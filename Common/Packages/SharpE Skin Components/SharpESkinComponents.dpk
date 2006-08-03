@@ -1,0 +1,70 @@
+package SharpESkinComponents;
+
+{$R *.res}
+{$R '..\..\Delphi Components\SharpE Skin Components\SharpEButton.dcr'}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  designide,
+  xmlrtl,
+  vclactnband,
+  vclx,
+  vcl,
+  JvSystemD9R,
+  vcljpg,
+  JvCoreD9R,
+  DJclVcl,
+  DJcl,
+  GR32_D2005,
+  PNG_D9;
+
+contains
+  StrTools in '..\..\Delphi Components\SharpE Skin Components\StrTools.pas',
+  sharedBitmapList in '..\..\Delphi Components\SharpE Skin Components\sharedBitmapList.pas',
+  SharpEBar in '..\..\Delphi Components\SharpE Skin Components\SharpEBar.pas',
+  SharpEBase in '..\..\Delphi Components\SharpE Skin Components\SharpEBase.pas',
+  SharpEBaseControls in '..\..\Delphi Components\SharpE Skin Components\SharpEBaseControls.pas',
+  SharpEBitmapList in '..\..\Delphi Components\SharpE Skin Components\SharpEBitmapList.pas',
+  SharpEButton in '..\..\Delphi Components\SharpE Skin Components\SharpEButton.pas',
+  SharpECheckBox in '..\..\Delphi Components\SharpE Skin Components\SharpECheckBox.pas',
+  SharpEDefault in '..\..\Delphi Components\SharpE Skin Components\SharpEDefault.pas',
+  SharpEDesignTime in '..\..\Delphi Components\SharpE Skin Components\SharpEDesignTime.pas',
+  SharpEEdit in '..\..\Delphi Components\SharpE Skin Components\SharpEEdit.pas',
+  SharpEForm in '..\..\Delphi Components\SharpE Skin Components\SharpEForm.pas',
+  SharpEImage32 in '..\..\Delphi Components\SharpE Skin Components\SharpEImage32.pas',
+  SharpELabel in '..\..\Delphi Components\SharpE Skin Components\SharpELabel.pas',
+  SharpEMiniThrobber in '..\..\Delphi Components\SharpE Skin Components\SharpEMiniThrobber.pas',
+  SharpEPanel in '..\..\Delphi Components\SharpE Skin Components\SharpEPanel.pas',
+  SharpEProgressBar in '..\..\Delphi Components\SharpE Skin Components\SharpEProgressBar.pas',
+  SharpERadioBox in '..\..\Delphi Components\SharpE Skin Components\SharpERadioBox.pas',
+  SharpEScheme in '..\..\Delphi Components\SharpE Skin Components\SharpEScheme.pas',
+  SharpESkin in '..\..\Delphi Components\SharpE Skin Components\SharpESkin.pas',
+  SharpESkinManager in '..\..\Delphi Components\SharpE Skin Components\SharpESkinManager.pas',
+  SharpESkinPart in '..\..\Delphi Components\SharpE Skin Components\SharpESkinPart.pas',
+  SharpETaskItem in '..\..\Delphi Components\SharpE Skin Components\SharpETaskItem.pas',
+  ShlIntf in '..\..\Delphi Components\SharpE Skin Components\ShlIntf.pas',
+  StrConst in '..\..\Delphi Components\SharpE Skin Components\StrConst.pas';
+
+end.
