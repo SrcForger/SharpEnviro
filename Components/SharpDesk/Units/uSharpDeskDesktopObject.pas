@@ -60,7 +60,7 @@ type
       procedure FSetSelected(Value : boolean);
       procedure LayerOnPaint(Sender: TObject; Buffer: TBitmap32);
       procedure LayerOnChange(Sender : TObject);
-      procedure BitmapOnChange(Sender : TObject);
+      //procedure BitmapOnChange(Sender : TObject);
     public
       constructor Create(pOwner : TObjectFile;
                          pSettings : TObjectSetItem);
@@ -248,7 +248,7 @@ begin
   end;
 end;
 
-procedure TDesktopObject.BitmapOnChange(Sender : TObject);
+{procedure TDesktopObject.BitmapOnChange(Sender : TObject);
 begin
   if Fwindow <> nil then
   begin
@@ -259,7 +259,7 @@ begin
     FWindow.Picture := FLayer.Bitmap;
     FWindow.DrawWindow;
   end;
-end;
+end;  }
 
 procedure TDesktopObject.LayerOnPaint(Sender: TObject; Buffer: TBitmap32);
 begin

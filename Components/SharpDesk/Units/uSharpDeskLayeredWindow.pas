@@ -35,6 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs,
+  Types,
   GR32,
   SharpApi,
   SharpDeskApi;
@@ -48,7 +49,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure FormDblClick(Sender: TObject);
   private
-    FTerminate : boolean;
+    //FTerminate : boolean;
     DC: HDC;
     Blend: TBlendFunction;
     FPicture : TBitmap32;
@@ -182,6 +183,7 @@ begin
 
   DC := GetDC(Handle);
   try
+    {$WARNINGS OFF}
     if not Win32Check(LongBool(DC)) then
       RaiseLastWin32Error;
 
@@ -199,6 +201,7 @@ begin
   finally
     ReleaseDC(Handle, DC);
   end;
+  {$WARNINGS ON}
 end;
 
 procedure TSharpDeskLayeredWindow.FormMouseDown(Sender: TObject;

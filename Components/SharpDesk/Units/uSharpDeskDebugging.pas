@@ -48,8 +48,7 @@ begin
   if pObject = nil then exit;
   try
     className := pObject.ClassName;
-    pObject.Free;
-    pObject := nil;
+    FreeAndNil(pObject);
   except
     on E: Exception do 
     begin

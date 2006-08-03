@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, StdCtrls, ShellApi, Menus, ImgList, Registry,
-  GR32_Image,GR32_Layers,GR32, GR32_resamplers, JPeg,
+  GR32_Image,GR32_Layers,GR32, GR32_resamplers, JPeg,Types,
   TypInfo,
   ShlObj,JvSimpleXML,JclSysInfo,AppEvnts,
   SharpApi,
@@ -329,8 +329,8 @@ begin
 end;
 
 procedure TSharpDeskMainForm.WMKILLFOCUS(var msg : TMessage);
-var
-  MuteXHandle : THandle;
+{var
+  MuteXHandle : THandle;}
 begin
   if not Created then
   begin
@@ -515,7 +515,7 @@ end;
 procedure TSharpDeskMainForm.LoadTheme(ID : integer; WPChange : boolean);
 var
    LoadThemeForm : TLoadThemeForm;
-   SetList : TStringList;
+   {SetList : TStringList;  }
 begin
      if (SharpDesk.DeskSettings.TerminalMode) and (not SharpDesk.DeskSettings.ThemeLoading) and (not FirstTheme) then exit;
      SharpDeskMainForm.SendMessageToConsole('Loading Theme',COLOR_OK,DMT_STATUS);
@@ -734,9 +734,6 @@ end;
 
 
 procedure TSharpDeskMainForm.FormCreate(Sender: TObject);
-var
-   i : integer;
-   b : boolean;
 begin
      ObjectPopupImageCount := ObjectPopUp.Images.Count;
 
@@ -788,8 +785,8 @@ end;
 
 
 procedure TSharpDeskMainForm.FormShow(Sender: TObject);
-var
-  Owner: HWnd;
+{var
+  Owner: HWnd;  }
 begin
   //window handling
  // Owner := GetWindow(MainForm.Handle, GW_OWNER);
@@ -807,8 +804,8 @@ end;
 
 
 procedure TSharpDeskMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
-var
-   n : integer;
+{var
+   n : integer;  }
 begin
   SendMessageToConsole('Closing main window',COLOR_OK,DMT_STATUS);
   SharpApi.UnRegisterAction('!AddDesktopObject');     
@@ -872,10 +869,10 @@ procedure TSharpDeskMainForm.BackgroundImageMouseUp(Sender: TObject;
   Layer: TCustomLayer);
 var
    B,i : integer;
-   cpos : TPoint;
+   //cpos : TPoint;
    MuteXHandle : THandle;
    DesktopObject : TDesktopObject;
-   MenuItem : TMenuItem;
+   //MenuItem : TMenuItem;
 begin
   if not SharpDesk.Enabled then exit;
   SharpDesk.MouseDown:=False;
@@ -929,7 +926,6 @@ begin
       ENDOFCUSTOMMENU.Visible := True;
       STARTOFBOTTOMMENU.Visible := True;
       SharpApi.SendMessageTo('SharpMenuWMForm',WM_CLOSESHARPMENU,0,0);
-      b := 0;
 
       while ObjectPopUp.Items[0].Name <> 'ENDOFCUSTOMMENU' do ObjectPopUp.Items.Delete(0);
       while ObjectPopUp.Items[ObjectPopUp.Items.Count-1].Name <> 'STARTOFBOTTOMMENU' do ObjectPopUp.Items.Delete(ObjectPopUp.Items.Count-1);
@@ -1374,10 +1370,6 @@ end;
 
 
 procedure TSharpDeskMainForm.CloneObject1Click(Sender: TObject);
-var
-   n : integer;
-   ID : String;
-   PosX,PosY : integer;
 begin
   SharpDesk.CloneSelectedObjects;
 end;
@@ -1587,7 +1579,7 @@ end;
 procedure TSharpDeskMainForm.OnLoadPresetClickSelected(Sender : TObject);
 var
    pID : integer;
-   DesktopObject : TDesktopObject;
+   //DesktopObject : TDesktopObject;
 begin
   if not (Sender is TMenuItem) then exit;
   pID := TMenuItem(Sender).Tag;
@@ -1811,10 +1803,6 @@ begin
 end;
 
 procedure TSharpDeskMainForm.Delete1Click(Sender: TObject);
-var
-   n,k,PIndex,ID : integer;
-   prev,pTemp,pvar : pPlugin;
-   s : string;
 begin
   SharpDesk.DeleteSelectedLayers;
   SharpDesk.LastLayer := - 1;
@@ -1900,7 +1888,7 @@ var
    tempItem : TMenuItem;
    XML : TJvSimpleXML;
    SList : TStringList;
-   DesktopObject : TDesktopObject;
+   //DesktopObject : TDesktopObject;
    ObjectFile    : String;
 begin
   if Tooltiptimer.Enabled then
@@ -2063,8 +2051,7 @@ begin
           end;
      end;
 
-     AlignSettingsForm.Free;
-     AlignSettingsForm := nil;
+     FreeAndNil(AlignSettingsForm);
 
      XMl.SaveToFile(GetSharpeUserSettingsPath + 'SharpDesk\Aligns.xml');
      XML.Free;
@@ -2137,7 +2124,9 @@ begin
     exit;
   end;
 
+  {$WARNINGS OFF}
   TooltipTimer.Tag := TooltipTimer.Tag + TooltipTimer.Interval;
+  {$WARNINGS ON}
   if TooltipTimer.Tag>=2000 then
   begin
     DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));

@@ -206,8 +206,8 @@ uses uSharpDeskDesktopObject,
 procedure TSelectionLayer.Paint(Buffer: TBitmap32);
 var
   L : TFloatRect;
-  n : integer;
-  c : TColor32;
+  //n : integer;
+  //c : TColor32;
 begin
   L := GetAdjustedLocation;
   Buffer.SetStipple([clwhite32,clwhite32,clwhite32,clblack32,clblack32,clblack32]);
@@ -282,9 +282,7 @@ end;
 procedure TSharpDeskManager.DeleteInputAreas(oID : integer);
 var
   n : integer;
-  pInputArea : TInputArea;
 begin
-  pInputArea := nil;
   for n := FInputAreaList.Count - 1 downto 0 do
       if TInputArea(FInputAreaList.Items[n]).ObjectID = oID then
          FInputAreaList.Delete(n);
@@ -1186,8 +1184,7 @@ begin
     TIntClass(VList.Objects[n]).Free;
     VList.Objects[n] := nil;
   end;
-  VList.Free;
-  VList := nil;
+  FreeAndNil(VList);
   FObjectSettings.SaveObjectSettings;
 end;
 
@@ -1535,8 +1532,8 @@ end;
 procedure TSharpDeskManager.RenderToolTip(pDesktopObject : TObject; X,Y : integer);
 var
   DesktopObject : TDesktopObject;
-  ObjectFile    : TObjectFile;
-  n : integer;
+  //ObjectFile    : TObjectFile;
+  //n : integer;
 begin
   if not FDeskSettings.Tooltips then exit;
 
@@ -1640,9 +1637,9 @@ begin
 end;
 
 procedure TSharpDeskManager.CheckInvisibleLayers;
-var
- n,i : integer;
- DesktopObject : TDesktopObject;
+//var
+ //n,i : integer;
+ //DesktopObject : TDesktopObject;
 begin
   // handled by objects now
 

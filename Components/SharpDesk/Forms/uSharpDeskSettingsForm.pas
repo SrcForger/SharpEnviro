@@ -40,7 +40,7 @@ uses
   uSharpDeskObjectFile,
   uSharpDeskDesktopObject,
   SharpDeskApi, ComCtrls, ImgList, ActnList, ToolWin, JvExExtCtrls, JvComponent,
-  JvRollOut;
+  JvRollOut, Types;
 
 type
   TSettingsForm = class(TForm)
@@ -105,8 +105,7 @@ end;
 
 procedure TSettingsForm.BuildObjectSets;
 var
-   n,i,k,count : integer;
-   b : boolean;
+   n : integer;
    ListItem : TListItem;
    tempObjectSet : TObjectSet;
    SList : TStringList;

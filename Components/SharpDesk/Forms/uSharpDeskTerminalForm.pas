@@ -111,8 +111,6 @@ begin
 end;
 
 procedure TTerminalWnd.cb_tmodeClick(Sender: TObject);
-var
-  n : integer;
 begin
   GroupBox1.Enabled := cb_tmode.Checked;
   cb_smenu.Enabled := cb_tmode.Checked;

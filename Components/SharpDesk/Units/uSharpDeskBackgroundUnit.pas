@@ -32,7 +32,7 @@ Unit uSharpDeskBackgroundUnit;
 
 Interface
 
-uses Windows,Graphics,SysUtils,Forms,SharpApi,Jpeg,Classes,Dialogs,
+uses Windows,Graphics,SysUtils,Forms,SharpApi,Jpeg,Classes,Dialogs,Types,
      GR32,Math,GR32_blend,GR32_Image, GR32_resamplers,PngImage, Registry,Messages,
      uSharpDeskTThemeSettings,
      uSharpDeskSharpETheme;
@@ -360,6 +360,7 @@ var
    simple : boolean;
    MC : TColor;
 begin
+  mon := nil;
   simple := True;
   SharpApi.SendDebugMessageEx('SharpDesk',PChar('Simple Mode check'),clblue,DMT_trace);
   // Checking for simple mode!

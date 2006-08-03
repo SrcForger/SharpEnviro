@@ -116,8 +116,6 @@ begin
 end;
 
 procedure TObjectSet.Clear;
-var
-   n : integer;
 begin
  {for n := 0 to Count - 1 do
       if Items[n] <> nil then

@@ -140,7 +140,7 @@ procedure TDragAndDropManager.DoDragAndDrop(pFile : String; X,Y : integer);
 var
    tXML : TJvSimpleXML;
    oXML : TJvSimpleXML;
-   n,i,Index : integer;
+   n,i : integer;
    fn,s,ID : string;
    ObjectFile : TObjectFile;
    ObjectSet : TObjectSet;
@@ -249,12 +249,14 @@ var
    SR : TSearchRec;
    DragAndDropItem : TDragAndDropItem;
 begin
+  {$WARNINGS OFF}
   Clear;
   if not DirectoryExists(pDirectory) then exit;
   if FindFirst(IncludeTrailingBackSlash(pDirectory)+'*.XML', faAnyFile , sr) = 0 then
   repeat
+    XML := TJvSimpleXML.Create(nil);
     try
-      XML := TJvSimpleXML.Create(nil);
+      
       XML.LoadFromFile(IncludeTrailingBackSlash(pDirectory)+SR.Name);
       if TSharpDeskManager(FOwner).ObjectFileList.GetByObjectFile(XML.Root.Items.ItemNamed['Settings'].Items.Value('Object','none')) <> nil then
       begin
@@ -270,6 +272,7 @@ begin
     end;
   until FindNext(sr) <> 0;
   FindClose(sr);
+  {$WARNINGS ON}
 end;
 
 

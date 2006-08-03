@@ -100,8 +100,8 @@ begin
   end;
 
   ForceDirectories(ExtractFileDir(FFileName));
+  XML := TJvSimpleXML.Create(nil);
   try
-    XML := TJvSimpleXML.Create(nil);
     XML.Root.Name := 'ObjectSets';
     XML.Root.Items.Add('SetList').Items.Add('1').Value := 'Default';
     XML.Root.Items.Add('Objects').Items.Add('1');
@@ -117,8 +117,8 @@ var
    ID : String;
    done : boolean;
 begin
+  Result := 0;
   randomize;
-  done := False;
   if Count = 0 then exit;
   repeat
     done := True;
@@ -265,8 +265,7 @@ begin
   if ObjectSet <> nil then
   begin
     ObjectSet.Clear;
-    ObjectSet.Free;
-    ObjectSet := nil;
+    FreeAndNil(ObjectSet);
   end;
   Pack;
 end;

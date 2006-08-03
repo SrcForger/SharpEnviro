@@ -241,8 +241,6 @@ end;
 
 
 destructor TSharpETheme.Destroy;
-var
-  n : integer;
 begin
   TextFont.Free;
   MenuFont.Free;

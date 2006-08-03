@@ -102,7 +102,11 @@ var
 begin
   FDirectory := pDirectory;
 	Clear;
+
+  {$WARNINGS OFF}
   pDirectory := ExcludeTrailingBackSlash(pDirectory);
+  {$WARNINGS ON}
+
   if not DirectoryExists(pDirectory) then exit;
 
   if FindFirst(pDirectory+'\*'+FExtension, faAnyFile , sr) = 0 then

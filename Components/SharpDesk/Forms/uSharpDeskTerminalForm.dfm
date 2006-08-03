@@ -191,7 +191,7 @@ object TerminalWnd: TTerminalWnd
   end
   object bottompanel: TPanel
     Left = 0
-    Top = 382
+    Top = 384
     Width = 298
     Height = 40
     Align = alBottom
@@ -231,7 +231,7 @@ object TerminalWnd: TTerminalWnd
   end
   object Panel2: TPanel
     Left = 0
-    Top = 380
+    Top = 382
     Width = 298
     Height = 2
     Align = alBottom
