@@ -1,0 +1,55 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = SharpDesk.exe Clock.dll SharpDeskApi.dll FilePanel.dll Link.dll \
+  Weather.dll Image.dll Drive.dll RecycleBin.dll Text.dll IconPanel.dll \
+  websearch.dll
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+SharpDesk.exe: SharpDesk.dpr
+  $(DCC)
+
+Clock.dll: ..\Objects\Clock\Clock.dpr
+  $(DCC)
+
+SharpDeskApi.dll: ..\Common\SharpDeskApi\SharpDeskApi.dpr
+  $(DCC)
+
+FilePanel.dll: ..\Objects\FilePanel\FilePanel.dpr
+  $(DCC)
+
+Link.dll: ..\Objects\Link\Link.dpr
+  $(DCC)
+
+Weather.dll: ..\Objects\Weather\Weather.dpr
+  $(DCC)
+
+Image.dll: ..\Objects\Image\Image.dpr
+  $(DCC)
+
+Drive.dll: ..\Objects\Drive2\Drive.dpr
+  $(DCC)
+
+RecycleBin.dll: ..\Objects\RecycleBin\RecycleBin.dpr
+  $(DCC)
+
+Text.dll: ..\Objects\Text\Text.dpr
+  $(DCC)
+
+IconPanel.dll: ..\Objects\IconPanel\IconPanel.dpr
+  $(DCC)
+
+websearch.dll: ..\Objects\WebSearch\websearch.dpr
+  $(DCC)
+
+
