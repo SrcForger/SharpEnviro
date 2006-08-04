@@ -1,0 +1,333 @@
+unit MainWnd;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
+  SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
+  JvSimpleXML, SharpApi, Jclsysinfo, Menus, SharpELabel, Math;
+
+
+type
+  TMainForm = class(TForm)
+    Background: TImage32;
+    rambar: TSharpEProgressBar;
+    UpdateTimer: TTimer;
+    MenuPopup: TPopupMenu;
+    Settings1: TMenuItem;
+    swpbar: TSharpEProgressBar;
+    lb_rambar: TSharpELabel;
+    lb_swpbar: TSharpELabel;
+    SharpESkinManager1: TSharpESkinManager;
+    lb_swp: TSharpELabel;
+    lb_ram: TSharpELabel;
+    procedure Settings1Click(Sender: TObject);
+    procedure UpdateTimerTimer(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+  protected
+  private
+    BarWidth    : integer;
+    ShowRAMBar  : boolean;
+    ShowRAMPC   : boolean;
+    ShowRAMInfo : boolean;
+    ShowSWPBar  : boolean;
+    ShowSWPPC   : boolean;
+    ShowSWPInfo : boolean;
+    ItemAlign   : integer;
+  public
+    ModuleID : integer;
+    BarWnd : hWnd;
+    procedure LoadSettings;
+    procedure ReAlignComponents(SendUpdate : boolean);
+  end;
+
+
+implementation
+
+uses SettingsWnd,
+     uSharpBarAPI;
+
+{$R *.dfm}
+
+function Li2Double(x: LARGE_INTEGER): Double; 
+begin 
+  Result := x.HighPart * 4.294967296E9 + x.LowPart 
+end;
+
+procedure TMainForm.LoadSettings;
+var
+  filename : string;
+  item : TJvSimpleXMLElem;
+begin
+  BarWidth := 100;
+  ShowRAMBar  := True;
+  ShowRAMPC   := True;
+  ShowRAMInfo := False;
+  ShowSWPBar  := True;
+  ShowSWPPC   := True;
+  ShowSWPInfo := False;
+  ItemAlign   := 2;
+
+  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
+  if item <> nil then with item.Items do
+  begin
+    BarWidth := IntValue('Width',100);
+    ShowRAMBar  := BoolValue('ShowRAMBar',True);
+    ShowRAMPC   := BoolValue('ShowRAMPC',True);
+    ShowRAMInfo := BoolValue('ShowRAMInfo',False);
+    ShowSWPBar  := BoolValue('ShowSWPBar',True);
+    ShowSWPPC   := BoolValue('ShowSWPPC',True);
+    ShowSWPInfo := BoolValue('ShowSWPInfo',False);
+    ItemAlign   := IntValue('ItemAlign',2);
+    if ItemAlign >2 then ItemAlign := 2;
+    if ItemAlign <1 then ItemAlign := 1;
+  end;
+
+  ReAlignComponents(false);
+end;
+
+procedure TMainForm.ReAlignComponents(SendUpdate : boolean);
+var
+  ramw,spacing,swpw,h : integer;
+  pcmod,imod : integer;
+  o1,o2,o3,o4,o5 : integer;
+  freespace : integer;
+begin
+  freespace := uSharpBarApi.GetFreeBarSpace(BarWnd);
+  if BarWidth<25 then BarWidth := 25;
+
+  ramw := 0;
+  swpw := 0;
+  spacing := 10;
+  pcmod := 0;
+  imod := 0;
+
+  o1 := 2;
+  o2 := 0;
+  o3 := 0;
+  o4 := 0;
+  o5 := 0;
+
+  case ItemAlign of
+   1: begin
+        if ShowRamInfo then
+        begin
+          lb_ram.Visible := True;
+          lb_ram.Left := o1;
+          lb_ram.LabelStyle := lsMedium;
+          lb_ram.Top := Height div 2 - lb_ram.Height div 2;
+          o1 := lb_ram.Left + lb_ram.Width + 2;
+        end else lb_ram.Visible := False;
+
+        if ShowRamBar then
+        begin
+          rambar.AutoSize := True;
+          rambar.Width := BarWidth;
+          rambar.Visible := True;
+          rambar.Height := Height div 2;
+          rambar.Left := o1;
+          rambar.Top := Height div 2  - rambar.Height div 2;
+          o1 := rambar.Left + rambar.Width + 2;
+        end else rambar.Visible := False;
+
+        if ShowRamPC then
+        begin
+          lb_rambar.Visible := True;
+          lb_rambar.LabelStyle := lsMedium;
+          lb_rambar.Left := o1;
+          lb_rambar.Top := Height div 2 - lb_rambar.Height div 2;
+          o1 := lb_rambar.Left + lb_rambar.Width + 2;
+        end else lb_rambar.Visible := False;
+
+        o1 := o1 + spacing;
+
+        if ShowSWPInfo then
+        begin
+          spacing := 0;
+          lb_swp.Visible := True;
+          lb_swp.LabelStyle := lsMedium;
+          lb_swp.Left := o1;
+          lb_swp.Top := Height div 2 - lb_swp.Height div 2;
+          o1 := lb_swp.Left + lb_swp.Width + 2;
+        end else lb_swp.Visible := FalsE;
+
+        if ShowSWPBar then
+        begin
+          spacing := 0;
+          swpbar.AutoSize := True;
+          swpbar.Width := BarWidth;
+          swpbar.Visible := True;
+          swpbar.Left := o1;
+          swpbar.Height := Height div 2;
+          swpbar.Top := Height div 2 - swpbar.Height div 2;
+          o1 := swpbar.Left + swpbar.Width + 2;
+        end else swpbar.Visible := False;
+
+        if ShowSWPPC then
+        begin
+          spacing := 0;
+          lb_swpbar.Visible := True;
+          lb_swpbar.LabelStyle := lsMedium;
+          lb_swpbar.Left := o1;
+          lb_swpbar.Top := Height div 2 - lb_swpbar.Height div 2;
+          o1 := lb_swpbar.Left + lb_swpbar.Width + 2;
+        end;
+
+        o1 := o1 - spacing;
+      end
+   else begin
+          o2 := (Height - 2 - 4) div 2;
+          if ShowRamInfo then
+          begin
+            lb_ram.Visible := True;
+            lb_ram.LabelStyle := lsSmall;
+            lb_ram.Left := o1;
+            lb_ram.Top := 2 + (o2 div 2) - (lb_ram.Height div 2);
+            o3 := lb_ram.Left + lb_ram.Width + 2;
+          end else lb_ram.Visible := False;
+
+          if ShowSWPInfo then
+          begin
+            lb_swp.Visible := True;
+            lb_swp.LabelStyle := lsSmall;
+            lb_swp.Left := o1;
+            lb_swp.Top := Height - 2 - (o2 div 2) - (lb_swp.Height div 2);
+            o3 := lb_swp.Left + lb_swp.Width + 2;
+          end else lb_swp.Visible := False;
+
+          if ShowRamBar then
+          begin
+            rambar.Width := BarWidth;
+            rambar.AutoSize := False;
+            rambar.Left := o3;
+            rambar.Height := o2;
+            rambar.Top := 2;
+            rambar.Visible := True;
+            o4 := rambar.Left + rambar.Width + 2;
+          end else rambar.Visible := False;
+
+          if ShowSwpBar then
+          begin
+            swpbar.Width := Barwidth;
+            swpbar.AutoSize := False;
+            swpbar.Left := o3;
+            swpbar.Height := o2;
+            swpbar.Top := Height - 2 - swpbar.Height;
+            swpbar.Visible := True;
+            o4 := swpbar.Left + swpbar.Width + 2;
+          end else swpbar.Visible := False;
+
+          if ShowRamPC then
+          begin
+            lb_rambar.Visible := True;
+            lb_rambar.Left := max(o3,o4);
+            lb_rambar.Top := 2 + (o2 div 2) - (lb_rambar.Height div 2);
+            lb_rambar.LabelStyle := lsSmall;
+            o5 := lb_rambar.Left + lb_rambar.Width + 2;
+          end else lb_rambar.Visible := FalsE;
+
+          if ShowSwpPC then
+          begin
+            lb_swpbar.Visible := True;
+            lb_swpbar.Left := max(o3,o4);
+            lb_swpbar.Top := Height - 2 - (o2 div 2) - (lb_swp.Height div 2);
+            lb_swpbar.LabelStyle := lsSmall;
+            o5 := lb_swpbar.Left + lb_swpbar.Width + 2;
+          end else lb_swpbar.Visible := FalsE;
+        end;
+  end;
+
+  Width := max(o1,max(max(o3,o4),o5));
+  if SendUpdate then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+end;
+
+
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  UpdateTimer.Enabled := True;
+end;
+
+procedure TMainForm.UpdateTimerTimer(Sender: TObject);
+var
+  memStat : TMemoryStatus;
+  i : integer;
+begin
+  memStat.dwLength := SizeOf(memStat);
+  GlobalMemoryStatus(memStat);
+
+  if (RamBar.Visible) or (lb_rambar.Visible) then
+  begin
+    i := round(((memstat.dwTotalPhys - memstat.dwAvailPhys) / memstat.dwTotalPhys) * 100);
+    if RamBar.Visible then
+       if (i <> rambar.Value) then
+           rambar.Value := i;
+    if (lb_rambar.Visible) then
+       if (inttostr(i) + '%' <> lb_rambar.Caption) then
+          lb_rambar.Caption := inttostr(i) + '%';
+  end;
+
+  if (SwpBar.Visible) or (lb_swpbar.Visible) then
+  begin
+    i := round(((memstat.dwTotalPageFile - memstat.dwAvailPageFile) / memstat.dwTotalPageFile) * 100);
+    if SwpBar.Visible then
+       if i <> swpbar.Value then
+          swpbar.Value := i;
+    if lb_swpbar.Visible then
+       if (inttostr(i) + '%' <> lb_swpbar.Caption) then
+           lb_swpbar.Caption := inttostr(i) + '%';
+  end;
+end;
+
+procedure TMainForm.Settings1Click(Sender: TObject);
+var
+  SettingsForm : TSettingsForm;
+  item : TJvSimpleXMLElem;
+begin
+  SettingsForm := TSettingsForm.Create(nil);
+  SettingsForm.cb_rambar.Checked  := ShowRAMBar;
+  SettingsForm.cb_raminfo.checked := ShowRAMInfo;
+  SettingsForm.cb_rampc.Checked   := ShowRAMPC;
+  SettingsForm.cb_swpbar.Checked  := ShowSWPBar;
+  SettingsForm.cb_swpinfo.Checked := ShowSWPInfo;
+  SettingsForm.cb_swppc.Checked   := ShowSWPPC;
+  SettingsForm.tb_size.Position   := Barwidth;
+  case ItemAlign of
+    1: SettingsForm.rb_halign.Checked := True
+    else SettingsForm.rb_valign.Checked := True;
+  end;
+  if SettingsForm.ShowModal = mrOk then
+  begin
+    ShowRAMBar  := SettingsForm.cb_rambar.Checked;
+    ShowRAMInfo := SettingsForm.cb_raminfo.checked;
+    ShowRAMPC   := SettingsForm.cb_rampc.Checked;
+    ShowSWPBar  := SettingsForm.cb_swpbar.Checked;
+    ShowSWPInfo := SettingsForm.cb_swpinfo.Checked;
+    ShowSWPPC   := SettingsForm.cb_swppc.Checked;
+    Barwidth    := SettingsForm.tb_size.Position;
+    if SettingsForm.rb_halign.Checked then ItemAlign := 1
+       else ItemAlign := 2;
+       
+    item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
+    if item <> nil then with item.Items do
+    begin
+      clear;
+      Add('Width',BarWidth);
+      Add('ShowRAMBar',ShowRAMBar);
+      Add('ShowRAMInfo',ShowRAMInfo);
+      Add('ShowRAMPC',ShowRAMPC);
+      Add('ShowSWPBar',ShowSWPBar);
+      Add('ShowSWPInfo',ShowSWPInfo);
+      Add('ShowSWPPC',ShowSWPPC);
+      Add('ShowSWPPC',ShowSWPPC);
+      Add('ItemAlign',ItemAlign);
+    end;
+    uSharpBarAPI.SaveXMLFile(BarWnd);
+    ReAlignComponents(true);
+  end;
+  SettingsForm.Free;
+  SettingsForm := nil;
+  SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+end;
+
+end.
