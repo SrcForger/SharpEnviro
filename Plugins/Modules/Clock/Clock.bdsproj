@@ -127,10 +127,10 @@
 		</Directories>
 		<Parameters>
 			<Parameters Name="RunParams">-load:19343478</Parameters>
-			<Parameters Name="HostApplication">C:\SharpE\SharpBar.exe</Parameters>
+			<Parameters Name="HostApplication">..\..\..\..\SharpE\SharpBar.exe</Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
-			<Parameters Name="DebugCWD">C:\SharpE\</Parameters>
+			<Parameters Name="DebugCWD">..\..\..\..\SharpE\</Parameters>
 		</Parameters>
 		<VersionInfo>
 			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
