@@ -1,0 +1,95 @@
+{
+Source Name: SharpESkin
+Description: SharpESkin service to provide all app with skin graphics
+Copyright (C) Malx (Malx@sharpe-shell.org)
+
+Common: SharpApi
+
+Source Forge Site
+https://sourceforge.net/projects/sharpe/
+
+SharpE Site
+http://www.sharpe-shell.org
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+}
+
+library SkinControler;
+
+uses
+  windows,
+  registry,
+  Classes,
+  Messages,
+  activex,
+  sysutils,
+  forms,
+  Jclstrings,
+  uSkinServer in 'uSkinServer.pas' {SkinServer},
+  uInfoDlg in 'uInfoDlg.pas' {InfoDlg},
+  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
+  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas';
+
+var
+   SkinServer : TSkinServer;
+{$E ser}
+
+{$R *.RES}
+
+function Start(owner: hwnd): hwnd;
+begin
+  result := owner;
+  SkinServer := TSkinServer.Create(nil);
+end;
+
+procedure Stop;
+begin
+  if InfoDlg <> nil then begin
+    InfoDlg.Free;
+  end;
+  SkinServer.Free;
+end;
+
+
+procedure DisplayInfoWnd;
+begin
+  if InfoDlg = nil then begin
+    InfoDlg := TInfoDlg.Create(nil);
+    if SkinServer <> nil then begin
+      SkinServer.UpdateInfoDlg;
+    end
+    else begin
+      InfoDlg.lSkinFile.caption := 'Server Not Running';
+      InfoDlg.lnr.caption := '0';
+      InfoDlg.lNrReq.caption := '0';
+      InfoDlg.lLastHwnd.caption := '0';
+    end;
+    InfoDlg.Show;
+  end
+  else begin
+    if InfoDlg.Visible = true then InfoDlg.SetFocus
+    else InfoDlg.Show;
+  end;
+end;
+
+exports
+  Start,
+  Stop,
+  DisplayInfoWnd;
+
+begin
+
+end.
+
