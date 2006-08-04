@@ -1,0 +1,265 @@
+{
+Source Name: MainWnd.pas
+Description: iDrop Module Main Form
+Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
+
+Source Forge Site
+https://sourceforge.net/projects/sharpe/
+
+Main SharpE Site
+http://www.Sharpe-Shell.org
+
+Recommended Environment
+ - Compiler : Delphi 2005 (Personal Edition)
+ - OS : Windows 2000 or higher
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+}
+
+unit MainWnd;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, GR32_Image,
+  SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls,
+  JvSimpleXML, SharpApi,shellAPI, Menus, JclFileUtils, GR32, GR32_Ellipse;
+
+
+type
+  TMainForm = class(TForm)
+    Background: TImage32;
+    MenuPopup: TPopupMenu;
+    Settings1: TMenuItem;
+    AnimTimer: TTimer;
+    procedure AnimTimerTimer(Sender: TObject);
+    procedure BackgroundDblClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure Settings1Click(Sender: TObject);
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
+  private
+    sWidth  : integer;
+    sTarget : String;
+  public
+    ModuleID : integer;
+    BarWnd : hWnd;
+    BGBmp : TBitmap32;
+    OldLBWindowProc: TWndMethod;
+    lastcolor : TColor;
+    cs : TColorSchemeEx;
+    procedure LBWindowProc(var Message: TMessage);
+    procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;
+    procedure LoadSettings;
+    procedure ReAlignComponents;
+    procedure Draw(startcolor : Tcolor; ck : boolean);
+  end;
+
+
+implementation
+
+uses SettingsWnd,
+     uSharpBarAPI;
+
+{$R *.dfm}
+
+procedure TMainForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.ExStyle := params.ExStyle or WS_EX_ACCEPTFILES;
+end;
+
+procedure TMainForm.LBWindowProc(var Message: TMessage);
+begin
+  if Message.Msg = WM_DROPFILES then
+     WMDropFiles(Message);
+  OldLBWindowProc(Message);
+end;
+
+procedure TMainForm.WMDropFiles(var msg: TMessage);
+var
+  pcFileName: PChar;
+  i, iSize, iFileCount: integer;
+  Fo      : TSHFILEOpStruct;
+  buffer  : array[0..4096] of char;
+  p       : pchar;
+begin
+   if not IsDirectory(sTarget) then
+   begin
+      showmessage('Target directory does not exists!');
+      exit;
+   end;
+   AnimTimer.Tag := 0;
+   AnimTimer.Interval := 250;
+   AnimTimer.Enabled := True;
+   pcFileName := '';
+   iFileCount := DragQueryFile(Msg.wParam, $FFFFFFFF, pcFileName, 255);
+   FillChar(Buffer, sizeof(Buffer), #0);
+   p := @buffer;
+   for i := 0 to iFileCount - 1 do
+   begin
+      iSize := DragQueryFile(Msg.wParam, i, nil, 0) + 1;
+      pcFileName := StrAlloc(iSize);
+      DragQueryFile(Msg.wParam, i, pcFileName, iSize);
+      if i<>iFileCount-1 then p := StrECOPY(p, pcFileName) + 1
+         else StrECopy(p,pcFileName);
+      StrDispose(pcFileName);
+   end;
+
+   FillChar(Fo, sizeof(Fo), #0);
+   Fo.Wnd    := Handle;
+   if GetKeyState(VK_SHIFT) < 0 then Fo.wFunc := FO_MOVE
+       else Fo.wFunc  := FO_COPY;
+   Fo.pFrom  := @Buffer;
+   Fo.pTo    := PChar(sTarget);
+   Fo.fFlags := 0;
+   SHFILEOperation(Fo);
+   DragFinish(Msg.wParam);
+   AnimTimer.Interval := 250;
+   AnimTimer.Tag := 1;
+end;
+
+procedure TMainForm.LoadSettings;
+var
+  item : TJvSimpleXMLElem;
+begin
+  sWidth  := Height;
+  sTarget := 'X:\';
+
+  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
+  if item <> nil then with item.Items do
+  begin
+    sTarget := Value('Target','X:\');
+  end;
+
+  ReAlignComponents;
+end;
+
+procedure TMainForm.Draw(startcolor : Tcolor; ck : boolean);
+var
+  n : integer;
+  s : integer;
+  r : integer;
+  Bmp : TBitmap32;
+  c : TColor;
+begin
+  if BGBmp = nil then exit;
+  if Background.Bitmap = nil then exit;
+  if BGBmp.Width < 1 then exit;
+  cs := LoadColorSchemeEx;
+  Bmp := TBitmap32.Create;
+  try
+    Bmp.Assign(BGBmp);
+    try
+      n := 0;
+      s := 4;
+      if startcolor = 0 then
+         c := cs.WorkAreaback
+         else c := startcolor;
+      repeat
+        Ellipse(Bmp,Rect(4+n*s,1+n*s,Bmp.Width-4-n*s,Bmp.Height-1-n*s),True, True,clBlack32,color32(c));
+        if ck then
+        begin
+          if c = cs.WorkAreaback then
+             c := cs.Throbberback else c := cs.WorkAreaback;
+        end;
+        n := n + 1;
+      until Bmp.Height - 1 - n*s - 1 - n*s <=4;
+    except
+    end;
+    Bmp.DrawTo(Background.Bitmap);
+  finally
+    Bmp.Free;
+  end;
+end;
+
+procedure TMainForm.ReAlignComponents;
+begin
+  Width := Height+8;
+  Draw(0,True);
+end;
+
+
+procedure TMainForm.Settings1Click(Sender: TObject);
+var
+  SettingsForm : TSettingsForm;
+  item : TJvSimpleXMLElem;
+  SimpleXML : TJvSimpleXML;
+begin
+  try
+    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm.edit_target.Text := sTarget;
+    if SettingsForm.ShowModal = mrOk then
+    begin
+      sTarget  := SettingsForm.edit_target.Text;
+
+      item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
+      if item <> nil then with item.Items do
+      begin
+        clear;
+        Add('Target',sTarget);
+      end;
+      uSharpBarAPI.SaveXMLFile(BarWnd);
+      ReAlignComponents;
+    end;
+
+  finally
+    SettingsForm.Free;
+    SettingsForm := nil;
+    SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  end;
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  BGBmp := TBitmap32.Create;
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  BGBmp.Free;
+  BGBmp := nil;
+end;
+
+procedure TMainForm.BackgroundDblClick(Sender: TObject);
+begin
+  SharpApi.SharpExecute(IncludeTrailingBackSlash(sTarget));
+end;
+
+procedure TMainForm.AnimTimerTimer(Sender: TObject);
+begin
+  if AnimTimer.Tag <1 then
+  begin
+    if LastColor = cs.WorkAreaback then
+       LastColor := cs.ThrobberBack else LastColor := cs.WorkAreaback;
+    Draw(LastColor,True);
+  end
+  else
+  begin
+    AnimTimer.Tag := AnimTimer.Tag +1;
+    if LastColor = cs.WorkAreaback then
+       LastColor := cs.ThrobberBack else LastColor := cs.WorkAreaback;
+    Draw(LastColor,False);
+  end;
+  if AnimTimer.Tag >= 8 then
+  begin
+    AnimTimer.Enabled := False;
+    Draw(0,True);
+  end;
+end;
+
+end.
