@@ -3,7 +3,7 @@ object EditFilterForm: TEditFilterForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Edit Filter'
-  ClientHeight = 345
+  ClientHeight = 387
   ClientWidth = 289
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -14,7 +14,7 @@ object EditFilterForm: TEditFilterForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
-  OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -95,10 +95,54 @@ object EditFilterForm: TEditFilterForm
     TabOrder = 5
     OnClick = btn_find1Click
   end
+  object rb_filename: TRadioButton
+    Left = 8
+    Top = 288
+    Width = 145
+    Height = 17
+    Caption = 'Filename'
+    TabOrder = 6
+    OnClick = rb_classnameClick
+  end
+  object edit_filename: TEdit
+    Left = 24
+    Top = 304
+    Width = 201
+    Height = 21
+    TabOrder = 7
+  end
+  object btn_find2: TButton
+    Tag = 1
+    Left = 232
+    Top = 304
+    Width = 41
+    Height = 22
+    Caption = 'Find'
+    TabOrder = 8
+    OnClick = btn_find1Click
+  end
+  object btn_cancel: TButton
+    Left = 208
+    Top = 352
+    Width = 75
+    Height = 25
+    Caption = 'Cancel'
+    TabOrder = 9
+    OnClick = btn_cancelClick
+  end
+  object btn_ok: TButton
+    Left = 128
+    Top = 352
+    Width = 75
+    Height = 25
+    Caption = 'Ok'
+    TabOrder = 10
+    OnClick = btn_okClick
+  end
   object wndclasspopup: TPopupMenu
     Images = wndcimages
     Left = 240
-    Top = 280
+    Top = 224
   end
   object wndcimages: TImageList
     BkColor = clMenu
