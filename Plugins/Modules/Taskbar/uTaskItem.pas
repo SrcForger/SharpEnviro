@@ -38,7 +38,8 @@ uses
   Messages,
   SysUtils,
   DateUtils,
-  JclSysUtils;
+  JclSysUtils,
+  JclSysInfo;
 
 type
   TTaskItem = class
@@ -48,6 +49,8 @@ type
                 FIcon : hIcon;
                 FCaption : String;
                 FWndClass : String;
+                FFilePath : String;
+                FFileName : String;
                 FVisible  : boolean;
                 FPlacement: TWindowPlacement;
               private
@@ -60,6 +63,7 @@ type
                 procedure UpdateVisibleState;
                 procedure UpdatePlacement;
                 procedure UpdateIcon;
+                procedure UpdateFileInfo;
                 procedure Minimize;
                 procedure Restore;
               published
@@ -69,7 +73,9 @@ type
                 property WndClass : String  read FWndClass;
                 property Visible  : boolean read FVisible;
                 property Placement : TWindowPlacement read FPlacement;
-                property TimeAdded : Int64 read FTimeAdded;
+                property TimeAdded : Int64  read FTimeAdded;
+                property FileName  : String read FFileName;
+                property FilePath  : String read FFilePath;
               end;
 
 implementation
@@ -88,8 +94,14 @@ begin
   inherited Destroy;
 end;
 
+procedure TTaskItem.UpdateFileInfo;
+begin
+  FFilePath := GetProcessNameFromWnd(FHandle);
+  FFileName := ExtractFileName(FFilePath);
+end;
+
 procedure TTaskItem.UpdateIcon;
-const 
+const
   ICON_SMALL2 = 2;
 var
   newicon : hicon;
@@ -134,6 +146,7 @@ begin
   UpdateVisibleState;
   UpdatePlacement;
   UpdateIcon;
+  UpdateFileInfo;
 end;
 
 procedure TTaskItem.Minimize;

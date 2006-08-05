@@ -145,7 +145,11 @@ function CloseModule(ID : integer) : boolean;
 var
   n : integer;
 begin
-  if ModuleList = nil then exit;
+  if ModuleList = nil then
+  begin
+    result := False;
+    exit;
+  end;
 
   try
     for n := 0 to ModuleList.Count - 1 do

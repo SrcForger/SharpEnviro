@@ -13,6 +13,7 @@ object sfilterform: Tsfilterform
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object list_filters: TListBox
@@ -22,6 +23,7 @@ object sfilterform: Tsfilterform
     Height = 177
     ItemHeight = 13
     TabOrder = 0
+    OnClick = list_filtersClick
   end
   object btn_new: TButton
     Left = 128
@@ -39,6 +41,7 @@ object sfilterform: Tsfilterform
     Height = 25
     Caption = 'Edit'
     TabOrder = 2
+    OnClick = btn_editClick
   end
   object btn_delete: TButton
     Left = 128
@@ -55,5 +58,6 @@ object sfilterform: Tsfilterform
     Height = 25
     Caption = 'Close'
     TabOrder = 4
+    OnClick = Button1Click
   end
 end

@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls;
+  Dialogs, StdCtrls, JvSimpleXML;
 
 type
   Tsfilterform = class(TForm)
@@ -43,11 +43,15 @@ type
     btn_edit: TButton;
     btn_delete: TButton;
     Button1: TButton;
+    procedure Button1Click(Sender: TObject);
+    procedure list_filtersClick(Sender: TObject);
+    procedure btn_editClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure btn_newClick(Sender: TObject);
   private
-    { Private-Deklarationen }
   public
-    { Public-Deklarationen }
+    procedure UpdateFilterList;
+    procedure UpdateButtonStates;
   end;
 
 var
@@ -55,9 +59,44 @@ var
 
 implementation
 
-uses EditFilterWmd;
+uses EditFilterWmd, SharpAPI;
 
 {$R *.dfm}
+
+procedure Tsfilterform.UpdateButtonStates;
+begin
+  if list_filters.ItemIndex <0 then
+  begin
+    btn_edit.Enabled := False;
+    btn_delete.Enabled := False;
+  end else
+  begin
+    btn_edit.Enabled := True;
+    btn_delete.Enabled := True;
+  end;
+end;
+
+procedure Tsfilterform.UpdateFilterList;
+var
+  n : integer;
+  XML : TJvSimpleXML;
+  fn : string;
+begin
+  list_filters.Clear;
+  fn := SharpApi.GetSharpeGlobalSettingsPath + 'SharpBar\Module Settings\TaskBar\';
+  ForceDirectories(fn);
+  fn := fn + 'Filters.xml';
+  if not FileExists(fn) then exit;
+
+  XML := TJvSimpleXMl.Create(nil);
+  try
+    XML.LoadFromFile(fn);
+    for n := 0 to XML.Root.Items.Count - 1 do
+        list_filters.items.add(XML.Root.Items.Item[n].Items.Value('Name','Error reading XML data'));
+  except
+  end;
+  XML.Free;
+end;
 
 procedure Tsfilterform.btn_newClick(Sender: TObject);
 begin
@@ -67,6 +106,38 @@ begin
   finally
     FreeAndNil(EditFilterForm);
   end;
+  UpdateFilterList;
+  UpdateButtonStates;
+end;
+
+procedure Tsfilterform.FormShow(Sender: TObject);
+begin
+  UpdateFilterList;
+  UpdateButtonStates;
+end;
+
+procedure Tsfilterform.btn_editClick(Sender: TObject);
+begin
+  if list_filters.ItemIndex <0 then exit;
+  try
+    EditFilterForm := TEditFilterForm.Create(nil);
+    EditFilterForm.LoadFromXML(list_filters.Items[list_filters.Itemindex]);
+    EditFilterForm.showmodal;
+  finally
+    FreeAndNil(EditFilterForm);
+  end;
+  UpdateFilterList;
+  UpdateButtonStates;
+end;
+
+procedure Tsfilterform.list_filtersClick(Sender: TObject);
+begin
+  UpdateButtonStates;
+end;
+
+procedure Tsfilterform.Button1Click(Sender: TObject);
+begin
+  Close;
 end;
 
 end.

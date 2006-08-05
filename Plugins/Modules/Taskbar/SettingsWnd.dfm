@@ -3,8 +3,8 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Task Module Settings'
-  ClientHeight = 152
-  ClientWidth = 416
+  ClientHeight = 198
+  ClientWidth = 630
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,6 +13,7 @@ object SettingsForm: TSettingsForm
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -23,8 +24,8 @@ object SettingsForm: TSettingsForm
     Caption = 'Task Style'
   end
   object Button1: TButton
-    Left = 256
-    Top = 120
+    Left = 472
+    Top = 168
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -32,8 +33,8 @@ object SettingsForm: TSettingsForm
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 336
-    Top = 120
+    Left = 552
+    Top = 168
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -64,48 +65,13 @@ object SettingsForm: TSettingsForm
     Caption = 'Minimal'
     TabOrder = 4
   end
-  object cb_filter: TCheckBox
-    Left = 264
-    Top = 8
-    Width = 145
-    Height = 17
-    Caption = 'Filter Tasks (Display only)'
-    TabOrder = 5
-  end
-  object cb_maximized: TCheckBox
-    Left = 275
-    Top = 24
-    Width = 97
-    Height = 17
-    Caption = 'Maximized'
-    Checked = True
-    Enabled = False
-    State = cbChecked
-    TabOrder = 6
-  end
-  object cb_minimized: TCheckBox
-    Left = 275
-    Top = 40
-    Width = 97
-    Height = 17
-    Caption = 'Minimized'
-    TabOrder = 7
-  end
-  object cb_visible: TCheckBox
-    Left = 275
-    Top = 56
-    Width = 97
-    Height = 17
-    Caption = 'Visible'
-    TabOrder = 8
-  end
   object Panel1: TPanel
     Left = 96
     Top = 0
     Width = 145
     Height = 89
     BevelOuter = bvNone
-    TabOrder = 9
+    TabOrder = 5
     object cb_sort: TCheckBox
       Left = 8
       Top = 8
@@ -113,6 +79,7 @@ object SettingsForm: TSettingsForm
       Height = 17
       Caption = 'Sort Tasks'
       TabOrder = 0
+      OnClick = cb_sortClick
     end
     object rb_caption: TRadioButton
       Left = 16
@@ -149,22 +116,50 @@ object SettingsForm: TSettingsForm
       TabStop = True
     end
   end
-  object CheckBox1: TCheckBox
-    Left = 275
-    Top = 72
+  object Button3: TButton
+    Left = 544
+    Top = 32
+    Width = 81
+    Height = 25
+    Caption = 'Setup Filterrs'
+    TabOrder = 6
+    OnClick = Button3Click
+  end
+  object list_include: TCheckListBox
+    Left = 288
+    Top = 24
+    Width = 121
+    Height = 121
+    OnClickCheck = list_includeClickCheck
+    ItemHeight = 13
+    TabOrder = 7
+  end
+  object rb_ifilter: TCheckBox
+    Left = 288
+    Top = 8
     Width = 97
     Height = 17
-    Caption = 'Special Filter'
-    TabOrder = 10
+    Caption = 'Include Filters'
+    TabOrder = 8
+    OnClick = rb_ifilterClick
   end
-  object Button3: TButton
-    Left = 360
-    Top = 72
-    Width = 49
-    Height = 22
-    Caption = 'Setup'
-    TabOrder = 11
-    OnClick = Button3Click
+  object list_exclude: TCheckListBox
+    Left = 416
+    Top = 24
+    Width = 121
+    Height = 121
+    OnClickCheck = list_excludeClickCheck
+    ItemHeight = 13
+    TabOrder = 9
+  end
+  object rb_efilter: TCheckBox
+    Left = 416
+    Top = 8
+    Width = 97
+    Height = 17
+    Caption = 'Exclude Filters'
+    TabOrder = 10
+    OnClick = rb_efilterClick
   end
   object XPManifest1: TXPManifest
     Left = 16

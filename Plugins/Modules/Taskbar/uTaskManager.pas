@@ -45,8 +45,6 @@ type
   TTaskExChangeEvent = procedure(pItem1,pItem2 : TTaskItem; I1,I2 : integer) of object;
 
   TSortType = (stCaption,stWndClass,stTime,stIcon);
-  TTaskFilter = (tfMaximized,tfMinimized,tfVisible);
-  TTaskFilters = set of TTaskFilter;
 
   TTaskManager = class
                  protected

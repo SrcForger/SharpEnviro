@@ -55,6 +55,13 @@ type
   THSLColor = record
                 Hue, Saturation, Lightness : Integer;
               end;
+  TTaskFilter = record
+                  FilterStates : Set of Byte;
+                  FilterClass : String;
+                  FilterFile  : String;
+                  FilterType  : integer;
+                  FilterName  : String;
+                end;
 
   TMainForm = class(TForm)
     Background: TImage32;
@@ -76,8 +83,8 @@ type
     sState      : TSharpETaskItemStates;
     sSort       : boolean;
     sSortType   : TSortType;
-    sFilter     : boolean;
-    sFilters    : TTaskFilters;
+    sIFilter,sEFilter : Boolean;
+    sIFilters,sEFilters : array of TTaskFilter;
   public
     TM: TTaskManager;
     IList: TObjectList;
@@ -103,6 +110,7 @@ type
     procedure CompleteRefresh;
     function CheckFilter(pItem : TTaskItem) : boolean;
     procedure CheckFilterAll;
+    procedure LoadFilterSettingsFromXML;
   end;
 
 
@@ -274,9 +282,57 @@ begin
      end;
 end;
 
+procedure LoadFilterFromXML(var filter : TTaskFilter; XML : TJvSimpleXMLElem);
+var
+  n : integer;
+begin
+  filter.FilterType := XML.Items.IntValue('FilterType',2);
+  filter.FilterClass := XML.Items.Value('WndClassName');
+  filter.FilterFile  := XML.Items.Value('FileName');
+  filter.FilterStates := [];
+  for n := 0 to 10 do
+      if XML.Items.BoolValue('SW_'+inttostr(n),False) then filter.FilterStates := filter.FilterStates + [n];
+end;
+
+procedure TMainForm.LoadFilterSettingsFromXML;
+var
+  XML : TJvSimpleXML;
+  i,n : integer;
+  fn : string;
+begin
+  fn := SharpApi.GetSharpeGlobalSettingsPath + 'SharpBar\Module Settings\TaskBar\';
+  fn := fn + 'Filters.xml';
+  if not FileExists(fn) then
+  begin
+    sIFilter := False;
+    sEFilter := False;
+    exit;
+  end;
+
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(fn);
+    for i := 0 to High(sIFilters) do
+    begin
+      for n := 0 to XML.Root.Items.Count - 1 do
+          if XML.Root.Items.Item[n].Items.Value('Name') = sIFilters[i].FilterName then
+             LoadFilterFromXML(sIFilters[i],XML.Root.Items.Item[n]);
+    end;
+    for i := 0 to High(sEFilters) do
+    begin
+      for n := 0 to XML.Root.Items.Count - 1 do
+          if XML.Root.Items.Item[n].Items.Value('Name') = sEFilters[i].FilterName then
+             LoadFilterFromXML(sEFilters[i],XML.Root.Items.Item[n]);
+    end;
+  except
+  end;
+  XML.Free;
+end;
+
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
+  item,fitem : TJvSimpleXMLElem;
+  n : integer;
 begin
   sState     := tisFull;
   sWidth     := 100;
@@ -299,19 +355,37 @@ begin
       3: sSortType := stIcon;
       else sSortType := stCaption;
     end;
-    sFilter := BoolValue('Filter',False);
-    sFilters := [];
-    if BoolValue('MaximizedFilter',True) then sFilters := sFilters + [tfMaximized];
-    if BoolValue('MinimizedFilter',True) then sFilters := sFilters + [tfMinimized];
-    if BoolValue('VisibleFilter',True) then sFilters := sFilters + [tfVisible];
+    sIFilter := BoolValue('IFilter',False);
+    sEFilter := BoolValue('EFilter',False);
+    setlength(sIFilters,0);
+    setlength(sEFilters,0);
+    if ItemNamed['IFilters'] <> nil then
+    begin
+      fitem := ItemNamed['IFilters'];
+      for n := 0 to fitem.Items.Count-1 do
+      begin
+        setlength(sIFilters,length(sIFilters)+1);
+        sIFilters[High(sIFilters)].FilterName := fitem.Items.Item[n].Value;
+      end;
+    end;
+    if ItemNamed['EFilters'] <> nil then
+    begin
+      fitem := ItemNamed['EFilters'];
+      for n := 0 to fitem.Items.Count-1 do
+      begin
+        setlength(sEFilters,length(sEFilters)+1);
+        sEFilters[High(sEFilters)].FilterName := fitem.Items.Item[n].Value;
+      end;
+    end;
   end;
+  if (sIFilter) or (sEFilter) then LoadFilterSettingsFromXML;
 
   TM.SortTasks := sSort;
   TM.SortType := sSortType;
   GetSpacing;
   ReAlignComponents;
   if TM.SortTasks then TM.DoSortTasks;
-  if sFilter then CompleteRefresh;
+  CompleteRefresh;
 end;
 
 procedure TMainForm.CompleteRefresh;
@@ -360,7 +434,8 @@ end;
 procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  item : TJvSimpleXMLElem;
+  item,fitem : TJvSimpleXMLElem;
+  n,i : integer;
 begin
   try
     SettingsForm := TSettingsForm.Create(nil);
@@ -376,10 +451,19 @@ begin
       stIcon     : SettingsForm.rb_icon.Checked := True;
     end;
     SettingsForm.cb_sort.Checked := sSort;
-    SettingsForm.cb_filter.Checked := sFilter;
-    SettingsForm.cb_maximized.Checked := (tfMaximized in sFilters);
-    SettingsForm.cb_minimized.Checked := (tfMinimized in sFilters);
-    SettingsForm.cb_visible.Checked := (tfVisible in sFilters);
+    SettingsForm.rb_ifilter.Checked := sIFilter;
+    SettingsForm.rb_efilter.Checked := sEFilter;
+    SettingsForm.UpdateFilterList;
+    for n := 0 to High(sIFilters) do
+    begin
+      i := SettingsForm.list_include.Items.IndexOf(sIFilters[n].FilterName);
+      if i >=0 then SettingsForm.list_include.Checked[i] := True;
+    end;
+    for n := 0 to High(sEFilters) do
+    begin
+      i := SettingsForm.list_exclude.Items.IndexOf(sEFilters[n].FilterName);
+      if i >=0 then SettingsForm.list_exclude.Checked[i] := True;
+    end;
 
     if SettingsForm.ShowModal = mrOk then
     begin
@@ -391,14 +475,26 @@ begin
          else if SettingsForm.rb_timeadded.Checked then sSortType := stTime
               else if SettingsForm.rb_icon.Checked then sSortType := stIcon
                    else sSortType := stCaption;
-      sFilter := SettingsForm.cb_filter.Checked;
-      sFilters := [];
-      if SettingsForm.cb_maximized.Checked then sFilters := sFilters + [tfMaximized];
-      if SettingsForm.cb_minimized.Checked then sFilters := sFilters + [tfMinimized];
-      if SettingsForm.cb_visible.Checked then sFilters := sFilters + [tfVisible];
+      sIFilter := SettingsForm.rb_ifilter.Checked;
+      sEFilter := SettingsForm.rb_efilter.Checked;
+      setlength(sIFilters,0);
+      setlength(sEFilters,0);
+      for n := 0 to SettingsForm.list_include.Count - 1 do
+          if SettingsForm.list_include.Checked[n] then
+          begin
+            setlength(sIFilters,length(sIFilters)+1);
+            sIFilters[High(sIFilters)].FilterName := SettingsForm.list_include.Items[n];
+          end;
+      for n := 0 to SettingsForm.list_exclude.Count - 1 do
+          if SettingsForm.list_exclude.Checked[n] then
+          begin
+            setlength(sEFilters,length(sEFilters)+1);
+            sEFilters[High(sEFilters)].FilterName := SettingsForm.list_exclude.Items[n];
+          end;
       item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
       if item <> nil then with item.Items do
       begin
+        clear;
         Add('Sort',sSort);
         case sSortType of
           stCaption  : Add('SortType',0);
@@ -406,21 +502,22 @@ begin
           stTime     : Add('SortType',2);
           stIcon     : Add('SortType',3);
         end;
-        Add('MaximizedFilter',(tfMaximized in sFilters));
-        Add('MinimizedFilter',(tfMinimized in sFilters));
-        Add('VisibleFilter',(tfVisible in sFilters));
-        Add('Filter',sFilter);
         case sState of
           tisFull    : Add('State',0);
           tisCompact : Add('State',1);
           tisMini    : Add('State',2);
         end;
+        Add('IFilter',sIFilter);
+        Add('EFilter',sEFilter);
+        fitem := Add('IFilters');
+        for n := 0 to High(sIFilters) do
+            fitem.Items.Add(inttostr(n),sIFilters[n].FilterName);
+        fitem := Add('EFilters');
+        for n := 0 to High(sEFilters) do
+            fitem.Items.Add(inttostr(n),sEFilters[n].FilterName);
       end;
       uSharpBarAPI.SaveXMLFile(BarWnd);
-      TM.SortTasks := sSort;
-      TM.SortType := sSortType;
-      if TM.SortTasks then TM.DoSortTasks;
-      if sFilter then CompleteRefresh;
+      LoadSettings;
     end;
     ReAlignComponents;
 
@@ -486,7 +583,7 @@ var
   pTaskItem : TSharpETaskItem;
   pItem : TTaskItem;
 begin
-  if not sFilter then exit;
+  if (sIFilter = False) and (sEFilter = False) then exit;
 
   pTaskItem := nil;
   for i := 0 to TM.GetCount do
@@ -508,25 +605,39 @@ begin
 end;
 
 function TMainForm.CheckFilter(pItem : TTaskItem) : boolean;
+var
+  n : integer;
 begin
-  if not sFilter then
+  if (sIFilter = False) and (sEFilter = False) then
   begin
     result := true;
     exit;
   end;
 
   result := false;
-  if (tfVisible in sFilters) and (pItem.Visible) then result := true;
-  if (tfMaximized in sFilters) and
-     ((pItem.Placement.showCmd = SW_MAXIMIZE)
-      or (pItem.Placement.showCmd = SW_SHOWMAXIMIZED)
-      or (pItem.Placement.showCmd = SW_MAX)
-      or (IsZoomed(pItem.Handle))) then result := true;
-  if (tfMinimized in sFilters) and
-     ((pItem.Placement.showCmd = SW_MINIMIZE)
-      or (pItem.Placement.showCmd = SW_SHOWMINIMIZED)
-      or (pItem.Placement.showCmd = SW_SHOWMINNOACTIVE)
-      or (isIconic(pItem.Handle))) then result := true;
+  if sIFilter then
+  begin
+    for n:=0 to High(sIFilters) do
+    begin
+      case sIFilters[n].FilterType of
+        0: if pItem.Placement.showCmd in sIFilters[n].FilterStates then result := true;
+        1: if pItem.WndClass = sIFilters[n].FilterClass then result := true;
+        2: if pItem.FileName = sIFilters[n].FilterFile then result := true;
+      end;
+    end;
+  end;
+
+  if sEFilter then
+  begin
+    for n:=0 to High(sEFilters) do
+    begin
+      case sEFilters[n].FilterType of
+        0: if pItem.Placement.showCmd in sEFilters[n].FilterStates then result := false;
+        1: if pItem.WndClass = sEFilters[n].FilterClass then result := false;
+        2: if pItem.FileName = sEFilters[n].FilterFile then result := false;
+      end;
+    end;
+  end;
 end;
 
 procedure TMainForm.FlashTask(pItem : TTaskItem; Index : integer);
@@ -729,8 +840,8 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
 
 begin
-  sFilter := False;
-  sFilters := [];
+  sIFilter := False;
+  sEFilter := False;
   sMaxwidth  := 128;
   IList := TObjectList.Create;
   IList.Clear;
