@@ -111,6 +111,7 @@ type
     function CheckFilter(pItem : TTaskItem) : boolean;
     procedure CheckFilterAll;
     procedure LoadFilterSettingsFromXML;
+    constructor CreateParented(ParentWindow : hwnd; pID : integer; pBarWnd : Hwnd; pHeight : integer);
   end;
 
 
@@ -124,6 +125,14 @@ var
   usend : boolean;
 
 {$R *.dfm}
+
+constructor TMainForm.CreateParented(ParentWindow : hwnd; pID : integer; pBarWnd : Hwnd; pHeight : integer);
+begin
+  Inherited CreateParented(ParentWindow);
+  ModuleID := pID;
+  BarWnd := pBarWnd;
+  Height := pHeight;
+end;
 
 procedure TMainForm.WMCommand(var msg: TMessage);
 begin
@@ -166,7 +175,9 @@ begin
     sAutoHeight := Height - 2;
   end;
 
-  if sMaxWidth = -1 then sMaxWidth := 128;
+  if (sAutoHeight > Height - 2) or (sAutoHeight <=0) then
+     sAutoHeight := Height -2;
+  if sMaxWidth <= 0 then sMaxWidth := 128;
 end;
 
 procedure TMainForm.DisplaySystemMenu(pHandle : hwnd);
@@ -418,7 +429,6 @@ begin
   if NewWidth > FreeBarSpace then
   begin
     CalculateItemWidth(IList.Count);
-    AlignTaskComponents;
     NewWidth := IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
   end;
   if Width <> NewWidth then
@@ -846,6 +856,7 @@ begin
   IList := TObjectList.Create;
   IList.Clear;
   TM := TTaskManager.Create;
+  TM.Enabled := True;
   TM.OnNewTask := NewTask;
   TM.OnRemoveTask := RemoveTask;
   TM.OnUpdateTask := UpdateTask;
@@ -853,8 +864,12 @@ begin
   TM.OnFlashTask    := FlashTask;
   TM.OnTaskExchange := TaskExChange;
 
+  InitHook;
+  LoadSettings;
+
   EnumWindows(@EnumWindowsProc, 0);
 end;
+
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin

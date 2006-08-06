@@ -49,6 +49,7 @@ type
   TTaskManager = class
                  protected
                  private
+                   FEnabled        : Boolean;
                    FOnNewTask      : TTaskChangeEvent;
                    FOnRemoveTask   : TTaskChangeEvent;
                    FOnUpdateTask   : TTaskChangeEvent;
@@ -74,6 +75,7 @@ type
                    constructor Create; reintroduce;
                    destructor Destroy; override;
                  published
+                   property Enabled        : boolean          read FEnabled write FEnabled;
                    property SortTasks      : boolean          read FSortTasks write FSortTasks;
                    property SortType       : TSortType        read FSortType write FSortType;
                    property OnNewTask      : TTaskChangeEvent read FOnNewTask write FOnNewTask;
@@ -90,6 +92,7 @@ implementation
 constructor TTaskManager.Create;
 begin
   inherited Create;
+  FEnabled := False;
   FItems := TObjectList.Create;
   FItems.Clear;
   FSortTasks := True;
@@ -144,6 +147,8 @@ var
   pItem : TTaskItem;
   n : integer;
 begin
+  if not FEnabled then exit;
+
   RemoveDeadTasks;
   for n := 0 to FItems.Count -1 do
   begin
@@ -161,6 +166,8 @@ var
   pItem : TTaskItem;
   n : integer;
 begin
+  if not FEnabled then exit;
+
   RemoveDeadTasks;
   for n := 0 to FItems.Count -1 do
   begin
@@ -193,6 +200,8 @@ procedure TTaskManager.AddTask(pHandle : hwnd);
 var
   pItem : TTaskItem;
 begin
+  if not FEnabled then exit;
+
   RemoveDeadTasks;
   if not IsWindow(pHandle) then exit;
   if GetItemByHandle(pHandle) <> nil then exit; // item already exists
@@ -208,6 +217,8 @@ var
   pItem : TTaskItem;
   n : integer;
 begin
+  if not FEnabled then exit;
+
   for n := 0 to FItems.Count -1 do
   begin
     pItem := TTaskItem(FItems.Items[n]);
@@ -229,6 +240,8 @@ var
   pItem : TTaskItem;
   n : integer;
 begin
+  if not FEnabled then exit;
+
   RemoveDeadTasks;
   for n := 0 to FItems.Count - 1 do
   begin

@@ -89,25 +89,29 @@ begin
 end;
 
 constructor TModule.Create(pID : integer; pParent : hwnd);
+var
+  i : integer;
 begin
   inherited Create;
   FID   := pID;
   FBarWnd := pParent;
-  FForm := TMainForm.CreateParented(pParent);
-  FForm.BorderStyle := bsNone;
   try
-    FForm.Height := GetBarPluginHeight(FBarWnd);
+    i := GetBarPluginHeight(FBarWnd);
   except
   end;
+  FForm := TMainForm.CreateParented(pParent,ID,FBarWnd,i);
+  FForm.BorderStyle := bsNone;
   FForm.ParentWindow := pParent;
+  FForm.Height := i;
   MouseTimer.AddWinControl(TMainForm(FForm));
   with FForm as TMainForm do
   begin
     ModuleID := pID;
     BarWnd   := FBarWnd;
-    InitHook;
-    LoadSettings;
-    ReAlignComponents;
+//    InitHook;
+//    LoadSettings;
+//    EnumerateTasks(TMainForm(FForm));
+//    ReAlignComponents;
     Show;
   end;
   FForm.Parent := GetControlByHandle(pParent);
