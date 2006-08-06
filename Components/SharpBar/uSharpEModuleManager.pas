@@ -256,7 +256,8 @@ begin
             FModuleSettings.SaveToFile(FModuleSettings.FileName);
             break;
           end;
-          
+
+      BroadCastModuleRefresh;
       FixModulePositions;
       exit;
     end;
