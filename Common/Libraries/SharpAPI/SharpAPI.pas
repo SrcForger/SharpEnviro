@@ -132,8 +132,11 @@ const
   DMT_NONE = -1;
   
   // SharpCenter
+// SharpCenter
   WM_SETTINGSCHANGED      = WM_APP + 660;
   WM_UPDATESETTINGS       = WM_APP + 661;
+  WM_SCGLOBALBTNMSG         = WM_APP + 662;
+
   SCU_SHARPDESK = 1001;
   SCU_SHARPCORE = 1002;
   SCU_SHARPBAR = 1003;
@@ -142,6 +145,15 @@ const
   SCU_SERVICE = 1006;
   SCU_OBJECT = 1007;
   SCU_MODULE = 1008;
+
+  SCB_MOVEUP = 2000;
+  SCB_MOVEDOWN = 2001;
+  SCB_ADD = 2002;
+  SCB_DEL = 2003;
+  SCB_EDIT = 2004;
+  SCB_IMPORT = 2005;
+  SCB_EXPORT = 2006;
+  SCB_CLEAR = 2007;
 
   //showModes to use with sendTrayMessage
   smSLIDE = 1;
@@ -176,6 +188,13 @@ type
   end;
   pMsgData = ^TMsgData;
 
+  PConfigMsg = ^TConfigMsg;
+  TConfigMsg = record
+    Command: string[255];
+    Parameter: string[255];
+    PluginID: Integer;
+  end;
+
 function GetDelimitedActionList: WideString; external 'SharpAPI.dll' name 'GetDelimitedActionList';
 function RegisterAction(ActionName: Pchar; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterAction';
 function RegisterActionEx(ActionName: Pchar; GroupName:PChar; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterActionEx';
@@ -191,6 +210,8 @@ function GetMostUsedItems(ReturnCount: integer): widestring; external 'SharpAPI.
 function GetSharpeDirectory: PChar; external 'SharpAPI.dll' name 'GetSharpeDirectory';
 function GetSharpeUserSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeUserSettingsPath';
 function GetSharpeGlobalSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeGlobalSettingsPath';
+function GetCenterDirectory: PChar; external 'SharpAPI.dll' name 'GetCenterDirectory';
+
 
 function SetNewIconSet(NewIconSet : String) : hresult; external 'SharpAPI.dll' name 'SetNewIconSet';
 function SetNewTheme(NewTheme : String; NewThemeID : integer; broadcast : boolean) : hresult; external 'SharpAPI.dll' name 'SetNewTheme';
