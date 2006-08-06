@@ -77,7 +77,7 @@ type
 implementation
 
 uses
-  uWeatherMgr, SharpApi;
+  SharpApi;
 
 
 
