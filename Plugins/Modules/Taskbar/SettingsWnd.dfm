@@ -121,7 +121,7 @@ object SettingsForm: TSettingsForm
     Top = 32
     Width = 81
     Height = 25
-    Caption = 'Setup Filterrs'
+    Caption = 'Setup Filters'
     TabOrder = 6
     OnClick = Button3Click
   end
