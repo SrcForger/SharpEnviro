@@ -115,7 +115,7 @@
 			<Linker Name="ExeDescription"></Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir">D:\PB5 Output\Center\Root\Plugins</Directories>
+			<Directories Name="OutputDir">..\..\..\..\SharpE\</Directories>
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
@@ -127,7 +127,7 @@
 		</Directories>
 		<Parameters>
 			<Parameters Name="RunParams"></Parameters>
-			<Parameters Name="HostApplication">D:\PB5 Output\SharpCenter.exe</Parameters>
+			<Parameters Name="HostApplication">..\..\..\..\SharpE\SharpCenter.exe</Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
 			<Parameters Name="DebugCWD"></Parameters>
