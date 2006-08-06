@@ -123,6 +123,8 @@ uses
   jclfileutils,
   jclsysinfo,
   JvSimpleXML,
+  Graphics,
+  FileUtils,
 
   uExecServiceRecentItemList in '..\..\..\Plugins\Services\Exec\uExecServiceRecentItemList.pas',
   uExecServiceUsedItemList in '..\..\..\Plugins\Services\Exec\uExecServiceUsedItemList.pas';
@@ -164,6 +166,8 @@ const
   // SharpCenter
   WM_SETTINGSCHANGED      = WM_APP + 660;
   WM_UPDATESETTINGS       = WM_APP + 661;
+  WM_SCGLOBALBTNMSG         = WM_APP + 662;
+
   SCU_SHARPDESK = 1001;
   SCU_SHARPCORE = 1002;
   SCU_SHARPBAR = 1003;
@@ -173,6 +177,14 @@ const
   SCU_OBJECT = 1007;
   SCU_MODULE = 1008;
 
+  SCB_MOVEUP = 2000;
+  SCB_MOVEDOWN = 2001;
+  SCB_ADD = 2002;
+  SCB_DEL = 2003;
+  SCB_EDIT = 2004;
+  SCB_IMPORT = 2005;
+  SCB_EXPORT = 2006;
+  SCB_CLEAR = 2007;
 
   HR_NORECIEVERWINDOW = 2;
   HR_UNKNOWNERROR = 1;
@@ -204,6 +216,7 @@ const
   THEMEPATH = 'Theme';
   SCHEMEPATH = 'Scheme';
   SKINDIR  = 'Skins';
+  CENTERDIR = 'Center\Root';
   ICONSDIR = 'Icons';
 
 type
@@ -246,6 +259,13 @@ type
     Parameter: string[255]
   end;
 
+  PConfigMsg = ^TConfigMsg;
+  TConfigMsg = record
+    Command: string[255];
+    Parameter: string[255];
+    PluginID: Integer;
+  end;
+
   PActionCmd = ^TActionCmd;
   TActionCmd = record
     Command: string[255];
@@ -258,7 +278,6 @@ var
   wpara: wparam;
   mess: integer;
   lpara: lparam;
-  sTemp: string;
 
 
 function GetSharpeDirectory  : PChar; forward;
@@ -441,18 +460,24 @@ begin
 end;
 
 function GetIconSetName : PChar;
+var
+  stemp:String;
 begin
   stemp := RegLoadStr(THEMEPATH,'IconSet','Cubeix Black');
   result := PChar(stemp);
 end;
 
 function GetThemeName : PChar;
+var
+  stemp:String;
 begin
   stemp := RegLoadStr(THEMEPATH,'Name','SharpE');
   result := PChar(stemp);
 end;
 
 function GetThemeID : Integer;
+var
+  stemp:String;
 begin
   stemp := RegLoadStr(THEMEPATH,'ID','0');
   try
@@ -471,6 +496,7 @@ function GetCurrentIconSetFile : PChar;
 var
   SharpEDir : String;
   IconSet   : String;
+  stemp     : string;
 begin
   SharpEDir := GetSharpEDirectory;
   IconSet   := GetIconSetName;
@@ -490,14 +516,28 @@ begin
 end;
 
 function GetSkinName : PChar;
+var
+  stemp:String;
 begin
   stemp := RegLoadStr(SKINPATH,'Name','SharpE');
+  result := PChar(stemp);
+end;
+
+function GetCenterDirectory : PChar;
+var
+  SharpEDir : String;
+  stemp:String;
+begin
+  SharpEDir := GetSharpEDirectory;
+  stemp := IncludeTrailingBackslash(SharpEDir)+
+           IncludeTrailingBackslash(CenterDir);
   result := PChar(stemp);
 end;
 
 function GetSkinDirectory : PChar;
 var
   SharpEDir : String;
+  stemp:String;
 begin
   SharpEDir := GetSharpEDirectory;
   stemp := IncludeTrailingBackslash(SharpEDir)+
@@ -509,6 +549,7 @@ function GetCurrentSkinFile : PChar;
 var
   SkinDir  : String;
   SkinName : String;
+  stemp:String;
 begin
   SkinDir := GetSkinDirectory;
   SkinName := GetSkinName;
@@ -965,6 +1006,7 @@ end;
 function LoadSettingA(module: pChar; setting: pChar; default: pChar): pChar;
 var
   Reg: TRegIniFile;
+  stemp:String;
 begin
   Reg := TRegIniFile.create(OLD_REGPATH);
   try
@@ -1324,6 +1366,72 @@ begin
   end;
 end;
 
+function ConfigMsg(ACommand: Pchar; AParameter: PChar; APluginID:Integer): hresult;
+var
+  cds: TCopyDataStruct;
+  wnd: hWnd;
+  msg: TConfigMsg;
+  path: string;
+  MutexHandle: THandle;
+begin
+  Result := 0;
+  wnd := 0;
+  try
+    //Prepare TCopyDataStruct
+
+    SendDebugMessageEx('SharpApi', pchar(format('Config Msg Received: %s - %s',
+      [ACommand,AParameter])), 0, DMT_INFO);
+    msg.Parameter := AParameter;
+    msg.Command := ACommand;
+    msg.PluginID := APluginID;
+
+    with cds do
+    begin
+      dwData := 0;
+      cbData := SizeOf(TConfigMsg);
+      lpData := @msg;
+    end;
+
+    MuteXHandle := OpenMutex(MUTEX_ALL_ACCESS, False, 'SharpCenterMutexX');
+    if MuteXHandle <> 0 then
+    begin
+
+      //Find the window
+      wnd := FindWindow('TSharpCenterWnd', nil);
+      if wnd <> 0 then
+      begin
+        SendDebugMessageEx('SharpApi',
+          pchar(format('SharpCenter Mutex Exists, Sending Msg: %s - %s', [ACommand,AParameter])),
+          0,
+          DMT_STATUS);
+        result := sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
+      end;
+      CloseHandle(MuteXHandle);
+    end
+    else
+    begin
+      // Start the SharpCenter application
+      Path := GetSharpeDirectory;
+
+      if fileexists(Path + 'SharpCenter.exe') then
+      begin
+        SendDebugMessageEx('SharpApi',
+          pchar(format('SharpCenter Mutex not found, Launching file: %s', [Path +
+          'SharpCenter.exe'])), 0, DMT_STATUS);
+        ShellExecute(wnd, 'open', pchar(Path + 'SharpCenter.exe'), Pchar('-api ' +
+          ACommand + ' ' + AParameter), pchar(path), WM_SHOWWINDOW);
+      end
+      else
+        SendDebugMessageEx('SharpApi',
+          pchar(format('There was an error launching: %s', [Path +
+          'SharpCenter.exe'])), 0, DMT_ERROR);
+    end;
+
+  except
+    result := HR_UNKNOWNERROR;
+  end;
+end;
+
 function SendMessageTo(WndName: string; msg: integer; wpar: wparam; lpar:
   lparam): boolean;
 var
@@ -1372,8 +1480,7 @@ begin
 
   // Check current dir
   Path := ExtractFilePath(Application.ExeName);
-  if DirCheck(Path,sCheckResult) then
-  begin
+  if DirCheck(Path,sCheckResult) then begin
     tmp := ExtractFilePath(sCheckResult);
     Result := pchar(tmp);
     exit;
@@ -1403,31 +1510,45 @@ end;
 function GetSharpeUserSettingsPath: PChar;
 var
   Path: string;
-  Fn: string;
+  Fn: pchar;
   user:String;
+  stemp:String;
 begin
 
   // Check current directory
   User := GetLocalUserName;
   Fn := GetSharpeDirectory;
   Path := IncludeTrailingBackslash(Fn+'Settings\User') + User;
-  ForceDirectories(Path);
-  stemp := Trim(IncludeTrailingBackslash(Path));
-  Result := pchar(stemp);
 
+  if Not(DirectoryExists(Path)) then
+    Sysutils.ForceDirectories(Path);
+
+  stemp := IncludeTrailingBackslash(Path);
+  Result := pchar(stemp);
+  SendDebugMessage('SharpApi',Result,clblack);
 end;
 
 function GetSharpeGlobalSettingsPath: PChar;
 var
   Path: string;
-  Fn: string;
+  Fn: pchar;
+  stemp:String;
 begin
   // Check current directory
   Fn := GetSharpeDirectory;
+  //SendDebugMessage('SharpApi Fn',Fn,clblack);
+
   Path := IncludeTrailingBackslash(Fn+'Settings\Global');
-  ForceDirectories(Path);
-  stemp := Trim(IncludeTrailingBackslash(Path));
+  //SendDebugMessage('SharpApi Path',pchar(Path),clblack);
+
+  if Not(DirectoryExists(Path)) then
+    Sysutils.ForceDirectories(Path);
+
+  stemp := IncludeTrailingBackslash(Path);
+  //SendDebugMessage('SharpApi stemp',pchar(stemp),clblack);
+
   Result := pchar(stemp);
+  //SendDebugMessage('SharpApi Result',Result,clblack);
 end;
 
 function GetRecentItems(ReturnCount: integer): widestring;
@@ -1445,17 +1566,17 @@ begin
     exit;
   end;
 
-  TmpRI := TRecentItemsStore.Create(GetSharpeUserSettingsPath + xmlfile);
+  TmpRI := TRecentItemsList.Create(GetSharpeUserSettingsPath + xmlfile);
   strl := TStringList.Create;
 
-  if ReturnCount >= TmpRI.Count - 1 then
-    ReturnCount := TmpRI.Count;
+  if ReturnCount >= TmpRI.Items.Count - 1 then
+    ReturnCount := TmpRI.Items.Count;
 
   with TmpRI do
   begin
-    for i := Count - 1 downto (Count - ReturnCount) do
+    for i := Items.Count - 1 downto (Items.Count - ReturnCount) do
     begin
-      strl.Add(info[i].Value);
+      strl.Add(TmpRI[i].Value);
     end;
 
     Result := strl.CommaText;
@@ -1474,17 +1595,17 @@ const
   xmlfile = 'SharpCore\Services\Exec\UiList.xml';
 begin
 
-  TmpMui := TMUItemsStore.Create(GetSharpeUserSettingsPath + xmlfile);
+  TmpMui := TUsedItemsList.Create(GetSharpeUserSettingsPath + xmlfile);
   strl := TStringList.Create;
   TmpMui.Sort;
 
-  if ReturnCount >= TmpMui.Count then
-    ReturnCount := TmpMui.Count;
+  if ReturnCount >= TmpMui.Items.Count then
+    ReturnCount := TmpMui.Items.Count;
 
   with TmpMui do
   begin
     for i := 0 to ReturnCount - 1 do
-      strl.Add(info[i].Value);
+      strl.Add(TmpMui[i].Value);
 
     Result := strl.CommaText;
   end;
@@ -1519,6 +1640,10 @@ exports
 
   // Help Exports
   HelpMsg,
+
+  // SharpCenter
+  ConfigMsg,
+  GetCenterDirectory,
 
   GetSharpeDirectory,
   GetSharpeUserSettingsPath,
@@ -1557,6 +1682,9 @@ exports
   LoadColorSchemeEx,
   SaveColorScheme,
   SaveColorSchemeEx;
+
+begin
+
 
 end.
 
