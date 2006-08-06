@@ -6,9 +6,7 @@ uses
   uSharpCenterMainWnd in 'uSharpCenterMainWnd.pas' {SharpCenterWnd},
   uSharpCenterManager in 'uSharpCenterManager.pas',
   uSharpCenterDllMethods in 'uSharpCenterDllMethods.pas',
-  uSharpCenterDllConfigWnd in 'uSharpCenterDllConfigWnd.pas' {frmDllConfig},
-  uSharpCenterSectionList in '..\Common\SharpCenterApi\uSharpCenterSectionList.pas',
-  uSharpCenterCommon in '..\Common\SharpCenterApi\uSharpCenterCommon.pas';
+  uSharpCenterDllConfigWnd in 'uSharpCenterDllConfigWnd.pas' {frmDllConfig};
 
 {$R *.res}
 

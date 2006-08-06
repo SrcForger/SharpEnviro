@@ -41,9 +41,6 @@ uses
   ExtCtrls,
   CategoryButtons,
   Menus,
-  SharpESkinManager,
-  SharpEBaseControls,
-  SharpEButton,
   StdCtrls,
   SharpApi,
   Buttons,
@@ -59,8 +56,7 @@ uses
   JclGraphics,
   Tabs,
   JvOutlookBar,
-  SharpEListBox,
-  MouseTimer;
+  SharpEListBox, SharpESkinManager;
 
 type
   TSharpCenterWnd = class(TForm)
@@ -98,7 +94,6 @@ type
 
     procedure FormShow(Sender: TObject);
   private
-    fMousetimer: TMouseTimer;
     { Private declarations }
     procedure SchemeWindow;
 
@@ -237,13 +232,13 @@ end;
 
 procedure TSharpCenterWnd.FormCreate(Sender: TObject);
 begin
-  FMouseTimer := TMouseTimer.Create;
-  FMouseTimer.AddWinControl(SharpCenterWnd.pnlPluginPanel);
+  //ouseTimer := TMouseTimer.Create;
+  //ouseTimer.AddWinControl(SharpCenterWnd.pnlPluginPanel);
 end;
 
 procedure TSharpCenterWnd.FormDestroy(Sender: TObject);
 begin
-  fMousetimer.Free;
+  //fMousetimer.Free;
 
   if frmDllConfig <> nil then
     FreeAndNil(frmDllConfig);
