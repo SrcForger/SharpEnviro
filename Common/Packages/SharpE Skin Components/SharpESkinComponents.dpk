@@ -65,6 +65,7 @@ contains
   SharpESkinPart in '..\..\Delphi Components\SharpE Skin Components\SharpESkinPart.pas',
   SharpETaskItem in '..\..\Delphi Components\SharpE Skin Components\SharpETaskItem.pas',
   ShlIntf in '..\..\Delphi Components\SharpE Skin Components\ShlIntf.pas',
-  StrConst in '..\..\Delphi Components\SharpE Skin Components\StrConst.pas';
+  StrConst in '..\..\Delphi Components\SharpE Skin Components\StrConst.pas',
+  SharpEListBox in '..\..\Delphi Components\SharpE Skin Components\SharpEListBox.pas';
 
 end.
