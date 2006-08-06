@@ -124,7 +124,6 @@ uses
   jclsysinfo,
   JvSimpleXML,
   Graphics,
-  FileUtils,
 
   uExecServiceRecentItemList in '..\..\..\Plugins\Services\Exec\uExecServiceRecentItemList.pas',
   uExecServiceUsedItemList in '..\..\..\Plugins\Services\Exec\uExecServiceUsedItemList.pas';
