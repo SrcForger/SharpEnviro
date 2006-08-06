@@ -10,9 +10,9 @@ uses
   Jclstrings,
   forms,
   SharpApi,
-  uWeatherMgr in 'uWeatherMgr.pas',
   uWeatherList in 'uWeatherList.pas',
-  uWeatherOptions in 'uWeatherOptions.pas';
+  uWeatherOptions in 'uWeatherOptions.pas',
+  uWeatherMgr in 'uWeatherMgr.pas';
 
 {$E ser}
 
@@ -24,7 +24,7 @@ var
 begin
   Result := HInstance;
   force := False;
-  
+
   // Weather Options
   fn := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatheroptions.xml';
   ForceDirectories(ExtractFilePath(fn));
