@@ -115,7 +115,7 @@
 			<Linker Name="ExeDescription"></Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir">..\..\..\..\SharpE\</Directories>
+			<Directories Name="OutputDir">..\..\..\..\SharpE\Center\Root\Plugins\_Objects\</Directories>
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
