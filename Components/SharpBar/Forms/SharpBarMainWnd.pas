@@ -242,8 +242,14 @@ end;
 
 procedure TSharpBarMainForm.WMDisplayChange(var msg : TMessage);
 begin
-  if BarHideForm.Visible then BarHideForm.Close;
+  if BarHideForm.Visible then
+  begin
+    if SharpEBar1.SpecialHideForm then BarHideForm.UpdateStatus
+       else BarHideForm.Close;
+  end;
   SharpEBar1.UpdatePosition;
+  ModuleManager.BroadCastModuleRefresh;
+  ModuleManager.FixModulePositions;
 end;
 
 procedure TSharpBarMainForm.WMSchemeUpdate(var msg : TMessage);
@@ -1056,8 +1062,8 @@ begin
       BarHideForm.Width := Width;
       BarHideForm.Height := 1;
       BarHideForm.Top := Top + Height -1;
+      SharpBarMainForm.Hide;
       BarHideForm.Show;
-      Hide;
     end
     else if (Y=0) and (SharpEBar1.VertPos = vpTop) then
     begin
@@ -1065,8 +1071,8 @@ begin
       BarHideForm.Width := Width;
       BarHideForm.Height := 1;
       BarHideForm.Top := Top;
+      SharpBarMainForm.Hide;
       BarHideForm.Show;
-      Hide;
     end;
   end;
 end;
