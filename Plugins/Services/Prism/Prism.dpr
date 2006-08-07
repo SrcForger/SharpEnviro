@@ -43,7 +43,7 @@ uses
   SharpApi,
   uCPUGeneral in 'uCPUGeneral.pas',
   uPrismController in 'uPrismController.pas',
-  uPrismSettings in '..\SettingsDll\uPrismSettings.pas';
+  uPrismSettings in '..\..\Configurations\Prism\uPrismSettings.pas';
 
 {$E ser}
 
