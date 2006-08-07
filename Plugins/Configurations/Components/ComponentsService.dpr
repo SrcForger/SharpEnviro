@@ -39,10 +39,10 @@ uses
   Controls,
   PngSpeedButton,
   tabs,
-  uSharpCenterSectionList,
   uCompServiceItemsWnd in 'uCompServiceItemsWnd.pas' {frmCompItems},
   uCompServiceList in 'uCompServiceList.pas',
-  uSEListboxPainter in '..\..\..\Common\SharpEListbox\uSEListboxPainter.pas';
+  uSharpCenterSectionList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterSectionList.pas',
+  uSEListboxPainter in '..\..\..\Common\Units\SEListboxPainter\uSEListboxPainter.pas';
 
 {$E dll}
 
