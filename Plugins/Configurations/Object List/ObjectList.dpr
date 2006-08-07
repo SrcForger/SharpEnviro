@@ -37,8 +37,10 @@ uses
   Windows,
   Forms,
   Dialogs,
-  uSharpCenterSectionList,
-  uConfigListWnd in 'uConfigListWnd.pas' {frmConfigListWnd};
+  uConfigListWnd in 'uConfigListWnd.pas' {frmConfigListWnd},
+  uSharpCenterSectionList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterSectionList.pas',
+  uSEListboxPainter in '..\..\..\Common\Units\SEListboxPainter\uSEListboxPainter.pas',
+  uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas';
 
 {$E .dll}
 
