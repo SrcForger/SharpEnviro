@@ -40,7 +40,8 @@ uses
   uExecServicePathIncludeList in 'uExecServicePathIncludeList.pas',
   uExecServiceSettings in 'uExecServiceSettings.pas',
   uExecServiceRecentItemList in 'uExecServiceRecentItemList.pas',
-  uExecServiceUsedItemList in 'uExecServiceUsedItemList.pas';
+  uExecServiceUsedItemList in 'uExecServiceUsedItemList.pas',
+  CalcExpress in '..\..\..\Common\3rd party\CalcExpress\Source\CalcExpress.pas';
 
 {$E service}
 

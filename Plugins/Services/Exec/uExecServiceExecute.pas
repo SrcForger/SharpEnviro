@@ -49,7 +49,8 @@ uses
   shfolder,
 
   // Calc Express
-  calcexpress,
+  CalcExpress,
+
 
   // Common
   SharpApi,
