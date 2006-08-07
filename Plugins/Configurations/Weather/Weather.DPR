@@ -11,12 +11,12 @@ uses
   forms,
   SharpApi,
   PngSpeedButton,
-  uWeatherOptions in 'uWeatherOptions.pas',
-  uWeatherMgr in 'uWeatherMgr.pas',
   uWeatherItemsListWnd in 'uWeatherItemsListWnd.pas' {FrmWeatherItemsList},
   uWeatherOptionsWnd in 'uWeatherOptionsWnd.pas' {frmWeatherOptions},
   uWeatherItemEditWnd in 'uWeatherItemEditWnd.pas' {frmWeatherItem},
-  uWeatherList in '..\..\Services\Weather\uWeatherList.pas';
+  uWeatherList in '..\..\Services\Weather\uWeatherList.pas',
+  uWeatherMgr in '..\..\Services\Weather\uWeatherMgr.pas',
+  uWeatherOptions in '..\..\Services\Weather\uWeatherOptions.pas';
 
 {$E dll}
 
