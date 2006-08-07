@@ -389,6 +389,8 @@ begin
       end;
     end;
   end;
+  if length(sEFilters) = 0 then sEFilter := False;
+  if length(sIFilters) = 0 then sIFilter := False;
   if (sIFilter) or (sEFilter) then LoadFilterSettingsFromXML;
 
   TM.SortTasks := sSort;
@@ -660,6 +662,7 @@ begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
     if pTaskItem.Tag = pItem.Handle then
     begin
+      if pTaskItem.Down then exit;
       pTaskItem.Flashing := True;
       if not FlashTimer.Enabled then FlashTimer.Enabled := True;
       exit;
