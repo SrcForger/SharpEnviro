@@ -67,7 +67,7 @@ object FrmWeatherItemsList: TFrmWeatherItemsList
         Left = 0
         Top = 0
         Width = 32
-        Height = 33
+        Height = 32
         Cursor = crHandPoint
         Align = alLeft
         AutoSize = True
@@ -134,7 +134,7 @@ object FrmWeatherItemsList: TFrmWeatherItemsList
         Left = 36
         Top = 0
         Width = 128
-        Height = 33
+        Height = 28
         Cursor = crHandPoint
         Align = alLeft
         Caption = 'Weather data provided by weather.com'
