@@ -3,8 +3,8 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Task Module Settings'
-  ClientHeight = 198
-  ClientWidth = 630
+  ClientHeight = 184
+  ClientWidth = 497
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -24,8 +24,8 @@ object SettingsForm: TSettingsForm
     Caption = 'Task Style'
   end
   object Button1: TButton
-    Left = 472
-    Top = 168
+    Left = 336
+    Top = 152
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -33,8 +33,8 @@ object SettingsForm: TSettingsForm
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 552
-    Top = 168
+    Left = 416
+    Top = 152
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -42,7 +42,7 @@ object SettingsForm: TSettingsForm
     OnClick = Button2Click
   end
   object cb_tsfull: TRadioButton
-    Left = 8
+    Left = 16
     Top = 24
     Width = 113
     Height = 17
@@ -50,7 +50,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 2
   end
   object cb_tscompact: TRadioButton
-    Left = 8
+    Left = 16
     Top = 40
     Width = 113
     Height = 17
@@ -58,7 +58,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 3
   end
   object cb_tsminimal: TRadioButton
-    Left = 8
+    Left = 16
     Top = 56
     Width = 113
     Height = 17
@@ -66,8 +66,8 @@ object SettingsForm: TSettingsForm
     TabOrder = 4
   end
   object Panel1: TPanel
-    Left = 96
-    Top = 0
+    Left = 0
+    Top = 72
     Width = 145
     Height = 89
     BevelOuter = bvNone
@@ -117,8 +117,8 @@ object SettingsForm: TSettingsForm
     end
   end
   object Button3: TButton
-    Left = 544
-    Top = 32
+    Left = 408
+    Top = 24
     Width = 81
     Height = 25
     Caption = 'Setup Filters'
@@ -126,7 +126,7 @@ object SettingsForm: TSettingsForm
     OnClick = Button3Click
   end
   object list_include: TCheckListBox
-    Left = 288
+    Left = 152
     Top = 24
     Width = 121
     Height = 121
@@ -135,7 +135,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 7
   end
   object rb_ifilter: TCheckBox
-    Left = 288
+    Left = 152
     Top = 8
     Width = 97
     Height = 17
@@ -144,7 +144,7 @@ object SettingsForm: TSettingsForm
     OnClick = rb_ifilterClick
   end
   object list_exclude: TCheckListBox
-    Left = 416
+    Left = 280
     Top = 24
     Width = 121
     Height = 121
@@ -153,7 +153,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 9
   end
   object rb_efilter: TCheckBox
-    Left = 416
+    Left = 280
     Top = 8
     Width = 97
     Height = 17
@@ -162,7 +162,7 @@ object SettingsForm: TSettingsForm
     OnClick = rb_efilterClick
   end
   object XPManifest1: TXPManifest
-    Left = 16
-    Top = 88
+    Left = 416
+    Top = 120
   end
 end

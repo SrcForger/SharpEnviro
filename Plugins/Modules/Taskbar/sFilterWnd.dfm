@@ -50,6 +50,7 @@ object sfilterform: Tsfilterform
     Height = 25
     Caption = 'Delete'
     TabOrder = 3
+    OnClick = btn_deleteClick
   end
   object Button1: TButton
     Left = 128

@@ -54,6 +54,15 @@ type
     btn_find2: TButton;
     btn_cancel: TButton;
     btn_ok: TButton;
+    btn_examplefilters: TButton;
+    examplefilterpopup: TPopupMenu;
+    VisibleTasksonly1: TMenuItem;
+    MinimizedTasjs1: TMenuItem;
+    ExplorerWindows1: TMenuItem;
+    procedure btn_examplefiltersClick(Sender: TObject);
+    procedure ExplorerWindows1Click(Sender: TObject);
+    procedure MinimizedTasjs1Click(Sender: TObject);
+    procedure VisibleTasksonly1Click(Sender: TObject);
     procedure btn_okClick(Sender: TObject);
     procedure btn_cancelClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -270,6 +279,12 @@ var
   i,n : integer;
   fn : string;
 begin
+  if length(trim(edit_name.Text))<=0 then
+  begin
+    showmessage('please enter a valid name first');
+    exit;
+  end;
+
   fn := SharpApi.GetSharpeGlobalSettingsPath + 'SharpBar\Module Settings\TaskBar\';
   ForceDirectories(fn);
   fn := fn + 'Filters.xml';
@@ -309,6 +324,62 @@ begin
   XML.Free;
   
   Modalresult := mrOk;
+end;
+
+procedure TEditFilterForm.VisibleTasksonly1Click(Sender: TObject);
+var
+  n : integer;
+begin
+  edit_name.Text := 'Visible';
+  edit_filename.Text := '';
+  edit_classname.Text := '';
+  rb_showstate.Checked := True;
+  for n := 0 to clb_showstates.Count-1 do
+      clb_showstates.Checked[n] := False;
+  clb_showstates.Checked[1] := True;
+  clb_showstates.Checked[3] := True;
+  clb_showstates.Checked[5] := True;
+  clb_showstates.Checked[8] := True;
+  clb_showstates.Checked[9] := True;
+  clb_showstates.Checked[10] := True;
+
+  UpdateStates;
+end;
+
+procedure TEditFilterForm.MinimizedTasjs1Click(Sender: TObject);
+var
+  n : integer;
+begin
+  edit_name.Text := 'Minimized';
+  edit_filename.Text := '';
+  edit_classname.Text := '';
+  rb_showstate.Checked := True;
+  for n := 0 to clb_showstates.Count-1 do
+      clb_showstates.Checked[n] := False;
+  clb_showstates.Checked[2] := True;
+  clb_showstates.Checked[6] := True;
+  clb_showstates.Checked[7] := True;
+
+  UpdateStates;
+end;
+
+procedure TEditFilterForm.ExplorerWindows1Click(Sender: TObject);
+var
+  n : integer;
+begin
+  rb_filename.Checked := True;
+  edit_name.Text := 'Explorer Windows';
+  edit_filename.Text := 'Explorer.exe';
+  clb_showstates.enabled := True;
+  for n := 0 to clb_showstates.Count-1 do
+      clb_showstates.Checked[n] := False;
+
+  UpdateStates;
+end;
+
+procedure TEditFilterForm.btn_examplefiltersClick(Sender: TObject);
+begin
+  examplefilterpopup.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
 end;
 
 end.

@@ -4,7 +4,7 @@ object EditFilterForm: TEditFilterForm
   BorderStyle = bsToolWindow
   Caption = 'Edit Filter'
   ClientHeight = 387
-  ClientWidth = 289
+  ClientWidth = 306
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -45,7 +45,7 @@ object EditFilterForm: TEditFilterForm
   object edit_name: TEdit
     Left = 72
     Top = 8
-    Width = 121
+    Width = 225
     Height = 21
     TabOrder = 1
     Text = 'My Task Filter'
@@ -53,7 +53,7 @@ object EditFilterForm: TEditFilterForm
   object clb_showstates: TCheckListBox
     Left = 24
     Top = 72
-    Width = 249
+    Width = 273
     Height = 153
     ItemHeight = 13
     Items.Strings = (
@@ -82,12 +82,12 @@ object EditFilterForm: TEditFilterForm
   object edit_classname: TEdit
     Left = 24
     Top = 256
-    Width = 201
+    Width = 225
     Height = 21
     TabOrder = 4
   end
   object btn_find1: TButton
-    Left = 232
+    Left = 256
     Top = 256
     Width = 41
     Height = 22
@@ -107,13 +107,13 @@ object EditFilterForm: TEditFilterForm
   object edit_filename: TEdit
     Left = 24
     Top = 304
-    Width = 201
+    Width = 225
     Height = 21
     TabOrder = 7
   end
   object btn_find2: TButton
     Tag = 1
-    Left = 232
+    Left = 256
     Top = 304
     Width = 41
     Height = 22
@@ -139,6 +139,15 @@ object EditFilterForm: TEditFilterForm
     TabOrder = 10
     OnClick = btn_okClick
   end
+  object btn_examplefilters: TButton
+    Left = 200
+    Top = 40
+    Width = 97
+    Height = 22
+    Caption = 'Example Filters ...'
+    TabOrder = 11
+    OnClick = btn_examplefiltersClick
+  end
   object wndclasspopup: TPopupMenu
     Images = wndcimages
     Left = 240
@@ -146,7 +155,23 @@ object EditFilterForm: TEditFilterForm
   end
   object wndcimages: TImageList
     BkColor = clMenu
-    Left = 248
-    Top = 24
+    Left = 56
+    Top = 336
+  end
+  object examplefilterpopup: TPopupMenu
+    Left = 120
+    Top = 32
+    object VisibleTasksonly1: TMenuItem
+      Caption = 'Visible Tasks'
+      OnClick = VisibleTasksonly1Click
+    end
+    object MinimizedTasjs1: TMenuItem
+      Caption = 'Minimized Tasks'
+      OnClick = MinimizedTasjs1Click
+    end
+    object ExplorerWindows1: TMenuItem
+      Caption = 'Explorer Windows'
+      OnClick = ExplorerWindows1Click
+    end
   end
 end

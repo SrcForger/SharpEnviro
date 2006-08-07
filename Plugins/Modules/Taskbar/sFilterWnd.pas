@@ -43,6 +43,7 @@ type
     btn_edit: TButton;
     btn_delete: TButton;
     Button1: TButton;
+    procedure btn_deleteClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure list_filtersClick(Sender: TObject);
     procedure btn_editClick(Sender: TObject);
@@ -138,6 +139,37 @@ end;
 procedure Tsfilterform.Button1Click(Sender: TObject);
 begin
   Close;
+end;
+
+procedure Tsfilterform.btn_deleteClick(Sender: TObject);
+var
+  n : integer;
+  XML : TJvSimpleXML;
+  fn : string;
+  b : boolean;
+begin
+  if list_filters.ItemIndex<0 then exit;
+  if MessageBox(Handle,PChar('Do you really want to delete filter '+list_filters.Items[list_filters.Itemindex]),'Confirm',MB_YESNO) = mrNo then exit;
+
+  fn := SharpApi.GetSharpeGlobalSettingsPath + 'SharpBar\Module Settings\TaskBar\';
+  ForceDirectories(fn);
+  fn := fn + 'Filters.xml';
+  if not FileExists(fn) then exit;
+
+  b := False;
+  XML := TJvSimpleXMl.Create(nil);
+  try
+    XML.LoadFromFile(fn);
+    for n := XML.Root.Items.Count - 1 downto 0 do
+        if list_filters.Items[list_filters.Itemindex] = XML.Root.Items.Item[n].Items.Value('Name','Error reading XML data') then
+           XML.Root.Items.Delete(n);
+  except
+    b := True;
+  end;
+  if not b then XML.SaveToFile(fn);
+  XML.Free;
+
+  UpdateFilterList;
 end;
 
 end.
