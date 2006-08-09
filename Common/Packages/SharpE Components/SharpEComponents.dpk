@@ -27,11 +27,8 @@ package SharpEComponents;
 requires
   rtl,
   vcl,
-  SharpESkinComponents,
   PNG_D9,
   GR32_D2005,
-  DJcl,
-  DJclVcl,
   vcljpg,
   JvCoreD9R,
   vclx,
@@ -42,6 +39,7 @@ requires
 
 contains
   uSharpeColorBox in '..\..\Delphi Components\SharpEColorBox\uSharpeColorBox.pas',
-  SharpFX in '..\..\Units\SharpFX\SharpFX.pas';
+  SharpFX in '..\..\Units\SharpFX\SharpFX.pas',
+  SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas';
 
 end.
