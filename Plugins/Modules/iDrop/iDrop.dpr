@@ -49,7 +49,8 @@ uses
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
-  GR32_Ellipse in '..\..\..\Common\3rd party\GR32 Addons\GR32_Ellipse.pas';
+  GR32_Ellipse in '..\..\..\Common\3rd party\GR32 Addons\GR32_Ellipse.pas',
+  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
 
 type
   TModule = class
