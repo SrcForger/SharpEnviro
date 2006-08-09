@@ -36,7 +36,10 @@ uses
   Defaults in 'Defaults.pas',
   BarForm in 'BarForm.pas' {BarWnd},
   AboutWnd in 'AboutWnd.pas' {AboutForm},
-  QuickHelpWnd in 'QuickHelpWnd.pas' {QuickHelpForm};
+  QuickHelpWnd in 'QuickHelpWnd.pas' {QuickHelpForm},
+  SharpFX in '..\..\Common\Units\SharpFX\SharpFX.pas',
+  SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
+  graphicsFX in '..\..\Common\Units\SharpFX\graphicsFX.pas';
 
 {$R *.res}
 
