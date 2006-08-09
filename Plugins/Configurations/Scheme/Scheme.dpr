@@ -46,7 +46,9 @@ uses
   uSEListboxPainter in '..\..\..\Common\Units\SEListboxPainter\uSEListboxPainter.pas',
   uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
   uSharpCenterSectionList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterSectionList.pas',
-  uEditSchemeWnd in 'uEditSchemeWnd.pas' {EditSchemeForm};
+  uEditSchemeWnd in 'uEditSchemeWnd.pas' {EditSchemeForm},
+  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
+  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas';
 
 {$R *.RES}
 

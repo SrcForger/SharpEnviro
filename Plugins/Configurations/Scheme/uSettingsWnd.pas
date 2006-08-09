@@ -153,6 +153,7 @@ begin
       DeleteFile(dir + fn);
       AddScheme(EditSchemeForm);
       EditSchemeForm := nil;
+      BuildSchemeList;
       exit;
     end;
   finally
@@ -210,6 +211,7 @@ begin
       end;
       fn := StrRemoveChars(pEditSchemeForm.edit_name.Text,['"','<','>','|','/','\','*','?','.',':']);
       dir := SharpApi.GetSharpeUserSettingsPath + 'Schemes\';
+      ForceDirectories(dir);
       XML.SaveToFile(dir+fn+'.xml');
     end;
   finally
@@ -218,7 +220,7 @@ begin
     if XML <> nil then XML.Free;
   end;
 
-  if not wasnil then BuildSchemeList;
+  if wasnil then BuildSchemeList;
 end;
 
 procedure TfrmSettingsWnd.DeleteScheme;
