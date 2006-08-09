@@ -39,7 +39,8 @@ uses
   QuickHelpWnd in 'QuickHelpWnd.pas' {QuickHelpForm},
   SharpFX in '..\..\Common\Units\SharpFX\SharpFX.pas',
   SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  graphicsFX in '..\..\Common\Units\SharpFX\graphicsFX.pas';
+  graphicsFX in '..\..\Common\Units\SharpFX\graphicsFX.pas',
+  GR32_PNG in '..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
 
 {$R *.res}
 

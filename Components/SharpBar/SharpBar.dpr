@@ -45,7 +45,8 @@ uses
   BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm},
   SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   graphicsFX in '..\..\Common\Units\SharpFX\graphicsFX.pas',
-  shellhook in '..\..\Common\Libraries\ShellHook\shellhook.pas';
+  shellhook in '..\..\Common\Libraries\ShellHook\shellhook.pas',
+  GR32_PNG in '..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
 
 {$R *.res}
 

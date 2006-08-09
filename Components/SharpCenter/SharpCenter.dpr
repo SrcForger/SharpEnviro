@@ -8,7 +8,8 @@ uses
   uSharpCenterDllMethods in 'uSharpCenterDllMethods.pas',
   uSharpCenterDllConfigWnd in 'uSharpCenterDllConfigWnd.pas' {frmDllConfig},
   graphicsFX in '..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpFX in '..\..\Common\Units\SharpFX\SharpFX.pas';
+  SharpFX in '..\..\Common\Units\SharpFX\SharpFX.pas',
+  SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas';
 
 {$R *.res}
 
