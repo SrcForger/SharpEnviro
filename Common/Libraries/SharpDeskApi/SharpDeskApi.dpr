@@ -45,7 +45,6 @@ uses
   GR32_Image,
   GR32_Layers,
   GR32_BLEND,
-  GR32_PNG,
   GR32_Transforms,
   GR32_Filters,
   GR32_Resamplers,
@@ -54,7 +53,8 @@ uses
   JclShell,
   Math,
   Classes,
-  SharpAPI in '..\SharpAPI\SharpAPI.pas';
+  SharpAPI in '..\SharpAPI\SharpAPI.pas',
+  GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas';
 
 {$R glyphs.res}
 {$R *.res}
