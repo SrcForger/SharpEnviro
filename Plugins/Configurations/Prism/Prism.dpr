@@ -43,7 +43,7 @@ uses
   SharpApi,
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettingsWnd},
   uPrismSettings in 'uPrismSettings.pas',
-  uSharpCenterSectionList;
+  uSharpCenterSectionList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterSectionList.pas';
 
 {$R *.RES}
 
