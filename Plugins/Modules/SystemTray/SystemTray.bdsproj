@@ -119,7 +119,7 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath"></Directories>
+			<Directories Name="SearchPath">..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpEColorBox</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
@@ -149,13 +149,16 @@
 		</VersionInfo>
 		<VersionInfoKeys>
 			<VersionInfoKeys Name="FileVersion">0.7.0.0</VersionInfoKeys>
-			<VersionInfoKeys Name="ProductVersion">0.7.0.0</VersionInfoKeys>  <VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
-      <VersionInfoKeys Name="FileDescription">System Tray Module</VersionInfoKeys>
-      <VersionInfoKeys Name="InternalName">SystemTray.module</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-      <VersionInfoKeys Name="OriginalFilename">SystemTray.dll</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductName"></VersionInfoKeys>
-    </VersionInfoKeys>
-	</Delphi.Personality>
+			<VersionInfoKeys Name="ProductVersion">0.7.0.0</VersionInfoKeys>
+			<VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
+			<VersionInfoKeys Name="FileDescription">System Tray Module</VersionInfoKeys>
+			<VersionInfoKeys Name="InternalName">SystemTray.module</VersionInfoKeys>
+			<VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys>
+			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+			<VersionInfoKeys Name="OriginalFilename">SystemTray.dll</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductName"></VersionInfoKeys>
+		</VersionInfoKeys>  <Excluded_Packages>
+      <Excluded_Packages Name="C:\Dokumente und Einstellungen\Martin\Eigene Dateien\Borland Studio-Projekte\Bpl\JvJansD9D.bpl">JVCL Jans Components</Excluded_Packages>
+    </Excluded_Packages>
+  </Delphi.Personality>
 </BorlandProject>
