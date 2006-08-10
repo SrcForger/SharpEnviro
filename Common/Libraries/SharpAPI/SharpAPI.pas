@@ -133,9 +133,9 @@ const
   
   // SharpCenter
 // SharpCenter
-  WM_SETTINGSCHANGED      = WM_APP + 660;
-  WM_UPDATESETTINGS       = WM_APP + 661;
-  WM_SCGLOBALBTNMSG         = WM_APP + 662;
+  WM_SETTINGSCHANGED = WM_APP + 660;
+  WM_UPDATESETTINGS  = WM_APP + 661;
+  WM_SCGLOBALBTNMSG  = WM_APP + 662;
 
   SCU_SHARPDESK = 1001;
   SCU_SHARPCORE = 1002;
@@ -211,7 +211,7 @@ function GetSharpeDirectory: PChar; external 'SharpAPI.dll' name 'GetSharpeDirec
 function GetSharpeUserSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeUserSettingsPath';
 function GetSharpeGlobalSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeGlobalSettingsPath';
 function GetCenterDirectory: PChar; external 'SharpAPI.dll' name 'GetCenterDirectory';
-
+function CenterMsg(Command, Param : PChar; PluginID : integer): hresult; external 'SharpAPI.dll' name 'CenterMsg';
 
 function SetNewIconSet(NewIconSet : String) : hresult; external 'SharpAPI.dll' name 'SetNewIconSet';
 function SetNewTheme(NewTheme : String; NewThemeID : integer; broadcast : boolean) : hresult; external 'SharpAPI.dll' name 'SetNewTheme';

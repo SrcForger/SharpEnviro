@@ -690,6 +690,36 @@ begin
   end;
 end;
 
+function CenterMsg(Command, Param : PChar; PluginID : integer): hresult;
+var
+  cds: TCopyDataStruct;
+  wnd: hWnd;
+  msg: TConfigMsg;
+begin
+  try
+    //Prepare TCopyDataStruct
+    msg.PluginID := Pluginid;
+    msg.Command := Command;
+    msg.Parameter := Param;
+    with cds do
+    begin
+      dwData := 0;
+      cbData := SizeOf(TConfigMsg);
+      lpData := @msg;
+    end;
+    //Find the window
+    wnd := FindWindow('TSharpCenterWnd', nil);
+    if wnd <> 0 then
+    begin
+      result := sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
+    end
+    else
+      result := HR_NORECIEVERWINDOW;
+  except
+    result := HR_UNKNOWNERROR;
+  end;
+end;
+
 function SendPluginMessage(BarID, PluginID : integer; Command : pChar): hresult;
 var
   cds: TCopyDataStruct;
@@ -1642,6 +1672,7 @@ exports
 
   // SharpCenter
   ConfigMsg,
+  CenterMsg,
   GetCenterDirectory,
 
   GetSharpeDirectory,
