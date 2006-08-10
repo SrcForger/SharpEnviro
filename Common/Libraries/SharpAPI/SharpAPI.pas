@@ -181,6 +181,19 @@ type
     WorkAreaText : Tcolor;
   end;
 
+  TSharpEColorSet = record
+                      Base  : TColor;
+                      Dark  : TColor;
+                      Light : TColor;
+                      Font  : TColor;
+                    end;
+  TSharpEColorScheme = record
+                         FirstColor  : TSharpEColorSet;
+                         SecondColor : TSharpEColorSet;
+                         ThirdColor  : TSharpEColorSet;
+                       end;
+
+
 
   TMsgData = record
     Command: string[255];
