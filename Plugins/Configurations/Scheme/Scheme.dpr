@@ -53,13 +53,8 @@ uses
 {$R *.RES}
 
 function Open(const APluginID: Integer; owner: hwnd): hwnd;
-var
-  s: string;
 begin
   // Specidfy the Service configuration filename
-  s := GetSharpeUserSettingsPath +
-    'SharpCore\Services\Prism\Prism.xml';
-
   frmSettingsWnd := TfrmSettingsWnd.Create(nil);
   frmSettingsWnd.InitialiseSettings;
 
@@ -74,7 +69,7 @@ end;
 
 procedure Help;
 begin
-  SharpApi.HelpMsg('go {docs}\SharpCore\Services\Prism.sdoc');
+  SharpApi.HelpMsg('go {docs}\Theme\Scheme.sdoc');
 end;
 
 function ConfigDllType: Integer;

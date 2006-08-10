@@ -322,23 +322,11 @@ end;
 procedure TfrmSettingsWnd.schemelistDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 begin
-  // If nothing selected, exit
-  if Index = -1 then
-    exit;
+  if Index = -1 then  exit;
 
-  // Get Object, and if not assigned then exit
-//  obj := TComponentItem(TListBox(Control).Items.Objects[Index]);
-//  if not (assigned(obj)) then
-//    exit;
+  if TListBox(Control).Style = lbStandard then exit;
 
-  // Also do not continue if list style is standard
-  if TListBox(Control).Style = lbStandard then
-    exit;
-
-
-  // Draw Method
-  PaintListbox(TListBox(Control), Rect, 0, State, schemelist.Items[Index], SchemeImages, Index,
-    '', clWindowText);
+  PaintListbox(TListBox(Control), Rect, 0, State, schemelist.Items[Index], SchemeImages, Index, '', clWindowText);
 end;
 
 procedure TfrmSettingsWnd.FormCreate(Sender: TObject);
