@@ -119,7 +119,7 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath"></Directories>
+			<Directories Name="SearchPath">..\..\..\Common\Delphi Components\SharpE Skin Components</Directories>
 			<Directories Name="Packages">vcl;rtl;vclx;VclSmp;vclshlctrls;dbrtl;adortl;vcldb;qrpt;bdertl;vcldbx;dsnap;cds;bdecds;ibxpress;vclie;xmlrtl;inet;inetdbbde;inetdbxpress;inetdb;nmfast;dbexpress;dbxcds;indy;dclaxserver;alvd6;O406_r60;LadderStat6;FlatStyle_D6;DSPack_D6;visualclx;visualdbclx;DJcl;JVCL200_R60;JvCoreD6R;JvCustomD6R;JvJansD6R;JvAppFrmD6R;JvBandsD6R;JvStdCtrlsD6R;JvCmpD6R;JvCryptD6R;JvCtrlsD6R;JvDlgsD6R;JvDockingD6R;JvDotNetCtrlsD6R;JvGlobusD6R;JvHMID6R;JvInterpreterD6R;JvManagedThreadsD6R;JvMMD6R;JvNetD6R;JvPageCompsD6R;JvPluginD6R;JvPrintPreviewD6R;JvSystemD6R;JvTimeFrameworkD6R;JvUIBD6R;JvValidatorsD6R;JvWizardD6R;JvXPCtrlsD6R</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>

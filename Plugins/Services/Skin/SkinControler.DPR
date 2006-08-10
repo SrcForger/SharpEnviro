@@ -40,7 +40,8 @@ uses
   uSkinServer in 'uSkinServer.pas' {SkinServer},
   uInfoDlg in 'uInfoDlg.pas' {InfoDlg},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas';
+  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
+  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
 
 var
    SkinServer : TSkinServer;
