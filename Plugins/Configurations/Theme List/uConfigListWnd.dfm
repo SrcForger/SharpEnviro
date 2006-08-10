@@ -1,0 +1,39 @@
+object frmConfigListWnd: TfrmConfigListWnd
+  Left = 0
+  Top = 0
+  Width = 434
+  Height = 320
+  Caption = 'frmConfigListWnd'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object themelist: TSharpEListBox
+    Left = 0
+    Top = 0
+    Width = 426
+    Height = 291
+    Style = lbOwnerDrawFixed
+    Align = alClient
+    BevelOuter = bvNone
+    BorderStyle = bsNone
+    ItemHeight = 54
+    TabOrder = 0
+    OnDrawItem = themelistDrawItem
+  end
+  object ThemeImages: TPngImageList
+    Height = 48
+    Width = 62
+    PngImages = <>
+    Left = 304
+    Top = 192
+  end
+end
