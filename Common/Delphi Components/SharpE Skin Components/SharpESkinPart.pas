@@ -252,7 +252,7 @@ begin
   try
     result := StrToInt(X);
   except
-    result := -1
+    result := 0;
   end;
 end;
 
@@ -261,7 +261,7 @@ begin
   try
     result := StrToInt(Y);
   except
-    result := -1;
+    result := 0;
   end;
 end;
 
@@ -508,7 +508,7 @@ begin
   try
     result := StrToInt(FWidth);
   except
-    result := -1;
+    result := 0;
   end;
 end;
 
@@ -517,7 +517,7 @@ begin
   try
     result := StrToInt(FHeight);
   except
-    result := -1;
+    result := 0;
   end;
 end;
 
@@ -526,7 +526,7 @@ begin
   try
     result := StrToInt(FX);
   except
-    result := -1
+    result := 0;
   end;
 end;
 
@@ -535,7 +535,7 @@ begin
   try
     result := StrToInt(FY);
   except
-    result := -1;
+    result := 0;
   end;
 end;
 

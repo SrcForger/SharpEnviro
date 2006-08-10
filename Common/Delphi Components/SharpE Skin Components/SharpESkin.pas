@@ -425,6 +425,7 @@ type
     property Normal: TSkinPart read FNormal write FNormal;
     property Down: TSkinPart read FDown write FDown;
     property Hover: TSkinPart read FHover write FHover;
+    property SkinDim : TSkinDim read FSkinDim;
   end;
 
 implementation

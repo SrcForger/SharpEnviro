@@ -42,7 +42,6 @@ type
     procedure Paint; override;
     procedure Loaded; override;
     procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); virtual;
-    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
       override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -62,6 +61,7 @@ type
     procedure SetAutoSize(value: Boolean); override;
     procedure UpdateSkin; overload; virtual;
     procedure UpdateSkin(sender: TComponent); overload;
+    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); virtual;
     property SkinManager: TSharpESkinManager read FManager write SetManager;
     property AutoSize: Boolean read FAutoSize write SetAutoSize;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;

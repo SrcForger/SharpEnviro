@@ -60,16 +60,14 @@ type
 
   protected
     procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
-    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
     procedure SMouseEnter; override;
     procedure SMouseLeave; override;
-
   public
     constructor Create(AOwner: TComponent); override;
-
+    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
   published
     property Anchors;
     property Cancel: Boolean read FCancel write FCancel default False;

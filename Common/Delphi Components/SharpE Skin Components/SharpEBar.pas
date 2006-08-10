@@ -159,7 +159,6 @@ type
     FPar: TSharpEBar;
   protected
     procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
-    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -167,6 +166,7 @@ type
     procedure SMouseLeave; override;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
   end;
 
 procedure PreMul(var Bitmap: TBitmap32);
