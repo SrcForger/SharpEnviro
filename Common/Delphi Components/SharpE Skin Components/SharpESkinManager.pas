@@ -148,9 +148,9 @@ begin
   if FUsingMainWnd then Application.UnHookMainWindow(MessageHook)
   else Classes.DeAllocateHwnd(FMsgWnd) ;
 
-  inherited;
   FSystemScheme.Free;
   FSystemSkin.Free;
+  inherited;
 end;
 
 procedure TSharpESkinManager.Loaded;

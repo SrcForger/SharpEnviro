@@ -305,6 +305,8 @@ end;
 
 destructor TSharpEBarBackground.Destroy;
 begin
+  DestroyWindow(WindowHandle);
+  Windows.UnregisterClass(PChar('SharpEBarBackGround'),hInstance);
   FBmp.free;
   inherited;
 end;
