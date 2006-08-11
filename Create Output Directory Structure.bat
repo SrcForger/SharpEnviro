@@ -7,10 +7,11 @@ cd Center
 mkdir Root
 cd Root
 mkdir Plugins
-mkdir Themes
+mkdir _Themes
 cd Plugins
 mkdir _Objects
 mkdir _Services
+mkdir _themes
 cd ..
 cd Themes
 mkdir _themedlls
