@@ -78,6 +78,8 @@ type
     Label1: TLabel;
     Panel2: TPanel;
     lbSections: TSharpEListBox;
+    UnloadTimer: TTimer;
+    procedure UnloadTimerTimer(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
     procedure PngSpeedButton1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -93,17 +95,18 @@ type
 
     procedure FormShow(Sender: TObject);
   private
-    { Private declarations }
+    FUnloadCommand : String;
+    FUnloadParam : String;
+    FUnloadID : integer;
     procedure SchemeWindow;
-
     procedure WndProc(var Message: TMessage); override;
     procedure WMSysCommand(var Message: TMessage); message WM_SYSCOMMAND;
 
   public
-    { Public declarations }
     procedure BuildSectionRoot;
     procedure GetCopyData(var Msg: TMessage); message wm_CopyData;
     procedure ExecuteCommand(ACommand, AParameter: string; APluginID: Integer);
+    procedure UnloadDllWithTimer(ACommand, AParameter: string; APluginID: Integer);
   end;
 
 var
@@ -265,7 +268,6 @@ var
 begin
   tmpMsg := pConfigMsg(PCopyDataStruct(msg.lParam)^.lpData)^;
   ExecuteCommand(tmpMsg.Command, tmpMsg.Parameter, tmpMsg.PluginID);
-
 end;
 
 procedure TSharpCenterWnd.PngSpeedButton1Click(Sender: TObject);
@@ -290,41 +292,67 @@ begin
   ExecuteCommand(tmpItem.Command, tmpItem.Parameter, tmpItem.PluginID);
 end;
 
-procedure TSharpCenterWnd.ExecuteCommand(ACommand, AParameter: string;
-  APluginID: Integer);
+procedure TSharpCenterWnd.UnloadDllWithTimer(ACommand, AParameter: string; APluginID: Integer);
+begin
+  FUnloadCommand := ACommand;
+  FUnloadParam := AParameter;
+  FUnloadID := APluginID;
+  UnloadTimer.Enabled := True;
+end;
+
+procedure TSharpCenterWnd.ExecuteCommand(ACommand, AParameter: string; APluginID: Integer);
 begin
   // navigate to folder
-  if CompareStr(ACommand, '_navfolder') = 0 then begin
-    if Assigned(frmDllConfig) then
-      frmDllConfig.unloaddll;
-
-    SharpCenterManager.BuildSectionItemsFromPath(AParameter, Self.lbSections);
-  end;
+  if CompareStr(ACommand, '_navfolder') = 0 then
+  begin
+    if Assigned(frmDllConfig) then UnloadDllWithTimer(ACommand, AParameter, APluginID);
+  end else
 
   // Unload current dll
-  if CompareStr(ACommand, '_unloaddll') = 0 then begin
-    if Assigned(frmDllConfig) then
-      frmDllConfig.unloaddll;
-  end;
+  if CompareStr(ACommand, '_unloaddll') = 0 then
+  begin
+    if Assigned(frmDllConfig) then UnloadDllWithTimer(ACommand, AParameter, APluginID);
+  end else
 
   // Load config
-  if CompareStr(ACommand, '_loadConfig') = 0 then begin
-    if Assigned(frmDllConfig) then
-      frmDllConfig.unloaddll;
+  if CompareStr(ACommand, '_loadConfig') = 0 then
+  begin
+    if Assigned(frmDllConfig) then UnloadDllWithTimer(ACommand, AParameter, APluginID);
+  end;
+end;
 
-    if fileexists(AParameter) then begin
+procedure TSharpCenterWnd.UnloadTimerTimer(Sender: TObject);
+begin
+  try
+    if CompareStr(FUnloadCommand, '_unloaddll') = 0 then
+    begin
+      frmDllConfig.UnloadDll;
+    end else
 
-      if not (assigned(frmDllConfig)) then
-        frmDllConfig := TfrmDllConfig.Create(SharpCenterWnd.pnlMain,
-          AParameter,
-          ExtractFileName(AParameter))
-      else
-        frmDllConfig.InitialiseWindow(SharpCenterWnd.pnlMain,
-          ExtractFileName(AParameter));
+    if CompareStr(FUnloadCommand, '_navfolder') = 0 then
+    begin
+      frmDllConfig.UnloadDll;
+      SharpCenterManager.BuildSectionItemsFromPath(FUnloadParam, Self.lbSections)
+    end else
+
+    if CompareStr(FUnloadCommand,'_loadConfig') = 0 then
+    begin
+      frmDllConfig.UnloadDll;
+      if fileexists(FUnloadParam) then
+      begin
+        if not (assigned(frmDllConfig)) then
+          frmDllConfig := TfrmDllConfig.Create(SharpCenterWnd.pnlMain,
+            FUnloadParam,
+            ExtractFileName(FUnloadParam))
+        else
+          frmDllConfig.InitialiseWindow(SharpCenterWnd.pnlMain,
+            ExtractFileName(FUnloadParam));
+      end;
+      frmDllConfig.PluginID := FUnloadID;
+      frmDllConfig.LoadConfiguration(FUnloadParam);
     end;
-    frmDllConfig.PluginID := APluginID;
-    frmDllConfig.LoadConfiguration(AParameter);
-
+  finally
+    UnloadTimer.Enabled := False;
   end;
 end;
 
