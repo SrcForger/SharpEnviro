@@ -125,7 +125,7 @@ type
       string);
     destructor Destroy; override;
     property ConfigDll: TConfigDll read FConfigDll write FConfigDll;
-    property Param: Integer read FPluginID write FPluginID;
+    property PluginID: Integer read FPluginID write FPluginID;
     property DllFilename: string read FDllFilename write FDllFilename;
     property Name: string read FName write FName;
     property OwnerWinControl: TWinControl read FOwnerWinControl write
@@ -265,7 +265,7 @@ var
   num, ItemHeight: Integer;
 begin
   Xml := TJvSimpleXML.Create(nil);
-  LockWindowUpdate(Self.Handle);
+  //LockWindowUpdate(Self.Handle);
   FDllFilename := AFileName;
 
   try
@@ -308,6 +308,7 @@ begin
         UpdateSections;
 
         case iConfigDllType of
+          SCU_SHARPTHEME: ; // already assigned
           SCU_SERVICE: begin
 
               s := GetSharpeUserSettingsPath +
@@ -330,7 +331,7 @@ begin
   finally
     Xml.Free;
 
-    LockWindowUpdate(0);
+    //LockWindowUpdate(0);
   end;
 end;
 

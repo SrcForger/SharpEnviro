@@ -240,8 +240,8 @@ object frmDllConfig: TfrmDllConfig
           object lblDllsCaption: TLabel
             Left = 0
             Top = 0
-            Width = 185
-            Height = 21
+            Width = 17
+            Height = 14
             Align = alClient
             Alignment = taCenter
             Caption = 'Dlls'

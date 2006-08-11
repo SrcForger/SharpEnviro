@@ -64,7 +64,6 @@ type
     pnlPage: TPanel;
     pnlConfigurationTree: TPanel;
     graBackdrop: TJvGradient;
-    SharpESkinManager: TSharpESkinManager;
     imgBackdrop: TImage;
     pnlSectionToolbar: TPanel;
     graSectionToolbar: TJvGradient;
@@ -104,7 +103,7 @@ type
     { Public declarations }
     procedure BuildSectionRoot;
     procedure GetCopyData(var Msg: TMessage); message wm_CopyData;
-    procedure ExecuteCommand(ACommand, AParameter:String;APluginID:Integer);
+    procedure ExecuteCommand(ACommand, AParameter: string; APluginID: Integer);
   end;
 
 var
@@ -134,11 +133,9 @@ end;
 
 procedure TSharpCenterWnd.SchemeWindow;
 begin
-  with SharpESkinManager.Scheme do begin
-    pnlConfigurationTree.Color := clWindow;
-    graBackdrop.StartColor := clWindow;
-    graBackdrop.EndColor := clBtnFace;
-  end;
+  pnlConfigurationTree.Color := clWindow;
+  graBackdrop.StartColor := clWindow;
+  graBackdrop.EndColor := clBtnFace;
 end;
 
 procedure TSharpCenterWnd.lbSectionDrawItem(Control: TWinControl; Index:
@@ -158,7 +155,7 @@ begin
       clBlack);
   end
   else
-    PaintListbox(lbSections, Rect, 0 {5}, State, 'No Items', '',clLtGray);
+    PaintListbox(lbSections, Rect, 0 {5}, State, 'No Items', '', clLtGray);
 end;
 
 procedure TSharpCenterWnd.BuildSectionRoot;
@@ -249,7 +246,6 @@ end;
 
 procedure TSharpCenterWnd.WndProc(var Message: TMessage);
 begin
-
   if frmDllConfig <> nil then begin
 
     if Message.Msg = WM_SCGLOBALBTNMSG then
@@ -268,7 +264,7 @@ var
   tmpMsg: tconfigmsg;
 begin
   tmpMsg := pConfigMsg(PCopyDataStruct(msg.lParam)^.lpData)^;
-  ExecuteCommand(tmpMsg.Command,tmpMsg.Parameter,tmpMsg.PluginID);
+  ExecuteCommand(tmpMsg.Command, tmpMsg.Parameter, tmpMsg.PluginID);
 
 end;
 
@@ -288,13 +284,13 @@ end;
 
 procedure TSharpCenterWnd.btnBackClick(Sender: TObject);
 var
-  tmpItem:TSharpCenterHistoryItem;
+  tmpItem: TSharpCenterHistoryItem;
 begin
- tmpItem := SharpCenterManager.History.GetLastEntry;
- ExecuteCommand(tmpItem.Command,tmpItem.Parameter,tmpItem.PluginID);
+  tmpItem := SharpCenterManager.History.GetLastEntry;
+  ExecuteCommand(tmpItem.Command, tmpItem.Parameter, tmpItem.PluginID);
 end;
 
-procedure TSharpCenterWnd.ExecuteCommand(ACommand, AParameter: String;
+procedure TSharpCenterWnd.ExecuteCommand(ACommand, AParameter: string;
   APluginID: Integer);
 begin
   // navigate to folder
@@ -302,7 +298,7 @@ begin
     if Assigned(frmDllConfig) then
       frmDllConfig.unloaddll;
 
-    SharpCenterManager.BuildSectionItemsFromPath(AParameter,Self.lbSections);
+    SharpCenterManager.BuildSectionItemsFromPath(AParameter, Self.lbSections);
   end;
 
   // Unload current dll
@@ -315,6 +311,20 @@ begin
   if CompareStr(ACommand, '_loadConfig') = 0 then begin
     if Assigned(frmDllConfig) then
       frmDllConfig.unloaddll;
+
+    if fileexists(AParameter) then begin
+
+      if not (assigned(frmDllConfig)) then
+        frmDllConfig := TfrmDllConfig.Create(SharpCenterWnd.pnlMain,
+          AParameter,
+          ExtractFileName(AParameter))
+      else
+        frmDllConfig.InitialiseWindow(SharpCenterWnd.pnlMain,
+          ExtractFileName(AParameter));
+    end;
+    frmDllConfig.PluginID := APluginID;
+    frmDllConfig.LoadConfiguration(AParameter);
+
   end;
 end;
 

@@ -1865,12 +1865,6 @@ object SharpCenterWnd: TSharpCenterWnd
       end
     end
   end
-  object SharpESkinManager: TSharpESkinManager
-    SkinSource = ssDefault
-    SchemeSource = ssSystem
-    Left = 128
-    Top = 340
-  end
   object picMain: TPngImageCollection
     Items = <
       item
