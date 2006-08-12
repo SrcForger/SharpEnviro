@@ -416,14 +416,14 @@ begin
       if FGlyphResize then
       begin
         TLinearResampler.Create(FGlyph32);
-        if Height < FGlyph32.Height + 4 then
+        if Height < FGlyph32.Height + 6 then
         begin
-          nh := Height - 4;
+          nh := Height - 6;
           nw := round((FGlyph32.Width/FGlyph32.Height)*nh);
         end else
-        if Width < FGlyph32.Width + 4 then
+        if Width < FGlyph32.Width + 6 then
         begin
-          nw := Width - 4;
+          nw := Width - 6;
           nh := round((FGlyph32.Height/FGlyph32.Width)*nw);
         end else
         begin
