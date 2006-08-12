@@ -210,6 +210,8 @@ end;
 
 destructor TSharpEBGForm.Destroy;
 begin
+  DestroyWindow(WindowHandle);
+  Windows.UnregisterClass(PChar('SharpEBackgroundForm'),hInstance);
   FBmp.free;
   inherited;
 end;
