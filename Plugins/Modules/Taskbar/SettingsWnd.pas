@@ -57,6 +57,8 @@ type
     rb_ifilter: TCheckBox;
     list_exclude: TCheckListBox;
     rb_efilter: TCheckBox;
+    cb_minall: TCheckBox;
+    cb_maxall: TCheckBox;
     procedure rb_efilterClick(Sender: TObject);
     procedure rb_ifilterClick(Sender: TObject);
     procedure cb_sortClick(Sender: TObject);

@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, 
-  SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls,
+  SharpESkinManager, SharpEScheme, SharpEButton, SharpESkin, ExtCtrls,
   JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math, Contnrs,
   SharpETaskItem,
   uTaskManager,
@@ -69,6 +69,10 @@ type
     Settings1: TMenuItem;
     SystemSkinManager: TSharpESkinManager;
     FlashTimer: TTimer;
+    ses_minall: TSharpEButton;
+    ses_maxall: TSharpEButton;
+    procedure ses_maxallClick(Sender: TObject);
+    procedure ses_minallClick(Sender: TObject);
     procedure FlashTimerTimer(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -83,9 +87,12 @@ type
     sState      : TSharpETaskItemStates;
     sSort       : boolean;
     sSortType   : TSortType;
+    sMaxAllButton : boolean;
+    sMinAllButton : boolean;
     sIFilter,sEFilter : Boolean;
     sIFilters,sEFilters : array of TTaskFilter;
     FLocked : boolean;
+    FSpecialButtonWidth : integer;
   public
     TM: TTaskManager;
     IList: TObjectList;
@@ -113,6 +120,7 @@ type
     procedure CheckFilterAll;
     procedure LoadFilterSettingsFromXML;
     constructor CreateParented(ParentWindow : hwnd; pID : integer; pBarWnd : Hwnd; pHeight : integer);
+    procedure AlignSpecialButtons;
   end;
 
 
@@ -179,6 +187,26 @@ begin
   if (sAutoHeight > Height - 2) or (sAutoHeight <=0) then
      sAutoHeight := Height -2;
   if sMaxWidth <= 0 then sMaxWidth := 128;
+end;
+
+procedure TMainForm.AlignSpecialButtons;
+var
+  n : integer;
+begin
+  n := 0;
+  if sMinAllButton then
+  begin
+    ses_minall.visible := True;
+    ses_minall.Left := n;
+    n := n + ses_minall.Width + 2;
+  end else ses_minall.Visible := False;
+  if sMaxAllButton then
+  begin
+    ses_maxall.Visible := True;
+    ses_maxall.Left := n;
+    n := n + ses_maxall.Width + 2;
+  end else ses_maxall.Visible := False;
+  FSpecialButtonWidth := n;
 end;
 
 procedure TMainForm.DisplaySystemMenu(pHandle : hwnd);
@@ -367,6 +395,8 @@ begin
       3: sSortType := stIcon;
       else sSortType := stCaption;
     end;
+    sMinAllButton := BoolValue('MinAllButton',False);
+    sMaxAllButton := BoolValue('MaxAllButton',False);
     sIFilter := BoolValue('IFilter',False);
     sEFilter := BoolValue('EFilter',False);
     setlength(sIFilters,0);
@@ -396,17 +426,30 @@ begin
 
   TM.SortTasks := sSort;
   TM.SortType := sSortType;
+
+  LockWindowUpdate(Handle);
+  FLocked := True;
+
+  AlignSpecialButtons;
   GetSpacing;
-  ReAlignComponents;
   if TM.SortTasks then TM.DoSortTasks;
   CompleteRefresh;
+  ReAlignComponents;
+
+  LockWindowUpdate(0);
+  FLocked := False;
 end;
 
 procedure TMainForm.CompleteRefresh;
 begin
-  IList.Clear;
-  TM.CompleteRefresh;
-  AlignTaskComponents;
+  LockWindowUpdate(Handle);
+  try
+    IList.Clear;
+    TM.CompleteRefresh;
+    AlignTaskComponents;
+  finally
+    if not FLocked then LockWindowUpdate(0);
+  end;
 end;
 
 procedure TMainForm.ReAlignComponents;
@@ -425,26 +468,30 @@ begin
     end;
     exit;
   end;
+
   LockWindowUpdate(Handle);
   FLocked := True;
-  GetSpacing;
-  CalculateItemWidth(IList.Count);
-  NewWidth := IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
-  FreeBarSpace := GetFreeBarSpace(BarWnd) + self.Width;
-  if NewWidth > FreeBarSpace then
-  begin
+  try
+    GetSpacing;
     CalculateItemWidth(IList.Count);
-    NewWidth := IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
+    NewWidth := FSpecialButtonWidth + IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
+    FreeBarSpace := GetFreeBarSpace(BarWnd) + self.Width;
+    if NewWidth > FreeBarSpace then
+    begin
+      CalculateItemWidth(IList.Count);
+      NewWidth := FSpecialButtonWidth + IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
+    end;
+    if Width <> NewWidth then
+    begin
+      if NewWidth < 0 then NewWidth := 1;
+      self.Width := NewWidth;
+      AlignTaskComponents;
+      SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+    end;
+  finally
+    FLocked := False;
+    LockWindowUpdate(0);
   end;
-  if Width <> NewWidth then
-  begin
-    if NewWidth < 0 then NewWidth := 1;
-    self.Width := NewWidth;
-    AlignTaskComponents;
-    SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
-  end;
-  FLocked := False;
-  LockWindowUpdate(0);
 end;
 
 
@@ -467,6 +514,8 @@ begin
       stTime     : SettingsForm.rb_timeadded.Checked := True;
       stIcon     : SettingsForm.rb_icon.Checked := True;
     end;
+    SettingsForm.cb_minall.Checked := sMinAllButton;
+    SettingsForm.cb_maxall.Checked := sMaxAllButton;
     SettingsForm.cb_sort.Checked := sSort;
     SettingsForm.rb_ifilter.Checked := sIFilter;
     SettingsForm.rb_efilter.Checked := sEFilter;
@@ -508,6 +557,8 @@ begin
             setlength(sEFilters,length(sEFilters)+1);
             sEFilters[High(sEFilters)].FilterName := SettingsForm.list_exclude.Items[n];
           end;
+      sMinAllButton := SettingsForm.cb_minall.Checked;
+      sMaxAllButton := SettingsForm.cb_maxall.Checked;
       item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
       if item <> nil then with item.Items do
       begin
@@ -524,6 +575,8 @@ begin
           tisCompact : Add('State',1);
           tisMini    : Add('State',2);
         end;
+        Add('MinAllButton',sMinAllButton);
+        Add('MaxAllButton',sMaxAllButton);
         Add('IFilter',sIFilter);
         Add('EFilter',sEFilter);
         fitem := Add('IFilters');
@@ -536,8 +589,6 @@ begin
       uSharpBarAPI.SaveXMLFile(BarWnd);
       LoadSettings;
     end;
-    ReAlignComponents;
-
   finally
     SettingsForm.Free;
     SettingsForm := nil;
@@ -552,7 +603,7 @@ var
 begin
   for n := 0 to IList.Count -1 do
       TSharpETaskItem(IList.Items[n]).State := sState;
-  FreeSpace := GetFreeBarSpace(BarWnd) + self.Width;
+  FreeSpace := GetFreeBarSpace(BarWnd) + self.Width - FSpecialButtonWidth;
   if ItemCount = 0 then sCurrentWidth := 16
      else sCurrentWidth := Max(Min((FreeSpace - ItemCount*sSpacing) div ItemCount,sMaxWidth),16);
 end;
@@ -563,22 +614,25 @@ var
   pTaskItem : TSharpETaskItem;
 begin
   LockWindowUpdate(Handle);
-  for n := 0 to IList.Count -1 do
-  begin
-    pTaskItem := TSharpETaskItem(IList.Items[n]);
-    if sCurrentWidth < sMaxWidth then
+  try
+    for n := 0 to IList.Count -1 do
     begin
-      pTaskItem.AutoSize := False;
-      pTaskItem.Width := sCurrentWidth;
-      pTaskItem.Height := sAutoHeight;
-      pTaskItem.Left := n*sCurrentWidth + n*sSpacing;
-    end else
-    begin
-      pTaskItem.AutoSize := True;
-      pTaskItem.Left := n*sMaxWidth + n*sSpacing;
+      pTaskItem := TSharpETaskItem(IList.Items[n]);
+      if sCurrentWidth < sMaxWidth then
+      begin
+        pTaskItem.AutoSize := False;
+        pTaskItem.Width := sCurrentWidth;
+        pTaskItem.Height := sAutoHeight;
+        pTaskItem.Left := FSpecialButtonWidth + n*sCurrentWidth + n*sSpacing;
+      end else
+      begin
+        pTaskItem.AutoSize := True;
+        pTaskItem.Left := FSpecialButtonWidth + n*sMaxWidth + n*sSpacing;
+      end;
     end;
+  finally
+    if not FLocked then LockWindowUpdate(0);
   end;
-  if not FLocked then   LockWindowUpdate(0);
 end;
 
 procedure UpdateIcon(var pTaskItem : TSharpETaskItem; pItem : TTaskItem);
@@ -715,7 +769,7 @@ begin
   pTaskItem.Width := sCurrentWidth;
   pTaskItem.Parent := Background;
   pTaskItem.SkinManager := SystemSkinManager;
-  pTaskItem.Left := (IList.Count-1) * sCurrentWidth + (IList.Count - 2) * sSpacing;
+  pTaskItem.Left := FSpecialButtonWidth + (IList.Count-1) * sCurrentWidth + (IList.Count - 2) * sSpacing;
   pTaskItem.AutoPosition := True;
   pTaskItem.AutoSize := True;
   pTaskItem.Margin := 0;
@@ -862,6 +916,8 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   sIFilter := False;
   sEFilter := False;
+  sMinAllButton := False;
+  sMaxAllButton := False;
   sMaxwidth  := 128;
   IList := TObjectList.Create;
   IList.Clear;
@@ -905,6 +961,36 @@ begin
     end;
   end;
   if fc = 0 then FlashTimer.Enabled := False;
+end;
+
+procedure TMainForm.ses_minallClick(Sender: TObject);
+var
+  n : integer;
+  pTaskItem : TSharpETaskItem;
+  pItem : TTaskItem;
+begin
+  for n := IList.Count -1 downto 0 do
+  begin
+    pTaskItem := TSharpETaskItem(IList.Items[n]);
+    pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Tag));
+    if pItem <> nil then
+       pItem.Minimize;
+  end;
+end;
+
+procedure TMainForm.ses_maxallClick(Sender: TObject);
+var
+  n : integer;
+  pTaskItem : TSharpETaskItem;
+  pItem : TTaskItem;
+begin
+  for n := IList.Count -1 downto 0 do
+  begin
+    pTaskItem := TSharpETaskItem(IList.Items[n]);
+    pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Tag));
+    if pItem <> nil then
+       pItem.Restore;
+  end;
 end;
 
 end.
