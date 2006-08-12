@@ -41,6 +41,7 @@ uses
   Dialogs,
   StdCtrls,
   gr32,
+  gr32_resamplers,
   SharpEBase,
   SharpEBaseControls,
   SharpEDefault,
@@ -58,6 +59,7 @@ type
 
     FGlyph32FileName: TGlyph32FileName;
     FGlyph32: TBitmap32;
+    FGlyphResize : Boolean;
     FLayout: TButtonLayout;
     FMargin: Integer;
     FDisabledAlpha: Integer;
@@ -78,6 +80,7 @@ type
     procedure SetAutoPosition(const Value: boolean);
     procedure SetCaption(Value: string);
     procedure SetDefault(Value: Boolean);
+    procedure SetGlyphResize(Value: Boolean);
   protected
     procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
     procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
@@ -119,7 +122,8 @@ type
     property Caption: string read FCaption write SetCaption;
     property ModalResult: TModalResult read FModalResult write FModalResult default 0;
     property Default: Boolean read FDefault write SetDefault default False;
-    property AutoPosition: boolean read FAutoPosition write SetAutoPosition;
+    property AutoPosition: Boolean read FAutoPosition write SetAutoPosition;
+    property GlyphResize: Boolean read FGlyphResize write SetGlyphResize;
    { Published declarations }
   end;
 
@@ -147,6 +151,15 @@ procedure TSharpEButton.CNCommand(var Message: TWMCommand);
 begin
   if Message.NotifyCode = BN_CLICKED then
     Click;
+end;
+
+procedure TSharpEButton.SetGlyphResize(Value: Boolean);
+begin
+  if Value <> FGlyphResize then
+  begin
+    FGlyphResize := Value;
+    UpdateSkin;
+  end;
 end;
 
 procedure TSharpEButton.SetDefault(Value: Boolean);
@@ -325,6 +338,8 @@ var
   r, TextRect, CompRect: TRect;
   TextSize : TPoint;
   GlyphPos, TextPos: TPoint;
+  glp : TBitmap32;
+  nw,nh : integer;
 begin
   CompRect := Rect(0, 0, width, height);
 
@@ -392,40 +407,70 @@ begin
     begin
       TextSize.X := bmp.TextWidth(caption);
       TextSize.Y := bmp.TextHeight(caption);
+
+      glp := TBitmap32.Create;
+      glp.DrawMode := dmBlend;
+      glp.CombineMode := cmMerge;
+      FGlyph32.DrawMode := dmBlend;
+      FGlyph32.CombineMode := cmMerge;
+      if FGlyphResize then
+      begin
+        TLinearResampler.Create(FGlyph32);
+        if Height < FGlyph32.Height + 4 then
+        begin
+          nh := Height - 4;
+          nw := round((FGlyph32.Width/FGlyph32.Height)*nh);
+        end else
+        if Width < FGlyph32.Width + 4 then
+        begin
+          nw := Width - 4;
+          nh := round((FGlyph32.Height/FGlyph32.Width)*nw);
+        end else
+        begin
+          nw := FGlyph32.Width;
+          nh := FGlyph32.Height;
+        end;
+      end else
+      begin
+        nw := FGlyph32.Width;
+        nh := FGlyph32.Height;
+      end;
+      glp.SetSize(nw,nh);
+      glp.Clear(color32(0,0,0,0));
+      FGlyph32.DrawTo(glp,Rect(0,0,nw,nh));
+
       case Layout of
         blGlyphLeft:
         begin
-          GlyphPos.X := TextPos.X - (FGlyph32.Width + Margin) div 2;
-          GlyphPos.Y := TextPos.Y - Glyph32.Height div 2 + TextSize.Y div 2;
-          TextPos.X := TextPos.X + (FGlyph32.Width + Margin) div 2;
+          GlyphPos.X := TextPos.X - (glp.Width + Margin) div 2;
+          GlyphPos.Y := TextPos.Y - glp.Height div 2 + TextSize.Y div 2;
+          TextPos.X := TextPos.X + (glp.Width + Margin) div 2;
         end;
 
         blGlyphRight:
         begin
-          GlyphPos.Y := TextPos.Y - Glyph32.Height div 2 + TextSize.Y div 2;
-          TextPos.X := TextPos.X - (FGlyph32.Width + Margin) div 2;
+          GlyphPos.Y := TextPos.Y - glp.Height div 2 + TextSize.Y div 2;
+          TextPos.X := TextPos.X - (glp.Width + Margin) div 2;
           GlyphPos.X := TextPos.X + TextSize.X + Margin;
         end;
 
         blGlyphTop:
         begin
-          GlyphPos.X := TextPos.X + TextSize.X div 2 - Glyph32.Width div 2;
-          GlyphPos.Y := TextPos.Y - (FGlyph32.Height + Margin) div 2;
-          TextPos.Y := TextPos.Y + (FGlyph32.Height + Margin) div 2;
+          GlyphPos.X := TextPos.X + TextSize.X div 2 - glp.Width div 2;
+          GlyphPos.Y := TextPos.Y - (glp.Height + Margin) div 2;
+          TextPos.Y := TextPos.Y + (glp.Height + Margin) div 2;
         end;
 
         blGlyphBottom:
         begin
-          GlyphPos.X := TextPos.X + TextSize.X div 2 - Glyph32.Width div 2;
-          TextPos.Y := TextPos.Y - (FGlyph32.Height + Margin) div 2;
+          GlyphPos.X := TextPos.X + TextSize.X div 2 - glp.Width div 2;
+          TextPos.Y := TextPos.Y - (glp.Height + Margin) div 2;
           GlyphPos.Y := TextPos.Y + TextSize.Y + Margin;
         end;
       end;
-      FGlyph32.DrawMode := dmBlend;
-      FGlyph32.CombineMode := cmMerge;
-      if not Enabled then FGlyph32.MasterAlpha := FDisabledAlpha;
-      FGlyph32.DrawTo(bmp,GlyphPos.X,GlyphPos.Y);
-      FGlyph32.MasterAlpha := 255;
+      if not Enabled then glp.MasterAlpha := FDisabledAlpha;
+      glp.DrawTo(bmp,GlyphPos.X,GlyphPos.Y);
+      glp.Free;
       bmp.RenderText(TextPos.X,TextPos.Y,Caption,0, Color32(bmp.Font.color));
     end;
   end
@@ -484,8 +529,8 @@ end;
 
 destructor TSharpEButton.Destroy;
 begin
-  inherited;
   FGlyph32.Free;
+  inherited;
 end;
 
 procedure TSharpEButton.SetGlyph32FileName(const Value: TGlyph32FileName);
