@@ -38,7 +38,8 @@ uses Windows,
      Contnrs,
      Dialogs,
      uTaskItem,
-     JclSysUtils;
+     JclSysUtils,
+     JclStrings;
 
 type
   TTaskChangeEvent = procedure(pItem : TTaskItem; Index : integer) of object;
@@ -289,6 +290,7 @@ var
   pItem1,pItem2 : TTaskItem;
   n,i : integer;
   SList : TStringList;
+  fixedcaption : String;
 begin
   case FSortType of
     stCaption,stWndClass,stTime,stIcon:
@@ -298,8 +300,9 @@ begin
         for n := 0 to FItems.Count - 1 do
         begin
           pItem1 := TTaskItem(FItems.Items[n]);
+          if FSortType = stCaption then fixedcaption := StrReplaceChar(pItem1.Caption,'=','-');
           case FSortType of
-            stCaption:  SList.Add(pItem1.Caption+'='+inttostr(pItem1.Handle));
+            stCaption:  SList.Add(fixedcaption+'='+inttostr(pItem1.Handle));
             stWndClass: SList.Add(pItem1.WndClass+'='+inttostr(pItem1.Handle));
             stTime:     SList.Add(inttostr(pItem1.TimeAdded)+'='+inttostr(pItem1.Handle));
             stIcon:     SList.AdD(inttostr(pItem1.Icon)+'='+inttostr(pItem1.Handle));

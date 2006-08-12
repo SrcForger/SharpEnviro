@@ -85,6 +85,7 @@ type
     sSortType   : TSortType;
     sIFilter,sEFilter : Boolean;
     sIFilters,sEFilters : array of TTaskFilter;
+    FLocked : boolean;
   public
     TM: TTaskManager;
     IList: TObjectList;
@@ -424,6 +425,8 @@ begin
     end;
     exit;
   end;
+  LockWindowUpdate(Handle);
+  FLocked := True;
   GetSpacing;
   CalculateItemWidth(IList.Count);
   NewWidth := IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
@@ -440,6 +443,8 @@ begin
     AlignTaskComponents;
     SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
   end;
+  FLocked := False;
+  LockWindowUpdate(0);
 end;
 
 
@@ -557,6 +562,7 @@ var
   n : integer;
   pTaskItem : TSharpETaskItem;
 begin
+  LockWindowUpdate(Handle);
   for n := 0 to IList.Count -1 do
   begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
@@ -572,6 +578,7 @@ begin
       pTaskItem.Left := n*sMaxWidth + n*sSpacing;
     end;
   end;
+  if not FLocked then   LockWindowUpdate(0);
 end;
 
 procedure UpdateIcon(var pTaskItem : TSharpETaskItem; pItem : TTaskItem);
@@ -637,7 +644,7 @@ begin
         2: if pItem.FileName = sIFilters[n].FilterFile then result := true;
       end;
     end;
-  end;
+  end else result := true;
 
   if sEFilter then
   begin
