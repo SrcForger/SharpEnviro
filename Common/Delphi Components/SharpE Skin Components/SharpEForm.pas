@@ -79,6 +79,7 @@ type
     destructor Destroy; override;
     procedure UpdateSkin; override;
     procedure WndProc(var msg: TMessage);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     property Skin: TBitmap32 read FSkin;
   published
     property BGForm : TSharpEBGForm read FBGForm;
@@ -130,6 +131,7 @@ begin
       end;
     end;
   end;
+
   msg.Result := DefWindowProc(windowHandle, msg.Msg, msg.wParam, msg.lParam);
   st := inttostr(msg.result);
 end;
@@ -210,6 +212,7 @@ end;
 
 destructor TSharpEBGForm.Destroy;
 begin
+  showmessagE('bu');
   DestroyWindow(WindowHandle);
   Windows.UnregisterClass(PChar('SharpEBackgroundForm'),hInstance);
   FBmp.free;
@@ -320,6 +323,7 @@ begin
   hproc := TFarProc(GetWindowLong(TForm(aowner).handle, GWL_WNDPROC));
   fproc := Classes.MakeObjectInstance(WndProc);
   SetWindowlong(TForm(aowner).handle, GWL_WNDPROC, longword(fproc));
+  TForm(aowner).OnCloseQuery := FormCloseQuery;
   UpdateSkin;
 end;
 
@@ -377,8 +381,7 @@ begin
       begin
       end;
   end;
-  msg.result := CallWindowProc(hproc, TForm(Owner).Handle, msg.msg, msg.wparam,
-    msg.lparam);
+  msg.result := CallWindowProc(hproc, TForm(Owner).Handle, msg.msg, msg.wparam, msg.lparam);
 end;
 
 procedure TSharpEForm.UpdateSkin;
@@ -397,6 +400,12 @@ begin
     else
       (Owner as TForm).Color := DefaultSharpEScheme.WorkAreaback;
   end;
+end;
+
+procedure TSharpEForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  CanClose := True;
+  ShowWindow(FBGForm.WindowHandle,SW_HIDE);
 end;
 
 end.
