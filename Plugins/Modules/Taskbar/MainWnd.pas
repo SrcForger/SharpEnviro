@@ -235,8 +235,8 @@ begin
     sAutoHeight := Height - 2;
   end;
 
-  if (sAutoHeight > Height - 2) or (sAutoHeight <=0) then
-     sAutoHeight := Height -2;
+  if (sAutoHeight > Height) or (sAutoHeight <=0) then
+     sAutoHeight := Height;
   if sMaxWidth <= 0 then sMaxWidth := 128;
 end;
 
