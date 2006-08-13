@@ -158,7 +158,7 @@ end;
 
 procedure TTaskItem.Restore;
 begin
-  OpenIcon(FHandle);
+  ShowWindow(FHandle, SW_Restore);
   UpdateCaption;
   UpdateVisibleState;
 end;
