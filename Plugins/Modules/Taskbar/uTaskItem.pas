@@ -158,7 +158,8 @@ end;
 
 procedure TTaskItem.Restore;
 begin
-  ShowWindow(FHandle, SW_Restore);
+  if IsIconic(FHandle) then ShowWindow(FHandle, SW_Restore)
+     else OpenIcon(FHandle);
   UpdateCaption;
   UpdateVisibleState;
 end;
