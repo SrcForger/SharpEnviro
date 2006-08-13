@@ -277,6 +277,7 @@ var
   wpara: wparam;
   mess: integer;
   lpara: lparam;
+  stemp: String;
 
 
 function GetSharpeDirectory  : PChar; forward;
@@ -459,24 +460,18 @@ begin
 end;
 
 function GetIconSetName : PChar;
-var
-  stemp:String;
 begin
   stemp := RegLoadStr(THEMEPATH,'IconSet','Cubeix Black');
   result := PChar(stemp);
 end;
 
 function GetThemeName : PChar;
-var
-  stemp:String;
 begin
   stemp := RegLoadStr(THEMEPATH,'Name','SharpE');
   result := PChar(stemp);
 end;
 
 function GetThemeID : Integer;
-var
-  stemp:String;
 begin
   stemp := RegLoadStr(THEMEPATH,'ID','0');
   try
@@ -495,7 +490,6 @@ function GetCurrentIconSetFile : PChar;
 var
   SharpEDir : String;
   IconSet   : String;
-  stemp     : string;
 begin
   SharpEDir := GetSharpEDirectory;
   IconSet   := GetIconSetName;
@@ -515,8 +509,6 @@ begin
 end;
 
 function GetSkinName : PChar;
-var
-  stemp:String;
 begin
   stemp := RegLoadStr(SKINPATH,'Name','SharpE');
   result := PChar(stemp);
@@ -525,7 +517,6 @@ end;
 function GetCenterDirectory : PChar;
 var
   SharpEDir : String;
-  stemp:String;
 begin
   SharpEDir := GetSharpEDirectory;
   stemp := IncludeTrailingBackslash(SharpEDir)+
@@ -536,7 +527,6 @@ end;
 function GetSkinDirectory : PChar;
 var
   SharpEDir : String;
-  stemp:String;
 begin
   SharpEDir := GetSharpEDirectory;
   stemp := IncludeTrailingBackslash(SharpEDir)+
@@ -548,7 +538,6 @@ function GetCurrentSkinFile : PChar;
 var
   SkinDir  : String;
   SkinName : String;
-  stemp:String;
 begin
   SkinDir := GetSkinDirectory;
   SkinName := GetSkinName;
@@ -1035,7 +1024,6 @@ end;
 function LoadSettingA(module: pChar; setting: pChar; default: pChar): pChar;
 var
   Reg: TRegIniFile;
-  stemp:String;
 begin
   Reg := TRegIniFile.create(OLD_REGPATH);
   try
@@ -1509,9 +1497,11 @@ begin
 
   // Check current dir
   Path := ExtractFilePath(Application.ExeName);
-  if DirCheck(Path,sCheckResult) then begin
+  if DirCheck(Path,sCheckResult) then
+  begin
     tmp := ExtractFilePath(sCheckResult);
-    Result := pchar(tmp);
+    stemp := tmp;
+    Result := pchar(stemp);
     exit;
   end;
 
@@ -1524,9 +1514,11 @@ begin
     If Reg.ValueExists('InstallPath') Then Begin
 
       Path := Reg.ReadString('InstallPath');
-      if DirCheck(Path,sCheckResult) then begin
+      if DirCheck(Path,sCheckResult) then
+      begin
         tmp := ExtractFilePath(sCheckResult);
-        Result := pchar(tmp);
+        stemp := tmp;
+        Result := pchar(stemp);
         exit;
       end;
     End;
@@ -1541,7 +1533,6 @@ var
   Path: string;
   Fn: pchar;
   user:String;
-  stemp:String;
 begin
 
   // Check current directory
@@ -1561,7 +1552,6 @@ function GetSharpeGlobalSettingsPath: PChar;
 var
   Path: string;
   Fn: pchar;
-  stemp:String;
 begin
   // Check current directory
   Fn := GetSharpeDirectory;
@@ -1575,7 +1565,7 @@ begin
 
   stemp := IncludeTrailingBackslash(Path);
   //SendDebugMessage('SharpApi stemp',pchar(stemp),clblack);
-
+  
   Result := pchar(stemp);
   //SendDebugMessage('SharpApi Result',Result,clblack);
 end;
@@ -1646,10 +1636,10 @@ end;
 
 exports
   SharpEBroadCast,
-  SendDebugMessage, //Sends Message to SharpConsol
+  SendDebugMessage, //Sends Message to SharpConsole
   SendDebugMessageEx,
   SendTrayMessage, //Sends Message to SharpTray
-  SendConsoleMessage, //Sends Message to SharpConsol
+  SendConsoleMessage, //Sends Message to SharpConsole
 
   // Service Exports
   ServiceMsg,
