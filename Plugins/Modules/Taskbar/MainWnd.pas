@@ -35,7 +35,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, 
-  SharpESkinManager, SharpEScheme, SharpEButton, SharpESkin, ExtCtrls,
+  SharpESkinManager, SharpEScheme, SharpEButton, SharpESkin,
+  SharpECustomSkinSettings, ExtCtrls,
   JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math, Contnrs,
   SharpETaskItem,
   uTaskManager,
@@ -43,7 +44,8 @@ uses
   shellhook,
   DateUtils,
   GR32,
-  GR32_Filters;
+  GR32_Filters,
+  GR32_PNG;
 
 
 type
@@ -93,6 +95,8 @@ type
     sIFilters,sEFilters : array of TTaskFilter;
     FLocked : boolean;
     FSpecialButtonWidth : integer;
+    FDminA,FDmaxA : TBitmap32; // default min/max all images
+    FCustomSkinSettings: TSharpECustomSkinSettings;
   public
     TM: TTaskManager;
     IList: TObjectList;
@@ -121,6 +125,7 @@ type
     procedure LoadFilterSettingsFromXML;
     constructor CreateParented(ParentWindow : hwnd; pID : integer; pBarWnd : Hwnd; pHeight : integer);
     procedure AlignSpecialButtons;
+    procedure UpdateCustomSettings;
   end;
 
 
@@ -134,6 +139,52 @@ var
   usend : boolean;
 
 {$R *.dfm}
+
+procedure TMainForm.UpdateCustomSettings;
+var
+  dir : String;
+  b : boolean;
+begin
+  if (not ses_minall.Visible) and (not ses_maxall.Visible) then exit;
+
+  FCustomSkinSettings.LoadFromXML('');
+  try
+    with FCustomSkinSettings.xml.Items do
+    begin
+      FCustomSkinSettings.xml.SimpleXML.SaveToFile('X:\1.xml');
+      if ItemNamed['taskbar'] <> nil then
+      begin
+        with FCustomSkinSettings.xml.Items.ItemNamed['taskbar'] do
+        begin
+          dir := IncludeTrailingBackSlash(FCustomSkinSettings.Path);
+          if FileExists(dir + items.Value('minallicon')) then
+          begin
+            try
+              GR32_PNG.LoadBitmap32FromPNG(ses_minall.Glyph32,dir + items.Value('minallicon'),b);
+            except
+              ses_minall.Glyph32.Assign(FDminA);
+            end;
+          end else ses_minall.Glyph32.Assign(FDminA);
+          if FileExists(dir + Items.Value('maxallicon')) then
+          begin
+            try
+              GR32_PNG.LoadBitmap32FromPNG(ses_maxall.Glyph32,dir + items.Value('maxallicon'),b);
+            except
+              ses_maxall.Glyph32.Assign(FDmaxA);
+            end;
+          end else ses_maxall.Glyph32.Assign(FDmaxA);
+        end;
+      end else
+      begin
+        ses_minall.Glyph32.Assign(FDminA);
+        ses_maxall.Glyph32.Assign(FDmaxA);
+      end;
+    end;
+  except
+    ses_minall.Glyph32.Assign(FDminA);
+    ses_maxall.Glyph32.Assign(FDmaxA);
+  end;
+end;
 
 constructor TMainForm.CreateParented(ParentWindow : hwnd; pID : integer; pBarWnd : Hwnd; pHeight : integer);
 begin
@@ -373,6 +424,8 @@ procedure TMainForm.LoadSettings;
 var
   item,fitem : TJvSimpleXMLElem;
   n : integer;
+  b : boolean;
+  dir : String;
 begin
   sState     := tisFull;
   sWidth     := 100;
@@ -423,6 +476,8 @@ begin
   if length(sEFilters) = 0 then sEFilter := False;
   if length(sIFilters) = 0 then sIFilter := False;
   if (sIFilter) or (sEFilter) then LoadFilterSettingsFromXML;
+
+  UpdateCustomSettings;
 
   TM.SortTasks := sSort;
   TM.SortType := sSortType;
@@ -914,6 +969,14 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
 
 begin
+  FCustomSkinSettings := TSharpECustomSkinSettings.Create;
+
+  FDminA := TBitmap32.Create;
+  FDmaxA := TBitmap32.Create;
+
+  FDminA.Assign(ses_minall.Glyph32);
+  FDmaxA.Assign(ses_maxall.Glyph32);
+
   sIFilter := False;
   sEFilter := False;
   sMinAllButton := False;
@@ -939,6 +1002,9 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  FCustomSkinSettings.Free;
+  FDminA.Free;
+  FDmaxA.Free;
   TM.Free;
   IList.Clear;
   IList.Free;
@@ -972,6 +1038,7 @@ begin
   for n := IList.Count -1 downto 0 do
   begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
+    pTaskItem.Down := False;
     pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Tag));
     if pItem <> nil then
        pItem.Minimize;
