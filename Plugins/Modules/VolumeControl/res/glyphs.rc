@@ -1,0 +1,4 @@
+high RCDATA "audio-volume-high.png"
+medium RCDATA "audio-volume-medium.png"
+low RCDATA "audio-volume-low.png"
+muted RCDATA "audio-volume-muted.png"
