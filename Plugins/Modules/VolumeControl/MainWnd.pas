@@ -266,7 +266,9 @@ procedure TMainForm.cshapeMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   cshape.Tag := 1;
-  pbar.Value := round((X/cshape.Width) * pbar.Max);
+  if x>cshape.Width then pbar.Value := pbar.Max
+     else if x<0 then pbar.Value := 0
+     else pbar.Value := round((X/cshape.Width) * pbar.Max);
   SetMasterVolume(pbar.Value,(sMixer));
 end;
 
@@ -286,7 +288,9 @@ procedure TMainForm.cshapeMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   cshape.Tag := 0;
-  pbar.Value := round((X/cshape.Width) * pbar.Max);
+  if x>cshape.Width then pbar.Value := pbar.Max
+     else if x<0 then pbar.Value := 0
+     else pbar.Value := round((X/cshape.Width) * pbar.Max);
   SetMasterVolume(pbar.Value,(sMixer));
 end;
 
