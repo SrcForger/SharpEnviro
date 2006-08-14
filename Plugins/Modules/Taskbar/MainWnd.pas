@@ -151,7 +151,6 @@ begin
   try
     with FCustomSkinSettings.xml.Items do
     begin
-      FCustomSkinSettings.xml.SimpleXML.SaveToFile('X:\1.xml');
       if ItemNamed['taskbar'] <> nil then
       begin
         with FCustomSkinSettings.xml.Items.ItemNamed['taskbar'] do
