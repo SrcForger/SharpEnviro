@@ -254,9 +254,9 @@ begin
   end;
 
   Application.Initialize;
+  Application.ShowMainForm := False;
   Application.Title := 'SharpBar';
   Application.CreateForm(TSharpBarMainForm, SharpBarMainForm);
-  Application.ShowMainForm := False;
   //  Application.CreateForm(TPluginManagerForm, PluginManagerForm);
   //  Application.CreateForm(TAddPluginForm, AddPluginForm);
   //  Application.CreateForm(TBarHideForm, BarHideForm);

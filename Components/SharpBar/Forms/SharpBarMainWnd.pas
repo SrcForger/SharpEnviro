@@ -1160,7 +1160,6 @@ end;
 
 procedure TSharpBarMainForm.ApplicationEvents1Activate(Sender: TObject);
 begin
-  self.Show;
   if ApplicationEvents1.Tag = 0 then
   begin
     ModuleManager.UpdateModuleSkins;
@@ -1168,6 +1167,8 @@ begin
     ModuleManager.RefreshMiniThrobbers;
     ApplicationEvents1.Tag := 1;
   end;
+  Application.ShowMainForm := True;
+  Show;
 end;
 
 procedure TSharpBarMainForm.SkinManagerSkinChanged(Sender: TObject);
