@@ -47,6 +47,18 @@ uses
 
 {$R *.RES}
 
+
+
+type
+  TActionEvent = Class(Tobject)
+  Procedure MessageHandler(var Message: TMessage);
+  end;
+
+Var
+  SkinServer : TSkinServer;
+  AE:TActionEvent;
+  h:THandle;
+
 function Start(owner: hwnd): hwnd;
 begin
   result := owner;
@@ -96,6 +108,28 @@ exports
   Start,
   Stop,
   DisplayInfoWnd;
+
+{ TActionEvent }
+
+procedure TActionEvent.MessageHandler(var Message: TMessage);
+var
+  sdexe:String;
+const
+  fsCommand = '%s %s';
+begin
+  if message.Msg = WM_SHARPEACTIONMESSAGE then begin
+
+    case Message.LParam of
+      0 : begin
+        //SkinServer.ReloadSharedMemory;
+        SharpEBroadCast(WM_SYSTEMSKINUPDATE,0,0);
+      end;
+    end;
+  end;
+
+  if Message.Msg = WM_SHARPEUPDATEACTIONS then
+    RegisterActionEx('!RefreshSkin','SharpSkin',h,0);
+end;
 
 begin
 
