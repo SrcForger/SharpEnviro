@@ -96,6 +96,7 @@ begin
   height := 1;
   left := -4096;
   top := -4096;
+  Setwindowlong(handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
 end;
 
 end.
