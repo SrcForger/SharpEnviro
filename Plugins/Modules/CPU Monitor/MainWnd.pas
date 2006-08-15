@@ -65,7 +65,7 @@ type
   public
     ModuleID : integer;
     BarWnd   : hWnd;
-    procedure LoadSettings;
+    procedure LoadSettings(realign : boolean);
     procedure ReAlignComponents;
   end;
 
@@ -79,7 +79,7 @@ uses SettingsWnd,
 {$R *.dfm}
 
 
-procedure TMainForm.LoadSettings;
+procedure TMainForm.LoadSettings(realign : boolean);
 var
   item : TJvSimpleXMLElem;
   cs : TColorSchemeEx;
@@ -106,7 +106,7 @@ begin
   end;
   sUpdate := Max(sUpdate,100);
 
-  ReAlignComponents;
+  if realign then ReAlignComponents;
 end;
 
 procedure TMainForm.ReAlignComponents;
@@ -133,8 +133,12 @@ begin
            cpugraph.Width := Width - 4;
            cpugraph.Top   := 2;
            cpugraph.Height := Height - 4;
-           cpugraph.Bitmap.SetSize(Max(Width - 4,2),Height -4);
-           cpugraph.Bitmap.Clear(color32(sBGColor));
+           if (cpugraph.Bitmap.Width <> Max(Width - 4,2)) or
+              (cpugraph.Bitmap.Height <> Height -4) then
+           begin
+             cpugraph.Bitmap.SetSize(Max(Width - 4,2),Height -4);
+             cpugraph.Bitmap.Clear(color32(sBGColor));
+           end;
            bshape.Left := cpugraph.Left - 1;
            bshape.Top := cpugraph.Top - 1;
            bshape.Width := cpugraph.width + 2;
@@ -216,31 +220,33 @@ var
   t : integer;
   bmp : TBitmap32;
 begin
-  CollectCPUData; // Get the data for all processors
+  try
+    CollectCPUData; // Get the data for all processors
 
-  bmp := cpugraph.Bitmap;
-  i := GetCPUUsage(0);
-  t := round(i*bmp.Height);
-  if t<0 then t := 0
-     else if t>bmp.Height then t := bmp.Height;
+    bmp := cpugraph.Bitmap;
+    i := GetCPUUsage(0);
+    t := round(i*bmp.Height);
+    if t<0 then t := 0
+       else if t>bmp.Height then t := bmp.Height;
 
-  case sDrawMode of
-    0: begin
-         bmp.DrawTo(bmp,Rect(0,0,bmp.Width-1,bmp.Height),Rect(1,0,bmp.Width,bmp.Height));
-         bmp.Line(bmp.Width-1,0,bmp.Width-1,bmp.Height,color32(sBGColor));
-         bmp.Line(bmp.Width-1,bmp.Height-t,bmp.Width-1,bmp.Height,color32(sFGColor));
-       end;
-    1: begin
-         bmp.DrawTo(bmp,Rect(0,0,bmp.Width-2,bmp.Height),Rect(2,0,bmp.Width,bmp.Height));
-         bmp.Line(bmp.Width-1,0,bmp.Width-1,bmp.Height,color32(sBGColor));
-         bmp.Line(bmp.Width-2,0,bmp.Width-2,bmp.Height,color32(sBGColor));
-         bmp.Line(bmp.Width-3,bmp.Height-oldvalue,bmp.Width-1,bmp.Height-t,color32(sFGColor));
-       end;
-    2,3: begin
-           pbar.value := round(i*100);
+    case sDrawMode of
+      0: begin
+           bmp.DrawTo(bmp,Rect(0,0,bmp.Width-1,bmp.Height),Rect(1,0,bmp.Width,bmp.Height));
+           bmp.Line(bmp.Width-1,0,bmp.Width-1,bmp.Height,color32(sBGColor));
+           bmp.Line(bmp.Width-1,bmp.Height-t,bmp.Width-1,bmp.Height,color32(sFGColor));
          end;
+      1: begin
+           bmp.DrawTo(bmp,Rect(0,0,bmp.Width-2,bmp.Height),Rect(2,0,bmp.Width,bmp.Height));
+           bmp.Line(bmp.Width-1,0,bmp.Width-1,bmp.Height,color32(sBGColor));
+           bmp.Line(bmp.Width-2,0,bmp.Width-2,bmp.Height,color32(sBGColor));
+           bmp.Line(bmp.Width-3,bmp.Height-oldvalue,bmp.Width-1,bmp.Height-t,color32(sFGColor));
+         end;
+      2,3: begin
+             pbar.value := round(i*100);
+           end;
+    end;
+  except
   end;
-
   oldvalue := t;
 end;
 

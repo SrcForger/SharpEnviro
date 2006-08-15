@@ -102,7 +102,7 @@ begin
   begin
     ModuleID := pID;
     BarWnd   := FBarWnd;
-    LoadSettings;
+    LoadSettings(False);
     ReAlignComponents;
     Show;
   end;
@@ -196,6 +196,7 @@ begin
       begin
         temp := TModule(ModuleList.Items[n]);
         temp.Form.Height := GetBarPluginHeight(temp.BarWnd);
+        TMainForm(temp.Form).LoadSettings(False);
         TMainForm(temp.Form).ReAlignComponents;
       end;
 end;
