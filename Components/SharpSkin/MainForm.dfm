@@ -22,7 +22,7 @@ object Form1: TForm1
     Left = 576
     Top = 36
     Width = 261
-    Height = 670
+    Height = 672
     Align = alRight
     BevelOuter = bvNone
     BorderWidth = 5
@@ -560,7 +560,7 @@ object Form1: TForm1
     end
     object Panel1: TPanel
       Left = 5
-      Top = 545
+      Top = 547
       Width = 251
       Height = 120
       Align = alBottom
@@ -651,8 +651,8 @@ object Form1: TForm1
         Width = 35
         Height = 15
         BackgroundColor = clBtnFace
-        Color = 11842740
-        ColorCode = -4
+        Color = 127
+        ColorCode = -1
         CustomScheme = False
         ClickedColorID = ccWorkAreaBack
         OnColorClick = WABColorClick
@@ -663,7 +663,7 @@ object Form1: TForm1
         Width = 35
         Height = 15
         BackgroundColor = clBtnFace
-        Color = 5921370
+        Color = 32
         ColorCode = -5
         CustomScheme = False
         ClickedColorID = ccWorkAreaDark
@@ -675,7 +675,7 @@ object Form1: TForm1
         Width = 35
         Height = 15
         BackgroundColor = clBtnFace
-        Color = 13553358
+        Color = 72
         ColorCode = -6
         CustomScheme = False
         ClickedColorID = ccWorkAreaLight
@@ -699,7 +699,7 @@ object Form1: TForm1
         Width = 35
         Height = 15
         BackgroundColor = clBtnFace
-        Color = 7496528
+        Color = 127
         ColorCode = -1
         CustomScheme = False
         ClickedColorID = ccThrobberBack
@@ -711,7 +711,7 @@ object Form1: TForm1
         Width = 35
         Height = 15
         BackgroundColor = clBtnFace
-        Color = 5916735
+        Color = 1908028
         ColorCode = -2
         CustomScheme = False
         ClickedColorID = ccThrobberDark
@@ -723,7 +723,7 @@ object Form1: TForm1
         Width = 35
         Height = 15
         BackgroundColor = clBtnFace
-        Color = 5717811
+        Color = 1184404
         ColorCode = -3
         CustomScheme = False
         ClickedColorID = ccThrobberLight
@@ -747,7 +747,7 @@ object Form1: TForm1
     Left = 0
     Top = 36
     Width = 576
-    Height = 670
+    Height = 672
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 5
@@ -756,7 +756,7 @@ object Form1: TForm1
       Left = 5
       Top = 29
       Width = 566
-      Height = 569
+      Height = 571
       Cursor = crIBeam
       GutterWidth = 30
       RightMarginColor = clSilver
@@ -784,6 +784,7 @@ object Form1: TForm1
       BracketHighlighting.CaseSensitiveWordPairs = False
       BracketHighlighting.WordPairs.Strings = (
         '$WorkAreaBack')
+      BracketHighlighting.StringEscape = #39#39
       SelForeColor = clHighlightText
       SelBackColor = clHighlight
       OnChange = xmleditChange
@@ -842,9 +843,12 @@ object Form1: TForm1
         Width = 564
         CloseButton = False
         AutoFreeClosed = False
+        Painter = JvModernTabBarPainter1
+        Images = PngImageList1
         Tabs = <
           item
             Caption = 'Plain XML'
+            Selected = True
             ImageIndex = 9
           end
           item
@@ -887,15 +891,13 @@ object Form1: TForm1
             Caption = 'TaskItem'
             ImageIndex = 11
           end>
-        Painter = JvModernTabBarPainter1
-        Images = PngImageList1
         OnTabSelecting = tabsTabSelecting
         OnTabSelected = tabsTabSelected
       end
     end
     object Errors: TListBox
       Left = 5
-      Top = 598
+      Top = 600
       Width = 566
       Height = 67
       Align = alBottom
@@ -1018,6 +1020,13 @@ object Form1: TForm1
       Enabled = False
       ImageIndex = 16
       OnClick = btn_RenderClick
+    end
+    object btn_Refresh: TToolButton
+      Left = 376
+      Top = 0
+      Caption = 'Refresh'
+      ImageIndex = 29
+      OnClick = btn_RefreshClick
     end
   end
   object MainMenu1: TMainMenu
@@ -2087,6 +2096,39 @@ object Form1: TForm1
           82}
         Name = 'PngImage28'
         Background = clMenu
+      end
+      item
+        PngImage.Data = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000000473424954080808087C0864880000001974455874536F6674776172
+          65007777772E696E6B73636170652E6F72679BEE3C1A0000030D4944415478DA
+          6D934B48546114C7CF7D7CD33C737414664C534A7CF5D004B50229C2162184A6
+          A0E8A2889A4C6D51BB422A6C910B575299BA48C4512BA26C1582154961339284
+          3506A6A4A3E6736674661C67EEAB7327AFCCC20B87FBDD7BBEF3FBCEF99FF351
+          922481F2E45B6DC92A9669020A4EF182686668DA43513011E6843674BF7574D4
+          70517B6FE3AB8D520005565B29C3D0BDB999896C46AA8958E2F400E85BF16EC2
+          A8733EF0EBCF2A32A55A84F4175CB359D1D58E61C60800695984A547CB8B8F68
+          638D1A60F15893410D3A350B062D010DA161D91B8416DBC826021D06ADAA7023
+          1022181A17019CACEBEFCCCDB05CD6A8096D1F774188E381B08C70709F31585C
+          7040579865A6189A021AEDE58749F1F4B124FA56EB50184B8B8F004E5CEFF361
+          B09EE3454914C5203AEE637A3D688759966ECE4A31653694E769138C5A60192A
+          527245E30087FB622300AC5F2484118E66A4768F39A7CF61AD4558EB54946097
+          B0AA67AD37CF8244D1901CAF85CABB3240DCD18037C7C73465A725BD9A59585D
+          9C9A5DF22040DC0E665986FE58599C5D5075269DF8B7F88836158D6F7804EC55
+          00060CF0C12E0FFABAF075D114A3091186FEDF32AC62712DA0C695460184F083
+          6CC74851F61EED0A1AB70B9BC543E7764A18682E6364B4FCFDCE312B760E8CB9
+          0441CCC54DDEE8A87B3667A23FB095F269746278670E7030107081995E0A00C1
+          2CEB5B06E5D31B30F84954293A8AA2A60B73D27AFE2EBBF36716D68AF0B72A02
+          385EDB2BBC7E5846A3FA806AC3D4FC3AB4F4D9E5A1F9C9F3A20CB223A04EAD22
+          0F4CB186B815F7BA2488223FD256AD52E640E86A2CA187BEB9A492C2544AC07F
+          1E7F1886BFCF4B438EE9E0923B80578462655DB025548C6E0FB83782CF3F3FAE
+          AA523210D392E342932EF794D9A44FB596E6E91270A47D410EE4B679031CAAEE
+          87709807BD86C08BC1F14DBC18F99899531151C2317DF4F569F50D5C57E02DEC
+          D86F892139E916BD09A78F661858F76D816BD123387ECC8531FDABF6F61A5BA4
+          A3DB806EB9D74894B605935B7A5E45987A51920E613762F16E2CA33E5F4261E1
+          0EEEFBAD88FB0FBBD29CE1BBCCA7630000000049454E44AE426082}
+        Name = 'PngImage29'
+        Background = clWindow
       end>
     Left = 408
     Top = 120

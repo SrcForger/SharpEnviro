@@ -41,7 +41,7 @@ uses
   SharpESkin, SharpEButton, SharpESkinManager, SharpEBaseControls, SharpEScheme,
   SharpECheckBox, SharpEProgressBar, SharpEBar, gr32,
   SharpEMiniThrobber, SharpERadioBox, SharpEPanel, SharpEEdit, SharpELabel,
-  SharpETaskItem;
+  SharpETaskItem, SharpApi;
 
 type
   TForm1 = class(TForm)
@@ -169,6 +169,8 @@ type
     SharpETaskItem3: TSharpETaskItem;
     TaskItem1: TMenuItem;
     askItem2: TMenuItem;
+    btn_Refresh: TToolButton;
+    procedure btn_RefreshClick(Sender: TObject);
     procedure TaskItem1Click(Sender: TObject);
     procedure Edit1Click(Sender: TObject);
     procedure Font1Click(Sender: TObject);
@@ -1025,6 +1027,16 @@ end;
 procedure TForm1.TaskItem1Click(Sender: TObject);
 begin
   ParseAndInsertText(DefaultTaskItemSkin);
+end;
+
+procedure TForm1.btn_RefreshClick(Sender: TObject);
+begin
+  If ServiceStarted('SkinController') then begin
+    Errors.Items.Add('[Refreshing Loaded SharpE Skin]');
+    SharpExecute('!RefreshSkin');
+  End else
+    Errors.Items.Add('[SkinController is not started, unable to refresh skin]');
+    
 end;
 
 end.
