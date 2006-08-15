@@ -133,10 +133,10 @@ begin
            cpugraph.Width := Width - 4;
            cpugraph.Top   := 2;
            cpugraph.Height := Height - 4;
-           if (cpugraph.Bitmap.Width <> Max(Width - 4,2)) or
+           if (cpugraph.Bitmap.Width <> Max(Width - 4,4)) or
               (cpugraph.Bitmap.Height <> Height -4) then
            begin
-             cpugraph.Bitmap.SetSize(Max(Width - 4,2),Height -4);
+             cpugraph.Bitmap.SetSize(Max(Width - 4,4),Height -4);
              cpugraph.Bitmap.Clear(color32(sBGColor));
            end;
            bshape.Left := cpugraph.Left - 1;
@@ -228,6 +228,9 @@ begin
     t := round(i*bmp.Height);
     if t<0 then t := 0
        else if t>bmp.Height then t := bmp.Height;
+
+    if oldvalue<0 then oldvalue := 0
+       else if oldvalue>bmp.Height then oldvalue := bmp.Height;
 
     case sDrawMode of
       0: begin
