@@ -290,7 +290,7 @@ begin
         MessageBox(0, 'Window not created', 'SharpEBarBackGround', MB_OK)
       else
       begin
-        ShowWindow(WindowHandle, sw_shownormal);
+        //ShowWindow(WindowHandle, sw_shownormal);
       //   hproc := TFarProc(GetWindowLong(form.handle,GWL_WNDPROC));
       //  fproc := Classes.MakeObjectInstance(WndProc);
         SetWindowlong(Windowhandle, GWL_WNDPROC, longword(fproc));
