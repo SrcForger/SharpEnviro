@@ -1031,7 +1031,7 @@ end;
 
 procedure TForm1.btn_RefreshClick(Sender: TObject);
 begin
-  If ServiceStarted('SkinController') then begin
+  If IsServiceStarted('SkinController') = MR_STARTED then begin
     Errors.Items.Add('[Refreshing Loaded SharpE Skin]');
     SharpExecute('!RefreshSkin');
   End else
