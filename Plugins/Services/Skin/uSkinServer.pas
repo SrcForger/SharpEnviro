@@ -37,6 +37,11 @@ uses Windows, Dialogs, SysUtils, Classes,
      SharpESkin,
      GR32_Filters;
 
+Type
+  TActionEvent = Class(Tobject)
+  Procedure MessageHandler(var Message: TMessage);
+  end;
+
 type
 
     TSkinServer = class(TForm)
@@ -78,6 +83,11 @@ type
       BlockName : string[255];
       BlockSize : Cardinal;
     end;
+
+var
+  h:THandle;
+  SkinServer : TSkinServer;
+  AE:TActionEvent;
 
 {$R *.dfm}
 
@@ -274,6 +284,28 @@ begin
   FLastHwnd := msg.WParam;
   //Update info dlg
   UpdateInfoDlg;
+end;
+
+{ TActionEvent }
+
+procedure TActionEvent.MessageHandler(var Message: TMessage);
+var
+  sdexe:String;
+const
+  fsCommand = '%s %s';
+begin
+  if message.Msg = WM_SHARPEACTIONMESSAGE then begin
+
+    case Message.LParam of
+      0 : begin
+        SkinServer.ReloadSharedMemory;
+        SharpEBroadCast(WM_SYSTEMSKINUPDATE,0,0);
+      end;
+    end;
+  end;
+
+  if Message.Msg = WM_SHARPEUPDATEACTIONS then
+    RegisterActionEx('!RefreshSkin','SharpSkin',h,0);
 end;
 
 end.

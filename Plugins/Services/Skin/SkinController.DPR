@@ -43,8 +43,6 @@ uses
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
 
-var
-   SkinServer : TSkinServer;
 {$E ser}
 
 {$R *.RES}
@@ -53,6 +51,10 @@ function Start(owner: hwnd): hwnd;
 begin
   result := owner;
   SkinServer := TSkinServer.Create(nil);
+
+  ae := TActionEvent.Create;
+  h := allocatehwnd(Ae.MessageHandler);
+  RegisterActionEx('!RefreshSkin','SharpSkin',h,0);
 end;
 
 procedure Stop;
@@ -61,6 +63,11 @@ begin
     InfoDlg.Free;
   end;
   SkinServer.Free;
+
+  DeallocateHWnd(h);
+  AE.Free;
+  UnRegisterAction('!RefreshSkin');
+
 end;
 
 
