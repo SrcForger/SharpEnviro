@@ -212,9 +212,11 @@ end;
 
 destructor TSharpEBGForm.Destroy;
 begin
-  showmessagE('bu');
-  DestroyWindow(WindowHandle);
-  Windows.UnregisterClass(PChar('SharpEBackgroundForm'),hInstance);
+  try
+    DestroyWindow(WindowHandle);
+    Windows.UnregisterClass(PChar('SharpEBackgroundForm'),hInstance);
+  except
+  end;
   FBmp.free;
   inherited;
 end;
