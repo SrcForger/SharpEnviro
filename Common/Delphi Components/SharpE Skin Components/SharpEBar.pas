@@ -142,9 +142,11 @@ type
     owner: TComponent;
     Blend: TBlendFunction;
     WindowHandle: hWnd;
+    FAlpha  : byte;
   protected
     procedure UpdateSkin(skinbmp: TBitmap32);
     procedure UpdateWndLayer;
+    procedure SetAlpha(Value : Byte);
   public
     constructor Create(AOwner: TComponent);
     destructor Destroy; override;
@@ -152,6 +154,7 @@ type
     procedure UpdateSize;
     procedure SetZOrder;
     property handle: hwnd read WindowHandle;
+    property Alpha : byte read FAlpha write SetAlpha;
   end;
 
   TSharpEThrobber = class(TCustomSharpEGraphicControl)
@@ -243,6 +246,7 @@ var WindowClass: TWndClassEx;
 begin
   owner := AOwner;
   FBmp := TBitmap32.create;
+  FAlpha := 255;
   with Blend do
   begin
     BlendOp := AC_SRC_OVER;
@@ -314,6 +318,15 @@ begin
   inherited;
 end;
 
+procedure TSharpEBarBackground.SetAlpha(Value : byte);
+begin
+  if Value <> FAlpha then
+  begin
+    FAlpha := Value;
+    UpdateWndLayer;
+  end;
+end;
+
 procedure TSharpEBarBackground.UpdateSkin(skinbmp: TBitmap32);
 begin
   FBmp.Assign(skinbmp);
@@ -349,6 +362,7 @@ begin
   BmpSize.cy := FBmp.Height;
   BmpTopLeft := Point(0, 0);
   DC := GetDC(WindowHandle);
+  Blend.SourceConstantAlpha := FAlpha;
   try
     if not LongBool(DC) then
       RaiseLastOSError;
