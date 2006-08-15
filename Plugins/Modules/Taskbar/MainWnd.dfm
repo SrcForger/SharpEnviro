@@ -23,6 +23,7 @@ object MainForm: TMainForm
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
+    RepaintMode = rmOptimizer
     Scale = 1.000000000000000000
     ScaleMode = smNormal
     TabOrder = 0

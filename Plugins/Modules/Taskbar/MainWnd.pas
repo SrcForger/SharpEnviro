@@ -481,7 +481,6 @@ begin
   TM.SortTasks := sSort;
   TM.SortType := sSortType;
 
-  LockWindowUpdate(Handle);
   FLocked := True;
 
   AlignSpecialButtons;
@@ -490,19 +489,16 @@ begin
   CompleteRefresh;
   ReAlignComponents;
 
-  LockWindowUpdate(0);
   FLocked := False;
 end;
 
 procedure TMainForm.CompleteRefresh;
 begin
-  LockWindowUpdate(Handle);
   try
     IList.Clear;
     TM.CompleteRefresh;
     AlignTaskComponents;
   finally
-    if not FLocked then LockWindowUpdate(0);
   end;
 end;
 
@@ -510,6 +506,7 @@ procedure TMainForm.ReAlignComponents;
 var
   FreeBarSpace : integer;
   newWidth,oWidth : integer;
+  oBmp : TBitmap32;
 begin
   if IList.Count <=0 then
   begin
@@ -523,7 +520,6 @@ begin
     exit;
   end;
 
-  LockWindowUpdate(Handle);
   FLocked := True;
   try
     GetSpacing;
@@ -538,13 +534,25 @@ begin
     if Width <> NewWidth then
     begin
       if NewWidth < 0 then NewWidth := 1;
+
+      Background.Bitmap.BeginUpdate;
+      oBmp := TBitmap32.Create;
+      try
+        oBmp.Assign(Background.Bitmap);
+        Background.Bitmap.SetSize(NewWidth,Background.Height);
+        Background.Bitmap.Clear(color32(0,0,0,0));
+        oBmp.DrawTo(Background.Bitmap,0,0);
+        oBmp.DrawTo(Background.Bitmap,oBmp.Width,0);
+      finally
+        Background.Bitmap.EndUpdate;
+        oBmp.Free;
+      end;
       self.Width := NewWidth;
       AlignTaskComponents;
       SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
     end;
   finally
     FLocked := False;
-    LockWindowUpdate(0);
   end;
 end;
 
@@ -667,7 +675,6 @@ var
   n : integer;
   pTaskItem : TSharpETaskItem;
 begin
-  LockWindowUpdate(Handle);
   try
     for n := 0 to IList.Count -1 do
     begin
@@ -685,7 +692,6 @@ begin
       end;
     end;
   finally
-    if not FLocked then LockWindowUpdate(0);
   end;
 end;
 

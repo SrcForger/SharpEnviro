@@ -194,8 +194,10 @@ begin
       if TModule(ModuleList.Items[n]).ID = ID then
       begin
         temp := TModule(ModuleList.Items[n]);
+        TMainForm(temp.Form).Background.Bitmap.BeginUpdate;
         TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,temp.Form.Height);
         uSharpBarAPI.PaintBarBackGround(temp.BarWnd,TMainForm(temp.Form).Background.Bitmap,Temp.Form);
+        TMainForm(temp.Form).Background.Bitmap.EndUpdate;
       end;
 end;
 
