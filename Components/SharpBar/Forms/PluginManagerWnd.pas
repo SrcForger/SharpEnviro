@@ -86,6 +86,8 @@ var
   tempModuleFile : TModuleFile;
   i : integer;
 begin
+  if AddPluginForm = nil then AddPluginForm := TAddPluginForm.Create(self);
+
   if AddPluginForm.Showmodal = mrOk then
   begin
     if AddPluginForm.list_plugins.ItemIndex <> -1 then

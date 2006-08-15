@@ -710,4 +710,10 @@ object SharpBarMainForm: TSharpBarMainForm
     Left = 24
     Top = 56
   end
+  object BlendInTimer: TTimer
+    Enabled = False
+    Interval = 100
+    Left = 384
+    Top = 144
+  end
 end

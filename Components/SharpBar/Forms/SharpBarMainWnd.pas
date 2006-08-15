@@ -77,6 +77,7 @@ type
     ApplicationEvents1: TApplicationEvents;
     BarManagment1: TMenuItem;
     CreateemptySharpBar1: TMenuItem;
+    BlendInTimer: TTimer;
     procedure FormHide(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure CreateemptySharpBar1Click(Sender: TObject);
@@ -161,7 +162,8 @@ implementation
 
 uses PluginManagerWnd,
      SharpEMiniThrobber,
-     BarHideWnd;
+     BarHideWnd,
+     AddPluginWnd;
 
 {$R *.dfm}
 
@@ -791,6 +793,8 @@ end;
 procedure TSharpBarMainForm.FormDestroy(Sender: TObject);
 begin
   if BarHideForm <> nil then FreeAndNil(BarHideForm);
+  if AddPluginForm <> nil then FreeAndNil(AddPluginForm);
+  if PluginManagerForm <> nil then FreeAndNil(PluginManagerForm);
 
   // check if shell hook functions have been used for any module
   if FShellHookList.Count > 0 then SHUnSetHook;
@@ -813,6 +817,7 @@ end;
 
 procedure TSharpBarMainForm.PluginManager1Click(Sender: TObject);
 begin
+  if PluginManagerForm = nil then PluginManagerForm := TPluginManagerForm.Create(self);
   PluginManagerForm.Showmodal;
 end;
 
@@ -1155,6 +1160,7 @@ end;
 
 procedure TSharpBarMainForm.ApplicationEvents1Activate(Sender: TObject);
 begin
+  self.Show;
   if ApplicationEvents1.Tag = 0 then
   begin
     ModuleManager.UpdateModuleSkins;
