@@ -198,6 +198,7 @@ begin
         TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,temp.Form.Height);
         uSharpBarAPI.PaintBarBackGround(temp.BarWnd,TMainForm(temp.Form).Background.Bitmap,Temp.Form);
         TMainForm(temp.Form).Background.Bitmap.EndUpdate;
+        TMainForm(temp.Form).Background.Repaint;
       end;
 end;
 
@@ -211,6 +212,11 @@ begin
       begin
         temp := TModule(ModuleList.Items[n]);
         temp.Form.Height := GetBarPluginHeight(temp.BarWnd);
+        TMainForm(temp.Form).Background.Bitmap.BeginUpdate;
+        TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,temp.Form.Height);
+        uSharpBarAPI.PaintBarBackGround(temp.BarWnd,TMainForm(temp.Form).Background.Bitmap,Temp.Form);
+        TMainForm(temp.Form).Background.Bitmap.EndUpdate;
+        TMainForm(temp.Form).Background.Repaint;
         TMainForm(temp.Form).UpdateCustomSettings;
         TMainForm(temp.Form).ReAlignComponents;
       end;

@@ -546,7 +546,7 @@ begin
       finally
         Background.Bitmap.EndUpdate;
         oBmp.Free;
-      end;
+      end;  
       self.Width := NewWidth;
       AlignTaskComponents;
       SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
