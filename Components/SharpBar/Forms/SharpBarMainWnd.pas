@@ -78,6 +78,7 @@ type
     BarManagment1: TMenuItem;
     CreateemptySharpBar1: TMenuItem;
     BlendInTimer: TTimer;
+    procedure BlendInTimerTimer(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure CreateemptySharpBar1Click(Sender: TObject);
@@ -1167,8 +1168,14 @@ begin
     ModuleManager.RefreshMiniThrobbers;
     ApplicationEvents1.Tag := 1;
   end;
-  Application.ShowMainForm := True;
-  Show;
+  if BlendInTimer.Tag <> 255 then
+  begin
+    SetLayeredWindowAttributes(Handle, RGB(255,0,254), 1, LWA_COLORKEY or LWA_ALPHA);
+    SharpEBar1.abackground.Alpha := 1;
+    Application.ShowMainForm := True;
+    Show;
+    BlendInTimer.Enabled := True;
+  end;
 end;
 
 procedure TSharpBarMainForm.SkinManagerSkinChanged(Sender: TObject);
@@ -1199,6 +1206,18 @@ end;
 procedure TSharpBarMainForm.OnBarPositionUpdate(Sender : TObject);
 begin
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
+end;
+
+procedure TSharpBarMainForm.BlendInTimerTimer(Sender: TObject);
+begin
+  BlendInTimer.Tag := BlendInTimer.Tag + 40;
+  if BlendInTimer.Tag >= 255 then
+  begin
+    BlendInTimer.Tag := 255;
+    BlendInTimer.Enabled := False;
+  end;
+  SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendInTimer.Tag, LWA_COLORKEY or LWA_ALPHA);
+  SharpEBar1.abackground.Alpha := BlendInTimer.Tag;
 end;
 
 end.
