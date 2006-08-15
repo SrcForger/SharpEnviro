@@ -724,8 +724,7 @@ begin
            if (FManager.Skin.BarSkin.EnableVFlip) and (FVertPos = vpBottom) then
               Bmp.FlipVert();
          end;
-      Bmp.DrawTo(FSkin, 0, 0, Rect(fsmod.X, 0, bmp.width - fsmod.y,
-        bmp.height));
+      Bmp.DrawTo(FSkin, 0, 0, Rect(fsmod.X, 0, bmp.width - fsmod.y, bmp.height));
       Bmp.free;
       FSkin.OnPixelCombine := PC_noAlpha;
       FSkin.DrawMode := dmCustom;

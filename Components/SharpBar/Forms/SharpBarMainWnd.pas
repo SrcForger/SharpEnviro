@@ -339,7 +339,6 @@ begin
   DebugOutput('WM_UpdateBarWidth',2,1);
   ModuleManager.BroadCastModuleRefresh;
   ModuleManager.FixModulePositions;
-  SharpEBar1.UpdateSkin;
   ModuleManager.RefreshMiniThrobbers;
 end;
 
