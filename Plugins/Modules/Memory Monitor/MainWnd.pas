@@ -123,6 +123,7 @@ var
   pcmod,imod : integer;
   o1,o2,o3,o4,o5 : integer;
   freespace : integer;
+  oWidth : integer;
 begin
   freespace := uSharpBarApi.GetFreeBarSpace(BarWnd);
   if BarWidth<25 then BarWidth := 25;
@@ -287,8 +288,9 @@ begin
         end;
   end;
 
+  oWidth := Width;
   Width := max(o1,max(max(o3,o4),o5));
-  if SendUpdate then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  if (SendUpdate) and (oWidth<> Width) then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
 end;
 
 
