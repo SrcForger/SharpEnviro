@@ -139,14 +139,19 @@ begin
   o4 := 0;
   o5 := 0;
 
+  lb_swp.Left := -100;
+  lb_ram.Left := -100;
+
   case ItemAlign of
    1: begin
         if ShowRamInfo then
         begin
+          lb_ram.Width := lb_ram.Canvas.TextWidth(lb_ram.caption);
+          lb_ram.Height := lb_ram.Canvas.TextHeight(lb_ram.Caption);
           lb_ram.Visible := True;
           lb_ram.Left := o1;
           lb_ram.LabelStyle := lsMedium;
-          lb_ram.Top := Height div 2 - lb_ram.Height div 2;
+          lb_ram.Top := Height div 2 - lb_ram.Height div 2 - 2;
           o1 := lb_ram.Left + lb_ram.Width + 2;
         end else lb_ram.Visible := False;
 
@@ -163,10 +168,12 @@ begin
 
         if ShowRamPC then
         begin
+          lb_rambar.Width := lb_rambar.Canvas.TextWidth('100%');
+          lb_rambar.Height := lb_rambar.Canvas.TextHeight('100%');
           lb_rambar.Visible := True;
           lb_rambar.LabelStyle := lsMedium;
           lb_rambar.Left := o1;
-          lb_rambar.Top := Height div 2 - lb_rambar.Height div 2;
+          lb_rambar.Top := Height div 2 - lb_rambar.Height div 2 - 1;
           o1 := lb_rambar.Left + lb_rambar.Width + 2;
         end else lb_rambar.Visible := False;
 
@@ -175,12 +182,14 @@ begin
         if ShowSWPInfo then
         begin
           spacing := 0;
+          lb_swp.Width := lb_swp.Canvas.TextWidth(lb_swp.caption);
+          lb_swp.Height := lb_swp.Canvas.TextHeight(lb_swp.Caption);
           lb_swp.Visible := True;
           lb_swp.LabelStyle := lsMedium;
           lb_swp.Left := o1;
-          lb_swp.Top := Height div 2 - lb_swp.Height div 2;
+          lb_swp.Top := Height div 2 - lb_swp.Height div 2 - 2;
           o1 := lb_swp.Left + lb_swp.Width + 2;
-        end else lb_swp.Visible := FalsE;
+        end else lb_swp.Visible := False;
 
         if ShowSWPBar then
         begin
@@ -197,12 +206,14 @@ begin
         if ShowSWPPC then
         begin
           spacing := 0;
+          lb_swpbar.Width := lb_swpbar.Canvas.TextWidth('100%');
+          lb_swpbar.Height := lb_swpbar.Canvas.TextHeight('100%');
           lb_swpbar.Visible := True;
           lb_swpbar.LabelStyle := lsMedium;
           lb_swpbar.Left := o1;
-          lb_swpbar.Top := Height div 2 - lb_swpbar.Height div 2;
+          lb_swpbar.Top := Height div 2 - lb_swpbar.Height div 2 - 1;
           o1 := lb_swpbar.Left + lb_swpbar.Width + 2;
-        end;
+        end else lb_swpbar.Visible := False;
 
         o1 := o1 - spacing;
       end
@@ -210,19 +221,23 @@ begin
           o2 := (Height - 2 - 4) div 2;
           if ShowRamInfo then
           begin
+            lb_ram.Width := lb_ram.Canvas.TextWidth(lb_ram.caption);
+            lb_ram.Height := lb_ram.Canvas.TextHeight(lb_ram.Caption);
             lb_ram.Visible := True;
             lb_ram.LabelStyle := lsSmall;
             lb_ram.Left := o1;
-            lb_ram.Top := 2 + (o2 div 2) - (lb_ram.Height div 2);
+            lb_ram.Top := 1 + (o2 div 2) - (lb_ram.Height div 2);
             o3 := lb_ram.Left + lb_ram.Width + 2;
           end else lb_ram.Visible := False;
 
           if ShowSWPInfo then
           begin
+            lb_swp.Width := lb_swp.Canvas.TextWidth(lb_swp.caption);
+            lb_swp.Height := lb_swp.Canvas.TextHeight(lb_swp.Caption);
             lb_swp.Visible := True;
             lb_swp.LabelStyle := lsSmall;
             lb_swp.Left := o1;
-            lb_swp.Top := Height - 2 - (o2 div 2) - (lb_swp.Height div 2);
+            lb_swp.Top := Height - 3 - (o2 div 2) - (lb_swp.Height div 2);
             o3 := lb_swp.Left + lb_swp.Width + 2;
           end else lb_swp.Visible := False;
 
@@ -250,18 +265,22 @@ begin
 
           if ShowRamPC then
           begin
+            lb_rambar.Width := lb_rambar.Canvas.TextWidth('100%');
+            lb_rambar.Height := lb_rambar.Canvas.TextHeight('100%');
             lb_rambar.Visible := True;
             lb_rambar.Left := max(o3,o4);
-            lb_rambar.Top := 2 + (o2 div 2) - (lb_rambar.Height div 2);
+            lb_rambar.Top := 1 + (o2 div 2) - (lb_rambar.Height div 2);
             lb_rambar.LabelStyle := lsSmall;
             o5 := lb_rambar.Left + lb_rambar.Width + 2;
           end else lb_rambar.Visible := FalsE;
 
           if ShowSwpPC then
           begin
+            lb_swpbar.Width := lb_swpbar.Canvas.TextWidth('100%');
+            lb_swpbar.Height := lb_swpbar.Canvas.TextHeight('100%');
             lb_swpbar.Visible := True;
             lb_swpbar.Left := max(o3,o4);
-            lb_swpbar.Top := Height - 2 - (o2 div 2) - (lb_swp.Height div 2);
+            lb_swpbar.Top := Height - 3 - (o2 div 2) - (lb_swp.Height div 2);
             lb_swpbar.LabelStyle := lsSmall;
             o5 := lb_swpbar.Left + lb_swpbar.Width + 2;
           end else lb_swpbar.Visible := FalsE;
@@ -348,7 +367,6 @@ begin
       Add('ShowRAMPC',ShowRAMPC);
       Add('ShowSWPBar',ShowSWPBar);
       Add('ShowSWPInfo',ShowSWPInfo);
-      Add('ShowSWPPC',ShowSWPPC);
       Add('ShowSWPPC',ShowSWPPC);
       Add('ItemAlign',ItemAlign);
     end;

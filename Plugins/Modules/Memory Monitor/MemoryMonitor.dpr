@@ -103,7 +103,7 @@ begin
     ModuleID := pID;
     BarWnd   := FBarWnd;
     LoadSettings;
-    ReAlignComponents(true);
+    SendMessage(pParent,WM_UPDATEBARWIDTH,0,0);
     Show;
   end;
 end;

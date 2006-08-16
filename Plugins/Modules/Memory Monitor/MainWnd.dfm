@@ -55,8 +55,9 @@ object MainForm: TMainForm
     object lb_rambar: TSharpELabel
       Left = 144
       Top = 0
-      Width = 37
-      Height = 10
+      Width = 45
+      Height = 15
+      AutoSize = False
       Caption = 'lb_rambar'
       Visible = False
       SkinManager = SharpESkinManager1
@@ -65,8 +66,9 @@ object MainForm: TMainForm
     object lb_swpbar: TSharpELabel
       Left = 144
       Top = 16
-      Width = 39
-      Height = 10
+      Width = 44
+      Height = 15
+      AutoSize = False
       Caption = 'lb_swpbar'
       Visible = False
       SkinManager = SharpESkinManager1
@@ -75,8 +77,9 @@ object MainForm: TMainForm
     object lb_swp: TSharpELabel
       Left = 0
       Top = 16
-      Width = 15
-      Height = 10
+      Width = 17
+      Height = 15
+      AutoSize = False
       Caption = 'swp'
       Visible = False
       SkinManager = SharpESkinManager1
@@ -85,8 +88,9 @@ object MainForm: TMainForm
     object lb_ram: TSharpELabel
       Left = 0
       Top = 0
-      Width = 13
-      Height = 10
+      Width = 18
+      Height = 15
+      AutoSize = False
       Caption = 'ram'
       Visible = False
       SkinManager = SharpESkinManager1
