@@ -242,7 +242,7 @@ begin
            bmp.DrawTo(bmp,Rect(0,0,bmp.Width-2,bmp.Height),Rect(2,0,bmp.Width,bmp.Height));
            bmp.Line(bmp.Width-1,0,bmp.Width-1,bmp.Height,color32(sBGColor));
            bmp.Line(bmp.Width-2,0,bmp.Width-2,bmp.Height,color32(sBGColor));
-           bmp.Line(bmp.Width-3,bmp.Height-oldvalue,bmp.Width-1,bmp.Height-t,color32(sFGColor));
+           bmp.Line(bmp.Width-3,max(0,(bmp.Height-1)-oldvalue),bmp.Width-1,max(0,(bmp.Height-1)-t),color32(sFGColor));
          end;
       2,3: begin
              pbar.value := round(i*100);
