@@ -517,98 +517,104 @@ var
    LoadThemeForm : TLoadThemeForm;
    {SetList : TStringList;  }
 begin
-     if (SharpDesk.DeskSettings.TerminalMode) and (not SharpDesk.DeskSettings.ThemeLoading) and (not FirstTheme) then exit;
-     SharpDeskMainForm.SendMessageToConsole('Loading Theme',COLOR_OK,DMT_STATUS);
-     LoadThemeForm := TLoadThemeForm.Create(Application);
-     Application.ProcessMessages;
-     TerminateTask(FindWindow(nil,'SharpMenuWMForm'),0);
-     SharpDesk.ThemeSettings.ReloadThemes('');
-     SharpDesk.DeskSettings.ReloadSettings;
-     SharpDesk.ObjectSettings.ReloadObjectSettings;
-     SharpDesk.DeskSettings.Theme := SharpDesk.ThemeSettings.GetThemeByID(ID);
-     SharpDesk.DeskSettings.ThemeID := SharpDesk.DeskSettings.Theme.ThemeID;
-     SharpDesk.DeskSettings.SaveSettings;
-     LoadThemeForm.Show;
-     LoadThemeForm.Repaint;
-     SharpDeskMainForm.SendMessageToConsole('unloading desktop objects',COLOR_OK,DMT_STATUS);
-     LoadThemeForm.SetStatus('Unloading Desktop Objects',0);
+  if (SharpDesk.DeskSettings.TerminalMode) and (not SharpDesk.DeskSettings.ThemeLoading) and (not FirstTheme) then exit;
+  SharpDeskMainForm.SendMessageToConsole('Loading Theme',COLOR_OK,DMT_STATUS);
+
+  SharpApi.SharpEBroadCast(WM_THEMELOADINGSTART,0,0);
+  try
+    LoadThemeForm := TLoadThemeForm.Create(Application);
+    Application.ProcessMessages;
+    TerminateTask(FindWindow(nil,'SharpMenuWMForm'),0);
+    SharpDesk.ThemeSettings.ReloadThemes('');
+    SharpDesk.DeskSettings.ReloadSettings;
+    SharpDesk.ObjectSettings.ReloadObjectSettings;
+    SharpDesk.DeskSettings.Theme := SharpDesk.ThemeSettings.GetThemeByID(ID);
+    SharpDesk.DeskSettings.ThemeID := SharpDesk.DeskSettings.Theme.ThemeID;
+    SharpDesk.DeskSettings.SaveSettings;
+    LoadThemeForm.Show;
+    LoadThemeForm.Repaint;
+    SharpDeskMainForm.SendMessageToConsole('unloading desktop objects',COLOR_OK,DMT_STATUS);
+    LoadThemeForm.SetStatus('Unloading Desktop Objects',0);
 //     MainForm.UnLoadObjects(False);
-     Application.ProcessMessages;
-     SharpApi.SendDebugMessageEx('SharpDesk',PChar('Main Resize : ' +
-       inttostr(Screen.DesktopLeft)+','+inttostr(Screen.DesktopTop)+','+inttostr(Screen.DesktopWidth)+','+inttostr(Screen.DesktopHeight)),clblue,DMT_INFO);
-     SharpDeskMainForm.Left := Screen.DesktopLeft;
-     SharpDeskMainForm.Top  := Screen.DesktopTop;
-     SharpDeskMainForm.Width := Screen.DesktopWidth;
-     SharpDeskMainForm.Height := Screen.DesktopHeight;
-     if WPChange then
-     begin
-          LoadThemeForm.SetStatus('Loading Wallpaper Settings',20);
-          SharpDeskMainForm.SendMessageToConsole('loading wallpaper settings',COLOR_OK,DMT_STATUS);
-          LoadThemeForm.SetStatus('Loading Wallpaper',25);
-          SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
-          Background.Reload;
-          LoadThemeForm.SetStatus('Loading Wallpaper Effects',40);
-     end;
-     SharpDesk.UpdateAnimationLayer;
-     LoadThemeForm.SetStatus('Loading Scheme',55);
+    Application.ProcessMessages;
+    SharpApi.SendDebugMessageEx('SharpDesk',PChar('Main Resize : ' +
+                                inttostr(Screen.DesktopLeft)+','+inttostr(Screen.DesktopTop)+','+inttostr(Screen.DesktopWidth)+','+inttostr(Screen.DesktopHeight)),clblue,DMT_INFO);
+    SharpDeskMainForm.Left := Screen.DesktopLeft;
+    SharpDeskMainForm.Top  := Screen.DesktopTop;
+    SharpDeskMainForm.Width := Screen.DesktopWidth;
+    SharpDeskMainForm.Height := Screen.DesktopHeight;
+    if WPChange then
+    begin
+      LoadThemeForm.SetStatus('Loading Wallpaper Settings',20);
+      SharpDeskMainForm.SendMessageToConsole('loading wallpaper settings',COLOR_OK,DMT_STATUS);
+      LoadThemeForm.SetStatus('Loading Wallpaper',25);
+      SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
+      Background.Reload;
+      LoadThemeForm.SetStatus('Loading Wallpaper Effects',40);
+    end;
+    SharpDesk.UpdateAnimationLayer;
+    LoadThemeForm.SetStatus('Loading Scheme',55);
 
-     SharpDeskMainForm.SendMessageToConsole('loading scheme',COLOR_OK,DMT_STATUS);
-     SharpDeskMainForm.ChangeScheme(SharpDesk.DeskSettings.Theme.Scheme.Throbberback,
-                           SharpDesk.DeskSettings.Theme.Scheme.Throbberdark,
-                           SharpDesk.DeskSettings.Theme.Scheme.Throbberlight,
-                           SharpDesk.DeskSettings.Theme.Scheme.ThrobberText,
-                           SharpDesk.DeskSettings.Theme.Scheme.WorkAreaback,
-                           SharpDesk.DeskSettings.Theme.Scheme.WorkAreadark,
-                           SharpDesk.DeskSettings.Theme.Scheme.WorkArealight,
-                           SharpDesk.DeskSettings.Theme.Scheme.WorkAreaText);
-     LoadThemeForm.ReDrawForm;
-     if SharpDesk.DeskSettings.Theme.UseCursor then
-     begin
-       LoadThemeForm.SetStatus('Loading Cursors',65);
-       SharpApi.ServiceStart('curses');
-       SharpApi.ServiceMsg('curses',PChar('Load Cursor:' + inttostr(SharpDesk.DeskSettings.Theme.Cursor)));
-     end else SharpApi.ServiceStop('curses');
+    SharpDeskMainForm.SendMessageToConsole('loading scheme',COLOR_OK,DMT_STATUS);
+    SharpDeskMainForm.ChangeScheme(SharpDesk.DeskSettings.Theme.Scheme.Throbberback,
+                                   SharpDesk.DeskSettings.Theme.Scheme.Throbberdark,
+                                   SharpDesk.DeskSettings.Theme.Scheme.Throbberlight,
+                                   SharpDesk.DeskSettings.Theme.Scheme.ThrobberText,
+                                   SharpDesk.DeskSettings.Theme.Scheme.WorkAreaback,
+                                   SharpDesk.DeskSettings.Theme.Scheme.WorkAreadark,
+                                   SharpDesk.DeskSettings.Theme.Scheme.WorkArealight,
+                                   SharpDesk.DeskSettings.Theme.Scheme.WorkAreaText);
+    LoadThemeForm.ReDrawForm;
+    if SharpDesk.DeskSettings.Theme.UseCursor then
+    begin
+      LoadThemeForm.SetStatus('Loading Cursors',65);
+      SharpApi.ServiceStart('curses');
+      SharpApi.ServiceMsg('curses',PChar('Load Cursor:' + inttostr(SharpDesk.DeskSettings.Theme.Cursor)));
+    end else SharpApi.ServiceStop('curses');
 
-     if DeskSettingsForm <> nil then
-        if DeskSettingsForm.visible then
-        begin
-             DeskSettingsForm.Hide;
-             Application.ProcessMessages;
-             DeskSettingsForm.Show;
-             Application.ProcessMessages;
-        end;
-     SharpDeskMainForm.SendMessageToConsole('loading desktop objects',COLOR_OK,DMT_STATUS);
-     LoadThemeForm.SetStatus('Loading Desktop Objects',75);
+    if DeskSettingsForm <> nil then
+       if DeskSettingsForm.visible then
+       begin
+         DeskSettingsForm.Hide;
+         Application.ProcessMessages;
+         DeskSettingsForm.Show;
+         Application.ProcessMessages;
+       end;
+    SharpDeskMainForm.SendMessageToConsole('loading desktop objects',COLOR_OK,DMT_STATUS);
+    LoadThemeForm.SetStatus('Loading Desktop Objects',75);
   //   MainForm.LoadObjects;
 //     SharpDesk.UnloadAllObjects;
-     SharpDesk.ObjectSetList.LoadFromFile;
+    SharpDesk.ObjectSetList.LoadFromFile;
 //     SharpDesk.ObjectFileList.UnLoadAll;
 //     SharpDesk.ObjectFileList.ReLoadAllObjects;
-     SharpDesk.LoadObjectSets(SharpDesk.DeskSettings.Theme.ObjectSets);
+    SharpDesk.LoadObjectSets(SharpDesk.DeskSettings.Theme.ObjectSets);
 //     SharpDesk.LoadObjectSet(TObjectSet(SharpDesk.ObjectSetList.GetByID(SharpDesk.DeskSettings.Theme.ObjectSetID)));
-     SharpDeskMainForm.SendMessageToConsole('reloading SharpMenu',COLOR_OK,DMT_STATUS);
+    SharpDeskMainForm.SendMessageToConsole('reloading SharpMenu',COLOR_OK,DMT_STATUS);
 //     path := ExtractFileDir(Application.ExeName)+'\Settings\SharpMenu\'+DeskSettings.Theme.MenuFile+'.rc';
 //     if not FileExists(Path) then
 //        path := ExtractFileDir(Application.ExeName)+'\Settings\SharpMenu\Default.rc';
 //     MainForm.rightClickMenu.LoadFromFile(path, nil);
 //     MainForm.rightClickMenu.RefreshMenuOptions;
-     LoadThemeForm.SetStatus('Registry Update',90);
-     SharpApi.SetNewIconSet(SharpDesk.DeskSettings.Theme.IconSet);
-     SharpApi.SetNewSkin(SharpDesk.DeskSettings.Theme.Skin,false);
+    LoadThemeForm.SetStatus('Registry Update',90);
+    SharpApi.SetNewIconSet(SharpDesk.DeskSettings.Theme.IconSet);
+    SharpApi.SetNewSkin(SharpDesk.DeskSettings.Theme.Skin,false);
 
      //next broadcast will be by SharpDesk, loadingtheme = true will make the
      //WM handler ignore the message
-     loadingtheme := true;
-     SharpAPI.SetNewTheme(SharpDesk.DeskSettings.Theme.Name,SharpDesk.DeskSettings.ThemeID,true);
-     LoadThemeForm.SetStatus('Loading Menu',92);
-     SharpApi.SharpExecute(ExtractFileDir(Application.ExeName)+'\SharpMenu.exe');
-     LoadThemeForm.SetStatus('Theme Loaded',100);
-     LoadThemeForm.Close;
-     LoadThemeForm.Free;
-     SharpDeskMainForm.SendMessageToConsole('theme loaded',COLOR_OK,DMT_STATUS);
+    loadingtheme := true;
+    SharpAPI.SetNewTheme(SharpDesk.DeskSettings.Theme.Name,SharpDesk.DeskSettings.ThemeID,true);
+    LoadThemeForm.SetStatus('Loading Menu',92);
+    SharpApi.SharpExecute(ExtractFileDir(Application.ExeName)+'\SharpMenu.exe');
+    LoadThemeForm.SetStatus('Theme Loaded',100);
+    LoadThemeForm.Close;
+    LoadThemeForm.Free;
+    SharpDeskMainForm.SendMessageToConsole('theme loaded',COLOR_OK,DMT_STATUS);
 
-     if SharpDesk.DeskSettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
-     FirstTheme := False;
+    if SharpDesk.DeskSettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
+    FirstTheme := False;
+  finally
+    SharpApi.SharpEBroadCast(WM_THEMELOADINGEND,0,0);
+  end;
 end;
 
 // ######################################
