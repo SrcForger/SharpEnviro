@@ -37,20 +37,19 @@ uses
   Dialogs, StdCtrls, GR32, GR32_PNG, GR32_Image, SharpEBaseControls, SharpEButton,
   SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
   JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math, SharpEEdit, SharpELabel,
-  adCpuUsage;
+  cpuUsage;
 
 
 type
+
   TMainForm = class(TForm)
     Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
-    ClockTimer: TTimer;
     pbar: TSharpEProgressBar;
     cpugraph: TImage32;
     bshape: TShape;
-    procedure ClockTimerTimer(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
   protected
   private
@@ -65,8 +64,10 @@ type
   public
     ModuleID : integer;
     BarWnd   : hWnd;
+    cpuusage : TCPUUsage;
     procedure LoadSettings(realign : boolean);
     procedure ReAlignComponents;
+    procedure UpdateGraph;
   end;
 
 
@@ -116,7 +117,7 @@ var
 begin
   self.Caption := inttostr(sCPU);
 
-  ClockTimer.Interval := sUpdate;
+  cpuUsage.UpdateTimer.Interval := sUpdate;
   bshape.Pen.Color := sBorderColor;
   FreeBarSpace := GetFreeBarSpace(BarWnd) + self.Width;
   if FreeBarSpace <0 then FreeBarSpace := 1;
@@ -214,17 +215,17 @@ begin
   end;
 end;
 
-procedure TMainForm.ClockTimerTimer(Sender: TObject);
+procedure TMainForm.UpdateGraph;
 var
   i : double;
   t : integer;
   bmp : TBitmap32;
 begin
   try
-    CollectCPUData; // Get the data for all processors
+    if cpuusage = nil then exit;
 
     bmp := cpugraph.Bitmap;
-    i := GetCPUUsage(0);
+    i := cpuusage.GetCPUUsage(sCPU);
     t := round(i*bmp.Height);
     if t<0 then t := 0
        else if t>bmp.Height then t := bmp.Height;

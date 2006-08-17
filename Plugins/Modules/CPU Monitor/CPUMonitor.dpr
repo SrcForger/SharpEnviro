@@ -53,9 +53,11 @@ uses
   uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   uSharpDeskFunctions in '..\..\..\Components\SharpDesk\Units\uSharpDeskFunctions.pas',
-  adCpuUsage in '..\..\..\Common\3rd party\adCpuUsage\adCpuUsage.pas';
+  adCpuUsage in '..\..\..\Common\3rd party\adCpuUsage\adCpuUsage.pas',
+  cpuUsage in 'cpuUsage.pas';
 
 type
+
   TModule = class
             private
               FForm : TForm;
@@ -75,8 +77,9 @@ type
 var
   ModuleList : TObjectList;
   MouseTimer : TMouseTimer;
-
+  CurrentCPUUsage : TCPUUsage;
 {$R *.res}
+
 
 function GetControlByHandle(AHandle: THandle): TWinControl;
 begin
@@ -84,6 +87,8 @@ begin
                             PChar( Format( 'Delphi%8.8x',
                                            [GetCurrentProcessID]))));
 end;
+
+
 
 constructor TModule.Create(pID : integer; pParent : hwnd);
 begin
@@ -100,11 +105,13 @@ begin
   MouseTimer.AddWinControl(TMainForm(FForm));
   with FForm as TMainForm do
   begin
+    cpuusage := CurrentCPUUsage;
     ModuleID := pID;
     BarWnd   := FBarWnd;
     LoadSettings(False);
     ReAlignComponents;
     Show;
+    CurrentCPUUsage.Forms.Add(FForm);
   end;
  // FForm.Parent := GetControlByHandle(pParent);
 end;
@@ -127,6 +134,9 @@ begin
 
     if MouseTimer = nil then
        MouseTimer := TMouseTimer.Create;
+
+    if CurrentCPUUsage = nil then
+       CurrentCPUUsage := TCPUUsage.Create;
 
     temp := TModule.Create(ID,parent);
     ModuleList.Add(temp);
@@ -151,6 +161,8 @@ begin
           if MouseTimer.ControlList.Count = 0 then
              FreeAndNil(MouseTimer);
           ModuleList.Delete(n);
+          if ModuleList.Count = 0 then
+             FreeAndNil(CurrentCPUUsage);
           result := True;
           exit;
         end;
