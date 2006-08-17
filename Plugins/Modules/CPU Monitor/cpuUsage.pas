@@ -45,6 +45,7 @@ begin
   setlength(CPUUsage,GetCPUCount);
   Forms := TObjectList.Create(False);
   UpdateTimer := TTimer.Create(nil);
+  UpdateTimer.Interval := 1001;
   UpdateTimer.OnTimer := OnUpdateTimer;
 end;
 

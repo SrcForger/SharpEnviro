@@ -117,7 +117,8 @@ var
 begin
   self.Caption := inttostr(sCPU);
 
-  cpuUsage.UpdateTimer.Interval := sUpdate;
+  if cpuUsage.UpdateTimer.Interval = 1001 then cpuUsage.UpdateTimer.Interval := sUpdate
+     else sUpdate := cpuUsage.UpdateTimer.Interval;
   bshape.Pen.Color := sBorderColor;
   FreeBarSpace := GetFreeBarSpace(BarWnd) + self.Width;
   if FreeBarSpace <0 then FreeBarSpace := 1;
@@ -206,8 +207,8 @@ begin
       end;
       uSharpBarAPI.SaveXMLFile(BarWnd);
     end;
+      cpuUsage.UpdateTimer.Interval := sUpdate;
     ReAlignComponents;
-
   finally
     SettingsForm.Free;
     SettingsForm := nil;
