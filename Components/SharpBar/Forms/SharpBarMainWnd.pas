@@ -78,6 +78,12 @@ type
     BarManagment1: TMenuItem;
     CreateemptySharpBar1: TMenuItem;
     BlendInTimer: TTimer;
+    BlendOutTimer: TTimer;
+    DelayTimer1: TTimer;
+    DelayTimer2: TTimer;
+    procedure DelayTimer2Timer(Sender: TObject);
+    procedure DelayTimer1Timer(Sender: TObject);
+    procedure BlendOutTimerTimer(Sender: TObject);
     procedure BlendInTimerTimer(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -117,8 +123,14 @@ type
     { Private-Deklarationen }
     FBarID : integer;
     FShellHookList : TStringList;
+    FThemeUpdating : Boolean;
+    FStartup : Boolean;
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem : TJvSimpleXMlElem);
+
+    // theme update;
+    procedure WMThemeUpdateStart(var msg : TMessage); message WM_THEMELOADINGSTART;
+    procedure WMThemeUpdateEnd(var msg : TMessage); message WM_THEMELOADINGEND;
 
     // shell hooks
     procedure WMRegisterShellHook(var msg : TMessage); message WM_REGISTERSHELLHOOK;
@@ -126,6 +138,9 @@ type
     procedure WMShellHook(var msg : TMessage); message WM_SHELLHOOK;
 
     //Modules (uSharpBarAPI.pas)
+    procedure WMLockBarWindow(var msg : TMessage); message WM_LOCKBARWINDOW;
+    procedure WMUnlockBarWindow(var msg : TMessage); message WM_UNLOCKBARWINDOW;
+
     procedure WMGetFreeBarSpace(var msg : TMessage); message WM_GETFREEBARSPACE;
     procedure WMSaveXMLFile(var msg : TMessage); message WM_SAVEXMLFILE;
     procedure WMGetXMLHandle(var msg : TMessage); message WM_GETXMLHANDLE;
@@ -184,6 +199,18 @@ procedure dllcallback(handle : hwnd);
 begin
 end;
 
+
+procedure LockWindow(const Handle: HWND);
+begin
+  SendMessage(Handle, WM_SETREDRAW, 0, 0);
+end;
+
+procedure UnlockWindow(const Handle: HWND);
+begin
+  SendMessage(Handle, WM_SETREDRAW, 1, 0);
+  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+end;
+
 // ************************
 // Window Message handlers
 // ************************
@@ -194,6 +221,49 @@ begin
   ModuleManager.FixModulePositions;
 end;
         }
+
+
+procedure TSharpBarMainForm.WMLockBarWindow(var msg : TMessage);
+begin
+  if FStartup then exit;
+  
+  LockWindow(Handle);
+end;
+
+procedure TSharpBarMainForm.WMUnlockBarWindow(var msg : TMessage);
+begin
+  if FStartup then exit;
+  
+  UnLockWindow(Handle);
+  SendMessage(SharpEBar1.abackground.handle, WM_SETREDRAW, 1, 0);
+  RedrawWindow(SharpEBar1.abackground.handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+end;
+
+procedure TSharpBarMainForm.WMThemeUpdateStart(var msg : TMessage);
+begin
+  LockWindow(Handle);
+  FThemeUpdating := True;
+  //LockWindowUpdate(Application.Handle);
+  BlendInTimer.Enabled := False;
+  BlendOutTimer.Tag := BlendInTimer.Tag;
+  BlendOutTimer.Enabled := True;
+end;
+
+procedure TSharpBarMainForm.WMThemeUpdateEnd(var msg : TMessage);
+begin
+  FThemeUpdating := False;
+  LoadSharpEScheme(SkinManager.Scheme);
+  SharpEBar1.UpdateSkin;
+  SharpEBar1.Throbber.UpdateSkin;
+  SharpEbar1.Throbber.Repaint;
+  ModuleManager.UpdateModuleSkins;
+  ModuleManager.FixModulePositions;
+  ModuleManager.RefreshMiniThrobbers;
+
+  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+  DelayTimer1.Enabled := True;
+//  DelayTimer2.Enabled := True;
+end;
 
 procedure TSharpBarMainForm.WMShellHook(var msg : TMessage);
 var
@@ -257,12 +327,9 @@ end;
 
 procedure TSharpBarMainForm.WMSchemeUpdate(var msg : TMessage);
 begin
-//  DebugOutput('WM_SchemeUpdate:',2,1);
-//  DebugOutput('->LoadSharpEScheme',3,1);
-//  LoadSharpEScheme(SkinManager.Scheme);
-//  DebugOutput('->LoadFromXMlFile',3,1);
-//  SkinManager.Skin.LoadFromXmlFile(SharpAPI.GetCurrentSkinFile);
-//  DebugOutput('->Update Bar and Modules',3,1);
+  if FThemeUpdating then exit;
+
+  LockWindow(Handle);
   LoadSharpEScheme(SkinManager.Scheme);
   SharpEBar1.UpdateSkin;
   SharpEBar1.Throbber.UpdateSkin;
@@ -270,6 +337,7 @@ begin
   ModuleManager.UpdateModuleSkins;
   ModuleManager.FixModulePositions;
   ModuleManager.RefreshMiniThrobbers;
+  UnLockWindow(Handle);
 end;
 
 procedure TSharpBarMainForm.WMSaveXMLFile(var msg : TMessage);
@@ -301,16 +369,17 @@ end;
 
 procedure TSharpBarMainForm.WMSharpEThemeUpdate(var msg : TMessage);
 begin
-//  DebugOutput('WM_SharpEThemeUpdate',2,1);
-//  DebugOutput('->LoadSharpEScheme',3,1);
-//  LoadSharpEScheme(SkinManager.Scheme);
-//  DebugOutput('->LoadFromXMLFile',3,1);
-//  SkinManager.Skin.LoadFromXmlFile(SharpAPI.GetCurrentSkinFile);
-//  DebugOutput('->Update Bar and Modules',3,1);
+  if FThemeUpdating then exit;
+  LockWindow(Handle);
+  FThemeUpdating := True;
+  exit;
+
+  LoadSharpEScheme(SkinManager.Scheme);
   SharpEBar1.UpdateSkin;
   SharpEBar1.Throbber.UpdateSkin;
   SharpEbar1.Throbber.Repaint;
   ModuleManager.UpdateModuleSkins;
+  ModuleManager.BroadCastModuleRefresh;
   ModuleManager.FixModulePositions;
   ModuleManager.RefreshMiniThrobbers;
 end;
@@ -336,6 +405,8 @@ end;
 
 procedure TSharpBarMainForm.WMUpdateBarWidth(var msg : TMessage);
 begin
+  if FThemeUpdating then exit;
+
   DebugOutput('WM_UpdateBarWidth',2,1);
   ModuleManager.BroadCastModuleRefresh;
   ModuleManager.FixModulePositions;
@@ -343,6 +414,7 @@ begin
 end;
 
 // ***********************
+
 
 procedure TSharpBarMainForm.LoadModuleSettings;
 // Load the module settings file for this bar
@@ -639,6 +711,8 @@ end;
 
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
+  FStartup := True;
+
   FShellHookList := TStringList.Create;
   FShellHookList.Clear;
   
@@ -854,6 +928,8 @@ var
   oVP : TSharpEBarVertPos;
   oHP : TSharpEBarHorizPos;
 begin
+  if FThemeUpdating then exit;
+
   if Shift = [ssLeft] then
   begin
     if not BarMove then
@@ -1045,6 +1121,8 @@ end;
 procedure TSharpBarMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+  if FThemeUpdating then exit;
+
   if Button = mbRight then
      if (Y=Height-1) and (SharpEBar1.VertPos = vpBottom)
         or (Y=0) and (SharpEBar1.VertPos = vpTop) then
@@ -1160,6 +1238,8 @@ end;
 
 procedure TSharpBarMainForm.ApplicationEvents1Activate(Sender: TObject);
 begin
+  if FThemeUpdating then exit;
+
   if ApplicationEvents1.Tag = 0 then
   begin
     ModuleManager.UpdateModuleSkins;
@@ -1169,6 +1249,7 @@ begin
   end;
   if BlendInTimer.Tag <> 255 then
   begin
+    FStartup := False;
     SetLayeredWindowAttributes(Handle, RGB(255,0,254), 1, LWA_COLORKEY or LWA_ALPHA);
     SharpEBar1.abackground.Alpha := 1;
     Application.ShowMainForm := True;
@@ -1179,11 +1260,16 @@ end;
 
 procedure TSharpBarMainForm.SkinManagerSkinChanged(Sender: TObject);
 begin
-{  SharpEBar1.UpdateSkin;
-  SharpEBar1.Throbber.UpdateSkin;
-  SharpEbar1.Throbber.Repaint;  }
+//  if FThemeUpdating then exit;
+
+  if ModuleManager = nil then exit;
+
   ModuleManager.UpdateModuleSkins;
   ModuleManager.FixModulePositions;
+  if FThemeUpdating then exit;
+  SharpEBar1.UpdateSkin;
+  SharpEBar1.Throbber.UpdateSkin;
+  SharpEbar1.Throbber.Repaint;
   ModuleManager.RefreshMiniThrobbers;
 end;
 
@@ -1208,15 +1294,44 @@ begin
 end;
 
 procedure TSharpBarMainForm.BlendInTimerTimer(Sender: TObject);
+var
+  msg : TMessage;
 begin
   BlendInTimer.Tag := BlendInTimer.Tag + 40;
   if BlendInTimer.Tag >= 255 then
   begin
     BlendInTimer.Tag := 255;
     BlendInTimer.Enabled := False;
+    WMUnlockBarWindow(msg);
   end;
   SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendInTimer.Tag, LWA_COLORKEY or LWA_ALPHA);
   SharpEBar1.abackground.Alpha := BlendInTimer.Tag;
+end;
+
+procedure TSharpBarMainForm.BlendOutTimerTimer(Sender: TObject);
+begin
+  BlendOutTimer.Tag := BlendOutTimer.Tag - 400;
+  if BlendOutTimer.Tag <= 0 then
+  begin
+    BlendOutTimer.Tag := 0;
+    BlendOutTimer.Enabled := False;
+  end;
+  SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendOutTimer.Tag, LWA_COLORKEY or LWA_ALPHA);
+  SharpEBar1.abackground.Alpha := BlendOutTimer.Tag;
+end;
+
+procedure TSharpBarMainForm.DelayTimer1Timer(Sender: TObject);
+begin
+  DelayTimer1.Enabled := False;
+
+  BlendOutTimer.Enabled := False;
+  BlendInTimer.Tag := BlendOutTimer.Tag;
+  BlendInTimer.Enabled := True;
+end;
+
+procedure TSharpBarMainForm.DelayTimer2Timer(Sender: TObject);
+begin
+  DelayTimer2.Enabled := False;
 end;
 
 end.
