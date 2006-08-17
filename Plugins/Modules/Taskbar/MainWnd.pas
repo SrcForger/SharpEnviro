@@ -140,6 +140,17 @@ var
 
 {$R *.dfm}
 
+procedure LockWindow(const Handle: HWND);
+begin
+  SendMessage(Handle, WM_SETREDRAW, 0, 0);
+end;
+
+procedure UnlockWindow(const Handle: HWND);
+begin
+  SendMessage(Handle, WM_SETREDRAW, 1, 0);
+  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+end;
+
 procedure TMainForm.UpdateCustomSettings;
 var
   dir : String;
@@ -520,6 +531,8 @@ begin
     exit;
   end;
 
+//  LockWindow(BarWnd);
+  SendMessage(BarWnd,WM_LOCKBARWINDOW,0,0);
   FLocked := True;
   try
     GetSpacing;
@@ -546,13 +559,15 @@ begin
       finally
         Background.Bitmap.EndUpdate;
         oBmp.Free;
-      end;  
+      end;
       self.Width := NewWidth;
       AlignTaskComponents;
       SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
     end;
   finally
     FLocked := False;
+    SendMessage(BarWnd,WM_UNLOCKBARWINDOW,0,0);
+  //  UnLockWindow(BarWnd);
   end;
 end;
 
