@@ -4,7 +4,7 @@ object SettingsForm: TSettingsForm
   BorderStyle = bsToolWindow
   Caption = 'CPU Monitor Module Settings'
   ClientHeight = 374
-  ClientWidth = 191
+  ClientWidth = 242
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -101,6 +101,55 @@ object SettingsForm: TSettingsForm
     AutoSize = False
     Caption = 'CPU Number:'
   end
+  object Label9: TLabel
+    Left = 128
+    Top = 248
+    Width = 60
+    Height = 13
+    Caption = 'Alpha Value:'
+  end
+  object lb_bgalpha: TLabel
+    Left = 216
+    Top = 262
+    Width = 25
+    Height = 14
+    AutoSize = False
+    Caption = '255'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Arial'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object lb_fgalpha: TLabel
+    Left = 216
+    Top = 286
+    Width = 25
+    Height = 14
+    AutoSize = False
+    Caption = '255'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Arial'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object lb_borderalpha: TLabel
+    Left = 216
+    Top = 310
+    Width = 25
+    Height = 14
+    AutoSize = False
+    Caption = '255'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Arial'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
   object Button1: TButton
     Left = 32
     Top = 344
@@ -122,7 +171,7 @@ object SettingsForm: TSettingsForm
   object tb_size: TGaugeBar
     Left = 8
     Top = 24
-    Width = 177
+    Width = 225
     Height = 13
     Color = clWindow
     Backgnd = bgSolid
@@ -199,7 +248,7 @@ object SettingsForm: TSettingsForm
   object tb_update: TGaugeBar
     Left = 8
     Top = 64
-    Width = 177
+    Width = 225
     Height = 13
     Color = clWindow
     Backgnd = bgSolid
@@ -224,6 +273,58 @@ object SettingsForm: TSettingsForm
     CheckMaxValue = True
     EditorEnabled = False
     TabOrder = 10
+  end
+  object tb_bgalpha: TGaugeBar
+    Left = 128
+    Top = 264
+    Width = 81
+    Height = 13
+    Color = clWindow
+    Backgnd = bgSolid
+    BorderStyle = bsNone
+    HandleColor = clBtnFace
+    BorderColor = clBtnShadow
+    Max = 255
+    ShowArrows = False
+    ShowHandleGrip = True
+    Style = rbsMac
+    Position = 255
+    OnChange = tb_bgalphaChange
+  end
+  object tb_fgalpha: TGaugeBar
+    Left = 128
+    Top = 288
+    Width = 81
+    Height = 13
+    Color = clWindow
+    Backgnd = bgSolid
+    BorderStyle = bsNone
+    HandleColor = clBtnFace
+    BorderColor = clBtnShadow
+    Max = 255
+    Min = 32
+    ShowArrows = False
+    ShowHandleGrip = True
+    Style = rbsMac
+    Position = 255
+    OnChange = tb_fgalphaChange
+  end
+  object tb_borderalpha: TGaugeBar
+    Left = 128
+    Top = 312
+    Width = 81
+    Height = 13
+    Color = clWindow
+    Backgnd = bgSolid
+    BorderStyle = bsNone
+    HandleColor = clBtnFace
+    BorderColor = clBtnShadow
+    Max = 255
+    ShowArrows = False
+    ShowHandleGrip = True
+    Style = rbsMac
+    Position = 255
+    OnChange = tb_borderalphaChange
   end
   object XPManifest1: TXPManifest
     Left = 152

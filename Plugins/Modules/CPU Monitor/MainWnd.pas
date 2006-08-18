@@ -48,8 +48,9 @@ type
     Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     pbar: TSharpEProgressBar;
-    cpugraph: TImage32;
-    bshape: TShape;
+    cpugraphcont: TImage32;
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
   protected
   private
@@ -60,11 +61,16 @@ type
     sBorderColor : integer;
     sFGColor     : integer;
     sUpdate      : integer;
+    sFGAlpha     : integer;
+    sBGAlpha     : integer;
+    sBorderAlpha : integer;
     oldvalue     : integer;
   public
     ModuleID : integer;
     BarWnd   : hWnd;
     cpuusage : TCPUUsage;
+    bgbmp    : TBitmap32;
+    cpugraph : TBitmap32;
     procedure LoadSettings(realign : boolean);
     procedure ReAlignComponents;
     procedure UpdateGraph;
@@ -92,6 +98,9 @@ begin
   sBGColor  := SharpESkinManager1.Scheme.WorkAreaback;
   sBorderColor := clBlack;
   sUpdate      := 500;
+  sFGAlpha     := 255;
+  sBGAlpha     := 255;
+  sBorderAlpha := 255;
 
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
   if item <> nil then with item.Items do
@@ -104,22 +113,36 @@ begin
     sBGColor  := CodeToColorEx(IntValue('BGColor',SharpESkinManager1.Scheme.WorkAreaback),cs);
     sBorderColor := CodeToColorEx(IntValue('BorderColor',clBlack),cs);
     sUpdate   := IntValue('Update',250);
+    sFGAlpha      := Max(0,Min(255,IntValue('FGAlpha',255)));
+    sBGAlpha      := Max(0,Min(255,IntValue('BGAlpha',255)));
+    sBorderAlpha  := Max(0,Min(255,IntValue('BorderAlpha',255)));
   end;
   sUpdate := Max(sUpdate,100);
 
   if realign then ReAlignComponents;
 end;
 
+function ColorToColor32(c : TColor; alpha : integer) : TColor32;
+var
+  R,G,B : integer;
+begin
+  R := GetRValue(c);
+  G := GetGValue(c);
+  B := GetBValue(c);
+  result := Color32(R,G,B,alpha);
+end;
+
 procedure TMainForm.ReAlignComponents;
 var
   FreeBarSpace : integer;
   newWidth : integer;
+  c : TColor32;
 begin
   self.Caption := inttostr(sCPU);
 
   if cpuUsage.UpdateTimer.Interval = 1001 then cpuUsage.UpdateTimer.Interval := sUpdate
      else sUpdate := cpuUsage.UpdateTimer.Interval;
-  bshape.Pen.Color := sBorderColor;
+
   FreeBarSpace := GetFreeBarSpace(BarWnd) + self.Width;
   if FreeBarSpace <0 then FreeBarSpace := 1;
   newWidth := sWidth + 4;
@@ -129,28 +152,28 @@ begin
   case sDrawMode of
     0,1: begin
            pbar.Visible := False;
-           bshape.Visible := True;
-           cpugraph.Visible := True;
-           cpugraph.Left := 2;
-           cpugraph.Width := Width - 4;
-           cpugraph.Top   := 2;
-           cpugraph.Height := Height - 4;
-           if (cpugraph.Bitmap.Width <> Max(Width - 4,4)) or
-              (cpugraph.Bitmap.Height <> Height -4) then
+           cpugraphcont.Visible := True;
+           cpugraphcont.Left := 2;
+           cpugraphcont.Width := Width - 4;
+           cpugraphcont.Top   := 2;
+           cpugraphcont.Height := Height - 4;
+           if (cpugraphcont.Bitmap.Width <> Max(Width - 4,4)) or
+              (cpugraphcont.Bitmap.Height <> Height -4) then
            begin
-             cpugraph.Bitmap.SetSize(Max(Width - 4,4),Height -4);
-             cpugraph.Bitmap.Clear(color32(sBGColor));
+             cpugraphcont.Bitmap.SetSize(Max(Width - 4,4),Height -4);
+             cpugraph.SetSize(cpugraphcont.Bitmap.Width-2,cpugraphcont.Bitmap.Height-2);
+             cpugraph.Clear(color32(0,0,0,0));
+             bgbmp.DrawTo(cpugraphcont.Bitmap,-2,-2);
+             c := ColorToColor32(sBorderColor,sBorderAlpha);
+             cpugraphcont.Bitmap.FrameRectS(0,0,cpugraph.Width,cpugraph.Height,c);
+             c := ColorToColor32(sBGColor,sBGAlpha);
+             cpugraph.FillRect(0,0,cpugraph.Width,cpugraph.Height,c);
            end;
-           bshape.Left := cpugraph.Left - 1;
-           bshape.Top := cpugraph.Top - 1;
-           bshape.Width := cpugraph.width + 2;
-           bshape.Height := cpugraph.Height + 2;
          end;
     else
     begin
       pbar.Visible := True;
-      bshape.Visible := False;
-      cpugraph.Visible := False;
+      cpugraphcont.Visible := False;
       pbar.Left :=  + 2;
       pbar.Top := 4;
       pbar.Width := Width - 4;
@@ -180,6 +203,9 @@ begin
     SettingsForm.scb_fg.color := sFGColor;
     SettingsForm.scb_border.color := sBorderColor;
     SettingsForm.edit_cpu.Value := sCpu;
+    SettingsForm.tb_fgalpha.Position := sFGAlpha;
+    SettingsForm.tb_bgalpha.Position := sBGAlpha;
+    SettingsForm.tb_borderalpha.Position := sBorderAlpha;
 
     if SettingsForm.ShowModal = mrOk then
     begin
@@ -191,6 +217,9 @@ begin
       sBorderColor := SettingsForm.scb_border.color;
       sUpdate      := SettingsForm.tb_update.Position;
       sCpu         := round(SettingsForm.edit_cpu.Value);
+      sFGAlpha     := SettingsForm.tb_fgalpha.Position;
+      sBGAlpha     := SettingsForm.tb_bgalpha.Position;
+      sBorderAlpha := SettingsForm.tb_borderalpha.Position;
       if SettingsForm.rb_bar.Checked then sDrawMode := 0
          else if SettingsForm.rb_line.Checked then sDrawMode := 1
          else sDrawMode := 2;
@@ -204,10 +233,13 @@ begin
         Add('FGColor',ColorToCodeEx(sFGColor,cs));
         Add('BGColor',ColorToCodeEx(sBGColor,cs));
         Add('BorderColor',ColorToCodeEx(sBordercolor,cs));
+        Add('FGAlpha',sFGAlpha);
+        Add('BGAlpha',sBGAlpha);
+        Add('BorderAlpha',sBorderAlpha);
       end;
       uSharpBarAPI.SaveXMLFile(BarWnd);
-    end;
       cpuUsage.UpdateTimer.Interval := sUpdate;
+    end;
     ReAlignComponents;
   finally
     SettingsForm.Free;
@@ -219,40 +251,79 @@ end;
 procedure TMainForm.UpdateGraph;
 var
   i : double;
+  n : integer;
   t : integer;
+  c1,c2 : TColor32;
   bmp : TBitmap32;
 begin
+  bmp := TBitmap32.create;
   try
     if cpuusage = nil then exit;
 
-    bmp := cpugraph.Bitmap;
     i := cpuusage.GetCPUUsage(sCPU);
-    t := round(i*bmp.Height);
+    t := round(i*cpugraph.Height);
     if t<0 then t := 0
-       else if t>bmp.Height then t := bmp.Height;
+       else if t>cpugraph.Height then t := cpugraph.Height;
 
     if oldvalue<0 then oldvalue := 0
-       else if oldvalue>bmp.Height then oldvalue := bmp.Height;
+       else if oldvalue>cpugraph.Height then oldvalue := cpugraph.Height;
 
+    if (sDrawMode = 0) or (sDrawMode = 1) then
+    begin
+      c1 := ColorToColor32(sBGColor,sBGAlpha);
+      c2 := ColorToColor32(sFGColor,sFGAlpha);
+    end;
+
+    bmp.SetSize(cpugraph.Width,cpugraph.Height);
+    bmp.Clear(color32(0,0,0,0));
     case sDrawMode of
       0: begin
-           bmp.DrawTo(bmp,Rect(0,0,bmp.Width-1,bmp.Height),Rect(1,0,bmp.Width,bmp.Height));
-           bmp.Line(bmp.Width-1,0,bmp.Width-1,bmp.Height,color32(sBGColor));
-           bmp.Line(bmp.Width-1,bmp.Height-t,bmp.Width-1,bmp.Height,color32(sFGColor));
+           cpugraph.DrawTo(bmp,Rect(0,0,cpugraph.Width-1,cpugraph.Height),Rect(1,0,cpugraph.Width,cpugraph.Height));
+           cpugraph.Clear(color32(0,0,0,0));
+           bmp.DrawTo(cpugraph);
+           cpugraph.Line(cpugraph.Width-1,0,cpugraph.Width-1,cpugraph.Height,c1);
+           cpugraph.Line(cpugraph.Width-1,cpugraph.Height-t,cpugraph.Width-1,cpugraph.Height,c2);
          end;
       1: begin
-           bmp.DrawTo(bmp,Rect(0,0,bmp.Width-2,bmp.Height),Rect(2,0,bmp.Width,bmp.Height));
-           bmp.Line(bmp.Width-1,0,bmp.Width-1,bmp.Height,color32(sBGColor));
-           bmp.Line(bmp.Width-2,0,bmp.Width-2,bmp.Height,color32(sBGColor));
-           bmp.Line(bmp.Width-3,max(0,(bmp.Height-1)-oldvalue),bmp.Width-1,max(0,(bmp.Height-1)-t),color32(sFGColor));
+           cpugraph.DrawTo(bmp,Rect(0,0,cpugraph.Width-2,cpugraph.Height),Rect(2,0,cpugraph.Width,cpugraph.Height));
+           cpugraph.Clear(color32(0,0,0,0));
+           bmp.DrawTo(cpugraph);
+           cpugraph.Line(cpugraph.Width-1,0,cpugraph.Width-1,cpugraph.Height,c1);
+           cpugraph.Line(cpugraph.Width-2,0,cpugraph.Width-2,cpugraph.Height,c1);
+           cpugraph.Line(cpugraph.Width-3,max(0,(cpugraph.Height-1)-oldvalue),cpugraph.Width-1,max(0,(cpugraph.Height-1)-t),c2);
          end;
       2,3: begin
              pbar.value := round(i*100);
            end;
     end;
+    if (sDrawMode = 0) or (sDrawMode = 1) then
+    begin
+      cpugraphcont.Bitmap.BeginUpdate;
+      cpugraphcont.Bitmap.Clear(color32(0,0,0,0));
+      bgbmp.DrawTo(cpugraphcont.Bitmap,-cpugraphcont.left,-cpugraphcont.Top);
+      c1 := ColorToColor32(sBorderColor,sBorderAlpha);
+      cpugraphcont.Bitmap.FrameRectTS(0,0,cpugraphcont.Bitmap.Width,cpugraphcont.Bitmap.Height,c1);
+      cpugraphcont.Bitmap.EndUpdate;
+      cpugraph.DrawTo(cpugraphcont.Bitmap,1,1);
+    end;
   except
   end;
+  bmp.free;
   oldvalue := t;
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  bgbmp := TBitmap32.Create;
+  cpugraph := TBitmap32.Create;
+  cpugraph.DrawMode := dmBlend;
+  cpugraph.CombineMode := cmMerge;
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  bgbmp.Free;
+  cpugraph.Free;
 end;
 
 end.

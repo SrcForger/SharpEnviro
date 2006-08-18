@@ -195,6 +195,7 @@ begin
         temp := TModule(ModuleList.Items[n]);
         TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,temp.Form.Height);
         uSharpBarAPI.PaintBarBackGround(temp.BarWnd,TMainForm(temp.Form).Background.Bitmap,Temp.Form);
+        TMainForm(temp.Form).bgbmp.Assign(TMainForm(temp.Form).Background.Bitmap);
       end;
 end;
 

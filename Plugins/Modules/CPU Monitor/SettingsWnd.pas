@@ -61,6 +61,16 @@ type
     tb_update: TGaugeBar;
     edit_cpu: TJvSpinEdit;
     Label8: TLabel;
+    Label9: TLabel;
+    lb_bgalpha: TLabel;
+    tb_bgalpha: TGaugeBar;
+    lb_fgalpha: TLabel;
+    tb_fgalpha: TGaugeBar;
+    lb_borderalpha: TLabel;
+    tb_borderalpha: TGaugeBar;
+    procedure tb_borderalphaChange(Sender: TObject);
+    procedure tb_fgalphaChange(Sender: TObject);
+    procedure tb_bgalphaChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure tb_updateChange(Sender: TObject);
     procedure tb_sizeChange(Sender: TObject);
@@ -99,6 +109,21 @@ end;
 procedure TSettingsForm.FormCreate(Sender: TObject);
 begin
   edit_cpu.MaxValue := adCpuUsage.GetCPUCount;
+end;
+
+procedure TSettingsForm.tb_bgalphaChange(Sender: TObject);
+begin
+  lb_bgalpha.Caption := inttostr(tb_bgalpha.Position);
+end;
+
+procedure TSettingsForm.tb_fgalphaChange(Sender: TObject);
+begin
+  lb_fgalpha.Caption := inttostr(tb_fgalpha.Position);
+end;
+
+procedure TSettingsForm.tb_borderalphaChange(Sender: TObject);
+begin
+  lb_borderalpha.Caption := inttostr(tb_borderalpha.Position);
 end;
 
 end.

@@ -11,6 +11,8 @@ object MainForm: TMainForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object Background: TImage32
@@ -35,14 +37,7 @@ object MainForm: TMainForm
       SkinManager = SharpESkinManager1
       AutoSize = False
     end
-    object bshape: TShape
-      Left = 112
-      Top = 24
-      Width = 65
-      Height = 65
-      Brush.Style = bsClear
-    end
-    object cpugraph: TImage32
+    object cpugraphcont: TImage32
       Left = 32
       Top = 32
       Width = 113
