@@ -319,6 +319,7 @@ var
   tempItem : TTrayIcon;
   foundshared : boolean;
 begin
+  if AM = False then exit;
   msg := 'TRAYICON_MODIFIED';
   if (pItem = nil) and ((AM=False) and Shared) then exit;
 
