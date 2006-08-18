@@ -329,7 +329,7 @@ procedure TSharpBarMainForm.WMSchemeUpdate(var msg : TMessage);
 begin
   if FThemeUpdating then exit;
 
-  LockWindow(Handle);
+  if not FStartup then LockWindow(Handle);
   LoadSharpEScheme(SkinManager.Scheme);
   SharpEBar1.UpdateSkin;
   SharpEBar1.Throbber.UpdateSkin;
@@ -370,9 +370,9 @@ end;
 procedure TSharpBarMainForm.WMSharpEThemeUpdate(var msg : TMessage);
 begin
   if FThemeUpdating then exit;
-  LockWindow(Handle);
+  if not FStartup then LockWindow(Handle);
   FThemeUpdating := True;
-  exit;
+  if not FStartup then exit;
 
   LoadSharpEScheme(SkinManager.Scheme);
   SharpEBar1.UpdateSkin;
@@ -1250,6 +1250,7 @@ begin
   if BlendInTimer.Tag <> 255 then
   begin
     FStartup := False;
+    UnlockWindow(Handle);
     SetLayeredWindowAttributes(Handle, RGB(255,0,254), 1, LWA_COLORKEY or LWA_ALPHA);
     SharpEBar1.abackground.Alpha := 1;
     Application.ShowMainForm := True;

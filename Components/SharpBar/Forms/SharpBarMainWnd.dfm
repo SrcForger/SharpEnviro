@@ -4,7 +4,7 @@ object SharpBarMainForm: TSharpBarMainForm
   Width = 434
   Height = 210
   Caption = 'SharpBarMainForm'
-  Color = 15790320
+  Color = 11842740
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -734,7 +734,7 @@ object SharpBarMainForm: TSharpBarMainForm
   end
   object DelayTimer2: TTimer
     Enabled = False
-    Interval = 500
+    Interval = 7500
     OnTimer = DelayTimer2Timer
     Left = 264
     Top = 144
