@@ -775,6 +775,8 @@ begin
   SharpEBar1.onPositionUpdate := OnBarPositionUpdate;
 
   BarHideForm := TBarHideForm.Create(self);
+
+  DelayTimer2.Enabled := True;
 end;
 
 procedure TSharpBarMainForm.AutoPos1Click(Sender: TObject);
@@ -1337,6 +1339,17 @@ end;
 
 procedure TSharpBarMainForm.DelayTimer2Timer(Sender: TObject);
 begin
+  if (FStartup) or (not Visible) then
+  begin
+    FStartup := False;
+    UnlockWindow(Handle);
+    SetLayeredWindowAttributes(Handle, RGB(255,0,254), 1, LWA_COLORKEY or LWA_ALPHA);
+    SharpEBar1.abackground.Alpha := 1;
+    Application.ShowMainForm := True;
+    Show;
+    BlendInTimer.Enabled := True;
+  end;
+
   DelayTimer2.Enabled := False;
 end;
 
