@@ -13,8 +13,7 @@ mkdir _Objects
 mkdir _Services
 mkdir _themes
 cd ..
-mdkir Themes
-cd Themes
+cd _Themes
 mkdir _themedlls
 cd..
 cd..
