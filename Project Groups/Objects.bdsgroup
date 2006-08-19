@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality">Default.Personality</Option>
+      <Option Name="ProjectType"></Option>
+      <Option Name="Version">1.0</Option>
+      <Option Name="GUID">{67CAB7D5-89C1-4C34-B1FA-4B9CD6876066}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    
+    
+    <Projects>
+      <Projects Name="Clock.dll">..\Plugins\Objects\Clock\Clock.bdsproj</Projects>
+      <Projects Name="Drive.dll">..\Plugins\Objects\Drive\Drive.bdsproj</Projects>
+      <Projects Name="Image.dll">..\Plugins\Objects\Image\Image.bdsproj</Projects>
+      <Projects Name="Link.dll">..\Plugins\Objects\Link\Link.bdsproj</Projects>
+      <Projects Name="RecycleBin.dll">..\Plugins\Objects\RecycleBin\RecycleBin.bdsproj</Projects>
+      <Projects Name="Text.dll">..\Plugins\Objects\Text\Text.bdsproj</Projects>
+      <Projects Name="Weather.dll">..\Plugins\Objects\Weather\Weather.bdsproj</Projects>
+      <Projects Name="Targets">Clock.dll Drive.dll Image.dll Link.dll RecycleBin.dll Text.dll Weather.dll</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>
