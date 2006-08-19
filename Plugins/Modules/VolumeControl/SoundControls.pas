@@ -73,7 +73,8 @@ begin
                               @Details, 
                               MIXER_SETCONTROLDETAILSF_VALUE) = MMSYSERR_NOERROR)then 
       Result := true; 
-  end; 
+  end;
+  mixerClose(Mixer);
 end; 
 
 function GetMasterVolume(mxct : integer): Cardinal;
@@ -101,6 +102,7 @@ begin
                               MIXER_GETCONTROLDETAILSF_VALUE) = MMSYSERR_NOERROR)then
       result := UnsignedDetails.dwValue;
   end;
+  mixerClose(Mixer);
 end;
 
 function GetMasterMute(Mixer: hMixerObj; var Control: TMixerControl; mxct : integer): MMResult;
