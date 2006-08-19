@@ -319,12 +319,12 @@ var
   tempItem : TTrayIcon;
   foundshared : boolean;
 begin
-  if AM = False then exit;
   msg := 'TRAYICON_MODIFIED';
   if (pItem = nil) and ((AM=False) and Shared) then exit;
 
   if pItem = nil then
   begin
+    if AM = False then exit;
     pItem := TTrayIcon.Create;
     pItem.data.Wnd := pData.Wnd;
     pItem.data.uID := pdata.uID;
