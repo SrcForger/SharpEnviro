@@ -408,9 +408,14 @@ begin
   if FThemeUpdating then exit;
 
   DebugOutput('WM_UpdateBarWidth',2,1);
-  ModuleManager.BroadCastModuleRefresh;
-  ModuleManager.FixModulePositions;
-  ModuleManager.RefreshMiniThrobbers;
+  if not FStartup then LockWindow(Handle);
+  try
+    ModuleManager.BroadCastModuleRefresh;
+    ModuleManager.FixModulePositions;
+    ModuleManager.RefreshMiniThrobbers;
+  finally
+    if not FStartup then UnLockwindow(Handle);
+  end;
 end;
 
 // ***********************
