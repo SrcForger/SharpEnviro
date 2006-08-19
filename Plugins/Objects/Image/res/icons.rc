@@ -1,0 +1,5 @@
+100 BITMAP "size.bmp"
+101 BITMAP "sizeitem.bmp"
+102 BITMAP "properties.bmp"
+103 BITMAP "open.bmp"
+104 BITMAP "sizeitemchecked.bmp"
