@@ -35,11 +35,16 @@ requires
   JvSystemD9R,
   vclactnband,
   xmlrtl,
-  designide;
+  designide,
+  Jcl;
 
 contains
   uSharpeColorBox in '..\..\Delphi Components\SharpEColorBox\uSharpeColorBox.pas',
   SharpFX in '..\..\Units\SharpFX\SharpFX.pas',
-  SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas';
+  SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas',
+  uSharpEFontSelector in '..\..\Delphi Components\SharpEFontSelector\uSharpEFontSelector.pas',
+  graphicsFX in '..\..\Units\SharpFX\graphicsFX.pas',
+  uSharpEFontSelectorWnd in '..\..\Delphi Components\SharpEFontSelector\uSharpEFontSelectorWnd.pas',
+  uFontList in '..\..\Delphi Components\SharpEFontSelector\uFontList.pas';
 
 end.

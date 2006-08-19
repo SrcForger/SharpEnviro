@@ -149,7 +149,13 @@
 		</VersionInfo>
 		<VersionInfoKeys>
 			<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
-			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
-		</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>  <VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
+      <VersionInfoKeys Name="FileDescription"></VersionInfoKeys>
+      <VersionInfoKeys Name="InternalName"></VersionInfoKeys>
+      <VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys>
+      <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
+      <VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
+      <VersionInfoKeys Name="ProductName"></VersionInfoKeys>
+    </VersionInfoKeys>
 	</Delphi.Personality>
 </BorlandProject>
