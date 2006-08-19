@@ -8,8 +8,7 @@
 			<Option Name="GUID">{B8686083-C3F7-4FB7-BEEF-B8A5D4E26A4B}</Option>
 		</Option>
 	</PersonalityInfo>
-	<Default.Personality>  
-    <Projects>
+	<Default.Personality>  <Projects>
       <Projects Name="Button.dll">..\Plugins\Modules\Button\Button.bdsproj</Projects>
       <Projects Name="Clock.dll">..\Plugins\Modules\Clock\Clock.bdsproj</Projects>
       <Projects Name="iDrop.dll">..\Plugins\Modules\iDrop\iDrop.bdsproj</Projects>
@@ -17,7 +16,9 @@
       <Projects Name="MiniScmd.dll">..\Plugins\Modules\MiniScmd\MiniScmd.bdsproj</Projects>
       <Projects Name="SystemTray.dll">..\Plugins\Modules\SystemTray\SystemTray.bdsproj</Projects>
       <Projects Name="TaskBar.dll">..\Plugins\Modules\Taskbar\TaskBar.bdsproj</Projects>
-      <Projects Name="Targets">Button.dll Clock.dll iDrop.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll</Projects>
+      <Projects Name="VolumeControl.dll">..\Plugins\Modules\VolumeControl\VolumeControl.bdsproj</Projects>
+      <Projects Name="CPUMonitor.dll">..\Plugins\Modules\CPU Monitor\CPUMonitor.bdsproj</Projects>
+      <Projects Name="Targets">Button.dll Clock.dll iDrop.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll VolumeControl.dll CPUMonitor.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
