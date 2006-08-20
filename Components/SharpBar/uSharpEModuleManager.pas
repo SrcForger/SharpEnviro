@@ -494,10 +494,15 @@ begin
   end;
 
   // get left/right offets for plugin area
-  if FBar.ShowThrobber then
-     lo := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.X)
-     else lo := FBar.Throbber.Left;
-  ro := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.Y);
+  try
+    if FBar.ShowThrobber then
+       lo := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.X)
+       else lo := FBar.Throbber.Left;
+    ro := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.Y);
+  except
+    lo := 0;
+    ro := 0;
+  end;
 
   result := maxsize - ro - lo - size;
 end;
@@ -693,10 +698,15 @@ var
   RCount,LCount : integer;
 begin
   setlength(IDArray,0);
-  if FBar.ShowThrobber then
-     lo := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.X)
-     else lo := FBar.Throbber.Left;
-  ro := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.Y);
+  try
+    if FBar.ShowThrobber then
+       lo := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.X)
+       else lo := FBar.Throbber.Left;
+    ro := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.Y);
+  except
+    lo := 0;
+    ro := 0;
+  end;
   ParentControl := GetControlByHandle(FParent);
   if FBar.HorizPos = hpFull then
   begin
