@@ -46,7 +46,8 @@ uses
   SharpEBaseControls,
   SharpESkinManager,
   SHarpEScheme,
-  SharpESkin;
+  SharpESkin,
+  SharpESkinPart;
 
 type
   TSharpEThrobber = class;
@@ -88,7 +89,6 @@ type
     FDisableHideThrobber: Boolean;
     FDisableHideBar     : Boolean;
     FSpecialHideForm    : Boolean;
-
     procedure PC_NoAlpha(F: TColor32; var B: TColor32; M: TColor32);
     procedure FormPaint(Sender: TObject);
     procedure SetBitmapSizes;
@@ -600,6 +600,20 @@ begin
   if Value <> FVertPos then
   begin
     FVertPos := Value;
+    if assigned(FManager) then
+    begin
+      if (FManager.Skin.BarSkin.Valid)
+          and (not FManager.Skin.BarSkin.BarBottom.Empty)
+          and (Value = vpBottom) then
+      begin
+        FManager.Skin.BarSkin.PAXoffset := FManager.Skin.BarSkin.PBXoffset;
+        FManager.Skin.BarSkin.PAYoffset := FManager.Skin.BarSkin.PBYoffset;
+      end else
+      begin
+        FManager.Skin.BarSkin.PAXoffset := FManager.Skin.BarSkin.PTXoffset;
+        FManager.Skin.BarSkin.PAYoffset := FManager.Skin.BarSkin.PTYoffset;
+      end;
+    end;
     UpdatePosition;
   end;
 end;
@@ -668,6 +682,16 @@ begin
 
   if (FManager.Skin.BarSkin.Valid) then
   begin
+    if (not FManager.Skin.BarSkin.BarBottom.Empty) and (FVertPos = vpBottom) then
+    begin
+      FManager.Skin.BarSkin.PAXoffset := FManager.Skin.BarSkin.PBXoffset;
+      FManager.Skin.BarSkin.PAYoffset := FManager.Skin.BarSkin.PBYoffset;
+    end else
+    begin
+      FManager.Skin.BarSkin.PAXoffset := FManager.Skin.BarSkin.PTXoffset;
+      FManager.Skin.BarSkin.PAYoffset := FManager.Skin.BarSkin.PTYoffset;
+    end;
+
     try
       fsmod.X := strtoint(FManager.Skin.BarSkin.FSMod.X);
       fsmod.Y := strtoint(FManager.Skin.BarSkin.FSMod.Y);
@@ -819,8 +843,15 @@ begin
       // Save the non modified values
       if FSkinSeed <> FManager.Skin.BarSkin.Seed then
       begin
-        FThrobberPosX := FManager.Skin.BarSkin.ThDim.X;
-        FThrobberPosY := FManager.Skin.BarSkin.ThDim.Y;
+        if (not FManager.Skin.BarSkin.BarBottom.Empty) and (FVertPos = vpBottom) then
+        begin
+          FThrobberPosX := FManager.Skin.BarSkin.ThBDim.X;
+          FThrobberPosY := FManager.Skin.BarSkin.ThBDim.Y;
+        end else
+        begin
+          FThrobberPosX := FManager.Skin.BarSkin.ThDim.X;
+          FThrobberPosY := FManager.Skin.BarSkin.ThDim.Y;
+        end;
       end;
     end;
     if Assigned(FManager) then
@@ -945,6 +976,7 @@ procedure TSharpEThrobber.DrawManagedSkin(bmp: TBitmap32; Scheme:
   TSharpEScheme);
 var
   r, CompRect: TRect;
+  tempdim : TSkinDim;
 begin
   if not Assigned(FManager) then
   begin
@@ -956,14 +988,13 @@ begin
     exit;
   if (FManager.Skin.BarSkin.Valid) then
   begin
+    if (not FManager.Skin.BarSkin.BarBottom.Empty) and (FPar.VertPos = vpBottom) then
+       tempDim := FManager.Skin.BarSkin.ThBDim
+       else tempDim := FManager.Skin.BarSkin.ThDim;
     case FPar.HorizPos of
-      hpLeft, hpFull: FManager.Skin.BarSkin.ThDim.SetLocation(FPar.ThrobberPosX
-        +
-          '-' + FManager.Skin.BarSkin.FSMod.X, FPar.ThrobberPosY);
-      hpMiddle: FManager.Skin.BarSkin.ThDim.SetLocation(FPar.ThrobberPosX,
-          FPar.ThrobberPosY);
-      hpRight: FManager.Skin.BarSkin.ThDim.SetLocation(FPar.ThrobberPosX,
-          FPar.ThrobberPosY);
+      hpLeft, hpFull: tempDim.SetLocation(FPar.ThrobberPosX + '-' + FManager.Skin.BarSkin.FSMod.X, FPar.ThrobberPosY);
+      hpMiddle: tempDim.SetLocation(FPar.ThrobberPosX, FPar.ThrobberPosY);
+      hpRight: tempDim.SetLocation(FPar.ThrobberPosX, FPar.ThrobberPosY);
     end;
   end;
   CompRect := Rect(0, 0, Parent.Width, Parent.Height);
@@ -971,7 +1002,9 @@ begin
   begin
     if FAutoSize then
     begin
-      r := FManager.Skin.BarSkin.GetThrobberDim(CompRect);
+      if (not FManager.Skin.BarSkin.BarBottom.Empty) and (FPar.VertPos = vpBottom) then
+         r := FManager.Skin.BarSkin.GetThrobberBottomDim(CompRect)
+         else r := FManager.Skin.BarSkin.GetThrobberDim(CompRect);
       if ((r.Right - r.Left) <> width) or ((r.Bottom - r.Top) <> height) then
       begin
         width := r.Right - r.Left;

@@ -338,6 +338,7 @@ type
   private
     FSkinDim: TSkinDim;
     FThDim: TSkinDim;
+    FThBDim: TSkinDim;
     FThNormal: TSkinPart;
     FThDown: TSkinPart;
     FThHover: TSkinPart;
@@ -351,6 +352,10 @@ type
     FEnableVFlip: boolean;
     FSpecialHideForm: boolean;
     FDefaultSkin: boolean;
+    FPTXoffset : TSkinPoint;
+    FPTYoffset : TSkinPoint;
+    FPBXoffset : TSkinPoint;
+    FPBYoffset : TSkinPoint;
   public
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
@@ -363,10 +368,12 @@ type
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
     function GetAutoDim(r: TRect): TRect;
     function GetThrobberDim(r: TRect): TRect;
+    function GetThrobberBottomDim(r: TRect): TRect;
     property ThNormal: TSkinPart read FThNormal write FThNormal;
     property ThDown: TSkinPart read FThDown write FThDown;
     property ThHover: TSkinPart read FThHover write FThHover;
     property ThDim: TSkinDim read FThDim;
+    property ThBDim: TSkinDim read FThBDim;
     property Bar: TSkinPart read FBar write FBar;
     property BarBottom : TSkinPart read FBarBottom write FBarBottom;
     property FSMod: TSkinPoint read FFSMod write FFSMod;
@@ -374,6 +381,10 @@ type
     property Seed: integer read FSeed;
     property PAXoffset: TSkinPoint read FPAXoffset write FPAXoffset;
     property PAYoffset: TSkinPoint read FPAYoffset write FPAYoffset;
+    property PTXoffset: TSkinPoint read FPTXoffset;
+    property PTYoffset: TSkinPoint read FPTYoffset;
+    property PBXoffset: TSkinPoint read FPBXoffset;
+    property PBYoffset: TSkinPoint read FPBYoffset;
     property SkinDim: TSkinDim read FSkinDim;
     property EnableVFlip: boolean read FEnableVFlip write FEnableVFlip;
     property SpecialHideForm : boolean read FSpecialHideForm write FSpecialHideForm;
@@ -1598,6 +1609,7 @@ constructor TSharpEBarSkin.Create(BmpList : TSkinBitmapList);
 begin
   FSkinDim := TSkinDim.Create;
   FThDim := TSkinDim.Create;
+  FThBDim := TSkinDim.Create;
   FThNormal := TSkinPart.Create(BmpList);
   FThDown := TSkinPart.Create(BmpList);
   FThHover := TSkinPart.Create(BmpList);
@@ -1605,8 +1617,12 @@ begin
   FBarBottom := TSkinPart.Create(BmpList);
   FFSMod := TSkinPoint.Create;
   FSBMod := TSKinPoint.Create;
-  FPAXoffset := TSkinPoint.Create;
-  FPAYoffset := TSkinPoint.Create;
+  FPTXoffset := TSkinPoint.Create;
+  FPTYoffset := TSkinPoint.Create;
+  FPBXoffset := TSkinPoint.Create;
+  FPBYoffset := TSkinPoint.Create;
+  FPAXoffset := FPTXoffset;
+  FPAYoffset := FPTYoffset;
   FEnableVFlip := False;
   FSpecialHideForm := False;
   Clear;
@@ -1616,6 +1632,7 @@ destructor TSharpEBarSkin.Destroy;
 begin
   FThNormal.Free;
   FThDown.Free;
+  FThBDim.Free;
   FThHover.Free;
   FBar.Free;
   FBarBottom.Free;
@@ -1623,14 +1640,17 @@ begin
   FThDim.Free;
   FFSMod.Free;
   FSBMod.Free;
-  FPAXoffset.Free;
-  FPAYoffset.Free;
+  FPTXoffset.Free;
+  FPTYoffset.Free;
+  FPBXoffset.Free;
+  FPBYoffset.Free;
 end;
 
 procedure TSharpEBarSkin.SaveToStream(Stream: TStream);
 begin
   FSkinDim.SaveToStream(Stream);
   FThDim.SaveToStream(Stream);
+  FThBDim.SaveToStream(Stream);
   FThNormal.SaveToStream(Stream);
   FThDown.SaveToStream(Stream);
   FThHover.SaveToStream(Stream);
@@ -1638,8 +1658,12 @@ begin
   FBarBottom.SaveToStream(Stream);
   FFSMod.SaveToStream(Stream);
   FSBMod.SaveToStream(Stream);
-  FPAXoffset.SaveToStream(Stream);
-  FPAYoffset.SaveToStream(Stream);
+
+  FPTXoffset.SaveToStream(Stream);
+  FPTYoffset.SaveToStream(Stream);
+  FPBXoffset.SaveToStream(Stream);
+  FPBYoffset.SaveToStream(Stream);
+
   if FEnableVFlip then StringSavetoStream('1', Stream)
      else StringSavetoStream('0', Stream);
 
@@ -1658,6 +1682,7 @@ begin
 
   FSkinDim.LoadFromStream(Stream);
   FThDim.LoadFromStream(Stream);
+  FThBDim.LoadFromStream(Stream);
   FThNormal.LoadFromStream(Stream);
   FThDown.LoadFromStream(Stream);
   FThHover.LoadFromStream(Stream);
@@ -1665,8 +1690,12 @@ begin
   FBarBottom.LoadFromStream(Stream);
   FFSMod.LoadFromStream(Stream);
   FSBMod.LoadFromStream(Stream);
-  FPAXoffset.LoadFromStream(Stream);
-  FPAYoffset.LoadFromStream(Stream);
+
+  FPTXoffset.LoadFromStream(Stream);
+  FPTYoffset.LoadFromStream(Stream);
+  FPBXoffset.LoadFromStream(Stream);
+  FPBYoffset.LoadFromStream(Stream);
+  
   if StringLoadFromStream(Stream) = '1' then FEnableVFlip := True
      else FEnableVFlip := False;
   if StringLoadFromStream(Stream) = '1' then FSpecialHideForm := True
@@ -1686,10 +1715,14 @@ begin
     SkinDim.SetDimension('w', '33');
     FThDim.SetLocation('4', '3');
     FThDim.SetDimension('10', '13');
+    FThBDim.SetLocation('4','4');
+    FThBDim.SetDimension('10', '13');
     FFSMod.SetPoint('0', '0');
     FSBMod.SetPoint('0', '0');
-    FPAXoffset.SetPoint('14', '7');
-    FPAYoffset.SetPoint('3', '4');
+    FPTXoffset.SetPoint('14', '7');
+    FPTYoffset.SetPoint('3', '4');
+    FPBXoffset.SetPoint('14', '7');
+    FPBYoffset.SetPoint('3', '4');
     FBar.SkinDim.SetDimension('w', 'h');
     FBar.BlendColor := '$WorkAreaBack';
     FBar.Blend := True;
@@ -1710,11 +1743,15 @@ begin
   FBarBottom.Clear;
   FFSMod.Clear;
   FSBMod.Clear;
-  FPAXoffset.Clear;
-  FPAYoffset.Clear;
+  FPTXoffset.Clear;
+  FPTYoffset.Clear;
+  FPBXoffset.Clear;
+  FPBYoffset.Clear;
   FSkinDim.SetDimension('w', 'h');
   FThDim.SetDimension('0', '0');
   FThDim.SetLocation('0', '0');
+  FThBDim.SetDimension('0', '0');
+  FThBDim.SetLocation('0', '0');
   FEnableVFlip := False;
   FSpecialHideForm := False;
   NewSeed;
@@ -1741,9 +1778,17 @@ begin
         with ItemNamed['throbber'].Items do
         begin
           if ItemNamed['dimension'] <> nil then
+          begin
             FThDim.SetDimension(Value('dimension', 'w,h'));
+            FThBDim.SetDimension(Value('dimension', 'w,h'));
+          end;
           if ItemNamed['location'] <> nil then
+          begin
             FThDim.SetLocation(Value('location', 'w,h'));
+            FThBDim.SetLocation(Value('location', 'w,h'));
+          end;
+          if ItemNamed['locationbottom'] <> nil then
+            FThBDim.SetLocation(Value('locationbottom', 'w,h'));
           if ItemNamed['normal'] <> nil then
             FThNormal.LoadFromXML(ItemNamed['normal'], path, nil);
           if ItemNamed['down'] <> nil then
@@ -1762,9 +1807,13 @@ begin
       if ItemNamed['sbmod'] <> nil then
         FSBMod.SetPoint(Value('sbmod', '0,0'));
       if ItemNamed['payoffsets'] <> nil then
-        FPAYoffset.SetPoint(Value('payoffsets', '0,0'));
+        FPTYoffset.SetPoint(Value('payoffsets', '0,0'));
       if ItemNamed['paxoffsets'] <> nil then
-        FPAXoffset.SetPoint(Value('paxoffsets', '0,0'));
+        FPTXoffset.SetPoint(Value('paxoffsets', '0,0'));
+      if ItemNamed['payoffsetsbottom'] <> nil then
+        FPBYoffset.SetPoint(Value('payoffsetsbottom', '0,0'));
+      if ItemNamed['paxoffsetsbottom'] <> nil then
+        FPBXoffset.SetPoint(Value('paxoffsetsbottom', '0,0'));
       if ItemNamed['enablevflip'] <> nil then
         FEnablevflip := BoolValue('enablevflip', False);
       if ItemNamed['specialhideform'] <> nil then
@@ -1777,6 +1826,11 @@ end;
 function TSharpEBarSkin.GetAutoDim(r: Trect): TRect;
 begin
   result := FSkinDim.GetRect(r);
+end;
+
+function TSharpEBarSkin.GetThrobberBottomDim(r: TRect): TRect;
+begin
+  result := FThBDim.GetRect(r);
 end;
 
 function TSharpEBarSkin.GetThrobberDim(r: Trect): TRect;
