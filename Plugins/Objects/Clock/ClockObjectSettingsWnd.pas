@@ -81,6 +81,7 @@ type
     ThemeSettings  : TThemeSettings;
     ObjectID : integer;
     StartX : Integer;
+    function GetSettingsFile : String;
     procedure SaveSettings;
     procedure LoadSettings;
   end;
@@ -95,70 +96,96 @@ implementation
 
 {$R *.dfm}
 
-procedure TSettingsWnd.LoadSettings();
+function TSettingsWnd.GetSettingsFile : string;
+var
+  UserDir,Dir : String;
 begin
-     if ObjectID=0 then
-     begin
-          cb_ac.Checked := True;
-          cb_ac.OnClick(cb_ac);
-          cb_alphablend.OnClick(cb_alphablend);
-          exit;
-     end;
-     with ObjectSettings.XML.Root.Items.ItemNamed['ObjectSettings'].Items.ItemNamed[inttostr(ObjectID)].Items do
-     begin
-          cb_ac.Checked := BoolValue('ClockType',False);
-          cb_dc.Checked := not cb_ac.Checked;
-          if cb_ac.Checked then cb_ac.OnClick(cb_ac)
-             else cb_dc.OnClick(cb_dc);
-          if (cb_ac.Checked) and (SkinList.Items.Count>0) then
-          begin
-               if SkinList.Items.IndexOf(Value('AnalogSkin',''))<>-1
-                  then SKinList.ItemIndex := SKinList.Items.IndexOf(Value('AnalogSkin',''));
-          end;
-          FontName  := Value('FontName','Arial');
-          FontSize  := IntValue('FontSize',32);
-          FontColor := IntValue('FontColor',0);
-          cb_AlphaBlend.Checked  := BoolValue('AlphaBlend',false);
-          cb_AlphaBlend.OnClick(cb_AlphaBlend);
-          cb_shadow.Checked      := BoolValue('DrawShadow',false);
-          tb_alpha.Position      := IntValue('AlphaValue',255);
-          btnChooseFont.Font.Name := FontName;
-          btnChooseFont.Caption := FontName;
-          btnChooseFont.Font.Size := FontSize;
-          cb_special.checked := BoolValue('DrawSpecial',True);
-          cb_glass.checked := BoolValue('DrawGlass',True);
-          cb_alphablend.OnClick(cb_alphablend);
-          SkinList.OnClick(SkinList);
-     end;
+  UserDir := SharpApi.GetSharpeUserSettingsPath;
+  Dir := UserDir + 'SharpDesk\Objects\Clock\';
+  result := Dir + inttostr(ObjectID) + '.xml';
+end;
+
+procedure TSettingsWnd.LoadSettings();
+var
+  XML : TJvSimpleXML;
+  sfile : String;
+begin
+  if ObjectID=0 then
+  begin
+    cb_ac.Checked := True;
+    cb_ac.OnClick(cb_ac);
+    cb_alphablend.OnClick(cb_alphablend);
+    exit;
+  end;
+
+  sfile := GetSettingsFile;
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(sFile);
+    with XML.Root.Items do
+    begin
+      cb_ac.Checked := BoolValue('ClockType',False);
+      cb_dc.Checked := not cb_ac.Checked;
+      if cb_ac.Checked then cb_ac.OnClick(cb_ac)
+         else cb_dc.OnClick(cb_dc);
+      if (cb_ac.Checked) and (SkinList.Items.Count>0) then
+      begin
+        if SkinList.Items.IndexOf(Value('AnalogSkin',''))<>-1
+           then SKinList.ItemIndex := SKinList.Items.IndexOf(Value('AnalogSkin',''));
+      end;
+      FontName  := Value('FontName','Arial');
+      FontSize  := IntValue('FontSize',32);
+      FontColor := IntValue('FontColor',0);
+      cb_AlphaBlend.Checked  := BoolValue('AlphaBlend',false);
+      cb_AlphaBlend.OnClick(cb_AlphaBlend);
+      cb_shadow.Checked      := BoolValue('DrawShadow',false);
+      tb_alpha.Position      := IntValue('AlphaValue',255);
+      btnChooseFont.Font.Name := FontName;
+      btnChooseFont.Caption := FontName;
+      btnChooseFont.Font.Size := FontSize;
+      cb_special.checked := BoolValue('DrawSpecial',True);
+      cb_glass.checked := BoolValue('DrawGlass',True);
+      cb_alphablend.OnClick(cb_alphablend);
+      SkinList.OnClick(SkinList);
+   end;
+ finally
+   XML.Free;
+ end;
 end;
 
 
 procedure TSettingsWnd.SaveSettings();
+var
+  XML : TJvSimpleXML;
+  sfile : String;
 begin
-     if ObjectID = 0 then exit;
+  if ObjectID = 0 then exit;
 
-     {Find and Delete Old Settings}
-     try
-       ObjectSettings.XML.Root.Items.ItemNamed['ObjectSettings'].Items.Delete(inttostr(ObjectID));
-     except
-     end;
-
-     ObjectSettings.XML.Root.Items.ItemNamed['ObjectSettings'].Items.Add(inttostr(ObjectID));
-     with ObjectSettings.XML.Root.Items.ItemNamed['ObjectSettings'].Items.ItemNamed[inttostr(ObjectID)].Items do
-     begin
-          Add('DrawSpecial',cb_special.checked).Properties.Add('CopyValue',True);
-          Add('DrawGlass',cb_glass.checked).Properties.Add('CopyValue',True);
-          Add('ClockType',cb_ac.Checked).Properties.Add('CopyValue',True);
-          Add('AlphaBlend',cb_AlphaBlend.Checked).Properties.Add('CopyValue',True);
-          Add('AlphaValue',tb_alpha.Position).Properties.Add('CopyValue',True);
-          Add('DrawShadow',cb_shadow.checked).Properties.Add('CopyValue',True);
-          Add('FontColor',FontColor).Properties.Add('CopyValue',True);
-          Add('FontName',FontName).Properties.Add('CopyValue',True);
-          Add('FontSize',FontSize).Properties.Add('CopyValue',True);
-          if (cb_ac.Checked) and (SkinList.ItemIndex<>-1) then
-             Add('AnalogSkin',SkinList.Items[SkinList.Itemindex]).Properties.Add('CopyValue',True);
+  sfile := GetSettingsFile;
+  ForceDirectories(ExtractFileDir(sfile));
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.Root.Name := 'ClockObjectSettings';
+    XML.Root.Clear;
+    with XML.Root.Items do
+    begin
+      Add('DrawSpecial',cb_special.checked).Properties.Add('CopyValue',True);
+      Add('DrawGlass',cb_glass.checked).Properties.Add('CopyValue',True);
+      Add('ClockType',cb_ac.Checked).Properties.Add('CopyValue',True);
+      Add('AlphaBlend',cb_AlphaBlend.Checked).Properties.Add('CopyValue',True);
+      Add('AlphaValue',tb_alpha.Position).Properties.Add('CopyValue',True);
+      Add('DrawShadow',cb_shadow.checked).Properties.Add('CopyValue',True);
+      Add('FontColor',FontColor).Properties.Add('CopyValue',True);
+      Add('FontName',FontName).Properties.Add('CopyValue',True);
+      Add('FontSize',FontSize).Properties.Add('CopyValue',True);
+      if (cb_ac.Checked) and (SkinList.ItemIndex<>-1) then
+         Add('AnalogSkin',SkinList.Items[SkinList.Itemindex]).Properties.Add('CopyValue',True);
     end;
-    ObjectSettings.SaveObjectSettings;
+    if FileExists(sfile) then Deletefile(sfile);
+    XML.SaveToFile(sfile);
+  finally
+    XML.Free;
+  end;
 end;
 
 procedure TSettingsWnd.FormCreate(Sender: TObject);

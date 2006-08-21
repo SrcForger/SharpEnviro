@@ -324,32 +324,40 @@ var
    sTheme : String;
    alphablend : boolean;
    w,h : integer;
+   sxml : TJvSimpleXML;
+   sfile : String;
 begin
-     FLastHour:=-1;
-     FLastMinute:=-1;
-     if ObjectID=0 then exit;
-     with FObjectSettings.XML.Root.Items.ItemNamed['ObjectSettings'].Items.ItemNamed[inttostr(ObjectID)].Items do
-     begin
-          AlphaBlend := BoolValue('AlphaBlend',False);
-          if AlphaBlend then Bitmap.MasterAlpha := IntValue('AlphaValue',255)
-             else Bitmap.MasterAlpha := 255;
-          FColor := StringToColor(Value('FontColor','0'));
-          FShadow := BoolValue('DrawShadow',false);
-          FSkinType := BoolValue('ClockType',False);
-          FAnalogSkin := Value('AnalogSkin','');
-          FDrawSpecial := BoolValue('DrawSpecial',True);
-          FDrawGlass := BoolValue('DrawGlass',True);
-     end;
-     if Bitmap.MasterAlpha<16 then Bitmap.MasterAlpha:=16;
+  FLastHour:=-1;
+  FLastMinute:=-1;
+  if ObjectID=0 then exit;
 
-     with Bitmap.Font do
-     begin
-          with FObjectSettings.XML.Root.Items.ItemNamed['ObjectSettings'].Items.ItemNamed[inttostr(ObjectID)].Items do
-          begin
-               Name := Value('FontName','Arial');
-               Size := IntValue('FontSize',32);
-          end;
+  sxml := TJvSimpleXML.Create(nil);
+  sfile := SharpApi.GetSharpeUserSettingsPath + 'SharpDesk\Objects\Clock\'+ inttostr(ObjectID) + '.xml';
+
+  try
+    sxml.LoadFromFile(sfile);
+    with sxml.Root.Items do
+    begin
+      AlphaBlend := BoolValue('AlphaBlend',False);
+      if AlphaBlend then Bitmap.MasterAlpha := IntValue('AlphaValue',255)
+         else Bitmap.MasterAlpha := 255;
+      FColor := StringToColor(Value('FontColor','0'));
+      FShadow := BoolValue('DrawShadow',false);
+      FSkinType := BoolValue('ClockType',False);
+      FAnalogSkin := Value('AnalogSkin','');
+      FDrawSpecial := BoolValue('DrawSpecial',True);
+      FDrawGlass := BoolValue('DrawGlass',True);
+
+      if Bitmap.MasterAlpha<16 then Bitmap.MasterAlpha:=16;
+      with Bitmap.Font do
+      begin
+        Name := Value('FontName','Arial');
+        Size := IntValue('FontSize',32);
+      end;
      end;
+  finally
+    sxml.Free;
+  end;
 
      FShadowColor := FDeskSettings.Theme.ShadowColor;
      FShadowAlpha := FDeskSettings.Theme.ShadowAlpha;
