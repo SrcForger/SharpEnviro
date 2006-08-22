@@ -370,7 +370,8 @@ begin
         if pItem.itype = 'image' then
         begin
           pItem.Bitmap := TBitmap32.Create;
-          SharpDeskApi.LoadPng(pItem.Bitmap,IncludeTrailingBackslash(ExtractFileDir(filename))+pItem.data);
+          if not SharpDeskApi.LoadPng(pItem.Bitmap,IncludeTrailingBackslash(ExtractFileDir(filename))+pItem.data) then
+             pItem.Bitmap.Clear(color32(0,0,0,0));
         end;
         FWeatherSkinItems.Add(pItem);
       end;
