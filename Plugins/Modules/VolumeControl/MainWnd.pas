@@ -246,6 +246,7 @@ begin
   i := GetMasterVolume(sMixer);
   if i<>lastvolume then
   begin
+    lastvolume := i;
     pbar.Value := i;
     v := i / pbar.Max;
     if GetMaterMuteStatus(sMixer) then mute.Glyph32.Assign(FDMute)

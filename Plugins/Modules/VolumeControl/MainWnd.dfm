@@ -81,7 +81,7 @@ object MainForm: TMainForm
     Top = 72
   end
   object ClockTimer: TTimer
-    Interval = 100
+    Interval = 250
     OnTimer = ClockTimerTimer
     Left = 224
     Top = 16
