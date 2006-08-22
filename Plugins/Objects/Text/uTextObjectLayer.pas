@@ -152,6 +152,7 @@ begin
     FHLTimer.Tag := 0;
     EndUpdate;
     FParentImage.EndUpdate;
+    Changed;
     exit;
   end;
   if FHLTimer.Tag >= 5 then
@@ -161,6 +162,7 @@ begin
     //DrawBitmap;
     EndUpdate;
     FParentImage.EndUpdate;
+    Changed;
     exit;
   end;
   DrawBitmap;
@@ -174,7 +176,7 @@ begin
   end;
   EndUpdate;
   FParentImage.EndUpdate;
-  Bitmap.Changed;
+  Changed;
 end;
 
 

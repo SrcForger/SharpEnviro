@@ -153,6 +153,7 @@ begin
        else if i<32 then i := 32;
     Bitmap.MasterAlpha := i;
     DrawBitmap;
+    Changed;
     exit;
   end;
   FParentImage.BeginUpdate;
@@ -178,7 +179,7 @@ begin
   if FDeskSettings.Theme.AnimBlend then
      SharpDeskApi.BlendImage(Bitmap,FDeskSettings.Theme.AnimBlendColor,round(FHLTimer.Tag*(FDeskSettings.Theme.AnimBlendValue/FAnimSteps)));
   FParentImage.EndUpdate;
-  Bitmap.Changed;
+  Changed;
 end;
 
 procedure TImageLayer.OnOpenClick(Sender : TObject);

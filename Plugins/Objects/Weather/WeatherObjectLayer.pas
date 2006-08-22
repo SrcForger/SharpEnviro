@@ -209,7 +209,8 @@ begin
     Bitmap.MasterAlpha := i;
     DrawBitmap;
     FParentImage.EndUpdate;
-    EndUpdate;    
+    EndUpdate;
+    Changed;
     exit;
   end;
   if FDeskSettings.Theme.AnimAlpha then
@@ -235,7 +236,7 @@ begin
      SharpDeskApi.BlendImage(Bitmap,FDeskSettings.Theme.AnimBlendColor,round(FHLTimer.Tag*(FDeskSettings.Theme.AnimBlendValue/FAnimSteps)));
   FParentImage.EndUpdate;
   EndUpdate;
-  Bitmap.Changed;
+  Changed;
 end;
 
 procedure TWeatherLayer.RenderWeatherSkin;

@@ -255,6 +255,7 @@ begin
     DrawBitmap;
     EndUpdate;
     FParentImage.EndUpdate;
+    Changed;
     exit;
   end;
 
@@ -283,7 +284,7 @@ begin
      SharpDeskApi.BlendImage(Bitmap,FDeskSettings.Theme.AnimBlendColor,round(FHLTimer.Tag*(FDeskSettings.Theme.AnimBlendValue/FAnimSteps)));
   EndUpdate;
   FParentImage.EndUpdate;
-  Bitmap.Changed;
+  Changed;
 end;
 
 
