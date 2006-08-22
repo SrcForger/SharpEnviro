@@ -38,9 +38,6 @@ uses
   ExtCtrls,
   graphics,
   forms,
-  JvComponent,
-  JvSimpleXml,
-  SharpApi,
   PngSpeedButton,
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettingsWnd},
   uSEListboxPainter in '..\..\..\Common\Units\SEListboxPainter\uSEListboxPainter.pas',
@@ -48,7 +45,9 @@ uses
   uSharpCenterSectionList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterSectionList.pas',
   uEditSchemeWnd in 'uEditSchemeWnd.pas' {EditSchemeForm},
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas';
+  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
+  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
+  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
 
 {$R *.RES}
 
@@ -56,7 +55,7 @@ function Open(const APluginID: Integer; owner: hwnd): hwnd;
 begin
   // Specidfy the Service configuration filename
   frmSettingsWnd := TfrmSettingsWnd.Create(nil);
-  frmSettingsWnd.InitialiseSettings;
+  frmSettingsWnd.InitialiseSettings(APluginID);
 
   frmSettingsWnd.ParentWindow := owner;
   frmSettingsWnd.Left := 0;

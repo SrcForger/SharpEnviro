@@ -46,22 +46,14 @@ uses
   Spin,
   ComCtrls,
   pngimage,
-  JvSimpleXML,
-  JvPageList,
-  JvExControls,
-  JvComponent,
   Mask,
-  JvExMask,
-  JvSpin,
   uEditSchemeWnd,
-  SharpApi, ImgList, uSharpeColorBox, SharpEListBox, PngImageList;
+  SharpApi, ImgList, uSharpeColorBox, SharpEListBox, PngImageList,
+  JvSimpleXML;
 
 type
   TfrmSettingsWnd = class(TForm)
     Label3: TLabel;
-    plConfig: TJvPageList;
-    spGeneral: TJvStandardPage;
-    JvStandardPage2: TJvStandardPage;
     schemelist: TSharpEListBox;
     schemeimages: TPngImageList;
     procedure FormDestroy(Sender: TObject);
@@ -74,7 +66,7 @@ type
     FInitialising: Boolean;
   public
     { Public declarations }
-    procedure InitialiseSettings;
+    procedure InitialiseSettings(ThemeID : integer);
     procedure BuildSchemeList;
     procedure DeleteScheme;
     procedure AddScheme(pEditSchemeForm : TEditSchemeForm);
@@ -307,7 +299,7 @@ begin
   end;
 end;
 
-procedure TfrmSettingsWnd.InitialiseSettings;
+procedure TfrmSettingsWnd.InitialiseSettings(ThemeID : integer);
 begin
   FInitialising := True;
   BuildSchemeList;

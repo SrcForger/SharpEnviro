@@ -29,39 +29,17 @@ object frmSettingsWnd: TfrmSettingsWnd
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object plConfig: TJvPageList
+  object schemelist: TSharpEListBox
     Left = 0
     Top = 0
     Width = 380
     Height = 400
-    ActivePage = spGeneral
-    PropagateEnable = False
+    Style = lbOwnerDrawFixed
     Align = alClient
-    object spGeneral: TJvStandardPage
-      Left = 0
-      Top = 0
-      Width = 380
-      Height = 400
-      object schemelist: TSharpEListBox
-        Left = 0
-        Top = 0
-        Width = 380
-        Height = 400
-        Style = lbOwnerDrawFixed
-        Align = alClient
-        BorderStyle = bsNone
-        ItemHeight = 22
-        TabOrder = 0
-        OnDrawItem = schemelistDrawItem
-      end
-    end
-    object JvStandardPage2: TJvStandardPage
-      Left = 0
-      Top = 0
-      Width = 380
-      Height = 400
-      Caption = 'JvStandardPage2'
-    end
+    BorderStyle = bsNone
+    ItemHeight = 22
+    TabOrder = 0
+    OnDrawItem = schemelistDrawItem
   end
   object schemeimages: TPngImageList
     Height = 20
