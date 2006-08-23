@@ -413,6 +413,7 @@ var
   pItem,tempItem : TTrayIcon;
   s1,s2,s3,s4,s5,s6,s7,s8,s9 : string;
   n : integer;
+  e : boolean;
 begin
   try
     Data := pCopyDataStruct(Msg.LParam);
@@ -482,7 +483,7 @@ begin
       // supposed to have the icon with ID 1 and you are only receiving a DELETE
       // message for the Icon with ID 1 later... so we have to make sure to
       // delete the Icon with ID 0 when the second icon is added...
-      if (IconData.uID = 1) and (Shared) then
+   {   if (IconData.uID = 1) and (Shared) then
       begin
         for n := 0 to FIcons.Count - 1 do
         begin
@@ -494,14 +495,32 @@ begin
             break;
           end;
         end;
-      end;
+      end;  }
+      e := True;
 
-      case TrayCmd of
-        NIM_ADD: ModifyTrayIcon(pItem,IconData,Hidden,Shared,True);
-        NIM_MODIFY: ModifyTrayIcon(pItem,IconData,Hidden,Shared,False);
-        NIM_DELETE: if pItem <> nil then RemoveTrayIcon(pItem);
+      if (IconData.uID = 1) and (Shared) then e := False;
+
+      if e then
+      begin
+        case TrayCmd of
+          NIM_ADD: begin
+                     if hidden then e := False
+                        else if pItem = nil then ModifyTrayIcon(pItem,IconData,False,False,True)
+                        else e := False;
+                   end;
+          NIM_MODIFY: begin
+                        if (hidden) and (pItem<>nil) then RemoveTrayIcon(pItem)
+                           else if (pItem <> nil) then ModifyTrayIcon(pItem,IconData,False,False,True)
+                           else e := False;
+                      end;
+         NIM_DELETE: begin
+                        if (pItem <> nil) then RemoveTrayIcon(pItem)
+                            else e := False;
+                      end;
+        end;
       end;
-      msg.Result := -1;
+      if e then msg.Result := -1
+         else msg.Result := 0;
     end else msg.Result := DefWindowProc(Handle, Msg.Msg, Msg.WParam, Msg.LParam);
   except
     msg.Result := DefWindowProc(Handle, Msg.Msg, Msg.WParam, Msg.LParam);
