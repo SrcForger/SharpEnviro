@@ -109,13 +109,8 @@ begin
   begin
     ModuleID := pID;
     BarWnd   := FBarWnd;
-//    InitHook;
-//    LoadSettings;
-//    EnumerateTasks(TMainForm(FForm));
-//    ReAlignComponents;
     Show;
   end;
-  FForm.Parent := GetControlByHandle(pParent);
 end;
 
 destructor TModule.Destroy;
