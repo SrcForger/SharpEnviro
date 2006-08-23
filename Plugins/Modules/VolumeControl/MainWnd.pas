@@ -67,6 +67,7 @@ type
     sMixer  : integer;
     FDLow,FDMed,FDHigh,FDMute : TBitmap32;
     lastvolume : integer;
+    lastmute : boolean;
     procedure InitDefaultImages;
   public
     ModuleID : integer;
@@ -244,12 +245,13 @@ var
   v : real;
 begin
   i := GetMasterVolume(sMixer);
-  if i<>lastvolume then
+  if (i<>lastvolume) or (GetMaterMuteStatus(sMixer)<>lastmute) then
   begin
     lastvolume := i;
+    lastmute   := GetMaterMuteStatus(sMixer);
     pbar.Value := i;
     v := i / pbar.Max;
-    if GetMaterMuteStatus(sMixer) then mute.Glyph32.Assign(FDMute)
+    if (lastmute) then mute.Glyph32.Assign(FDMute)
        else if v > 0.8 then mute.Glyph32.Assign(FDHigh)
        else if v > 0.3 then mute.Glyph32.Assign(FDMed)
        else mute.Glyph32.Assign(FDLow);
