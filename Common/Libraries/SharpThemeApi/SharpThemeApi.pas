@@ -50,6 +50,11 @@ type
                        color : integer;
                      end;
 
+  TSharpEIcon = record
+                  FileName : String;
+                  Tag      : String;
+                end;
+
 // ThemeAPIControls
 procedure InitializeTheme; external 'SharpThemeApi.dll' name 'InitializeTheme';
 function LoadTheme(pName : PChar) : boolean; overload; external 'SharpThemeApi.dll' name 'LoadTheme';
@@ -75,6 +80,17 @@ function ColorToSchemeCode(pCode : integer) : integer; external 'SharpThemeApi.d
 function GetSkinName : PChar; external 'SharpThemeApi.dll' name 'GetSkinName';
 function GetSkinColorCount : integer; external 'SharpThemeApi.dll' name 'GetSkinColorCount';
 function GetSkinColor(pIndex : integer) : TSharpESkinColor; external 'SharpThemeApi.dll' name 'GetSkinColor';
+
+// Theme IconSet
+function GetIconSetName : PChar; external 'SharpThemeApi.dll' name 'GetIconSetName';
+function GetIconSetAuthor : PChar; external 'SharpThemeApi.dll' name 'GetIconSetAuthor';
+function GetIconSetWebsite : PChar; external 'SharpThemeApi.dll' name 'GetIconSetWebsite';
+function GetIconSetDirectory : PChar; external 'SharpThemeApi.dll' name 'GetIconSetDirectory';
+function GetIconSetIconsCount : integer; external 'SharpThemeApi.dll' name 'GetIconSetIconsCount';
+function GetIconSetIcon(pIndex : integer) : TSharpEIcon; overload; external 'SharpThemeApi.dll' name 'GetIconSetIconByIndex';
+function GetIconSetIcon(pTag : PChar); : TSharpEIcon; overload; external 'SharpThemeApi.dll' name'GetIconSetByTag';
+function IsIconInIconSet(pTag : PChar) : boolean; external 'SharpThemeApi.dll' name 'IsIconInIconSet';
+function ValidateIcon(pFileName : PChar) : PChar; external 'SharpThemeApi.dll' name 'ValidateIcon';
 
 implementation
 
