@@ -389,7 +389,7 @@ var
 begin
   filter.FilterType := XML.Items.IntValue('FilterType',2);
   filter.FilterClass := XML.Items.Value('WndClassName');
-  filter.FilterFile  := XML.Items.Value('FileName');
+  filter.FilterFile  := LowerCase(XML.Items.Value('FileName'));
   filter.FilterStates := [];
   for n := 0 to 10 do
       if XML.Items.BoolValue('SW_'+inttostr(n),False) then filter.FilterStates := filter.FilterStates + [n];

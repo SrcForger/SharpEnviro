@@ -97,7 +97,7 @@ end;
 procedure TTaskItem.UpdateFileInfo;
 begin
   FFilePath := GetProcessNameFromWnd(FHandle);
-  FFileName := ExtractFileName(FFilePath);
+  FFileName := LowerCase(ExtractFileName(FFilePath));
 end;
 
 procedure GetWindowIcon(var Icon: HICON; Handle: HWnd; iSize: integer = 0);
