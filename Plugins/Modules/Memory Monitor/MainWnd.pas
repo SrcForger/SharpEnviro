@@ -52,6 +52,7 @@ type
     SharpESkinManager1: TSharpESkinManager;
     lb_swp: TSharpELabel;
     lb_ram: TSharpELabel;
+    procedure BackgroundDblClick(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
     procedure UpdateTimerTimer(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -380,6 +381,11 @@ begin
   SettingsForm.Free;
   SettingsForm := nil;
   SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+end;
+
+procedure TMainForm.BackgroundDblClick(Sender: TObject);
+begin
+  SharpApi.SharpExecute('TaskMgr.exe');
 end;
 
 end.

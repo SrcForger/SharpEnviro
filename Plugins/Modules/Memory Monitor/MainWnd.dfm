@@ -18,7 +18,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 189
-    Height = 164
+    Height = 162
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -26,6 +26,7 @@ object MainForm: TMainForm
     Scale = 1.000000000000000000
     ScaleMode = smNormal
     TabOrder = 0
+    OnDblClick = BackgroundDblClick
     object rambar: TSharpEProgressBar
       Left = 40
       Top = 0
@@ -60,6 +61,7 @@ object MainForm: TMainForm
       AutoSize = False
       Caption = 'lb_rambar'
       Visible = False
+      OnDblClick = BackgroundDblClick
       SkinManager = SharpESkinManager1
       LabelStyle = lsSmall
     end
@@ -71,6 +73,7 @@ object MainForm: TMainForm
       AutoSize = False
       Caption = 'lb_swpbar'
       Visible = False
+      OnDblClick = BackgroundDblClick
       SkinManager = SharpESkinManager1
       LabelStyle = lsSmall
     end
@@ -82,6 +85,7 @@ object MainForm: TMainForm
       AutoSize = False
       Caption = 'swp'
       Visible = False
+      OnDblClick = BackgroundDblClick
       SkinManager = SharpESkinManager1
       LabelStyle = lsSmall
     end
@@ -93,6 +97,7 @@ object MainForm: TMainForm
       AutoSize = False
       Caption = 'ram'
       Visible = False
+      OnDblClick = BackgroundDblClick
       SkinManager = SharpESkinManager1
       LabelStyle = lsSmall
     end
