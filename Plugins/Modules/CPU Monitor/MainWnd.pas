@@ -49,6 +49,7 @@ type
     SharpESkinManager1: TSharpESkinManager;
     pbar: TSharpEProgressBar;
     cpugraphcont: TImage32;
+    procedure cpugraphcontDblClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
@@ -324,6 +325,11 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   bgbmp.Free;
   cpugraph.Free;
+end;
+
+procedure TMainForm.cpugraphcontDblClick(Sender: TObject);
+begin
+  SharpApi.SharpExecute('TaskMgr.exe');
 end;
 
 end.

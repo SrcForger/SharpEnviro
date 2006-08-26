@@ -19,7 +19,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 285
-    Height = 166
+    Height = 164
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -47,6 +47,7 @@ object MainForm: TMainForm
       Scale = 1.000000000000000000
       ScaleMode = smNormal
       TabOrder = 0
+      OnDblClick = cpugraphcontDblClick
     end
   end
   object MenuPopup: TPopupMenu
