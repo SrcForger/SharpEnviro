@@ -47,6 +47,7 @@ type
     SharpESkinManager1: TSharpESkinManager;
     lb_clock: TSharpELabel;
     ClockTimer: TTimer;
+    procedure lb_clockDblClick(Sender: TObject);
     procedure ClockTimerTimer(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
   protected
@@ -162,6 +163,11 @@ begin
   end;
   DateTimeToString(s,sFormat,now());
   lb_clock.Caption := s;
+end;
+
+procedure TMainForm.lb_clockDblClick(Sender: TObject);
+begin
+  SharpApi.SharpExecute('timedate.cpl');
 end;
 
 end.
