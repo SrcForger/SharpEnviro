@@ -261,7 +261,7 @@ begin
   btn_stop.Width    := btn_stop.Height;
   btn_prev.Width    := btn_prev.Height;
   btn_next.Width    := btn_next.Height;
-  btn_pselect.Width := btn_pselect.Width;
+  btn_pselect.Width := btn_pselect.Height;
 
   btn_play.Left := 2;
   btn_pause.Left := btn_play.Left + btn_play.Width + 1;
