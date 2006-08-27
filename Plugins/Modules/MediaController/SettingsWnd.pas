@@ -52,6 +52,7 @@ type
     Label2: TLabel;
     cb_pselect: TCheckBox;
     cb_qcd: TRadioButton;
+    cb_wmp: TRadioButton;
     procedure cb_foobarClick(Sender: TObject);
     procedure cb_winampClick(Sender: TObject);
     procedure btn_openfooClick(Sender: TObject);
@@ -111,7 +112,11 @@ begin
   end else
   if cb_qcd.checked then
   begin
-    foocontrols := True;
+    foocontrols := False;
+  end else
+  if cb_wmp.Checked then
+  begin
+    foocontrols := False;
   end;
 
   lb_foobarpath.Enabled := foocontrols;

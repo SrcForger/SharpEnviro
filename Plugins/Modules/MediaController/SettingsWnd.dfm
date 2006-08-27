@@ -3,7 +3,7 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Media Controler Module Settings'
-  ClientHeight = 247
+  ClientHeight = 281
   ClientWidth = 307
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -39,7 +39,7 @@ object SettingsForm: TSettingsForm
   end
   object Button1: TButton
     Left = 144
-    Top = 216
+    Top = 248
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -48,7 +48,7 @@ object SettingsForm: TSettingsForm
   end
   object Button2: TButton
     Left = 224
-    Top = 216
+    Top = 248
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -61,9 +61,7 @@ object SettingsForm: TSettingsForm
     Width = 113
     Height = 17
     Caption = 'Winamp'
-    Checked = True
     TabOrder = 2
-    TabStop = True
     OnClick = cb_winampClick
   end
   object cb_foobar: TRadioButton
@@ -72,7 +70,9 @@ object SettingsForm: TSettingsForm
     Width = 169
     Height = 17
     Caption = 'Foobar2000'
+    Checked = True
     TabOrder = 3
+    TabStop = True
     OnClick = cb_foobarClick
   end
   object edit_foopath: TEdit
@@ -119,6 +119,15 @@ object SettingsForm: TSettingsForm
     Caption = 'Quintessential Player (QCD)'
     TabOrder = 8
     OnClick = cb_foobarClick
+  end
+  object cb_wmp: TRadioButton
+    Left = 16
+    Top = 216
+    Width = 169
+    Height = 17
+    Caption = 'Windows Media Player'
+    TabOrder = 9
+    OnClick = cb_winampClick
   end
   object OpenFile: TOpenDialog
     FileName = '*.*'

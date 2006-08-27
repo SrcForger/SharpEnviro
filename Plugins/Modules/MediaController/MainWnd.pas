@@ -41,7 +41,7 @@ uses
 
 
 type
-  TMediaPlayerType = (mptFoobar,mptWinamp,mptMPC,mptQCD);
+  TMediaPlayerType = (mptFoobar,mptWinamp,mptMPC,mptQCD,mptWMP);
 
   TMainForm = class(TForm)
     Background: TImage32;
@@ -60,6 +60,8 @@ type
     MediaPlayerClassic1: TMenuItem;
     ImageList1: TImageList;
     QCD1: TMenuItem;
+    WindowsMediaPlayer1: TMenuItem;
+    procedure WindowsMediaPlayer1Click(Sender: TObject);
     procedure QCD1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -82,6 +84,7 @@ type
     FIconWinAmp : TBitmap32;
     FIconMPC    : TBitmap32;
     FIconQCD    : TBitmap32;
+    FIconWMP    : TBitmap32;
   public
     ModuleID : integer;
     BarWnd : hWnd;
@@ -121,6 +124,15 @@ const
   QCD_COMMAND_STOP	 = 40014;
   QCD_COMMAND_PAUSE	 = 40015;
   QCD_COMMAND_PLAY   = 40016;
+
+    {Windows Media Player}
+  WMP_VOLUME_MUTE         = $80000;
+  WMP_VOLUME_DOWN         = $90000;
+  WMP_VOLUME_UP           = $a0000;
+  WMP_MEDIA_NEXTTRACK     = $B0000;
+  WMP_MEDIA_PREVIOUSTRACK = $C0000;
+  WMP_MEDIA_STOP          = $D0000;
+  WMP_MEDIA_PLAY_PAUSE    = $E0000;
 
 implementation
 
@@ -175,6 +187,16 @@ begin
     end;
   except
   end;
+
+  try
+    ResStream := TResourceStream.Create(HInstance, 'wmp', RT_RCDATA);
+    try
+      LoadBitmap32FromPng(FIconWMP,ResStream,b);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
 end;
 
 procedure TMainForm.UpdatePSelectIcon;
@@ -184,7 +206,15 @@ begin
     mptMPC    : btn_pselect.Glyph32.Assign(FIconMPC);
     mptWinAmp : btn_pselect.Glyph32.Assign(FIconWinAmp);
     mptQCD    : btn_pselect.Glyph32.Assign(FIconQCD);
+    mptWMP    : btn_pselect.Glyph32.Assign(FIconWMP);
   end;
+end;
+
+function GetWMPHandle : hwnd;
+begin
+  result := FindWindow('WMPlayerApp', nil);
+  result := FindWindowEx(result, 0, 'WMPAppHost', 'WMPAppHost');
+  if result = 0 then result := Findwindow(nil,'Windows Media Player');
 end;
 
 function GetQCDHandle : hwnd;
@@ -217,6 +247,7 @@ begin
      mptWinAmp : Add('Player','mptWinAmp');
      mptMPC    : Add('Player','mptMPC');
      mptQCD    : Add('Player','mptQCD');
+     mptWMP    : Add('Player','mptWMP');
    end;
    Add('PlayerFile',sPlayerFile);
    Add('QuickPlayerSelect',sPSelect);
@@ -241,6 +272,7 @@ begin
     if         s = 'mptwinamp' then sPlayer := mptWinAmp
        else if s = 'mptmpc' then sPlayer := mptMPC
        else if s = 'mptqcd' then sPlayer := mptQCD
+       else if s = 'mptwmp' then sPlayer := mptWMP
        else sPlayer := mptFoobar;
     sPlayerFile := Value('PlayerFile','-1');
     sPSelect    := BoolValue('QuickPlayerSelect',True);
@@ -296,6 +328,7 @@ begin
       mptWinAmp: SettingsForm.cb_winamp.Checked := True;
       mptMPC   : SettingsForm.cb_mpc.Checked    := True;
       mptQCD   : SettingsForm.cb_qcd.Checked    := True;
+      mptWMP   : SettingsForm.cb_wmp.Checked    := True;
     end;
     SettingsForm.edit_foopath.Text := sPlayerFile;
     SettingsForm.cb_pselect.Checked := sPSelect;
@@ -305,6 +338,7 @@ begin
       if SettingsForm.cb_winamp.Checked then sPlayer := mptWinAmp
          else if SettingsForm.cb_mpc.Checked then sPlayer := mptMPC
          else if SettingsForm.cb_qcd.Checked then sPlayer := mptQCD
+         else if SettingsForm.cb_wmp.Checked then sPlayer := mptWMP
          else sPlayer := mptFooBar;
       sPlayerFile := SettingsForm.edit_foopath.Text;
       sPSelect := SettingsForm.cb_pselect.Checked;
@@ -343,6 +377,10 @@ begin
                  wnd := GetQCDHandle;
                  if wnd <> 0 then SendMessage(wnd,WM_COMMAND,QCD_COMMAND_PLAY,0);
                end;
+    mptWMP   : begin
+                 wnd := GetWMPHandle;
+                 if wnd <> 0 then SendMessage(wnd,WM_APPCOMMAND,0,WMP_MEDIA_PLAY_PAUSE);
+               end;
   end;
 end;
 
@@ -368,6 +406,10 @@ begin
                  wnd := GetQCDHandle;
                  if wnd <> 0 then SendMessage(wnd,WM_COMMAND,QCD_COMMAND_PAUSE,0);
                end;
+    mptWMP   : begin
+                 wnd := GetWMPHandle;
+                 if wnd <> 0 then SendMessage(wnd,WM_APPCOMMAND,0,WMP_MEDIA_PLAY_PAUSE);
+               end;
   end;
 end;
 
@@ -392,6 +434,10 @@ begin
     mptQCD   : begin
                  wnd := GetQCDHandle;
                  if wnd <> 0 then SendMessage(wnd,WM_COMMAND,QCD_COMMAND_STOP,0);
+               end;
+    mptWMP   : begin
+                 wnd := GetWMPHandle;
+                 if wnd <> 0 then SendMessage(wnd,WM_APPCOMMAND,0,WMP_MEDIA_STOP);
                end;
   end;
 end;
@@ -423,6 +469,15 @@ begin
                  wnd := GetQCDHandle;
                  if wnd <> 0 then SendMessage(wnd,WM_COMMAND,QCD_COMMAND_TRKBWD,0);
                end;
+    mptWMP   : begin
+                 wnd := GetWMPHandle;
+                 if wnd <> 0 then
+                 begin
+                   SendMessage(wnd,WM_APPCOMMAND,0,WMP_MEDIA_STOP);
+                   SendMessage(wnd,WM_APPCOMMAND,0,WMP_MEDIA_PREVIOUSTRACK);
+                   SendMessage(wnd,WM_APPCOMMAND,0,WMP_MEDIA_PLAY_PAUSE);
+                 end;
+               end;
   end;
 end;
 
@@ -447,6 +502,10 @@ begin
     mptQCD   : begin
                  wnd := GetQCDHandle;
                  if wnd <> 0 then SendMessage(wnd,WM_COMMAND,QCD_COMMAND_TRKFWD,0);
+               end;
+    mptWMP   : begin
+                 wnd := GetWMPHandle;
+                 if wnd <> 0 then SendMessage(wnd,WM_APPCOMMAND,0,WMP_MEDIA_NEXTTRACK);
                end;
   end;
 end;
@@ -486,6 +545,7 @@ begin
   FIconWinAmp := TBitmap32.Create;
   FIconMPC    := TBitmap32.Create;
   FIconQCD    := TBitmap32.Create;
+  FIconWMP    := TBitmap32.Create;
 
   InitDefaultImages;
 end;
@@ -496,11 +556,19 @@ begin
  FIconWinAmp.Free;
  FIconMPC.Free;
  FIconQCD.Free;
+ FIconWMP.Free;
 end;
 
 procedure TMainForm.QCD1Click(Sender: TObject);
 begin
   sPlayer := mptQCD;
+  SaveSettings;
+  UpdatePSelectIcon;
+end;
+
+procedure TMainForm.WindowsMediaPlayer1Click(Sender: TObject);
+begin
+  sPlayer := mptWMP;
   SaveSettings;
   UpdatePSelectIcon;
 end;
