@@ -3,7 +3,7 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Media Controler Module Settings'
-  ClientHeight = 281
+  ClientHeight = 305
   ClientWidth = 307
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -39,7 +39,7 @@ object SettingsForm: TSettingsForm
   end
   object Button1: TButton
     Left = 144
-    Top = 248
+    Top = 272
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -48,7 +48,7 @@ object SettingsForm: TSettingsForm
   end
   object Button2: TButton
     Left = 224
-    Top = 248
+    Top = 272
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -57,7 +57,7 @@ object SettingsForm: TSettingsForm
   end
   object cb_winamp: TRadioButton
     Left = 16
-    Top = 192
+    Top = 216
     Width = 113
     Height = 17
     Caption = 'Winamp'
@@ -122,11 +122,20 @@ object SettingsForm: TSettingsForm
   end
   object cb_wmp: TRadioButton
     Left = 16
-    Top = 216
+    Top = 240
     Width = 169
     Height = 17
     Caption = 'Windows Media Player'
     TabOrder = 9
+    OnClick = cb_winampClick
+  end
+  object cb_vlc: TRadioButton
+    Left = 16
+    Top = 192
+    Width = 113
+    Height = 17
+    Caption = 'VLC Media Player'
+    TabOrder = 10
     OnClick = cb_winampClick
   end
   object OpenFile: TOpenDialog

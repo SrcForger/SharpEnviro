@@ -53,6 +53,7 @@ type
     cb_pselect: TCheckBox;
     cb_qcd: TRadioButton;
     cb_wmp: TRadioButton;
+    cb_vlc: TRadioButton;
     procedure cb_foobarClick(Sender: TObject);
     procedure cb_winampClick(Sender: TObject);
     procedure btn_openfooClick(Sender: TObject);
@@ -115,6 +116,10 @@ begin
     foocontrols := False;
   end else
   if cb_wmp.Checked then
+  begin
+    foocontrols := False;
+  end else
+  if cb_vlc.Checked then
   begin
     foocontrols := False;
   end;
