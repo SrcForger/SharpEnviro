@@ -102,11 +102,12 @@ type
     IList: TObjectList;
     ModuleID : integer;
     BarWnd : hWnd;
+    procedure SetSize(NewWidth : integer);
     procedure InitHook;
     procedure CalculateItemWidth(ItemCount : integer);
     procedure AlignTaskComponents;
     procedure LoadSettings;
-    procedure ReAlignComponents;
+    procedure ReAlignComponents(BroadCast : boolean);
     procedure WMCommand(var msg: TMessage); message WM_COMMAND;
     procedure WMShellHook(var msg : TMessage); message WM_SHELLHOOK;
     procedure NewTask(pItem : TTaskItem; Index : integer);
@@ -254,7 +255,7 @@ procedure TMainForm.AlignSpecialButtons;
 var
   n : integer;
 begin
-  n := 0;
+  n := 1;
   if sMinAllButton then
   begin
     ses_minall.visible := True;
@@ -498,7 +499,6 @@ begin
   GetSpacing;
   if TM.SortTasks then TM.DoSortTasks;
   CompleteRefresh;
-  ReAlignComponents;
 
   FLocked := False;
 end;
@@ -513,62 +513,41 @@ begin
   end;
 end;
 
-procedure TMainForm.ReAlignComponents;
+procedure TMainForm.SetSize(NewWidth : integer);
+var
+  i : integer;
+begin
+  Width := NewWidth;
+  CalculateItemWidth(IList.Count);
+  i := FSpecialButtonWidth + IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
+  if i+1 < NewWidth then Width := i+1;
+  AlignTaskComponents;
+end;
+
+procedure TMainForm.ReAlignComponents(BroadCast : boolean);
 var
   FreeBarSpace : integer;
   newWidth,oWidth : integer;
   oBmp : TBitmap32;
 begin
+  GetSpacing;
   if IList.Count <=0 then
   begin
-    Width := 1;
-    if not usend then
-    begin
-      usend := True;
-      SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
-      usend := False;
-    end;
+    Tag := 1;
+    Hint := '1';
+    if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
     exit;
   end;
 
-//  LockWindow(BarWnd);
-  SendMessage(BarWnd,WM_LOCKBARWINDOW,0,0);
-  FLocked := True;
-  try
-    GetSpacing;
-    CalculateItemWidth(IList.Count);
-    NewWidth := FSpecialButtonWidth + IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
-    FreeBarSpace := GetFreeBarSpace(BarWnd) + self.Width;
-    if NewWidth > FreeBarSpace then
-    begin
-      CalculateItemWidth(IList.Count);
-      NewWidth := FSpecialButtonWidth + IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
-    end;
-    if Width <> NewWidth then
-    begin
-      if NewWidth < 0 then NewWidth := 1;
+  NewWidth := FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing;
 
-      Background.Bitmap.BeginUpdate;
-      oBmp := TBitmap32.Create;
-      try
-        oBmp.Assign(Background.Bitmap);
-        Background.Bitmap.SetSize(NewWidth,Background.Height);
-        Background.Bitmap.Clear(color32(0,0,0,0));
-        oBmp.DrawTo(Background.Bitmap,0,0);
-        oBmp.DrawTo(Background.Bitmap,oBmp.Width,0);
-      finally
-        Background.Bitmap.EndUpdate;
-        oBmp.Free;
-      end;
-      self.Width := NewWidth;
-      AlignTaskComponents;
-      SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
-    end;
-  finally
-    FLocked := False;
-    SendMessage(BarWnd,WM_UNLOCKBARWINDOW,0,0);
-  //  UnLockWindow(BarWnd);
-  end;
+  Tag := FSpecialButtonWidth + IList.Count * 16 + (IList.Count - 1) * sSpacing;
+  Hint := InttoStr(NewWidth);
+  if Width <> NewWidth then
+  begin
+    AlignTaskComponents;
+    if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  end else AlignTaskComponents;
 end;
 
 
@@ -665,11 +644,12 @@ begin
       end;
       uSharpBarAPI.SaveXMLFile(BarWnd);
       LoadSettings;
+      AlignTaskComponents;
+      RealignComponents(True);
     end;
   finally
     SettingsForm.Free;
     SettingsForm := nil;
-    SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
   end;
 end;
 
@@ -680,7 +660,7 @@ var
 begin
   for n := 0 to IList.Count -1 do
       TSharpETaskItem(IList.Items[n]).State := sState;
-  FreeSpace := GetFreeBarSpace(BarWnd) + self.Width - FSpecialButtonWidth;
+  FreeSpace := Width - FSpecialButtonWidth;
   if ItemCount = 0 then sCurrentWidth := 16
      else sCurrentWidth := Max(Min((FreeSpace - ItemCount*sSpacing) div ItemCount,sMaxWidth),16);
 end;
@@ -856,7 +836,7 @@ begin
   pTaskItem.OnClick := SharpETaskItemClick;
   pTaskItem.OnMouseUp := OnTaskItemMouseUp;
   pTaskItem.Show;
-  ReAlignComponents;
+  if not FLocked then ReAlignComponents(True);
 end;
 
 procedure TMainForm.TaskExchange(pItem1,pItem2 : TTaskItem; n,i : integer);
@@ -885,7 +865,7 @@ begin
       if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
          IList.Delete(n);
   CalculateItemWidth(IList.Count);
-  ReAlignComponents;
+  if not FLocked then ReAlignComponents(True);
 end;
 
 procedure TMainForm.UpdateTask(pItem : TTaskItem; Index : integer);
@@ -955,18 +935,11 @@ begin
    M_ACTIVATETASK  : TM.ActivateTask(msg.LParam);
    M_GETMINRECT    : TM.UpdateTask(msg.LParam);
   end;
-
-//    :
-// M_TASKFLASHING
-// end;
 end;
 
 procedure TMainForm.InitHook;
 begin
   PostMessage(BarWnd,WM_REGISTERSHELLHOOK,ModuleID,0);
-  CalculateItemWidth(IList.Count);
-  AlignTaskComponents;
-  ReAlignComponents;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -1016,7 +989,10 @@ begin
   InitHook;
   LoadSettings;
 
+  FLocked := True;
   EnumWindows(@EnumWindowsProc, 0);
+  FLocked := False;
+  RealignComponents(False);
 end;
 
 
@@ -1055,14 +1031,20 @@ var
   pTaskItem : TSharpETaskItem;
   pItem : TTaskItem;
 begin
-  for n := IList.Count -1 downto 0 do
-  begin
-    pTaskItem := TSharpETaskItem(IList.Items[n]);
-    pTaskItem.Down := False;
-    pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Tag));
-    if pItem <> nil then
-       pItem.Minimize;
+  FLocked := True;
+  try
+    for n := IList.Count -1 downto 0 do
+    begin
+      pTaskItem := TSharpETaskItem(IList.Items[n]);
+      pTaskItem.Down := False;
+      pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Tag));
+      if pItem <> nil then
+         pItem.Minimize;
+    end;
+  finally
+    FLocked := False;
   end;
+  RealignComponents(True);
 end;
 
 procedure TMainForm.ses_maxallClick(Sender: TObject);
@@ -1071,13 +1053,20 @@ var
   pTaskItem : TSharpETaskItem;
   pItem : TTaskItem;
 begin
-  for n := IList.Count -1 downto 0 do
-  begin
-    pTaskItem := TSharpETaskItem(IList.Items[n]);
-    pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Tag));
-    if pItem <> nil then
-       pItem.Restore;
+  FLocked := True;
+
+  try
+    for n := IList.Count -1 downto 0 do
+    begin
+      pTaskItem := TSharpETaskItem(IList.Items[n]);
+      pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Tag));
+      if pItem <> nil then
+         pItem.Restore;
+    end;
+  finally
+    FLocked := False;
   end;
+  RealignComponents(True);
 end;
 
 end.

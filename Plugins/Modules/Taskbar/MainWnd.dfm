@@ -29,9 +29,9 @@ object MainForm: TMainForm
     TabOrder = 0
     object ses_minall: TSharpEButton
       Left = 0
-      Top = 1
+      Top = 0
       Width = 24
-      Height = 17
+      Height = 18
       SkinManager = SystemSkinManager
       AutoSize = True
       OnClick = ses_minallClick
@@ -80,9 +80,9 @@ object MainForm: TMainForm
     end
     object ses_maxall: TSharpEButton
       Left = 24
-      Top = 1
+      Top = 0
       Width = 24
-      Height = 17
+      Height = 18
       SkinManager = SystemSkinManager
       AutoSize = True
       OnClick = ses_maxallClick
