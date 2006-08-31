@@ -3,7 +3,7 @@ object MainForm: TMainForm
   Top = 0
   Width = 293
   Height = 195
-  Caption = 'Sharp Menu'
+  Caption = 'Media Controller'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,7 +19,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 285
-    Height = 164
+    Height = 166
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -29,9 +29,9 @@ object MainForm: TMainForm
     TabOrder = 0
     object btn_play: TSharpEButton
       Left = 2
-      Top = 1
+      Top = 0
       Width = 16
-      Height = 17
+      Height = 18
       SkinManager = SharpESkinManager1
       AutoSize = True
       OnClick = btn_playClick
@@ -108,9 +108,9 @@ object MainForm: TMainForm
     end
     object btn_stop: TSharpEButton
       Left = 34
-      Top = 1
+      Top = 0
       Width = 16
-      Height = 17
+      Height = 18
       SkinManager = SharpESkinManager1
       AutoSize = True
       OnClick = btn_stopClick
@@ -187,9 +187,9 @@ object MainForm: TMainForm
     end
     object btn_pause: TSharpEButton
       Left = 18
-      Top = 1
+      Top = 0
       Width = 16
-      Height = 17
+      Height = 18
       SkinManager = SharpESkinManager1
       AutoSize = True
       OnClick = btn_pauseClick
@@ -266,9 +266,9 @@ object MainForm: TMainForm
     end
     object btn_prev: TSharpEButton
       Left = 50
-      Top = 1
+      Top = 0
       Width = 16
-      Height = 17
+      Height = 18
       SkinManager = SharpESkinManager1
       AutoSize = True
       OnClick = btn_prevClick
@@ -345,9 +345,9 @@ object MainForm: TMainForm
     end
     object btn_next: TSharpEButton
       Left = 66
-      Top = 1
+      Top = 0
       Width = 16
-      Height = 17
+      Height = 18
       SkinManager = SharpESkinManager1
       AutoSize = True
       OnClick = btn_nextClick
@@ -424,9 +424,9 @@ object MainForm: TMainForm
     end
     object btn_pselect: TSharpEButton
       Left = 82
-      Top = 1
+      Top = 0
       Width = 16
-      Height = 17
+      Height = 18
       SkinManager = SharpESkinManager1
       AutoSize = True
       OnClick = btn_pselectClick
@@ -555,7 +555,7 @@ object MainForm: TMainForm
     Left = 112
     Top = 40
     Bitmap = {
-      494C010106000900040010001000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010106000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -955,6 +955,7 @@ object MainForm: TMainForm
       800380038C7FE00F80038003803FC00780038003C01FC00380038003C00F8003
       80038003C0078001800380038003800180038003000180018003800380038001
       8003C003C007800180038FFFE00780038003C3FFF007C0038003F077F803E007
-      8003FE0FFC77F00F8003FFC7FEFFFC7F}
+      8003FE0FFC77F00F8003FFC7FEFFFC7F00000000000000000000000000000000
+      000000000000}
   end
 end

@@ -93,7 +93,8 @@ type
     BarWnd : hWnd;
     procedure LoadSettings;
     procedure SaveSettings;
-    procedure ReAlignComponents;
+    procedure SetSize(NewWidth : integer);
+    procedure ReAlignComponents(BroadCast : boolean);
     procedure UpdatePSelectIcon;
     procedure InitDefaultImages;
   end;
@@ -144,7 +145,7 @@ const
   VLC_NEXT       = 13014;
 
 
-  implementation
+implementation
 
 
 uses SettingsWnd,
@@ -306,9 +307,12 @@ begin
     sPlayerFile := Value('PlayerFile','-1');
     sPSelect    := BoolValue('QuickPlayerSelect',True);
   end;
-
-  ReAlignComponents;
   UpdatePSelectIcon;
+end;
+
+procedure TMainForm.SetSize(NewWidth : integer);
+begin
+  Width := NewWidth;
 end;
 
 procedure TMainForm.ReAlignComponents;
@@ -338,11 +342,11 @@ begin
     btn_pselect.Visible := True;
   end else btn_pselect.Visible := False;
 
-  FreeBarSpace := GetFreeBarSpace(BarWnd) + self.Width;
-  if FreeBarSpace <0 then FreeBarSpace := 1;
   newWidth := btn_next.Left + btn_next.Width + i + 2;
-  if newWidth > FreeBarSpace then Width := FreeBarSpace
-     else Width := newWidth;
+  Tag := NewWidth;
+  Hint := inttostr(NewWidth);
+  if newWidth <> Width then
+     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
 end;
 
 
@@ -376,13 +380,11 @@ begin
 
       SaveSettings;
     end;
-    ReAlignComponents;
+    ReAlignComponents(True);
     UpdatePSelectIcon;
-
   finally
     SettingsForm.Free;
     SettingsForm := nil;
-    SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
   end;
 end;
 
