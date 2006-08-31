@@ -58,7 +58,8 @@ type
     ModuleID : integer;
     BarWnd   : hWnd;
     procedure LoadSettings;
-    procedure ReAlignComponents;
+    procedure SetSize(NewWidth : integer);
+    procedure ReAlignComponents(BroadCast : boolean);
   end;
 
 
@@ -88,23 +89,26 @@ begin
       else sStyle := lsMedium
     end;
   end;
-
-  ReAlignComponents;
 end;
 
-procedure TMainForm.ReAlignComponents;
+procedure TMainForm.SetSize(NewWidth : integer);
+begin
+  Width := NewWidth;
+end;
+
+procedure TMainForm.ReAlignComponents(BroadCast : boolean);
 var
-  FreeBarSpace : integer;
   newWidth : integer;
 begin
   self.Caption := sFormat;
   ClockTimer.OnTimer(ClockTimer);
 
-  FreeBarSpace := GetFreeBarSpace(BarWnd) + self.Width;
-  if FreeBarSpace <0 then FreeBarSpace := 1;
   newWidth := lb_clock.Canvas.TextWidth(sFormat)+4;
-  if newWidth > FreeBarSpace then Width := FreeBarSpace
-     else Width := newWidth;
+  Tag := newWidth;
+  Hint := inttostr(NewWidth);
+  if newWidth <> width then
+     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+
 end;
 
 
@@ -143,12 +147,11 @@ begin
       uSharpBarAPI.SaveXMLFile(BarWnd);
       ClockTimer.OnTimer(ClockTimer);
     end;
-    ReAlignComponents;
+    ReAlignComponents(True);
 
   finally
     SettingsForm.Free;
     SettingsForm := nil;
-    SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
   end;
 end;
 
@@ -159,7 +162,7 @@ begin
   if lb_clock.LabelStyle <> sStyle then
   begin
     lb_clock.LabelStyle := sStyle;
-    RealignComponents;
+    RealignComponents(True);
   end;
   DateTimeToString(s,sFormat,now());
   lb_clock.Caption := s;
