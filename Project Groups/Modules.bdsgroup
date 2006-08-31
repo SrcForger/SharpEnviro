@@ -19,7 +19,8 @@
       <Projects Name="VolumeControl.dll">..\Plugins\Modules\VolumeControl\VolumeControl.bdsproj</Projects>
       <Projects Name="CPUMonitor.dll">..\Plugins\Modules\CPU Monitor\CPUMonitor.bdsproj</Projects>
       <Projects Name="MediaController.dll">..\Plugins\Modules\MediaController\MediaController.bdsproj</Projects>
-      <Projects Name="Targets">Button.dll Clock.dll iDrop.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll VolumeControl.dll CPUMonitor.dll MediaController.dll</Projects>
+      <Projects Name="Notes.dll">..\Plugins\Modules\Notes\Notes.bdsproj</Projects>
+      <Projects Name="Targets">Button.dll Clock.dll iDrop.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll VolumeControl.dll CPUMonitor.dll MediaController.dll Notes.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
