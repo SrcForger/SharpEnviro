@@ -65,7 +65,8 @@ type
     procedure LBWindowProc(var Message: TMessage);
     procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;
     procedure LoadSettings;
-    procedure ReAlignComponents;
+    procedure SetSize(NewWidth : integer);
+    procedure ReAlignComponents(BroadCast : boolean);
     procedure Draw(startcolor : Tcolor; ck : boolean);
   end;
 
@@ -145,8 +146,6 @@ begin
   begin
     sTarget := Value('Target','X:\');
   end;
-
-  ReAlignComponents;
 end;
 
 procedure TMainForm.Draw(startcolor : Tcolor; ck : boolean);
@@ -187,9 +186,17 @@ begin
   end;
 end;
 
-procedure TMainForm.ReAlignComponents;
+procedure TMainForm.SetSize(NewWidth : integer);
 begin
-  Width := Height+8;
+  Width := NewWidth;
+  Draw(0,True);
+end;
+
+procedure TMainForm.ReAlignComponents(BroadCast : boolean);
+begin
+  Tag := Height+8;
+  Hint := inttostr(Height + 8);
+  if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
   Draw(0,True);
 end;
 
@@ -214,13 +221,12 @@ begin
         Add('Target',sTarget);
       end;
       uSharpBarAPI.SaveXMLFile(BarWnd);
-      ReAlignComponents;
+      ReAlignComponents(True);
     end;
 
   finally
     SettingsForm.Free;
     SettingsForm := nil;
-    SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
   end;
 end;
 
