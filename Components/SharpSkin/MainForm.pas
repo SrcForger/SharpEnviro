@@ -167,6 +167,12 @@ type
     SharpETaskItem1: TSharpETaskItem;
     SharpETaskItem2: TSharpETaskItem;
     SharpETaskItem3: TSharpETaskItem;
+    SharpETaskItem4: TSharpETaskItem;
+    SharpETaskItem5: TSharpETaskItem;
+    SharpETaskItem6: TSharpETaskItem;
+    SharpETaskItem7: TSharpETaskItem;
+    SharpETaskItem8: TSharpETaskItem;
+    SharpETaskItem9: TSharpETaskItem;
     TaskItem1: TMenuItem;
     askItem2: TMenuItem;
     btn_Refresh: TToolButton;
@@ -516,6 +522,12 @@ begin
   SharpETaskItem1.SkinManager := SkinManager;
   SharpETaskItem2.SkinManager := SkinManager;
   SharpETaskItem3.SkinManager := SkinManager;
+  SharpETaskItem4.SkinManager := SkinManager;
+  SharpETaskItem5.SkinManager := SkinManager;
+  SharpETaskItem6.SkinManager := SkinManager;
+  SharpETaskItem7.SkinManager := SkinManager;
+  SharpETaskItem8.SkinManager := SkinManager;
+  SharpETaskItem9.SkinManager := SkinManager;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
@@ -857,6 +869,12 @@ begin
   SharpETaskItem1.Repaint;
   SharpETaskItem2.Repaint;
   SharpETaskItem3.Repaint;
+  SharpETaskItem4.Repaint;
+  SharpETaskItem5.Repaint;
+  SharpETaskItem6.Repaint;
+  SharpETaskItem7.Repaint;
+  SharpETaskItem8.Repaint;
+  SharpETaskItem9.Repaint;
 
   BarWnd.SharpEBar1.UpdateSkin;
   ShowWindow(BarWnd.SharpEBar1.abackground.handle,SW_HIDE);
