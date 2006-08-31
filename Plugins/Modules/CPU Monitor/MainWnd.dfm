@@ -19,7 +19,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 285
-    Height = 164
+    Height = 166
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft

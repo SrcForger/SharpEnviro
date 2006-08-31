@@ -72,8 +72,9 @@ type
     cpuusage : TCPUUsage;
     bgbmp    : TBitmap32;
     cpugraph : TBitmap32;
-    procedure LoadSettings(realign : boolean);
-    procedure ReAlignComponents;
+    procedure SetSize(NewWidth : integer);
+    procedure LoadSettings;
+    procedure ReAlignComponents(broadcast : boolean);
     procedure UpdateGraph;
   end;
 
@@ -87,7 +88,7 @@ uses SettingsWnd,
 {$R *.dfm}
 
 
-procedure TMainForm.LoadSettings(realign : boolean);
+procedure TMainForm.LoadSettings;
 var
   item : TJvSimpleXMLElem;
   cs : TColorSchemeEx;
@@ -119,8 +120,6 @@ begin
     sBorderAlpha  := Max(0,Min(255,IntValue('BorderAlpha',255)));
   end;
   sUpdate := Max(sUpdate,100);
-
-  if realign then ReAlignComponents;
 end;
 
 function ColorToColor32(c : TColor; alpha : integer) : TColor32;
@@ -133,9 +132,8 @@ begin
   result := Color32(R,G,B,alpha);
 end;
 
-procedure TMainForm.ReAlignComponents;
+procedure TMainForm.ReAlignComponents(Broadcast : boolean);
 var
-  FreeBarSpace : integer;
   newWidth : integer;
   c : TColor32;
 begin
@@ -144,11 +142,10 @@ begin
   if cpuUsage.UpdateTimer.Interval = 1001 then cpuUsage.UpdateTimer.Interval := sUpdate
      else sUpdate := cpuUsage.UpdateTimer.Interval;
 
-  FreeBarSpace := GetFreeBarSpace(BarWnd) + self.Width;
-  if FreeBarSpace <0 then FreeBarSpace := 1;
   newWidth := sWidth + 4;
-  if newWidth > FreeBarSpace then Width := FreeBarSpace
-     else Width := newWidth;
+  Tag := NewWidth;
+  Hint := inttostr(NewWidth);
+  if newWidth <> Width then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
 
   case sDrawMode of
     0,1: begin
@@ -181,6 +178,12 @@ begin
       pbar.Height := Height - 8;
     end;
   end;
+end;
+
+procedure TMainForm.SetSize(NewWidth : integer);
+begin
+  Width := NewWidth;
+  ReAlignComponents(False);
 end;
 
 
@@ -241,11 +244,10 @@ begin
       uSharpBarAPI.SaveXMLFile(BarWnd);
       cpuUsage.UpdateTimer.Interval := sUpdate;
     end;
-    ReAlignComponents;
+    ReAlignComponents(True);
   finally
     SettingsForm.Free;
     SettingsForm := nil;
-    SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
   end;
 end;
 
