@@ -73,7 +73,8 @@ type
     ModuleID : integer;
     BarWnd   : hWnd;
     procedure LoadSettings;
-    procedure ReAlignComponents;
+    procedure SetSize(NewWidth : integer);
+    procedure ReAlignComponents(BroadCast : boolean);
   end;
 
 
@@ -137,6 +138,8 @@ begin
     end;
   except
   end;
+
+  tempBmp.Free;
 end;
 
 procedure TMainForm.LoadSettings;
@@ -152,23 +155,34 @@ begin
     sWidth := IntValue('Width',100);
     sMixer := IntValue('Mixer',MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
   end;
-
-  ReAlignComponents;
 end;
 
-procedure TMainForm.ReAlignComponents;
+procedure TMainForm.SetSize(NewWidth : integer);
+begin
+  Width := NewWidth;
+  
+  mute.Width := Height + 2;
+  pbar.Left := mute.Left + mute.Width + 2;
+  pbar.Width := Width - mute.Left - mute.Width - 4;
+  pbar.Height := Height - 8;
+  cshape.Left   := pbar.Left;
+  cshape.Top    := pbar.Top;
+  cshape.Width  := pbar.Width;
+  cshape.Height := pbar.Height;
+end;
+
+procedure TMainForm.ReAlignComponents(BroadCast : boolean);
 var
-  FreeBarSpace : integer;
   newWidth : integer;
 begin
   self.Caption := inttostr(sMixer);
   ClockTimer.OnTimer(ClockTimer);
 
-  FreeBarSpace := GetFreeBarSpace(BarWnd) + self.Width;
-  if FreeBarSpace <0 then FreeBarSpace := 1;
   newWidth := sWidth + mute.Width + 6;
-  if newWidth > FreeBarSpace then Width := FreeBarSpace
-     else Width := newWidth;
+  Tag := newWidth;
+  Hint := inttostr(newWidth);
+  if newWidth <> Width then
+     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
 
   mute.Width := Height + 2;
   pbar.Left := mute.Left + mute.Width + 2;
@@ -212,12 +226,11 @@ begin
       uSharpBarAPI.SaveXMLFile(BarWnd);
       ClockTimer.OnTimer(ClockTimer);
     end;
-    ReAlignComponents;
+    ReAlignComponents(True);
 
   finally
     SettingsForm.Free;
     SettingsForm := nil;
-    SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
   end;
 end;
 

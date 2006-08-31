@@ -41,7 +41,7 @@ object MainForm: TMainForm
       Left = 2
       Top = 0
       Width = 25
-      Height = 17
+      Height = 18
       SkinManager = SharpESkinManager1
       AutoSize = True
       OnClick = muteClick

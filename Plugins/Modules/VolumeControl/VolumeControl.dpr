@@ -102,10 +102,9 @@ begin
     ModuleID := pID;
     BarWnd   := FBarWnd;
     LoadSettings;
-    ReAlignComponents;
+    ReAlignComponents(False);
     Show;
   end;
- // FForm.Parent := GetControlByHandle(pParent);
 end;
 
 destructor TModule.Destroy;
@@ -167,7 +166,7 @@ begin
       if TModule(ModuleList.Items[n]).ID = ID then
       begin
         temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.Form).ReAlignComponents;
+        TMainForm(temp.Form).ReAlignComponents(False);
       end;
 end;
 
@@ -195,7 +194,7 @@ begin
       begin
         temp := TModule(ModuleList.Items[n]);
         temp.Form.Height := GetBarPluginHeight(temp.BarWnd);
-        TMainForm(temp.Form).ReAlignComponents;
+        TMainForm(temp.Form).ReAlignComponents(False);
       end;
 end;
 
@@ -212,6 +211,20 @@ begin
       end;
 end;
 
+procedure SetSize(ID : integer; NewWidth : integer);
+var
+  n : integer;
+  temp : TModule;
+begin
+  for n := 0 to ModuleList.Count - 1 do
+      if TModule(ModuleList.Items[n]).ID = ID then
+      begin
+        temp := TModule(ModuleList.Items[n]);
+        TMainForm(temp.FForm).SetSize(NewWidth);
+      end;
+
+end;
+
 
 Exports
   CreateModule,
@@ -219,7 +232,8 @@ Exports
   Poschanged,
   Refresh,
   SkinChanged,
-  ShowSettingsWnd;
+  ShowSettingsWnd,
+  SetSize;
 
 
 end.
