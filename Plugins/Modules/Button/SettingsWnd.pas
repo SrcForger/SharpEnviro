@@ -54,6 +54,7 @@ type
     btn_open: TButton;
     OpenFile: TOpenDialog;
     XPManifest1: TXPManifest;
+    cb_specialskin: TCheckBox;
     procedure btn_openClick(Sender: TObject);
     procedure cb_seaClick(Sender: TObject);
     procedure tb_sizeChange(Sender: TObject);

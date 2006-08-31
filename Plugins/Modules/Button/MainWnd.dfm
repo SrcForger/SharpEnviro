@@ -11,6 +11,8 @@ object MainForm: TMainForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object Background: TImage32
@@ -27,11 +29,11 @@ object MainForm: TMainForm
     TabOrder = 0
     object Button: TSharpEButton
       Left = 8
-      Top = 1
+      Top = 0
       Width = 105
-      Height = 32
+      Height = 18
       SkinManager = SharpESkinManager1
-      AutoSize = False
+      AutoSize = True
       OnMouseUp = ButtonMouseUp
       Glyph32.DrawMode = dmBlend
       Glyph32.CombineMode = cmMerge
@@ -42,6 +44,7 @@ object MainForm: TMainForm
       DisabledAlpha = 100
       Caption = 'Button'
       AutoPosition = True
+      GlyphResize = False
     end
   end
   object MenuPopup: TPopupMenu

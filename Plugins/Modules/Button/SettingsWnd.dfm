@@ -3,7 +3,7 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Button Module Settings'
-  ClientHeight = 271
+  ClientHeight = 303
   ClientWidth = 192
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,14 +18,14 @@ object SettingsForm: TSettingsForm
   TextHeight = 13
   object Label4: TLabel
     Left = 8
-    Top = 64
+    Top = 88
     Width = 58
     Height = 13
     Caption = 'Button Size:'
   end
   object lb_barsize: TLabel
     Left = 72
-    Top = 64
+    Top = 88
     Width = 33
     Height = 14
     AutoSize = False
@@ -39,14 +39,14 @@ object SettingsForm: TSettingsForm
   end
   object Label1: TLabel
     Left = 8
-    Top = 104
+    Top = 128
     Width = 54
     Height = 13
     Caption = 'Click Action'
   end
   object Label2: TLabel
     Left = 24
-    Top = 136
+    Top = 160
     Width = 132
     Height = 11
     Caption = '(Action.service must be started)'
@@ -68,7 +68,7 @@ object SettingsForm: TSettingsForm
   end
   object Button1: TButton
     Left = 32
-    Top = 240
+    Top = 264
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -77,7 +77,7 @@ object SettingsForm: TSettingsForm
   end
   object Button2: TButton
     Left = 112
-    Top = 240
+    Top = 264
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -94,7 +94,7 @@ object SettingsForm: TSettingsForm
   end
   object tb_size: TGaugeBar
     Left = 8
-    Top = 80
+    Top = 104
     Width = 177
     Height = 13
     Color = clWindow
@@ -112,7 +112,7 @@ object SettingsForm: TSettingsForm
   end
   object cb_sea: TRadioButton
     Left = 8
-    Top = 120
+    Top = 144
     Width = 113
     Height = 17
     Caption = 'SharpE Action'
@@ -123,7 +123,7 @@ object SettingsForm: TSettingsForm
   end
   object cb_ea: TRadioButton
     Left = 8
-    Top = 184
+    Top = 208
     Width = 169
     Height = 17
     Caption = 'Execute Application/File'
@@ -132,7 +132,7 @@ object SettingsForm: TSettingsForm
   end
   object combo_actionlist: TComboBox
     Left = 24
-    Top = 152
+    Top = 176
     Width = 161
     Height = 21
     AutoDropDown = True
@@ -142,7 +142,7 @@ object SettingsForm: TSettingsForm
   end
   object edit_app: TEdit
     Left = 24
-    Top = 200
+    Top = 224
     Width = 137
     Height = 21
     TabOrder = 8
@@ -150,12 +150,20 @@ object SettingsForm: TSettingsForm
   end
   object btn_open: TButton
     Left = 164
-    Top = 200
+    Top = 224
     Width = 22
     Height = 22
     Caption = '...'
     TabOrder = 9
     OnClick = btn_openClick
+  end
+  object cb_specialskin: TCheckBox
+    Left = 8
+    Top = 62
+    Width = 185
+    Height = 17
+    Caption = 'Use Special Skins (if supported)'
+    TabOrder = 10
   end
   object OpenFile: TOpenDialog
     FileName = '*.*'
