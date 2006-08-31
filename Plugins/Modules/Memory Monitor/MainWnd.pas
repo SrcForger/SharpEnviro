@@ -70,7 +70,8 @@ type
     ModuleID : integer;
     BarWnd : hWnd;
     procedure LoadSettings;
-    procedure ReAlignComponents(SendUpdate : boolean);
+    procedure SetSize(NewWidth : integer);
+    procedure ReAlignComponents(BroadCast : boolean);
   end;
 
 
@@ -114,19 +115,21 @@ begin
     if ItemAlign >2 then ItemAlign := 2;
     if ItemAlign <1 then ItemAlign := 1;
   end;
-
-  ReAlignComponents(false);
 end;
 
-procedure TMainForm.ReAlignComponents(SendUpdate : boolean);
+procedure TMainForm.SetSize(NewWidth : integer);
+begin
+  Width := NewWidth;
+  ReAlignComponents(False);
+end;
+
+procedure TMainForm.ReAlignComponents(Broadcast : boolean);
 var
   ramw,spacing,swpw,h : integer;
   pcmod,imod : integer;
   o1,o2,o3,o4,o5 : integer;
-  freespace : integer;
-  oWidth : integer;
+  NewWidth : integer;
 begin
-  freespace := uSharpBarApi.GetFreeBarSpace(BarWnd);
   if BarWidth<25 then BarWidth := 25;
 
   ramw := 0;
@@ -291,9 +294,10 @@ begin
         end;
   end;
 
-  oWidth := Width;
-  Width := max(o1,max(max(o3,o4),o5));
-  if (SendUpdate) and (oWidth<> Width) then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  NewWidth := max(o1,max(max(o3,o4),o5));
+  Tag := NewWidth;
+  Hint := inttostr(NewWidth);
+  if (BroadCast) and (NewWidth <> Width) then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
 end;
 
 
