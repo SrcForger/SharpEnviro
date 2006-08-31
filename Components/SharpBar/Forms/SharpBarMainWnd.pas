@@ -125,6 +125,7 @@ type
     FShellHookList : TStringList;
     FThemeUpdating : Boolean;
     FStartup : Boolean;
+    FBarLock : Boolean;
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem : TJvSimpleXMlElem);
 
@@ -226,6 +227,7 @@ end;
 procedure TSharpBarMainForm.WMLockBarWindow(var msg : TMessage);
 begin
   if FStartup then exit;
+  if FBarLock then exit;
   
   LockWindow(Handle);
 end;
@@ -233,6 +235,7 @@ end;
 procedure TSharpBarMainForm.WMUnlockBarWindow(var msg : TMessage);
 begin
   if FStartup then exit;
+  if FBarLock then exit;
   
   UnLockWindow(Handle);
   SendMessage(SharpEBar1.abackground.handle, WM_SETREDRAW, 1, 0);
@@ -241,6 +244,7 @@ end;
 
 procedure TSharpBarMainForm.WMThemeUpdateStart(var msg : TMessage);
 begin
+  FBarLock := True;
   LockWindow(Handle);
   FThemeUpdating := True;
   //LockWindowUpdate(Application.Handle);
@@ -260,6 +264,7 @@ begin
   ModuleManager.FixModulePositions;
   ModuleManager.RefreshMiniThrobbers;
 
+  FBarLock := False;
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
   DelayTimer1.Enabled := True;
 //  DelayTimer2.Enabled := True;
@@ -270,9 +275,13 @@ var
   n : integer;
 begin
   // bar received a shell hook, forward it to all registered modules
-  for n := 0 to FShellHookList.Count -1 do
-  begin
-    PostMessage(strtoint(FShellHookList[n]),WM_ShellHook,msg.WParam,msg.LParam);
+
+  try
+    for n := 0 to FShellHookList.Count -1 do
+    begin
+      PostMessage(strtoint(FShellHookList[n]),WM_ShellHook,msg.WParam,msg.LParam);
+    end;
+  except
   end;
 end;
 
@@ -330,6 +339,7 @@ begin
   if FThemeUpdating then exit;
 
   if not FStartup then LockWindow(Handle);
+  FBarLock := True;
   LoadSharpEScheme(SkinManager.Scheme);
   SharpEBar1.UpdateSkin;
   SharpEBar1.Throbber.UpdateSkin;
@@ -337,6 +347,7 @@ begin
   ModuleManager.UpdateModuleSkins;
   ModuleManager.FixModulePositions;
   ModuleManager.RefreshMiniThrobbers;
+  FBarLock := False;
   UnLockWindow(Handle);
 end;
 
@@ -380,7 +391,7 @@ begin
   SharpEbar1.Throbber.Repaint;
   ModuleManager.UpdateModuleSkins;
   ModuleManager.BroadCastModuleRefresh;
-  ModuleManager.FixModulePositions;
+  ModuleManager.ReCalculateModuleSize;
   ModuleManager.RefreshMiniThrobbers;
 end;
 
@@ -410,7 +421,8 @@ begin
   DebugOutput('WM_UpdateBarWidth',2,1);
   if not FStartup then LockWindow(Handle);
   try
-    ModuleManager.BroadCastModuleRefresh;
+    ModuleManager.ReCalculateModuleSize;
+//    ModuleManager.BroadCastModuleRefresh;
     ModuleManager.FixModulePositions;
     ModuleManager.RefreshMiniThrobbers;
   finally
@@ -474,7 +486,7 @@ begin
       ModuleSettings.SaveToFile(Dir + inttostr(FBarID)+'.xml');
     end;
   end;
-  ModuleManager.FixModulePositions;
+  ModuleManager.ReCalculateModuleSize;
 end;
 
 procedure TSharpBarMainForm.LoadBarModules(XMLElem : TJvSimpleXMlElem);
@@ -499,6 +511,7 @@ begin
                                   Items.Item[n].Items.IntValue('Position',-1));
        end;
      end;
+  ModuleManager.ReCalculateModuleSize;
 end;
 
 procedure TSharpBarMainForm.SaveBarSettings;
@@ -717,6 +730,7 @@ end;
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
   FStartup := True;
+  FBarLock := False;
 
   FShellHookList := TStringList.Create;
   FShellHookList.Clear;
@@ -1193,6 +1207,7 @@ begin
   if mThrobber = nil then exit;
   ModuleManager.Delete(mThrobber.Tag);
   SaveBarSettings;
+  ModuleManager.ReCalculateModuleSize;
 end;
 
 procedure TSharpBarMainForm.Left2Click(Sender: TObject);

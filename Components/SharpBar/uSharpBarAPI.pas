@@ -34,6 +34,15 @@ interface
 
 uses JvSimpleXML, windows, forms,GR32, sysutils, SharpAPI, classes;
 
+type
+  TModuleSize = record
+                  Min      : integer;
+                  Width    : integer;
+                  Priority : integer;
+                end;
+  PModuleSize = ^TModuleSize;
+
+
 function GetModuleXMLItem(BarWnd : Hwnd; ID : integer) : TJvSimpleXMLElem;
 
 function GetFreeBarSpace(BarWnd : hWnd) : integer;

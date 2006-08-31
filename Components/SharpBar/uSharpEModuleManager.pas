@@ -83,6 +83,7 @@ type
                      DllModuleMessage   : function (ID : integer; msg: string): integer;
                      DllShowSettingsWnd : procedure(ID : integer);
                      DllRefresh         : procedure(ID : integer);
+                     DllSetSize         : procedure(ID : integer; NewWidth : integer);
                      procedure Clear;
                      constructor Create(pFileName : string; pParent : hwnd;
                                         pSkinManager : TSharpESkinManager;
@@ -155,9 +156,11 @@ type
                      function GetFirstRModuleIndex : integer;
                      function GenerateModuleID : integer;
                      function GetFreeBarSpace : integer;
+                     function GetMaxBarSpace : integer;
                      procedure MoveModule(Index, Direction : integer);
                      function SendPluginMessage(ID : integer; msg : string) : integer;
                      procedure BroadCastModuleRefresh;
+                     procedure ReCalculateModuleSize;
                      procedure OnMiniThrobberClick(Sender : TObject);
                      procedure OnMiniThrobberMouseDown(Sender : TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
                      procedure OnMiniThrobberMouseUp(Sender : TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -172,6 +175,9 @@ type
                    end;
 
 implementation
+
+
+uses uSharpBarApi;
 
 
 
@@ -399,7 +405,7 @@ begin
   if MFID > FModuleFiles.Count -1 then exit;
   tempModuleFile := TModuleFile(FModuleFiles.Items[MFID]);
   LoadModule(GenerateModuleID,ExtractFileName(tempModuleFile.FFileName),Position);
-  FixModulePositions;
+  ReCalculateModuleSize;
 end;
 
 procedure TModuleManager.LoadModule(ID : integer; Module : String; Position : integer);
@@ -470,18 +476,9 @@ end;
 function TModuleManager.GetFreeBarSpace : integer;
 var
   n : integer;
-  size,maxsize : integer;
-  pForm : TWinControl;
-  pMon : TMonitor;
+  size : integer;
   pModule : TModule;
-  lo,ro : integer;
 begin
-  pForm := GetControlByHandle(FParent);
-
-  // get screen size
-  pMon := Screen.MonitorFromPoint(Point(pForm.Left,pForm.Top),mdNearest);
-  maxSize := pMon.Width;
-
   // get size of all modules
   size := 0;
   for n := 0 to FModules.Count - 1 do
@@ -492,6 +489,22 @@ begin
        size := size + pModule.Throbber.Width + FModuleSpacing
        else size := size + FModuleSpacing;
   end;
+
+  result := GetMaxBarSpace - size;
+end;
+
+function TModuleManager.GetMaxBarSpace : integer;
+var
+  maxsize : integer;
+  pForm : TWinControl;
+  pMon : TMonitor;
+  lo,ro : integer;
+begin
+  pForm := GetControlByHandle(FParent);
+
+  // get screen size
+  pMon := Screen.MonitorFromPoint(Point(pForm.Left,pForm.Top),mdNearest);
+  maxSize := pMon.Width;
 
   // get left/right offets for plugin area
   try
@@ -504,7 +517,7 @@ begin
     ro := 0;
   end;
 
-  result := maxsize - ro - lo - size;
+  result := maxsize - ro - lo;
 end;
 
 function TModuleManager.GetModule(ID : integer) : TModule;
@@ -523,10 +536,9 @@ end;
 procedure TModuleManager.OnMiniThrobberMouseMove(Sender : TObject; Shift: TShiftState; X, Y: integer);
 var
   MP : TPoint;
-  mThrobber : TSharpEMiniThrobber;
   checkModule,tempModule : TModule;
   index : integer;
-  n,i : integer;
+  i : integer;
   cPos,Pos : TPoint;
   update : boolean;
 begin
@@ -794,6 +806,83 @@ begin
   end;
 end;
 
+procedure TModuleManager.ReCalculateModuleSize;
+var
+  n : integer;
+  temp : TModule;
+  msize : TModuleSize;
+  i : integer;
+  minsize : integer;
+  maxsize : integer;
+  maxbarsize : integer;
+  FreeMinSpace : integer;
+  nonminmaxsizeadd : integer;
+  nonminmaxrequest : array of integer;
+  smod : integer;
+begin
+  if FModules = nil then exit;
+
+  minsize := 0;
+  maxsize := 0;
+  smod    := 0;
+  setlength(nonminmaxrequest,0);
+  maxbarsize := GetMaxBarSpace;
+  for n := 0 to FModules.Count - 1 do
+  begin
+    temp := TModule(FModules.Items[n]);
+    msize.Min := temp.Control.Tag;
+    try
+      msize.Width := strtoint(temp.Control.Hint);
+    except
+      msize.Width := msize.Min;
+    end;
+    minsize := minsize + msize.Min;
+    maxsize := maxsize + msize.Width;
+    smod := smod + temp.Throbber.Width + FModuleSpacing;
+    if msize.Min <> msize.Width then
+    begin
+      setlength(nonminmaxrequest,length(nonminmaxrequest)+1);
+      nonminmaxrequest[High(nonminmaxrequest)] := abs(msize.Width - msize.Min);
+    end;
+  end;
+
+  FreeMinSpace := Max(0,maxbarsize - minsize - smod);
+  if (length(nonminmaxrequest) > 0) and (FreeMinSpace > 0) and (maxsize > maxbarsize)then
+  begin
+    for n := 0 to High(nonminmaxrequest) do
+        nonminmaxrequest[n] := round(Int(((nonminmaxrequest[n])/(maxsize - minsize))*FreeMinSpace));
+  end;
+
+  i := 0;
+  for n := 0 to FModules.Count - 1 do
+  begin
+    temp := TModule(FModules.Items[n]);
+    msize.Min := temp.Control.Tag;
+    try
+      msize.Width := strtoint(temp.Control.Hint);
+    except
+      msize.Width := msize.Min;
+    end;
+    if msize.Min <> msize.Width then
+    begin
+      try
+        //if temp.Control.Width <> msize.Min + nonminmaxrequest[i] then
+           temp.ModuleFile.DllSetSize(temp.ID,msize.Min + nonminmaxrequest[i]);
+      finally
+        i := i + 1;
+      end;
+    end else
+    begin
+      try
+       // if temp.Control.Width <> msize.Min then
+           temp.ModuleFile.DllSetSize(temp.ID,msize.Min);
+      except
+      end;
+    end;
+  end;
+  FixModulePositions;
+end;
+
 
 // ############## TModuleFile #################
 
@@ -844,12 +933,14 @@ begin
       @DllModuleMessage   := GetProcAddress(FDllHandle, 'ModuleMessage');
       @DllShowSettingsWnd := GetProcAddress(FDllHandle, 'ShowSettingsWnd');
       @DllRefresh         := GetProcAddress(FDllHandle, 'Refresh');
+      @DllSetSize         := GetProcAddress(FDllHandle, 'SetSize');
     end;
 
     if (@DllCreateModule = nil) or
        (@DllCloseModule = nil) or
        (@DllPosChanged = nil) or
-       (@DllSkinChanged = nil) then
+       (@DllSkinChanged = nil) or
+       (@DllSetSize = nil) then
     begin
       FreeLibrary(FDllhandle);
       FDllhandle := 0;
@@ -860,6 +951,7 @@ begin
       DllModuleMessage     := nil;
       DllShowSettingsWnd   := nil;
       DllRefresh           := nil;
+      DllSetSize           := nil;
       exit;
     end;
 
@@ -875,11 +967,10 @@ end;
 
 procedure TModuleFile.UnloadDll;
 begin
-  if not FLoaded then exit;
-
   Clear;
 
   try
+    if not FLoaded then exit;
     FreeLibrary(FDllHandle);
   finally
     FLoaded    := False;
@@ -890,7 +981,8 @@ begin
     DllSkinChanged       := nil;
     DllModuleMessage     := nil;
     DllShowSettingsWnd   := nil;
-    DllRefresh           := nil; 
+    DllRefresh           := nil;
+    DllSetSize           := nil;
   end;
 end;
 
