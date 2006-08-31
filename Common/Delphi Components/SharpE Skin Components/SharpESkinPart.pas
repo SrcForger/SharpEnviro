@@ -972,6 +972,7 @@ begin
   StringSaveToStream(FBlendColor, Stream);
   FGradientAlpha.SaveToStream(Stream);
   FGradientColor.SaveToStream(Stream);
+  StringSavetoStream(FGradientType, Stream);
   FSkinDim.SaveToStream(Stream);
   FSkinText.SaveToStream(Stream);
   count := FItems.Count;
@@ -994,6 +995,7 @@ begin
     FBlendColor := StringLoadFromStream(Stream);
     FGradientAlpha.LoadFromStream(Stream);
     FGradientColor.LoadFromStream(Stream);
+    FGradientType := StringLoadFromStream(Stream);
     FSkinDim.LoadFromStream(Stream);
     FSkinText.LoadFromStream(Stream);
     Stream.ReadBuffer(count, sizeof(count));
