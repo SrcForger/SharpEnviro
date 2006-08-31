@@ -163,15 +163,18 @@ type
 
   TSharpETaskItemStates = (tisFull,tisCompact,tisMini);
   TSharpETaskItemState = class
-                           Normal       : TSkinPart;
-                           Down         : TSkinPart;
-                           Hover        : TSkinPart;
-                           Spacing      : integer;
-                           DrawIcon     : Boolean;
-                           DrawText     : Boolean;
-                           IconSize     : integer;
-                           IconLocation : TSkinPoint;
-                           SkinDim      : TSkinDim;
+                           Normal         : TSkinPart;
+                           NormalHover    : TSkinPart;
+                           Down           : TSkinPart;
+                           DownHover      : TSkinPart;
+                           Highlight      : TSkinPart;
+                           HighlightHover : TSkinPart;
+                           Spacing        : integer;
+                           DrawIcon       : Boolean;
+                           DrawText       : Boolean;
+                           IconSize       : integer;
+                           IconLocation   : TSkinPoint;
+                           SkinDim        : TSkinDim;
                          end;
 
   TSharpETaskItemSkin = class
@@ -196,6 +199,8 @@ type
   TSharpEButtonSkin = class
   private
     FSkinDim: TSkinDim;
+    FIconLROffset: TSkinPoint;
+    FIconTBOffset: TSkinPoint;
     FNormal: TSkinPart;
     FDown: TSkinPart;
     FHover: TSkinPart;
@@ -214,6 +219,8 @@ type
     property Hover: TSkinPart read FHover write FHover;
     property Disabled: TSkinPart read FDisabled write FDisabled;
     property SkinDim: TSkinDim read FSkinDim;
+    property IconLROffset: TSkinPoint read FIconLROffset;
+    property IconTBOffset: TSkinPoint read FIconTBOffset;
  end;
 
   TSharpEFormSkin = class
@@ -817,6 +824,10 @@ begin
   FSkinDim := TSkinDim.Create;
   FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w', 'h');
+  FIconLROffset := TSkinPoint.Create;
+  FIconTBOffset := TSkinPoint.Create;
+  FIconLROffset.SetPoint('3','3');
+  FIconTBOffset.SetPoint('3','3');
   FNormal := TSkinPart.Create(BmpList);
   FDown := TSkinPart.Create(BmpList);
   FHover := TSkinPart.Create(BmpList);
@@ -830,11 +841,15 @@ begin
   FHover.Free;
   FDisabled.Free;
   FSkinDim.Free;
+  FIconLROffset.Free;
+  FIconTBOffset.Free;
 end;
 
 procedure TSharpEButtonSkin.SaveToStream(Stream: TStream);
 begin
   FSkinDim.SaveToStream(Stream);
+  FIconLROffset.SaveToStream(Stream);
+  FIconTBOffset.SaveToStream(Stream);
   FNormal.SaveToStream(Stream);
   FDown.SaveToStream(Stream);
   FHover.SaveToStream(Stream);
@@ -844,6 +859,8 @@ end;
 procedure TSharpEButtonSkin.LoadFromStream(Stream: TStream);
 begin
   FSkinDim.LoadFromStream(Stream);
+  FIconLROffset.LoadFromStream(Stream);
+  FIconTBOffset.LoadFromStream(Stream);
   FNormal.LoadFromStream(Stream);
   FDown.LoadFromStream(Stream);
   FHover.LoadFromStream(Stream);
@@ -858,6 +875,8 @@ begin
   FDisabled.Clear;
   FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w', 'h');
+  FIconLROffset.SetPoint('3','3');
+  FIconTBOffset.SetPoint('3','3');
 end;
 
 procedure TSharpEButtonSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
@@ -882,6 +901,10 @@ begin
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
         FSkinDim.SetLocation(Value('location','0,0'));
+      if ItemNamed['iconlroffset'] <> nil then
+        FIconLROffset.SetPoint(Value('iconlroffset', '3,3'));
+      if ItemNamed['icontboffset'] <> nil then
+        FIconTBOffset.SetPoint(Value('icontboffset','3,3'));
     end;
   finally
     SkinText.free;
@@ -909,21 +932,30 @@ begin
   FMini := TSharpETaskItemState.Create;
 
   FFull.SkinDim := TSkinDim.Create;
-  FFull.Normal := TSkinPart.Create(BmpList);
-  FFull.Down   := TSkinPart.Create(BmpList);
-  FFull.Hover  := TSkinPart.Create(BmpList);
+  FFull.Normal         := TSkinPart.Create(BmpList);
+  FFull.NormalHover    := TSkinPart.Create(BmpList);
+  FFull.Down           := TSkinPart.Create(BmpList);
+  FFull.DownHover      := TSkinPart.Create(BmpList);
+  FFull.Highlight      := TSkinPart.Create(BmpList);
+  FFull.HighlightHover := TSkinPart.Create(BmpList);
   FFull.IconLocation := TSkinPoint.Create;
 
   FCompact.SkinDim := TSkinDim.Create;
-  FCompact.Normal := TSkinPart.Create(BmpList);
-  FCompact.Down   := TSkinPart.Create(BmpList);
-  FCompact.Hover  := TSkinPart.Create(BmpList);
+  FCompact.Normal         := TSkinPart.Create(BmpList);
+  FCompact.NormalHover    := TSkinPart.Create(BmpList);
+  FCompact.Down           := TSkinPart.Create(BmpList);
+  FCompact.DownHover      := TSkinPart.Create(BmpList);
+  FCompact.Highlight      := TSkinPart.Create(BmpList);
+  FCompact.HighlightHover := TSkinPart.Create(BmpList);
   FCompact.IconLocation := TSkinPoint.Create;
 
   FMini.SkinDim := TSkinDim.Create;
-  FMini.Normal := TSkinPart.Create(BmpList);
-  FMini.Down   := TSkinPart.Create(BmpList);
-  FMini.Hover  := TSkinPart.Create(BmpList);
+  FMini.Normal         := TSkinPart.Create(BmpList);
+  FMini.NormalHover    := TSkinPart.Create(BmpList);
+  FMini.Down           := TSkinPart.Create(BmpList);
+  FMini.DownHover      := TSkinPart.Create(BmpList);
+  FMini.Highlight      := TSkinPart.Create(BmpList);
+  FMini.HighlightHover := TSkinPart.Create(BmpList);
   FMini.IconLocation := TSkinPoint.Create;
   Clear;
 end;
@@ -932,20 +964,29 @@ destructor TSharpETaskItemSkin.Destroy;
 begin
   FFull.SkinDim.Free;
   FFull.Normal.Free;
-  FFull.Hover.Free;
+  FFull.NormalHover.Free;
   FFull.Down.Free;
+  FFull.DownHover.Free;
+  FFull.Highlight.Free;
+  FFull.HighlightHover.Free;
   FFull.IconLocation.Free;
 
   FCompact.SkinDim.Free;
   FCompact.Normal.Free;
-  FCompact.Hover.Free;
+  FCompact.NormalHover.Free;
   FCompact.Down.Free;
+  FCompact.DownHover.Free;
+  FCompact.Highlight.Free;
+  FCompact.HighlightHover.Free;
   FCompact.IconLocation.Free;
 
   FMini.SkinDim.Free;
   FMini.Normal.Free;
-  FMini.Hover.Free;
+  FMini.NormalHover.Free;
   FMini.Down.Free;
+  FMini.DownHover.Free;
+  FMini.Highlight.Free;
+  FMini.HighlightHover.Free;
   FMini.IconLocation.Free;
 
   FFull.Free;
@@ -957,8 +998,11 @@ procedure TSharpETaskItemSkin.SaveToStream(Stream: TStream);
 begin
   FFull.SkinDim.SaveToStream(Stream);
   FFull.Normal.SaveToStream(Stream);
+  FFull.NormalHover.SaveToStream(Stream);
   FFull.Down.SaveToStream(Stream);
-  FFull.Hover.SaveToStream(Stream);
+  FFull.DownHover.SaveToStream(Stream);
+  FFull.Highlight.SaveToStream(Stream);
+  FFull.HighlightHover.SaveToStream(Stream);
   FFull.IconLocation.SaveToStream(Stream);
   StringSaveToStream(inttostr(FFull.Spacing),Stream);
   StringSaveToStream(inttostr(FFull.IconSize),Stream);
@@ -967,8 +1011,11 @@ begin
 
   FCompact.SkinDim.SaveToStream(Stream);
   FCompact.Normal.SaveToStream(Stream);
+  FCompact.NormalHover.SaveToStream(Stream);
   FCompact.Down.SaveToStream(Stream);
-  FCompact.Hover.SaveToStream(Stream);
+  FCompact.DownHover.SaveToStream(Stream);
+  FCompact.Highlight.SaveToStream(Stream);
+  FCompact.HighlightHover.SaveToStream(Stream);
   FCompact.IconLocation.SaveToStream(Stream);
   StringSaveToStream(inttostr(FCompact.Spacing),Stream);
   StringSaveToStream(inttostr(FCompact.IconSize),Stream);
@@ -977,8 +1024,11 @@ begin
 
   FMini.SkinDim.SaveToStream(Stream);
   FMini.Normal.SaveToStream(Stream);
+  FMini.NormalHover.SaveToStream(Stream);
   FMini.Down.SaveToStream(Stream);
-  FMini.Hover.SaveToStream(Stream);
+  FMini.DownHover.SaveToStream(Stream);
+  FMini.Highlight.SaveToStream(Stream);
+  FMini.HighlightHover.SaveToStream(Stream);
   FMini.IconLocation.SaveToStream(Stream);
   StringSaveToStream(inttostr(FMini.Spacing),Stream);
   StringSaveToStream(inttostr(FMini.IconSize),Stream);
@@ -990,8 +1040,11 @@ procedure TSharpETaskItemSkin.LoadFromStream(Stream: TStream);
 begin
   Full.SkinDim.LoadFromStream(Stream);
   FFull.Normal.LoadFromStream(Stream);
+  FFull.NormalHover.LoadFromStream(Stream);
   FFull.Down.LoadFromStream(Stream);
-  FFull.Hover.LoadFromStream(Stream);
+  FFull.DownHover.LoadFromStream(Stream);
+  FFull.Highlight.LoadFromStream(Stream);
+  FFull.HighlightHover.LoadFromStream(Stream);
   FFull.IconLocation.LoadFromStream(Stream);
   FFull.Spacing := StrToInt(StringLoadFromStream(Stream));
   FFull.IconSize := StrToInt(StringLoadFromStream(Stream));
@@ -1000,8 +1053,11 @@ begin
 
   FCompact.SkinDim.LoadFromStream(Stream);
   FCompact.Normal.LoadFromStream(Stream);
+  FCompact.NormalHover.LoadFromStream(Stream);
   FCompact.Down.LoadFromStream(Stream);
-  FCompact.Hover.LoadFromStream(Stream);
+  FCompact.DownHover.LoadFromStream(Stream);
+  FCompact.Highlight.LoadFromStream(Stream);
+  FCompact.HighlightHover.LoadFromStream(Stream);
   FCompact.IconLocation.LoadFromStream(Stream);
   FCompact.Spacing := StrToInt(StringLoadFromStream(Stream));
   FCompact.IconSize := StrToInt(StringLoadFromStream(Stream));
@@ -1010,8 +1066,11 @@ begin
 
   FMini.SkinDim.LoadFromStream(Stream);
   FMini.Normal.LoadFromStream(Stream);
+  FMini.NormalHover.LoadFromStream(Stream);
   FMini.Down.LoadFromStream(Stream);
-  FMini.Hover.LoadFromStream(Stream);
+  FMini.DownHover.LoadFromStream(Stream);
+  FMini.Highlight.LoadFromStream(Stream);
+  FMini.HighlightHover.LoadFromStream(Stream);
   FMini.IconLocation.LoadFromStream(Stream);
   FMini.Spacing := StrToInt(StringLoadFromStream(Stream));
   FMini.IconSize := StrToInt(StringLoadFromStream(Stream));
@@ -1025,8 +1084,11 @@ begin
   FFull.SkinDim.SetLocation('0','0');
   FFull.SkinDim.SetDimension('w', 'h');
   FFull.Normal.Clear;
+  FFull.NormalHover.Clear;
   FFull.Down.Clear;
-  FFull.Hover.Clear;
+  FFull.DownHover.Clear;
+  FFull.Highlight.Clear;
+  FFull.HighlightHover.Clear;
   FFull.IconSize := 16;
   FFull.DrawIcon := True;
   FFull.DrawText := True;
@@ -1037,8 +1099,11 @@ begin
   FCompact.SkinDim.SetLocation('0','0');
   FCompact.SkinDim.SetDimension('w', 'h');
   FCompact.Normal.Clear;
+  FCompact.NormalHover.Clear;
   FCompact.Down.Clear;
-  FCompact.Hover.Clear;
+  FCompact.DownHover.Clear;
+  FCompact.Highlight.Clear;
+  FCompact.HighlightHover.Clear;
   FCompact.IconSize := 16;
   FCompact.DrawIcon := False;
   FCompact.DrawText := True;
@@ -1049,8 +1114,11 @@ begin
   FMini.SkinDim.SetLocation('0','0');
   FMini.SkinDim.SetDimension('w', 'h');
   FMini.Normal.Clear;
+  FMini.NormalHover.Clear;
   FMini.Down.Clear;
-  FMini.Hover.Clear;
+  FMini.DownHover.Clear;
+  FMini.Highlight.Clear;
+  FMini.HighlightHover.Clear;
   FMini.IconSize := 16;
   FMini.DrawIcon := True;
   FMini.DrawText := False;
@@ -1093,10 +1161,16 @@ begin
           end;
           if ItemNamed['normal'] <> nil then
              st.Normal.LoadFromXML(ItemNamed['normal'],path,SkinText);
+          if ItemNamed['normalhover'] <> nil then
+             st.NormalHover.LoadFromXML(ItemNamed['normalhover'],path,SkinText);
           if ItemNamed['down'] <> nil then
              st.Down.LoadFromXML(ItemNamed['down'],path,SkinText);
-          if ItemNamed['hover'] <> nil then
-             st.Hover.LoadFromXML(ItemNamed['hover'],path,SkinText);
+          if ItemNamed['downhover'] <> nil then
+             st.DownHover.LoadFromXML(ItemNamed['downhover'],path,SkinText);
+          if ItemNamed['highlight'] <> nil then
+             st.Highlight.LoadFromXML(ItemNamed['highlight'],path,SkinText);
+          if ItemNamed['highlighthover'] <> nil then
+             st.HighlightHover.LoadFromXML(ItemNamed['highlighthover'],path,SkinText);
           if ItemNamed['dimension'] <> nil then
              st.SkinDim.SetDimension(Value('dimension', 'w,h'));
           if ItemNamed['location'] <> nil then

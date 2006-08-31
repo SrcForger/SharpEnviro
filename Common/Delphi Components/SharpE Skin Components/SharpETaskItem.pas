@@ -404,35 +404,68 @@ begin
       FButtonDown := False;
       FButtonOver := False;
     end;
-                                 
+
     FSkin.Clear(Color32(0, 0, 0, 0));
     if ((FButtonDown) or (FDown)) and not (CurrentState.Down.Empty) then
     begin
-      CurrentState.Down.Draw(bmp, Scheme);
-      CurrentState.Down.SkinText.AssignFontTo(bmp.Font,Scheme);
-      mw := CurrentState.Down.SkinText.GetMaxWidth(CompRect);
-      DrawCaption := FixCaption(Bmp,Caption,mw);
-      TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
-      TextPos := CurrentState.Down.SkinText.GetXY(TextRect, CompRect);
+      if ((FButtonOver) and not (FButtonDown) and not(CurrentState.DownHover.Empty)) then
+      begin
+        CurrentState.DownHover.Draw(bmp, Scheme);
+        CurrentState.DownHover.SkinText.AssignFontTo(bmp.Font,Scheme);
+        mw := CurrentState.DownHover.SkinText.GetMaxWidth(CompRect);
+        DrawCaption := FixCaption(Bmp,Caption,mw);
+        TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
+        TextPos := CurrentState.DownHover.SkinText.GetXY(TextRect, CompRect);
+      end else
+      begin
+        CurrentState.Down.Draw(bmp, Scheme);
+        CurrentState.Down.SkinText.AssignFontTo(bmp.Font,Scheme);
+        mw := CurrentState.Down.SkinText.GetMaxWidth(CompRect);
+        DrawCaption := FixCaption(Bmp,Caption,mw);
+        TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
+        TextPos := CurrentState.Down.SkinText.GetXY(TextRect, CompRect);
+      end;
     end
     else
-    if ((FButtonOver) or (FFlashing and FFlashState)) and not (CurrentState.Hover.Empty) then
+    if (FFlashing) and not (CurrentState.Highlight.Empty) then
     begin
-      CurrentState.Hover.Draw(bmp, Scheme);
-      CurrentState.Hover.SkinText.AssignFontTo(bmp.Font,Scheme);
-      mw := CurrentState.Hover.SkinText.GetMaxWidth(CompRect);
-      DrawCaption := FixCaption(Bmp,Caption,mw);
-      TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
-      TextPos := CurrentState.Hover.SkinText.GetXY(TextRect, CompRect);
+      if ((FButtonOver) and not (CurrentState.Highlight.Empty)) then
+      begin
+        CurrentState.HighlightHover.Draw(bmp, Scheme);
+        CurrentState.HighlightHover.SkinText.AssignFontTo(bmp.Font,Scheme);
+        mw := CurrentState.HighlightHover.SkinText.GetMaxWidth(CompRect);
+        DrawCaption := FixCaption(Bmp,Caption,mw);
+        TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
+        TextPos := CurrentState.HighlightHover.SkinText.GetXY(TextRect, CompRect);
+      end else
+      begin
+        CurrentState.Highlight.Draw(bmp, Scheme);
+        CurrentState.Highlight.SkinText.AssignFontTo(bmp.Font,Scheme);
+        mw := CurrentState.Highlight.SkinText.GetMaxWidth(CompRect);
+        DrawCaption := FixCaption(Bmp,Caption,mw);
+        TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
+        TextPos := CurrentState.Highlight.SkinText.GetXY(TextRect, CompRect);
+      end;
     end
     else
     begin
-      CurrentState.Normal.Draw(bmp, Scheme);
-      CurrentState.Normal.SkinText.AssignFontTo(bmp.Font,Scheme);
-      mw := CurrentState.Normal.SkinText.GetMaxWidth(CompRect);
-      DrawCaption := FixCaption(Bmp,Caption,mw);
-      TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
-      TextPos := CurrentState.Normal.SkinText.GetXY(TextRect, CompRect);
+      if ((FButtonOver) and not (CurrentState.NormalHover.Empty)) then
+      begin
+        CurrentState.NormalHover.Draw(bmp, Scheme);
+        CurrentState.NormalHover.SkinText.AssignFontTo(bmp.Font,Scheme);
+        mw := CurrentState.NormalHover.SkinText.GetMaxWidth(CompRect);
+        DrawCaption := FixCaption(Bmp,Caption,mw);
+        TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
+        TextPos := CurrentState.NormalHover.SkinText.GetXY(TextRect, CompRect);
+      end else
+      begin
+        CurrentState.Normal.Draw(bmp, Scheme);
+        CurrentState.Normal.SkinText.AssignFontTo(bmp.Font,Scheme);
+        mw := CurrentState.Normal.SkinText.GetMaxWidth(CompRect);
+        DrawCaption := FixCaption(Bmp,Caption,mw);
+        TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
+        TextPos := CurrentState.Normal.SkinText.GetXY(TextRect, CompRect);
+      end;
     end;
 
     if (FGlyph32 <> nil) and (CurrentState.DrawIcon) then
