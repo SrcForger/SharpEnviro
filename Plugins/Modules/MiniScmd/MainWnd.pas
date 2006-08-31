@@ -57,7 +57,8 @@ type
     ModuleID : integer;
     BarWnd : hWnd;
     procedure LoadSettings;
-    procedure ReAlignComponents;
+    procedure SetSize(NewWidth : integer);
+    procedure ReAlignComponents(BroadCast : boolean);
   end;
 
 
@@ -81,11 +82,16 @@ begin
   begin
     sWidth     := IntValue('Width',100);
   end;
-
-  ReAlignComponents;
 end;
 
-procedure TMainForm.ReAlignComponents;
+procedure TMainForm.SetSize(NewWidth : integer);
+begin
+  Width := NewWidth;
+  edit.Width := max(1,NewWidth - 4);
+end;
+
+
+procedure TMainForm.ReAlignComponents(BroadCast : boolean);
 var
   FreeBarSpace : integer;
   newWidth : integer;
@@ -93,15 +99,13 @@ begin
   self.Caption := '';
   if sWidth<20 then sWidth := 20;
 
-  edit.Left := 4;
+  edit.Left := 2;
 
-  FreeBarSpace := GetFreeBarSpace(BarWnd) + self.Width;
-  if FreeBarSpace <0 then FreeBarSpace := 1;
-  newWidth := sWidth + 8;
-  if newWidth > FreeBarSpace then Width := FreeBarSpace
-     else Width := newWidth;
-
-  edit.Width := max(1,Width - 8);
+  newWidth := sWidth + 4;
+  Tag := newWidth;
+  Hint := inttostr(newWidth);
+  if newWidth <> Width then
+     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
 end;
 
 
@@ -126,12 +130,11 @@ begin
       end;
       uSharpBarAPI.SaveXMLFile(BarWnd);
     end;
-    ReAlignComponents;
+    ReAlignComponents(True);
 
   finally
     SettingsForm.Free;
     SettingsForm := nil;
-    SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
   end;
 end;
 
