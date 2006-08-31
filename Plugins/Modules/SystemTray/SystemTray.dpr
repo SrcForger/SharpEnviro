@@ -178,7 +178,7 @@ begin
     BarWnd   := FBarWnd;
 
     LoadSettings;
-    ReAlignComponents(true);
+    ReAlignComponents(False);
     TrayClient.ScreenPos := TMainForm(FForm).ClientToScreen(
                                  Point(TMainForm(FForm).Background.Left,
                                  TMainForm(FForm).Background.Top));
@@ -305,7 +305,6 @@ begin
           TrayClient.RenderIcons;
         end;
         TMainForm(temp.Form).ReAlignComponents(false);
-     //   if FUpdateTimer <> nil then TimerObject.OnUpdateTimer(nil);
       end;
 end;
 
@@ -348,13 +347,27 @@ begin
       end;
 end;
 
+procedure SetSize(ID : integer; NewWidth : integer);
+var
+  n : integer;
+  temp : TModule;
+begin
+  for n := 0 to ModuleList.Count - 1 do
+      if TModule(ModuleList.Items[n]).ID = ID then
+      begin
+        temp := TModule(ModuleList.Items[n]);
+        TMainForm(temp.FForm).SetSize(NewWidth);
+      end;
+end;
+
 Exports
   CreateModule,
   CloseModule,
   Poschanged,
   Refresh,
   SkinChanged,
-  ShowSettingsWnd;
+  ShowSettingsWnd,
+  SetSize;
 
 begin
 //  SaveDllProc := @dllProc;  // Speichern der Kette von Exit-Prozeduren

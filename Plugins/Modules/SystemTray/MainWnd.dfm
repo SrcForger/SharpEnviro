@@ -99,6 +99,7 @@ object MainForm: TMainForm
       Margin = 0
       DisabledAlpha = 100
       AutoPosition = False
+      GlyphResize = False
     end
     object sb_right: TSharpEButton
       Left = 256
@@ -150,6 +151,7 @@ object MainForm: TMainForm
       Margin = -3
       DisabledAlpha = 100
       AutoPosition = False
+      GlyphResize = False
     end
   end
   object MenuPopup: TPopupMenu

@@ -157,7 +157,11 @@
 			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
 			<VersionInfoKeys Name="OriginalFilename">SystemTray.dll</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName"></VersionInfoKeys>
-		</VersionInfoKeys>  <Excluded_Packages>
+		</VersionInfoKeys>  
+    
+    
+    
+    <Excluded_Packages>
       <Excluded_Packages Name="C:\Dokumente und Einstellungen\Martin\Eigene Dateien\Borland Studio-Projekte\Bpl\JvJansD9D.bpl">JVCL Jans Components</Excluded_Packages>
     </Excluded_Packages>
   </Delphi.Personality>

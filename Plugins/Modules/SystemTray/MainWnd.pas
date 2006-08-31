@@ -61,7 +61,6 @@ type
     procedure Settings1Click(Sender: TObject);
   protected
   private
-    BarWidth : integer;
     sShowBackground  : Boolean;
     sBackgroundColor : integer;
     sBackgroundAlpha : integer;
@@ -77,11 +76,11 @@ type
   public
     ModuleID : integer;
     Offset : integer;
-    MaxWidth : integer;
     BarWnd : hWnd;
     FTrayClient : TTrayClient;
     procedure LoadSettings;
     procedure RepaintIcons;
+    procedure SetSize(NewWidth : integer);
     procedure ReAlignComponents(SendUpdate : boolean);
   end;
 
@@ -101,7 +100,6 @@ end;
 procedure TMainForm.LoadSettings;
 var item : TJvSimpleXMLElem;
 begin
-  BarWidth := 100;
   Offset   := 0;
   sShowBackground  := False;
   sBackgroundColor := -6;
@@ -116,7 +114,6 @@ begin
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
   if item <> nil then with item.Items do
   begin
-    BarWidth := IntValue('Width',100);
     sShowBackground  := BoolValue('ShowBackground',False);
     sBackgroundColor := IntValue('BackgroundColor',-6);
     sBackgroundAlpha := IntValue('BackgroundAlpha',255);
@@ -129,18 +126,19 @@ begin
   end;               
 end;
 
+procedure TMainForm.SetSize(NewWidth : integer);
+begin
+  Width := NewWidth;
+end;
+
 procedure TMainForm.ReAlignComponents(SendUpdate : boolean);
 var
- owidth : integer;
+ newwidth : integer;
  cs : TColorSchemeEx;
 begin
-  MaxWidth := uSharpBarApi.GetFreeBarSpace(BarWnd)+Width;
-
-  owidth := Width;
-
   if lb_servicenotrunning.visible then
   begin
-    Width := Min(lb_servicenotrunning.Canvas.TextWidth(lb_servicenotrunning.Caption) + 64,MaxWidth);
+    newWidth := lb_servicenotrunning.Canvas.TextWidth(lb_servicenotrunning.Caption);
   end else
   begin
     if FTrayClient <> nil then
@@ -157,8 +155,8 @@ begin
       cs := LoadColorSchemeEX;
       FTrayClient.cs := cs;
       FTrayClient.RenderIcons;
-      Width := Min(FTrayClient.Bitmap.Width,MaxWidth);
-      if FTrayClient.Bitmap.Width > Width then
+      NewWidth := FTrayClient.Bitmap.Width;
+   {   if FTrayClient.Bitmap.Width > Width then
       begin
         Width := MaxWidth;
         sb_left.Left := 0;
@@ -170,17 +168,19 @@ begin
         sb_left.Visible := True;
         sb_right.Visible := True;
         cWidth := Max(sb_right.Left - sb_left.Left - sb_left.Width,0);
-      end else
+      end else  }
       begin
         cwidth := Width;
         offset := 1;
         sb_left.Visible := False;
         sb_right.Visible := False;
       end;
-    end else Width := Min(64,MaxWidth);
+    end else NewWidth := 64;
   end;
 
-  if (owidth <> width) and (SendUpdate) then
+  Tag := newwidth;
+  Hint := inttostr(newwidth);
+  if (newwidth <> width) and (SendUpdate) then
   begin
      SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
   end;
@@ -233,7 +233,6 @@ begin
     ReAlignComponents(true);
   end;
   SettingsForm.Free;
-  SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
 end;
 
 procedure TMainForm.BackgroundMouseUp(Sender: TObject; Button: TMouseButton;
