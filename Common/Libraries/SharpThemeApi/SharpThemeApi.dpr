@@ -319,9 +319,6 @@ procedure LoadThemeInfo;
 var
   XML : TJvSimpleXML;
 begin
-  randomize;
-  Theme.Info.Name := inttostr(random(10000));
-  exit;
   SetThemeInfoDefault;
   if not FileExists(Theme.Data.Directory + THEME_INFO_FILE) then exit;
 
@@ -582,10 +579,6 @@ function LoadCurrentTheme : boolean;
 var
   themename : String;
 begin
-  randomize;
-  Theme.Info.Name := inttostr(random(10000));
-  exit;
-
   themename := GetCurrentThemeName;
   result := LoadTheme(PChar(themename));
 end;
