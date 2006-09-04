@@ -39,25 +39,19 @@ uses
   SharpAPI in '..\SharpAPI\SharpAPI.pas';
 
 type
-  TSharpEColorSet = record
-                      BaseColor  : integer;
-                      LightColor : integer;
-                      DarkColor  : integer;
-                      FontColor  : integer;
-                    end;
-
   TSharpESkinColor = record
                        Name  : String;
                        Tag   : String;
+                       Info  : String;
                        Color : integer;
                      end;
+
+  TSharpEColorSet = array of TSharpESkinColor;
 
   TSharpEIcon = record
                   FileName : String;
                   Tag      : String;
                 end;
-
-                
 
   TThemeIconSet = record
                     Name      : String;
@@ -69,7 +63,8 @@ type
 
   TThemeSkin = record
                  Name : String;
-                 SkinColors : array of TSharpESkinColor;
+                 Scheme : String;
+                 Directory : String;
                end;
 
   TThemeData = record
@@ -85,10 +80,8 @@ type
                end;
 
   TThemeScheme = record
-                   Name      : String;
-                   FirstSet  : TSharpEColorSet;
-                   SecondSet : TSharpEColorSet;
-                   ThirdSet  : TSharpEColorSet;
+                   Name   : String;
+                   Colors : TSharpEColorSet;
                  end;
 
   TSharpETheme = record
@@ -110,6 +103,9 @@ const
   DEFAULT_THEME = 'Default';
   DEFAULT_ICONSET = 'Cubeix Black';
 
+  SKINS_DIRECTORY = 'Skins';
+  SKINS_SCHEME_DIRECTORY = 'Schemes';
+
   SHARPE_USER_SETTINGS = 'SharpE.xml';
 
   THEME_INFO_FILE = 'Theme.xml';
@@ -117,58 +113,30 @@ const
   SKIN_FILE       = 'Skin.xml';
   ICONSET_FILE    = 'IconSet';
 
-  scsFirstBaseColor   = -1;
-  scsFirstLightColor  = -2;
-  scsFirstDarkColor   = -3;
-  scsFirstFontColor   = -4;
-  scsSecondBaseColor  = -5;
-  scsSecondLightColor = -6;
-  scsSecondDarkColor  = -7;
-  scsSecondFontColor  = -8;
-  scsThirdBaseColor   = -9;
-  scsThirdLightColor  = -10;
-  scsThirdDarkColor   = -11;
-  scsThirdFontColor   = -12;
-
-
 // ##########################################
 //   COLOR CONVERTING
 // ##########################################
 
 function SchemeCodeToColor(pCode : integer) : integer;
 begin
-  case pCode of
-    scsFirstBaseColor   : result := Theme.Scheme.FirstSet.BaseColor;
-    scsFirstLightColor  : result := Theme.Scheme.FirstSet.LightColor;
-    scsFirstDarkColor   : result := Theme.Scheme.FirstSet.DarkColor;
-    scsFirstFontColor   : result := Theme.Scheme.FirstSet.FontColor;
-    scsSecondBaseColor  : result := Theme.Scheme.SecondSet.BaseColor;
-    scsSecondLightColor : result := Theme.Scheme.SecondSet.LightColor;
-    scsSecondDarkColor  : result := Theme.Scheme.SecondSet.DarkColor;
-    scsSecondFontColor  : result := Theme.Scheme.SecondSet.FontColor;
-    scsThirdBaseColor   : result := Theme.Scheme.ThirdSet.BaseColor;
-    scsThirdLightColor  : result := Theme.Scheme.ThirdSet.LightColor;
-    scsThirdDarkColor   : result := Theme.Scheme.ThirdSet.DarkColor;
-    scsThirdFontColor   : result := Theme.Scheme.ThirdSet.FontColor;
-    else result := pCode;
-  end;
+  if pCode < 0 then
+  begin
+    if abs(pCode) < length(Theme.Scheme.Colors)-1 then
+       result := Theme.Scheme.Colors[abs(pCode)].Color;
+  end else result := pCode;
 end;
 
 function ColorToSchemeCode(pColor : integer) : integer;
+var
+  n : integer;
 begin
-       if (pColor = Theme.Scheme.FirstSet.BaseColor) then   result := scsFirstBaseColor
-  else if (pColor = Theme.Scheme.FirstSet.LightColor) then  result := scsFirstLightColor
-  else if (pColor = Theme.Scheme.FirstSet.DarkColor) then   result := scsFirstDarkColor
-  else if (pColor = Theme.Scheme.FirstSet.FontColor) then   result := scsFirstFontColor
-  else if (pColor = Theme.Scheme.SecondSet.BaseColor) then  result := scsSecondBaseColor
-  else if (pColor = Theme.Scheme.SecondSet.LightColor) then result := scsSecondLightColor
-  else if (pColor = Theme.Scheme.SecondSet.DarkColor) then  result := scsSecondDarkColor
-  else if (pColor = Theme.Scheme.SecondSet.FontColor) then  result := scsSecondFontColor
-  else if (pColor = Theme.Scheme.ThirdSet.BaseColor) then   result := scsThirdBaseColor
-  else if (pColor = Theme.Scheme.ThirdSet.LightColor) then  result := scsThirdLightColor
-  else if (pColor = Theme.Scheme.ThirdSet.DarkColor) then   result := scsThirdDarkColor
-  else if (pColor = Theme.Scheme.ThirdSet.FontColor) then   result := scsThirdFontColor
-  else result := pColor;
+  for n := 0 to High(Theme.Scheme.Colors) do
+      if Theme.Scheme.Colors[n].Color = pColor then
+      begin
+        result := -n;
+        exit;
+      end;
+  result := n;
 end;
 
 // ##########################################
@@ -246,30 +214,16 @@ procedure SetThemeSchemeDefault;
 begin
   Theme.Scheme.Name := 'Default';
 
-  Theme.Scheme.FirstSet.BaseColor  := 0;
-  Theme.Scheme.FirstSet.LightColor := 0;
-  Theme.Scheme.FirstSet.DarkColor  := 0;
-  Theme.Scheme.FirstSet.FontColor  := 0;
-
-  Theme.Scheme.SecondSet.BaseColor  := 0;
-  Theme.Scheme.SecondSet.LightColor := 0;
-  Theme.Scheme.SecondSet.DarkColor  := 0;
-  Theme.Scheme.SecondSet.FontColor  := 0;
-
-  Theme.Scheme.ThirdSet.BaseColor  := 0;
-  Theme.Scheme.ThirdSet.LightColor := 0;
-  Theme.Scheme.ThirdSet.DarkColor  := 0;
-  Theme.Scheme.ThirdSet.FontColor  := 0;
+  setlength(Theme.Scheme.Colors,1);
+  Theme.Scheme.Colors[0].Name  := 'Default';
+  Theme.Scheme.Colors[0].Tag   := 'Default';
+  Theme.Scheme.Colors[0].Info  := '';
+  Theme.Scheme.Colors[0].Color := 16777215;
 end;
 
 procedure SetThemeSkinDefault;
 begin
   Theme.Skin.Name := 'Default';
-  setlength(Theme.Skin.SkinColors,0);
-  setlength(Theme.Skin.SkinColors,1);
-  Theme.Skin.SkinColors[0].Name := 'Background';
-  Theme.Skin.SkinColors[0].Tag  := '$FirstBaseColor';
-  Theme.Skin.skinColors[0].Color := scsFirstBaseColor;
 end;
 
 
@@ -333,69 +287,29 @@ begin
   SetThemeSkinDefault;
   if not FileExists(Theme.Data.Directory + SKIN_FILE) then exit;
 
-  setlength(Theme.Skin.SkinColors,0);
   XML := TJvSimpleXML.Create(nil);
   try
     XML.LoadFromFile(Theme.Data.Directory + SKIN_FILE);
     with XML.Root.Items do
     begin
       Theme.Skin.Name := Value('Name');
-      if ItemNamed['SkinColors'] <> nil then
-         for n := 0 to ItemNamed['SkinColors'].Items.Count - 1 do
-             with ItemNamed['SkinColors'].Items.Item[n].Items do
-             begin
-               setlength(Theme.Skin.SkinColors,length(Theme.Skin.SkinColors)+1);
-               Theme.Skin.SkinColors[High(Theme.Skin.SkinColors)].Name := Value('Name','Background');
-               Theme.Skin.SkinColors[High(Theme.Skin.SkinColors)].Tag  := Value('Tag','$FirstBaseColor');
-               Theme.Skin.SkinColors[High(Theme.Skin.SkinColors)].Color := IntValue('Color',scsFirstBaseColor);
-             end;
+      Theme.Skin.Scheme := Value('Scheme');
     end;
   finally
     XML.Free;
   end;
+  Theme.Skin.Directory := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + Theme.Skin.Name + '\';
 end;
 
 procedure LoadThemeScheme;
 var
   XML : TJvSimpleXML;
 begin
-  if not FileExists(Theme.Data.Directory + SCHEME_FILE) then SetThemeSchemeDefault;
+  if not DirectoryExists(Theme.Skin.Directory + SKINS_SCHEME_DIRECTORY) then SetThemeSchemeDefault;
 
   XML := TJvSimpleXML.Create(nil);
   try
     XML.LoadFromFile(Theme.Data.Directory + SCHEME_FILE);
-    with XML.Root.Items do
-    begin
-      Theme.Scheme.Name := Value('Name','Default');
-      if ItemNamed['BaseColors'] <> nil then
-         with ItemNamed['BaseColors'].Items do
-         begin
-           Theme.Scheme.FirstSet.BaseColor  := IntValue('1',0);
-           Theme.Scheme.SecondSet.BaseColor := IntValue('2',0);
-           Theme.Scheme.ThirdSet.BaseColor  := IntValue('3',0);
-         end;
-      if ItemNamed['LightColors'] <> nil then
-         with ItemNamed['LightColors'].Items do
-         begin
-           Theme.Scheme.FirstSet.LightColor  := IntValue('1',0);
-           Theme.Scheme.SecondSet.LightColor := IntValue('2',0);
-           Theme.Scheme.ThirdSet.LightColor  := IntValue('3',0);
-         end;
-      if ItemNamed['DarkColors'] <> nil then
-         with ItemNamed['DarkColors'].Items do
-         begin
-           Theme.Scheme.FirstSet.DarkColor  := IntValue('1',0);
-           Theme.Scheme.SecondSet.DarkColor := IntValue('2',0);
-           Theme.Scheme.ThirdSet.DarkColor  := IntValue('3',0);
-         end;
-      if ItemNamed['FontColors'] <> nil then
-         with ItemNamed['FontColors'].Items do
-         begin
-           Theme.Scheme.FirstSet.FontColor  := IntValue('1',0);
-           Theme.Scheme.SecondSet.FontColor := IntValue('2',0);
-           Theme.Scheme.ThirdSet.FontColor  := IntValue('3',0);
-         end;
-    end;
   finally
     XML.Free;
   end;
@@ -405,6 +319,9 @@ procedure LoadThemeInfo;
 var
   XML : TJvSimpleXML;
 begin
+  randomize;
+  Theme.Info.Name := inttostr(random(10000));
+  exit;
   SetThemeInfoDefault;
   if not FileExists(Theme.Data.Directory + THEME_INFO_FILE) then exit;
 
@@ -665,6 +582,10 @@ function LoadCurrentTheme : boolean;
 var
   themename : String;
 begin
+  randomize;
+  Theme.Info.Name := inttostr(random(10000));
+  exit;
+
   themename := GetCurrentThemeName;
   result := LoadTheme(PChar(themename));
 end;
@@ -712,5 +633,4 @@ exports
   ValidateIcon;
 
 begin
-
 end.
