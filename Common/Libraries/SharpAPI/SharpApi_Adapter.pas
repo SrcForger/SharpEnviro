@@ -79,11 +79,12 @@ end;
 
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
-const
-  cForms = 'Forms';
 begin
   with JvInterpreterAdapter do
   begin
+    AddConst('SharpApi','SHARPE_DIR',String(GetSharpEDirectory));
+    AddConst('SharpApi','SETTINGS_USER_DIR',String(GetSharpeUserSettingsPath));
+    AddConst('SharpApi','SETTINGS_GLOBAL_DIR',String(GetSharpEGlobalSettingsPath));
     AddFunction('SharpApi','GetSharpEDirectory',Adapter_GetSharpeDirectory,0,[],varString);
     AddFunction('SharpApi','GetSharpeUserSettingsPath',Adapter_GetSharpeUserSettingsPath,0,[],varString);
     AddFunction('SharpApi','GetSharpeGlobalSettingsPath',Adapter_GetSharpeGlobalSettingsPath,0,[],varString);
