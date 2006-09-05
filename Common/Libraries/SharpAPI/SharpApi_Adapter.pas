@@ -39,7 +39,7 @@ procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapt
 
 implementation
 
-uses SharpApi;
+uses Variants,SharpApi;
 
 procedure Adapter_GetSharpeDirectory(var Value: Variant; Args: TJvInterpreterArgs);
 begin
@@ -56,6 +56,26 @@ begin
   Value := String(GetSharpeGlobalSettingsPath);
 end;
 
+procedure Adapter_IsComponentRunning(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := IsComponentRunning(PChar(VarToStr(Args.Values[0])));
+end;
+
+procedure Adapter_FindComponent(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := FindComponent(PChar(VarToStr(Args.Values[0])));
+end;
+
+procedure Adapter_CloseComponent(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := CloseComponent(PChar(VarToStr(Args.Values[0])));
+end;
+
+procedure Adapter_TerminateComponent(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  TerminateComponent(PChar(VarToStr(Args.Values[0])));
+end;
+
 
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
@@ -67,6 +87,10 @@ begin
     AddFunction('SharpApi','GetSharpEDirectory',Adapter_GetSharpeDirectory,0,[],varString);
     AddFunction('SharpApi','GetSharpeUserSettingsPath',Adapter_GetSharpeUserSettingsPath,0,[],varString);
     AddFunction('SharpApi','GetSharpeGlobalSettingsPath',Adapter_GetSharpeGlobalSettingsPath,0,[],varString);
+    AddFunction('SharpApi','IsComponentRunning',Adapter_IsComponentRunning,1,[varString],varBoolean);
+    AddFunction('SharpApi','FindComponent',Adapter_FindComponent,1,[varString],varLongWord);
+    AddFunction('SharpApi','CloseComponent',Adapter_CloseComponent,1,[varString],varBoolean);
+    AddFunction('SharpApi','TerminateComponent',Adapter_TerminateComponent,1,[varString],varEmpty);
   end;
 end;
 

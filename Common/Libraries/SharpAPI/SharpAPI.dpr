@@ -153,6 +153,11 @@ const
   WM_FORCEOBJECTRELOAD    = WM_APP + 533;
   WM_TERMINALWND          = WM_APP + 534;
 
+  WM_THEMELOADINGSTART    = WM_APP + 535;
+  WM_THEMELOADINGEND      = WM_APP + 536;
+
+  WM_SHARPTERMINATE       = WM_APP + 550;
+
   // SharpBar (new Skin Stuff)
   WM_UPDATEBARWIDTH       = WM_APP + 601;
   WM_SHARPEPLUGINMESSAGE  = WM_APP + 602;
@@ -1634,6 +1639,48 @@ begin
 
 end;
 
+function FindComponent(Component : PChar) : hwnd;
+var
+  sname : string;
+begin
+  sname := Component;
+  if      CompareText(sname,'sharpdesk') = 0 then result := FindWindow('TSharpDeskMainForm',nil)
+  else if CompareText(sname,'sharpcore') = 0 then result := FindWindow('TSharpCoreMainWnd',nil)
+  else if CompareText(sname,'sharpbar') = 0  then result := FindWindow('TSharpBarMainForm',nil)
+  else result := FindWindow(PChar(sname),nil);
+end;
+
+function IsComponentRunning(Component : PChar) : boolean;
+begin
+  if FindComponent(Component) <> 0 then result := true
+     else result := false;
+end;
+
+function CloseComponent(Component : PChar) : boolean;
+var
+  wnd : THandle;
+begin
+  wnd := FindComponent(Component);
+
+  if wnd <> 0 then
+  begin
+    SendMessage(wnd,WM_SHARPTERMINATE,0,0);
+    PostMessage(wnd,WM_CLOSE,0,0);
+    PostThreadMessage(GetWindowThreadProcessID(wnd, nil), WM_QUIT, 0, 0);
+    result := not IsComponentRunning(Component);
+  end else result := false;
+end;
+
+procedure TerminateComponent(Component : PChar);
+var
+  PID : DWord;
+begin
+  PID := GetPidFromProcessName(Component + '.exe');
+  TerminateApp(PID,250);
+end;
+
+
+
 exports
   SharpEBroadCast,
   SendDebugMessage, //Sends Message to SharpConsole
@@ -1701,8 +1748,12 @@ exports
   LoadColorScheme,
   LoadColorSchemeEx,
   SaveColorScheme,
-  SaveColorSchemeEx;
+  SaveColorSchemeEx,
 
+  FindComponent,
+  IsComponentRunning,
+  CloseComponent,
+  TerminateComponent;
 begin
 
 

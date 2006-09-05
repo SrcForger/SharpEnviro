@@ -79,6 +79,8 @@ const
   WM_THEMELOADINGSTART    = WM_APP + 535;
   WM_THEMELOADINGEND      = WM_APP + 536;
 
+  WM_SHARPTERMINATE       = WM_APP + 550;
+
   // SharpBar (new Skin Stuff)
   WM_UPDATEBARWIDTH       = WM_APP + 601;
   WM_SHARPEPLUGINMESSAGE  = WM_APP + 602;
@@ -275,6 +277,11 @@ function SendMessageTo(WndName: string; msg: integer; wpar: wparam; lpar: lparam
 function BarMsg(PluginName, Command: pChar): hresult; external 'SharpApi.dll';
 // new for skin stuff
 function SendPluginMessage(BarID, PluginID : integer; Command : pChar): hresult; external 'SharpApi.dll';
+
+function FindComponent(Component : PChar) : hwnd; external 'SharpApi.dll' name 'FindComponent';
+function IsComponentRunning(Component : PChar) : boolean; external 'SharpApi.dll' name 'IsComponentRunning';
+function CloseComponent(Component : PChar) : boolean; external 'SharpApi.dll' name 'CloseComponent';
+procedure TerminateComponent(Component : PChar); external 'SharpApi.dll' name 'TerminateComponent';
 
 implementation
 
