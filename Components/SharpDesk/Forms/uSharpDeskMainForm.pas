@@ -218,6 +218,7 @@ type
     procedure WMKILLFOCUS(var msg : TMessage);            message WM_KILLFOCUS;
     procedure WMMouseLeave(var Msg: TMessage);            message CM_MOUSELEAVE;
     procedure WMMouseMove(var Msg: TMessage);             message WM_MOUSEMOVE;
+    procedure WMSharpTerminate(var Msg : TMessage);       message WM_SHARPTERMINATE;
     procedure OnCreateNewPresetClick(Sender : TObject);        // PresetMenu event
     procedure OnSaveAsPresetClick(Sender : TObject);           // PresetMenu event
     procedure OnLoadPresetClick(Sender : TObject);             // PresetMenu event
@@ -296,6 +297,12 @@ uses uSharpDeskCreateForm,
 
 // ######################################
 
+
+procedure TSharpDeskMainForm.WMSharpTerminate(var Msg : TMessage);
+begin
+  SharpDesk.DeskSettings.SaveSettings;
+  Application.Terminate;
+end;
 
 procedure TSharpDeskMainForm.WMDisplayChange(var Msg : TMessage);
 begin
