@@ -1,0 +1,53 @@
+
+ Start         Length     Name                   Class
+ 0001:00000000 000115D8H .text                   CODE
+ 0002:00000000 00000588H .data                   DATA
+ 0002:00000588 00000885H .bss                    BSS
+
+
+Detailed map of segments
+
+ 0001:00000000 0000457B C=CODE     S=.text    G=(none)   M=System   ACBP=A9
+ 0001:0000457C 000001DC C=CODE     S=.text    G=(none)   M=SysInit  ACBP=A9
+ 0001:00004758 00000038 C=CODE     S=.text    G=(none)   M=Types    ACBP=A9
+ 0001:00004790 000001C5 C=CODE     S=.text    G=(none)   M=Windows  ACBP=A9
+ 0001:00004958 00000038 C=CODE     S=.text    G=(none)   M=Messages ACBP=A9
+ 0001:00004990 00000308 C=CODE     S=.text    G=(none)   M=SysConst ACBP=A9
+ 0001:00004C98 00005DB0 C=CODE     S=.text    G=(none)   M=SysUtils ACBP=A9
+ 0001:0000AA48 000007FF C=CODE     S=.text    G=(none)   M=VarUtils ACBP=A9
+ 0001:0000B248 00002806 C=CODE     S=.text    G=(none)   M=Variants ACBP=A9
+ 0001:0000DA50 00000098 C=CODE     S=.text    G=(none)   M=RTLConsts ACBP=A9
+ 0001:0000DAE8 00000084 C=CODE     S=.text    G=(none)   M=TypInfo  ACBP=A9
+ 0001:0000DB6C 00000038 C=CODE     S=.text    G=(none)   M=ActiveX  ACBP=A9
+ 0001:0000DBA4 00003672 C=CODE     S=.text    G=(none)   M=Classes  ACBP=A9
+ 0001:00011218 00000038 C=CODE     S=.text    G=(none)   M=ShellHookTypes ACBP=A9
+ 0001:00011250 00000388 C=CODE     S=.text    G=(none)   M=SharpProcess ACBP=A9
+ 0002:00000000 00000098 C=DATA     S=.data    G=DGROUP   M=System   ACBP=A9
+ 0002:00000098 0000002C C=DATA     S=.data    G=DGROUP   M=SysInit  ACBP=A9
+ 0002:000000C4 0000024C C=DATA     S=.data    G=DGROUP   M=SysUtils ACBP=A9
+ 0002:00000310 00000008 C=DATA     S=.data    G=DGROUP   M=VarUtils ACBP=A9
+ 0002:00000318 00000076 C=DATA     S=.data    G=DGROUP   M=Variants ACBP=A9
+ 0002:00000390 0000000C C=DATA     S=.data    G=DGROUP   M=TypInfo  ACBP=A9
+ 0002:0000039C 00000004 C=DATA     S=.data    G=DGROUP   M=Classes  ACBP=A9
+ 0002:00001000 0000065C C=BSS      S=.bss     G=DGROUP   M=System   ACBP=A9
+ 0002:0000165C 00000014 C=BSS      S=.bss     G=DGROUP   M=SysInit  ACBP=A9
+ 0002:00001670 00000004 C=BSS      S=.bss     G=DGROUP   M=Types    ACBP=A9
+ 0002:00001674 00000008 C=BSS      S=.bss     G=DGROUP   M=Windows  ACBP=A9
+ 0002:0000167C 00000004 C=BSS      S=.bss     G=DGROUP   M=Messages ACBP=A9
+ 0002:00001680 00000004 C=BSS      S=.bss     G=DGROUP   M=SysConst ACBP=A9
+ 0002:00001684 00000120 C=BSS      S=.bss     G=DGROUP   M=SysUtils ACBP=A9
+ 0002:000017A4 0000005C C=BSS      S=.bss     G=DGROUP   M=VarUtils ACBP=A9
+ 0002:00001800 00000040 C=BSS      S=.bss     G=DGROUP   M=Variants ACBP=A9
+ 0002:00001840 00000004 C=BSS      S=.bss     G=DGROUP   M=RTLConsts ACBP=A9
+ 0002:00001844 00000004 C=BSS      S=.bss     G=DGROUP   M=TypInfo  ACBP=A9
+ 0002:00001848 00000004 C=BSS      S=.bss     G=DGROUP   M=ActiveX  ACBP=A9
+ 0002:0000184C 00000034 C=BSS      S=.bss     G=DGROUP   M=Classes  ACBP=A9
+ 0002:00001880 00000004 C=BSS      S=.bss     G=DGROUP   M=ShellHookTypes ACBP=A9
+
+Bound resource files
+
+SharpProcess.RES
+SharpProcess.drf
+
+
+Program entry point at 0001:000115A4
