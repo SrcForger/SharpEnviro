@@ -73,6 +73,8 @@ type
     FlashTimer: TTimer;
     ses_minall: TSharpEButton;
     ses_maxall: TSharpEButton;
+    TimedCheck: TTimer;
+    procedure TimedCheckTimer(Sender: TObject);
     procedure ses_maxallClick(Sender: TObject);
     procedure ses_minallClick(Sender: TObject);
     procedure FlashTimerTimer(Sender: TObject);
@@ -110,6 +112,7 @@ type
     procedure ReAlignComponents(BroadCast : boolean);
     procedure WMCommand(var msg: TMessage); message WM_COMMAND;
     procedure WMShellHook(var msg : TMessage); message WM_SHELLHOOK;
+    procedure WMVWMChange(var msg : TMessage); message WM_SHARPVWMMESSAGE;
     procedure NewTask(pItem : TTaskItem; Index : integer);
     procedure RemoveTask(pItem : TTaskItem; Index : integer);
     procedure UpdateTask(pItem : TTaskItem; Index : integer);
@@ -141,6 +144,13 @@ var
 
 {$R *.dfm}
 
+function PointInRect(P : TPoint; Rect : TRect) : boolean;
+begin
+  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
+     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
+     else PointInRect:=False;
+end;
+
 procedure LockWindow(const Handle: HWND);
 begin
   SendMessage(Handle, WM_SETREDRAW, 0, 0);
@@ -150,6 +160,12 @@ procedure UnlockWindow(const Handle: HWND);
 begin
   SendMessage(Handle, WM_SETREDRAW, 1, 0);
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+end;
+
+procedure TMainForm.WMVWMChange(var msg : TMessage);
+begin
+  if TimedCheck.Enabled then TimedCheck.Enabled := false;
+  TimedCheck.Enabled := True;
 end;
 
 procedure TMainForm.UpdateCustomSettings;
@@ -710,9 +726,12 @@ var
   n,i : integer;
   pTaskItem : TSharpETaskItem;
   pItem : TTaskItem;
+  changed : boolean;
 begin
   if (sIFilter = False) and (sEFilter = False) then exit;
 
+  changed := False;
+  FLocked := True;
   pTaskItem := nil;
   for i := 0 to TM.GetCount do
   begin
@@ -723,18 +742,31 @@ begin
       if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
       begin
         pTaskItem := TSharpETaskItem(IList.Items[n]);
+        if not CheckFilter(pItem) then
+        begin
+          RemoveTask(TM.GetItemByHandle(pTaskItem.Tag),0);
+          changed := True;
+        end;
         break;
       end;
       if pTaskItem = nil then
-         if CheckFilter(pItem) then NewTask(pItem,i);
+         if CheckFilter(pItem) then
+         begin
+           NewTask(pItem,i);
+           changed := True;
+         end;
     end;
   end;
-
+  FLocked := False;
+  if changed then RealignComponents(True);
 end;
 
 function TMainForm.CheckFilter(pItem : TTaskItem) : boolean;
 var
   n : integer;
+  R : TRect;
+  Mon : TMonitor;
+  icount : integer;
 begin
   if (sIFilter = False) and (sEFilter = False) then
   begin
@@ -743,15 +775,24 @@ begin
   end;
 
   result := false;
+  icount := 0;
   if sIFilter then
   begin
     for n:=0 to High(sIFilters) do
     begin
       case sIFilters[n].FilterType of
-        0: if pItem.Placement.showCmd in sIFilters[n].FilterStates then result := true;
-        1: if pItem.WndClass = sIFilters[n].FilterClass then result := true;
-        2: if pItem.FileName = sIFilters[n].FilterFile then result := true;
+        0: if pItem.Placement.showCmd in sIFilters[n].FilterStates then icount := icount + 1;
+        1: if pItem.WndClass = sIFilters[n].FilterClass then icount := icount + 1;
+        2: if pItem.FileName = sIFilters[n].FilterFile then icount := icount + 1;
+        3: begin
+             Mon := Screen.MonitorFromWindow(Self.Handle);
+             GetWindowRect(pItem.Handle,R);
+             if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect))
+                or (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
+                or (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then icount := icount + 1;
+           end;
       end;
+      if icount = length(sIFilters) then result := true;
     end;
   end else result := true;
 
@@ -763,6 +804,13 @@ begin
         0: if pItem.Placement.showCmd in sEFilters[n].FilterStates then result := false;
         1: if pItem.WndClass = sEFilters[n].FilterClass then result := false;
         2: if pItem.FileName = sEFilters[n].FilterFile then result := false;
+        3: begin
+             Mon := Screen.MonitorFromWindow(Self.Handle);
+             GetWindowRect(pItem.Handle,R);
+             if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect))
+                or (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
+                or (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then result := false;
+           end;
       end;
     end;
   end;
@@ -1067,6 +1115,12 @@ begin
     FLocked := False;
   end;
   RealignComponents(True);
+end;
+
+procedure TMainForm.TimedCheckTimer(Sender: TObject);
+begin
+  CheckFilterAll;
+  TimedCheck.Enabled := False;
 end;
 
 end.

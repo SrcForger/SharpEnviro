@@ -19,7 +19,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 285
-    Height = 166
+    Height = 164
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -150,5 +150,12 @@ object MainForm: TMainForm
     OnTimer = FlashTimerTimer
     Left = 200
     Top = 32
+  end
+  object TimedCheck: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = TimedCheckTimer
+    Left = 216
+    Top = 96
   end
 end
