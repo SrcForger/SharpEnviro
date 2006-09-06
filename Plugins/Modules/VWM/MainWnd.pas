@@ -208,6 +208,8 @@ begin
 
   newWidth := sWidth + 4;
 
+  Tag := newWidth;
+  Hint := inttostr(newWidth);
   if (newWidth <> Width) then
      if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
 end;
