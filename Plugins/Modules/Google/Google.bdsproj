@@ -115,11 +115,11 @@
 			<Linker Name="ExeDescription">Google</Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir"></Directories>
+			<Directories Name="OutputDir">..\..\..\..\SharpE\Modules</Directories>
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath"></Directories>
+			<Directories Name="SearchPath">..\..\..\Common\Delphi Components\SharpE Skin Components</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
@@ -127,7 +127,7 @@
 		</Directories>
 		<Parameters>
 			<Parameters Name="RunParams"></Parameters>
-			<Parameters Name="HostApplication"></Parameters>
+			<Parameters Name="HostApplication">..\..\..\..\SharpE\SharpBar.exe</Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
 			<Parameters Name="DebugCWD"></Parameters>
