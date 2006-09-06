@@ -129,6 +129,7 @@ type
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem : TJvSimpleXMlElem);
 
+
     // theme update;
     procedure WMThemeUpdateStart(var msg : TMessage); message WM_THEMELOADINGSTART;
     procedure WMThemeUpdateEnd(var msg : TMessage); message WM_THEMELOADINGEND;
@@ -148,6 +149,7 @@ type
     procedure WMGetBGHandle(var msg : TMessage); message WM_GETBACKGROUNDHANDLE;
     procedure WMGetBarHeight(var msg : TMessage); message WM_GETBARHEIGHT;
 
+    procedure WMSharpVWMMessage(var msg : TMessage); message WM_SHARPVWMMESSAGE;
     procedure WMDisplayChange(var msg : TMessage); message WM_DISPLAYCHANGE;
     procedure WMUpdateBarWidth(var msg : TMessage); message WM_UPDATEBARWIDTH;
     procedure WMGetCopyData(var msg: TMessage); message WM_COPYDATA;
@@ -268,6 +270,21 @@ begin
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
   DelayTimer1.Enabled := True;
 //  DelayTimer2.Enabled := True;
+end;
+
+procedure TSharpBarMainForm.WMSharpVWMMessage;
+var
+  n : integer;
+begin
+  // bar received a shell hook, forward it to all registered modules
+
+  try
+    for n := 0 to ModuleManager.Modules.Count -1 do
+    begin
+      PostMessage(TModule(ModuleManager.Modules.Items[n]).Handle,WM_SHARPVWMMESSAGE,msg.WParam,msg.LParam);
+    end;
+  except
+  end;
 end;
 
 procedure TSharpBarMainForm.WMShellHook(var msg : TMessage);
