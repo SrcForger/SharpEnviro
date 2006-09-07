@@ -767,6 +767,7 @@ var
   R : TRect;
   Mon : TMonitor;
   icount : integer;
+  mnfilter : integer;
 begin
   if (sIFilter = False) and (sEFilter = False) then
   begin
@@ -776,14 +777,23 @@ begin
 
   result := false;
   icount := 0;
+  mnfilter := 0;
   if sIFilter then
   begin
     for n:=0 to High(sIFilters) do
     begin
       case sIFilters[n].FilterType of
         0: if pItem.Placement.showCmd in sIFilters[n].FilterStates then icount := icount + 1;
-        1: if pItem.WndClass = sIFilters[n].FilterClass then icount := icount + 1;
-        2: if pItem.FileName = sIFilters[n].FilterFile then icount := icount + 1;
+        1: if pItem.WndClass = sIFilters[n].FilterClass then
+           begin
+             icount := icount + 1;
+             mnfilter := mnfilter + 1;
+           end;
+        2: if pItem.FileName = sIFilters[n].FilterFile then
+           begin
+             icount := icount + 1;
+             mnfilter := mnfilter + 1;
+           end;
         3: begin
              Mon := Screen.MonitorFromWindow(Self.Handle);
              GetWindowRect(pItem.Handle,R);
@@ -792,7 +802,7 @@ begin
                 or (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then icount := icount + 1;
            end;
       end;
-      if icount = length(sIFilters) then result := true;
+      if icount >= length(sIFilters)-mnfilter then result := true;
     end;
   end else result := true;
 
