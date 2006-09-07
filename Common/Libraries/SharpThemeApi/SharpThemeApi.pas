@@ -37,26 +37,62 @@ uses
   Classes;
 
 type
-  TSharpEColorSet = record
-                      BaseColor  : integer;
-                      LightColor : integer;
-                      DarkColor  : integer;
-                      FontColor  : integer;
-                    end;
-
   TSharpESkinColor = record
-                       Name  : String;
-                       Tag   : String;
-                       color : integer;
-                     end;
+    Name: string;
+    Tag: string;
+    Info: string;
+    Color: integer;
+  end;
+
+  TSharpEColorSet = array of TSharpESkinColor;
 
   TSharpEIcon = record
-                  FileName : String;
-                  Tag      : String;
-                end;
+    FileName: string;
+    Tag: string;
+  end;
+
+  TThemeIconSet = record
+    Name: string;
+    Author: string;
+    Website: string;
+    Directory: string;
+    Icons: array of TSharpEIcon;
+  end;
+
+  TThemeSkin = record
+    Name: string;
+    Scheme: string;
+    Directory: string;
+  end;
+
+  TThemeData = record
+    Directory: string;
+    LastUpdate: Int64;
+  end;
+
+  TThemeInfo = record
+    Name: string;
+    Author: string;
+    Comment: string;
+    Website: string;
+  end;
+
+  TThemeScheme = record
+    Name: string;
+    Colors: TSharpEColorSet;
+  end;
+
+  TSharpETheme = record
+    Data: TThemeData;
+    Info: TThemeInfo;
+    Scheme: TThemeScheme;
+    Skin: TThemeSkin;
+    IconSet: TThemeIconSet;
+  end;
 
 // ThemeAPIControls
 procedure InitializeTheme; external 'SharpThemeApi.dll' name 'InitializeTheme';
+function Initialized: boolean; external 'SharpThemeApi.dll' name 'Initialized';
 function LoadTheme(pName : PChar) : boolean; overload; external 'SharpThemeApi.dll' name 'LoadTheme';
 function LoadTheme : boolean; overload; external 'SharpThemeApi.dll' name 'LoadCurrentTheme';
 
@@ -75,6 +111,10 @@ function GetSchemeColorSet(pSet : integer) : TSharpEColorSet; external 'SharpThe
 function GetSchemeName : PChar; external 'SharpThemeApi.dll' name 'GetSchemeName';
 function SchemeCodeToColor(pCode : integer) : integer; external 'SharpThemeApi.dll' name 'SchemeCodeToColor';
 function ColorToSchemeCode(pCode : integer) : integer; external 'SharpThemeApi.dll' name 'ColorToSchemeCode';
+function GetSchemeColorCount: Integer; external 'SharpThemeApi.dll' name 'GetSchemeColorCount';
+function GetSchemeColorByIndex(pIndex: integer): TSharpESkinColor; external 'SharpThemeApi.dll' name 'GetSchemeColorByIndex';
+function GetSchemeColorIndexByTag(pTag: string): Integer; external 'SharpThemeApi.dll' name 'GetSchemeColorIndexByTag';
+function GetSchemeColorByTag(pTag: string): TSharpESkinColor; external 'SharpThemeApi.dll' name 'GetSchemeColorByTag';
 
 // Theme Skin
 function GetSkinName : PChar; external 'SharpThemeApi.dll' name 'GetSkinName';

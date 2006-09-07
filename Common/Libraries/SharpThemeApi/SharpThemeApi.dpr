@@ -30,7 +30,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 library SharpThemeApi;
 
-
 uses
   SysUtils,
   DateUtils,
@@ -40,61 +39,62 @@ uses
 
 type
   TSharpESkinColor = record
-                       Name  : String;
-                       Tag   : String;
-                       Info  : String;
-                       Color : integer;
-                     end;
+    Name: string;
+    Tag: string;
+    Info: string;
+    Color: integer;
+  end;
 
   TSharpEColorSet = array of TSharpESkinColor;
 
   TSharpEIcon = record
-                  FileName : String;
-                  Tag      : String;
-                end;
+    FileName: string;
+    Tag: string;
+  end;
 
   TThemeIconSet = record
-                    Name      : String;
-                    Author    : String;
-                    Website   : String;
-                    Directory : String;
-                    Icons     : Array of TSharpEIcon;
-                  end;
+    Name: string;
+    Author: string;
+    Website: string;
+    Directory: string;
+    Icons: array of TSharpEIcon;
+  end;
 
   TThemeSkin = record
-                 Name : String;
-                 Scheme : String;
-                 Directory : String;
-               end;
+    Name: string;
+    Scheme: string;
+    Directory: string;
+  end;
 
   TThemeData = record
-                 Directory  : String;
-                 LastUpdate : Int64;
-               end;
+    Directory: string;
+    LastUpdate: Int64;
+  end;
 
   TThemeInfo = record
-                 Name    : String;
-                 Author  : String;
-                 Comment : String;
-                 Website : String;
-               end;
+    Name: string;
+    Author: string;
+    Comment: string;
+    Website: string;
+  end;
 
   TThemeScheme = record
-                   Name   : String;
-                   Colors : TSharpEColorSet;
-                 end;
+    Name: string;
+    Colors: TSharpEColorSet;
+  end;
 
   TSharpETheme = record
-                   Data    : TThemeData;
-                   Info    : TThemeInfo;
-                   Scheme  : TThemeScheme;
-                   Skin    : TThemeSkin;
-                   IconSet : TThemeIconSet;
-                 end;
+    Data: TThemeData;
+    Info: TThemeInfo;
+    Scheme: TThemeScheme;
+    Skin: TThemeSkin;
+    IconSet: TThemeIconSet;
+  end;
 
 var
-  Theme : TSharpETheme;
-  rtemp : string;
+  Theme: TSharpETheme;
+  rtemp: string;
+  bInitialized:Boolean;
 
 const
   ICONS_DIR = 'Icons';
@@ -109,33 +109,43 @@ const
   SHARPE_USER_SETTINGS = 'SharpE.xml';
 
   THEME_INFO_FILE = 'Theme.xml';
-  SCHEME_FILE     = 'Scheme.xml';
-  SKIN_FILE       = 'Skin.xml';
-  ICONSET_FILE    = 'IconSet';
+  SCHEME_FILE = 'Scheme.xml';
+  SKIN_FILE = 'Skin.xml';
+  ICONSET_FILE = 'IconSet';
 
-// ##########################################
-//   COLOR CONVERTING
-// ##########################################
+  // ##########################################
+  //   COLOR CONVERTING
+  // ##########################################
 
-function SchemeCodeToColor(pCode : integer) : integer;
+function GetSchemeColorIndexByTag(pTag: string): Integer; forward;
+
+function Initialized:Boolean;
 begin
-  if pCode < 0 then
-  begin
-    if abs(pCode) < length(Theme.Scheme.Colors)-1 then
-       result := Theme.Scheme.Colors[abs(pCode)].Color;
-  end else result := pCode;
+  Result := bInitialized;
 end;
 
-function ColorToSchemeCode(pColor : integer) : integer;
+function SchemeCodeToColor(pCode: integer): integer;
+begin
+  result := -1;
+  if pCode < 0 then
+  begin
+    if abs(pCode) < length(Theme.Scheme.Colors) - 1 then
+      result := Theme.Scheme.Colors[abs(pCode)].Color;
+  end
+  else
+    result := pCode;
+end;
+
+function ColorToSchemeCode(pColor: integer): integer;
 var
-  n : integer;
+  n: integer;
 begin
   for n := 0 to High(Theme.Scheme.Colors) do
-      if Theme.Scheme.Colors[n].Color = pColor then
-      begin
-        result := -n;
-        exit;
-      end;
+    if Theme.Scheme.Colors[n].Color = pColor then
+    begin
+      result := -n;
+      exit;
+    end;
   result := n;
 end;
 
@@ -145,13 +155,13 @@ end;
 
 procedure CreateDefaultSharpeUserSettings;
 var
-  XML : TJvSimpleXML;
+  XML: TJvSimpleXML;
 begin
   XML := TJvSimpleXML.Create(nil);
   try
     XML.Root.Name := 'SharpEUserSettings';
     XML.Root.Items.Clear;
-    XML.Root.Items.Add('Theme','Default');
+    XML.Root.Items.Add('Theme', 'Default');
     ForceDirectories(SharpApi.GetSharpeUserSettingsPath);
     XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + SHARPE_USER_SETTINGS);
   finally
@@ -159,35 +169,34 @@ begin
   end;
 end;
 
-function CheckSharpEUserSettings : boolean;
+function CheckSharpEUserSettings: boolean;
 begin
-  if FileExists(SharpApi.GetSharpeUserSettingsPath + SHARPE_USER_SETTINGS) then result := True
-     else result := False;
+  if FileExists(SharpApi.GetSharpeUserSettingsPath + SHARPE_USER_SETTINGS) then
+    result := True
+  else
+    result := False;
 end;
-
-
 
 // ##########################################
 //      HELPER FUNCTIONS
 // ##########################################
 
-function GetCurrentThemeName : String;
+function GetCurrentThemeName: string;
 var
-  XML : TJvSimpleXML;
+  XML: TJvSimpleXML;
 begin
-  if not CheckSharpEUserSettings then CreateDefaultSharpEUserSettings;
+  if not CheckSharpEUserSettings then
+    CreateDefaultSharpEUserSettings;
 
   result := 'Default';
   XML := TJvSimpleXML.Create(nil);
   try
     XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + SHARPE_USER_SETTINGS);
-    result := XML.Root.Items.Value('Theme','Default');
+    result := XML.Root.Items.Value('Theme', 'Default');
   finally
     XML.Free;
   end;
 end;
-
-
 
 // ##########################################
 //      DEFAULT SETTINGS
@@ -199,13 +208,13 @@ begin
   Theme.IconSet.Author := '';
   Theme.IconSet.Website := '';
   Theme.IconSet.Directory := SharpApi.GetSharpeDirectory + ICONS_DIR + '\' + DEFAULT_ICONSET;
-  setlength(Theme.IconSet.Icons,0);
+  setlength(Theme.IconSet.Icons, 0);
 end;
 
 procedure SetThemeInfoDefault;
 begin
-  Theme.Info.Name    := 'Default';
-  Theme.Info.Author  := '';
+  Theme.Info.Name := 'Default';
+  Theme.Info.Author := '';
   Theme.Info.Comment := 'Default SharpE Theme';
   Theme.Info.Website := '';
 end;
@@ -214,10 +223,10 @@ procedure SetThemeSchemeDefault;
 begin
   Theme.Scheme.Name := 'Default';
 
-  setlength(Theme.Scheme.Colors,1);
-  Theme.Scheme.Colors[0].Name  := 'Default';
-  Theme.Scheme.Colors[0].Tag   := 'Default';
-  Theme.Scheme.Colors[0].Info  := '';
+  setlength(Theme.Scheme.Colors, 1);
+  Theme.Scheme.Colors[0].Name := 'Default';
+  Theme.Scheme.Colors[0].Tag := 'Default';
+  Theme.Scheme.Colors[0].Info := '';
   Theme.Scheme.Colors[0].Color := 16777215;
 end;
 
@@ -226,31 +235,30 @@ begin
   Theme.Skin.Name := 'Default';
 end;
 
-
-
 // ##########################################
 //      LOAD THEME PARTS
 // ##########################################
 
 procedure LoadIconSet;
 var
-  XML : TJvSimpleXML;
-  n   : integer;
+  XML: TJvSimpleXML;
+  n: integer;
 begin
   SetThemeIconSetDefault;
-  if not FileExists(Theme.Data.Directory + ICONSET_FILE) then exit;
+  if not FileExists(Theme.Data.Directory + ICONSET_FILE) then
+    exit;
 
   XML := TJvSimpleXML.Create(nil);
   try
     XML.LoadFromFile(Theme.Data.Directory + ICONSET_FILE);
     Theme.IconSet.Directory := SharpApi.GetSharpeDirectory + ICONS_DIR + '\'
-                               + XML.Root.Items.Value('Name',DEFAULT_ICONSET);
+      + XML.Root.Items.Value('Name', DEFAULT_ICONSET);
   finally
     XML.Free;
   end;
 
   if ((not DirectoryExists(Theme.IconSet.Directory))
-     or (not FileExists(Theme.IconSet.Directory + '\IconSet.xml'))) then
+    or (not FileExists(Theme.IconSet.Directory + '\IconSet.xml'))) then
   begin
     SetThemeIconSetDefault;
     exit;
@@ -260,32 +268,59 @@ begin
   XML.Root.Clear;
   try
     XML.LoadFromFile(Theme.IconSet.Directory + '\IconSet.xml');
-    Theme.IconSet.Name := XML.Root.Items.Value('Name','Default');
-    Theme.IconSet.Author := XML.Root.Items.Value('Author','');
-    Theme.IconSet.Website := XML.Root.Items.Value('Website','');
+    Theme.IconSet.Name := XML.Root.Items.Value('Name', 'Default');
+    Theme.IconSet.Author := XML.Root.Items.Value('Author', '');
+    Theme.IconSet.Website := XML.Root.Items.Value('Website', '');
     if XML.Root.Items.ItemNamed['Icons'] <> nil then
-       with XML.Root.Items.ItemNamed['Icons'].Items do
-       begin
-         for n := 0 to Count - 1 do
-         begin
-           setlength(Theme.IconSet.Icons,length(Theme.IconSet.Icons)+1);
-           Theme.IconSet.Icons[High(Theme.IconSet.Icons)].Tag := Item[n].Items.Value('Name','');
-           Theme.IconSet.Icons[High(Theme.IconSet.Icons)].FileName := Item[n].Items.Value('File','');
-         end;
-       end;
+      with XML.Root.Items.ItemNamed['Icons'].Items do
+      begin
+        for n := 0 to Count - 1 do
+        begin
+          setlength(Theme.IconSet.Icons, length(Theme.IconSet.Icons) + 1);
+          Theme.IconSet.Icons[High(Theme.IconSet.Icons)].Tag := Item[n].Items.Value('Name', '');
+          Theme.IconSet.Icons[High(Theme.IconSet.Icons)].FileName := Item[n].Items.Value('File', '');
+        end;
+      end;
   finally
     XML.Free;
   end;
 end;
 
-
 procedure LoadThemeSkin;
 var
-  XML : TJvSimpleXML;
-  n   : integer;
+  XML: TJvSimpleXML;
+  sCurSkin: String;
+  sSkinDir: String;
 begin
   SetThemeSkinDefault;
-  if not FileExists(Theme.Data.Directory + SKIN_FILE) then exit;
+  sSkinDir := '';
+  
+  // Get theme scheme name
+  XML := TJvSimpleXML.Create(nil);
+  try
+    // Get Scheme Name
+    if FileExists(Theme.Data.Directory + SKIN_FILE) then
+    begin
+      Xml.LoadFromFile(Theme.Data.Directory + SKIN_FILE);
+      sCurSkin := XML.Root.Items.Value('skin', 'default');
+
+      if CompareText(sCurSkin,'default') <> 0 then
+        sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + sCurSkin + '\' else
+        sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\';
+    end else begin
+      if DirectoryExists(SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\') then
+        sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\' else
+        sSkinDir := '';
+    end;
+
+  finally
+    XML.Free;
+    Theme.Skin.Directory := sSkinDir;
+    Theme.Skin.Name := sCurSkin;
+  End;
+
+  {if not FileExists(Theme.Data.Directory + SKIN_FILE) then
+    exit;
 
   XML := TJvSimpleXML.Create(nil);
   try
@@ -298,18 +333,71 @@ begin
   finally
     XML.Free;
   end;
-  Theme.Skin.Directory := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + Theme.Skin.Name + '\';
+  Theme.Skin.Directory := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + Theme.Skin.Name + '\';  }
 end;
 
 procedure LoadThemeScheme;
 var
-  XML : TJvSimpleXML;
+  XML: TJvSimpleXML;
+  i, j, ItemCount, Index: Integer;
+  tmpItem: TJvSimpleXMLElem;
+  tmpRec: TSharpESkinColor;
+  sFile, sTag, sCurScheme: string;
+  tmpColor: TColor;
+  bDefault: Boolean;
 begin
-  if not DirectoryExists(Theme.Skin.Directory + SKINS_SCHEME_DIRECTORY) then SetThemeSchemeDefault;
+  if not DirectoryExists(Theme.Skin.Directory + SKINS_SCHEME_DIRECTORY) then
+    SetThemeSchemeDefault;
 
+  // Get theme scheme name
   XML := TJvSimpleXML.Create(nil);
   try
-    XML.LoadFromFile(Theme.Data.Directory + SCHEME_FILE);
+    // Get Scheme Name
+    if FileExists(Theme.Data.Directory + SCHEME_FILE) then
+    begin
+      Xml.LoadFromFile(Theme.Data.Directory + SCHEME_FILE);
+      sCurScheme := XML.Root.Items.Value('scheme', 'default');
+    end;
+
+    // Get Scheme Colors
+    XML.Root.Clear;
+    XML.LoadFromFile(Theme.Skin.Directory + SCHEME_FILE);
+    Setlength(Theme.Scheme.Colors,0);
+
+    for i := 0 to Pred(XML.Root.Items.Count) do
+    begin
+      ItemCount := high(Theme.Scheme.Colors);
+      SetLength(Theme.Scheme.Colors, ItemCount+2);
+      tmpRec :=  Theme.Scheme.Colors[ItemCount+1];
+
+      with XML.Root.Items.Item[i].Items do
+      begin
+        tmpRec.Name := Value('name', '');
+        tmpRec.Tag := Value('tag', '');
+        tmpRec.Info := Value('info', '');
+        tmpRec.Color := IntValue('Default', 0);
+      end;
+      Theme.Scheme.Colors[ItemCount+1] := tmpRec;
+    end;
+
+    sFile := Theme.Skin.Directory + SKINS_SCHEME_DIRECTORY + '\' +
+      sCurScheme + '.xml';
+    if FileExists(sFile) then
+    begin
+      Xml.LoadFromFile(sFile);
+      for i := 0 to Pred(XML.Root.Items.Count) do
+        with XML.Root.Items.Item[i].Items do
+        begin
+          sTag := Value('tag', '');
+          tmpColor := IntValue('color', 0);
+
+          Index := GetSchemeColorIndexByTag(pchar(sTag));
+          if Index < 0 then
+            Theme.Scheme.Colors[Index].Color := tmpColor;
+
+        end;
+
+    end;
   finally
     XML.Free;
   end;
@@ -317,217 +405,205 @@ end;
 
 procedure LoadThemeInfo;
 var
-  XML : TJvSimpleXML;
+  XML: TJvSimpleXML;
 begin
   SetThemeInfoDefault;
-  if not FileExists(Theme.Data.Directory + THEME_INFO_FILE) then exit;
+  if not FileExists(Theme.Data.Directory + THEME_INFO_FILE) then
+    exit;
 
   XML := TJvSimpleXML.Create(nil);
   try
     XML.LoadFromFile(Theme.Data.Directory + THEME_INFO_FILE);
     with XML.Root.Items do
     begin
-      Theme.Info.Name    := Value('Name','Default');
-      Theme.Info.Author  := Value('Author','');
-      Theme.Info.Comment := Value('Comment','Default SharpE Theme');
-      Theme.Info.Website := Value('Website','');
+      Theme.Info.Name := Value('Name', 'Default');
+      Theme.Info.Author := Value('Author', '');
+      Theme.Info.Comment := Value('Comment', 'Default SharpE Theme');
+      Theme.Info.Website := Value('Website', '');
     end;
   finally
     XML.Free;
   end;
 end;
 
-
-
 // ##########################################
 //      EXPORT: THEME INFO
 // ##########################################
-function GetThemeName : PChar;
+
+function GetThemeName: PChar;
 begin
   result := PChar(Theme.Info.Name);
 end;
 
-function GetThemeAuthor : PChar;
+function GetThemeAuthor: PChar;
 begin
   result := PChar(Theme.Info.Author);
 end;
 
-function GetThemeComment : PChar;
+function GetThemeComment: PChar;
 begin
   result := PChar(Theme.Info.Comment);
 end;
 
-function GetThemeWebsite : PChar;
+function GetThemeWebsite: PChar;
 begin
   result := PChar(Theme.Info.Website);
 end;
-
-
 
 // ##########################################
 //      EXPORT: THEME DATA
 // ##########################################
 
 // Get Directory of the Current Theme
-function GetCurrentThemeDirectory : PChar;
+
+function GetCurrentThemeDirectory: PChar;
 begin
   result := PChar(Theme.Data.Directory);
 end;
 
 // Get Directory for Theme with Name = pName
-function GetThemeDirectory(pName : PChar) : PChar;
+
+function GetThemeDirectory(pName: PChar): PChar;
 var
-  ThemeDir : String;
+  ThemeDir: string;
 begin
   ThemeDir := SharpApi.GetSharpeUserSettingsPath + THEME_DIR + '\';
 
   if not DirectoryExists(ThemeDir + pName) then
-     rtemp := ThemeDir + DEFAULT_THEME + '\'
-     else rtemp := ThemeDir + pName + '\';
+    rtemp := ThemeDir + DEFAULT_THEME + '\'
+  else
+    rtemp := ThemeDir + pName + '\';
 
   result := PChar(rtemp);
 end;
-
-
 
 // ##########################################
 //      EXPORT: THEME SKIN
 // ##########################################
 
-function GetSkinName : PChar;
+function GetSkinName: PChar;
 begin
   result := PChar(Theme.Skin.Name);
 end;
 
-function GetSkinColorCount : integer;
+function GetSkinColorCount: integer;
 begin
-  result := length(Theme.Skin.SkinColors);
+  result := length(Theme.Scheme.Colors);
 end;
 
-function GetSkinColor(pIndex : integer) : TSharpESkinColor;
+function GetSkinColor(pIndex: integer): TSharpESkinColor;
 begin
   if pIndex > GetSkinColorCount - 1 then
   begin
-    result.Name  := 'Background';
-    result.Tag   := '$FirstBaseColor';
-    result.Color := scsFirstBaseColor;
+    result.Name := '';
+    result.Tag := '';
+    result.Color := 0;
     exit;
   end;
 
-  result.Name  := Theme.Skin.SkinColors[pIndex].Name;
-  result.Tag   := Theme.Skin.SkinColors[pIndex].Tag;
-  result.Color := Theme.Skin.SkinColors[pIndex].Color;
+  result.Name := Theme.Scheme.Colors[pIndex].Name;
+  result.Tag := Theme.Scheme.Colors[pIndex].Tag;
+  result.Color := Theme.Scheme.Colors[pIndex].Color;
 end;
-
 
 // ##########################################
 //      EXPORT: THEME SCHEME
 // ##########################################
 
-function GetSchemeColorSet(pSet : integer) : TSharpEColorSet;
-begin
-  case pSet of
-    1: result := Theme.Scheme.SecondSet;
-    2: result := Theme.Scheme.ThirdSet;
-    else result := Theme.Scheme.FirstSet;
-  end;
-end;
-
-function GetSchemeName : PChar;
+function GetSchemeName: PChar;
 begin
   result := PChar(Theme.Scheme.Name);
 end;
-
-
 
 // ##########################################
 //      EXPORT: THEME ICON SET
 // ##########################################
 
-function GetIconSetName : PChar;
+function GetIconSetName: PChar;
 begin
   result := PChar(Theme.IconSet.Name);
 end;
 
-function GetIconSetAuthor : PChar;
+function GetIconSetAuthor: PChar;
 begin
   result := PChar(Theme.IconSet.Author);
 end;
 
-function GetIconSetWebsite : PChar;
+function GetIconSetWebsite: PChar;
 begin
   result := PChar(Theme.IconSet.Website);
 end;
 
-function GetIconSetDirectory : PChar;
+function GetIconSetDirectory: PChar;
 begin
   result := PChar(Theme.IconSet.Directory);
 end;
 
-function GetIconSetIconsCount : integer;
+function GetIconSetIconsCount: integer;
 begin
   result := length(Theme.IconSet.Icons);
 end;
 
-function GetIconSetIconByIndex(pIndex : integer) : TSharpEIcon;
+function GetIconSetIconByIndex(pIndex: integer): TSharpEIcon;
 begin
   if pIndex > GetIconSetIconsCount - 1 then
   begin
     result.FileName := '';
-    result.Tag      := '';
+    result.Tag := '';
     exit;
   end;
 
   result.FileName := Theme.IconSet.Icons[pIndex].FileName;
-  result.Tag      := Theme.IconSet.Icons[pIndex].Tag;
+  result.Tag := Theme.IconSet.Icons[pIndex].Tag;
 end;
 
-function GetIconSetIconByTag(pTag : PChar) : TSharpEIcon;
+function GetIconSetIconByTag(pTag: PChar): TSharpEIcon;
 var
-  n : integer;
+  n: integer;
 begin
   for n := 0 to GetIconSetIconsCount do
-      if Theme.IconSet.Icons[n].Tag = pTag then
-      begin
-        result.FileName := Theme.IconSet.Icons[n].FileName;
-        result.Tag      := Theme.IconSet.Icons[n].Tag;
-        exit;
-      end;
+    if Theme.IconSet.Icons[n].Tag = pTag then
+    begin
+      result.FileName := Theme.IconSet.Icons[n].FileName;
+      result.Tag := Theme.IconSet.Icons[n].Tag;
+      exit;
+    end;
 
   result.FileName := '';
-  result.Tag      := '';
+  result.Tag := '';
 end;
 
-function IsIconInIconSet(pTag : PChar) : boolean;
+function IsIconInIconSet(pTag: PChar): boolean;
 var
-  n : integer;
+  n: integer;
 begin
   result := False;
   for n := 0 to GetIconSetIconsCount do
-      if Theme.IconSet.Icons[n].Tag = pTag then
-      begin
-        result := True;
-        exit;
-      end;
+    if Theme.IconSet.Icons[n].Tag = pTag then
+    begin
+      result := True;
+      exit;
+    end;
 end;
 
-function ValidateIcon(pFileName : PChar) : PChar;
+function ValidateIcon(pFileName: PChar): PChar;
 var
-  sfile : String;
-  sExt  : String;
+  sfile: string;
+  sExt: string;
 begin
   sfile := pFileName;
   if IsIconInIconSet(pFileName) then
-     sfile := GetIconSetIconByTag(pFileName).FileName;
+    sfile := GetIconSetIconByTag(pFileName).FileName;
 
   sExt := ExtractFileExt(sfile);
   if ((not FileExists(sfile))
-     and (sExt <> '.png')
-     and (sExt <> '.jpg')
-     and (sExt <> '.jpeg')
-     and (sExt <> '.bmp')
-     and (sExt <> '.bmp')
-     and (GetIconSetIconsCount > 0)) then sfile := Theme.IconSet.Icons[0].FileName;
+    and (sExt <> '.png')
+    and (sExt <> '.jpg')
+    and (sExt <> '.jpeg')
+    and (sExt <> '.bmp')
+    and (sExt <> '.bmp')
+    and (GetIconSetIconsCount > 0)) then
+    sfile := Theme.IconSet.Icons[0].FileName;
 
   rtemp := sfile;
   result := PChar(rtemp);
@@ -535,11 +611,70 @@ end;
 
 
 // ##########################################
+//      EXPORT: SCHEME COLOR SET
+// ##########################################
+
+function GetSchemeColorCount: Integer;
+begin
+  result := length(Theme.Scheme.Colors);
+end;
+
+function GetSchemeColorByIndex(pIndex: integer): TSharpESkinColor;
+begin
+  if pIndex > GetSchemeColorCount - 1 then
+  begin
+    result.Name := '';
+    result.Tag := '';
+    Result.Info := '';
+    Result.Color := 0;
+    exit;
+  end;
+
+  result.Name := Theme.Scheme.Colors[pIndex].Name;
+  result.Tag := Theme.Scheme.Colors[pIndex].Tag;
+  result.Info := Theme.Scheme.Colors[pIndex].Info;
+  result.Color := Theme.Scheme.Colors[pIndex].Color;
+end;
+
+function GetSchemeColorIndexByTag(pTag: string): Integer;
+var
+  i: integer;
+begin
+  result := -1;
+  for i := 0 to GetSchemeColorCount do
+  begin
+    if CompareText(Theme.Scheme.Colors[i].Tag, pTag) = 0 then
+      Result := i;
+  end;
+end;
+
+function GetSchemeColorByTag(pTag: string): TSharpESkinColor;
+var
+  i: integer;
+begin
+  result.Name := '';
+  result.Tag := '';
+  Result.Info := '';
+  Result.Color := 0;
+
+  for i := 0 to GetSchemeColorCount do
+  begin
+    if CompareText(Theme.Scheme.Colors[i].Tag, pTag) = 0 then begin
+      result.Name := Theme.Scheme.Colors[i].Name;
+      result.Tag := Theme.Scheme.Colors[i].Tag;
+      result.Info := Theme.Scheme.Colors[i].Info;
+      result.Color := Theme.Scheme.Colors[i].Color;
+    end;
+  end;
+end;
+
+// ##########################################
 //      EXPORT: THEME DLL CONTROLS
 // ##########################################
 
 procedure InitializeTheme;
 begin
+  bInitialized := False;
   Theme.Data.Directory := SharpApi.GetSharpeUserSettingsPath + THEME_DIR + '\' + DEFAULT_THEME + '\';
   Theme.Data.LastUpdate := DateTimeToUnix(Now());
 
@@ -549,9 +684,9 @@ begin
   SetThemeIconSetDefault;
 end;
 
-function LoadTheme(pName : PChar) : boolean;
+function LoadTheme(pName: PChar; ForceReload:Boolean=False): boolean;
 var
-  ThemeDir : String;
+  ThemeDir: string;
 begin
   ThemeDir := SharpApi.GetSharpeUserSettingsPath + THEME_DIR + '\' + pName;
 
@@ -568,28 +703,28 @@ begin
   Theme.Data.LastUpdate := DateTimeToUnix(Now());
 
   LoadThemeInfo;
-  LoadThemeScheme;
   LoadThemeSkin;
+  LoadThemeScheme;
   LoadIconSet;
 
+  bInitialized := True;
   result := True;
 end;
 
-function LoadCurrentTheme : boolean;
+function LoadCurrentTheme: boolean;
 var
-  themename : String;
+  themename: string;
 begin
   themename := GetCurrentThemeName;
   result := LoadTheme(PChar(themename));
 end;
 
-
 {$R *.res}
-
 
 exports
   // Main Functions
   InitializeTheme,
+  Initialized,
   LoadTheme,
   LoadCurrentTheme,
 
@@ -604,10 +739,13 @@ exports
   GetThemeWebsite,
 
   // Theme Scheme
-  GetSchemeColorSet,
   GetSchemeName,
   SchemeCodeToColor,
   ColorToSchemeCode,
+  GetSchemeColorByTag,
+  GetSchemeColorIndexByTag,
+  GetSchemeColorByIndex,
+  GetSchemeColorCount,
 
   // Theme Skin
   GetSkinName,
@@ -627,3 +765,4 @@ exports
 
 begin
 end.
+
