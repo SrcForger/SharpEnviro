@@ -96,8 +96,8 @@ begin
   sWidth    := 100;
   sDrawMode := 0;
   sCpu      := 0;
-  sFGColor  := SharpESkinManager1.Scheme.Throbberback;
-  sBGColor  := SharpESkinManager1.Scheme.WorkAreaback;
+  sFGColor  := 0;//SharpESkinManager1.Scheme.Throbberback;
+  sBGColor  := 0;//SharpESkinManager1.Scheme.WorkAreaback;
   sBorderColor := clBlack;
   sUpdate      := 500;
   sFGAlpha     := 255;
@@ -111,8 +111,8 @@ begin
     sWidth    := IntValue('Width',100);
     sDrawMode := IntValue('DrawMode',0);
     sCPU      := IntValue('CPU',0);
-    sFGColor  := CodeToColorEx(IntValue('FGColor',SharpESkinManager1.Scheme.Throbberback),cs);
-    sBGColor  := CodeToColorEx(IntValue('BGColor',SharpESkinManager1.Scheme.WorkAreaback),cs);
+    sFGColor  := CodeToColorEx(IntValue('FGColor',0),cs);
+    sBGColor  := CodeToColorEx(IntValue('BGColor',0),cs);
     sBorderColor := CodeToColorEx(IntValue('BorderColor',clBlack),cs);
     sUpdate   := IntValue('Update',250);
     sFGAlpha      := Max(0,Min(255,IntValue('FGAlpha',255)));
