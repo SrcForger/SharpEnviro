@@ -86,11 +86,7 @@ begin
   begin
     if not Transparent then
     begin
-
-      if Assigned(FManager) then
-        Brush.Color := FManager.Scheme.WorkAreaback
-      else
-        Brush.Color := Self.Color;
+      Brush.Color := Self.Color;
 
       Brush.Style := bsSolid;
       FillRect(ClientRect);
@@ -132,9 +128,7 @@ begin
   if not Enabled then
   begin
     if Assigned(FManager) then
-      Canvas.Font.Color := FManager.Scheme.WorkAreadark
-    else
-      Canvas.Font.Color := clBtnShadow;
+       Canvas.Font.Color := clBtnShadow;
   end;
 
   case Layout of

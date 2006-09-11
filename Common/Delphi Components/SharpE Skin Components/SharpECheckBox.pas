@@ -204,9 +204,9 @@ begin
 
     y := floor((Height - r.bottom) / 2);
     FillRectS(r.Left, r.Top + y, r.Right, r.Bottom + y,
-      color32(Scheme.WorkArealight));
+      color32(Scheme.GetColorByName('WorkArealight')));
     FrameRectS(r.Left, r.Top + y, r.Right, r.Bottom + y,
-      color32(Scheme.WorkAreadark));
+      color32(Scheme.GetColorByName('WorkAreadark')));
 
     if FChecked then
     begin
@@ -219,7 +219,7 @@ begin
         p.Add(FixedPoint(12, 1 + y));
         p.Add(FixedPoint(14, 3 + y));
         p.Add(FixedPoint(7, 10 + y));
-        p.DrawFill(bmp, color32(Scheme.Throbberback));
+        p.DrawFill(bmp, color32(Scheme.GetColorByName('Throbberback')));
       finally
         p.free;
       end;
@@ -315,7 +315,7 @@ begin
     bmp.RenderText(p.X, p.Y, caption, 0, Color32(bmp.Font.color));
   end
   else          
-    DrawDefaultSkin(bmp, Scheme);
+    DrawDefaultSkin(bmp, DefaultSharpEScheme);
 end;
 
 procedure TSharpECheckBox.Paint;

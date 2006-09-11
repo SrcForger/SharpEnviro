@@ -230,13 +230,13 @@ begin
 
     y := floor((Height - r.bottom) / 2);
     FillRectS(r.Left, r.Top + y, r.Right, r.Bottom + y,
-      color32(Scheme.WorkArealight));
+      color32(Scheme.GetColorByName('WorkArealight')));
     FrameRectS(r.Left, r.Top + y, r.Right, r.Bottom + y,
-      color32(Scheme.WorkAreadark));
+      color32(Scheme.GetColorByName('WorkAreadark')));
 
     if FChecked then
     begin
-      bmp.FillRectS(Types.Rect(r.Left+2,r.Top+2+y,R.Right-2,r.Bottom-2+y),color32(Scheme.Throbberback));
+      bmp.FillRectS(Types.Rect(r.Left+2,r.Top+2+y,R.Right-2,r.Bottom-2+y),color32(Scheme.GetColorByName('Throbberback')));
     end;
 
     x := 16;
@@ -325,7 +325,7 @@ begin
     bmp.RenderText(p.X, p.Y, caption, 0, Color32(bmp.Font.color));
   end
   else
-    DrawDefaultSkin(bmp, Scheme);
+    DrawDefaultSkin(bmp, DefaultSharpEScheme);
 end;
 
 procedure TSharpERadioBox.SetGroupIndex(const Value: Integer);

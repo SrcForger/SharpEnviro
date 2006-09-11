@@ -396,11 +396,11 @@ begin
   begin
     if Assigned(FManager) then
     begin
-      (Owner as TForm).Color := FManager.Scheme.WorkAreaback;
+      (Owner as TForm).Color := FManager.Scheme.GetColorByName('WorkAreaback');
       FBGForm.UpdateSkin;
     end
     else
-      (Owner as TForm).Color := DefaultSharpEScheme.WorkAreaback;
+      (Owner as TForm).Color := DefaultSharpEScheme.GetColorByName('WorkAreaback');
   end;
 end;
 

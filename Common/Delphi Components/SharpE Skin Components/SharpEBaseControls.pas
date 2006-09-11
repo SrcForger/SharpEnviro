@@ -257,24 +257,19 @@ begin
     end;
 end;
 
-procedure TCustomSharpEGraphicControl.DrawDefaultSkin(bmp: TBitmap32; Scheme:
-  TSharpEScheme);
+procedure TCustomSharpEGraphicControl.DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
 begin
   with bmp do
   begin
     Clear(color32(0, 0, 0, 0));
     FrameRectS(0, 0, Width, Height, setalpha(color32(clblack), 200));
-    FrameRectS(1, 1, Width - 1, Height - 1,
-      setalpha(color32(Scheme.WorkAreadark), 200));
-    FrameRectS(1, 1, Width - 2, Height - 2,
-      setalpha(color32(Scheme.WorkAreaLight), 200));
-    FillRect(2, 2, Width - 2, Height - 2, setalpha(color32(Scheme.WorkAreaBack),
-      200));
+    FrameRectS(1, 1, Width - 1, Height - 1, setalpha(color32(Scheme.GetColorByName('WorkAreadark')), 200));
+    FrameRectS(1, 1, Width - 2, Height - 2, setalpha(color32(Scheme.GetColorByName('WorkAreaLight')), 200));
+    FillRect(2, 2, Width - 2, Height - 2, setalpha(color32(Scheme.GetColorByName('WorkAreaBack')), 200));
   end;
 end;
 
-procedure TCustomSharpEGraphicControl.DrawManagedSkin(bmp: TBitmap32; Scheme:
-  TSharpEScheme);
+procedure TCustomSharpEGraphicControl.DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
 begin
   DrawDefaultSkin(bmp, Scheme);
 end;

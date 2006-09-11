@@ -553,10 +553,10 @@ begin
   begin
     CompRect := Rect(0, 0, width, height);
 
-    Canvas.Brush.Color := Scheme.WorkArealight;
+    Canvas.Brush.Color := Scheme.GetColorByName('WorkArealight');
     Canvas.FillRect(CompRect);
     CopyParentImage(self,Canvas);
-    Frame3D(Canvas, CompRect, Scheme.WorkAreadark, Scheme.WorkArealight, 1);
+    Frame3D(Canvas, CompRect, Scheme.GetColorByName('WorkAreadark'), Scheme.GetColorByName('WorkArealight'), 1);
 
 
     DefaultSharpESkinText.AssignFontTo(FEdit.Font,Scheme);
@@ -650,7 +650,7 @@ begin
       bmp := nil;
     end;
   end
-  else DrawDefaultSkin(Scheme);
+  else DrawDefaultSkin(DefaultSharpEScheme);
 end;
 
 procedure TSharpEEdit.SetAutoSize(const Value: Boolean);

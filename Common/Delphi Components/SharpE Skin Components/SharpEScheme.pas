@@ -39,49 +39,33 @@ uses
   Dialogs,
   StdCtrls,
   gr32,
-  SharpEBase;
+  SharpEBase,
+  SharpThemeApi;
 
 type
   TSchemeEvent = procedure of object;
 
   TSharpEScheme = class(TComponent)
   private
-    FThrobberback: Tcolor;
-    FThrobberdark: Tcolor;
-    FThrobberlight: Tcolor;
-    FThrobbertext: Tcolor;
-    FWorkAreaback: Tcolor;
-    FWorkAreadark: Tcolor;
-    FWorkArealight: Tcolor;
-    FWorkAreatext: Tcolor;
+    FColors  : TSharpEColorSet;
     FOnNotify: TSchemeEvent;
 
     procedure NotifyManager;
-    procedure SetTB(Value: TColor);
-    procedure SetTD(Value: TColor);
-    procedure SetTL(Value: TColor);
-    procedure SetTT(Value: TColor);
-    procedure SetWB(Value: TColor);
-    procedure SetWD(Value: TColor);
-    procedure SetWL(Value: TColor);
-    procedure SetWT(Value: TColor);
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    procedure AssignScheme(ss: TColorSchemeEx);
+    procedure AddColor(Name,Tag,Info : String; Color : integer); overload;
+    procedure AddColor(Color : TSharpESkinColor); overload;
+    function GetColorByName(Name : String) : integer;
+    function GetColorByTag(Tag  : String) : integer;
+    function GetColorIndexByTag(Tag : String) : integer;
+    procedure ClearColors;
     property OnNotify: TSchemeEvent read FOnNotify write FOnNotify;
   published
-    property Throbberback: Tcolor read FThrobberback write SetTB;
-    property Throbberdark: Tcolor read FThrobberdark write SetTD;
-    property Throbberlight: Tcolor read FThrobberlight write SetTL;
-    property Throbbertext: Tcolor read FThrobbertext write SetTT;
-    property WorkAreaback: Tcolor read FWorkAreaback write SetWB;
-    property WorkAreadark: Tcolor read FWorkAreadark write SetWD;
-    property WorkArealight: Tcolor read FWorkArealight write SetWL;
-    property WorkAreatext: Tcolor read FWorkAreatext write SetWT;
+    property Colors : TSharpEColorSet read FColors;
   end;
 
 implementation
@@ -91,13 +75,19 @@ uses SharpESkinManager,
 constructor TSharpEScheme.Create(AOwner: TComponent);
 begin
   inherited;
-  AssignScheme(DefaultSharpEColorScheme);
+  ClearColors;
+  Assign(DefaultSharpEScheme);
+end;
+
+destructor TSharpEScheme.Destroy;
+begin
+  ClearColors;
+  inherited Destroy;
 end;
 
 procedure TSharpEScheme.NotifyManager;
 begin
-  if Assigned(OnNotify) then
-    OnNotify;
+  if Assigned(OnNotify) then OnNotify;
 end;
 
 procedure TSharpEScheme.Notification(AComponent: TComponent; Operation:
@@ -108,111 +98,85 @@ begin
   begin
     if (AComponent is TSharpESkinManager) then
     begin
-      if (AComponent as TSharpESkinManager).CompScheme = self then
-        FOnNotify := nil;
+      if (AComponent as TSharpESkinManager).CompScheme = self then FOnNotify := nil;
     end;
   end
 end;
 
-procedure TSharpEScheme.SetTB(Value: TColor);
-begin
-  if FThrobberBack <> Value then
-  begin
-    FThrobberBack := Value;
-    NotifyManager;
-  end;
-end;
-
-procedure TSharpEScheme.SetTD(Value: TColor);
-begin
-  if FThrobberDark <> Value then
-  begin
-    FThrobberDark := Value;
-    NotifyManager;
-  end;
-end;
-
-procedure TSharpEScheme.SetTL(Value: TColor);
-begin
-  if FThrobberLight <> Value then
-  begin
-    FThrobberLight := Value;
-    NotifyManager;
-  end;
-end;
-
-procedure TSharpEScheme.SetTT(Value: TColor);
-begin
-  if FThrobberText <> Value then
-  begin
-    FThrobberText := Value;
-    NotifyManager;
-  end;
-end;
-
-procedure TSharpEScheme.SetWB(Value: TColor);
-begin
-  if FWorkAreaBack <> Value then
-  begin
-    FWorkAreaBack := Value;
-    NotifyManager;
-  end;
-end;
-
-procedure TSharpEScheme.SetWD(Value: TColor);
-begin
-  if FWorkAreaDark <> Value then
-  begin
-    FWorkAreaDark := Value;
-    NotifyManager;
-  end;
-end;
-
-procedure TSharpEScheme.SetWL(Value: TColor);
-begin
-  if FWorkAreaLight <> Value then
-  begin
-    FWorkAreaLight := Value;
-    NotifyManager;
-  end;
-end;
-
-procedure TSharpEScheme.SetWT(Value: TColor);
-begin
-  if FWorkAreaText <> Value then
-  begin
-    FWorkAreaText := Value;
-    NotifyManager;
-  end;
-end;
-
 procedure TSharpEScheme.Assign(Source: TPersistent);
-var ss: TSharpEScheme;
+var
+  ss: TSharpEScheme;
+  n : integer;
 begin
-  if Source is TSharpEScheme then
-    ss := Source as TSharpEScheme
-  else
-    exit;
-  FThrobberback := ss.Throbberback;
-  FThrobberdark := ss.Throbberdark;
-  FThrobberlight := ss.Throbberlight;
-  FThrobberText := ss.ThrobberText;
-  FWorkAreaBack := ss.WorkAreaback;
-  FWorkAreaDark := ss.WorkAreadark;
-  FWorkAreaLight := ss.WorkArealight;
-  FWorkAreaText := ss.WorkAreaText;
+  if Source is TSharpEScheme then ss := Source as TSharpEScheme
+     else exit;
+
+  ClearColors;
+  setlength(FColors,length(ss.Colors));
+  for n := 0 to High(ss.Colors) do
+      FColors[n] := ss.Colors[n];
 end;
 
-procedure TSharpEScheme.AssignScheme(ss: TColorSchemeEx);
+procedure TSharpEScheme.AddColor(Color : TSharpESkinColor);
 begin
-  FThrobberback := ss.Throbberback;
-  FThrobberdark := ss.Throbberdark;
-  FThrobberlight := ss.Throbberlight;
-  FThrobberText := ss.ThrobberText;
-  FWorkAreaBack := ss.WorkAreaback;
-  FWorkAreaDark := ss.WorkAreadark;
-  FWorkAreaLight := ss.WorkArealight;
-  FWorkAreaText := ss.WorkAreaText;
+  setlength(FColors,length(FColors)+1);
+  FColors[High(FColors)] := Color;
+end;
+
+procedure TSharpEScheme.AddColor(Name,Tag,Info : String; Color : integer);
+var
+  n : integer;
+begin
+  setlength(FColors,length(FColors)+1);
+  n := High(FColors);
+  FColors[n].Name := Name;
+  FColors[n].Tag  := Tag;
+  FColors[n].Info := Info;
+  Fcolors[n].Color := Color;
+end;
+
+function TSharpEScheme.GetColorByName(Name : String) : integer;
+var
+  n : integer;
+begin
+  result := 0;
+  for n := 0 to High(FColors) do
+      if CompareText(FColors[n].Name,Name) = 0 then
+      begin
+        result := FColors[n].Color;
+        exit;
+      end;
+end;
+
+function TSharpEScheme.GetColorByTag(Tag  : String) : integer;
+var
+  n : integer;
+begin
+  result := 0;
+  for n := 0 to High(FColors) do
+      if CompareText(FColors[n].Tag,Tag) = 0 then
+      begin
+        result := FColors[n].Color;
+        exit;
+      end;
+end;
+
+function TSharpEScheme.GetColorIndexByTag(Tag : String) : integer;
+var
+  n : integer;
+begin
+  result := -1;
+  for n := 0 to High(FColors) do
+      if CompareText(FColors[n].Tag,Tag) = 0 then
+      begin
+        result := n;
+        exit;
+      end;
+end;
+
+procedure TSharpEScheme.ClearColors;
+begin
+  setlength(FColors,0);
 end;
 
 end.

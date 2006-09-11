@@ -509,10 +509,7 @@ begin
   begin
     if (Owner is TForm) then
     begin
-      if Assigned(FManager) then
-        (Owner as TForm).Color := FManager.Scheme.WorkAreaback
-      else
-        (Owner as TForm).Color := DefaultSharpEScheme.WorkAreaback;
+      (Owner as TForm).Color := DefaultSharpEScheme.GetColorByName('WorkAreaback');
     end;
   end;
   if Assigned(FThrobber) then
@@ -654,12 +651,12 @@ begin
     end;
     begin
       FrameRectS(r.Left, r.Top, r.Right, r.Bottom,
-        setalpha(color32(Scheme.WorkAreaDark), 255));
+        setalpha(color32(Scheme.GetColorByName('WorkAreaDark')), 255));
       FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1,
-        setalpha(color32(Scheme.WorkAreaLight), 255));
+        setalpha(color32(Scheme.GetColorByName('WorkAreaLight')), 255));
     end;
     FillRect(r.Left + 1, r.Top + 1, r.Right - 1, r.Bottom - 1,
-      setalpha(color32(Scheme.WorkAreaBack), 255));
+      setalpha(color32(Scheme.GetColorByName('WorkAreaBack')), 255));
   end;
   FSkin.DrawTo(FBuffer);
   FBackGround.UpdateSkin(FBuffer);
@@ -674,7 +671,7 @@ var
 begin
   if not assigned(FManager) then
   begin
-    DrawDefaultSkin(Scheme);
+    DrawDefaultSkin(DefaultSharpEScheme);
     exit;
   end;
 
@@ -729,7 +726,7 @@ begin
 
     if (FManager.Skin.BarSkin.DefaultSkin) then
     begin
-      DrawDefaultSkin(Scheme);
+      DrawDefaultSkin(DefaultSharpEScheme);
       exit;
     end;
 
@@ -759,7 +756,7 @@ begin
     end;
   end
   else
-    DrawDefaultSkin(Scheme);
+    DrawDefaultSkin(DefaultSharpEScheme);
 end;
 
 procedure TSharpEBar.FormPaint(Sender: TObject);
@@ -873,10 +870,7 @@ begin
   begin
     if (Owner is TForm) then
     begin
-      if Assigned(FManager) then
-        (Owner as TForm).Color := FManager.Scheme.WorkAreaback
-      else
-        (Owner as TForm).Color := DefaultSharpEScheme.WorkAreaback;
+     (Owner as TForm).Color := DefaultSharpEScheme.GetColorByName('WorkAreaback');
     end;
   end;
 
@@ -956,19 +950,19 @@ begin
     if FButtonDown then
     begin
       FrameRectS(r.Left, r.Top, r.Right, r.Bottom,
-        setalpha(color32(Scheme.ThrobberLight), 255));
+        setalpha(color32(Scheme.GetColorByName('ThrobberLight')), 255));
       FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1,
-        setalpha(color32(Scheme.ThrobberDark), 255));
+        setalpha(color32(Scheme.GetColorByName('ThrobberDark')), 255));
     end
     else
     begin
       FrameRectS(r.Left, r.Top, r.Right, r.Bottom,
-        setalpha(color32(Scheme.Throbberdark), 255));
+        setalpha(color32(Scheme.GetColorByName('Throbberdark')), 255));
       FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1,
-        setalpha(color32(Scheme.ThrobberLight), 255));
+        setalpha(color32(Scheme.GetColorByName('ThrobberLight')), 255));
     end;
     FillRect(r.Left + 1, r.Top + 1, r.Right - 1, r.Bottom - 1,
-      setalpha(color32(Scheme.ThrobberBack), 255));
+      setalpha(color32(Scheme.GetColorByName('ThrobberBack')), 255));
   end;
 end;
 

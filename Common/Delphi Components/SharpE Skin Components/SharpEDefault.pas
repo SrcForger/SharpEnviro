@@ -13,7 +13,6 @@ const
 
 var
   DefaultSharpESkinTextRecord: TSkinTextRecord;
-  DefaultSharpEColorScheme: TColorSchemeEx;
   DefaultSharpEScheme: TSharpEScheme;
   DefaultSharpESkin: TSharpESkin;
   DefaultSharpESkinText: TSkinText;
@@ -25,19 +24,16 @@ initialization
   DefaultSharpESkinTextRecord.FSize := 7;
   DefaultSharpESkinTextRecord.FColor := '$WorkAreaText';
 
-//SharpEColorScheme
-  DefaultSharpEColorScheme.Throbberback := $B68972;
-  DefaultSharpEColorScheme.Throbberdark := $5B4439;
-  DefaultSharpEColorScheme.Throbberlight := $C5958D;
-  DefaultSharpEColorScheme.ThrobberText := $000000;
-  DefaultSharpEColorScheme.WorkAreaback := $CACACA;
-  DefaultSharpEColorScheme.WorkAreadark := $757575;
-  DefaultSharpEColorScheme.WorkArealight := $F5F5F5;
-  DefaultSharpEColorScheme.WorkAreaText := $000000;
-
 //SharpEScheme
   DefaultSharpEScheme := TSharpEScheme.Create(nil);
-  DefaultSharpEScheme.AssignScheme(DefaultSharpEColorScheme);
+  DefaultSharpEScheme.AddColor('Throbberback','$Throbberback','Throbberback',$B68972);
+  DefaultSharpEScheme.AddColor('Throbberdark','$Throbberdark','Throbberdark',$5B4439);
+  DefaultSharpEScheme.AddColor('Throbberlight','$Throbberlight','Throbberlight',$C5958D);
+  DefaultSharpEScheme.AddColor('ThrobberText','$ThrobberText','ThrobberText',$000000);
+  DefaultSharpEScheme.AddColor('WorkAreaback','$WorkAreaback','WorkAreaback',$CACACA);
+  DefaultSharpEScheme.AddColor('WorkAreadark','$WorkAreadark','WorkAreadark',$757575);
+  DefaultSharpEScheme.AddColor('WorkArealight','$WorkArealight','WorkArealight',$F5F5F5);
+  DefaultSharpEScheme.AddColor('WorkAreaText','$WorkAreaText','WorkAreaText',$000000);
 
 //SharpESkin
   DefaultSharpESkin := TSharpESkin.Create(nil);

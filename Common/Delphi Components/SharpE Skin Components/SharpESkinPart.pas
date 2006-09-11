@@ -1277,38 +1277,19 @@ begin
 end;
 
 function SchemedStringToColor(str: string; cs: TSharpEScheme): TColor;
+var
+  n : integer;
 begin
-  if lowercase(str) = '$workareaback' then
-    result := cs.WorkAreaback
+  n := cs.GetColorIndexByTag(str);
+  if n <> -1 then result := cs.GetColorByTag(str)
   else
-    if lowercase(str) = '$workareadark' then
-      result := cs.WorkAreadark
-    else
-      if lowercase(str) = '$workarealight' then
-        result := cs.WorkArealight
-      else
-        if lowercase(str) = '$workareatext' then
-          result := cs.WorkAreatext
-        else
-          if lowercase(str) = '$throbberback' then
-            result := cs.Throbberback
-          else
-            if lowercase(str) = '$throbberdark' then
-              result := cs.Throbberdark
-            else
-              if lowercase(str) = '$throbberlight' then
-                result := cs.Throbberlight
-              else
-                if lowercase(str) = '$throbbertext' then
-                  result := cs.Throbbertext
-                else
-                begin
-                  try
-                    result := StringToColor(str);
-                  except
-                    result := clblack;
-                  end;
-                end;
+  begin
+    try
+      result := StringToColor(str);
+    except
+      result := clblack;
+    end;
+  end;
 end;
 
 function get_location(str: string): TRect;

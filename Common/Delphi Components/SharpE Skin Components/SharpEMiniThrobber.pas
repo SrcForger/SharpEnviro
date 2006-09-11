@@ -172,19 +172,19 @@ begin
     if FButtonDown then
     begin
       FrameRectS(r.Left, r.Top, r.Right, r.Bottom,
-        setalpha(color32(Scheme.ThrobberLight), 255));
+        setalpha(color32(Scheme.GetColorByName('ThrobberLight')), 255));
       FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1,
-        setalpha(color32(Scheme.ThrobberDark), 255));
+        setalpha(color32(Scheme.GetColorByName('ThrobberDark')), 255));
     end
     else
     begin
       FrameRectS(r.Left, r.Top, r.Right, r.Bottom,
-        setalpha(color32(Scheme.Throbberdark), 255));
+        setalpha(color32(Scheme.GetColorByName('Throbberdark')), 255));
       FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1,
-        setalpha(color32(Scheme.ThrobberLight), 255));
+        setalpha(color32(Scheme.GetColorByName('ThrobberLight')), 255));
     end;
     FillRect(r.Left + 1, r.Top + 1, r.Right - 1, r.Bottom - 1,
-      setalpha(color32(Scheme.ThrobberBack), 255));
+      setalpha(color32(Scheme.GetColorByName('ThrobberBack')), 255));
   end;
 end;
 
@@ -224,7 +224,7 @@ begin
       end;
   end
   else
-    DrawDefaultSkin(bmp, Scheme);
+    DrawDefaultSkin(bmp, DefaultSharpEScheme);
 end;
 
 end.

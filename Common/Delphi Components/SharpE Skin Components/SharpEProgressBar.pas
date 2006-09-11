@@ -136,11 +136,11 @@ begin
       FrameRectS(0, 0, Width, Height, color32(clblack));
       Inc(r.Left); Inc(r.Top); Dec(r.Bottom); Dec(r.Right);
     end;
-    FrameRectS(r.Left, r.Top, r.Right, r.Bottom, color32(Scheme.WorkArealight));
-    FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1, color32(Scheme.WorkAreadark));
-    FillRectS(r.Left + 1, r.Top + 1, r.Right - 1, r.Bottom - 1, color32(Scheme.WorkAreaBack));
+    FrameRectS(r.Left, r.Top, r.Right, r.Bottom, color32(Scheme.GetColorByName('WorkArealight')));
+    FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1, color32(Scheme.GetColorByName('WorkAreadark')));
+    FillRectS(r.Left + 1, r.Top + 1, r.Right - 1, r.Bottom - 1, color32(Scheme.GetColorByName('WorkAreaBack')));
     FillRectS(r.Left + 1, r.Top + 1, r.left + round((r.Right - r.Left - 2) *
-              FValue / (FMax - FMin)), r.Bottom - 1, color32(Scheme.ThrobberBack));
+              FValue / (FMax - FMin)), r.Bottom - 1, color32(Scheme.GetColorByName('ThrobberBack')));
   end;
 end;
 
@@ -199,7 +199,7 @@ begin
       end;
     end
     else
-      DrawDefaultSkin(bmp, Scheme);
+      DrawDefaultSkin(bmp, DefaultSharpEScheme);
   finally
     skindim.free;
     temp.free;

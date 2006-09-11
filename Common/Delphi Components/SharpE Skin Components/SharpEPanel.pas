@@ -287,16 +287,16 @@ begin
 
     if Assigned(FManager) then
     begin
-      TopColor := FManager.Scheme.WorkAreaLight;
-      BottomColor := FManager.Scheme.WorkAreaDark;
-      Color := FManager.Scheme.WorkAreaBack;
+      TopColor := DefaultSharpEScheme.GetColorByName('WorkAreaLight');
+      BottomColor := DefaultSharpEScheme.GetColorByName('WorkAreaDark');
+      Color := DefaultSharpEScheme.GetColorByName('WorkAreaBack');
       FManager.Skin.SkinText.AssignFontTo(Font,FManager.Scheme);
     end
     else
     begin
-      TopColor := DefaultSharpEScheme.WorkAreaLight;
-      BottomColor := DefaultSharpEScheme.WorkAreaDark;
-      Color := DefaultSharpEScheme.WorkAreaBack;
+      TopColor := DefaultSharpEScheme.GetColorByName('WorkAreaLight');
+      BottomColor := DefaultSharpEScheme.GetColorByName('WorkAreaDark');
+      Color := DefaultSharpEScheme.GetColorByName('WorkAreaBack');
       DefaultSharpESkinText.AssignFontTo(Font,DefaultSharpEScheme);
     end;
 

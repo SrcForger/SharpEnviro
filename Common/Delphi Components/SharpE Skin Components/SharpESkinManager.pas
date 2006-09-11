@@ -95,7 +95,8 @@ type
 procedure LoadSharpEScheme(Scheme: TSharpEScheme);
 
 implementation
-uses SharpEButton,
+uses
+  SharpEButton,
   SharpEForm,
   SharpEPanel,
   SharpEBar,
@@ -105,7 +106,8 @@ uses SharpEButton,
   SharpELabel,
   SharpEEdit,
   SharpEMiniThrobber,
-  SharpETaskItem;
+  SharpETaskItem,
+  SharpThemeApi;
 
 constructor TSharpESkinManager.CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme);
 begin
@@ -120,6 +122,15 @@ begin
   FSystemSkin := TSystemSharpESkin.create;
   FSystemSkin.OnSkinChanged := SystemSkinChanged;
   FSystemSkin.OnNotify := ComponentSkinUpdated;
+
+  if not (csDesigning in ComponentState) then
+  begin
+    if not SharpThemeApi.Initialized then
+    begin
+      SharpThemeApi.InitializeTheme;
+      SharpThemeApi.LoadTheme;
+    end;
+  end;
 
   LoadSharpEScheme(FSystemScheme);
   inherited;
@@ -347,18 +358,12 @@ end;
 
 procedure LoadSharpEScheme(Scheme: TSharpEScheme);
 var
-  cs: TColorSchemeEx;
+  n : integer;
 begin
   try
-    cs := LoadColorSchemeEx;
-    Scheme.Throbberback := cs.Throbberback;
-    Scheme.Throbberdark := cs.Throbberdark;
-    Scheme.Throbberlight := cs.Throbberlight;
-    Scheme.Throbbertext := cs.ThrobberText;
-    Scheme.WorkAreaback := cs.WorkAreaback;
-    Scheme.WorkAreadark := cs.WorkAreadark;
-    Scheme.WorkArealight := cs.WorkArealight;
-    Scheme.WorkAreatext := cs.WorkAreaText;
+    Scheme.ClearColors;
+    for n := 0 to SharpThemeApi.GetSchemeColorCount - 1 do
+        Scheme.AddColor(SharpThemeApi.GetSchemeColorByIndex(n));
   except
     Scheme.Assign(DefaultSharpEScheme);
   end;

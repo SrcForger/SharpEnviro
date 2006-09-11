@@ -27,7 +27,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 unit SharpEButton;
-
+                                                                                           
 interface
 
 uses
@@ -277,23 +277,23 @@ begin
     if FButtonDown then
     begin
       FrameRectS(r.Left, r.Top, r.Right, r.Bottom,
-        setalpha(color32(Scheme.WorkAreaLight), 200));
+        setalpha(color32(Scheme.GetColorByName('WorkAreaLight')), 200));
       FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1,
-        setalpha(color32(Scheme.WorkAreaDark), 200));
+        setalpha(color32(Scheme.GetColorByName('WorkAreaDark')), 200));
     end
     else
     begin
       FrameRectS(r.Left, r.Top, r.Right, r.Bottom,
-        setalpha(color32(Scheme.WorkAreadark), 200));
+        setalpha(color32(Scheme.GetColorByName('WorkAreadark')), 200));
       FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1,
-        setalpha(color32(Scheme.WorkAreaLight), 200));
+        setalpha(color32(Scheme.GetColorByName('WorkAreaLight')), 200));
     end;
     FillRect(r.Left + 1, r.Top + 1, r.Right - 1, r.Bottom - 1,
-      setalpha(color32(Scheme.WorkAreaBack), 200));
+      setalpha(color32(Scheme.GetColorByName('WorkAreaBack')), 200));
 
     if FDefault then
       FrameRectS(r.Left+1, r.Top+1, r.Right-1, r.Bottom-1,
-        setalpha(color32(Scheme.WorkAreadark), 200));
+        setalpha(color32(Scheme.GetColorByName('WorkAreadark')), 200));
 
     if FGlyph32 <> nil then
     begin
@@ -432,7 +432,7 @@ begin
 
   if not Assigned(FManager) then
   begin
-    DrawDefaultSkin(bmp, Scheme);
+    DrawDefaultSkin(bmp, DefaultSharpEScheme);
     exit;
   end;
 
@@ -554,7 +554,7 @@ begin
     end;
   end
   else
-    DrawDefaultSkin(bmp, Scheme);
+    DrawDefaultSkin(bmp, DefaultSharpEScheme);
 end;
 
 procedure TSharpEButton.SetCaption(Value: string);
