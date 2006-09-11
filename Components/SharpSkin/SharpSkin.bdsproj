@@ -137,8 +137,8 @@
 			<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 			<VersionInfo Name="MajorVer">0</VersionInfo>
 			<VersionInfo Name="MinorVer">7</VersionInfo>
-			<VersionInfo Name="Release">0</VersionInfo>
-			<VersionInfo Name="Build">2</VersionInfo>
+			<VersionInfo Name="Release">1</VersionInfo>
+			<VersionInfo Name="Build">0</VersionInfo>
 			<VersionInfo Name="Debug">False</VersionInfo>
 			<VersionInfo Name="PreRelease">False</VersionInfo>
 			<VersionInfo Name="Special">False</VersionInfo>
@@ -150,13 +150,13 @@
 		<VersionInfoKeys>
 			<VersionInfoKeys Name="CompanyName">SharpE-Shell Development Team</VersionInfoKeys>
 			<VersionInfoKeys Name="FileDescription">Skin Development Software for the skin system of the SharpE Shell</VersionInfoKeys>
-			<VersionInfoKeys Name="FileVersion">0.7.0.2</VersionInfoKeys>
+			<VersionInfoKeys Name="FileVersion">0.7.1.0</VersionInfoKeys>
 			<VersionInfoKeys Name="InternalName">SharpSkin</VersionInfoKeys>
 			<VersionInfoKeys Name="LegalCopyright">Martin Kraemer (2006) &lt;MartinKraemer@gmx.net&gt;</VersionInfoKeys>
 			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
 			<VersionInfoKeys Name="OriginalFilename">SharpSkin.exe</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName">SharpSkin</VersionInfoKeys>
-			<VersionInfoKeys Name="ProductVersion">0.7.0.2</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductVersion">0.7.1.0</VersionInfoKeys>
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
 		</VersionInfoKeys>
 	</Delphi.Personality>

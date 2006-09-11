@@ -33,7 +33,7 @@ unit MainForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Variants, Classes, Controls, Forms,
   Dialogs, JvExControls, JvComponent, JvEditorCommon, JvUnicodeEditor,
   JvUnicodeHLEditor, JvEditor, JvHLEditor, Menus, ExtCtrls, StdCtrls,
   JvExStdCtrls, JvListBox, JvSimpleXML, JvHLEditorPropertyForm, ToolWin,
@@ -41,7 +41,7 @@ uses
   SharpESkin, SharpEButton, SharpESkinManager, SharpEBaseControls, SharpEScheme,
   SharpECheckBox, SharpEProgressBar, SharpEBar, gr32,
   SharpEMiniThrobber, SharpERadioBox, SharpEPanel, SharpEEdit, SharpELabel,
-  SharpETaskItem, SharpApi;
+  SharpETaskItem, SharpApi, Graphics;
 
 type
   TForm1 = class(TForm)
@@ -83,25 +83,6 @@ type
     btn_Render: TToolButton;
     ToolButton8: TToolButton;
     Panel1: TPanel;
-    Label1: TLabel;
-    WAB: TSharpEColorBox;
-    Label2: TLabel;
-    WAD: TSharpEColorBox;
-    Label3: TLabel;
-    WAL: TSharpEColorBox;
-    Label4: TLabel;
-    WAT: TSharpEColorBox;
-    Label5: TLabel;
-    TRB: TSharpEColorBox;
-    Label6: TLabel;
-    Label7: TLabel;
-    TRD: TSharpEColorBox;
-    Label8: TLabel;
-    TRL: TSharpEColorBox;
-    Label9: TLabel;
-    TRT: TSharpEColorBox;
-    Label10: TLabel;
-    Label11: TLabel;
     Skin: TSharpESkin;
     Scheme: TSharpEScheme;
     SkinButton1: TSharpEButton;
@@ -176,6 +157,11 @@ type
     TaskItem1: TMenuItem;
     askItem2: TMenuItem;
     btn_Refresh: TToolButton;
+    Panel6: TPanel;
+    Label1: TLabel;
+    Button3: TButton;
+    cpanel: TPanel;
+    procedure Button3Click(Sender: TObject);
     procedure btn_RefreshClick(Sender: TObject);
     procedure TaskItem1Click(Sender: TObject);
     procedure Edit1Click(Sender: TObject);
@@ -194,8 +180,6 @@ type
     procedure SharpBarxmlbasecode1Click(Sender: TObject);
     procedure btn_saveClick(Sender: TObject);
     procedure tabsTabSelected(Sender: TObject; Item: TJvTabBarItem);
-    procedure WABColorClick(Sender: TObject; Color: TColor;
-      ColType: TClickedColorID);
     procedure FormShow(Sender: TObject);
     procedure btn_RenderClick(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
@@ -213,8 +197,8 @@ type
     procedure Exit1Click(Sender: TObject);
     procedure OnXMLDecode(Sender: TObject; var Value: string);
     procedure OnXMLTagParsed(Sender: TObject; Name: string);
+    procedure OnSchemeColorClick(Sender : TObject; Color: TColor; ColType: TClickedColorID);
   private
-    { Private-Deklarationen }
   public
     function UpdateSkinEdit(newTab : String) : boolean;
     procedure ParseAndInsertText(Text : String);
@@ -223,6 +207,8 @@ type
     procedure CheckXML;
     procedure RepaintSkinDemo;
     procedure disabletab(name: string);
+    procedure UpdateColorComponents;
+    procedure UpdateColorScheme;
   end;
 
 var
@@ -235,7 +221,7 @@ var
 
 implementation
 
-uses Defaults, JvJCLUtils, BarForm, AboutWnd, QuickHelpWnd;
+uses Defaults, JvJCLUtils, BarForm, AboutWnd, QuickHelpWnd, SchemeEditWnd;
 
 {$R *.dfm}
 
@@ -284,6 +270,7 @@ begin
     btn_addtemplate.Enabled := true;
     Insert1.Enabled := true;
     xmledit.Enabled := true;
+    UpdateColorComponents;
   end;
 end;
 
@@ -354,8 +341,7 @@ end;
 
 function TForm1.UpdateSkinEdit(newTab : String) : boolean;
 var
-  n,i : integer;
-  SList : TStringList;
+  n : integer;
 begin
   if LOWERCASE(Tabs.SelectedTab.Caption) <> 'plain xml' then
   begin
@@ -645,7 +631,6 @@ end;
 procedure TForm1.btn_RenderClick(Sender: TObject);
 var
   tempxml : TJvSimpleXML;
-  n : integer;
 begin
   CheckXML;
   tempxml := TJvSimpleXML.Create(nil);
@@ -825,15 +810,7 @@ begin
   BarWnd.Top := PBar6.Top + 64;
   btn_Render.OnClick(btn_Render);
 
-  previewPanel.Color := WAB.Color;
-  Scheme.WorkAreaback := WAB.Color;
-  Scheme.WorkAreadark := WAD.Color;
-  Scheme.WorkArealight := WAL.Color;
-  Scheme.WorkAreatext  := WAT.Color;
-  Scheme.Throbberback  := TRB.Color;
-  Scheme.Throbberdark  := TRD.Color;
-  Scheme.Throbberlight := TRL.Color;
-  Scheme.Throbbertext  := TRT.Color;
+ // previewPanel.Color := WAB.Color;
 
   RepaintSkinDemo;
 end;
@@ -887,22 +864,6 @@ begin
   BarWnd.SharpEBar1.UpdateSkin;
   BarWnd.SharpEBar1.Skin.DrawTo(BarImage.Bitmap,0,BarWnd.SharpEBar1.Skin.Height+8);
   BarWnd.SharpEBar1.Throbber.Parent := BarImage;
-end;
-
-procedure TForm1.WABColorClick(Sender: TObject; Color: TColor;
-  ColType: TClickedColorID);
-begin
-  previewPanel.Color := WAB.Color;
-  Scheme.WorkAreaback := WAB.Color;
-  Scheme.WorkAreadark := WAD.Color;
-  Scheme.WorkArealight := WAL.Color;
-  Scheme.WorkAreatext  := WAT.Color;
-  Scheme.Throbberback  := TRB.Color;
-  Scheme.Throbberdark  := TRD.Color;
-  Scheme.Throbberlight := TRL.Color;
-  Scheme.Throbbertext  := TRT.Color;
-
-  RepaintSkinDemo;
 end;
 
 procedure TForm1.tabsTabSelected(Sender: TObject; Item: TJvTabBarItem);
@@ -1056,5 +1017,80 @@ begin
     Errors.Items.Add('[SkinController is not started, unable to refresh skin]');
     
 end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+var
+  SchemeEditForm : TSchemeEditForm;
+begin
+  if length(trim(SkinFile)) = 0 then exit;
+  SchemeEditForm := TSchemeEditForm.Create(self);
+  try
+    SchemeEditForm.FileName := ExtractFileDir(SkinFile) + '\Scheme.xml';
+    SchemeEditForm.LoadFromFile;
+    SchemeEditForm.ShowModal;
+  except
+  end;
+  SchemeEditForm.Free;
+  UpdateColorComponents;
+end;
+
+procedure TForm1.UpdateColorComponents;
+var
+  n,i : integer;
+  TagLabel : TLabel;
+  ColorBox : TSharpEColorBox;
+  XML : TJvSimpleXML;
+  fname : string;
+begin
+  for n := cpanel.ComponentCount -1 downto 0 do
+      cpanel.Components[n].Free;
+
+  fname := ExtractFileDir(SkinFile) + '\Scheme.xml';
+  if not FileExists(fname) then exit;
+
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(fname);
+    i := 8;
+    for n := 0 to XML.Root.Items.Count -1 do
+        with XML.Root.Items.Item[n].Items do
+        begin
+          TagLabel := TLabel.Create(cpanel);
+          TagLabel.Parent := cpanel;
+          TagLabel.Left := 8;
+          TagLabel.Top := i;
+          TagLabel.Caption := Value('Tag','');
+          ColorBox := TSharpEColorBox.Create(cpanel);
+          ColorBox.Parent := cPanel;
+          ColorBox.Left := cpanel.Width - 16 - ColorBox.Width;
+          ColorBox.Top := i;
+          ColorBox.Color := IntValue('Default',clWhite);
+          ColorBox.OnColorClick := OnSchemeColorClick;
+          i := i + 24;
+        end;
+  except
+  end;
+  XML.Free;
+  UpdateColorScheme;
+end;
+
+procedure TForm1.UpdateColorScheme;
+var
+  n : integer;
+begin
+  Scheme.ClearColors;
+  if cpanel.ComponentCount = 0 then exit;
+
+  for n := 0 to (cpanel.ComponentCount div 2) - 1 do
+      Scheme.AddColor(inttostr(n),TLabel(cpanel.Components[n*2]).Caption,'',TSharpEColorBox(cpanel.Components[n*2+1]).Color);
+  RepaintSkinDemo;
+end;
+
+procedure TForm1.OnSchemeColorClick(Sender : TObject; Color: TColor; ColType: TClickedColorID);
+begin
+  UpdateColorScheme;
+end;
+
+
 
 end.

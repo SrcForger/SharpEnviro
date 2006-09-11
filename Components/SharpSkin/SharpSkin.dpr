@@ -40,7 +40,9 @@ uses
   SharpFX in '..\..\Common\Units\SharpFX\SharpFX.pas',
   SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   graphicsFX in '..\..\Common\Units\SharpFX\graphicsFX.pas',
-  GR32_PNG in '..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
+  GR32_PNG in '..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
+  SchemeEditWnd in 'SchemeEditWnd.pas' {SchemeEditForm},
+  uSharpeColorBox in '..\..\Common\Delphi Components\SharpEColorBox\uSharpeColorBox.pas';
 
 {$R *.res}
 
@@ -50,6 +52,7 @@ begin
   Application.CreateForm(TForm1, Form1);
   Application.CreateForm(TAboutForm, AboutForm);
   Application.CreateForm(TQuickHelpForm, QuickHelpForm);
+//  Application.CreateForm(TSchemeEditForm, SchemeEditForm);
   //Application.CreateForm(TBarWnd, BarWnd);
   Application.Run;
 end.
