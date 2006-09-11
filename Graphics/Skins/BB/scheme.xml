@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinScheme>
+  <item>
+    <Name>Background</Name>
+    <Tag>$Background</Tag>
+    <Info>Background</Info>
+    <Default>10395294</Default>
+  </item>
+  <item>
+    <Name>Background Text</Name>
+    <Tag>$BackgroundText</Tag>
+    <Info>Background Text</Info>
+    <Default>0</Default>
+  </item>
+  <item>
+    <Name>Background Hover</Name>
+    <Tag>$BackgroundHover</Tag>
+    <Info>Background Hover</Info>
+    <Default>11974326</Default>
+  </item>
+  <item>
+    <Name>Foreground</Name>
+    <Tag>$Foreground</Tag>
+    <Info>Foreground</Info>
+    <Default>7891034</Default>
+  </item>
+  <item>
+    <Name>Foreground Text</Name>
+    <Tag>$ForegroundText</Tag>
+    <Info>Foreground Text</Info>
+    <Default>0</Default>
+  </item>
+  <item>
+    <Name>Foreground Hover</Name>
+    <Tag>$ForegroundHover</Tag>
+    <Info>Foreground Hover</Info>
+    <Default>9141874</Default>
+  </item>
+</SharpESkinScheme>

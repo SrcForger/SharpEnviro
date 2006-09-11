@@ -17,19 +17,19 @@
               <location>0,0</location>
               <dimension>52,16</dimension>
               <image>images\Modules\Button\Special-ShowMenu-Back-Up.png</image>
-              <color>$WorkAreaBack</color>
+              <color>$Background</color>
             </skinpart>
             <skinpart>
               <location>1,1</location>
               <dimension>14,14</dimension>
               <image>images\Modules\Button\Special-ShowMenu-Cube.png</image>
-              <color>$ThrobberBack</color>
+              <color>$Foreground</color>
             </skinpart>
             <skinpart>
               <location>16,3</location>
               <dimension>33,11</dimension>
               <image>images\Modules\Button\Special-ShowMenu-Font.png</image>
-              <color>$WorkAreaText</color>
+              <color>$BackgoundText</color>
             </skinpart>
           </normal>
           <hover>
@@ -37,19 +37,19 @@
               <location>0,0</location>
               <dimension>52,16</dimension>
               <image>images\Modules\Button\Special-ShowMenu-Back-Up.png</image>
-              <color>$ThrobberBack</color>
+              <color>$Foreground</color>
             </skinpart>
             <skinpart>
               <location>1,1</location>
               <dimension>14,14</dimension>
               <image>images\Modules\Button\Special-ShowMenu-Cube.png</image>
-              <color>$WorkAreaBack</color>
+              <color>$Backgroundk</color>
             </skinpart>
             <skinpart>
               <location>16,3</location>
               <dimension>33,11</dimension>
               <image>images\Modules\Button\Special-ShowMenu-Font.png</image>
-              <color>$ThrobberText</color>
+              <color>$ForegroundText</color>
             </skinpart>
           </hover>
           <down>
@@ -57,19 +57,19 @@
               <location>0,0</location>
               <dimension>52,16</dimension>
               <image>images\Modules\Button\Special-ShowMenu-Back-Down.png</image>
-              <color>$WorkAreaBack</color>
+              <color>$Background</color>
             </skinpart>
             <skinpart>
               <location>2,2</location>
               <dimension>14,14</dimension>
               <image>images\Modules\Button\Special-ShowMenu-Cube.png</image>
-              <color>$ThrobberBack</color>
+              <color>$Foregroundk</color>
             </skinpart>
             <skinpart>
               <location>17,4</location>
               <dimension>33,11</dimension>
               <image>images\Modules\Button\Special-ShowMenu-Font.png</image>
-              <color>$WorkAreaText</color>
+              <color>$BackgroundText</color>
             </skinpart>
           </down>
           <disabled>

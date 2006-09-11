@@ -14,19 +14,19 @@
         <location>0,0</location>
         <dimension>6,30</dimension>
         <image>images/bar-left.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </skinpart>
       <skinpart>
         <location>6,0</location>
         <dimension>w-12,30</dimension>
         <image>images/bar-middle.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </skinpart>
       <skinpart>
         <location>w-6,0</location>
         <dimension>6,30</dimension>
         <image>images/bar-right.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </skinpart>
     </bar>
     <throbber>
@@ -37,7 +37,7 @@
           <location>0,0</location>
           <dimension>7,16</dimension>
           <image>images/throbber-normal.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
       </normal>
       <hover>
@@ -45,7 +45,7 @@
           <location>0,0</location>
           <dimension>7,16</dimension>
           <image>images/throbber-normal.png</image>
-          <color>$ThrobberLight</color>
+          <color>$ForeGroundHover</color>
         </skinpart>
       </hover>
       <down>
@@ -53,7 +53,7 @@
           <location>0,0</location>
           <dimension>7,16</dimension>
           <image>images/throbber-down.png</image>
-          <color>$ThrobberLight</color>
+          <color>$ForeGroundHover</color>
         </skinpart>
       </down>
     </throbber>
@@ -66,7 +66,7 @@
         <location>cw+6,ch-1</location>
         <name>Small Fonts</name>
         <size>7</size>
-        <color>$WorkAreaText</color>
+        <color>$BackgroundText</color>
       </text>
       <icon>
         <draw>1</draw>
@@ -81,19 +81,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
       </normal>
       <normalhover>
@@ -101,19 +101,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
       </normalhover>
       <down>
@@ -121,19 +121,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Left.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskD_Middle.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Right.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
       </down>
       <downhover>
@@ -141,19 +141,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Left.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskD_Middle.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Right.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
       </downhover>
       <highlight>
@@ -161,19 +161,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
-          <color>$WorkAreaLight</color>
+          <color>$BackgroundHover</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
-          <color>$WorkAreaLight</color>
+          <color>$BackgroundHover</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
-          <color>$WorkAreaLight</color>
+          <color>$BackgroundHover</color>
         </skinpart>
       </highlight>
       <highlighthover>
@@ -181,19 +181,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
-          <color>$ThrobberLight</color>
+          <color>$ForeGroundHover</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
-          <color>$ThrobberLight</color>
+          <color>$ForeGroundHover</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
-          <color>$ThrobberLight</color>
+          <color>$ForeGroundHover</color>
         </skinpart>
       </highlighthover>
     </full>
@@ -204,7 +204,7 @@
         <location>cw-1,ch-1</location>
         <name>Small Fonts</name>
         <size>7</size>
-        <color>$WorkAreaText</color>
+        <color>$BackgroundText</color>
       </text>
       <icon>
         <draw>0</draw>
@@ -219,19 +219,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
       </normal>
       <normalhover>
@@ -239,19 +239,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
       </normalhover>
       <down>
@@ -259,19 +259,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Left.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskD_Middle.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Right.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
       </down>
       <downhover>
@@ -279,19 +279,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Left.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskD_Middle.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Right.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
       </downhover>
       <highlight>
@@ -299,19 +299,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
-          <color>$WorkAreaLight</color>
+          <color>$BackgroundHover</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
-          <color>$WorkAreaLight</color>
+          <color>$BackgroundHover</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
-          <color>$WorkAreaLight</color>
+          <color>$BackgroundHover</color>
         </skinpart>
       </highlight>
       <highlighthover>
@@ -319,19 +319,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
-          <color>$ThrobberLight</color>
+          <color>$ForeGroundHover</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
-          <color>$ThrobberLight</color>
+          <color>$ForeGroundHover</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
-          <color>$ThrobberLight</color>
+          <color>$ForeGroundHover</color>
         </skinpart>
       </highlighthover>
     </compact>
@@ -352,19 +352,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
       </normal>
       <normalhover>
@@ -372,19 +372,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
       </normalhover>
       <down>
@@ -392,19 +392,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Left.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskD_Middle.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Right.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
       </down>
       <downhover>
@@ -412,19 +412,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Left.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskD_Middle.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Right.png</image>
-          <color>$ThrobberBack</color>
+          <color>$Foreground</color>
         </skinpart>
       </downhover>
       <highlight>
@@ -432,19 +432,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
-          <color>$WorkAreaLight</color>
+          <color>$BackgroundHover</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
-          <color>$WorkAreaLight</color>
+          <color>$BackgroundHover</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
-          <color>$WorkAreaLight</color>
+          <color>$BackgroundHover</color>
         </skinpart>
       </highlight>
       <highlighthover>
@@ -452,19 +452,19 @@
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
-          <color>$ThrobberLight</color>
+          <color>$ForeGroundHover</color>
         </skinpart>
         <skinpart>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
-          <color>$ThrobberLight</color>
+          <color>$ForeGroundHover</color>
         </skinpart>
         <skinpart>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
-          <color>$ThrobberLight</color>
+          <color>$ForeGroundHover</color>
         </skinpart>
       </highlighthover>
     </mini>
@@ -486,7 +486,7 @@
           <location>0,0</location>
           <dimension>10,10</dimension>
           <image>images/Form_Btn_Down.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
       </normal>
       <hover>
@@ -495,7 +495,7 @@
           <location>0,0</location>
           <dimension>10,10</dimension>
           <image>images/Form_Btn_Down.png</image>
-          <color>$WorkAreaLight</color>
+          <color>$BackgroundHover</color>
         </skinpart>
       </hover>
       <down>
@@ -504,7 +504,7 @@
           <location>0,0</location>
           <dimension>10,10</dimension>
           <image>images/Form_Btn_Down.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
       </down>
       <disabled>
@@ -513,7 +513,7 @@
           <location>0,0</location>
           <dimension>10,10</dimension>
           <image>images/Form_Btn_Down.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
       </disabled>
     </btndown>
@@ -524,7 +524,7 @@
           <location>0,0</location>
           <dimension>10,10</dimension>
           <image>images/Form_Btn_Close.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
       </normal>
       <hover>
@@ -533,7 +533,7 @@
           <location>0,0</location>
           <dimension>10,10</dimension>
           <image>images/Form_Btn_Close.png</image>
-          <color>$WorkAreaLight</color>
+          <color>$BackgroundHover</color>
         </skinpart>
       </hover>
       <down>
@@ -542,7 +542,7 @@
           <location>0,0</location>
           <dimension>10,10</dimension>
           <image>images/Form_Btn_Close.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
       </down>
       <disabled>
@@ -551,7 +551,7 @@
           <location>0,0</location>
           <dimension>10,10</dimension>
           <image>images/Form_Btn_Close.png</image>
-          <color>$WorkAreaBack</color>
+          <color>$Background</color>
         </skinpart>
       </disabled>
     </btnclose>
@@ -565,25 +565,25 @@
         <location>0,0</location>
         <dimension>6,23</dimension>
         <image>images/Form_left_top.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </skinpart>
       <skinpart>
         <location>0,23</location>
         <dimension>6,h-29</dimension>
         <image>images/Form_left_middle.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </skinpart>
       <skinpart>
         <location>0,h-6</location>
         <dimension>6,6</dimension>
         <image>images/Form_left_bottom.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </skinpart>
       <skinpart>
         <location>6,0</location>
         <dimension>w-12,6</dimension>
         <image>images/Form_middle_top.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </skinpart>
       <skinpart>
         <location>6,6</location>
@@ -596,44 +596,44 @@
         <dimension>w-15,9</dimension>
         <image>images/empty.png</image>
         <gradienttype>horizontal</gradienttype>
-        <gradientcolor>$ThrobberLight,$ThrobberBack</gradientcolor>
+        <gradientcolor>$ForeGroundHover,$Foreground</gradientcolor>
         <gradientalpha>255,255</gradientalpha>
       </skinpart>
       <skinpart>
         <location>6,18</location>
         <dimension>w-12,5</dimension>
         <image>images/Form_middle_middle.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </skinpart>
       <skinpart>
         <location>6,23</location>
         <dimension>w-12,h-29</dimension>
         <image>images/empty.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </skinpart>
       <skinpart>
         <location>6,h-6</location>
         <dimension>w-12,6</dimension>
         <image>images/Form_middle_bottom.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </skinpart>
       <skinpart>
         <location>w-6,0</location>
         <dimension>6,23</dimension>
         <image>images/Form_right_top.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </skinpart>
       <skinpart>
         <location>w-6,23</location>
         <dimension>6,h-29</dimension>
         <image>images/Form_right_middle.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </skinpart>
       <skinpart>
         <location>w-6,h-6</location>
         <dimension>6,6</dimension>
         <image>images/Form_right_bottom.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </skinpart>
     </full>
   </form>
@@ -644,7 +644,7 @@
         <location>0,0</location>
         <dimension>6,6</dimension>
         <image>images/MiniThrobber-Normal.png</image>
-        <color>$ThrobberBack</color>
+        <color>$Foreground</color>
         <alpha>128</alpha>
       </skinpart>
     </normal>
@@ -653,7 +653,7 @@
         <location>0,0</location>
         <dimension>6,6</dimension>
         <image>images/MiniThrobber-Normal.png</image>
-        <color>$ThrobberBack</color>
+        <color>$Foreground</color>
       </skinpart>
     </hover>
     <down>
@@ -661,7 +661,7 @@
         <location>0,0</location>
         <dimension>6,6</dimension>
         <image>images/MiniThrobber-Down.png</image>
-        <color>$ThrobberBack</color>
+        <color>$Foreground</color>
       </skinpart>
     </down>
   </minithrobber>
@@ -670,7 +670,7 @@
       <location>cw-2,ch-1</location>
       <name>Small Fonts</name>
       <size>7</size>
-      <color>$WorkAreaText</color>
+      <color>$BackgroundText</color>
     </text>
     <location>0,0</location>
     <dimension>w,18</dimension>
@@ -681,63 +681,63 @@
         <location>0,0</location>
         <dimension>3,3</dimension>
         <image>images/Button-Top-Left.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,0</location>
         <dimension>w-8,3</dimension>
         <image>images/Button-Middle-Top.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-5,0</location>
         <dimension>5,3</dimension>
         <image>images/Button-Top-Right.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>0,3</location>
         <dimension>3,h-8</dimension>
         <image>images/button-middle-left.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>0,h-5</location>
         <dimension>3,5</dimension>
         <image>images/button-bottom-left.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,h-5</location>
         <dimension>w-8,5</dimension>
         <image>images/button-middle-bottom.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-5,h-5</location>
         <dimension>5,5</dimension>
         <image>images/button-bottom-right.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-5,3</location>
         <dimension>5,h-8</dimension>
         <image>images/button-middle-right.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,3</location>
         <dimension>w-8,h-8</dimension>
         <image>images/button-middle.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
@@ -745,7 +745,7 @@
         <dimension>w-9,h-9</dimension>
         <image>images/empty.png</image>
         <gradienttype>vertical</gradienttype>
-        <gradientcolor>$WorkAreaLight,$WorkAreaBack</gradientcolor>
+        <gradientcolor>$BackgroundHover,$Background</gradientcolor>
         <gradientalpha>255,255</gradientalpha>
       </skinpart>
     </normal>
@@ -754,63 +754,63 @@
         <location>0,0</location>
         <dimension>3,3</dimension>
         <image>images/Button-Top-Left.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,0</location>
         <dimension>w-8,3</dimension>
         <image>images/Button-Middle-Top.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-5,0</location>
         <dimension>5,3</dimension>
         <image>images/Button-Top-Right.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>0,3</location>
         <dimension>3,h-8</dimension>
         <image>images/button-middle-left.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>0,h-5</location>
         <dimension>3,5</dimension>
         <image>images/button-bottom-left.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,h-5</location>
         <dimension>w-8,5</dimension>
         <image>images/button-middle-bottom.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-5,h-5</location>
         <dimension>5,5</dimension>
         <image>images/button-bottom-right.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-5,3</location>
         <dimension>5,h-8</dimension>
         <image>images/button-middle-right.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,3</location>
         <dimension>w-8,h-8</dimension>
         <image>images/button-middle.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
     </hover>
@@ -822,69 +822,69 @@
         <location>0,0</location>
         <dimension>3,3</dimension>
         <image>images/Button-Top-Left-Down.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,0</location>
         <dimension>w-8,3</dimension>
         <image>images/Button-Middle-Top-Down.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-5,0</location>
         <dimension>5,3</dimension>
         <image>images/Button-Top-Right-Down.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>0,3</location>
         <dimension>3,h-8</dimension>
         <image>images/button-middle-left-Down.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>0,h-5</location>
         <dimension>3,5</dimension>
         <image>images/button-bottom-left-Down.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,h-5</location>
         <dimension>w-8,5</dimension>
         <image>images/button-middle-bottom-Down.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-5,h-5</location>
         <dimension>5,5</dimension>
         <image>images/button-bottom-right-Down.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-5,3</location>
         <dimension>5,h-8</dimension>
         <image>images/button-middle-right-Down.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,3</location>
         <dimension>w-8,h-8</dimension>
         <image>images/button-middle.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
     </down>
     <disabled>
       <text>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
       </text>
       <!-- Disabled State Skin Parts -->
     </disabled>
@@ -913,55 +913,55 @@
         <location>0,0</location>
         <dimension>2,2</dimension>
         <image>images/PB-Left-Top.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>0,2</location>
         <dimension>2,h-4</dimension>
         <image>images/PB-Left-Middle.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>0,h-2</location>
         <dimension>2,2</dimension>
         <image>images/PB-Left-Bottom.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>2,0</location>
         <dimension>w-4,2</dimension>
         <image>images/PB-Middle-Top.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>2,h-2</location>
         <dimension>w-4,2</dimension>
         <image>images/PB-Middle-Bottom.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>w-2,0</location>
         <dimension>2,2</dimension>
         <image>images/PB-Right-Top.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>w-2,2</location>
         <dimension>2,h-4</dimension>
         <image>images/PB-Right-Middle.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>w-2,h-2</location>
         <dimension>2,2</dimension>
         <image>images/PB-Right-Bottom.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>2,2</location>
         <dimension>w-4,h-4</dimension>
         <image>images/empty.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
     </background>
     <progress>
@@ -971,55 +971,55 @@
         <location>0,0</location>
         <dimension>2,2</dimension>
         <image>images/PB-Left-Top-P.png</image>
-        <color>$ThrobberBack</color>
+        <color>$Foreground</color>
       </skinpart>
       <skinpart>
         <location>0,2</location>
         <dimension>2,h-4</dimension>
         <image>images/PB-Left-Middle-P.png</image>
-        <color>$ThrobberBack</color>
+        <color>$Foreground</color>
       </skinpart>
       <skinpart>
         <location>0,h-2</location>
         <dimension>2,2</dimension>
         <image>images/PB-Left-Bottom-P.png</image>
-        <color>$ThrobberBack</color>
+        <color>$Foreground</color>
       </skinpart>
       <skinpart>
         <location>2,0</location>
         <dimension>w-4,2</dimension>
         <image>images/PB-Middle-Top-P.png</image>
-        <color>$ThrobberBack</color>
+        <color>$Foreground</color>
       </skinpart>
       <skinpart>
         <location>2,h-2</location>
         <dimension>w-4,2</dimension>
         <image>images/PB-Middle-Bottom-P.png</image>
-        <color>$ThrobberBack</color>
+        <color>$Foreground</color>
       </skinpart>
       <skinpart>
         <location>w-2,0</location>
         <dimension>2,2</dimension>
         <image>images/PB-Right-Top-P.png</image>
-        <color>$ThrobberBack</color>
+        <color>$Foreground</color>
       </skinpart>
       <skinpart>
         <location>w-2,2</location>
         <dimension>2,h-4</dimension>
         <image>images/PB-Right-Middle-P.png</image>
-        <color>$ThrobberBack</color>
+        <color>$Foreground</color>
       </skinpart>
       <skinpart>
         <location>w-2,h-2</location>
         <dimension>2,2</dimension>
         <image>images/PB-Right-Bottom-P.png</image>
-        <color>$ThrobberBack</color>
+        <color>$Foreground</color>
       </skinpart>
       <skinpart>
         <location>2,2</location>
         <dimension>w-4,h-4</dimension>
         <image>images/empty.png</image>
-        <color>$ThrobberBack</color>
+        <color>$Foreground</color>
       </skinpart>
     </progress>
   </progressbar>
@@ -1033,63 +1033,63 @@
         <location>0,0</location>
         <dimension>3,3</dimension>
         <image>images/Edit-Left-Top.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>0,3</location>
         <dimension>3,h-6</dimension>
         <image>images/Edit-Left-Middle.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>0,h-3</location>
         <dimension>3,3</dimension>
         <image>images/Edit-Left-Bottom.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,0</location>
         <dimension>w-6,3</dimension>
         <image>images/Edit-Middle-Top.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,3</location>
         <dimension>w-6,h-6</dimension>
         <image>images/empty.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,h-3</location>
         <dimension>w-6,3</dimension>
         <image>images/Edit-Middle-Bottom.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-3,0</location>
         <dimension>3,3</dimension>
         <image>images/Edit-Right-Top.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-3,3</location>
         <dimension>3,h-6</dimension>
         <image>images/Edit-Right-Middle.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-3,h-3</location>
         <dimension>3,3</dimension>
         <image>images/Edit-Right-Bottom.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
     </normal>
@@ -1098,55 +1098,55 @@
         <location>0,0</location>
         <dimension>3,3</dimension>
         <image>images/Edit-Left-Top.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>0,3</location>
         <dimension>3,h-6</dimension>
         <image>images/Edit-Left-Middle.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>0,h-3</location>
         <dimension>3,3</dimension>
         <image>images/Edit-Left-Bottom.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>3,0</location>
         <dimension>w-6,3</dimension>
         <image>images/Edit-Middle-Top.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>3,3</location>
         <dimension>w-6,h-6</dimension>
         <image>images/empty.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>3,h-3</location>
         <dimension>w-6,3</dimension>
         <image>images/Edit-Middle-Bottom.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>w-3,0</location>
         <dimension>3,3</dimension>
         <image>images/Edit-Right-Top.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>w-3,3</location>
         <dimension>3,h-6</dimension>
         <image>images/Edit-Right-Middle.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>w-3,h-3</location>
         <dimension>3,3</dimension>
         <image>images/Edit-Right-Bottom.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
     </focus>
     <hover>
@@ -1154,55 +1154,55 @@
         <location>0,0</location>
         <dimension>3,3</dimension>
         <image>images/Edit-Left-Top.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>0,3</location>
         <dimension>3,h-6</dimension>
         <image>images/Edit-Left-Middle.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>0,h-3</location>
         <dimension>3,3</dimension>
         <image>images/Edit-Left-Bottom.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>3,0</location>
         <dimension>w-6,3</dimension>
         <image>images/Edit-Middle-Top.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>3,3</location>
         <dimension>w-6,h-6</dimension>
         <image>images/empty.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>3,h-3</location>
         <dimension>w-6,3</dimension>
         <image>images/Edit-Middle-Bottom.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>w-3,0</location>
         <dimension>3,3</dimension>
         <image>images/Edit-Right-Top.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>w-3,3</location>
         <dimension>3,h-6</dimension>
         <image>images/Edit-Right-Middle.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
       <skinpart>
         <location>w-3,h-3</location>
         <dimension>3,3</dimension>
         <image>images/Edit-Right-Bottom.png</image>
-        <color>$WorkAreaLight</color>
+        <color>$BackgroundHover</color>
       </skinpart>
     </hover>
     <disabled>
@@ -1214,7 +1214,7 @@
       <location>cw-2,ch-1</location>
       <name>Small Fonts</name>
       <size>10</size>
-      <color>$WorkAreaText</color>
+      <color>$BackgroundText</color>
     </text>
     <dimension>w,h</dimension>
     <normal>
@@ -1222,63 +1222,63 @@
         <location>0,0</location>
         <dimension>3,3</dimension>
         <image>images/Button-Top-Left.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,0</location>
         <dimension>w-8,3</dimension>
         <image>images/Button-Middle-Top.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-5,0</location>
         <dimension>5,3</dimension>
         <image>images/Button-Top-Right.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>0,3</location>
         <dimension>3,h-8</dimension>
         <image>images/button-middle-left.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>0,h-5</location>
         <dimension>3,5</dimension>
         <image>images/button-bottom-left.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,h-5</location>
         <dimension>w-8,5</dimension>
         <image>images/button-middle-bottom.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-5,h-5</location>
         <dimension>5,5</dimension>
         <image>images/button-bottom-right.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>w-5,3</location>
         <dimension>5,h-8</dimension>
         <image>images/button-middle-right.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <location>3,3</location>
         <dimension>w-8,h-8</dimension>
         <image>images/button-middle.png</image>
-        <color>$WorkAreaBack</color>
+        <color>$Background</color>
         <alpha>196</alpha>
       </skinpart>
     </normal>

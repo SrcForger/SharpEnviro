@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinScheme>
+  <item>
+    <Tag>$Background</Tag>
+    <Color>10395294</Colort>
+  </item>
+  <item>
+    <Tag>$BackgroundText</Tag>
+    <Color>0</Color>
+  </item>
+  <item>
+    <Tag>$BackgroundHover</Tag>
+    <Color>11974326</Color>
+  </item>
+  <item>
+    <Tag>$Foreground</Tag>
+    <Color>7891034</Color>
+  </item>
+  <item>
+    <Tag>$ForegroundText</Tag>
+    <Color>0</Color>
+  </item>
+  <item>
+    <Tag>$ForegroundHover</Tag>
+    <Color>9141874</Color>
+  </item>
+</SharpESkinScheme>
