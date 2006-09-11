@@ -51,44 +51,6 @@ type
     Tag: string;
   end;
 
-  TThemeIconSet = record
-    Name: string;
-    Author: string;
-    Website: string;
-    Directory: string;
-    Icons: array of TSharpEIcon;
-  end;
-
-  TThemeSkin = record
-    Name: string;
-    Scheme: string;
-    Directory: string;
-  end;
-
-  TThemeData = record
-    Directory: string;
-    LastUpdate: Int64;
-  end;
-
-  TThemeInfo = record
-    Name: string;
-    Author: string;
-    Comment: string;
-    Website: string;
-  end;
-
-  TThemeScheme = record
-    Name: string;
-    Colors: TSharpEColorSet;
-  end;
-
-  TSharpETheme = record
-    Data: TThemeData;
-    Info: TThemeInfo;
-    Scheme: TThemeScheme;
-    Skin: TThemeSkin;
-    IconSet: TThemeIconSet;
-  end;
 
 // ThemeAPIControls
 procedure InitializeTheme; external 'SharpThemeApi.dll' name 'InitializeTheme';

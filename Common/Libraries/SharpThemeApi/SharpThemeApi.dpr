@@ -35,6 +35,7 @@ uses
   DateUtils,
   Classes,
   JvSimpleXML,
+  Dialogs,
   SharpAPI in '..\SharpAPI\SharpAPI.pas';
 
 type
@@ -146,7 +147,7 @@ begin
       result := -n;
       exit;
     end;
-  result := n;
+  result := pColor;
 end;
 
 // ##########################################
@@ -360,43 +361,45 @@ begin
     end;
 
     // Get Scheme Colors
-    XML.Root.Clear;
-    XML.LoadFromFile(Theme.Skin.Directory + SCHEME_FILE);
     Setlength(Theme.Scheme.Colors,0);
-
-    for i := 0 to Pred(XML.Root.Items.Count) do
-    begin
-      ItemCount := high(Theme.Scheme.Colors);
-      SetLength(Theme.Scheme.Colors, ItemCount+2);
-      tmpRec :=  Theme.Scheme.Colors[ItemCount+1];
-
-      with XML.Root.Items.Item[i].Items do
-      begin
-        tmpRec.Name := Value('name', '');
-        tmpRec.Tag := Value('tag', '');
-        tmpRec.Info := Value('info', '');
-        tmpRec.Color := IntValue('Default', 0);
-      end;
-      Theme.Scheme.Colors[ItemCount+1] := tmpRec;
-    end;
-
-    sFile := Theme.Skin.Directory + SKINS_SCHEME_DIRECTORY + '\' +
-      sCurScheme + '.xml';
-    if FileExists(sFile) then
-    begin
-      Xml.LoadFromFile(sFile);
+    XML.Root.Clear;
+    try
+      XML.LoadFromFile(Theme.Skin.Directory + SCHEME_FILE);
       for i := 0 to Pred(XML.Root.Items.Count) do
+      begin
+        ItemCount := high(Theme.Scheme.Colors);
+        SetLength(Theme.Scheme.Colors, ItemCount+2);
+        tmpRec :=  Theme.Scheme.Colors[ItemCount+1];
+
         with XML.Root.Items.Item[i].Items do
         begin
-          sTag := Value('tag', '');
-          tmpColor := IntValue('color', 0);
-
-          Index := GetSchemeColorIndexByTag(pchar(sTag));
-          if Index < 0 then
-            Theme.Scheme.Colors[Index].Color := tmpColor;
-
+          tmpRec.Name := Value('name', '');
+          tmpRec.Tag := Value('tag', '');
+          tmpRec.Info := Value('info', '');
+          tmpRec.Color := IntValue('Default', 0);
         end;
+        Theme.Scheme.Colors[ItemCount+1] := tmpRec;
+      end;
+    except
+    end;
+    sFile := Theme.Skin.Directory + SKINS_SCHEME_DIRECTORY + '\' + sCurScheme + '.xml';
+    if FileExists(sFile) then
+    begin
+      try
+        XML.LoadFromFile(sFile);
 
+        for i := 0 to Pred(XML.Root.Items.Count) do
+          with XML.Root.Items.Item[i].Items do
+          begin
+            sTag := Value('tag', '');
+            tmpColor := IntValue('color', Theme.Scheme.Colors[Index].Color);
+
+            Index := GetSchemeColorIndexByTag(pchar(sTag));
+            if Index >= 0 then
+              Theme.Scheme.Colors[Index].Color := tmpColor;
+        end;
+      except
+      end;
     end;
   finally
     XML.Free;
@@ -641,7 +644,7 @@ var
   i: integer;
 begin
   result := -1;
-  for i := 0 to GetSchemeColorCount do
+  for i := 0 to GetSchemeColorCount - 1 do
   begin
     if CompareText(Theme.Scheme.Colors[i].Tag, pTag) = 0 then
       Result := i;
@@ -657,7 +660,7 @@ begin
   Result.Info := '';
   Result.Color := 0;
 
-  for i := 0 to GetSchemeColorCount do
+  for i := 0 to GetSchemeColorCount - 1 do
   begin
     if CompareText(Theme.Scheme.Colors[i].Tag, pTag) = 0 then begin
       result.Name := Theme.Scheme.Colors[i].Name;

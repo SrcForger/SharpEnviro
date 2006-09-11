@@ -127,7 +127,7 @@
 		</Directories>
 		<Parameters>
 			<Parameters Name="RunParams"></Parameters>
-			<Parameters Name="HostApplication">E:\SharpE\SharpThemeTest.exe</Parameters>
+			<Parameters Name="HostApplication">F:\SharpE\ThemeApiTest.exe</Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
 			<Parameters Name="DebugCWD"></Parameters>
