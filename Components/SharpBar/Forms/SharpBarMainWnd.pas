@@ -1176,7 +1176,7 @@ begin
      end;
   if (Button = mbLeft) and (not SharpEBar1.DisableHideBar) then
   begin
-    BarHideForm.Color := SkinManager.Scheme.Throbberback;
+    //BarHideForm.Color := SkinManager.Scheme.Throbberback;
     if (Y=Height-1)  and (SharpEbar1.VertPos = vpBottom) then
     begin
       BarHideForm.Left := Left;
