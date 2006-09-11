@@ -115,7 +115,7 @@
 			<Linker Name="ExeDescription">SystemTask</Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir"></Directories>
+			<Directories Name="OutputDir">..\..\..\..\SharpE\Services\</Directories>
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
@@ -130,8 +130,12 @@
 			<Parameters Name="HostApplication"></Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
-			<Parameters Name="DebugCWD"></Parameters>
-		</Parameters>
+			<Parameters Name="DebugCWD"></Parameters>  <Parameters Name="RemoteHost"></Parameters>
+      <Parameters Name="RemotePath"></Parameters>
+      <Parameters Name="RemoteLauncher"></Parameters>
+      <Parameters Name="RemoteCWD"></Parameters>
+      <Parameters Name="RemoteDebug">False</Parameters>
+    </Parameters>
 		<VersionInfo>
 			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 			<VersionInfo Name="AutoIncBuild">False</VersionInfo>
