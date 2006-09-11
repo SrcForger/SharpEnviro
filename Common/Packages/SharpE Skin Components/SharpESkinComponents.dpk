@@ -67,6 +67,7 @@ contains
   StrConst in '..\..\Delphi Components\SharpE Skin Components\StrConst.pas',
   SharpEListBox in '..\..\Delphi Components\SharpE Skin Components\SharpEListBox.pas',
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas',
-  SharpECustomSkinSettings in '..\..\Delphi Components\SharpE Skin Components\SharpECustomSkinSettings.pas';
+  SharpECustomSkinSettings in '..\..\Delphi Components\SharpE Skin Components\SharpECustomSkinSettings.pas',
+  SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas';
 
 end.
