@@ -107,6 +107,7 @@ var
   newicon : hicon;
 begin
   newicon := 0;
+  if FIcon <> 0 then DestroyIcon(FIcon);
   try
     SendMessageTimeout(Handle, WM_GETICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
 

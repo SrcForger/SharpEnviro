@@ -756,8 +756,8 @@ begin
     if (bmp.Width <> 0) and (bmp.Height <> 0) then
        pTaskItem.Glyph32.Assign(bmp);
   except
-    bmp.Free;
   end;
+  bmp.Free;
 end;
 
 procedure TMainForm.CheckFilterAll;
