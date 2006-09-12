@@ -91,6 +91,7 @@ type
     sState      : TSharpETaskItemStates;
     sSort       : boolean;
     sSortType   : TSortType;
+    sDebug      : boolean;
     sMaxAllButton : boolean;
     sMinAllButton : boolean;
     sIFilter,sEFilter : Boolean;
@@ -130,6 +131,9 @@ type
     constructor CreateParented(ParentWindow : hwnd; pID : integer; pBarWnd : Hwnd; pHeight : integer);
     procedure AlignSpecialButtons;
     procedure UpdateCustomSettings;
+
+    procedure DebugOutPutInfo(msg : String);
+    procedure DebugOutPutError(msg : String);
   end;
 
 
@@ -143,6 +147,18 @@ var
   usend : boolean;
 
 {$R *.dfm}
+
+procedure TMainForm.DebugOutPutInfo(msg : String);
+begin
+  if not sDebug then exit;
+  SharpApi.SendDebugMessageEx('Module|Taskbar',PChar(msg),0,DMT_INFO);
+end;
+
+procedure TMainForm.DebugOutPutError(msg : String);
+begin
+  if not sDebug then exit;
+  SharpApi.SendDebugMessageEx('Module|Taskbar',PChar(msg),clMaroon,DMT_ERROR);
+end;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
 begin
@@ -164,6 +180,7 @@ end;
 
 procedure TMainForm.WMVWMChange(var msg : TMessage);
 begin
+  DebugOutPutInfo('TMainForm.WMVWMChance (Message Procedure)');
   if TimedCheck.Enabled then TimedCheck.Enabled := false;
   TimedCheck.Enabled := True;
 end;
@@ -173,6 +190,7 @@ var
   dir : String;
   b : boolean;
 begin
+  DebugOutPutInfo('TMainForm.UpdatecustomSettings (Procedure)');
   if (not ses_minall.Visible) and (not ses_maxall.Visible) then exit;
 
   FCustomSkinSettings.LoadFromXML('');
@@ -215,6 +233,7 @@ end;
 
 constructor TMainForm.CreateParented(ParentWindow : hwnd; pID : integer; pBarWnd : Hwnd; pHeight : integer);
 begin
+  DebugOutPutInfo('TMainForm.CreateParented (constructor)');
   Inherited CreateParented(ParentWindow);
   ModuleID := pID;
   BarWnd := pBarWnd;
@@ -223,6 +242,7 @@ end;
 
 procedure TMainForm.WMCommand(var msg: TMessage);
 begin
+  DebugOutPutInfo('TMainForm.WMCommand (Message Procedure)');
   PostMessage(SysMenuHandle, WM_SYSCOMMAND, msg.wparam, msg.lparam);
   inherited;
 end;
@@ -231,6 +251,7 @@ procedure TMainForm.GetSpacing;
 var
   r : TRect;
 begin
+  DebugOutPutInfo('TMainForm.GetSpacing (Procedure)');
   if SystemSkinManager.Skin.TaskItemSkin = nil then exit;
   try
     case sState of
@@ -271,6 +292,7 @@ procedure TMainForm.AlignSpecialButtons;
 var
   n : integer;
 begin
+  DebugOutPutInfo('TMainForm.AlignSpecialButtons (Procedure)');
   n := 1;
   if sMinAllButton then
   begin
@@ -292,6 +314,7 @@ var
   cp: TPoint;
   AppMenu: hMenu;
 begin
+  DebugOutPutInfo('TMainForm.DisplaySystemMenu (Procedure)');
   SysMenuHandle := pHandle;
   GetCursorPos(cp);
   AppMenu := GetSystemMenu(pHandle, False);
@@ -322,6 +345,7 @@ end;
 
 procedure TMainForm.OnTaskItemMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
+  DebugOutPutInfo('TMainForm.OnTaskItemMouseUp (Procedure)');
   if not (Sender is TSharpETaskItem) then exit;
   if Button = mbRight then DisplaySystemMenu(TSharpETaskItem(Sender).Tag);
 end;
@@ -418,6 +442,7 @@ var
   i,n : integer;
   fn : string;
 begin
+  DebugOutPutInfo('TMainForm.LoadFilterSettingsFromXML (Procedure)');
   fn := SharpApi.GetSharpeGlobalSettingsPath + 'SharpBar\Module Settings\TaskBar\';
   fn := fn + 'Filters.xml';
   if not FileExists(fn) then
@@ -454,11 +479,13 @@ var
   b : boolean;
   dir : String;
 begin
+  DebugOutPutInfo('TMainForm.LoadSettings (Procedure)');
   sState     := tisFull;
   sWidth     := 100;
   sMaxwidth  := 128;
   sSpacing   := 2;
   sSort      := False;
+  sDebug     := False;
 
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
   if item <> nil then with item.Items do
@@ -479,6 +506,7 @@ begin
     sMaxAllButton := BoolValue('MaxAllButton',False);
     sIFilter := BoolValue('IFilter',False);
     sEFilter := BoolValue('EFilter',False);
+    sDebug   := BoolValue('Debug',False);
     setlength(sIFilters,0);
     setlength(sEFilters,0);
     if ItemNamed['IFilters'] <> nil then
@@ -521,11 +549,13 @@ end;
 
 procedure TMainForm.CompleteRefresh;
 begin
+  DebugOutPutInfo('TMainForm.CompleteRefresh (Procedure)');
   try
     IList.Clear;
     TM.CompleteRefresh;
     AlignTaskComponents;
-  finally
+  except
+    DebugOutPutError('TMainForm.CompleteRefresh Except');
   end;
 end;
 
@@ -533,6 +563,7 @@ procedure TMainForm.SetSize(NewWidth : integer);
 var
   i : integer;
 begin
+  DebugOutPutInfo('TMainForm.SetSize (Procedure)');
   Width := NewWidth;
   CalculateItemWidth(IList.Count);
   i := FSpecialButtonWidth + IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
@@ -546,6 +577,7 @@ var
   newWidth,oWidth : integer;
   oBmp : TBitmap32;
 begin
+  DebugOutPutInfo('TMainForm.ReAlignComponents (Procedure)');
   GetSpacing;
   if IList.Count <=0 then
   begin
@@ -573,6 +605,7 @@ var
   item,fitem : TJvSimpleXMLElem;
   n,i : integer;
 begin
+  DebugOutPutInfo('TMainForm.Settings1Click (Procedure)');
   try
     SettingsForm := TSettingsForm.Create(nil);
     case sState of
@@ -586,6 +619,7 @@ begin
       stTime     : SettingsForm.rb_timeadded.Checked := True;
       stIcon     : SettingsForm.rb_icon.Checked := True;
     end;
+    SettingsForm.cb_debug.Checked  := sDebug;
     SettingsForm.cb_minall.Checked := sMinAllButton;
     SettingsForm.cb_maxall.Checked := sMaxAllButton;
     SettingsForm.cb_sort.Checked := sSort;
@@ -615,6 +649,7 @@ begin
                    else sSortType := stCaption;
       sIFilter := SettingsForm.rb_ifilter.Checked;
       sEFilter := SettingsForm.rb_efilter.Checked;
+      sDebug   := SettingsForm.cb_debug.Checked;
       setlength(sIFilters,0);
       setlength(sEFilters,0);
       for n := 0 to SettingsForm.list_include.Count - 1 do
@@ -647,6 +682,7 @@ begin
           tisCompact : Add('State',1);
           tisMini    : Add('State',2);
         end;
+        Add('Debug',sDebug);
         Add('MinAllButton',sMinAllButton);
         Add('MaxAllButton',sMaxAllButton);
         Add('IFilter',sIFilter);
@@ -674,6 +710,7 @@ var
   n : integer;
   FreeSpace : integer;
 begin
+  DebugOutPutInfo('TMainForm.CalculateItemWidth (Procedure)');
   for n := 0 to IList.Count -1 do
       TSharpETaskItem(IList.Items[n]).State := sState;
   FreeSpace := Width - FSpecialButtonWidth;
@@ -686,6 +723,7 @@ var
   n : integer;
   pTaskItem : TSharpETaskItem;
 begin
+  DebugOutPutInfo('TMainForm.AlignTaskComponents (Procedure)');
   try
     for n := 0 to IList.Count -1 do
     begin
@@ -702,7 +740,7 @@ begin
         pTaskItem.Left := FSpecialButtonWidth + n*sMaxWidth + n*sSpacing;
       end;
     end;
-  finally
+  except
   end;
 end;
 
@@ -710,13 +748,14 @@ procedure UpdateIcon(var pTaskItem : TSharpETaskItem; pItem : TTaskItem);
 var
   bmp : TBitmap32;
 begin
+
   if (pTaskItem = nil) or (pItem = nil) then exit;
   bmp := TBitmap32.Create;
   try
     IconToImage(bmp,pItem.Icon);
     if (bmp.Width <> 0) and (bmp.Height <> 0) then
        pTaskItem.Glyph32.Assign(bmp);
-  finally
+  except
     bmp.Free;
   end;
 end;
@@ -728,33 +767,37 @@ var
   pItem : TTaskItem;
   changed : boolean;
 begin
+  DebugOutPutInfo('TMainForm.CheckFilterAll (Procedure)');
   if (sIFilter = False) and (sEFilter = False) then exit;
 
   changed := False;
   FLocked := True;
   pTaskItem := nil;
-  for i := 0 to TM.GetCount do
+  for i := 0 to TM.GetCount -1 do
   begin
     pItem := TM.GetItemByIndex(i);
     if pItem <> nil then
     begin
+      pTaskItem := nil;
       for n := 0 to IList.Count - 1 do
-      if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
-      begin
-        pTaskItem := TSharpETaskItem(IList.Items[n]);
-        if not CheckFilter(pItem) then
-        begin
-          RemoveTask(TM.GetItemByHandle(pTaskItem.Tag),0);
-          changed := True;
-        end;
-        break;
-      end;
+          if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
+          begin
+            pTaskItem := TSharpETaskItem(IList.Items[n]);
+            if not CheckFilter(pItem) then
+            begin
+              RemoveTask(TM.GetItemByHandle(pTaskItem.Tag),0);
+              changed := True;
+              pTaskItem := nil;
+            end;
+            break;
+          end;
+
       if pTaskItem = nil then
          if CheckFilter(pItem) then
          begin
            NewTask(pItem,i);
            changed := True;
-         end;
+        end;
     end;
   end;
   FLocked := False;
@@ -768,7 +811,9 @@ var
   Mon : TMonitor;
   icount : integer;
   mnfilter : integer;
+  nm : boolean;
 begin
+//  DebugOutPutInfo('TMainForm.CheckFilter (Procedure)');
   if (sIFilter = False) and (sEFilter = False) then
   begin
     result := true;
@@ -778,12 +823,16 @@ begin
   result := false;
   icount := 0;
   mnfilter := 0;
+  nm := False;
   if sIFilter then
   begin
     for n:=0 to High(sIFilters) do
     begin
       case sIFilters[n].FilterType of
-        0: if pItem.Placement.showCmd in sIFilters[n].FilterStates then icount := icount + 1;
+        0: if pItem.Placement.showCmd in sIFilters[n].FilterStates then
+           begin
+             icount := icount + 1;
+           end else nm := True;
         1: if pItem.WndClass = sIFilters[n].FilterClass then
            begin
              icount := icount + 1;
@@ -799,10 +848,11 @@ begin
              GetWindowRect(pItem.Handle,R);
              if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect))
                 or (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
-                or (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then icount := icount + 1;
+                or (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then icount := icount + 1
+                else nm := True;
            end;
       end;
-      if icount >= length(sIFilters)-mnfilter then result := true;
+      if (icount >= length(sIFilters)-mnfilter) and (not nm) then result := true;
     end;
   end else result := true;
 
@@ -831,6 +881,7 @@ var
   n : integer;
   pTaskItem : TSharpETaskItem;
 begin
+  DebugOutPutInfo('TMainForm.FlashTask (Procedure)');
   for n := 0 to IList.Count -1 do
   begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
@@ -849,6 +900,7 @@ var
   n : integer;
   pTaskItem : TSharpETaskItem;
 begin
+  DebugOutPutInfo('TMainForm.ActivateTask (Procedure)');
   pTaskItem := nil;
   CheckFilterAll;
 
@@ -872,6 +924,7 @@ var
   pTaskItem : TSharpETaskItem;
   oWidth : integer;
 begin
+  DebugOutPutInfo('TMainForm.NewTask (Procedure)');
   if not CheckFilter(pItem) then exit;
   pTaskItem := TSharpETaskItem.Create(self);
   oWidth := sCurrentWidth;
@@ -901,6 +954,7 @@ procedure TMainForm.TaskExchange(pItem1,pItem2 : TTaskItem; n,i : integer);
 var
   index1,index2 : integer;
 begin
+  DebugOutPutInfo('TMainForm.TaskExchange (Procedure)');
   index1 := -1;
   index2 := -1;
   for n:= 0 to IList.Count - 1 do
@@ -919,6 +973,7 @@ procedure TMainForm.RemoveTask(pItem : TTaskItem; Index : integer);
 var
   n : integer;
 begin
+  DebugOutPutInfo('TMainForm.RemoveTask (Procedure)');
   for n := IList.Count -1 downto 0 do
       if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
          IList.Delete(n);
@@ -931,6 +986,7 @@ var
   pTaskItem : TSharpETaskItem;
   n : integer;
 begin
+  DebugOutPutInfo('TMainForm.UpdateTask (Procedure)');
   CheckFilterAll;
   pTaskItem := nil;
   for n := 0 to IList.Count - 1 do
@@ -939,15 +995,7 @@ begin
         pTaskItem := TSharpETaskItem(IList.Items[n]);
         break;
       end;
-  if pTaskItem = nil then
-  begin
-    if CheckFilter(pItem) then NewTask(pItem,Index);
-    exit;
-  end else if not CheckFilter(pItem) then
-  begin
-    RemoveTask(pItem,Index);
-    exit;
-  end;
+  if pTaskItem = nil then exit;
 
   UpdateIcon(pTaskItem,pItem);
   pTaskItem.Caption := pItem.Caption;
@@ -957,6 +1005,7 @@ procedure TMainForm.SharpETaskItemClick(Sender: TObject);
 var
   pItem : TTaskItem;
 begin
+  DebugOutPutInfo('TMainForm.SharpETaskItemClick (Procedure)');
   if Sender = nil then exit;
   if not (Sender is TSharpETaskItem) then exit;
   try
@@ -984,6 +1033,7 @@ end;
 procedure TMainForm.WMShellHook(var msg : TMessage);
 begin
  //Hide;
+ DebugOutPutInfo('TMainForm.WMShellHook (Message Procedure)');
  if msg.LParam = self.Handle then exit;
  case msg.WParam of
    M_NEWTASK       : TM.AddTask(msg.LParam);
@@ -997,6 +1047,7 @@ end;
 
 procedure TMainForm.InitHook;
 begin
+  DebugOutPutInfo('TMainForm.InitHook (Procedure)');
   PostMessage(BarWnd,WM_REGISTERSHELLHOOK,ModuleID,0);
 end;
 
@@ -1020,6 +1071,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
 
 begin
+  DebugOutPutInfo('TMainForm.FormCreate (Procedure)');
   FCustomSkinSettings := TSharpECustomSkinSettings.Create;
 
   FDminA := TBitmap32.Create;
@@ -1056,6 +1108,7 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  DebugOutPutInfo('TMainForm.FormDestroy (Procedure)');
   FCustomSkinSettings.Free;
   FDminA.Free;
   FDmaxA.Free;
@@ -1070,6 +1123,7 @@ var
   fc,n : integer;
   pTaskItem : TSharpETaskItem;
 begin
+  DebugOutPutInfo('TMainForm.FlashTimerTimer (Procedure)');
   fc := 0;
   for n := 0 to IList.Count -1 do
   begin
@@ -1089,6 +1143,7 @@ var
   pTaskItem : TSharpETaskItem;
   pItem : TTaskItem;
 begin
+  DebugOutPutInfo('TMainForm.ses_minallClick (Procedure)');
   FLocked := True;
   try
     for n := IList.Count -1 downto 0 do
@@ -1099,9 +1154,9 @@ begin
       if pItem <> nil then
          pItem.Minimize;
     end;
-  finally
-    FLocked := False;
+  except
   end;
+  FLocked := False;
   RealignComponents(True);
 end;
 
@@ -1111,6 +1166,7 @@ var
   pTaskItem : TSharpETaskItem;
   pItem : TTaskItem;
 begin
+  DebugOutPutInfo('TMainForm.ses_maxallClick (Procedure)');
   FLocked := True;
 
   try
@@ -1121,14 +1177,15 @@ begin
       if pItem <> nil then
          pItem.Restore;
     end;
-  finally
-    FLocked := False;
+  except
   end;
+  FLocked := False;
   RealignComponents(True);
 end;
 
 procedure TMainForm.TimedCheckTimer(Sender: TObject);
 begin
+  DebugOutPutInfo('TMainForm.TimedCheckTimer (Procedure)');
   CheckFilterAll;
   TimedCheck.Enabled := False;
 end;

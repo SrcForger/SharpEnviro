@@ -100,22 +100,6 @@ begin
   FFileName := LowerCase(ExtractFileName(FFilePath));
 end;
 
-procedure GetWindowIcon(var Icon: HICON; Handle: HWnd; iSize: integer = 0);
-begin
- SendMessageTimeout(Handle, WM_GETICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(Icon));
-
- if (iSize = 0) then
-  begin
-   if (Icon = 0) then Icon := HICON(GetClassLong(Handle, GCL_HICON));
-  end;
-
- if (Icon = 0) then SendMessageTimeout(Handle, WM_GETICON, 1, 0, SMTO_ABORTIFHUNG, 1000, DWORD(Icon));
- if (Icon = 0) then Icon := HICON(GetClassLong(Handle, GCL_HICON));
- if (Icon = 0) then SendMessageTimeout(Handle, WM_QUERYDRAGICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(Icon));
-
- if (Icon = 0) then Icon := LoadIcon(0, IDI_WINLOGO);
-end;
-
 procedure TTaskItem.UpdateIcon;
 const
   ICON_SMALL2 = 2;
@@ -123,16 +107,19 @@ var
   newicon : hicon;
 begin
   newicon := 0;
+  try
+    SendMessageTimeout(Handle, WM_GETICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
 
-  SendMessageTimeout(Handle, WM_GETICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
+    if (newicon = 0) then newicon := HICON(GetClassLong(Handle, GCL_HICON));
 
-  if (newicon = 0) then newicon := HICON(GetClassLong(Handle, GCL_HICON));
+    if (newicon = 0) then SendMessageTimeout(Handle, WM_GETICON, 1, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
+    if (newicon = 0) then newicon := HICON(GetClassLong(Handle, GCL_HICON));
+    if (newicon = 0) then SendMessageTimeout(Handle, WM_QUERYDRAGICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
 
-  if (newicon = 0) then SendMessageTimeout(Handle, WM_GETICON, 1, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
-  if (newicon = 0) then newicon := HICON(GetClassLong(Handle, GCL_HICON));
-  if (newicon = 0) then SendMessageTimeout(Handle, WM_QUERYDRAGICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(newicon));
-
-  if (newicon = 0) then newicon := LoadIcon(0, IDI_WINLOGO);
+    if (newicon = 0) then newicon := LoadIcon(0, IDI_WINLOGO);
+  except
+  end;
+  
   if newicon <> 0 then FIcon := newicon;
 end;
 

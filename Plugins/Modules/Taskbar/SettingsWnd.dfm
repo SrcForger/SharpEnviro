@@ -3,7 +3,7 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Task Module Settings'
-  ClientHeight = 184
+  ClientHeight = 201
   ClientWidth = 658
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -25,7 +25,7 @@ object SettingsForm: TSettingsForm
   end
   object Button1: TButton
     Left = 496
-    Top = 152
+    Top = 168
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -34,7 +34,7 @@ object SettingsForm: TSettingsForm
   end
   object Button2: TButton
     Left = 576
-    Top = 152
+    Top = 168
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -176,6 +176,14 @@ object SettingsForm: TSettingsForm
     Height = 17
     Caption = 'Display '#39'Restore All Windows'#39' Button'
     TabOrder = 12
+  end
+  object cb_debug: TCheckBox
+    Left = 16
+    Top = 160
+    Width = 217
+    Height = 17
+    Caption = 'Enable Debug Output (Developer Mode)'
+    TabOrder = 13
   end
   object XPManifest1: TXPManifest
     Left = 416

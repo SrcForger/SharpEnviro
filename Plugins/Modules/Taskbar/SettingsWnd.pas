@@ -59,6 +59,7 @@ type
     rb_efilter: TCheckBox;
     cb_minall: TCheckBox;
     cb_maxall: TCheckBox;
+    cb_debug: TCheckBox;
     procedure rb_efilterClick(Sender: TObject);
     procedure rb_ifilterClick(Sender: TObject);
     procedure cb_sortClick(Sender: TObject);

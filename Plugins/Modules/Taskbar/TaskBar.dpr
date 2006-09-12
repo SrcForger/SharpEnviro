@@ -81,6 +81,10 @@ var
 
 {$R *.res}
 
+procedure DebugOutputInfo(msg : String);
+begin
+end;
+
 
 function GetControlByHandle(AHandle: THandle): TWinControl;
 begin
