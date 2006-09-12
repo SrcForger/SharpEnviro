@@ -192,8 +192,12 @@ begin
   result := 'Default';
   XML := TJvSimpleXML.Create(nil);
   try
-    XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + SHARPE_USER_SETTINGS);
-    result := XML.Root.Items.Value('Theme', 'Default');
+    try
+      XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + SHARPE_USER_SETTINGS);
+      result := XML.Root.Items.Value('Theme', 'Default');
+    except
+      result := 'Default';
+    end;
   finally
     XML.Free;
   end;
@@ -251,9 +255,12 @@ begin
 
   XML := TJvSimpleXML.Create(nil);
   try
-    XML.LoadFromFile(Theme.Data.Directory + ICONSET_FILE);
-    Theme.IconSet.Directory := SharpApi.GetSharpeDirectory + ICONS_DIR + '\'
-      + XML.Root.Items.Value('Name', DEFAULT_ICONSET);
+    try
+      XML.LoadFromFile(Theme.Data.Directory + ICONSET_FILE);
+      Theme.IconSet.Directory := SharpApi.GetSharpeDirectory + ICONS_DIR + '\' + XML.Root.Items.Value('Name', DEFAULT_ICONSET);
+    except
+      Theme.IconSet.Directory := SharpApi.GetSharpeDirectory + ICONS_DIR + '\' + DEFAULT_ICONSET;
+    end;
   finally
     XML.Free;
   end;
@@ -268,20 +275,23 @@ begin
   Theme.IconSet.Directory := Theme.IconSet.Directory + '\';
   XML.Root.Clear;
   try
-    XML.LoadFromFile(Theme.IconSet.Directory + '\IconSet.xml');
-    Theme.IconSet.Name := XML.Root.Items.Value('Name', 'Default');
-    Theme.IconSet.Author := XML.Root.Items.Value('Author', '');
-    Theme.IconSet.Website := XML.Root.Items.Value('Website', '');
-    if XML.Root.Items.ItemNamed['Icons'] <> nil then
-      with XML.Root.Items.ItemNamed['Icons'].Items do
-      begin
-        for n := 0 to Count - 1 do
+    try
+      XML.LoadFromFile(Theme.IconSet.Directory + '\IconSet.xml');
+      Theme.IconSet.Name := XML.Root.Items.Value('Name', 'Default');
+      Theme.IconSet.Author := XML.Root.Items.Value('Author', '');
+      Theme.IconSet.Website := XML.Root.Items.Value('Website', '');
+      if XML.Root.Items.ItemNamed['Icons'] <> nil then
+        with XML.Root.Items.ItemNamed['Icons'].Items do
         begin
-          setlength(Theme.IconSet.Icons, length(Theme.IconSet.Icons) + 1);
-          Theme.IconSet.Icons[High(Theme.IconSet.Icons)].Tag := Item[n].Items.Value('Name', '');
-          Theme.IconSet.Icons[High(Theme.IconSet.Icons)].FileName := Item[n].Items.Value('File', '');
+          for n := 0 to Count - 1 do
+          begin
+            setlength(Theme.IconSet.Icons, length(Theme.IconSet.Icons) + 1);
+            Theme.IconSet.Icons[High(Theme.IconSet.Icons)].Tag := Item[n].Items.Value('Name', '');
+            Theme.IconSet.Icons[High(Theme.IconSet.Icons)].FileName := Item[n].Items.Value('File', '');
+          end;
         end;
-      end;
+    except
+    end;
   finally
     XML.Free;
   end;
@@ -302,16 +312,21 @@ begin
     // Get Scheme Name
     if FileExists(Theme.Data.Directory + SKIN_FILE) then
     begin
-      Xml.LoadFromFile(Theme.Data.Directory + SKIN_FILE);
-      sCurSkin := XML.Root.Items.Value('skin', 'default');
+      try
+        Xml.LoadFromFile(Theme.Data.Directory + SKIN_FILE);
+        sCurSkin := XML.Root.Items.Value('skin', 'default');
+      except
+        sCurSkin := 'default';
+      end;
 
       if CompareText(sCurSkin,'default') <> 0 then
-        sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + sCurSkin + '\' else
-        sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\';
-    end else begin
+        sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + sCurSkin + '\'
+        else sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\';
+    end else
+    begin
       if DirectoryExists(SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\') then
-        sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\' else
-        sSkinDir := '';
+        sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\'
+        else sSkinDir := '';
     end;
 
   finally
@@ -354,10 +369,15 @@ begin
   XML := TJvSimpleXML.Create(nil);
   try
     // Get Scheme Name
+    sCurScheme := 'default';
     if FileExists(Theme.Data.Directory + SCHEME_FILE) then
     begin
-      Xml.LoadFromFile(Theme.Data.Directory + SCHEME_FILE);
-      sCurScheme := XML.Root.Items.Value('scheme', 'default');
+      try
+        Xml.LoadFromFile(Theme.Data.Directory + SCHEME_FILE);
+        sCurScheme := XML.Root.Items.Value('scheme', 'default');
+      except
+        sCurScheme := 'default';
+      end;
     end;
 
     // Get Scheme Colors
@@ -382,6 +402,7 @@ begin
       end;
     except
     end;
+    
     sFile := Theme.Skin.Directory + SKINS_SCHEME_DIRECTORY + '\' + sCurScheme + '.xml';
     if FileExists(sFile) then
     begin
@@ -416,13 +437,17 @@ begin
 
   XML := TJvSimpleXML.Create(nil);
   try
-    XML.LoadFromFile(Theme.Data.Directory + THEME_INFO_FILE);
-    with XML.Root.Items do
-    begin
-      Theme.Info.Name := Value('Name', 'Default');
-      Theme.Info.Author := Value('Author', '');
-      Theme.Info.Comment := Value('Comment', 'Default SharpE Theme');
-      Theme.Info.Website := Value('Website', '');
+    try
+      XML.LoadFromFile(Theme.Data.Directory + THEME_INFO_FILE);
+      with XML.Root.Items do
+      begin
+        Theme.Info.Name := Value('Name', 'Default');
+        Theme.Info.Author := Value('Author', '');
+        Theme.Info.Comment := Value('Comment', 'Default SharpE Theme');
+        Theme.Info.Website := Value('Website', '');
+      end;
+    except
+      SetThemeInfoDefault;
     end;
   finally
     XML.Free;
