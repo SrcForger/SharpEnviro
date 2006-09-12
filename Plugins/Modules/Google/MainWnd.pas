@@ -58,8 +58,8 @@ type
     procedure EditEnter(Sender: TObject);
     procedure EditExit(Sender: TObject);
 
-    procedure WMUpdateBangs(var Msg : TMessage); message WM_SHARPEUPDATEACTIONS;
-    procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
+    procedure WMSHARPEUPDATEACTIONS(var Msg : TMessage); message WM_SHARPEUPDATEACTIONS;
+    procedure WMSHARPEACTIONMESSAGE(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
     BangCommand_Append: string;
 
@@ -81,7 +81,7 @@ uses SettingsWnd,
 
 {$R *.dfm}
 
-{$REGION ' Form Events and Procedures '}
+{$REGION ' Form Events, Overrides and Message Traps '}
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   Edit.Edit.OnEnter := EditEnter;
@@ -95,11 +95,11 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
 //
 end;
-procedure TMainForm.WMUpdateBangs(var Msg : TMessage);
+procedure TMainForm.WMSHARPEUPDATEACTIONS(var Msg : TMessage);
 begin
   RegisterBangs;
 end;
-procedure TMainForm.WMSharpEBang(var Msg : TMessage);
+procedure TMainForm.WMSHARPEACTIONMESSAGE(var Msg : TMessage);
 begin
   case msg.LParam of
     0: edit.SetFocus;
@@ -153,6 +153,7 @@ begin
 end;
 {$ENDREGION}
 
+{$REGION ' Misc Procedures '}
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
 var
   newWidth : integer;
@@ -163,8 +164,9 @@ begin
 
   newWidth := (sWidth + 4);
 
-  Tag := NewWidth;
-  Hint := inttostr(NewWidth);
+  Tag := newWidth;
+  Hint := inttostr(newWidth);
+
   if (newWidth <> Width) then
      if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
 end;
@@ -173,6 +175,7 @@ begin
   Width := NewWidth;
   edit.Width := max(1,NewWidth - 4);
 end;
+{$ENDREGION}
 
 {$REGION ' Bang Procedures '}
 procedure TMainForm.RegisterBangs;

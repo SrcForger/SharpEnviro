@@ -2,7 +2,7 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Width = 178
-  Height = 58
+  Height = 59
   Anchors = [akLeft, akTop, akBottom]
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 170
-    Height = 27
+    Height = 25
     Align = alClient
     Anchors = [akLeft, akTop, akBottom]
     Bitmap.ResamplerClassName = 'TNearestResampler'
@@ -30,12 +30,12 @@ object MainForm: TMainForm
     TabOrder = 0
     DesignSize = (
       170
-      27)
+      25)
     object SharpEButton1: TSharpEButton
       Left = 0
       Top = 0
       Width = 43
-      Height = 18
+      Height = 24
       Anchors = [akLeft, akTop, akBottom]
       SkinManager = SharpESkinManager1
       AutoSize = True
@@ -55,7 +55,7 @@ object MainForm: TMainForm
       Left = 42
       Top = 0
       Width = 43
-      Height = 18
+      Height = 24
       Anchors = [akLeft, akTop, akBottom]
       SkinManager = SharpESkinManager1
       AutoSize = True
@@ -75,7 +75,7 @@ object MainForm: TMainForm
       Left = 84
       Top = 0
       Width = 43
-      Height = 18
+      Height = 24
       Anchors = [akLeft, akTop, akBottom]
       SkinManager = SharpESkinManager1
       AutoSize = True
@@ -95,7 +95,7 @@ object MainForm: TMainForm
       Left = 126
       Top = 0
       Width = 43
-      Height = 18
+      Height = 24
       Anchors = [akLeft, akTop, akBottom]
       SkinManager = SharpESkinManager1
       AutoSize = True

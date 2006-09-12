@@ -3,7 +3,7 @@ unit main;
 interface
 
 uses
-  Controls, Forms, Windows, Messages, ShellHookTypes, sharpapi;
+  Controls, Forms, Windows, Messages, ShellHookTypes, sharpapi, sharpprocess;
 
 type
   TfmMain = class(TForm)
@@ -38,7 +38,7 @@ implementation
 
 {$R *.dfm}
 
-{$REGION ' Form Events & Overrides '}
+{$REGION ' Form Events & Overrides & Message Traps '}
 procedure TfmMain.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -59,8 +59,13 @@ procedure TfmMain.FormDestroy(Sender: TObject);
 begin
   fmMain := nil;
 end;
+procedure TfmMain.WMHSHELLNOTIFY(var Msg: TMessage);
+begin
+  SharpEBroadCastEx(WM_HSHELL_BROADCAST,Msg.WParam,Msg.LParam);
+end;
 {$ENDREGION}
 
+{$REGION ' Hook Procedures '}
 procedure TfmMain.Hook;
 var
   mm: MINIMIZEDMETRICS;
@@ -98,16 +103,6 @@ begin
   if (MappedFileHandle > 0) then
    CloseHandle(MappedFileHandle);
 end;
-
-procedure TfmMain.WMHSHELLNOTIFY(var Msg: TMessage);
-//var
-//  aMsg: TMessage;
-begin
-//  aMsg.Msg := ;
-//  aMsg.WParam := Msg.WParam;
-//  aMsg.LParam := Msg.LParam;
-
-  sharpapi.SharpEBroadCast(WM_HSHELL_BROADCAST,Msg.WParam,Msg.LParam);
-end;
+{$ENDREGION}
 
 end.

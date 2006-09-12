@@ -4,7 +4,7 @@ interface
 
 uses classes, Forms, SysUtils, ShellApi, ShlObj, ComObj, Windows,
      Graphics, psapi, tlHelp32, messages, jclshell, GR32, GR32_Image, SharpAPI,
-     SharpLibrary, SharpEImage32, ShellHookTypes, Activex, ComCtrls, HotKeyManager;
+     SharpLibrary, SharpEImage32, ShellHookTypes, Activex, ComCtrls, HotKeyManager, dialogs;
 
 {$REGION ' Process & File Type Declarations '}
 type
@@ -135,11 +135,11 @@ procedure PushAWindow(Wnd: HWND; bRecall: boolean = false; bVWM: boolean = False
 
 implementation
 
-const
-  LOCALIZED_KEYNAMES = True;
+//const
+//  LOCALIZED_KEYNAMES = True;
 
 var
-  i: integer;
+//  i: integer;
   wpara: wparam;
   mess: integer;
   lpara: lparam;
@@ -280,14 +280,22 @@ begin
           rcSize.Top := (rcSize.Top + 10000);
          end;
 
-        rcSize.Left := rcSize.Left + ((0 - iDeskCount) * 10000);
+        if not (bRecall) then
+         begin
+          rcSize.Left := rcSize.Left + ((0 - iDeskCount) * 10000);
+         end;
 
         if (((rcSize.Left > -5) and (rcSize.Left < Screen.DesktopWidth)) or
         ((rcSize.Left < 0) and ((rcSize.Left + iWidth) > -1)) or bRecall) then
          begin
           //If we're being asked to recall a window, we're assuming that the window
           // being recalled, was previously moved by this procedure
+          rcSize.Left := rcSize.Left + 100000;
           rcSize.Left := rcSize.Left - ((rcSize.Left div 10000) * 10000);
+
+//          rcSize.Left := (rcSize.Left + 100000);
+//          rcSize.Left := rcSize.Left - ((rcSize.Left div 10000) * 10000);
+////          rcSize.Left := rcSize.Left - (((Abs(rcSize.Left) + 10000) div 10000) * 10000);
           rcSize.Top := rcSize.Top - ((rcSize.Top div 10000) * 10000);
          end;
 
@@ -1165,24 +1173,31 @@ end;
 function SharpEBroadCastEx(msg: integer; wpar: wparam; lpar: lparam): integer;
   function EnumChildWindowsProc(Wnd: hwnd; param: lParam): boolean; export; stdcall;
   begin
-    PostMessage(wnd, mess, wpara, lpara);
-    inc(i);
+    Result := False;
+
+    SendMessage(wnd, mess, wpara, lpara);
+
+//    inc(i);
     result := true;
   end;
   function EnumWindowsProc(Wnd: hwnd; param: lParam): boolean; export; stdcall;
   begin
-    PostMessage(wnd, mess, wpara, lpara);
+    Result := False;
+
+    SendMessage(wnd, mess, wpara, lpara);
+
     EnumChildWindows(wnd, @EnumChildWindowsProc,mess);
-    inc(i);
+//    inc(i);
     result := true;
   end;
 begin
-  i := 0;
+//  i := 0;
   mess := msg;
   wpara := wpar;
   lpara := lpar;
   EnumWindows(@EnumWindowsProc, msg);
-  result := i;
+//  result := i;
+  Result := 0;
 end;
 
 end.

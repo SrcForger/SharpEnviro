@@ -35,7 +35,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, Math, Menus, GR32_Image, SharpEBaseControls, SharpEButton,
   SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, uSharpBarAPI,
-  JvSimpleXML, SharpApi, ShellHookTypes, SharpProcess, HotKeyManager;
+  JvSimpleXML, SharpApi, ShellHookTypes, SharpProcess, HotKeyManager, Dialogs;
 
 type
   TMainForm = class(TForm)
@@ -57,6 +57,7 @@ type
 
     procedure GenericButtonClick(Sender: TObject);
   protected
+    procedure CreateParams(var Params: TCreateParams); override;
   private
     sWidth : integer;
 
@@ -93,7 +94,15 @@ uses SettingsWnd;
 const
   LOCALIZED_KEYNAMES = True;
 
-{$REGION ' Form Events and Message Traps '}
+{$REGION ' Form Events, Overrides and Message Traps '}
+procedure TMainForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+
+  with Params do begin
+    WinClassName := 'SharpE_VWM';
+  end;
+end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   iCurrentDesktop := 0;
@@ -109,7 +118,7 @@ end;
 
 procedure TMainForm.WMHSHELLBROADCAST(var Msg: TMessage);
 begin
-  PushAWindow(GetForeGroundWindow,True,True);
+//  PushAWindow(Msg.WParam,True,True);
 end;
 procedure TMainForm.WMSHARPEUPDATEACTIONS(var Msg : TMessage);
 begin
@@ -210,6 +219,7 @@ begin
 
   Tag := newWidth;
   Hint := inttostr(newWidth);
+
   if (newWidth <> Width) then
      if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
 end;
@@ -254,7 +264,6 @@ begin
      begin
       PushAWindow(PTProcessObject(test.WindowList.Items[i]).Handle,bRecallMode,True,iDeskCount);
      end;
-
     SharpEBroadCastEx(WM_SHARPVWMMESSAGE,0,iCurrentDesktop);
   finally
     test.Empty;

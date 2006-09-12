@@ -43,16 +43,11 @@ uses
   StdCtrls,
   JvSimpleXML,
   MainWnd in 'MainWnd.pas' {MainForm},
-  SettingsWnd in 'SettingsWnd.pas',
-  MMSystem,
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  sharpprocess in '..\..\..\Common\Units\SharpViper\sharpprocess.pas',
-  ShellHookTypes in '..\..\Services\SystemTask\ShellHookTypes.pas',
-  SharpLibrary in '..\..\..\Common\Units\SharpViper\SharpLibrary.pas';
+  SettingsWnd in 'SettingsWnd.pas', {SettingsForm}
+  SharpAPI,
+  uSharpBarAPI,
+  graphicsFX,
+  MouseTimer, MMSystem;
 
 type
   TModule = class

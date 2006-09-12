@@ -33,7 +33,7 @@ library Google;
 uses
   Windows,
   Controls,
-  Dialogs,
+//  Dialogs,
   SysUtils,
   Forms,
   Classes,
@@ -43,14 +43,11 @@ uses
   StdCtrls,
   JvSimpleXML,
   MainWnd in 'MainWnd.pas' {MainForm},
-  SettingsWnd in 'SettingsWnd.pas',
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
-
-{SettingsForm}
+  SettingsWnd in 'SettingsWnd.pas', {SettingsForm}
+  SharpAPI,
+  uSharpBarAPI,
+//  graphicsFX,
+  MouseTimer;
 
 type
   TModule = class
