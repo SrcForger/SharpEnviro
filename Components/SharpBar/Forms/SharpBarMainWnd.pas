@@ -81,6 +81,8 @@ type
     BlendOutTimer: TTimer;
     DelayTimer1: TTimer;
     DelayTimer2: TTimer;
+    DelayTimer3: TTimer;
+    procedure DelayTimer3Timer(Sender: TObject);
     procedure DelayTimer2Timer(Sender: TObject);
     procedure DelayTimer1Timer(Sender: TObject);
     procedure BlendOutTimerTimer(Sender: TObject);
@@ -341,14 +343,7 @@ end;
 
 procedure TSharpBarMainForm.WMDisplayChange(var msg : TMessage);
 begin
-  if BarHideForm.Visible then
-  begin
-    if SharpEBar1.SpecialHideForm then BarHideForm.UpdateStatus
-       else BarHideForm.Close;
-  end;
-  SharpEBar1.UpdatePosition;
-  ModuleManager.BroadCastModuleRefresh;
-  ModuleManager.FixModulePositions;
+  DelayTimer3.Enabled := True;
 end;
 
 procedure TSharpBarMainForm.WMSchemeUpdate(var msg : TMessage);
@@ -1371,6 +1366,8 @@ end;
 
 procedure TSharpBarMainForm.DelayTimer2Timer(Sender: TObject);
 begin
+  DelayTimer2.Enabled := False;
+
   if (FStartup) or (not Visible) then
   begin
     FStartup := False;
@@ -1381,8 +1378,20 @@ begin
     Show;
     BlendInTimer.Enabled := True;
   end;
+end;
 
-  DelayTimer2.Enabled := False;
+procedure TSharpBarMainForm.DelayTimer3Timer(Sender: TObject);
+begin
+  DelayTimer3.Enabled := False;
+
+  if BarHideForm.Visible then
+  begin
+    if SharpEBar1.SpecialHideForm then BarHideForm.UpdateStatus
+       else BarHideForm.Close;
+  end;
+  SharpEBar1.UpdatePosition;
+  ModuleManager.BroadCastModuleRefresh;
+  ModuleManager.FixModulePositions;
 end;
 
 end.

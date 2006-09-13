@@ -739,4 +739,11 @@ object SharpBarMainForm: TSharpBarMainForm
     Left = 264
     Top = 144
   end
+  object DelayTimer3: TTimer
+    Enabled = False
+    Interval = 5000
+    OnTimer = DelayTimer3Timer
+    Left = 224
+    Top = 144
+  end
 end

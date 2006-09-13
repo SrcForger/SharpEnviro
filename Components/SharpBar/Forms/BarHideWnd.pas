@@ -67,12 +67,14 @@ begin
   if Application.Terminated then exit;
 
   mon := Screen.MonitorFromWindow(SharpBarMainForm.Handle);
+  if mon = nil then mon := Screen.MonitorFromPoint(Point(SharpBarMainForm.Left,SharpBarMainForm.Top));
+
   if (SharpBarMainForm.SharpEBar1.VertPos = vpTop) and
      (SharpBarMainForm.SharpEBar1.SpecialHideForm) then
   begin
     Left := SharpBarMainForm.Left;
     Width := SharpBarMainForm.Width;
-    Top := mon.Top;
+    if mon <> nil then Top := mon.Top;
     Height := 1;
     if not Visible then Show;
   end else
@@ -81,7 +83,7 @@ begin
   begin
     Left := SharpBarMainForm.Left;
     Width := SharpBarMainForm.Width;
-    Top := mon.Top + mon.Height - 1;
+    if mon <> nil then Top := mon.Top + mon.Height - 1;
     Height := 1;
     if not Visible then Show;
   end else
