@@ -180,7 +180,7 @@ begin
     AddFunction('SharpFileUtils','CopyFile',Adapter_CopyFile,3,[varString,varString,varBoolean],varBoolean);
     AddFunction('SharpFileUtils','DeleteFile',Adapter_DeleteFile,1,[varString],varBoolean);
     AddFunction('SharpFileUtils','FileExists',Adapter_FileExists,1,[varString],varBoolean);
-    AddFunction('SharpFileUtils','CreateDirectory',Adapter_CreateDirectory,0,[],varEmpty);
+    AddFunction('SharpFileUtils','CreateDirectory',Adapter_CreateDirectory,0,[varString],varEmpty);
     AddFunction('SharpFileUtils','GetFileVersion',Adapater_GetFileVersionAsString,1,[varString],varString);
     AddFunction('SharpFileUtils','CompareVersions',Adapter_CompareVersion,2,[varString,varString],varInteger);
   end;
