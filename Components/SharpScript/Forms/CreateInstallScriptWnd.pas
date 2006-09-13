@@ -6,7 +6,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, JvExControls, JvComponent, JvEditorCommon, JvEditor, JvHLEditor,
   StdCtrls, ExtCtrls, ToolWin, ComCtrls, ImgList, PngImageList, AbBase,
-  AbBrowse, AbZBrows, AbZipper, AbUtils, DateUtils;
+  AbBrowse, AbZBrows, AbZipper, AbUtils, DateUtils, XPMan, JvComponentBase,
+  JvInterpreter;
 
 type
   TCreateInstallScriptForm = class(TForm)
@@ -32,6 +33,11 @@ type
     Label3: TLabel;
     ed_rnotes: TMemo;
     AbZipper1: TAbZipper;
+    XPManifest1: TXPManifest;
+    JvInterpreter: TJvInterpreterProgram;
+    lb_errors: TListBox;
+    procedure ed_scriptPaintGutter(Sender: TObject; Canvas: TCanvas);
+    procedure ToolButton2Click(Sender: TObject);
     procedure ToolButton1Click(Sender: TObject);
     procedure btn_deletefileClick(Sender: TObject);
     procedure btn_addfileClick(Sender: TObject);
@@ -118,6 +124,46 @@ begin
     RenameFile(s,SavePackageDialog.FileName + '.sip');
     
     if not b then showmessage('PANIC: something went wrong!');
+  end;
+end;
+
+procedure TCreateInstallScriptForm.ToolButton2Click(Sender: TObject);
+var
+  errors : boolean;
+begin
+  lb_errors.Clear;
+  lb_errors.Items.Add('Compiling Script...');
+  JvInterpreter.Pas.CommaText := ed_script.Lines.CommaText;
+  errors := True;
+  try
+    JvInterpreter.Compile;
+    errors := False;
+  except
+    on E: Exception do lb_errors.Items.Add('Error: ' + E.Message);
+  end;
+  if not errors then lb_errors.Items.Add('No Errors Found!');
+end;
+
+procedure TCreateInstallScriptForm.ed_scriptPaintGutter(Sender: TObject;
+  Canvas: TCanvas);
+var
+  i: Integer;
+  R: TRect;
+  oldFont: TFont;
+begin
+  oldFont := TFont.Create;
+  try
+    oldFont.Assign(Canvas.Font);
+    Canvas.Font := ed_script.Font;
+    with ed_script do
+      for i := TopRow to TopRow + VisibleRowCount do
+      begin
+        R := Bounds(2, (i - TopRow) * CellRect.Height, GutterWidth - 2 - 5, CellRect.Height);
+        Windows.DrawText(Canvas.Handle, PChar(IntToStr(i + 1)), -1, R, DT_RIGHT or DT_VCENTER or DT_SINGLELINE);
+      end;
+  finally
+    Canvas.Font := oldFont;
+    oldFont.Free;
   end;
 end;
 

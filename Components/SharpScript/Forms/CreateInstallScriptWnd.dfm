@@ -19,7 +19,7 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
     Left = 0
     Top = 38
     Width = 440
-    Height = 443
+    Height = 346
     Cursor = crIBeam
     Lines.Strings = (
       'unit InstallScript;'
@@ -44,7 +44,7 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
       'end;'
       ''
       '// Install code'
-      'functio Install : boolean;'
+      'function Install : boolean;'
       'begin'
       '  result := True;'
       'end;'
@@ -60,8 +60,11 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
       '// Not used at the moment'
       'function UnInstall : boolean;'
       'begin'
-      'end;')
-    GutterWidth = 0
+      'end;'
+      ''
+      ''
+      'end.')
+    GutterWidth = 32
     RightMarginColor = clSilver
     Completion.ItemHeight = 13
     Completion.Interval = 800
@@ -73,6 +76,7 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
     BracketHighlighting.StringEscape = #39#39
     SelForeColor = clHighlightText
     SelBackColor = clHighlight
+    OnPaintGutter = ed_scriptPaintGutter
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -84,18 +88,18 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
     TabStop = True
     UseDockManager = False
     Colors.Comment.Style = [fsItalic]
-    Colors.Comment.ForeColor = clOlive
+    Colors.Comment.ForeColor = clNavy
     Colors.Comment.BackColor = clWindow
     Colors.Number.ForeColor = clNavy
     Colors.Number.BackColor = clWindow
-    Colors.Strings.ForeColor = clPurple
+    Colors.Strings.ForeColor = clBlue
     Colors.Strings.BackColor = clWindow
-    Colors.Symbol.ForeColor = clBlue
+    Colors.Symbol.ForeColor = clBlack
     Colors.Symbol.BackColor = clWindow
     Colors.Reserved.Style = [fsBold]
-    Colors.Reserved.ForeColor = clWindowText
+    Colors.Reserved.ForeColor = clBlack
     Colors.Reserved.BackColor = clWindow
-    Colors.Identifier.ForeColor = clWindowText
+    Colors.Identifier.ForeColor = clBlack
     Colors.Identifier.BackColor = clWindow
     Colors.Preproc.ForeColor = clGreen
     Colors.Preproc.BackColor = clWindow
@@ -142,20 +146,21 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
       Top = 0
       Caption = 'Compile (test)'
       ImageIndex = 3
+      OnClick = ToolButton2Click
     end
   end
   object Panel1: TPanel
     Left = 440
     Top = 38
     Width = 230
-    Height = 443
+    Height = 346
     Align = alRight
     TabOrder = 2
     object Panel2: TPanel
       Left = 1
       Top = 257
       Width = 228
-      Height = 185
+      Height = 88
       Align = alClient
       BevelOuter = bvNone
       BorderWidth = 5
@@ -172,14 +177,14 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
         Left = 5
         Top = 18
         Width = 218
-        Height = 138
+        Height = 41
         Align = alClient
         ItemHeight = 13
         TabOrder = 0
       end
       object ToolBar1: TToolBar
         Left = 5
-        Top = 156
+        Top = 59
         Width = 218
         Height = 24
         Align = alBottom
@@ -263,6 +268,15 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
         TabOrder = 0
       end
     end
+  end
+  object lb_errors: TListBox
+    Left = 0
+    Top = 384
+    Width = 670
+    Height = 97
+    Align = alBottom
+    ItemHeight = 13
+    TabOrder = 3
   end
   object PngImageList1: TPngImageList
     PngImages = <
@@ -376,5 +390,13 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
     StoreOptions = [soStripDrive, soRemoveDots, soReplace]
     Left = 344
     Top = 112
+  end
+  object XPManifest1: TXPManifest
+    Left = 272
+    Top = 240
+  end
+  object JvInterpreter: TJvInterpreterProgram
+    Left = 240
+    Top = 104
   end
 end

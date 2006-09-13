@@ -2,7 +2,7 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Width = 434
-  Height = 131
+  Height = 151
   Caption = 'SharpScript'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,6 +12,7 @@ object MainForm: TMainForm
   Font.Style = []
   Menu = MainMenu1
   OldCreateOrder = False
+  Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -29,8 +30,8 @@ object MainForm: TMainForm
     Caption = 'Use the menu to select what you want to do...'
   end
   object MainMenu1: TMainMenu
-    Left = 240
-    Top = 8
+    Left = 360
+    Top = 16
     object File1: TMenuItem
       Caption = 'File'
       object Exit1: TMenuItem
@@ -42,6 +43,7 @@ object MainForm: TMainForm
       Caption = 'Script'
       object Execute1: TMenuItem
         Caption = 'Execute...'
+        OnClick = Execute1Click
       end
       object Create1: TMenuItem
         Caption = 'Create'
@@ -60,5 +62,18 @@ object MainForm: TMainForm
         Caption = 'Edit...'
       end
     end
+  end
+  object XPManifest1: TXPManifest
+    Left = 328
+    Top = 16
+  end
+  object OpenScript: TOpenDialog
+    Filter = 'SharpE Install Package|*.sip'
+    Left = 296
+    Top = 16
+  end
+  object JvInterpreter: TJvInterpreterProgram
+    Left = 264
+    Top = 16
   end
 end
