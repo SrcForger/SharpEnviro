@@ -3,7 +3,7 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Button Module Settings'
-  ClientHeight = 303
+  ClientHeight = 348
   ClientWidth = 192
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -68,7 +68,7 @@ object SettingsForm: TSettingsForm
   end
   object Button1: TButton
     Left = 32
-    Top = 264
+    Top = 312
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -77,7 +77,7 @@ object SettingsForm: TSettingsForm
   end
   object Button2: TButton
     Left = 112
-    Top = 264
+    Top = 312
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -165,6 +165,31 @@ object SettingsForm: TSettingsForm
     Caption = 'Use Special Skins (if supported)'
     TabOrder = 10
   end
+  object cb_script: TRadioButton
+    Left = 8
+    Top = 256
+    Width = 169
+    Height = 17
+    Caption = 'SharpE Script'
+    TabOrder = 11
+    OnClick = cb_seaClick
+  end
+  object edit_script: TEdit
+    Left = 24
+    Top = 272
+    Width = 137
+    Height = 21
+    TabOrder = 12
+  end
+  object btn_script: TButton
+    Left = 162
+    Top = 272
+    Width = 22
+    Height = 22
+    Caption = '...'
+    TabOrder = 13
+    OnClick = btn_scriptClick
+  end
   object OpenFile: TOpenDialog
     FileName = '*.*'
     Filter = 'All Files|*.*|Applications (*.exe)|*.exe'
@@ -176,5 +201,10 @@ object SettingsForm: TSettingsForm
   object XPManifest1: TXPManifest
     Left = 144
     Top = 8
+  end
+  object OpenScript: TOpenDialog
+    Filter = 'SharpE Script |*.sescript'
+    Left = 136
+    Top = 128
   end
 end

@@ -55,6 +55,11 @@ type
     OpenFile: TOpenDialog;
     XPManifest1: TXPManifest;
     cb_specialskin: TCheckBox;
+    cb_script: TRadioButton;
+    edit_script: TEdit;
+    btn_script: TButton;
+    OpenScript: TOpenDialog;
+    procedure btn_scriptClick(Sender: TObject);
     procedure btn_openClick(Sender: TObject);
     procedure cb_seaClick(Sender: TObject);
     procedure tb_sizeChange(Sender: TObject);
@@ -77,7 +82,8 @@ procedure TSettingsForm.Button1Click(Sender: TObject);
 begin
   self.ModalResult := mrOk;
   if cb_sea.Checked then ActionStr := combo_actionlist.Text
-     else ActionStr := Edit_App.Text;
+     else if cb_script.Checked then ActionStr := edit_script.Text
+          else ActionStr := Edit_App.Text;
 end;
 
 procedure TSettingsForm.Button2Click(Sender: TObject);
@@ -97,6 +103,7 @@ var
 begin
   cb_labels.OnClick(cb_labels);
   cb_sea.OnClick(cb_sea);
+  cb_script.OnClick(cb_script);
   SList := TStringList.Create;
   try
     SList.Clear;
@@ -114,7 +121,8 @@ begin
          else combo_actionlist.ItemIndex := 0;
     end;
     if cb_ea.Checked then
-       edit_app.Text := ActionStr;
+       else if cb_script.Checked then edit_script.Text := ActionStr
+       else edit_app.Text := ActionStr;
   end;
 end;
 
@@ -128,12 +136,31 @@ begin
   combo_actionlist.Enabled := cb_sea.Checked;
   edit_app.Enabled         := cb_ea.Checked;
   btn_open.Enabled         := cb_ea.Checked;
+  edit_script.Enabled      := cb_script.Checked;
+  btn_script.Enabled       := cb_script.Checked;
 end;
 
 procedure TSettingsForm.btn_openClick(Sender: TObject);
 begin
   if OpenFile.Execute then
      Edit_App.Text := OpenFile.FileName;
+end;
+
+procedure TSettingsForm.btn_scriptClick(Sender: TObject);
+var
+  Dir : String;
+begin
+  if OpenScript.InitialDir = '' then
+  begin
+    Dir :=  SharpApi.GetSharpeUserSettingsPath + 'Scripts\';
+    ForceDirectories(Dir);
+    OpenScript.InitialDir := Dir;
+  end;
+
+  if OpenScript.Execute then
+  begin
+    edit_script.Text := OpenScript.FileName;
+  end;
 end;
 
 end.

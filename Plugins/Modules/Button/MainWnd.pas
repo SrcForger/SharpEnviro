@@ -72,12 +72,12 @@ type
     FCustomSettings : TSharpECustomSkinSettings;
     FCustomBmpList  : TSkinBitmapList;
     ModuleSize  : TModuleSize;
-    procedure UpdateCustomSkin;
   public
     ModuleID : integer;
     BarWnd : hWnd;
     procedure LoadSettings;
     procedure ReAlignComponents(BroadCast : boolean);
+    procedure UpdateCustomSkin;
     procedure SetWidth(new : integer);
   end;
 
@@ -210,7 +210,8 @@ begin
     SettingsForm.tb_size.Position   := sWidth;
     SettingsForm.cb_specialskin.Checked := sSpecialSkin;
     case sAction of
-     1: SettingsForm.cb_sea.Checked := True
+     1: SettingsForm.cb_sea.Checked := True;
+     3: SettingsForm.cb_script.Checked := True;
      else SettingsForm.cb_ea.Checked := True;
     end;
     SettingsForm.ActionStr := sActionStr;
@@ -223,7 +224,8 @@ begin
       sActionStr  := SettingsForm.ActionStr;
       sSpecialSkin := SettingsForm.cb_specialskin.Checked;
       if SettingsForm.cb_sea.Checked then sAction := 1
-         else sAction := 2;
+         else if SettingsForm.cb_script.Checked then sAction := 3
+              else sAction := 2;
 
       item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
       if item <> nil then with item.Items do
