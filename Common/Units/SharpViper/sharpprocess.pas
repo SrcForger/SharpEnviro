@@ -128,6 +128,7 @@ type
   procedure EmptyWindowList(WindowList: TList);
 {$ENDREGION}
 
+function GetActiveWindow: HWND;
 function IsTaskWindow(isWnd: HWND): boolean;
 function SharpEBroadCastEx(msg: integer; wpar: wparam; lpar: lparam): integer;
 
@@ -537,7 +538,8 @@ begin
     if (ProcessType = ptTask) then
      begin
       try
-       Active := (Wnd = GetForegroundWindow);
+//       Active := (Wnd = GetForegroundWindow);
+       Active := (Wnd = GetActiveWindow);
 
        GetWindowIcon(icDisplay, Wnd);
 
@@ -1139,6 +1141,16 @@ begin
    end;
 end;
 {$ENDREGION}
+
+function GetActiveWindow: HWND;
+var
+  i: HWND;
+begin
+  Result := GetForegroundWindow;
+  i := HWND(GetWindowLong(Result, GWL_HWNDPARENT));
+
+  if (i > 0) then Result := i;
+end;
 
 function IsTaskWindow(isWnd: HWND): boolean;
 var
