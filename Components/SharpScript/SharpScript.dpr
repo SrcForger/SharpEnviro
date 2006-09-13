@@ -10,7 +10,9 @@ uses
   SharpApi_Adapter in '..\..\Common\Libraries\SharpAPI\SharpApi_Adapter.pas',
   SharpFileUtils_Adapter in '..\..\Common\Units\SharpScript\SharpFileUtils_Adapter.pas',
   SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpBase_Adapter in '..\..\Common\Units\SharpScript\SharpBase_Adapter.pas';
+  SharpBase_Adapter in '..\..\Common\Units\SharpScript\SharpBase_Adapter.pas',
+  CreateGenericScriptWnd in 'Forms\CreateGenericScriptWnd.pas' {CreateGenericScriptForm},
+  ScriptControls in 'ScriptControls.pas';
 
 {$R *.res}
 
@@ -23,5 +25,6 @@ begin
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TCreateInstallScriptForm, CreateInstallScriptForm);
+  Application.CreateForm(TCreateGenericScriptForm, CreateGenericScriptForm);
   Application.Run;
 end.

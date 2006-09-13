@@ -49,6 +49,7 @@ object MainForm: TMainForm
         Caption = 'Create'
         object Generic1: TMenuItem
           Caption = 'Generic'
+          OnClick = Generic1Click
         end
         object Install1: TMenuItem
           Caption = 'Install'
