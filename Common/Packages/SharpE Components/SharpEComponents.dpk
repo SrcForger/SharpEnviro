@@ -36,14 +36,19 @@ requires
   vclactnband,
   xmlrtl,
   designide,
-  Jcl;
+  Jcl,
+  SharpESkinComponents,
+  JclVcl,
+  VclSmp;
 
 contains
   uSharpeColorBox in '..\..\Delphi Components\SharpEColorBox\uSharpeColorBox.pas',
   SharpFX in '..\..\Units\SharpFX\SharpFX.pas',
-  SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas',
   uSharpEFontSelector in '..\..\Delphi Components\SharpEFontSelector\uSharpEFontSelector.pas',
   uSharpEFontSelectorWnd in '..\..\Delphi Components\SharpEFontSelector\uSharpEFontSelectorWnd.pas',
-  uFontList in '..\..\Delphi Components\SharpEFontSelector\uFontList.pas';
+  uFontList in '..\..\Delphi Components\SharpEFontSelector\uFontList.pas',
+  uScHotkeyEdit in '..\..\Delphi Components\SCHotkeyEdit\uScHotkeyEdit.pas',
+  VKToString in '..\..\Units\SCHotkeyManager\VKToString.pas',
+  uScHotkeyMgr in '..\..\Units\SCHotkeyManager\uScHotkeyMgr.pas';
 
 end.
