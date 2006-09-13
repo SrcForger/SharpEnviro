@@ -21,7 +21,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
     Cursor = crIBeam
     Lines.Strings = (
       'begin'
-      'end.')
+      'end;')
     GutterWidth = 32
     RightMarginColor = clSilver
     Completion.ItemHeight = 13

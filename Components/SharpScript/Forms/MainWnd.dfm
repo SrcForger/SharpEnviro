@@ -69,7 +69,7 @@ object MainForm: TMainForm
     Top = 16
   end
   object OpenScript: TOpenDialog
-    Filter = 'SharpE Install Package|*.sip'
+    Filter = 'SharpE Script|*.sescript|SharpE Install Script|*.sip'
     Left = 296
     Top = 16
   end

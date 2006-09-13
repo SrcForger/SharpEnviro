@@ -21,6 +21,12 @@ type
                              procedure DoInstall(FileName : String);
                            end;
 
+  TSharpEGenericScript = class
+                         private
+                         public
+                           procedure ExecuteScript(FileName : String);
+                         end;
+
 
 implementation
 
@@ -141,6 +147,21 @@ begin
     UnZipper.CloseArchive;
     UnZipper.Free;
     RenameFile(s,FileName);
+  end;
+end;
+
+procedure TSharpEGenericScript.ExecuteScript(FileName :String);
+var
+  JvInterpreter : TJvInterpreterProgram;
+begin
+  if not FileExists(FileName) then exit;
+
+  JvInterpreter := TJvInterpreterProgram.Create(nil);
+  try
+    JvInterpreter.Pas.LoadFromFile(FileName);
+    JvInterpreter.Run;
+  finally
+    JvInterpreter.Free;
   end;
 end;
 

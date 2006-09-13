@@ -111,7 +111,7 @@ begin
 
   if SaveScript.Execute then
   begin
-    ed_script.Lines.SaveToFile(SaveScript.FileName);
+    ed_script.Lines.SaveToFile(SaveScript.FileName + '.sescript');
   end;
 end;
 

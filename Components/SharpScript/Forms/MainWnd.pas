@@ -62,7 +62,8 @@ end;
 procedure TMainForm.Execute1Click(Sender: TObject);
 var
   Ext : String;
-  script : TSharpEInstallerScript;
+  installscript : TSharpEInstallerScript;
+  genericscript : TSharpEGenericScript;
 begin
   if OpenScript.Execute then
   begin
@@ -70,10 +71,18 @@ begin
     if Ext = '.sip' then
     begin
       try
-        script := TSharpEInstallerScript.Create;
-        script.DoInstall(OpenScript.Filename);
+        installscript := TSharpEInstallerScript.Create;
+        installscript.DoInstall(OpenScript.Filename);
       finally
-        script.Free;
+        installscript.Free;
+      end;
+    end else if Ext = '.sescript' then
+    begin
+      try
+        genericscript := TSharpEGenericScript.Create;
+        genericscript.ExecuteScript(OpenScript.FileName);
+      finally
+        genericscript.Free;
       end;
     end else Showmessage('Unknown file extension');
   end;
