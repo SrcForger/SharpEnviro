@@ -2,6 +2,7 @@ program SharpScript;
 
 uses
   Forms,
+  SysUtils,
   JvInterpreter,
   MainWnd in 'Forms\MainWnd.pas' {MainForm},
   CreateInstallScriptWnd in 'Forms\CreateInstallScriptWnd.pas' {CreateInstallScriptForm},
@@ -16,11 +17,46 @@ uses
 
 {$R *.res}
 
+var
+  Prm : String;
+  Ext : String;
+  installscript : TSharpEInstallerScript;
+  genericscript : TSharpEGenericScript;
+
 begin
   SharpBase_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   SharpApi_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   SharpFileUtils_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   SharpArchiveUtils_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
+
+
+  if ParamCount > 0 then
+  begin
+    Prm := ParamStr(1);
+    if FileExists(Prm) then
+    begin
+      Ext := ExtractFileExt(Prm);
+      if Ext = '.sip' then
+      begin
+        try
+          installscript := TSharpEInstallerScript.Create;
+          installscript.DoInstall(Prm);
+        finally
+          installscript.Free;
+          Halt;
+        end;
+      end else if Ext = '.sescript' then
+      begin
+        try
+          genericscript := TSharpEGenericScript.Create;
+          genericscript.ExecuteScript(Prm);
+        finally
+          genericscript.Free;
+          Halt;
+        end;
+      end;
+    end;
+  end;
 
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
