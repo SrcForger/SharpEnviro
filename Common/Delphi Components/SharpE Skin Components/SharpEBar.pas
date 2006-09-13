@@ -444,6 +444,7 @@ begin
   inherited;
 end;
 
+
 procedure TSharpEBar.UpdatePosition;
 var
   Mon: TMonitor;
@@ -451,6 +452,9 @@ var
 begin
   if (not FAutoPosition) or (csDesigning in ComponentState) then
     exit;
+
+  // Form.Monitor is calling TCustomForm.GetMonitor which makes sure that the TScreen Rect is updated 
+  Form.Monitor;
 
   FMonitorIndex := abs(FMonitorIndex);
   try
@@ -806,12 +810,6 @@ begin
     WM_LBUTTONDOWN,
       WM_RBUTTONDOWN:
       begin
-                     { if msg.Msg = WM_LBUTTONDOWN then
-                      begin
-                        if GET_X_LPARAM(msg.lParam) = 1 then
-                           form.Top := form.Top - form.Height - 1;
-                      end;     }
-
         if Throbber.FButtonDown then
         begin
           Throbber.FButtonOver := False;
@@ -820,8 +818,7 @@ begin
         end;
       end;
   end;
-  msg.result := CallWindowProc(hproc, form.Handle, msg.msg, msg.wparam,
-    msg.lparam);
+  msg.result := CallWindowProc(hproc, form.Handle, msg.msg, msg.wparam, msg.lparam);
 end;
 
 procedure TSharpEBar.UpdateSkin;
