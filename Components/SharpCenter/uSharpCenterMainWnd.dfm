@@ -24,7 +24,7 @@ object SharpCenterWnd: TSharpCenterWnd
     Left = 0
     Top = 0
     Width = 583
-    Height = 435
+    Height = 434
     Align = alClient
     BevelOuter = bvNone
     Caption = 'pnlMain'
@@ -35,7 +35,7 @@ object SharpCenterWnd: TSharpCenterWnd
       Left = 185
       Top = 0
       Width = 2
-      Height = 435
+      Height = 434
       Color = clBtnFace
       ParentColor = False
       OnMoved = FormResize
@@ -44,7 +44,7 @@ object SharpCenterWnd: TSharpCenterWnd
       Left = 187
       Top = 0
       Width = 396
-      Height = 435
+      Height = 434
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
@@ -52,7 +52,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Left = 0
         Top = 0
         Width = 396
-        Height = 435
+        Height = 434
         Align = alClient
         BevelOuter = bvNone
         Color = clWindow
@@ -61,7 +61,7 @@ object SharpCenterWnd: TSharpCenterWnd
           Left = 0
           Top = 0
           Width = 396
-          Height = 435
+          Height = 434
           Style = grVertical
           StartColor = clBtnHighlight
           EndColor = clBtnFace
@@ -70,7 +70,7 @@ object SharpCenterWnd: TSharpCenterWnd
           Left = 0
           Top = 0
           Width = 396
-          Height = 435
+          Height = 434
           Align = alClient
           Center = True
           Picture.Data = {
@@ -1700,7 +1700,7 @@ object SharpCenterWnd: TSharpCenterWnd
       Left = 0
       Top = 0
       Width = 185
-      Height = 435
+      Height = 434
       Align = alLeft
       BevelOuter = bvNone
       Color = clWindow
@@ -1801,7 +1801,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Left = 0
         Top = 32
         Width = 185
-        Height = 403
+        Height = 402
         Align = alClient
         BevelOuter = bvNone
         Color = clWindow
@@ -1842,7 +1842,7 @@ object SharpCenterWnd: TSharpCenterWnd
           Left = 0
           Top = 21
           Width = 185
-          Height = 382
+          Height = 381
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 5
@@ -1852,7 +1852,7 @@ object SharpCenterWnd: TSharpCenterWnd
             Left = 5
             Top = 5
             Width = 175
-            Height = 372
+            Height = 371
             Style = lbOwnerDrawFixed
             Align = alClient
             BorderStyle = bsNone
