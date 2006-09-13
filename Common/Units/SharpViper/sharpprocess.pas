@@ -4,7 +4,7 @@ interface
 
 uses classes, Forms, SysUtils, ShellApi, ShlObj, ComObj, Windows,
      Graphics, psapi, tlHelp32, messages, jclshell, GR32, GR32_Image, SharpAPI,
-     SharpLibrary, SharpEImage32, ShellHookTypes, Activex, ComCtrls, HotKeyManager, dialogs;
+     SharpLibrary, SharpEImage32, ShellHookTypes, Activex, ComCtrls, HotKeyManager;
 
 {$REGION ' Process & File Type Declarations '}
 type
@@ -459,12 +459,7 @@ procedure TSharpTaskImage.DisplayPopup;
 var
   ptCursor: TPoint;
   AppMenu: hMenu;
-  test: TRect;
 begin
-  GetWindowRect(Wnd,test);
-  showmessage('Left := ' + inttostr(test.Left) + ' Top := ' + inttostr(test.Top));
-  exit;
-
   AppMenu := GetSystemMenu(Wnd, False);
 
   GetCursorPos(ptCursor);
