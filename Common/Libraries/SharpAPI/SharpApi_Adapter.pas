@@ -71,6 +71,11 @@ begin
   Value := CloseComponent(PChar(VarToStr(Args.Values[0])));
 end;
 
+procedure Adapter_StartComponent(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  StartComponent(PChar(VarToStr(Args.Values[0])));
+end;
+
 procedure Adapter_TerminateComponent(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   TerminateComponent(PChar(VarToStr(Args.Values[0])));
@@ -92,6 +97,7 @@ begin
     AddFunction('SharpApi','FindComponent',Adapter_FindComponent,1,[varString],varLongWord);
     AddFunction('SharpApi','CloseComponent',Adapter_CloseComponent,1,[varString],varBoolean);
     AddFunction('SharpApi','TerminateComponent',Adapter_TerminateComponent,1,[varString],varEmpty);
+    AddFunction('SharpApi','StartComponent',Adapter_StartComponent,1,[varString],varEmpty);
   end;
 end;
 

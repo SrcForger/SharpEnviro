@@ -282,6 +282,7 @@ function FindComponent(Component : PChar) : hwnd; external 'SharpApi.dll' name '
 function IsComponentRunning(Component : PChar) : boolean; external 'SharpApi.dll' name 'IsComponentRunning';
 function CloseComponent(Component : PChar) : boolean; external 'SharpApi.dll' name 'CloseComponent';
 procedure TerminateComponent(Component : PChar); external 'SharpApi.dll' name 'TerminateComponent';
+procedure StartComponent(Component : PChar); external 'SharpApi.dll' name 'StartComponent';
 
 implementation
 
