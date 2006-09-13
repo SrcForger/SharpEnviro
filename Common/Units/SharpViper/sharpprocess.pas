@@ -261,11 +261,6 @@ begin
 
       if (bIconic) then
        begin
-//        if (bRecall) then
-//         begin
-//          rcSize.Left := rcSize.Left - ((rcSize.Left div 10000) * 10000);
-//          rcSize.Top := rcSize.Top - ((rcSize.Top div 10000) * 10000);
-//         end;
        end
       else
        begin
@@ -275,7 +270,9 @@ begin
           rcSize.Top := rcSize.Top + 4;
          end;
 
-        if (rcSize.Top < 10000) then
+//        if (rcSize.Top < 10000) then
+        //(Top < 0) Fix 
+        if (rcSize.Top < 5000) then
          begin
           rcSize.Top := (rcSize.Top + 10000);
          end;
@@ -462,7 +459,12 @@ procedure TSharpTaskImage.DisplayPopup;
 var
   ptCursor: TPoint;
   AppMenu: hMenu;
+  test: TRect;
 begin
+  GetWindowRect(Wnd,test);
+  showmessage('Left := ' + inttostr(test.Left) + ' Top := ' + inttostr(test.Top));
+  exit;
+
   AppMenu := GetSystemMenu(Wnd, False);
 
   GetCursorPos(ptCursor);
