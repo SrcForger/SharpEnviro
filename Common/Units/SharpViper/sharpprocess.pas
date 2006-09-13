@@ -290,13 +290,11 @@ begin
          begin
           //If we're being asked to recall a window, we're assuming that the window
           // being recalled, was previously moved by this procedure
-          rcSize.Left := rcSize.Left + 100000;
+//          rcSize.Left := rcSize.Left + 100000;
           rcSize.Left := rcSize.Left - ((rcSize.Left div 10000) * 10000);
 
-//          rcSize.Left := (rcSize.Left + 100000);
-//          rcSize.Left := rcSize.Left - ((rcSize.Left div 10000) * 10000);
-////          rcSize.Left := rcSize.Left - (((Abs(rcSize.Left) + 10000) div 10000) * 10000);
-          rcSize.Top := rcSize.Top - ((rcSize.Top div 10000) * 10000);
+//          rcSize.Top := rcSize.Top - ((rcSize.Top div 10000) * 10000);
+          rcSize.Top := rcSize.Top - 10000;
          end;
 
         if (bMaximized) then
