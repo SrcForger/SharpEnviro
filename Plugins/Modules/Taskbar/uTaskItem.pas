@@ -134,7 +134,7 @@ end;
 
 procedure TTaskItem.UpdateWndClass;
 var
-  buf: array [0..127] of Char;
+  buf: array [0..254] of Char;
 begin
   GetClassName(FHandle, buf, SizeOf(buf));
   FWndClass := buf;
