@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, JvExControls, JvComponent, JvEditorCommon, JvEditor, JvHLEditor,
-  StdCtrls, ExtCtrls, ToolWin, ComCtrls, ImgList, PngImageList;
+  StdCtrls, ExtCtrls, ToolWin, ComCtrls, ImgList, PngImageList, AbBase,
+  AbBrowse, AbZBrows, AbZipper, AbUtils, DateUtils;
 
 type
   TCreateInstallScriptForm = class(TForm)
@@ -30,6 +31,7 @@ type
     Panel4: TPanel;
     Label3: TLabel;
     ed_rnotes: TMemo;
+    AbZipper1: TAbZipper;
     procedure ToolButton1Click(Sender: TObject);
     procedure btn_deletefileClick(Sender: TObject);
     procedure btn_addfileClick(Sender: TObject);
@@ -45,8 +47,7 @@ var
 
 implementation
 
-uses MainWnd,
-     LibTar;
+uses MainWnd;
 
 {$R *.dfm}
 
@@ -77,38 +78,45 @@ procedure TCreateInstallScriptForm.ToolButton1Click(Sender: TObject);
 var
   n : integer;
   MemoryStream : TMemoryStream;
-  TW : TTarWriter;
   b : boolean;
+  s : String;
 begin
   if SavePackageDialog.Execute then
   begin
     b := False;
+    AbZipper1.ArchiveType := atZip;
+    s := ExtractFileDir(SavePackageDialog.FileName) + '\' + inttostr(DateTimeToUnix(now))+'.zip';
+    AbZipper1.FileName :=  s;
     MemoryStream := TMemoryStream.Create;
-    TW := TTarWriter.Create(SavePackageDialog.FileName + '.sip');
     try
       MemoryStream.Clear;
       ed_script.Lines.SaveToStream(MemoryStream);
       MemoryStream.Position := 0;
-      TW.AddStream(MemoryStream,'Script.siscript',now);
+      AbZipper1.AddFromStream('Script.siscript',MemoryStream);
 
       MemoryStream.Clear;
       ed_rnotes.Lines.SaveToStream(MemoryStream);
       MemoryStream.Position := 0;
-      TW.AddStream(MemoryStream,'ReleaseNotes.txt',now);
+      AbZipper1.AddFromStream('ReleaseNotes.txt',MemoryStream);
 
       Memorystream.Clear;
       ed_changelog.Lines.SaveToStream(MemoryStream);
       MemoryStream.Position := 0;
-      TW.AddStream(MemoryStream,'Changelog.txt',now);
-      
+      AbZipper1.AddFromStream('Changelog.txt',MemoryStream);
+
       for n := 0 to lb_files.Items.Count - 1 do
           if FileExists(lb_files.Items[n]) then
-             TW.AddFile(lb_files.Items[n],'Files\'+ExtractfileName(lb_files.Items[n]));
+             AbZipper1.AddFiles(lb_files.Items[n],0);
+
       b := True;
+      AbZipper1.Save;
+      AbZipper1.CloseArchive;
     finally
-      TW.Free;
       MemoryStream.Free;
     end;
+    DeleteFile(SavePackageDialog.FileName + '.sip');
+    RenameFile(s,SavePackageDialog.FileName + '.sip');
+    
     if not b then showmessage('PANIC: something went wrong!');
   end;
 end;

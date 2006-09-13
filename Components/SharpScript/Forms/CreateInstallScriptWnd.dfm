@@ -19,7 +19,7 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
     Left = 0
     Top = 38
     Width = 440
-    Height = 445
+    Height = 443
     Cursor = crIBeam
     Lines.Strings = (
       'unit InstallScript;'
@@ -70,6 +70,7 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
     Completion.CRLF = '/n'
     Completion.Separator = '='
     TabStops = '3 5'
+    BracketHighlighting.StringEscape = #39#39
     SelForeColor = clHighlightText
     SelBackColor = clHighlight
     Align = alClient
@@ -147,14 +148,14 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
     Left = 440
     Top = 38
     Width = 230
-    Height = 445
+    Height = 443
     Align = alRight
     TabOrder = 2
     object Panel2: TPanel
       Left = 1
       Top = 257
       Width = 228
-      Height = 187
+      Height = 185
       Align = alClient
       BevelOuter = bvNone
       BorderWidth = 5
@@ -171,14 +172,14 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
         Left = 5
         Top = 18
         Width = 218
-        Height = 140
+        Height = 138
         Align = alClient
         ItemHeight = 13
         TabOrder = 0
       end
       object ToolBar1: TToolBar
         Left = 5
-        Top = 158
+        Top = 156
         Width = 218
         Height = 24
         Align = alBottom
@@ -368,5 +369,12 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofNoReadOnlyReturn, ofEnableSizing, ofForceShowHidden]
     Left = 320
     Top = 192
+  end
+  object AbZipper1: TAbZipper
+    AutoSave = False
+    DOSMode = False
+    StoreOptions = [soStripDrive, soRemoveDots, soReplace]
+    Left = 344
+    Top = 112
   end
 end

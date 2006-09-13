@@ -4,8 +4,8 @@ uses
   Forms,
   MainWnd in 'Forms\MainWnd.pas' {MainForm},
   CreateInstallScriptWnd in 'Forms\CreateInstallScriptWnd.pas' {CreateInstallScriptForm},
-  LibTar in 'E:\Units\LibTar.pas',
-  InstallWnd in 'Forms\InstallWnd.pas' {InstallForm};
+  InstallWnd in 'Forms\InstallWnd.pas' {InstallForm},
+  SharpArchiveUtils_Adapter in '..\..\Common\Units\SharpScript\SharpArchiveUtils_Adapter.pas';
 
 {$R *.res}
 
