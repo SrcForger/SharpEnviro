@@ -43,6 +43,7 @@ const
     'LegalCopyRight', 'OriginalFileName', 'ProductName', 'ProductVersion');
 
 function GetFileInfo(FName, InfoType: string): string;
+procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
 implementation
 
