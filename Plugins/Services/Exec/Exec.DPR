@@ -34,14 +34,14 @@ uses
   dialogs,
   graphics,
   SysUtils,
-  SharpApi,
   uExecServiceExecute in 'uExecServiceExecute.pas',
   uExecServiceAliasList in 'uExecServiceAliasList.pas',
   uExecServicePathIncludeList in 'uExecServicePathIncludeList.pas',
   uExecServiceSettings in 'uExecServiceSettings.pas',
   uExecServiceRecentItemList in 'uExecServiceRecentItemList.pas',
   uExecServiceUsedItemList in 'uExecServiceUsedItemList.pas',
-  CalcExpress in '..\..\..\Common\3rd party\CalcExpress\Source\CalcExpress.pas';
+  CalcExpress in '..\..\..\Common\3rd party\CalcExpress\Source\CalcExpress.pas',
+  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas';
 
 {$E service}
 
