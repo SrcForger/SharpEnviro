@@ -18,12 +18,13 @@ object SettingsForm: TSettingsForm
   object Label4: TLabel
     Left = 8
     Top = 8
-    Width = 94
+    Width = 65
     Height = 13
-    Caption = 'Command Box Size:'
+    Caption = 'Edit Box Size:'
+    Transparent = True
   end
   object lb_barsize: TLabel
-    Left = 104
+    Left = 77
     Top = 8
     Width = 33
     Height = 14
@@ -64,12 +65,12 @@ object SettingsForm: TSettingsForm
     BorderStyle = bsNone
     HandleColor = clBtnFace
     BorderColor = clBtnShadow
-    Max = 150
+    Max = 250
     Min = 25
     ShowArrows = False
     ShowHandleGrip = True
     Style = rbsMac
-    Position = 100
+    Position = 150
     OnChange = tb_sizeChange
   end
   object OpenFile: TOpenDialog
