@@ -1,0 +1,29 @@
+unit SkinScript;
+
+interface
+
+function InitAnimation : integer;
+function OnAnimate : boolean;
+
+implementation
+
+function InitAnimation : integer;
+begin
+  result := 50;
+end;
+
+function OnAnimate : boolean;
+var
+  n : integer;
+begin
+  for n := 0 to 8 do
+      BlendColor(inttostr(n),'$Background','$Foreground',5);
+
+  BlendGradientFromColor('9','$BackgroundHover','$Background',5);
+  BlendGradientToColor('9','$Background','$BackgroundHover',5);
+
+  if GetColor('0') = '$Foreground' then result := false
+     else result := true;
+end;
+
+end.

@@ -676,8 +676,11 @@
     <dimension>w,18</dimension>
     <iconlroffset>3,5</iconlroffset>
     <icontboffset>3,5</icontboffset>
+    <OnNormalMouseEnter>Scripts\ButtonNormalMouseEnter.skinscript</OnNormalMouseEnter>
+    <OnNormalMouseLeave>Scripts\ButtonNormalMouseLeave.skinscript</OnNormalMouseLeave>
     <normal>
       <skinpart>
+        <ID>0</ID> 
         <location>0,0</location>
         <dimension>3,3</dimension>
         <image>images/Button-Top-Left.png</image>
@@ -685,6 +688,7 @@
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
+        <ID>1</ID>
         <location>3,0</location>
         <dimension>w-8,3</dimension>
         <image>images/Button-Middle-Top.png</image>
@@ -692,6 +696,7 @@
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
+        <ID>2</ID>
         <location>w-5,0</location>
         <dimension>5,3</dimension>
         <image>images/Button-Top-Right.png</image>
@@ -699,6 +704,7 @@
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
+        <ID>3</ID>
         <location>0,3</location>
         <dimension>3,h-8</dimension>
         <image>images/button-middle-left.png</image>
@@ -706,6 +712,7 @@
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
+        <ID>4</ID>
         <location>0,h-5</location>
         <dimension>3,5</dimension>
         <image>images/button-bottom-left.png</image>
@@ -713,6 +720,7 @@
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
+        <ID>5</ID>
         <location>3,h-5</location>
         <dimension>w-8,5</dimension>
         <image>images/button-middle-bottom.png</image>
@@ -720,6 +728,7 @@
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
+        <ID>6</ID>
         <location>w-5,h-5</location>
         <dimension>5,5</dimension>
         <image>images/button-bottom-right.png</image>
@@ -727,6 +736,7 @@
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
+        <ID>7</ID>
         <location>w-5,3</location>
         <dimension>5,h-8</dimension>
         <image>images/button-middle-right.png</image>
@@ -734,6 +744,7 @@
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
+        <ID>8</ID>
         <location>3,3</location>
         <dimension>w-8,h-8</dimension>
         <image>images/button-middle.png</image>
@@ -741,6 +752,7 @@
         <alpha>196</alpha>
       </skinpart>
       <skinpart>
+        <ID>9</ID>
         <location>3,3</location>
         <dimension>w-9,h-9</dimension>
         <image>images/empty.png</image>
@@ -754,6 +766,82 @@
         <location>0,0</location>
         <dimension>3,3</dimension>
         <image>images/Button-Top-Left.png</image>
+        <color>$ForegroundHover</color>
+        <alpha>196</alpha>
+      </skinpart>
+      <skinpart>
+        <location>3,0</location>
+        <dimension>w-8,3</dimension>
+        <image>images/Button-Middle-Top.png</image>
+        <color>$ForegroundHover</color>
+        <alpha>196</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-5,0</location>
+        <dimension>5,3</dimension>
+        <image>images/Button-Top-Right.png</image>
+        <color>$ForegroundHover</color>
+        <alpha>196</alpha>
+      </skinpart>
+      <skinpart>
+        <location>0,3</location>
+        <dimension>3,h-8</dimension>
+        <image>images/button-middle-left.png</image>
+        <color>$ForegroundHover</color>
+        <alpha>196</alpha>
+      </skinpart>
+      <skinpart>
+        <location>0,h-5</location>
+        <dimension>3,5</dimension>
+        <image>images/button-bottom-left.png</image>
+        <color>$ForegroundHover</color>
+        <alpha>196</alpha>
+      </skinpart>
+      <skinpart>
+        <location>3,h-5</location>
+        <dimension>w-8,5</dimension>
+        <image>images/button-middle-bottom.png</image>
+        <color>$ForegroundHover</color>
+        <alpha>196</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-5,h-5</location>
+        <dimension>5,5</dimension>
+        <image>images/button-bottom-right.png</image>
+        <color>$ForegroundHover</color>
+        <alpha>196</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-5,3</location>
+        <dimension>5,h-8</dimension>
+        <image>images/button-middle-right.png</image>
+        <color>$ForegroundHover</color>
+        <alpha>196</alpha>
+      </skinpart>
+      <skinpart>
+        <location>3,3</location>
+        <dimension>w-8,h-8</dimension>
+        <image>images/button-middle.png</image>
+        <color>$ForegroundHover</color>
+        <alpha>196</alpha>
+      </skinpart>
+      <skinpart>
+        <location>3,3</location>
+        <dimension>w-9,h-9</dimension>
+        <image>images/empty.png</image>
+        <gradienttype>vertical</gradienttype>
+        <gradientcolor>$Background,$BackgroundHover</gradientcolor>
+        <gradientalpha>255,255</gradientalpha>
+      </skinpart>
+    </hover>
+    <down>
+      <text>
+        <location>cw-2,ch</location>
+      </text>
+      <skinpart>
+        <location>0,0</location>
+        <dimension>3,3</dimension>
+        <image>images/Button-Top-Left.png</image>
         <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
@@ -813,73 +901,13 @@
         <color>$BackgroundHover</color>
         <alpha>196</alpha>
       </skinpart>
-    </hover>
-    <down>
-      <text>
-        <location>cw-2,ch</location>
-      </text>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>3,3</dimension>
-        <image>images/Button-Top-Left-Down.png</image>
-        <color>$BackgroundHover</color>
-        <alpha>196</alpha>
-      </skinpart>
-      <skinpart>
-        <location>3,0</location>
-        <dimension>w-8,3</dimension>
-        <image>images/Button-Middle-Top-Down.png</image>
-        <color>$BackgroundHover</color>
-        <alpha>196</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-5,0</location>
-        <dimension>5,3</dimension>
-        <image>images/Button-Top-Right-Down.png</image>
-        <color>$BackgroundHover</color>
-        <alpha>196</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,3</location>
-        <dimension>3,h-8</dimension>
-        <image>images/button-middle-left-Down.png</image>
-        <color>$BackgroundHover</color>
-        <alpha>196</alpha>
-      </skinpart>
-      <skinpart>
-        <location>0,h-5</location>
-        <dimension>3,5</dimension>
-        <image>images/button-bottom-left-Down.png</image>
-        <color>$BackgroundHover</color>
-        <alpha>196</alpha>
-      </skinpart>
-      <skinpart>
-        <location>3,h-5</location>
-        <dimension>w-8,5</dimension>
-        <image>images/button-middle-bottom-Down.png</image>
-        <color>$BackgroundHover</color>
-        <alpha>196</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-5,h-5</location>
-        <dimension>5,5</dimension>
-        <image>images/button-bottom-right-Down.png</image>
-        <color>$BackgroundHover</color>
-        <alpha>196</alpha>
-      </skinpart>
-      <skinpart>
-        <location>w-5,3</location>
-        <dimension>5,h-8</dimension>
-        <image>images/button-middle-right-Down.png</image>
-        <color>$BackgroundHover</color>
-        <alpha>196</alpha>
-      </skinpart>
       <skinpart>
         <location>3,3</location>
-        <dimension>w-8,h-8</dimension>
-        <image>images/button-middle.png</image>
-        <color>$BackgroundHover</color>
-        <alpha>196</alpha>
+        <dimension>w-9,h-9</dimension>
+        <image>images/empty.png</image>
+        <gradienttype>vertical</gradienttype>
+        <gradientcolor>$Background,$BackgroundHover</gradientcolor>
+        <gradientalpha>255,255</gradientalpha>
       </skinpart>
     </down>
     <disabled>
