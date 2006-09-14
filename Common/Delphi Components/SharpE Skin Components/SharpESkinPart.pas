@@ -141,6 +141,7 @@ type
 
   private
     FItems: TSkinPartList;
+    FID: String;
     FBmpList: TSkinBitmapList;
     FBitmapId: integer;
     FMasterAlpha: integer;
@@ -560,7 +561,7 @@ begin
   FMaxWidth := 'w';
   FStyleBold := False;
   FStyleItalic := False;
-  FStyleUnderline := False;
+  FStyleUnderline := False; 
   Assign(DefaultSharpESkinTextRecord);
 end;
 
@@ -970,6 +971,7 @@ begin
   Stream.WriteBuffer(FDrawMode, sizeof(FDrawMode));
   Stream.WriteBuffer(FBlend, sizeof(FBlend));
   StringSaveToStream(FBlendColor, Stream);
+  StringSaveToStream(FID, Stream);
   FGradientAlpha.SaveToStream(Stream);
   FGradientColor.SaveToStream(Stream);
   StringSavetoStream(FGradientType, Stream);
@@ -993,6 +995,7 @@ begin
     Stream.ReadBuffer(FDrawMode, sizeof(FDrawMode));
     Stream.ReadBuffer(FBlend, sizeof(FBlend));
     FBlendColor := StringLoadFromStream(Stream);
+    FID := StringLoadFromStream(Stream);
     FGradientAlpha.LoadFromStream(Stream);
     FGradientColor.LoadFromStream(Stream);
     FGradientType := StringLoadFromStream(Stream);
@@ -1102,6 +1105,8 @@ begin
     result := false;
     with xml.Items do
     begin
+      if ItemNamed['ID'] <> nil then
+        FID := Value('ID','');
       if ItemNamed['gradienttype'] <> nil then
         FGradientType := Value('gradienttype','horizontal');
       if ItemNamed['gradientcolor'] <> nil then
@@ -1190,6 +1195,7 @@ procedure TSkinPart.Clear;
 begin
   if FItems <> nil then
     FItems.Clear;
+  FID := '';
   FBitmapID := -1;
   FBlend := false;
   FBlendColor := '$000000';
@@ -1219,6 +1225,7 @@ begin
   FBmpList := BmpList;
   FDrawMode := sdmStretch;
   FMasterAlpha := 255;
+  FID := '';
 end;
 
 destructor TSkinPart.Destroy;
