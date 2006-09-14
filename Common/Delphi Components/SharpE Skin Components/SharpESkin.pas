@@ -205,6 +205,8 @@ type
     FDown: TSkinPart;
     FHover: TSkinPart;
     FDisabled: TSkinPart;
+    FOnNormalMouseEnterScript   : String;
+    FOnNormalMouseLeaveScript   : String;
   public
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
@@ -221,6 +223,8 @@ type
     property SkinDim: TSkinDim read FSkinDim;
     property IconLROffset: TSkinPoint read FIconLROffset;
     property IconTBOffset: TSkinPoint read FIconTBOffset;
+    property OnNormalMouseEnterScript : String read FOnNormalMouseEnterScript;
+    property OnNormalMouseLeaveScript : String read FOnNormalMouseLeaveScript;
  end;
 
   TSharpEFormSkin = class
@@ -448,6 +452,24 @@ type
 
 implementation
 uses SharpESkinManager,gr32_png;
+
+
+function LoadScriptFromFile(FileName : String) : String;
+var
+  SList : TStringList;
+begin
+  result := '';
+  if not FileExists(FileName) then exit;
+  SList := TStringList.Create;
+  SList.Clear;
+  try
+    SList.LoadFromFile(FileName);
+    result := SList.CommaText;
+  except
+    result := '';
+  end;
+  SList.Free;
+end;
 
 //***************************************
 //* TSharpESkin
@@ -832,6 +854,8 @@ begin
   FDown := TSkinPart.Create(BmpList);
   FHover := TSkinPart.Create(BmpList);
   FDisabled := TSkinPart.Create(BmpList);
+  FOnNormalMouseEnterScript   := '';
+  FOnNormalMouseLeaveScript   := '';
 end;
 
 destructor TSharpEButtonSkin.Destroy;
@@ -854,6 +878,8 @@ begin
   FDown.SaveToStream(Stream);
   FHover.SaveToStream(Stream);
   FDisabled.SaveToStream(Stream);
+  StringSaveToStream(FOnNormalMouseEnterScript,Stream);
+  StringSaveToStream(FOnNormalMouseLeaveScript,Stream);
 end;
 
 procedure TSharpEButtonSkin.LoadFromStream(Stream: TStream);
@@ -865,6 +891,8 @@ begin
   FDown.LoadFromStream(Stream);
   FHover.LoadFromStream(Stream);
   FDisabled.LoadFromStream(Stream);
+  FOnNormalMouseEnterScript := StringLoadFromStream(Stream);
+  FOnNormalMouseLeaveScript := StringLoadFromStream(Stream);
 end;
 
 procedure TSharpEButtonSkin.Clear;
@@ -877,6 +905,8 @@ begin
   FSkinDim.SetDimension('w', 'h');
   FIconLROffset.SetPoint('3','3');
   FIconTBOffset.SetPoint('3','3');
+  FOnNormalMouseEnterScript   := '';
+  FOnNormalMouseLeaveScript   := '';
 end;
 
 procedure TSharpEButtonSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
@@ -905,6 +935,10 @@ begin
         FIconLROffset.SetPoint(Value('iconlroffset', '3,3'));
       if ItemNamed['icontboffset'] <> nil then
         FIconTBOffset.SetPoint(Value('icontboffset','3,3'));
+      if ItemNamed['OnNormalMouseEnter'] <> nil then
+        FOnNormalMouseEnterScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseEnter',''));
+      if ItemNamed['OnNormalMouseLeave'] <> nil then
+        FOnNormalMouseLeaveScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseLeave',''));
     end;
   finally
     SkinText.free;
@@ -1348,8 +1382,7 @@ begin
   FSkinDim.SetDimension('w', 'h');
 end;
 
-procedure TSharpEMiniThrobberSkin.LoadFromXML(xml: TJvSimpleXMLElem; path:
-  string);
+procedure TSharpEMiniThrobberSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
 var SkinText: TSkinText;
 begin
   SkinText := TSkinText.create;

@@ -48,6 +48,7 @@ uses
   SharpEScheme,
   SharpESkinManager,
   SharpESkin,
+  SharpEAnimationTimers,
   math,
   Types,
   Buttons;
@@ -99,6 +100,7 @@ type
     procedure Resize; override;
     destructor Destroy; override;
     procedure UpdateAutoPosition;
+    function HasNormalHoverScript : boolean;
   published
     //property Align;
     property Anchors;
@@ -244,17 +246,42 @@ procedure TSharpEButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited;
-  UpdateSkin;
+  if HasNormalHoverScript then
+     SharpEAnimManager.ExecuteScript(self,
+                                     FManager.Skin.ButtonSkin.OnNormalMouseEnterScript,
+                                     FManager.Skin.ButtonSkin.Normal,
+                                     FManager.Scheme)
+     else UpdateSkin;
 end;
 
 procedure TSharpEButton.SMouseEnter;
 begin
-  UpdateSkin;
+  if HasNormalHoverScript then
+     SharpEAnimManager.ExecuteScript(self,
+                                     FManager.Skin.ButtonSkin.OnNormalMouseEnterScript,
+                                     FManager.Skin.ButtonSkin.Normal,
+                                     FManager.Scheme)
+     else UpdateSkin;
 end;
 
 procedure TSharpEButton.SMouseLeave;
 begin
-  UpdateSkin;
+  if HasNormalHoverScript then
+     SharpEAnimManager.ExecuteScript(self,
+                                     FManager.Skin.ButtonSkin.OnNormalMouseLeaveScript,
+                                     FManager.Skin.ButtonSkin.Normal,
+                                     FManager.Scheme)
+     else UpdateSkin;
+end;
+
+function TSharpEButton.HasNormalHoverScript : boolean;
+begin
+  result := False;
+  if not assigned(FManager) then exit;
+
+  if (length(Trim(FManager.Skin.ButtonSkin.OnNormalMouseEnterScript)) > 0)
+     and (length(Trim(FManager.Skin.ButtonSkin.OnNormalMouseLeaveScript)) > 0) then result := True
+     else result := False;
 end;
 
 procedure TSharpEButton.DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
@@ -478,7 +505,7 @@ begin
         TextPos := ButtonSkin.Down.SkinText.GetXY(TextRect, CompRect);
       end
       else
-        if FButtonOver and not (ButtonSkin.Hover.Empty) then
+        if ((FButtonOver) and not (ButtonSkin.Hover.Empty) and not (HasNormalHoverScript)) then
         begin
           ButtonSkin.Hover.Draw(bmp, Scheme);
           ButtonSkin.Hover.SkinText.AssignFontTo(bmp.Font,Scheme);

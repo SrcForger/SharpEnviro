@@ -169,6 +169,7 @@ type
     function Empty: Boolean;
     function GetBitmap: TBitmap32;
   published
+    property ID: String read FID;
     property Items: TSkinPartList read FItems;
     property Bitmap: TBitmap32 read GetBitmap;
     property BitmapID: integer read FBitmapID write FBitmapID;
@@ -1175,6 +1176,7 @@ begin
   Clear;
   if Value = nil then
     Exit;
+  FID := Value.ID;
   FBitmapId := Value.FBitmapId;
   FSkinDim.Assign(Value.SkinDim);
   FBlend := Value.Blend;
