@@ -37,7 +37,8 @@ requires
   JvCoreD9R,
   GR32_D2005,
   PNG_D9,
-  SharpEComponents;
+  SharpEComponents,
+  JvInterpreterD9R;
 
 contains
   StrTools in '..\..\Delphi Components\SharpE Skin Components\StrTools.pas',
@@ -68,6 +69,7 @@ contains
   SharpEListBox in '..\..\Delphi Components\SharpE Skin Components\SharpEListBox.pas',
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas',
   SharpECustomSkinSettings in '..\..\Delphi Components\SharpE Skin Components\SharpECustomSkinSettings.pas',
-  SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas';
+  SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas',
+  SharpEAnimationTimers in '..\..\Delphi Components\SharpE Skin Components\SharpEAnimationTimers.pas';
 
 end.
