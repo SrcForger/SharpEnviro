@@ -81,6 +81,11 @@ begin
   TerminateComponent(PChar(VarToStr(Args.Values[0])));
 end;
 
+procedure Adapter_SharpExecute(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := SharpExecute(PChar(VarToStr(Args.Values[0])));
+end;
+
 
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
@@ -98,6 +103,7 @@ begin
     AddFunction('SharpApi','CloseComponent',Adapter_CloseComponent,1,[varString],varBoolean);
     AddFunction('SharpApi','TerminateComponent',Adapter_TerminateComponent,1,[varString],varEmpty);
     AddFunction('SharpApi','StartComponent',Adapter_StartComponent,1,[varString],varEmpty);
+    AddFunction('SharpApi','Execute',Adapter_SharpExecute,1,[varString],varInteger);
   end;
 end;
 
