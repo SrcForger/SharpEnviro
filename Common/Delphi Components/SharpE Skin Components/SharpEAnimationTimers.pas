@@ -23,6 +23,7 @@ type
                     ID : String;
                     spart : TSkinPart;
                     BlendColor : String;
+                    BlendAlpha : integer;
                     GradientColorFrom : String;
                     GradientColorTo   : String;
                   end;
@@ -126,6 +127,16 @@ begin
   result := RGB(NR,NG,NB);
 end;
 
+procedure Script_IncreaseAlpha(SP : TSkinPart; Amount : integer);
+begin
+  SP.BlendAlpha := Min(255,SP.BlendAlpha + Amount);
+end;
+
+procedure Script_DecreaseAlpha(SP : TSkinPart; Amount : integer);
+begin
+  SP.BlendAlpha := Max(0,SP.BlendAlpha - Amount);
+end;
+
 procedure Script_BlendColor(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
 var
   NewColor : integer;
@@ -208,6 +219,7 @@ begin
   begin
     SP.BlendColor := BlendColor;
     SP.GradientColor.SetPoint(GradientColorFrom,GradientColorTo);
+    SP.BlendAlpha := BlendAlpha;
   end;
 end;
 
@@ -235,6 +247,7 @@ begin
     BlendColor := SP.BlendColor;
     GradientColorFrom := SP.GradientColor.X;
     GradientColorTo := SP.GradientColor.Y;
+    BlendAlpha := SP.BlendAlpha;
   end;
 end;
 
@@ -303,55 +316,62 @@ begin
 end;
 
 procedure TSharpEAnimTimer.OnInterpreterGetValue(Sender: TObject; Identifier: string; var Value: Variant; Args: TjvInterpreterArgs; var Done: Boolean);
+const
+  sBlendGradientFromColor = 0;
+  sBlendGraidentToColor   = 1;
+  sBlendColor             = 2;
+  sIncraseAlpha           = 3;
+  sDecraseAlpha           = 4;
+  sGetcolor               = 5;
+  sIntToStr               = 6;
+
 var
   temp : TSkinPart;
+  stype : integer;
 begin
   try
-    if CompareText(Identifier,'BlendGradientFromColor') = 0 then
+         if CompareText(Identifier,'BlendGradientFromColor') = 0 then stype := sBlendGradientFromColor
+    else if CompareText(Identifier,'BlendGradientToColor') = 0   then stype := sBlendGraidentToColor
+    else if CompareText(Identifier, 'BlendColor') = 0            then stype := sBlendColor
+    else if CompareText(Identifier, 'IncreaseAlpha') = 0          then stype := sIncraseAlpha
+    else if CompareText(Identifier, 'DecreaseAlpha') = 0          then stype := sDecraseAlpha
+    else if CompareText(Identifier, 'GetColor') = 0              then stype := sGetColor
+    else if CompareText(Identifier, 'IntToStr')  = 0             then stype := sIntToStr
+    else stype := -1;
+
+    if    (stype = sBlendGradientFromColor)
+       or (stype = sBlendGraidentToColor)
+       or (stype = sBlendColor)
+       or (stype = sIncraseAlpha)
+       or (stype = sDecraseAlpha) then
     begin
       temp := FindSkinPart(VarToStr(Args.Values[0]),FSkinPart);
       if temp <> nil then
       begin
         AddToModList(temp, FModList);
         RestoreFromModList(temp, FLMList);
-        Script_BlendGradientFrom(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
+        case stype of
+          sBlendGradientFromColor : Script_BlendGradientFrom(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
+          sBlendGraidentToColor   : Script_BlendGradientTo(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
+          sBlendColor             : Script_BlendColor(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
+          sIncraseAlpha           : Script_IncreaseAlpha(temp,Args.Values[1]);
+          sDecraseAlpha           : Script_DecreaseAlpha(temp,Args.Values[1]);
+        end;
         AddToModList(temp, FLMList);
       end;
       Done := True;
     end else
-    if CompareText(Identifier,'BlendGradientToColor') = 0 then
+    if    (stype = sGetColor)
+       or (stype = sIntToStr) then
     begin
       temp := FindSkinPart(VarToStr(Args.Values[0]),FSkinPart);
       if temp <> nil then
       begin
-        AddToModList(temp, FModList);
-        RestoreFromModList(temp, FLMList);
-        Script_BlendGradientTo(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
-        AddToModList(temp, FLMList);
+        case stype of
+          sGetColor : Value := Script_GetColor(temp);
+          sIntToStr : Value := Script_Inttostr(Args.Values[0]);
+        end;
       end;
-      Done := True;
-    end else
-    if CompareText(Identifier, 'BlendColor') = 0 then
-    begin
-      temp := FindSkinPart(VarToStr(Args.Values[0]),FSkinPart);
-      if temp <> nil then
-      begin
-        AddToModList(temp, FModList);
-        RestoreFromModList(temp, FLMList);
-        Script_BlendColor(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
-        AddToModList(temp, FLMList);
-      end;
-      Done := True;
-    end else
-    if CompareText(Identifier, 'Getcolor') = 0 then
-    begin
-      temp := FindSkinPart(VarToStr(Args.Values[0]),FSkinPart);
-      if temp <> nil then Value := Script_GetColor(temp);
-      Done := True;
-    end else
-    if CompareText(Identifier, 'IntToStr')  = 0 then
-    begin
-      Value := Script_Inttostr(Args.Values[0]);
       Done := True;
     end;
   except
