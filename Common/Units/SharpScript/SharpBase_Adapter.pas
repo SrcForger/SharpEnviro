@@ -58,12 +58,32 @@ begin
   Sleep(Args.Values[0]);
 end;
 
+procedure Adapter_IntToStr(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  try
+    Value := inttostr(Args.Values[0]);
+  except
+    Value := '';
+  end;
+end;
+
+procedure Adapter_StrToInt(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  try
+    Value := strtoint(Args.Values[0]);
+  except
+    Value := 0;
+  end;
+end;
+
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 begin
   with JvInterpreterAdapter do
   begin
     AddFunction('SharpBase','Sleep',Adapter_Sleep,1,[varInteger],varEmpty);
+    AddFunction('SharpBase','IntToStr',Adapter_IntToStr,1,[varInteger],varString);
+    AddFunction('SharpBase','StrToInt',Adapter_StrToInt,1,[varString],varInteger);
   end;
 end;
 
