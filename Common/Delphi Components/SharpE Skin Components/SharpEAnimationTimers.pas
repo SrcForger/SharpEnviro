@@ -91,9 +91,33 @@ begin
   end;
 end;
 
+function Script_StrToInt(Str : String) : integer;
+begin
+  try
+    result := StrToInt(Str);
+  except
+    result := 0;
+  end;
+end;
+
+function Script_GetGradientFromColor(SP : TSkinPart) : String;
+begin
+  result := SP.GradientColor.X;
+end;
+
+function Script_GetGradientToColor(SP : TSkinPart) : String;
+begin
+  result := SP.GradientColor.Y;
+end;
+
 function Script_GetColor(SP : TSkinPart) : String;
 begin
   result := SP.BlendColor;
+end;
+
+function Script_GetAlpha(SP : TSkinPart) : integer;
+begin
+  result := SP.BlendAlpha;
 end;
 
 function StepBlendColor(FromColor,ToColor,CurrentColor : integer; Step : integer) : integer;
@@ -322,8 +346,12 @@ const
   sBlendColor             = 2;
   sIncraseAlpha           = 3;
   sDecraseAlpha           = 4;
-  sGetcolor               = 5;
+  sGetColor               = 5;
   sIntToStr               = 6;
+  sStrToInt               = 7;
+  sGetAlpha               = 8;
+  sGetGradientFromColor   = 9;
+  sGetGradientToColor     = 10;
 
 var
   temp : TSkinPart;
@@ -333,10 +361,14 @@ begin
          if CompareText(Identifier,'BlendGradientFromColor') = 0 then stype := sBlendGradientFromColor
     else if CompareText(Identifier,'BlendGradientToColor') = 0   then stype := sBlendGraidentToColor
     else if CompareText(Identifier, 'BlendColor') = 0            then stype := sBlendColor
-    else if CompareText(Identifier, 'IncreaseAlpha') = 0          then stype := sIncraseAlpha
-    else if CompareText(Identifier, 'DecreaseAlpha') = 0          then stype := sDecraseAlpha
+    else if CompareText(Identifier, 'IncreaseAlpha') = 0         then stype := sIncraseAlpha
+    else if CompareText(Identifier, 'DecreaseAlpha') = 0         then stype := sDecraseAlpha
     else if CompareText(Identifier, 'GetColor') = 0              then stype := sGetColor
     else if CompareText(Identifier, 'IntToStr')  = 0             then stype := sIntToStr
+    else if CompareText(Identifier, 'StrToInt')  = 0             then stype := sStrToInt
+    else if CompareText(Identifier, 'GetAlpha')  = 0             then stype := sGetAlpha
+    else if CompareText(Identifier, 'GetGradientFromColor')  = 0 then stype := sGetGradientFromColor
+    else if CompareText(Identifier, 'GetGradientToColor')  = 0   then stype := sGetGradientToColor
     else stype := -1;
 
     if    (stype = sBlendGradientFromColor)
@@ -362,14 +394,22 @@ begin
       Done := True;
     end else
     if    (stype = sGetColor)
-       or (stype = sIntToStr) then
+       or (stype = sIntToStr)
+       or (stype = sStrToInt)
+       or (stype = sGetAlpha)
+       or (stype = sGetGradientFromColor)
+       or (stype = sGetGradientToColor) then
     begin
       temp := FindSkinPart(VarToStr(Args.Values[0]),FSkinPart);
       if temp <> nil then
       begin
         case stype of
-          sGetColor : Value := Script_GetColor(temp);
-          sIntToStr : Value := Script_Inttostr(Args.Values[0]);
+          sGetColor             : Value := Script_GetColor(temp);
+          sIntToStr             : Value := Script_Inttostr(Args.Values[0]);
+          sStrToInt             : Value := Script_Inttostr(Args.Values[0]);
+          sGetAlpha             : Value := Script_GetAlpha(temp);
+          sGetGradientFromColor : Value := Script_GetGradientFromColor(temp);
+          sGetGradientToColor   : Value := Script_GetGradientToColor(temp);
         end;
       end;
       Done := True;
