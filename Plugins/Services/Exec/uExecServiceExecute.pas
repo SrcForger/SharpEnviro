@@ -313,7 +313,7 @@ begin
     end
     else
     if ((ExtractFileExt(text) = '.sip') or (ExtractFileExt(text) = '.sescript')) then begin
-      if ShellOpenFile(Handle,GetSharpeDirectory+'SharpScript.exe',text,GetSharpeDirectory) = 1 then begin
+      if ShellOpenFile(Handle,GetSharpeDirectory+'SharpScript.exe','"' + text + '"',GetSharpeDirectory) = 1 then begin
         Result := True;
         Exit;
       end;
