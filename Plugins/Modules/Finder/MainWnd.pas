@@ -263,9 +263,23 @@ end;
 {$ENDREGION}
 
 procedure TMainForm.SharpEButton1Click(Sender: TObject);
+var
+  Test: TRect;
 begin
   BuildTaskMenu;
-  popTasks.Popup(Left + 4,(Top + Height));
+
+  GetWindowRect(Handle,Test);
+
+  //Stupid top/bottom check. This will be changed shortly
+  //to something real and more effective
+  if (test.Top < (Screen.DesktopHeight div 2)) then
+   begin
+    popTasks.Popup(Test.Left,Test.Top + Height);
+   end
+  else
+   begin
+    popTasks.Popup(Left, Top);
+   end;
 end;
 
 procedure TMainForm.GenericMouseClick(Sender: TObject);
