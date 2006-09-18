@@ -159,6 +159,10 @@ type
     FGradientColor : TSkinPoint;
     FGradientAlpha : TSkinPoint;
     Procedure DoCombine(F: TColor32; var B: TColor32; M: TColor32);
+    procedure TileDraw(Src,Dest : TBitmap32; DestRect : TRect);
+    procedure CustomDraw(Src, Dst : TBitmap32; SrcRect, DstRect : TRect);
+
+
   public
     constructor Create(BmpList: TSkinBitmapList); virtual;
     destructor Destroy; override;
@@ -189,7 +193,6 @@ type
     property GradientColor: TSkinPoint read FGradientColor write FGradientColor;
   end;
 
-procedure TileDraw(Src,Dest : TBitmap32; DestRect : TRect);
 function get_location(str: string): TRect;
 function SchemedStringToColor(str: string; cs: TSharpEScheme): TColor;
 procedure doBlend(Dest: TBitmap32; source: TBitmap32; color: TColor);
@@ -1023,6 +1026,22 @@ begin
   end;
 end;
 
+procedure TSkinPart.CustomDraw(Src, Dst : TBitmap32; SrcRect, DstRect : TRect);
+begin
+  Src.DrawMode := dmCustom;
+  Src.OnPixelCombine := DoCombine;
+ 
+  Case FLayerMode of 
+    lmBlend: begin 
+              Src.OnPixelCombine := nil; 
+              FLayerMode := lmBlend; 
+             end; 
+    lmAdd: Src.OnPixelCombine := nil; 
+ end; 
+ 
+ Dst.Draw(DstRect,SrcRect,Src); 
+end;
+
 procedure TSkinPart.draw(bmp: TBitmap32; cs: TSharpEScheme);
 var temp: Tbitmap32;
   FBitmap: Tbitmap32;
@@ -1039,20 +1058,9 @@ begin
     else
       isEmpty := False;
     FBitmap.MasterAlpha := FMasterAlpha;
-
-    FBitmap.DrawMode := dmCustom;
-    FBitmap.OnPixelCombine := DoCombine;
-
-    Case FLayerMode of
-      lmBlend: begin
-        FBitmap.OnPixelCombine := nil;
-        FLayerMode := lmBlend;
-      end;
-      lmAdd: FBitmap.OnPixelCombine := nil;
-    end;
-
-
+    FBitmap.DrawMode := dmBlend;
     FBitmap.CombineMode := cmMerge;
+
     r := FSkinDim.GetRect(rect(0, 0, bmp.Width, bmp.Height));
     if IsEmpty then
     begin
@@ -1068,7 +1076,7 @@ begin
       try
         doBlend(temp, FBitmap, SchemedStringToColor(BlendColor, cs));
         temp.MasterAlpha := FMasterAlpha;
-        if FDrawMode = sdmStretch then bmp.draw(r, rect(0, 0, temp.width, temp.Height), temp)
+        if FDrawMode = sdmStretch then CustomDraw(bmp, temp, rect(0,0, temp.width, temp.height), r)
            else TileDraw(temp,bmp,r);
       finally
         temp.free;
@@ -1287,11 +1295,14 @@ end;
 //* Other
 //**********************************
 
-procedure TileDraw(Src,Dest : TBitmap32; DestRect : TRect);
+procedure TSkinPart.TileDraw(Src,Dest : TBitmap32; DestRect : TRect);
 var
   w,h,nx,ny,x,y : integer;
   temp : TBitmap32;
 begin
+  Src.DrawMode := dmBlend;
+  Src.CombineMode := cmMerge;
+
   temp := TBitmap32.Create;
   try
     w := abs(DestRect.Right-DestRect.Left);
@@ -1300,12 +1311,25 @@ begin
     temp.Clear(color32(0,0,0,0));
     nx := round(Int(w / Src.Width));
     ny := round(Int(h / Src.Height));
-    for y := 0 to ny do
-        for x := 0 to nx do
-            Src.DrawTo(temp,x*Src.Width,y*Src.Height);
-    temp.DrawMode := dmBlend;
-    temp.CombineMode := cmMerge;
-    temp.DrawTo(Dest,DestRect.Left,DestRect.Top);
+
+    for y := 0 to ny do  
+       for x := 0 to nx do  
+           Src.DrawTo(temp,x*Src.Width,y*Src.Height);  
+ 
+   temp.DrawMode := dmCustom;  
+   temp.OnPixelCombine := DoCombine;  
+ 
+   Case FLayerMode of  
+     lmBlend: begin  
+       temp.OnPixelCombine := nil;  
+       FLayerMode := lmBlend;  
+     end;  
+     lmAdd: temp.OnPixelCombine := nil;  
+   end;  
+ 
+   temp.CombineMode := cmMerge;  
+   temp.DrawTo(Dest,DestRect.Left,DestRect.Top);
+
   finally
     temp.free;
   end;
