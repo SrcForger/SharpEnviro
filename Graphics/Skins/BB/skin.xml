@@ -76,20 +76,29 @@
       <spacing>2</spacing>
       <location>0,0</location>
       <dimension>128,17</dimension>
+      <OnNormalMouseEnter>Scripts\TaskItemNormalMouseEnter.skinscript</OnNormalMouseEnter>
+      <OnNormalMouseLeave>Scripts\TaskItemNormalMouseLeave.skinscript</OnNormalMouseLeave>
+      <OnDownMouseEnter>Scripts\TaskItemNormalMouseEnter.skinscript</OnDownMouseEnter>
+      <OnDownMouseLeave>Scripts\TaskItemNormalMouseLeave.skinscript</OnDownMouseLeave>
+      <OnHighlightStepStart>Scripts\TaskItemHighlightStart.skinscript</OnHighlightStepStart>
+      <OnHighlightStepEnd>Scripts\TaskItemHighlightEnd.skinscript</OnHighlightStepEnd>
       <normal>
         <skinpart>
+          <ID>Left</ID>  
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
           <color>$Background</color>
         </skinpart>
         <skinpart>
+          <ID>Middle</ID>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
           <color>$Background</color>
         </skinpart>
         <skinpart>
+          <ID>Right</ID>  
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
@@ -118,18 +127,21 @@
       </normalhover>
       <down>
         <skinpart>
+	  <ID>Left</ID>
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Left.png</image>
           <color>$Background</color>
         </skinpart>
         <skinpart>
+	  <ID>Middle</ID>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskD_Middle.png</image>
           <color>$Background</color>
         </skinpart>
         <skinpart>
+	  <ID>Right</ID>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Right.png</image>
@@ -158,18 +170,21 @@
       </downhover>
       <highlight>
         <skinpart>
+ 	  <ID>Left</ID>
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
           <color>$BackgroundHover</color>
         </skinpart>
         <skinpart>
+     	  <ID>Middle</ID>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
           <color>$BackgroundHover</color>
         </skinpart>
         <skinpart>
+          <ID>Right</ID>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
@@ -214,20 +229,29 @@
       <spacing>1</spacing>
       <location>0,0</location>
       <dimension>96,17</dimension>
+      <OnNormalMouseEnter>Scripts\TaskItemNormalMouseEnter.skinscript</OnNormalMouseEnter>
+      <OnNormalMouseLeave>Scripts\TaskItemNormalMouseLeave.skinscript</OnNormalMouseLeave>
+      <OnDownMouseEnter>Scripts\TaskItemNormalMouseEnter.skinscript</OnDownMouseEnter>
+      <OnDownMouseLeave>Scripts\TaskItemNormalMouseLeave.skinscript</OnDownMouseLeave>
+      <OnHighlightStepStart>Scripts\TaskItemHighlightStart.skinscript</OnHighlightStepStart>
+      <OnHighlightStepEnd>Scripts\TaskItemHighlightEnd.skinscript</OnHighlightStepEnd>
       <normal>
         <skinpart>
+	  <ID>Left</ID>
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
           <color>$Background</color>
         </skinpart>
         <skinpart>
+          <ID>Middle</ID>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
           <color>$Background</color>
         </skinpart>
         <skinpart>
+          <ID>Right</ID>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
@@ -256,18 +280,21 @@
       </normalhover>
       <down>
         <skinpart>
+          <ID>Left</ID>
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Left.png</image>
           <color>$Background</color>
         </skinpart>
         <skinpart>
+          <ID>Middle</ID>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskD_Middle.png</image>
           <color>$Background</color>
         </skinpart>
         <skinpart>
+          <ID>Right</ID>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Right.png</image>
@@ -296,18 +323,21 @@
       </downhover>
       <highlight>
         <skinpart>
+          <ID>Left</ID>
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
           <color>$BackgroundHover</color>
         </skinpart>
         <skinpart>
+          <ID>Middle</ID>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
           <color>$BackgroundHover</color>
         </skinpart>
         <skinpart>
+          <ID>Right</ID>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
@@ -347,20 +377,29 @@
       <spacing>1</spacing>
       <location>0,0</location>
       <dimension>19,17</dimension>
+      <OnNormalMouseEnter>Scripts\TaskItemNormalMouseEnter.skinscript</OnNormalMouseEnter>
+      <OnNormalMouseLeave>Scripts\TaskItemNormalMouseLeave.skinscript</OnNormalMouseLeave>
+      <OnDownMouseEnter>Scripts\TaskItemNormalMouseEnter.skinscript</OnDownMouseEnter>
+      <OnDownMouseLeave>Scripts\TaskItemNormalMouseLeave.skinscript</OnDownMouseLeave>
+      <OnHighlightStepStart>Scripts\TaskItemHighlightStart.skinscript</OnHighlightStepStart>
+      <OnHighlightStepEnd>Scripts\TaskItemHighlightEnd.skinscript</OnHighlightStepEnd>
       <normal>
         <skinpart>
+          <ID>Left</ID>
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
           <color>$Background</color>
         </skinpart>
         <skinpart>
+          <ID>Middle</ID>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
           <color>$Background</color>
         </skinpart>
         <skinpart>
+          <ID>Right</ID>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>
@@ -389,18 +428,21 @@
       </normalhover>
       <down>
         <skinpart>
+          <ID>Left</ID>
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Left.png</image>
           <color>$Background</color>
         </skinpart>
         <skinpart>
+          <ID>Middle</ID>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskD_Middle.png</image>
           <color>$Background</color>
         </skinpart>
         <skinpart>
+          <ID>Right</ID>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskD_Right.png</image>
@@ -429,18 +471,21 @@
       </downhover>
       <highlight>
         <skinpart>
+          <ID>Left</ID>
           <location>0,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Left.png</image>
           <color>$BackgroundHover</color>
         </skinpart>
         <skinpart>
+          <ID>Middle</ID>
           <location>2,0</location>
           <dimension>w-4,16</dimension>
           <image>images/TaskN_Middle.png</image>
           <color>$BackgroundHover</color>
         </skinpart>
         <skinpart>
+          <ID>Right</ID>
           <location>w-2,0</location>
           <dimension>2,16</dimension>
           <image>images/TaskN_Right.png</image>

@@ -1,0 +1,25 @@
+unit SkinScript;
+
+interface
+
+function InitAnimation : integer;
+function OnAnimate : boolean;
+
+implementation
+
+function InitAnimation : integer;
+begin
+  result := 100;
+end;
+
+function OnAnimate : boolean;
+begin
+  BlendColor('Left','$Background','$ForeGround',10);
+  BlendColor('Middle','$Background','$ForeGround',10);
+  BlendColor('Right','$Background','$ForeGround',10);
+
+  if GetColor('Left') = '$ForeGround' then result := false
+     else result := true;
+end;
+
+end.
