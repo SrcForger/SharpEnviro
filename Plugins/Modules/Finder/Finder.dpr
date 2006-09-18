@@ -33,7 +33,6 @@ library Finder;
 uses
   Windows,
   Controls,
-//  Dialogs,
   SysUtils,
   Forms,
   Classes,
@@ -43,11 +42,17 @@ uses
   StdCtrls,
   JvSimpleXML,
   MainWnd in 'MainWnd.pas' {MainForm},
-  SettingsWnd in 'SettingsWnd.pas', {SettingsForm}
-  SharpAPI,
-  uSharpBarAPI,
-//  graphicsFX,
-  MouseTimer;
+  SettingsWnd in 'SettingsWnd.pas',
+  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
+  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
+  MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
+  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
+  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
+  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
+  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
+  sharpprocess in '..\..\..\Common\Units\SharpViper\sharpprocess.pas',
+  ShellHookTypes in '..\..\Services\SystemTask\ShellHookTypes.pas',
+  SharpLibrary in '..\..\..\Common\Units\SharpViper\SharpLibrary.pas';
 
 type
   TModule = class

@@ -115,11 +115,11 @@
 			<Linker Name="ExeDescription">Finder</Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir"></Directories>
+			<Directories Name="OutputDir">..\..\..\..\SharpE\Modules</Directories>
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath"></Directories>
+			<Directories Name="SearchPath">..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpEColorBox</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
