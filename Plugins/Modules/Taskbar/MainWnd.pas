@@ -1131,7 +1131,7 @@ begin
     if pTaskItem.Flashing then
     begin
       fc := fc + 1;
-      pTaskItem.FlashState := not pTaskItem.FlashState;
+     // pTaskItem.FlashState := not pTaskItem.FlashState;
     end;
   end;
   if fc = 0 then FlashTimer.Enabled := False;
