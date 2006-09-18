@@ -331,7 +331,6 @@ begin
   except
     continue := False;
   end;
-  FTimer.Enabled := continue;
 
   SharpEAnimManager.TimerActive := True;
   try
@@ -341,17 +340,25 @@ begin
             TCustomSharpEComponent(FComponent).UpdateSkin
     else if FComponent is TCustomSharpEControl then
             TCustomSharpEControl(FComponent).UpdateSkin;
-  finally
-    SharpEAnimManager.TimerActive := FalsE;
+  except
+    continue := False;
   end;
+  SharpEAnimManager.TimerActive := FalsE;
+  FTimer.Enabled := continue;
 
-  RestoreSkinParts;
+  try
+    RestoreSkinParts;
+  except
+  end;
 
   // max animation time =  10 seconds;
   if DateTimeToUnix(now) - ETime > 10 then FTimer.Enabled := False;
 
-  if (FTimer.Enabled = False) and (Assigned(FOnTimerFinished)) then
-     FOnTimerFinished(Self,FSkinPart);
+  try
+    if (FTimer.Enabled = False) and (Assigned(FOnTimerFinished)) then
+       FOnTimerFinished(Self,FSkinPart);
+  except
+  end;
 end;
 
 procedure TSharpEAnimTimer.OnInterpreterGetValue(Sender: TObject; Identifier: string; var Value: Variant; Args: TjvInterpreterArgs; var Done: Boolean);
