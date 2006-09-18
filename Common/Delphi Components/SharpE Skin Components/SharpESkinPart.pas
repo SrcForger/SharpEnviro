@@ -14,12 +14,15 @@ uses
   Classes,
   Math,
   GR32_Resamplers,
+  GR32_Blend,
   Dialogs;
 
 type
   TSkinPart = class;
   TSkinPartList = class;
   TSkinDrawMode = (sdmTile, sdmStretch);
+  TLayerMode = (lmBlend, lmAdd, lmSubtract, lmModule, lmMin, lmMax,
+    lmDifference, lmExclusion);
 
   TSkinPoint = class
   private
@@ -138,6 +141,7 @@ type
   private //for linked list
     next, prev: TSkinPart;
     parentlist: TSkinPartList;
+    FLayerMode: TLayerMode;
 
   private
     FItems: TSkinPartList;
@@ -154,6 +158,7 @@ type
     FGradientType : string;
     FGradientColor : TSkinPoint;
     FGradientAlpha : TSkinPoint;
+    Procedure DoCombine(F: TColor32; var B: TColor32; M: TColor32);
   public
     constructor Create(BmpList: TSkinBitmapList); virtual;
     destructor Destroy; override;
@@ -175,6 +180,7 @@ type
     property BitmapID: integer read FBitmapID write FBitmapID;
     property SkinDim: TSkinDim read FSkinDim write FSkinDim;
     property SkinText: TSkinText read FSkinText write FSkinText;
+    property LayerMode: TLayerMode read FLayerMode write FLayerMode;
     property Blend: boolean read FBlend write FBlend;
     property BlendColor: string read FBlendColor write FBlendColor;
     property BlendAlpha: integer read FBlendAlpha write FBlendAlpha;
@@ -970,6 +976,7 @@ begin
   Stream.WriteBuffer(FBitmapId, sizeof(FBitmapId));
   Stream.WriteBuffer(FMasterAlpha, sizeof(FMasterAlpha));
   Stream.WriteBuffer(FDrawMode, sizeof(FDrawMode));
+  Stream.WriteBuffer(FLayerMode, sizeof(FLayerMode));
   Stream.WriteBuffer(FBlend, sizeof(FBlend));
   StringSaveToStream(FBlendColor, Stream);
   StringSaveToStream(FID, Stream);
@@ -994,6 +1001,7 @@ begin
     Stream.ReadBuffer(FBitmapId, sizeof(FBitmapId));
     Stream.ReadBuffer(FMasterAlpha, sizeof(FMasterAlpha));
     Stream.ReadBuffer(FDrawMode, sizeof(FDrawMode));
+    Stream.ReadBuffer(FLayerMode, sizeof(FLayerMode));
     Stream.ReadBuffer(FBlend, sizeof(FBlend));
     FBlendColor := StringLoadFromStream(Stream);
     FID := StringLoadFromStream(Stream);
@@ -1021,6 +1029,7 @@ var temp: Tbitmap32;
   i: integer;
   r: Trect;
   isEmpty: boolean;
+
 begin
   if (FBitmapId >= 0) then
   begin
@@ -1030,7 +1039,19 @@ begin
     else
       isEmpty := False;
     FBitmap.MasterAlpha := FMasterAlpha;
-    FBitmap.DrawMode := dmBlend;
+
+    FBitmap.DrawMode := dmCustom;
+    FBitmap.OnPixelCombine := DoCombine;
+
+    Case FLayerMode of
+      lmBlend: begin
+        FBitmap.OnPixelCombine := nil;
+        FLayerMode := lmBlend;
+      end;
+      lmAdd: FBitmap.OnPixelCombine := nil;
+    end;
+
+
     FBitmap.CombineMode := cmMerge;
     r := FSkinDim.GetRect(rect(0, 0, bmp.Width, bmp.Height));
     if IsEmpty then
@@ -1125,6 +1146,9 @@ begin
       if ItemNamed['drawmode'] <> nil then
         if lowercase(Value('drawmode', 'stretch')) = 'tile' then
           FDrawMode := sdmTile;
+      if ItemNamed['layermode'] <> nil then
+        FLayerMode := TLayerMode(IntValue('layermode',0));
+
       if ItemNamed['color'] <> nil then
       begin
         FBlendColor := Value('color', '');
@@ -1187,6 +1211,7 @@ begin
   FGradientType := Value.GradientType;
   FGradientColor.Assign(Value.GradientColor);
   FGradientAlpha.Assign(Value.GradientAlpha);
+  FLayerMode := Value.LayerMode;
   for i := 0 to Value.Items.count - 1 do
   begin
     FItems.Add(Value.Items[i]);
@@ -1227,6 +1252,7 @@ begin
   FBmpList := BmpList;
   FDrawMode := sdmStretch;
   FMasterAlpha := 255;
+  FLayerMode := TLayerMode(0);
   FID := '';
 end;
 
@@ -1456,6 +1482,18 @@ begin
   for x:=0 to Rect.Right-Rect.Left do
       Bmp.VertLineT(x+Rect.Left,Rect.Top,Rect.Bottom,
                     color32(sr+round(nr*x),sg+round(ng*x),sb+round(nb*x),st+round(nt*x)));
+end;
+
+procedure TSkinPart.DoCombine(F: TColor32; var B: TColor32; M: TColor32);
+begin
+  Case FLayerMode of
+    lmSubtract: B := ColorSub (F, B);
+    lmModule: B := ColorModulate(F, B);
+    lmMin: B := ColorMin(F, B);
+    lmMax: B := ColorMax(F, B);
+    lmDifference: B := ColorDifference(F, B);
+    lmExclusion:  B := ColorExclusion(F, B);
+  End;
 end;
 
 end.
