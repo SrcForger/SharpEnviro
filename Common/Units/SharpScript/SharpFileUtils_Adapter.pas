@@ -96,7 +96,7 @@ procedure Adapter_CopyFile(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   Value := CopyFile(PChar(VarToStr(Args.Values[0])),
                     PChar(VarToStr(Args.Values[1])),
-                    Args.Values[2]);
+                    not Args.Values[2]);
 end;
 
 procedure Adapter_DeleteFile(var Value: Variant; Args: TJvInterpreterArgs);
