@@ -564,7 +564,7 @@ var
   i : integer;
 begin
   DebugOutPutInfo('TMainForm.SetSize (Procedure)');
-  Width := NewWidth;
+  Width := Max(NewWidth,1);
   CalculateItemWidth(IList.Count);
   i := FSpecialButtonWidth + IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
   if i+1 < NewWidth then Width := i+1;
@@ -587,9 +587,9 @@ begin
     exit;
   end;
 
-  NewWidth := FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing;
+  NewWidth := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1);
 
-  Tag := FSpecialButtonWidth + IList.Count * 16 + (IList.Count - 1) * sSpacing;
+  Tag := Max(FSpecialButtonWidth + IList.Count * 16 + (IList.Count - 1) * sSpacing,1);
   Hint := InttoStr(NewWidth);
   if Width <> NewWidth then
   begin
@@ -889,7 +889,7 @@ begin
     begin
       if pTaskItem.Down then exit;
       pTaskItem.Flashing := True;
-      if not FlashTimer.Enabled then FlashTimer.Enabled := True;
+      //if not FlashTimer.Enabled then FlashTimer.Enabled := True;
       exit;
     end;
   end;
@@ -997,8 +997,11 @@ begin
       end;
   if pTaskItem = nil then exit;
 
-  UpdateIcon(pTaskItem,pItem);
-  pTaskItem.Caption := pItem.Caption;
+  try
+    UpdateIcon(pTaskItem,pItem);
+    pTaskItem.Caption := pItem.Caption;
+  except
+  end;
 end;
 
 procedure TMainForm.SharpETaskItemClick(Sender: TObject);
