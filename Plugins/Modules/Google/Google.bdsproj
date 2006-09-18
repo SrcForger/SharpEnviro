@@ -115,11 +115,11 @@
 			<Linker Name="ExeDescription">Google</Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir"></Directories>
+			<Directories Name="OutputDir">..\..\..\..\SharpE\</Directories>
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath"></Directories>
+			<Directories Name="SearchPath">..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Components\SharpBar;..\..\..\Common\Units\MouseTimer</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
@@ -131,6 +131,11 @@
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
 			<Parameters Name="DebugCWD"></Parameters>
+			<Parameters Name="RemoteHost"></Parameters>
+			<Parameters Name="RemotePath"></Parameters>
+			<Parameters Name="RemoteLauncher"></Parameters>
+			<Parameters Name="RemoteCWD"></Parameters>
+			<Parameters Name="RemoteDebug">False</Parameters>
 		</Parameters>
 		<VersionInfo>
 			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
