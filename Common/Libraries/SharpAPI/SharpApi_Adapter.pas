@@ -86,6 +86,26 @@ begin
   Value := SharpExecute(PChar(VarToStr(Args.Values[0])));
 end;
 
+procedure Adapter_ServiceStart(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := SharpApi.ServiceStart(PChar(VarToStr(Args.Values[0])));
+end;
+
+procedure Adapter_ServiceStop(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := SharpApi.ServiceStop(PChar(VarToStr(Args.Values[0])));
+end;
+
+procedure Adapter_ServiceMsg(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := SharpApi.ServiceMsg(PChar(VarToStr(Args.Values[0])),PChar(VarToStr(Args.Values[1])));
+end;
+
+procedure Adapter_IsServiceStarted(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  Value := SharpApi.IsServiceStarted(PChar(VarToStr(Args.Values[0])));
+end;
+
 
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
@@ -95,15 +115,32 @@ begin
     AddConst('SharpApi','SHARPE_DIR',String(GetSharpEDirectory));
     AddConst('SharpApi','SETTINGS_USER_DIR',String(GetSharpeUserSettingsPath));
     AddConst('SharpApi','SETTINGS_GLOBAL_DIR',String(GetSharpEGlobalSettingsPath));
+
+    AddConst('SharpApi','MR_STARTED',MR_STARTED);
+    AddConst('SharpApi','MR_STOPPED',MR_STOPPED);
+    AddConst('SharpApi','MR_ERRORSTARTING',MR_ERRORSTARTING);
+    AddConst('SharpApi','MR_OK',MR_OK);
+    AddConst('SharpApi','MR_INCOMPATIBLE',MR_INCOMPATIBLE);
+    AddConst('SharpApi','MR_ERRORSTOPPING',MR_ERRORSTOPPING);
+    AddConst('SharpApi','MR_STARTED',MR_STARTED);
+    AddConst('SharpApi','MR_FORCECONFIGDISABLE',MR_FORCECONFIGDISABLE);
+
     AddFunction('SharpApi','GetSharpEDirectory',Adapter_GetSharpeDirectory,0,[],varString);
     AddFunction('SharpApi','GetSharpeUserSettingsPath',Adapter_GetSharpeUserSettingsPath,0,[],varString);
     AddFunction('SharpApi','GetSharpeGlobalSettingsPath',Adapter_GetSharpeGlobalSettingsPath,0,[],varString);
+    
     AddFunction('SharpApi','IsComponentRunning',Adapter_IsComponentRunning,1,[varString],varBoolean);
     AddFunction('SharpApi','FindComponent',Adapter_FindComponent,1,[varString],varLongWord);
     AddFunction('SharpApi','CloseComponent',Adapter_CloseComponent,1,[varString],varBoolean);
     AddFunction('SharpApi','TerminateComponent',Adapter_TerminateComponent,1,[varString],varEmpty);
     AddFunction('SharpApi','StartComponent',Adapter_StartComponent,1,[varString],varEmpty);
+
     AddFunction('SharpApi','Execute',Adapter_SharpExecute,1,[varString],varInteger);
+
+    AddFunction('SharpApi','ServiceStart',Adapter_ServiceStart,1,[varString],varInteger);
+    AddFunction('SharpApi','ServiceStop',Adapter_ServiceStop,1,[varString],varInteger);
+    AddFunction('SharpApi','ServiceMsg',Adapter_ServiceMsg,1,[varString,varString],varInteger);
+    AddFunction('SharpApi','IsServiceStarted',Adapter_IsServiceStarted,1,[varString],varInteger);
   end;
 end;
 
