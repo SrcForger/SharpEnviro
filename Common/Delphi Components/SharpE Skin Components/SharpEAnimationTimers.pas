@@ -19,6 +19,8 @@ uses
   Variants;
 
 type
+  TOnTimerFinishedEvent = procedure (Sender : TObject; SkinPart : TSkinPart) of Object;
+
   TSkinPartInfo = record
                     ID : String;
                     spart : TSkinPart;
@@ -40,6 +42,7 @@ type
                        ETime        : Int64;
                        FModList     : TSkinPartArray;
                        FLMList      : TSkinPartArray;
+                       FOnTimerFinished : TOnTimerFinishedEvent;
                      public
                        constructor Create(pComponent : TObject;
                                           pScript : String;
@@ -59,21 +62,26 @@ type
                      published
                        property Component : TObject read FComponent;
                        property Timer     : TTimer  read FTimer;
+                       property OnTimerFinished : TOnTimerFinishedEvent read FOnTimerFinished write FOnTimerFinished;
                      end;
 
   TSharpETimerManager = class
                         private
                           FTimers : TObjectList;
                           FCheckTimer : TTimer;
+                          FTimerActive : boolean;
                         public
                           constructor Create; reintroduce;
                           destructor Destroy; override;
-                          procedure ExecuteScript(pComponent : TObject;
-                                                  pScript : String;
-                                                  pSkinPart : TSkinPart;
-                                                  pScheme : TSharpEScheme);
+                          function ExecuteScript(pComponent : TObject;
+                                                 pScript : String;
+                                                 pSkinPart : TSkinPart;
+                                                 pScheme : TSharpEScheme) : TSharpEAnimTimer;
                           procedure OnCheckTimer(Sender : TObject);
+                          function HasScriptRunning(pComponent : TObject) : boolean;
+                          procedure StopScript(pComponent : TObject);
                         published
+                          property TimerActive : boolean read FTimerActive write FTimerActive;
                         end;
 
 var
@@ -278,7 +286,6 @@ end;
 procedure TSharpEAnimTimer.RestoreSkinParts;
 var
   n : integer;
-  temp : TSkinPart;
 begin
   for n := 0 to High(FModList) do
       with FModList[n] do
@@ -312,7 +319,7 @@ var
   continue : boolean;
 begin
   FTimer.Tag := FTimer.Tag + 1;
-  if (FComponent = nil) or (FSkinPart = nil) then
+  if (FComponent = nil) or (FSkinPart = nil) or (FScheme = nil) then
   begin
     FTimer.Enabled := False;
     exit;
@@ -326,17 +333,25 @@ begin
   end;
   FTimer.Enabled := continue;
 
-  if FComponent is TCustomSharpEGraphicControl then
-     TCustomSharpEGraphicControl(FComponent).UpdateSkin;
-  if FComponent is TCustomSharpEComponent then
-     TCustomSharpEComponent(FComponent).UpdateSkin;
-  if FComponent is TCustomSharpEControl then
-     TCustomSharpEControl(FComponent).UpdateSkin;
+  SharpEAnimManager.TimerActive := True;
+  try
+    if FComponent is TCustomSharpEGraphicControl then
+       TCustomSharpEGraphicControl(FComponent).UpdateSkin
+    else if FComponent is TCustomSharpEComponent then
+            TCustomSharpEComponent(FComponent).UpdateSkin
+    else if FComponent is TCustomSharpEControl then
+            TCustomSharpEControl(FComponent).UpdateSkin;
+  finally
+    SharpEAnimManager.TimerActive := FalsE;
+  end;
 
   RestoreSkinParts;
 
   // max animation time =  10 seconds;
   if DateTimeToUnix(now) - ETime > 10 then FTimer.Enabled := False;
+
+  if (FTimer.Enabled = False) and (Assigned(FOnTimerFinished)) then
+     FOnTimerFinished(Self,FSkinPart);
 end;
 
 procedure TSharpEAnimTimer.OnInterpreterGetValue(Sender: TObject; Identifier: string; var Value: Variant; Args: TjvInterpreterArgs; var Done: Boolean);
@@ -454,10 +469,10 @@ begin
   Inherited Destroy;
 end;
 
-procedure TSharpETimerManager.ExecuteScript(pComponent : TObject;
-                                            pScript : String;
-                                            pSkinPart : TSkinPart;
-                                            pScheme : TSharpEScheme);
+function TSharpETimerManager.ExecuteScript(pComponent : TObject;
+                                           pScript : String;
+                                           pSkinPart : TSkinPart;
+                                           pScheme : TSharpEScheme) : TSharpEAnimTimer;
 var
   n : integer;
   temp : TSharpEAnimTimer;
@@ -468,10 +483,13 @@ begin
     if temp.Component = pComponent then
     begin
       temp.Update(pComponent,pScript,pSkinPart,pScheme);
+      result := temp;
       exit;
     end;
   end;
-  FTimers.Add(TSharpEAnimTimer.Create(pComponent,pScript,pSkinPart,pScheme));
+  temp := TSharpEAnimTimer.Create(pComponent,pScript,pSkinPart,pScheme);
+  FTimers.Add(temp);
+  result := temp;
   FCheckTimer.Enabled := True;
 end;
 
@@ -489,8 +507,41 @@ begin
       temp.Free;
     end;
   end;
-  
+
   if FTimers.Count = 0 then FCheckTimer.Enabled := False;
+end;
+
+function TSharpETimerManager.HasScriptRunning(pComponent : TObject) : boolean;
+var
+  n : integer;
+  temp : TSharpEAnimTimer;
+begin
+  for n := 0 to FTimers.Count -1 do
+  begin
+    temp := TSharpEAnimTimer(FTimers.Items[n]);
+    if (temp.Component = pComponent) and (temp.Timer.Enabled) then
+    begin
+      result := True;
+      exit;
+    end;
+  end;
+  result := False;
+end;
+
+procedure TSharpETimerManager.StopScript(pComponent : TObject);
+var
+  n : integer;
+  temp : TSharpEAnimTimer;
+begin
+  for n := 0 to FTimers.Count -1 do
+  begin
+    temp := TSharpEAnimTimer(FTimers.Items[n]);
+    if (temp.Component = pComponent)then
+    begin
+      temp.Timer.Enabled := False;
+      exit;
+    end;
+  end;
 end;
 
 

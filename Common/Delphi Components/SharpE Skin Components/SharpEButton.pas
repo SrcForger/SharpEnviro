@@ -246,6 +246,13 @@ procedure TSharpEButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited;
+
+  if not assigned(FManager) then
+  begin
+    UpdateSkin;
+    exit;
+  end;
+
   if HasNormalHoverScript then
      SharpEAnimManager.ExecuteScript(self,
                                      FManager.Skin.ButtonSkin.OnNormalMouseEnterScript,
@@ -256,6 +263,12 @@ end;
 
 procedure TSharpEButton.SMouseEnter;
 begin
+  if not assigned(FManager) then
+  begin
+    UpdateSkin;
+    exit;
+  end;
+
   if HasNormalHoverScript then
      SharpEAnimManager.ExecuteScript(self,
                                      FManager.Skin.ButtonSkin.OnNormalMouseEnterScript,
@@ -266,6 +279,12 @@ end;
 
 procedure TSharpEButton.SMouseLeave;
 begin
+  if not assigned(FManager) then
+  begin
+    UpdateSkin;
+    exit;
+  end;
+
   if HasNormalHoverScript then
      SharpEAnimManager.ExecuteScript(self,
                                      FManager.Skin.ButtonSkin.OnNormalMouseLeaveScript,

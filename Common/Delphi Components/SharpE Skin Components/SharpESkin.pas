@@ -175,6 +175,14 @@ type
                            IconSize       : integer;
                            IconLocation   : TSkinPoint;
                            SkinDim        : TSkinDim;
+                           OnNormalMouseEnterScript    : String;
+                           OnNormalMouseLeaveScript    : String;
+                           OnDownMouseEnterScript      : String;
+                           OnDownMouseLeaveScript      : String;
+                           OnHighlightMouseEnterScript : String;
+                           OnHighlightMouseLeaveScript : String;
+                           OnHighlightStepStartScript  : String;
+                           OnHighlightStepEndScript    : String;
                          end;
 
   TSharpETaskItemSkin = class
@@ -205,8 +213,8 @@ type
     FDown: TSkinPart;
     FHover: TSkinPart;
     FDisabled: TSkinPart;
-    FOnNormalMouseEnterScript   : String;
-    FOnNormalMouseLeaveScript   : String;
+    FOnNormalMouseEnterScript : String;
+    FOnNormalMouseLeaveScript : String;
   public
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
@@ -959,6 +967,42 @@ end;
 //* TSharpETaskItemSkin
 //***************************************
 
+procedure LoadTIScriptsFromStream(ti : TSharpETaskItemState; Stream : TStream);
+begin
+  ti.OnNormalMouseEnterScript    := StringLoadFromStream(Stream);
+  ti.OnNormalMouseLeaveScript    := StringLoadFromStream(Stream);
+  ti.OnDownMouseEnterScript      := StringLoadFromStream(Stream);
+  ti.OnDownMouseLeaveScript      := StringLoadFromStream(Stream);
+  ti.OnHighlightMouseEnterScript := StringLoadFromStream(Stream);
+  ti.OnHighlightMouseLeaveScript := StringLoadFromStream(Stream);
+  ti.OnHighlightStepStartScript  := StringLoadFromStream(Stream);
+  ti.OnHighlightStepEndScript    := StringLoadFromStream(Stream);
+end;
+
+procedure SaveTIScriptsToStream(ti : TSharpETaskItemState; Stream : TStream);
+begin
+  StringSaveToStream(ti.OnNormalMouseEnterScript,Stream);
+  StringSaveToStream(ti.OnNormalMouseLeaveScript,Stream);
+  StringSaveToStream(ti.OnDownMouseEnterScript,Stream);
+  StringSaveToStream(ti.OnDownMouseLeaveScript,Stream);
+  StringSaveToStream(ti.OnHighlightMouseEnterScript,Stream);
+  StringSaveToStream(ti.OnHighlightMouseLeaveScript,Stream);
+  StringSaveToStream(ti.OnHighlightStepStartScript,Stream);
+  StringSaveToStream(ti.OnHighlightStepEndScript,Stream);
+end;
+
+procedure ClearTIScripts(ti : TSharpETaskItemState);
+begin
+  ti.OnNormalMouseEnterScript    := '';
+  ti.OnNormalMouseLeaveScript    := '';
+  ti.OnDownMouseEnterScript      := '';
+  ti.OnDownMouseLeaveScript      := '';
+  ti.OnHighlightMouseEnterScript := '';
+  ti.OnHighlightMouseLeaveScript := '';
+  ti.OnHighlightStepStartScript  := '';
+  ti.OnHighlightStepEndScript    := '';
+end;
+
 constructor TSharpETaskItemSkin.Create(BmpList : TSkinBitmapList);
 begin
   FFull := TSharpETaskItemState.Create;
@@ -991,6 +1035,7 @@ begin
   FMini.Highlight      := TSkinPart.Create(BmpList);
   FMini.HighlightHover := TSkinPart.Create(BmpList);
   FMini.IconLocation := TSkinPoint.Create;
+
   Clear;
 end;
 
@@ -1042,6 +1087,7 @@ begin
   StringSaveToStream(inttostr(FFull.IconSize),Stream);
   StringSaveToStream(BoolToStr(FFull.DrawIcon),Stream);
   StringSaveToStream(BoolToStr(FFull.DrawText),Stream);
+  SaveTIScriptsToStream(FFull,Stream);
 
   FCompact.SkinDim.SaveToStream(Stream);
   FCompact.Normal.SaveToStream(Stream);
@@ -1055,6 +1101,7 @@ begin
   StringSaveToStream(inttostr(FCompact.IconSize),Stream);
   StringSaveToStream(BoolToStr(FCompact.DrawIcon),Stream);
   StringSaveToStream(BoolToStr(FCompact.DrawText),Stream);
+  SaveTIScriptsToStream(FCompact,Stream);
 
   FMini.SkinDim.SaveToStream(Stream);
   FMini.Normal.SaveToStream(Stream);
@@ -1068,6 +1115,7 @@ begin
   StringSaveToStream(inttostr(FMini.IconSize),Stream);
   StringSaveToStream(BoolToStr(FMini.DrawIcon),Stream);
   StringSaveToStream(BoolToStr(FMini.DrawText),Stream);
+  SaveTIScriptsToStream(FMini,Stream);
 end;
 
 procedure TSharpETaskItemSkin.LoadFromStream(Stream: TStream);
@@ -1084,6 +1132,7 @@ begin
   FFull.IconSize := StrToInt(StringLoadFromStream(Stream));
   FFull.DrawIcon := StrToBool(StringLoadFromStream(Stream));
   FFull.DrawText := StrToBool(StringLoadFromStream(Stream));
+  LoadTIScriptsFromStream(FFull,Stream);
 
   FCompact.SkinDim.LoadFromStream(Stream);
   FCompact.Normal.LoadFromStream(Stream);
@@ -1097,6 +1146,7 @@ begin
   FCompact.IconSize := StrToInt(StringLoadFromStream(Stream));
   FCompact.DrawIcon := StrToBool(StringLoadFromStream(Stream));
   FCompact.DrawText := StrToBool(StringLoadFromStream(Stream));
+  LoadTIScriptsFromStream(FCompact,Stream);
 
   FMini.SkinDim.LoadFromStream(Stream);
   FMini.Normal.LoadFromStream(Stream);
@@ -1110,10 +1160,15 @@ begin
   FMini.IconSize := StrToInt(StringLoadFromStream(Stream));
   FMini.DrawIcon := StrToBool(StringLoadFromStream(Stream));
   FMini.DrawText := StrToBool(StringLoadFromStream(Stream));
+  LoadTIScriptsFromStream(FMini,Stream);
 end;
 
 procedure TSharpETaskItemSkin.Clear;
 begin
+  ClearTIScripts(FFull);
+  ClearTIScripts(FCompact);
+  ClearTIScripts(FMini);
+
   FFull.SkinDim.Clear;
   FFull.SkinDim.SetLocation('0','0');
   FFull.SkinDim.SetDimension('w', 'h');
@@ -1209,6 +1264,22 @@ begin
              st.SkinDim.SetDimension(Value('dimension', 'w,h'));
           if ItemNamed['location'] <> nil then
              st.SkinDim.SetLocation(Value('location','0,0'));
+          if ItemNamed['OnNormalMouseEnter'] <> nil then
+             st.OnNormalMouseEnterScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseEnter',''));
+          if ItemNamed['OnNormalMouseLeave'] <> nil then
+             st.OnNormalMouseLeaveScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseLeave',''));
+          if ItemNamed['OnDownMouseEnter'] <> nil then
+             st.OnDownMouseEnterScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnDownMouseEnter',''));
+          if ItemNamed['OnDownMouseLeave'] <> nil then
+             st.OnDownMouseLeaveScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnDownMouseLeave',''));
+          if ItemNamed['OnHighlightMouseEnter'] <> nil then
+             st.OnHighlightMouseEnterScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnHighlightMouseEnter',''));
+          if ItemNamed['OnHighlightMouseLeave'] <> nil then
+             st.OnHighlightMouseLeaveScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnHighlightMouseLeave',''));
+          if ItemNamed['OnHighlightStepStart'] <> nil then
+             st.OnHighlightStepStartScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnHighlightStepStart',''));
+          if ItemNamed['OnHighlightStepEnd'] <> nil then
+             st.OnHighlightStepEndScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnHighlightStepEnd',''));
           if ItemNamed['icon'] <> nil then
           begin
             if ItemNamed['icon'].Items.ItemNamed['draw'] <> nil then
