@@ -353,7 +353,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
             OnClick = GenericPopupClick
           end
           object functionFindComponentNameStringinteger1: TMenuItem
-            Caption = 'function FindComponent(Name : String) : integer;'
+            Caption = 'function FindComponent(Name : String) : Cardinal;'
             Hint = 'FindComponent('#39'Name'#39')'
             OnClick = GenericPopupClick
           end
@@ -388,6 +388,29 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
           object functionGetSharpEUserSettingsPathString1: TMenuItem
             Caption = 'function GetSharpEUserSettingsPath : String;'
             Hint = 'GetSharpEUserSettingsPath'
+            OnClick = GenericPopupClick
+          end
+        end
+        object Services1: TMenuItem
+          Caption = 'Services'
+          object functionServiceStartServiceStringhresult1: TMenuItem
+            Caption = 'function ServiceStart(Service : String) : hresult;'
+            Hint = 'ServiceStart('#39'Service'#39')'
+            OnClick = GenericPopupClick
+          end
+          object functionServiceStopServicePCharhresult1: TMenuItem
+            Caption = 'function ServiceStop(Service : String) : hresult;'
+            Hint = 'ServiceStop('#39'Service'#39')'
+            OnClick = GenericPopupClick
+          end
+          object functionServiceMsgServiceMessageStringhresult1: TMenuItem
+            Caption = 'function ServiceMsg(Service, Message : String) : hresult;'
+            Hint = 'ServiceMsg('#39'Service'#39','#39'Message'#39');'
+            OnClick = GenericPopupClick
+          end
+          object functionIsServicesStartedServicePCharhresult1: TMenuItem
+            Caption = 'function IsServicesStarted(Service : PChar) : hresult;'
+            Hint = 'IsServiceStarted('#39'Service'#39')'
             OnClick = GenericPopupClick
           end
         end
@@ -439,17 +462,66 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
     end
     object Constants1: TMenuItem
       Caption = 'Constants'
-      object SHARPEDIR2: TMenuItem
-        Caption = 'SHARPE_DIR'
-        Hint = 'SHARPE_DIR'
-      end
-      object SETTINGSUSERDIR2: TMenuItem
-        Caption = 'SETTINGS_USER_DIR'
-        Hint = 'SETTINGS_USER_DIR'
-      end
-      object SETTINGSGLOBALDIR1: TMenuItem
-        Caption = 'SETTINGS_GLOBAL_DIR'
-        Hint = 'SETTINGS_GLOBAL_DIR'
+      object SharpApi2: TMenuItem
+        Caption = 'SharpApi'
+        object Directories1: TMenuItem
+          Caption = 'Directories'
+          object SHARPEDIR2: TMenuItem
+            Caption = 'SHARPE_DIR'
+            Hint = 'SHARPE_DIR'
+          end
+          object SETTINGSGLOBALDIR1: TMenuItem
+            Caption = 'SETTINGS_GLOBAL_DIR'
+            Hint = 'SETTINGS_GLOBAL_DIR'
+          end
+          object SETTINGSUSERDIR2: TMenuItem
+            Caption = 'SETTINGS_USER_DIR'
+            Hint = 'SETTINGS_USER_DIR'
+          end
+        end
+        object ServiceResults1: TMenuItem
+          Caption = 'Service Results'
+          object MRSTARTED1: TMenuItem
+            Caption = 'MR_STARTED'
+            Hint = 'MR_STARTED'
+            OnClick = GenericPopupClick
+          end
+          object MRSTOPPED1: TMenuItem
+            Caption = 'MR_STOPPED'
+            Hint = 'MR_STOPPED'
+            OnClick = GenericPopupClick
+          end
+          object MRERRORSTARTING1: TMenuItem
+            Caption = 'MR_ERRORSTARTING'
+            Hint = 'MR_ERRORSTARTING'
+            OnClick = GenericPopupClick
+          end
+          object MROK1: TMenuItem
+            Caption = 'MR_OK'
+            Hint = 'MR_OK'
+            OnClick = GenericPopupClick
+          end
+          object MRINCOMPATIBLE1: TMenuItem
+            Caption = 'MR_INCOMPATIBLE'
+            Hint = 'MR_INCOMPATIBLE'
+            OnClick = GenericPopupClick
+          end
+          object MBERRORSTOPPING1: TMenuItem
+            Caption = 'MR_ERRORSTOPPING'
+            Hint = 'MR_ERRORSTOPPING'
+            OnClick = GenericPopupClick
+          end
+          object MRSTARTED2: TMenuItem
+            Caption = 'MR_STARTED'
+            Hint = 'MR_STARTED'
+            OnClick = GenericPopupClick
+          end
+          object MRFORCECONFIGDISABLE1: TMenuItem
+            Caption = 'MR_FORCECONFIGDISABLE'
+            Hint = 'MR_FORCECONFIGDISABLE'
+            OnClick = GenericPopupClick
+          end
+        end
       end
     end
   end

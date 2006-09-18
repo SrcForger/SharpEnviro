@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, JvComponentBase, JvInterpreter, XPMan, ImgList, PngImageList,
   StdCtrls, ComCtrls, ToolWin, JvExControls, JvComponent, JvEditorCommon,
-  JvEditor, JvHLEditor, Menus;
+  JvEditor, JvHLEditor, Menus, JcLSysUtils;
 
 type
   TCreateGenericScriptForm = class(TForm)
@@ -59,6 +59,22 @@ type
     Version1: TMenuItem;
     Directory2: TMenuItem;
     Files1: TMenuItem;
+    SharpApi2: TMenuItem;
+    Directories1: TMenuItem;
+    ServiceResults1: TMenuItem;
+    MRSTARTED1: TMenuItem;
+    MRSTOPPED1: TMenuItem;
+    MRERRORSTARTING1: TMenuItem;
+    MROK1: TMenuItem;
+    MRINCOMPATIBLE1: TMenuItem;
+    MBERRORSTOPPING1: TMenuItem;
+    MRSTARTED2: TMenuItem;
+    MRFORCECONFIGDISABLE1: TMenuItem;
+    Services1: TMenuItem;
+    functionServiceStartServiceStringhresult1: TMenuItem;
+    functionServiceStopServicePCharhresult1: TMenuItem;
+    functionServiceMsgServiceMessageStringhresult1: TMenuItem;
+    functionIsServicesStartedServicePCharhresult1: TMenuItem;
     procedure btn_insertClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure GenericPopupClick(Sender: TObject);
