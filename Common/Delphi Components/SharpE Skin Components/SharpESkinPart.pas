@@ -1084,7 +1084,7 @@ begin
     end
     else
     begin
-      if FDrawMode = sdmStretch then bmp.draw(r, rect(0, 0, FBitmap.width, FBitmap.Height), FBitmap)
+      if FDrawMode = sdmStretch then CustomDrawm(bmp, FBitmap, rect(0, 0, FBitmap.width, FBitmap.Height), r)
          else TileDraw(FBitmap,bmp,r);
     end;
 
