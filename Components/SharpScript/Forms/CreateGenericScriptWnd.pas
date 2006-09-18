@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, JvComponentBase, JvInterpreter, XPMan, ImgList, PngImageList,
   StdCtrls, ComCtrls, ToolWin, JvExControls, JvComponent, JvEditorCommon,
-  JvEditor, JvHLEditor;
+  JvEditor, JvHLEditor, Menus;
 
 type
   TCreateGenericScriptForm = class(TForm)
@@ -22,6 +22,46 @@ type
     ToolButton4: TToolButton;
     OpenScript: TOpenDialog;
     SaveScript: TSaveDialog;
+    ToolButton5: TToolButton;
+    btn_insert: TToolButton;
+    FunctionDropDown: TPopupMenu;
+    N11: TMenuItem;
+    SharpApi1: TMenuItem;
+    Constants1: TMenuItem;
+    SETTINGSGLOBALDIR1: TMenuItem;
+    SHARPEDIR2: TMenuItem;
+    SETTINGSUSERDIR2: TMenuItem;
+    functionGetSharpEDirectoryString1: TMenuItem;
+    functionGetSharpEUserSettingsPathString1: TMenuItem;
+    functionGetSharpEGlobalSettingsPathString1: TMenuItem;
+    functionIsComponentRunningNameStringboolean1: TMenuItem;
+    functionFindComponentNameStringinteger1: TMenuItem;
+    functionCloseComponentNameStringboolean1: TMenuItem;
+    procedureTerminateComponentNameString1: TMenuItem;
+    procedureStartComponentNameString1: TMenuItem;
+    functionExecuteFilePathStringinteger1: TMenuItem;
+    ComponentControl1: TMenuItem;
+    Directory1: TMenuItem;
+    Applications1: TMenuItem;
+    Script1: TMenuItem;
+    Valueconvertion1: TMenuItem;
+    functionIntToStrValueintegerString1: TMenuItem;
+    functionStrToIntValueStringinteger1: TMenuItem;
+    imer1: TMenuItem;
+    procedureSleepTimeInMs1: TMenuItem;
+    FileUtils1: TMenuItem;
+    functionCopyFileFromToStringOverwritebooleanboolean1: TMenuItem;
+    functionDeleteFileFilePathStringboolean1: TMenuItem;
+    functionFileExistsFilePathStringboolean1: TMenuItem;
+    functionCreateDirectoryPathStringboolean1: TMenuItem;
+    functionGetFileVersionFilePathStrhingString1: TMenuItem;
+    functionCompareVersionsFilePathStringinteger1: TMenuItem;
+    Version1: TMenuItem;
+    Directory2: TMenuItem;
+    Files1: TMenuItem;
+    procedure btn_insertClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure GenericPopupClick(Sender: TObject);
     procedure ToolButton4Click(Sender: TObject);
     procedure ToolButton1Click(Sender: TObject);
     procedure ToolButton2Click(Sender: TObject);
@@ -37,7 +77,7 @@ var
 
 implementation
 
-uses SharpApi;
+uses SharpApi, MainWnd;
 
 {$R *.dfm}
 
@@ -69,11 +109,11 @@ var
   errors : boolean;
 begin
   lb_errors.Clear;
-  lb_errors.Items.Add('Compiling Script...');
+  lb_errors.Items.Add('Running Script...');
   JvInterpreter.Pas.CommaText := ed_script.Lines.CommaText;
   errors := True;
   try
-    JvInterpreter.Compile;
+    JvInterpreter.Run;
     errors := False;
   except
     on E: Exception do lb_errors.Items.Add('Error: ' + E.Message);
@@ -113,6 +153,28 @@ begin
   begin
     ed_script.Lines.SaveToFile(SaveScript.FileName + '.sescript');
   end;
+end;
+
+procedure TCreateGenericScriptForm.GenericPopupClick(Sender: TObject);
+begin
+  if not (Sender is TMenuItem) then exit;
+
+  ed_script.InsertText(TMenuItem(Sender).Hint);
+  ed_script.Refresh;
+end;
+
+procedure TCreateGenericScriptForm.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  MainForm.Show;
+end;
+
+procedure TCreateGenericScriptForm.btn_insertClick(Sender: TObject);
+var
+  p : TPoint;
+begin
+  p := ToolBar2.ClientToScreen(Point(btn_insert.Left,btn_insert.Top));
+  btn_insert.DropdownMenu.Popup(p.X,p.y+btn_insert.Height);
 end;
 
 end.

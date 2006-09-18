@@ -33,6 +33,7 @@ begin
   if ParamCount > 0 then
   begin
     Prm := ParamStr(1);
+    SharpApi.SendDebugMessageEx('SharpScript',PChar('Param:'+ParamStr(1)),0,DMT_INFO);
     if FileExists(Prm) then
     begin
       Ext := ExtractFileExt(Prm);
