@@ -169,7 +169,7 @@ begin
               handle := FindWindow(nil,PChar('SharpBar_'+inttostr(BarID)));
               if handle = 0 then
               begin
-                if SharpApi.SharpExecute(ExtractFileDir(Application.ExeName)+'\SharpBar.exe '
+                if SharpApi.SharpExecute('_nohist,' + ExtractFileDir(Application.ExeName)+'\SharpBar.exe '
                    + NO_LOAD_AUTO_START_BARS_PARAM + ' '
                    + NO_REMOVE_EMPTY_BARS_PARAM + ' '
                    + LOAD_BY_ID_PARAM+inttostr(BarID)) = HR_OK then lab := true;
