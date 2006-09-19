@@ -1037,9 +1037,9 @@ begin
               Src.DrawMode := dmBlend;
              end; 
     lmAdd: Src.OnPixelCombine := nil;
- end; 
- 
- Dst.Draw(DstRect,SrcRect,Src); 
+  end;
+
+  Dst.Draw(DstRect,SrcRect,Src);
 end;
 
 procedure TSkinPart.draw(bmp: TBitmap32; cs: TSharpEScheme);
@@ -1076,7 +1076,7 @@ begin
       try
         doBlend(temp, FBitmap, SchemedStringToColor(BlendColor, cs));
         temp.MasterAlpha := FMasterAlpha;
-        if FDrawMode = sdmStretch then CustomDraw(bmp, temp, rect(0,0, temp.width, temp.height), r)
+        if FDrawMode = sdmStretch then CustomDraw(temp, bmp, rect(0,0, temp.width, temp.height), r)
            else TileDraw(temp,bmp,r);
       finally
         temp.free;
@@ -1084,7 +1084,7 @@ begin
     end
     else
     begin
-      if FDrawMode = sdmStretch then CustomDraw(bmp, FBitmap, rect(0, 0, FBitmap.width, FBitmap.Height), r)
+      if FDrawMode = sdmStretch then CustomDraw(FBitmap, bmp, rect(0, 0, FBitmap.width, FBitmap.Height), r)
          else TileDraw(FBitmap,bmp,r);
     end;
 
