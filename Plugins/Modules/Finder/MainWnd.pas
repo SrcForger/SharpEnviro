@@ -36,7 +36,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, Math, Menus, GR32, GR32_Image, SharpEBaseControls, SharpEButton,
   SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls,
-  JvSimpleXML, SharpApi, SharpProcess, ShellHookTypes, COMMCTRL, dialogs;
+  JvSimpleXML, SharpApi, SharpProcess, ShellHookTypes, COMMCTRL;
 
 type
   TMainForm = class(TForm)
