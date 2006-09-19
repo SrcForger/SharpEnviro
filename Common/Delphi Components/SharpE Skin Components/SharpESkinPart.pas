@@ -1034,9 +1034,9 @@ begin
   Case FLayerMode of 
     lmBlend: begin 
               Src.OnPixelCombine := nil; 
-              FLayerMode := lmBlend; 
+              Src.DrawMode := dmBlend;
              end; 
-    lmAdd: Src.OnPixelCombine := nil; 
+    lmAdd: Src.OnPixelCombine := nil;
  end; 
  
  Dst.Draw(DstRect,SrcRect,Src); 
@@ -1084,7 +1084,7 @@ begin
     end
     else
     begin
-      if FDrawMode = sdmStretch then CustomDrawm(bmp, FBitmap, rect(0, 0, FBitmap.width, FBitmap.Height), r)
+      if FDrawMode = sdmStretch then CustomDraw(bmp, FBitmap, rect(0, 0, FBitmap.width, FBitmap.Height), r)
          else TileDraw(FBitmap,bmp,r);
     end;
 
@@ -1322,7 +1322,7 @@ begin
    Case FLayerMode of  
      lmBlend: begin  
        temp.OnPixelCombine := nil;  
-       FLayerMode := lmBlend;  
+       temp.DrawMode := dmBlend;  
      end;  
      lmAdd: temp.OnPixelCombine := nil;  
    end;  
