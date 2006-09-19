@@ -244,6 +244,8 @@ end;
 
 procedure TSharpEButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+var
+  tempSkin : TSharpEButtonSkin;
 begin
   inherited;
 
@@ -253,15 +255,21 @@ begin
     exit;
   end;
 
+  if CustomSkin <> nil then
+     tempSkin := CustomSkin
+     else tempSkin := FManager.Skin.ButtonSkin;
+
   if HasNormalHoverScript then
      SharpEAnimManager.ExecuteScript(self,
-                                     FManager.Skin.ButtonSkin.OnNormalMouseEnterScript,
-                                     FManager.Skin.ButtonSkin.Normal,
+                                     tempSkin.OnNormalMouseEnterScript,
+                                     tempSkin.Normal,
                                      FManager.Scheme)
      else UpdateSkin;
 end;
 
 procedure TSharpEButton.SMouseEnter;
+var
+  tempSkin : TSharpEButtonSkin;
 begin
   if not assigned(FManager) then
   begin
@@ -269,15 +277,21 @@ begin
     exit;
   end;
 
+  if CustomSkin <> nil then
+     tempSkin := CustomSkin
+     else tempSkin := FManager.Skin.ButtonSkin;
+
   if HasNormalHoverScript then
      SharpEAnimManager.ExecuteScript(self,
-                                     FManager.Skin.ButtonSkin.OnNormalMouseEnterScript,
-                                     FManager.Skin.ButtonSkin.Normal,
+                                     tempSkin.OnNormalMouseEnterScript,
+                                     tempSkin.Normal,
                                      FManager.Scheme)
      else UpdateSkin;
 end;
 
 procedure TSharpEButton.SMouseLeave;
+var
+  tempSkin : TSharpEButtonSkin;
 begin
   if not assigned(FManager) then
   begin
@@ -285,21 +299,32 @@ begin
     exit;
   end;
 
+  if CustomSkin <> nil then
+     tempSkin := CustomSkin
+     else tempSkin := FManager.Skin.ButtonSkin;
+
   if HasNormalHoverScript then
      SharpEAnimManager.ExecuteScript(self,
-                                     FManager.Skin.ButtonSkin.OnNormalMouseLeaveScript,
-                                     FManager.Skin.ButtonSkin.Normal,
+                                     tempSkin.OnNormalMouseLeaveScript,
+                                     tempSkin.Normal,
                                      FManager.Scheme)
      else UpdateSkin;
 end;
 
 function TSharpEButton.HasNormalHoverScript : boolean;
+var
+  tempSkin : TSharpEButtonSkin;
 begin
   result := False;
   if not assigned(FManager) then exit;
 
-  if (length(Trim(FManager.Skin.ButtonSkin.OnNormalMouseEnterScript)) > 0)
-     and (length(Trim(FManager.Skin.ButtonSkin.OnNormalMouseLeaveScript)) > 0) then result := True
+
+  if CustomSkin <> nil then
+     tempSkin := CustomSkin
+     else tempSkin := FManager.Skin.ButtonSkin;
+
+  if (length(Trim(tempSkin.OnNormalMouseEnterScript)) > 0)
+     and (length(Trim(tempSkin.OnNormalMouseLeaveScript)) > 0) then result := True
      else result := False;
 end;
 
