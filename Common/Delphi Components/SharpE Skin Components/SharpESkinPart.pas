@@ -191,6 +191,7 @@ type
     property GradientType: string read FGradientType write FGradientType;
     property GradientAlpha: TSkinPoint read FGradientAlpha write FGradientAlpha;
     property GradientColor: TSkinPoint read FGradientColor write FGradientColor;
+    property MasterAlpha : integer read FMasterAlpha write FMasterAlpha;
   end;
 
 function get_location(str: string): TRect;
