@@ -38,6 +38,7 @@ type
     FBuffer: TBitmap32;
     FBackground: TBitmap32;
     FAutoSize: boolean;
+    FSpecialBackground : TBitmap32;
 
     procedure Paint; override;
     procedure Loaded; override;
@@ -67,6 +68,7 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
+    property SpecialBackground : TBitmap32 read FSpecialBackground write FSpecialBackground;
   end;
 
   TCustomSharpEComponent = class(TComponent)
@@ -448,9 +450,15 @@ procedure TCustomSharpEGraphicControl.Paint;
 begin
   SetBitmapSizes;
   //Get background from window canvas
-  Windows.BitBlt(FBackground.Canvas.Handle, 0, 0,
-    FBackground.Width, FBackground.Height,
-    Canvas.Handle, 0, 0, SRCCOPY);
+  if FSpecialBackground = nil then
+  begin
+    Windows.BitBlt(FBackground.Canvas.Handle, 0, 0,
+      FBackground.Width, FBackground.Height,
+      Canvas.Handle, 0, 0, SRCCOPY);
+  end else
+  begin
+    FBackground.Draw(0,0,Rect(Left,Top,Left+Width,Top+Height),FSpecialBackground);
+  end;
 
   DrawSkin;
   DrawToCanvas;
