@@ -376,7 +376,7 @@ begin
                                             CurrentState.OnHighlightMouseEnterScript,
                                             CurrentState.Normal,
                                             FManager.Scheme).OnTimerFinished := nil   }
-    else if (not FFlashing) and (HasNormalHoverScript) then
+    else if (not FFlashing) and (HasNormalHoverScript) and (not (FButtonDown or FDown))  then
             SharpEAnimManager.ExecuteScript(self,
                                             CurrentState.OnNormalMouseEnterScript,
                                             CurrentState.Normal,
@@ -416,7 +416,7 @@ begin
                                       CurrentState.Normal,
                                       FManager.Scheme).OnTimerFinished := OnAnimFinished
     end                                                                     }
-    else if (FFlashing and HasHighlightAnimationScript) then
+    else if (FFlashing and HasHighlightAnimationScript) and (not (FButtonDown or FDown))then
     begin
       FFlashState := False;
       SharpEAnimManager.ExecuteScript(self,
@@ -424,7 +424,7 @@ begin
                                       CurrentState.Normal,
                                       FManager.Scheme).OnTimerFinished := OnAnimFinished
     end
-    else if HasNormalHoverScript then
+    else if (HasNormalHoverScript) and (not (FButtonDown or FDown)) then
             SharpEAnimManager.ExecuteScript(self,
                                             CurrentState.OnNormalMouseLeaveScript,
                                             CurrentState.Normal,
