@@ -36,6 +36,10 @@ uses
   Classes,
   JvSimpleXML,
   Dialogs,
+  GR32,
+  Graphics,
+  Windows,
+  JclStrings,
   SharpAPI in '..\SharpAPI\SharpAPI.pas';
 
 type
@@ -95,7 +99,7 @@ type
 var
   Theme: TSharpETheme;
   rtemp: string;
-  bInitialized:Boolean;
+  bInitialized: Boolean;
 
 const
   ICONS_DIR = 'Icons';
@@ -120,7 +124,7 @@ const
 
 function GetSchemeColorIndexByTag(pTag: string): Integer; forward;
 
-function Initialized:Boolean;
+function Initialized: Boolean;
 begin
   Result := bInitialized;
 end;
@@ -300,12 +304,12 @@ end;
 procedure LoadThemeSkin;
 var
   XML: TJvSimpleXML;
-  sCurSkin: String;
-  sSkinDir: String;
+  sCurSkin: string;
+  sSkinDir: string;
 begin
   SetThemeSkinDefault;
   sSkinDir := '';
-  
+
   // Get theme scheme name
   XML := TJvSimpleXML.Create(nil);
   try
@@ -319,21 +323,24 @@ begin
         sCurSkin := 'default';
       end;
 
-      if CompareText(sCurSkin,'default') <> 0 then
+      if CompareText(sCurSkin, 'default') <> 0 then
         sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + sCurSkin + '\'
-        else sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\';
-    end else
+      else
+        sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\';
+    end
+    else
     begin
       if DirectoryExists(SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\') then
         sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\'
-        else sSkinDir := '';
+      else
+        sSkinDir := '';
     end;
 
   finally
     XML.Free;
     Theme.Skin.Directory := sSkinDir;
     Theme.Skin.Name := sCurSkin;
-  End;
+  end;
 
   {if not FileExists(Theme.Data.Directory + SKIN_FILE) then
     exit;
@@ -355,13 +362,13 @@ end;
 procedure LoadThemeScheme;
 var
   XML: TJvSimpleXML;
-  i, j, ItemCount, Index: Integer;
-  tmpItem: TJvSimpleXMLElem;
+  i, ItemCount, Index: Integer;
   tmpRec: TSharpESkinColor;
   sFile, sTag, sCurScheme: string;
   tmpColor: TColor;
-  bDefault: Boolean;
 begin
+  Index := 0;
+
   if not DirectoryExists(Theme.Skin.Directory + SKINS_SCHEME_DIRECTORY) then
     SetThemeSchemeDefault;
 
@@ -381,15 +388,15 @@ begin
     end;
 
     // Get Scheme Colors
-    Setlength(Theme.Scheme.Colors,0);
+    Setlength(Theme.Scheme.Colors, 0);
     XML.Root.Clear;
     try
       XML.LoadFromFile(Theme.Skin.Directory + SCHEME_FILE);
       for i := 0 to Pred(XML.Root.Items.Count) do
       begin
         ItemCount := high(Theme.Scheme.Colors);
-        SetLength(Theme.Scheme.Colors, ItemCount+2);
-        tmpRec :=  Theme.Scheme.Colors[ItemCount+1];
+        SetLength(Theme.Scheme.Colors, ItemCount + 2);
+        tmpRec := Theme.Scheme.Colors[ItemCount + 1];
 
         with XML.Root.Items.Item[i].Items do
         begin
@@ -398,11 +405,11 @@ begin
           tmpRec.Info := Value('info', '');
           tmpRec.Color := IntValue('Default', 0);
         end;
-        Theme.Scheme.Colors[ItemCount+1] := tmpRec;
+        Theme.Scheme.Colors[ItemCount + 1] := tmpRec;
       end;
     except
     end;
-    
+
     sFile := Theme.Skin.Directory + SKINS_SCHEME_DIRECTORY + '\' + sCurScheme + '.xml';
     if FileExists(sFile) then
     begin
@@ -418,7 +425,7 @@ begin
             Index := GetSchemeColorIndexByTag(pchar(sTag));
             if Index >= 0 then
               Theme.Scheme.Colors[Index].Color := tmpColor;
-        end;
+          end;
       except
       end;
     end;
@@ -637,7 +644,6 @@ begin
   result := PChar(rtemp);
 end;
 
-
 // ##########################################
 //      EXPORT: SCHEME COLOR SET
 // ##########################################
@@ -687,7 +693,8 @@ begin
 
   for i := 0 to GetSchemeColorCount - 1 do
   begin
-    if CompareText(Theme.Scheme.Colors[i].Tag, pTag) = 0 then begin
+    if CompareText(Theme.Scheme.Colors[i].Tag, pTag) = 0 then
+    begin
       result.Name := Theme.Scheme.Colors[i].Name;
       result.Tag := Theme.Scheme.Colors[i].Tag;
       result.Info := Theme.Scheme.Colors[i].Info;
@@ -712,7 +719,7 @@ begin
   SetThemeIconSetDefault;
 end;
 
-function LoadTheme(pName: PChar; ForceReload:Boolean=False): boolean;
+function LoadTheme(pName: PChar; ForceReload: Boolean = False): boolean;
 var
   ThemeDir: string;
 begin
@@ -747,6 +754,193 @@ begin
   result := LoadTheme(PChar(themename));
 end;
 
+function ParseColor(AColorStr: PChar): Integer;
+var
+  iStart, iEnd: Integer;
+  h, s, l: double;
+  sColorType, sParam: string;
+  strlTokens: TStringList;
+  r, g, b: byte;
+  c: Integer;
+  col32: TColor32;
+
+  function CMYKtoColor(C, M, Y, K: integer): TColor;
+  var
+    R, G, B: integer;
+  begin
+    R := 255 - Round(2.55 * (C + K));
+    if R < 0 then
+      R := 0;
+    G := 255 - Round(2.55 * (M + K));
+    if G < 0 then
+      G := 0;
+    B := 255 - Round(2.55 * (Y + K));
+    if B < 0 then
+      B := 0;
+    Result := RGB(R, G, B);
+  end;
+
+  function HSVtoRGB(H, S, V: Integer): TColor;
+  var
+    ht, d, t1, t2, t3: Integer;
+    R, G, B: Word;
+  begin
+    s := s * 255 div 100;
+    v := v * 255 div 100;
+
+    if S = 0 then begin
+      R := V;
+      G := V;
+      B := V;
+    end
+    else begin
+      ht := H * 6;
+      d := ht mod 360;
+
+      t1 := round(V * (255 - S) / 255);
+      t2 := round(V * (255 - S * d / 360) / 255);
+      t3 := round(V * (255 - S * (360 - d) / 360) / 255);
+
+      case ht div 360 of
+        0: begin
+            R := V;
+            G := t3;
+            B := t1;
+          end;
+        1: begin
+            R := t2;
+            G := V;
+            B := t1;
+          end;
+        2: begin
+            R := t1;
+            G := V;
+            B := t3;
+          end;
+        3: begin
+            R := t1;
+            G := t2;
+            B := V;
+          end;
+        4: begin
+            R := t3;
+            G := t1;
+            B := V;
+          end;
+      else begin
+          R := V;
+          G := t1;
+          B := t2;
+        end;
+      end;
+    end;
+    Result := RGB(R, G, B);
+  end;
+
+begin
+  result := -1;
+
+  // Which colour type are we using? RGB, CMY, CMYK, HSV, HSL, LAB
+  iStart := Pos('(', AColorStr);
+  if iStart = 0 then
+    exit;
+
+  iEnd := Pos(')', AColorStr);
+  if iStart = 0 then
+    exit;
+
+  sColorType := Copy(AColorStr, 1, iStart - 1);
+  sParam := Copy(AColorStr, iStart + 1, iEnd - iStart - 1);
+
+  // RGB
+  if CompareText(sColorType, 'rgb') = 0 then begin
+    strlTokens := TStringList.Create;
+    try
+      StrTokenToStrings(sParam, ',', strlTokens);
+      if strlTokens.Count <> 3 then
+        exit;
+
+      Result := RGB(StrToInt(StrlTokens[0]), StrToInt(StrlTokens[1]),
+        StrToInt(StrlTokens[2]));
+
+      exit;
+
+    finally
+      strlTokens.Free;
+    end;
+  end
+  else if CompareText(sColorType, 'cmyk') = 0 then begin
+    strlTokens := TStringList.Create;
+    try
+      StrTokenToStrings(sParam, ',', strlTokens);
+      if strlTokens.Count <> 4 then
+        exit;
+
+      Result := CMYKtoColor(StrToInt(StrlTokens[0]), StrToInt(StrlTokens[1]),
+        StrToInt(StrlTokens[2]), StrToInt(StrlTokens[3]));
+
+      exit;
+
+    finally
+      strlTokens.Free;
+    end;
+  end;
+
+  // HSV
+  if CompareText(sColorType, 'hsv') = 0 then begin
+    strlTokens := TStringList.Create;
+    try
+      StrTokenToStrings(sParam, ',', strlTokens);
+      if strlTokens.Count <> 3 then
+        exit;
+
+      Result := HSVtoRGB(strtoint(StrlTokens[0]), strtoint(StrlTokens[1]),
+        strtoint(StrlTokens[2]));
+
+      exit;
+
+    finally
+      strlTokens.Free;
+    end;
+  end;
+  // HSL
+  if CompareText(sColorType, 'hsl') = 0 then begin
+    strlTokens := TStringList.Create;
+    try
+      StrTokenToStrings(sParam, ',', strlTokens);
+      if strlTokens.Count <> 3 then
+        exit;
+
+      h := StrToFloat(StrlTokens[0]) / 255;
+      s := StrToFloat(StrlTokens[1]) / 255;
+      l := StrToFloat(StrlTokens[2]) / 255;
+
+      col32 := HSLtoRGB(h, s, l);
+      Color32ToRGB(col32, r, g, b);
+      Result := RGB(r, g, b);
+      exit;
+
+    finally
+      strlTokens.Free;
+    end;
+  end;
+  // HEX
+  if CompareText(sColorType, 'hex') = 0 then begin
+    Result := stringtocolor('$' + sParam);
+    c := ColorToRGB(Result);
+    c := (c and $FF) shl 16 + // Red
+    (c and $FF00) + // Green
+    (c and $FF0000) shr 16; // Blue
+
+    Result := c;
+  end;
+  // COLOR
+  if CompareText(sColorType, 'color') = 0 then begin
+    Result := stringtocolor(sParam);
+  end;
+
+end;
+
 {$R *.res}
 
 exports
@@ -774,6 +968,7 @@ exports
   GetSchemeColorIndexByTag,
   GetSchemeColorByIndex,
   GetSchemeColorCount,
+  ParseColor,
 
   // Theme Skin
   GetSkinName,

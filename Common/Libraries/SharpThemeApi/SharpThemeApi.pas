@@ -77,6 +77,7 @@ function GetSchemeColorCount: Integer; external 'SharpThemeApi.dll' name 'GetSch
 function GetSchemeColorByIndex(pIndex: integer): TSharpESkinColor; external 'SharpThemeApi.dll' name 'GetSchemeColorByIndex';
 function GetSchemeColorIndexByTag(pTag: string): Integer; external 'SharpThemeApi.dll' name 'GetSchemeColorIndexByTag';
 function GetSchemeColorByTag(pTag: string): TSharpESkinColor; external 'SharpThemeApi.dll' name 'GetSchemeColorByTag';
+function ParseColor(AColorStr:PChar):Integer; external 'SharpThemeApi.dll' name 'ParseColor';
 
 // Theme Skin
 function GetSkinName : PChar; external 'SharpThemeApi.dll' name 'GetSkinName';
