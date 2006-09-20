@@ -177,7 +177,7 @@ type
 implementation
 
 
-uses uSharpBarApi;
+uses uSharpBarApi, SharpBarMainWnd;
 
 
 
@@ -1008,6 +1008,7 @@ begin
   FThrobber.SkinManager := pModuleFile.FSkinManager;
   FThrobber.Visible := False;
   FThrobber.Tag := FID;
+  FThrobber.SpecialBackground := TSharpBarMainForm(FOwnerForm).BGImage;
 end;
 
 destructor TModule.Destroy;

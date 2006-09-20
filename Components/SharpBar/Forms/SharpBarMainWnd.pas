@@ -35,9 +35,9 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, SharpESkinManager, SharpEScheme, SharpEBaseControls, SharpESkin,
-  Menus, StdCtrls, JvSimpleXML, SharpApi, ShellHook,
+  Menus, StdCtrls, JvSimpleXML, SharpApi, ShellHook, GR32,
   uSharpEModuleManager, SharpEButton, DateUtils, ExtCtrls,
-  ImgList, PngImageList, XPMan, SharpEBar, AppEvnts;
+  ImgList, PngImageList, XPMan, SharpEBar, AppEvnts, GR32_Image;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -128,6 +128,9 @@ type
     FThemeUpdating : Boolean;
     FStartup : Boolean;
     FBarLock : Boolean;
+    FTopZone : TBitmap32;
+    FBottomZone : TBitmap32;
+    FBGImage : TBitmap32;
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem : TJvSimpleXMlElem);
 
@@ -164,6 +167,9 @@ type
     procedure LoadBarFromID(ID : integer);
     procedure LoadModuleSettings;
     procedure SaveBarSettings;
+    procedure UpdateBGZone;
+    procedure UpdateBGImage;
+    property BGImage : TBitmap32 read FBGImage;
   end;
 
 const
@@ -179,6 +185,9 @@ var
   BarMove : boolean;
   BarMovePoint : TPoint;
 
+
+function PrintWindow(SourceWindow: hwnd; Destination: hdc; nFlags: cardinal): bool; stdcall; external 'user32.dll' name 'PrintWindow';
+
 implementation
 
 uses PluginManagerWnd,
@@ -187,6 +196,7 @@ uses PluginManagerWnd,
      AddPluginWnd;
 
 {$R *.dfm}
+
 
 function GetControlByHandle(AHandle: THandle): TWinControl;
 begin
@@ -375,7 +385,8 @@ end;
 
 procedure TSharpBarMainForm.WMGetBGHandle(var msg : TMessage);
 begin
-  msg.result := integer(@SharpEBar1.skin);
+  msg.result := integer(@FBGImage);
+//  msg.result := integer(@SharpEBar1.skin);
 end;
 
 procedure TSharpBarMainForm.WMGetBarHeight(var msg : TMessage);
@@ -443,6 +454,44 @@ begin
 end;
 
 // ***********************
+
+procedure TSharpBarMainForm.UpdateBGImage;
+begin
+  if FBGImage = nil then exit;
+  if (Width = 0) or (Height = 0) then exit;
+
+  //showmessage(inttostr(Left));
+  FBGImage.SetSize(Width,Height);
+  FBGImage.Clear(color32(0,0,0,0));
+  if SharpEBar1.VertPos = vpTop then FBGImage.Draw(0,0,Rect(Left-Monitor.Left,0,Left-Monitor.Left+FTopZone.Width,FTopZone.Height),FTopZone)
+     else FBGImage.Draw(0,0,Rect(Left-Monitor.Left,0,Left-Monitor.Left+FBottomZone.Width,FBottomZone.Height),FBottomZone);
+  SharpEbar1.Skin.DrawTo(FBGImage);
+end;
+
+procedure TSharpBarMainForm.UpdateBGZone;
+var
+  BGBmp : TBitmap32;
+  wnd : hwnd;
+begin
+  if (FTopZone = nil) or (FBottomZone = nil) then exit;
+
+  BGBmp := TBitmap32.Create;
+  BGBmp.SetSize(Screen.Width,Screen.Height);
+  try
+    wnd := FindWindow('TSharpDeskMainForm',nil);
+    if wnd <> 0 then
+    begin
+      PrintWindow(wnd,BGBmp.Handle,0);
+      FTopZone.SetSize(Monitor.Width,Height);
+      FBottomZone.SetSize(Monitor.Width,Height);
+      FTopZone.Draw(0,0,Rect(Monitor.Left,Monitor.Top,Monitor.Left + Monitor.Width,Monitor.Top + Height), BGBmp);
+      FBottomZone.Draw(0,0,Rect(Monitor.Left,Monitor.Top + Monitor.Height - Height,Monitor.Left + Monitor.Width,Monitor.Top + Monitor.Height), BGBmp);
+    end;
+  except
+  end;
+  BGBmp.Free;
+  UpdateBGImage;
+end;
 
 
 procedure TSharpBarMainForm.LoadModuleSettings;
@@ -741,6 +790,11 @@ end;
 
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
+  FBottomZone := TBitmap32.Create;
+  FTopZone    := TBitmap32.Create;
+  FBGImage    := TBitmap32.Create;
+  SharpEBar1.Throbber.SpecialBackground := FBGImage;
+
   FStartup := True;
   FBarLock := False;
 
@@ -915,6 +969,10 @@ begin
   ModuleManager.Free;
  // ModuleSettings.Free;
   //ModuleSettings := nil;
+
+  FBottomZone.Free;
+  FTopZone.Free;
+  FBGImage.Free;
 end;
 
 procedure TSharpBarMainForm.SharpEBar1ResetSize(Sender: TObject);
@@ -960,6 +1018,8 @@ var
   R : TRect;
   oVP : TSharpEBarVertPos;
   oHP : TSharpEBarHorizPos;
+  oMon : integer;
+  oPMon : boolean;
 begin
   if FThemeUpdating then exit;
 
@@ -977,6 +1037,8 @@ begin
     begin
       oVP := SharpEBar1.VertPos;
       oHP := SharpEBar1.HorizPos;
+      oMon := SharpEBar1.MonitorIndex;
+      oPMon := SharpEbar1.PrimaryMonitor;
       for n := 0 to Screen.MonitorCount - 1 do
       begin
         if Screen.Monitors[n] = Screen.PrimaryMonitor then
@@ -1123,14 +1185,22 @@ begin
           SharpEBar1.VertPos      := vpBottom;
         end;
       end;
+      if (oMon <> SharpEBar1.MonitorIndex) or (oPMon <> SharpEBar1.PrimaryMonitor) then
+      begin
+        UpdateBGZone;
+      end;
       if oVP <> SharpEBar1.VertPos then
       begin
+        UpdateBGImage;
         SharpEBar1.UpdateSkin;
         ModuleManager.UpdateModuleSkins;
         ModuleManager.FixModulePositions;
       end;
       if oHP <> SharpEBar1.HorizPos then
-         ModuleManager.FixModulePositions;
+      begin
+        UpdateBGImage;
+        ModuleManager.FixModulePositions;
+      end;
     end;
     if BarHideForm <> nil then BarHideForm.UpdateStatus;
   end;
@@ -1326,6 +1396,7 @@ end;
 procedure TSharpBarMainForm.OnBarPositionUpdate(Sender : TObject);
 begin
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
+  UpdateBGZone;
 end;
 
 procedure TSharpBarMainForm.BlendInTimerTimer(Sender: TObject);
