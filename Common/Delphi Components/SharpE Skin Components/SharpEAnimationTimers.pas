@@ -28,6 +28,9 @@ type
                     BlendAlpha : integer;
                     GradientColorFrom : String;
                     GradientColorTo   : String;
+                    MasterAlpha : integer;
+                    GradientAlphaFrom : String;
+                    GradientAlphaTo   : String;
                   end;
 
   TSkinPartArray = array of TSkinPartInfo;
@@ -125,7 +128,54 @@ end;
 
 function Script_GetAlpha(SP : TSkinPart) : integer;
 begin
-  result := SP.BlendAlpha;
+  result := SP.MasterAlpha;
+end;
+
+procedure Script_SetAlpha(SP : TSkinPart; NewAlpha : integer);
+begin
+  SP.MasterAlpha := Min(255,NewAlpha);
+end;
+
+procedure Script_IncreaseGradientFromAlpha(SP : TSkinPart; Amount: integer);
+var
+  n : integer;
+begin
+  n := Min(255,SP.GradientAlpha.XAsInt + Amount);
+  SP.GradientAlpha.SetPoint(inttostr(n),SP.GradientAlpha.Y);
+end;
+
+procedure Script_IncreaseGradientToAlpha(SP : TSkinPart; Amount: integer);
+var
+  n : integer;
+begin
+  n := Min(255,SP.GradientAlpha.YAsInt + Amount);
+  SP.GradientAlpha.SetPoint(SP.GradientAlpha.X,inttostr(n));
+end;
+
+procedure Script_DecraseGradientFromAlpha(SP : TSkinPart; Amount: integer);
+var
+  n : integer;
+begin
+  n := Max(0,SP.GradientAlpha.XAsInt - Amount);
+  SP.GradientAlpha.SetPoint(inttostr(n),SP.GradientAlpha.Y);
+end;
+
+procedure Script_DecraseGradientToAlpha(SP : TSkinPart; Amount: integer);
+var
+  n : integer;
+begin
+  n := Max(0,SP.GradientAlpha.YAsInt - Amount);
+  SP.GradientAlpha.SetPoint(SP.GradientAlpha.X,inttostr(n));
+end;
+
+procedure Script_SetGradientFromAlpha(SP : TSkinPart; NewAlpha : integer);
+begin
+  SP.GradientAlpha.SetPoint(inttostr(Max(0,Min(255,NewAlpha))),SP.GradientAlpha.Y);
+end;
+
+procedure Script_SetGradientToAlpha(SP : TSkinPart; NewAlpha : integer);
+begin
+  SP.GradientAlpha.SetPoint(SP.GradientAlpha.X,inttostr(Max(0,Min(255,NewAlpha))));
 end;
 
 function StepBlendColor(FromColor,ToColor,CurrentColor : integer; Step : integer) : integer;
@@ -161,12 +211,12 @@ end;
 
 procedure Script_IncreaseAlpha(SP : TSkinPart; Amount : integer);
 begin
-  SP.BlendAlpha := Min(255,SP.BlendAlpha + Amount);
+  SP.MasterAlpha := Min(255,SP.MasterAlpha + Amount);
 end;
 
 procedure Script_DecreaseAlpha(SP : TSkinPart; Amount : integer);
 begin
-  SP.BlendAlpha := Max(0,SP.BlendAlpha - Amount);
+  SP.MasterAlpha := Max(0,SP.MasterAlpha - Amount);
 end;
 
 procedure Script_BlendColor(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
@@ -252,6 +302,8 @@ begin
     SP.BlendColor := BlendColor;
     SP.GradientColor.SetPoint(GradientColorFrom,GradientColorTo);
     SP.BlendAlpha := BlendAlpha;
+    SP.MasterAlpha := MasterAlpha;
+    SP.GradientAlpha.SetPoint(GradientAlphaFrom,GradientAlphaTo);
   end;
 end;
 
@@ -280,6 +332,9 @@ begin
     GradientColorFrom := SP.GradientColor.X;
     GradientColorTo := SP.GradientColor.Y;
     BlendAlpha := SP.BlendAlpha;
+    MasterAlpha := SP.MasterAlpha;
+    GradientAlphaFrom := SP.GradientAlpha.X;
+    GradientAlphaTo  := SP.GradientAlpha.Y;
   end;
 end;
 
@@ -363,41 +418,62 @@ end;
 
 procedure TSharpEAnimTimer.OnInterpreterGetValue(Sender: TObject; Identifier: string; var Value: Variant; Args: TjvInterpreterArgs; var Done: Boolean);
 const
-  sBlendGradientFromColor = 0;
-  sBlendGraidentToColor   = 1;
-  sBlendColor             = 2;
-  sIncraseAlpha           = 3;
-  sDecraseAlpha           = 4;
-  sGetColor               = 5;
-  sIntToStr               = 6;
-  sStrToInt               = 7;
-  sGetAlpha               = 8;
-  sGetGradientFromColor   = 9;
-  sGetGradientToColor     = 10;
+  sBlendGradientFromColor    = 0;
+  sBlendGraidentToColor      = 1;
+  sBlendColor                = 2;
+  sIncraseAlpha              = 3;
+  sDecraseAlpha              = 4;
+  sGetColor                  = 5;
+  sIntToStr                  = 6;
+  sStrToInt                  = 7;
+  sGetAlpha                  = 8;
+  sGetGradientFromColor      = 9;
+  sGetGradientToColor        = 10;
+  sSetAlpha                  = 11;
+  sSetGradientFromAlpha      = 12;
+  sSetGradientToAlpha        = 13;
+  sIncreaseGradientFromAlpha = 14;
+  sIncreaseGradientToAlpha   = 15;
+  sDecraseGradientFromAlpha  = 16;
+  sDecraseGradientToAlpha    = 17;
 
 var
   temp : TSkinPart;
   stype : integer;
 begin
   try
-         if CompareText(Identifier,'BlendGradientFromColor') = 0 then stype := sBlendGradientFromColor
-    else if CompareText(Identifier,'BlendGradientToColor') = 0   then stype := sBlendGraidentToColor
-    else if CompareText(Identifier, 'BlendColor') = 0            then stype := sBlendColor
-    else if CompareText(Identifier, 'IncreaseAlpha') = 0         then stype := sIncraseAlpha
-    else if CompareText(Identifier, 'DecreaseAlpha') = 0         then stype := sDecraseAlpha
-    else if CompareText(Identifier, 'GetColor') = 0              then stype := sGetColor
-    else if CompareText(Identifier, 'IntToStr')  = 0             then stype := sIntToStr
-    else if CompareText(Identifier, 'StrToInt')  = 0             then stype := sStrToInt
-    else if CompareText(Identifier, 'GetAlpha')  = 0             then stype := sGetAlpha
-    else if CompareText(Identifier, 'GetGradientFromColor')  = 0 then stype := sGetGradientFromColor
-    else if CompareText(Identifier, 'GetGradientToColor')  = 0   then stype := sGetGradientToColor
+         if CompareText(Identifier,'BlendGradientFromColor') = 0      then stype := sBlendGradientFromColor
+    else if CompareText(Identifier,'BlendGradientToColor') = 0        then stype := sBlendGraidentToColor
+    else if CompareText(Identifier, 'BlendColor') = 0                 then stype := sBlendColor
+    else if CompareText(Identifier, 'IncreaseAlpha') = 0              then stype := sIncraseAlpha
+    else if CompareText(Identifier, 'DecreaseAlpha') = 0              then stype := sDecraseAlpha
+    else if CompareText(Identifier, 'GetColor') = 0                   then stype := sGetColor
+    else if CompareText(Identifier, 'IntToStr')  = 0                  then stype := sIntToStr
+    else if CompareText(Identifier, 'StrToInt')  = 0                  then stype := sStrToInt
+    else if CompareText(Identifier, 'GetAlpha')  = 0                  then stype := sGetAlpha
+    else if CompareText(Identifier, 'GetGradientFromColor')  = 0      then stype := sGetGradientFromColor
+    else if CompareText(Identifier, 'GetGradientToColor')  = 0        then stype := sGetGradientToColor
+    else if CompareText(Identifier, 'SetAlpha')  = 0                  then stype := sSetAlpha
+    else if CompareText(Identifier, 'SetGradientFromAlpha')  = 0      then stype := sSetGradientFromAlpha
+    else if CompareText(Identifier, 'SetGradientToAlpha')  = 0        then stype := sSetGradientToAlpha
+    else if CompareText(Identifier, 'IncreaseGradientFromAlpha')  = 0 then stype := sIncreaseGradientFromAlpha
+    else if CompareText(Identifier, 'IncreaseGradientToAlpha')  = 0   then stype := sIncreaseGradientToAlpha
+    else if CompareText(Identifier, 'DecreaseGradientFromAlpha')  = 0  then stype := sDecraseGradientFromAlpha
+    else if CompareText(Identifier, 'DecreaseGradientToAlpha')  = 0    then stype := sDecraseGradientToAlpha
     else stype := -1;
 
     if    (stype = sBlendGradientFromColor)
        or (stype = sBlendGraidentToColor)
        or (stype = sBlendColor)
        or (stype = sIncraseAlpha)
-       or (stype = sDecraseAlpha) then
+       or (stype = sDecraseAlpha)
+       or (stype = sSetAlpha)
+       or (stype = sSetGradientFromAlpha)
+       or (stype = sSetGradientToAlpha)
+       or (stype = sIncreaseGradientFromAlpha)
+       or (stype = sIncreaseGradientToAlpha)
+       or (stype = sDecraseGradientFromAlpha)
+       or (stype = sDecraseGradientToAlpha) then
     begin
       temp := FindSkinPart(VarToStr(Args.Values[0]),FSkinPart);
       if temp <> nil then
@@ -405,11 +481,18 @@ begin
         AddToModList(temp, FModList);
         RestoreFromModList(temp, FLMList);
         case stype of
-          sBlendGradientFromColor : Script_BlendGradientFrom(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
-          sBlendGraidentToColor   : Script_BlendGradientTo(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
-          sBlendColor             : Script_BlendColor(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
-          sIncraseAlpha           : Script_IncreaseAlpha(temp,Args.Values[1]);
-          sDecraseAlpha           : Script_DecreaseAlpha(temp,Args.Values[1]);
+          sBlendGradientFromColor    : Script_BlendGradientFrom(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
+          sBlendGraidentToColor      : Script_BlendGradientTo(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
+          sBlendColor                : Script_BlendColor(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
+          sIncraseAlpha              : Script_IncreaseAlpha(temp,Args.Values[1]);
+          sDecraseAlpha              : Script_DecreaseAlpha(temp,Args.Values[1]);
+          sSetAlpha                  : Script_SetAlpha(temp,Args.Values[1]);
+          sSetGradientFromAlpha      : Script_SetGradientFromAlpha(temp,Args.Values[1]);
+          sSetGradientToAlpha        : Script_SetGradientToAlpha(temp,Args.Values[1]);
+          sIncreaseGradientFromAlpha : Script_IncreaseGradientFromAlpha(temp,Args.Values[1]);
+          sIncreaseGradientToAlpha   : Script_IncreaseGradientToAlpha(temp,Args.Values[1]);
+          sDecraseGradientFromAlpha  : Script_DecraseGradientFromAlpha(temp,Args.Values[1]);
+          sDecraseGradientToAlpha    : Script_DecraseGradientToAlpha(temp,Args.Values[1]);
         end;
         AddToModList(temp, FLMList);
       end;
