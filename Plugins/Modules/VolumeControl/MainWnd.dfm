@@ -19,7 +19,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 285
-    Height = 166
+    Height = 164
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -39,9 +39,9 @@ object MainForm: TMainForm
     end
     object mute: TSharpEButton
       Left = 2
-      Top = 0
+      Top = 1
       Width = 25
-      Height = 18
+      Height = 20
       SkinManager = SharpESkinManager1
       AutoSize = True
       OnClick = muteClick
@@ -51,7 +51,7 @@ object MainForm: TMainForm
       Layout = blGlyphLeft
       Margin = -1
       DisabledAlpha = 100
-      AutoPosition = False
+      AutoPosition = True
       GlyphResize = True
     end
     object cshape: TShape
