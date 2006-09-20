@@ -62,6 +62,7 @@ type
                        procedure AddToModList(SP : TSkinPart; var ML : TSkinPartArray);
                        procedure RestoreFromModList(SP : TSkinPart; var ML : TSkinPartArray);
                        procedure RestoreSkinParts;
+                       procedure BuildRestoreList(SP : TSkinPart);
                      published
                        property Component : TObject read FComponent;
                        property Timer     : TTimer  read FTimer;
@@ -338,6 +339,17 @@ begin
   end;
 end;
 
+procedure TSharpEAnimTimer.BuildRestoreList(SP : TSkinPart);
+var
+  n : integer;
+begin
+  AddToModList(SP,FModList);
+  for n := 0 to SP.Items.Count -1 do
+  begin
+    BuildRestoreList(SP.Items[n]);
+  end;
+end;
+
 procedure TSharpEAnimTimer.RestoreSkinParts;
 var
   n : integer;
@@ -347,6 +359,11 @@ begin
       if spart <> nil then
       begin
         spart.BlendColor := FModList[n].BlendColor;
+        spart.BlendColor := FModList[n].BlendColor;
+        spart.GradientColor.SetPoint(FModList[n].GradientColorFrom,FModList[n].GradientColorTo);
+        spart.BlendAlpha := FModList[n].BlendAlpha;
+        spart.MasterAlpha := FModList[n].MasterAlpha;
+        spart.GradientAlpha.SetPoint(FModList[n].GradientAlphaFrom,FModList[n].GradientAlphaTo);
       end;
 end;
 
@@ -382,6 +399,11 @@ begin
 
   setlength(FModList,0);
   try
+    BuildRestoreList(FSkinPart);
+  except
+  end;
+
+  try
     continue :=  FInterpreter.CallFunction('OnAnimate',nil,[]);
   except
     continue := False;
@@ -398,7 +420,7 @@ begin
   except
     continue := False;
   end;
-  SharpEAnimManager.TimerActive := FalsE;
+  SharpEAnimManager.TimerActive := False;
   FTimer.Enabled := continue;
 
   try
@@ -478,7 +500,7 @@ begin
       temp := FindSkinPart(VarToStr(Args.Values[0]),FSkinPart);
       if temp <> nil then
       begin
-        AddToModList(temp, FModList);
+//        AddToModList(temp, FModList);
         RestoreFromModList(temp, FLMList);
         case stype of
           sBlendGradientFromColor    : Script_BlendGradientFrom(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
