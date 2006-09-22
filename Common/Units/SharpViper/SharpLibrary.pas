@@ -2,8 +2,24 @@ unit SharpLibrary;
 
 interface
 
-uses Classes, Forms, Messages, ShlObj, Windows, Graphics, SysUtils, SharpApi, Dialogs,
-     GR32, GR32_Filters;
+uses Classes, Forms, Messages, ShlObj, Windows, Graphics, SysUtils, SharpApi,
+     GR32, GR32_Filters, ExtCtrls, Controls;
+
+type
+  TImageEX = class(TImage)
+    private
+      FOnMouseLeave: TNotifyEvent;
+      FOnMouseEnter: TNotifyEvent;
+    protected
+      procedure CMMouseLeave(var msg : TMessage); message CM_MOUSELEAVE;
+      procedure CMMouseEnter(var msg : TMessage); message CM_MOUSEENTER;
+    public
+      constructor Create(Owner: TComponent); override;
+      destructor Destroy; override;
+    published
+      property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+      property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    end;
 
 type
     TColorRec = packed record
@@ -27,6 +43,34 @@ implementation
 
 //This one line of code puts a form inside of SharpDesk, in this example
 //  Windows.SetParent(Handle, FindWindow('TSharpDeskMainForm', nil));
+
+{$REGION ' TImageEx Procedures '}
+constructor TImageEx.Create(Owner: TComponent);
+begin
+ inherited Create(Owner);
+
+ Width := 16;
+ Height := 16;
+
+ Align := AlClient;
+ ShowHint := True;
+ Transparent := True;
+end;
+destructor TImageEx.Destroy;
+begin
+  inherited Destroy;
+end;
+procedure TImageEx.CMMouseLeave(var msg : TMessage);
+begin
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+procedure TImageEx.CMMouseEnter(var msg : TMessage);
+begin
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+{$ENDREGION}
 
 {$REGION ' File Routines '}
 function PathPaths(sPath: string): TStringList;
