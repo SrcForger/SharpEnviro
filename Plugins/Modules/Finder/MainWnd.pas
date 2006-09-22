@@ -36,7 +36,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, Math, Menus, GR32, GR32_Image, SharpEBaseControls, SharpEButton,
   SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls,
-  JvSimpleXML, SharpApi, SharpProcess, ShellHookTypes, COMMCTRL;
+  JvSimpleXML, SharpApi, SharpProcess, ShellHookTypes, COMMCTRL, dialogs;
 
 type
   TMainForm = class(TForm)
@@ -264,21 +264,42 @@ end;
 
 procedure TMainForm.SharpEButton1Click(Sender: TObject);
 var
+  x, CaptionHeight, BreakHeight,
+  ExtraPixels, TotalHeight : integer;
   Test: TRect;
 begin
   BuildTaskMenu;
 
-  GetWindowRect(Handle,Test);
+  //Since users want floating bars, we need to try and better
+  //determine where to popup our Task menu
+  TotalHeight   := 0;
+  BreakHeight   := 2;
+  ExtraPixels   := 6;
+  CaptionHeight := Canvas.TextHeight('Wg');
 
-  //Stupid top/bottom check. This will be changed shortly
-  //to something real and more effective
-  if (test.Top < (Screen.DesktopHeight div 2)) then
+  for x := 0 to popTasks.Items.Count - 1 do
    begin
-    popTasks.Popup(Test.Left,Test.Top + Height);
-   end
-  else
+    if popTasks.Items.Items[x].Caption = '-' then TotalHeight := TotalHeight + BreakHeight
+    else TotalHeight := TotalHeight + CaptionHeight;
+    TotalHeight := TotalHeight + ExtraPixels;
+   end;
+
+  if TotalHeight <> 0 then
    begin
-    popTasks.Popup(Left, Top);
+    TotalHeight := TotalHeight + ExtraPixels;
+
+    GetWindowRect(Handle,Test);
+
+    //Stupid top/bottom check. This will be changed shortly
+    //to something real and more effective
+    if (test.Top < (Screen.DesktopHeight div 2)) then
+     begin
+      popTasks.Popup(Test.Left,Test.Top + Height);
+     end
+    else
+     begin
+      popTasks.Popup(Test.Left, Test.Top - TotalHeight);
+     end;
    end;
 end;
 
