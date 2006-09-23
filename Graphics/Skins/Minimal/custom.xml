@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpECustomSkinSettings>
+  <taskbar>
+    <minallicon>images\Modules\Taskbar\minall.png</minallicon>
+    <maxallicon>images\Modules\Taskbar\maxall.png</maxallicon>
+  </taskbar>
+</SharpECustomSkinSettings>

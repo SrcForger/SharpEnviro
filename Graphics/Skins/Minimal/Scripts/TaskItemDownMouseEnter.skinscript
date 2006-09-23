@@ -1,0 +1,40 @@
+unit SkinScript;
+
+interface
+
+function InitAnimation : integer;
+function OnAnimate : boolean;
+
+implementation
+
+function InitAnimation : integer;
+begin
+  result := 30;
+end;
+
+function OnAnimate : boolean;
+begin
+  IncreaseAlpha('0',4);  
+  IncreaseAlpha('1',4);
+  IncreaseAlpha('2',4);
+  IncreaseAlpha('3',4);
+
+  IncreaseGradientFromAlpha('gradient',24);
+  DecreaseGradientToAlpha('gradient',24);
+  
+  // End Condidition
+  if GetAlpha('0') >= 244 then 
+  begin
+    SetAlpha('0',244);
+    SetAlpha('1',244);
+    SetAlpha('2',244);
+    SetAlpha('3',244);
+     
+    SetGradientFromAlpha('gradient',192);
+    SetGradientToAlpha('gradient',48);
+
+    result := false;
+  end else result := true;
+end;
+
+end.
