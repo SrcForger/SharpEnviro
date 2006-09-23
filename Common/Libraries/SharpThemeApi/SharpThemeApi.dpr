@@ -167,8 +167,14 @@ begin
     XML.Root.Name := 'SharpEUserSettings';
     XML.Root.Items.Clear;
     XML.Root.Items.Add('Theme', 'Default');
-    ForceDirectories(SharpApi.GetSharpeUserSettingsPath);
-    XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + SHARPE_USER_SETTINGS);
+    
+    // fix for svn... only save if SharpCore.exe is in the path so that the SharpE
+    // path really is correct.
+    if FileExists(SharpApi.GetSharpeDirectory + 'SharpCore.exe') then
+    begin
+      ForceDirectories(SharpApi.GetSharpeUserSettingsPath);
+      XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + SHARPE_USER_SETTINGS);
+    end;
   finally
     XML.Free;
   end;
