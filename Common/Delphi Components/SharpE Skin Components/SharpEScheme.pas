@@ -50,7 +50,7 @@ type
     FColors  : TSharpEColorSet;
     FOnNotify: TSchemeEvent;
 
-    procedure NotifyManager;
+    //procedure NotifyManager;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
@@ -85,10 +85,10 @@ begin
   inherited Destroy;
 end;
 
-procedure TSharpEScheme.NotifyManager;
+{procedure TSharpEScheme.NotifyManager;
 begin
   if Assigned(OnNotify) then OnNotify;
-end;
+end;    }
 
 procedure TSharpEScheme.Notification(AComponent: TComponent; Operation:
   TOperation);

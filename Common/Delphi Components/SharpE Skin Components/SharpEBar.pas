@@ -88,7 +88,7 @@ type
     FShowThrobber: Boolean;
     FDisableHideThrobber: Boolean;
     FDisableHideBar     : Boolean;
-    FSpecialHideForm    : Boolean;
+    //FSpecialHideForm    : Boolean;
     procedure PC_NoAlpha(F: TColor32; var B: TColor32; M: TColor32);
     procedure FormPaint(Sender: TObject);
     procedure SetBitmapSizes;

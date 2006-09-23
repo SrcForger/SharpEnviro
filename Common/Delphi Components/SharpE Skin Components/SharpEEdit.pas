@@ -118,7 +118,7 @@ type
     procedure EditExitEvent(Sender:TObject);
     procedure EditEnterEvent(Sender:TObject);
     procedure EditChangeEvent(Sender:TObject);
-    procedure SetAutoSize(const Value: Boolean);
+//    procedure SetAutoSize(const Value: Boolean);
   protected
     FAutoSize: boolean;
     procedure Paint; override;
@@ -654,11 +654,11 @@ begin
   else DrawDefaultSkin(DefaultSharpEScheme);
 end;
 
-procedure TSharpEEdit.SetAutoSize(const Value: Boolean);
+{procedure TSharpEEdit.SetAutoSize(const Value: Boolean);
 begin
   FAutosize := Value;
   UpdateSkin;
   Invalidate;
-end;
+end;       }
 
 end.

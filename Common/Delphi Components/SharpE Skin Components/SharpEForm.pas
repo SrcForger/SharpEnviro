@@ -37,6 +37,7 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
+  Types,
   gr32,
   SharpeDefault,
   SharpEBase,
