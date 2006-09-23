@@ -142,7 +142,7 @@ begin
   if Key = VK_RETURN then
   begin
     SetFocus;
-    SharpApi.SharpExecute(edit.Edit.Text);
+    SharpApi.SharpExecute(trim(edit.Edit.Text));
     edit.Text := '';
     edit.Edit.Text := '';
   end;
