@@ -51,16 +51,12 @@ procedure PaintListbox(AListbox: TListBox; ARect: TRect; ALeftOffset:Integer; AS
 var
   s: string;
   tsStatus: Integer;
-  R, RImg: Trect;
+  R: Trect;
   w, n: Integer;
-  pici: TPngImageCollectionItem;
   TextTop: Integer;
-  IconWidth, IconHeight, IconTop, ItemHeight: Integer;
+  IconWidth, ItemHeight: Integer;
 begin
   R := ARect;
-  IconTop := 0;
-  IconHeight := 0;
-  pici := nil;
   IconWidth := 0;
 
   if R.Top > AListbox.Height then
