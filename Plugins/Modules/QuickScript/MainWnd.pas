@@ -111,7 +111,6 @@ end;
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
 var
   newWidth : integer;
-  i : integer;
 begin
   if sWidth<20 then sWidth := 20;
 
@@ -160,8 +159,7 @@ begin
     ReAlignComponents(True);
 
   finally
-    SettingsForm.Free;
-    SettingsForm := nil;
+    FreeAndNil(SettingsForm);
   end;
 end;
 

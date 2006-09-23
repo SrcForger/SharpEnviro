@@ -58,8 +58,6 @@ begin
 end;
 
 function TCPUUsage.GetCPUUsage(ID : integer) : double;
-var
-  n : integer;
 begin
   try
     if ID > High(CPUUsage) then result := 0

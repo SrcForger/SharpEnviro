@@ -229,8 +229,7 @@ begin
     ReAlignComponents(True);
 
   finally
-    SettingsForm.Free;
-    SettingsForm := nil;
+    FreeAndNil(SettingsForm);
   end;
 end;
 

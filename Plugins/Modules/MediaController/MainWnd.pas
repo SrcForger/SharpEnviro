@@ -317,7 +317,6 @@ end;
 
 procedure TMainForm.ReAlignComponents;
 var
-  FreeBarSpace : integer;
   newWidth : integer;
   i : integer;
 begin
@@ -383,8 +382,7 @@ begin
     ReAlignComponents(True);
     UpdatePSelectIcon;
   finally
-    SettingsForm.Free;
-    SettingsForm := nil;
+    FreeAndNil(SettingsForm);
   end;
 end;
 

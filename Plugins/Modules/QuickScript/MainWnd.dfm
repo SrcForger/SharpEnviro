@@ -29,9 +29,9 @@ object MainForm: TMainForm
     TabOrder = 0
     object Button: TSharpEButton
       Left = 8
-      Top = 0
+      Top = 1
       Width = 105
-      Height = 18
+      Height = 20
       SkinManager = SharpESkinManager1
       AutoSize = True
       OnMouseUp = ButtonMouseUp

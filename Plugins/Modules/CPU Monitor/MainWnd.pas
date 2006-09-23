@@ -191,7 +191,6 @@ procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
   item : TJvSimpleXMLElem;
-  n : integer;
   cs : TColorSchemeEx;
 begin
   try
@@ -246,20 +245,19 @@ begin
     end;
     ReAlignComponents(True);
   finally
-    SettingsForm.Free;
-    SettingsForm := nil;
+    FreeAndNil(SettingsForm);
   end;
 end;
 
 procedure TMainForm.UpdateGraph;
 var
   i : double;
-  n : integer;
   t : integer;
   c1,c2 : TColor32;
   bmp : TBitmap32;
 begin
   bmp := TBitmap32.create;
+  t := 0;
   try
     if cpuusage = nil then exit;
 
@@ -271,6 +269,8 @@ begin
     if oldvalue<0 then oldvalue := 0
        else if oldvalue>cpugraph.Height then oldvalue := cpugraph.Height;
 
+    c1 := 0;
+    c2 := 0;
     if (sDrawMode = 0) or (sDrawMode = 1) then
     begin
       c1 := ColorToColor32(sBGColor,sBGAlpha);

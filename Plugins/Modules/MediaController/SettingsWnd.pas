@@ -90,9 +90,11 @@ end;
 
 procedure TSettingsForm.GetFooPathFromRegistry;
 begin
+  {$WARNINGS OFF}
   Edit_FooPath.Text := IncludeTrailingBackSlash(
                           RegLoadStr('FooBar2000','InstallDir','C:\Program Files\Foobar2000\'))
                        + 'FooBar2000.exe';
+  {$WARNINGS ON}
 end;
 
 procedure TSettingsForm.UpdateStatus;
@@ -122,7 +124,7 @@ begin
   if cb_vlc.Checked then
   begin
     foocontrols := False;
-  end;
+  end else foocontrols := False;
 
   lb_foobarpath.Enabled := foocontrols;
   edit_foopath.Enabled := foocontrols;
