@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, GR32_RangeBars, SharpApi, XPMan;
+  Dialogs, StdCtrls, ComCtrls, GR32_RangeBars, SharpApi;
 
 type
   TSettingsForm = class(TForm)
@@ -44,7 +44,6 @@ type
     lb_barsize: TLabel;
     tb_size: TGaugeBar;
     OpenFile: TOpenDialog;
-    XPManifest1: TXPManifest;
     procedure tb_sizeChange(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);

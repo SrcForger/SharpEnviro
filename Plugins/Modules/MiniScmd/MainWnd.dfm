@@ -17,7 +17,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 285
-    Height = 166
+    Height = 164
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -25,10 +25,10 @@ object MainForm: TMainForm
     ScaleMode = smNormal
     TabOrder = 0
     object edit: TSharpEEdit
-      Left = 0
-      Top = 0
+      Left = 3
+      Top = 1
       Width = 100
-      Height = 17
+      Height = 20
       AutoSize = True
       SkinManager = SharpESkinManager1
       AutoPosition = True

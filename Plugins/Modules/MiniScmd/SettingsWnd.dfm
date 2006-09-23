@@ -80,8 +80,4 @@ object SettingsForm: TSettingsForm
     Left = 136
     Top = 96
   end
-  object XPManifest1: TXPManifest
-    Left = 144
-    Top = 8
-  end
 end
