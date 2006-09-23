@@ -1111,12 +1111,13 @@ begin
 end;
 
 procedure TMainForm.FlashTimerTimer(Sender: TObject);
-var
-  fc,n : integer;
-  pTaskItem : TSharpETaskItem;
+//var
+ // fc,n : integer;
+ // pTaskItem : TSharpETaskItem;
 begin
   DebugOutPutInfo('TMainForm.FlashTimerTimer (Procedure)');
-  fc := 0;
+  FlashTimer.Enabled := False;
+ { fc := 0;
   for n := 0 to IList.Count -1 do
   begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
@@ -1126,7 +1127,7 @@ begin
      // pTaskItem.FlashState := not pTaskItem.FlashState;
     end;
   end;
-  if fc = 0 then FlashTimer.Enabled := False;
+  if fc = 0 then FlashTimer.Enabled := False;     }
 end;
 
 procedure TMainForm.ses_minallClick(Sender: TObject);
