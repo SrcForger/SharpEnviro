@@ -137,11 +137,8 @@ end;
 procedure Arc(aBMP:TBitmap32; aRect: TRect; aStart,aEnd:integer;AA: boolean;
               clLine: TColor32);
 const rad = 0.01745329251;
-var t1,t2,t3,t4,t5,t6,t7,t8,t9: integer;
-    d1,d2,x,y: integer;
-    center_x,center_y,rx,ry: integer;
-    R0,R1,R2,R3: TRect;
-    e: single;
+var x,y: integer;
+    rx,ry: integer;
 
     function ArcArea(sStart,sEnd: integer): TRect;
     begin
