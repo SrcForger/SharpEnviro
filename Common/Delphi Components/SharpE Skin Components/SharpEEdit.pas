@@ -77,7 +77,7 @@ type
     procedure SetFStringList(const Value: TStringlist);
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy;
+    destructor Destroy; override;
     procedure Loaded; override;
     procedure SetAutoComplete;
     property SearchList: TStringlist read FStringList write SetFStringList;
@@ -186,7 +186,7 @@ end;
 procedure TSharpEEditText.SetAutoComplete;
 var
   FAutoComplete: IAutoComplete2;
-  FStrings, FSF, FSFavs, FSHist, FSMru: IUnknown;
+  FStrings, FSF, FSHist, FSMru: IUnknown;
   om: IObjMgr;
   ACOOptions: Integer;
 begin
@@ -431,8 +431,7 @@ end;
 
 destructor TSharpEEdit.Destroy;
 begin
-  FEdit.Free;
-  FEdit := nil;
+  FreeAndNil(FEdit);
   inherited Destroy;
 end;
 
@@ -649,8 +648,7 @@ begin
        FEdit.Height := Height - 2;
      end;
     finally
-      bmp.free;
-      bmp := nil;
+      FreeAndNil(bmp);
     end;
   end
   else DrawDefaultSkin(DefaultSharpEScheme);

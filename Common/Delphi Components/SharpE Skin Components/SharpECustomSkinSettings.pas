@@ -37,7 +37,9 @@ begin
   if FileExists(dir + 'custom.xml') then fn := dir + 'custom.xml'
      else
      begin
+       {$WARNINGS OFF}
        dir := IncludeTrailingBackSlash(ExtractFileDir(SharpApi.GetCurrentSkinFile));
+       {$WARNINGS ON}
        if FileExists(dir + 'custom.xml') then fn := dir + 'custom.xml'
           else exit;
      end;

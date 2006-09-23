@@ -454,11 +454,9 @@ end;
 function TSharpEButton.GetTextWidth : integer;
 var
   bmp : TBitmap32;
-  w : integer;
   ButtonSkin : TSharpEButtonSkin;
 begin
   bmp := TBitmap32.Create;
-  result := 0;
   try
     if not Assigned(FManager) then
     begin
@@ -473,9 +471,11 @@ begin
          else DefaultSharpESkinText.AssignFontTo(bmp.Font,DefaultSharpEScheme);
     end;
     result := bmp.TextWidth(FCaption);
+    exit;
   finally
     bmp.free;
   end;
+  result := 0;
 end;
 
 function TSharpEButton.GetIconWidth : integer;

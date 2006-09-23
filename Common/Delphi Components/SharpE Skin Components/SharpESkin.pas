@@ -944,9 +944,11 @@ begin
       if ItemNamed['icontboffset'] <> nil then
         FIconTBOffset.SetPoint(Value('icontboffset','3,3'));
       if ItemNamed['OnNormalMouseEnter'] <> nil then
+      {$WARNINGS OFF}
         FOnNormalMouseEnterScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseEnter',''));
       if ItemNamed['OnNormalMouseLeave'] <> nil then
         FOnNormalMouseLeaveScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseLeave',''));
+      {$WARNINGS ON}
     end;
   finally
     SkinText.free;
@@ -1230,9 +1232,9 @@ begin
       2: loadstr := 'mini';
     end;
     case n of
-      0: st := FFull;
       1: st := FCompact;
       2: st := FMini;
+      else st := FFUll;
     end;
     SkinText := TSkinText.create;
     SkinText.SetLocation('cw', 'ch');
@@ -1264,6 +1266,7 @@ begin
              st.SkinDim.SetDimension(Value('dimension', 'w,h'));
           if ItemNamed['location'] <> nil then
              st.SkinDim.SetLocation(Value('location','0,0'));
+         {$WARNINGS OFF}
           if ItemNamed['OnNormalMouseEnter'] <> nil then
              st.OnNormalMouseEnterScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseEnter',''));
           if ItemNamed['OnNormalMouseLeave'] <> nil then
@@ -1280,6 +1283,7 @@ begin
              st.OnHighlightStepStartScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnHighlightStepStart',''));
           if ItemNamed['OnHighlightStepEnd'] <> nil then
              st.OnHighlightStepEndScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnHighlightStepEnd',''));
+          {$WARNINGS ON}
           if ItemNamed['icon'] <> nil then
           begin
             if ItemNamed['icon'].Items.ItemNamed['draw'] <> nil then

@@ -60,7 +60,6 @@ type
   private
     //FCancel: Boolean;
     FFlashing : boolean;
-    FFlashTime : int64;
     FFlashState : boolean;
     FState : TSharpETaskItemStates;
     FGlyph32FileName: TGlyph32FileName;
@@ -563,7 +562,6 @@ var
   GlyphPos, TextPos: TPoint;
   mw : integer;
   DrawCaption : String;
-  DrawGlyph : TBitmap32;
   CurrentState : TSharpeTaskItemState;
 begin
   CompRect := Rect(0, 0, width, height);
