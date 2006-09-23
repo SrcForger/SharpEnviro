@@ -36,7 +36,7 @@
         <dimension>w-2,26</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>128</alpha>
+        <alpha>144</alpha>
       </skinpart>
     </bar>
     <throbber>
@@ -100,7 +100,7 @@
         <location>cw-1,ch</location>
         <name>Small Fonts</name>
         <size>7</size>
-        <color>$BackgroundText</color>
+        <color>$Text</color>
       </text>
       <icon>
         <draw>1</draw>
@@ -382,7 +382,7 @@
         <location>cw-1,ch</location>
         <name>Small Fonts</name>
         <size>7</size>
-        <color>$BackgroundText</color>
+        <color>$Text</color>
       </text>
       <icon>
         <draw>0</draw>
@@ -1159,7 +1159,7 @@
       <location>cw-1,ch</location>
       <name>Small Fonts</name>
       <size>7</size>
-      <color>$BackgroundText</color>
+      <color>$Text</color>
     </text>
     <location>0,1</location>
     <dimension>w,19</dimension>

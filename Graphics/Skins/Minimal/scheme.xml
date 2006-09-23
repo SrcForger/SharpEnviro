@@ -12,4 +12,10 @@
     <Info>Background Color</Info>
     <Default>8151615</Default>
   </item>
+  <item>
+    <Name>Text</Name>
+    <Tag>$Text</Tag>
+    <Info>Text Color</Info>
+    <Default>0</Default>
+  </item>
 </SharpESkinScheme>
