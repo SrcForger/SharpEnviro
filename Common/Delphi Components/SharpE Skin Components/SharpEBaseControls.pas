@@ -88,6 +88,7 @@ type
   TCustomSharpEControl = class(TCustomControl)
   protected
     FManager: TSharpESkinManager;
+    FSpecialBackground: TBitmap32;
 
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
@@ -97,6 +98,7 @@ type
     procedure UpdateSkin; overload; virtual;
     procedure UpdateSkin(sender: TComponent); overload;
     property SkinManager: TSharpESkinManager read FManager write SetManager;
+    property SpecialBackground : TBitmap32 read FSpecialBackground write FSpecialBackground;
   end;
 
 implementation
