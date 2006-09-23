@@ -409,7 +409,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
             OnClick = GenericPopupClick
           end
           object functionIsServicesStartedServicePCharhresult1: TMenuItem
-            Caption = 'function IsServicesStarted(Service : PChar) : hresult;'
+            Caption = 'function IsServicesStarted(Service : String) : hresult;'
             Hint = 'IsServiceStarted('#39'Service'#39')'
             OnClick = GenericPopupClick
           end
