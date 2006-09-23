@@ -1187,6 +1187,7 @@ begin
       if (oMon <> SharpEBar1.MonitorIndex) or (oPMon <> SharpEBar1.PrimaryMonitor) then
       begin
         UpdateBGZone;
+        ModuleManager.RefreshMiniThrobbers;
       end;
       if oVP <> SharpEBar1.VertPos then
       begin
@@ -1194,11 +1195,13 @@ begin
         SharpEBar1.UpdateSkin;
         ModuleManager.UpdateModuleSkins;
         ModuleManager.FixModulePositions;
+        ModuleManager.RefreshMiniThrobbers;
       end;
       if oHP <> SharpEBar1.HorizPos then
       begin
         UpdateBGImage;
         ModuleManager.FixModulePositions;
+        ModuleManager.RefreshMiniThrobbers;
       end;
     end;
     if BarHideForm <> nil then BarHideForm.UpdateStatus;
