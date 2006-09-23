@@ -118,7 +118,7 @@ type
     procedure EditExitEvent(Sender:TObject);
     procedure EditEnterEvent(Sender:TObject);
     procedure EditChangeEvent(Sender:TObject);
-//    procedure SetAutoSize(const Value: Boolean);
+    procedure SetAutoSizeProperty(const Value: Boolean);
   protected
     FAutoSize: boolean;
     procedure Paint; override;
@@ -133,7 +133,7 @@ type
     destructor Destroy; override;
     procedure SetFocus; override;
   published
-    property AutoSize: Boolean read FAutosize write SetAutoSize;
+    property AutoSize: Boolean read FAutosize write SetAutoSizeProperty;
     property Anchors;
     property Cancel: Boolean read FCancel write FCancel default False;
     property Constraints;
@@ -654,11 +654,11 @@ begin
   else DrawDefaultSkin(DefaultSharpEScheme);
 end;
 
-{procedure TSharpEEdit.SetAutoSize(const Value: Boolean);
+procedure TSharpEEdit.SetAutoSizeProperty(const Value: Boolean);
 begin
   FAutosize := Value;
   UpdateSkin;
   Invalidate;
-end;       }
+end;
 
 end.
