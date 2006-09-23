@@ -18,7 +18,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 189
-    Height = 164
+    Height = 162
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -60,6 +60,7 @@ object MainForm: TMainForm
       Height = 15
       AutoSize = False
       Caption = 'lb_rambar'
+      Transparent = True
       Visible = False
       OnDblClick = BackgroundDblClick
       SkinManager = SharpESkinManager1
@@ -72,6 +73,7 @@ object MainForm: TMainForm
       Height = 15
       AutoSize = False
       Caption = 'lb_swpbar'
+      Transparent = True
       Visible = False
       OnDblClick = BackgroundDblClick
       SkinManager = SharpESkinManager1
@@ -84,6 +86,7 @@ object MainForm: TMainForm
       Height = 15
       AutoSize = False
       Caption = 'swp'
+      Transparent = True
       Visible = False
       OnDblClick = BackgroundDblClick
       SkinManager = SharpESkinManager1
@@ -96,6 +99,7 @@ object MainForm: TMainForm
       Height = 15
       AutoSize = False
       Caption = 'ram'
+      Transparent = True
       Visible = False
       OnDblClick = BackgroundDblClick
       SkinManager = SharpESkinManager1
