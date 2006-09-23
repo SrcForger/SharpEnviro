@@ -111,12 +111,8 @@ begin
 end; 
 
 procedure TZ9Edit.WMEraseBkGnd(var Message: TWMEraseBkGnd); 
-var 
-  DC: hDC; 
-  i: integer; 
-  p: TPoint; 
+var
   canvas : TCanvas;
-  oh : THandle; 
 begin
   if FTransparent and not(csDesigning in componentstate) then
   begin
@@ -194,9 +190,8 @@ end;
 
 procedure TZ9Edit.RepaintWindow; 
 var 
-  DC: hDC; 
+  DC: hDC;
   TmpBitmap, Bitmap: hBitmap;
-  canvas : TCanvas;
   tempdc : hDC;
 begin
   if FTransparent then
