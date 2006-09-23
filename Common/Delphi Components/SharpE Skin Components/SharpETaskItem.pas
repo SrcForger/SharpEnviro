@@ -640,7 +640,7 @@ begin
       FGlyph32.CombineMode := cmMerge;
       TextSize.X := bmp.TextWidth(DrawCaption);
       TextSize.Y := bmp.TextHeight(DrawCaption);
-      if not Enabled then DrawGlyph.MasterAlpha := FDisabledAlpha;
+      //if not Enabled then DrawGlyph.MasterAlpha := FDisabledAlpha;
       GlyphPos := CurrentState.IconLocation.GetXY(TextRect,CompRect);
       FGlyph32.DrawTo(bmp,Rect(GlyphPos.X,GlyphPos.Y,GlyphPos.X + CurrentState.IconSize, GlyphPos.Y + CurrentState.IconSize));
     end;
