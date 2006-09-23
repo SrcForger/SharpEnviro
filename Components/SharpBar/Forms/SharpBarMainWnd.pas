@@ -37,7 +37,7 @@ uses
   Dialogs, SharpESkinManager, SharpEScheme, SharpEBaseControls, SharpESkin,
   Menus, StdCtrls, JvSimpleXML, SharpApi, ShellHook, GR32,
   uSharpEModuleManager, SharpEButton, DateUtils, ExtCtrls,
-  ImgList, PngImageList, XPMan, SharpEBar, AppEvnts, GR32_Image;
+  ImgList, PngImageList, SharpEBar, AppEvnts, GR32_Image;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -59,7 +59,6 @@ type
     PngImageList1: TPngImageList;
     Settings1: TMenuItem;
     AutoStart1: TMenuItem;
-    XPManifest1: TXPManifest;
     ThrobberPopUp: TPopupMenu;
     Information1: TMenuItem;
     N5: TMenuItem;
@@ -1355,7 +1354,8 @@ begin
   begin
     FStartup := False;
     UnlockWindow(Handle);
-    SetLayeredWindowAttributes(Handle, RGB(255,0,254), 1, LWA_COLORKEY or LWA_ALPHA);
+    SetLayeredWindowAttributes(Handle, RGB(255,0,254), 1, LWA_ALPHA);
+    SetLayeredWindowAttributes(Handle, RGB(255,0,254), 1, LWA_COLORKEY);
     SharpEBar1.abackground.Alpha := 1;
     Application.ShowMainForm := True;
     Show;
@@ -1410,7 +1410,8 @@ begin
     BlendInTimer.Enabled := False;
     WMUnlockBarWindow(msg);
   end;
-  SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendInTimer.Tag, LWA_COLORKEY or LWA_ALPHA);
+  SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendInTimer.Tag, LWA_ALPHA);
+  SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendInTimer.Tag, LWA_COLORKEY);
   SharpEBar1.abackground.Alpha := BlendInTimer.Tag;
 end;
 
@@ -1422,7 +1423,8 @@ begin
     BlendOutTimer.Tag := 0;
     BlendOutTimer.Enabled := False;
   end;
-  SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendOutTimer.Tag, LWA_COLORKEY or LWA_ALPHA);
+  SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendOutTimer.Tag, LWA_ALPHA);
+  SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendOutTimer.Tag, LWA_COLORKEY);
   SharpEBar1.abackground.Alpha := BlendOutTimer.Tag;
 end;
 
@@ -1443,7 +1445,8 @@ begin
   begin
     FStartup := False;
     UnlockWindow(Handle);
-    SetLayeredWindowAttributes(Handle, RGB(255,0,254), 1, LWA_COLORKEY or LWA_ALPHA);
+    SetLayeredWindowAttributes(Handle, RGB(255,0,254), 1, LWA_ALPHA);
+    SetLayeredWindowAttributes(Handle, RGB(255,0,254), 1, LWA_COLORKEY);
     SharpEBar1.abackground.Alpha := 1;
     Application.ShowMainForm := True;
     Show;
