@@ -52,13 +52,14 @@ uses
   StrTools,
   ShlIntf,
   ActiveX,
-  ComObj;
+  ComObj,
+  TranComp;
 
 type
   TSearchListChangeEvent = procedure of object;
   TParentControl = class(TWinControl);
 
-  TSharpEEditText = class(TEdit)
+  TSharpEEditText = class(TZ9Edit)
   private
     FStringList: TStringList;
     FSearchListChange: TSearchListChangeEvent;
@@ -110,8 +111,7 @@ type
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMFocusChanged(var Message: TCMFocusChanged); message
-      CM_FOCUSCHANGED;
+    procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure SetText(Value:String);
 
     procedure KeyUpEvent(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -190,6 +190,8 @@ var
   om: IObjMgr;
   ACOOptions: Integer;
 begin
+  // THIS SHIT IS LEAKING! SOMEONE FIX IT! :)
+  exit;
   CoInitialize(nil);
   FAutoComplete := CreateComObject(CLSID_AutoComplete) as IAutoComplete2;
   Try
@@ -369,6 +371,7 @@ begin
 
   FEdit := TSharpEEditText.Create(self);
   FEdit.Parent := self;
+  FEdit.Transparent := True;
   FEdit.Left := 1;
   FEdit.Top := 1;
   FEdit.Width := Width -1;
