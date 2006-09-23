@@ -89,7 +89,6 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  filename : string;
   item : TJvSimpleXMLElem;
 begin
   BarWidth := 100;
@@ -125,21 +124,15 @@ end;
 
 procedure TMainForm.ReAlignComponents(Broadcast : boolean);
 var
-  ramw,spacing,swpw,h : integer;
-  pcmod,imod : integer;
+  spacing,h : integer;
   o1,o2,o3,o4,o5 : integer;
   NewWidth : integer;
 begin
   if BarWidth<25 then BarWidth := 25;
 
-  ramw := 0;
-  swpw := 0;
   spacing := 10;
-  pcmod := 0;
-  imod := 0;
 
   o1 := 2;
-  o2 := 0;
   o3 := 0;
   o4 := 0;
   o5 := 0;
@@ -382,9 +375,7 @@ begin
     uSharpBarAPI.SaveXMLFile(BarWnd);
     ReAlignComponents(true);
   end;
-  SettingsForm.Free;
-  SettingsForm := nil;
-  SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  FreeAndNil(SettingsForm);
 end;
 
 procedure TMainForm.BackgroundDblClick(Sender: TObject);

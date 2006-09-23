@@ -93,7 +93,6 @@ end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
 var
-  FreeBarSpace : integer;
   newWidth : integer;
 begin
   self.Caption := '';
@@ -133,8 +132,7 @@ begin
     ReAlignComponents(True);
 
   finally
-    SettingsForm.Free;
-    SettingsForm := nil;
+    FreeAndNil(SettingsForm);
   end;
 end;
 

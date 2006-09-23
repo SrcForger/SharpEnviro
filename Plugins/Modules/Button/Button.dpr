@@ -138,6 +138,7 @@ function CloseModule(ID : integer) : boolean;
 var
   n : integer;
 begin
+  result := False;
   if ModuleList = nil then exit;
 
   try

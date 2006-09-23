@@ -287,8 +287,8 @@ end;
 
 procedure TTaskManager.DoSortTasks;
 var
-  pItem1,pItem2 : TTaskItem;
-  n,i : integer;
+  pItem1 : TTaskItem;
+  n : integer;
   SList : TStringList;
   fixedcaption : String;
 begin

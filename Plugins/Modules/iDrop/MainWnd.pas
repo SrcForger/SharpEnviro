@@ -152,7 +152,6 @@ procedure TMainForm.Draw(startcolor : Tcolor; ck : boolean);
 var
   n : integer;
   s : integer;
-  r : integer;
   Bmp : TBitmap32;
   c : TColor;
 begin
@@ -205,7 +204,6 @@ procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
   item : TJvSimpleXMLElem;
-  SimpleXML : TJvSimpleXML;
 begin
   try
     SettingsForm := TSettingsForm.Create(nil);
@@ -225,8 +223,7 @@ begin
     end;
 
   finally
-    SettingsForm.Free;
-    SettingsForm := nil;
+    FreeAndNil(SettingsForm);
   end;
 end;
 
@@ -243,7 +240,9 @@ end;
 
 procedure TMainForm.BackgroundDblClick(Sender: TObject);
 begin
+  {$WARNINGS OFF}
   SharpApi.SharpExecute(IncludeTrailingBackSlash(sTarget));
+  {$WARNINGS ON}
 end;
 
 procedure TMainForm.AnimTimerTimer(Sender: TObject);

@@ -144,7 +144,6 @@ uses SettingsWnd,
 
 var
   SysMenuHandle : hwnd;
-  usend : boolean;
 
 {$R *.dfm}
 
@@ -201,7 +200,9 @@ begin
       begin
         with FCustomSkinSettings.xml.Items.ItemNamed['taskbar'] do
         begin
+          {$WARNINGS OFF}
           dir := IncludeTrailingBackSlash(FCustomSkinSettings.Path);
+          {$WARNINGS ON}
           if FileExists(dir + items.Value('minallicon')) then
           begin
             try
@@ -248,8 +249,6 @@ begin
 end;
 
 procedure TMainForm.GetSpacing;
-var
-  r : TRect;
 begin
   DebugOutPutInfo('TMainForm.GetSpacing (Procedure)');
   if SystemSkinManager.Skin.TaskItemSkin = nil then exit;
@@ -476,8 +475,6 @@ procedure TMainForm.LoadSettings;
 var
   item,fitem : TJvSimpleXMLElem;
   n : integer;
-  b : boolean;
-  dir : String;
 begin
   DebugOutPutInfo('TMainForm.LoadSettings (Procedure)');
   sState     := tisFull;
@@ -573,9 +570,7 @@ end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
 var
-  FreeBarSpace : integer;
-  newWidth,oWidth : integer;
-  oBmp : TBitmap32;
+  newWidth : integer;
 begin
   DebugOutPutInfo('TMainForm.ReAlignComponents (Procedure)');
   GetSpacing;
@@ -700,8 +695,7 @@ begin
       RealignComponents(True);
     end;
   finally
-    SettingsForm.Free;
-    SettingsForm := nil;
+    FreeAndNil(SettingsForm);
   end;
 end;
 
@@ -772,7 +766,6 @@ begin
 
   changed := False;
   FLocked := True;
-  pTaskItem := nil;
   for i := 0 to TM.GetCount -1 do
   begin
     pItem := TM.GetItemByIndex(i);
@@ -1057,10 +1050,6 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 
   function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
-  var
-    buffer : array[0..254] of Char;
-    buffer2 : array[0..254] of Char;
-    icon : hicon;
   begin
     if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
        ((IsWindowVisible(Wnd) or IsIconic(wnd)) and

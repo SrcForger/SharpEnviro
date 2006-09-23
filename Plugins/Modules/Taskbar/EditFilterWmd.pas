@@ -201,8 +201,8 @@ procedure TEditFilterForm.btn_find1Click(Sender: TObject);
         item.ImageIndex := EditFilterForm.wndclasspopup.Items.Count;
         item.OnClick := EditFilterForm.PopupItemOnClick;
         EditFilterForm.wndclasspopup.Items.add(item);
+        tempIcon := TIcon.Create;
         try
-          tempIcon := TIcon.Create;
           tempIcon.Handle := GetIcon(wnd);
           EditFilterForm.wndcimages.AddIcon(tempIcon);
         finally

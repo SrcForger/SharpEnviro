@@ -979,8 +979,7 @@ begin
   begin
     temp := TTrayItem(FItems.Items[n]);
     FItems.Extract(temp);
-    temp.Free;
-    temp := nil;
+    FreeAndNil(Temp);
     RenderIcons;
   end;
 end;

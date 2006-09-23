@@ -103,6 +103,7 @@ begin
   try
     i := GetBarPluginHeight(FBarWnd);
   except
+    i := 16;
   end;
   FForm := TMainForm.CreateParented(pParent,ID,FBarWnd,i);
   FForm.BorderStyle := bsNone;
@@ -150,6 +151,7 @@ function CloseModule(ID : integer) : boolean;
 var
   n : integer;
 begin
+  result := False;
   if ModuleList = nil then
   begin
     result := False;
