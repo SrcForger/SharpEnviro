@@ -37,7 +37,8 @@ uses
   Dialogs, SharpESkinManager, SharpEScheme, SharpEBaseControls, SharpESkin,
   Menus, StdCtrls, JvSimpleXML, SharpApi, ShellHook, GR32,
   uSharpEModuleManager, SharpEButton, DateUtils, ExtCtrls,
-  ImgList, PngImageList, SharpEBar, AppEvnts, GR32_Image;
+  ImgList, PngImageList, SharpEBar, AppEvnts, GR32_Image,
+  Jpeg;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -476,16 +477,23 @@ begin
 
   BGBmp := TBitmap32.Create;
   BGBmp.SetSize(Screen.Width,Screen.Height);
+  BGBmp.Clear(color32(4,3,2,255));
   try
     wnd := FindWindow('TSharpDeskMainForm',nil);
     if wnd <> 0 then
     begin
       PrintWindow(wnd,BGBmp.Handle,0);
-      FTopZone.SetSize(Monitor.Width,Height);
-      FBottomZone.SetSize(Monitor.Width,Height);
-      FTopZone.Draw(0,0,Rect(Monitor.Left,Monitor.Top,Monitor.Left + Monitor.Width,Monitor.Top + Height), BGBmp);
-      FBottomZone.Draw(0,0,Rect(Monitor.Left,Monitor.Top + Monitor.Height - Height,Monitor.Left + Monitor.Width,Monitor.Top + Monitor.Height), BGBmp);
-    end;
+      if (BGBmp.Pixel[0,0] = color32(4,3,2,255))
+         and (BGBmp.Pixel[BGBmp.Width - 1,BGBmp.Height - 1] = color32(4,3,2,255))
+         and (BGBmp.Pixel[0,BGBmp.Height - 1] = color32(4,3,2,255))
+         and (BGBmp.Pixel[BGBmp.Width - 1,0] = color32(4,3,2,255)) then
+         if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg') then
+            BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg');
+    end else PaintDesktop(BGBmp.Handle);
+    FTopZone.SetSize(Monitor.Width,Height);
+    FBottomZone.SetSize(Monitor.Width,Height);
+    FTopZone.Draw(0,0,Rect(Monitor.Left,Monitor.Top,Monitor.Left + Monitor.Width,Monitor.Top + Height), BGBmp);
+    FBottomZone.Draw(0,0,Rect(Monitor.Left,Monitor.Top + Monitor.Height - Height,Monitor.Left + Monitor.Width,Monitor.Top + Monitor.Height), BGBmp);
   except
   end;
   BGBmp.Free;
@@ -855,6 +863,7 @@ begin
 
   BarHideForm := TBarHideForm.Create(self);
 
+  UpdateBGZone;
   DelayTimer2.Enabled := True;
 end;
 
@@ -1399,7 +1408,7 @@ end;
 procedure TSharpBarMainForm.OnBarPositionUpdate(Sender : TObject);
 begin
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
-  UpdateBGZone;
+  UpdateBGImage;
 end;
 
 procedure TSharpBarMainForm.BlendInTimerTimer(Sender: TObject);
