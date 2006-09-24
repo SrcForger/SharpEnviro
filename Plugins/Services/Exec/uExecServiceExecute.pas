@@ -80,6 +80,8 @@ type
     Calc: TCalcExpress;
 
     FAliasValue: string;
+    FDebugText: String;
+    FUseDebug: Boolean;
     procedure SetAliasValue(const Value: string);
 
   public
@@ -94,6 +96,8 @@ type
     constructor Create;
     destructor Destroy; override;
     function ProcessString(Text: string; SaveHistory: Boolean = True): Boolean;
+    property UseDebug: Boolean read FUseDebug write FUseDebug;
+    property DebugText: String read FDebugText write FDebugText;
   protected
 
   private
@@ -181,7 +185,7 @@ begin
         tmp := filetoexecute;
 
         for j := 0 to Pred(PathIncludeList.Items.Count) do begin
-          FileToExecute := fileexistsin(FileToExecute, PathIncludeList[j].Path,
+          FileToExecute := fileexistsin(tmp, PathIncludeList[j].Path,
             PathIncludeList[j].WildCard);
         end;
 
@@ -241,7 +245,7 @@ var
 begin
   // Create Calculator Component
   Calc := TCalcExpress.Create(nil);
-
+  UseDebug := False;
   // Initialise XML Filenames
   SrvSettingsPath := GetSharpeUserSettingsPath +
     'SharpCore\Services\Exec\';
@@ -393,7 +397,7 @@ begin
           Exit;
         end;
       end
-      else if ExtractFileExt(text) = '.msc' then begin
+      else if ((ExtractFileExt(text) = '.msc') and (Pos('mmc',lowercase(text)) <> 0)) then  begin
         Debug('ExecuteType: MSC Console', DMT_TRACE);
 
         if ShellOpenFile(Handle, GetWindowsSystemFolder + '\mmc.exe',
@@ -594,7 +598,9 @@ var
   i, j: integer;
   alval: string;
   tokens: tstringlist;
+  tmpFC: TExecFileCommandl;
 begin
+
 
   // StringList Intialisation
   windowsfolderlist := TStringList.Create;
@@ -631,7 +637,7 @@ begin
       AliasValue := fileexistsin(text, PathIncludeList[j].Path,
         PathIncludeList[j].WildCard);
 
-      if StrCompare(AliasValue, alval) <> 0 then begin
+      if ((StrCompare(AliasValue, alval) <> 0) and (AliasValue <> '')) then begin
         Result := True;
         Exit;
       end;
@@ -647,7 +653,6 @@ begin
     strlist.Free;
     tokens.Free;
   end;
-
 end;
 
 {=============================================================================
@@ -702,7 +707,7 @@ function TSharpExec.FileExistsIn(FileName: string; location: string; extension:
 var
   templist: TStrings;
   i: Integer;
-  withoute, withe: string;
+  withoute, withe, withpath: string;
 
 begin
 
@@ -800,7 +805,12 @@ function TSharpExec.ShellOpenFile(hWnd: HWND; AFileName, AParams, ADefaultDir:
 begin
   Debug('FileName: ' + AFileName, DMT_TRACE);
   Debug('dir: ' + ADefaultDir, DMT_TRACE);
+  result := 0;
 
+  if FUseDebug then begin
+    FDebugText := AFileName + ' ' + ADefaultDir + ' ' + AParams;
+    Result := 1;
+  end else
   result := shellapi.ShellExecute(hWnd, nil, pChar(AFileName),
     pChar(AParams),
     pChar(ADefaultDir),

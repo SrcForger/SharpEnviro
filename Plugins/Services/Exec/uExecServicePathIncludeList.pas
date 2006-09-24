@@ -117,13 +117,36 @@ begin
 end;
 
 constructor TPathIncludeList.Create(FileName: string);
+var
+  i:Integer;
+  bSave:Boolean;
 begin
   inherited Create;
   FFileName := FileName;
   Items := TObjectList.Create;
+  bSave := False;
 
-  if FileExists(FileName) then
-    Load
+  if FileExists(FileName) then begin
+    Load;
+
+    Try
+    for i := 0 to Pred(Self.Items.Count) do begin
+      if (DirectoryExists(Self.Item[i].Path) = False) then begin
+        Self.Item[i].Path := 'invalid';
+        Self.Item[i].WildCard := '';
+        bSave := True;
+      end;
+    end;
+    Finally
+      if bSave then Self.Save;
+      Self.Add(GetSharpeDirectory,'*.exe',False,True);
+      Self.Add(GetSharpeDirectory,'*.exe',False,False);
+      Self.Add(GetSharpeDirectory,'*.exe',True,True);
+      Self.Add(GetSharpeDirectory,'*.exe',False,False);
+    End;
+
+
+  end
   else begin
     Add(GetWindowsFolder, '*.exe', False, True);
     Add(GetWindowsSystemFolder, '*.exe', False, True);
