@@ -49,6 +49,7 @@ contains
   uFontList in '..\..\Delphi Components\SharpEFontSelector\uFontList.pas',
   uScHotkeyEdit in '..\..\Delphi Components\SCHotkeyEdit\uScHotkeyEdit.pas',
   VKToString in '..\..\Units\SCHotkeyManager\VKToString.pas',
-  uScHotkeyMgr in '..\..\Units\SCHotkeyManager\uScHotkeyMgr.pas';
+  uScHotkeyMgr in '..\..\Units\SCHotkeyManager\uScHotkeyMgr.pas',
+  MBButtonPanel in '..\..\Delphi Components\MBButtonPanel\MBButtonPanel.pas';
 
 end.
