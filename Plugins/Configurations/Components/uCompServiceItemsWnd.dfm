@@ -675,10 +675,4 @@ object frmCompItems: TfrmCompItems
     Left = 248
     Top = 216
   end
-  object SharpESkinManager: TSharpESkinManager
-    SkinSource = ssDefault
-    SchemeSource = ssSystem
-    Left = 304
-    Top = 188
-  end
 end

@@ -84,7 +84,6 @@ type
     miEditCommand: TMenuItem;
     dlgImport: TOpenDialog;
     dlgExport: TSaveDialog;
-    SharpESkinManager: TSharpESkinManager;
     Panel1: TPanel;
     lbItems: TSharpEListBox;
     procedure lbItems_Click(Sender: TObject);
@@ -138,7 +137,7 @@ begin
   begin
     tmpInfo := TComponentItem(lbitems.Items.Objects[lbitems.ItemIndex]);
 
-    TempItemStorage.Delete(tmpInfo);
+    ItemStorage.Delete(tmpInfo);
     lbitems.DeleteSelected;
 
     // Select next
@@ -163,9 +162,9 @@ begin
 
   if sFileName <> '' then
   begin
-    TempItemStorage.Add(ExtractFileName(sFilename), 'Untitled', sFileName,
+    ItemStorage.Add(ExtractFileName(sFilename), 'Untitled', sFileName,
       False, False, False, 0);
-    UpdateDisplay(TempItemStorage);
+    UpdateDisplay(ItemStorage);
     SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
     UpdateButtonStates;
   end;
@@ -191,7 +190,7 @@ begin
         obj.Name := ExtractFileName(sFilename);
       end;
     end;
-    UpdateDisplay(TempItemStorage);
+    UpdateDisplay(ItemStorage);
     SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
     UpdateButtonStates;
   end;
@@ -237,6 +236,7 @@ var
   i: Integer;
   idx: Integer;
 begin
+  idx := 0;
   if lbItems.ItemIndex <> -1 then
     idx := lbItems.ItemIndex;
 
@@ -298,28 +298,28 @@ end;
 procedure TfrmCompItems.AddExistingClick(Sender: TObject);
 begin
   if TMenuItem(Sender) = miSharpBar then
-    TempItemStorage.Add('SharpBar', 'Core Bar Component', GetSharpeDirectory +
+    ItemStorage.Add('SharpBar', 'Core Bar Component', GetSharpeDirectory +
       'SharpBar.exe', True, False, False, 0)
   else if TMenuItem(Sender) = miSharpDesk then
-    TempItemStorage.Add('SharpDesk', 'Core Desktop Component',
+    ItemStorage.Add('SharpDesk', 'Core Desktop Component',
       GetSharpeDirectory + 'SharpDesk.exe', True, False, False, 0)
   else if TMenuItem(Sender) = miSharpConsole then
-    TempItemStorage.Add('SharpConsole', 'Core Debugging Component',
+    ItemStorage.Add('SharpConsole', 'Core Debugging Component',
       GetSharpeDirectory + 'SharpConsole.exe', True, False, False, 0)
   else if TMenuItem(Sender) = miSharpTray then
-    TempItemStorage.Add('SharpTray', 'Core Tray Component',
+    ItemStorage.Add('SharpTray', 'Core Tray Component',
       GetSharpeDirectory + 'SharpTray.exe', True, False, False, 0)
   else if TMenuItem(Sender) = miSharpTask then
-    TempItemStorage.Add('SharpTask', 'Core Task Component',
+    ItemStorage.Add('SharpTask', 'Core Task Component',
       GetSharpeDirectory + 'SharpTask.exe', True, False, False, 0)
   else if TMenuItem(Sender) = miSharpVWM then
-    TempItemStorage.Add('SharpVwm', 'Core VWM Component',
+    ItemStorage.Add('SharpVwm', 'Core VWM Component',
       GetSharpeDirectory + 'SharpVWM.exe', True, False, False, 0)
   else if TMenuItem(Sender) = miSharpDocs then
-    TempItemStorage.Add('SharpDocs', 'Core Help Component',
+    ItemStorage.Add('SharpDocs', 'Core Help Component',
       GetSharpeDirectory + 'SharpDocs.exe', True, False, False, 0);
 
-  UpdateDisplay(TempItemStorage);
+  UpdateDisplay(ItemStorage);
   SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
   UpdateButtonStates;
 end;
@@ -333,18 +333,18 @@ begin
   // move selected down
   Index := lbitems.ItemIndex;
   tmpObj := TComponentItem(lbItems.Items.Objects[index]);
-  ObjIndex := TempItemStorage.Items.IndexOf(tmpObj);
+  ObjIndex := ItemStorage.Items.IndexOf(tmpObj);
 
   if ObjIndex <> -1 then
   begin
 
-    if not (ObjIndex + 1 >= TempItemStorage.Count) then
+    if not (ObjIndex + 1 >= ItemStorage.Count) then
     begin
-      TempItemStorage.Items.Move(ObjIndex, ObjIndex + 1);
+      ItemStorage.Items.Move(ObjIndex, ObjIndex + 1);
       lbItems.ItemIndex := ObjIndex + 1;
     end;
   end;
-  UpdateDisplay(TempItemStorage);
+  UpdateDisplay(ItemStorage);
   SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
   UpdateButtonStates;
 end;
@@ -358,17 +358,17 @@ begin
   // move selected down
   Index := lbitems.ItemIndex;
   tmpObj := TComponentItem(lbItems.Items.Objects[index]);
-  ObjIndex := TempItemStorage.Items.IndexOf(tmpObj);
+  ObjIndex := ItemStorage.Items.IndexOf(tmpObj);
 
   if ObjIndex <> -1 then
   begin
     if not (ObjIndex - 1 < 0) then
     begin
-      TempItemStorage.Items.Move(ObjIndex, ObjIndex - 1);
+      ItemStorage.Items.Move(ObjIndex, ObjIndex - 1);
       lbItems.ItemIndex := ObjIndex - 1;
     end;
   end;
-  UpdateDisplay(TempItemStorage);
+  UpdateDisplay(ItemStorage);
   SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
   UpdateButtonStates;
 end;
@@ -387,7 +387,7 @@ begin
     if InputQuery('Rename Item', 'Please enter new name', s) then
       tmpInfo.Name := s;
 
-    UpdateDisplay(TempItemStorage);
+    UpdateDisplay(ItemStorage);
     SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
     UpdateButtonStates;
   end;
@@ -407,7 +407,7 @@ begin
     if InputQuery('Change Command', 'Please enter new command', s) then
       tmpInfo.Command := s;
 
-    UpdateDisplay(TempItemStorage);
+    UpdateDisplay(ItemStorage);
     SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
     UpdateButtonStates;
   end;
@@ -415,7 +415,7 @@ end;
 
 procedure TfrmCompItems.FormResize(Sender: TObject);
 begin
-  UpdateDisplay(TempItemStorage);
+  UpdateDisplay(ItemStorage);
 end;
 
 procedure TfrmCompItems.UpdateButtonStates;
@@ -492,7 +492,7 @@ begin
   dlgExport.FileName := 'Components_backup.xml';
   if dlgExport.Execute then
   begin
-    TempItemStorage.Save(dlgExport.FileName);
+    ItemStorage.Save(dlgExport.FileName);
 
   end;
 end;
@@ -501,8 +501,8 @@ procedure TfrmCompItems.btnImportClick(Sender: TObject);
 begin
   if dlgImport.Execute then
   begin
-    TempItemStorage.Load(dlgImport.FileName);
-    UpdateDisplay(TempItemStorage);
+    ItemStorage.Load(dlgImport.FileName);
+    UpdateDisplay(ItemStorage);
     SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
   end;
 end;
@@ -512,11 +512,12 @@ begin
   if (MessageDlg('Are you sure you want to clear the Components list?',
     mtConfirmation, [mbOK, mbCancel], 0) = mrOk) then
   begin
-    TempItemStorage.Clear;
-    frmCompItems.UpdateDisplay(TempItemStorage);
+    ItemStorage.Clear;
+    frmCompItems.UpdateDisplay(ItemStorage);
     SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
   end;
 end;
 
 end.
+
 

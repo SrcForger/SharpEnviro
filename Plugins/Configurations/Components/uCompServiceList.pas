@@ -110,7 +110,6 @@ procedure Debug(Text: string; DebugType: Integer);
 
 var
   ItemStorage: TComponentsList;
-  TempItemStorage: TComponentsList;
 
 implementation
 

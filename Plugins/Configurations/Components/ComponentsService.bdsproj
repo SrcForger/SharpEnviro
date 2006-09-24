@@ -115,11 +115,11 @@
 			<Linker Name="ExeDescription"></Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir">..\..\..\..\SharpE\Center\Root\Plugins\_Services</Directories>
+			<Directories Name="OutputDir">..\..\..\..\SharpE\Center\Root\Plugins\_Services\</Directories>
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath"></Directories>
+			<Directories Name="SearchPath">..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFx;..\..\..\Common\3rd Party\GR32 Addons\</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>

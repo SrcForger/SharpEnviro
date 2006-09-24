@@ -53,45 +53,22 @@ begin
   if frmCompItems = nil then
     frmCompItems := TfrmCompItems.Create(nil);
 
-  TempItemStorage := TComponentsList.Create;
-  TempItemStorage.FileName := GetListFileName;
-  if FileExists(TempItemStorage.FileName) then
-    TempItemStorage.Load
+  ItemStorage := TComponentsList.Create;
+  ItemStorage.FileName := GetListFileName;
+  if FileExists(ItemStorage.FileName) then
+    ItemStorage.Load
   else
-    TempItemStorage.New;
+    ItemStorage.New;
 
   frmCompItems.ParentWindow := owner;
   frmCompItems.Left := 2;
   frmCompItems.Top := 2;
   frmCompItems.BorderStyle := bsNone;
-  frmCompItems.UpdateDisplay(TempItemStorage);
+  frmCompItems.UpdateDisplay(ItemStorage);
   frmCompItems.Show;
   result := frmCompItems.Handle;
 
   frmCompItems.UpdateButtonStates;
-end;
-
-function New(const APluginID:Integer; owner: hwnd):hwnd;
-begin
-
-  if frmCompItems = nil then
-    frmCompItems := TfrmCompItems.Create(nil);
-
-  TempItemStorage := TComponentsList.Create;
-  TempItemStorage.FileName := GetListFileName;
-  if FileExists(TempItemStorage.FileName) then
-    TempItemStorage.Load
-  else
-    TempItemStorage.New;
-
-  frmCompItems.ParentWindow := owner;
-  frmCompItems.Align := alClient;
-  frmCompItems.Left := 2;
-  frmCompItems.Top := 2;
-  frmCompItems.BorderStyle := bsNone;
-  frmCompItems.UpdateDisplay(TempItemStorage);
-  frmCompItems.Show;
-  result := frmCompItems.Handle;
 end;
 
 procedure Help;
@@ -106,7 +83,7 @@ begin
 
     if SaveSettings then
     begin
-      TempItemStorage.Save;
+      ItemStorage.Save;
     end;
 
     frmCompItems.Close;
@@ -183,7 +160,6 @@ end;
 
 exports
   Open,
-  New,
   Close,
   Help,
   ConfigDllType,
