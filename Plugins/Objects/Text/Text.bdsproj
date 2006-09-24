@@ -119,7 +119,7 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\..\Components\SharpDesk\Units</Directories>
+			<Directories Name="SearchPath">..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
@@ -130,8 +130,12 @@
 			<Parameters Name="HostApplication">C:\PB5 Output\SharpDesk.exe</Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
-			<Parameters Name="DebugCWD"></Parameters>
-		</Parameters>
+			<Parameters Name="DebugCWD"></Parameters>  <Parameters Name="RemoteHost"></Parameters>
+      <Parameters Name="RemotePath"></Parameters>
+      <Parameters Name="RemoteLauncher"></Parameters>
+      <Parameters Name="RemoteCWD"></Parameters>
+      <Parameters Name="RemoteDebug">False</Parameters>
+    </Parameters>
 		<VersionInfo>
 			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 			<VersionInfo Name="AutoIncBuild">False</VersionInfo>

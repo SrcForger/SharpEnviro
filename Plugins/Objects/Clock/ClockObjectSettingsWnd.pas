@@ -252,7 +252,7 @@ var
   SrcR: Integer;
   SrcB: Integer;
   T: TAffineTransformation;
-  Sx, Sy, Scale: Single;
+  {Sx, Sy, }Scale: Single;
 begin
   SrcR := Src.Width - 1;
   SrcB := Src.Height - 1;
@@ -264,10 +264,10 @@ begin
 
     T.Translate(-SrcR / 2, -SrcB / 2);
     T.Rotate(0, 0, Alpha);
-    Alpha := Alpha * 3.14159265358979 / 180;
+    //Alpha := Alpha * 3.14159265358979 / 180;
 
-    Sx := Abs(SrcR * Cos(Alpha)) + Abs(SrcB * Sin(Alpha));
-    Sy := Abs(SrcR * Sin(Alpha)) + Abs(SrcB * Cos(Alpha));
+    //Sx := Abs(SrcR * Cos(Alpha)) + Abs(SrcB * Sin(Alpha));
+    //Sy := Abs(SrcR * Sin(Alpha)) + Abs(SrcB * Cos(Alpha));
 
     scale := 1;
 
@@ -297,10 +297,10 @@ var
 //  FSArrow : TBitmap32;
   FPicture : TBitmap32;
   TempBmp : TBitmap32;
-  SrcR: Integer;
-  SrcB: Integer;
-  T: TAffineTransformation;
-  Sx, Sy, Scale: Single;
+  //SrcR: Integer;
+  //SrcB: Integer;
+  //T: TAffineTransformation;
+  //Sx, Sy, Scale: Single;
   b : boolean;
   XML : TJvSimpleXML;
   n : integer;

@@ -53,7 +53,8 @@ uses
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   uSharpeColorBox in '..\..\..\Common\Delphi Components\SharpEColorBox\uSharpeColorBox.pas',
-  uSharpEFontSelector in '..\..\..\Common\Delphi Components\SharpEFontSelector\uSharpEFontSelector.pas';
+  uSharpEFontSelector in '..\..\..\Common\Delphi Components\SharpEFontSelector\uSharpEFontSelector.pas',
+  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas';
 
 {$R *.RES}
 
