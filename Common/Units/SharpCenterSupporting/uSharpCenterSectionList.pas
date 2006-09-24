@@ -65,8 +65,8 @@ type
   private
     FList: TList;
     FIconList: TPngImageCollection;
-    function AssignIconIndex(AFilename: string; var ASectionObject:
-      TSectionObject): Integer;
+    //function AssignIconIndex(AFilename: string; var ASectionObject:
+     // TSectionObject): Integer;
     function GetSectionItem(AID: Integer): TSectionObject;
   public
     constructor Create;
@@ -98,14 +98,14 @@ begin
 
 end;
 
-function TSectionObjectList.AssignIconIndex(AFilename: string;
+{function TSectionObjectList.AssignIconIndex(AFilename: string;
   var ASectionObject: TSectionObject): Integer;
 var
   tmpPngImage: TPNGObject;
   tmpPiC: TPngImageCollectionItem;
   idx: Integer;
 begin
-  idx := 0;
+  Result := '';
   if FileExists(AFileName) then begin
     tmpPngImage := TPNGObject.Create;
     tmpPngImage.LoadFromFile(AFileName);
@@ -118,7 +118,7 @@ begin
 
     Result := idx;
   end;
-end;
+end;     }
 
 procedure TSectionObjectList.Clear;
 begin
