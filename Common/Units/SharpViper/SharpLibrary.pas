@@ -2,8 +2,20 @@ unit SharpLibrary;
 
 interface
 
-uses Classes, Forms, Messages, ShlObj, Windows, Graphics, SysUtils, SharpApi,
-     GR32, GR32_Filters, ExtCtrls, Controls;
+uses Classes, Forms, Messages, ShlObj, Windows, Graphics, SysUtils,
+     Controls, ExtCtrls, StdCtrls, SharpApi, GR32, GR32_Filters, ActiveX;
+
+const
+  SHACF_AUTOSUGGEST_FORCE_ON = $10000000;
+  SHACF_AUTOSUGGEST_FORCE_OFF = $20000000;
+  SHACF_AUTOAPPEND_FORCE_ON = $40000000;
+  SHACF_AUTOAPPEND_FORCE_OFF = $80000000;
+  SHACF_DEFAULT = $0;
+  SHACF_FILESYSTEM = $1;
+  SHACF_URLHISTORY = $2;
+  SHACF_URLMRU = $4;
+
+function SHAutoComplete(hwndEdit: HWnd; dwFlags: DWORD): HResult; stdcall; external 'Shlwapi.dll';
 
 type
   TImageEX = class(TImage)
@@ -38,11 +50,28 @@ function WindowsExit(RebootParam: Longword): Boolean;
 procedure CromaKey(ABitmap: TBitmap32; TrColor: TColor32);
 procedure GetWindowIcon(var Icon: HICON; Handle: HWnd; iSize: integer = 0);
 procedure IconToImage(Bmp : TBitmap32; const icon : HIcon);
+procedure TurnOnAutoComplete(edOn: TEdit);
 
 implementation
 
 //This one line of code puts a form inside of SharpDesk, in this example
 //  Windows.SetParent(Handle, FindWindow('TSharpDeskMainForm', nil));
+
+procedure TurnOnAutoComplete(edOn: TEdit);
+var
+  Options: dWord;
+begin
+  Options := SHACF_FILESYSTEM or SHACF_URLHISTORY or SHACF_URLMRU or
+               SHACF_AUTOSUGGEST_FORCE_ON or SHACF_AUTOAPPEND_FORCE_ON;
+
+  if Succeeded(CoInitialize(nil)) then begin
+   try
+    SHAutoComplete(edOn.Handle, Options);
+   finally
+    CoUninitialize;
+   end;
+  end;
+end;
 
 {$REGION ' TImageEx Procedures '}
 constructor TImageEx.Create(Owner: TComponent);
@@ -94,7 +123,6 @@ begin
     Tokens.Free;
   end;
 end;
-
 function GetSpecialFolder(wnd: HWND; iFolder: integer): string;
 var
   idl: PItemIDList;
@@ -210,7 +238,6 @@ begin
 
   Result := Buf;
 end;
-
 function LockWS: Boolean;
 type
   TLockWorkStation = function: Boolean;
