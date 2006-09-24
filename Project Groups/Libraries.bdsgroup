@@ -1,21 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-  <PersonalityInfo>
-    <Option>
-      <Option Name="Personality">Default.Personality</Option>
-      <Option Name="ProjectType"></Option>
-      <Option Name="Version">1.0</Option>
-      <Option Name="GUID">{1979C0F9-3CC4-4C1E-A6AA-F32156482F1E}</Option>
-    </Option>
-  </PersonalityInfo>
-  <Default.Personality>
-    
-    
-    <Projects>
+	<PersonalityInfo>
+		<Option>
+			<Option Name="Personality">Default.Personality</Option>
+			<Option Name="ProjectType"></Option>
+			<Option Name="Version">1.0</Option>
+			<Option Name="GUID">{1979C0F9-3CC4-4C1E-A6AA-F32156482F1E}</Option>
+		</Option>
+	</PersonalityInfo>
+	<Default.Personality>  <Projects>
       <Projects Name="SharpAPI.dll">..\Common\Libraries\SharpAPI\SharpAPI.bdsproj</Projects>
       <Projects Name="SharpDeskApi.dll">..\Common\Libraries\SharpDeskApi\SharpDeskApi.bdsproj</Projects>
       <Projects Name="shellhook.dll">..\Common\Libraries\ShellHook\shellhook.bdsproj</Projects>
-      <Projects Name="Targets">SharpAPI.dll SharpDeskApi.dll shellhook.dll</Projects>
+      <Projects Name="SharpThemeApi.dll">..\Common\Libraries\SharpThemeApi\SharpThemeApi.bdsproj</Projects>
+      <Projects Name="Targets">SharpAPI.dll SharpDeskApi.dll shellhook.dll SharpThemeApi.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
