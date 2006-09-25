@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, GR32_RangeBars, SharpApi, XPMan;
+  Dialogs, StdCtrls, ComCtrls, GR32_RangeBars, SharpApi, SharpDialogs, XPMan;
 
 type
   TSettingsForm = class(TForm)
@@ -46,25 +46,12 @@ type
     lb_barsize: TLabel;
     tb_size: TGaugeBar;
     Label1: TLabel;
-    cb_sea: TRadioButton;
-    Label2: TLabel;
-    cb_ea: TRadioButton;
-    combo_actionlist: TComboBox;
-    edit_app: TEdit;
+    edit_action: TEdit;
     btn_open: TButton;
-    OpenFile: TOpenDialog;
     XPManifest1: TXPManifest;
     cb_specialskin: TCheckBox;
-    cb_script: TRadioButton;
-    edit_script: TEdit;
-    btn_script: TButton;
-    OpenScript: TOpenDialog;
-    procedure btn_scriptClick(Sender: TObject);
     procedure btn_openClick(Sender: TObject);
-    procedure cb_seaClick(Sender: TObject);
     procedure tb_sizeChange(Sender: TObject);
-    procedure FormShow(Sender: TObject);
-    procedure cb_labelsClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private
@@ -80,10 +67,8 @@ implementation
 
 procedure TSettingsForm.Button1Click(Sender: TObject);
 begin
+  ActionStr := edit_action.Text;
   self.ModalResult := mrOk;
-  if cb_sea.Checked then ActionStr := combo_actionlist.Text
-     else if cb_script.Checked then ActionStr := edit_script.Text
-          else ActionStr := Edit_App.Text;
 end;
 
 procedure TSettingsForm.Button2Click(Sender: TObject);
@@ -91,76 +76,18 @@ begin
   self.ModalResult := mrCancel;
 end;
 
-procedure TSettingsForm.cb_labelsClick(Sender: TObject);
-begin
-  edit_caption.Enabled :=  cb_labels.Checked;
-end;
-
-procedure TSettingsForm.FormShow(Sender: TObject);
-var
-  SList : TStringList;
-  n     : integer;
-begin
-  cb_labels.OnClick(cb_labels);
-  cb_sea.OnClick(cb_sea);
-  cb_script.OnClick(cb_script);
-  SList := TStringList.Create;
-  try
-    SList.Clear;
-    SList.DelimitedText := SharpApi.GetDelimitedActionList;
-    SList.Sort;
-    combo_actionlist.Clear;
-    for n := 0 to SList.Count - 1 do
-        combo_actionlist.Items.Add(SList.ValueFromIndex[n]);
-  finally
-    SList.Free;
-    if combo_actionlist.Items.Count >0 then
-    begin
-      n := combo_actionlist.Items.IndexOf(ActionStr);
-      if (n <> - 1) and (cb_sea.Checked) then combo_actionlist.ItemIndex := n
-         else combo_actionlist.ItemIndex := 0;
-    end;
-    if cb_ea.Checked then
-       else if cb_script.Checked then edit_script.Text := ActionStr
-       else edit_app.Text := ActionStr;
-  end;
-end;
-
 procedure TSettingsForm.tb_sizeChange(Sender: TObject);
 begin
   lb_barsize.Caption := inttostr(tb_size.Position) + 'px';
 end;
 
-procedure TSettingsForm.cb_seaClick(Sender: TObject);
-begin
-  combo_actionlist.Enabled := cb_sea.Checked;
-  edit_app.Enabled         := cb_ea.Checked;
-  btn_open.Enabled         := cb_ea.Checked;
-  edit_script.Enabled      := cb_script.Checked;
-  btn_script.Enabled       := cb_script.Checked;
-end;
-
 procedure TSettingsForm.btn_openClick(Sender: TObject);
-begin
-  if OpenFile.Execute then
-     Edit_App.Text := OpenFile.FileName;
-end;
-
-procedure TSettingsForm.btn_scriptClick(Sender: TObject);
 var
-  Dir : String;
+  s : string;
 begin
-  if OpenScript.InitialDir = '' then
-  begin
-    Dir :=  SharpApi.GetSharpeUserSettingsPath + 'Scripts\';
-    ForceDirectories(Dir);
-    OpenScript.InitialDir := Dir;
-  end;
-
-  if OpenScript.Execute then
-  begin
-    edit_script.Text := OpenScript.FileName;
-  end;
+  s := SharpDialogs.TargetDialog(STI_ALL_TARGETS,
+                                 ClientToScreen(point(btn_open.Left,btn_open.Top)));
+  if length(trim(s))>0 then edit_action.Text := s;
 end;
 
 end.

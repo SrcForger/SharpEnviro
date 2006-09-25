@@ -66,7 +66,6 @@ type
     sShowLabel   : boolean;
     sCaption     : String;
     FDCaption    : boolean;
-    sAction      : integer;
     sActionStr   : String;
     sSpecialSkin : boolean;
     FCustomSettings : TSharpECustomSkinSettings;
@@ -139,7 +138,6 @@ begin
   sWidth       := 100;
   sShowLabel   := True;
   sCaption     := 'Menu';
-  sAction      := 1;
   sActionStr   := '!ShowMenu';
   sSpecialSkin := True;
   FDCaption    := True;
@@ -150,7 +148,6 @@ begin
     sWidth       := IntValue('Width',100);
     sShowLabel   := BoolValue('ShowLabel',True);
     sCaption     := Value('Caption','SharpE');
-    sAction      := IntValue('Action',1);
     sActionStr   := Value('ActionStr','!ShowMenu');
     sSpecialSkin := BoolValue('SpecialSkin',True);
   end;
@@ -209,23 +206,13 @@ begin
     SettingsForm.edit_caption.Text := sCaption;
     SettingsForm.tb_size.Position   := sWidth;
     SettingsForm.cb_specialskin.Checked := sSpecialSkin;
-    case sAction of
-     1: SettingsForm.cb_sea.Checked := True;
-     3: SettingsForm.cb_script.Checked := True;
-     else SettingsForm.cb_ea.Checked := True;
-    end;
     SettingsForm.ActionStr := sActionStr;
+    SettingsForm.edit_action.Text := sActionStr;
 
     if SettingsForm.ShowModal = mrOk then
     begin
-      sShowLabel  := SettingsForm.cb_labels.Checked;
-      sCaption    := SettingsForm.edit_caption.Text;
-      sWidth      := SettingsForm.tb_size.Position;
       sActionStr  := SettingsForm.ActionStr;
       sSpecialSkin := SettingsForm.cb_specialskin.Checked;
-      if SettingsForm.cb_sea.Checked then sAction := 1
-         else if SettingsForm.cb_script.Checked then sAction := 3
-              else sAction := 2;
 
       item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
       if item <> nil then with item.Items do
@@ -234,7 +221,6 @@ begin
         Add('Width',sWidth);
         Add('ShowLabel',sShowLabel);
         Add('Caption',sCaption);
-        Add('Action',sAction);
         Add('ActionStr',sActionStr);
         Add('SpecialSkin',sSpecialSkin);
       end;
