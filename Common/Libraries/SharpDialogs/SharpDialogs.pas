@@ -44,7 +44,7 @@ const
   STI_ALL_TARGETS = [stiFile,stiRecentFiles,stiMostUsedFiles,stiDrive,
                      stiDirectory,stiShellFolders,stiScript,stiAction];
 
-function TargetDialog(TargetItems : TTargetDialogSelectItems; PopupPoint : TPoint) : String; external 'SharpDialogs.dll';
+function TargetDialog(TargetItems : TTargetDialogSelectItems; PopupPoint : TPoint) : PChar; external 'SharpDialogs.dll';
 
 implementation
 
