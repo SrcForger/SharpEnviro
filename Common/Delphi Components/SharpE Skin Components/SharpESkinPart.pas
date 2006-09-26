@@ -1127,6 +1127,7 @@ function TSkinPart.LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinT
 var sp: TSkinPart;
   i: integer;
   fil: string;
+  s : string;
 begin
   Clear;
   if Text <> nil then
@@ -1156,7 +1157,18 @@ begin
         if lowercase(Value('drawmode', 'stretch')) = 'tile' then
           FDrawMode := sdmTile;
       if ItemNamed['layermode'] <> nil then
-        FLayerMode := TLayerMode(IntValue('layermode',0));
+      begin
+        s := Value('layermode','blend');
+        if         CompareText('Blend',s) = 0 then FLayerMode := lmBlend
+           else if CompareText('Add',s) = 0 then FLayerMode := lmAdd
+           else if CompareText('Subtract',s) = 0 then FLayerMode := lmSubtract
+           else if CompareText('Module',s) = 0 then FLayerMode := lmModule
+           else if CompareText('Min',s) = 0 then FLayerMode := lmMin
+           else if CompareText('Max',s) = 0 then FLayerMode := lmMax
+           else if CompareText('Difference',s) = 0 then FLayerMode := lmDifference
+           else if CompareText('Exclusion',s) = 0 then FLayerMode := lmExclusion
+           else  FLayerMode := lmBlend;
+      end;
 
       if ItemNamed['color'] <> nil then
       begin

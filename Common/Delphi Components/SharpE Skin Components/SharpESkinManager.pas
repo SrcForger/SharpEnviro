@@ -128,7 +128,7 @@ begin
     if not SharpThemeApi.Initialized then
     begin
       SharpThemeApi.InitializeTheme;
-      SharpThemeApi.LoadTheme;
+      SharpThemeApi.LoadTheme(True);
     end;
   end;
 
@@ -182,6 +182,7 @@ begin
   if (SchemeSource = ssSystem) and
      ((Msg.Msg = WM_SHARPETHEMEUPDATE) or (Msg.Msg = WM_SHARPEUPDATESETTINGS)) then
   Begin
+    SharpThemeApi.LoadTheme;
     LoadSharpEScheme(FSystemScheme);
     RefreshControls;
   end;
