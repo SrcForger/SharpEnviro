@@ -57,6 +57,7 @@ procedure InitializeTheme; external 'SharpThemeApi.dll' name 'InitializeTheme';
 function Initialized: boolean; external 'SharpThemeApi.dll' name 'Initialized';
 function LoadTheme(pName : PChar) : boolean; overload; external 'SharpThemeApi.dll' name 'LoadTheme';
 function LoadTheme : boolean; overload; external 'SharpThemeApi.dll' name 'LoadCurrentTheme';
+function LoadTheme(ForceReload : boolean) : boolean; overload; overload; external 'SharpThemeApi.dll' name 'LoadCurrentThemeF';
 
 // Theme Info
 function GetThemeName: PChar; external 'SharpThemeApi.dll' name 'GetThemeName';

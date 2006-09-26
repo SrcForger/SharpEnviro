@@ -716,6 +716,7 @@ end;
 procedure InitializeTheme;
 begin
   bInitialized := False;
+  Theme.Data.LastUpdate := 0;
   Theme.Data.Directory := SharpApi.GetSharpeUserSettingsPath + THEME_DIR + '\' + DEFAULT_THEME + '\';
   Theme.Data.LastUpdate := DateTimeToUnix(Now());
 
@@ -729,6 +730,13 @@ function LoadTheme(pName: PChar; ForceReload: Boolean = False): boolean;
 var
   ThemeDir: string;
 begin
+  if (DateTimeToUnix(Now()) - Theme.Data.LastUpdate <= 1)
+     and (not ForceReload) then
+  begin
+    result := False;
+    exit;
+  end;
+
   ThemeDir := SharpApi.GetSharpeUserSettingsPath + THEME_DIR + '\' + pName;
 
   if not DirectoryExists(ThemeDir) then
@@ -752,12 +760,17 @@ begin
   result := True;
 end;
 
-function LoadCurrentTheme: boolean;
+function LoadCurrentThemeF(ForceUpdate : boolean) : boolean;
 var
   themename: string;
 begin
   themename := GetCurrentThemeName;
-  result := LoadTheme(PChar(themename));
+  result := LoadTheme(PChar(themename),ForceUpdate);
+end;
+
+function LoadCurrentTheme: boolean;
+begin
+  result := LoadCurrentThemeF(False);
 end;
 
 function ParseColor(AColorStr: PChar): Integer;
@@ -955,6 +968,7 @@ exports
   Initialized,
   LoadTheme,
   LoadCurrentTheme,
+  LoadCurrentThemeF,
 
   // Theme Data
   GetCurrentThemeDirectory,
