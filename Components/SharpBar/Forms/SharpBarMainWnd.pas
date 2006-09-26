@@ -272,9 +272,11 @@ begin
   FThemeUpdating := False;
 //  SharpThemeApi.LoadTheme;
   LoadSharpEScheme(SkinManager.Scheme);
+  UpdateBGZone;
   SharpEBar1.UpdateSkin;
   SharpEBar1.Throbber.UpdateSkin;
   SharpEbar1.Throbber.Repaint;
+  UpdateBGImage;
   ModuleManager.UpdateModuleSkins;
   ModuleManager.FixModulePositions;
   ModuleManager.RefreshMiniThrobbers;
@@ -1422,6 +1424,8 @@ begin
     BlendInTimer.Tag := 255;
     BlendInTimer.Enabled := False;
     WMUnlockBarWindow(msg);
+    ModuleManager.UpdateModuleSkins;
+    ModuleManager.FixModulePositions;
   end;
   SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendInTimer.Tag, LWA_ALPHA);
   SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendInTimer.Tag, LWA_COLORKEY);
