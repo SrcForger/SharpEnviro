@@ -967,16 +967,19 @@
       <size>6</size>
       <name>Small Fonts</name>
       <bold>0</bold>
+      <color>$BackgroundText</color>	 
     </small>
     <medium>
       <name>Verdana</name>
       <size>8</size>
       <bold>1</bold>
+      <color>$BackgroundText</color>
     </medium>
     <big>
       <name>Verdana</name>
       <size>10</size>
       <bold>1</bold>
+      <color>$BackgroundText</color>
     </big>
   </font>
   <progressbar>
