@@ -74,8 +74,6 @@ procedure TMainForm.LoadSettings;
 var
   item : TJvSimpleXMLElem;
 begin
-  SharpApi.RegisterActionEx(PChar('!FocusMiniScmd ('+inttostr(ModuleID)+')'),'Modules',self.Handle,1);
-
   sFormat := 'HH:MM:SS';
   sStyle  := lsMedium;
 
