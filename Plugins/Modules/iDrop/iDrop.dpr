@@ -44,13 +44,9 @@ uses
   SharpEBar,
   StdCtrls,
   JvSimpleXML,
+  uSharpBarApi,
   MainWnd in 'MainWnd.pas' {MainForm},
-  SettingsWnd in 'SettingsWnd.pas' {SettingsForm},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
-  GR32_Ellipse in '..\..\..\Common\3rd party\GR32 Addons\GR32_Ellipse.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
+  SettingsWnd in 'SettingsWnd.pas' {SettingsForm};
 
 type
   TModule = class
@@ -180,7 +176,7 @@ begin
       begin
         temp := TModule(ModuleList.Items[n]);
         temp.Form.Height := GetBarPluginHeight(temp.BarWnd);
-        TMainForm(temp.Form).ReAlignComponents(False);
+        TMainForm(temp.Form).ReAlignComponents(True);
       end;
 end;
 
