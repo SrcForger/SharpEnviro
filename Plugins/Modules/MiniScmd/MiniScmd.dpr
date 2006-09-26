@@ -43,14 +43,11 @@ uses
   SharpESkinManager,
   SharpEBar,
   StdCtrls,
+  uSharpBarApi,
+  MouseTimer,
   JvSimpleXML,
   MainWnd in 'MainWnd.pas' {MainForm},
-  SettingsWnd in 'SettingsWnd.pas' {SettingsForm},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
+  SettingsWnd in 'SettingsWnd.pas' {SettingsForm};
 
 type
   TModule = class
