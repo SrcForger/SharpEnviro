@@ -119,7 +119,7 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\Libraries\SharpThemeApi;..\..\Common\3rd party\TransparentEdit</Directories>
+			<Directories Name="SearchPath">..\..\Common\Libraries\SharpThemeApi;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd party\GR32 Addons;..\..\Common\Libraries\SharpAPI;..\..\Common\Units\SharpFX;..\..\Common\Libraries\ShellHook;..\..\Common\3rd party\TransparentEdit</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>

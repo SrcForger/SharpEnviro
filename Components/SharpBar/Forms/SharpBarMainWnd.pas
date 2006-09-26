@@ -38,7 +38,7 @@ uses
   Menus, StdCtrls, JvSimpleXML, SharpApi, ShellHook, GR32,
   uSharpEModuleManager, SharpEButton, DateUtils, ExtCtrls,
   ImgList, PngImageList, SharpEBar, AppEvnts, GR32_Image,
-  Jpeg;
+  Jpeg, SharpThemeApi;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -270,6 +270,7 @@ end;
 procedure TSharpBarMainForm.WMThemeUpdateEnd(var msg : TMessage);
 begin
   FThemeUpdating := False;
+//  SharpThemeApi.LoadTheme;
   LoadSharpEScheme(SkinManager.Scheme);
   SharpEBar1.UpdateSkin;
   SharpEBar1.Throbber.UpdateSkin;

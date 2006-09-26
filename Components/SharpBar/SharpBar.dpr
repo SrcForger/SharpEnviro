@@ -40,13 +40,10 @@ uses
   uSharpEModuleManager in 'uSharpEModuleManager.pas',
   uSharpBarAPI in 'uSharpBarAPI.pas',
   JvSimpleXML,
+  SharpApi,
   PluginManagerWnd in 'Forms\PluginManagerWnd.pas' {PluginManagerForm},
   AddPluginWnd in 'Forms\AddPluginWnd.pas' {AddPluginForm},
-  BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm},
-  SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  graphicsFX in '..\..\Common\Units\SharpFX\graphicsFX.pas',
-  shellhook in '..\..\Common\Libraries\ShellHook\shellhook.pas',
-  GR32_PNG in '..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
+  BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm};
 
 {$R *.res}
 
