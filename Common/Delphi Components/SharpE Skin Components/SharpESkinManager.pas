@@ -60,6 +60,7 @@ type
     FSystemSkin: TSystemSharpESkin;
     FComponentSkin: TSharpESkin;
     FUsingMainWnd : boolean;
+    FIsThemeLoading : boolean;
     FMsgWnd : Hwnd;
     procedure SystemSkinChanged(sender : TObject);
     procedure SetSkinSource(value: TSkinSource);
@@ -123,6 +124,8 @@ begin
   FSystemSkin.OnSkinChanged := SystemSkinChanged;
   FSystemSkin.OnNotify := ComponentSkinUpdated;
 
+  FIsThemeLoading := False;
+
   if not (csDesigning in ComponentState) then
   begin
     if not SharpThemeApi.Initialized then
@@ -179,12 +182,23 @@ end;
 
 function TSharpESkinManager.MessageHook(var Msg: TMessage): Boolean;
 begin
-  if (SchemeSource = ssSystem) and
-     ((Msg.Msg = WM_SHARPETHEMEUPDATE) or (Msg.Msg = WM_SHARPEUPDATESETTINGS)) then
-  Begin
+  if (msg.Msg = WM_THEMELOADINGSTART) then FIsThemeLoading := True;
+  if (msg.Msg = WM_THEMELOADINGEND) then
+  begin
+    FIsThemeLoading := False;
     SharpThemeApi.LoadTheme;
     LoadSharpEScheme(FSystemScheme);
     RefreshControls;
+  end;
+  if (SchemeSource = ssSystem) and
+     ((Msg.Msg = WM_SHARPETHEMEUPDATE) or (Msg.Msg = WM_SHARPEUPDATESETTINGS)) then
+  Begin
+    if not FIsThemeLoading then
+    begin
+      SharpThemeApi.LoadTheme;
+      LoadSharpEScheme(FSystemScheme);
+      RefreshControls;
+    end;
   end;
   if (Msg.Msg = WM_SYSTEMSKINUPDATE) then
   begin
