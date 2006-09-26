@@ -270,8 +270,9 @@ end;
 procedure TSharpBarMainForm.WMThemeUpdateEnd(var msg : TMessage);
 begin
   FThemeUpdating := False;
-//  SharpThemeApi.LoadTheme;
+  SharpThemeApi.LoadTheme;
   LoadSharpEScheme(SkinManager.Scheme);
+  sleep(1000);
   UpdateBGZone;
   SharpEBar1.UpdateSkin;
   SharpEBar1.Throbber.UpdateSkin;
@@ -463,7 +464,6 @@ begin
   if FBGImage = nil then exit;
   if (Width = 0) or (Height = 0) then exit;
 
-  //showmessage(inttostr(Left));
   FBGImage.SetSize(Width,Height);
   FBGImage.Clear(color32(0,0,0,0));
   if SharpEBar1.VertPos = vpTop then FBGImage.Draw(0,0,Rect(Left-Monitor.Left,0,Left-Monitor.Left+FTopZone.Width,FTopZone.Height),FTopZone)
@@ -712,6 +712,7 @@ begin
   // Set window caption to SharpBar_ID
   self.Caption := 'SharpBar_' + inttostr(FBarID);
 
+  UpdateBGZone;
   LoadModuleSettings;
 end;
 
@@ -791,6 +792,7 @@ begin
     exit;
   end;
 
+  UpdateBGZone;
   try
     LoadBarModules(xml.root.items.ItemNamed['bars'].Items.Item[i]);
   except
@@ -866,7 +868,6 @@ begin
 
   BarHideForm := TBarHideForm.Create(self);
 
-  UpdateBGZone;
   DelayTimer2.Enabled := True;
 end;
 
