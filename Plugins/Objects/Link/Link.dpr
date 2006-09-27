@@ -50,16 +50,12 @@ uses
   uSharpDeskTObjectSettings,
   uSharpDeskTThemeSettings,
   uSharpDeskFunctions,
+  SharpApi,
+  SharpDeskApi,   
   uLinkObjectLayer in 'uLinkObjectLayer.pas',
   LinkObjectSettingsWnd in 'LinkObjectSettingsWnd.pas' {SettingsWnd},
   LinkObjectXMLSettings in 'LinkObjectXMLSettings.pas',
-  mlinewnd in 'mlinewnd.pas' {mlineform},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpDeskApi in '..\..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  uSharpeColorBox in '..\..\..\Common\Delphi Components\SharpEColorBox\uSharpeColorBox.pas',
-  uSharpEFontSelector in '..\..\..\Common\Delphi Components\SharpEFontSelector\uSharpEFontSelector.pas';
+  mlinewnd in 'mlinewnd.pas' {mlineform};
 
 {$R *.RES}
 {$R icons.res}
@@ -150,7 +146,6 @@ function StartSettingsWnd(ObjectID : integer; Handle : hwnd) : hwnd;
 var
    n : integer;
    Layer : TLayer;
-   tw : TWinControl;
 begin
   if not FirstStart then
   begin
@@ -235,7 +230,7 @@ begin
     SDM_DESELECT : Layer.FolderLayer.EndHL;
     SDM_CLOSE_LAYER : begin
                         LayerList.Remove(Layer);
-                        Layer := nil;                       
+                        Layer := nil;
                       end;
     SDM_SHUTDOWN : begin
                      LayerList.Clear;
@@ -299,10 +294,11 @@ var
   w,h : integer;
   eh : integer;
   P : TPoint;
-  L : TFloatRect;
   color1,color2 : TColor32;
   SList : TStringList;
 begin
+  result := False;
+  
   if FirstStart then exit;
   Layer := nil;
   for n := 0 to LayerList.Count - 1 do

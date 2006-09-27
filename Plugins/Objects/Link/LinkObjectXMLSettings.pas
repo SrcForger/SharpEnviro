@@ -95,7 +95,7 @@ type
       FontAlphaValue   : integer;
       {End Settings Block}
       constructor Create(pObjectID : integer; pXMLRoot: TJvSimpleXMLElem); reintroduce;
-      destructor Destroy;
+      destructor Destroy; override;
       procedure LoadSettings;
       procedure SaveSettings(SaveToFile : boolean);
       function GetSettingsFile : String;
@@ -138,7 +138,6 @@ end;
 
 procedure TXMLSettings.LoadSettings;
 var
-  n : integer;
   SettingsFile : String;
   csX : TColorSchemeEX;
 begin

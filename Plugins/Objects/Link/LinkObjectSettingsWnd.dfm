@@ -128,7 +128,6 @@ object SettingsWnd: TSettingsWnd
               FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF0000FF00FFFF00FF
               FF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FF0000}
             ParentFont = False
-            PopupMenu = targetpopup
             OnClick = btn_targetselectClick
           end
           object edit_target: TEdit
@@ -413,7 +412,7 @@ object SettingsWnd: TSettingsWnd
             Height = 14
             Cursor = 15
             BackgroundColor = clBtnFace
-            Color = 9145227
+            Color = 10395294
             ColorCode = -4
             CustomScheme = False
             ClickedColorID = ccWorkAreaBack
@@ -874,7 +873,7 @@ object SettingsWnd: TSettingsWnd
                 Height = 14
                 Cursor = 15
                 BackgroundColor = clBtnFace
-                Color = 9145227
+                Color = 10395294
                 ColorCode = -4
                 CustomScheme = False
                 ClickedColorID = ccWorkAreaBack
@@ -1056,7 +1055,7 @@ object SettingsWnd: TSettingsWnd
                 Height = 14
                 Cursor = 15
                 BackgroundColor = clBtnFace
-                Color = 4539717
+                Color = 5197647
                 ColorCode = -5
                 CustomScheme = False
                 ClickedColorID = ccWorkAreaDark
@@ -1068,7 +1067,7 @@ object SettingsWnd: TSettingsWnd
                 Height = 14
                 Cursor = 15
                 BackgroundColor = clBtnFace
-                Color = 9145227
+                Color = 10395294
                 ColorCode = -4
                 CustomScheme = False
                 ClickedColorID = ccWorkAreaBack
@@ -1163,281 +1162,14 @@ object SettingsWnd: TSettingsWnd
   object IconPopup: TPopupMenu
     AutoPopup = False
     Images = IconList
-    Left = 256
-    Top = 24
+    Left = 160
+    Top = 72
   end
   object OpenFileDialog: TOpenDialog
     Filter = 'Any File|*.*'
     Title = 'Select Icon'
     Left = 224
     Top = 24
-  end
-  object targetpopup: TPopupMenu
-    AutoHotkeys = maManual
-    Images = popupiconlist
-    Left = 280
-    Top = 64
-    object File1: TMenuItem
-      Caption = 'File'
-      ImageIndex = 0
-      OnClick = File1Click
-    end
-    object Folder1: TMenuItem
-      Caption = 'Folder'
-      ImageIndex = 1
-      OnClick = Folder1Click
-    end
-    object S1: TMenuItem
-      Caption = 'Shell folder'
-      ImageIndex = 2
-      object shellAdministrativeTools1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Administrative Tools'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellAppData1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:AppData'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellCommonAdministrativeTools1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Common Administrative Tools'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellCommonAppData1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Common AppData'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellCommonDesktop1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Common Desktop'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellCommonDocuments1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Common Documents'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellCommonFavorites1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Common Favorites'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellCommonMenu1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Common Menu'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellCommonProgramFiles1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:CommonProgramFiles'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellCommonPrograms1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Common Programs'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellCommonStartup1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Common Startup'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellCommonTemplates1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Common Templates'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellConnectionsFolder1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:ConnectionsFolder'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellControlPanelFolder1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:ControlPanelFolder'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellCookies1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Cookies'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellDesktop1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Desktop'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellDriveFolder1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:DriveFolder'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellFavorites1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Favorites'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellFonts1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Fonts'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellHistory1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:History'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellInternetFolder1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:InternetFolder'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellLocalAppData1: TMenuItem
-        AutoHotkeys = maManual
-        Break = mbBarBreak
-        Caption = 'shell:Local AppData'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellMenu1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Menu'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellMyMusic1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:My Music'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellMyPictures2: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:My Pictures'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellNetHood1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:NetHood'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellNetworkFolder1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:NetworkFolder'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellRecent1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Recent'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellPersonal1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Personal'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellPrintHood1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:PrintHood'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellProfile1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Profile'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellProgramFiles1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:ProgramFiles'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellPrograms1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Programs'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellPrintersFolder1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:PrintersFolder'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellRecycleBinFolder1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:RecycleBinFolder'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellSendTo1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:SendTo'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellStartup1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Startup'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellSystemX861: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:SystemX86'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellSystem1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:System'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellTemplates1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Templates'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-      object shellWindows1: TMenuItem
-        AutoHotkeys = maManual
-        Caption = 'shell:Windows'
-        ImageIndex = 3
-        OnClick = shellAdministrativeTools1Click
-      end
-    end
   end
   object popupiconlist: TImageList
     Left = 288
@@ -1846,8 +1578,8 @@ object SettingsWnd: TSettingsWnd
       000000000000}
   end
   object PopupMenu1: TPopupMenu
-    Left = 248
-    Top = 64
+    Left = 176
+    Top = 112
     object SharpEIcon1: TMenuItem
       Caption = 'SharpE Icon'
       OnClick = SharpEIcon1Click

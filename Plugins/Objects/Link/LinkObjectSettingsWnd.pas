@@ -36,8 +36,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, CommCtrl, Controls, Forms,
   Dialogs, StdCtrls, SharpApi, SharpFX, ComCtrls,
   pngimage, ExtCtrls, GR32, GR32_PNG, GR32_Image, ImgList,
-  Menus, FileCtrl, JvSimpleXML, ActiveX, ShlObj, uSharpeColorBox, Buttons,
-  Tabs, SharpDeskApi, ShellApi,
+  Menus, JvSimpleXML, uSharpeColorBox, Buttons,
+  Tabs, SharpDeskApi, ShellApi, SharpDialogs,
   uSharpDeskTThemeSettings,
   uSharpDeskTObjectSettings,
   uSharpDeskTDeskSettings,
@@ -104,9 +104,6 @@ type
     tb_blend: TTrackBar;
     cb_AlphaBlend: TCheckBox;
     tb_alpha: TTrackBar;
-    targetpopup: TPopupMenu;
-    File1: TMenuItem;
-    Folder1: TMenuItem;
     popupiconlist: TImageList;
     GroupBox10: TGroupBox;
     cb_iconshadow: TCheckBox;
@@ -143,48 +140,6 @@ type
     scb_bgblending: TSharpEColorBox;
     cb_bgblending: TCheckBox;
     Label5: TLabel;
-    S1: TMenuItem;
-    shellConnectionsFolder1: TMenuItem;
-    shellRecycleBinFolder1: TMenuItem;
-    shellPrintersFolder1: TMenuItem;
-    shellControlPanelFolder1: TMenuItem;
-    shellInternetFolder1: TMenuItem;
-    shellDriveFolder1: TMenuItem;
-    shellNetworkFolder1: TMenuItem;
-    shellCommonAdministrativeTools1: TMenuItem;
-    shellAdministrativeTools1: TMenuItem;
-    shellSystemX861: TMenuItem;
-    shellMyPictures2: TMenuItem;
-    shellMyMusic1: TMenuItem;
-    shellProfile1: TMenuItem;
-    shellCommonProgramFiles1: TMenuItem;
-    shellProgramFiles1: TMenuItem;
-    shellSystem1: TMenuItem;
-    shellWindows1: TMenuItem;
-    shellHistory1: TMenuItem;
-    shellCookies1: TMenuItem;
-    shellLocalAppData1: TMenuItem;
-    shellAppData1: TMenuItem;
-    shellCommonDocuments1: TMenuItem;
-    shellCommonTemplates1: TMenuItem;
-    shellCommonAppData1: TMenuItem;
-    shellCommonFavorites1: TMenuItem;
-    shellCommonDesktop1: TMenuItem;
-    shellCommonMenu1: TMenuItem;
-    shellCommonPrograms1: TMenuItem;
-    shellCommonStartup1: TMenuItem;
-    shellTemplates1: TMenuItem;
-    shellPrintHood1: TMenuItem;
-    shellNetHood1: TMenuItem;
-    shellFavorites1: TMenuItem;
-    shellPersonal1: TMenuItem;
-    shellSendTo1: TMenuItem;
-    shellRecent1: TMenuItem;
-    shellMenu1: TMenuItem;
-    shellPrograms1: TMenuItem;
-    shellStartup1: TMenuItem;
-    shellDesktop1: TMenuItem;
-    shellFonts1: TMenuItem;
     tab_caption: TTabSheet;
     GroupBox8: TGroupBox;
     cb_mline: TCheckBox;
@@ -230,8 +185,6 @@ type
     procedure cb_bgthicknessClick(Sender: TObject);
     procedure tb_bgthicknessChange(Sender: TObject);
     procedure btn_targetselectClick(Sender: TObject);
-    procedure File1Click(Sender: TObject);
-    procedure Folder1Click(Sender: TObject);
     procedure edit_csizeKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure SharpEIcon1Click(Sender: TObject);
@@ -245,7 +198,6 @@ type
     procedure cb_bgblendingClick(Sender: TObject);
     procedure scb_bgblendingColorClick(Sender: TObject; Color: TColor;
       ColType: TClickedColorID);
-    procedure shellAdministrativeTools1Click(Sender: TObject);
     procedure cb_captionClick(Sender: TObject);
     procedure btn_mlineClick(Sender: TObject);
     procedure cb_mlineClick(Sender: TObject);
@@ -274,7 +226,6 @@ type
      
 implementation
 
-uses LinkObjectFolderWnd;
 
 {$R *.dfm}
 
@@ -283,7 +234,6 @@ procedure TSettingsWnd.PaintPanels;
 var
   n : integer;
   DP : TDesktopPanel;
-  Bmp : TBitmap32;
 begin
   bgList.Bitmap.SetSize((PanelList.Width + 12)* (PanelList.Count),PanelList.Heigh+12);
   bgList.Bitmap.Clear(color32(bgList.Color));
@@ -317,8 +267,9 @@ var
    Settings : TXMLSettings;
 begin
   ThemeIconList := TStringList.Create;
+
+  p := GetIconList(DeskSettings.Theme.IconSet);
   try
-     p := GetIconList(DeskSettings.Theme.IconSet);
      ThemeIconList.CommaText := p;
      releasebuffer(p);
   except
@@ -347,7 +298,6 @@ begin
                 begin
                      wIcon.ReleaseHandle;
                      DestroyIcon(TempIcon);
-                     TempIcon := 0;
                 end;
                 wIcon.Free;
            end;
@@ -506,7 +456,6 @@ end;
 
 procedure TSettingsWnd.SaveSettings();
 var
-   n,i : integer;
    IconFile : string;
    Settings : TXMLSettings;
 begin
@@ -861,64 +810,11 @@ end;
 
 procedure TSettingsWnd.btn_targetselectClick(Sender: TObject);
 var
-  p : TPoint;
+  s : string;
 begin
-  p := self.ClientToScreen(point(btn_targetselect.left,btn_targetselect.Top));
-  btn_targetselect.PopupMenu.Popup(p.x-8,p.y+40);
-end;
-
-procedure TSettingsWnd.File1Click(Sender: TObject);
-var
-  filename : string;
-  fileExt : string;
-  I: Integer;
-begin
-  if OpenFileDialog.Execute then
-  begin
-    Edit_target.Text:=OpenFileDialog.FileName;
-    if Icon.Tag = -2 then ShellIcon1.Click;
-    Filename:=ExtractFileName(edit_target.Text);
-    FileExt := ExtractFileExt(FileName);
-    if FileExt <> '' then
-    begin
-      I := LastDelimiter('.' + PathDelim + DriveDelim,Filename);
-      if (I = 0) or (FileName[I] <> '.') then I := MaxInt;
-      Edit_Caption.Text := Copy(FileName, 1, I - 1);
-    end else Edit_Caption.Text := filename;
-  end;
-end;
-
-procedure TSettingsWnd.Folder1Click(Sender: TObject);
-var
-  pidl, pidlSelected: PItemIDList;
-  bi: TBrowseInfo;
-  szDirName: array [0..260] of AnsiChar;
-begin
-  {Get the root PIDL of the network neighborhood tree}
-  if SHGetSpecialFolderLocation(Handle, CSIDL_DESKTOP, pidl) = NOERROR then
-  begin
-    {Populate a BROWSEINFO structure}
-    bi.hwndOwner := Handle;
-    bi.pidlRoot := pidl;
-    bi.pszDisplayName := szDirName;
-    bi.lpszTitle := 'Select directory';
-    bi.ulFlags := BIF_RETURNONLYFSDIRS;
-    bi.lpfn := nil;
-    bi.lParam := 0;
-    bi.iImage := - 1;
-    {Display the "Browse For Folder" dialog box}
-    pidlSelected := SHBrowseForFolder(bi);
-    {NULL indicates that Cancel was selected from the dialog box}
-    if pidlSelected <> nil then
-    begin
-      SHGetPathFromIDList(pidlSelected, szDirName);
-      edit_target.Text:=szDirName;
-      {Release the PIDL of the computer name}
-      CoTaskMemFree(pidlSelected);
-    end;
-    {Release the PIDL of the network neighborhood tree}
-    CoTaskMemFree(pidl);
-  end;
+  s := SharpDialogs.TargetDialog(STI_ALL_TARGETS,
+                                 GroupBox15.ClientToScreen(point(btn_targetselect.Left,btn_targetselect.Top)));
+  if length(trim(s))>0 then edit_target.Text := s;
 end;
 
 procedure TSettingsWnd.edit_csizeKeyUp(Sender: TObject; var Key: Word;
@@ -1075,11 +971,6 @@ begin
   PaintPanels;
 end;
 
-procedure TSettingsWnd.shellAdministrativeTools1Click(Sender: TObject);
-begin
-  edit_target.Text := TMenuItem(Sender).Caption;
-end;
-
 procedure TSettingsWnd.cb_captionClick(Sender: TObject);
 var
   b : boolean;
@@ -1139,8 +1030,7 @@ begin
       edit_caption.Text := mlinewnd.Memo1.Lines.CommaText;
     end;
   finally
-    mlinewnd.Free;
-    mlinewnd := nil;
+    FreeAndNil(mlinewnd);
   end;
 end;
 

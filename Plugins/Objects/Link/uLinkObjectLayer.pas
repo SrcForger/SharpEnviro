@@ -303,12 +303,6 @@ end;
 
 
 procedure TFolderLayer.LoadSettings;
-var
-   i : integer;
-   alphablend : integer;
-   IconList : TStringList;
-   p : PChar;
-   Bmp : TBitmap32;
 begin
   if ObjectID=0 then exit;
 

@@ -119,7 +119,7 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX</Directories>
+			<Directories Name="SearchPath">..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Delphi Components\SharpEColorBox;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
@@ -130,12 +130,13 @@
 			<Parameters Name="HostApplication">C:\SharpE\SharpDesk.exe</Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
-			<Parameters Name="DebugCWD"></Parameters>  <Parameters Name="RemoteHost"></Parameters>
-      <Parameters Name="RemotePath"></Parameters>
-      <Parameters Name="RemoteLauncher"></Parameters>
-      <Parameters Name="RemoteCWD"></Parameters>
-      <Parameters Name="RemoteDebug">False</Parameters>
-    </Parameters>
+			<Parameters Name="DebugCWD"></Parameters>
+			<Parameters Name="RemoteHost"></Parameters>
+			<Parameters Name="RemotePath"></Parameters>
+			<Parameters Name="RemoteLauncher"></Parameters>
+			<Parameters Name="RemoteCWD"></Parameters>
+			<Parameters Name="RemoteDebug">False</Parameters>
+		</Parameters>
 		<VersionInfo>
 			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 			<VersionInfo Name="AutoIncBuild">False</VersionInfo>
