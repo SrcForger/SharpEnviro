@@ -48,7 +48,9 @@ var
   sr : TSearchRec;
   tempItem : TDesktopPanel;
 begin
+  {$WARNINGS OFF}
   pDirectory := IncludeTrailingBackslash(pDirectory);
+  {$WARNINGS ON}
   if FindFirst(pDirectory+'*.*',faDirectory,sr) = 0 then
   repeat
     if (sr.Name = '.') or (sr.Name = '..') then continue;
