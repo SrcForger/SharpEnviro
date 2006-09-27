@@ -83,7 +83,6 @@ end;
 
 procedure TPluginManagerForm.btn_addpluginClick(Sender: TObject);
 var
-  tempModuleFile : TModuleFile;
   i : integer;
 begin
   if AddPluginForm = nil then AddPluginForm := TAddPluginForm.Create(self);
@@ -92,7 +91,6 @@ begin
   begin
     if AddPluginForm.list_plugins.ItemIndex <> -1 then
     begin
-      tempModuleFile := TModuleFile(ModuleManager.ModuleFiles.Items[AddPluginForm.list_plugins.ItemIndex]);
       if AddPluginForm.rb_left.Checked then i := -1
          else i := 1;
       ModuleManager.CreateModule(AddPluginForm.list_plugins.ItemIndex,i);

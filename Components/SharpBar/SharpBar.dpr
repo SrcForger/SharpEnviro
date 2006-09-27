@@ -69,38 +69,39 @@ begin
   begin
     result := False;
     exit;
-  end
-     else
-  try
+  end else
+  begin
     xml := TJvSimpleXMl.Create(nil);
-    xml.LoadFromFile(Dir + 'bars.xml');
-    k := 0;
-    with xml.root.items.ItemNamed['bars'] do
-    begin
-      for n := 0 to Items.Count - 1 - k do
+    try
+      xml.LoadFromFile(Dir + 'bars.xml');
+      k := 0;
+      with xml.root.items.ItemNamed['bars'] do
       begin
-        if Items.Item[n-k].Items.ItemNamed['Modules'] <> nil then
-           if Items.Item[n-k].Items.ItemNamed['Modules'].Items.Count > 0  then
-              Continue;
-        BarID := Items.Item[n-k].Items.IntValue('ID',-1);
-        // check if a bar with this ID is running
-        handle := FindWindow(nil,PChar('SharpBar_'+inttostr(BarID)));
-        if handle = 0 then
+        for n := 0 to Items.Count - 1 - k do
         begin
-          // delete the bar settings
-          Items.Delete(n-k);
-          k := k + 1;
-          DeleteFile(Dir + 'Module Settings\' + inttostr(BarID)+'.xml');
+          if Items.Item[n-k].Items.ItemNamed['Modules'] <> nil then
+             if Items.Item[n-k].Items.ItemNamed['Modules'].Items.Count > 0  then
+                Continue;
+          BarID := Items.Item[n-k].Items.IntValue('ID',-1);
+          // check if a bar with this ID is running
+          handle := FindWindow(nil,PChar('SharpBar_'+inttostr(BarID)));
+          if handle = 0 then
+          begin
+            // delete the bar settings
+            Items.Delete(n-k);
+            k := k + 1;
+            DeleteFile(Dir + 'Module Settings\' + inttostr(BarID)+'.xml');
+          end;
         end;
       end;
+      xml.SaveToFile(Dir + 'bars.xml');
+    except
+      xml.free;
+      result := False;
+      exit;
     end;
-    xml.SaveToFile(Dir + 'bars.xml');
-  except
-    xml.free;
-    result := False;
-    exit;
+    result := True;
   end;
-  result := True;
 end;
 
 function CheckIfValidBar(ID : integer) : boolean;
@@ -225,7 +226,7 @@ begin
 
   // Set BarID to -1 --- this will tell TSharpBarMainForm to create a new bar
   // if there is no param given
-  ParamID := -1;
+
   // Check given exec ID params if this bar is supposed to be empty or
   // if it should be an already existing bar
   if length(trim(ParamString))>0 then

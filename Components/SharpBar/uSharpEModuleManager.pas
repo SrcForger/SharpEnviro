@@ -229,14 +229,17 @@ var
   n : integer;
   tempModule : TModule;
 begin
+  result := 0;
   for n := 0 to FModules.Count -1 do
   begin
     tempModule := TModule(FModules.Items[n]);
     if tempModule.ID = ID then
     begin
       if assigned(tempModule.ModuleFile.DllModuleMessage) then
-         result := tempModule.ModuleFile.DllModuleMessage(ID,msg)
-      else result := 0;
+      begin
+        result := tempModule.ModuleFile.DllModuleMessage(ID,msg);
+        exit;
+      end;
     end;
   end;
 end;
@@ -464,7 +467,9 @@ var
   temp : TModuleFile;
 begin
   Clear;
+  {$WARNINGS OFF}
   FDirectory := IncludeTrailingBackSlash(pDirectory);
+  {$WARNINGS ON}
   if FindFirst(FDirectory + '*.dll',FAAnyFile,sr) = 0 then
   repeat
     temp := TModuleFile.Create(FDirectory + sr.Name,FParent, FSkinManager, FBar, FModuleSettings);
@@ -703,7 +708,6 @@ var
   ro,lo,rx,x : integer;
   TempModule     : TModule;
   IDArray        : array of integer;
-  IgnorePos      : boolean;
   ParentControl  : TWinControl;
   LeftSize,RightSize : integer;
   MTWidth : integer; // mini Throbbers
@@ -720,10 +724,6 @@ begin
     ro := 0;
   end;
   ParentControl := GetControlByHandle(FParent);
-  if FBar.HorizPos = hpFull then
-  begin
-    IgnorePos := False
-  end else IgnorePos := True;
 
   if FModules.Count > 0 then
      MTWidth := TModule(FModules.Items[0]).Throbber.Width+FModuleSpacing
@@ -816,7 +816,6 @@ var
   maxsize : integer;
   maxbarsize : integer;
   FreeMinSpace : integer;
-  nonminmaxsizeadd : integer;
   nonminmaxrequest : array of integer;
   smod : integer;
 begin

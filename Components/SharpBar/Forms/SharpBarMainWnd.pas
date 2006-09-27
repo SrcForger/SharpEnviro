@@ -751,6 +751,7 @@ begin
   end;
 
   // Find and load settings!
+  i := -1;
   xml := TJvSimpleXML.Create(nil);
   try
     xml.LoadFromFile(Dir + 'bars.xml');
@@ -794,7 +795,7 @@ begin
 
   UpdateBGZone;
   try
-    LoadBarModules(xml.root.items.ItemNamed['bars'].Items.Item[i]);
+    if i <> -1 then LoadBarModules(xml.root.items.ItemNamed['bars'].Items.Item[i]);
   except
   end;
   xml.free;
