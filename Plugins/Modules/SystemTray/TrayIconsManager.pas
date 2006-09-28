@@ -841,6 +841,7 @@ var
   tempItem : TTrayItem;
   n : integer;
   mon : TMonitor;
+  x,y : integer;
 begin
   for n := 0 to FItems.Count - 1 do
   begin
@@ -858,13 +859,15 @@ begin
         FTipWnd.InfoLabel.Caption := tempItem.FTip;
         FTipWnd.Width := FTipWnd.InfoLabel.Width +8; // FTipWnd.InfoLabel.Canvas.TextWidth(tempItem.Title)+16;
         FTipWnd.Height := FTipWnd.InfoLabel.Height + 6;
-        FTipWnd.Top := FTipGPoint.Y - FTipWnd.Height - 1;
-        FTipWnd.Left := FTipGPoint.X+2;
+        x := FTipGPoint.X+2;
+        y := FTipGPoint.Y - FTipWnd.Height - 1;
         mon := Screen.Monitors[GetCurrentMonitor];
-        if FTipWnd.Left + FTipWnd.Width > mon.Left + mon.Width then
-           FTipWnd.Left := mon.Left + mon.Width - FTipWnd.Width;
-        if FTipWnd.Top < mon.top then
-           FTipWnd.top := mon.top;
+        if x + FTipWnd.Width > mon.Left + mon.Width then
+           x := mon.Left + mon.Width - FTipWnd.Width;
+        if y < mon.top then
+           y := mon.top;
+        FTipWnd.Left := x;
+        FTipWnd.Top := y;
       end;
     end;
   end;
