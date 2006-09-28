@@ -34,6 +34,7 @@ unit SharpFileUtils_Adapter;
 interface
 
 uses Windows,
+     Classes,
      SysUtils,
      JvInterpreter;
 
@@ -42,16 +43,44 @@ const
     'CompanyName', 'FileDescription', 'FileVersion', 'InternalName',
     'LegalCopyRight', 'OriginalFileName', 'ProductName', 'ProductVersion');
 
+procedure RegisterFileUtilsLog(pLog : TStrings);
+procedure UnregisterFileUtilsLog;
 function GetFileInfo(FName, InfoType: string): string;
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
 implementation
 
 uses Variants,
-     Classes,
      Types,
      JclStrings,
      SharpApi;
+
+var
+  FLog : TStrings;
+  FLogEnabled : boolean;
+
+procedure UnregisterFileUtilsLog;
+begin
+  FLogEnabled := False;
+  FLog := nil;
+end;
+
+procedure RegisterFileUtilsLog(pLog : TStrings);
+begin
+  FLogEnabled := True;
+  FLog := pLog;
+end;
+
+procedure AddLog(logmsg : String);
+begin
+  if not FLogEnabled then exit;
+
+  try
+    if FLog <> nil then FLog.Add(logmsg);
+  except
+    FLog := nil;
+  end;
+end;
 
 function GetFileInfo(FName, InfoType: string): string;
 var
@@ -94,19 +123,36 @@ end;
 
 procedure Adapter_CopyFile(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := CopyFile(PChar(VarToStr(Args.Values[0])),
-                    PChar(VarToStr(Args.Values[1])),
-                    not Args.Values[2]);
+  try
+    Value := CopyFile(PChar(VarToStr(Args.Values[0])),
+                      PChar(VarToStr(Args.Values[1])),
+                      not Args.Values[2]);
+    if Value then AddLog('File copied from: ('+VarToStr(Args.Values[0])+') to: ('+VarToStr(Args.Values[1])+')')
+       else AddLog('Failed to copy file from: ('+VarToStr(Args.Values[0])+') to: ('+VarToStr(Args.Values[1])+')');
+  except
+    AddLog('Failed to call CopyFile "'+VarToStr(Args.Values[0])+'" -> "' +VarToStr(Args.Values[1])+'"');
+  end;
 end;
 
 procedure Adapter_DeleteFile(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := DeleteFile(VarToStr(Args.Values[0]));
+  try
+    Value := DeleteFile(VarToStr(Args.Values[0]));
+    if Value then AddLog('Delete file: ('+VarToStr(Args.Values[0])+')')
+       else AddLog('Failed to delete file: ('+VarToStr(Args.Values[0])+')');
+  except
+    AddLog('Failed to call DeleteFile("'+VarToStr(Args.Values[0])+'")');
+  end;
 end;
 
 procedure Adapter_FileExists(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := FileExists(VarToStr(Args.Values[0]));
+  try
+    Value := FileExists(VarToStr(Args.Values[0]));
+    AddLog('FileExists("'+VarToStr(Args.Values[0])+'") -> ' + BoolToStr(Value,True));
+  except
+    AddLog('Failed to call FileExists("'+VarToStr(Args.Values[0])+'")');
+  end;
 end;
 
 procedure Adapater_GetFileVersionAsString(var Value: Variant; Args: TJvInterpreterArgs);

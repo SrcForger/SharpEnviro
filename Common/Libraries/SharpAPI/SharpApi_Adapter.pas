@@ -33,77 +33,169 @@ unit SharpApi_Adapter;
 
 interface
 
-uses JvInterpreter;
+uses JvInterpreter, Classes, SysUtils;
 
+procedure UnregisterAPILog;
+procedure RegisterAPILog(pLog : TStrings);
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
 implementation
 
 uses Variants,SharpApi;
 
+var
+  FLog : TStrings;
+  FLogEnabled : boolean;
+
+procedure UnregisterAPILog;
+begin
+  FLogEnabled := False;
+  FLog := nil;
+end;
+
+procedure RegisterAPILog(pLog : TStrings);
+begin
+  FLogEnabled := True;
+  FLog := pLog;
+end;
+
+procedure AddLog(logmsg : String);
+begin
+  if not FLogEnabled then exit;
+  
+  try
+    if FLog <> nil then FLog.Add(logmsg);
+  except
+    FLog := nil;
+  end;
+end;
+
 procedure Adapter_GetSharpeDirectory(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := String(GetSharpeDirectory);
+  try
+    Value := String(GetSharpeDirectory);
+  except
+    AddLog('Failed to get SharpE Directory');
+  end;
 end;
 
 procedure Adapter_GetSharpeUserSettingsPath(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := String(GetSharpeUserSettingsPath);
+  try
+    Value := String(GetSharpeUserSettingsPath);
+  except
+    AddLog('Failed to get SharpE User Settings Path');
+  end;
 end;
 
 procedure Adapter_GetSharpeGlobalSettingsPath(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := String(GetSharpeGlobalSettingsPath);
+  try
+    Value := String(GetSharpeGlobalSettingsPath);
+  except
+    AddLog('Failed to get SharpE Global Settings Path');
+  end;
 end;
 
 procedure Adapter_IsComponentRunning(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := IsComponentRunning(PChar(VarToStr(Args.Values[0])));
+  try
+    Value := IsComponentRunning(PChar(VarToStr(Args.Values[0])));
+    AddLog('IsComponentRunning("'+VarToStr(Args.Values[0])+'") -> ' + BoolToStr(Value,True));
+  except
+    AddLog('Failed to call IsComponentRunning("'+VarToStr(Args.Values[0])+'")');
+  end;
 end;
 
 procedure Adapter_FindComponent(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := FindComponent(PChar(VarToStr(Args.Values[0])));
+  try
+    Value := FindComponent(PChar(VarToStr(Args.Values[0])));
+    AddLog('FindComponent("'+VarToStr(Args.Values[0])+'") -> ' + BoolToStr(Value,True));
+  except
+    AddLog('Failed to call FindComponent("'+VarToStr(Args.Values[0])+'")');
+  end;
 end;
 
 procedure Adapter_CloseComponent(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := CloseComponent(PChar(VarToStr(Args.Values[0])));
+  try
+    Value := CloseComponent(PChar(VarToStr(Args.Values[0])));
+    if Value then AddLog('Component "'+VarToStr(Args.Values[0])+'" closed.')
+       else AddLog('Failed to close component "'+VarToStr(Args.Values[0])+'"');
+  except
+    AddLog('Failed to call CloseComponent("'+VarToStr(Args.Values[0])+'")');
+  end;
 end;
 
 procedure Adapter_StartComponent(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  StartComponent(PChar(VarToStr(Args.Values[0])));
+  try
+    AddLog('Starting component "'+VarToStr(Args.Values[0])+'"');
+    StartComponent(PChar(VarToStr(Args.Values[0])));
+  except
+    AddLog('Failed to call StartComponent("'+VarToStr(Args.Values[0])+'")');
+  end;
 end;
 
 procedure Adapter_TerminateComponent(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TerminateComponent(PChar(VarToStr(Args.Values[0])));
+  try
+    AddLog('Terminating component "'+VarToStr(Args.Values[0])+'"');
+    TerminateComponent(PChar(VarToStr(Args.Values[0])));
+  except
+    AddLog('Failed to call TerminateComponent("'+VarToStr(Args.Values[0])+'")');
+  end;
 end;
 
 procedure Adapter_SharpExecute(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := SharpExecute(PChar(VarToStr(Args.Values[0])));
+  try
+    Value := SharpExecute(PChar(VarToStr(Args.Values[0])));
+    AddLog('SharpExecute("'+VarToStr(Args.Values[0])+'") -> ' + IntToStr(Value));
+  except
+    AddLog('Failed to call SharpExecute("'+VarToStr(Args.Values[0])+'")');
+  end;
 end;
 
 procedure Adapter_ServiceStart(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := SharpApi.ServiceStart(PChar(VarToStr(Args.Values[0])));
+  try
+    Value := SharpApi.ServiceStart(PChar(VarToStr(Args.Values[0])));
+    AddLog('ServiceStart("'+VarToStr(Args.Values[0])+'") -> ' + IntToStr(Value));
+  except
+    AddLog('Failed to call ServiceStart("'+VarToStr(Args.Values[0])+'")');
+  end;
 end;
 
 procedure Adapter_ServiceStop(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := SharpApi.ServiceStop(PChar(VarToStr(Args.Values[0])));
+  try
+    Value := SharpApi.ServiceStop(PChar(VarToStr(Args.Values[0])));
+    AddLog('ServiceStop("'+VarToStr(Args.Values[0])+'") -> ' + IntToStr(Value));
+  except
+    AddLog('Failed to call ServiceStop("'+VarToStr(Args.Values[0])+'")');
+  end;
 end;
 
 procedure Adapter_ServiceMsg(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := SharpApi.ServiceMsg(PChar(VarToStr(Args.Values[0])),PChar(VarToStr(Args.Values[1])));
+  try
+    Value := SharpApi.ServiceMsg(PChar(VarToStr(Args.Values[0])),PChar(VarToStr(Args.Values[1])));
+    AddLog('ServiceMsg("'+VarToStr(Args.Values[0])+'") -> ' + IntToStr(Value));
+  except
+    AddLog('Failed to call ServiceMsg("'+VarToStr(Args.Values[0])+'")');
+  end;
 end;
 
 procedure Adapter_IsServiceStarted(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := SharpApi.IsServiceStarted(PChar(VarToStr(Args.Values[0])));
+  try
+    Value := SharpApi.IsServiceStarted(PChar(VarToStr(Args.Values[0])));
+    AddLog('IsServiceStarted("'+VarToStr(Args.Values[0])+'") -> ' + IntToStr(Value));
+  except
+    AddLog('Failed to call IsServiceStarted("'+VarToStr(Args.Values[0])+'")');
+  end;
 end;
 
 

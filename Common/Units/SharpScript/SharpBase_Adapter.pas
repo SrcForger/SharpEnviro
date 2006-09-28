@@ -35,6 +35,7 @@ interface
 
 uses Windows,
      SysUtils,
+     Classes,
      JvInterpreter,
      AbUtils,
      AbArcTyp,
@@ -44,17 +45,46 @@ uses Windows,
      AbUnzper;
 
 
+procedure RegisterBaseLog(pLog : TStrings);
+procedure UnregisterBaseLog;
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 
 implementation
 
 uses Variants,
-     Classes,
      Types,
      DateUtils;
 
+var
+  FLog : TStrings;
+  FLogEnabled : boolean;
+
+procedure UnregisterBaseLog;
+begin
+  FLogEnabled := False;
+  FLog := nil;
+end;
+
+procedure RegisterBaseLog(pLog : TStrings);
+begin
+  FLogEnabled := True;
+  FLog := pLog;
+end;
+
+procedure AddLog(logmsg : String);
+begin
+  if not FLogEnabled then exit;
+
+  try
+    if FLog <> nil then FLog.Add(logmsg);
+  except
+    FLog := nil;
+  end;
+end;
+
 procedure Adapter_Sleep(var Value: Variant; Args: TJvInterpreterArgs);
 begin
+  AddLog('Executing Sleep('+VarToStr(Args.Values[0])+')');
   Sleep(Args.Values[0]);
 end;
 
@@ -62,7 +92,9 @@ procedure Adapter_IntToStr(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   try
     Value := inttostr(Args.Values[0]);
+    AddLog('IntToStr("'+VarToStr(Args.Values[0])+'") -> ' + Value);
   except
+    AddLog('Failed to convert "'+VarToStr(Args.Values[0])+'" to String');
     Value := '';
   end;
 end;
@@ -71,7 +103,9 @@ procedure Adapter_StrToInt(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   try
     Value := strtoint(Args.Values[0]);
+    AddLog('StrToInt("'+VarToStr(Args.Values[0])+'") -> ' + inttostr(Value));
   except
+    AddLog('Failed to convert "'+VarToStr(Args.Values[0])+'" to Integer');
     Value := 0;
   end;
 end;
