@@ -293,6 +293,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
     Top = 240
   end
   object JvInterpreter: TJvInterpreterProgram
+    OnStatement = JvInterpreterStatement
     Left = 472
     Top = 152
   end
@@ -469,14 +470,17 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
           object SHARPEDIR2: TMenuItem
             Caption = 'SHARPE_DIR'
             Hint = 'SHARPE_DIR'
+            OnClick = GenericPopupClick
           end
           object SETTINGSGLOBALDIR1: TMenuItem
             Caption = 'SETTINGS_GLOBAL_DIR'
             Hint = 'SETTINGS_GLOBAL_DIR'
+            OnClick = GenericPopupClick
           end
           object SETTINGSUSERDIR2: TMenuItem
             Caption = 'SETTINGS_USER_DIR'
             Hint = 'SETTINGS_USER_DIR'
+            OnClick = GenericPopupClick
           end
         end
         object ServiceResults1: TMenuItem
@@ -522,6 +526,19 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
             OnClick = GenericPopupClick
           end
         end
+      end
+    end
+    object ScriptEngine1: TMenuItem
+      Caption = 'Script Engine'
+      object LOGWINDOWOFF1: TMenuItem
+        Caption = '{$LOGWINDOW OFF}'
+        Hint = '{$LOGWINDOW OFF}'
+        OnClick = LOGWINDOWOFF1Click
+      end
+      object LOGWINDOWAUTOCLOSEON1: TMenuItem
+        Caption = '{$LOGWINDOW AUTOCLOSE ON}'
+        Hint = '{$LOGWINDOW AUTOCLOSE ON}'
+        OnClick = LOGWINDOWOFF1Click
       end
     end
   end

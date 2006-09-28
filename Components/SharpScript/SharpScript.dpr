@@ -13,7 +13,8 @@ uses
   SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpBase_Adapter in '..\..\Common\Units\SharpScript\SharpBase_Adapter.pas',
   CreateGenericScriptWnd in 'Forms\CreateGenericScriptWnd.pas' {CreateGenericScriptForm},
-  ScriptControls in 'ScriptControls.pas';
+  ScriptControls in 'ScriptControls.pas',
+  LogWnd in 'Forms\LogWnd.pas' {LogForm};
 
 {$R *.res}
 
@@ -39,8 +40,8 @@ begin
       Ext := ExtractFileExt(Prm);
       if Ext = '.sip' then
       begin
+        installscript := TSharpEInstallerScript.Create;
         try
-          installscript := TSharpEInstallerScript.Create;
           installscript.DoInstall(Prm);
         finally
           installscript.Free;
@@ -48,8 +49,8 @@ begin
         end;
       end else if Ext = '.sescript' then
       begin
+        genericscript := TSharpEGenericScript.Create;
         try
-          genericscript := TSharpEGenericScript.Create;
           genericscript.ExecuteScript(Prm);
         finally
           genericscript.Free;

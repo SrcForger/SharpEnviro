@@ -70,16 +70,16 @@ begin
     Ext := ExtractFileExt(OpenScript.FileName);
     if Ext = '.sip' then
     begin
+      installscript := TSharpEInstallerScript.Create;
       try
-        installscript := TSharpEInstallerScript.Create;
         installscript.DoInstall(OpenScript.Filename);
       finally
         installscript.Free;
       end;
     end else if Ext = '.sescript' then
     begin
+      genericscript := TSharpEGenericScript.Create;
       try
-        genericscript := TSharpEGenericScript.Create;
         genericscript.ExecuteScript(OpenScript.FileName);
       finally
         genericscript.Free;

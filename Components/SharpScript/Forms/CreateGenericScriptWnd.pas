@@ -75,6 +75,11 @@ type
     functionServiceStopServicePCharhresult1: TMenuItem;
     functionServiceMsgServiceMessageStringhresult1: TMenuItem;
     functionIsServicesStartedServicePCharhresult1: TMenuItem;
+    ScriptEngine1: TMenuItem;
+    LOGWINDOWOFF1: TMenuItem;
+    LOGWINDOWAUTOCLOSEON1: TMenuItem;
+    procedure LOGWINDOWOFF1Click(Sender: TObject);
+    procedure JvInterpreterStatement(Sender: TObject);
     procedure btn_insertClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure GenericPopupClick(Sender: TObject);
@@ -93,7 +98,10 @@ var
 
 implementation
 
-uses SharpApi, MainWnd;
+uses SharpApi,
+     MainWnd,
+     SharpApi_Adapter,
+     SharpBase_Adapter, SharpFileUtils_Adapter;
 
 {$R *.dfm}
 
@@ -126,15 +134,26 @@ var
 begin
   lb_errors.Clear;
   lb_errors.Items.Add('Running Script...');
+  lb_errors.Items.Add('');
   JvInterpreter.Pas.CommaText := ed_script.Lines.CommaText;
   errors := True;
+
+  SharpApi_Adapter.RegisterAPILog(lb_errors.Items);
+  SharpBase_Adapter.RegisterBaseLog(lb_errors.Items);
+  SharpFileUtils_Adapter.RegisterFileUtilsLog(lb_errors.Items);
+
   try
     JvInterpreter.Run;
     errors := False;
   except
     on E: Exception do lb_errors.Items.Add('Error: ' + E.Message);
   end;
+  lb_errors.Items.Add('');
   if not errors then lb_errors.Items.Add('No Errors Found!');
+
+  SharpApi_Adapter.UnRegisterAPILog;
+  SharpBase_Adapter.UnRegisterBaseLog;
+  SharpFileUtils_Adapter.UnRegisterFileUtilsLog;
 end;
 
 procedure TCreateGenericScriptForm.ToolButton1Click(Sender: TObject);
@@ -167,7 +186,9 @@ begin
 
   if SaveScript.Execute then
   begin
-    ed_script.Lines.SaveToFile(SaveScript.FileName + '.sescript');
+    if CompareText(ExtractFileExt(SaveScript.FileName),'.sescript') = 0 then
+       ed_script.Lines.SaveToFile(SaveScript.FileName)
+       else ed_script.Lines.SaveToFile(SaveScript.FileName + '.sescript');
   end;
 end;
 
@@ -191,6 +212,19 @@ var
 begin
   p := ToolBar2.ClientToScreen(Point(btn_insert.Left,btn_insert.Top));
   btn_insert.DropdownMenu.Popup(p.X,p.y+btn_insert.Height);
+end;
+
+procedure TCreateGenericScriptForm.JvInterpreterStatement(Sender: TObject);
+begin
+  Application.ProcessMessages;
+end;
+
+procedure TCreateGenericScriptForm.LOGWINDOWOFF1Click(Sender: TObject);
+begin
+  if not (Sender is TMenuItem) then exit;
+
+  ed_script.Lines.Insert(0,TMenuItem(Sender).Hint);
+  ed_script.Refresh;
 end;
 
 end.
