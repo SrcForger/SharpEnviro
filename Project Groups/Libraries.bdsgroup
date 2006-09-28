@@ -13,7 +13,8 @@
       <Projects Name="SharpDeskApi.dll">..\Common\Libraries\SharpDeskApi\SharpDeskApi.bdsproj</Projects>
       <Projects Name="shellhook.dll">..\Common\Libraries\ShellHook\shellhook.bdsproj</Projects>
       <Projects Name="SharpThemeApi.dll">..\Common\Libraries\SharpThemeApi\SharpThemeApi.bdsproj</Projects>
-      <Projects Name="Targets">SharpAPI.dll SharpDeskApi.dll shellhook.dll SharpThemeApi.dll</Projects>
+      <Projects Name="SharpDialogs.dll">..\Common\Libraries\SharpDialogs\SharpDialogs.bdsproj</Projects>
+      <Projects Name="Targets">SharpAPI.dll SharpDeskApi.dll shellhook.dll SharpThemeApi.dll SharpDialogs.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
