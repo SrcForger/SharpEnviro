@@ -34,7 +34,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ToolWin, ComCtrls, ImgList, PngImageList, JvTabBar, StdCtrls;
+  Dialogs, ToolWin, ComCtrls, ImgList, PngImageList, JvTabBar, StdCtrls,
+  JvComponentBase, JvFindReplace;
 
 type
   TNotesForm = class(TForm)
@@ -56,6 +57,11 @@ type
     ImportDialog: TOpenDialog;
     ExportDialog: TSaveDialog;
     ToolButton1: TToolButton;
+    btn_fint: TToolButton;
+    FindDialog: TJvFindReplace;
+    btn_linewrap: TToolButton;
+    procedure btn_linewrapClick(Sender: TObject);
+    procedure btn_fintClick(Sender: TObject);
     procedure ToolButton1Click(Sender: TObject);
     procedure tb_importClick(Sender: TObject);
     procedure tb_exportClick(Sender: TObject);
@@ -108,9 +114,9 @@ var
 begin
   Dir := GetNotesDir;
   ForceDirectories(Dir);
-  Tabs.Tabs.Clear;
   if ((Tabs.SelectedTab <> nil) and (length(Focustab)=0)) then CurrentTab := Tabs.SelectedTab.Caption
      else CurrentTab := FocusTab;
+  Tabs.Tabs.Clear;
   if FindFirst(Dir + '*'+NOTES_EXTENSION,FAAnyFile,sr) = 0 then
   repeat
     fname := ExtractFileName(sr.Name);
@@ -160,6 +166,7 @@ end;
 procedure TNotesForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   SaveCurrentTab;
+  TMainForm(Owner).sLineWrap := btn_LineWrap.Down;
   TMainForm(Owner).SaveSettings;
 end;
 
@@ -286,5 +293,17 @@ begin
 end;
 
 
+
+procedure TNotesForm.btn_fintClick(Sender: TObject);
+begin
+  FindDialog.Find;
+end;
+
+procedure TNotesForm.btn_linewrapClick(Sender: TObject);
+begin
+  Notes.WordWrap := btn_linewrap.Down;
+  if not Notes.WordWrap then Notes.ScrollBars := ssBoth
+     else Notes.ScrollBars := ssVertical;
+end;
 
 end.

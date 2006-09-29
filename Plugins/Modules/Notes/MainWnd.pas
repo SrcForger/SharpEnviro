@@ -63,6 +63,7 @@ type
   public
     ModuleID : integer;
     BarWnd : hWnd;
+    sLineWrap    : Boolean;
     procedure LoadSettings;
     procedure SaveSettings;
     procedure SetSize(NewWidth : integer);
@@ -122,6 +123,7 @@ begin
     Add('Top',sTop);
     Add('Height',sHeight);
     Add('Width',sWidth);
+    Add('LineWrap',sLineWrap);
   end;
   uSharpBarAPI.SaveXMLFile(BarWnd);
 end;
@@ -134,6 +136,7 @@ begin
   sCaption     := True;
   sIcon        := True;
   sAlwaysOnTop := True;
+  sLineWrap    := True;
 
   Mon := screen.MonitorFromWindow(Handle);
   sWidth  := 512;
@@ -151,6 +154,7 @@ begin
     sTop         := IntValue('Top',sTop);
     sHeight      := Max(64,IntValue('Height',sHeight));
     sWidth       := Max(64,IntValue('Width',sWidth));
+    sLineWrap    := BoolValue('LineWrap',False);
   end;
 end;
 
@@ -249,6 +253,8 @@ begin
   NotesForm.Top    := sTop;
   NotesForm.Width  := sWidth;
   NotesForm.Height := sHeight;
+  NotesForm.btn_linewrap.Down := sLineWrap;
+  NotesForm.btn_linewrap.OnClick(NotesForm.btn_linewrap);
   NotesForm.Show;
 //  if sAlwaysOnTop then SetWindowPos(NotesForm.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
    //  else SetWindowPos(NotesForm.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
