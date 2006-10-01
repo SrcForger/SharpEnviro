@@ -3,7 +3,7 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'MiniScmd Module Settings'
-  ClientHeight = 87
+  ClientHeight = 103
   ClientWidth = 192
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -17,14 +17,14 @@ object SettingsForm: TSettingsForm
   TextHeight = 13
   object Label4: TLabel
     Left = 8
-    Top = 8
+    Top = 32
     Width = 94
     Height = 13
     Caption = 'Command Box Size:'
   end
   object lb_barsize: TLabel
     Left = 104
-    Top = 8
+    Top = 32
     Width = 33
     Height = 14
     AutoSize = False
@@ -38,7 +38,7 @@ object SettingsForm: TSettingsForm
   end
   object Button1: TButton
     Left = 32
-    Top = 56
+    Top = 72
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -47,7 +47,7 @@ object SettingsForm: TSettingsForm
   end
   object Button2: TButton
     Left = 112
-    Top = 56
+    Top = 72
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -56,7 +56,7 @@ object SettingsForm: TSettingsForm
   end
   object tb_size: TGaugeBar
     Left = 8
-    Top = 24
+    Top = 48
     Width = 177
     Height = 13
     Color = clWindow
@@ -72,12 +72,12 @@ object SettingsForm: TSettingsForm
     Position = 100
     OnChange = tb_sizeChange
   end
-  object OpenFile: TOpenDialog
-    FileName = '*.*'
-    Filter = 'All Files|*.*|Applications (*.exe)|*.exe'
-    Options = [ofHideReadOnly, ofEnableSizing, ofForceShowHidden]
-    Title = 'Select Target File'
-    Left = 136
-    Top = 96
+  object cb_selectbutton: TCheckBox
+    Left = 8
+    Top = 8
+    Width = 153
+    Height = 17
+    Caption = 'Show Quick Select Button'
+    TabOrder = 3
   end
 end

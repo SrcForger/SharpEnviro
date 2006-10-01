@@ -43,7 +43,7 @@ type
     Label4: TLabel;
     lb_barsize: TLabel;
     tb_size: TGaugeBar;
-    OpenFile: TOpenDialog;
+    cb_selectbutton: TCheckBox;
     procedure tb_sizeChange(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);

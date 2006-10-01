@@ -46,11 +46,14 @@ type
     Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     edit: TSharpEEdit;
+    btn_select: TSharpEButton;
+    procedure btn_selectClick(Sender: TObject);
     procedure editKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Settings1Click(Sender: TObject);
   protected
   private
-    sWidth      : integer;
+    sWidth   : integer;
+    sButton  : boolean;
     procedure WMUpdateBangs(var Msg : TMessage); message WM_SHARPEUPDATEACTIONS;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
@@ -65,7 +68,8 @@ type
 implementation
 
 uses SettingsWnd,
-     uSharpBarAPI;
+     uSharpBarAPI,
+     SharpDialogs;
 
 {$R *.dfm}
 
@@ -76,18 +80,30 @@ begin
   SharpApi.RegisterActionEx(PChar('!FocusMiniScmd ('+inttostr(ModuleID)+')'),'Modules',self.Handle,1);
 
   sWidth     := 100;
+  sButton    := True;
 
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
   if item <> nil then with item.Items do
   begin
     sWidth     := IntValue('Width',100);
+    sButton    := BoolValue('Button',True);
   end;
 end;
 
 procedure TMainForm.SetSize(NewWidth : integer);
 begin
   Width := NewWidth;
-  edit.Width := max(1,NewWidth - 4);
+  if sButton then
+  begin
+    btn_select.Width := btn_select.Height;
+    btn_select.Left := Width - btn_select.Width - 2;
+    btn_select.show;
+    edit.Width := max(1,(Width - 6) - btn_select.width);
+  end else
+  begin
+    edit.Width := max(1,(Width - 4));
+    btn_select.Hide;
+  end;
 end;
 
 
@@ -104,7 +120,9 @@ begin
   Tag := newWidth;
   Hint := inttostr(newWidth);
   if newWidth <> Width then
-     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  begin
+    if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0)
+  end else SetSize(Width);
 end;
 
 
@@ -116,16 +134,19 @@ begin
   try
     SettingsForm := TSettingsForm.Create(nil);
     SettingsForm.tb_size.Position   := sWidth;
+    SettingsForm.cb_selectbutton.Checked := sButton;
 
     if SettingsForm.ShowModal = mrOk then
     begin
       sWidth      := SettingsForm.tb_size.Position;
+      sButton     := SettingsForm.cb_selectbutton.Checked;
 
       item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
       if item <> nil then with item.Items do
       begin
         clear;
         Add('Width',sWidth);
+        Add('Button',sButton);
       end;
       uSharpBarAPI.SaveXMLFile(BarWnd);
     end;
@@ -139,12 +160,11 @@ end;
 procedure TMainForm.editKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_RETURN then
+  if (Key = VK_RETURN) then
   begin
     SetFocus;
-    SharpApi.SharpExecute(trim(edit.Edit.Text));
+    SharpApi.SharpExecute(trim(edit.Text));
     edit.Text := '';
-    edit.Edit.Text := '';
   end;
 end;
 
@@ -213,6 +233,21 @@ begin
   ForceForegroundWindow(BarWnd);
   case msg.LParam of
     1: edit.SetFocus;
+  end;
+end;
+
+procedure TMainForm.btn_selectClick(Sender: TObject);
+var
+  s : string;
+begin
+  s := SharpDialogs.TargetDialog(STI_ALL_TARGETS,
+                                 ClientToScreen(point(btn_select.Left,btn_select.Top)));
+  if length(trim(s))>0 then
+  begin
+    ForceForegroundWindow(BarWnd);
+    edit.SetFocus;
+    edit.Text := s;
+    edit.Edit.SelectAll;
   end;
 end;
 
