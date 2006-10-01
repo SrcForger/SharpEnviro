@@ -183,7 +183,7 @@ begin
       if TModule(ModuleList.Items[n]).ID = ID then
       begin
         temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.Form).ReAlignComponents(False);
+        TMainForm(temp.Form).ReAlignComponents(True);
       end;
 end;
 
