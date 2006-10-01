@@ -1396,12 +1396,16 @@ begin
 
   if ModuleManager = nil then exit;
 
-  ModuleManager.UpdateModuleSkins;
-  ModuleManager.FixModulePositions;
-  if FThemeUpdating then exit;
   SharpEBar1.UpdateSkin;
   SharpEBar1.Throbber.UpdateSkin;
   SharpEbar1.Throbber.Repaint;
+  UpdateBGImage;
+
+  ModuleManager.UpdateModuleSkins;
+  ModuleManager.FixModulePositions;
+
+  if FThemeUpdating then exit;
+
   ModuleManager.RefreshMiniThrobbers;
 end;
 
