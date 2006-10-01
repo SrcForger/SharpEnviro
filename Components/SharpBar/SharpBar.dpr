@@ -254,13 +254,7 @@ begin
   Application.Initialize;
   Application.ShowMainForm := False;
   Application.Title := 'SharpBar';
+  mfParamID := ParamID;
   Application.CreateForm(TSharpBarMainForm, SharpBarMainForm);
-  //  Application.CreateForm(TPluginManagerForm, PluginManagerForm);
-  //  Application.CreateForm(TAddPluginForm, AddPluginForm);
-  //  Application.CreateForm(TBarHideForm, BarHideForm);
-  // Initialize the bar content
-  // ID > 0 try load from xml
-  // ID = -1 new bar
-  SharpBarMainForm.LoadBarFromID(ParamID);
   Application.Run;
 end.

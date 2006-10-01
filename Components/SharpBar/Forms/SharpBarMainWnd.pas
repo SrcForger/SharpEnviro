@@ -178,6 +178,7 @@ const
 
 var
   SharpBarMainForm: TSharpBarMainForm;
+  mfParamID : integer;
 //  SharpESkin : TSharpESkin;
 //  SharpEScheme : TSharpEScheme;
   ModuleManager : TModuleManager;
@@ -870,6 +871,15 @@ begin
   BarHideForm := TBarHideForm.Create(self);
 
   DelayTimer2.Enabled := True;
+
+  // Initialize the bar content
+  // ID > 0 try load from xml
+  // ID = -1 new bar
+  if mfParamID <> -255 then
+  begin
+    SharpBarMainForm.LoadBarFromID(mfParamID);
+    mfParamID := -255;
+  end;
 end;
 
 procedure TSharpBarMainForm.AutoPos1Click(Sender: TObject);
@@ -1421,6 +1431,7 @@ var
   msg : TMessage;
 begin
   BlendInTimer.Tag := BlendInTimer.Tag + 40;
+
   if BlendInTimer.Tag >= 255 then
   begin
     BlendInTimer.Tag := 255;
@@ -1428,6 +1439,7 @@ begin
     WMUnlockBarWindow(msg);
     ModuleManager.UpdateModuleSkins;
     ModuleManager.FixModulePositions;
+    ModuleManager.BroadCastModuleRefresh;
   end;
   SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendInTimer.Tag, LWA_ALPHA);
   SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendInTimer.Tag, LWA_COLORKEY);
