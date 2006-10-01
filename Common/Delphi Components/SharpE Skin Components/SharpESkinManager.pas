@@ -197,6 +197,7 @@ begin
     begin
       SharpThemeApi.LoadTheme;
       LoadSharpEScheme(FSystemScheme);
+      if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
       RefreshControls;
     end;
   end;
