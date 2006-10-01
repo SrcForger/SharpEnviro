@@ -163,7 +163,7 @@ begin
       if TModule(ModuleList.Items[n]).ID = ID then
       begin
         temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.Form).ReAlignComponents(False);
+        TMainForm(temp.Form).ReAlignComponents(True);
       end;
 end;
 
@@ -192,7 +192,7 @@ begin
         temp := TModule(ModuleList.Items[n]);
         temp.Form.Height := GetBarPluginHeight(temp.BarWnd);
         TMainForm(temp.Form).UpdateCustomSkin;
-        TMainForm(temp.Form).ReAlignComponents(False);
+        TMainForm(temp.Form).ReAlignComponents(True);
       end;
 end;
 

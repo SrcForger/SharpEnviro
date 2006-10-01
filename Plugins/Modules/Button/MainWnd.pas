@@ -211,6 +211,10 @@ begin
 
     if SettingsForm.ShowModal = mrOk then
     begin
+      sShowLabel := SettingsForm.cb_labels.Checked;
+      sCaption := SettingsForm.Edit_caption.Text;
+      sWidth := SettingsForm.tb_size.Position;
+      sSpecialSkin := SettingsForm.cb_specialskin.Checked;
       sActionStr  := SettingsForm.ActionStr;
       sSpecialSkin := SettingsForm.cb_specialskin.Checked;
 
