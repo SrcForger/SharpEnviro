@@ -36,7 +36,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
   SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
-  JvSimpleXML, SharpApi, Jclsysinfo, Menus, SharpELabel, Math;
+  JvSimpleXML, SharpApi, Jclsysinfo, Menus, SharpELabel, Math, SharpESkinLabel;
 
 
 type
@@ -47,11 +47,11 @@ type
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     swpbar: TSharpEProgressBar;
-    lb_rambar: TSharpELabel;
-    lb_swpbar: TSharpELabel;
     SharpESkinManager1: TSharpESkinManager;
-    lb_swp: TSharpELabel;
-    lb_ram: TSharpELabel;
+    lb_ram: TSharpESkinLabel;
+    lb_swp: TSharpESkinLabel;
+    lb_rambar: TSharpESkinLabel;
+    lb_swpbar: TSharpESkinLabel;
     procedure BackgroundDblClick(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
     procedure UpdateTimerTimer(Sender: TObject);
@@ -142,14 +142,14 @@ begin
 
   case ItemAlign of
    1: begin
-        lb_ram.Width := lb_ram.Canvas.TextWidth(lb_ram.caption);
+{        lb_ram.Width := lb_ram.Canvas.TextWidth(lb_ram.caption);
         lb_ram.Height := lb_ram.Canvas.TextHeight(lb_ram.Caption);
         lb_swp.Width := lb_swp.Canvas.TextWidth(lb_swp.caption);
         lb_swp.Height := lb_swp.Canvas.TextHeight(lb_swp.Caption);
         lb_rambar.Width := lb_rambar.Canvas.TextWidth('100%');
         lb_rambar.Height := lb_rambar.Canvas.TextHeight('100%');
         lb_swpbar.Width := lb_swpbar.Canvas.TextWidth('100%');
-        lb_swpbar.Height := lb_swpbar.Canvas.TextHeight('100%');
+        lb_swpbar.Height := lb_swpbar.Canvas.TextHeight('100%');}
 
         if ShowRamInfo then
         begin
@@ -218,14 +218,14 @@ begin
       end
    else begin
           o2 := (Height - 2 - 4) div 2;
-          lb_ram.Width := lb_ram.Canvas.TextWidth(lb_ram.caption);
+       {   lb_ram.Width := lb_ram.Canvas.TextWidth(lb_ram.caption);
           lb_ram.Height := lb_ram.Canvas.TextHeight(lb_ram.Caption);
           lb_swp.Width := lb_swp.Canvas.TextWidth(lb_swp.caption);
           lb_swp.Height := lb_swp.Canvas.TextHeight(lb_swp.Caption);
           lb_swpbar.Width := lb_swpbar.Canvas.TextWidth('100%');
           lb_swpbar.Height := lb_swpbar.Canvas.TextHeight('100%');
           lb_rambar.Width := lb_rambar.Canvas.TextWidth('100%');
-          lb_rambar.Height := lb_rambar.Canvas.TextHeight('100%');
+          lb_rambar.Height := lb_rambar.Canvas.TextHeight('100%');   }
 
           if ShowRamInfo then
           begin

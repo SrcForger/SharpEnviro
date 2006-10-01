@@ -53,56 +53,48 @@ object MainForm: TMainForm
       SkinManager = SharpESkinManager1
       AutoSize = True
     end
-    object lb_rambar: TSharpELabel
-      Left = 144
+    object lb_ram: TSharpESkinLabel
+      Left = 8
       Top = 0
-      Width = 45
-      Height = 15
-      AutoSize = False
-      Caption = 'lb_rambar'
-      Transparent = True
-      Visible = False
-      OnDblClick = BackgroundDblClick
+      Width = 23
+      Height = 20
       SkinManager = SharpESkinManager1
-      LabelStyle = lsSmall
-    end
-    object lb_swpbar: TSharpELabel
-      Left = 144
-      Top = 16
-      Width = 44
-      Height = 15
-      AutoSize = False
-      Caption = 'lb_swpbar'
-      Transparent = True
-      Visible = False
-      OnDblClick = BackgroundDblClick
-      SkinManager = SharpESkinManager1
-      LabelStyle = lsSmall
-    end
-    object lb_swp: TSharpELabel
-      Left = 0
-      Top = 16
-      Width = 17
-      Height = 15
-      AutoSize = False
-      Caption = 'swp'
-      Transparent = True
-      Visible = False
-      OnDblClick = BackgroundDblClick
-      SkinManager = SharpESkinManager1
-      LabelStyle = lsSmall
-    end
-    object lb_ram: TSharpELabel
-      Left = 0
-      Top = 0
-      Width = 18
-      Height = 15
-      AutoSize = False
+      AutoSize = True
       Caption = 'ram'
-      Transparent = True
-      Visible = False
-      OnDblClick = BackgroundDblClick
+      AutoPosition = False
+      LabelStyle = lsSmall
+    end
+    object lb_swp: TSharpESkinLabel
+      Left = 32
+      Top = 48
+      Width = 25
+      Height = 20
       SkinManager = SharpESkinManager1
+      AutoSize = True
+      Caption = 'swp'
+      AutoPosition = False
+      LabelStyle = lsSmall
+    end
+    object lb_rambar: TSharpESkinLabel
+      Left = 80
+      Top = 40
+      Width = 47
+      Height = 20
+      SkinManager = SharpESkinManager1
+      AutoSize = True
+      Caption = 'lb_rambar'
+      AutoPosition = False
+      LabelStyle = lsSmall
+    end
+    object lb_swpbar: TSharpESkinLabel
+      Left = 80
+      Top = 72
+      Width = 49
+      Height = 20
+      SkinManager = SharpESkinManager1
+      AutoSize = True
+      Caption = 'lb_swpbar'
+      AutoPosition = False
       LabelStyle = lsSmall
     end
   end
