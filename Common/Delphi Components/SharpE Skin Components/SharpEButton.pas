@@ -49,6 +49,7 @@ uses
   SharpESkinManager,
   SharpESkin,
   SharpEAnimationTimers,
+  SharpESkinPart,
   math,
   Types,
   Buttons;
@@ -70,7 +71,9 @@ type
     FDefault: Boolean;
     FAutoPosition: Boolean;
     FCustomSkin : TSharpEButtonSkin;
-
+    FPrecacheText : TSkinText;
+    FPrecacheBmp  : TBitmap32;
+    FPrecacheCaption : String;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
@@ -498,6 +501,7 @@ var
   nw,nh : integer;
   p : TPoint;
   ButtonSkin : TSharpEButtonSkin;
+  SkinText : TSkinText;
 begin
   CompRect := Rect(0, 0, width, height);
 
@@ -536,6 +540,7 @@ begin
     if not (Enabled) and not (ButtonSkin.Disabled.Empty) then
     begin
       ButtonSkin.Disabled.Draw(bmp, Scheme);
+      SkinText := ButtonSkin.Disabled.SkinText;
       ButtonSkin.Disabled.SkinText.AssignFontTo(bmp.Font,Scheme);
       TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
       TextPos := ButtonSkin.Disabled.SkinText.GetXY(TextRect, CompRect);
@@ -544,6 +549,7 @@ begin
       if FButtonDown and not (ButtonSkin.Down.Empty) then
       begin
         ButtonSkin.Down.Draw(bmp, Scheme);
+        SkinText := ButtonSkin.Down.SkinText;
         ButtonSkin.Down.SkinText.AssignFontTo(bmp.Font,Scheme);
         TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
         TextPos := ButtonSkin.Down.SkinText.GetXY(TextRect, CompRect);
@@ -552,6 +558,7 @@ begin
         if ((FButtonOver) and not (ButtonSkin.Hover.Empty) and not (HasNormalHoverScript)) then
         begin
           ButtonSkin.Hover.Draw(bmp, Scheme);
+          SkinText := ButtonSkin.Hover.SkinText;
           ButtonSkin.Hover.SkinText.AssignFontTo(bmp.Font,Scheme);
           TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
           TextPos := ButtonSkin.Hover.SkinText.GetXY(TextRect, CompRect);
@@ -559,6 +566,7 @@ begin
         else
         begin
           ButtonSkin.Normal.Draw(bmp, Scheme);
+          SkinText := ButtonSkin.Normal.SkinText;
           ButtonSkin.Normal.SkinText.AssignFontTo(bmp.Font,Scheme);
           TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
           TextPos := ButtonSkin.Normal.SkinText.GetXY(TextRect, CompRect);
@@ -621,7 +629,9 @@ begin
       if not Enabled then glp.MasterAlpha := FDisabledAlpha;
       glp.DrawTo(bmp,GlyphPos.X,GlyphPos.Y);
       glp.Free;
-      bmp.RenderText(TextPos.X,TextPos.Y,Caption,0, Color32(bmp.Font.color));
+      if length(trim(Caption))>0 then
+         SkinText.RenderTo(bmp,TextPos.X,TextPos.Y,Caption,Scheme,
+                           FPrecacheText,FPrecacheBmp,FPrecacheCaption);
     end;
   end
   else
@@ -687,6 +697,9 @@ end;
 
 destructor TSharpEButton.Destroy;
 begin
+  if FPrecacheBmp <> nil then FreeAndNil(FPrecacheBmp);
+  if FPrecacheText <> nil then FreeAndNil(FPrecacheText);
+
   FGlyph32.Free;
   inherited;
 end;

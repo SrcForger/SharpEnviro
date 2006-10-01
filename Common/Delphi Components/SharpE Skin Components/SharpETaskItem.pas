@@ -72,6 +72,9 @@ type
     FDefault: Boolean;
     FAutoPosition: Boolean;
     FDown: Boolean;
+    FPrecacheText : TSkinText;
+    FPrecacheBmp  : TBitmap32;
+    FPrecacheCaption : String;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
@@ -544,9 +547,11 @@ end;
 
 procedure DrawSkinPart(state : TSkinPart; bmp : TBitmap32; scheme : TSharpEScheme;
                        var mw : integer; var TextPos : TPoint; var TextRect : TRect;
-                       var CompRect : TRect; Caption : String; var DrawCaption : String);
+                       var CompRect : TRect; Caption : String; var DrawCaption : String;
+                       var SkinText : TSkinText);
 begin
   state.Draw(bmp, Scheme);
+  SkinText := state.SkinText;
   state.SkinText.AssignFontTo(bmp.Font,Scheme);
   mw := state.SkinText.GetMaxWidth(CompRect);
   DrawCaption := FixCaption(Bmp,Caption,mw);
@@ -563,6 +568,7 @@ var
   mw : integer;
   DrawCaption : String;
   CurrentState : TSharpeTaskItemState;
+  SkinText : TSkinText;
 begin
   CompRect := Rect(0, 0, width, height);
 
@@ -602,19 +608,20 @@ begin
       FButtonOver := False;
     end;
 
+    SkinText := nil;
     FSkin.Clear(Color32(0, 0, 0, 0));
     if (FButtonDown or FDown) and (not CurrentState.Down.Empty) then
     begin
       if (FButtonOver) and (not FButtonDown) and (not CurrentState.DownHover.Empty) and (not SharpEAnimManager.HasScriptRunning(self)) then
-         DrawSkinPart(CurrentState.DownHover,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption)
-         else DrawSkinPart(CurrentState.Down,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption);
+         DrawSkinPart(CurrentState.DownHover,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText)
+         else DrawSkinPart(CurrentState.Down,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText);
     end else
     if (FFlashing) and (not CurrentState.Highlight.Empty) and (not SharpEAnimManager.HasScriptRunning(self))
        and (not HasHighlightAnimationScript) then
     begin
       if (FButtonOver and (not CurrentState.HighlightHover.Empty)) then
-         DrawSkinPart(CurrentState.HighlightHover,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption)
-         else DrawSkinPart(CurrentState.Highlight,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption);
+         DrawSkinPart(CurrentState.HighlightHover,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText)
+         else DrawSkinPart(CurrentState.Highlight,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText);
     end else
     begin
       if FButtonOver then
@@ -622,12 +629,12 @@ begin
         if (FFlashing) then
         begin
           if (not SharpEAnimManager.HasScriptRunning(self)) then
-           DrawSkinPart(CurrentState.HighlightHover,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption)
-           else DrawSkinPart(CurrentState.Normal,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption);
+           DrawSkinPart(CurrentState.HighlightHover,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText)
+           else DrawSkinPart(CurrentState.Normal,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText);
         end else
-        if (not HasNormalHoverScript) then DrawSkinPart(CurrentState.NormalHover,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption)
-           else DrawSkinPart(CurrentState.Normal,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption);
-      end else DrawSkinPart(CurrentState.Normal,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption);
+        if (not HasNormalHoverScript) then DrawSkinPart(CurrentState.NormalHover,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText)
+           else DrawSkinPart(CurrentState.Normal,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText);
+      end else DrawSkinPart(CurrentState.Normal,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText);
     end;
 
     if (FGlyph32 <> nil) and (CurrentState.DrawIcon) then
@@ -642,9 +649,11 @@ begin
       GlyphPos := CurrentState.IconLocation.GetXY(TextRect,CompRect);
       FGlyph32.DrawTo(bmp,Rect(GlyphPos.X,GlyphPos.Y,GlyphPos.X + CurrentState.IconSize, GlyphPos.Y + CurrentState.IconSize));
     end;
-    if CurrentState.DrawText then
+    if (CurrentState.DrawText) and (SkinText <> nil) then
     begin
-      bmp.RenderText(TextPos.X,TextPos.Y,DrawCaption,0, Color32(bmp.Font.color));
+      if length(trim(Caption))>0 then
+         SkinText.RenderTo(bmp,TextPos.X,TextPos.Y,DrawCaption,Scheme,
+                           FPrecacheText,FPrecacheBmp,FPrecacheCaption);
     end;
   end
   else
@@ -696,6 +705,8 @@ end;
 destructor TSharpETaskItem.Destroy;
 begin
   inherited;
+  if FPrecacheBmp <> nil then FreeAndNil(FPrecacheBmp);
+  if FPrecacheText <> nil then FreeAndNil(FPrecacheText);
   FGlyph32.Free;
 end;
 

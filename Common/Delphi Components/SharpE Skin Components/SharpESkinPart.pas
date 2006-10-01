@@ -15,6 +15,8 @@ uses
   Math,
   GR32_Resamplers,
   GR32_Blend,
+  Sharpapi,
+  GR32_Transforms,
   Dialogs;
 
 type
@@ -82,6 +84,8 @@ type
     property HeightAsInt : integer read GetHeightInteger;
   end;
 
+  TShadowType = (stLeft,stRight,stOutline);
+
   TSkinText = class
   private
     FX: string;
@@ -93,6 +97,10 @@ type
     FStyleItalic : boolean;
     FStyleUnderline : boolean;
     FMaxWidth : String;
+    FShadow : boolean;
+    FShadowColor : string;
+    FShadowType : TShadowType;
+    FShadowAlpha : integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -112,6 +120,8 @@ type
     function GetMaxWidth(CompRect: TRect): integer;
     function GetFont(cs: TSharpEScheme): TFont;
     procedure AssignFontTo(pFont : TFont; cs: TSharpEScheme);
+    procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme;
+                       var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String);
   end;
 
   TSkinPartList = class(TObject)
@@ -203,7 +213,9 @@ procedure HGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect 
 implementation
 
 uses Sysutils,
-  SharpEDefault,gr32_png;
+     SharpEDefault,
+     gr32_png,
+     SharpThemeApi;
 
 type ESkinPartList = class(Exception);
 
@@ -557,12 +569,16 @@ end;
 
 constructor TSkinText.Create;
 begin
+  inherited Create;
+
   Clear;
 end;
 
 destructor TSkinText.Destroy;
 begin
   FX := '';
+
+  inherited Destroy;
 end;
 
 procedure TSkinText.Clear;
@@ -572,7 +588,11 @@ begin
   FMaxWidth := 'w';
   FStyleBold := False;
   FStyleItalic := False;
-  FStyleUnderline := False; 
+  FStyleUnderline := False;
+  FShadow := False;
+  FShadowType := stRight;
+  FShadowColor := '0';
+  FShadowAlpha := 255;
   Assign(DefaultSharpESkinTextRecord);
 end;
 
@@ -587,9 +607,19 @@ begin
   StringSaveToStream(BoolToStr(FStyleUnderline),Stream);
   StringSaveToStream(FMaxWidth, Stream);
   Stream.WriteBuffer(FSize, sizeof(FSize));
+  StringSaveToStream(BoolToStr(FShadow),Stream);
+  StringSaveToStream(FShadowColor,Stream);
+  case FShadowType of
+    stLeft    : StringSaveToStream('0',Stream);
+    stOutline : StringSaveToStream('2',Stream);
+    else StringSaveToStream('1',Stream);
+  end;
+  Stream.WriteBuffer(FShadowAlpha,SizeOf(FShadowAlpha));
 end;
 
 procedure TSkinText.LoadFromStream(Stream: TStream);
+var
+  s : string;
 begin
   FX := StringLoadFromStream(Stream);
   FY := StringLoadFromStream(Stream);
@@ -600,6 +630,13 @@ begin
   FStyleUnderline := StrToBool(StringLoadFromStream(Stream));
   FMaxwidth := StringLoadFromStream(Stream);
   Stream.ReadBuffer(FSize, sizeof(FSize));
+  FShadow := StrToBool(StringLoadFromStream(Stream));
+  FShadowColor := StringLoadFromStream(Stream);
+  s := StringLoadFromStream(Stream);
+  if CompareText(s,'0') = 0 then FShadowType := stLeft
+     else if CompareText(s,'2') = 0 then FShadowType := stOutline
+     else FShadowType := stRight;
+  Stream.ReadBuffer(FShadowAlpha,SizeOf(FShadowAlpha));
 end;
 
 procedure TSkinText.Assign(Value: TSkinText);
@@ -613,6 +650,10 @@ begin
   FStyleItalic := Value.FStyleItalic;
   FStyleUnderline := Value.FStyleUnderline;
   FMaxWidth := Value.FMaxWidth;
+  FShadow := Value.FShadow;
+  FShadowColor := Value.FShadowColor;
+  FShadowAlpha := Value.FShadowAlpha;
+  FShadowType := Value.FShadowType;
 end;
 
 procedure TSkinText.Assign(Value: TSkinTextRecord);
@@ -671,6 +712,8 @@ begin
 end;
 
 procedure TSkinText.LoadFromXML(xml: TJvSimpleXMLElem);
+var
+  s : string;
 begin
   with xml.Items do
   begin
@@ -690,6 +733,19 @@ begin
       FStyleUnderline := BoolValue('underline',false);
     if ItemNamed['maxwidth'] <> nil then
       FMaxWidth := Value('maxwidth','w');
+    if ItemNamed['shadow'] <> nil then
+      FShadow := BoolValue('shadow',false);
+    if ItemNamed['shadowcolor'] <> nil then
+      FShadowColor := Value('shadowcolor','0');
+    if ItemNamed['shadowalpha'] <> nil then
+      FShadowAlpha := Max(0,Min(255,IntValue('shadowalpha',255)));
+    if ItemNamed['shadowtype'] <> nil then
+    begin
+      s := Value('shadowtype','Right');
+      if s = 'Left' then FShadowType := stLeft
+         else if s = 'Outline' then FShadowType := stOutline
+         else FShadowType := stRight;
+    end;
   end;
 end;
 
@@ -790,6 +846,259 @@ begin
 
   result.X := ParseCoordinate(FX, tw, th, cw, ch);
   result.Y := ParseCoordinate(FY, tw, th, cw, ch);
+end;
+
+
+procedure boxblur(img: tbitmap32; radius: integer; iterations: integer; horz: boolean = true; vert: boolean = true);
+var gSum: cardinal; bSum: cardinal; rSum: cardinal; aSum: Cardinal;
+  line: PColor32Array;
+  col: tcolor32;
+  winlength: longword;
+  window, cx, x, y, t1, iter: integer;
+  realwidth, bytewidth, width, height: integer;
+  scanjump: integer;
+  rightedge, leftedge, center: PColor32;
+  pixelbuf: array of TColor32;
+begin
+  bytewidth := img.width * 4;
+  realwidth := img.width;
+  width := img.width - 1;
+  height := img.height - 1;
+  winlength := radius * 2 + 1;
+  scanjump := integer(img.scanline[1]) - integer(img.scanline[0]);
+
+  if horz then begin
+    setlength(pixelbuf, img.width);
+    for iter := 0 to iterations - 1 do begin
+      line := img.scanline[0];
+
+      for y := 0 to height do begin
+        rsum := 0;
+        gsum := 0;
+        bsum := 0;
+        aSum := 0;
+    //load up our initial window
+        for window := -radius to radius - 1 do begin //-1 so we don't include the first pixel to enter the window
+          //"Wrap" our edge pixel
+          if window < 0 then
+            cx := 0 else
+            cx := window;
+
+          rSum := rSum + (line[cx]) and $FF;
+          gSum := gSum + (line[cx] shr 8) and $FF;
+          bSum := bSum + (line[cx] shr 16) and $FF;
+          aSum := aSum + (line[cx] shr 24);
+        end;
+
+        leftedge := @line[0];
+        rightedge := @line[radius]; //start loading pixels in the end of the window
+        center := @pixelbuf[0];
+
+        for x := 0 to width do begin
+          col := rightedge^; //add the pixel at the right edge of the window
+          rSum := rSum + col and $FF;
+          gSum := gSum + (col shr 8) and $FF;
+          bSum := bSum + (col shr 16) and $FF;
+          aSum := aSum + (col shr 24);
+
+          center^ := (bSum div winlength) shl 16 or (gSum div winlength) shl 8 or (rSum div winlength) or (aSum div winlength) shl 24;
+
+      //unload the leftmost pixel
+          col := leftedge^;
+          rSum := rSum - (col and $FF);
+          gSum := gSum - ((col shr 8) and $FF);
+          bSum := bSum - ((col shr 16) and $FF);
+          aSum := aSum - (col shr 24);
+
+          if x < width - radius then
+            inc(rightedge);
+          if x >= radius then
+            inc(leftedge);
+          inc(center);
+        end;
+
+        Move(pixelbuf[0], line[0], 4 * (width + 1)); //copy the line we built to the bmp
+        line := Pointer(integer(line) + scanjump); //move to next line
+      end;
+    end; //horz iterations
+  end;
+
+
+  if vert then begin
+    setlength(pixelbuf, img.height);
+    for iter := 0 to iterations - 1 do begin
+      line := img.scanline[0];
+
+      for x := 0 to width do begin
+        rsum := 0;
+        gsum := 0;
+        bsum := 0;
+        asum := 0;
+
+    //load up our initial window
+        for window := -radius to radius - 1 do begin //-1 so we don't include the first pixel to enter the window
+          //"Wrap" our edge pixel
+          if window < 0 then
+            cx := 0 else
+            cx := window;
+
+          rSum := rSum + (line[cx * realwidth]) and $FF;
+          gSum := gSum + (line[cx * realwidth] shr 8) and $FF;
+          bSum := bSum + (line[cx * realwidth] shr 16) and $FF;
+          aSum := aSum + (line[cx * realwidth] shr 24);
+        end;
+
+        leftedge := @line[0];
+        rightedge := @line[radius * realwidth]; //start loading pixels in the end of the window
+        center := @pixelbuf[0];
+
+        for y := 0 to height do begin
+          col := rightedge^; //add the pixel at the right edge of the window
+          rSum := rSum + col and $FF;
+          gSum := gSum + (col shr 8) and $FF;
+          bSum := bSum + (col shr 16) and $FF;
+          aSum := aSum + (col shr 24);
+
+          center^ := (bSum div winlength) shl 16 or (gSum div winlength) shl 8 or (rSum div winlength) or (asum div winlength) shl 24;
+
+      //unload the leftmost pixel
+          col := leftedge^;
+          rSum := rSum - (col and $FF);
+          gSum := gSum - ((col shr 8) and $FF);
+          bSum := bSum - ((col shr 16) and $FF);
+          aSum := aSum - (col shr 24);
+
+          if y < height - radius then
+            inc(rightedge, realwidth);
+          if y >= radius then
+            inc(leftedge, realwidth);
+          inc(center);
+        end;
+
+        leftedge := @pixelbuf[0]; // Input
+        rightedge := @line[0]; // Output
+        for t1 := 0 to height do begin
+          rightedge^ := leftedge^;
+          inc(rightedge, realwidth);
+          inc(leftedge);
+        end;
+
+        inc(line); //move to next col
+      end;
+    end;
+  end;
+end;
+
+procedure TSkinText.RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String; cs : TSharpEScheme;
+                             var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String);
+var
+  c : TColor;
+  R,G,B : byte;
+  c2 : TColor32;
+  new : boolean;
+  ShadowBmp : TBitmap32;
+  w,h : integer;
+begin
+  if (pPrecacheBmp = nil) or (pPrecacheText = nil) then
+  begin
+    new := True;
+    if pPrecacheBmp = nil then
+    begin
+      pPrecacheBmp := TBitmap32.Create;
+      pPrecacheBmp.DrawMode := dmBlend;
+      pPrecacheBmp.CombineMode := cmMerge;
+    end;
+    if pPrecacheText = nil then
+    begin
+      pPrecacheText := TSkinText.Create;
+      pPrecacheText.Clear;
+    end;
+  end else new := False;
+
+
+  // Check if something changed since cache bmp has been created.
+  if ((CompareText(pPrecacheText.FName,FName) <> 0) or
+     (CompareText(pPrecacheText.FColor,FColor) <> 0) or
+     (CompareText(pPrecacheText.FMaxWidth,FMaxWidth) <> 0) or
+     (CompareText(pPrecacheText.FShadowColor,FShadowColor) <> 0) or
+     (pPrecacheText.FSize <> FSize) or
+     (pPrecacheText.FStyleBold <> FStyleBold) or
+     (pPrecacheText.FStyleItalic <> FStyleItalic) or
+     (pPrecacheText.FStyleUnderline <> FStyleUnderline) or
+     (pPrecacheText.FShadow <> FShadow) or
+     (pPrecacheText.FShadowType <> FShadowType) or
+     (pPrecacheText.FShadowAlpha <> FShadowAlpha) or
+     (CompareText(pPrecacheCaption,Caption) <> 0)) or (new) then
+  begin
+    SharpApi.SendDebugMessage('Skin',PChar(
+    pPrecacheText.FName + '-' + FName + ' | ' +
+    pPrecacheText.FColor + '-' + FColor + ' | ' +
+    pPrecacheText.FMaxWidth + '-' + FMaxWidth + ' | ' +
+    pPrecacheText.FShadowColor + '-' + FShadowColor + ' | ' +
+    pPrecacheCaption + '-' + Caption + ' | ' +
+    BoolToStr(pPrecacheText.FShadowType = stLeft) + '-' + BoolToStr(FShadowType = stLeft) + ' | ' +
+    inttostr(pPrecacheText.FShadowAlpha) + '-' + inttostr(FShadowAlpha) + ' | ' +
+    inttostr(pPrecacheText.FSize) + '-' + inttostr(FSize) + ' | ' +
+    BoolToStr(pPrecacheText.FStyleBold) + '-' + BoolToStr(FStyleBold) + ' | ' +
+    BoolToStr(pPrecacheText.FStyleItalic) + '-' + BoolToStr(FStyleItalic) + ' | ' +
+    BoolToStr(pPrecacheText.FStyleUnderline) + '-' + BoolToStr(FStyleUnderline) + ' | ' +
+    BoolToStr(pPrecacheText.FShadow) + '-' + BoolToStr(FShadow) + ' | '),9);
+
+    // text settings or caption changed! redraw caption
+    pPrecacheText.Assign(self);
+    pPrecacheCaption := Caption;
+    w := Bmp.TextWidth(Caption);
+    h := Bmp.TextHeight(Caption);
+    pPrecacheBmp.SetSize(w+20,h+20);
+    pPrecacheBmp.Clear(color32(0,0,0,0));
+    pPrecacheBmp.Font.Assign(bmp.Font);
+
+    if FShadow then
+    begin
+      ShadowBmp := TBitmap32.Create;
+      try
+        ShadowBmp.DrawMode := dmBlend;
+        ShadowBmp.CombineMode := cmMerge;
+        ShadowBmp.SetSize(pPrecacheBmp.Width,pPrecacheBmp.Height);
+        ShadowBmp.Clear(color32(0,0,0,0));
+        ShadowBmp.Font.Assign(Bmp.Font);
+        c := SchemedStringToColor(FShadowColor, cs);
+        R := GetRValue(c);
+        G := GetGValue(c);
+        B := GetBValue(c);
+        c2 := color32(R,G,B,FShadowAlpha);
+        case FShadowType of
+          stLeft    : ShadowBmp.RenderText(pPrecacheBmp.Width div 2 - w div 2 - 1,
+                                           pPrecacheBmp.Height div 2 - h div 2 + 1,Caption,0,c2);
+          stRight   : ShadowBmp.RenderText(pPrecacheBmp.Width div 2 - w div 2 + 1,
+                                           pPrecacheBmp.Height div 2 - h div 2 + 1,Caption,0,c2);
+          stOutline :
+          begin
+            ShadowBmp.RenderText(pPrecacheBmp.Width div 2 - w div 2,
+                                 pPrecacheBmp.Height div 2 - h div 2,Caption,0,c2);
+            boxblur(ShadowBmp,1,1);
+            ShadowBmp.RenderText(pPrecacheBmp.Width div 2 - w div 2,
+                                 pPrecacheBmp.Height div 2 - h div 2,Caption,0,c2);
+          end;
+        end;
+        boxblur(ShadowBmp,1,1);
+        ShadowBmp.DrawTo(pPrecacheBmp,0,0);
+        ShadowBmp.DrawTo(pPrecacheBmp,0,0);
+        boxblur(ShadowBmp,1,1);
+        ShadowBmp.DrawTo(pPrecacheBmp,0,0);
+        ShadowBmp.DrawTo(pPrecacheBmp,0,0);
+      finally
+        ShadowBmp.Free;
+      end;
+    end;
+    c := SchemedStringToColor(FColor, cs);
+    R := GetRValue(c);
+    G := GetGValue(c);
+    B := GetBValue(c);
+    c2 := color32(R,G,B,255);
+    pPrecacheBmp.RenderText(pPrecacheBmp.Width div 2 - w div 2,pPrecacheBmp.Height div 2 - h div 2,Caption,0,c2);
+  end;
+  pPrecacheBmp.DrawTo(Bmp,X-10,Y-10);
 end;
 
 //***************************************
@@ -1352,16 +1661,17 @@ function SchemedStringToColor(str: string; cs: TSharpEScheme): TColor;
 var
   n : integer;
 begin
+  result := 0;
   n := cs.GetColorIndexByTag(str);
   if n <> -1 then result := cs.GetColorByTag(str)
-  else
-  begin
+  else SharpThemeApi.ParseColor(PChar(str));
+{  begin
     try
       result := StringToColor(str);
     except
       result := clblack;
     end;
-  end;
+  end;}
 end;
 
 function get_location(str: string): TRect;

@@ -61,7 +61,8 @@ uses
   SharpEImage32,
   SharpEListBox,
   SharpEEdit,
-  SharpeTaskItem;
+  SharpETaskItem,
+  SharpESkinLabel;
 
   //***************************************
 //* TXmlFileNameProperty
@@ -202,6 +203,7 @@ begin
   RegisterComponents('SharpE', [TSharpEEdit]);
   RegisterComponents('SharpE', [TSharpEListBox]);
   RegisterComponents('SharpE', [TSharpETaskItem]);
+  RegisterComponents('SharpE', [TSharpESkinLabel]);
 
   RegisterPropertyEditor(TypeInfo(TXmlFileName), TSharpESkin, 'XmlFilename',
     TXmlFileNameProperty);
