@@ -1032,20 +1032,6 @@ begin
      (pPrecacheText.FShadowAlpha <> FShadowAlpha) or
      (CompareText(pPrecacheCaption,Caption) <> 0)) or (new) then
   begin
-    SharpApi.SendDebugMessage('Skin',PChar(
-    pPrecacheText.FName + '-' + FName + ' | ' +
-    pPrecacheText.FColor + '-' + FColor + ' | ' +
-    pPrecacheText.FMaxWidth + '-' + FMaxWidth + ' | ' +
-    pPrecacheText.FShadowColor + '-' + FShadowColor + ' | ' +
-    pPrecacheCaption + '-' + Caption + ' | ' +
-    BoolToStr(pPrecacheText.FShadowType = stLeft) + '-' + BoolToStr(FShadowType = stLeft) + ' | ' +
-    inttostr(pPrecacheText.FShadowAlpha) + '-' + inttostr(FShadowAlpha) + ' | ' +
-    inttostr(pPrecacheText.FSize) + '-' + inttostr(FSize) + ' | ' +
-    BoolToStr(pPrecacheText.FStyleBold) + '-' + BoolToStr(FStyleBold) + ' | ' +
-    BoolToStr(pPrecacheText.FStyleItalic) + '-' + BoolToStr(FStyleItalic) + ' | ' +
-    BoolToStr(pPrecacheText.FStyleUnderline) + '-' + BoolToStr(FStyleUnderline) + ' | ' +
-    BoolToStr(pPrecacheText.FShadow) + '-' + BoolToStr(FShadow) + ' | '),9);
-
     // text settings or caption changed! redraw caption
     pPrecacheText.Assign(self);
     pPrecacheCaption := Caption;
