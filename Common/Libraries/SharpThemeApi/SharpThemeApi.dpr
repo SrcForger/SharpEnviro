@@ -122,6 +122,203 @@ const
   //   COLOR CONVERTING
   // ##########################################
 
+function ParseColor(AColorStr: PChar): Integer;
+var
+  iStart, iEnd: Integer;
+  h, s, l: double;
+  sColorType, sParam: string;
+  strlTokens: TStringList;
+  r, g, b: byte;
+  c: Integer;
+  col32: TColor32;
+
+  function CMYKtoColor(C, M, Y, K: integer): TColor;
+  var
+    R, G, B: integer;
+  begin
+    R := 255 - Round(2.55 * (C + K));
+    if R < 0 then
+      R := 0;
+    G := 255 - Round(2.55 * (M + K));
+    if G < 0 then
+      G := 0;
+    B := 255 - Round(2.55 * (Y + K));
+    if B < 0 then
+      B := 0;
+    Result := RGB(R, G, B);
+  end;
+
+  function HSVtoRGB(H, S, V: Integer): TColor;
+  var
+    ht, d, t1, t2, t3: Integer;
+    R, G, B: Word;
+  begin
+    s := s * 255 div 100;
+    v := v * 255 div 100;
+
+    if S = 0 then begin
+      R := V;
+      G := V;
+      B := V;
+    end
+    else begin
+      ht := H * 6;
+      d := ht mod 360;
+
+      t1 := round(V * (255 - S) / 255);
+      t2 := round(V * (255 - S * d / 360) / 255);
+      t3 := round(V * (255 - S * (360 - d) / 360) / 255);
+
+      case ht div 360 of
+        0: begin
+            R := V;
+            G := t3;
+            B := t1;
+          end;
+        1: begin
+            R := t2;
+            G := V;
+            B := t1;
+          end;
+        2: begin
+            R := t1;
+            G := V;
+            B := t3;
+          end;
+        3: begin
+            R := t1;
+            G := t2;
+            B := V;
+          end;
+        4: begin
+            R := t3;
+            G := t1;
+            B := V;
+          end;
+      else begin
+          R := V;
+          G := t1;
+          B := t2;
+        end;
+      end;
+    end;
+    Result := RGB(R, G, B);
+  end;
+
+begin
+  result := -1;
+
+  // Which colour type are we using? RGB, CMY, CMYK, HSV, HSL, LAB
+  iStart := Pos('(', AColorStr);
+  iEnd := Pos(')', AColorStr);
+
+  if (iStart = 0) or (iEnd = 0) then
+  begin
+    // try to convert
+    try
+      result := strtoint(AColorStr);
+    except
+      try
+        result := StringToColor(AColorStr);
+      except
+        result := -1;
+      end;
+    end;
+    exit;
+  end;
+
+  sColorType := Copy(AColorStr, 1, iStart - 1);
+  sParam := Copy(AColorStr, iStart + 1, iEnd - iStart - 1);
+
+  // RGB
+  if CompareText(sColorType, 'rgb') = 0 then begin
+    strlTokens := TStringList.Create;
+    try
+      StrTokenToStrings(sParam, ',', strlTokens);
+      if strlTokens.Count <> 3 then
+        exit;
+
+      Result := RGB(StrToInt(StrlTokens[0]), StrToInt(StrlTokens[1]),
+        StrToInt(StrlTokens[2]));
+
+      exit;
+
+    finally
+      strlTokens.Free;
+    end;
+  end
+  else if CompareText(sColorType, 'cmyk') = 0 then begin
+    strlTokens := TStringList.Create;
+    try
+      StrTokenToStrings(sParam, ',', strlTokens);
+      if strlTokens.Count <> 4 then
+        exit;
+
+      Result := CMYKtoColor(StrToInt(StrlTokens[0]), StrToInt(StrlTokens[1]),
+        StrToInt(StrlTokens[2]), StrToInt(StrlTokens[3]));
+
+      exit;
+
+    finally
+      strlTokens.Free;
+    end;
+  end;
+
+  // HSV
+  if CompareText(sColorType, 'hsv') = 0 then begin
+    strlTokens := TStringList.Create;
+    try
+      StrTokenToStrings(sParam, ',', strlTokens);
+      if strlTokens.Count <> 3 then
+        exit;
+
+      Result := HSVtoRGB(strtoint(StrlTokens[0]), strtoint(StrlTokens[1]),
+        strtoint(StrlTokens[2]));
+
+      exit;
+
+    finally
+      strlTokens.Free;
+    end;
+  end;
+  // HSL
+  if CompareText(sColorType, 'hsl') = 0 then begin
+    strlTokens := TStringList.Create;
+    try
+      StrTokenToStrings(sParam, ',', strlTokens);
+      if strlTokens.Count <> 3 then
+        exit;
+
+      h := StrToFloat(StrlTokens[0]) / 255;
+      s := StrToFloat(StrlTokens[1]) / 255;
+      l := StrToFloat(StrlTokens[2]) / 255;
+
+      col32 := HSLtoRGB(h, s, l);
+      Color32ToRGB(col32, r, g, b);
+      Result := RGB(r, g, b);
+      exit;
+
+    finally
+      strlTokens.Free;
+    end;
+  end;
+  // HEX
+  if CompareText(sColorType, 'hex') = 0 then begin
+    Result := stringtocolor('$' + sParam);
+    c := ColorToRGB(Result);
+    c := (c and $FF) shl 16 + // Red
+    (c and $FF00) + // Green
+    (c and $FF0000) shr 16; // Blue
+
+    Result := c;
+  end;
+  // COLOR
+  if CompareText(sColorType, 'color') = 0 then begin
+    Result := stringtocolor(sParam);
+  end;
+
+end;
+
 function GetSchemeColorIndexByTag(pTag: string): Integer; forward;
 
 function Initialized: Boolean;
@@ -409,7 +606,7 @@ begin
           tmpRec.Name := Value('name', '');
           tmpRec.Tag := Value('tag', '');
           tmpRec.Info := Value('info', '');
-          tmpRec.Color := IntValue('Default', 0);
+          tmpRec.Color := ParseColor(PChar(Value('Default', '0')));
         end;
         Theme.Scheme.Colors[ItemCount + 1] := tmpRec;
       end;
@@ -773,192 +970,6 @@ begin
   result := LoadCurrentThemeF(False);
 end;
 
-function ParseColor(AColorStr: PChar): Integer;
-var
-  iStart, iEnd: Integer;
-  h, s, l: double;
-  sColorType, sParam: string;
-  strlTokens: TStringList;
-  r, g, b: byte;
-  c: Integer;
-  col32: TColor32;
-
-  function CMYKtoColor(C, M, Y, K: integer): TColor;
-  var
-    R, G, B: integer;
-  begin
-    R := 255 - Round(2.55 * (C + K));
-    if R < 0 then
-      R := 0;
-    G := 255 - Round(2.55 * (M + K));
-    if G < 0 then
-      G := 0;
-    B := 255 - Round(2.55 * (Y + K));
-    if B < 0 then
-      B := 0;
-    Result := RGB(R, G, B);
-  end;
-
-  function HSVtoRGB(H, S, V: Integer): TColor;
-  var
-    ht, d, t1, t2, t3: Integer;
-    R, G, B: Word;
-  begin
-    s := s * 255 div 100;
-    v := v * 255 div 100;
-
-    if S = 0 then begin
-      R := V;
-      G := V;
-      B := V;
-    end
-    else begin
-      ht := H * 6;
-      d := ht mod 360;
-
-      t1 := round(V * (255 - S) / 255);
-      t2 := round(V * (255 - S * d / 360) / 255);
-      t3 := round(V * (255 - S * (360 - d) / 360) / 255);
-
-      case ht div 360 of
-        0: begin
-            R := V;
-            G := t3;
-            B := t1;
-          end;
-        1: begin
-            R := t2;
-            G := V;
-            B := t1;
-          end;
-        2: begin
-            R := t1;
-            G := V;
-            B := t3;
-          end;
-        3: begin
-            R := t1;
-            G := t2;
-            B := V;
-          end;
-        4: begin
-            R := t3;
-            G := t1;
-            B := V;
-          end;
-      else begin
-          R := V;
-          G := t1;
-          B := t2;
-        end;
-      end;
-    end;
-    Result := RGB(R, G, B);
-  end;
-
-begin
-  result := -1;
-
-  // Which colour type are we using? RGB, CMY, CMYK, HSV, HSL, LAB
-  iStart := Pos('(', AColorStr);
-  if iStart = 0 then
-    exit;
-
-  iEnd := Pos(')', AColorStr);
-  if iStart = 0 then
-    exit;
-
-  sColorType := Copy(AColorStr, 1, iStart - 1);
-  sParam := Copy(AColorStr, iStart + 1, iEnd - iStart - 1);
-
-  // RGB
-  if CompareText(sColorType, 'rgb') = 0 then begin
-    strlTokens := TStringList.Create;
-    try
-      StrTokenToStrings(sParam, ',', strlTokens);
-      if strlTokens.Count <> 3 then
-        exit;
-
-      Result := RGB(StrToInt(StrlTokens[0]), StrToInt(StrlTokens[1]),
-        StrToInt(StrlTokens[2]));
-
-      exit;
-
-    finally
-      strlTokens.Free;
-    end;
-  end
-  else if CompareText(sColorType, 'cmyk') = 0 then begin
-    strlTokens := TStringList.Create;
-    try
-      StrTokenToStrings(sParam, ',', strlTokens);
-      if strlTokens.Count <> 4 then
-        exit;
-
-      Result := CMYKtoColor(StrToInt(StrlTokens[0]), StrToInt(StrlTokens[1]),
-        StrToInt(StrlTokens[2]), StrToInt(StrlTokens[3]));
-
-      exit;
-
-    finally
-      strlTokens.Free;
-    end;
-  end;
-
-  // HSV
-  if CompareText(sColorType, 'hsv') = 0 then begin
-    strlTokens := TStringList.Create;
-    try
-      StrTokenToStrings(sParam, ',', strlTokens);
-      if strlTokens.Count <> 3 then
-        exit;
-
-      Result := HSVtoRGB(strtoint(StrlTokens[0]), strtoint(StrlTokens[1]),
-        strtoint(StrlTokens[2]));
-
-      exit;
-
-    finally
-      strlTokens.Free;
-    end;
-  end;
-  // HSL
-  if CompareText(sColorType, 'hsl') = 0 then begin
-    strlTokens := TStringList.Create;
-    try
-      StrTokenToStrings(sParam, ',', strlTokens);
-      if strlTokens.Count <> 3 then
-        exit;
-
-      h := StrToFloat(StrlTokens[0]) / 255;
-      s := StrToFloat(StrlTokens[1]) / 255;
-      l := StrToFloat(StrlTokens[2]) / 255;
-
-      col32 := HSLtoRGB(h, s, l);
-      Color32ToRGB(col32, r, g, b);
-      Result := RGB(r, g, b);
-      exit;
-
-    finally
-      strlTokens.Free;
-    end;
-  end;
-  // HEX
-  if CompareText(sColorType, 'hex') = 0 then begin
-    Result := stringtocolor('$' + sParam);
-    c := ColorToRGB(Result);
-    c := (c and $FF) shl 16 + // Red
-    (c and $FF00) + // Green
-    (c and $FF0000) shr 16; // Blue
-
-    Result := c;
-  end;
-  // COLOR
-  if CompareText(sColorType, 'color') = 0 then begin
-    Result := stringtocolor(sParam);
-  end;
-
-end;
 
 {$R *.res}
 
