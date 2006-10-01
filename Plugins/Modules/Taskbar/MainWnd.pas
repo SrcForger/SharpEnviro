@@ -565,6 +565,7 @@ begin
   CalculateItemWidth(IList.Count);
   i := FSpecialButtonWidth + IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
   if i+1 < NewWidth then Width := i+1;
+  CalculateItemWidth(IList.Count);
   AlignTaskComponents;
 end;
 
@@ -588,7 +589,7 @@ begin
   Hint := InttoStr(NewWidth);
   if Width <> NewWidth then
   begin
-    AlignTaskComponents;
+    //AlignTaskComponents;
     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
   end else AlignTaskComponents;
 end;
@@ -722,16 +723,17 @@ begin
     for n := 0 to IList.Count -1 do
     begin
       pTaskItem := TSharpETaskItem(IList.Items[n]);
+      if not pTaskItem.Visible then pTaskItem.Visible := True;
       if sCurrentWidth < sMaxWidth then
       begin
         pTaskItem.AutoSize := False;
+        pTaskItem.Left := FSpecialButtonWidth + n*sCurrentWidth + n*sSpacing;
         pTaskItem.Width := sCurrentWidth;
         pTaskItem.Height := sAutoHeight;
-        pTaskItem.Left := FSpecialButtonWidth + n*sCurrentWidth + n*sSpacing;
       end else
       begin
-        pTaskItem.AutoSize := True;
         pTaskItem.Left := FSpecialButtonWidth + n*sMaxWidth + n*sSpacing;
+        pTaskItem.AutoSize := True;
       end;
     end;
   except
@@ -915,22 +917,23 @@ end;
 procedure TMainForm.NewTask(pItem : TTaskItem; Index : integer);
 var
   pTaskItem : TSharpETaskItem;
-  oWidth : integer;
+//  oWidth : integer;
 begin
   DebugOutPutInfo('TMainForm.NewTask (Procedure)');
   if not CheckFilter(pItem) then exit;
   pTaskItem := TSharpETaskItem.Create(self);
-  oWidth := sCurrentWidth;
+//  oWidth := sCurrentWidth;
   CalculateItemWidth(IList.Count + 1);
-  if oWidth <> sCurrentWidth then
-     AlignTaskComponents;
+//  if oWidth <> sCurrentWidth then
+//     AlignTaskComponents;
   IList.Add(pTaskItem);
   pTaskItem.Width := sCurrentWidth;
   pTaskItem.Parent := Background;
   pTaskItem.SkinManager := SystemSkinManager;
-  pTaskItem.Left := FSpecialButtonWidth + (IList.Count-1) * sCurrentWidth + (IList.Count - 2) * sSpacing;
+//  pTaskItem.Left := FSpecialButtonWidth + (IList.Count-1) * sCurrentWidth + (IList.Count - 2) * sSpacing;
+  pTaskItem.Left := Width;
   pTaskItem.AutoPosition := True;
-  pTaskItem.AutoSize := True;
+//  pTaskItem.AutoSize := True;
   pTaskItem.Margin := 0;
   pTaskItem.Flashing := False;
   pTaskItem.Caption := pItem.Caption;
@@ -939,7 +942,7 @@ begin
   UpdateIcon(pTaskItem,pItem);
   pTaskItem.OnClick := SharpETaskItemClick;
   pTaskItem.OnMouseUp := OnTaskItemMouseUp;
-  pTaskItem.Show;
+//  pTaskItem.Show;
   if not FLocked then ReAlignComponents(True);
 end;
 

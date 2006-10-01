@@ -220,7 +220,7 @@ begin
         TMainForm(temp.Form).Background.Bitmap.EndUpdate;
         TMainForm(temp.Form).Background.Repaint;
         TMainForm(temp.Form).UpdateCustomSettings;
-        TMainForm(temp.Form).ReAlignComponents(False);
+        TMainForm(temp.Form).ReAlignComponents(True);
       end;
 end;
 
