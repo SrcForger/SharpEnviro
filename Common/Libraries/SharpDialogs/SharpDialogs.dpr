@@ -237,7 +237,7 @@ var
   ofdialog : TOpenDialog;
 begin
   try
-    ofdialog := TOpenDialog.Create(targetmenu);
+    ofdialog := TOpenDialog.Create(nil);
     ofdialog.Filter := 'All Files (*.*)|*.*';
     if ofdialog.Execute then targetmenuresult := ofdialog.FileName;
   finally
@@ -299,6 +299,17 @@ begin
     targetmenu.Items.Clear;
     mindex := -1;
 
+    // two Dummy items! do not remove!
+    menuItem := TMenuItem.Create(targetmenu);
+    targetmenu.Items.Add(menuItem);
+    menuItem.Visible := False;
+    mindex := mindex + 1;
+
+    menuItem := TMenuItem.Create(targetmenu);
+    menuItem.Visible := False;
+    targetmenu.Items.Add(menuItem);
+    mindex := mindex + 1;
+
     if stiFile in TargetItems then
     begin
       // Files Menu
@@ -333,6 +344,7 @@ begin
         begin
           menuItem := TMenuItem.Create(targetmenu);
           menuItem.Caption := ExtractFileName(SList[n]);
+          if length(trim(menuItem.Caption)) = 0 then menuItem.Caption := SList[n];
           menuItem.Hint := SList[n];
           menuItem.OnClick := targetmenuclick.OnMRClick;
           menuItem.ImageIndex := 9;
@@ -353,6 +365,7 @@ begin
         begin
           menuItem := TMenuItem.Create(targetmenu);
           menuItem.Caption := ExtractFileName(SList[n]);
+          if length(trim(menuItem.Caption)) = 0 then menuItem.Caption := SList[n];
           menuItem.Hint := SList[n];
           menuItem.OnClick := targetmenuclick.OnMRClick;
           menuItem.ImageIndex := 9;
@@ -406,7 +419,7 @@ begin
       menuItem := TMenuItem.Create(targetmenu);
       menuItem.Caption := 'Open...';
       menuItem.ImageIndex := 2;
-      menuItem.OnClick := targetmenuclick.OnDirOpenClick;
+      menuItem.OnClick := targetmenuclick.OnFileOpenClick;//.OnDirOpenClick;
       targetmenu.Items.Items[mindex].Add(menuItem);
 
       menuItem := TMenuItem.Create(targetmenu);
