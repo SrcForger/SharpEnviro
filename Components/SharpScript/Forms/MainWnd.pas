@@ -23,6 +23,7 @@ type
     XPManifest1: TXPManifest;
     OpenScript: TOpenDialog;
     JvInterpreter: TJvInterpreterProgram;
+    procedure FormPaint(Sender: TObject);
     procedure Generic1Click(Sender: TObject);
     procedure Execute1Click(Sender: TObject);
     procedure Install1Click(Sender: TObject);
@@ -92,6 +93,11 @@ procedure TMainForm.Generic1Click(Sender: TObject);
 begin
   CreateGenericScriptForm.show;
   self.hide;
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+    if CreateGenericScriptForm.Visible then Hide;
 end;
 
 end.

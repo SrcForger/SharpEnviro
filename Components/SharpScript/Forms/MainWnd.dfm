@@ -2,7 +2,7 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Width = 434
-  Height = 151
+  Height = 171
   Caption = 'SharpScript'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,6 +13,7 @@ object MainForm: TMainForm
   Menu = MainMenu1
   OldCreateOrder = False
   Position = poScreenCenter
+  OnPaint = FormPaint
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
