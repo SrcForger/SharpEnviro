@@ -1120,7 +1120,7 @@ begin
         begin
           StopTipTimer;
           SetForegroundWindow(tempItem.Wnd);
-          postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,WM_CONTEXTMENU);
+          postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID, WM_CONTEXTMENU);
           postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID, WM_RBUTTONDOWN);
           postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID, WM_RBUTTONUP);
         end;
