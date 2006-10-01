@@ -25,9 +25,9 @@ procedure TExPopupList.WndProc(var Message: TMessage);
 begin
   Case message.Msg Of 
     WM_ENTERMENULOOP: begin
-                        nrevent := True;
-                        lastmenuid := TWMMenuSelect(Message).IDItem;
-                        lastmenu := TWMMenuSelect(Message).Menu;
+//                        nrevent := True;
+//                        lastmenuid := TWMMenuSelect(Message).IDItem;
+//                        lastmenu := TWMMenuSelect(Message).Menu;
                       end;
     WM_EXITMENULOOP : ;
     WM_MENUSELECT   : begin
@@ -35,6 +35,7 @@ begin
                         begin
                           lastmenuid := TWMMenuSelect(Message).IDItem;
                           lastmenu := TWMMenuSelect(Message).Menu;
+                          nrevent := True;
                         end else if GetSubMenu(lastmenu,lastmenuid) <> 0 then nrevent := False;
                       end;
   End; 
