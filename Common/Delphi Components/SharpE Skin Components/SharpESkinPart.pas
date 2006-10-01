@@ -1012,13 +1012,15 @@ begin
     begin
       pPrecacheText := TSkinText.Create;
       pPrecacheText.Clear;
+      pPrecacheText.FColor := '-1';
     end;
   end else new := False;
 
 
   // Check if something changed since cache bmp has been created.
   if ((CompareText(pPrecacheText.FName,FName) <> 0) or
-     (CompareText(pPrecacheText.FColor,FColor) <> 0) or
+//     (CompareText(pPrecacheText.FColor,FColor) <> 0) or
+     (strtoint(pPrecacheText.FColor) <> SchemedStringToColor(FColor,cs)) or
      (CompareText(pPrecacheText.FMaxWidth,FMaxWidth) <> 0) or
      (CompareText(pPrecacheText.FShadowColor,FShadowColor) <> 0) or
      (pPrecacheText.FSize <> FSize) or
@@ -1092,6 +1094,7 @@ begin
       end;
     end;
     c := SchemedStringToColor(FColor, cs);
+    pPrecacheText.FColor := inttostr(c);
     R := GetRValue(c);
     G := GetGValue(c);
     B := GetBValue(c);
