@@ -36,7 +36,7 @@
         <dimension>w-2,26</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>144</alpha>
+        <alpha>164</alpha>
       </skinpart>
     </bar>
     <throbber>
@@ -101,6 +101,10 @@
         <name>Small Fonts</name>
         <size>7</size>
         <color>$Text</color>
+        <shadow>1</shadow>
+        <shadowcolor>$TextShadow</shadowcolor>
+        <shadowtype>Right</shadowtype>
+        <shadowalpha>196</shadowalpha>
       </text>
       <icon>
         <draw>1</draw>
@@ -383,6 +387,10 @@
         <name>Small Fonts</name>
         <size>7</size>
         <color>$Text</color>
+        <shadow>1</shadow>
+        <shadowcolor>$TextShadow</shadowcolor>
+        <shadowtype>Right</shadowtype>
+        <shadowalpha>196</shadowalpha>
       </text>
       <icon>
         <draw>0</draw>
@@ -1160,6 +1168,10 @@
       <name>Small Fonts</name>
       <size>7</size>
       <color>$Text</color>
+      <shadow>1</shadow>
+      <shadowcolor>$TextShadow</shadowcolor>
+      <shadowtype>Right</shadowtype>
+      <shadowalpha>196</shadowalpha>
     </text>
     <location>0,1</location>
     <dimension>w,19</dimension>
@@ -1255,7 +1267,7 @@
     </hover>
     <down>
       <text>
-        <location>cw-2,ch</location>
+        <location>cw-2,ch+1</location>
       </text>
       <skinpart>
         <ID>0</ID>
@@ -1312,18 +1324,33 @@
       <name>Small Fonts</name>
       <bold>0</bold>
       <color>$Text</color>
+      <shadow>1</shadow>
+      <shadowcolor>$TextShadow</shadowcolor>
+      <shadowtype>Outline</shadowtype>
+      <shadowalpha>196</shadowalpha>
+      <location>0,1</location>
     </small>
     <medium>
       <name>Verdana</name>
       <size>8</size>
       <bold>1</bold>
       <color>$Text</color>
+      <shadow>1</shadow>
+      <shadowcolor>$TextShadow</shadowcolor>
+      <shadowtype>Outline</shadowtype>
+      <shadowalpha>255</shadowalpha>
+      <location>0,-1</location>
     </medium>
     <big>
       <name>Verdana</name>
       <size>10</size>
       <bold>1</bold>
       <color>$Text</color>
+      <shadow>1</shadow>
+      <shadowcolor>$TextShadow</shadowcolor>
+      <shadowtype>Outline</shadowtype>
+      <shadowalpha>196</shadowalpha>
+      <location>0,-3</location>
     </big>
   </font>
   <progressbar>
