@@ -422,11 +422,16 @@ begin
 end;
 procedure TSharpEEdit.KeyUpEvent(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  If Key = VK_RETURN then
-    Text := '';
+  if Key = VK_RETURN then
+  begin
+    if CompareText(Text,FEdit.Text) <> 0 then FEdit.Text := Text;
+  end else if CompareText(Text,FEdit.Text) <> 0 then Text := FEdit.Text;
 
   if Assigned(OnKeyUp) then
     OnKeyUp(Sender,Key,Shift);
+
+  if Key = VK_RETURN then
+     Text := '';
 end;
 
 destructor TSharpEEdit.Destroy;
