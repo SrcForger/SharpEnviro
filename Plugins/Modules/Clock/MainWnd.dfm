@@ -24,21 +24,16 @@ object MainForm: TMainForm
     Scale = 1.000000000000000000
     ScaleMode = smNormal
     TabOrder = 0
-    object lb_clock: TSharpELabel
-      Left = 0
+    object lb_clock: TSharpESkinLabel
+      Left = 2
       Top = 0
-      Width = 285
-      Height = 164
-      Align = alClient
-      Alignment = taCenter
-      AutoSize = False
-      Caption = '.'
-      PopupMenu = MenuPopup
-      Transparent = True
-      Layout = tlCenter
-      OnDblClick = lb_clockDblClick
+      Width = 14
+      Height = 25
       SkinManager = SharpESkinManager1
-      LabelStyle = lsSmall
+      AutoSize = True
+      Caption = '.'
+      AutoPosition = True
+      LabelStyle = lsMedium
     end
   end
   object MenuPopup: TPopupMenu

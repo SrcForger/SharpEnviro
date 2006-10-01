@@ -36,7 +36,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
   SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
-  JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math, SharpEEdit, SharpELabel;
+  JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math, SharpEEdit, SharpELabel,
+  SharpESkinLabel;
 
 
 type
@@ -45,8 +46,8 @@ type
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
-    lb_clock: TSharpELabel;
     ClockTimer: TTimer;
+    lb_clock: TSharpESkinLabel;
     procedure lb_clockDblClick(Sender: TObject);
     procedure ClockTimerTimer(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
@@ -101,7 +102,8 @@ begin
   self.Caption := sFormat;
   ClockTimer.OnTimer(ClockTimer);
 
-  newWidth := lb_clock.Canvas.TextWidth(sFormat)+4;
+//  newWidth := lb_clock.Canvas.TextWidth(sFormat)+4;
+  newWidth := lb_clock.Width;
   Tag := newWidth;
   Hint := inttostr(NewWidth);
   if newWidth <> width then
