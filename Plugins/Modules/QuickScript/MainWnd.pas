@@ -76,6 +76,7 @@ type
     procedure ReAlignComponents(BroadCast : boolean);
     procedure SetWidth(new : integer);
     procedure OnScriptClick(Sender : TObject);
+    procedure OnNewScriptClick(Sender : TObject);
   end;
 
 
@@ -174,6 +175,11 @@ begin
   if FileExists(FileName) then SharpApi.SharpExecute(FileName);
 end;
 
+procedure TMainForm.OnNewScriptClick(Sender : TObject);
+begin
+  SharpApi.SharpExecute('_nohist,SharpScript.exe -newgenericscript');
+end;
+
 procedure TMainForm.ButtonMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
@@ -186,6 +192,17 @@ begin
   if Button = mbLeft then
   begin
     scriptpopup.Items.Clear;
+    
+    menu := TMenuItem.Create(scriptpopup);
+    menu.Caption := 'Create New Script';
+    menu.OnClick := OnNewScriptClick;
+    menu.ImageIndex := 1;
+    scriptpopup.Items.Add(menu);
+
+    menu := TMenuItem.Create(scriptpopup);
+    menu.Caption := '-';
+    scriptpopup.Items.Add(menu);
+
     Dir := SharpApi.GetSharpeUserSettingsPath + 'Scripts\';
     if FindFirst(Dir + '*.sescript',FAAnyFile,sr) = 0 then
     repeat
