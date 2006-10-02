@@ -768,7 +768,7 @@ begin
 
   changed := False;
   FLocked := True;
-  for i := 0 to TM.GetCount -1 do
+  for i := TM.GetCount -1 downto 0  do
   begin
     pItem := TM.GetItemByIndex(i);
     if pItem <> nil then
