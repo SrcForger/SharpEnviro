@@ -3,7 +3,8 @@ unit SharpLibrary;
 interface
 
 uses Classes, Forms, Messages, ShlObj, Windows, Graphics, SysUtils,
-     Controls, ExtCtrls, StdCtrls, SharpApi, GR32, GR32_Filters, ActiveX;
+     Controls, ExtCtrls, StdCtrls, SharpApi, GR32, GR32_Filters,
+     ActiveX, IniFiles;
 
 const
   SHACF_AUTOSUGGEST_FORCE_ON = $10000000;
@@ -44,6 +45,7 @@ function GetSpecialFolder(wnd: HWND; iFolder: integer): string;
 function GetWindowCaption(hCap: HWND): string;
 function LockWS: Boolean;
 function NeededServiceRunning(szService: PChar): boolean;
+function ResolveInternetShortcut(Filename: string): String;
 function SendMessageEX(szClass: pchar = nil; szWindow: pchar = nil; msgParm: Cardinal = 0; parm1: integer = 0; parm2: integer = 0): boolean;
 function WindowsExit(RebootParam: Longword): Boolean;
 
@@ -72,6 +74,21 @@ begin
    end;
   end;
 end;
+
+function ResolveInternetShortcut(Filename: string): string;
+var
+  ini : TiniFile;
+begin
+  Result := '';
+
+  ini := TIniFile.Create(fileName);
+  try
+   Result := ini.ReadString('InternetShortcut', 'URL', '');
+  finally
+   FreeAndNil(ini);
+  end;
+end;
+
 
 {$REGION ' TImageEx Procedures '}
 constructor TImageEx.Create(Owner: TComponent);
