@@ -186,7 +186,8 @@ begin
   if (msg.Msg = WM_THEMELOADINGEND) then
   begin
     FIsThemeLoading := False;
-    SharpThemeApi.LoadTheme;
+    if not (csDesigning in ComponentState) then
+       SharpThemeApi.LoadTheme;
     LoadSharpEScheme(FSystemScheme);
     RefreshControls;
   end;
@@ -195,7 +196,8 @@ begin
   Begin
     if not FIsThemeLoading then
     begin
-      SharpThemeApi.LoadTheme;
+      if not (csDesigning in ComponentState) then
+         SharpThemeApi.LoadTheme;
       LoadSharpEScheme(FSystemScheme);
       if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
       RefreshControls;
