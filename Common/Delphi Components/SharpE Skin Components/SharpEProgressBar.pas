@@ -171,7 +171,7 @@ begin
       if not (FManager.Skin.ProgressBarSkin.BackGround.Empty) then
       begin
         if (not FManager.Skin.ProgressBarSkin.SmallBackground.Empty) and
-           (Bmp.Height <= StrToInt(FManager.Skin.ProgressBarSkin.SmallModeOffset.Y)) then
+           (Bmp.Height <= FManager.Skin.ProgressBarSkin.SmallModeOffset.YAsInt) then
            FManager.Skin.ProgressBarSkin.SmallBackground.draw(bmp, Scheme)
         else
           FManager.Skin.ProgressBarSkin.BackGround.Draw(bmp, Scheme);
@@ -179,7 +179,7 @@ begin
       if not (FManager.Skin.ProgressBarSkin.Progress.Empty) then
       begin
         if (not FManager.Skin.ProgressBarSkin.SmallProgress.Empty) and
-           (Bmp.Height <= StrToInt(FManager.Skin.ProgressBarSkin.SmallModeOffset.Y)) then
+           (Bmp.Height <= FManager.Skin.ProgressBarSkin.SmallModeOffset.YAsInt) then
            r := FManager.Skin.ProgressBarskin.SmallProgress.SkinDim.GetRect(rect(0, 0, bmp.Width, bmp.Height))
         else r := FManager.Skin.ProgressBarSkin.Progress.SkinDim.GetRect(rect(0, 0, bmp.width, bmp.height));
         if r.Right = 0 then
@@ -192,7 +192,7 @@ begin
         temp.DrawMode := dmBlend;
         temp.CombineMode := cmMerge;
         if (not FManager.Skin.ProgressBarSkin.SmallProgress.Empty) and
-           (Bmp.Height <= StrToInt(FManager.Skin.ProgressBarSkin.SmallModeOffset.Y)) then
+           (Bmp.Height <= FManager.Skin.ProgressBarSkin.SmallModeOffset.YAsInt) then
            FManager.Skin.ProgressBarSkin.SmallProgress.Draw(temp, Scheme)
         else FManager.Skin.ProgressBarSkin.Progress.Draw(temp, Scheme);
         bmp.Draw(r.Left, r.Top, rect(0, 0, temp.Width, temp.Height), temp);

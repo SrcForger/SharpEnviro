@@ -637,10 +637,10 @@ begin
 
      FEdit.Font.Assign(bmp.Font);
      try
-       EditRect.Left := StrToInt(FManager.Skin.EditSkin.EditXOffsets.X);
-       EditRect.Top  := StrToInt(FManager.Skin.EditSkin.EditYOffsets.X);
-       EditRect.Right := Width - EditRect.Left - StrToInt(FManager.Skin.EditSkin.EditXOffsets.Y);
-       EditRect.Bottom := Height - EditRect.Top - StrToInt(FManager.Skin.EditSkin.EditYOffsets.Y);
+       EditRect.Left := FManager.Skin.EditSkin.EditXOffsets.XAsInt;
+       EditRect.Top  := FManager.Skin.EditSkin.EditYOffsets.XAsInt;
+       EditRect.Right := Width - EditRect.Left - FManager.Skin.EditSkin.EditXOffsets.YAsInt;
+       EditRect.Bottom := Height - EditRect.Top - FManager.Skin.EditSkin.EditYOffsets.YAsInt;
        FEdit.Left := EditRect.Left;
        FEdit.Top  := EditRect.Top;
        FEdit.Width := EditRect.Right;

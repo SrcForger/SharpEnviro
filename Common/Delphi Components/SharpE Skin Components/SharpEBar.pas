@@ -694,14 +694,14 @@ begin
     end;
 
     try
-      fsmod.X := strtoint(FManager.Skin.BarSkin.FSMod.X);
-      fsmod.Y := strtoint(FManager.Skin.BarSkin.FSMod.Y);
+      fsmod.X := FManager.Skin.BarSkin.FSMod.XAsInt;
+      fsmod.Y := FManager.Skin.BarSkin.FSMod.YAsInt;
     except
       fsmod := Point(0, 0);
     end;
     try
-      sbmod.X := strtoint(FManager.Skin.BarSkin.SBMod.X);
-      sbmod.Y := strtoint(FManager.Skin.BarSkin.SBMod.Y);
+      sbmod.X := FManager.Skin.BarSkin.SBMod.XAsInt;
+      sbmod.Y := FManager.Skin.BarSkin.SBMod.YAsInt;
     except
       fsmod := Point(0, 0);
     end;

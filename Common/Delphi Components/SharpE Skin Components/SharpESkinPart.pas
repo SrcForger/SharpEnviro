@@ -273,20 +273,14 @@ end;
 
 function TSkinPoint.GetXInteger : integer;
 begin
-  try
-    result := StrToInt(X);
-  except
-    result := 0;
-  end;
+  if not TryStrToInt(X,result) then
+     result := 0;
 end;
 
 function TSkinPoint.GetYInteger : integer;
 begin
-  try
-    result := StrToInt(Y);
-  except
-    result := 0;
-  end;
+  if not TryStrToInt(Y,result) then
+     result := 0;
 end;
 
 function TSkinPoint.GetXY(TextRect: Trect; CompRect: TRect): TPoint;
@@ -308,6 +302,7 @@ function TSkinPoint.ParseCoordinate(s: string; tw, th, cw, ch: integer): integer
 var i: integer;
   tmp: string;
   sub: boolean;
+  k : integer;
 begin
   if length(s) = 0 then
   begin
@@ -371,9 +366,13 @@ begin
                   if (tmp <> '') then
                   begin
                     if (sub) then
-                      result := result - strtoint(tmp)
+                    begin
+                      if trystrtoint(tmp,k) then result := result - k;
+                    end
                     else
-                      result := result + strtoint(tmp);
+                    begin
+                      if trystrtoint(tmp,k) then result := result + k;
+                    end;
                   end;
                   if (s[i] = '+') then
                     sub := false
@@ -386,9 +385,13 @@ begin
   if (tmp <> '') then
   begin
     if (sub) then
-      result := result - strtoint(tmp)
+    begin
+      if trystrtoint(tmp,k) then result := result - k
+    end
     else
-      result := result + strtoint(tmp);
+    begin
+      if trystrtoint(tmp,k) then result := result + k;
+    end;
   end;
 end;
 
@@ -476,6 +479,7 @@ function TSkinDim.ParseCoordinate(s: string; w, h: integer): integer;
 var i: integer;
   tmp: string;
   sub: boolean;
+  k : integer;
 begin
   result := 0;
   tmp := '';
@@ -495,9 +499,13 @@ begin
           if (tmp <> '') then
           begin
             if (sub) then
-              result := result - strtoint(tmp)
+            begin
+              if trystrtoint(tmp,k) then result := result - k;
+            end
             else
-              result := result + strtoint(tmp);
+            begin
+              if trystrtoint(tmp,k) then result := result + k;
+            end;
           end;
           if (s[i] = '+') then
             sub := false
@@ -510,9 +518,13 @@ begin
   if (tmp <> '') then
   begin
     if (sub) then
-      result := result - strtoint(tmp)
+    begin
+      if trystrtoint(tmp,k) then result := result - k;
+    end
     else
-      result := result + strtoint(tmp);
+    begin
+      if trystrtoint(tmp,k) then result := result + k;
+    end;
   end;
 end;
 
@@ -529,38 +541,26 @@ end;
 
 function TSkinDim.GetWidthInteger : integer;
 begin
-  try
-    result := StrToInt(FWidth);
-  except
-    result := 0;
-  end;
+  if not TryStrToInt(FWidth,result) then
+     result := 0;
 end;
 
 function TSkinDim.GetHeightInteger : integer;
 begin
-  try
-    result := StrToInt(FHeight);
-  except
-    result := 0;
-  end;
+  if not TryStrToInt(FHeight,result) then
+     result := 0;
 end;
 
 function TSkinDim.GetXInteger : integer;
 begin
-  try
-    result := StrToInt(FX);
-  except
-    result := 0;
-  end;
+  if not TryStrToInt(FX,result) then
+     result := 0;
 end;
 
 function TSkinDim.GetYInteger : integer;
 begin
-  try
-    result := StrToInt(FY);
-  except
-    result := 0;
-  end;
+  if not TryStrToInt(FY,result) then
+     result := 0;
 end;
 
 //***************************************
@@ -753,6 +753,7 @@ function TSkinText.ParseCoordinate(s: string; tw, th, cw, ch: integer): integer;
 var i: integer;
   tmp: string;
   sub: boolean;
+  k : integer;
 begin
   if length(s) = 0 then
   begin
@@ -804,9 +805,13 @@ begin
                   if (tmp <> '') then
                   begin
                     if (sub) then
-                      result := result - strtoint(tmp)
+                    begin
+                      if trystrtoint(tmp,k) then result := result - k;
+                    end
                     else
-                      result := result + strtoint(tmp);
+                    begin
+                      if trystrtoint(tmp,k) then result := result + k;
+                    end;
                   end;
                   if (s[i] = '+') then
                     sub := false
@@ -819,9 +824,13 @@ begin
   if (tmp <> '') then
   begin
     if (sub) then
-      result := result - strtoint(tmp)
+    begin
+      if trystrtoint(tmp,k) then result := result - k;
+    end
     else
-      result := result + strtoint(tmp);
+    begin
+      if trystrtoint(tmp,k) then result := result + k;
+    end;
   end;
 end;
 

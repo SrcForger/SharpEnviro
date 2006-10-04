@@ -105,11 +105,8 @@ end;
 
 function Script_StrToInt(Str : String) : integer;
 begin
-  try
-    result := StrToInt(Str);
-  except
-    result := 0;
-  end;
+  if not TryStrToInt(Str,result) then
+     result := 0;
 end;
 
 function Script_GetGradientFromColor(SP : TSkinPart) : String;
