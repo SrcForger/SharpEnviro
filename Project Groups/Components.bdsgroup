@@ -1,23 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-  <PersonalityInfo>
-    <Option>
-      <Option Name="Personality">Default.Personality</Option>
-      <Option Name="ProjectType"></Option>
-      <Option Name="Version">1.0</Option>
-      <Option Name="GUID">{49B7F2D2-114E-4ADC-B573-85E54751D8CF}</Option>
-    </Option>
-  </PersonalityInfo>
-  <Default.Personality>
-    
-    
-    <Projects>
+	<PersonalityInfo>
+		<Option>
+			<Option Name="Personality">Default.Personality</Option>
+			<Option Name="ProjectType"></Option>
+			<Option Name="Version">1.0</Option>
+			<Option Name="GUID">{49B7F2D2-114E-4ADC-B573-85E54751D8CF}</Option>
+		</Option>
+	</PersonalityInfo>
+	<Default.Personality>  <Projects>
       <Projects Name="SharpBar.exe">..\Components\SharpBar\SharpBar.bdsproj</Projects>
       <Projects Name="SharpCenter.exe">..\Components\SharpCenter\SharpCenter.bdsproj</Projects>
       <Projects Name="SharpDesk.exe">..\Components\SharpDesk\SharpDesk.bdsproj</Projects>
       <Projects Name="SharpSkin.exe">..\Components\SharpSkin\SharpSkin.bdsproj</Projects>
       <Projects Name="SharpSplash.exe">..\Components\SharpSplash\SharpSplash.bdsproj</Projects>
-      <Projects Name="Targets">SharpBar.exe SharpCenter.exe SharpDesk.exe SharpSkin.exe SharpSplash.exe</Projects>
+      <Projects Name="SharpScript.exe">..\Components\SharpScript\SharpScript.bdsproj</Projects>
+      <Projects Name="Targets">SharpBar.exe SharpCenter.exe SharpDesk.exe SharpSkin.exe SharpSplash.exe SharpScript.exe</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
