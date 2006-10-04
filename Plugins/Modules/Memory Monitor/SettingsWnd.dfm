@@ -3,7 +3,7 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Memory Monitor Settings'
-  ClientHeight = 197
+  ClientHeight = 279
   ClientWidth = 312
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -76,9 +76,22 @@ object SettingsForm: TSettingsForm
     Font.Style = [fsBold]
     ParentFont = False
   end
+  object Label5: TLabel
+    Left = 8
+    Top = 168
+    Width = 63
+    Height = 13
+    Caption = 'Value Text:'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
   object Button1: TButton
     Left = 152
-    Top = 168
+    Top = 248
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -87,7 +100,7 @@ object SettingsForm: TSettingsForm
   end
   object Button2: TButton
     Left = 232
-    Top = 168
+    Top = 248
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -131,7 +144,7 @@ object SettingsForm: TSettingsForm
     Top = 120
     Width = 97
     Height = 17
-    Caption = 'Percent Value'
+    Caption = 'Value'
     TabOrder = 6
   end
   object cb_rampc: TCheckBox
@@ -139,12 +152,12 @@ object SettingsForm: TSettingsForm
     Top = 40
     Width = 97
     Height = 17
-    Caption = 'Percent Value'
+    Caption = 'Value'
     TabOrder = 7
   end
   object rb_halign: TRadioButton
     Left = 176
-    Top = 24
+    Top = 28
     Width = 113
     Height = 17
     Caption = 'Horizontal'
@@ -152,7 +165,7 @@ object SettingsForm: TSettingsForm
   end
   object rb_valign: TRadioButton
     Left = 176
-    Top = 40
+    Top = 48
     Width = 105
     Height = 17
     Caption = 'Vertical (2 rows)'
@@ -175,5 +188,29 @@ object SettingsForm: TSettingsForm
     Style = rbsMac
     Position = 25
     OnChange = tb_sizeChange
+  end
+  object Panel1: TPanel
+    Left = 8
+    Top = 184
+    Width = 305
+    Height = 49
+    BevelOuter = bvNone
+    TabOrder = 11
+    object cb_itc_pt: TRadioButton
+      Left = 8
+      Top = 4
+      Width = 145
+      Height = 17
+      Caption = 'Percent Taken  (61%)'
+      TabOrder = 0
+    end
+    object cb_itc_fmb: TRadioButton
+      Left = 8
+      Top = 24
+      Width = 161
+      Height = 17
+      Caption = 'Free MB (210 MB free)'
+      TabOrder = 1
+    end
   end
 end

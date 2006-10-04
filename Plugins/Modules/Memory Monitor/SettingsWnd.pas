@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, GR32_RangeBars;
+  Dialogs, StdCtrls, ComCtrls, GR32_RangeBars, ExtCtrls;
 
 type
   TSettingsForm = class(TForm)
@@ -54,6 +54,10 @@ type
     tb_size: TGaugeBar;
     Label4: TLabel;
     lb_barsize: TLabel;
+    Label5: TLabel;
+    Panel1: TPanel;
+    cb_itc_pt: TRadioButton;
+    cb_itc_fmb: TRadioButton;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tb_sizeChange(Sender: TObject);
     procedure Button2Click(Sender: TObject);

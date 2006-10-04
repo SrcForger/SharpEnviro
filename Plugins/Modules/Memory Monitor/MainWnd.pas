@@ -66,6 +66,7 @@ type
     ShowSWPPC   : boolean;
     ShowSWPInfo : boolean;
     ItemAlign   : integer;
+    sITC        : integer;
   public
     ModuleID : integer;
     BarWnd : hWnd;
@@ -98,6 +99,7 @@ begin
   ShowSWPBar  := True;
   ShowSWPPC   := True;
   ShowSWPInfo := False;
+  sITC        := 0;
   ItemAlign   := 2;
 
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
@@ -111,6 +113,7 @@ begin
     ShowSWPPC   := BoolValue('ShowSWPPC',True);
     ShowSWPInfo := BoolValue('ShowSWPInfo',False);
     ItemAlign   := IntValue('ItemAlign',2);
+    sITC        := IntValue('ITC',0);
     if ItemAlign >2 then ItemAlign := 2;
     if ItemAlign <1 then ItemAlign := 1;
   end;
@@ -140,6 +143,7 @@ begin
   lb_swp.Left := -100;
   lb_ram.Left := -100;
 
+  UpdateTimerTimer(UpdateTimer);
   case ItemAlign of
    1: begin
 {        lb_ram.Width := lb_ram.Canvas.TextWidth(lb_ram.caption);
@@ -302,7 +306,7 @@ end;
 procedure TMainForm.UpdateTimerTimer(Sender: TObject);
 var
   memStat : TMemoryStatus;
-  i : integer;
+  i,t : integer;
 begin
   memStat.dwLength := SizeOf(memStat);
   GlobalMemoryStatus(memStat);
@@ -310,23 +314,46 @@ begin
   if (RamBar.Visible) or (lb_rambar.Visible) then
   begin
     i := round(((memstat.dwTotalPhys - memstat.dwAvailPhys) / memstat.dwTotalPhys) * 100);
+    t := memstat.dwAvailPhys div 1024 div 1024;
     if RamBar.Visible then
        if (i <> rambar.Value) then
            rambar.Value := i;
     if (lb_rambar.Visible) then
-       if (inttostr(i) + '%' <> lb_rambar.Caption) then
-          lb_rambar.Caption := inttostr(i) + '%';
+    begin
+      case sITC of
+        0: begin
+             if CompareText(inttostr(i) + '%',lb_rambar.Caption) <> 0 then
+             lb_rambar.Caption := inttostr(i) + '%';
+           end;
+        else begin
+              if CompareText(inttostr(t) + ' MB free',lb_rambar.Caption) <> 0 then
+              lb_rambar.Caption := inttostr(t) + ' MB free';
+             end;
+       end;
+    end;
   end;
 
   if (SwpBar.Visible) or (lb_swpbar.Visible) then
   begin
     i := round(((memstat.dwTotalPageFile - memstat.dwAvailPageFile) / memstat.dwTotalPageFile) * 100);
+    t := memstat.dwAvailPageFile div 1024 div 1024;
     if SwpBar.Visible then
        if i <> swpbar.Value then
           swpbar.Value := i;
+
     if lb_swpbar.Visible then
-       if (inttostr(i) + '%' <> lb_swpbar.Caption) then
-           lb_swpbar.Caption := inttostr(i) + '%';
+    begin
+      case sITC of
+        0: begin
+             if CompareText(inttostr(i) + '%',lb_swpbar.Caption) <> 0 then
+             lb_swpbar.Caption := inttostr(i) + '%';
+           end;
+        else begin
+              if CompareText(inttostr(t) + ' MB free',lb_swpbar.Caption) <> 0 then
+              lb_swpbar.Caption := inttostr(t) + ' MB free';
+             end;
+      end;
+    end;
   end;
 end;
 
@@ -343,12 +370,22 @@ begin
   SettingsForm.cb_swpinfo.Checked := ShowSWPInfo;
   SettingsForm.cb_swppc.Checked   := ShowSWPPC;
   SettingsForm.tb_size.Position   := Barwidth;
+
+  case sITC of
+    0: SettingsForm.cb_itc_pt.Checked := True
+    else SettingsForm.cb_itc_fmb.Checked := True;
+  end;
+
   case ItemAlign of
     1: SettingsForm.rb_halign.Checked := True
     else SettingsForm.rb_valign.Checked := True;
   end;
+
   if SettingsForm.ShowModal = mrOk then
   begin
+    if SettingsForm.cb_itc_pt.Checked then sITC := 0
+       else sITC := 1;
+
     ShowRAMBar  := SettingsForm.cb_rambar.Checked;
     ShowRAMInfo := SettingsForm.cb_raminfo.checked;
     ShowRAMPC   := SettingsForm.cb_rampc.Checked;
@@ -358,7 +395,7 @@ begin
     Barwidth    := SettingsForm.tb_size.Position;
     if SettingsForm.rb_halign.Checked then ItemAlign := 1
        else ItemAlign := 2;
-       
+
     item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
     if item <> nil then with item.Items do
     begin
@@ -371,6 +408,7 @@ begin
       Add('ShowSWPInfo',ShowSWPInfo);
       Add('ShowSWPPC',ShowSWPPC);
       Add('ItemAlign',ItemAlign);
+      Add('ITC',sITC);
     end;
     uSharpBarAPI.SaveXMLFile(BarWnd);
     ReAlignComponents(true);

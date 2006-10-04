@@ -100,7 +100,6 @@ object MainForm: TMainForm
   end
   object UpdateTimer: TTimer
     Enabled = False
-    Interval = 250
     OnTimer = UpdateTimerTimer
     Left = 120
     Top = 40
