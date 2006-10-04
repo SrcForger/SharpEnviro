@@ -406,7 +406,8 @@ begin
   FMArrow := TBitmap32.Create;
 
   FPicture := TBitmap32.Create;
-  FPicture.DrawMode := dmBlend;  
+  FPicture.DrawMode := dmBlend;
+  FPicture.CombineMode := cmMerge;
   FXML := TJvSimpleXML.Create(nil);
   fTimer := TTimer.Create(nil);
   fTimer.OnTimer := fTimer1TimerFirst;
