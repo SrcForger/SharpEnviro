@@ -202,9 +202,13 @@ begin
      FXML.LoadFromFile(dir+'skin.xml');
 
      FClockBack.DrawMode := dmBlend;
+     FClockBack.CombineMode := cmMerge;
      FClockGlas.DrawMode := dmBlend;
+     FClockGlas.CombineMode := cmMerge;
      FHArrow.DrawMode := dmBlend;
+     FHArrow.CombineMode := cmMerge;
      FMArrow.DrawMode := dmBlend;
+     FMArrow.CombineMode := cmMerge;
 
      LoadBitmap32FromPNG(FClockBack,dir+'watch_face.png',b);
      LoadBitmap32FromPNG(FClockGlas,dir+'watch_glass.png',b);
@@ -246,9 +250,10 @@ begin
           except
           end;
      end;
-    
+
      TempBmp := TBitmap32.Create;
      TempBmp.DrawMode := dmBlend;
+     TempBmp.CombineMode := cmMerge;
      TempBmp.SetSize(FClockBack.Width,FClockBack.Height);
 
      TempBmp.Clear(color32(0,0,0,0));
