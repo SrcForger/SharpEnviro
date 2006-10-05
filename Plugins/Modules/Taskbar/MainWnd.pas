@@ -774,7 +774,7 @@ begin
     if pItem <> nil then
     begin
       pTaskItem := nil;
-      for n := 0 to IList.Count - 1 do
+      for n := IList.Count - 1 downto 0 do
           if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
           begin
             pTaskItem := TSharpETaskItem(IList.Items[n]);
