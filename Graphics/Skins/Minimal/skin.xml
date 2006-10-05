@@ -1113,6 +1113,7 @@
   </form>
   <minithrobber>
     <dimension>5,5</dimension>
+    <location>0,4</location>
     <normal>
       <skinpart>
         <location>0,0</location>
