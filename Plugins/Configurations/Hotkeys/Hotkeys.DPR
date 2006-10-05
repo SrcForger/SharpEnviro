@@ -35,6 +35,7 @@ uses
   graphics,
   sysutils,
   SharpAPI,
+  XPMan,
   PngSpeedButton,
   uHotkeyServiceList in 'uHotkeyServiceList.pas',
   uHotkeyServiceItemListWnd in 'uHotkeyServiceItemListWnd.pas' {frmConfig},

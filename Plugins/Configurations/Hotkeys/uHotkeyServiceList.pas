@@ -61,7 +61,8 @@ type
     destructor Destroy; override;
 
     function Add(Hotkey, Command: string; IsAction: Boolean): THotkeyItem;
-    procedure Delete(Index: integer);
+    procedure Delete(Index: integer); overload;
+    procedure Delete(AItem:  THotkeyItem); overload;
 
     property Count: integer read GetCount;
     property Filename: string read FFileName write FFileName;
@@ -213,6 +214,15 @@ begin
   finally
     xml.Free;
   end;
+end;
+
+procedure THotkeyList.Delete(AItem: THotkeyItem);
+var
+  n:Integer;
+begin
+  n := FItems.IndexOf(AItem);
+  if n <> -1 then
+    FItems.Delete(n);
 end;
 
 { THotkeyItem }

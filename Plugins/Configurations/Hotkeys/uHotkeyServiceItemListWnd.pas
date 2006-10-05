@@ -44,10 +44,6 @@ uses
   ToolWin,
   ExtCtrls,
   ImgList,
-  ActnMenus,
-  ActnList,
-  ActnMan,
-  ActnCtrls,
   Menus,
 
   // JVCL
@@ -55,25 +51,16 @@ uses
 
   // Project
   uHotkeyServiceList,
-  XPStyleActnCtrls,
   uSEListboxPainter, PngImageList, SharpEListBox;
 
 type
   TfrmConfig = class(TForm)
     dlgOpenFile: TOpenDialog;
     dlgSaveFile: TSaveDialog;
-    ImageList1: TImageList;
     PopupMenu1: TPopupMenu;
     Load1: TMenuItem;
     Append1: TMenuItem;
     Append2: TMenuItem;
-    am: TActionManager;
-    actLoadHotkeys: TAction;
-    actAdd: TAction;
-    actEdit: TAction;
-    actDelete: TAction;
-    actSaveHotkeys: TAction;
-    actAppendHotkeys: TAction;
     picMain: TPngImageCollection;
     lbHotkeys: TSharpEListBox;
     procedure lbHotkeysDrawItem(Control: TWinControl; Index: Integer;
@@ -85,17 +72,12 @@ type
 
     procedure HotkeyItemMouseDown(Sender: TObject;
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure actAddUpdate(Sender: TObject);
-    procedure actEditUpdate(Sender: TObject);
-    procedure actDeleteUpdate(Sender: TObject);
-    procedure actLoadHotkeysUpdate(Sender: TObject);
-    procedure actSaveHotkeysUpdate(Sender: TObject);
-    procedure actAppendHotkeysUpdate(Sender: TObject);
-    procedure AddItemClick(Sender: TObject);
     procedure DeleteItemClick(Sender: TObject);
     procedure EditItemClick(Sender: TObject);
+    procedure AddItemClick(Sender: TObject);
   private
     { Private declarations }
+    procedure CenterForm(var AForm: TForm; AOwner: TForm);
   public
     { Public declarations }
     procedure RefreshHotkeys;
@@ -118,6 +100,15 @@ uses
   uHotkeyServiceItemEditWnd;
 
 {$R *.dfm}
+
+procedure TfrmConfig.CenterForm(var AForm: TForm; AOwner: TForm);
+var
+  p: TPoint;
+begin
+  p := ClientToScreen(AOwner.ScreenToClient(AOwner.ClientOrigin));
+  AForm.Left := p.x + AOwner.Width div 2 - AForm.Width div 2;
+  AForm.Top := p.y + AOwner.Height div 2 - AForm.Height div 2;
+end;
 
 procedure TfrmConfig.cmdAddHotkeyClick(Sender: TObject);
 begin
@@ -156,11 +147,6 @@ begin
   // Refresh Hotkey List Interface
   RefreshHotkeys;
 
-  // Initialise the Interface
-  actAdd.Enabled := True;
-  actEdit.Enabled := True;
-  actDelete.Enabled := True;
-
 end;
 
 procedure TfrmConfig.columnclick(Sender: TObject);
@@ -173,6 +159,7 @@ var
   i: Integer;
   idx: Integer;
 begin
+  idx := 0;
   if lbHotkeys.ItemIndex <> -1 then
     idx := lbHotkeys.ItemIndex;
 
@@ -192,9 +179,6 @@ end;
 
 procedure TfrmConfig.HotkeyItemMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  i: integer;
-  id: integer;
 begin
   {id := THotkeyMgrItem(sender).Tag;
   ItemSelectedId := id;
@@ -203,44 +187,6 @@ begin
     FHotkeyPnlItems[i].Selected := False;
   THotkeyMgrItem(Sender).Selected := True;   }
 
-end;
-
-procedure TfrmConfig.actAddUpdate(Sender: TObject);
-begin
-  actAdd.Enabled := True;
-end;
-
-procedure TfrmConfig.actEditUpdate(Sender: TObject);
-begin
-  if FHotkeyList.Count > 0 then
-    actEdit.Enabled := True
-  else
-    actEdit.Enabled := False;
-end;
-
-procedure TfrmConfig.actDeleteUpdate(Sender: TObject);
-begin
-  if FHotkeyList.Count > 0 then
-    actDelete.Enabled := True
-  else
-    actDelete.Enabled := False;
-end;
-
-procedure TfrmConfig.actLoadHotkeysUpdate(Sender: TObject);
-begin
-  actLoadHotkeys.Enabled := True;
-end;
-
-procedure TfrmConfig.actSaveHotkeysUpdate(Sender: TObject);
-begin
-  if FHotkeyList.Count > 0 then
-    actSaveHotkeys.Enabled := True;
-end;
-
-procedure TfrmConfig.actAppendHotkeysUpdate(Sender: TObject);
-begin
-  if FHotkeyList.Count > 0 then
-    actAppendHotkeys.Enabled := True;
 end;
 
 procedure TfrmConfig.LoadHotkeyList;
@@ -263,6 +209,7 @@ begin
   // Create the form
   if not assigned(FrmHotkeyEdit) then
     FrmHotkeyEdit := TFrmHotkeyEdit.Create(nil);
+  CenterForm(Tform(FrmHotkeyEdit),Self);
 
   with FrmHotkeyEdit do
   begin
@@ -270,36 +217,32 @@ begin
     // Initialise the dialog
     SelectedText := '';
     hkeCommand.Text := '';
-    hkeAction.Text := '';
-    edtCommand.Text := '';
-    tbHotkeyType.Tabs.Items[0].Selected := true;
+    mmoCommand.Lines.Text := '';
 
     CmdAddEdit.Caption := 'Add';
     FrmHotkeyEdit.Caption := 'Create Hotkey Item';
 
-    pagCommand.Show;
-
     case FrmHotkeyEdit.ShowModal of
       mrOk:
         begin
-          case plCommandTypes.ActivePageIndex of
-            0: FHotkeyList.Add(hkeCommand.Text, edtCommand.Text, False);
-            1: FHotkeyList.Add(hkeAction.Text, lvActionItems.Selected.Caption, True);
-          end;
-          SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+          FHotkeyList.Add(hkeCommand.Text, mmoCommand.Lines.Text, False);
         end;
     end;
-
+    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
     RefreshHotkeys;
   end;
 end;
 
 procedure TfrmConfig.DeleteItemClick(Sender: TObject);
 var
-  id: integer;
+  tmpItem: THotkeyItem;
 begin
-  id := ItemSelectedID;
-  FHotkeyList.Delete(id);
+  if lbHotkeys.SelCount = 0 then
+    Exit;
+
+  tmpItem := THotkeyItem(lbHotkeys.Items.Objects[lbHotkeys.ItemIndex]);
+
+  FHotkeyList.Delete(tmpItem);
 
   SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
   RefreshHotkeys;
@@ -307,45 +250,25 @@ end;
 
 procedure TfrmConfig.EditItemClick(Sender: TObject);
 var
-  id: integer;
+  tmpItem: THotkeyItem;
 begin
+  if lbHotkeys.SelCount = 0 then
+    Exit;
+
+  tmpItem := THotkeyItem(lbHotkeys.Items.Objects[lbHotkeys.ItemIndex]);
 
   if not assigned(FrmHotkeyEdit) then
     FrmHotkeyEdit := TFrmHotkeyEdit.Create(nil);
-
-  id := ItemSelectedID;
+  CenterForm(Tform(FrmHotkeyEdit),Self);
 
   with FrmHotkeyEdit do
   begin
 
     // Initialise the dialog
     SelectedText := '';
-    hkeCommand.Text := '';
-    hkeAction.Text := '';
-    edtCommand.Text := '';
-
-    if FHotkeyList.HotkeyItem[id].IsAction then
-    begin
-      if IsServiceStarted(pchar('actions')) = MR_STARTED then
-      begin
-        plCommandTypes.ActivePageIndex := piAction;
-        hkeAction.Text := FHotkeyList.HotkeyItem[id].Hotkey;
-        tbHotkeyType.Tabs.Items[1].Selected := true;
-        FrmHotkeyEdit.SelectedText := FHotkeyList.HotkeyItem[id].Command;
-      end
-      else
-      begin
-        MessageDlg('Actions Service is not currently running', mtError, [mbOK], 0);
-        exit;
-      end;
-    end
-    else
-    begin
-      tbHotkeyType.Tabs.Items[0].Selected := true;
-      plCommandTypes.ActivePageIndex := piFile;
-      hkeAction.Text := FHotkeyList.HotkeyItem[id].Hotkey;
-      edtCommand.Text := FHotkeyList.HotkeyItem[id].Command;
-    end;
+    hkeCommand.Text :=tmpItem.Hotkey;
+    mmoCommand.Lines.Text := '';
+    mmoCommand.Lines.Text := tmpItem.Command;
 
     CmdAddEdit.Caption := 'Update';
     FrmHotkeyEdit.Caption := 'Edit Hotkey Item';
@@ -353,30 +276,13 @@ begin
     case FrmHotkeyEdit.showmodal of
       mrOk:
         begin
-
-          FHotkeyList.HotkeyItem[id].IsAction := false;
-
-          case plCommandTypes.ActivePageIndex of
-            piAction:
-              begin
-                FHotkeyList.HotkeyItem[id].Command := lvActionItems.Selected.Caption;
-                FHotkeyList.HotkeyItem[id].Hotkey := hkeAction.Text;
-                FHotkeyList.HotkeyItem[id].IsAction := True;
-              end;
-            piFile:
-              begin
-                FHotkeyList.HotkeyItem[id].Hotkey := hkeCommand.Text;
-                FHotkeyList.HotkeyItem[id].Command := edtCommand.Text;
-              end;
-          end;
-
-        SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+          tmpItem.Hotkey := hkeCommand.Text;
+          tmpItem.Command := mmoCommand.Lines.Text;
         end;
     end;
+    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    RefreshHotkeys;
   end;
-
-  RefreshHotkeys;
-
 end;
 
 procedure TfrmConfig.lbHotkeysDrawItem(Control: TWinControl; Index: Integer;
@@ -406,7 +312,8 @@ begin
   FontColor := clBlack;
 
   if obj.IsAction then
-    iIconIndex := 1 else
+    iIconIndex := 1
+  else
     iIconIndex := 0;
 
   // Draw Method
