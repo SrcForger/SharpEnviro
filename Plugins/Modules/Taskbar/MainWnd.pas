@@ -585,7 +585,9 @@ begin
 
   NewWidth := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1);
 
-  Tag := Max(FSpecialButtonWidth + IList.Count * 16 + (IList.Count - 1) * sSpacing,1);
+  if sState = tisMini then Tag := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1)
+     else Tag := Max(FSpecialButtonWidth + IList.Count * 16 + (IList.Count - 1) * sSpacing,1);
+     
   Hint := InttoStr(NewWidth);
   if Width <> NewWidth then
   begin
