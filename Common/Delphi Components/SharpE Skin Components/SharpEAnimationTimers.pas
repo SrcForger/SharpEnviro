@@ -378,7 +378,7 @@ begin
     FTimer.Interval := FInterpreter.CallFunction('InitAnimation',nil,[]);
     ETime := DateTimeToUnix(now);
     FTimer.Enabled := True;
-except
+  except
     FTimer.Enabled := False;
   end;
 end;
@@ -610,7 +610,7 @@ begin
   for n := FTimers.Count - 1 downto 0 do
   begin
     temp := TSharpEAnimTimer(FTimers.Items[n]);
-    if not temp.Timer.Enabled then
+    if (not temp.Timer.Enabled) or (not assigned(temp.Component)) then
     begin
       FTimers.Extract(temp);
       temp.Free;
