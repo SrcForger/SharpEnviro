@@ -125,8 +125,10 @@ uses
   JvSimpleXML,
   Graphics,
 
-  uExecServiceRecentItemList in '..\..\..\Plugins\Services\Exec\uExecServiceRecentItemList.pas',
-  uExecServiceUsedItemList in '..\..\..\Plugins\Services\Exec\uExecServiceUsedItemList.pas';
+  uExecServiceRecentItemList in
+    '..\..\..\Plugins\Services\Exec\uExecServiceRecentItemList.pas',
+  uExecServiceUsedItemList in
+    '..\..\..\Plugins\Services\Exec\uExecServiceUsedItemList.pas';
 
 {$R *.RES}
 
@@ -139,38 +141,38 @@ const
 
   WM_WEATHERUPDATE = WM_APP + 540;
 
-  WM_SHARPETHEMEUPDATE    = WM_APP + 522;
-  WM_DISABLESHARPDESK     = WM_APP + 523;
-  WM_ENABLESHARPDESK      = WM_APP + 524;
-  WM_EDITCURRENTTHEME     = WM_APP + 525;
-  WM_ADDDESKTOPOBJECT     = WM_APP + 526;
-  WM_SHOWOBJECTLIST       = WM_APP + 527;
-  WM_SHOWDESKTOPSETTINGS  = WM_APP + 528;
-  WM_DISPLAYSHARPMENU     = WM_APP + 529;
-  WM_CLOSESHARPMENU       = WM_APP + 530;
-  WM_CLOSEDESK            = WM_APP + 531;
+  WM_SHARPETHEMEUPDATE = WM_APP + 522;
+  WM_DISABLESHARPDESK = WM_APP + 523;
+  WM_ENABLESHARPDESK = WM_APP + 524;
+  WM_EDITCURRENTTHEME = WM_APP + 525;
+  WM_ADDDESKTOPOBJECT = WM_APP + 526;
+  WM_SHOWOBJECTLIST = WM_APP + 527;
+  WM_SHOWDESKTOPSETTINGS = WM_APP + 528;
+  WM_DISPLAYSHARPMENU = WM_APP + 529;
+  WM_CLOSESHARPMENU = WM_APP + 530;
+  WM_CLOSEDESK = WM_APP + 531;
   WM_DESKEXPORTBACKGROUND = WM_APP + 532;
-  WM_FORCEOBJECTRELOAD    = WM_APP + 533;
-  WM_TERMINALWND          = WM_APP + 534;
+  WM_FORCEOBJECTRELOAD = WM_APP + 533;
+  WM_TERMINALWND = WM_APP + 534;
 
-  WM_THEMELOADINGSTART    = WM_APP + 535;
-  WM_THEMELOADINGEND      = WM_APP + 536;
+  WM_THEMELOADINGSTART = WM_APP + 535;
+  WM_THEMELOADINGEND = WM_APP + 536;
 
-  WM_SHARPTERMINATE       = WM_APP + 550;
+  WM_SHARPTERMINATE = WM_APP + 550;
 
   // SharpBar (new Skin Stuff)
-  WM_UPDATEBARWIDTH       = WM_APP + 601;
-  WM_SHARPEPLUGINMESSAGE  = WM_APP + 602;
-  WM_SKINCHANGED          = WM_APP + 603;
+  WM_UPDATEBARWIDTH = WM_APP + 601;
+  WM_SHARPEPLUGINMESSAGE = WM_APP + 602;
+  WM_SKINCHANGED = WM_APP + 603;
 
   // System Tray Service
-  WM_REGISTERWITHTRAY     = WM_APP + 650;
-  WM_UNREGISTERWITHTRAY   = WM_APP + 651;
-  
+  WM_REGISTERWITHTRAY = WM_APP + 650;
+  WM_UNREGISTERWITHTRAY = WM_APP + 651;
+
   // SharpCenter
-  WM_SETTINGSCHANGED      = WM_APP + 660;
-  WM_UPDATESETTINGS       = WM_APP + 661;
-  WM_SCGLOBALBTNMSG         = WM_APP + 662;
+  WM_SETTINGSCHANGED = WM_APP + 660;
+  WM_UPDATESETTINGS = WM_APP + 661;
+  WM_SCGLOBALBTNMSG = WM_APP + 662;
 
   SCU_SHARPDESK = 1001;
   SCU_SHARPCORE = 1002;
@@ -219,12 +221,12 @@ const
   SKINPATH = 'Skin';
   THEMEPATH = 'Theme';
   SCHEMEPATH = 'Scheme';
-  SKINDIR  = 'Skins';
+  SKINDIR = 'Skins';
   CENTERDIR = 'Center\Root';
   ICONSDIR = 'Icons';
 
 type
-  THandleArray =  array of HWND;
+  THandleArray = array of HWND;
 
   TColor = -$7FFFFFFF - 1..$7FFFFFFF;
 
@@ -236,7 +238,7 @@ type
     WorkAreaback: Tcolor;
     WorkAreadark: Tcolor;
     WorkArealight: Tcolor;
-    WorkAreaText : Tcolor;
+    WorkAreaText: Tcolor;
   end;
 
   TColorScheme = record
@@ -284,14 +286,15 @@ var
   wpara: wparam;
   mess: integer;
   lpara: lparam;
-  stemp: String;
+  stemp: string;
 
-
-function GetSharpeDirectory  : PChar; forward;
-function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam): integer; forward;
+function GetSharpeDirectory: PChar; forward;
+function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam): integer;
+  forward;
 
 { HELPER FUNCTIONS }
-function RegLoadStr(Key, Prop, Default : String): string;
+
+function RegLoadStr(Key, Prop, Default: string): string;
 var
   Reg: TRegIniFile;
 begin
@@ -299,14 +302,14 @@ begin
   try
     result := 'SharpE';
     Reg.RootKey := HKEY_CURRENT_USER;
-    result := Reg.ReadString(Key,Prop,Default);
+    result := Reg.ReadString(Key, Prop, Default);
   finally
     Reg.CloseKey;
     Reg.free;
   end;
 end;
 
-function RegWriteStr(Key, Prop, Value  : String) : hresult;
+function RegWriteStr(Key, Prop, Value: string): hresult;
 var
   Reg: TRegIniFile;
 begin
@@ -314,7 +317,7 @@ begin
   try
     result := HR_UNKNOWNERROR;
     Reg.RootKey := HKEY_CURRENT_USER;
-    Reg.WriteString(Key,Prop,Value);
+    Reg.WriteString(Key, Prop, Value);
     result := HR_OK;
   finally
     Reg.CloseKey;
@@ -322,7 +325,8 @@ begin
   end;
 end;
 
-function LoadColorFromRegistry(key: pChar; value: pChar; default: Tcolor): Tcolor;
+function LoadColorFromRegistry(key: pChar; value: pChar; default: Tcolor):
+  Tcolor;
 var
   Reg: TRegIniFile;
   temp: string;
@@ -392,95 +396,109 @@ end;
 
 {EXPORTED FUNTIONS}
 
-function SaveColorScheme(cs : TColorScheme) : boolean;
+function SaveColorScheme(cs: TColorScheme): boolean;
 begin
- try
-   SaveColorToRegistry(SCHEMEPATH,'ThrobberBack',cs.Throbberback);
-   SaveColorToRegistry(SCHEMEPATH,'ThrobberDark',cs.ThrobberDark);
-   SaveColorToRegistry(SCHEMEPATH,'ThrobberLight',cs.ThrobberLight);
-   SaveColorToRegistry(SCHEMEPATH,'WorkAreaBack',cs.WorkareaBack);
-   SaveColorToRegistry(SCHEMEPATH,'WorkAreaDark',cs.WorkareaDark);
-   SaveColorToRegistry(SCHEMEPATH,'WorkAreaLight',cs.WorkareaLight);
-   result := true;
- except
-   result := false;
- end;
+  try
+    SaveColorToRegistry(SCHEMEPATH, 'ThrobberBack', cs.Throbberback);
+    SaveColorToRegistry(SCHEMEPATH, 'ThrobberDark', cs.ThrobberDark);
+    SaveColorToRegistry(SCHEMEPATH, 'ThrobberLight', cs.ThrobberLight);
+    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaBack', cs.WorkareaBack);
+    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaDark', cs.WorkareaDark);
+    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaLight', cs.WorkareaLight);
+    result := true;
+  except
+    result := false;
+  end;
 end;
 
 function LoadColorScheme: TColorScheme;
 begin
   try
-    result.Throbberback  := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberBack', $00C88200);
-    result.Throbberdark  := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberDark', $00996400);
-    result.Throbberlight := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberLight', $00F6A710);
-    result.WorkAreaback  := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaBack', $00DEDFDE);
-    result.WorkAreadark  := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaDark', $00999999);
-    result.WorkArealight := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaLight', $00FDFDFD);
+    result.Throbberback := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberBack',
+      $00C88200);
+    result.Throbberdark := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberDark',
+      $00996400);
+    result.Throbberlight := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberLight',
+      $00F6A710);
+    result.WorkAreaback := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaBack',
+      $00DEDFDE);
+    result.WorkAreadark := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaDark',
+      $00999999);
+    result.WorkArealight := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaLight',
+      $00FDFDFD);
   except
-    result.Throbberback  := $00C88200;
-    result.Throbberdark  := $00996400;
+    result.Throbberback := $00C88200;
+    result.Throbberdark := $00996400;
     result.Throbberlight := $00F6A710;
-    result.WorkAreaback  := $00DEFDDE;
-    result.WorkAreadark  := $00AAAAAA;
+    result.WorkAreaback := $00DEFDDE;
+    result.WorkAreadark := $00AAAAAA;
     result.WorkArealight := $00FDFDFD;
   end;
 end;
 
-function SaveColorSchemeEx(cs : TColorSchemeEx) : boolean;
+function SaveColorSchemeEx(cs: TColorSchemeEx): boolean;
 begin
- try
-   SaveColorToRegistry(SCHEMEPATH,'ThrobberBack',cs.Throbberback);
-   SaveColorToRegistry(SCHEMEPATH,'ThrobberDark',cs.ThrobberDark);
-   SaveColorToRegistry(SCHEMEPATH,'ThrobberLight',cs.ThrobberLight);
-   SaveColorToRegistry(SCHEMEPATH,'ThrobberText',cs.ThrobberText);
-   SaveColorToRegistry(SCHEMEPATH,'WorkAreaBack',cs.WorkareaBack);
-   SaveColorToRegistry(SCHEMEPATH,'WorkAreaDark',cs.WorkareaDark);
-   SaveColorToRegistry(SCHEMEPATH,'WorkAreaLight',cs.WorkareaLight);
-   SaveColorToRegistry(SCHEMEPATH,'WorkAreaText',cs.WorkAreaText);
-   result := true;
- except
-   result := false;
- end;
+  try
+    SaveColorToRegistry(SCHEMEPATH, 'ThrobberBack', cs.Throbberback);
+    SaveColorToRegistry(SCHEMEPATH, 'ThrobberDark', cs.ThrobberDark);
+    SaveColorToRegistry(SCHEMEPATH, 'ThrobberLight', cs.ThrobberLight);
+    SaveColorToRegistry(SCHEMEPATH, 'ThrobberText', cs.ThrobberText);
+    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaBack', cs.WorkareaBack);
+    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaDark', cs.WorkareaDark);
+    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaLight', cs.WorkareaLight);
+    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaText', cs.WorkAreaText);
+    result := true;
+  except
+    result := false;
+  end;
 end;
 
 function LoadColorSchemeEx: TColorSchemeEx;
 begin
   try
-    result.Throbberback  := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberBack', $00C88200);
-    result.Throbberdark  := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberDark', $00996400);
-    result.Throbberlight := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberLight', $00F6A710);
-    result.ThrobberText  := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberText', $00000000);
-    result.WorkAreaback  := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaBack', $00DEDFDE);
-    result.WorkAreadark  := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaDark', $00999999);
-    result.WorkArealight := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaLight', $00FDFDFD);
-    result.WorkAreaText  := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaText', $00000000);
+    result.Throbberback := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberBack',
+      $00C88200);
+    result.Throbberdark := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberDark',
+      $00996400);
+    result.Throbberlight := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberLight',
+      $00F6A710);
+    result.ThrobberText := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberText',
+      $00000000);
+    result.WorkAreaback := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaBack',
+      $00DEDFDE);
+    result.WorkAreadark := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaDark',
+      $00999999);
+    result.WorkArealight := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaLight',
+      $00FDFDFD);
+    result.WorkAreaText := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaText',
+      $00000000);
   except
-    result.Throbberback  := $00C88200;
-    result.Throbberdark  := $00996400;
+    result.Throbberback := $00C88200;
+    result.Throbberdark := $00996400;
     result.Throbberlight := $00F6A710;
-    result.ThrobberText  := $00000000;
-    result.WorkAreaback  := $00DEFDDE;
-    result.WorkAreadark  := $00AAAAAA;
+    result.ThrobberText := $00000000;
+    result.WorkAreaback := $00DEFDDE;
+    result.WorkAreadark := $00AAAAAA;
     result.WorkArealight := $00FDFDFD;
-    result.WorkAreaText  := $00000000;
+    result.WorkAreaText := $00000000;
   end;
 end;
 
-function GetIconSetName : PChar;
+function GetIconSetName: PChar;
 begin
-  stemp := RegLoadStr(THEMEPATH,'IconSet','Cubeix Black');
+  stemp := RegLoadStr(THEMEPATH, 'IconSet', 'Cubeix Black');
   result := PChar(stemp);
 end;
 
-function GetThemeName : PChar;
+function GetThemeName: PChar;
 begin
-  stemp := RegLoadStr(THEMEPATH,'Name','SharpE');
+  stemp := RegLoadStr(THEMEPATH, 'Name', 'SharpE');
   result := PChar(stemp);
 end;
 
-function GetThemeID : Integer;
+function GetThemeID: Integer;
 begin
-  stemp := RegLoadStr(THEMEPATH,'ID','0');
+  stemp := RegLoadStr(THEMEPATH, 'ID', '0');
   try
     result := StrToInt(stemp)
   except
@@ -488,85 +506,86 @@ begin
   end;
 end;
 
-function SetNewIconSet(NewIconSet : String) : hresult;
+function SetNewIconSet(NewIconSet: string): hresult;
 begin
-  result := RegWriteStr(THEMEPATH,'IconSet',NewIconSet);
+  result := RegWriteStr(THEMEPATH, 'IconSet', NewIconSet);
 end;
 
-function GetCurrentIconSetFile : PChar;
+function GetCurrentIconSetFile: PChar;
 var
-  SharpEDir : String;
-  IconSet   : String;
+  SharpEDir: string;
+  IconSet: string;
 begin
   SharpEDir := GetSharpEDirectory;
-  IconSet   := GetIconSetName;
-  stemp     := IncludeTrailingBackslash(SharpEDir) +
-               IncludeTrailingBackslash(ICONSDIR) +
-               IncludeTrailingBackslash(IconSet) +
-               'IconSet.xml';
-  result :=  PChar(stemp);
+  IconSet := GetIconSetName;
+  stemp := IncludeTrailingBackslash(SharpEDir) +
+    IncludeTrailingBackslash(ICONSDIR) +
+    IncludeTrailingBackslash(IconSet) +
+    'IconSet.xml';
+  result := PChar(stemp);
 end;
 
-function SetNewTheme(NewTheme : String; NewThemeID : integer; broadcast : boolean) : hresult;
+function SetNewTheme(NewTheme: string; NewThemeID: integer; broadcast: boolean):
+  hresult;
 begin
-  RegWriteStr(THEMEPATH,'Name',NewTheme);
-  result := RegWriteStr(THEMEPATH,'ID',inttostr(NewThemeID));
+  RegWriteStr(THEMEPATH, 'Name', NewTheme);
+  result := RegWriteStr(THEMEPATH, 'ID', inttostr(NewThemeID));
   if broadcast then
-     SharpEBroadCast(WM_SHARPETHEMEUPDATE,NewThemeID,1);
+    SharpEBroadCast(WM_SHARPETHEMEUPDATE, NewThemeID, 1);
 end;
 
-function GetSkinName : PChar;
+function GetSkinName: PChar;
 begin
-  stemp := RegLoadStr(SKINPATH,'Name','SharpE');
+  stemp := RegLoadStr(SKINPATH, 'Name', 'SharpE');
   result := PChar(stemp);
 end;
 
-function GetCenterDirectory : PChar;
+function GetCenterDirectory: PChar;
 var
-  SharpEDir : String;
-begin
-  SharpEDir := GetSharpEDirectory;
-  stemp := IncludeTrailingBackslash(SharpEDir)+
-           IncludeTrailingBackslash(CenterDir);
-  result := PChar(stemp);
-end;
-
-function GetSkinDirectory : PChar;
-var
-  SharpEDir : String;
+  SharpEDir: string;
 begin
   SharpEDir := GetSharpEDirectory;
-  stemp := IncludeTrailingBackslash(SharpEDir)+
-           IncludeTrailingBackslash(SkinDir);
+  stemp := IncludeTrailingBackslash(SharpEDir) +
+    IncludeTrailingBackslash(CenterDir);
   result := PChar(stemp);
 end;
 
-function GetCurrentSkinFile : PChar;
+function GetSkinDirectory: PChar;
 var
-  SkinDir  : String;
-  SkinName : String;
+  SharpEDir: string;
+begin
+  SharpEDir := GetSharpEDirectory;
+  stemp := IncludeTrailingBackslash(SharpEDir) +
+    IncludeTrailingBackslash(SkinDir);
+  result := PChar(stemp);
+end;
+
+function GetCurrentSkinFile: PChar;
+var
+  SkinDir: string;
+  SkinName: string;
 begin
   SkinDir := GetSkinDirectory;
   SkinName := GetSkinName;
   stemp := SkinDir +
-           IncludeTrailingBackslash(SkinName) +
-           'Skin.xml';
+    IncludeTrailingBackslash(SkinName) +
+    'Skin.xml';
   result := PChar(stemp);
 end;
 
-function SetNewSkin(NewSkin : String; broadcast : boolean) : hresult;
+function SetNewSkin(NewSkin: string; broadcast: boolean): hresult;
 begin
-  result := RegWriteStr(SKINPATH,'Name',NewSkin);
+  result := RegWriteStr(SKINPATH, 'Name', NewSkin);
   if broadcast then
-     SharpEBroadCast(WM_SKINCHANGED,0,0);
+    SharpEBroadCast(WM_SKINCHANGED, 0, 0);
 end;
 
 function GetDelimitedIconSetList: WideString;
 var
   FileName: string;
   SList: tstringlist;
-  XML : TJvSimpleXML;
-  n : integer;
+  XML: TJvSimpleXML;
+  n: integer;
 begin
   try
     XML := TJvSimpleXML.Create(nil);
@@ -577,23 +596,24 @@ begin
     if FileExists(FileName) then
     begin
       XML.LoadFromFile(FileName);
-      for n:=0 to XML.Root.Items.ItemNamed['Icons'].Items.Count-1 do
-          with XML.Root.Items.ItemNamed['Icons'].Items.Item[n].Items do
-               SList.Add(Value('name','error')+'='+Value('file','error'));
+      for n := 0 to XML.Root.Items.ItemNamed['Icons'].Items.Count - 1 do
+        with XML.Root.Items.ItemNamed['Icons'].Items.Item[n].Items do
+          SList.Add(Value('name', 'error') + '=' + Value('file', 'error'));
       Result := SList.CommaText;
       FreeAndNil(SList);
       FreeAndNil(XML);
-    end else result := '';
+    end
+    else
+      result := '';
 
   finally
     if Assigned(SList) then
-       FreeAndNil(SList);
+      FreeAndNil(SList);
     if Assigned(XML) then
-       FreeAndNil(XML);
+      FreeAndNil(XML);
   end;
 
 end;
-
 
 {FUNCTIONS NOT CHANGED SINCE UPDATE 02 Feb 2005}
 
@@ -686,7 +706,7 @@ begin
   end;
 end;
 
-function CenterMsg(Command, Param : PChar; PluginID : integer): hresult;
+function CenterMsg(Command, Param: PChar; PluginID: integer): hresult;
 var
   cds: TCopyDataStruct;
   wnd: hWnd;
@@ -716,7 +736,7 @@ begin
   end;
 end;
 
-function SendPluginMessage(BarID, PluginID : integer; Command : pChar): hresult;
+function SendPluginMessage(BarID, PluginID: integer; Command: pChar): hresult;
 var
   cds: TCopyDataStruct;
   wnd: hWnd;
@@ -733,7 +753,7 @@ begin
       lpData := @msg;
     end;
     //Find the window
-    wnd := FindWindow(nil,PChar('SharpBar_'+inttostr(BarID)));
+    wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(BarID)));
     if wnd <> 0 then
     begin
       result := sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
@@ -1087,7 +1107,7 @@ begin
     Reg.CloseKey;
     Reg.free;
   end;
-end; 
+end;
 
 function LoadSettingD(module: pChar; setting: pChar; default: Tcolor): Tcolor;
 var
@@ -1135,11 +1155,10 @@ begin
   end;
 end;
 
-
 function SharpExecute(data: pChar): hresult;
 var
-  wnd:hWnd;
-  n:hresult;
+  wnd: hWnd;
+  n: hresult;
   bShellExecute: Boolean;
 begin
   Result := HR_OK;
@@ -1153,13 +1172,15 @@ begin
       begin
         result := ServiceMsg('exec', pchar(data));
         bShellExecute := False;
-      end else
+      end
+      else
       begin
-          n := ServiceStart('exec');
-          if (n <> HR_NORECIEVERWINDOW) or (n <> HR_UNKNOWNERROR) then begin
-            result := ServiceMsg('exec', pchar(data));
-            bShellExecute := False;
-          end;
+        n := ServiceStart('exec');
+        if (n <> HR_NORECIEVERWINDOW) or (n <> HR_UNKNOWNERROR) then
+        begin
+          result := ServiceMsg('exec', pchar(data));
+          bShellExecute := False;
+        end;
       end;
     end;
 
@@ -1186,14 +1207,16 @@ begin
     end;
 
     // Send the message to register the Action
-    Result := ServiceMsg('actions', pchar(Format('_registeraction,%s,Undefined,%d,%d',
+    Result := ServiceMsg('actions',
+      pchar(Format('_registeraction,%s,Undefined,%d,%d',
       [ActionName, WindowHandle, LParamID])));
   except
     result := HR_UNKNOWNERROR;
   end;
 end;
 
-function RegisterActionEx(ActionName: Pchar; GroupName: Pchar; WindowHandle: hwnd; LParamID:
+function RegisterActionEx(ActionName: Pchar; GroupName: Pchar; WindowHandle:
+  hwnd; LParamID:
   Cardinal): hresult;
 begin
   try
@@ -1245,14 +1268,16 @@ begin
     end;
 
     // Send the message to update the Action
-    Result := ServiceMsg('actions', pchar(Format('_updateaction,%s,Undefined,%d,%d',
+    Result := ServiceMsg('actions',
+      pchar(Format('_updateaction,%s,Undefined,%d,%d',
       [ActionName, WindowHandle, LParamID])));
   except
     result := HR_UNKNOWNERROR;
   end;
 end;
 
-function UpdateActionEx(ActionName, GroupName: Pchar; WindowHandle: hwnd; LParamID:
+function UpdateActionEx(ActionName, GroupName: Pchar; WindowHandle: hwnd;
+  LParamID:
   Cardinal): hresult;
 begin
   try
@@ -1266,7 +1291,7 @@ begin
 
     // Send the message to update the Action
     Result := ServiceMsg('actions', pchar(Format('_updateaction,%s,%s,%d,%d',
-      [ActionName, GroupName,WindowHandle, LParamID])));
+      [ActionName, GroupName, WindowHandle, LParamID])));
   except
     result := HR_UNKNOWNERROR;
   end;
@@ -1368,8 +1393,8 @@ begin
     begin
       // Start the SharpDocs application
       Path := GetSharpeDirectory;
-//      Path := RegReadString(HKEY_CURRENT_USER, 'Software\ldi\sharpe\SharpCore',
-//        'SharpEPath');
+      //      Path := RegReadString(HKEY_CURRENT_USER, 'Software\ldi\sharpe\SharpCore',
+      //        'SharpEPath');
 
       if fileexists(Path + 'SharpDocs.exe') then
       begin
@@ -1390,7 +1415,8 @@ begin
   end;
 end;
 
-function ConfigMsg(ACommand: Pchar; AParameter: PChar; APluginID:Integer): hresult;
+function ConfigMsg(ACommand: Pchar; AParameter: PChar; APluginID: Integer):
+  hresult;
 var
   cds: TCopyDataStruct;
   wnd: hWnd;
@@ -1404,7 +1430,7 @@ begin
     //Prepare TCopyDataStruct
 
     SendDebugMessageEx('SharpApi', pchar(format('Config Msg Received: %s - %s',
-      [ACommand,AParameter])), 0, DMT_INFO);
+      [ACommand, AParameter])), 0, DMT_INFO);
     msg.Parameter := AParameter;
     msg.Command := ACommand;
     msg.PluginID := APluginID;
@@ -1425,7 +1451,8 @@ begin
       if wnd <> 0 then
       begin
         SendDebugMessageEx('SharpApi',
-          pchar(format('SharpCenter Mutex Exists, Sending Msg: %s - %s', [ACommand,AParameter])),
+          pchar(format('SharpCenter Mutex Exists, Sending Msg: %s - %s',
+            [ACommand, AParameter])),
           0,
           DMT_STATUS);
         result := sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
@@ -1440,9 +1467,11 @@ begin
       if fileexists(Path + 'SharpCenter.exe') then
       begin
         SendDebugMessageEx('SharpApi',
-          pchar(format('SharpCenter Mutex not found, Launching file: %s', [Path +
+          pchar(format('SharpCenter Mutex not found, Launching file: %s', [Path
+            +
           'SharpCenter.exe'])), 0, DMT_STATUS);
-        ShellExecute(wnd, 'open', pchar(Path + 'SharpCenter.exe'), Pchar('-api ' +
+        ShellExecute(wnd, 'open', pchar(Path + 'SharpCenter.exe'), Pchar('-api '
+          +
           ACommand + ' ' + AParameter), pchar(path), WM_SHOWWINDOW);
       end
       else
@@ -1471,40 +1500,41 @@ begin
     result := False;
 end;
 
-function GetSharpeDirectory: PChar;
+function DirCheck(APath: string; var AResult: string): Boolean;
+var
+  DirCheck: array[0..4] of string;
+  i: Integer;
+begin
+  Result := False;
+  DirCheck[0] := 'SharpCore.exe';
+  DirCheck[1] := 'SharpBar.exe';
+  DirCheck[2] := 'SharpDesk.exe';
+  DirCheck[3] := 'SharpApi.dll';
+  DirCheck[4] := 'SharpDeskApi.dll';
 
-  function DirCheck(APath:String; var AResult:String):Boolean;
-  var
-    DirCheck: array[0..4] of String;
-    i: Integer;
-  begin
-    Result := False;
-    DirCheck[0] := 'SharpCore.exe';
-    DirCheck[1] := 'SharpBar.exe';
-    DirCheck[2] := 'SharpDesk.exe';
-    DirCheck[3] := 'SharpApi.dll';
-    DirCheck[4] := 'SharpDeskApi.dll';
-
-    for i := Low(DirCheck) to High(DirCheck) do
-    if FileExists(APath + DirCheck[i]) then begin
+  for i := Low(DirCheck) to High(DirCheck) do
+    if FileExists(APath + DirCheck[i]) then
+    begin
       AResult := APath + DirCheck[i];
       Result := True;
       Break;
     end;
 
-  end;
+end;
+
+function GetSharpeDirectory: PChar;
 
 var
   Path: string;
   tmp: string;
-  Reg:TRegistry;
-  sCheckResult: String;
+  Reg: TRegistry;
+  sCheckResult: string;
 begin
   Result := '';
 
   // Check current dir
   Path := ExtractFilePath(Application.ExeName);
-  if DirCheck(Path,sCheckResult) then
+  if DirCheck(Path, sCheckResult) then
   begin
     tmp := ExtractFilePath(sCheckResult);
     stemp := tmp;
@@ -1514,65 +1544,76 @@ begin
 
   // check Registry Key
   Reg := TRegistry.Create;
-  Try
+  try
     Reg.RootKey := HKCU;
-    Reg.OpenKey('Software\SharpE',True);
+    Reg.OpenKey('Software\SharpE', True);
 
-    If Reg.ValueExists('InstallPath') Then Begin
+    if Reg.ValueExists('InstallPath') then
+    begin
 
       Path := Reg.ReadString('InstallPath');
-      if DirCheck(Path,sCheckResult) then
+      if DirCheck(Path, sCheckResult) then
       begin
         tmp := ExtractFilePath(sCheckResult);
         stemp := tmp;
         Result := pchar(stemp);
         exit;
       end;
-    End;
-  Finally
+    end;
+  finally
     Reg.CloseKey;
     Reg.Free;
-  End;
+  end;
 end;
 
 function GetSharpeUserSettingsPath: PChar;
 var
   Path: string;
   Fn: pchar;
-  user:String;
+  user: string;
+  sRes: String;
 begin
 
   // Check current directory
   User := GetLocalUserName;
   Fn := GetSharpeDirectory;
-  Path := IncludeTrailingBackslash(Fn+'Settings\User') + User;
+  Path := IncludeTrailingBackslash(Fn + 'Settings\User') + User;
 
-  if Not(DirectoryExists(Path)) then
-    Sysutils.ForceDirectories(Path);
+  if not (DirectoryExists(Path)) then begin
+    DirCheck(Path,sRes);
+
+    if sRes <> '' then
+      Sysutils.ForceDirectories(Path);
+  end;
 
   stemp := IncludeTrailingBackslash(Path);
   Result := pchar(stemp);
-  SendDebugMessage('SharpApi',Result,clblack);
+  //SendDebugMessage('SharpApi', Result, clblack);
 end;
 
 function GetSharpeGlobalSettingsPath: PChar;
 var
   Path: string;
   Fn: pchar;
+  sRes: String;
 begin
   // Check current directory
   Fn := GetSharpeDirectory;
   //SendDebugMessage('SharpApi Fn',Fn,clblack);
 
-  Path := IncludeTrailingBackslash(Fn+'Settings\Global');
+  Path := IncludeTrailingBackslash(Fn + 'Settings\Global');
   //SendDebugMessage('SharpApi Path',pchar(Path),clblack);
 
-  if Not(DirectoryExists(Path)) then
-    Sysutils.ForceDirectories(Path);
+  if not (DirectoryExists(Path)) then begin
+    DirCheck(Path,sRes);
+
+    if sRes <> '' then
+      Sysutils.ForceDirectories(Path);
+  end;
 
   stemp := IncludeTrailingBackslash(Path);
   //SendDebugMessage('SharpApi stemp',pchar(stemp),clblack);
-  
+
   Result := pchar(stemp);
   //SendDebugMessage('SharpApi Result',Result,clblack);
 end;
@@ -1641,21 +1682,21 @@ begin
 
 end;
 
-
 // function based on http://www.delphipraxis.net/post452421.html
-function FindAllWindows(const WindowClass: String): THandleArray;
+
+function FindAllWindows(const WindowClass: string): THandleArray;
 type
   PParam = ^TParam;
   TParam = record
-             ClassName: String;
-             Res: THandleArray;
-           end;
-var 
+    ClassName: string;
+    Res: THandleArray;
+  end;
+var
   Rec: TParam;
 
-  function GetWndClass(pHandle : hwnd) : String;
+  function GetWndClass(pHandle: hwnd): string;
   var
-    buf: array [0..254] of Char;
+    buf: array[0..254] of Char;
   begin
     GetClassName(pHandle, buf, SizeOf(buf));
     result := buf;
@@ -1667,8 +1708,8 @@ var
     begin
       if (CompareText(GetWndClass(_hWnd), ClassName) = 0) then
       begin
-        SetLength(Res, Length(Res)+1);
-        Res[Length(Res)-1] := _hWnd;
+        SetLength(Res, Length(Res) + 1);
+        Res[Length(Res) - 1] := _hWnd;
       end;
       Result := True;
     end;
@@ -1680,74 +1721,91 @@ begin
     SetLength(Rec.Res, 0);
     EnumWindows(@_EnumProc, Integer(@Rec));
   except
-    SetLength(Rec.Res,0);
+    SetLength(Rec.Res, 0);
   end;
   Result := Rec.Res;
 end;
 
-
-function FindAllComponents(Component : PChar) : THandleArray;
+function FindAllComponents(Component: PChar): THandleArray;
 var
-  sname : string;
+  sname: string;
 begin
   sname := Component;
-  if      CompareText(sname,'sharpdesk') = 0 then result := FindAllWindows('TSharpDeskMainForm')
-  else if CompareText(sname,'sharpcore') = 0 then result := FindAllWindows('TSharpCoreMainWnd')
-  else if CompareText(sname,'sharpbar') = 0  then result := FindAllWindows('TSharpBarMainForm')
-  else result := FindAllWindows(PChar(sname));
+  if CompareText(sname, 'sharpdesk') = 0 then
+    result := FindAllWindows('TSharpDeskMainForm')
+  else if CompareText(sname, 'sharpcore') = 0 then
+    result := FindAllWindows('TSharpCoreMainWnd')
+  else if CompareText(sname, 'sharpbar') = 0 then
+    result := FindAllWindows('TSharpBarMainForm')
+  else if CompareText(sname, 'sharpconsole') = 0 then
+    result := FindAllWindows('TSharpConsoleWnd')
+  else if CompareText(sname, 'sharpmenu') = 0 then
+    result := FindAllWindows('TSharpBarMainForm')
+  else
+    result := FindAllWindows(PChar(sname));
 end;
 
-function FindComponent(Component : PChar) : hwnd;
+function FindComponent(Component: PChar): hwnd;
 var
-  sname : string;
+  sname: string;
 begin
   sname := Component;
-  if      CompareText(sname,'sharpdesk') = 0 then result := FindWindow('TSharpDeskMainForm',nil)
-  else if CompareText(sname,'sharpcore') = 0 then result := FindWindow('TSharpCoreMainWnd',nil)
-  else if CompareText(sname,'sharpbar') = 0  then result := FindWindow('TSharpBarMainForm',nil)
-  else result := FindWindow(PChar(sname),nil);
+  if CompareText(sname, 'sharpdesk') = 0 then
+    result := FindWindow('TSharpDeskMainForm', nil)
+  else if CompareText(sname, 'sharpcore') = 0 then
+    result := FindWindow('TSharpCoreMainWnd', nil)
+  else if CompareText(sname, 'sharpbar') = 0 then
+    result := FindWindow('TSharpBarMainForm', nil)
+  else if CompareText(sname, 'sharpconsole') = 0 then
+    result := FindWindow('TSharpConsoleWnd', nil)
+  else if CompareText(sname, 'sharpmenu') = 0 then
+    result := FindWindow('TSharpMenuWMForm', nil)
+  else
+    result := FindWindow(PChar(sname), nil);
 end;
 
-function IsComponentRunning(Component : PChar) : boolean;
+function IsComponentRunning(Component: PChar): boolean;
 begin
-  if FindComponent(Component) <> 0 then result := true
-     else result := false;
+  if FindComponent(Component) <> 0 then
+    result := true
+  else
+    result := false;
 end;
 
-function CloseComponent(Component : PChar) : boolean;
+function CloseComponent(Component: PChar): boolean;
 var
-  wndlist : THandleArray;
-  n : integer;
+  wndlist: THandleArray;
+  n: integer;
 begin
   wndlist := FindAllComponents(Component);
 
   for n := 0 to High(wndlist) do
   begin
-    SendMessage(wndlist[n],WM_SHARPTERMINATE,0,0);
-    PostMessage(wndlist[n],WM_CLOSE,0,0);
+    SendMessage(wndlist[n], WM_SHARPTERMINATE, 0, 0);
+    PostMessage(wndlist[n], WM_CLOSE, 0, 0);
     PostThreadMessage(GetWindowThreadProcessID(wndlist[n], nil), WM_QUIT, 0, 0);
   end;
 
-  setlength(wndlist,0);
+  setlength(wndlist, 0);
 
   result := not IsComponentRunning(Component);
 end;
 
-procedure TerminateComponent(Component : PChar);
+procedure TerminateComponent(Component: PChar);
 var
-  PID : DWord;
+  PID: DWord;
 begin
   PID := GetPidFromProcessName(Component + '.exe');
-  TerminateApp(PID,250);
+  TerminateApp(PID, 250);
 end;
 
-procedure StartComponent(Component : PChar);
+procedure StartComponent(Component: PChar);
 begin
-  if ExtractFileExt(Component) = '.exe' then SharpExecute(Component)
-     else SharpExecute(PChar(Component + '.exe'));
+  if ExtractFileExt(Component) = '.exe' then
+    SharpExecute(Component)
+  else
+    SharpExecute(PChar(Component + '.exe'));
 end;
-
-
 
 exports
   SharpEBroadCast,
@@ -1824,7 +1882,6 @@ exports
   TerminateComponent,
   StartComponent;
 begin
-
 
 end.
 
