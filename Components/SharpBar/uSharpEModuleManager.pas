@@ -1002,6 +1002,7 @@ begin
   FControl := GetControlByHandle(FHandle);
   FPosition := pPosition;
   FThrobber := TSharpEMiniThrobber.Create(FOwnerForm);
+  FThrobber.AutoPosition := True;
   FThrobber.Parent := FOwnerForm;
   FThrobber.BringToFront;
   FThrobber.SkinManager := pModuleFile.FSkinManager;
