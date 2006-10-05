@@ -53,11 +53,12 @@ type
   TSharpEMiniThrobber = class(TCustomSharpEGraphicControl)
   private
     FCancel: Boolean;
+    FAutoPosition: Boolean;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
-
+    procedure SetAutoPosition(const Value: boolean);
   protected
     procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -84,7 +85,7 @@ type
     property OnMouseUp;
     property OnMouseEnter;
     property OnMouseLeave;
-   { Published declarations }
+    property AutoPosition: Boolean read FAutoPosition write SetAutoPosition;
   end;
 
 implementation
@@ -94,6 +95,7 @@ begin
   inherited Create(AOwner);
   Width := 7;
   Height := 9;
+  FAutoPosition := True;
   FAutoSize := True;
 end;
 
@@ -145,6 +147,15 @@ begin
   UpdateSkin;
 end;
 
+procedure TSharpEMiniThrobber.SetAutoPosition(const Value: boolean);
+begin
+  if FAutoPosition <> Value then
+  begin
+    FAutoPosition := Value;
+    UpdateSkin;
+  end;
+end;
+
 procedure TSharpEMiniThrobber.DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
 var
   r: TRect;
@@ -158,6 +169,8 @@ begin
       exit;
     end;
   end;
+  if FAutoPosition then
+     Top := 0;
   with bmp do
   begin
     Clear(color32(0, 0, 0, 0));
@@ -192,6 +205,12 @@ procedure TSharpEMiniThrobber.DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpESch
 var
   r, CompRect: TRect;
 begin
+  if not assigned(FManager) then
+  begin
+    DrawDefaultSkin(bmp,Scheme);
+    exit;
+  end;
+
   CompRect := Rect(0, 0, width, height);
   if FAutoSize then
   begin
@@ -203,6 +222,10 @@ begin
       Exit;
     end;
   end;
+
+  if FAutoPosition then
+     top := FManager.Skin.MiniThrobberSkin.SkinDim.YAsInt;
+
   if FManager.Skin.MiniThrobberSkin.Valid then
   begin
     FSkin.Clear(Color32(0, 0, 0, 0));

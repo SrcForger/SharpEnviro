@@ -1420,6 +1420,7 @@ constructor TSharpEMiniThrobberSkin.Create(BmpList : TSkinBitmapList);
 begin
   FSkinDim := TSkinDim.Create;
   FSkinDim.SetDimension('w', 'h');
+  FSkinDim.SetLocation('0','0');
   FNormal := TSkinPart.Create(BmpList);
   FDown := TSkinPart.Create(BmpList);
   FHover := TSkinPart.Create(BmpList);
@@ -1454,6 +1455,7 @@ begin
   FNormal.Clear;
   FDown.Clear;
   FHover.Clear;
+  FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w', 'h');
 end;
 
@@ -1475,6 +1477,8 @@ begin
         FHover.LoadFromXML(ItemNamed['hover'], path, SkinText);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
+      if ItemNamed['location'] <> nil then
+        FSkinDim.SetLocation(Value('location', '0,0')); 
     end;
   finally
     SkinText.free;
