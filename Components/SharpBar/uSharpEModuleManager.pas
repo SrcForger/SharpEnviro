@@ -145,11 +145,13 @@ type
                      procedure UnloadModules;
                      procedure Unload(ID : integer);
                      procedure Delete(ID : integer);
+                     procedure Clone(ID : integer);
                      procedure CreateModule(MFID : integer; Position : integer);
-                     procedure LoadModule(ID : integer; Module : String; Position : integer);
+                     procedure LoadModule(ID : integer; Module : String; Position,Index : integer);
                      procedure LoadFromDirectory(pDirectory : String);
                      procedure FixModulePositions;
                      function GetModule(ID : integer) : TModule;
+                     function GetModuleIndex(ID : integer) : integer;
                      procedure UpdateModuleSkins;
                      procedure SortModulesByPosition;
                      procedure RefreshMiniThrobbers;
@@ -242,6 +244,39 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TModuleManager.Clone(ID : integer);
+var
+  tempModule : TModule;
+  newID : integer;
+  tempsettings : string;
+  n : integer;
+begin
+  tempModule := TModule(GetModule(ID));
+  if tempModule = nil then exit;
+
+  newID := GenerateModuleID;
+
+  // Search the module we settings which we want to clone
+  for n := 0 to FModuleSettings.Root.Items.Count - 1 do
+      if FModuleSettings.Root.Items.Item[n].Items.IntValue('ID',-1) = ID then
+      begin
+        // Found the module -> Clone the settings
+        if FModuleSettings.Root.Items.Item[n].Items.ItemNamed['Settings'] <> nil then
+        begin
+          tempsettings := FModuleSettings.Root.Items.Item[n].Items.ItemNamed['Settings'].SaveToString;
+          with FModuleSettings.Root.Items.Add('Item').Items do
+          begin
+            Add('ID',newID);
+            Add('Settings').LoadFromString(tempsettings);
+          end;
+          FModuleSettings.SaveToFile(FModuleSettings.FileName);
+          break;
+        end;
+      end;
+
+  LoadModule(newID,ExtractFileName(tempModule.ModuleFile.FileName),TempModule.Position,GetModuleIndex(ID)+1);
 end;
 
 procedure TModuleManager.Delete(ID : integer);
@@ -407,11 +442,11 @@ var
 begin
   if MFID > FModuleFiles.Count -1 then exit;
   tempModuleFile := TModuleFile(FModuleFiles.Items[MFID]);
-  LoadModule(GenerateModuleID,ExtractFileName(tempModuleFile.FFileName),Position);
+  LoadModule(GenerateModuleID,ExtractFileName(tempModuleFile.FFileName),Position,-1);
   ReCalculateModuleSize;
 end;
 
-procedure TModuleManager.LoadModule(ID : integer; Module : String; Position : integer);
+procedure TModuleManager.LoadModule(ID : integer; Module : String; Position, Index : integer);
 var
  n,i : integer;
  pFile : TModuleFile;
@@ -455,7 +490,8 @@ begin
         end;
       end;
 
-      FModules.Add(TModule.Create(FBar.aform,pFile,ID,FParent,Position));
+      if Index <> -1 then FModules.Insert(Index,TModule.Create(FBar.aform,pFile,ID,FParent,Position))
+         else FModules.Add(TModule.Create(FBar.aform,pFile,ID,FParent,Position));
     end;
   end;
   SortModulesByPosition;
@@ -523,6 +559,19 @@ begin
   end;
 
   result := maxsize - ro - lo;
+end;
+
+function TModuleManager.GetModuleIndex(ID : integer) : integer;
+var
+  n : integer;
+begin
+  for n := 0 to FModules.Count - 1 do
+      if TModule(FModules.Items[n]).ID = ID then
+      begin
+        result := n;
+        exit;
+      end;
+  result := -1;
 end;
 
 function TModuleManager.GetModule(ID : integer) : TModule;

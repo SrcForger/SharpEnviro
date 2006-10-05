@@ -82,6 +82,8 @@ type
     DelayTimer1: TTimer;
     DelayTimer2: TTimer;
     DelayTimer3: TTimer;
+    Clone1: TMenuItem;
+    procedure Clone1Click(Sender: TObject);
     procedure DelayTimer3Timer(Sender: TObject);
     procedure DelayTimer2Timer(Sender: TObject);
     procedure DelayTimer1Timer(Sender: TObject);
@@ -580,7 +582,8 @@ begin
                      +' Position:' +Items.Item[n].Items.Value('Position','-1'),2,1);
          ModuleManager.LoadModule(Items.Item[n].Items.IntValue('ID',-1),
                                   Items.Item[n].Items.Value('Module',''),
-                                  Items.Item[n].Items.IntValue('Position',-1));
+                                  Items.Item[n].Items.IntValue('Position',-1),
+                                  -1);
        end;
      end;
   ModuleManager.ReCalculateModuleSize;
@@ -1501,6 +1504,17 @@ begin
   SharpEBar1.UpdatePosition;
   ModuleManager.BroadCastModuleRefresh;
   ModuleManager.FixModulePositions;
+end;
+
+procedure TSharpBarMainForm.Clone1Click(Sender: TObject);
+var
+  mThrobber : TSharpEMiniThrobber;
+begin
+  mThrobber := TSharpEMiniThrobber(ThrobberPopUp.popupcomponent);
+  if mThrobber = nil then exit;
+  ModuleManager.Clone(mThrobber.Tag);
+  SaveBarSettings;
+  ModuleManager.ReCalculateModuleSize;
 end;
 
 end.
