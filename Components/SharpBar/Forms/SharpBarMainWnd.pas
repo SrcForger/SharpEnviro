@@ -483,18 +483,18 @@ begin
 
   BGBmp := TBitmap32.Create;
   BGBmp.SetSize(Screen.Width,Screen.Height);
-  BGBmp.Clear(color32(4,3,2,255));
+  BGBmp.Clear(color32(0,0,0,255));
   try
     wnd := FindWindow('TSharpDeskMainForm',nil);
     if wnd <> 0 then
     begin
-      PrintWindow(wnd,BGBmp.Handle,0);
-      if (BGBmp.Pixel[0,0] = color32(4,3,2,255))
-         and (BGBmp.Pixel[BGBmp.Width - 1,BGBmp.Height - 1] = color32(4,3,2,255))
-         and (BGBmp.Pixel[0,BGBmp.Height - 1] = color32(4,3,2,255))
-         and (BGBmp.Pixel[BGBmp.Width - 1,0] = color32(4,3,2,255)) then
-         if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg') then
-            BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg');
+      // try two times... :)
+      if not PrintWindow(wnd,BGBmp.Handle,0) then
+         if not PrintWindow(wnd,BGBmp.Handle,0) then
+         begin
+           if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg') then
+              BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg');
+         end;
     end else PaintDesktop(BGBmp.Handle);
     FTopZone.SetSize(Monitor.Width,Height);
     FBottomZone.SetSize(Monitor.Width,Height);
