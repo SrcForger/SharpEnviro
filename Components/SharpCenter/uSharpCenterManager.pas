@@ -530,7 +530,8 @@ var
   n,pluginid:Integer;
   cmd, param:String;
 begin
-  Result := FStack.Pop;
+  if FStack.Count > 0 then Result := FStack.Pop
+     else result := nil;
 end;
 
 end.

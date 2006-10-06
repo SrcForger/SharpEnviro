@@ -289,7 +289,11 @@ var
   tmpItem: TSharpCenterHistoryItem;
 begin
   tmpItem := SharpCenterManager.History.GetLastEntry;
-  ExecuteCommand(tmpItem.Command, tmpItem.Parameter, tmpItem.PluginID);
+  if tmpItem <> nil then
+  begin
+    ExecuteCommand(tmpItem.Command, tmpItem.Parameter, tmpItem.PluginID);
+    tmpItem.Free;
+  end;
 end;
 
 procedure TSharpCenterWnd.UnloadDllWithTimer(ACommand, AParameter: string; APluginID: Integer);
