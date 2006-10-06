@@ -57,14 +57,14 @@ object SettingsForm: TSettingsForm
   end
   object Label4: TLabel
     Left = 160
-    Top = 88
+    Top = 104
     Width = 42
     Height = 13
     Caption = 'Bar Size:'
   end
   object lb_barsize: TLabel
     Left = 208
-    Top = 88
+    Top = 104
     Width = 18
     Height = 14
     AutoSize = False
@@ -165,7 +165,7 @@ object SettingsForm: TSettingsForm
   end
   object rb_valign: TRadioButton
     Left = 176
-    Top = 48
+    Top = 70
     Width = 105
     Height = 17
     Caption = 'Vertical (2 rows)'
@@ -173,7 +173,7 @@ object SettingsForm: TSettingsForm
   end
   object tb_size: TGaugeBar
     Left = 160
-    Top = 104
+    Top = 120
     Width = 145
     Height = 13
     Color = clWindow
@@ -212,5 +212,13 @@ object SettingsForm: TSettingsForm
       Caption = 'Free MB (210 MB free)'
       TabOrder = 1
     end
+  end
+  object rb_halign2: TRadioButton
+    Left = 176
+    Top = 48
+    Width = 129
+    Height = 17
+    Caption = 'Horizontal (compact)'
+    TabOrder = 12
   end
 end

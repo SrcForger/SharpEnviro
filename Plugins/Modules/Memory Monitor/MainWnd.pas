@@ -114,7 +114,7 @@ begin
     ShowSWPInfo := BoolValue('ShowSWPInfo',False);
     ItemAlign   := IntValue('ItemAlign',2);
     sITC        := IntValue('ITC',0);
-    if ItemAlign >2 then ItemAlign := 2;
+    if ItemAlign >3 then ItemAlign := 3;
     if ItemAlign <1 then ItemAlign := 1;
   end;
 end;
@@ -145,18 +145,84 @@ begin
 
   UpdateTimerTimer(UpdateTimer);
   case ItemAlign of
-   1: begin
-{        lb_ram.Width := lb_ram.Canvas.TextWidth(lb_ram.caption);
-        lb_ram.Height := lb_ram.Canvas.TextHeight(lb_ram.Caption);
-        lb_swp.Width := lb_swp.Canvas.TextWidth(lb_swp.caption);
-        lb_swp.Height := lb_swp.Canvas.TextHeight(lb_swp.Caption);
-        lb_rambar.Width := lb_rambar.Canvas.TextWidth('100%');
-        lb_rambar.Height := lb_rambar.Canvas.TextHeight('100%');
-        lb_swpbar.Width := lb_swpbar.Canvas.TextWidth('100%');
-        lb_swpbar.Height := lb_swpbar.Canvas.TextHeight('100%');}
+   3: begin
+        o2 := (Height - 2 - 4) div 2;
+        o3 := 2;
 
         if ShowRamInfo then
         begin
+          lb_ram.Caption := 'RAM:';
+          lb_ram.Visible := True;
+          lb_ram.LabelStyle := lsSmall;
+          lb_ram.Left := o1 -5;
+          lb_ram.Top := 1 + (o2 div 2) - (lb_ram.Height div 2);
+          o3 := lb_ram.Left + lb_ram.Width + 2;
+          o4 := o3;
+        end else lb_ram.visible := False;
+
+        if ShowRamBar then
+        begin
+          rambar.AutoSize := False;
+          rambar.visible := True;
+          rambar.Height := o2;
+          rambar.left := o1;
+          rambar.Top := Height - 2 - rambar.Height;
+          rambar.Width := BarWidth;
+          o4 := max(o4,rambar.Left + rambar.Width + 2);
+        end else rambar.visible := False;
+
+        if ShowRamPC then
+        begin
+          lb_rambar.Visible := True;
+          lb_rambar.LabelStyle := lsSmall;
+          if ShowRamInfo then lb_rambar.Left := o3 - 8
+             else lb_rambar.Left := o3 - 5;
+          lb_rambar.Top := 1 + (o2 div 2) - (lb_ram.Height div 2);
+          o4 := max(o4,lb_rambar.Left + lb_rambar.Width + 2);
+        end else lb_rambar.Visible := False;
+
+        if (ShowRamPC) or (ShowRamBar) or (ShowRamInfo) then
+        begin
+          o3 := o4 + 7;
+          o4 := o4 + 5;
+        end else o3 := o4 + 5;
+
+        if ShowSwpInfo then
+        begin
+          lb_swp.Caption := 'SWAP:';
+          lb_swp.Visible := True;
+          lb_swp.LabelStyle := lsSmall;
+          lb_swp.Left := o4 - 5;
+          lb_swp.Top := 1 + (o2 div 2) - (lb_swp.Height div 2);
+          o3 := lb_swp.Left + lb_swp.Width + 2;
+          o5 := o3;
+        end else lb_swp.visible := False;
+
+        if ShowSwpBar then
+        begin
+          swpbar.AutoSize := False;
+          swpbar.visible := True;
+          swpbar.Height := o2;
+          swpbar.left := o4;
+          swpbar.Top := Height - 2 - swpbar.Height;
+          swpbar.Width := BarWidth;
+          o5 := max(o5,swpbar.Left + swpbar.Width + 2);
+        end else swpbar.visible := False;
+
+        if ShowSwpPC then
+        begin
+          lb_swpbar.Visible := True;
+          lb_swpbar.LabelStyle := lsSmall;
+          if ShowRamInfo then lb_swpbar.Left := o3 - 8
+             else lb_swpbar.Left := o3 - 5;
+          lb_swpbar.Top := 1 + (o2 div 2) - (lb_swp.Height div 2);
+          o5 := max(o5,lb_swpbar.Left + lb_swpbar.Width + 2);
+        end else lb_swpbar.Visible := False;
+      end;
+   1: begin
+        if ShowRamInfo then
+        begin
+          lb_ram.Caption := 'ram';
           lb_ram.Visible := True;
           lb_ram.Left := o1;
           lb_ram.LabelStyle := lsMedium;
@@ -189,6 +255,7 @@ begin
         if ShowSWPInfo then
         begin
           spacing := 0;
+          lb_swp.Caption := 'swp';
           lb_swp.Visible := True;
           lb_swp.LabelStyle := lsMedium;
           lb_swp.Left := o1;
@@ -222,17 +289,10 @@ begin
       end
    else begin
           o2 := (Height - 2 - 4) div 2;
-       {   lb_ram.Width := lb_ram.Canvas.TextWidth(lb_ram.caption);
-          lb_ram.Height := lb_ram.Canvas.TextHeight(lb_ram.Caption);
-          lb_swp.Width := lb_swp.Canvas.TextWidth(lb_swp.caption);
-          lb_swp.Height := lb_swp.Canvas.TextHeight(lb_swp.Caption);
-          lb_swpbar.Width := lb_swpbar.Canvas.TextWidth('100%');
-          lb_swpbar.Height := lb_swpbar.Canvas.TextHeight('100%');
-          lb_rambar.Width := lb_rambar.Canvas.TextWidth('100%');
-          lb_rambar.Height := lb_rambar.Canvas.TextHeight('100%');   }
 
           if ShowRamInfo then
           begin
+            lb_ram.Caption := 'ram';
             lb_ram.Visible := True;
             lb_ram.LabelStyle := lsSmall;
             lb_ram.Left := o1;
@@ -242,6 +302,7 @@ begin
 
           if ShowSWPInfo then
           begin
+            lb_swp.Caption := 'swp';
             lb_swp.Visible := True;
             lb_swp.LabelStyle := lsSmall;
             lb_swp.Left := o1;
@@ -377,7 +438,8 @@ begin
   end;
 
   case ItemAlign of
-    1: SettingsForm.rb_halign.Checked := True
+    1: SettingsForm.rb_halign.Checked := True;
+    3: SettingsForm.rb_halign2.Checked := True;
     else SettingsForm.rb_valign.Checked := True;
   end;
 
@@ -394,6 +456,7 @@ begin
     ShowSWPPC   := SettingsForm.cb_swppc.Checked;
     Barwidth    := SettingsForm.tb_size.Position;
     if SettingsForm.rb_halign.Checked then ItemAlign := 1
+       else if SettingsForm.rb_halign2.Checked then ItemAlign := 3
        else ItemAlign := 2;
 
     item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);

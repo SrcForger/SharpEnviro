@@ -58,6 +58,7 @@ type
     Panel1: TPanel;
     cb_itc_pt: TRadioButton;
     cb_itc_fmb: TRadioButton;
+    rb_halign2: TRadioButton;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tb_sizeChange(Sender: TObject);
     procedure Button2Click(Sender: TObject);
