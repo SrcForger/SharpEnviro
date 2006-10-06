@@ -162,7 +162,7 @@ begin
       if TModule(ModuleList.Items[n]).ID = ID then
       begin
         temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.Form).ReAlignComponents(False);
+        TMainForm(temp.Form).ReAlignComponents(True);
       end;
 end;
 
@@ -177,6 +177,7 @@ begin
         temp := TModule(ModuleList.Items[n]);
         TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,temp.Form.Height);
         uSharpBarAPI.PaintBarBackGround(temp.BarWnd,TMainForm(temp.Form).Background.Bitmap,Temp.Form);
+        TMainForm(temp.Form).ReAlignComponents(True);
       end;
 end;
 
@@ -190,7 +191,7 @@ begin
       begin
         temp := TModule(ModuleList.Items[n]);
         temp.Form.Height := GetBarPluginHeight(temp.BarWnd);
-        TMainForm(temp.Form).ReAlignComponents(False);
+        TMainForm(temp.Form).ReAlignComponents(True);
       end;
 end;
 

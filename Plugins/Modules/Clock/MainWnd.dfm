@@ -26,11 +26,12 @@ object MainForm: TMainForm
     TabOrder = 0
     object lb_clock: TSharpESkinLabel
       Left = 2
-      Top = 0
+      Top = -1
       Width = 14
-      Height = 25
+      Height = 23
       SkinManager = SharpESkinManager1
       AutoSize = True
+      OnDblClick = lb_clockDblClick
       Caption = '.'
       AutoPosition = True
       LabelStyle = lsMedium
