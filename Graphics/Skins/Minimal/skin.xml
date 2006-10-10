@@ -1441,6 +1441,9 @@
     <location>0,1</location>
     <editxoffsets>3,3</editxoffsets>
     <edityoffsets>3,3</edityoffsets>
+    <text>
+      <color>$Text</color>
+    </text>
     <normal>
       <skinpart>
         <ID>0</ID>
@@ -1532,7 +1535,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -1540,7 +1543,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -1548,7 +1551,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -1556,7 +1559,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>196</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -1564,7 +1567,7 @@
         <dimension>w-2,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>96</alpha>
+        <alpha>128</alpha>
       </skinpart>
     </hover>
     <disabled>
