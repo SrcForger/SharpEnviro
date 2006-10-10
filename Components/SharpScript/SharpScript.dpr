@@ -14,7 +14,8 @@ uses
   SharpBase_Adapter in '..\..\Common\Units\SharpScript\SharpBase_Adapter.pas',
   CreateGenericScriptWnd in 'Forms\CreateGenericScriptWnd.pas' {CreateGenericScriptForm},
   ScriptControls in 'ScriptControls.pas',
-  LogWnd in 'Forms\LogWnd.pas' {LogForm};
+  LogWnd in 'Forms\LogWnd.pas' {LogForm},
+  Windows_Adapter in '..\..\Common\Units\SharpScript\Windows_Adapter.pas';
 
 {$R *.res}
 
@@ -30,6 +31,7 @@ begin
   SharpApi_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   SharpFileUtils_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   SharpArchiveUtils_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
+  Windows_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
 
   newgeneric := False;

@@ -2,7 +2,7 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Width = 434
-  Height = 171
+  Height = 191
   Caption = 'SharpScript'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -58,6 +58,7 @@ object MainForm: TMainForm
         end
         object Skin1: TMenuItem
           Caption = 'Skin'
+          Enabled = False
         end
       end
       object Edit1: TMenuItem

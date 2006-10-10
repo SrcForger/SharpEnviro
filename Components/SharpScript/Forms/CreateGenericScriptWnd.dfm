@@ -2,7 +2,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
   Left = 0
   Top = 0
   Width = 870
-  Height = 608
+  Height = 588
   Caption = 'Create Generic SharpE Script'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,7 +19,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
     Left = 0
     Top = 38
     Width = 862
-    Height = 442
+    Height = 422
     Cursor = crIBeam
     Lines.Strings = (
       'begin'
@@ -137,7 +137,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
   end
   object lb_errors: TListBox
     Left = 0
-    Top = 480
+    Top = 460
     Width = 862
     Height = 97
     Align = alBottom
@@ -523,6 +523,65 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
           object MRFORCECONFIGDISABLE1: TMenuItem
             Caption = 'MR_FORCECONFIGDISABLE'
             Hint = 'MR_FORCECONFIGDISABLE'
+            OnClick = GenericPopupClick
+          end
+        end
+      end
+      object Windows1: TMenuItem
+        Caption = 'Windows'
+        object Directrories1: TMenuItem
+          Caption = 'Directrories'
+          object WINDOWSDIR1: TMenuItem
+            Caption = 'WINDOWS_DIR'
+            Hint = 'WINDOWS_DIR'
+            OnClick = GenericPopupClick
+          end
+          object WINDOWSSYSTEMDIR1: TMenuItem
+            Caption = 'WINDOWS_SYSTEM_DIR'
+            Hint = 'WINDOWS_SYSTEM_DIr'
+            OnClick = GenericPopupClick
+          end
+          object WINDOWSTEMPDIR1: TMenuItem
+            Caption = 'WINDOWS_TEMP_DIR'
+            Hint = 'WINDOWS_TEMP_DIR'
+            OnClick = GenericPopupClick
+          end
+          object DESKTOPDIR1: TMenuItem
+            Caption = 'DESKTOP_DIR'
+            Hint = 'DESKTOP_DIR'
+            OnClick = GenericPopupClick
+          end
+          object STARTUPDIR1: TMenuItem
+            Caption = 'STARTUP_DIR'
+            Hint = 'STARTUP_DIR'
+            OnClick = GenericPopupClick
+          end
+          object SHARPEDIR1: TMenuItem
+            Caption = 'SHARPE_DIR'
+            Hint = 'SHARPE_DIR'
+            OnClick = GenericPopupClick
+          end
+          object COMMONSTARTUPDIR1: TMenuItem
+            Caption = 'COMMON_STARTUP_DIR'
+            Hint = 'COMMON_STARTUP_DIR'
+            OnClick = GenericPopupClick
+          end
+        end
+        object SystemInformations1: TMenuItem
+          Caption = 'System Informations'
+          object USERNAME1: TMenuItem
+            Caption = 'USER_NAME'
+            Hint = 'USER_NAME'
+            OnClick = GenericPopupClick
+          end
+          object COMPUTERNAME1: TMenuItem
+            Caption = 'COMPUTER_NAME'
+            Hint = 'COMPUTER_NAME'
+            OnClick = GenericPopupClick
+          end
+          object DOMAINNAME1: TMenuItem
+            Caption = 'DOMAIN_NAME'
+            Hint = 'DOMAIN_NAME'
             OnClick = GenericPopupClick
           end
         end

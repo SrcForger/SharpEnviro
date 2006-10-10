@@ -36,13 +36,7 @@ interface
 uses Windows,
      SysUtils,
      Classes,
-     JvInterpreter,
-     AbUtils,
-     AbArcTyp,
-     AbBase,
-     AbBrowse,
-     AbZBrows,
-     AbUnzper;
+     JvInterpreter;
 
 
 procedure RegisterBaseLog(pLog : TStrings);
