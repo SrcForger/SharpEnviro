@@ -1662,14 +1662,7 @@ begin
   result := 0;
   n := cs.GetColorIndexByTag(str);
   if n <> -1 then result := cs.GetColorByTag(str)
-  else SharpThemeApi.ParseColor(PChar(str));
-{  begin
-    try
-      result := StringToColor(str);
-    except
-      result := clblack;
-    end;
-  end;}
+  else result := SharpThemeApi.ParseColor(PChar(str));
 end;
 
 function get_location(str: string): TRect;
