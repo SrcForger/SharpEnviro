@@ -131,6 +131,7 @@ var
   r, g, b: byte;
   c: Integer;
   col32: TColor32;
+  n : integer;
 
   function CMYKtoColor(C, M, Y, K: integer): TColor;
   var
@@ -215,9 +216,9 @@ begin
   if (iStart = 0) or (iEnd = 0) then
   begin
     // try to convert
-    try
-      result := strtoint(AColorStr);
-    except
+    if TryStrToInt(AColorStr,n) then result := n
+    else
+    begin
       try
         result := StringToColor(AColorStr);
       except
@@ -568,7 +569,7 @@ var
   i, ItemCount, Index: Integer;
   tmpRec: TSharpESkinColor;
   sFile, sTag, sCurScheme: string;
-  tmpColor: TColor;
+  tmpColor: string;
 begin
   Index := 0;
 
@@ -589,6 +590,7 @@ begin
         sCurScheme := 'default';
       end;
     end;
+    Theme.Scheme.Name := sCurScheme;
 
     // Get Scheme Colors
     Setlength(Theme.Scheme.Colors, 0);
@@ -623,11 +625,11 @@ begin
           with XML.Root.Items.Item[i].Items do
           begin
             sTag := Value('tag', '');
-            tmpColor := IntValue('color', Theme.Scheme.Colors[Index].Color);
+            tmpColor := Value('color', inttostr(Theme.Scheme.Colors[Index].Color));
 
             Index := GetSchemeColorIndexByTag(pchar(sTag));
             if Index >= 0 then
-              Theme.Scheme.Colors[Index].Color := tmpColor;
+              Theme.Scheme.Colors[Index].Color := ParseColor(PChar(tmpColor));
           end;
       except
       end;
@@ -912,7 +914,6 @@ end;
 
 procedure InitializeTheme;
 begin
-  bInitialized := False;
   Theme.Data.LastUpdate := 0;
   Theme.Data.Directory := SharpApi.GetSharpeUserSettingsPath + THEME_DIR + '\' + DEFAULT_THEME + '\';
   Theme.Data.LastUpdate := DateTimeToUnix(Now());
@@ -921,6 +922,8 @@ begin
   SetThemeSchemeDefault;
   SetThemeSkinDefault;
   SetThemeIconSetDefault;
+
+  bInitialized := True;
 end;
 
 function LoadTheme(pName: PChar; ForceReload: Boolean = False): boolean;
@@ -953,7 +956,6 @@ begin
   LoadThemeScheme;
   LoadIconSet;
 
-  bInitialized := True;
   result := True;
 end;
 
