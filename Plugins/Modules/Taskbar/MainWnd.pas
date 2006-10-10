@@ -709,7 +709,7 @@ var
 begin
   DebugOutPutInfo('TMainForm.CalculateItemWidth (Procedure)');
   for n := 0 to IList.Count -1 do
-      TSharpETaskItem(IList.Items[n]).State := sState;
+      if IList.Items[n] <> nil then TSharpETaskItem(IList.Items[n]).State := sState;
   FreeSpace := Width - FSpecialButtonWidth;
   if ItemCount = 0 then sCurrentWidth := 16
      else sCurrentWidth := Max(Min((FreeSpace - ItemCount*sSpacing) div ItemCount,sMaxWidth),16);
@@ -901,18 +901,22 @@ begin
   pTaskItem := nil;
   CheckFilterAll;
 
-  for n := 0 to IList.Count -1 do
-  begin
-    pTaskItem := TSharpETaskItem(IList.Items[n]);
-    if (pItem.Handle <> pTaskItem.Tag ) and (pTaskItem.Down) then
-       pTaskItem.Down := False
-       else if pItem.Handle = pTaskItem.Tag then
-       begin
-         pTaskItem.Down := True;
-         if pTaskItem.Flashing then pTaskItem.Flashing := False;
-         UpdateIcon(pTaskItem,pItem);
-         pTaskItem.Repaint;
-       end;
+  try
+    for n := 0 to IList.Count -1 do
+    begin
+      pTaskItem := TSharpETaskItem(IList.Items[n]);
+      if (pItem.Handle <> pTaskItem.Tag ) and (pTaskItem.Down) then
+         pTaskItem.Down := False
+         else if pItem.Handle = pTaskItem.Tag then
+         begin
+           pTaskItem.Down := True;
+           if pTaskItem.Flashing then pTaskItem.Flashing := False;
+           UpdateIcon(pTaskItem,pItem);
+           pTaskItem.Repaint;
+         end;
+    end;
+  except
+    SharpApi.SendDebugMessageEx('Module|Taskbar',PChar('Error in ActivateTask'),0,DMT_ERROR);
   end;
 end;
 
