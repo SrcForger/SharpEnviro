@@ -137,7 +137,10 @@ begin
     if (not IsWindow(pItem.Handle)) or
        ((not visible) and (not minimized)) then
     begin
-      if Assigned(OnRemoveTask) then OnRemoveTask(pItem,n);
+      try
+        if Assigned(OnRemoveTask) then OnRemoveTask(pItem,n);
+      except
+      end;
       FItems.Delete(n);
     end;
   end;
@@ -156,7 +159,10 @@ begin
     pItem := TTaskItem(FItems.Items[n]);
     if pItem.Handle = pHandle then
     begin
-      if Assigned(OnFlashTask) then FOnFlashTask(pItem,n);
+      try
+        if Assigned(OnFlashTask) then FOnFlashTask(pItem,n);
+      except
+      end;
       exit;
     end;
   end;
@@ -176,7 +182,10 @@ begin
     if pItem.Handle = pHandle then
     begin
       pItem.UpdateFromHwnd;
-      if Assigned(OnActivateTask) then FOnActivateTask(pItem,n);
+      try
+        if Assigned(OnActivateTask) then FOnActivateTask(pItem,n);
+      except
+      end;
       exit;
     end;
   end;
@@ -209,7 +218,10 @@ begin
   pItem := TTaskItem.Create(pHandle);
   pItem.UpdateCaption;
   FItems.Add(pItem);
-  if Assigned(OnNewTask) then FOnNewTask(pItem, FItems.Count -1);
+  try
+    if Assigned(OnNewTask) then FOnNewTask(pItem, FItems.Count -1);
+  except
+  end;
   if FSortTasks then DoSortTasks;
 end;
 
@@ -228,7 +240,10 @@ begin
       // call the onremove event before actually removing the item
       // this makes it possible for the application to use the still existing
       // TTaskItem to gather informations about which window will be removed
-      if Assigned(OnRemoveTask) then FOnRemoveTask(pItem,n);
+      try
+        if Assigned(OnRemoveTask) then FOnRemoveTask(pItem,n);
+      except
+      end;
       FItems.Delete(n);
       exit;
     end;
@@ -250,7 +265,10 @@ begin
     if pItem.Handle = pHandle then
     begin
       pItem.UpdateFromHwnd;
-      if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
+      try
+        if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
+      except
+      end;
     end;
   end;
   if FSortTasks then DoSortTasks;
@@ -281,7 +299,10 @@ begin
   n := FItems.IndexOf(pItem1);
   i := FItems.IndexOf(pItem2);
   if (n < 0) or (i < 0) then exit;
-  if Assigned(FOnTaskExchange) then FOnTaskExchange(pItem1,pItem2,n,i);
+  try
+    if Assigned(FOnTaskExchange) then FOnTaskExchange(pItem1,pItem2,n,i);
+  except
+  end;
   FItems.Exchange(n,i);
 end;
 

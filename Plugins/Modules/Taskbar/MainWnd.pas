@@ -746,6 +746,7 @@ procedure UpdateIcon(var pTaskItem : TSharpETaskItem; pItem : TTaskItem);
 var
   bmp : TBitmap32;
 begin
+  if (pTaskItem = nil) or (pItem = nil) then exit;
 
   if (pTaskItem = nil) or (pItem = nil) then exit;
   bmp := TBitmap32.Create;
@@ -810,6 +811,12 @@ var
   mnfilter : integer;
   nm : boolean;
 begin
+  if pItem = nil then
+  begin
+    result := false;
+    exit;
+  end;
+
 //  DebugOutPutInfo('TMainForm.CheckFilter (Procedure)');
   if (sIFilter = False) and (sEFilter = False) then
   begin
@@ -879,6 +886,8 @@ var
   pTaskItem : TSharpETaskItem;
 begin
   DebugOutPutInfo('TMainForm.FlashTask (Procedure)');
+  if pItem = nil then exit;
+
   for n := 0 to IList.Count -1 do
   begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
@@ -898,6 +907,8 @@ var
   pTaskItem : TSharpETaskItem;
 begin
   DebugOutPutInfo('TMainForm.ActivateTask (Procedure)');
+  if pItem = nil then exit;
+  
   pTaskItem := nil;
   CheckFilterAll;
 
@@ -926,6 +937,8 @@ var
 //  oWidth : integer;
 begin
   DebugOutPutInfo('TMainForm.NewTask (Procedure)');
+  if pItem = nil then exit;
+  
   if not CheckFilter(pItem) then exit;
   pTaskItem := TSharpETaskItem.Create(self);
 //  oWidth := sCurrentWidth;
@@ -957,6 +970,8 @@ var
   index1,index2 : integer;
 begin
   DebugOutPutInfo('TMainForm.TaskExchange (Procedure)');
+  if (pItem1 = nil) or (pItem2 = nil) then exit;
+
   index1 := -1;
   index2 := -1;
   for n:= 0 to IList.Count - 1 do
@@ -976,6 +991,8 @@ var
   n : integer;
 begin
   DebugOutPutInfo('TMainForm.RemoveTask (Procedure)');
+  if pItem = nil then exit;
+
   for n := IList.Count -1 downto 0 do
       if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
          IList.Delete(n);
@@ -989,6 +1006,8 @@ var
   n : integer;
 begin
   DebugOutPutInfo('TMainForm.UpdateTask (Procedure)');
+  if pItem = nil then exit;
+
   CheckFilterAll;
   pTaskItem := nil;
   for n := 0 to IList.Count - 1 do
