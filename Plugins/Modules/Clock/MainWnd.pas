@@ -88,6 +88,8 @@ begin
       else sStyle := lsMedium
     end;
   end;
+  lb_clock.LabelStyle := sStyle;
+  lb_clock.UpdateSkin;
 end;
 
 procedure TMainForm.SetSize(NewWidth : integer);
@@ -157,14 +159,14 @@ end;
 procedure TMainForm.ClockTimerTimer(Sender: TObject);
 var
   s : string;
+  ow : integer;
 begin
-  if lb_clock.LabelStyle <> sStyle then
-  begin
-    lb_clock.LabelStyle := sStyle;
-    RealignComponents(True);
-  end;
+  ow := lb_clock.Width;
   DateTimeToString(s,sFormat,now());
   lb_clock.Caption := s;
+  if lb_clock.LabelStyle <> sStyle then
+     lb_clock.LabelStyle := sStyle;
+  if ow <> lb_clock.Width then RealignComponents(True);
 end;
 
 procedure TMainForm.lb_clockDblClick(Sender: TObject);
