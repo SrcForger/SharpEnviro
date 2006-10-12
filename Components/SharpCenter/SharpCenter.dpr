@@ -6,7 +6,6 @@ uses
   uSharpCenterMainWnd in 'uSharpCenterMainWnd.pas' {SharpCenterWnd},
   uSharpCenterManager in 'uSharpCenterManager.pas',
   uSharpCenterDllMethods in 'uSharpCenterDllMethods.pas',
-  uSharpCenterDllConfigWnd in 'uSharpCenterDllConfigWnd.pas' {frmDllConfig},
   graphicsFX in '..\..\Common\Units\SharpFX\graphicsFX.pas',
   SharpFX in '..\..\Common\Units\SharpFX\SharpFX.pas',
   SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas';

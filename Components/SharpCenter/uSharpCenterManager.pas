@@ -93,7 +93,7 @@ type
   private
     FConfigFile: string;
   public
-    property ConfigPath: string read FConfigFile write FConfigFile;
+    property ConfigFile: string read FConfigFile write FConfigFile;
   end;
 
 type
@@ -102,7 +102,9 @@ type
     FCommand: string;
     FParameter: string;
     FPluginID: Integer;
+    FID: Integer;
   public
+    property ID: Integer read FID write FID;
     property Command: string read FCommand write FCommand;
     property Parameter: string read FParameter write FParameter;
     property PluginID: Integer read FPluginID write FPluginID;
@@ -111,16 +113,19 @@ type
 type
   TSharpCenterHistory = class
   private
-    FStack: TStack;
+    FList: TList;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure Delete(AItem:TSharpCenterHistoryItem);
 
     function AddFolder(APath: string): TSharpCenterHistoryItem;
     function AddDll(ADll: string; APluginID: Integer): TSharpCenterHistoryItem;
     function AddConfig(AConfig: string): TSharpCenterHistoryItem;
+    function Add(ACommand, AParameter: String; APluginID:Integer): TSharpCenterHistoryItem;
     Function GetLastEntry:TSharpCenterHistoryItem;
+    property List: TList read FList write FList;
   end;
 
 type
@@ -132,7 +137,7 @@ type
     FObjectsPath: string;
     FHistory: TSharpCenterHistory;
 
-    FCurrentCommand: String;
+    FCurrentCommand: TSharpCenterHistoryItem;
 
 
     function GetControlByHandle(AHandle: THandle): TWinControl;
@@ -182,19 +187,18 @@ var
   sFn, sName: string;
 
   sets: TStringList;
+  tmpItem: TSharpCenterHistoryItem;
   dir, s: string;
   i, j, h, w, n: Integer;
   objects, files: TStringList;
 begin
-  LockWindowUpdate(SharpCenterWnd.Handle);
-  try
     // Unload Dll
-    if frmDllConfig <> nil then
-      frmDllConfig.UnloadDll;
+    if SharpCenterWnd.ConfigDll.DllHandle <> 0 then
+      SharpCenterWnd.UnloadDll;
 
     // Get the Button Data
     tmpBTData :=
-      TBTData(SharpCenterWnd.lbSections.Items.Objects[SharpCenterWnd.lbSections.ItemIndex]);
+      TBTData(SharpCenterWnd.lbTree.Items.Objects[SharpCenterWnd.lbTree.ItemIndex]);
     sName := tmpBTData.Caption;
 
     case tmpBTData.BT of
@@ -202,10 +206,13 @@ begin
       btFolder: begin
           tmpBTDataFolder := TBTDataFolder(tmpBTData);
 
-          History.AddFolder(FCurrentCommand);
+          History.Add(FCurrentCommand.Command,FCurrentCommand.Parameter,FCurrentCommand.PluginID);
+          
+          FCurrentCommand.Command := '_navfolder';
+          FCurrentCommand.Parameter := PathAddSeparator(tmpBTDataFolder.Path);
 
-          FCurrentCommand := PathAddSeparator(tmpBTDataFolder.Path);
-          BuildSectionItemsFromPath(FCurrentCommand, SharpCenterWnd.lbSections);
+          SharpCenterWnd.lbTree.Clear;
+          BuildSectionItemsFromPath(FCurrentCommand.Parameter, SharpCenterWnd.lbTree);
 
           SharpCenterWnd.btnBack.Enabled := True;
         end;
@@ -217,37 +224,39 @@ begin
           // Display the plugin window
 
           tmpBTDataConfig := TBTDataConfig(tmpBTData);
+          History.Add(FCurrentCommand.Command,FCurrentCommand.Parameter,FCurrentCommand.PluginID);
 
+          FCurrentCommand.Command := '_loadconfig';
+          FCurrentCommand.Parameter := tmpBTDataConfig.ConfigFile;
 
-          History.AddConfig(FCurrentCommand);
-          FCurrentCommand := tmpBTDataConfig.ConfigPath;
+          if fileexists(FCurrentCommand.Parameter) then begin
 
-          if fileexists(FCurrentCommand) then begin
-
-            if not (assigned(frmDllConfig)) then
-              frmDllConfig := TfrmDllConfig.Create(SharpCenterWnd.pnlMain,
-                tmpBTDataConfig.ConfigPath,
-                tmpBTDataConfig.Caption)
-            else begin
-              frmDllConfig.InitialiseWindow(SharpCenterWnd.pnlMain,
+            SharpCenterWnd.InitialiseWindow(SharpCenterWnd.pnlMain,
                 tmpBTDataConfig.Caption);
-              frmDllConfig.LoadConfiguration(FCurrentCommand);
-            end;
-
+            SharpCenterWnd.LoadConfiguration(FCurrentCommand.Parameter);
 
           end;
 
         end;
-    end;
+        btDll: begin
+          tmpBTDatadLL := TBTDatadLL(tmpBTData);
+          //History.Add(FCurrentCommand);
 
-  finally
-    LockWindowUpdate(0);
-  end;
+          //FCurrentCommand.Command := '_loaddll';
+          //FCurrentCommand.Parameter := tmpBTDatadLL.Path;
+
+          SharpCenterWnd.LoadSelectedDll(SharpCenterWnd.lbTree.ItemIndex);
+        end;
+    end;
 end;
 
 constructor TSharpCenterManager.Create;
 begin
   FHistory := TSharpCenterHistory.Create;
+
+  FCurrentCommand := TSharpCenterHistoryItem.Create;
+  FCurrentCommand.Command := '_navfolder';
+  FCurrentCommand.Parameter := GetCenterDirectory;
 
   // Load definitions
   LoadCenterDefines(FThemesPath, FModulesPath, FObjectsPath);
@@ -327,7 +336,7 @@ begin
 
           NewBT := TBTDataConfig.Create;
           NewBT.Caption := sName;
-          TBTDataConfig(NewBt).ConfigPath := APath + sRec.Name;
+          TBTDataConfig(NewBt).ConfigFile := APath + sRec.Name;
           NewBT.ID := -1;
           NewBT.BT := btConfig;
           pngfile := sIcon;
@@ -428,8 +437,8 @@ begin
     ABTData.IconIndex := 2;
 
   if SharpCenterWnd.picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6 >
-    SharpCenterWnd.lbSections.ItemHeight then
-    SharpCenterWnd.lbSections.ItemHeight :=
+    SharpCenterWnd.lbTree.ItemHeight then
+    SharpCenterWnd.lbTree.ItemHeight :=
       SharpCenterWnd.picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6;
 end;
 
@@ -472,17 +481,17 @@ end;
 
 constructor TSharpCenterHistory.Create;
 begin
-  FStack := TStack.Create;
+  FList := TList.Create;
 end;
 
 procedure TSharpCenterHistory.Clear;
 begin
-  //FStack.;
+  FList.Clear;
 end;
 
 destructor TSharpCenterHistory.Destroy;
 begin
-  FStack.Free;
+  FList.Free;
   inherited;
 end;
 
@@ -495,8 +504,9 @@ begin
   Result.Command := '_navfolder';
   Result.Parameter := APath;
   Result.PluginID := -1;
+  Result.ID := FList.Count;
 
-  FStack.Push(Result);
+  FList.Add(Result);
 end;
 
 function TSharpCenterHistory.AddDll(
@@ -509,7 +519,9 @@ begin
   Result.Command := '_loaddll';
   Result.Parameter := ADll;
   Result.PluginID := APluginID;
-  FStack.Push(Result);
+  Result.ID := FList.Count;
+
+  FList.Add(Result);
 end;
 
 function TSharpCenterHistory.AddConfig(
@@ -522,7 +534,9 @@ begin
   Result.Command := '_loadconfig';
   Result.Parameter := AConfig;
   Result.PluginID := -1;
-  FStack.Push(Result);
+  Result.ID := FList.Count;
+
+  FList.Add(Result);
 end;
 
 function TSharpCenterHistory.GetLastEntry: TSharpCenterHistoryItem;
@@ -530,9 +544,32 @@ var
   n,pluginid:Integer;
   cmd, param:String;
 begin
-  if FStack.Count > 0 then Result := FStack.Pop
-     else result := nil;
+  if FList.Last <> nil then
+    Result := TSharpCenterHistoryItem(FList.Last);
+end;
+
+function TSharpCenterHistory.Add(ACommand, AParameter: String; APluginID:Integer): TSharpCenterHistoryItem;
+begin
+  Result := TSharpCenterHistoryItem.Create;
+  Result.Command := ACommand;
+  Result.Parameter := AParameter;
+  Result.PluginID := APluginID;
+  Result.ID := FList.Count;
+
+  FList.Add(Result);
+end;
+
+procedure TSharpCenterHistory.Delete(AItem: TSharpCenterHistoryItem);
+var
+  n:Integer;
+begin
+  n := FList.IndexOf(AItem);
+  if n <> -1 then begin
+    FList.Delete(n);
+  end;
 end;
 
 end.
+
+
 
