@@ -26,15 +26,18 @@ var
 begin
   try
     CollectCPUData;
-    //showmessage(floattostr(GetCPUUsage(0)));
     for n := 0 to High(CPUUsage) do
         CPUUsage[n] := adCpuUsage.GetCPUUsage(n);
   except
   end;
-  for n := 0 to Forms.Count - 1 do
+  for n := Forms.Count - 1 downto 0 do
   begin
-    if Forms <> nil then
-       TMainForm(Forms.Items[n]).UpdateGraph;
+    try
+      if Forms.Items[n] <> nil then
+         TMainForm(Forms.Items[n]).UpdateGraph;
+    except
+      Forms.Items[n] := nil;
+    end;
   end;
 end;
 
