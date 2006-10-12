@@ -1659,7 +1659,6 @@ function SchemedStringToColor(str: string; cs: TSharpEScheme): TColor;
 var
   n : integer;
 begin
-  result := 0;
   n := cs.GetColorIndexByTag(str);
   if n <> -1 then result := cs.GetColorByTag(str)
   else result := SharpThemeApi.ParseColor(PChar(str));

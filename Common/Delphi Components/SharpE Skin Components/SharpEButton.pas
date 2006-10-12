@@ -572,7 +572,7 @@ begin
           TextPos := ButtonSkin.Normal.SkinText.GetXY(TextRect, CompRect);
         end;
 
-    if FGlyph32 <> nil then
+    if (FGlyph32 <> nil) and (Buttonskin <> FCustomSkin) then
     begin
       TextSize.X := bmp.TextWidth(caption);
       TextSize.Y := bmp.TextHeight(caption);
