@@ -75,6 +75,8 @@ type
     procedure DeleteItemClick(Sender: TObject);
     procedure EditItemClick(Sender: TObject);
     procedure AddItemClick(Sender: TObject);
+    procedure ImportHotkeys;
+    procedure ExportHotkeys;
   private
     { Private declarations }
     procedure CenterForm(var AForm: TForm; AOwner: TForm);
@@ -319,6 +321,26 @@ begin
   // Draw Method
   PaintListbox(TListBox(Control), Rect, 0, State, sText, picMain, iIconIndex,
     sStatus, FontColor);
+end;
+
+procedure TfrmConfig.ExportHotkeys;
+begin
+  dlgExport.FileName := 'hotkeys_backup.xml';
+  if dlgExport.Execute then
+  begin
+    ItemStorage.Save(dlgExport.FileName);
+
+  end;
+end;
+
+procedure TfrmConfig.ImportHotkeys;
+begin
+  if dlgImport.Execute then
+  begin
+    ItemStorage.Load(dlgImport.FileName);
+    UpdateDisplay(ItemStorage);
+    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+  end;
 end;
 
 end.

@@ -93,10 +93,12 @@ end;
 
 procedure BtnImport(var AButton:TPngSpeedButton);
 begin
+  frmConfig.ImportHotkeys;
 end;
 
 procedure BtnExport(var AButton:TPngSpeedButton);
 begin
+  frmConfig.ExportHotkeys;
 end;
 
 //Ordinary Dll code, tells delphi what functions to export.
