@@ -58,7 +58,7 @@ uses
   Tabs,
   JvOutlookBar,
   SharpEListBox, SharpESkinManager, uSharpCenterSectionList,
-  uSharpCenterDllMethods, uSharpCenterManager;
+  uSharpCenterDllMethods, uSharpCenterManager, JvExStdCtrls, JvHtControls;
 
 type
   TSharpCenterWnd = class(TForm)
@@ -71,9 +71,6 @@ type
     pnlTree: TPanel;
     picMain: TPngImageCollection;
     pnlMain: TPanel;
-    Panel1: TPanel;
-    JvGradient1: TJvGradient;
-    lblTree: TLabel;
     Panel2: TPanel;
     lbTree: TSharpEListBox;
     UnloadTimer: TTimer;
@@ -102,12 +99,14 @@ type
     JvGradient2: TJvGradient;
     Panel5: TPanel;
     lbPluginSections: TSharpEListBox;
-    btnForward: TPngSpeedButton;
     btnFavourite: TPngSpeedButton;
     PopupMenu1: TPopupMenu;
-    Memo1: TMemo;
-    Timer1: TTimer;
-    procedure Timer1Timer(Sender: TObject);
+    Label1: TLabel;
+    Panel1: TPanel;
+    JvGradient1: TJvGradient;
+    Shape1: TShape;
+    lblTree: TJvHTLabel;
+    procedure lblTreeHyperLinkClick(Sender: TObject; LinkName: string);
     procedure lbPluginSectionsDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure lbPluginSectionsMouseUp(Sender: TObject; Button: TMouseButton;
@@ -129,8 +128,6 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure btnBackMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure lbTreeMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure btnHomeClick(Sender: TObject);
@@ -288,6 +285,8 @@ begin
 
   SharpCenterManager.BuildSectionItemsFromPath(GetCenterDirectory,
     lbTree);
+
+  SharpCenterManager.SetNavRoot(GetCenterDirectory);
 end;
 
 procedure TSharpCenterWnd.btnHomeClick(Sender: TObject);
@@ -317,29 +316,6 @@ begin
   Finally
     LockWindowUpdate(0);
   End;
-end;
-
-procedure TSharpCenterWnd.btnBackMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-var
-  Path: string;
-begin
-  {SharpCenterManager.UnloadDll;
-
-  Path := SharpCenterManager.GetNextHistory;
-  if Path <> '' then
-  begin
-    if CompareStr(Path, GetSharpeDirectory + 'Center\') = 0 then
-    begin
-      SharpCenterManager.BuildSectionItemsFromPath(Path, True, SharpCenterWnd.lbSections);
-      btnBack.Enabled := False;
-    end
-    else
-      SharpCenterManager.BuildSectionItemsFromPath(Path, False, lbSections);
-
-    SharpCenterManager.CurrentPath := Path;
-  end;   }
-
 end;
 
 procedure TSharpCenterWnd.FormResize(Sender: TObject);
@@ -394,20 +370,22 @@ end;
 procedure TSharpCenterWnd.btnBackClick(Sender: TObject);
 var
   tmpItem: TSharpCenterHistoryItem;
-  i: Integer;
 begin
 
   tmpItem := nil;
   if SharpCenterManager.History.List.Count <> 0 then
-  tmpItem := SharpCenterManager.History.List.Last;
+    tmpItem := SharpCenterManager.History.List.Last;
 
   if tmpItem <> nil then
   begin
-    //UnloadDll;
-    ExecuteCommand(tmpItem.Command, tmpItem.Parameter, tmpItem.PluginID);
     UnloadDll;
-    SharpCenterManager.History.List.Delete(TSharpCenterHistoryItem(SharpCenterManager.History.List.Last).ID);
+    ExecuteCommand(tmpItem.Command, tmpItem.Parameter, tmpItem.PluginID);
+    SharpCenterManager.SetNavRoot(tmpItem.Parameter);
+    SharpCenterManager.History.Delete(tmpItem);
 
+    if SharpCenterManager.History.List.Count = 0 then
+      btnBack.Enabled := False else
+      btnBack.Enabled := True;
   end;
 end;
 
@@ -424,19 +402,19 @@ procedure TSharpCenterWnd.ExecuteCommand(ACommand, AParameter: string;
   APluginID: Integer);
 begin
   // navigate to folder
-  if CompareStr(ACommand, '_navfolder') = 0 then
+  if CompareStr(ACommand, cChangeFolder) = 0 then
   begin
     if FConfigDll.Dllhandle <> 0 then
       UnloadDllWithTimer(ACommand, AParameter, APluginID);
 
       SharpCenterManager.BuildSectionItemsFromPath(AParameter, SharpCenterWnd.lbTree);
   end
-  else if CompareStr(ACommand, '_unloaddll') = 0 then
+  else if CompareStr(ACommand, cUnloadDll) = 0 then
   begin
     if FConfigDll.Dllhandle <> 0 then
       UnloadDllWithTimer(ACommand, AParameter, APluginID);
   end
-  else if CompareStr(ACommand, '_loadconfig') = 0 then
+  else if CompareStr(ACommand, cLoadConfig) = 0 then
   begin
     if FConfigDll.Dllhandle <> 0 then
       UnloadDllWithTimer(ACommand, AParameter, APluginID);
@@ -449,17 +427,17 @@ end;
 procedure TSharpCenterWnd.UnloadTimerTimer(Sender: TObject);
 begin
   try
-    if CompareStr(FUnloadCommand, '_unloaddll') = 0 then
+    if CompareStr(FUnloadCommand, cUnloadDll) = 0 then
     begin
       UnloadDll;
     end
-    else if CompareStr(FUnloadCommand, '_navfolder') = 0 then
+    else if CompareStr(FUnloadCommand, cChangeFolder) = 0 then
     begin
       UnloadDll;
       SharpCenterManager.BuildSectionItemsFromPath(FUnloadParam,
         Self.lbTree)
     end
-    else if CompareStr(FUnloadCommand, '_loadConfig') = 0 then
+    else if CompareStr(FUnloadCommand, cLoadConfig) = 0 then
     begin
       UnloadDll;
       if fileexists(FUnloadParam) then
@@ -521,8 +499,6 @@ var
   Xml: TJvSimpleXML;
   iConfigDllType: Integer;
   s: string;
-  i: Integer;
-  num, ItemHeight: Integer;
 begin
   Xml := TJvSimpleXML.Create(nil);
   FDllFilename := AFileName;
@@ -767,7 +743,7 @@ var
   xml: TJvSimpleXML;
   i: Integer;
   pngfile: string;
-  s, sDll, sIcon, sName: string;
+  s, sDll, sIcon: string;
   NewBT: TBTData;
   sPath: string;
 begin
@@ -830,7 +806,7 @@ begin
 
   if @FConfigDll.AddSections <> nil then
   begin
-    ItemHeight := SharpCenterWnd.lbPluginSections.ItemHeight;
+    ItemHeight := SharpCenterWnd.lbTree.ItemHeight;
     FConfigDll.AddSections(FSections, num);
 
     // Add to Section List
@@ -844,6 +820,7 @@ begin
       begin
         FSections[i].IconID := AssignIconIndex(FSections[i]);
         lbPluginSections.Items.AddObject(FSections[i].Caption, FSections[i]);
+        pnlSections.Show;
       end;
     end;
 
@@ -895,8 +872,6 @@ begin
   FSections.IconList := picMain;
   FSections.Clear;
 
-  lblTree.Caption := AName;
-
   lbTree.Items.Clear;
   lbPluginSections.Items.Clear;
 end;
@@ -917,7 +892,6 @@ end;
 procedure TSharpCenterWnd.lbPluginSectionsDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
-  colItem: TColor;
   tmpItem: TSectionObject;
 begin
   if lbPluginSections.Items.Count = 0 then
@@ -1000,15 +974,18 @@ begin
   btnClear.Enabled := False;
 end;
 
-procedure TSharpCenterWnd.Timer1Timer(Sender: TObject);
-var
-  i:Integer;
+procedure TSharpCenterWnd.lblTreeHyperLinkClick(Sender: TObject;
+  LinkName: string);
 begin
-      Memo1.Lines.Clear;
-    For i := 0 to Pred(SharpCenterManager.History.List.Count) do
-      Memo1.Lines.Add(TSharpCenterHistoryItem(SharpCenterManager.History.List[i]).Parameter);
+  if ExtractFileExt(LinkName) = '.con' then
+  ExecuteCommand(cLoadConfig,LinkName,-1) else
+  ExecuteCommand(cChangeFolder,LinkName,-1);
 
+  SharpCenterManager.SetNavRoot(LinkName);
 end;
 
 end.
+
+
+
 

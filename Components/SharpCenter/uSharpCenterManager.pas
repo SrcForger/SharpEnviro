@@ -41,13 +41,19 @@ uses
   ExtCtrls,
   Menus,
   jclFileUtils,
+  JclStrings,
   uSharpCenterDllMethods,
   PngImageList,
   PngImage,
-  JclStrings,
   StdCtrls,
   SharpApi,
   Contnrs;
+
+const
+  cLoadConfig = '_loadconfig';
+  cChangeFolder = '_navdir';
+  cUnloadDll = '_unloaddll';
+  cLoadDll = '_loaddll';
 
 type
   TBT = (btUnspecified, btFolder, btConfig, btDll);
@@ -118,44 +124,40 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure Delete(AItem:TSharpCenterHistoryItem);
+    procedure Delete(AItem: TSharpCenterHistoryItem);
 
     function AddFolder(APath: string): TSharpCenterHistoryItem;
     function AddDll(ADll: string; APluginID: Integer): TSharpCenterHistoryItem;
     function AddConfig(AConfig: string): TSharpCenterHistoryItem;
-    function Add(ACommand, AParameter: String; APluginID:Integer): TSharpCenterHistoryItem;
-    Function GetLastEntry:TSharpCenterHistoryItem;
+    function Add(ACommand, AParameter: string; APluginID: Integer): TSharpCenterHistoryItem;
+    function GetLastEntry: TSharpCenterHistoryItem;
     property List: TList read FList write FList;
   end;
 
 type
   TSharpCenterManager = class
   private
-    FCurrentSelected: string;
     FThemesPath: string;
     FModulesPath: string;
     FObjectsPath: string;
     FHistory: TSharpCenterHistory;
 
     FCurrentCommand: TSharpCenterHistoryItem;
-
-
-    function GetControlByHandle(AHandle: THandle): TWinControl;
     procedure AssignIconIndex(AFileName: string; ABTData: TBTData);
-
-    function GetDisplayName(ADllFilename: string; APluginID: Integer): string;
+    function GetFirstPathElement(APath: string): string;
+    //function GetDisplayName(ADllFilename: string; APluginID: Integer): string;
   public
     constructor Create;
     destructor Destroy; override;
 
     property History: TSharpCenterHistory read FHistory write FHistory;
-
+    property CurrentCommand: TSharpCenterHistoryItem read FCurrentCommand write FCurrentCommand;
     procedure ClickButton(Sender: TObject);
     function GetNextHistory: string;
     procedure ClearHistory;
 
     procedure BuildSectionItemsFromPath(APath: string; Alistbox: TListbox);
-
+    procedure SetNavRoot(APath: string);
   end;
 
 var
@@ -169,85 +171,68 @@ uses
   uSharpCenterDllConfigWnd,
   JvSimpleXml;
 
-function TSharpCenterManager.GetControlByHandle(AHandle: THandle): TWinControl;
-begin
-  Result := Pointer(GetProp(AHandle,
-    PChar(Format('Delphi%8.8x', [GetCurrentProcessID]))));
-end;
-
 procedure TSharpCenterManager.ClickButton(Sender: TObject);
 var
   tmpBTData: TBTData;
   tmpBTDataFolder: TBTDataFolder;
-  tmpBTDataDll: TBTDataDll;
   tmpBTDataConfig: TBTDataConfig;
-
-  iConfigDllType: Integer;
-  Xml: TJvSimpleXml;
-  sFn, sName: string;
-
-  sets: TStringList;
-  tmpItem: TSharpCenterHistoryItem;
-  dir, s: string;
-  i, j, h, w, n: Integer;
-  objects, files: TStringList;
+  sName: string;
 begin
-    // Unload Dll
-    if SharpCenterWnd.ConfigDll.DllHandle <> 0 then
-      SharpCenterWnd.UnloadDll;
+  // Unload Dll
+  if SharpCenterWnd.ConfigDll.DllHandle <> 0 then
+    SharpCenterWnd.UnloadDll;
 
-    // Get the Button Data
-    tmpBTData :=
-      TBTData(SharpCenterWnd.lbTree.Items.Objects[SharpCenterWnd.lbTree.ItemIndex]);
-    sName := tmpBTData.Caption;
+  // Get the Button Data
+  tmpBTData :=
+    TBTData(SharpCenterWnd.lbTree.Items.Objects[SharpCenterWnd.lbTree.ItemIndex]);
+  sName := tmpBTData.Caption;
 
-    case tmpBTData.BT of
-      btUnspecified: ;
-      btFolder: begin
-          tmpBTDataFolder := TBTDataFolder(tmpBTData);
+  case tmpBTData.BT of
+    btUnspecified: ;
+    btFolder:
+      begin
+        tmpBTDataFolder := TBTDataFolder(tmpBTData);
 
-          History.Add(FCurrentCommand.Command,FCurrentCommand.Parameter,FCurrentCommand.PluginID);
-          
-          FCurrentCommand.Command := '_navfolder';
-          FCurrentCommand.Parameter := PathAddSeparator(tmpBTDataFolder.Path);
+        History.Add(FCurrentCommand.Command, FCurrentCommand.Parameter, FCurrentCommand.PluginID);
 
-          SharpCenterWnd.lbTree.Clear;
-          BuildSectionItemsFromPath(FCurrentCommand.Parameter, SharpCenterWnd.lbTree);
+        FCurrentCommand.Command := cChangeFolder;
+        FCurrentCommand.Parameter := PathAddSeparator(tmpBTDataFolder.Path);
+        SetNavRoot(FCurrentCommand.Parameter);
 
-          SharpCenterWnd.btnBack.Enabled := True;
+        SharpCenterWnd.lbTree.Clear;
+        BuildSectionItemsFromPath(FCurrentCommand.Parameter, SharpCenterWnd.lbTree);
+
+        SharpCenterWnd.btnBack.Enabled := True;
+      end;
+    btConfig:
+      begin
+
+        tmpBTDataConfig := TBTDataConfig(tmpBTData);
+        History.Add(FCurrentCommand.Command, FCurrentCommand.Parameter, FCurrentCommand.PluginID);
+
+        FCurrentCommand.Command := cLoadConfig;
+        FCurrentCommand.Parameter := tmpBTDataConfig.ConfigFile;
+
+        SetNavRoot(tmpBTDataConfig.ConfigFile);
+        SharpCenterWnd.btnBack.Enabled := True;
+
+        if fileexists(FCurrentCommand.Parameter) then
+        begin
+
+          SharpCenterWnd.InitialiseWindow(SharpCenterWnd.pnlMain,
+            tmpBTDataConfig.Caption);
+          SharpCenterWnd.LoadConfiguration(FCurrentCommand.Parameter);
+
         end;
-      btConfig: begin
 
-          // Has to load the xml file
-          // Get the multiple plugin configs
-          // Add the multiple plugin configs, if any
-          // Display the plugin window
+      end;
+    btDll:
+      begin
+        //tmpBTDatadLL := TBTDatadLL(tmpBTData);
 
-          tmpBTDataConfig := TBTDataConfig(tmpBTData);
-          History.Add(FCurrentCommand.Command,FCurrentCommand.Parameter,FCurrentCommand.PluginID);
-
-          FCurrentCommand.Command := '_loadconfig';
-          FCurrentCommand.Parameter := tmpBTDataConfig.ConfigFile;
-
-          if fileexists(FCurrentCommand.Parameter) then begin
-
-            SharpCenterWnd.InitialiseWindow(SharpCenterWnd.pnlMain,
-                tmpBTDataConfig.Caption);
-            SharpCenterWnd.LoadConfiguration(FCurrentCommand.Parameter);
-
-          end;
-
-        end;
-        btDll: begin
-          tmpBTDatadLL := TBTDatadLL(tmpBTData);
-          //History.Add(FCurrentCommand);
-
-          //FCurrentCommand.Command := '_loaddll';
-          //FCurrentCommand.Parameter := tmpBTDatadLL.Path;
-
-          SharpCenterWnd.LoadSelectedDll(SharpCenterWnd.lbTree.ItemIndex);
-        end;
-    end;
+        SharpCenterWnd.LoadSelectedDll(SharpCenterWnd.lbTree.ItemIndex);
+      end;
+  end;
 end;
 
 constructor TSharpCenterManager.Create;
@@ -255,7 +240,7 @@ begin
   FHistory := TSharpCenterHistory.Create;
 
   FCurrentCommand := TSharpCenterHistoryItem.Create;
-  FCurrentCommand.Command := '_navfolder';
+  FCurrentCommand.Command := cChangeFolder;
   FCurrentCommand.Parameter := GetCenterDirectory;
 
   // Load definitions
@@ -269,8 +254,6 @@ begin
 end;
 
 function TSharpCenterManager.GetNextHistory: string;
-var
-  idx: Integer;
 begin
   Result := '';
 
@@ -287,37 +270,52 @@ begin
   FHistory.Clear;
 end;
 
+function TSharpCenterManager.GetFirstPathElement(APath: string): string;
+var
+  n: Integer;
+  s: string;
+begin
+  APath := PathAddSeparator(APath);
+  s := Copy(APath, 0, Length(APath) - 1);
+  n := StrILastPos('Root', s);
+  Result := Copy(APath, n, length(s) - n + 1);
+
+end;
+
 procedure TSharpCenterManager.BuildSectionItemsFromPath(APath: string; Alistbox:
   TListbox);
 var
   SRec: TSearchRec;
   NewBT: TBTData;
-
-  tmpPngImage: TPNGObject;
-  tmpPiC: TPngImageCollectionItem;
   pngfile: string;
-  s, sDll, sIcon, sName: string;
+  sIcon, sName: string;
   xml: TJvSimpleXML;
-  i: Integer;
+
 begin
   // Clear list box
   AListbox.Items.Clear;
   Alistbox.ItemHeight := 16;
   try
+    FCurrentCommand.Command := cChangeFolder;
+    FCurrentCommand.Parameter := APath;
+    APath := PathAddSeparator(APath);
 
     if FindFirst(APath + '*.*', SysUtils.faAnyFile, SRec) = 0 then
       repeat
         if (sRec.Name = '.') or (sRec.Name = '..') then
           Continue;
 
-        if (ExtractFileExt(sRec.Name) = '.con') then begin
+        if (ExtractFileExt(sRec.Name) = '.con') then
+        begin
 
           xml := TJvSimpleXML.Create(nil);
           try
             Xml.LoadFromFile(APath + sRec.Name);
 
-            if xml.Root.Items.ItemNamed['Default'] <> nil then begin
-              with xml.Root.Items.ItemNamed['Default'] do begin
+            if xml.Root.Items.ItemNamed['Default'] <> nil then
+            begin
+              with xml.Root.Items.ItemNamed['Default'] do
+              begin
                 if Items.ItemNamed['Name'] <> nil then
                   sName := Items.ItemNamed['Name'].Value;
 
@@ -325,7 +323,8 @@ begin
                   sIcon := APath + Items.ItemNamed['Icon'].Value;
               end;
             end
-            else begin
+            else
+            begin
               sName := PathRemoveExtension(sRec.Name);
               sIcon := APath + PathRemoveExtension(sRec.Name) + '.png';
             end;
@@ -342,50 +341,12 @@ begin
           pngfile := sIcon;
           AssignIconIndex(pngfile, NewBT);
           AListbox.Items.AddObject(NewBT.Caption, NewBT);
-
-          // Process the xml file
-          {xml := TJvSimpleXML.Create(nil);
-          Try
-            xml.LoadFromFile(APath + sRec.Name);
-
-            with xml.Root.Items.ItemNamed['Sections'] do begin
-              for i := 0 to Pred(Items.Count) do begin
-
-                NewBT := TBTDataDll.Create;
-
-                sDll := '';
-                if Items.Item[i].Items.ItemNamed['Dll'] <> nil then
-                  sDll := Items.Item[i].Items.ItemNamed['Dll'].Value;
-
-                sIcon := '';
-                if Items.Item[i].Items.ItemNamed['Icon'] <> nil then
-                  sIcon := Items.Item[i].Items.ItemNamed['Icon'].Value;
-
-                s := GetDisplayName(APath+sDll, -1);
-
-                if s = '' then
-                  NewBT.Caption := Items.Item[i].Name
-                else
-                  NewBT.Caption := s;
-
-                AListbox.Items.AddObject(NewBT.Caption, NewBT);
-                TBTDataDll(NewBT).Path := APath+sDll;
-                TBTDataDll(NewBT).PluginID := -1;
-                NewBT.ID := -1;
-                NewBT.BT := btDll;
-
-                pngfile := APath + sIcon;
-                AssignIconIndex(pngfile, ARoot, NewBT);
-              end;
-            end;
-
-          Finally
-            xml.Free;
-          End;   }
         end
-        else if (IsDirectory(APath + sRec.Name)) then begin
+        else if IsDirectory(APath + sRec.Name) then
+        begin
 
-          if Copy(sRec.Name, 0, 1) <> '_' then begin
+          if Copy(sRec.Name, 0, 1) <> '_' then
+          begin
 
             NewBT := TBTDataFolder.Create;
             NewBT.Caption := PathRemoveExtension(sRec.Name);
@@ -405,7 +366,8 @@ begin
         FindNext(SRec) <> 0;
 
   finally
-    if AListbox.Items.Count = 0 then begin
+    if AListbox.Items.Count = 0 then
+    begin
       AListbox.Enabled := False;
       AListbox.AddItem('No items found', nil);
     end
@@ -420,7 +382,8 @@ var
   tmpPngImage: TPNGObject;
   tmpPiC: TPngImageCollectionItem;
 begin
-  if FileExists(AFileName) then begin
+  if FileExists(AFileName) then
+  begin
     tmpPngImage := TPNGObject.Create;
     tmpPngImage.LoadFromFile(AFileName);
     tmpPngImage.CreateAlpha;
@@ -453,7 +416,7 @@ begin
   FIconIndex := -1;
 end;
 
-function TSharpCenterManager.GetDisplayName(ADllFilename: string; APluginID:
+{function TSharpCenterManager.GetDisplayName(ADllFilename: string; APluginID:
   Integer):
   string;
 var
@@ -475,7 +438,7 @@ begin
       UnloadConfigDll(@tmpConfigDll);
     end;
   end;
-end;
+end;    }
 
 { TSharpCenterHistory }
 
@@ -490,7 +453,12 @@ begin
 end;
 
 destructor TSharpCenterHistory.Destroy;
+var
+  i: Integer;
 begin
+  for i := 0 to Pred(FList.Count) do
+    TSharpCenterHistoryItem(FList[i]).Free;
+
   FList.Free;
   inherited;
 end;
@@ -498,10 +466,11 @@ end;
 function TSharpCenterHistory.AddFolder(APath: string): TSharpCenterHistoryItem;
 begin
   Result := nil;
-  if APath = '' then exit;
+  if APath = '' then
+    exit;
 
   Result := TSharpCenterHistoryItem.Create;
-  Result.Command := '_navfolder';
+  Result.Command := cChangeFolder;
   Result.Parameter := APath;
   Result.PluginID := -1;
   Result.ID := FList.Count;
@@ -513,7 +482,8 @@ function TSharpCenterHistory.AddDll(
   ADll: string; APluginID: Integer): TSharpCenterHistoryItem;
 begin
   Result := nil;
-  if ADll = '' then exit;
+  if ADll = '' then
+    exit;
 
   Result := TSharpCenterHistoryItem.Create;
   Result.Command := '_loaddll';
@@ -528,10 +498,11 @@ function TSharpCenterHistory.AddConfig(
   AConfig: string): TSharpCenterHistoryItem;
 begin
   Result := nil;
-  if AConfig = '' then exit;
+  if AConfig = '' then
+    exit;
 
   Result := TSharpCenterHistoryItem.Create;
-  Result.Command := '_loadconfig';
+  Result.Command := cLoadConfig;
   Result.Parameter := AConfig;
   Result.PluginID := -1;
   Result.ID := FList.Count;
@@ -540,15 +511,13 @@ begin
 end;
 
 function TSharpCenterHistory.GetLastEntry: TSharpCenterHistoryItem;
-var
-  n,pluginid:Integer;
-  cmd, param:String;
 begin
+  Result := nil;
   if FList.Last <> nil then
     Result := TSharpCenterHistoryItem(FList.Last);
 end;
 
-function TSharpCenterHistory.Add(ACommand, AParameter: String; APluginID:Integer): TSharpCenterHistoryItem;
+function TSharpCenterHistory.Add(ACommand, AParameter: string; APluginID: Integer): TSharpCenterHistoryItem;
 begin
   Result := TSharpCenterHistoryItem.Create;
   Result.Command := ACommand;
@@ -561,15 +530,46 @@ end;
 
 procedure TSharpCenterHistory.Delete(AItem: TSharpCenterHistoryItem);
 var
-  n:Integer;
+  n: Integer;
 begin
   n := FList.IndexOf(AItem);
-  if n <> -1 then begin
+  if n <> -1 then
+  begin
     FList.Delete(n);
   end;
 end;
 
+procedure TSharpCenterManager.SetNavRoot(APath: string);
+var
+  tmpStrl: TStringList;
+  s, sHtml, sPre: string;
+  i: Integer;
+begin
+  sHtml := '';
+  s := GetFirstPathElement(APath);
+  tmpStrl := TStringList.Create;
+  try
+    StrTokenToStrings(s, '\', tmpStrl);
+    sPre := PathRemoveSeparator(GetCenterDirectory);
+
+    for i := 0 to Pred(tmpStrl.Count) do
+    begin
+      if i <> 0 then
+        sPre := sPre + '\' + tmpStrl[i];
+
+      if ((CompareStr(PathAddSeparator(ExtractFilePath(sPre)),ExtractFilePath(FCurrentCommand.Parameter)) = 0) or
+        (CompareStr(PathAddSeparator(sPre),FCurrentCommand.Parameter) = 0)) then
+      sHtml := sHtml + Format('/<A HREF="%s"><b>%s</b></A>', [sPre, tmpStrl[i]]) else
+      sHtml := sHtml + Format('/<A HREF="%s">%s</A>', [sPre, tmpStrl[i]]);
+    end;
+  finally
+    tmpStrl.Free;
+    SharpCenterWnd.lblTree.Caption := sHtml;
+  end;
+end;
+
 end.
+
 
 
 

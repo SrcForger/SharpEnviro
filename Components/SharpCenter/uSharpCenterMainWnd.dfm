@@ -1709,60 +1709,28 @@ object SharpCenterWnd: TSharpCenterWnd
       TabOrder = 1
       object pnlTree: TPanel
         Left = 0
-        Top = 0
+        Top = 24
         Width = 185
-        Height = 269
+        Height = 245
         Align = alClient
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 0
-        object Panel1: TPanel
+        object Panel2: TPanel
           Left = 0
           Top = 0
           Width = 185
-          Height = 21
-          Align = alTop
-          BevelOuter = bvNone
-          Caption = 'Plugin Panel'
-          Color = clBtnShadow
-          TabOrder = 0
-          Visible = False
-          object JvGradient1: TJvGradient
-            Left = 0
-            Top = 0
-            Width = 185
-            Height = 21
-            Style = grVertical
-            StartColor = clBtnHighlight
-            EndColor = clBtnFace
-          end
-          object lblTree: TLabel
-            Left = 0
-            Top = 0
-            Width = 185
-            Height = 21
-            Align = alClient
-            Alignment = taCenter
-            Caption = 'SharpE Options'
-            Transparent = True
-            Layout = tlCenter
-          end
-        end
-        object Panel2: TPanel
-          Left = 0
-          Top = 21
-          Width = 185
-          Height = 248
+          Height = 245
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 5
           ParentColor = True
-          TabOrder = 1
+          TabOrder = 0
           object lbTree: TSharpEListBox
             Left = 5
             Top = 5
             Width = 175
-            Height = 153
+            Height = 235
             Style = lbOwnerDrawFixed
             Align = alClient
             BorderStyle = bsNone
@@ -1770,16 +1738,6 @@ object SharpCenterWnd: TSharpCenterWnd
             TabOrder = 0
             OnDrawItem = lbTreeDrawItem
             OnMouseUp = lbTreeMouseUp
-          end
-          object Memo1: TMemo
-            Left = 5
-            Top = 158
-            Width = 175
-            Height = 85
-            Align = alBottom
-            Lines.Strings = (
-              'Memo1')
-            TabOrder = 1
           end
         end
       end
@@ -1792,11 +1750,12 @@ object SharpCenterWnd: TSharpCenterWnd
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 1
+        Visible = False
         object SharpEListBox1: TSharpEListBox
           Left = 0
-          Top = 8
+          Top = 24
           Width = 185
-          Height = 92
+          Height = 76
           Style = lbOwnerDrawFixed
           Align = alClient
           BorderStyle = bsNone
@@ -1807,7 +1766,7 @@ object SharpCenterWnd: TSharpCenterWnd
           Left = 0
           Top = 0
           Width = 185
-          Height = 8
+          Height = 24
           Align = alTop
           BevelOuter = bvNone
           Caption = 'Plugin Panel'
@@ -1815,19 +1774,41 @@ object SharpCenterWnd: TSharpCenterWnd
           TabOrder = 1
           object JvGradient2: TJvGradient
             Left = 0
-            Top = 0
+            Top = 1
             Width = 185
-            Height = 8
+            Height = 23
             Style = grVertical
             StartColor = clWindow
             EndColor = clBtnFace
           end
+          object Label1: TLabel
+            Left = 4
+            Top = 4
+            Width = 42
+            Height = 14
+            Caption = 'Sections'
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -11
+            Font.Name = 'Arial'
+            Font.Style = []
+            ParentFont = False
+            Transparent = True
+          end
+          object Shape1: TShape
+            Left = 0
+            Top = 0
+            Width = 185
+            Height = 1
+            Align = alTop
+            Pen.Color = clBtnFace
+          end
         end
         object Panel5: TPanel
           Left = 0
-          Top = 8
+          Top = 24
           Width = 185
-          Height = 92
+          Height = 76
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 5
@@ -1837,7 +1818,7 @@ object SharpCenterWnd: TSharpCenterWnd
             Left = 5
             Top = 5
             Width = 175
-            Height = 82
+            Height = 66
             Style = lbOwnerDrawFixed
             Align = alClient
             BorderStyle = bsNone
@@ -1846,6 +1827,35 @@ object SharpCenterWnd: TSharpCenterWnd
             OnDrawItem = lbPluginSectionsDrawItem
             OnMouseUp = lbPluginSectionsMouseUp
           end
+        end
+      end
+      object Panel1: TPanel
+        Left = 0
+        Top = 0
+        Width = 185
+        Height = 24
+        Align = alTop
+        BevelOuter = bvNone
+        Caption = 'Plugin Panel'
+        Color = clBtnShadow
+        TabOrder = 2
+        object JvGradient1: TJvGradient
+          Left = 0
+          Top = 0
+          Width = 185
+          Height = 24
+          Style = grVertical
+          StartColor = clWindow
+          EndColor = clBtnFace
+        end
+        object lblTree: TJvHTLabel
+          Left = 4
+          Top = 5
+          Width = 21
+          Height = 20
+          Caption = '<A HREF="">Test</A>'
+          Transparent = True
+          OnHyperLinkClick = lblTreeHyperLinkClick
         end
       end
     end
@@ -1873,7 +1883,7 @@ object SharpCenterWnd: TSharpCenterWnd
       EndColor = clBtnFace
     end
     object btnImport: TPngSpeedButton
-      Left = 117
+      Left = 89
       Top = 5
       Width = 23
       Height = 22
@@ -1904,7 +1914,7 @@ object SharpCenterWnd: TSharpCenterWnd
       PngOptions = [pngBlendOnDisabled, pngGrayscaleOnDisabled]
     end
     object btnExport: TPngSpeedButton
-      Left = 141
+      Left = 113
       Top = 5
       Width = 23
       Height = 22
@@ -1939,7 +1949,7 @@ object SharpCenterWnd: TSharpCenterWnd
       PngOptions = [pngBlendOnDisabled, pngGrayscaleOnDisabled]
     end
     object btnClear: TPngSpeedButton
-      Left = 165
+      Left = 137
       Top = 5
       Width = 23
       Height = 22
@@ -2122,7 +2132,7 @@ object SharpCenterWnd: TSharpCenterWnd
       PngOptions = [pngBlendOnDisabled, pngGrayscaleOnDisabled]
     end
     object btnBack: TPngSpeedButton
-      Left = 29
+      Left = 49
       Top = 5
       Width = 23
       Height = 22
@@ -2159,7 +2169,7 @@ object SharpCenterWnd: TSharpCenterWnd
       PngOptions = [pngBlendOnDisabled, pngGrayscaleOnDisabled]
     end
     object btnHome: TPngSpeedButton
-      Left = 5
+      Left = 1
       Top = 5
       Width = 23
       Height = 22
@@ -2194,7 +2204,7 @@ object SharpCenterWnd: TSharpCenterWnd
       PngOptions = [pngBlendOnDisabled, pngGrayscaleOnDisabled]
     end
     object Bevel1: TBevel
-      Left = 104
+      Left = 76
       Top = 5
       Width = 9
       Height = 22
@@ -2206,42 +2216,8 @@ object SharpCenterWnd: TSharpCenterWnd
       Height = 22
       Anchors = [akTop, akRight]
     end
-    object btnForward: TPngSpeedButton
-      Left = 53
-      Top = 5
-      Width = 23
-      Height = 22
-      Hint = 'Previous Section'
-      Enabled = False
-      Flat = True
-      ParentShowHint = False
-      ShowHint = True
-      PngImage.Data = {
-        89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
-        610000000473424954080808087C0864880000001974455874536F6674776172
-        65007777772E696E6B73636170652E6F72679BEE3C1A0000021A4944415478DA
-        9D934F68134114C6BFD9D9CDAE354D8911342895AA0805510F9EAA17C19BDEBD
-        4985222AA2118B82503C08A560850A0AA287083DB43420B6A6DD841C5430C104
-        09A5555051B1DA3F89896D917437D9CDEE38BB42AC3545E2DB79CB3230BFB7DF
-        37EF11C618D6C6E12B5292D97898EC371FE01F41EA010E754B6C47708F3E937B
-        3F0E86531C546A1870FBC213A8994123961EC971C8710E996E087027A462A5B2
-        8C996FEF5838DAAFEB9552A89E24D2D12D3A15B6FCB149511E3837A66467E3D8
-        EADB098FB011C389BBFA87B9E9095EAF73B524D2715964BD670621F053942721
-        02087F9CC87C8DC286059FBC09ADFEBD484D25CC783AB200C66A925CC08DD361
-        BCFC3C0A2A882E84539CE5FC097F3908D32DB0CB7F10DF9716D948FCBE5ED297
-        5D492EE07AD73D24DE86615865372915D1DCE44393E2852CC960C442D5AEA25A
-        35B1CDDB8E16713BA2CF87F48FF3AF875CC0D913D71099ECAB79207A08245980
-        E8A448217B36701F14F02FB47AF7C34FDB107BF6589B2B7E1AFE0BC02D80A408
-        F028F41780C3044AA0D0661C081CC3525E63EAD351BD5CD17E4B700035573980
-        4A045414A07EB9E5C282DEDD686F398AF4AB9491994CE598855526D6B9464142
-        F9E2C91E253E3B807DC12308886D78148D68F9C2BC6A5B6BAE71BD46BAD4D583
-        15BB8042B1C8C66363BA611AA1E4CD3A8DB41EE07CE755BCC8262A536FB279DB
-        FA8F560EF8376B8B3F8A135C6FE3C3D4C838FF04229E1D985AD2165E00000000
-        49454E44AE426082}
-      PngOptions = [pngBlendOnDisabled, pngGrayscaleOnDisabled]
-    end
     object btnFavourite: TPngSpeedButton
-      Left = 77
+      Left = 25
       Top = 5
       Width = 23
       Height = 22
@@ -2250,7 +2226,6 @@ object SharpCenterWnd: TSharpCenterWnd
       Flat = True
       ParentShowHint = False
       ShowHint = True
-      OnClick = btnBackClick
       PngImage.Data = {
         89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
         6100000006624B4744000000000000F943BB7F000000097048597300000DD700
@@ -2617,23 +2592,18 @@ object SharpCenterWnd: TSharpCenterWnd
         Name = 'PngImage3'
         Background = clWindow
       end>
-    Left = 136
-    Top = 304
+    Left = 304
+    Top = 232
   end
   object UnloadTimer: TTimer
     Enabled = False
     Interval = 50
     OnTimer = UnloadTimerTimer
-    Left = 56
-    Top = 288
+    Left = 232
+    Top = 316
   end
   object PopupMenu1: TPopupMenu
     Left = 80
     Top = 88
-  end
-  object Timer1: TTimer
-    OnTimer = Timer1Timer
-    Left = 200
-    Top = 48
   end
 end
