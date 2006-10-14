@@ -212,7 +212,7 @@ type
   TConfigMsg = record
     Command: string[255];
     Parameter: string[255];
-    PluginID: Integer;
+    PluginID: string[255];
   end;
 
 function GetDelimitedActionList: WideString; external 'SharpAPI.dll' name 'GetDelimitedActionList';
@@ -231,7 +231,7 @@ function GetSharpeDirectory: PChar; external 'SharpAPI.dll' name 'GetSharpeDirec
 function GetSharpeUserSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeUserSettingsPath';
 function GetSharpeGlobalSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeGlobalSettingsPath';
 function GetCenterDirectory: PChar; external 'SharpAPI.dll' name 'GetCenterDirectory';
-function CenterMsg(Command, Param : PChar; PluginID : integer): hresult; external 'SharpAPI.dll' name 'CenterMsg';
+function CenterMsg(Command, Param, PluginID : PChar): hresult; external 'SharpAPI.dll' name 'CenterMsg';
 
 function SetNewIconSet(NewIconSet : String) : hresult; external 'SharpAPI.dll' name 'SetNewIconSet';
 function SetNewTheme(NewTheme : String; NewThemeID : integer; broadcast : boolean) : hresult; external 'SharpAPI.dll' name 'SetNewTheme';

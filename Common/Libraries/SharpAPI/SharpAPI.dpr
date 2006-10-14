@@ -271,7 +271,7 @@ type
   TConfigMsg = record
     Command: string[255];
     Parameter: string[255];
-    PluginID: Integer;
+    PluginID: string[255];
   end;
 
   PActionCmd = ^TActionCmd;
@@ -706,7 +706,7 @@ begin
   end;
 end;
 
-function CenterMsg(Command, Param: PChar; PluginID: integer): hresult;
+function CenterMsg(Command, Param, PluginID :PChar): hresult;
 var
   cds: TCopyDataStruct;
   wnd: hWnd;
@@ -1415,7 +1415,7 @@ begin
   end;
 end;
 
-function ConfigMsg(ACommand: Pchar; AParameter: PChar; APluginID: Integer):
+function ConfigMsg(ACommand: Pchar; AParameter, APluginID: PChar):
   hresult;
 var
   cds: TCopyDataStruct;
