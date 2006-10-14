@@ -41,8 +41,7 @@ type
   TConfigDll = record
     filename: string;
     Dllhandle: Thandle;
-    Open: function(const APluginID:Integer; owner: hwnd): hwnd;
-    New: function(const APluginID:Integer; owner: hwnd): hwnd;
+    Open: function(const APluginID:Pchar; owner: hwnd): hwnd;
     Close: function(owner: hwnd; SaveSettings: Boolean): boolean;
     ConfigDllType: function:Integer;
 
@@ -57,7 +56,7 @@ type
 
     ChangeSection: procedure(const ASection:TSectionObject);
     AddSections: procedure(var AList: TSectionObjectList; var AItemHeight: Integer);
-    GetDisplayName: procedure (const APluginID:Integer; var ADisplayName:PChar);
+    GetDisplayName: procedure (const APluginID:Pchar; var ADisplayName:PChar);
 
     Help: procedure;
   end;
@@ -76,7 +75,6 @@ begin
     if plugin.dllhandle <> 0 then
       FreeLibrary(plugin.dllhandle);
     plugin.Open := nil;
-    plugin.New := nil;
     plugin.Close := nil;
     plugin.Help := nil;
     plugin.ConfigDllType := nil;
@@ -113,7 +111,6 @@ begin
     result.dllhandle := LoadLibrary(filename);
     if result.dllhandle <> 0 then begin
       @result.Open := GetProcAddress(result.dllhandle, 'Open');
-      @result.New := GetProcAddress(result.dllhandle, 'New');
       @result.Close := GetProcAddress(result.Dllhandle, 'Close');
       @result.Help := GetProcAddress(result.Dllhandle, 'Help');
       @result.ConfigDllType := GetProcAddress(result.Dllhandle, 'ConfigDllType');

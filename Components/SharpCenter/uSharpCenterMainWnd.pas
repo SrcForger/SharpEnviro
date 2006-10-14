@@ -57,7 +57,7 @@ uses
   jvSimpleXml,
   Tabs,
   JvOutlookBar,
-  SharpEListBox, SharpESkinManager, uSharpCenterSectionList,
+  SharpEListBox, SharpESkinManager, uSharpCenterSectionList, SharpThemeApi,
   uSharpCenterDllMethods, uSharpCenterManager, JvExStdCtrls, JvHtControls;
 
 type
@@ -138,10 +138,10 @@ type
   private
     FUnloadCommand: string;
     FUnloadParam: string;
-    FUnloadID: integer;
+    FUnloadID: string;
     FName: string;
     FDllFilename: string;
-    FPluginID: Integer;
+    FPluginID: string;
     FConfigDll: TConfigDll;
     FSections: TSectionObjectList;
     FCancelClicked: Boolean;
@@ -158,19 +158,18 @@ type
   public
     procedure BuildSectionRoot;
     procedure GetCopyData(var Msg: TMessage); message wm_CopyData;
-    procedure ExecuteCommand(ACommand, AParameter: string; APluginID: Integer);
-    procedure UnloadDllWithTimer(ACommand, AParameter: string; APluginID:
-      Integer);
+    procedure ExecuteCommand(ACommand, AParameter, APluginID: String);
+    procedure UnloadDllWithTimer(ACommand, AParameter, APluginID:String);
 
     procedure InitialiseWindow(AOwner: TWinControl; AName: string);
     procedure UnloadDll;
     procedure ReloadDll;
-    procedure LoadDll(AFileName: string);
+    procedure LoadDll(AFileName, APluginID:String);
     procedure UpdateSize;
     procedure SaveChanges;
     procedure UpdateSections;
     procedure DisablePluginButtons;
-    function GetDisplayName(ADllFilename: string; APluginID: Integer): string;
+    function GetDisplayName(ADllFilename, APluginID: String): string;
 
     procedure SettingsChanged(var Msg: TMessage); message WM_SETTINGSCHANGED;
     procedure ButtonStateEvent(var Msg: TMessage); message WM_SCGLOBALBTNMSG;
@@ -179,13 +178,13 @@ type
     property ConfigChanged: Boolean read GetConfigChanged;
     property ConfigDll: TConfigDll read FConfigDll write
       FConfigDll;
-    property PluginID: Integer read FPluginID write FPluginID;
+    property PluginID: String read FPluginID write FPluginID;
     property DllFilename: string read FDllFilename write FDllFilename;
     property Name: string read FName write FName;
     property Sections: TSectionObjectList read FSections write FSections;
     property PluginHandle: THandle read FPluginHandle write FPluginHandle;
 
-    procedure LoadConfiguration(AConfigurationFile: string);
+    procedure LoadConfiguration(AConfigurationFile, APluginID:String);
     procedure LoadSelectedDll(AItemIndex: Integer);
   end;
 
@@ -329,6 +328,8 @@ begin
   FConfigDll.Dllhandle := 0;
   FSections := TSectionObjectList.Create;
   DisablePluginButtons;
+
+  SharpThemeApi.InitializeTheme;
 end;
 
 procedure TSharpCenterWnd.FormDestroy(Sender: TObject);
@@ -389,49 +390,47 @@ begin
   end;
 end;
 
-procedure TSharpCenterWnd.UnloadDllWithTimer(ACommand, AParameter: string;
-  APluginID: Integer);
+procedure TSharpCenterWnd.UnloadDllWithTimer(ACommand, AParameter, APluginID:String);
 begin
-  FUnloadCommand := ACommand;
+  FUnloadCommand := cUnloadDll;
   FUnloadParam := AParameter;
   FUnloadID := APluginID;
   UnloadTimer.Enabled := True;
 end;
 
-procedure TSharpCenterWnd.ExecuteCommand(ACommand, AParameter: string;
-  APluginID: Integer);
+procedure TSharpCenterWnd.ExecuteCommand(ACommand, AParameter, APluginID:String);
 begin
   // navigate to folder
-  if CompareStr(ACommand, cChangeFolder) = 0 then
+  if CompareText(ACommand, cChangeFolder) = 0 then
   begin
     if FConfigDll.Dllhandle <> 0 then
       UnloadDllWithTimer(ACommand, AParameter, APluginID);
 
       SharpCenterManager.BuildSectionItemsFromPath(AParameter, SharpCenterWnd.lbTree);
   end
-  else if CompareStr(ACommand, cUnloadDll) = 0 then
+  else if CompareText(ACommand, cUnloadDll) = 0 then
   begin
     if FConfigDll.Dllhandle <> 0 then
       UnloadDllWithTimer(ACommand, AParameter, APluginID);
   end
-  else if CompareStr(ACommand, cLoadConfig) = 0 then
+  else if CompareText(ACommand, cLoadConfig) = 0 then
   begin
     if FConfigDll.Dllhandle <> 0 then
       UnloadDllWithTimer(ACommand, AParameter, APluginID);
 
     lbTree.Items.Clear;
-    LoadConfiguration(AParameter);
   end;
 end;
 
 procedure TSharpCenterWnd.UnloadTimerTimer(Sender: TObject);
 begin
   try
-    if CompareStr(FUnloadCommand, cUnloadDll) = 0 then
+    if CompareText(FUnloadCommand, cUnloadDll) = 0 then
     begin
       UnloadDll;
+      LoadConfiguration(FUnloadParam, FUnloadID);
     end
-    else if CompareStr(FUnloadCommand, cChangeFolder) = 0 then
+    else if CompareText(FUnloadCommand, cChangeFolder) = 0 then
     begin
       UnloadDll;
       SharpCenterManager.BuildSectionItemsFromPath(FUnloadParam,
@@ -446,7 +445,7 @@ begin
           ExtractFileName(FUnloadParam));
       end;
       PluginID := FUnloadID;
-      LoadConfiguration(FUnloadParam);
+      LoadConfiguration(FUnloadParam,FPluginID);
     end;
   finally
     UnloadTimer.Enabled := False;
@@ -491,10 +490,10 @@ end;
 
 procedure TSharpCenterWnd.ReloadDll;
 begin
-  LoadDll(FDllFilename);
+  LoadDll(FDllFilename, FPluginID);
 end;
 
-procedure TSharpCenterWnd.LoadDll(AFileName: string);
+procedure TSharpCenterWnd.LoadDll(AFileName, APluginID:String);
 var
   Xml: TJvSimpleXML;
   iConfigDllType: Integer;
@@ -506,8 +505,8 @@ begin
   try
 
     // Check Dll is already loaded
-    if @FConfigDll.Open <> nil then
-      UnloadDll;
+    //if @FConfigDll.Open <> nil then
+    //  UnloadDll;
 
     if FileExists(AFileName) then
     begin
@@ -518,7 +517,7 @@ begin
 
         //Self.ParentWindow := OwnerWinControl.Handle;
 
-        FPluginHandle := FConfigDll.Open(FPluginID, pnlPlugin.Handle);
+        FPluginHandle := FConfigDll.Open(Pchar(APluginID), pnlPlugin.Handle);
         pnlPlugin.ParentWindow := FPluginHandle;
 
         ResizeToFitWindow(PluginHandle, pnlPlugin);
@@ -559,8 +558,7 @@ begin
 
                   if ItemNamed[FName] <> nil then
                     FPluginID :=
-                      ItemNamed[FName].Properties.IntValue('ID',
-                      -1);
+                      ItemNamed[FName].Properties.Value('ID','');
               end;
             end;
         end;
@@ -694,7 +692,7 @@ begin
   if FConfigDll.Close(Self.Handle, True) then
   begin
     iConfigDllType := FConfigDll.ConfigDllType;
-    SharpEBroadCast(WM_SHARPEUPDATESETTINGS, iConfigDllType, FPluginID);
+    SharpEBroadCast(WM_SHARPEUPDATESETTINGS, iConfigDllType, StrToInt(FPluginID));
 
     btnSave.Enabled := False;
     btnCancel.Enabled := False;
@@ -718,7 +716,7 @@ var
   tmpPiC: TPngImageCollectionItem;
 begin
   if FileExists(ASectionObject.Icon) then
-  begin
+  begin    
     tmpPngImage := TPNGObject.Create;
     tmpPngImage.LoadFromFile(ASectionObject.Icon);
     tmpPngImage.CreateAlpha;
@@ -731,14 +729,9 @@ begin
   end
   else
     Result := 0;
-
-  {if SharpCenterWnd.picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6 >
-  SharpCenterWnd.lbSections.ItemHeight then
-    SharpCenterWnd.lbSections.ItemHeight :=
-    SharpCenterWnd.picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6; }
 end;
 
-procedure TSharpCenterWnd.LoadConfiguration(AConfigurationFile: string);
+procedure TSharpCenterWnd.LoadConfiguration(AConfigurationFile, APluginID:String);
 var
   xml: TJvSimpleXML;
   i: Integer;
@@ -769,7 +762,7 @@ begin
           if Items.Item[i].Items.ItemNamed['Icon'] <> nil then
             sIcon := Items.Item[i].Items.ItemNamed['Icon'].Value;
 
-          s := GetDisplayName(sPath + sDll, -1);
+          s := GetDisplayName(sPath + sDll, '');
 
           if s = '' then
             NewBT.Caption := Items.Item[i].Name
@@ -778,7 +771,7 @@ begin
 
           lbTree.Items.AddObject(NewBT.Caption, NewBT);
           TBTDataDll(NewBT).Path := sPath + sDll;
-          TBTDataDll(NewBT).PluginID := -1;
+          TBTDataDll(NewBT).PluginID := APluginID;
           NewBT.ID := -1;
           NewBT.BT := btDll;
 
@@ -806,7 +799,7 @@ begin
 
   if @FConfigDll.AddSections <> nil then
   begin
-    ItemHeight := SharpCenterWnd.lbTree.ItemHeight;
+    ItemHeight := 32;
     FConfigDll.AddSections(FSections, num);
 
     // Add to Section List
@@ -883,7 +876,8 @@ begin
   tmpItem := TBTDataDll(lbTree.Items.Objects[AItemIndex]);
   if tmpItem <> nil then
   begin
-    LoadDll(tmpItem.Path);
+    FPluginID := tmpItem.PluginID;
+    LoadDll(tmpItem.Path,tmpItem.PluginID);
 
     lbTree.ItemIndex := AItemIndex;
   end;
@@ -907,8 +901,7 @@ begin
   end;
 end;
 
-function TSharpCenterWnd.GetDisplayName(ADllFilename: string;
-  APluginID: Integer): string;
+function TSharpCenterWnd.GetDisplayName(ADllFilename, APluginID:String): string;
 var
   tmpConfigDll: TConfigDll;
   s: PChar;
@@ -922,7 +915,7 @@ begin
     try
       if @tmpConfigDll.GetDisplayName <> nil then
       begin
-        tmpConfigDll.GetDisplayName(APluginID, s);
+        tmpConfigDll.GetDisplayName(Pchar(APluginID), s);
         Result := s;
       end;
 
@@ -954,10 +947,11 @@ begin
   else
     ABTData.IconIndex := 2;
 
-  if picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6 >
+    lbTree.ItemHeight := 32;
+  {if picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6 >
     lbTree.ItemHeight then
     lbTree.ItemHeight :=
-      picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6;
+      picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6; }
 
 end;
 
@@ -978,8 +972,8 @@ procedure TSharpCenterWnd.lblTreeHyperLinkClick(Sender: TObject;
   LinkName: string);
 begin
   if ExtractFileExt(LinkName) = '.con' then
-  ExecuteCommand(cLoadConfig,LinkName,-1) else
-  ExecuteCommand(cChangeFolder,LinkName,-1);
+  ExecuteCommand(cLoadConfig,LinkName,'') else
+  ExecuteCommand(cChangeFolder,LinkName,'');
 
   SharpCenterManager.SetNavRoot(LinkName);
 end;

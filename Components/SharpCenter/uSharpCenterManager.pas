@@ -79,12 +79,12 @@ type
   TBTDataDll = class(TBTData)
   private
     FPath: string;
-    FPluginID: Integer;
+    FPluginID: string;
     FDllProc: TConfigDll;
   public
     property Path: string read FPath write FPath;
     property DllProc: TConfigDll read FDllProc write FDllProc;
-    property PluginID: Integer read FPluginID write FPluginID;
+    property PluginID: String read FPluginID write FPluginID;
   end;
 
 type
@@ -107,13 +107,13 @@ type
   private
     FCommand: string;
     FParameter: string;
-    FPluginID: Integer;
+    FPluginID: String;
     FID: Integer;
   public
     property ID: Integer read FID write FID;
     property Command: string read FCommand write FCommand;
     property Parameter: string read FParameter write FParameter;
-    property PluginID: Integer read FPluginID write FPluginID;
+    property PluginID: String read FPluginID write FPluginID;
   end;
 
 type
@@ -127,9 +127,9 @@ type
     procedure Delete(AItem: TSharpCenterHistoryItem);
 
     function AddFolder(APath: string): TSharpCenterHistoryItem;
-    function AddDll(ADll: string; APluginID: Integer): TSharpCenterHistoryItem;
+    function AddDll(ADll, APluginID: String): TSharpCenterHistoryItem;
     function AddConfig(AConfig: string): TSharpCenterHistoryItem;
-    function Add(ACommand, AParameter: string; APluginID: Integer): TSharpCenterHistoryItem;
+    function Add(ACommand, AParameter, APluginID: String): TSharpCenterHistoryItem;
     function GetLastEntry: TSharpCenterHistoryItem;
     property List: TList read FList write FList;
   end;
@@ -221,7 +221,7 @@ begin
 
           SharpCenterWnd.InitialiseWindow(SharpCenterWnd.pnlMain,
             tmpBTDataConfig.Caption);
-          SharpCenterWnd.LoadConfiguration(FCurrentCommand.Parameter);
+          SharpCenterWnd.LoadConfiguration(FCurrentCommand.Parameter,FCurrentCommand.PluginID);
 
         end;
 
@@ -294,7 +294,7 @@ var
 begin
   // Clear list box
   AListbox.Items.Clear;
-  Alistbox.ItemHeight := 16;
+  Alistbox.ItemHeight := 32;
   try
     FCurrentCommand.Command := cChangeFolder;
     FCurrentCommand.Parameter := APath;
@@ -399,10 +399,11 @@ begin
   else
     ABTData.IconIndex := 2;
 
-  if SharpCenterWnd.picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6 >
+  SharpCenterWnd.lbTree.ItemHeight := 32;
+  {if SharpCenterWnd.picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6 >
     SharpCenterWnd.lbTree.ItemHeight then
     SharpCenterWnd.lbTree.ItemHeight :=
-      SharpCenterWnd.picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6;
+      SharpCenterWnd.picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6;  }
 end;
 
 { TBTData }
@@ -472,14 +473,14 @@ begin
   Result := TSharpCenterHistoryItem.Create;
   Result.Command := cChangeFolder;
   Result.Parameter := APath;
-  Result.PluginID := -1;
+  Result.PluginID := '';
   Result.ID := FList.Count;
 
   FList.Add(Result);
 end;
 
 function TSharpCenterHistory.AddDll(
-  ADll: string; APluginID: Integer): TSharpCenterHistoryItem;
+  ADll, APluginID: string): TSharpCenterHistoryItem;
 begin
   Result := nil;
   if ADll = '' then
@@ -504,7 +505,7 @@ begin
   Result := TSharpCenterHistoryItem.Create;
   Result.Command := cLoadConfig;
   Result.Parameter := AConfig;
-  Result.PluginID := -1;
+  Result.PluginID := '';
   Result.ID := FList.Count;
 
   FList.Add(Result);
@@ -517,7 +518,7 @@ begin
     Result := TSharpCenterHistoryItem(FList.Last);
 end;
 
-function TSharpCenterHistory.Add(ACommand, AParameter: string; APluginID: Integer): TSharpCenterHistoryItem;
+function TSharpCenterHistory.Add(ACommand, AParameter, APluginID: string): TSharpCenterHistoryItem;
 begin
   Result := TSharpCenterHistoryItem.Create;
   Result.Command := ACommand;
@@ -557,8 +558,8 @@ begin
       if i <> 0 then
         sPre := sPre + '\' + tmpStrl[i];
 
-      if ((CompareStr(PathAddSeparator(ExtractFilePath(sPre)),ExtractFilePath(FCurrentCommand.Parameter)) = 0) or
-        (CompareStr(PathAddSeparator(sPre),FCurrentCommand.Parameter) = 0)) then
+      if ((CompareText(PathAddSeparator(ExtractFilePath(sPre)),ExtractFilePath(FCurrentCommand.Parameter)) = 0) or
+        (CompareText(PathAddSeparator(sPre),FCurrentCommand.Parameter) = 0)) then
       sHtml := sHtml + Format('/<A HREF="%s"><b>%s</b></A>', [sPre, tmpStrl[i]]) else
       sHtml := sHtml + Format('/<A HREF="%s">%s</A>', [sPre, tmpStrl[i]]);
     end;

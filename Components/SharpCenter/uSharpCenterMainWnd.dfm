@@ -1852,7 +1852,7 @@ object SharpCenterWnd: TSharpCenterWnd
           Left = 4
           Top = 5
           Width = 21
-          Height = 20
+          Height = 15
           Caption = '<A HREF="">Test</A>'
           Transparent = True
           OnHyperLinkClick = lblTreeHyperLinkClick
