@@ -79,11 +79,13 @@ function GetSchemeColorByIndex(pIndex: integer): TSharpESkinColor; external 'Sha
 function GetSchemeColorIndexByTag(pTag: string): Integer; external 'SharpThemeApi.dll' name 'GetSchemeColorIndexByTag';
 function GetSchemeColorByTag(pTag: string): TSharpESkinColor; external 'SharpThemeApi.dll' name 'GetSchemeColorByTag';
 function ParseColor(AColorStr:PChar):Integer; external 'SharpThemeApi.dll' name 'ParseColor';
+function GetSchemeDirectory : PChar; external 'SharpThemeApi.dll' name 'GetSchemeDirectory';
 
 // Theme Skin
 function GetSkinName : PChar; external 'SharpThemeApi.dll' name 'GetSkinName';
 function GetSkinColorCount : integer; external 'SharpThemeApi.dll' name 'GetSkinColorCount';
 function GetSkinColor(pIndex : integer) : TSharpESkinColor; external 'SharpThemeApi.dll' name 'GetSkinColor';
+function GetSkinDirectory : PChar; external 'SharpThemeApi.dll' name 'GetSkinDirectory';
 
 // Theme IconSet
 function GetIconSetName : PChar; external 'SharpThemeApi.dll' name 'GetIconSetName';

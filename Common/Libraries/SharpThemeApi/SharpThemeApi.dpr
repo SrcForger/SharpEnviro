@@ -721,6 +721,11 @@ end;
 //      EXPORT: THEME SKIN
 // ##########################################
 
+function GetSkinDirectory : PChar;
+begin
+  result := PChar(Theme.Skin.Directory);
+end;
+
 function GetSkinName: PChar;
 begin
   result := PChar(Theme.Skin.Name);
@@ -749,6 +754,11 @@ end;
 // ##########################################
 //      EXPORT: THEME SCHEME
 // ##########################################
+
+function GetSchemeDirectory : PChar;
+begin
+  result := PChar(GetSkinDirectory + SKINS_SCHEME_DIRECTORY + '\');
+end;
 
 function GetSchemeName: PChar;
 begin
@@ -1001,12 +1011,14 @@ exports
   GetSchemeColorIndexByTag,
   GetSchemeColorByIndex,
   GetSchemeColorCount,
+  GetSchemeDirectory,
   ParseColor,
 
   // Theme Skin
   GetSkinName,
   GetSkinColorCount,
   GetSkinColor,
+  GetSkinDirectory,
 
   // Theme IconSet
   GetIconSetName,
