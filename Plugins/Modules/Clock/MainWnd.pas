@@ -88,8 +88,11 @@ begin
       else sStyle := lsMedium
     end;
   end;
-  lb_clock.LabelStyle := sStyle;
-  lb_clock.UpdateSkin;
+  if lb_clock.LabelStyle = sStyle then
+     if lb_clock.LabelStyle = lsSmall then lb_clock.LabelStyle := lsMedium
+        else lb_clock.LabelStyle := lsSmall;
+  ClockTimer.OnTimer(ClockTimer);
+  lb_clock.Updateskin;
 end;
 
 procedure TMainForm.SetSize(NewWidth : integer);
@@ -110,7 +113,6 @@ begin
   Hint := inttostr(NewWidth);
   if newWidth <> width then
      if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
-
 end;
 
 
