@@ -757,7 +757,8 @@ end;
 
 function GetSchemeDirectory : PChar;
 begin
-  result := PChar(GetSkinDirectory + SKINS_SCHEME_DIRECTORY + '\');
+  rtemp := GetSkinDirectory + SKINS_SCHEME_DIRECTORY + '\';
+  result := PChar(rtemp);
 end;
 
 function GetSchemeName: PChar;
@@ -982,6 +983,16 @@ begin
   result := LoadCurrentThemeF(False);
 end;
 
+// ##########################################
+//      EXPORT: GLOBAL
+// ##########################################
+
+function GetCurrentSharpEThemeName : PChar;
+begin
+  rtemp := GetCurrentThemeName;
+  result := PChar(rtemp);
+end;
+
 
 {$R *.res}
 
@@ -992,6 +1003,9 @@ exports
   LoadTheme,
   LoadCurrentTheme,
   LoadCurrentThemeF,
+
+  //Global
+  GetCurrentSharpEThemeName,
 
   // Theme Data
   GetCurrentThemeDirectory,

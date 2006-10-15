@@ -59,6 +59,9 @@ function LoadTheme(pName : PChar) : boolean; overload; external 'SharpThemeApi.d
 function LoadTheme : boolean; overload; external 'SharpThemeApi.dll' name 'LoadCurrentTheme';
 function LoadTheme(ForceReload : boolean) : boolean; overload; overload; external 'SharpThemeApi.dll' name 'LoadCurrentThemeF';
 
+// Global data
+function GetCurrentSharpEThemeName : PChar; external 'SharpThemeApi.dll' name 'GetCurrentSharpEThemeName';
+
 // Theme Info
 function GetThemeName: PChar; external 'SharpThemeApi.dll' name 'GetThemeName';
 function GetThemeAuthor: PChar; external 'SharpThemeApi.dll' name 'GetThemeAuthor';
