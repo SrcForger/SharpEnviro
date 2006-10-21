@@ -436,11 +436,11 @@ procedure SetThemeSchemeDefault;
 begin
   Theme.Scheme.Name := 'Default';
 
-  setlength(Theme.Scheme.Colors, 1);
+  {setlength(Theme.Scheme.Colors, 1);
   Theme.Scheme.Colors[0].Name := 'Default';
   Theme.Scheme.Colors[0].Tag := 'Default';
   Theme.Scheme.Colors[0].Info := '';
-  Theme.Scheme.Colors[0].Color := 16777215;
+  Theme.Scheme.Colors[0].Color := 16777215;  }
 end;
 
 procedure SetThemeSkinDefault;
