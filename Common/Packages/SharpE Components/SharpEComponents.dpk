@@ -39,7 +39,16 @@ requires
   Jcl,
   SharpESkinComponents,
   JclVcl,
-  VclSmp;
+  VclSmp,
+  JvStdCtrlsD9R,
+  JvInterpreterD9R,
+  vcldb,
+  dbrtl,
+  bdertl,
+  JvCustomD9R,
+  JvMMD9R,
+  JvCtrlsD9R,
+  Jv3rdD9R;
 
 contains
   uSharpeColorBox in '..\..\Delphi Components\SharpEColorBox\uSharpeColorBox.pas',
@@ -50,6 +59,8 @@ contains
   uScHotkeyEdit in '..\..\Delphi Components\SCHotkeyEdit\uScHotkeyEdit.pas',
   VKToString in '..\..\Units\SCHotkeyManager\VKToString.pas',
   uScHotkeyMgr in '..\..\Units\SCHotkeyManager\uScHotkeyMgr.pas',
-  MBButtonPanel in '..\..\Delphi Components\MBButtonPanel\MBButtonPanel.pas';
+  MBButtonPanel in '..\..\Delphi Components\MBButtonPanel\MBButtonPanel.pas',
+  uSharpeGaugeBoxEdit in '..\..\Delphi Components\SharpEGaugeBox\uSharpeGaugeBoxEdit.pas',
+  uSharpeGaugeBoxWnd in '..\..\Delphi Components\SharpEGaugeBox\uSharpeGaugeBoxWnd.pas';
 
 end.
