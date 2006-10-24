@@ -1,0 +1,6 @@
+// ----------------------------------------------------------------------------
+// List all the Bitmaps etc. to build into RES
+// ----------------------------------------------------------------------------
+FONT_BMP BITMAP "RC\scfont.bmp"
+FONTDROPLEFT_BMP BITMAP "RC\dropleft_Gray.bmp"
+FONTARR_BMP BITMAP "RC\scfontarr.bmp"

@@ -301,16 +301,16 @@ var
   afont: TDeskFont;
   text: TStringlist;
   x, y: integer;
-  c, bkgcolor: TColor;
+  c: TColor;
 begin
   text := TStringList.Create;
+  bmp := TBitmap32.Create;
   try
 
     afont.Bold := chkBold.Checked;
     afont.Italic := chkItalic.Checked;
     afont.Underline := chkUnderline.Checked;
     afont.Shadow := chkShadow.Checked;
-    bkgcolor := AlterColor(secFontColor.Color, 100);
     secFontColor.BackgroundColor := clWindow;
 
     if chkAlpha.Checked then
@@ -343,8 +343,6 @@ begin
     afont.AALevel := 0;
 
     text.Add('#Environment');
-
-    bmp := TBitmap32.Create;
     bmp.SetSize(imgFontPreview.Width + 64, imgFontPreview.Height + 64);
 
     if radBackWhite.Checked then
@@ -463,8 +461,6 @@ var
   imageindex:Integer;
   itemindex: integer;
   textheight: Integer;
-  fontname:String;
-  tmp:String;
 begin
   cbxFontName.canvas.fillrect(rect);
 

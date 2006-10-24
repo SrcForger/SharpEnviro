@@ -1,7 +1,7 @@
 @echo off
 
-del Resources.res
+del SharpeFontSelectorBitmaps.res
 
-"brcc32" Resources.rc
+"brcc32" SharpeFontSelectorBitmaps.rc
 
 pause

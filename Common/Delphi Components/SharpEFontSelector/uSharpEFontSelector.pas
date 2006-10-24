@@ -62,21 +62,17 @@ type
     FBoldEnabled: Boolean;
     FItalicEnabled: Boolean;
     FUnderlineEnabled: Boolean;
-    FCustomScheme: boolean;
     FEnabled: Boolean;
     FOnAfterDialog: TNotifyEvent;
     FFontBackground: TSEFBackgroundType;
     FFlat: Boolean;
 
     function CreateInitialControls: Boolean;
-    procedure DrawBitmap(Left, Top: Integer; ResourceName: string; var Bitmap: TBitmap32;
-      TransparentColor: Tcolor);
     function Execute: Boolean;
 
     procedure BtnPropertiesClick(Sender: TObject);
     procedure SetFont(const Value: TSharpEFontProperties);
-    procedure SetEnabled(const Value: boolean);
-    procedure SetFlat(const Value: Boolean);
+    procedure SetEnabled(const Value: boolean); 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -84,7 +80,6 @@ type
   protected
   published
     property Owner;
-    property Flat: Boolean read FFlat Write SetFlat;
     property Font: TSharpEFontProperties read FFont write SetFont;
     property FontBackground: TSEFBackgroundType read FFontBackground write FFontBackground;
     property ShadowEnabled: Boolean read FShadowEnabled write FShadowEnabled;
@@ -109,7 +104,7 @@ uses
 
 { TSharpEFontSelector }
 
-{$R Resources.res}
+{$R SharpeFontSelectorBitmaps.res}
 
 procedure Register;
 begin
@@ -187,19 +182,22 @@ begin
 
   // Get Initial Values
   R := Rect(Self.Left, Self.Top, Self.Width, Self.Height);
-  ButtonWidth := 23;
+  ButtonWidth := 15;
 
   FSbProperties := TSpeedButton.Create(Self);
-  with FSbProperties do begin
+  with FSbProperties do
+  begin
     Parent := Self;
     Align := alRight;
-    Width := ButtonWidth-2;
-    Font.Style := [fsBold];
-    Caption := '...';
+    Width := ButtonWidth;
+    Caption := '';
     Flat := True;
-
+    Color := clWindow;
+    ParentColor := True;
     OnClick := BtnPropertiesClick;
   end;
+
+  FSbProperties.Glyph.LoadFromResourceName(HInstance,'FONTDROPLEFT_BMP');
 
 end;
 
@@ -209,26 +207,13 @@ begin
   inherited;
 end;
 
-procedure TSharpEFontSelector.DrawBitmap(Left, Top: Integer;
-  ResourceName: string; var Bitmap: TBitmap32; TransparentColor: Tcolor);
-var
-  tmpBmp: TBitmap;
-begin
-  tmpBmp := TBitmap.Create;
-  tmpBmp.LoadFromResourceName(hInstance, ResourceName);
-  tmpBmp.TransparentColor := TransparentColor;
-  tmpBmp.Transparent := True;
-  Bitmap.Canvas.Draw(Left, Top, tmpBmp);
-
-  tmpBmp.Free;
-end;
-
 function TSharpEFontSelector.Execute: Boolean;
 var
   x: integer;
 
 begin
-
+    Result := False;
+    
     // Initialise Font Selector Window
     with frmFontSelector do begin
 
@@ -268,7 +253,6 @@ begin
       if FAlphaEnabled then begin
         chkAlpha.Visible := True;
         chkAlpha.Left := x;
-        x := x + chkAlpha.Width + 6;
       end;
 
       pnlAlphaProps.Visible := True;
@@ -331,8 +315,7 @@ end;
 procedure TSharpEFontSelector.Paint;
 var
   MBmp: TBitmap32;
-  tmpBmp: TBitmap;
-  R, R2: TRect;
+  R: TRect;
   NameLength, SizeLength: Integer;
   TopColor, BottomColor: TColor;
   AllowedLength: Integer;
@@ -396,17 +379,6 @@ end;
 procedure TSharpEFontSelector.SetEnabled(const Value: boolean);
 begin
   FEnabled := Value;
-  Invalidate;
-end;
-
-procedure TSharpEFontSelector.SetFlat(const Value: Boolean);
-begin
-  FFlat := Value;
-
-  If Value then
-      ControlStyle := ControlStyle - [csFramed] else
-      ControlStyle := ControlStyle + [csFramed];
-
   Invalidate;
 end;
 
