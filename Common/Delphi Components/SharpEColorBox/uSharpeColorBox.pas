@@ -288,7 +288,9 @@ begin
       Color := FColorDialog.Color;
       TMenuItem(Sender).Tag := Color;
     end;
-    FColorDialog.CustomColors.SaveToFile(s);
+
+    if fileexists(s) then
+      FColorDialog.CustomColors.SaveToFile(s);
 
   end
   else
