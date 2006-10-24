@@ -79,8 +79,7 @@ type
     procedure btnOkClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
 
-    procedure secFontColorColorClick(Sender: TObject; Color: TColor;
-      ColType: TClickedColorID);
+    procedure secFontColorColorClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure StateChange(Sender: TObject);
     procedure gbFontAlphaMouseUp(Sender: TObject; Button: TMouseButton;
@@ -264,8 +263,7 @@ begin
   ModalResult := MrCancel;
 end;
 
-procedure TfrmFontSelector.secFontColorColorClick(Sender: TObject;
-  Color: TColor; ColType: TClickedColorID);
+procedure TfrmFontSelector.secFontColorColorClick(Sender: TObject);
 begin
   UpdateFontPreview;
 end;
@@ -313,6 +311,7 @@ begin
     afont.Underline := chkUnderline.Checked;
     afont.Shadow := chkShadow.Checked;
     bkgcolor := AlterColor(secFontColor.Color, 100);
+    secFontColor.BackgroundColor := clWindow;
 
     if chkAlpha.Checked then
       afont.Alpha := gbFontAlpha.Position
@@ -358,9 +357,9 @@ begin
     for y := 0 to (imgFontPreview.Height - 2) div 12 + 1 do
       for x := 0 to (imgFontPreview.Width - 2) div 12 + 1 do begin
         if (x mod 2) - (y mod 2) = 0 then
-          c := clsilver
+          c := darker(clWhite,15)
         else
-          c := clgray;
+          c := darker(clWhite,10);
         bmp.FillRect(x * 12, y * 12, x * 12 + 12, y * 12 + 12, color32(c));
       end;
     end;

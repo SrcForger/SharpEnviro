@@ -101,8 +101,9 @@ object frmFontSelector: TfrmFontSelector
         Width = 320
         Height = 122
         Align = alClient
+        Bitmap.ResamplerClassName = 'TNearestResampler'
         BitmapAlign = baCenter
-        Scale = 1
+        Scale = 1.000000000000000000
         ScaleMode = smNormal
         TabOrder = 0
         object Panel3: TPanel
@@ -122,8 +123,6 @@ object frmFontSelector: TfrmFontSelector
             BackgroundColor = clWindow
             Color = 33023
             ColorCode = 33023
-            CustomScheme = False
-            ClickedColorID = ccCustom
             OnColorClick = secFontColorColorClick
           end
           object radBackCheck: TRadioButton
@@ -265,8 +264,6 @@ object frmFontSelector: TfrmFontSelector
             BackgroundColor = clBtnFace
             Color = 33023
             ColorCode = 33023
-            CustomScheme = False
-            ClickedColorID = ccCustom
             OnColorClick = secFontColorColorClick
           end
         end

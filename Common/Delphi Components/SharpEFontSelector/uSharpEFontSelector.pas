@@ -62,7 +62,6 @@ type
     FBoldEnabled: Boolean;
     FItalicEnabled: Boolean;
     FUnderlineEnabled: Boolean;
-    FColorScheme: TColorScheme;
     FCustomScheme: boolean;
     FEnabled: Boolean;
     FOnAfterDialog: TNotifyEvent;
@@ -76,15 +75,12 @@ type
 
     procedure BtnPropertiesClick(Sender: TObject);
     procedure SetFont(const Value: TSharpEFontProperties);
-    procedure SetCustomScheme(const Value: boolean);
-    procedure SetColorScheme(const Value: TColorScheme);
     procedure SetEnabled(const Value: boolean);
     procedure SetFlat(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
-    property ColorScheme: TColorScheme read FColorScheme write SetColorScheme;
   protected
   published
     property Owner;
@@ -97,7 +93,6 @@ type
     property ItalicEnabled: Boolean read FItalicEnabled write FItalicEnabled;
     property UnderlineEnabled: Boolean read FUnderlineEnabled write FUnderlineEnabled;
     property Color;
-    property CustomScheme: boolean read FCustomScheme write SetCustomScheme;
     property Enabled: boolean read FEnabled write SetEnabled;
 
     property OnAfterDialog: TNotifyEvent read FOnAfterDialog write FOnAfterDialog;
@@ -133,8 +128,8 @@ begin
         FFont.Size := round(edtSize.Value);
         FFont.Alpha := chkAlpha.Checked;
         FFont.AlphaValue := gbFontAlpha.Position;
-        FFont.Color := secFontColor.ColorCode;
-        FFont.ShadowColor := secShadowColor.ColorCode;
+        FFont.Color := secFontColor.Color;
+        FFont.ShadowColor := secShadowColor.Color;
         FFont.ShadowAlphaValue := gbShadowAlpha.Position;
         FFont.Shadow := chkShadow.Checked;
 
@@ -159,8 +154,10 @@ begin
   inherited;
   Width := 145;
   Height := 21;
+  BorderStyle := bsSingle;
   BevelInner := bvNone;
-  BevelOuter := bvLowered;
+  BevelOuter := bvNone;
+  BevelKind := bkNone;
 
   FFont := TSharpEFontProperties.Create;
   FFont.Name := 'Arial';
@@ -196,7 +193,7 @@ begin
   with FSbProperties do begin
     Parent := Self;
     Align := alRight;
-    Width := ButtonWidth;
+    Width := ButtonWidth-2;
     Font.Style := [fsBold];
     Caption := '...';
     Flat := True;
@@ -241,11 +238,6 @@ begin
       chkUnderline.Visible := False;
       chkShadow.Visible := False;
       chkAlpha.Visible := False;
-
-      secFontColor.CustomScheme := FCustomScheme;
-      secFontColor.ColorScheme := FColorScheme;
-      secShadowColor.CustomScheme := FCustomScheme;
-      secShadowColor.ColorScheme := FColorScheme;
 
       x := 4;
 
@@ -317,8 +309,8 @@ begin
       else
         gbShadowAlpha.Position := 75;
 
-      secFontColor.ColorCode := FFont.Color;
-      secShadowColor.ColorCode := FFont.ShadowColor;
+      secFontColor.Color := FFont.Color;
+      secShadowColor.Color := FFont.ShadowColor;
 
       case FFontBackground of
       sefbChecker: radBackCheck.Checked := True;
@@ -364,12 +356,12 @@ begin
     mBmp.Height := ClientRect.Bottom;
     mBmp.Width := ClientRect.Right;
     MBmp.Clear(Color32(Color));
-    MBmp.FrameRectS(R,color32(clBtnShadow));
+    //MBmp.Canvas.FrameRect(R);
 
     // Draw Bitmaps
-    DrawBitmap(3, 3, 'SCFONT_BMP', MBmp, clWhite);
+    //DrawBitmap(3, 3, 'SCFONT_BMP', MBmp, clWhite);
 
-    AllowedLength := FSbProperties.Left - 3 - 18;
+    AllowedLength := FSbProperties.Left- 3;
     NameLength := MBmp.TextWidth(FFont.Name);
     SizeLength := MBmp.TextWidth(Format('[%d]', [FFont.size]));
 
@@ -381,9 +373,9 @@ begin
       FontName := FFont.Name;
 
     if FEnabled then
-      MBmp.RenderText(18, 4, Format('%s [%d]', [FontName, FFont.Size]), 0, Color32(clWindowText))
+      MBmp.RenderText(1, 1, Format('%s [%d]', [FontName, FFont.Size]), 0, Color32(clWindowText))
     else
-      MBmp.RenderText(18, 4, Format('%s [%d]', [FontName, FFont.Size]), 0, Color32(clGrayText));
+      MBmp.RenderText(1, 1, Format('%s [%d]', [FontName, FFont.Size]), 0, Color32(clGrayText));
 
     if FSbProperties <> nil then
       FSbProperties.Enabled := FEnabled;
@@ -393,18 +385,6 @@ begin
     mBmp.Free;
 
   end;
-end;
-
-procedure TSharpEFontSelector.SetCustomScheme(const Value: boolean);
-begin
-  FCustomScheme := Value;
-  Invalidate;
-end;
-
-procedure TSharpEFontSelector.SetColorScheme(const Value: TColorScheme);
-begin
-  FColorScheme := Value;
-  Invalidate;
 end;
 
 procedure TSharpEFontSelector.SetFont(const Value: TSharpEFontProperties);

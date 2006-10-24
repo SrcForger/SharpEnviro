@@ -35,6 +35,8 @@ type
     FColorCode: Integer;
     FLastColor: TColor;
 
+    FSelectedID: Integer;
+
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure AdvancedDrawItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect; State:
@@ -50,6 +52,7 @@ type
     procedure SetColor(const Value: TColor);
     function GetColorCode: Integer;
     procedure SetColorCode(const Value: Integer);
+    function GetColor: TColor;
 
   public
     { Public declarations }
@@ -59,7 +62,7 @@ type
   published
     { Published declarations }
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor;
-    property Color: TColor read FColor write SetColor;
+    property Color: TColor read GetColor write SetColor;
     property ColorCode: Integer read GetColorCode write SetColorCode;
     //property ClickedColorID: TClickedColorID read FClickedColorID write SetClickedColorID;
     property OnColorClick: TNotifyEvent read FOnColorClick write FOnColorClick;
@@ -134,7 +137,7 @@ begin
     else
       Brush.Color := id;
 
-    if ((id = color) and (id < 0)) or (color = id) then
+    if ((dColor = color) and (id < 0)) or ( (id >= 0) and (fcolor = id)) then
     begin
 
       pen.Color := clBtnShadow;
@@ -252,9 +255,16 @@ begin
 
 end;
 
+function TCustomSharpeColorBox.GetColor: TColor;
+begin
+  if FColorCode < 0 then
+    Result := CodeToColor(FColorCode) else
+    Result := FColor;
+end;
+
 function TCustomSharpeColorBox.GetColorCode: Integer;
 begin
-  Result := ColorToCode(Self.Color);
+  Result := ColorToCode(FColor);
 end;
 
 procedure TCustomSharpeColorBox.MenuClick(Sender: TObject);
@@ -318,9 +328,6 @@ begin
   FMouseDown := False;
   Screen.cursor := crDefault;
 
-  //if Assigned(FOnColorClick) then
-  //  FOnColorClick(Self, color, ccCustom);
-
   Paint;
 end;
 
@@ -377,11 +384,14 @@ begin
   SetColorCode(FColor);
 
   paint;
+
+  if Assigned(FOnColorClick) then
+    FOnColorClick(Self);
 end;
 
 procedure TCustomSharpeColorBox.SetColorCode(const Value: Integer);
 begin
-  FColorCode := ColorToCode(Value);
+  FColorCode := Value;//ColorToCode(Value);
   //FColor := CodeToColor(Value);
 
   Invalidate;
@@ -403,6 +413,7 @@ begin
     FColorMenu.AutoHotkeys := maManual;
   end;
 
+  FSelectedID := 0;
   FColorMenu.Items.Clear;
   with FColorMenu.Items do
   begin
