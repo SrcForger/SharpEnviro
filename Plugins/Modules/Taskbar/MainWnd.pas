@@ -708,8 +708,11 @@ var
   FreeSpace : integer;
 begin
   DebugOutPutInfo('TMainForm.CalculateItemWidth (Procedure)');
-  for n := 0 to IList.Count -1 do
-      if IList.Items[n] <> nil then TSharpETaskItem(IList.Items[n]).State := sState;
+  try
+    for n := IList.Count -1 downto 0 do
+        if IList.Items[n] <> nil then TSharpETaskItem(IList.Items[n]).State := sState;
+  except
+  end;
   FreeSpace := Width - FSpecialButtonWidth;
   if ItemCount = 0 then sCurrentWidth := 16
      else sCurrentWidth := Max(Min((FreeSpace - ItemCount*sSpacing) div ItemCount,sMaxWidth),16);
@@ -722,20 +725,23 @@ var
 begin
   DebugOutPutInfo('TMainForm.AlignTaskComponents (Procedure)');
   try
-    for n := 0 to IList.Count -1 do
+    for n := IList.Count -1 downto 0 do
     begin
       pTaskItem := TSharpETaskItem(IList.Items[n]);
-      if not pTaskItem.Visible then pTaskItem.Visible := True;
-      if sCurrentWidth < sMaxWidth then
+      if pTaskItem <> nil then
       begin
-        pTaskItem.AutoSize := False;
-        pTaskItem.Left := FSpecialButtonWidth + n*sCurrentWidth + n*sSpacing;
-        pTaskItem.Width := sCurrentWidth;
-        pTaskItem.Height := sAutoHeight;
-      end else
-      begin
-        pTaskItem.Left := FSpecialButtonWidth + n*sMaxWidth + n*sSpacing;
-        pTaskItem.AutoSize := True;
+        if not pTaskItem.Visible then pTaskItem.Visible := True;
+        if sCurrentWidth < sMaxWidth then
+        begin
+          pTaskItem.AutoSize := False;
+          pTaskItem.Left := FSpecialButtonWidth + n*sCurrentWidth + n*sSpacing;
+          pTaskItem.Width := sCurrentWidth;
+          pTaskItem.Height := sAutoHeight;
+        end else
+        begin
+          pTaskItem.Left := FSpecialButtonWidth + n*sMaxWidth + n*sSpacing;
+          pTaskItem.AutoSize := True;
+        end;
       end;
     end;
   except
@@ -771,34 +777,38 @@ begin
 
   changed := False;
   FLocked := True;
-  for i := TM.GetCount -1 downto 0  do
-  begin
-    pItem := TM.GetItemByIndex(i);
-    if pItem <> nil then
+  try
+    for i := TM.GetCount -1 downto 0  do
     begin
-      pTaskItem := nil;
-      for n := IList.Count - 1 downto 0 do
-          if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
-          begin
-            pTaskItem := TSharpETaskItem(IList.Items[n]);
-            if not CheckFilter(pItem) then
+      pItem := TM.GetItemByIndex(i);
+      if pItem <> nil then
+      begin
+        pTaskItem := nil;
+        for n := IList.Count - 1 downto 0 do
+            if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
             begin
-              RemoveTask(TM.GetItemByHandle(pTaskItem.Tag),0);
-              changed := True;
-              pTaskItem := nil;
+              pTaskItem := TSharpETaskItem(IList.Items[n]);
+              if not CheckFilter(pItem) then
+              begin
+                RemoveTask(TM.GetItemByHandle(pTaskItem.Tag),0);
+                changed := True;
+                pTaskItem := nil;
+              end;
+              break;
             end;
-            break;
-          end;
 
-      if pTaskItem = nil then
-         if CheckFilter(pItem) then
-         begin
-           NewTask(pItem,i);
-           changed := True;
-        end;
+        if pTaskItem = nil then
+           if CheckFilter(pItem) then
+           begin
+             NewTask(pItem,i);
+             changed := True;
+          end;
+      end;
     end;
+    FLocked := False;
+  except
+    changed := True;
   end;
-  FLocked := False;
   if changed then RealignComponents(True);
 end;
 
@@ -888,16 +898,21 @@ begin
   DebugOutPutInfo('TMainForm.FlashTask (Procedure)');
   if pItem = nil then exit;
 
-  for n := 0 to IList.Count -1 do
-  begin
-    pTaskItem := TSharpETaskItem(IList.Items[n]);
-    if pTaskItem.Tag = pItem.Handle then
+
+  try
+    for n := 0 to IList.Count -1 do
     begin
-      if pTaskItem.Down then exit;
-      pTaskItem.Flashing := True;
-      //if not FlashTimer.Enabled then FlashTimer.Enabled := True;
-      exit;
+      pTaskItem := TSharpETaskItem(IList.Items[n]);
+      if pTaskItem <> nil then
+         if pTaskItem.Tag = pItem.Handle then
+         begin
+           if pTaskItem.Down then exit;
+           pTaskItem.Flashing := True;
+           //if not FlashTimer.Enabled then FlashTimer.Enabled := True;
+           exit;
+         end;
     end;
+  except
   end;
 end;
 
@@ -913,18 +928,21 @@ begin
   CheckFilterAll;
 
   try
-    for n := 0 to IList.Count -1 do
+    for n := IList.Count -1 downto 0 do
     begin
       pTaskItem := TSharpETaskItem(IList.Items[n]);
-      if (pItem.Handle <> pTaskItem.Tag ) and (pTaskItem.Down) then
-         pTaskItem.Down := False
-         else if pItem.Handle = pTaskItem.Tag then
-         begin
-           pTaskItem.Down := True;
-           if pTaskItem.Flashing then pTaskItem.Flashing := False;
-           UpdateIcon(pTaskItem,pItem);
-           pTaskItem.Repaint;
-         end;
+      if pTaskItem <> nil then
+      begin
+        if (pItem.Handle <> pTaskItem.Tag ) and (pTaskItem.Down) then
+           pTaskItem.Down := False
+        else if pItem.Handle = pTaskItem.Tag then
+        begin
+          pTaskItem.Down := True;
+          if pTaskItem.Flashing then pTaskItem.Flashing := False;
+          UpdateIcon(pTaskItem,pItem);
+          pTaskItem.Repaint;
+        end;
+      end;
     end;
   except
     SharpApi.SendDebugMessageEx('Module|Taskbar',PChar('Error in ActivateTask'),0,DMT_ERROR);
@@ -974,16 +992,19 @@ begin
 
   index1 := -1;
   index2 := -1;
-  for n:= 0 to IList.Count - 1 do
-  begin
-    if TSharpETaskItem(IList.Items[n]).Tag = pItem1.Handle then index1 := n;
-    if TSharpETaskItem(IList.Items[n]).Tag = pItem2.Handle then index2 := n;
-    if (index1 <> -1) and (index2 <> -1) then break;
+  try
+    for n:= 0 to IList.Count - 1 do
+    begin
+      if TSharpETaskItem(IList.Items[n]).Tag = pItem1.Handle then index1 := n;
+      if TSharpETaskItem(IList.Items[n]).Tag = pItem2.Handle then index2 := n;
+      if (index1 <> -1) and (index2 <> -1) then break;
+    end;
+    if ((index1 = - 1) or (index2 = -1))
+       or ((index1 = index2)) then exit;
+    IList.Exchange(index1,index2);
+    AlignTaskComponents;
+  except
   end;
-  if ((index1 = - 1) or (index2 = -1))
-     or ((index1 = index2)) then exit;
-  IList.Exchange(index1,index2);
-  AlignTaskComponents;
 end;
 
 procedure TMainForm.RemoveTask(pItem : TTaskItem; Index : integer);
@@ -993,9 +1014,12 @@ begin
   DebugOutPutInfo('TMainForm.RemoveTask (Procedure)');
   if pItem = nil then exit;
 
-  for n := IList.Count -1 downto 0 do
-      if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
-         IList.Delete(n);
+  try
+    for n := IList.Count -1 downto 0 do
+        if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
+           IList.Delete(n);
+  except
+  end;
   CalculateItemWidth(IList.Count);
   if not FLocked then ReAlignComponents(True);
 end;
@@ -1010,12 +1034,16 @@ begin
 
   CheckFilterAll;
   pTaskItem := nil;
-  for n := 0 to IList.Count - 1 do
-      if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
-      begin
-        pTaskItem := TSharpETaskItem(IList.Items[n]);
-        break;
-      end;
+  try
+    for n := 0 to IList.Count - 1 do
+        if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
+        begin
+          pTaskItem := TSharpETaskItem(IList.Items[n]);
+          break;
+        end;
+  except
+    pTaskItem := nil;
+  end;
   if pTaskItem = nil then exit;
 
   try
