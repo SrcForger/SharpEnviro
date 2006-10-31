@@ -42,7 +42,7 @@ uses
   uHotkeyServiceItemEditWnd in 'uHotkeyServiceItemEditWnd.pas' {FrmHotkeyEdit},
   uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas';
 
-function Open(const APluginID: Integer; owner: hwnd): hwnd;
+function Open(const APluginID: Pchar; owner: hwnd): hwnd;
 begin
   FrmConfig := TFrmConfig.Create(nil);
 
@@ -71,7 +71,7 @@ begin
   Result := SCU_SERVICE;
 end;
 
-procedure GetDisplayName(const APluginID:Integer; var ADisplayName:PChar);
+procedure GetDisplayName(const APluginID:Pchar; var ADisplayName:PChar);
 begin
   ADisplayName := PChar('Hotkeys');
 end;

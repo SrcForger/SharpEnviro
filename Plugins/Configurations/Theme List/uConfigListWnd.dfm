@@ -11,8 +11,6 @@ object frmConfigListWnd: TfrmConfigListWnd
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -20,12 +18,12 @@ object frmConfigListWnd: TfrmConfigListWnd
     Left = 0
     Top = 0
     Width = 426
-    Height = 291
+    Height = 288
     Style = lbOwnerDrawFixed
     Align = alClient
     BevelOuter = bvNone
     BorderStyle = bsNone
-    ItemHeight = 54
+    ItemHeight = 66
     TabOrder = 0
     OnDrawItem = themelistDrawItem
   end

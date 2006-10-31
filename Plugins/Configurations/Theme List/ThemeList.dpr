@@ -49,7 +49,7 @@ uses
 
 {$R *.res}
 
-function Open(const APluginID: Integer; owner: hwnd): hwnd;
+function Open(const APluginID: Pchar; owner: hwnd): hwnd;
 begin
   if frmConfigListWnd = nil then frmConfigListWnd := TfrmConfigListWnd.Create(nil);
 
@@ -77,7 +77,7 @@ procedure Help;
 begin
 end;
 
-procedure GetDisplayName(const APluginID: Integer; var ADisplayName: PChar);
+procedure GetDisplayName(const APluginID: Pchar; var ADisplayName: PChar);
 begin
   ADisplayName := PChar('Themes');
 end;

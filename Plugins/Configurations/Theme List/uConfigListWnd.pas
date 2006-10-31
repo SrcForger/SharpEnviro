@@ -35,29 +35,29 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, SharpApi, uSEListboxPainter, JclFileUtils,
   uSharpCenterSectionList, uSharpCenterCommon, ImgList, PngImageList,
-  SharpEListBox;
+  SharpEListBox, SharpThemeApi;
+
+type
+  TStringObject = Class(TObject)
+  public
+    Str:String;
+  end;
 
 type
   TfrmConfigListWnd = class(TForm)
     ThemeImages: TPngImageList;
     themelist: TSharpEListBox;
-    procedure FormDestroy(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure themelistDrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
   private
-    FLoadedThemeID: string;
   private
-    function GetLoadedThemeID: string;
     procedure BuildThemeList;
-    property LoadedThemeID: string read FLoadedThemeID write FLoadedThemeID;
   public
     procedure EditTheme;
   end;
 
 var
   frmConfigListWnd: TfrmConfigListWnd;
-  IDList : TStringList;
 
 implementation
 
@@ -67,29 +67,8 @@ uses GR32, GR32_PNG;
 
 { TfrmConfigListWnd }
 
-function TfrmConfigListWnd.GetLoadedThemeID: string;
-var
-  xml: TJvSimpleXML;
-  fn: string;
-begin
-  Result := '';
-  xml := TJvSimpleXML.Create(nil);
-  try
-    fn := GetSharpeUserSettingsPath + 'SharpDesk\Settings.xml';
-    if fileexists(fn) then begin
-      xml.LoadFromFile(fn);
-      with xml.Root.Items.ItemNamed['Settings'] do begin
-        Result := items.ItemNamed['Theme'].Value;
-      end;
-    end;
-  finally
-    xml.Free;
-  end;
-end;
-
 procedure TfrmConfigListWnd.FormShow(Sender: TObject);
 begin
-  FLoadedThemeID := GetLoadedThemeID;
   BuildThemeList;
 end;
 
@@ -101,10 +80,11 @@ var
   Bmp : TBitmap;
   Bmp32 : TBitmap32;
   b : boolean;
+  str:TStringObject;
 begin
   dir := SharpApi.GetSharpeUserSettingsPath + 'Themes\';
   ThemeList.Clear;
-  IDList.Clear;
+
   XML := TJvSimpleXML.Create(nil);
   bmp := TBitmap.Create;
   bmp32 := TBitmap32.Create;
@@ -118,8 +98,12 @@ begin
         if FileExists(dir + sr.Name + '\Theme.xml') then
         begin
           XML.LoadFromFile(dir + sr.Name + '\Theme.xml');
-          ThemeList.Items.Add(XML.Root.Items.Value('Name','Error loading XML Setting'));
-          IDList.Add(XML.Root.Items.Value('ID','-1'));
+
+          str := TStringObject.Create;
+          str.Str := sr.Name;
+
+          ThemeList.Items.AddObject(XML.Root.Items.Value('Name','Error loading XML Setting'),str);
+
           if FileExists(dir + sr.Name + '\Preview.png') then
           begin
             GR32_PNG.LoadBitmap32FromPNG(Bmp32,dir + sr.Name + '\Preview.png',b);
@@ -150,32 +134,30 @@ procedure TfrmConfigListWnd.themelistDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   status : String;
+  str: TStringObject;
 begin
   if Index < 0 then  exit;
+  str := TStringObject(TSharpEListBox(Control).Items.Objects[Index]);
 
   if TListBox(Control).Style = lbStandard then  exit;
 
-  if IDList[Index] = FLoadedThemeID then status := 'current theme'
-     else status := '';
+  //if IDList[Index] = FLoadedThemeID then status := 'current theme'
+  //   else status := '';
+
+  SharpThemeApi.GetThemeName;
+
 
   PaintListbox(TListBox(Control), Rect, 0, State, themelist.Items[Index], ThemeImages, Index, status, clWindowText);
 end;
 
 procedure TfrmConfigListWnd.EditTheme;
+var
+  str:TStringObject;
 begin
   if ThemeList.ItemIndex < 0 then exit;
-  SharpApi.CenterMsg('_loadConfig',PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'),strtoint(IDList[ThemeList.ItemIndex]));
-end;
 
-procedure TfrmConfigListWnd.FormCreate(Sender: TObject);
-begin
-  IDList := TStringList.Create;
-  IDList.Clear;
-end;
-
-procedure TfrmConfigListWnd.FormDestroy(Sender: TObject);
-begin
-  IDList.Free;
+  str := TStringObject(ThemeList.Items.Objects[ThemeList.ItemIndex]);
+  SharpApi.CenterMsg('_loadConfig',PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'),pchar(str.Str));
 end;
 
 end.

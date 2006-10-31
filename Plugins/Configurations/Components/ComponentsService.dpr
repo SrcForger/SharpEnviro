@@ -47,7 +47,7 @@ uses
 {$E dll}
 
 {$R *.res}
-function Open(const APluginID:Integer; owner: hwnd):hwnd;
+function Open(const APluginID:Pchar; owner: hwnd):hwnd;
 begin
 
   if frmCompItems = nil then
@@ -153,7 +153,7 @@ begin
 
 end;
 
-procedure GetDisplayName(const APluginID:Integer; var ADisplayName:PChar);
+procedure GetDisplayName(const APluginID:Pchar; var ADisplayName:PChar);
 begin
   ADisplayName := PChar('Components');
 end;
