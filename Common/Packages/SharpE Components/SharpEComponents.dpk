@@ -61,6 +61,7 @@ contains
   uScHotkeyMgr in '..\..\Units\SCHotkeyManager\uScHotkeyMgr.pas',
   MBButtonPanel in '..\..\Delphi Components\MBButtonPanel\MBButtonPanel.pas',
   uSharpeGaugeBoxEdit in '..\..\Delphi Components\SharpEGaugeBox\uSharpeGaugeBoxEdit.pas',
-  uSharpeGaugeBoxWnd in '..\..\Delphi Components\SharpEGaugeBox\uSharpeGaugeBoxWnd.pas';
+  uSharpeGaugeBoxWnd in '..\..\Delphi Components\SharpEGaugeBox\uSharpeGaugeBoxWnd.pas',
+  SharpERoundPanel in '..\..\Delphi Components\SharpERoundPanel\SharpERoundPanel.pas';
 
 end.
