@@ -573,6 +573,19 @@ begin
   result := PChar(stemp);
 end;
 
+function GetCurrentSchemeFile: PChar;
+var
+  SkinDir: string;
+  SkinName: string;
+begin
+  SkinDir := GetSkinDirectory;
+  SkinName := GetSkinName;
+  stemp := SkinDir +
+    IncludeTrailingBackslash(SkinName) +
+    'Scheme.xml';
+  result := PChar(stemp);
+end;
+
 function SetNewSkin(NewSkin: string; broadcast: boolean): hresult;
 begin
   result := RegWriteStr(SKINPATH, 'Name', NewSkin);
@@ -1845,6 +1858,7 @@ exports
   GetMostUsedItems,
   GetSkinName,
   GetCurrentSkinFile,
+  GetCurrentSchemeFile,
   SetNewSkin,
   GetThemeName,
   SetNewTheme,

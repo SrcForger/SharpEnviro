@@ -238,6 +238,8 @@ function SetNewTheme(NewTheme : String; NewThemeID : integer; broadcast : boolea
 function SetNewSkin(NewSkin : String; broadcast : boolean) : hresult; external 'SharpAPI.dll' name 'SetNewSkin';
 function GetSkinName : PChar; external 'SharpAPI.dll' name 'GetSkinName';
 function GetCurrentSkinFile : PChar; external 'SharpAPI.dll' name 'GetCurrentSkinFile';
+function GetCurrentSchemeFile : PChar; external 'SharpAPI.dll' name 'GetCurrentSchemeFile';
+
 function GetIconSetName : PChar; external 'SharpAPI.dll' name 'GetIconSetName';
 function GetThemeName : PChar; external 'SharpAPI.dll' name 'GetThemeName';
 function GetThemeID : integer; external 'SharpAPI.dll' name 'GetThemeID';
