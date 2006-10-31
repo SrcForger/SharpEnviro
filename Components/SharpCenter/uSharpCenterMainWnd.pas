@@ -54,19 +54,17 @@ uses
   JvGradient,
   JclGraphUtils,
   JclGraphics,
+  JclFileUtils,
   jvSimpleXml,
   Tabs,
   JvOutlookBar,
   SharpEListBox, SharpESkinManager, uSharpCenterSectionList, SharpThemeApi,
-  uSharpCenterDllMethods, uSharpCenterManager, JvExStdCtrls, JvHtControls;
+  uSharpCenterDllMethods, uSharpCenterManager, JvExStdCtrls, JvHtControls,
+  ToolWin;
 
 type
   TSharpCenterWnd = class(TForm)
-    pnlPluginPanel: TPanel;
-    pnlPlugin: TPanel;
     pnlConfigurationTree: TPanel;
-    graBackdrop: TJvGradient;
-    imgBackdrop: TImage;
     splMain: TSplitter;
     pnlTree: TPanel;
     picMain: TPngImageCollection;
@@ -76,18 +74,8 @@ type
     UnloadTimer: TTimer;
     Panel3: TPanel;
     JvGradient3: TJvGradient;
-    btnImport: TPngSpeedButton;
-    btnExport: TPngSpeedButton;
-    btnClear: TPngSpeedButton;
-    btnAdd: TPngSpeedButton;
-    btnEdit: TPngSpeedButton;
-    btnDelete: TPngSpeedButton;
-    btnMoveDown: TPngSpeedButton;
-    btnMoveUp: TPngSpeedButton;
     btnBack: TPngSpeedButton;
     btnHome: TPngSpeedButton;
-    Bevel1: TBevel;
-    Bevel2: TBevel;
     PnlButtons: TPanel;
     graPnlbuttons: TJvGradient;
     btnHelp: TPngSpeedButton;
@@ -106,6 +94,23 @@ type
     JvGradient1: TJvGradient;
     Shape1: TShape;
     lblTree: TJvHTLabel;
+    pnlPluginMain: TPanel;
+    pnlConfigToolbar: TPanel;
+    JvGradient4: TJvGradient;
+    btnImport: TPngSpeedButton;
+    btnExport: TPngSpeedButton;
+    btnClear: TPngSpeedButton;
+    btnAdd: TPngSpeedButton;
+    btnEdit: TPngSpeedButton;
+    btnDelete: TPngSpeedButton;
+    btnMoveDown: TPngSpeedButton;
+    btnMoveUp: TPngSpeedButton;
+    pnlPluginPanel: TPanel;
+    pnlPlugin: TPanel;
+    graBackdrop: TJvGradient;
+    imgBackdrop: TImage;
+    PngImageList1: TPngImageList;
+    N11: TMenuItem;
     procedure lblTreeHyperLinkClick(Sender: TObject; LinkName: string);
     procedure lbPluginSectionsDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
@@ -191,6 +196,9 @@ type
 var
   SharpCenterWnd: TSharpCenterWnd;
 
+const
+  GlobalItemHeight = 22;
+
 implementation
 
 uses
@@ -206,6 +214,8 @@ begin
   GetControlByHandle(AHandle).Height := AControl.Height;
   GetControlByHandle(AHandle).Width := AControl.Width;
   GetControlByHandle(AHandle).Invalidate;
+
+  Self.Invalidate;
 end;
 
 procedure TSharpCenterWnd.ButtonStateEvent(var Msg: TMessage);
@@ -428,7 +438,9 @@ begin
     if CompareText(FUnloadCommand, cUnloadDll) = 0 then
     begin
       UnloadDll;
-      LoadConfiguration(FUnloadParam, FUnloadID);
+
+      if Not(IsDirectory(FUnloadParam)) then
+        LoadConfiguration(FUnloadParam, FUnloadID);
     end
     else if CompareText(FUnloadCommand, cChangeFolder) = 0 then
     begin
@@ -547,7 +559,7 @@ begin
           SCU_SHARPTHEME: ; // already assigned
           SCU_SERVICE:
             begin
-
+              FName := GetDisplayName(AFileName,FPluginID);
               s := GetSharpeUserSettingsPath +
                 'SharpCore\ServiceList.xml';
 
@@ -574,6 +586,10 @@ procedure TSharpCenterWnd.btnCancelClick(Sender: TObject);
 begin
   try
     FCancelClicked := True;
+
+    if @FConfigDll.Open <> nil then
+      UnloadDll;
+
     ReloadDll;
   finally
     FCancelClicked := False;
@@ -649,6 +665,7 @@ begin
   if @FConfigDll.Open <> nil then
   begin
     ResizeToFitWindow(PluginHandle, pnlPlugin);
+
   end;
 end;
 
@@ -688,11 +705,17 @@ end;
 procedure TSharpCenterWnd.SaveChanges;
 var
   iConfigDllType: Integer;
+  n: Integer;
 begin
   if FConfigDll.Close(Self.Handle, True) then
   begin
     iConfigDllType := FConfigDll.ConfigDllType;
-    SharpEBroadCast(WM_SHARPEUPDATESETTINGS, iConfigDllType, StrToInt(FPluginID));
+
+    if TryStrToInt(FPluginID,n) then
+      n :=  StrToInt(FPluginID) else
+      n := -1;
+
+    SharpEBroadCast(WM_SHARPEUPDATESETTINGS, iConfigDllType, n);
 
     btnSave.Enabled := False;
     btnCancel.Enabled := False;
@@ -799,7 +822,7 @@ begin
 
   if @FConfigDll.AddSections <> nil then
   begin
-    ItemHeight := 32;
+    ItemHeight := GlobalItemHeight;
     FConfigDll.AddSections(FSections, num);
 
     // Add to Section List
@@ -856,6 +879,7 @@ procedure TSharpCenterWnd.InitialiseWindow(AOwner: TWinControl; AName: string);
 begin
   PnlButtons.DoubleBuffered := True;
   pnlPluginPanel.DoubleBuffered := True;
+  pnlConfigToolbar.DoubleBuffered := True;
   graPnlbuttons.StartColor := clBtnFace;
   graPnlbuttons.EndColor := clWindow;
 
@@ -947,7 +971,7 @@ begin
   else
     ABTData.IconIndex := 2;
 
-    lbTree.ItemHeight := 32;
+    lbTree.ItemHeight := GlobalItemHeight;
   {if picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6 >
     lbTree.ItemHeight then
     lbTree.ItemHeight :=

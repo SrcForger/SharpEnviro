@@ -145,7 +145,7 @@ type
     FCurrentCommand: TSharpCenterHistoryItem;
     procedure AssignIconIndex(AFileName: string; ABTData: TBTData);
     function GetFirstPathElement(APath: string): string;
-    //function GetDisplayName(ADllFilename: string; APluginID: Integer): string;
+    function GetDisplayName(ADllFilename: string; APluginID: String): string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -294,7 +294,7 @@ var
 begin
   // Clear list box
   AListbox.Items.Clear;
-  Alistbox.ItemHeight := 32;
+  Alistbox.ItemHeight := GlobalItemHeight;
   try
     FCurrentCommand.Command := cChangeFolder;
     FCurrentCommand.Parameter := APath;
@@ -399,7 +399,7 @@ begin
   else
     ABTData.IconIndex := 2;
 
-  SharpCenterWnd.lbTree.ItemHeight := 32;
+  SharpCenterWnd.lbTree.ItemHeight := GlobalItemHeight;
   {if SharpCenterWnd.picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6 >
     SharpCenterWnd.lbTree.ItemHeight then
     SharpCenterWnd.lbTree.ItemHeight :=
@@ -417,8 +417,8 @@ begin
   FIconIndex := -1;
 end;
 
-{function TSharpCenterManager.GetDisplayName(ADllFilename: string; APluginID:
-  Integer):
+function TSharpCenterManager.GetDisplayName(ADllFilename: string; APluginID:
+  String):
   string;
 var
   tmpConfigDll: TConfigDll;
@@ -431,7 +431,7 @@ begin
 
     try
       if @tmpConfigDll.GetDisplayName <> nil then begin
-        tmpConfigDll.GetDisplayName(APluginID, s);
+        tmpConfigDll.GetDisplayName(Pchar(APluginID), pchar(s));
         Result := s;
       end;
 
@@ -439,7 +439,7 @@ begin
       UnloadConfigDll(@tmpConfigDll);
     end;
   end;
-end;    }
+end;
 
 { TSharpCenterHistory }
 
