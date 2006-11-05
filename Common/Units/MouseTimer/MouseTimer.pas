@@ -103,8 +103,11 @@ begin
             begin
               if temp <> FLastControl then
               begin
-                if FLastControl <> nil then FLastControl.Perform(CM_MOUSELEAVE,0,0);
-                if temp <> nil then temp.Perform(CM_MOUSEENTER,0,0);
+                try
+                  if FLastControl <> nil then FLastControl.Perform(CM_MOUSELEAVE,0,0);
+                  if temp <> nil then temp.Perform(CM_MOUSEENTER,0,0);
+                except
+                end;
                 FLastControl := temp;
               end;
               FoundControl := True;
@@ -114,8 +117,12 @@ begin
     if not FoundControl then
        if FLastControl <> nil then
           begin
-            FLastControl.Perform(CM_MOUSELEAVE,0,0);
-            FLastControl := nil;
+            try
+              FLastControl.Perform(CM_MOUSELEAVE,0,0);
+              FLastControl := nil;
+            except
+              FLastControl := nil;
+            end;
             exit;
           end;
   except
