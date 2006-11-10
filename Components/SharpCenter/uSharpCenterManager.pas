@@ -394,16 +394,9 @@ begin
 
     ABTData.IconIndex := tmpPic.Index;
   end
-  else if ExtractFilePath(AFileName) = GetCenterDirectory then
-    ABTData.IconIndex := 3
-  else
-    ABTData.IconIndex := 2;
+  else ABTData.IconIndex := 1;
 
   SharpCenterWnd.lbTree.ItemHeight := GlobalItemHeight;
-  {if SharpCenterWnd.picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6 >
-    SharpCenterWnd.lbTree.ItemHeight then
-    SharpCenterWnd.lbTree.ItemHeight :=
-      SharpCenterWnd.picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6;  }
 end;
 
 { TBTData }
@@ -565,7 +558,7 @@ begin
     end;
   finally
     tmpStrl.Free;
-    SharpCenterWnd.lblTree.Caption := sHtml;
+    SharpCenterWnd.lblTree.Caption := ' ' + sHtml;
   end;
 end;
 

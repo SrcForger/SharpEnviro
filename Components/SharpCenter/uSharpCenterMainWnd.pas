@@ -60,7 +60,7 @@ uses
   JvOutlookBar,
   SharpEListBox, SharpESkinManager, uSharpCenterSectionList, SharpThemeApi,
   uSharpCenterDllMethods, uSharpCenterManager, JvExStdCtrls, JvHtControls,
-  ToolWin;
+  ToolWin, SharpERoundPanel, JvExComCtrls, JvToolBar;
 
 type
   TSharpCenterWnd = class(TForm)
@@ -70,10 +70,8 @@ type
     picMain: TPngImageCollection;
     pnlMain: TPanel;
     Panel2: TPanel;
-    lbTree: TSharpEListBox;
     UnloadTimer: TTimer;
-    Panel3: TPanel;
-    JvGradient3: TJvGradient;
+    pnlToolbar: TPanel;
     btnBack: TPngSpeedButton;
     btnHome: TPngSpeedButton;
     PnlButtons: TPanel;
@@ -81,41 +79,37 @@ type
     btnHelp: TPngSpeedButton;
     btnSave: TPngSpeedButton;
     btnCancel: TPngSpeedButton;
-    pnlSections: TPanel;
-    SharpEListBox1: TSharpEListBox;
-    pnlSectionsCaption: TPanel;
-    JvGradient2: TJvGradient;
-    Panel5: TPanel;
-    lbPluginSections: TSharpEListBox;
     btnFavourite: TPngSpeedButton;
     PopupMenu1: TPopupMenu;
-    Label1: TLabel;
-    Panel1: TPanel;
-    JvGradient1: TJvGradient;
-    Shape1: TShape;
     lblTree: TJvHTLabel;
-    pnlPluginMain: TPanel;
-    pnlConfigToolbar: TPanel;
-    JvGradient4: TJvGradient;
-    btnImport: TPngSpeedButton;
-    btnExport: TPngSpeedButton;
-    btnClear: TPngSpeedButton;
+    pnlContent: TPanel;
+    N11: TMenuItem;
     btnAdd: TPngSpeedButton;
     btnEdit: TPngSpeedButton;
     btnDelete: TPngSpeedButton;
     btnMoveDown: TPngSpeedButton;
     btnMoveUp: TPngSpeedButton;
-    pnlPluginPanel: TPanel;
-    pnlPlugin: TPanel;
-    graBackdrop: TJvGradient;
-    imgBackdrop: TImage;
+    btnImport: TPngSpeedButton;
+    btnExport: TPngSpeedButton;
+    btnClear: TPngSpeedButton;
     PngImageList1: TPngImageList;
-    N11: TMenuItem;
+    pnlSectionText: TPanel;
+    lblTabs: TJvHTLabel;
+    pnlPluginContainer: TPanel;
+    pnlPlugin: TPanel;
+    JvGradient1: TJvGradient;
+    JvGradient4: TJvGradient;
+    Shape1: TShape;
+    Shape2: TShape;
+    Panel4: TPanel;
+    Image1: TImage;
+    Bevel2: TShape;
+    Bevel1: TShape;
+    lbTree: TSharpEListBox;
+    pnlTreeTitle: TPanel;
+    Image2: TImage;
+    procedure lblTabsHyperLinkClick(Sender: TObject; LinkName: string);
     procedure lblTreeHyperLinkClick(Sender: TObject; LinkName: string);
-    procedure lbPluginSectionsDrawItem(Control: TWinControl; Index: Integer;
-      Rect: TRect; State: TOwnerDrawState);
-    procedure lbPluginSectionsMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure btnEditClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure btnAddClick(Sender: TObject);
@@ -151,6 +145,7 @@ type
     FSections: TSectionObjectList;
     FCancelClicked: Boolean;
     FPluginHandle: THandle;
+    FSelectedTabID: Integer;
 
     procedure SchemeWindow;
     procedure WMSysCommand(var Message: TMessage); message WM_SYSCOMMAND;
@@ -261,8 +256,6 @@ end;
 procedure TSharpCenterWnd.SchemeWindow;
 begin
   pnlConfigurationTree.Color := clWindow;
-  graBackdrop.StartColor := clWindow;
-  graBackdrop.EndColor := clBtnFace;
 end;
 
 procedure TSharpCenterWnd.lbTreeDrawItem(Control: TWinControl; Index:
@@ -336,10 +329,20 @@ end;
 procedure TSharpCenterWnd.FormCreate(Sender: TObject);
 begin
   FConfigDll.Dllhandle := 0;
+  pnlSectionText.DoubleBuffered := True;
+  pnlToolbar.DoubleBuffered := True;
+  pnlMain.DoubleBuffered := True;
+  PnlButtons.DoubleBuffered := True;
+  pnlConfigurationTree.DoubleBuffered := True;
+  pnlTreeTitle.DoubleBuffered := True;
+  lbTree.DoubleBuffered := True;
+
   FSections := TSectionObjectList.Create;
+  UpdateSections;
   DisablePluginButtons;
 
   SharpThemeApi.InitializeTheme;
+
 end;
 
 procedure TSharpCenterWnd.FormDestroy(Sender: TObject);
@@ -491,6 +494,7 @@ begin
     FConfigDll.Close(Hinstance, false);
 
   UnloadConfigDll(@FConfigDll);
+  FSelectedTabID := -1;
   UpdateSections;
 
   btnSave.Enabled := False;
@@ -552,6 +556,7 @@ begin
         btnImport.Enabled := (@FConfigDll.BtnImport <> nil);
         btnExport.Enabled := (@FConfigDll.BtnExport <> nil);
         btnClear.Enabled := (@FConfigDll.BtnClear <> nil);
+        FSelectedTabID := 0;
 
         UpdateSections;
 
@@ -722,16 +727,6 @@ begin
   end;
 end;
 
-procedure TSharpCenterWnd.lbPluginSectionsMouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  if lbPluginSections.ItemIndex = -1 then
-    exit;
-  if @FConfigDll.ChangeSection <> nil then
-    FConfigDll.ChangeSection(FSections[lbPluginSections.ItemIndex]);
-
-end;
-
 function TSharpCenterWnd.AssignIconIndex(
   ASectionObject: TSectionObject): Integer;
 var
@@ -817,6 +812,7 @@ procedure TSharpCenterWnd.UpdateSections;
 var
   Itemheight: Integer;
   num, i, idx: Integer;
+  s:String;
 begin
   FSections.Clear;
 
@@ -825,61 +821,32 @@ begin
     ItemHeight := GlobalItemHeight;
     FConfigDll.AddSections(FSections, num);
 
-    // Add to Section List
-    idx := lbPluginSections.ItemIndex;
-    lbPluginSections.Clear;
-    for i := 0 to Pred(FSections.Count) do
-    begin
-      num := -1;
+    s := '';
+    if FSections.Count = 0 then begin
+      lblTabs.Font.Color := clGrayText;
+      lblTabs.Caption := ' No Sections Defined';
+    end else
+    For i := 0 to Pred(FSections.Count) do begin
 
-      if FSections[i] <> nil then
-      begin
-        FSections[i].IconID := AssignIconIndex(FSections[i]);
-        lbPluginSections.Items.AddObject(FSections[i].Caption, FSections[i]);
-        pnlSections.Show;
-      end;
+      if i = FSelectedTabID then
+      s := s + Format('<A HREF="%d"><b> %s</b></A>',[i, FSections[i].Caption]) else
+      s := s + Format('<A HREF="%d"> %s</A>',[i, FSections[i].Caption]);
+      if i <> FSections.Count-1 then
+        s := s + ' - ';
     end;
 
-    if @FConfigDll.ChangeSection <> nil then
-    begin
-      if lbPluginSections.Count <> 0 then
-      begin
-        lbPluginSections.ItemIndex := 0;
-
-        if not ((idx <> -1) and (idx < lbPluginSections.Count)) then
-          idx := 0;
-
-        FConfigDll.ChangeSection(FSections[idx]);
-        lbPluginSections.ItemIndex := idx;
-      end;
-    end;
-
-    lbPluginSections.ItemHeight := ItemHeight;
-
-    if (lbPluginSections.Count <= 1) then
-    begin
-      pnlSections.Height := 0;
-    end
-    else
-    begin
-      pnlSections.Height := pnlSectionsCaption.Height +
-        (lbPluginSections.ItemHeight * (lbPluginSections.Count)) + 12;
-
-      pnlSectionsCaption.Visible := True;
-    end;
-  end
-  else
-  begin
-    lbPluginSections.Clear;
-    pnlSectionsCaption.Visible := False;
+    lblTabs.Font.Color := clBtnText;
+    lblTabs.Caption := s;
+  end else begin
+    lblTabs.Font.Color := clGrayText;
+    lblTabs.Caption := ' No Sections Defined';
   end;
 end;
 
 procedure TSharpCenterWnd.InitialiseWindow(AOwner: TWinControl; AName: string);
 begin
   PnlButtons.DoubleBuffered := True;
-  pnlPluginPanel.DoubleBuffered := True;
-  pnlConfigToolbar.DoubleBuffered := True;
+  pnlSectionText.DoubleBuffered := True;
   graPnlbuttons.StartColor := clBtnFace;
   graPnlbuttons.EndColor := clWindow;
 
@@ -890,7 +857,7 @@ begin
   FSections.Clear;
 
   lbTree.Items.Clear;
-  lbPluginSections.Items.Clear;
+  UpdateSections;
 end;
 
 procedure TSharpCenterWnd.LoadSelectedDll(AItemIndex: Integer);
@@ -904,24 +871,6 @@ begin
     LoadDll(tmpItem.Path,tmpItem.PluginID);
 
     lbTree.ItemIndex := AItemIndex;
-  end;
-end;
-
-procedure TSharpCenterWnd.lbPluginSectionsDrawItem(Control: TWinControl;
-  Index: Integer; Rect: TRect; State: TOwnerDrawState);
-var
-  tmpItem: TSectionObject;
-begin
-  if lbPluginSections.Items.Count = 0 then
-    exit;
-
-  try
-    tmpItem := TSectionObject(lbPluginSections.Items.Objects[Index]);
-    if tmpItem <> nil then
-      PaintListbox(lbPluginSections, Rect, 0 {5}, State, tmpItem.Caption,
-        picMain,
-        tmpItem.IconID, tmpItem.Status, clBlack);
-  except
   end;
 end;
 
@@ -1000,6 +949,18 @@ begin
   ExecuteCommand(cChangeFolder,LinkName,'');
 
   SharpCenterManager.SetNavRoot(LinkName);
+end;
+
+
+procedure TSharpCenterWnd.lblTabsHyperLinkClick(Sender: TObject;
+  LinkName: string);
+begin
+  FSelectedTabID := StrToInt(LinkName);
+  UpdateSections;
+
+  if @FConfigDll.ChangeSection <> nil then
+    FConfigDll.ChangeSection(FSections[FSelectedTabID]);
+
 end;
 
 end.
