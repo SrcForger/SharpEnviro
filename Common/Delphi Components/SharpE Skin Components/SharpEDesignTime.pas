@@ -59,6 +59,7 @@ uses
   SharpELabel,
   SharpERadioBox,
   SharpEImage32,
+  SharpEListBox,
   SharpEEdit,
   SharpETaskItem,
   SharpESkinLabel;
@@ -202,6 +203,7 @@ begin
   RegisterComponents('SharpE', [TSharpEEdit]);
   RegisterComponents('SharpE', [TSharpETaskItem]);
   RegisterComponents('SharpE', [TSharpESkinLabel]);
+  RegisterComponents('SharpE', [TSharpEListBox]);
 
   RegisterPropertyEditor(TypeInfo(TXmlFileName), TSharpESkin, 'XmlFilename',
     TXmlFileNameProperty);
