@@ -37,7 +37,6 @@ requires
   xmlrtl,
   designide,
   Jcl,
-  SharpESkinComponents,
   JclVcl,
   VclSmp,
   JvStdCtrlsD9R,
@@ -48,11 +47,13 @@ requires
   JvCustomD9R,
   JvMMD9R,
   JvCtrlsD9R,
-  Jv3rdD9R;
+  Jv3rdD9R,
+  PngComponentsD9,
+  JvPageCompsD9R,
+  SharpESkinComponents;
 
 contains
   uSharpeColorBox in '..\..\Delphi Components\SharpEColorBox\uSharpeColorBox.pas',
-  SharpFX in '..\..\Units\SharpFX\SharpFX.pas',
   uSharpEFontSelector in '..\..\Delphi Components\SharpEFontSelector\uSharpEFontSelector.pas',
   uSharpEFontSelectorWnd in '..\..\Delphi Components\SharpEFontSelector\uSharpEFontSelectorWnd.pas',
   uFontList in '..\..\Delphi Components\SharpEFontSelector\uFontList.pas',
@@ -62,6 +63,7 @@ contains
   MBButtonPanel in '..\..\Delphi Components\MBButtonPanel\MBButtonPanel.pas',
   uSharpeGaugeBoxEdit in '..\..\Delphi Components\SharpEGaugeBox\uSharpeGaugeBoxEdit.pas',
   uSharpeGaugeBoxWnd in '..\..\Delphi Components\SharpEGaugeBox\uSharpeGaugeBoxWnd.pas',
-  SharpERoundPanel in '..\..\Delphi Components\SharpERoundPanel\SharpERoundPanel.pas';
+  SharpERoundPanel in '..\..\Delphi Components\SharpERoundPanel\SharpERoundPanel.pas',
+  SharpEListBox in '..\..\Delphi Components\SharpEListBox\SharpEListBox.pas';
 
 end.
