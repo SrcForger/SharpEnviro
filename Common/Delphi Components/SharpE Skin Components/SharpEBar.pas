@@ -438,6 +438,7 @@ begin
   //Do not free FThrobber, form owns it and is responsible for that
   if (csDesigning in ComponentState) and (Owner is TForm) then
     (Owner as TForm).Color := clBtnFace;
+  SetWindowlong(form.handle, GWL_WNDPROC, longword(hproc));
   FSkin.Free;
   FBuffer.Free;
   FBackGround.Free;
