@@ -59,7 +59,6 @@ uses
   SharpELabel,
   SharpERadioBox,
   SharpEImage32,
-  SharpEListBox,
   SharpEEdit,
   SharpETaskItem,
   SharpESkinLabel;
@@ -201,7 +200,6 @@ begin
   RegisterComponents('SharpE', [TSharpEMiniThrobber]);
   RegisterComponents('SharpE', [TSharpEImage32]);
   RegisterComponents('SharpE', [TSharpEEdit]);
-  RegisterComponents('SharpE', [TSharpEListBox]);
   RegisterComponents('SharpE', [TSharpETaskItem]);
   RegisterComponents('SharpE', [TSharpESkinLabel]);
 
