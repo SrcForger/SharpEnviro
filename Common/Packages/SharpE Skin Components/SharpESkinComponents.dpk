@@ -72,6 +72,7 @@ contains
   SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas',
   SharpEAnimationTimers in '..\..\Delphi Components\SharpE Skin Components\SharpEAnimationTimers.pas',
   TranComp in '..\..\3rd party\TransparentEdit\TranComp.pas',
-  SharpESkinLabel in '..\..\Delphi Components\SharpE Skin Components\SharpESkinLabel.pas';
+  SharpESkinLabel in '..\..\Delphi Components\SharpE Skin Components\SharpESkinLabel.pas',
+  SharpEListBox in '..\..\Delphi Components\SharpE Skin Components\SharpEListBox.pas';
 
 end.
