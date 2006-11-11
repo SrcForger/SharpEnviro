@@ -52,6 +52,7 @@ type
 
   TSharpESkinManager = class(TComponent)
   private
+    FNoSystemSchemeInit: boolean;
     FOnSkinChanged: TNotifyEvent;
     FSkinSource: TSkinSource;
     FSchemeSource: TSkinSource;
@@ -79,7 +80,8 @@ type
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme);
+    constructor CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme); overload;
+    constructor CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; NoSystemScheme : boolean); overload;
     destructor Destroy; override;
     property Scheme: TSharpEScheme read GetScheme;
     property Skin: TSharpESkin read GetSkin;
@@ -110,6 +112,12 @@ uses
   SharpETaskItem,
   SharpThemeApi;
 
+constructor TSharpESkinManager.CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; NoSystemScheme : boolean);
+begin
+  FNoSystemSchemeInit := NoSystemScheme;
+  CreateRuntime(AOwner, Skin, Scheme);
+end;
+
 constructor TSharpESkinManager.CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme);
 begin
   FComponentScheme := Scheme;
@@ -126,16 +134,20 @@ begin
 
   FIsThemeLoading := False;
 
-  if not (csDesigning in ComponentState) then
+  if not FNoSystemSchemeInit then
   begin
-    if not SharpThemeApi.Initialized then
+    if not (csDesigning in ComponentState) then
     begin
-      SharpThemeApi.InitializeTheme;
-      SharpThemeApi.LoadTheme(True);
+      if not SharpThemeApi.Initialized then
+      begin
+        SharpThemeApi.InitializeTheme;
+        SharpThemeApi.LoadTheme(True);
+      end;
     end;
-  end;
 
-  LoadSharpEScheme(FSystemScheme);
+    LoadSharpEScheme(FSystemScheme);
+  end;
+  
   inherited;
 
  //Default values
