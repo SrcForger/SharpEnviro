@@ -56,7 +56,7 @@ implementation
 
 procedure TBarWnd.FormCreate(Sender: TObject);
 begin
-  SkinManager := TSharpESkinManager.CreateRuntime(self,SharpESkin1,SharpEScheme1);
+  SkinManager := TSharpESkinManager.CreateRuntime(self,SharpESkin1,SharpEScheme1,True);
   SkinManager.SkinSource := ssComponent;
   SkinManager.SchemeSource := ssComponent;
 
