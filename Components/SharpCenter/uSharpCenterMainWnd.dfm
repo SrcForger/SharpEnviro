@@ -1,11 +1,11 @@
 object SharpCenterWnd: TSharpCenterWnd
   Left = 0
   Top = 0
-  Width = 488
-  Height = 379
+  Width = 600
+  Height = 450
   BorderStyle = bsSizeToolWin
   Caption = 'SharpCenter'
-  Color = clBtnFace
+  Color = clWindow
   Constraints.MinHeight = 200
   Constraints.MinWidth = 488
   Font.Charset = ANSI_CHARSET
@@ -23,18 +23,19 @@ object SharpCenterWnd: TSharpCenterWnd
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 480
-    Height = 350
+    Width = 592
+    Height = 421
     Align = alClient
     BevelOuter = bvNone
+    Color = clWindow
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 0
     object pnlMain: TPanel
       Left = 0
       Top = 29
-      Width = 480
-      Height = 289
+      Width = 592
+      Height = 360
       Align = alClient
       BevelOuter = bvNone
       Caption = 'pnlMain'
@@ -45,7 +46,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Left = 160
         Top = 0
         Width = 2
-        Height = 289
+        Height = 360
         Color = clBtnFace
         ParentColor = False
         OnMoved = FormResize
@@ -54,7 +55,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Left = 0
         Top = 0
         Width = 160
-        Height = 289
+        Height = 360
         Align = alLeft
         BevelOuter = bvNone
         Color = clWindow
@@ -63,7 +64,7 @@ object SharpCenterWnd: TSharpCenterWnd
           Left = 0
           Top = 18
           Width = 160
-          Height = 271
+          Height = 342
           Align = alClient
           BevelOuter = bvNone
           Color = clWindow
@@ -72,7 +73,7 @@ object SharpCenterWnd: TSharpCenterWnd
             Left = 0
             Top = 0
             Width = 160
-            Height = 271
+            Height = 342
             Align = alClient
             BevelOuter = bvNone
             BorderWidth = 5
@@ -82,7 +83,7 @@ object SharpCenterWnd: TSharpCenterWnd
               Left = 5
               Top = 5
               Width = 150
-              Height = 261
+              Height = 332
               Style = lbOwnerDrawFixed
               Align = alClient
               BorderStyle = bsNone
@@ -136,8 +137,8 @@ object SharpCenterWnd: TSharpCenterWnd
       object pnlContent: TPanel
         Left = 162
         Top = 0
-        Width = 318
-        Height = 289
+        Width = 430
+        Height = 360
         Align = alClient
         BevelOuter = bvNone
         Color = clWindow
@@ -145,7 +146,7 @@ object SharpCenterWnd: TSharpCenterWnd
         object pnlSectionText: TPanel
           Left = 0
           Top = 0
-          Width = 318
+          Width = 430
           Height = 18
           Align = alTop
           BevelOuter = bvNone
@@ -155,7 +156,7 @@ object SharpCenterWnd: TSharpCenterWnd
           object JvGradient4: TJvGradient
             Left = 0
             Top = 1
-            Width = 318
+            Width = 430
             Height = 17
             Style = grVertical
             StartColor = clWindow
@@ -164,7 +165,7 @@ object SharpCenterWnd: TSharpCenterWnd
           object lblTabs: TJvHTLabel
             Left = 0
             Top = 1
-            Width = 318
+            Width = 430
             Height = 17
             Align = alClient
             Caption = '<b><A HREF="">/Test\</A>'
@@ -175,7 +176,7 @@ object SharpCenterWnd: TSharpCenterWnd
           object Shape1: TShape
             Left = 0
             Top = 0
-            Width = 318
+            Width = 430
             Height = 1
             Align = alTop
             Pen.Color = clBtnFace
@@ -184,8 +185,8 @@ object SharpCenterWnd: TSharpCenterWnd
         object pnlPluginContainer: TPanel
           Left = 0
           Top = 18
-          Width = 318
-          Height = 271
+          Width = 430
+          Height = 342
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 4
@@ -194,8 +195,8 @@ object SharpCenterWnd: TSharpCenterWnd
           object pnlPlugin: TPanel
             Left = 4
             Top = 4
-            Width = 310
-            Height = 263
+            Width = 422
+            Height = 334
             Align = alClient
             BevelOuter = bvNone
             Color = clWindow
@@ -203,8 +204,8 @@ object SharpCenterWnd: TSharpCenterWnd
             object Image2: TImage
               Left = 0
               Top = 0
-              Width = 310
-              Height = 263
+              Width = 422
+              Height = 334
               Align = alClient
               Center = True
               Picture.Data = {
@@ -1835,7 +1836,7 @@ object SharpCenterWnd: TSharpCenterWnd
     object pnlToolbar: TPanel
       Left = 0
       Top = 0
-      Width = 480
+      Width = 592
       Height = 29
       Align = alTop
       BevelOuter = bvNone
@@ -2201,7 +2202,7 @@ object SharpCenterWnd: TSharpCenterWnd
         PngOptions = [pngBlendOnDisabled, pngGrayscaleOnDisabled]
       end
       object Image1: TImage
-        Left = 457
+        Left = 569
         Top = 0
         Width = 23
         Height = 29
@@ -2256,19 +2257,19 @@ object SharpCenterWnd: TSharpCenterWnd
     end
     object PnlButtons: TPanel
       Left = 0
-      Top = 318
-      Width = 480
+      Top = 389
+      Width = 592
       Height = 32
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 2
       DesignSize = (
-        480
+        592
         32)
       object graPnlbuttons: TJvGradient
         Left = 0
         Top = 0
-        Width = 480
+        Width = 592
         Height = 32
         Align = alBottom
         Style = grVertical
@@ -2276,7 +2277,7 @@ object SharpCenterWnd: TSharpCenterWnd
         EndColor = clBtnFace
       end
       object btnHelp: TPngSpeedButton
-        Left = 265
+        Left = 377
         Top = 6
         Width = 65
         Height = 22
@@ -2317,7 +2318,7 @@ object SharpCenterWnd: TSharpCenterWnd
           F15EF4F6F6DD27DFFF8CF32F683B4F744CC79CF60000000049454E44AE426082}
       end
       object btnSave: TPngSpeedButton
-        Left = 338
+        Left = 450
         Top = 6
         Width = 65
         Height = 22
@@ -2359,7 +2360,7 @@ object SharpCenterWnd: TSharpCenterWnd
           000049454E44AE426082}
       end
       object btnCancel: TPngSpeedButton
-        Left = 410
+        Left = 522
         Top = 6
         Width = 65
         Height = 22
@@ -2760,5 +2761,9 @@ object SharpCenterWnd: TSharpCenterWnd
     Left = 52
     Top = 152
     Bitmap = {}
+  end
+  object XPManifest1: TXPManifest
+    Left = 24
+    Top = 248
   end
 end
