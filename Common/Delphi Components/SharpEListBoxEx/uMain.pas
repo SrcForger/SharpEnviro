@@ -5,24 +5,23 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, PngImageList, ComCtrls, Buttons,
-  PngSpeedButton, SharpEListBox;
+  PngSpeedButton, SharpEListBoxEx, ImgList;
 
 type
   TForm1 = class(TForm)
     Button1: TButton;
-    ListBox1: TListBox;
     PngSpeedButton1: TPngSpeedButton;
-    SharpEListBox1: TSharpEListBox;
+    Col1: TPngImageList;
     procedure SharpEListBox1ClickItem(AText: string; AItem, ACol: Integer);
     procedure FormResize(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
-    lb: TSharpEListBox;
+    lb: TSharpEListBoxEx;
     Procedure ClickItem(AText: String; AItem:Integer; ACol:Integer);
     Procedure GetCellText(const ACol:Integer; AItem:TSharpEListItem; var AColor:TColor);
     Procedure GetCellCursor(const ACol:Integer; AItem:TSharpEListItem; var ACursor:TCursor);
-  public
+    public
     { Public declarations }
   end;
 
@@ -36,15 +35,15 @@ implementation
 procedure TForm1.Button1Click(Sender: TObject);
 var
   //tmpItem: TSharpEListBoxItem;
-  tmpCol: TSharpEListBoxColumn;
+  tmpCol: TSharpEListBoxExColumn;
   li: TSharpEListItem;
 
 begin
-  lb := TSharpEListBox.Create(Self);
+  lb := TSharpEListBoxEx.Create(Self);
   lb.Parent := Self;
   lb.Align := alClient;
   lb.Width := 500;
-  lb.PngImageCollection := PngImageCollection1;
+
   lb.OnClickItem := ClickItem;
   lb.OnGetCellTextColor := GetCellText;
   lb.OnGetCellCursor := GetCellCursor;
@@ -55,6 +54,7 @@ begin
   tmpCol.Width := 50;
   tmpCol.HAlign := taCenter;
   tmpCol.VAlign := taVerticalCenter;
+  tmpCol.PngImageList := Col1;
 
   tmpCol := lb.AddColumn('Main Text');
   tmpCol.Width := lb.Width - 100 - 50;
@@ -62,6 +62,7 @@ begin
   tmpCol.VAlign := taAlignTop;
   tmpCol.TextColor := clDkGray;
   tmpCol.SelectedTextColor := clBlack;
+  tmpCol.PngImageList := Col1;
 
   tmpCol := lb.AddColumn('Status');
   tmpCol.Width := 68;
@@ -78,12 +79,12 @@ begin
   tmpCol.SelectedTextColor := clBlack;
 
   li := lb.AddItem('',2);
-  li.AddSubItem('Test2');
+  li.AddSubItem('Test2',0);
   li.AddSubItem('Enabled');
   li.AddSubItem('',1);
   li.Hint := 'Click to set as default';
 
-  li := lb.AddItem('',2);
+  li := lb.AddItem('',0);
   li.Data := Form1;
   li.AddSubItem('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   li.AddSubItem('Enabled');

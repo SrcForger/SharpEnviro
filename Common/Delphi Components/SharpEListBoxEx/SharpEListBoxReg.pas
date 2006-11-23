@@ -52,7 +52,7 @@ var
 implementation
 
 uses
-  SharpEListBox;
+  SharpEListBoxEx;
 
 { TSharpEListBoxColumnsProperty }
 
@@ -73,19 +73,19 @@ end;   }
 procedure TSharpEListBoxColumnsProperty.Edit;
 var
   i:Integer;
-  tmpColumn:TSharpEListBoxColumn;
+  tmpColumn:TSharpEListBoxExColumn;
 begin
   inherited;
   frmEditColumn := TFrmEditColumn.Create(nil);
-  frmEditColumn.Tag := Integer(TSharpEListBox(getcomponent(0)));
+  frmEditColumn.Tag := Integer(TSharpEListBoxEx(getcomponent(0)));
   Try
 
-    For i := 0 to Pred(TSharpEListBox(getcomponent(0)).ColumnCount) do begin
-      tmpColumn := TSharpEListBox(getcomponent(0)).Column[i];
+    For i := 0 to Pred(TSharpEListBoxEx(getcomponent(0)).ColumnCount) do begin
+      tmpColumn := TSharpEListBoxEx(getcomponent(0)).Column[i];
       frmEditColumn.lbColumns.AddItem('Column 1',tmpColumn);
     end;
 
-    if TSharpEListBox(getcomponent(0)).ColumnCount = 0 then
+    if TSharpEListBoxEx(getcomponent(0)).ColumnCount = 0 then
       frmEditColumn.plMain.ActivePage := frmEditColumn.plAddColumns else
       frmEditColumn.plMain.ActivePage := frmEditColumn.plConfig;
 
@@ -107,11 +107,11 @@ end;
 
 procedure TfrmEditColumn.btnAddClick(Sender: TObject);
 var
-  lb:TSharpEListBox;
+  lb:TSharpEListBoxEx;
   s:String;
-  tmpCol: TSharpEListBoxColumn;
+  tmpCol: TSharpEListBoxExColumn;
 begin
-  lb := TSharpEListBox(Pointer(Self.Tag));
+  lb := TSharpEListBoxEx(Pointer(Self.Tag));
 
   tmpCol := lb.AddColumn('');
   s := 'Column ' + IntToStr(lb.ColumnCount);

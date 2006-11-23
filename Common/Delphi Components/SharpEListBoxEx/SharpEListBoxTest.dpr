@@ -3,9 +3,9 @@ program SharpEListBoxTest;
 uses
   Forms,
   uMain in 'uMain.pas' {Form1},
-  SharpEListBox in 'SharpEListBox.pas',
+  SharpEListBoxEx in 'SharpEListBoxEx.pas',
   SharpEListBoxReg in 'SharpEListBoxReg.pas' {frmEditColumn};
-  
+
 {$R *.res}
 
 begin

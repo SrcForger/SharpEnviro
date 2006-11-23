@@ -21,7 +21,6 @@ object frmEditColumn: TfrmEditColumn
     Height = 24
     AutoSize = True
     Caption = 'ToolBar1'
-    Flat = True
     Images = PngImageList1
     TabOrder = 0
     object btnAdd: TToolButton
@@ -257,7 +256,7 @@ object frmEditColumn: TfrmEditColumn
           Top = 40
           Width = 89
           Height = 22
-          ItemHeight = 0
+          ItemHeight = 14
           ItemIndex = 0
           TabOrder = 2
           Text = 'LeftJustify'
@@ -271,7 +270,7 @@ object frmEditColumn: TfrmEditColumn
           Top = 40
           Width = 89
           Height = 22
-          ItemHeight = 0
+          ItemHeight = 14
           ItemIndex = 0
           TabOrder = 3
           Text = 'AlignTop'
