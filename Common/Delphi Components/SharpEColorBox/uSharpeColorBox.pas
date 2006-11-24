@@ -69,9 +69,6 @@ type
 
   end;
 
-function CodeToColor(ColorCode: integer): integer;
-function ColorToCode(Color: integer): integer;
-
 type
   TSharpEColorBox = class(TCustomSharpEColorBox)
   private
@@ -121,7 +118,7 @@ begin
       font.Color := clHighlightText;
 
     Caption := TMenuItem(Sender).Caption;
-    dcolor := CodeToColor(id);
+    dcolor := SchemeCodeToColor(id); //CodeToColor(id);
 
     if not (odSelected in State) then
       Brush.Color := clMenu
@@ -185,37 +182,6 @@ begin
   Paint;
 end;
 
-function CodeToColor(ColorCode: integer): integer;
-var
-  tmpColor: TSharpESkinColor;
-begin
-  if ColorCode < 0 then
-  begin
-    tmpColor := GetSchemeColorByIndex(-(ColorCode + 1));
-    Result := tmpColor.Color;
-  end
-  else
-    Result := ColorCode;
-end;
-
-function ColorToCode(Color: integer): integer;
-var
-  tmpColor: TSharpESkinColor;
-  i: Integer;
-begin
-  for i := 0 to Pred(GetSkinColorCount) do
-  begin
-    tmpColor := GetSchemeColorByIndex(i);
-    if Color = -i then
-    begin
-      result := -i;
-      exit;
-    end;
-  end;
-
-  result := color;
-end;
-
 constructor TCustomSharpeColorBox.Create(AOwner: TComponent);
 begin
   inherited;
@@ -243,13 +209,13 @@ begin
   if FMouseOver then
   begin
     Bmp.Canvas.Pen.Color := darker(Color, 80);
-    Bmp.Canvas.Brush.Color := CodeToColor(FColorCode);
+    Bmp.Canvas.Brush.Color := SchemeCodeToColor(FColorCode); //CodeToColor(FColorCode);
     Bmp.Canvas.Rectangle(R);
   end
   else
   begin
     Bmp.Canvas.Pen.Color := darker(Color, 20);
-    Bmp.Canvas.Brush.Color := CodeToColor(FColorCode);
+    Bmp.Canvas.Brush.Color := SchemeCodeToColor(FColorCode); //CodeToColor(FColorCode);
     Bmp.Canvas.Rectangle(R);
   end;
 
@@ -258,13 +224,13 @@ end;
 function TCustomSharpeColorBox.GetColor: TColor;
 begin
   if FColorCode < 0 then
-    Result := CodeToColor(FColorCode) else
+    Result := SchemeCodeToColor(FColorCode) else // CodeToColor(FColorCode) else
     Result := FColor;
 end;
 
 function TCustomSharpeColorBox.GetColorCode: Integer;
 begin
-  Result := ColorToCode(FColor);
+  Result := ColorToSchemeCode(FColor); //ColorToCode(FColor);
 end;
 
 procedure TCustomSharpeColorBox.MenuClick(Sender: TObject);
@@ -394,7 +360,7 @@ end;
 procedure TCustomSharpeColorBox.SetColorCode(const Value: Integer);
 begin
   FColorCode := Value;//ColorToCode(Value);
-  //FColor := CodeToColor(Value);
+  FColor := SchemeCodeToColor(Value); // CodeToColor(Value);
 
   Invalidate;
 end;
