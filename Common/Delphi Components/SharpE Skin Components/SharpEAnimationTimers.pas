@@ -1,3 +1,33 @@
+{
+Source Name: SharpEAnimationTimers.pas
+Description: Generic Timer and Script parsing unit for Skin animation scripts
+Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
+
+Source Forge Site
+https://sourceforge.net/projects/sharpe/
+
+Main SharpE Site
+http://www.Sharpe-Shell.org
+
+Recommended Environment
+ - Compiler : Delphi 2005 (Personal Edition)
+ - OS : Windows 2000 or higher
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+}
+
 unit SharpEAnimationTimers;
 
 interface
@@ -31,6 +61,10 @@ type
                     MasterAlpha : integer;
                     GradientAlphaFrom : String;
                     GradientAlphaTo   : String;
+                    TextColor : String;
+                    TextAlpha : integer;
+                    TextShadowColor : String;
+                    TextShadowAlpha : integer;
                   end;
 
   TSkinPartArray = array of TSkinPartInfo;
@@ -124,6 +158,26 @@ begin
   result := SP.BlendColor;
 end;
 
+function Script_GetTextAlpha(SP : TSkinPart) : integer;
+begin
+  result := SP.SkinText.Alpha;
+end;
+
+function Script_GetTextColor(SP : TSkinPart) : String;
+begin
+  result := SP.SkinText.Color;
+end;
+
+function Script_GetTextShadowColor(SP : TSkinPart) : String;
+begin
+  result := SP.SkinText.ShadowColor;
+end;
+
+function Script_GetTextShadowAlpha(SP : TSkinPart) : integer;
+begin
+  result := SP.SkinText.ShadowAlpha;
+end;
+
 function Script_GetAlpha(SP : TSkinPart) : integer;
 begin
   result := SP.MasterAlpha;
@@ -131,7 +185,59 @@ end;
 
 procedure Script_SetAlpha(SP : TSkinPart; NewAlpha : integer);
 begin
-  SP.MasterAlpha := Min(255,NewAlpha);
+  SP.MasterAlpha := Max(0,Min(255,NewAlpha));
+end;
+
+procedure Script_SetTextAlpha(SP : TSkinPart; NewAlpha : integer);
+begin
+  SP.SkinText.Alpha := Max(0,Min(255,NewAlpha));
+end;
+
+procedure Script_SetTextShadowAlpha(SP : TSkinPart; NewAlpha : integer);
+begin
+  SP.SkinText.ShadowAlpha := Max(0,Min(255,NewAlpha));
+end;
+
+procedure Script_SetTextShadowColor(SP : TSkinPart; NewColor : String);
+begin
+  SP.SkinText.ShadowColor := NewColor;
+end;
+
+procedure Script_setColor(SP : TSkinPart; NewColor : String);
+begin
+  SP.BlendColor := NewColor;
+end;
+
+procedure Script_IncreaseTextShadowAlpha(SP : TSkinPart; Amount : integeR);
+var
+  n : integer;
+begin
+  n := Max(0,Min(255,SP.SkinText.ShadowAlpha + Amount));
+  SP.SkinText.ShadowAlpha := n;
+end;
+
+procedure Script_DecreaseTextShadowAlpha(SP : TSkinPart; Amount : integeR);
+var
+  n : integer;
+begin
+  n := Max(0,Min(255,SP.SkinText.ShadowAlpha - Amount));
+  SP.SkinText.ShadowAlpha := n;
+end;
+
+procedure Script_IncreaseTextAlpha(SP : TSkinPart; Amount : integer);
+var
+  n : integer;
+begin
+  n := Max(0,Min(255,SP.SkinText.Alpha + Amount));
+  SP.SkinText.Alpha := n;
+end;
+
+procedure Script_DecreaseTextAlpha(SP : TSkinPart; Amount : integer);
+var
+  n : integer;
+begin
+  n := Max(0,Min(255,SP.SkinText.Alpha - Amount));
+  SP.SkinText.Alpha := n;
 end;
 
 procedure Script_IncreaseGradientFromAlpha(SP : TSkinPart; Amount: integer);
@@ -164,6 +270,11 @@ var
 begin
   n := Max(0,SP.GradientAlpha.YAsInt - Amount);
   SP.GradientAlpha.SetPoint(SP.GradientAlpha.X,inttostr(n));
+end;
+
+procedure Script_SetTextColor(SP : TSkinPart; NewColor : String);
+begin
+  SP.SkinText.Color := NewColor;
 end;
 
 procedure Script_SetGradientFromAlpha(SP : TSkinPart; NewAlpha : integer);
@@ -215,6 +326,34 @@ end;
 procedure Script_DecreaseAlpha(SP : TSkinPart; Amount : integer);
 begin
   SP.MasterAlpha := Max(0,SP.MasterAlpha - Amount);
+end;
+
+procedure Script_BlendTextShadowColor(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
+var
+  NewColor : integer;
+  CurrentColor, FromColor, ToColor : integer;
+begin
+  FromColor := SchemedStringToColor(pFromColor, Scheme);
+  ToColor := SchemedStringToColor(pToColor, Scheme);
+  CurrentColor := SchemedStringToColor(SP.SkinText.ShadowColor, Scheme);
+  NewColor := StepBlendColor(FromColor,ToColor,CurrentColor,Step);
+
+  if NewColor = ToColor then SP.SkinText.ShadowColor := pToColor
+     else SP.SkinText.ShadowColor := inttostr(NewColor);
+end;
+
+procedure Script_BlendTextColor(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
+var
+  NewColor : integer;
+  CurrentColor, FromColor, ToColor : integer;
+begin
+  FromColor := SchemedStringToColor(pFromColor, Scheme);
+  ToColor := SchemedStringToColor(pToColor, Scheme);
+  CurrentColor := SchemedStringToColor(SP.SkinText.Color, Scheme);
+  NewColor := StepBlendColor(FromColor,ToColor,CurrentColor,Step);
+
+  if NewColor = ToColor then SP.SkinText.Color := pToColor
+     else SP.SkinText.Color := inttostr(NewColor);
 end;
 
 procedure Script_BlendColor(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
@@ -302,6 +441,10 @@ begin
     SP.BlendAlpha := BlendAlpha;
     SP.MasterAlpha := MasterAlpha;
     SP.GradientAlpha.SetPoint(GradientAlphaFrom,GradientAlphaTo);
+    SP.SkinText.Color := TextColor;
+    SP.SkinText.Alpha := TextAlpha;
+    SP.SkinText.ShadowAlpha := TextShadowAlpha;
+    SP.SkinText.ShadowColor := TextShadowColor;
   end;
 end;
 
@@ -333,6 +476,10 @@ begin
     MasterAlpha := SP.MasterAlpha;
     GradientAlphaFrom := SP.GradientAlpha.X;
     GradientAlphaTo  := SP.GradientAlpha.Y;
+    TextColor := SP.SkinText.Color;
+    TextAlpha := SP.SkinText.Alpha;
+    TextShadowAlpha := SP.SkinText.ShadowAlpha;
+    TextShadowColor := SP.SkinText.ShadowColor;
   end;
 end;
 
@@ -455,6 +602,21 @@ const
   sIncreaseGradientToAlpha   = 15;
   sDecraseGradientFromAlpha  = 16;
   sDecraseGradientToAlpha    = 17;
+  sBlendTextColor            = 18;
+  sGetTextColor              = 19;
+  sSetTextColor              = 20;
+  sGetTextAlpha              = 21;
+  sSetTextAlpha              = 22;
+  sIncreaseTextAlpha         = 23;
+  sDecreaseTextAlpha         = 24;
+  sGetTextShadowAlpha        = 25;
+  sSetTextShadowAlpha        = 26;
+  sIncreaseTextShadowAlpha   = 27;
+  sDecreaseTextShadowAlpha   = 28;
+  sGetTextShadowColor        = 29;
+  sSetTextShadowColor        = 30;
+  sBlendTextShadowColor      = 31;
+  sSetColor                  = 32;
 
 var
   temp : TSkinPart;
@@ -462,7 +624,7 @@ var
 begin
   try
          if CompareText(Identifier,'BlendGradientFromColor') = 0      then stype := sBlendGradientFromColor
-    else if CompareText(Identifier,'BlendGradientToColor') = 0        then stype := sBlendGraidentToColor
+    else if CompareText(Identifier, 'BlendGradientToColor') = 0        then stype := sBlendGraidentToColor
     else if CompareText(Identifier, 'BlendColor') = 0                 then stype := sBlendColor
     else if CompareText(Identifier, 'IncreaseAlpha') = 0              then stype := sIncraseAlpha
     else if CompareText(Identifier, 'DecreaseAlpha') = 0              then stype := sDecraseAlpha
@@ -477,8 +639,23 @@ begin
     else if CompareText(Identifier, 'SetGradientToAlpha')  = 0        then stype := sSetGradientToAlpha
     else if CompareText(Identifier, 'IncreaseGradientFromAlpha')  = 0 then stype := sIncreaseGradientFromAlpha
     else if CompareText(Identifier, 'IncreaseGradientToAlpha')  = 0   then stype := sIncreaseGradientToAlpha
-    else if CompareText(Identifier, 'DecreaseGradientFromAlpha')  = 0  then stype := sDecraseGradientFromAlpha
-    else if CompareText(Identifier, 'DecreaseGradientToAlpha')  = 0    then stype := sDecraseGradientToAlpha
+    else if CompareText(Identifier, 'DecreaseGradientFromAlpha')  = 0 then stype := sDecraseGradientFromAlpha
+    else if CompareText(Identifier, 'DecreaseGradientToAlpha')  = 0   then stype := sDecraseGradientToAlpha
+    else if CompareText(Identifier, 'BlendTextColor') = 0             then stype := sBlendTextColor
+    else if CompareText(Identifier, 'GetTextColor') = 0               then stype := sGetTextColor
+    else if CompareText(Identifier, 'SetTextColor') = 0               then stype := sSetTextColor
+    else if CompareText(Identifier, 'GetTextAlpha') = 0               then stype := sGetTextAlpha
+    else if CompareText(Identifier, 'SetTextAlpha') = 0               then stype := sSetTextAlpha
+    else if CompareText(Identifier, 'IncreaseTextAlpha') = 0          then stype := sIncreaseTextAlpha
+    else if CompareText(Identifier, 'DecreaseTextAlpha') = 0          then stype := sDecreaseTextAlpha
+    else if CompareText(Identifier, 'GetTextShadowColor') = 0         then stype := sGetTextShadowColor
+    else if CompareText(Identifier, 'SetTextShadowColor') = 0         then stype := sSetTextShadowColor
+    else if CompareText(Identifier, 'BlendTextShadowColor') = 0       then stype := sBlendTextShadowColor
+    else if CompareText(Identifier, 'GetTextShadowAlpha') = 0         then stype := sGetTextShadowAlpha
+    else if CompareText(Identifier, 'SetTextShadowAlpha') = 0         then stype := sSetTextShadowAlpha
+    else if CompareText(Identifier, 'IncreaseTextShadowAlpha') = 0    then stype := sIncreaseTextShadowAlpha
+    else if CompareText(Identifier, 'DecreaseTextShadowAlpha') = 0    then stype := sDecreaseTextShadowAlpha
+    else if CompareText(Identifier, 'SetColor') = 0                   then stype := sSetColor
     else stype := -1;
 
     if    (stype = sBlendGradientFromColor)
@@ -492,7 +669,18 @@ begin
        or (stype = sIncreaseGradientFromAlpha)
        or (stype = sIncreaseGradientToAlpha)
        or (stype = sDecraseGradientFromAlpha)
-       or (stype = sDecraseGradientToAlpha) then
+       or (stype = sDecraseGradientToAlpha)
+       or (stype = sBlendTextColor)
+       or (stype = sSetTextColor)
+       or (stype = sSetTextAlpha)
+       or (stype = sIncreaseTextAlpha)
+       or (stype = sDecreaseTextAlpha)
+       or (stype = sSetTextShadowColor)
+       or (stype = sSetTextShadowAlpha)
+       or (stype = sIncreaseTextShadowAlpha)
+       or (stype = sDecreaseTextShadowAlpha)
+       or (stype = sBlendTextShadowColor)
+       or (stype = sSetcolor) then
     begin
       temp := FindSkinPart(VarToStr(Args.Values[0]),FSkinPart);
       if temp <> nil then
@@ -503,8 +691,10 @@ begin
           sBlendGradientFromColor    : Script_BlendGradientFrom(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
           sBlendGraidentToColor      : Script_BlendGradientTo(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
           sBlendColor                : Script_BlendColor(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
+          sBlendTextColor            : Script_BlendTextColor(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
           sIncraseAlpha              : Script_IncreaseAlpha(temp,Args.Values[1]);
           sDecraseAlpha              : Script_DecreaseAlpha(temp,Args.Values[1]);
+          sSetTextColor              : Script_SetTextColor(temp,Args.Values[1]);
           sSetAlpha                  : Script_SetAlpha(temp,Args.Values[1]);
           sSetGradientFromAlpha      : Script_SetGradientFromAlpha(temp,Args.Values[1]);
           sSetGradientToAlpha        : Script_SetGradientToAlpha(temp,Args.Values[1]);
@@ -512,6 +702,15 @@ begin
           sIncreaseGradientToAlpha   : Script_IncreaseGradientToAlpha(temp,Args.Values[1]);
           sDecraseGradientFromAlpha  : Script_DecraseGradientFromAlpha(temp,Args.Values[1]);
           sDecraseGradientToAlpha    : Script_DecraseGradientToAlpha(temp,Args.Values[1]);
+          sSetTextAlpha              : Script_SetTextAlpha(temp,Args.Values[1]);
+          sIncreaseTextAlpha         : Script_IncreaseTextAlpha(temp,Args.Values[1]);
+          sDecreaseTextAlpha         : Script_DecreaseTextAlpha(temp,Args.Values[1]);
+          sSetTextShadowAlpha        : Script_SetTextShadowAlpha(temp,Args.Values[1]);
+          sSetTextShadowColor        : Script_SetTextShadowColor(temp,Args.Values[1]);
+          sIncreaseTextShadowAlpha   : Script_IncreaseTextShadowAlpha(temp,Args.Values[1]);
+          sDecreaseTextShadowAlpha   : Script_DecreaseTextShadowAlphA(temp,Args.Values[1]);
+          sBlendTextShadowColor      : Script_BlendTextShadowColor(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
+          sSetColor                  : Script_SetColor(temp,Args.Values[1]);
         end;
         AddToModList(temp, FLMList);
       end;
@@ -522,7 +721,11 @@ begin
        or (stype = sStrToInt)
        or (stype = sGetAlpha)
        or (stype = sGetGradientFromColor)
-       or (stype = sGetGradientToColor) then
+       or (stype = sGetGradientToColor)
+       or (stype = sGetTextColor)
+       or (stype = sGetTextAlpha)
+       or (stype = sGetTextShadowColor)
+       or (stype = sGetTextShadowAlpha) then
     begin
       temp := FindSkinPart(VarToStr(Args.Values[0]),FSkinPart);
       if temp <> nil then
@@ -534,6 +737,8 @@ begin
           sGetAlpha             : Value := Script_GetAlpha(temp);
           sGetGradientFromColor : Value := Script_GetGradientFromColor(temp);
           sGetGradientToColor   : Value := Script_GetGradientToColor(temp);
+          sGetTextColor         : Value := Script_GetTextColor(temp);
+          sGetTextAlpha         : Value := Script_GetTextAlpha(temp);
         end;
       end;
       Done := True;

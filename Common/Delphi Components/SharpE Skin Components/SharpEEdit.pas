@@ -1,5 +1,5 @@
 {
-Source Name: SharpEMiniThrobber
+Source Name: SharpEEdit.pas
 Description: SharpE component for SharpE
 Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
 

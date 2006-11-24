@@ -1,3 +1,34 @@
+{
+Source Name: SharpESkinPart.pas
+Description: Skin Part classes
+Copyright (C) Malx (Malx@techie.com)
+              Martin Krämer <MartinKraemer@gmx.net>
+
+Source Forge Site
+https://sourceforge.net/projects/sharpe/
+
+Main SharpE Site
+http://www.Sharpe-Shell.org
+
+Recommended Environment
+ - Compiler : Delphi 2005 (Personal Edition)
+ - OS : Windows 2000 or higher
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+}
+
 unit SharpESkinPart;
 
 interface
@@ -93,6 +124,7 @@ type
     FName: string;
     FColor: string;
     FSize: integer;
+    FAlpha: integer;
     FStyleBold : boolean;
     FStyleItalic : boolean;
     FStyleUnderline : boolean;
@@ -122,6 +154,11 @@ type
     procedure AssignFontTo(pFont : TFont; cs: TSharpEScheme);
     procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme;
                        var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String);
+  published
+    property Color : String read FColor write FColor;
+    property Alpha : integer read FAlpha write FAlpha;
+    property ShadowColor : String read FShadowColor write FShadowColor;
+    property ShadowAlpha : integer read FShadowAlpha write FShadowAlpha;
   end;
 
   TSkinPartList = class(TObject)
@@ -593,6 +630,7 @@ begin
   FShadowType := stRight;
   FShadowColor := '0';
   FShadowAlpha := 255;
+  FAlpha := 255;
   Assign(DefaultSharpESkinTextRecord);
 end;
 
@@ -615,6 +653,7 @@ begin
     else StringSaveToStream('1',Stream);
   end;
   Stream.WriteBuffer(FShadowAlpha,SizeOf(FShadowAlpha));
+  Stream.WriteBuffer(FAlpha,SizeOf(FAlpha));
 end;
 
 procedure TSkinText.LoadFromStream(Stream: TStream);
@@ -637,6 +676,7 @@ begin
      else if CompareText(s,'2') = 0 then FShadowType := stOutline
      else FShadowType := stRight;
   Stream.ReadBuffer(FShadowAlpha,SizeOf(FShadowAlpha));
+  Stream.ReadBuffer(FAlpha,SizeOf(FAlpha));
 end;
 
 procedure TSkinText.Assign(Value: TSkinText);
@@ -654,6 +694,7 @@ begin
   FShadowColor := Value.FShadowColor;
   FShadowAlpha := Value.FShadowAlpha;
   FShadowType := Value.FShadowType;
+  FAlpha := Value.FAlpha;
 end;
 
 procedure TSkinText.Assign(Value: TSkinTextRecord);
@@ -733,6 +774,8 @@ begin
       FStyleUnderline := BoolValue('underline',false);
     if ItemNamed['maxwidth'] <> nil then
       FMaxWidth := Value('maxwidth','w');
+    if ItemNamed['alpha'] <> nil then
+      FAlpha := Max(0,Min(255,IntValue('alpha',255)));
     if ItemNamed['shadow'] <> nil then
       FShadow := BoolValue('shadow',false);
     if ItemNamed['shadowcolor'] <> nil then
@@ -1096,6 +1139,7 @@ begin
     c2 := color32(R,G,B,255);
     pPrecacheBmp.RenderText(pPrecacheBmp.Width div 2 - w div 2,pPrecacheBmp.Height div 2 - h div 2,Caption,0,c2);
   end;
+  pPrecacheBmp.MasterAlpha := FAlpha;
   pPrecacheBmp.DrawTo(Bmp,X-10,Y-10);
 end;
 

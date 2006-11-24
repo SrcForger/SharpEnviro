@@ -1,5 +1,5 @@
 {
-Source Name: SharpEForm
+Source Name: SharpEBar.pas
 Description: SharpE component for SharpE
 Copyright (C) Malx (Malx@techie.com)
               Martin Krämer <MartinKraemer@gmx.net>
@@ -7,8 +7,12 @@ Copyright (C) Malx (Malx@techie.com)
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
 
-SharpE Site
-http://www.sharpe-shell.org
+Main SharpE Site
+http://www.Sharpe-Shell.org
+
+Recommended Environment
+ - Compiler : Delphi 2005 (Personal Edition)
+ - OS : Windows 2000 or higher
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -440,7 +444,8 @@ begin
   //Do not free FThrobber, form owns it and is responsible for that
   if (csDesigning in ComponentState) and (Owner is TForm) then
     (Owner as TForm).Color := clBtnFace;
-  SetWindowlong(form.handle, GWL_WNDPROC, longword(hproc));
+  if not Application.Terminated then
+     SetWindowlong(form.handle, GWL_WNDPROC, longword(hproc));
   FSkin.Free;
   FBuffer.Free;
   FBackGround.Free;

@@ -2,6 +2,7 @@
 Source Name: SharpEScheme
 Description: SharpE component for SharpE
 Copyright (C) Malx (Malx@techie.com)
+              Martin Krämer (MartinKraemer@gmx.net)
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/

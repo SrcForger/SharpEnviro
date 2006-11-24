@@ -163,6 +163,7 @@ begin
   end;
 
   FSkin.Clear(Color32(0, 0, 0, 0));
+  bmp.Clear(Color32(0, 0, 0, 0));
   if length(trim(Caption))>0 then
      SkinText.RenderTo(bmp,5,5,Caption,Scheme,
                        FPrecacheText,FPrecacheBmp,FPrecacheCaption);
@@ -174,6 +175,7 @@ begin
   begin
     FCaption := Value;
     UpdateSkin;
+    Invalidate;
   end;
 end;
 
