@@ -47,6 +47,7 @@ const
                         '§^  <image>images/filename.png</image>^'+
                         '§^  <color>$WorkAreaBack</color>^'+
                         '§</skinpart>';
+
       DefaultSkinPart3 = '<skinpart>'+
                         '§^  <alpha>255</alpha>^'+
                         '§^  <location>0,0</location>^'+
@@ -54,7 +55,7 @@ const
                         '§^  <image>empty</image>^'+
                         '§^  <color>$WorkAreaBack</color>^'+
                         '§</skinpart>';
-                        
+
       DefaultButtonSkin = '<button>'+
                           '§^  <text>^'+
                           '§^    <location>cw,ch-1</location>^'+
@@ -63,6 +64,36 @@ const
                           '§^    <color>$WorkAreaText</color>^'+
                           '§^  </text>^'+
                           '§^  <dimension>w,20</dimension>^'+
+                          '§^  <normal>^'+
+                          '§^    <!-- Normal State Skin Parts -->^'+
+                          '§^  </normal>^'+
+                          '§^  <hover>^'+
+                          '§^    <!-- Hover State Skin Parts -->^'+
+                          '§^  </hover>^'+
+                          '§^  <down>^'+
+                          '§^    <text>^'+
+                          '§^      <location>cw,ch</location>^'+
+                          '§^    </text>^'+
+                          '§^    <!-- Down State Skin Parts -->^'+
+                          '§^  </down>^'+
+                          '§^  <disabled>^'+
+                          '§^    <text>^'+
+                          '§^      <color>$WorkAreaBack</color>^'+
+                          '§^    </text>^'+
+                          '§^    <!-- Disabled State Skin Parts -->^'+
+                          '§^  </disabled>^'+
+                          '§^</button>^';
+
+  DefaultButtonSkinAnim = '<button>'+
+                          '§^  <text>^'+
+                          '§^    <location>cw,ch-1</location>^'+
+                          '§^    <name>Small Fonts</name>^'+
+                          '§^    <size>7</size>^'+
+                          '§^    <color>$WorkAreaText</color>^'+
+                          '§^  </text>^'+
+                          '§^  <dimension>w,20</dimension>^'+
+                          '§^    <OnNormalMouseEnter></OnNormalMouseEnter>^'+
+                          '§^    <OnNormalMouseLeave></OnNormalMouseLeave>^'+
                           '§^  <normal>^'+
                           '§^    <!-- Normal State Skin Parts -->^'+
                           '§^  </normal>^'+
@@ -234,6 +265,93 @@ const
                             '§^    <!-- Disabled State Skin Parts -->^'+
                             '§^  </disabled>^'+
                             '§</edit>';
+
+      DefaultTaskItemSkinAnim = '<taskitem>'+
+                                '§^  <full>^'+
+                                '§^    <text>^'+
+                                '§^      <draw>1</draw>^'+
+                                '§^      <maxwidth>w-22</maxwidth>^'+
+                                '§^    </text>^'+
+                                '§^    <icon>^'+
+                                '§^      <draw>1</draw>^'+
+                                '§^      <size>12</size>^'+
+                                '§^      <location>cw+8-twh,2</location>^'+
+                                '§^    </icon>^'+
+                                '§^    <spacing>2</spacing>^'+
+                                '§^    <location>0,0</location>^'+
+                                '§^    <dimension>128,17</dimension>^'+
+                                '§^    <OnNormalMouseEnter></OnNormalMouseEnter>^'+
+                                '§^    <OnNormalMouseLeave></OnNormalMouseLeave>^'+
+                                '§^    <OnDownMouseEnter></OnDownMouseEnter>^'+
+                                '§^    <OnDownMouseLeave></OnDownMouseLeave>^'+
+                                '§^    <OnHighlightStepStart></OnHighlightStepStart>^'+
+                                '§^    <OnHighlightStepEnd></OnHighlightStepEnd>^'+
+                                '§^    <normal>^'+
+                                '§^      <!-- Normal State Skin Parts -->^'+
+                                '§^    </normal>^'+
+                                '§^    <hover>^'+
+                                '§^      <!-- Hovar State Skin Parts -->^'+
+                                '§^    </hover>^'+
+                                '§^    <down>^'+
+                                '§^      <!-- Down State Skin Parts -->^'+
+                                '§^    </down>^'+
+                                '§^  </full>^'+
+                                '§^  <compact>^'+
+                                '§^    <text>^'+
+                                '§^      <draw>1</draw>^'+
+                                '§^      <maxwidth>w-6</maxwidth>^'+
+                                '§^    </text>^'+
+                                '§^    <icon>^'+
+                                '§^      <draw>0</draw>^'+
+                                '§^    </icon>^'+
+                                '§^    <spacing>1</spacing>^'+
+                                '§^    <location>0,0</location>^'+
+                                '§^    <dimension>96,17</dimension>^'+
+                                '§^    <OnNormalMouseEnter></OnNormalMouseEnter>^'+
+                                '§^    <OnNormalMouseLeave></OnNormalMouseLeave>^'+
+                                '§^    <OnDownMouseEnter></OnDownMouseEnter>^'+
+                                '§^    <OnDownMouseLeave></OnDownMouseLeave>^'+
+                                '§^    <OnHighlightStepStart></OnHighlightStepStart>^'+
+                                '§^    <OnHighlightStepEnd></OnHighlightStepEnd>^'+
+                                '§^    <normal>^'+
+                                '§^      <!-- Normal State Skin Parts -->^'+
+                                '§^    </normal>^'+
+                                '§^    <hover>^'+
+                                '§^      <!-- Hovar State Skin Parts -->^'+
+                                '§^    </hover>^'+
+                                '§^    <down>^'+
+                                '§^      <!-- Down State Skin Parts -->^'+
+                                '§^    </down>^'+
+                                '§^  </compact>^'+
+                                '§^  <mini>^'+
+                                '§^    <text>^'+
+                                '§^      <draw>0</draw>^'+
+                                '§^    </text>^'+
+                                '§^    <icon>^'+
+                                '§^      <draw>1</draw>^'+
+                                '§^      <size>12</size>^'+
+                                '§^      <location>4,2</location>^'+
+                                '§^    </icon>^'+
+                                '§^    <spacing>1</spacing>^'+
+                                '§^    <location>0,0</location>^'+
+                                '§^    <dimension>19,17</dimension>^'+
+                                '§^    <OnNormalMouseEnter></OnNormalMouseEnter>^'+
+                                '§^    <OnNormalMouseLeave></OnNormalMouseLeave>^'+
+                                '§^    <OnDownMouseEnter></OnDownMouseEnter>^'+
+                                '§^    <OnDownMouseLeave></OnDownMouseLeave>^'+
+                                '§^    <OnHighlightStepStart></OnHighlightStepStart>^'+
+                                '§^    <OnHighlightStepEnd></OnHighlightStepEnd>^'+
+                                '§^    <normal>^'+
+                                '§^      <!-- Normal State Skin Parts -->^'+
+                                '§^    </normal>^'+
+                                '§^    <hover>^'+
+                                '§^      <!-- Hovar State Skin Parts -->^'+
+                                '§^    </hover>^'+
+                                '§^    <down>^'+
+                                '§^      <!-- Down State Skin Parts -->^'+
+                                '§^    </down>^'+
+                                '§^  </mini>^'+
+                                '§</taskitem>';
 
           DefaultTaskItemSkin = '<taskitem>'+
                                 '§^  <full>^'+

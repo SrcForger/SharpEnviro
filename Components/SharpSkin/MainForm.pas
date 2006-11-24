@@ -161,6 +161,12 @@ type
     Label1: TLabel;
     Button3: TButton;
     cpanel: TPanel;
+    askItemAnimated1: TMenuItem;
+    ButtonAnimated1: TMenuItem;
+    ButtonAnimated2: TMenuItem;
+    askitemAnimated2: TMenuItem;
+    procedure ButtonAnimated1Click(Sender: TObject);
+    procedure askItemAnimated1Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure btn_RefreshClick(Sender: TObject);
     procedure TaskItem1Click(Sender: TObject);
@@ -197,7 +203,7 @@ type
     procedure Exit1Click(Sender: TObject);
     procedure OnXMLDecode(Sender: TObject; var Value: string);
     procedure OnXMLTagParsed(Sender: TObject; Name: string);
-    procedure OnSchemeColorClick(Sender : TObject; Color: TColor; ColType: TClickedColorID);
+    procedure OnColorClick(Sender : TObject);
   private
   public
     function UpdateSkinEdit(newTab : String) : boolean;
@@ -1065,7 +1071,7 @@ begin
           ColorBox.Left := cpanel.Width - 16 - ColorBox.Width;
           ColorBox.Top := i;
           ColorBox.Color := IntValue('Default',clWhite);
-          ColorBox.OnColorClick := OnSchemeColorClick;
+          ColorBox.OnColorClick := OnColorClick;
           i := i + 24;
         end;
   except
@@ -1086,11 +1092,21 @@ begin
   RepaintSkinDemo;
 end;
 
-procedure TForm1.OnSchemeColorClick(Sender : TObject; Color: TColor; ColType: TClickedColorID);
+procedure TForm1.OnColorClick(Sender : TObject);
 begin
   UpdateColorScheme;
 end;
 
 
+
+procedure TForm1.askItemAnimated1Click(Sender: TObject);
+begin
+  ParseAndInsertText(DefaultTaskItemSkinAnim);
+end;
+
+procedure TForm1.ButtonAnimated1Click(Sender: TObject);
+begin
+  ParseAndInsertText(DefaultButtonSkinAnim);
+end;
 
 end.
