@@ -44,6 +44,7 @@ type
     lb_barsize: TLabel;
     tb_size: TGaugeBar;
     cb_selectbutton: TCheckBox;
+    Label1: TLabel;
     procedure tb_sizeChange(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);

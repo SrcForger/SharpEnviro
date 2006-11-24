@@ -17,7 +17,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 285
-    Height = 164
+    Height = 166
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -32,7 +32,8 @@ object MainForm: TMainForm
       SkinManager = SharpESkinManager1
       AutoSize = True
       OnClick = btn_selectClick
-      Glyph32FileName = 'utilities-terminal.png'
+      OnMouseDown = btn_selectMouseDown
+      OnMouseUp = btn_selectMouseUp
       Glyph32.DrawMode = dmBlend
       Glyph32.CombineMode = cmMerge
       Glyph32.ResamplerClassName = 'TLinearResampler'

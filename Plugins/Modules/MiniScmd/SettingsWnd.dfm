@@ -3,8 +3,8 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'MiniScmd Module Settings'
-  ClientHeight = 103
-  ClientWidth = 192
+  ClientHeight = 128
+  ClientWidth = 217
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,14 +17,14 @@ object SettingsForm: TSettingsForm
   TextHeight = 13
   object Label4: TLabel
     Left = 8
-    Top = 32
+    Top = 56
     Width = 94
     Height = 13
     Caption = 'Command Box Size:'
   end
   object lb_barsize: TLabel
     Left = 104
-    Top = 32
+    Top = 56
     Width = 33
     Height = 14
     AutoSize = False
@@ -36,9 +36,26 @@ object SettingsForm: TSettingsForm
     Font.Style = [fsBold]
     ParentFont = False
   end
+  object Label1: TLabel
+    Left = 24
+    Top = 24
+    Width = 191
+    Height = 25
+    AutoSize = False
+    Caption = 
+      '(right clicking the quick select button will auto execute the se' +
+      'lected command)'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -9
+    Font.Name = 'Small Fonts'
+    Font.Style = []
+    ParentFont = False
+    WordWrap = True
+  end
   object Button1: TButton
-    Left = 32
-    Top = 72
+    Left = 56
+    Top = 96
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -46,8 +63,8 @@ object SettingsForm: TSettingsForm
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 112
-    Top = 72
+    Left = 136
+    Top = 96
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -56,8 +73,8 @@ object SettingsForm: TSettingsForm
   end
   object tb_size: TGaugeBar
     Left = 8
-    Top = 48
-    Width = 177
+    Top = 72
+    Width = 201
     Height = 13
     Color = clWindow
     Backgnd = bgSolid

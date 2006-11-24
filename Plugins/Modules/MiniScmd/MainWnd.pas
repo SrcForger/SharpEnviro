@@ -47,6 +47,10 @@ type
     SharpESkinManager1: TSharpESkinManager;
     edit: TSharpEEdit;
     btn_select: TSharpEButton;
+    procedure btn_selectMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure btn_selectMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure btn_selectClick(Sender: TObject);
     procedure editKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Settings1Click(Sender: TObject);
@@ -63,6 +67,9 @@ type
     procedure SetSize(NewWidth : integer);
     procedure ReAlignComponents(BroadCast : boolean);
   end;
+
+var
+  rightbutton : boolean;
 
 
 implementation
@@ -81,6 +88,7 @@ begin
 
   sWidth     := 100;
   sButton    := True;
+  rightbutton := False;
 
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
   if item <> nil then with item.Items do
@@ -248,7 +256,25 @@ begin
     edit.SetFocus;
     edit.Text := s;
     edit.Edit.SelectAll;
+    if rightbutton then
+    begin
+      SharpApi.SharpExecute(trim(edit.Text));
+      edit.Text := '';
+    end;
   end;
+end;
+
+procedure TMainForm.btn_selectMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbRight then rightbutton := True
+     else rightbutton := False;
+end;
+
+procedure TMainForm.btn_selectMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbRight then btn_select.OnClick(btn_select);
 end;
 
 end.
