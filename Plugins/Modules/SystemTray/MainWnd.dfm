@@ -11,6 +11,8 @@ object MainForm: TMainForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object Background: TImage32
@@ -54,7 +56,7 @@ object MainForm: TMainForm
       Top = 0
       Width = 22
       Height = 16
-      SkinManager = SharpESkinManager1
+      SkinManager = SkinManager
       AutoSize = False
       Visible = False
       OnClick = sb_leftClick
@@ -106,7 +108,7 @@ object MainForm: TMainForm
       Top = 0
       Width = 22
       Height = 16
-      SkinManager = SharpESkinManager1
+      SkinManager = SkinManager
       AutoSize = False
       Visible = False
       OnClick = sb_rightClick
@@ -163,7 +165,7 @@ object MainForm: TMainForm
       OnClick = Settings1Click
     end
   end
-  object SharpESkinManager1: TSharpESkinManager
+  object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
     Left = 112

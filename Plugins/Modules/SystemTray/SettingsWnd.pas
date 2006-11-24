@@ -55,6 +55,10 @@ type
     cb_blend: TCheckBox;
     scb_blend: TSharpEColorBox;
     tb_blend: TGaugeBar;
+    Label3: TLabel;
+    lb_alpha: TLabel;
+    tb_alpha: TGaugeBar;
+    procedure tb_alphaChange(Sender: TObject);
     procedure tb_blendChange(Sender: TObject);
     procedure cb_blendClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -129,6 +133,11 @@ end;
 procedure TSettingsForm.tb_blendChange(Sender: TObject);
 begin
   lb_blend.Caption := inttostr(round((tb_blend.Position/tb_blend.Max)*100)) + '%';
+end;
+
+procedure TSettingsForm.tb_alphaChange(Sender: TObject);
+begin
+  lb_alpha.Caption := inttostr(round((tb_alpha.Position/tb_alpha.Max)*100)) + '%';
 end;
 
 end.

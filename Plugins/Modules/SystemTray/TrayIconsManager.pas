@@ -36,6 +36,7 @@ uses Windows, Dialogs, SysUtils,
      Forms, Controls, Messages, Types, Graphics, Contnrs, ExtCtrls,
      GR32,
      SharpApi,
+     SharpThemeApi,
      TipWnd,
      GR32_Filters,
      WinVer,
@@ -119,6 +120,7 @@ type
                    FLastTipItem : TTrayItem;
                    FTipPoint : TPoint;
                    FTipGPoint : TPoint;
+                   FIconAlpha       : integer;
                    FColorBlend      : boolean;
                    FBlendColor      : integer;
                    FBlendAlpha      : integer;
@@ -131,7 +133,6 @@ type
                    FRepaintHash     : integer;
                    FScreenPos       : TPoint;
                    FLastMessage     : Int64;
-                   FCS : TColorSchemeEx;
                    procedure FOnTipTimer(Sender : TObject);
                    procedure NewRepaintHash;
                  public
@@ -151,27 +152,34 @@ type
                    function  IconExists(item : TTrayItem) : Boolean;
                    procedure RegisterWithTray;
                    procedure ClearTrayIcons;
+                   procedure SetBorderColor(Value : TColor32);
+                   procedure SetBackgroundColor(Value : TColor32);
+                   procedure SetBlendColor(Value : integer);
+                   procedure SetBorderAlpha(Value : integer);
+                   procedure SetBackgroundAlpha(Value : integer);
+                   procedure SetBlendAlpha(Value : integer);
+                   procedure SetIconAlpha(Value : integer);
                    constructor Create; reintroduce;
                    destructor  Destroy; override;
                  published
                    property Items : TObjectList read FItems;
                    property Bitmap : TBitmap32 read FBitmap;
+                   property IconAlpha : integer read FIconAlpha write SetIconAlpha;
                    property IconSize : integer read FIconSize write FIconSize;
                    property IconSpacing : integer read FIconSpacing write FIconSpacing;
                    property TopSpacing  : integer read FTopSpacing write FTopSpacing;
                    property ColorBlend     : boolean read FColorBlend write FColorBlend;
-                   property BlendColor     : integer read FBlendColor write FBlendColor;
-                   property BlendAlpha     : integer read FBlendAlpha write FBlendAlpha;
+                   property BlendColor     : integer read FBlendColor write SetBlendColor;
+                   property BlendAlpha     : integer read FBlendAlpha write SetBlendAlpha;
                    property DrawBackground : boolean read FDrawBackground write FDrawBackground;
                    property DrawBorder     : boolean read FDrawBorder write FDrawBorder;
-                   property BackGroundColor : TColor32 read FBackGroundColor write FBackgroundColor;
-                   property BorderColor    : TColor32 read FBorderColor     write FBorderColor;
-                   property BackgroundAlpha : integer read FBackgroundAlpha write FBackgroundAlpha;
-                   property BorderAlpha    : integer read FBorderAlpha      write FBorderAlpha;
+                   property BackGroundColor : TColor32 read FBackGroundColor write SetBackgroundColor;
+                   property BorderColor    : TColor32 read FBorderColor     write SetBorderColor;
+                   property BackgroundAlpha : integer read FBackgroundAlpha write SetBackgroundAlpha;
+                   property BorderAlpha    : integer read FBorderAlpha      write SetBorderAlpha;
                    property RepaintHash    : integer read FRepaintHash      write FRepaintHash;
                    property ScreenPos      : TPoint  read FScreenPos        write FScreenPos;
                    property LastMessage    : Int64   read FLastMessage;
-                   property CS : TColorSchemeEx read FCS write FCS;
                  end;
   {$ENDREGION}
 {$ENDREGION}
@@ -472,7 +480,8 @@ begin
   result := Color32(R,G,B,A);
 end;
 
-function CodeToColor(ColorCode : integer; ColorScheme: TColorScheme) : integer;
+
+{function CodeToColor(ColorCode : integer; ColorScheme: TColorScheme) : integer;
 begin
   case ColorCode of
    -1 : result := ColorScheme.Throbberback;
@@ -498,7 +507,7 @@ begin
    -8 : result := ColorScheme.WorkAreaText;
    else result := ColorCode;
   end;
-end;
+end;  }
 
 function ColorToCodeEx(Color : integer; ColorScheme: TColorSchemeEX) : integer;
 begin
@@ -739,6 +748,7 @@ begin
   Randomize;
   NewRepaintHash;
   FColorBlend := False;
+  FIconAlpha  := 255;
   FBlendAlpha := 255;
   FBlendColor := 0;
   FDrawBackground := True;
@@ -768,6 +778,64 @@ begin
 
   FMsgWnd := TMsgWnd.Create(nil);
   FMsgWnd.FTrayClient := self;
+end;
+
+procedure TTrayClient.SetIconAlpha(Value : integer);
+begin
+  if Value <> FIconAlpha then
+  begin
+    FIconAlpha := min(255,max(0,Value));
+  end;
+end;
+
+procedure TTrayClient.SetBorderColor(Value : TColor32);
+begin
+  if Value <> FBorderColor then
+  begin
+    FBorderColor := ColorToColor32Alpha(SchemeCodeToColor(Value),FBorderAlpha);
+  end;
+end;
+
+procedure TTrayClient.SetBackgroundColor(Value : TColor32);
+begin
+  if Value <> FBackgroundColor then
+  begin
+    FBackgroundColor := ColorToColor32Alpha(SchemeCodeToColor(Value),FBackgroundAlpha);
+  end;
+end;
+
+procedure TTrayClient.SetBorderAlpha(Value : integer);
+begin
+  if Value <> FBorderAlpha then
+  begin
+    FBorderAlpha := Value;
+    FBorderColor := ColorToColor32Alpha(SchemeCodeToColor(WinColor(FBorderColor)),FBorderAlpha);
+  end;
+end;
+
+procedure TTrayClient.SetBackgroundAlpha(Value : integer);
+begin
+  if Value <> FBackgroundAlpha then
+  begin
+    FBackgroundAlpha := Value;
+    FBackgroundColor := ColorToColor32Alpha(SchemeCodeToColor(WinColor(FBackgroundColor)),FBackgroundAlpha);
+  end;
+end;
+
+procedure TTrayClient.SetBlendColor(Value : integer);
+begin
+  if Value <> FBlendColor then
+  begin
+    FBlendColor := SchemeCodeToColor(Value);
+  end;
+end;
+
+procedure TTrayClient.SetBlendAlpha(Value : integer);
+begin
+  if Value <> FBlendAlpha then
+  begin
+    FBlendAlpha := Value;
+  end;
 end;
 
 procedure TTrayClient.NewRepaintHash;
@@ -857,7 +925,7 @@ begin
       begin
         FLastTipItem := tempItem;
         FTipWnd.InfoLabel.Caption := tempItem.FTip;
-        FTipWnd.Width := FTipWnd.InfoLabel.Width +8; // FTipWnd.InfoLabel.Canvas.TextWidth(tempItem.Title)+16;
+        FTipWnd.Width := FTipWnd.InfoLabel.Width + 8; // FTipWnd.InfoLabel.Canvas.TextWidth(tempItem.Title)+16;
         FTipWnd.Height := FTipWnd.InfoLabel.Height + 6;
         x := FTipGPoint.X+2;
         y := FTipGPoint.Y - FTipWnd.Height - 1;
@@ -865,7 +933,7 @@ begin
         if x + FTipWnd.Width > mon.Left + mon.Width then
            x := mon.Left + mon.Width - FTipWnd.Width;
         if y < mon.top then
-           y := mon.top;
+           y := FTipGPoint.Y + 2 ;
         FTipWnd.Left := x;
         FTipWnd.Top := y;
       end;
@@ -1018,20 +1086,23 @@ begin
     FBitmap.Clear(color32(0,0,0,0));
     if FDrawBorder then
     begin
-      FBitmap.FillRect(0,0,FBitmap.Width,FBitmap.Height,ColorToColor32Alpha(CodeToColorEx(FBorderColor,FCS),FBorderAlpha));
+      FBitmap.FillRect(0,0,FBitmap.Width,FBitmap.Height,FBorderColor);
       FBitmap.FillRect(1,1,FBitmap.Width-1,FBitmap.Height-1,Color32(0,0,0,0));
     end;
-    if FDrawBackground then FBitmap.FillRect(1,1,FBitmap.Width-1,FBitmap.Height-1,ColorToColor32Alpha(CodeToColorEx(FBackgroundColor,FCS),FBackgroundAlpha));
+    if FDrawBackground then FBitmap.FillRect(1,1,FBitmap.Width-1,FBitmap.Height-1,FBackgroundColor);
     for n := 0 to FItems.Count - 1 do
     begin
       tempItem := TTrayItem(FItems.Items[n]);
       tempItem.Bitmap.DrawMode := dmBlend;
+      tempItem.Bitmap.MasterAlpha := FIconAlpha;
       if FColorBlend then
       begin
         tempBmp.SetSize(tempItem.Bitmap.Width,tempItem.Bitmap.Height);
         tempBmp.Clear(color32(0,0,0,0));
+        tempItem.Bitmap.MasterAlpha := 255;
         tempItem.Bitmap.DrawTo(tempBmp);
-        BlendImageA(tempBmp,CodeToColorEx(FBlendColor,FCS),FBlendAlpha);
+        BlendImageA(tempBmp,FBlendColor,FBlendAlpha);
+        tempBmp.MasterAlpha := FIconAlpha;
         tempBmp.DrawTo(FBitmap,Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
       end else tempItem.Bitmap.DrawTo(FBitmap,Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
     end;
@@ -1058,22 +1129,25 @@ begin
     target.Clear(color32(0,0,0,0));
     if FDrawBorder then
     begin
-      target.FillRect(0,0,target.Width,target.Height,ColorToColor32Alpha(CodeToColorEx(FBorderColor,FCS),FBorderAlpha));
+      target.FillRect(0,0,target.Width,target.Height,FBorderColor);
       target.FillRect(1,1,target.Width-1,target.Height-1,Color32(0,0,0,0));
     end;
-    if FDrawBackground then target.FillRect(1,1,target.Width-1,target.Height-1,ColorToColor32Alpha(CodeToColorEx(FBackgroundColor,FCS),FBackgroundAlpha));
+    if FDrawBackground then target.FillRect(1,1,target.Width-1,target.Height-1,FBackgroundColor);
     for n := 0 to abs(ei-si)-1 do
     begin
       if si+n < FItems.Count then
       begin
         tempItem := TTrayItem(FItems.Items[si+n]);
         tempItem.Bitmap.DrawMode := dmBlend;
+        tempItem.Bitmap.MasterAlpha := FIconAlpha;
         if FColorBlend then
         begin
           tempBmp.SetSize(tempItem.Bitmap.Width,tempItem.Bitmap.Height);
           tempBmp.Clear(color32(0,0,0,0));
+          tempItem.Bitmap.MasterAlpha := 255;
           tempItem.Bitmap.DrawTo(tempBmp);
-          BlendImageA(tempBmp,CodeToColorEx(FBlendColor,FCS),FBlendAlpha);
+          BlendImageA(tempBmp,FBlendColor,FBlendAlpha);
+          tempBmp.MasterAlpha := FIconAlpha;
           tempBmp.DrawTo(target,Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
         end else tempItem.Bitmap.DrawTo(target,Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
       end;

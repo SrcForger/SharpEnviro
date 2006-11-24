@@ -138,11 +138,10 @@ begin
       if TrayClient.RepaintHash <> lastrepaint then
       begin
         if ServiceRunning then
-        begin
-          tempForm.lb_servicenotrunning.Visible := False;
-          tempForm.RepaintIcons;
-        end else tempForm.lb_servicenotrunning.Visible := True;
+           tempForm.lb_servicenotrunning.Visible := False
+           else tempForm.lb_servicenotrunning.Visible := True;
         tempForm.ReAlignComponents(true);
+        if ServiceRunning then tempForm.RepaintIcons;
       end;
     end;
   end;
@@ -231,7 +230,8 @@ function CloseModule(ID : integer) : boolean;
 var
   n : integer;
 begin
-  if ModuleList = nil then begin
+  if ModuleList = nil then
+  begin
     result := false;
     exit;
   end;
@@ -266,9 +266,9 @@ begin
         temp := TModule(ModuleList.Items[n]);
         TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,
                                                        temp.Form.Height);
-         uSharpBarAPI.PaintBarBackGround(temp.BarWnd,
-                                         TMainForm(temp.Form).Background.Bitmap,
-                                         Temp.Form);
+        uSharpBarAPI.PaintBarBackGround(temp.BarWnd,
+                                        TMainForm(temp.Form).Background.Bitmap,
+                                        Temp.Form);
 
         TrayClient.ScreenPos :=
              TMainForm(temp.FForm).ClientToScreen(
@@ -326,10 +326,10 @@ begin
               if FUpdateTimer <> nil then
               begin
                 FUpdateTimer.Enabled := False;
-                FUpdateTimer.Free;
+                FreeAndNil(FUpdateTimer);
               end;
               if TrayClient <> nil then
-                 TrayClient.Free;
+                 FreeAndNil(TrayClient);
             end;
     end;
 end;

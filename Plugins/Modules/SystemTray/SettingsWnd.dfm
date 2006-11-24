@@ -3,7 +3,7 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'SystemTray Module Settings'
-  ClientHeight = 259
+  ClientHeight = 304
   ClientWidth = 216
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,14 +18,14 @@ object SettingsForm: TSettingsForm
   TextHeight = 13
   object Label4: TLabel
     Left = 28
-    Top = 32
+    Top = 80
     Width = 41
     Height = 13
     Caption = 'Visibility:'
   end
   object lb_dbg: TLabel
     Left = 72
-    Top = 32
+    Top = 80
     Width = 33
     Height = 14
     AutoSize = False
@@ -39,14 +39,14 @@ object SettingsForm: TSettingsForm
   end
   object Label1: TLabel
     Left = 28
-    Top = 104
+    Top = 152
     Width = 41
     Height = 13
     Caption = 'Visibility:'
   end
   object lb_dbd: TLabel
     Left = 72
-    Top = 104
+    Top = 152
     Width = 33
     Height = 14
     AutoSize = False
@@ -60,14 +60,35 @@ object SettingsForm: TSettingsForm
   end
   object Label2: TLabel
     Left = 28
-    Top = 176
+    Top = 224
     Width = 30
     Height = 13
     Caption = 'Value:'
   end
   object lb_blend: TLabel
     Left = 72
-    Top = 176
+    Top = 224
+    Width = 33
+    Height = 14
+    AutoSize = False
+    Caption = '100%'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Arial'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object Label3: TLabel
+    Left = 28
+    Top = 8
+    Width = 65
+    Height = 13
+    Caption = 'Icon Visibility:'
+  end
+  object lb_alpha: TLabel
+    Left = 96
+    Top = 8
     Width = 33
     Height = 14
     AutoSize = False
@@ -81,7 +102,7 @@ object SettingsForm: TSettingsForm
   end
   object cb_dbg: TCheckBox
     Left = 8
-    Top = 8
+    Top = 56
     Width = 113
     Height = 17
     Hint = 'cb_dbg'
@@ -91,7 +112,7 @@ object SettingsForm: TSettingsForm
   end
   object cb_dbd: TCheckBox
     Left = 8
-    Top = 80
+    Top = 128
     Width = 89
     Height = 17
     Hint = 'cb_db'
@@ -101,7 +122,7 @@ object SettingsForm: TSettingsForm
   end
   object Button1: TButton
     Left = 56
-    Top = 224
+    Top = 272
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -110,7 +131,7 @@ object SettingsForm: TSettingsForm
   end
   object Button2: TButton
     Left = 136
-    Top = 224
+    Top = 272
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -119,29 +140,25 @@ object SettingsForm: TSettingsForm
   end
   object scb_dbg: TSharpEColorBox
     Left = 128
-    Top = 8
+    Top = 56
     Width = 35
     Height = 15
     BackgroundColor = clBtnFace
     Color = clWhite
     ColorCode = 16777215
-    CustomScheme = False
-    ClickedColorID = ccCustom
   end
   object scb_dbd: TSharpEColorBox
     Left = 128
-    Top = 80
+    Top = 128
     Width = 35
     Height = 15
     BackgroundColor = clBtnFace
     Color = clWhite
     ColorCode = 16777215
-    CustomScheme = False
-    ClickedColorID = ccCustom
   end
   object tb_dbg: TGaugeBar
     Left = 28
-    Top = 48
+    Top = 96
     Width = 177
     Height = 13
     Color = clWindow
@@ -158,7 +175,7 @@ object SettingsForm: TSettingsForm
   end
   object tb_dbd: TGaugeBar
     Left = 28
-    Top = 120
+    Top = 168
     Width = 177
     Height = 13
     Color = clWindow
@@ -175,7 +192,7 @@ object SettingsForm: TSettingsForm
   end
   object cb_blend: TCheckBox
     Left = 8
-    Top = 152
+    Top = 200
     Width = 105
     Height = 17
     Hint = 'cb_db'
@@ -185,18 +202,16 @@ object SettingsForm: TSettingsForm
   end
   object scb_blend: TSharpEColorBox
     Left = 128
-    Top = 152
+    Top = 200
     Width = 35
     Height = 15
     BackgroundColor = clBtnFace
     Color = clWhite
     ColorCode = 16777215
-    CustomScheme = False
-    ClickedColorID = ccCustom
   end
   object tb_blend: TGaugeBar
     Left = 28
-    Top = 192
+    Top = 240
     Width = 177
     Height = 13
     Color = clWindow
@@ -210,5 +225,23 @@ object SettingsForm: TSettingsForm
     Style = rbsMac
     Position = 255
     OnChange = tb_blendChange
+  end
+  object tb_alpha: TGaugeBar
+    Left = 28
+    Top = 24
+    Width = 177
+    Height = 13
+    Color = clWindow
+    Backgnd = bgSolid
+    BorderStyle = bsNone
+    HandleColor = clBtnFace
+    BorderColor = clBtnShadow
+    Max = 255
+    Min = 32
+    ShowArrows = False
+    ShowHandleGrip = True
+    Style = rbsMac
+    Position = 255
+    OnChange = tb_alphaChange
   end
 end

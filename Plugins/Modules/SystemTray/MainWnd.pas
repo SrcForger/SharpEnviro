@@ -37,7 +37,7 @@ uses
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
   SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
   JvSimpleXML, SharpApi, Jclsysinfo, Menus, GR32_Layers, TrayIconsManager,
-  SharpEPanel,Math, GR32;
+  SharpEPanel,Math, GR32, SharpECustomSkinSettings;
 
 
 type
@@ -47,17 +47,16 @@ type
     Settings1: TMenuItem;
     lb_servicenotrunning: TLabel;
     sb_left: TSharpEButton;
-    SharpESkinManager1: TSharpESkinManager;
+    SkinManager: TSharpESkinManager;
     sb_right: TSharpEButton;
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure sb_rightClick(Sender: TObject);
     procedure sb_leftClick(Sender: TObject);
-    procedure BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
-      Y: Integer; Layer: TCustomLayer);
+    procedure BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
     procedure BackgroundMouseLeave(Sender: TObject);
-    procedure BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
-    procedure BackgroundMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
+    procedure BackgroundMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
+    procedure BackgroundMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
     procedure Settings1Click(Sender: TObject);
   protected
   private
@@ -70,9 +69,11 @@ type
     sColorBlend      : Boolean;
     sBlendColor      : integer;
     sBlendAlpha      : integer;
+    sIconAlpha       : integer;
     cwidth           : integer;
     doubleclick      : boolean;
     refreshed        : boolean;
+    FCustomSkinSettings: TSharpECustomSkinSettings;
   public
     ModuleID : integer;
     Offset : integer;
@@ -88,7 +89,9 @@ type
 implementation
 
 uses SettingsWnd,
-     uSharpBarAPI;
+     uSharpBarAPI,
+     SharpESkinPart,
+     SharpThemeApi;
 
 {$R *.dfm}
 
@@ -98,31 +101,62 @@ begin
 end;
 
 procedure TMainForm.LoadSettings;
-var item : TJvSimpleXMLElem;
+var
+  item : TJvSimpleXMLElem;
+  skin : String;
 begin
   Offset   := 0;
-  sShowBackground  := False;
-  sBackgroundColor := -6;
-  sBackgroundAlpha := 255;
-  sShowBorder      := True;
-  sBorderColor     := -5;
-  sBorderAlpha     := 255;
-  sColorBlend      := False;
-  sBlendColor      := -1;
-  sBlendAlpha      := 255;
+
+  // Load Skin custom settings as default
+  FCustomSkinSettings.LoadFromXML('');
+  try
+    with FCustomSkinSettings.xml.Items do
+         if ItemNamed['systemtray'] <> nil then
+            with ItemNamed['systemtray'].Items do
+            begin
+              sShowBackground  := BoolValue('showbackground',False);
+              sBackgroundColor := SharpESkinPart.SchemedStringToColor(Value('backgroundcolor','0'),SkinManager.Scheme);
+              sBackgroundAlpha := IntValue('backgroundalpha',255);
+              sShowBorder      := BoolValue('showborder',False);
+              sBorderColor     := SharpESkinPart.SchemedStringToColor(Value('bordercolor','clwhite'),SkinManager.Scheme);
+              sBorderAlpha     := IntValue('borderalpha',255);
+              sColorBlend      := BoolValue('colorblend',false);
+              sBlendColor      := SharpESkinPart.SchemedStringToColor(Value('blendrcolor','clwhite'),SkinManager.Scheme);
+              sBlendAlpha      := IntValue('blendalpha',0);
+              sIconAlpha       := IntValue('iconalpha',255);
+            end;
+  except
+    sShowBackground  := False;
+    sBackgroundColor := 0;
+    sBackgroundAlpha := 255;
+    sShowBorder      := False;
+    sBorderColor     := clwhite;
+    sBorderAlpha     := 255;
+    sColorBlend      := False;
+    sBlendColor      := clwhite;
+    sBlendAlpha      := 255;
+    sIconAlpha       := 255;
+  end;
 
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
   if item <> nil then with item.Items do
   begin
-    sShowBackground  := BoolValue('ShowBackground',False);
-    sBackgroundColor := IntValue('BackgroundColor',-6);
-    sBackgroundAlpha := IntValue('BackgroundAlpha',255);
-    sShowBorder      := BoolValue('ShowBorder',True);
-    sBorderColor     := IntValue('BorderColor',-5);
-    sBorderAlpha     := IntValue('BorderAlpha',255);
-    sColorBlend      := BoolValue('ColorBlend',False);
-    sBlendColor      := IntValue('BlendColor',-1);
-    sBlendAlpha      := IntValue('BlendAlpha',255);
+    skin := SharpThemeApi.GetSkinName;
+    if ItemNamed['skin'] <> nil then
+       if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then
+          with ItemNamed['skin'].Items.ItemNamed[skin].Items do
+          begin
+            sShowBackground  := BoolValue('ShowBackground',sShowBackground);
+            sBackgroundColor := IntValue('BackgroundColor',sBackgroundColor);
+            sBackgroundAlpha := IntValue('BackgroundAlpha',sBackgroundAlpha);
+            sShowBorder      := BoolValue('ShowBorder',sShowBorder);
+            sBorderColor     := IntValue('BorderColor',sBorderColor);
+            sBorderAlpha     := IntValue('BorderAlpha',sBorderAlpha);
+            sColorBlend      := BoolValue('ColorBlend',sColorBlend);
+            sBlendColor      := IntValue('BlendColor',sBlendColor);
+            sBlendAlpha      := IntValue('BlendAlpha',sBlendAlpha);
+            sIconAlpha       := IntValue('IconAlpha',sIconAlpha);
+          end;
   end;               
 end;
 
@@ -134,7 +168,6 @@ end;
 procedure TMainForm.ReAlignComponents(SendUpdate : boolean);
 var
  newwidth : integer;
- cs : TColorSchemeEx;
 begin
   if lb_servicenotrunning.visible then
   begin
@@ -152,8 +185,7 @@ begin
       FTrayClient.ColorBlend      := sColorBlend;
       FTrayClient.BlendColor      := sBlendColor;
       FTrayClient.BlendAlpha      := sBlendAlpha;
-      cs := LoadColorSchemeEX;
-      FTrayClient.cs := cs;
+      FTrayClient.IconAlpha       := sIconAlpha;
       FTrayClient.RenderIcons;
       NewWidth := FTrayClient.Bitmap.Width;
    {   if FTrayClient.Bitmap.Width > Width then
@@ -191,6 +223,7 @@ procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
   item : TJvSimpleXMLElem;
+  skin : String;
 begin
   SettingsForm := TSettingsForm.Create(nil);
   SettingsForm.cb_dbg.Checked      := sShowBackground;
@@ -202,6 +235,7 @@ begin
   SettingsForm.cb_blend.Checked    := sColorBlend;
   SettingsForm.scb_blend.ColorCode := sBlendColor;
   SettingsForm.tb_blend.Position   := sBlendAlpha;
+  SettingsForm.tb_alpha.Position   := sIconAlpha;
   if SettingsForm.ShowModal = mrOk then
   begin
     sShowBackground := SettingsForm.cb_dbg.Checked;
@@ -213,20 +247,32 @@ begin
     sColorBlend := SettingsForm.cb_blend.Checked;
     sBlendColor := SettingsForm.scb_blend.ColorCode;
     sBlendAlpha := SettingsForm.tb_blend.Position;
+    sIconAlpha  := SettingsForm.tb_alpha.Position;
 
     item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-    if item <> nil then with item.Items do
+    if item <> nil then
+    with item.Items do
     begin
-      clear;
-      Add('ShowBackground',sShowBackground);
-      Add('BackgroundColor',sBackgroundColor);
-      Add('BackgroundAlpha',sBackgroundAlpha);
-      Add('ShowBorder',sShowBorder);
-      Add('BorderColor',sBorderColor);
-      Add('BorderAlpha',sBorderAlpha);
-      Add('ColorBlend',sColorBlend);
-      Add('BlendColor',sBlendColor);
-      Add('BlendAlpha',sBlendAlpha);
+      skin := SharpThemeApi.GetSkinName;
+      if ItemNamed['skin'] <> nil then
+      begin
+        if ItemNamed['skin'].Items.ItemNamed[skin] = nil then
+           ItemNamed['skin'].Items.Add(skin);
+      end else Add('skin').Items.Add(skin);
+      with ItemNamed['skin'].Items.ItemNamed[skin].Items do
+      begin
+        clear;
+        Add('ShowBackground',sShowBackground);
+        Add('BackgroundColor',sBackgroundColor);
+        Add('BackgroundAlpha',sBackgroundAlpha);
+        Add('ShowBorder',sShowBorder);
+        Add('BorderColor',sBorderColor);
+        Add('BorderAlpha',sBorderAlpha);
+        Add('ColorBlend',sColorBlend);
+        Add('BlendColor',sBlendColor);
+        Add('BlendAlpha',sBlendAlpha);
+        Add('IconAlpha',sIconAlpha);
+      end;
     end;
     uSharpBarAPI.SaveXMLFile(BarWnd);
 
@@ -355,6 +401,16 @@ begin
        tempbmp.free;
      end;
    end else FTrayClient.Bitmap.DrawTo(Background.Bitmap,0,Height div 2 - FTrayClient.Bitmap.Height div 2);
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  FCustomSkinSettings := TSharpECustomSkinSettings.Create;
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(FCustomSkinSettings);
 end;
 
 end.
