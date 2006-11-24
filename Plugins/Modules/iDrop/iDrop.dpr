@@ -176,6 +176,7 @@ begin
       begin
         temp := TModule(ModuleList.Items[n]);
         temp.Form.Height := GetBarPluginHeight(temp.BarWnd);
+        TMainForm(temp.Form).UpdateCustomSettings;
         TMainForm(temp.Form).ReAlignComponents(True);
       end;
 end;

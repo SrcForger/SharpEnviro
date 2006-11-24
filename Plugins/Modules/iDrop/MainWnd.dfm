@@ -19,7 +19,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 271
-    Height = 148
+    Height = 150
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -42,5 +42,11 @@ object MainForm: TMainForm
     OnTimer = AnimTimerTimer
     Left = 208
     Top = 72
+  end
+  object SkinManager: TSharpESkinManager
+    SkinSource = ssSystem
+    SchemeSource = ssSystem
+    Left = 176
+    Top = 48
   end
 end

@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32_Image,
-  SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls,
+  SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpECustomSkinSettings,
   JvSimpleXML, SharpApi,shellAPI, Menus, JclFileUtils, GR32, GR32_Ellipse;
 
 
@@ -45,6 +45,7 @@ type
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     AnimTimer: TTimer;
+    SkinManager: TSharpESkinManager;
     procedure AnimTimerTimer(Sender: TObject);
     procedure BackgroundDblClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -55,6 +56,9 @@ type
   private
     sWidth  : integer;
     sTarget : String;
+    FCustomBmp : TBitmap32;
+    FCustomBlendColor : integer;
+    FCustomSkinSettings: TSharpECustomSkinSettings;
   public
     ModuleID : integer;
     BarWnd : hWnd;
@@ -68,15 +72,63 @@ type
     procedure SetSize(NewWidth : integer);
     procedure ReAlignComponents(BroadCast : boolean);
     procedure Draw(startcolor : Tcolor; ck : boolean);
+    procedure UpdateCustomSettings;
   end;
 
 
 implementation
 
 uses SettingsWnd,
-     uSharpBarAPI;
+     Math,
+     GR32_PNG,
+     uSharpBarAPI,
+     SharpESkinPart;
 
 {$R *.dfm}
+
+procedure TMainForm.UpdateCustomSettings;
+var
+  dir : String;
+  s   : String;
+  b   : boolean;
+  tmp : TBitmap32;
+begin
+  FCustomSkinSettings.LoadFromXML('');
+  if FCustomBmp <> nil then FreeAndNil(FCustomBmp);
+  try
+    with FCustomSkinSettings.xml.Items do
+    begin
+      if ItemNamed['idrop'] <> nil then
+      begin
+        with FCustomSkinSettings.xml.Items.ItemNamed['idrop'] do
+        begin
+          {$WARNINGS OFF}
+          dir := IncludeTrailingBackSlash(FCustomSkinSettings.Path);
+          {$WARNINGS ON}
+          if items.ItemNamed['blendcolor'] <> nil then
+          begin
+            s := items.Value('blendcolor',inttostr(clwhite));
+            FCustomBlendColor := SharpESkinPart.SchemedStringToColor(s,SkinManager.Scheme);
+          end else s := '-1';
+          if FileExists(dir + items.Value('background')) then
+          begin
+            FCustomBmp := TBitmap32.Create;
+            tmp        := TBitmap32.Create;
+            try
+              GR32_PNG.LoadBitmap32FromPNG(tmp,dir + items.Value('background'),b);
+              if CompareText(s,'-1') <> 0 then
+                 SharpESkinPart.doBlend(FCustomBmp,tmp,FCustomBlendColor);
+            except
+              FreeAndNil(FCustomBmp);
+            end;
+            tmp.Free;
+          end
+        end;
+      end;
+    end;
+  except
+  end;
+end;
 
 procedure TMainForm.CreateParams(var Params: TCreateParams);
 begin
@@ -146,6 +198,8 @@ begin
   begin
     sTarget := Value('Target','X:\');
   end;
+
+  UpdateCustomSettings;
 end;
 
 procedure TMainForm.Draw(startcolor : Tcolor; ck : boolean);
@@ -158,6 +212,18 @@ begin
   if BGBmp = nil then exit;
   if Background.Bitmap = nil then exit;
   if BGBmp.Width < 1 then exit;
+
+  if FCustomBmp <> nil then
+  begin
+    BGBmp.DrawTo(Background.Bitmap);
+    FCustomBmp.CombineMode := cmMerge;
+    FCustomBmp.DrawMode := dmBlend;
+    FCustomBmp.DrawTo(Background.Bitmap,
+                      width div 2 - FCustomBmp.Width div 2,
+                      height div 2 - FCustomBmp.Height div 2); 
+    exit;
+  end;
+
   cs := LoadColorSchemeEx;
   Bmp := TBitmap32.Create;
   try
@@ -192,9 +258,15 @@ begin
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
+var
+  newwidth : integer;
 begin
-  Tag := Height+8;
-  Hint := inttostr(Height + 8);
+  if FCustomBmp <> nil then
+     newwidth := max(2,FCustomBmp.Width + 4)
+     else newwidth := Height + 8;
+
+  Tag := newwidth;
+  Hint := inttostr(newwidth);
   if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
   Draw(0,True);
 end;
@@ -230,12 +302,14 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   BGBmp := TBitmap32.Create;
+  FCustomSkinSettings := TSharpECustomSkinSettings.Create;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  BGBmp.Free;
-  BGBmp := nil;
+  FreeAndNil(BGBmp);
+  FreeAndNil(FCustomSkinSettings);
+  if FCustomBmp <> nil then  FreeAndNil(FCustomBmp);
 end;
 
 procedure TMainForm.BackgroundDblClick(Sender: TObject);
@@ -247,6 +321,12 @@ end;
 
 procedure TMainForm.AnimTimerTimer(Sender: TObject);
 begin
+  if FCustomBmp <> nil then
+  begin
+    AnimTimer.Enabled := False;
+    exit;
+  end;
+
   if AnimTimer.Tag <1 then
   begin
     if LastColor = cs.WorkAreaback then
