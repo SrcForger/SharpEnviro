@@ -1316,9 +1316,12 @@ var
 begin
   mThrobber := TSharpEMiniThrobber(ThrobberPopUp.popupcomponent);
   if mThrobber = nil then exit;
-  ModuleManager.Delete(mThrobber.Tag);
-  SaveBarSettings;
-  ModuleManager.ReCalculateModuleSize;
+  if MessageBox(self.handle,'Do you really want to delete this module? All settings will be lost!','Confirm : "Delete Module"',MB_YESNO) = IDYES then
+  begin
+    ModuleManager.Delete(mThrobber.Tag);
+    SaveBarSettings;
+    ModuleManager.ReCalculateModuleSize;
+  end;
 end;
 
 procedure TSharpBarMainForm.Left2Click(Sender: TObject);
