@@ -39,31 +39,32 @@ uses
   graphics,
   forms,
   PngSpeedButton,
-  uSettingsWnd in 'uSettingsWnd.pas' {frmSettingsWnd},
+  uSchemeListWnd in 'uSchemeListWnd.pas' {frmSchemeList},
   uSEListboxPainter in '..\..\..\Common\Units\SEListboxPainter\uSEListboxPainter.pas',
   uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
   uSharpCenterSectionList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterSectionList.pas',
-  uEditSchemeWnd in 'uEditSchemeWnd.pas' {EditSchemeForm},
+  uEditSchemeWnd in 'uEditSchemeWnd.pas' {frmEditScheme},
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
+  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
+  uSchemeList in 'uSchemeList.pas';
 
 {$R *.RES}
 
-function Open(const APluginID: Integer; owner: hwnd): hwnd;
+function Open(const APluginID: PChar; owner: hwnd): hwnd;
 begin
   // Specidfy the Service configuration filename
-  frmSettingsWnd := TfrmSettingsWnd.Create(nil);
-  frmSettingsWnd.InitialiseSettings(APluginID);
+  frmSchemeList := TfrmSchemeList.Create(nil);
+  frmSchemeList.InitialiseSettings(APluginID);
 
-  frmSettingsWnd.ParentWindow := owner;
-  frmSettingsWnd.Left := 0;
-  frmSettingsWnd.Top := 0;
-  frmSettingsWnd.BorderStyle := bsNone;
-  frmSettingsWnd.Show;
+  frmSchemeList.ParentWindow := owner;
+  frmSchemeList.Left := 0;
+  frmSchemeList.Top := 0;
+  frmSchemeList.BorderStyle := bsNone;
+  frmSchemeList.Show;
 
-  result := frmSettingsWnd.Handle;
+  result := frmSchemeList.Handle;
 end;
 
 procedure Help;
@@ -77,35 +78,37 @@ begin
 end;
 
 function Close(owner: hwnd; SaveSettings: Boolean): boolean;
+var
+  b:Boolean;
 begin
 
-//  if SaveSettings then
+  if SaveSettings then begin
+    b := frmSchemeList.SaveSchemes;
 
-  FreeAndNil(frmSettingsWnd);
-  result := True;
+    if b then begin
+      FreeAndNil(frmSchemeList);
+      Result := True;
+    end else
+      Result := False;
+    end;
 end;
 
 procedure BtnAdd(var AButton:TPngSpeedButton);
-var
-  p:TPoint;
 begin
-  frmSettingsWnd.AddScheme(nil);
-//  p := AButton.ClientOrigin;
-//  frmCompItems.mnuAdd.Popup(p.X,p.Y+AButton.Height);
+  frmSchemeList.AddScheme;
 end;
 
 procedure BtnEdit(var AButton:TPngSpeedButton);
 begin
-  frmSettingsWnd.EditScheme;
+  frmSchemeList.EditScheme;
 end;
 
 procedure BtnDelete(var AButton:TPngSpeedButton);
 begin
-  frmSettingsWnd.DeleteScheme;
-//  frmCompItems.btnDeleteClick(nil);
+  frmSchemeList.DeleteScheme;
 end;
 
-procedure GetDisplayName(const APluginID:Integer; var ADisplayName:PChar);
+procedure GetDisplayName(const APluginID:PChar; var ADisplayName:PChar);
 begin
   ADisplayName := PChar('Scheme');
 end;

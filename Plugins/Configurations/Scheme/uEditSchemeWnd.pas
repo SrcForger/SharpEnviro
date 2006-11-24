@@ -34,62 +34,316 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, uSharpeColorBox;
+  Dialogs, StdCtrls, ExtCtrls, uSharpeColorBox, ContNrs, Buttons, PngBitBtn,
+  GraphicsFx, pngimage, JvExStdCtrls, JvEdit, GR32_Image, BarPreview, GR32,
+  uSchemeList, PngImageList, JvExExtCtrls, JvComponent, JvPanel, JvHtControls,
+  SharpELabel, SharpERoundPanel, PngSpeedButton, ImgList, JvShape;
 
 type
-  TEditSchemeForm = class(TForm)
+  TfrmEditScheme = class(TForm)
     Panel1: TPanel;
-    b1: TSharpEColorBox;
-    l1: TSharpEColorBox;
-    d1: TSharpEColorBox;
-    f1: TSharpEColorBox;
-    Panel2: TPanel;
-    b2: TSharpEColorBox;
-    l2: TSharpEColorBox;
-    d2: TSharpEColorBox;
-    f2: TSharpEColorBox;
+    PngBitBtn1: TPngBitBtn;
+    btn_cancel: TPngBitBtn;
     Panel3: TPanel;
-    b3: TSharpEColorBox;
-    l3: TSharpEColorBox;
-    d3: TSharpEColorBox;
-    f3: TSharpEColorBox;
-    edit_name: TEdit;
-    Label5: TLabel;
-    Panel4: TPanel;
+    Panel2: TPanel;
+    tmrUpdatePreview: TTimer;
+    bmlMain: TBitmap32List;
+    sbAvailableColors: TScrollBox;
+    Panel5: TJvPanel;
     Label1: TLabel;
+    EdtAuthor: TEdit;
+    lblName: TLabel;
+    EdtSkinName: TEdit;
+    pnlSchemePreview: TJvPanel;
+    imgBarPreview: TImage32;
     Label2: TLabel;
     Label3: TLabel;
+    cbBackgroundTint: TSharpEColorBox;
     Label4: TLabel;
-    btn_cancel: TButton;
-    btn_ok: TButton;
+    procedure col6Click(Sender: TObject);
+    procedure col5Click(Sender: TObject);
+    procedure col4Click(Sender: TObject);
+    procedure col3Click(Sender: TObject);
+    procedure col2Click(Sender: TObject);
+    procedure col1Click(Sender: TObject);
+    procedure EdtSkinNameChange(Sender: TObject);
+    procedure EdtAuthorKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
+    procedure tmrUpdatePreviewTimer(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure btn_okClick(Sender: TObject);
     procedure btn_cancelClick(Sender: TObject);
   private
+    FColors: TObjectList;
+    FAuthor: string;
+    FName: string;
+    FSchemeName: string;
+    FSchemeItem: TSchemeItem;
+    FSkinName: string;
+    FSelectedColorIdx: Integer;
+    FEdit: Boolean;
+    procedure SetColors(const Value: TObjectList);
+    procedure SetAuthor(const Value: string);
+    procedure SetSchemeName(const Value: string);
+    procedure ClickColor(Sender: TObject);
+    function GetSchemeName: string;
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
+    property Edit: Boolean read FEdit write FEdit;
+    property SchemeItem: TSchemeItem read FSchemeItem write FSchemeItem;
+    property Colors: TObjectList read FColors write SetColors;
+    property SchemeName: string read GetSchemeName write SetSchemeName;
+    property SkinName: string read FSkinName write FSkinName;
+    property Author: string read FAuthor write SetAuthor;
   end;
 
+var
+  frmEditScheme: TfrmEditScheme;
 
 implementation
 
-uses JclStrings;
+uses JclStrings, SharpThemeApi, uSchemeListWnd;
 
 {$R *.dfm}
 
-procedure TEditSchemeForm.btn_cancelClick(Sender: TObject);
+procedure TfrmEditScheme.btn_cancelClick(Sender: TObject);
 begin
   modalresult := mrCancel;
 end;
 
-procedure TEditSchemeForm.btn_okClick(Sender: TObject);
+procedure TfrmEditScheme.btn_okClick(Sender: TObject);
 begin
-  if length(trim(StrRemoveChars(edit_name.Text,['"','<','>','|','/','\','*','?','.',':']))) <=0 then
+  {if length(trim(StrRemoveChars(edit_name.Text,['"','<','>','|','/','\','*','?','.',':']))) <=0 then
   begin
     Showmessage('Please enter a valid scheme name first');
     exit;
   end;
-  modalresult := mrOk;
+  modalresult := mrOk;   }
+end;
+
+procedure TfrmEditScheme.SetColors(const Value: TObjectList);
+var
+  tmpLabel: TJvHtLabel;
+  tmpEdit: TEdit;
+  tmpColBox: TSharpEColorBox;
+  tmpItem: TSchemeColorItem;
+  tmpSkinColor: TSharpESkinColor;
+  tmpPanel: TPanel;
+
+  colBkg: TColor;
+  i: Integer;
+begin
+  FColors := Value;
+
+  // Delete old controls
+  for i := 0 to Pred(sbAvailableColors.ControlCount) do
+  begin
+    sbAvailableColors.Controls[i].Free;
+  end;
+
+  for i := Pred(FColors.Count) downto 0 do
+  begin
+    tmpPanel := TPanel.Create(sbAvailableColors);
+    tmpItem := TSchemeColorItem(FColors[i]);
+    tmpSkinColor := GetSchemeColorByTag(tmpItem.Tag);
+
+    colBkg := clBtnFace;
+
+    with tmpPanel do
+    begin
+      Parent := sbAvailableColors;
+      Height := 20;
+      BorderWidth := 2;
+      BorderStyle := bsNone;
+      BevelOuter := bvNone;
+
+      Color := colBkg;
+
+      Align := alTop;
+    end;
+
+    tmpColBox := TSharpEColorBox.Create(tmpPanel);
+    with tmpColBox do
+    begin
+      Parent := tmpPanel;
+      align := alLeft;
+      BackgroundColor := colBkg;
+      Color := tmpItem.Color;
+      Tag := i;
+      OnColorClick := ClickColor;
+      Top := 10;
+      Left := 0;
+    end;
+
+    tmpLabel := TJvHTLabel.Create(tmpPanel);
+    with tmpLabel do
+    begin
+      Parent := tmpPanel;
+      align := alClient;
+      Color := colBkg;
+      Caption := Format('%s - <i>%s</i>', [tmpSkinColor.info, tmpSkinColor.tag]);
+      Top := 10;
+    end;
+  end;
+
+end;
+
+procedure TfrmEditScheme.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+var
+  i: integer;
+  bFound, bCurrent: Boolean;
+begin
+  {if Self.ModalResult <> mrCancel then
+  begin
+    // is it found
+    bFound := False;
+    bCurrent := False;
+
+    if frmSchemeList.lbSchemeList.Items.IndexOf(EdtSkinName.Text) <> -1 then
+      bFound := True;
+
+    // is the found item, the same as the one being edited?
+    if CompareText(frmSchemeList.lbSchemeList.Item[frmSchemeList.lbSchemeList.ItemIndex].SubItemText[0],
+      EdtSkinName.Text) = 0 then
+      bCurrent := True;
+
+    if bFound and bCurrent then
+    begin
+      CanClose := True;
+      exit;
+    end
+    else if bFound and not(bCurrent) and Not(FEdit) then
+    begin
+      ShowMessage('Please enter a unique skin identifier');
+      CanClose := False;
+      exit;
+    end
+    else if bFound and (bCurrent) and Not(FEdit) then
+    begin
+      ShowMessage('Please enter a unique skin identifier');
+      CanClose := False;
+      exit;
+    end;
+
+  end; }
+
+  for i := Pred(sbAvailableColors.ControlCount) downto 0 do
+  begin
+    sbAvailableColors.Controls[i].Free;
+  end;
+end;
+
+procedure TfrmEditScheme.SetAuthor(const Value: string);
+begin
+  FAuthor := Value;
+  EdtAuthor.Text := Value;
+end;
+
+procedure TfrmEditScheme.SetSchemeName(const Value: string);
+begin
+  FSchemeName := Value;
+  EdtSkinName.Text := Value;
+end;
+
+procedure TfrmEditScheme.ClickColor(Sender: TObject);
+var
+  tmpItem: TSchemeColorItem;
+begin
+  tmpItem := TSchemeColorItem(FColors[(TSharpEColorBox(Sender).Tag)]);
+  tmpItem.Color := TSharpEColorBox(Sender).Color;
+  tmpItem.UnparsedColor := ColorToString(TSharpEColorBox(Sender).Color);
+end;
+
+function TfrmEditScheme.GetSchemeName: string;
+begin
+  Result := FSchemeName;
+end;
+
+procedure TfrmEditScheme.tmrUpdatePreviewTimer(Sender: TObject);
+var
+  bmp: TBitmap32;
+  bmpTint: TBitmap32;
+  y, x: Integer;
+  c: TColor;
+  cx, cy: Integer;
+begin
+  bmp := TBitmap32.Create;
+  try
+
+    bmlMain.Bitmap[FSelectedColorIdx].DrawTo(imgBarPreview.Bitmap);
+    BarPreview.CreateBarPreview(bmp, FSkinName, FSchemeItem.GetItemAsColorArray(FColors), 200);
+
+    bmpTint := TBitmap32.Create;
+    try
+      bmpTint.SetSize(imgBarPreview.Bitmap.Width, imgBarPreview.Bitmap.Height);
+      bmpTint.DrawMode := dmBlend;
+      bmpTint.MasterAlpha := 100;
+      bmpTint.Clear(Color32(cbBackgroundTint.Color));
+      bmpTint.DrawTo(imgBarPreview.Bitmap);
+    finally
+      bmpTint.Free;
+    end;
+
+    pnlSchemePreview.Height := bmp.Height + 20;
+    bmp.DrawMode := dmBlend;
+
+    cx := (imgBarPreview.Width div 2) - (bmp.Width div 2);
+    cy := (imgBarPreview.Height div 2) - (bmp.Height div 2);
+
+    bmp.DrawTo(imgBarPreview.Bitmap, cX, CY);
+  finally
+    bmp.Free;
+  end;
+end;
+
+procedure TfrmEditScheme.FormShow(Sender: TObject);
+begin
+  FSelectedColorIdx := 0;
+  tmrUpdatePreviewTimer(nil);
+end;
+
+procedure TfrmEditScheme.EdtAuthorKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  FAuthor := EdtAuthor.Text;
+end;
+
+procedure TfrmEditScheme.EdtSkinNameChange(Sender: TObject);
+begin
+  FSchemeName := EdtSkinName.Text;
+end;
+
+procedure TfrmEditScheme.col1Click(Sender: TObject);
+begin
+  FSelectedColorIdx := 0;
+end;
+
+procedure TfrmEditScheme.col2Click(Sender: TObject);
+begin
+  FSelectedColorIdx := 1;
+end;
+
+procedure TfrmEditScheme.col3Click(Sender: TObject);
+begin
+  FSelectedColorIdx := 2;
+end;
+
+procedure TfrmEditScheme.col4Click(Sender: TObject);
+begin
+  FSelectedColorIdx := 3;
+end;
+
+procedure TfrmEditScheme.col5Click(Sender: TObject);
+begin
+  FSelectedColorIdx := 4;
+end;
+
+procedure TfrmEditScheme.col6Click(Sender: TObject);
+begin
+  FSelectedColorIdx := 5;
 end;
 
 end.
+

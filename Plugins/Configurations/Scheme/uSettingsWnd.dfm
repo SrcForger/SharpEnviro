@@ -29,7 +29,7 @@ object frmSettingsWnd: TfrmSettingsWnd
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object schemelist: TSharpEListBox
+  object schemelist: TSharpEListBoxEx
     Left = 0
     Top = 0
     Width = 380

@@ -48,13 +48,13 @@ uses
   pngimage,
   Mask,
   uEditSchemeWnd,
-  SharpApi, ImgList, uSharpeColorBox, SharpEListBox, PngImageList,
+  SharpApi, ImgList, uSharpeColorBox, SharpEListBoxEx, PngImageList,
   JvSimpleXML;
 
 type
   TfrmSettingsWnd = class(TForm)
     Label3: TLabel;
-    schemelist: TSharpEListBox;
+    schemelist: TSharpEListBoxEx;
     schemeimages: TPngImageList;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
