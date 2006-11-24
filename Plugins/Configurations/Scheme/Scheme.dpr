@@ -90,6 +90,9 @@ begin
       Result := True;
     end else
       Result := False;
+    end else begin
+      FreeAndNil(frmSchemeList);
+      Result := True;
     end;
 end;
 
