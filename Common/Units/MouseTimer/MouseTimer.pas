@@ -4,7 +4,7 @@ Description: If a dll file creates a form no component on this
              dll form will ever receive any of the VCL internal
              CM_MouseEnter/CM_MouseLeave messages. 
              The TMouseTimer class simply emulates these messages
-             by monitor the current control at the cursor position.
+             by monitoring the current control at the cursor position.
 
 Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
 
@@ -126,6 +126,7 @@ begin
             exit;
           end;
   except
+    FLastControl := nil;
   end;
 end;
 
