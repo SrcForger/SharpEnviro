@@ -19,7 +19,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 285
-    Height = 164
+    Height = 166
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -34,7 +34,7 @@ object MainForm: TMainForm
       Min = 0
       Max = 100
       Value = 0
-      SkinManager = SharpESkinManager1
+      SkinManager = SkinManager
       AutoSize = False
     end
     object cpugraphcont: TImage32
@@ -58,7 +58,7 @@ object MainForm: TMainForm
       OnClick = Settings1Click
     end
   end
-  object SharpESkinManager1: TSharpESkinManager
+  object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
     Left = 224

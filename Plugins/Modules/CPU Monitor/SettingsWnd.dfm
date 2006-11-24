@@ -102,19 +102,19 @@ object SettingsForm: TSettingsForm
     Caption = 'CPU Number:'
   end
   object Label9: TLabel
-    Left = 128
+    Left = 120
     Top = 248
     Width = 60
     Height = 13
     Caption = 'Alpha Value:'
   end
   object lb_bgalpha: TLabel
-    Left = 216
+    Left = 208
     Top = 262
     Width = 25
     Height = 14
     AutoSize = False
-    Caption = '255'
+    Caption = '100%'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -123,12 +123,12 @@ object SettingsForm: TSettingsForm
     ParentFont = False
   end
   object lb_fgalpha: TLabel
-    Left = 216
+    Left = 208
     Top = 286
     Width = 25
     Height = 14
     AutoSize = False
-    Caption = '255'
+    Caption = '100%'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -137,12 +137,12 @@ object SettingsForm: TSettingsForm
     ParentFont = False
   end
   object lb_borderalpha: TLabel
-    Left = 216
+    Left = 208
     Top = 310
     Width = 25
     Height = 14
     AutoSize = False
-    Caption = '255'
+    Caption = '100%'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -220,8 +220,6 @@ object SettingsForm: TSettingsForm
     BackgroundColor = clBtnFace
     Color = clWhite
     ColorCode = 16777215
-    CustomScheme = False
-    ClickedColorID = ccCustom
   end
   object scb_fg: TSharpEColorBox
     Left = 16
@@ -231,8 +229,6 @@ object SettingsForm: TSettingsForm
     BackgroundColor = clBtnFace
     Color = clWhite
     ColorCode = 16777215
-    CustomScheme = False
-    ClickedColorID = ccCustom
   end
   object scb_border: TSharpEColorBox
     Left = 16
@@ -242,8 +238,6 @@ object SettingsForm: TSettingsForm
     BackgroundColor = clBtnFace
     Color = clWhite
     ColorCode = 16777215
-    CustomScheme = False
-    ClickedColorID = ccCustom
   end
   object tb_update: TGaugeBar
     Left = 8
@@ -275,7 +269,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 10
   end
   object tb_bgalpha: TGaugeBar
-    Left = 128
+    Left = 120
     Top = 264
     Width = 81
     Height = 13
@@ -292,7 +286,7 @@ object SettingsForm: TSettingsForm
     OnChange = tb_bgalphaChange
   end
   object tb_fgalpha: TGaugeBar
-    Left = 128
+    Left = 120
     Top = 288
     Width = 81
     Height = 13
@@ -310,7 +304,7 @@ object SettingsForm: TSettingsForm
     OnChange = tb_fgalphaChange
   end
   object tb_borderalpha: TGaugeBar
-    Left = 128
+    Left = 120
     Top = 312
     Width = 81
     Height = 13

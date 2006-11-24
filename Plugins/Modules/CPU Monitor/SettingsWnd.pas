@@ -113,17 +113,17 @@ end;
 
 procedure TSettingsForm.tb_bgalphaChange(Sender: TObject);
 begin
-  lb_bgalpha.Caption := inttostr(tb_bgalpha.Position);
+  lb_bgalpha.Caption := inttostr(round((tb_bgalpha.Position/tb_bgalpha.Max)*100)) + '%';
 end;
 
 procedure TSettingsForm.tb_fgalphaChange(Sender: TObject);
 begin
-  lb_fgalpha.Caption := inttostr(tb_fgalpha.Position);
+  lb_fgalpha.Caption := inttostr(round((tb_fgalpha.Position/tb_fgalpha.Max)*100)) + '%';
 end;
 
 procedure TSettingsForm.tb_borderalphaChange(Sender: TObject);
 begin
-  lb_borderalpha.Caption := inttostr(tb_borderalpha.Position);
+  lb_borderalpha.Caption := inttostr(round((tb_borderalpha.Position/tb_borderalpha.Max)*100)) + '%';
 end;
 
 end.

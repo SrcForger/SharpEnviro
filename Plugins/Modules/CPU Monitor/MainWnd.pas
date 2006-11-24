@@ -37,7 +37,7 @@ uses
   Dialogs, StdCtrls, GR32, GR32_PNG, GR32_Image, SharpEBaseControls, SharpEButton,
   SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
   JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math, SharpEEdit, SharpELabel,
-  cpuUsage;
+  cpuUsage, SharpThemeApi, SharpECustomSkinSettings;
 
 
 type
@@ -46,7 +46,7 @@ type
     Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
-    SharpESkinManager1: TSharpESkinManager;
+    SkinManager: TSharpESkinManager;
     pbar: TSharpEProgressBar;
     cpugraphcont: TImage32;
     procedure cpugraphcontDblClick(Sender: TObject);
@@ -66,6 +66,7 @@ type
     sBGAlpha     : integer;
     sBorderAlpha : integer;
     oldvalue     : integer;
+    FCustomSkinSettings: TSharpECustomSkinSettings;
   public
     ModuleID : integer;
     BarWnd   : hWnd;
@@ -83,7 +84,7 @@ implementation
 
 uses SettingsWnd,
      uSharpBarAPI,
-     uSharpDeskFunctions;
+     SharpESkinPart;
 
 {$R *.dfm}
 
@@ -91,33 +92,60 @@ uses SettingsWnd,
 procedure TMainForm.LoadSettings;
 var
   item : TJvSimpleXMLElem;
-  cs : TColorSchemeEx;
+  skin : String;
 begin
   sWidth    := 100;
   sDrawMode := 0;
+  sUpdate   := 500;
   sCpu      := 0;
-  sFGColor  := 0;//SharpESkinManager1.Scheme.Throbberback;
-  sBGColor  := 0;//SharpESkinManager1.Scheme.WorkAreaback;
-  sBorderColor := clBlack;
-  sUpdate      := 500;
-  sFGAlpha     := 255;
-  sBGAlpha     := 255;
-  sBorderAlpha := 255;
+
+  // Load Skin custom settings as default
+  FCustomSkinSettings.LoadFromXML('');
+  try
+    with FCustomSkinSettings.xml.Items do
+         if ItemNamed['cpumonitor'] <> nil then
+            with ItemNamed['cpumonitor'].Items do
+            begin
+              sFGColor     := SharpESkinPart.SchemedStringToColor(Value('fgcolor','clwhite'),SkinManager.Scheme);
+              sBGColor     := SharpESkinPart.SchemedStringToColor(Value('bgcolor','0'),SkinManager.Scheme);
+              sBorderColor := SharpESkinPart.SchemedStringToColor(Value('bordercolor','clwhite'),SkinManager.Scheme);
+              sFGAlpha     := IntValue('fgalpha',255);
+              sBGAlpha     := IntValue('bgalpha',255);
+              sBorderAlpha := IntValue('borderalpha',255);
+            end;
+  except
+    sFGColor  := clwhite;
+    sBGColor  := 0;
+    sBorderColor := clwhite;
+    sFGAlpha     := 255;
+    sBGAlpha     := 255;
+    sBorderAlpha := 255;
+  end;
 
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
   if item <> nil then with item.Items do
   begin
-    cs := SharpApi.LoadColorSchemeEx;
-    sWidth    := IntValue('Width',100);
-    sDrawMode := IntValue('DrawMode',0);
-    sCPU      := IntValue('CPU',0);
-    sFGColor  := CodeToColorEx(IntValue('FGColor',0),cs);
-    sBGColor  := CodeToColorEx(IntValue('BGColor',0),cs);
-    sBorderColor := CodeToColorEx(IntValue('BorderColor',clBlack),cs);
-    sUpdate   := IntValue('Update',250);
-    sFGAlpha      := Max(0,Min(255,IntValue('FGAlpha',255)));
-    sBGAlpha      := Max(0,Min(255,IntValue('BGAlpha',255)));
-    sBorderAlpha  := Max(0,Min(255,IntValue('BorderAlpha',255)));
+    if ItemNamed['global'] <> nil then
+       with ItemNamed['global'].Items do
+       begin
+         sWidth    := IntValue('Width',100);
+         sDrawMode := IntValue('DrawMode',0);
+         sCPU      := IntValue('CPU',0);
+         sUpdate   := IntValue('Update',250);
+       end;
+
+    skin := SharpThemeApi.GetSkinName;
+    if ItemNamed['skin'] <> nil then
+       if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then
+          with ItemNamed['skin'].Items.ItemNamed[skin].Items do
+          begin
+            sFGColor     := SchemeCodeToColor(IntValue('FGColor',sFGColor));
+            sBGColor     := SchemeCodeToColor(IntValue('BGColor',sBGColor));
+            sBorderColor := SchemeCodeToColor(IntValue('BorderColor',sBorderColor));
+            sFGAlpha     := Max(0,Min(255,IntValue('FGAlpha',sFGAlpha)));
+            sBGAlpha     := Max(0,Min(255,IntValue('BGAlpha',sBGAlpha)));
+            sBorderAlpha := Max(0,Min(255,IntValue('BorderAlpha',sBorderAlpha)));
+          end;
   end;
   sUpdate := Max(sUpdate,100);
 end;
@@ -191,7 +219,7 @@ procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
   item : TJvSimpleXMLElem;
-  cs : TColorSchemeEx;
+  skin : String;
 begin
   try
     SettingsForm := TSettingsForm.Create(nil);
@@ -212,7 +240,6 @@ begin
 
     if SettingsForm.ShowModal = mrOk then
     begin
-      cs := SharpApi.LoadColorSchemeEx;
       item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
       sWidth       := SettingsForm.tb_size.Position;
       sBGColor     := SettingsForm.scb_bg.color;
@@ -226,20 +253,36 @@ begin
       if SettingsForm.rb_bar.Checked then sDrawMode := 0
          else if SettingsForm.rb_line.Checked then sDrawMode := 1
          else sDrawMode := 2;
-      if item <> nil then with item.Items do
-      begin
-        clear;
-        Add('Width',sWidth);
-        Add('Update',sUpdate);
-        Add('DrawMode',sDrawMode);
-        Add('CPU',sCpu);
-        Add('FGColor',ColorToCodeEx(sFGColor,cs));
-        Add('BGColor',ColorToCodeEx(sBGColor,cs));
-        Add('BorderColor',ColorToCodeEx(sBordercolor,cs));
-        Add('FGAlpha',sFGAlpha);
-        Add('BGAlpha',sBGAlpha);
-        Add('BorderAlpha',sBorderAlpha);
-      end;
+      if item <> nil then
+         with item.Items do
+         begin
+           if ItemNamed['global'] = nil then Add('global');
+           with ItemNamed['global'].Items do
+           begin
+             Clear; 
+             Add('Width',sWidth);
+             Add('Update',sUpdate);
+             Add('DrawMode',sDrawMode);
+             Add('CPU',sCpu);
+           end;
+
+           skin := SharpThemeApi.GetSkinName;
+           if ItemNamed['skin'] <> nil then
+           begin
+             if ItemNamed['skin'].Items.ItemNamed[skin] = nil then
+                ItemNamed['skin'].Items.Add(skin);
+           end else Add('skin').Items.Add(skin);
+           with ItemNamed['skin'].Items.ItemNamed[skin].Items do
+           begin
+             Clear;
+             Add('FGColor',ColorToSchemeCode(sFGColor));
+             Add('BGColor',ColorToSchemeCode(sBGColor));
+             Add('BorderColor',ColorToSchemeCode(sBordercolor));
+             Add('FGAlpha',sFGAlpha);
+             Add('BGAlpha',sBGAlpha);
+             Add('BorderAlpha',sBorderAlpha);
+           end;
+         end;
       uSharpBarAPI.SaveXMLFile(BarWnd);
       cpuUsage.UpdateTimer.Interval := sUpdate;
     end;
@@ -321,12 +364,14 @@ begin
   cpugraph := TBitmap32.Create;
   cpugraph.DrawMode := dmBlend;
   cpugraph.CombineMode := cmMerge;
+  FCustomSkinSettings := TSharpECustomSkinSettings.Create;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   bgbmp.Free;
   cpugraph.Free;
+  FreeAndNil(FCustomSkinSettings);
 end;
 
 procedure TMainForm.cpugraphcontDblClick(Sender: TObject);
