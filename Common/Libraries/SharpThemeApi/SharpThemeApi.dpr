@@ -332,8 +332,8 @@ begin
   result := -1;
   if pCode < 0 then
   begin
-    if abs(pCode) < length(Theme.Scheme.Colors) - 1 then
-      result := Theme.Scheme.Colors[abs(pCode)].Color;
+    if abs(pCode) <= length(Theme.Scheme.Colors) then
+      result := Theme.Scheme.Colors[abs(pCode) - 1].Color;
   end
   else
     result := pCode;
@@ -346,7 +346,7 @@ begin
   for n := 0 to High(Theme.Scheme.Colors) do
     if Theme.Scheme.Colors[n].Color = pColor then
     begin
-      result := -n;
+      result := -n - 1;
       exit;
     end;
   result := pColor;
