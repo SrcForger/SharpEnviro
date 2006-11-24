@@ -148,11 +148,6 @@ procedure ChangeSection(const ASection:TSectionObject);
 begin
 end;
 
-procedure AddSections(var AList: TSectionObjectList; var AItemHeight: Integer);
-begin
-
-end;
-
 procedure GetDisplayName(const APluginID:Pchar; var ADisplayName:PChar);
 begin
   ADisplayName := PChar('Components');
@@ -174,8 +169,6 @@ exports
   BtnClear,
 
   GetDisplayName,
-
-  AddSections,
   ChangeSection;
 
 end.
