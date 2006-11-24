@@ -4,7 +4,7 @@
     <Name>Border</Name>
     <Tag>$Border</Tag>
     <Info>Border Color</Info>
-    <Default>RGB(255,255,255)</Default>
+    <Default>RGB(196,196,196)</Default>
   </item>
   <item>
     <Name>Background</Name>
@@ -19,7 +19,7 @@
     <Default>RGB(255,255,255)</Default>
   </item>
   <item>
-    <Name>Text</Name>
+    <Name>Text Shadow</Name>
     <Tag>$TextShadow</Tag>
     <Info>Text Shadow Color</Info>
     <Default>0</Default>
