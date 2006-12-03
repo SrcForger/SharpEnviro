@@ -179,8 +179,13 @@ type
 implementation
 
 
-uses uSharpBarApi, SharpBarMainWnd;
+uses uSharpBarApi,
+     SharpApi,
+     SharpBarMainWnd;
 
+
+type
+  THandleArray = array of HWND;
 
 
 function GetControlByHandle(AHandle: THandle): TWinControl;
@@ -534,18 +539,82 @@ begin
   result := GetMaxBarSpace - size;
 end;
 
+function FindAllWindows(const WindowClass: string): THandleArray;
+type
+  PParam = ^TParam;
+  TParam = record
+    ClassName: string;
+    Res: THandleArray;
+  end;
+var
+  Rec: TParam;
+
+  function GetWndClass(pHandle: hwnd): string;
+  var
+    buf: array[0..254] of Char;
+  begin
+    GetClassName(pHandle, buf, SizeOf(buf));
+    result := buf;
+  end;
+
+  function _EnumProc(_hWnd: HWND; _LParam: LPARAM): LongBool; stdcall;
+  begin
+    with PParam(_LParam)^ do
+    begin
+      if (CompareText(GetWndClass(_hWnd), ClassName) = 0) then
+      begin
+        SetLength(Res, Length(Res) + 1);
+        Res[Length(Res) - 1] := _hWnd;
+      end;
+      Result := True;
+    end;
+  end;
+
+begin
+  try
+    Rec.ClassName := WindowClass;
+    SetLength(Rec.Res, 0);
+    EnumWindows(@_EnumProc, Integer(@Rec));
+  except
+    SetLength(Rec.Res, 0);
+  end;
+  Result := Rec.Res;
+end;
+
 function TModuleManager.GetMaxBarSpace : integer;
 var
   maxsize : integer;
   pForm : TWinControl;
   pMon : TMonitor;
   lo,ro : integer;
+  harray : THandleArray;
+  n : integer;
+  R : TRect;
+  freespace : integer;
 begin
   pForm := GetControlByHandle(FParent);
 
   // get screen size
   pMon := Screen.MonitorFromPoint(Point(pForm.Left,pForm.Top),mdNearest);
   maxSize := pMon.Width;
+
+  setlength(harray,0);
+  // find all SharpBar windows and store their handle in harray
+  harray := FindAllWindows('TSharpBarMainForm');
+  for n := 0 to High(harray) do
+  begin
+    if harray[n] <> pForm.Handle then
+    begin                                                       
+      GetWindowRect(harray[n],R);
+      // another bar on the same monitor with the same top position ?
+      if (R.Top = pForm.Top) and (Screen.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
+      begin
+        freespace := GetWindowLong(harray[n],GWL_USERDATA);
+        MaxSize := MaxSize - (R.Right - R.Left) + freespace;
+      end;
+    end;
+  end;
+  setlength(harray,0);
 
   // get left/right offets for plugin area
   try
@@ -792,6 +861,8 @@ begin
      if lo + ro + LeftSize + RightSize <> ParentControl.Width then
         ParentControl.Width := Max(lo + ro + FSkinManager.Skin.BarSkin.ThDim.XAsInt+5,lo + ro + LeftSize + RightSize);
 
+  SetWindowLong(ParentControl.Handle,GWL_USERDATA,Max(ParentControl.Width - lo - ro - LeftSize - Rightsize,0));
+
   x := 0;
   rx := 0;
   RCount := 0;
@@ -867,6 +938,11 @@ var
   FreeMinSpace : integer;
   nonminmaxrequest : array of integer;
   smod : integer;
+  harray : THandleArray;
+  ParentControl : TWinControl;
+  pMon : TMonitor;
+  R : TRect;
+  freespace : integer;
 begin
   if FModules = nil then exit;
 
@@ -914,21 +990,58 @@ begin
     if msize.Min <> msize.Width then
     begin
       try
-        //if temp.Control.Width <> msize.Min + nonminmaxrequest[i] then
-           temp.ModuleFile.DllSetSize(temp.ID,msize.Min + nonminmaxrequest[i]);
+        temp.ModuleFile.DllSetSize(temp.ID,msize.Min + nonminmaxrequest[i]);
       finally
         i := i + 1;
       end;
     end else
     begin
       try
-       // if temp.Control.Width <> msize.Min then
-           temp.ModuleFile.DllSetSize(temp.ID,msize.Min);
+        temp.ModuleFile.DllSetSize(temp.ID,msize.Min);
       except
       end;
     end;
   end;
+
   FixModulePositions;
+
+  ParentControl := GetControlByHandle(FParent);
+ // if (minsize-maxsize) <> 0 then
+ //    SetWindowLong(ParentControl.Handle,GWL_USERDATA,minsize-maxsize);
+
+  // Check if there is no bar space left and if other bars which have
+  // free space left should resize
+  pMon := Screen.MonitorFromPoint(Point(ParentControl.Left,ParentControl.Top),mdNearest);
+  maxSize := pMon.Width - ParentControl.Width;
+
+  setlength(harray,0);
+  // find all SharpBar windows and store their handle in harray
+  harray := FindAllWindows('TSharpBarMainForm');
+  for n := 0 to High(harray) do
+    if harray[n] <> ParentControl.Handle then
+    begin
+      GetWindowRect(harray[n],R);
+      // another bar on the same monitor with the same top position?
+      if (R.Top = ParentControl.Top) and (Screen.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
+          MaxSize := MaxSize - (R.Right - R.Left);
+    end;
+//  if MaxSize < 0 then
+    for n := 0 to High(harray) do
+      if harray[n] <> ParentControl.Handle then
+      begin
+        GetWindowRect(harray[n],R);
+        // another bar on the same monitor with the same top position?
+        if (R.Top = ParentControl.Top) and (Screen.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
+        begin
+          freespace := GetWindowLong(harray[n],GWL_USERDATA);
+          if (MaxSize < 0) or (FreeSpace > 0) then
+          begin
+             PostMessage(harray[n],WM_UPDATEBARWIDTH,0,0);
+             break;
+          end;
+        end;
+      end;
+  setlength(harray,0);
 end;
 
 
