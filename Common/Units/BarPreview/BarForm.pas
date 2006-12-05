@@ -34,12 +34,14 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, SharpEBaseControls, SharpEBar, SharpESkinManager, SharpEScheme, SharpESkin;
+  Dialogs, SharpEBaseControls, SharpEBar, SharpESkinManager, SharpEScheme, SharpESkin,
+  SharpEButton;
 
 type
   TBarWnd = class(TForm)
     SharpESkin1: TSharpESkin;
     SharpEScheme1: TSharpEScheme;
+    Button: TSharpEButton;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -61,6 +63,7 @@ begin
   SkinManager.SchemeSource := ssComponent;
 
   SharpEBar1 := TSharpEBar.CreateRuntime(self,SkinManager);
+  Button.SkinManager := SkinManager;
 end;
 
 procedure TBarWnd.FormDestroy(Sender: TObject);

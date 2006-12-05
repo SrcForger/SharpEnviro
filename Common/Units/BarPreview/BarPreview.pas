@@ -1,15 +1,46 @@
+{
+Source Name: BarPreview.pas
+Description: SharpE Bar Preview Rendering
+Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
+
+Source Forge Site
+https://sourceforge.net/projects/sharpe/
+
+Main SharpE Site
+http://www.sharpe-shell.org
+
+Recommended Environment
+ - Compiler : Delphi 2005 PE
+ - OS : Windows 2000 or higher
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+}
+
 unit BarPreview;
 
 interface
 
-uses SharpApi, SharpThemeApi, Math, GR32, JvSimpleXML, BarForm, SharpEBar;
+uses SharpApi, SharpThemeApi, Math, GR32, JvSimpleXML, BarForm, SharpEBar,
+     Windows, SysUtils, Dialogs;
 
 procedure CreateBarPreview(ABitmap : TBitmap32; pSkin,pScheme : String; Width : integer); overload;
-procedure CreateBarPreview(ABitmap : TBitmap32; pSkin, pSchemeList: TSharpEColorSet; Width : integer); overload;
+procedure CreateBarPreview(ABitmap : TBitmap32; pSkin : String; pSchemeList: TSharpEColorSet; Width : integer); overload;
 
 implementation
 
-procedure CreateBarPreview(ABitmap : TBitmap32; pSkin, pSchemeList: TSharpEColorSet; Width : integer);
+procedure CreateBarPreview(ABitmap : TBitmap32; pSkin : String; pSchemeList: TSharpEColorSet; Width : integer);
 var
   BarWnd: TBarWnd;
   Dir : String;
@@ -18,6 +49,8 @@ var
   colorint   : integer;
   XML : TJvSimpleXML;
   n : integer;
+  ThrobberPos : TPoint;
+  ButtonPos : TPoint;
 begin
   try
     XML := TJvSimpleXML.Create(nil);
@@ -30,8 +63,14 @@ begin
     for n := 0 to High(pSchemeList) do
         BarWnd.SharpEScheme1.AddColor(pSchemeList[n]);
 
+    ThrobberPos := Point(BarWnd.SkinManager.Skin.BarSkin.ThDim.XAsInt,
+                         BarWnd.SkinManager.Skin.BarSkin.ThDim.YAsInt);
+    ButtonPos := Point(BarWnd.SkinManager.Skin.BarSkin.PAXoffset.XAsInt+8,
+                       BarWnd.SkinManager.Skin.BarSkin.PAYoffset.XAsInt+BarWnd.SkinManager.Skin.ButtonSkin.SkinDim.YAsInt);
+
     BarWnd.Left := -100;
     BarWnd.Top := -100;
+    BarWnd.Width := width;
 
     BarWnd.SharpEBar1.UpdateSkin;
     ShowWindow(BarWnd.SharpEBar1.abackground.handle,SW_HIDE);
@@ -40,11 +79,12 @@ begin
     BarWnd.SharpEBar1.VertPos := vpTop;
     BarWnd.SharpEBar1.UpdateSkin;
     BarWnd.SharpEBar1.Skin.DrawTo(ABitmap,0,0);
-    BarWnd.SharpEBar1.VertPos := vpBottom;
     BarWnd.SharpEBar1.Throbber.UpdateSkin;
     BarWnd.SharpEBar1.Throbber.Skin.DrawTo(ABitmap,
-                                           BarWnd.SkinManager.Skin.BarSkin.ThDim.XAsInt,
-                                           BarWnd.SkinManager.Skin.BarSkin.ThDim.YAsInt);
+                                           ThrobberPos.X,
+                                           ThrobberPos.Y);
+    BarWnd.Button.UpdateSkin;
+    BarWnd.Button.Skin.DrawTo(ABitmap,ButtonPos.X,ButtonPos.Y);
   finally
     XML.Free;
     FreeAndNil(barWnd);
@@ -61,6 +101,8 @@ var
   colorint   : integer;
   XML : TJvSimpleXML;
   n : integer;
+  throbberpos : TPoint;
+  buttonpos : TPoint;
 begin
   try
     XML := TJvSimpleXML.Create(nil);
@@ -87,8 +129,14 @@ begin
     except
     end;
 
+    ThrobberPos := Point(BarWnd.SkinManager.Skin.BarSkin.ThDim.XAsInt,
+                         BarWnd.SkinManager.Skin.BarSkin.ThDim.YAsInt);
+    ButtonPos := Point(BarWnd.SkinManager.Skin.BarSkin.PAXoffset.XAsInt+8,
+                       BarWnd.SkinManager.Skin.BarSkin.PAYoffset.XAsInt+BarWnd.SkinManager.Skin.ButtonSkin.SkinDim.YAsInt);
+
     BarWnd.Left := -100;
     BarWnd.Top := -100;
+    BarWnd.Width := width;
 
     BarWnd.SharpEBar1.UpdateSkin;
     ShowWindow(BarWnd.SharpEBar1.abackground.handle,SW_HIDE);
@@ -97,11 +145,12 @@ begin
     BarWnd.SharpEBar1.VertPos := vpTop;
     BarWnd.SharpEBar1.UpdateSkin;
     BarWnd.SharpEBar1.Skin.DrawTo(ABitmap,0,0);
-    BarWnd.SharpEBar1.VertPos := vpBottom;
     BarWnd.SharpEBar1.Throbber.UpdateSkin;
     BarWnd.SharpEBar1.Throbber.Skin.DrawTo(ABitmap,
-                                           BarWnd.SkinManager.Skin.BarSkin.ThDim.XAsInt,
-                                           BarWnd.SkinManager.Skin.BarSkin.ThDim.YAsInt);
+                                           ThrobberPos.X,
+                                           ThrobberPos.Y);
+    BarWnd.Button.UpdateSkin;
+    BarWnd.Button.Skin.DrawTo(ABitmap,ButtonPos.X,ButtonPos.Y);
   finally
     XML.Free;
     FreeAndNil(barWnd);
