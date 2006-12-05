@@ -125,6 +125,7 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
 
+    property Skin : TBitmap32 read FSkin;
     property CustomSkin : TSharpEButtonSkin read FCustomSkin write FCustomSkin;
     property Glyph32FileName: TGlyph32FileName read FGlyph32FileName write  SetGlyph32FileName;
     property Glyph32: Tbitmap32 read FGlyph32 write SetGlyph32 stored True;
@@ -536,6 +537,7 @@ begin
       FButtonOver := False;
     end;
 
+    FSkin.SetSize(Width,Height);
     FSkin.Clear(Color32(0, 0, 0, 0));
     if not (Enabled) and not (ButtonSkin.Disabled.Empty) then
     begin
@@ -633,6 +635,7 @@ begin
          SkinText.RenderTo(bmp,TextPos.X,TextPos.Y,Caption,Scheme,
                            FPrecacheText,FPrecacheBmp,FPrecacheCaption);
     end;
+    Bmp.DrawTo(FSkin);
   end
   else
     DrawDefaultSkin(bmp, DefaultSharpEScheme);
