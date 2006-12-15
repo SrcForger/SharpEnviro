@@ -128,6 +128,7 @@ type
   procedure EmptyWindowList(WindowList: TList);
 {$ENDREGION}
 
+function CurrentDesktop: integer;
 function GetActiveWindow: HWND;
 function IsTaskWindow(isWnd: HWND): boolean;
 function SharpEBroadCastEx(msg: integer; wpar: wparam; lpar: lparam): integer;
@@ -144,6 +145,41 @@ var
   wpara: wparam;
   mess: integer;
   lpara: lparam;
+
+function CurrentDesktop: integer;
+var
+  tmpTask: TSharpTask;
+  rcTemp: TRect;
+  i,j,k,l: integer;
+begin
+  Result := 0;
+
+  k := 0;
+
+  tmpTask := TSharpTask.Create;
+  try
+   tmpTask.Build;
+
+   j := Pred(tmpTask.WindowList.Count);
+   for i := 0 to j do
+    begin
+     if (GetWindowRect(PTProcessObject(tmpTask.WindowList.Items[i]).Handle, rcTemp)) then
+      begin
+       if (rcTemp.Left < k) then k := rcTemp.Left;
+      end;
+    end;
+
+   if (k < 0) then
+    begin
+     l := (k div 10000);
+    end;
+
+   Result := l;
+  finally
+   tmpTask.Empty;
+   FreeAndNil(tmpTask);
+  end;
+end;
 
 function GetPathFromWND(WndProc: HWND): string;
 function _GetFileName(iPID: DWORD): string;
@@ -271,8 +307,6 @@ begin
           rcSize.Top := rcSize.Top + 4;
          end;
 
-//        if (rcSize.Top < 10000) then
-        //(Top < 0) Fix 
         if (rcSize.Top < 5000) then
          begin
           rcSize.Top := (rcSize.Top + 10000);
@@ -288,10 +322,11 @@ begin
          begin
           //If we're being asked to recall a window, we're assuming that the window
           // being recalled, was previously moved by this procedure
-//          rcSize.Left := rcSize.Left + 100000;
+
+          //I also believe, that the VWM app/plug-in, switched to desktop 0,
+          //before going to recall mode
           rcSize.Left := rcSize.Left - ((rcSize.Left div 10000) * 10000);
 
-//          rcSize.Top := rcSize.Top - ((rcSize.Top div 10000) * 10000);
           rcSize.Top := rcSize.Top - 10000;
          end;
 
@@ -1151,7 +1186,6 @@ begin
 
   if (i > 0) then Result := i;
 end;
-
 function IsTaskWindow(isWnd: HWND): boolean;
 var
   tmpTask: TSharpTask;
@@ -1176,7 +1210,6 @@ begin
    FreeAndNil(tmpTask);
   end;
 end;
-
 function SharpEBroadCastEx(msg: integer; wpar: wparam; lpar: lparam): integer;
   function EnumChildWindowsProc(Wnd: hwnd; param: lParam): boolean; export; stdcall;
   begin
