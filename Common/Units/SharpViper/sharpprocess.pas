@@ -3,8 +3,9 @@ unit sharpprocess;
 interface
 
 uses classes, Forms, SysUtils, ShellApi, ShlObj, ComObj, Windows,
-     Graphics, psapi, tlHelp32, messages, jclshell, GR32, GR32_Image, SharpAPI,
-     SharpLibrary, SharpEImage32, ShellHookTypes, Activex, ComCtrls, HotKeyManager;
+     Graphics, psapi, tlHelp32, messages, jclshell, GR32,
+     GR32_Image, SharpAPI, SharpLibrary, SharpEImage32,
+     ShellHookTypes, Activex, ComCtrls, HotKeyManager, dialogs;
 
 {$REGION ' Process & File Type Declarations '}
 type
@@ -152,9 +153,12 @@ var
   rcTemp: TRect;
   i,j,k,l: integer;
 begin
+//Crap, this only works if there are any visible windows (non-minimized), on the
+//furthest desktop
   Result := 0;
 
   k := 0;
+  l := 0;
 
   tmpTask := TSharpTask.Create;
   try
@@ -165,7 +169,8 @@ begin
     begin
      if (GetWindowRect(PTProcessObject(tmpTask.WindowList.Items[i]).Handle, rcTemp)) then
       begin
-       if (rcTemp.Left < k) then k := rcTemp.Left;
+       if (rcTemp.Left < k) then begin k := rcTemp.Left;
+   showmessage('k := ' + inttostr(k) + ' Caption := ' + PTProcessObject(tmpTask.WindowList.Items[i]).Caption); end;
       end;
     end;
 
