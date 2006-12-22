@@ -125,6 +125,7 @@ type
     procedure OnMonitorPopupItemClick(Sender : TObject);
   private
     { Private-Deklarationen }
+    FSuspended : boolean;
     FBarID : integer;
     FShellHookList : TStringList;
     FThemeUpdating : Boolean;
@@ -136,6 +137,9 @@ type
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem : TJvSimpleXMlElem);
 
+
+    // Power Management
+    procedure WMPowerBroadcast(var msg : TMessage); message WM_POWERBROADCAST;
 
     // theme update;
     procedure WMThemeUpdateStart(var msg : TMessage); message WM_THEMELOADINGSTART;
@@ -240,6 +244,15 @@ begin
 end;
         }
 
+
+procedure TSharpBarMainForm.WMPowerBroadcast(var msg : TMessage);
+begin
+  case msg.WParam of
+    PBT_APMSUSPEND: FSuspended := True;
+    PBT_APMRESUMESUSPEND: FSuspended := False;
+  end;
+  msg.Result := 1;
+end;
 
 procedure TSharpBarMainForm.WMLockBarWindow(var msg : TMessage);
 begin
@@ -360,11 +373,13 @@ end;
 
 procedure TSharpBarMainForm.WMDisplayChange(var msg : TMessage);
 begin
+  if FSuspended then exit;
   DelayTimer3.Enabled := True;
 end;
 
 procedure TSharpBarMainForm.WMSchemeUpdate(var msg : TMessage);
 begin
+  if FSuspended then exit;
   if FThemeUpdating then exit;
 
   if not FStartup then LockWindow(Handle);
@@ -382,6 +397,7 @@ end;
 
 procedure TSharpBarMainForm.WMSaveXMLFile(var msg : TMessage);
 begin
+  if FSuspended then exit;
   ModuleSettings.SaveToFile(ModuleSettings.FileName);
 end;
 
@@ -410,6 +426,7 @@ end;
 
 procedure TSharpBarMainForm.WMSharpEThemeUpdate(var msg : TMessage);
 begin
+  if FSuspended then exit;
   if FThemeUpdating then exit;
   if not FStartup then LockWindow(Handle);
   FThemeUpdating := True;
@@ -446,6 +463,7 @@ end;
 
 procedure TSharpBarMainForm.WMUpdateBarWidth(var msg : TMessage);
 begin
+  if FSuspended then exit;
   if FThemeUpdating then exit;
 
   DebugOutput('WM_UpdateBarWidth',2,1);
@@ -464,6 +482,7 @@ end;
 
 procedure TSharpBarMainForm.UpdateBGImage;
 begin
+  if FSuspended then exit;
   if FBGImage = nil then exit;
   if (Width = 0) or (Height = 0) then exit;
 
@@ -479,6 +498,7 @@ var
   BGBmp : TBitmap32;
   wnd : hwnd;
 begin
+  if FSuspended then exit;
   if (FTopZone = nil) or (FBottomZone = nil) then exit;
 
   BGBmp := TBitmap32.Create;
@@ -488,13 +508,14 @@ begin
     wnd := FindWindow('TSharpDeskMainForm',nil);
     if wnd <> 0 then
     begin
-      // try two times... :)
+      // try 3 times... :)
       if not PrintWindow(wnd,BGBmp.Handle,0) then
          if not PrintWindow(wnd,BGBmp.Handle,0) then
-         begin
-           if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg') then
-              BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg');
-         end;
+            if not PrintWindow(wnd,BGBmp.Handle,0) then
+            begin
+              if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg') then
+                 BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg');
+            end;
     end else PaintDesktop(BGBmp.Handle);
     FTopZone.SetSize(Monitor.Width,Height);
     FBottomZone.SetSize(Monitor.Width,Height);
@@ -807,6 +828,7 @@ end;
 
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
+  FSuspended := False;
   FBottomZone := TBitmap32.Create;
   FTopZone    := TBitmap32.Create;
   FBGImage    := TBitmap32.Create;
@@ -1003,6 +1025,7 @@ end;
 
 procedure TSharpBarMainForm.SharpEBar1ResetSize(Sender: TObject);
 begin
+  if FSuspended then exit;
   ModuleManager.FixModulePositions;
 end;
 
@@ -1021,6 +1044,7 @@ end;
 
 procedure TSharpBarMainForm.FormShow(Sender: TObject);
 begin
+  if FSuspended then exit;
   if ModuleManager.Modules.Count = 0 then
      SharpEBar1.ShowThrobber := True;
   SharpEBar1.Throbber.Repaint;
@@ -1047,6 +1071,7 @@ var
   oMon : integer;
   oPMon : boolean;
 begin
+  if FSuspended then exit;
   if FThemeUpdating then exit;
 
   if Shift = [ssLeft] then
@@ -1314,6 +1339,7 @@ procedure TSharpBarMainForm.Delete1Click(Sender: TObject);
 var
   mThrobber : TSharpEMiniThrobber;
 begin
+  if FSuspended then exit;
   mThrobber := TSharpEMiniThrobber(ThrobberPopUp.popupcomponent);
   if mThrobber = nil then exit;
   if MessageBox(self.handle,'Do you really want to delete this module? All settings will be lost!','Confirm : "Delete Module"',MB_YESNO) = IDYES then
@@ -1374,6 +1400,7 @@ end;
 
 procedure TSharpBarMainForm.ApplicationEvents1Activate(Sender: TObject);
 begin
+  if FSuspended then exit;
   if FThemeUpdating then exit;
 
   if ApplicationEvents1.Tag = 0 then
@@ -1399,7 +1426,7 @@ end;
 procedure TSharpBarMainForm.SkinManagerSkinChanged(Sender: TObject);
 begin
 //  if FThemeUpdating then exit;
-
+  if FSuspended then exit;
   if ModuleManager = nil then exit;
 
   SharpEBar1.UpdateSkin;
@@ -1422,16 +1449,19 @@ end;
 
 procedure TSharpBarMainForm.FormResize(Sender: TObject);
 begin
+  if FSuspended then exit;
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
 end;
 
 procedure TSharpBarMainForm.FormHide(Sender: TObject);
 begin
+  if FSuspended then exit;
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
 end;
 
 procedure TSharpBarMainForm.OnBarPositionUpdate(Sender : TObject);
 begin
+  if FSuspended then exit;
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
   UpdateBGImage;
 end;
@@ -1440,6 +1470,14 @@ procedure TSharpBarMainForm.BlendInTimerTimer(Sender: TObject);
 var
   msg : TMessage;
 begin
+  if FSuspended then
+  begin
+    BlendInTimer.Tag := 255;
+    BlendInTimer.Enabled := False;
+    SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendInTimer.Tag, LWA_ALPHA);
+    SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendInTimer.Tag, LWA_COLORKEY);
+    exit;
+  end;
   BlendInTimer.Tag := BlendInTimer.Tag + 40;
 
   if BlendInTimer.Tag >= 255 then
@@ -1458,6 +1496,15 @@ end;
 
 procedure TSharpBarMainForm.BlendOutTimerTimer(Sender: TObject);
 begin
+  if FSuspended then
+  begin
+    BlendOutTimer.Tag := 255;
+    BlendOutTimer.Enabled := False;
+    SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendOutTimer.Tag, LWA_ALPHA);
+    SetLayeredWindowAttributes(Handle, RGB(255,0,254), BlendOutTimer.Tag, LWA_COLORKEY);
+    exit;
+  end;
+
   BlendOutTimer.Tag := BlendOutTimer.Tag - 400;
   if BlendOutTimer.Tag <= 0 then
   begin
@@ -1498,6 +1545,7 @@ end;
 procedure TSharpBarMainForm.DelayTimer3Timer(Sender: TObject);
 begin
   DelayTimer3.Enabled := False;
+  if FSuspended then exit;
 
   if BarHideForm.Visible then
   begin

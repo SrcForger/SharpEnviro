@@ -23,8 +23,8 @@ object SharpBarMainForm: TSharpBarMainForm
   object PopupMenu1: TPopupMenu
     Images = PngImageList1
     OnPopup = PopupMenu1Popup
-    Left = 264
-    Top = 8
+    Left = 384
+    Top = 40
     object BarManagment1: TMenuItem
       Caption = 'Bar Managment'
       ImageIndex = 11
@@ -641,14 +641,14 @@ object SharpBarMainForm: TSharpBarMainForm
         Name = 'PngImage24'
         Background = clMenu
       end>
-    Left = 232
-    Top = 8
+    Left = 320
+    Top = 40
     Bitmap = {}
   end
   object ThrobberPopUp: TPopupMenu
     Images = PngImageList1
-    Left = 200
-    Top = 56
+    Left = 352
+    Top = 40
     object Information1: TMenuItem
       Caption = 'Information'
       ImageIndex = 18
@@ -717,20 +717,20 @@ object SharpBarMainForm: TSharpBarMainForm
     onThrobberMouseUp = SharpEBar1ThrobberMouseUp
     onThrobberMouseMove = SharpEBar1ThrobberMouseMove
     onResetSize = SharpEBar1ResetSize
-    Left = 320
-    Top = 24
+    Left = 384
+    Top = 8
   end
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
     onSkinChanged = SkinManagerSkinChanged
-    Left = 296
-    Top = 80
+    Left = 352
+    Top = 8
   end
   object ApplicationEvents1: TApplicationEvents
     OnActivate = ApplicationEvents1Activate
-    Left = 24
-    Top = 56
+    Left = 320
+    Top = 8
   end
   object BlendInTimer: TTimer
     Enabled = False
