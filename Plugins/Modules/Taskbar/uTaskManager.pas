@@ -90,6 +90,14 @@ type
 
 implementation
 
+function GetWndClass(pHandle : hwnd) : String;
+var
+  buf: array [0..254] of Char;
+begin
+  GetClassName(pHandle, buf, SizeOf(buf));
+  result := buf;
+end;
+
 constructor TTaskManager.Create;
 begin
   inherited Create;
@@ -178,6 +186,7 @@ procedure TTaskManager.ActivateTask(pHandle : hwnd);
 var
   pItem : TTaskItem;
   n : integer;
+  wndclass : String;
 begin
   if not FEnabled then exit;
 
@@ -198,6 +207,12 @@ begin
     end;
   except
   end;
+
+  // Windows which don't send a NewTask message will be added when they
+  // send an activate message
+  wndclass := GetWndClass(pHandle);
+  if CompareText(wndclass,'ConsoleWindowClass') = 0 then  // cmd.exe
+     AddTask(pHandle);
 end;
 
 
