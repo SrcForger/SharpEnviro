@@ -109,6 +109,7 @@ type
     pnlTreeTitle: TPanel;
     Image2: TImage;
     XPManifest1: TXPManifest;
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure lblTabsHyperLinkClick(Sender: TObject; LinkName: string);
     procedure lblTreeHyperLinkClick(Sender: TObject; LinkName: string);
     procedure btnEditClick(Sender: TObject);
@@ -125,7 +126,6 @@ type
     procedure UnloadTimerTimer(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
     procedure PngSpeedButton1Click(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure lbTreeMouseUp(Sender: TObject; Button: TMouseButton;
@@ -302,7 +302,6 @@ procedure TSharpCenterWnd.lbTreeMouseUp(Sender: TObject; Button:
   TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  LockWindowUpdate(Self.Handle);
   try
     if lbTree.ItemIndex = -1 then
       exit;
@@ -310,14 +309,17 @@ begin
     if FConfigDll.Dllhandle <> 0 then
     begin
       UnloadDll;
+      //LockWindowUpdate(Self.Handle);
       SharpCenterManager.ClickButton(nil);
     end
-    else
+    else begin
+      //LockWindowUpdate(Self.Handle);
       SharpCenterManager.ClickButton(nil);
+    end;
 
     UpdateSize;
   finally
-    LockWindowUpdate(0);
+    //LockWindowUpdate(0);
   end;
 end;
 
@@ -344,20 +346,6 @@ begin
 
   SharpThemeApi.InitializeTheme;
 
-end;
-
-procedure TSharpCenterWnd.FormDestroy(Sender: TObject);
-begin
-  inherited;
-
-  if @FConfigDll <> nil then
-    UnloadDll;
-
-  FSections.Clear;
-  FSections.Free;
-
-  if SharpCenterManager <> nil then
-    SharpCenterManager.Free;
 end;
 
 procedure TSharpCenterWnd.GetCopyData(var Msg: TMessage);
@@ -475,8 +463,10 @@ end;
 
 procedure TSharpCenterWnd.btnSaveClick(Sender: TObject);
 begin
+  LockWindowUpdate(Self.Handle);
   if SaveChanges then
     ReloadDll;
+  LockWindowUpdate(0);
 end;
 
 procedure TSharpCenterWnd.UnloadDll;
@@ -974,6 +964,21 @@ begin
   if @FConfigDll.ChangeSection <> nil then
     FConfigDll.ChangeSection(FSections[FSelectedTabID]);
 
+end;
+
+procedure TSharpCenterWnd.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
+begin
+  inherited;
+
+  if @FConfigDll <> nil then
+    UnloadDll;
+
+  FSections.Clear;
+  FSections.Free;
+
+  if SharpCenterManager <> nil then
+    SharpCenterManager.Free;
 end;
 
 end.
