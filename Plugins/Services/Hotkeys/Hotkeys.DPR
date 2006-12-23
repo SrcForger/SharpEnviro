@@ -37,8 +37,6 @@ uses
   SharpAPI,
   uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas',
   uHotkeyServiceMain in 'uHotkeyServiceMain.pas',
-  uScHotkeyMgr in '..\..\Common\HotkeyEdit\uScHotkeyMgr.pas',
-  VKToString in '..\..\Common\HotkeyEdit\VKToString.pas',
   uHotkeyServiceList in '..\..\Configurations\Hotkeys\uHotkeyServiceList.pas';
 
 {$E service}
