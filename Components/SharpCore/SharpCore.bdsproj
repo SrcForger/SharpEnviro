@@ -119,11 +119,11 @@
 			<Linker Name="GenerateHpps">False</Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir">..\..\..\..\Sharpe\</Directories>
+			<Directories Name="OutputDir">..\..\..\..\SharpE\Center\Root\Plugins\_Services\</Directories>
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\Common\3rd Party\GR32 Addons\</Directories>
+			<Directories Name="SearchPath">..\..\Common\3rd Party\GR32 Addons\;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\VersInfo</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
