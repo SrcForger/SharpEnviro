@@ -83,6 +83,7 @@ type
     DelayTimer2: TTimer;
     DelayTimer3: TTimer;
     Clone1: TMenuItem;
+    procedure FormActivate(Sender: TObject);
     procedure Clone1Click(Sender: TObject);
     procedure DelayTimer3Timer(Sender: TObject);
     procedure DelayTimer2Timer(Sender: TObject);
@@ -1418,7 +1419,7 @@ begin
     SetLayeredWindowAttributes(Handle, RGB(255,0,254), 1, LWA_COLORKEY);
     SharpEBar1.abackground.Alpha := 1;
     Application.ShowMainForm := True;
-    Show;
+    ShowWindow(Handle, SW_HIDE);
     BlendInTimer.Enabled := True;
   end;
 end;
@@ -1537,7 +1538,7 @@ begin
     SetLayeredWindowAttributes(Handle, RGB(255,0,254), 1, LWA_COLORKEY);
     SharpEBar1.abackground.Alpha := 1;
     Application.ShowMainForm := True;
-    Show;
+    ShowWindow(Handle, SW_HIDE);
     BlendInTimer.Enabled := True;
   end;
 end;
@@ -1566,6 +1567,11 @@ begin
   ModuleManager.Clone(mThrobber.Tag);
   SaveBarSettings;
   ModuleManager.ReCalculateModuleSize;
+end;
+
+procedure TSharpBarMainForm.FormActivate(Sender: TObject);
+begin
+  ShowWindow(Application.Handle,SW_HIDE);
 end;
 
 end.

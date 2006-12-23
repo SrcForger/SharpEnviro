@@ -12,6 +12,7 @@ object SharpBarMainForm: TSharpBarMainForm
   Font.Style = []
   OldCreateOrder = False
   Position = poDesigned
+  OnActivate = FormActivate
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnHide = FormHide
