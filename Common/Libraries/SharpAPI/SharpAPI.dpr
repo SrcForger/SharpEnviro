@@ -224,6 +224,7 @@ const
   SKINDIR = 'Skins';
   CENTERDIR = 'Center\Root';
   ICONSDIR = 'Icons';
+  DEFAULTSETTINGSDIR = '#Default#';
 
 type
   THandleArray = array of HWND;
@@ -293,6 +294,36 @@ function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam): integer;
   forward;
 
 { HELPER FUNCTIONS }
+
+function CopyDir(const fromDir, toDir : String) : Boolean;
+var
+  fos : TSHFileOPStruct;
+begin
+  ZeroMemory(@fos, SizeOf(fos));
+  with fos do
+  begin
+    wFunc  := FO_COPY;
+    fFlags := FOF_FILESONLY;
+    pFrom  := PChar(fromDir + #0);
+    pTo    := PChar(toDir);
+  end;
+  result := (0 = SHFileOperation(fos));
+end;
+
+procedure RenameDir(DirFrom, DirTo : string);
+var
+  shellinfo : TShFileOpStruct;
+begin
+  with shellinfo do
+  begin
+    wnd    := 0;
+    wFunc  := FO_RENAME;
+    pFrom  := PChar(DirFrom);
+    pTo    := PChar(DirTo);
+    fFlags := FOF_FILESONLY or FOF_ALLOWUNDO or FOF_SILENT or FOF_NOCONFIRMATION;
+  end;
+  SHFileOperation(shellinfo);
+end;
 
 function RegLoadStr(Key, Prop, Default: string): string;
 var
@@ -1592,11 +1623,14 @@ begin
   Fn := GetSharpeDirectory;
   Path := IncludeTrailingBackslash(Fn + 'Settings\User') + User;
 
-  if not (DirectoryExists(Path)) then begin
-    DirCheck(Path,sRes);
-
-    if sRes <> '' then
-      Sysutils.ForceDirectories(Path);
+  if not (DirectoryExists(Path)) then
+  begin
+    // check if the default settings dir exists
+    if DirectoryExists(Fn + 'Settings\'+DEFAULTSETTINGSDIR) then
+    begin
+      CopyDir(Fn + 'Settings\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User\');
+      RenameDir(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User\'+User);
+    end else Sysutils.ForceDirectories(Path);
   end;
 
   stemp := IncludeTrailingBackslash(Path);
