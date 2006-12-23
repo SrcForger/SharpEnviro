@@ -62,6 +62,9 @@ Var
 
 function Start(owner: hwnd): hwnd;
 begin
+  if not SharpThemeApi.Initialized then
+     SharpThemeApi.InitializeTheme;
+
   result := owner;
   SkinServer := TSkinServer.Create(nil);
 

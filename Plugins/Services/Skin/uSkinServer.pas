@@ -34,6 +34,7 @@ uses Windows, Dialogs, SysUtils, Classes,
      Forms, Controls, Messages, Types, Graphics, Contnrs, ExtCtrls,
      GR32,
      SharpApi,
+     SharpThemeApi,
      SharpESkin,
      GR32_Filters;
 
@@ -136,7 +137,8 @@ begin
   //dealloc handles to old shared memory
   DeAllocMemory;
   //Load new skin
-  FFileName := SharpAPI.GetCurrentSkinFile;
+  SharpThemeApi.LoadTheme(True);
+  FFileName := SharpThemeApi.GetSkinDirectory + '\Skin.xml';
   FSkin.LoadFromXmlFile(FFileName);
   inc(FNrLoaded);
   //Calculate size of bitmaplist
