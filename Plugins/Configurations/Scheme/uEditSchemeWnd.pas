@@ -37,7 +37,7 @@ uses
   Dialogs, StdCtrls, ExtCtrls, uSharpeColorBox, ContNrs, Buttons, PngBitBtn,
   GraphicsFx, pngimage, JvExStdCtrls, JvEdit, GR32_Image, BarPreview, GR32,
   uSchemeList, PngImageList, JvExExtCtrls, JvComponent, JvPanel, JvHtControls,
-  SharpELabel, SharpERoundPanel, PngSpeedButton, ImgList, JvShape;
+  SharpELabel, SharpERoundPanel, PngSpeedButton, ImgList, JvShape, JclIniFiles;
 
 type
   TfrmEditScheme = class(TForm)
@@ -104,7 +104,7 @@ var
 
 implementation
 
-uses JclStrings, SharpThemeApi, uSchemeListWnd;
+uses JclStrings, SharpThemeApi, SharpApi, uSchemeListWnd;
 
 {$R *.dfm}
 
@@ -192,46 +192,49 @@ end;
 
 procedure TfrmEditScheme.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 var
-  i: integer;
-  bFound, bCurrent: Boolean;
-begin
-  {if Self.ModalResult <> mrCancel then
+  tmpSchemeItem: TSchemeItem;
+  bExists: Boolean;
+
+  procedure FreeControls;
+  var
+    i: Integer;
   begin
-    // is it found
-    bFound := False;
-    bCurrent := False;
+    for i := Pred(sbAvailableColors.ControlCount) downto 0 do
+      sbAvailableColors.Controls[i].Free;
+  end;
 
-    if frmSchemeList.lbSchemeList.Items.IndexOf(EdtSkinName.Text) <> -1 then
-      bFound := True;
+begin
+  if Self.ModalResult <> mrCancel then
+  begin
+    // Check if exists
+    bExists := frmSchemeList.SchemeItems.IndexOfSkinName(EdtSkinName.Text) <> -1;
 
-    // is the found item, the same as the one being edited?
-    if CompareText(frmSchemeList.lbSchemeList.Item[frmSchemeList.lbSchemeList.ItemIndex].SubItemText[0],
-      EdtSkinName.Text) = 0 then
-      bCurrent := True;
-
-    if bFound and bCurrent then
+    if not (FEdit) then
     begin
-      CanClose := True;
-      exit;
+      if bExists then
+        CanClose := False
+      else
+        CanClose := True;
     end
-    else if bFound and not(bCurrent) and Not(FEdit) then
+    else
     begin
-      ShowMessage('Please enter a unique skin identifier');
-      CanClose := False;
-      exit;
-    end
-    else if bFound and (bCurrent) and Not(FEdit) then
-    begin
-      ShowMessage('Please enter a unique skin identifier');
-      CanClose := False;
-      exit;
+      if bExists = False then
+        Canclose := True
+      else if CompareText(frmSchemeList.lbSchemeList.Item[frmSchemeList.lbSchemeList.ItemIndex].SubItemText[0],
+        EdtSkinName.Text) = 0 then
+        CanClose := True
+      else
+        CanClose := False;
     end;
 
-  end; }
+    if CanClose then begin
+      FreeControls;
 
-  for i := Pred(sbAvailableColors.ControlCount) downto 0 do
-  begin
-    sbAvailableColors.Controls[i].Free;
+      if Not(FEdit) then
+        IniWriteString(GetSharpeUserSettingsPath+'author.dat','main','author',EdtAuthor.Text);
+    end
+    else
+      MessageDlg('You have entered a duplicate FTheme name'+#13+#10+'Please choose another name', mtError, [mbOK], 0);
   end;
 end;
 
@@ -302,6 +305,13 @@ procedure TfrmEditScheme.FormShow(Sender: TObject);
 begin
   FSelectedColorIdx := 0;
   tmrUpdatePreviewTimer(nil);
+
+  if Not(FEdit) then begin
+    if FileExists(GetSharpeUserSettingsPath+'author.dat') then
+      EdtAuthor.Text := IniReadString(GetSharpeUserSettingsPath+'author.dat',
+        'main','author');
+  end;
+  EdtSkinName.SetFocus;
 end;
 
 procedure TfrmEditScheme.EdtAuthorKeyDown(Sender: TObject; var Key: Word;
