@@ -61,6 +61,7 @@ contains
   uSharpeGaugeBoxEdit in '..\..\Delphi Components\SharpEGaugeBox\uSharpeGaugeBoxEdit.pas',
   uSharpeGaugeBoxWnd in '..\..\Delphi Components\SharpEGaugeBox\uSharpeGaugeBoxWnd.pas',
   SharpERoundPanel in '..\..\Delphi Components\SharpERoundPanel\SharpERoundPanel.pas',
-  SharpEListBoxEx in '..\..\Delphi Components\SharpEListBoxEx\SharpEListBoxEx.pas';
+  SharpEListBoxEx in '..\..\Delphi Components\SharpEListBoxEx\SharpEListBoxEx.pas',
+  SharpFX in '..\..\Units\SharpFX\SharpFX.pas';
 
 end.
