@@ -290,7 +290,7 @@ procedure TSharpEListBoxEx.DrawItemImage(ACanvas: TCanvas; ARect: TRect;
   AItem: TSharpEListItem; ACol: Integer);
 var
   R: TRect;
-  iW, iH, iItemHWOffsets, iItemWWOffsets: Integer;
+  iW, iH, iItemHWOffsets, iItemWWOffsets, iVCenter, n: Integer;
 begin
   // Get W+H of Icon
 
@@ -304,7 +304,9 @@ begin
     taVerticalCenter:
       begin
         iItemHWOffsets := ItemHeight - (ItemOffset.Y * 2);
-        R := Rect(0, ARect.Top + (iItemHWOffsets div 2) - (iH div 2), 0, iH);
+        n := (iItemHWOffsets div 2) - (iH div 2);
+
+        R := Rect(0, ARect.Top + n, 0, iH);
       end;
   end;
 
@@ -331,6 +333,7 @@ var
   s: string;
   tmpColor: TColor;
   iImgWidth: Integer;
+  R: TRect;
 const
   Alignments: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
   VerticalAlignments: array[TVerticalAlignment] of Longint = (DT_TOP, DT_BOTTOM,
@@ -346,7 +349,7 @@ begin
   if  IsImageIndexValid(AItem,ACol,Aitem.SubItemImageIndex[ACol]) then
   begin
     iImgWidth := Column[ACol].PngImageList.Width;
-    ARect.Left := ARect.Left + iImgWidth + 4;
+    ARect.Left := ARect.Left + iImgWidth +4;
   end;
 
   s := PathCompactPath(Self.Canvas.Handle, Aitem.SubItemText[ACol], Column[ACol].Width - ItemOffset.X - iImgWidth, cpEnd);
@@ -367,7 +370,8 @@ begin
       ACanvas.Font.Color := Column[Acol].TextColor;
   end;
 
-  DrawText(ACanvas.Handle, PChar(s), Length(s), ARect, AFlags);
+  DrawText(ACanvas.Handle, PChar(s), Length(s),
+    ARect, AFlags);
 end;
 
 procedure TSharpEListBoxEx.DrawSelection(ARect: TRect;
