@@ -168,9 +168,9 @@ begin
    for i := 0 to j do
     begin
      if (GetWindowRect(PTProcessObject(tmpTask.WindowList.Items[i]).Handle, rcTemp)) then
-      begin
+//      begin
        if (rcTemp.Left < k) then begin k := rcTemp.Left;
-   showmessage('k := ' + inttostr(k) + ' Caption := ' + PTProcessObject(tmpTask.WindowList.Items[i]).Caption); end;
+//   showmessage('k := ' + inttostr(k) + ' Caption := ' + PTProcessObject(tmpTask.WindowList.Items[i]).Caption); end;
       end;
     end;
 
