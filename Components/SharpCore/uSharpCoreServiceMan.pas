@@ -151,6 +151,10 @@ begin
   i := Files.IndexOf('SystemTray' + ServiceExt);
   if i <> -1 then Files.Move(i,0);
 
+  // Move Components to top of list
+  i := Files.IndexOf('SkinController' + ServiceExt);
+  if i <> -1 then Files.Move(i,0);
+
   // Move Components to end of list
   i := Files.IndexOf('Components' + ServiceExt);
   if i <> -1 then Files.Move(i,Files.Count-1);
