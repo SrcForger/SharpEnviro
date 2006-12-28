@@ -108,6 +108,16 @@ begin
   Offset   := 0;
 
   // Load Skin custom settings as default
+  sShowBackground  := False;
+  sBackgroundColor := 0;
+  sBackgroundAlpha := 255;
+  sShowBorder      := False;
+  sBorderColor     := clwhite;
+  sBorderAlpha     := 255;
+  sColorBlend      := False;
+  sBlendColor      := clwhite;
+  sBlendAlpha      := 255;
+  sIconAlpha       := 255;
   FCustomSkinSettings.LoadFromXML('');
   try
     with FCustomSkinSettings.xml.Items do
@@ -126,16 +136,6 @@ begin
               sIconAlpha       := IntValue('iconalpha',255);
             end;
   except
-    sShowBackground  := False;
-    sBackgroundColor := 0;
-    sBackgroundAlpha := 255;
-    sShowBorder      := False;
-    sBorderColor     := clwhite;
-    sBorderAlpha     := 255;
-    sColorBlend      := False;
-    sBlendColor      := clwhite;
-    sBlendAlpha      := 255;
-    sIconAlpha       := 255;
   end;
 
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
