@@ -93,14 +93,14 @@ type
     function GetHeightInteger : integer;
   public
     constructor Create;
-    procedure Clear;
+    procedure Clear; virtual;
     procedure SetLocation(x, y: string); overload;
     procedure SetLocation(str: string); overload;
     procedure SetDimension(w, h: string); overload;
     procedure SetDimension(str: string); overload;
 
-    procedure SaveToStream(Stream: TStream);
-    procedure LoadFromStream(Stream: TStream);
+    procedure SaveToStream(Stream: TStream); virtual;
+    procedure LoadFromStream(Stream: TStream); virtual;
 
     function GetRect(ps: Trect): TRect;
     function ParseCoordinate(s: string; w, h: integer): integer;
@@ -113,6 +113,17 @@ type
     property Height: string read FHeight;
     property WidthAsInt : integer read GetWidthInteger;
     property HeightAsInt : integer read GetHeightInteger;
+  end;
+
+  TSkinIcon = class(TSkinDim)
+  private
+    FDrawIcon : boolean;
+  public
+    procedure Clear; override;
+    procedure SaveToStream(Stream: TStream); override;
+    procedure LoadFromStream(Stream: TStream); override;
+    procedure LoadFromXML(xml: TJvSimpleXMLElem);
+    property DrawIcon : boolean read FDrawIcon write FDrawIcon;
   end;
 
   TShadowType = (stLeft,stRight,stOutline);
@@ -216,11 +227,10 @@ type
     procedure Assign(Value: TSkinPart);
     procedure Clear; virtual;
 
-    procedure SaveToStream(Stream: TStream);
-    procedure LoadFromStream(Stream: TStream);
+    procedure SaveToStream(Stream: TStream);  virtual;
+    procedure LoadFromStream(Stream: TStream); virtual;
 
-    function LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinText):
-      boolean;
+    function LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinText): boolean; virtual;
     procedure draw(bmp: TBitmap32; cs: TSharpEScheme);
     function Empty: Boolean;
     function GetBitmap: TBitmap32;
@@ -240,6 +250,22 @@ type
     property GradientColor: TSkinPoint read FGradientColor write FGradientColor;
     property MasterAlpha : integer read FMasterAlpha write FMasterAlpha;
   end;
+
+  // TSkinPart with Icon!
+  TSkinPartEx = class(TSkinPart)
+  private
+    FSkinIcon : TSkinIcon;
+  public
+    constructor Create(BmpList: TSkinBitmapList); override;
+    destructor Destroy; override;
+    procedure Clear; override;
+    procedure SaveToStream(Stream: TStream); override;
+    procedure LoadFromStream(Stream: TStream); override;
+    function LoadFromXML(xml: TJvSimpleXMLElem; path: string;
+                         Text: TSkinText; Icon : TSkinIcon): boolean; reintroduce;
+  published
+    property SkinIcon : TSkinIcon read FSkinIcon;
+  end;    
 
 function get_location(str: string): TRect;
 function SchemedStringToColor(str: string; cs: TSharpEScheme): TColor;
@@ -1653,6 +1679,88 @@ begin
   end
   else
     result := nil;
+end;
+
+//**********************************
+//* TSkinIcon
+//**********************************
+
+procedure TSkinIcon.Clear;
+begin
+  Inherited Clear;
+  FDrawIcon := True;
+end;
+
+procedure TSkinIcon.SaveToStream(Stream: TStream);
+begin
+  inherited SaveToStream(Stream);
+  StringSaveToStream(BoolToStr(FDrawIcon),Stream);
+end;
+
+procedure TSkinIcon.LoadFromStream(Stream: TStream);
+begin
+  inherited LoadFromStream(Stream);
+  FDrawIcon := StrToBool(StringLoadFromStream(Stream));
+end;
+
+procedure TSkinIcon.LoadFromXML(xml: TJvSimpleXMLElem);
+begin
+  with xml.Items do
+  begin
+    if ItemNamed['dimension'] <> nil then
+       SetDimension(Value('dimension', 'w,h'));
+    if ItemNamed['location'] <> nil then
+       SetLocation(Value('location','0,0'));
+    if ItemNamed['drawicon'] <> nil then
+       FDrawIcon := BoolValue('drawicon',true);
+  end;
+end;
+
+//**********************************
+//* TSkinPartEX
+//**********************************
+
+constructor TSkinPartEx.Create(BmpList: TSkinBitmapList);
+begin
+  inherited Create(BmpList);
+  FSkinIcon := TSkinIcon.Create;
+end;
+
+destructor TSkinPartEx.Destroy;
+begin
+  FSkinIcon.Free;
+  inherited Destroy;
+end;
+
+procedure TSkinPartEx.Clear;
+begin
+  inherited Clear;
+  FSkinIcon.Clear;
+end;
+
+procedure TSkinPartEx.SaveToStream(Stream: TStream);
+begin
+  inherited SaveToStream(Stream);
+  FSkinIcon.SaveToStream(Stream);
+end;
+
+procedure TSkinPartEx.LoadFromStream(Stream: TStream);
+begin
+  inherited LoadFromStream(Stream);
+  FSkinIcon.LoadFromStream(Stream);
+end;
+
+function TSkinPartEx.LoadFromXML(xml: TJvSimpleXMLElem; path: string;
+                                 Text: TSkinText; Icon : TSkinIcon): boolean;
+begin
+  if Icon <> nil then
+     FSkinIcon.Assign(Icon);
+  with xml.items do
+  begin
+    if ItemNamed['icon'] <> nil then
+       FSkinIcon.LoadFromXML(ItemNamed['icon']);
+  end;
+  result := inherited LoadFromXML(xml,path,Text);
 end;
 
 //**********************************
