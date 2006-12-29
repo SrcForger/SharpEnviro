@@ -58,6 +58,7 @@ type
   TSharpEEditSkin = class;
   TSharpEFormSkin = class;
   TSharpETaskItemSkin = class;
+  TSharpEMenuSkin = class;
   TSkinEvent = procedure of object;
 
   TSkinName = string;
@@ -85,6 +86,8 @@ type
     FEditSkin: TSharpEEditSkin;
     FFormSkin: TSharpEFormSkin;
     FTaskItemSkin: TSharpETaskItemSkin;
+    FMenuSkin : TSharpEMenuSkin;
+    FMenuItemSkin: TSharpEMenuItemSkin;
 
     FSkinHeader: TSharpeSkinHeader;
     FXml: TJvSimpleXml;
@@ -123,6 +126,8 @@ type
     property MiniThrobberSkin: TSharpEMiniThrobberSkin read FMiniThrobberSkin;
     property EditSkin: TSharpEEditSkin read FEditSkin;
     property FormSkin: TSharpEFormSkin read FFormSkin;
+    property MenuSkin : TSharpEMenuSkin read FMenuSkin;
+    property MenuItemSkin : TSharpEMenuItemSkin read FMenuItemSkin;
     property TaskItemSkin: TSharpETaskItemSkin  read FTaskItemSkin;
     property SkinText: TSkinText read FSkinText;
     property SmallText  : TSkinText read FSmallText;
@@ -203,6 +208,51 @@ type
     property Compact: TSharpETaskItemState read FCompact write FCompact;
     property Mini: TSharpETaskItemState read FMini write FMini;
  end;
+
+  TSharpEMenuSkin = class
+  private
+    FSkinDim    : TSkinDim;
+    FTitelText  : TSkinText;
+    FBackground : TSkinPart;
+    FTBOffset   : TSkinPoint;
+    FLROffset   : TSkinPoint;
+    FWidthLimit : TSkinPoint;
+  public
+    constructor Create(BmpList : TSkinBitmapList);
+    destructor Destroy; override;
+    procedure Clear;
+    procedure SaveToStream(Stream: TStream);
+    procedure LoadFromStream(Stream: TStream);
+    procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
+    property Background : TSkinPart read FBackground;
+    property TBOffset : TSkinPoint read FTBOffset;
+    property LBOffset : TSkinPoint read FLROffset;
+    property WidthLimit : TSkinPoint read FWidthLimit;
+    property TitelText : TSkinText read FTitelText;
+    property SkinDim : TSkinDim read FSkinDim;
+  end;
+
+  TSharpEMenuItemSkin = class
+  private
+    FSkinDim       : TSkinDim;
+    FSeperator     : TSkinPart;
+    FNormalItem    : TSkinPartEx;
+    FHoverItem     : TSkinPartEx;
+    FNormalSubItem : TSkinPartEx;
+    FHoverSubItem  : TSkinPartEx;
+  public
+    constructor Create(BmpList : TSkinBitmapList);
+    destructor Destroy; override;
+    procedure Clear;
+    procedure SaveToStream(Stream: TStream);
+    procedure LoadFromStream(Stream: TStream);
+    procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
+    property NormalItem : TSkinPartEx read FNormalItem;
+    property HoverItem  : TSkinPartEx read FHoverItem;
+    property NormalSubItem : TSkinPartEx read FNormalSubItem;
+    property HoverISubtem  : TSkinPartEx read FHoverSubItem;
+    property Seperator : TSkinPart read FSeperator; 
+  end;
 
   TSharpEButtonSkin = class
   private
@@ -503,6 +553,8 @@ begin
   FSkinHeader := TSharpeSkinHeader.Create;
   FMiniThrobberskin := TSharpEMiniThrobberSkin.Create(FBitmapList);
   FEditSkin := TSharpEEditSkin.Create(FBitmapList);
+  FMenuSkin := TSharpEMenuSkin.Create(FBitmapList);
+  FMenuItemSkin := TSharpEMenuItemSkin.Create(FBitmapList);
 
   FXml := TJvSimpleXml.Create(nil);
 end;
@@ -531,6 +583,8 @@ begin
   FMiniThrobberSkin.Free;
   FEditSkin.Free;
   FFormSkin.Free;
+  FMenuSkin.Free;
+  FMenuItemSkin.Free;
   FBitmapList.Free;
   inherited;
 end;
@@ -647,6 +701,24 @@ begin
     Stream.WriteBuffer(size, sizeof(size));
     Stream.CopyFrom(tempStream, Size);
 
+    //Write MenuSkin
+    tempStream.clear;
+    StringSaveToStream('Menu', Stream);
+    FMenuSkin.SaveToStream(tempStream);
+    size := tempStream.Size;
+    tempStream.Position := 0;
+    Stream.WriteBuffer(size, sizeof(size));
+    Stream.CopyFrom(tempStream, Size);
+
+    //Write MenuItemSkin
+    tempStream.clear;
+    StringSaveToStream('MenuItem', Stream);
+    FMenuItemSkin.SaveToStream(tempStream);
+    size := tempStream.Size;
+    tempStream.Position := 0;
+    Stream.WriteBuffer(size, sizeof(size));
+    Stream.CopyFrom(tempStream, Size);
+
     //Write Header
     {StringSaveToStream('Header', Stream);
     FSkinHeader.SaveToStream(tempStream);
@@ -719,7 +791,13 @@ begin
                         else
                           if temp = 'TaskItem' then
                             FTaskItemSkin.LoadFromStream(Stream)
-                          else Stream.Position := Stream.Position + size;
+                          else
+                            if temp = 'Menu' then
+                              FMenuSkin.LoadFromStream(Stream)
+                            else
+                              if temp = 'MenuItem' then
+                                FMenuItemSkin.LoadFromStream(Stream)
+                                else Stream.Position := Stream.Position + size;
 
       temp := StringLoadFromStream(Stream);
     end;
@@ -741,6 +819,8 @@ begin
   FMiniThrobberSkin.Clear;
   FEditSkin.Clear;
   FFormSkin.Clear;
+  FMenuSkin.Clear;
+  FMenuItemSkin.Clear;
   FTaskItemSkin.Clear;
   FSmallText.Clear;
   FMediumText.Clear;
@@ -840,9 +920,195 @@ begin
     FFormSkin.LoadFromXML(FXml.Root.Items.ItemNamed['form'], path);
   if FXml.Root.Items.ItemNamed['taskitem'] <> nil then
     FTaskItemSkin.LoadFromXML(FXml.Root.Items.ItemNamed['taskitem'],path);
-
+  if FXml.Root.Items.ItemNamed['menu'] <> nil then
+    FMenuSkin.LoadFromXML(FXml.Root.Items.ItemNamed['menu'],path);
+  if FXml.Root.Items.ItemNamed['menuitem'] <> nil then
+    FMenuItemSkin.LoadFromXML(FXml.Root.Items.ItemNamed['menuitem'],path);
 
   FBarSkin.CheckValid;
+end;
+
+//***************************************
+//* TMenuSkin
+//***************************************
+
+constructor TSharpEMenuSkin.Create(BmpList:  TSkinBitmapList);
+begin
+  FSkinDim := TSkinDim.Create;
+  FSkinDim.SetLocation('0','0');
+  FSkinDim.SetDimension('100','100');
+  FTitelText := TSkinText.Create;
+  FBackground := TSkinPart.Create(BmpList);
+  FTBOffset   := TSkinPoint.Create;
+  FTBOffset.SetPoint('0','0');
+  FLROffset   := TSkinPoint.Create;
+  FLROffset.SetPoint('0','0');
+  FWidthLimit := TSkinPoint.Create;
+  FWidthLimit.SetPoint('50','350');
+end;
+
+destructor TSharpEMenuSkin.Destroy;
+begin
+  FSkinDim.Free;
+  FBackground.Free;
+  FTBOffset.Free;
+  FLROffset.Free;
+  FWidthLimit.Free;
+  FTitelText.Free;
+end;
+
+procedure TSharpEMenuSkin.Clear;
+begin
+  FSkinDim.SetLocation('0','0');
+  FSkinDim.SetDimension('100','100');
+  FTBOffset.SetPoint('0','0');
+  FLROffset.SetPoint('0','0');
+  FWidthLimit.SetPoint('50','350');
+  FBackground.Clear;
+end;
+
+procedure TSharpEMenuSkin.LoadFromStream(Stream : TStream);
+begin
+  FSkinDim.LoadFromStream(Stream);
+  FBackground.LoadFromStream(Stream);
+  FTitelText.LoadFromStream(Stream);
+  FTBOffset.LoadFromStream(Stream);
+  FLROffset.LoadFromStream(Stream);
+  FWidthLimit.LoadFromStream(Stream);
+end;
+
+procedure TSharpEMenuSkin.SaveToStream(Stream : TStream);
+begin
+  FSkinDim.SaveToStream(Stream);
+  FBackground.SaveToStream(Stream);
+  FTitelText.SaveToStream(Stream);
+  FTBOffset.SaveToStream(Stream);
+  FLROffset.SaveToStream(Stream);
+  FWidthLimit.SaveToStream(Stream);
+end;
+
+procedure TSharpEMenuSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
+var
+  SkinText: TSkinText;
+  SkinIcon : TSkinIcon;
+begin
+  SkinIcon := TSkinIcon.Create;
+  SkinIcon.DrawIcon := False;
+  SkinText := TSkinText.Create;
+  SkinText.SetLocation('cw', 'ch');
+  try
+    with xml.Items do
+    begin
+      if ItemNamed['icon'] <> nil then
+        SkinIcon.LoadFromXML(ItemNamed['icon']); 
+      if ItemNamed['text'] <> nil then
+        SkinText.LoadFromXML(ItemNamed['text']);
+      if ItemNamed['background'] <> nil then
+        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText);
+      if ItemNamed['dimension'] <> nil then
+        FSkinDim.SetDimension(Value('dimension', 'w,h'));
+      if ItemNamed['location'] <> nil then
+        FSkinDim.SetLocation(Value('location','0,0'));
+      if ItemNamed['text'] <> nil then
+        FTitelText.LoadFromXML(ItemNamed['text']);
+      if ItemNamed['tboffset'] <> nil then
+        FTBOffset.SetPoint(Value('tboffset','0,0'));
+      if ItemNamed['lroffset'] <> nil then
+        FLROffset.SetPoint(Value('lroffset','0,0'));
+      if ItemNamed['widthlimit'] <> nil then
+        FWidthLimit.SetPoint(Value('widthlimit','0,0'));
+    end;
+  finally
+    SkinText.free;
+  end;
+end;
+
+//***************************************
+//* TMenuItemSkin
+//***************************************
+
+constructor TSharpEMenuItemSkin.Create(BmpList:  TSkinBitmapList);
+begin
+  FSkinDim := TSkinDim.Create;
+  FSkinDim.SetLocation('0','0');
+  FSkinDim.SetDimension('w','h');
+  FSeperator := TSkinPart.Create(BmpList);
+end;
+
+destructor TSharpEMenuItemSkin.Destroy;
+begin
+  FSkinDim.Free;
+  FBackground.Free;
+  FTBOffset.Free;
+  FLROffset.Free;
+  FWidthLimit.Free;
+  FTitelText.Free;
+end;
+
+procedure TSharpEMenuSkin.Clear;
+begin
+  FSkinDim.SetLocation('0','0');
+  FSkinDim.SetDimension('100','100');
+  FTBOffset.SetPoint('0','0');
+  FLROffset.SetPoint('0','0');
+  FWidthLimit.SetPoint('50','350');
+  FBackground.Clear;
+end;
+
+procedure TSharpEMenuSkin.LoadFromStream(Stream : TStream);
+begin
+  FSkinDim.LoadFromStream(Stream);
+  FBackground.LoadFromStream(Stream);
+  FTitelText.LoadFromStream(Stream);
+  FTBOffset.LoadFromStream(Stream);
+  FLROffset.LoadFromStream(Stream);
+  FWidthLimit.LoadFromStream(Stream);
+end;
+
+procedure TSharpEMenuSkin.SaveToStream(Stream : TStream);
+begin
+  FSkinDim.SaveToStream(Stream);
+  FBackground.SaveToStream(Stream);
+  FTitelText.SaveToStream(Stream);
+  FTBOffset.SaveToStream(Stream);
+  FLROffset.SaveToStream(Stream);
+  FWidthLimit.SaveToStream(Stream);
+end;
+
+procedure TSharpEMenuSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
+var
+  SkinText: TSkinText;
+  SkinIcon : TSkinIcon;
+begin
+  SkinIcon := TSkinIcon.Create;
+  SkinIcon.DrawIcon := False;
+  SkinText := TSkinText.Create;
+  SkinText.SetLocation('cw', 'ch');
+  try
+    with xml.Items do
+    begin
+      if ItemNamed['icon'] <> nil then
+        SkinIcon.LoadFromXML(ItemNamed['icon']); 
+      if ItemNamed['text'] <> nil then
+        SkinText.LoadFromXML(ItemNamed['text']);
+      if ItemNamed['background'] <> nil then
+        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText);
+      if ItemNamed['dimension'] <> nil then
+        FSkinDim.SetDimension(Value('dimension', 'w,h'));
+      if ItemNamed['location'] <> nil then
+        FSkinDim.SetLocation(Value('location','0,0'));
+      if ItemNamed['text'] <> nil then
+        FTitelText.LoadFromXML(ItemNamed['text']);
+      if ItemNamed['tboffset'] <> nil then
+        FTBOffset.SetPoint(Value('tboffset','0,0'));
+      if ItemNamed['lroffset'] <> nil then
+        FLROffset.SetPoint(Value('lroffset','0,0'));
+      if ItemNamed['widthlimit'] <> nil then
+        FWidthLimit.SetPoint(Value('widthlimit','0,0'));
+    end;
+  finally
+    SkinText.free;
+  end;
 end;
 
 //***************************************
