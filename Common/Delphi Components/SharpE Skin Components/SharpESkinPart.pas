@@ -1658,7 +1658,6 @@ destructor TSkinPart.Destroy;
 begin
   if (parentlist <> nil) then
     parentlist.Remove(self);
-  Clear;
   FMasterAlpha := 0;
   FBlendAlpha := 0;
   FBitmapId := -1;
