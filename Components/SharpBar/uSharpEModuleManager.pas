@@ -861,7 +861,8 @@ begin
      if lo + ro + LeftSize + RightSize <> ParentControl.Width then
         ParentControl.Width := Max(lo + ro + FSkinManager.Skin.BarSkin.ThDim.XAsInt+5,lo + ro + LeftSize + RightSize);
 
-  SetWindowLong(ParentControl.Handle,GWL_USERDATA,Max(ParentControl.Width - lo - ro - LeftSize - Rightsize,0));
+  if FBar.HorizPos = hpFull then SetWindowLong(ParentControl.Handle,GWL_USERDATA,0)
+     else SetWindowLong(ParentControl.Handle,GWL_USERDATA,Max(ParentControl.Width - lo - ro - LeftSize - Rightsize,0));
 
   x := 0;
   rx := 0;
@@ -1034,7 +1035,7 @@ begin
         if (R.Top = ParentControl.Top) and (Screen.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
         begin
           freespace := GetWindowLong(harray[n],GWL_USERDATA);
-          if (MaxSize < 0) or (FreeSpace > 0) then
+          if (MaxSize < 0) and (FreeSpace > 0) then
           begin
              PostMessage(harray[n],WM_UPDATEBARWIDTH,0,0);
              break;
