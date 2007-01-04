@@ -24,7 +24,8 @@
       <Projects Name="Google.dll">..\Plugins\Modules\Google\Google.bdsproj</Projects>
       <Projects Name="Finder.dll">..\Plugins\Modules\Finder\Finder.bdsproj</Projects>
       <Projects Name="QuickScript.dll">..\Plugins\Modules\QuickScript\QuickScript.bdsproj</Projects>
-      <Projects Name="Targets">Button.dll Clock.dll iDrop.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll VolumeControl.dll CPUMonitor.dll MediaController.dll Notes.dll VWM.dll Google.dll Finder.dll QuickScript.dll</Projects>
+      <Projects Name="BatteryMonitor.dll">..\Plugins\Modules\Battery Monitor\BatteryMonitor.bdsproj</Projects>
+      <Projects Name="Targets">Button.dll Clock.dll iDrop.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll VolumeControl.dll CPUMonitor.dll MediaController.dll Notes.dll VWM.dll Google.dll Finder.dll QuickScript.dll BatteryMonitor.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
