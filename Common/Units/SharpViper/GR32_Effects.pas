@@ -42,6 +42,7 @@ uses
   procedure GlassTiles(Src, Dest: TBitmap32; const TileWidth, TileHeight: Word);
   procedure GrayscaleFilterMMX(Src, Dest: TBitmap32; const Filter: TColor32);
   procedure LightenBitmap(Src: TBitmap32;iLightenAmount: integer = 16);
+  procedure Mirror(Src, Dest: TBitmap32);
   procedure Negative(Src: TBitmap32);
   procedure NegativeRGB(Src: TBitmap32);
   procedure Sepia(Src: TBitmap32; SepiaIntensity: integer = 30);
@@ -826,6 +827,12 @@ begin
      EMMS;
      Src.Changed;
     end;
+end;
+{$ENDREGION}
+{$REGION ' Mirror '}
+procedure Mirror(Src, Dest: TBitmap32);
+begin
+  Src.FlipHorz(Dest);
 end;
 {$ENDREGION}
 {$REGION ' Negative '}
