@@ -48,6 +48,7 @@ type
     SharpESkinManager1: TSharpESkinManager;
     ClockTimer: TTimer;
     lb_clock: TSharpESkinLabel;
+    OpenWindowsDateTimesettings1: TMenuItem;
     procedure lb_clockDblClick(Sender: TObject);
     procedure ClockTimerTimer(Sender: TObject);
     procedure Settings1Click(Sender: TObject);

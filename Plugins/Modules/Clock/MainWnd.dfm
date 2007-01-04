@@ -17,10 +17,11 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 285
-    Height = 164
+    Height = 166
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
+    PopupMenu = MenuPopup
     Scale = 1.000000000000000000
     ScaleMode = smNormal
     TabOrder = 0
@@ -43,6 +44,10 @@ object MainForm: TMainForm
     object Settings1: TMenuItem
       Caption = 'Settings'
       OnClick = Settings1Click
+    end
+    object OpenWindowsDateTimesettings1: TMenuItem
+      Caption = 'Open Windows Date/Time Settings'
+      OnClick = lb_clockDblClick
     end
   end
   object SharpESkinManager1: TSharpESkinManager
