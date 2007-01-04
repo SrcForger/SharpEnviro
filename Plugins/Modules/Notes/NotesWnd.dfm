@@ -181,17 +181,40 @@ object NotesForm: TNotesForm
       ShowHint = True
       OnClick = btn_fintClick
     end
-    object btn_linewrap: TToolButton
+    object ToolButton2: TToolButton
       Left = 232
       Top = 0
+      Width = 8
+      Caption = 'ToolButton2'
+      ImageIndex = 8
+      Style = tbsSeparator
+    end
+    object btn_linewrap: TToolButton
+      Left = 240
+      Top = 0
+      Hint = 'Enabled/Disable Line Wrap'
       AutoSize = True
       Caption = 'btn_linewrap'
       ImageIndex = 13
+      ParentShowHint = False
+      ShowHint = True
       Style = tbsCheck
       OnClick = btn_linewrapClick
     end
+    object btn_monofont: TToolButton
+      Left = 267
+      Top = 0
+      Hint = 'Enable/Disable Monospaced Font'
+      AutoSize = True
+      Caption = 'btn_monofont'
+      ImageIndex = 14
+      ParentShowHint = False
+      ShowHint = True
+      Style = tbsCheck
+      OnClick = btn_monofontClick
+    end
     object ToolButton6: TToolButton
-      Left = 259
+      Left = 294
       Top = 0
       Width = 8
       Caption = 'ToolButton6'
@@ -199,7 +222,7 @@ object NotesForm: TNotesForm
       Style = tbsSeparator
     end
     object tb_close: TToolButton
-      Left = 267
+      Left = 302
       Top = 0
       Hint = 'Close'
       AutoSize = True
@@ -225,7 +248,7 @@ object NotesForm: TNotesForm
     Left = 0
     Top = 45
     Width = 477
-    Height = 225
+    Height = 227
     Align = alClient
     BevelInner = bvNone
     BevelOuter = bvNone
@@ -590,6 +613,27 @@ object NotesForm: TNotesForm
           47204DCF853103FDFE800CC8D62C2F84D0F731A5E71CC771AD73468871E7335D
           7902BCE632F0257905EE0000000049454E44AE426082}
         Name = 'PngImage13'
+        Background = clMenu
+      end
+      item
+        PngImage.Data = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          6100000006624B474400EC00EC00EB83478395000000097048597300000B1300
+          000B1301009A9C180000000774494D45000000000000000973942E0000017E49
+          44415478DA9593CB4EC2401486FF3161412937B7A5F501D4C7919D31716382A8
+          542E1AA1200B13255E628C2F21AF249700B6ECED4242D2F1CC50955B55FEE64C
+          D376FE6FCEF49C6120DD3D345EC6E3F10E565028146AE6CD529A8987EBC6153F
+          2B5EACE2C7EDFD0D8AF9733603188D3E162672BAE0C95106384738AC88ACFF06
+          3C3D3F2E0033075984957F0038AD3418F4A169299905F7F095031425F23B4098
+          451C1E65502C9460181B3275E117EF23AA1A0CE0FE448F862C015CD745BD5687
+          A11B3E1850A3D145C0DEEE3EBADD0E6CE78DC281E3D8148E0408D5AA97D05306
+          1881D5682C08D026B30DDBF601C31F8050D5AA1144472C165F0E68775B70EC9F
+          D5E7014256A58AADCDED0040A725CD620BC32500AB6C41A77F118F270200ED57
+          7FFF13F3700A6095AB327DFA09CB01A20AAEFB3E29A34745A74F27E6B1045815
+          5A59D3BF3B31915C0F0670EA18CE99BC9BF91CCC9C899466C06F020949060164
+          0F4CA9D7EFC9FACF8B916DE63089E3EC79DE4AC799B1B566E1B494FE04ABED39
+          20655CA28D0000000049454E44AE426082}
+        Name = 'PngImage14'
         Background = clMenu
       end>
     Left = 312

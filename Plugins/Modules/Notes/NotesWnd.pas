@@ -60,6 +60,9 @@ type
     btn_fint: TToolButton;
     FindDialog: TJvFindReplace;
     btn_linewrap: TToolButton;
+    btn_monofont: TToolButton;
+    ToolButton2: TToolButton;
+    procedure btn_monofontClick(Sender: TObject);
     procedure btn_linewrapClick(Sender: TObject);
     procedure btn_fintClick(Sender: TObject);
     procedure ToolButton1Click(Sender: TObject);
@@ -167,6 +170,7 @@ procedure TNotesForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   SaveCurrentTab;
   TMainForm(Owner).sLineWrap := btn_LineWrap.Down;
+  TMainForm(Owner).sMonoFont := btn_monofont.Down;
   TMainForm(Owner).SaveSettings;
 end;
 
@@ -184,9 +188,9 @@ begin
 
   if not b then
      if MessageBox(self.Handle,
-                   PChar('Selected Notes are not empty!' + #10#13 +
-                         'Do you really want to delete all Notes in Tab:' + Item.Caption),
-                   'Confirm Delete Tab', MB_YESNO) = IDYES then b := True;
+                   PChar('The tab you are about to close is not empty!' + #10#13 +
+                         'All information will be lost. Close it anyway?'),
+                   'Closing Tab...', MB_YESNO) = IDYES then b := True;
 
   if b then
   begin
@@ -304,6 +308,12 @@ begin
   Notes.WordWrap := btn_linewrap.Down;
   if not Notes.WordWrap then Notes.ScrollBars := ssBoth
      else Notes.ScrollBars := ssVertical;
+end;
+
+procedure TNotesForm.btn_monofontClick(Sender: TObject);
+begin
+  if btn_monofont.Down then Notes.Font.Name := 'Courier New'
+     else Notes.Font.Name := 'Tahoma';
 end;
 
 end.
