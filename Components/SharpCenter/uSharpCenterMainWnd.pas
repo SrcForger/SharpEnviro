@@ -102,7 +102,6 @@ type
     Shape1: TShape;
     Shape2: TShape;
     Panel4: TPanel;
-    Image1: TImage;
     Bevel2: TShape;
     Bevel1: TShape;
     lbTree: TSharpEListBox;

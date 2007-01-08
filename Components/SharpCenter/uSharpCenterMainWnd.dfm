@@ -1,17 +1,17 @@
 object SharpCenterWnd: TSharpCenterWnd
   Left = 0
   Top = 0
-  Width = 600
-  Height = 450
-  BorderStyle = bsSizeToolWin
+  BorderStyle = bsSingle
   Caption = 'SharpCenter'
+  ClientHeight = 424
+  ClientWidth = 594
   Color = clWindow
   Constraints.MinHeight = 200
   Constraints.MinWidth = 488
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'Arial'
+  Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
   OnCloseQuery = FormCloseQuery
@@ -19,12 +19,12 @@ object SharpCenterWnd: TSharpCenterWnd
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 13
   object Panel4: TPanel
     Left = 0
     Top = 0
-    Width = 584
-    Height = 416
+    Width = 594
+    Height = 424
     Align = alClient
     BevelOuter = bvNone
     Color = clWindow
@@ -34,8 +34,8 @@ object SharpCenterWnd: TSharpCenterWnd
     object pnlMain: TPanel
       Left = 0
       Top = 29
-      Width = 584
-      Height = 355
+      Width = 594
+      Height = 363
       Align = alClient
       BevelOuter = bvNone
       Caption = 'pnlMain'
@@ -46,7 +46,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Left = 160
         Top = 0
         Width = 2
-        Height = 355
+        Height = 363
         Color = clBtnFace
         ParentColor = False
         OnMoved = FormResize
@@ -55,7 +55,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Left = 0
         Top = 0
         Width = 160
-        Height = 355
+        Height = 363
         Align = alLeft
         BevelOuter = bvNone
         Color = clWindow
@@ -64,7 +64,7 @@ object SharpCenterWnd: TSharpCenterWnd
           Left = 0
           Top = 18
           Width = 160
-          Height = 337
+          Height = 345
           Align = alClient
           BevelOuter = bvNone
           Color = clWindow
@@ -73,7 +73,7 @@ object SharpCenterWnd: TSharpCenterWnd
             Left = 0
             Top = 0
             Width = 160
-            Height = 337
+            Height = 345
             Align = alClient
             BevelOuter = bvNone
             BorderWidth = 5
@@ -83,7 +83,7 @@ object SharpCenterWnd: TSharpCenterWnd
               Left = 5
               Top = 5
               Width = 150
-              Height = 327
+              Height = 335
               Style = lbOwnerDrawFixed
               Align = alClient
               BorderStyle = bsNone
@@ -120,7 +120,7 @@ object SharpCenterWnd: TSharpCenterWnd
             Height = 17
             Align = alClient
             Caption = '<A HREF="">Test</A>'
-            Transparent = True
+            Transparent = False
             Layout = tlCenter
             OnHyperLinkClick = lblTreeHyperLinkClick
           end
@@ -137,8 +137,8 @@ object SharpCenterWnd: TSharpCenterWnd
       object pnlContent: TPanel
         Left = 162
         Top = 0
-        Width = 422
-        Height = 355
+        Width = 432
+        Height = 363
         Align = alClient
         BevelOuter = bvNone
         Color = clWindow
@@ -146,7 +146,7 @@ object SharpCenterWnd: TSharpCenterWnd
         object pnlSectionText: TPanel
           Left = 0
           Top = 0
-          Width = 422
+          Width = 432
           Height = 18
           Align = alTop
           BevelOuter = bvNone
@@ -156,7 +156,7 @@ object SharpCenterWnd: TSharpCenterWnd
           object JvGradient4: TJvGradient
             Left = 0
             Top = 1
-            Width = 422
+            Width = 432
             Height = 17
             Style = grVertical
             StartColor = clWindow
@@ -165,7 +165,7 @@ object SharpCenterWnd: TSharpCenterWnd
           object lblTabs: TJvHTLabel
             Left = 0
             Top = 1
-            Width = 422
+            Width = 432
             Height = 17
             Align = alClient
             Caption = '<b><A HREF="">/Test\</A>'
@@ -176,7 +176,7 @@ object SharpCenterWnd: TSharpCenterWnd
           object Shape1: TShape
             Left = 0
             Top = 0
-            Width = 422
+            Width = 432
             Height = 1
             Align = alTop
             Pen.Color = clBtnFace
@@ -185,8 +185,8 @@ object SharpCenterWnd: TSharpCenterWnd
         object pnlPluginContainer: TPanel
           Left = 0
           Top = 18
-          Width = 422
-          Height = 337
+          Width = 432
+          Height = 345
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 4
@@ -195,8 +195,8 @@ object SharpCenterWnd: TSharpCenterWnd
           object pnlPlugin: TPanel
             Left = 4
             Top = 4
-            Width = 414
-            Height = 329
+            Width = 424
+            Height = 337
             Align = alClient
             BevelOuter = bvNone
             Color = clWindow
@@ -204,8 +204,8 @@ object SharpCenterWnd: TSharpCenterWnd
             object Image2: TImage
               Left = 0
               Top = 0
-              Width = 414
-              Height = 329
+              Width = 424
+              Height = 337
               Align = alClient
               Center = True
               Picture.Data = {
@@ -1836,7 +1836,7 @@ object SharpCenterWnd: TSharpCenterWnd
     object pnlToolbar: TPanel
       Left = 0
       Top = 0
-      Width = 584
+      Width = 594
       Height = 29
       Align = alTop
       BevelOuter = bvNone
@@ -2201,43 +2201,6 @@ object SharpCenterWnd: TSharpCenterWnd
           4E44AE426082}
         PngOptions = [pngBlendOnDisabled, pngGrayscaleOnDisabled]
       end
-      object Image1: TImage
-        Left = 561
-        Top = 0
-        Width = 23
-        Height = 29
-        Align = alRight
-        Center = True
-        Picture.Data = {
-          0A54504E474F626A65637489504E470D0A1A0A0000000D494844520000001000
-          00001008060000001FF3FF610000000473424954080808087C08648800000009
-          704859730000004E0000004E01B1CD1F3300000016744558744372656174696F
-          6E2054696D650030362F31342F3035BF6598320000002574455874536F667477
-          617265004D6163726F6D656469612046697265776F726B73204D582032303034
-          8776ACCF000002A84944415478DA7DD35D4853611807F0FF99BA669B3B6E3A70
-          1FE1D660959AB58BC8BE1426815136B24489A232F32B500C3402BB28F522A3A8
-          7484E2C88F0B1B4851501418945DE44561174A249A33CB69A8A9643BDBCE767A
-          DFCD6FB473786E0ECFFFB767CF790F230802D65E0CC328D844548915489B77A2
-          E1EF0F3C277DD358E762D602242C97C5C366C8C5A91DC5907CA907F7EB0306E6
-          8660774FA083B44C0A2B42AB0012564B75B025142323B9029101F2CCEF07DC53
-          403F81C65E61CA378B6632959DE446570124CC46AAD1B6D7064B5C3A64F45920
-          102A8AF03CE0E380C18764847718E6C6D1C27D87230890B06E930A4D89D548D5
-          6442CA30A189A84D8B0214A2082DCF1CF0D341A0A7E80B024AA5B26157AD3C4F
-          B08C448A44749A50AD441627A1057F04AEC7B4A3DC5AE50C02A61443E77DC7AD
-          93629641E378155CFC3704C0AF8BD0BAA66BC2EBCE37682C71340701A991E9DA
-          698F48D7A8E251A4AE0543EE47E3B518F17E854FE096964C91B8083D4AB575B8
-          98533036DA357388FE865CB1076F77B7C3CC13DDE70394222DCAB477C886C3D0
-          EAAAC380FB3378C11744EA4D2F71F36309BA0B9D3DDC108280517702DDC90FA0
-          A161AF777959D1A2385CD1DE4354988240B7C186C7E04074060A2A2F60FA198A
-          BC534223052CA6423C49AA01EBF184000A2D22B424E4ADDE30B4215E6282F57D
-          12862EC3C90DC24CFEFE0C05D451467C329C865A5F400258461621BAF914D911
-          A4C98FA328BF7872BE0FE7B911E1C5D24122E740CA6E47A938169754161834B9
-          2414BE8C307E316AF41DA8789C8FFEEADF0E8F4BC8DDE8286F9119716EB31E67
-          D87DD8A6CA2213300B4B8DB98BECCC9CDE3FBD384A32AE0D3FA605288135A32C
-          3C1699F2FD50A7661DC4B1D9427776EAD90AD26FFBEFD7B806324BB6E26A795E
-          A5B5C5DEDAE31A9E384CFAF9953DFF0089E04941DFADBC800000000049454E44
-          AE426082}
-      end
       object Bevel2: TShape
         Left = 160
         Top = 4
@@ -2257,19 +2220,19 @@ object SharpCenterWnd: TSharpCenterWnd
     end
     object PnlButtons: TPanel
       Left = 0
-      Top = 384
-      Width = 584
+      Top = 392
+      Width = 594
       Height = 32
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 2
       DesignSize = (
-        584
+        594
         32)
       object graPnlbuttons: TJvGradient
         Left = 0
         Top = 0
-        Width = 584
+        Width = 594
         Height = 32
         Align = alBottom
         Style = grVertical
@@ -2277,7 +2240,7 @@ object SharpCenterWnd: TSharpCenterWnd
         EndColor = clBtnFace
       end
       object btnHelp: TPngSpeedButton
-        Left = 370
+        Left = 380
         Top = 3
         Width = 65
         Height = 26
@@ -2317,7 +2280,7 @@ object SharpCenterWnd: TSharpCenterWnd
           F15EF4F6F6DD27DFFF8CF32F683B4F744CC79CF60000000049454E44AE426082}
       end
       object btnSave: TPngSpeedButton
-        Left = 443
+        Left = 453
         Top = 3
         Width = 65
         Height = 26
@@ -2358,7 +2321,7 @@ object SharpCenterWnd: TSharpCenterWnd
           000049454E44AE426082}
       end
       object btnCancel: TPngSpeedButton
-        Left = 515
+        Left = 525
         Top = 3
         Width = 65
         Height = 26
