@@ -49,6 +49,8 @@ type
     property Key;
     property OnChange;
     property OnKeyUp;
+    property Align;
+    property Anchors;
     //property Text;
   end;
 
