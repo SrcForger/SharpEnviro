@@ -38,7 +38,6 @@ uses
   forms,
   Jclstrings,
   uSkinServer in 'uSkinServer.pas' {SkinServer},
-  uInfoDlg in 'uInfoDlg.pas' {InfoDlg},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
@@ -75,9 +74,6 @@ end;
 
 procedure Stop;
 begin
-  if InfoDlg <> nil then begin
-    InfoDlg.Free;
-  end;
   SkinServer.Free;
 
   DeallocateHWnd(h);
@@ -86,32 +82,9 @@ begin
 
 end;
 
-
-procedure DisplayInfoWnd;
-begin
-  if InfoDlg = nil then begin
-    InfoDlg := TInfoDlg.Create(nil);
-    if SkinServer <> nil then begin
-      SkinServer.UpdateInfoDlg;
-    end
-    else begin
-      InfoDlg.lSkinFile.caption := 'Server Not Running';
-      InfoDlg.lnr.caption := '0';
-      InfoDlg.lNrReq.caption := '0';
-      InfoDlg.lLastHwnd.caption := '0';
-    end;
-    InfoDlg.Show;
-  end
-  else begin
-    if InfoDlg.Visible = true then InfoDlg.SetFocus
-    else InfoDlg.Show;
-  end;
-end;
-
 exports
   Start,
-  Stop,
-  DisplayInfoWnd;
+  Stop;
 
 { TActionEvent }
 
