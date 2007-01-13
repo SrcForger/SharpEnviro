@@ -86,10 +86,11 @@ type
 implementation
 
 uses
- gr32_png;
+ gr32_png,
+ SharpEBase;
+
 
 // function written by Andre Beckedorf (graphics32 dev team)
-
 function HasVisiblePixel(Bitmap: TBitmap32): Boolean;
 var
   I: Integer;
@@ -126,11 +127,13 @@ end;
 
 procedure TSkinBitmap.LoadFromStream(Stream: TStream);
 begin
+  FFileName := StringLoadFromStream(Stream);
   FBitmap.LoadFromStream(Stream);
 end;
 
 procedure TSkinBitmap.SaveToStream(Stream: TStream);
 begin
+  StringSaveToStream(FFileName,Stream);
   FBitmap.SaveToStream(Stream);
 end;
 
