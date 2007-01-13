@@ -103,13 +103,12 @@ type
 
   TSystemSharpESkin = class(TSharpESkin)
   private
-    FSharedBmpList  : TSharedBitmapList;
     FActivated      : Boolean;
     FUsingMainWnd   : Boolean;
     FMsgWnd         : Hwnd;
     FOnSkinChanged  : TNotifyEvent;
 
-    procedure LoadSkinData(buffer : pointer);
+    procedure LoadSkinFromStream;
 
     //Either hook MainWnd or create a wnd by itself
     function MessageHook(var Msg: TMessage) : boolean;
@@ -123,15 +122,12 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    procedure LoadFromSharedSkin(ssi : TSharedSkinInfo);
-
     //Following procedures should not work with systemskin
     //so they are overrided to do nothing
     procedure LoadFromXmlFile(filename: string); override;
     procedure LoadFromSkin(filename: string); override;
     procedure LoadFromStream(Stream : TStream); override;
 
-    property SharedBmpList : TSharedBitmapList read FSharedBmpList;
     property Activated : Boolean read FActivated write SetActive;
     property OnSkinChanged: TNotifyEvent read FOnSkinChanged write FOnSkinChanged;
    published
@@ -141,8 +137,9 @@ implementation
 
 constructor TSystemSharpESkin.Create;
 begin
-  FSharedBmpList := TSharedBitmapList.Create('',0);
-  inherited CreateBmp(nil, FSharedBmpList as TSkinBitmapList);
+//  FSharedBmpList := TSharedBitmapList.Create('',0);
+//  inherited CreateBmp(nil, FSharedBmpList as TSkinBitmapList);
+  inherited Create(nil);
   FActivated := false;
 
   //Hook MainWindow to recieve system messages
@@ -166,7 +163,7 @@ end;
 procedure TSystemSharpESkin.SetActive(b : boolean);
 begin
   if b then
-    RegisterForSystemSkin
+    LoadSkinFromStream
   else
     FActivated := false;
 end;
@@ -186,41 +183,15 @@ begin
   FActivated := true;
 end;
 
-procedure TSystemSharpESkin.LoadSkinData(buffer : pointer);
+procedure TSystemSharpESkin.LoadSkinFromStream;
 var
-  stream     : TMemoryStream;
-  c          : Cardinal;
-  source     : pointer;
-  pos        : ^Cardinal;
-  StreamSize : ^Cardinal;
-
+  stream : TFileStream;
 begin
-  try
-    if (buffer = nil) then
-    begin
-      exit;
-    end;
-    c   := cardinal(buffer^);
-    pos := pointer(Cardinal(buffer) + (c+1)*4);
-    StreamSize := pointer(Cardinal(buffer) + (c+2)*4);
-    source := pointer(Cardinal(buffer)+ pos^);
-    Stream := TMemoryStream.Create;
-    Stream.WriteBuffer(source^,StreamSize^);
-    Stream.position := 0;
-    inherited Clear;
-    inherited LoadFromStream(Stream);
-    Stream.Free;
-  except
-  end;
+  inherited Clear;
+  stream := TFileStream.Create(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin',fmOpenRead or fmShareDenyNone);
+  inherited LoadFromStream(Stream);
+  Stream.Free;
   if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
-end;
-
-procedure TSystemSharpESkin.LoadFromSharedSkin(ssi : TSharedSkinInfo);
-begin
-  if ssi.Version = '1.0' then begin
-    FSharedBmpList.SetNewBlock(ssi.BlockName,ssi.BlockSize);
-    LoadSkinData(FSharedBmpList.Buffer);
-  end;
 end;
 
 procedure TSystemSharpESkin.NotifyManager;
@@ -236,18 +207,19 @@ var
 begin
   result := false;
   if FActivated then begin
-    if (Msg.Msg = WM_COPYDATA) then begin
+ {   if (Msg.Msg = WM_COPYDATA) then begin
       m := TWMCopyData(Msg);
       if m.CopyDataStruct.dwData = 301 then begin
         ssi := TSharedSkinInfo(m.CopyDataStruct.lpData^);
         LoadFromSharedSkin(ssi);
         NotifyManager;
       end;
-    end
-    else if (Msg.Msg = WM_SYSTEMSKINUPDATE) then
+    end       }
+    //else
+    if (Msg.Msg = WM_SYSTEMSKINUPDATE) then
     begin
-      FActivated := false;
-      RegisterForSystemSkin;
+      FActivated := true;
+      LoadSkinFromStream;
     end;
   end;
 end;
@@ -395,7 +367,7 @@ begin
 
 
   if ( FMemory <> Nil ) then begin
-    if not UnmapViewOfFile(FMemory) then 
+    if not UnmapViewOfFile(FMemory) then
        FMemory := Nil;
   end;
 
