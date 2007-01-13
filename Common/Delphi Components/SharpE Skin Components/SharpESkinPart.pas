@@ -104,7 +104,7 @@ type
 
     function GetRect(ps: Trect): TRect;
     function ParseCoordinate(s: string; w, h: integer): integer;
-    procedure Assign(Value: TSkinDim);
+    procedure Assign(Value: TSkinDim); virtual;
     property X: string read FX;
     property Y: string read FY;
     property XAsInt : integer read GetXInteger;
@@ -120,6 +120,7 @@ type
     FDrawIcon : boolean;
   public
     procedure Clear; override;
+    procedure Assign(Value: TSkinIcon); reintroduce;
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromStream(Stream: TStream); override;
     procedure LoadFromXML(xml: TJvSimpleXMLElem);
@@ -144,6 +145,7 @@ type
     FShadowColor : string;
     FShadowType : TShadowType;
     FShadowAlpha : integer;
+    FDrawText : boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -164,12 +166,14 @@ type
     function GetFont(cs: TSharpEScheme): TFont;
     procedure AssignFontTo(pFont : TFont; cs: TSharpEScheme);
     procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme;
-                       var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String);
+                       var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String); overload;
+    procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme); overload;
   published
     property Color : String read FColor write FColor;
     property Alpha : integer read FAlpha write FAlpha;
     property ShadowColor : String read FShadowColor write FShadowColor;
     property ShadowAlpha : integer read FShadowAlpha write FShadowAlpha;
+    property DrawText : boolean read FDrawText write FDrawText;
   end;
 
   TSkinPartList = class(TObject)
@@ -224,7 +228,7 @@ type
   public
     constructor Create(BmpList: TSkinBitmapList); virtual;
     destructor Destroy; override;
-    procedure Assign(Value: TSkinPart);
+    procedure Assign(Value: TSkinPart); virtual;
     procedure Clear; virtual;
 
     procedure SaveToStream(Stream: TStream);  virtual;
@@ -255,16 +259,19 @@ type
   TSkinPartEx = class(TSkinPart)
   private
     FSkinIcon : TSkinIcon;
+    FWidthMod : integer;
   public
     constructor Create(BmpList: TSkinBitmapList); override;
     destructor Destroy; override;
     procedure Clear; override;
+    procedure Assign(Value: TSkinPartEx); reintroduce;
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromStream(Stream: TStream); override;
     function LoadFromXML(xml: TJvSimpleXMLElem; path: string;
                          Text: TSkinText; Icon : TSkinIcon): boolean; reintroduce;
   published
     property SkinIcon : TSkinIcon read FSkinIcon;
+    property WidthMod : integer read FWidthMod;
   end;    
 
 function get_location(str: string): TRect;
@@ -669,6 +676,7 @@ begin
   StringSaveToStream(BoolToStr(FStyleBold),Stream);
   StringSaveToStream(BoolToStr(FStyleItalic),Stream);
   StringSaveToStream(BoolToStr(FStyleUnderline),Stream);
+  StringSaveToStream(BoolToStr(FDrawText),Stream);
   StringSaveToStream(FMaxWidth, Stream);
   Stream.WriteBuffer(FSize, sizeof(FSize));
   StringSaveToStream(BoolToStr(FShadow),Stream);
@@ -693,6 +701,7 @@ begin
   FStyleBold := StrToBool(StringLoadFromStream(Stream));
   FStyleItalic := StrToBool(StringLoadfromStream(Stream));
   FStyleUnderline := StrToBool(StringLoadFromStream(Stream));
+  FDrawText := StrToBool(StringLoadFromStream(Stream));
   FMaxwidth := StringLoadFromStream(Stream);
   Stream.ReadBuffer(FSize, sizeof(FSize));
   FShadow := StrToBool(StringLoadFromStream(Stream));
@@ -721,6 +730,7 @@ begin
   FShadowAlpha := Value.FShadowAlpha;
   FShadowType := Value.FShadowType;
   FAlpha := Value.FAlpha;
+  FDrawText := Value.DrawText;
 end;
 
 procedure TSkinText.Assign(Value: TSkinTextRecord);
@@ -815,6 +825,8 @@ begin
          else if s = 'Outline' then FShadowType := stOutline
          else FShadowType := stRight;
     end;
+    if ItemNamed['drawtext'] <> nil then
+      FDrawText := BoolValue('drawtext',true);
   end;
 end;
 
@@ -1065,6 +1077,72 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TSkinText.RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme);
+var
+  c : TColor;
+  R,G,B : byte;
+  c2 : TColor32;
+  ShadowBmp : TBitmap32;
+  TempBmp : TBitmap32;
+  w,h : integer;
+begin
+  TempBmp := TBitmap32.Create;
+  w := Bmp.TextWidth(Caption);
+  h := Bmp.TextHeight(Caption);
+  TempBmp.SetSize(w+20,h+20);
+  TempBmp.Clear(color32(0,0,0,0));
+  TempBmp.Font.Assign(bmp.Font);
+
+  if FShadow then
+  begin
+    ShadowBmp := TBitmap32.Create;
+    try
+      ShadowBmp.DrawMode := dmBlend;
+      ShadowBmp.CombineMode := cmMerge;
+      ShadowBmp.SetSize(TempBmp.Width,TempBmp.Height);
+      ShadowBmp.Clear(color32(0,0,0,0));
+      ShadowBmp.Font.Assign(Bmp.Font);
+      c := SchemedStringToColor(FShadowColor, cs);
+      R := GetRValue(c);
+      G := GetGValue(c);
+      B := GetBValue(c);
+      c2 := color32(R,G,B,FShadowAlpha);
+      case FShadowType of
+        stLeft    : ShadowBmp.RenderText(TempBmp.Width div 2 - w div 2 - 1,
+                                         TempBmp.Height div 2 - h div 2 + 1,Caption,0,c2);
+        stRight   : ShadowBmp.RenderText(TempBmp.Width div 2 - w div 2 + 1,
+                                         TempBmp.Height div 2 - h div 2 + 1,Caption,0,c2);
+        stOutline :
+        begin
+          ShadowBmp.RenderText(TempBmp.Width div 2 - w div 2,
+                               TempBmp.Height div 2 - h div 2,Caption,0,c2);
+          boxblur(ShadowBmp,1,1);
+          ShadowBmp.RenderText(TempBmp.Width div 2 - w div 2,
+                               TempBmp.Height div 2 - h div 2,Caption,0,c2);
+        end;
+      end;
+      boxblur(ShadowBmp,1,1);
+      ShadowBmp.DrawTo(TempBmp,0,0);
+      ShadowBmp.DrawTo(TempBmp,0,0);
+      boxblur(ShadowBmp,1,1);
+      ShadowBmp.DrawTo(TempBmp,0,0);
+      ShadowBmp.DrawTo(TempBmp,0,0);
+    finally
+      ShadowBmp.Free;
+    end;
+  end;
+  c := SchemedStringToColor(FColor, cs);
+  R := GetRValue(c);
+  G := GetGValue(c);
+  B := GetBValue(c);
+  c2 := color32(R,G,B,255);
+  TempBmp.RenderText(TempBmp.Width div 2 - w div 2,TempBmp.Height div 2 - h div 2,Caption,0,c2);
+  TempBmp.MasterAlpha := FAlpha;
+  TempBmp.DrawTo(Bmp,X-10,Y-10);
+
+  FreeAndNil(TempBmp);
 end;
 
 procedure TSkinText.RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String; cs : TSharpEScheme;
@@ -1690,6 +1768,12 @@ begin
   FDrawIcon := True;
 end;
 
+procedure TSkinIcon.Assign(Value: TSkinIcon);
+begin
+  inherited Assign(Value as TSkinDim);
+  FDrawIcon := Value.DrawIcon;
+end;
+
 procedure TSkinIcon.SaveToStream(Stream: TStream);
 begin
   inherited SaveToStream(Stream);
@@ -1723,6 +1807,7 @@ constructor TSkinPartEx.Create(BmpList: TSkinBitmapList);
 begin
   inherited Create(BmpList);
   FSkinIcon := TSkinIcon.Create;
+  FWidthMod := 0;
 end;
 
 destructor TSkinPartEx.Destroy;
@@ -1731,22 +1816,32 @@ begin
   inherited Destroy;
 end;
 
+procedure TSkinPartEx.Assign(Value : TSkinPartEx);
+begin
+  inherited Assign(Value as TSkinPart);
+  FSkinIcon.Assign(Value.SkinIcon);
+  FWidthMod := Value.WidthMod;
+end;
+
 procedure TSkinPartEx.Clear;
 begin
   inherited Clear;
   FSkinIcon.Clear;
+  FWidthMod := 0;
 end;
 
 procedure TSkinPartEx.SaveToStream(Stream: TStream);
 begin
   inherited SaveToStream(Stream);
   FSkinIcon.SaveToStream(Stream);
+  Stream.WriteBuffer(FWidthMod, sizeof(FWidthMod));
 end;
 
 procedure TSkinPartEx.LoadFromStream(Stream: TStream);
 begin
   inherited LoadFromStream(Stream);
   FSkinIcon.LoadFromStream(Stream);
+  Stream.ReadBuffer(FWidthMod, sizeof(FWidthMod));
 end;
 
 function TSkinPartEx.LoadFromXML(xml: TJvSimpleXMLElem; path: string;

@@ -227,7 +227,7 @@ type
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
     property Background : TSkinPart read FBackground;
     property TBOffset : TSkinPoint read FTBOffset;
-    property LBOffset : TSkinPoint read FLROffset;
+    property LROffset : TSkinPoint read FLROffset;
     property WidthLimit : TSkinPoint read FWidthLimit;
     property TitelText : TSkinText read FTitelText;
     property SkinDim : TSkinDim read FSkinDim;
@@ -1005,8 +1005,8 @@ begin
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
         FSkinDim.SetLocation(Value('location','0,0'));
-      if ItemNamed['text'] <> nil then
-        FTitelText.LoadFromXML(ItemNamed['text']);
+      if ItemNamed['titeltext'] <> nil then
+        FTitelText.LoadFromXML(ItemNamed['titeltext']);
       if ItemNamed['tboffset'] <> nil then
         FTBOffset.SetPoint(Value('tboffset','0,0'));
       if ItemNamed['lroffset'] <> nil then
