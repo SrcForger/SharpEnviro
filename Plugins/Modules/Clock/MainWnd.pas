@@ -169,7 +169,7 @@ begin
   lb_clock.Caption := s;
   if lb_clock.LabelStyle <> sStyle then
      lb_clock.LabelStyle := sStyle;
-  if ow <> lb_clock.Width then RealignComponents(True);
+  if ow - lb_clock.Width > 4  then RealignComponents(True);
 end;
 
 procedure TMainForm.lb_clockDblClick(Sender: TObject);
