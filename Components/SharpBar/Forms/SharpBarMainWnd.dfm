@@ -12,7 +12,6 @@ object SharpBarMainForm: TSharpBarMainForm
   Font.Style = []
   OldCreateOrder = False
   Position = poDesigned
-  OnActivate = FormActivate
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnHide = FormHide
@@ -722,51 +721,31 @@ object SharpBarMainForm: TSharpBarMainForm
     Top = 8
   end
   object SkinManager: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
+    SkinSource = ssComponent
+    SchemeSource = ssComponent
     onSkinChanged = SkinManagerSkinChanged
     Left = 352
     Top = 8
-  end
-  object ApplicationEvents1: TApplicationEvents
-    OnActivate = ApplicationEvents1Activate
-    Left = 320
-    Top = 8
-  end
-  object BlendInTimer: TTimer
-    Enabled = False
-    Interval = 50
-    OnTimer = BlendInTimerTimer
-    Left = 384
-    Top = 144
-  end
-  object BlendOutTimer: TTimer
-    Tag = 255
-    Enabled = False
-    Interval = 10
-    OnTimer = BlendOutTimerTimer
-    Left = 344
-    Top = 144
   end
   object DelayTimer1: TTimer
     Enabled = False
     Interval = 1500
     OnTimer = DelayTimer1Timer
-    Left = 304
+    Left = 392
     Top = 144
   end
   object DelayTimer2: TTimer
     Enabled = False
-    Interval = 7500
+    Interval = 2500
     OnTimer = DelayTimer2Timer
-    Left = 264
+    Left = 352
     Top = 144
   end
   object DelayTimer3: TTimer
     Enabled = False
     Interval = 5000
     OnTimer = DelayTimer3Timer
-    Left = 224
+    Left = 312
     Top = 144
   end
 end
