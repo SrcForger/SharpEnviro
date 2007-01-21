@@ -33,8 +33,8 @@ unit SettingsWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, ExtCtrls, uSharpeColorBox, GR32_RangeBars;
+  Windows, Messages, SysUtils, Classes, Controls, Forms,
+  Dialogs, StdCtrls, uSharpeColorBox, GR32_RangeBars, ExtCtrls;
 
 type
   TSettingsForm = class(TForm)

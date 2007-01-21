@@ -42,10 +42,6 @@ uses
   Forms,
   Classes,
   Contnrs,
-  SharpESkinManager,
-  SharpEBar,
-  StdCtrls,
-  JvSimpleXML,
   Types,
   GR32,
   MainWnd in 'MainWnd.pas' {MainForm},
@@ -304,6 +300,7 @@ begin
           end;
           TrayClient.RenderIcons;
         end;
+        TMainForm(temp.Form).LoadSettings;
         TMainForm(temp.Form).ReAlignComponents(false);
       end;
 end;
