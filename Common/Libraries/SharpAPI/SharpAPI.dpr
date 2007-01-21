@@ -1787,7 +1787,7 @@ begin
   else if CompareText(sname, 'sharpconsole') = 0 then
     result := FindAllWindows('TSharpConsoleWnd')
   else if CompareText(sname, 'sharpmenu') = 0 then
-    result := FindAllWindows('TSharpBarMainForm')
+    result := FindAllWindows('TSharpEMenuWnd')
   else
     result := FindAllWindows(PChar(sname));
 end;
@@ -1806,7 +1806,7 @@ begin
   else if CompareText(sname, 'sharpconsole') = 0 then
     result := FindWindow('TSharpConsoleWnd', nil)
   else if CompareText(sname, 'sharpmenu') = 0 then
-    result := FindWindow('TSharpMenuWMForm', nil)
+    result := FindWindow('TSharpEMenuWnd', nil)
   else
     result := FindWindow(PChar(sname), nil);
 end;
