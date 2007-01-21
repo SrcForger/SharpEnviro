@@ -1847,14 +1847,17 @@ end;
 function TSkinPartEx.LoadFromXML(xml: TJvSimpleXMLElem; path: string;
                                  Text: TSkinText; Icon : TSkinIcon): boolean;
 begin
+  result := inherited LoadFromXML(xml,path,Text);
+
   if Icon <> nil then
      FSkinIcon.Assign(Icon);
   with xml.items do
   begin
+    if ItemNamed['WidthMod'] <> nil then
+       FWidthMod := IntValue('WidthMod',0);
     if ItemNamed['icon'] <> nil then
        FSkinIcon.LoadFromXML(ItemNamed['icon']);
   end;
-  result := inherited LoadFromXML(xml,path,Text);
 end;
 
 //**********************************

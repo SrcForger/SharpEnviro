@@ -108,15 +108,13 @@ type
     FMsgWnd         : Hwnd;
     FOnSkinChanged  : TNotifyEvent;
 
-    procedure LoadSkinFromStream;
-
     //Either hook MainWnd or create a wnd by itself
     function MessageHook(var Msg: TMessage) : boolean;
     Procedure MessageHook2(var Msg:TMessage);
 
-    procedure RegisterForSystemSkin;
+    //procedure RegisterForSystemSkin;
     procedure SetActive(b : boolean);
-    procedure NotifyManager;
+    //procedure NotifyManager;
   protected
   public
     constructor Create;
@@ -127,6 +125,8 @@ type
     procedure LoadFromXmlFile(filename: string); override;
     procedure LoadFromSkin(filename: string); override;
     procedure LoadFromStream(Stream : TStream); override;
+
+    procedure LoadSkinFromStream;
 
     property Activated : Boolean read FActivated write SetActive;
     property OnSkinChanged: TNotifyEvent read FOnSkinChanged write FOnSkinChanged;
@@ -168,7 +168,7 @@ begin
     FActivated := false;
 end;
 
-procedure TSystemSharpESkin.RegisterForSystemSkin;
+{procedure TSystemSharpESkin.RegisterForSystemSkin;
 var
   hTargetWnd: HWND;
 begin
@@ -181,7 +181,7 @@ begin
     end;
   end;
   FActivated := true;
-end;
+end;        }
 
 procedure TSystemSharpESkin.LoadSkinFromStream;
 var
@@ -194,16 +194,16 @@ begin
   if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
 end;
 
-procedure TSystemSharpESkin.NotifyManager;
+{procedure TSystemSharpESkin.NotifyManager;
 begin
   if Assigned(OnNotify) then
     OnNotify;
-end;
+end;}
 
 function TSystemSharpESkin.MessageHook(var Msg: TMessage): Boolean;
-var
-  m : TWMCopyData;
-  ssi : TSharedSkinInfo;
+//var
+//  m : TWMCopyData;
+//  ssi : TSharedSkinInfo;
 begin
   result := false;
   if FActivated then begin

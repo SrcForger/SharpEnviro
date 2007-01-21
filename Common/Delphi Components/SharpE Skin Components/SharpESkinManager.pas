@@ -218,7 +218,16 @@ begin
   end;
   if (Msg.Msg = WM_SYSTEMSKINUPDATE) then
   begin
-
+    if SkinSource = ssSystem then
+       SystemSkin.LoadSkinFromStream;
+    if SchemeSource = ssSystem then
+    begin
+      if not (csDesigning in ComponentState) then
+         SharpThemeApi.LoadTheme;
+      LoadSharpEScheme(FSystemScheme);
+    end;
+    RefreshControls;
+    if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
   end;
   result := false;
 end;
@@ -232,6 +241,8 @@ procedure TSharpESkinManager.RefreshControls;
 var
   i: Integer;
 begin
+  if Owner = nil then exit;
+
   for i := Owner.ComponentCount - 1 downto 0 do
   begin
     if (Owner.Components[i] is TSharpEButton) then

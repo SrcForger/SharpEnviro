@@ -239,6 +239,7 @@ type
     FSeperator     : TSkinPart;
     FNormalItem    : TSkinPartEx;
     FHoverItem     : TSkinPartEx;
+    FDownItem      : TSkinPartEx;
     FNormalSubItem : TSkinPartEx;
     FHoverSubItem  : TSkinPartEx;
   public
@@ -250,8 +251,9 @@ type
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
     property NormalItem : TSkinPartEx read FNormalItem;
     property HoverItem  : TSkinPartEx read FHoverItem;
+    property DownItem   : TSkinPartEx read FDownItem;
     property NormalSubItem : TSkinPartEx read FNormalSubItem;
-    property HoverISubtem  : TSkinPartEx read FHoverSubItem;
+    property HoverSubItem  : TSkinPartEx read FHoverSubItem;
     property Seperator : TSkinPart read FSeperator; 
   end;
 
@@ -826,6 +828,7 @@ begin
   FSmallText.Clear;
   FMediumText.Clear;
   FBigText.Clear;
+  FBitmapList.Clear;
 
   FSkinName := '';
 end;
@@ -1030,7 +1033,8 @@ begin
   FSkinDim.SetDimension('w','32');
   FSeperator := TSkinPart.Create(BmpList);
   FNormalItem := TSkinPartEx.Create(BmpList);
-  FHoverItem := TSkinPartEx.Create(BmpList);
+  FHoverItem  := TSkinPartEx.Create(BmpList);
+  FDownItem   := TSkinPartEx.Create(BmpList);
   FNormalSubItem := TSkinPartEx.Create(BmpList);
   FHoverSubItem := TSkinPartEx.Create(BmpList);
 end;
@@ -1041,6 +1045,7 @@ begin
   FSeperator.Free;
   FNormalItem.Free;
   FHoverItem.Free;
+  FDownItem.Free;
   FNormalSubItem.Free;
   FHoverSubItem.Free;
 end;
@@ -1052,6 +1057,7 @@ begin
   FSeperator.Clear;
   FNormalItem.Clear;
   FHoverItem.Clear;
+  FDownItem.Clear;
   FNormalSubItem.Clear;
   FHoverSubItem.Clear;
 end;
@@ -1062,6 +1068,7 @@ begin
   FSeperator.LoadFromStream(Stream);
   FNormalItem.LoadFromStream(Stream);
   FHoverItem.LoadFromStream(Stream);
+  FDownItem.LoadFromStream(Stream);
   FNormalSubItem.LoadFromStream(Stream);
   FHoverSubItem.LoadFromStream(Stream);
 end;
@@ -1072,6 +1079,7 @@ begin
   FSeperator.SaveToStream(Stream);
   FNormalItem.SaveToStream(Stream);
   FHoverItem.SaveToStream(Stream);
+  FDownItem.SaveToStream(Stream);
   FNormalSubItem.SaveToStream(Stream);
   FHoverSubItem.SaveToStream(Stream);
 end;
@@ -1100,6 +1108,8 @@ begin
         FSeperator.LoadFromXML(ItemNamed['seperator'], path, SkinText);
       if ItemNamed['normal'] <> nil then
         FNormalItem.LoadFromXML(ItemNamed['normal'], path, SkinText, SkinIcon);
+      if ItemNamed['down'] <> nil then
+        FDownItem.LoadFromXML(ItemNamed['down'], path, SkinText, SkinIcon);
       if ItemNamed['normalsub'] <> nil then
         FNormalSubItem.LoadFromXML(ItemNamed['normalsub'], path, SkinText, SkinIcon);
       if ItemNamed['hover'] <> nil then
