@@ -17,10 +17,8 @@ object SharpDeskMainForm: TSharpDeskMainForm
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnDeactivate = FormDeactivate
   OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
-  OnMouseUp = FormMouseUp
   OnPaint = FormPaint
   OnResize = FormResize
   OnShow = FormShow

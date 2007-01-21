@@ -43,7 +43,6 @@ uses
   uSharpDeskSettingsForm in 'Forms\uSharpDeskSettingsForm.pas' {SettingsForm},
   uSharpDeskDeskSettingsForm in 'Forms\uSharpDeskDeskSettingsForm.pas' {DeskSettingsForm},
   uSharpDeskObjectInfoForm in 'Forms\uSharpDeskObjectInfoForm.pas' {ObjectInfoForm},
-  uSharpDeskObjectListForm in 'Forms\uSharpDeskObjectListForm.pas' {ObjectListForm},
   uSharpDeskLoadThemeForm in 'Forms\uSharpDeskLoadThemeForm.pas' {LoadThemeForm},
   uSharpDeskAdvancedSettingsForm in 'Forms\uSharpDeskAdvancedSettingsForm.pas' {ASettingsForm},
   uSharpDeskCreateForm in 'Forms\uSharpDeskCreateForm.pas' {CreateForm},
@@ -149,7 +148,6 @@ begin
   Application.CreateForm(TCreateForm, CreateForm);
   Application.CreateForm(TSettingsForm, SettingsForm);
   Application.CreateForm(TObjectInfoForm, ObjectInfoForm);
-  Application.CreateForm(TObjectListForm, ObjectListForm);
   Application.CreateForm(TASettingsForm, ASettingsForm);
   Application.CreateForm(TCreateForm, CreateForm);
 

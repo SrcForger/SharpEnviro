@@ -143,8 +143,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure BackgroundImageKeyDown(Sender: TObject; var Key: Word;
@@ -178,7 +176,6 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure Delete1Click(Sender: TObject);
     procedure Clone1Click(Sender: TObject);
-    procedure FormDeactivate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormPaint(Sender: TObject);
     procedure CheckThemeTimerTimer(Sender: TObject);
@@ -210,7 +207,6 @@ type
     procedure WMSharpEUppdateSettings(var msg: TMessage); message WM_SHARPEUPDATESETTINGS;
     procedure WMCloseDesk(var msg : TMEssage);            message WM_CLOSEDESK;
     procedure WMAdddesktopObject(var msg : TMessage);     message WM_ADDDESKTOPOBJECT;
-    procedure WMShowObjectList(var msg : TMessage);       message WM_SHOWOBJECTLIST;
     procedure WMShowDesktopSettings(var msg : TMessage);  message WM_SHOWDESKTOPSETTINGS;
     procedure WMForceObjectReload(var msg : TMessage);    message WM_FORCEOBJECTRELOAD;
     procedure WMWeatherUpdate(var msg : TMessage);        message WM_WEATHERUPDATE;
@@ -286,7 +282,6 @@ implementation
 uses uSharpDeskCreateForm,
      uSharpDeskSettingsForm,
      uSharpDeskDeskSettingsForm,
-     uSharpDeskObjectListForm,
      uSharpDeskObjectInfoForm,
      uSharpDeskAdvancedSettingsForm,
      uSharpDeskAlignSettingsForm,
@@ -317,7 +312,7 @@ end;
 procedure TSharpDeskMainForm.WMMouseMove(var Msg: TMessage);
 var
   tme: TTRACKMOUSEEVENT;
-  TrackMouseEvent_: function(var EventTrack: TTrackMouseEvent): BOOL; stdcall; 
+  TrackMouseEvent_: function(var EventTrack: TTrackMouseEvent): BOOL; stdcall;
 begin
   tme.cbSize := sizeof(TTRACKMOUSEEVENT);
   tme.dwFlags := TME_HOVER or TME_LEAVE;
@@ -336,13 +331,9 @@ begin
 end;
 
 procedure TSharpDeskMainForm.WMKILLFOCUS(var msg : TMessage);
-{var
-  MuteXHandle : THandle;}
 begin
   if not Created then
   begin
-   // MuteXHandle := OpenMutex(MUTEX_ALL_ACCESS , False, 'SharpMenuVisibleMuteX');
-//    if not (MuteXHandle = null) then
     begin
       if not TaskTM then setwindowpos(FindWindow('SharpE_Task', nil), HWND_NOTOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
       if not BarTM  then setwindowpos(FindWindow('TSharpBarMainForm', nil), HWND_NOTOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
@@ -353,7 +344,6 @@ begin
       SharpDeskMainForm.SetZOrder(False);
       Created := True;
     end;
-  //  CloseHandle(MuteXHandle);
   end;
 end;
 
@@ -406,7 +396,6 @@ begin
   if ObjectInfoForm.Visible   then ObjectInfoForm.btn_close.OnClick(nil);
   if DeskSettingsForm.Visible then DeskSettingsForm.btn_Cancel.OnClick(nil);
   if SettingsForm.Visible     then SettingsForm.btn_cancel.OnClick(nil);
-  if ObjectListForm.Visible   then ObjectListForm.Close;
   SharpDesk.DisableAnimation;
   SharpDeskMainForm.Enabled := False;
   CheckThemeTimer.Enabled := True;
@@ -435,6 +424,8 @@ begin
   SharpApi.RegisterActionEx('!ThemeManager','SharpTheme',SharpDeskMainForm.Handle,2);
   SharpApi.RegisterActionEx('!AddDesktopObject','SharpDesk',SharpDeskMainForm.Handle,3);
   SharpApi.RegisterActionEx('!Show/HideDesktop','SharpDesk',SharpDeskMainForm.Handle,4);
+  SharpApi.RegisterActionEx('!SharpDeskSettings','SharpDesk',SharpDeskMainForm.Handle,5);
+  SharpApi.RegisterActionEx('!CloseSharpDesk','SharpDesk',SharpDeskMainForm.Handle,6);
 end;
 
 procedure TSharpDeskMainForm.WMForceObjectReload(var msg : TMessage);
@@ -457,18 +448,16 @@ var
 begin
   case msg.LParam of
    1: begin
-        SharpApi.SendMessageTo('SharpMenuWMForm',WM_CLOSESHARPMENU,0,0);
         SharpApi.SharpExecute(ExtractFileDir(Application.ExeName)+'\SharpTheme.exe');
         sleep(500);
         SharpApi.SendMessageTo('SharpTheme - Theme Manager',WM_EDITCURRENTTHEME,0,0);
       end;
    2: begin
-        SharpApi.SendMessageTo('SharpMenuWMForm',WM_CLOSESHARPMENU,0,0);
         SharpApi.SharpExecute(ExtractFileDir(Application.ExeName)+'\SharpTheme.exe');
       end;
    3: begin
-        SharpApi.SendMessageTo('SharpMenuWMForm',WM_CLOSESHARPMENU,0,0);
-        CreateForm.Showmodal;
+        if not CreateForm.Visible then
+           CreateForm.Showmodal;
         if SharpDesk.Desksettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
       end;
    4 : begin
@@ -484,7 +473,6 @@ begin
            if LoadThemeForm <> nil then
               if LoadThemeForm.Visible then ForceForegroundWindow(LoadThemeForm.Handle);
            if ObjectInfoForm.Visible   then ForceForegroundWindow(ObjectInfoForm.Handle);
-           if ObjectListForm.Visible   then ForceForegroundWindow(ObjectListForm.Handle);
            if SettingsForm.Visible     then ForceForegroundWindow(SettingsForm.Handle);
 
            handle := FindWindow('SharpE_Task', nil);
@@ -514,6 +502,8 @@ begin
            Created := True;
          end;
        end;
+   5 : WMShowDesktopSettings(msg);
+   6 : WMCloseDesk(msg);
   end;
 end;
 
@@ -531,7 +521,6 @@ begin
   try
     LoadThemeForm := TLoadThemeForm.Create(Application);
     Application.ProcessMessages;
-    TerminateTask(FindWindow(nil,'SharpMenuWMForm'),0);
     SharpDesk.ThemeSettings.ReloadThemes('');
     SharpDesk.DeskSettings.ReloadSettings;
     SharpDesk.ObjectSettings.ReloadObjectSettings;
@@ -589,19 +578,8 @@ begin
        end;
     SharpDeskMainForm.SendMessageToConsole('loading desktop objects',COLOR_OK,DMT_STATUS);
     LoadThemeForm.SetStatus('Loading Desktop Objects',75);
-  //   MainForm.LoadObjects;
-//     SharpDesk.UnloadAllObjects;
     SharpDesk.ObjectSetList.LoadFromFile;
-//     SharpDesk.ObjectFileList.UnLoadAll;
-//     SharpDesk.ObjectFileList.ReLoadAllObjects;
     SharpDesk.LoadObjectSets(SharpDesk.DeskSettings.Theme.ObjectSets);
-//     SharpDesk.LoadObjectSet(TObjectSet(SharpDesk.ObjectSetList.GetByID(SharpDesk.DeskSettings.Theme.ObjectSetID)));
-    SharpDeskMainForm.SendMessageToConsole('reloading SharpMenu',COLOR_OK,DMT_STATUS);
-//     path := ExtractFileDir(Application.ExeName)+'\Settings\SharpMenu\'+DeskSettings.Theme.MenuFile+'.rc';
-//     if not FileExists(Path) then
-//        path := ExtractFileDir(Application.ExeName)+'\Settings\SharpMenu\Default.rc';
-//     MainForm.rightClickMenu.LoadFromFile(path, nil);
-//     MainForm.rightClickMenu.RefreshMenuOptions;
     LoadThemeForm.SetStatus('Registry Update',90);
     SharpApi.SetNewIconSet(SharpDesk.DeskSettings.Theme.IconSet);
     SharpApi.SetNewSkin(SharpDesk.DeskSettings.Theme.Skin,false);
@@ -610,8 +588,6 @@ begin
      //WM handler ignore the message
     loadingtheme := true;
     SharpAPI.SetNewTheme(SharpDesk.DeskSettings.Theme.Name,SharpDesk.DeskSettings.ThemeID,true);
-    LoadThemeForm.SetStatus('Loading Menu',92);
-    SharpApi.SharpExecute(ExtractFileDir(Application.ExeName)+'\SharpMenu.exe');
     LoadThemeForm.SetStatus('Theme Loaded',100);
     LoadThemeForm.Close;
     LoadThemeForm.Free;
@@ -702,15 +678,6 @@ begin
 end;
 
 
-// ######################################
-
-
-procedure TSharpDeskMainForm.WMShowObjectList(var msg : TMessage);
-begin
-     ObjectListForm.Showmodal;
-end;
-
-
 // #################################################
 // Scheme has changed message - update compontens...
 
@@ -755,6 +722,8 @@ begin
      SharpApi.RegisterActionEx('!ThemeManager','SharpTheme',SharpDeskMainForm.Handle,2);
      SharpApi.RegisterActionEx('!AddDesktopObject','SharpDesk',SharpDeskMainForm.Handle,3);
      SharpApi.RegisterActionEx('!Show/HideDesktop','SharpDesk',SharpDeskMainForm.Handle,4);
+     SharpApi.RegisterActionEx('!SharpDeskSettings','SharpDesk',SharpDeskMainForm.Handle,5);
+     SharpApi.RegisterActionEx('!CloseSharpDesk','SharpDesk',SharpDeskMainForm.Handle,6);
      SendMessageToConsole('creating main window',COLOR_OK,DMT_STATUS);
      SharpDesk := TSharpDeskManager.Create(SharpDeskMainForm.BackgroundImage);
 
@@ -821,30 +790,20 @@ procedure TSharpDeskMainForm.FormClose(Sender: TObject; var Action: TCloseAction
    n : integer;  }
 begin
   SendMessageToConsole('Closing main window',COLOR_OK,DMT_STATUS);
-  SharpApi.UnRegisterAction('!AddDesktopObject');     
+  SharpApi.UnRegisterAction('!AddDesktopObject');
   SharpApi.UnRegisterAction('!EditCurrentTheme');
   SharpApi.UnRegisterAction('!ThemeManager');
   SharpApi.UnRegisterAction('!Show/HideDesktop');
+  SharpApi.UnRegisterAction('!SharpDeskSettings');
+  SharpApi.UnRegisterAction('!Show/CloseSharpDesk');
   SharpDesk.DeskSettings.SaveSettings;
   SharpDesk.UnloadAllObjects;
   SharpDesk.Free;
   Background.Destroy;
-  SharpApi.SendMessageTo('SharpMenuWMForm',WM_CLOSESHARPMENU,0,0);     
 end;
 
 
 // ######################################
-
-
-procedure TSharpDeskMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  if Button = mbRight then
-  begin
-    SharpApi.SendMessageTo('SharpMenuWMForm',WM_DISPLAYSHARPMENU,X,Y);
-  end
-  else SharpApi.SendMessageTo('SharpMenuWMForm',WM_CLOSESHARPMENU,0,0);
-end;
 
 
 // ######################################
@@ -938,7 +897,6 @@ begin
       if (SharpDesk.DeskSettings.TerminalMode) and (not SharpDesk.DeskSettings.ObjectMenu) then exit;
       ENDOFCUSTOMMENU.Visible := True;
       STARTOFBOTTOMMENU.Visible := True;
-      SharpApi.SendMessageTo('SharpMenuWMForm',WM_CLOSESHARPMENU,0,0);
 
       while ObjectPopUp.Items[0].Name <> 'ENDOFCUSTOMMENU' do ObjectPopUp.Items.Delete(0);
       while ObjectPopUp.Items[ObjectPopUp.Items.Count-1].Name <> 'STARTOFBOTTOMMENU' do ObjectPopUp.Items.Delete(ObjectPopUp.Items.Count-1);
@@ -984,16 +942,11 @@ begin
     else
     if (Button = mbRight) then
     begin
-      MuteXHandle := OpenMutex(MUTEX_ALL_ACCESS , False, 'SharpMenuMuteX');
-      if not (MuteXHandle <> 0) then
-      begin
-        SharpApi.SharpExecute(ExtractFileDir(Application.ExeName)+'\SharpMenu.exe');
-        sleep(1000);
-      end;
-      CloseHandle(MuteXHandle);
+      SharpApi.SharpExecute(SharpApi.GetSharpeDirectory+'SharpMenu.exe '
+                            + inttostr(Mouse.CursorPos.X) + ' ' + inttostr(Mouse.CursorPos.Y));
+      sleep(1000);
       SharpApi.SendDebugMessageEx('SharpDesk',PChar('Menu popup at : ' + inttostr(Mouse.CursorPos.X) + '|' + inttostr(Mouse.CursorPos.Y)),clblue,DMT_Trace);
-      SharpApi.SendMessageTo('SharpMenuWMForm',WM_DISPLAYSHARPMENU,Mouse.CursorPos.X,Mouse.CursorPos.Y);
-    end else SharpApi.SendMessageTo('SharpMenuWMForm',WM_CLOSESHARPMENU,0,0);
+    end;
   end;
 end;
 
@@ -1120,7 +1073,6 @@ begin
 
   if (Button = mbLeft) then
   begin
-    SharpApi.SendMessageTo('SharpMenuWMForm',WM_CLOSESHARPMENU,0,0);
     oSelect:=True;
     SPos.X := X;
     SPos.Y := Y;
@@ -1803,7 +1755,6 @@ end;
 
 procedure TSharpDeskMainForm.ApplicationEvents1Deactivate(Sender: TObject);
 begin
-  SharpApi.SendMessageTo('SharpMenuWMForm',WM_CLOSESHARPMENU,0,0);
   SharpDesk.UnselectAll;
   SharpDesk.LastLayer := -1;
   SharpDesk.HideTooltip;
@@ -1825,11 +1776,6 @@ end;
 procedure TSharpDeskMainForm.Clone1Click(Sender: TObject);
 begin
   SharpDesk.CloneSelectedObjects;
-end;
-
-procedure TSharpDeskMainForm.FormDeactivate(Sender: TObject);
-begin
-  SharpApi.SendMessageTo('SharpMenuWMForm',WM_CLOSESHARPMENU,0,0);
 end;
 
 procedure TSharpDeskMainForm.FormResize(Sender: TObject);
