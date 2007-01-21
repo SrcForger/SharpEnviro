@@ -92,8 +92,6 @@ type
 const
   NOTES_EXTENSION = '.txt';
 
-var
-  NotesForm: TNotesForm;
 
 implementation
 

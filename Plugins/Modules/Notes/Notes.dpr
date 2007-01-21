@@ -149,6 +149,9 @@ begin
           MouseTimer.RemoveWinControl(TModule(ModuleList.Items[n]).Form);
           if MouseTimer.ControlList.Count = 0 then
              FreeAndNil(MouseTimer);
+          if TMainForm(TModule(ModuleList.Items[n]).Form).NotesForm <> nil then
+             if TMainForm(TModule(ModuleList.Items[n]).Form).Visible then
+                TMainForm(TModule(ModuleList.Items[n]).Form).NotesForm.SaveCurrentTab;
           ModuleList.Delete(n);
           result := True;
           exit;

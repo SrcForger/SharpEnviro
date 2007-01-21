@@ -29,7 +29,7 @@ object MainForm: TMainForm
     TabOrder = 0
     object Button: TSharpEButton
       Left = 2
-      Top = 1
+      Top = 0
       Width = 105
       Height = 20
       SkinManager = SharpESkinManager1

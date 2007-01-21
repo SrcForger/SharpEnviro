@@ -33,10 +33,10 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, GR32, GR32_PNG, SharpEBaseControls, SharpEButton,
-  SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
-  JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math;
+  Windows, Messages, SysUtils, Classes, Controls, Forms,
+  Dialogs, StdCtrls, GR32_Image, GR32, GR32_PNG, SharpEButton,
+  SharpESkinManager, JvSimpleXML, SharpApi, Menus, Math, NotesWnd,
+  SharpEBaseControls;
 
 
 type
@@ -65,6 +65,7 @@ type
     BarWnd : hWnd;
     sLineWrap    : Boolean;
     sMonoFont    : Boolean;
+    NotesForm    : TNotesForm;
     procedure LoadSettings;
     procedure SaveSettings;
     procedure SetSize(NewWidth : integer);
@@ -75,7 +76,7 @@ type
 implementation
 
 uses SettingsWnd,
-     uSharpBarAPI, NotesWnd;
+     uSharpBarAPI;
 
 {$R *.dfm}
 {$R glyphs.res}
