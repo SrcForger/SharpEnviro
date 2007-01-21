@@ -51,10 +51,8 @@ Type
 
       procedure UpdateTheme(var Msg: TMessage); message WM_SHARPETHEMEUPDATE;
       procedure UpdateScheme(var Msg: TMessage); message WM_SHARPEUPDATESETTINGS;
-      procedure UpdateStreamFile;
-    { Private declarations }
     public
-    { Public declarations }
+      procedure UpdateStreamFile;
     end;
 
 {$R *.dfm}
@@ -92,7 +90,7 @@ begin
     FStream := TFileStream.Create(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin',fmCreate);
   end;
   FSkin.SaveToStream(FStream,true);
-  FStream.Free;
+  FreeAndNil(FStream);
 end;
 
 procedure TSkinServer.CreateParams(var Params: TCreateParams);

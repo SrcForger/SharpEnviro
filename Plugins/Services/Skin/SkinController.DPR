@@ -98,7 +98,7 @@ begin
 
     case Message.LParam of
       0 : begin
-        //SkinServer.ReloadSharedMemory;
+        SkinServer.UpdateStreamFile;
         SharpEBroadCast(WM_SYSTEMSKINUPDATE,0,0);
       end;
     end;
