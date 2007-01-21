@@ -26,7 +26,7 @@ object MainForm: TMainForm
     TabOrder = 0
     object btn_select: TSharpEButton
       Left = 104
-      Top = 1
+      Top = 0
       Width = 25
       Height = 20
       SkinManager = SharpESkinManager1
@@ -79,7 +79,7 @@ object MainForm: TMainForm
     end
     object edit: TSharpEEdit
       Left = 3
-      Top = 1
+      Top = 0
       Width = 100
       Height = 20
       AutoSize = True

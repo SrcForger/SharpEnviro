@@ -43,8 +43,8 @@ object SettingsForm: TSettingsForm
     Height = 25
     AutoSize = False
     Caption = 
-      '(right clicking the quick select button will auto execute the se' +
-      'lected command)'
+      '(right clicking on the quick select button will copy the selecte' +
+      'd command to the edit field)'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -9

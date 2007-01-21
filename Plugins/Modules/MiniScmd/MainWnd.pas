@@ -33,10 +33,9 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Controls, Forms,
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
-  SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
-  JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math, SharpEEdit;
+  SharpESkinManager, JvSimpleXML, SharpApi, Menus, Math, SharpEEdit;
 
 
 type
@@ -256,7 +255,7 @@ begin
     edit.SetFocus;
     edit.Text := s;
     edit.Edit.SelectAll;
-    if rightbutton then
+    if not rightbutton then
     begin
       SharpApi.SharpExecute(trim(edit.Text));
       edit.Text := '';
