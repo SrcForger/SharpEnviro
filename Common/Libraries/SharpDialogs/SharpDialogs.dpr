@@ -107,17 +107,17 @@ begin
  SList.Add('shell:NetHood=NetHood');
  SList.Add('shell:ConnectionsFolder=Network Connections');
  SList.Add('shell:NetworkFolder=Network Folder');
+ SList.Add('shell:PrintersFolder=Printers Folder');
  SList.Add('shell:PrintHood=PrintHood');
- SList.Add('shell:Profile=User Profile');
  SList.Add('shell:ProgramFiles=Program Files');
  SList.Add('shell:Programs=Programs');
- SList.Add('shell:PrintersFolder=Printers Folder');
  SList.Add('shell:Recent=Recent Documents');
  SList.Add('shell:RecycleBinFolder=Recycle Bin');
  SList.Add('shell:SendTo=Send To');
- SList.Add('shell:SystemX86=System32');
+ SList.Add('shell:SystemX86=System32 (X86)');
  SList.Add('shell:System=System32');
  SList.Add('shell:Templates=Templates');
+ SList.Add('shell:Profile=User Profile');
  SList.Add('shell:Windows=Windows Directory');
 end;
 
@@ -419,7 +419,7 @@ begin
       menuItem := TMenuItem.Create(targetmenu);
       menuItem.Caption := 'Open...';
       menuItem.ImageIndex := 2;
-      menuItem.OnClick := targetmenuclick.OnFileOpenClick;//.OnDirOpenClick;
+      menuItem.OnClick := targetmenuclick.OnDirOpenClick;//.OnFileOpenClick;//.;
       targetmenu.Items.Items[mindex].Add(menuItem);
 
       menuItem := TMenuItem.Create(targetmenu);
