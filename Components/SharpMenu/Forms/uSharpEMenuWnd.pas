@@ -56,6 +56,8 @@ type
   TSharpEMenuWnd = class(TForm)
     SubMenuTimer: TTimer;
     offsettimer: TTimer;
+    FGCheckTimer: TTimer;
+    procedure FGCheckTimerTimer(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure offsettimerTimer(Sender: TObject);
     procedure SubMenuTimerTimer(Sender: TObject);
@@ -234,6 +236,8 @@ procedure TSharpEMenuWnd.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
 var
   submenu : boolean;
 begin
+  if FMenu = nil then exit;
+
   submenu := false;
   if FMenu.PerformMouseMove(x,y+FOffset,submenu) then
   begin
@@ -258,6 +262,8 @@ end;
 procedure TSharpEMenuWnd.FormMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+  if FMenu = nil then exit;
+
   if FMenu.PerformMouseDown then
   begin
     FMenu.RenderTo(FPicture);
@@ -269,6 +275,8 @@ end;
 procedure TSharpEMenuWnd.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+  if FMenu = nil then exit;
+
   if FMenu.PerformMouseUp then
   begin
     FMenu.RenderTo(FPicture);
@@ -294,11 +302,6 @@ begin
          lm := TSharpEMenuWnd(TSharpEMenuWnd(pOwner).cOwner);
       pOwner := TSharpEMenuWnd(pOwner).cOwner;
     end;
-    if FFreeMenu then
-    begin
-      TSharpEMenuWnd(lm).Menu.Free;
-      FFreeMenu := False;
-    end;
     TSharpEMenuWnd(lm).Release;
   end;
 end;
@@ -314,6 +317,8 @@ begin
       FSubMenu.Release;
       FSubMenu := nil;
     end;
+    if FFreeMenu then
+       FreeAndNil(FMenu);
   end;
   FPicture.Free;
   if FRootMenu then Application.Terminate;
@@ -324,6 +329,8 @@ var
   item : TSharpEMenuItem;
   t,y : integer;
 begin
+  if FMenu = nil then exit;
+
   SubMenuTimer.Enabled := False;
   item := FMenu.CurrentItem;
   if item <> nil then
@@ -364,6 +371,8 @@ var
   CPos : TPoint;
   b : boolean;
 begin
+  if FMenu = nil then exit;
+
   // Reset sub menu timer!
   if SubMenuTimer.Enabled then
   begin
@@ -415,7 +424,8 @@ begin
   if (FFreeMenu) then
   begin
     FFreeMenu := False;
-    FreeAndNil(FMenu);
+    if FMenu <> nil then
+       FreeAndNil(FMenu);
     Release;
   end;
 end;
@@ -425,8 +435,28 @@ begin
   if (FFreeMenu) then
   begin
     FFreeMenu := False;
-    FreeAndNil(FMenu);
+    if FMenu <> nil then
+       FreeAndNil(FMenu);
     Release;
+  end;
+end;
+
+procedure TSharpEMenuWnd.FGCheckTimerTimer(Sender: TObject);
+var
+  handle : hwnd;
+  buff : array[0..255] of Char;
+  s : string;
+begin
+  handle := GetForegroundWindow;
+  if handle <> 0 then
+  begin
+    GetClassName(handle,buff,sizeof(buff));
+    s := buff;
+    if CompareText(s,ClassType.ClassName) <> 0 then
+    begin
+      FGCheckTimer.Enabled := False;
+      Release;
+    end;
   end;
 end;
 

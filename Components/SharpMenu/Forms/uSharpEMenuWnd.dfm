@@ -40,4 +40,10 @@ object SharpEMenuWnd: TSharpEMenuWnd
     Left = 144
     Top = 72
   end
+  object FGCheckTimer: TTimer
+    Interval = 250
+    OnTimer = FGCheckTimerTimer
+    Left = 112
+    Top = 104
+  end
 end

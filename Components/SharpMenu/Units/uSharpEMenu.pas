@@ -62,6 +62,7 @@ type
     constructor Create(pManager  : TSharpESkinManager); reintroduce;
     destructor Destroy; override;
     procedure AddSeperatorItem(pDynamic : boolean);
+    procedure AddLabelItem(pCaption : String; pDynamic : boolean);
     procedure AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean); overload;
     procedure AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean); overload;
     procedure AddDynamicDirectoryItem(pTarget : String; pDynamic : boolean);
@@ -202,12 +203,24 @@ begin
   FDynList.Free;
 end;
 
+procedure TSharpEMenu.AddLabelItem(pCaption : String; pDynamic : boolean);
+var
+  item : TSharpEMenuItem;
+begin
+  item := TSharpEMenuItem.Create(mtLabel);
+  item.isDynamic := False;
+  item.Icon := nil;
+  item.Caption := pCaption;
+  FItems.Add(item);
+end;
+
 procedure TSharpEMenu.AddSeperatorItem(pDynamic : boolean);
 var
   item : TSharpEMenuItem;
 begin
   item := TSharpEMenuItem.Create(mtSeperator);
   item.isDynamic := pDynamic;
+  item.icon := nil;
   FItems.Add(Item);
 end;
 
@@ -316,6 +329,7 @@ begin
     if item.isVisible then
     begin
       case item.ItemType of
+        mtLabel    : i := menuitemskin.LabelItem.SkinDim.HeightAsInt;
         mtSeperator: i := menuitemskin.Seperator.SkinDim.HeightAsInt;
         mtSubMenu  : i := menuitemskin.NormalSubItem.SkinDim.HeightAsInt;
         else         i := menuitemskin.NormalItem.SkinDim.HeightAsInt;
@@ -460,6 +474,7 @@ begin
   try
     h := 8;
     case item.ItemType of
+      mtLabel     : drawpart := menuitemskin.LabelItem;
       mtSeperator : drawpart := menuitemskin.Seperator;
       mtSubMenu   : begin
                       case state of

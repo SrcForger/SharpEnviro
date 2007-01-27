@@ -37,7 +37,8 @@ uses GR32,uSharpEMenuIcon;
 type
   TSharpEMenuItem = class;
 
-  TSharpEMenuItemType = (mtLink,mtSubMenu,mtSeperator,mtDynamicDir,mtDriveList);
+  TSharpEMenuItemType = (mtLink,mtSubMenu,mtSeperator,mtDynamicDir,mtDriveList,
+                         mtLabel);
   TSharpEMenuItemState = (msNormal,msHover,msDown);
 
   TSharpEMenuItemClickEvent = procedure(pItem : TSharpEMenuItem; var CanClose : boolean) of object;

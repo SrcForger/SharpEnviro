@@ -64,15 +64,15 @@ begin
   inherited Create;
   
   FIcon := TBitmap32.Create;
-  FIcon.DrawMode := dmBlend;
-  FIcon.CombineMode := cmMerge;
   FIconHandle := 0;
   FIconType := itCustomIcon;
   FIconSource := pIconSource;
   TLinearResampler.Create(FIcon);
   FCount := 1;
 
-  FIcon.assign(pBmp);
+  FIcon.Assign(pBmp);
+  FIcon.DrawMode := dmBlend;
+  FIcon.CombineMode := cmMerge;
 end;
 
 constructor TSharpEMenuIcon.Create(pIconSource,pIconData : String);

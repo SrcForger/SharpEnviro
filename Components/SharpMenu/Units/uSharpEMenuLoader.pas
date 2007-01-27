@@ -67,6 +67,9 @@ begin
         if CompareText(typestring,'drivelist') = 0 then
            menu.AddDriveListItem(False)
         else
+        if CompareText(typestring,'label') = 0 then
+           menu.AddLabelItem(Value('Caption'),False)
+        else
         if CompareText(typestring,'submenu') = 0 then
         begin
           menuitem := TSharpEMenuItem(menu.AddSubMenuItem(Value('Caption'),Value('Icon'),Value('Icon'),False));
