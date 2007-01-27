@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, ExtCtrls, Menus, Math,
+  Dialogs, StdCtrls, GR32_Image, GR32_PNG, ImgList, PngImageList,
   JvSimpleXML,
   Jclsysinfo,
   SharpApi,
@@ -46,7 +46,9 @@ uses
   SharpEButton,
   SharpECustomSkinSettings,
   SharpEBitmapList,
-  GR32, ImgList, PngImageList;
+  uSharpEMenu,
+  uSharpEMenuWnd,
+  GR32, Menus, Math;
 
 
 type
@@ -56,7 +58,6 @@ type
     Settings1: TMenuItem;
     Button: TSharpEButton;
     SharpESkinManager1: TSharpESkinManager;
-    scriptpopup: TPopupMenu;
     PngImageList1: TPngImageList;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -69,6 +70,8 @@ type
     sCaption : boolean;
     sIcon    : boolean;
     FIcon    : TBitmap32;
+    FMenuIcon1 : TBitmap32;
+    FMenuIcon2 : TBitmap32;
   public
     ModuleID : integer;
     BarWnd : hWnd;
@@ -85,6 +88,7 @@ implementation
 uses SettingsWnd;
 
 {$R *.dfm}
+{$R glyphs.res}
 
 procedure TMainForm.LoadSettings;
 var
@@ -188,51 +192,84 @@ var
   menu : TMenuItem;
   s : string;
   p : TPoint;
+  mn : TSharpEMenu;
+  wnd : TSharpEMenuWnd;
 begin
   if Button = mbLeft then
   begin
-    scriptpopup.Items.Clear;
-    
-    menu := TMenuItem.Create(scriptpopup);
-    menu.Caption := 'Create New Script';
-    menu.OnClick := OnNewScriptClick;
-    menu.ImageIndex := 1;
-    scriptpopup.Items.Add(menu);
-
-    menu := TMenuItem.Create(scriptpopup);
-    menu.Caption := '-';
-    scriptpopup.Items.Add(menu);
+    mn := TSharpEMenu.Create(SharpESkinManager1);
+    mn.AddLinkItem('Create New Script','_nohist,{#SharpEDir#}SharpScript.exe -newgenericscript','customicon:edititem',FMenuIcon1,false);
+    mn.AddSeperatorItem(False);
 
     Dir := SharpApi.GetSharpeUserSettingsPath + 'Scripts\';
     if FindFirst(Dir + '*.sescript',FAAnyFile,sr) = 0 then
     repeat
-      menu := TMenuItem.Create(scriptpopup);
-      menu.ImageIndex := 0;
-      menu.OnClick := OnScriptClick;
       s := sr.Name;
-      menu.hint := sr.Name;
       setlength(s, length(s)-length('.sescript'));
-      menu.Caption := s;
-      scriptpopup.Items.Add(menu);
+      mn.AddLinkItem(s,Dir + sr.name,'customicon:scriptitem',FMenuIcon2,False);
     until FindNext(sr) <> 0;
     FindClose(sr);
 
-    p := ClientToScreen(Point(self.Button.Left, self.Button.Top));
+    wnd := TSharpEMenuWnd.Create(self,mn);
+    wnd.FreeMenu := True; // menu will free itself when closed
+
+    p := ClientToScreen(Point(self.Button.Left, self.Height + self.Top));
+    wnd.Left := p.x;
     if p.Y < Monitor.Top + Monitor.Height div 2 then
-       scriptpopup.Popup(p.x,p.y + self.Button.Height)
-       else scriptpopup.Popup(p.x,p.y);
+       wnd.Top := p.y
+       else wnd.Top := p.y;
+    wnd.Show;
   end;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
+var
+  ResStream : TResourceStream;
+  TempBmp : TBitmap32;
+  b : boolean;
 begin
-  FIcon := TBitmap32.CreatE;
+  FIcon := TBitmap32.Create;
   FIcon.Assign(Button.Glyph32);
+  FMenuIcon1 := TBitmap32.Create;
+  FMenuIcon2 := TBitmap32.Create;
+
+  TempBmp := TBitmap32.Create;
+  TempBmp.SetSize(22,22);
+  TempBmp.Clear(color32(0,0,0,0));
+
+  TempBmp.DrawMode := dmBlend;
+  TempBmp.CombineMode := cmMerge;
+
+  try
+    ResStream := TResourceStream.Create(HInstance, 'edit', RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      FMenuIcon1.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+
+  try
+    ResStream := TResourceStream.Create(HInstance, 'file', RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      FMenuIcon2.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+
+  TempBmp.Free;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FIcon.Free;
+  FMenuIcon1.Free;
+  FMenuIcon2.Free;
 end;
 
 end.

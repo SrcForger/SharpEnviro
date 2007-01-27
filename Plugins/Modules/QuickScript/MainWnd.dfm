@@ -19,7 +19,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 285
-    Height = 144
+    Height = 146
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -29,7 +29,7 @@ object MainForm: TMainForm
     TabOrder = 0
     object Button: TSharpEButton
       Left = 8
-      Top = 1
+      Top = 0
       Width = 105
       Height = 20
       SkinManager = SharpESkinManager1
@@ -110,8 +110,8 @@ object MainForm: TMainForm
     end
   end
   object MenuPopup: TPopupMenu
-    Left = 168
-    Top = 120
+    Left = 248
+    Top = 24
     object Settings1: TMenuItem
       Caption = 'Settings'
       OnClick = Settings1Click
@@ -120,13 +120,8 @@ object MainForm: TMainForm
   object SharpESkinManager1: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
-    Left = 192
-    Top = 72
-  end
-  object scriptpopup: TPopupMenu
-    Images = PngImageList1
-    Left = 88
-    Top = 64
+    Left = 216
+    Top = 24
   end
   object PngImageList1: TPngImageList
     PngImages = <
@@ -169,8 +164,8 @@ object MainForm: TMainForm
         Name = 'PngImage1'
         Background = clMenu
       end>
-    Left = 128
-    Top = 32
+    Left = 184
+    Top = 24
     Bitmap = {}
   end
 end
