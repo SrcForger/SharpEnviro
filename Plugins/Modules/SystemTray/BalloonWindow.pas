@@ -446,7 +446,6 @@ var
   item : TBalloonItem;
   trayicon : TTrayItem;
 begin
-  item := TBalloonItem(BalloonList.Items[0]);
   if (X > self.clientWidth - 23) and (X < self.clientWidth - 7) and
     (Y > 5 + offset) and (Y < 21 + offset) then
   begin
@@ -457,7 +456,10 @@ begin
   end
   else
   begin
-    if item.owner <> nil then
+    item := TBalloonItem(BalloonList.Items[0]);
+    if item = nil then
+       UpdateTimer.OnTimer(UpdateTimer)
+    else if item.owner <> nil then
     begin
       trayicon := TTrayItem(item.owner);
       if Button = mbLeft then
