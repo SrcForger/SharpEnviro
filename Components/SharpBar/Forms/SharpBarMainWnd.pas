@@ -461,7 +461,7 @@ begin
     ModuleManager.ReCalculateModuleSize;
 //    ModuleManager.BroadCastModuleRefresh;
     ModuleManager.FixModulePositions;
-    ModuleManager.RefreshMiniThrobbers;
+   // ModuleManager.RefreshMiniThrobbers;
   finally
     if not FStartup then UnLockwindow(Handle);
   end;
