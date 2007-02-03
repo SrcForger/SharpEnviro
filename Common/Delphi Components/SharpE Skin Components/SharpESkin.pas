@@ -237,6 +237,7 @@ type
   private
     FSkinDim       : TSkinDim;
     FSeperator     : TSkinPart;
+    FLabelItem     : TSkinPartEx;
     FNormalItem    : TSkinPartEx;
     FHoverItem     : TSkinPartEx;
     FDownItem      : TSkinPartEx;
@@ -254,6 +255,7 @@ type
     property DownItem   : TSkinPartEx read FDownItem;
     property NormalSubItem : TSkinPartEx read FNormalSubItem;
     property HoverSubItem  : TSkinPartEx read FHoverSubItem;
+    property LabelItem : TSkinPartEx read FLabelItem;
     property Seperator : TSkinPart read FSeperator; 
   end;
 
@@ -1033,6 +1035,7 @@ begin
   FSkinDim.SetDimension('w','32');
   FSeperator := TSkinPart.Create(BmpList);
   FNormalItem := TSkinPartEx.Create(BmpList);
+  FLabelItem  := TSkinPartEx.Create(BmpList);
   FHoverItem  := TSkinPartEx.Create(BmpList);
   FDownItem   := TSkinPartEx.Create(BmpList);
   FNormalSubItem := TSkinPartEx.Create(BmpList);
@@ -1044,6 +1047,7 @@ begin
   FSkinDim.Free;
   FSeperator.Free;
   FNormalItem.Free;
+  FLabelItem.Free;
   FHoverItem.Free;
   FDownItem.Free;
   FNormalSubItem.Free;
@@ -1056,6 +1060,7 @@ begin
   FSkinDim.SetDimension('w','32');
   FSeperator.Clear;
   FNormalItem.Clear;
+  FLabelItem.Clear;
   FHoverItem.Clear;
   FDownItem.Clear;
   FNormalSubItem.Clear;
@@ -1071,6 +1076,7 @@ begin
   FDownItem.LoadFromStream(Stream);
   FNormalSubItem.LoadFromStream(Stream);
   FHoverSubItem.LoadFromStream(Stream);
+  FLabelItem.LoadFromStream(Stream);
 end;
 
 procedure TSharpEMenuItemSkin.SaveToStream(Stream : TStream);
@@ -1082,6 +1088,7 @@ begin
   FDownItem.SaveToStream(Stream);
   FNormalSubItem.SaveToStream(Stream);
   FHoverSubItem.SaveToStream(Stream);
+  FLabelItem.SaveToStream(Stream);
 end;
 
 procedure TSharpEMenuItemSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
@@ -1116,6 +1123,8 @@ begin
         FHoverItem.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon);
       if ItemNamed['hoversub'] <> nil then
         FHoverSubItem.LoadFromXML(ItemNamed['hoversub'], path, SkinText, SkinIcon);
+      if ItemNamed['label'] <> nil then
+        FLabelItem.LoadFromXml(ItemNamed['label'], path, SkinText, SkinIcon);
     end;
   finally
     SkinText.free;
