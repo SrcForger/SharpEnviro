@@ -65,6 +65,7 @@ type
     BarWnd : hWnd;
     sLineWrap    : Boolean;
     sMonoFont    : Boolean;
+    sLastTab     : String;
     NotesForm    : TNotesForm;
     procedure LoadSettings;
     procedure SaveSettings;
@@ -127,6 +128,7 @@ begin
     Add('Width',sWidth);
     Add('LineWrap',sLineWrap);
     Add('MonoFont',sMonoFont);
+    Add('LastTab',sLastTab);
   end;
   uSharpBarAPI.SaveXMLFile(BarWnd);
 end;
@@ -160,6 +162,7 @@ begin
     sWidth       := Max(64,IntValue('Width',sWidth));
     sLineWrap    := BoolValue('LineWrap',False);
     sMonoFont    := BoolValue('MonoFont',False);
+    sLastTab     := Value('LastTab','');
   end;
 end;
 

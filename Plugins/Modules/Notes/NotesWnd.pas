@@ -169,6 +169,8 @@ begin
   SaveCurrentTab;
   TMainForm(Owner).sLineWrap := btn_LineWrap.Down;
   TMainForm(Owner).sMonoFont := btn_monofont.Down;
+  if Tabs.SelectedTab <> nil then TMainForm(Owner).sLastTab := Tabs.SelectedTab.Caption
+     else TMainForm(Owner).sLastTab := '';
   TMainForm(Owner).SaveSettings;
 end;
 
@@ -240,7 +242,7 @@ end;
 
 procedure TNotesForm.FormShow(Sender: TObject);
 begin
-  UpdateTabList('');
+  UpdateTabList(TMainForm(Owner).sLastTab);
  // SetWindowPos(handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
 end;
 
