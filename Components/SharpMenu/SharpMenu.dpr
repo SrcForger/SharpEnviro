@@ -41,6 +41,8 @@ program SharpMenu;
 
 uses
   Forms,
+  Windows,
+  Messages,
   Classes,
   Types,
   Math,
@@ -55,7 +57,8 @@ uses
   uSharpEMenuIcon in 'Units\uSharpEMenuIcon.pas',
   uSharpEMenuIcons in 'Units\uSharpEMenuIcons.pas',
   uSharpEMenuItem in 'Units\uSharpEMenuItem.pas',
-  uSharpEMenuConsts in 'Units\uSharpEMenuConsts.pas';
+  uSharpEMenuConsts in 'Units\uSharpEMenuConsts.pas',
+  uSkinManagerThreads in '..\..\Common\Units\Threads\uSkinManagerThreads.pas';
 
 {$R *.res}
 
@@ -64,6 +67,7 @@ type
   public
     procedure OnAppDeactivate(Sender : TObject);
   end;
+
 
 var
   SkinManager : TSharpESkinManager;
@@ -74,6 +78,8 @@ var
   mfile : String;
   Pos : TPoint;
   i : integer;
+  MutexHandle : THandle;
+  SystemSkinLoadThread : TSystemSkinLoadThread;
 
 
 procedure TEventClass.OnAppDeactivate(Sender : TObject);
@@ -82,6 +88,16 @@ begin
 end;
 
 begin
+  MutexHandle := CreateMutex(nil, TRUE, 'SharpMenuMutex');
+  if MuteXHandle <>0 then
+  begin
+    if GetLastError = ERROR_ALREADY_EXISTS then
+    begin
+      CloseHandle(MuteXHandle);
+      halt;
+    end;
+  end;
+
   Pos := Mouse.CursorPos;
   // Check Params
   if ParamCount >= 2 then
@@ -101,12 +117,14 @@ begin
 
   // init Classes
   events := TEventClass.Create;
+
   SkinManager := TSharpESkinManager.Create(nil);
-  SkinManager.SkinSource := ssSystem;
-  SkinManager.SchemeSource := ssSystem;
+  SystemSkinLoadThread := TSystemSkinLoadThread.Create(SkinManager);
   mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManager);
   Application.CreateForm(TSharpEMenuWnd, wnd);
   Application.OnDeactivate := events.OnAppDeactivate;
+  SystemSkinLoadThread.WaitFor;
+  SystemSkinLoadThread.Free;
 
   wnd.InitMenu(mn,true);
   wnd.Left := Pos.X;
@@ -128,4 +146,6 @@ begin
   // Free Classes
   SkinManager.Free;
   events.Free;
+  
+  CloseHandle(MuteXHandle);
 end.

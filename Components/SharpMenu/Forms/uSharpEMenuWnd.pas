@@ -290,6 +290,8 @@ var
   pOwner : TObject;
   lm : TSharpEMenuWnd;
 begin
+  if FMenu = nil then exit;
+
   if FMenu.PerformClick then
   begin
     // Find the Top Most menu and close everything!
@@ -308,6 +310,10 @@ end;
 
 procedure TSharpEMenuWnd.FormDestroy(Sender: TObject);
 begin
+  FGCheckTimer.Enabled := False;
+  OffsetTimer.Enabled := False;
+  SubMenuTimer.Enabled := False;
+
   if FMenu <> nil then
   begin
     FMenu.ItemIndex := -1;
@@ -421,6 +427,10 @@ end;
 
 procedure TSharpEMenuWnd.FormDeactivate(Sender: TObject);
 begin
+  FGCheckTimer.Enabled := False;
+  OffsetTimer.Enabled := False;
+  SubMenuTimer.Enabled := False;
+
   if (FFreeMenu) then
   begin
     FFreeMenu := False;
@@ -447,6 +457,8 @@ var
   buff : array[0..255] of Char;
   s : string;
 begin
+  if not (FFreeMenu) then exit;
+
   handle := GetForegroundWindow;
   if handle <> 0 then
   begin
@@ -455,6 +467,8 @@ begin
     if CompareText(s,ClassType.ClassName) <> 0 then
     begin
       FGCheckTimer.Enabled := False;
+      OffsetTimer.Enabled := False;
+      SubMenuTimer.Enabled := False;
       Release;
     end;
   end;
