@@ -8,6 +8,8 @@ uses
 
 type
   TBarHideForm = class(TForm)
+    procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure FormCreate(Sender: TObject);
     procedure FormClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -99,6 +101,26 @@ begin
   left := -4096;
   top := -4096;
   Setwindowlong(handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW or WS_EX_LAYERED);
+end;
+
+procedure TBarHideForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbRight then
+   if (Y=Height-1) and (SharpBarMainForm.SharpEBar1.VertPos = vpBottom)
+      or (Y=0) and (SharpBarMainForm.SharpEBar1.VertPos = vpTop) then
+   begin
+     if ModuleManager.Modules.Count = 0 then
+     begin
+       SharpBarMainForm.SharpEBar1.ShowThrobber := True;
+       exit;
+     end;
+     SharpBarMainForm.SharpEBar1.ShowThrobber := not SharpBarMainForm.SharpEBar1.ShowThrobber;
+     LockWindow(SharpBarMainForm.Handle);
+     ModuleManager.FixModulePositions;
+     UnLockWindow(SharpBarMainForm.Handle);
+     if SharpBarMainForm.SharpEBar1.ShowThrobber then SharpBarMainForm.SharpEBar1.Throbber.Repaint;
+   end;
 end;
 
 end.

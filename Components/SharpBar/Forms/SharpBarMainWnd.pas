@@ -36,7 +36,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Forms,
   Dialogs, SharpESkinManager, Menus, StdCtrls, JvSimpleXML, SharpApi, ShellHook,
   GR32, uSharpEModuleManager, DateUtils, PngImageList, SharpEBar, Jpeg, SharpThemeApi,
-  SharpEBaseControls, ImgList, Controls, ExtCtrls;
+  SharpEBaseControls, ImgList, Controls, ExtCtrls, uSkinManagerThreads;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -71,13 +71,13 @@ type
     Settings: TMenuItem;
     DisableBarHiding1: TMenuItem;
     SharpEBar1: TSharpEBar;
-    SkinManager: TSharpESkinManager;
     BarManagment1: TMenuItem;
     CreateemptySharpBar1: TMenuItem;
     DelayTimer1: TTimer;
     DelayTimer2: TTimer;
     DelayTimer3: TTimer;
     Clone1: TMenuItem;
+    QuickAddModule1: TMenuItem;
     procedure Clone1Click(Sender: TObject);
     procedure DelayTimer3Timer(Sender: TObject);
     procedure DelayTimer2Timer(Sender: TObject);
@@ -85,7 +85,7 @@ type
     procedure FormHide(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure CreateemptySharpBar1Click(Sender: TObject);
-    procedure SkinManagerSkinChanged(Sender: TObject);
+    procedure SkinManager1SkinChanged(Sender: TObject);
     procedure DisableBarHiding1Click(Sender: TObject);
     procedure Right1Click(Sender: TObject);
     procedure Left2Click(Sender: TObject);
@@ -115,6 +115,7 @@ type
     procedure AutoPos1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure OnMonitorPopupItemClick(Sender : TObject);
+    procedure OnQuickAddModuleItemClick(Sender : TObject);
   private
     { Private-Deklarationen }
     FSuspended : boolean;
@@ -126,9 +127,13 @@ type
     FTopZone : TBitmap32;
     FBottomZone : TBitmap32;
     FBGImage : TBitmap32;
+    FSkinManager : TSharpESkinManager;
+    SkinManagerLoadThread : TSystemSkinLoadThread;
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem : TJvSimpleXMlElem);
 
+    // Plugin message (to be broadcastet to modules)
+    procedure WMWeatherUpdate(var msg : TMessage); message WM_WEATHERUPDATE;
 
     // Power Management
     procedure WMPowerBroadcast(var msg : TMessage); message WM_POWERBROADCAST;
@@ -158,7 +163,6 @@ type
     procedure WMGetCopyData(var msg: TMessage); message WM_COPYDATA;
     procedure WMSharpEThemeUpdate(var msg : TMessage); message WM_SHARPETHEMEUPDATE;
     procedure WMSchemeUpdate(var msg : TMessage); message WM_SHARPEUPDATESETTINGS;
-  //  procedure WMSystemSkinUpdate(var msg : TMessage); message WM_SYSTEMSKINUPDATE;
 
     procedure OnBarPositionUpdate(Sender : TObject);
   public
@@ -168,6 +172,7 @@ type
     procedure UpdateBGZone;
     procedure UpdateBGImage;
     property BGImage : TBitmap32 read FBGImage;
+    property SkinManager : TSharpESkinManager read FSkinManager;
   end;
 
 const
@@ -177,14 +182,13 @@ const
 var
   SharpBarMainForm: TSharpBarMainForm;
   mfParamID : integer;
-//  SharpESkin : TSharpESkin;
-//  SharpEScheme : TSharpEScheme;
   ModuleManager : TModuleManager;
   ModuleSettings : TJvSimpleXML;
   BarMove : boolean;
   BarMovePoint : TPoint;
 
-
+procedure LockWindow(const Handle: HWND);
+procedure UnLockWindow(const Handle: HWND);
 function PrintWindow(SourceWindow: hwnd; Destination: hdc; nFlags: cardinal): bool; stdcall; external 'user32.dll' name 'PrintWindow';
 
 implementation
@@ -229,12 +233,10 @@ end;
 // Window Message handlers
 // ************************
 
-{procedure TSharpBarMainForm.WMSystemSkinUpdate(var msg : TMessage);
+procedure TSharpBarMainForm.WMWeatherUpdate(var msg : TMessage);
 begin
-  ModuleManager.UpdateModuleSkins;
-  ModuleManager.FixModulePositions;
+  ModuleManager.BroadcastPluginMessage('MM_WEATHERUPDATE');
 end;
-        }
 
 
 procedure TSharpBarMainForm.WMPowerBroadcast(var msg : TMessage);
@@ -258,7 +260,7 @@ procedure TSharpBarMainForm.WMUnlockBarWindow(var msg : TMessage);
 begin
   if FStartup then exit;
   if FBarLock then exit;
-  
+
   UnLockWindow(Handle);
   SendMessage(SharpEBar1.abackground.handle, WM_SETREDRAW, 1, 0);
   RedrawWindow(SharpEBar1.abackground.handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
@@ -818,6 +820,13 @@ end;
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
   FSuspended := False;
+
+  FSkinManager := TSharpESkinManager.Create(self);
+  SharpEBar1.SkinManager := FSkinManager;
+  
+  // Load System Skin and Scheme in a Thread
+  SkinManagerLoadThread := TSystemSkinLoadThread.Create(FSkinManager);
+
   FBottomZone := TBitmap32.Create;
   FTopZone    := TBitmap32.Create;
   FBGImage    := TBitmap32.Create;
@@ -831,10 +840,6 @@ begin
 
   DebugOutput('Creating Main Form',1,1);
   DebugOutput('Creating SkinManager',2,1);
-
-  SkinManager.SkinSource := ssSystem;
-  SkinManager.SchemeSource := ssSystem;
-  SkinManager.SystemSkin.LoadSkinFromStream;
 
   randomize;
   // Initialize module settings xml handler
@@ -850,13 +855,6 @@ begin
   DebugOutput('Loading Modules from Directory: '+ExtractFileDir(Application.ExeName) + '\Modules\',2,1);
   ModuleManager.LoadFromDirectory(ExtractFileDir(Application.ExeName) + '\Modules\');
 
-  SharpEBar1.UpdateSkin;
-  SharpEBar1.Throbber.UpdateSkin;
-
-  ModuleManager.UpdateModuleSkins;
-  ModuleManager.FixModulePositions;
-  ModuleManager.RefreshMiniThrobbers;
-
   // VWM Compatible | Taskhide | Alt+f4 lock
   DebugOutput('Setting Form properties',2,1);
   SetWindowLong(Handle, GWL_USERDATA, magicDWord);
@@ -869,6 +867,14 @@ begin
   SharpEBar1.onPositionUpdate := OnBarPositionUpdate;
 
   BarHideForm := TBarHideForm.Create(self);
+
+  // Wait for the Skin Loading Thread to be finished
+  SkinManagerLoadThread.WaitFor;
+  SkinManagerLoadThread.Free;
+
+  FSkinManager.onSkinChanged := SkinManager1SkinChanged;
+  SharpEBar1.UpdateSkin;
+  SharpEBar1.Throbber.UpdateSkin;
 
   DelayTimer2.Enabled := True;
 
@@ -953,13 +959,25 @@ begin
   SaveBarSettings;
 end;
 
+procedure TSharpBarMainForm.OnQuickAddModuleItemClick(Sender : TObject);
+var
+  i : integer;
+begin
+  if not (Sender is TMenuItem) then exit;
+  i := TMenuItem(Sender).Tag;
+  ModuleManager.CreateModule(i,-1);
+end;
+
 procedure TSharpBarMainForm.PopupMenu1Popup(Sender: TObject);
 var
   n : integer;
   item : TMenuItem;
+  mfile : TModuleFile;
+  s : String;
 begin
+  // Build Monitor List
   Monitor1.Clear;
-  for n := 0 to Screen.MonitorCount-1 do
+  for n := 0 to Screen.MonitorCount - 1 do
   begin
     item := TMenuItem.Create(Monitor1);
     if Screen.Monitors[n] = Screen.PrimaryMonitor then
@@ -970,6 +988,22 @@ begin
     item.OnClick := OnMonitorPopupItemClick;
     Monitor1.Add(item);
   end;
+
+  // Build Module List
+  QuickAddModule1.Clear;
+  for n := 0 to ModuleManager.ModuleFiles.Count - 1 do
+  begin
+    mfile := TModuleFile(ModuleManager.ModuleFiles.Items[n]);
+    item := TMenuItem.Create(Monitor1);
+    s := ExtractFileName(mfile.FileName);
+    setlength(s,length(s) - length(ExtractFileExt(s)));
+    item.Caption := s;
+    item.Tag := n;
+    item.ImageIndex := 11;
+    item.OnClick := OnQuickAddModuleItemClick;
+    QuickAdDModule1.Add(item);
+  end;
+
   AutoStart1.Checked := SharpEBar1.AutoStart;
   DisableBarHiding1.Checked := SharpEBar1.DisableHideBar;
 end;
@@ -1219,16 +1253,20 @@ begin
       if oVP <> SharpEBar1.VertPos then
       begin
         UpdateBGImage;
+        LockWindow(Handle);
         SharpEBar1.UpdateSkin;
         ModuleManager.UpdateModuleSkins;
         ModuleManager.FixModulePositions;
         ModuleManager.RefreshMiniThrobbers;
+        UnLockWindow(Handle);
       end;
       if oHP <> SharpEBar1.HorizPos then
       begin
         UpdateBGImage;
+        LockWindow(Handle);
         ModuleManager.FixModulePositions;
         ModuleManager.RefreshMiniThrobbers;
+        UnLockWindow(Handle);
       end;
     end;
     if BarHideForm <> nil then BarHideForm.UpdateStatus;
@@ -1265,7 +1303,9 @@ begin
          exit;
        end;
        SharpEBar1.ShowThrobber := not SharpEBar1.ShowThrobber;
+       LockWindow(Handle);
        ModuleManager.FixModulePositions;
+       UnLockWindow(Handle);
        if SharpEBar1.ShowThrobber then SharpEBar1.Throbber.Repaint;
      end;
   if (Button = mbLeft) and (not SharpEBar1.DisableHideBar) then
@@ -1319,9 +1359,11 @@ begin
   if mThrobber = nil then exit;
   if MessageBox(self.handle,'Do you really want to delete this module? All settings will be lost!','Confirm : "Delete Module"',MB_YESNO) = IDYES then
   begin
+    LockWindow(Handle);
     ModuleManager.Delete(mThrobber.Tag);
     SaveBarSettings;
     ModuleManager.ReCalculateModuleSize;
+    UnLockWindow(Handle);
   end;
 end;
 
@@ -1373,7 +1415,7 @@ begin
   SaveBarSettings;
 end;
 
-procedure TSharpBarMainForm.SkinManagerSkinChanged(Sender: TObject);
+procedure TSharpBarMainForm.SkinManager1SkinChanged(Sender: TObject);
 begin
 //  if FThemeUpdating then exit;
   if FSuspended then exit;

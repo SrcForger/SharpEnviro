@@ -161,6 +161,7 @@ type
                      function GetMaxBarSpace : integer;
                      procedure MoveModule(Index, Direction : integer);
                      function SendPluginMessage(ID : integer; msg : string) : integer;
+                     procedure BroadcastPluginMessage(msg : string);
                      procedure BroadCastModuleRefresh;
                      procedure ReCalculateModuleSize;
                      procedure OnMiniThrobberClick(Sender : TObject);
@@ -231,13 +232,28 @@ begin
   inherited Destroy;
 end;
 
+// Broadcast a message to all modules
+procedure TModuleManager.BroadCastPluginMessage(msg : string);
+var
+  n : integer;
+  tempModule : TModule;
+begin
+  for n := 0 to FModules.Count - 1 do
+  begin
+    tempModule := TModule(FModules.Items[n]);
+    if assigned(tempModule.ModuleFile.DllModuleMessage) then
+       tempModule.ModuleFile.DllModuleMessage(tempModule.ID,msg);
+  end;
+end;
+
+// Broadcast a message to a single module by ID
 function TModuleManager.SendPluginMessage(ID : integer; msg : string) : integer;
 var
   n : integer;
   tempModule : TModule;
 begin
   result := 0;
-  for n := 0 to FModules.Count -1 do
+  for n := 0 to FModules.Count - 1 do
   begin
     tempModule := TModule(FModules.Items[n]);
     if tempModule.ID = ID then
@@ -306,8 +322,10 @@ begin
             break;
           end;
 
+      LockWindow(FParent);
       BroadCastModuleRefresh;
       FixModulePositions;
+      UnLockWindow(FParent);
       exit;
     end;
   end;
@@ -331,7 +349,9 @@ begin
     begin
       TempModule.ModuleFile.DLLCloseModule(ID);
       FModules.Delete(n);
+      LockWindow(FParent);
       FixModulePositions;
+      UnLockWindow(FParent);
       exit;
     end;
   end;
@@ -445,7 +465,7 @@ procedure TModuleManager.CreateModule(MFID : integer; Position : integer);
 var
   tempModuleFile : TModuleFile;
 begin
-  if MFID > FModuleFiles.Count -1 then exit;
+  if MFID > FModuleFiles.Count - 1 then exit;
   tempModuleFile := TModuleFile(FModuleFiles.Items[MFID]);
   LoadModule(GenerateModuleID,ExtractFileName(tempModuleFile.FFileName),Position,-1);
   ReCalculateModuleSize;
@@ -742,12 +762,14 @@ begin
         update := true;
       end;
 
-        if Update then
-        begin
-          SortModulesByPosition;
-          FixModulePositions;
-          exit;
-        end;
+      if Update then
+      begin
+        LockWindow(FParent);
+        SortModulesByPosition;
+        FixModulePositions;
+        UnLockWindow(FParent);
+        exit;
+      end;
     end;
   end;
 end;
@@ -1060,8 +1082,6 @@ begin
   FSkinManager := pSkinManager;
   FBar         := pBar;
   FLoaded   := False;
- // FModules  := TObjectList.Create;
-//  FModules.Clear;
   LoadDll;
 end;
 
@@ -1069,8 +1089,6 @@ destructor TModuleFile.Destroy;
 begin
   Inherited Destroy;
   UnloadDll;
-//  FModules.Free;
-//  FModules := nil;
 end;
 
 

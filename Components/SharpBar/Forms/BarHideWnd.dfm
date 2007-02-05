@@ -18,6 +18,7 @@ object BarHideForm: TBarHideForm
   OnClick = FormClick
   OnClose = FormClose
   OnCreate = FormCreate
+  OnMouseUp = FormMouseUp
   PixelsPerInch = 96
   TextHeight = 13
 end

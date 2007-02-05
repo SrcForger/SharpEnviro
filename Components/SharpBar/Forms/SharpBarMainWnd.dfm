@@ -35,9 +35,13 @@ object SharpBarMainForm: TSharpBarMainForm
       end
     end
     object PluginManager1: TMenuItem
-      Caption = 'Plugin Manager'
+      Caption = 'Module Manager'
       ImageIndex = 12
       OnClick = PluginManager1Click
+    end
+    object QuickAddModule1: TMenuItem
+      Caption = 'Quick Add Module'
+      ImageIndex = 25
     end
     object N4: TMenuItem
       Caption = '-'
@@ -640,6 +644,20 @@ object SharpBarMainForm: TSharpBarMainForm
           0049454E44AE426082}
         Name = 'PngImage24'
         Background = clMenu
+      end
+      item
+        PngImage.Data = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          6100000006624B4744000000000000F943BB7F000000097048597300000DD700
+          000DD70142289B780000000774494D45000000000000000973942E000000A549
+          44415478DA6364A01030D2CC0093D42567809431947BF6CCEC1813520DF8DF9C
+          E90466D74EDFC700348071901B80E667304036000DC0C304D980FF3D792E0CBF
+          FFFD070BFEFEFB1F45C7FFFF100C92AB9B8970118A010DE98E0C0F5F7F032BFC
+          0734088818BEFDFACFF01768D81F10FF1F0383920427C3D4E547B01A80E18520
+          0F5330BD6EC769C25EC01588E7EF7F061B40762C506C00D1D188C500CA9232B1
+          80620300486577112F125DDB0000000049454E44AE426082}
+        Name = 'PngImage25'
+        Background = clMenu
       end>
     Left = 320
     Top = 40
@@ -704,7 +722,6 @@ object SharpBarMainForm: TSharpBarMainForm
     end
   end
   object SharpEBar1: TSharpEBar
-    SkinManager = SkinManager
     AutoPosition = True
     HorizPos = hpMiddle
     VertPos = vpTop
@@ -718,13 +735,6 @@ object SharpBarMainForm: TSharpBarMainForm
     onThrobberMouseMove = SharpEBar1ThrobberMouseMove
     onResetSize = SharpEBar1ResetSize
     Left = 384
-    Top = 8
-  end
-  object SkinManager: TSharpESkinManager
-    SkinSource = ssComponent
-    SchemeSource = ssComponent
-    onSkinChanged = SkinManagerSkinChanged
-    Left = 352
     Top = 8
   end
   object DelayTimer1: TTimer
