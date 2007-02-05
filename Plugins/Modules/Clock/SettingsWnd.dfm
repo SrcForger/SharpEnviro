@@ -3,8 +3,8 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Clock Module Settings'
-  ClientHeight = 143
-  ClientWidth = 198
+  ClientHeight = 179
+  ClientWidth = 244
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,7 +15,7 @@ object SettingsForm: TSettingsForm
   Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 13
-  object Label4: TLabel
+  object lb_textsize: TLabel
     Left = 8
     Top = 8
     Width = 48
@@ -29,9 +29,16 @@ object SettingsForm: TSettingsForm
     Height = 13
     Caption = 'Format String:'
   end
+  object Label2: TLabel
+    Left = 8
+    Top = 104
+    Width = 234
+    Height = 13
+    Caption = 'Bottom Label (leave empty to only use one label)'
+  end
   object Button1: TButton
-    Left = 40
-    Top = 112
+    Left = 88
+    Top = 152
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -39,8 +46,8 @@ object SettingsForm: TSettingsForm
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 120
-    Top = 112
+    Left = 168
+    Top = 152
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -50,13 +57,13 @@ object SettingsForm: TSettingsForm
   object edit_format: TEdit
     Left = 8
     Top = 72
-    Width = 153
+    Width = 201
     Height = 21
     TabOrder = 2
     Text = 'hh:mm:ss'
   end
   object Button3: TButton
-    Left = 168
+    Left = 216
     Top = 72
     Width = 25
     Height = 22
@@ -90,20 +97,38 @@ object SettingsForm: TSettingsForm
     Caption = 'Small'
     TabOrder = 6
   end
+  object edit_bottom: TEdit
+    Left = 8
+    Top = 120
+    Width = 201
+    Height = 21
+    TabOrder = 7
+    Text = 'DD.MM.YYYY'
+    OnChange = edit_bottomChange
+  end
+  object Button4: TButton
+    Left = 213
+    Top = 120
+    Width = 25
+    Height = 22
+    Caption = '...'
+    TabOrder = 8
+    OnClick = Button4Click
+  end
   object OpenFile: TOpenDialog
     FileName = '*.*'
     Filter = 'All Files|*.*|Applications (*.exe)|*.exe'
     Options = [ofHideReadOnly, ofEnableSizing, ofForceShowHidden]
     Title = 'Select Target File'
-    Left = 32
-    Top = 48
+    Left = 216
+    Top = 32
   end
   object XPManifest1: TXPManifest
-    Left = 48
+    Left = 216
     Top = 40
   end
   object PopupMenu1: TPopupMenu
-    Left = 16
+    Left = 192
     Top = 40
     object N213046HHMMSS3: TMenuItem
       Caption = '21:30:46 (HH:MM:SS)'

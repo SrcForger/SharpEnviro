@@ -49,12 +49,14 @@ type
     ClockTimer: TTimer;
     lb_clock: TSharpESkinLabel;
     OpenWindowsDateTimesettings1: TMenuItem;
+    lb_bottomclock: TSharpESkinLabel;
     procedure lb_clockDblClick(Sender: TObject);
     procedure ClockTimerTimer(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
   protected
   private
     sFormat : String;
+    sBottomFormat : String;
     sStyle  : TSharpELabelStyle;
   public
     ModuleID : integer;
@@ -77,12 +79,14 @@ var
   item : TJvSimpleXMLElem;
 begin
   sFormat := 'HH:MM:SS';
+  sBottomFormat := 'DD.MM.YYYY';
   sStyle  := lsMedium;
 
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
   if item <> nil then with item.Items do
   begin
     sFormat := Value('Format','HH:MM:SS');
+    sBottomFormat := Value('BottomFormat','DD.MM.YYYY');
     case IntValue('Style',1) of
       0: sStyle := lsSmall;
       2: sStyle := lsBig;
@@ -99,6 +103,11 @@ end;
 procedure TMainForm.SetSize(NewWidth : integer);
 begin
   Width := NewWidth;
+  if lb_bottomClock.Visible then
+  begin
+    lb_clock.Left := newWidth div 2 - lb_clock.Width div 2;
+    lb_bottomclock.Left := newWidth div 2 - lb_bottomclock.Width div 2;
+  end else lb_clock.Left := 0;
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
@@ -109,7 +118,16 @@ begin
   ClockTimer.OnTimer(ClockTimer);
 
 //  newWidth := lb_clock.Canvas.TextWidth(sFormat)+4;
-  newWidth := lb_clock.Width;
+  if lb_bottomClock.Visible then
+  begin
+    lb_clock.Top := 1 + ((Height - 2 - 4) div 2 div 2) - (lb_clock.Height div 2);
+    lb_bottomclock.Top := Height - 3 - ((Height - 2 - 4) div 2 div 2) - (lb_bottomclock.Height div 2); 
+    newWidth := max(lb_clock.Width,lb_bottomClock.Width);
+  end else
+  begin
+    newWidth := lb_clock.Width;
+    lb_clock.Top := Height div 2 - (lb_clock.Height div 2) - 2;
+  end;
   Tag := newWidth;
   Hint := inttostr(NewWidth);
   if newWidth <> width then
@@ -125,6 +143,8 @@ begin
   try
     SettingsForm := TSettingsForm.Create(nil);
     SettingsForm.edit_format.Text := sFormat;
+    SettingsForm.edit_bottom.Text := sBottomFormat;
+    SettingsForm.edit_bottom.OnChange(SettingsForm.edit_bottom);
     case sStyle of
       lsSmall  : SettingsForm.cb_small.Checked := True;
       lsMedium : SettingsForm.cb_medium.Checked := True;
@@ -134,6 +154,7 @@ begin
     if SettingsForm.ShowModal = mrOk then
     begin
       sFormat  := SettingsForm.edit_format.Text;
+      sBottomFormat := SettingsForm.edit_bottom.Text;
       if SettingsForm.cb_small.Checked then sStyle := lsSmall
          else if SettingsForm.cb_large.Checked then sStyle := lsBig
               else sStyle := lsMedium;
@@ -143,6 +164,7 @@ begin
       begin
         clear;
         Add('Format',sFormat);
+        Add('BottomFormat',sBottomFormat);
         case sStyle of
           lsSmall  : Add('Style',0);
           lsMedium : Add('Style',1);
@@ -162,14 +184,30 @@ end;
 procedure TMainForm.ClockTimerTimer(Sender: TObject);
 var
   s : string;
-  ow : integer;
+  ow,nw : integer;
+  ov : boolean;
 begin
-  ow := lb_clock.Width;
+  ow := Width;
+  ov := lb_bottomclock.visible;
   DateTimeToString(s,sFormat,now());
   lb_clock.Caption := s;
-  if lb_clock.LabelStyle <> sStyle then
-     lb_clock.LabelStyle := sStyle;
-  if ow - lb_clock.Width > 4  then RealignComponents(True);
+  if length(trim(sBottomFormat)) > 0 then
+  begin
+    DateTimeToString(s,sBottomFormat,now());
+    lb_bottomclock.Caption := s;
+    if lb_clock.LabelStyle <> lsSmall then
+       lb_clock.LabelStyle := lsSmall;
+    nw := max(lb_bottomclock.Width,lb_clock.Width);
+    lb_bottomclock.Visible := True;
+  end else
+  begin
+    if lb_clock.LabelStyle <> sStyle then
+       lb_clock.LabelStyle := sStyle;
+    nw := lb_clock.Width;
+    lb_bottomclock.Visible := False;
+  end;
+  if (nw - ow > 4) or (lb_bottomclock.visible <> ov) then
+     RealignComponents(True);
 end;
 
 procedure TMainForm.lb_clockDblClick(Sender: TObject);

@@ -40,7 +40,7 @@ type
   TSettingsForm = class(TForm)
     Button1: TButton;
     Button2: TButton;
-    Label4: TLabel;
+    lb_textsize: TLabel;
     Label1: TLabel;
     OpenFile: TOpenDialog;
     XPManifest1: TXPManifest;
@@ -54,6 +54,11 @@ type
     cb_medium: TRadioButton;
     cb_small: TRadioButton;
     N21304619062006HHMMSSDDMMYYYY1: TMenuItem;
+    Label2: TLabel;
+    edit_bottom: TEdit;
+    Button4: TButton;
+    procedure edit_bottomChange(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
     procedure N213046HHMMSS3Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -81,13 +86,31 @@ end;
 
 procedure TSettingsForm.Button3Click(Sender: TObject);
 begin
-  PopUpMenu1.PopupComponent := Button3;
+  PopUpMenu1.PopupComponent := edit_format;
   PopUpMenu1.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
 end;
 
 procedure TSettingsForm.N213046HHMMSS3Click(Sender: TObject);
 begin
-  edit_format.Text := TMenuItem(SendeR).Hint;
+  if PopUpMenu1.PopupComponent is TEdit then
+     TEdit(PopUpMenu1.PopupComponent).Text := TMenuItem(Sender).Hint;
+  if PopUpMenu1.PopupComponent = edit_bottom then
+     edit_bottom.OnChange(edit_bottom);
+end;
+
+procedure TSettingsForm.Button4Click(Sender: TObject);
+begin
+  PopUpMenu1.PopupComponent := edit_bottom;
+  PopUpMenu1.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
+end;
+
+procedure TSettingsForm.edit_bottomChange(Sender: TObject);
+begin
+  if length(trim(edit_bottom.Text)) = 0 then lb_textsize.Enabled := True
+     else lb_textsize.enabled := False;
+  cb_large.Enabled := lb_textsize.Enabled;
+  cb_medium.Enabled := lb_textsize.Enabled;
+  cb_small.Enabled := lb_textsize.Enabled;     
 end;
 
 end.
