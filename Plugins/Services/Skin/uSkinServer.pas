@@ -79,7 +79,7 @@ var
   n : integer;
 begin
   //Load new skin
-  SharpThemeApi.LoadTheme(True);
+  SharpThemeApi.LoadTheme(True,[tpSkin]);
   FFileName := SharpThemeApi.GetSkinDirectory + 'Skin.xml';
   FSkin.LoadFromXmlFile(FFileName);
   if FStream <> nil then
