@@ -53,7 +53,7 @@ implementation
 initialization
   DefaultSharpESkinTextRecord.FName := 'Small Fonts';
   DefaultSharpESkinTextRecord.FSize := 7;
-  DefaultSharpESkinTextRecord.FColor := '$WorkAreaText';
+  DefaultSharpESkinTextRecord.FColor := '0';
 
 //SharpEScheme
   DefaultSharpEScheme := TSharpEScheme.Create(nil);

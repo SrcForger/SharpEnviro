@@ -465,6 +465,7 @@ var
   r: TRect;
   TextSize : TPoint;
   GlyphPos, TextPos: TPoint;
+  temp : TBitmap32;
 begin
   with bmp do
   begin
@@ -477,17 +478,24 @@ begin
       FrameRectS(0, 0, Width, Height, color32(clblack));
       Inc(r.Left); Inc(r.Top); Dec(r.Bottom); Dec(r.Right);
     end;
-    if FButtonDown then
+    if (FButtonDown or FDown) then
     begin
       FrameRectS(r.Left, r.Top, r.Right, r.Bottom,
         setalpha(color32(Scheme.GetColorByName('WorkAreaLight')), 200));
       FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1,
         setalpha(color32(Scheme.GetColorByName('WorkAreaDark')), 200));
     end
+    else if (FButtonOver) then
+    begin
+      FrameRectS(r.Left, r.Top, r.Right, r.Bottom,
+        setalpha(color32(Scheme.GetColorByName('ThrobberDark')), 200));
+      FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1,
+        setalpha(color32(Scheme.GetColorByName('ThrobberLight')), 200));
+    end
     else
     begin
       FrameRectS(r.Left, r.Top, r.Right, r.Bottom,
-        setalpha(color32(Scheme.GetColorByName('WorkAreadark')), 200));
+        setalpha(color32(Scheme.GetColorByName('WorkAreaDark')), 200));
       FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1,
         setalpha(color32(Scheme.GetColorByName('WorkAreaLight')), 200));
     end;
@@ -500,46 +508,23 @@ begin
 
     if FGlyph32 <> nil then
     begin
+      Temp := TBitmap32.Create;
+      Temp.DrawMode := dmBlend;
+      Temp.CombineMode := cmMerge;
+      Temp.SetSize(16,16);
+      Temp.Clear(color32(0,0,0,0));
+      TLinearResampler.Create(FGlyph32);
+      FGlyph32.DrawTo(Temp,Rect(0,0,16,16));
       TextSize.X := bmp.TextWidth(caption);
       TextSize.Y := bmp.TextHeight(caption);
       TextPos.X := Width div 2 - TextSize.X div 2;
       TextPos.Y := Height div  2 - TextSize.Y div 2;
-      case Layout of
-        blGlyphLeft:
-        begin
-          GlyphPos.X := TextPos.X - (FGlyph32.Width + Margin) div 2;
-          GlyphPos.Y := TextPos.Y - Glyph32.Height div 2 + TextSize.Y div 2;
-          TextPos.X := TextPos.X + (FGlyph32.Width + Margin) div 2;
-        end;
-
-        blGlyphRight:
-        begin
-          GlyphPos.Y := TextPos.Y - Glyph32.Height div 2 + TextSize.Y div 2;
-          TextPos.X := TextPos.X - (FGlyph32.Width + Margin) div 2;
-          GlyphPos.X := TextPos.X + TextSize.X + Margin;
-        end;
-
-        blGlyphTop:
-        begin
-          GlyphPos.X := TextPos.X + TextSize.X div 2 - Glyph32.Width div 2;
-          GlyphPos.Y := TextPos.Y - (FGlyph32.Height + Margin) div 2;
-          TextPos.Y := TextPos.Y + (FGlyph32.Height + Margin) div 2;
-        end;
-
-        blGlyphBottom:
-        begin
-          GlyphPos.X := TextPos.X + TextSize.X div 2 - Glyph32.Width div 2;
-          TextPos.Y := TextPos.Y - (FGlyph32.Height + Margin) div 2;
-          GlyphPos.Y := TextPos.Y + TextSize.Y + Margin;
-        end;
-      end;
-      
-      FGlyph32.DrawMode := dmBlend;
-      FGlyph32.CombineMode := cmMerge;
-      if not Enabled then FGlyph32.MasterAlpha := FDisabledAlpha;
-      FGlyph32.DrawTo(bmp,GlyphPos.X,GlyphPos.Y);
-      FGlyph32.MasterAlpha := 255;
-      bmp. RenderText(TextPos.X,TextPos.Y,Caption,0, Color32(bmp.Font.color));
+      GlyphPos.X := TextPos.X - (Temp.Width + Margin) div 2;
+      GlyphPos.Y := TextPos.Y - Temp.Height div 2 + TextSize.Y div 2;
+      TextPos.X := TextPos.X + (Temp.Width + Margin) div 2;
+      Temp.DrawTo(bmp,GlyphPos.X,GlyphPos.Y);
+      bmp.RenderText(TextPos.X,TextPos.Y,Caption,0, Color32(bmp.Font.color));
+      Temp.Free;
     end;
   end;
 end;

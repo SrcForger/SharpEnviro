@@ -170,7 +170,7 @@ begin
     end;
   end;
   if FAutoPosition then
-     Top := 0;
+     Top := 3;
   with bmp do
   begin
     Clear(color32(0, 0, 0, 0));

@@ -142,7 +142,7 @@ begin
       if not SharpThemeApi.Initialized then
       begin
         SharpThemeApi.InitializeTheme;
-        SharpThemeApi.LoadTheme(True);
+        SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
       end;
     end;
 
@@ -200,7 +200,7 @@ begin
   begin
     FIsThemeLoading := False;
     if not (csDesigning in ComponentState) then
-       SharpThemeApi.LoadTheme;
+       SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
     LoadSharpEScheme(FSystemScheme);
     RefreshControls;
   end;
@@ -210,7 +210,7 @@ begin
     if not FIsThemeLoading then
     begin
       if not (csDesigning in ComponentState) then
-         SharpThemeApi.LoadTheme;
+         SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
       LoadSharpEScheme(FSystemScheme);
       if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
       RefreshControls;
@@ -223,7 +223,7 @@ begin
     if SchemeSource = ssSystem then
     begin
       if not (csDesigning in ComponentState) then
-         SharpThemeApi.LoadTheme;
+         SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
       LoadSharpEScheme(FSystemScheme);
     end;
     RefreshControls;

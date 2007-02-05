@@ -185,12 +185,17 @@ end;        }
 
 procedure TSystemSharpESkin.LoadSkinFromStream;
 var
+  loadfile : String;
   stream : TFileStream;
 begin
   inherited Clear;
-  stream := TFileStream.Create(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin',fmOpenRead or fmShareDenyNone);
-  inherited LoadFromStream(Stream);
-  Stream.Free;
+  loadfile := SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin';
+  if FileExists(loadfile) then
+  begin
+    stream := TFileStream.Create(loadfile,fmOpenRead or fmShareDenyNone);
+    inherited LoadFromStream(Stream);
+    Stream.Free;
+  end;
   if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
 end;
 
