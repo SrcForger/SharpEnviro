@@ -48,6 +48,7 @@ type
     lb_barsize: TLabel;
     tb_size: TGaugeBar;
     Label2: TLabel;
+    Label3: TLabel;
     procedure tb_sizeChange(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);

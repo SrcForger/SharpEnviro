@@ -3,7 +3,7 @@ object MainForm: TMainForm
   Top = 0
   Width = 293
   Height = 195
-  Caption = 'Sharp Menu'
+  Caption = 'VolumeControl'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,7 +19,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 285
-    Height = 164
+    Height = 166
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -39,12 +39,13 @@ object MainForm: TMainForm
     end
     object mute: TSharpEButton
       Left = 2
-      Top = 1
+      Top = 0
       Width = 25
       Height = 20
       SkinManager = SharpESkinManager1
       AutoSize = True
       OnClick = muteClick
+      OnMouseUp = muteMouseUp
       Glyph32.DrawMode = dmBlend
       Glyph32.CombineMode = cmMerge
       Glyph32.ResamplerClassName = 'TLinearResampler'

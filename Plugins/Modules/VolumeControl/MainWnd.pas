@@ -50,6 +50,8 @@ type
     pbar: TSharpEProgressBar;
     mute: TSharpEButton;
     cshape: TShape;
+    procedure muteMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure cshapeMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure cshapeMouseMove(Sender: TObject; Shift: TShiftState; X,
@@ -307,6 +309,13 @@ begin
      else if x<0 then pbar.Value := 0
      else pbar.Value := round((X/cshape.Width) * pbar.Max);
   SetMasterVolume(pbar.Value,(sMixer));
+end;
+
+procedure TMainForm.muteMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbRight then
+       SharpApi.SharpExecute('sndvol32.exe');
 end;
 
 end.

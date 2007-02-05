@@ -3,7 +3,7 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Volume Control  Module Settings'
-  ClientHeight = 193
+  ClientHeight = 231
   ClientWidth = 194
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -57,9 +57,20 @@ object SettingsForm: TSettingsForm
       ' need.'
     WordWrap = True
   end
+  object Label3: TLabel
+    Left = 8
+    Top = 160
+    Width = 177
+    Height = 25
+    AutoSize = False
+    Caption = 
+      'Right click on the "mute" button will open the windows volume co' +
+      'ntrol...'
+    WordWrap = True
+  end
   object Button1: TButton
     Left = 32
-    Top = 160
+    Top = 200
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -68,7 +79,7 @@ object SettingsForm: TSettingsForm
   end
   object Button2: TButton
     Left = 112
-    Top = 160
+    Top = 200
     Width = 75
     Height = 25
     Caption = 'Cancel'
