@@ -54,8 +54,7 @@ uses
   HTTPGet,
   SharpAPI,
   dialogs,
-  jvsimplexml,
-  uSharpDeskDebugging;
+  jvsimplexml;
 
 type
   TOnReadValue = procedure(Value: string);
@@ -163,7 +162,7 @@ type
     Forecast: TXMLForecast;
     constructor Create(pOwner : TObject);
     destructor Destroy; override;
-    property OnReadValue: TOnReadValue read FOnReadValue write FOnReadValue;    
+    property OnReadValue: TOnReadValue read FOnReadValue write FOnReadValue;
   published
     property Owner : TObject read FOwner;
   end;
@@ -175,9 +174,13 @@ type
     xmlCC, xmlForecast, xmlLinks: TJvSimpleXml;
   public
     wxml: TXMLWeather;
+    FCCValid     : boolean;
+    FFCValid     : boolean;
     constructor Create;
     destructor Destroy; override;
     procedure Update(WeatherLocation : String);
+    property CCValid : boolean read FCCValid;
+    property FCValid : boolean read FFCValid;
   end;
 
 //var
@@ -202,10 +205,10 @@ end;
 
 destructor TWeatherParser.Destroy;
 begin
-  DebugFree(xmlCC);
-  DebugFree(xmlForecast);
-  DebugFree(xmlLinks);
-  DebugFree(wxml);
+  FreeAndNil(xmlCC);
+  FreeAndNil(xmlForecast);
+  FreeAndNil(xmlLinks);
+  FreeAndNil(wxml);
   inherited;
 end;
 
@@ -223,9 +226,11 @@ begin
     // Refresh all classes
       wxml.HeadLoc.Refresh;
       wxml.CurrentCondition.Refresh;
+      FCCValid := True;
     except
+      FCCValid := False;
     end;
-  end;
+  end else FCCValid := False;
 
   // Load Forecast
   tmp := GetSharpeUserSettingsPath + spath + 'Data\'+WeatherLocation + '\forecast.xml';
@@ -235,9 +240,11 @@ begin
       xmlForecast.LoadFromFile(tmp);
     // Refresh all classes
       wxml.Forecast.Refresh;
+      FFCValid := True;
     except
+      FFCValid := False;
     end;
-  end;
+  end else FFCValid := False;
 
 end;
 
@@ -286,9 +293,9 @@ end;
 
 destructor TXMLWeather.Destroy;
 begin
-  DebugFree(HeadLoc);
-  DebugFree(CurrentCondition);
-  DebugFree(Forecast);
+  FreeAndNil(HeadLoc);
+  FreeAndNil(CurrentCondition);
+  FreeAndNil(Forecast);
   inherited;
 end;
 
