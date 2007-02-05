@@ -512,7 +512,7 @@
       <text>
         <draw>1</draw>
         <maxwidth>w-34</maxwidth>
-        <location>cw-1,ch</location>
+        <location>cw+6,ch</location>
         <name>Small Fonts</name>
         <size>7</size>
         <color>$Text</color>
@@ -524,7 +524,7 @@
       <icon>
         <draw>1</draw>
         <size>14</size>
-        <location>cw-twh+3,3</location>
+        <location>cw-twh+10,3</location>
       </icon>
       <spacing>2</spacing>
       <location>0,1</location>
@@ -797,8 +797,8 @@
     <compact>
       <text>
         <draw>1</draw>
-        <maxwidth>w-12</maxwidth>
-        <location>cw-1,ch</location>
+        <maxwidth>w-30</maxwidth>
+        <location>cw+6,ch</location>
         <name>Small Fonts</name>
         <size>7</size>
         <color>$Text</color>
@@ -808,13 +808,13 @@
         <shadowalpha>196</shadowalpha>
       </text>
       <icon>
-        <draw>0</draw>
-        <size>12</size>
-        <location>cw+8-twh,2</location>
+        <draw>1</draw>
+        <size>14</size>
+        <location>cw-twh+10,3</location>
       </icon>
       <spacing>1</spacing>
       <location>0,1</location>
-      <dimension>96,20</dimension>
+      <dimension>80,20</dimension>
       <OnNormalMouseEnter>Scripts\TaskItemNormalMouseEnter.skinscript</OnNormalMouseEnter>
       <OnNormalMouseLeave>Scripts\TaskItemNormalMouseLeave.skinscript</OnNormalMouseLeave>
       <OnDownMouseEnter>Scripts\TaskItemDownMouseEnter.skinscript</OnDownMouseEnter>
