@@ -37,6 +37,9 @@ uses
   Classes;
 
 type
+  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet);
+  TThemeParts = set of TThemePart;
+
   TSharpESkinColor = record
     Name: string;
     Tag: string;
@@ -51,13 +54,15 @@ type
     Tag: string;
   end;
 
+const
+  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet];
+
 
 // ThemeAPIControls
 procedure InitializeTheme; external 'SharpThemeApi.dll' name 'InitializeTheme';
 function Initialized: boolean; external 'SharpThemeApi.dll' name 'Initialized';
-function LoadTheme(pName : PChar) : boolean; overload; external 'SharpThemeApi.dll' name 'LoadTheme';
-function LoadTheme : boolean; overload; external 'SharpThemeApi.dll' name 'LoadCurrentTheme';
-function LoadTheme(ForceReload : boolean) : boolean; overload; overload; external 'SharpThemeApi.dll' name 'LoadCurrentThemeF';
+function LoadTheme(pName: PChar; ForceReload: Boolean = False; ThemeParts : TThemeParts = ALL_THEME_PARTS) : boolean; overload external 'SharpThemeApi.dll' name 'LoadTheme';
+function LoadTheme(ForceReload: Boolean = False; ThemeParts : TThemeParts = ALL_THEME_PARTS) : boolean; overload; external 'SharpThemeApi.dll' name 'LoadCurrentTheme';
 
 // Global data
 function GetCurrentSharpEThemeName : PChar; external 'SharpThemeApi.dll' name 'GetCurrentSharpEThemeName';

@@ -43,6 +43,9 @@ uses
   SharpAPI in '..\SharpAPI\SharpAPI.pas';
 
 type
+  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet);
+  TThemeParts = set of TThemePart;
+
   TSharpESkinColor = record
     Name: string;
     Tag: string;
@@ -58,6 +61,7 @@ type
   end;
 
   TThemeIconSet = record
+    LastUpdate : Int64;
     Name: string;
     Author: string;
     Website: string;
@@ -66,6 +70,7 @@ type
   end;
 
   TThemeSkin = record
+    LastUpdate : Int64;
     Name: string;
     Scheme: string;
     Directory: string;
@@ -77,6 +82,7 @@ type
   end;
 
   TThemeInfo = record
+    LastUpdate : Int64;
     Name: string;
     Author: string;
     Comment: string;
@@ -84,6 +90,7 @@ type
   end;
 
   TThemeScheme = record
+    LastUpdate : Int64;
     Name: string;
     Colors: TSharpEColorSet;
   end;
@@ -117,6 +124,8 @@ const
   SCHEME_FILE = 'Scheme.xml';
   SKIN_FILE = 'Skin.xml';
   ICONSET_FILE = 'IconSet';
+
+  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet];
 
   // ##########################################
   //   COLOR CONVERTING
@@ -417,6 +426,7 @@ end;
 
 procedure SetThemeIconSetDefault;
 begin
+  Theme.IconSet.LastUpdate := 0;
   Theme.IconSet.Name := 'Default';
   Theme.IconSet.Author := '';
   Theme.IconSet.Website := '';
@@ -426,6 +436,7 @@ end;
 
 procedure SetThemeInfoDefault;
 begin
+  Theme.Info.LastUpdate := 0;
   Theme.Info.Name := 'Default';
   Theme.Info.Author := '';
   Theme.Info.Comment := 'Default SharpE Theme';
@@ -434,6 +445,7 @@ end;
 
 procedure SetThemeSchemeDefault;
 begin
+  Theme.Scheme.LastUpdate := 0;
   Theme.Scheme.Name := 'Default';
 
   {setlength(Theme.Scheme.Colors, 1);
@@ -445,6 +457,7 @@ end;
 
 procedure SetThemeSkinDefault;
 begin
+  Theme.Skin.LastUpdate := 0;
   Theme.Skin.Name := 'Default';
 end;
 
@@ -503,6 +516,7 @@ begin
   finally
     XML.Free;
   end;
+  Theme.IconSet.LastUpdate := DateTimeToUnix(Now());
 end;
 
 procedure LoadThemeSkin;
@@ -546,21 +560,7 @@ begin
     Theme.Skin.Name := sCurSkin;
   end;
 
-  {if not FileExists(Theme.Data.Directory + SKIN_FILE) then
-    exit;
-
-  XML := TJvSimpleXML.Create(nil);
-  try
-    XML.LoadFromFile(Theme.Data.Directory + SKIN_FILE);
-    with XML.Root.Items do
-    begin
-      Theme.Skin.Name := Value('Name');
-      Theme.Skin.Scheme := Value('Scheme');
-    end;
-  finally
-    XML.Free;
-  end;
-  Theme.Skin.Directory := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + Theme.Skin.Name + '\';  }
+  Theme.Skin.LastUpdate := DateTimeToUnix(Now());
 end;
 
 procedure LoadThemeScheme;
@@ -637,6 +637,7 @@ begin
   finally
     XML.Free;
   end;
+  Theme.Scheme.LastUpdate := DateTimeToUnix(Now());
 end;
 
 procedure LoadThemeInfo;
@@ -664,6 +665,7 @@ begin
   finally
     XML.Free;
   end;
+  Theme.Info.LastUpdate := DateTimeToUnix(Now());
 end;
 
 // ##########################################
@@ -937,17 +939,12 @@ begin
   bInitialized := True;
 end;
 
-function LoadTheme(pName: PChar; ForceReload: Boolean = False): boolean;
+
+function LoadTheme(pName: PChar; ForceReload: Boolean = False; ThemeParts : TThemeParts = ALL_THEME_PARTS): boolean;
 var
   ThemeDir: string;
+  ct : Int64;
 begin
-  if (DateTimeToUnix(Now()) - Theme.Data.LastUpdate <= 1)
-     and (not ForceReload) then
-  begin
-    result := False;
-    exit;
-  end;
-
   ThemeDir := SharpApi.GetSharpeUserSettingsPath + THEME_DIR + '\' + pName;
 
   if not DirectoryExists(ThemeDir) then
@@ -962,25 +959,25 @@ begin
   Theme.Data.Directory := ThemeDir + '\';
   Theme.Data.LastUpdate := DateTimeToUnix(Now());
 
-  LoadThemeInfo;
-  LoadThemeSkin;
-  LoadThemeScheme;
-  LoadIconSet;
+  ct := DateTimeToUnix(Now());
+  if (tpInfo in ThemeParts) and
+     (ct - Theme.Info.LastUpdate > 1) or (ForceReload) then LoadThemeInfo;
+  if (tpSkin in ThemeParts) and
+     (ct - Theme.Skin.LastUpdate > 1) or (ForceReload) then LoadThemeSkin;
+  if (tpScheme  in ThemeParts) and
+     (ct - Theme.Scheme.LastUpdate > 1) or (ForceReload) then LoadThemeScheme;
+  if (tpIconSet in ThemeParts) and
+     (ct - Theme.IconSet.LastUpdate > 1) or (ForceReload) then LoadIconSet;
 
   result := True;
 end;
 
-function LoadCurrentThemeF(ForceUpdate : boolean) : boolean;
+function LoadCurrentTheme(ForceUpdate : boolean = False; ThemeParts : TThemeParts = ALL_THEME_PARTS) : boolean;
 var
   themename: string;
 begin
   themename := GetCurrentThemeName;
-  result := LoadTheme(PChar(themename),ForceUpdate);
-end;
-
-function LoadCurrentTheme: boolean;
-begin
-  result := LoadCurrentThemeF(False);
+  result := LoadTheme(PChar(themename),ForceUpdate,ThemeParts);
 end;
 
 // ##########################################
@@ -1002,7 +999,6 @@ exports
   Initialized,
   LoadTheme,
   LoadCurrentTheme,
-  LoadCurrentThemeF,
 
   //Global
   GetCurrentSharpEThemeName,
