@@ -9,8 +9,7 @@ uses
   graphicsFX in '..\..\Common\Units\SharpFX\graphicsFX.pas',
   SharpFX in '..\..\Common\Units\SharpFX\SharpFX.pas',
   SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpERoundPanel in '..\..\Common\Delphi Components\SharpERoundPanel\SharpERoundPanel.pas',
-  uTabListTest in 'E:\Test\Tab List\uTabListTest.pas' {Form1};
+  SharpERoundPanel in '..\..\Common\Delphi Components\SharpERoundPanel\SharpERoundPanel.pas';
 
 {$R *.res}
 

@@ -35,62 +35,69 @@ uses
   Classes,
   sharpapi,
   Tabs,
+  GR32_Image,
+  GR32,
   uSharpCenterSectionList;
 
 type
-  TConfigDll = record
-    filename: string;
+  TSetting = record
+    Filename: string;
     Dllhandle: Thandle;
+
     Open: function(const APluginID:Pchar; owner: hwnd): hwnd;
-    Close: function(owner: hwnd; SaveSettings: Boolean): boolean;
-    ConfigDllType: function:Integer;
+    Close: function(AOwner: hwnd; SaveSettings: Boolean): boolean;
 
-    BtnMoveUp: procedure(var AButton: TPngSpeedButton);
-    BtnMoveDown: procedure(var AButton: TPngSpeedButton);
-    BtnAdd: procedure(var AButton: TPngSpeedButton);
-    BtnEdit: procedure(var AButton: TPngSpeedButton);
-    BtnDelete: procedure(var AButton: TPngSpeedButton);
-    BtnImport: procedure(var AButton: TPngSpeedButton);
-    BtnExport: procedure(var AButton: TPngSpeedButton);
-    BtnClear: procedure(var AButton: TPngSpeedButton);
+    OpenEdit: function(AOwner:Hwnd; ANew:Boolean):Hwnd;
+    CloseEdit: function(AOwner: Hwnd; ANew, ASave:Boolean): boolean;
 
-    ChangeSection: procedure(const ASection:TSectionObject);
-    AddSections: procedure(var AList: TSectionObjectList; var AItemHeight: Integer);
-    GetDisplayName: procedure (const APluginID:Pchar; var ADisplayName:PChar);
+    ClickBtn: procedure (AButtonID: Integer; AButton: TPngSpeedButton);
+    ClickTab: procedure (ATab: TSectionItem);
+    AddTabs: procedure(var ATabs:TSectionItemList);
 
-    Help: procedure;
+    UpdatePreview: procedure (var AImage32:TImage32);
+
+    SetDisplayText: procedure (const APluginID:Pchar; var ADisplayText:PChar);
+    SetStatusText: procedure (var AStatusText: PChar);
+    SetSettingType: function(): Integer;
+    SetBtnState : function(AButtonID: Integer): Boolean;
+
+    GetCenterScheme: procedure (var ABackground: TColor;
+      var AItemColor: TColor; var AItemSelectedColor: TColor);
+    
+
   end;
-  PConfigDll = ^TConfigDll;
+  PSetting = ^TSetting;
 
   // functions to use for loading Plugins
-function LoadConfigDll(filename: Pchar): TConfigDll;
-function UnloadConfigDll(plugin: PConfigDll): hresult;
+function LoadSetting(filename: Pchar): TSetting;
+function UnloadSetting(plugin: PSetting): hresult;
 
 implementation
 
-function UnloadConfigDll(plugin: PConfigDll): hresult;
+function UnloadSetting(plugin: PSetting): hresult;
 begin
   result := 0;
   try
     if plugin.dllhandle <> 0 then
       FreeLibrary(plugin.dllhandle);
+
     plugin.Open := nil;
     plugin.Close := nil;
-    plugin.Help := nil;
-    plugin.ConfigDllType := nil;
-    plugin.GetDisplayName := nil;
 
-    plugin.BtnMoveUp := nil;
-    plugin.BtnMoveDown := nil;
-    plugin.BtnAdd := nil;
-    plugin.BtnEdit := nil;
-    plugin.BtnDelete := nil;
-    plugin.BtnImport := nil;
-    plugin.BtnExport := nil;
-    plugin.BtnClear := nil;
+    plugin.OpenEdit := nil;
+    plugin.CloseEdit := nil;
 
-    plugin.ChangeSection := nil;
-    plugin.AddSections := nil;
+    plugin.ClickBtn := nil;
+    plugin.ClickTab := nil;
+    plugin.AddTabs := nil;
+
+    plugin.UpdatePreview := nil;
+
+    plugin.SetDisplayText := nil;
+    plugin.SetStatusText := nil;
+    plugin.SetSettingType := nil;
+    plugin.GetCenterScheme := nil;
+    plugin.SetBtnState := nil;
 
     plugin.DllHandle := 0;
 
@@ -102,7 +109,7 @@ begin
   end;
 end;
 
-function LoadConfigDll(filename: Pchar): TConfigDll;
+function LoadSetting(filename: Pchar): TSetting;
 begin
   try
     result.filename := filename;
@@ -110,23 +117,23 @@ begin
 
     result.dllhandle := LoadLibrary(filename);
     if result.dllhandle <> 0 then begin
-      @result.Open := GetProcAddress(result.dllhandle, 'Open');
+
+      @result.Open := GetProcAddress(result.Dllhandle, 'Open');
       @result.Close := GetProcAddress(result.Dllhandle, 'Close');
-      @result.Help := GetProcAddress(result.Dllhandle, 'Help');
-      @result.ConfigDllType := GetProcAddress(result.Dllhandle, 'ConfigDllType');
-      @result.GetDisplayName := GetProcAddress(result.Dllhandle, 'GetDisplayName');
+      @result.OpenEdit := GetProcAddress(result.Dllhandle, 'OpenEdit');
+      @result.CloseEdit := GetProcAddress(result.Dllhandle, 'CloseEdit');
 
-      @result.BtnMoveUp := GetProcAddress(result.Dllhandle, 'BtnMoveUp');
-      @result.BtnMoveDown := GetProcAddress(result.Dllhandle, 'BtnMoveDown');
-      @result.BtnAdd := GetProcAddress(result.Dllhandle, 'BtnAdd');
-      @result.BtnEdit := GetProcAddress(result.Dllhandle, 'BtnEdit');
-      @result.BtnDelete := GetProcAddress(result.Dllhandle, 'BtnDelete');
-      @result.BtnImport := GetProcAddress(result.Dllhandle, 'BtnImport');
-      @result.BtnExport := GetProcAddress(result.Dllhandle, 'BtnExport');
-      @result.BtnClear := GetProcAddress(result.Dllhandle, 'BtnClear');
+      @result.ClickBtn := GetProcAddress(result.Dllhandle, 'ClickBtn');
+      @result.ClickTab := GetProcAddress(result.Dllhandle, 'ClickTab');
+      @result.AddTabs := GetProcAddress(result.Dllhandle, 'AddTabs');
 
-      @result.ChangeSection := GetProcAddress(result.Dllhandle, 'ChangeSection');
-      @result.AddSections := GetProcAddress(result.Dllhandle, 'AddSections');
+      @result.UpdatePreview := GetProcAddress(result.Dllhandle, 'UpdatePreview');
+
+      @result.SetDisplayText := GetProcAddress(result.Dllhandle,'SetDisplayText');
+      @result.SetStatusText := GetProcAddress(result.Dllhandle,'SetStatusText');
+      @result.GetCenterScheme := GetProcAddress(result.Dllhandle, 'GetCenterScheme');
+      @result.SetSettingType := GetProcAddress(result.Dllhandle, 'SetSettingType');
+      @result.SetBtnState := GetProcAddress(result.Dllhandle, 'SetBtnState');
 
       if (@result.Open = nil) then begin
         freelibrary(result.dllhandle);

@@ -23,6 +23,7 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
+
 unit uSharpCenterManager;
 
 interface
@@ -31,6 +32,7 @@ uses
   Windows,
   Messages,
   SysUtils,
+  SharpApi,
   Variants,
   Classes,
   Graphics,
@@ -43,10 +45,11 @@ uses
   jclFileUtils,
   JclStrings,
   uSharpCenterDllMethods,
+  SharpEListBoxEx,
   PngImageList,
   PngImage,
   StdCtrls,
-  SharpApi,
+  
   Contnrs;
 
 const
@@ -80,10 +83,10 @@ type
   private
     FPath: string;
     FPluginID: string;
-    FDllProc: TConfigDll;
+    FSetting: TSetting;
   public
     property Path: string read FPath write FPath;
-    property DllProc: TConfigDll read FDllProc write FDllProc;
+    property Setting: TSetting read FSetting write FSetting;
     property PluginID: String read FPluginID write FPluginID;
   end;
 
@@ -143,9 +146,12 @@ type
     FHistory: TSharpCenterHistory;
 
     FCurrentCommand: TSharpCenterHistoryItem;
+    FEditItemState: Boolean;
+    FEditItemWarning: Boolean;
     procedure AssignIconIndex(AFileName: string; ABTData: TBTData);
     function GetFirstPathElement(APath: string): string;
-    function GetDisplayName(ADllFilename: string; APluginID: String): string;
+    procedure SetEditItemWarning(const Value: Boolean);
+    procedure SetEditItemState(const Value: Boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -156,8 +162,12 @@ type
     function GetNextHistory: string;
     procedure ClearHistory;
 
-    procedure BuildSectionItemsFromPath(APath: string; Alistbox: TListbox);
+    procedure BuildSectionItemsFromPath(APath: string; Alistbox: TSharpEListBoxEx);
     procedure SetNavRoot(APath: string);
+
+    property EditItemState: Boolean read FEditItemState write SetEditItemState;
+    property EditItemWarning: Boolean read FEditItemWarning write SetEditItemWarning;
+    function CheckEditState:Boolean;
   end;
 
 var
@@ -179,12 +189,12 @@ var
   sName: string;
 begin
   // Unload Dll
-  if SharpCenterWnd.ConfigDll.DllHandle <> 0 then
+  if SharpCenterWnd.Setting.DllHandle <> 0 then
     SharpCenterWnd.UnloadDll;
 
   // Get the Button Data
   tmpBTData :=
-    TBTData(SharpCenterWnd.lbTree.Items.Objects[SharpCenterWnd.lbTree.ItemIndex]);
+    TBTData(SharpCenterWnd.lbTree[SharpCenterWnd.lbTree.ItemIndex].Data);
   sName := tmpBTData.Caption;
 
   case tmpBTData.BT of
@@ -202,7 +212,8 @@ begin
         SharpCenterWnd.lbTree.Clear;
         BuildSectionItemsFromPath(FCurrentCommand.Parameter, SharpCenterWnd.lbTree);
 
-        SharpCenterWnd.btnBack.Enabled := True;
+
+        SharpCenterWnd.SetToolbarTabVisible(tidHistory,True);
       end;
     btConfig:
       begin
@@ -214,7 +225,7 @@ begin
         FCurrentCommand.Parameter := tmpBTDataConfig.ConfigFile;
 
         SetNavRoot(tmpBTDataConfig.ConfigFile);
-        SharpCenterWnd.btnBack.Enabled := True;
+        SharpCenterWnd.SetToolbarTabVisible(tidHistory,True);
 
         if fileexists(FCurrentCommand.Parameter) then
         begin
@@ -283,16 +294,18 @@ begin
 end;
 
 procedure TSharpCenterManager.BuildSectionItemsFromPath(APath: string; Alistbox:
-  TListbox);
+  TSharpEListboxEx);
 var
   SRec: TSearchRec;
   NewBT: TBTData;
   pngfile: string;
   sIcon, sName: string;
   xml: TJvSimpleXML;
+  li:TSharpEListItem;
 
 begin
   // Clear list box
+
   AListbox.Items.Clear;
   Alistbox.ItemHeight := GlobalItemHeight;
   try
@@ -340,7 +353,9 @@ begin
           NewBT.BT := btConfig;
           pngfile := sIcon;
           AssignIconIndex(pngfile, NewBT);
-          AListbox.Items.AddObject(NewBT.Caption, NewBT);
+
+          li := Alistbox.AddItem(NewBT.Caption,NewBT.IconIndex);
+          li.Data := Pointer(NewBT);
         end
         else if IsDirectory(APath + sRec.Name) then
         begin
@@ -350,9 +365,6 @@ begin
 
             NewBT := TBTDataFolder.Create;
             NewBT.Caption := PathRemoveExtension(sRec.Name);
-
-            AListbox.Items.AddObject(NewBT.Caption,
-              NewBT);
             TBTDataFolder(NewBT).Path := APath + sRec.Name;
             NewBT.ID := -1;
 
@@ -360,6 +372,8 @@ begin
 
             pngfile := APath + PathRemoveExtension(sRec.Name) + '.png';
             AssignIconIndex(pngfile, NewBT);
+            li := Alistbox.AddItem(NewBT.Caption,NewBT.IconIndex);
+            li.Data := Pointer(NewBT);
           end;
         end;
       until
@@ -369,7 +383,7 @@ begin
     if AListbox.Items.Count = 0 then
     begin
       AListbox.Enabled := False;
-      AListbox.AddItem('No items found', nil);
+      AListbox.AddItem('No items found', -1);
     end
     else
       AListbox.Enabled := True;
@@ -388,7 +402,7 @@ begin
     tmpPngImage.LoadFromFile(AFileName);
     tmpPngImage.CreateAlpha;
 
-    tmpPiC := SharpCenterWnd.picMain.Items.Add();
+    tmpPiC := SharpCenterWnd.picMain.PngImages.Add();
     tmpPiC.PngImage.Assign(tmpPngImage);
     tmpPiC.Background := clWindow;
 
@@ -408,30 +422,6 @@ begin
   FID := -1;
   FBT := btUnspecified;
   FIconIndex := -1;
-end;
-
-function TSharpCenterManager.GetDisplayName(ADllFilename: string; APluginID:
-  String):
-  string;
-var
-  tmpConfigDll: TConfigDll;
-  s: PChar;
-begin
-  Result := '';
-
-  if fileexists(ADllFilename) then begin
-    tmpConfigDll := LoadConfigDll(PChar(ADllFilename));
-
-    try
-      if @tmpConfigDll.GetDisplayName <> nil then begin
-        tmpConfigDll.GetDisplayName(Pchar(APluginID), pchar(s));
-        Result := s;
-      end;
-
-    finally
-      UnloadConfigDll(@tmpConfigDll);
-    end;
-  end;
 end;
 
 { TSharpCenterHistory }
@@ -560,6 +550,31 @@ begin
     tmpStrl.Free;
     SharpCenterWnd.lblTree.Caption := ' ' + sHtml;
   end;
+end;
+
+procedure TSharpCenterManager.SetEditItemWarning(const Value: Boolean);
+begin
+  FEditItemWarning := Value;
+  SharpCenterWnd.UpdateSettingTheme;
+end;
+
+procedure TSharpCenterManager.SetEditItemState(const Value: Boolean);
+begin
+  FEditItemState := Value;
+  SharpCenterWnd.UpdateSettingTheme;
+end;
+
+function TSharpCenterManager.CheckEditState:Boolean;
+begin
+  Result := False;
+  If EditItemState then begin
+      EditItemWarning := True;
+      Result := True;
+  end;
+
+    if ((SharpCenterManager.EditItemState) or
+      (SharpCenterManager.EditItemWarning)) then
+        Result := True;
 end;
 
 end.
