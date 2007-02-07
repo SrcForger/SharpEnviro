@@ -5,13 +5,16 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, PngImageList, ComCtrls, Buttons,
-  PngSpeedButton, SharpEListBoxEx, ImgList;
+  PngSpeedButton, SharpEListBoxEx, ImgList, ExtCtrls;
 
 type
   TForm1 = class(TForm)
     Button1: TButton;
     PngSpeedButton1: TPngSpeedButton;
-    Col1: TPngImageList;
+    SharpEListBoxEx1: TSharpEListBoxEx;
+    col1: TPngImageList;
+    procedure SharpEListBoxEx1GetCellColor(const AItem: Integer;
+      var AColor: TColor);
     procedure SharpEListBox1ClickItem(AText: string; AItem, ACol: Integer);
     procedure FormResize(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -43,11 +46,13 @@ begin
   lb.Parent := Self;
   lb.Align := alClient;
   lb.Width := 500;
+  lb.OnGetCellColor := SharpEListBoxEx1GetCellColor;
+  lb.Visible := False;
 
   lb.OnClickItem := ClickItem;
   lb.OnGetCellTextColor := GetCellText;
   lb.OnGetCellCursor := GetCellCursor;
-  lb.ItemOffset := Point(1,1);
+  lb.ItemOffset := Point(4,4);
   lb.itemheight := 54;
 
   tmpCol := lb.AddColumn('ItemIcon');
@@ -67,7 +72,7 @@ begin
   tmpCol := lb.AddColumn('Status');
   tmpCol.Width := 68;
   tmpCol.HAlign := taLeftJustify;
-  tmpCol.VAlign := taAlignTop;
+  tmpCol.VAlign := taVerticalCenter;
   tmpCol.TextColor := clDkGray;
   tmpCol.SelectedTextColor := clBlack;
 
@@ -78,17 +83,11 @@ begin
   tmpCol.TextColor := clDkGray;
   tmpCol.SelectedTextColor := clBlack;
 
-  li := lb.AddItem('',2);
-  li.AddSubItem('Test2',0);
+  li := SharpEListBoxEx1.AddItem('',2);
+  li.AddSubItem('',0);
   li.AddSubItem('Enabled');
   li.AddSubItem('',1);
   li.Hint := 'Click to set as default';
-
-  li := lb.AddItem('',0);
-  li.Data := Form1;
-  li.AddSubItem('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-  li.AddSubItem('Enabled');
-  li.AddSubItem('',1);
 
   lb.Invalidate;
 end;
@@ -135,6 +134,13 @@ end;
 procedure TForm1.SharpEListBox1ClickItem(AText: string; AItem, ACol: Integer);
 begin
   ShowMessage('Test');
+end;
+
+procedure TForm1.SharpEListBoxEx1GetCellColor(const AItem: Integer;
+  var AColor: TColor);
+begin
+  if Aitem = lb.ItemIndex then
+    AColor := clBlue;
 end;
 
 end.
