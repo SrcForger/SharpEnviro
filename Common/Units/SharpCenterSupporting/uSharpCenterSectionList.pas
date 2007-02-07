@@ -42,7 +42,7 @@ uses
   JvSimpleXml;
 
 type
-  TSectionObject = class(TObject)
+  TSectionItem = class(TObject)
   private
     FIconID: Integer;
     FID: Integer;
@@ -61,22 +61,22 @@ type
   end;
 
 type
-  TSectionObjectList = class
+  TSectionItemList = class
   private
     FList: TList;
     FIconList: TPngImageCollection;
     //function AssignIconIndex(AFilename: string; var ASectionObject:
-     // TSectionObject): Integer;
-    function GetSectionItem(AID: Integer): TSectionObject;
+     // TSectionItem): Integer;
+    function GetSectionItem(AID: Integer): TSectionItem;
   public
     constructor Create;
     destructor Destroy; override;
-    function Add(ACaption: string; AData: TObject; AIcon: string; AStatus:String): TSectionObject;
+    function Add(ACaption: string; AData: TObject; AIcon: string; AStatus:String): TSectionItem;
 
     procedure Clear;
     function Count:Integer;
 
-    property GetItem[AID:Integer] : TSectionObject read GetSectionItem; default;
+    property GetItem[AID:Integer] : TSectionItem read GetSectionItem; default;
     property IconList: TPngImageCollection read FIconList write FIconList;
   end;
 
@@ -84,11 +84,11 @@ type
 
 implementation
 
-{ TSectionObjectList }
+{ TSectionItemList }
 
-function TSectionObjectList.Add(ACaption: string; AData: TObject; AIcon: string; AStatus:String): TSectionObject;
+function TSectionItemList.Add(ACaption: string; AData: TObject; AIcon: string; AStatus:String): TSectionItem;
 begin
-  Result := TSectionObject.Create;
+  Result := TSectionItem.Create;
   Result.Caption := ACaption;
   Result.Status := AStatus;
   Result.Data := AData;
@@ -98,8 +98,8 @@ begin
 
 end;
 
-{function TSectionObjectList.AssignIconIndex(AFilename: string;
-  var ASectionObject: TSectionObject): Integer;
+{function TSectionItemList.AssignIconIndex(AFilename: string;
+  var ASectionObject: TSectionItem): Integer;
 var
   tmpPngImage: TPNGObject;
   tmpPiC: TPngImageCollectionItem;
@@ -120,37 +120,37 @@ begin
   end;
 end;     }
 
-procedure TSectionObjectList.Clear;
+procedure TSectionItemList.Clear;
 begin
   FList.Clear;
 end;
 
-function TSectionObjectList.Count: Integer;
+function TSectionItemList.Count: Integer;
 begin
   Result := FList.Count;
 end;
 
-constructor TSectionObjectList.Create;
+constructor TSectionItemList.Create;
 begin
   FList := TList.Create;
 end;
 
-destructor TSectionObjectList.Destroy;
+destructor TSectionItemList.Destroy;
 begin
   FList.Free;
 
   inherited;
 end;
 
-function TSectionObjectList.GetSectionItem(AID: Integer): TSectionObject;
+function TSectionItemList.GetSectionItem(AID: Integer): TSectionItem;
 begin
   if AID > FList.Count then Result := nil else
-    Result := TSectionObject(FList[AID]);
+    Result := TSectionItem(FList[AID]);
 end;
 
-{ TSectionObject }
+{ TSectionItem }
 
-constructor TSectionObject.Create;
+constructor TSectionItem.Create;
 begin
   FIconID := -1;
 end;
