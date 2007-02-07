@@ -94,7 +94,6 @@ type
     Online1: TMenuItem;
     Sourceforge1: TMenuItem;
     PngImageList1: TPngImageList;
-    SharpESkinManager1: TSharpESkinManager;
     procedure FormDestroy(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure ExitSharpCore1Click(Sender: TObject);
@@ -134,8 +133,7 @@ type
     procedure ActionUpdateMsg(var Msg: TMessage); message
       WM_SHARPEUPDATEACTIONS;
     procedure BeforeShutDown(var Msg: TMessage); message wm_queryendsession;
-    procedure ReloadServiceSettings(var Msg: TMessage); message
-      WM_UPDATESETTINGS;
+    procedure ReloadServiceSettings(var Msg: TMessage); message WM_SHARPCENTERMESSAGE;
   public
 
   end;
@@ -512,8 +510,9 @@ procedure TSharpCoreMainWnd.ReloadServiceSettings(var Msg: TMessage);
 var
   tmpInfo: TInfo;
 begin
+  if Msg.WParam = SCM_EVT_UPDATE_SETTINGS then begin
   with ServiceManager do begin
-    case Msg.WParam of
+    case Msg.LParam of
       SCU_SHARPCORE: ; // reload sharpcore settings
       SCU_SERVICE: begin
           tmpInfo := ServiceList.FindObject(Msg.LParam);
@@ -525,6 +524,7 @@ begin
 
         end;
     end;
+  end;
   end;
 end;
 
