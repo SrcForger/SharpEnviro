@@ -945,12 +945,11 @@ var gSum: cardinal; bSum: cardinal; rSum: cardinal; aSum: Cardinal;
   col: tcolor32;
   winlength: longword;
   window, cx, x, y, t1, iter: integer;
-  realwidth, bytewidth, width, height: integer;
+  realwidth, width, height: integer;
   scanjump: integer;
   rightedge, leftedge, center: PColor32;
   pixelbuf: array of TColor32;
 begin
-  bytewidth := img.width * 4;
   realwidth := img.width;
   width := img.width - 1;
   height := img.height - 1;
