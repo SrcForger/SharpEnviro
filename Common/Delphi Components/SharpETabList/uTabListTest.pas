@@ -4,14 +4,18 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, GR32, GR32_Image, uSharpeTabList;
+  Dialogs, GR32, GR32_Image, uSharpeTabList, ExtCtrls, SharpERoundPanel,
+  ImgList, PngImageList, JvExControls, JvComponent, JvPageList;
 
 type
   TForm12 = class(TForm)
+    PngImageList1: TPngImageList;
+    SharpETabList1: TSharpETabList;
+    SharpERoundPanel3: TSharpERoundPanel;
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
-    tmpTabList:TSharpETabList;
+
   public
     { Public declarations }
   end;
@@ -25,23 +29,25 @@ implementation
 
 procedure TForm12.FormCreate(Sender: TObject);
 begin
-  tmpTabList := TSharpETabList.Create(self);
-  with tmpTabList do begin
-    Parent := Self;
-    {TabWidth := 80;
-    TabColor := clWindow;
-    TabSelectedColor := clBtnFace;
+  with SharpETabList1 do begin
+    TabWidth := 62;
+    TabColor := $00EFEFEF;
+    TabSelectedColor := clWindow;
+    CaptionUnSelectedColor := clBlack;
+    StatusUnSelectedColor := clGreen;
+    StatusSelectedColor := clGreen;
+
     BkgColor := clWindow;
     Align := alTop;
-    Height := 24;
+    Height := 25;
     TextBounds := Rect(8,8,8,4);
+    IconBounds := Rect(4,4,8,4);
     TabIndex := 1;
-    AutoSizeTabs := True;
+    AutoSizeTabs := False;
 
-    Add('Services','1');
-    Add('Addons');
-    Add('Components','100');
-    Add('Objects','5'); }
+    Add('Edit',0);
+    Add('Add',1);
+    Add('Delete',2);
   end;
 end;
 
