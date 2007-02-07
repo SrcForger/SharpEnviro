@@ -18,11 +18,10 @@ type
     FImageIndex: Integer;
     FVisible: Boolean;
     procedure SetImageIndex(const Value: Integer);
-    function GetID: Integer;
     procedure SetID(const Value: Integer);
     procedure SetVisible(const Value: Boolean);
   public
-    constructor Create;
+    constructor Create; reintroduce;
   published
     Property Caption: String read FCaption write FCaption;
     Property Status: String read FStatus write FStatus;
@@ -54,14 +53,12 @@ type
     FTabList: TSharpETabListItems;
     FTabIndex: Integer;
     FTabWidth: Integer;
-    FColor: TColor;
     FtabColor: TColor;
     FBkgColor: TColor;
     FTabSelectedColor: TColor;
     FTextBounds: TRect;
     FOnTabChange: TSharpETabChange;
     FMouseOverID: Integer;
-    FMouseOverID2: Integer;
     FTimer: TTimer;
     FImage32:Timage32;
     FAutoSizeTabs: Boolean;
@@ -73,7 +70,6 @@ type
     FIconBounds: TRect;
     FBorderColor: TColor;
     FBorder: Boolean;
-    FBorderSelectedOnly: Boolean;
     FBorderSelectedColor: TColor;
     FOnTabClick: TSharpETabClick;
 
@@ -88,7 +84,6 @@ type
     Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
     procedure MouseMoveEvent(Sender: TObject; Shift: TShiftState;
     X, Y: Integer; Layer: TCustomLayer);
-    procedure MouseLeaveEvent(Sender: TObject);
     procedure TimeEvent(Sender: TObject);
     function WithinRect(AX,AY: Integer; ARect:TRect):Boolean;
     procedure SetAutoSizeTabs(const Value: Boolean);
@@ -280,19 +275,18 @@ end;
 
 procedure TSharpETabList.DrawTab(ATabRect: TRect; ATabItem: TSharpETabListItem);
 var
-  tw, iTabWidth, iIconWidth, iIconHeight, iStatusWidth, iCaptionWidth:Integer;
+  iTabWidth, iIconWidth, {iIconHeight, }iStatusWidth, iCaptionWidth:Integer;
   s: String;
 begin
   iTabWidth := ATabRect.Right-ATabRect.Left;
-  iIconWidth := 0;
   // Get icon width
   if ((Assigned(FPngImageList)) and (ATabItem.ImageIndex >= 0) and
     (ATabItem.ImageIndex <= FPngImageList.Count-1)) then begin
       iIconWidth := PngImageList.PngImages[ATabItem.ImageIndex].PngImage.Width;
-      iIconHeight := PngImageList.PngImages[ATabItem.ImageIndex].PngImage.Height;
+      //iIconHeight := PngImageList.PngImages[ATabItem.ImageIndex].PngImage.Height;
     end else begin
       iiconWidth := 0;
-      iIconHeight := 0;
+      //iIconHeight := 0;
     end;
 
   // Get status text width
@@ -420,12 +414,6 @@ begin
   end;
 end;
 
-procedure TSharpETabList.MouseLeaveEvent(Sender: TObject);
-begin
-  //FMouseOverID := -1;
-  Invalidate;
-end;
-
 procedure TSharpETabList.MouseMoveEvent(Sender: TObject; Shift: TShiftState; X,
   Y: Integer; Layer: TCustomLayer);
 var
@@ -457,7 +445,6 @@ var
   x: Integer;
   iDrawCount, i, iMaxTabSize: Integer;
   tr: TRect;
-  poly: TPolygon32;
 begin
   inherited;
   try
@@ -608,11 +595,6 @@ begin
    FCaption := '';
    FStatus := '';
    FVisible := True;
-end;
-
-function TSharpETabListItem.GetID: Integer;
-begin
-
 end;
 
 procedure TSharpETabListItem.SetID(const Value: Integer);
