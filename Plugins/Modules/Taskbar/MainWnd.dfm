@@ -19,7 +19,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 285
-    Height = 164
+    Height = 166
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -29,7 +29,7 @@ object MainForm: TMainForm
     TabOrder = 0
     object ses_minall: TSharpEButton
       Left = 0
-      Top = 1
+      Top = 0
       Width = 24
       Height = 20
       SkinManager = SystemSkinManager
@@ -80,7 +80,7 @@ object MainForm: TMainForm
     end
     object ses_maxall: TSharpEButton
       Left = 24
-      Top = 1
+      Top = 0
       Width = 24
       Height = 20
       SkinManager = SystemSkinManager

@@ -564,7 +564,15 @@ begin
   Width := Max(NewWidth,1);
   CalculateItemWidth(IList.Count);
   i := FSpecialButtonWidth + IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
-  if i+1 < NewWidth then Width := i+1;
+  if i+1 < NewWidth then
+  begin
+    Width := i+1;
+    Hint := InttoStr(Width);
+  end;
+  Background.Bitmap.BeginUpdate;
+  Background.Bitmap.SetSize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
+  Background.Bitmap.EndUpdate;
   CalculateItemWidth(IList.Count);
   AlignTaskComponents;
 end;
