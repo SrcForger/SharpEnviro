@@ -61,6 +61,17 @@ uses
   BB
   }
 
+{ Class Structure:
+  ~~~~~~~~~~~~~~~
+
+  TModuleManager - manages module dll files and all module windows
+  TModuleManager.ModuleFiles -> ObjectList of TModuleFiles
+  TModuleManager.Modules     -> ObjectList of TModule
+  
+  TModuleFile - class for each module dll files... contains dll function links
+  TModule - Module class itself... module window handle, mini throbber, ...
+}
+
 type
 
 
@@ -359,7 +370,7 @@ end;
 
 // Gets the index of the first module which is aligned at the right of the bar
 // make sure that SortModulesByPosition has been called before using this
-// return -1 if there is no right aligned module
+// returns -1 if there is no right aligned module
 function TModuleManager.GetFirstRModuleIndex : integer;
 var
   n : integer;
@@ -441,6 +452,7 @@ begin
         FModuleFiles.Delete(0);
 end;
 
+// Generate a unique ID for a new module
 function TModuleManager.GenerateModuleID : integer;
 var
   n : integer;
@@ -522,6 +534,7 @@ begin
   SortModulesByPosition;
 end;
 
+// Load all module dll files from a directory
 procedure TModuleManager.LoadFromDirectory(pDirectory : string);
 var
   sr : TSearchRec;
@@ -842,9 +855,11 @@ begin
   end;
 end;
 
+// Update the position of all modules and their mini throbbers
+// This will also update the main window width
 procedure TModuleManager.FixModulePositions;
 var
-  n : integer;
+  n,i : integer;
   ro,lo,rx,x : integer;
   TempModule     : TModule;
   IDArray        : array of integer;
@@ -852,6 +867,7 @@ var
   LeftSize,RightSize : integer;
   MTWidth : integer; // mini Throbbers
   RCount,LCount : integer;
+  CList : TObjectList;
 begin
   setlength(IDArray,0);
   try
@@ -890,20 +906,32 @@ begin
   rx := 0;
   RCount := 0;
   LCount := 0;
+  CList := TObjectList.Create;
+  CList.OwnsObjects := False;
   for n := 0 to FModules.Count -1 do
   begin
     TempModule := TModule(FModules.Items[n]);
     if TempModule.Position = -1 then
     begin
       LCount := LCount + 1;
-      TempModule.Control.Left := lo + x + MTWidth*(LCount);
+      i := lo + x + MTWidth*(LCount);
+      if TempModule.Control.Left <> i then
+      begin
+        TempModule.Control.Left := i;
+        CList.Add(TempModule);
+      end;
       x := x + TempModule.Control.Width;
     end else
     begin
       RCount := RCount + 1;
       if not (FBar.HorizPos = hpFull) then
-         TempModule.Control.Left := lo + LeftSize + rx + MTWidth*(RCount)
-         else TempModule.Control.Left := ParentControl.Width - ro - RightSize + rx + MTWidth*(RCount);
+         i := lo + LeftSize + rx + MTWidth*(RCount)
+         else i := ParentControl.Width - ro - RightSize + rx + MTWidth*(RCount);
+      if i <> TempModule.Control.Left then
+      begin
+        TempModule.Control.Left := i;
+        CList.Add(TempModule);
+      end;
       rx := rx + TempModule.Control.Width;
     end;
     TempModule.Control.Top  := strtoint(FSkinManager.Skin.BarSkin.PAYoffset.X);
@@ -914,14 +942,15 @@ begin
     TempModule.Throbber.OnMouseMove := OnMiniThrobberMouseMove;
     TempModule.Throbber.OnMouseUp   := OnMiniThrobberMouseUp;
     if not TempModule.Throbber.Visible then TempModule.Throbber.Visible := True;
-//    TempModule.Throbber.UpdateSkin;
   end;
 
-  for n := 0 to FModules.Count -1 do
+  for n := 0 to Clist.Count -1 do
   begin
-    TempModule := TModule(FModules.Items[n]);
+    TempModule := TModule(CList.Items[n]);
     TempModule.ModuleFile.DllPosChanged(TempModule.ID);
   end;
+  CList.Clear;
+  FreeAndNil(CList);
 end;
 
 procedure TModuleManager.UpdateModuleSkins;
@@ -949,6 +978,9 @@ begin
   end;
 end;
 
+// Calculate how much space every module is taking and check how much free bar
+// space is left. Adjust the size of modules with dynamic size (task list,...)
+// if there is more space needed or of the dynamic module can have more space.
 procedure TModuleManager.ReCalculateModuleSize;
 var
   n : integer;

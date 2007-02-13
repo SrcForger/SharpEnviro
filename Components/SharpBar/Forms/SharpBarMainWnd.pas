@@ -127,6 +127,7 @@ type
     FTopZone : TBitmap32;
     FBottomZone : TBitmap32;
     FBGImage : TBitmap32;
+    FShellBCInProgress : boolean;
     FSkinManager : TSharpESkinManager;
     SkinManagerLoadThread : TSystemSkinLoadThread;
     procedure CreateNewBar;
@@ -173,6 +174,7 @@ type
     procedure UpdateBGImage;
     property BGImage : TBitmap32 read FBGImage;
     property SkinManager : TSharpESkinManager read FSkinManager;
+    property ShellBCInProgress : boolean read FShellBCInProgress;
   end;
 
 const
@@ -217,6 +219,14 @@ procedure dllcallback(handle : hwnd);
 begin
 end;
 
+function GetCurrentTime : Int64;
+var
+  h,m,s,ms : word;
+begin
+  DecodeTime(now,h,m,s,ms);
+  result := h*60*60*1000 + m*60*1000 + s*1000 + ms;
+end;
+
 
 procedure LockWindow(const Handle: HWND);
 begin
@@ -225,6 +235,8 @@ end;
 
 procedure UnlockWindow(const Handle: HWND);
 begin
+  if SharpBarMainForm.ShellBCInProgress then exit;
+
   SendMessage(Handle, WM_SETREDRAW, 1, 0);
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
 end;
@@ -233,12 +245,13 @@ end;
 // Window Message handlers
 // ************************
 
+// Weather Service updated the xml files -> broadcast as message to all modules
 procedure TSharpBarMainForm.WMWeatherUpdate(var msg : TMessage);
 begin
   ModuleManager.BroadcastPluginMessage('MM_WEATHERUPDATE');
 end;
 
-
+// Computer is entering or leaving suspended state (Laptop,...)
 procedure TSharpBarMainForm.WMPowerBroadcast(var msg : TMessage);
 begin
   case msg.WParam of
@@ -248,18 +261,21 @@ begin
   msg.Result := 1;
 end;
 
+// Module is requesting to lock the whole bar window
 procedure TSharpBarMainForm.WMLockBarWindow(var msg : TMessage);
 begin
   if FStartup then exit;
   if FBarLock then exit;
-  
+
   LockWindow(Handle);
 end;
 
+// Module is requesting the bar window to be unlocked
 procedure TSharpBarMainForm.WMUnlockBarWindow(var msg : TMessage);
 begin
   if FStartup then exit;
   if FBarLock then exit;
+  if FShellBCInProgress then exit;
 
   UnLockWindow(Handle);
   SendMessage(SharpEBar1.abackground.handle, WM_SETREDRAW, 1, 0);
@@ -310,6 +326,7 @@ begin
   end;
 end;
 
+// Shell hook received (task list,...) -> forward to all registered shell modules
 procedure TSharpBarMainForm.WMShellHook(var msg : TMessage);
 var
   n : integer;
@@ -319,12 +336,15 @@ begin
   try
     for n := 0 to FShellHookList.Count -1 do
     begin
+      if n = 0 then FShellBCInProgress := True
+         else if n = FShellHookList.Count -1 then FShellBCInProgress := False;
       PostMessage(strtoint(FShellHookList[n]),WM_ShellHook,msg.WParam,msg.LParam);
     end;
   except
   end;
 end;
 
+// A module is requesting to be notified on shell messages (task list,...)
 procedure TSharpBarMainForm.WMRegisterShellHook(var msg : TMessage);
 var
   n : integer;
@@ -346,6 +366,7 @@ begin
   end;
 end;
 
+// A Module which was registered to receive shell messages unregisters itself
 procedure TSharpBarMainForm.WMUnregisterShellHook(var msg : TMessage);
 begin
   FShellHookList.Delete(FShellHookList.IndexOf(inttostr(msg.WParam)));
@@ -357,11 +378,13 @@ begin
 end;
 
 
+// A Module is requesting how much free bar space is left
 procedure TSharpBarMainForm.WMGetFreeBarSpace(var msg : TMessage);
 begin
   msg.Result := ModuleManager.GetFreeBarSpace;
 end;
 
+// Display resolution changed
 procedure TSharpBarMainForm.WMDisplayChange(var msg : TMessage);
 begin
   if FSuspended then exit;
@@ -386,23 +409,26 @@ begin
   UnLockWindow(Handle);
 end;
 
+// Module is requesting that the settings are saved to file
 procedure TSharpBarMainForm.WMSaveXMLFile(var msg : TMessage);
 begin
   if FSuspended then exit;
   ModuleSettings.SaveToFile(ModuleSettings.FileName);
 end;
 
+// Module is requesting the handle to the xml settings class
 procedure TSharpBarMainForm.WMGetXMLHandle(var msg : TMessage);
 begin
   msg.Result := integer(@ModuleSettings);
 end;
 
+// Module is requesting the handle to the Background image
 procedure TSharpBarMainForm.WMGetBGHandle(var msg : TMessage);
 begin
   msg.result := integer(@FBGImage);
-//  msg.result := integer(@SharpEBar1.skin);
 end;
 
+// Module is requesting the height of the Bar
 procedure TSharpBarMainForm.WMGetBarHeight(var msg : TMessage);
 begin
   try
@@ -433,6 +459,7 @@ begin
   ModuleManager.RefreshMiniThrobbers;
 end;
 
+// Plugin message received... foward to requested module
 procedure TSharpBarMainForm.WMGetCopyData(var msg: TMessage);
 var
   pParams: string;
@@ -452,6 +479,7 @@ begin
   ModuleManager.SendPluginMessage(pID,pParams);
 end;
 
+// Module is requesting update of bar width
 procedure TSharpBarMainForm.WMUpdateBarWidth(var msg : TMessage);
 begin
   if FSuspended then exit;
@@ -461,9 +489,6 @@ begin
   if not FStartup then LockWindow(Handle);
   try
     ModuleManager.ReCalculateModuleSize;
-//    ModuleManager.BroadCastModuleRefresh;
-    ModuleManager.FixModulePositions;
-   // ModuleManager.RefreshMiniThrobbers;
   finally
     if not FStartup then UnLockwindow(Handle);
   end;
@@ -820,6 +845,7 @@ end;
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
   FSuspended := False;
+  FShellBCInProgress := False;
 
   FSkinManager := TSharpESkinManager.Create(self);
   SharpEBar1.SkinManager := FSkinManager;
