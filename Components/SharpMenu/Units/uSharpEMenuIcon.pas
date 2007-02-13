@@ -32,7 +32,7 @@ unit uSharpEMenuIcon;
 
 interface
 
-uses SysUtils,GR32,GR32_Resamplers;
+uses SysUtils,Classes,GR32,GR32_Resamplers;
 
 type
   TIconType = (itShellIcon,itCustomIcon);
@@ -44,14 +44,17 @@ type
     FIconSource : String;
     FIconType : TIconType;
     FCount : integer;
+    FCached : Boolean;
   public
     property Icon : TBitmap32 read FIcon;
     property IconSource : String read FIconSource;
     property IconType : TIconType read FIconType write FIconType;
     property IconShellHandle : THandle read FIconHandle;
     property Count : integer read FCount write FCount;
+    property Cached : boolean read FCached write FCached;
     constructor Create(pIconSource,pIconData : String); reintroduce; overload;
     constructor Create(pIconSource : String; pBmp : TBitmap32); overload;
+    constructor Create(pIconSource : String; pIconType : TIconType; Stream : TStream); overload;
     destructor Destroy; override;
   end;
 
@@ -59,9 +62,23 @@ implementation
 
 uses SharpIconUtils;
 
+constructor TSharpEMenuIcon.Create(pIconSource : String; pIconType : TIconType; Stream : TStream);
+begin
+  inherited Create;
+  FCached := False;
+
+  FIcon := TBitmap32.Create;
+  FIconHandle := 0;
+  FIconType := pIconType;
+  FIconSource := pIconSource;
+  TLinearResampler.Create(FIcon);
+  FIcon.LoadFromStream(Stream);
+end;
+
 constructor TSharpEMenuIcon.Create(pIconSource : String; pBmp : TBitmap32);
 begin
   inherited Create;
+  FCached := False;
   
   FIcon := TBitmap32.Create;
   FIconHandle := 0;
@@ -80,6 +97,7 @@ var
   ext : String;
 begin
   inherited Create;
+  FCached := False;
 
   FIcon := TBitmap32.Create;
   FIcon.DrawMode := dmBlend;
@@ -97,7 +115,6 @@ begin
     FIconSource := pIconSource;
     FIconType := itCustomIcon;
   end;
-
   case FIconType of
     itShellIcon: FIconHandle := SharpIconUtils.extrShellIcon(FIcon,FIconSource);
     itCustomIcon: begin

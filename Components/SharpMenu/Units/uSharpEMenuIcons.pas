@@ -32,7 +32,7 @@ unit uSharpEMenuIcons;
 
 interface
 
-uses SysUtils,Contnrs,GR32,uSharpEMenuIcon;
+uses SysUtils,Contnrs,Classes,GR32,uSharpEMenuIcon;
 
 type
   TSharpEMenuIcons = class
@@ -47,9 +47,13 @@ type
     function AddIcon(pIconSource : String; pBmp : TBitmap32) : TSharpEMenuIcon; overload;
     procedure RemoveIcon(pIconSource : String); overload;
     procedure RemoveIcon(pIcon : TSharpEMenuIcon); overload;
+    procedure SaveIconCache(pFileName : String);
+    procedure LoadIconCache(pFileName : String);
   end;
 
 implementation
+
+uses SharpApi,jclsysinfo;
 
 constructor TSharpEMenuIcons.Create;
 begin
@@ -74,7 +78,8 @@ begin
   for n := 0 to FItems.Count -1 do
   begin
     Item := TSharpEMenuIcon(FItems.Items[n]);
-    if (Item.IconSource = pIconSource) then
+    if (CompareText(Item.IconSource,pIconData) = 0) or
+       (CompareText(Item.IconSource,pIconSource) = 0) then
     begin
       result := Item;
       exit;
@@ -141,6 +146,85 @@ begin
       exit;
     end;
   end;
+end;
+
+procedure StringSaveToStream(str: string; stream: TStream);
+var Size: integer;
+begin
+  Size := length(str);
+  stream.WriteBuffer(Size, sizeof(Size));
+  stream.WriteBuffer(Pointer(str)^, Size);
+end;
+
+function StringLoadFromStream(stream: TStream): string;
+var Size: integer;
+  str: string;
+begin
+  Stream.ReadBuffer(Size, sizeof(Size));
+  SetString(str, nil, Size);
+  Stream.ReadBuffer(Pointer(str)^, Size);
+  result := str;
+end;
+
+procedure TSharpEMenuIcons.LoadIconCache(pFileName : String);
+var
+  Stream : TFileStream;
+  Dir,Fn : String;
+  t : byte;
+  Item : TSharpEMenuIcon;
+  IconSource : String;
+  IconType : TIconType;
+begin
+  Dir := SharpApi.GetSharpeDirectory + 'Cache';
+  Fn := Dir + '\' + GetLocalUserName + pFileName;
+  if not FileExists(Fn) then exit;
+
+  Stream := TFileStream.Create(Fn,fmOpenRead);
+  while (Stream.Position < Stream.Size) do
+  begin
+    IconSource := StringLoadFromStream(Stream);
+    Stream.ReadBuffer(t,sizeof(t));
+    case t of
+      1: IconType := itCustomIcon;
+      else IconType := itShellIcon;
+    end;
+    Item := TSharpEMenuIcon.Create(IconSource,IconType,Stream);
+    Item.Cached := True;
+    FItems.Add(item);
+  end;
+  Stream.Free;
+end;
+
+procedure TSharpEMenuIcons.SaveIconCache(pFileName : String);
+var
+  Stream : TFileStream;
+  n : integer;
+  Dir,Fn : String;
+  t : byte;
+  Item : TSharpEMenuIcon;
+begin
+  Dir := SharpApi.GetSharpeDirectory + 'Cache';
+  If not DirectoryExists(Dir) then ForceDirectories(Dir);
+
+  Fn := Dir + '\' + GetLocalUserName + pFileName;
+  if not FileExists(Fn) then Stream := TFileStream.Create(Fn,fmCreate)
+     else Stream := TFileStream.Create(Fn,fmOpenReadWrite);
+  Stream.Seek(0,soFromEnd);
+  for n := 0 to FItems.Count - 1 do
+  begin
+    Item := TSharpEMenuIcon(FItems.Items[n]);
+    if not Item.Cached then
+    begin
+      StringSaveToStream(Item.IconSource,Stream);
+      case Item.IconType of
+        itCustomIcon : t := 1;
+        else t := 0;
+      end;
+      Stream.WriteBuffer(t,sizeof(t));
+      Item.Icon.SaveToStream(Stream);
+    end;
+  end;
+  Stream.Free;
 end;
 
 end.

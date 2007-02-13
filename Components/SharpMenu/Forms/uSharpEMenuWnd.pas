@@ -56,8 +56,6 @@ type
   TSharpEMenuWnd = class(TForm)
     SubMenuTimer: TTimer;
     offsettimer: TTimer;
-    FGCheckTimer: TTimer;
-    procedure FGCheckTimerTimer(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure offsettimerTimer(Sender: TObject);
     procedure SubMenuTimerTimer(Sender: TObject);
@@ -310,7 +308,6 @@ end;
 
 procedure TSharpEMenuWnd.FormDestroy(Sender: TObject);
 begin
-  FGCheckTimer.Enabled := False;
   OffsetTimer.Enabled := False;
   SubMenuTimer.Enabled := False;
 
@@ -361,9 +358,10 @@ begin
          t := t + FMenu.GetItemsHeight(Max(0,FMenu.Itemindex-1)) - FOffset;
       if (t + FSubMenu.Picture.Height) > (Monitor.Top + Monitor.Height) then
          t := Monitor.Top + Monitor.Height - FSubMenu.Picture.Height;
-      if t < 0 then
+      if t < Monitor.Top then
       begin
-        FSubMenu.Height := Monitor.Height;
+        if FSubMenu.Picture.Height > Monitor.Height then
+           FSubMenu.Height := Monitor.Height;
         t := 0;
       end;
       FSubMenu.top := t;
@@ -427,7 +425,6 @@ end;
 
 procedure TSharpEMenuWnd.FormDeactivate(Sender: TObject);
 begin
-  FGCheckTimer.Enabled := False;
   OffsetTimer.Enabled := False;
   SubMenuTimer.Enabled := False;
 
@@ -448,29 +445,6 @@ begin
     if FMenu <> nil then
        FreeAndNil(FMenu);
     Release;
-  end;
-end;
-
-procedure TSharpEMenuWnd.FGCheckTimerTimer(Sender: TObject);
-var
-  handle : hwnd;
-  buff : array[0..255] of Char;
-  s : string;
-begin
-  if not (FFreeMenu) then exit;
-
-  handle := GetForegroundWindow;
-  if handle <> 0 then
-  begin
-    GetClassName(handle,buff,sizeof(buff));
-    s := buff;
-    if CompareText(s,ClassType.ClassName) <> 0 then
-    begin
-      FGCheckTimer.Enabled := False;
-      OffsetTimer.Enabled := False;
-      SubMenuTimer.Enabled := False;
-      Release;
-    end;
   end;
 end;
 

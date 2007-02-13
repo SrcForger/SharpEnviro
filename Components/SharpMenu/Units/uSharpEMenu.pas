@@ -145,9 +145,9 @@ begin
   I1 := TSharpEMenuItem(Item1);
   I2 := TSharpEMenuItem(Item2);
   if (I1.isDynamic) and (not I2.isDynamic) then
-     result := -1
-     else if (not I1.isDynamic) and (I2.isDynamic) then
      result := 1
+     else if (not I1.isDynamic) and (I2.isDynamic) then
+     result := -1
      else if (I1.isDynamic) and (I2.isDynamic) and (I1.ItemType = mtSubMenu) and (I2.ItemType <> I1.ItemType) then
      result := -1
      else if (I1.isDynamic) and (I2.isDynamic) and (I2.ItemType = mtSubMenu) and (I2.ItemType <> I1.ItemType) then

@@ -28,7 +28,7 @@ object SharpEMenuWnd: TSharpEMenuWnd
   TextHeight = 13
   object SubMenuTimer: TTimer
     Enabled = False
-    Interval = 250
+    Interval = 100
     OnTimer = SubMenuTimerTimer
     Left = 112
     Top = 72
@@ -39,11 +39,5 @@ object SharpEMenuWnd: TSharpEMenuWnd
     OnTimer = offsettimerTimer
     Left = 144
     Top = 72
-  end
-  object FGCheckTimer: TTimer
-    Interval = 250
-    OnTimer = FGCheckTimerTimer
-    Left = 112
-    Top = 104
   end
 end
