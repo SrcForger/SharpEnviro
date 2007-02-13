@@ -18,7 +18,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 189
-    Height = 162
+    Height = 164
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -56,8 +56,8 @@ object MainForm: TMainForm
     object lb_ram: TSharpESkinLabel
       Left = 8
       Top = 0
-      Width = 23
-      Height = 20
+      Width = 26
+      Height = 21
       SkinManager = SharpESkinManager1
       AutoSize = True
       Caption = 'ram'
@@ -67,8 +67,8 @@ object MainForm: TMainForm
     object lb_swp: TSharpESkinLabel
       Left = 32
       Top = 48
-      Width = 25
-      Height = 20
+      Width = 26
+      Height = 21
       SkinManager = SharpESkinManager1
       AutoSize = True
       Caption = 'swp'
@@ -78,8 +78,8 @@ object MainForm: TMainForm
     object lb_rambar: TSharpESkinLabel
       Left = 80
       Top = 40
-      Width = 47
-      Height = 20
+      Width = 51
+      Height = 21
       SkinManager = SharpESkinManager1
       AutoSize = True
       Caption = 'lb_rambar'
@@ -89,8 +89,8 @@ object MainForm: TMainForm
     object lb_swpbar: TSharpESkinLabel
       Left = 80
       Top = 72
-      Width = 49
-      Height = 20
+      Width = 51
+      Height = 21
       SkinManager = SharpESkinManager1
       AutoSize = True
       Caption = 'lb_swpbar'

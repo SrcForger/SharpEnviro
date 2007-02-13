@@ -111,6 +111,11 @@ begin
     edit.Width := max(1,(Width - 4));
     btn_select.Hide;
   end;
+
+  Background.Bitmap.BeginUpdate;
+  Background.Bitmap.SetSize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
+  Background.Bitmap.EndUpdate;
 end;
 
 

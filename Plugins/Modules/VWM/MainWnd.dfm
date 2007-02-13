@@ -20,7 +20,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 170
-    Height = 25
+    Height = 30
     Align = alClient
     Anchors = [akLeft, akTop, akBottom]
     Bitmap.ResamplerClassName = 'TNearestResampler'
@@ -30,7 +30,7 @@ object MainForm: TMainForm
     TabOrder = 0
     DesignSize = (
       170
-      25)
+      30)
     object SharpEButton1: TSharpEButton
       Left = 0
       Top = 0

@@ -170,6 +170,11 @@ procedure TMainForm.SetSize(NewWidth : integer);
 begin
   Width := NewWidth;
   Button.Width := max(1,Width - 4);
+
+  Background.Bitmap.BeginUpdate;
+  Background.Bitmap.SetSize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
+  Background.Bitmap.EndUpdate;
 end;
 
 procedure TMainForm.ReAlignComponents;

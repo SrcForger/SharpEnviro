@@ -108,6 +108,11 @@ begin
     lb_clock.Left := newWidth div 2 - lb_clock.Width div 2;
     lb_bottomclock.Left := newWidth div 2 - lb_bottomclock.Width div 2;
   end else lb_clock.Left := 0;
+
+  Background.Bitmap.BeginUpdate;
+  Background.Bitmap.SetSize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
+  Background.Bitmap.EndUpdate;
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);

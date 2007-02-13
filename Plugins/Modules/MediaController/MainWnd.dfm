@@ -19,7 +19,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 285
-    Height = 164
+    Height = 166
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -29,7 +29,7 @@ object MainForm: TMainForm
     TabOrder = 0
     object btn_play: TSharpEButton
       Left = 2
-      Top = 1
+      Top = 0
       Width = 16
       Height = 20
       SkinManager = SharpESkinManager1
@@ -108,7 +108,7 @@ object MainForm: TMainForm
     end
     object btn_stop: TSharpEButton
       Left = 34
-      Top = 1
+      Top = 0
       Width = 16
       Height = 20
       SkinManager = SharpESkinManager1
@@ -187,7 +187,7 @@ object MainForm: TMainForm
     end
     object btn_pause: TSharpEButton
       Left = 18
-      Top = 1
+      Top = 0
       Width = 16
       Height = 20
       SkinManager = SharpESkinManager1
@@ -266,7 +266,7 @@ object MainForm: TMainForm
     end
     object btn_prev: TSharpEButton
       Left = 50
-      Top = 1
+      Top = 0
       Width = 16
       Height = 20
       SkinManager = SharpESkinManager1
@@ -345,7 +345,7 @@ object MainForm: TMainForm
     end
     object btn_next: TSharpEButton
       Left = 66
-      Top = 1
+      Top = 0
       Width = 16
       Height = 20
       SkinManager = SharpESkinManager1
@@ -424,7 +424,7 @@ object MainForm: TMainForm
     end
     object btn_pselect: TSharpEButton
       Left = 82
-      Top = 1
+      Top = 0
       Width = 16
       Height = 20
       SkinManager = SharpESkinManager1

@@ -173,6 +173,10 @@ end;
 procedure TMainForm.SetSize(NewWidth : integer);
 begin
   Width := NewWidth;
+  Background.Bitmap.BeginUpdate;
+  Background.Bitmap.SetSize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
+  Background.Bitmap.EndUpdate;
   edit.Width := max(1,NewWidth - 4);
 end;
 {$ENDREGION}

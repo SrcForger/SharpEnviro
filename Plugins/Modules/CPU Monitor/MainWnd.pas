@@ -212,6 +212,13 @@ procedure TMainForm.SetSize(NewWidth : integer);
 begin
   Width := NewWidth;
   ReAlignComponents(False);
+
+  Background.Bitmap.BeginUpdate;
+  Background.Bitmap.SetSize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
+  Background.Bitmap.EndUpdate;
+
+  BGBmp.Assign(Background.Bitmap);
 end;
 
 

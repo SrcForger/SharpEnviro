@@ -30,8 +30,8 @@ object MainForm: TMainForm
     object lb_info: TSharpESkinLabel
       Left = 2
       Top = -1
-      Width = 14
-      Height = 23
+      Width = 12
+      Height = 21
       SkinManager = SharpESkinManager1
       AutoSize = True
       Caption = '.'
@@ -52,8 +52,8 @@ object MainForm: TMainForm
     object lb_pc: TSharpESkinLabel
       Left = 106
       Top = -1
-      Width = 14
-      Height = 23
+      Width = 12
+      Height = 21
       SkinManager = SharpESkinManager1
       AutoSize = True
       Caption = '.'
