@@ -44,6 +44,8 @@ type
     FileName : String;
   end;
 
+  TDeskGridArray = array of array of TSharpEDesktopItem;
+
   // Usage:
   // - TSharpEDesktop.Create
   // - TSharpEDesktop.AddDirectory('DirA'); (Main Directory!)
@@ -61,7 +63,7 @@ type
     FAddPoint      : TSharpEDesktopAddPoint;      // Add topleft,bottomleft,...
     FAddVert       : boolean;                     // Add Direction = Top <-> Bottom
     FGridSize      : integer;
-    FGridArray     : array of array of TSharpEDesktopItem;
+    FGridArray     : TDeskGridArray;
     FDimension     : TPoint;
     function FindCustomDataByFile(pFileName : String) : TCustomData;
     function FindItemByFile(pFileName : String) : TSharpEDesktopItem;
@@ -74,12 +76,14 @@ type
     procedure AddDirectory(pDirectory : String);
     procedure LoadCustomData;
     procedure SaveCustomData;
-    procedure RefreshDirectories;
+    function RefreshDirectories : boolean;
 
     constructor Create(pWidth,pHeight : integer); reintroduce;
     destructor Destroy; override;
   published
     property Name : String read FName write FName;
+    property Grid : TDeskGridArray read FGridArray;
+    property GridSize : integer read FGridSize;
   end;
 
 implementation
@@ -90,7 +94,7 @@ constructor TSharpEDesktop.Create(pWidth,pHeight : integer);
 begin
   inherited Create;
 
-  FAddPoint := apTopLeft;
+  FAddPoint := apBottomLeft;
   FAddVert := True;
 
   FGridSize := 64;
@@ -228,7 +232,7 @@ var
 begin
   for y := 0 to High(FGridArray) do
       for x := 0 to High(FGridArray[y]) do
-          FGridArray[x,y] := nil;
+          FGridArray[y,x] := nil;
 end;
 
 procedure TSharpEDesktop.InitGridArray;
@@ -247,9 +251,9 @@ procedure TSharpEDesktop.InsertToGrid(pItem : TSharpEDesktopItem);
 
   function GridAssign(x,y : integer) : boolean;
   begin
-    if FGridArray[x,y] = nil then
+    if FGridArray[y,x] = nil then
     begin
-      FGridArray[x,y] := pItem;
+      FGridArray[y,x] := pItem;
       pItem.IsInGrid := True;
       result := true
     end else result := false;
@@ -374,7 +378,7 @@ begin
   result := nil;
 end;
 
-procedure TSharpEDesktop.RefreshDirectories;
+function TSharpEDesktop.RefreshDirectories : boolean;
 var
   sr : TSearchRec;
   n,i : integer;
@@ -384,6 +388,8 @@ var
   newlist : TStringList;
   newitem : boolean;
 begin
+  result := False;
+
   newlist := TStringList.Create;
   newlist.Clear;
 
@@ -398,7 +404,7 @@ begin
         if ((sr.Name <> '.') and (sr.Name <> '..')) then
         begin
           item := FindItemByFile(sr.Name);
-          if item <> nil then
+          if item = nil then
           begin
             newlist.add(FDirectories[n] + sr.Name);
           end else
@@ -406,6 +412,8 @@ begin
             GetFileLastWrite(item.FileName,dt);
             if CompareDateTime(dt,item.LastChange) > 0 then
                item.UpdateFromFile;
+            item.HasChanged := True;
+            result := True;
           end;
         end;
       until FindNext(sr) <> 0;
@@ -421,19 +429,22 @@ begin
       if GetGridItem(ditem.X,ditem.Y) = nil then
       begin
         newitem := True;
-        item := TSharpEDesktopItem.Create(FDirectories[n] + sr.Name);
+        item := TSharpEDesktopItem.Create(newlist[i]);
         item.IsInGrid := True;
         FItems.Add(item);
+        FGridArray[ditem.Y,ditem.X] := item;
         newlist.Delete(i);
+        result := True;
       end;
   end;
 
   for n := 0 to newlist.Count - 1 do
   begin
     newitem := True;
-    item := TSharpEDesktopItem.Create(FDirectories[n] + sr.Name);
+    item := TSharpEDesktopItem.Create(newlist[n]);
     FItems.Add(item);
     InsertToGrid(item);
+    result := True;
   end;
 
   FreeAndNil(newlist);

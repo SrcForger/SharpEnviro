@@ -111,7 +111,7 @@ begin
       for n := 0 to XML.Root.Items.Count - 1 do
           with XML.Root.Items.Item[n].Items do
           begin
-            DirList.Free;
+            DirList.Clear;
             if ItemNamed['Directories'] <> nil then
                for i := 0 to ItemNamed['Directories'].Items.Count - 1 do
                    DirList.Add(ItemNamed['Directories'].Items.Item[i].Value);

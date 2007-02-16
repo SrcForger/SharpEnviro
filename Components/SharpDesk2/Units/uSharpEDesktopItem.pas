@@ -32,7 +32,7 @@ unit uSharpEDesktopItem;
 
 interface
 
-uses Windows,Classes,SysUtils;
+uses Windows,Classes,SysUtils,GR32_Layers;
 
 type
   TSharpEDesktopItemTypes = (dtShellLink,dtFile,dtDirectory);
@@ -44,11 +44,14 @@ type
     FWorkDir    : String;
     FTarget     : String;
     FLastChange : TDateTime;
+    FHasChanged : boolean;
     FType       : TSharpEDesktopItemTypes;
+    FLayer      : TCustomLayer;
     FIsInGrid   : Boolean;
     procedure UpdateDirectory;
     procedure UpdateShellLink;
     procedure UpdateFile;
+    function GetHasLayer : boolean;
   public
     procedure UpdateFromFile;
     
@@ -58,6 +61,9 @@ type
     property FileName : String read FFileName;
     property LastChange : TDateTime read FLastChange;
     property IsInGrid : boolean read FIsInGrid write FIsInGrid;
+    property HasChanged : boolean read FHasChanged write FHasChanged;
+    property HasLayer : boolean read GetHasLayer;
+    property Layer : TCustomLayer read FLayer write FLayer;
   end;
 
 implementation
@@ -71,7 +77,9 @@ var
 begin
   inherited Create;
 
+  FLayer := nil;
   FFileName := pFileName;
+  FHasChanged := True;
   FBaseDir  := IncludeTrailingBackSlash(ExtractFileDir(FFileName));
   FIsInGrid := False;
   FLastChange := 0;
@@ -87,6 +95,11 @@ end;
 destructor TSharpEDesktopItem.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TSharpEDesktopItem.GetHasLayer : boolean;
+begin
+  result := Assigned(FLayer);
 end;
 
 procedure TSharpEDesktopItem.UpdateDirectory;
