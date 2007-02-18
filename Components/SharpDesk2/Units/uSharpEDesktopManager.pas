@@ -32,7 +32,7 @@ unit uSharpEDesktopManager;
 
 interface
 
-uses Forms,Classes,SysUtils,Windows,Contnrs,uSharpEDesktopItem,uSharpEDesktop;
+uses Forms,Classes,Controls,SysUtils,Windows,Contnrs,uSharpEDesktopItem,uSharpEDesktop;
 
 type
   TSharpEDesktopManager = class
@@ -41,9 +41,13 @@ type
     FCurrentDesktop : TSharpEDesktop; // only a pointer to a desktop from the list!
     procedure InitDesktops;
   public
+    procedure LoadDesktops;
+    procedure PerformMouseMove(pX,pY : integer);
+    procedure PerformMouseDown(pX,pY : integer; Button : TMouseButton);
+    procedure PerformMouseUp(pX,pY : integer; Button : TMouseButton);
+
     constructor Create; reintroduce;
     destructor Destroy; override;
-    procedure LoadDesktops;
   published
     property CurrentDesktop : TSharpEDesktop read FCurrentDesktop;
   end;
@@ -132,6 +136,18 @@ begin
   XML.Free;
 
   InitDesktops;
+end;
+
+procedure TSharpEDesktopManager.PerformMouseMove(pX,pY : integer);
+begin
+end;
+
+procedure TSharpEDesktopManager.PerformMouseDown(pX,pY : integer; Button : TMouseButton);
+begin
+end;
+
+procedure TSharpEDesktopManager.PerformMouseUp(pX,pY : integer; Button : TMouseButton);
+begin
 end;
 
 end.

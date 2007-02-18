@@ -70,12 +70,12 @@ type
     procedure InitGridArray;
     procedure ClearGridArray;
     procedure InsertToGrid(pItem : TSharpEDesktopItem);
-    function GetGridItem(x,y : integer) : TSharpEDesktopItem;
     procedure UpdateCustomDataFromGrid;
   public
     procedure AddDirectory(pDirectory : String);
     procedure LoadCustomData;
     procedure SaveCustomData;
+    function GetGridItem(x,y : integer) : TSharpEDesktopItem;
     function RefreshDirectories : boolean;
 
     constructor Create(pWidth,pHeight : integer); reintroduce;
@@ -94,7 +94,7 @@ constructor TSharpEDesktop.Create(pWidth,pHeight : integer);
 begin
   inherited Create;
 
-  FAddPoint := apBottomLeft;
+  FAddPoint := apTopLeft;
   FAddVert := True;
 
   FGridSize := 64;
@@ -211,7 +211,7 @@ begin
       try
         XML.LoadFromFile(fn);
         for i := 0 to XML.Root.Items.Count - 1 do
-            with XML.Root.Items.Item[n].Items do
+            with XML.Root.Items.Item[i].Items do
             begin
               ditem := TCustomData.Create;
               ditem.X := IntValue('x',0);
@@ -401,7 +401,7 @@ begin
     begin
       if FindFirst(FDirectories[n] + '*.*',FAAnyFile,sr) = 0 then
       repeat
-        if ((sr.Name <> '.') and (sr.Name <> '..')) then
+        if ((sr.Name <> '.') and (sr.Name <> '..') and (sr.Name <> 'SharpE.Desktop')) then
         begin
           item := FindItemByFile(sr.Name);
           if item = nil then

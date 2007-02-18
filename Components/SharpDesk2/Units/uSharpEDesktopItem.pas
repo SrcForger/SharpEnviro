@@ -32,7 +32,7 @@ unit uSharpEDesktopItem;
 
 interface
 
-uses Windows,Classes,SysUtils,GR32_Layers;
+uses Windows,Classes,SysUtils,GR32,GR32_Layers;
 
 type
   TSharpEDesktopItemTypes = (dtShellLink,dtFile,dtDirectory);
@@ -43,11 +43,13 @@ type
     FBaseDir    : String;
     FWorkDir    : String;
     FTarget     : String;
+    FCaption    : String;
     FLastChange : TDateTime;
     FHasChanged : boolean;
     FType       : TSharpEDesktopItemTypes;
     FLayer      : TCustomLayer;
     FIsInGrid   : Boolean;
+    FIcon       : TBitmap32;
     procedure UpdateDirectory;
     procedure UpdateShellLink;
     procedure UpdateFile;
@@ -58,17 +60,20 @@ type
     constructor Create(pFileName : String); reintroduce;
     destructor Destroy; override;
   published
+    property Caption  : String read FCaption;
     property FileName : String read FFileName;
     property LastChange : TDateTime read FLastChange;
     property IsInGrid : boolean read FIsInGrid write FIsInGrid;
     property HasChanged : boolean read FHasChanged write FHasChanged;
     property HasLayer : boolean read GetHasLayer;
     property Layer : TCustomLayer read FLayer write FLayer;
+    property Icon : TBitmap32 read FIcon;
   end;
 
 implementation
 
 uses JclFileUtils,
+     SharpIconUtils,
      uExecServiceExtractShortcut;
 
 constructor TSharpEDesktopItem.Create(pFileName : String);
@@ -77,13 +82,15 @@ var
 begin
   inherited Create;
 
+  FIcon := TBitmap32.Create;
+
   FLayer := nil;
   FFileName := pFileName;
   FHasChanged := True;
   FBaseDir  := IncludeTrailingBackSlash(ExtractFileDir(FFileName));
   FIsInGrid := False;
   FLastChange := 0;
-  
+
   Ext := ExtractFileExt(FFileName);
   if IsDirectory(FFileName) then FType := dtDirectory
   else if CompareText(Ext,'.lnk') = 0 then FType := dtShellLink
@@ -94,6 +101,8 @@ end;
 
 destructor TSharpEDesktopItem.Destroy;
 begin
+  FreeAndNil(FIcon);
+
   inherited Destroy;
 end;
 
@@ -106,6 +115,7 @@ procedure TSharpEDesktopItem.UpdateDirectory;
 begin
   FTarget := IncludeTrailingBackSlash(FFileName);
   FWorkDir := FTarget;
+  FCaption := PathExtractPathDepth(FTarget,1);
 end;
 
 procedure TSharpEDesktopItem.UpdateShellLink;
@@ -115,12 +125,14 @@ begin
   ResolveLink(FFileName,link);
   FTarget  := link.Target;
   FWorkDir := link.WorkDir;
+  FCaption := ExtractFileName(FFileName);
 end;
 
 procedure TSharpEDesktopItem.UpdateFile;
 begin
   FTarget := FFileName;
   FWorkDir := ExtractFileDir(FFileName);
+  FCaption := ExtractFileName(FTarget);
 end;
 
 procedure TSharpEDesktopItem.UpdateFromFile;
@@ -132,6 +144,8 @@ begin
     dtShellLink : UpdateShellLink;
     else UpdateFile;
   end;
+
+  extrShellIcon(FIcon,FFileName);
 end;
 
 end.

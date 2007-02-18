@@ -34,12 +34,18 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, GR32_Image,
+  Dialogs, GR32_Image, GR32_Layers,GR32,
   uSharpEDesktopManager, uSharpEDesktopRenderer;
 
 type
   TSharpDeskMainWnd = class(TForm)
     Background: TImage32;
+    procedure BackgroundMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
+    procedure BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
+    procedure BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer; Layer: TCustomLayer);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -70,6 +76,27 @@ procedure TSharpDeskMainWnd.FormDestroy(Sender: TObject);
 begin
   FDeskRenderer.Free;
   FDeskManager.Free;
+end;
+
+procedure TSharpDeskMainWnd.BackgroundMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
+begin
+  FDeskRenderer.PerformMouseMove(X,Y);
+  FDeskManager.PerformMouseMove(X,Y);
+end;
+
+procedure TSharpDeskMainWnd.BackgroundMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
+begin
+  FDeskRenderer.PerformMouseDown(X,Y,Button);
+  FDeskManager.PerformMouseDown(X,Y,Button);
+end;
+
+procedure TSharpDeskMainWnd.BackgroundMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
+begin
+  FDeskRenderer.PerformMouseUp(X,Y,Button);
+  FDeskManager.PerformMouseUp(X,Y,Button);
 end;
 
 end.

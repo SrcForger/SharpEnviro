@@ -23,8 +23,12 @@ object SharpDeskMainWnd: TSharpDeskMainWnd
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
+    RepaintMode = rmOptimizer
     Scale = 1.000000000000000000
     ScaleMode = smNormal
     TabOrder = 0
+    OnMouseDown = BackgroundMouseDown
+    OnMouseMove = BackgroundMouseMove
+    OnMouseUp = BackgroundMouseUp
   end
 end
