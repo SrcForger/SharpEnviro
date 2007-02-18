@@ -162,6 +162,8 @@ end;
 
 procedure TSystemSharpESkin.SetActive(b : boolean);
 begin
+  if (csDesigning in ComponentState) then exit;
+
   if b then
     LoadSkinFromStream
   else

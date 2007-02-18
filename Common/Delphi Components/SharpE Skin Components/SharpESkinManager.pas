@@ -166,7 +166,7 @@ begin
     FMsgWnd := classes.AllocateHwnd(MessageHook2);
   end;
 
-  if FSkinSource = ssSystem then
+  if (FSkinSource = ssSystem) and not (csDesigning in ComponentState) then
      FSystemSkin.Activated := true
  end;
 
