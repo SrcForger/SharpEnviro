@@ -37,7 +37,7 @@ uses
   Classes;
 
 type
-  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet);
+  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon);
   TThemeParts = set of TThemePart;
 
   TSharpESkinColor = record
@@ -55,7 +55,7 @@ type
   end;
 
 const
-  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet];
+  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon];
 
 
 // ThemeAPIControls
@@ -105,6 +105,26 @@ function GetIconSetIcon(pIndex : integer) : TSharpEIcon; overload; external 'Sha
 function GetIconSetIcon(pTag : PChar) : TSharpEIcon; overload; external 'SharpThemeApi.dll' name'GetIconSetByTag';
 function IsIconInIconSet(pTag : PChar) : boolean; external 'SharpThemeApi.dll' name 'IsIconInIconSet';
 function ValidateIcon(pFileName : PChar) : PChar; external 'SharpThemeApi.dll' name 'ValidateIcon';
+
+// Theme DesktopIcon
+function GetDesktopIconSize        : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconSize';
+function GetDesktopIconAlpha       : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconAlpha';
+function GetDesktopIconBlending    : boolean; external 'SharpThemeApi.dll' name 'GetDesktopIconBlending';
+function GetDesktopIconBlendColor  : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconBlendColor';
+function GetDesktopIconBlendAlpha  : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconBlendAlpha';
+function GetDesktopFontName        : String;  external 'SharpThemeApi.dll' name 'GetDesktopFontName';
+function GetDesktopTextSize        : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextSize';
+function GetDesktopTextBold        : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextBold';
+function GetDesktopTextItalic      : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextItalic';
+function GetDesktopTextUnderline   : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextUnderline';
+function GetDesktopTextColor       : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextColor';
+function GetDesktopTextAlpha       : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextAlpha';
+function GetDesktopTextShadow      : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextShadow';
+function GetDesktopTextShadowAlpha : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowAlpha';
+function GetDesktopTextShadowColor : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowColor';
+function GetDesktopTextShadowType  : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowType';
+function GetDesktopTextShadowSize  : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowSize';
+
 
 implementation
 

@@ -43,7 +43,7 @@ uses
   SharpAPI in '..\SharpAPI\SharpAPI.pas';
 
 type
-  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet);
+  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon);
   TThemeParts = set of TThemePart;
 
   TSharpESkinColor = record
@@ -58,6 +58,27 @@ type
   TSharpEIcon = record
     FileName: string;
     Tag: string;
+  end;
+
+  TThemeDesktopIcon = record
+    LastUpdate      : Int64;
+    IconSize        : integer;
+    IconAlpha       : integer;
+    IconBlending    : boolean;
+    IconBlendColor  : integer;
+    IconBlendAlpha  : integer;
+    FontName        : String;
+    TextSize        : integer;
+    TextBold        : boolean;
+    TextItalic      : boolean;
+    TextUnderline   : boolean;
+    TextColor       : integer;
+    TextAlpha       : integer;
+    TextShadow      : boolean;
+    TextShadowAlpha : integer;
+    TextShadowColor : integer;
+    TextShadowType  : integer;
+    TextShadowSize  : integer;
   end;
 
   TThemeIconSet = record
@@ -101,6 +122,7 @@ type
     Scheme: TThemeScheme;
     Skin: TThemeSkin;
     IconSet: TThemeIconSet;
+    DesktopIcon : TThemeDesktopIcon;
   end;
 
 var
@@ -123,9 +145,10 @@ const
   THEME_INFO_FILE = 'Theme.xml';
   SCHEME_FILE = 'Scheme.xml';
   SKIN_FILE = 'Skin.xml';
-  ICONSET_FILE = 'IconSet';
+  ICONSET_FILE = 'IconSet.xml';
+  DESKTOPICON_FILE = 'DesktopIcon.xml';
 
-  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet];
+  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon];
 
   // ##########################################
   //   COLOR CONVERTING
@@ -461,11 +484,35 @@ begin
   Theme.Skin.Name := 'Default';
 end;
 
+procedure SetThemeDesktopIconDefault;
+begin
+  with Theme.DesktopIcon do
+  begin
+    IconSize        := 48;
+    IconAlpha       := 255;
+    IconBlending    := False;
+    IconBlendColor  := 0;
+    IconBlendAlpha  := 255;
+    FontName        := 'Verdana';
+    TextSize        := 8;
+    TextBold        := False;
+    TextItalic      := False;
+    TextUnderline   := False;
+    TextColor       := 0;
+    TextAlpha       := 255;
+    TextShadow      := False;
+    TextShadowAlpha := 255;
+    TextShadowColor := 0;
+    TextShadowType  := 0;
+    TextShadowSize  := 1;
+  end;
+end;
+
 // ##########################################
 //      LOAD THEME PARTS
 // ##########################################
 
-procedure LoadIconSet;
+procedure LoadThemeIconSet;
 var
   XML: TJvSimpleXML;
   n: integer;
@@ -668,6 +715,48 @@ begin
   Theme.Info.LastUpdate := DateTimeToUnix(Now());
 end;
 
+procedure LoadThemeDesktopIcon;
+var
+  XML : TJvSimpleXML;
+begin
+  SetThemeDesktopIconDefault;
+  if not FileExists(Theme.Data.Directory + DESKTOPICON_FILE) then
+    exit;
+
+  XML := TJvSimpleXML.Create(nil);
+  try
+    try
+      XML.LoadFromFile(Theme.Data.Directory + DESKTOPICON_FILE);
+      with XML.Root.Items do
+      with Theme.DesktopIcon do
+      begin
+        IconSize        := IntValue('IconSize',IconSize);
+        IconAlpha       := IntValue('IconAlpha',IconAlpha);
+        IconBlending    := BoolValue('IconBlending',IconBlending);
+        IconBlendColor  := IntValue('IconBlendColor',IconBlendColor);
+        IconBlendAlpha  := IntValue('IconBlendAlpha',IconBlendAlpha);
+        FontName        := Value('FontName',FontName);
+        TextSize        := IntValue('TextSize',TextSize);
+        TextBold        := BoolValue('TextBold',TextBold);
+        TextItalic      := BoolValue('TextItalic',TextItalic);
+        TextUnderline   := BoolValue('TextUnderline',TextUnderline);
+        TextColor       := IntValue('TextColor',TextColor);
+        TextAlpha       := IntValue('TextAlpha',TextAlpha);
+        TextShadow      := BoolValue('TextShadow',TextShadow);
+        TextShadowAlpha := IntValue('TextShadowAlpha',TextShadowAlpha);
+        TextShadowColor := IntValue('TextShadowColor',TextShadowColor);
+        TextShadowType  := IntValue('TextShadowType',TextShadowType);
+        TextShadowSize  := IntValue('TextShadowSize',TextShadowSize);
+      end;
+    except
+      SetThemeDesktopIconDefault;
+    end;
+  finally
+    XML.Free;
+  end;
+  Theme.DesktopIcon.LastUpdate := DateTimeToUnix(Now());
+end;
+
 // ##########################################
 //      EXPORT: THEME INFO
 // ##########################################
@@ -863,6 +952,95 @@ begin
 end;
 
 // ##########################################
+//      EXPORT: Desktop Icon
+// ##########################################
+
+function GetDesktopIconSize : integer;
+begin
+  result := Theme.DesktopIcon.IconSize;
+end;
+
+function GetDesktopIconAlpha : integer;
+begin
+  result := Theme.DesktopIcon.IconAlpha;
+end;
+
+function GetDesktopIconBlending : boolean;
+begin
+  result := Theme.DesktopIcon.IconBlending;
+end;
+
+function GetDesktopIconBlendColor : integer;
+begin
+  result := Theme.DesktopIcon.IconBlendColor;
+end;
+
+function GetDesktopIconBlendAlpha : integer;
+begin
+  result := Theme.DesktopIcon.IconBlendAlpha;
+end;
+
+function GetDesktopFontName: PChar;
+begin
+  result := PChar(Theme.DesktopIcon.FontName);
+end;
+
+function GetDesktopTextSize : integer;
+begin
+  result := Theme.DesktopIcon.TextSize;
+end;
+
+function GetDesktopTextBold : Boolean;
+begin
+  result := Theme.DesktopIcon.TextBold;
+end;
+
+function GetDesktopTextItalic : boolean;
+begin
+  result := Theme.DesktopIcon.TextItalic;
+end;
+
+function GetDesktopTextUnderline : Boolean;
+begin
+  result := Theme.DesktopIcon.TextUnderline;
+end;
+
+function GetDesktopTextColor : integer;
+begin
+  result := Theme.DesktopIcon.TextColor;
+end;
+
+function GetDesktopTextAlpha : integer;
+begin
+  result := Theme.DesktopIcon.TextAlpha;
+end;
+
+function GetDesktopTextShadow : boolean;
+begin
+  result := Theme.DesktopIcon.TextShadow;
+end;
+
+function GetDesktopTextShadowAlpha : integer;
+begin
+  result := Theme.DesktopIcon.TextShadowAlpha;
+end;
+
+function GetDesktopTextShadowColor : integer;
+begin
+  result := Theme.DesktopIcon.TextShadowColor;
+end;
+
+function GetDesktopTextShadowType : integer;
+begin
+  result := Theme.DesktopIcon.TextShadowType;
+end;
+
+function GetDesktopTextShadowSize : integer;
+begin
+  result := Theme.DesktopIcon.TextShadowSize;
+end;
+
+// ##########################################
 //      EXPORT: SCHEME COLOR SET
 // ##########################################
 
@@ -935,6 +1113,7 @@ begin
   SetThemeSchemeDefault;
   SetThemeSkinDefault;
   SetThemeIconSetDefault;
+  SetThemeDesktopIconDefault;
 
   bInitialized := True;
 end;
@@ -967,7 +1146,9 @@ begin
   if (tpScheme  in ThemeParts) and
      (ct - Theme.Scheme.LastUpdate > 1) or (ForceReload) then LoadThemeScheme;
   if (tpIconSet in ThemeParts) and
-     (ct - Theme.IconSet.LastUpdate > 1) or (ForceReload) then LoadIconSet;
+     (ct - Theme.IconSet.LastUpdate > 1) or (ForceReload) then LoadThemeIconSet;
+  if (tpDesktopIcon in ThemeParts) and
+     (ct - Theme.DesktopIcon.LastUpdate >1) or (ForceReload) then LoadThemeDesktopIcon;
 
   result := True;
 end;
@@ -1039,7 +1220,26 @@ exports
   GetIconSetIconByIndex,
   GetIconSetIconByTag,
   IsIconInIconSet,
-  ValidateIcon;
+  ValidateIcon,
+
+  // Theme DesktopIcon
+  GetDesktopIconSize,
+  GetDesktopIconAlpha,
+  GetDesktopIconBlending,
+  GetDesktopIconBlendColor,
+  GetDesktopIconBlendAlpha,
+  GetDesktopFontName,
+  GetDesktopTextSize,
+  GetDesktopTextBold,
+  GetDesktopTextItalic,
+  GetDesktopTextUnderline,
+  GetDesktopTextColor,
+  GetDesktopTextAlpha,
+  GetDesktopTextShadow,
+  GetDesktopTextShadowAlpha,
+  GetDesktopTextShadowColor,
+  GetDesktopTextShadowType,
+  GetDesktopTextShadowSize;
 
 begin
 end.
