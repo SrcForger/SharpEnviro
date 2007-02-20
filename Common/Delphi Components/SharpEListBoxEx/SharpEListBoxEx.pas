@@ -663,7 +663,7 @@ begin
 
     if Assigned(FOnClickItem) then begin
 
-      if col > Pred(Item[id].SubItemCount) then
+      if ((col > Pred(Item[id].SubItemCount)) or (col = -1)) then
         colText := '' else
         colText := Item[id].SubItemText[col];
 
