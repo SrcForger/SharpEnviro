@@ -51,22 +51,16 @@ object Form12: TForm12
     BorderColor = clBlack
     BorderSelectedColor = clRed
     PngImageList = PngImageList1
-    TabList = <
-      item
-        Caption = 'Add'
-        ImageIndex = 6
-        ID = 0
-      end
-      item
-        Caption = 'Edit'
-        ImageIndex = 7
-        ID = 0
-      end
-      item
-        Caption = 'Delete'
-        ImageIndex = 8
-        ID = 0
-      end>
+    TabList = <>
+  end
+  object Button1: TButton
+    Left = 160
+    Top = 360
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 2
+    OnClick = Button1Click
   end
   object PngImageList1: TPngImageList
     PngImages = <

@@ -95,6 +95,8 @@ type
     procedure DrawTab(ATabRect:TRect; ATabItem: TSharpETabListItem);
   public
 
+    function ClickTab(ATab: TSharpETabListItem):Boolean; overload;
+    function ClickTab(ATabID: Integer):Boolean; overload;
 
     Function Add: TSharpETabListItem; overload;
     Function Add(ATabCaption: String; ATabImageIndex:Integer=-1;
@@ -461,7 +463,7 @@ begin
   if Count = 0 then exit;
   w := Self.Width;
   iMaxTabSize := CalculateMaxTabSize;
-  
+
   iPosTabs := w div (iMaxTabSize+3);
   x := 0;
 
@@ -585,6 +587,25 @@ procedure TSharpETabList.SetBorderSelectedColor(const Value: TColor);
 begin
   FBorderSelectedColor := Value;
   Invalidate;
+end;
+
+function TSharpETabList.ClickTab(ATabID: Integer): Boolean;
+begin
+  Result := False;
+  if ((ATabID = -1) or (ATabID > Self.Count-1)) then exit;
+
+  MouseDownEvent(Self,mbLeft,[],TabList.Item[ATabID].TabRect.Left+1,
+    TabList.Item[ATabID].TabRect.Top+1,nil);
+  Result := True;
+end;
+
+function TSharpETabList.ClickTab(ATab: TSharpETabListItem): Boolean;
+begin
+  Result := False;
+  if ATab = nil then exit;
+
+  MouseDownEvent(Self,mbLeft,[],ATab.TabRect.Left+1, ATab.TabRect.Top+1,nil);
+  Result := True;
 end;
 
 { TSharpETabListItem }

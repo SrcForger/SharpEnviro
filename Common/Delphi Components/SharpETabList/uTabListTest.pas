@@ -5,13 +5,15 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, GR32, GR32_Image, uSharpeTabList, ExtCtrls, SharpERoundPanel,
-  ImgList, PngImageList, JvExControls, JvComponent, JvPageList;
+  ImgList, PngImageList, JvExControls, JvComponent, JvPageList, StdCtrls;
 
 type
   TForm12 = class(TForm)
     PngImageList1: TPngImageList;
     SharpETabList1: TSharpETabList;
     SharpERoundPanel3: TSharpERoundPanel;
+    Button1: TButton;
+    procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
@@ -49,6 +51,11 @@ begin
     Add('Add',1);
     Add('Delete',2);
   end;
+end;
+
+procedure TForm12.Button1Click(Sender: TObject);
+begin
+  SharpETabList1.ClickTab(SharpETabList1.TabList.Item[1])
 end;
 
 end.
