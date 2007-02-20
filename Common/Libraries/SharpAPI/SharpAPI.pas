@@ -145,8 +145,9 @@ const
   SCM_SET_BUTTON_ENABLED = 1002;
   SCM_SET_BUTTON_DISABLED = 1003;
   SCM_SET_SETTINGS_CHANGED = 1004;
-  SCM_EVT_UPDATE_PREVIEW = 1005;
-  SCM_EVT_UPDATE_SETTINGS = 1006;
+  SCM_EVT_BTNCLICK = 1005;
+  SCM_EVT_UPDATE_PREVIEW = 1006;
+  SCM_EVT_UPDATE_SETTINGS = 1007;
 
   SCU_SHARPDESK = 2001;
   SCU_SHARPCORE = 2002;
@@ -157,16 +158,24 @@ const
   SCU_OBJECT = 2007;
   SCU_MODULE = 2008;
 
-  SCB_MOVEUP = 2000;
-  SCB_MOVEDOWN = 2001;
-  SCB_IMPORT = 2005;
-  SCB_EXPORT = 2006;
-  SCB_CLEAR = 2007;
-  SCB_HELP = 2008;
+  SCB_MOVEUP = 3000;
+  SCB_MOVEDOWN = 3001;
+  SCB_IMPORT = 3002;
+  SCB_EXPORT = 3003;
+  SCB_CLEAR = 3004;
+  SCB_DELETE = 3005;
+  SCB_HELP = 3006;
+  SCB_ADD = 3007;
+  SCB_EDIT = 3008;
+  SCB_DEL = 3009;
+  SCB_CONFIGURE = 3010; // For editing the contents of a list
 
   //showModes to use with sendTrayMessage
   smSLIDE = 1;
   smSHRINK = 2;
+
+type
+  TSCE_EDITMODE = (sceAdd, sceEdit, sceDelete);
 
 type
   TColor = -$7FFFFFFF - 1..$7FFFFFFF;
@@ -196,8 +205,8 @@ type
   end;
   pMsgData = ^TMsgData;
 
-  PConfigMsg = ^TConfigMsg;
-  TConfigMsg = record
+  PSettingMsg = ^TSettingMsg;
+  TSettingMsg = record
     Command: string[255];
     Parameter: string[255];
     PluginID: string[255];
