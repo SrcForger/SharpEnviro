@@ -1,6 +1,6 @@
 {
 Source Name: uSharpCenterDllMethods
-Description: Plugin Interface for the SharpCenter Configs
+Description: Plugin Interface for the SharpCenter Settings
 Copyright (C) lee@sharpe-shell.org
 
 Source Forge Site
@@ -37,7 +37,7 @@ uses
   Tabs,
   GR32_Image,
   GR32,
-  uSharpCenterSectionList;
+  uSharpCenterPluginTabList;
 
 type
   TSetting = record
@@ -47,12 +47,12 @@ type
     Open: function(const APluginID:Pchar; owner: hwnd): hwnd;
     Close: function(AOwner: hwnd; SaveSettings: Boolean): boolean;
 
-    OpenEdit: function(AOwner:Hwnd; ANew:Boolean):Hwnd;
-    CloseEdit: function(AOwner: Hwnd; ANew, ASave:Boolean): boolean;
+    OpenEdit: function(AOwner:Hwnd; AEditMode:TSCE_EDITMODE):Hwnd;
+    CloseEdit: function(AOwner: Hwnd; AEditMode:TSCE_EDITMODE; ASave:Boolean): boolean;
 
-    ClickBtn: procedure (AButtonID: Integer; AButton: TPngSpeedButton);
-    ClickTab: procedure (ATab: TSectionItem);
-    AddTabs: procedure(var ATabs:TSectionItemList);
+    ClickBtn: procedure (AButtonID: Integer; AButton: TPngSpeedButton; AText: String);
+    ClickTab: procedure (ATab: TPluginTabItem);
+    AddTabs: procedure(var ATabs:TPluginTabItemList);
 
     UpdatePreview: procedure (var AImage32:TImage32);
 
@@ -113,7 +113,7 @@ function LoadSetting(filename: Pchar): TSetting;
 begin
   try
     result.filename := filename;
-    SendDebugMessageEx('SharpCenter',Pchar('Loading ConfigDll: ' + filename),clBlack,DMT_Info);
+    SendDebugMessageEx('SharpCenter',Pchar('Loading SettingDll: ' + filename),clBlack,DMT_Info);
 
     result.dllhandle := LoadLibrary(filename);
     if result.dllhandle <> 0 then begin
@@ -138,12 +138,12 @@ begin
       if (@result.Open = nil) then begin
         freelibrary(result.dllhandle);
         result.dllhandle := 0;
-        SendDebugMessageEx('SharpCenter','Unable to load ConfigDll, Open proc missing',clRed,DMT_ERROR);
+        SendDebugMessageEx('SharpCenter','Unable to load SettingDll, Open proc missing',clRed,DMT_ERROR);
       end;
     end;
   except
     result.dllhandle := 0;
-    SendDebugMessageEx('SharpCenter','Loading ConfigDll Failed',clRed,DMT_ERROR);
+    SendDebugMessageEx('SharpCenter','Loading SettingDll Failed',clRed,DMT_ERROR);
   end;
 end;
 

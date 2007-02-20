@@ -53,13 +53,13 @@ uses
   Contnrs;
 
 const
-  cLoadConfig = '_loadconfig';
+  cLoadSetting = '_loadSetting';
   cChangeFolder = '_navdir';
   cUnloadDll = '_unloaddll';
   cLoadDll = '_loaddll';
 
 type
-  TBT = (btUnspecified, btFolder, btConfig, btDll);
+  TBT = (btUnspecified, btFolder, btSetting, btDll);
 
 type
   TBTData = class
@@ -98,11 +98,11 @@ type
     property Path: string read FPath write FPath;
   end;
 
-  TBTDataConfig = class(TBTData)
+  TBTDataSetting = class(TBTData)
   private
-    FConfigFile: string;
+    FSettingFile: string;
   public
-    property ConfigFile: string read FConfigFile write FConfigFile;
+    property SettingFile: string read FSettingFile write FSettingFile;
   end;
 
 type
@@ -123,6 +123,7 @@ type
   TSharpCenterHistory = class
   private
     FList: TList;
+    function GetCount: Integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -131,10 +132,12 @@ type
 
     function AddFolder(APath: string): TSharpCenterHistoryItem;
     function AddDll(ADll, APluginID: String): TSharpCenterHistoryItem;
-    function AddConfig(AConfig: string): TSharpCenterHistoryItem;
+    function AddSetting(ASetting: string): TSharpCenterHistoryItem;
     function Add(ACommand, AParameter, APluginID: String): TSharpCenterHistoryItem;
     function GetLastEntry: TSharpCenterHistoryItem;
     property List: TList read FList write FList;
+
+    property Count: Integer read GetCount;
   end;
 
 type
@@ -148,22 +151,25 @@ type
     FCurrentCommand: TSharpCenterHistoryItem;
     FEditItemState: Boolean;
     FEditItemWarning: Boolean;
+    FCenterDir: String;
     procedure AssignIconIndex(AFileName: string; ABTData: TBTData);
-    function GetFirstPathElement(APath: string): string;
+
     procedure SetEditItemWarning(const Value: Boolean);
     procedure SetEditItemState(const Value: Boolean);
+    function GetCenterDir: String;
   public
     constructor Create;
     destructor Destroy; override;
 
     property History: TSharpCenterHistory read FHistory write FHistory;
     property CurrentCommand: TSharpCenterHistoryItem read FCurrentCommand write FCurrentCommand;
-    procedure ClickButton(Sender: TObject);
+    property CenterDir: String read GetCenterDir;
+
     function GetNextHistory: string;
     procedure ClearHistory;
 
-    procedure BuildSectionItemsFromPath(APath: string; Alistbox: TSharpEListBoxEx);
-    procedure SetNavRoot(APath: string);
+    procedure BuildRootFromPath(APath: string; Alistbox: TSharpEListBoxEx);
+    procedure BuildRoot(AListBox: TSharpEListBoxEx);
 
     property EditItemState: Boolean read FEditItemState write SetEditItemState;
     property EditItemWarning: Boolean read FEditItemWarning write SetEditItemWarning;
@@ -171,88 +177,24 @@ type
   end;
 
 var
-  SharpCenterManager: TSharpCenterManager;
+  SCM: TSharpCenterManager;
 
 implementation
 
 uses
   uSharpCenterMainWnd,
   uSharpCenterCommon,
-  uSharpCenterDllConfigWnd,
   JvSimpleXml;
-
-procedure TSharpCenterManager.ClickButton(Sender: TObject);
-var
-  tmpBTData: TBTData;
-  tmpBTDataFolder: TBTDataFolder;
-  tmpBTDataConfig: TBTDataConfig;
-  sName: string;
-begin
-  // Unload Dll
-  if SharpCenterWnd.Setting.DllHandle <> 0 then
-    SharpCenterWnd.UnloadDll;
-
-  // Get the Button Data
-  tmpBTData :=
-    TBTData(SharpCenterWnd.lbTree[SharpCenterWnd.lbTree.ItemIndex].Data);
-  sName := tmpBTData.Caption;
-
-  case tmpBTData.BT of
-    btUnspecified: ;
-    btFolder:
-      begin
-        tmpBTDataFolder := TBTDataFolder(tmpBTData);
-
-        History.Add(FCurrentCommand.Command, FCurrentCommand.Parameter, FCurrentCommand.PluginID);
-
-        FCurrentCommand.Command := cChangeFolder;
-        FCurrentCommand.Parameter := PathAddSeparator(tmpBTDataFolder.Path);
-        SetNavRoot(FCurrentCommand.Parameter);
-
-        SharpCenterWnd.lbTree.Clear;
-        BuildSectionItemsFromPath(FCurrentCommand.Parameter, SharpCenterWnd.lbTree);
-
-
-        SharpCenterWnd.SetToolbarTabVisible(tidHistory,True);
-      end;
-    btConfig:
-      begin
-
-        tmpBTDataConfig := TBTDataConfig(tmpBTData);
-        History.Add(FCurrentCommand.Command, FCurrentCommand.Parameter, FCurrentCommand.PluginID);
-
-        FCurrentCommand.Command := cLoadConfig;
-        FCurrentCommand.Parameter := tmpBTDataConfig.ConfigFile;
-
-        SetNavRoot(tmpBTDataConfig.ConfigFile);
-        SharpCenterWnd.SetToolbarTabVisible(tidHistory,True);
-
-        if fileexists(FCurrentCommand.Parameter) then
-        begin
-
-          SharpCenterWnd.InitialiseWindow(SharpCenterWnd.pnlMain,
-            tmpBTDataConfig.Caption);
-          SharpCenterWnd.LoadConfiguration(FCurrentCommand.Parameter,FCurrentCommand.PluginID);
-
-        end;
-
-      end;
-    btDll:
-      begin
-        //tmpBTDatadLL := TBTDatadLL(tmpBTData);
-
-        SharpCenterWnd.LoadSelectedDll(SharpCenterWnd.lbTree.ItemIndex);
-      end;
-  end;
-end;
 
 constructor TSharpCenterManager.Create;
 begin
   FHistory := TSharpCenterHistory.Create;
+  FCenterDir := GetCenterDirectory;
 
   FCurrentCommand := TSharpCenterHistoryItem.Create;
   FCurrentCommand.Command := cChangeFolder;
-  FCurrentCommand.Parameter := GetCenterDirectory;
+  FCurrentCommand.Parameter := FCenterDir;
+  FCurrentCommand.PluginID := '';
 
   // Load definitions
   LoadCenterDefines(FThemesPath, FModulesPath, FObjectsPath);
@@ -281,19 +223,7 @@ begin
   FHistory.Clear;
 end;
 
-function TSharpCenterManager.GetFirstPathElement(APath: string): string;
-var
-  n: Integer;
-  s: string;
-begin
-  APath := PathAddSeparator(APath);
-  s := Copy(APath, 0, Length(APath) - 1);
-  n := StrILastPos('Root', s);
-  Result := Copy(APath, n, length(s) - n + 1);
-
-end;
-
-procedure TSharpCenterManager.BuildSectionItemsFromPath(APath: string; Alistbox:
+procedure TSharpCenterManager.BuildRootFromPath(APath: string; Alistbox:
   TSharpEListboxEx);
 var
   SRec: TSearchRec;
@@ -311,6 +241,7 @@ begin
   try
     FCurrentCommand.Command := cChangeFolder;
     FCurrentCommand.Parameter := APath;
+    FCurrentCommand.PluginID := '';
     APath := PathAddSeparator(APath);
 
     if FindFirst(APath + '*.*', SysUtils.faAnyFile, SRec) = 0 then
@@ -346,11 +277,11 @@ begin
             Xml.Free;
           end;
 
-          NewBT := TBTDataConfig.Create;
+          NewBT := TBTDataSetting.Create;
           NewBT.Caption := sName;
-          TBTDataConfig(NewBt).ConfigFile := APath + sRec.Name;
+          TBTDataSetting(NewBt).SettingFile := APath + sRec.Name;
           NewBT.ID := -1;
-          NewBT.BT := btConfig;
+          NewBT.BT := btSetting;
           pngfile := sIcon;
           AssignIconIndex(pngfile, NewBT);
 
@@ -478,16 +409,16 @@ begin
   FList.Add(Result);
 end;
 
-function TSharpCenterHistory.AddConfig(
-  AConfig: string): TSharpCenterHistoryItem;
+function TSharpCenterHistory.AddSetting(
+  ASetting: string): TSharpCenterHistoryItem;
 begin
   Result := nil;
-  if AConfig = '' then
+  if ASetting = '' then
     exit;
 
   Result := TSharpCenterHistoryItem.Create;
-  Result.Command := cLoadConfig;
-  Result.Parameter := AConfig;
+  Result.Command := cLoadSetting;
+  Result.Parameter := ASetting;
   Result.PluginID := '';
   Result.ID := FList.Count;
 
@@ -523,35 +454,6 @@ begin
   end;
 end;
 
-procedure TSharpCenterManager.SetNavRoot(APath: string);
-var
-  tmpStrl: TStringList;
-  s, sHtml, sPre: string;
-  i: Integer;
-begin
-  sHtml := '';
-  s := GetFirstPathElement(APath);
-  tmpStrl := TStringList.Create;
-  try
-    StrTokenToStrings(s, '\', tmpStrl);
-    sPre := PathRemoveSeparator(GetCenterDirectory);
-
-    for i := 0 to Pred(tmpStrl.Count) do
-    begin
-      if i <> 0 then
-        sPre := sPre + '\' + tmpStrl[i];
-
-      if ((CompareText(PathAddSeparator(ExtractFilePath(sPre)),ExtractFilePath(FCurrentCommand.Parameter)) = 0) or
-        (CompareText(PathAddSeparator(sPre),FCurrentCommand.Parameter) = 0)) then
-      sHtml := sHtml + Format('/<A HREF="%s"><b>%s</b></A>', [sPre, tmpStrl[i]]) else
-      sHtml := sHtml + Format('/<A HREF="%s">%s</A>', [sPre, tmpStrl[i]]);
-    end;
-  finally
-    tmpStrl.Free;
-    SharpCenterWnd.lblTree.Caption := ' ' + sHtml;
-  end;
-end;
-
 procedure TSharpCenterManager.SetEditItemWarning(const Value: Boolean);
 begin
   FEditItemWarning := Value;
@@ -572,12 +474,34 @@ begin
       Result := True;
   end;
 
-    if ((SharpCenterManager.EditItemState) or
-      (SharpCenterManager.EditItemWarning)) then
+    if ((EditItemState) or (EditItemWarning)) then
         Result := True;
 end;
 
+function TSharpCenterManager.GetCenterDir: String;
+begin
+  Result := FCenterDir;
+end;
+
+procedure TSharpCenterManager.BuildRoot(AListBox: TSharpEListBoxEx);
+begin
+  History.Clear;
+  BuildRootFromPath(CenterDir, AListBox);
+end;
+
+function TSharpCenterHistory.GetCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+initialization
+  SCM := TSharpCenterManager.Create;
+finalization
+  FreeAndNil(SCM);
+
 end.
+
+
 
 
 

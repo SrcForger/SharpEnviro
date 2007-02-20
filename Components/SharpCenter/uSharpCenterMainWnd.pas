@@ -58,20 +58,25 @@ uses
   jvSimpleXml,
   Tabs,
   JvOutlookBar,
-  SharpEListBox, SharpESkinManager, uSharpCenterSectionList, SharpThemeApi,
+  SharpEListBox, SharpESkinManager, uSharpCenterPluginTabList, SharpThemeApi,
   uSharpCenterDllMethods, uSharpCenterManager, JvExStdCtrls, JvHtControls,
   ToolWin, SharpERoundPanel, JvExComCtrls, JvToolBar, XPMan, uSharpETabList,
-  GR32_Image, uVistaFuncs, JvLabel, JvgWizardHeader, JvPageList, SharpEListBoxEx;
+  GR32_Image, uVistaFuncs, JvLabel, JvgWizardHeader, JvPageList, SharpEListBoxEx,
+  PngBitBtn;
 
 type
   TTabID = (tidHome, tidFavourite, tidHistory, tidImport, tidExport);
+  TEditTabID = (tidAdd, tidEdit, tidDelete);
+
+const
+  cEditTabHide=0;
+  cEditTabShow=25;
 
 type
   TSharpCenterWnd = class(TForm)
-    pnlConfigurationTree: TPanel;
+    pnlSettingTree: TPanel;
     splMain: TSplitter;
     pnlTree: TPanel;
-    picMain_: TPngImageCollection;
     pnlMain: TPanel;
     Panel2: TPanel;
     UnloadTimer: TTimer;
@@ -80,51 +85,56 @@ type
     btnSave: TPngSpeedButton;
     btnCancel: TPngSpeedButton;
     PopupMenu1: TPopupMenu;
-    lblTree: TJvHTLabel;
     pnlContent: TPanel;
-    N11: TMenuItem;
-    PngImageList1: TPngImageList;
+    MiAdd: TMenuItem;
     pnlPluginContainer_: TPanel;
-    JvGradient1: TJvGradient;
-    Shape2: TShape;
     Panel4: TPanel;
-    pnlTreeTitle: TPanel;
     XPManifest1: TXPManifest;
     pnlLivePreview: TPanel;
     imgLivePreview: TImage32;
     ImageList1: TImageList;
     tlToolbar: TSharpETabList;
-    SharpERoundPanel2: TSharpERoundPanel;
+    pnlToolbar: TSharpERoundPanel;
     Panel1: TPanel;
     Panel3: TPanel;
     plToolbar: TJvPageList;
     pnlPluginContainer: TPanel;
-    tlSections: TSharpETabList;
+    tlPluginTabs: TSharpETabList;
     rpnlContent: TSharpERoundPanel;
     pnlPlugin: TPanel;
     lbTree: TSharpEListBoxEx;
     picMain: TPngImageList;
-    pagHome: TJvStandardPage;
-    Image1: TImage;
     pnlEditContainer: TSharpERoundPanel;
-    plStandardEdit: TJvPageList;
-    pagAddEdit: TJvStandardPage;
-    pnlEditButtons: TPanel;
-    btnEditCancel: TPngSpeedButton;
-    btnEditApply: TPngSpeedButton;
-    pnlEditPlugin: TPanel;
-    pagDelete: TJvStandardPage;
-    Label1: TLabel;
-    Panel7: TPanel;
-    PngSpeedButton3: TPngSpeedButton;
-    PngSpeedButton4: TPngSpeedButton;
-    PngSpeedButton5: TPngSpeedButton;
     tlEditItem: TSharpETabList;
     pilIcons: TPngImageList;
+    pnlEditPlugin: TPanel;
+    pnlEditToolbar: TPanel;
+    btnEditCancel: TPngSpeedButton;
+    btnEditApply: TPngSpeedButton;
+    pagFav: TJvStandardPage;
+    pagHistory: TJvStandardPage;
+    pagImport: TJvStandardPage;
+    pagExport: TJvStandardPage;
+    Label1: TLabel;
+    edImportFilename: TEdit;
+    btnImport: TPngSpeedButton;
+    Label2: TLabel;
+    Edit2: TEdit;
+    PngSpeedButton2: TPngSpeedButton;
+    MiEdit: TMenuItem;
+    miDelete: TMenuItem;
+    miSep: TMenuItem;
+    miConfigure: TMenuItem;
+    lbHistory: TListBox;
+    Timer1: TTimer;
+    procedure Timer1Timer(Sender: TObject);
+    procedure MiClick(Sender: TObject);
+    procedure PopupMenu1Popup(Sender: TObject);
+    procedure btnImportClick(Sender: TObject);
+    procedure tlEditItemTabClick(ASender: TObject; const ATabIndex: Integer);
     procedure btnEditApplyClick(Sender: TObject);
     procedure tlEditItemTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
-    procedure tlEditItemTabClick(ASender: TObject; const ATabIndex: Integer);
     procedure tlToolbarTabClick(ASender: TObject; const ATabIndex:Integer);
     procedure tlToolbarTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -134,20 +144,11 @@ type
     procedure btnFavouriteClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure lblTabsHyperLinkClick(Sender: TObject; LinkName: string);
-    procedure lblTreeHyperLinkClick(Sender: TObject; LinkName: string);
-    procedure btnMoveUpClick(Sender: TObject);
-    procedure btnMoveDownClick(Sender: TObject);
-    procedure btnClearClick(Sender: TObject);
-    procedure btnExportClick(Sender: TObject);
-    procedure btnImportClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
     procedure UnloadTimerTimer(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
-    procedure PngSpeedButton1Click(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure lbTree_MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -162,24 +163,30 @@ type
     FDllFilename: string;
     FPluginID: string;
     FSetting: TSetting;
-    FSections: TSectionItemList;
+    FPluginTabs: TPluginTabItemList;
     FCancelClicked: Boolean;
     FPluginHandle: THandle;
     FSelectedTabID: Integer;
+    FSelectedPluginTabID: Integer;
     FEditItemHandle: THandle;
 
-    procedure SchemeWindow;
-    function GetControlByHandle(AHandle: THandle): TWinControl;
-    procedure ResizeToFitWindow(AHandle: THandle; AControl: TWinControl);
-    function GetConfigChanged: Boolean;
+    function GetSettingChanged: Boolean;
     procedure SetControlParentWindows(Ctl: TWinControl);
-    function AssignIconIndex(ASectionObject: TSectionItem): Integer; overload;
+    function AssignIconIndex(APluginTabObject: TPluginTabItem): Integer; overload;
     procedure AssignIconIndex(AFileName: string; ABTData: TBTData); overload;
     procedure UpdateLivePreview;
-    procedure HideAllTaskbarButton;
-    function ForceForegroundWindow(hwnd: THandle): Boolean;
+    procedure CenterMessage(var Msg: TMessage); message WM_SHARPCENTERMESSAGE;
+    Procedure ClickItem;
+    
+    procedure EditTabVisible(AVisible:Boolean);
+    procedure InitWindow;
+    procedure InitToolbar;
+    procedure InitPluginTabs;
+    procedure InitSize;
+
+    procedure ShowHistory;
   public
-    procedure BuildSectionRoot;
+
     procedure GetCopyData(var Msg: TMessage); message wm_CopyData;
     procedure ExecuteCommand(ACommand, AParameter, APluginID: string);
     procedure UnloadDllWithTimer(ACommand, AParameter, APluginID: string);
@@ -188,30 +195,27 @@ type
     procedure UnloadDll;
     procedure ReloadDll;
     procedure LoadDll(AFileName, APluginID: string);
-    procedure UpdateSize;
     function SaveChanges:Boolean;
-    procedure UpdateSections;
-    procedure DisablePluginButtons;
+
     function GetDisplayName(ADllFilename, APluginID: string): string;
     function GetStatusText(ADllFilename, APluginID: string): string;
     procedure UpdateSettingTheme;
-    procedure CenterMessage(var Msg: TMessage); message WM_SHARPCENTERMESSAGE;
 
     procedure EnabledWM(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure WMPosChange(var Message: TWMWINDOWPOSCHANGING);
- Message WM_WINDOWPOSCHANGING;
+    procedure SetTabIndex(ATab:TEditTabID);
 
-    property ConfigChanged: Boolean read GetConfigChanged;
+    property SettingChanged: Boolean read GetSettingChanged;
     property Setting: TSetting read FSetting write
       FSetting;
     property PluginID: string read FPluginID write FPluginID;
     property DllFilename: string read FDllFilename write FDllFilename;
     property Name: string read FName write FName;
-    property Sections: TSectionItemList read FSections write FSections;
+    property PluginTabs: TPluginTabItemList read FPluginTabs write FPluginTabs;
     property PluginHandle: THandle read FPluginHandle write FPluginHandle;
     property EditItemHandle: THandle read FEditItemHandle write FEditItemHandle;
+    property SelectedTabID: Integer read FSelectedTabID write FSelectedTabID;
 
-    procedure LoadConfiguration(AConfigurationFile, APluginID: string);
+    procedure LoadSettinguration(ASettingurationFile, APluginID: string);
     procedure LoadSelectedDll(AItemIndex: Integer);
 
     procedure SetToolbarTabVisible(ATabID:TTabID; AVisible:Boolean);
@@ -231,190 +235,59 @@ implementation
 uses
   SharpEScheme,
   uSEListboxPainter,
-  uSharpCenterDllConfigWnd;
+  uSharpCenterHelperMethods;
 
 {$R *.dfm}
 
-function TSharpCenterWnd.ForceForegroundWindow(hwnd: THandle): Boolean;
-const
-  SPI_GETFOREGROUNDLOCKTIMEOUT = $2000;
-  SPI_SETFOREGROUNDLOCKTIMEOUT = $2001;
-var
-  ForegroundThreadID: DWORD;
-  ThisThreadID: DWORD;
-  timeout: DWORD;
-
-begin
-  if IsIconic(hwnd) then
-    ShowWindow(hwnd, SW_RESTORE);
-
-  if GetForegroundWindow = hwnd then
-    Result := True
-  else
-  begin
-    // Windows 98/2000 doesn't want to foreground a window when some other
-    // window has keyboard focus
-
-    if ((Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion > 4)) or
-      ((Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and
-      ((Win32MajorVersion > 4) or ((Win32MajorVersion = 4) and
-      (Win32MinorVersion > 0)))) then
-    begin
-      // Code from Karl E. Peterson, www.mvps.org/vb/sample.htm
-      // Converted to Delphi by Ray Lischner
-      // Published in The Delphi Magazine 55, page 16
-
-      Result := False;
-      ForegroundThreadID := GetWindowThreadProcessID(GetForegroundWindow, nil);
-      ThisThreadID := GetWindowThreadPRocessId(hwnd, nil);
-      if AttachThreadInput(ThisThreadID, ForegroundThreadID, True) then
-      begin
-        BringWindowToTop(hwnd); // IE 5.5 related hack
-        SetForegroundWindow(hwnd);
-        AttachThreadInput(ThisThreadID, ForegroundThreadID, False);
-        Result := (GetForegroundWindow = hwnd);
-      end;
-      if not Result then
-      begin
-        // Code by Daniel P. Stasinski
-        SystemParametersInfo(SPI_GETFOREGROUNDLOCKTIMEOUT, 0, @timeout, 0);
-        SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, TObject(0),
-          SPIF_SENDCHANGE);
-        BringWindowToTop(hwnd); // IE 5.5 related hack
-        SetForegroundWindow(hWnd);
-        SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, TObject(timeout),
-          SPIF_SENDCHANGE);
-      end;
-    end
-    else
-    begin
-      BringWindowToTop(hwnd); // IE 5.5 related hack
-      SetForegroundWindow(hwnd);
-    end;
-
-    Result := (GetForegroundWindow = hwnd);
-  end;
-end; { ForceForegroundWindow }
-
-procedure TSharpCenterWnd.ResizeToFitWindow(AHandle: THandle; AControl:
-  TWinControl);
-begin
-  GetControlByHandle(AHandle).Height := AControl.Height;
-  GetControlByHandle(AHandle).Width := AControl.Width;
-  GetControlByHandle(AHandle).Invalidate;
-  //Application.ProcessMessages;
-
-  Self.Invalidate;
-end;
-
-function TSharpCenterWnd.GetControlByHandle(AHandle: THandle): TWinControl;
-begin
-  Result := Pointer(GetProp(AHandle,
-    PChar(Format('Delphi%8.8x', [GetCurrentProcessID]))));
-end;
-
 procedure TSharpCenterWnd.FormShow(Sender: TObject);
 begin
-  pnlPlugin.DoubleBuffered := True;
-  SharpCenterManager := TSharpCenterManager.Create;
-
-  SchemeWindow;
-  BuildSectionRoot;
-end;
-
-procedure TSharpCenterWnd.SchemeWindow;
-begin
-  pnlConfigurationTree.Color := clWindow;
-end;
-
-procedure TSharpCenterWnd.BuildSectionRoot;
-begin
-  tlEditItem.Height := 0;
-  SharpCenterManager.ClearHistory;
-  SharpCenterWnd.SetToolbarTabVisible(tidHistory,False);
-
-  SharpCenterManager.BuildSectionItemsFromPath(GetCenterDirectory,
-    lbTree);
-
-  SharpCenterManager.SetNavRoot(GetCenterDirectory);
+  InitWindow;
+  InitToolbar;
+  SCM.BuildRoot(lbTree);
 end;
 
 procedure TSharpCenterWnd.btnHomeClick(Sender: TObject);
 begin
   UnloadDll;
-  BuildSectionRoot;
+  InitToolbar;
+  
+  SetToolbarTabVisible(tidHistory,False);
+  SCM.BuildRoot(lbTree);
 end;
 
 procedure TSharpCenterWnd.lbTree_MouseUp(Sender: TObject; Button:
-  TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+  TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  try
-    if lbTree.ItemIndex = -1 then
-      exit;
+  if lbTree.ItemIndex = -1 then
+    exit;
 
-    if FSetting.Dllhandle <> 0 then
-    begin
-      UnloadDll;
-      //LockWindowUpdate(Self.Handle);
-      SharpCenterManager.ClickButton(nil);
-    end
-    else begin
-      //LockWindowUpdate(Self.Handle);
-      SharpCenterManager.ClickButton(nil);
-    end;
-
-    UpdateSize;
-  finally
-    //LockWindowUpdate(0);
-  end;
+  ClickItem;
+  InitSize;
 end;
 
 procedure TSharpCenterWnd.FormResize(Sender: TObject);
 begin
-  UpdateSize;
-end;
-
-procedure TSharpCenterWnd.FormCreate(Sender: TObject);
-begin
-  SetVistaFonts(Self);
-  HideAllTaskbarButton;
-  //SetupGlass;
-
-
-  FSetting.Dllhandle := 0;
-  pnlEditContainer.DoubleBuffered := true;
-  plStandardEdit.DoubleBuffered := True;
-  pagAddEdit.DoubleBuffered := True;
-  lbTree.Colors.BorderColorSelected := $00C1F4FE;
-  lbTree.ItemOffset := Point(0,0);
-
-
-
-  tlSections.TextBounds := Rect(8,8,8,4);
-
-  FSections := TSectionItemList.Create;
-  UpdateSections;
-  DisablePluginButtons;
-
-  SharpThemeApi.InitializeTheme;
-  UpdateSize;
+  InitSize;
 end;
 
 procedure TSharpCenterWnd.GetCopyData(var Msg: TMessage);
 var
-  tmpMsg: tconfigmsg;
+  tmpMsg: TSettingMsg;
+  tmpHist: TSharpCenterHistoryItem;
 begin
-  tmpMsg := pConfigMsg(PCopyDataStruct(msg.lParam)^.lpData)^;
+  tmpMsg := pSettingMsg(PCopyDataStruct(msg.lParam)^.lpData)^;
+  tmpHist := SCM.CurrentCommand;
+
+  SCM.History.Add(tmpHist.Command, tmpHist.Parameter, tmpMsg.PluginID);
+
+  //SCM.CurrentCommand.Command := tmpMsg.Command;
+  //SCM.CurrentCommand.Parameter := tmpMsg.Parameter;
+  //SCM.CurrentCommand.PluginID := '';
+
   ExecuteCommand(tmpMsg.Command, tmpMsg.Parameter, tmpMsg.PluginID);
 end;
 
-procedure TSharpCenterWnd.PngSpeedButton1Click(Sender: TObject);
-begin
-  //ConfigMsg('_cLoadDll','D:\SharpE\Center\Plugins\Services\ComponentsService.con',0);
-end;
-
-procedure TSharpCenterWnd.WMSyscommand(var Message: TWmSysCommand); 
+procedure TSharpCenterWnd.WMSyscommand(var Message: TWmSysCommand);
 begin
   case (Message.CmdType and $FFF0) of
     SC_MINIMIZE:
@@ -431,32 +304,28 @@ begin
     inherited;
   end;
 end;
+
 procedure TSharpCenterWnd.btnBackClick(Sender: TObject);
 var
   tmpItem: TSharpCenterHistoryItem;
 begin
 
   tmpItem := nil;
-  if SharpCenterManager.History.List.Count <> 0 then
-    tmpItem := SharpCenterManager.History.List.Last;
+  if SCM.History.List.Count <> 0 then
+    tmpItem := SCM.History.List.Last;
 
   if tmpItem <> nil then
   begin
-    UnloadDll;
     ExecuteCommand(tmpItem.Command, tmpItem.Parameter, tmpItem.PluginID);
-    SharpCenterManager.SetNavRoot(tmpItem.Parameter);
-    SharpCenterManager.History.Delete(tmpItem);
+    SCM.History.Delete(tmpItem);
 
-    if SharpCenterManager.History.List.Count = 0 then
-      SharpCenterWnd.SetToolbarTabVisible(tidHistory,False)
-    else
-      SharpCenterWnd.SetToolbarTabVisible(tidHistory,True);
+    SetToolbarTabVisible(tidHistory,Not(SCM.History.List.Count = 0));
   end;
 end;
 
 procedure TSharpCenterWnd.UnloadDllWithTimer(ACommand, AParameter, APluginID: string);
 begin
-  FUnloadCommand := cUnloadDll;
+  FUnloadCommand := ACommand;
   FUnloadParam := AParameter;
   FUnloadID := APluginID;
   UnloadTimer.Enabled := True;
@@ -464,25 +333,19 @@ end;
 
 procedure TSharpCenterWnd.ExecuteCommand(ACommand, AParameter, APluginID: string);
 begin
-  // navigate to folder
+
   if CompareText(ACommand, cChangeFolder) = 0 then
   begin
-    if FSetting.Dllhandle <> 0 then
-      UnloadDllWithTimer(ACommand, AParameter, APluginID);
-
-    SharpCenterManager.BuildSectionItemsFromPath(AParameter, SharpCenterWnd.lbTree);
+    UnloadDllWithTimer(cChangeFolder, AParameter, APluginID);
   end
   else if CompareText(ACommand, cUnloadDll) = 0 then
   begin
-    if FSetting.Dllhandle <> 0 then
-      UnloadDllWithTimer(ACommand, AParameter, APluginID);
+    UnloadDllWithTimer(cUnloadDll, AParameter, APluginID);
   end
-  else if CompareText(ACommand, cLoadConfig) = 0 then
+  else if CompareText(ACommand, cLoadSetting) = 0 then
   begin
-    if FSetting.Dllhandle <> 0 then
-      UnloadDllWithTimer(ACommand, AParameter, APluginID);
+    UnloadDllWithTimer(cLoadSetting, AParameter, APluginID);
 
-    lbTree.Items.Clear;
   end;
 end;
 
@@ -492,27 +355,28 @@ begin
 
   if CompareText(FUnloadCommand, cUnloadDll) = 0 then
   begin
-    UnloadDll;
+    if FSetting.Dllhandle <> 0 then
+      UnloadDll;
 
     if not (IsDirectory(FUnloadParam)) then
-      LoadConfiguration(FUnloadParam, FUnloadID);
+      LoadSettinguration(FUnloadParam, FUnloadID);
   end
   else if CompareText(FUnloadCommand, cChangeFolder) = 0 then
   begin
-    UnloadDll;
-    SharpCenterManager.BuildSectionItemsFromPath(FUnloadParam,
-      Self.lbTree)
+    if FSetting.Dllhandle <> 0 then
+      UnloadDll;
+
+    SCM.BuildRootFromPath(FUnloadParam, Self.lbTree)
   end
-  else if CompareStr(FUnloadCommand, cLoadConfig) = 0 then
+  else if CompareText(FUnloadCommand, cLoadSetting) = 0 then
   begin
-    UnloadDll;
-    if fileexists(FUnloadParam) then
-    begin
-      InitialiseWindow(SharpCenterWnd.pnlMain,
-        ExtractFileName(FUnloadParam));
-    end;
-    PluginID := FUnloadID;
-    LoadConfiguration(FUnloadParam, FPluginID);
+
+    if FSetting.Dllhandle <> 0 then
+      UnloadDll;
+
+    SetToolbarTabVisible(tidHistory,True);
+    InitialiseWindow(pnlMain, FUnloadParam);
+    LoadSettinguration(FUnloadParam,FUnloadID);
   end;
 end;
 
@@ -520,37 +384,43 @@ procedure TSharpCenterWnd.btnHelpClick(Sender: TObject);
 begin
   if (@FSetting.SetBtnState) <> nil then
     if FSetting.SetBtnState(SCB_HELP) = True then
-      FSetting.ClickBtn(SCB_HELP,btnHelp);
+      FSetting.ClickBtn(SCB_HELP,btnHelp,'');
 end;
 
 procedure TSharpCenterWnd.btnSaveClick(Sender: TObject);
 begin
   LockWindowUpdate(Self.Handle);
-  if SaveChanges then
-    ReloadDll;
-  LockWindowUpdate(0);
+  Try
+    if SaveChanges then begin
+      ReloadDll;
+      pnlEditContainer.Hide;
+    end;
+  Finally
+    LockWindowUpdate(0);
+  End;
 end;
 
 procedure TSharpCenterWnd.UnloadDll;
 begin
+  if FSetting.Dllhandle = 0 then
+    exit;
+
   if btnSave = nil then
     exit;
 
   // Check if Save first
   if ((btnSave.Enabled) and not (FCancelClicked)) then
   begin
-    if (MessageDlg('Do you want to save changes?', mtConfirmation, [mbYes,
-      mbNo], 0) = mrYes) then
-      SaveChanges;
+    SaveChanges;
   end;
 
   // Handle proper closing of the edit window
-  tlSections.Height := 0;
+  tlPluginTabs.Height := 0;
   if @FSetting.OpenEdit <> nil then begin
     pnlEditContainer.Visible := False;
 
     if ((@FSetting.CloseEdit <> nil) and (EditItemHandle <> 0)) then
-      FSetting.CloseEdit(EditItemHandle,False,False);
+      FSetting.CloseEdit(EditItemHandle,sceEdit,False);
   end;
   tlEditItem.Height := 0;
 
@@ -561,19 +431,7 @@ begin
   // Unload dll
   UnloadSetting(@FSetting);
 
-  // Reinit values
-  FSelectedTabID := -1;
-  UpdateSections;
-  PluginHandle := 0;
-  EditItemHandle := 0;
-
-  // Update UI
-  btnSave.Enabled := False;
-  btnCancel.Enabled := False;
-  btnHelp.Enabled := False;
-  pnlEditContainer.Visible := False;
-  tlEditItem.TabIndex := -1;
-  DisablePluginButtons;
+  InitWindow;
 end;
 
 procedure TSharpCenterWnd.ReloadDll;
@@ -630,19 +488,17 @@ begin
         // Set Scheme
         UpdateSettingTheme;
 
-        // Set buttons
-        {EnableButton(SCB_MOVEUP,btnMoveUp);
-        EnableButton(SCB_MOVEDOWN,btnMoveDown);
-        EnableButton(SCB_ADD,btnAdd);
-        EnableButton(SCB_EDIT,btnEdit);
-        EnableButton(SCB_DEL,btnDelete);
-        EnableButton(SCB_IMPORT,btnImport);
-        EnableButton(SCB_EXPORT,btnExport);  }
-        //EnableButton(SCB_CLEAR,btnClear);
-        EnableButton(SCB_HELP,btnHelp);
-        FSelectedTabID := 0;
+        if @FSetting.SetBtnState <> nil then
+          SetToolbarTabVisible(tidImport,FSetting.SetBtnState(SCB_IMPORT));
 
-        UpdateSections;
+        if @FSetting.SetBtnState <> nil then
+          SetToolbarTabVisible(tidExport,FSetting.SetBtnState(SCB_EXPORT));
+
+        pnlToolbar.Hide;
+        FSelectedTabID := 0;
+        FSelectedPluginTabID := 0;
+
+        InitPluginTabs;
 
         case iSettingType of
           SCU_SHARPTHEME: ; // already assigned
@@ -678,8 +534,8 @@ begin
     FCancelClicked := True;
 
     if @FSetting.Open <> nil then begin
-      SharpCenterManager.EditItemState := False;
-      SharpCenterManager.EditItemWarning := False;
+      SCM.EditItemState := False;
+      SCM.EditItemWarning := False;
 
       UnloadDll;
     end;
@@ -691,73 +547,9 @@ begin
   end;
 end;
 
-procedure TSharpCenterWnd.btnImportClick(Sender: TObject);
-begin
-  if (@Setting.SetBtnState) <> nil then
-    if Setting.SetBtnState(SCB_IMPORT) then begin
-    try
-      //FSetting.ClickBtn(SCB_IMPORT,btnImport);
-    except
-      MessageDlg('Unable to Import Configuration' + #13 +
-        'Check SharpConsole for details', mtError, [mbOK], 0);
-    end;
-    end;
-end;
-
-procedure TSharpCenterWnd.btnExportClick(Sender: TObject);
-begin
-  if (@Setting.SetBtnState) <> nil then
-    if Setting.SetBtnState(SCB_EXPORT) then begin
-    try
-      //FSetting.ClickBtn(SCB_EXPORT,btnExport);
-    except
-      MessageDlg('Unable to Export Configuration' + #13 +
-        'Check SharpConsole for details', mtError, [mbOK], 0);
-    end;
-    end;
-end;
-
-procedure TSharpCenterWnd.btnClearClick(Sender: TObject);
-begin
-  if (@Setting.SetBtnState) <> nil then
-    if Setting.SetBtnState(SCB_CLEAR) then
-      //FSetting.ClickBtn(SCB_CLEAR,btnClear);
-end;
-
-procedure TSharpCenterWnd.btnMoveDownClick(Sender: TObject);
-begin
-  if (@Setting.SetBtnState) <> nil then
-    if Setting.SetBtnState(SCB_MOVEDOWN) then
-      //FSetting.ClickBtn(SCB_MOVEDOWN,btnMoveDown);
-end;
-
-procedure TSharpCenterWnd.btnMoveUpClick(Sender: TObject);
-begin
-  if (@Setting.SetBtnState) <> nil then
-    if Setting.SetBtnState(SCB_MOVEUP) then
-      //FSetting.ClickBtn(SCB_MOVEUP,btnMoveUp);
-end;
-
-function TSharpCenterWnd.GetConfigChanged: Boolean;
+function TSharpCenterWnd.GetSettingChanged: Boolean;
 begin
   Result := btnSave.Enabled;
-end;
-
-procedure TSharpCenterWnd.UpdateSize;
-begin
-  UpdateLivePreview;
-
-  if @FSetting.Open <> nil then
-  begin
-    ResizeToFitWindow(PluginHandle, pnlPlugin);
-
-    if @Setting.OpenEdit <> nil then
-      if EditItemHandle <> 0 then begin
-        pnlEditContainer.Height := GetControlByHandle(EditItemHandle).Height;
-        GetControlByHandle(EditItemHandle).Width := pnlEditPlugin.Width;
-      end;
-
-  end;
 end;
 
 procedure TSharpCenterWnd.SetControlParentWindows(Ctl: TWinControl);
@@ -795,7 +587,9 @@ begin
 
   if bClose then
   begin
-    iSettingType := FSetting.SetSettingType;
+    iSettingType := 0;
+    if (@FSetting.SetSettingType) <> nil then
+      iSettingType := FSetting.SetSettingType;
 
     if TryStrToInt(FPluginID, n) then
       n := StrToInt(FPluginID)
@@ -812,15 +606,15 @@ begin
 end;
 
 function TSharpCenterWnd.AssignIconIndex(
-  ASectionObject: TSectionItem): Integer;
+  APluginTabObject: TPluginTabItem): Integer;
 var
   tmpPngImage: TPNGObject;
   tmpPiC: TPngImageCollectionItem;
 begin
-  if FileExists(ASectionObject.Icon) then
+  if FileExists(APluginTabObject.Icon) then
   begin
     tmpPngImage := TPNGObject.Create;
-    tmpPngImage.LoadFromFile(ASectionObject.Icon);
+    tmpPngImage.LoadFromFile(APluginTabObject.Icon);
     tmpPngImage.CreateAlpha;
 
     tmpPiC := picMain.PngImages.Add();
@@ -833,7 +627,7 @@ begin
     Result := 0;
 end;
 
-procedure TSharpCenterWnd.LoadConfiguration(AConfigurationFile, APluginID: string);
+procedure TSharpCenterWnd.LoadSettinguration(ASettingurationFile, APluginID: string);
 var
   xml: TJvSimpleXML;
   i: Integer;
@@ -845,10 +639,10 @@ var
   li:TSharpEListItem;
 begin
   try
-    UpdateSize;
+    InitSize;
     xml := TJvSimpleXML.Create(nil);
     try
-      xml.LoadFromFile(AConfigurationFile);
+      xml.LoadFromFile(ASettingurationFile);
 
       with xml.Root.Items.ItemNamed['Sections'] do
       begin
@@ -857,7 +651,7 @@ begin
 
           NewBT := TBTDataDll.Create;
 
-          sPath := ExtractFilePath(AConfigurationFile);
+          sPath := ExtractFilePath(ASettingurationFile);
           sDll := '';
           if Items.Item[i].Items.ItemNamed['Dll'] <> nil then
             sDll := Items.Item[i].Items.ItemNamed['Dll'].Value;
@@ -881,6 +675,7 @@ begin
 
           pngfile := sPath + sIcon;
           AssignIconIndex(pngfile, NewBT);
+          lbTree.visible := True;
           li := lbTree.AddItem(NewBT.Caption,NewBT.IconIndex);
           li.AddSubItem(sStatus);
           li.Data := Pointer(NewBT);
@@ -897,61 +692,20 @@ begin
   end;
 end;
 
-procedure TSharpCenterWnd.UpdateSections;
-var
-  i {idx}: Integer;
-  s: string;
-
-begin
-  FSections.Clear;
-  tlSections.Clear;
-
-  if (@FSetting.AddTabs <> nil) then
-  begin
-    FSetting.AddTabs(FSections);
-
-    s := '';
-    if FSections.Count = 0 then
-    begin
-      tlSections.Height := 0;
-      rpnlContent.Top := 2;
-      rpnlContent.Height := pnlPluginContainer.Height-2;
-    end
-    else begin
-      tlSections.Height := 25;
-      rpnlContent.Top := 24;
-      rpnlContent.Height := pnlPluginContainer.Height-26;
-
-      for i := 0 to Pred(FSections.Count) do
-      begin
-        tlSections.Add(FSections[i].Caption,-1,FSections[i].Status);
-
-        tlSections.TabIndex := FSelectedTabID;
-      end;
-     end;
-  end
-  else
-  begin
-    tlSections.Height := 0;
-    rpnlContent.Top := 2;
-    rpnlContent.Height := pnlPluginContainer.height-2;
-  end;
-end;
-
 procedure TSharpCenterWnd.InitialiseWindow(AOwner: TWinControl; AName: string);
 begin
   PnlButtons.DoubleBuffered := True;
   pnlEditContainer.Hide;
   tlEditItem.Height := 0;
 
-  if not (Assigned(FSections)) then
-    FSections := TSectionItemList.Create;
+  if not (Assigned(FPluginTabs)) then
+    FPluginTabs := TPluginTabItemList.Create;
 
-  //FSections.IconList := picMain;
-  FSections.Clear;
+  //FPluginTabs.IconList := picMain;
+  FPluginTabs.Clear;
 
   lbTree.Items.Clear;
-  UpdateSections;
+  InitPluginTabs;
 end;
 
 procedure TSharpCenterWnd.LoadSelectedDll(AItemIndex: Integer);
@@ -1033,51 +787,12 @@ begin
 
     ABTData.IconIndex := tmpPic.Index;
   end
-  else if ExtractFilePath(AFileName) = GetCenterDirectory then
+  else if ExtractFilePath(AFileName) = SCM.CenterDir then
     ABTData.IconIndex := 3
   else
     ABTData.IconIndex := 2;
 
   lbTree.ItemHeight := GlobalItemHeight;
-  {if picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6 >
-    lbTree.ItemHeight then
-    lbTree.ItemHeight :=
-      picMain.Items.Items[ABTData.IconIndex].PngImage.Height + 6; }
-
-end;
-
-procedure TSharpCenterWnd.DisablePluginButtons;
-begin
-  // Set buttons
-  {btnMoveUp.Enabled := False;
-  btnMoveDown.Enabled := False;
-  btnAdd.Enabled := False;
-  btnEdit.Enabled := False;
-  btnDelete.Enabled := False;
-  btnImport.Enabled := False;
-  btnExport.Enabled := False;
-  btnClear.Enabled := False; }
-end;
-
-procedure TSharpCenterWnd.lblTreeHyperLinkClick(Sender: TObject;
-  LinkName: string);
-begin
-  if ExtractFileExt(LinkName) = '.con' then
-    ExecuteCommand(cLoadConfig, LinkName, '')
-  else
-    ExecuteCommand(cChangeFolder, LinkName, '');
-
-  SharpCenterManager.SetNavRoot(LinkName);
-end;
-
-procedure TSharpCenterWnd.lblTabsHyperLinkClick(Sender: TObject;
-  LinkName: string);
-begin
-  FSelectedTabID := StrToInt(LinkName);
-  UpdateSections;
-
-  if @FSetting.ClickTab <> nil then
-    FSetting.ClickTab(FSections[FSelectedTabID]);
 
 end;
 
@@ -1089,11 +804,8 @@ begin
   if @FSetting <> nil then
     UnloadDll;
 
-  FSections.Clear;
-  FSections.Free;
-
-  if SharpCenterManager <> nil then
-    SharpCenterManager.Free;
+  FPluginTabs.Clear;
+  FPluginTabs.Free;
 end;
 
 procedure TSharpCenterWnd.Button1Click(Sender: TObject);
@@ -1110,21 +822,6 @@ begin
     FSetting.UpdatePreview(imgLivePreview);
 
   pnlLivePreview.Visible := (@FSetting.UpdatePreview <> nil);
-end;
-
-procedure TSharpCenterWnd.WMPosChange(var Message: TWMWINDOWPOSCHANGING);
-begin
-
-  //UpdateSize;
-end;
-
-procedure TSharpCenterWnd.HideAllTaskbarButton;
-begin
-  ShowWindow(Application.Handle, SW_HIDE);
-  SetWindowLong(Application.Handle, GWL_EXSTYLE,
-    GetWindowLong(Application.Handle, GWL_EXSTYLE) and not WS_EX_APPWINDOW
-    or WS_EX_TOOLWINDOW);
-  ShowWindow(Application.Handle, SW_SHOW);
 end;
 
 procedure TSharpCenterWnd.CreateParams(var Params: TCreateParams);
@@ -1147,20 +844,15 @@ begin
       exit;
 
     // If in edit state do not continue
-    if SharpCenterManager.CheckEditState then
+    if SCM.CheckEditState then
       exit;
 
-
     if FSetting.Dllhandle <> 0 then
-    begin
       UnloadDll;
-      SharpCenterManager.ClickButton(nil);
-    end
-    else begin
-      SharpCenterManager.ClickButton(nil);
-    end;
 
-    UpdateSize;
+    ClickItem;
+
+    InitSize;
   finally
   end;
 end;
@@ -1178,7 +870,7 @@ var
 begin
   if @FSetting.GetCenterScheme <> nil then begin
 
-    if Not(SharpCenterManager.EditItemWarning) then begin
+    if Not(SCM.EditItemWarning) then begin
       colBackground := $00FBEFE3;
       colItem := clWindow;
       colSelectedItem := $00FBEFE3;
@@ -1193,8 +885,8 @@ begin
 
     pnlEditContainer.Color := colBackground;
     pnlEditPlugin.Color := colBackground;
-    pagAddEdit.Color := colBackground;
-    pnlEditButtons.Color := colBackground;
+    pnlEditContainer.Color := colBackground;
+    pnlEditToolbar.Color := colBackground;
     tlEditItem.TabSelectedColor := colBackground;
 
     if Not(pnlEditContainer.Visible) then
@@ -1202,11 +894,32 @@ begin
 
     btnEditCancel.Enabled := True;
 
-    if SharpCenterManager.EditItemState then begin
+    if (SCM.EditItemState) then begin
       btnEditApply.Enabled := True;
+
+      Case FSelectedTabID of
+      integer(tidAdd): btnEditApply.Caption := 'Add';
+      integer(tidEdit): btnEditApply.Caption := 'Apply';
+      integer(tidDelete): begin
+        btnEditApply.Caption := 'Delete';
+        btnEditApply.Visible := True;
+      end;
+      end;
+      
       btnEditCancel.Caption := 'Cancel';
+
     end else begin
       btnEditApply.Enabled := False;
+
+      Case FSelectedTabID of
+      integer(tidAdd): btnEditApply.Caption := 'Add';
+      integer(tidEdit): btnEditApply.Caption := 'Edit';
+      integer(tidDelete): begin
+        btnEditApply.Caption := 'Delete';
+        btnEditApply.Visible := True;
+      end;
+      end;
+      
       btnEditCancel.Caption := 'Close';
     end;
       
@@ -1217,39 +930,37 @@ begin
 end;
 
 procedure TSharpCenterWnd.CenterMessage(var Msg: TMessage);
+var
+  bEnabled:Boolean;
+  iBtnID: Integer;
 begin
   Case msg.WParam of
-    {SCM_SET_BUTTON_ENABLED, SCM_SET_BUTTON_DISABLED: begin
+    SCM_SET_BUTTON_ENABLED, SCM_SET_BUTTON_DISABLED: begin
 
-      bEnabled := (msg.LParam = SCM_SET_BUTTON_ENABLED);
+      bEnabled := (msg.WParam = SCM_SET_BUTTON_ENABLED);
       iBtnID := msg.LParam;
       case iBtnID of
-        SCB_MOVEUP: btnMoveUp.Enabled := bEnabled;
-        SCB_MOVEDOWN: btnMoveDown.Enabled := bEnabled;
-        SCB_ADD: btnAdd.Enabled := bEnabled;
-        SCB_DEL: btnDelete.Enabled := bEnabled;
-        SCB_EDIT: btnEdit.Enabled := bEnabled;
-        SCB_IMPORT: btnImport.Enabled := bEnabled;
-        SCB_EXPORT: btnExport.Enabled := bEnabled;
-        SCB_CLEAR : btnClear.Enabled := bEnabled;
+        SCB_IMPORT: SetToolbarTabVisible(tidImport,bEnabled);
+        SCB_EXPORT: SetToolbarTabVisible(tidExport,bEnabled);
+        SCB_DELETE : btnEditApply.Enabled := bEnabled;
         SCB_HELP : btnHelp.Enabled := bEnabled;
       end;
-    end; }
+    end;
 
     SCM_SET_SETTINGS_CHANGED: begin
       btnSave.Enabled := True;
       btnCancel.Enabled := True;
 
-      UpdateSections;
+      InitPluginTabs;
     end;
     SCM_EVT_UPDATE_PREVIEW : begin
       UpdateLivePreview;
     end;
     SCM_SET_EDIT_STATE: begin
-      SharpCenterManager.EditItemState := True;
+      SCM.EditItemState := True;
     end;
     SCM_SET_EDIT_CANCEL_STATE: begin
-      SharpCenterManager.EditItemState := False;
+      SCM.EditItemState := False;
     end;
   end;
 end;
@@ -1260,11 +971,11 @@ begin
   LockWindowUpdate(Self.Handle);
   Try
   if (@FSetting.CloseEdit <> nil) then
-    FSetting.CloseEdit(pnlEditPlugin.Handle,False,False);
+    FSetting.CloseEdit(pnlEditPlugin.Handle,sceEdit,False);
 
-  if Not(SharpCenterManager.EditItemState) then begin
-    SharpCenterManager.EditItemState := False;
-    SharpCenterManager.EditItemWarning := False;
+  if Not(SCM.EditItemState) then begin
+    SCM.EditItemState := False;
+    SCM.EditItemWarning := False;
     EditItemHandle := 0;
 
     pnlEditContainer.Hide;
@@ -1272,8 +983,8 @@ begin
     exit;
   end;
 
-  SharpCenterManager.EditItemState := False;
-  SharpCenterManager.EditItemWarning := False;
+  SCM.EditItemState := False;
+  SCM.EditItemWarning := False;
   EditItemHandle := 0;
 
   tlEditItemTabClick(tlEditItem,tlEditItem.TabIndex);
@@ -1302,14 +1013,37 @@ end;
 procedure TSharpCenterWnd.tlToolbarTabChange(ASender: TObject;
   const ATabIndex: Integer; var AChange: Boolean);
 begin
-  if SharpCenterManager.CheckEditState then
+  if SCM.CheckEditState then
       AChange := False;
+
+  Case ATabIndex of
+    Integer(tidHome): Begin
+      pnlToolbar.Hide;
+    End;
+    Integer(tidFavourite): Begin
+      pnlToolbar.Show;
+      pagFav.show;
+    End;
+    Integer(tidHistory): Begin
+      pnlToolbar.Hide;
+    End;
+    Integer(tidImport): Begin
+      pnlToolbar.Show;
+      pagImport.Show;
+    End;
+    Integer(tidExport): Begin
+      pnlToolbar.Show;
+      pagExport.Show;
+    End;
+  end;
+
 end;
 
 procedure TSharpCenterWnd.tlToolbarTabClick(ASender: TObject; const ATabIndex:Integer);
 begin
 
   Case ATabIndex of
+    0: btnHomeClick(nil);
   //0: btnHome.Click;
   //1: btnFavourite.Click;
   2: btnBackClick(nil);
@@ -1319,74 +1053,62 @@ begin
   end;
 end;
 
-procedure TSharpCenterWnd.tlEditItemTabClick(ASender: TObject;
-  const ATabIndex: Integer);
-var
-  handle:THandle;
-begin
-  // If in edit state do not continue
-    if SharpCenterManager.CheckEditState then
-      exit;
-
-  Case ATabIndex of
-  0,1: begin
-    plStandardEdit.ActivePage := pagAddEdit;
-    if (@FSetting.OpenEdit <> nil) then begin
-
-      if ATabIndex = 0 then
-        handle := FSetting.OpenEdit(pnlEditPlugin.Handle,True) else
-        handle := FSetting.OpenEdit(pnlEditPlugin.Handle,False);
-
-      if handle <> HR_NORECIEVERWINDOW then begin
-        FEditItemHandle := handle;
-
-        pnlEditContainer.Show;
-        pagAddEdit.Show;
-        pnlEditPlugin.ParentWindow := handle;
-
-        // Update Scheme
-        UpdateSettingTheme;
-
-        UpdateSize;
-        ForceForegroundWindow(EditItemHandle);
-        //ResizeToWindow(handle, pnlEditContainer);
-      end;
-    end;
-  end;
-  2: plStandardEdit.ActivePage := pagDelete;
-  End;
-end;
-
 procedure TSharpCenterWnd.tlEditItemTabChange(ASender: TObject;
   const ATabIndex: Integer; var AChange: Boolean);
 begin
-  if SharpCenterManager.CheckEditState then
+  if SCM.CheckEditState then begin
       AChange := False;
+    exit;
+  end;
+
+  case ATabIndex of
+    Integer(tidAdd): begin
+      pilIcons.PngImages.Items[10].Background := pnlEditToolbar.Color;
+      btnEditApply.PngImage := pilIcons.PngImages.Items[10].PngImage;
+    end;
+    Integer(tidEdit): begin
+      pilIcons.PngImages.Items[0].Background := pnlEditToolbar.Color;
+      btnEditApply.PngImage := pilIcons.PngImages.Items[0].PngImage;
+    end;
+    Integer(tidDelete): begin
+      pilIcons.PngImages.Items[2].Background := pnlEditToolbar.Color;
+      btnEditApply.PngImage := pilIcons.PngImages.Items[2].PngImage;
+    end;
+  end;
 end;
 
 procedure TSharpCenterWnd.btnEditApplyClick(Sender: TObject);
 var
   bValid: Boolean;
 begin
+  if FSelectedTabID = integer(tidDelete) then begin
+    if (@FSetting.ClickBtn <> nil) then
+      FSetting.ClickBtn(SCB_DELETE,btnEditApply,'');
+      exit;
+  end;
+
   bValid := True;
   LockWindowUpdate(Self.Handle);
   Try
   if (@FSetting.CloseEdit <> nil) then begin
-    if tlEditItem.TabIndex = 0 then
-    bValid := FSetting.CloseEdit(pnlEditPlugin.Handle,True,True) else
-    bValid := FSetting.CloseEdit(pnlEditPlugin.Handle,False,True);
+
+    case FSelectedTabID of
+      Integer(tidAdd): bValid := FSetting.CloseEdit(pnlEditPlugin.Handle,sceAdd,True);
+      Integer(tidEdit): bValid := FSetting.CloseEdit(pnlEditPlugin.Handle,sceEdit,True);
+      Integer(tidDelete): bValid:= FSetting.CloseEdit(pnlEditPlugin.Handle,sceDelete,True);
+    end;
   end;
 
   if bValid then begin
-    SharpCenterManager.EditItemState := False;
-    SharpCenterManager.EditItemWarning := False;
+    SCM.EditItemState := False;
+    SCM.EditItemWarning := False;
     EditItemHandle := 0;
 
     UpdateSettingTheme;
-    UpdateSections;
+    InitPluginTabs;
     tlEditItemTabClick(tlEditItem,tlEditItem.TabIndex);
   end else begin
-    SharpCenterManager.CheckEditState;
+    SCM.CheckEditState;
   end;
 
   Finally
@@ -1394,6 +1116,300 @@ begin
   End;
 end;
 
+procedure TSharpCenterWnd.SetTabIndex(ATab:TEditTabID);
+var
+  handle:THandle;
+begin
+  handle := 0;
+
+  // If in edit state do not continue
+    if SCM.CheckEditState then
+      exit;
+
+    if (@FSetting.OpenEdit <> nil) then begin
+
+      case Integer(ATab) of
+        Integer(tidAdd): handle :=
+          FSetting.OpenEdit(pnlEditPlugin.Handle,sceAdd);
+        Integer(tidEdit): handle :=
+          FSetting.OpenEdit(pnlEditPlugin.Handle,sceEdit);
+        Integer(tidDelete): handle :=
+          FSetting.OpenEdit(pnlEditPlugin.Handle,sceDelete);
+      end;
+
+      if handle <> HR_NORECIEVERWINDOW then begin
+        FEditItemHandle := handle;
+
+        pnlEditContainer.Show;
+        pnlEditPlugin.ParentWindow := handle;
+
+        // Update Scheme
+        UpdateSettingTheme;
+
+        InitSize;
+      end;
+    end;
+end;
+
+procedure TSharpCenterWnd.tlEditItemTabClick(ASender: TObject;
+  const ATabIndex: Integer);
+begin
+  FSelectedTabID := ATabIndex;
+  SetTabIndex(TEditTabID(ATabIndex));
+end;
+
+procedure TSharpCenterWnd.EditTabVisible(AVisible: Boolean);
+begin
+  if AVisible then
+    tlEditItem.Height := 25 else
+    tlEditItem.Height := 0;
+end;
+
+procedure TSharpCenterWnd.InitWindow;
+begin
+  // Vista
+  SetVistaFonts(Self);
+  HideAllTaskbarButton;
+
+  // Hide Edit Tab
+  EditTabVisible(False);
+
+  // Set Listbox defaults
+  lbTree.Colors.BorderColorSelected := $00C1F4FE;
+  lbTree.ItemOffset := Point(0,0);
+  lbTree.ColumnMargin := Rect(0,0,0,0);
+
+  // Set tab defaults
+  tlPluginTabs.TextBounds := Rect(8,8,8,4);
+
+  FSetting.Dllhandle := 0;
+  pnlEditContainer.DoubleBuffered := true;
+
+   // Reinit values
+  FSelectedTabID := -1;
+  PluginHandle := 0;
+  EditItemHandle := 0;
+
+  // Update UI
+  btnSave.Enabled := False;
+  btnCancel.Enabled := False;
+  btnHelp.Enabled := False;
+  pnlEditContainer.Visible := False;
+  tlEditItem.TabIndex := -1;
+  pnlToolbar.Hide;
+
+  FPluginTabs := TPluginTabItemList.Create;
+
+  InitPluginTabs;
+  InitSize;
+
+end;
+
+procedure TSharpCenterWnd.ClickItem;
+var
+  tmpBTData: TBTData;
+  tmpBTDataFolder: TBTDataFolder;
+  tmpBTDataSetting: TBTDataSetting;
+  tmpHistItem: TSharpCenterHistoryItem;
+  tmpHist:  TSharpCenterHistory;
+  tmpManager: TSharpCenterManager;
+  sName: string;
+begin
+  // Unload Dll
+  if Setting.DllHandle <> 0 then
+    UnloadDll;
+
+  // Get the Button Data
+  tmpBTData := TBTData(lbTree[lbTree.ItemIndex].Data);
+  sName := tmpBTData.Caption;
+
+  tmpHistItem := SCM.CurrentCommand;
+  tmpHist := SCM.History;
+  tmpManager := SCM;
+
+  case tmpBTData.BT of
+    btUnspecified: ;
+    btFolder:
+      begin
+        tmpBTDataFolder := TBTDataFolder(tmpBTData);
+
+        tmpHist.Add(tmpHistItem.Command, tmpHistItem.Parameter,
+          tmpHistItem.PluginID);
+
+        tmpHistItem.Command := cChangeFolder;
+        tmpHistItem.Parameter := PathAddSeparator(tmpBTDataFolder.Path);
+        tmpHistItem.PluginID := '';
+
+        tmpManager.BuildRootFromPath(tmpHistItem.Parameter, lbTree);
+
+        SetToolbarTabVisible(tidHistory,True);
+      end;
+    btSetting:
+      begin
+
+        tmpBTDataSetting := TBTDataSetting(tmpBTData);
+        tmpHist.Add(tmpHistItem.Command, tmpHistItem.Parameter, tmpHistItem.PluginID);
+
+        tmpHistItem.Command := cLoadSetting;
+        tmpHistItem.Parameter := tmpBTDataSetting.SettingFile;
+        tmpHistItem.PluginID := '';
+
+        SetToolbarTabVisible(tidHistory,True);
+
+        if fileexists(tmpHistItem.Parameter) then
+        begin
+
+          InitialiseWindow(pnlMain, tmpBTDataSetting.Caption);
+          LoadSettinguration(tmpHistItem.Parameter,tmpHistItem.PluginID);
+
+        end;
+
+      end;
+    btDll:
+      begin
+        LoadSelectedDll(lbTree.ItemIndex);
+      end;
+  end;
+end;
+
+procedure TSharpCenterWnd.InitToolbar;
+begin
+  // Hide Import Export + History
+  SetToolbarTabVisible(tidImport,False);
+  SetToolbarTabVisible(tidExport,False);
+  SetToolbarTabVisible(tidHistory,False);
+
+  // Hide Toolbar panel, and set tabindex to home
+  pnlToolbar.Visible := False;
+  tlToolbar.TabIndex := 0;
+end;
+
+procedure TSharpCenterWnd.InitPluginTabs;
+var
+  i {idx}: Integer;
+  s: string;
+
+begin
+  FPluginTabs.Clear;
+  tlPluginTabs.Clear;
+  LockWindowUpdate(Self.Handle);
+  Try
+
+  if (@FSetting.AddTabs <> nil) then
+  begin
+    FSetting.AddTabs(FPluginTabs);
+
+    s := '';
+    if FPluginTabs.Count = 0 then
+    begin
+      tlPluginTabs.Height := 0;
+      rpnlContent.Top := 2;
+      rpnlContent.Height := pnlPluginContainer.Height-2;
+    end
+    else begin
+      tlPluginTabs.Height := 25;
+      rpnlContent.Top := 24;
+      rpnlContent.Height := pnlPluginContainer.Height-26;
+
+      for i := 0 to Pred(FPluginTabs.Count) do
+      begin
+        tlPluginTabs.Add(FPluginTabs[i].Caption,-1,FPluginTabs[i].Status);
+
+        tlPluginTabs.TabIndex := FSelectedPluginTabID;
+      end;
+     end;
+  end
+  else
+  begin
+    tlPluginTabs.Height := 0;
+    rpnlContent.Top := 2;
+    rpnlContent.Height := pnlPluginContainer.height-2;
+  end;
+  Finally
+    LockWindowUpdate(0);
+  End;
+end;
+
+procedure TSharpCenterWnd.InitSize;
+begin
+  UpdateLivePreview;
+
+  if @FSetting.Open <> nil then
+  begin
+    If PluginHandle <> 0 then
+      ResizeToFitWindow(PluginHandle, pnlPlugin);
+
+    if @Setting.OpenEdit <> nil then
+      if EditItemHandle <> 0 then begin
+        pnlEditContainer.Height := GetControlByHandle(EditItemHandle).Height;
+        GetControlByHandle(EditItemHandle).Width := pnlEditPlugin.Width;
+      end;
+
+  end;
+end;
+
+procedure TSharpCenterWnd.btnImportClick(Sender: TObject);
+begin
+  if (@FSetting.ClickBtn <> nil) then
+    FSetting.ClickBtn(SCB_IMPORT,btnImport,PChar(edImportFileName.Text));
+end;
+
+procedure TSharpCenterWnd.PopupMenu1Popup(Sender: TObject);
+begin
+  miConfigure.Visible := False;
+  miSep.Visible := False;
+
+  if (@FSetting.SetBtnState <> nil) then
+    if FSetting.SetBtnState(SCB_CONFIGURE) then begin
+      miConfigure.Visible := True;
+      miSep.Visible := True;
+    end;
+
+  MiAdd.Visible := (@FSetting.OpenEdit <> nil);
+  MiEdit.Visible := (@FSetting.OpenEdit <> nil);
+  miDelete.Visible := (@FSetting.OpenEdit <> nil);
+end;
+
+procedure TSharpCenterWnd.MiClick(Sender: TObject);
+var
+  h:Thandle;
+begin
+  if Sender = MiAdd then
+    tlEditItem.ClickTab(integer(tidAdd)) else
+  if Sender = MiEdit then
+    tlEditItem.ClickTab(integer(tidEdit)) else
+  if Sender = MiDelete then begin
+    tlEditItem.ClickTab(integer(tidDelete));
+    btnEditApply.Click;
+  end else
+  if Sender = miConfigure then begin
+    if (@FSetting.ClickBtn <> nil) then
+      FSetting.ClickBtn(SCB_CONFIGURE,nil,miConfigure.Caption);
+  end;
+
+  h:=getnextWindow(handle,GW_HWNDNEXT);
+  Setforegroundwindow(h);
+end;
+
+procedure TSharpCenterWnd.ShowHistory;
+var
+  i:Integer;
+begin
+  lbHistory.Clear;
+  for i := 0 to SCM.History.Count-1 do
+    lbHistory.Items.Add(TSharpCenterHistoryItem(SCM.History.List[i]).Command +
+      ' ' + TSharpCenterHistoryItem(SCM.History.List[i]).Parameter + ' (' +
+          TSharpCenterHistoryItem(SCM.History.List[i]).PluginID + ')');
+end;
+procedure TSharpCenterWnd.Timer1Timer(Sender: TObject);
+begin
+  ShowHistory;
+end;
+
 end.
+
+
+
+
 
 
