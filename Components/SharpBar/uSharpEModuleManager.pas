@@ -285,6 +285,12 @@ var
   tempsettings : string;
   n : integer;
 begin
+  if GetFreeBarSpace < 50 then
+     if MessageBox(Application.Handle,
+                   'There is only few free space left for a new module.' + #10#13 +
+                   'Adding another module might cause modules to overlap eachother.' + #10#13 +
+                   'Do you really want to continue?','Confirm: Clone Module',MB_YESNO or MB_ICONWARNING) = IDNO then exit;
+
   tempModule := TModule(GetModule(ID));
   if tempModule = nil then exit;
 
@@ -478,6 +484,11 @@ var
   tempModuleFile : TModuleFile;
 begin
   if MFID > FModuleFiles.Count - 1 then exit;
+  if GetFreeBarSpace < 50 then
+     if MessageBox(Application.Handle,
+                   'There is only few free space left for a new module.' + #10#13 +
+                   'Adding another module might cause modules to overlap eachother.' + #10#13 +
+                   'Do you really want to continue?','Confirm: New Module',MB_YESNO or MB_ICONWARNING) = IDNO then exit;
   tempModuleFile := TModuleFile(FModuleFiles.Items[MFID]);
   LoadModule(GenerateModuleID,ExtractFileName(tempModuleFile.FFileName),Position,-1);
   ReCalculateModuleSize;
