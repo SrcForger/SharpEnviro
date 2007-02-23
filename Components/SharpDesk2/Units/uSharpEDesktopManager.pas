@@ -38,18 +38,18 @@ type
   TSharpEDesktopManager = class
   private
     FDesktops : TObjectList;
+    FSelectionList : TObjectList;
     FCurrentDesktop : TSharpEDesktop; // only a pointer to a desktop from the list!
     procedure InitDesktops;
   public
     procedure LoadDesktops;
-    procedure PerformMouseMove(pX,pY : integer);
-    procedure PerformMouseDown(pX,pY : integer; Button : TMouseButton);
-    procedure PerformMouseUp(pX,pY : integer; Button : TMouseButton);
+    procedure UpdateSelection(alist,dlist : TObjectList; X1,Y1,X2,Y2 : integer);
 
     constructor Create; reintroduce;
     destructor Destroy; override;
   published
     property CurrentDesktop : TSharpEDesktop read FCurrentDesktop;
+    property SelectionList : TObjectList read FSelectionList;
   end;
 
 implementation
@@ -64,13 +64,18 @@ begin
 
   FDesktops := TObjectList.Create(True);
   FDesktops.Clear;
+
+  FSelectionList := TObjectList.Create(False);
+  FSelectionList.Clear;
 end;
 
 destructor TSharpEDesktopManager.Destroy;
 begin
   FDesktops.Clear;
+  FSelectionList.Clear;
   
   FreeAndNil(FDesktops);
+  FreeAndNil(FSelectionList);
 end;
 
 procedure TSharpEDesktopManager.InitDesktops;
@@ -138,16 +143,67 @@ begin
   InitDesktops;
 end;
 
-procedure TSharpEDesktopManager.PerformMouseMove(pX,pY : integer);
+function PointInRect(P : TPoint; Rect : TRect) : boolean;
 begin
+  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
+     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
+     else PointInRect:=False;
 end;
 
-procedure TSharpEDesktopManager.PerformMouseDown(pX,pY : integer; Button : TMouseButton);
+procedure TSharpEDesktopManager.UpdateSelection(alist,dlist : TObjectList; X1,Y1,X2,Y2 : integer);
+var
+  x,y : integer;
+  n,i : integer;
+  item : TSharpEDesktopItem;
+  R : TRect;
+  newList : TObjectList;
 begin
+  if FCurrentDesktop = nil then exit;
+
+  R := Rect(X1,Y1,X2,Y2);
+
+  newList := TObjectList.Create(False);
+  newList.Clear;
+
+  if alist <> nil then alist.Clear;
+  if dlist <> nil then dlist.Clear;
+
+  with FCurrentDesktop do
+  begin
+    for y := 0 to High(Grid) do
+        for x := 0 to High(Grid[y]) do
+        begin
+          if Grid[y][x] <> nil then
+            if PointInRect(Point(x*gridsize + gridsize div 2, y*gridsize + gridsize div 2),R) then
+            begin
+              item := TSharpEDesktopItem(Grid[y][x]);
+              newList.Add(item);
+
+              // new item, add to add list
+              if (alist <> nil) and (FSelectionList.IndexOf(item)<0) then
+                 alist.Add(item)  
+            end;
+        end;
+  end;
+
+  // get items which have been removed
+  if (dlist <> nil) then
+  begin
+    for n := 0 to FSelectionList.Count - 1 do
+    begin
+      i := newList.IndexOf(FSelectionList.Items[n]);
+      if (i < 0) then
+          dlist.Add(FSelectionList.Items[n]);
+    end;
+  end;
+
+  // build new list
+  FSelectionList.Clear;
+  for n := 0 to newList.Count - 1 do
+      FSelectionList.Add(newList[n]);
+
+  newList.Free;
 end;
 
-procedure TSharpEDesktopManager.PerformMouseUp(pX,pY : integer; Button : TMouseButton);
-begin
-end;
 
 end.

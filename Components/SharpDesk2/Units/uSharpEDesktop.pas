@@ -76,6 +76,7 @@ type
     procedure LoadCustomData;
     procedure SaveCustomData;
     function GetGridItem(x,y : integer) : TSharpEDesktopItem;
+    function GetGridPoint(pItem : TSharpEDesktopItem) : TPoint;
     function RefreshDirectories : boolean;
 
     constructor Create(pWidth,pHeight : integer); reintroduce;
@@ -321,6 +322,20 @@ begin
   end;
   
   pItem.IsInGrid := False;
+end;
+
+function TSharpEDesktop.GetGridPoint(pItem : TSharpEDesktopItem) : TPoint;
+var
+  x,y : integer;
+begin
+  for y := 0 to High(FGridArray) do
+      for x := 0 to High(FGridArray[y]) do
+          if FGridArray[y][x] = pItem then
+          begin
+            result := Point(x,y);
+            exit;
+          end;
+  result := Point(0,0);
 end;
 
 function TSharpEDesktop.GetGridItem(x,y : integer) : TSharpEDesktopItem;

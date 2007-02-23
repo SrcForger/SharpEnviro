@@ -57,7 +57,8 @@ type
     FTextShadowSize  : integer;
   public
     procedure LoadSettings;
-    procedure RenderTo(Dst : TBitmap32; ditem : TSharpEDesktopItem);
+    procedure RenderTo(Dst : TBitmap32; ditem : TSharpEDesktopItem); overload;
+    procedure RenderTo(Dst : TBitmap32; ditem : TSharpEDesktopItem; pSelected : boolean); overload;
     
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -109,12 +110,18 @@ begin
 end;
 
 procedure TSharpEDesktopLinkRenderer.RenderTo(Dst : TBitmap32; ditem : TSharpEDesktopItem);
+begin
+  RenderTo(Dst,ditem,False);
+end;
+
+procedure TSharpEDesktopLinkRenderer.RenderTo(Dst : TBitmap32; ditem : TSharpEDesktopItem; pSelected : boolean);
 var
   Icon,Caption : TBitmap32;
 begin
   if (Dst = nil) or (ditem = nil) then exit;
 
-  Dst.Clear(color32(0,0,0,0));
+  if pSelected then Dst.Clear(color32(128,128,128,128))
+     else Dst.Clear(color32(0,0,0,0));
 
   Icon := TBitmap32.Create;
   Caption := TBitmap32.Create;

@@ -82,21 +82,18 @@ procedure TSharpDeskMainWnd.BackgroundMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
 begin
   FDeskRenderer.PerformMouseMove(X,Y);
-  FDeskManager.PerformMouseMove(X,Y);
 end;
 
 procedure TSharpDeskMainWnd.BackgroundMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
 begin
   FDeskRenderer.PerformMouseDown(X,Y,Button);
-  FDeskManager.PerformMouseDown(X,Y,Button);
 end;
 
 procedure TSharpDeskMainWnd.BackgroundMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
 begin
   FDeskRenderer.PerformMouseUp(X,Y,Button);
-  FDeskManager.PerformMouseUp(X,Y,Button);
 end;
 
 end.

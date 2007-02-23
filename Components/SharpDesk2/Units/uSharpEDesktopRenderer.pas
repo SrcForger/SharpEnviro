@@ -32,7 +32,7 @@ unit uSharpEDesktopRenderer;
 
 interface
 
-uses Classes,Controls,SysUtils,GR32,GR32_Image,GR32_Layers,
+uses Classes,Controls,Contnrs,SysUtils,GR32,GR32_Image,GR32_Layers,Math,
      uSharpEDesktopManager,
      uSharpEDesktopLinkRenderer;
 
@@ -47,12 +47,13 @@ type
   TSharpEDesktopRenderer =  class
   private
     FImage : TImage32;
-    FSelectLayer : TBitmapLayer;
     FSelectionLayer : TSelectionLayer;
+    FMovingLayer : TBitmapLayer;
     FLinkRenderer : TSharpEDesktopLinkRenderer;
     FManager : TSharpEDesktopManager;
     FMouseDownPos : TPoint;
     FMouseDown : boolean;
+    FIconsMoving : boolean;
   public
     procedure RenderBackground;
     procedure RefreshLayers;
@@ -97,11 +98,13 @@ begin
   FManager := pManager;
 
   FMouseDown := False;
+  FIconsMoving := False;
 
-  FSelectLayer := TBitmapLayer.Create(FImage.Layers);
-  FSelectLayer.Visible := False;
-  FSelectLayer.Bitmap.DrawMode := dmBlend;
-  FSelectLayer.Bitmap.CombineMode := cmMerge;
+  FMovingLayer := TBitmapLayer.Create(FImage.Layers);
+  FMovingLayer.Visible := False;
+  FMovingLayer.Bitmap.MasterAlpha := 128;
+  FMovingLayer.Bitmap.DrawMode := dmBLend;
+  FMovingLAyer.Bitmap.CombineMode := cmMerge;
 
   FSelectionLayer := TSelectionLayer.Create(FImage.Layers);
   FSelectionLayer.Visible := False;
@@ -110,7 +113,7 @@ end;
 
 destructor TSharpEDesktopRenderer.Destroy;
 begin
-  FreeAndNil(FSelectLayer);
+  FreeAndNil(FSelectionLayer);
   FreeAndNil(FLinkRenderer);
 
   inherited Destroy;
@@ -174,8 +177,10 @@ var
   item : TSharpEDesktopItem;
   ditem : TSharpEDesktop;
   x,y : integer;
+  n : integer;
   R : TFloatRect;
   X1,X2,Y1,Y2 : integer;
+  alist,dlist : TObjectList;
 begin
   if (FManager = nil) or (FImage = nil) then exit;
   if (FManager.CurrentDesktop = nil) then exit;
@@ -187,34 +192,13 @@ begin
 
   item := ditem.GetGridItem(x,y);
 
-  if (item <> nil) and (not FMouseDown) then
-  begin
-    // view the selection Layer
-    R := FSelectLayer.Location;
-    if (x*ditem.GridSize <> round(R.Left)) or (y*ditem.GridSize <> round(R.Top))
-       or (not FSelectLayer.Visible) then
-    begin
-      if (FSelectLayer.Bitmap.Width <> ditem.GridSize)
-          or (FSelectLAyer.Bitmap.Height <> ditem.GridSize) then
-      begin
-        FSelectLayer.Bitmap.SetSize(ditem.GridSize,ditem.GridSize);
-        FSelectLayer.Bitmap.Clear(color32(128,128,128,128));
-      end;
-      FSelectLayer.Location := FloatRect(x*ditem.GridSize,
-                                         y*ditem.GridSize,
-                                         x*ditem.GridSize+FSelectLayer.Bitmap.Width,
-                                         y*ditem.GridSize+FSelectLayer.Bitmap.Height);
-      FSelectLayer.SendToBack;
-      if not FSelectLayer.Visible then FSelectLayer.Visible := True;
-    end;
-  end else
-  begin
-    // hide the selection Layer;
-    if FSelectLayer.Visible then FSelectLayer.Visible := False;
-  end;
+  alist := TObjectList.Create(False);
+  alist.Clear;
+  dlist := TObjectList.Create(False);
+  dlist.Clear;
 
   // Move and Size the selection Rect
-  if (FMouseDown) and (FSelectionLayer.Visible) then
+  if (not FIconsMoving) and (FMouseDown) and (FSelectionLayer.Visible) then
   begin
     if pX>FMouseDownPos.X then
     begin
@@ -235,7 +219,39 @@ begin
       Y2 := FMouseDownPos.Y
     end;
     FSelectionLayer.Location := FloatRect(X1,Y1,X2,Y2);
+    FManager.UpdateSelection(alist,dlist,X1,Y1,X2,Y2);
+  end
+  else if (not FMouseDown) and (not FIconsMoving) and (FManager.SelectionList.Count <= 1) then
+  begin
+    FManager.UpdateSelection(alist,dlist,
+                             x * ditem.GridSize,
+                             y * ditem.GridSize,
+                             x * ditem.GridSize + ditem.GridSize,
+                             y * ditem.GridSize + ditem.GridSize);
+  end
+  else if FIconsMoving then
+  begin
+    FMovingLayer.Location := FloatRect(pX - FMouseDownPos.X,
+                                       pY - FMouseDownPos.Y,
+                                       pX - FMouseDownPos.X + FMovingLayer.Bitmap.Width,
+                                       pY - FMouseDownPos.Y + FMovingLayer.Bitmap.Height);
   end;
+
+
+  for n := 0 to alist.Count -1 do
+  begin
+    item := TSharpEDesktopItem(alist[n]);
+    FLinkRenderer.RenderTo(TBitmapLayer(item.Layer).Bitmap,item,True);
+  end;
+
+  for n := 0 to dlist.Count -1 do
+  begin
+    item := TSharpEDesktopItem(dlist[n]);
+    FLinkRenderer.RenderTo(TBitmapLayer(item.Layer).Bitmap,item,False);
+  end;
+
+  alist.Free;
+  dlist.Free;
 end;
 
 procedure TSharpEDesktopRenderer.PerformMouseDown(pX,pY : integer; Button : TMouseButton);
@@ -243,6 +259,10 @@ var
   item : TSharpEDesktopItem;
   ditem : TSharpEDesktop;
   x,y : integer;
+  xmin,xmax,ymin,ymax : integer;
+  w,h : integer;
+  p : TPoint;
+  n : integer;
 begin
   if (FManager = nil) or (FImage = nil) then exit;
   if (FManager.CurrentDesktop = nil) then exit;
@@ -263,6 +283,53 @@ begin
     FSelectionLayer.BringToFront;
     FSelectionLayer.Visible := True;
   end;
+
+  if FManager.SelectionList.IndexOf(item) < 0 then
+  begin
+    for n := 0 to FManager.SelectionList.Count - 1 do
+    begin
+      item := TSharpEDesktopItem(FManager.SelectionList.Items[n]);
+      FLinkRenderer.RenderTo(TBitmapLayer(item.Layer).Bitmap,item,False);
+    end;
+    FManager.SelectionList.Clear;
+  end else
+  begin
+    FIconsMoving := True;
+    // render movign layer
+    with FManager.SelectionList do
+    begin
+      xmin := 0;
+      xmax := 0;
+      ymin := 0;
+      ymax := 0;
+      for n := 0 to FManager.SelectionList.Count - 1 do
+      begin
+        item := TSharpEDesktopItem(FManager.SelectionList.Items[n]);
+        p := ditem.GetGridPoint(item);
+        xmin := min(xmin,p.X);
+        xmax := max(xmax,p.X);
+        ymin := min(ymin,p.Y);
+        ymax := max(ymax,p.Y);
+      end;
+      w := (xmax - xmin + 1)*ditem.GridSize;
+      h := (ymax - ymin + 1)*ditem.GridSize;
+      FMovingLayer.Bitmap.SetSize(w,h);
+      FMovingLayer.Bitmap.Clear(color32(0,0,0,0));
+      for n := 0 to FManager.SelectionList.Count - 1 do
+      begin
+        item := TSharpEDesktopItem(FManager.SelectionList.Items[n]);
+        p := ditem.GetGridPoint(item);
+        FMovingLayer.Bitmap.Draw((p.X - xmin) * ditem.GridSize,
+                                 (p.Y - ymin) * ditem.GridSize,
+                                 TBitmapLayer(item.Layer).Bitmap);
+      end;
+      FMovingLayer.Location := FloatRect(pX - FMouseDownPos.X,
+                                         pY - FMouseDownPos.Y,
+                                         pX - FMouseDownPos.X + FMovingLayer.Bitmap.Width,
+                                         pY - FMouseDownPos.Y + FMovingLayer.Bitmap.Height);
+      FMovingLayer.Visible := True;
+    end;
+  end;
 end;
 
 procedure TSharpEDesktopRenderer.PerformMouseUp(pX,pY : integer; Button : TMouseButton);
@@ -272,6 +339,12 @@ begin
   if FSelectionLayer.Visible then
   begin
     FSelectionLayer.Visible := False;
+  end;
+
+  if FIconsMoving then
+  begin
+    FIconsMoving := False;
+    FMovingLayer.Visible := False;
   end;
 end;
 
