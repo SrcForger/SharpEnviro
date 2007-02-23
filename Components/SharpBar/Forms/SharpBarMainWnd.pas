@@ -158,6 +158,7 @@ type
     procedure WMGetBGHandle(var msg : TMessage); message WM_GETBACKGROUNDHANDLE;
     procedure WMGetBarHeight(var msg : TMessage); message WM_GETBARHEIGHT;
 
+    procedure WMSharpTerminate(var msg : TMessage); message WM_SHARPTERMINATE;
     procedure WMSharpVWMMessage(var msg : TMessage); message WM_SHARPVWMMESSAGE;
     procedure WMDisplayChange(var msg : TMessage); message WM_DISPLAYCHANGE;
     procedure WMUpdateBarWidth(var msg : TMessage); message WM_UPDATEBARWIDTH;
@@ -244,6 +245,12 @@ end;
 // ************************
 // Window Message handlers
 // ************************
+
+// SharpE Terminate Message support
+procedure TSharpBarMainForm.WMSharpTerminate(var msg : TMessage);
+begin
+  Application.Terminate;
+end;
 
 // Weather Service updated the xml files -> broadcast as message to all modules
 procedure TSharpBarMainForm.WMWeatherUpdate(var msg : TMessage);
