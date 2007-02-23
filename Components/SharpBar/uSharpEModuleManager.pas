@@ -1215,6 +1215,7 @@ begin
   FControl := GetControlByHandle(FHandle);
   FPosition := pPosition;
   FThrobber := TSharpEMiniThrobber.Create(FOwnerForm);
+  FThrobber.Cursor := crHandPoint;
   FThrobber.AutoPosition := True;
   FThrobber.Parent := FOwnerForm;
   FThrobber.BringToFront;
