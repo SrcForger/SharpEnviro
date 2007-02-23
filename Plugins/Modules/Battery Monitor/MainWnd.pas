@@ -267,7 +267,12 @@ begin
        if CompareText(lb_info.Caption,s) <> 0 then lb_info.Caption := s;
 
     if lb_pc.Visible then
-       if CompareText(lb_pc.Caption,s+'%') <> 0 then lb_pc.Caption := IntToStr(LoadStatusPercent)+'%';
+    begin
+      if LoadStatusPercent >= 0 then
+      begin
+        if CompareText(lb_pc.Caption,s+'%') <> 0 then lb_pc.Caption := IntToStr(LoadStatusPercent)+'%';
+      end else if CompareText(lb_pc.Caption,'') <> 0 then lb_pc.Caption := '';
+    end;
 
     if pbar.Visible then
        if pbar.Value <> LoadStatusPercent then
