@@ -51,7 +51,6 @@ uses
   URLMon,
   StrUtils,
   ImgList,
-  HTTPGet,
   SharpAPI,
   dialogs,
   jvsimplexml;
