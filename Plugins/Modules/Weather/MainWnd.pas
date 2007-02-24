@@ -190,6 +190,7 @@ begin
   Background.Bitmap.SetSize(Width,Height);
   uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
   Background.Bitmap.EndUpdate;
+  if (sShowIcon) then RenderIcon;
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
