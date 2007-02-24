@@ -170,7 +170,7 @@ procedure TSharpEMenuIcons.LoadIconCache(pFileName : String);
 var
   Stream : TFileStream;
   Dir,Fn : String;
-  t : byte;
+  t : integer;
   Item : TSharpEMenuIcon;
   IconSource : String;
   IconType : TIconType;
@@ -200,7 +200,7 @@ var
   Stream : TFileStream;
   n : integer;
   Dir,Fn : String;
-  t : byte;
+  t : integer;
   Item : TSharpEMenuIcon;
 begin
   Dir := SharpApi.GetSharpeDirectory + 'Cache';
@@ -213,7 +213,8 @@ begin
   for n := 0 to FItems.Count - 1 do
   begin
     Item := TSharpEMenuIcon(FItems.Items[n]);
-    if not Item.Cached then
+    if (not Item.Cached) and (length(Item.IconSource) > 0) and
+       (Item.Icon.Width > 0) and (Item.Icon.Height > 0) then
     begin
       StringSaveToStream(Item.IconSource,Stream);
       case Item.IconType of
