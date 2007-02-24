@@ -1527,7 +1527,7 @@ end;
 
 function DirCheck(APath: string; var AResult: string): Boolean;
 var
-  DirCheck: array[0..4] of string;
+  DirCheck: array[0..6] of string;
   i: Integer;
 begin
   Result := False;
@@ -1536,6 +1536,8 @@ begin
   DirCheck[2] := 'SharpDesk.exe';
   DirCheck[3] := 'SharpApi.dll';
   DirCheck[4] := 'SharpDeskApi.dll';
+  DirCheck[5] := 'SharpThemeApi.dll';
+  DirCheck[6] := 'SharpMenu.exe';
 
   for i := Low(DirCheck) to High(DirCheck) do
     if FileExists(APath + DirCheck[i]) then
@@ -1596,6 +1598,7 @@ var
   Path: string;
   Fn: pchar;
   user: string;
+  sRes: String;
 begin
 
   // Check current directory
@@ -1610,7 +1613,13 @@ begin
     begin
       CopyDir(Fn + 'Settings\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User\');
       RenameDir(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User\'+User);
-    end else Sysutils.ForceDirectories(Path);
+    end else
+    begin
+      DirCheck(Fn,sRes);
+
+      if sRes <> '' then
+         Sysutils.ForceDirectories(Path);
+    end;
   end;
 
   stemp := IncludeTrailingBackslash(Path);
@@ -1632,7 +1641,7 @@ begin
   //SendDebugMessage('SharpApi Path',pchar(Path),clblack);
 
   if not (DirectoryExists(Path)) then begin
-    DirCheck(Path,sRes);
+    DirCheck(Fn,sRes);
 
     if sRes <> '' then
       Sysutils.ForceDirectories(Path);
