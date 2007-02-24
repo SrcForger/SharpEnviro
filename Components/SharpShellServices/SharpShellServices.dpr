@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 program SharpShellServices;
 
 {$R *.res}
+{$R SharpShellServicesCR.RES}
 
 
 uses
@@ -36,7 +37,8 @@ uses
   Messages,
   Windows,
   SysUtils,
-  Classes;
+  Classes,
+  uVistaFuncs in '..\..\Common\Units\VistaFuncs\uVistaFuncs.pas';
 
 type
   POleCmd = ^TOleCmd; //???
@@ -59,11 +61,10 @@ type
 
   TIMOleCommandTarget = interface(IUnknown)
     ['{b722bccb-4e68-101b-a2bc-00aa00404770}']
-    function QueryStatus(CmdGroup: PGUID; cCmds: Cardinal;
-      prgCmds: POleCmd; CmdText: POleCmdText): HResult; stdcall;
-    function Exec(CmdGroup: PGUID; nCmdID, nCmdexecopt: DWORD;
-      const vaIn: OleVariant; var vaOut: OleVariant): HResult; stdcall;
+    function QueryStatus(CmdGroup: PGUID; cCmds: Cardinal; prgCmds: POleCmd; CmdText: POleCmdText): HResult; stdcall;
+    function Exec(CmdGroup: PGUID; nCmdID, nCmdexecopt: DWORD; const vaIn: OleVariant; var vaOut: OleVariant): HResult; stdcall;
   end;
+  
   TServiceList = ^TServList;
   TServList = record
     data: TIMOLeCommandTarget;
@@ -81,6 +82,58 @@ var
   ListOfServices: TserviceList;
   MutexHandle: THandle;
 
+procedure LoadShellServiceObjectsVista;
+var
+  reg: Treginifile;
+  list: TstringList;
+  str: string;
+  i: integer;
+  CLSID: TCLSID;
+  hr: hresult;
+  dd: olevariant;
+  pCmdTarget: TIMOLeCommandTarget;
+  Wchar: pWideChar;
+  tempList: TserviceList;
+begin
+  ListOfServices := new(TServiceList);
+  ListOfServices.next := nil;
+  try
+    wChar := Allocmem(100);
+    list := tstringlist.create;
+    reg := TRegIniFile.Create;
+    reg.RootKey := HKEY_LOCAL_MACHINE;
+    reg.OpenKeyReadOnly('\Software\Microsoft\Windows\CurrentVersion\explorer\ShellServiceObjects');
+    reg.GetKeyNames(list);
+    tempList := ListOfServices;
+    for i := 0 to list.count - 1 do
+    begin
+      str := list.Strings[i];
+      if str <> '' then
+      begin
+        hr := CLSIDFromString(StringTowidechar(str, Wchar, 100), CLSID);
+        if (SUCCEEDED(hr)) then
+        begin
+          hr := CoCreateInstance(clsid, nil, CLSCTX_INPROC_SERVER or CLSCTX_INPROC_HANDLER, TIMOLeCommandTarget, pCmdTarget);
+          dd := 0;
+          if (SUCCEEDED(hr)) then
+          begin
+            pCmdTarget.Exec(@CGID_ShellServiceObject, 2, 0, dd, dd);
+            tempList.next := new(TServiceList);
+            tempList := TempList.next;
+            tempList.data := pCmdTarget;
+            templist.next := nil;
+          end;
+        end;
+      end;
+    end;
+    freemem(WChar, 100);
+    reg.CloseKey;
+  finally
+    list.Free;
+    reg.Free;
+  end;
+end;
+
 procedure LoadShellServiceObjects;
 var
   reg: Treginifile;
@@ -94,7 +147,6 @@ var
   Wchar: pWideChar;
   tempList: TserviceList;
 begin
-  CoInitializeEx(nil, COINIT_APARTMENTTHREADED or COINIT_DISABLE_OLE1DDE);
   ListOfServices := new(TServiceList);
   ListOfServices.next := nil;
   try
@@ -154,7 +206,6 @@ begin
   end;
   Dispose(ListOfServices);
   ListOfServices := nil;
-  CoUnInitialize();
 end;
 
 begin
@@ -167,11 +218,13 @@ begin
       Halt;
     end
   end;
-  
+
+  CoInitializeEx(nil, COINIT_APARTMENTTHREADED or COINIT_DISABLE_OLE1DDE or COINIT_SPEED_OVER_MEMORY);
   LoadShellServiceObjects;
+  if uVistaFuncs.IsWindowsVista then LoadShellServiceObjectsVista;
 
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
-  
+
   while GetMessage(msg, 0, 0, 0) do
   begin
     case msg.message of
@@ -180,6 +233,7 @@ begin
   end;
 
   UnLoadShellServiceObjects;
+  CoUnInitialize();
 
   ReleaseMutex(MutexHandle);
   CloseHandle(MutexHandle);
