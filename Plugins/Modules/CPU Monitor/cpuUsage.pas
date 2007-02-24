@@ -44,8 +44,12 @@ end;
 constructor TCPUUsage.Create;
 begin
   inherited Create;
-  CollectCPUData;
-  setlength(CPUUsage,GetCPUCount);
+  try
+    CollectCPUData;
+    setlength(CPUUsage,GetCPUCount);
+  except
+    setlength(CPUUsage,1);
+  end;
   Forms := TObjectList.Create(False);
   UpdateTimer := TTimer.Create(nil);
   UpdateTimer.Interval := 1001;
