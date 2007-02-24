@@ -341,9 +341,9 @@ begin
   // bar received a shell hook, forward it to all registered modules
 
   try
-    for n := 0 to FShellHookList.Count -1 do
+    for n := 0 to FShellHookList.Count - 1 do
     begin
-      if n = 0 then FShellBCInProgress := True
+      if (n = 0) and (n <> FShellHookList.Count - 1) then FShellBCInProgress := True
          else if n = FShellHookList.Count -1 then FShellBCInProgress := False;
       PostMessage(strtoint(FShellHookList[n]),WM_ShellHook,msg.WParam,msg.LParam);
     end;
