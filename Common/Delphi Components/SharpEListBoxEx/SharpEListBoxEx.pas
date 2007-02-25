@@ -156,7 +156,8 @@ type
     property Colors: TSharpEListBoxExColors read FColors write SetColors stored True;
     property Margin: TRect read FMargin write FMargin;
     property ColumnMargin: TRect read FColumnMargin write FColumnMargin;
-
+    property Color;
+    property Font;
 
     property ItemHeight;
     property OnClickItem: TSharpEListBoxExOnClickItem read FOnClickItem write FOnClickItem stored True;
@@ -220,7 +221,7 @@ end;
 constructor TSharpEListBoxEx.Create(Sender: TComponent);
 begin
   inherited;
-  Self.DoubleBuffered := True;
+  Self.DoubleBuffered := False;
   Self.Style := lbOwnerDrawFixed;
   Self.OnDrawItem := DrawItemEvent;
   Self.OnClick := ClickItem;
@@ -228,6 +229,7 @@ begin
   Self.OnMouseDown := MouseDownEvent;
   Self.OnDblClick := DblClickItem;
   Self.ItemHeight := 24;
+  Self.Color := clWindow;
 
   FColors := TSharpEListBoxExColors.Create;
   FColors.ItemColor := clWindow;
@@ -399,6 +401,9 @@ procedure TSharpEListBoxEx.DrawSelection(ARect: TRect;
 var
   tmpColor:TColor;
 begin
+  Self.Canvas.Brush.Color := Color;
+  Self.Canvas.FillRect(ARect);
+
   tmpColor := Colors.ItemColor;
   if Assigned(FOnGetCellColor) then
     FOnGetCellColor(AItem.ID,tmpColor);
