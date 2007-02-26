@@ -32,7 +32,7 @@ unit uSharpEMenuItem;
 
 interface
 
-uses GR32,uSharpEMenuIcon;
+uses GR32,SysUtils,uSharpEMenuIcon,uPropertyList;
 
 type
   TSharpEMenuItem = class;
@@ -54,15 +54,15 @@ type
     FIcon     : TSharpEMenuIcon; // only a pointer to the icon list!
     FSubMenu  : TObject;
     FCaption  : String;
-    FAction   : String;
     FIndex    : Integer;
     FItemType : TSharpEMenuItemType;
     FDynamic  : boolean;
     FVisible  : boolean;
+    FPropList : TPropertyList;
   public
     constructor Create(pItemType : TSharpEMenuItemType); reintroduce;
     destructor Destroy; override;
-    property Action    : String read FAction write FAction;
+    property PropList  : TPropertyList read FPropList;
     property Caption   : String read FCaption write FCaption;
     property Icon      : TSharpEMenuIcon read FIcon write FIcon;
     property ItemType  : TSharpEMenuItemType read FItemType;
@@ -70,8 +70,8 @@ type
     property isDynamic : boolean read FDynamic write FDynamic;
     property isVisible : boolean read FVisible write FVisible;
     property ListIndex : integer read FIndex write FIndex; // only used and updated before sorting!
-    property OnClick : TSharpEMenuItemClickEvent read FClickEvent write FClickEvent;
-    property OnPaint : TSharpEMenuItemPaintEvent read FPaintEvent write FPaintEvent;
+    property OnClick   : TSharpEMenuItemClickEvent read FClickEvent write FClickEvent;
+    property OnPaint   : TSharpEMenuItemPaintEvent read FPaintEvent write FPaintEvent;
   end;
 
 implementation
@@ -81,6 +81,8 @@ uses uSharpEMenu;
 constructor TSharpEMenuItem.Create(pItemType : TSharpEMenuItemType);
 begin
   inherited Create;
+
+  FPropList := TPropertyList.Create;
 
   FVisible := True;
   FDynamic := False;
@@ -97,6 +99,8 @@ begin
   if FSubMenu <> nil then
      TSharpEMenu(FSubMenu).Free;
   SharpEMenuIcons.RemoveIcon(Icon);
+
+  FreeAndNil(FPropList);
 
   inherited Destroy;
 end;

@@ -58,7 +58,8 @@ uses
   uSharpEMenuIcons in 'Units\uSharpEMenuIcons.pas',
   uSharpEMenuItem in 'Units\uSharpEMenuItem.pas',
   uSharpEMenuConsts in 'Units\uSharpEMenuConsts.pas',
-  uSkinManagerThreads in '..\..\Common\Units\Threads\uSkinManagerThreads.pas';
+  uSkinManagerThreads in '..\..\Common\Units\Threads\uSkinManagerThreads.pas',
+  uPropertyList in '..\..\Common\Units\PropertyList\uPropertyList.pas';
 
 {$R *.res}
 
@@ -154,6 +155,7 @@ begin
   SkinManager := TSharpESkinManager.Create(nil);
   SystemSkinLoadThread := TSystemSkinLoadThread.Create(SkinManager);
   mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManager);
+  Application.Title := 'SharpMenu';
   Application.CreateForm(TSharpEMenuWnd, wnd);
   SystemSkinLoadThread.WaitFor;
   SystemSkinLoadThread.Free;

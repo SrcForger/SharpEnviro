@@ -65,7 +65,7 @@ type
     procedure AddLabelItem(pCaption : String; pDynamic : boolean);
     procedure AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean); overload;
     procedure AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean); overload;
-    procedure AddDynamicDirectoryItem(pTarget : String; pDynamic : boolean);
+    procedure AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String;  pDynamic : boolean);
     procedure AddDriveListItem(pDynamic : boolean);
     function  AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean) : TObject;
     procedure RenderBackground;
@@ -180,7 +180,7 @@ begin
   begin
     item := TSharpEMenuItem(FItems.Items[n]);
     case item.ItemType of
-      mtDynamicDir : FMenuActions.UpdateDynamicDirectory(FDynList, item.Action);
+      mtDynamicDir : FMenuActions.UpdateDynamicDirectory(FDynList, item.PropList.GetString('Action'));
       mtDriveList : FMenuActions.UpdateDynamicDriveList(FDynList);
     end;
   end;
@@ -232,7 +232,7 @@ begin
   item := TSharpEMenuItem.Create(mtLink);
   item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon);
   item.Caption := pCaption;
-  item.Action := pTarget;
+  item.PropList.Add('Action',pTarget);
   item.OnClick := FMenuActions.OnLinkClick;
   item.isDynamic := pDynamic;
   FItems.Add(Item);
@@ -247,7 +247,7 @@ begin
   item := TSharpEMenuItem.Create(mtLink);
   item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget);
   item.Caption := pCaption;
-  item.Action := pTarget;
+  item.PropList.Add('Action',pTarget);
   item.OnClick := FMenuActions.OnLinkClick;
   item.isDynamic := pDynamic;
   FItems.Add(Item);
@@ -267,13 +267,13 @@ begin
   result := Item;
 end;
 
-procedure TSharpEMenu.AddDynamicDirectoryItem(pTarget : String; pDynamic : boolean);
+procedure TSharpEMenu.AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String; pDynamic : boolean);
 var
   item : TSharpEMenuItem;
 begin
   item := TSharpEMenuItem.Create(mtDynamicDir);
   item.Icon := nil;
-  item.Action := FMenuConsts.ParseString(pTarget);
+  item.PropList.Add('Action',FMenuConsts.ParseString(pTarget));
   item.isVisible := False;
   item.isDynamic := pDynamic;
   FItems.Add(Item);
@@ -285,7 +285,6 @@ var
 begin
   item := TSharpEMenuItem.Create(mtDriveList);
   item.Icon := nil;
-  item.Action := '';
   item.isVisible := False;
   item.isDynamic := pDynamic;
   FItems.Add(Item);

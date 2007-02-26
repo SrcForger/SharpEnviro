@@ -62,7 +62,10 @@ begin
            menu.AddSeperatorItem(False)
         else
         if CompareText(typestring,'dynamicdirectory') = 0 then
-           menu.AddDynamicDirectoryItem(Value('Target'),False)
+           menu.AddDynamicDirectoryItem(Value('Target'),
+                                        IntValue('MaxItems',-1),
+                                        IntValue('Sort',0),
+                                        Value('Filter'), False)
         else
         if CompareText(typestring,'drivelist') = 0 then
            menu.AddDriveListItem(False)

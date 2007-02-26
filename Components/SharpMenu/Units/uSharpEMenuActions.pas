@@ -52,7 +52,8 @@ type
 
 implementation
 
-uses uSharpEMenu;
+uses uSharpEMenu,
+     uPropertyList;
 
 constructor TSharpEMenuActions.Create(pOwner : TObject);
 begin
@@ -63,7 +64,7 @@ end;
 
 procedure TSharpEMenuActions.OnLinkClick(pItem : TSharpEMenuItem; var CanClose : boolean);
 begin
-  SharpApi.SharpExecute(pItem.Action);
+  SharpApi.SharpExecute(pItem.PropList.GetString('Action'));
   CanClose := True;
 end;
 
@@ -103,7 +104,7 @@ begin
         begin
           s := sr.Name;
           setlength(s,length(s) - length(ExtractFileExt(sr.Name)));
-          if item.Action = Dir + sr.Name then
+          if item.PropList.GetString('Action') = Dir + sr.Name then
           begin
             pDynList.Delete(n);
             found := true;
@@ -131,7 +132,7 @@ begin
                   for k := 0 to submenu.Items.count - 1 do
                   begin
                     subitem := TSharpEMenuItem(submenu.Items.Items[k]);
-                    if (subitem.ItemType = mtDynamicDir) and (subitem.Action = Dir + sr.Name + '\') then
+                    if (subitem.ItemType = mtDynamicDir) and (subitem.PropList.GetString('Action') = Dir + sr.Name + '\') then
                     begin
                       subfound := True;
                       break;
@@ -139,7 +140,11 @@ begin
                   end;
                   if not subfound then
                   begin
-                    submenu.AddDynamicDirectoryItem(Dir + sr.Name + '\',False);
+                    submenu.AddDynamicDirectoryItem(Dir + sr.Name + '\',
+                                                    item.PropList.GetInt('MaxItems'),
+                                                    item.PropList.GetInt('Sort'),
+                                                    item.PropList.GetString('Filter'),
+                                                    False);
                   end;
                 end;
                 found := True;
@@ -151,7 +156,11 @@ begin
           begin
             item := TSharpEMenuItem(pMenu.AddSubMenuItem(sr.name,'shellicon',Dir + sr.Name + '\',true));
             item.SubMenu := TSharpEMenu.Create(pMenu.SkinManager);
-            TSharpEMenu(item.SubMenu).AddDynamicDirectoryItem(Dir + sr.Name + '\',False);
+            TSharpEMenu(item.SubMenu).AddDynamicDirectoryItem(Dir + sr.Name + '\',
+                                                              item.PropList.GetInt('MaxItems'),
+                                                              item.PropList.GetInt('Sort'),
+                                                              item.PropList.GetString('Filter'),
+                                                              False);
           end;
         end else
         begin
@@ -224,7 +233,7 @@ begin
           s := '['+Chr(i + Ord('A')) + ':] - ' + sn;
           item := TSharpEMenuItem(pDynList.Items[n]);
           if (item.ItemType = mtLink) and (item.Caption = s)
-             and (item.Action = Chr(i + Ord('A')) + ':\') then
+             and (item.PropList.GetString('Action') = Chr(i + Ord('A')) + ':\') then
           begin
             pDynList.Delete(n);
             found := true;
