@@ -74,6 +74,8 @@ type
     function GetInt(pName : String) : integer;
     function GetBool(pName : String) : boolean;
     function Remove(pName : String) : boolean;
+    procedure Clear;
+    function HasProperty(pName : String) : boolean;
 
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -196,6 +198,16 @@ begin
     exit;
   end;
   result := False;
+end;
+
+procedure TPropertyList.Clear;
+begin
+  FList.Clear;
+end;
+
+function TPropertyList.HasProperty(pName : String) : boolean;
+begin
+  result := (FindByName(pName) <> nil);
 end;
 
 end.
