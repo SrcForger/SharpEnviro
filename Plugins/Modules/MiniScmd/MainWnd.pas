@@ -175,8 +175,11 @@ begin
   if (Key = VK_RETURN) then
   begin
     SetFocus;
-    SharpApi.SharpExecute(trim(edit.Text));
-    edit.Text := '';
+    if (edit.Text <> '') then
+    begin
+       SharpApi.SharpExecute(trim(edit.Text));
+       edit.Text := '';
+    end;
   end;
 end;
 
