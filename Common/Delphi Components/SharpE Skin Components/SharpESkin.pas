@@ -236,7 +236,7 @@ type
   TSharpEMenuItemSkin = class
   private
     FSkinDim       : TSkinDim;
-    FSeperator     : TSkinPart;
+    FSeparator     : TSkinPart;
     FLabelItem     : TSkinPartEx;
     FNormalItem    : TSkinPartEx;
     FHoverItem     : TSkinPartEx;
@@ -258,7 +258,7 @@ type
     property NormalSubItem : TSkinPartEx read FNormalSubItem;
     property HoverSubItem  : TSkinPartEx read FHoverSubItem;
     property LabelItem : TSkinPartEx read FLabelItem;
-    property Seperator : TSkinPart read FSeperator;
+    property Separator : TSkinPart read FSeparator;
     property Custom    : TSkinPart read FCustom;
     property CustomHover : TSkinPart read FCustomHover; 
   end;
@@ -1039,7 +1039,7 @@ begin
   FSkinDim := TSkinDim.Create;
   FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w','32');
-  FSeperator := TSkinPart.Create(BmpList);
+  FSeparator := TSkinPart.Create(BmpList);
   FNormalItem := TSkinPartEx.Create(BmpList);
   FLabelItem  := TSkinPartEx.Create(BmpList);
   FHoverItem  := TSkinPartEx.Create(BmpList);
@@ -1053,7 +1053,7 @@ end;
 destructor TSharpEMenuItemSkin.Destroy;
 begin
   FSkinDim.Free;
-  FSeperator.Free;
+  FSeparator.Free;
   FNormalItem.Free;
   FLabelItem.Free;
   FHoverItem.Free;
@@ -1068,7 +1068,7 @@ procedure TSharpEMenuItemSkin.Clear;
 begin
   FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w','32');
-  FSeperator.Clear;
+  FSeparator.Clear;
   FNormalItem.Clear;
   FLabelItem.Clear;
   FHoverItem.Clear;
@@ -1082,7 +1082,7 @@ end;
 procedure TSharpEMenuItemSkin.LoadFromStream(Stream : TStream);
 begin
   FSkinDim.LoadFromStream(Stream);
-  FSeperator.LoadFromStream(Stream);
+  FSeparator.LoadFromStream(Stream);
   FNormalItem.LoadFromStream(Stream);
   FHoverItem.LoadFromStream(Stream);
   FDownItem.LoadFromStream(Stream);
@@ -1096,7 +1096,7 @@ end;
 procedure TSharpEMenuItemSkin.SaveToStream(Stream : TStream);
 begin
   FSkinDim.SaveToStream(Stream);
-  FSeperator.SaveToStream(Stream);
+  FSeparator.SaveToStream(Stream);
   FNormalItem.SaveToStream(Stream);
   FHoverItem.SaveToStream(Stream);
   FDownItem.SaveToStream(Stream);
@@ -1127,8 +1127,8 @@ begin
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
         FSkinDim.SetLocation(Value('location','0,0'));
-      if ItemNamed['seperator'] <> nil then
-        FSeperator.LoadFromXML(ItemNamed['seperator'], path, SkinText);
+      if ItemNamed['Separator'] <> nil then
+        FSeparator.LoadFromXML(ItemNamed['Separator'], path, SkinText);
       if ItemNamed['normal'] <> nil then
         FNormalItem.LoadFromXML(ItemNamed['normal'], path, SkinText, SkinIcon);
       if ItemNamed['down'] <> nil then
