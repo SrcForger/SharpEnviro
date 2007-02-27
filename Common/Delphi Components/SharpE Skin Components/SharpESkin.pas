@@ -243,8 +243,6 @@ type
     FDownItem      : TSkinPartEx;
     FNormalSubItem : TSkinPartEx;
     FHoverSubItem  : TSkinPartEx;
-    FCustom        : TSkinPart;
-    FCustomHover   : TSkinPart;
   public
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
@@ -259,8 +257,6 @@ type
     property HoverSubItem  : TSkinPartEx read FHoverSubItem;
     property LabelItem : TSkinPartEx read FLabelItem;
     property Separator : TSkinPart read FSeparator;
-    property Custom    : TSkinPart read FCustom;
-    property CustomHover : TSkinPart read FCustomHover; 
   end;
 
   TSharpEButtonSkin = class
@@ -1046,8 +1042,6 @@ begin
   FDownItem   := TSkinPartEx.Create(BmpList);
   FNormalSubItem := TSkinPartEx.Create(BmpList);
   FHoverSubItem := TSkinPartEx.Create(BmpList);
-  FCustom     := TSkinPartEx.Create(BmpList);
-  FCustomHover := TSkinPartEx.Create(BmpList);
 end;
 
 destructor TSharpEMenuItemSkin.Destroy;
@@ -1060,8 +1054,6 @@ begin
   FDownItem.Free;
   FNormalSubItem.Free;
   FHoverSubItem.Free;
-  FCustom.Free;
-  FCustomHover.Free;
 end;
 
 procedure TSharpEMenuItemSkin.Clear;
@@ -1075,8 +1067,6 @@ begin
   FDownItem.Clear;
   FNormalSubItem.Clear;
   FHoverSubItem.Clear;
-  FCustom.Clear;
-  FCustomHover.Clear;
 end;
 
 procedure TSharpEMenuItemSkin.LoadFromStream(Stream : TStream);
@@ -1089,8 +1079,6 @@ begin
   FNormalSubItem.LoadFromStream(Stream);
   FHoverSubItem.LoadFromStream(Stream);
   FLabelItem.LoadFromStream(Stream);
-  FCustom.LoadFromStream(Stream);
-  FCustomHover.LoadFromStream(Stream);
 end;
 
 procedure TSharpEMenuItemSkin.SaveToStream(Stream : TStream);
@@ -1103,8 +1091,6 @@ begin
   FNormalSubItem.SaveToStream(Stream);
   FHoverSubItem.SaveToStream(Stream);
   FLabelItem.SaveToStream(Stream);
-  FCustom.SaveToStream(Stream);
-  FCustomHover.SaveToStream(Stream);
 end;
 
 procedure TSharpEMenuItemSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
@@ -1141,10 +1127,6 @@ begin
         FHoverSubItem.LoadFromXML(ItemNamed['hoversub'], path, SkinText, SkinIcon);
       if ItemNamed['label'] <> nil then
         FLabelItem.LoadFromXml(ItemNamed['label'], path, SkinText, SkinIcon);
-      if ItemNamed['custom'] <> nil then
-        FCustom.LoadFromXML(ItemNamed['custom'], path, SkinText);
-      if ItemNamed['customhover'] <> nil then
-        FCustomHover.LoadFromXML(ItemNamed['customhover'], path, SkinText);
     end;
   finally
     SkinText.free;
