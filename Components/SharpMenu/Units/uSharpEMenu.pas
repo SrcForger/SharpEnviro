@@ -77,7 +77,7 @@ type
     function PerformMouseUp : boolean;
     function PerformClick : boolean;
     procedure RefreshDynamicContent;
-    procedure RecylceBitmaps;
+    procedure RecycleBitmaps;
     property ItemIndex  : integer read FItemIndex write FItemIndex;
     property CurrentItem : TSharpEMenuItem read GetCurrentItem;
     property Background : TBitmap32 read FBackground;
@@ -132,7 +132,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TSharpEMenu.RecylceBitmaps;
+procedure TSharpEMenu.RecycleBitmaps;
 begin
   FreeAndNil(FBackground);
   FreeAndNil(FNormalMenu);

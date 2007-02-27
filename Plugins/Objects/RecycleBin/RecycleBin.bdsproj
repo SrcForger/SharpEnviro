@@ -130,12 +130,13 @@
 			<Parameters Name="HostApplication">C:\PB5 Output\SharpDesk.exe</Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
-			<Parameters Name="DebugCWD"></Parameters>  <Parameters Name="RemoteHost"></Parameters>
-      <Parameters Name="RemotePath"></Parameters>
-      <Parameters Name="RemoteLauncher"></Parameters>
-      <Parameters Name="RemoteCWD"></Parameters>
-      <Parameters Name="RemoteDebug">False</Parameters>
-    </Parameters>
+			<Parameters Name="DebugCWD"></Parameters>
+			<Parameters Name="RemoteHost"></Parameters>
+			<Parameters Name="RemotePath"></Parameters>
+			<Parameters Name="RemoteLauncher"></Parameters>
+			<Parameters Name="RemoteCWD"></Parameters>
+			<Parameters Name="RemoteDebug">False</Parameters>
+		</Parameters>
 		<VersionInfo>
 			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 			<VersionInfo Name="AutoIncBuild">False</VersionInfo>

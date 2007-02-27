@@ -241,7 +241,7 @@ begin
   begin
     if FSubMenu <> nil then
     begin
-      FSubMenu.SharpEMenu.RecylceBitmaps;
+      FSubMenu.SharpEMenu.RecycleBitmaps;
       FSubMenu.Release;
       FSubMenu := nil;
     end;
@@ -314,7 +314,7 @@ begin
   if FMenu <> nil then
   begin
     FMenu.ItemIndex := -1;
-    FMenu.RecylceBitmaps;
+    FMenu.RecycleBitmaps;
     if FSubMenu <> nil then
     begin
       FSubMenu.Release;
@@ -340,7 +340,7 @@ begin
   begin
     if FSubMenu <> nil then
     begin
-      FSubMenu.SharpEMenu.RecylceBitmaps;
+      FSubMenu.SharpEMenu.RecycleBitmaps;
       FSubMenu.Release;
       FSubMenu := nil;
     end;

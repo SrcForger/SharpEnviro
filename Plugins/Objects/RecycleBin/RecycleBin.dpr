@@ -1,5 +1,5 @@
 {
-Source Name: RecylceBin.dpr
+Source Name: RecycleBin.dpr
 Description: RecycleBin Desktop Object
 Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
 
