@@ -204,7 +204,7 @@ begin
   begin
     mn := TSharpEMenu.Create(SharpESkinManager1);
     mn.AddLinkItem('Create New Script','_nohist,{#SharpEDir#}SharpScript.exe -newgenericscript','customicon:edititem',FMenuIcon1,false);
-    mn.AddSeperatorItem(False);
+    mn.AddSeparatorItem(False);
 
     Dir := SharpApi.GetSharpeUserSettingsPath + 'Scripts\';
     if FindFirst(Dir + '*.sescript',FAAnyFile,sr) = 0 then

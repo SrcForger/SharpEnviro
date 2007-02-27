@@ -85,10 +85,10 @@ begin
     HTTPReqResp1.URL := UrlTarget;
     HTTPReqResp1.Execute(UrlTarget, Stream);
 
-    Debug(STRSeperator,DMT_INFO);
+    Debug(STRSeparator,DMT_INFO);
     Debug(STRRequest + UrlTarget,DMT_INFO);
     Debug(STRDateTime + DateTimeToStr(now),DMT_INFO);
-    Debug(STRSeperator,DMT_INFO);
+    Debug(STRSeparator,DMT_INFO);
 
     StrStream := TStringStream.Create('');
     StrStream.CopyFrom(Stream, 0);

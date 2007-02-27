@@ -58,8 +58,8 @@ begin
         if CompareText(typestring,'link') = 0 then
            menu.AddLinkItem(Value('Caption'),Value('Target'),Value('Icon'),False)
         else
-        if CompareText(typestring,'seperator') = 0 then
-           menu.AddSeperatorItem(False)
+        if CompareText(typestring,'separator') = 0 then
+           menu.AddSeparatorItem(False)
         else
         if CompareText(typestring,'dynamicdirectory') = 0 then
            menu.AddDynamicDirectoryItem(Value('Target'),

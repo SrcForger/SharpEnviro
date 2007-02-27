@@ -37,7 +37,7 @@ uses GR32,SysUtils,uSharpEMenuIcon,uPropertyList;
 type
   TSharpEMenuItem = class;
 
-  TSharpEMenuItemType = (mtLink,mtSubMenu,mtSeperator,mtDynamicDir,mtDriveList,
+  TSharpEMenuItemType = (mtLink,mtSubMenu,mtSeparator,mtDynamicDir,mtDriveList,
                          mtLabel);
   TSharpEMenuItemState = (msNormal,msHover,msDown);
 

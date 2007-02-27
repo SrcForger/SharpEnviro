@@ -59,7 +59,7 @@ const
   STRRequest    = '  Request: ';
   STRResponse   = '  Response: ';
   STRDateTime   = '  AT: ';
-  STRSeperator  = '-----------------------------------------------------------';
+  STRSeparator  = '-----------------------------------------------------------';
 
 implementation
 
@@ -141,10 +141,10 @@ begin
 
     HTTPReqResp1.Execute(UrlTarget, Stream);
 
-    Debug(STRSeperator,DMT_INFO);
+    Debug(STRSeparator,DMT_INFO);
     Debug(STRRequest + Target,DMT_INFO);
     Debug(STRDateTime + DateTimeToStr(now),DMT_INFO);
-    Debug(STRSeperator,DMT_INFO);
+    Debug(STRSeparator,DMT_INFO);
 
     //StrStream := TStringStream.Create('');
     try

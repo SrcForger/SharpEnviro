@@ -61,7 +61,7 @@ type
   public
     constructor Create(pManager  : TSharpESkinManager); reintroduce;
     destructor Destroy; override;
-    procedure AddSeperatorItem(pDynamic : boolean);
+    procedure AddSeparatorItem(pDynamic : boolean);
     procedure AddLabelItem(pCaption : String; pDynamic : boolean);
     function AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean) : TObject; overload;
     function AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean) : TObject; overload;
@@ -226,11 +226,11 @@ begin
   FItems.Add(item);
 end;
 
-procedure TSharpEMenu.AddSeperatorItem(pDynamic : boolean);
+procedure TSharpEMenu.AddSeparatorItem(pDynamic : boolean);
 var
   item : TSharpEMenuItem;
 begin
-  item := TSharpEMenuItem.Create(mtSeperator);
+  item := TSharpEMenuItem.Create(mtSeparator);
   item.isDynamic := pDynamic;
   item.icon := nil;
   FItems.Add(Item);
@@ -345,7 +345,7 @@ begin
     begin
       case item.ItemType of
         mtLabel    : i := menuitemskin.LabelItem.SkinDim.HeightAsInt;
-        mtSeperator: i := menuitemskin.Seperator.SkinDim.HeightAsInt;
+        mtSeparator: i := menuitemskin.Separator.SkinDim.HeightAsInt;
         mtSubMenu  : i := menuitemskin.NormalSubItem.SkinDim.HeightAsInt;
         else         i := menuitemskin.NormalItem.SkinDim.HeightAsInt;
       end;
@@ -490,7 +490,7 @@ begin
     h := 8;
     case item.ItemType of
       mtLabel     : drawpart := menuitemskin.LabelItem;
-      mtSeperator : drawpart := menuitemskin.Seperator;
+      mtSeparator : drawpart := menuitemskin.Separator;
       mtSubMenu   : begin
                       case state of
                         msHover,msDown : drawpart := menuitemskin.HoverSubItem;

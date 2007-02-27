@@ -279,7 +279,7 @@ end;
 
 const
   ComplexCharacters = AlphaNumeric;
-  ComplexSeperators = [#1..#255] - ComplexCharacters;
+  ComplexSeparators = [#1..#255] - ComplexCharacters;
 
 function TComplexField.GetCount: Integer;
 var
@@ -291,7 +291,7 @@ begin
     P := PChar(FData);
     while P^ <> #0 do
     begin
-      while P^ in ComplexSeperators do
+      while P^ in ComplexSeparators do
         Inc(P);
       if P^ in ComplexCharacters then
         Inc(Result);
@@ -329,7 +329,7 @@ begin
   I := 0;
   while P^ <> #0 do
   begin
-    while P^ in ComplexSeperators do
+    while P^ in ComplexSeparators do
       Inc(P);
     StartPos := P;
     if P^ in ComplexCharacters then
@@ -359,7 +359,7 @@ begin
   I := -1;
   while P^ <> #0 do
   begin
-    while P^ in ComplexSeperators do
+    while P^ in ComplexSeparators do
       Inc(P);
     StartPos := P;
     while P^ in ComplexCharacters do
