@@ -236,13 +236,15 @@ type
   TSharpEMenuItemSkin = class
   private
     FSkinDim       : TSkinDim;
-    FSeparator     : TSkinPart;
+    FSeperator     : TSkinPart;
     FLabelItem     : TSkinPartEx;
     FNormalItem    : TSkinPartEx;
     FHoverItem     : TSkinPartEx;
     FDownItem      : TSkinPartEx;
     FNormalSubItem : TSkinPartEx;
     FHoverSubItem  : TSkinPartEx;
+    FCustom        : TSkinPart;
+    FCustomHover   : TSkinPart;
   public
     constructor Create(BmpList : TSkinBitmapList);
     destructor Destroy; override;
@@ -256,7 +258,9 @@ type
     property NormalSubItem : TSkinPartEx read FNormalSubItem;
     property HoverSubItem  : TSkinPartEx read FHoverSubItem;
     property LabelItem : TSkinPartEx read FLabelItem;
-    property Separator : TSkinPart read FSeparator;
+    property Seperator : TSkinPart read FSeperator;
+    property Custom    : TSkinPart read FCustom;
+    property CustomHover : TSkinPart read FCustomHover; 
   end;
 
   TSharpEButtonSkin = class
@@ -416,6 +420,7 @@ type
     FThNormal: TSkinPart;
     FThDown: TSkinPart;
     FThHover: TSkinPart;
+    FCustomBG: TSkinPart;
     FBar: TSkinPart;
     FBarBottom: TSkinPart;
     FFSMod: TSkinPoint;
@@ -448,6 +453,7 @@ type
     property ThHover: TSkinPart read FThHover write FThHover;
     property ThDim: TSkinDim read FThDim;
     property ThBDim: TSkinDim read FThBDim;
+    property CustomBG: TSkinPart read FCustomBG;
     property Bar: TSkinPart read FBar write FBar;
     property BarBottom : TSkinPart read FBarBottom write FBarBottom;
     property FSMod: TSkinPoint read FFSMod write FFSMod;
@@ -1033,62 +1039,72 @@ begin
   FSkinDim := TSkinDim.Create;
   FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w','32');
-  FSeparator := TSkinPart.Create(BmpList);
+  FSeperator := TSkinPart.Create(BmpList);
   FNormalItem := TSkinPartEx.Create(BmpList);
   FLabelItem  := TSkinPartEx.Create(BmpList);
   FHoverItem  := TSkinPartEx.Create(BmpList);
   FDownItem   := TSkinPartEx.Create(BmpList);
   FNormalSubItem := TSkinPartEx.Create(BmpList);
   FHoverSubItem := TSkinPartEx.Create(BmpList);
+  FCustom     := TSkinPartEx.Create(BmpList);
+  FCustomHover := TSkinPartEx.Create(BmpList);
 end;
 
 destructor TSharpEMenuItemSkin.Destroy;
 begin
   FSkinDim.Free;
-  FSeparator.Free;
+  FSeperator.Free;
   FNormalItem.Free;
   FLabelItem.Free;
   FHoverItem.Free;
   FDownItem.Free;
   FNormalSubItem.Free;
   FHoverSubItem.Free;
+  FCustom.Free;
+  FCustomHover.Free;
 end;
 
 procedure TSharpEMenuItemSkin.Clear;
 begin
   FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w','32');
-  FSeparator.Clear;
+  FSeperator.Clear;
   FNormalItem.Clear;
   FLabelItem.Clear;
   FHoverItem.Clear;
   FDownItem.Clear;
   FNormalSubItem.Clear;
   FHoverSubItem.Clear;
+  FCustom.Clear;
+  FCustomHover.Clear;
 end;
 
 procedure TSharpEMenuItemSkin.LoadFromStream(Stream : TStream);
 begin
   FSkinDim.LoadFromStream(Stream);
-  FSeparator.LoadFromStream(Stream);
+  FSeperator.LoadFromStream(Stream);
   FNormalItem.LoadFromStream(Stream);
   FHoverItem.LoadFromStream(Stream);
   FDownItem.LoadFromStream(Stream);
   FNormalSubItem.LoadFromStream(Stream);
   FHoverSubItem.LoadFromStream(Stream);
   FLabelItem.LoadFromStream(Stream);
+  FCustom.LoadFromStream(Stream);
+  FCustomHover.LoadFromStream(Stream);
 end;
 
 procedure TSharpEMenuItemSkin.SaveToStream(Stream : TStream);
 begin
   FSkinDim.SaveToStream(Stream);
-  FSeparator.SaveToStream(Stream);
+  FSeperator.SaveToStream(Stream);
   FNormalItem.SaveToStream(Stream);
   FHoverItem.SaveToStream(Stream);
   FDownItem.SaveToStream(Stream);
   FNormalSubItem.SaveToStream(Stream);
   FHoverSubItem.SaveToStream(Stream);
   FLabelItem.SaveToStream(Stream);
+  FCustom.SaveToStream(Stream);
+  FCustomHover.SaveToStream(Stream);
 end;
 
 procedure TSharpEMenuItemSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
@@ -1111,8 +1127,8 @@ begin
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
         FSkinDim.SetLocation(Value('location','0,0'));
-      if ItemNamed['separator'] <> nil then
-        FSeparator.LoadFromXML(ItemNamed['separator'], path, SkinText);
+      if ItemNamed['seperator'] <> nil then
+        FSeperator.LoadFromXML(ItemNamed['seperator'], path, SkinText);
       if ItemNamed['normal'] <> nil then
         FNormalItem.LoadFromXML(ItemNamed['normal'], path, SkinText, SkinIcon);
       if ItemNamed['down'] <> nil then
@@ -1125,6 +1141,10 @@ begin
         FHoverSubItem.LoadFromXML(ItemNamed['hoversub'], path, SkinText, SkinIcon);
       if ItemNamed['label'] <> nil then
         FLabelItem.LoadFromXml(ItemNamed['label'], path, SkinText, SkinIcon);
+      if ItemNamed['custom'] <> nil then
+        FCustom.LoadFromXML(ItemNamed['custom'], path, SkinText);
+      if ItemNamed['customhover'] <> nil then
+        FCustomHover.LoadFromXML(ItemNamed['customhover'], path, SkinText);
     end;
   finally
     SkinText.free;
@@ -2085,6 +2105,7 @@ begin
   FThNormal := TSkinPart.Create(BmpList);
   FThDown := TSkinPart.Create(BmpList);
   FThHover := TSkinPart.Create(BmpList);
+  FCustomBG := TSkinPart.Create(BmpList);
   FBar := TSkinPart.Create(BmpList);
   FBarBottom := TSkinPart.Create(BmpList);
   FFSMod := TSkinPoint.Create;
@@ -2106,6 +2127,7 @@ begin
   FThDown.Free;
   FThBDim.Free;
   FThHover.Free;
+  FCustomBG.Free;
   FBar.Free;
   FBarBottom.Free;
   FSkinDim.Free;
@@ -2140,7 +2162,9 @@ begin
      else StringSavetoStream('0', Stream);
 
   if FSpecialHideForm then StringSaveToStream('1', Stream)
-     else StringSaveToStream('0', Stream)
+     else StringSaveToStream('0', Stream);
+
+  FCustomBG.SaveToStream(Stream);
 end;
 
 procedure TSharpEBarSkin.LoadFromStream(Stream: TStream);
@@ -2151,7 +2175,7 @@ begin
     n := random(100000);
   until n <> FSeed;
   FSeed := n;
-
+  
   FSkinDim.LoadFromStream(Stream);
   FThDim.LoadFromStream(Stream);
   FThBDim.LoadFromStream(Stream);
@@ -2172,6 +2196,8 @@ begin
      else FEnableVFlip := False;
   if StringLoadFromStream(Stream) = '1' then FSpecialHideForm := True
      else FSpecialHideForm := False;
+
+  FCustomBG.LoadFromStream(Stream);
 end;
 
 procedure TSharpEBarSkin.CheckValid;
@@ -2215,6 +2241,7 @@ begin
   FBarBottom.Clear;
   FFSMod.Clear;
   FSBMod.Clear;
+  FCustomBG.Clear;
   FPTXoffset.Clear;
   FPTYoffset.Clear;
   FPBXoffset.Clear;
@@ -2290,6 +2317,8 @@ begin
         FEnablevflip := BoolValue('enablevflip', False);
       if ItemNamed['specialhideform'] <> nil then
         FSpecialHideForm := BoolValue('specialhideform', False);
+      if ItemNamed['custombg'] <> nil then
+         FCustomBG.LoadFromXML(ItemNamed['custombg'], path, nil);
     end;
   finally
   end;
