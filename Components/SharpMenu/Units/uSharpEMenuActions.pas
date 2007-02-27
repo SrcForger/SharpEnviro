@@ -33,7 +33,9 @@ unit uSharpEMenuActions;
 interface
 
 uses Windows,
+     Classes,
      Contnrs,
+     DateUtils,
      SysUtils,
      SharpApi,
      JclSysInfo,
@@ -46,14 +48,16 @@ type
   public
     constructor Create(pOwner : TObject); reintroduce;
     procedure OnLinkClick(pItem : TSharpEMenuItem; var CanClose : boolean);
-    procedure UpdateDynamicDirectory(var pDynList : TObjectList; pDir : String);
+    procedure UpdateDynamicDirectory(var pDynList : TObjectList; pDir,
+                                     pFilter : String; pSort,pMaxItems : integer);
     procedure UpdateDynamicDriveList(var pDynList : TObjectList);
   end;
 
 implementation
 
 uses uSharpEMenu,
-     uPropertyList;
+     uPropertyList,
+     JclFileUtils;
 
 constructor TSharpEMenuActions.Create(pOwner : TObject);
 begin
@@ -68,110 +72,182 @@ begin
   CanClose := True;
 end;
 
-procedure TSharpEMenuActions.UpdateDynamicDirectory(var pDynList : TObjectList; pDir : String);
+procedure TSharpEMenuActions.UpdateDynamicDirectory(var pDynList : TObjectList; pDir,
+          pFilter : String; pSort,pMaxItems : integer);
+
+  procedure InvertList(var SList : TStringList);
+  var
+    temp : TStringList;
+    n : integer;
+  begin
+    temp := TStringList.Create;
+    temp.Clear;
+    temp.Assign(SList);
+
+    SList.Clear;
+    for n := temp.Count - 1 downto 0 do
+        SList.Add(temp[n]);
+    temp.Free;
+  end;
+
 var
   pMenu : TSharpEMenu;
   submenu : TSharpEMenu;
-  n,i,k : integer;
+  n,i,k,h : integer;
   item,subitem : TSharpEMenuItem;
   sr : TSearchRec;
   found,subfound : boolean;
   s : String;
   Dir : String;
+  SList : TStringList;
+  svalue : String;
+  sname : String;
+  dt : TDateTime;
 begin
   pMenu := TSharpEMenu(FOwner);
   Dir := IncludeTrailingBackSlash(pDir);
 
-  if FindFirst(pDir + '*',faAnyFile,sr) = 0 then
+  if length(trim(pFilter)) = 0 then
+     pFilter := '*';
+
+
+  SList := TStringList.Create;
+  SList.Clear;
+
+  if FindFirst(pDir + pFilter,faAnyFile,sr) = 0 then
   repeat
     if (CompareText(sr.Name,'.') <> 0) and (CompareText(sr.Name,'..') <> 0) then
     begin
-      found := False;
-      // search for sub menu item with caption = sr.Name
-      for n := pDynList.Count - 1 downto 0  do
-      begin
-        item := TSharpEMenuItem(pDynList.Items[n]);
-        if (sr.Attr and faDirectory) > 0 then
-        begin
-           if item.Caption = sr.Name then
-           begin
-             found := true;
-             pDynList.Delete(n);
-             break;
+      if (sr.Attr and faDirectory) > 0 then svalue := '0'
+         else
+         begin
+           case pSort of
+             1: svalue := '1' + IntToStr(FileGetSize(Dir + sr.Name));
+             2: begin
+                  GetFileLastWrite(Dir + sr.Name,dt);
+                  svalue := '1' + IntToStr(DateTimeToUnix(dt));
+                 end;
+             else svalue := '1';
            end;
-        end
-        else
-        begin
-          s := sr.Name;
-          setlength(s,length(s) - length(ExtractFileExt(sr.Name)));
-          if item.PropList.GetString('Action') = Dir + sr.Name then
-          begin
-            pDynList.Delete(n);
-            found := true;
-            break;
-          end;
-        end;
-      end;
-      if (not found) then
+           if (sr.Attr and faHidden) > 0 then
+              svalue[1] := '2';
+         end;
+
+      // do not add Directories if sorting is enabled
+      if not((pSort > 0) and ((sr.Attr and faDirectory) > 0)) then
+          SList.Add(svalue + '=' + sr.Name);
+    end;
+  until (FindNext(sr) <> 0);
+  FindClose(sr);
+  SList.Sort;
+  if pSort > 0 then InvertList(SList);
+
+
+  pMaxItems := pMaxItems - 1;
+  if (pMaxItems <= 0) or (pMaxItems > SList.Count - 1) then
+     pMaxItems := SList.Count - 1;
+
+
+  for h := 0 to pMaxItems do
+  begin
+    svalue := SList.ValueFromIndex[h];
+    sname := SList.Names[h];
+
+    found := False;
+
+    // search for sub menu item with caption = svalue
+    for n := pDynList.Count - 1 downto 0  do
+    begin
+      item := TSharpEMenuItem(pDynList.Items[n]);
+
+      // Is it a Directory then compare the Caption to DirectoryName
+      if sname[1] = '0' then
       begin
-        // item not found, add it
-        if (sr.Attr and faDirectory) > 0 then
+        if item.Caption = svalue then
         begin
-          found := False;
-          for i := 0 to pMenu.Items.Count - 1 do
+          found := true;
+          pDynList.Delete(n);
+          break;
+        end;
+      end
+      else
+        // No Directory, there could be multiple files from different directories
+        // in the same menu, so compare the filetarget and not the caption
+        if item.PropList.GetString('Action') = Dir + svalue then
+        begin
+          pDynList.Delete(n);
+          found := true;
+          break;
+        end;
+    end;
+
+    if (found) then
+    begin
+      item.PropList.Add('SortData',sname+svalue);
+      item.PropList.Add('Sort',pSort);
+    end;
+
+    // item not found, add it
+    if (not found) then
+    begin
+      // Is it a Directory?
+      if sname[1] = '0' then
+      begin
+        found := False;
+        for i := 0 to pMenu.Items.Count - 1 do
+        begin
+          item := TSharpEMenuItem(pMenu.Items.Items[i]);
+          if (item.isDynamic) and (item.ItemType = mtSubMenu) then
           begin
-            item := TSharpEMenuItem(pMenu.Items.Items[i]);
-            if (item.isDynamic) and (item.ItemType = mtSubMenu) then
+            if (item.Caption = svalue) then
             begin
-              if (item.Caption = sr.Name) then
+              submenu := TSharpEMenu(item.SubMenu);
+              if submenu <> nil then
               begin
-                submenu := TSharpEMenu(item.SubMenu);
-                if submenu <> nil then
+                subfound := False;
+                for k := 0 to submenu.Items.count - 1 do
                 begin
-                  subfound := False;
-                  for k := 0 to submenu.Items.count - 1 do
+                  subitem := TSharpEMenuItem(submenu.Items.Items[k]);
+                  if (subitem.ItemType = mtDynamicDir) and (subitem.PropList.GetString('Action') = Dir + svalue + '\') then
                   begin
-                    subitem := TSharpEMenuItem(submenu.Items.Items[k]);
-                    if (subitem.ItemType = mtDynamicDir) and (subitem.PropList.GetString('Action') = Dir + sr.Name + '\') then
-                    begin
-                      subfound := True;
-                      break;
-                    end;
-                  end;
-                  if not subfound then
-                  begin
-                    submenu.AddDynamicDirectoryItem(Dir + sr.Name + '\',
-                                                    item.PropList.GetInt('MaxItems'),
-                                                    item.PropList.GetInt('Sort'),
-                                                    item.PropList.GetString('Filter'),
-                                                    False);
+                    subfound := True;
+                    break;
                   end;
                 end;
-                found := True;
-                break;
+                if not subfound then
+                begin
+                  submenu.AddDynamicDirectoryItem(Dir + svalue + '\',
+                                                  item.PropList.GetInt('MaxItems'),
+                                                  item.PropList.GetInt('Sort'),
+                                                  item.PropList.GetString('Filter'),
+                                                  False);
+                end;
               end;
+              found := True;
+              break;
             end;
           end;
-          if (not found) then
-          begin
-            item := TSharpEMenuItem(pMenu.AddSubMenuItem(sr.name,'shellicon',Dir + sr.Name + '\',true));
-            item.SubMenu := TSharpEMenu.Create(pMenu.SkinManager);
-            TSharpEMenu(item.SubMenu).AddDynamicDirectoryItem(Dir + sr.Name + '\',
-                                                              item.PropList.GetInt('MaxItems'),
-                                                              item.PropList.GetInt('Sort'),
-                                                              item.PropList.GetString('Filter'),
-                                                              False);
-          end;
-        end else
+        end;
+        if (not found) then
         begin
-          // do not add hidden files! (desktop.ini ...)
-          if not((sr.Attr and faHidden) > 0) then
+          item := TSharpEMenuItem(pMenu.AddSubMenuItem(svalue,'shellicon',Dir + svalue + '\',true));
+          item.SubMenu := TSharpEMenu.Create(pMenu.SkinManager);
+          TSharpEMenu(item.SubMenu).AddDynamicDirectoryItem(Dir + svalue + '\',
+                                                            item.PropList.GetInt('MaxItems'),
+                                                            item.PropList.GetInt('Sort'),
+                                                            item.PropList.GetString('Filter'),
+                                                            False);
+        end;
+      end else
+      begin
+        // It's a File, but do not add hidden files! (desktop.ini ...)
+        if not(sname[1] = '2') then
+        begin
+          s := svalue;
+          setlength(s,length(s) - length(ExtractFileExt(svalue)));
+          found := false;
+          for n := 0 to pMenu.Items.Count - 1 do
           begin
-            s := sr.Name;
-            setlength(s,length(s) - length(ExtractFileExt(sr.Name)));
-            found := false;
-            for n := 0 to pMenu.Items.Count - 1 do
-            begin
               item := TSharpEMenuItem(pMenu.Items.Items[n]);
               if (item.ItemType = mtLink) and (item.isDynamic) then
                  if (item.Caption = s) then
@@ -181,13 +257,15 @@ begin
                  end;
             end;
             if (not found) then
-               pMenu.AddLinkItem(s,Dir + sr.Name,'shellicon',true);
+               with TSharpEMenuItem(pMenu.AddLinkItem(s,Dir + svalue,'shellicon',true)) do
+               begin
+                 PropList.Add('SortData',sname+svalue);
+                 PropList.Add('Sort',pSort);
+               end;
           end;
         end;
       end;
     end;
-  until FindNext(sr) <> 0;
-  FindClose(sr);
 end;
 
 procedure TSharpEMenuActions.UpdateDynamicDriveList(var pDynList : TObjectList);

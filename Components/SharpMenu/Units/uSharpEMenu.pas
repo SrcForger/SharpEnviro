@@ -63,8 +63,8 @@ type
     destructor Destroy; override;
     procedure AddSeperatorItem(pDynamic : boolean);
     procedure AddLabelItem(pCaption : String; pDynamic : boolean);
-    procedure AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean); overload;
-    procedure AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean); overload;
+    function AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean) : TObject; overload;
+    function AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean) : TObject; overload;
     procedure AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String;  pDynamic : boolean);
     procedure AddDriveListItem(pDynamic : boolean);
     function  AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean) : TObject;
@@ -141,6 +141,7 @@ end;
 function DynSort(Item1 : Pointer; Item2 : Pointer) : integer;
 var
  I1,I2 : TSharpEMenuItem;
+ d1,d2 : string;
 begin
   I1 := TSharpEMenuItem(Item1);
   I2 := TSharpEMenuItem(Item2);
@@ -153,7 +154,14 @@ begin
      else if (I1.isDynamic) and (I2.isDynamic) and (I2.ItemType = mtSubMenu) and (I2.ItemType <> I1.ItemType) then
      result := 1
      else if (I1.isDynamic) and (I2.isDynamic) and (I1.ItemType = I2.ItemType) then
-     result := CompareText(I1.Caption,I2.Caption)
+     begin
+       if (I1.PropList.GetInt('Sort') > 0) and (I2.PropList.GetInt('Sort') > 0) then
+       begin
+         d1 := I1.PropList.GetString('SortData');
+         d2 := I2.PropList.GetString('SortData');
+         result := CompareText(d2,d1);
+       end else result := CompareText(I1.Caption,I2.Caption);
+     end
      else result := I1.ListIndex - I2.ListIndex;
 end;
 
@@ -180,7 +188,11 @@ begin
   begin
     item := TSharpEMenuItem(FItems.Items[n]);
     case item.ItemType of
-      mtDynamicDir : FMenuActions.UpdateDynamicDirectory(FDynList, item.PropList.GetString('Action'));
+      mtDynamicDir : FMenuActions.UpdateDynamicDirectory(FDynList,
+                                                         item.PropList.GetString('Action'),
+                                                         item.PropList.GetString('Filter'),
+                                                         item.PropList.GetInt('Sort'),
+                                                         item.PropList.GetInt('MaxItems'));
       mtDriveList : FMenuActions.UpdateDynamicDriveList(FDynList);
     end;
   end;
@@ -224,7 +236,7 @@ begin
   FItems.Add(Item);
 end;
 
-procedure TSharpEMenu.AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean);
+function TSharpEMenu.AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean) : TObject;
 var
   item : TSharpEMenuItem;
 begin
@@ -236,9 +248,10 @@ begin
   item.OnClick := FMenuActions.OnLinkClick;
   item.isDynamic := pDynamic;
   FItems.Add(Item);
+  result := item;
 end;
 
-procedure TSharpEMenu.AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean);
+function TSharpEMenu.AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean) : TObject;
 var
   item : TSharpEMenuItem;
 begin
@@ -251,6 +264,7 @@ begin
   item.OnClick := FMenuActions.OnLinkClick;
   item.isDynamic := pDynamic;
   FItems.Add(Item);
+  result := item;
 end;
 
 function TSharpEMenu.AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean) : TObject;
@@ -274,6 +288,8 @@ begin
   item := TSharpEMenuItem.Create(mtDynamicDir);
   item.Icon := nil;
   item.PropList.Add('Action',FMenuConsts.ParseString(pTarget));
+  item.PropList.Add('MaxItems',pMax);
+  item.PropList.Add('Sort',pSort);
   item.isVisible := False;
   item.isDynamic := pDynamic;
   FItems.Add(Item);
