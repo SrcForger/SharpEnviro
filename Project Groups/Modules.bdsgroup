@@ -20,13 +20,10 @@
       <Projects Name="CPUMonitor.dll">..\Plugins\Modules\CPU Monitor\CPUMonitor.bdsproj</Projects>
       <Projects Name="MediaController.dll">..\Plugins\Modules\MediaController\MediaController.bdsproj</Projects>
       <Projects Name="Notes.dll">..\Plugins\Modules\Notes\Notes.bdsproj</Projects>
-      <Projects Name="VWM.dll">..\Plugins\Modules\VWM\VWM.bdsproj</Projects>
-      <Projects Name="Google.dll">..\Plugins\Modules\Google\Google.bdsproj</Projects>
-      <Projects Name="Finder.dll">..\Plugins\Modules\Finder\Finder.bdsproj</Projects>
       <Projects Name="QuickScript.dll">..\Plugins\Modules\QuickScript\QuickScript.bdsproj</Projects>
       <Projects Name="BatteryMonitor.dll">..\Plugins\Modules\Battery Monitor\BatteryMonitor.bdsproj</Projects>
       <Projects Name="Weather.dll">..\Plugins\Modules\Weather\Weather.bdsproj</Projects>
-      <Projects Name="Targets">Button.dll Clock.dll iDrop.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll VolumeControl.dll CPUMonitor.dll MediaController.dll Notes.dll VWM.dll Google.dll Finder.dll QuickScript.dll BatteryMonitor.dll Weather.dll</Projects>
+      <Projects Name="Targets">Button.dll Clock.dll iDrop.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll VolumeControl.dll CPUMonitor.dll MediaController.dll Notes.dll QuickScript.dll BatteryMonitor.dll Weather.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
