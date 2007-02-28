@@ -54,6 +54,8 @@ type
     FMouseDownPos : TPoint;
     FMouseDown : boolean;
     FIconsMoving : boolean;
+
+    FOldItem : TObject; // Just a temp pointer
   public
     procedure RenderBackground;
     procedure RefreshLayers;
@@ -166,7 +168,13 @@ begin
               if item.HasChanged then
               begin
                 // Update the layer
-                FLinkRenderer.RenderTo(TBitmapLayer(item.Layer).Bitmap,item);
+                pLayer := TBitmapLayer(item.Layer);
+                if FManager.SelectionList.IndexOf(item) >= 0 then FLinkRenderer.RenderTo(pLayer.Bitmap,item,True)
+                   else FLinkRenderer.RenderTo(pLayer.Bitmap,item,False);
+                pLayer.Location := FloatRect(x*GridSize,
+                                             y*GridSize,
+                                             x*GridSize+pLayer.Bitmap.Width,
+                                             y*GridSize+pLayer.Bitmap.Height);
               end;
             end;
   end;
@@ -235,6 +243,25 @@ begin
                                        pY - FMouseDownPos.Y,
                                        pX - FMouseDownPos.X + FMovingLayer.Bitmap.Width,
                                        pY - FMouseDownPos.Y + FMovingLayer.Bitmap.Height);
+
+    // icons are moving over another icon, what which isn't moved - what to do?
+    if (item <> FOldItem) and (item <> nil) and (FManager.SelectionList.IndexOf(item) <0) then
+    begin
+      if (item.itemType = dtDirectory) then
+      begin
+        FImage.Cursor := crDrag;
+        FLinkRenderer.RenderTo(TBitmapLayer(item.Layer).Bitmap,item,True);
+        if FOldItem <> nil then
+           FLinkRenderer.RenderTo(TBitmapLayer(TSharpEDesktopItem(FOldItem).Layer).Bitmap,TSharpEDesktopItem(FOldItem),True);
+        FOldItem := item;
+      end else FImage.Cursor := crDefault;
+    end else FImage.Cursor := crDefault;
+
+    if (item <> FOldItem) and (FOldItem <> nil) then
+    begin
+      item := TSharpEDesktopItem(FOldItem);
+      FLinkRenderer.RenderTo(TBitmapLayer(item.Layer).Bitmap,item,False);
+    end;
   end;
 
 
@@ -295,7 +322,7 @@ begin
   end else
   begin
     FIconsMoving := True;
-    // render movign layer
+    // render moving layer
     with FManager.SelectionList do
     begin
       xmin := 0;
@@ -333,7 +360,27 @@ begin
 end;
 
 procedure TSharpEDesktopRenderer.PerformMouseUp(pX,pY : integer; Button : TMouseButton);
+type
+  TTempItem = record
+                item : TSharpEDesktopItem;
+                p    : TPoint;
+              end;  
+var
+  n : integer;
+  item : TSharpEDesktopItem;
+  ditem : TSharpEDesktop;
+  sx,sy,mx,my,nx,ny,x,y : integer;
+  p : TPoint;
+  olist : array of TTempItem;
 begin
+  if (FManager = nil) or (FImage = nil) then exit;
+  if (FManager.CurrentDesktop = nil) then exit;
+
+  ditem := FManager.CurrentDesktop;
+
+  x := pX div ditem.GridSize;
+  y := pY div ditem.GridSize;
+
   FMouseDown := False;
 
   if FSelectionLayer.Visible then
@@ -345,6 +392,42 @@ begin
   begin
     FIconsMoving := False;
     FMovingLayer.Visible := False;
+
+
+    sx := High(ditem.Grid);
+    sy := High(ditem.Grid);
+    mx := FMouseDownPos.X div ditem.GridSize;
+    my := FMouseDownPos.Y div ditem.GridSize;
+
+    setlength(olist,0);
+
+    for n := 0 to FManager.SelectionList.Count - 1 do
+    begin
+      setlength(olist,length(olist)+1);
+      item := TSharpEDesktopItem(FManager.SelectionList.Items[n]);
+      p := ditem.GetGridPoint(item);
+      olist[High(olist)].item := item;
+      olist[High(olist)].p := p;
+      ditem.RemoveFromGrid(item);
+      sx := min(sx,p.X);
+      sy := min(sy,p.Y);
+    end;
+
+    for n := 0 to High(olist) do
+    begin
+      item := olist[n].item;
+      p := olist[n].p;
+      nx := x + sx - p.X - sx + mx;
+      ny := y + sy - p.Y - sy + my;
+      nx := p.X + x - mx;
+      ny := p.Y + y - my;
+      ditem.RemoveFromGrid(item);
+      ditem.InserToNearestGrid(item,nx,ny);
+    end;
+
+    setlength(olist,0);
+    
+    RefreshLayers;
   end;
 end;
 

@@ -18,8 +18,8 @@ object SharpDeskMainWnd: TSharpDeskMainWnd
   object Background: TImage32
     Left = 0
     Top = 0
-    Width = 744
-    Height = 417
+    Width = 736
+    Height = 410
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft

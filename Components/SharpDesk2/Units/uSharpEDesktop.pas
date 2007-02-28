@@ -69,7 +69,6 @@ type
     function FindItemByFile(pFileName : String) : TSharpEDesktopItem;
     procedure InitGridArray;
     procedure ClearGridArray;
-    procedure InsertToGrid(pItem : TSharpEDesktopItem);
     procedure UpdateCustomDataFromGrid;
   public
     procedure AddDirectory(pDirectory : String);
@@ -77,6 +76,10 @@ type
     procedure SaveCustomData;
     function GetGridItem(x,y : integer) : TSharpEDesktopItem;
     function GetGridPoint(pItem : TSharpEDesktopItem) : TPoint;
+    function InserToNearestGrid(pItem : TSharpEDesktopItem; pX, pY : integeR) : boolean;
+    function InsertToGrid(pItem : TSharpEDesktopItem; pX, pY : integer) : boolean; overload;
+    function InsertToGrid(pItem : TSharpEDesktopItem) : boolean; overload;
+    function RemoveFromGrid(pItem : TSharpEDesktopItem) : boolean;
     function RefreshDirectories : boolean;
 
     constructor Create(pWidth,pHeight : integer); reintroduce;
@@ -98,7 +101,7 @@ begin
   FAddPoint := apTopLeft;
   FAddVert := True;
 
-  FGridSize := 64;
+  FGridSize := 96;
   FDimension.x := pWidth;
   FDimension.y := pHeight;
 
@@ -248,16 +251,83 @@ begin
       setlength(FGridArray[n],mx);
 end;
 
-procedure TSharpEDesktop.InsertToGrid(pItem : TSharpEDesktopItem);
+function TSharpEDesktop.RemoveFromGrid(pItem : TSharpEDesktopItem) : boolean;
+var
+  x,y : integer;
+begin
+  for y := 0 to High(FGridArray) do
+      for x := 0 to High(FGridArray[y]) do
+          if FGridArray[y][x] = pItem then
+          begin
+            FGridArray[y][x] := nil;
+            pItem.IsInGrid := False;
+            result := True;
+          end;
+  result := False;
+end;
+
+function TSharpEDesktop.InserToNearestGrid(pItem : TSharpEDesktopItem; pX, pY : integeR) : boolean;
+var
+  x,y : integer;
+  bx,by : integer;
+  r : real;
+  br : real;
+begin
+  if py > High(FGridArray) then py := High(FGridArray);
+  if px > High(FGridArray[0]) then px := High(FGridArray[0]);
+  if py < 0 then py := 0;
+  if px < 0 then px := 0;
+
+  if FGridArray[py][px] = nil then
+  begin
+    FGridArray[py][px] := pItem;
+    pItem.IsInGrid := True;
+    exit;
+  end;
+
+  bx := 0;
+  by := 0;
+  br := -1;
+
+  for y := 0 to High(FGridArray) do
+      for x := 0 to High(FGridArray[y]) do
+          if FGridArray[y][x] = nil then
+          begin
+            r := sqrt((x-pX)*(x-pX) + (y-pY)*(y-pY));
+            if (r < br) or (br < 0) then
+            begin
+              br := r;
+              bx := x;
+              by := y;
+            end;
+          end;
+
+  if br >= 0 then
+  begin
+    FGridArray[by][bx] := pItem;
+    pItem.IsInGrid := True;
+  end;
+end;
+
+function TSharpEDesktop.InsertToGrid(pItem : TSharpEDesktopItem) : boolean;
+begin
+  result := InsertToGrid(pItem,0,0);
+end;
+
+function TSharpEDesktop.InsertToGrid(pItem : TSharpEDesktopItem; pX, pY : integer) : boolean;
 
   function GridAssign(x,y : integer) : boolean;
   begin
-    if FGridArray[y,x] = nil then
-    begin
-      FGridArray[y,x] := pItem;
-      pItem.IsInGrid := True;
-      result := true
-    end else result := false;
+    if y <= High(FGridArray) then
+       if x <= High(FGridArray[0]) then
+       begin
+         if FGridArray[y,x] = nil then
+         begin
+           FGridArray[y,x] := pItem;
+           pItem.IsInGrid := True;
+           result := true
+         end else result := false;
+       end else result := false;
   end;
 
 var
@@ -267,60 +337,64 @@ begin
   mx := High(FGridArray[0]);
   my := High(FGridArray);
 
-  case FAddPoint of
-    apTopLeft:
-      if FAddVert then
-      begin
-        for x := 0 to mx do
-            for y := 0 to my do
-                if GridAssign(x,y) then exit;
-      end else
-      begin
-        for y := 0 to my do
-            for x := 0 to mx do
-                if GridAssign(x,y) then exit;
-      end;
-      
-    apTopRight:
-      if FAddVert then
-      begin
-        for x := mx downto 0 do
-            for y := 0 to my do
-                if GridAssign(x,y) then exit;
-      end else
-      begin
-        for y := 0 to my do
-            for x := mx downto 0 do
-                if GridAssign(x,y) then exit;
-      end;
+  try
+    case FAddPoint of
+      apTopLeft:
+        if FAddVert then
+        begin
+          for x := pX to mx do
+              for y := pY to my do
+                  if GridAssign(x,y) then exit;
+        end else
+        begin
+          for y := pY to my do
+              for x := pX to mx do
+                  if GridAssign(x,y) then exit;
+        end;
 
-    apBottomRight:
-      if FAddVert then
-      begin
-        for x := mx downto 0 do
-            for y := my downto 0 do
-                if GridAssign(x,y) then exit;
-      end else
-      begin
-        for y := my downto 0 do
-            for x := mx downto 0 do
-                if GridAssign(x,y) then exit;
-      end;
+      apTopRight:
+        if FAddVert then
+        begin
+          for x := mx downto pX do
+              for y := pY to my do
+                  if GridAssign(x,y) then exit;
+        end else
+        begin
+          for y := pY to my do
+              for x := mx downto pX do
+                  if GridAssign(x,y) then exit;
+        end;
 
-    apBottomLeft:
-      if FAddVert then
-      begin
-        for x := 0 to mx do
-            for y := my downto 0 do
-                if GridAssign(x,y) then exit;
-      end else
-      begin
-        for y := my downto 0 do
-            for x := 0 to mx do
-                if GridAssign(x,y) then exit;
-      end;
+      apBottomRight:
+        if FAddVert then
+        begin
+          for x := mx downto pX do
+              for y := my downto pY do
+                  if GridAssign(x,y) then exit;
+        end else
+        begin
+          for y := my downto pY do
+              for x := mx downto pY do
+                  if GridAssign(x,y) then exit;
+        end;
+
+      apBottomLeft:
+        if FAddVert then
+        begin
+          for x := pY to mx do
+              for y := my downto pY do
+                  if GridAssign(x,y) then exit;
+        end else
+        begin
+          for y := my downto pY do
+              for x := pX to mx do
+                  if GridAssign(x,y) then exit;
+        end;
+    end;
+  finally
+    result := True;
   end;
-  
+
   pItem.IsInGrid := False;
 end;
 
@@ -447,7 +521,10 @@ begin
         item := TSharpEDesktopItem.Create(newlist[i]);
         item.IsInGrid := True;
         FItems.Add(item);
-        FGridArray[ditem.Y,ditem.X] := item;
+        if ((ditem.Y <= High(FGridArray)) and (ditem.X <= High(FGridArray[0]))
+           and (ditem.Y > 0) and (ditem.X > 0)) then
+                FGridArray[ditem.Y,ditem.X] := item
+           else InserToNearestGrid(item,ditem.Y,ditem.X);
         newlist.Delete(i);
         result := True;
       end;

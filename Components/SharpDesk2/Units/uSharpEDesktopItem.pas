@@ -44,12 +44,12 @@ type
     FWorkDir    : String;
     FTarget     : String;
     FCaption    : String;
+    FIcon       : TBitmap32;
     FLastChange : TDateTime;
     FHasChanged : boolean;
     FType       : TSharpEDesktopItemTypes;
     FLayer      : TCustomLayer;
     FIsInGrid   : Boolean;
-    FIcon       : TBitmap32;
     procedure UpdateDirectory;
     procedure UpdateShellLink;
     procedure UpdateFile;
@@ -68,6 +68,7 @@ type
     property HasLayer : boolean read GetHasLayer;
     property Layer : TCustomLayer read FLayer write FLayer;
     property Icon : TBitmap32 read FIcon;
+    property ItemType : TSharpEDesktopItemTypes read FType;
   end;
 
 implementation
@@ -124,6 +125,12 @@ var
 begin
   ResolveLink(FFileName,link);
   FTarget  := link.Target;
+  if IsDirectory(FTarget) then
+  begin
+    FType := dtDirectory;
+    UpdateDirectory;
+    exit;
+  end else FType := dtShellLink;
   FWorkDir := link.WorkDir;
   FCaption := ExtractFileName(FFileName);
 end;
