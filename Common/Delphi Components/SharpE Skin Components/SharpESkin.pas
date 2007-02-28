@@ -416,7 +416,6 @@ type
     FThNormal: TSkinPart;
     FThDown: TSkinPart;
     FThHover: TSkinPart;
-    FCustomBG: TSkinPart;
     FBar: TSkinPart;
     FBarBottom: TSkinPart;
     FFSMod: TSkinPoint;
@@ -449,7 +448,6 @@ type
     property ThHover: TSkinPart read FThHover write FThHover;
     property ThDim: TSkinDim read FThDim;
     property ThBDim: TSkinDim read FThBDim;
-    property CustomBG: TSkinPart read FCustomBG;
     property Bar: TSkinPart read FBar write FBar;
     property BarBottom : TSkinPart read FBarBottom write FBarBottom;
     property FSMod: TSkinPoint read FFSMod write FFSMod;
@@ -2087,7 +2085,6 @@ begin
   FThNormal := TSkinPart.Create(BmpList);
   FThDown := TSkinPart.Create(BmpList);
   FThHover := TSkinPart.Create(BmpList);
-  FCustomBG := TSkinPart.Create(BmpList);
   FBar := TSkinPart.Create(BmpList);
   FBarBottom := TSkinPart.Create(BmpList);
   FFSMod := TSkinPoint.Create;
@@ -2109,7 +2106,6 @@ begin
   FThDown.Free;
   FThBDim.Free;
   FThHover.Free;
-  FCustomBG.Free;
   FBar.Free;
   FBarBottom.Free;
   FSkinDim.Free;
@@ -2145,8 +2141,6 @@ begin
 
   if FSpecialHideForm then StringSaveToStream('1', Stream)
      else StringSaveToStream('0', Stream);
-
-  FCustomBG.SaveToStream(Stream);
 end;
 
 procedure TSharpEBarSkin.LoadFromStream(Stream: TStream);
@@ -2178,8 +2172,6 @@ begin
      else FEnableVFlip := False;
   if StringLoadFromStream(Stream) = '1' then FSpecialHideForm := True
      else FSpecialHideForm := False;
-
-  FCustomBG.LoadFromStream(Stream);
 end;
 
 procedure TSharpEBarSkin.CheckValid;
@@ -2223,7 +2215,6 @@ begin
   FBarBottom.Clear;
   FFSMod.Clear;
   FSBMod.Clear;
-  FCustomBG.Clear;
   FPTXoffset.Clear;
   FPTYoffset.Clear;
   FPBXoffset.Clear;
@@ -2299,8 +2290,6 @@ begin
         FEnablevflip := BoolValue('enablevflip', False);
       if ItemNamed['specialhideform'] <> nil then
         FSpecialHideForm := BoolValue('specialhideform', False);
-      if ItemNamed['custombg'] <> nil then
-         FCustomBG.LoadFromXML(ItemNamed['custombg'], path, nil);
     end;
   finally
   end;
