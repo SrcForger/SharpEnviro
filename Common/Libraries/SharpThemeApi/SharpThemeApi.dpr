@@ -541,7 +541,7 @@ begin
   end;
 
   Theme.IconSet.Directory := Theme.IconSet.Directory + '\';
-  XML.Root.Clear;
+  XML := TJvSimpleXML.Create(nil);
   try
     try
       XML.LoadFromFile(Theme.IconSet.Directory + '\IconSet.xml');
