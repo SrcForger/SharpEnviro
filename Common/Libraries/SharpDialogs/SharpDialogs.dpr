@@ -86,8 +86,6 @@ var
   iconmenuresult : String;
   targetmenu  : TPopupMenu;
   iconmenu : TPopupMenu;
-  sharpeiconmenu : TPopupMenu;
-  sharpeiconmenuresult : integer;
 
 {$R Glyphs.res}
 {$R *.res}
@@ -574,12 +572,9 @@ end;
 function IconDialog(pTarget : String; IconItems : TIconMenuSelectItems; PopupPoint : TPoint) : PChar;
 var
   menuItem : TMenuItem;
-  SList : TStringList;
   n : integer;
-  i : integer;
   mindex : integer;
-  sr : TSearchRec;
-  s,dir : String;
+  dir : String;
   iconmenuclick : TIconMenuClickHandler;
   iml : TPngImageList;
   subiml : TPngImageList;
@@ -591,7 +586,7 @@ var
 begin
   Iconmenuresult := '';
   Iconmenu := TPopupMenu.Create(nil);
-//  Iconmenuclick := TTargetDialogClickHandler.Create;
+  Iconmenuclick := TIconMenuClickHandler.Create;
   iml := TPngImageList.Create(nil);
   iml.Width := 16;
   iml.Height := 16;
@@ -600,7 +595,6 @@ begin
   subiml.Height := 40;
   Iconmenu.Images := iml;
 
-  SList := TStringList.Create;
   try
     // Build Image Lists
     Bmp := TBitmap.Create;
@@ -630,9 +624,9 @@ begin
         subiml.AddIcon(wIcon);
         wIcon.ReleaseHandle;
         DestroyIcon(FileInfo.hIcon);
-        ImageList_Destroy(ImageListHandle);
-        wIcon.Free;
       end else subiml.Add(bmp,bmp);
+      ImageList_Destroy(ImageListHandle);
+      wIcon.Free;
     end;
 
     Iconmenu.Items.Clear;
@@ -675,9 +669,9 @@ begin
       Iconmenu.Items.Add(menuItem);
       mindex := mindex + 1;
 
-      if not SharpThemeApi.Initialized then
-         SharpThemeApi.InitializeTheme;
-      SharpThemeApi.LoadTheme(False,[tpIconSet]);
+  //    if not SharpThemeApi.Initialized then
+   //      SharpThemeApi.InitializeTheme;
+   //   SharpThemeApi.LoadTheme(False,[tpIconSet]);
       wIcon := TIcon.Create;
       Dir := GetIconSetDirectory;
       for n := 0 to GetIconSetIconsCount - 1 do
@@ -724,11 +718,10 @@ begin
     end;
 
   finally
-    FreeAndNil(SList);
     FreeAndNil(IconMenu);
     FreeAndNil(subiml);
     FreeAndNil(iml);
-//    FreeAndNil(Iconmenuclick);
+    FreeAndNil(Iconmenuclick);
   end;
   result := PChar(Iconmenuresult);
 end;
