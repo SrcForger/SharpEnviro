@@ -73,6 +73,7 @@ type
     FCustomSkin : TSharpEButtonSkin;
     FPrecacheText : TSkinText;
     FPrecacheBmp  : TBitmap32;
+    FGlyphSpacing : integer;
     FPrecacheCaption : String;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
@@ -87,6 +88,7 @@ type
     procedure SetCaption(Value: string);
     procedure SetDefault(Value: Boolean);
     procedure SetGlyphResize(Value: Boolean);
+    procedure SetGlyphSpacing(Value : Integer);
     function GetGlyphSize : TPoint;
   protected
     procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
@@ -137,6 +139,7 @@ type
     property Default: Boolean read FDefault write SetDefault default False;
     property AutoPosition: Boolean read FAutoPosition write SetAutoPosition;
     property GlyphResize: Boolean read FGlyphResize write SetGlyphResize;
+    property GlyphSpacing: integer read FGlyphSpacing write FGlyphSpacing;
    { Published declarations }
   end;
 
@@ -629,10 +632,10 @@ begin
         end;
       end;
       if not Enabled then glp.MasterAlpha := FDisabledAlpha;
-      glp.DrawTo(bmp,GlyphPos.X,GlyphPos.Y);
+      glp.DrawTo(bmp,GlyphPos.X - FGlyphSpacing div 2,GlyphPos.Y);
       glp.Free;
       if length(trim(Caption))>0 then
-         SkinText.RenderTo(bmp,TextPos.X,TextPos.Y,Caption,Scheme,
+         SkinText.RenderTo(bmp,TextPos.X + FGlyphSpacing div 2,TextPos.Y,Caption,Scheme,
                            FPrecacheText,FPrecacheBmp,FPrecacheCaption);
     end;
     Bmp.DrawTo(FSkin);
@@ -641,11 +644,24 @@ begin
     DrawDefaultSkin(bmp, DefaultSharpEScheme);
 end;
 
+procedure TSharpEButton.SetGlyphSpacing(Value : integer);
+begin
+  if Value <> FGlyphSpacing then
+  begin
+    FGlyphSpacing := Value;
+    UpdateSkin;
+    Invalidate;
+  end;
+end;
+
 procedure TSharpEButton.SetCaption(Value: string);
 begin
-  FCaption := Value;
-
-  UpdateSkin;
+  if CompareText(FCaption,Value) <> 0 then
+  begin
+    FCaption := Value;
+    UpdateSkin;
+    Invalidate;
+  end;
 end;
 
 procedure TSharpEButton.Resize;
