@@ -903,7 +903,7 @@ function GetIconSetIconByTag(pTag: PChar): TSharpEIcon;
 var
   n: integer;
 begin
-  for n := 0 to GetIconSetIconsCount do
+  for n := 0 to GetIconSetIconsCount - 1 do
     if Theme.IconSet.Icons[n].Tag = pTag then
     begin
       result.FileName := Theme.IconSet.Icons[n].FileName;
@@ -920,7 +920,7 @@ var
   n: integer;
 begin
   result := False;
-  for n := 0 to GetIconSetIconsCount do
+  for n := 0 to GetIconSetIconsCount - 1 do
     if Theme.IconSet.Icons[n].Tag = pTag then
     begin
       result := True;

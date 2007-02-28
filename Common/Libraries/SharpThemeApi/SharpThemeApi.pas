@@ -102,7 +102,7 @@ function GetIconSetWebsite : PChar; external 'SharpThemeApi.dll' name 'GetIconSe
 function GetIconSetDirectory : PChar; external 'SharpThemeApi.dll' name 'GetIconSetDirectory';
 function GetIconSetIconsCount : integer; external 'SharpThemeApi.dll' name 'GetIconSetIconsCount';
 function GetIconSetIcon(pIndex : integer) : TSharpEIcon; overload; external 'SharpThemeApi.dll' name 'GetIconSetIconByIndex';
-function GetIconSetIcon(pTag : PChar) : TSharpEIcon; overload; external 'SharpThemeApi.dll' name'GetIconSetByTag';
+function GetIconSetIcon(pTag : PChar) : TSharpEIcon; overload; external 'SharpThemeApi.dll' name'GetIconSetIconByTag';
 function IsIconInIconSet(pTag : PChar) : boolean; external 'SharpThemeApi.dll' name 'IsIconInIconSet';
 function ValidateIcon(pFileName : PChar) : PChar; external 'SharpThemeApi.dll' name 'ValidateIcon';
 
