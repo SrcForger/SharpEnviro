@@ -37,6 +37,7 @@ uses
   Graphics,
   Dialogs,
   SysUtils,
+  CommCtrl,
   Classes,
   Forms,
   Types,
@@ -47,7 +48,10 @@ uses
   ShellApi,
   ShlObj,
   SharpApi,
-  ExPopupList in 'ExPopupList.pas';
+  ExPopupList in 'ExPopupList.pas',
+  SharpIconUtils in '..\..\Units\SharpIconUtils\SharpIconUtils.pas',
+  GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas',
+  SharpThemeApi in '..\SharpThemeApi\SharpThemeApi.pas';
 
 type
   TTargetDialogSelectItem = (stiFile,stiRecentFiles,stiMostUsedFiles,stiDrive,
@@ -63,14 +67,27 @@ type
                                 procedure OnActionClick(Sender : TObject);
                               end;
 
+  TIconMenuSelectItem = (smiShellIcon,smiCustomIcon,smiSharpEIcon);
+  TIconMenuSelectItems = Set of TIconMenuSelectItem;
+  TIconMenuClickHandler = class
+                            procedure OnShellIconClick(Sender : TObject);
+                            procedure OnCustomIconClick(Sender : TObject);
+                            procedure OnSharpEIconClick(Sender : TObject);
+                          end;
+
 
 const
+  SMI_ALL_ICONS = [smiShellIcon,smiCustomIcon,smiSharpEIcon];
   STI_ALL_TARGETS = [stiFile,stiRecentFiles,stiMostUsedFiles,stiDrive,
                      stiDirectory,stiShellFolders,stiScript,stiAction];
 
 var
   targetmenuresult : String;
+  iconmenuresult : String;
   targetmenu  : TPopupMenu;
+  iconmenu : TPopupMenu;
+  sharpeiconmenu : TPopupMenu;
+  sharpeiconmenuresult : integer;
 
 {$R Glyphs.res}
 {$R *.res}
@@ -150,6 +167,39 @@ begin
     GetVolumeInformation(PChar(Chr(DriveByte + Ord('A')) + ':\'), Buf, SizeOf(Buf), nil, NotUsed, VolFlags, nil, 0);
     Result := Buf;
   except
+  end;
+end;
+
+procedure TIconMenuClickHandler.OnShellIconClick(Sender : TObject);
+begin
+  try
+    iconmenuresult := 'shell:icon';
+  finally
+    nrevent := False;
+  end;
+end;
+
+procedure TIconMenuClickHandler.OnCustomIconClick(Sender : TObject);
+var
+  ofdialog : TOpenDialog;
+begin
+  iconmenuresult := '';
+  ofdialog := TOpenDialog.Create(nil);
+  try
+    ofdialog.Filter := 'Images (*.jpg,*.png)|*.jpg;*.png';
+    if ofdialog.Execute then iconmenuresult := ofdialog.FileName;
+  finally
+    ofdialog.Free;
+    nrevent := False;
+  end;
+end;
+
+procedure TIconMenuClickHandler.OnSharpEIconClick(Sender : TObject);
+begin
+  try
+    iconmenuresult := TMenuItem(Sender).Hint;
+  finally
+    nrevent := False;
   end;
 end;
 
@@ -236,11 +286,13 @@ procedure TTargetDialogClickHandler.OnFileOpenClick(Sender : TObject);
 var
   ofdialog : TOpenDialog;
 begin
+  targetmenuresult := '';
+  ofdialog := TOpenDialog.Create(nil);
   try
-    ofdialog := TOpenDialog.Create(nil);
     ofdialog.Filter := 'All Files (*.*)|*.*';
     if ofdialog.Execute then targetmenuresult := ofdialog.FileName;
   finally
+    ofdialog.Free;
     nrevent := False;
   end;
 end;
@@ -514,13 +566,177 @@ begin
     FreeAndNil(SList);
     FreeAndNil(TargetMenu);
     FreeAndNil(targetmenuclick);
+    FreeAndNil(iml);
   end;
   result := PChar(targetmenuresult);
 end;
 
+function IconDialog(pTarget : String; IconItems : TIconMenuSelectItems; PopupPoint : TPoint) : PChar;
+var
+  menuItem : TMenuItem;
+  SList : TStringList;
+  n : integer;
+  i : integer;
+  mindex : integer;
+  sr : TSearchRec;
+  s,dir : String;
+  iconmenuclick : TIconMenuClickHandler;
+  iml : TPngImageList;
+  subiml : TPngImageList;
+  bmp : TBitmap;
+  FileInfo : SHFILEINFO;
+  ImageListHandle : THandle;
+  WIcon : TIcon;
+  icon : TSharpEIcon;
+begin
+  Iconmenuresult := '';
+  Iconmenu := TPopupMenu.Create(nil);
+//  Iconmenuclick := TTargetDialogClickHandler.Create;
+  iml := TPngImageList.Create(nil);
+  iml.Width := 16;
+  iml.Height := 16;
+  subiml := TPngImageList.Create(nil);
+  subiml.Width := 40;
+  subiml.Height := 40;
+  Iconmenu.Images := iml;
+
+  SList := TStringList.Create;
+  try
+    // Build Image Lists
+    Bmp := TBitmap.Create;
+    Bmp.Width := 16;
+    Bmp.Height := 16;
+
+    iml.Add(bmp,bmp);
+
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'cube');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'open');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'graph');
+
+    iml.Add(bmp,bmp);
+
+    Bmp.Width := 40;
+    Bmp.Height := 40;
+    subiml.Add(bmp,bmp);
+
+    if smiShellIcon in IconItems then
+    begin
+      wIcon := TIcon.Create;
+      ImageListHandle := SHGetFileInfo(pChar(pTarget), 0, FileInfo, sizeof( SHFILEINFO ),
+                                      SHGFI_ICON or SHGFI_SHELLICONSIZE);
+      if FileInfo.hicon <> 0 then
+      begin
+        wIcon.Handle := FileInfo.hicon;
+        subiml.AddIcon(wIcon);
+        wIcon.ReleaseHandle;
+        DestroyIcon(FileInfo.hIcon);
+        ImageList_Destroy(ImageListHandle);
+        wIcon.Free;
+      end else subiml.Add(bmp,bmp);
+    end;
+
+    Iconmenu.Items.Clear;
+    mindex := -1;
+
+    // two Dummy items! do not remove!
+    menuItem := TMenuItem.Create(Iconmenu);
+    Iconmenu.Items.Add(menuItem);
+    menuItem.Visible := False;
+    mindex := mindex + 1;
+
+    menuItem := TMenuItem.Create(Iconmenu);
+    menuItem.Visible := False;
+    Iconmenu.Items.Add(menuItem);
+    mindex := mindex + 1;
+
+    if smiShellIcon in IconItems then
+    begin
+      // Files Menu
+      menuItem := TMenuItem.Create(Iconmenu);
+      menuItem.Caption := 'Shell Icon';
+      menuItem.ImageIndex := 3;
+      menuItem.SubMenuImages := subiml;
+      Iconmenu.Items.Add(menuItem);
+      mindex := mindex + 1;
+
+      menuItem := TMenuItem.Create(Iconmenu);
+      menuItem.Caption := 'Shell Icon';
+      menuItem.OnClick := iconmenuclick.OnShellIconClick;
+      menuItem.ImageIndex := 1;
+      Iconmenu.Items.Items[mindex].Add(menuItem);
+    end;
+
+    if smiSharpEIcon in IconItems then
+    begin
+      menuItem := TMenuItem.Create(Iconmenu);
+      menuItem.Caption := 'SharpE Icon';
+      menuItem.ImageIndex := 1;
+      menuItem.SubMenuImages := subiml;
+      Iconmenu.Items.Add(menuItem);
+      mindex := mindex + 1;
+
+      if not SharpThemeApi.Initialized then
+         SharpThemeApi.InitializeTheme;
+      SharpThemeApi.LoadTheme(False,[tpIconSet]);
+      wIcon := TIcon.Create;
+      Dir := GetIconSetDirectory;
+      for n := 0 to GetIconSetIconsCount - 1 do
+      begin
+        icon := GetIconSetIcon(n);
+
+        if FileExists(Dir + Icon.FileName) then
+        begin
+          wIcon.LoadFromFile(Dir + Icon.FileName);
+          subiml.AddIcon(wIcon);
+
+          menuItem := TMenuItem.Create(Iconmenu);
+          menuItem.Caption := icon.Tag;
+          menuItem.Hint := Icon.Tag;
+          menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
+          menuItem.ImageIndex := subiml.Count - 1;
+          if n mod 10  = 0 then menuItem.Break := mbBarBreak;
+          Iconmenu.Items.Items[mindex].Add(menuItem);
+        end;
+      end;
+      wIcon.Free;
+    end;
+
+    if smiCustomIcon in IconItems then
+    begin
+      menuItem := TMenuItem.Create(Iconmenu);
+      menuItem.Caption := 'Custom Icon...';
+      menuItem.ImageIndex := 2;
+      menuItem.OnClick := iconmenuclick.OnCustomIconClick;
+      menuItem.SubMenuImages := subiml;
+      Iconmenu.Items.Add(menuItem);
+      mindex := mindex + 1;
+    end;
+
+    subiml.Add(bmp,bmp);
+    Bmp.Free;
+
+    Iconmenu.Popup(PopupPoint.X,PopupPoint.Y);
+
+    // freeze until OnClick event is done;
+    while nrevent do
+    begin
+      Application.ProcessMessages;
+    end;
+
+  finally
+    FreeAndNil(SList);
+    FreeAndNil(IconMenu);
+    FreeAndNil(subiml);
+    FreeAndNil(iml);
+//    FreeAndNil(Iconmenuclick);
+  end;
+  result := PChar(Iconmenuresult);
+end;
+
 
 Exports
-  TargetDialog;
+  TargetDialog,
+  IconDialog;
 
 
 

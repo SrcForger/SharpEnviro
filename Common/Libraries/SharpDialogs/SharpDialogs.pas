@@ -39,12 +39,17 @@ type
                              stiDirectory,stiShellFolders,stiScript,stiAction);
   TTargetDialogSelectItems = Set of TTargetDialogSelectItem;
 
+  TIconMenuSelectItem = (smiShellIcon,smiCustomIcon,smiSharpEIcon);
+  TIconMenuSelectItems = Set of TIconMenuSelectItem;
+
 
 const
+  SMI_ALL_ICONS = [smiShellIcon,smiCustomIcon,smiSharpEIcon];
   STI_ALL_TARGETS = [stiFile,stiRecentFiles,stiMostUsedFiles,stiDrive,
                      stiDirectory,stiShellFolders,stiScript,stiAction];
 
 function TargetDialog(TargetItems : TTargetDialogSelectItems; PopupPoint : TPoint) : PChar; external 'SharpDialogs.dll';
+function IconDialog(pTarget : String; IconItems : TIconMenuSelectItems; PopupPoint : TPoint) : PChar; external 'SharpDialogs.dll';
 
 implementation
 
