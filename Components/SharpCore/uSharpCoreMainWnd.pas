@@ -94,6 +94,9 @@ type
     Online1: TMenuItem;
     Sourceforge1: TMenuItem;
     PngImageList1: TPngImageList;
+    N3: TMenuItem;
+    ShutdownSharpEcloseallcomponents1: TMenuItem;
+    procedure ShutdownSharpEcloseallcomponents1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure ExitSharpCore1Click(Sender: TObject);
@@ -134,6 +137,7 @@ type
       WM_SHARPEUPDATEACTIONS;
     procedure BeforeShutDown(var Msg: TMessage); message wm_queryendsession;
     procedure ReloadServiceSettings(var Msg: TMessage); message WM_SHARPCENTERMESSAGE;
+    procedure SharpTerminate(var Msg: TMessage); message WM_SHARPTERMINATE;
   public
 
   end;
@@ -162,6 +166,13 @@ uses
   uSharpCoreSettings;
 
 {$R *.dfm}
+
+procedure TSharpCoreMainWnd.SharpTerminate(var Msg: TMessage);
+begin
+  FreeAllBeforeExit;
+
+  Application.Terminate;
+end;
 
 procedure TSharpCoreMainWnd.CloseCore(var Msg: TMessage);
 begin
@@ -531,6 +542,12 @@ end;
 procedure TSharpCoreMainWnd.FormDestroy(Sender: TObject);
 begin
   trayicon.Free;
+end;
+
+procedure TSharpCoreMainWnd.ShutdownSharpEcloseallcomponents1Click(
+  Sender: TObject);
+begin
+  SharpApi.SharpEBroadCast(WM_SHARPTERMINATE,0,0);
 end;
 
 initialization
