@@ -224,6 +224,7 @@ begin
     SettingsForm.cb_icon.Checked := sShowIcon;
     SettingsForm.cb_icon.OnClick(SettingsForm.cb_icon);
     SettingsForm.cb_labels.OnClick(SettingsForm.cb_labels);
+    SettingsForm.cb_specialskin.Checked := sSpecialSkin;
     SettingsForm.UpdateIcon;
     SettingsForm.sMenu := sMenu;
 
