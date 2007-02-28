@@ -186,8 +186,15 @@ begin
 
   btn.Left := 2;
 
-  if (sShowLabel) and (FDCaption) then btn.Caption := sCaption
-     else btn.Caption := '';
+  if (sShowLabel) and (FDCaption) then
+  begin
+    btn.GlyphSpacing := 4;
+    btn.Caption := sCaption
+  end else
+  begin
+    btn.GlyphSpacing := 0;
+    btn.Caption := '';
+  end;
 
   if btn.CustomSkin <> nil then
   begin

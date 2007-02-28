@@ -97,7 +97,7 @@ object SettingsForm: TSettingsForm
     HandleColor = clBtnFace
     BorderColor = clBtnShadow
     Max = 200
-    Min = 25
+    Min = 20
     ShowArrows = False
     ShowHandleGrip = True
     Style = rbsMac
