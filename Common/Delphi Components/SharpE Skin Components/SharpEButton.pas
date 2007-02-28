@@ -139,7 +139,7 @@ type
     property Default: Boolean read FDefault write SetDefault default False;
     property AutoPosition: Boolean read FAutoPosition write SetAutoPosition;
     property GlyphResize: Boolean read FGlyphResize write SetGlyphResize;
-    property GlyphSpacing: integer read FGlyphSpacing write FGlyphSpacing;
+    property GlyphSpacing: integer read FGlyphSpacing write SetGlyphSpacing;
    { Published declarations }
   end;
 
