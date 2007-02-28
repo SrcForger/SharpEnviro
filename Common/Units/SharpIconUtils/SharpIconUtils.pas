@@ -6,6 +6,7 @@ uses Windows,
      Graphics,
      SysUtils,
      ShellApi,
+     SharpThemeApi,
      CommCtrl,
      GR32,
      GR32_PNG,
@@ -22,6 +23,7 @@ function extrShellIcon(Bmp : TBitmap32; FileName : String) : THandle;
 function GetShellIconHandle(FileName : String) : THandle;
 function LoadIco(Bmp : TBitmap32; IconFile : string; Size : integer) : boolean;
 function LoadPng(Bmp : TBitmap32; IconFile:string) : boolean;
+function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32) : boolean;
 
 implementation
 
@@ -175,6 +177,31 @@ begin
 
   GR32_PNG.LoadBitmap32FromPNG(Bmp,IconFile,b);
   result := true;
+end;
+
+function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32) : boolean;
+var
+  SEIcon : TSharpEIcon;
+  Ext : String;
+begin
+  if CompareText(Icon,'shell:icon') = 0 then
+     result := (extrShellIcon(Bmp,Target) <> 0)
+  else if SharpThemeApi.IsIconInIconSet(PChar(Icon)) then
+  begin
+    SEIcon := SharpThemeApi.GetIconSetIcon(PChar(Icon));
+    result := LoadIco(Bmp,SharpThemeApi.GetIconSetDirectory + SEIcon.FileName,0);
+  end else
+  begin
+    if FileExists(Icon) then
+    begin
+      Ext := ExtractFileExt(Icon);
+      if CompareText(Ext,'.png') = 0 then
+         result := LoadPng(Bmp,Icon)
+      else if CompareText(Ext,'.ico') = 0 then
+         result := LoadIco(Bmp,Icon,0)
+      else result := False;
+    end else result := False;
+  end;
 end;
 
 end.
