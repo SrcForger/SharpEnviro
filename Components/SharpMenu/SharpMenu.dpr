@@ -161,7 +161,10 @@ begin
   SystemSkinLoadThread.Free;
 
   wnd.InitMenu(mn,true);
-  wnd.Left := Pos.X;
+  i := Pos.X;
+  if (i + wnd.Width > (wnd.Monitor.Left + wnd.Monitor.Width)) then
+     i := (wnd.Monitor.Left + wnd.Monitor.Width) - wnd.Width;
+  wnd.Left := i;
 
   // Check position
   i := Pos.Y;
