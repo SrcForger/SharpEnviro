@@ -33,8 +33,9 @@ unit SettingsWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, GR32_RangeBars, SharpApi, SharpDialogs, XPMan;
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Types,
+  Forms, Dialogs, StdCtrls, ComCtrls, GR32_RangeBars, SharpApi, SharpDialogs,
+  GR32_Image, SharpIconUtils, GR32, XPMan;
 
 type
   TSettingsForm = class(TForm)
@@ -50,6 +51,14 @@ type
     btn_open: TButton;
     XPManifest1: TXPManifest;
     cb_specialskin: TCheckBox;
+    lb_icon: TLabel;
+    cb_icon: TCheckBox;
+    img_icon: TImage32;
+    edit_icon: TEdit;
+    btn_selecticon: TButton;
+    procedure cb_iconClick(Sender: TObject);
+    procedure cb_labelsClick(Sender: TObject);
+    procedure btn_selecticonClick(Sender: TObject);
     procedure btn_openClick(Sender: TObject);
     procedure tb_sizeChange(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -58,12 +67,30 @@ type
     { Private-Deklarationen }
   public
     ActionStr : String;
+    procedure UpdateIcon;
   end;
 
 
 implementation
 
 {$R *.dfm}
+
+procedure TSettingsForm.UpdateIcon;
+var
+  Bmp : TBitmap32;
+begin
+  Bmp := TBitmap32.Create;
+  try
+    Bmp.DrawMode := dmBlend;
+    Bmp.CombineMode := cmMerge;
+    img_icon.Bitmap.SetSize(img_icon.Width,img_icon.Height);
+    img_icon.Bitmap.Clear(color32(self.Color));
+    if IconStringToIcon(edit_icon.Text,edit_action.Text,Bmp) then
+       Bmp.DrawTo(img_icon.Bitmap,Rect(0,0,img_icon.Bitmap.Width,img_icon.Bitmap.Height));
+  finally
+    Bmp.Free;
+  end;
+end;
 
 procedure TSettingsForm.Button1Click(Sender: TObject);
 begin
@@ -87,7 +114,38 @@ var
 begin
   s := SharpDialogs.TargetDialog(STI_ALL_TARGETS,
                                  ClientToScreen(point(btn_open.Left,btn_open.Top)));
-  if length(trim(s))>0 then edit_action.Text := s;
+  if length(trim(s))>0 then
+  begin
+    edit_action.Text := s;
+    UpdateIcon;
+  end;
+end;
+
+procedure TSettingsForm.btn_selecticonClick(Sender: TObject);
+var
+  s : string;
+begin
+  s := SharpDialogs.IconDialog(edit_action.Text,
+                               SMI_ALL_ICONS,
+                               ClientToScreen(point(btn_selecticon.Left,btn_selecticon.Top)));
+  if length(trim(s))>0 then
+  begin
+    edit_icon.Text := s;
+    UpdateIcon;
+  end;
+end;
+
+procedure TSettingsForm.cb_labelsClick(Sender: TObject);
+begin
+  edit_caption.Enabled := cb_labels.Checked; 
+end;
+
+procedure TSettingsForm.cb_iconClick(Sender: TObject);
+begin
+  edit_icon.Enabled := cb_icon.Checked;
+  btn_selecticon.Enabled := cb_icon.Checked;
+  lb_icon.Enabled := cb_icon.Checked;
+  img_icon.Enabled := cb_icon.Checked;
 end;
 
 end.

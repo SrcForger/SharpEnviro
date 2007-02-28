@@ -18,8 +18,8 @@ object MainForm: TMainForm
   object Background: TImage32
     Left = 0
     Top = 0
-    Width = 285
-    Height = 166
+    Width = 277
+    Height = 159
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -27,14 +27,14 @@ object MainForm: TMainForm
     Scale = 1.000000000000000000
     ScaleMode = smNormal
     TabOrder = 0
-    object Button: TSharpEButton
+    object btn: TSharpEButton
       Left = 8
       Top = 0
       Width = 105
       Height = 20
       SkinManager = SharpESkinManager1
       AutoSize = True
-      OnMouseUp = ButtonMouseUp
+      OnMouseUp = btnMouseUp
       Glyph32.DrawMode = dmBlend
       Glyph32.CombineMode = cmMerge
       Glyph32.OuterColor = -16777216
@@ -44,7 +44,8 @@ object MainForm: TMainForm
       DisabledAlpha = 100
       Caption = 'Button'
       AutoPosition = True
-      GlyphResize = False
+      GlyphResize = True
+      GlyphSpacing = 4
     end
   end
   object MenuPopup: TPopupMenu

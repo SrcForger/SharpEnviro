@@ -45,7 +45,8 @@ uses
   SharpESkinManager,
   SharpEButton,
   SharpECustomSkinSettings,
-  SharpEBitmapList;
+  SharpEBitmapList,
+  SharpIconUtils;
 
 
 type
@@ -53,11 +54,11 @@ type
     Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
-    Button: TSharpEButton;
+    btn: TSharpEButton;
     SharpESkinManager1: TSharpESkinManager;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure ButtonMouseUp(Sender: TObject; Button: TMouseButton;
+    procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure Settings1Click(Sender: TObject);
   protected
@@ -67,10 +68,13 @@ type
     sCaption     : String;
     FDCaption    : boolean;
     sActionStr   : String;
+    sIcon        : String;
+    sShowIcon    : boolean; 
     sSpecialSkin : boolean;
     FCustomSettings : TSharpECustomSkinSettings;
     FCustomBmpList  : TSkinBitmapList;
     ModuleSize  : TModuleSize;
+    procedure UpdateIcon;
   public
     ModuleID : integer;
     BarWnd : hWnd;
@@ -86,6 +90,16 @@ implementation
 uses SettingsWnd;
 
 {$R *.dfm}
+
+procedure TMainForm.UpdateIcon;
+begin
+  if sShowIcon then
+  begin
+    if not IconStringToIcon(sIcon,sActionStr,btn.Glyph32) then
+       btn.Glyph32.SetSize(0,0)
+  end else btn.Glyph32.SetSize(0,0);
+  btn.Repaint;
+end;
 
 procedure TMainForm.UpdateCustomSkin;
 var
@@ -108,10 +122,10 @@ begin
                  // found custom skin!
                  FDCaption := Item[n].Items.BoolValue('DisplayCaption',True);
                  FCustomBmpList.Clear;
-                 if Button.CustomSkin = nil then
-                    Button.CustomSkin := TSharpEButtonSkin.Create(FCustomBmpList)
-                    else Button.CustomSkin.Clear;
-                 Button.CustomSkin.LoadFromXML(Item[n].Items.ItemNamed['skin'].Items.ItemNamed['button'],FCustomSettings.Path);
+                 if btn.CustomSkin = nil then
+                    btn.CustomSkin := TSharpEButtonSkin.Create(FCustomBmpList)
+                    else btn.CustomSkin.Clear;
+                 btn.CustomSkin.LoadFromXML(Item[n].Items.ItemNamed['skin'].Items.ItemNamed['button'],FCustomSettings.Path);
                  exit;
                end;
           end;
@@ -124,10 +138,10 @@ begin
   FDCaption := True;
   FCustomBmpList.Clear;
   // nothing loaded - remove custom skin
-  if Button.CustomSkin <> nil then
+  if btn.CustomSkin <> nil then
   begin
-    Button.CustomSkin.Free;
-    Button.CustomSkin := nil;
+    btn.CustomSkin.Free;
+    btn.CustomSkin := nil;
   end;
 end;
 
@@ -139,8 +153,10 @@ begin
   sShowLabel   := True;
   sCaption     := 'Menu';
   sActionStr   := '!ShowMenu';
-  sSpecialSkin := True;
+  sSpecialSkin := False;
   FDCaption    := True;
+  sIcon        := 'icon.mycomputer';
+  sShowIcon    := True; 
 
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
   if item <> nil then with item.Items do
@@ -149,16 +165,19 @@ begin
     sShowLabel   := BoolValue('ShowLabel',True);
     sCaption     := Value('Caption','SharpE');
     sActionStr   := Value('ActionStr','!ShowMenu');
-    sSpecialSkin := BoolValue('SpecialSkin',True);
+    sSpecialSkin := BoolValue('SpecialSkin',False);
+    sShowIcon    := BoolValue('ShowIcon',sShowIcon);
+    sIcon        := Value('Icon',sIcon); 
   end;
 
   UpdateCustomSkin;
+  UpdateIcon;
 end;
 
 procedure TMainForm.SetWidth(new : integer);
 begin
   Width := Max(new,1);
-  Button.Width := max(1,Width - 4);
+  btn.Width := max(1,Width - 4);
 
   Background.Bitmap.BeginUpdate;
   Background.Bitmap.SetSize(Width,Height);
@@ -174,15 +193,22 @@ begin
   self.Caption := sCaption;
   if sWidth<20 then sWidth := 20;
 
-  Button.Left := 2;
+  btn.Left := 2;
 
-  if (sShowLabel) and (FDCaption) then Button.Caption := sCaption
-     else Button.Caption := '';
+  if (sShowLabel) and (FDCaption) then
+  begin
+    btn.GlyphSpacing := 4;
+    btn.Caption := sCaption
+  end else
+  begin
+    btn.GlyphSpacing := 0;
+    btn.Caption := '';
+  end;
 
-  if Button.CustomSkin <> nil then
+  if btn.CustomSkin <> nil then
   begin
     try
-      i := strtoint(Button.CustomSkin.SkinDim.Width);
+      i := strtoint(btn.CustomSkin.SkinDim.Width);
       NewWidth := i + 4;
     except
       newWidth := sWidth + 8;
@@ -213,6 +239,11 @@ begin
     SettingsForm.cb_specialskin.Checked := sSpecialSkin;
     SettingsForm.ActionStr := sActionStr;
     SettingsForm.edit_action.Text := sActionStr;
+    SettingsForm.edit_icon.Text := sIcon;
+    SettingsForm.cb_icon.Checked := sShowIcon;
+    SettingsForm.cb_icon.OnClick(SettingsForm.cb_icon);
+    SettingsForm.cb_labels.OnClick(SettingsForm.cb_labels);
+    SettingsForm.UpdateIcon;
 
     if SettingsForm.ShowModal = mrOk then
     begin
@@ -222,6 +253,8 @@ begin
       sSpecialSkin := SettingsForm.cb_specialskin.Checked;
       sActionStr  := SettingsForm.ActionStr;
       sSpecialSkin := SettingsForm.cb_specialskin.Checked;
+      sShowIcon := SettingsForm.cb_icon.Checked;
+      sIcon := SettingsForm.edit_icon.Text;
 
       item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
       if item <> nil then with item.Items do
@@ -232,7 +265,10 @@ begin
         Add('Caption',sCaption);
         Add('ActionStr',sActionStr);
         Add('SpecialSkin',sSpecialSkin);
+        Add('ShowIcon',sShowIcon);
+        Add('Icon',sIcon);
       end;
+      UpdateIcon;
       uSharpBarAPI.SaveXMLFile(BarWnd);
     end;
     UpdateCustomSkin;
@@ -243,7 +279,7 @@ begin
   end;
 end;
 
-procedure TMainForm.ButtonMouseUp(Sender: TObject; Button: TMouseButton;
+procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbLeft then

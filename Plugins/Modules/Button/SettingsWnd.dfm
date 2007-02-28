@@ -3,8 +3,8 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Button Module Settings'
-  ClientHeight = 218
-  ClientWidth = 242
+  ClientHeight = 290
+  ClientWidth = 235
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,14 +17,14 @@ object SettingsForm: TSettingsForm
   TextHeight = 13
   object Label4: TLabel
     Left = 8
-    Top = 88
+    Top = 168
     Width = 58
     Height = 13
     Caption = 'Button Size:'
   end
   object lb_barsize: TLabel
     Left = 72
-    Top = 88
+    Top = 168
     Width = 33
     Height = 14
     AutoSize = False
@@ -38,10 +38,17 @@ object SettingsForm: TSettingsForm
   end
   object Label1: TLabel
     Left = 8
-    Top = 128
+    Top = 208
     Width = 54
     Height = 13
     Caption = 'Click Action'
+  end
+  object lb_icon: TLabel
+    Left = 48
+    Top = 88
+    Width = 40
+    Height = 13
+    Caption = 'Location'
   end
   object cb_labels: TCheckBox
     Left = 8
@@ -50,10 +57,11 @@ object SettingsForm: TSettingsForm
     Height = 17
     Caption = 'Show Caption'
     TabOrder = 0
+    OnClick = cb_labelsClick
   end
   object Button1: TButton
-    Left = 80
-    Top = 184
+    Left = 72
+    Top = 256
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -61,8 +69,8 @@ object SettingsForm: TSettingsForm
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 160
-    Top = 184
+    Left = 152
+    Top = 256
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -79,7 +87,7 @@ object SettingsForm: TSettingsForm
   end
   object tb_size: TGaugeBar
     Left = 8
-    Top = 104
+    Top = 184
     Width = 217
     Height = 13
     Color = clWindow
@@ -88,7 +96,7 @@ object SettingsForm: TSettingsForm
     HandleColor = clBtnFace
     BorderColor = clBtnShadow
     Max = 200
-    Min = 25
+    Min = 20
     ShowArrows = False
     ShowHandleGrip = True
     Style = rbsMac
@@ -97,7 +105,7 @@ object SettingsForm: TSettingsForm
   end
   object edit_action: TEdit
     Left = 8
-    Top = 144
+    Top = 224
     Width = 185
     Height = 21
     TabOrder = 5
@@ -105,7 +113,7 @@ object SettingsForm: TSettingsForm
   end
   object btn_open: TButton
     Left = 204
-    Top = 144
+    Top = 224
     Width = 22
     Height = 22
     Caption = '...'
@@ -114,11 +122,48 @@ object SettingsForm: TSettingsForm
   end
   object cb_specialskin: TCheckBox
     Left = 8
-    Top = 62
+    Top = 142
     Width = 185
     Height = 17
     Caption = 'Use Special Skins (if supported)'
     TabOrder = 7
+  end
+  object cb_icon: TCheckBox
+    Left = 8
+    Top = 64
+    Width = 97
+    Height = 17
+    Caption = 'Show Icon'
+    TabOrder = 8
+    OnClick = cb_iconClick
+  end
+  object img_icon: TImage32
+    Left = 8
+    Top = 90
+    Width = 32
+    Height = 32
+    Bitmap.ResamplerClassName = 'TNearestResampler'
+    BitmapAlign = baTopLeft
+    Scale = 1.000000000000000000
+    ScaleMode = smNormal
+    TabOrder = 9
+  end
+  object edit_icon: TEdit
+    Left = 48
+    Top = 104
+    Width = 145
+    Height = 21
+    ReadOnly = True
+    TabOrder = 10
+  end
+  object btn_selecticon: TButton
+    Left = 200
+    Top = 102
+    Width = 25
+    Height = 22
+    Caption = '...'
+    TabOrder = 11
+    OnClick = btn_selecticonClick
   end
   object XPManifest1: TXPManifest
     Left = 144
