@@ -24,7 +24,8 @@
       <Projects Name="BatteryMonitor.dll">..\Plugins\Modules\Battery Monitor\BatteryMonitor.bdsproj</Projects>
       <Projects Name="Weather.dll">..\Plugins\Modules\Weather\Weather.bdsproj</Projects>
       <Projects Name="Menu.dll">..\Plugins\Modules\Menu\Menu.bdsproj</Projects>
-      <Projects Name="Targets">Button.dll Clock.dll iDrop.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll VolumeControl.dll CPUMonitor.dll MediaController.dll Notes.dll QuickScript.dll BatteryMonitor.dll Weather.dll Menu.dll</Projects>
+      <Projects Name="ButtonBar.dll">..\Plugins\Modules\ButtonBar\ButtonBar.bdsproj</Projects>
+      <Projects Name="Targets">Button.dll Clock.dll iDrop.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll VolumeControl.dll CPUMonitor.dll MediaController.dll Notes.dll QuickScript.dll BatteryMonitor.dll Weather.dll Menu.dll ButtonBar.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
