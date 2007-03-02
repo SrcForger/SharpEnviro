@@ -8,7 +8,7 @@ uses
   uSharpCenterHelperMethods in 'uSharpCenterHelperMethods.pas',
   uSharpCenterHistoryManager in 'uSharpCenterHistoryManager.pas',
   uSharpCenterFavManager in 'uSharpCenterFavManager.pas',
-  uSharpCenterManager2 in 'uSharpCenterManager2.pas';
+  uSharpCenterManager in 'uSharpCenterManager.pas';
 
 {$R *.res}
 

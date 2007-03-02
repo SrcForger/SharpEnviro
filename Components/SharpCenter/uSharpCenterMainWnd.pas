@@ -59,7 +59,7 @@ uses
   Tabs,
   JvOutlookBar,
   SharpEListBox, SharpESkinManager, uSharpCenterPluginTabList, SharpThemeApi,
-  uSharpCenterDllMethods, uSharpCenterManager2, JvExStdCtrls, JvHtControls,
+  uSharpCenterDllMethods, uSharpCenterManager, JvExStdCtrls, JvHtControls,
   ToolWin, SharpERoundPanel, JvExComCtrls, JvToolBar, XPMan, uSharpETabList,
   GR32_Image, uVistaFuncs, JvLabel, JvgWizardHeader, JvPageList, SharpEListBoxEx,
   PngBitBtn;
