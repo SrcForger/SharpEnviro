@@ -36,7 +36,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Forms,
   Dialogs, SharpESkinManager, Menus, StdCtrls, JvSimpleXML, SharpApi, ShellHook,
   GR32, uSharpEModuleManager, DateUtils, PngImageList, SharpEBar, Jpeg, SharpThemeApi,
-  SharpEBaseControls, ImgList, Controls, ExtCtrls, uSkinManagerThreads;
+  SharpEBaseControls, ImgList, Controls, ExtCtrls, uSkinManagerThreads,
+  uSystemFuncs, Types;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -148,6 +149,10 @@ type
     procedure WMUnregisterShellHook(var msg : TMessage); message WM_UNREGISTERSHELLHOOK;
     procedure WMShellHook(var msg : TMessage); message WM_SHELLHOOK;
 
+    // SharpE Actions
+    procedure WMUpdateBangs(var Msg : TMessage); message WM_SHARPEUPDATEACTIONS;
+    procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
+
     //Modules (uSharpBarAPI.pas)
     procedure WMLockBarWindow(var msg : TMessage); message WM_LOCKBARWINDOW;
     procedure WMUnlockBarWindow(var msg : TMessage); message WM_UNLOCKBARWINDOW;
@@ -245,6 +250,21 @@ end;
 // ************************
 // Window Message handlers
 // ************************
+
+// SharpE Actions
+procedure TSharpBarMainForm.WMUpdateBangs(var Msg : TMessage);
+begin
+   ModuleManager.BroadcastPluginMessage('WM_SHARPEUPDATEACTIONS');
+
+   SharpApi.RegisterAction(PChar('!FocusBar ('+inttostr(FBarID)+')'),Handle,1);
+end;
+
+procedure TSharpBarMainForm.WMSharpEBang(var Msg : TMessage);
+begin
+  case msg.LParam of
+    1: ForceForeGroundWindow(Handle);
+  end;
+end;
 
 // SharpE Terminate Message support
 procedure TSharpBarMainForm.WMSharpTerminate(var msg : TMessage);
