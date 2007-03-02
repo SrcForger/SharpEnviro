@@ -1,7 +1,7 @@
 {
 Source Name: uSharpCenterDllMethods
 Description: Plugin Interface for the SharpCenter Settings
-Copyright (C) lee@sharpe-shell.org
+Copyright (C) Pixol - pixol@sharpe-shell.org
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -50,7 +50,7 @@ type
     OpenEdit: function(AOwner:Hwnd; AEditMode:TSCE_EDITMODE):Hwnd;
     CloseEdit: function(AOwner: Hwnd; AEditMode:TSCE_EDITMODE; ASave:Boolean): boolean;
 
-    ClickBtn: procedure (AButtonID: Integer; AButton: TPngSpeedButton; AText: String);
+    ClickBtn: procedure (AButtonID: Integer; AText: String);
     ClickTab: procedure (ATab: TPluginTabItem);
     AddTabs: procedure(var ATabs:TPluginTabItemList);
 
@@ -69,12 +69,12 @@ type
   PSetting = ^TSetting;
 
   // functions to use for loading Plugins
-function LoadSetting(filename: Pchar): TSetting;
-function UnloadSetting(plugin: PSetting): hresult;
+function LoadPlugin(filename: Pchar): TSetting;
+function UnloadPlugin(plugin: PSetting): hresult;
 
 implementation
 
-function UnloadSetting(plugin: PSetting): hresult;
+function UnloadPlugin(plugin: PSetting): hresult;
 begin
   result := 0;
   try
@@ -109,7 +109,7 @@ begin
   end;
 end;
 
-function LoadSetting(filename: Pchar): TSetting;
+function LoadPlugin(filename: Pchar): TSetting;
 begin
   try
     result.filename := filename;

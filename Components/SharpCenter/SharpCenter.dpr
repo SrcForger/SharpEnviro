@@ -4,9 +4,11 @@ uses
   Forms,
   Windows,
   uSharpCenterMainWnd in 'uSharpCenterMainWnd.pas' {SharpCenterWnd},
-  uSharpCenterManager in 'uSharpCenterManager.pas',
   uSharpCenterDllMethods in 'uSharpCenterDllMethods.pas',
-  uSharpCenterHelperMethods in 'uSharpCenterHelperMethods.pas';
+  uSharpCenterHelperMethods in 'uSharpCenterHelperMethods.pas',
+  uSharpCenterHistoryManager in 'uSharpCenterHistoryManager.pas',
+  uSharpCenterFavManager in 'uSharpCenterFavManager.pas',
+  uSharpCenterManager2 in 'uSharpCenterManager2.pas';
 
 {$R *.res}
 
