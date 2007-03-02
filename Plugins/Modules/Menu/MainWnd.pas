@@ -75,6 +75,8 @@ type
     FCustomBmpList  : TSkinBitmapList;
     ModuleSize  : TModuleSize;
     procedure UpdateIcon;
+    procedure WMUpdateBangs(var Msg : TMessage); message WM_SHARPEUPDATEACTIONS;
+    procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
     ModuleID : integer;
     BarWnd : hWnd;
@@ -90,6 +92,18 @@ implementation
 uses SettingsWnd;
 
 {$R *.dfm}
+
+procedure TMainForm.WMUpdateBangs(var Msg : TMessage);
+begin
+  SharpApi.RegisterActionEx(PChar('!OpenMenu: '+sMenu),'Modules',self.Handle,1);
+end;
+
+procedure TMainForm.WMSharpEBang(var Msg : TMessage);
+begin
+  case msg.LParam of
+    1: btn.OnMouseUp(btn,mbLeft,[],0,0);
+  end;
+end;
 
 procedure TMainForm.UpdateIcon;
 begin
@@ -211,8 +225,6 @@ begin
   ModuleSize.Priority := 0;
   self.Tag := NewWidth;
   self.Hint := inttostr(NewWidth);
-//    self.Tag := PInteger(PModuleSize(@ModuleSize));
-//    self.Tag := @PInteger(ModuleSize);
   if (BroadCast) and (newWidth <> Width) then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
 end;
 
