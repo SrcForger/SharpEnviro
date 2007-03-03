@@ -175,6 +175,8 @@ begin
     sSpecialSkin := BoolValue('SpecialSkin',sSpecialSkin);
   end;
 
+  SharpApi.RegisterActionEx(PChar('!OpenMenu: '+sMenu),'Modules',self.Handle,1);
+
   UpdateCustomSkin;
   UpdateIcon;
 end;
@@ -253,7 +255,11 @@ begin
       sCaption := SettingsForm.Edit_caption.Text;
       sWidth := SettingsForm.tb_size.Position;
       sSpecialSkin := SettingsForm.cb_specialskin.Checked;
+
+      SharpApi.UnRegisterAction(PChar('!OpenMenu: '+sMenu));
       sMenu  := SettingsForm.sMenu;
+      SharpApi.RegisterActionEx(PChar('!OpenMenu: '+sMenu),'Modules',self.Handle,1);
+
       sShowIcon := SettingsForm.cb_icon.Checked;
       sIcon := SettingsForm.edit_icon.Text;
       sSpecialSkin := SettingsForm.cb_specialskin.Checked;
@@ -311,6 +317,8 @@ begin
   FCustomSettings.Free;
   FCustomBmpList.Clear;
   FCustomBmpList.Free;
+
+  SharpApi.UnRegisterAction(PChar('!OpenMenu: '+sMenu));
 end;
 
 end.
