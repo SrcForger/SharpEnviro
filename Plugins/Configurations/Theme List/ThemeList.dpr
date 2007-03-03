@@ -1,7 +1,7 @@
-{
+﻿{
 Source Name: ThemeList
 Description: Theme List Config Dll
-Copyright (C) Martin Kr�mer (MartinKraemer@gmx.net)
+Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
 
 3rd Party Libraries used: JCL, JVCL
 Common: SharpApi
@@ -29,21 +29,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 library ThemeList;
 uses
-  SysUtils,
   Controls,
   Classes,
   Windows,
   Forms,
   Dialogs,
+  JvSimpleXml,
   PngSpeedButton,
-  uConfigListWnd in 'uConfigListWnd.pas' {frmConfigListWnd},
+  uVistaFuncs,
+  SysUtils,
+  uThemeListWnd in 'uThemeListWnd.pas' {frmThemeList},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   uSEListboxPainter in '..\..\..\Common\Units\SEListboxPainter\uSEListboxPainter.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  uSharpCenterSectionList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterSectionList.pas',
-  uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas';
+  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
+  uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
+  uThemeListEditWnd in 'uThemeListEditWnd.pas' {frmEditItem},
+  uThemeListManager in 'uThemeListManager.pas';
 
 {$E .dll}
 
@@ -51,60 +55,201 @@ uses
 
 function Open(const APluginID: Pchar; owner: hwnd): hwnd;
 begin
-  if frmConfigListWnd = nil then frmConfigListWnd := TfrmConfigListWnd.Create(nil);
+  if frmThemeList = nil then frmThemeList := TfrmThemeList.Create(nil);
 
-  frmConfigListWnd.ParentWindow := owner;
-  frmConfigListWnd.Left := 2;
-  frmConfigListWnd.Top := 2;
-  frmConfigListWnd.BorderStyle := bsNone;
-  frmConfigListWnd.Show;
-  result := frmConfigListWnd.Handle;
+  uVistaFuncs.SetVistaFonts(frmThemeList);
+  frmThemeList.ParentWindow := owner;
+  frmThemeList.Left := 2;
+  frmThemeList.Top := 2;
+  frmThemeList.BorderStyle := bsNone;
+  frmThemeList.Show;
+  result := frmThemeList.Handle;
 end;
 
 function Close(owner: hwnd; SaveSettings: Boolean): boolean;
 begin
   result := True;
   try
-    frmConfigListWnd.Close;
-    frmConfigListWnd.Free;
-    frmConfigListWnd := nil;
+    if SaveSettings then
+      frmThemeList.ThemeList.Save;
+
+    frmThemeList.Close;
+    frmThemeList.Free;
+    frmThemeList := nil;
+
+    if frmEditItem <> nil then begin
+      frmEditItem.Close;
+      frmEditItem.Free;
+      frmEditItem := nil;
+    end;
+
   except
     result := False;
   end;
 end;
 
-procedure Help;
+function OpenEdit(AOwner: hwnd; AEditMode:TSCE_EDITMODE): hwnd;
 begin
+  result := HR_NORECIEVERWINDOW;
+  if frmEditItem = nil then frmEditItem := TfrmEditItem.Create(nil);
+  uVistaFuncs.SetVistaFonts(frmEditItem);
+
+  frmEditItem.ParentWindow := AOwner;
+  frmEditItem.Left := 0;
+  frmEditItem.Top := 0;
+  frmEditItem.BorderStyle := bsNone;
+  frmEditItem.Show;
+  frmThemeList.EditMode := AEditMode;
+
+  //force
+  frmEditItem.SetFocus;
+
+  if frmThemeList.UpdateUI then begin
+    result := frmEditItem.Handle;
+  end else
+    FreeAndNil(FrmEditItem);
+
 end;
 
-procedure GetDisplayName(const APluginID: Pchar; var ADisplayName: PChar);
+function CloseEdit(AOwner: hwnd; AEditMode:TSCE_EDITMODE; SaveSettings: Boolean): boolean;
 begin
-  ADisplayName := PChar('Themes');
+  Result := True;
+
+  // First validate
+  if SaveSettings then
+    if Not(frmEditItem.ValidateWindow(AEditMode)) then begin
+      Result := False;
+      Exit;
+    end else
+       frmEditItem.ClearValidation;
+
+  // If Validation ok then continue
+  if SaveSettings then begin
+    frmThemeList.SaveUi;
+    SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
+  end;
+
+  if frmEditItem <> nil then begin
+      frmEditItem.Close;
+      frmEditItem.Free;
+      frmEditItem := nil;
+  end;
+
+  if frmThemeList <> nil then begin
+    frmThemeList.lbThemeList.Enabled := True;
+    frmThemeList.BuildThemeList;
+  end;
 end;
 
-procedure BtnAdd(var AButton:TPngSpeedButton);
+procedure SetDisplayText(const APluginID: Pchar; var ADisplayText: PChar);
 begin
-//  frmConfigListWnd.AddScheme(nil);
+  ADisplayText := PChar('Themes');
 end;
 
-procedure BtnEdit(var AButton:TPngSpeedButton);
+procedure SetStatusText(var AStatusText: PChar);
+var
+  sr: TSearchRec;
+  dir : String;
+  n: Integer;
 begin
-  if frmConfigListWnd <> nil then frmConfigListWnd.EditTheme
+  dir := SharpApi.GetSharpeUserSettingsPath + 'Themes\';
+  n := 0;
+
+  if FindFirst(dir+'*.*', faDirectory, sr) = 0 then
+  begin
+    repeat
+        if FileExists(dir + sr.Name + '\Theme.xml') then
+          inc(n);
+    until FindNext(sr) <> 0;
+    FindClose(sr);
+  end;
+
+  AStatusText := Pchar(IntToStr(n));
 end;
 
-procedure BtnDelete(var AButton:TPngSpeedButton);
+procedure ClickBtn(AButtonID: Integer; AButton:TPngSpeedButton; AText:String);
+var
+  id, newid:Integer;
+  tmp: TThemeListItem;
 begin
-//  frmConfigListWnd.DeleteScheme;
+  Case AButtonID of
+      SCB_DELETE: begin
+        id := frmThemeList.lbThemeList.ItemIndex;
+
+        if id <> -1 then begin
+          tmp := TThemeListItem(frmThemeList.lbThemeList.Item[id].Data);
+          tmp.Deleted := True;
+          frmThemeList.lbThemeList.DeleteSelected;
+
+          if id > (frmThemeList.ThemeList.Count-2) then begin
+            if id-1 >= 0 then
+               newID := id-1 else
+               newid := 0;
+          end else
+            newid := id;
+
+          if frmThemeList.lbThemeList.Count <> 0 then
+            frmThemeList.lbThemeList.ItemIndex := newId;
+
+          SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
+        end;
+      end;
+      SCB_IMPORT: begin
+      end;
+      SCB_CONFIGURE: begin
+        frmThemeList.ConfigureItem;
+      end;
+  end;
 end;
+
+function SetBtnState(AButtonID: Integer): Boolean;
+begin
+  Result := False;
+
+  Case AButtonID of
+    SCB_IMPORT: Result := False;
+    SCB_EXPORT: Result := False;
+    SCB_DELETE: Begin
+      if frmThemeList.lbThemeList.ItemIndex <> -1 then
+        Result := True else
+        Result := False;
+    end;
+    SCB_CONFIGURE: Result := True;
+  end;
+end;
+
+procedure GetCenterScheme(var ABackground: TColor;
+      var AItemColor: TColor; var AItemSelectedColor: TColor);
+begin
+  if frmEditItem <> nil then begin
+    FrmEditItem.Color := ABackground;
+  end;
+
+  if frmThemeList <> nil then begin
+    frmThemeList.lbThemeList.Colors.ItemColor := AItemColor;
+    frmThemeList.lbThemeList.Colors.ItemColorSelected := AItemSelectedColor;
+    frmThemeList.lbThemeList.Colors.BorderColor := AItemSelectedColor;
+    frmThemeList.lbThemeList.Colors.BorderColorSelected := AItemSelectedColor;
+  end;
+end;
+
+procedure AddTabs(var ATabs:TPluginTabItemList);
+begin
+  ATabs.Add('Themes',nil,'',IntToStr(frmThemeList.lbThemeList.Count));
+end;
+
 
 exports
   Open,
   Close,
-  Help,
-
-//  BtnAdd,
-  BtnEdit;
-//  BtnDelete;
+  OpenEdit,
+  CloseEdit,
+  SetDisplayText,
+  SetStatusText,
+  SetBtnState,
+  GetCenterScheme,
+  AddTabs,
+  ClickBtn;
 
 end.
 
