@@ -757,6 +757,11 @@ begin
   if ATabID = integer(tidDelete) then begin
     if (@ActivePlugin.ClickBtn <> nil) then
       ActivePlugin.ClickBtn(SCB_DELETE,'');
+
+      LoadPluginTabs;
+      if Assigned(FOnAddPluginTabs) then
+        FOnAddPluginTabs(Self);
+
       exit;
   end;
 

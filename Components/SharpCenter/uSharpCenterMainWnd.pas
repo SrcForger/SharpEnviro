@@ -39,7 +39,6 @@ uses
   Dialogs,
   ComCtrls,
   ExtCtrls,
-  CategoryButtons,
   Menus,
   StdCtrls,
   SharpApi,
@@ -50,18 +49,13 @@ uses
   PngImageList,
   JvExControls,
   JvComponent,
-  JvAnimatedImage,
-  JvGradient,
-  JclGraphUtils,
-  JclGraphics,
   JclFileUtils,
   jvSimpleXml,
   Tabs,
-  JvOutlookBar,
-  SharpEListBox, SharpESkinManager, uSharpCenterPluginTabList, SharpThemeApi,
-  uSharpCenterDllMethods, uSharpCenterManager, JvExStdCtrls, JvHtControls,
-  ToolWin, SharpERoundPanel, JvExComCtrls, JvToolBar, XPMan, uSharpETabList,
-  GR32_Image, uVistaFuncs, JvLabel, JvgWizardHeader, JvPageList, SharpEListBoxEx,
+  SharpEListBox, SharpESkinManager, uSharpCenterPluginTabList,
+  uSharpCenterDllMethods, uSharpCenterManager,
+  ToolWin, SharpERoundPanel, XPMan, uSharpETabList,
+  GR32_Image, GR32, uVistaFuncs, JvLabel, JvPageList, SharpEListBoxEx,
   PngBitBtn;
 
 const
@@ -210,16 +204,19 @@ uses
 
 procedure TSharpCenterWnd.FormShow(Sender: TObject);
 begin
-  SCM.OnAddNavItem := AddItemEvent;
-  SCM.OnUpdateTheme := UpdateThemeEvent;
-
   SCM.OnInitNavigation := InitNavEvent;
+  SCM.OnAddNavItem := AddItemEvent;
+
   SCM.OnLoadPlugin := LoadPluginEvent;
   SCM.OnUnloadPlugin := UnloadPluginEvent;
+
   SCM.OnLoadEdit := LoadEditEvent;
   SCM.OnApplyEdit :=  ApplyEditEvent;
   SCM.OnCancelEdit := CancelEditEvent;
+
   SCM.OnAddPluginTabs := AddPluginTabsEvent;
+  SCM.OnUpdateTheme := UpdateThemeEvent;
+
   SCM.PngImageList := pilIcons;
   SCM.PluginContainer := pnlPlugin;
   SCM.EditWndContainer := pnlEditPlugin;
@@ -310,6 +307,10 @@ end;
 
 procedure TSharpCenterWnd.btnSaveClick(Sender: TObject);
 begin
+  if SCM.CheckEditState then begin
+    exit;
+  end;
+
   LockWindowUpdate(Self.Handle);
   Try
     if SCM.Save then begin
@@ -330,7 +331,7 @@ begin
 
     if @SCM.ActivePlugin.Open <> nil then begin
       SCM.StateEditItem := False;
-      SCM.StateEditItem := False;
+      SCM.StateEditWarning := False;
 
       SCM.Unload;
     end;
@@ -381,6 +382,7 @@ end;
 
 procedure TSharpCenterWnd.lbTreeClickItem(AText: string; AItem, ACol: Integer);
 begin
+  lockwindowupdate(Self.Handle);
   try
 
     if lbTree.ItemIndex = -1 then
@@ -394,6 +396,7 @@ begin
 
     ClickItem;
   finally
+    LockWindowUpdate(0);
   end;
 end;
 
@@ -468,8 +471,10 @@ end;
 procedure TSharpCenterWnd.tlToolbarTabChange(ASender: TObject;
   const ATabIndex: Integer; var AChange: Boolean);
 begin
-  if SCM.CheckEditState then
+  if SCM.CheckEditState then begin
       AChange := False;
+    exit;
+  end;
 
   Case ATabIndex of
     Integer(tidHome): Begin
