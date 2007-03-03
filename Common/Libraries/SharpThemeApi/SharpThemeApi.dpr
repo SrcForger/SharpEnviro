@@ -928,29 +928,6 @@ begin
     end;
 end;
 
-function ValidateIcon(pFileName: PChar): PChar;
-var
-  sfile: string;
-  sExt: string;
-begin
-  sfile := pFileName;
-  if IsIconInIconSet(pFileName) then
-    sfile := GetIconSetIconByTag(pFileName).FileName;
-
-  sExt := ExtractFileExt(sfile);
-  if ((not FileExists(sfile))
-    and (sExt <> '.png')
-    and (sExt <> '.jpg')
-    and (sExt <> '.jpeg')
-    and (sExt <> '.bmp')
-    and (sExt <> '.bmp')
-    and (GetIconSetIconsCount > 0)) then
-    sfile := Theme.IconSet.Icons[0].FileName;
-
-  rtemp := sfile;
-  result := PChar(rtemp);
-end;
-
 // ##########################################
 //      EXPORT: Desktop Icon
 // ##########################################
@@ -1220,7 +1197,6 @@ exports
   GetIconSetIconByIndex,
   GetIconSetIconByTag,
   IsIconInIconSet,
-  ValidateIcon,
 
   // Theme DesktopIcon
   GetDesktopIconSize,

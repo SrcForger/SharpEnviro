@@ -81,7 +81,7 @@ function GetThemeDirectory(pName : PChar): PChar; overload external 'SharpThemeA
 function GetSchemeColorSet(pSet : integer) : TSharpEColorSet; external 'SharpThemeApi.dll' name 'GetSchemeColorSet';
 function GetSchemeName : PChar; external 'SharpThemeApi.dll' name 'GetSchemeName';
 function SchemeCodeToColor(pCode : integer) : integer; external 'SharpThemeApi.dll' name 'SchemeCodeToColor';
-function ColorToSchemeCode(pCode : integer) : integer; external 'SharpThemeApi.dll' name 'ColorToSchemeCode';
+function ColorToSchemeCode(pColor : integer) : integer; external 'SharpThemeApi.dll' name 'ColorToSchemeCode';
 function GetSchemeColorCount: Integer; external 'SharpThemeApi.dll' name 'GetSchemeColorCount';
 function GetSchemeColorByIndex(pIndex: integer): TSharpESkinColor; external 'SharpThemeApi.dll' name 'GetSchemeColorByIndex';
 function GetSchemeColorIndexByTag(pTag: string): Integer; external 'SharpThemeApi.dll' name 'GetSchemeColorIndexByTag';
@@ -104,7 +104,6 @@ function GetIconSetIconsCount : integer; external 'SharpThemeApi.dll' name 'GetI
 function GetIconSetIcon(pIndex : integer) : TSharpEIcon; overload; external 'SharpThemeApi.dll' name 'GetIconSetIconByIndex';
 function GetIconSetIcon(pTag : PChar) : TSharpEIcon; overload; external 'SharpThemeApi.dll' name'GetIconSetIconByTag';
 function IsIconInIconSet(pTag : PChar) : boolean; external 'SharpThemeApi.dll' name 'IsIconInIconSet';
-function ValidateIcon(pFileName : PChar) : PChar; external 'SharpThemeApi.dll' name 'ValidateIcon';
 
 // Theme DesktopIcon
 function GetDesktopIconSize        : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconSize';
