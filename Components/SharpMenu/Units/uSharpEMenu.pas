@@ -66,7 +66,7 @@ type
     function AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean) : TObject; overload;
     function AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean) : TObject; overload;
     procedure AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String;  pDynamic : boolean);
-    procedure AddDriveListItem(pDynamic : boolean);
+    procedure AddDriveListItem(pDriveNames:  boolean; pDynamic : boolean);
     function  AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean) : TObject;
     procedure RenderBackground;
     procedure RenderNormalMenu;
@@ -193,7 +193,7 @@ begin
                                                          item.PropList.GetString('Filter'),
                                                          item.PropList.GetInt('Sort'),
                                                          item.PropList.GetInt('MaxItems'));
-      mtDriveList : FMenuActions.UpdateDynamicDriveList(FDynList);
+      mtDriveList : FMenuActions.UpdateDynamicDriveList(FDynList,item.PropList.GetBool('ShowDriveNames'));
     end;
   end;
 
@@ -295,13 +295,14 @@ begin
   FItems.Add(Item);
 end;
 
-procedure TSharpEMenu.AddDriveListItem(pDynamic : boolean);
+procedure TSharpEMenu.AddDriveListItem(pDriveNames: Boolean; pDynamic : boolean);
 var
   item : TSharpEMenuItem;
 begin
   item := TSharpEMenuItem.Create(mtDriveList);
   item.Icon := nil;
   item.isVisible := False;
+  item.PropList.Add('ShowDriveNames',pDriveNames);
   item.isDynamic := pDynamic;
   FItems.Add(Item);
 end;

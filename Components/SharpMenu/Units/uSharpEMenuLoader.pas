@@ -68,7 +68,7 @@ begin
                                         Value('Filter'), False)
         else
         if CompareText(typestring,'drivelist') = 0 then
-           menu.AddDriveListItem(False)
+           menu.AddDriveListItem(BoolValue('ShowDriveNames',True),False)
         else
         if CompareText(typestring,'label') = 0 then
            menu.AddLabelItem(Value('Caption'),False)

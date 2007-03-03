@@ -50,7 +50,7 @@ type
     procedure OnLinkClick(pItem : TSharpEMenuItem; var CanClose : boolean);
     procedure UpdateDynamicDirectory(var pDynList : TObjectList; pDir,
                                      pFilter : String; pSort,pMaxItems : integer);
-    procedure UpdateDynamicDriveList(var pDynList : TObjectList);
+    procedure UpdateDynamicDriveList(var pDynList : TObjectList; pDriveNames : boolean);
   end;
 
 implementation
@@ -268,7 +268,7 @@ begin
     end;
 end;
 
-procedure TSharpEMenuActions.UpdateDynamicDriveList(var pDynList : TObjectList);
+procedure TSharpEMenuActions.UpdateDynamicDriveList(var pDynList : TObjectList; pDriveNames : boolean);
 
   function DriveExists(DriveByte: Byte): Boolean;
   begin
@@ -286,7 +286,7 @@ procedure TSharpEMenuActions.UpdateDynamicDriveList(var pDynList : TObjectList);
       DRIVE_CDROM: Result := 'CD-ROM/DVD';
       DRIVE_RAMDISK: Result := 'RAM Disk';
     else
-      Result := 'anderer Laufwerkstyp';
+      Result := 'Unknown Type';
     end;
   end;
 
@@ -305,7 +305,8 @@ begin
         found := false;
         for n := pDynList.Count - 1 downto 0  do
         begin
-          sn := JclSysInfo.GetVolumeName(Chr(i + Ord('A')));
+          if pDriveNames then sn := JclSysInfo.GetVolumeName(Chr(i + Ord('A')))
+             else sn := '';
           if length(sn) <= 0 then
              sn := DriveType(i);
           s := '['+Chr(i + Ord('A')) + ':] - ' + sn;
@@ -320,7 +321,8 @@ begin
         end;
         if (not found) then
         begin
-          sn := JclSysInfo.GetVolumeName(Chr(i + Ord('A')));
+          if pDriveNames then sn := JclSysInfo.GetVolumeName(Chr(i + Ord('A')))
+             else sn := '';
           if length(sn) <= 0 then
              sn := DriveType(i);
           pMenu.AddLinkItem('['+Chr(i + Ord('A')) + ':] - ' + sn,
