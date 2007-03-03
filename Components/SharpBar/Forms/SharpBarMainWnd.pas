@@ -256,7 +256,7 @@ procedure TSharpBarMainForm.WMUpdateBangs(var Msg : TMessage);
 begin
    ModuleManager.BroadcastPluginMessage('WM_SHARPEUPDATEACTIONS');
 
-   SharpApi.RegisterAction(PChar('!FocusBar ('+inttostr(FBarID)+')'),Handle,1);
+   SharpApi.RegisterActionEx(PChar('!FocusBar ('+inttostr(FBarID)+')'),'SharpBar',Handle,1);
 end;
 
 procedure TSharpBarMainForm.WMSharpEBang(var Msg : TMessage);
@@ -939,6 +939,8 @@ begin
     SharpBarMainForm.LoadBarFromID(mfParamID);
     mfParamID := -255;
   end;
+
+  SharpApi.RegisterActionEx(PChar('!FocusBar ('+inttostr(FBarID)+')'),'SharpBar',Handle,1);
 end;
 
 procedure TSharpBarMainForm.AutoPos1Click(Sender: TObject);
@@ -1063,6 +1065,8 @@ end;
 
 procedure TSharpBarMainForm.FormDestroy(Sender: TObject);
 begin
+  SharpApi.UnRegisterAction(PChar('!FocusBar ('+inttostr(FBarID)+')'));
+
   if BarHideForm <> nil then FreeAndNil(BarHideForm);
   if AddPluginForm <> nil then FreeAndNil(AddPluginForm);
   if PluginManagerForm <> nil then FreeAndNil(PluginManagerForm);
