@@ -440,7 +440,10 @@ end;
 procedure TSharpBarMainForm.WMSaveXMLFile(var msg : TMessage);
 begin
   if FSuspended then exit;
-  ModuleSettings.SaveToFile(ModuleSettings.FileName);
+  ModuleSettings.SaveToFile(ModuleSettings.FileName + '~');
+  if FileExists(ModuleSettings.FileName) then
+     DeleteFile(ModuleSettings.FileName);
+  RenameFile(ModuleSettings.FileName + '~',ModuleSettings.FileName);
 end;
 
 // Module is requesting the handle to the xml settings class
@@ -707,7 +710,10 @@ begin
     exit;
   end;
   ForceDirectories(Dir);
-  xml.SaveToFile(Dir + 'bars.xml');
+  xml.SaveToFile(Dir + 'bars.xml~');
+  if FileExists(Dir + 'bars.xml') then
+     DeleteFile(Dir + 'bars.xml');
+  RenameFile(Dir + 'bars.xml~',Dir + 'bars.xml');
   xml.Free;
 end;
 
@@ -1021,6 +1027,7 @@ begin
   if not (Sender is TMenuItem) then exit;
   i := TMenuItem(Sender).Tag;
   ModuleManager.CreateModule(i,-1);
+  SaveBarSettings;
 end;
 
 procedure TSharpBarMainForm.PopupMenu1Popup(Sender: TObject);
@@ -1079,7 +1086,10 @@ begin
   // We want to produce good code, so let's free stuff before the app is closed ;)
   ForceDirectories(ExtractFileDir(ModuleSettings.FileName));
   SaveBarSettings;
-  ModuleSettings.SaveToFile(ModuleSettings.FileName);
+  ModuleSettings.SaveToFile(ModuleSettings.FileName + '~');
+  if FileExists(ModuleSettings.FileName) then
+     DeleteFile(ModuleSettings.FileName);
+  RenameFile(ModuleSettings.FileName + '~',ModuleSettings.FileName);
   ModuleManager.Free;
  // ModuleSettings.Free;
   //ModuleSettings := nil;
