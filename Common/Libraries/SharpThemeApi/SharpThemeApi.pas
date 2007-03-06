@@ -59,6 +59,8 @@ type
     GDStartAlpha    : integer;
     GDEndColor      : integer;
     GDEndAlpha      : integer;
+    MirrorHoriz     : boolean;
+    MirrorVert      : boolean;
   end;
 
   TSharpESkinColor = record

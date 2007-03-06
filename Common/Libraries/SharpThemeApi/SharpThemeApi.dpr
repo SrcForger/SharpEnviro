@@ -78,6 +78,8 @@ type
     GDStartAlpha    : integer;
     GDEndColor      : integer;
     GDEndAlpha      : integer;
+    MirrorHoriz     : boolean;
+    MirrorVert      : boolean;
   end;
   TThemeWallpapers = array of TThemeWallpaper;
   TMonitorWallpapers = array of String;
@@ -596,6 +598,8 @@ begin
     GDStartAlpha    := 0;
     GDEndColor      := 0;
     GDEndAlpha      := 0;
+    MirrorHoriz     := False;
+    MirrorVert      := False;
   end;
 end;
 
@@ -937,6 +941,8 @@ begin
                  GDStartAlpha    := IntValue('GDStartAlpha',GDStartAlpha);
                  GDEndColor      := IntValue('GDEndColor',GDEndColor);
                  GDEndAlpha      := IntValue('GDEndAlpha',GDEndAlpha);
+                 MirrorHoriz     := BoolValue('MirrorHoriz',MirrorHoriz);
+                 MirrorVert      := BoolValue('MirrorVert',MirrorVert);
                end;
              end;
       if XML.Root.Items.ItemNamed['Monitors'] <> nil then
