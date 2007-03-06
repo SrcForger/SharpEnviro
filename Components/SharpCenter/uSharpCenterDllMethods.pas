@@ -44,11 +44,11 @@ type
     Filename: string;
     Dllhandle: Thandle;
 
-    Open: function(const APluginID:Pchar; owner: hwnd): hwnd;
-    Close: function(AOwner: hwnd; SaveSettings: Boolean): boolean;
+    Open: function(const APluginID:Pchar; AOwner: hwnd): hwnd;
+    Close: function(AOwner: hwnd; ASave: Boolean): boolean;
 
     OpenEdit: function(AOwner:Hwnd; AEditMode:TSCE_EDITMODE):Hwnd;
-    CloseEdit: function(AOwner: Hwnd; AEditMode:TSCE_EDITMODE; ASave:Boolean): boolean;
+    CloseEdit: function(AOwner: Hwnd; AEditMode:TSCE_EDITMODE; AApply:Boolean): boolean;
 
     ClickBtn: procedure (AButtonID: Integer; AText: String);
     ClickTab: procedure (ATab: TPluginTabItem);
