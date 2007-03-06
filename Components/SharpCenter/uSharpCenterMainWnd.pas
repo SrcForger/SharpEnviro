@@ -837,7 +837,7 @@ begin
     pnlEditContainer.Visible := False;
 
     if ((@SCM.ActivePlugin.CloseEdit <> nil) and (SCM.EditWndHandle <> 0)) then
-      SCM.ActivePlugin.CloseEdit(SCM.EditWndHandle,sceEdit,False);
+      SCM.ActivePlugin.CloseEdit(sceEdit,False);
   end;
   
   tlEditItem.Height := 0;

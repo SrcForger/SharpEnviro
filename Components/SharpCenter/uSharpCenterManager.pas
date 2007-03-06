@@ -261,7 +261,7 @@ begin
 
   // Handle proper closing of the setting
   if @FActivePlugin.Close <> nil then
-    FActivePlugin.Close(Hinstance, false);
+    FActivePlugin.Close(false);
 
   // Unload dll
   UnloadPlugin(@FActivePlugin);
@@ -321,7 +321,7 @@ var
 begin
   bClose := True;
   if (@FActivePlugin.Close <> nil) then
-    bClose := FActivePlugin.Close(FPluginWndHandle, True);
+    bClose := FActivePlugin.Close(True);
 
   if bClose then
   begin
@@ -769,9 +769,9 @@ begin
   if (@ActivePlugin.CloseEdit <> nil) then begin
 
     case ATabID of
-      Integer(tidAdd): bValid := ActivePlugin.CloseEdit(EditWndContainer.Handle,sceAdd,True);
-      Integer(tidEdit): bValid := ActivePlugin.CloseEdit(EditWndContainer.Handle,sceEdit,True);
-      Integer(tidDelete): bValid:= ActivePlugin.CloseEdit(EditWndContainer.Handle,sceDelete,True);
+      Integer(tidAdd): bValid := ActivePlugin.CloseEdit(sceAdd,True);
+      Integer(tidEdit): bValid := ActivePlugin.CloseEdit(sceEdit,True);
+      Integer(tidDelete): bValid:= ActivePlugin.CloseEdit(sceDelete,True);
     end;
   end;
 
@@ -798,7 +798,7 @@ begin
   Result := True;
 
   if (@ActivePlugin.CloseEdit <> nil) then
-    ActivePlugin.CloseEdit(EditWndContainer.Handle,sceEdit,False);
+    ActivePlugin.CloseEdit(sceEdit,False);
 
   if Not(StateEditItem) then begin
     StateEditItem := False;
