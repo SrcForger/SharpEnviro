@@ -49,6 +49,7 @@ type
     ThemeImages: TPngImageList;
     lbThemeList: TSharpEListBoxEx;
     pilDefault: TPngImageList;
+    procedure lbThemeListGetCellColor(const AItem: Integer; var AColor: TColor);
 
     procedure lbThemeListDblClickItem(AText: string; AItem, ACol: Integer);
     procedure lbThemeListClickItem(AText: string; AItem, ACol: Integer);
@@ -85,22 +86,13 @@ uses uThemeListEditWnd, SharpThemeApi;
 procedure TfrmThemeList.FormShow(Sender: TObject);
 begin
   lbThemeList.Margin := Rect(0,0,0,0);
+  lbThemeList.ColumnMargin := Rect(6,0,6,0);
 
   ThemeList.Load;
   BuildThemeList;
 
 
 end;
-
-{procedure TfrmConfigListWnd.EditTheme;
-var
-  str:TStringObject;
-begin
-  if lbThemes.ItemIndex < 0 then exit;
-
-  str := TStringObject(lbThemes.Items.Objects[lbThemes.ItemIndex]);
-  SharpApi.CenterMsg('_loadConfig',PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'),pchar(str.Str));
-end; }
 
 function TfrmThemeList.UpdateEditText:Boolean;
 var
@@ -177,6 +169,7 @@ end;
 procedure TfrmThemeList.FormCreate(Sender: TObject);
 begin
   ThemeList := TThemeList.Create;
+  Self.DoubleBuffered := true;
 end;
 
 procedure TfrmThemeList.FormDestroy(Sender: TObject);
@@ -191,8 +184,6 @@ var
   b : boolean;
   i: Integer;
   newItem:TSharpEListItem;
-
-  png: TPngImageCollectionItem;
 begin
   lbThemeList.Clear;
 
@@ -215,18 +206,14 @@ begin
     if ( (ThemeList[i].PreviewFileName <> '') and
       (FileExists(ThemeList[i].PreviewFileName))) then begin
 
-        //GR32_PNG.LoadBitmap32FromPNG(Bmp32,ThemeList[i].PreviewFileName,b);
-        {bmp.Canvas.Brush.Color := clBlack;
+        GR32_PNG.LoadBitmap32FromPNG(Bmp32,ThemeList[i].PreviewFileName,b);
+        bmp.Canvas.Brush.Color := clBlack;
         bmp.Canvas.Pen.Color := clBlack;
         bmp.canvas.FillRect(bmp.canvas.ClipRect);
-        bmp32.DrawTo(bmp.canvas.handle,1,1);  }
+        bmp32.DrawTo(bmp.canvas.handle,1,1);
 
-        {newItem.SubItemImageIndexes[0] :=
-          Pointer(themeimages.AddMasked(bmp,clFuchsia));}
-        png := themeimages.PngImages.Add();
-        png.PngImage.LoadFromFile(ThemeList[i].PreviewFileName);
-
-        newItem.SubItemImageIndexes[0] := Pointer(png.Index);
+        newItem.SubItemImageIndexes[0] :=
+          Pointer(themeimages.AddMasked(bmp,clFuchsia));
       end else begin
         bmp.Canvas.Brush.Color := clWindow;
         bmp.Canvas.Pen.Color := clBlack;
@@ -265,8 +252,6 @@ begin
 
   SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
 end;
-
-
 
 function TfrmThemeList.UpdateUI: Boolean;
 var
@@ -340,7 +325,6 @@ end;
 function TfrmThemeList.SaveUi: Boolean;
 var
   tmp: TThemeListItem;
-  sValidName: String;
 begin
   Result := True;
 
@@ -382,6 +366,12 @@ begin
 
   sTheme := TThemeListItem(lbThemeList.Item[lbThemeList.ItemIndex].Data).Name;
   SharpApi.CenterMsg('_loadsetting',PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'),pchar(sTheme));
+end;
+
+procedure TfrmThemeList.lbThemeListGetCellColor(const AItem: Integer;
+  var AColor: TColor);
+begin
+  if AItem = 2 then AColor := clRed;
 end;
 
 end.

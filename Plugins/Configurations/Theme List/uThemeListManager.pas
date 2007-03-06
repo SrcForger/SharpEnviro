@@ -55,6 +55,7 @@ type
 
     function Count:Integer;
     Function GetDefaultThemeIdx: Integer;
+    Procedure SetDefaultThemeIdx(AItem: TThemeListItem);
 
     procedure Load(AThemeDir: String); overload;
     procedure Load; overload;
@@ -70,7 +71,7 @@ type
 implementation
 
 uses
-  SharpApi;
+  SharpApi, uThemeListWnd;
 
 { TThemeList }
 
@@ -97,8 +98,6 @@ end;
 
 function TThemeList.CopyFolder(Asrc, ADest: String): Boolean;
 var
-  f: TSearchRec;
-  Dir: string;
   i: Integer;
   sList: TStringList;
 begin
@@ -283,6 +282,7 @@ function TThemeList.RenameFolder(Asrc, ADest: String): Boolean;
 var
   shellinfo : TShFileOpStruct;
 begin
+  Result := True;
   with shellinfo do
   begin
     wnd    := 0;
@@ -299,7 +299,6 @@ var
   sThemeDir, sSrc, sDest: string;
   xml: TJvSimpleXml;
   i: Integer;
-  sValidFolder: String;
 
   tmpItem: TThemeListItem;
 begin
@@ -360,11 +359,41 @@ begin
 
   end;
 
+  // Set selected theme as default
+  SetDefaultThemeIdx(TThemeListItem(frmThemeList.lbThemeList.Item[frmThemeList.lbThemeList.ItemIndex].Data));
+
 end;
 
 procedure TThemeList.Save(AThemeDir: String);
 begin
 
+end;
+
+procedure TThemeList.SetDefaultThemeIdx(AItem: TThemeListItem);
+var
+  xml:TJvSimpleXML;
+  elem: TJvSimpleXMLElem;
+  s, sDest, sThemeDir: String;
+begin
+  if Self.Count = 0 then exit;
+
+  sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
+  sDest := GetSharpeUserSettingsPath + 'SharpE.xml';
+
+  s := GetSharpeUserSettingsPath + 'SharpE.xml';
+  xml := TJvSimpleXML.Create(nil);
+  Try
+    xml.LoadFromFile(sDest);
+    elem := xml.Root.Items.ItemNamed['Theme'];
+
+    if elem <> nil then
+      elem.Value := AItem.Name else
+      xml.Root.Items.Add('Theme',AItem.Name);
+
+  Finally
+    xml.SaveToFile(sDest);
+    xml.Free;
+  End;
 end;
 
 procedure TThemeList.SetItem(Index: Integer; const Value: TThemeListItem);

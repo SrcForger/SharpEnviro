@@ -124,7 +124,6 @@ procedure TfrmEditItem.valThemeDirNotExistsValidate(Sender: TObject;
 var
   sValidName, sThemeDir: String;
   i: Integer;
-  bVal: Boolean;
 begin
   Valid := True;
   if ItemEdit = nil then begin
