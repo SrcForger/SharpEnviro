@@ -37,8 +37,29 @@ uses
   Classes;
 
 type
-  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon);
+  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,tpDesktopAnimation,tpWallpaper);
   TThemeParts = set of TThemePart;
+
+  TThemeWallpaperGradientType = (twgtHoriz,twgtVert,twgtTSHoriz,twgtTSVert);
+  TThemeWallpaperSize = (twsCenter,twsScale,twsStretch,twsTile);
+
+  TThemeWallpaper  = record
+    Name            : String;
+    Image           : String;
+    Color           : integer;
+    Alpha           : integer;
+    Size            : TThemeWallpaperSize;
+    ColorChange     : boolean;
+    Hue             : integer;
+    Saturation      : integer;
+    Lightness       : integer;
+    Gradient        : boolean;
+    GradientType    : TThemeWallpaperGradientType;
+    GDStartColor    : integer;
+    GDStartAlpha    : integer;
+    GDEndColor      : integer;
+    GDEndAlpha      : integer;
+  end;
 
   TSharpESkinColor = record
     Name: string;
@@ -55,7 +76,7 @@ type
   end;
 
 const
-  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon];
+  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,tpDesktopAnimation,tpWallpaper];
 
 
 // ThemeAPIControls
@@ -107,23 +128,43 @@ function IsIconInIconSet(pTag : PChar) : boolean; external 'SharpThemeApi.dll' n
 
 // Theme DesktopIcon
 function GetDesktopIconSize        : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconSize';
+function GetDesktopIconAlphaBlend  : boolean; external 'SharpThemeApi.dll' name 'GetDesktopIconAlphaBlend';
 function GetDesktopIconAlpha       : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconAlpha';
 function GetDesktopIconBlending    : boolean; external 'SharpThemeApi.dll' name 'GetDesktopIconBlending';
 function GetDesktopIconBlendColor  : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconBlendColor';
 function GetDesktopIconBlendAlpha  : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconBlendAlpha';
+function GetDesktopIconShadow      : boolean; external 'SharpThemeApi.dll' name 'GetDesktopIconShadow';
+function GetDesktopIconShadowColor : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconShadowColor';
+function GetDesktopIconShadowAlpha : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconShadowAlpha';
 function GetDesktopFontName        : String;  external 'SharpThemeApi.dll' name 'GetDesktopFontName';
+function GetDesktopDisplayText     : boolean; external 'SharpThemeApi.dll' name 'GetDesktopDisplayText';
 function GetDesktopTextSize        : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextSize';
 function GetDesktopTextBold        : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextBold';
 function GetDesktopTextItalic      : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextItalic';
 function GetDesktopTextUnderline   : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextUnderline';
 function GetDesktopTextColor       : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextColor';
-function GetDesktopTextAlpha       : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextAlpha';
+function GetDesktopTextAlpha       : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextAlpha';
+function GetDesktopTextAlphaValue  : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextAlphaValue';
 function GetDesktopTextShadow      : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextShadow';
 function GetDesktopTextShadowAlpha : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowAlpha';
 function GetDesktopTextShadowColor : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowColor';
 function GetDesktopTextShadowType  : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowType';
 function GetDesktopTextShadowSize  : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowSize';
 
+// Theme Desktop Animation
+function GetDesktopAnimUseAnimations   : boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimUseAnimations';
+function GetDesktopAnimScale           : boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimScale';
+function GetDesktopAnimScaleValue      : integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimScaleValue';
+function GetDesktopAnimAlpha           : boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimAlpha';
+function GetDesktopAnimAlphaValue      : integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimAlphaValue';
+function GetDesktopAnimBlend           : boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimBlend';
+function GetDesktopAnimBlendValue      : integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimBlendValue';
+function GetDesktopAnimBlendColor      : integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimBlendColor';
+function GetDesktopAnimBrightness      : boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimBrightness';
+function GetDesktopAnimBrightnessValue : integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimBrightnessValue';
+
+// Theme Wallpaper
+function GetMonitorWallpaper(Index : integer) : TThemeWallpaper; external 'SharpThemeApi.dll' name 'GetMonitorWallpaper';
 
 implementation
 

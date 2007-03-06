@@ -43,7 +43,7 @@ uses
   SharpAPI in '..\SharpAPI\SharpAPI.pas';
 
 type
-  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon);
+  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,tpDesktopAnimation,tpWallpaper);
   TThemeParts = set of TThemePart;
 
   TSharpESkinColor = record
@@ -60,25 +60,68 @@ type
     Tag: string;
   end;
 
+  TThemeWallpaperGradientType = (twgtHoriz,twgtVert,twgtTSHoriz,twgtTSVert);
+  TThemeWallpaperSize = (twsCenter,twsScale,twsStretch,twsTile);
+  TThemeWallpaper  = record
+    Name            : String;
+    Image           : String;
+    Color           : integer;
+    Alpha           : integer;
+    Size            : TThemeWallpaperSize;
+    ColorChange     : boolean;
+    Hue             : integer;
+    Saturation      : integer;
+    Lightness       : integer;
+    Gradient        : boolean;
+    GradientType    : TThemeWallpaperGradientType;
+    GDStartColor    : integer;
+    GDStartAlpha    : integer;
+    GDEndColor      : integer;
+    GDEndAlpha      : integer;
+  end;
+  TThemeWallpapers = array of TThemeWallpaper;
+  TMonitorWallpapers = array of String;
+
+
+  TThemeDesktopAnim = record
+    LastUpdate      : Int64;
+    UseAnimations   : boolean;
+    Scale           : boolean;
+    ScaleValue      : integer;
+    Alpha           : boolean;
+    AlphaValue      : integer;
+    Blend           : boolean;
+    BlendValue      : integer;
+    BlendColor      : integer;
+    Brightness      : boolean;
+    BrightnessValue : integer;
+  end;
+
   TThemeDesktopIcon = record
     LastUpdate      : Int64;
     IconSize        : integer;
+    IconAlphaBlend  : boolean;
     IconAlpha       : integer;
     IconBlending    : boolean;
     IconBlendColor  : integer;
     IconBlendAlpha  : integer;
+    IconShadow      : boolean;
+    IconShadowColor : integer;
+    IconShadowAlpha : integer;
     FontName        : String;
     TextSize        : integer;
     TextBold        : boolean;
     TextItalic      : boolean;
     TextUnderline   : boolean;
     TextColor       : integer;
-    TextAlpha       : integer;
+    TextAlpha       : boolean;
+    TextAlphaValue  : integer;
     TextShadow      : boolean;
     TextShadowAlpha : integer;
     TextShadowColor : integer;
     TextShadowType  : integer;
     TextShadowSize  : integer;
+    DisplayText     : boolean;
   end;
 
   TThemeIconSet = record
@@ -123,6 +166,10 @@ type
     Skin: TThemeSkin;
     IconSet: TThemeIconSet;
     DesktopIcon : TThemeDesktopIcon;
+    DesktopAnim : TThemeDesktopAnim;
+    Wallpapers : TThemeWallpapers;
+    WallpapresLastUpdate : Int64;
+    MonitorWallpapers : TMonitorWallpapers
   end;
 
 var
@@ -147,8 +194,10 @@ const
   SKIN_FILE = 'Skin.xml';
   ICONSET_FILE = 'IconSet.xml';
   DESKTOPICON_FILE = 'DesktopIcon.xml';
+  DESKTOPANIM_FILE = 'DesktopAnimation.xml';
+  WALLPAPER_FILE = 'Wallpaper.xml';
 
-  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon];
+  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,tpDesktopAnimation,tpWallpaper];
 
   // ##########################################
   //   COLOR CONVERTING
@@ -470,12 +519,6 @@ procedure SetThemeSchemeDefault;
 begin
   Theme.Scheme.LastUpdate := 0;
   Theme.Scheme.Name := 'Default';
-
-  {setlength(Theme.Scheme.Colors, 1);
-  Theme.Scheme.Colors[0].Name := 'Default';
-  Theme.Scheme.Colors[0].Tag := 'Default';
-  Theme.Scheme.Colors[0].Info := '';
-  Theme.Scheme.Colors[0].Color := 16777215;  }
 end;
 
 procedure SetThemeSkinDefault;
@@ -489,22 +532,70 @@ begin
   with Theme.DesktopIcon do
   begin
     IconSize        := 48;
+    IconAlphaBlend  := False;
     IconAlpha       := 255;
     IconBlending    := False;
     IconBlendColor  := 0;
     IconBlendAlpha  := 255;
+    IconShadow      := True;
+    IconShadowColor := 0;
+    IconShadowAlpha := 128;
     FontName        := 'Verdana';
     TextSize        := 8;
     TextBold        := False;
     TextItalic      := False;
     TextUnderline   := False;
     TextColor       := 0;
-    TextAlpha       := 255;
+    TextAlpha       := False;
+    TextAlphaValue  := 255;
     TextShadow      := False;
     TextShadowAlpha := 255;
     TextShadowColor := 0;
     TextShadowType  := 0;
     TextShadowSize  := 1;
+    DisplayText     := True;
+  end;
+end;
+
+procedure SetThemeDesktopAnimDefault;
+begin
+  with Theme.DesktopAnim do
+  begin
+    UseAnimations   := True;
+    Scale           := False;
+    ScaleValue      := 0;
+    Alpha           := True;
+    AlphaValue      := 128;
+    Blend           := True;
+    BlendValue      := 255;
+    BlendColor      := 11842737;
+    Brightness      := True;
+    BrightnessValue := 25;
+  end;
+end;
+
+procedure SetThemeWallpaperDefault;
+begin
+  setlength(Theme.Wallpapers,1);
+  setlength(Theme.MonitorWallpapers,1);
+  Theme.MonitorWallpapers[0] := 'Default';
+  with Theme.Wallpapers[0] do
+  begin
+    Name            := 'Default';
+    Image           := '';
+    Color           := 0;
+    Alpha           := 255;
+    Size            := twsScale;
+    ColorChange     := False;
+    Hue             := 0;
+    Saturation      := 0;
+    Lightness       := 0;
+    Gradient        := False;
+    GradientType    := twgtHoriz;
+    GDStartColor    := 0;
+    GDStartAlpha    := 0;
+    GDEndColor      := 0;
+    GDEndAlpha      := 0;
   end;
 end;
 
@@ -731,22 +822,28 @@ begin
       with Theme.DesktopIcon do
       begin
         IconSize        := IntValue('IconSize',IconSize);
+        IconAlphaBlend  := BoolValue('IconAlphaBlend',IconAlphaBlend);
         IconAlpha       := IntValue('IconAlpha',IconAlpha);
         IconBlending    := BoolValue('IconBlending',IconBlending);
         IconBlendColor  := IntValue('IconBlendColor',IconBlendColor);
         IconBlendAlpha  := IntValue('IconBlendAlpha',IconBlendAlpha);
+        IconShadow      := BoolValue('IconShadow',IconShadow);
+        IconShadowColor := IntValue('IconShadowColor',IconShadowColor);
+        IconShadowAlpha := IntValue('IconShadowAlpha',IconShadowAlpha);
         FontName        := Value('FontName',FontName);
         TextSize        := IntValue('TextSize',TextSize);
         TextBold        := BoolValue('TextBold',TextBold);
         TextItalic      := BoolValue('TextItalic',TextItalic);
         TextUnderline   := BoolValue('TextUnderline',TextUnderline);
         TextColor       := IntValue('TextColor',TextColor);
-        TextAlpha       := IntValue('TextAlpha',TextAlpha);
+        TextAlpha       := BoolValue('TextAlpha',TextAlpha);
+        TextAlphaValue  := IntValue('TextAlphaValue',TextAlphaValue);
         TextShadow      := BoolValue('TextShadow',TextShadow);
         TextShadowAlpha := IntValue('TextShadowAlpha',TextShadowAlpha);
         TextShadowColor := IntValue('TextShadowColor',TextShadowColor);
         TextShadowType  := IntValue('TextShadowType',TextShadowType);
         TextShadowSize  := IntValue('TextShadowSize',TextShadowSize);
+        DisplayText     := BoolValue('DisplayText',DisplayText);
       end;
     except
       SetThemeDesktopIconDefault;
@@ -755,6 +852,108 @@ begin
     XML.Free;
   end;
   Theme.DesktopIcon.LastUpdate := DateTimeToUnix(Now());
+end;
+
+procedure LoadThemeDesktopAnim;
+var
+  XML : TJvSimpleXML;
+begin
+  SetThemeDesktopAnimDefault;
+  if not FileExists(Theme.Data.Directory + DESKTOPANIM_FILE) then
+    exit;
+
+  XML := TJvSimpleXML.Create(nil);
+  try
+    try
+      XML.LoadFromFile(Theme.Data.Directory + DESKTOPANIM_FILE);
+      with XML.Root.Items do
+      with Theme.DesktopAnim do
+      begin
+        UseAnimations   := BoolValue('UseAnimations',UseAnimations);
+        Scale           := BoolValue('Scale',Scale);
+        ScaleValue      := IntValue('ScaleValue',ScaleValue);
+        Alpha           := BoolValue('Alpha',Alpha);
+        AlphaValue      := IntValue('AlphaValue',AlphaValue);
+        Blend           := BoolValue('Blend',Blend);
+        BlendValue      := IntValue('BlendValue',BlendValue);
+        BlendColor      := IntValue('BlendColor',BlendColor);
+        Brightness      := BoolValue('Brightness',Brightness);
+        BrightnessValue := IntValue('BrightnessValue',BrightnessValue);
+      end;
+    except
+      SetThemeDesktopAnimDefault;
+    end;
+  finally
+    XML.Free;
+  end;
+  Theme.DesktopAnim.LastUpdate := DateTimeToUnix(Now());
+end;
+
+procedure LoadThemeWallpaper;
+var
+  XML : TJvSimpleXML;
+  n,i : integer;
+begin
+  SetThemeWallpaperDefault;
+  if not (FileExists(Theme.Data.Directory + WALLPAPER_FILE)) then
+     exit;
+
+  XML := TJvSimpleXML.Create(nil);
+  try
+    try
+      XML.LoadFromFile(Theme.Data.Directory + WALLPAPER_FILE);
+      if XML.Root.Items.ItemNamed['Wallpapers'] <> nil then
+         for n := 0 to XML.Root.Items.ItemNamed['Wallpapers'].Items.Count - 1 do
+             with XML.Root.Items.ItemNamed['Wallpapers'].Items.Item[n].Items do
+             begin
+               if n <> 0 then
+                  setlength(Theme.Wallpapers,length(Theme.Wallpapers)+1);
+               with Theme.Wallpapers[High(Theme.Wallpapers)] do
+               begin
+                Name            := Value('Name',Name);
+                Image           := Value('Image',Image);
+                Color           := IntValue('Color',Color);
+                Alpha           := IntValue('Alpha',Alpha);
+                i               := IntValue('Size',0);
+                case i of
+                  0: Size := twsCenter;
+                  2: Size := twsStretch;
+                   3: Size := twsTile;
+                   else Size := twsScale;
+                 end;
+                 ColorChange     := BoolValue('ColorChange',ColorChange);
+                 Hue             := IntValue('Hue',Hue);
+                 Saturation      := IntValue('Saturation',Saturation);
+                 Lightness       := IntValue('Lightness',Lightness);
+                 Gradient        := BoolValue('Gradient',Gradient);
+                 i               := IntValue('GradientType',0);
+                 case i of
+                   1: GradientType := twgtVert;
+                   2: GradientType := twgtTSHoriz;
+                   3: GradientType := twgtTSVert
+                   else GradientType := twgtHoriz;
+                 end;
+                 GDStartColor    := IntValue('GDStartColor',GDStartColor);
+                 GDStartAlpha    := IntValue('GDStartAlpha',GDStartAlpha);
+                 GDEndColor      := IntValue('GDEndColor',GDEndColor);
+                 GDEndAlpha      := IntValue('GDEndAlpha',GDEndAlpha);
+               end;
+             end;
+      if XML.Root.Items.ItemNamed['Monitors'] <> nil then
+         for n := 0 to XML.Root.Items.ItemNamed['Monitors'].Items.Count - 1 do
+             with XML.Root.Items.ItemNamed['Monitors'].Items.Item[n].Items do
+             begin
+               if n <> 0 then
+                  setlength(Theme.MonitorWallpapers,length(Theme.MonitorWallpapers)+1);
+               Theme.MonitorWallpapers[High(Theme.MonitorWallpapers)] := Value('Name','Default');
+             end;
+    except
+      SetThemeWallpaperDefault;
+    end;
+  finally
+    XML.Free;
+  end;
+  Theme.WallpapresLastUpdate := DateTimeToUnix(Now());
 end;
 
 // ##########################################
@@ -928,6 +1127,74 @@ begin
     end;
 end;
 
+
+// ##########################################
+//      EXPORT: Desktop Animation
+// ##########################################
+
+function GetDesktopAnimUseAnimations : boolean;
+begin
+  result := Theme.DesktopAnim.UseAnimations;
+end;
+
+function GetDesktopAnimScale : boolean;
+begin
+  result := Theme.DesktopAnim.Scale;
+end;
+
+function GetDesktopAnimScaleValue : integer;
+begin
+  result := Theme.DesktopAnim.ScaleValue;
+end;
+
+function GetDesktopAnimAlpha : boolean;
+begin
+  result := Theme.DesktopAnim.Alpha;
+end;
+
+function GetDesktopAnimAlphaValue : integer;
+begin
+  result := Theme.DesktopAnim.AlphaValue;
+end;
+
+function GetDesktopAnimBlend : boolean;
+begin
+  result := Theme.DesktopAnim.Blend;
+end;
+
+function GetDesktopAnimBlendValue : integer;
+begin
+  result := Theme.DesktopAnim.BlendValue;
+end;
+
+function GetDesktopAnimBlendColor : integer;
+begin
+  result := Theme.DesktopAnim.BlendColor;
+end;
+
+function GetDesktopAnimBrightness : boolean;
+begin
+  result := Theme.DesktopAnim.Brightness;
+end;
+
+function GetDesktopAnimBrightnessValue : integer;
+begin
+  result := Theme.DesktopAnim.BrightnessValue;
+end;
+
+// ##########################################
+//      EXPORT: Wallpaper
+// ##########################################
+
+function GetMonitorWallpaper(Index : integer) : TThemeWallpaper;
+begin
+  Index := abs(Index);
+  if Index > High(Theme.Wallpapers) then
+     Index := 0;
+  result := Theme.Wallpapers[Index];
+end;
+
+
 // ##########################################
 //      EXPORT: Desktop Icon
 // ##########################################
@@ -935,6 +1202,11 @@ end;
 function GetDesktopIconSize : integer;
 begin
   result := Theme.DesktopIcon.IconSize;
+end;
+
+function GetDesktopIconAlphaBlend : boolean;
+begin
+  result := Theme.DesktopIcon.IconAlphaBlend;
 end;
 
 function GetDesktopIconAlpha : integer;
@@ -955,6 +1227,21 @@ end;
 function GetDesktopIconBlendAlpha : integer;
 begin
   result := Theme.DesktopIcon.IconBlendAlpha;
+end;
+
+function GetDesktopIconShadow : boolean;
+begin
+  result := Theme.DesktopIcon.IconShadow;
+end;
+
+function GetDesktopIconShadowColor : integer;
+begin
+  result := Theme.DesktopIcon.IconShadowColor;
+end;
+
+function GetDesktopIconShadowAlpha : integer;
+begin
+  result := Theme.DesktopIcon.IconShadowAlpha;
 end;
 
 function GetDesktopFontName: PChar;
@@ -987,14 +1274,24 @@ begin
   result := Theme.DesktopIcon.TextColor;
 end;
 
-function GetDesktopTextAlpha : integer;
+function GetDesktopTextAlpha : boolean;
 begin
   result := Theme.DesktopIcon.TextAlpha;
+end;
+
+function GetDesktopTextAlphaValue : integer;
+begin
+  result := Theme.DesktopIcon.TextAlphaValue;
 end;
 
 function GetDesktopTextShadow : boolean;
 begin
   result := Theme.DesktopIcon.TextShadow;
+end;
+
+function GetDesktopDisplayText : boolean;
+begin
+  result := Theme.DesktopIcon.DisplayText;
 end;
 
 function GetDesktopTextShadowAlpha : integer;
@@ -1091,6 +1388,7 @@ begin
   SetThemeSkinDefault;
   SetThemeIconSetDefault;
   SetThemeDesktopIconDefault;
+  SetThemeWallpaperDefault;
 
   bInitialized := True;
 end;
@@ -1126,6 +1424,8 @@ begin
      (ct - Theme.IconSet.LastUpdate > 1) or (ForceReload) then LoadThemeIconSet;
   if (tpDesktopIcon in ThemeParts) and
      (ct - Theme.DesktopIcon.LastUpdate >1) or (ForceReload) then LoadThemeDesktopIcon;
+  if (tpWallpaper in ThemeParts) and
+     (ct - Theme.WallpapresLastUpdate >1) or (ForceReload) then LoadThemeWallpaper;
 
   result := True;
 end;
@@ -1198,24 +1498,45 @@ exports
   GetIconSetIconByTag,
   IsIconInIconSet,
 
-  // Theme DesktopIcon
+  // Theme Desktop Icon
   GetDesktopIconSize,
+  GetDesktopIconAlphaBlend,
   GetDesktopIconAlpha,
   GetDesktopIconBlending,
   GetDesktopIconBlendColor,
   GetDesktopIconBlendAlpha,
+  GetDesktopIconShadow,
+  GetDesktopIconShadowColor,
+  GetDesktopIconShadowAlpha,
   GetDesktopFontName,
+  GetDesktopDisplayText,
   GetDesktopTextSize,
   GetDesktopTextBold,
   GetDesktopTextItalic,
   GetDesktopTextUnderline,
   GetDesktopTextColor,
   GetDesktopTextAlpha,
+  GetDesktopTextAlphaValue,
   GetDesktopTextShadow,
   GetDesktopTextShadowAlpha,
   GetDesktopTextShadowColor,
   GetDesktopTextShadowType,
-  GetDesktopTextShadowSize;
+  GetDesktopTextShadowSize,
+
+  // Theme Desktop Animation
+  GetDesktopAnimUseAnimations,
+  GetDesktopAnimScale,
+  GetDesktopAnimScaleValue,
+  GetDesktopAnimAlpha,
+  GetDesktopAnimAlphaValue,
+  GetDesktopAnimBlend,
+  GetDesktopAnimBlendValue,
+  GetDesktopAnimBlendColor,
+  GetDesktopAnimBrightness,
+  GetDesktopAnimBrightnessValue,
+
+  // Wallpaper
+  GetMonitorWallpaper;
 
 begin
 end.
