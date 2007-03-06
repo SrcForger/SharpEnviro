@@ -585,9 +585,11 @@ begin
   // Set tab defaults
   tlPluginTabs.TextBounds := Rect(8,8,8,4);
   pnlEditContainer.DoubleBuffered := true;
+  pnlPlugin.DoubleBuffered := True;
 
    // Reinit values
   FSelectedTabID := -1;
+  FCancelClicked := False;
 
   // Update UI
   btnSave.Enabled := False;
@@ -821,7 +823,8 @@ end;
 
 procedure TSharpCenterWnd.UnloadPluginEvent(Sender: TObject);
 begin
-
+  LockWindowUpdate(Self.Handle);
+  Try
   // Check if Save first
   if ((btnSave.Enabled) and not (FCancelClicked)) then
   begin
@@ -840,6 +843,9 @@ begin
   tlEditItem.Height := 0;
   btnSave.Enabled := False;
   btnCancel.Enabled := False;
+  Finally
+    LockWindowUpdate(0);
+  End;
 end;
 
 procedure TSharpCenterWnd.UpdateThemeEvent(Sender: TObject);

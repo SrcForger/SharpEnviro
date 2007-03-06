@@ -119,6 +119,7 @@ object SharpCenterWnd: TSharpCenterWnd
               ParentShowHint = False
               ShowHint = True
               TabOrder = 1
+              Visible = False
             end
           end
         end
@@ -718,7 +719,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 145
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -18
+                Left = -38
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1168,7 +1169,7 @@ object SharpCenterWnd: TSharpCenterWnd
               object Edit2: TEdit
                 Left = 0
                 Top = 36
-                Width = -23
+                Width = -43
                 Height = 21
                 Anchors = [akLeft, akTop, akRight]
                 Ctl3D = True
@@ -1204,9 +1205,9 @@ object SharpCenterWnd: TSharpCenterWnd
         TabOrder = 1
         object pnlPluginContainer_: TPanel
           Left = 6
-          Top = 200
+          Top = 198
           Width = 507
-          Height = 346
+          Height = 348
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 4
@@ -1215,7 +1216,7 @@ object SharpCenterWnd: TSharpCenterWnd
         end
         object pnlLivePreview: TPanel
           Left = 6
-          Top = 155
+          Top = 153
           Width = 507
           Height = 45
           Align = alTop
@@ -1240,7 +1241,7 @@ object SharpCenterWnd: TSharpCenterWnd
           Left = 6
           Top = 149
           Width = 507
-          Height = 6
+          Height = 4
           Align = alTop
           BevelOuter = bvNone
           Color = clWindow
@@ -1249,20 +1250,20 @@ object SharpCenterWnd: TSharpCenterWnd
         end
         object pnlPluginContainer: TPanel
           Left = 6
-          Top = 200
+          Top = 198
           Width = 507
-          Height = 346
+          Height = 348
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 3
           DesignSize = (
             507
-            346)
+            348)
           object rpnlContent: TSharpERoundPanel
             Left = 0
             Top = 24
             Width = 507
-            Height = 322
+            Height = 324
             Anchors = [akLeft, akTop, akRight, akBottom]
             BevelOuter = bvNone
             BorderWidth = 4
@@ -1278,7 +1279,7 @@ object SharpCenterWnd: TSharpCenterWnd
               Left = 4
               Top = 4
               Width = 499
-              Height = 314
+              Height = 316
               Align = alClient
               BevelOuter = bvNone
               Color = clWindow
@@ -2326,7 +2327,7 @@ object SharpCenterWnd: TSharpCenterWnd
         686
         32)
       object btnHelp: TPngSpeedButton
-        Left = 472
+        Left = 468
         Top = 3
         Width = 65
         Height = 26
@@ -2334,6 +2335,12 @@ object SharpCenterWnd: TSharpCenterWnd
         Caption = 'Help'
         Enabled = False
         Flat = True
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
         OnClick = btnHelpClick
         PngImage.Data = {
           89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
@@ -2771,7 +2778,7 @@ object SharpCenterWnd: TSharpCenterWnd
           24F40000000049454E44AE426082}
       end
       object btnSave: TPngSpeedButton
-        Left = 545
+        Left = 541
         Top = 3
         Width = 65
         Height = 26
@@ -2779,6 +2786,12 @@ object SharpCenterWnd: TSharpCenterWnd
         Caption = 'Save'
         Enabled = False
         Flat = True
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
         OnClick = btnSaveClick
         PngImage.Data = {
           89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
@@ -3214,7 +3227,7 @@ object SharpCenterWnd: TSharpCenterWnd
           5878FB547F008BFBD79C56F3EE120000000049454E44AE426082}
       end
       object btnCancel: TPngSpeedButton
-        Left = 617
+        Left = 613
         Top = 3
         Width = 65
         Height = 26
@@ -3222,6 +3235,12 @@ object SharpCenterWnd: TSharpCenterWnd
         Caption = 'Cancel'
         Enabled = False
         Flat = True
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
         OnClick = btnCancelClick
         PngImage.Data = {
           89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
@@ -3672,8 +3691,8 @@ object SharpCenterWnd: TSharpCenterWnd
   end
   object PopupMenu1: TPopupMenu
     OnPopup = PopupMenu1Popup
-    Left = 464
-    Top = 328
+    Left = 476
+    Top = 368
     object MiAdd: TMenuItem
       Caption = 'Add'
       OnClick = MiClick
@@ -3696,13 +3715,13 @@ object SharpCenterWnd: TSharpCenterWnd
     end
   end
   object XPManifest1: TXPManifest
-    Left = 428
-    Top = 280
+    Left = 444
+    Top = 368
   end
   object ImageList1: TImageList
     AllocBy = 32
-    Left = 184
-    Top = 68
+    Left = 376
+    Top = 372
     Bitmap = {
       494C010101002000200010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000008000000001002000000000000080
@@ -4827,8 +4846,8 @@ object SharpCenterWnd: TSharpCenterWnd
         Name = 'PngImage2'
         Background = clWindow
       end>
-    Left = 500
-    Top = 252
+    Left = 408
+    Top = 368
     Bitmap = {}
   end
   object pilIcons: TPngImageList
@@ -10982,8 +11001,9 @@ object SharpCenterWnd: TSharpCenterWnd
     Bitmap = {}
   end
   object Timer1: TTimer
+    Enabled = False
     OnTimer = Timer1Timer
-    Left = 68
-    Top = 232
+    Left = 508
+    Top = 364
   end
 end

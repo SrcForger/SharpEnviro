@@ -256,12 +256,12 @@ begin
   if ActivePlugin.Dllhandle = 0 then
     exit;
 
+  if Assigned(FOnUnloadPlugin) then
+    FOnUnloadPlugin(Self);
+
   // Handle proper closing of the setting
   if @FActivePlugin.Close <> nil then
     FActivePlugin.Close(Hinstance, false);
-
-  if Assigned(FOnUnloadPlugin) then
-    FOnUnloadPlugin(Self);
 
   // Unload dll
   UnloadPlugin(@FActivePlugin);
