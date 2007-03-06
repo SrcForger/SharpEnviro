@@ -23,7 +23,8 @@ function extrShellIcon(Bmp : TBitmap32; FileName : String) : THandle;
 function GetShellIconHandle(FileName : String) : THandle;
 function LoadIco(Bmp : TBitmap32; IconFile : string; Size : integer) : boolean;
 function LoadPng(Bmp : TBitmap32; IconFile:string) : boolean;
-function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32) : boolean;
+function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32) : boolean; overload;
+function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32; Size : integer) : boolean; overload;
 
 implementation
 
@@ -179,7 +180,13 @@ begin
   result := true;
 end;
 
+
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32) : boolean;
+begin
+  IconStringToIcon(Icon,Target,Bmp,0);
+end;
+
+function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32; Size : integer) : boolean;
 var
   SEIcon : TSharpEIcon;
   Ext : String;
@@ -189,7 +196,7 @@ begin
   else if SharpThemeApi.IsIconInIconSet(PChar(Icon)) then
   begin
     SEIcon := SharpThemeApi.GetIconSetIcon(PChar(Icon));
-    result := LoadIco(Bmp,SharpThemeApi.GetIconSetDirectory + SEIcon.FileName,0);
+    result := LoadIco(Bmp,SharpThemeApi.GetIconSetDirectory + SEIcon.FileName,Size);
   end else
   begin
     if FileExists(Icon) then
