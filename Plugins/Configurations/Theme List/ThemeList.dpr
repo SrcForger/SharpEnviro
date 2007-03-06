@@ -53,12 +53,12 @@ uses
 
 {$R *.res}
 
-function Open(const APluginID: Pchar; owner: hwnd): hwnd;
+function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 begin
   if frmThemeList = nil then frmThemeList := TfrmThemeList.Create(nil);
 
   uVistaFuncs.SetVistaFonts(frmThemeList);
-  frmThemeList.ParentWindow := owner;
+  frmThemeList.ParentWindow := aowner;
   frmThemeList.Left := 2;
   frmThemeList.Top := 2;
   frmThemeList.BorderStyle := bsNone;
@@ -66,11 +66,11 @@ begin
   result := frmThemeList.Handle;
 end;
 
-function Close(owner: hwnd; SaveSettings: Boolean): boolean;
+function Close(ASave: Boolean): boolean;
 begin
   result := True;
   try
-    if SaveSettings then
+    if ASave then
       frmThemeList.ThemeList.Save;
 
     frmThemeList.Close;
@@ -111,12 +111,12 @@ begin
 
 end;
 
-function CloseEdit(AOwner: hwnd; AEditMode:TSCE_EDITMODE; SaveSettings: Boolean): boolean;
+function CloseEdit(AEditMode:TSCE_EDITMODE; AApply: Boolean): boolean;
 begin
   Result := True;
 
   // First validate
-  if SaveSettings then
+  if AApply then
     if Not(frmEditItem.ValidateWindow(AEditMode)) then begin
       Result := False;
       Exit;
@@ -124,7 +124,7 @@ begin
        frmEditItem.ClearValidation;
 
   // If Validation ok then continue
-  if SaveSettings then begin
+  if AApply then begin
     frmThemeList.SaveUi;
     SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
   end;
