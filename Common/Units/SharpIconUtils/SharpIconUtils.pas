@@ -8,6 +8,7 @@ uses Windows,
      ShellApi,
      SharpThemeApi,
      CommCtrl,
+     Math,
      GR32,
      GR32_PNG,
      GR32_System,
@@ -159,7 +160,7 @@ begin
   end else
   begin
     result := False;
-    Bmp.SetSize(100,100);
+    Bmp.SetSize(Max(Size,1),Max(1,Size));
     Bmp.Clear(color32(64,64,64,64));
   end;
 end;
@@ -183,7 +184,7 @@ end;
 
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32) : boolean;
 begin
-  IconStringToIcon(Icon,Target,Bmp,0);
+  result := IconStringToIcon(Icon,Target,Bmp,0);
 end;
 
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32; Size : integer) : boolean;
