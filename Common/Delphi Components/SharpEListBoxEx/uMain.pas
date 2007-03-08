@@ -13,6 +13,7 @@ type
     PngSpeedButton1: TPngSpeedButton;
     SharpEListBoxEx1: TSharpEListBoxEx;
     col1: TPngImageList;
+    PngImageList1: TPngImageList;
     procedure SharpEListBoxEx1GetCellFont(const ACol: Integer;
       AItem: TSharpEListItem; var AFont: TFont);
     procedure SharpEListBox1ClickItem(AText: string; AItem, ACol: Integer);
@@ -49,8 +50,12 @@ begin
   SharpEListBoxEx1.ItemOffset := Point(4,4);
   SharpEListBoxEx1.itemheight := 54;
 
-  li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa',2);
-  li.AddSubItem('Columnaaaaaaaaaaaaaaaaa',0);
+  li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa',2,0);
+  li.AddSubItem('Columnaaaaaaaaaaaaaaaaa',1);
+  li.AddSubItem('Column3bbbbbbbbbbbbbbbbbbbbb');
+  li.Hint := 'Click to set as default';
+  li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa');
+  li.AddSubItem('Columnaaaaaaaaaaaaaaaaa');
   li.AddSubItem('Column3bbbbbbbbbbbbbbbbbbbbb');
   li.Hint := 'Click to set as default';
 
