@@ -152,9 +152,9 @@ var
   dir : String;
   n: Integer;
 begin
+  AStatusText := Pchar(IntToStr(1));
   dir := SharpApi.GetSharpeUserSettingsPath + 'Themes\';
   n := 0;
-
   if FindFirst(dir+'*.*', faDirectory, sr) = 0 then
   begin
     repeat
@@ -163,7 +163,6 @@ begin
     until FindNext(sr) <> 0;
     FindClose(sr);
   end;
-
   AStatusText := Pchar(IntToStr(n));
 end;
 
