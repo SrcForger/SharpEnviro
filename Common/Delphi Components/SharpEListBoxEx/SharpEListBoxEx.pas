@@ -146,7 +146,8 @@ type
       Rect: TRect; State: TOwnerDrawState);
     procedure DrawSelection(ARect: TRect; AState: TOwnerDrawState; AItem: TSharpEListItem);
     procedure SetColors(const Value: TSharpEListBoxExColors);
-    procedure DrawItemText(ACanvas: TCanvas; ARect: TRect; AFlags: Longint; Aitem: TSharpEListItem; ACol: Integer);
+    procedure DrawItemText(ACanvas: TCanvas; ARect: TRect; AFlags: Longint;
+      Aitem: TSharpEListItem; ACol: Integer; APngImageList:TPngImageList);
     procedure DrawItemImage(ACanvas: TCanvas; ARect: TRect; AItem: TSharpEListItem;
       ACol: Integer; APngImageList:TPngImageList);
     function GetColumn(AColumn: Integer): TSharpEListBoxExColumn;
@@ -331,13 +332,17 @@ try
 
         if ((FSelected) and (IsImageIndexValid(tmpItem,i,tmpItem.SubItemSelectedImageIndex[i]))) then begin
             DrawItemImage(Self.Canvas, R, tmpItem, i, tmpCol.SelectedImages);
+
+            DrawItemText(Self.Canvas, R, 0, tmpItem, i, tmpCol.SelectedImages);
         end else
         begin
           if IsImageIndexValid(tmpItem,i,tmpItem.SubItemImageIndex[i]) then
             DrawItemImage(Self.Canvas, R, tmpItem, i, tmpCol.Images);
+
+          DrawItemText(Self.Canvas, R, 0, tmpItem, i, tmpCol.Images);
         end;
 
-        DrawItemText(Self.Canvas, R, 0, tmpItem, i);
+        
         X := X + Column[i].Width;
       end;
     end;
@@ -353,7 +358,6 @@ var
   R: TRect;
   iW, iH, iItemHWOffsets, iItemWWOffsets, n: Integer;
 begin
-
 
   iW := APngImageList.PngImages.
     Items[Aitem.GetSubItemImageIndex(ACol)].PngImage.Width;
@@ -391,23 +395,18 @@ begin
 end;
 
 procedure TSharpEListBoxEx.DrawItemText(ACanvas: TCanvas; ARect: TRect;
-  AFlags: Integer; Aitem: TSharpEListItem; ACol: Integer);
+  AFlags: Integer; Aitem: TSharpEListItem; ACol: Integer; APngImageList:TPngImageList);
 var
   s: string;
   tmpColor: TColor;
   iImgWidth: Integer;
   tmpFont: TFont;
-  tmpPngList: TPngImageList;
 const
   Alignments: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
   VerticalAlignments: array[TVerticalAlignment] of Longint = (DT_TOP, DT_BOTTOM,
     DT_VCENTER);
 
 begin
-  if FSelected then
-    tmpPngList := Column[ACol].SelectedImages else
-    tmpPngList := Column[ACol].Images;
-
   AFlags := AFlags or DT_NOPREFIX or DT_EXPANDTABS or DT_SINGLELINE or
     VerticalAlignments[Column[ACol].VAlign] or Alignments[Column[ACol].HAlign];
   AFlags := DrawTextBiDiModeFlags(AFlags);
@@ -415,7 +414,7 @@ begin
   iImgWidth := 0;
   if  IsImageIndexValid(AItem,ACol,Aitem.SubItemImageIndex[ACol]) then
   begin
-    iImgWidth := tmpPngList.PngImages.
+    iImgWidth := APngImageList.PngImages.
       Items[Aitem.GetSubItemImageIndex(ACol)].PngImage.Width+10;
     ARect.Left := ARect.Left + iImgWidth;
   end;
