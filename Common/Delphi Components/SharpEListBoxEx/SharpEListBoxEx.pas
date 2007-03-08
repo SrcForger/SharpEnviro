@@ -148,7 +148,7 @@ type
     procedure SetColors(const Value: TSharpEListBoxExColors);
     procedure DrawItemText(ACanvas: TCanvas; ARect: TRect; AFlags: Longint; Aitem: TSharpEListItem; ACol: Integer);
     procedure DrawItemImage(ACanvas: TCanvas; ARect: TRect; AItem: TSharpEListItem;
-      ACol: Integer);
+      ACol: Integer; APngImageList:TPngImageList);
     function GetColumn(AColumn: Integer): TSharpEListBoxExColumn;
     function GetColumnCount: Integer;
     procedure SetColumn(AColumn: Integer; const Value: TSharpEListBoxExColumn);
@@ -330,11 +330,11 @@ try
       begin
 
         if ((FSelected) and (IsImageIndexValid(tmpItem,i,tmpItem.SubItemSelectedImageIndex[i]))) then begin
-            DrawItemImage(Self.Canvas, R, tmpItem, i);
+            DrawItemImage(Self.Canvas, R, tmpItem, i, tmpCol.SelectedImages);
         end else
         begin
           if IsImageIndexValid(tmpItem,i,tmpItem.SubItemImageIndex[i]) then
-            DrawItemImage(Self.Canvas, R, tmpItem, i);
+            DrawItemImage(Self.Canvas, R, tmpItem, i, tmpCol.Images);
         end;
 
         DrawItemText(Self.Canvas, R, 0, tmpItem, i);
@@ -348,20 +348,16 @@ end;
 end;
 
 procedure TSharpEListBoxEx.DrawItemImage(ACanvas: TCanvas; ARect: TRect;
-  AItem: TSharpEListItem; ACol: Integer);
+  AItem: TSharpEListItem; ACol: Integer; APngImageList:TPngImageList);
 var
   R: TRect;
   iW, iH, iItemHWOffsets, iItemWWOffsets, n: Integer;
-  tmpPngList: TPngImageList;
 begin
-  // Get W+H of Icon
-  if FSelected then
-    tmpPngList := Column[ACol].SelectedImages else
-    tmpPngList := Column[ACol].Images;
 
-  iW := tmpPngList.PngImages.
+
+  iW := APngImageList.PngImages.
     Items[Aitem.GetSubItemImageIndex(ACol)].PngImage.Width;
-  iH := tmpPngList.PngImages.
+  iH := APngImageList.PngImages.
     Items[Aitem.GetSubItemImageIndex(ACol)].PngImage.Height;
 
   // Vertical postion
@@ -389,7 +385,7 @@ begin
   end;
 
   Try
-    tmpPngList.PngImages[AItem.SubItemImageIndex[ACol]].PngImage.Draw(ACanvas, R);
+    APngImageList.PngImages[AItem.SubItemImageIndex[ACol]].PngImage.Draw(ACanvas, R);
   Except
   End;
 end;
