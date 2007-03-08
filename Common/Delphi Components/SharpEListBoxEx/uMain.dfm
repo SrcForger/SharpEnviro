@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 8
   Top = 8
-  Width = 568
+  Width = 580
   Height = 355
   Caption = 'Form1'
   Color = clBtnFace
@@ -11,7 +11,6 @@ object Form1: TForm1
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
   object PngSpeedButton1: TPngSpeedButton
@@ -20,56 +19,60 @@ object Form1: TForm1
     Width = 23
     Height = 22
   end
+  object SharpEListBoxEx1: TSharpEListBoxEx
+    Left = 0
+    Top = 0
+    Width = 564
+    Height = 319
+    Columns = <
+      item
+        Width = 120
+        MaxWidth = 0
+        MinWidth = 0
+        TextColor = clRed
+        SelectedTextColor = clGray
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calLeft
+        Autosize = False
+        PngImageList = col1
+      end
+      item
+        Width = 150
+        MaxWidth = 150
+        MinWidth = 0
+        TextColor = clBlack
+        SelectedTextColor = clBlack
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calLeft
+        Autosize = True
+        PngImageList = col1
+      end
+      item
+        Width = 100
+        MaxWidth = 0
+        MinWidth = 0
+        TextColor = clBlack
+        SelectedTextColor = clBlack
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        Autosize = False
+        PngImageList = col1
+      end>
+    ItemHeight = 24
+    OnGetCellFont = SharpEListBoxEx1GetCellFont
+    Align = alClient
+  end
   object Button1: TButton
-    Left = 12
-    Top = 184
+    Left = 16
+    Top = 276
     Width = 75
     Height = 25
     Caption = 'Button1'
     TabOrder = 0
     OnClick = Button1Click
-  end
-  object SharpEListBoxEx1: TSharpEListBoxEx
-    Left = 224
-    Top = 0
-    Width = 328
-    Height = 319
-    Columns = <
-      item
-        Width = 50
-        TextColor = clGray
-        SelectedTextColor = clGray
-        HAlign = taCenter
-        VAlign = taAlignTop
-        PngImageList = col1
-      end
-      item
-        Width = 200
-        TextColor = clBlack
-        SelectedTextColor = clBlack
-        HAlign = taLeftJustify
-        VAlign = taAlignTop
-        PngImageList = col1
-      end
-      item
-        Width = 68
-        TextColor = clBlack
-        SelectedTextColor = clBlack
-        HAlign = taLeftJustify
-        VAlign = taVerticalCenter
-        PngImageList = col1
-      end
-      item
-        Width = 25
-        TextColor = clBlack
-        SelectedTextColor = clBlack
-        HAlign = taLeftJustify
-        VAlign = taAlignTop
-        PngImageList = col1
-      end>
-    ItemHeight = 24
-    OnGetCellColor = SharpEListBoxEx1GetCellColor
-    Align = alRight
   end
   object col1: TPngImageList
     BlendColor = clBlack
@@ -165,6 +168,8 @@ object Form1: TForm1
         Background = clWindow
       end>
     PngOptions = []
+    Left = 440
+    Top = 232
     Bitmap = {}
   end
 end

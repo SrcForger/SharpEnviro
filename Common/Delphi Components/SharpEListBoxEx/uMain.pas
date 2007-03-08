@@ -13,10 +13,10 @@ type
     PngSpeedButton1: TPngSpeedButton;
     SharpEListBoxEx1: TSharpEListBoxEx;
     col1: TPngImageList;
-    procedure SharpEListBoxEx1GetCellColor(const AItem: Integer;
-      var AColor: TColor);
+    procedure SharpEListBoxEx1GetCellFont(const ACol: Integer;
+      AItem: TSharpEListItem; var AFont: TFont);
     procedure SharpEListBox1ClickItem(AText: string; AItem, ACol: Integer);
-    procedure FormResize(Sender: TObject);
+
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
@@ -42,77 +42,23 @@ var
   li: TSharpEListItem;
 
 begin
-  lb := TSharpEListBoxEx.Create(Self);
-  lb.Parent := Self;
-  lb.Align := alClient;
-  lb.Width := 500;
-  lb.OnGetCellColor := SharpEListBoxEx1GetCellColor;
-  lb.Visible := False;
 
-  lb.OnClickItem := ClickItem;
-  lb.OnGetCellTextColor := GetCellText;
-  lb.OnGetCellCursor := GetCellCursor;
-  lb.ItemOffset := Point(4,4);
-  lb.itemheight := 54;
+  SharpEListBoxEx1.OnClickItem := ClickItem;
+  SharpEListBoxEx1.OnGetCellTextColor := GetCellText;
+  SharpEListBoxEx1.OnGetCellCursor := GetCellCursor;
+  SharpEListBoxEx1.ItemOffset := Point(4,4);
+  SharpEListBoxEx1.itemheight := 54;
 
-  tmpCol := lb.AddColumn('ItemIcon');
-  tmpCol.Width := 50;
-  tmpCol.HAlign := taCenter;
-  tmpCol.VAlign := taVerticalCenter;
-  tmpCol.PngImageList := Col1;
-
-  tmpCol := lb.AddColumn('Main Text');
-  tmpCol.Width := lb.Width - 100 - 50;
-  tmpCol.HAlign := taLeftJustify;
-  tmpCol.VAlign := taAlignTop;
-  tmpCol.TextColor := clDkGray;
-  tmpCol.SelectedTextColor := clBlack;
-  tmpCol.PngImageList := Col1;
-
-  tmpCol := lb.AddColumn('Status');
-  tmpCol.Width := 68;
-  tmpCol.HAlign := taLeftJustify;
-  tmpCol.VAlign := taVerticalCenter;
-  tmpCol.TextColor := clDkGray;
-  tmpCol.SelectedTextColor := clBlack;
-
-  tmpCol := lb.AddColumn('StatusIcon');
-  tmpCol.Width := 25;
-  tmpCol.HAlign := taCenter;
-  tmpCol.VAlign := taVerticalCenter;
-  tmpCol.TextColor := clDkGray;
-  tmpCol.SelectedTextColor := clBlack;
-
-  li := SharpEListBoxEx1.AddItem('',2);
-  li.AddSubItem('',0);
-  li.AddSubItem('Enabled');
-  li.AddSubItem('',1);
+  li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa',2);
+  li.AddSubItem('Columnaaaaaaaaaaaaaaaaa',0);
+  li.AddSubItem('Column3bbbbbbbbbbbbbbbbbbbbb');
   li.Hint := 'Click to set as default';
 
-  lb.Invalidate;
 end;
 
 procedure TForm1.ClickItem(AText: String; AItem, ACol: Integer);
 begin
-  //ShowMessage(AText);
-  lb.Item[AItem].SubItemImageIndex[ACol] := 0;
 
-  {if lb.Item[AItem].SubItemImageIndex[ACol] <> -1 then
-  if lb.Item[AItem].SubItemImageIndex[ACol] = 0 then
-  lb.Item[AItem].SubItemImageIndex[ACol] := 1 else
-  lb.Item[AItem].SubItemImageIndex[ACol] := 0;   }
-end;
-
-procedure TForm1.FormResize(Sender: TObject);
-begin
-  if assigned(lb) then
-  if lb.ColumnCount = 4 then begin
-    lb.Column[0].Width := 50;
-    lb.Column[1].Width := lb.Width - 100 - 50;
-    lb.Column[2].Width := 68;
-    lb.Column[3].Width := 25;
-    lb.Invalidate;
-  end;
 end;
 
 procedure TForm1.GetCellCursor(const ACol: Integer; AItem: TSharpEListItem;
@@ -124,11 +70,7 @@ end;
 
 procedure TForm1.GetCellText(const ACol: Integer; AItem:TSharpEListItem; var AColor: TColor);
 begin
-  if ACol = 2 then begin
-    if lb.ItemIndex = AItem.ID then
-    AColor := clBlue else
-    AColor := clNavy;
-  end;
+
 end;
 
 procedure TForm1.SharpEListBox1ClickItem(AText: string; AItem, ACol: Integer);
@@ -136,11 +78,16 @@ begin
   ShowMessage('Test');
 end;
 
-procedure TForm1.SharpEListBoxEx1GetCellColor(const AItem: Integer;
-  var AColor: TColor);
+procedure TForm1.SharpEListBoxEx1GetCellFont(const ACol: Integer;
+  AItem: TSharpEListItem; var AFont: TFont);
 begin
-  if Aitem = lb.ItemIndex then
-    AColor := clBlue;
+  if ACol = 0 then begin
+  AFont.Style := [fsBold];
+  AFont.Size := 9;
+  AFont.Name := 'courier';
+  end;
+  if ACol = 1 then AFont.Style := [fsItalic];
+  if ACol = 2 then AFont.Style := [fsUnderline];
 end;
 
 end.
