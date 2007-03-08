@@ -304,7 +304,10 @@ begin
     if FActivePlugin.Dllhandle <> 0 then
       Unload;
 
-    Load(FUnloadCommand.Param,FUnloadCommand.PluginID);
+    ActivePluginID := FUnloadCommand.PluginID;
+    if CompareText(ExtractFileExt(FUnloadCommand.Param),'.con') = 0 then
+       BuildNavFromFile(FUnloadCommand.Param)
+       else  Load(FUnloadCommand.Param,FUnloadCommand.PluginID);
   end;
 end;
 
