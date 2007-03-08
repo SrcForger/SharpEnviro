@@ -250,7 +250,7 @@ begin
   if FrmEditItem <> nil then
     UpdateEditText;
 
-  //SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
+  SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
 end;
 
 function TfrmThemeList.UpdateUI: Boolean;
