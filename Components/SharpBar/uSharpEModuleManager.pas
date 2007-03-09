@@ -90,11 +90,11 @@ type
                      DllCreateModule    : function(ID : integer; parent : hwnd) : hwnd;
                      DllCloseModule     : function(ID : integer) : boolean;
                      DllPosChanged      : procedure(ID : integer);
-                     DllSkinChanged     : procedure(ID : integer);
                      DllModuleMessage   : function (ID : integer; msg: string): integer;
                      DllShowSettingsWnd : procedure(ID : integer);
                      DllRefresh         : procedure(ID : integer);
                      DllSetSize         : procedure(ID : integer; NewWidth : integer);
+                     DllUpdateMessage   : procedure(Part : integer);
                      procedure Clear;
                      constructor Create(pFileName : string; pParent : hwnd;
                                         pSkinManager : TSharpESkinManager;
@@ -163,7 +163,6 @@ type
                      procedure FixModulePositions;
                      function GetModule(ID : integer) : TModule;
                      function GetModuleIndex(ID : integer) : integer;
-                     procedure UpdateModuleSkins;
                      procedure SortModulesByPosition;
                      procedure RefreshMiniThrobbers;
                      function GetFirstRModuleIndex : integer;
@@ -173,6 +172,7 @@ type
                      procedure MoveModule(Index, Direction : integer);
                      function SendPluginMessage(ID : integer; msg : string) : integer;
                      procedure BroadcastPluginMessage(msg : string);
+                     procedure BroadcastPluginUpdate(part : integer);
                      procedure BroadCastModuleRefresh;
                      procedure ReCalculateModuleSize;
                      procedure OnMiniThrobberClick(Sender : TObject);
@@ -241,6 +241,20 @@ begin
   FModuleFiles.Free;
   FModuleFiles := nil;
   inherited Destroy;
+end;
+
+// Sends an update message to all modules
+procedure TModuleManager.BroadcastPluginUpdate(part : integer);
+var
+  n : integer;
+  mf : TModuleFile;
+begin
+  for n := 0 to FModuleFiles.Count - 1 do
+  begin
+    mf := TModuleFile(FModuleFiles.Items[n]);
+    if @mf.DllUpdateMessage <> nil then
+       mf.DllUpdateMessage(part);
+  end;
 end;
 
 // Broadcast a message to all modules
@@ -964,17 +978,6 @@ begin
   FreeAndNil(CList);
 end;
 
-procedure TModuleManager.UpdateModuleSkins;
-var
-  n : integer;
-  TempModule : TModule;
-begin
-  for n := 0 to FModules.Count -1 do
-  begin
-    TempModule := TModule(FModules.Items[n]);
-    TempModule.ModuleFile.DllSkinChanged(TempModule.ID);
-  end;
-end;
 
 procedure TModuleManager.RefreshMiniThrobbers;
 var
@@ -1152,7 +1155,7 @@ begin
       @DllCreateModule    := GetProcAddress(FDllHandle, 'CreateModule');
       @DllCloseModule     := GetProcAddress(FDllHandle, 'CloseModule');
       @DllPosChanged      := GetProcAddress(FDllHandle, 'PosChanged');
-      @DllSkinChanged     := GetProcAddress(FDllHandle, 'SkinChanged');
+      @DllUpdateMessage    := GetProcAddress(FDllHandle, 'UpdateMessage');
       @DllModuleMessage   := GetProcAddress(FDllHandle, 'ModuleMessage');
       @DllShowSettingsWnd := GetProcAddress(FDllHandle, 'ShowSettingsWnd');
       @DllRefresh         := GetProcAddress(FDllHandle, 'Refresh');
@@ -1162,7 +1165,7 @@ begin
     if (@DllCreateModule = nil) or
        (@DllCloseModule = nil) or
        (@DllPosChanged = nil) or
-       (@DllSkinChanged = nil) or
+       (@DllUpdateMessage = nil) or
        (@DllSetSize = nil) then
     begin
       FreeLibrary(FDllhandle);
@@ -1170,7 +1173,7 @@ begin
       DllCreateModule      := nil;
       DllCloseModule       := nil;
       DllPosChanged        := nil;
-      DllSkinChanged       := nil;
+      DllUpdateMessage     := nil;
       DllModuleMessage     := nil;
       DllShowSettingsWnd   := nil;
       DllRefresh           := nil;
@@ -1201,7 +1204,7 @@ begin
     DllCreateModule      := nil;
     DllCloseModule       := nil;
     DllPosChanged        := nil;
-    DllSkinChanged       := nil;
+    DllUpdateMessage     := nil;
     DllModuleMessage     := nil;
     DllShowSettingsWnd   := nil;
     DllRefresh           := nil;
