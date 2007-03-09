@@ -14,6 +14,8 @@ type
     SharpEListBoxEx1: TSharpEListBoxEx;
     col1: TPngImageList;
     PngImageList1: TPngImageList;
+    procedure SharpEListBoxEx1MeasureItem(Control: TWinControl; Index: Integer;
+      var Height: Integer);
     procedure SharpEListBoxEx1GetCellFont(const ACol: Integer;
       AItem: TSharpEListItem; var AFont: TFont);
     procedure SharpEListBox1ClickItem(AText: string; AItem, ACol: Integer);
@@ -50,11 +52,11 @@ begin
   SharpEListBoxEx1.ItemOffset := Point(4,4);
   SharpEListBoxEx1.itemheight := 54;
 
-  li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa',1,0);
+  li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa',1,2);
   li.AddSubItem('Columnaaaaaaaaaaaaaaaaa',1);
-  li.AddSubItem('Column3bbbbbbbbbbbbbbbbbbbbb');
+  li.AddSubItem('Column3bbbbbbbbbbbbbbbbbbbbb',1);
   li.Hint := 'Click to set as default';
-  li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa');
+  li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa',1);
   li.AddSubItem('Columnaaaaaaaaaaaaaaaaa');
   li.AddSubItem('Column3bbbbbbbbbbbbbbbbbbbbb');
   li.Hint := 'Click to set as default';
@@ -93,6 +95,12 @@ begin
   end;
   if ACol = 1 then AFont.Style := [fsItalic];
   if ACol = 2 then AFont.Style := [fsUnderline];
+end;
+
+procedure TForm1.SharpEListBoxEx1MeasureItem(Control: TWinControl;
+  Index: Integer; var Height: Integer);
+begin
+  if Index = 1 then height := 50;
 end;
 
 end.
