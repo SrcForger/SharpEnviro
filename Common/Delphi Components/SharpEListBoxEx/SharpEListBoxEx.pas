@@ -358,11 +358,17 @@ var
   R: TRect;
   iW, iH, iItemHWOffsets, iItemWWOffsets, n: Integer;
 begin
-
-  iW := APngImageList.PngImages.
-    Items[Aitem.GetSubItemImageIndex(ACol)].PngImage.Width;
-  iH := APngImageList.PngImages.
-    Items[Aitem.GetSubItemImageIndex(ACol)].PngImage.Height;
+  if FSelected then begin
+    iW := APngImageList.PngImages.
+      Items[Aitem.GetSubItemSelectedImageIndex(ACol)].PngImage.Width;
+    iH := APngImageList.PngImages.
+      Items[Aitem.GetSubItemSelectedImageIndex(ACol)].PngImage.Height;
+  end else begin
+    iW := APngImageList.PngImages.
+      Items[Aitem.GetSubItemImageIndex(ACol)].PngImage.Width;
+    iH := APngImageList.PngImages.
+      Items[Aitem.GetSubItemImageIndex(ACol)].PngImage.Height;
+  end;
 
   // Vertical postion
   case Column[ACol].VAlign of
@@ -389,7 +395,10 @@ begin
   end;
 
   Try
+    if FSelected then
+    APngImageList.PngImages[AItem.SubItemSelectedImageIndex[ACol]].PngImage.Draw(ACanvas, R) else
     APngImageList.PngImages[AItem.SubItemImageIndex[ACol]].PngImage.Draw(ACanvas, R);
+
   Except
   End;
 end;
@@ -412,11 +421,20 @@ begin
   AFlags := DrawTextBiDiModeFlags(AFlags);
 
   iImgWidth := 0;
-  if  IsImageIndexValid(AItem,ACol,Aitem.SubItemImageIndex[ACol]) then
-  begin
-    iImgWidth := APngImageList.PngImages.
-      Items[Aitem.GetSubItemImageIndex(ACol)].PngImage.Width+10;
-    ARect.Left := ARect.Left + iImgWidth;
+  if FSelected then begin
+    if  IsImageIndexValid(AItem,ACol,Aitem.SubItemSelectedImageIndex[ACol]) then
+    begin
+      iImgWidth := APngImageList.PngImages.
+        Items[Aitem.GetSubItemSelectedImageIndex(ACol)].PngImage.Width+10;
+      ARect.Left := ARect.Left + iImgWidth;
+    end;
+  end else begin
+    if  IsImageIndexValid(AItem,ACol,Aitem.SubItemImageIndex[ACol]) then
+    begin
+      iImgWidth := APngImageList.PngImages.
+        Items[Aitem.GetSubItemImageIndex(ACol)].PngImage.Width+10;
+      ARect.Left := ARect.Left + iImgWidth;
+    end;
   end;
 
   ACanvas.Font := Self.Font;

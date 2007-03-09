@@ -50,7 +50,7 @@ begin
   SharpEListBoxEx1.ItemOffset := Point(4,4);
   SharpEListBoxEx1.itemheight := 54;
 
-  li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa',2,0);
+  li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa',1,0);
   li.AddSubItem('Columnaaaaaaaaaaaaaaaaa',1);
   li.AddSubItem('Column3bbbbbbbbbbbbbbbbbbbbb');
   li.Hint := 'Click to set as default';
