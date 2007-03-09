@@ -63,6 +63,7 @@ type
     FComponentSkin: TSharpESkin;
     FUsingMainWnd : boolean;
     FIsThemeLoading : boolean;
+    FHandleUpdates : boolean;
     FMsgWnd : Hwnd;
     procedure SystemSkinChanged(sender : TObject);
     procedure SetSkinSource(value: TSkinSource);
@@ -88,11 +89,14 @@ type
     property Skin: TSharpESkin read GetSkin;
     property SystemSkin: TSystemSharpESkin read FSystemSkin;
     procedure RefreshControls;
+    procedure UpdateSkin;
+    procedure UpdateScheme;
   published
     property SkinSource: TSkinSource read FSkinSource write SetSkinSource;
     property SchemeSource: TSchemeSource read FSchemeSource write SetSchemeSource;
     property CompScheme: TSharpEScheme read FComponentScheme write SetComponentScheme;
     property CompSkin: TSharpESkin read FComponentSkin write SetComponentSkin;
+    property HandleUpdates : boolean read FHandleUpdates write FHandleUpdates;
     property onSkinChanged: TNotifyEvent read FOnSkinChanged write FOnSkinChanged;
   end;
 
@@ -133,6 +137,7 @@ begin
   FSystemSkin.OnSkinChanged := SystemSkinChanged;
   FSystemSkin.OnNotify := ComponentSkinUpdated;
 
+  FHandleUpdates := True;
   FIsThemeLoading := False;
 
   if not FNoSystemSchemeInit then
@@ -193,8 +198,32 @@ begin
   //RefreshControls;
 end;
 
+procedure TSharpESkinManager.UpdateSkin;
+begin
+  if SkinSource = ssSystem then
+  begin
+    SystemSkin.LoadSkinFromStream;
+    LoadSharpEScheme(FSystemScheme);
+  end;
+  RefreshControls;
+  if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
+end;
+
+procedure TSharpESkinManager.UpdateScheme;
+begin
+  if SkinSource = ssSystem then
+     LoadSharpEScheme(FSystemScheme);
+  RefreshControls;
+end;
+
 function TSharpESkinManager.MessageHook(var Msg: TMessage): Boolean;
 begin
+  if not FHandleUpdates then
+  begin
+    result := false;
+    exit;
+  end;
+
   if (msg.Msg = WM_THEMELOADINGSTART) then FIsThemeLoading := True;
   if (msg.Msg = WM_THEMELOADINGEND) then
   begin
@@ -205,7 +234,8 @@ begin
     RefreshControls;
   end;
   if (SchemeSource = ssSystem) and
-     ((Msg.Msg = WM_SHARPETHEMEUPDATE) or (Msg.Msg = WM_SHARPEUPDATESETTINGS)) then
+     ((Msg.Msg = WM_SHARPETHEMEUPDATE)
+     or ((Msg.Msg = WM_SHARPEUPDATESETTINGS) and (Msg.WParam = SU_SCHEME))) then
   Begin
     if not FIsThemeLoading then
     begin
@@ -216,18 +246,11 @@ begin
       RefreshControls;
     end;
   end;
-  if (Msg.Msg = WM_SYSTEMSKINUPDATE) then
+  if ((Msg.Msg = WM_SHARPEUPDATESETTINGS) and (Msg.WParam = SU_SKIN)) then
   begin
-    if SkinSource = ssSystem then
-       SystemSkin.LoadSkinFromStream;
-    if SchemeSource = ssSystem then
-    begin
-      if not (csDesigning in ComponentState) then
-         SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
-      LoadSharpEScheme(FSystemScheme);
-    end;
-    RefreshControls;
-    if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
+    if not (csDesigning in ComponentState) then
+       SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
+    UpdateSkin;
   end;
   result := false;
 end;
