@@ -922,8 +922,8 @@ begin
                 case i of
                   0: Size := twsCenter;
                   2: Size := twsStretch;
-                   3: Size := twsTile;
-                   else Size := twsScale;
+                  3: Size := twsTile;
+                  else Size := twsScale;
                  end;
                  ColorChange     := BoolValue('ColorChange',ColorChange);
                  Hue             := IntValue('Hue',Hue);
@@ -1193,11 +1193,22 @@ end;
 // ##########################################
 
 function GetMonitorWallpaper(Index : integer) : TThemeWallpaper;
+var
+  n : integer;
 begin
   Index := abs(Index);
-  if Index > High(Theme.Wallpapers) then
+
+  if Index > High(Theme.MonitorWallpapers) then
      Index := 0;
-  result := Theme.Wallpapers[Index];
+
+  for n := 0 to High(Theme.Wallpapers) do
+      if CompareText(Theme.MonitorWallpapers[Index],Theme.Wallpapers[n].Name) = 0 then
+      begin
+        result := Theme.Wallpapers[n];
+        exit;
+      end;
+
+  result := Theme.Wallpapers[0];
 end;
 
 
