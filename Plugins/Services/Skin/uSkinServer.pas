@@ -49,8 +49,7 @@ Type
       FFileName  : string;
       FStream    : TFileStream;
 
-      procedure UpdateTheme(var Msg: TMessage); message WM_SHARPETHEMEUPDATE;
-      procedure UpdateScheme(var Msg: TMessage); message WM_SHARPEUPDATESETTINGS;
+      procedure UpdateSkin(var Msg: TMessage); message WM_SHARPEUPDATESETTINGS;
     public
       procedure UpdateStreamFile;
     end;
@@ -66,7 +65,7 @@ begin
   FSkin := TSharpESkin.Create(self);
   //FStream := TFileStream.Create(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin',fmCreate or fmShareDenyWrite);
   UpdateStreamFile;
-  SharpEBroadCast(WM_SYSTEMSKINUPDATE,0,0);
+  SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKINFILECHANGED,0);
 end;
 
 procedure TSkinServer.FormDestroy(Sender: TObject);
@@ -107,16 +106,10 @@ begin
   end;
 end;
 
-procedure TSkinServer.UpdateScheme(var Msg: TMessage);
+procedure TSkinServer.UpdateSkin(var Msg: TMessage);
 begin
   UpdateStreamFile;
-  SharpEBroadCast(WM_SYSTEMSKINUPDATE,0,0);
-end;
-
-procedure TSkinServer.UpdateTheme(var Msg: TMessage);
-begin
-  UpdateStreamFile;
-  SharpEBroadCast(WM_SYSTEMSKINUPDATE,0,0);
+  SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKINFILECHANGED,0);
 end;
 
 end.
