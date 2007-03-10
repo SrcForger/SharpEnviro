@@ -121,7 +121,10 @@ end;
 procedure TSharpEScheme.AddColor(Color : TSharpESkinColor);
 begin
   setlength(FColors,length(FColors)+1);
-  FColors[High(FColors)] := Color;
+  FColors[High(FColors)].Name := Color.Name;
+  FColors[High(FColors)].Tag := Color.Tag;
+  FColors[High(FColors)].Info := Color.Info;
+  FColors[High(FColors)].Color := Color.Color;
 end;
 
 procedure TSharpEScheme.AddColor(Name,Tag,Info : String; Color : integer);
