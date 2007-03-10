@@ -304,7 +304,7 @@ var
   tmpPng: TPngObject;
   R: TRect;
   X, Y: Integer;
-  i: Integer;
+  i, idx: Integer;
   bSelected: Boolean;
 begin
 try
@@ -334,10 +334,12 @@ try
       begin
         tmpPng := nil;
         if ((bSelected) and (IsImageIndexValid(tmpItem,i,
-          tmpItem.SubItemSelectedImageIndex[i],bSelected))) then begin
+          tmpItem.SubItemSelectedImageIndex[i],bSelected)) and (tmpCol.SelectedImages <> nil)) then begin
 
-            tmpPng := tmpCol.SelectedImages.PngImages.
-              Items[tmpItem.GetSubItemSelectedImageIndex(i)].PngImage;
+            idx := tmpItem.GetSubItemSelectedImageIndex(i);
+
+            if idx <> -1 then
+              tmpPng := tmpCol.SelectedImages.PngImages.Items[idx].PngImage;
 
             if tmpPng <> nil then
               DrawItemImage(Self.Canvas, R, tmpItem, i, tmpPng);
@@ -345,18 +347,21 @@ try
             DrawItemText(Self.Canvas, R, 0, tmpItem, i, tmpPng);
         end else
         begin
-          if IsImageIndexValid(tmpItem,i,tmpItem.SubItemImageIndex[i],bSelected) then
+          if IsImageIndexValid(tmpItem,i,tmpItem.SubItemImageIndex[i],bSelected) then begin
 
-            tmpPng := tmpCol.Images.PngImages.
-              Items[tmpItem.GetSubItemImageIndex(i)].PngImage;
+          idx := tmpItem.GetSubItemImageIndex(i);
+
+          if idx <> -1 then
+            tmpPng := tmpCol.Images.PngImages.Items[idx].PngImage;
 
             if tmpPng <> nil then
               DrawItemImage(Self.Canvas, R, tmpItem, i, tmpPng);
 
             DrawItemText(Self.Canvas, R, 0, tmpItem, i, tmpPng);
-        end;
+        end else
+          DrawItemText(Self.Canvas, R, 0, tmpItem, i, nil);
+      end;
 
-        
         X := X + Column[i].Width;
       end;
     end;
@@ -776,7 +781,9 @@ end;
 
 function TSharpEListBoxEx.GetItem(AItem: Integer): TSharpEListItem;
 begin
-  Result := TSharpEListItem(Self.Items.Objects[AItem]);
+  Result := nil;
+  if Self.Items.Count <> 0 then
+    Result := TSharpEListItem(Self.Items.Objects[AItem]);
 end;
 
 function TSharpEListBoxEx.IsImageIndexValid(AItem: TSharpEListItem;
@@ -785,6 +792,8 @@ begin
   Result := False;
 
   if ASelected then begin
+    if (Column[ACol].SelectedImages = nil) then
+      Result := True else
     if ( (AImageIndex <> -1) and (Column[ACol].SelectedImages <> nil)  and
       (Column[ACol].SelectedImages.PngImages[AImageIndex] <> nil)) then
         Result := True;
