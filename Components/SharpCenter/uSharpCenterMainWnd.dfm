@@ -90,18 +90,26 @@ object SharpCenterWnd: TSharpCenterWnd
               Columns = <
                 item
                   Width = 120
+                  MaxWidth = 0
+                  MinWidth = 0
                   TextColor = clBlack
                   SelectedTextColor = clBlack
                   HAlign = taLeftJustify
                   VAlign = taVerticalCenter
-                  PngImageList = picMain
+                  ColumnAlign = calLeft
+                  Autosize = False
+                  Images = picMain
                 end
                 item
                   Width = 20
+                  MaxWidth = 0
+                  MinWidth = 0
                   TextColor = 10658466
                   SelectedTextColor = 33023
                   HAlign = taLeftJustify
                   VAlign = taVerticalCenter
+                  ColumnAlign = calLeft
+                  Autosize = False
                 end>
               ItemHeight = 24
               OnClickItem = lbTreeClickItem
@@ -211,11 +219,14 @@ object SharpCenterWnd: TSharpCenterWnd
                 Columns = <
                   item
                     Width = 149
+                    MaxWidth = 0
+                    MinWidth = 0
                     TextColor = clBlack
                     SelectedTextColor = clBlack
                     HAlign = taLeftJustify
                     VAlign = taVerticalCenter
-                    PngImageList = pilIcons
+                    ColumnAlign = calLeft
+                    Autosize = False
                   end>
                 Color = 8447997
                 ItemHeight = 21
@@ -719,7 +730,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 145
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -42
+                Left = -70
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1169,7 +1180,7 @@ object SharpCenterWnd: TSharpCenterWnd
               object Edit2: TEdit
                 Left = 0
                 Top = 36
-                Width = -47
+                Width = -75
                 Height = 21
                 Anchors = [akLeft, akTop, akRight]
                 Ctl3D = True
@@ -1235,6 +1246,7 @@ object SharpCenterWnd: TSharpCenterWnd
             Scale = 1.000000000000000000
             ScaleMode = smNormal
             TabOrder = 0
+            OnBitmapResize = btnBackClick
           end
         end
         object Panel3: TPanel
@@ -1284,7 +1296,6 @@ object SharpCenterWnd: TSharpCenterWnd
               BevelOuter = bvNone
               Color = clWindow
               FullRepaint = False
-              ParentBackground = False
               PopupMenu = PopupMenu1
               TabOrder = 0
             end

@@ -45,7 +45,7 @@ type
     Dllhandle: Thandle;
 
     Open: function(const APluginID:Pchar; AOwner: hwnd): hwnd;
-    Close: function(ASave: Boolean): boolean;
+    Close: procedure(ASave: Boolean);
 
     OpenEdit: function(AOwner:Hwnd; AEditMode:TSCE_EDITMODE):Hwnd;
     CloseEdit: function(AEditMode:TSCE_EDITMODE; AApply:Boolean): boolean;

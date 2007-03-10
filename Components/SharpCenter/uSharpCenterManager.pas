@@ -63,7 +63,8 @@ type
   end;
 
 type
-  TSharpCenterManagerAddNavItem = Procedure (AItem: TSharpCenterManagerItem) of object;
+  TSharpCenterManagerAddNavItem = Procedure (AItem: TSharpCenterManagerItem;
+    const AIndex:Integer) of object;
 
 type
   TSharpCenterManager = Class
@@ -226,8 +227,7 @@ begin
         Result := True;
 
         case iSettingType of
-          SCU_SHARPTHEME: ; // already assigned
-          SCU_SERVICE:
+          SU_SERVICE:
             begin
               sName := GetDisplayName(FActiveFile, FActivePluginID);
               sFile := GetSharpeUserSettingsPath + 'SharpCore\ServiceList.xml';
@@ -320,27 +320,22 @@ function TSharpCenterManager.Save: Boolean;
 var
   iSettingType: Integer;
   n: Integer;
-  bClose: Boolean;
 begin
-  bClose := True;
+  Result := True;
+  
   if (@FActivePlugin.Close <> nil) then
-    bClose := FActivePlugin.Close(True);
+    FActivePlugin.Close(True);
 
-  if bClose then
-  begin
-    iSettingType := 0;
-    if (@FActivePlugin.SetSettingType) <> nil then
-      iSettingType := FActivePlugin.SetSettingType;
+  iSettingType := 0;
+  if (@FActivePlugin.SetSettingType) <> nil then
+    iSettingType := FActivePlugin.SetSettingType;
 
-    if TryStrToInt(FActivePluginID, n) then
-      n := StrToInt(FActivePluginID)
-    else
-      n := -1;
+  if TryStrToInt(FActivePluginID, n) then
+    n := StrToInt(FActivePluginID)
+  else
+    n := -1;
 
-    SharpEBroadCast(WM_SHARPEUPDATESETTINGS, iSettingType, n);
-  end;
-
-  Result := bClose;
+  SharpEBroadCast(WM_SHARPEUPDATESETTINGS, iSettingType, n);
 end;
 
 function TSharpCenterManager.BuildNavFromFile(AFile: string): Boolean;
@@ -397,7 +392,7 @@ begin
           SCM.AssignIconIndex(pngfile, newItem);
 
           if Assigned(FOnAddNavItem) then begin
-            FOnAddNavItem(newItem);
+            FOnAddNavItem(newItem,0);
           end;
 
           if i = 0 then begin
@@ -477,7 +472,7 @@ begin
           AssignIconIndex(sPng,newItem);
 
           if Assigned(FOnAddNavItem) then begin
-            FOnAddNavItem(newItem);
+            FOnAddNavItem(newItem,-1);
             Inc(iCount);
           end;
 
@@ -496,7 +491,7 @@ begin
             AssignIconIndex(sPng, newItem);
 
             if Assigned(FOnAddNavItem) then begin
-              FOnAddNavItem(newItem);
+              FOnAddNavItem(newItem,-1);
               Inc(iCount);
             end;
           end;
@@ -512,7 +507,7 @@ begin
       newItem.ItemType := itmNone;
 
       if Assigned(FOnAddNavItem) then begin
-        FOnAddNavItem(newItem);
+        FOnAddNavItem(newItem,0);
       end;
 
     end;

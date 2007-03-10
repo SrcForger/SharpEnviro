@@ -173,7 +173,8 @@ type
     procedure SetToolbarTabVisible(ATabID:TTabID; AVisible:Boolean);
     procedure LoadPluginEvent(Sender:TObject);
     procedure UnloadPluginEvent(Sender:TObject);
-    procedure AddItemEvent(AItem: TSharpCenterManagerItem);
+    procedure AddItemEvent(AItem: TSharpCenterManagerItem;
+      const AIndex:Integer);
     procedure AddPluginTabsEvent(Sender: TObject);
     procedure UpdateThemeEvent(Sender: TObject);
     procedure InitNavEvent(Sender:TObject);
@@ -359,13 +360,14 @@ end;
 
 procedure TSharpCenterWnd.UpdateLivePreview;
 begin
+  //pnlLivePreview.Visible := False;
   imgLivePreview.Bitmap.SetSize(pnlLivePreview.Width,pnlLivePreview.Height);
   imgLivePreview.Bitmap.Clear(clwhite32);
 
-  if (@SCM.ActivePlugin.UpdatePreview <> nil) then
+  if (@SCM.ActivePlugin.UpdatePreview <> nil) then begin
     SCM.ActivePlugin.UpdatePreview(imgLivePreview);
-
-  pnlLivePreview.Visible := (@SCM.ActivePlugin.UpdatePreview <> nil);
+    pnlLivePreview.Visible := True;
+  end;
 end;
 
 procedure TSharpCenterWnd.CreateParams(var Params: TCreateParams);
@@ -679,14 +681,15 @@ procedure TSharpCenterWnd.UpdateSize;
 begin
   UpdateLivePreview;
 
-  if @SCM.ActivePlugin.Open <> nil then
+  if (@SCM.ActivePlugin.Open <> nil) then
   begin
     If SCM.PluginWndHandle <> 0 then
       ResizeToFitWindow(SCm.PluginWndHandle, pnlPlugin);
 
     if @SCM.ActivePlugin.OpenEdit <> nil then
       if SCM.EditWndHandle <> 0 then begin
-        pnlEditContainer.Height := GetControlByHandle(SCM.EditWndHandle).Height;
+        pnlEditContainer.Height := GetControlByHandle(SCM.EditWndHandle).Height+
+          pnlEditToolbar.Height;
         GetControlByHandle(SCM.EditWndHandle).Width := pnlEditPlugin.Width;
       end;
 
@@ -777,13 +780,17 @@ begin
 
 end;
 
-procedure TSharpCenterWnd.AddItemEvent(AItem: TSharpCenterManagerItem);
+procedure TSharpCenterWnd.AddItemEvent(AItem: TSharpCenterManagerItem;
+  const AIndex:Integer);
 var
   tmp:TSharpEListItem;
 begin
   tmp := lbTree.AddItem(AItem.Caption,AItem.IconIndex);
   tmp.AddSubItem(AItem.Status);
   tmp.Data := AItem;
+
+  if ((AIndex < lbTree.count) and (AIndex <> -1)) then
+    lbTree.ItemIndex := AIndex;
 end;
 
 procedure TSharpCenterWnd.InitNavEvent(Sender: TObject);
