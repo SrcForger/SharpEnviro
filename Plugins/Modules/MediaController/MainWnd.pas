@@ -37,7 +37,7 @@ uses
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
   SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
   JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math,
-  ShellApi, ImgList, GR32, GR32_PNG;
+  ShellApi, ImgList, GR32, GR32_PNG, Types;
 
 
 type

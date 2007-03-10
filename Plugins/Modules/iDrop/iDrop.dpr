@@ -173,7 +173,7 @@ var
   n,i : integer;
 begin
   if (not (part = SU_SKINFILECHANGED)) or (not (part = SU_BACKGROUND))
-     or (not (part = SU_THEME)) or (not (part = SU_ICONSET)) then exit;
+     or (not (part = SU_THEME)) or (not (part = SU_SCHEME)) then exit;
 
   for n := 0  to ModuleList.Count - 1 do
   begin
@@ -203,6 +203,8 @@ begin
     begin
       TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,temp.Form.Height);
       uSharpBarAPI.PaintBarBackGround(temp.BarWnd,TMainForm(temp.Form).Background.Bitmap,Temp.Form);
+      if (part = SU_THEME) or (part = SU_SKINFILECHANGED) then
+         TMainForm(temp.Form).ReAlignComponents(False);
     end;
   end;
 end;

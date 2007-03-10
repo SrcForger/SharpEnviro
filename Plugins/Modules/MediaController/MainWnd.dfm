@@ -18,8 +18,8 @@ object MainForm: TMainForm
   object Background: TImage32
     Left = 0
     Top = 0
-    Width = 285
-    Height = 166
+    Width = 277
+    Height = 159
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -105,6 +105,7 @@ object MainForm: TMainForm
       DisabledAlpha = 100
       AutoPosition = True
       GlyphResize = True
+      GlyphSpacing = 0
     end
     object btn_stop: TSharpEButton
       Left = 34
@@ -184,6 +185,7 @@ object MainForm: TMainForm
       DisabledAlpha = 100
       AutoPosition = True
       GlyphResize = True
+      GlyphSpacing = 0
     end
     object btn_pause: TSharpEButton
       Left = 18
@@ -263,6 +265,7 @@ object MainForm: TMainForm
       DisabledAlpha = 100
       AutoPosition = True
       GlyphResize = True
+      GlyphSpacing = 0
     end
     object btn_prev: TSharpEButton
       Left = 50
@@ -342,6 +345,7 @@ object MainForm: TMainForm
       DisabledAlpha = 100
       AutoPosition = True
       GlyphResize = True
+      GlyphSpacing = 0
     end
     object btn_next: TSharpEButton
       Left = 66
@@ -421,6 +425,7 @@ object MainForm: TMainForm
       DisabledAlpha = 100
       AutoPosition = True
       GlyphResize = True
+      GlyphSpacing = 0
     end
     object btn_pselect: TSharpEButton
       Left = 82
@@ -500,6 +505,7 @@ object MainForm: TMainForm
       DisabledAlpha = 100
       AutoPosition = True
       GlyphResize = True
+      GlyphSpacing = 0
     end
   end
   object MenuPopup: TPopupMenu
@@ -513,6 +519,7 @@ object MainForm: TMainForm
   object SharpESkinManager1: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
+    HandleUpdates = False
     Left = 192
     Top = 72
   end

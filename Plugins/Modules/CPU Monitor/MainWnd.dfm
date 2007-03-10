@@ -18,8 +18,8 @@ object MainForm: TMainForm
   object Background: TImage32
     Left = 0
     Top = 0
-    Width = 285
-    Height = 166
+    Width = 277
+    Height = 159
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -61,6 +61,7 @@ object MainForm: TMainForm
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
+    HandleUpdates = False
     Left = 224
     Top = 72
   end

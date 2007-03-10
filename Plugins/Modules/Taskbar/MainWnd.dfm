@@ -18,8 +18,8 @@ object MainForm: TMainForm
   object Background: TImage32
     Left = 0
     Top = 0
-    Width = 285
-    Height = 166
+    Width = 277
+    Height = 159
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -77,6 +77,7 @@ object MainForm: TMainForm
       DisabledAlpha = 100
       AutoPosition = True
       GlyphResize = True
+      GlyphSpacing = 0
     end
     object ses_maxall: TSharpEButton
       Left = 24
@@ -128,6 +129,7 @@ object MainForm: TMainForm
       DisabledAlpha = 100
       AutoPosition = True
       GlyphResize = True
+      GlyphSpacing = 0
     end
   end
   object MenuPopup: TPopupMenu
@@ -141,6 +143,7 @@ object MainForm: TMainForm
   object SystemSkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
+    HandleUpdates = False
     Left = 176
     Top = 56
   end
