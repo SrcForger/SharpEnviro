@@ -36,6 +36,7 @@ interface
 uses
   Windows,
   Messages,
+  graphics,
   classes;
 
 const
@@ -52,6 +53,7 @@ const
   SU_THEME = 4;
   SU_ICONSET = 5;
   SU_BACKGROUND = 6; // SHARPBAR
+  SU_SERVICE = 7;
 
   {Viper}
   WM_SHARPAUDIOMESSAGE = WM_APP + 507;
@@ -156,15 +158,6 @@ const
   SCM_EVT_UPDATE_PREVIEW = 1006;
   SCM_EVT_UPDATE_SETTINGS = 1007;
 
-  SCU_SHARPDESK = 2001;
-  SCU_SHARPCORE = 2002;
-  SCU_SHARPBAR = 2003;
-  SCU_SHARPMENU = 2004;
-  SCU_SHARPTHEME = 2005;
-  SCU_SERVICE = 2006;
-  SCU_OBJECT = 2007;
-  SCU_MODULE = 2008;
-
   SCB_MOVEUP = 3000;
   SCB_MOVEDOWN = 3001;
   SCB_IMPORT = 3002;
@@ -185,7 +178,7 @@ type
   TSCE_EDITMODE = (sceAdd, sceEdit, sceDelete);
 
 type
-  TColor = -$7FFFFFFF - 1..$7FFFFFFF;
+  //TColor = -$7FFFFFFF - 1..$7FFFFFFF;
   TColorScheme = record
     Throbberback: Tcolor;
     Throbberdark: Tcolor;
