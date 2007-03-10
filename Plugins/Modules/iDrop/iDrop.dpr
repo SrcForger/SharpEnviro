@@ -45,6 +45,7 @@ uses
   StdCtrls,
   JvSimpleXML,
   uSharpBarApi,
+  SharpApi,
   MainWnd in 'MainWnd.pas' {MainForm},
   SettingsWnd in 'SettingsWnd.pas' {SettingsForm};
 
@@ -166,19 +167,44 @@ begin
       end;
 end;
 
-procedure SkinChanged(ID : integer);
+procedure UpdateMessage(part : integer);
 var
-  n : integer;
   temp : TModule;
+  n,i : integer;
 begin
+  if (not (part = SU_SKINFILECHANGED)) or (not (part = SU_BACKGROUND))
+     or (not (part = SU_THEME)) or (not (part = SU_ICONSET)) then exit;
+
   for n := 0  to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        temp.Form.Height := GetBarPluginHeight(temp.BarWnd);
-        TMainForm(temp.Form).UpdateCustomSettings;
-        TMainForm(temp.Form).ReAlignComponents(True);
-      end;
+  begin
+    temp := TModule(ModuleList.Items[n]);
+
+    // Step1: check if height changed
+    if (part = SU_SKINFILECHANGED) or (part = SU_BACKGROUND)
+       or (part = SU_THEME) then
+    begin
+      i := GetBarPluginHeight(temp.BarWnd);
+      if temp.Form.Height <> i then
+         temp.Form.Height := i;
+    end;
+
+     // Step2: check if skin or scheme changed
+    if (part = SU_SCHEME) or (part = SU_THEME) then
+        TMainForm(temp.Form).SkinManager.UpdateScheme;
+    if (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
+    begin
+      TMainForm(temp.Form).SkinManager.UpdateSkin;
+      TMainForm(temp.Form).UpdateCustomSettings;
+    end;
+
+    // Step3: update
+    if (part = SU_SCHEME) or (part = SU_BACKGROUND)
+        or (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
+    begin
+      TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,temp.Form.Height);
+      uSharpBarAPI.PaintBarBackGround(temp.BarWnd,TMainForm(temp.Form).Background.Bitmap,Temp.Form);
+    end;
+  end;
 end;
 
 procedure ShowSettingsWnd(ID : integer);
@@ -212,7 +238,7 @@ Exports
   CloseModule,
   Poschanged,
   Refresh,
-  SkinChanged,
+  UpdateMessage,
   ShowSettingsWnd,
   SetSize;
 

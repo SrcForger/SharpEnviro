@@ -74,10 +74,10 @@ type
     FCustomSettings : TSharpECustomSkinSettings;
     FCustomBmpList  : TSkinBitmapList;
     ModuleSize  : TModuleSize;
-    procedure UpdateIcon;
   public
     ModuleID : integer;
     BarWnd : hWnd;
+    procedure UpdateIcon;
     procedure LoadSettings;
     procedure ReAlignComponents(BroadCast : boolean);
     procedure UpdateCustomSkin;

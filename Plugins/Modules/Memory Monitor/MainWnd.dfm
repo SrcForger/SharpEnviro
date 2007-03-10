@@ -1,7 +1,7 @@
 object MainForm: TMainForm
   Left = 0
   Top = 0
-  Width = 197
+  Width = 313
   Height = 193
   Caption = 'Memory Monitor'
   Color = clBtnFace
@@ -17,8 +17,8 @@ object MainForm: TMainForm
   object Background: TImage32
     Left = 0
     Top = 0
-    Width = 189
-    Height = 164
+    Width = 297
+    Height = 157
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -115,6 +115,7 @@ object MainForm: TMainForm
   object SharpESkinManager1: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
+    HandleUpdates = False
     Left = 224
     Top = 80
   end
