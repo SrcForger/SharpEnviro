@@ -34,6 +34,7 @@ uses
   Windows,
   Forms,
   Dialogs,
+  graphics,
   JvSimpleXml,
   PngSpeedButton,
   uVistaFuncs,
@@ -59,8 +60,8 @@ begin
 
   uVistaFuncs.SetVistaFonts(frmThemeList);
   frmThemeList.ParentWindow := aowner;
-  frmThemeList.Left := 2;
-  frmThemeList.Top := 2;
+  frmThemeList.Left := 0;
+  frmThemeList.Top := 0;
   frmThemeList.BorderStyle := bsNone;
   frmThemeList.Show;
   result := frmThemeList.Handle;

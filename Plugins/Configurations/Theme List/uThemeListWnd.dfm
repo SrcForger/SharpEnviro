@@ -24,25 +24,38 @@ object frmThemeList: TfrmThemeList
     Columns = <
       item
         Width = 70
+        MaxWidth = 0
+        MinWidth = 0
         TextColor = clBlack
         SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
-        PngImageList = ThemeImages
+        ColumnAlign = calLeft
+        Autosize = False
+        Images = ThemeImages
+        SelectedImages = ThemeImages
       end
       item
         Width = 200
+        MaxWidth = 0
+        MinWidth = 0
         TextColor = clBlack
         SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
+        ColumnAlign = calLeft
+        Autosize = False
       end
       item
         Width = 200
+        MaxWidth = 0
+        MinWidth = 0
         TextColor = clBlack
         SelectedTextColor = clBlack
         HAlign = taRightJustify
         VAlign = taVerticalCenter
+        ColumnAlign = calLeft
+        Autosize = False
       end>
     ItemHeight = 65
     OnClickItem = lbThemeListClickItem

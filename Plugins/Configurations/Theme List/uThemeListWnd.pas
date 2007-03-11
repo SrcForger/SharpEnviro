@@ -36,7 +36,7 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, uSEListboxPainter, JclFileUtils,
   uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
   SharpEListBox, uThemeListManager, SharpEListBoxEx,GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings;
+  ExtCtrls, Menus, JclStrings, JclInifiles;
 
 type
   TStringObject = Class(TObject)
@@ -117,9 +117,16 @@ begin
       frmEditItem.cbBasedOn.ItemIndex := 0;
       frmEditItem.cbBasedOn.Enabled := True;
 
-      if FrmEditItem.pagEdit.Visible then
+      if FrmEditItem.pagEdit.Visible then begin
         FrmEditItem.edName.SetFocus;
+
+        if FileExists(GetSharpeUserSettingsPath+'author.dat') then begin
+          FrmEditItem.edAuthor.Text := IniReadString(GetSharpeUserSettingsPath+'author.dat',
+            'main','author');
+        end;
+      end;
       Result := True;
+
     end;
     sceEdit: begin
 

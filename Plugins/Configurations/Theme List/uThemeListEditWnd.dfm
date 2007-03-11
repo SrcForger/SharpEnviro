@@ -1,9 +1,10 @@
 object frmEditItem: TfrmEditItem
   Left = 0
   Top = 0
-  Width = 505
-  Height = 105
+  BorderStyle = bsNone
   Caption = 'frmEditItem'
+  ClientHeight = 69
+  ClientWidth = 505
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,7 +18,7 @@ object frmEditItem: TfrmEditItem
   object plEdit: TJvPageList
     Left = 0
     Top = 0
-    Width = 489
+    Width = 505
     Height = 69
     ActivePage = pagEdit
     PropagateEnable = False
@@ -25,10 +26,10 @@ object frmEditItem: TfrmEditItem
     object pagEdit: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 489
+      Width = 505
       Height = 69
       DesignSize = (
-        489
+        505
         69)
       object Label3: TJvLabel
         Left = 18
@@ -58,7 +59,7 @@ object frmEditItem: TfrmEditItem
       object edAuthor: TLabeledEdit
         Left = 264
         Top = 8
-        Width = 202
+        Width = 218
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 16
@@ -72,7 +73,7 @@ object frmEditItem: TfrmEditItem
       object edWebsite: TLabeledEdit
         Left = 288
         Top = 40
-        Width = 178
+        Width = 194
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 43
@@ -89,7 +90,7 @@ object frmEditItem: TfrmEditItem
         Width = 137
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 3
         OnSelect = cbBasedOnSelect
       end
@@ -97,7 +98,7 @@ object frmEditItem: TfrmEditItem
     object pagDelete: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 489
+      Width = 505
       Height = 69
       BorderWidth = 8
       object Label2: TLabel
