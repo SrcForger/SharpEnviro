@@ -358,11 +358,11 @@ try
               DrawItemImage(Self.Canvas, R, tmpItem, i, tmpPng);
 
             DrawItemText(Self.Canvas, R, 0, tmpItem, i, tmpPng);
-        end else
-          DrawItemText(Self.Canvas, R, 0, tmpItem, i, nil);
-      end;
+      end else
+        DrawItemText(Self.Canvas, R, 0, tmpItem, i, nil);
 
         X := X + Column[i].Width;
+      end;
       end;
     end;
 
