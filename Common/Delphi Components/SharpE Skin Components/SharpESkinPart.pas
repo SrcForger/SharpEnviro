@@ -849,7 +849,7 @@ begin
   while i <= length(s) do
   begin
     inc(i);
-    if (s[i] >= '0') and (s[i] <= '9') then
+    if (s[i] >= '0') and (s[i] <= '9') and (s[i] <> #0) then
       tmp := tmp + s[i]
     else
       if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'cw') then
@@ -2028,12 +2028,18 @@ var
    eR,eG,eB : integer;
    y : integer;
 begin
-  sR := GetRValue(color1);
-  sG := GetGValue(color1);
-  sB := GetBValue(color1);
-  eR := GetRValue(color2);
-  eG := GetGValue(color2);
-  eB := GetBValue(color2);
+  if color1 <> -1 then begin
+    sR := GetRValue(color1);
+    sG := GetGValue(color1);
+    sB := GetBValue(color1);
+  end;
+
+  if color2 <> -1 then begin
+    eR := GetRValue(color2);
+    eG := GetGValue(color2);
+    eB := GetBValue(color2);
+  end;
+  
   nR:=(eR-sR)/(Rect.Bottom-Rect.Top);
   nG:=(eG-sG)/(Rect.Bottom-Rect.Top);
   nB:=(eB-sB)/(Rect.Bottom-Rect.Top);
