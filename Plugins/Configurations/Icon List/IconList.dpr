@@ -38,6 +38,7 @@ uses
   PngSpeedButton,
   uVistaFuncs,
   SysUtils,
+  Graphics,
   uIconListWnd in 'uIconListWnd.pas' {frmIconList},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   uSEListboxPainter in '..\..\..\Common\Units\SEListboxPainter\uSEListboxPainter.pas',
