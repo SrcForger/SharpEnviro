@@ -58,34 +58,43 @@ uses
   // JCL
   jclStrings,
   SharpDialogs,
+  SharpApi,
 
   // PNG Image
   pngimage, JvExExtCtrls, JvShape, JvComponentBase,
-  SharpEBaseControls, SharpEEdit, TranComp, JvLabel, PngImageList, PngBitBtn;
+  SharpEBaseControls, SharpEEdit, TranComp, JvLabel, PngImageList, PngBitBtn,
+  JvExStdCtrls, JvMemo;
 
 type
   TFrmHotkeyEdit = class(TForm)
     pnl1: TPanel;
     Panel1: TPanel;
-    cmdAddEdit: TButton;
-    cmdCancel: TButton;
-    hkeCommand: TScHotkeyEdit;
+    pMain: TJvPageList;
+    spEdit: TJvStandardPage;
+    spDelete: TJvStandardPage;
     cmdBrowse: TPngBitBtn;
-    mmoCommand: TMemo;
-    imlList: TPngImageList;
-    Label1: TJvLabel;
-    JvLabel2: TJvLabel;
+    Label3: TJvLabel;
+    edName: TLabeledEdit;
+    edCommand: TLabeledEdit;
+    edHotkey: TScHotkeyEdit;
+    Button1: TButton;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
 
     procedure cmdbrowseclick(Sender: TObject);
+
+
   private
     { Private declarations }
 
   public
     { Public declarations }
     SelectedText: string;
+    procedure InitUi(AEditMode: TSCE_EDITMODE);
+    function ValidateEdit(AEditMode: TSCE_EDITMODE):Boolean;
+    procedure ShowValidationErrors(AEditMode: TSCE_EDITMODE);
+    function Save(AApply: Boolean;AEditMode: TSCE_EDITMODE):Boolean;
   end;
 
 var
@@ -100,32 +109,30 @@ const
 implementation
 
 uses
-  uHotkeyServiceItemListWnd,
-  SharpApi;
+  uHotkeyServiceItemListWnd;
 
 {$R *.dfm}
 
 procedure TFrmHotkeyEdit.cmdbrowseclick(Sender: TObject);
 begin
-  mmoCommand.Lines.Text := mmoCommand.Lines.Text +
-    SharpDialogs.TargetDialog(STI_ALL_TARGETS, Mouse.CursorPos);
+  edCommand.Text := SharpDialogs.TargetDialog(STI_ALL_TARGETS, Mouse.CursorPos);
 end;
 
 procedure TFrmHotkeyEdit.FormShow(Sender: TObject);
 begin
-  mmoCommand.SetFocus;
+  edCommand.SetFocus;
 end;
 
 procedure TFrmHotkeyEdit.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_RETURN then
-    cmdAddEdit.Click;
+  //if Key = VK_RETURN then
+  //  cmdAddEdit.Click;
 end;
 
 procedure TFrmHotkeyEdit.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  if Self.ModalResult <> mrCancel then
+  {if Self.ModalResult <> mrCancel then
   begin
     if mmoCommand.Lines.Text = '' then
     begin
@@ -139,7 +146,32 @@ begin
       CanClose := False;
       exit;
     end;
+  end;   }
+end;
+
+procedure TFrmHotkeyEdit.InitUi(AEditMode: TSCE_EDITMODE);
+begin
+  Case AEditMode of
+    sceAdd: ;
+    sceEdit: ;
+    sceDelete: ;
   end;
+end;
+
+function TFrmHotkeyEdit.ValidateEdit(AEditMode: TSCE_EDITMODE): Boolean;
+begin
+  Result := True;
+end;
+
+function TFrmHotkeyEdit.Save(AApply: Boolean;
+  AEditMode: TSCE_EDITMODE): Boolean;
+begin
+  Result := True;
+end;
+
+procedure TFrmHotkeyEdit.ShowValidationErrors(AEditMode: TSCE_EDITMODE);
+begin
+
 end;
 
 end.

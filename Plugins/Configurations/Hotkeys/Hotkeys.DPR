@@ -36,17 +36,20 @@ uses
   sysutils,
   SharpAPI,
   XPMan,
+  uVistaFuncs,
   PngSpeedButton,
   uHotkeyServiceList in 'uHotkeyServiceList.pas',
   uHotkeyServiceItemListWnd in 'uHotkeyServiceItemListWnd.pas' {frmConfig},
   uHotkeyServiceItemEditWnd in 'uHotkeyServiceItemEditWnd.pas' {FrmHotkeyEdit},
   uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas';
 
-function Open(const APluginID: Pchar; owner: hwnd): hwnd;
+function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 begin
   FrmConfig := TFrmConfig.Create(nil);
 
-  FrmConfig.ParentWindow := owner;
+  uVistaFuncs.SetVistaFonts(FrmConfig);
+
+  FrmConfig.ParentWindow := AOwner;
   FrmConfig.Left := 0;
   FrmConfig.Top := 0;
   FrmConfig.BorderStyle := bsNone;
@@ -55,63 +58,89 @@ begin
   result := FrmConfig.Handle;
 end;
 
-function Close(owner: hwnd; SaveSettings: Boolean): boolean;
+function Close(ASave: Boolean): boolean;
 begin
+  Result := False;
 
-  if SaveSettings then
+  if ASave then
     FHotkeyList.Save;
 
-  FreeAndNil(FrmHotkeyEdit);
-  FreeAndNil(FrmConfig);
-  result := True;
+  if FrmHotkeyEdit <> nil then
+    FreeAndNil(FrmHotkeyEdit);
+
+  if FrmConfig <> nil then begin
+    FreeAndNil(FrmConfig);
+  end;
 end;
 
-function ConfigDllType: Integer;
+function OpenEdit(AOwner:Hwnd; AEditMode:TSCE_EDITMODE):Hwnd;
 begin
-  Result := SCU_SERVICE;
+  // Create Form
+  if Not(Assigned(FrmHotkeyEdit)) then
+    FrmHotkeyEdit := TFrmHotkeyEdit.Create(nil);
+
+  uVistaFuncs.SetVistaFonts(FrmHotkeyEdit);
+
+  // Assign form to AOwner handle
+  FrmHotkeyEdit.ParentWindow := AOwner;
+  FrmHotkeyEdit.Left := 0;
+  FrmHotkeyEdit.Top := 0;
+  FrmHotkeyEdit.BorderStyle := bsNone;
+  FrmHotkeyEdit.Show;
+
+  // Initialise UI based on the edit mode
+  FrmHotkeyEdit.InitUI(AEditMode);
+
+  Result := FrmHotkeyEdit.Handle;
+
 end;
 
-procedure GetDisplayName(const APluginID:Pchar; var ADisplayName:PChar);
+function CloseEdit(AEditMode:TSCE_EditMode; AApply:Boolean): boolean;
 begin
-  ADisplayName := PChar('Hotkeys');
+  Result := True;
+
+  // Validation
+  if Not(FrmHotkeyEdit.ValidateEdit(AEditMode)) then Begin
+    Result := False;
+    FrmHotkeyEdit.ShowValidationErrors(AEditMode);
+    Exit;
+  End;
+
+  // Define whether we add/edit or delete the item
+  if FrmHotkeyEdit.Save(AApply, AEditMode) then Begin
+    FreeAndNil(FrmHotkeyEdit);
+  end;
 end;
 
-procedure BtnAdd(var AButton:TPngSpeedButton);
+procedure SetDisplayText(const APluginID:Pchar; var ADisplayText:PChar);
 begin
-  frmConfig.AddItemClick(nil);
+  ADisplayText := PChar('Hotkeys');
 end;
 
-procedure BtnEdit(var AButton:TPngSpeedButton);
+procedure GetCenterScheme(var ABackground: TColor; var AItemColor: TColor; var AItemSelectedColor: TColor);
 begin
-  frmConfig.EditItemClick(nil);
-end;
+  if FrmHotkeyEdit <> nil then
+    FrmHotkeyEdit.Color := ABackground;
 
-procedure BtnDelete(var AButton:TPngSpeedButton);
-begin
-  frmConfig.DeleteItemClick(nil);
-end;
-
-procedure BtnImport(var AButton:TPngSpeedButton);
-begin
-  frmConfig.ImportHotkeys;
-end;
-
-procedure BtnExport(var AButton:TPngSpeedButton);
-begin
-  frmConfig.ExportHotkeys;
+  frmConfig.lbHotkeys.Colors.ItemColor := AItemColor;
+  frmConfig.lbHotkeys.Colors.ItemColorSelected := AItemSelectedColor;
 end;
 
 //Ordinary Dll code, tells delphi what functions to export.
 exports
   Open,
   Close,
-  BtnAdd,
-  BtnEdit,
-  BtnDelete,
-  BtnImport,
-  BtnExport,
-  ConfigDllType,
-  GetDisplayName;
+  OpenEdit,
+  CloseEdit,
+  //ClickBtn,
+  //SetBtnState,
+  //AddTabs,
+  //ClickTabs,
+
+  SetDisplayText,
+  //SetSettingType,
+  GetCenterScheme;
+
 begin
 
 end.

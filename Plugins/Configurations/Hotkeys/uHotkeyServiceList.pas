@@ -44,9 +44,11 @@ type
     FCommand: string;
     FHotkey: string;
     FIsAction: Boolean;
+    FName: string;
   public
     property Command: string read FCommand write FCommand;
     property Hotkey: string read Fhotkey write Fhotkey;
+    property Name: string read FName write FName;
     property IsAction: Boolean read FIsAction write FIsAction;
   end;
 
@@ -60,7 +62,7 @@ type
     constructor Create(FileName: string);
     destructor Destroy; override;
 
-    function Add(Hotkey, Command: string; IsAction: Boolean): THotkeyItem;
+    function Add(Hotkey, Command, Name: String; IsAction: Boolean): THotkeyItem;
     procedure Delete(Index: integer); overload;
     procedure Delete(AItem:  THotkeyItem); overload;
 
@@ -85,11 +87,12 @@ uses
 
 { THotkeyList }
 
-function THotkeyList.Add(Hotkey, Command: string; IsAction: Boolean): THotkeyItem;
+function THotkeyList.Add(Hotkey, Command, Name: String; IsAction: Boolean): THotkeyItem;
 begin
   Result := THotkeyItem.Create;
   Result.Hotkey := Hotkey;
   Result.Command := Command;
+  Result.Name := Name;
   Result.IsAction := IsAction;
   FItems.Add(Result);
 end;
@@ -166,6 +169,7 @@ begin
           self.Add(
             ItemNamed['hotkey' + inttostr(loop)].Items.Value('Hotkey', ''),
             ItemNamed['hotkey' + inttostr(loop)].Items.Value('Command', ''),
+            ItemNamed['hotkey' + inttostr(loop)].Items.Value('Name', ''),
             ItemNamed['hotkey' + inttostr(loop)].Items.BoolValue('IsAction', False)
             );
         end;
@@ -197,6 +201,7 @@ begin
 
       for loop := 0 to self.Count - 1 do begin
         xml.Root.Items.Add('Hotkey' + IntToStr(Loop));
+        xml.Root.Items.Item[loop].Items.Add('Name', Self.HotkeyItem[loop].Name);
         xml.Root.Items.Item[loop].Items.Add('Hotkey', Self.HotkeyItem[loop].Hotkey);
         xml.Root.Items.Item[loop].Items.Add('Command', Self.HotkeyItem[loop].Command);
         xml.Root.Items.Item[loop].Items.Add('IsAction', Self.HotkeyItem[loop].IsAction);

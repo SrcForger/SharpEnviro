@@ -50,21 +50,25 @@ uses
   JvGradient,
 
   // Project
-  uHotkeyServiceList,
-  uSEListboxPainter, PngImageList, SharpEListBox;
+  uHotkeyServiceList, PngImageList, uScHotkeyEdit, JvExControls,
+  JvComponent, JvLabel, SharpERoundPanel, SharpEListBoxEx, JvHint;
 
 type
   TfrmConfig = class(TForm)
-    dlgOpenFile: TOpenDialog;
-    dlgSaveFile: TSaveDialog;
+    dlgImport: TOpenDialog;
+    dlgExport: TSaveDialog;
     PopupMenu1: TPopupMenu;
     Load1: TMenuItem;
     Append1: TMenuItem;
     Append2: TMenuItem;
     picMain: TPngImageCollection;
-    lbHotkeys: TSharpEListBox;
-    procedure lbHotkeysDrawItem(Control: TWinControl; Index: Integer;
-      Rect: TRect; State: TOwnerDrawState);
+    imlList: TPngImageList;
+    lbHotkeys: TSharpEListBoxEx;
+    JvHint1: TJvHint;
+
+    procedure lbHotkeysGetCellTextColor(const ACol: Integer;
+      AItem: TSharpEListItem; var AColor: TColor);
+
     procedure cmdAddHotkeyClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
 
@@ -79,7 +83,6 @@ type
     procedure ExportHotkeys;
   private
     { Private declarations }
-    procedure CenterForm(var AForm: TForm; AOwner: TForm);
   public
     { Public declarations }
     procedure RefreshHotkeys;
@@ -102,15 +105,6 @@ uses
   uHotkeyServiceItemEditWnd;
 
 {$R *.dfm}
-
-procedure TfrmConfig.CenterForm(var AForm: TForm; AOwner: TForm);
-var
-  p: TPoint;
-begin
-  p := ClientToScreen(AOwner.ScreenToClient(AOwner.ClientOrigin));
-  AForm.Left := p.x + AOwner.Width div 2 - AForm.Width div 2;
-  AForm.Top := p.y + AOwner.Height div 2 - AForm.Height div 2;
-end;
 
 procedure TfrmConfig.cmdAddHotkeyClick(Sender: TObject);
 begin
@@ -160,6 +154,7 @@ procedure TfrmConfig.RefreshHotkeys;
 var
   i: Integer;
   idx: Integer;
+  tmpItem: TSharpEListItem;
 begin
   idx := 0;
   if lbHotkeys.ItemIndex <> -1 then
@@ -169,8 +164,10 @@ begin
 
   for i := 0 to Pred(FHotkeyList.Count) do
   begin
-    lbHotkeys.AddItem(FHotkeyList.HotkeyItem[i].Command,
-      FHotkeyList.HotkeyItem[i]);
+    tmpItem := lbHotkeys.AddItem(FHotkeyList.HotkeyItem[i].Hotkey,0);
+    tmpItem.AddSubItem(FHotkeyList.HotkeyItem[i].Name);
+    tmpItem.AddSubItem(FHotkeyList.HotkeyItem[i].Command);
+    tmpItem.Data := FHotkeyList.HotkeyItem[i];
   end;
 
   try
@@ -209,7 +206,7 @@ end;
 procedure TfrmConfig.AddItemClick(Sender: TObject);
 begin
   // Create the form
-  if not assigned(FrmHotkeyEdit) then
+  {if not assigned(FrmHotkeyEdit) then
     FrmHotkeyEdit := TFrmHotkeyEdit.Create(nil);
   CenterForm(Tform(FrmHotkeyEdit),Self);
 
@@ -221,7 +218,7 @@ begin
     hkeCommand.Text := '';
     mmoCommand.Lines.Text := '';
 
-    CmdAddEdit.Caption := 'Add';
+    //CmdAddEdit.Caption := 'Add';
     FrmHotkeyEdit.Caption := 'Create Hotkey Item';
 
     case FrmHotkeyEdit.ShowModal of
@@ -230,9 +227,9 @@ begin
           FHotkeyList.Add(hkeCommand.Text, mmoCommand.Lines.Text, False);
         end;
     end;
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 1);
     RefreshHotkeys;
-  end;
+  end;  }
 end;
 
 procedure TfrmConfig.DeleteItemClick(Sender: TObject);
@@ -246,7 +243,7 @@ begin
 
   FHotkeyList.Delete(tmpItem);
 
-  SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 1);
   RefreshHotkeys;
 end;
 
@@ -254,7 +251,7 @@ procedure TfrmConfig.EditItemClick(Sender: TObject);
 var
   tmpItem: THotkeyItem;
 begin
-  if lbHotkeys.SelCount = 0 then
+  {if lbHotkeys.SelCount = 0 then
     Exit;
 
   tmpItem := THotkeyItem(lbHotkeys.Items.Objects[lbHotkeys.ItemIndex]);
@@ -272,7 +269,7 @@ begin
     mmoCommand.Lines.Text := '';
     mmoCommand.Lines.Text := tmpItem.Command;
 
-    CmdAddEdit.Caption := 'Update';
+    //CmdAddEdit.Caption := 'Update';
     FrmHotkeyEdit.Caption := 'Edit Hotkey Item';
 
     case FrmHotkeyEdit.showmodal of
@@ -282,45 +279,9 @@ begin
           tmpItem.Command := mmoCommand.Lines.Text;
         end;
     end;
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 1);
     RefreshHotkeys;
-  end;
-end;
-
-procedure TfrmConfig.lbHotkeysDrawItem(Control: TWinControl; Index: Integer;
-  Rect: TRect; State: TOwnerDrawState);
-var
-  iIconIndex: Integer;
-  sText, sStatus: string;
-  FontColor: TColor;
-  obj: THotkeyItem;
-begin
-  // If nothing selected, exit
-  if Index = -1 then
-    exit;
-
-  // Get Object, and if not assigned then exit
-  obj := THotkeyItem(TListBox(Control).Items.Objects[Index]);
-  if not (assigned(obj)) then
-    exit;
-
-  // Also do not continue if list style is standard
-  if TListBox(Control).Style = lbStandard then
-    exit;
-
-  // Object specific extractions
-  sText := obj.Command;
-  sStatus := obj.Hotkey;
-  FontColor := clBlack;
-
-  if obj.IsAction then
-    iIconIndex := 1
-  else
-    iIconIndex := 0;
-
-  // Draw Method
-  PaintListbox(TListBox(Control), Rect, 0, State, sText, picMain, iIconIndex,
-    sStatus, FontColor);
+  end;  }
 end;
 
 procedure TfrmConfig.ExportHotkeys;
@@ -328,7 +289,7 @@ begin
   dlgExport.FileName := 'hotkeys_backup.xml';
   if dlgExport.Execute then
   begin
-    ItemStorage.Save(dlgExport.FileName);
+    FHotkeyList.Save(dlgExport.FileName);
 
   end;
 end;
@@ -337,10 +298,17 @@ procedure TfrmConfig.ImportHotkeys;
 begin
   if dlgImport.Execute then
   begin
-    ItemStorage.Load(dlgImport.FileName);
-    UpdateDisplay(ItemStorage);
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    FHotkeyList.Load(dlgImport.FileName);
+    RefreshHotkeys;
+    SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 1);
   end;
+end;
+
+procedure TfrmConfig.lbHotkeysGetCellTextColor(const ACol: Integer;
+  AItem: TSharpEListItem; var AColor: TColor);
+begin
+  if ACol = 0 then
+    AColor := clBlue;
 end;
 
 end.
