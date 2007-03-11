@@ -36,29 +36,27 @@ uses
   Dialogs,
   sysutils,
   ExtCtrls,
+  sharpapi,
   graphics,
   forms,
+  GR32,
+  GR32_Image,
+  uSharpCenterPluginTabList,
   PngSpeedButton,
   uSchemeListWnd in 'uSchemeListWnd.pas' {frmSchemeList},
-  uSEListboxPainter in '..\..\..\Common\Units\SEListboxPainter\uSEListboxPainter.pas',
-  uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
-  uSharpCenterSectionList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterSectionList.pas',
   uEditSchemeWnd in 'uEditSchemeWnd.pas' {frmEditScheme},
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   uSchemeList in 'uSchemeList.pas';
 
 {$R *.RES}
 
-function Open(const APluginID: PChar; owner: hwnd): hwnd;
+function Open(const APluginID: PChar; AOwner: hwnd): HWnd;
 begin
-  // Specidfy the Service configuration filename
+  // Specify the Service configuration filename
   frmSchemeList := TfrmSchemeList.Create(nil);
   frmSchemeList.InitialiseSettings(APluginID);
+  frmSchemeList.Theme := APluginID;
 
-  frmSchemeList.ParentWindow := owner;
+  frmSchemeList.ParentWindow := AOwner;
   frmSchemeList.Left := 0;
   frmSchemeList.Top := 0;
   frmSchemeList.BorderStyle := bsNone;
@@ -72,43 +70,17 @@ begin
   SharpApi.HelpMsg('go {docs}\Theme\Scheme.sdoc');
 end;
 
-function ConfigDllType: Integer;
+function SetSettingType: Integer;
 begin
-  Result := SCU_SERVICE;
+  Result := SU_SCHEME;
 end;
 
-function Close(owner: hwnd; SaveSettings: Boolean): boolean;
-var
-  b:Boolean;
+procedure Close(ASave:Boolean);
 begin
+  if ASave then
+    frmSchemeList.SaveSchemes;
 
-  if SaveSettings then begin
-    b := frmSchemeList.SaveSchemes;
-
-    if b then begin
-      FreeAndNil(frmSchemeList);
-      Result := True;
-    end else
-      Result := False;
-    end else begin
-      FreeAndNil(frmSchemeList);
-      Result := True;
-    end;
-end;
-
-procedure BtnAdd(var AButton:TPngSpeedButton);
-begin
-  frmSchemeList.AddScheme;
-end;
-
-procedure BtnEdit(var AButton:TPngSpeedButton);
-begin
-  frmSchemeList.EditScheme;
-end;
-
-procedure BtnDelete(var AButton:TPngSpeedButton);
-begin
-  frmSchemeList.DeleteScheme;
+  FreeAndNil(frmSchemeList);
 end;
 
 procedure GetDisplayName(const APluginID:PChar; var ADisplayName:PChar);
@@ -116,22 +88,76 @@ begin
   ADisplayName := PChar('Scheme');
 end;
 
+procedure UpdatePreview(var AImage32:TImage32);
+begin
+  if (frmSchemeList.SchemeItems.Count <> 0) or (frmSchemeList <> nil) then
+    frmSchemeList.CreatePreviewBitmap(AImage32) else
+    AImage32.Bitmap.Clear(clWhite32);
+end;
+
+procedure AddTabs(var ATabs:TPluginTabItemList);
+begin
+  ATabs.Add('Schemes',nil,'',IntToStr(frmSchemeList.lbSchemeList.Count));
+end;
+
+function OpenEdit(AOwner:Hwnd; AEditMode:TSCE_EditMode):Hwnd;
+begin
+  // Create Form
+  if Not(Assigned(frmEditScheme)) then
+    frmEditScheme := TfrmEditScheme.Create(nil);
+
+  // Assign form to owner handle
+  frmEditScheme.ParentWindow := AOwner;
+  frmEditScheme.Left := 0;
+  frmEditScheme.Top := 0;
+  frmEditScheme.BorderStyle := bsNone;
+  frmEditScheme.Show;
+
+  // Initialise UI based on the edit mode
+  frmEditScheme.InitUI(AEditMode);
+
+  Result := frmEditScheme.Handle;
+
+end;
+
+function CloseEdit(AEditMode:TSCE_EditMode; AApply:Boolean): boolean;
+begin
+  Result := True;
+
+  // Validation
+  if Not(frmEditScheme.ValidateEdit(AEditMode)) then Begin
+    Result := False;
+    //frmEditScheme.InitValidateUi(frmEditScheme);
+    Exit;
+  End;
+
+  // Define whether we add/edit or delete the item
+  if frmEditScheme.Save(AEditMode, AApply) then Begin
+    FreeAndNil(frmEditScheme);
+  end;
+end;
+
+procedure GetCenterScheme(var ABackground: TColor; var AItemColor: TColor; var AItemSelectedColor: TColor);
+begin
+  if frmEditScheme <> nil then begin
+    frmEditScheme.Color := ABackground;
+  end;
+
+  frmSchemeList.lbSchemeList.Colors.ItemColor := AItemColor;
+  frmSchemeList.lbSchemeList.Colors.ItemColorSelected := AItemSelectedColor;
+  frmSchemeList.lbSchemeList.Colors.BorderColorSelected := AItemSelectedColor;
+end;
+
 exports
   Open,
   Close,
+  OpenEdit,
+  CloseEdit,
   Help,
-  ConfigDllType,
+  SetSettingType,
+  AddTabs,
+  GetCenterScheme,
 
-  BtnAdd,
-  BtnEdit,
-  BtnDelete,
-  {BtnMoveUp,
-  BtnMoveDown,
-  BtnImport,
-  BtnExport,
-  BtnClear, }
-
-  GetDisplayName;
-
+  UpdatePreview;
 end.
 
