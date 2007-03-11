@@ -230,7 +230,7 @@ begin
         end;
         if (not found) then
         begin
-          item := TSharpEMenuItem(pMenu.AddSubMenuItem(svalue,'shellicon',Dir + svalue + '\',true));
+          item := TSharpEMenuItem(pMenu.AddSubMenuItem(svalue,'shell:icon',Dir + svalue + '\',true));
           item.SubMenu := TSharpEMenu.Create(pMenu.SkinManager);
           TSharpEMenu(item.SubMenu).AddDynamicDirectoryItem(Dir + svalue + '\',
                                                             item.PropList.GetInt('MaxItems'),
@@ -257,7 +257,7 @@ begin
                  end;
             end;
             if (not found) then
-               with TSharpEMenuItem(pMenu.AddLinkItem(s,Dir + svalue,'shellicon',true)) do
+               with TSharpEMenuItem(pMenu.AddLinkItem(s,Dir + svalue,'shell:icon',true)) do
                begin
                  PropList.Add('SortData',sname+svalue);
                  PropList.Add('Sort',pSort);
@@ -327,7 +327,7 @@ begin
              sn := DriveType(i);
           pMenu.AddLinkItem('['+Chr(i + Ord('A')) + ':] - ' + sn,
                             Chr(i + Ord('A')) + ':\',
-                            'shellicon',
+                            'shell:icon',
                             true);
         end;
       end;

@@ -106,7 +106,7 @@ begin
   TLinearResampler.Create(FIcon);
   FCount := 1;
 
-  if CompareText(pIconSource,'shellicon') = 0 then
+  if CompareText(pIconSource,'shell:icon') = 0 then
   begin
     FIconSource := pIconData;
     FIconType := itShellIcon;
@@ -115,21 +115,7 @@ begin
     FIconSource := pIconSource;
     FIconType := itCustomIcon;
   end;
-  case FIconType of
-    itShellIcon: FIconHandle := SharpIconUtils.extrShellIcon(FIcon,FIconSource);
-    itCustomIcon: begin
-                    ext := ExtractFileExt(FIconSource);
-                    if CompareText(ext,'.ico') = 0 then
-                       SharpIconUtils.LoadIco(FIcon,FIconSource,16)
-                    else if CompareText(ext,'.png') = 0 then
-                            SharpIconUtils.LoadPng(FIcon,FIconSource)
-                    else
-                    begin
-                      FIcon.SetSize(32,32);
-                      FIcon.Clear(color32(64,64,64,64));
-                    end;
-                  end;
-  end;
+  SharpIconUtils.IconStringToIcon(pIconSource,pIconData,FIcon,32);
 end;
 
 destructor TSharpEMenuIcon.Destroy;
