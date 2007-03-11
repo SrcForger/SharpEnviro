@@ -189,7 +189,7 @@ var
 begin
   if (not (part = SU_SKINFILECHANGED)) or (not (part = SU_BACKGROUND))
      or (not (part = SU_THEME)) or (not (part = SU_ICONSET))
-      or (not (part = SU_SCHEME)) then exit;
+     or (not (part = SU_SCHEME)) then exit;
 
   for n := 0  to ModuleList.Count - 1 do
   begin

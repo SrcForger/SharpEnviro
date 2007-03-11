@@ -37,6 +37,7 @@ object MainForm: TMainForm
   object SharpESkinManager1: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
+    HandleUpdates = True
     Left = 192
     Top = 72
   end

@@ -76,6 +76,7 @@ type
   public
     ModuleID : integer;
     BarWnd : hWnd;
+    procedure RefreshIcons;
     procedure LoadSettings;
     procedure ReAlignComponents(BroadCast : boolean);
     procedure SetWidth(new : integer);
@@ -133,6 +134,18 @@ begin
          btn.Glyph32.SetSize(0,0)
     end else btn.Glyph32.SetSize(0,0);
   end;
+end;
+
+procedure TMainForm.RefreshIcons;
+var
+  n : integer;
+begin
+  if not sShowIcon then exit;
+
+  for n := 0 to High(FButtonList) do
+      with FButtonList[n] do
+           if not IconStringToIcon(Icon,Target,btn.Glyph32) then
+              btn.Glyph32.SetSize(0,0)
 end;
 
 procedure TMainForm.UpdateButtons;

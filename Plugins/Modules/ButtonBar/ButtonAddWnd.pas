@@ -35,7 +35,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, GR32_Image, StdCtrls, SharpDialogs, SharpIconUtils, GR32;
+  Dialogs, GR32_Image, StdCtrls, Types, SharpDialogs, SharpIconUtils, GR32;
 
 type
   TButtonAddForm = class(TForm)

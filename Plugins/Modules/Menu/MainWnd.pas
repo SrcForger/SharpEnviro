@@ -74,12 +74,12 @@ type
     FCustomSettings : TSharpECustomSkinSettings;
     FCustomBmpList  : TSkinBitmapList;
     ModuleSize  : TModuleSize;
-    procedure UpdateIcon;
     procedure WMUpdateBangs(var Msg : TMessage); message WM_SHARPEUPDATEACTIONS;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
     ModuleID : integer;
     BarWnd : hWnd;
+    procedure UpdateIcon;
     procedure LoadSettings;
     procedure ReAlignComponents(BroadCast : boolean);
     procedure UpdateCustomSkin;
