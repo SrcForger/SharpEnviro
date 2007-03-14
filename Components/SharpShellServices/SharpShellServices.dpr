@@ -97,10 +97,10 @@ var
 begin
   ListOfServices := new(TServiceList);
   ListOfServices.next := nil;
+  list := tstringlist.create;
+  reg := TRegIniFile.Create;
   try
     wChar := Allocmem(100);
-    list := tstringlist.create;
-    reg := TRegIniFile.Create;
     reg.RootKey := HKEY_LOCAL_MACHINE;
     reg.OpenKeyReadOnly('\Software\Microsoft\Windows\CurrentVersion\explorer\ShellServiceObjects');
     reg.GetKeyNames(list);
@@ -149,10 +149,10 @@ var
 begin
   ListOfServices := new(TServiceList);
   ListOfServices.next := nil;
+  list := tstringlist.create;
+  reg := TRegIniFile.Create;
   try
     wChar := Allocmem(100);
-    list := tstringlist.create;
-    reg := TRegIniFile.Create;
     reg.RootKey := HKEY_LOCAL_MACHINE;
     reg.OpenKeyReadOnly('\Software\Microsoft\Windows\CurrentVersion\ShellServiceObjectDelayLoad');
     reg.GetValueNames(list);
