@@ -59,6 +59,8 @@ type
     sTop         : integer;
     sWidth       : integer;
     sHeight      : integer;
+    procedure WMUpdateBangs(var Msg : TMessage); message WM_SHARPEUPDATEACTIONS;
+    procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
     procedure LoadIcon;
   public
     ModuleID : integer;
@@ -81,6 +83,18 @@ uses SettingsWnd,
 
 {$R *.dfm}
 {$R glyphs.res}
+
+procedure TMainForm.WMUpdateBangs(var Msg : TMessage);
+begin
+  SharpApi.RegisterActionEx('!ShowNotes','Modules',self.Handle,1);
+end;
+
+procedure TMainForm.WMSharpEBang(var Msg : TMessage);
+begin
+  case msg.LParam of
+    1: Button.OnClick(Button);
+  end;
+end;
 
 procedure TMainForm.LoadIcon;
 var
@@ -138,6 +152,8 @@ var
   item : TJvSimpleXMLElem;
   Mon : TMonitor;
 begin
+  SharpApi.RegisterActionEx('!ShowNotes','Modules',self.Handle,1);
+
   sCaption     := True;
   sIcon        := True;
   sAlwaysOnTop := True;
