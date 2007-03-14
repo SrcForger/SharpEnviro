@@ -121,8 +121,6 @@ type
                  end;
 
 
-function LoadIcon(bmp : TBitmap32; Icon,Target,IconSet : String; Size : integer) : boolean; forward;
-
 
 procedure BlendImageA(bmp : Tbitmap32; color : TColor; alpha:integer);
 var
@@ -384,7 +382,7 @@ begin
   SList := TStringList.Create;
   SList.Clear;
   SList.Add(Text);
-  RenderText(dst,Font,SList,Align,spacing);
+  result := RenderText(dst,Font,SList,Align,spacing);
   SList.Free;
 end;
 
@@ -536,17 +534,13 @@ function RenderObject(dst            : TBitmap32;
 var
   FontBitmap : TBitmap32;
   IconBitmap : TBitmap32;
-  p : TPoint;
-  n,i : integer;
-  w,h : integer;
-  smod : integer;
+  n : integer;
 begin
   if dst = nil then
   begin
     RenderObject := False;
     exit;
   end;
-  smod := 0;
   if (Caption.Draw) and (Caption.Caption<>nil) then
   begin
     FontBitmap := TBitmap32.Create;
@@ -558,7 +552,6 @@ begin
       taRight: n:= -1;
       else n := 0;
     end;
-    if Font.Shadow then smod := -2;     
     if not RenderText(FontBitmap,Font,Caption.Caption,n,Caption.LineSpace) then
     begin
       FontBitmap.SetSize(64,64);
@@ -569,7 +562,6 @@ begin
   IconBitmap := TBitmap32.Create;
   IconBitmap.DrawMode := dmBlend;
   IconBitmap.CombineMode := cmMerge;
-  if Icon.Shadow then smod := -3;
   RenderIcon(IconBitmap,Icon,point(0,0));
 
   if Caption.Draw then
@@ -592,394 +584,6 @@ begin
   IconBitmap.Free;
   if Caption.Draw then FreeAndNil(FontBitmap);
   RenderObject := True;
-end;
-
-
-
-
-function GetIconList(IconSet : widestring) : PChar;
-var
-   SList : TStringList;
-   XML : TJvSimpleXML;
-   n : integer;
-begin
-     SList := TStringList.create;
-     SList.Clear;
-     try
-        XML := TJvSimpleXML.Create(nil);
-        if FileExists(ExtractFilePath(Application.ExeName)+'Icons\'+IconSet+'\IconSet.xml') then
-        begin
-             XML.LoadFromFile(ExtractFilePath(Application.ExeName)+'Icons\'+IconSet+'\IconSet.xml');
-             for n:=0 to XML.Root.Items.ItemNamed['Icons'].Items.Count-1 do
-                 with XML.Root.Items.ItemNamed['Icons'].Items.Item[n].Items do
-                      SList.Add(Value('name','error')+'='+Value('file','error'));
-        end;
-        Result := AllocMem(Length(SList.CommaText) + 1);
-        StrPCopy(Result, SList.CommaText);
-     finally
-            XML.Free;
-            SList.Free;
-     end;
-end;
-
-
-function LoadJpg(Bmp : TBitmap32; IconFile : string) : boolean;
-var
-   JPegImage  : TJPEGImage;
-begin
-     if not FileExists(IconFile) then
-     begin
-          result := False;
-          Bmp.SetSize(100,100);
-          Bmp.Clear(color32(128,128,128,128));
-          exit;
-     end;
-
-     JPegImage := TJPEGImage.Create;
-     try
-        JPegImage.LoadFromFile(IconFile);
-        Bmp.SetSize(JPegImage.Width,JPegImage.Height);
-        Bmp.Assign(JpegImage);
-        JPegImage.Free;
-        result := True;        
-     except
-           result := False;
-           JPegImage.Free;
-           Bmp.SetSize(100,100);
-           Bmp.Clear(color32(128,128,128,128));
-     end;
-end;
-
-
-function LoadPng(out Bmp : TBitmap32; IconFile:string) : boolean;
-var
-   ADIB : TBitmap32;
-   i, j: integer;
-   P: PColor32;
-   A: PByte;
-   ABmp: TBitmap;
-   APng: TPngObject;
-   Canvas: TCanvas;
-   b : boolean;
-begin
-  if not FileExists(IconFile) then
-  begin
-    result := False;
-    Bmp.SetSize(100,100);
-    Bmp.Clear(color32(128,128,128,128));
-    exit;
-  end;
-
-  GR32_PNG.LoadBitmap32FromPNG(Bmp,IconFile,b);
-  result := true;
-  exit;
-
-
-     result := False;
-     APng := TPngObject.Create;
-     ABmp := TBitmap.Create;
-     ADib := TBitmap32.Create;
-     try
-        // Load and assign to the a bitmap
-        APng.LoadFromfile(IconFile);
-        APng.AssignTo(ABmp);
-
-        // We now *draw* the bitmap to our bitmap.. this will clear alpha in places
-        // where drawn.. so we can use it later
-        ADib.SetSize(APng.Width, APng.Height);
-        ADib.Clear(clBlack32);
-        Canvas := TCanvas.Create;
-        try
-           Canvas.Handle := ADib.Handle;
-           Canvas.Draw(0,0,ABmp);
-        finally
-               Canvas.Free;
-        end;
-
-     // Flip the alpha channel
-     P := @ADib.Bits[0];
-     for i := 0 to ADib.Width * ADib.Height - 1 do
-     begin
-       P^ := P^ XOR $FF000000;
-       inc(P);
-     end;
-
-     // The previous doesn't handle bitwise alpha info, so we do that here
-     for i := 0 to APng.Height - 1 do
-     begin
-          A := PByte(APng.AlphaScanLine[i]);
-          if assigned(A) then
-          begin
-               P := @ADib.Bits[i * ADib.Width];
-               for j := 0 to APng.Width - 1 do
-               begin
-                    P^ := SetAlpha(P^, A^);
-                    inc(P); inc(A);
-               end;
-          end else break;
-     end;
-
-     finally
-            result := True;
-            APng.Free;
-            ABmp.Free;
-            Bmp := ADib;
-            Bmp.DrawMode := dmBlend;
-     end;
-end;
-
-procedure IconToImage(Bmp : TBitmap32; const icon : hicon);
-var
-   w,h,i    : Integer;
-   p        : PColorArray;
-   p2       : pColor32;
-   bmi      : BITMAPINFO;
-   AlphaBmp : Tbitmap32;
-   tempbmp  : Tbitmap;
-   info     : Ticoninfo;
-   dc       : hdc;
-   alphaUsed : boolean;
-begin
-     Alphabmp := nil;
-     tempbmp := Tbitmap.Create;
-//     dc := createcompatibledc(0);
-     try
-        //get info about icon
-        GetIconInfo(icon,info);
-        tempbmp.handle := info.hbmColor;
-        ///////////////////////////////////////////////////////
-        // Here comes a ugly step were it tries to paint it as
-        // a 32 bit icon and check if it is successful.
-        // If failed it will paint it as an icon with fewer colors.
-        // No way of deciding bitcount in the beginning has been
-        // found reliable , try if you want too.   /Malx
-        ///////////////////////////////////////////////////////
-        AlphaUsed := false;
-        if true then
-        begin //32-bit icon with alpha
-              w := tempbmp.Width;
-              h := tempbmp.Height;
-              Bmp.setsize(w,h);
-              with bmi.bmiHeader do
-              begin
-                   biSize := SizeOf(bmi.bmiHeader);
-                   biWidth := w;
-                   biHeight := -h;
-                   biPlanes := 1;
-                   biBitCount := 32;
-                   biCompression := BI_RGB;
-                   biSizeImage := 0;
-                   biXPelsPerMeter := 1; //dont care
-                   biYPelsPerMeter := 1; //dont care
-                   biClrUsed := 0;
-                   biClrImportant := 0;
-              end;
-              GetMem(p,w*h*SizeOf(TColorRec));
-              GetDIBits(tempbmp.Canvas.Handle,tempbmp.Handle,0,h,p,bmi,DIB_RGB_COLORS);
-              P2 := Bmp.PixelPtr[0, 0];
-              for i := 0 to w*h-1 do
-              begin
-                   if (p[i].a > 0) then alphaused := true;
-                   P2^ := color32(p[i].r,p[i].g,p[i].b,p[i].a);
-                   Inc(P2);// proceed to the next pixel
-              end;
-              FreeMem(p);
-        end;
-        if not(alphaused) then
-        begin // 24,16,8,4,2 bit icons
-              Bmp.Assign(tempbmp);
-              AlphaBmp := Tbitmap32.Create;
-              tempbmp.handle := info.hbmMask;
-              AlphaBmp.Assign(tempbmp);
-              Invert(AlphaBmp,AlphaBmp);
-              Intensitytoalpha(Bmp,AlphaBmp);
-        end;
-     finally
-//            DeleteDC(dc);
-            AlphaBmp.free;
-            DeleteObject(info.hbmMask);
-            DeleteObject(info.hbmColor);             
-            tempbmp.free;
-     end;
-end;
-
-function LoadIco(Bmp : TBitmap32; IconFile : string; Size : integer) : boolean;
-var
-  icon : Hicon;
-begin
-  try
-    icon := loadimage(0,pchar(IconFile),IMAGE_ICON,Size,Size,LR_DEFAULTSIZE or LR_LOADFROMFILE);
-    if icon <> 0 then
-    begin
-      IconToImage(Bmp, icon);
-      destroyicon(icon);
-      result := True;
-    end else
-    begin
-      result := False;
-      Bmp.SetSize(100,100);
-      Bmp.Clear(color32(128,128,128,128));
-    end;
-  except
-    result := False;
-    Bmp.SetSize(100,100);
-    Bmp.Clear(color32(128,128,128,128));
-  end;
-end;
-
-function LoadBmp(Bmp : TBitmap32; IconFile : string) : boolean;
-var
-   B : TBitmap;
-begin
-     if not FileExists(IconFile) then
-     begin
-          result := False;
-          Bmp.SetSize(100,100);
-          Bmp.Clear(color32(128,128,128,128));
-          exit;
-     end;
-
-     try
-        B:=TBitmap.Create;
-        B.LoadFromFile(IconFile);
-        Bmp.SetSize(B.Width,B.Height);
-        B.Free;
-        Bmp.LoadFromFile(IconFile);
-        Bmp.DrawMode := dmBlend;
-        result := True;
-     except
-           result := False;
-           Bmp.SetSize(100,100);
-           Bmp.Clear(color32(128,128,128,128));
-     end;
-end;
-
-
-function extrIcon(Bmp : TBitmap32; FileName : string) : boolean;
-var
-  icon : Hicon;
-begin
-     if not FileExists(FileName) then
-     begin
-       result := False;
-       Bmp.SetSize(100,100);
-       Bmp.Clear(color32(128,128,128,128));
-       exit;
-     end;
-
-     try
-        icon := ExtractIcon(hInstance,PChar(FileName), 0);
-        if icon <> 0 then
-        begin
-             IconToImage(Bmp,icon);
-             destroyicon(icon);
-             result := True;
-             exit;
-        end;
-        result := False;
-        Bmp.SetSize(100,100);
-        Bmp.Clear(color32(128,128,128,128));
-     except
-           result := False;
-           Bmp.SetSize(100,100);
-           Bmp.Clear(color32(128,128,128,128));
-     end;
-end;
-
-function extrShellIcon(Bmp : TBitmap32; FileName, IconSet : string) : boolean;
-var
-  icon : Hicon;
-  FileInfo : SHFILEINFO;
-  ImageListHandle : THandle;
-  b : boolean;
-  ResStream: TResourceStream;
-  tempBmp : TBitmap32;
-begin
-  ImageListHandle := SHGetFileInfo( pChar(FileName), 0, FileInfo, sizeof( SHFILEINFO ),
-                                    SHGFI_ICON or SHGFI_SHELLICONSIZE);
-  if FileInfo.hicon <> 0 then
-  begin
-    IconToImage(Bmp,FileInfo.hicon);
-    DestroyIcon(FileInfo.hIcon);
-    ImageList_Destroy(ImageListHandle);
-    result := True;
-    exit;
-  end;
-  result := False;
-  DestroyIcon(FileInfo.hIcon);
-  ImageList_Destroy(ImageListHandle);
-
-  LoadIcon(bmp,'icon.application','icon.application',IconSet,48);
-  try
-    ResStream := TResourceStream.Create(HInstance, 'Fail_Image', RT_RCDATA);
-  except
-    exit;
-  end;
-  
-  try
-    TempBmp := TBitmap32.Create;
-    LoadBitmap32FromPNG(TempBmp,ResStream,b);
-    TempBmp.DrawMode := dmBlend;
-    TempBmp.CombineMode := cmMerge;
-    TempBmp.DrawTo(Bmp,Bmp.Width-TempBmp.Width, Bmp.Height-TempBmp.Height);
-  finally
-    TempBmp.Free;
-    ResStream.Free;
-  end;
-end;
-
-function DoLoadImage(Bmp : TBitmap32; Image, IconSet : String; Size : integer) : boolean;
-var
-  ext : String;
-  b : boolean;
-begin
-  Ext := ExtractFileExt(Image);
-  
-  if lowercase(Ext) = '.exe' then b := extrShellIcon(Bmp,Image, IconSet)
-  else if lowercase(Ext) = '.ico' then b := loadIco(Bmp,Image,Size)
-  else if lowercase(Ext) = '.png' then b := loadPng(Bmp,Image)
-  else b := False;
-
-  if b = False then image := '-3';
-
-  {no data about what image to load
-  and SharpE Icon list is empty - so not even default icon available}
-  if Image = '-3' then
-  begin
-    Bmp.SetSize(64,64);
-    Bmp.Clear(color32(128,128,128,128));
-  end;
-end;
-
-function LoadIcon(bmp : TBitmap32; Icon,Target,IconSet : String; Size : integer) : boolean;
-var
-  IconList : TStringList;
-  p : PChar;
-  i : integer;
-begin
-  if Icon = '-2' then extrShellIcon(Bmp,Target, IconSet)
-  else if FileExists(Icon) then DoLoadImage(Bmp,Icon, IconSet, Size)
-  else
-  //else if Icon = '-2' then
-  begin
-   {SharpE Icon}
-   IconList := TStringList.Create;
-   try
-     p := GetIconList(IconSet);
-     IconList.CommaText := p;
-   finally
-     releasebuffer(p);
-   end;
-   i := IconList.IndexOfName(Icon);
-   if (i<>-1) and (i<=IconList.Count-1) then
-   begin
-     if FileExists(SharpApi.GetSharpeDirectory+'Icons\'+ IconSet +'\'+IconList.Values[IconList.Names[i]]) then
-        Icon := SharpApi.GetSharpeDirectory+'Icons\'+ IconSet +'\'+IconList.Values[IconList.Names[i]];
-   end else if IconList.Count>0 then Icon := SharpApi.GetSharpeDirectory+'Icons\'+ IconSet +'\'+IconList.Values[IconList.Names[i]]
-            else Icon := '-3';
-   IconList.Free;
-   DoLoadImage(Bmp,Icon,IconSet,Size);
-  end;
 end;
 
 
@@ -1026,20 +630,12 @@ end;
 
 
 exports
- LoadJpg,
- LoadIco,
- LoadBmp,
- LoadPng,
- IconToImage,
  BlendImageA,
  BlendImageB,
  LightenBitmapA,
  LightenBitmapB,
  CreateDropShadow,
  releasebuffer,
- GetIconList,
- extrIcon,
- extrShellIcon,
  RenderText,
  RenderTextB,
  RenderTextNA,
@@ -1050,6 +646,3 @@ exports
 
 begin
 end.
-
-finalization
-

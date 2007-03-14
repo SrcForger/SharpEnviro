@@ -104,19 +104,9 @@ const
      SDM_DELETE_LAYER = 17;
      SDM_WEATHER_UPDATE = 18;
      SDM_INIT_DONE = 19;
-     SDM_KEY_SET_FOCUS = 20;
-     SDM_KEY_REMOVE_FOCUS = 21;
-     SDM_KEY_SEND_INPUT = 22;
 
-function LoadBmp(Bmp : TBitmap32; IconFile : string) : boolean; external 'SharpDeskApi.dll';
-function LoadJpg(Bmp : TBitmap32; IconFile : string) : boolean; external 'SharpDeskApi.dll';
-function LoadPng(out Bmp : TBitmap32; IconFile : string) : boolean; external 'SharpDeskApi.dll';
-function LoadIco(Bmp : TBitmap32; IconFile : string; Size : integer) : boolean; external 'SharpDeskApi.dll';
-function extrIcon(Bmp : TBitmap32; FileName : string) : boolean; external 'SharpDeskApi.dll';
-function extrShellIcon(Bmp : TBitmap32; FileName : string) : boolean; external 'SharpDeskApi.dll';
-function GetIconList(IconSet : widestring) : PChar; external 'SharpDeskApi.dll';
+
 // function GetAlphaBMP(Bmp : TBitmap32) : TBitmap32; external 'SharpDeskApi.dll';
-procedure IconToImage(Bmp : TBitmap32; const icon : hicon); external 'SharpDeskApi.dll';
 procedure LightenBitmap(Bmp : TBitmap32; Amount :integer); external 'SharpDeskApi.dll' name 'LightenBitmapA'; overload;
 procedure LightenBitmap(Bmp : TBitmap32; Amount :integer; Rect : TRect); external 'SharpDeskApi.dll' name 'LightenBitmapB'; overload;
 procedure BlendImage(Bmp : TBitmap32; Color : TColor; alpha : integer); external 'SharpDeskApi.dll' name 'BlendImageA'; overload;
@@ -125,11 +115,9 @@ procedure CreateDropShadow(Bmp : TBitmap32; StartX, StartY, sAlpha, color :integ
 // procedure RemoveAlpha(var Bmp : TBitmap32); external 'SharpDeskApi.dll';
 procedure releasebuffer(p : pChar); external 'SharpDeskApi.dll';
 
-function LoadIcon(bmp : TBitmap32; Icon,Target,IconSet : String; Size : integer) : boolean; external 'SharpDeskApi.dll';
-
 // Align: -1=Left; 0=Center; 1=Right
-function RenderText(dst : TBitmap32; Font : TDeskFont; Text : TStringList; Align : integer; Spacing : integer) : boolean; overload; external 'SharpDeskApi.dll'; 
-function RenderText(dst : TBitmap32; Font : TDeskFont; Text : String; Align : integer; Spacing : integer) : boolean; overload; external 'SharpDeskApi.dll' name 'RenderTextB'; 
+function RenderText(dst : TBitmap32; Font : TDeskFont; Text : TStringList; Align : integer; Spacing : integer) : boolean; overload; external 'SharpDeskApi.dll';
+function RenderText(dst : TBitmap32; Font : TDeskFont; Text : String; Align : integer; Spacing : integer) : boolean; overload; external 'SharpDeskApi.dll' name 'RenderTextB';
 function RenderTextNA(dst : TBitmap32; Font : TDeskFont; Text : TStringList; Align : integer; Spacing : integer; BGColor : integer) : boolean; external 'SharpDeskApi.dll';
 function RenderIcon(dst : TBitmap32; Icon : TDeskIcon; SizeMod : TPoint) : boolean; external 'SharpDeskApi.dll';
 function RenderObject(dst : TBitmap32; Icon : TDeskIcon; Font : TDeskFont; Caption : TDeskCaption; SizeMod : TPoint; OffsetMod : TPoint) : boolean; external 'SharpDeskApi.dll';
@@ -141,10 +129,7 @@ function DeskIcon(Icon : TBitmap32; Size : integer; Alpha : integer; Blend : boo
 function DeskCaption(Caption : TStringList; Align : TTextAlign; Xoffset : integer; Yoffset : integer; Draw : boolean; LineSpace : integer) : TDeskCaption;
 function IntToTextAlign(value : integer) : TTextAlign;
 
-function RegisterInputArea(ID,X1,Y1,X2,Y2 : integer) : integer; external 'SharpDesk.exe';
-function DeleteInputArea(oID,ID : integer) : boolean; external 'SharpDesk.exe';
 
-                       
 implementation
 
 function DeskFont(Name        : String;
