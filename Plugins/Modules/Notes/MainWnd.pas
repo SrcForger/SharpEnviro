@@ -86,7 +86,7 @@ uses SettingsWnd,
 
 procedure TMainForm.WMUpdateBangs(var Msg : TMessage);
 begin
-  SharpApi.RegisterActionEx('!ShowNotes','Modules',self.Handle,1);
+  SharpApi.RegisterActionEx('!ToggleNotes','Modules',self.Handle,1);
 end;
 
 procedure TMainForm.WMSharpEBang(var Msg : TMessage);
@@ -152,7 +152,7 @@ var
   item : TJvSimpleXMLElem;
   Mon : TMonitor;
 begin
-  SharpApi.RegisterActionEx('!ShowNotes','Modules',self.Handle,1);
+  SharpApi.RegisterActionEx('!ToggleNotes','Modules',self.Handle,1);
 
   sCaption     := True;
   sIcon        := True;
