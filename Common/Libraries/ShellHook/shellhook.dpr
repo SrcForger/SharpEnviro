@@ -65,8 +65,6 @@ const
 // will send messages to this handle in response to specific messages trapped by our
 // hook DLL
 procedure SHSetMainHandle(Handle: HWND);
-var
-  i,n : integer;
 begin
   if not IsWindow(rHookRec^.MainWindow1) then rHookRec^.MainWindow1 := 0;
   if not IsWindow(rHookRec^.MainWindow2) then rHookRec^.MainWindow2 := 0;
