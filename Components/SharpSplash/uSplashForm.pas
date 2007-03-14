@@ -35,6 +35,7 @@ interface
 uses
   Windows,
   Messages,
+  Types,
   SysUtils,
   Classes,
   Graphics,
@@ -91,7 +92,8 @@ const w = Round($10000 * (1/255));
 var
   p: PColor32;
   c: TColor32;
-  i,a,r,g,b: integer;
+  i,a: integer;
+  r,g,b: byte;
 begin
   p:= Bitmap.PixelPtr[0,0];
   for i:= 0 to Bitmap.Width * Bitmap.Height - 1 do begin
@@ -107,7 +109,6 @@ end;
 
 constructor TSplashForm.Create(AOwner: TComponent);
 var
-  n : integer;
   FileName : String;
   b : boolean;
 begin
@@ -141,8 +142,6 @@ begin
     exit;
   end;
 
-  // FPicture.SaveToFile('X:\1.png');
-
   Width  := FPicture.Width;
   Height := FPicture.Height;
   left   := Screen.WorkAreaWidth div 2 - self.Width div 2;
@@ -174,53 +173,32 @@ begin
   TopLeft := BoundsRect.TopLeft;
 
   DC := GetDC(Handle);
+  Bmp := TBitmap32.Create;
   try
+    {$WARNINGS OFF}
     if not Win32Check(LongBool(DC)) then
       RaiseLastWin32Error;
 
-    Bmp := TBitmap32.Create;
     bmp.SetSize(FPicture.Width,FPicture.Height);
     Bmp.Clear(color32(0,0,0,0));
-    FPicture.DrawMode := dmBlend;    
+    FPicture.DrawMode := dmBlend;
     Bmp.Draw(0,0,FPicture);
-    //Bmp.Assign(FPicture);
     if not Win32Check(UpdateLayeredWindow(Handle, DC, @TopLeft, @BmpSize,
       Bmp.Handle, @BmpTopLeft, clNone, @Blend, ULW_ALPHA)) then
       RaiseLastWin32Error;
-    Bmp.Free;
+    {$WARNINGS ON}
   finally
+    Bmp.Free;
     ReleaseDC(Handle, DC);
   end;
 end;
 
-procedure TSplashForm.DrawWindow;
-var
-  SwapBMP, Swap2: TBitmap32;
-  b: boolean;
-  i:integer;
-begin
- // Swap2 := TBitmap32.Create;  // try many drawto over a final png and see
+procedure TSplashForm.DrawWindow;begin
 
-
-//  SwapBMP := TBitmap32.Create;
-//  SwapBMP.drawmode := dmBlend;
-//  SwapBMP.LoadFromFile('C:\Icons\BlueIcons1\Blue Icon PNGs\Direct Connect.png');
-//  GR32_PNG.LoadBitmap32FromPNG(SwapBMP,'C:\png.png',b);
-
-//  PreMul(SwapBmp);
-
-//  SwapBMP.MasterAlpha := 255;
-//  SwapBMP.DrawTo(MBitmap,10,10);
-
-  UpdateWndLayer; // aggiorna la finestra con l'immagine MBitmap
-
- // Swap2.Free;
-//  SwapBMP.Free;
+  UpdateWndLayer;
 end;
 
 procedure TSplashForm.FormCreate(Sender: TObject);
-var
-  b : boolean;
 begin
   if FTerminate then exit;
 
@@ -253,14 +231,6 @@ begin
   until n>=255;              
   CloseTimer.Enabled := True;
 end;
-
-{procedure TBackgroundForm.WMMove(var Msg : TMessage);
-begin
-  TForm(Owner).Left := self.Left+4;
-  TForm(Owner).Top  := self.Top+2;
-  TForm(Owner).BringToFront;
-end;                        }
-
 
 procedure TSplashForm.ClosetimerTimer(Sender: TObject);
 begin
