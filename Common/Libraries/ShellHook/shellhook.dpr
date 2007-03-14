@@ -21,11 +21,13 @@ type
 
 
 exports
+    {$WARNINGS OFF}
     SHSetHook index 1,
     SHUnSetHook index 2,
     SHSetMainHandle index 3,
     SHResetMsgFlag index 4,
     SHSetCallBack index 5;
+    {$WARNINGS ON}
 
 type
 // define a record that will store the handle of our EXE's main window AND
@@ -119,6 +121,7 @@ begin
     for n := 1 to 5 do
 //    for n := 0 to High(rHookRec^.MainWindow) do
     begin
+      MWnd := 0;
       case n of
         1: MWnd := rHookRec^.MainWindow1;
         2: MWnd := rHookRec^.MainWindow2;

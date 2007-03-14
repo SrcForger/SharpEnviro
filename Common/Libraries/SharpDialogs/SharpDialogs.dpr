@@ -48,7 +48,7 @@ uses
   ShellApi,
   ShlObj,
   SharpApi,
-  ExPopupList in 'ExPopupList.pas',
+  ExPopupList,
   SharpIconUtils in '..\..\Units\SharpIconUtils\SharpIconUtils.pas',
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas',
   SharpThemeApi in '..\SharpThemeApi\SharpThemeApi.pas';
@@ -703,7 +703,7 @@ begin
       menuItem.OnClick := iconmenuclick.OnCustomIconClick;
       menuItem.SubMenuImages := subiml;
       Iconmenu.Items.Add(menuItem);
-      mindex := mindex + 1;
+      //mindex := mindex + 1;
     end;
 
     subiml.Add(bmp,bmp);
