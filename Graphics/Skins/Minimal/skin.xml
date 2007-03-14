@@ -91,6 +91,51 @@
         </skinpart>
       </down>
     </throbber>
+    <custombg>
+      <dimension>4,4</dimension>
+      <location>-2,-2</location>
+      <skinpart>
+        <ID>0</ID>
+        <location>1,1</location>
+        <dimension>w-2,1</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>148</alpha>
+      </skinpart>
+      <skinpart>
+        <ID>1</ID>
+        <location>w-1,2</location>
+        <dimension>1,h-3</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>148</alpha>
+      </skinpart>
+      <skinpart>
+        <ID>2</ID>
+        <location>1,h-1</location>
+        <dimension>w-2,1</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>148</alpha>
+      </skinpart>
+      <skinpart>
+        <ID>3</ID>
+        <location>0,2</location>
+        <dimension>1,h-3</dimension>
+        <image>images/Empty.png</image>
+        <color>$Border</color>
+        <alpha>148</alpha>
+      </skinpart>
+      <skinpart>
+        <ID>gradient</ID>
+        <location>1,2</location>
+        <dimension>w-3,h-4</dimension>
+        <image>images/bgempty.png</image>
+        <gradienttype>vertical</gradienttype>
+        <gradientcolor>$Background,$Background</gradientcolor>
+        <gradientalpha>0,60</gradientalpha>
+      </skinpart>
+    </custombg>
   </sharpbar>
   <menu>
     <dimension>w,h</dimension>
