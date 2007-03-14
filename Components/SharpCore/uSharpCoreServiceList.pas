@@ -3,6 +3,7 @@ unit uSharpCoreServiceList;
 interface
 uses
   // Standard
+  Windows,
   Classes,
   ContNrs,
   SysUtils,

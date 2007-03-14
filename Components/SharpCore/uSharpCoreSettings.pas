@@ -27,6 +27,7 @@ unit uSharpCoreSettings;
 
 interface
 uses
+  windows,
   Classes,
   ContNrs,
   messages,
