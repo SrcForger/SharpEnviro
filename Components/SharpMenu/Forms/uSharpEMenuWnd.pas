@@ -44,7 +44,8 @@ uses
   Dialogs,
   StdCtrls,
   SharpApi,
-  ExtCtrls,  
+  ExtCtrls,
+  Types,
   GR32,
   GR32_Layers,
   GR32_Image,
@@ -87,7 +88,7 @@ type
   public
     procedure DrawWindow;
     procedure InitMenu(pMenu : TSharpEMenu; pRootMenu : boolean);
-    constructor Create(AOwner: TComponent); overload;
+    constructor Create(AOwner: TComponent); overload; override;
     constructor Create(AOwner: TComponent; pMenu : TSharpEMenu); reintroduce; overload;
     property SharpEMenu : TSharpEMenu read FMenu;
     property Picture : TBitmap32 read FPicture;
@@ -111,7 +112,8 @@ const w = Round($10000 * (1/255));
 var
   p: PColor32;
   c: TColor32;
-  i,a,r,g,b: integer;
+  i,a: integer;
+  r,g,b : byte;
 begin
   p:= Bitmap.PixelPtr[0,0];
   for i:= 0 to Bitmap.Width * Bitmap.Height - 1 do begin
@@ -182,12 +184,14 @@ begin
 
   DC := GetDC(Handle);
   try
+    {$WARNINGS OFF}
     if not Win32Check(LongBool(DC)) then
       RaiseLastWin32Error;
 
      if not Win32Check(UpdateLayeredWindow(Handle, DC, @TopLeft, @BmpSize,
       FPicture.Handle, @BmpTopLeft, clNone, @Blend, ULW_ALPHA)) then
       RaiseLastWin32Error;
+    {$WARNINGS ON}
   finally
     ReleaseDC(Handle, DC);
   end;
@@ -330,7 +334,7 @@ end;
 procedure TSharpEMenuWnd.SubMenuTimerTimer(Sender: TObject);
 var
   item : TSharpEMenuItem;
-  t,y : integer;
+  t : integer;
 begin
   if FMenu = nil then exit;
 
@@ -373,7 +377,6 @@ end;
 procedure TSharpEMenuWnd.offsettimerTimer(Sender: TObject);
 var
   CPos : TPoint;
-  b : boolean;
 begin
   if FMenu = nil then exit;
 
@@ -385,7 +388,6 @@ begin
   end;
 
   CPos := Mouse.CursorPos;
-  b := False;
   if (CPos.X > Left) and (CPos.X < Left + Width) then
   begin
     if (CPos.Y >= Monitor.Top) and (CPos.Y <= Monitor.Top + 5) and (FOffset >= 0) then

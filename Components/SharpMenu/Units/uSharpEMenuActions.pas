@@ -105,11 +105,14 @@ var
   dt : TDateTime;
 begin
   pMenu := TSharpEMenu(FOwner);
+  {$WARNINGS OFF}
   Dir := IncludeTrailingBackSlash(pDir);
+  {$WARNINGS ON}
 
   if length(trim(pFilter)) = 0 then
      pFilter := '*';
 
+  item := nil;
 
   SList := TStringList.Create;
   SList.Clear;
@@ -129,8 +132,10 @@ begin
                  end;
              else svalue := '1';
            end;
+           {$WARNINGS OFF}
            if (sr.Attr and faHidden) > 0 then
               svalue[1] := '2';
+           {$WARNINGS ON}
          end;
 
       // do not add Directories if sorting is enabled

@@ -76,7 +76,6 @@ var
   wnd : TSharpEMenuWnd;
   events : TEventClass;
   handle : THandle;
-  ps : String;
   buff : array[0..255] of Char;
   s : string;
   iconcachefile : String;

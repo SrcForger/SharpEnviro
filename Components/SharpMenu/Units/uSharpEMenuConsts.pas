@@ -21,6 +21,7 @@ begin
   inherited Create;
   FConstList := TStringList.Create;
   FConstList.Clear;
+  {$WARNINGS OFF}
   FConstList.Add('{#SharpEDir#}='               + SharpApi.GetSharpeDirectory);
   FConstList.Add('{#SharpEUserSettingsDir#}='   + SharpApi.GetSharpeUserSettingsPath);
   FConstList.Add('{#SharpEGlobalSettingsDir#}=' + SharpApi.GetSharpeGlobalSettingsPath);
@@ -33,6 +34,7 @@ begin
   FConstList.Add('{#CommonDesktopDir#}='        + IncludeTrailingBackSlash(JclSysInfo.GetCommonDesktopDirectoryFolder));
   FConstList.Add('{#MyDocumentsDir#}='          + IncludeTrailingBackSlash(JclSysInfo.GetPersonalFolder));
   FConstList.Add('{#ProgramFilesDir#}='         + IncludeTrailingBackSlash(JclSysInfo.GetProgramFilesFolder));
+  {$WARNINGS ON}
 end;
 
 destructor TSharpEMenuConsts.Destroy;

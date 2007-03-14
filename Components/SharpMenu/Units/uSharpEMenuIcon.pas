@@ -93,8 +93,6 @@ begin
 end;
 
 constructor TSharpEMenuIcon.Create(pIconSource,pIconData : String);
-var
-  ext : String;
 begin
   inherited Create;
   FCached := False;
