@@ -2028,16 +2028,28 @@ var
    eR,eG,eB : integer;
    y : integer;
 begin
-  if color1 <> -1 then begin
+  if color1 <> -1 then
+  begin
     sR := GetRValue(color1);
     sG := GetGValue(color1);
     sB := GetBValue(color1);
+  end else
+  begin
+    sR := 0;
+    sG := 0;
+    sB := 0;
   end;
 
-  if color2 <> -1 then begin
+  if color2 <> -1 then
+  begin
     eR := GetRValue(color2);
     eG := GetGValue(color2);
     eB := GetBValue(color2);
+  end else
+  begin
+    eR := 0;
+    eG := 0;
+    eB := 0;
   end;
   
   nR:=(eR-sR)/(Rect.Bottom-Rect.Top);
