@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinScheme>
+  <item>
+    <Name>bar blend</Name>
+    <Tag>$barblend</Tag>
+    <Info>bar blend</Info>
+    <Default>11962738</Default>
+  </item>
+  <item>
+    <Name>task text</Name>
+    <Tag>$tasktext</Tag>
+    <Info>task text</Info>
+    <Default>0</Default>
+  </item>
+  <item>
+    <Name>task glow</Name>
+    <Tag>$taskglow</Tag>
+    <Info>task glow</Info>
+    <Default>16756318</Default>
+  </item>
+  <item>
+    <Name>task flashing glow</Name>
+    <Tag>$taskflashing</Tag>
+    <Info>task flashing glow</Info>
+    <Default>33023</Default>
+  </item>
+  <item>
+    <Name>button glow</Name>
+    <Tag>$buttonglow</Tag>
+    <Info>button glow</Info>
+    <Default>16756318</Default>
+  </item>
+  <item>
+    <Name>task text shadow</Name>
+    <Tag>$tasktextshdw</Tag>
+    <Info/>
+    <Default>0</Default>
+  </item>
+  <item>
+    <Name>menu background</Name>
+    <Tag>$menubackg</Tag>
+    <Info/>
+    <Default>11962738</Default>
+  </item>
+  <item>
+    <Name>menu text</Name>
+    <Tag>$menutext</Tag>
+    <Info/>
+    <Default>16777215</Default>
+  </item>
+  <item>
+    <Name>menu text shadow</Name>
+    <Tag>$menutextshadow</Tag>
+    <Info/>
+    <Default>0</Default>
+  </item>
+  <item>
+    <Name>menu item glow</Name>
+    <Tag>$menuglow</Tag>
+    <Info/>
+    <Default>16756318</Default>
+  </item>
+</SharpESkinScheme>
