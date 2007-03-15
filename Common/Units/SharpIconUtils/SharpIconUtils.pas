@@ -23,7 +23,7 @@ procedure IconToImage(Bmp : TBitmap32; const icon : hicon);
 function extrShellIcon(Bmp : TBitmap32; FileName : String) : THandle;
 function GetShellIconHandle(FileName : String) : THandle;
 function LoadIco(Bmp : TBitmap32; IconFile : string; Size : integer) : boolean;
-function LoadPng(Bmp : TBitmap32; IconFile:string) : boolean;
+function LoadPng(Bmp : TBitmap32; PngFile:string) : boolean;
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32) : boolean; overload;
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32; Size : integer) : boolean; overload;
 
@@ -165,11 +165,11 @@ begin
   end;
 end;
 
-function LoadPng(Bmp : TBitmap32; IconFile:string) : boolean;
+function LoadPng(Bmp : TBitmap32; PngFile:string) : boolean;
 var
   b : boolean;
 begin
-  if not FileExists(IconFile) then
+  if not FileExists(PngFile) then
   begin
     result := False;
     Bmp.SetSize(100,100);
@@ -177,7 +177,7 @@ begin
     exit;
   end;
 
-  GR32_PNG.LoadBitmap32FromPNG(Bmp,IconFile,b);
+  GR32_PNG.LoadBitmap32FromPNG(Bmp,PngFile,b);
   result := true;
 end;
 
