@@ -108,8 +108,11 @@ end;
 
 procedure TSkinServer.UpdateSkin(var Msg: TMessage);
 begin
-  UpdateStreamFile;
-  SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKINFILECHANGED,0);
+  if msg.WParam = SU_SKIN then
+  begin
+    UpdateStreamFile;
+    SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKINFILECHANGED,0);
+  end;
 end;
 
 end.
