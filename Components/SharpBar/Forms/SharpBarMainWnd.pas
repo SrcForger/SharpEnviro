@@ -119,6 +119,8 @@ type
     procedure OnQuickAddModuleItemClick(Sender : TObject);
   private
     { Private-Deklarationen }
+    FUser32DllHandle : THandle;
+    PrintWindow : function (SourceWindow: hwnd; Destination: hdc; nFlags: cardinal): bool; stdcall;
     FSuspended : boolean;
     FBarID : integer;
     FShellHookList : TStringList;
@@ -191,7 +193,6 @@ var
 
 procedure LockWindow(const Handle: HWND);
 procedure UnLockWindow(const Handle: HWND);
-function PrintWindow(SourceWindow: hwnd; Destination: hdc; nFlags: cardinal): bool; stdcall; external 'user32.dll' name 'PrintWindow';
 
 implementation
 
@@ -527,13 +528,20 @@ begin
     if wnd <> 0 then
     begin
       // try 3 times... :)
-      if not PrintWindow(wnd,BGBmp.Handle,0) then
-         if not PrintWindow(wnd,BGBmp.Handle,0) then
-            if not PrintWindow(wnd,BGBmp.Handle,0) then
-            begin
-              if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg') then
-                 BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg');
-            end;
+      if @PrintWindow <> nil then
+      begin
+        if not PrintWindow(wnd,BGBmp.Handle,0) then
+           if not PrintWindow(wnd,BGBmp.Handle,0) then
+              if not PrintWindow(wnd,BGBmp.Handle,0) then
+              begin
+                if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg') then
+                   BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg');
+              end;
+      end else
+      begin
+        if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg') then
+        BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg');
+      end;
     end else PaintDesktop(BGBmp.Handle);
     FTopZone.SetSize(Monitor.Width,Height);
     FBottomZone.SetSize(Monitor.Width,Height);
@@ -849,6 +857,10 @@ end;
 
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
+  FUser32DllHandle := LoadLibrary('user32.dll');
+  if FUser32DllHandle <> 0 then
+     @PrintWindow := GetProcAddress(FUser32DllHandle, 'PrintWindow');
+
   FSuspended := False;
   FShellBCInProgress := False;
 
@@ -1045,6 +1057,8 @@ end;
 
 procedure TSharpBarMainForm.FormDestroy(Sender: TObject);
 begin
+  FreeLibrary(FUser32DllHandle);
+
   SharpApi.UnRegisterAction(PChar('!FocusBar ('+inttostr(FBarID)+')'));
 
   if BarHideForm <> nil then FreeAndNil(BarHideForm);
