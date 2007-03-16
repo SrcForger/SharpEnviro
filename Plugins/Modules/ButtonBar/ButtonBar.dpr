@@ -188,9 +188,11 @@ var
   temp : TModule;
   n,i : integer;
 begin
-  if (not (part = SU_SKINFILECHANGED)) or (not (part = SU_BACKGROUND))
-     or (not (part = SU_THEME)) or (not (part = SU_ICONSET))
-     or (not (part = SU_SCHEME)) then exit;
+  if (part <> SU_SKINFILECHANGED) and (part <> SU_BACKGROUND)
+     and (part <> SU_THEME) and (part <> SU_SKIN)
+     and (part <> SU_ICONSET) then exit;
+
+  if ModuleList = nil then exit;
 
   for n := 0  to ModuleList.Count - 1 do
   begin

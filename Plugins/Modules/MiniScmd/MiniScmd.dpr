@@ -45,6 +45,7 @@ uses
   StdCtrls,
   uSharpBarApi,
   MouseTimer,
+  SharpThemeApi,
   JvSimpleXML,
   SharpApi,
   MainWnd in 'MainWnd.pas' {MainForm},
@@ -187,16 +188,18 @@ var
   temp : TModule;
   n,i : integer;
 begin
-  if (not (part = SU_SKINFILECHANGED)) or (not (part = SU_BACKGROUND))
-     or (not (part = SU_THEME)) or (not (part = SU_SCHEME)) then exit;
+  if (part <> SU_SKINFILECHANGED) and (part <> SU_BACKGROUND)
+     and (part <> SU_THEME) and (part <> SU_SKIN) then exit;
 
-  for n := 0  to ModuleList.Count - 1 do
+  if ModuleList = nil then exit;
+
+  for n := 0 to ModuleList.Count - 1 do
   begin
     temp := TModule(ModuleList.Items[n]);
 
     // Step1: check if height changed
     if (part = SU_SKINFILECHANGED) or (part = SU_BACKGROUND)
-       or (part = SU_THEME) then
+       or (part = SU_THEME) or (part = SU_SKIN) then
     begin
       i := GetBarPluginHeight(temp.BarWnd);
       if temp.Form.Height <> i then
@@ -204,10 +207,11 @@ begin
     end;
 
      // Step2: check if skin or scheme changed
-    if (part = SU_SCHEME) or (part = SU_THEME) then
-        TMainForm(temp.Form).SharpESkinManager1.UpdateScheme;
     if (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
        TMainForm(temp.Form).SharpESkinManager1.UpdateSkin;
+
+    if (part = SU_SCHEME) or (part = SU_THEME) then
+        TMainForm(temp.Form).SharpESkinManager1.UpdateScheme;
 
     // Step3: update
     if (part = SU_SCHEME) or (part = SU_BACKGROUND)
