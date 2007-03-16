@@ -394,14 +394,14 @@ begin
 
   // Step1: Update settings and prepate modules for updating
   case msg.WParam of
-    SU_SKIN : SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
-    SU_THEME : SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme,tpIconSet]);
+    SU_SKIN : SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
+    SU_THEME : SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme,tpIconSet]);
     SU_SCHEME :
       begin
-        SharpThemeApi.LoadTheme(False,[tpScheme]);
+        SharpThemeApi.LoadTheme(True,[tpScheme]);
         SkinManager.UpdateScheme;
       end;
-    SU_ICONSET : SharpThemeApi.LoadTheme(False,[tpIconSet]);
+    SU_ICONSET : SharpThemeApi.LoadTheme(True,[tpIconSet]);
   end;
 
   if msg.WParam = SU_SKINFILECHANGED then
