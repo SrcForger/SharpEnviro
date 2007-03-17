@@ -730,7 +730,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 145
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -90
+                Left = -94
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1180,7 +1180,7 @@ object SharpCenterWnd: TSharpCenterWnd
               object Edit2: TEdit
                 Left = 0
                 Top = 36
-                Width = -95
+                Width = -99
                 Height = 21
                 Anchors = [akLeft, akTop, akRight]
                 Ctl3D = True
@@ -1282,6 +1282,7 @@ object SharpCenterWnd: TSharpCenterWnd
             BorderWidth = 4
             Caption = 'SharpERoundPanel1'
             Color = clWindow
+            ParentBackground = False
             TabOrder = 1
             RoundValue = 10
             BorderColor = 16510947
@@ -1306,6 +1307,7 @@ object SharpCenterWnd: TSharpCenterWnd
             Width = 507
             Height = 25
             Anchors = [akLeft, akTop, akRight]
+            OnTabChange = tlPluginTabsTabChange
             TabWidth = 62
             TabIndex = 0
             TabColor = 16250871

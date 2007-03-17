@@ -659,6 +659,9 @@ begin
 
   if (@ActivePlugin.AddTabs <> nil) then
     ActivePlugin.AddTabs(FPluginTabs);
+
+  if (PluginTabs.Count > 0) and (@ActivePlugin.ClickTab <> nil) then
+     ActivePlugin.ClickTab(PluginTabs.GetItem[0]);
 end;
 
 function TSharpCenterManager.GetDisplayName(AFile, APluginID: string): string;

@@ -118,6 +118,8 @@ type
     Timer1: TTimer;
     lbFavs: TSharpEListBoxEx;
     Button1: TButton;
+    procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
+      var AChange: Boolean);
     procedure Timer1Timer(Sender: TObject);
     procedure MiClick(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
@@ -944,6 +946,14 @@ begin
     pnlEditContainer.Hide;
   end else
     tlEditItemTabClick(tlEditItem,tlEditItem.TabIndex);
+end;
+
+procedure TSharpCenterWnd.tlPluginTabsTabChange(ASender: TObject;
+  const ATabIndex: Integer; var AChange: Boolean);
+begin
+  if (ATabIndex > SCM.PluginTabs.Count - 1) then exit;
+  if @SCM.ActivePlugin.ClickTab <> nil then
+     SCM.ActivePlugin.ClickTab(SCM.PluginTabs.GetItem[ATabIndex]);
 end;
 
 end.
