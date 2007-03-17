@@ -53,12 +53,12 @@ begin
   SharpEListBoxEx1.itemheight := 54;
 
   li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa',1,2);
-  li.AddSubItem('Columnaaaaaaaaaaaaaaaaa',1);
+  li.AddSubItem('Columnaaaaaaaaaaaaaaaaa',1,2);
   li.AddSubItem('Column3bbbbbbbbbbbbbbbbbbbbb',1);
   li.Hint := 'Click to set as default';
   li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa',1);
-  li.AddSubItem('Columnaaaaaaaaaaaaaaaaa');
-  li.AddSubItem('Column3bbbbbbbbbbbbbbbbbbbbb');
+  li.AddSubItem('Columnaaaaaaaaaaaaaaaaa',1);
+  li.AddSubItem('Column3bbbbbbbbbbbbbbbbbbbbb',1,2);
   li.Hint := 'Click to set as default';
 
 end;
