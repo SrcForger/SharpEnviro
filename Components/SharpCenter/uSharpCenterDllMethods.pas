@@ -63,8 +63,6 @@ type
 
     GetCenterScheme: procedure (var ABackground: TColor;
       var AItemColor: TColor; var AItemSelectedColor: TColor);
-    
-
   end;
   PSetting = ^TSetting;
 
