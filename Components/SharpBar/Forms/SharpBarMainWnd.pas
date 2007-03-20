@@ -1408,7 +1408,7 @@ begin
   if FSuspended then exit;
   mThrobber := TSharpEMiniThrobber(ThrobberPopUp.popupcomponent);
   if mThrobber = nil then exit;
-  if MessageBox(self.handle,'Do you really want to delete this module? All settings will be lost!','Confirm : "Delete Module"',MB_YESNO) = IDYES then
+  if MessageBox(self.handle,'Do you really want to remove this module? All settings will be lost!','Confirm : "Remove Module"',MB_YESNO) = IDYES then
   begin
     LockWindow(Handle);
     ModuleManager.Delete(mThrobber.Tag);

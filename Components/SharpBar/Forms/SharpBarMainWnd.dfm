@@ -682,7 +682,7 @@ object SharpBarMainForm: TSharpBarMainForm
       Caption = '-'
     end
     object Delete1: TMenuItem
-      Caption = 'Delete'
+      Caption = 'Remove'
       ImageIndex = 17
       OnClick = Delete1Click
     end
