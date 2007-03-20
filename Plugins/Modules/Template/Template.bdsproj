@@ -149,18 +149,18 @@
 			<VersionInfo Name="Special">False</VersionInfo>
 			<VersionInfo Name="Private">False</VersionInfo>
 			<VersionInfo Name="DLL">False</VersionInfo>
-			<VersionInfo Name="Locale">1031</VersionInfo>
+			<VersionInfo Name="Locale">1033</VersionInfo>
 			<VersionInfo Name="CodePage">1252</VersionInfo>
 		</VersionInfo>
 		<VersionInfoKeys>
 			<VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
-			<VersionInfoKeys Name="FileDescription">SharpBar menu module</VersionInfoKeys>
+			<VersionInfoKeys Name="FileDescription">SharpBar template module</VersionInfoKeys>
 			<VersionInfoKeys Name="FileVersion">0.7.0.0</VersionInfoKeys>
-			<VersionInfoKeys Name="InternalName">Menu Module</VersionInfoKeys>
+			<VersionInfoKeys Name="InternalName">Template Module</VersionInfoKeys>
 			<VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys>
 			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-			<VersionInfoKeys Name="OriginalFilename">SharpMenu.dll</VersionInfoKeys>
-			<VersionInfoKeys Name="ProductName">SharpMenu Module</VersionInfoKeys>
+			<VersionInfoKeys Name="OriginalFilename">Template.dll</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductName">Template Module</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductVersion">0.7.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
 		</VersionInfoKeys>

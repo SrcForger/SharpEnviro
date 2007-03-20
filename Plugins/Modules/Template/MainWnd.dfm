@@ -16,8 +16,8 @@ object MainForm: TMainForm
   object Background: TImage32
     Left = 0
     Top = 0
-    Width = 277
-    Height = 159
+    Width = 285
+    Height = 167
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -25,6 +25,25 @@ object MainForm: TMainForm
     Scale = 1.000000000000000000
     ScaleMode = smNormal
     TabOrder = 0
+    object cboxList: TComboBox
+      Left = 0
+      Top = 0
+      Width = 145
+      Height = 21
+      ItemHeight = 13
+      TabOrder = 0
+      Items.Strings = (
+        'Item 1'
+        'Item 2'
+        'Item 3'
+        'Item 4'
+        'Item 5'
+        'Item 6'
+        'Item 7'
+        'Item 8'
+        'Item 9'
+        'Item 10')
+    end
   end
   object MenuPopup: TPopupMenu
     Left = 224
@@ -37,6 +56,7 @@ object MainForm: TMainForm
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
+    HandleUpdates = True
     Left = 192
     Top = 72
   end
