@@ -500,7 +500,7 @@ end;
 
 procedure TSharpCoreMainWnd.SubmitBug1Click(Sender: TObject);
 begin
-  SharpExecute('http://www.sharpe-shell.org/e107_plugins/bugtracker2/bugtracker2.php');
+  SharpExecute('http://trac.sharpe-shell.org/index.fcgi/report');
 end;
 
 procedure TSharpCoreMainWnd.Sourceforge1Click(Sender: TObject);
