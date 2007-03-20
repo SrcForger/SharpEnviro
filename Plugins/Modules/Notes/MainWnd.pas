@@ -269,7 +269,7 @@ begin
   b := False;
   for n := 0 to Screen.MonitorCount-1 do
       if ((PointInRect(Point(sLeft,sTop),Screen.Monitors[n].BoundsRect))
-         or (PointInRecT(Point(sLeft+sWidth,sTop+sHeight), Screen.Monitors[n].BoundsRect))) then
+         and (PointInRecT(Point(sLeft+sWidth,sTop+sHeight), Screen.Monitors[n].BoundsRect))) then
              b := True;
   if not b then
   begin
