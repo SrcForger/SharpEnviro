@@ -1,6 +1,6 @@
 {
 Source Name: SharpGraphicsUtils.pas
-Description: Main window for displaying and controling all desktop objects
+Description: Graphics32 related help Functions
 Copyright (C) Malx <>
               Martin Krämer <MartinKraemer@gmx.net>
 
