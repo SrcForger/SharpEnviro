@@ -57,11 +57,11 @@ type
   private
     sWidth   : integer;
     sButton  : boolean;
-    procedure WMUpdateBangs(var Msg : TMessage); message WM_SHARPEUPDATEACTIONS;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
     ModuleID : integer;
     BarWnd : hWnd;
+    procedure UpdateBangs;
     procedure LoadSettings;
     procedure SetSize(NewWidth : integer);
     procedure ReAlignComponents(BroadCast : boolean);
@@ -83,7 +83,7 @@ procedure TMainForm.LoadSettings;
 var
   item : TJvSimpleXMLElem;
 begin
-  SharpApi.RegisterActionEx(PChar('!FocusMiniScmd ('+inttostr(ModuleID)+')'),'Modules',self.Handle,1);
+  UpdateBangs;
 
   sWidth     := 100;
   sButton    := True;
@@ -183,7 +183,7 @@ begin
   end;
 end;
 
-procedure TMainForm.WMUpdateBangs(var Msg : TMessage);
+procedure TMainForm.UpdateBangs;
 begin
   SharpApi.RegisterActionEx(PChar('!FocusMiniScmd ('+inttostr(ModuleID)+')'),'Modules',self.Handle,1);
 end;

@@ -238,6 +238,22 @@ begin
       end;
 end;
 
+function ModuleMessage(ID : integer; msg: string): integer;
+var
+  n : integer;
+  temp : TModule;
+begin
+  result := 0;
+  if CompareText(msg,'MM_SHARPEUPDATEACTIONS') <> 0 then exit;
+
+  for n := 0 to ModuleList.Count - 1 do
+      if TModule(ModuleList.Items[n]).ID = ID then
+      begin
+        temp := TModule(ModuleList.Items[n]);
+        TMainForm(temp.FForm).UpdateBangs;
+      end;
+end;
+
 procedure SetSize(ID : integer; NewWidth : integer);
 var
   n : integer;
@@ -258,6 +274,7 @@ Exports
   Poschanged,
   Refresh,
   UpdateMessage,
+  ModuleMessage,
   ShowSettingsWnd,
   SetSize;
 

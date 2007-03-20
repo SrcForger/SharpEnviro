@@ -74,11 +74,11 @@ type
     FCustomSettings : TSharpECustomSkinSettings;
     FCustomBmpList  : TSkinBitmapList;
     ModuleSize  : TModuleSize;
-    procedure WMUpdateBangs(var Msg : TMessage); message WM_SHARPEUPDATEACTIONS;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
     ModuleID : integer;
     BarWnd : hWnd;
+    procedure UpdateBangs;
     procedure UpdateIcon;
     procedure LoadSettings;
     procedure ReAlignComponents(BroadCast : boolean);
@@ -93,7 +93,7 @@ uses SettingsWnd;
 
 {$R *.dfm}
 
-procedure TMainForm.WMUpdateBangs(var Msg : TMessage);
+procedure TMainForm.UpdateBangs;
 begin
   SharpApi.RegisterActionEx(PChar('!OpenMenu: '+sMenu),'Modules',self.Handle,1);
 end;
@@ -175,7 +175,7 @@ begin
     sSpecialSkin := BoolValue('SpecialSkin',sSpecialSkin);
   end;
 
-  SharpApi.RegisterActionEx(PChar('!OpenMenu: '+sMenu),'Modules',self.Handle,1);
+  UpdateBangs;
 
   UpdateCustomSkin;
   UpdateIcon;

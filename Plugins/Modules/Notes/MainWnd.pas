@@ -59,7 +59,6 @@ type
     sTop         : integer;
     sWidth       : integer;
     sHeight      : integer;
-    procedure WMUpdateBangs(var Msg : TMessage); message WM_SHARPEUPDATEACTIONS;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
     procedure LoadIcon;
   public
@@ -71,6 +70,7 @@ type
     NotesForm    : TNotesForm;
     procedure LoadSettings;
     procedure SaveSettings;
+    procedure UpdateBangs;
     procedure SetSize(NewWidth : integer);
     procedure ReAlignComponents(Broadcast : boolean);
   end;
@@ -84,7 +84,7 @@ uses SettingsWnd,
 {$R *.dfm}
 {$R glyphs.res}
 
-procedure TMainForm.WMUpdateBangs(var Msg : TMessage);
+procedure TMainForm.UpdateBangs;
 begin
   SharpApi.RegisterActionEx('!ToggleNotes','Modules',self.Handle,1);
 end;
@@ -152,7 +152,7 @@ var
   item : TJvSimpleXMLElem;
   Mon : TMonitor;
 begin
-  SharpApi.RegisterActionEx('!ToggleNotes','Modules',self.Handle,1);
+  UpdateBangs;
 
   sCaption     := True;
   sIcon        := True;
