@@ -301,9 +301,9 @@ var
 begin
   if GetFreeBarSpace < 50 then
      if MessageBox(Application.Handle,
-                   'There is only few free space left for a new module.' + #10#13 +
-                   'Adding another module might cause modules to overlap eachother.' + #10#13 +
-                   'Do you really want to continue?','Confirm: Clone Module',MB_YESNO or MB_ICONWARNING) = IDNO then exit;
+                   'Your SharpBar is nearly full. Adding this module may cause' + #10#13 +
+                   'overlap between modules, preventing you from accessing their throbbers.' + #10#13 +
+                   'Continue anyway?','Confirm: Clone Module',MB_YESNO or MB_ICONWARNING) = IDNO then exit;
 
   tempModule := TModule(GetModule(ID));
   if tempModule = nil then exit;
