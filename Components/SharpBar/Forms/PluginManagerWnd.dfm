@@ -3,7 +3,7 @@ object PluginManagerForm: TPluginManagerForm
   Top = 0
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
-  Caption = 'Plugin Manager'
+  Caption = 'Module Manager'
   ClientHeight = 251
   ClientWidth = 372
   Color = clBtnFace
@@ -56,9 +56,9 @@ object PluginManagerForm: TPluginManagerForm
   object btn_addplugin: TButton
     Left = 16
     Top = 184
-    Width = 89
+    Width = 105
     Height = 25
-    Caption = 'Add new Plugin'
+    Caption = 'Add new module...'
     TabOrder = 4
     OnClick = btn_addpluginClick
   end
