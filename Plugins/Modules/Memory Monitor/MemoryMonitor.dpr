@@ -231,11 +231,6 @@ begin
   end;
 end;
 
-function PluginMessage(ID : integer; msg: string): integer;
-begin
-  Result := 0;
-end;
-
 procedure ShowSettingsWnd(ID : integer);
 var
   n : integer;
@@ -270,7 +265,6 @@ Exports
   Refresh,
   UpdateMessage,
   ShowSettingsWnd,
-  PluginMessage,
   SetSize;
 
 

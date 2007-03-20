@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
-  SharpESkinManager, JvSimpleXML, SharpApi, Menus, GR32_Layers,
+  SharpESkinManager, JvSimpleXML, SharpApi, Menus, GR32_Layers, Types,
   TrayIconsManager, Math, GR32, SharpECustomSkinSettings;
 
 

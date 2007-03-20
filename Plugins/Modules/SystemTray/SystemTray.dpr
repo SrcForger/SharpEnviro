@@ -335,11 +335,6 @@ begin
   end;
 end;
 
-function PluginMessage(ID : integer; msg: string): integer;
-begin
-  Result := 0;
-end;
-
 procedure LibExit(Reason: Integer);
 begin
     case reason of
