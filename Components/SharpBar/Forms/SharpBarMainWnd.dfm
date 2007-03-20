@@ -668,7 +668,7 @@ object SharpBarMainForm: TSharpBarMainForm
     Left = 352
     Top = 40
     object Information1: TMenuItem
-      Caption = 'Information'
+      Caption = 'About'
       ImageIndex = 18
       OnClick = Information1Click
     end
