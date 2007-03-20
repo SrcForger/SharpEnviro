@@ -249,7 +249,7 @@ end;
 // SharpE Actions
 procedure TSharpBarMainForm.WMUpdateBangs(var Msg : TMessage);
 begin
-   ModuleManager.BroadcastPluginMessage('WM_SHARPEUPDATEACTIONS');
+   ModuleManager.BroadcastPluginMessage('MM_SHARPEUPDATEACTIONS');
 
    SharpApi.RegisterActionEx(PChar('!FocusBar ('+inttostr(FBarID)+')'),'SharpBar',Handle,1);
 end;
