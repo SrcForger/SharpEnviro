@@ -114,6 +114,7 @@ end;
 begin
   Application.Initialize;
   events := TEventClass.Create;
+  Application.ShowMainForm := False;
   Application.OnDeactivate := events.OnAppDeactivate;
 
   st := GetCurrentTime;
