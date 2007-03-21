@@ -48,6 +48,7 @@ type
   public
     constructor Create(pOwner : TObject); reintroduce;
     procedure OnLinkClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure OnFolderclick(pItem : TSharpEMenuItem; var CanClose : boolean);
     procedure UpdateDynamicDirectory(var pDynList : TObjectList; pDir,
                                      pFilter : String; pSort,pMaxItems : integer);
     procedure UpdateDynamicDriveList(var pDynList : TObjectList; pDriveNames : boolean);
@@ -64,6 +65,12 @@ begin
   inherited Create;
   
   FOwner := pOwner;
+end;
+
+procedure TSharpEMenuActions.OnFolderclick(pItem : TSharpEMenuItem; var CanClose : boolean);
+begin
+  SharpApi.SharpExecute(pItem.PropList.GetString('Target'));
+  CanClose := True;
 end;
 
 procedure TSharpEMenuActions.OnLinkClick(pItem : TSharpEMenuItem; var CanClose : boolean);

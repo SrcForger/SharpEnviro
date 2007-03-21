@@ -32,7 +32,7 @@ unit uSharpEMenu;
 
 interface
 
-uses SysUtils,Contnrs,GR32,Classes,Dialogs,
+uses SysUtils, Contnrs,GR32,Classes,Dialogs,
      SharpESkinManager,
      uSharpEMenuIcons,
      uSharpEMenuItem,
@@ -92,6 +92,7 @@ var
 implementation
 
 uses Math,
+     JclFileUtils,
      SharpESkin,
      SharpESkinPart,
      uSharpEMenuWnd;
@@ -277,6 +278,11 @@ begin
   item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget);
   item.Caption := pCaption;
   item.isDynamic := pDynamic;
+  if isDirectory(pTarget) then
+  begin
+    item.PropList.Add('Target',pTarget);
+    item.OnClick := FMenuActions.OnFolderClick;
+  end;
   FItems.Add(Item);
   result := Item;
 end;
