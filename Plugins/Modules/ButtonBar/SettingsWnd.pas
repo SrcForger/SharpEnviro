@@ -175,7 +175,10 @@ end;
 
 procedure TSettingsForm.btn_deleteClick(Sender: TObject);
 begin
-  if Buttons.Selected = nil then exit;
+ if Buttons.Selected = nil then exit;
+ if MessageBox(Handle,
+               'This will remove the item from the list.  All settings will be lost.' + #10#13 +
+               'Continue anyway?','Remove Item',MB_YESNO or MB_ICONWARNING) = IDNO then exit;
   Buttons.DeleteSelected;
 end;
 

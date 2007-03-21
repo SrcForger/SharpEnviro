@@ -117,7 +117,7 @@ object SettingsForm: TSettingsForm
     Top = 126
     Width = 73
     Height = 25
-    Caption = 'New'
+    Caption = 'New...'
     TabOrder = 6
     OnClick = btn_newClick
   end
@@ -126,7 +126,7 @@ object SettingsForm: TSettingsForm
     Top = 158
     Width = 73
     Height = 25
-    Caption = 'Edit'
+    Caption = 'Edit...'
     TabOrder = 7
     OnClick = btn_editClick
   end
