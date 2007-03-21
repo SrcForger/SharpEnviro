@@ -49,6 +49,7 @@ type
     UpdateTimer: TTimer;
     lb_top: TSharpESkinLabel;
     lb_bottom: TSharpESkinLabel;
+    procedure BackgroundDblClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
@@ -318,6 +319,11 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FIcon);
   FreeAndNil(FWeatherParser);
+end;
+
+procedure TMainForm.BackgroundDblClick(Sender: TObject);
+begin
+  SharpApi.SharpExecute('http://www.weather.com/weather/local/'+slocation);
 end;
 
 end.

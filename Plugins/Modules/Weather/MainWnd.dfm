@@ -27,6 +27,7 @@ object MainForm: TMainForm
     Scale = 1.000000000000000000
     ScaleMode = smNormal
     TabOrder = 0
+    OnDblClick = BackgroundDblClick
     object lb_top: TSharpESkinLabel
       Left = 2
       Top = -1
@@ -34,6 +35,7 @@ object MainForm: TMainForm
       Height = 21
       SkinManager = SharpESkinManager1
       AutoSize = True
+      OnDblClick = BackgroundDblClick
       Caption = '.'
       AutoPosition = False
       LabelStyle = lsSmall
@@ -45,6 +47,7 @@ object MainForm: TMainForm
       Height = 21
       SkinManager = SharpESkinManager1
       AutoSize = True
+      OnDblClick = BackgroundDblClick
       Caption = '.'
       AutoPosition = False
       LabelStyle = lsSmall
