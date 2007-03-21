@@ -21,6 +21,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure btn_closeClick(Sender: TObject);
     procedure btn_addpluginClick(Sender: TObject);
+    procedure CreateParams(var Params: TCreateParams); override;
   private
     { Private-Deklarationen }
   public
@@ -41,6 +42,12 @@ uses AddPluginWnd,
      uSharpEModuleManager;
 
 {$R *.dfm}
+
+procedure TPluginManagerForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
+  Params.ExStyle := WS_EX_APPWINDOW;
+end;
 
 procedure TPluginManagerForm.UpdatePluginList;
 var
