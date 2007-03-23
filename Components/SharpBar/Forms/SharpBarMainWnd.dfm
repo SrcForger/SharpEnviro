@@ -758,4 +758,9 @@ object SharpBarMainForm: TSharpBarMainForm
     Left = 312
     Top = 144
   end
+  object ApplicationEvents1: TApplicationEvents
+    OnMessage = ApplicationEvents1Message
+    Left = 352
+    Top = 8
+  end
 end

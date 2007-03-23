@@ -34,10 +34,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Forms,
-  Dialogs, SharpESkinManager, Menus, StdCtrls, JvSimpleXML, SharpApi, ShellHook,
+  Dialogs, SharpESkinManager, Menus, StdCtrls, JvSimpleXML, SharpApi,
   GR32, uSharpEModuleManager, DateUtils, PngImageList, SharpEBar, Jpeg, SharpThemeApi,
   SharpEBaseControls, ImgList, Controls, ExtCtrls, uSkinManagerThreads,
-  uSystemFuncs, Types;
+  uSystemFuncs, Types, AppEvnts;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -79,6 +79,8 @@ type
     DelayTimer3: TTimer;
     Clone1: TMenuItem;
     QuickAddModule1: TMenuItem;
+    ApplicationEvents1: TApplicationEvents;
+    procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure Clone1Click(Sender: TObject);
     procedure DelayTimer3Timer(Sender: TObject);
     procedure DelayTimer2Timer(Sender: TObject);
@@ -144,7 +146,7 @@ type
     // shell hooks
     procedure WMRegisterShellHook(var msg : TMessage); message WM_REGISTERSHELLHOOK;
     procedure WMUnregisterShellHook(var msg : TMessage); message WM_UNREGISTERSHELLHOOK;
-    procedure WMShellHook(var msg : TMessage); message WM_SHELLHOOK;
+//    procedure WMShellHook(var msg : TMessage); message WM_SHELLHOOK;
 
     // SharpE Actions
     procedure WMUpdateBangs(var Msg : TMessage); message WM_SHARPEUPDATEACTIONS;
@@ -161,7 +163,6 @@ type
     procedure WMGetBarHeight(var msg : TMessage); message WM_GETBARHEIGHT;
 
     procedure WMSharpTerminate(var msg : TMessage); message WM_SHARPTERMINATE;
-    procedure WMSharpVWMMessage(var msg : TMessage); message WM_SHARPVWMMESSAGE;
     procedure WMDisplayChange(var msg : TMessage); message WM_DISPLAYCHANGE;
     procedure WMUpdateBarWidth(var msg : TMessage); message WM_UPDATEBARWIDTH;
     procedure WMGetCopyData(var msg: TMessage); message WM_COPYDATA;
@@ -190,9 +191,11 @@ var
   ModuleSettings : TJvSimpleXML;
   BarMove : boolean;
   BarMovePoint : TPoint;
+  WM_SHELLHOOK : integer;
 
 procedure LockWindow(const Handle: HWND);
 procedure UnLockWindow(const Handle: HWND);
+function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; external 'shell32.dll' index 181;
 
 implementation
 
@@ -304,23 +307,8 @@ begin
   RedrawWindow(SharpEBar1.abackground.handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
 end;
 
-procedure TSharpBarMainForm.WMSharpVWMMessage;
-var
-  n : integer;
-begin
-  // bar received a shell hook, forward it to all registered modules
-
-  try
-    for n := 0 to ModuleManager.Modules.Count -1 do
-    begin
-      PostMessage(TModule(ModuleManager.Modules.Items[n]).Handle,WM_SHARPVWMMESSAGE,msg.WParam,msg.LParam);
-    end;
-  except
-  end;
-end;
-
 // Shell hook received (task list,...) -> forward to all registered shell modules
-procedure TSharpBarMainForm.WMShellHook(var msg : TMessage);
+{procedure TSharpBarMainForm.WMShellHook(var msg : TMessage);
 var
   n : integer;
 begin
@@ -335,7 +323,7 @@ begin
     end;
   except
   end;
-end;
+end;        }
 
 // A module is requesting to be notified on shell messages (task list,...)
 procedure TSharpBarMainForm.WMRegisterShellHook(var msg : TMessage);
@@ -353,9 +341,11 @@ begin
   if FShellHookList.Count = 1 then
   begin
     // first module requestion a shell hook -> register the global hook
-    SHSetMainHandle(self.handle);
-    SHSetCallBack(@dllcallback);
-    SHSetHook;
+    RegisterShellHook(0,1);
+    RegisterShellHook(Handle,3);
+//    SHSetMainHandle(self.handle);
+//    SHSetCallBack(@dllcallback);
+//    SHSetHook;
   end;
 end;
 
@@ -366,7 +356,8 @@ begin
 
   if FShellHookList.Count = 0 then
   begin
-    SHUnsetHook;
+    RegisterShellHook(Handle,0);
+//    SHUnsetHook;
   end;
 end;
 
@@ -857,6 +848,8 @@ end;
 
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
+  WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
+
   FUser32DllHandle := LoadLibrary('user32.dll');
   if FUser32DllHandle <> 0 then
      @PrintWindow := GetProcAddress(FUser32DllHandle, 'PrintWindow');
@@ -1066,7 +1059,11 @@ begin
   if PluginManagerForm <> nil then FreeAndNil(PluginManagerForm);
 
   // check if shell hook functions have been used for any module
-  if FShellHookList.Count > 0 then SHUnSetHook;
+  if FShellHookList.Count > 0 then
+  begin
+    RegisterShellHook(Handle,0);
+  //  SHUnSetHook;
+  end;
   FShellHookList.Clear;
   FShellHookList.Free;
 
@@ -1553,6 +1550,27 @@ begin
   ModuleManager.Clone(mThrobber.Tag);
   SaveBarSettings;
   ModuleManager.ReCalculateModuleSize;
+end;
+
+procedure TSharpBarMainForm.ApplicationEvents1Message(var Msg: tagMSG;
+  var Handled: Boolean);
+var
+  n : integer;
+begin
+  if msg.message = WM_SHELLHOOK then
+  begin
+   // bar received a shell hook, forward it to all registered modules
+    try
+      for n := 0 to FShellHookList.Count - 1 do
+      begin
+        if (n = 0) and (n <> FShellHookList.Count - 1) then FShellBCInProgress := True
+           else if n = FShellHookList.Count -1 then FShellBCInProgress := False;
+        PostMessage(strtoint(FShellHookList[n]),WM_SHARPSHELLMESSAGE,msg.WParam,msg.LParam);
+      end;
+    except
+    end;
+   Handled := True;
+  end else Handled := False;
 end;
 
 end.
