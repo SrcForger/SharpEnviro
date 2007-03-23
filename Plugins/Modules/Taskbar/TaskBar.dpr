@@ -54,7 +54,6 @@ uses
   MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  shellhook in '..\..\..\Common\Libraries\ShellHook\shellhook.pas',
   uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
 

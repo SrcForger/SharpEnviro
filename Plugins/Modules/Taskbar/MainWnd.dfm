@@ -157,7 +157,6 @@ object MainForm: TMainForm
   object TimedCheck: TTimer
     Enabled = False
     Interval = 500
-    OnTimer = TimedCheckTimer
     Left = 216
     Top = 96
   end

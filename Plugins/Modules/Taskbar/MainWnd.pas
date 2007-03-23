@@ -33,15 +33,14 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, 
+  Types, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, 
   SharpESkinManager, SharpEScheme, SharpEButton, SharpESkin,
   SharpECustomSkinSettings, ExtCtrls,
   JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math, Contnrs,
   SharpETaskItem,
   uTaskManager,
   uTaskItem,
-  shellhook,
   DateUtils,
   GR32,
   GR32_Filters,
@@ -74,7 +73,6 @@ type
     ses_minall: TSharpEButton;
     ses_maxall: TSharpEButton;
     TimedCheck: TTimer;
-    procedure TimedCheckTimer(Sender: TObject);
     procedure ses_maxallClick(Sender: TObject);
     procedure ses_minallClick(Sender: TObject);
     procedure FlashTimerTimer(Sender: TObject);
@@ -112,8 +110,7 @@ type
     procedure LoadSettings;
     procedure ReAlignComponents(BroadCast : boolean);
     procedure WMCommand(var msg: TMessage); message WM_COMMAND;
-    procedure WMShellHook(var msg : TMessage); message WM_SHELLHOOK;
-    procedure WMVWMChange(var msg : TMessage); message WM_SHARPVWMMESSAGE;
+    procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
     procedure NewTask(pItem : TTaskItem; Index : integer);
     procedure RemoveTask(pItem : TTaskItem; Index : integer);
     procedure UpdateTask(pItem : TTaskItem; Index : integer);
@@ -175,13 +172,6 @@ procedure UnlockWindow(const Handle: HWND);
 begin
   SendMessage(Handle, WM_SETREDRAW, 1, 0);
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
-end;
-
-procedure TMainForm.WMVWMChange(var msg : TMessage);
-begin
-  DebugOutPutInfo('TMainForm.WMVWMChance (Message Procedure)');
-  if TimedCheck.Enabled then TimedCheck.Enabled := false;
-  TimedCheck.Enabled := True;
 end;
 
 procedure TMainForm.UpdateCustomSettings;
@@ -1096,12 +1086,13 @@ begin
  DebugOutPutInfo('TMainForm.WMShellHook (Message Procedure)');
  if msg.LParam = self.Handle then exit;
  case msg.WParam of
-   M_NEWTASK       : TM.AddTask(msg.LParam);
-   M_CAPTIONUPDATE : TM.UpdateTask(msg.LParam);
-   M_TASKFLASHING  : TM.FlashTask(msg.LParam);
-   M_DELTASK       : TM.RemoveTask(msg.LParam);
-   M_ACTIVATETASK  : TM.ActivateTask(msg.LParam);
-   M_GETMINRECT    : TM.UpdateTask(msg.LParam);
+   HSHELL_WINDOWCREATED : TM.AddTask(msg.LParam);
+   HSHELL_REDRAW : TM.UpdateTask(msg.LParam);
+   HSHELL_REDRAW + 32768 : TM.FlashTask(msg.LParam);
+   HSHELL_WINDOWDESTROYED : TM.RemoveTask(msg.LParam);
+   HSHELL_WINDOWACTIVATED : TM.ActivateTask(msg.LParam);
+   HSHELL_WINDOWACTIVATED + 32768 : TM.ActivateTask(msg.LParam);
+   HSHELL_GETMINRECT      : TM.UpdateTask(msg.LParam);
   end;
 end;
 
@@ -1238,13 +1229,6 @@ begin
   end;
   FLocked := False;
   RealignComponents(True);
-end;
-
-procedure TMainForm.TimedCheckTimer(Sender: TObject);
-begin
-  DebugOutPutInfo('TMainForm.TimedCheckTimer (Procedure)');
-  CheckFilterAll;
-  TimedCheck.Enabled := False;
 end;
 
 end.
