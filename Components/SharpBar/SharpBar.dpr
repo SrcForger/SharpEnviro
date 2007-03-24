@@ -43,7 +43,8 @@ uses
   SharpApi,
   PluginManagerWnd in 'Forms\PluginManagerWnd.pas' {PluginManagerForm},
   AddPluginWnd in 'Forms\AddPluginWnd.pas' {AddPluginForm},
-  BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm};
+  BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm},
+  EditSchemeWnd in 'Forms\EditSchemeWnd.pas' {EditSchemeForm};
 
 {$R *.res}
 

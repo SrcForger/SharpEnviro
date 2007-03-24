@@ -37,7 +37,7 @@ uses
   Dialogs, SharpESkinManager, Menus, StdCtrls, JvSimpleXML, SharpApi,
   GR32, uSharpEModuleManager, DateUtils, PngImageList, SharpEBar, Jpeg, SharpThemeApi,
   SharpEBaseControls, ImgList, Controls, ExtCtrls, uSkinManagerThreads,
-  uSystemFuncs, Types, AppEvnts;
+  uSystemFuncs, Types, AppEvnts, uSharpEColorBox;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -80,6 +80,9 @@ type
     Clone1: TMenuItem;
     QuickAddModule1: TMenuItem;
     ApplicationEvents1: TApplicationEvents;
+    N6: TMenuItem;
+    Skin1: TMenuItem;
+    ColorScheme1: TMenuItem;
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure Clone1Click(Sender: TObject);
     procedure DelayTimer3Timer(Sender: TObject);
@@ -119,6 +122,9 @@ type
     procedure FormCreate(Sender: TObject);
     procedure OnMonitorPopupItemClick(Sender : TObject);
     procedure OnQuickAddModuleItemClick(Sender : TObject);
+    procedure OnSkinSelectItemClick(Sender : TObject);
+    procedure OnSchemeSelectItemClick(Sender : TObject);
+    procedure OnSchemeCreateClick(Sender : TObject);
   private
     { Private-Deklarationen }
     FUser32DllHandle : THandle;
@@ -204,7 +210,8 @@ implementation
 uses PluginManagerWnd,
      SharpEMiniThrobber,
      BarHideWnd,
-     AddPluginWnd;
+     AddPluginWnd,
+     EditSchemeWnd;
 
 {$R *.dfm}
 
@@ -432,23 +439,24 @@ begin
     SU_ICONSET : SharpThemeApi.LoadTheme(True,[tpIconSet]);
   end;
 
-  if msg.WParam = SU_SKINFILECHANGED then
-     SkinManager.UpdateSkin;
-
   if (msg.WParam = SU_THEME) or (msg.WParam = SU_SCHEME)
      or (msg.WParam = SU_SKINFILECHANGED)  then
      begin
        SkinManager.UpdateScheme;
+       SkinManager.UpdateSkin;
        SharpEBar1.UpdateSkin;
        SharpEBar1.Throbber.UpdateSkin;
        SharpEbar1.Throbber.Repaint;
+       UpdateBGImage;
+       if (msg.WParam = SU_SCHEME) then
+           ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
      end;
 
   // Step2: Update modules
   ModuleManager.BroadcastPluginUpdate(msg.WParam);
 
   // Step3: Modules updated, now update the bar
-  if msg.WParam = SU_SKINFILECHANGED then
+  if (msg.WParam = SU_SKINFILECHANGED) then
      ModuleManager.FixModulePositions;
 
   FBarLock := False;
@@ -1050,6 +1058,8 @@ var
   item : TMenuItem;
   mfile : TModuleFile;
   s : String;
+  sr : TSearchRec;
+  Dir : String;
 begin
   // Build Monitor List
   Monitor1.Clear;
@@ -1082,6 +1092,177 @@ begin
 
   AutoStart1.Checked := SharpEBar1.AutoStart;
   DisableBarHiding1.Checked := SharpEBar1.DisableHideBar;
+
+  // Build Skin List
+  Skin1.Clear;
+  Dir := SharpApi.GetSharpeDirectory + 'Skins\';
+  if FindFirst(Dir + '*.*',FADirectory,sr) = 0 then
+  repeat
+    if (CompareText(sr.Name,'.') <> 0) and (CompareText(sr.Name,'..') <> 0) then
+    begin
+      if FileExists(Dir + sr.Name + '\Skin.xml') then
+      begin
+        item := TMenuItem.Create(Skin1);
+        item.ImageIndex := 28;
+        if sr.Name = SharpThemeApi.GetSkinName then
+           item.Caption := '(' + sr.Name + ')'
+           else item.Caption := sr.Name;
+        item.Hint := sr.Name;
+        item.OnClick := OnSkinSelectItemClick;
+        Skin1.Add(item);
+      end;
+    end;
+  until FindNext(sr) <> 0;
+  FindClose(sr);
+
+  // Build Scheme List
+  ColorScheme1.Clear;
+  item := TMenuItem.Create(ColorScheme1);
+  item.ImageIndex := 27;
+  item.Caption := 'Create New Scheme';
+  item.Hint := 'My Scheme';
+  item.OnClick := OnSchemeCreateClick;
+  ColorScheme1.Add(item);
+
+  item := TMenuItem.Create(ColorScheme1);
+  item.ImageIndex := 27;
+  item.Caption := 'Edit Current Scheme';
+  item.Hint := SharpThemeApi.GetSchemeName;
+  item.OnClick := OnSchemeCreateClick;
+  ColorScheme1.Add(item);
+
+  item := TMenuItem.Create(ColorScheme1);
+  item.ImageIndex := -1;
+  item.Caption := '-';
+  ColorScheme1.Add(item);
+
+  Dir := SharpApi.GetSharpeDirectory + 'Skins\' + SharpThemeApi.GetSkinName + '\Schemes\';
+  if FindFirst(Dir + '*.xml',FAAnyFile,sr) = 0 then
+  repeat
+    item := TMenuItem.Create(ColorScheme1);
+    item.ImageIndex := 28;
+    s := sr.Name;
+    setlength(s,length(s) - length('.xml'));
+    if s = SharpThemeApi.GetSchemeName then
+       item.Caption := '(' + s + ')'
+        else item.Caption := s;
+    item.Hint := sr.Name;
+    item.OnClick := OnSchemeSelectItemClick;
+    ColorScheme1.Add(item);
+  until FindNext(sr) <> 0;
+  FindClose(sr);
+end;
+
+procedure TSharpBarMainForm.OnSchemeCreateClick(Sender : TObject);
+var
+  EditSchemeForm: TEditSchemeForm;
+  XML : TJvSimpleXML;
+  Dir : String;
+  n : integer;
+  reload : boolean;
+begin
+  reload := False;
+
+  EditSchemeForm := TEditSchemeForm.Create(self);
+  try
+    EditSchemeForm.InitForm('');
+    EditSchemeForm.Caption := 'Create/Edit SharpE Color Scheme';
+    EditSchemeForm.edit_name.Text := TMenuItem(Sender).Hint;
+    if EditSchemeForm.ShowModal = mrOk then
+    begin
+      Dir := SharpThemeApi.GetSkinDirectory + 'Schemes\';
+      XML := TJvSimpleXML.Create(nil);
+      try
+        XML.Root.Name := 'SharpESkinScheme';
+        XML.Root.Clear;
+        with XML.Root.Items.Add('Info').Items do
+        begin
+          Add('Name',EditSchemeForm.edit_name.Text);
+          Add('Author','...');
+        end;
+        
+        for n := 0 to SharpThemeApi.GetSchemeColorCount - 1 do
+            with XML.Root.Items.Add('Item').Items do
+            begin
+              Add('Tag',TLabel(EditSchemeForm.ColorPanel.Components[2*n]).Hint);
+              Add('Color',TSharpEColorBox(EditSchemeForm.ColorPanel.Components[2*n+1]).Color);
+            end;
+        XML.SaveToFile(Dir + EditSchemeForm.edit_name.Text + '.xml');
+        if EditSchemeForm.edit_name.Text = SharpThemeApi.GetSchemeName then
+           reload := True
+           else reload := False;
+      finally
+        XML.Free;
+      end;
+    end;
+  finally
+    EditSchemeForm.Free;
+  end;
+
+  if reload then SharpApi.SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKIN,0);
+end;
+
+procedure TSharpBarMainForm.OnSchemeSelectItemClick(Sender : TObject);
+var
+  XML : TJvSimpleXML;
+  Dir : String;
+  s : String;
+begin
+  Dir := SharpThemeApi.GetThemeDirectory;
+
+  // Change Scheme
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.Root.Name := 'SharpEThemeScheme';
+    XML.Root.Clear;
+    s := TMenuItem(Sender).Hint;
+    setlength(s,length(s) - length('.xml'));
+    XML.Root.Items.Add('Scheme',s);
+    XML.SaveToFile(Dir + 'Scheme.xml');
+  finally
+    XML.Free;
+  end;
+  SharpApi.SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKIN,0);
+end;
+
+procedure TSharpBarMainForm.OnSkinSelectItemClick(Sender : TObject);
+var
+  XML : TJvSimpleXML;
+  Dir,NewSkin,SkinDir : String;
+  sr : TSearchRec;
+  s : String;
+begin
+  XML := TJvSimpleXML.Create(nil);
+  Dir := SharpThemeApi.GetThemeDirectory;
+  NewSkin := TMenuItem(Sender).Hint;
+  SkinDir := SharpApi.GetSharpeDirectory + 'Skins\' + NewSkin + '\';
+
+  // Change Skin
+  try
+    XML.Root.Name := 'SharpEThemeSkin';
+    XML.Root.Clear;
+    XML.Root.Items.Add('Skin',NewSkin);
+    XML.SaveToFile(Dir + 'Skin.xml');
+  finally
+    XML.Free;
+  end;
+
+  if FindFirst(SkinDir + 'Schemes\*.xml',FAAnyFile,sr) = 0 then
+  begin
+    XML := TJvSimpleXML.Create(nil);
+    try
+      XML.Root.Name := 'SharpEThemeScheme';
+      XML.Root.Clear;
+      s := sr.Name;
+      setlength(s,length(s) - length('.xml'));
+      XML.Root.Items.Add('Scheme',s);
+      XML.SaveToFile(Dir + 'Scheme.xml');
+    finally
+      XML.Free;
+    end;
+  end;
+  FindClose(sr);
+  SharpApi.SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKIN,0);
 end;
 
 procedure TSharpBarMainForm.FormDestroy(Sender: TObject);

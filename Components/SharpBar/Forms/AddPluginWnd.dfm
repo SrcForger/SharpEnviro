@@ -1,9 +1,10 @@
 object AddPluginForm: TAddPluginForm
   Left = 0
   Top = 0
-  Width = 225
-  Height = 268
+  BorderStyle = bsToolWindow
   Caption = 'AddPluginForm'
+  ClientHeight = 244
+  ClientWidth = 219
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
