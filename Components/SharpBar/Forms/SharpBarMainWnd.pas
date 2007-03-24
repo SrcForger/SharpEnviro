@@ -137,6 +137,8 @@ type
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem : TJvSimpleXMlElem);
 
+    procedure WMThemeLoadingEnd(var msg : TMessage); message WM_APP + 536;
+
     // Plugin message (to be broadcastet to modules)
     procedure WMWeatherUpdate(var msg : TMessage); message WM_WEATHERUPDATE;
 
@@ -249,6 +251,31 @@ end;
 // Window Message handlers
 // ************************
 
+// Temporary! remove when SharpCenter is done!
+procedure TSharpBarMainForm.WMThemeLoadingEnd(var msg : TMessage);
+begin
+ if FSuspended then exit;
+
+  if not FStartup then LockWindow(Handle);
+  FBarLock := True;
+
+  UpdateBGZone;
+
+  SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
+  SkinManager.UpdateScheme;
+  SkinManager.UpdateSkin;
+  SharpEBar1.Throbber.UpdateSkin;
+  SharpEbar1.Throbber.Repaint;
+
+  ModuleManager.BroadcastPluginUpdate(SU_SKINFILECHANGED);
+  ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
+
+  ModuleManager.FixModulePositions;
+
+  FBarLock := False;
+  if not FStartup then UnLockWindow(Handle);
+end;
+
 // SharpE Actions
 procedure TSharpBarMainForm.WMUpdateBangs(var Msg : TMessage);
 begin
@@ -330,6 +357,7 @@ procedure TSharpBarMainForm.WMRegisterShellHook(var msg : TMessage);
 var
   n : integer;
   Module : TModule;
+  mm: MINIMIZEDMETRICS;
 begin
   for n := 0 to ModuleManager.Modules.Count - 1 do
   begin
@@ -340,6 +368,14 @@ begin
 
   if FShellHookList.Count = 1 then
   begin
+    FillChar(mm, SizeOf(MINIMIZEDMETRICS), 0);
+
+    mm.cbSize := SizeOf(MINIMIZEDMETRICS);
+    SystemParametersInfo(SPI_GETMINIMIZEDMETRICS, sizeof(MINIMIZEDMETRICS),@mm, 0);
+
+    mm.iArrange := mm.iArrange or ARW_HIDE;
+    SystemParametersInfo(SPI_SETMINIMIZEDMETRICS, sizeof(MINIMIZEDMETRICS),@mm, 0);
+
     // first module requestion a shell hook -> register the global hook
     RegisterShellHook(0,1);
     RegisterShellHook(Handle,3);
