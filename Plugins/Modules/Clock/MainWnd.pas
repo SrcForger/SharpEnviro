@@ -120,7 +120,7 @@ var
   newWidth : integer;
 begin
   self.Caption := sFormat;
-  ClockTimer.OnTimer(ClockTimer);
+  if not BroadCast then ClockTimer.OnTimer(ClockTimer);
 
 //  newWidth := lb_clock.Canvas.TextWidth(sFormat)+4;
   if lb_bottomClock.Visible then
