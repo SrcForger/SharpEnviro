@@ -46,7 +46,8 @@ uses
   SharpEButton,
   SharpECustomSkinSettings,
   SharpEBitmapList,
-  SharpIconUtils;
+  SharpIconUtils,
+  ShellApi;
 
 
 type
@@ -297,12 +298,14 @@ begin
   begin
     p := ClientToScreen(Point(btn.Left,btn.Top));
     p.y := p.y + Height - btn.Top;
-    ActionStr := SharpApi.GetSharpeDirectory;
-    ActionStr := ActionStr + 'SharpMenu.exe';
-    ActionStr := ActionStr + ' ' + inttostr(p.x) + ' ' + inttostr(p.y);
-    ActionStr := ActionStr + ' ' + SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
-    ActionStr := ActionStr + sMenu + '.xml';
-    SharpApi.SharpExecute(ActionStr);
+//    ActionStr := SharpApi.GetSharpeDirectory;
+//    ActionStr := ActionStr + 'SharpMenu.exe';
+//    ActionStr := ActionStr + ' ' + inttostr(p.x) + ' ' + inttostr(p.y);
+    ActionStr := inttostr(p.x) + ' ' + inttostr(p.y);
+    ActionStr := ActionStr + ' "' + SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
+    ActionStr := ActionStr + sMenu + '.xml"';
+    ShellApi.ShellExecute(Handle,'open',PChar(GetSharpEDirectory + 'SharpMenu.exe'),PChar(ActionStr),GetSharpEDirectory,SW_SHOWNORMAL);
+    //SharpApi.SharpExecute(ActionStr);
   end;
 end;
 
