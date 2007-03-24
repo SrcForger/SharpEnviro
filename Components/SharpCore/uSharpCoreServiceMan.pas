@@ -122,6 +122,7 @@ var
   NewService: TSharpService;
   Files: TStringList;
   i: integer;
+  sr: TSearchRec;
 begin
 
   // Free the existing service list and create a new instance
@@ -137,7 +138,18 @@ begin
   // Build the Plugin list
   Files := TStringList.Create;
   Try
-  BuildFileList(SharpCoreServicePath + '*' + ServiceExt, faAnyFile, Files);
+  SendDebugMessageEx('SharpCore',pchar('SharpCoreServicePath1: ' + IncludeTrailingPathDelimiter(ExtractFilePath(application.ExeName))),clBlack,DMT_INFO);
+  SendDebugMessageEx('SharpCore',pchar('SharpCoreServicePath2: ' + SharpCoreServicePath),clBlack,DMT_INFO);
+  SendDebugMessageEx('SharpCore',pchar('ServiceExt: ' + ServiceExt),clBlack,DMT_INFO);
+  Files.Clear;
+  if FindFirst(SharpCoreServicePath + '*' + ServiceExt,FAAnyFile,sr) = 0 then
+  repeat
+    Files.Add(sr.Name);
+   SendDebugMessageEx('SharpCore',pchar('AddingService: ' + sr.Name),clBlack,DMT_INFO);
+  until FindNext(sr) <> 0;
+  FindClose(sr);
+  SendDebugMessageEx('SharpCore',pchar('ServiceCount: ' + inttostr(Files.Count)),clBlack,DMT_INFO);
+//  BuildFileList(SharpCoreServicePath + '*' + ServiceExt, faAnyFile, Files);
 
    // Move Actions to top of list
   i := Files.IndexOf('Actions' + ServiceExt);
