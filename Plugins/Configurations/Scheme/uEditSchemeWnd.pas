@@ -46,6 +46,8 @@ type
     edAuthor: TLabeledEdit;
     SharpERoundPanel1: TSharpERoundPanel;
     sbAvailableColors: TScrollBox;
+    pnlContainer: TPanel;
+    procedure edNameKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     procedure FormShow(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -113,17 +115,21 @@ var
   i: Integer;
 begin
   FColors := Value;
+  LockWindowUpdate(Self.Handle);
+  
+  Try
 
   // Delete old controls
   for i := Pred(sbAvailableColors.ControlCount) downto 0 do
     sbAvailableColors.Controls[i].Free;
-    
+
   for i := 0 to Pred(FColors.Count) do 
   begin
     tmpPanel := TPanel.Create(sbAvailableColors);
     tmpItem := TSchemeColorItem(FColors[i]);
     tmpSkinColor := frmSchemeList.SchemeItems.GetSkinColorByTag(tmpItem.Tag);
 
+    if tmpSkinColor.Name <> '' then begin
     colBkg := clWindow;
 
     with tmpPanel do
@@ -148,6 +154,7 @@ begin
       Color := tmpItem.Color;
       Tag := Integer(tmpItem);
       OnColorClick := ClickColor;
+
       Top := 10;
       Left := 0;
     end;
@@ -162,6 +169,10 @@ begin
       Top := 10;
     end;
   end;
+  end;
+  Finally
+    LockWindowUpdate(0);
+  End;
 
 end;
 
@@ -222,6 +233,7 @@ begin
   tmpItem.UnparsedColor := ColorToString(TSharpEColorBox(Sender).Color);
 
   SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_EVT_UPDATE_PREVIEW,0);
+  SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_EDIT_STATE,0);
 end;
 
 function TfrmEditScheme.GetSchemeName: string;
@@ -244,7 +256,7 @@ end;
 
 procedure TfrmEditScheme.InitUI(AEditMode: TSCE_EditMode);
 var
-  tmpItem: TSchemeItem;
+  tmpItem, lstItem: TSchemeItem;
   tmpSchemeItems: TSchemeList;
   sTheme: string;
 begin
@@ -258,12 +270,32 @@ begin
       tmpItem.Name := '';
       tmpItem.Author := '';
       tmpItem.LoadSkinColorDefaults(sTheme);
+      edName.Text := '';
+      edAuthor.Text := '';
 
       Colors := tmpItem.Colors;
       SchemeItem := tmpItem;
+      Edit := False;
+    end;
+    sceEdit: begin
+
+      lstItem := TSchemeItem(frmSchemeList.lbSchemeList.
+        Item[frmSchemeList.lbSchemeList.ItemIndex].Data);
+
+      tmpItem := TSchemeItem.Create(frmSchemeList.SchemeItems);
+      tmpItem.Name := lstItem.Name;
+      tmpItem.Author := lstItem.Author;
+      lstItem.Assign(tmpItem.Colors);
+
+      edName.Text := tmpItem.Name;
+      edAuthor.Text := tmpItem.Author;
+
+      Colors := tmpItem.Colors;
+      SchemeItem := tmpItem;
+      Edit := True;
     end;
     sceDelete: begin
-    
+
     end;
   end;
 end;
@@ -275,8 +307,61 @@ end;
 
 function TfrmEditScheme.Save(AEditMode: TSCE_EditMode;
   AApply: Boolean): Boolean;
+var
+  tmpItem, lstItem, newItem: TSchemeItem;
+  tmpSchemeItems: TSchemeList;
+  sTheme: string;
 begin
-  Result := True;
+  sTheme := frmSchemeList.Theme;
+  tmpSchemeItems := frmSchemeList.SchemeItems;
+  tmpItem := FSchemeItem;
+
+    Case AEditMode of
+    sceAdd: begin
+
+      newItem := TSchemeItem.Create(nil);
+      newItem.Name := edName.Text;
+      newItem.Author := edAuthor.Text;
+      newItem.DefaultItem := False;
+
+      // Assign colours
+      tmpItem.Assign(newItem.Colors);
+
+      newItem.Filename := tmpSchemeItems.GetSkinSchemeDir(sTheme)
+        + trim(StrRemoveChars(tmpItem.Name,
+          ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':'])) + '.xml';
+
+      tmpSchemeItems.Add(newItem);
+      FSchemeItem.Free;
+
+      SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 0);
+      Result := True;
+    end;
+    sceEdit: begin
+
+      If AApply then begin
+        lstItem := TSchemeItem(frmSchemeList.lbSchemeList.
+          Item[frmSchemeList.lbSchemeList.ItemIndex].Data);
+
+        lstItem.Name := edName.Text;
+        lstItem.Author := edAuthor.Text;
+        FSchemeItem.Assign(lstItem.Colors);
+      end;
+
+      SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 0);
+
+      Result := True;
+    end;
+    sceDelete: begin
+
+    end;
+  end;
+end;
+
+procedure TfrmEditScheme.edNameKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_EDIT_STATE, 0);
 end;
 
 end.

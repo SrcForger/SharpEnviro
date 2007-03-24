@@ -77,10 +77,14 @@ end;
 
 procedure Close(ASave:Boolean);
 begin
+
   if ASave then
     frmSchemeList.SaveSchemes;
 
   FreeAndNil(frmSchemeList);
+
+  if frmEditScheme <> nil then
+    FreeAndNil(frmEditScheme);
 end;
 
 procedure GetDisplayName(const APluginID:PChar; var ADisplayName:PChar);
@@ -134,13 +138,17 @@ begin
   // Define whether we add/edit or delete the item
   if frmEditScheme.Save(AEditMode, AApply) then Begin
     FreeAndNil(frmEditScheme);
+    frmSchemeList.BuildSchemeList(frmSchemeList.Theme);
   end;
+
+  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 1);
 end;
 
 procedure GetCenterScheme(var ABackground: TColor; var AItemColor: TColor; var AItemSelectedColor: TColor);
 begin
   if frmEditScheme <> nil then begin
     frmEditScheme.Color := ABackground;
+    frmEditScheme.pnlContainer.Color := ABackground;
   end;
 
   frmSchemeList.lbSchemeList.Colors.ItemColor := AItemColor;
