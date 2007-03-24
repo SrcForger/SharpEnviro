@@ -1465,10 +1465,17 @@ begin
   result := PChar(rtemp);
 end;
 
+// Temporary for compatibility
+procedure LoadCurrentThemeF;
+begin
+end;
+
 
 {$R *.res}
 
 exports
+  LoadCurrentThemeF,
+
   // Main Functions
   InitializeTheme,
   Initialized,
