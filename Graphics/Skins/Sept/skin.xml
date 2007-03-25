@@ -9,6 +9,7 @@
     <paxoffsetsbottom>10,2</paxoffsetsbottom>
     <payoffsetsbottom>2,1</payoffsetsbottom>
     <enablevflip>1</enablevflip>
+    <specialhideform>1</specialhideform>
     <bar>
       <dimension>w,h</dimension>
       <!-- blend -->
