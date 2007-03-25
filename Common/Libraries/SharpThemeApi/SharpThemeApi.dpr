@@ -1466,21 +1466,21 @@ begin
 end;
 
 // Temporary for compatibility
-procedure LoadCurrentThemeF;
+function LoadCurrentThemeF(ForceUpdate : boolean) : boolean;
 begin
+  result := True;
 end;
 
 
 {$R *.res}
 
 exports
-  LoadCurrentThemeF,
-
   // Main Functions
   InitializeTheme,
   Initialized,
   LoadTheme,
   LoadCurrentTheme,
+  LoadCurrentThemeF,
 
   //Global
   GetCurrentSharpEThemeName,
