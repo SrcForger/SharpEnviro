@@ -1476,7 +1476,7 @@
         <color>$menuglow</color>
       </skinpart>
     </hoversub>
-    <seperator>
+    <separator>
       <dimension>w,5</dimension>
       <!-- separator skinparts-->
       <skinpart>
@@ -1485,7 +1485,7 @@
         <image>images/menu_separator.png</image>
         <alpha>70</alpha>
       </skinpart>
-    </seperator>
+    </separator>
     <label>
       <text>
         <drawtext>1</drawtext>

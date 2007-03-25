@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinScheme>
+  <Info>
+    <Name>Black</Name>
+    <Author>...</Author>
+  </Info>
+  <Item>
+    <Tag>$Background</Tag>
+    <Color>2565927</Color>
+  </Item>
+  <Item>
+    <Tag>$BackgroundText</Tag>
+    <Color>16777215</Color>
+  </Item>
+  <Item>
+    <Tag>$BackgroundHover</Tag>
+    <Color>4737096</Color>
+  </Item>
+  <Item>
+    <Tag>$Foreground</Tag>
+    <Color>128</Color>
+  </Item>
+  <Item>
+    <Tag>$ForegroundText</Tag>
+    <Color>16777215</Color>
+  </Item>
+  <Item>
+    <Tag>$ForegroundHover</Tag>
+    <Color>4737096</Color>
+  </Item>
+</SharpESkinScheme>

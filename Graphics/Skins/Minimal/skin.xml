@@ -455,7 +455,7 @@
         <alpha>148</alpha>
       </skinpart>
     </hoversub>
-    <seperator>
+    <separator>
       <dimension>w,8</dimension>
       <skinpart>
         <ID>0</ID>
@@ -498,7 +498,7 @@
         <gradientcolor>$Background,$Background</gradientcolor>
         <gradientalpha>0,96</gradientalpha>
       </skinpart>
-    </seperator>
+    </separator>
     <label>
       <text>
         <drawtext>1</drawtext>

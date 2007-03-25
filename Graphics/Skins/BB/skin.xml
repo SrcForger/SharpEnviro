@@ -302,7 +302,7 @@
         <color>$Background</color>
       </skinpart>
     </hoversub>
-    <seperator>
+    <separator>
       <dimension>w,8</dimension>
       <skinpart>
         <ID>0</ID>
@@ -336,7 +336,7 @@
         <color>$Foreground</color>
         <alpha>148</alpha>
       </skinpart>
-    </seperator>
+    </separator>
     <label>
       <text>
         <drawtext>1</drawtext>

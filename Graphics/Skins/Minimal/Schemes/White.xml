@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinScheme>
+  <Info>
+    <Name>White</Name>
+    <Author>BB</Author>
+  </Info>
+  <Item>
+    <Tag>$Border</Tag>
+    <Color>clBlack</Color>
+  </Item>
+  <Item>
+    <Tag>$Background</Tag>
+    <Color>clWhite</Color>
+  </Item>
+  <Item>
+    <Tag>$Text</Tag>
+    <Color>16777215</Color>
+  </Item>
+  <Item>
+    <Tag>$TextShadow</Tag>
+    <Color>0</Color>
+  </Item>
+</SharpESkinScheme>
