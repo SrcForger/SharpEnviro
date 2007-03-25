@@ -5,7 +5,7 @@
 			<Option Name="Personality">Delphi.Personality</Option>
 			<Option Name="ProjectType"></Option>
 			<Option Name="Version">1.0</Option>
-			<Option Name="GUID">{CDA44D8E-DA45-4C6C-9630-821B6473D985}</Option>
+			<Option Name="GUID">{621FD4E9-07F3-4B60-918E-938CAEAC72C6}</Option>
 		</Option>
 	</PersonalityInfo>
 	<Delphi.Personality>
@@ -119,7 +119,7 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\Libraries\SharpAPI;..\..\Units\SharpFX</Directories>
+			<Directories Name="SearchPath">..\..\Libraries\SharpAPI;..\..\Libraries\SharpThemeAPI;..\..\3rd party\GR32 Addons;..\..\3rd party\TransparentEdit</Directories>
 			<Directories Name="Packages"></Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
@@ -131,17 +131,12 @@
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
 			<Parameters Name="DebugCWD"></Parameters>
-			<Parameters Name="RemoteHost"></Parameters>
-			<Parameters Name="RemotePath"></Parameters>
-			<Parameters Name="RemoteLauncher"></Parameters>
-			<Parameters Name="RemoteCWD"></Parameters>
-			<Parameters Name="RemoteDebug">False</Parameters>
 		</Parameters>
 		<VersionInfo>
 			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 			<VersionInfo Name="AutoIncBuild">False</VersionInfo>
-			<VersionInfo Name="MajorVer">0</VersionInfo>
-			<VersionInfo Name="MinorVer">7</VersionInfo>
+			<VersionInfo Name="MajorVer">1</VersionInfo>
+			<VersionInfo Name="MinorVer">0</VersionInfo>
 			<VersionInfo Name="Release">0</VersionInfo>
 			<VersionInfo Name="Build">0</VersionInfo>
 			<VersionInfo Name="Debug">False</VersionInfo>
@@ -153,8 +148,8 @@
 			<VersionInfo Name="CodePage">1252</VersionInfo>
 		</VersionInfo>
 		<VersionInfoKeys>
-			<VersionInfoKeys Name="FileVersion">0.7.0.0</VersionInfoKeys>
-			<VersionInfoKeys Name="ProductVersion">0.7.0.0</VersionInfoKeys>
+			<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
 			<VersionInfoKeys Name="FileDescription"></VersionInfoKeys>
 			<VersionInfoKeys Name="InternalName"></VersionInfoKeys>
@@ -162,10 +157,6 @@
 			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
 			<VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName"></VersionInfoKeys>
-		</VersionInfoKeys>  <Language>
-      <Language Name="ActiveLang"></Language>
-      <Language Name="ProjectLang">$00000000</Language>
-      <Language Name="RootDir"></Language>
-    </Language>
-  </Delphi.Personality>
+		</VersionInfoKeys>
+	</Delphi.Personality>
 </BorlandProject>
