@@ -26,6 +26,7 @@ object Form12: TForm12
     Color = clWindow
     ParentBackground = False
     TabOrder = 1
+    DrawMode = srpNoTopRight
     RoundValue = 10
     BorderColor = clBlack
     Border = True

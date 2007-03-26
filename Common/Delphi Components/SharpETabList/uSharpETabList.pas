@@ -448,8 +448,11 @@ begin
   FImage32.Bitmap.Clear(Color32(FBkgColor));
 
   // Draw bottom line
-  If FBorder then
-    FImage32.Bitmap.Line(0,Self.Height-1,Self.Width-4,Self.Height-1,Color32(FBorderColor));
+  If FBorder then begin
+    if FTabAlign = taLeftJustify then
+      FImage32.Bitmap.Line(0,Self.Height-1,Self.Width-4,Self.Height-1,Color32(FBorderColor)) else
+      FImage32.Bitmap.Line(4,Self.Height-1,Self.Width,Self.Height-1,Color32(FBorderColor))
+  end;
 
   if Count = 0 then exit;
   w := Self.Width;
