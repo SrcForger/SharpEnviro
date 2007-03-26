@@ -72,6 +72,7 @@ type
     FBorder: Boolean;
     FBorderSelectedColor: TColor;
     FOnTabClick: TSharpETabClick;
+    FTabAlign: TLeftRight;
 
     function GetCount: Integer;
     procedure SetTabIndex(const Value: Integer);
@@ -91,6 +92,7 @@ type
     procedure SetBorder(const Value: Boolean);
     procedure SetBorderColor(const Value: TColor);
     procedure SetBorderSelectedColor(const Value: TColor);
+    procedure SetTabAlign(const Value: TLeftRight);
   protected
     procedure DrawTab(ATabRect:TRect; ATabItem: TSharpETabListItem);
   public
@@ -129,7 +131,7 @@ type
     Property CaptionUnSelectedColor: TColor read FCaptionUnSelectedColor write FCaptionUnSelectedColor;
     Property StatusUnSelectedColor: TColor read FStatusUnSelectedColor write FStatusUnSelectedColor;
 
-
+    property TabAlign: TLeftRight read FTabAlign write SetTabAlign;
     Property TextBounds: TRect read FTextBounds write FTextBounds;
     Property IconBounds: TRect read FIconBounds write FIconBounds;
     Property AutoSizeTabs: Boolean read FAutoSizeTabs write SetAutoSizeTabs;
@@ -245,6 +247,7 @@ begin
   FTextBounds := Rect(8,8,8,4);
   FIconBounds := Rect(4,4,8,4);
   FAutoSizeTabs := False;
+  FTabAlign := taLeftJustify;
 
   Fimage32 := Timage32.Create(self);
   FImage32.Parent := Self;
@@ -283,13 +286,10 @@ begin
   iTabWidth := ATabRect.Right-ATabRect.Left;
   // Get icon width
   if ((Assigned(FPngImageList)) and (ATabItem.ImageIndex >= 0) and
-    (ATabItem.ImageIndex <= FPngImageList.Count-1)) then begin
-      iIconWidth := PngImageList.PngImages[ATabItem.ImageIndex].PngImage.Width;
-      //iIconHeight := PngImageList.PngImages[ATabItem.ImageIndex].PngImage.Height;
-    end else begin
+    (ATabItem.ImageIndex <= FPngImageList.Count-1)) then
+      iIconWidth := PngImageList.PngImages[ATabItem.ImageIndex].PngImage.Width 
+   else
       iiconWidth := 0;
-      //iIconHeight := 0;
-    end;
 
   // Get status text width
   iStatusWidth := Canvas.TextWidth(ATabItem.Status);
@@ -313,11 +313,7 @@ begin
       FImage32.Bitmap.Canvas.Pen.Color := FtabColor;
   end;
 
-  Try
-    RoundRect(FImage32.Bitmap.Canvas.Handle,ATabRect.Left,ATabRect.Top,ATabRect.Right,ATabRect.bottom+5,10,10);
-  Except
-  End;
-
+  RoundRect(FImage32.Bitmap.Canvas.Handle,ATabRect.Left,ATabRect.Top,ATabRect.Right,ATabRect.bottom+5,10,10);
 
   // Draw Tab Bottom Border
   if FBorder then
@@ -349,8 +345,6 @@ begin
   if FTabIndex = ATabItem.ID then
   FImage32.Bitmap.Font.Color := FCaptionSelectedColor else
   FImage32.Bitmap.Font.Color := FCaptionUnSelectedColor;
-  //FImage32.Bitmap.Font.Name := Self.font.Name;
-  //FImage32.Bitmap.Font.Size := Self.Font.Size;
 
   // Draw Caption Text
   s := PathCompactPath(FImage32.Bitmap.Canvas.Handle, ATabItem.Caption,
@@ -449,9 +443,6 @@ var
   tr: TRect;
 begin
   inherited;
-  try
-
-  
 
   FImage32.Bitmap.Setsize(Self.Width,Self.Height);
   FImage32.Bitmap.Clear(Color32(FBkgColor));
@@ -465,30 +456,37 @@ begin
   iMaxTabSize := CalculateMaxTabSize;
 
   iPosTabs := w div (iMaxTabSize+3);
-  x := 0;
+  iMaxTabSize := CalculateMaxTabSize;
 
+  // What allignment?
+  if FTabAlign = taLeftJustify then
+    x := 0 else
+    x := Self.Width;
+
+  // How many are visible
   if Count < iPosTabs then
     iDrawCount := Count else
     iDrawCount := iPosTabs;
 
-
-  iMaxTabSize := CalculateMaxTabSize;
   For i := 0 to Pred(iDrawCount) do begin
 
-    if FTabList.Item[i].Visible then begin
-      tr := Rect(x,4,x+iMaxTabSize,Height);
-      FTabList.Item[i].TabRect := tr;
-      //FTabList.Item[i].ID := i;
+    if FTabAlign = taLeftJustify then begin
+      if FTabList.Item[i].Visible then begin
+        tr := Rect(x,4,x+iMaxTabSize,Height);
+        FTabList.Item[i].TabRect := tr;
+        DrawTab(tr,TSharpETabListItem(FTabList.Item[i]));
+        x := x + iMaxTabSize+2;
+      end;
 
-      DrawTab(tr,TSharpETabListItem(FTabList.Item[i]));
-
-      x := x + iMaxTabSize+2;
+    end else begin
+      if FTabList.Item[i].Visible then begin
+        tr := Rect(x-iMaxTabSize,4,x,Height);
+        FTabList.Item[i].TabRect := tr;
+        DrawTab(tr,TSharpETabListItem(FTabList.Item[i]));
+        x := x - iMaxTabSize-2;
+      end;
     end;
-
   end;
-  except
-  end;
-
 end;
 
 procedure TSharpETabList.SetAutoSizeTabs(const Value: Boolean);
@@ -606,6 +604,12 @@ begin
 
   MouseDownEvent(Self,mbLeft,[],ATab.TabRect.Left+1, ATab.TabRect.Top+1,nil);
   Result := True;
+end;
+
+procedure TSharpETabList.SetTabAlign(const Value: TLeftRight);
+begin
+  FTabAlign := Value;
+  Invalidate;
 end;
 
 { TSharpETabListItem }
