@@ -7,11 +7,11 @@ resourcestring
   rsApplicationName = 'SharpCore';
   rsRevertShellExplorer =
     'This process will revert the current shell to Windows Explorer, Are you sure?';
-  rsExplorerRestored = 'Windows Explorer has now been restored, this will apply on next reboot.';
+  rsExplorerRestored = 'Windows Explorer has now been restored; this will apply on next reboot.';
   rsAdminAccountRequired = 'You must be using an Administrator account to execute this command.';
   rsSeperateExplorer = 'This command will seperate the Windows Explorer Shell from the Explorer File Manager.'
     + #13 + 'This fix is required for SharpE to co-exist correctly with Explorer.' + #13#13 +
-      'Click Ok to continue.';
+      'Click OK to continue.';
   rsFixApplied = 'The fix has now been applied.' + #13 +
     'SharpCore must now reboot; click OK to reboot.';
   rsFixAlreadyApplied = 'The system has already had the Explorer process fix applied.';
