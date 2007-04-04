@@ -59,7 +59,8 @@ uses
   uSharpEMenuItem in 'Units\uSharpEMenuItem.pas',
   uSharpEMenuConsts in 'Units\uSharpEMenuConsts.pas',
   uSkinManagerThreads in '..\..\Common\Units\Threads\uSkinManagerThreads.pas',
-  uPropertyList in '..\..\Common\Units\PropertyList\uPropertyList.pas';
+  uPropertyList in '..\..\Common\Units\PropertyList\uPropertyList.pas',
+  uSharpEMenuPopups in 'Units\uSharpEMenuPopups.pas';
 
 {$R *.res}
 
@@ -193,6 +194,8 @@ begin
   Application.Run;
 
   // Free Classes
+  if SharpEMenuPopups <> nil then
+     SharpEMenuPopups.Free;
   SkinManager.Free;
   events.Free;
   

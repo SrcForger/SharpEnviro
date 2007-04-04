@@ -59,6 +59,7 @@ type
     FDynamic  : boolean;
     FVisible  : boolean;
     FPropList : TPropertyList;
+    FPopup    : TObject;
   public
     constructor Create(pItemType : TSharpEMenuItemType); reintroduce;
     destructor Destroy; override;
@@ -70,6 +71,7 @@ type
     property isDynamic : boolean read FDynamic write FDynamic;
     property isVisible : boolean read FVisible write FVisible;
     property ListIndex : integer read FIndex write FIndex; // only used and updated before sorting!
+    property Popup     : TObject read FPopup write FPopup;
     property OnClick   : TSharpEMenuItemClickEvent read FClickEvent write FClickEvent;
     property OnPaint   : TSharpEMenuItemPaintEvent read FPaintEvent write FPaintEvent;
   end;

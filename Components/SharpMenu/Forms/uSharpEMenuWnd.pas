@@ -51,12 +51,13 @@ uses
   GR32_Image,
   GR32_PNG,
   GR32_Blend,
-  uSharpEMenu;
+  uSharpEMenu, Menus;
 
 type
   TSharpEMenuWnd = class(TForm)
     SubMenuTimer: TTimer;
     offsettimer: TTimer;
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormDeactivate(Sender: TObject);
     procedure offsettimerTimer(Sender: TObject);
     procedure SubMenuTimerTimer(Sender: TObject);
@@ -71,6 +72,7 @@ type
     procedure FormActivate(Sender: TObject);
   private
     FMenu : TSharpEMenu;
+    FParentMenu : TSharpeMenuWnd;
     FOffset : integer;
     FOwner : TObject;
     FSubMenu : TSharpEMenuWnd;
@@ -87,10 +89,15 @@ type
     procedure WMNCHitTest(var Message: TWMNCHitTest);
   public
     procedure DrawWindow;
+    procedure PreMul(Bitmap: TBitmap32);
     procedure InitMenu(pMenu : TSharpEMenu; pRootMenu : boolean);
+    procedure CloseAll;
     constructor Create(AOwner: TComponent); overload; override;
     constructor Create(AOwner: TComponent; pMenu : TSharpEMenu); reintroduce; overload;
+  published
     property SharpEMenu : TSharpEMenu read FMenu;
+    property SharpESubMenu : TSharpEMenuWnd read FSubMenu write FSubMenu;
+    property ParentMenu : TsharpEMenuWnd read FParentMenu write FParentMenu;
     property Picture : TBitmap32 read FPicture;
     property cOwner : TObject read FOwner;
     property RootMenu : boolean read FRootMenu;
@@ -107,7 +114,7 @@ uses uSharpEMenuItem;
 
 
 // has to be applied to the TBitmap32 before passing it to the API function
-procedure PreMul(Bitmap: TBitmap32);
+procedure TSharpEMenuWnd.PreMul(Bitmap: TBitmap32);
 const w = Round($10000 * (1/255));
 var
   p: PColor32;
@@ -148,6 +155,7 @@ end;
 constructor TSharpEMenuWnd.Create(AOwner: TComponent);
 begin
   Create(AOwner,nil);
+  FParentMenu := nil;
 end;
 
 
@@ -156,6 +164,7 @@ begin
   inherited Create(AOwner);
   FOwner := AOwner;
   FPicture := TBitmap32.Create;
+  FParentMenu := nil;
 
   InitMenu(pMenu,False);
 end;
@@ -177,6 +186,21 @@ var
   TopLeft, BmpTopLeft: TPoint;
   BmpSize: TSize;
 begin
+  if (Height <> FPicture.Height) then
+  begin
+    if (FPicture.Height - FOffset < Height) then
+       FOffset := Max(0,FPicture.Height - Monitor.Height);
+    if (FPicture.Height <= Height) then
+       Height := FPicture.Height
+  end;
+
+  if (Width <> FPicture.Width) then
+  begin
+    if ParentMenu.Left > Left then
+       Left := ParentMenu.Left  - FPicture.Width;
+    Width := FPicture.Width;
+  end;
+
   BmpSize.cx := Width;
   BmpSize.cy := Height;
   BmpTopLeft := Point(0, FOffset);
@@ -272,7 +296,7 @@ procedure TSharpEMenuWnd.FormMouseDown(Sender: TObject; Button: TMouseButton;
 begin
   if FMenu = nil then exit;
 
-  if FMenu.PerformMouseDown then
+  if FMenu.PerformMouseDown(self,Button, X,Y) then
   begin
     FMenu.RenderTo(FPicture);
     PreMul(FPicture);
@@ -282,10 +306,13 @@ end;
 
 procedure TSharpEMenuWnd.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+var
+  p : TPoint;
 begin
   if FMenu = nil then exit;
 
-  if FMenu.PerformMouseUp then
+  p := ClientToScreen(point(X,Y));
+  if FMenu.PerformMouseUp(self,Button, p.X,p.Y) then
   begin
     FMenu.RenderTo(FPicture);
     PreMul(FPicture);
@@ -293,27 +320,30 @@ begin
   end;
 end;
 
-procedure TSharpEMenuWnd.FormClick(Sender: TObject);
+procedure TSharpEMenuWnd.CloseAll;
 var
   pOwner : TObject;
   lm : TSharpEMenuWnd;
 begin
+  // Find the Top Most menu and close everything!
+  pOwner := FOwner;
+  if FOwner is TSharpEMenuWnd then lm := TSharpEMenuWnd(FOwner)
+     else lm := self;
+  while pOwner is TSharpEMenuWnd do
+  begin
+    if TSharpEMenuWnd(pOwner).cOwner is TSharpEMenuWnd then
+       lm := TSharpEMenuWnd(TSharpEMenuWnd(pOwner).cOwner);
+    pOwner := TSharpEMenuWnd(pOwner).cOwner;
+  end;
+  TSharpEMenuWnd(lm).Release;
+end;
+
+procedure TSharpEMenuWnd.FormClick(Sender: TObject);
+begin
   if FMenu = nil then exit;
 
   if FMenu.PerformClick then
-  begin
-    // Find the Top Most menu and close everything!
-    pOwner := FOwner;
-    if FOwner is TSharpEMenuWnd then lm := TSharpEMenuWnd(FOwner)
-       else lm := self;
-    while pOwner is TSharpEMenuWnd do
-    begin
-      if TSharpEMenuWnd(pOwner).cOwner is TSharpEMenuWnd then
-         lm := TSharpEMenuWnd(TSharpEMenuWnd(pOwner).cOwner);
-      pOwner := TSharpEMenuWnd(pOwner).cOwner;
-    end;
-    TSharpEMenuWnd(lm).Release;
-  end;
+     CloseAll;
 end;
 
 procedure TSharpEMenuWnd.FormDestroy(Sender: TObject);
@@ -357,6 +387,7 @@ begin
     if item.SubMenu <> nil then
     begin
       FSubMenu := TSharpEMenuWnd.Create(self,TSharpEMenu(item.submenu));
+      FSubMenu.ParentMenu := self;
       t := Left + Width;
       if (t + FSubMenu.Width > Monitor.Left + Monitor.Width) then
          t := Left - FSubMenu.Width;
@@ -453,6 +484,66 @@ begin
     if FMenu <> nil then
        FreeAndNil(FMenu);
     Release;
+  end;
+end;
+
+procedure TSharpEMenuWnd.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  n : integer;
+begin
+  if FMenu = nil then exit;
+
+  if (Key = VK_RETURN) then
+     FormClick(self)
+  else
+  if (Key = VK_ESCAPE) then
+     CloseAll
+  else
+  if (Key = VK_UP) or (Key = VK_DOWN) or (Key = VK_HOME) or (Key = VK_END) then
+  begin
+    case Key of
+      VK_UP : FMenu.ItemIndex := FMenu.PreviousVisibleIndex;
+      VK_DOWN : FMenu.ItemIndex := FMenu.NextVisibleIndex;
+      VK_HOME : begin
+                  FOffset := 0;
+                  FMenu.ItemIndex := -1;
+                  FMenu.ItemIndex := FMenu.NextVisibleIndex;
+                end;
+      VK_END : begin
+                 FMenu.ItemIndex := FMenu.Items.Count - 1;
+                 FMenu.ItemIndex := FMenu.PreviousVisibleIndex;
+                 FMenu.ItemIndex := FMenu.NextVisibleIndex;
+               end;
+    end;
+    n := FMenu.GetItemsHeight(FMenu.ItemIndex);
+    if n > Height + FOffset then
+       FOffset := n - Height + FMenu.Background.Height - FMenu.NormalMenu.Height;
+    if n < FOffset then
+       FOffset := FOffset - FMenu.ItemsHeight[FMenu.ItemIndex];
+    FMenu.RenderTo(FPicture);
+    PreMul(FPicture);
+    DrawWindow;
+  end else
+  if (Key = VK_RIGHT) then
+  begin
+    SubMenuTimerTimer(SubMenuTimer);
+    if FSubMenu <> nil then
+    begin
+      FSubMenu.SharpEMenu.ItemIndex := FSubMenu.SharpEMenu.NextVisibleIndex;
+      FSubMenu.SharpEMenu.RenderTo(FSubMenu.Picture);
+      FSubMenu.PreMul(FSubMenu.Picture);
+      FSubMenu.DrawWindow;
+    end;
+  end else
+  if (Key = VK_LEFT) then
+  begin
+    if FParentMenu <> nil then
+    begin
+      FParentMenu.SharpESubMenu := nil;
+      FMenu.RecycleBitmaps;
+      Release;
+    end;
   end;
 end;
 

@@ -1,0 +1,5 @@
+delete RCDATA "list-remove.png"
+properties RCDATA "dialog-information.png"
+application RCDATA "applications-other.png"
+folder RCDATA "folder.png"
+openas RCDATA "system-users.png"

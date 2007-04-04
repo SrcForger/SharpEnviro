@@ -32,14 +32,17 @@ unit uSharpEMenu;
 
 interface
 
-uses SysUtils, Contnrs,GR32,Classes,Dialogs,
+uses SysUtils, Contnrs, Menus, Controls, GR32,Classes,Dialogs,
      SharpESkinManager,
+     uSharpEMenuPopups,
      uSharpEMenuIcons,
      uSharpEMenuItem,
      uSharpEMenuActions,
      uSharpEMenuConsts;
 
 type
+  TIntArray = array of integer;
+  
   TSharpEMenu = class
   private
     FSkinManager  : TSharpESkinManager;
@@ -50,7 +53,7 @@ type
     FNormalMenu : TBitmap32;
     FItemIndex : integer;
     FItemWidth : integer;
-    FItemsHeight : array of integer;
+    FItemsHeight : TIntArray;
     FMouseDown : boolean;
     procedure UpdateItemWidth;
     procedure UpdateItemsHeight;
@@ -73,21 +76,26 @@ type
     procedure RenderTo(Dst : TBitmap32);
     function GetItemsHeight(pindex : integer) : integer;
     function PerformMouseMove(px,py : integer; var submenu : boolean) : boolean;
-    function PerformMouseDown : boolean;
-    function PerformMouseUp : boolean;
+    function PerformMouseDown(Wnd : TObject; Button: TMouseButton; X,Y : integer) : boolean;
+    function PerformMouseUp(Wnd : TObject; Button: TMouseButton; X,Y : integer) : boolean;
     function PerformClick : boolean;
     procedure RefreshDynamicContent;
     procedure RecycleBitmaps;
+    function NextVisibleIndex : integer;
+    function PreviousVisibleIndex : integer;
+  published
     property ItemIndex  : integer read FItemIndex write FItemIndex;
     property CurrentItem : TSharpEMenuItem read GetCurrentItem;
     property Background : TBitmap32 read FBackground;
     property NormalMenu : TBitmap32 read FNormalMenu;
     property SkinManager : TSharpESkinManager read FSkinManager;
     property Items : TObjectList read FItems;
+    property ItemsHeight : TIntArray read FItemsHeight;
   end;
 
 var
   SharpEMenuIcons : TSharpEMenuIcons;
+  SharpEMenuPopups : TSharpEMenuPopups;
 
 implementation
 
@@ -112,6 +120,9 @@ begin
 
   if SharpEMenuIcons = nil then
      SharpEMenuIcons := TSharpEMenuIcons.Create;
+
+  if SharpEMenuPopups = nil then
+     SharpEMenuPopups := TSharpEMenuPopups.Create;
 end;
 
 destructor TSharpEMenu.Destroy;
@@ -247,6 +258,8 @@ begin
   item.Caption := pCaption;
   item.PropList.Add('Action',pTarget);
   item.OnClick := FMenuActions.OnLinkClick;
+  if pDynamic and FileExists(pTarget) then
+     item.Popup := SharpEMenuPopups.DynamicLinkPopup;
   item.isDynamic := pDynamic;
   FItems.Add(Item);
   result := item;
@@ -263,6 +276,8 @@ begin
   item.Caption := pCaption;
   item.PropList.Add('Action',pTarget);
   item.OnClick := FMenuActions.OnLinkClick;
+  if pDynamic and FileExists(pTarget) then
+     item.Popup := SharpEMenuPopups.DynamicLinkPopup;
   item.isDynamic := pDynamic;
   FItems.Add(Item);
   result := item;
@@ -282,6 +297,8 @@ begin
   begin
     item.PropList.Add('Target',pTarget);
     item.OnClick := FMenuActions.OnFolderClick;
+    if pDynamic then
+       item.popup := SharpEMenuPopups.DynamicDirPopup;
   end;
   FItems.Add(Item);
   result := Item;
@@ -639,7 +656,8 @@ var
   item : TSharpEMenuItem;
   CanClose : boolean;
 begin
-  if (FItemIndex > -1) and (FItemIndex < FItems.Count) then
+  if (FItemIndex > -1) and (FItemIndex < FItems.Count)
+     and (not SharpEMenuPopups.PopupVisible) then
   begin
     item := TSharpEMenuItem(FItems.Items[FItemIndex]);
     if assigned(item.OnClick) then
@@ -651,9 +669,10 @@ begin
     end;
   end;
   result := false;
+  SharpEMenuPopups.PopupVisible := False;
 end;
 
-function TSharpEMenu.PerformMouseDown : boolean;
+function TSharpEMenu.PerformMouseDown(Wnd : TObject; Button: TMouseButton; X,Y : integer) : boolean;
 begin
   if (FItemIndex > -1) and (FItemIndex < FItems.Count) then
   begin
@@ -662,13 +681,35 @@ begin
   end else result := false;
 end;
 
-function TSharpEMenu.PerformMouseUp : boolean;
+function TSharpEMenu.PerformMouseUp(Wnd : TObject; Button: TMouseButton; X,Y : integer) : boolean;
+var
+  item : TSharpEMenuItem;
+  mwnd : TSharpEMenuWnd;
 begin
-  if (FItemIndex > -1) and (FItemIndex < FItems.Count) then
+  if (FItemIndex > -1) and (FItemIndex < FItems.Count)
+     and (not SharpEMenuPopups.PopupVisible) then
   begin
+    item := TSharpEMenuItem(FItems.Items[FItemIndex]);
     FMouseDown := False;
     result := true;
-  end else result := false;
+    if (button = mbRight) and assigned(item.Popup) then
+    begin
+      mwnd := TSharpEMenuWnd(wnd);
+      if mwnd.SharpESubMenu <> nil then
+      begin
+        mwnd.SharpESubMenu.SharpEMenu.RecycleBitmaps;
+        mwnd.SharpESubMenu.Release;
+        mwnd.SharpESubMenu := nil;
+      end;
+      SharpEMenuPopups.LastMenu := mwnd;
+      SharpEMenuPopups.PopupVisible := True;
+      TPopupMenu(item.Popup).Popup(X,Y);
+    end;
+  end else
+  begin
+    result := false;
+    SharpEMenuPopups.PopupVisible := False;
+  end;
 end;
 
 function TSharpEMenu.PerformMouseMove(px,py : integer; var submenu : boolean) : boolean;
@@ -697,6 +738,42 @@ begin
   end;
   FItemIndex := -1;
   result := true;
+end;
+
+function TSharpEMenu.NextVisibleIndex : integer;
+var
+  n : integer;
+  item : TSharpEMenuItem;
+begin
+  for n := Max(0,FItemIndex+1) to FItems.Count - 1 do
+  begin
+    item := TSharpEMenuItem(FItems.Items[n]);
+    if (item.isVisible)
+       and ((@item.OnClick <> nil) or (item.ItemType = mtSubMenu))  then
+    begin
+      result := n;
+      exit;
+    end;
+  end;
+  result := FItemIndex;
+end;
+
+function TSharpEMenu.PreviousVisibleIndex : integer;
+var
+  n : integer;
+  item : TSharpEMenuItem;
+begin
+  for n := Min(FItems.Count - 1,FItemIndex - 1) downto 0 do
+  begin
+    item := TSharpEMenuItem(FItems.Items[n]);
+    if (item.isVisible)
+       and ((@item.OnClick <> nil) or (item.ItemType = mtSubMenu))  then
+    begin
+      result := n;
+      exit;
+    end;
+  end;
+  result := FItemIndex;
 end;
 
 end.
