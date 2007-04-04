@@ -291,17 +291,26 @@ end;
 procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
-  ActionStr : String;
+  ActionStr, pdir : String;
   p : TPoint;
 begin
   if Button = mbLeft then
   begin
     p := ClientToScreen(Point(btn.Left,btn.Top));
-    p.y := p.y + Height - btn.Top;
+    if p.y > Monitor.Top + Monitor.Height div 2 then
+    begin
+      p.y := p.y;
+      pdir := '-1';
+    end
+    else
+    begin
+      p.y := p.y + Height - btn.Top;
+      pdir := '1';
+    end;
 //    ActionStr := SharpApi.GetSharpeDirectory;
 //    ActionStr := ActionStr + 'SharpMenu.exe';
 //    ActionStr := ActionStr + ' ' + inttostr(p.x) + ' ' + inttostr(p.y);
-    ActionStr := inttostr(p.x) + ' ' + inttostr(p.y);
+    ActionStr := inttostr(p.x) + ' ' + inttostr(p.y) + ' ' + pdir;
     ActionStr := ActionStr + ' "' + SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
     ActionStr := ActionStr + sMenu + '.xml"';
     ShellApi.ShellExecute(Handle,'open',PChar(GetSharpEDirectory + 'SharpMenu.exe'),PChar(ActionStr),GetSharpEDirectory,SW_SHOWNORMAL);
