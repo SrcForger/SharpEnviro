@@ -88,7 +88,7 @@ implementation
 uses SettingsWnd;
 
 {$R *.dfm}
-{$R glyphs.res}
+{$R icons.res}
 
 procedure TMainForm.LoadSettings;
 var
