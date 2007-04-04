@@ -83,6 +83,8 @@ type
     N6: TMenuItem;
     Skin1: TMenuItem;
     ColorScheme1: TMenuItem;
+    ConfigureDesktopArea1: TMenuItem;
+    procedure ConfigureDesktopArea1Click(Sender: TObject);
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure Clone1Click(Sender: TObject);
     procedure DelayTimer3Timer(Sender: TObject);
@@ -140,6 +142,10 @@ type
     FShellBCInProgress : boolean;
     FSkinManager : TSharpESkinManager;
     SkinManagerLoadThread : TSystemSkinLoadThread;
+
+    FDeskAreaStart : function (owner : hwnd) : hwnd;
+    FDeskAreaEnd : function (owner : hwnd; SaveSettings : Boolean) : boolean;
+
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem : TJvSimpleXMlElem);
 
@@ -211,7 +217,8 @@ function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; extern
 
 implementation
 
-uses PluginManagerWnd,
+uses CoreConfigDummyWnd,
+     PluginManagerWnd,
      SharpEMiniThrobber,
      BarHideWnd,
      AddPluginWnd,
@@ -265,12 +272,13 @@ end;
 procedure TSharpBarMainForm.WMEndSession(var msg : TMessage);
 begin
   msg.result := 0;
-  Application.Terminate;
+  Close;
 end;
 
 procedure TSharpBarMainForm.WMQueryEndSession(var msg : TMessage);
 begin
   msg.Result := 1;
+  Close;
 end;
 
 // Temporary! remove when SharpCenter is done!
@@ -1801,6 +1809,37 @@ begin
     end;
    Handled := True;
   end else Handled := False;
+end;
+
+procedure TSharpBarMainForm.ConfigureDesktopArea1Click(Sender: TObject);
+var
+  DllHandle : integer;
+  FileName : String;
+  CoreConfigDummyForm: TCoreConfigDummyForm;
+  c : TControl;
+begin
+  FileName := SharpApi.GetSharpeDirectory + 'Services\DeskArea.service';
+  if FileExists(FileName) then
+  begin
+    DllHandle := LoadLibrary(PChar(FileName));
+    if DllHandle <> 0 then
+    begin
+      @FDeskAreaStart := GetProcAddress(DllHandle, 'StartSettingsWnd');
+      @FDeskAreaEnd   := GetProcAddress(DllHandle, 'CloseSettingsWnd');
+
+      CoreConfigDummyForm := TCoreConfigDummyForm.Create(self);
+      c := GetControlByHandle(FDeskAreaStart(CoreConfigDummyForm.bgpanel.Handle));
+      c.Parent := CoreConfigDummyForm;
+      c.Left := 8;
+      c.Top := 8;
+      if CoreConfigDummyForm.ShowModal = mrOk then FDeskAreaEnd(CoreConfigDummyForm.bgpanel.Handle,True)
+         else FDeskAreaEnd(CoreConfigDummyForm.bgpanel.Handle,False);
+      CoreConfigDummyForm.Free;
+      FreeLibrary(Dllhandle);
+      SharpApi.ServiceStop('DeskArea');
+      SharpApi.ServiceStart('DeskArea');
+    end;
+  end;
 end;
 
 end.

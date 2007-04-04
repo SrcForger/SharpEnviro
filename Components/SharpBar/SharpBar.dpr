@@ -44,7 +44,8 @@ uses
   PluginManagerWnd in 'Forms\PluginManagerWnd.pas' {PluginManagerForm},
   AddPluginWnd in 'Forms\AddPluginWnd.pas' {AddPluginForm},
   BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm},
-  EditSchemeWnd in 'Forms\EditSchemeWnd.pas' {EditSchemeForm};
+  EditSchemeWnd in 'Forms\EditSchemeWnd.pas' {EditSchemeForm},
+  CoreConfigDummyWnd in 'Forms\CoreConfigDummyWnd.pas' {CoreConfigDummyForm};
 
 {$R *.res}
 

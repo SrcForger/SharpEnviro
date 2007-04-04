@@ -47,6 +47,11 @@ object SharpBarMainForm: TSharpBarMainForm
     object N6: TMenuItem
       Caption = '-'
     end
+    object ConfigureDesktopArea1: TMenuItem
+      Caption = 'Configure Desktop Area...'
+      ImageIndex = 22
+      OnClick = ConfigureDesktopArea1Click
+    end
     object Skin1: TMenuItem
       Caption = 'Skin'
       ImageIndex = 27
