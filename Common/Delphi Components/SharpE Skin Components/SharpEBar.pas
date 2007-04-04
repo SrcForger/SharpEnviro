@@ -461,7 +461,7 @@ begin
   if (not FAutoPosition) or (csDesigning in ComponentState) then
     exit;
 
-  // Form.Monitor is calling TCustomForm.GetMonitor which makes sure that the TScreen Rect is updated 
+  // Form.Monitor is calling TCustomForm.GetMonitor which makes sure that the TScreen Rect is updated
   Form.Monitor;
 
   FMonitorIndex := abs(FMonitorIndex);
@@ -528,7 +528,7 @@ begin
     FThrobber.Repaint;
 
   if Assigned(FOnPositionUpdate) then
-     FOnPositionUpdate(self); 
+     FOnPositionUpdate(self);
 end;
 
 function TSharpEBar.GetSpecialHideForm : Boolean;
@@ -789,6 +789,11 @@ begin
       begin
         UpdateSkin;
       end;
+    WM_QUERYENDSESSION:
+    begin
+      msg.Result := 1;
+      exit;
+    end;
     WM_SHOWWINDOW:
       begin
         if msg.WParam > 0 then
