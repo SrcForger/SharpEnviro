@@ -48,7 +48,6 @@ type
     MenuPopup: TPopupMenu;
     MenuSettingsItem: TMenuItem;
     SkinManager: TSharpESkinManager;
-    cboxList: TComboBox;
     procedure MenuSettingsItemClick(Sender: TObject);
   protected
   private
