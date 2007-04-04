@@ -1,9 +1,10 @@
 object SharpBarMainForm: TSharpBarMainForm
   Left = 20
   Top = 20
-  Width = 434
-  Height = 210
+  BorderStyle = bsNone
   Caption = 'SharpBarMainForm'
+  ClientHeight = 210
+  ClientWidth = 434
   Color = 13290186
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

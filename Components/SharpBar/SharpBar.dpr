@@ -253,7 +253,6 @@ begin
   end;
 
   Application.Initialize;
-  Application.ShowMainForm := False;
   Application.Title := 'SharpBar';
   mfParamID := ParamID;
   Application.CreateForm(TSharpBarMainForm, SharpBarMainForm);

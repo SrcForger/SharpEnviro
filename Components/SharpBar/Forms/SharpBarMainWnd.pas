@@ -151,6 +151,10 @@ type
     // Power Management
     procedure WMPowerBroadcast(var msg : TMessage); message WM_POWERBROADCAST;
 
+    // Shutdown
+    procedure WMEndSession(var msg : TMessage); message WM_ENDSESSION;
+    procedure WMQueryEndSession(var msg : TMessage); message WM_QUERYENDSESSION;
+
     // shell hooks
     procedure WMRegisterShellHook(var msg : TMessage); message WM_REGISTERSHELLHOOK;
     procedure WMUnregisterShellHook(var msg : TMessage); message WM_UNREGISTERSHELLHOOK;
@@ -257,6 +261,17 @@ end;
 // ************************
 // Window Message handlers
 // ************************
+
+procedure TSharpBarMainForm.WMEndSession(var msg : TMessage);
+begin
+  msg.result := 0;
+  Application.Terminate;
+end;
+
+procedure TSharpBarMainForm.WMQueryEndSession(var msg : TMessage);
+begin
+  msg.Result := 1;
+end;
 
 // Temporary! remove when SharpCenter is done!
 procedure TSharpBarMainForm.WMThemeLoadingEnd(var msg : TMessage);
@@ -1737,8 +1752,6 @@ begin
   begin
     FStartup := False;
     UnlockWindow(Handle);
-    Application.ShowMainForm := True;
-    ShowWindow(Handle, SW_HIDE);
     Show;
   end;
 end;

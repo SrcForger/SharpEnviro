@@ -3,6 +3,7 @@ object BarHideForm: TBarHideForm
   Top = 0
   AlphaBlend = True
   AlphaBlendValue = 1
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsNone
   Caption = 'BarHideForm'
   ClientHeight = 48

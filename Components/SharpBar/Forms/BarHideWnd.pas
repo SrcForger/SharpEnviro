@@ -13,6 +13,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure CreateParams(var Params: TCreateParams); override;
   private
     procedure WMMove(var msg : TWMWindowPosChanging); message WM_WINDOWPOSCHANGING;
   public
@@ -27,6 +28,12 @@ implementation
 uses SharpBarMainWnd, SharpEBar;
 
 {$R *.dfm}
+
+procedure TBarHideForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
+  Params.ExStyle := WS_EX_TOOLWINDOW or WS_EX_LAYERED;
+end;
 
 procedure TBarHideForm.WMMove(var msg : TWMWindowPosChanging);
 begin
@@ -100,7 +107,7 @@ begin
   height := 1;
   left := -4096;
   top := -4096;
-  Setwindowlong(handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW or WS_EX_LAYERED);
+//  Setwindowlong(handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW or WS_EX_LAYERED);
 end;
 
 procedure TBarHideForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
