@@ -83,6 +83,7 @@ var
   mfile : String;
   Pos : TPoint;
   i : integer;
+  popupdir : integer;
   st : Int64;
   MutexHandle : THandle;
   SystemSkinLoadThread : TSystemSkinLoadThread;
@@ -130,6 +131,7 @@ begin
   end;
 
   Pos := Mouse.CursorPos;
+  popupdir := 1;
   // Check Params
   if ParamCount >= 2 then
   begin
@@ -137,6 +139,8 @@ begin
        Pos.X := i;
     if TryStrToInt(ParamStr(2),i) then
        Pos.Y := i;
+    if TryStrToInt(ParamStr(3),i) then
+       popupdir := i;
   end;
 
   if (ParamCount = 1) or (ParamCount >=2) then
@@ -169,6 +173,8 @@ begin
 
   // Check position
   i := Pos.Y;
+  if popupdir < 0 then
+     i := i - wnd.Picture.Height;
   if (i + wnd.Picture.Height) > (wnd.Monitor.Top + wnd.Monitor.Height) then
       i := wnd.Monitor.Top + wnd.Monitor.Height - wnd.Picture.Height;
   if i < 0 then
