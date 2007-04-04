@@ -472,14 +472,16 @@ end;
 
 procedure TSharpEColorPanel.InitialiseSliders;
 var
-  r,g,b,h,s,l: byte;
+  r,g,b: byte;
+  hsl: THSLColor;
   rgb: integer;
 begin
-  rgb := ColorToRGB(FColorCode);
-  RGBtoHSL(tcolor32(rgb),h,s,l);
+  rgb := FColorCode;
+
   r := GetRValue(rgb);
   b := GetBValue(rgb);
   g := GetGValue(rgb);
+  hsl := SharpGraphicsUtils.RGBtoHSL(color32(r,g,b,0));
 
   // RGB
   if FRedSlider <> nil then begin
@@ -499,18 +501,18 @@ begin
 
   // HSL
   if FHueSlider <> nil then begin
-    FHueSlider.Position := h;
-    TLabel(FHueSlider.Tag).Caption := Format('Hue: %d',[h]);
+    FHueSlider.Position := hsl.Hue;
+    TLabel(FHueSlider.Tag).Caption := Format('Hue: %d',[hsl.Hue]);
   end;
 
   if FSatSlider <> nil then begin
-    FSatSlider.Position := s;
-    TLabel(FSatSlider.Tag).Caption := Format('Sat: %d',[s]);
+    FSatSlider.Position := hsl.Saturation;
+    TLabel(FSatSlider.Tag).Caption := Format('Sat: %d',[hsl.Saturation]);
   end;
 
   if FBriSlider <> nil then begin
-    FBriSlider.Position := l;
-    TLabel(FBriSlider.Tag).Caption := Format('Bri: %d',[l]);
+    FBriSlider.Position := hsl.Lightness;
+    TLabel(FBriSlider.Tag).Caption := Format('Bri: %d',[hsl.Lightness]);
   end;
 
 end;
