@@ -789,11 +789,6 @@ begin
       begin
         UpdateSkin;
       end;
-    WM_QUERYENDSESSION:
-    begin
-      msg.Result := 1;
-      exit;
-    end;
     WM_SHOWWINDOW:
       begin
         if msg.WParam > 0 then
