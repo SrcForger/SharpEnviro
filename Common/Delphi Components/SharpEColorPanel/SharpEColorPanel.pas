@@ -481,7 +481,7 @@ begin
   r := GetRValue(rgb);
   b := GetBValue(rgb);
   g := GetGValue(rgb);
-  hsl := SharpGraphicsUtils.RGBtoHSL(color32(r,g,b,0));
+  hsl := SharpGraphicsUtils.RGBtoHSL(color32(r,g,b,255));
 
   // RGB
   if FRedSlider <> nil then begin
@@ -574,8 +574,10 @@ begin
 
   if ((Sender = FRedSlider) or (Sender = FBluSlider) or (Sender = FGreSlider)) then
     ColorCode := RGB(r,g,b)
-  else
-    ColorCode := HSLtoRGB(h,s,l);
+  else begin
+    Color32ToRGB(SharpGraphicsUtils.HSLtoRGB(h,s,l),r,g,b);
+    ColorCode := RGB(r,g,b);
+  end;
 
   FRedSlider.OnChange := SliderChangeEvent;
   FBluSlider.OnChange := SliderChangeEvent;
