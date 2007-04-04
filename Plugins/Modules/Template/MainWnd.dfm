@@ -37,7 +37,7 @@ object MainForm: TMainForm
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
-    HandleUpdates = True
+    HandleUpdates = False
     Left = 112
     Top = 32
   end
