@@ -212,8 +212,10 @@ begin
   // send an activate message
   wndclass := GetWndClass(pHandle);
   if CompareText(wndclass,'ConsoleWindowClass') = 0 then  // cmd.exe
-     AddTask(pHandle);
-end;
+     AddTask(pHandle)
+     else// Task wasn found, remove focus from any activated task
+     if Assigned(OnActivateTask) then FOnActivateTask(nil,-1);
+ end;
 
 
 procedure TTaskManager.CompleteRefresh;

@@ -920,8 +920,20 @@ var
   pTaskItem : TSharpETaskItem;
 begin
   DebugOutPutInfo('TMainForm.ActivateTask (Procedure)');
+  if (pItem = nil) and (Index = - 1) then
+  begin
+    for n := IList.Count - 1 downto 0 do
+    begin
+      pTaskItem := TSharpETaskItem(IList.Items[n]);
+      if pTaskItem <> nil then
+         if pTaskItem.Down then
+            pTaskItem.Down := False;
+    end;
+    exit;
+  end;
+
   if pItem = nil then exit;
-  
+
   pTaskItem := nil;
   CheckFilterAll;
 
