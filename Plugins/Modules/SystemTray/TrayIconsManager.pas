@@ -184,6 +184,8 @@ type
   {$ENDREGION}
 {$ENDREGION}
 
+function AllowSetForegroundWindow(ProcessID : DWORD) : boolean; stdcall; external 'user32.dll' name 'AllowSetForegroundWindow';
+
 {$R *.dfm}
 
 implementation
@@ -1162,6 +1164,7 @@ function TTrayClient.PerformIconAction(x,y,gx,gy,imod : integer; msg : uint) : b
 var
   n : integer;
   tempItem : TTrayItem;
+  PID: DWORD;
 begin
   result := false;
   for n := 0 to FItems.Count - 1 do
@@ -1177,7 +1180,23 @@ begin
         exit;
       end;
       result := true;
+
+      GetWindowThreadProcessId(tempItem.Wnd, @PID);
+      AllowSetForegroundWindow(PID);
+
+      if Msg <> WM_MOUSEMOVE then
+         StopTipTimer;
+
+      postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
       case Msg of
+        WM_MOUSEMOVE: StartTipTimer(x,y,gx,gy);
+        WM_RBUTTONUP: postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,WM_CONTEXTMENU);
+        WM_LBUTTONUP: postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,NIN_SELECT);
+      end;
+
+      exit;
+      // Old code below;
+ {     case Msg of
         WM_MOUSEMOVE:
         begin
           StartTipTimer(x,y,gx,gy);
@@ -1210,7 +1229,7 @@ begin
           postmessage(tempItem.Wnd, tempItem.CallbackMessage,tempItem.uID, Msg);
         end;
       end;
-      exit;
+      exit; }
     end;
   end;
   StopTipTimer;
