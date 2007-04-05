@@ -256,7 +256,7 @@ var
   s : string;
 begin
   s := SharpDialogs.TargetDialog(STI_ALL_TARGETS,
-                                 ClientToScreen(point(btn_select.Left,btn_select.Top)));
+                                 ClientToScreen(point(btn_select.Left,btn_select.Top + btn_select.height)));
   if length(trim(s))>0 then
   begin
     ForceForegroundWindow(BarWnd);
