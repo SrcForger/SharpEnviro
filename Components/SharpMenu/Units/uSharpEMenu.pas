@@ -32,13 +32,14 @@ unit uSharpEMenu;
 
 interface
 
-uses SysUtils, Contnrs, Menus, Controls, GR32,Classes,Dialogs,
+uses SysUtils, Forms, Contnrs, Menus, Controls, GR32,Classes,Dialogs,
      SharpESkinManager,
      uSharpEMenuPopups,
      uSharpEMenuIcons,
      uSharpEMenuItem,
      uSharpEMenuActions,
-     uSharpEMenuConsts;
+     uSharpEMenuConsts,
+     uSharpEMenuSettings;
 
 type
   TIntArray = array of integer;
@@ -48,6 +49,7 @@ type
     FSkinManager  : TSharpESkinManager;
     FMenuActions  : TSharpEMenuActions;
     FMenuConsts   : TSharpEMenuConsts;
+    FSettings     : TSharpEMenuSettings;
     FItems : TObjectList;
     FBackground : TBitmap32;
     FNormalMenu : TBitmap32;
@@ -55,6 +57,7 @@ type
     FItemWidth : integer;
     FItemsHeight : TIntArray;
     FMouseDown : boolean;
+    FWrapMenu  : boolean;
     procedure UpdateItemWidth;
     procedure UpdateItemsHeight;
     procedure ImageCheck(var pbmp : TBitmap32; pSize : TPoint);
@@ -62,8 +65,11 @@ type
                              pitem : TObject; state : TSharpEMenuItemState);
     function GetCurrentItem : TSharpEMenuItem;
   public
-    constructor Create(pManager  : TSharpESkinManager); reintroduce;
+    // Create/Destroy
+    constructor Create(pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings); reintroduce;
     destructor Destroy; override;
+
+    // Add Menu Items
     procedure AddSeparatorItem(pDynamic : boolean);
     procedure AddLabelItem(pCaption : String; pDynamic : boolean);
     function AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean) : TObject; overload;
@@ -71,18 +77,30 @@ type
     procedure AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String;  pDynamic : boolean);
     procedure AddDriveListItem(pDriveNames:  boolean; pDynamic : boolean);
     function  AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean) : TObject;
+
+    // Rendering
     procedure RenderBackground;
     procedure RenderNormalMenu;
     procedure RenderTo(Dst : TBitmap32);
+    procedure RecycleBitmaps;
+
+    // Item Control
     function GetItemsHeight(pindex : integer) : integer;
+    function NextVisibleIndex : integer;
+    function PreviousVisibleIndex : integer;
+
+    // Perform Actions
     function PerformMouseMove(px,py : integer; var submenu : boolean) : boolean;
     function PerformMouseDown(Wnd : TObject; Button: TMouseButton; X,Y : integer) : boolean;
     function PerformMouseUp(Wnd : TObject; Button: TMouseButton; X,Y : integer) : boolean;
     function PerformClick : boolean;
+
+    // Refresh Content
     procedure RefreshDynamicContent;
-    procedure RecycleBitmaps;
-    function NextVisibleIndex : integer;
-    function PreviousVisibleIndex : integer;
+
+    // Wrap
+    procedure WrapMenu(pMaxItems : integer);
+    procedure UnWrapMenu(target : TSharpEMenu);
   published
     property ItemIndex  : integer read FItemIndex write FItemIndex;
     property CurrentItem : TSharpEMenuItem read GetCurrentItem;
@@ -91,6 +109,8 @@ type
     property SkinManager : TSharpESkinManager read FSkinManager;
     property Items : TObjectList read FItems;
     property ItemsHeight : TIntArray read FItemsHeight;
+    property isWrapMenu : boolean read FWrapMenu write FWrapMenu;
+    property Settings : TSharpeMenuSettings read FSettings;
   end;
 
 var
@@ -105,18 +125,22 @@ uses Math,
      SharpESkinPart,
      uSharpEMenuWnd;
 
-constructor TSharpEMenu.Create(pManager  : TSharpESkinManager);
+constructor TSharpEMenu.Create(pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings);
 begin
   inherited Create;
 
   FMenuActions := TSharpEMenuActions.Create(self);
   FMenuConsts  := TSharpEMenuConsts.Create;
+  FSettings    := TSharpEMenuSettings.Create;
+  FSettings.Assign(pSettings);
 
   FSkinManager := pManager;
   FMouseDown := False;
   FItemIndex := -1;
   FItems := TObjectList.Create;
   FItems.Clear;
+
+  FWrapMenu := False;
 
   if SharpEMenuIcons = nil then
      SharpEMenuIcons := TSharpEMenuIcons.Create;
@@ -134,6 +158,7 @@ begin
   FreeAndNil(FItems);
   FreeAndNil(FMenuActions);
   FreeAndNil(FMenuConsts);
+  FreeAndNil(FSettings);
   if SharpEMenuIcons.Items.Count = 0 then
      FreeAndNil(SharpEMenuIcons);
   if FBackground <> nil then
@@ -162,12 +187,12 @@ begin
      else if (not I1.isDynamic) and (I2.isDynamic) then
      result := -1
      else if (I1.isDynamic) and (I2.isDynamic) and (I1.ItemType = mtSubMenu) and (I2.ItemType <> I1.ItemType) then
-     result := -1
+     result := -1 - 2*Min(0,I1.PropList.GetInt('Sort'))
      else if (I1.isDynamic) and (I2.isDynamic) and (I2.ItemType = mtSubMenu) and (I2.ItemType <> I1.ItemType) then
-     result := 1
+     result := 1 + 2*Min(0,I1.PropList.GetInt('Sort'))
      else if (I1.isDynamic) and (I2.isDynamic) and (I1.ItemType = I2.ItemType) then
      begin
-       if (I1.PropList.GetInt('Sort') > 0) and (I2.PropList.GetInt('Sort') > 0) then
+       if (I1.PropList.GetInt('Sort') > 1) and (I2.PropList.GetInt('Sort') > 1) then
        begin
          d1 := I1.PropList.GetString('SortData');
          d2 := I2.PropList.GetString('SortData');
@@ -183,6 +208,8 @@ var
   item : TSharpEMenuItem;
   n : integer;
 begin
+  if FWrapMenu then exit;
+
   FDynList := TObjectList.Create;
   FDynList.OwnsObjects := False;
   FDynList.Clear;
@@ -225,6 +252,8 @@ begin
   FItems.Sort(DynSort);
 
   FDynList.Free;
+
+  if FSettings.WrapMenu then WrapMenu(Max(5,FSettings.WrapCount));
 end;
 
 procedure TSharpEMenu.AddLabelItem(pCaption : String; pDynamic : boolean);
@@ -444,6 +473,110 @@ begin
   begin
     result := TSharpEMenuItem(FItems.Items[FItemIndex]);
   end else result := nil;
+end;
+
+// Unwrap the window and move all wrapped items back
+procedure TSharpEMenu.UnWrapMenu(target : TSharpEMenu);
+var
+  item : TSharpeMenuItem;
+  n : integer;
+begin
+  if FWrapMenu then
+  begin
+    // Transfer the menu items to target menu
+    for n := 0 to FItems.Count - 1 do
+    begin
+      item := TSharpEMenuItem(FItems[n]);
+      if not item.isWrapMenu then
+         target.Items.Add(FItems[n])
+    end;
+    // remove the transfered items
+    for n := FItems.Count - 1 downto 0 do
+    begin
+      item := TSharpEMenuItem(FItems[n]);
+      if not item.isWrapMenu then
+         FItems.Extract(FItems[n]);
+    end;
+  end;
+
+  // find all WrapMenu items and copy their sub menus
+  for n := 0 to FItems.Count - 1 do
+  begin
+    item := TSharpEMenuItem(FItems[n]);
+    if item.isWrapMenu then
+       TSharpEMenu(item.SubMenu).UnWrapMenu(target);
+  end;
+
+  // remove everything what remained
+  if FWrapMenu then
+  begin
+    FWrapMenu := False;
+    FItems.Clear;
+  end;
+end;
+
+// Check if the menu is too big and maybe wrap it
+procedure TSharpEMenu.WrapMenu(pMaxItems : integer);
+var
+  n,i : integer;
+  c,size : integer;
+  item,submenuitem : TSharpEMenuItem;
+begin
+  UpdateItemsHeight;
+
+  if pMaxItems < 0 then
+     pMaxItems := FItems.Count;
+
+  c := 0;
+  size := 0;
+  for n := 0 to FItems.Count - 1 do
+  begin
+    item := TSharpEMenuItem(FItems[n]);
+    size := size + FItemsHeight[n];
+    if item.isVisible then
+       c := c + 1;
+
+    if ((c >= pMaxItems) or (size > Screen.WorkAreaHeight - FItemsHeight[PreviousVisibleIndex]))
+       and (n < FItems.Count - 1) then
+    begin
+      item := TSharpEMenuItem.Create(mtSeparator);
+      item.isDynamic := True;
+
+      submenuitem := TSharpEMenuItem.Create(mtSubMenu);
+      submenuitem.Icon := SharpEMenuIcons.AddIcon('icon.folder','icon.folder');
+      submenuitem.Caption := 'Next Page...';
+      submenuitem.isDynamic := True;
+      submenuitem.isWrapMenu := True;
+      submenuitem.SubMenu := TSharpEMenu.Create(FSkinManager,FSettings);
+      TSharpeMenu(submenuitem.SubMenu).isWrapMenu := True;
+
+      if FSettings.WrapPosition = 0 then
+      begin
+        FItems.Insert(n,item);
+        FItems.Insert(n+1,submenuitem);
+      end else
+      begin
+        FItems.Insert(0,submenuitem);
+        FItems.Insert(1,item);
+      end;
+
+      for i := Min(FItems.Count - 1,n + 2) to FItems.Count - 1 do
+      begin
+        item := TSharpEMenuItem(FItems[i]);
+        if item.isVisible then
+           TSharpeMenu(submenuitem.SubMenu).Items.Add(FItems[i]);
+      end;
+      for i := FItems.Count - 1 downto Min(FItems.Count - 1,n + 2) do
+      begin
+        item := TSharpEMenuItem(FItems[i]);
+        if item.isVisible then
+           FItems.Extract(FItems[i]);
+      end;
+      TSharpeMenu(submenuitem.SubMenu).WrapMenu(pMaxItems);
+      exit;
+    end;
+  end;
+
 end;
 
 procedure TSharpEMenu.RenderBackground;

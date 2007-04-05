@@ -57,6 +57,7 @@ type
   TSharpEMenuWnd = class(TForm)
     SubMenuTimer: TTimer;
     offsettimer: TTimer;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormDeactivate(Sender: TObject);
     procedure offsettimerTimer(Sender: TObject);
@@ -399,6 +400,10 @@ begin
          t := t + FMenu.GetItemsHeight(Max(0,FMenu.Itemindex-1)) - FOffset;
       if (t + FSubMenu.Picture.Height) > (Monitor.Top + Monitor.Height) then
          t := Monitor.Top + Monitor.Height - FSubMenu.Picture.Height;
+
+      if item.isWrapMenu then
+         t := Top;
+
       if t < Monitor.Top then
       begin
         if FSubMenu.Picture.Height > Monitor.Height then
@@ -545,6 +550,13 @@ begin
       Release;
     end;
   end;
+end;
+
+procedure TSharpEMenuWnd.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if FMenu = nil then exit;
+  if not FMenu.isWrapMenu then
+     FMenu.UnWrapMenu(FMenu);
 end;
 
 end.

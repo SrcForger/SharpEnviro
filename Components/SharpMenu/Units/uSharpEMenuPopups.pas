@@ -196,6 +196,7 @@ begin
   // Seperator
   item := TMenuItem.Create(FDynamicDirPopup);
   item.Caption := '-';
+  item.Visible := False;
   FDynamicDirPopup.Items.Add(item);
 
   // Properties
@@ -204,6 +205,7 @@ begin
   item.Tag := 2;
   item.ImageIndex := 1;
   item.OnClick := DynamicDirPopupOnClick;
+  item.Visible := False;
   FDynamicDirPopup.Items.Add(item);
 end;
 
@@ -226,6 +228,7 @@ begin
   item.Caption := 'Open As...';
   item.ImageIndex := 4;
   item.Tag := 4;
+  item.Visible := False;
   item.OnClick := DynamicLinkPopupOnClick;
   FDynamicLinkPopup.Items.Add(item);
 
@@ -245,6 +248,7 @@ begin
   // Seperator
   item := TMenuItem.Create(FDynamicLinkPopup);
   item.Caption := '-';
+  item.Visible := False;
   FDynamicLinkPopup.Items.Add(item);
 
   // Properties
@@ -252,6 +256,7 @@ begin
   item.Caption := 'Properties';
   item.Tag := 2;
   item.ImageIndex := 1;
+  item.Visible := False;
   item.OnClick := DynamicLinkPopupOnClick;
   FDynamicLinkPopup.Items.Add(item);
 end;

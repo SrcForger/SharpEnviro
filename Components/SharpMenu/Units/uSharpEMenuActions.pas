@@ -132,7 +132,7 @@ begin
          else
          begin
            case pSort of
-             1: svalue := '1' + IntToStr(FileGetSize(Dir + sr.Name));
+             1: svalue := '1';
              2: begin
                   GetFileLastWrite(Dir + sr.Name,dt);
                   svalue := '1' + IntToStr(DateTimeToUnix(dt));
@@ -146,7 +146,7 @@ begin
          end;
 
       // do not add Directories if sorting is enabled
-      if not((pSort > 0) and ((sr.Attr and faDirectory) > 0)) then
+      if not((pSort > 1) and ((sr.Attr and faDirectory) > 0)) then
           SList.Add(svalue + '=' + sr.Name);
     end;
   until (FindNext(sr) <> 0);
@@ -243,7 +243,8 @@ begin
         if (not found) then
         begin
           item := TSharpEMenuItem(pMenu.AddSubMenuItem(svalue,'shell:icon',Dir + svalue + '\',true));
-          item.SubMenu := TSharpEMenu.Create(pMenu.SkinManager);
+          item.SubMenu := TSharpEMenu.Create(pMenu.SkinManager,pmenu.Settings);
+          item.PropList.Add('Sort',pSort);
           TSharpEMenu(item.SubMenu).AddDynamicDirectoryItem(Dir + svalue + '\',
                                                             item.PropList.GetInt('MaxItems'),
                                                             item.PropList.GetInt('Sort'),

@@ -60,7 +60,8 @@ uses
   uSharpEMenuConsts in 'Units\uSharpEMenuConsts.pas',
   uSkinManagerThreads in '..\..\Common\Units\Threads\uSkinManagerThreads.pas',
   uPropertyList in '..\..\Common\Units\PropertyList\uPropertyList.pas',
-  uSharpEMenuPopups in 'Units\uSharpEMenuPopups.pas';
+  uSharpEMenuPopups in 'Units\uSharpEMenuPopups.pas',
+  uSharpEMenuSettings in 'Units\uSharpEMenuSettings.pas';
 
 {$R *.res}
 
@@ -87,11 +88,13 @@ var
   st : Int64;
   MutexHandle : THandle;
   SystemSkinLoadThread : TSystemSkinLoadThread;
+  menusettings : TSharpEMenuSettings;
 
 
 procedure TEventClass.OnAppDeactivate(Sender : TObject);
 begin
-  if SharpEMenuIcons <> nil then SharpEMenuIcons.SaveIconCache(iconcachefile);
+  if (SharpEMenuIcons <> nil) and (menusettings.CacheIcons) then
+     SharpEMenuIcons.SaveIconCache(iconcachefile);
   Application.Terminate;
 end;
 
@@ -130,6 +133,9 @@ begin
     end;
   end;
 
+  menusettings := TSharpEMenuSettings.Create;
+  menusettings.LoadFromXML;
+
   Pos := Mouse.CursorPos;
   popupdir := 1;
   // Check Params
@@ -153,7 +159,9 @@ begin
   setlength(iconcachefile,length(iconcachefile) - length(ExtractFileExt(iconcachefile)));
   iconcachefile := iconcachefile + '.iconcache';
   SharpEMenuIcons := TSharpEMenuIcons.Create;
-  SharpEMenuIcons.LoadIconCache(iconcachefile);
+
+  if menusettings.CacheIcons then
+     SharpEMenuIcons.LoadIconCache(iconcachefile);
 
   // init Classes
 
@@ -161,7 +169,7 @@ begin
   SystemSkinLoadThread := TSystemSkinLoadThread.Create(SkinManager);
   mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManager);
   Application.Title := 'SharpMenu';
-  Application.CreateForm(TSharpEMenuWnd, wnd);
+  Application.CreateForm(TSharpEMenuwnd, wnd);
   SystemSkinLoadThread.WaitFor;
   SystemSkinLoadThread.Free;
 

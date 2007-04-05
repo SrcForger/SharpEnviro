@@ -58,6 +58,7 @@ type
     FItemType : TSharpEMenuItemType;
     FDynamic  : boolean;
     FVisible  : boolean;
+    FWrapMenu : boolean;
     FPropList : TPropertyList;
     FPopup    : TObject;
   public
@@ -70,6 +71,7 @@ type
     property SubMenu   : TObject read FSubMenu write FSubMenu;
     property isDynamic : boolean read FDynamic write FDynamic;
     property isVisible : boolean read FVisible write FVisible;
+    property isWrapMenu : boolean read FWrapMenu write FWrapMenu;
     property ListIndex : integer read FIndex write FIndex; // only used and updated before sorting!
     property Popup     : TObject read FPopup write FPopup;
     property OnClick   : TSharpEMenuItemClickEvent read FClickEvent write FClickEvent;
@@ -88,6 +90,7 @@ begin
 
   FVisible := True;
   FDynamic := False;
+  FWrapMenu := False;
 
   FClickEvent := nil;
   FPaintEvent := nil;
@@ -106,5 +109,6 @@ begin
 
   inherited Destroy;
 end;
+
 
 end.

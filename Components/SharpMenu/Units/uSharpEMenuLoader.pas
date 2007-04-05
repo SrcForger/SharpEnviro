@@ -34,6 +34,7 @@ interface
 
 uses JvSimpleXML,SysUtils,
      uSharpEMenu,
+     uSharpEMenuSettings,
      SharpESkinManager;
 
 function LoadMenu(pFileName : String; pManager: TSharpESkinManager) : TSharpEMenu;
@@ -42,42 +43,49 @@ implementation
 
 uses uSharpEMenuItem;
 
-function LoadMenuFromXML(pXML : TJvSimpleXMLElems; pManager: TSharpESkinManager) : TSharpEMenu;
+function LoadMenuFromXML(pXML : TJvSimpleXMLElems; pManager: TSharpESkinManager; pSettings : TSharpEMenuSettings) : TSharpEMenu;
 var
   n : integer;
   menu : TSharpEMenu;
   menuitem : TSharpEMenuItem;
   typestring : String;
 begin
-  menu := TSharpEMenu.Create(pManager);
+  menu := TSharpEMenu.Create(pManager,pSettings);
   result := menu;
   for n := 0 to pXML.Count - 1 do
       with pXML.Item[n].Items do
       begin
-        typestring := Value('type','none');
-        if CompareText(typestring,'link') = 0 then
-           menu.AddLinkItem(Value('Caption'),Value('Target'),Value('Icon'),False)
-        else
-        if CompareText(typestring,'separator') = 0 then
-           menu.AddSeparatorItem(False)
-        else
-        if CompareText(typestring,'dynamicdirectory') = 0 then
-           menu.AddDynamicDirectoryItem(Value('Target'),
-                                        IntValue('MaxItems',-1),
-                                        IntValue('Sort',0),
-                                        Value('Filter'), False)
-        else
-        if CompareText(typestring,'drivelist') = 0 then
-           menu.AddDriveListItem(BoolValue('ShowDriveNames',True),False)
-        else
-        if CompareText(typestring,'label') = 0 then
-           menu.AddLabelItem(Value('Caption'),False)
-        else
-        if CompareText(typestring,'submenu') = 0 then
+        if CompareText(pXML.Item[n].Name,'Settings') = 0 then
         begin
-          menuitem := TSharpEMenuItem(menu.AddSubMenuItem(Value('Caption'),Value('Icon'),Value('Icon'),False));
-          if ItemNamed['items'] <> nil then
-             menuitem.SubMenu := LoadMenuFromXML(ItemNamed['items'].Items,pManager);
+          // custom Settings for this menu exist...
+          menu.Settings.LoadFromXML(pXML.Item[n].Items);
+        end else
+        begin
+          typestring := Value('type','none');
+          if CompareText(typestring,'link') = 0 then
+             menu.AddLinkItem(Value('Caption'),Value('Target'),Value('Icon'),False)
+          else
+          if CompareText(typestring,'separator') = 0 then
+             menu.AddSeparatorItem(False)
+          else
+          if CompareText(typestring,'dynamicdirectory') = 0 then
+             menu.AddDynamicDirectoryItem(Value('Target'),
+                                          IntValue('MaxItems',-1),
+                                          IntValue('Sort',0),
+                                          Value('Filter'), False)
+          else
+          if CompareText(typestring,'drivelist') = 0 then
+             menu.AddDriveListItem(BoolValue('ShowDriveNames',True),False)
+          else
+          if CompareText(typestring,'label') = 0 then
+             menu.AddLabelItem(Value('Caption'),False)
+          else
+          if CompareText(typestring,'submenu') = 0 then
+          begin
+            menuitem := TSharpEMenuItem(menu.AddSubMenuItem(Value('Caption'),Value('Icon'),Value('Icon'),False));
+            if ItemNamed['items'] <> nil then
+               menuitem.SubMenu := LoadMenuFromXML(ItemNamed['items'].Items,pManager,menu.settings);
+          end;
         end;
       end;
 end;
@@ -86,21 +94,28 @@ function LoadMenu(pFileName : String; pManager: TSharpESkinManager) : TSharpEMen
 var
   XML : TJvSimpleXML;
   RootMenu : TSharpEMenu;
+  tempSettings : TSharpEMenuSettings;
 begin
+  tempSettings := TSharpEMenuSettings.Create;
+  tempSettings.LoadFromXML; // Load the default settings;
+
   RootMenu := nil;
   XML := TJvSimpleXML.Create(nil);
   try
     if FileExists(pFileName) then
     begin
       XML.LoadFromFile(pFileName);
-      RootMenu := LoadMenuFromXML(XML.Root.Items,pManager);
+      RootMenu := LoadMenuFromXML(XML.Root.Items,pManager,tempSettings);
     end;
   finally
     XML.Free;
   end;
+  
   if RootMenu = nil then
-     RootMenu := TSharpEMenu.Create(pManager);
+     RootMenu := TSharpEMenu.Create(pManager,tempSettings);
   result := RootMenu;
+
+  tempSettings.Free;
 end;
 
 end.

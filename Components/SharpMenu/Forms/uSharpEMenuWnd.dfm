@@ -18,6 +18,7 @@ object SharpEMenuWnd: TSharpEMenuWnd
   OldCreateOrder = False
   OnActivate = FormActivate
   OnClick = FormClick
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnDeactivate = FormDeactivate
