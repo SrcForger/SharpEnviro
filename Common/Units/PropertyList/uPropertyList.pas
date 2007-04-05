@@ -76,6 +76,7 @@ type
     function Remove(pName : String) : boolean;
     procedure Clear;
     function HasProperty(pName : String) : boolean;
+    procedure Assign(from : TPropertyList);
 
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -120,6 +121,22 @@ destructor TPropertyList.Destroy;
 begin
   FList.Clear;
   FreeAndNil(FList)
+end;
+
+procedure TPropertyList.Assign(from : TPropertyList);
+var
+  n : integer;
+begin
+  clear;
+  for n := 0 to from.FList.Count - 1 do
+  begin
+    if from.FList.Items[n] is TIntData then
+       Add(TIntData(from.FList.Items[n]).Name,TIntData(from.FList.Items[n]).Value)
+    else if from.FList.Items[n] is TStringData then
+            Add(TStringData(from.FList.Items[n]).Name,TStringData(from.FList.Items[n]).Value)
+    else if from.FList.Items[n] is TBoolData then
+            Add(TBoolData(from.FList.Items[n]).Name,TBoolData(from.FList.Items[n]).Value);
+  end;
 end;
 
 procedure TPropertyList.Add(pName : String; pValue : String);
