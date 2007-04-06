@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, GR32_PNG, ImgList, PngImageList,
+  Dialogs, StdCtrls, GR32_Image, GR32_PNG, ImgList, PngImageList, Types,
   JvSimpleXML,
   Jclsysinfo,
   SharpApi,
@@ -48,6 +48,7 @@ uses
   SharpEBitmapList,
   uSharpEMenu,
   uSharpEMenuWnd,
+  uSharpEMenuSettings,
   GR32, Menus, Math;
 
 
@@ -194,15 +195,20 @@ procedure TMainForm.ButtonMouseUp(Sender: TObject; Button: TMouseButton;
 var
   sr : TSearchRec;
   Dir : String;
-  menu : TMenuItem;
   s : string;
   p : TPoint;
   mn : TSharpEMenu;
+  ms : TSharpEMenuSettings;
   wnd : TSharpEMenuWnd;
 begin
   if Button = mbLeft then
   begin
-    mn := TSharpEMenu.Create(SharpESkinManager1);
+    ms := TSharpEMenuSettings.Create;
+    ms.LoadFromXML;
+
+    mn := TSharpEMenu.Create(SharpESkinManager1,ms);
+    ms.Free;
+
     mn.AddLinkItem('Create New Script','_nohist,{#SharpEDir#}SharpScript.exe -newgenericscript','customicon:edititem',FMenuIcon1,false);
     mn.AddSeparatorItem(False);
 
