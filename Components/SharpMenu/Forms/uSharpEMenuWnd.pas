@@ -365,6 +365,8 @@ begin
        FreeAndNil(FMenu);
   end;
   FPicture.Free;
+  if (FFreeMenu or (Tag = - 1)) and (SharpEMenuPopups <> nil) then
+     FreeAndNil(SharpEMenuPopups);
   if FRootMenu then Application.Terminate;
 end;
 
@@ -475,6 +477,7 @@ begin
   if (FFreeMenu) then
   begin
     FFreeMenu := False;
+    Tag := -1;
     if FMenu <> nil then
        FreeAndNil(FMenu);
     Release;
@@ -486,6 +489,7 @@ begin
   if (FFreeMenu) then
   begin
     FFreeMenu := False;
+    Tag := -1;
     if FMenu <> nil then
        FreeAndNil(FMenu);
     Release;
