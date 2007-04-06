@@ -410,9 +410,8 @@ var
   shared : boolean;
   state  : integer;
   statemask : integer;
-  pItem,tempItem : TTrayIcon;
+  pItem : TTrayIcon;
   s1,s2,s3,s4,s5,s6,s7,s8,s9 : string;
-  n : integer;
   e : boolean;
 begin
   try
@@ -509,7 +508,12 @@ begin
                         else e := False;
                    end;
           NIM_MODIFY: begin
-                        if (hidden) and (pItem<>nil) then RemoveTrayIcon(pItem)
+                        if (pItem = nil) and (IconData.Icon <> 0) and (not shared) and
+                           ((IconData.uFlags and NIF_ICON) = NIF_ICON) and
+                           ((IconData.uFlags and NIF_MESSAGE) = NIF_MESSAGE) and
+                           ((IconData.uFlags and NIF_TIP) = NIF_TIP) then
+                           ModifyTrayIcon(pItem,IconData,False,False,True)
+                           else if (hidden) and (pItem<>nil) then RemoveTrayIcon(pItem)
                            else if (pItem <> nil) then ModifyTrayIcon(pItem,IconData,False,False,True)
                            else e := False;
                       end;
