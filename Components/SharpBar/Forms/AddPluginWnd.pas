@@ -35,6 +35,8 @@ var
  n : integer;
  tempModuleFile : TModuleFile;
 begin
+  ModuleManager.RefreshFromDirectory(ModuleManager.ModuleDirectory);
+
   list_plugins.Clear;
   for n := 0 to ModuleManager.ModuleFiles.Count -1 do
   begin

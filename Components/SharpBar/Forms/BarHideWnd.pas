@@ -55,12 +55,12 @@ begin
 
   if SharpBarMainForm.Visible then
   begin
-    if not SharpBarMainForm.SharpEBar1.DisableHideBar then SharpBarMainForm.Hide
+    if not SharpBarMainForm.SharpEBar.DisableHideBar then SharpBarMainForm.Hide
   end
      else
      begin
        SharpBarMainForm.Show;
-       if not (SharpBarMainForm.SharpEBar1.SpecialHideForm) then
+       if not (SharpBarMainForm.SharpEBar.SpecialHideForm) then
        begin
          Close;
          exit;
@@ -78,8 +78,8 @@ begin
   mon := Screen.MonitorFromWindow(SharpBarMainForm.Handle);
   if mon = nil then mon := Screen.MonitorFromPoint(Point(SharpBarMainForm.Left,SharpBarMainForm.Top));
 
-  if (SharpBarMainForm.SharpEBar1.VertPos = vpTop) and
-     (SharpBarMainForm.SharpEBar1.SpecialHideForm) then
+  if (SharpBarMainForm.SharpEBar.VertPos = vpTop) and
+     (SharpBarMainForm.SharpEBar.SpecialHideForm) then
   begin
     Left := SharpBarMainForm.Left;
     Width := SharpBarMainForm.Width;
@@ -87,8 +87,8 @@ begin
     Height := 1;
     if not Visible then Show;
   end else
-  if (SharpBarMainForm.SharpEBar1.VertPos = vpBottom) and
-     (SharpBarMainForm.SharpEBar1.SpecialHideForm) then
+  if (SharpBarMainForm.SharpEBar.VertPos = vpBottom) and
+     (SharpBarMainForm.SharpEBar.SpecialHideForm) then
   begin
     Left := SharpBarMainForm.Left;
     Width := SharpBarMainForm.Width;
@@ -114,19 +114,19 @@ procedure TBarHideForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbRight then
-   if (Y=Height-1) and (SharpBarMainForm.SharpEBar1.VertPos = vpBottom)
-      or (Y=0) and (SharpBarMainForm.SharpEBar1.VertPos = vpTop) then
+   if (Y=Height-1) and (SharpBarMainForm.SharpEBar.VertPos = vpBottom)
+      or (Y=0) and (SharpBarMainForm.SharpEBar.VertPos = vpTop) then
    begin
      if ModuleManager.Modules.Count = 0 then
      begin
-       SharpBarMainForm.SharpEBar1.ShowThrobber := True;
+       SharpBarMainForm.SharpEBar.ShowThrobber := True;
        exit;
      end;
-     SharpBarMainForm.SharpEBar1.ShowThrobber := not SharpBarMainForm.SharpEBar1.ShowThrobber;
+     SharpBarMainForm.SharpEBar.ShowThrobber := not SharpBarMainForm.SharpEBar.ShowThrobber;
      LockWindow(SharpBarMainForm.Handle);
      ModuleManager.FixModulePositions;
      UnLockWindow(SharpBarMainForm.Handle);
-     if SharpBarMainForm.SharpEBar1.ShowThrobber then SharpBarMainForm.SharpEBar1.Throbber.Repaint;
+     if SharpBarMainForm.SharpEBar.ShowThrobber then SharpBarMainForm.SharpEBar.Throbber.Repaint;
    end;
 end;
 

@@ -13,8 +13,9 @@ object SharpBarMainForm: TSharpBarMainForm
   Font.Style = []
   OldCreateOrder = False
   Position = poDesigned
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnHide = FormHide
   OnMouseUp = FormMouseUp
   OnResize = FormResize
@@ -817,22 +818,6 @@ object SharpBarMainForm: TSharpBarMainForm
         ImageIndex = 20
       end
     end
-  end
-  object SharpEBar1: TSharpEBar
-    AutoPosition = True
-    HorizPos = hpMiddle
-    VertPos = vpTop
-    PrimaryMonitor = True
-    MonitorIndex = 0
-    AutoStart = True
-    ShowThrobber = True
-    DisableHideBar = False
-    onThrobberMouseDown = SharpEBar1ThrobberMouseDown
-    onThrobberMouseUp = SharpEBar1ThrobberMouseUp
-    onThrobberMouseMove = SharpEBar1ThrobberMouseMove
-    onResetSize = SharpEBar1ResetSize
-    Left = 384
-    Top = 8
   end
   object DelayTimer1: TTimer
     Enabled = False

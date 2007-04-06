@@ -71,7 +71,6 @@ type
     AllModulestotheLeft1: TMenuItem;
     Settings: TMenuItem;
     DisableBarHiding1: TMenuItem;
-    SharpEBar1: TSharpEBar;
     BarManagment1: TMenuItem;
     CreateemptySharpBar1: TMenuItem;
     DelayTimer1: TTimer;
@@ -84,6 +83,8 @@ type
     Skin1: TMenuItem;
     ColorScheme1: TMenuItem;
     ConfigureDesktopArea1: TMenuItem;
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ConfigureDesktopArea1Click(Sender: TObject);
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure Clone1Click(Sender: TObject);
@@ -112,7 +113,6 @@ type
     procedure AutoStart1Click(Sender: TObject);
     procedure PluginManager1Click(Sender: TObject);
     procedure SharpEBar1ResetSize(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure PopupMenu1Popup(Sender: TObject);
     procedure FullScreen1Click(Sender: TObject);
     procedure ExitMnClick(Sender: TObject);
@@ -141,6 +141,7 @@ type
     FBGImage : TBitmap32;
     FShellBCInProgress : boolean;
     FSkinManager : TSharpESkinManager;
+    FSharpEBar : TSharpEBar;
     SkinManagerLoadThread : TSystemSkinLoadThread;
 
     FDeskAreaStart : function (owner : hwnd) : hwnd;
@@ -195,6 +196,7 @@ type
     procedure UpdateBGImage;
     property BGImage : TBitmap32 read FBGImage;
     property SkinManager : TSharpESkinManager read FSkinManager;
+    property SharpEBar : TSharpEBar read FSharpEBar;
     property ShellBCInProgress : boolean read FShellBCInProgress;
   end;
 
@@ -210,6 +212,7 @@ var
   BarMove : boolean;
   BarMovePoint : TPoint;
   WM_SHELLHOOK : integer;
+  Closing : boolean;
 
 procedure LockWindow(const Handle: HWND);
 procedure UnLockWindow(const Handle: HWND);
@@ -294,8 +297,8 @@ begin
   SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
   SkinManager.UpdateScheme;
   SkinManager.UpdateSkin;
-  SharpEBar1.Throbber.UpdateSkin;
-  SharpEbar1.Throbber.Repaint;
+  SharpEBar.Throbber.UpdateSkin;
+  SharpEbar.Throbber.Repaint;
 
   ModuleManager.BroadcastPluginUpdate(SU_SKINFILECHANGED);
   ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
@@ -324,7 +327,7 @@ end;
 // SharpE Terminate Message support
 procedure TSharpBarMainForm.WMSharpTerminate(var msg : TMessage);
 begin
-  Application.Terminate;
+  Close;
 end;
 
 // Weather Service updated the xml files -> broadcast as message to all modules
@@ -360,8 +363,8 @@ begin
   if FShellBCInProgress then exit;
 
   UnLockWindow(Handle);
-  SendMessage(SharpEBar1.abackground.handle, WM_SETREDRAW, 1, 0);
-  RedrawWindow(SharpEBar1.abackground.handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+  SendMessage(SharpEBar.abackground.handle, WM_SETREDRAW, 1, 0);
+  RedrawWindow(SharpEBar.abackground.handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
 end;
 
 // Shell hook received (task list,...) -> forward to all registered shell modules
@@ -467,9 +470,9 @@ begin
      begin
        SkinManager.UpdateScheme;
        SkinManager.UpdateSkin;
-       SharpEBar1.UpdateSkin;
-       SharpEBar1.Throbber.UpdateSkin;
-       SharpEbar1.Throbber.Repaint;
+       SharpEBar.UpdateSkin;
+       SharpEBar.Throbber.UpdateSkin;
+       SharpEbar.Throbber.Repaint;
        UpdateBGImage;
        if (msg.WParam = SU_SCHEME) then
            ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
@@ -565,9 +568,9 @@ begin
 
   FBGImage.SetSize(Width,Height);
   FBGImage.Clear(color32(0,0,0,0));
-  if SharpEBar1.VertPos = vpTop then FBGImage.Draw(0,0,Rect(Left-Monitor.Left,0,Left-Monitor.Left+FTopZone.Width,FTopZone.Height),FTopZone)
+  if SharpEBar.VertPos = vpTop then FBGImage.Draw(0,0,Rect(Left-Monitor.Left,0,Left-Monitor.Left+FTopZone.Width,FTopZone.Height),FTopZone)
      else FBGImage.Draw(0,0,Rect(Left-Monitor.Left,0,Left-Monitor.Left+FBottomZone.Width,FBottomZone.Height),FBottomZone);
-  SharpEbar1.Skin.DrawTo(FBGImage);
+  SharpEbar.Skin.DrawTo(FBGImage);
 end;
 
 procedure TSharpBarMainForm.UpdateBGZone;
@@ -715,14 +718,14 @@ begin
             Items.Item[n].Items.ItemNamed['Settings'].Items.Clear;
             with Items.Item[n].Items.ItemNamed['Settings'] do
             begin
-              Items.Add('AutoPosition',SharpEBar1.AutoPosition);
-              Items.Add('PrimaryMonitor',SharpEBar1.PrimaryMonitor);
-              Items.Add('MonitorIndex',SharpEBar1.MonitorIndex);
-              Items.Add('HorizPos',HorizPosToInt(SharpEBar1.HorizPos));
-              Items.Add('VertPos',VertPosToInt(SharpEbar1.VertPos));
-              Items.Add('AutoStart',SharpEbar1.AutoStart);
-              Items.Add('ShowThrobber',SharpEBar1.ShowThrobber);
-              Items.Add('DisableHideBar',SharpEBar1.DisableHideBar);
+              Items.Add('AutoPosition',SharpEBar.AutoPosition);
+              Items.Add('PrimaryMonitor',SharpEBar.PrimaryMonitor);
+              Items.Add('MonitorIndex',SharpEBar.MonitorIndex);
+              Items.Add('HorizPos',HorizPosToInt(SharpEBar.HorizPos));
+              Items.Add('VertPos',VertPosToInt(SharpEbar.VertPos));
+              Items.Add('AutoStart',SharpEbar.AutoStart);
+              Items.Add('ShowThrobber',SharpEBar.ShowThrobber);
+              Items.Add('DisableHideBar',SharpEBar.DisableHideBar);
             end;
             // Save the Module List
             Items.Item[n].Items.ItemNamed['Modules'].Items.Clear;
@@ -874,14 +877,14 @@ begin
           with Items.Item[n].Items.ItemNamed['Settings'] do
           begin
             // This is the bar with the ID we want to load
-            SharpEBar1.AutoPosition   := Items.BoolValue('AutoPosition',True);
-            SharpEBar1.PrimaryMonitor := Items.BoolValue('PrimaryMonitor',True);
-            SharpEBar1.MonitorIndex   := Items.IntValue('MonitorIndex',0);
-            SharpEBar1.HorizPos       := IntToHorizPos(Items.IntValue('HorizPos',0));
-            SharpEBar1.VertPos        := IntToVertPos(Items.IntValue('VertPos',0));
-            SharpEBar1.AutoStart      := Items.BoolValue('AutoStart',True);
-            SharpEBar1.ShowThrobber   := Items.BoolValue('ShowThrobber',True);
-            SharpEBar1.DisableHideBar := Items.BoolValue('DisableHideBar',False);
+            SharpEBar.AutoPosition   := Items.BoolValue('AutoPosition',True);
+            SharpEBar.PrimaryMonitor := Items.BoolValue('PrimaryMonitor',True);
+            SharpEBar.MonitorIndex   := Items.IntValue('MonitorIndex',0);
+            SharpEBar.HorizPos       := IntToHorizPos(Items.IntValue('HorizPos',0));
+            SharpEBar.VertPos        := IntToVertPos(Items.IntValue('VertPos',0));
+            SharpEBar.AutoStart      := Items.BoolValue('AutoStart',True);
+            SharpEBar.ShowThrobber   := Items.BoolValue('ShowThrobber',True);
+            SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar',False);
             // Set Main Window Title to SharpBar_ID!
             // The bar with the given ID is now loaded =)
             FBarID := ID;
@@ -915,6 +918,8 @@ end;
 
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
+  Closing := False;
+
   WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
 
   FUser32DllHandle := LoadLibrary('user32.dll');
@@ -926,7 +931,22 @@ begin
 
   FSkinManager := TSharpESkinManager.Create(self);
   FSkinManager.HandleUpdates := False;
-  SharpEBar1.SkinManager := FSkinManager;
+
+  FSharpEBar := TSharpEBar.CreateRuntime(self,SkinManager);
+  FSharpEBar.AutoPosition := True;
+  FSharpEBar.AutoStart := True;
+  FSharpEBar.DisableHideBar := False;
+  FSharpEBar.HorizPos := hpMiddle;
+  FSharpEBar.MonitorIndex := 0;
+  FSharpEBar.PrimaryMonitor := True;
+  FSharpEBar.ShowThrobber := True;
+  FSharpEBar.VertPos := vpTop;
+  FSharpEBar.onThrobberMouseDown := SharpEBar1ThrobberMouseDown;
+  FSharpEBar.onThrobberMouseUp   := SharpEBar1ThrobberMouseUp;
+  FSharpEBar.onThrobberMouseMove := SharpEBar1ThrobberMouseMove;
+  FSharpEBar.onResetSize         := SharpEBar1ResetSize;
+
+  SharpEBar.SkinManager := FSkinManager;
   
   // Load System Skin and Scheme in a Thread
   SkinManagerLoadThread := TSystemSkinLoadThread.Create(FSkinManager);
@@ -934,7 +954,7 @@ begin
   FBottomZone := TBitmap32.Create;
   FTopZone    := TBitmap32.Create;
   FBGImage    := TBitmap32.Create;
-  SharpEBar1.Throbber.SpecialBackground := FBGImage;
+  SharpEBar.Throbber.SpecialBackground := FBGImage;
 
   FStartup := True;
   FBarLock := False;
@@ -954,7 +974,7 @@ begin
   // Create and Initialize the module manager
   // (Make sure the Skin Manager and Module Settings are ready before doing this!)
   DebugOutput('Creating Module Manager',2,1);
-  ModuleManager := TModuleManager.Create(self.Handle, SkinManager, SharpEBar1, ModuleSettings);
+  ModuleManager := TModuleManager.Create(self.Handle, SkinManager, SharpEBar, ModuleSettings);
   ModuleManager.ThrobberMenu := ThrobberPopUp;
   DebugOutput('Loading Modules from Directory: '+ExtractFileDir(Application.ExeName) + '\Modules\',2,1);
   ModuleManager.LoadFromDirectory(ExtractFileDir(Application.ExeName) + '\Modules\');
@@ -968,7 +988,7 @@ begin
 
   KeyPreview := true;
 
-  SharpEBar1.onPositionUpdate := OnBarPositionUpdate;
+  SharpEBar.onPositionUpdate := OnBarPositionUpdate;
 
   BarHideForm := TBarHideForm.Create(self);
 
@@ -977,8 +997,8 @@ begin
   SkinManagerLoadThread.Free;
 
   FSkinManager.onSkinChanged := SkinManager1SkinChanged;
-  SharpEBar1.UpdateSkin;
-  SharpEBar1.Throbber.UpdateSkin;
+  SharpEBar.UpdateSkin;
+  SharpEBar.Throbber.UpdateSkin;
 
   DelayTimer2.Enabled := True;
 
@@ -991,13 +1011,15 @@ begin
     mfParamID := -255;
   end;
 
+  UpdateBGZone;
+
   SharpApi.RegisterActionEx(PChar('!FocusBar ('+inttostr(FBarID)+')'),'SharpBar',Handle,1);
 end;
 
 procedure TSharpBarMainForm.AutoPos1Click(Sender: TObject);
 begin
-  SharpEBar1.VertPos := vpTop;
-  SharpEBar1.UpdateSkin;
+  SharpEBar.VertPos := vpTop;
+  SharpEBar.UpdateSkin;
   ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
   ModuleManager.FixModulePositions;
   ModuleManager.RefreshMiniThrobbers;
@@ -1006,8 +1028,8 @@ end;
 
 procedure TSharpBarMainForm.Bottom1Click(Sender: TObject);
 begin
-  SharpEBar1.VertPos := vpBottom;
-  SharpEBar1.UpdateSkin;
+  SharpEBar.VertPos := vpBottom;
+  SharpEBar.UpdateSkin;
   ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
   ModuleManager.FixModulePositions;
   SaveBarSettings;
@@ -1015,21 +1037,21 @@ end;
 
 procedure TSharpBarMainForm.Left1Click(Sender: TObject);
 begin
-  SharpEBar1.HorizPos := hpLeft;
+  SharpEBar.HorizPos := hpLeft;
   ModuleManager.FixModulePositions;
   SaveBarSettings;
 end;
 
 procedure TSharpBarMainForm.Middle1Click(Sender: TObject);
 begin
-  SharpEBar1.HorizPos := hpMiddle;
+  SharpEBar.HorizPos := hpMiddle;
   ModuleManager.FixModulePositions;
   SaveBarSettings;
 end;
 
 procedure TSharpBarMainForm.Right2Click(Sender: TObject);
 begin
-  SharpEBar1.HorizPos := hpRight;
+  SharpEBar.HorizPos := hpRight;
   ModuleManager.FixModulePositions;
   SaveBarSettings;
 end;
@@ -1045,23 +1067,23 @@ begin
   end;
   if index > Screen.MonitorCount -1 then exit;
   if Screen.Monitors[index] = Screen.PrimaryMonitor then
-     SharpEBar1.PrimaryMonitor := True
+     SharpEBar.PrimaryMonitor := True
      else
      begin
-       SharpEbar1.PrimaryMonitor := False;
-       SharpEBar1.MonitorIndex := index;
+       SharpEbar.PrimaryMonitor := False;
+       SharpEBar.MonitorIndex := index;
      end;
 end;
 
 procedure TSharpBarMainForm.ExitMnClick(Sender: TObject);
 begin
   SaveBarSettings;
-  Application.Terminate;
+  Close;
 end;
 
 procedure TSharpBarMainForm.FullScreen1Click(Sender: TObject);
 begin
-  SharpEBar1.HorizPos := hpFull;
+  SharpEBar.HorizPos := hpFull;
   SaveBarSettings;
 end;
 
@@ -1100,6 +1122,7 @@ begin
 
   // Build Module List
   QuickAddModule1.Clear;
+  ModuleManager.RefreshFromDirectory(ModuleManager.ModuleDirectory);
   for n := 0 to ModuleManager.ModuleFiles.Count - 1 do
   begin
     mfile := TModuleFile(ModuleManager.ModuleFiles.Items[n]);
@@ -1113,8 +1136,8 @@ begin
     QuickAdDModule1.Add(item);
   end;
 
-  AutoStart1.Checked := SharpEBar1.AutoStart;
-  DisableBarHiding1.Checked := SharpEBar1.DisableHideBar;
+  AutoStart1.Checked := SharpEBar.AutoStart;
+  DisableBarHiding1.Checked := SharpEBar.DisableHideBar;
 
   // Build Skin List
   Skin1.Clear;
@@ -1288,41 +1311,6 @@ begin
   SharpApi.SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKIN,0);
 end;
 
-procedure TSharpBarMainForm.FormDestroy(Sender: TObject);
-begin
-  FreeLibrary(FUser32DllHandle);
-
-  SharpApi.UnRegisterAction(PChar('!FocusBar ('+inttostr(FBarID)+')'));
-
-  if BarHideForm <> nil then FreeAndNil(BarHideForm);
-  if AddPluginForm <> nil then FreeAndNil(AddPluginForm);
-  if PluginManagerForm <> nil then FreeAndNil(PluginManagerForm);
-
-  // check if shell hook functions have been used for any module
-  if FShellHookList.Count > 0 then
-  begin
-    RegisterShellHook(Handle,0);
-  //  SHUnSetHook;
-  end;
-  FShellHookList.Clear;
-  FShellHookList.Free;
-
-  // We want to produce good code, so let's free stuff before the app is closed ;)
-  ForceDirectories(ExtractFileDir(ModuleSettings.FileName));
-  SaveBarSettings;
-  ModuleSettings.SaveToFile(ModuleSettings.FileName + '~');
-  if FileExists(ModuleSettings.FileName) then
-     DeleteFile(ModuleSettings.FileName);
-  RenameFile(ModuleSettings.FileName + '~',ModuleSettings.FileName);
-  ModuleManager.Free;
- // ModuleSettings.Free;
-  //ModuleSettings := nil;
-
-  FBottomZone.Free;
-  FTopZone.Free;
-  FBGImage.Free;
-end;
-
 procedure TSharpBarMainForm.SharpEBar1ResetSize(Sender: TObject);
 begin
   if FSuspended then exit;
@@ -1338,7 +1326,7 @@ end;
 procedure TSharpBarMainForm.AutoStart1Click(Sender: TObject);
 begin
   AutoStart1.Checked := not AutoStart1.Checked;
-  SharpEBar1.AutoStart := AutoStart1.Checked;
+  SharpEBar.AutoStart := AutoStart1.Checked;
   SaveBarSettings;
 end;
 
@@ -1346,8 +1334,8 @@ procedure TSharpBarMainForm.FormShow(Sender: TObject);
 begin
   if FSuspended then exit;
   if ModuleManager.Modules.Count = 0 then
-     SharpEBar1.ShowThrobber := True;
-  SharpEBar1.Throbber.Repaint;
+     SharpEBar.ShowThrobber := True;
+  SharpEBar.Throbber.Repaint;
   ShowWindow(application.Handle, SW_HIDE);
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
 end;
@@ -1385,10 +1373,10 @@ begin
     end;
     if BarMove then
     begin
-      oVP := SharpEBar1.VertPos;
-      oHP := SharpEBar1.HorizPos;
-      oMon := SharpEBar1.MonitorIndex;
-      oPMon := SharpEbar1.PrimaryMonitor;
+      oVP := SharpEBar.VertPos;
+      oHP := SharpEBar.HorizPos;
+      oMon := SharpEBar.MonitorIndex;
+      oPMon := SharpEbar.PrimaryMonitor;
       for n := 0 to Screen.MonitorCount - 1 do
       begin
         if Screen.Monitors[n] = Screen.PrimaryMonitor then
@@ -1396,7 +1384,7 @@ begin
         P := Mouse.CursorPos;
 
         // Special Movement Code if Full Align
-        if SharpEBar1.HorizPos = hpFull then
+        if SharpEBar.HorizPos = hpFull then
         begin
           // Top
           R.Left   := Screen.Monitors[n].Left;
@@ -1405,14 +1393,14 @@ begin
           R.Bottom := R.Top + 64;
           if PointInRect(P,R) then
           begin
-            if Mon = -1 then SharpEBar1.PrimaryMonitor := True
+            if Mon = -1 then SharpEBar.PrimaryMonitor := True
                else
                begin
-                 SharpEBar1.PrimaryMonitor := False;
-                 SharpEBar1.MonitorIndex := Mon;
+                 SharpEBar.PrimaryMonitor := False;
+                 SharpEBar.MonitorIndex := Mon;
                end;
-          SharpEBar1.HorizPos     := hpFull;
-          SharpEBar1.VertPos      := vpTop;
+          SharpEBar.HorizPos     := hpFull;
+          SharpEBar.VertPos      := vpTop;
           end;
 
           // Bottom
@@ -1420,14 +1408,14 @@ begin
           R.Bottom := R.Top + 64;
           if PointInRect(P,R) then
           begin
-            if Mon = -1 then SharpEBar1.PrimaryMonitor := True
+            if Mon = -1 then SharpEBar.PrimaryMonitor := True
                else
                begin
-                 SharpEBar1.PrimaryMonitor := False;
-                 SharpEBar1.MonitorIndex := Mon;
+                 SharpEBar.PrimaryMonitor := False;
+                 SharpEBar.MonitorIndex := Mon;
                end;
-          SharpEBar1.HorizPos     := hpFull;
-          SharpEBar1.VertPos      := vpBottom;
+          SharpEBar.HorizPos     := hpFull;
+          SharpEBar.VertPos      := vpBottom;
           end;
           Continue;
         end;
@@ -1440,14 +1428,14 @@ begin
         R.Bottom := R.Top + 64;
         if PointInRect(P,R) then
         begin
-          if Mon = -1 then SharpEBar1.PrimaryMonitor := True
+          if Mon = -1 then SharpEBar.PrimaryMonitor := True
              else
              begin
-               SharpEBar1.PrimaryMonitor := False;
-               SharpEBar1.MonitorIndex := Mon;
+               SharpEBar.PrimaryMonitor := False;
+               SharpEBar.MonitorIndex := Mon;
              end;
-          SharpEBar1.HorizPos     := hpLeft;
-          SharpEBar1.VertPos      := vpTop;
+          SharpEBar.HorizPos     := hpLeft;
+          SharpEBar.VertPos      := vpTop;
         end;
 
         // Top Middle
@@ -1457,14 +1445,14 @@ begin
         R.Bottom := R.Top + 64;
         if PointInRect(P,R) then
         begin
-          if Mon = -1 then SharpEBar1.PrimaryMonitor := True
+          if Mon = -1 then SharpEBar.PrimaryMonitor := True
              else
              begin
-               SharpEBar1.PrimaryMonitor := False;
-               SharpEBar1.MonitorIndex := Mon;
+               SharpEBar.PrimaryMonitor := False;
+               SharpEBar.MonitorIndex := Mon;
              end;
-          SharpEBar1.HorizPos     := hpMiddle;
-          SharpEBar1.VertPos      := vpTop;
+          SharpEBar.HorizPos     := hpMiddle;
+          SharpEBar.VertPos      := vpTop;
         end;
 
         // Top Right
@@ -1474,14 +1462,14 @@ begin
         R.Bottom := R.Top + 64;
         if PointInRect(P,R) then
         begin
-          if Mon = -1 then SharpEBar1.PrimaryMonitor := True
+          if Mon = -1 then SharpEBar.PrimaryMonitor := True
              else
              begin
-               SharpEBar1.PrimaryMonitor := False;
-               SharpEBar1.MonitorIndex := Mon;
+               SharpEBar.PrimaryMonitor := False;
+               SharpEBar.MonitorIndex := Mon;
              end;
-          SharpEBar1.HorizPos     := hpRight;
-          SharpEBar1.VertPos      := vpTop;
+          SharpEBar.HorizPos     := hpRight;
+          SharpEBar.VertPos      := vpTop;
         end;
 
         // Bottom Left
@@ -1491,14 +1479,14 @@ begin
         R.Bottom := R.Top + 64;
         if PointInRect(P,R) then
         begin
-          if Mon = -1 then SharpEBar1.PrimaryMonitor := True
+          if Mon = -1 then SharpEBar.PrimaryMonitor := True
              else
              begin
-               SharpEBar1.PrimaryMonitor := False;
-               SharpEBar1.MonitorIndex := Mon;
+               SharpEBar.PrimaryMonitor := False;
+               SharpEBar.MonitorIndex := Mon;
              end;
-          SharpEBar1.HorizPos     := hpLeft;
-          SharpEBar1.VertPos      := vpBottom;
+          SharpEBar.HorizPos     := hpLeft;
+          SharpEBar.VertPos      := vpBottom;
         end;
 
         // Bottom Middle
@@ -1508,14 +1496,14 @@ begin
         R.Bottom := R.Top + 64;
         if PointInRect(P,R) then
         begin
-          if Mon = -1 then SharpEBar1.PrimaryMonitor := True
+          if Mon = -1 then SharpEBar.PrimaryMonitor := True
              else
              begin
-               SharpEBar1.PrimaryMonitor := False;
-               SharpEBar1.MonitorIndex := Mon;
+               SharpEBar.PrimaryMonitor := False;
+               SharpEBar.MonitorIndex := Mon;
              end;
-          SharpEBar1.HorizPos     := hpMiddle;
-          SharpEBar1.VertPos      := vpBottom;
+          SharpEBar.HorizPos     := hpMiddle;
+          SharpEBar.VertPos      := vpBottom;
         end;
 
         // Bottom Right
@@ -1525,32 +1513,32 @@ begin
         R.Bottom := R.Top + 64;
         if PointInRect(P,R) then
         begin
-          if Mon = -1 then SharpEBar1.PrimaryMonitor := True
+          if Mon = -1 then SharpEBar.PrimaryMonitor := True
              else
              begin
-               SharpEBar1.PrimaryMonitor := False;
-               SharpEBar1.MonitorIndex := Mon;
+               SharpEBar.PrimaryMonitor := False;
+               SharpEBar.MonitorIndex := Mon;
              end;
-          SharpEBar1.HorizPos     := hpRight;
-          SharpEBar1.VertPos      := vpBottom;
+          SharpEBar.HorizPos     := hpRight;
+          SharpEBar.VertPos      := vpBottom;
         end;
       end;
-      if (oMon <> SharpEBar1.MonitorIndex) or (oPMon <> SharpEBar1.PrimaryMonitor) then
+      if (oMon <> SharpEBar.MonitorIndex) or (oPMon <> SharpEBar.PrimaryMonitor) then
       begin
         UpdateBGZone;
         ModuleManager.RefreshMiniThrobbers;
       end;
-      if oVP <> SharpEBar1.VertPos then
+      if oVP <> SharpEBar.VertPos then
       begin
         UpdateBGImage;
         LockWindow(Handle);
-        SharpEBar1.UpdateSkin;
+        SharpEBar.UpdateSkin;
         ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
         ModuleManager.FixModulePositions;
         ModuleManager.RefreshMiniThrobbers;
         UnLockWindow(Handle);
       end;
-      if oHP <> SharpEBar1.HorizPos then
+      if oHP <> SharpEBar.HorizPos then
       begin
         UpdateBGImage;
         LockWindow(Handle);
@@ -1582,24 +1570,24 @@ procedure TSharpBarMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbRight then
-     if (Y=Height-1) and (SharpEBar1.VertPos = vpBottom)
-        or (Y=0) and (SharpEBar1.VertPos = vpTop) then
+     if (Y=Height-1) and (SharpEBar.VertPos = vpBottom)
+        or (Y=0) and (SharpEBar.VertPos = vpTop) then
      begin
        if ModuleManager.Modules.Count = 0 then
        begin
-         SharpEBar1.ShowThrobber := True;
+         SharpEBar.ShowThrobber := True;
          exit;
        end;
-       SharpEBar1.ShowThrobber := not SharpEBar1.ShowThrobber;
+       SharpEBar.ShowThrobber := not SharpEBar.ShowThrobber;
        LockWindow(Handle);
        ModuleManager.FixModulePositions;
        UnLockWindow(Handle);
-       if SharpEBar1.ShowThrobber then SharpEBar1.Throbber.Repaint;
+       if SharpEBar.ShowThrobber then SharpEBar.Throbber.Repaint;
      end;
-  if (Button = mbLeft) and (not SharpEBar1.DisableHideBar) then
+  if (Button = mbLeft) and (not SharpEBar.DisableHideBar) then
   begin
     //BarHideForm.Color := SkinManager.Scheme.Throbberback;
-    if (Y=Height-1)  and (SharpEbar1.VertPos = vpBottom) then
+    if (Y=Height-1)  and (SharpEbar.VertPos = vpBottom) then
     begin
       BarHideForm.Left := Left;
       BarHideForm.Width := Width;
@@ -1608,7 +1596,7 @@ begin
       SharpBarMainForm.Hide;
       BarHideForm.Show;
     end
-    else if (Y=0) and (SharpEBar1.VertPos = vpTop) then
+    else if (Y=0) and (SharpEBar.VertPos = vpTop) then
     begin
       BarHideForm.Left := Left;
       BarHideForm.Width := Width;
@@ -1668,7 +1656,7 @@ begin
   if tempModule = nil then exit;
   ri := ModuleManager.GetFirstRModuleIndex;
   index := ModuleManager.Modules.IndexOf(tempModule);
-  if (ri = index) and (SharpEbar1.HorizPos <> hpFull) then
+  if (ri = index) and (SharpEbar.HorizPos <> hpFull) then
      ModuleManager.MoveModule(index,-1);
   ModuleManager.MoveModule(index,-1);
   ModuleManager.SortModulesByPosition;
@@ -1688,7 +1676,7 @@ begin
   if tempModule = nil then exit;
   ri := ModuleManager.GetFirstRModuleIndex;
   index := ModuleManager.Modules.IndexOf(tempModule);
-  if (ri = index+1) and (SharpEbar1.HorizPos <> hpFull) then
+  if (ri = index+1) and (SharpEbar.HorizPos <> hpFull) then
      ModuleManager.MoveModule(index,1);
   ModuleManager.MoveModule(index,1);
   ModuleManager.SortModulesByPosition;
@@ -1699,7 +1687,7 @@ end;
 procedure TSharpBarMainForm.DisableBarHiding1Click(Sender: TObject);
 begin
   DisableBarHiding1.Checked := not DisableBarHiding1.Checked;
-  SharpEBar1.DisableHideBar := DisableBarHiding1.Checked;
+  SharpEBar.DisableHideBar := DisableBarHiding1.Checked;
   SaveBarSettings;
 end;
 
@@ -1710,9 +1698,9 @@ begin
   if FSuspended then exit;
   if ModuleManager = nil then exit;
 
-  SharpEBar1.UpdateSkin;
-  SharpEBar1.Throbber.UpdateSkin;
-  SharpEbar1.Throbber.Repaint;
+  SharpEBar.UpdateSkin;
+  SharpEBar.Throbber.UpdateSkin;
+  SharpEbar.Throbber.Repaint;
   UpdateBGImage;
 
   //ModuleManager.UpdateModuleSkins;
@@ -1771,10 +1759,10 @@ begin
 
   if BarHideForm.Visible then
   begin
-    if SharpEBar1.SpecialHideForm then BarHideForm.UpdateStatus
+    if SharpEBar.SpecialHideForm then BarHideForm.UpdateStatus
        else BarHideForm.Close;
   end;
-  SharpEBar1.UpdatePosition;
+  SharpEBar.UpdatePosition;
   ModuleManager.BroadCastModuleRefresh;
   ModuleManager.FixModulePositions;
 end;
@@ -1840,6 +1828,58 @@ begin
       SharpApi.ServiceStart('DeskArea');
     end;
   end;
+end;
+
+procedure TSharpBarMainForm.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  if Closing then exit;
+
+  Closing := True;
+  FreeLibrary(FUser32DllHandle);
+  FUser32DllHandle := 0;
+
+  SharpApi.UnRegisterAction(PChar('!FocusBar ('+inttostr(FBarID)+')'));
+
+  if BarHideForm <> nil then FreeAndNil(BarHideForm);
+  if AddPluginForm <> nil then FreeAndNil(AddPluginForm);
+  if PluginManagerForm <> nil then FreeAndNil(PluginManagerForm);
+
+  // check if shell hook functions have been used for any module
+  if FShellHookList.Count > 0 then
+  begin
+    RegisterShellHook(Handle,0);
+  //  SHUnSetHook;
+  end;
+  FShellHookList.Clear;
+  FShellHookList.Free;
+
+  // We want to produce good code, so let's free stuff before the app is closed ;)
+  ForceDirectories(ExtractFileDir(ModuleSettings.FileName));
+  SaveBarSettings;
+  ModuleSettings.SaveToFile(ModuleSettings.FileName + '~');
+  if FileExists(ModuleSettings.FileName) then
+     DeleteFile(ModuleSettings.FileName);
+  RenameFile(ModuleSettings.FileName + '~',ModuleSettings.FileName);
+  ModuleManager.Free;
+ // ModuleSettings.Free;
+  //ModuleSettings := nil;
+
+  FBottomZone.Free;
+  FTopZone.Free;
+  FBGImage.Free;
+
+  FSharpEBar.Free;
+  FSharpEBar := nil;
+
+  FSkinManager.Free;
+  FSkinManager := nil;
+end;
+
+procedure TSharpBarMainForm.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
+begin
+  CanClose := True;
 end;
 
 end.

@@ -160,6 +160,7 @@ type
                      procedure CreateModule(MFID : integer; Position : integer);
                      procedure LoadModule(ID : integer; Module : String; Position,Index : integer);
                      procedure LoadFromDirectory(pDirectory : String);
+                     procedure RefreshFromDirectory(pDirectory : String);
                      procedure FixModulePositions;
                      function GetModule(ID : integer) : TModule;
                      function GetModuleIndex(ID : integer) : integer;
@@ -169,6 +170,7 @@ type
                      function GenerateModuleID : integer;
                      function GetFreeBarSpace : integer;
                      function GetMaxBarSpace : integer;
+                     function GetModuleFileByFileName(pFileName : String) : TModuleFile;
                      procedure MoveModule(Index, Direction : integer);
                      function SendPluginMessage(ID : integer; msg : string) : integer;
                      procedure BroadcastPluginMessage(msg : string);
@@ -180,12 +182,12 @@ type
                      procedure OnMiniThrobberMouseUp(Sender : TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
                      procedure OnMiniThrobberMouseMove(Sender : TObject; Shift: TShiftState; X, Y: integer);
                    published
-                     property Directory      : string       read FDirectory;
-                     property Parent         : hwnd         read FParent;
-                     property ModuleFiles    : TObjectList  read FModuleFiles;
-                     property Modules        : TObjectList  read FModules;
-                     property ModuleSettings : TJvSimpleXML read FModuleSettings;
-                     property ThrobberMenu   : TPopupMenu   read FThrobberMenu write FThrobberMenu;
+                     property ModuleDirectory : string       read FDirectory;
+                     property Parent          : hwnd         read FParent;
+                     property ModuleFiles     : TObjectList  read FModuleFiles;
+                     property Modules         : TObjectList  read FModules;
+                     property ModuleSettings  : TJvSimpleXML read FModuleSettings;
+                     property ThrobberMenu    : TPopupMenu   read FThrobberMenu write FThrobberMenu;
                    end;
 
 implementation
@@ -559,22 +561,47 @@ begin
   SortModulesByPosition;
 end;
 
+function TModuleManager.GetModuleFileByFileName(pFileName : String) : TModuleFile;
+var
+  n : integer;
+  temp : TModuleFile;
+begin
+  for n := 0 to FModuleFiles.Count - 1 do
+  begin
+    temp := TModuleFile(FModuleFiles.Items[n]);
+    if CompareText(temp.FFileName,pFileName) = 0 then
+    begin
+      result := temp;
+      exit;
+    end;
+  end;
+  result := nil;
+end;
+
 // Load all module dll files from a directory
-procedure TModuleManager.LoadFromDirectory(pDirectory : string);
+procedure TModuleManager.RefreshFromDirectory(pDirectory : string);
 var
   sr : TSearchRec;
   temp : TModuleFile;
 begin
-  Clear;
   {$WARNINGS OFF}
   FDirectory := IncludeTrailingBackSlash(pDirectory);
   {$WARNINGS ON}
   if FindFirst(FDirectory + '*.dll',FAAnyFile,sr) = 0 then
   repeat
-    temp := TModuleFile.Create(FDirectory + sr.Name,FParent, FSkinManager, FBar, FModuleSettings);
-    FModuleFiles.Add(temp);
+    if GetModuleFileByFileName(FDirectory + sr.Name) = nil then
+    begin
+      temp := TModuleFile.Create(FDirectory + sr.Name,FParent, FSkinManager, FBar, FModuleSettings);
+      FModuleFiles.Add(temp);
+    end;
   until FindNext(sr) <> 0;
   FindClose(sr);
+end;
+
+procedure TModuleManager.LoadFromDirectory(pDirectory : string);
+begin
+  Clear;
+  RefreshFromDirectory(pDirectory);
 end;
 
 function TModuleManager.GetFreeBarSpace : integer;
