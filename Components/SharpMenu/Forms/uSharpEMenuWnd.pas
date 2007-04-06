@@ -57,6 +57,10 @@ type
   TSharpEMenuWnd = class(TForm)
     SubMenuTimer: TTimer;
     offsettimer: TTimer;
+    procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
+    procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormDeactivate(Sender: TObject);
@@ -561,6 +565,58 @@ begin
   if FMenu = nil then exit;
   if not FMenu.isWrapMenu then
      FMenu.UnWrapMenu(FMenu);
+end;
+
+procedure TSharpEMenuWnd.FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+var
+  o : integer;
+begin
+  if FParentMenu = nil then exit;
+  if (FPicture.Height <= Height) and (FParentMenu.Picture.Height <= FParentMenu.Height) then exit;
+
+  if ((Mouse.CursorPos.x < Left) or (Mouse.CursorPos.x > Left + Width))
+     and (FParentMenu.Picture.Height > FParentMenu.Height) then
+  begin
+    FParentMenu.SharpESubMenu := nil;
+    FParentMenu.FormMouseWheelDown(FParentMenu,Shift,MousePos,Handled);
+    FMenu.RecycleBitmaps;
+    Release;
+    exit;
+  end;
+
+  o := FOffset;
+  FOffset := FOffset + 50;
+  if FOffset > FPicture.Height - Monitor.Height then
+     FOffset := FPicture.Height - Monitor.Height;
+  if o <> FOffset then
+     DrawWindow;
+end;
+
+procedure TSharpEMenuWnd.FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+  var
+  o : integer;
+begin
+  if FParentMenu = nil then exit;
+  if (FPicture.Height <= Height) and (FParentMenu.Picture.Height <= FParentMenu.Height) then exit;
+
+  if ((Mouse.CursorPos.x < Left) or (Mouse.CursorPos.x > Left + Width))
+     and (FParentMenu.Picture.Height > FParentMenu.Height) then
+  begin
+    FParentMenu.SharpESubMenu := nil;
+    FParentMenu.FormMouseWheelUp(FParentMenu,Shift,MousePos,Handled);
+    FMenu.RecycleBitmaps;
+    Release;
+    exit;
+  end;
+
+  o := FOffset;
+  FOffset := FOffset - 50;
+  if FOffset < 0 then
+     FOffset := 0;
+  if o <> FOffset then
+     DrawWindow;
 end;
 
 end.
