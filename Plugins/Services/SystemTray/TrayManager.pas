@@ -340,8 +340,6 @@ begin
   if (pData.uFlags and NIF_TIP) = NIF_TIP then
   begin
     pItem.data.szTip := pData.szTip;
-    pItem.data.Union.uTimeout := pData.Union.uTimeout;
-    pItem.data.Union.uVersion := pData.Union.uVersion;
   end else
   if (pData.uFlags and NIF_INFO) = NIF_INFO then
   begin
@@ -349,6 +347,8 @@ begin
     pItem.data.szInfoTitle := pData.szInfoTitle;
     pItem.data.dwInfoFlags := pData.dwInfoFlags;
   end;
+  pItem.data.Union.uTimeout := pData.Union.uTimeout;
+  pItem.data.Union.uVersion := pData.Union.uVersion;
 
   foundshared := False;
   if (pData.uFlags and NIF_ICON) = NIF_ICON then
@@ -463,6 +463,8 @@ begin
         NIM_ADD: s4:= 'ADD';
         NIM_MODIFY: s4 := 'MODIFY';
         NIM_DELETE: s4 := 'DELETE';
+        NIM_SETFOCUS : s4 := 'SETFOCUS';
+        NIM_SETVERSION : s4 := 'SETVERSION';
       end;
       if (s3 <> 'Kerio Personal Firewall - Aktiviert') and (IconData.Wnd <> 0) then
       SendMiniConsoleMsg(PChar('TRAY: ' + 'State: ' + s1 +
@@ -471,6 +473,8 @@ begin
                                        ' | Hidden: ' + s5 +
                                        ' | Shared: ' + s6 +
                                        ' | Title: ' + s3+IconData.szInfoTitle+
+                                       ' | Callback: ' + inttostr(IconData.uCallbackMessage)+
+                                       ' | Version: ' + inttostr(IconData.Union.uVersion)+
                                        ' | ' + s8+
                                        ' | pItem:' + s9 ));
 
@@ -507,7 +511,7 @@ begin
                         else if pItem = nil then ModifyTrayIcon(pItem,IconData,False,False,True)
                         else e := False;
                    end;
-          NIM_MODIFY: begin
+          NIM_MODIFY,NIM_SETVERSION: begin
                         if (pItem = nil) and (IconData.Icon <> 0) and (not shared) and
                            ((IconData.uFlags and NIF_ICON) = NIF_ICON) and
                            ((IconData.uFlags and NIF_MESSAGE) = NIF_MESSAGE) and
