@@ -1187,11 +1187,14 @@ begin
       if Msg <> WM_MOUSEMOVE then
          StopTipTimer;
 
+      SharpApi.SendDebugMessage('Module: SystemTray',PChar('Wnd:' + inttostr(tempItem.Wnd)
+                                + ' | CallBack:' + inttostr(tempItem.CallbackMessage)
+                                + ' | uID:' + inttostr(tempItem.uID)),0);
       postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
       case Msg of
         WM_MOUSEMOVE: StartTipTimer(x,y,gx,gy);
-        WM_RBUTTONUP: postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,WM_CONTEXTMENU);
-        WM_LBUTTONUP: postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,NIN_SELECT);
+        WM_RBUTTONUP: if (tempItem.BInfoFlags > 4) then postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,WM_CONTEXTMENU);
+        WM_LBUTTONUP: if (tempItem.BInfoFlags > 4) then postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,NIN_SELECT);
       end;
 
       exit;
