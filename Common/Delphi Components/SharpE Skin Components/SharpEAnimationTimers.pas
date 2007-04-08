@@ -277,6 +277,16 @@ begin
   SP.SkinText.Color := NewColor;
 end;
 
+function Script_GetGradientFromAlpha(SP : TSkinPart) : integer;
+begin
+  result := SP.GradientAlpha.XAsInt;
+end;
+
+function Script_GetGradientToAlpha(SP : TSkinPart) : integer;
+begin
+  result := SP.GradientAlpha.YAsInt;
+end;
+
 procedure Script_SetGradientFromAlpha(SP : TSkinPart; NewAlpha : integer);
 begin
   SP.GradientAlpha.SetPoint(inttostr(Max(0,Min(255,NewAlpha))),SP.GradientAlpha.Y);
@@ -617,6 +627,8 @@ const
   sSetTextShadowColor        = 30;
   sBlendTextShadowColor      = 31;
   sSetColor                  = 32;
+  sGetGradientFromAlpha      = 33;
+  sGetGradientToAlpha        = 34;
 
 var
   temp : TSkinPart;
@@ -656,6 +668,8 @@ begin
     else if CompareText(Identifier, 'IncreaseTextShadowAlpha') = 0    then stype := sIncreaseTextShadowAlpha
     else if CompareText(Identifier, 'DecreaseTextShadowAlpha') = 0    then stype := sDecreaseTextShadowAlpha
     else if CompareText(Identifier, 'SetColor') = 0                   then stype := sSetColor
+    else if CompareText(Identifier, 'GetGradientFromAlpha') = 0       then stype := sGetGradientFromAlpha
+    else if CompareText(Identifier, 'GetGradientToAlpha') = 0         then stype := sGetGradientToAlpha
     else stype := -1;
 
     if    (stype = sBlendGradientFromColor)
@@ -725,7 +739,9 @@ begin
        or (stype = sGetTextColor)
        or (stype = sGetTextAlpha)
        or (stype = sGetTextShadowColor)
-       or (stype = sGetTextShadowAlpha) then
+       or (stype = sGetTextShadowAlpha)
+       or (stype = sGetGradientFromAlpha)
+       or (stype = sGetGradientToAlpha) then
     begin
       temp := FindSkinPart(VarToStr(Args.Values[0]),FSkinPart);
       if temp <> nil then
@@ -739,6 +755,8 @@ begin
           sGetGradientToColor   : Value := Script_GetGradientToColor(temp);
           sGetTextColor         : Value := Script_GetTextColor(temp);
           sGetTextAlpha         : Value := Script_GetTextAlpha(temp);
+          sGetGradientFromAlpha : Value := Script_GetGradientFromAlpha(temp);
+          sGetGradientToAlpha   : Value := Script_GetGradientToAlpha(temp);
         end;
       end;
       Done := True;
