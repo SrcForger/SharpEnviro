@@ -239,7 +239,7 @@ begin
     end else
     begin
       lb_top.LabelStyle := lsMedium;
-      lb_top.Top := Height div 2 - (lb_top.Height div 2) - 2;
+      lb_top.Top := Height div 2 - (lb_top.Height div 2);
       lb_bottom.Visible := False;
       o3 := o1 + lb_top.Width + 2;
     end;

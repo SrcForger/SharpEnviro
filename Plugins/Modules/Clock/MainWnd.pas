@@ -131,7 +131,7 @@ begin
   end else
   begin
     newWidth := lb_clock.Width;
-    lb_clock.Top := Height div 2 - (lb_clock.Height div 2) - 2;
+    lb_clock.Top := Height div 2 - (lb_clock.Height div 2);
   end;
   Tag := newWidth;
   Hint := inttostr(NewWidth);
