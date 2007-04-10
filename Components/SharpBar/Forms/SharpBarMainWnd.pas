@@ -474,8 +474,7 @@ begin
        SharpEBar.Throbber.UpdateSkin;
        SharpEbar.Throbber.Repaint;
        UpdateBGImage;
-       if (msg.WParam = SU_SCHEME) then
-           ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
+       ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
      end;
 
   // Step2: Update modules
@@ -1533,8 +1532,8 @@ begin
         UpdateBGImage;
         LockWindow(Handle);
         SharpEBar.UpdateSkin;
-        ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
         ModuleManager.FixModulePositions;
+        ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
         ModuleManager.RefreshMiniThrobbers;
         UnLockWindow(Handle);
       end;
@@ -1543,6 +1542,7 @@ begin
         UpdateBGImage;
         LockWindow(Handle);
         ModuleManager.FixModulePositions;
+        ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
         ModuleManager.RefreshMiniThrobbers;
         UnLockWindow(Handle);
       end;
@@ -1705,6 +1705,7 @@ begin
 
   //ModuleManager.UpdateModuleSkins;
   ModuleManager.FixModulePositions;
+  ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
 
  // if FThemeUpdating then exit;
 
@@ -1733,6 +1734,7 @@ begin
   if FSuspended then exit;
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
   UpdateBGImage;
+  ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
 end;
 
 procedure TSharpBarMainForm.DelayTimer1Timer(Sender: TObject);
