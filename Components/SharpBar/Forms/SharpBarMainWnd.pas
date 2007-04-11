@@ -1848,7 +1848,11 @@ begin
 
   SharpApi.UnRegisterAction(PChar('!FocusBar ('+inttostr(FBarID)+')'));
 
-  if BarHideForm <> nil then FreeAndNil(BarHideForm);
+  if BarHideForm <> nil then
+  begin
+    if BarHideForm.Visible then BarHideForm.Close;
+    FreeAndNil(BarHideForm);
+  end;
   if AddPluginForm <> nil then FreeAndNil(AddPluginForm);
   if PluginManagerForm <> nil then FreeAndNil(PluginManagerForm);
 
@@ -1886,7 +1890,21 @@ end;
 procedure TSharpBarMainForm.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
+  if BarHideForm <> nil then
+  begin
+    if BarHideForm.Visible then BarHideForm.Close;
+    FreeAndNil(BarHideForm);
+  end;
   CanClose := True;
 end;
+
+initialization
+
+finalization
+  if BarHideForm <> nil then
+  begin
+    if BarHideForm.Visible then BarHideForm.Close;
+    FreeAndNil(BarHideForm);
+  end;
 
 end.
