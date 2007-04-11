@@ -35,6 +35,7 @@ interface
 uses Windows,
      Classes,
      Contnrs,
+     ShellApi,
      DateUtils,
      SysUtils,
      SharpApi,
@@ -52,13 +53,20 @@ type
     procedure UpdateDynamicDirectory(var pDynList : TObjectList; pDir,
                                      pFilter : String; pSort,pMaxItems : integer);
     procedure UpdateDynamicDriveList(var pDynList : TObjectList; pDriveNames : boolean);
+    procedure UpdateControlPanelList(var pDynList : TObjectList);
   end;
 
 implementation
 
 uses uSharpEMenu,
+     GR32,
+     SharpIconUtils,
      uPropertyList,
-     JclFileUtils;
+     uControlPanelItems,
+     JclFileUtils,
+     JclSysUtils,
+     JclShell,
+     JclStrings;
 
 constructor TSharpEMenuActions.Create(pOwner : TObject);
 begin
@@ -77,6 +85,91 @@ procedure TSharpEMenuActions.OnLinkClick(pItem : TSharpEMenuItem; var CanClose :
 begin
   SharpApi.SharpExecute(pItem.PropList.GetString('Action'));
   CanClose := True;
+end;
+
+procedure TSharpEMenuActions.UpdateControlPanelList(var pDynList : TObjectList);
+var
+  CPLList : TCPLItems;
+  n,i,k : integer;
+  item : TSharpEMenuItem;
+  pMenu : TSharpEMenu;
+  target : String;
+  found : boolean;
+  bmp : TBitmap32;
+  IconFile,IconID : String;
+  bighandle,iconhandle : hicon;
+begin
+  CPLList := GetCPLItems;
+  pMenu := TSharpEMenu(FOwner);
+
+  for n := 0 to High(CPLList) do
+      with CPLList[n] do
+      begin
+        // Check if the item already exists
+        found := False;
+        for i := 0 to pDynList.Count - 1 do
+        begin
+          item := TSharpEMenuItem(pDynList.Items[i]);
+          if (item.ItemType = mtLink) and (item.Caption = Name) and
+             (CompareText(item.PropList.GetString('Action'),FileName) = 0) then
+          begin
+            pDynList.delete(i);
+            found := True;
+            break;
+          end;
+        end;
+
+        if Found then continue;
+
+        if length(trim(Name)) > 0 then
+        begin
+          Target := FileName;
+          Target := StringReplace(Target,'%ProgramFiles%',JclSysInfo.GetProgramFilesFolder,[rfReplaceAll,rfIgnoreCase]);
+          Target := StringReplace(Target,'%SystemRoot%',JclSysInfo.GetWindowsFolder,[rfReplaceAll,rfIgnoreCase]);
+          Target := Trim(Target);
+
+          if (not GUIDItem) and (not FileExists(Target)) then
+             Target := 'control.exe /name ' + Target;
+
+          Icon := StringReplace(Icon,'%ProgramFiles%',JclSysInfo.GetProgramFilesFolder,[rfReplaceAll,rfIgnoreCase]);
+          Icon := StringReplace(Icon,'%SystemRoot%',JclSysInfo.GetWindowsFolder,[rfReplaceAll,rfIgnoreCase]);
+          Icon := Trim(Icon);
+          if not FileExists(Icon) then
+          begin
+            // Check if it's a ressource icon
+            k := StrILastPos(',',Icon);
+            if k > 0 then
+            begin
+              IconFile := JclStrings.StrLeft(Icon,k-1);
+              IconID := JclStrings.StrRight(Icon,length(Icon)-k);
+
+              bighandle := 0;
+              if CompareText(IconID,'-1') = 0 then
+                 ExtractIconEx(PChar(IconFile), 0, bighandle, iconhandle,1)
+                 else iconhandle := ExtractIcon(hInstance,PChar(IconFile),StrToInt(IconID));
+              if iconhandle <> 0 then
+              begin
+                bmp := TBitmap32.Create;
+                SharpIconUtils.IconToImage(bmp,iconhandle);
+                DestroyIcon(iconhandle);
+                if bighandle <> 0 then
+                   DestroyIcon(bighandle);
+                pMenu.AddLinkItem(Name,Target,Icon,bmp,True);
+                bmp.Free;
+              end else pMenu.AddLinkItem(Name,Target,'shell:icon',True);
+            end else pMenu.AddLinkItem(Name,Target,'shell:icon',True);
+          end else
+          begin
+            bmp := TBitmap32.Create;
+            SharpIconUtils.extrShellIcon(Bmp,Icon);
+            if (not FileExists(Target)) then
+                Target := 'control.exe /name ' + Target;
+            pMenu.AddLinkItem(Name,Target,Icon,bmp,True);
+            bmp.Free;
+ //           pMenu.AddLinkItem(Icon,Target,'shell:icon',True);
+          end;
+        end;
+      end;
 end;
 
 procedure TSharpEMenuActions.UpdateDynamicDirectory(var pDynList : TObjectList; pDir,
@@ -309,40 +402,58 @@ var
   pMenu : TSharpEMenu;
   found : boolean;
   s,sn : String;
+  Tmp: array [0..104] of Char;
+  Info: TSHFileInfo;
+  P: PChar;
+  SC : String;
 begin
   pMenu := TSharpEMenu(FOwner);
-  
-  for i := 0 to 25 do
-      if DriveExists(i) then
+
+  try
+    FillChar(Tmp[0], SizeOf(Tmp), #0);
+    GetLogicalDriveStrings(SizeOf(Tmp), Tmp);
+    P := Tmp;
+    while P^ <> #0 do
+    begin
+      SC := P;
+      Inc(P, 4);
+      SHGetFileInfo(PChar(SC), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or SHGFI_TYPENAME);
+      found := false;
+      for n := pDynList.Count - 1 downto 0  do
       begin
-        found := false;
-        for n := pDynList.Count - 1 downto 0  do
+        sn := '';
+        if pDriveNames then sn := Trim(Info.szDisplayName)
+           else sn := Trim(Info.szTypeName);
+        s := '['+ SC[1] + ':] - ' + sn;
+        item := TSharpEMenuItem(pDynList.Items[n]);
+        if (item.ItemType = mtLink) and (item.Caption = s)
+           and (item.PropList.GetString('Action') = SC[1] + ':\') then
         begin
-          if pDriveNames then sn := JclSysInfo.GetVolumeName(Chr(i + Ord('A')))
-             else sn := '';
-          if length(sn) <= 0 then
-             sn := DriveType(i);
-          s := '['+Chr(i + Ord('A')) + ':] - ' + sn;
-          item := TSharpEMenuItem(pDynList.Items[n]);
-          if (item.ItemType = mtLink) and (item.Caption = s)
-             and (item.PropList.GetString('Action') = Chr(i + Ord('A')) + ':\') then
-          begin
-            pDynList.Delete(n);
-            found := true;
-            break;
-          end;
+          pDynList.Delete(n);
+          found := true;
+          break;
         end;
-        if (not found) then
-        begin
-          if pDriveNames then sn := JclSysInfo.GetVolumeName(Chr(i + Ord('A')))
-             else sn := '';
-          if length(sn) <= 0 then
-             sn := DriveType(i);
-          pMenu.AddLinkItem('['+Chr(i + Ord('A')) + ':] - ' + sn,
-                            Chr(i + Ord('A')) + ':\',
+      end;
+      if (not found) then
+      begin
+          sn := '';
+          if pDriveNames then sn := Info.szDisplayName
+             else sn := Info.szTypeName;
+          s := '['+ SC[1] + ':] - ' + sn;
+          pMenu.AddLinkItem(s,
+                            SC[1] + ':\',
                             'shell:icon',
                             true);
         end;
+
+    end;
+  except
+  end;
+  exit;
+
+  for i := 0 to 25 do
+      if DriveExists(i) then
+      begin
       end;
 end;
 

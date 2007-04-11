@@ -76,6 +76,7 @@ type
     function AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean) : TObject; overload;
     procedure AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String;  pDynamic : boolean);
     procedure AddDriveListItem(pDriveNames:  boolean; pDynamic : boolean);
+    procedure AddControlPanelItem(pDynamic : boolean);
     function  AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean) : TObject;
 
     // Rendering
@@ -233,6 +234,7 @@ begin
                                                          item.PropList.GetInt('Sort'),
                                                          item.PropList.GetInt('MaxItems'));
       mtDriveList : FMenuActions.UpdateDynamicDriveList(FDynList,item.PropList.GetBool('ShowDriveNames'));
+      mtCPLList : FMenuActions.UpdateControlPanelList(FDynList);
     end;
   end;
 
@@ -305,8 +307,9 @@ begin
   item.Caption := pCaption;
   item.PropList.Add('Action',pTarget);
   item.OnClick := FMenuActions.OnLinkClick;
-  if pDynamic and FileExists(pTarget) then
-     item.Popup := SharpEMenuPopups.DynamicLinkPopup;
+  if pDynamic and (length(pTarget) > 3) then
+     if FileExists(pTarget) then
+        item.Popup := SharpEMenuPopups.DynamicLinkPopup;
   item.isDynamic := pDynamic;
   FItems.Add(Item);
   result := item;
@@ -322,7 +325,7 @@ begin
   item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget);
   item.Caption := pCaption;
   item.isDynamic := pDynamic;
-  if isDirectory(pTarget) then
+  if length(trim(pTarget))>0 then
   begin
     item.PropList.Add('Target',pTarget);
     item.OnClick := FMenuActions.OnFolderClick;
@@ -342,6 +345,7 @@ begin
   item.PropList.Add('Action',FMenuConsts.ParseString(pTarget));
   item.PropList.Add('MaxItems',pMax);
   item.PropList.Add('Sort',pSort);
+  item.PropList.Add('Filter',pFilter);
   item.isVisible := False;
   item.isDynamic := pDynamic;
   FItems.Add(Item);
@@ -359,6 +363,16 @@ begin
   FItems.Add(Item);
 end;
 
+procedure TSharpEMenu.AddControlPanelItem(pDynamic : boolean);
+var
+  item : TSharpEMenuItem;
+begin
+  item := TSharpEMenuItem.Create(mtCPLList);
+  item.Icon := nil;
+  item.isVisible := False;
+  item.isDynamic := pDynamic;
+  FItems.Add(Item);
+end;
 
 // Calculate overall items size until pindex (-1 = all)
 function TSharpEMenu.GetItemsHeight(pindex : integer) : integer;

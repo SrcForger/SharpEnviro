@@ -77,12 +77,15 @@ begin
           if CompareText(typestring,'drivelist') = 0 then
              menu.AddDriveListItem(BoolValue('ShowDriveNames',True),False)
           else
+          if CompareText(typestring,'cpllist') = 0 then
+             menu.AddControlPanelItem(False)
+          else;
           if CompareText(typestring,'label') = 0 then
              menu.AddLabelItem(Value('Caption'),False)
           else
           if CompareText(typestring,'submenu') = 0 then
           begin
-            menuitem := TSharpEMenuItem(menu.AddSubMenuItem(Value('Caption'),Value('Icon'),Value('Icon'),False));
+            menuitem := TSharpEMenuItem(menu.AddSubMenuItem(Value('Caption'),Value('Icon'),Value('Target',''),False));
             if ItemNamed['items'] <> nil then
                menuitem.SubMenu := LoadMenuFromXML(ItemNamed['items'].Items,pManager,menu.settings);
           end;

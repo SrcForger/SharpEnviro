@@ -50,6 +50,7 @@ uses
   SysUtils,
   SharpApi,
   SharpESkinManager,
+  SharpESkin,
   uSharpEMenuWnd in 'Forms\uSharpEMenuWnd.pas' {SharpEMenuWnd},
   uSharpEMenuLoader in 'Units\uSharpEMenuLoader.pas',
   uSharpEMenu in 'Units\uSharpEMenu.pas',
@@ -61,7 +62,9 @@ uses
   uSkinManagerThreads in '..\..\Common\Units\Threads\uSkinManagerThreads.pas',
   uPropertyList in '..\..\Common\Units\PropertyList\uPropertyList.pas',
   uSharpEMenuPopups in 'Units\uSharpEMenuPopups.pas',
-  uSharpEMenuSettings in 'Units\uSharpEMenuSettings.pas';
+  uSharpEMenuSettings in 'Units\uSharpEMenuSettings.pas',
+  uControlPanelItems in '..\..\Common\Units\ControlPanelItems\uControlPanelItems.pas',
+  SharpIconUtils in '..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas';
 
 {$R *.res}
 
@@ -165,7 +168,7 @@ begin
 
   // init Classes
 
-  SkinManager := TSharpESkinManager.Create(nil);
+  SkinManager := TSharpESkinManager.Create(nil,[scMenu,scMenuItem]);
   SystemSkinLoadThread := TSystemSkinLoadThread.Create(SkinManager);
   mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManager);
   Application.Title := 'SharpMenu';
@@ -174,13 +177,13 @@ begin
   SystemSkinLoadThread.Free;
 
   wnd.InitMenu(mn,true);
-  i := Pos.X;
+  i := Pos.X + SkinManager.Skin.MenuSkin.SkinDim.XAsInt;
   if (i + wnd.Width > (wnd.Monitor.Left + wnd.Monitor.Width)) then
      i := (wnd.Monitor.Left + wnd.Monitor.Width) - wnd.Width;
   wnd.Left := i;
 
   // Check position
-  i := Pos.Y;
+  i := Pos.Y + SkinManager.Skin.MenuSkin.SkinDim.YAsInt;
   if popupdir < 0 then
      i := i - wnd.Picture.Height;
   if (i + wnd.Picture.Height) > (wnd.Monitor.Top + wnd.Monitor.Height) then
