@@ -61,6 +61,7 @@ object MainForm: TMainForm
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
+    ComponentSkins = [scProgressBar]
     HandleUpdates = False
     Left = 224
     Top = 72

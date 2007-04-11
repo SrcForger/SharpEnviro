@@ -72,6 +72,7 @@ type
     procedure ReAlignComponents(BroadCast : boolean);
     property WeatherParser : TWeatherParser read FWeatherParser;
     property WeatherLocation : String read sLocation;
+    property ShowIcon : boolean read sShowIcon;
   end;
 
 
@@ -222,8 +223,10 @@ begin
 
   if (sShowLabels) then
   begin
-    lb_top.Visible := True;
     lb_top.Caption := ReplaceDataInString(sTopLabel);
+    lb_top.UpdateSkin;
+    lb_top.Resize;
+    lb_top.Visible := True;
     lb_top.left := o1;
     s := ReplaceDataInString(sBottomLabel);
     if length(trim(s))>0 then
@@ -231,6 +234,8 @@ begin
       lb_top.LabelStyle := lsSmall;
       lb_top.Top := 1 + (o2 div 2) - (lb_top.Height div 2);
       lb_bottom.Caption := s;
+      lb_bottom.UpdateSkin;
+      lb_bottom.Resize;
       lb_bottom.Left := o1;
       lb_bottom.Top := Height - 3 - (o2 div 2) - (lb_bottom.Height div 2);
       lb_bottom.Visible := True;

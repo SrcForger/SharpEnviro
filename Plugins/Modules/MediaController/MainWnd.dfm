@@ -519,6 +519,7 @@ object MainForm: TMainForm
   object SharpESkinManager1: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
+    ComponentSkins = [scButton]
     HandleUpdates = False
     Left = 192
     Top = 72

@@ -170,6 +170,7 @@ object MainForm: TMainForm
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
+    ComponentSkins = []
     HandleUpdates = False
     Left = 112
     Top = 80

@@ -37,6 +37,7 @@ object MainForm: TMainForm
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
+    ComponentSkins = [scPanel, scButton, scProgressBar, scCheckBox, scRadioBox, scMiniThrobber, scEdit, scTaskItem]
     HandleUpdates = False
     Left = 112
     Top = 32

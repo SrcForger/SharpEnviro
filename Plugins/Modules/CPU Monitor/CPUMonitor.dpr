@@ -238,7 +238,7 @@ begin
       uSharpBarAPI.PaintBarBackGround(temp.BarWnd,TMainForm(temp.Form).Background.Bitmap,Temp.Form);
       TMainForm(temp.Form).bgbmp.Assign(TMainForm(temp.Form).Background.Bitmap);
       if (part = SU_THEME) or (part = SU_SKINFILECHANGED) then
-         TMainForm(temp.Form).ReAlignComponents(False);
+         TMainForm(temp.Form).ReAlignComponents((part = SU_SKINFILECHANGED));
     end;
   end;
 end;
