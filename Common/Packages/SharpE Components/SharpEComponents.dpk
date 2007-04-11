@@ -47,7 +47,10 @@ requires
   JvPageCompsD9R,
   SharpESkinComponents,
   Jcl,
-  JclVcl;
+  JclVcl,
+  vcldb,
+  dbrtl,
+  bdertl;
 
 contains
   uSharpeColorBox in '..\..\Delphi Components\SharpEColorBox\uSharpeColorBox.pas',
@@ -67,6 +70,8 @@ contains
   uSharpEListView in '..\..\Delphi Components\SharpEListBoxEx\uSharpEListView.pas',
   SharpEColorPanel in '..\..\Delphi Components\SharpEColorPanel\SharpEColorPanel.pas',
   SharpCenterScheme in '..\..\Delphi Components\SharpECenterScheme\SharpCenterScheme.pas',
-  SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas';
+  SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
+  uSchemeList in '..\..\..\Plugins\Configurations\Scheme\uSchemeList.pas',
+  uSharpEColorPanelEx in '..\..\Delphi Components\SharpEColorPanelEx\uSharpEColorPanelEx.pas';
 
 end.
