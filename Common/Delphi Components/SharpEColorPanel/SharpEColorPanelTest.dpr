@@ -1,5 +1,16 @@
 program SharpEColorPanelTest;
 
+{%File 'ModelSupport\SharpEColorPanel\SharpEColorPanel.txvpck'}
+{%File 'ModelSupport\SharpAPI\SharpAPI.txvpck'}
+{%File 'ModelSupport\uMain\uMain.txvpck'}
+{%File 'ModelSupport\SharpGraphicsUtils\SharpGraphicsUtils.txvpck'}
+{%File 'ModelSupport\uSharpeColorBox\uSharpeColorBox.txvpck'}
+{%File 'ModelSupport\SharpCenterScheme\SharpCenterScheme.txvpck'}
+{%File 'ModelSupport\SharpERoundPanel\SharpERoundPanel.txvpck'}
+{%File 'ModelSupport\SharpThemeApi\SharpThemeApi.txvpck'}
+{%File 'ModelSupport\uSharpETabList\uSharpETabList.txvpck'}
+{%File 'ModelSupport\default.txvpck'}
+
 uses
   Forms,
   uMain in 'uMain.pas' {MainWnd},
@@ -8,9 +19,9 @@ uses
   uSharpETabList in '..\SharpETabList\uSharpETabList.pas',
   uSharpeColorBox in '..\SharpEColorBox\uSharpeColorBox.pas',
   SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas',
-  SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas',
   SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
-  SharpCenterScheme in '..\SharpECenterScheme\SharpCenterScheme.pas';
+  SharpCenterScheme in '..\SharpECenterScheme\SharpCenterScheme.pas',
+  SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas';
 
 {$R *.res}
 
