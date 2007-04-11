@@ -44,9 +44,8 @@ end;
 
 procedure TBarHideForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  if Application.Terminated then exit;
-
-  if not SharpBarMainForm.Visible then SharpBarMainForm.Show;
+  if not Closing then
+     if not SharpBarMainForm.Visible then SharpBarMainForm.Show;
 end;
 
 procedure TBarHideForm.FormClick(Sender: TObject);
