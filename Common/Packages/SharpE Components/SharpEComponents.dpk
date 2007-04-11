@@ -67,7 +67,6 @@ contains
   SharpEListBoxEx in '..\..\Delphi Components\SharpEListBoxEx\SharpEListBoxEx.pas',
   SharpFX in '..\..\Units\SharpFX\SharpFX.pas',
   uSharpETabList in '..\..\Delphi Components\SharpETabList\uSharpETabList.pas',
-  uSharpEListView in '..\..\Delphi Components\SharpEListBoxEx\uSharpEListView.pas',
   SharpEColorPanel in '..\..\Delphi Components\SharpEColorPanel\SharpEColorPanel.pas',
   SharpCenterScheme in '..\..\Delphi Components\SharpECenterScheme\SharpCenterScheme.pas',
   SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
