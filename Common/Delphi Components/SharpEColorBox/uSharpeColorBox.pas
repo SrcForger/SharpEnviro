@@ -15,7 +15,11 @@ uses
   sharpfx,
   sharpthemeapi,
   graphics,
-  Forms;
+  Forms,
+  uSchemeList,
+  uvistafuncs,
+  SharpCenterScheme,
+  JvSimpleXml;
 
 type
   TCustomSharpeColorBox = class(Tcustompanel)
@@ -34,8 +38,12 @@ type
     FColor: TColor;
     FColorCode: Integer;
     FLastColor: TColor;
+    FCustom: Boolean;
+    FSCS:TSharpECenterScheme;
 
     FSelectedID: Integer;
+    FSchemeList: TSchemeList;
+    FCustomColor: TSchemeColorItem;
 
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
@@ -44,7 +52,6 @@ type
     procedure MenuClick(Sender: TObject);
 
     procedure SetBackgroundColor(const Value: TColor);
-    //procedure SetClickedColorID(const Value: TClickedColorID);
     procedure DrawColorSelector(Bmp: TBitmap; R: TRect);
 
     procedure UpdateSelCol(Sender: TObject);
@@ -54,17 +61,17 @@ type
     procedure SetColorCode(const Value: Integer);
     function GetColor: TColor;
 
+    procedure PopulateSkinColors;
   public
     { Public declarations }
     procedure Paint; override;
     constructor Create(AOwner: TComponent); override;
-
+    destructor Destroy; override;
   published
     { Published declarations }
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor;
     property Color: TColor read GetColor write SetColor;
     property ColorCode: Integer read GetColorCode write SetColorCode;
-    //property ClickedColorID: TClickedColorID read FClickedColorID write SetClickedColorID;
     property OnColorClick: TNotifyEvent read FOnColorClick write FOnColorClick;
 
   end;
@@ -75,11 +82,9 @@ type
   published
     property BackgroundColor;
     property Color;
-    //property ClickedColorID;
     property OnColorClick;
     property Hint;
     property Align;
-
   end;
 
 procedure Register;
@@ -98,57 +103,58 @@ end;
 procedure TCustomSharpeColorBox.AdvancedDrawItem(Sender: TObject;
   ACanvas: TCanvas; ARect: TRect; State: TOwnerDrawState);
 var
-  Caption: string;
-  dColor: TColor;
-  id: integer;
   tmpbitmap: Tbitmap;
   n: integer;
+
+  tmpCol: TSchemeColorItem;
+  skinCol: TSharpESkinColor;
 begin
-  id := TMenuItem(Sender).Tag;
+  tmpCol := TSchemeColorItem(TMenuItem(Sender).Tag);
+  if tmpCol = nil then exit;
+
+  if tmpCol.Tag = '' then begin
+    skinCol.Name := 'Custom';
+    skinCol.Color := tmpCol.Color;
+  end else
+    skinCol := FSchemeList.GetSkinColorByTag(tmpCol.Tag);
+
   n := 20;
 
   with ACanvas do
   begin
-    font.Name := 'arial';
     font.Size := 8;
 
-    if not (odSelected in State) then
-      font.Color := clMenuText
-    else
-      font.Color := clHighlightText;
-
-    Caption := TMenuItem(Sender).Caption;
-    dcolor := SchemeCodeToColor(id); //CodeToColor(id);
+    font.Color := clMenuText;
 
     if not (odSelected in State) then
       Brush.Color := clMenu
     else
     begin
-      Brush.Color := clMenuHighlight;
+      Brush.Color := FSCS.EditCol;
     end;
 
     FillRect(ARect);
 
-    if id < 0 then
-      Brush.Color := dcolor
-    else
-      Brush.Color := id;
+    if (odSelected in State) then begin
+      pen.Color := darker(FSCS.EditBordCol,8);
+      Brush.Color := FSCS.EditCol;
 
-    if ((dColor = color) and (id < 0)) or ( (id >= 0) and (fcolor = id)) then
+      RoundRect(Arect.Left, ARect.Top, ARect.Right, ARect.Bottom,6,6);
+    end;
+    
+
+    if (FColorCode = Integer(tmpCol.Data)) then
     begin
 
-      pen.Color := clBtnShadow;
-      //font.Style := [fsbold];
-      Brush.Color := clMenuHighlight;
-      RoundRect(Arect.Left, ARect.Top, ARect.Right, ARect.Bottom, 6, 6);
+      pen.Color := darker(FSCS.SidePanelBordCol,12);
+      Brush.Color := FSCS.SidePanelCol;
+      RoundRect(Arect.Left, ARect.Top, ARect.Right, ARect.Bottom,6,6);
 
-      if id < 0 then
-        Brush.Color := dcolor
-      else
-        Brush.Color := color;
+      Brush.Color := skinCol.Color;
 
-      pen.Color := clBlack;
-      RoundRect(ARect.Left + 3, ARect.Top + 4, ARect.Left + 14, ARect.Bottom - 4, 4, 4);
+      pen.Color := darker(skinCol.Color,20);
+      RoundRect(ARect.Left + 3, ARect.Top + 4, ARect.Left + 14, ARect.Bottom - 4,2,2);
+
       font.Color := clMenuText;
       tmpbitmap := TBitmap.Create;
       tmpbitmap.Handle := LoadBitmap(HInstance, 'ARROW_BMP');
@@ -159,27 +165,33 @@ begin
     end
     else
     begin
-      Pen.Color := clBlack;
+      Brush.Color := skinCol.Color;
+      pen.Color := darker(skinCol.Color,20);
+
       //Rectangle(ARect.Left + 3, ARect.Top + 4, ARect.Left + 14, ARect.Bottom - 4);
-      RoundRect(ARect.Left + 3, ARect.Top + 4, ARect.Left + 14, ARect.Bottom - 4, 4, 4);
+      RoundRect(ARect.Left + 3, ARect.Top + 4, ARect.Left + 14, ARect.Bottom - 4,2,2);
 
     end;
 
     SetBkMode(ACanvas.Handle, TRANSPARENT);
-    TextOut(ARect.Left + n, ARect.Top + 3, Caption);
+    TextOut(ARect.Left + n, ARect.Top + 3, skinCol.Name);
   end;
 end;
 
 procedure TCustomSharpeColorBox.CMMouseEnter(var Message: TMessage);
 begin
-  FMouseOver := True;
-  Paint;
+  if Not(csDesigning in ComponentState) then begin
+    FMouseOver := True;
+    Paint;
+  end;
 end;
 
 procedure TCustomSharpeColorBox.CMMouseLeave(var Message: TMessage);
 begin
-  FMouseOver := False;
-  Paint;
+  if Not(csDesigning in ComponentState) then begin
+    FMouseOver := False;
+    Paint;
+  end;
 end;
 
 constructor TCustomSharpeColorBox.Create(AOwner: TComponent);
@@ -191,7 +203,9 @@ begin
   FColor := clwhite;
   FLastColor := 0;
   FColorCode := clWhite;
-  //FClickedColorID := ccCustom;
+  FSchemeList := TSchemeList.Create;
+  FCustomColor := TSchemeColorItem.Create;
+  FSCS := TSharpECenterScheme.Create(nil);
   Align := alNone;
 
   // Create timer
@@ -199,8 +213,14 @@ begin
   FTimer.OnTimer := UpdateSelCol;
   FTimer.Interval := 50;
   FTimer.Enabled := False;
+end;
 
-  LoadTheme;
+destructor TCustomSharpeColorBox.Destroy;
+begin
+  inherited;
+  FSchemeList.Free;
+  FCustomColor.Free;
+  FSCS.Free;
 end;
 
 procedure TCustomSharpeColorBox.DrawColorSelector(Bmp: TBitmap; R: TRect);
@@ -208,15 +228,15 @@ begin
   // Draw border
   if FMouseOver then
   begin
-    Bmp.Canvas.Pen.Color := darker(Color, 80);
     Bmp.Canvas.Brush.Color := SchemeCodeToColor(FColorCode); //CodeToColor(FColorCode);
-    Bmp.Canvas.Rectangle(R);
+    Bmp.Canvas.Pen.Color := darker(Bmp.Canvas.Brush.Color, 20);
+    Bmp.Canvas.RoundRect(R.Left,R.Top,R.Right,R.Bottom,0,0);
   end
   else
   begin
-    Bmp.Canvas.Pen.Color := darker(Color, 20);
     Bmp.Canvas.Brush.Color := SchemeCodeToColor(FColorCode); //CodeToColor(FColorCode);
-    Bmp.Canvas.Rectangle(R);
+    Bmp.Canvas.Pen.Color := darker(Bmp.Canvas.Brush.Color, 10);
+    Bmp.Canvas.RoundRect(R.Left,R.Top,R.Right,R.Bottom,0,0);
   end;
 
 end;
@@ -230,16 +250,26 @@ end;
 
 function TCustomSharpeColorBox.GetColorCode: Integer;
 begin
-  Result := ColorToSchemeCode(FColor); //ColorToCode(FColor);
+
+  if Not(FCustom) then
+    Result := ColorToSchemeCode(FColor) else
+    Result := FColor;
 end;
 
 procedure TCustomSharpeColorBox.MenuClick(Sender: TObject);
 var
-  id: integer;
+  tmpCol: TSchemeColorItem;
+  n: Integer;
   s:String;
 begin
-  id := TMenuItem(Sender).Tag;
-  if id >= 0 then
+  if Sender = nil then
+    n := FColor else begin
+
+      tmpCol := TSchemeColorItem(TMenuItem(Sender).Tag);
+      n := Integer(tmpCol.Data);
+    end;
+
+  if ((tmpCol = nil) or (n >= 0)) then
   begin
     if not (assigned(FcolorDialog)) then
       FColorDialog := TColorDialog.Create(nil);
@@ -251,8 +281,12 @@ begin
     FColorDialog.Color := Color;
     if FColorDialog.Execute then
     begin
+      FCustom := True;
+
       Color := FColorDialog.Color;
-      TMenuItem(Sender).Tag := Color;
+      ColorCode := FColorDialog.Color;
+      
+      //TMenuItem(Sender).Tag := Color;
     end;
 
     if fileexists(s) then
@@ -261,7 +295,8 @@ begin
   end
   else
   begin
-    color := id;
+    FCustom := False;
+    color := n;
   end;
 end;
 
@@ -272,20 +307,21 @@ var
 begin
   inherited;
 
-  if (X > rColorBox.Left) and (X < rColorBox.Right) and
-    (Y > rColorBox.Top) and (Y < rColorBox.Bottom) then
-  begin
-    pt.X := X;
-    pt.Y := Y;
-    ShowColorMenu(pt);
-  end
-  else
-  begin
-    FTimer.Enabled := True;
-    FMouseDown := True;
-    Screen.cursor := crCross;
+  if Not(csDesigning in ComponentState) then begin
+    if (X > rColorBox.Left) and (X < rColorBox.Right) and
+      (Y > rColorBox.Top) and (Y < rColorBox.Bottom) then
+    begin
+      pt.X := X;
+      pt.Y := Y;
+      ShowColorMenu(pt);
+    end
+    else
+    begin
+      FTimer.Enabled := True;
+      FMouseDown := True;
+      Screen.cursor := crCross;
+    end;
   end;
-
 end;
 
 procedure TCustomSharpeColorBox.MouseUp(Button: TMouseButton;
@@ -307,8 +343,9 @@ begin
   osBmp := TBitmap.Create;
 
   try
-    osBmp.Height := ClientRect.Bottom;
-    osBmp.Width := ClientRect.Right;
+  try
+    osBmp.Height := Self.Height;//.Bottom;
+    osBmp.Width := Self.Width;//.Right;
 
     // Draw Color Box
     osBmp.Canvas.Brush.Color := FBackgroundColor;
@@ -334,22 +371,32 @@ begin
 
     // Copy off screen bitmap to canvas
     canvas.CopyRect(ClientRect, osBmp.canvas, ClientRect);
+  except
+  end;
   finally
     osBmp.Free;
   end;
 
 end;
 
+procedure TCustomSharpeColorBox.PopulateSkinColors;
+begin
+  FSchemeList.Load('bb');
+  FSchemeList.Theme := 'bb';
+end;
+
 procedure TCustomSharpeColorBox.SetBackgroundColor(const Value: TColor);
 begin
   FBackgroundColor := Value;
-  Paint;
+  //Paint;
 end;
 
 procedure TCustomSharpeColorBox.SetColor(const Value: TColor);
 begin
   FColor := Value;
-  SetColorCode(FColor);
+  ColorCode := Value;
+
+  FCustomColor.Color := Value;
 
   paint;
 
@@ -359,21 +406,26 @@ end;
 
 procedure TCustomSharpeColorBox.SetColorCode(const Value: Integer);
 begin
-  FColorCode := Value;//ColorToCode(Value);
-  FColor := SchemeCodeToColor(Value); // CodeToColor(Value);
+  FColorCode := ColorToSchemeCode(Value);
+  FColor := SchemeCodeToColor(Value);
 
-  Invalidate;
+  FCustomColor.Color := Value;
+
+  Self.Paint;
 end;
 
 procedure TCustomSharpeColorBox.ShowColorMenu(Point: TPoint);
 var
   pt1, pt2: TPoint;
   i: integer;
-  tmpRec: TSharpESkinColor;
+  tmpColItem: TSchemeColorItem;
   mi: TMenuItem;
+  n:Integer;
+  bPopup: Boolean;
+
+  skinCol: TSharpESkinColor;
 begin
 
-  // Create the Popup Menu
   if not (Assigned(FColorMenu)) then
   begin
     FColorMenu := TPopupMenu.Create(self);
@@ -381,43 +433,45 @@ begin
     FColorMenu.AutoHotkeys := maManual;
   end;
 
+  PopulateSkinColors;
+
+
   FSelectedID := 0;
   FColorMenu.Items.Clear;
   with FColorMenu.Items do
   begin
-    if GetSkinColorCount = 0 then
+    if FSchemeList.Count = 0 then
     begin
-      Add(NewItem('No Skin Colors Available', 0, False, False, MenuClick, 0, 'NoSkinCols'));
-      Add(NewItem('-', 0, False, False, MenuClick, 0, 'sep'));
-
-      Add(NewItem('Custom', 0, False, True, MenuClick, 0, 'Custom'));
-      if Color >= 0 then
-        FLastColor := Color;
-      Items[Count - 1].Tag := FLastColor;
-      Items[Count - 1].OnAdvancedDrawItem := AdvancedDrawItem;
-      Items[Count - 1].Hint := 'Custom';
+      bPopup := False;
+      FCustomColor.Data := Pointer(FColor);
     end
     else
     begin
 
-      for i := 0 to Pred(GetSkinColorCount) do
+      bPopup := True;
+      for i := 0 to Pred(FSchemeList.Item[0].colors.count) do
       begin
-        tmpRec := GetSchemeColorByIndex(i);
+        tmpColItem := FSchemeList.Item[0].Color[i];
+
+        n := -1  - i;
+        tmpColItem.Data := Pointer(n);
+        skinCol := FSchemeList.GetSkinColorByTag(tmpColItem.Tag);
+
         mi := TMenuItem.Create(nil);
-        mi.Caption := tmpRec.Info + '           ';
-        mi.Hint := tmpRec.Info;
+        mi.Caption := skinCol.Name + 'XXX';
+        mi.Hint := skinCol.Info;
         mi.Name := 'Color' + IntToStr(i);
         mi.OnClick := MenuClick;
-        mi.Tag := -(i + 1);
+        mi.Tag := Integer(tmpColItem);
         mi.OnAdvancedDrawItem := AdvancedDrawItem;
         Add(mi);
       end;
 
       Add(NewItem('-', 0, False, False, MenuClick, 0, 'sep'));
       Add(NewItem('Custom', 0, False, True, MenuClick, 0, 'Custom'));
-      if Color >= 0 then
-        FLastColor := Color;
-      Items[Count - 1].Tag := FLastColor;
+
+      FCustomColor.Data := Pointer(FColor);
+      Items[Count - 1].Tag := Integer(FCustomColor);
       Items[Count - 1].OnAdvancedDrawItem := AdvancedDrawItem;
       Items[Count - 1].Hint := 'Custom';
     end;
@@ -425,9 +479,14 @@ begin
   end;
 
   // Popup the menu
-  pt1 := ClientToScreen(ClientRect.BottomRight);
-  pt2 := ClientToScreen(ClientRect.TopLeft);
-  FColorMenu.Popup(pt2.X, pt1.Y);
+
+  if bPopup then begin
+    pt1 := ClientToScreen(ClientRect.BottomRight);
+    pt2 := ClientToScreen(ClientRect.TopLeft);
+    FColorMenu.Popup(pt2.X, pt1.Y);
+  end else begin
+    MenuClick(nil);
+  end;
 end;
 
 procedure TCustomSharpeColorBox.UpdateSelCol(Sender: TObject);
