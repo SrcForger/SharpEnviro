@@ -30,10 +30,13 @@ type
     FColor: TColor;
     FTag: string;
     FUnparsedColor: string;
+    FData: Pointer;
   public
     property Tag: string read FTag write FTag;
     property Color: TColor read FColor write FColor;
     property UnparsedColor: string read FUnparsedColor write FUnparsedColor;
+
+    property Data: Pointer read FData write FData;
   end;
 
   TSchemeItem = class(TPersistent)
@@ -345,7 +348,6 @@ procedure TSchemeList.Save;
 var
   i: Integer;
   sTmp: string;
-  bOk: Boolean;
 begin
   // Backup existing schemes
   sTmp := GetSkinSchemeDir(FTheme);// GetSchemeDirectory;
