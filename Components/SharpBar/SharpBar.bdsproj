@@ -126,8 +126,8 @@
 			<Directories Name="UsePackages">True</Directories>
 		</Directories>
 		<Parameters>
-			<Parameters Name="RunParams"></Parameters>
-			<Parameters Name="HostApplication"></Parameters>
+			<Parameters Name="RunParams">-load:52733373</Parameters>
+			<Parameters Name="HostApplication">..\..\..\SharpE\SharpBar.exe</Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
 			<Parameters Name="DebugCWD"></Parameters>
@@ -163,6 +163,13 @@
 			<VersionInfoKeys Name="ProductName">SharpBar</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductVersion">0.7.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
-		</VersionInfoKeys>
-	</Delphi.Personality>
+		</VersionInfoKeys>  <Language>
+      <Language Name="ActiveLang"></Language>
+      <Language Name="ProjectLang">$00000000</Language>
+      <Language Name="RootDir"></Language>
+    </Language>
+    <Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
+    </Excluded_Packages>
+  </Delphi.Personality>
 </BorlandProject>

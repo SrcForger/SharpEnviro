@@ -281,7 +281,7 @@ end;
 procedure TSharpBarMainForm.WMQueryEndSession(var msg : TMessage);
 begin
   msg.Result := 1;
-  Close;
+  Self.Close;
 end;
 
 // Temporary! remove when SharpCenter is done!
@@ -1890,21 +1890,13 @@ end;
 procedure TSharpBarMainForm.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
-  if BarHideForm <> nil then
-  begin
-    if BarHideForm.Visible then BarHideForm.Close;
-    FreeAndNil(BarHideForm);
-  end;
   CanClose := True;
-end;
-
-initialization
-
-finalization
-  if BarHideForm <> nil then
+  {if BarHideForm <> nil then
   begin
     if BarHideForm.Visible then BarHideForm.Close;
     FreeAndNil(BarHideForm);
-  end;
+  end; }
+
+end;
 
 end.
