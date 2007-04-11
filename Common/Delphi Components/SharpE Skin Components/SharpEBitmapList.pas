@@ -121,7 +121,8 @@ end;
 
 destructor TSkinBitmap.Destroy;
 begin
-  FBitmap.Free;
+  if FBitmap <> nil then
+     FBitmap.Free;
   inherited;
 end;
 

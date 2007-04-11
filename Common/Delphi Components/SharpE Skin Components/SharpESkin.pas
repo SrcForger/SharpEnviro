@@ -47,6 +47,15 @@ uses
   Math;
 
 type
+  TSharpESkinItem = (scPanel,scButton,scBar,scProgressBar,scCheckBox,scRadioBox,
+                     scMiniThrobber,scEdit,scForm,scTaskItem,scMenu,scMenuItem);
+  TSharpESkinItems = set of TSharpESkinItem;
+
+const
+ ALL_SHARPE_SKINS = [scPanel,scButton,scBar,scProgressBar,scCheckBox,scRadioBox,
+                     scMiniThrobber,scEdit,scForm,scTaskItem,scMenu,scMenuItem];
+
+type
   TSharpEPanelSkin = class;
   TSharpEButtonSkin = class;
   TSharpEBarSkin = class;
@@ -75,6 +84,7 @@ type
     FBigText    : TSkinText;
     FSkinVersion: Double;
     FBitmapList: TSkinBitmapList;
+    FLoadSkins : TSharpESkinItems;
 
     FOnNotify: TSkinEvent;
     FPanelSkin: TSharpEPanelSkin;
@@ -105,8 +115,8 @@ type
       override;
     procedure DefineProperties(Filer: TFiler); override;
   public
-    constructor Create(AOwner: TComponent); overload;override;
-    constructor CreateBmp(AOwner: TComponent; BmpList : TSkinBitmapList); overload;
+    constructor Create(AOwner: TComponent; Skins: TSharpESkinItems = ALL_SHARPE_SKINS); reintroduce; overload;
+    constructor CreateBmp(AOwner: TComponent; BmpList : TSkinBitmapList; Skins: TSharpESkinItems = ALL_SHARPE_SKINS); overload;
     destructor Destroy; override;
     procedure Clear;
     procedure LoadFromXmlFile(filename: string); virtual;
@@ -135,6 +145,8 @@ type
     property MediumText : TSkinText read FMediumText;
     property BigText    : TSkinText read FBigText;
     property BitmapList: TSkinBitmapList read FBitmapList write FBitmapList;
+
+    procedure RemoveNotUsedBitmaps;
 
     procedure FreeInstance; override;
   published
@@ -513,7 +525,9 @@ type
     property SkinDim : TSkinDim read FSkinDim;
   end;
 
+
 implementation
+
 uses SharpESkinManager,gr32_png;
 
 
@@ -538,60 +552,203 @@ end;
 //* TSharpESkin
 //***************************************
 
-constructor TSharpESkin.Create(AOwner: TComponent);
+constructor TSharpESkin.Create(AOwner: TComponent; Skins: TSharpESkinItems = ALL_SHARPE_SKINS);
 begin
-  inherited;
+  inherited Create(AOwner);
+
+  FLoadSkins := Skins;
+
   if FBitmaplist = nil then
     FBitmapList := TSkinBitmapList.Create;
-  FButtonSkin := TSharpEButtonSkin.create(FBitmapList);
-  FCheckBoxSkin := TSharpECheckBoxSkin.create(FBitmapList);
-  FRadioBoxSkin := TSharpERadioBoxSkin.create(FBitmapList);
-  FProgressBarSkin := TSharpEProgressBarSkin.create(FBitmapList);
-  FFormSkin := TSharpEFormSkin.Create(FBitmapList);
-  FBarSkin := TSharpEBarSkin.create(FBitmapList);
-  FTaskItemSkin := TSharpeTaskItemSkin.Create(FBitmapList);
+
+  if scButton in FLoadSkins then FButtonSkin := TSharpEButtonSkin.create(FBitmapList);
+  if scCheckBox in FLoadSkins then FCheckBoxSkin := TSharpECheckBoxSkin.create(FBitmapList);
+  if scRadioBox in FLoadSkins then FRadioBoxSkin := TSharpERadioBoxSkin.create(FBitmapList);
+  if scProgressBar in FLoadSkins then FProgressBarSkin := TSharpEProgressBarSkin.create(FBitmapList);
+  if scForm in FLoadSkins then FFormSkin := TSharpEFormSkin.Create(FBitmapList);
+  if scBar in FLoadSkins then FBarSkin := TSharpEBarSkin.create(FBitmapList);
+  if scTaskItem in FLoadSkins then FTaskItemSkin := TSharpeTaskItemSkin.Create(FBitmapList);
   FSkinText := TSkinText.Create;
   FSmallText  := TSkinText.Create;
   FMediumText := TSkinText.Create;
   FBigText    := TSkinText.Create;
-  FPanelSkin := TSharpEPanelSkin.Create(FBitmapList);
+  if scPanel in FLoadSkins then FPanelSkin := TSharpEPanelSkin.Create(FBitmapList);
   FSkinHeader := TSharpeSkinHeader.Create;
-  FMiniThrobberskin := TSharpEMiniThrobberSkin.Create(FBitmapList);
-  FEditSkin := TSharpEEditSkin.Create(FBitmapList);
-  FMenuSkin := TSharpEMenuSkin.Create(FBitmapList);
-  FMenuItemSkin := TSharpEMenuItemSkin.Create(FBitmapList);
+  if scMiniThrobber in FLoadSkins then FMiniThrobberskin := TSharpEMiniThrobberSkin.Create(FBitmapList);
+  if scEdit in FLoadSkins then FEditSkin := TSharpEEditSkin.Create(FBitmapList);
+  if scMenu in FLoadSkins then FMenuSkin := TSharpEMenuSkin.Create(FBitmapList);
+  if scMenuItem in FLoadSkins then FMenuItemSkin := TSharpEMenuItemSkin.Create(FBitmapList);
 
   FXml := TJvSimpleXml.Create(nil);
 end;
 
-constructor TSharpESkin.CreateBmp(AOwner: TComponent; BmpList : TSkinBitmapList);
+constructor TSharpESkin.CreateBmp(AOwner: TComponent; BmpList : TSkinBitmapList; Skins: TSharpESkinItems = ALL_SHARPE_SKINS);
 begin
   FBitmapList := bmpList;
-  Create(Aowner);
+  Create(Aowner,Skins);
 end;
 
 destructor TSharpESkin.Destroy;
 begin
   FXml.Free;
-  FButtonSkin.Free;
-  FCheckBoxSkin.Free;
-  FRadioBoxSkin.Free;
-  FProgressBarSkin.Free;
-  FBarSkin.Free;
-  FTaskItemSkin.Free;
+  if FButtonSkin <> nil then FButtonSkin.Free;
+  if FCheckBoxSkin <> nil then FCheckBoxSkin.Free;
+  if FRadioBoxSkin <> nil then FRadioBoxSkin.Free;
+  if FProgressBarskin <> nil then FProgressBarSkin.Free;
+  if FBarSkin <> nil then FBarSkin.Free;
+  if FTaskItemSkin <> nil then FTaskItemSkin.Free;
   FSkinText.Free;
   FSmallText.Free;
   FMediumText.Free;
   FBigText.Free;
-  FPanelSkin.Free;
+  if FPanelSkin <> nil then FPanelSkin.Free;
   FSkinHeader.Free;
-  FMiniThrobberSkin.Free;
-  FEditSkin.Free;
-  FFormSkin.Free;
-  FMenuSkin.Free;
-  FMenuItemSkin.Free;
+  if FMiniThrobberSkin <> nil then FMiniThrobberSkin.Free;
+  if FEditSkin <> nil then FEditSkin.Free;
+  if FFormSkin <> nil then FFormSkin.Free;
+  if FMenuSkin <> nil then FMenuSkin.Free;
+  if FMenuItemSkin <> nil then FMenuItemSkin.Free;
   FBitmapList.Free;
   inherited;
+end;
+
+procedure TSharpESkin.RemoveNotUsedBitmaps;
+
+  procedure RemoveSkinPartBitmaps(sp : TSkinPart; List : TObjectList);
+  var
+    i,k : integer;
+    item : TSkinBitmap;
+  begin
+    if sp.Items <> nil then
+    begin
+      for i := 0 to sp.Items.Count - 1 do
+      begin
+        if sp.Items.Item[i].Items <> nil then
+           RemoveSkinPartBitmaps(sp.Items.Item[i],List);
+      end;
+    end;
+
+    if sp.BitmapID >= 0 then
+    begin
+      for k := List.Count - 1 downto 0 do
+      begin
+        item := TSkinBitmap(List.Items[k]);
+        if FBitmapList[sp.BitmapID] = item then
+          List.Delete(k);
+      end;
+    end;
+  end;
+
+var
+  n : integer;
+  list : TObjectList;
+begin
+  list := TObjectList.Create(False);
+  for n := 0 to FBitmapList.Count - 1 do
+      list.Add(FBitmapList.Items[n]);
+
+  if FButtonSkin <> nil then
+  begin
+    RemoveSkinPartBitmaps(FButtonSkin.Normal,List);
+    RemoveSkinPartBitmaps(FButtonSkin.Down,List);
+    RemoveSkinPartBitmaps(FButtonSkin.Hover,List);
+    RemoveSkinPartBitmaps(FButtonSkin.Disabled,List);
+  end;
+  if FBarSkin <> nil then
+  begin
+    RemoveSkinPartBitmaps(FBarSkin.Bar,List);
+    RemoveSkinPartBitmaps(FBarSkin.BarBottom,List);
+    RemoveSkinPartBitmaps(FBarSkin.ThNormal,List);
+    RemoveSkinPartBitmaps(FBarSkin.ThDown,List);
+    RemoveSkinPartBitmaps(FBarSkin.ThHover,List);
+  end;
+  if FEditSkin <> nil then
+  begin
+    RemoveSkinPartBitmaps(FEditSkin.Normal,List);
+    RemoveSkinPartBitmaps(FEditSkin.Focus,List);
+    RemoveSkinPartBitmaps(FEditSkin.Disabled,List);
+    RemoveSkinPartBitmaps(FEditSkin.Hover,List);
+  end;
+  if FProgressBarSkin <> nil then
+  begin
+    RemoveSkinPartBitmaps(FProgressBarSkin.BackGround,List);
+    RemoveSkinPartBitmaps(FProgressBarSkin.Progress,List);
+    RemoveSkinPartBitmaps(FProgressBarSkin.SmallBackground,List);
+    RemoveSkinPartBitmaps(FProgressBarSkin.SmallProgress,List);
+  end;
+  if FTaskItemSkin <> nil then
+  begin
+    RemoveSkinPartBitmaps(FTaskItemSkin.Full.Normal,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Full.NormalHover,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Full.Down,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Full.DownHover,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Full.Highlight,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Full.HighlightHover,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Compact.Normal,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Compact.NormalHover,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Compact.Down,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Compact.DownHover,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Compact.Highlight,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Compact.HighlightHover,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Mini.Normal,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Mini.NormalHover,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Mini.Down,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Mini.DownHover,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Mini.Highlight,List);
+    RemoveSkinPartBitmaps(FTaskItemSkin.Mini.HighlightHover,List);
+  end;
+  if FCheckBoxSkin <> nil then
+  begin
+    RemoveskinPartBitmaps(FCheckBoxSkin.Normal,List);
+    RemoveskinPartBitmaps(FCheckBoxSkin.Down,List);
+    RemoveskinPartBitmaps(FCheckBoxSkin.Hover,List);
+    RemoveskinPartBitmaps(FCheckBoxSkin.Disabled,List);
+    RemoveskinPartBitmaps(FCheckBoxSkin.Checked,List);
+  end;
+  if FRadioBoxSkin <> nil then
+  begin
+    RemoveskinPartBitmaps(FRadioBoxSkin.Normal,List);
+    RemoveskinPartBitmaps(FRadioBoxSkin.Down,List);
+    RemoveskinPartBitmaps(FRadioBoxSkin.Hover,List);
+    RemoveskinPartBitmaps(FRadioBoxSkin.Disabled,List);
+    RemoveskinPartBitmaps(FRadioBoxSkin.Checked,List);
+  end;
+  if FMiniThrobberSkin <> nil then
+  begin
+    RemoveskinPartBitmaps(FMiniThrobberSkin.Normal,List);
+    RemoveskinPartBitmaps(FMiniThrobberSkin.Down,List);
+    RemoveskinPartBitmaps(FMiniThrobberSkin.Hover,List);
+  end;
+  if FFormSkin <> nil then
+  begin
+    RemoveskinPartBitmaps(FFormSkin.Full,List);
+  end;
+  if FMenuSkin <> nil then
+  begin
+    RemoveskinPartBitmaps(FMenuSkin.Background,List);
+  end;
+  if FMenuItemSkin <> nil then
+  begin
+    RemoveskinPartBitmaps(FMenuItemSkin.NormalItem,List);
+    RemoveskinPartBitmaps(FMenuItemSkin.HoverItem,List);
+    RemoveskinPartBitmaps(FMenuItemSkin.DownItem,List);
+    RemoveskinPartBitmaps(FMenuItemSkin.NormalSubItem,List);
+    RemoveskinPartBitmaps(FMenuItemSkin.HoverSubItem,List);
+    RemoveskinPartBitmaps(FMenuItemSkin.LabelItem,List);
+    RemoveskinPartBitmaps(FMenuItemSkin.Separator,List);
+  end;
+  if FPanelSkin <> nil then
+  begin
+    RemoveskinPartBitmaps(FPanelSkin.Normal,List);
+    RemoveskinPartBitmaps(FPanelSkin.Selected,List);
+    RemoveskinPartBitmaps(FPanelSkin.Lowered,List);
+    RemoveskinPartBitmaps(FPanelSkin.Raised,List);
+  end;
+
+  for n := 0 to List.Count - 1 do
+      FreeAndNil(TSkinBitmap(List.Items[n]).FBitmap);
+
+  list.free;
 end;
 
 procedure TSharpESkin.SaveToStream(Stream: TStream);
@@ -618,111 +775,147 @@ begin
   try
 
     //Write Button
-    StringSaveToStream('Button', Stream);
-    FButtonSkin.SaveToStream(tempStream);
-    size := tempStream.Size;
-    tempStream.Position := 0;
-    Stream.WriteBuffer(size, sizeof(size));
-    Stream.CopyFrom(tempStream, Size);
+    if FButtonSkin <> nil then
+    begin
+      StringSaveToStream('Button', Stream);
+      FButtonSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
 
     //Write ProgressBar
-    tempStream.clear;
-    StringSaveToStream('ProgressBar', Stream);
-    FProgressBarSkin.SaveToStream(tempStream);
-    size := tempStream.Size;
-    tempStream.Position := 0;
-    Stream.WriteBuffer(size, sizeof(size));
-    Stream.CopyFrom(tempStream, Size);
+    if FProgressBarSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('ProgressBar', Stream);
+      FProgressBarSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
 
     //Write CheckBox
-    tempStream.clear;
-    StringSaveToStream('CheckBox', Stream);
-    FCheckBoxSkin.SaveToStream(tempStream);
-    size := tempStream.Size;
-    tempStream.Position := 0;
-    Stream.WriteBuffer(size, sizeof(size));
-    Stream.CopyFrom(tempStream, Size);
+    if FCheckBoxSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('CheckBox', Stream);
+      FCheckBoxSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
 
     //Write RadioBox
-    tempStream.clear;
-    StringSaveToStream('RadioBox', Stream);
-    FRadioBoxSkin.SaveToStream(tempStream);
-    size := tempStream.Size;
-    tempStream.Position := 0;
-    Stream.WriteBuffer(size, sizeof(size));
-    Stream.CopyFrom(tempStream, Size);
+    if FRadioBoxSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('RadioBox', Stream);
+      FRadioBoxSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
 
     //Write Bar
-    tempStream.clear;
-    StringSaveToStream('Bar', Stream);
-    FBarSkin.SaveToStream(tempStream);
-    size := tempStream.Size;
-    tempStream.Position := 0;
-    Stream.WriteBuffer(size, sizeof(size));
-    Stream.CopyFrom(tempStream, Size);
+    if FBarSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('Bar', Stream);
+      FBarSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
 
     //Write Panel
-    tempStream.clear;
-    StringSaveToStream('Panel', Stream);
-    FPanelSkin.SaveToStream(tempStream);
-    size := tempStream.Size;
-    tempStream.Position := 0;
-    Stream.WriteBuffer(size, sizeof(size));
-    Stream.CopyFrom(tempStream, Size);
+    if FPanelSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('Panel', Stream);
+      FPanelSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
 
     //Write MiniThrobber
-    tempStream.clear;
-    StringSaveToStream('MiniThrobber', Stream);
-    FMiniThrobberSkin.SaveToStream(tempStream);
-    size := tempStream.Size;
-    tempStream.Position := 0;
-    Stream.WriteBuffer(size, sizeof(size));
-    Stream.CopyFrom(tempStream, Size);
+    if FMiniThrobberSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('MiniThrobber', Stream);
+      FMiniThrobberSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
 
     //Write Edit
-    tempStream.clear;
-    StringSaveToStream('Edit', Stream);
-    FEditSkin.SaveToStream(tempStream);
-    size := tempStream.Size;
-    tempStream.Position := 0;
-    Stream.WriteBuffer(size, sizeof(size));
-    Stream.CopyFrom(tempStream, Size);
+    if FEditSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('Edit', Stream);
+      FEditSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
 
     //Write Form
-    tempStream.clear;
-    StringSaveToStream('Form', Stream);
-    FFormSkin.SaveToStream(tempStream);
-    size := tempStream.Size;
-    tempStream.Position := 0;
-    Stream.WriteBuffer(size, sizeof(size));
-    Stream.CopyFrom(tempStream, Size);
+    if FFormSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('Form', Stream);
+      FFormSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
 
     //Write TaskItem
-    tempStream.clear;
-    StringSaveToStream('TaskItem', Stream);
-    FTaskItemSkin.SaveToStream(tempStream);
-    size := tempStream.Size;
-    tempStream.Position := 0;
-    Stream.WriteBuffer(size, sizeof(size));
-    Stream.CopyFrom(tempStream, Size);
+    if FTaskItemSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('TaskItem', Stream);
+      FTaskItemSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
 
     //Write MenuSkin
-    tempStream.clear;
-    StringSaveToStream('Menu', Stream);
-    FMenuSkin.SaveToStream(tempStream);
-    size := tempStream.Size;
-    tempStream.Position := 0;
-    Stream.WriteBuffer(size, sizeof(size));
-    Stream.CopyFrom(tempStream, Size);
+    if FMenuSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('Menu', Stream);
+      FMenuSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
 
     //Write MenuItemSkin
-    tempStream.clear;
-    StringSaveToStream('MenuItem', Stream);
-    FMenuItemSkin.SaveToStream(tempStream);
-    size := tempStream.Size;
-    tempStream.Position := 0;
-    Stream.WriteBuffer(size, sizeof(size));
-    Stream.CopyFrom(tempStream, Size);
+    if FMenuItemSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('MenuItem', Stream);
+      FMenuItemSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
 
     //Write Header
     {StringSaveToStream('Header', Stream);
@@ -767,40 +960,40 @@ begin
       if temp = 'Header' then
         FSkinHeader.LoadFromStream(Stream)
       else
-        if temp = 'Button' then
+        if (temp = 'Button') and (FButtonSkin <> nil) then
           FButtonSkin.LoadFromStream(Stream)
         else
-          if temp = 'ProgressBar' then
+          if (temp = 'ProgressBar') and (FProgressBarSkin <> nil) then
             FProgressBarSkin.LoadFromStream(Stream)
           else
-            if temp = 'CheckBox' then
+            if (temp = 'CheckBox') and (FCheckBoxSkin <> nil) then
               FCheckBoxSkin.LoadFromStream(Stream)
             else
-              if temp = 'RadioBox' then
+              if (temp = 'RadioBox') and (FRadioBoxSkin <> nil) then
                 FRadioBoxSkin.LoadFromStream(Stream)
               else
-                if temp = 'Bar' then
+                if (temp = 'Bar') and (FBarSkin <> nil) then
                   FBarSkin.LoadFromStream(Stream)
                 else
-                  if temp = 'Panel' then
+                  if (temp = 'Panel') and (FPanelSkin <> nil) then
                     FPanelSkin.LoadFromStream(Stream)
                   else
-                    if temp = 'MiniThrobber' then
+                    if (temp = 'MiniThrobber') and (FMiniThrobberSkin <> nil) then
                       FMiniThrobberSkin.LoadFromStream(Stream)
                     else
-                      if temp = 'Edit' then
+                      if (temp = 'Edit') and (FEditSkin <> nil) then
                         FEditSkin.LoadFromStream(Stream)
                       else
-                        if temp = 'Form' then
+                        if (temp = 'Form') and (FFormSkin <> nil) then
                           FFormSkin.LoadFromStream(Stream)
                         else
-                          if temp = 'TaskItem' then
+                          if (temp = 'TaskItem') and (FTaskItemSkin <> nil) then
                             FTaskItemSkin.LoadFromStream(Stream)
                           else
-                            if temp = 'Menu' then
+                            if (temp = 'Menu') and (FMenuSkin <> nil) then
                               FMenuSkin.LoadFromStream(Stream)
                             else
-                              if temp = 'MenuItem' then
+                              if (temp = 'MenuItem') and (FMenuItemSkin <> nil) then
                                 FMenuItemSkin.LoadFromStream(Stream)
                                 else Stream.Position := Stream.Position + size;
 
@@ -808,25 +1001,29 @@ begin
     end;
   except
   end;
-  FBarSkin.CheckValid;
+  
+  if FBarskin <> nil then
+     FBarSkin.CheckValid;
   inherited;
+  
+  RemoveNotUsedBitmaps;
 end;
 
 procedure TSharpESkin.Clear;
 begin
-  FButtonSkin.Clear;
-  FCheckBoxSkin.Clear;
-  FProgressBarSkin.Clear;
-  FBarSkin.Clear;
-  FPanelSkin.Clear;
+  if FButtonSkin <> nil then FButtonSkin.Clear;
+  if FCheckBoxSkin <> nil then FCheckBoxSkin.Clear;
+  if FProgressBarSkin <> nil then FProgressBarSkin.Clear;
+  if FBarSkin <> nil then FBarSkin.Clear;
+  if FPanelSkin <> nil then FPanelSkin.Clear;
   FSkinHeader.Clear;
-  FRadioBoxSkin.Clear;
-  FMiniThrobberSkin.Clear;
-  FEditSkin.Clear;
-  FFormSkin.Clear;
-  FMenuSkin.Clear;
-  FMenuItemSkin.Clear;
-  FTaskItemSkin.Clear;
+  if FRadioBoxSkin <> nil then FRadioBoxSkin.Clear;
+  if FMiniThrobberSkin <> nil then FMiniThrobberSkin.Clear;
+  if FEditSkin <> nil then FEditSkin.Clear;
+  if FFormSkin <> nil then FFormSkin.Clear;
+  if FMenuSkin <> nil then FMenuSkin.Clear;
+  if FMenuItemSkin <> nil then FMenuItemSkin.Clear;
+  if FTaskItemSkin <> nil then FTaskItemSkin.Clear;
   FSmallText.Clear;
   FMediumText.Clear;
   FBigText.Clear;
@@ -888,7 +1085,8 @@ begin
       exit;
   except
     Clear;
-    BarSkin.CheckValid;
+    if FBarSkin <> nil then
+       BarSkin.CheckValid;
     exit;
   end;
   Clear;
@@ -906,32 +1104,33 @@ begin
      end;
   if FXml.Root.Items.ItemNamed['header'] <> nil then
     FSkinHeader.LoadFromXml(FXml.Root.Items.ItemNamed['header'], path);
-  if FXml.Root.Items.ItemNamed['button'] <> nil then
+  if (FXml.Root.Items.ItemNamed['button'] <> nil) and (FButtonSkin <> nil) then
     FButtonSkin.LoadFromXML(FXml.Root.Items.ItemNamed['button'], path);
-  if FXml.Root.Items.ItemNamed['sharpbar'] <> nil then
+  if (FXml.Root.Items.ItemNamed['sharpbar'] <> nil) and (FBarSkin <> nil) then
     FBarSkin.LoadFromXML(FXml.Root.Items.ItemNamed['sharpbar'], path);
-  if FXml.Root.Items.ItemNamed['progressbar'] <> nil then
+  if (FXml.Root.Items.ItemNamed['progressbar'] <> nil) and (FProgressBarSkin <> nil) then
     FProgressBarSkin.LoadFromXML(FXml.Root.Items.ItemNamed['progressbar'], path);
-  if FXml.Root.Items.ItemNamed['checkbox'] <> nil then
+  if (FXml.Root.Items.ItemNamed['checkbox'] <> nil) and (FCheckBoxSkin <> nil) then
     FCheckBoxSkin.LoadFromXML(FXml.Root.Items.ItemNamed['checkbox'], path);
-  if FXml.Root.Items.ItemNamed['radiobox'] <> nil then
+  if (FXml.Root.Items.ItemNamed['radiobox'] <> nil) and (FRadioBoxSkin <> nil) then
     FRadioBoxSkin.LoadFromXML(FXml.Root.Items.ItemNamed['radiobox'], path);
-  if FXml.Root.Items.ItemNamed['panel'] <> nil then
+  if (FXml.Root.Items.ItemNamed['panel'] <> nil) and (FPanelSkin <> nil) then
     FPanelSkin.LoadFromXML(FXml.Root.Items.ItemNamed['panel'], path);
-  if FXml.Root.Items.ItemNamed['minithrobber'] <> nil then
+  if (FXml.Root.Items.ItemNamed['minithrobber'] <> nil) and (FMiniThrobberSkin <> nil) then
     FMiniThrobberSkin.LoadFromXML(FXML.Root.Items.ItemNamed['minithrobber'], path);
-  if FXml.Root.Items.ItemNamed['edit'] <> nil then
+  if (FXml.Root.Items.ItemNamed['edit'] <> nil) and (FEditSkin <> nil) then
     FEditSkin.LoadFromXML(FXML.Root.Items.ItemNamed['edit'], path);
-  if FXml.Root.Items.ItemNamed['form'] <> nil then
+  if (FXml.Root.Items.ItemNamed['form'] <> nil) and (FFormSkin <> nil) then
     FFormSkin.LoadFromXML(FXml.Root.Items.ItemNamed['form'], path);
-  if FXml.Root.Items.ItemNamed['taskitem'] <> nil then
+  if (FXml.Root.Items.ItemNamed['taskitem'] <> nil) and (FTaskItemSkin <> nil) then
     FTaskItemSkin.LoadFromXML(FXml.Root.Items.ItemNamed['taskitem'],path);
-  if FXml.Root.Items.ItemNamed['menu'] <> nil then
+  if (FXml.Root.Items.ItemNamed['menu'] <> nil) and (FMenuSkin <> nil) then
     FMenuSkin.LoadFromXML(FXml.Root.Items.ItemNamed['menu'],path);
-  if FXml.Root.Items.ItemNamed['menuitem'] <> nil then
+  if (FXml.Root.Items.ItemNamed['menuitem'] <> nil) and (FMenuItemSkin <> nil) then
     FMenuItemSkin.LoadFromXML(FXml.Root.Items.ItemNamed['menuitem'],path);
 
-  FBarSkin.CheckValid;
+  if FBarSkin <> nil then
+     FBarSkin.CheckValid;
 end;
 
 //***************************************

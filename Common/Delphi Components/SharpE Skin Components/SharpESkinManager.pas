@@ -64,6 +64,7 @@ type
     FUsingMainWnd : boolean;
     FIsThemeLoading : boolean;
     FHandleUpdates : boolean;
+    FSkinItems : TSharpESkinItems;
     FMsgWnd : Hwnd;
     procedure SystemSkinChanged(sender : TObject);
     procedure SetSkinSource(value: TSkinSource);
@@ -76,14 +77,16 @@ type
     procedure ComponentSkinUpdated;
     function MessageHook(var Msg: TMessage): Boolean;
     procedure MessageHook2(var Msg: TMessage);
+    procedure SetComponentSkins(Value : TSharpESkinItems);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
     procedure Loaded; override;
   public
-    constructor Create(AOwner: TComponent); override;
-    constructor CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme); overload;
-    constructor CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; NoSystemScheme : boolean); overload;
+    constructor Create(AOwner: TComponent); overload; override;
+    constructor Create(AOwner: TComponent; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); overload;
+    constructor CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); overload;
+    constructor CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; NoSystemScheme : boolean; Skins : TSharpESkinItems = ALL_SHARPE_SKINS); overload;
     destructor Destroy; override;
     property Scheme: TSharpEScheme read GetScheme;
     property Skin: TSharpESkin read GetSkin;
@@ -96,6 +99,7 @@ type
     property SchemeSource: TSchemeSource read FSchemeSource write SetSchemeSource;
     property CompScheme: TSharpEScheme read FComponentScheme write SetComponentScheme;
     property CompSkin: TSharpESkin read FComponentSkin write SetComponentSkin;
+    property ComponentSkins: TSharpESkinItems read FSkinItems write SetComponentSkins default ALL_SHARPE_SKINS;
     property HandleUpdates : boolean read FHandleUpdates write FHandleUpdates;
     property onSkinChanged: TNotifyEvent read FOnSkinChanged write FOnSkinChanged;
   end;
@@ -117,25 +121,53 @@ uses
   SharpETaskItem,
   SharpThemeApi;
 
-constructor TSharpESkinManager.CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme; NoSystemScheme : boolean);
+constructor TSharpESkinManager.CreateRuntime(AOwner: TComponent;
+                                             Skin : TSharpESkin; Scheme : TSharpEScheme;
+                                             NoSystemScheme : boolean;
+                                             Skins : TSharpESkinItems = ALL_SHARPE_SKINS);
 begin
   FNoSystemSchemeInit := NoSystemScheme;
-  CreateRuntime(AOwner, Skin, Scheme);
+  CreateRuntime(AOwner, Skin, Scheme, Skins);
 end;
 
-constructor TSharpESkinManager.CreateRuntime(AOwner: TComponent; Skin : TSharpESkin; Scheme : TSharpEScheme);
+constructor TSharpESkinManager.CreateRuntime(AOwner: TComponent;
+                                             Skin : TSharpESkin; Scheme : TSharpEScheme;
+                                             Skins : TSharpESkinItems = ALL_SHARPE_SKINS);
 begin
   FComponentScheme := Scheme;
   FComponentSkin := Skin;
-  Create(AOwner);
+  Create(AOwner,Skins);
+end;
+
+procedure TSharpESkinManager.SetComponentSkins(Value : TSharpESkinItems);
+begin
+  if Value <> FSkinItems then
+  begin
+    FSkinItems := Value;
+    FreeAndNil(FSystemSkin);
+    FSystemSkin := TSystemSharpESkin.create(FSkinItems);
+    FSystemSkin.OnSkinChanged := SystemSkinChanged;
+    FSystemSkin.OnNotify := ComponentSkinUpdated;
+    UpdateSkin;
+  end;
 end;
 
 constructor TSharpESkinManager.Create(AOwner: TComponent);
 begin
+  Create(AOwner, [scBar]);
+end;
+
+constructor TSharpESkinManager.Create(AOwner: TComponent; Skins : TSharpESkinItems = ALL_SHARPE_SKINS);
+begin
+  FSkinItems := Skins;
+
   FSystemScheme := TSharpEScheme.create(nil);
-  FSystemSkin := TSystemSharpESkin.create;
-  FSystemSkin.OnSkinChanged := SystemSkinChanged;
-  FSystemSkin.OnNotify := ComponentSkinUpdated;
+  if FSkinItems <> [] then
+  begin
+    FSystemSkin := TSystemSharpESkin.create(FSkinItems);
+    FSystemSkin.OnSkinChanged := SystemSkinChanged;
+    FSystemSkin.OnNotify := ComponentSkinUpdated;
+  end;
 
   FHandleUpdates := True;
   FIsThemeLoading := False;
@@ -153,8 +185,8 @@ begin
 
     LoadSharpEScheme(FSystemScheme);
   end;
-  
-  inherited;
+
+  inherited Create(AOwner);
 
  //Default values
   FSchemeSource := ssDefault;

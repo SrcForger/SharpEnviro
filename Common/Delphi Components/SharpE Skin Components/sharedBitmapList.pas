@@ -117,7 +117,7 @@ type
     //procedure NotifyManager;
   protected
   public
-    constructor Create;
+    constructor Create(Skins: TSharpESkinItems = ALL_SHARPE_SKINS); reintroduce;
     destructor Destroy; override;
 
     //Following procedures should not work with systemskin
@@ -135,11 +135,11 @@ type
 
 implementation
 
-constructor TSystemSharpESkin.Create;
+constructor TSystemSharpESkin.Create(Skins: TSharpESkinItems = ALL_SHARPE_SKINS);
 begin
 //  FSharedBmpList := TSharedBitmapList.Create('',0);
 //  inherited CreateBmp(nil, FSharedBmpList as TSkinBitmapList);
-  inherited Create(nil);
+  inherited Create(nil, Skins);
   FActivated := false;
 
   //Hook MainWindow to recieve system messages
