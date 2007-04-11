@@ -337,13 +337,16 @@ procedure TModuleManager.Delete(ID : integer);
 var
   n,i : integer;
   TempModule : TModule;
+  MF : TModuleFile;
+  hm : boolean;
 begin
   for n := 0 to FModules.Count - 1 do
   begin
     TempModule := TModule(FModules.Items[n]);
     if TempModule.ID = ID then
     begin
-      TempModule.ModuleFile.DLLCloseModule(ID);
+      MF := TempModule.ModuleFile;
+      MF.DLLCloseModule(ID);
       FModules.Delete(n);
 
       for i := 0 to FModuleSettings.Root.Items.Count -1 do
@@ -354,6 +357,19 @@ begin
             FModuleSettings.SaveToFile(FModuleSettings.FileName);
             break;
           end;
+
+      // Check if the same module file has other modules loaded...
+      hm := False;
+      for i := 0 to FModules.Count - 1 do
+      begin
+        if TModule(FModules.Items[i]).ModuleFile = MF then
+        begin
+          hm := True;
+          break;
+        end;
+      end;
+      if not hm then
+         MF.UnloadDll; // No other modules loaded by that Module File... unload the dll
 
       LockWindow(FParent);
       BroadCastModuleRefresh;
@@ -374,14 +390,32 @@ procedure TModuleManager.Unload(ID : integer);
 var
   n : integer;
   TempModule : TModule;
+  MF : TModuleFile;
+  i : integer;
+  hm : boolean;
 begin
   for n := 0 to FModules.Count - 1 do
   begin
     TempModule := TModule(FModules.Items[n]);
     if TempModule.ID = ID then
     begin
-      TempModule.ModuleFile.DLLCloseModule(ID);
+      MF := TempModule.ModuleFile;
+      MF.DLLCloseModule(ID);
       FModules.Delete(n);
+
+      // Check if the same module file has other modules loaded...
+      hm := False;
+      for i := 0 to FModules.Count - 1 do
+      begin
+        if TModule(FModules.Items[i]).ModuleFile = MF then
+        begin
+          hm := True;
+          break;
+        end;
+      end;
+      if not hm then
+         MF.UnloadDll; // No other modules loaded by that Module File... unload the dll
+
       LockWindow(FParent);
       FixModulePositions;
       UnLockWindow(FParent);
@@ -1149,13 +1183,13 @@ constructor TModuleFile.Create(pFileName : String; pParent : hwnd;
                                pModuleSettings : TJvSimpleXML);
 begin
   Inherited Create;
-  FParent   := pParent;
+  FParent         := pParent;
   FModuleSettings := pModuleSettings;
-  FFileName := pFileName;
-  FSkinManager := pSkinManager;
-  FBar         := pBar;
-  FLoaded   := False;
-  LoadDll;
+  FFileName       := pFileName;
+  FSkinManager    := pSkinManager;
+  FBar            := pBar;
+  FLoaded         := False;
+  //LoadDll;
 end;
 
 destructor TModuleFile.Destroy;
@@ -1252,6 +1286,7 @@ begin
   FOwnerForm := pOwnerForm;
   FID := pID;
   FModuleFile := pModuleFile;
+  if not FModuleFile.FLoaded then FModuleFile.LoadDll;
   FHandle := FModuleFile.DllCreateModule(FID,pParent);
   FControl := GetControlByHandle(FHandle);
   FPosition := pPosition;

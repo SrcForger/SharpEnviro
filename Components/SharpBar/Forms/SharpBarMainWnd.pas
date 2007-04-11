@@ -37,7 +37,7 @@ uses
   Dialogs, SharpESkinManager, Menus, StdCtrls, JvSimpleXML, SharpApi,
   GR32, uSharpEModuleManager, DateUtils, PngImageList, SharpEBar, Jpeg, SharpThemeApi,
   SharpEBaseControls, ImgList, Controls, ExtCtrls, uSkinManagerThreads,
-  uSystemFuncs, Types, AppEvnts, uSharpEColorBox;
+  uSystemFuncs, Types, AppEvnts, uSharpEColorBox, SharpESkin;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -473,8 +473,8 @@ begin
        SharpEBar.UpdateSkin;
        SharpEBar.Throbber.UpdateSkin;
        SharpEbar.Throbber.Repaint;
-       UpdateBGImage;
-       ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
+       UpdateBGZone;
+//       ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
      end;
 
   // Step2: Update modules
@@ -928,7 +928,7 @@ begin
   FSuspended := False;
   FShellBCInProgress := False;
 
-  FSkinManager := TSharpESkinManager.Create(self);
+  FSkinManager := TSharpESkinManager.Create(self, [scBar,scMiniThrobber]);
   FSkinManager.HandleUpdates := False;
 
   FSharpEBar := TSharpEBar.CreateRuntime(self,SkinManager);
@@ -1733,6 +1733,11 @@ procedure TSharpBarMainForm.OnBarPositionUpdate(Sender : TObject);
 begin
   if FSuspended then exit;
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
+
+  if Left < 0 then Left := 0;
+  if Width > Monitor.Width then
+     Width := Monitor.Width; 
+
   UpdateBGImage;
   ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
 end;
