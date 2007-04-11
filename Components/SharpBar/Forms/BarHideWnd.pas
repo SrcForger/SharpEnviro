@@ -50,7 +50,7 @@ end;
 
 procedure TBarHideForm.FormClick(Sender: TObject);
 begin
-  if Application.Terminated then exit;
+  if Closing then exit;
 
   if SharpBarMainForm.Visible then
   begin
@@ -72,7 +72,7 @@ procedure TBarHideForm.UpdateStatus;
 var
   mon : TMonitor;
 begin
-  if Application.Terminated then exit;
+  if Closing then exit;
 
   mon := Screen.MonitorFromWindow(SharpBarMainForm.Handle);
   if mon = nil then mon := Screen.MonitorFromPoint(Point(SharpBarMainForm.Left,SharpBarMainForm.Top));
