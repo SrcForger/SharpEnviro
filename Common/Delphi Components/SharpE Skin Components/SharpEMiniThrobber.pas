@@ -54,11 +54,13 @@ type
   private
     FCancel: Boolean;
     FAutoPosition: Boolean;
+    FBottom : Boolean;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
     procedure SetAutoPosition(const Value: boolean);
+    procedure SetBottom(const Value: boolean);
   protected
     procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -85,6 +87,7 @@ type
     property OnMouseUp;
     property OnMouseEnter;
     property OnMouseLeave;
+    property Bottom : Boolean read FBottom write SetBottom;
     property AutoPosition: Boolean read FAutoPosition write SetAutoPosition;
   end;
 
@@ -145,6 +148,15 @@ end;
 procedure TSharpEMiniThrobber.SMouseLeave;
 begin
   UpdateSkin;
+end;
+
+procedure TSharpEMiniThrobber.SetBottom(const Value: boolean);
+begin
+  if FBottom <> Value then
+  begin
+    FBottom := Value;
+    UpdateSkin;
+  end;
 end;
 
 procedure TSharpEMiniThrobber.SetAutoPosition(const Value: boolean);
@@ -224,7 +236,9 @@ begin
   end;
 
   if FAutoPosition then
-     top := FManager.Skin.MiniThrobberSkin.SkinDim.YAsInt;
+     if FBottom then
+     top := FManager.Skin.MiniThrobberSkin.BottomSkinDim.YAsInt
+        else top := FManager.Skin.MiniThrobberSkin.SkinDim.YAsInt;
 
   if FManager.Skin.MiniThrobberSkin.Valid then
   begin

@@ -507,6 +507,7 @@ type
   TSharpEMiniThrobberSkin = class
   private
     FSkinDim: TSkinDim;
+    FBottomSkinDim : TSkinDim;
     FNormal: TSkinPart;
     FDown: TSkinPart;
     FHover: TSkinPart;
@@ -523,6 +524,7 @@ type
     property Down: TSkinPart read FDown write FDown;
     property Hover: TSkinPart read FHover write FHover;
     property SkinDim : TSkinDim read FSkinDim;
+    property BottomSkinDim : TSkinDim read FBottomSkinDim;
   end;
 
 
@@ -1906,6 +1908,9 @@ begin
   FSkinDim := TSkinDim.Create;
   FSkinDim.SetDimension('w', 'h');
   FSkinDim.SetLocation('0','0');
+  FBottomSkinDim := TSkinDim.Create;
+  FBottomSkinDim.SetDimension('w', 'h');
+  FBottomSkinDim.SetLocation('0','0');
   FNormal := TSkinPart.Create(BmpList);
   FDown := TSkinPart.Create(BmpList);
   FHover := TSkinPart.Create(BmpList);
@@ -1917,6 +1922,7 @@ begin
   FDown.Free;
   FHover.Free;
   FSkinDim.Free;
+  FBottomSkinDim.Free;
 end;
 
 procedure TSharpEMiniThrobberSkin.SaveToStream(Stream: TStream);
@@ -1925,6 +1931,7 @@ begin
   FNormal.SaveToStream(Stream);
   FDown.SaveToStream(Stream);
   FHover.SaveToStream(Stream);
+  FBottomSkinDim.SaveToStream(Stream);
 end;
 
 procedure TSharpEMiniThrobberSkin.LoadFromStream(Stream: TStream);
@@ -1933,6 +1940,8 @@ begin
   FNormal.LoadFromStream(Stream);
   FDown.LoadFromStream(Stream);
   FHover.LoadFromStream(Stream);
+  FBottomSkinDim.Assign(FSkinDim);
+  FBottomSkinDim.LoadFromStream(Stream);
 end;
 
 procedure TSharpEMiniThrobberSkin.Clear;
@@ -1942,6 +1951,8 @@ begin
   FHover.Clear;
   FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w', 'h');
+  FBottomSkinDim.SetDimension('w', 'h');
+  FBottomSkinDim.SetLocation('0','0');
 end;
 
 procedure TSharpEMiniThrobberSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
@@ -1963,7 +1974,10 @@ begin
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
-        FSkinDim.SetLocation(Value('location', '0,0')); 
+        FSkinDim.SetLocation(Value('location', '0,0'));
+      if ItemNamed['bottomlocation'] <> nil then
+        FBottomSkinDim.SetLocation(Value('bottomlocation', '0,0'))
+        else FBottomSkinDim.Assign(FSkinDim);
     end;
   finally
     SkinText.free;
