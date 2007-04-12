@@ -31,26 +31,6 @@ object MainForm: TMainForm
     OnMouseMove = BackgroundMouseMove
     OnMouseUp = BackgroundMouseUp
     OnMouseLeave = BackgroundMouseLeave
-    object lb_servicenotrunning: TLabel
-      Left = 0
-      Top = 0
-      Width = 277
-      Height = 159
-      Align = alClient
-      Alignment = taCenter
-      AutoSize = False
-      BiDiMode = bdLeftToRight
-      Caption = 'SystemTray.service not running!'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clMaroon
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold, fsUnderline]
-      ParentBiDiMode = False
-      ParentFont = False
-      Transparent = True
-      Visible = False
-    end
     object sb_left: TSharpEButton
       Left = 0
       Top = 0
@@ -157,6 +137,17 @@ object MainForm: TMainForm
       GlyphResize = False
       GlyphSpacing = 0
     end
+    object lb_servicenotrunning: TSharpESkinLabel
+      Left = 0
+      Top = 0
+      Width = 141
+      Height = 21
+      SkinManager = SkinManager
+      AutoSize = True
+      Caption = 'SharpE Tray Service not running'
+      AutoPosition = True
+      LabelStyle = lsMedium
+    end
   end
   object MenuPopup: TPopupMenu
     AutoPopup = False
@@ -170,7 +161,7 @@ object MainForm: TMainForm
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
-    ComponentSkins = []
+    ComponentSkins = [scBar]
     HandleUpdates = False
     Left = 112
     Top = 80

@@ -36,7 +36,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
   SharpESkinManager, JvSimpleXML, SharpApi, Menus, GR32_Layers, Types,
-  TrayIconsManager, Math, GR32, SharpECustomSkinSettings;
+  TrayIconsManager, Math, GR32, SharpECustomSkinSettings, SharpESkinLabel;
 
 
 type
@@ -44,10 +44,10 @@ type
     Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
-    lb_servicenotrunning: TLabel;
     sb_left: TSharpEButton;
     SkinManager: TSharpESkinManager;
     sb_right: TSharpEButton;
+    lb_servicenotrunning: TSharpESkinLabel;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure sb_rightClick(Sender: TObject);
@@ -174,7 +174,10 @@ var
 begin
   if lb_servicenotrunning.visible then
   begin
-    newWidth := lb_servicenotrunning.Canvas.TextWidth(lb_servicenotrunning.Caption);
+    lb_servicenotrunning.UpdateSkin;
+    lb_servicenotrunning.UpdateAutoPosition;
+    newWidth := lb_servicenotrunning.TextWidth+8;
+    lb_servicenotrunning.Left := 2;
   end else
   begin
     if FTrayClient <> nil then

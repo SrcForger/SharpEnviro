@@ -853,6 +853,7 @@ end;
 destructor TTrayClient.Destroy;
 begin
   FMsgWnd.Free;
+  if FBalloonWnd.Visible then FBalloonWnd.Close;
   FBalloonWnd.Free;
   FItems.Free;
   FBitmap.Free;

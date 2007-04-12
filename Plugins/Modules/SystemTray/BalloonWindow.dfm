@@ -13,6 +13,7 @@ object BalloonForm: TBalloonForm
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnMouseMove = FormMouseMove

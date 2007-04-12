@@ -52,12 +52,13 @@ type
     Image1: TImage;
     IconList: TImageList;
     UpdateTimer: TTimer;
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure FormPaint(Sender: TObject);
     procedure UpdateTimerTimer(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     FTrayManager : TObject;
@@ -166,15 +167,6 @@ begin
   backbuffer := Tbitmap.create;
   backbuffer.width := 20;
   backbuffer.height := 20;
-end;
-
-procedure TBalloonForm.FormDestroy(Sender: TObject);
-begin
-  UpdateTimer.Enabled := False;
-  BalloonList.Free;
-  BalloonList := nil;
-  ChoosedIcon.Free;
-  backbuffer.free;
 end;
 
 function TBalloonForm.ShowBalloon : boolean;
@@ -410,8 +402,7 @@ begin
   self.canvas.Draw(self.clientWidth - 23, 5 + offset, backbuffer);
 end;
 
-procedure TBalloonForm.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
-  Y: Integer);
+procedure TBalloonForm.FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
   if (X > self.clientWidth - 23) and (X < self.clientWidth - 7) and
     (Y > 5 + offset) and (Y < 21 + offset) then
@@ -421,8 +412,7 @@ begin
       backbuffer.Canvas.Rectangle(0, 0, 20, 20);
       backbuffer.Canvas.Draw(0, 0, Image1.Picture.Icon);
       changecolor(@backbuffer, clBlack, clblack, 1, 1, 1, 1);
-      self.canvas.Draw(self.clientWidth - 23, 5 + offset,
-        backbuffer);
+      self.canvas.Draw(self.clientWidth - 23, 5 + offset, backbuffer);
       bOverCross := true;
     end;
   end
@@ -433,8 +423,7 @@ begin
       backbuffer.Canvas.Rectangle(0, 0, 20, 20);
       backbuffer.Canvas.Draw(0, 0, Image1.Picture.Icon);
       changecolor(@backbuffer, clBlack, cs.Throbberdark, 1, 1, 1, 1);
-      self.canvas.Draw(self.clientWidth - 23, 5 + offset,
-        backbuffer);
+      self.canvas.Draw(self.clientWidth - 23, 5 + offset, backbuffer);
       bOverCross := false;
     end;
   end;
@@ -474,6 +463,20 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TBalloonForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  CanClose := True;
+end;
+
+procedure TBalloonForm.FormDestroy(Sender: TObject);
+begin
+  UpdateTimer.Enabled := False;
+  BalloonList.Free;
+  BalloonList := nil;
+  ChoosedIcon.Free;
+  backbuffer.free;
 end;
 
 end.
