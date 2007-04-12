@@ -51,7 +51,8 @@ uses
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  uPropertyList in '..\..\..\Common\Units\PropertyList\uPropertyList.pas';
+  uPropertyList in '..\..\..\Common\Units\PropertyList\uPropertyList.pas',
+  uControlPanelItems in '..\..\..\Common\Units\ControlPanelItems\uControlPanelItems.pas';
 
 type
   TModule = class

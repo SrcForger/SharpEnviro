@@ -220,15 +220,21 @@ begin
       mn.AddLinkItem(s,Dir + sr.name,'customicon:scriptitem',FMenuIcon2,False);
     until FindNext(sr) <> 0;
     FindClose(sr);
+    mn.RenderBackground;
 
     wnd := TSharpEMenuWnd.Create(self,mn);
     wnd.FreeMenu := True; // menu will free itself when closed
 
-    p := ClientToScreen(Point(self.Button.Left, self.Height + self.Top));
+    p := ClientToScreen(Point(self.Button.Left + self.Button.Width div 2, self.Height + self.Top));
+    p.x := p.x + SharpESkinManager1.Skin.MenuSkin.SkinDim.XAsInt - mn.Background.Width div 2;
+    if p.x < Monitor.Left then
+       p.x := Monitor.Left;
+    if p.x + mn.Background.Width  > Monitor.Left + Monitor.Width then
+       p.x := Monitor.Left + Monitor.Width - mn.Background.Width;
     wnd.Left := p.x;
     if p.Y < Monitor.Top + Monitor.Height div 2 then
-       wnd.Top := p.y
-       else wnd.Top := p.y;
+       wnd.Top := p.y + SharpESkinManager1.Skin.MenuSkin.SkinDim.YAsInt
+       else wnd.Top := p.y - Top - Height - mn.Background.Height - SharpESkinManager1.Skin.MenuSkin.SkinDim.YAsInt;
     wnd.Show;
   end;
 end;
