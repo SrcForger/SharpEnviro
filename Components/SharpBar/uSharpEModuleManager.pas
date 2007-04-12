@@ -1023,6 +1023,7 @@ begin
     TempModule.Control.Top  := strtoint(FSkinManager.Skin.BarSkin.PAYoffset.X);
     TempModule.Throbber.Left := TempModule.Control.Left-TempModule.Throbber.Width-FModuleSpacing div 2;
     TempModule.Throbber.Top  := TempModule.Control.Top;
+    TempModule.Throbber.Bottom := (FBar.VertPos = vpBottom);
     TempModule.Throbber.OnClick := OnMiniThrobberClick;
     TempModule.Throbber.OnMouseDown := OnMiniThrobberMouseDown;
     TempModule.Throbber.OnMouseMove := OnMiniThrobberMouseMove;
@@ -1048,6 +1049,7 @@ begin
   for n := 0 to FModules.Count -1 do
   begin
     TempModule := TModule(FModules.Items[n]);
+    TempModule.Throbber.Bottom := (FBar.VertPos = vpBottom);
     TempModule.Throbber.UpdateSkin;
     TempModule.Throbber.Invalidate;
   end;

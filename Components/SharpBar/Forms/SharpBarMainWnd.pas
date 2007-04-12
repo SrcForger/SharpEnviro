@@ -1891,12 +1891,6 @@ procedure TSharpBarMainForm.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
   CanClose := True;
-  {if BarHideForm <> nil then
-  begin
-    if BarHideForm.Visible then BarHideForm.Close;
-    FreeAndNil(BarHideForm);
-  end; }
-
 end;
 
 end.
