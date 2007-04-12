@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinScheme>
+  <Info>
+    <Name>Black</Name>
+    <Author>...</Author>
+  </Info>
+  <Item>
+    <Tag>$Border</Tag>
+    <Color>0</Color>
+  </Item>
+  <Item>
+    <Tag>$Background</Tag>
+    <Color>3684408</Color>
+  </Item>
+  <Item>
+    <Tag>$Text</Tag>
+    <Color>16777215</Color>
+  </Item>
+  <Item>
+    <Tag>$TextShadow</Tag>
+    <Color>0</Color>
+  </Item>
+  <Item>
+    <Tag>$BorderBG</Tag>
+    <Color>16777215</Color>
+  </Item>
+</SharpESkinScheme>
