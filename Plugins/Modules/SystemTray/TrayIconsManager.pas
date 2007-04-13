@@ -109,6 +109,7 @@ type
                  private
                    FMsgWnd: TMsgWnd;
                    FBalloonWnd : TBalloonForm;
+                   FV4Popup : TTrayItem;
                    FIconSize : integer;
                    FIconSpacing : integer;
                    FTopSpacing  : integer;
@@ -1166,6 +1167,9 @@ var
   n : integer;
   tempItem : TTrayItem;
   PID: DWORD;
+  ix,iy : DWORD;
+  lp : lparam;
+  wp : wparam;
 begin
   result := false;
   for n := 0 to FItems.Count - 1 do
@@ -1174,6 +1178,15 @@ begin
     if n + imod < FItems.Count then
     begin
       tempItem := TTrayItem(FItems.Items[n+imod]);
+
+      if (TempItem <> FV4Popup) and
+         (FV4Popup <> nil) then
+      begin
+        wp := MakeWParam(0,0);
+        lp := MakeLParam(NIN_POPUPCLOSE,FV4Popup.uID);
+        PostMessage(FV4Popup.Wnd,FV4Popup.CallbackMessage,wp,lp);
+      end;
+
       if not iswindow(tempItem.Wnd) then
       begin
         DeleteTrayIconByIndex(n+imod);
@@ -1185,20 +1198,39 @@ begin
       GetWindowThreadProcessId(tempItem.Wnd, @PID);
       AllowSetForegroundWindow(PID);
 
-      if Msg <> WM_MOUSEMOVE then
-         StopTipTimer;
-
       SharpApi.SendDebugMessage('Module: SystemTray',PChar('Wnd:' + inttostr(tempItem.Wnd)
                                 + ' | CallBack:' + inttostr(tempItem.CallbackMessage)
                                 + ' | uID:' + inttostr(tempItem.uID)),0);
-      postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
-      case Msg of
-        WM_MOUSEMOVE: StartTipTimer(x,y,gx,gy);
-        WM_RBUTTONUP: if (tempItem.BInfoFlags > 4) then postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,WM_CONTEXTMENU);
-        WM_LBUTTONUP: if (tempItem.BInfoFlags > 4) then postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,NIN_SELECT);
+      if (tempItem.BInfoFlags >= 4) then
+      begin
+        StopTipTimer;
+        ix := gx;
+        iy := gy;
+        wp := MakeLParam(ix,iy);
+        case msg of
+          WM_LBUTTONUP,WM_LBUTTONDOWN,
+          WM_LBUTTONDBLCLK,WM_RBUTTONDOWN: lp := MakeLParam(msg,tempItem.uID);
+          WM_MOUSEMOVE: begin
+//                          FV4Popup := tempItem;
+                          lp := MakeLParam(WM_MOUSEMOVE,tempItem.uID);
+                          //lp := MakeLParam(NIN_POPUPOPEN,tempItem.uID);
+                        end;
+          WM_RBUTTONUP: begin
+                          lp := MakeLParam(WM_RBUTTONUP,tempItem.uID);
+                          PostMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
+                          lp := MakeLParam(WM_CONTEXTMENU,tempItem.uID);
+                        end;
+          else exit;
+        end;
+        PostMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
+      end else
+      begin
+        if Msg = WM_MOUSEMOVE then
+           StartTipTimer(x,y,gx,gy)
+           else StopTipTimer;
       end;
-
-      exit;
+       // always send this to fix icons with fucked up versions
+      postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
       // Old code below;
  {     case Msg of
         WM_MOUSEMOVE:
