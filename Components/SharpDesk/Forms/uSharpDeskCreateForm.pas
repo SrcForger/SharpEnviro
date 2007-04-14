@@ -121,7 +121,7 @@ begin
      k := -1;
      for n:=0 to SharpDesk.ObjectFileList.Count - 1 do
      begin
-          if TObjectFile(SharpDesk.ObjectFileList.Items[n]).Loaded then
+          //if TObjectFile(SharpDesk.ObjectFileList.Items[n]).Loaded then
           begin
             filename := TObjectFile(SharpDesk.ObjectFileList.Items[n]).FileName;
             s:='';

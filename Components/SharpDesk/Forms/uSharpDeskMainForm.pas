@@ -47,9 +47,6 @@ uses
   uSharpDeskFunctions,
   uSharpDeskObjectFileList,
   uSharpDeskObjectSetList,
-  uSharpDeskTDeskSettings,
-  uSharpDeskTObjectSettings,
-  uSharpDeskTThemeSettings,
   uSharpDeskManager,
   uSharpDeskDesktopObject, PngImageList, XPMan;
 
@@ -501,9 +498,7 @@ begin
     LoadThemeForm := TLoadThemeForm.Create(Application);
     SharpThemeApi.LoadTheme(False,ALL_THEME_PARTS);
     Application.ProcessMessages;
-    SharpDesk.ThemeSettings.ReloadThemes('');
     SharpDesk.DeskSettings.ReloadSettings;
-    SharpDesk.ObjectSettings.ReloadObjectSettings;
     LoadThemeForm.Show;
     LoadThemeForm.Repaint;
     SharpDeskMainForm.SendMessageToConsole('unloading desktop objects',COLOR_OK,DMT_STATUS);
@@ -1900,7 +1895,6 @@ begin
   if (length(Trim(s)) = 0) or (s='') then exit;
   SharpDesk.ObjectSetList.AddObjectSet(s,SharpThemeApi.GetThemeName);
   SharpDesk.ObjectSetList.SaveSettings;
-  SharpDesk.ThemeSettings.SaveThemes;
   SharpDesk.AssignSelectedObjectsToSet(SharpDesk.ObjectSetList.Count-1);
 end;
 

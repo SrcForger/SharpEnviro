@@ -41,9 +41,6 @@ uses Windows,
      gr32_image,
      SharpApi,
      SharpDeskApi,
-     uSharpDeskTDeskSettings,
-     uSharpDeskTThemeSettings,
-     uSharpDeskTObjectSettings,
      uSharpDeskObjectSetItem;
 
 type
@@ -60,9 +57,7 @@ type
       DllCreateLayer      : function (Image: TImage32; ObjectID : integer) : TBitmapLayer;
       DllStartSettingsWnd : function (ObjectID : integer; owner : Hwnd): hwnd;
       DllSharpDeskMessage : procedure(ObjectID : integer; Layer : TBitmapLayer; DeskMessage,P1,P2,P3 : integer);
-      DllGetSettings      : procedure(pDeskSettings   : TDeskSettings;
-                                      pThemeSettings  : TThemeSettings;
-                                      pObjectSettings : TObjectSettings);
+      DllInitSettings     : procedure();
       procedure Unload;
       procedure UnloadObjects;
       procedure Load;
@@ -95,7 +90,7 @@ begin
   FPath            := pFileName;
   FFileName        := ExtractFileName(pFileName);
   FLoaded          := False;
-  Load;
+  //Load;
 end;
 
 
@@ -125,6 +120,7 @@ function TObjectFile.AddDesktopObject(pSettings : TObjectSetItem) : TObject;
 var
    tempObject : TDesktopObject;
 begin
+  if not FLoaded then Load;
   tempObject := TDesktopObject.Create(self,pSettings);
   self.Add(tempObject);
   DllSharpDeskMessage(tempObject.Settings.ObjectID,tempObject.Layer,SDM_INIT_DONE,0,0,0);
@@ -146,7 +142,7 @@ begin
     DllStartSettingsWnd := nil;
     DllCloseSettingsWnd := nil;
     DllSharpDeskMessage := nil;
-    DllGetSettings      := nil;
+    DllInitSettings     := nil;
   end;
 end;
 
@@ -166,7 +162,7 @@ begin
       @DllCreateLayer      := GetProcAddress(dllhandle, 'CreateLayer');
       @DllSharpDeskMessage := GetProcAddress(dllhandle, 'SharpDeskMessage');
       @DllStartSettingsWnd := GetProcAddress(dllhandle, 'StartSettingsWnd');
-      @DllGetSettings      := GetProcAddress(dllhandle, 'GetSettings');
+      @DllInitSettings     := GetProcAddress(dllhandle, 'InitSettings');
     end;
 
     if (@DllCreateLayer = nil) or
@@ -181,10 +177,8 @@ begin
     end;
 
     FLoaded := True;
-    if (@DLLGetSettings <> nil) then
-       DLLGetSettings(TSharpDeskManager(TObjectFileList(FOwner).Owner).DeskSettings,
-                      TSharpDeskManager(TObjectFileList(FOwner).Owner).ThemeSettings,
-                      TSharpDeskManager(TObjectFileList(FOwner).Owner).ObjectSettings);
+    if (@DLLInitSettings <> nil) then
+       DLLInitSettings;
     SharpApi.SendDebugMessageEx('SharpDesk',PChar('Initializing ' + FPath),clblack,DMT_STATUS);
   except
     try

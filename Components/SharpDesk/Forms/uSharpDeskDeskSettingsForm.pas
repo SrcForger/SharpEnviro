@@ -57,14 +57,12 @@ type
     edit_gridy: TEdit;
     cb_singleclick: TCheckBox;
     Label3: TLabel;
-    Button1: TButton;
     procedure FormShow(Sender: TObject);
     procedure btn_CancelClick(Sender: TObject);
     procedure btn_ChangeClick(Sender: TObject);
     procedure edit_gridxChange(Sender: TObject);
     procedure edit_gridyChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure Button1Click(Sender: TObject);
   private
   public
     procedure LoadSettings;
@@ -159,11 +157,6 @@ procedure TDeskSettingsForm.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   SharpDeskMainForm.Enabled := True;
-end;
-
-procedure TDeskSettingsForm.Button1Click(Sender: TObject);
-begin
-  SharpApi.HelpMsg('go {docs}\SharpDesk\Settings.sdoc');
 end;
 
 end.

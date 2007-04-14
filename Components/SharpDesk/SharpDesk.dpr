@@ -53,18 +53,16 @@ uses
   uSharpDeskObjectSetList in 'Units\uSharpDeskObjectSetList.pas',
   uSharpDeskObjectSet in 'Units\uSharpDeskObjectSet.pas',
   uSharpDeskObjectSetItem in 'Units\uSharpDeskObjectSetItem.pas',
-  uSharpDeskTThemeSettings in 'Units\uSharpDeskTThemeSettings.pas',
   uSharpDeskManager in 'Units\uSharpDeskManager.pas',
   uSharpDeskSharpETheme in 'Units\uSharpDeskSharpETheme.pas',
-  uSharpDeskTDeskSettings in 'Units\uSharpDeskTDeskSettings.pas',
-  uSharpDeskTObjectSettings in 'Units\uSharpDeskTObjectSettings.pas',
   uSharpDeskDebugging in 'Units\uSharpDeskDebugging.pas',
   uSharpDeskLayeredWindow in 'Units\uSharpDeskLayeredWindow.pas' {SharpDeskLayeredWindow},
   SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpDeskApi in '..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas',
   SharpFX in '..\..\Common\Units\SharpFX\SharpFX.pas',
   SharpThemeApi in '..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
-  SharpGraphicsUtils in '..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas';
+  SharpGraphicsUtils in '..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
+  uSharpDeskTDeskSettings in 'Units\uSharpDeskTDeskSettings.pas';
 
 {$R *.res}
 

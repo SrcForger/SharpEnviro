@@ -53,8 +53,6 @@ uses
     uSharpDeskObjectSetList,
     uSharpDeskObjectFileList,
     uSharpDeskTDeskSettings,
-    uSharpDeskTThemeSettings,
-    uSharpDeskTObjectSettings,
     uSharpDeskTDragAndDrop,
     uSharpDeskObjectSet;
 
@@ -98,8 +96,6 @@ type
       FObjectSetList   : TObjectSetList;
       FObjectFileList  : TObjectFileList;
       FDeskSettings    : TDeskSettings;
-      FThemeSettings   : TThemeSettings;
-      FObjectSettings  : TObjectSettings;
       FDragAndDrop     : TDragAndDropManager;
     public
       constructor Create(pImage32 : TImage32);
@@ -163,11 +159,9 @@ type
       property ObjectExt       : String              read FObjectExt;
       property ObjectFileList  : TObjectFileList     read FObjectFileList;
       property ObjectSetList   : TObjectSetList      read FObjectSetList;
-      property ObjectSettings  : TObjectSettings     read FObjectSettings;
       property ObjectsMoved    : boolean             read FObjectsMoved    write FObjectsMoved;
       property SelectionCount  : integer             read FSelectionCount  write FSelectionCount;
       property SelectLayer     : TSelectionLayer     read FSelectLayer;
-      property ThemeSettings   : TThemeSettings      read FThemeSettings;
     end;
 
 implementation
@@ -247,25 +241,10 @@ begin
   LastLayer:=-1;
 
   try
-    SharpApi.SendDebugMessageEx('SharpDesk','loading theme settings',clblack,DMT_STATUS);
-    FThemeSettings := TThemeSettings.Create;
-    FThemeSettings.ReloadThemes;
-  except
-    SharpApi.SendDebugMessageEx('SharpDesk','error loading theme settings',clred,DMT_ERROR);
-  end;
-
-  try
     SharpApi.SendDebugMessageEx('SharpDesk','loading SharpDesk settings',clblack,DMT_STATUS);
     FDeskSettings := TDeskSettings.Create(self);
   except
     SharpApi.SendDebugMessageEx('SharpDesk','error loading SharpDesk settings',clred,DMT_ERROR);
-  end;
-
-  try
-    SharpApi.SendDebugMessageEx('SharpDesk','loading object settings file',clblack,DMT_STATUS);
-    FObjectSettings := TObjectSettings.Create;
-  except
-    SharpApi.SendDebugMessageEx('SharpDesk','error loading object settings file',clred,DMT_ERROR);
   end;
 
   FObjectSetList := TObjectSetList.Create(GetSharpeUserSettingsPath + 'SharpDesk\Sets.xml');
@@ -287,8 +266,6 @@ begin
   DebugFree(FObjectSetList);
   DebugFree(FObjectFileList);
   DebugFree(FDeskSettings);
-  DebugFree(FThemeSettings);
-  DebugFree(FObjectSettings);
   DebugFree(FDragAndDrop);
 end;
 
@@ -474,6 +451,8 @@ begin
         k := k + 1;
       end;
     end;
+    if TObjectFile(FObjectFileList.Items[n]).Count = 0 then
+       TObjectFile(FObjectFileList.Items[n]).Unload;
   end;
   FObjectSetList.SaveSettings;
   CheckGhostLayers;
@@ -845,7 +824,6 @@ begin
         if DesktopObject.Selected then
            LoadPreset(DesktopObject,pID,False);
       end;
-  FObjectSettings.SaveObjectSettings;
 end;
 
 
@@ -858,7 +836,6 @@ begin
   ObjectFile := TObjectFile(pObjectFile);
   for n := 0  to ObjectFile.Count - 1 do
       LoadPreset(ObjectFile.Items[n],pID,False);
-  FObjectSettings.SaveObjectSettings;
 end;
 
 
@@ -904,7 +881,6 @@ begin
     oXML.Free;
   end;
 
-  if Save then FObjectSettings.SaveObjectSettings;
   DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
                                           DesktopObject.Layer,
                                           SDM_REPAINT_LAYER,0,0,0);
@@ -1054,7 +1030,6 @@ begin
     VList.Objects[n] := nil;
   end;
   FreeAndNil(VList);
-  FObjectSettings.SaveObjectSettings;
 end;
 
 
@@ -1273,12 +1248,9 @@ end;
 
 procedure TSharpDeskManager.CheckGhostObjects;
 var
-   n,i,k : integer;
-   ObjectID : integer;
-   continue : boolean;
+   n,i : integer;
    ObjectSet : TObjectSet;
    ObjectSetItem : TObjectSetItem;
-   DeleteList : TStringList;
    ObjectList : TStringList;
    sr,sr2 : TSearchRec;
    dir : String;
@@ -1320,44 +1292,6 @@ begin
 
   ObjectList.Free;
   exit;
-
-  //old code!
-  
-  UnloadAllObjects;
-  for n := 0 to FObjectSetList.Count - 1 do
-  begin
-    ObjectSet := TObjectSet(FObjectSetList.Items[n]);
-    for i := 0 to ObjectSet.Count - 1 do
-    begin
-      ObjectSetItem := TObjectSetItem(ObjectSet.Items[i]);
-      continue := False;
-      for k := 0 to FObjectSettings.XML.Root.Items.ItemNamed['ObjectSettings'].Items.Count - 1 do
-          if FObjectSettings.XML.Root.Items.ItemNamed['ObjectSettings'].Items.Item[k].Name = inttostr(ObjectSetItem.ObjectID) then
-             Continue := True;
-      if not Continue then
-      begin
-        SharpApi.SendDebugMessageEx('SharpDesk',PChar('Deleting ghost object with ID : '+inttostr(ObjectSetItem.ObjectID)), clred, DMT_ERROR);
-        ObjectSet.Items[i] := nil;
-        ObjectSetItem.Free;
-      end;
-    end;
-    ObjectSet.Pack;
-  end;
-
-  DeleteList := TStringList.Create;
-  DeleteList.Clear;
-  for n := 0 to FObjectSettings.XML.Root.Items.ItemNamed['ObjectSettings'].Items.Count - 1 do
-  begin
-    ObjectID := strtoint(FObjectSettings.XML.Root.Items.ItemNamed['ObjectSettings'].Items.Item[n].Name);
-    ObjectSetItem := TObjectSetItem(FObjectSetList.GetSetItemByID(ObjectID));
-    if ObjectSetItem = nil then DeleteList.Add(inttostr(ObjectID));
-  end;
-  for n := 0 to DeleteList.Count - 1 do
-      FObjectSettings.XML.Root.Items.ItemNamed['ObjectSettings'].Items.Delete(DeleteList[n]);
-
-  DeleteList.Free;
-  FObjectSettings.SaveObjectSettings;
-  FObjectSetList.SaveSettings;
 end;
 
 

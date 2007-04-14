@@ -152,6 +152,9 @@ begin
      CreateMode:=pCreate;
      ObjectID := ID;
 
+     if not pObjectFile.Loaded then
+        pObjectFile.Load;
+
      ObjectFile := pObjectFile;
 
      if CreateMode then
@@ -245,8 +248,9 @@ begin
     DesktopObject.Settings.Pos := Point(round(DesktopObject.Layer.Location.Left),
                                         round(DesktopObject.Layer.Location.Top));
     SharpDesk.ObjectSetList.SaveSettings;
-    SharpDesk.ObjectSettings.SaveObjectSettings;
-  end;
+  end else
+      if ObjectFile.Count = 0 then
+         ObjectFile.UnLoad;
   SharpDesk.CheckInvisibleLayers;
 end;
 

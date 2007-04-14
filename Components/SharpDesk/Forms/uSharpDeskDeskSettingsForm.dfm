@@ -48,15 +48,6 @@ object DeskSettingsForm: TDeskSettingsForm
       TabOrder = 1
       OnClick = btn_CancelClick
     end
-    object Button1: TButton
-      Left = 8
-      Top = 8
-      Width = 25
-      Height = 25
-      Caption = '?'
-      TabOrder = 2
-      OnClick = Button1Click
-    end
   end
   object Panel2: TPanel
     Left = 0
