@@ -46,9 +46,7 @@ uses
   GR32_Image,
   GR32_Layers,
   GR32_Transforms,
-  uSharpDeskTDeskSettings,
-  uSharpDeskTObjectSettings,
-  uSharpDeskTThemeSettings,
+  JclFileUtils,
   uSharpDeskFunctions,
   SharpApi,
   SharpDeskApi,
@@ -195,6 +193,8 @@ var
    MenuItem : TMenuItem;
    bmp2 : TBitmap;
    n : integer;
+   s : String;
+   b : boolean;
    Layer : TLayer;
 begin
   if FirstStart then exit;
@@ -262,13 +262,22 @@ begin
                        Bmp2.LoadFromResourceID(HInstance,101);
                        Menu.Images.AddMasked(bmp2,clFuchsia);
 
-                       MenuItem := TMenuItem.Create(Menu2.Items);
-                       MenuItem.Caption := 'Properties';
-                       MenuItem.ImageIndex := Menu2.Images.Count;
-                       MenuItem.OnClick := Layer.FolderLayer.OnPropertiesClick;
-                       Menu2.Items.Add(MenuItem);
-                       Bmp2.LoadFromResourceID(HInstance,102);
-                       Menu2.Images.AddMasked(bmp2,clFuchsia);
+                       s := Layer.FolderLayer.Settings.Target;
+                       b := False;
+                       if (s[1] = '\') and (s[2] = '\') then // Network Folder
+                          b := True
+                          else if FileExists(s) or isDirectory(s) then
+                                  b := True;
+                       if b then
+                       begin
+                         MenuItem := TMenuItem.Create(Menu2.Items);
+                         MenuItem.Caption := 'Properties';
+                         MenuItem.ImageIndex := Menu2.Images.Count;
+                         MenuItem.OnClick := Layer.FolderLayer.OnPropertiesClick;
+                         Menu2.Items.Add(MenuItem);
+                         Bmp2.LoadFromResourceID(HInstance,102);
+                         Menu2.Images.AddMasked(bmp2,clFuchsia);
+                       end;
 
                        Bmp2.Free;
                      end;
@@ -277,9 +286,9 @@ end;
 
 
 
-procedure GetSettings( pDeskSettings   : TDeskSettings;
-                       pThemeSettings  : TThemeSettings;
-                       pObjectSettings : TObjectSettings);
+procedure GetSettings( pDeskSettings   : TObject;
+                       pThemeSettings  : TObject;
+                       pObjectSettings : TObject);
 var
   XML : TJvSimpleXML;
   Settings: TXMLSettings;
