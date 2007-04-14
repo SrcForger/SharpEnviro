@@ -104,7 +104,6 @@ type
 var
    LayerList : TLayerList;
    FirstStart : boolean = True;
-   LastSettingsTick,LastSettingsPanel : integer;
 
 
 destructor TLayer.Destroy;
@@ -162,17 +161,12 @@ begin
   end;
 
   if SettingsWnd=nil then SettingsWnd := TSettingsWnd.Create(nil);
-//  SettingsWnd.Parent := GetControlByHandle(Handle);
   SettingsWnd.ParentWindow:=Handle;
   SettingsWnd.Left:=0;
   SettingsWnd.Top:=0;
   SettingsWnd.BorderStyle:=bsNone;
   SettingsWnd.ObjectID:=ObjectID;
   SettingsWnd.LoadSettings;
-  if (not FirstStart) and (GetTickCount-LastSettingsTick<2000) then
-      SettingsWnd.PageControl1.ActivePageIndex:=LastSettingsPanel;
-//  showmessage(inttostr(SettingsWnd.Top));
-//SettingsWnd.ParentWindow:=Handle;
   SettingsWnd.Show;
   result:=SettingsWnd.Handle;
 end;
@@ -184,8 +178,6 @@ begin
     begin
       SettingsWnd.ObjectID:=ObjectID;
       SettingsWnd.SaveSettings;
-      LastSettingsTick := GetTickCount;
-      LastSettingsPanel := SettingsWnd.PageControl1.ActivePageIndex;
     end;
     SettingsWnd.Close;
     SettingsWnd.Free;
@@ -305,7 +297,7 @@ begin
       Add('MaxLength',0);
     end;
     XML.Root.Items.Add('DefaultSettings');
-    Settings := TXMLSettings.Create(-1,XML.Root.Items.ItemNamed['DefaultSettings']);
+    Settings := TXMLSettings.Create(-1,XML.Root.Items.ItemNamed['DefaultSettings'],'Link');
     Settings.LoadSettings;
     Settings.Target := '{File}';
     Settings.Caption := '{FileName}';

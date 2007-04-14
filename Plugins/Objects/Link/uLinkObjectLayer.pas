@@ -35,7 +35,7 @@ uses
   Windows, StdCtrls, Forms,Classes, Controls, ExtCtrls, Dialogs,Math,
   Messages, JPeg, SharpApi, SysUtils,ShellApi, Graphics,
   gr32,pngimage,GR32_Image, GR32_Layers, GR32_BLEND,GR32_Transforms, GR32_Filters,
-  JvSimpleXML, SharpDeskApi, JclFileUtils, JclShell,
+  JvSimpleXML, SharpDeskApi, JclFileUtils, JclShell, Types,
   LinkObjectSettingsWnd,
   LinkObjectXMLSettings,
   uSharpDeskDebugging,
@@ -43,7 +43,7 @@ uses
   uSharpDeskTObjectSettings,
   uSharpDeskTDeskSettings,
   uSharpDeskFunctions,
-  uSharpDeskDesktopPanel,
+  uSharpDeskObjectSettings,
   SharpThemeApi,
   SharpIconUtils,
   GR32_Resamplers;
@@ -159,10 +159,9 @@ begin
     FHLTimer.Enabled := False;
     FHLTimer.Tag := 0;
     FScale := 100;
-{    if (FSettings.UseThemeSettings) and (SharpThemeApi.GetDesktopIconAlphaBlend) then
-       i := SharpThemeApi.GetDesktopIconAlpha
-        else if FSettings.AlphaBlend then i := FSettings.AlphaValue
-             else i := 255;}
+    if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
+       i := FSettings.Theme[DS_ICONALPHA].IntValue
+       else i := 255;
     if i > 255 then i := 255
        else if i<32 then i := 32;
     Bitmap.MasterAlpha := i;
@@ -177,10 +176,10 @@ begin
      FScale := round(100 + ((SharpThemeApi.GetDesktopAnimScaleValue)/FAnimSteps)*FHLTimer.Tag);
   if SharpThemeApi.GetDesktopAnimAlpha then
   begin
-    {if (FSettings.UseThemeSettings) and (SharpThemeApi.GetDesktopIconAlphaBlend) then
-       i := SharpThemeApi.GetDesktopIconAlpha
-        else if FSettings.AlphaBlend then i := FSettings.AlphaValue
-             else i := 255;     }
+    FScale := 100;
+    if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
+       i := FSettings.Theme[DS_ICONALPHA].IntValue
+       else i := 255;
     i := i + round(((SharpThemeApi.GetDesktopAnimAlphaValue/FAnimSteps)*FHLTimer.Tag));
     if i > 255 then i := 255
        else if i<32 then i := 32;
@@ -271,64 +270,69 @@ begin
 
   FSettings.LoadSettings;
 
-  FFontSettings.Name      := FSettings.FontName;
-  FFontSettings.Size      := FSettings.FontSize;
-  FFontSettings.Color     := FSettings.FontColor;
-  FFontSettings.Bold      := FSettings.FontBold;
-  FFontSettings.Italic    := FSettings.FontItalic;
-  FFontSettings.Underline := FSettings.FontUnderline;
-  FFontSettings.AALevel   := 0;
-  if FSettings.FontAlpha then FFontSettings.Alpha := FSettings.FontAlphaValue
-     else FFontSettings.Alpha := 255;
-  FFontSettings.ShadowColor := FSettings.FontShadowColor;
-  FFontSettings.ShadowAlphaValue := FSettings.FontShadowValue;
-  FFontSettings.Shadow    := FSettings.FontShadow;
-  FFontSettings.ShadowAlpha := True;
-
-  FCaptionSettings.Caption.Clear;
-  if FSettings.MLineCaption then FCaptionSettings.Caption.CommaText := FSettings.Caption
-     else FCaptionSettings.Caption.Add(FSettings.Caption);
-  FCaptionSettings.Align := IntToTextAlign(FSettings.CaptionAlign);
-  FCaptionSettings.Xoffset := 0;
-  FCaptionSettings.Yoffset := 0;
-  if FSettings.IconSpacing then
-     if (FCaptionSettings.Align = taLeft) or (FCaptionSettings.Align = taRight) then
-         FCaptionSettings.Xoffset := FSettings.IconSpacingValue
-     else FCaptionSettings.Yoffset := FSettings.IconSpacingValue;
-
-  FCaptionSettings.Draw := FSettings.ShowCaption;
-  FCaptionSettings.LineSpace := 0;
-
-  FIconSettings.Size  := 100;
-  FIconSettings.Alpha := 255;
-  FIconSettings.ShadowColor := GetDesktopIconShadowColor;
-  FIconSettings.ShadowAlpha := GetDesktopIconShadowAlpha;
-  FIconSettings.XOffset     := 0;
-  FIconSettings.YOffset     := 0;
-  if FSettings.IconOffset then FIconSettings.XOffset := FSettings.IconOffsetValue;;
-
-  FIconSettings.Blend       := FSettings.ColorBlend;
-  FIconSettings.BlendColor  := FSettings.BlendColor;
-  FIconSettings.BlendValue  := FSettings.BlendValue;
-  FIconSettings.Shadow      := FSettings.UseIconShadow;
-
-  if length(FSettings.Size)=0 then FSettings.Size:='48';
-
-  bmp := TBitmap32.Create;
-  IconStringToIcon(FSettings.IconFile,FSettings.Target,Bmp,strtoint(FSettings.Size));
-  bmp.DrawMode := dmBlend;
-  bmp.CombineMode := cmMerge;
-  TLinearResampler.Create(bmp);
-  FIconSettings.Icon.SetSize(strtoint(FSettings.Size),strtoint(Fsettings.Size));
-  FIconSettings.Icon.Clear(color32(0,0,0,0));
-  bmp.DrawTo(FIconSettings.Icon,Rect(0,0,FIconSettings.Icon.Width,FIconSettings.Icon.Height));
-  bmp.Free;
-
-  if FSettings.AlphaBlend then
+  with FSettings do
   begin
-    Bitmap.MasterAlpha := FSettings.AlphaValue;
-    if Bitmap.MasterAlpha<16 then Bitmap.MasterAlpha:=16;
-  end else Bitmap.MasterAlpha := 255;
+    FFontSettings.Name      := Theme[DS_FONTNAME].Value;
+    FFontSettings.Size      := Theme[DS_TEXTSIZE].IntValue;
+    FFontSettings.Color     := Theme[DS_TEXTCOLOR].IntValue;
+    FFontSettings.Bold      := Theme[DS_TEXTBOLD].BoolValue;
+    FFontSettings.Italic    := Theme[DS_TEXTITALIC].BoolValue;
+    FFontSettings.Underline := Theme[DS_TEXTUNDERLINE].BoolValue;
+    FFontSettings.AALevel   := 0;
+    if Theme[DS_TEXTALPHA].BoolValue then
+       FFontSettings.Alpha := Theme[DS_TEXTALPHAVLAUE].IntValue
+       else FFontSettings.Alpha := 255;
+    FFontSettings.ShadowColor      := Theme[DS_TEXTSHADOWCOLOR].IntValue;
+    FFontSettings.ShadowAlphaValue := Theme[DS_TEXTSHADOWALPHA].IntValue;
+    FFontSettings.Shadow           := Theme[DS_TEXTSHADOW].BoolValue;
+    FFontSettings.ShadowAlpha      := True;
+
+
+    FCaptionSettings.Caption.Clear;
+    if FSettings.MLineCaption then FCaptionSettings.Caption.CommaText := FSettings.Caption
+       else FCaptionSettings.Caption.Add(FSettings.Caption);
+    FCaptionSettings.Align := IntToTextAlign(FSettings.CaptionAlign);
+    FCaptionSettings.Xoffset := 0;
+    FCaptionSettings.Yoffset := 0;
+   // if FSettings.IconSpacing then
+    //   if (FCaptionSettings.Align = taLeft) or (FCaptionSettings.Align = taRight) then
+    //       FCaptionSettings.Xoffset := 0
+   //    else FCaptionSettings.Yoffset := 0;
+    FCaptionSettings.Draw := Theme[DS_DISPLAYTEXT].BoolValue;
+    FCaptionSettings.LineSpace := 0;
+
+    FIconSettings.Size  := 100;
+    FIconSettings.Alpha := 255;
+    FIconSettings.XOffset     := 0;
+    FIconSettings.YOffset     := 0;
+    //if FSettings.IconOffset then FIconSettings.XOffset := FSettings.IconOffsetValue;;
+
+    FIconSettings.Blend       := Theme[DS_ICONBLENDING].BoolValue;
+    FIconSettings.BlendColor  := Theme[DS_ICONBLENDCOLOR].IntValue;
+    FIconSettings.BlendValue  := Theme[DS_ICONBLENDALPHA].IntValue;
+    FIconSettings.Shadow      := Theme[DS_ICONSHADOW].BoolValue;
+    FIconSettings.ShadowColor := Theme[DS_ICONSHADOWCOLOR].IntValue;
+    FIconSettings.ShadowAlpha := Theme[DS_ICONSHADOWALPHA].IntValue;
+
+    if Theme[DS_ICONSIZE].IntValue <= 8 then
+       Theme[DS_ICONSIZE].IntValue:= 48;
+
+    bmp := TBitmap32.Create;
+    IconStringToIcon(FSettings.Icon,FSettings.Target,Bmp,Theme[DS_ICONSIZE].IntValue);
+    bmp.DrawMode := dmBlend;
+    bmp.CombineMode := cmMerge;
+    TLinearResampler.Create(bmp);
+    FIconSettings.Icon.SetSize(Theme[DS_ICONSIZE].IntValue,Theme[DS_ICONSIZE].IntValue);
+    FIconSettings.Icon.Clear(color32(0,0,0,0));
+    bmp.DrawTo(FIconSettings.Icon,Rect(0,0,FIconSettings.Icon.Width,FIconSettings.Icon.Height));
+    bmp.Free;
+
+    if Theme[DS_ICONALPHABLEND].BoolValue then
+    begin
+      Bitmap.MasterAlpha := Theme[DS_ICONALPHA].IntValue;
+      if Bitmap.MasterAlpha<16 then Bitmap.MasterAlpha:=16;
+    end else Bitmap.MasterAlpha := 255;
+  end;
 
   DrawBitmap;
   if FHLTimer.Tag >= FAnimSteps then
@@ -343,7 +347,7 @@ begin
   Alphahit := False;
   FObjectId := id;
   scaled := false;
-  FSettings := TXMLSettings.Create(FObjectId,nil);
+  FSettings := TXMLSettings.Create(FObjectId,nil,'Link');
   FHLTimer := TTimer.Create(nil);
   FHLTimer.Interval := 20;
   FHLTimer.Tag      := 0;

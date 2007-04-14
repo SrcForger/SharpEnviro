@@ -51,6 +51,7 @@ type
       procedure LoadSettings; override;
       procedure SaveSettings(SaveToFile : boolean); reintroduce;
     published
+      property theme : TThemeSettingsArray read ts; 
     end;
 
 
@@ -74,86 +75,22 @@ begin
 end;
 
 procedure TXMLSettings.SaveSettings(SaveToFile : boolean);
-var
-  csX : TColorSchemeEx;
-  SettingsFile,SettingsDir : String;
 begin
-  if FXML = nil then exit;
+  if FXMLRoot = nil then exit;
 
-  FXML.Options := FXML.Options + [sxoAutoCreate];
-  FXMLRoot.Clear;
+  inherited InitSaveSettings;
+  inherited SaveSettings;
 
-  csX := SharpApi.LoadColorSchemeEx;
-
-  SaveSetting(FXMLRoot,'AlphaValue',AlphaValue,True);
-  SaveSetting(FXMLRoot,'AlphaBlend',AlphaBlend,True);
-  SaveSetting(FXMLRoot,'BlendValue',BlendValue,True);
-  SaveSetting(FXMLRoot,'ColorBlend',ColorBlend,True);
-  SaveSetting(FXMLRoot,'UseIconShadow',UseIconShadow,False);
-  SaveSetting(FXMLRoot,'Size',Size,True);
-  SaveSetting(FXMLRoot,'Target',Target,False);
-  SaveSetting(FXMLRoot,'IconFile',IconFile,False);
-
-  FXMLRoot.Items.Add('Caption',Caption);
-  with FXMLRoot.Items.ItemNamed['Caption'].Properties do
+  with FXMLRoot.Items do
   begin
-    Add('CopyValue',False);
-    Add('SortValue',True);
+    Add('Target',Target);
+    Add('Icon',Icon);
+    Add('Caption',Caption).Properties.Add('SortValue',True);
+    Add('CaptionAlign',CaptionAlign);
+    Add('MLineCaption',MLineCaption);
   end;
 
-  SaveSetting(FXMLRoot,'Shadow',Shadow,True);
-  SaveSetting(FXMLRoot,'ShowCaption',ShowCaption,True);
-  SaveSetting(FXMLRoot,'IconSpacingValue',IconSpacingValue,True);
-  SaveSetting(FXMLRoot,'IconSpacing',IconSpacing,True);
-  SaveSetting(FXMLRoot,'IconOffsetValue',IconOffsetValue,True);
-  SaveSetting(FXMLRoot,'IconOffset',IconOffset,True);
-  SaveSetting(FXMLRoot,'CaptionAlign',CaptionAlign,False);
-  SaveSetting(FXMLRoot,'MLineCaption',MLineCaption,False);
-  SaveSetting(FXMLRoot,'CustomFont',CustomFont,True);
-  SaveSetting(FXMLRoot,'FontName',FontName,True);
-  SaveSetting(FXMLRoot,'FontSize',FontSize,True);
-
-  SaveSetting(FXMLRoot,'FontBold',FontBold,True);
-  SaveSetting(FXMLRoot,'FontItalic',FontItalic,True);
-  SaveSetting(FXMLRoot,'FontUnderline',FontUnderline,True);
-  SaveSetting(FXMLRoot,'FontShadow',FontShadow,True);
-  SaveSetting(FXMLRoot,'FontShadowValue',FontShadowValue,True);
-
-  SaveSetting(FXMLRoot,'FontAlpha',FontAlpha,True);
-  SaveSetting(FXMLRoot,'FontAlphaValue',FontAlphaValue,True);
-
-  if SaveToFile then
-  begin
-    SettingsFile := GetSettingsFile;
-    SettingsDir  := ExtractFileDir(SettingsFile);
-    ForceDirectories(SettingsDir);
-    try
-      FXML.SaveToFile(SettingsDir+'~temp.xml');
-    except
-      SharpApi.SendDebugMessageEx('Link.object',PChar('Failed to save Settings to: '+SettingsDir+'~temp.xml'),0,DMT_ERROR);
-      DeleteFile(SettingsDir+'~temp.xml');
-      exit;
-    end;
-    if FileExists(SettingsFile) then
-       DeleteFile(SettingsFile);
-    if not RenameFile(SettingsDir+'~temp.xml',SettingsFile) then
-       SharpApi.SendDebugMessageEx('Link.object','Failed to Rename Settings File',0,DMT_ERROR);
-  end;
-end;
-
-procedure TXMLSettings.SaveSetting(pXMLElems : TJvSimpleXMLElem; pName,pValue : String; copy : boolean);
-begin
-  pXMLElems.Items.Add(pName,pValue).Properties.Add('CopyValue',copy);
-end;
-
-procedure TXMLSettings.SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Integer; copy : boolean);
-begin
-  pXMLElems.Items.Add(pName,pValue).Properties.Add('CopyValue',copy);
-end;
-
-procedure TXMLSettings.SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Boolean; copy : boolean);
-begin
-  pXMLElems.Items.Add(pName,pValue).Properties.Add('CopyValue',copy);
+  inherited FinishSaveSettings(SaveToFile);
 end;
 
 

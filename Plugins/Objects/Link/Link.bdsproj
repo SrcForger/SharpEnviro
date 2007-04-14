@@ -119,15 +119,15 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Delphi Components\SharpEFontSelector;..\..\..\Common\Units\SharpFX;..\..\..\Common\Delphi Components\SharpEColorBox;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Units\SharpIconUtils</Directories>
+			<Directories Name="SearchPath">..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Units\SharpIconUtils</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
 			<Directories Name="UsePackages">True</Directories>
 		</Directories>
 		<Parameters>
-			<Parameters Name="RunParams">-ext .obj</Parameters>
-			<Parameters Name="HostApplication">C:\SharpE\SharpDesk.exe</Parameters>
+			<Parameters Name="RunParams">-ext .object</Parameters>
+			<Parameters Name="HostApplication">..\..\..\..\SharpE\SharpDesk.exe</Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
 			<Parameters Name="DebugCWD"></Parameters>
