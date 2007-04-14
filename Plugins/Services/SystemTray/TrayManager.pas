@@ -255,10 +255,10 @@ begin
   FWndList.Duplicates := dupIgnore;
   FWndList.Clear;
 
-  left := -200;
-  top := -200;
-  Width := 1;
-  Height := 1;
+  left := Monitor.Top;
+  top := Monitor.Height - 24;
+  Width := Monitor.Width;
+  Height := 24;
   Setwindowlong(handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
 
   WindowClass.cbSize := sizeOf(TWndClassEx);
@@ -276,7 +276,7 @@ begin
   // register the class
   if RegisterClassEx(WindowClass) <> 0 then
   begin
-    FNotifyWindow := CreateWindowEx(0,'TrayNotifyWnd',nil,WS_CHILD,100,100,0,0,Handle,0,hInstance,nil);
+    FNotifyWindow := CreateWindowEx(0,'TrayNotifyWnd',nil,WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN,100,100,154,22,Handle,0,hInstance,nil);
     if (FNotifywindow = 0) then
        Windows.UnregisterClass('TrayNotifyWnd',hinstance)
   end;
