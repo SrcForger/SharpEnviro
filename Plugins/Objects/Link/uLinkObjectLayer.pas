@@ -51,7 +51,7 @@ type
   TColorArray = array[0..MaxInt div SizeOf(TColorRec)-1] of TColorRec;
   PColorArray = ^TColorArray;
 
-  TFolderLayer = class(TBitmapLayer)
+  TLinkLayer = class(TBitmapLayer)
   private
     FFontSettings    : TDeskFont;
     FIconSettings    : TDeskIcon;
@@ -96,12 +96,12 @@ var
 implementation
 
 
-procedure TFolderLayer.OnOpenClick(Sender : TObject);
+procedure TLinkLayer.OnOpenClick(Sender : TObject);
 begin
   DoubleClick;
 end;
 
-procedure TFolderLayer.OnSearchClick(Sender : TObject);
+procedure TLinkLayer.OnSearchClick(Sender : TObject);
 //var
 //   Shell: Variant;
 begin
@@ -109,17 +109,17 @@ begin
   //   Shell.FindFiles;
 end;
 
-procedure TFolderLayer.OnPropertiesClick(Sender : TObject);
+procedure TLinkLayer.OnPropertiesClick(Sender : TObject);
 begin
   DisplayPropDialog(Application.Handle,FSettings.Target);
 end;
 
-procedure TFolderLayer.OnOpenWith(Sender : TObject);
+procedure TLinkLayer.OnOpenWith(Sender : TObject);
 begin
   ShellOpenAs(FSettings.Target);
 end;
 
-procedure TFolderLayer.StartHL;
+procedure TLinkLayer.StartHL;
 begin
   if SharpThemeApi.GetDesktopAnimUseAnimations then
   begin
@@ -132,7 +132,7 @@ begin
   end;
 end;
 
-procedure TFolderLayer.EndHL;
+procedure TLinkLayer.EndHL;
 begin
   if SharpThemeApi.GetDesktopAnimUseAnimations then
   begin
@@ -144,7 +144,7 @@ begin
   end;
 end;
 
-procedure TFolderLayer.OnTimer(Sender: TObject);
+procedure TLinkLayer.OnTimer(Sender: TObject);
 var
   i : integer;
 begin
@@ -200,12 +200,12 @@ begin
 end;
 
 
-procedure TFolderLayer.DoubleClick;
+procedure TLinkLayer.DoubleClick;
 begin
   SharpExecute(FSettings.Target);
 end;
 
-procedure TFolderLayer.DrawBitmap;
+procedure TLinkLayer.DrawBitmap;
 var
    R : TFloatrect;
    w,h : integer;
@@ -259,7 +259,7 @@ end;
 
 
 
-procedure TFolderLayer.LoadSettings;
+procedure TLinkLayer.LoadSettings;
 var
   bmp : TBitmap32;
 begin
@@ -271,7 +271,7 @@ begin
   begin
     FFontSettings.Name      := Theme[DS_FONTNAME].Value;
     FFontSettings.Size      := Theme[DS_TEXTSIZE].IntValue;
-    FFontSettings.Color     := Theme[DS_TEXTCOLOR].IntValue;
+    FFontSettings.Color     := SharpThemeApi.SchemeCodeToColor(Theme[DS_TEXTCOLOR].IntValue);
     FFontSettings.Bold      := Theme[DS_TEXTBOLD].BoolValue;
     FFontSettings.Italic    := Theme[DS_TEXTITALIC].BoolValue;
     FFontSettings.Underline := Theme[DS_TEXTUNDERLINE].BoolValue;
@@ -279,7 +279,7 @@ begin
     if Theme[DS_TEXTALPHA].BoolValue then
        FFontSettings.Alpha := Theme[DS_TEXTALPHAVLAUE].IntValue
        else FFontSettings.Alpha := 255;
-    FFontSettings.ShadowColor      := Theme[DS_TEXTSHADOWCOLOR].IntValue;
+    FFontSettings.ShadowColor      := SharpThemeApi.SchemeCodeToColor(Theme[DS_TEXTSHADOWCOLOR].IntValue);
     FFontSettings.ShadowAlphaValue := Theme[DS_TEXTSHADOWALPHA].IntValue;
     FFontSettings.Shadow           := Theme[DS_TEXTSHADOW].BoolValue;
     FFontSettings.ShadowAlpha      := True;
@@ -305,10 +305,10 @@ begin
     //if FSettings.IconOffset then FIconSettings.XOffset := FSettings.IconOffsetValue;;
 
     FIconSettings.Blend       := Theme[DS_ICONBLENDING].BoolValue;
-    FIconSettings.BlendColor  := Theme[DS_ICONBLENDCOLOR].IntValue;
+    FIconSettings.BlendColor  := SharpThemeApi.SchemeCodeToColor(Theme[DS_ICONBLENDCOLOR].IntValue);
     FIconSettings.BlendValue  := Theme[DS_ICONBLENDALPHA].IntValue;
     FIconSettings.Shadow      := Theme[DS_ICONSHADOW].BoolValue;
-    FIconSettings.ShadowColor := Theme[DS_ICONSHADOWCOLOR].IntValue;
+    FIconSettings.ShadowColor := SharpThemeApi.SchemeCodeToColor(Theme[DS_ICONSHADOWCOLOR].IntValue);
     FIconSettings.ShadowAlpha := Theme[DS_ICONSHADOWALPHA].IntValue;
 
     if Theme[DS_ICONSIZE].IntValue <= 8 then
@@ -337,7 +337,7 @@ begin
 end;
 
 
-constructor TFolderLayer.Create( ParentImage:Timage32; Id : integer);
+constructor TLinkLayer.Create( ParentImage:Timage32; Id : integer);
 begin
   Inherited Create(ParentImage.Layers);
   FParentImage := ParentImage;
@@ -358,7 +358,7 @@ begin
   LoadSettings;
 end;
 
-destructor TFolderLayer.Destroy;
+destructor TLinkLayer.Destroy;
 begin
   DebugFree(FCaptionSettings.Caption);
   DebugFree(FIconSettings.Icon);

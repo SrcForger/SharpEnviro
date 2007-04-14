@@ -91,12 +91,12 @@ type
     TLayer = class
              private
               FObjectID : integer;
-              FLayer : TFolderLayer;
+              FLayer : TLinkLayer;
              public
               destructor Destroy; override;
              published
               property ObjectID : integer read FObjectID write FObjectID;
-              property FolderLayer : TFolderLayer read FLayer write FLayer;
+              property FolderLayer : TLinkLayer read FLayer write FLayer;
              end;
 
 var
@@ -126,7 +126,7 @@ begin
   LayerList.Add(TLayer.Create);
   Layer := TLayer(LayerList.Items[LayerList.Count-1]);
   Layer.ObjectID := ObjectID;
-  Layer.FolderLayer := TFolderLayer.create(Image, ObjectID);
+  Layer.FolderLayer := TLinkLayer.create(Image, ObjectID);
   Layer.FolderLayer.Tag:=ObjectID;
   result := Layer.FolderLayer;
 end;
