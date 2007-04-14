@@ -90,7 +90,7 @@ begin
     Bmp.CombineMode := cmMerge;
     img_icon.Bitmap.SetSize(img_icon.Width,img_icon.Height);
     img_icon.Bitmap.Clear(color32(self.Color));
-    if IconStringToIcon(edit_icon.Text,'',Bmp,32) then
+    if IconStringToIcon(edit_icon.Text,edit_target.Text,Bmp,32) then
        Bmp.DrawTo(img_icon.Bitmap,Rect(0,0,img_icon.Bitmap.Width,img_icon.Bitmap.Height));
   finally
     Bmp.Free;

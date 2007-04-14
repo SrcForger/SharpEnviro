@@ -243,6 +243,7 @@ object SettingsWnd: TSettingsWnd
         Height = 22
         ReadOnly = True
         TabOrder = 0
+        Text = 'shell:icon'
       end
       object img_icon: TImage32
         Left = 8

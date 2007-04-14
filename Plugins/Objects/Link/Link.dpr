@@ -286,9 +286,7 @@ end;
 
 
 
-procedure GetSettings( pDeskSettings   : TObject;
-                       pThemeSettings  : TObject;
-                       pObjectSettings : TObject);
+procedure InitSettings();
 var
   XML : TJvSimpleXML;
   Settings: TXMLSettings;
@@ -324,7 +322,7 @@ Exports
   CreateLayer,
   StartSettingsWnd,
   SharpDeskMessage,
-  GetSettings;
+  InitSettings;
 
 begin
 end.
