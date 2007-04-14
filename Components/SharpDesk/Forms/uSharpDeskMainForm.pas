@@ -70,7 +70,6 @@ type
     DeleteObject1: TMenuItem;
     OpenObjectSettings1: TMenuItem;
     LockObjec1: TMenuItem;
-    ObjectInformation1: TMenuItem;
     ObjectPopUpImages: TImageList;
     CloneObject1: TMenuItem;
     AdvancedCommands: TMenuItem;
@@ -138,7 +137,7 @@ type
     XPManifest1: TXPManifest;
     Lock1: TMenuItem;
     N6: TMenuItem;
-    N10: TMenuItem;
+    N1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -808,7 +807,8 @@ begin
     if (Button = mbright) and not (ssAlt in Shift) then
     begin
       ENDOFCUSTOMMENU.Visible := True;
-      STARTOFBOTTOMMENU.Visible := True;
+      N13.Visible := True;
+//      STARTOFBOTTOMMENU.Visible := True;
 
       while ObjectPopUp.Items[0].Name <> 'ENDOFCUSTOMMENU' do ObjectPopUp.Items.Delete(0);
       while ObjectPopUp.Items[ObjectPopUp.Items.Count-1].Name <> 'STARTOFBOTTOMMENU' do ObjectPopUp.Items.Delete(ObjectPopUp.Items.Count-1);
@@ -832,9 +832,6 @@ begin
 
       if ObjectPopUp.Items[0].Name = 'ENDOFCUSTOMMENU' then ObjectPopUp.Items[0].Visible := False
          else ObjectPopUp.Items[0].Visible := True;
-
-      if ObjectPopUp.Items[ObjectPopUp.Items.Count-1].Name = 'STARTOFBOTTOMMENU' then ObjectPopUp.Items[ObjectPopUp.Items.Count-1].Visible := False
-         else ObjectPopUp.Items[ObjectPopUp.Items.Count-1].Visible := True;
 
       if (SharpDesk.SelectionCount <= 1) then
       begin
@@ -1459,7 +1456,7 @@ begin
          tempItem := TMenuItem.Create(Objectselections1);
          tempItem.Caption := ObjectSet.Name + ' (' + inttostr(ObjectSet.Count) +')';
          tempItem.Tag := ObjectSet.SetID;
-         tempItem.ImageIndex := 5;
+         tempItem.ImageIndex := 7;
          tempItem.OnClick := OnSelectByObjectSetClick;
          Objectselections1.Add(tempItem);
        end;
@@ -1479,7 +1476,7 @@ begin
     begin
       tempItem := TMenuItem.Create(ObjectSet2);
       tempItem.Caption := TObjectSet(SharpDesk.ObjectSetList.Items[n]).Name;
-      tempItem.ImageIndex := 19;
+      tempItem.ImageIndex := 7;
       tempItem.Tag := n;
       tempItem.OnClick := OnObjectAssignSetClick;
       ObjectSet2.Add(tempItem);
@@ -1689,7 +1686,7 @@ begin
     begin
       tempItem := TMenuItem.Create(ObjectSet1);
       tempItem.Caption := TObjectSet(SharpDesk.ObjectSetList.Items[n]).Name;
-      tempItem.ImageIndex := 19;
+      tempItem.ImageIndex := 7;
       tempItem.Tag := n;
       tempItem.OnClick := OnObjectAssignSetClick;
       ObjectSet1.Add(tempItem);
@@ -1743,7 +1740,7 @@ begin
       begin
         tempItem := TMenuItem.Create(LoadPreset2);
         tempItem.Caption := Item[n].Items.Value('Name','### ERROR ###');
-        tempItem.ImageIndex := 5;
+        tempItem.ImageIndex := 7;
         tempItem.Tag:=strtoint(Item[n].Name);
         tempItem.OnClick := OnLoadPresetClickSelected;
         LoadPreset2.Add(tempItem);
@@ -1908,6 +1905,7 @@ begin
   if MakeWindow1.Checked then DesktopObject.MakeLayer
      else DesktopObject.MakeWindow;
   MakeWindow1.Checked := not MakeWindow1.Checked;
+  SharpDesk.ObjectSetList.SaveSettings;
 //  if MakeWindow1.ImageIndex = 29 then
   //   DesktopObject.MakeWindow
 //     else DesktopObject.MakeLayer;

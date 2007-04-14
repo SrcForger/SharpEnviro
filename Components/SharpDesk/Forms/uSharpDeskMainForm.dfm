@@ -53,14 +53,6 @@ object SharpDeskMainForm: TSharpDeskMainForm
     object ENDOFCUSTOMMENU: TMenuItem
       Caption = '-'
     end
-    object OpenObjectSettings1: TMenuItem
-      Caption = 'Object Settings'
-      ImageIndex = 1
-      OnClick = OpenObjectSettings1Click
-    end
-    object N13: TMenuItem
-      Caption = '-'
-    end
     object CloneObject1: TMenuItem
       Caption = 'Clone'
       ImageIndex = 4
@@ -76,7 +68,6 @@ object SharpDeskMainForm: TSharpDeskMainForm
       ImageIndex = 6
       object LockObjec1: TMenuItem
         Caption = 'Lock'
-        ImageIndex = 7
         OnClick = LockObjec1Click
       end
       object N6: TMenuItem
@@ -95,17 +86,14 @@ object SharpDeskMainForm: TSharpDeskMainForm
     end
     object Object1: TMenuItem
       Caption = 'Advanced'
-      ImageIndex = 12
-      object ObjectInformation1: TMenuItem
-        Caption = 'Information'
-        ImageIndex = 12
-      end
-      object N10: TMenuItem
-        Caption = '-'
-      end
+      ImageIndex = 3
       object MakeWindow1: TMenuItem
         Caption = 'Always On Top'
+        ImageIndex = 4
         OnClick = MakeWindow1Click
+      end
+      object N1: TMenuItem
+        Caption = '-'
       end
       object Align1: TMenuItem
         Caption = 'Align'
@@ -126,8 +114,38 @@ object SharpDeskMainForm: TSharpDeskMainForm
           OnClick = MovetoBack1Click
         end
       end
+      object Objectselections1: TMenuItem
+        Caption = 'Select'
+        ImageIndex = 3
+        object All1: TMenuItem
+          Caption = 'All'
+          ImageIndex = 4
+          OnClick = All1Click
+        end
+        object sameObjectSet1: TMenuItem
+          Caption = 'same Object Set'
+          ImageIndex = 13
+          OnClick = sameObjectSet1Click
+        end
+        object N9: TMenuItem
+          Caption = '-'
+        end
+      end
+      object ObjectSet2: TMenuItem
+        Caption = 'Assign to set'
+        ImageIndex = 3
+        object Newobjectset1: TMenuItem
+          Caption = 'New object set'
+          ImageIndex = 11
+          OnClick = NewObjectSetClick
+        end
+        object N3: TMenuItem
+          Caption = '-'
+        end
+      end
       object N11: TMenuItem
         Caption = '-'
+        Visible = False
       end
       object AdvancedCommands: TMenuItem
         Caption = 'Advanced'
@@ -160,6 +178,7 @@ object SharpDeskMainForm: TSharpDeskMainForm
       object ObjectPreset1: TMenuItem
         Caption = 'Preset'
         ImageIndex = 5
+        Visible = False
         object LoadPreset1: TMenuItem
           Caption = 'Load Preset'
           ImageIndex = 15
@@ -180,38 +199,18 @@ object SharpDeskMainForm: TSharpDeskMainForm
           ImageIndex = 11
         end
       end
-      object Objectselections1: TMenuItem
-        Caption = 'Select'
-        ImageIndex = 5
-        object All1: TMenuItem
-          Caption = 'All'
-          ImageIndex = 28
-          OnClick = All1Click
-        end
-        object sameObjectSet1: TMenuItem
-          Caption = 'same Object Set'
-          ImageIndex = 28
-          OnClick = sameObjectSet1Click
-        end
-        object N9: TMenuItem
-          Caption = '-'
-        end
-      end
-      object ObjectSet2: TMenuItem
-        Caption = 'Assign to set'
-        ImageIndex = 5
-        object Newobjectset1: TMenuItem
-          Caption = 'New object set'
-          ImageIndex = 3
-          OnClick = NewObjectSetClick
-        end
-        object N3: TMenuItem
-          Caption = '-'
-        end
-      end
+    end
+    object N13: TMenuItem
+      Caption = '-'
+    end
+    object OpenObjectSettings1: TMenuItem
+      Caption = 'Object Settings'
+      ImageIndex = 1
+      OnClick = OpenObjectSettings1Click
     end
     object STARTOFBOTTOMMENU: TMenuItem
       Caption = '-'
+      Visible = False
     end
   end
   object ObjectPopUpImages: TImageList
@@ -902,19 +901,19 @@ object SharpDeskMainForm: TSharpDeskMainForm
     Top = 8
   end
   object ObjectPopup2: TPopupMenu
-    Images = ImageList1
+    Images = PngImageList1
     OnPopup = ObjectPopup2Popup
     Left = 224
     Top = 8
-    object Delete1: TMenuItem
-      Caption = 'Delete'
-      ImageIndex = 10
-      OnClick = Delete1Click
-    end
     object Clone1: TMenuItem
       Caption = 'Clone'
-      ImageIndex = 6
+      ImageIndex = 4
       OnClick = Clone1Click
+    end
+    object Delete1: TMenuItem
+      Caption = 'Delete'
+      ImageIndex = 0
+      OnClick = Delete1Click
     end
     object N8: TMenuItem
       Caption = '-'
@@ -922,6 +921,7 @@ object SharpDeskMainForm: TSharpDeskMainForm
     object Align2: TMenuItem
       Caption = 'Align sets'
       ImageIndex = 27
+      Visible = False
       object NewAligns1: TMenuItem
         Caption = 'New'
         ImageIndex = 1
@@ -940,27 +940,28 @@ object SharpDeskMainForm: TSharpDeskMainForm
       end
     end
     object ObjectAlig1: TMenuItem
-      Caption = 'Object align'
-      ImageIndex = 28
+      Caption = 'Align'
+      ImageIndex = 3
       object Aligntogrid1: TMenuItem
         Caption = 'Align to grid'
-        ImageIndex = 29
+        ImageIndex = 8
         OnClick = AlignObjecttoGrid1Click
       end
       object BringtoFront2: TMenuItem
         Caption = 'Bring to front'
-        ImageIndex = 29
+        ImageIndex = 10
         OnClick = BringtoFront1Click
       end
       object SendtoBack1: TMenuItem
         Caption = 'Send to back'
-        ImageIndex = 29
+        ImageIndex = 9
         OnClick = MovetoBack1Click
       end
     end
     object ObjectPreset2: TMenuItem
       Caption = 'Object preset'
       ImageIndex = 18
+      Visible = False
       object LoadPreset2: TMenuItem
         Caption = 'Load preset'
         ImageIndex = 15
@@ -968,10 +969,10 @@ object SharpDeskMainForm: TSharpDeskMainForm
     end
     object ObjectSet1: TMenuItem
       Caption = 'Assign to set'
-      ImageIndex = 28
+      ImageIndex = 3
       object NewObjectSet: TMenuItem
         Caption = 'New object set'
-        ImageIndex = 3
+        ImageIndex = 11
         OnClick = NewObjectSetClick
       end
       object N12: TMenuItem
@@ -983,12 +984,12 @@ object SharpDeskMainForm: TSharpDeskMainForm
     end
     object LockObjects1: TMenuItem
       Caption = 'Lock objects'
-      ImageIndex = 26
+      ImageIndex = 6
       OnClick = LockObjects1Click
     end
     object UnlockObjects1: TMenuItem
       Caption = 'Unlock objects'
-      ImageIndex = 0
+      ImageIndex = 3
       OnClick = UnlockObjects1Click
     end
   end
@@ -2513,6 +2514,33 @@ object SharpDeskMainForm: TSharpDeskMainForm
           E6D66F78D9D46E399453F2A3B3CBA4EDB358860ED3FFC699342B94EC71E3CCE3
           F15EF4F6F6DD27DFFF8CF32F683B4F744CC79CF60000000049454E44AE426082}
         Name = 'PngImage12'
+        Background = clMenu
+      end
+      item
+        PngImage.Data = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          6100000006624B474400FF00FF00FFA0BDA793000000097048597300000DD700
+          000DD70142289B780000000774494D45000000000000000973942E0000024349
+          44415478DA9D934B6813511486FFC93C4D231D231629884D20AB340AD5A8A986
+          DA9857B372A760E9C28DAF855B9FB8B1168B882B0511B5BAD28560153455688B
+          6085DA8A4249DB34A525333658344913F29C4C9C9960143A41E8D9DCCBBDE77C
+          F7FCFFBD97D819BC7E873090E7B1C120DA4203D5F17BBD884466B4058BC50241
+          10502E9761B3D960B55AFF0FF0EDDD8642A1BCF10E0EEC73202626C192B26E92
+          24139009B231E060E76E883FD690CD4BBA490C43419665180C067D4097BB0333
+          8BABF0EED981F753715D08CB522049521FE039ECC4B7680213778FE916BBCE3E
+          83A9896D0CF07BF7633AF21DCF2FBAF0796A12A363A30D4D93149BA4E6762489
+          16E465AE0608055C988FC670BA7B33E46A15015F10344DD74FCC66B3902409E9
+          741A994C06F1F83286DF8C20DDE20371E6DCA9AA9A64B7DB61366F85DF1700DF
+          CC6B856AB2288A989D9B453299520029A41488EF8857816610FE92A801AE5EBE
+          0603498363695014856A55636AF362B1A8BC918262228B4B572E80DB6444EBF6
+          5678BA3D78F96EBC26A1C7B2845B83B791CBE5D6695621B1C5053C1A7A0C8EE3
+          603236610B6F86DBEDC68387F76B80BEA31D58FDFA0203FD3735BDEA9DABC1F3
+          3CA20BF378F274489367548A3986D3FC713A9D7F01BDC7FDF899580696C3B8D1
+          3F0896A1411004263E7D4478E4ADE2C51A0E7576A1542AD53B73381CFF7470A2
+          072BBF7260F2024A4B63A0888A721B84F2B1DAB0ABDD8157AF87E1F706353FFE
+          84FAD1EA80937D21AC240BEBF44F4E47B5D1C97CD024C8954A7DCF6432411005
+          FC06303FF1D9EB62ADE50000000049454E44AE426082}
+        Name = 'PngImage13'
         Background = clMenu
       end>
     Left = 224
