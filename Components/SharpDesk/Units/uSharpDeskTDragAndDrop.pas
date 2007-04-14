@@ -79,7 +79,8 @@ implementation
 uses uSharpDeskManager,
      uSharpDeskObjectFile,
      uSharpDeskObjectSet,
-     uSharpDeskObjectSetItem;
+     uSharpDeskObjectSetItem,
+     SharpThemeApi;
 
 
 // ######################################
@@ -169,7 +170,9 @@ begin
 
   SList := TStringList.Create;
   SList.Clear;
-  SList.CommaText := TSharpDeskManager(FOwner).DeskSettings.Theme.ObjectSets;
+  for n := 0 to TSharpDeskManager(FOwner).ObjectSetList.Count - 1 do
+    if TObjectSet(TSharpDeskManager(FOwner).ObjectSetList.Items[n]).ThemeList.IndexOf(SharpThemeApi.GetThemeName) >= 0 then
+       SList.Add(inttostr(TObjectSet(TSharpDeskManager(FOwner).ObjectSetList.Items[n]).SetID));
   ObjectSet := TObjectset(TSharpDeskManager(FOwner).ObjectSetList.GetSetByID(strtoint(SList[0])));
   if ObjectSet = nil then exit;
   ObjectSetItem := ObjectSet.AddDesktopObject(strtoint(ID),ObjectFile.FileName,Point(X,Y),False,False);

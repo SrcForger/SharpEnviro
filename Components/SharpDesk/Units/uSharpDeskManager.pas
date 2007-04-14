@@ -73,16 +73,6 @@ type
 
     TIntArray = array of integer;
 
-    TInputArea = class(TObject)
-                 public
-                   Left     : integer;
-                   Top      : integer;
-                   Width    : integer;
-                   Height   : integer;
-                   ID       : integer;
-                   ObjectID : integer;
-                 end;
-
     TSelectionLayer = class(TPositionedlayer)
                       private
                       public
@@ -93,8 +83,6 @@ type
 
     TSharpDeskManager = class(TObject)
     private
-      FInputAreaList   : TObjectList;
-      FInputID         : TPoint;
       FSelectionCount  : integer;  // Count of selected layers
       FLayerMousePos   : TPoint;   // Position of the Mouse when last clicked on a layer
       FDoubleClick     : boolean;  // Was the last action a DoubleClick
@@ -105,7 +93,6 @@ type
       FObjectExt       : String;
       FBackgroundLayer : TBitmapLayer;
       FEffectLayer     : TBitmapLayer;
-      FTooltip         : TBitmapLayer;
       FSelectLayer     : TSelectionLayer;
       FImage           : TImage32;
       FObjectSetList   : TObjectSetList;
@@ -118,7 +105,6 @@ type
       constructor Create(pImage32 : TImage32);
       destructor Destroy; override;
       procedure AlignSelectedObjectsToGrid;
-      function AddInputArea(ID,X1,Y1,X2,Y2 : integer) : integer;
       procedure AlignSelectedObjects(aID : integer);
       procedure AssignSelectedObjectsToSet(setID : integer);
       procedure BringSelectedObjectsToFront;
@@ -128,25 +114,21 @@ type
       procedure CheckGhostObjects;
       procedure CheckGhostLayers;
       procedure CheckInvisibleLayers;
-      function  CheckMouseInputArea(oID,X,Y : integer) : TPoint;
       procedure CloneSelectedObjects;
       procedure ConvertOldObjectFormat;
       procedure CreatePreset(pDesktopObject : TObject; pName : String);
       procedure DeleteSelectedLayers;
-      procedure DeleteInputAreas(oID : integer);
-      function  DeleteInputArea(oID,ID : integer) : boolean;
       procedure DisableAnimation;
       procedure EnableAnimation;
       function  GenerateObjectID : integer;
       function  GetDesktopObjectByID(ID : integer) : TObject;
       function  GetNextGridPoint(Pos : TPoint) : TPoint;
       function  GetUpperLeftMostLayerPos : TPoint;
-      procedure HideTooltip;
-      procedure InputEvent(Key : Char);
       function  IsAnyObjectSetLoaded : boolean;
       procedure LockAllObjects;
       procedure LoadObjectSet(OSet : TObjectSet);
       procedure LoadObjectSets(SetList : String);
+      procedure LoadObjectSetsFromTheme(pThemeName : String);
       procedure LoadPreset(pDesktopObject : TObject; pID : integer; Save : boolean);
       procedure LoadPresetForSelected(pID : integer);
       procedure LoadPresetForAll(pObjectFile : TObject; pID : integer);
@@ -154,9 +136,6 @@ type
       procedure MoveLayerTo(pDesktopObject : TObject; X,Y : integer);
       procedure MoveLayerBy(pDesktopObject : TObject; dX,dY : integer);
       procedure MoveSelectedLayers(dX,dY : integer; pIgnoreLocked : boolean);
-      procedure RegisterFileType;
-      procedure RemoveInputFocus;
-      procedure RenderToolTip(pDesktopObject : TObject; X,Y : integer);
       procedure ResizeBackgroundLayer;
       procedure SavePresetAs(pDesktopObject : TObject; PresetID : integer);
       procedure SelectAll;
@@ -178,7 +157,6 @@ type
       property DragAndDrop     : TDragAndDropManager read FDragAndDrop;
       property Enabled         : boolean             read FEnabled         write FEnabled;
       property Image           : TImage32            read FImage;
-      property InputID         : TPoint              read FInputID         write FInputID;
       property LastLayer       : integer             read FLastLayer       write FLastLayer;
       property LayerMousePos   : TPoint              read FLayerMousePos   write FLayerMousePos;
       property MouseDown       : boolean             read FMouseDown       write FMouseDown;
@@ -189,7 +167,6 @@ type
       property ObjectsMoved    : boolean             read FObjectsMoved    write FObjectsMoved;
       property SelectionCount  : integer             read FSelectionCount  write FSelectionCount;
       property SelectLayer     : TSelectionLayer     read FSelectLayer;
-      property Tooltip         : TBitmapLayer        read FTooltip;
       property ThemeSettings   : TThemeSettings      read FThemeSettings;
     end;
 
@@ -199,15 +176,14 @@ uses uSharpDeskDesktopObject,
      uSharpDeskObjectFile,
      uSharpDeskObjectSetItem,
      uSharpDeskFunctions,
-     SharpDeskApi;
+     SharpDeskApi,
+     SharpThemeApi;
 
 
 
 procedure TSelectionLayer.Paint(Buffer: TBitmap32);
 var
   L : TFloatRect;
-  //n : integer;
-  //c : TColor32;
 begin
   L := GetAdjustedLocation;
   Buffer.SetStipple([clwhite32,clwhite32,clwhite32,clblack32,clblack32,clblack32]);
@@ -216,104 +192,6 @@ begin
   Buffer.LineFSP(Round(L.Right),Round(L.Top),Round(L.Right),Round(L.Bottom));
   Buffer.LineFSP(Round(L.Left),Round(L.Top),Round(L.Left),Round(L.Bottom));
   Buffer.LineFSP(Round(L.Left),Round(L.Bottom),Round(L.Right),Round(L.Bottom));
-end;
-
-function TSharpDeskManager.CheckMouseInputArea(oID,X,Y : integer) : TPoint;
-var
-  n : integer;
-  pInputArea : TInputArea;
-begin
-  result := Point(-1,-1);
-  for n := 0 to FInputAreaList.Count - 1 do
-  begin
-    pInputArea := TInputArea(FInputAreaList.Items[n]);
-    if pInputArea.ObjectID = oID then
-    begin
-    //  showmessagE(inttostr(pInputArea.Left)+','+inttostr(pInputArea.Top)+','+inttostr(pInputArea.Left+pInputArea.Width)+','+inttostr(pInputArea.Top+pInputArea.Height));
-       if uSharpDeskFunctions.PointInRect(Point(X,Y),Rect(pInputArea.Left,pInputArea.Top,pInputArea.Left+pInputArea.Width,pInputArea.Top+pInputArea.Height)) then
-          begin
-            result := Point(pInputArea.ObjectID,pInputArea.ID);
-            exit;
-          end;
-    end;
-  end;
-end;
-
-procedure TSharpDeskManager.InputEvent(Key : Char);
-var
-  pDesktopObject : TDesktopObject;
-begin
-  if FInputID.X = -1 then exit;
-  pDesktopObject := TDesktopObject(self.GetDesktopObjectByID(FInputID.X));
-  if pDesktopObject <> nil then
-     pDesktopObject.Owner.DllSharpDeskMessage(pDesktopObject.Settings.ObjectID,
-                                              pDesktopObject.Layer,
-                                              SDM_KEY_SEND_INPUT,ord(Key),0,0);
-end;
-
-procedure TSharpDeskManager.RemoveInputFocus;
-var
-  pDesktopObject : TDesktopObject;
-begin
-  if FInputID.X = -1 then exit;
-  pDesktopObject := TDesktopObject(self.GetDesktopObjectByID(FInputID.X));
-  if pDesktopObject <> nil then
-     pDesktopObject.Owner.DllSharpDeskMessage(pDesktopObject.Settings.ObjectID,
-                                              pDesktopObject.Layer,
-                                              SDM_KEY_REMOVE_FOCUS,FInputID.Y,0,0);
-  FInputID := Point(-1,-1);
-end;
-
-function TSharpDeskManager.DeleteInputArea(oID,ID : integer) : boolean;
-var
-  n : integer;
-begin
-  result := False;
-  for n := 0 to FInputAreaList.Count - 1 do
-      if (TInputArea(FInputAreaList.Items[n]).ObjectID = oID)
-         and (TInputArea(FInputAreaList.Items[n]).ID = ID) then
-         begin
-           FInputAreaList.Delete(n);
-           result := True;
-           exit;
-         end;
-end;
-
-procedure TSharpDeskManager.DeleteInputAreas(oID : integer);
-var
-  n : integer;
-begin
-  for n := FInputAreaList.Count - 1 downto 0 do
-      if TInputArea(FInputAreaList.Items[n]).ObjectID = oID then
-         FInputAreaList.Delete(n);
-end;
-
-function TSharpDeskManager.AddInputArea(ID,X1,Y1,X2,Y2 : integer) : integer;
-var
-  pDesktopObject : TDesktopObject;
-  pInputArea : TInputArea;
-  n,idm : integer;
-begin
-  pDesktopObject := TDesktopObject(GetDesktopObjectByID(ID));
-  if pDesktopObject = nil then
-  begin
-    result := -1;
-    exit;
-  end;
-  pInputArea := TInputArea.Create;
-  pInputArea.Left := X1;
-  pInputArea.Top  := Y1;
-  pInputArea.Width := X2-X1;
-  pInputArea.Height := Y2-Y1;
-  pInputArea.ObjectID := ID;
-  idm := 0;
-  for n := 0 to FInputAreaList.Count -1 do
-      if TInputArea(FInputAreaList.Items[n]).ObjectID = ID then
-         if TInputArea(FInputAreaList.Items[n]).ID > idm then
-            idm := TInputArea(FInputAreaList.Items[n]).ID + 1;
-  pInputArea.ID := idm;
-  FInputAreaList.Add(pInputArea);
-  result := pInputArea.ID;
 end;
 
 
@@ -329,11 +207,8 @@ begin
   SharpApi.SendDebugMessage('SharpDesk','Using "'+FObjectExt+'" as object extension',clblue);
 
   ConvertOldObjectFormat;
-  RegisterFileType;
 
   FImage := pImage32;
-
-  FInputAreaList := TObjectList.Create;
 
   FEnabled := False;
   FDoubleClick := False;
@@ -365,11 +240,6 @@ begin
 
   FSelectLayer := TSelectionLayer.Create(FImage.Layers);
   FSelectLayer.Visible := True;
-//  FSelectLayer.Bitmap.MasterAlpha:=255;
-//  FSelectLayer.Bitmap.DrawMode:=dmBlend;
-//  FSelectLayer.Bitmap.SetSize(1,1);
-//  FSelectLayer.Bitmap.Clear(Color32(100,100,100,0));
-//  FSelectLayer.AlphaHit:=False;
   FSelectLayer.Location := FloatRect(0,0,1,1);
   FSelectLayer.Tag:=-3;
   FSelectLayer.BringToFront;
@@ -387,8 +257,6 @@ begin
   try
     SharpApi.SendDebugMessageEx('SharpDesk','loading SharpDesk settings',clblack,DMT_STATUS);
     FDeskSettings := TDeskSettings.Create(self);
-    FDeskSettings.Theme := FThemeSettings.GetThemeByID(FDeskSettings.ThemeID);
-    FDeskSettings.ThemeID := FDeskSettings.Theme.ThemeID;
   except
     SharpApi.SendDebugMessageEx('SharpDesk','error loading SharpDesk settings',clred,DMT_ERROR);
   end;
@@ -416,7 +284,6 @@ end;
 
 destructor TSharpDeskManager.Destroy;
 begin
-  DebugFree(FInputAreaList);
   DebugFree(FObjectSetList);
   DebugFree(FObjectFileList);
   DebugFree(FDeskSettings);
@@ -807,7 +674,9 @@ begin
         if (DesktopObject.Selected) and (not DesktopObject.Settings.Locked) then
         begin
           CPos := GetNextGridPoint(DesktopObject.Settings.Pos);
-          MoveLayerTo(DesktopObject,CPos.X,CPos.Y);
+          MoveLayerTo(DesktopObject,
+                      CPos.X,
+                      CPos.Y);
           DesktopObject.Settings.Pos := CPos;
         end;
       end;
@@ -1217,41 +1086,6 @@ begin
 end;
 
 
-
-procedure TSharpDeskManager.RegisterFileType;
-Var
-  Reg : TRegistry;
-Begin
-  if IsAdmin then
-  begin
-  Reg := TRegistry.Create;
-  try
-  with Reg do
-  begin
-    RootKey := HKEY_CLASSES_ROOT;
-    OpenKey('\SharpDesk', True);
-    WriteString('', 'SharpDesk Object');
-    CloseKey;
-    OpenKey('SharpDesk\DefaultIcon', True);
-    WriteString('', Application.ExeName + ',0');
-    CloseKey;
-    OpenKey('SharpDesk\shell\open\command', True);
-    WriteString('', Application.ExeName + ' "%L"');
-    CloseKey;
-    RootKey := HKEY_CLASSES_ROOT;
-    OpenKey('\.object', True);
-    WriteString('', 'SharpDesk');
-    CloseKey;
-  end;
-  finally
-    Reg.CloseKey;
-    Reg.Free;
-  end;
-  SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nil, nil);
-  end;
-End;
-
-
 // ######################################
 
 
@@ -1273,6 +1107,21 @@ begin
 end;
 
 
+
+procedure TSharpDeskManager.LoadObjectSetsFromTheme(pThemeName : String);
+var
+  n : integer;
+  ObjectSet : TObjectSet;
+begin
+  UnloadAllObjects;
+  for n := 0 to FObjectSetList.Count - 1 do
+  begin
+    ObjectSet := TObjectSet(FObjectSetList.Items[n]);
+    if ObjectSet.ThemeList.IndexOf(pThemeName) >= 0 then
+       LoadObjectSet(ObjectSet); 
+  end;
+  if FEffectLayer.Bitmap.MasterAlpha<>0 then FEffectLayer.BringToFront;
+end;
 
 procedure TSharpDeskManager.LoadObjectSets(SetList : String);
 var
@@ -1334,7 +1183,9 @@ var
 begin
   SList := TStringList.Create;
   SList.Clear;
-  SList.CommaText := FDeskSettings.Theme.ObjectSets;
+  for n := 0 to ObjectSetList.Count - 1 do
+      if TObjectSet(ObjectSetList.Items[n]).ThemeList.IndexOf(SharpThemeApi.GetThemeName) >= 0 then
+         SList.Add(inttostr(TObjectSet(ObjectSetList.Items[n]).SetID));
   for n := 0 to SList.Count - 1 do
       if FObjectSetList.GetSetByID(strtoint(SList[n])) <> nil then
       begin
@@ -1525,59 +1376,6 @@ begin
                                                    DesktopObject.Layer,
                                                    messageID,0,0,0);
       end;
-end;
-
-
-
-procedure TSharpDeskManager.RenderToolTip(pDesktopObject : TObject; X,Y : integer);
-var
-  DesktopObject : TDesktopObject;
-  //ObjectFile    : TObjectFile;
-  //n : integer;
-begin
-  if not FDeskSettings.Tooltips then exit;
-
-  try
-    DesktopObject := TDesktopObject(pDesktopObject);
-  except
-    exit;
-  end;
-
-  if (DesktopObject = nil) or (FToolTip<>nil) then
-  begin
-    FTooltip.Free;
-    FTooltip := nil;
-    if (DesktopObject = nil) then exit;
-  end;
-
-  if @DesktopObject.Owner.DllRenderTooltip = nil then exit;
-
-  FTooltip := TBitmapLayer.Create(FImage.Layers);
-  FTooltip.Bitmap.DrawMode := dmBlend;
-  FTooltip.AlphaHit := False;
-  FTooltip.Bitmap.SetSize(10,10);
-  FTooltip.Bitmap.Clear(color32(0,0,0,0));
-  FTooltip.Tag := -2;
-  DesktopObject.Owner.DllRenderTooltip(DesktopObject.Settings.ObjectID,FTooltip.Bitmap);
-  X := X + 8;
-  Y := Y + 8;
-  if X+FTooltip.Bitmap.Width>FImage.Width then
-     X := FImage.Width-FTooltip.Bitmap.Width;
-  if Y+FTooltip.Bitmap.Height>FImage.Height then
-     Y := FImage.Height-FTooltip.Bitmap.Height;
-  FTooltip.Location := FloatRect(X,Y,X+FTooltip.Bitmap.Width,Y+FTooltip.Bitmap.Height);
-  FTooltip.Bitmap.MasterAlpha := 192;
-  FTooltip.BringToFront;
-end;
-
-
-
-procedure TSharpDeskManager.HideTooltip;
-begin
-  if FTooltip = nil then exit;
-
-  FTooltip.Free;
-  FTooltip := nil;
 end;
 
 procedure TSharpDeskManager.CheckGhostLayers;

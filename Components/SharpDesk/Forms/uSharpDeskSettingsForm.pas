@@ -34,13 +34,13 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, SharpApi,
+  Dialogs, ExtCtrls, StdCtrls, SharpApi,JvRollOut, Types, JvExtComponent,
+  ComCtrls, ToolWin, JvExExtCtrls, ImgList, ActnList, JvComponent,
   gr32,
   gr32_layers,
   uSharpDeskObjectFile,
   uSharpDeskDesktopObject,
-  SharpDeskApi, ComCtrls, ImgList, ActnList, ToolWin, JvExExtCtrls, JvComponent,
-  JvRollOut, Types;
+  SharpDeskApi, SharpThemeApi;
 
 type
   TSettingsForm = class(TForm)
@@ -108,16 +108,14 @@ var
    n : integer;
    ListItem : TListItem;
    tempObjectSet : TObjectSet;
-   SList : TStringList;
+   Theme : String;
 begin
   ObjectSets.Clear;
-  SList := TStringList.Create;
-  SList.Clear;
-  SList.CommaText := SharpDesk.DeskSettings.Theme.ObjectSets;
-  for n := 0 to SList.Count - 1 do
+  Theme := SharpThemeApi.GetThemeName;
+  for n := 0 to SharpDesk.ObjectSetList.Count - 1 do
   begin
-    tempObjectSet := TObjectSet(SharpDesk.ObjectSetList.GetSetByID(strtoint(SList[n])));
-    if tempObjectSet = nil then continue;
+    tempObjectSet := TObjectSet(SharpDesk.ObjectSetList[n]);
+    if tempObjectSet.ThemeList.IndexOf(Theme) < 0 then continue;
     ListItem := ObjectSets.Items.Add;
     ListItem.StateIndex := tempObjectSet.SetID;
     ListItem.Caption := tempObjectSet.Name;
@@ -127,7 +125,6 @@ begin
     if (n = 0) and (CreateMode) then ListItem.Selected := True;
     ListItem.Update;
   end;
-  SList.Free;
 end;
 
 procedure TSettingsForm.Load(pDesktopObject : TDesktopObject);
@@ -291,22 +288,14 @@ end;
 
 procedure TSettingsForm.NewSetExecute(Sender: TObject);
 var
-  SList : TStringList;
   s : String;
 begin
  // SettingsForm.FormStyle := fsNormal;
   s:= InputBox('Create Object Set','Object Set name : ','');
  // SettingsForm.FormStyle := fsStayOnTop;
   if (length(s) = 0) or (s='') then exit;
-  SharpDesk.ObjectSetList.AddObjectSet(s);
+  SharpDesk.ObjectSetList.AddObjectSet(s, SharpThemeApi.GetThemeName);
   SharpDesk.ObjectSetList.SaveSettings;
-  Slist := TStringList.Create;
-  SList.Clear;
-  SList.CommaText := Sharpdesk.DeskSettings.Theme.ObjectSets;
-  SList.Add(inttostr(TObjectSet(SharpDesk.ObjectSetList.Items[SharpDesk.ObjectSetList.Count-1]).SetID));
-  Sharpdesk.DeskSettings.Theme.ObjectSets := SList.CommaText;
-  SList.Free;  
-  SharpDesk.ThemeSettings.SaveThemes;
   BuildObjectSets;
 end;
 

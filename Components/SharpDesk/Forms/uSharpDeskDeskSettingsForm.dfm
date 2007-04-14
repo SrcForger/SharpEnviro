@@ -3,7 +3,7 @@ object DeskSettingsForm: TDeskSettingsForm
   Top = 191
   BorderStyle = bsToolWindow
   Caption = 'SharpDesk Settings'
-  ClientHeight = 347
+  ClientHeight = 301
   ClientWidth = 329
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,7 +19,7 @@ object DeskSettingsForm: TDeskSettingsForm
   TextHeight = 13
   object bottompanel: TPanel
     Left = 0
-    Top = 307
+    Top = 261
     Width = 329
     Height = 40
     Align = alBottom
@@ -60,7 +60,7 @@ object DeskSettingsForm: TDeskSettingsForm
   end
   object Panel2: TPanel
     Left = 0
-    Top = 305
+    Top = 259
     Width = 329
     Height = 2
     Align = alBottom
@@ -69,7 +69,7 @@ object DeskSettingsForm: TDeskSettingsForm
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Top = 176
+    Top = 128
     Width = 313
     Height = 121
     Caption = 'Advanced Options'
@@ -145,7 +145,7 @@ object DeskSettingsForm: TDeskSettingsForm
     Left = 8
     Top = 8
     Width = 313
-    Height = 161
+    Height = 113
     Caption = ' Options'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -180,24 +180,9 @@ object DeskSettingsForm: TDeskSettingsForm
       Font.Style = []
       ParentFont = False
     end
-    object Label1: TLabel
-      Left = 32
-      Top = 91
-      Width = 185
-      Height = 14
-      AutoSize = False
-      Caption = 'Enable object tooltips'
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Arial'
-      Font.Style = []
-      ParentFont = False
-      WordWrap = True
-    end
     object Label3: TLabel
       Left = 32
-      Top = 136
+      Top = 88
       Width = 249
       Height = 17
       AutoSize = False
@@ -260,23 +245,9 @@ object DeskSettingsForm: TDeskSettingsForm
       Text = '20'
       OnChange = edit_gridyChange
     end
-    object cb_tooltips: TCheckBox
-      Left = 8
-      Top = 72
-      Width = 169
-      Height = 17
-      Caption = 'Tooltips'
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Arial'
-      Font.Style = [fsBold]
-      ParentFont = False
-      TabOrder = 3
-    end
     object cb_singleclick: TCheckBox
       Left = 8
-      Top = 120
+      Top = 72
       Width = 169
       Height = 17
       Caption = ' Single Click'
@@ -286,7 +257,7 @@ object DeskSettingsForm: TDeskSettingsForm
       Font.Name = 'Arial'
       Font.Style = [fsBold]
       ParentFont = False
-      TabOrder = 4
+      TabOrder = 3
     end
   end
 end

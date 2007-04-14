@@ -34,6 +34,7 @@ interface
 
 uses Windows,
 		 Contnrs,
+     Classes,
 		 Types,
      Dialogs,
      SysUtils,
@@ -48,6 +49,7 @@ type
 			 FSetID    : integer;
        FName     : String;
        FSetList  : TObjectSetList;
+       FThemeList : TStringList;
      public
        constructor Create(pID : integer; pName : String; parent : TObjectSetList);
        destructor Destroy; override;
@@ -61,6 +63,7 @@ type
      published           
        property Name  : String read FName write FName;
        property SetID : integer read FSetID;
+       property ThemeList : TStringList read FThemeList;
      end;
 
 implementation
@@ -71,6 +74,8 @@ begin
   FSetID   := pID;
   FName    := pName;
   FSetList := parent;
+  FThemeList := TStringList.Create;
+  FThemeList.Clear;
   OwnsObjects := False;  
   Load;
 end;
@@ -97,6 +102,7 @@ end;
 destructor TObjectSet.Destroy;
 begin
 	Clear;
+  FreeAndNil(FThemeList);
   Inherited Destroy;
 end;
 
@@ -117,12 +123,6 @@ end;
 
 procedure TObjectSet.Clear;
 begin
- {for n := 0 to Count - 1 do
-      if Items[n] <> nil then
-      begin
-        Items[n].Free;
-        Items[n] := nil;
-      end;         }
   Inherited Clear;
 end;
 

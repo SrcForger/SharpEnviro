@@ -42,30 +42,21 @@ uses Graphics,
      uSharpDeskSharpETheme,
      uSharpDeskObjectSet;
 
-type                  
+type
     TDeskSettings = class
                      private
                        XML : TJvSimpleXML;
                      public
                        Owner               : TObject;
-                       Theme               : TSharpETheme;
-                       ThemeID             : integer;
                        CheckObjectPosition : boolean;
                        DragAndDrop         : boolean;
                        AdvancedCommands    : boolean;
                        AdvancedMM          : boolean;
-                       Tooltips            : boolean;
                        SingleClick         : boolean;
                        Grid                : boolean;
                        GridX               : integer;
                        GridY               : integer;
                        SetObjectRolledOut  : boolean;
-                       TerminalMode        : boolean;
-                       SharpMenu           : boolean;
-                       ObjectMenu          : boolean;
-                       ThemeLoading        : boolean;
-                       ObjectMove          : boolean;
-                       ExitDesk            : boolean;   
                        constructor Create(pOwner : TObject);
                        destructor Destroy; override;
                        procedure SaveSettings;
@@ -84,24 +75,15 @@ begin
   inherited Create;
 
   Owner := pOwner;
-  Theme := nil;
-  ThemeID := 0;
   CheckObjectPosition := True;
   DragAndDrop         := True;
   AdvancedCommands    := True;
   AdvancedMM          := True;
   SingleClick         := False;
-  Tooltips            := True;
   Grid                := True;
   SetObjectRolledOut  := True;
   GridX               := 8;
   GridY               := 8;
-  TerminalMode        := False;
-  SharpMenu           := True;
-  ObjectMenu          := True;
-  ThemeLoading        := True;
-  ObjectMove          := True;
-  ExitDesk            := True;
   XML := TJvSimpleXML.Create(nil);
   ReloadSettings;
 end;
@@ -139,27 +121,14 @@ begin
   XML.Root.Items.Clear;
   XML.Root.Items.Add('Settings');
   XML.Root.Items.Add('Grid');
-  XML.Root.Items.Add('Terminal');
   with XML.Root.Items.ItemNamed['Settings'].Items do
   begin
-    if Theme<>nil then Add('Theme',Theme.ThemeID)
-       else Add('Theme',ThemeID);
     Add('DragAndDrop',DragAndDrop);
     Add('AdvancedCommands',AdvancedCommands);
     Add('AdvancedMemoryManagement',AdvancedMM);
     Add('SingleClick',SingleClick);
     Add('CheckObjectPosition',CheckObjectPosition);
-    Add('Tooltips',Tooltips);
     Add('SetObjectRolledOut',SetObjectRolledOut);
-  end;
-  with XML.Root.Items.ItemNamed['Terminal'].Items do
-  begin
-    Add('TerminalMode',TerminalMode);
-    Add('SharpMenu',SharpMenu);
-    Add('ObjectMenu',ObjectMenu);
-    Add('ThemeLoading',ThemeLoading);
-    Add('ObjectMove',ObjectMove);
-    Add('ExitDesk',ExitDesk);
   end;
   with XML.Root.Items.ItemNamed['Grid'].Items do
   begin
@@ -194,23 +163,12 @@ begin
   XML.Options :=[sxoAutoCreate,sxoAutoIndent];
   with XML.Root.Items.ItemNamed['Settings'].Items do
   begin
-    ThemeID             := IntValue('Theme',0);
     DragAndDrop         := BoolValue('DragAndDrop',True);
     AdvancedCommands    := BoolValue('AdvancedCommands',True);
     AdvancedMM          := BoolValue('AdvancedMemoryManagement',True);
     SingleClick         := BoolValue('SingleClick',False);
     CheckObjectPosition := ItemNamed['CheckObjectPosition'].BoolValue;
-    Tooltips            := BoolValue('Tooltips',True);
-    SetObjectRolledOut  := BoolValue('SetObjectRolledOut',True); 
-  end;
-  with XML.Root.Items.ItemNamed['Terminal'].Items do
-  begin
-    TerminalMode := BoolValue('TerminalMode',False);
-    SharpMenu    := BoolValue('SharpMenu',True);
-    ObjectMenu   := BoolValue('ObjectMenu',True);
-    ThemeLoading := BoolValue('ThemeLoading',True);
-    ObjectMove   := BoolValue('ObjectMove',True);
-     ExitDesk    := BoolValue('ExitDesk',True);
+    SetObjectRolledOut  := BoolValue('SetObjectRolledOut',True);
   end;
   with XML.Root.Items.ItemNamed['Grid'].Items do
   begin

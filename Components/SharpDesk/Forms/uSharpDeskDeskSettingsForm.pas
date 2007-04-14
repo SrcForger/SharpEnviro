@@ -55,8 +55,6 @@ type
     edit_gridx: TEdit;
     Label9: TLabel;
     edit_gridy: TEdit;
-    cb_tooltips: TCheckBox;
-    Label1: TLabel;
     cb_singleclick: TCheckBox;
     Label3: TLabel;
     Button1: TButton;
@@ -92,7 +90,6 @@ begin
   cb_singleclick.Checked := SharpDesk.DeskSettings.SingleClick;
   Edit_GridX.Text      := inttostr(SharpDesk.DeskSettings.GridX);
   Edit_GridY.Text      := inttostr(SharpDesk.DeskSettings.GridY);
-  cb_tooltips.Checked  := SharpDesk.DeskSettings.Tooltips;
 end;
 
 
@@ -108,7 +105,6 @@ begin
   SharpDesk.DeskSettings.GridX               := strtoint(Edit_GridX.Text);
   SharpDesk.DeskSettings.GridY               := strtoint(Edit_GridY.Text);
   SharpDesk.DeskSettings.CheckObjectPosition := cb_oposcheck.Checked;
-  SharpDesk.DeskSettings.Tooltips            := cb_tooltips.Checked;
   SharpDesk.DeskSettings.SingleClick         := cb_singleclick.checked;
 
   SharpDesk.DeskSettings.SaveSettings;

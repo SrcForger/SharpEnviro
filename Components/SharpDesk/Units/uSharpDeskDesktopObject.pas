@@ -84,7 +84,6 @@ uses uSharpDeskObjectFileList,
 
 procedure TDesktopObject.Delete;
 begin
-  FDeskManager.DeleteInputAreas(Fsettings.ObjectID);
   self.Owner.DllSharpDeskMessage(FSettings.ObjectID,FLayer,SDM_DELETE_LAYER,0,0,0);
   TObjectSet(FSettings.Owner).Remove(FSettings);
 end;
@@ -123,8 +122,8 @@ begin
     FLayer.AlphaHit:=False;
     FLayer.Location := FloatRect(FSettings.Pos.X,
                                  FSettings.Pos.Y,
-                                 FSettings.Pos.X+FLayer.Bitmap.Width,
-                                 FSettings.Pos.Y+FLayer.Bitmap.Height);
+                                 FSettings.Pos.X + FLayer.Bitmap.Width,
+                                 FSettings.Pos.Y + FLayer.Bitmap.Height);
 		FLayer.BringToFront;
 
     SharpApi.SendDebugMessageEx('SharpDesk',

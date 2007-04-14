@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, StdCtrls, Gauges, SharpApi, SharpFX,
-  ComCtrls, PngImage;
+  ComCtrls, PngImage, SharpThemeApi;
 
 type
   TLoadThemeForm = class(TForm)
@@ -81,11 +81,11 @@ var
    bmp : TBitmap;
    c : TColor;
 begin
-     lb_theme.Caption:='Theme : ' + SharpDesk.DeskSettings.Theme.Name;
+     lb_theme.Caption:='Theme : ' + SharpThemeApi.GetThemeName;;
      temppng := TPngObject.Create;
-     if FileExists(ExtractFileDir(Application.ExeName)+'\Themes\Previews\'+inttostr(SharpDesk.DeskSettings.Theme.ThemeID)+'.png') then
+     if FileExists(SharpThemeApi.GetThemeDirectory + 'Preview.png') then
      try
-        temppng.LoadFromFile(ExtractFileDir(Application.ExeName)+'\Themes\Previews\'+inttostr(SharpDesk.DeskSettings.Theme.ThemeID)+'.png');
+        temppng.LoadFromFile(SharpThemeApi.GetThemeDirectory + 'Preview.png');
      finally
         bmp := TBitmap.Create;
         bmp.Width := temppng.Width;

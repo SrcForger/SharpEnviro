@@ -38,6 +38,7 @@ uses Windows,
 		 Types,
      SysUtils,
      JvSimpleXML,
+     SharpThemeApi,
 		 SharpApi;
 
 type
@@ -55,7 +56,7 @@ type
        function GetSetByID(pID : integer) : TObject;
        function GetSetItemByID (pID : integer) : TObject;
        function GenerateObjectID : integer;
-       procedure AddObjectSet(pName : String);
+       procedure AddObjectSet(pName,pThemeList : String);
        procedure DeleteSet(pID : integer);
      published
        property FileName : String read FFileName;
@@ -103,7 +104,11 @@ begin
   XML := TJvSimpleXML.Create(nil);
   try
     XML.Root.Name := 'ObjectSets';
-    XML.Root.Items.Add('SetList').Items.Add('1').Value := 'Default';
+    with XML.Root.Items.Add('SetList').Items.Add('1').Items do
+    begin
+      Add('Name','Default');
+      Add('Themes',SharpThemeApi.GetThemeName);
+    end;
     XML.Root.Items.Add('Objects').Items.Add('1');
     XML.SaveToFile(FFileName);
   finally
@@ -147,7 +152,11 @@ begin
   FXML.Root.Clear;
   with FXML.Root.Items.Add('SetList').Items do
        for n := 0 to self.Count - 1 do
-           Add(inttostr(TObjectSet(Items[n]).SetID),TObjectSet(Items[n]).Name);
+           with Add(inttostr(TObjectSet(Items[n]).SetID)).Items do
+           begin
+             Add('Name',TObjectSet(Items[n]).Name);
+             Add('Themes',TObjectSet(Items[n]).ThemeList.CommaText);
+           end;
            
   FXML.Root.Items.Add('Objects');
   for n := 0 to Count -1 do
@@ -167,7 +176,9 @@ begin
           end;
         end;
   end;
-  FXML.SaveToFile(FFileName);
+  FXML.SaveToFile(FFileName + '~');
+  if FileExists(FFileName) then DeleteFile(FFileName);
+  RenameFile(FFileName + '~',FFileName);
 end;
 
 
@@ -205,6 +216,7 @@ end;
 procedure TObjectSetList.LoadFromFile;
 var
    n : integer;
+   oset : TObjectSet;
 begin
   Clear;
   try
@@ -224,7 +236,13 @@ begin
     end;
   end;
   for n:= 0 to FXML.Root.Items.ItemNamed['SetList'].Items.Count - 1 do
-      Add(TObjectSet.Create(strtoint(FXML.Root.Items.ItemNamed['SetList'].Items.Item[n].Name),FXML.Root.Items.ItemNamed['SetList'].Items.Item[n].Value,self));
+  begin
+    oset := TObjectSet.Create(strtoint(FXML.Root.Items.ItemNamed['SetList'].Items.Item[n].Name),
+                              FXML.Root.Items.ItemNamed['SetList'].Items.Item[n].Items.Value('Name','#'),
+                              self);
+    oset.ThemeList.CommaText := FXML.Root.Items.ItemNamed['SetList'].Items.Item[n].Items.Value('Themes','#');
+    Add(oset);
+  end;
 end;
 
 procedure TObjectSetList.Clear;
@@ -239,10 +257,11 @@ begin
   Inherited Clear;
 end;
 
-procedure TObjectSetList.AddObjectSet(pName : String);
+procedure TObjectSetList.AddObjectSet(pName,pThemeList : String);
 var
    n : integer;
    newID : integer;
+   oset : TObjectSet;
 begin
   newID := 1;
   for n := 0 to count - 1 do
@@ -251,9 +270,15 @@ begin
     if newID <= TObjectSet(Items[n]).SetID then
        newID := TObjectSet(Items[n]).SetID + 1;
   end;
-  FXML.Root.Items.ItemNamed['SetList'].Items.Add(inttostr(NewID),pName);
-  FXML.Root.Items.ItemNamed['Objects'].Items.Add(inttostr(NewID));  
-  Add(TObjectSet.Create(newID,pName,self));
+  with FXML.Root.Items.ItemNamed['SetList'].Items.Add(inttostr(NewID)).Items do
+  begin
+    Add('Name',pName);
+    Add('Themes',pThemeList);
+  end;
+  FXML.Root.Items.ItemNamed['Objects'].Items.Add(inttostr(NewID));
+  oset := TObjectSet.Create(newID,pName,self);
+  oset.ThemeList.CommaText := pThemeList;
+  Add(oset);
 end;
 
 procedure TObjectSetList.DeleteSet(pID : integer);

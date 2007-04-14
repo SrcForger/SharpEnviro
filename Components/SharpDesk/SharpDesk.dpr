@@ -42,9 +42,7 @@ uses
   uSharpDeskMainForm in 'Forms\uSharpDeskMainForm.pas' {SharpDeskMainForm},
   uSharpDeskSettingsForm in 'Forms\uSharpDeskSettingsForm.pas' {SettingsForm},
   uSharpDeskDeskSettingsForm in 'Forms\uSharpDeskDeskSettingsForm.pas' {DeskSettingsForm},
-  uSharpDeskObjectInfoForm in 'Forms\uSharpDeskObjectInfoForm.pas' {ObjectInfoForm},
   uSharpDeskLoadThemeForm in 'Forms\uSharpDeskLoadThemeForm.pas' {LoadThemeForm},
-  uSharpDeskAdvancedSettingsForm in 'Forms\uSharpDeskAdvancedSettingsForm.pas' {ASettingsForm},
   uSharpDeskCreateForm in 'Forms\uSharpDeskCreateForm.pas' {CreateForm},
   uSharpDeskBackgroundUnit in 'Units\uSharpDeskBackgroundUnit.pas',
   uSharpDeskFunctions in 'Units\uSharpDeskFunctions.pas',
@@ -62,25 +60,14 @@ uses
   uSharpDeskTObjectSettings in 'Units\uSharpDeskTObjectSettings.pas',
   uSharpDeskDebugging in 'Units\uSharpDeskDebugging.pas',
   uSharpDeskLayeredWindow in 'Units\uSharpDeskLayeredWindow.pas' {SharpDeskLayeredWindow},
-  uSharpDeskTerminalForm in 'Forms\uSharpDeskTerminalForm.pas' {TerminalWnd},
   SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpDeskApi in '..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas',
-  SharpFX in '..\..\Common\Units\SharpFX\SharpFX.pas';
+  SharpFX in '..\..\Common\Units\SharpFX\SharpFX.pas',
+  SharpThemeApi in '..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
+  SharpGraphicsUtils in '..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas';
 
 {$R *.res}
 
-function RegisterInputArea(ID,X1,Y1,X2,Y2 : integer) : Integer;
-begin
-  result := uSharpDeskMainForm.Sharpdesk.AddInputArea(ID,X1,Y1,X2,Y2);
-end;
-
-function DeleteInputArea(oID,ID : integer) : boolean;
-begin
-  result := uSharpDeskMainForm.SharpDesk.DeleteInputArea(oID,ID);
-end;
-
-Exports
-  RegisterInputArea;
 
 
 var
@@ -134,7 +121,6 @@ begin
 
   Application.CreateForm(TSharpDeskMainForm, SharpDeskMainForm);
   Application.CreateForm(TCreateForm, CreateForm);
-  Application.CreateForm(TTerminalWnd, TerminalWnd);
   //Application.CreateForm(TSharpDeskLayeredWindow, SharpDeskLayeredWindow);
   MuteXHandle := OpenMutex(MUTEX_ALL_ACCESS,False,'SharpThemeMutex');
   if MuteXHandle <> 0 then
@@ -147,8 +133,6 @@ begin
   Application.CreateForm(TDeskSettingsForm, DeskSettingsForm);
   Application.CreateForm(TCreateForm, CreateForm);
   Application.CreateForm(TSettingsForm, SettingsForm);
-  Application.CreateForm(TObjectInfoForm, ObjectInfoForm);
-  Application.CreateForm(TASettingsForm, ASettingsForm);
   Application.CreateForm(TCreateForm, CreateForm);
 
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));

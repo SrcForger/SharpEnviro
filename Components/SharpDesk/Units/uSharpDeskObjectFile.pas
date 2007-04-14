@@ -63,7 +63,6 @@ type
       DllGetSettings      : procedure(pDeskSettings   : TDeskSettings;
                                       pThemeSettings  : TThemeSettings;
                                       pObjectSettings : TObjectSettings);
-      DllRenderTooltip    : function (pObjectID : integer; pBitmap : TBitmap32) : boolean;                                      
       procedure Unload;
       procedure UnloadObjects;
       procedure Load;
@@ -148,7 +147,6 @@ begin
     DllCloseSettingsWnd := nil;
     DllSharpDeskMessage := nil;
     DllGetSettings      := nil;
-    DllRenderTooltip    := nil;
   end;
 end;
 
@@ -169,7 +167,6 @@ begin
       @DllSharpDeskMessage := GetProcAddress(dllhandle, 'SharpDeskMessage');
       @DllStartSettingsWnd := GetProcAddress(dllhandle, 'StartSettingsWnd');
       @DllGetSettings      := GetProcAddress(dllhandle, 'GetSettings');
-      @DllRenderTooltip    := GetProcAddress(dllhandle, 'RenderTooltip');
     end;
 
     if (@DllCreateLayer = nil) or
@@ -184,8 +181,6 @@ begin
     end;
 
     FLoaded := True;
-//    if (@DLLRenderTooltip <> nil) then FSupportsTooltip := True
-//       else FSupportsTooltip := False;
     if (@DLLGetSettings <> nil) then
        DLLGetSettings(TSharpDeskManager(TObjectFileList(FOwner).Owner).DeskSettings,
                       TSharpDeskManager(TObjectFileList(FOwner).Owner).ThemeSettings,

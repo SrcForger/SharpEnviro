@@ -39,6 +39,7 @@ uses
   TypInfo,
   ShlObj,JvSimpleXML,JclSysInfo,AppEvnts,
   SharpApi,
+  SharpThemeApi,
   SharpDeskApi,
   uSharpDeskLoadThemeForm,
   uSharpDeskBackgroundUnit,
@@ -50,7 +51,7 @@ uses
   uSharpDeskTObjectSettings,
   uSharpDeskTThemeSettings,
   uSharpDeskManager,
-  uSharpDeskDesktopObject;
+  uSharpDeskDesktopObject, PngImageList, XPMan;
 
 const
     WM_PRIVATE_MESSAGE = WM_USER + 321;
@@ -86,10 +87,8 @@ type
     AlignObjecttoGrid1: TMenuItem;
     BringtoFront1: TMenuItem;
     MovetoBack1: TMenuItem;
-    XMLProperties1: TMenuItem;
     LockAllObjects1: TMenuItem;
     UnlockAllObjects1: TMenuItem;
-    N6: TMenuItem;
     ObjectPreset1: TMenuItem;
     LoadPreset1: TMenuItem;
     N7: TMenuItem;
@@ -126,13 +125,10 @@ type
     N9: TMenuItem;
     ImageList1: TImageList;
     sameObjectSet1: TMenuItem;
-    ToolTipTimer: TTimer;
     ObjectSet1: TMenuItem;
     ObjectPreset2: TMenuItem;
     LoadPreset2: TMenuItem;
     Object1: TMenuItem;
-    N10: TMenuItem;
-    N1: TMenuItem;
     N11: TMenuItem;
     NewObjectSet: TMenuItem;
     N12: TMenuItem;
@@ -140,6 +136,12 @@ type
     N3: TMenuItem;
     Newobjectset1: TMenuItem;
     MakeWindow1: TMenuItem;
+    PngImageList1: TPngImageList;
+    N13: TMenuItem;
+    XPManifest1: TXPManifest;
+    Lock1: TMenuItem;
+    N6: TMenuItem;
+    N10: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -158,7 +160,6 @@ type
     procedure BackgroundImageDblClick(Sender: TObject);
     procedure BackgroundImageClick(Sender: TObject);
     procedure LockObjec1Click(Sender: TObject);
-    procedure ObjectInformation1Click(Sender: TObject);
     procedure CloneObject1Click(Sender: TObject);
     procedure RepaintObject2Click(Sender: TObject);
     procedure SingleClickAction1Click(Sender: TObject);
@@ -168,7 +169,6 @@ type
     procedure BringtoFront1Click(Sender: TObject);
     procedure MovetoBack1Click(Sender: TObject);
     procedure ClickTopMost1Click(Sender: TObject);
-    procedure XMLProperties1Click(Sender: TObject);
     procedure LockAllObjects1Click(Sender: TObject);
     procedure ObjectPopUpPopup(Sender: TObject);
     procedure UnlockAllObjects1Click(Sender: TObject);
@@ -188,15 +188,10 @@ type
     procedure UnlockObjects1Click(Sender: TObject);
     procedure All1Click(Sender: TObject);
     procedure sameObjectSet1Click(Sender: TObject);
-    procedure ToolTipTimerTimer(Sender: TObject);
-    procedure DevMenuPopup(Sender: TObject);
-    procedure ObjectMenuPopup(Sender: TObject);
     procedure NewObjectSetClick(Sender: TObject);
     procedure MakeWindow1Click(Sender: TObject);
-    procedure FormKeyPress(Sender: TObject; var Key: Char);
   private
     procedure WMDisplayChange(var Msg : TMessage);        message WM_DISPLAYCHANGE;
-    procedure WMTerminalWnd(var Msg : TMessage);          message WM_TERMINALWND;
     procedure WMDeskExportBackground(var Msg : TMessage); message WM_DESKEXPORTBACKGROUND;
     procedure WMEnableDesk(var Msg : TMessage);           message WM_ENABLESHARPDESK;
     procedure WMDisableDesk(var Msg : TMessage);          message WM_DISABLESHARPDESK;
@@ -227,11 +222,9 @@ type
     procedure OnObjectAssignSetClick(Sender : TObject);        // AssignObjectSet Menu event
     procedure OnSelectByObjectSetClick(Sender : TObject);      // SelectBy event
   public
-    procedure ChangeScheme(ThrobberBack,ThrobberDark,ThrobberLight,ThrobberText,
-                           WorkAreaBack,WorkAreaDark,WorkAreaLight,WorkAreaText : integer);
     procedure WMDropFiles(var Message: TWMDropFiles); message WM_DROPFILES; // Drag & Drop
     procedure SendMessageToConsole(msg : string; color : integer; DebugLevel : integer);
-    procedure LoadTheme(ID : integer; WPChange : boolean);
+    procedure LoadTheme(WPChange : boolean);
   end;
 
 const
@@ -282,10 +275,8 @@ implementation
 uses uSharpDeskCreateForm,
      uSharpDeskSettingsForm,
      uSharpDeskDeskSettingsForm,
-     uSharpDeskObjectInfoForm,
-     uSharpDeskAdvancedSettingsForm,
      uSharpDeskAlignSettingsForm,
-     uSharpDeskObjectSet, uSharpDeskTerminalForm;
+     uSharpDeskObjectSet;
 
 {$R *.dfm}
 
@@ -302,11 +293,6 @@ end;
 procedure TSharpDeskMainForm.WMDisplayChange(var Msg : TMessage);
 begin
 //  LoadTheme(SharpDesk.DeskSettings.ThemeID,True);
-end;
-
-procedure TSharpDeskMainForm.WMTerminalWnd(var Msg : TMessage);
-begin
-  TerminalWnd.Showmodal;
 end;
 
 procedure TSharpDeskMainForm.WMMouseMove(var Msg: TMessage);
@@ -326,7 +312,6 @@ procedure TSharpDeskMainForm.WMMouseLeave(var Msg: TMessage);
 begin
 {  SharpDesk.UnselectAll;
   SharpDesk.LastLayer := -1;
-  SharpDesk.HideTooltip;
   SharpApi.SendDebugMessage('DESK','MOUSE LEAVE',0);}
 end;
 
@@ -377,7 +362,6 @@ end;
 
 procedure TSharpDeskMainForm.WMCloseDesk(var Msg : TMessage);
 begin
-  if (SharpDesk.DeskSettings.TerminalMode) and (not SharpDesk.DeskSettings.ExitDesk) then exit;
   SharpDeskMainForm.Close;
   Application.Terminate;
 end;
@@ -391,9 +375,7 @@ end;
 
 procedure TSharpDeskMainForm.WMDisableDesk(var Msg : TMessage);
 begin
-  if ASettingsForm.Visible    then ASettingsForm.btn_close.OnClick(nil);
   if CreateForm.Visible       then CreateForm.btn_cancel.OnClick(nil);
-  if ObjectInfoForm.Visible   then ObjectInfoForm.btn_close.OnClick(nil);
   if DeskSettingsForm.Visible then DeskSettingsForm.btn_Cancel.OnClick(nil);
   if SettingsForm.Visible     then SettingsForm.btn_cancel.OnClick(nil);
   SharpDesk.DisableAnimation;
@@ -415,7 +397,7 @@ begin
     0 : b:= False;
     else b := False;
   end;
-  SharpDeskMainForm.LoadTheme(msg.WParam,b);
+  SharpDeskMainForm.LoadTheme(b);
 end;
 
 procedure TSharpDeskMainForm.WMUpdateBangs(var Msg : TMessage);
@@ -434,7 +416,7 @@ begin
   SharpDesk.ObjectSetList.LoadFromFile;
   SharpDesk.ObjectFileList.RefreshDirectory;
   SharpDesk.ObjectFileList.ReLoadAllObjects;
-  SharpDesk.LoadObjectSets(SharpDesk.DeskSettings.Theme.ObjectSets);
+  SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
 end;
 
 function IsTopMost(wnd: HWND): Boolean;
@@ -467,12 +449,10 @@ begin
            setwindowpos(SharpDeskMainForm.Handle, HWND_TOP, Screen.DesktopLeft,Screen.DesktopTop,
                         Screen.DesktopWidth, Screen.DesktopHeight, SWP_SHOWWINDOW);
            ForceForegroundWindow(SharpDeskMainForm.Handle);
-           if ASettingsForm.Visible    then ForceForegroundWindow(ASettingsForm.Handle);
            if CreateForm.Visible       then ForceForegroundWindow(CreateForm.Handle);
            if DeskSettingsForm.Visible then ForceForegroundWindow(DeskSettingsForm.Handle);
            if LoadThemeForm <> nil then
               if LoadThemeForm.Visible then ForceForegroundWindow(LoadThemeForm.Handle);
-           if ObjectInfoForm.Visible   then ForceForegroundWindow(ObjectInfoForm.Handle);
            if SettingsForm.Visible     then ForceForegroundWindow(SettingsForm.Handle);
 
            handle := FindWindow('SharpE_Task', nil);
@@ -509,24 +489,21 @@ end;
 
 
 
-procedure TSharpDeskMainForm.LoadTheme(ID : integer; WPChange : boolean);
+procedure TSharpDeskMainForm.LoadTheme(WPChange : boolean);
 var
    LoadThemeForm : TLoadThemeForm;
    {SetList : TStringList;  }
 begin
-  if (SharpDesk.DeskSettings.TerminalMode) and (not SharpDesk.DeskSettings.ThemeLoading) and (not FirstTheme) then exit;
   SharpDeskMainForm.SendMessageToConsole('Loading Theme',COLOR_OK,DMT_STATUS);
 
   SharpApi.SharpEBroadCast(WM_THEMELOADINGSTART,0,0);
   try
     LoadThemeForm := TLoadThemeForm.Create(Application);
+    SharpThemeApi.LoadTheme(False,ALL_THEME_PARTS);
     Application.ProcessMessages;
     SharpDesk.ThemeSettings.ReloadThemes('');
     SharpDesk.DeskSettings.ReloadSettings;
     SharpDesk.ObjectSettings.ReloadObjectSettings;
-    SharpDesk.DeskSettings.Theme := SharpDesk.ThemeSettings.GetThemeByID(ID);
-    SharpDesk.DeskSettings.ThemeID := SharpDesk.DeskSettings.Theme.ThemeID;
-    SharpDesk.DeskSettings.SaveSettings;
     LoadThemeForm.Show;
     LoadThemeForm.Repaint;
     SharpDeskMainForm.SendMessageToConsole('unloading desktop objects',COLOR_OK,DMT_STATUS);
@@ -551,22 +528,7 @@ begin
     SharpDesk.UpdateAnimationLayer;
     LoadThemeForm.SetStatus('Loading Scheme',55);
 
-    SharpDeskMainForm.SendMessageToConsole('loading scheme',COLOR_OK,DMT_STATUS);
-    SharpDeskMainForm.ChangeScheme(SharpDesk.DeskSettings.Theme.Scheme.Throbberback,
-                                   SharpDesk.DeskSettings.Theme.Scheme.Throbberdark,
-                                   SharpDesk.DeskSettings.Theme.Scheme.Throbberlight,
-                                   SharpDesk.DeskSettings.Theme.Scheme.ThrobberText,
-                                   SharpDesk.DeskSettings.Theme.Scheme.WorkAreaback,
-                                   SharpDesk.DeskSettings.Theme.Scheme.WorkAreadark,
-                                   SharpDesk.DeskSettings.Theme.Scheme.WorkArealight,
-                                   SharpDesk.DeskSettings.Theme.Scheme.WorkAreaText);
     LoadThemeForm.ReDrawForm;
-    if SharpDesk.DeskSettings.Theme.UseCursor then
-    begin
-      LoadThemeForm.SetStatus('Loading Cursors',65);
-      SharpApi.ServiceStart('curses');
-      SharpApi.ServiceMsg('curses',PChar('Load Cursor:' + inttostr(SharpDesk.DeskSettings.Theme.Cursor)));
-    end else SharpApi.ServiceStop('curses');
 
     if DeskSettingsForm <> nil then
        if DeskSettingsForm.visible then
@@ -579,15 +541,11 @@ begin
     SharpDeskMainForm.SendMessageToConsole('loading desktop objects',COLOR_OK,DMT_STATUS);
     LoadThemeForm.SetStatus('Loading Desktop Objects',75);
     SharpDesk.ObjectSetList.LoadFromFile;
-    SharpDesk.LoadObjectSets(SharpDesk.DeskSettings.Theme.ObjectSets);
-    LoadThemeForm.SetStatus('Registry Update',90);
-    SharpApi.SetNewIconSet(SharpDesk.DeskSettings.Theme.IconSet);
-    SharpApi.SetNewSkin(SharpDesk.DeskSettings.Theme.Skin,false);
+    SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
 
      //next broadcast will be by SharpDesk, loadingtheme = true will make the
      //WM handler ignore the message
     loadingtheme := true;
-    SharpAPI.SetNewTheme(SharpDesk.DeskSettings.Theme.Name,SharpDesk.DeskSettings.ThemeID,true);
     LoadThemeForm.SetStatus('Theme Loaded',100);
     LoadThemeForm.Close;
     LoadThemeForm.Free;
@@ -606,40 +564,6 @@ end;
 procedure TSharpDeskMainForm.SendMessageToConsole(msg : string; color : integer; DebugLevel : integer);
 begin
      SendDebugMessageEx(TAG_APP,PChar('<font color='+ColorToString(color)+'>'+msg),color,DebugLevel);
-end;
-
-
-// ######################################
-
-
-
-procedure TSharpDeskMainForm.ChangeScheme(ThrobberBack,ThrobberDark,ThrobberLight,ThrobberText,
-                                 WorkAreaBack,WorkAreaDark,WorkAreaLight,WorkAreaText : integer);
-var
-  cs : TColorSchemeEx;
-begin
-  cs.Throbberback := ThrobberBack;
-  cs.Throbberdark := ThrobberDark;
-  cs.Throbberlight := ThrobberLight;
-  cs.ThrobberText  := ThrobberText;
-  cs.WorkAreaback := WorkAreaBack;
-  cs.WorkAreadark := WorkAreaDark;
-  cs.WorkArealight := WorkAreaLight;
-  cs.WorkAreaText  := WorkAreaText;
-  SaveColorSchemeEx(cs);
-  {   SaveSetting('SharpBar','3DThrobberBack',ThrobberBack);
-     SaveSetting('SharpBar','3DThrobberDark',ThrobberDark);
-     SaveSetting('SharpBar','3DThrobberLight',ThrobberLight);
-     SaveSetting('SharpBar','3DWorkareaBack',WorkAreaBack);
-     SaveSetting('SharpBar','3DWorkareaDark',WorkAreaDark);
-     SaveSetting('SharpBar','3DWorkareaLight',WorkAreaLight); }
-     try
-        SendMessageToConsole('sending scheme update message',COLOR_OK,DMT_STATUS);
-        SharpEBroadcast(WM_SHARPEUPDATESETTINGS,0,0);
-        SendMessageToConsole('scheme update message send',COLOR_OK,DMT_STATUS);
-     except
-           SendMessageToConsole('failed to send scheme update message',COLOR_ERROR,DMT_ERROR);
-     end;
 end;
 
 
@@ -715,6 +639,10 @@ end;
 
 procedure TSharpDeskMainForm.FormCreate(Sender: TObject);
 begin
+  if not SharpThemeApi.Initialized then
+     SharpThemeApi.InitializeTheme;
+  SharpThemeApi.LoadTheme();
+
      ObjectPopupImageCount := ObjectPopUp.Images.Count;
 
      startup := True;
@@ -755,7 +683,7 @@ begin
      SharpDeskMainForm.Top:=Screen.DesktopTop;
      SharpDeskMainForm.Width:=Screen.DesktopWidth;
      SharpDeskMainForm.Height:=Screen.DesktopHeight;
-     LoadTheme(SharpDesk.DeskSettings.ThemeID,True);
+     LoadTheme(True);
      SharpDeskMainForm.BackgroundImage.RepaintMode := rmOptimizer;
 //     MainForm.BackgroundImage.UseRepaintOptimizer := True;
 //     MainForm.BackgroundImage.RenderingOptimizations := [roLayerResize,roLayerUpdate];
@@ -830,27 +758,17 @@ end;
 // ######################################
 
 
-
-
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.BackgroundImageMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer;
   Layer: TCustomLayer);
 var
    B,i : integer;
    //cpos : TPoint;
-   MuteXHandle : THandle;
    DesktopObject : TDesktopObject;
    //MenuItem : TMenuItem;
 begin
   if not SharpDesk.Enabled then exit;
   SharpDesk.MouseDown:=False;
-
-  if SharpDesk.Tooltip <> nil then
-     SharpDesk.HideTooltip;
 
   if oSelect then
   begin
@@ -894,7 +812,6 @@ begin
     end;
     if (Button = mbright) and not (ssAlt in Shift) then
     begin
-      if (SharpDesk.DeskSettings.TerminalMode) and (not SharpDesk.DeskSettings.ObjectMenu) then exit;
       ENDOFCUSTOMMENU.Visible := True;
       STARTOFBOTTOMMENU.Visible := True;
 
@@ -926,10 +843,10 @@ begin
 
       if (SharpDesk.SelectionCount <= 1) then
       begin
-        if DesktopObject.Settings.isWindow then MakeWindow1.ImageIndex:=4
-           else MakeWindow1.ImageIndex:=29;
-        if DesktopObject.Settings.Locked then LockObjec1.ImageIndex:=4
-           else LockObjec1.ImageIndex:=29;
+        if DesktopObject.Settings.isWindow then MakeWindow1.Checked := True
+           else MakeWindow1.Checked := False;
+        if DesktopObject.Settings.Locked then LockObjec1.Checked := True
+           else LockObjec1.Checked := False;
         ObjectPopUp.Popup(Mouse.CursorPos.X,Mouse.CursorPos.y);
       end else ObjectPopUp2.Popup(Mouse.CursorPos.x,Mouse.CursorPos.y);
     end;
@@ -937,7 +854,6 @@ begin
   begin
     LastX:=X;
     LastY:=Y;
-    if (SharpDesk.DeskSettings.TerminalMode) and (not SharpDesk.DeskSettings.SharpMenu) then exit;
     if (Button = mbRight) and (Shift = [ssCtrl]) then DevMenu.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y)
     else
     if (Button = mbRight) then
@@ -958,19 +874,10 @@ procedure TSharpDeskMainForm.BackgroundImageMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer;
   Layer: TCustomLayer);
 var
-   CPos,pp : TPoint;
+   CPos : TPoint;
    DesktopObject : TDesktopObject;
 begin
   if not SharpDesk.Enabled then exit;
-
-  if Tooltiptimer.Enabled then
-  begin
-    TooltipTimer.Tag := 0;
-    TooltipTimer.Enabled := False;
-  end;
-
-  if SharpDesk.Tooltip <> nil then
-     SharpDesk.HideTooltip;
 
   if SharpDesk.DoubleClick then
   begin
@@ -985,40 +892,22 @@ begin
   begin
     SharpDesk.SelectionCount:=0;
     SharpDesk.UnselectAll;
-    SharpDesk.RemoveInputFocus;    
   end;
 
-  SharpDesk.RemoveInputFocus;
 
-  SharpDesk.ObjectsMoved := False;  
+  SharpDesk.ObjectsMoved := False;
 
   if Layer.Tag>-1 then
   begin
     DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(Layer.Tag));
     if DesktopObject = nil then exit;
 
-    pp := SharpDesk.CheckMouseInputArea(DesktopObject.Settings.ObjectID,
-                                     CPos.X - round(DesktopObject.Layer.Location.Left),
-                                     CPos.Y - round(DesktopObject.Layer.Location.Top));
-    if pp.X <> -1 then
-    begin
-      SharpDesk.RemoveInputFocus;
-      SharpDesk.InputID := pp;
-      DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
-                                              DesktopObject.Layer,
-                                              SDM_KEY_SET_FOCUS,pp.Y,0,0);
-      SharpDesk.UnselectAll;
-      DesktopObject.Selected := True;
-      SharpDesk.SelectionCount := SharpDesk.SelectionCount + 1;
-    end else
     if (ssShift in Shift) and (ssCtrl in Shift) then
     begin
-       SharpDesk.RemoveInputFocus;
        SharpDesk.SelectBySetID(TObjectSet(DesktopObject.Settings.Owner).SetID);
     end else
     if ssShift in Shift then
     begin
-      SharpDesk.RemoveInputFocus;
       if DesktopObject.Selected then
       begin
         if SharpDesk.SelectionCount = -1 then SharpDesk.SelectionCount := 1
@@ -1106,15 +995,7 @@ begin
     DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
                                             DesktopObject.Layer,
                                             SDM_MOUSE_MOVE,CPos.X,CPos.Y,0);
-    if Tooltiptimer.Enabled then
-       TooltipTimer.Tag := 0;
-       //showmessage(inttostr(CPos.X - DesktopObject.Settings.Pos.X));
-       //showmessage(inttostr(CPos.X - round(DesktopObject.Layer.Location.Left)));
-    if SharpDesk.CheckMouseInputArea(DesktopObject.Settings.ObjectID,
-                                     CPos.X - round(DesktopObject.Layer.Location.Left),
-                                     CPos.Y - round(DesktopObject.Layer.Location.Top)).X <> -1 then
-       BackgroundImage.Cursor := crIBeam
-       else BackgroundImage.Cursor := crDefault;
+
   end;
 
   if oSelect then
@@ -1150,22 +1031,18 @@ begin
 
   if (SharpDesk.MouseDown) and (SharpDesk.SelectionCount<>0) then
   begin
-//    SharpDesk.ObjectsMoved:=False;
-    if not ((SharpDesk.DeskSettings.TerminalMode) and (not SharpDesk.DeskSettings.ObjectMove)) then
+    CPos := Mouse.CursorPos;
+    if SharpDesk.DeskSettings.Grid then CPos := SharpDesk.GetNextGridPoint(CPos);
+    X1 := CPos.X-SharpDesk.LayerMousePos.X;
+    Y1 := CPos.Y-SharpDesk.LayerMousePos.Y;
+    if (X<>0) and (Y<>0) then
     begin
-      CPos := Mouse.CursorPos;
-      if SharpDesk.DeskSettings.Grid then CPos := SharpDesk.GetNextGridPoint(CPos);
-      X1 := CPos.X-SharpDesk.LayerMousePos.X;
-      Y1 := CPos.Y-SharpDesk.LayerMousePos.Y;
-      if (X<>0) and (Y<>0) then
-      begin
-        if Shift = [ssCtrl,ssLeft] then SharpDesk.MoveSelectedLayers(X1,Y1,True)
-           else SharpDesk.MoveSelectedLayers(X1,Y1,False);
-        SharpDesk.ObjectSetList.SaveSettings;
-      end;
-      SharpDesk.LayerMousePos := CPos;
-      exit;
+      if Shift = [ssCtrl,ssLeft] then SharpDesk.MoveSelectedLayers(X1,Y1,True)
+         else SharpDesk.MoveSelectedLayers(X1,Y1,False);
+      SharpDesk.ObjectSetList.SaveSettings;
     end;
+    SharpDesk.LayerMousePos := CPos;
+    exit;
   end;
 
   if Layer.Tag = -2 then exit;
@@ -1173,11 +1050,6 @@ begin
   begin
     if SharpDesk.LastLayer > -1 then
     begin
-      if (SharpDesk.DeskSettings.Tooltips) then
-      begin
-        TooltipTimer.Tag := 0;
-        ToolTipTimer.Enabled := True;
-      end;
       DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));
       if DesktopObject = nil then exit;
       try
@@ -1193,30 +1065,12 @@ begin
       end;
       DesktopObject.Selected := False;
       SharpDesk.SelectionCount := 0;
-    end
-    else if (SharpDesk.LastLayer = - 1) then
-    begin
-      TooltipTimer.Tag := 0;
-      SharpDesk.HideTooltip;
-      ToolTipTimer.Enabled := False;
     end;
 
     if Layer.Tag > -1 then
     begin
-      SharpDesk.HideTooltip;
       DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(Layer.Tag));
       if DesktopObject = nil then exit;
-      if (Shift = [ssAlt]) and (SharpDesk.DeskSettings.Tooltips) then
-      begin
-        ToolTipTimer.Enabled := False;
-        cpos := SharpDesk.Image.ScreenToClient(Mouse.CursorPos);
-        SharpDesk.RenderToolTip(DesktopObject,cpos.x,cpos.y);
-      end
-      else if (SharpDesk.DeskSettings.Tooltips) then
-      begin
-        TooltipTimer.Tag := 0;
-        ToolTipTimer.Enabled := True;
-      end;
       try
         DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
                                                 DesktopObject.Layer,
@@ -1230,12 +1084,6 @@ begin
       end;
       DesktopObject.Selected := True;
       SharpDesk.SelectionCount := -1;
-    end
-    else if (Layer.Tag = - 1) then
-    begin
-      SharpDesk.HideTooltip;
-      TooltipTimer.Tag := 0;      
-      ToolTipTimer.Enabled := False;
     end;
   end;
   SharpDesk.LastLayer := Layer.Tag;
@@ -1316,19 +1164,12 @@ end;
 
 procedure TSharpDeskMainForm.LockObjec1Click(Sender: TObject);
 begin
-  if LockObjec1.ImageIndex = 29 then SharpDesk.LockSelectedObjects
-     else SharpDesk.UnLockSelectedObjects;
+  if LockObjec1.Checked then SharpDesk.UnLockSelectedObjects
+     else SharpDesk.LockSelectedObjects;
+  LockObjec1.Checked := not LockObjec1.Checked;
+//  if LockObjec1.ImageIndex = 29 then SharpDesk.LockSelectedObjects
+//     else SharpDesk.UnLockSelectedObjects;
 End;
-
-
-// ######################################
-
-
-procedure TSharpDeskMainForm.ObjectInformation1Click(Sender: TObject);
-begin
-     ObjectInfoForm.LoadSettings(TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer)));
-     ObjectInfoForm.Showmodal;
-end;
 
 
 // ######################################
@@ -1484,19 +1325,6 @@ end;
 // ######################################
 
 
-procedure TSharpDeskMainForm.XMLProperties1Click(Sender: TObject);
-var
-   DesktopObject : TDesktopObject;
-begin
-  DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));
-  ASettingsForm.Load(DesktopObject);
-  ASettingsForm.Showmodal;
-end;
-
-
-// ######################################
-
-
 procedure TSharpDeskMainForm.LockAllObjects1Click(Sender: TObject);
 begin
   SharpDesk.LockAllObjects;
@@ -1616,18 +1444,15 @@ var
 begin
      if SharpDesk.LastLayer = -1 then exit;
 
-     if Tooltiptimer.Enabled then
-     begin
-       TooltipTimer.Tag := 0;
-       TooltipTimer.Enabled := False;
-     end;
-
      SharpDesk.CheckPresetsFile;
 
      {SelectAll Menu}
      SList := TStringList.Create;
      SList.Clear;
-     SList.CommaText := SharpDesk.DeskSettings.Theme.ObjectSets;
+     for n := 0 to SharpDesk.ObjectSetList.Count - 1 do
+         if TObjectSet(SharpDesk.ObjectSetList.Items[n]).ThemeList.IndexOf(SharpThemeApi.GetThemeName) >= 0 then
+            SList.Add(inttostr(TObjectSet(SharpDesk.ObjectSetList.Items[n]).SetID));
+
      while ObjectSelections1.Count > 3 do
            ObjectSelections1.Delete(3);
 
@@ -1649,7 +1474,9 @@ begin
      {Assign To Set Menu}
   SList := TStringList.Create;
   SList.Clear;
-  SList.CommaText := SharpDesk.DeskSettings.Theme.ObjectSets;
+  for n := 0 to SharpDesk.ObjectSetList.Count - 1 do
+      if TObjectSet(SharpDesk.ObjectSetList.Items[n]).ThemeList.IndexOf(SharpThemeApi.GetThemeName) >= 0 then
+         SList.Add(inttostr(TObjectSet(SharpDesk.ObjectSetList.Items[n]).SetID));
   while ObjectSet2.Count>2 do ObjectSet2.Delete(2);
   for n := 0 to SharpDesk.ObjectSetList.Count - 1 do
   begin
@@ -1757,8 +1584,7 @@ procedure TSharpDeskMainForm.ApplicationEvents1Deactivate(Sender: TObject);
 begin
   SharpDesk.UnselectAll;
   SharpDesk.LastLayer := -1;
-  SharpDesk.HideTooltip;
-  SharpApi.SendDebugMessage('DESK','MOUSE LEAVE',0);  
+  SharpApi.SendDebugMessage('DESK','MOUSE LEAVE',0);
 end;
 
 procedure TSharpDeskMainForm.FormDestroy(Sender: TObject);
@@ -1850,12 +1676,6 @@ var
    //DesktopObject : TDesktopObject;
    ObjectFile    : String;
 begin
-  if Tooltiptimer.Enabled then
-  begin
-    TooltipTimer.Tag := 0;
-    TooltipTimer.Enabled := False;
-  end;
-
   i := Align2.Count - 1;
   for n:=4 to i do
       Align2.Delete(4);
@@ -1864,7 +1684,9 @@ begin
 
   SList := TStringList.Create;
   SList.Clear;
-  SList.CommaText := SharpDesk.DeskSettings.Theme.ObjectSets;
+  for n := 0 to SharpDesk.ObjectSetList.Count - 1 do
+      if TObjectSet(SharpDesk.ObjectSetList.Items[n]).ThemeList.IndexOf(SharpThemeApi.GetThemeName) >= 0 then
+         SList.Add(inttostr(TObjectSet(SharpDesk.ObjectSetList.Items[n]).SetID));
   while ObjectSet1.Count>2 do ObjectSet1.Delete(2);
   for n := 0 to SharpDesk.ObjectSetList.Count - 1 do
   begin
@@ -2024,7 +1846,7 @@ end;
 procedure TSharpDeskMainForm.LoadObjects1Click(Sender: TObject);
 begin
   SharpDesk.ObjectFileList.ReLoadAllObjects;
-  SharpDesk.LoadObjectSets(SharpDesk.DeskSettings.Theme.ObjectSets);
+  SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
 end;
 
 procedure TSharpDeskMainForm.RefreshObjectDirectory1Click(Sender: TObject);
@@ -2032,7 +1854,7 @@ begin
   SharpDesk.ObjectFileList.UnLoadAll;
   SharpDesk.ObjectFileList.RefreshDirectory;
   SharpDesk.ObjectFileList.ReLoadAllObjects;
-  SharpDesk.LoadObjectSets(SharpDesk.DeskSettings.Theme.ObjectSets);
+  SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
 end;
 
 procedure TSharpDeskMainForm.LockObjects1Click(Sender: TObject);
@@ -2070,65 +1892,14 @@ begin
   SharpDesk.SendMessageToAllObjects(SDM_WEATHER_UPDATE);
 end;
 
-procedure TSharpDeskMainForm.ToolTipTimerTimer(Sender: TObject);
-var
-  DesktopObject : TDesktopObject;
-  p : TPoint;
-begin
-  if not (SharpDesk.DeskSettings.Tooltips) then
-  begin
-    ToolTipTimer.Tag := 0;
-    ToolTipTimer.Enabled := False;
-    SharpDesk.HideTooltip;
-    exit;
-  end;
-
-  {$WARNINGS OFF}
-  TooltipTimer.Tag := TooltipTimer.Tag + TooltipTimer.Interval;
-  {$WARNINGS ON}
-  if TooltipTimer.Tag>=2000 then
-  begin
-    DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));
-    p := SharpDesk.Image.ScreenToClient(Mouse.CursorPos);
-    SharpDesk.RenderToolTip(DesktopObject,p.x,p.y);
-    TooltipTimer.Tag := 0;
-    TooltipTimer.Enabled := False;
-  end;
-end;
-
-procedure TSharpDeskMainForm.DevMenuPopup(Sender: TObject);
-begin
-  if Tooltiptimer.Enabled then
-  begin
-    TooltipTimer.Tag := 0;
-    TooltipTimer.Enabled := False;
-  end;
-end;
-
-procedure TSharpDeskMainForm.ObjectMenuPopup(Sender: TObject);
-begin
-  if Tooltiptimer.Enabled then
-  begin
-    TooltipTimer.Tag := 0;
-    TooltipTimer.Enabled := False;
-  end;
-end;
-
 procedure TSharpDeskMainForm.NewObjectSetClick(Sender: TObject);
 var
-  SList : TStringList;
   s : String;
 begin
   s:= InputBox('Create Object Set','Object Set name : ','');
   if (length(Trim(s)) = 0) or (s='') then exit;
-  SharpDesk.ObjectSetList.AddObjectSet(s);
+  SharpDesk.ObjectSetList.AddObjectSet(s,SharpThemeApi.GetThemeName);
   SharpDesk.ObjectSetList.SaveSettings;
-  Slist := TStringList.Create;
-  SList.Clear;
-  SList.CommaText := Sharpdesk.DeskSettings.Theme.ObjectSets;
-  SList.Add(inttostr(TObjectSet(SharpDesk.ObjectSetList.Items[SharpDesk.ObjectSetList.Count-1]).SetID));
-  Sharpdesk.DeskSettings.Theme.ObjectSets := SList.CommaText;
-  SList.Free;
   SharpDesk.ThemeSettings.SaveThemes;
   SharpDesk.AssignSelectedObjectsToSet(SharpDesk.ObjectSetList.Count-1);
 end;
@@ -2140,14 +1911,12 @@ var
 begin
   DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));
   if DesktopObject = nil then exit;
-  if MakeWindow1.ImageIndex = 29 then
-     DesktopObject.MakeWindow
-     else DesktopObject.MakeLayer;
-end;
-
-procedure TSharpDeskMainForm.FormKeyPress(Sender: TObject; var Key: Char);
-begin
-  SharpDesk.InputEvent(Key);
+  if MakeWindow1.Checked then DesktopObject.MakeLayer
+     else DesktopObject.MakeWindow;
+  MakeWindow1.Checked := not MakeWindow1.Checked;
+//  if MakeWindow1.ImageIndex = 29 then
+  //   DesktopObject.MakeWindow
+//     else DesktopObject.MakeLayer;
 end;
 
 end.
