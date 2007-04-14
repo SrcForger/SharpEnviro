@@ -51,11 +51,14 @@ uses
   uSharpDeskTThemeSettings,
   uSharpDeskFunctions,
   SharpApi,
-  SharpDeskApi,   
+  SharpDeskApi,
   uLinkObjectLayer in 'uLinkObjectLayer.pas',
   LinkObjectSettingsWnd in 'LinkObjectSettingsWnd.pas' {SettingsWnd},
   LinkObjectXMLSettings in 'LinkObjectXMLSettings.pas',
-  mlinewnd in 'mlinewnd.pas' {mlineform};
+  mlinewnd in 'mlinewnd.pas' {mlineform},
+  uPropertyList in '..\..\..\Common\Units\PropertyList\uPropertyList.pas',
+  SharpThemeUtils in '..\..\..\Common\Units\SharpThemeUtils\SharpThemeUtils.pas',
+  uSharpDeskObjectSettings in '..\..\..\Common\Units\XML\uSharpDeskObjectSettings.pas';
 
 {$R *.RES}
 {$R icons.res}
@@ -100,9 +103,6 @@ type
 
 var
    LayerList : TLayerList;
-   DeskSettings   : TDeskSettings;
-   ObjectSettings : TObjectSettings;
-   ThemeSettings  : TThemeSettings;
    FirstStart : boolean = True;
    LastSettingsTick,LastSettingsPanel : integer;
 
@@ -129,7 +129,7 @@ begin
   LayerList.Add(TLayer.Create);
   Layer := TLayer(LayerList.Items[LayerList.Count-1]);
   Layer.ObjectID := ObjectID;
-  Layer.FolderLayer := TFolderLayer.create(Image, ObjectID, DeskSettings,ThemeSettings,ObjectSettings);
+  Layer.FolderLayer := TFolderLayer.create(Image, ObjectID);
   Layer.FolderLayer.Tag:=ObjectID;
   result := Layer.FolderLayer;
 end;
@@ -168,9 +168,6 @@ begin
   SettingsWnd.Top:=0;
   SettingsWnd.BorderStyle:=bsNone;
   SettingsWnd.ObjectID:=ObjectID;
-  SettingsWnd.DeskSettings   := DeskSettings;
-  SettingsWnd.ObjectSettings := ObjectSettings;
-  Settingswnd.ThemeSettings  := ThemeSettings;
   SettingsWnd.LoadSettings;
   if (not FirstStart) and (GetTickCount-LastSettingsTick<2000) then
       SettingsWnd.PageControl1.ActivePageIndex:=LastSettingsPanel;
@@ -287,84 +284,6 @@ begin
 end;
 
 
-function RenderTooltip(pObjectID : integer; pBitmap : TBitmap32) : boolean;
-var
-  n : integer;
-  Layer : TLayer;
-  w,h : integer;
-  eh : integer;
-  P : TPoint;
-  color1,color2 : TColor32;
-  SList : TStringList;
-begin
-  result := False;
-  
-  if FirstStart then exit;
-  Layer := nil;
-  for n := 0 to LayerList.Count - 1 do
-  begin
-    if TLayer(LayerList.Items[n]).ObjectID = pObjectID then
-    begin
-      Layer := TLayer(LayerList.Items[n]);
-      break;
-    end;
-  end;
-  if Layer = nil then exit;
-
-  SList := TStringList.Create;
-  SList.Clear;
-  SList.Add('Object : Link.object'); 
-  SList.Add('Target : ' + Layer.FolderLayer.Settings.Target);
-
-  with pBitmap do
-  begin
-    if DeskSettings<>nil then
-    begin
-      Color1 := color32(DeskSettings.Theme.Scheme.WorkArealight);
-      Color2 := color32(DeskSettings.Theme.Scheme.WorkAreadark);
-    end else
-    begin
-      Color1 := color32(clsilver);
-      Color2 := color32(clBlack);
-    end;
-    BeginUpdate;
-    MasterAlpha := 255;
-    Font.Name := 'Arial';
-    Font.Color := clBlack;
-    Font.Style := [];
-    Font.Size := 8;
-    p := GetBitmapSize(pBitmap,SList);
-    w := p.x + 8;
-    h := p.y + 4;
-    eh := TextHeight('!"§$%&/()=?`°QWERTZUIOPÜASDFGHJJKLÖÄYXCVBNqp1234567890');
-    SetSize(w,h);
-    Clear(color32(0,0,0,0));
-        
-    FillRectTS(rect(3,0,w-3,h-1),color1);
-    LineT(1,2,1,h-2,color1);
-    LineT(2,1,2,h-1,color1);
-    LineT(w-2,2,w-2,h-2,color1);
-    LineT(w-3,1,w-3,h-1,color1);
-
-    LineT(2,0,w-2,0,color2);
-    LineT(2,h-1,w-2,h-1,color2);
-    LineT(0,2,0,h-2,color2);
-    LineT(w-1,2,w-1,h-2,color2);
-    Pixel[1,1] := color2;
-    Pixel[w-2,1] := color2;
-    Pixel[1,h-2] := color2;
-    Pixel[w-2,h-2] := color2;    
-
-    for n := 0 to SList.Count - 1 do
-        RenderText(4,n*eh+2,SList[n],0,color32(Font.Color));
-    EndUpdate;
-    Changed;    
-  end;
-
-  SList.Free;
-end;
-
-
 
 procedure GetSettings( pDeskSettings   : TDeskSettings;
                        pThemeSettings  : TThemeSettings;
@@ -373,10 +292,6 @@ var
   XML : TJvSimpleXML;
   Settings: TXMLSettings;
 begin
-  DeskSettings   := pDeskSettings;
-  ThemeSettings  := pThemeSettings;
-  ObjectSettings := pObjectSettings;
-
   XML := TJvSimpleXML.Create(nil);
   try
     ForceDirectories(GetSharpeGlobalSettingsPath + 'SharpDesk\DragAndDrop\');
@@ -408,7 +323,6 @@ Exports
   CreateLayer,
   StartSettingsWnd,
   SharpDeskMessage,
-  RenderTooltip,
   GetSettings;
 
 begin

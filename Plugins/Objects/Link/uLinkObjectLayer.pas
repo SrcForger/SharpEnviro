@@ -44,6 +44,8 @@ uses
   uSharpDeskTDeskSettings,
   uSharpDeskFunctions,
   uSharpDeskDesktopPanel,
+  SharpThemeApi,
+  SharpIconUtils,
   GR32_Resamplers;
 type
    TColorRec = packed record
@@ -64,10 +66,6 @@ type
     FObjectID        : integer;
     FScale           : integer;
     FLocked          : Boolean;
-    FDeskPanel       : TDesktopPanel;
-    FDeskSettings    : TDeskSettings;
-    FThemeSettings   : TThemeSettings;
-    FObjectSettings  : TObjectSettings;
   protected
      procedure OnTimer(Sender: TObject);
   public
@@ -81,10 +79,7 @@ type
      procedure OnOpenWith(Sender : TObject);
      procedure StartHL;
      procedure EndHL;
-     constructor Create( ParentImage:Timage32; Id : integer;
-                         DeskSettings : TDeskSettings;
-                         ThemeSettings : TThemeSettings;
-                         ObjectSettings : TObjectSettings); reintroduce;
+     constructor Create( ParentImage:Timage32; Id : integer); reintroduce;
      destructor Destroy; override;
      property ObjectId  : Integer read FObjectId  write FObjectId;
      property Locked    : boolean read FLocked    write FLocked;
@@ -129,7 +124,7 @@ end;
 
 procedure TFolderLayer.StartHL;
 begin
-  if FDeskSettings.Theme.DeskHoverAnimation then
+  if SharpThemeApi.GetDesktopAnimUseAnimations then
   begin
     FHLTimerI := 1;
     FHLTimer.Enabled := True;
@@ -142,7 +137,7 @@ end;
 
 procedure TFolderLayer.EndHL;
 begin
-  if FDeskSettings.Theme.DeskHoverAnimation then
+  if SharpThemeApi.GetDesktopAnimUseAnimations then
   begin
     FHLTimerI := -1;
     FHLTimer.Enabled := True;
@@ -164,10 +159,10 @@ begin
     FHLTimer.Enabled := False;
     FHLTimer.Tag := 0;
     FScale := 100;
-    if (FSettings.UseThemeSettings) and (FDeskSettings.Theme.DeskUseAlphaBlend) then
-       i := FDeskSettings.Theme.DeskAlphaBlend
+{    if (FSettings.UseThemeSettings) and (SharpThemeApi.GetDesktopIconAlphaBlend) then
+       i := SharpThemeApi.GetDesktopIconAlpha
         else if FSettings.AlphaBlend then i := FSettings.AlphaValue
-             else i := 255;
+             else i := 255;}
     if i > 255 then i := 255
        else if i<32 then i := 32;
     Bitmap.MasterAlpha := i;
@@ -177,15 +172,16 @@ begin
     Changed;
     exit;
   end;
-  if FDeskSettings.Theme.AnimScale then
-     FScale := round(100 + ((FDeskSettings.Theme.AnimScaleValue)/FAnimSteps)*FHLTimer.Tag);
-  if FDeskSettings.Theme.AnimAlpha then
+
+  if SharpThemeApi.GetDesktopAnimScale then
+     FScale := round(100 + ((SharpThemeApi.GetDesktopAnimScaleValue)/FAnimSteps)*FHLTimer.Tag);
+  if SharpThemeApi.GetDesktopAnimAlpha then
   begin
-    if (FSettings.UseThemeSettings) and (FDeskSettings.Theme.DeskUseAlphaBlend) then
-       i := FDeskSettings.Theme.DeskAlphaBlend
+    {if (FSettings.UseThemeSettings) and (SharpThemeApi.GetDesktopIconAlphaBlend) then
+       i := SharpThemeApi.GetDesktopIconAlpha
         else if FSettings.AlphaBlend then i := FSettings.AlphaValue
-             else i := 255;
-    i := i + round(((FDeskSettings.Theme.AnimAlphaValue/FAnimSteps)*FHLTimer.Tag));
+             else i := 255;     }
+    i := i + round(((SharpThemeApi.GetDesktopAnimAlphaValue/FAnimSteps)*FHLTimer.Tag));
     if i > 255 then i := 255
        else if i<32 then i := 32;
     Bitmap.MasterAlpha := i;
@@ -196,10 +192,12 @@ begin
     FHLTimer.Tag := FAnimSteps;
   end;
   DrawBitmap;
-  if FDeskSettings.Theme.AnimBB then
-     SharpDeskApi.LightenBitmap(Bitmap,round(FHLTimer.Tag*(FDeskSettings.Theme.AnimBBValue/FAnimSteps)));
-  if FDeskSettings.Theme.AnimBlend then
-     SharpDeskApi.BlendImage(Bitmap,FDeskSettings.Theme.AnimBlendColor,round(FHLTimer.Tag*(FDeskSettings.Theme.AnimBlendValue/FAnimSteps)));
+  if SharpThemeApi.GetDesktopAnimBrightness then
+     SharpDeskApi.LightenBitmap(Bitmap,round(FHLTimer.Tag*(SharpThemeApi.GetDesktopAnimBrightnessValue/FAnimSteps)));
+  if SharpThemeApi.GetDesktopAnimBlend then
+     SharpDeskApi.BlendImage(Bitmap,
+                             SharpThemeApi.GetDesktopAnimBlendColor,
+                             round(FHLTimer.Tag*(SharpThemeApi.GetDesktopAnimBlendValue/FAnimSteps)));
   FParentImage.EndUpdate;
   EndUpdate;
   Changed;
@@ -229,47 +227,10 @@ begin
                             FCaptionSettings,
                             Point(0,0),
                             Point(0,0));
-  case FSettings.BGType of
-   1: begin
-        w := TempBitmap.Width + FSettings.BGThicknessValue + 2;
-        h := TempBitmap.Height + FSettings.BGThicknessValue + 2;
-        Bitmap.SetSize(w,h);
-        Bitmap.Clear(color32(0,0,0,0));
-        Bitmap.FillRectS(Bitmap.Canvas.ClipRect,color32(GetRValue(FSettings.BGBorderColor),
-                                                        GetGValue(FSettings.BGBorderColor),
-                                                        GetBValue(FSettings.BGBorderColor),
-                                                        FSettings.BGTransValue));
-        Bitmap.FillRectS(Rect(FSettings.BGThicknessValue,
-                              FSettings.BGThicknessValue,
-                              Bitmap.Width-FSettings.BGThicknessValue,
-                              Bitmap.Height-FSettings.BGThicknessValue),
-                              color32(GetRValue(FSettings.BGColor),
-                                      GetGValue(FSettings.BGColor),
-                                      GetBValue(FSettings.BGColor),
-                                      FSettings.BGTransValue));
-        Bitmap.Draw(FSettings.BGThicknessValue + 1,FSettings.BGThicknessValue + 1,TempBitmap);
-      end;
-   2: begin
-        FDeskPanel.SetCenterSize(TempBitmap.Width,TempBitmap.Height);
-        FDeskPanel.Paint;
-        if FSettings.BGTHBlend then
-           SharpDeskApi.BlendImage(FDeskPanel.Bitmap,FSettings.BGTHBlendColor);
-        if FSettings.BGTrans then
-           FDeskPanel.Bitmap.MasterAlpha := FSettings.BGTransValue
-           else FDeskPanel.Bitmap.MasterAlpha := 255;
-        FDeskPanel.Bitmap.DrawMode := dmBlend;
-        Bitmap.SetSize(FDeskPanel.Width,FDeskPanel.Height);
-        Bitmap.Clear(color32(0,0,0,0));
-        Bitmap.Draw(0,0,FDeskPanel.Bitmap);
-        Bitmap.Draw(FDeskPanel.TopHeight,FDeskPanel.LeftWidth,TempBitmap);
-      end;
-   else
-   begin
-     Bitmap.SetSize(TempBitmap.Width,TempBitmap.Height);
-     Bitmap.Clear(color32(0,0,0,0));
-     Bitmap.Draw(0,0,TempBitmap);
-   end;
-  end;
+
+  Bitmap.SetSize(TempBitmap.Width,TempBitmap.Height);
+  Bitmap.Clear(color32(0,0,0,0));
+  Bitmap.Draw(0,0,TempBitmap);
 
   TempBitmap.Free;
 
@@ -303,44 +264,26 @@ end;
 
 
 procedure TFolderLayer.LoadSettings;
+var
+  bmp : TBitmap32;
 begin
   if ObjectID=0 then exit;
 
   FSettings.LoadSettings;
 
-  if (FSettings.CustomFont) and not(Fsettings.UseThemeSettings) then
-  begin
-    FFontSettings.Name      := FSettings.FontName;
-    FFontSettings.Size      := FSettings.FontSize;
-    FFontSettings.Color     := CodeToColorEx(FSettings.FontColor,FDeskSettings.Theme.Scheme);
-    FFontSettings.Bold      := FSettings.FontBold;
-    FFontSettings.Italic    := FSettings.FontItalic;
-    FFontSettings.Underline := FSettings.FontUnderline;
-    FFontSettings.AALevel   := 0;
-    if FSettings.FontAlpha then FFontSettings.Alpha := FSettings.FontAlphaValue
-       else FFontSettings.Alpha := 255;
-    FFontSettings.ShadowColor := CodeToColorEx(FSettings.FontShadowColor,FDeskSettings.Theme.Scheme);
-    FFontSettings.ShadowAlphaValue := FSettings.FontShadowValue;
-    FFontSettings.Shadow    := FSettings.FontShadow;
-    FFontSettings.ShadowAlpha := True;
-  end else
-  begin
-    FFontSettings.Name      := FDeskSettings.Theme.TextFont.Name;
-    FFontSettings.Color     := CodeToColorEx(FDeskSettings.Theme.TextFont.Color,FDeskSettings.Theme.Scheme);
-    FFontSettings.Bold      := fsBold in FDeskSettings.Theme.TextFont.Style;
-    FFontSettings.Italic    := fsItalic in FDeskSettings.Theme.TextFont.Style;
-    FFontSettings.Underline := fsUnderline in FDeskSettings.Theme.TextFont.Style;
-    FFontSettings.AALevel   := 0;
-    if FDeskSettings.Theme.DeskFontAlpha then FFontSettings.Alpha := FDeskSettings.Theme.DeskFontAlphaValue
-       else FFontSettings.Alpha := 255;
-    FFontSettings.Size      := FDeskSettings.Theme.TextFont.Size;
-    FFontSettings.ShadowColor := CodeToColorEx(FDeskSettings.Theme.ShadowColor,FDeskSettings.Theme.Scheme);
-    FFontSettings.ShadowAlphaValue := FDeskSettings.Theme.ShadowAlpha;
-    FFontSettings.ShadowAlpha := True;
-    if FSettings.UseThemeSettings then FFontSettings.Shadow := FDeskSettings.Theme.DeskTextShadow
-       else FFontSettings.Shadow := FSettings.Shadow;
-  end;
-
+  FFontSettings.Name      := FSettings.FontName;
+  FFontSettings.Size      := FSettings.FontSize;
+  FFontSettings.Color     := FSettings.FontColor;
+  FFontSettings.Bold      := FSettings.FontBold;
+  FFontSettings.Italic    := FSettings.FontItalic;
+  FFontSettings.Underline := FSettings.FontUnderline;
+  FFontSettings.AALevel   := 0;
+  if FSettings.FontAlpha then FFontSettings.Alpha := FSettings.FontAlphaValue
+     else FFontSettings.Alpha := 255;
+  FFontSettings.ShadowColor := FSettings.FontShadowColor;
+  FFontSettings.ShadowAlphaValue := FSettings.FontShadowValue;
+  FFontSettings.Shadow    := FSettings.FontShadow;
+  FFontSettings.ShadowAlpha := True;
 
   FCaptionSettings.Caption.Clear;
   if FSettings.MLineCaption then FCaptionSettings.Caption.CommaText := FSettings.Caption
@@ -353,36 +296,33 @@ begin
          FCaptionSettings.Xoffset := FSettings.IconSpacingValue
      else FCaptionSettings.Yoffset := FSettings.IconSpacingValue;
 
-  if FSettings.UseThemeSettings then FCaptionSettings.Draw := FDeskSettings.Theme.DeskDisplayCaption
-     else FCaptionSettings.Draw := FSettings.ShowCaption;
+  FCaptionSettings.Draw := FSettings.ShowCaption;
   FCaptionSettings.LineSpace := 0;
 
   FIconSettings.Size  := 100;
   FIconSettings.Alpha := 255;
-  FIconSettings.ShadowColor := CodeToColorEx(FDeskSettings.Theme.DeskIconShadowColor,FDeskSettings.Theme.Scheme);
-  FIconSettings.ShadowAlpha := FDeskSettings.Theme.DeskIconShadow;
+  FIconSettings.ShadowColor := GetDesktopIconShadowColor;
+  FIconSettings.ShadowAlpha := GetDesktopIconShadowAlpha;
   FIconSettings.XOffset     := 0;
   FIconSettings.YOffset     := 0;
   if FSettings.IconOffset then FIconSettings.XOffset := FSettings.IconOffsetValue;;
-  if FSettings.UseThemeSettings then
-  begin
-    FSettings.AlphaBlend      := FDeskSettings.Theme.DeskUseAlphaBlend;
-    FSettings.AlphaValue      := FDeskSettings.Theme.DeskAlphaBlend;
-    FIconSettings.Blend       := FDeskSettings.Theme.DeskUseColorBlend;
-    FIconSettings.BlendColor  := CodeToColorEx(FDeskSettings.Theme.DeskColorBlendColor,FDeskSettings.Theme.Scheme);
-    FIconSettings.BlendValue  := FDeskSettings.Theme.DeskColorBlend;
-    FIconSettings.Shadow      := FDeskSettings.Theme.DeskUseIconShadow;
-  end else
-  begin
-    FIconSettings.Blend       := FSettings.ColorBlend; 
-    FIconSettings.BlendColor  := CodeToColorEx(FSettings.BlendColor,FDeskSettings.Theme.Scheme);
-    FIconSettings.BlendValue  := FSettings.BlendValue;
-    FIconSettings.Shadow      := FSettings.UseIconShadow;
-  end;
+
+  FIconSettings.Blend       := FSettings.ColorBlend;
+  FIconSettings.BlendColor  := FSettings.BlendColor;
+  FIconSettings.BlendValue  := FSettings.BlendValue;
+  FIconSettings.Shadow      := FSettings.UseIconShadow;
 
   if length(FSettings.Size)=0 then FSettings.Size:='48';
 
-  SharpDeskApi.LoadIcon(FIconSettings.Icon,FSettings.IconFile,FSettings.Target,FDeskSettings.Theme.IconSet,strtoint(FSettings.size));
+  bmp := TBitmap32.Create;
+  IconStringToIcon(FSettings.IconFile,FSettings.Target,Bmp,strtoint(FSettings.Size));
+  bmp.DrawMode := dmBlend;
+  bmp.CombineMode := cmMerge;
+  TLinearResampler.Create(bmp);
+  FIconSettings.Icon.SetSize(strtoint(FSettings.Size),strtoint(Fsettings.Size));
+  FIconSettings.Icon.Clear(color32(0,0,0,0));
+  bmp.DrawTo(FIconSettings.Icon,Rect(0,0,FIconSettings.Icon.Width,FIconSettings.Icon.Height));
+  bmp.Free;
 
   if FSettings.AlphaBlend then
   begin
@@ -390,26 +330,16 @@ begin
     if Bitmap.MasterAlpha<16 then Bitmap.MasterAlpha:=16;
   end else Bitmap.MasterAlpha := 255;
 
-  if FSettings.BGType = 2 then
-     FDeskPanel.LoadPanel(FSettings.BGSkin);
-
   DrawBitmap;
   if FHLTimer.Tag >= FAnimSteps then
      FHLTimer.OnTimer(FHLTimer);   
 end;
 
 
-constructor TFolderLayer.Create( ParentImage:Timage32; Id : integer;
-                                 DeskSettings : TDeskSettings;
-                                 ThemeSettings : TThemeSettings;
-                                 ObjectSettings : TObjectSettings);
+constructor TFolderLayer.Create( ParentImage:Timage32; Id : integer);
 begin
   Inherited Create(ParentImage.Layers);
-  FDeskSettings   := DeskSettings;
-  FThemeSettings  := ThemeSettings;
-  FObjectSettings := ObjectSettings;
   FParentImage := ParentImage;
-  FDeskPanel := TDesktopPanel.Create;
   Alphahit := False;
   FObjectId := id;
   scaled := false;
@@ -432,7 +362,6 @@ begin
   DebugFree(FCaptionSettings.Caption);
   DebugFree(FIconSettings.Icon);
   DebugFree(FSettings);
-  DebugFree(FDeskPanel);
   FHLTimer.Enabled := False;
   DebugFree(FHLTimer);
   inherited Destroy;

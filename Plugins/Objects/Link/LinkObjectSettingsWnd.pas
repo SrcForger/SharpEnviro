@@ -40,13 +40,14 @@ uses
   Tabs, SharpDeskApi, ShellApi, SharpDialogs,
   uSharpDeskTThemeSettings,
   uSharpDeskTObjectSettings,
-  uSharpDeskTDeskSettings,
   uSharpDeskDebugging,
   uSharpDeskDesktopPanelList,
   uSharpDeskDesktopPanel,
   uSharpDeskFunctions,
   LinkObjectXMLSettings,
   mlinewnd, uSharpEFontSelector,
+  SharpThemeApi,
+  SharpIconUtils,
   GR32_Resamplers;
 
 type
@@ -74,29 +75,8 @@ type
     Panel1: TPanel;
     TabSheet2: TTabSheet;
     IconList: TImageList;
-    IconPopup: TPopupMenu;
     TabSheet1: TTabSheet;
     OpenFileDialog: TOpenDialog;
-    tab_background: TTabSheet;
-    GroupBox1: TGroupBox;
-    rb_bg1: TRadioButton;
-    rb_bg2: TRadioButton;
-    rb_bg3: TRadioButton;
-    pc_bg: TPageControl;
-    ts_bgskin: TTabSheet;
-    ts_themed: TTabSheet;            
-    GroupBox3: TGroupBox;
-    bglist: TImgView32;
-    GroupBox2: TGroupBox;
-    cb_bgtransB: TCheckBox;
-    tb_bgtransB: TTrackBar;
-    GroupBox4: TGroupBox;
-    cb_bgtransA: TCheckBox;
-    tb_bgtransA: TTrackBar;
-    tb_bgthickness: TTrackBar;
-    cb_bgthickness: TCheckBox;
-    ts_bgnone: TTabSheet;
-    Label7: TLabel;
     GroupBox6: TGroupBox;
     Label4: TLabel;
     GroupBox7: TGroupBox;
@@ -104,13 +84,8 @@ type
     tb_blend: TTrackBar;
     cb_AlphaBlend: TCheckBox;
     tb_alpha: TTrackBar;
-    popupiconlist: TImageList;
     GroupBox10: TGroupBox;
     cb_iconshadow: TCheckBox;
-    Panel3: TPanel;
-    cb_themesettingsA: TCheckBox;
-    Panel2: TPanel;
-    cb_themesettingsB: TCheckBox;
     GroupBox11: TGroupBox;
     edit_icon: TEdit;
     Label2: TLabel;
@@ -119,12 +94,7 @@ type
     CustomIcon1: TMenuItem;
     ShellIcon1: TMenuItem;
     SharpEIcon1: TMenuItem;
-    Icon: TImage32;
-    GroupBox5: TGroupBox;
-    lb_bgcolor: TLabel;
-    lb_bgbordercolor: TLabel;
-    cp_bgborder: TSharpEColorBox;
-    cp_bgcolor: TSharpEColorBox;
+    img_icon: TImage32;
     GroupBox9: TGroupBox;
     cb_32: TRadioButton;
     cb_48: TRadioButton;
@@ -137,9 +107,6 @@ type
     tb_iconoffset: TTrackBar;
     cb_iconoffset: TCheckBox;
     cp_cblend: TSharpEColorBox;
-    scb_bgblending: TSharpEColorBox;
-    cb_bgblending: TCheckBox;
-    Label5: TLabel;
     tab_caption: TTabSheet;
     GroupBox8: TGroupBox;
     cb_mline: TCheckBox;
@@ -156,8 +123,6 @@ type
     GroupBox15: TGroupBox;
     edit_target: TEdit;
     btn_targetselect: TSpeedButton;
-    Panel4: TPanel;
-    cb_themesettingsC: TCheckBox;
 
     procedure FormShow(Sender: TObject);
     procedure cb_blendClick(Sender: TObject);
@@ -171,33 +136,17 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure cb_csizeClick(Sender: TObject);
     procedure cb_32Click(Sender: TObject);
-    procedure cb_themesettingsAClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure rb_bg1Click(Sender: TObject);
-    procedure rb_bg2Click(Sender: TObject);
-    procedure tab_backgroundShow(Sender: TObject);
-    procedure rb_bg3Click(Sender: TObject);
-    procedure bglistClick(Sender: TObject);
-    procedure tb_bgtransBChange(Sender: TObject);
-    procedure cb_bgtransBClick(Sender: TObject);
-    procedure cb_bgtransAClick(Sender: TObject);
-    procedure tb_bgtransAChange(Sender: TObject);
-    procedure cb_bgthicknessClick(Sender: TObject);
-    procedure tb_bgthicknessChange(Sender: TObject);
     procedure btn_targetselectClick(Sender: TObject);
     procedure edit_csizeKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure SharpEIcon1Click(Sender: TObject);
-    procedure CustomIcon1Click(Sender: TObject);
-    procedure ShellIcon1Click(Sender: TObject);
     procedure btn_selecticonClick(Sender: TObject);
     procedure tb_iconoffsetChange(Sender: TObject);
     procedure tb_iconspacingChange(Sender: TObject);
     procedure cb_iconoffsetClick(Sender: TObject);
     procedure cb_iconspacingClick(Sender: TObject);
     procedure cb_bgblendingClick(Sender: TObject);
-    procedure scb_bgblendingColorClick(Sender: TObject; Color: TColor;
-      ColType: TClickedColorID);
+    procedure scb_bgblendingColorClick(Sender: TObject; Color: TColor);
     procedure cb_captionClick(Sender: TObject);
     procedure btn_mlineClick(Sender: TObject);
     procedure cb_mlineClick(Sender: TObject);
@@ -205,20 +154,15 @@ type
   private
     procedure MenuOnClick(Sender : TObject);
   public
-    DeskSettings   : TDeskSettings;
-    ObjectSettings : TObjectSettings;
-    ThemeSettings  : TThemeSettings;
     ObjectID : integer;
     MouseIsDown_AlphaBlend : Boolean;
     StartX : Integer;
     cs : TColorScheme;
-    ThemeIconList : TStringList;
     PanelList : TDesktopPanelList;
     procedure SaveSettings;
     procedure LoadSettings;
     procedure PaintPanels;
-    procedure LoadCustomIcon(FileName : String);
-    procedure SyncBars(pChecked : boolean; pPosition : integer);
+    procedure UpdateIcon;
   end;
 
 
@@ -229,30 +173,26 @@ implementation
 
 {$R *.dfm}
 
+procedure TSettingsWnd.UpdateIcon;
+var
+  Bmp : TBitmap32;
+begin
+  Bmp := TBitmap32.Create;
+  try
+    Bmp.DrawMode := dmBlend;
+    Bmp.CombineMode := cmMerge;
+    img_icon.Bitmap.SetSize(img_icon.Width,img_icon.Height);
+    img_icon.Bitmap.Clear(color32(self.Color));
+    if IconStringToIcon(edit_icon.Text,'',Bmp) then
+       Bmp.DrawTo(img_icon.Bitmap,Rect(0,0,img_icon.Bitmap.Width,img_icon.Bitmap.Height));
+  finally
+    Bmp.Free;
+  end;
+end;
 
 procedure TSettingsWnd.PaintPanels;
-var
-  n : integer;
-  DP : TDesktopPanel;
 begin
-  bgList.Bitmap.SetSize((PanelList.Width + 12)* (PanelList.Count),PanelList.Heigh+12);
-  bgList.Bitmap.Clear(color32(bgList.Color));
-  for n := 0 to PanelList.Count - 1 do
-  begin
-    DP := TDesktopPanel(PanelList.Items[n]);
-    DP.Paint;
-    if cb_bgblending.Checked then
-       SharpDeskApi.BlendImage(DP.Bitmap,scb_bgblending.color);
-    if n = bgList.Tag then
-    begin
-     bgList.Bitmap.FillRectTS(Rect(n*(DP.Width+6)+6-2,6-2,n*(DP.Width+6)+6+DP.Width+2,6+DP.Height+2),
-                              color32(128,32,32,255));
-    end;
-    DP.Bitmap.DrawTo(bgList.Bitmap,n*(DP.Width+6)+6,6);
-  end;
-  if not rb_bg3.checked then
-     bgList.Bitmap.FillRectTS(bgList.Bitmap.Canvas.ClipRect,color32(196,196,196,128));
-  bgList.Repaint;
+
 end;
 
 
@@ -266,80 +206,16 @@ var
    p : PChar;
    Settings : TXMLSettings;
 begin
-  ThemeIconList := TStringList.Create;
-
-  p := GetIconList(DeskSettings.Theme.IconSet);
-  try
-     ThemeIconList.CommaText := p;
-     releasebuffer(p);
-  except
-    releasebuffer(p);
-    ThemeIconList.Clear;
-  end;
-
-  try
-     s := ExtractFileDir(Application.ExeName)+'\Icons\'+DeskSettings.Theme.IconSet+'\IconSet.xml';
-     if not FileExists(s) then exit;
-
-     IconList.Clear;
-     IconList.BkColor := Icon.color;
-
-     for n:=0 to ThemeIconList.Count -1 do
-     begin
-           s2 := ExtractFilePath(s) + ThemeIconList.Values[ThemeIconList.Names[n]];
-           if FileExists(s2) then
-           begin
-                wIcon := TIcon.Create;
-                TempIcon := loadimage(0,pchar(s2),IMAGE_ICON,32,32,LR_DEFAULTSIZE or LR_LOADFROMFILE);
-                if TempIcon = 0 then wIcon.LoadFromFile(s2)
-                   else wIcon.Handle := TempIcon;
-                IconList.AddIcon(wIcon);
-                if TempIcon<>0 then
-                begin
-                     wIcon.ReleaseHandle;
-                     DestroyIcon(TempIcon);
-                end;
-                wIcon.Free;
-           end;
-     end;
-
-     IconPopup.Items.Clear;
-     i := -1;
-     for n:=0 to IconList.Count-1 do
-     begin
-          i:=i+1;
-          MenuItem := TMenuItem.Create(IconPopup.Items);
-          MenuItem.Caption :='';
-          MenuItem.ImageIndex := n;
-          MenuItem.OnClick := MenuOnClick;
-          if i=8 then
-          begin
-               MenuItem.Break := mbBreak;
-               i:=0;
-          end;
-          IconPopup.Items.Add(MenuItem);
-          if MenuItem.ImageIndex = 0 then MenuItem.OnClick(MenuItem);
-     end;
-  except
-       IconList.Clear;
-  end;
-
   cs := LoadColorScheme;
   cp_cblend.Color := cs.Throbberback;
   if ObjectID=0 then
   begin
-       cb_48.Checked:=True;
-       rb_bg1.Checked := True;
-       rb_bg1.OnClick(rb_bg1);
-       cb_themesettingsA.OnClick(cb_themesettingsA);
-       exit;
+    cb_48.Checked:=True;
+    exit;
   end;
 
   Settings := TXMLSettings.Create(ObjectID,nil);
   Settings.LoadSettings;
-
-  cb_bgblending.Checked := Settings.BGTHBlend;
-  scb_bgblending.Color  := Settings.BGTHBlendColor;
 
   Edit_target.Text  := Settings.Target;
   Edit_Caption.Text := Settings.Caption;
@@ -351,36 +227,9 @@ begin
                       edit_csize.Text  := Settings.Size;
                     end;
 
-  if Settings.IconFile='-2' then
-  begin
-    Icon.Tag := -2;
-    ShellIcon1.Click;
-  end else
-  begin
-    n := ThemeIconList.IndexOfName(Settings.IconFile);
-    if (n <> -1) and (n <= IconPopup.Items.Count-1) then
-       IconPopup.Items.Items[n].OnClick(IconPopup.Items.Items[n])
-       else if FileExists(Settings.IconFile) then
-       begin
-         Icon.Hint := Settings.IconFile;
-         Icon.Tag := -1;
-         LoadCustomIcon(Icon.Hint)
-       end else IconPopup.Items.Items[0].OnClick(IconPopup.Items.Items[0]);
-  end;
+  edit_icon.Text := Settings.IconFile;
+  UpdateIcon;
 
-  bglist.Tag := 0;
-  for n := 0 to PanelList.Count - 1 do
-      if TDesktopPanel(PanelList.Items[n]).PanelName  = Settings.BGSkin then
-      begin
-        bglist.Tag := n;
-        break;
-      end;
-  if bglist.Tag = -1 then
-  begin
-    bgList.Tag := 0;
-    Settings.BGType := 0;
-  end;
-      
   cp_cblend.Color   := Settings.BlendColor;
   tb_blend.Position := Settings.BlendValue;
   cb_blend.Checked  := Settings.ColorBlend;
@@ -396,14 +245,6 @@ begin
   cb_iconshadow.Checked     := Settings.UseIconShadow;
   cb_AlphaBlend.Checked     := Settings.AlphaBlend;
   tb_Alpha.Position         := Settings.AlphaValue;
-  cb_themesettingsA.Checked := Settings.UseThemeSettings;
-
-  cp_bgcolor.Color         := Settings.BGColor;
-  cp_bgborder.Color        := Settings.BGBorderColor;
-  SyncBars(Settings.BGTrans,Settings.BGTransValue);
-  cb_bgthickness.Checked   := Settings.BGThickness;
-  tb_bgthickness.Position  := Settings.BGThicknessValue;
-  cb_bgthickness.OnClick(cb_bgthickness);
 
   cb_iconoffset.Checked    := Settings.IconOffset;
   tb_iconoffset.Position   := Settings.IconOffsetValue;
@@ -412,7 +253,7 @@ begin
   cb_iconoffset.OnClick(cb_iconoffset);
   cb_iconspacing.OnClick(cb_iconspacing);
 
-  dp_calign.ItemIndex       := Settings.CaptionAlign;  
+  dp_calign.ItemIndex       := Settings.CaptionAlign;
   cb_mline.Checked                 := Settings.MLineCaption;
   cb_cfont.Checked                 := Settings.CustomFont;
   customfont.Font.Name             := Settings.FontName;
@@ -427,27 +268,7 @@ begin
   customfont.Font.AlphaValue       := Settings.FontAlphaValue;
   customfont.Font.Alpha            := Settings.FontAlpha;
 
-  case Settings.BGType of
-    0 : begin
-          rb_bg1.Checked := True;
-          rb_bg1.OnClick(rb_bg1);
-        end;
-    1 : begin
-          rb_bg2.Checked := True;
-          rb_bg2.OnClick(rb_bg2);
-        end;
-    2 : begin
-          rb_bg3.Checked := True;
-          rb_bg3.OnClick(rb_bg3);
-        end;
-    else begin
-           rb_bg1.Checked := True;
-           rb_bg1.OnClick(rb_bg1);
-         end;
-  end;
-
-  cb_themesettingsA.OnClick(cb_themesettingsA);
-  cb_mline.OnClick(cb_mline);  
+  cb_mline.OnClick(cb_mline);
   
   DebugFree(Settings);
 end;
@@ -470,33 +291,18 @@ begin
              else if cb_csize.Checked then Settings.Size := edit_csize.Text
                   else Settings.Size:='48';
 
-  Settings.BGTHBlend        := cb_bgblending.Checked;
-  Settings.BGTHBLendColor   := scb_bgblending.Color;
-  Settings.UseThemeSettings := cb_themesettingsA.checked;
   Settings.Target           := edit_target.Text;
   Settings.Caption          := edit_caption.Text;
   Settings.ShowCaption      := cb_caption.Checked;
   if (not cb_caption.Checked) or (not cb_Shadow.Checked) then Settings.Shadow := False
      else if cb_Shadow.Checked then Settings.Shadow := True;
-  if Icon.Tag<>-1 then
-  begin
-       if Icon.Tag=-2 then Iconfile := '-2'
-          else IconFile := ThemeIconList.Names[Icon.Tag]
-  end else IconFile := Icon.Hint;
-
-  Settings.IconFile         := IconFile;
+  Settings.IconFile         := edit_icon.text;
   Settings.AlphaBlend       := cb_AlphaBlend.Checked;
   Settings.AlphaValue       := tb_alpha.position;
   Settings.BlendColor       := cp_cblend.Color;
   Settings.ColorBlend       := cb_blend.checked;
   Settings.BlendValue       := tb_blend.position;
   Settings.UseIconShadow    := cb_iconshadow.Checked;
-  Settings.BGColor          := cp_bgcolor.Color;
-  Settings.BGBorderColor    := cp_bgborder.Color;
-  Settings.BGThicknessValue := tb_bgthickness.Position;
-  Settings.BGThickness      := cb_bgthickness.Checked;
-  Settings.BGTransValue     := tb_bgtransA.Position;
-  Settings.BGTrans          := cb_bgtransA.Checked;
 
   Settings.IconOffset       := cb_iconoffset.Checked;
   Settings.IconOffsetValue  := tb_iconoffset.Position;
@@ -518,16 +324,7 @@ begin
   Settings.FontAlphaValue   := customfont.Font.AlphaValue;
   Settings.FontAlpha        := customfont.Font.Alpha;
 
-  if bglist.Tag < PanelList.Count then
-     Settings.BGSkin := TDesktopPanel(PanelList[bgList.Tag]).PanelName
-     else Settings.BGSkin := '';
-
-  if rb_bg3.Checked then Settings.BGType := 2
-     else if rb_bg2.Checked then Settings.BGType := 1
-          else Settings.BGType := 0;
-
   Settings.SaveSettings(True);
-  ObjectSettings.SaveObjectSettings;
   DebugFree(Settings);
 end;
 
@@ -618,18 +415,11 @@ end;
 
 procedure TSettingsWnd.MenuOnClick(Sender : TObject);
 begin
-  Icon.Bitmap.SetSize(32,32);
-  Icon.Bitmap.Clear(color32(Icon.Color));
-  IconList.Draw(Icon.Bitmap.Canvas,0,0,TMenuItem(Sender).ImageIndex);
-  Icon.Tag := TMenuItem(Sender).ImageIndex;
-  edit_icon.Text := ThemeIconList.Names[Icon.Tag]
+
 end;
 
 procedure TSettingsWnd.FormDestroy(Sender: TObject);
 begin
-  IconList.Clear;
-  IconPopup.Items.Clear;
-  ThemeIconList.Free;
   PanelList.Clear;
   PanelList.Free;
   PanelList := nil;
@@ -637,175 +427,18 @@ end;
 
 procedure TSettingsWnd.cb_csizeClick(Sender: TObject);
 begin
-  if Icon.Tag=-2 then
-  begin
-    cb_32.Checked := True;
-    exit;
-  end;
   edit_csize.Enabled := True;
 end;
 
 procedure TSettingsWnd.cb_32Click(Sender: TObject);
 begin
   edit_csize.Enabled := False;
-  if Icon.Tag=-2 then cb_32.Checked := True;
-end;
-
-procedure TSettingsWnd.cb_themesettingsAClick(Sender: TObject);
-var
-   b : boolean;
-begin
-  b := not TCheckBox(Sender).Checked;
-  cb_themesettingsA.Checked := not b;
-  cb_themesettingsB.Checked := not b;
-  cb_themesettingsC.Checked := not b;  
-  cb_iconshadow.Enabled := b;
-  cb_caption.Enabled := b;
-  cb_shadow.Enabled := b;
-  cb_blend.Enabled := b;
-  tb_blend.Enabled := b;
-  cb_AlphaBlend.Enabled := b;
-  tb_alpha.Enabled := b;
-  if (TCheckBox(Sender).Checked) and (DeskSettings<>nil) then
-  begin
-    if DeskSettings.Theme.DeskDisplayCaption then
-    begin
-      dp_calign.Enabled := True;
-      lb_calign.Enabled := True;
-    end else
-    begin
-      dp_calign.Enabled := False;
-      lb_calign.Enabled := False;
-    end;
-  end else
-  begin
-    if cb_caption.Enabled then
-    begin
-      dp_calign.Enabled := cb_caption.Checked;
-      lb_calign.Enabled := cb_caption.Checked;
-    end else
-    begin
-      dp_calign.Enabled := False;
-      lb_calign.Enabled := False;
-    end;
-  end;
-  cb_alphablend.OnClick(self);
-  cb_blend.OnClick(self);
-  cb_caption.OnClick(self);
-  cb_cfont.OnClick(self);
-  cb_mline.OnClick(cb_mline);
 end;
 
 procedure TSettingsWnd.FormCreate(Sender: TObject);
 begin
   PanelList := TDesktopPanelList.create(52,52);
   PanelList.LoadFromDirectory(GetSharpeDirectory + 'Images\Panels\');
-  cb_themesettingsA.OnClick(cb_themesettingsA);
-end;
-
-procedure TSettingsWnd.rb_bg1Click(Sender: TObject);
-begin
-  pc_bg.ActivePage := ts_bgnone;
-end;
-
-procedure TSettingsWnd.rb_bg2Click(Sender: TObject);
-begin
-  pc_bg.ActivePage := ts_themed;
-end;
-
-procedure TSettingsWnd.tab_backgroundShow(Sender: TObject);
-begin
-  PaintPanels;
-end;
-
-procedure TSettingsWnd.rb_bg3Click(Sender: TObject);
-begin
-  pc_bg.ActivePage := ts_bgskin;
-  PaintPanels;
-end;
-
-procedure TSettingsWnd.bglistClick(Sender: TObject);
-var
- p  : TPoint;
- n  : integer;
- DP : TDesktopPanel;
-begin
-  if not rb_bg3.Checked then exit;
-  p := bglist.ScreenToClient(Mouse.CursorPos);
-  p.X := p.x + abs(round(bglist.OffsetHorz));
-  for n := 0 to PanelList.Count - 1 do
-  begin
-    DP := TDesktopPanel(PanelList.Items[0]);
-    if PointInRect(p,Rect(n*(DP.Width+6)+6,6,n*(DP.Width+6)+6+DP.Width,6+DP.Height)) then
-    begin
-      bglist.Tag := n;
-      PaintPanels;
-      exit;
-    end;
-  end;
-end;
-
-procedure TSettingsWnd.SyncBars(pChecked : boolean; pPosition : integer);
-begin
-  with tb_bgtransA do
-  begin
-    Position := pPosition;
-    Enabled := pChecked;
-  end;
-  with tb_bgtransB do
-  begin
-    Position := pPosition;
-    Enabled := pChecked;
-  end;  
-  with cb_bgtransA do
-  begin
-    Checked := pChecked;
-    if tb_bgtransA.Max >0 then
-       if not pChecked then
-          Caption := 'Visibility: disabled'
-           else Caption := 'Visibility: ' + inttostr(round((pPosition*100) / tb_bgtransA.Max))+'%'
-  end;
-  with cb_bgtransB do
-  begin
-    Checked := pChecked;
-    if tb_bgtransA.Max >0 then
-       if not pChecked then
-          Caption := 'Visibility: disabled'
-          else Caption := 'Visibility: ' + inttostr(round((pPosition*100) / tb_bgtransA.Max))+'%'
-  end;
-end;
-
-procedure TSettingsWnd.tb_bgtransBChange(Sender: TObject);
-begin
-  SyncBars(cb_bgtransB.Checked,tb_bgTransB.Position);
-end;
-
-procedure TSettingsWnd.cb_bgtransBClick(Sender: TObject);
-begin
-  SyncBars(cb_bgtransB.Checked,tb_bgTransB.Position);
-end;
-
-procedure TSettingsWnd.cb_bgtransAClick(Sender: TObject);
-begin
-  SyncBars(cb_bgtransA.Checked,tb_bgTransA.Position);
-end;
-
-procedure TSettingsWnd.tb_bgtransAChange(Sender: TObject);
-begin
-  SyncBars(cb_bgtransA.Checked,tb_bgTransA.Position);
-end;
-
-procedure TSettingsWnd.cb_bgthicknessClick(Sender: TObject);
-begin
-  tb_bgthickness.Enabled := cb_bgthickness.Checked;
-  if cb_bgthickness.Checked then
-     cb_bgthickness.Caption := 'Thickness: ' + inttostr(tb_bgthickness.Position)
-     else cb_bgthickness.Caption := 'Thickness: disabled';
-end;
-
-procedure TSettingsWnd.tb_bgthicknessChange(Sender: TObject);
-begin
-  cb_bgthickness.Caption := 'Thickness: ' + inttostr(tb_bgthickness.Position)
 end;
 
 procedure TSettingsWnd.btn_targetselectClick(Sender: TObject);
@@ -824,114 +457,22 @@ var
 begin
   for n := 0 to 9 do
       if (Key = Ord('1')+n) or (Key<49) then exit;
-  edit_csize.Undo;  
-end;
-
-procedure TSettingsWnd.SharpEIcon1Click(Sender: TObject);
-var
-  p : TPoint;
-begin
-  p := self.ClientToScreen(point(btn_selecticon.left,btn_selecticon.top));
-  IconPopup.Popup(p.x-8,p.y+48);
-end;
-
-procedure TSettingsWnd.LoadCustomIcon(FileName : String);
-var
-  Bmp : TBitmap32;
-  b : boolean;
-begin
-  if (not cb_48.Checked) and (not cb_32.Checked)
-      and (not cb_64.Checked) and (not cb_csize.Checked) then cb_48.Checked:=True;
-  Bmp := TBitmap32.Create;
-  Bmp.SetSize(32,32);
-  Bmp.Clear(color32(Icon.Color));
-  if Lowercase(ExtractFileExt(FileName)) = '.png' then
-     gr32_png.LoadBitmap32FromPNG(Bmp,FileName,b)
-     else Bmp.LoadFromFile(FileName);
-  Icon.Bitmap.SetSize(32,32);
-  Icon.Bitmap.Clear(color32(Icon.Color));
-  TLinearResampler.Create(Bmp);
-  Bmp.DrawTo(Icon.Bitmap,Icon.Bitmap.canvas.cliprect);
-  Icon.Hint := FileName;
-  Icon.Tag := -1;
-  edit_icon.Text := FileName;
-  Bmp.Free;
-end;
-
-procedure TSettingsWnd.CustomIcon1Click(Sender: TObject);
-begin
-  if OpenIconDialog.Execute then
-     LoadCustomIcon(OpenIconDialog.FileName)
-end;
-
-procedure TSettingsWnd.ShellIcon1Click(Sender: TObject);
-var
-  s : String;
-  wicon : HIcon;
-  ImageListHandle: THandle;
-  dicon : TIcon;
-  FileInfo : SHFILEINFO;
-  tempBmp : TBitmap;
-begin
-  s := edit_target.Text;
-  cb_32.Checked := True;
-  edit_icon.Text := 'shell.icon';
-
-  tempBmp := TBitmap.Create;
-  with tempBmp do
-  begin
-    Width  := 32;
-    Height := 32;
-    Canvas.Brush.Color := Icon.Color;
-    Canvas.FillRect(Canvas.ClipRect);
-  end;
-
-  if (FileExists(s)) and (ExtractFileExt(s)='.exe') then
-  begin
-    dicon := TIcon.Create;
-    wicon := ExtractIcon(hInstance,PChar(s), 0);
-    dicon.Handle := wicon;
-    tempBmp.Canvas.Draw(0,0,dicon);
-    Icon.Tag:=-2;
-    if wicon<>0 then
-    begin
-      dicon.ReleaseHandle;
-      DestroyIcon(wicon);
-    end;
-    dIcon.Free;
-  end else
-  begin
-    ImageListHandle := SHGetFileInfo( pChar(s), 0, FileInfo, sizeof( SHFILEINFO ),
-                                      SHGFI_ICON or SHGFI_SHELLICONSIZE);
-    dicon := TIcon.Create;
-    dicon.Handle := FileInfo.hIcon;
-    if dicon.Handle <> 0 then
-    begin
-      tempBmp.Canvas.Draw(0,0,dicon);
-      Icon.Tag := -2;
-      dIcon.ReleaseHandle;
-    end else
-    begin
-      IconList.Draw(tempBmp.Canvas,0,0,0);
-      Icon.Tag := 0;
-    end;
-    FreeAndNil(dIcon);
-    DestroyIcon(FileInfo.hIcon);
-    ImageList_Destroy(ImageListHandle);
-  end;
-
-  Icon.Bitmap.SetSize(32,32);
-  Icon.Bitmap.Clear(color32(Icon.Color));
-  Icon.Bitmap.Draw(rect(0,0,32,32),rect(0,0,32,32),tempBmp.Canvas.Handle);
-  tempBmp.Free;
+  edit_csize.Undo;
 end;
 
 procedure TSettingsWnd.btn_selecticonClick(Sender: TObject);
 var
   p : TPoint;
+  s : String;
 begin
-  p := self.ClientToScreen(point(btn_selecticon.left,btn_selecticon.Top));
-  btn_selecticon.PopupMenu.Popup(p.x-8,p.y+48);
+  s := SharpDialogs.IconDialog(edit_target.Text,
+                               SMI_ALL_ICONS,
+                               ClientToScreen(point(btn_selecticon.Left,btn_selecticon.Top)));
+  if length(trim(s))>0 then
+  begin
+    edit_icon.Text := s;
+    UpdateIcon;
+  end;
 end;
 
 procedure TSettingsWnd.tb_iconoffsetChange(Sender: TObject);
@@ -965,8 +506,7 @@ begin
   PaintPanels;
 end;
 
-procedure TSettingsWnd.scb_bgblendingColorClick(Sender: TObject;
-  Color: TColor; ColType: TClickedColorID);
+procedure TSettingsWnd.scb_bgblendingColorClick(Sender: TObject; Color: TColor);
 begin
   PaintPanels;
 end;
@@ -975,33 +515,10 @@ procedure TSettingsWnd.cb_captionClick(Sender: TObject);
 var
   b : boolean;
 begin
-  if cb_themesettingsA.Checked then b := False
-     else b := cb_caption.Checked;
+  b := cb_caption.Checked;
   dp_calign.Enabled    := b;
   lb_calign.Enabled    := b;
   //groupBox8.Enabled    := b;
-  if (DeskSettings<> nil) and (cb_themesettingsA.Checked) then
-  begin
-    cb_shadow.Enabled    := False;
-    cb_cfont.Enabled     := False;  
-    if DeskSettings.Theme.DeskDisplayCaption then
-    begin
-   //   groupbox12.Enabled   := True;
-      cb_mline.Enabled     := True;
-      edit_caption.Enabled := True;
-      btn_mline.Enabled    := True;
-      dp_calign.Enabled    := True;
-      lb_calign.Enabled    := True;
-    end else
-    begin
-    //  groupbox12.Enabled   := False;
-      cb_mline.Enabled     := False;
-      edit_caption.Enabled := False;
-      btn_mline.Enabled    := False;
-      dp_calign.Enabled    := False;
-      lb_calign.Enabled    := False;
-    end;
-  end else
   begin
    // groupbox12.Enabled   := b;
     cb_mline.Enabled     := b;
@@ -1044,8 +561,7 @@ procedure TSettingsWnd.cb_cfontClick(Sender: TObject);
 begin
   if not cb_cfont.Enabled then customfont.Enabled := False
      else customfont.Enabled := cb_cfont.Checked;
-  if cb_themesettingsA.Checked then cb_shadow.enabled := false
-     else cb_shadow.Enabled := not cb_cfont.Checked;
+  cb_shadow.Enabled := not cb_cfont.Checked;
 end;
 
 end.
