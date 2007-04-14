@@ -217,9 +217,10 @@ begin
     pDesktopObject := TDesktopObject(FDesktopObject);
     pDesktopObject.DeskManager.LastLayer := Tag;
     p := pDesktopObject.DeskManager.Image.ScreenToClient(Mouse.CursorPos);
-    pDesktopObject.Settings.Pos := p;
-    pDesktopObject.DeskManager.MoveLayerTo(pDesktopObject,p.X-x,p.Y-y);
-    pDesktopObject.DeskManager.ObjectSetList.SaveSettings;
+    pDesktopObject.DeskManager.MoveLayerTo(pDesktopObject,
+                                           p.X-x - pDesktopObject.Layer.Bitmap.Width div 2,
+                                           p.Y-y - pDesktopObject.Layer.Bitmap.Height div 2);
+    pDesktopObject.Settings.Pos := Point(Left + round(Width / 2),Top + round(Height / 2));
   end else dbclick := False;
 end;
 

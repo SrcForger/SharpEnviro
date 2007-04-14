@@ -376,8 +376,8 @@ begin
   if pDesktopObject = nil then exit;
   FObjectsMoved := True;
   L := TDesktopObject(pDesktopObject).Layer.Location;
-  P.X := X - round(L.Left);
-  P.Y := Y - round(L.Top);
+  P.X := X - round(L.Left) + round((L.Right - L.Left) / 2);
+  P.Y := Y - round(L.Top) + round((L.Bottom - L.Top) / 2);
   MoveLayerBy(pDesktopObject,P.X,P.Y);
 end;
 
@@ -399,7 +399,9 @@ begin
   L.Right := L.Left + w;
   L.Bottom := L.Top + h;
   TDesktopObject(pDesktopObject).Layer.Location := L;
-  TDesktopObject(pDesktopObject).Settings.Pos := Point(round(L.Left),round(L.Top));
+//  TDesktopObject(pDesktopObject).Settings.Pos := Point(round(L.Left),round(L.Top));
+  TDesktopObject(pDesktopObject).Settings.Pos := Point(TDesktopObject(pDesktopObject).Settings.Pos.X +dx,
+                                                       TDesktopObject(pDesktopObject).Settings.Pos.Y +dy);
   TDesktopObject(pDesktopObject).Layer.Bitmap.Changed;
 end;
 
@@ -654,8 +656,8 @@ begin
         begin
           CPos := GetNextGridPoint(DesktopObject.Settings.Pos);
           MoveLayerTo(DesktopObject,
-                      CPos.X,
-                      CPos.Y);
+                      CPos.X - DesktopObject.Layer.Bitmap.Width,
+                      CPos.Y - DesktopObject.Layer.Bitmap.Height);
           DesktopObject.Settings.Pos := CPos;
         end;
       end;

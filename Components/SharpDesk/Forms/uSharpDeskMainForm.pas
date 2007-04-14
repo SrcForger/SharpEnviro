@@ -718,6 +718,7 @@ begin
   SharpApi.UnRegisterAction('!Show/HideDesktop');
   SharpApi.UnRegisterAction('!SharpDeskSettings');
   SharpApi.UnRegisterAction('!Show/CloseSharpDesk');
+  SharpDesk.ObjectSetList.SaveSettings;
   SharpDesk.DeskSettings.SaveSettings;
   SharpDesk.UnloadAllObjects;
   SharpDesk.Free;
@@ -1905,6 +1906,7 @@ begin
   if MakeWindow1.Checked then DesktopObject.MakeLayer
      else DesktopObject.MakeWindow;
   MakeWindow1.Checked := not MakeWindow1.Checked;
+  SharpDesk.AlignSelectedObjectsToGrid;
   SharpDesk.ObjectSetList.SaveSettings;
 //  if MakeWindow1.ImageIndex = 29 then
   //   DesktopObject.MakeWindow

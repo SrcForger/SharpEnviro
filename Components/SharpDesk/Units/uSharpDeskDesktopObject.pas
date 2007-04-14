@@ -120,10 +120,10 @@ begin
     FLayer.OnPaint := LayerOnPaint;
 		FLayer.Tag := FSettings.ObjectID;
     FLayer.AlphaHit:=False;
-    FLayer.Location := FloatRect(FSettings.Pos.X,
-                                 FSettings.Pos.Y,
-                                 FSettings.Pos.X + FLayer.Bitmap.Width,
-                                 FSettings.Pos.Y + FLayer.Bitmap.Height);
+    FLayer.Location := FloatRect(FSettings.Pos.X - FLayer.Bitmap.Width div 2,
+                                 FSettings.Pos.Y - FLayer.Bitmap.Height div 2,
+                                 FSettings.Pos.X + FLayer.Bitmap.Width div 2,
+                                 FSettings.Pos.Y + FLayer.Bitmap.Height div 2);
 		FLayer.BringToFront;
 
     SharpApi.SendDebugMessageEx('SharpDesk',
@@ -144,10 +144,10 @@ begin
     FLayer.Bitmap.Clear(color32(128,128,128,128));
     FLayer.Tag := FSettings.ObjectID;
     FLAyer.AlphaHit := False;
-    FLayer.Location := FloatRect(FSettings.Pos.X,
-                                 FSettings.Pos.Y,
-                                 FSettings.Pos.X+FLayer.Bitmap.Width,
-                                 FSettings.Pos.Y+FLayer.Bitmap.Height);
+    FLayer.Location := FloatRect(FSettings.Pos.X - FLayer.Bitmap.Width div 2,
+                                 FSettings.Pos.Y - FLayer.Bitmap.Height div 2,
+                                 FSettings.Pos.X + FLayer.Bitmap.Width div 2,
+                                 FSettings.Pos.Y + FLayer.Bitmap.Height div 2);
     FLayer.BringToFront;
   end;
   if FSettings.isWindow then MakeWindow;
@@ -174,10 +174,8 @@ begin
     FLayer.OnChange := LayerOnChange;
     //FLayer.Bitmap.OnChange := BitmapOnChange;
     FWindow := TSharpDeskLayeredWindow.Create(nil);
-    FWindow.Left := FSettings.Pos.X;
-    FWindow.Top := FSettings.Pos.Y;
-    FWindow.Width := FLayer.Bitmap.Width;
-    FWindow.Height := FLayer.Bitmap.Height;
+    FWindow.Left := round(FLayer.Location.Left);
+    FWindow.Top := round(FLayer.Location.Top);
     FWindow.Width := round(FLayer.Location.Right-FLayer.Location.Left);
     FWindow.Height := round(FLayer.Location.Bottom-FLayer.Location.Top);
     FWindow.Picture := FLayer.Bitmap;
@@ -202,11 +200,24 @@ end;
 
 
 procedure TDesktopObject.MakeLayer;
+var
+  L : TFLoatRect;
+  w,h : real;
 begin
   if FWindow <> nil then
   begin
     FSettings.isWindow := False;
     try
+      L := FLayer.Location;
+      w := L.Right - L.Left;
+      h := L.Bottom - L.Top;
+      L.Left := FWindow.Left;
+      L.Right := FWindow.Left + w;
+      L.Top := FWindow.Top;
+      L.Bottom := FWindow.Top + h;
+      FLayer.Location := L;
+      FSettings.Pos := Point(FWindow.Left + round(w / 2),
+                             FWindow.Top + round(h / 2));
       try
         FWindow.Free;
       except
@@ -237,6 +248,8 @@ begin
   //  FWindow.Top   := round(FLayer.Location.Top);
     FWindow.Width := round(FLayer.Location.Right-FLayer.Location.Left);
     FWindow.Height := round(FLayer.Location.Bottom-FLayer.Location.Top);
+    //FWindow.Left := FSettings.Pos.X - FLayer.Bitmap.Width div 2;
+    //FWindow.Top := FSettings.Pos.Y - FLayer.Bitmap.Width div 2;
     FWindow.DrawWindow;
     SetWindowPos(FWindow.Handle, HWND_TOPMOST,
                          round(FLayer.Location.Left),
@@ -264,10 +277,13 @@ procedure TDesktopObject.LayerOnPaint(Sender: TObject; Buffer: TBitmap32);
 begin
   if FWindow <> nil then
   begin
-    FWindow.Left := FSettings.Pos.X;
-    FWindow.Top := FSettings.Pos.Y;
-    FWindow.Width := FLayer.Bitmap.Width;
-    FWindow.Height := FLayer.Bitmap.Height;
+    if (FLayer.Bitmap.Width <> FWindow.Width) or (FLayer.Bitmap.Height <> FWindow.Height) then
+    begin
+      FWindow.Width := FLayer.Bitmap.Width;
+      FWindow.Height := FLayer.Bitmap.Height;
+      FWindow.Left := FSettings.Pos.X - FLayer.Bitmap.Width div 2;
+      FWindow.Top := FSettings.Pos.Y - FLayer.Bitmap.Width div 2;
+    end;
     FWindow.Picture := FLayer.Bitmap;
     FWindow.DrawWindow;
   end;
