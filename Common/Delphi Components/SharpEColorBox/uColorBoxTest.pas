@@ -4,21 +4,16 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uSharpEColorBox, ExtCtrls, StdCtrls, uSharpEFontSelector, XPMan,
+  Dialogs, SharpEColorPicker, ExtCtrls, StdCtrls, XPMan,
   sharpthemeapi;
 
 type
   TForm1 = class(TForm)
-    Button1: TButton;
-    SharpEFontSelector1: TSharpEFontSelector;
-    Edit1: TEdit;
-    Panel1: TPanel;
-    SharpEColorBox1: TSharpEColorBox;
-    SharpEFontSelector2: TSharpEFontSelector;
     XPManifest1: TXPManifest;
+    Panel1: TPanel;
+    SharpEColorPicker1: TSharpEColorPicker;
     procedure FormCreate(Sender: TObject);
     procedure SharpEColorBox1ColorClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -32,21 +27,10 @@ implementation
 
 {$R *.dfm}
 
-procedure TForm1.Button1Click(Sender: TObject);
-var
-  cb:TSharpEColorBox;
-begin
-  cb := TSharpEColorBox.Create(self);
-  cb.Parent := self;
-  cb.Left := 100;
-  cb.top := 100;
-  cb.OnColorClick := SharpEColorBox1ColorClick;
-end;
-
 procedure TForm1.SharpEColorBox1ColorClick(Sender: TObject);
 begin
-  Panel1.Caption :=  IntToStr(TSharpEColorBox(Sender).ColorCode);
-  Panel1.Color := TSharpEColorBox(Sender).Color;
+  Panel1.Caption :=  IntToStr(TSharpEColorPicker(Sender).ColorCode);
+  Panel1.Color := TSharpEColorPicker(Sender).Color;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

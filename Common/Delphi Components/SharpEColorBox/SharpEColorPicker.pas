@@ -1,4 +1,4 @@
-unit uSharpeColorBox;
+unit SharpEColorPicker;
 
 interface
 
@@ -18,11 +18,11 @@ uses
   Forms,
   uSchemeList,
   uvistafuncs,
-  SharpCenterScheme,
+  SharpECenterScheme,
   JvSimpleXml;
 
 type
-  TCustomSharpeColorBox = class(Tcustompanel)
+  TCustomSharpeColorPicker = class(Tcustompanel)
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -31,7 +31,7 @@ type
     FBackgroundColor: TColor;
     FTimer: TTimer;
     FColorMenu: TPopupMenu;
-    rColorBox: TRect;
+    rColorPicker: TRect;
     FMouseOver, FMouseDown: Boolean;
     FOnColorClick: TNotifyEvent;
     FColorDialog: TColorDialog;
@@ -77,7 +77,7 @@ type
   end;
 
 type
-  TSharpEColorBox = class(TCustomSharpEColorBox)
+  TSharpEColorPicker = class(TCustomSharpEColorPicker)
   private
   published
     property BackgroundColor;
@@ -95,12 +95,12 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('SharpE', [TSharpeColorBox]);
+  RegisterComponents('SharpE_Common', [TSharpeColorPicker]);
 end;
 
-{ TCustomSharpeColorBox }
+{ TCustomSharpeColorPicker }
 
-procedure TCustomSharpeColorBox.AdvancedDrawItem(Sender: TObject;
+procedure TCustomSharpeColorPicker.AdvancedDrawItem(Sender: TObject;
   ACanvas: TCanvas; ARect: TRect; State: TOwnerDrawState);
 var
   tmpbitmap: Tbitmap;
@@ -178,7 +178,7 @@ begin
   end;
 end;
 
-procedure TCustomSharpeColorBox.CMMouseEnter(var Message: TMessage);
+procedure TCustomSharpeColorPicker.CMMouseEnter(var Message: TMessage);
 begin
   if Not(csDesigning in ComponentState) then begin
     FMouseOver := True;
@@ -186,7 +186,7 @@ begin
   end;
 end;
 
-procedure TCustomSharpeColorBox.CMMouseLeave(var Message: TMessage);
+procedure TCustomSharpeColorPicker.CMMouseLeave(var Message: TMessage);
 begin
   if Not(csDesigning in ComponentState) then begin
     FMouseOver := False;
@@ -194,7 +194,7 @@ begin
   end;
 end;
 
-constructor TCustomSharpeColorBox.Create(AOwner: TComponent);
+constructor TCustomSharpeColorPicker.Create(AOwner: TComponent);
 begin
   inherited;
   Height := 15;
@@ -208,6 +208,8 @@ begin
   FSCS := TSharpECenterScheme.Create(nil);
   Align := alNone;
 
+  FColor := clWhite;
+
   // Create timer
   FTimer := TTimer.Create(nil);
   FTimer.OnTimer := UpdateSelCol;
@@ -215,7 +217,7 @@ begin
   FTimer.Enabled := False;
 end;
 
-destructor TCustomSharpeColorBox.Destroy;
+destructor TCustomSharpeColorPicker.Destroy;
 begin
   inherited;
   FSchemeList.Free;
@@ -223,7 +225,7 @@ begin
   FSCS.Free;
 end;
 
-procedure TCustomSharpeColorBox.DrawColorSelector(Bmp: TBitmap; R: TRect);
+procedure TCustomSharpeColorPicker.DrawColorSelector(Bmp: TBitmap; R: TRect);
 begin
   // Draw border
   if FMouseOver then
@@ -241,14 +243,14 @@ begin
 
 end;
 
-function TCustomSharpeColorBox.GetColor: TColor;
+function TCustomSharpeColorPicker.GetColor: TColor;
 begin
   if FColorCode < 0 then
     Result := SchemeCodeToColor(FColorCode) else // CodeToColor(FColorCode) else
     Result := FColor;
 end;
 
-function TCustomSharpeColorBox.GetColorCode: Integer;
+function TCustomSharpeColorPicker.GetColorCode: Integer;
 begin
 
   if Not(FCustom) then
@@ -256,12 +258,14 @@ begin
     Result := FColor;
 end;
 
-procedure TCustomSharpeColorBox.MenuClick(Sender: TObject);
+procedure TCustomSharpeColorPicker.MenuClick(Sender: TObject);
 var
   tmpCol: TSchemeColorItem;
   n: Integer;
   s:String;
 begin
+  tmpCol := nil;
+
   if Sender = nil then
     n := FColor else begin
 
@@ -274,7 +278,7 @@ begin
     if not (assigned(FcolorDialog)) then
       FColorDialog := TColorDialog.Create(nil);
 
-    s := GetSharpeUserSettingsPath+'ColorBox.dat';
+    s := GetSharpeUserSettingsPath+'ColorPicker.dat';
     if fileexists(s) then
       FColorDialog.CustomColors.LoadFromFile(s);
 
@@ -300,7 +304,7 @@ begin
   end;
 end;
 
-procedure TCustomSharpeColorBox.MouseDown(Button: TMouseButton;
+procedure TCustomSharpeColorPicker.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   pt: TPoint;
@@ -308,8 +312,8 @@ begin
   inherited;
 
   if Not(csDesigning in ComponentState) then begin
-    if (X > rColorBox.Left) and (X < rColorBox.Right) and
-      (Y > rColorBox.Top) and (Y < rColorBox.Bottom) then
+    if (X > rColorPicker.Left) and (X < rColorPicker.Right) and
+      (Y > rColorPicker.Top) and (Y < rColorPicker.Bottom) then
     begin
       pt.X := X;
       pt.Y := Y;
@@ -324,7 +328,7 @@ begin
   end;
 end;
 
-procedure TCustomSharpeColorBox.MouseUp(Button: TMouseButton;
+procedure TCustomSharpeColorPicker.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   inherited;
@@ -335,14 +339,14 @@ begin
   Paint;
 end;
 
-procedure TCustomSharpeColorBox.Paint;
+procedure TCustomSharpeColorPicker.Paint;
 var
   osBmp: TBitmap;
   tmpBitmap: TBitmap;
 begin
+
   osBmp := TBitmap.Create;
 
-  try
   try
     osBmp.Height := Self.Height;//.Bottom;
     osBmp.Width := Self.Width;//.Right;
@@ -350,9 +354,10 @@ begin
     // Draw Color Box
     osBmp.Canvas.Brush.Color := FBackgroundColor;
     osBmp.Canvas.FillRect(ClientRect);
-    rColorBox := ClientRect;
-    rColorBox.Right := rColorBox.Right - 20;
-    DrawColorSelector(osBmp, rColorBox);
+    rColorPicker := ClientRect;
+    rColorPicker.Right := 16;
+    rColorPicker.Bottom := 16;
+    DrawColorSelector(osBmp, rColorPicker);
 
     // Draw Status
     tmpBitmap := TBitmap.Create;
@@ -366,35 +371,34 @@ begin
 
     TmpBitmap.TransparentColor := clFuchsia;
     tmpBitmap.Transparent := True;
-    osBmp.Canvas.Draw(rColorBox.Right + 4, 1, tmpBitmap);
+    osBmp.Canvas.Draw(rColorPicker.Right + 4, 1, tmpBitmap);
     tmpBitmap.Free;
 
     // Copy off screen bitmap to canvas
     canvas.CopyRect(ClientRect, osBmp.canvas, ClientRect);
-  except
-  end;
+
   finally
     osBmp.Free;
   end;
 
 end;
 
-procedure TCustomSharpeColorBox.PopulateSkinColors;
+procedure TCustomSharpeColorPicker.PopulateSkinColors;
 begin
   FSchemeList.Load('bb');
   FSchemeList.Theme := 'bb';
 end;
 
-procedure TCustomSharpeColorBox.SetBackgroundColor(const Value: TColor);
+procedure TCustomSharpeColorPicker.SetBackgroundColor(const Value: TColor);
 begin
   FBackgroundColor := Value;
   //Paint;
 end;
 
-procedure TCustomSharpeColorBox.SetColor(const Value: TColor);
+procedure TCustomSharpeColorPicker.SetColor(const Value: TColor);
 begin
   FColor := Value;
-  ColorCode := Value;
+  //ColorCode := Value;
 
   FCustomColor.Color := Value;
 
@@ -404,7 +408,7 @@ begin
     FOnColorClick(Self);
 end;
 
-procedure TCustomSharpeColorBox.SetColorCode(const Value: Integer);
+procedure TCustomSharpeColorPicker.SetColorCode(const Value: Integer);
 begin
   FColorCode := ColorToSchemeCode(Value);
   FColor := SchemeCodeToColor(Value);
@@ -414,7 +418,7 @@ begin
   Self.Paint;
 end;
 
-procedure TCustomSharpeColorBox.ShowColorMenu(Point: TPoint);
+procedure TCustomSharpeColorPicker.ShowColorMenu(Point: TPoint);
 var
   pt1, pt2: TPoint;
   i: integer;
@@ -489,7 +493,7 @@ begin
   end;
 end;
 
-procedure TCustomSharpeColorBox.UpdateSelCol(Sender: TObject);
+procedure TCustomSharpeColorPicker.UpdateSelCol(Sender: TObject);
 var
   HDC: THandle;
   P: TPoint;
