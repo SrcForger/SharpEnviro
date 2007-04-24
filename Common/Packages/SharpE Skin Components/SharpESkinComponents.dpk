@@ -38,7 +38,8 @@ requires
   JvCoreD9R,
   JclVcl,
   GR32_D2005,
-  PNG_D9;
+  PNG_D9,
+  JvInterpreterD9R;
 
 contains
   sharedBitmapList in '..\..\Delphi Components\SharpE Skin Components\sharedBitmapList.pas',

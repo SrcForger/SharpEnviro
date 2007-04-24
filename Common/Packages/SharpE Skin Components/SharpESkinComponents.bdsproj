@@ -131,6 +131,11 @@
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
 			<Parameters Name="DebugCWD"></Parameters>
+			<Parameters Name="RemoteHost"></Parameters>
+			<Parameters Name="RemotePath"></Parameters>
+			<Parameters Name="RemoteLauncher"></Parameters>
+			<Parameters Name="RemoteCWD"></Parameters>
+			<Parameters Name="RemoteDebug">False</Parameters>
 		</Parameters>
 		<VersionInfo>
 			<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
@@ -158,5 +163,14 @@
 			<VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName"></VersionInfoKeys>
 		</VersionInfoKeys>
-	</Delphi.Personality>
+		<Language>
+			<Language Name="ActiveLang"></Language>
+			<Language Name="ProjectLang">$00000000</Language>
+			<Language Name="RootDir"></Language>
+		</Language>  <Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\JvInterpreterD9D.bpl">JVCL Interpreter Components</Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\SharpEComponents.bpl">(untitled)</Excluded_Packages>
+    </Excluded_Packages>
+  </Delphi.Personality>
 </BorlandProject>
