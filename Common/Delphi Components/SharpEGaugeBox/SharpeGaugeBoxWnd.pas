@@ -1,10 +1,10 @@
-unit uSharpeGaugeBoxWnd;
+unit SharpeGaugeBoxWnd;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, GR32_RangeBars, ExtCtrls, uSharpeGaugeBoxEdit, ComCtrls,
+  Dialogs, GR32_RangeBars, ExtCtrls, SharpeGaugeBoxEdit, ComCtrls,
   JvExComCtrls, JvComCtrls, JvExExtCtrls, JvComponent, JvPanel, buttons,
   StdCtrls, JvExControls, JvGradient;
 

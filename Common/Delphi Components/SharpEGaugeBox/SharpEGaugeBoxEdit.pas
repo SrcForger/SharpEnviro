@@ -24,7 +24,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-unit uSharpeGaugeBoxEdit;
+unit SharpEGaugeBoxEdit;
 
 interface
 
@@ -59,9 +59,8 @@ type
   TSharpeGaugeBox = class(TCustomPanel)
   private
     FBtnGauge: TSpeedButton;
-    FValueEdit: TJvEdit;
+    FValueEdit: TEdit;
     FBackPanel: TPanel;
-    FSpacer: TShape;
     FEnabled: Boolean;
     FOnChangeValue: TChangeValueEvent;
     FMax: Integer;
@@ -79,7 +78,7 @@ type
     procedure BtnGaugeClick(Sender: TObject);
     procedure BtnGaugeMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure SetEnabled(const Value: boolean);
+    procedure SetEnabled(const Value: boolean); reintroduce;
     procedure SetMax(const Value: Integer);
     procedure SetMin(const Value: Integer);
     procedure SetPrefix(const Value: string);
@@ -127,11 +126,11 @@ procedure Register;
 implementation
 
 uses
-  uSharpeGaugeBoxWnd;
+  SharpeGaugeBoxWnd;
 
 procedure Register;
 begin
-  RegisterComponents('SharpE', [TSharpeGaugeBox]);
+  RegisterComponents('SharpE_Common', [TSharpeGaugeBox]);
 end;
 
 { TSharpeGaugeBox }
@@ -147,6 +146,7 @@ begin
   BevelInner := bvNone;
   BevelOuter := bvNone;
   BevelKind := bkNone;
+  ParentBackground := False;
 
   FEnabled := True;
   FValue := 100;
@@ -168,17 +168,7 @@ procedure TSharpeGaugeBox.Paint;
 var
   MBmp: TBitmap32;
   R: TRect;
-  TopColor, BottomColor: TColor;
 
-  procedure AdjustColors(Bevel: TPanelBevel);
-  begin
-    TopColor := clBtnHighlight;
-    if Bevel = bvLowered then
-      TopColor := clBtnShadow;
-    BottomColor := clBtnShadow;
-    if Bevel = bvLowered then
-      BottomColor := clBtnHighlight;
-  end;
 begin
   R := ClientRect;
 
@@ -187,11 +177,6 @@ begin
     mBmp.Height := ClientRect.Bottom;
     mBmp.Width := ClientRect.Right;
     MBmp.Clear(Color32(Color));
-    //MBmp.FrameRectS(R,color32(clBtnShadow));
-
-    // Draw Bitmaps
-    // DrawBitmap(3, 3, 'DROPDOWN_BMP', MBmp, clWhite);
-
     FBtnGauge.Enabled := Self.Enabled;
     FValueEdit.Enabled := Self.Enabled;
 
@@ -225,11 +210,12 @@ begin
     Parent := Self;
     Align := alClient;
 
-    BorderStyle := bsSingle;
+    BorderStyle := bsNone;
     BevelInner := bvNone;
     BevelOuter := bvNone;
     BevelKind := bkNone;
-    Color := clWindow;
+    ParentBackground := False;
+    Color := Self.Color;
   end;
 
   FBtnGauge := TSpeedButton.Create(FBackPanel);
@@ -241,25 +227,24 @@ begin
     Font.Style := [fsBold];
     Caption := '';
     Flat := True;
-    Color := clWindow;
-    ParentColor := True;
-    //OnClick := BtnGaugeClick;
+    Color := Self.Color;
     OnMouseUp := BtnGaugeMouseUp;
   end;
 
   FBtnGauge.Glyph.LoadFromResourceName(HInstance,'DROPLEFT_GRAY');
 
-  FSpacer := TShape.Create(FBackPanel);
+  {FSpacer := TShape.Create(FBackPanel);
   with FSpacer do
   begin
     Parent := FBackPanel;
-    Width := 2;
+    Width := 4;
     Align := alLeft;
-    Pen.Color := clWindow;
-    Brush.Color := clWindow;
-  end;
+    ParentBackground := False;
+    Pen.Color := Self.Color;
+    Brush.Color := Self.Color;
+  end;     }
 
-  FValueEdit := TJvEdit.Create(FBackPanel);
+  FValueEdit := TEdit.Create(FBackPanel);
   with FValueEdit do
   begin
     Parent := FBackPanel;
@@ -269,9 +254,9 @@ begin
     OnKeyDown := ValueEditKeyDown;
     OnExit := ValueEditExit;
     OnClick := ValueEditClick;
-    Flat := True;
-    Ctl3D := False;
-    BorderStyle := bsNone;
+    //Flat := True;
+    //Ctl3D := False;
+    //BorderStyle := bsNone;
     font.Name := 'Arial';
     font.Size := 8;
     MaxLength := 6;
