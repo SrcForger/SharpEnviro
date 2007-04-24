@@ -42,7 +42,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('SharpE', [TSharpERoundPanel]);
+  RegisterComponents('SharpE_Common', [TSharpERoundPanel]);
 end;
 
 
