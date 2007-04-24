@@ -217,7 +217,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('SharpE', [TSharpEListBoxEx]);
+  RegisterComponents('SharpE_Common', [TSharpEListBoxEx]);
 end;
 
 { TSharpEListBoxExItemColumn }
