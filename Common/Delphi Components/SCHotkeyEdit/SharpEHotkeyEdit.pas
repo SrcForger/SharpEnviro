@@ -1,4 +1,4 @@
-unit uScHotkeyEdit;
+unit SharpEHotkeyEdit;
 
 interface
 
@@ -20,7 +20,7 @@ uses
   jclinifiles;
 
 type
-  TCustomScHotkeyEdit = class(TCustomEdit)
+  TCustomSharpEHotkeyEdit = class(TCustomEdit)
   private
     FKey: string;
     FModifier: TScModifier;
@@ -41,7 +41,7 @@ type
   end;
 
 type
-  TScHotkeyEdit = class(TCustomScHotkeyEdit)
+  TSharpEHotkeyEdit = class(TCustomSharpEHotkeyEdit)
   private
   public
   published
@@ -58,21 +58,21 @@ procedure Register;
 
 implementation
 
-{ TCustomScHotkeyEdit }
+{ TCustomSharpEHotkeyEdit }
 
 procedure Register;
 begin
-  RegisterComponents('SharpE', [TScHotkeyEdit]);
+  RegisterComponents('SharpE_Common', [TSharpEHotkeyEdit]);
 end;
 
-constructor TCustomScHotkeyEdit.Create(Owner:TComponent);
+constructor TCustomSharpEHotkeyEdit.Create(Owner:TComponent);
 begin
   inherited;
   Self.DoubleBuffered := True;
   Self.Font.Color := clDkGray;
 end;
 
-function TCustomScHotkeyEdit.GetKeyCode: Integer;
+function TCustomSharpEHotkeyEdit.GetKeyCode: Integer;
 var
   vkc: TVKToString;
 begin
@@ -81,7 +81,7 @@ begin
   Result := vkc.AsAscii;
 end;
 
-procedure TCustomScHotkeyEdit.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TCustomSharpEHotkeyEdit.KeyDown(var Key: Word; Shift: TShiftState);
 var
   vkc: TVKToString;
   skey: string;
@@ -142,13 +142,13 @@ begin
 
 end;
 
-procedure TCustomScHotkeyEdit.KeyPress(var Key: Char);
+procedure TCustomSharpEHotkeyEdit.KeyPress(var Key: Char);
 begin
   inherited;
   Key := #0;
 end;
 
-procedure TCustomScHotkeyEdit.KeyUp(var Key: Word; Shift: TShiftState);
+procedure TCustomSharpEHotkeyEdit.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited;
   Key := Word(#0);
@@ -160,14 +160,14 @@ begin
 
 end;
 
-procedure TCustomScHotkeyEdit.MouseDown(Button: TMouseButton;
+procedure TCustomSharpEHotkeyEdit.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   inherited;
   //ShowCARET(self.Handle);
 end;
 
-procedure TCustomScHotkeyEdit.SetHotkeyText(Key: string;
+procedure TCustomSharpEHotkeyEdit.SetHotkeyText(Key: string;
   Modifiers: TScModifier);
 var
   vkc: TVKToString;
@@ -198,7 +198,7 @@ begin
   end;
 end;
 
-procedure TCustomScHotkeyEdit.SetKey(const Value: string);
+procedure TCustomSharpEHotkeyEdit.SetKey(const Value: string);
 var
   i: integer;
 begin
@@ -215,11 +215,12 @@ begin
   SetHotkeyText(FKey, FModifier);
 end;
 
-procedure TCustomScHotkeyEdit.SetModifier(const Value: TScModifier);
+procedure TCustomSharpEHotkeyEdit.SetModifier(const Value: TScModifier);
 begin
   FModifier := Value;
   SetHotkeyText(FKey, FModifier);
 end;
 
 end.
+
 
