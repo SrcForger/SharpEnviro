@@ -1,7 +1,7 @@
 @echo off
 
-del SharpEColorPanelRes.res
+del SharpEColorEditorRes.res
 
-"brcc32" SharpEColorPanelRes.rc
+"brcc32" SharpEColorEditorRes.rc
 
 pause

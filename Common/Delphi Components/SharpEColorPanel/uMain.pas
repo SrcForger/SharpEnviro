@@ -4,15 +4,16 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, SharpEColorPanel, StdCtrls, JvPageList, JvExControls,
+  Dialogs, ExtCtrls, SharpEColorEditor, StdCtrls, JvPageList, JvExControls,
   JvComponent, ComCtrls, JvExComCtrls, JvComCtrls, XPMan, Mask, JvExMask, JvSpin,
   JvExStdCtrls, JvHtControls, sharpthemeapi, uVistaFuncs, JvLinkLabel, JvPanel,
-  JvLabel, JvExExtCtrls;
+  JvLabel, JvExExtCtrls, SharpESwatchManager;
 
 type
   TMainWnd = class(TForm)
-    SharpEColorPanel1: TSharpEColorPanel;
     XPManifest1: TXPManifest;
+    SharpEColorEditor1: TSharpEColorEditor;
+    SharpESwatchManager1: TSharpESwatchManager;
     procedure FormShow(Sender: TObject);
     procedure JvLinkLabel1LinkClick(Sender: TObject; LinkNumber: Integer;
       LinkText, LinkParam: string);
@@ -33,7 +34,7 @@ implementation
 
 procedure TMainWnd.Button1Click(Sender: TObject);
 begin
-  SharpEColorPanel1.Expanded := Not(SharpEColorPanel1.Expanded);
+  SharpEColorEditor1.Expanded := Not(SharpEColorEditor1.Expanded);
 
 end;
 
@@ -51,7 +52,7 @@ end;
 
 procedure TMainWnd.FormShow(Sender: TObject);
 begin
-  SharpEColorPanel1.Expanded := True;
+  SharpEColorEditor1.Expanded := True;
 end;
 
 end.

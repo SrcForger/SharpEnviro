@@ -14,14 +14,14 @@ program SharpEColorPanelTest;
 uses
   Forms,
   uMain in 'uMain.pas' {MainWnd},
-  SharpEColorPanel in 'SharpEColorPanel.pas',
   SharpERoundPanel in '..\SharpERoundPanel\SharpERoundPanel.pas',
-  uSharpETabList in '..\SharpETabList\uSharpETabList.pas',
-  uSharpeColorBox in '..\SharpEColorBox\uSharpeColorBox.pas',
   SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas',
   SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
-  SharpCenterScheme in '..\SharpECenterScheme\SharpCenterScheme.pas',
-  SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas';
+  SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas',
+  SharpEColorPicker in '..\SharpEColorPicker\SharpEColorPicker.pas',
+  SharpEColorEditor in 'SharpEColorEditor.pas',
+  SharpESwatchManager in '..\SharpESwatchCollection\SharpESwatchManager.pas',
+  SharpESwatchCollection in '..\SharpESwatchCollection\SharpESwatchCollection.pas';
 
 {$R *.res}
 
