@@ -1,4 +1,4 @@
-unit SharpCenterScheme;
+unit SharpECenterScheme;
 
 interface
 
@@ -187,7 +187,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('SharpE', [TSharpECenterScheme]);
+  RegisterComponents('SharpE_Common', [TSharpECenterScheme]);
 end;
 
 constructor TSharpECenterScheme.Create(AOwner: TComponent);
