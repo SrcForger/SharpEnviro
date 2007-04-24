@@ -1,4 +1,4 @@
-unit uSharpETabList;
+unit SharpETabList;
 
 interface
 
@@ -170,7 +170,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('SharpE', [TSharpETabList]);
+  RegisterComponents('SharpE_Common', [TSharpETabList]);
 end;
 
 function TSharpETabList.Add(ATabCaption: String; ATabImageIndex:Integer=-1;
