@@ -1,4 +1,4 @@
-unit uSharpEFontSelector;
+unit SharpEFontSelector;
 
 interface
 
@@ -72,12 +72,13 @@ type
 
     procedure BtnPropertiesClick(Sender: TObject);
     procedure SetFont(const Value: TSharpEFontProperties);
-    procedure SetEnabled(const Value: boolean); 
+    
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Paint; override;
   protected
+    procedure SetEnabled(const Value: boolean); reintroduce;
+    procedure Paint; override;
   published
     property Owner;
     property Font: TSharpEFontProperties read FFont write SetFont;
@@ -99,7 +100,7 @@ implementation
 
 uses
   JclFileUtils,
-  uSharpEFontSelectorWnd,
+  SharpEFontSelectorWnd,
   graphicsfx;
 
 { TSharpEFontSelector }
@@ -108,7 +109,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents('SharpE', [TSharpEFontSelector]);
+  RegisterComponents('SharpE_Common', [TSharpEFontSelector]);
 end;
 
 procedure TSharpEFontSelector.BtnPropertiesClick(Sender: TObject);

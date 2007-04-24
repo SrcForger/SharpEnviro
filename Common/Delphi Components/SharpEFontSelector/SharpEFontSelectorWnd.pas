@@ -1,4 +1,4 @@
-unit uSharpEFontSelectorWnd;
+unit SharpEFontSelectorWnd;
 
 interface
 
@@ -13,7 +13,7 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
-  uSharpeColorBox,
+  SharpeColorPicker,
   ExtCtrls,
   SharpApi,
   GR32_RangeBars,
@@ -21,7 +21,7 @@ uses
   GR32_Image,
   Spin,
   graphicsfx,
-  Menus, ImgList,uFontList;
+  Menus, ImgList,SharpEFontSelectorFontList;
 
 type
   TDeskFont = record
@@ -60,7 +60,6 @@ type
     gbFontAlpha: TGaugeBar;
     pnlShadowProps: TPanel;
     gbShadowAlpha: TGaugeBar;
-    secShadowColor: TSharpEColorBox;
     Panel1: TPanel;
     Image2: TImage;
     Label2: TLabel;
@@ -71,11 +70,12 @@ type
     miWhite: TMenuItem;
     miBlack: TMenuItem;
     Panel3: TPanel;
-    secFontColor: TSharpEColorBox;
     radBackWhite: TRadioButton;
     radBackCheck: TRadioButton;
     radBackBlack: TRadioButton;
     imlFontIcons: TImageList;
+    secFontColor: TSharpEColorPicker;
+    secShadowColor: TSharpEColorPicker;
     procedure btnOkClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
 
@@ -127,7 +127,7 @@ implementation
 
 uses
 
-  uSharpEFontSelector;
+  SharpEFontSelector;
 
 {$R *.dfm}
 

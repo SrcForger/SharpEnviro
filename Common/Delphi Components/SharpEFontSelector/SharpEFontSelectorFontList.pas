@@ -1,4 +1,4 @@
-unit uFontList;
+unit SharpEFontSelectorFontList;
 
 interface
 
