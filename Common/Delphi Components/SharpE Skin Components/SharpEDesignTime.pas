@@ -217,23 +217,23 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('SharpE', [TSharpESkinManager]);
-  RegisterComponents('SharpE', [TSharpEScheme]);
-  RegisterComponents('SharpE', [TSharpESkin]);
-  RegisterComponents('SharpE', [TSharpEForm]);
-  RegisterComponents('SharpE', [TSharpEBar]);
-  RegisterComponents('SharpE', [TSharpEButton]);
-  RegisterComponents('SharpE', [TSharpECheckBox]);
-  RegisterComponents('SharpE', [TSharpEProgressBar]);
-  RegisterComponents('SharpE', [TSharpEPanel]);
-  RegisterComponents('SharpE', [TSharpELabel]);
-  RegisterComponents('SharpE', [TSharpERadioBox]);
-  RegisterComponents('SharpE', [TSharpEMiniThrobber]);
-  RegisterComponents('SharpE', [TSharpEImage32]);
-  RegisterComponents('SharpE', [TSharpEEdit]);
-  RegisterComponents('SharpE', [TSharpETaskItem]);
-  RegisterComponents('SharpE', [TSharpESkinLabel]);
-  RegisterComponents('SharpE', [TSharpEListBox]);
+  RegisterComponents('SharpE_Skin', [TSharpESkinManager]);
+  RegisterComponents('SharpE_Skin', [TSharpEScheme]);
+  RegisterComponents('SharpE_Skin', [TSharpESkin]);
+  RegisterComponents('SharpE_Skin', [TSharpEForm]);
+  RegisterComponents('SharpE_Skin', [TSharpEBar]);
+  RegisterComponents('SharpE_Skin', [TSharpEButton]);
+  RegisterComponents('SharpE_Skin', [TSharpECheckBox]);
+  RegisterComponents('SharpE_Skin', [TSharpEProgressBar]);
+  RegisterComponents('SharpE_Skin', [TSharpEPanel]);
+  RegisterComponents('SharpE_Skin', [TSharpELabel]);
+  RegisterComponents('SharpE_Skin', [TSharpERadioBox]);
+  RegisterComponents('SharpE_Skin', [TSharpEMiniThrobber]);
+  RegisterComponents('SharpE_Skin', [TSharpEImage32]);
+  RegisterComponents('SharpE_Skin', [TSharpEEdit]);
+  RegisterComponents('SharpE_Skin', [TSharpETaskItem]);
+  RegisterComponents('SharpE_Skin', [TSharpESkinLabel]);
+  RegisterComponents('SharpE_Skin', [TSharpEListBox]);
 
   RegisterPropertyEditor(TypeInfo(TXmlFileName), TSharpESkin, 'XmlFilename',
     TXmlFileNameProperty);
