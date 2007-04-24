@@ -119,7 +119,7 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath"></Directories>
+			<Directories Name="SearchPath">..\..\Libraries\SharpAPI;..\..\Libraries\SharpThemeAPI;..\..\3rd party\GR32 Addons;..\..\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Units\SCHotkeyManager</Directories>
 			<Directories Name="Packages"></Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
@@ -167,6 +167,8 @@
 			<Language Name="ActiveLang"></Language>
 			<Language Name="ProjectLang">$00000000</Language>
 			<Language Name="RootDir"></Language>
-		</Language>
-	</Delphi.Personality>
+		</Language>  <Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
+    </Excluded_Packages>
+  </Delphi.Personality>
 </BorlandProject>
