@@ -2,12 +2,8 @@ program SharpEColorPanelExTest;
 
 uses
   Forms,
-  uSharpEColorPanelEx in 'uSharpEColorPanelEx.pas',
-  uSharpeColorBox in '..\SharpEColorBox\uSharpeColorBox.pas',
   uSharpEColorPanelExTest in 'uSharpEColorPanelExTest.pas' {Form1},
-  SharpEColorPanel in '..\SharpEColorPanel\SharpEColorPanel.pas',
-  SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas',
-  SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas';
+  SharpEColorEditorEx in 'SharpEColorEditorEx.pas';
 
 {$R *.res}
 
