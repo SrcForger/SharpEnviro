@@ -1,7 +1,0 @@
-// ----------------------------------------------------------------------------
-// List all the Bitmaps etc. to build into RES
-// ----------------------------------------------------------------------------
-PIPETTE_BMP BITMAP "RC\pipette.bmp"
-PIPETTEDIS_BMP BITMAP "RC\pipettedis.bmp"
-PIPETTESEL_BMP BITMAP "RC\pipettesel.bmp"
-ARROW_BMP BITMAP "RC\arrow.bmp"
