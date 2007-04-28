@@ -120,7 +120,7 @@
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
 			<Directories Name="SearchPath">..\SharpApi\</Directories>
-			<Directories Name="Packages">rtl;vclx;vcl;Jcl;JclVcl;JvCoreD9R;JvSystemD9R;JvStdCtrlsD9R;JvAppFrmD9R;JvBandsD9R;JvCmpD9R;JvCryptD9R;JvCtrlsD9R;JvCustomD9R;JvDlgsD9R;JvDockingD9R;JvDotNetCtrlsD9R;VclSmp;JvGlobusD9R;JvHMID9R;JvInterpreterD9R;JvJansD9R;JvManagedThreadsD9R;JvMMD9R;JvNetD9R;JvPageCompsD9R;JvPluginD9R;JvPrintPreviewD9R;JvRuntimeDesignD9R;JvTimeFrameworkD9R;JvUIBD9R;JvValidatorsD9R;JvWizardD9R;JvXPCtrlsD9R;GR32_DSGN_D2005;GR32_D2005;PNG_D9;PngComponentsD9;xmlrtl;vclactnband;SharpESkinComponents;SharpEComponents;HotKeyManagerPackage;CoolTrayIcon_D6plus</Directories>
+			<Directories Name="Packages">rtl;vcl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
 			<Directories Name="UsePackages">False</Directories>
