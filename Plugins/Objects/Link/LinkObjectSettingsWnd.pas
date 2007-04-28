@@ -99,12 +99,12 @@ end;
 
 procedure TSettingsWnd.LoadSettings();
 var
-  Settings : TXMLSettings;
+  Settings : TLinkXMLSettings;
 begin
   if ObjectID=0 then
      exit;
 
-  Settings := TXMLSettings.Create(ObjectID,nil,'Link');
+  Settings := TLinkXMLSettings.Create(ObjectID,nil,'Link');
   Settings.LoadSettings;
 
   Edit_target.Text  := Settings.Target;
@@ -125,11 +125,11 @@ end;
 
 procedure TSettingsWnd.SaveSettings();
 var
-   Settings : TXMLSettings;
+   Settings : TLinkXMLSettings;
 begin
   if ObjectID=0 then exit;
 
-  Settings := TXMLSettings.Create(ObjectID,nil,'Link');
+  Settings := TLinkXMLSettings.Create(ObjectID,nil,'Link');
   Settings.LoadSettings;
 
   Settings.Target       := edit_target.Text;

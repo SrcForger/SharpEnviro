@@ -39,7 +39,7 @@ uses JvSimpleXML,
      uSharpDeskObjectSettings;
 
 type
-    TXMLSettings = class(TDesktopXMLSettings)
+    TLinkXMLSettings = class(TDesktopXMLSettings)
     private
     public
       {Settings Block}
@@ -59,7 +59,7 @@ implementation
 
 
 
-procedure TXMLSettings.LoadSettings;
+procedure TLinkXMLSettings.LoadSettings;
 begin
   inherited InitLoadSettings;
   inherited LoadSettings;
@@ -74,7 +74,7 @@ begin
   end;
 end;
 
-procedure TXMLSettings.SaveSettings(SaveToFile : boolean);
+procedure TLinkXMLSettings.SaveSettings(SaveToFile : boolean);
 begin
   if FXMLRoot = nil then exit;
 

@@ -33,9 +33,9 @@ unit uLinkObjectLayer;
 interface
 uses
   Windows, StdCtrls, Forms,Classes, Controls, ExtCtrls, Dialogs,Math,
-  Messages, JPeg, SharpApi, SysUtils,ShellApi, Graphics,
-  gr32,pngimage,GR32_Image, GR32_Layers, GR32_BLEND,GR32_Transforms, GR32_Filters,
-  JvSimpleXML, SharpDeskApi, JclFileUtils, JclShell, Types,
+  Messages, SharpApi, SysUtils,ShellApi, Graphics,
+  gr32,GR32_Image, GR32_Layers, GR32_BLEND,GR32_Transforms, GR32_Filters,
+  JvSimpleXML, SharpDeskApi, JclShell, Types,
   LinkObjectSettingsWnd,
   LinkObjectXMLSettings,
   uSharpDeskDebugging,
@@ -53,17 +53,17 @@ type
 
   TLinkLayer = class(TBitmapLayer)
   private
-    FFontSettings    : TDeskFont;
-    FIconSettings    : TDeskIcon;
-    FCaptionSettings : TDeskCaption;
-    FSettings        : TXMLSettings;
-    FHLTimer         : TTimer;
-    FHLTimerI        : integer;
-    FAnimSteps       : integer;
-    FObjectID        : integer;
-    FScale           : integer;
-    FLocked          : Boolean;
   protected
+     FFontSettings    : TDeskFont;
+     FIconSettings    : TDeskIcon;
+     FCaptionSettings : TDeskCaption;
+     FSettings        : TLinkXMLSettings;
+     FHLTimer         : TTimer;
+     FHLTimerI        : integer;
+     FAnimSteps       : integer;
+     FObjectID        : integer;
+     FScale           : integer;
+     FLocked          : Boolean;
      procedure OnTimer(Sender: TObject);
   public
      FParentImage : Timage32;
@@ -80,7 +80,7 @@ type
      destructor Destroy; override;
      property ObjectId  : Integer read FObjectId  write FObjectId;
      property Locked    : boolean read FLocked    write FLocked;
-     property Settings  : TXMLSettings read FSettings;
+     property Settings  : TLinkXMLSettings read FSettings;
   private
   end;
 
@@ -282,7 +282,7 @@ begin
     FFontSettings.ShadowColor      := SharpThemeApi.SchemeCodeToColor(Theme[DS_TEXTSHADOWCOLOR].IntValue);
     FFontSettings.ShadowAlphaValue := Theme[DS_TEXTSHADOWALPHA].IntValue;
     FFontSettings.Shadow           := Theme[DS_TEXTSHADOW].BoolValue;
-    FFontSettings.ShadowAlpha      := True;
+    FFontSettings.ShadowAlpha      := False;
 
 
     FCaptionSettings.Caption.Clear;
@@ -314,15 +314,18 @@ begin
     if Theme[DS_ICONSIZE].IntValue <= 8 then
        Theme[DS_ICONSIZE].IntValue:= 48;
 
-    bmp := TBitmap32.Create;
-    IconStringToIcon(FSettings.Icon,FSettings.Target,Bmp,Theme[DS_ICONSIZE].IntValue);
-    bmp.DrawMode := dmBlend;
-    bmp.CombineMode := cmMerge;
-    TLinearResampler.Create(bmp);
-    FIconSettings.Icon.SetSize(Theme[DS_ICONSIZE].IntValue,Theme[DS_ICONSIZE].IntValue);
-    FIconSettings.Icon.Clear(color32(0,0,0,0));
-    bmp.DrawTo(FIconSettings.Icon,Rect(0,0,FIconSettings.Icon.Width,FIconSettings.Icon.Height));
-    bmp.Free;
+    if FIconSettings.Icon <> nil then
+    begin
+      bmp := TBitmap32.Create;
+      IconStringToIcon(FSettings.Icon,FSettings.Target,Bmp,Theme[DS_ICONSIZE].IntValue);
+      bmp.DrawMode := dmBlend;
+      bmp.CombineMode := cmMerge;
+      TLinearResampler.Create(bmp);
+      FIconSettings.Icon.SetSize(Theme[DS_ICONSIZE].IntValue,Theme[DS_ICONSIZE].IntValue);
+      FIconSettings.Icon.Clear(color32(0,0,0,0));
+      bmp.DrawTo(FIconSettings.Icon,Rect(0,0,FIconSettings.Icon.Width,FIconSettings.Icon.Height));
+      bmp.Free;
+    end;
 
     if Theme[DS_ICONALPHABLEND].BoolValue then
     begin
@@ -333,9 +336,8 @@ begin
 
   DrawBitmap;
   if FHLTimer.Tag >= FAnimSteps then
-     FHLTimer.OnTimer(FHLTimer);   
+     FHLTimer.OnTimer(FHLTimer);
 end;
-
 
 constructor TLinkLayer.Create( ParentImage:Timage32; Id : integer);
 begin
@@ -344,7 +346,7 @@ begin
   Alphahit := False;
   FObjectId := id;
   scaled := false;
-  FSettings := TXMLSettings.Create(FObjectId,nil,'Link');
+  FSettings := TLinkXMLSettings.Create(FObjectId,nil,'Link');
   FHLTimer := TTimer.Create(nil);
   FHLTimer.Interval := 20;
   FHLTimer.Tag      := 0;
@@ -354,7 +356,7 @@ begin
   FScale           := 100;
   FCaptionSettings.Caption := TStringList.Create;
   FCaptionSettings.Caption.Clear;
-  FIconSettings.Icon := TBitmap32.Create; 
+  FIconSettings.Icon := TBitmap32.Create;
   LoadSettings;
 end;
 
@@ -363,7 +365,8 @@ begin
   DebugFree(FCaptionSettings.Caption);
   DebugFree(FIconSettings.Icon);
   DebugFree(FSettings);
-  FHLTimer.Enabled := False;
+  if FHlTimer <> nil then
+     FHLTimer.Enabled := False;
   DebugFree(FHLTimer);
   inherited Destroy;
 end;

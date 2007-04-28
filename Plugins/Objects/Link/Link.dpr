@@ -54,8 +54,6 @@ uses
   LinkObjectSettingsWnd in 'LinkObjectSettingsWnd.pas' {SettingsWnd},
   LinkObjectXMLSettings in 'LinkObjectXMLSettings.pas',
   mlinewnd in 'mlinewnd.pas' {mlineform},
-  uPropertyList in '..\..\..\Common\Units\PropertyList\uPropertyList.pas',
-  SharpThemeUtils in '..\..\..\Common\Units\SharpThemeUtils\SharpThemeUtils.pas',
   uSharpDeskObjectSettings in '..\..\..\Common\Units\XML\uSharpDeskObjectSettings.pas';
 
 {$R *.RES}
@@ -289,7 +287,7 @@ end;
 procedure InitSettings();
 var
   XML : TJvSimpleXML;
-  Settings: TXMLSettings;
+  Settings: TLinkXMLSettings;
 begin
   XML := TJvSimpleXML.Create(nil);
   try
@@ -304,7 +302,7 @@ begin
       Add('MaxLength',0);
     end;
     XML.Root.Items.Add('DefaultSettings');
-    Settings := TXMLSettings.Create(-1,XML.Root.Items.ItemNamed['DefaultSettings'],'Link');
+    Settings := TLinkXMLSettings.Create(-1,XML.Root.Items.ItemNamed['DefaultSettings'],'Link');
     Settings.LoadSettings;
     Settings.Target := '{File}';
     Settings.Caption := '{FileName}';
