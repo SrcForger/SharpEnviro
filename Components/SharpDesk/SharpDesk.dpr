@@ -54,7 +54,6 @@ uses
   uSharpDeskObjectSet in 'Units\uSharpDeskObjectSet.pas',
   uSharpDeskObjectSetItem in 'Units\uSharpDeskObjectSetItem.pas',
   uSharpDeskManager in 'Units\uSharpDeskManager.pas',
-  uSharpDeskSharpETheme in 'Units\uSharpDeskSharpETheme.pas',
   uSharpDeskDebugging in 'Units\uSharpDeskDebugging.pas',
   uSharpDeskLayeredWindow in 'Units\uSharpDeskLayeredWindow.pas' {SharpDeskLayeredWindow},
   SharpAPI in '..\..\Common\Libraries\SharpAPI\SharpAPI.pas',

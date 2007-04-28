@@ -132,6 +132,7 @@ begin
   if not FLoaded then exit;
 
   UnloadObjects;
+  DllSharpDeskMessage(0,nil,SDM_SHUTDOWN,0,0,0);
 
   try
     FreeLibrary(FDllHandle);

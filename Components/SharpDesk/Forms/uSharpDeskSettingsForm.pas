@@ -34,13 +34,13 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, SharpApi,JvRollOut, Types, JvExtComponent,
-  ComCtrls, ToolWin, JvExExtCtrls, ImgList, ActnList, JvComponent,
+  Dialogs, ExtCtrls, StdCtrls, SharpApi,JvRollOut, Types,
+  ComCtrls, ImgList, JvComponent,
   gr32,
   gr32_layers,
   uSharpDeskObjectFile,
   uSharpDeskDesktopObject,
-  SharpDeskApi, SharpThemeApi;
+  SharpDeskApi, SharpThemeApi, JvExExtCtrls, ToolWin;
 
 type
   TSettingsForm = class(TForm)
@@ -211,7 +211,7 @@ begin
   SharpDesk.DeskSettings.SetObjectRolledOut := not ObjectRollout.Collapsed;
   SharpDesk.DeskSettings.SaveSettings;
 
-  if ObjectSets.Selected = nil then
+  if (ObjectSets.Selected = nil) and (Save) then
   begin
     showmessage('Please select an object set!');
     exit;
@@ -272,6 +272,10 @@ begin
 //  SettingsForm.Height:=SettingsPanel.Top + SettingsPanel.Height + BottomPanel.Height + 164;
   SettingsForm.Left:=Screen.Monitors[n].Left + Screen.Monitors[n].Width div 2 - SettingsForm.Width div 2;
   SettingsForm.top:=Screen.Monitors[n].Top + Screen.Monitors[n].Height div 2 - SettingsForm.Height div 2;
+
+  if ObjectSets.Selected = nil then
+     if ObjectSets.Items.Count > 0 then
+        ObjectSets.Items[0].Selected := True;
 
   Updatesize;
 end;

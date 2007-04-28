@@ -34,8 +34,6 @@ Interface
 
 uses Windows,Graphics,SysUtils,Forms,SharpApi,Jpeg,Classes,Dialogs,Types,
      GR32,Math,GR32_blend,GR32_Image, GR32_resamplers,PngImage, Registry,Messages,
-     uSharpDeskTThemeSettings,
-     uSharpDeskSharpETheme,
      SharpThemeApi,
      SharpGraphicsUtils;
 
@@ -181,12 +179,8 @@ var
    Re : TRect;
    w,h : integer;
    JPeg : TJpegImage;
-   winWallPath: string; 
-   MyReg : TRegIniFile;
-   colors : Array[1..1] of integer;
-   colors2 : Array[1..1] of DWord;
-   simple : boolean;
-   MC : TColor;
+   winWallPath: string;
+   Reg : TRegistry;
 
    loaded : boolean;
    WP : TThemeWallpaper;
@@ -322,13 +316,14 @@ begin
   JPeg.Free;
   tBmp.Free;
 
-  SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Set Win Wallpaper : ') + WP.Name),clblue,DMT_trace);  
+  SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Set Win Wallpaper : ') + WP.Name),clblue,DMT_trace);
+  Reg := TRegistry.Create;
+  Reg.RootKey := HKEY_CURRENT_USER;
+  Reg.OpenKey('\Control Panel\Desktop\',False);
+  Reg.WriteString('Wallpaper', winWallPath+'.jpg');
+  Reg.WriteString('WallpaperStyle', '2');
+  Reg.Free;
   SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(winWallPath+'.jpg'), SPIF_SENDCHANGE);
-  MyReg := TRegIniFile.Create;
-  MyReg.RootKey := HKEY_CURRENT_USER;
-  MyReg.WriteString('Control Panel\Desktop\', 'Wallpaper', winWallPath+'.jpg');
-  MyReg.WriteString('Control Panel\Desktop\', 'WallpaperStyle', '2');
-  MyReg.Free;
 
   SendMessage(FindWindow('Progman','Program Manager'),WM_COMMAND,106597, 0);
 end;

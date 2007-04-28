@@ -38,8 +38,6 @@ uses Graphics,
      Forms,
      JvSimpleXML,
      SharpApi,
-     uSharpDeskTThemeSettings,
-     uSharpDeskSharpETheme,
      uSharpDeskObjectSet;
 
 type

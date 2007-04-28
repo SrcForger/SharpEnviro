@@ -2547,8 +2547,4 @@ object SharpDeskMainForm: TSharpDeskMainForm
     Top = 96
     Bitmap = {}
   end
-  object XPManifest1: TXPManifest
-    Left = 232
-    Top = 48
-  end
 end

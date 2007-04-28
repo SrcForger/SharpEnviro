@@ -36,19 +36,17 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, StdCtrls, ShellApi, Menus, ImgList, Registry,
   GR32_Image,GR32_Layers,GR32, GR32_resamplers, JPeg,Types,
-  TypInfo,
   ShlObj,JvSimpleXML,JclSysInfo,AppEvnts,
   SharpApi,
   SharpThemeApi,
   SharpDeskApi,
   uSharpDeskLoadThemeForm,
   uSharpDeskBackgroundUnit,
-  uSharpDeskTPlugin,
   uSharpDeskFunctions,
   uSharpDeskObjectFileList,
   uSharpDeskObjectSetList,
   uSharpDeskManager,
-  uSharpDeskDesktopObject, PngImageList, XPMan;
+  uSharpDeskDesktopObject, PngImageList;
 
 const
     WM_PRIVATE_MESSAGE = WM_USER + 321;
@@ -134,7 +132,6 @@ type
     MakeWindow1: TMenuItem;
     PngImageList1: TPngImageList;
     N13: TMenuItem;
-    XPManifest1: TXPManifest;
     Lock1: TMenuItem;
     N6: TMenuItem;
     N1: TMenuItem;
@@ -548,6 +545,8 @@ begin
     if SharpDesk.DeskSettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
     FirstTheme := False;
   finally
+    BackgroundImage.Repaint;
+    Repaint;
     SharpApi.SharpEBroadCast(WM_THEMELOADINGEND,0,0);
   end;
 end;
@@ -723,6 +722,7 @@ begin
   SharpDesk.UnloadAllObjects;
   SharpDesk.Free;
   Background.Destroy;
+  SharpApi.SharpEBroadCast(WM_DESKCLOSING,0,0);
 end;
 
 
@@ -760,6 +760,7 @@ var
    B,i : integer;
    //cpos : TPoint;
    DesktopObject : TDesktopObject;
+   wnd : hwnd;
    //MenuItem : TMenuItem;
 begin
   if not SharpDesk.Enabled then exit;
@@ -851,9 +852,12 @@ begin
     else
     if (Button = mbRight) then
     begin
+      wnd := FindWindow('TSharpEMenuWnd',nil);
+      if wnd <> 0 then
+         SendMessage(wnd,WM_CLOSE,0,0);
       SharpApi.SharpExecute(SharpApi.GetSharpeDirectory+'SharpMenu.exe '
                             + inttostr(Mouse.CursorPos.X) + ' ' + inttostr(Mouse.CursorPos.Y));
-      sleep(1000);
+      //sleep(1000);
       SharpApi.SendDebugMessageEx('SharpDesk',PChar('Menu popup at : ' + inttostr(Mouse.CursorPos.X) + '|' + inttostr(Mouse.CursorPos.Y)),clblue,DMT_Trace);
     end;
   end;
@@ -869,8 +873,13 @@ procedure TSharpDeskMainForm.BackgroundImageMouseDown(Sender: TObject;
 var
    CPos : TPoint;
    DesktopObject : TDesktopObject;
+   wnd : hwnd;
 begin
   if not SharpDesk.Enabled then exit;
+
+  wnd := FindWindow('TSharpEMenuWnd',nil);
+  if wnd <> 0 then
+     SendMessage(wnd,WM_CLOSE,0,0);
 
   if SharpDesk.DoubleClick then
   begin

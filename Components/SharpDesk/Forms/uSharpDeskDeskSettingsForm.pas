@@ -34,8 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, SharpApi, ComCtrls, StdCtrls, ShellApi, JvSimpleXML,
-  uSharpDeskTPlugin;
+  Dialogs, ExtCtrls, SharpApi, ComCtrls, StdCtrls, ShellApi, JvSimpleXML;
 
 type
 
