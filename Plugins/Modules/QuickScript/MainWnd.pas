@@ -33,23 +33,19 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, GR32_PNG, ImgList, PngImageList, Types,
+  Windows, Messages, SysUtils, Classes, Controls, Forms,
+  Dialogs, StdCtrls, GR32_Image, GR32_PNG, Types,
   JvSimpleXML,
-  Jclsysinfo,
   SharpApi,
   uSharpBarAPI,
   SharpEBaseControls,
-  SharpESkin,
-  SharpEScheme,
   SharpESkinManager,
   SharpEButton,
   SharpECustomSkinSettings,
-  SharpEBitmapList,
   uSharpEMenu,
   uSharpEMenuWnd,
   uSharpEMenuSettings,
-  GR32, Menus, Math;
+  GR32, Menus, Math, ImgList, PngImageList;
 
 
 type
@@ -67,9 +63,8 @@ type
     procedure Settings1Click(Sender: TObject);
   protected
   private
-    sWidth   : integer;
-    sCaption : boolean;
-    sIcon    : boolean;
+    sCaption : Boolean;
+    sIcon    : Boolean;
     FIcon    : TBitmap32;
     FMenuIcon1 : TBitmap32;
     FMenuIcon2 : TBitmap32;
@@ -95,14 +90,12 @@ procedure TMainForm.LoadSettings;
 var
   item : TJvSimpleXMLElem;
 begin
-  sWidth   := 100;
   sCaption := True;
   sIcon    := True;
 
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
   if item <> nil then with item.Items do
   begin
-    sWidth   := IntValue('Width',100);
     sCaption := BoolValue('Caption',True);
     sIcon    := BoolValue('Icon',True); 
   end;
@@ -123,20 +116,25 @@ procedure TMainForm.ReAlignComponents(BroadCast : boolean);
 var
   newWidth : integer;
 begin
-  if sWidth<20 then sWidth := 20;
-
   Button.Left := 2;
+  newWidth := 24;
+  if (sIcon) and (Button.Glyph32 <> nil) then
+  begin
+    Button.Glyph32.Assign(FIcon);
+    newWidth := newWidth + Button.GetIconWidth;
+  end else Button.Glyph32.SetSize(0,0);
 
-  if (sCaption) then Button.Caption := 'Scripts'
-     else Button.Caption := '';
-  if (sIcon) then Button.Glyph32.Assign(FIcon)
-     else Button.Glyph32.SetSize(0,0);
+  if (sCaption) then
+  begin
+    Button.Caption := ' Scripts ';
+    newWidth := newWidth + Button.GetTextWidth;
+  end else Button.Caption := '';
 
-  newWidth := sWidth + 4;
-
-  self.Tag := NewWidth;
-  self.Hint := inttostr(NewWidth);
-  if (BroadCast) and (newWidth <> Width) then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  Tag := NewWidth;
+  Hint := inttostR(NewWidth);
+  if newWidth <> Width then
+     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0)
+        else Button.Width := max(1,Width - 4);
 end;
 
 
@@ -147,21 +145,19 @@ var
 begin
   try
     SettingsForm := TSettingsForm.Create(nil);
-    SettingsForm.cb_caption.Checked := sCaption;
-    SettingsForm.cb_icon.Checked    := sIcon;
-    SettingsForm.tb_size.Position   := sWidth;
+    SettingsForm.rb_caption.Checked := (sCaption and (not sIcon));
+    SettingsForm.rb_icon.Checked    := (sIcon and (not sCaption));
+    SettingsForm.rb_cai.Checked     := (sCaption and sIcon);
 
     if SettingsForm.ShowModal = mrOk then
     begin
-      sCaption := SettingsForm.cb_caption.checked;
-      sIcon    := SettingsForm.cb_icon.Checked;
-      sWidth   := SettingsForm.tb_size.Position;
+      sCaption := (SettingsForm.rb_caption.Checked or SettingsForm.rb_cai.Checked);
+      sIcon    := (SettingsForm.rb_icon.Checked or SettingsForm.rb_cai.Checked);
 
       item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
       if item <> nil then with item.Items do
       begin
         clear;
-        Add('Width',sWidth);
         Add('Caption',sCaption);
         Add('Icon',sIcon);
       end;

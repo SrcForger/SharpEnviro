@@ -15,26 +15,12 @@ object SettingsForm: TSettingsForm
   Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 13
-  object Label4: TLabel
+  object Label1: TLabel
     Left = 8
-    Top = 56
-    Width = 58
+    Top = 8
+    Width = 34
     Height = 13
-    Caption = 'Button Size:'
-  end
-  object lb_barsize: TLabel
-    Left = 72
-    Top = 56
-    Width = 33
-    Height = 14
-    AutoSize = False
-    Caption = '100px'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Arial'
-    Font.Style = [fsBold]
-    ParentFont = False
+    Caption = 'Display'
   end
   object Button1: TButton
     Left = 32
@@ -54,55 +40,28 @@ object SettingsForm: TSettingsForm
     TabOrder = 1
     OnClick = Button2Click
   end
-  object tb_size: TGaugeBar
-    Left = 8
-    Top = 72
-    Width = 177
-    Height = 13
-    Color = clWindow
-    Backgnd = bgSolid
-    BorderStyle = bsNone
-    HandleColor = clBtnFace
-    BorderColor = clBtnShadow
-    Max = 200
-    Min = 25
-    ShowArrows = False
-    ShowHandleGrip = True
-    Style = rbsMac
-    Position = 100
-    OnChange = tb_sizeChange
-  end
-  object cb_caption: TCheckBox
-    Left = 8
-    Top = 8
-    Width = 97
+  object rb_caption: TRadioButton
+    Left = 16
+    Top = 24
+    Width = 113
     Height = 17
-    Caption = 'Show Caption'
+    Caption = 'Caption'
+    TabOrder = 2
+  end
+  object rb_icon: TRadioButton
+    Left = 16
+    Top = 48
+    Width = 113
+    Height = 17
+    Caption = 'Icon'
     TabOrder = 3
   end
-  object cb_icon: TCheckBox
-    Left = 8
-    Top = 32
-    Width = 97
+  object rb_cai: TRadioButton
+    Left = 16
+    Top = 72
+    Width = 113
     Height = 17
-    Caption = 'Show Icon'
+    Caption = 'Caption and Icon'
     TabOrder = 4
-  end
-  object OpenFile: TOpenDialog
-    FileName = '*.*'
-    Filter = 'All Files|*.*|Applications (*.exe)|*.exe'
-    Options = [ofHideReadOnly, ofEnableSizing, ofForceShowHidden]
-    Title = 'Select Target File'
-    Left = 136
-    Top = 96
-  end
-  object XPManifest1: TXPManifest
-    Left = 144
-    Top = 8
-  end
-  object OpenScript: TOpenDialog
-    Filter = 'SharpE Script |*.sescript'
-    Left = 136
-    Top = 128
   end
 end

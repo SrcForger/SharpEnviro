@@ -33,22 +33,16 @@ unit SettingsWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, GR32_RangeBars, SharpApi, XPMan;
+  Classes, Forms, Dialogs, StdCtrls, Controls;
 
 type
   TSettingsForm = class(TForm)
     Button1: TButton;
     Button2: TButton;
-    Label4: TLabel;
-    lb_barsize: TLabel;
-    tb_size: TGaugeBar;
-    OpenFile: TOpenDialog;
-    XPManifest1: TXPManifest;
-    OpenScript: TOpenDialog;
-    cb_caption: TCheckBox;
-    cb_icon: TCheckBox;
-    procedure tb_sizeChange(Sender: TObject);
+    Label1: TLabel;
+    rb_caption: TRadioButton;
+    rb_icon: TRadioButton;
+    rb_cai: TRadioButton;
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private
@@ -70,11 +64,6 @@ end;
 procedure TSettingsForm.Button2Click(Sender: TObject);
 begin
   self.ModalResult := mrCancel;
-end;
-
-procedure TSettingsForm.tb_sizeChange(Sender: TObject);
-begin
-  lb_barsize.Caption := inttostr(tb_size.Position) + 'px';
 end;
 
 end.
