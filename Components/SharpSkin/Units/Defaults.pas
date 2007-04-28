@@ -290,7 +290,7 @@ const
                                 '§^      <!-- Normal State Skin Parts -->^'+
                                 '§^    </normal>^'+
                                 '§^    <hover>^'+
-                                '§^      <!-- Hovar State Skin Parts -->^'+
+                                '§^      <!-- Hover State Skin Parts -->^'+
                                 '§^    </hover>^'+
                                 '§^    <down>^'+
                                 '§^      <!-- Down State Skin Parts -->^'+
@@ -317,7 +317,7 @@ const
                                 '§^      <!-- Normal State Skin Parts -->^'+
                                 '§^    </normal>^'+
                                 '§^    <hover>^'+
-                                '§^      <!-- Hovar State Skin Parts -->^'+
+                                '§^      <!-- Hover State Skin Parts -->^'+
                                 '§^    </hover>^'+
                                 '§^    <down>^'+
                                 '§^      <!-- Down State Skin Parts -->^'+
@@ -345,7 +345,7 @@ const
                                 '§^      <!-- Normal State Skin Parts -->^'+
                                 '§^    </normal>^'+
                                 '§^    <hover>^'+
-                                '§^      <!-- Hovar State Skin Parts -->^'+
+                                '§^      <!-- Hover State Skin Parts -->^'+
                                 '§^    </hover>^'+
                                 '§^    <down>^'+
                                 '§^      <!-- Down State Skin Parts -->^'+
@@ -371,7 +371,7 @@ const
                                 '§^      <!-- Normal State Skin Parts -->^'+
                                 '§^    </normal>^'+
                                 '§^    <hover>^'+
-                                '§^      <!-- Hovar State Skin Parts -->^'+
+                                '§^      <!-- Hover State Skin Parts -->^'+
                                 '§^    </hover>^'+
                                 '§^    <down>^'+
                                 '§^      <!-- Down State Skin Parts -->^'+
@@ -392,7 +392,7 @@ const
                                 '§^      <!-- Normal State Skin Parts -->^'+
                                 '§^    </normal>^'+
                                 '§^    <hover>^'+
-                                '§^      <!-- Hovar State Skin Parts -->^'+
+                                '§^      <!-- Hover State Skin Parts -->^'+
                                 '§^    </hover>^'+
                                 '§^    <down>^'+
                                 '§^      <!-- Down State Skin Parts -->^'+
@@ -414,7 +414,7 @@ const
                                 '§^      <!-- Normal State Skin Parts -->^'+
                                 '§^    </normal>^'+
                                 '§^    <hover>^'+
-                                '§^      <!-- Hovar State Skin Parts -->^'+
+                                '§^      <!-- Hover State Skin Parts -->^'+
                                 '§^    </hover>^'+
                                 '§^    <down>^'+
                                 '§^      <!-- Down State Skin Parts -->^'+
