@@ -63,11 +63,14 @@ type
     MirrorVert      : boolean;
   end;
 
+  TSharpESchemeType = (stColor,stBoolean,stInteger);
+
   TSharpESkinColor = record
     Name: string;
     Tag: string;
     Info: string;
     Color: integer;
+    schemetype : TSharpESchemeType;
   end;
 
   TSharpEColorSet = array of TSharpESkinColor;

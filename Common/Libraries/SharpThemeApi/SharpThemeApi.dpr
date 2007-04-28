@@ -34,11 +34,10 @@ uses
   SysUtils,
   DateUtils,
   Classes,
+  Windows,
   JvSimpleXML,
-  Dialogs,
   GR32,
   Graphics,
-  Windows,
   JclStrings,
   SharpAPI in '..\SharpAPI\SharpAPI.pas';
 
@@ -46,11 +45,14 @@ type
   TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,tpDesktopAnimation,tpWallpaper);
   TThemeParts = set of TThemePart;
 
+  TSharpESchemeType = (stColor,stBoolean,stInteger);
+
   TSharpESkinColor = record
     Name: string;
     Tag: string;
     Info: string;
     Color: integer;
+    schemetype : TSharpESchemeType;
   end;
 
   TSharpEColorSet = array of TSharpESkinColor;
@@ -712,6 +714,7 @@ var
   tmpRec: TSharpESkinColor;
   sFile, sTag, sCurScheme: string;
   tmpColor: string;
+  s : String;
 begin
   Index := 0;
 
@@ -751,6 +754,12 @@ begin
           tmpRec.Tag := Value('tag', '');
           tmpRec.Info := Value('info', '');
           tmpRec.Color := ParseColor(PChar(Value('Default', '0')));
+          s := Value('type','color');
+          if CompareText(s,'boolean') = 0 then
+             tmpRec.schemetype := stBoolean
+             else if CompareText(s,'integer') = 0 then
+                  tmpRec.schemetype := stInteger
+                  else tmpRec.schemetype := stColor;
         end;
         Theme.Scheme.Colors[ItemCount + 1] := tmpRec;
       end;
@@ -1039,12 +1048,14 @@ begin
     result.Name := '';
     result.Tag := '';
     result.Color := 0;
+    result.schemetype := stColor;
     exit;
   end;
 
   result.Name := Theme.Scheme.Colors[pIndex].Name;
   result.Tag := Theme.Scheme.Colors[pIndex].Tag;
   result.Color := Theme.Scheme.Colors[pIndex].Color;
+  result.schemetype := Theme.Scheme.Colors[pIndex].SchemeType;
 end;
 
 // ##########################################
@@ -1348,6 +1359,7 @@ begin
     result.Tag := '';
     Result.Info := '';
     Result.Color := 0;
+    result.schemetype := stColor;
     exit;
   end;
 
@@ -1355,6 +1367,7 @@ begin
   result.Tag := Theme.Scheme.Colors[pIndex].Tag;
   result.Info := Theme.Scheme.Colors[pIndex].Info;
   result.Color := Theme.Scheme.Colors[pIndex].Color;
+  result.schemetype := Theme.Scheme.Colors[pIndex].SchemeType;
 end;
 
 function GetSchemeColorIndexByTag(pTag: string): Integer;
@@ -1377,6 +1390,7 @@ begin
   result.Tag := '';
   Result.Info := '';
   Result.Color := 0;
+  result.SchemeType := stColor;
 
   for i := 0 to GetSchemeColorCount - 1 do
   begin
@@ -1386,6 +1400,8 @@ begin
       result.Tag := Theme.Scheme.Colors[i].Tag;
       result.Info := Theme.Scheme.Colors[i].Info;
       result.Color := Theme.Scheme.Colors[i].Color;
+      result.SchemeType := Theme.Scheme.Colors[i].SchemeType;
+      exit;
     end;
   end;
 end;
