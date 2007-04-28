@@ -79,6 +79,7 @@ const
 
   WM_THEMELOADINGSTART    = WM_APP + 535;
   WM_THEMELOADINGEND      = WM_APP + 536;
+  WM_DESKCLOSING          = WM_APP + 537;
 
   WM_SHARPTERMINATE       = WM_APP + 550;
 
@@ -95,7 +96,8 @@ const
   WM_UNREGISTERSHELLHOOK  = WM_APP + 610;
   WM_LOCKBARWINDOW        = WM_APP + 611;
   WM_UNLOCKBARWINDOW      = WM_APP + 612;
-    
+  WM_BARINSERTMODULE      = WM_APP + 613;
+
   // System Tray Service
   WM_REGISTERWITHTRAY     = WM_APP + 650;
   WM_UNREGISTERWITHTRAY   = WM_APP + 651;
@@ -213,6 +215,11 @@ type
     PluginID: string[255];
   end;
 
+  TBarRect = record
+              R : TRect;
+              wnd : hwnd;
+             end;
+
 function GetDelimitedActionList: WideString; external 'SharpAPI.dll' name 'GetDelimitedActionList';
 function RegisterAction(ActionName: Pchar; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterAction';
 function RegisterActionEx(ActionName: Pchar; GroupName:PChar; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterActionEx';
@@ -221,6 +228,9 @@ function UpdateAction(ActionName: Pchar; WindowHandle: hwnd; LParamID: Cardinal)
 function UpdateActionEx(ActionName, GroupName: Pchar; WindowHandle: hwnd; LParamID: Cardinal): hresult; external 'SharpAPI.dll';
 
 function UnRegisterAction(ActionName: Pchar) : hresult; external 'SharpAPI.dll' name 'UnRegisterAction';
+
+function GetSharpBarArea(Index : integer) : TBarRect; external 'SharpApi.dll' name 'GetSharpBarArea';
+function GetSharpBarCount : integer; external 'SharpApi.dll' name 'GetSharpBarCount';
 
 function HelpMsg(MsgText: Pchar): hresult; external 'SharpAPI.dll' name 'HelpMsg';
 function GetRecentItems(ReturnCount: integer): widestring; external 'SharpAPI.dll' name 'GetRecentItems';
@@ -231,25 +241,10 @@ function GetSharpeGlobalSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSh
 function GetCenterDirectory: PChar; external 'SharpAPI.dll' name 'GetCenterDirectory';
 function CenterMsg(Command, Param, PluginID : PChar): hresult; external 'SharpAPI.dll' name 'CenterMsg';
 
-function SetNewIconSet(NewIconSet : String) : hresult; external 'SharpAPI.dll' name 'SetNewIconSet';
-function SetNewTheme(NewTheme : String; NewThemeID : integer; broadcast : boolean) : hresult; external 'SharpAPI.dll' name 'SetNewTheme';
-function SetNewSkin(NewSkin : String; broadcast : boolean) : hresult; external 'SharpAPI.dll' name 'SetNewSkin';
-function GetSkinName : PChar; external 'SharpAPI.dll' name 'GetSkinName';
-function GetCurrentSkinFile : PChar; external 'SharpAPI.dll' name 'GetCurrentSkinFile';
-function GetCurrentSchemeFile : PChar; external 'SharpAPI.dll' name 'GetCurrentSchemeFile';
-
-function GetIconSetName : PChar; external 'SharpAPI.dll' name 'GetIconSetName';
-function GetThemeName : PChar; external 'SharpAPI.dll' name 'GetThemeName';
-function GetThemeID : integer; external 'SharpAPI.dll' name 'GetThemeID';
-function GetCurrentIconSetFile : PChar; external 'SharpAPI.dll' name 'GetCurrentIconSetFile';
-function GetDelimitedIconSetList: WideString; external 'SharpAPI.dll' name 'GetDelimitedIconSetList';
-function GetSkinDirectory : PChar; external 'SharpAPI.dll' name 'GetSkinDirectory';
-
 function ServiceMsg(ServiceName, Command: pChar): hresult; external 'SharpAPI.dll' name 'ServiceMsg';
 function ServiceStart(ServiceName: pChar): hresult; external 'SharpAPI.dll' name 'ServiceStart';
 function ServiceStop(ServiceName: pChar): hresult; external 'SharpAPI.dll' name 'ServiceStop';
 function IsServiceStarted(ServiceName: pchar): hresult; external 'SharpAPI.dll' name 'IsServiceStarted';
-function SendTrayMessage(msg: string; timeout: integer; showmode: integer): hresult; external 'SharpAPI.dll';
 function SendDebugMessage(app: string; msg: string; color: integer): hresult; external 'SharpAPI.dll';
 function SendDebugMessageEx(module: pChar; msg: pChar; color: integer; MessageType: Integer): hresult; external 'SharpApi.dll';
 
@@ -269,7 +264,6 @@ function LoadColorSchemeEx: TColorSchemeEx; external 'SharpAPI.dll';
 function SaveColorScheme(cs : TColorScheme) : boolean; external 'SharpAPI.dll';
 function SaveColorSchemeEx(cs : TColorSchemeEx) : boolean; external 'SharpAPI.dll';
 function SharpExecute(data: string): hresult; external 'SharpAPI.dll';
-function SendUpdateMessageToSharpBar(modulewnd: hwnd): hresult; external 'SharpAPI.dll';
 function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam): integer; external 'SharpAPI.dll';
 
 function SendMessageTo(WndName: string; msg: integer; wpar: wparam; lpar: lparam): boolean; external 'SharpAPI.dll';

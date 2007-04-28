@@ -30,81 +30,6 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-{###########################################################################################
-IMPORTANT SHARP-API CHANGES: 13 Feb 2006 by BB
-############################################################################################
-Due to the complexibility of the xml files and the speed issues when having
-to load and parse xml files everytime when loading or saving a setting, I made
-the decission to store important and global SharpE settings in the registry.
-We can't have API functions which are messing around with xml files everytime
-an application wants to get a ColorScheme or the current Skin name.
-These settings which are accessed very often are therefore mirrored to the registry.
-Mirrored to the registry means that they will be updated everytime a theme is beeing loaded.
-This way we can have the most important settings accessable easily and without
-having to mess around with xml files. If the registry key gets deleted in any way
-(users reinstall windows, etc.) the data will simply be rewritten on startup
-when SharpE is reloading the theme.
-############################################################################################
-CHANGELOG:
- * New consts :
-    -> THEMEPATH = 'Theme'
-    -> SKINPATH = 'Skin';  // Registry
-    -> SKINDIR  = 'Skins'; // Directory containing the xml files
-    -> SCHEMEPATH = 'Scheme';
-    -> OLD_REGPATH = 'Software\ldi\sharpe\'; for backward compatibility
-    -> ICONSDIR = 'Icons'; // Directory to the Icon sets
- * New Exported Functions:
-     -> LoadColorSchemeEx
-     -> SaveColorSchemeEx
-     -> SaveColorScheme
-     -> GetSkinName
-     -> GetCurrentSkinFile
-     -> SetNewSkin
-     -> SendPluginMessage
-     -> GetThemeName
-     -> GetThemeID
-     -> SetNewTheme
-     -> GetIconSetName
-     -> SetNewIconSet
-     -> GetCurrentIconSetFile
-     -> GetDelimitedIconSetList
-     -> GetSkinDirectory
- * New types:
-     -> TColorSchemeEx // TColorScheme + ThrobberText + WorkAreaText;
- * New Message types: (everything with 600++ is new)
-     -> WM_UPDATEBARWIDTH       = WM_APP + 601; // used by SharpBar
-     -> WM_SHARPEPLUGINMESSAGE  = WM_APP + 602; // used by SharpBar
-     -> WM_SKINCHANGED          = WM_APP + 603; // global skin change broadcast!
-     -> WM_REGISTERWITHTRAY     = WM_APP + 650; // used by SystemTray.Service
-     -> WM_UNREGISTERWITHTRAY   = WM_APP + 651;
-
- * Changed REGPATH constant to 'Software\SharpE-Shell\';
-    -> replaced REGPATH with OLD_REGPATH in SaveSetting[A-D] and LoadSetting[A-E] functions
-    -> all new functions which are reading anything from the registry will use the new REGPATH
- * All modified registry functions will be moved to the top of the unit to clearly seperate them
- * Added LoadColorFromRegistry (modified version of LoadSettingD using new REGPATH)
- * Added SaveColorToRegistry (modified version of SaveSettingD using new REGPATH
- * Modified LoadColorScheme to use LoadColorFromRegistry and new REGPATH
-     -> new registry path for Scheme settings is Software\SharpE-Shell\Scheme
- * Added SaveColorScheme/Ex (saving a TColorScheme/Ex to the registry)
- * Added LoadColorSchemeEx
- * Added GetSkinName (load the current skin name from registry)
- * Added GetCurrentSkinFile (will return the path to the skin.xml file of the current skin)
- * Added SetNewSkin(broadcast : boolean) (will set the skin in registry and broadcast
-                                          and broadcast the change if param = true)
- * Added SendPluginMessage(BarID, PluginID : integer; Command : pChar)
- * Added GetThemeName (load theme name from registry)
- * Added GetThemeID
- * Added SetNewTheme (set new theme name)
- * Added IconSet handling functions -> GetIconSetName, SetNewIconSet, GetCurrentIconSetFile
-         -> The whole icon set stuff should become more global and not only desk specific
- * Added GetDelimitedIconSetList (Delimited String List with Items: "IconIdetifier=IconFile")
- * Added GetSkinDirectory
- * Possible fix for '0' at the end of some PChar results
-############################################################################################
-
-}
-
 library SharpAPI;
 
 {$WARN UNIT_PLATFORM OFF}
@@ -118,13 +43,9 @@ uses
   Forms,
   classes,
   dialogs,
-  FileCtrl,
   registry,
-  jclregistry,
-  jclfileutils,
   jclsysinfo,
   JvSimpleXML,
-  Graphics,
 
   uExecServiceRecentItemList in
     '..\..\..\Plugins\Services\Exec\uExecServiceRecentItemList.pas',
@@ -262,6 +183,11 @@ type
     hwndid: Integer;
     lparam: Integer;
   end;
+
+  TBarRect = record
+              R : TRect;
+              wnd : hwnd;
+             end;
 
 var
   i: integer;
@@ -496,61 +422,6 @@ begin
   end;
 end;
 
-function GetIconSetName: PChar;
-begin
-  stemp := RegLoadStr(THEMEPATH, 'IconSet', 'Cubeix Black');
-  result := PChar(stemp);
-end;
-
-function GetThemeName: PChar;
-begin
-  stemp := RegLoadStr(THEMEPATH, 'Name', 'SharpE');
-  result := PChar(stemp);
-end;
-
-function GetThemeID: Integer;
-begin
-  stemp := RegLoadStr(THEMEPATH, 'ID', '0');
-  try
-    result := StrToInt(stemp)
-  except
-    result := 0;
-  end;
-end;
-
-function SetNewIconSet(NewIconSet: string): hresult;
-begin
-  result := RegWriteStr(THEMEPATH, 'IconSet', NewIconSet);
-end;
-
-function GetCurrentIconSetFile: PChar;
-var
-  SharpEDir: string;
-  IconSet: string;
-begin
-  SharpEDir := GetSharpEDirectory;
-  IconSet := GetIconSetName;
-  stemp := IncludeTrailingBackslash(SharpEDir) +
-    IncludeTrailingBackslash(ICONSDIR) +
-    IncludeTrailingBackslash(IconSet) +
-    'IconSet.xml';
-  result := PChar(stemp);
-end;
-
-function SetNewTheme(NewTheme: string; NewThemeID: integer; broadcast: boolean):
-  hresult;
-begin
-  RegWriteStr(THEMEPATH, 'Name', NewTheme);
-  result := RegWriteStr(THEMEPATH, 'ID', inttostr(NewThemeID));
-  if broadcast then
-    SharpEBroadCast(WM_SHARPETHEMEUPDATE, NewThemeID, 1);
-end;
-
-function GetSkinName: PChar;
-begin
-  stemp := RegLoadStr(SKINPATH, 'Name', 'SharpE');
-  result := PChar(stemp);
-end;
 
 function GetCenterDirectory: PChar;
 var
@@ -561,86 +432,6 @@ begin
     IncludeTrailingBackslash(CenterDir);
   result := PChar(stemp);
 end;
-
-function GetSkinDirectory: PChar;
-var
-  SharpEDir: string;
-begin
-  SharpEDir := GetSharpEDirectory;
-  stemp := IncludeTrailingBackslash(SharpEDir) +
-    IncludeTrailingBackslash(SkinDir);
-  result := PChar(stemp);
-end;
-
-function GetCurrentSkinFile: PChar;
-var
-  SkinDir: string;
-  SkinName: string;
-begin
-  SkinDir := GetSkinDirectory;
-  SkinName := GetSkinName;
-  stemp := SkinDir +
-    IncludeTrailingBackslash(SkinName) +
-    'Skin.xml';
-  result := PChar(stemp);
-end;
-
-function GetCurrentSchemeFile: PChar;
-var
-  SkinDir: string;
-  SkinName: string;
-begin
-  SkinDir := GetSkinDirectory;
-  SkinName := GetSkinName;
-  stemp := SkinDir +
-    IncludeTrailingBackslash(SkinName) +
-    'Scheme.xml';
-  result := PChar(stemp);
-end;
-
-function SetNewSkin(NewSkin: string; broadcast: boolean): hresult;
-begin
-  result := RegWriteStr(SKINPATH, 'Name', NewSkin);
-  if broadcast then
-    SharpEBroadCast(WM_SKINCHANGED, 0, 0);
-end;
-
-function GetDelimitedIconSetList: WideString;
-var
-  FileName: string;
-  SList: tstringlist;
-  XML: TJvSimpleXML;
-  n: integer;
-begin
-  try
-    XML := TJvSimpleXML.Create(nil);
-    SList := TStringList.Create;
-    SList.Clear;
-    FileName := GetCurrentIconSetFile;
-
-    if FileExists(FileName) then
-    begin
-      XML.LoadFromFile(FileName);
-      for n := 0 to XML.Root.Items.ItemNamed['Icons'].Items.Count - 1 do
-        with XML.Root.Items.ItemNamed['Icons'].Items.Item[n].Items do
-          SList.Add(Value('name', 'error') + '=' + Value('file', 'error'));
-      Result := SList.CommaText;
-      FreeAndNil(SList);
-      FreeAndNil(XML);
-    end
-    else
-      result := '';
-
-  finally
-    if Assigned(SList) then
-      FreeAndNil(SList);
-    if Assigned(XML) then
-      FreeAndNil(XML);
-  end;
-
-end;
-
-{FUNCTIONS NOT CHANGED SINCE UPDATE 02 Feb 2005}
 
 function ServiceStart(ServiceName: pChar): hresult;
 var
@@ -761,35 +552,6 @@ begin
   end;
 end;
 
-function SendPluginMessage(BarID, PluginID: integer; Command: pChar): hresult;
-var
-  cds: TCopyDataStruct;
-  wnd: hWnd;
-  msg: TManagerCmd;
-begin
-  try
-    //Prepare TCopyDataStruct
-    msg.Parameters := Command;
-    msg.Command := inttostr(PluginID);
-    with cds do
-    begin
-      dwData := 0;
-      cbData := SizeOf(TManagerCmd);
-      lpData := @msg;
-    end;
-    //Find the window
-    wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(BarID)));
-    if wnd <> 0 then
-    begin
-      result := sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
-    end
-    else
-      result := HR_NORECIEVERWINDOW;
-  except
-    result := HR_UNKNOWNERROR;
-  end;
-end;
-
 function BarMsg(PluginName, Command: pChar): hresult;
 var
   cds: TCopyDataStruct;
@@ -850,25 +612,6 @@ begin
       result := HR_NORECIEVERWINDOW;
   except
     result := HR_UNKNOWNERROR;
-  end;
-end;
-
-function SendUpdateMessageToSharpBar(modulewnd: hwnd): hresult;
-var
-  wnd: hwnd;
-begin
-  try
-    wnd := FindWindow('TSharpBarMainForm', 'SharpBar');
-    if wnd <> 0 then
-    begin
-      PostMessage(wnd, WM_SHARPBARMESSAGE, ARG_MODULEUPDATE, modulewnd);
-      result := HR_OK;
-    end
-    else
-      result := HR_NORECIEVERWINDOW;
-  except
-    result := HR_UNKNOWNERROR;
-    ;
   end;
 end;
 
@@ -1368,12 +1111,6 @@ end;
 // Just here for backward compability
 /////////////////////////////////////////////
 
-function SendTrayMessage(msg: pChar; timeout: integer; effekt: integer):
-  hresult;
-begin
-  result := HR_UNKNOWNERROR;
-end;
-
 function HelpMsg(MsgText: Pchar): hresult;
 var
   cds: TCopyDataStruct;
@@ -1572,7 +1309,7 @@ begin
   // check Registry Key
   Reg := TRegistry.Create;
   try
-    Reg.RootKey := HKCU;
+    Reg.RootKey := HKEY_CURRENT_USER;
     Reg.OpenKey('Software\SharpE', True);
 
     if Reg.ValueExists('InstallPath') then
@@ -1843,11 +1580,35 @@ begin
     SharpExecute(PChar(Component + '.exe'));
 end;
 
+function GetSharpBarCount : integer;
+var
+  ha : THandleArray;
+  i : integer;
+begin
+  ha := FindAllWindows('TSharpBarMainForm');
+  i := length(ha);
+  setlength(ha,0);
+  result := i;
+end;
+
+function GetSharpBarArea(Index : integer) : TBarRect;
+var
+  ha : THandleArray;
+begin
+  Index := abs(Index);
+  ha := FindAllWindows('TSharpBarMainForm');
+  if Index <= High(ha) then
+  begin
+    GetWindowRect(ha[Index],result.R);
+    result.wnd := ha[Index];
+  end;
+  setlength(ha,0);
+end;
+
 exports
   SharpEBroadCast,
   SendDebugMessage, //Sends Message to SharpConsole
   SendDebugMessageEx,
-  SendTrayMessage, //Sends Message to SharpTray
   SendConsoleMessage, //Sends Message to SharpConsole
 
   // Service Exports
@@ -1869,6 +1630,10 @@ exports
   // Help Exports
   HelpMsg,
 
+  // Bar Tool Functions
+  GetSharpBarCount,
+  GetSharpBarArea,
+
   // SharpCenter
   ConfigMsg,
   CenterMsg,
@@ -1879,18 +1644,6 @@ exports
   GetSharpeGlobalSettingsPath,
   GetRecentItems,
   GetMostUsedItems,
-  GetSkinName,
-  GetCurrentSkinFile,
-  GetCurrentSchemeFile,
-  SetNewSkin,
-  GetThemeName,
-  SetNewTheme,
-  GetIconSetName,
-  SetNewIconSet,
-  GetCurrentIconSetFile,
-  GetDelimitedIconSetList,
-  GetThemeID,
-  GetSkinDirectory,
 
   SaveSettingA,
   SaveSettingB,
@@ -1901,8 +1654,6 @@ exports
   LoadSettingC,
   LoadSettingD,
   LoadSettingE,
-
-  SendUpdateMessageToSharpBar,
 
   SendMessageTo,
 
