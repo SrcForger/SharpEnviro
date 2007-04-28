@@ -51,12 +51,14 @@ uses
   GR32_Image,
   GR32_PNG,
   GR32_Blend,
-  uSharpEMenu, Menus;
+  uSharpEMenu, Menus, AppEvnts;
 
 type
   TSharpEMenuWnd = class(TForm)
     SubMenuTimer: TTimer;
     offsettimer: TTimer;
+    ApplicationEvents1: TApplicationEvents;
+    procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
     procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
@@ -108,6 +110,9 @@ type
     property RootMenu : boolean read FRootMenu;
     property FreeMenu : boolean read FFreeMenu write FFreeMenu;
   end;
+
+var
+  WM_SHELLHOOK : integer;
 
 
 implementation
@@ -233,6 +238,8 @@ end;
 
 procedure TSharpEMenuWnd.FormCreate(Sender: TObject);
 begin
+  WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
+
   ShowWindow( Application.Handle, SW_HIDE );
   SetWindowLong( Application.Handle, GWL_EXSTYLE,
                  GetWindowLong(Application.Handle, GWL_EXSTYLE) or
@@ -617,6 +624,29 @@ begin
      FOffset := 0;
   if o <> FOffset then
      DrawWindow;
+end;
+
+procedure TSharpEMenuWnd.ApplicationEvents1Message(var Msg: tagMSG;
+  var Handled: Boolean);
+var
+  buf: array [0..254] of Char;
+  cname : String;
+begin
+  if msg.message = WM_SHELLHOOK then
+  begin
+    Handled := True;
+    if (msg.lParam = Handle) or (msg.lparam = Application.Handle) then exit;
+
+    GetClassName(GetForegroundWindow(), buf, SizeOf(buf));
+    cname := buf;
+    if CompareText(cname,'TSharpEMenuWnd') = 0 then exit;
+//    if not IsWindow (msg.lParam) then exit;
+
+    case msg.WParam of
+      HSHELL_WINDOWACTIVATED : Close;
+      HSHELL_WINDOWACTIVATED + 32768 : close;
+    end;
+  end;
 end;
 
 end.

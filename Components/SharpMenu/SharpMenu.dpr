@@ -49,6 +49,7 @@ uses
   Controls,
   SysUtils,
   SharpApi,
+  SharpThemeApi,
   SharpESkinManager,
   SharpESkin,
   uSharpEMenuWnd in 'Forms\uSharpEMenuWnd.pas' {SharpEMenuWnd},
@@ -93,6 +94,7 @@ var
   SystemSkinLoadThread : TSystemSkinLoadThread;
   menusettings : TSharpEMenuSettings;
 
+function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; external 'shell32.dll' index 181;
 
 procedure TEventClass.OnAppDeactivate(Sender : TObject);
 begin
@@ -158,6 +160,9 @@ begin
      mfile := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Menu.xml';
   if not FileExists(mfile) then halt;
 
+  SharpThemeApi.InitializeTheme;
+  SharpThemeApi.LoadTheme(False,[tpScheme,tpSkin]);
+
   iconcachefile := ExtractFileName(mfile);
   setlength(iconcachefile,length(iconcachefile) - length(ExtractFileExt(iconcachefile)));
   iconcachefile := iconcachefile + '.iconcache';
@@ -173,6 +178,7 @@ begin
   mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManager);
   Application.Title := 'SharpMenu';
   Application.CreateForm(TSharpEMenuwnd, wnd);
+
   SystemSkinLoadThread.WaitFor;
   SystemSkinLoadThread.Free;
 
@@ -208,6 +214,11 @@ begin
       Application.Terminate;
     end;
   end;
+
+  // Register Shell Hook
+  RegisterShellHook(0,1);
+  RegisterShellHook(wnd.Handle,3);
+
   Application.Run;
 
   // Free Classes
@@ -217,4 +228,5 @@ begin
   events.Free;
   
   CloseHandle(MuteXHandle);
+  RegisterShellHook(Handle,0);
 end.

@@ -44,4 +44,9 @@ object SharpEMenuWnd: TSharpEMenuWnd
     Left = 144
     Top = 72
   end
+  object ApplicationEvents1: TApplicationEvents
+    OnMessage = ApplicationEvents1Message
+    Left = 176
+    Top = 72
+  end
 end
