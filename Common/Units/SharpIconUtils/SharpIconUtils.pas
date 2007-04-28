@@ -11,13 +11,7 @@ uses Windows,
      Math,
      GR32,
      GR32_PNG,
-     GR32_System,
-     GR32_Image,
-     GR32_Layers,
-     GR32_BLEND,
-     GR32_Transforms,
-     GR32_Filters,
-     GR32_Resamplers;
+     GR32_Filters;
 
 procedure IconToImage(Bmp : TBitmap32; const icon : hicon);
 function extrShellIcon(Bmp : TBitmap32; FileName : String) : THandle;
