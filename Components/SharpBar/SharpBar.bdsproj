@@ -46,7 +46,7 @@
 			<Compiler Name="ShowWarnings">True</Compiler>
 			<Compiler Name="UnitAliases">WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;</Compiler>
 			<Compiler Name="NamespacePrefix"></Compiler>
-			<Compiler Name="GenerateDocumentation">True</Compiler>
+			<Compiler Name="GenerateDocumentation">False</Compiler>
 			<Compiler Name="DefaultNamespace"></Compiler>
 			<Compiler Name="SymbolDeprecated">True</Compiler>
 			<Compiler Name="SymbolLibrary">True</Compiler>
@@ -119,14 +119,14 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\Common\Libraries\SharpThemeApi;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd party\GR32 Addons;..\..\Common\Libraries\SharpAPI;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\SharpFX;..\..\Common\Libraries\ShellHook;..\..\Common\Units\Threads;..\..\Common\Units\SystemFuncs;..\..\Common\Delphi Components\SharpEColorBox</Directories>
+			<Directories Name="SearchPath">..\..\Common\Libraries\SharpThemeApi;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd party\GR32 Addons;..\..\Common\Libraries\SharpAPI;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\SharpFX;..\..\Common\Libraries\ShellHook;..\..\Common\Units\Threads;..\..\Common\Units\SystemFuncs;..\..\Common\Delphi Components\SharpEColorBox;..\..\Common\Delphi Components\SharpECenterScheme;..\..\Plugins\Configurations\Scheme;..\..\Common\Units\VistaFuncs</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
 			<Directories Name="UsePackages">True</Directories>
 		</Directories>
 		<Parameters>
-			<Parameters Name="RunParams">-load:52733373</Parameters>
+			<Parameters Name="RunParams">-load:59949812</Parameters>
 			<Parameters Name="HostApplication">..\..\..\SharpE\SharpBar.exe</Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
@@ -163,13 +163,11 @@
 			<VersionInfoKeys Name="ProductName">SharpBar</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductVersion">0.7.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
-		</VersionInfoKeys>  <Language>
-      <Language Name="ActiveLang"></Language>
-      <Language Name="ProjectLang">$00000000</Language>
-      <Language Name="RootDir"></Language>
-    </Language>
-    <Excluded_Packages>
-      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
-    </Excluded_Packages>
-  </Delphi.Personality>
+		</VersionInfoKeys>
+		<Language>
+			<Language Name="ActiveLang"></Language>
+			<Language Name="ProjectLang">$00000000</Language>
+			<Language Name="RootDir"></Language>
+		</Language>
+	</Delphi.Personality>
 </BorlandProject>

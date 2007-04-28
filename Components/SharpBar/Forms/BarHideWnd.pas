@@ -25,7 +25,7 @@ var
 
 implementation
 
-uses SharpBarMainWnd, SharpEBar;
+uses SharpBarMainWnd, SharpEBar, SharpApi;
 
 {$R *.dfm}
 
@@ -45,7 +45,12 @@ end;
 procedure TBarHideForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   if not Closing then
-     if not SharpBarMainForm.Visible then SharpBarMainForm.Show;
+     if not SharpBarMainForm.Visible then
+     begin
+       SharpBarMainForm.Show;
+       SharpBarMainForm.Repaint;
+       SharpApi.ServiceMsg('DeskArea','Update');
+     end;
 end;
 
 procedure TBarHideForm.FormClick(Sender: TObject);
@@ -54,11 +59,17 @@ begin
 
   if SharpBarMainForm.Visible then
   begin
-    if not SharpBarMainForm.SharpEBar.DisableHideBar then SharpBarMainForm.Hide
+    if not SharpBarMainForm.SharpEBar.DisableHideBar then
+    begin
+      SharpBarMainForm.Hide;
+      SharpApi.ServiceMsg('DeskArea','Update');
+    end;
   end
      else
      begin
        SharpBarMainForm.Show;
+       SharpBarMainForm.Repaint;
+       SharpApi.ServiceMsg('DeskArea','Update');
        if not (SharpBarMainForm.SharpEBar.SpecialHideForm) then
        begin
          Close;

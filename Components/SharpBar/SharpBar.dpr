@@ -35,17 +35,18 @@ uses
   Windows,
   Dialogs,
   SysUtils,
+  Types,
   StrUtils,
   SharpBarMainWnd in 'Forms\SharpBarMainWnd.pas' {SharpBarMainForm},
   uSharpEModuleManager in 'uSharpEModuleManager.pas',
   uSharpBarAPI in 'uSharpBarAPI.pas',
   JvSimpleXML,
+  SharpEBar,
   SharpApi,
   PluginManagerWnd in 'Forms\PluginManagerWnd.pas' {PluginManagerForm},
   AddPluginWnd in 'Forms\AddPluginWnd.pas' {AddPluginForm},
   BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm},
-  EditSchemeWnd in 'Forms\EditSchemeWnd.pas' {EditSchemeForm},
-  CoreConfigDummyWnd in 'Forms\CoreConfigDummyWnd.pas' {CoreConfigDummyForm};
+  EditSchemeWnd in 'Forms\EditSchemeWnd.pas' {EditSchemeForm};
 
 {$R *.res}
 
@@ -53,6 +54,8 @@ const
  NO_REMOVE_EMPTY_BARS_PARAM = '-noREB';
  NO_LOAD_AUTO_START_BARS_PARAM = '-noLASB';
  LOAD_BY_ID_PARAM = '-load:';
+ X_POS = '-x:';
+ Y_POS = '-y:';
 
 // check the settings file and find + delete all bars which have
 // no modules in the list and which are not running at the moment
@@ -138,6 +141,13 @@ begin
   xml.free;
 end;
 
+function PointInRect(P : TPoint; Rect : TRect) : boolean;
+begin
+  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
+     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
+     else PointInRect:=False;
+end;
+
 // starts all bars which are set to AutoStart = True;
 function LoadAutoStartBars : boolean;
 var
@@ -195,7 +205,9 @@ var
   ParamString : string;
   ps : string;
   n : integer;
+  x,y : integer;
   noREB,noLASB : boolean;
+  Mon : TMonitor;
 begin
   // Possible exec Params
   // SharpBar.exe -noLASB  ::: no LoadAutoStartBars
@@ -208,19 +220,42 @@ begin
   noLASB := False;
   setlength(ParamString,0);
 
+  x := -1;
+  y := -1;
+
   // Check all exec params
   for n := 0 to ParamCount do
   begin
     ps := ParamStr(n);
     setlength(ps,6);
-    if ps = LOAD_BY_ID_PARAM then
+    if CompareText(ps,LOAD_BY_ID_PARAM) = 0 then
     begin
       ps := RightStr(ParamStr(n),length(paramStr(n))-length(LOAD_BY_ID_PARAM));
       ParamString := ps;
     end else
-        if ParamStr(n) = NO_REMOVE_EMPTY_BARS_PARAM then noREB := True
+        if CompareText(ParamStr(n),NO_REMOVE_EMPTY_BARS_PARAM) = 0 then noREB := True
         else
-        if ParamStr(n) = NO_LOAD_AUTO_START_BARS_PARAM then noLASB := True;
+        if CompareText(ParamStr(n),NO_LOAD_AUTO_START_BARS_PARAM) = 0 then noLASB := True
+        else
+        begin
+          ps := ParamStr(n);
+          setlength(ps,3);
+          if CompareText(ps,X_POS) = 0 then
+          begin
+            ps := RightStr(ParamStr(n),length(paramStr(n))-length(X_POS));
+            if trystrtoint(ps,x) then
+               x := StrToInt(ps)
+               else x := 0;
+          end
+          else
+          if CompareText(ps,Y_POS) = 0 then
+          begin
+            ps := RightStr(ParamStr(n),length(paramStr(n))-length(Y_POS));
+            if trystrtoint(ps,y) then
+               y := StrToInt(ps)
+               else y := 0;
+          end;
+        end;
    end;
 
   // Check the xml file and remove bars without any modules
@@ -257,5 +292,19 @@ begin
   Application.Title := 'SharpBar';
   mfParamID := ParamID;
   Application.CreateForm(TSharpBarMainForm, SharpBarMainForm);
+  if (x <> - 1) and (y <> - 1) then
+     for n := 0 to Screen.MonitorCount - 1 do
+     begin
+       Mon := Screen.Monitors[n];
+       if PointInRect(Point(x,y),Mon.BoundsRect) then
+       begin
+         if y > Mon.Top + Mon.Height div 2 then SharpBarMainForm.SharpEBar.VertPos := vpBottom
+            else SharpBarMainForm.SharpEBar.VertPos := vpTop;
+         if x < Mon.Left + Mon.Width div 2 - 25 then SharpBarMainForm.SharpEBar.HorizPos := hpLeft
+         else if x > Mon.Left + Mon.Width div 2 + 25 then SharpBarMainForm.SharpEBar.HorizPos := hpRight
+         else if x < Mon.Left + Mon.Width div 2 - 50 then SharpBarMainForm.SharpEBar.HorizPos := hpMiddle;
+         break;
+       end;
+    end;
   Application.Run;
 end.

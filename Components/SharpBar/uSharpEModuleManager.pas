@@ -39,6 +39,7 @@ uses
   Forms,
   Classes,
   Contnrs,
+  ExtCtrls,
   Menus,
   Math,
   SharpESkinManager,
@@ -129,11 +130,15 @@ type
                      property ModuleFile : TModuleFile read FModuleFile;
                      property Position : integer    read FPosition write FPosition;
                      property OwnerForm : TWinControl read FOwnerForm;
-                     property Throbber : TSharpEMiniThrobber read FThrobber;
+                     property Throbber : TSharpEMiniThrobber read FThrobber write FThrobber;
                    end;
 
   TModuleManager = class
                    private
+                     FDragForm          : TForm;
+                     FDragLastBar       : hwnd;
+                     FDragThrobber      : TSharpEMiniThrobber;
+                     FDragReleaseTimer  : TTimer;
                      FDirectory         : String;
                      FModuleFiles       : TObjectList;
                      FModules           : TObjectList;
@@ -158,7 +163,8 @@ type
                      procedure Delete(ID : integer);
                      procedure Clone(ID : integer);
                      procedure CreateModule(MFID : integer; Position : integer);
-                     procedure LoadModule(ID : integer; Module : String; Position,Index : integer);
+                     function LoadModule(ID : integer; Module : String; Position,Index : integer) : TModule; overload;
+                     function LoadModule(ID : integer; FromBar: integer; Position,Index : integer) : TModule; overload;
                      procedure LoadFromDirectory(pDirectory : String);
                      procedure RefreshFromDirectory(pDirectory : String);
                      procedure FixModulePositions;
@@ -181,6 +187,7 @@ type
                      procedure OnMiniThrobberMouseDown(Sender : TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
                      procedure OnMiniThrobberMouseUp(Sender : TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
                      procedure OnMiniThrobberMouseMove(Sender : TObject; Shift: TShiftState; X, Y: integer);
+                     procedure OnDragReleaseTimerOnTimer(Sender : TObject);
                    published
                      property ModuleDirectory : string       read FDirectory;
                      property Parent          : hwnd         read FParent;
@@ -224,6 +231,8 @@ constructor TModuleManager.Create(pParent : hwnd;
                                   pModuleSettings : TJvSimpleXML);
 begin
   inherited Create;
+  FDragLastBar  := 0;
+  FDragForm     := nil;
   FParent       := pParent;
   FSkinManager  := pSkinManager;
   FBar          := pBar;
@@ -233,6 +242,10 @@ begin
   FModuleSettings := pModuleSettings;
   FModuleFiles := TObjectList.Create;
   FModuleFiles.Clear;
+  FDragReleaseTimer := TTimer.Create(nil);
+  FDragReleaseTimer.Interval := 100;
+  FDragReleaseTimer.Enabled := False;
+  FDragReleaseTimer.OnTimer := OnDragReleaseTimerOnTimer;
 end;
 
 destructor TModuleManager.Destroy;
@@ -243,6 +256,17 @@ begin
   FModuleFiles.Free;
   FModuleFiles := nil;
   inherited Destroy;
+end;
+
+procedure TModuleManager.OnDragReleaseTimerOnTimer(Sender : TObject);
+begin
+  FDragReleaseTimer.Enabled := False;
+  if FDragThrobber <> nil then
+  begin
+    FDragThrobber.Free;
+    FDragThrobber := nil;
+  end;
+  FBar.aform.Repaint;
 end;
 
 // Sends an update message to all modules
@@ -544,12 +568,39 @@ begin
   ReCalculateModuleSize;
 end;
 
-procedure TModuleManager.LoadModule(ID : integer; Module : String; Position, Index : integer);
+// Special load funtion which copies a module from another bar!
+function TModuleManager.LoadModule(ID : integer; FromBar: integer; Position,Index : integer) : TModule;
+var
+  Dir,Module : String;
+  XML : TJvSimpleXML;
+begin
+  // Import the module settings from the temporary file
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\';
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(Dir + 'temp.xml');
+    Module := XML.Root.Items.Value('Module');
+    if XML.Root.Items.ItemNamed['Data'] <> nil then
+       if XML.Root.Items.ItemNamed['Data'].Items.ItemNamed['Item'] <> nil then
+       FModuleSettings.Root.Items.Add(XML.Root.Items.ItemNamed['Data'].Items.ItemNamed['Item']);
+  finally
+    XML.Free;
+    DeleteFile(Dir + 'temp.xml');
+  end;
+
+  if length(Module) > 0 then
+     result := LoadModule(ID,Module,Position,Index)
+     else result := nil;
+end;
+
+function TModuleManager.LoadModule(ID : integer; Module : String; Position, Index : integer) : TModule;
 var
  n,i : integer;
  pFile : TModuleFile;
  found : boolean;
+ pModule : TModule;
 begin
+  result := nil;
   if (ID = -1) or (length(Module)=0) then exit;
 
   for n := 0 to FModuleFiles.Count -1 do
@@ -587,9 +638,10 @@ begin
           FModuleSettings.SaveToFile(FModuleSettings.FileName);
         end;
       end;
-
-      if Index <> -1 then FModules.Insert(Index,TModule.Create(FBar.aform,pFile,ID,FParent,Position))
-         else FModules.Add(TModule.Create(FBar.aform,pFile,ID,FParent,Position));
+      pModule := TModule.Create(FBar.aform,pFile,ID,FParent,Position);
+      if Index <> -1 then FModules.Insert(Index,pModule)
+         else FModules.Add(pModule);
+      result := pModule;
     end;
   end;
   SortModulesByPosition;
@@ -715,6 +767,13 @@ begin
 
   // get screen size
   pMon := Screen.MonitorFromPoint(Point(pForm.Left,pForm.Top),mdNearest);
+  if pMon = nil then
+     pMon := TForm(pForm).Monitor;
+  if pMon = nil then
+  begin
+    result := 0;
+    exit;
+  end;
   maxSize := pMon.Width;
 
   setlength(harray,0);
@@ -723,7 +782,7 @@ begin
   for n := 0 to High(harray) do
   begin
     if harray[n] <> pForm.Handle then
-    begin                                                       
+    begin
       GetWindowRect(harray[n],R);
       // another bar on the same monitor with the same top position ?
       if (R.Top = pForm.Top) and (Screen.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
@@ -780,9 +839,14 @@ var
   MP : TPoint;
   checkModule,tempModule : TModule;
   index : integer;
-  i : integer;
+  i,n : integer;
   cPos,Pos : TPoint;
   update : boolean;
+  pForm : TForm;
+  BR : TBarRect;
+  b : boolean;
+  Dir : String;
+  XML : TJvSimpleXML;
 begin
   if FThrobberMoveID = -1 then exit;
   if Shift = [ssLeft] then
@@ -791,12 +855,18 @@ begin
     if not FThrobberMove then
     begin
       // Make sure the mouse was moved more than a few pixels before starting the move bar code
-      if (abs(FThrobberMovePoint.X - MP.X) > 32) then
+      if (abs(FThrobberMovePoint.X - MP.X) > 32)
+         or (abs(FThrobberMovePoint.Y - MP.Y) > 32) then
          FThrobberMove := True
          else exit;
     end;
-    if FThrobberMove then
+    pForm := TForm(GetControlByHandle(FParent));
+    if (FThrobberMove and PointInRect(MP,Rect(pForm.Left,
+                                              pForm.Top,
+                                              pForm.Left + pForm.Width,
+                                              pForm.Top + pForm.Height))) then
     begin
+      if FDragForm <> nil then FreeAndNil(FDragForm);
       update := False;
       tempModule := GetModule(FThrobberMoveID);
       if tempModule = nil then exit;
@@ -869,6 +939,69 @@ begin
         UnLockWindow(FParent);
         exit;
       end;
+    end else if (FThrobberMove) then // Mouse Moving but no in Bar Rect
+    begin
+      b := False;
+      for n := 0 to SharpApi.GetSharpBarCount - 1 do
+      begin
+        BR := SharpApi.GetSharpBarArea(n);
+        if (BR.Wnd <> FParent) and (PointInRect(MP,BR.R)) then
+        begin
+          // Mouse is in another bar!
+          if FDragLastBar <> BR.Wnd then
+          begin
+            tempModule := GetModule(FThrobberMoveID);
+            if tempModule = nil then exit;
+
+            FDragThrobber := tempModule.Throbber;
+            FDragThrobber.Visible := False;
+            tempmodule.throbber := nil; // The Throbber must be released after
+                                        // the event has finished
+            FreeAndNil(FDragForm);
+            FDragLastBar := BR.Wnd;
+            // Save the module settings to a temp file
+            Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\';
+            XML := TJvSimpleXML.Create(nil);
+            XML.Root.Clear;
+            XML.Root.Name := 'DragDropData';
+            XML.Root.Items.Add('Module',ExtractFileName(tempModule.ModuleFile.FileName));
+            for i := 0 to FModuleSettings.Root.Items.Count - 1 do
+                if FModuleSettings.Root.Items.Item[i].Items.IntValue('ID',-1) = FThrobberMoveID then
+                begin
+                  XML.Root.Items.Add('Data').Items.Add(FModuleSettings.Root.Items.Item[i]);
+                  break;
+                end;
+            XML.SaveToFile(Dir + 'temp.xml');
+            XML.Free;
+            Delete(FThrobberMoveID);
+            SendMessage(BR.wnd,WM_BARINSERTMODULE,FThrobberMoveID,TSharpBarMainForm(pForm).BarID);
+            FThrobberMove := False;
+            FThrobberMoveID := -1;
+            b := True;
+          end;
+          break;
+        end;
+      end;
+
+      if not b then
+      begin
+        if FDragForm = nil then
+        begin
+          tempModule := GetModule(FThrobberMoveID);
+          if tempModule = nil then exit;
+          FDragForm := TForm.Create(nil);
+          FDragForm.Width := tempModule.Control.Width;
+          FDragForm.Height := tempModule.Control.Height;
+          FDragForm.BorderStyle := bsNone;
+          SetWindowLong(FDragForm.handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
+          FDragForm.AlphaBlend := True;
+          FDragForm.AlphaBlendValue := 128;
+          FDragForm.Show;
+          tempModule.Control.PaintTo(FDragForm.Canvas.Handle,0,0);
+        end;
+        FDragForm.Left := MP.X;
+        FDragForm.Top := MP.Y;
+      end;
     end;
   end;
 end;
@@ -876,6 +1009,10 @@ end;
 procedure TModuleManager.OnMiniThrobberMouseUp(Sender : TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   FThrobberMoveID := -1;
+  if FDragForm <> nil then FreeAndNil(FDragForm);
+  if FDragThrobber <> nil then
+     FDragReleaseTimer.Enabled := True;
+  FDragLastBar := 0;
   if FThrobberMove then FThrobberMove := False;
 end;
 
@@ -891,6 +1028,8 @@ begin
 
   if Button = mbLeft then
   begin
+    if FDragForm <> nil then FreeAndNil(FDragForm);
+    FDragLastBar := 0;
     FThrobberMovePoint := Mouse.CursorPos;
     FThrobberMoveID    := mThrobber.Tag;
   end else FThrobberMove := False;
@@ -948,14 +1087,12 @@ var
   n,i : integer;
   ro,lo,rx,x : integer;
   TempModule     : TModule;
-  IDArray        : array of integer;
   ParentControl  : TWinControl;
   LeftSize,RightSize : integer;
   MTWidth : integer; // mini Throbbers
   RCount,LCount : integer;
   CList : TObjectList;
 begin
-  setlength(IDArray,0);
   try
     if FBar.ShowThrobber then
        lo := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.X)
@@ -1135,6 +1272,7 @@ begin
     end;
   end;
 
+  setlength(nonminmaxrequest,0);
   FixModulePositions;
 
   ParentControl := GetControlByHandle(FParent);
@@ -1218,7 +1356,7 @@ begin
       @DllCreateModule    := GetProcAddress(FDllHandle, 'CreateModule');
       @DllCloseModule     := GetProcAddress(FDllHandle, 'CloseModule');
       @DllPosChanged      := GetProcAddress(FDllHandle, 'PosChanged');
-      @DllUpdateMessage    := GetProcAddress(FDllHandle, 'UpdateMessage');
+      @DllUpdateMessage   := GetProcAddress(FDllHandle, 'UpdateMessage');
       @DllModuleMessage   := GetProcAddress(FDllHandle, 'ModuleMessage');
       @DllShowSettingsWnd := GetProcAddress(FDllHandle, 'ShowSettingsWnd');
       @DllRefresh         := GetProcAddress(FDllHandle, 'Refresh');
@@ -1305,8 +1443,11 @@ end;
 
 destructor TModule.Destroy;
 begin
-  FThrobber.Free;
-  FThrobber := nil;
+  if FThrobber <> nil then
+  begin
+    FThrobber.Free;
+    FThrobber := nil;
+  end;
   Inherited Destroy;
 end;
 

@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Forms,
   Dialogs, SharpESkinManager, Menus, StdCtrls, JvSimpleXML, SharpApi,
-  GR32, uSharpEModuleManager, DateUtils, PngImageList, SharpEBar, Jpeg, SharpThemeApi,
+  GR32, uSharpEModuleManager, DateUtils, PngImageList, SharpEBar, SharpThemeApi,
   SharpEBaseControls, ImgList, Controls, ExtCtrls, uSkinManagerThreads,
   uSystemFuncs, Types, AppEvnts, uSharpEColorBox, SharpESkin;
 
@@ -82,10 +82,8 @@ type
     N6: TMenuItem;
     Skin1: TMenuItem;
     ColorScheme1: TMenuItem;
-    ConfigureDesktopArea1: TMenuItem;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure ConfigureDesktopArea1Click(Sender: TObject);
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure Clone1Click(Sender: TObject);
     procedure DelayTimer3Timer(Sender: TObject);
@@ -144,13 +142,14 @@ type
     FSharpEBar : TSharpEBar;
     SkinManagerLoadThread : TSystemSkinLoadThread;
 
-    FDeskAreaStart : function (owner : hwnd) : hwnd;
-    FDeskAreaEnd : function (owner : hwnd; SaveSettings : Boolean) : boolean;
-
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem : TJvSimpleXMlElem);
 
-    procedure WMThemeLoadingEnd(var msg : TMessage); message WM_APP + 536;
+    procedure WMDeskClosing(var msg : TMessage); message WM_DESKCLOSING;
+    procedure WMThemeLoadingEnd(var msg : TMessage); message WM_THEMELOADINGEND;
+
+    // Drag and Drop between bars
+    procedure WMBarInsertModule(var msg : TMessage); message WM_BARINSERTMODULE;
 
     // Plugin message (to be broadcastet to modules)
     procedure WMWeatherUpdate(var msg : TMessage); message WM_WEATHERUPDATE;
@@ -198,6 +197,7 @@ type
     property SkinManager : TSharpESkinManager read FSkinManager;
     property SharpEBar : TSharpEBar read FSharpEBar;
     property ShellBCInProgress : boolean read FShellBCInProgress;
+    property BarID : integer read FBarID; 
   end;
 
 const
@@ -220,8 +220,7 @@ function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; extern
 
 implementation
 
-uses CoreConfigDummyWnd,
-     PluginManagerWnd,
+uses PluginManagerWnd,
      SharpEMiniThrobber,
      BarHideWnd,
      AddPluginWnd,
@@ -272,6 +271,35 @@ end;
 // Window Message handlers
 // ************************
 
+procedure TSharpBarMainForm.WMBarInsertModule(var msg : TMessage);
+var
+  MP : TPoint;
+  ModulePos : TPoint;
+  tempModule : TModule;
+  n : integer;
+  LastPos : integer;
+  LastIndex : integer;
+begin
+  MP := Mouse.CursorPos;
+  LastPos := -1;
+  LastIndex := -1;
+  for n := 0 to ModuleManager.Modules.Count - 1 do
+  begin
+    tempModule := TModule(ModuleManager.Modules.Items[n]);
+    ModulePos := tempModule.Control.ClientToScreen(Point(tempModule.Control.Width,
+                                                         tempModule.Control.Top));
+    if ModulePos.X - tempModule.Control.Width < MP.X then
+    begin
+      LastPos := tempModule.Position;
+      LastIndex := n;
+    end else break;
+  end;
+  ModuleManager.LoadModule(msg.WParam,msg.LParam,LastPos,LastIndex);
+  ModuleManager.ReCalculateModuleSize;
+  ModuleManager.FixModulePositions;
+  SaveBarSettings;
+end;
+
 procedure TSharpBarMainForm.WMEndSession(var msg : TMessage);
 begin
   msg.result := 0;
@@ -282,6 +310,11 @@ procedure TSharpBarMainForm.WMQueryEndSession(var msg : TMessage);
 begin
   msg.Result := 1;
   Self.Close;
+end;
+
+procedure TSharpBarMainForm.WMDeskClosing(var msg : TMessage);
+begin
+  DelayTimer1.Enabled := True;
 end;
 
 // Temporary! remove when SharpCenter is done!
@@ -591,12 +624,18 @@ begin
       if @PrintWindow <> nil then
       begin
         if not PrintWindow(wnd,BGBmp.Handle,0) then
+        begin
+           sleep(750);
            if not PrintWindow(wnd,BGBmp.Handle,0) then
+           begin
+              sleep(1500);
               if not PrintWindow(wnd,BGBmp.Handle,0) then
               begin
                 if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg') then
                    BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg');
               end;
+           end;
+        end;
       end else
       begin
         if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg') then
@@ -1011,6 +1050,7 @@ begin
   end;
 
   UpdateBGZone;
+  SkinManager.UpdateSkin;
 
   SharpApi.RegisterActionEx(PChar('!FocusBar ('+inttostr(FBarID)+')'),'SharpBar',Handle,1);
 end;
@@ -1595,6 +1635,7 @@ begin
       BarHideForm.Top := Top + Height -1;
       SharpBarMainForm.Hide;
       BarHideForm.Show;
+      SharpApi.ServiceMsg('DeskArea','Update');
     end
     else if (Y=0) and (SharpEBar.VertPos = vpTop) then
     begin
@@ -1604,6 +1645,7 @@ begin
       BarHideForm.Top := Top;
       SharpBarMainForm.Hide;
       BarHideForm.Show;
+      SharpApi.ServiceMsg('DeskArea','Update');
     end;
   end;
 end;
@@ -1713,8 +1755,63 @@ begin
 end;
 
 procedure TSharpBarMainForm.CreateemptySharpBar1Click(Sender: TObject);
+var
+  BR : array of TBarRect;
+  Mon : TMonitor;
+  n : integer;
+  lp : TPoint;
+
+  function BarAtPos(x,y : integer) : boolean;
+  var
+    i : integer;
+  begin
+    for i := 0 to High(BR) do
+        if PointInRect(Point(BR[i].R.Left + (BR[i].R.Right - BR[i].R.Left) div 2,
+                             BR[i].R.Top + (BR[i].R.Bottom - BR[i].R.Top) div 2),
+                             Mon.BoundsRect) then
+           if PointInRect(Point(x,y),BR[i].R)
+              or PointInRect(Point(x-75,y),BR[i].R)
+              or PointInRect(Point(x+75,y),BR[i].R) then
+           begin
+             result := true;
+             exit;
+           end;
+    lp := Point(x,y);
+    result := false;
+  end;
+
 begin
-  SharpApi.SharpExecute('SharpBar.exe -load:-1');
+  setlength(BR,0);
+  for n := 0 to SharpApi.GetSharpBarCount - 1 do
+  begin
+    setlength(BR,length(BR)+1);
+    BR[High(BR)] := SharpApi.GetSharpBarArea(n);
+  end;
+
+  lp := point(-1,-1);
+  for n := - 1 to Screen.MonitorCount - 1 do
+  begin
+    // start with the current monitor
+    if n = - 1 then Mon := Monitor
+       else Mon := Screen.Monitors[n];
+    if (n <> -1) and (Mon = Monitor) then Continue; // don't test the current monitor twice
+    if BarAtPos(Mon.Left,Mon.Top) then
+       if BarAtPos(Mon.Left + Mon.Width div 2, Mon.Top) then
+       if BarAtPos(Mon.Left + Mon.Width, Mon.Top) then
+       if BarAtPos(Mon.Left,Mon.Top + Mon.Height) then
+       if BarAtPos(Mon.Left + Mon.Width div 2, Mon.Top + Mon.Height) then
+          BarAtPos(Mon.Left + Mon.Width, Mon.Top + Mon.Height);
+    if (lp.x <> - 1) and (lp.y  <> - 1) then
+       break;
+  end;
+  setlength(BR,0);
+  if (lp.x = - 1) and (lp.y  = - 1) then
+  begin
+    ShowMessage('There is not enough free space left for another SharpBar');
+    exit;
+  end;
+
+  SharpApi.SharpExecute('SharpBar.exe -load:-1 -x:' + inttostr(lp.x) + ' -y:' + inttostr(lp.y));
 end;
 
 procedure TSharpBarMainForm.FormResize(Sender: TObject);
@@ -1745,6 +1842,7 @@ end;
 procedure TSharpBarMainForm.DelayTimer1Timer(Sender: TObject);
 begin
   DelayTimer1.Enabled := False;
+  SendMessage(Handle,WM_THEMELOADINGEND,0,0);
 end;
 
 procedure TSharpBarMainForm.DelayTimer2Timer(Sender: TObject);
@@ -1804,37 +1902,6 @@ begin
     end;
    Handled := True;
   end else Handled := False;
-end;
-
-procedure TSharpBarMainForm.ConfigureDesktopArea1Click(Sender: TObject);
-var
-  DllHandle : integer;
-  FileName : String;
-  CoreConfigDummyForm: TCoreConfigDummyForm;
-  c : TControl;
-begin
-  FileName := SharpApi.GetSharpeDirectory + 'Services\DeskArea.service';
-  if FileExists(FileName) then
-  begin
-    DllHandle := LoadLibrary(PChar(FileName));
-    if DllHandle <> 0 then
-    begin
-      @FDeskAreaStart := GetProcAddress(DllHandle, 'StartSettingsWnd');
-      @FDeskAreaEnd   := GetProcAddress(DllHandle, 'CloseSettingsWnd');
-
-      CoreConfigDummyForm := TCoreConfigDummyForm.Create(self);
-      c := GetControlByHandle(FDeskAreaStart(CoreConfigDummyForm.bgpanel.Handle));
-      c.Parent := CoreConfigDummyForm;
-      c.Left := 8;
-      c.Top := 8;
-      if CoreConfigDummyForm.ShowModal = mrOk then FDeskAreaEnd(CoreConfigDummyForm.bgpanel.Handle,True)
-         else FDeskAreaEnd(CoreConfigDummyForm.bgpanel.Handle,False);
-      CoreConfigDummyForm.Free;
-      FreeLibrary(Dllhandle);
-      SharpApi.ServiceStop('DeskArea');
-      SharpApi.ServiceStart('DeskArea');
-    end;
-  end;
 end;
 
 procedure TSharpBarMainForm.FormClose(Sender: TObject;

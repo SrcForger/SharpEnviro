@@ -48,11 +48,6 @@ object SharpBarMainForm: TSharpBarMainForm
     object N6: TMenuItem
       Caption = '-'
     end
-    object ConfigureDesktopArea1: TMenuItem
-      Caption = 'Configure Desktop Area...'
-      ImageIndex = 22
-      OnClick = ConfigureDesktopArea1Click
-    end
     object Skin1: TMenuItem
       Caption = 'Skin'
       ImageIndex = 27
@@ -821,7 +816,7 @@ object SharpBarMainForm: TSharpBarMainForm
   end
   object DelayTimer1: TTimer
     Enabled = False
-    Interval = 1500
+    Interval = 750
     OnTimer = DelayTimer1Timer
     Left = 392
     Top = 144
