@@ -33,8 +33,8 @@ unit SettingsWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, GR32_RangeBars, SharpApi, XPMan, Menus;
+  SysUtils, Classes, Controls, Forms,
+  Dialogs, StdCtrls, ComCtrls, SharpApi, Menus;
 
 type
   TSettingsForm = class(TForm)
@@ -42,8 +42,6 @@ type
     Button2: TButton;
     lb_textsize: TLabel;
     Label1: TLabel;
-    OpenFile: TOpenDialog;
-    XPManifest1: TXPManifest;
     edit_format: TEdit;
     Button3: TButton;
     PopupMenu1: TPopupMenu;

@@ -40,7 +40,7 @@
 			<Compiler Name="V">1</Compiler>
 			<Compiler Name="W">0</Compiler>
 			<Compiler Name="X">1</Compiler>
-			<Compiler Name="Y">1</Compiler>
+			<Compiler Name="Y">2</Compiler>
 			<Compiler Name="Z">1</Compiler>
 			<Compiler Name="ShowHints">True</Compiler>
 			<Compiler Name="ShowWarnings">True</Compiler>
@@ -120,7 +120,7 @@
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
 			<Directories Name="SearchPath">..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Units\MouseTimer;..\..\..\Common\Units\SharpFX;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs\</Directories>
-			<Directories Name="Packages">vcl;rtl</Directories>
+			<Directories Name="Packages">rtl;vcl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
 			<Directories Name="UsePackages">True</Directories>

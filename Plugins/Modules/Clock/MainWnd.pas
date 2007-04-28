@@ -33,11 +33,10 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
-  SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
-  JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math, SharpEEdit, SharpELabel,
-  SharpESkinLabel;
+  Windows, SysUtils, Classes, Controls, Forms,
+  Dialogs, StdCtrls, GR32_Image, SharpEBaseControls,
+  SharpESkinManager, JvSimpleXML, SharpApi, Menus, Math,
+  SharpESkinLabel, ExtCtrls;
 
 
 type
@@ -123,6 +122,7 @@ begin
   if not BroadCast then ClockTimer.OnTimer(ClockTimer);
 
 //  newWidth := lb_clock.Canvas.TextWidth(sFormat)+4;
+  lb_clock.UpdateSkin;
   if lb_bottomClock.Visible then
   begin
     lb_clock.Top := 1 + ((Height - 2 - 4) div 2 div 2) - (lb_clock.Height div 2);
@@ -131,7 +131,7 @@ begin
   end else
   begin
     newWidth := lb_clock.Width;
-    lb_clock.Top := Height div 2 - (lb_clock.Height div 2);
+    lb_clock.Top := Height div 2 - (lb_clock.Height div 2) - 1;
   end;
   Tag := newWidth;
   Hint := inttostr(NewWidth);

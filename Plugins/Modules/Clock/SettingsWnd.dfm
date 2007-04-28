@@ -115,20 +115,8 @@ object SettingsForm: TSettingsForm
     TabOrder = 8
     OnClick = Button4Click
   end
-  object OpenFile: TOpenDialog
-    FileName = '*.*'
-    Filter = 'All Files|*.*|Applications (*.exe)|*.exe'
-    Options = [ofHideReadOnly, ofEnableSizing, ofForceShowHidden]
-    Title = 'Select Target File'
-    Left = 216
-    Top = 32
-  end
-  object XPManifest1: TXPManifest
-    Left = 216
-    Top = 40
-  end
   object PopupMenu1: TPopupMenu
-    Left = 192
+    Left = 176
     Top = 40
     object N213046HHMMSS3: TMenuItem
       Caption = '21:30:46 (HH:MM:SS)'
