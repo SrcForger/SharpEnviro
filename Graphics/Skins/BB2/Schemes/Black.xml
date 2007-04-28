@@ -10,7 +10,7 @@
   </Item>
   <Item>
     <Tag>$Background</Tag>
-    <Color>3684408</Color>
+    <Color>2434341</Color>
   </Item>
   <Item>
     <Tag>$Text</Tag>
@@ -23,5 +23,9 @@
   <Item>
     <Tag>$BorderBG</Tag>
     <Color>16777215</Color>
+  </Item>
+  <Item>
+    <Tag>$Alpha</Tag>
+    <Color>164</Color>
   </Item>
 </SharpESkinScheme>

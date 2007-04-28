@@ -30,4 +30,11 @@
     <Info>Border Background</Info>
     <Default>8421504</Default>
   </item>
+  <item>
+    <Name>Alpha</Name>
+    <Tag>$Alpha</Tag>
+    <Info>Bar Background Alpha Value</Info>
+    <Default>164</Default>
+    <type>Integer</type>
+  </item>
 </SharpESkinScheme>

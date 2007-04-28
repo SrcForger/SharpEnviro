@@ -6,7 +6,7 @@
   </taskbar>
   <idrop>
     <background>images\Modules\iDrop\Background.png</background>
-    <blendcolor>$Border</blendcolor>
+    <blendcolor>$BorderBG</blendcolor>
   </idrop>
   <cpumonitor>
     <fgcolor>$Text</fgcolor>
