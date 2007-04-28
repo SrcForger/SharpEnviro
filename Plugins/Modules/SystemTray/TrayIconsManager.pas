@@ -39,6 +39,7 @@ uses Windows, Dialogs, SysUtils,
      SharpThemeApi,
      TipWnd,
      GR32_Filters,
+     GR32_Resamplers,
      WinVer,
      declaration,
      BalloonWindow,
@@ -710,6 +711,7 @@ constructor TTrayItem.Create(NIDv6 : TNotifyIconDataV6);
 begin
   FBitmap := TBitmap32.Create;
   FBitmap.SetSize(16,16);
+  TLinearResampler.Create(FBitmap);
   AssignFromNIDv6(NIDv6);
   Inherited Create;
 end;
