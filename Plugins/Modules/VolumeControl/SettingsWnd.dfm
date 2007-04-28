@@ -113,8 +113,4 @@ object SettingsForm: TSettingsForm
     Position = 100
     OnChange = tb_sizeChange
   end
-  object XPManifest1: TXPManifest
-    Left = 168
-    Top = 88
-  end
 end

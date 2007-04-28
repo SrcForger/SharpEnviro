@@ -33,11 +33,10 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32, GR32_PNG, GR32_Image, SharpEBaseControls, SharpEButton,
-  SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
-  JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math, SharpEEdit, SharpELabel,
-  SoundControls, MMSystem;
+  SharpESkinManager,  ExtCtrls, SharpEProgressBar,
+  JvSimpleXML, SharpApi, Menus, Math, SoundControls, MMSystem;
 
 
 type
