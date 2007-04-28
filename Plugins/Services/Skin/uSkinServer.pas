@@ -62,7 +62,7 @@ uses uInfodlg;
 
 procedure TSkinServer.FormCreate(Sender: TObject);
 begin
-  FSkin := TSharpESkin.Create(self);
+  FSkin := TSharpESkin.Create(self,ALL_SHARPE_SKINS);
   //FStream := TFileStream.Create(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin',fmCreate or fmShareDenyWrite);
   UpdateStreamFile;
   SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKINFILECHANGED,0);
