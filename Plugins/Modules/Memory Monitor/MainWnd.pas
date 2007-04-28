@@ -33,10 +33,10 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
+  Windows, Messages, SysUtils, Classes, Controls, Forms,
+  Dialogs, StdCtrls, GR32_Image, SharpEBaseControls,
   SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
-  JvSimpleXML, SharpApi, Jclsysinfo, Menus, SharpELabel, Math, SharpESkinLabel;
+  JvSimpleXML, SharpApi, Menus, Math, SharpESkinLabel;
 
 
 type
@@ -159,8 +159,9 @@ begin
           lb_ram.Caption := 'RAM:';
           lb_ram.Visible := True;
           lb_ram.LabelStyle := lsSmall;
+          lb_ram.UpdateSkin;
           lb_ram.Left := o1 -5;
-          lb_ram.Top := 1 + (o2 div 2) - (lb_ram.Height div 2);
+          lb_ram.Top := 2 + (o2 div 2) - (lb_ram.Height div 2);
           o3 := lb_ram.Left + lb_ram.Width + 2;
           o4 := o3;
         end else lb_ram.visible := False;
@@ -180,9 +181,10 @@ begin
         begin
           lb_rambar.Visible := True;
           lb_rambar.LabelStyle := lsSmall;
+          lb_rambar.UpdateSkin;
           if ShowRamInfo then lb_rambar.Left := o3 - 8
              else lb_rambar.Left := o3 - 5;
-          lb_rambar.Top := 1 + (o2 div 2) - (lb_ram.Height div 2);
+          lb_rambar.Top := 2 + (o2 div 2) - (lb_ram.Height div 2);
           o4 := max(o4,lb_rambar.Left + lb_rambar.Width + 2);
         end else lb_rambar.Visible := False;
 
@@ -197,6 +199,7 @@ begin
           lb_swp.Caption := 'SWAP:';
           lb_swp.Visible := True;
           lb_swp.LabelStyle := lsSmall;
+          lb_swp.UpdateSkin;
           lb_swp.Left := o4 - 5;
           lb_swp.Top := 1 + (o2 div 2) - (lb_swp.Height div 2);
           o3 := lb_swp.Left + lb_swp.Width + 2;
@@ -218,6 +221,7 @@ begin
         begin
           lb_swpbar.Visible := True;
           lb_swpbar.LabelStyle := lsSmall;
+          lb_swpbar.UpdateSkin;
           if ShowRamInfo then lb_swpbar.Left := o3 - 8
              else lb_swpbar.Left := o3 - 5;
           lb_swpbar.Top := 1 + (o2 div 2) - (lb_swp.Height div 2);
@@ -231,6 +235,7 @@ begin
           lb_ram.Visible := True;
           lb_ram.Left := o1;
           lb_ram.LabelStyle := lsMedium;
+          lb_ram.UpdateSkin;
           lb_ram.Top := Height div 2 - lb_ram.Height div 2 - 2;
           o1 := lb_ram.Left + lb_ram.Width + 2;
         end else lb_ram.Visible := False;
@@ -250,6 +255,7 @@ begin
         begin
           lb_rambar.Visible := True;
           lb_rambar.LabelStyle := lsMedium;
+          lb_rambar.UpdateSkin;
           lb_rambar.Left := o1;
           lb_rambar.Top := Height div 2 - lb_rambar.Height div 2 - 1;
           o1 := lb_rambar.Left + lb_rambar.Width + 2;
@@ -263,6 +269,7 @@ begin
           lb_swp.Caption := 'swp';
           lb_swp.Visible := True;
           lb_swp.LabelStyle := lsMedium;
+          lb_swp.UpdateSkin;
           lb_swp.Left := o1;
           lb_swp.Top := Height div 2 - lb_swp.Height div 2 - 2;
           o1 := lb_swp.Left + lb_swp.Width + 2;
@@ -285,6 +292,7 @@ begin
           spacing := 0;
           lb_swpbar.Visible := True;
           lb_swpbar.LabelStyle := lsMedium;
+          lb_swpbar.UpdateSkin;
           lb_swpbar.Left := o1;
           lb_swpbar.Top := Height div 2 - lb_swpbar.Height div 2 - 1;
           o1 := lb_swpbar.Left + lb_swpbar.Width + 2;
@@ -300,6 +308,7 @@ begin
             lb_ram.Caption := 'ram';
             lb_ram.Visible := True;
             lb_ram.LabelStyle := lsSmall;
+            lb_ram.UpdateSkin;
             lb_ram.Left := o1;
             lb_ram.Top := 1 + (o2 div 2) - (lb_ram.Height div 2);
             o3 := lb_ram.Left + lb_ram.Width + 2;
@@ -310,6 +319,7 @@ begin
             lb_swp.Caption := 'swp';
             lb_swp.Visible := True;
             lb_swp.LabelStyle := lsSmall;
+            lb_swp.UpdateSkin;
             lb_swp.Left := o1;
             lb_swp.Top := Height - 3 - (o2 div 2) - (lb_swp.Height div 2);
             o3 := lb_swp.Left + lb_swp.Width + 2;
@@ -340,6 +350,7 @@ begin
           if ShowRamPC then
           begin
             lb_rambar.Visible := True;
+            lb_rambar.UpdateSkin;
             lb_rambar.Left := max(o3,o4);
             lb_rambar.Top := 1 + (o2 div 2) - (lb_rambar.Height div 2);
             lb_rambar.LabelStyle := lsSmall;
@@ -349,6 +360,7 @@ begin
           if ShowSwpPC then
           begin
             lb_swpbar.Visible := True;
+            lb_swpbar.UpdateSkin;
             lb_swpbar.Left := max(o3,o4);
             lb_swpbar.Top := Height - 3 - (o2 div 2) - (lb_swp.Height div 2);
             lb_swpbar.LabelStyle := lsSmall;
