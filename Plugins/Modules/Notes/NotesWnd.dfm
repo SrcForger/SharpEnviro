@@ -244,14 +244,15 @@ object NotesForm: TNotesForm
     OnTabSelecting = tabsTabSelecting
     OnTabSelected = tabsTabSelected
   end
-  object Notes: TMemo
+  object Notes: TJvMemo
     Left = 0
     Top = 45
     Width = 477
     Height = 227
+    AutoSize = False
+    MaxLines = 0
+    HideCaret = False
     Align = alClient
-    BevelInner = bvNone
-    BevelOuter = bvNone
     Lines.Strings = (
       'Notes')
     ScrollBars = ssBoth

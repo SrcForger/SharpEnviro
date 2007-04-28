@@ -33,7 +33,7 @@ unit SettingsWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, GR32_RangeBars, SharpApi;
 
 type

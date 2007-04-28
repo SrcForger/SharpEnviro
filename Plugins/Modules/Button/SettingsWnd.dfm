@@ -165,8 +165,4 @@ object SettingsForm: TSettingsForm
     TabOrder = 11
     OnClick = btn_selecticonClick
   end
-  object XPManifest1: TXPManifest
-    Left = 144
-    Top = 8
-  end
 end

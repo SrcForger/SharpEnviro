@@ -72,16 +72,4 @@ object SettingsForm: TSettingsForm
     Caption = 'Always On Top'
     TabOrder = 5
   end
-  object OpenFile: TOpenDialog
-    FileName = '*.*'
-    Filter = 'All Files|*.*|Applications (*.exe)|*.exe'
-    Options = [ofHideReadOnly, ofEnableSizing, ofForceShowHidden]
-    Title = 'Select Target File'
-    Left = 136
-    Top = 96
-  end
-  object XPManifest1: TXPManifest
-    Left = 152
-    Top = 24
-  end
 end

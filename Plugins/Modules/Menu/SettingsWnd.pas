@@ -33,9 +33,9 @@ unit SettingsWnd;
 interface
 
 uses
-  Windows, Messages, Types, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, GR32_RangeBars, SharpApi, SharpDialogs, XPMan,
-  GR32_Image, SharpIconUtils, GR32;
+  Types, SysUtils, Classes, Controls, Forms,
+  Dialogs, StdCtrls, SharpDialogs,
+  GR32_Image, SharpIconUtils, GR32, GR32_RangeBars;
 
 type
   TSettingsForm = class(TForm)
@@ -70,6 +70,8 @@ type
 
 
 implementation
+
+uses SharpApi;
 
 {$R *.dfm}
 

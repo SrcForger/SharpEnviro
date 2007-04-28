@@ -67,6 +67,7 @@ type
     sLineWrap    : Boolean;
     sMonoFont    : Boolean;
     sLastTab     : String;
+    sLastTextPos : TPoint;
     NotesForm    : TNotesForm;
     procedure LoadSettings;
     procedure SaveSettings;
@@ -143,6 +144,8 @@ begin
     Add('LineWrap',sLineWrap);
     Add('MonoFont',sMonoFont);
     Add('LastTab',sLastTab);
+    Add('LastTextXPos',sLastTextPos.X);
+    Add('LastTextYPos',sLastTextPos.Y);
   end;
   uSharpBarAPI.SaveXMLFile(BarWnd);
 end;
@@ -159,6 +162,7 @@ begin
   sAlwaysOnTop := True;
   sLineWrap    := True;
   sMonoFont    := False;
+  sLastTextPos := Point(0,0);
 
   Mon := screen.MonitorFromWindow(Handle);
   sWidth  := 512;
@@ -179,6 +183,8 @@ begin
     sLineWrap    := BoolValue('LineWrap',False);
     sMonoFont    := BoolValue('MonoFont',False);
     sLastTab     := Value('LastTab','');
+    sLastTextPos.X := IntValue('LastTextXPos',0);
+    sLastTextPos.Y := IntValue('LastTextYPos',0);
   end;
 end;
 

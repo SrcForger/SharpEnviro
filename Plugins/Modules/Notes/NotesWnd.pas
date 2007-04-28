@@ -35,7 +35,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ToolWin, ComCtrls, ImgList, PngImageList, JvTabBar, StdCtrls,
-  JvComponentBase, JvFindReplace;
+  JvComponentBase, JvFindReplace, JvExStdCtrls, JvMemo, JvExControls,
+  JvComponent;
 
 type
   TNotesForm = class(TForm)
@@ -44,7 +45,6 @@ type
     tb_new: TToolButton;
     tabs: TJvTabBar;
     JvModernTabBarPainter1: TJvModernTabBarPainter;
-    Notes: TMemo;
     tb_paste: TToolButton;
     tb_selectall: TToolButton;
     tb_copy: TToolButton;
@@ -62,6 +62,7 @@ type
     btn_linewrap: TToolButton;
     btn_monofont: TToolButton;
     ToolButton2: TToolButton;
+    Notes: TJvMemo;
     procedure btn_monofontClick(Sender: TObject);
     procedure btn_linewrapClick(Sender: TObject);
     procedure btn_fintClick(Sender: TObject);
@@ -171,6 +172,7 @@ begin
   TMainForm(Owner).sMonoFont := btn_monofont.Down;
   if Tabs.SelectedTab <> nil then TMainForm(Owner).sLastTab := Tabs.SelectedTab.Caption
      else TMainForm(Owner).sLastTab := '';
+  TMainForm(Owner).sLastTextPos.Y := Notes.CurrentLine;
   TMainForm(Owner).SaveSettings;
 end;
 
@@ -243,6 +245,7 @@ end;
 procedure TNotesForm.FormShow(Sender: TObject);
 begin
   UpdateTabList(TMainForm(Owner).sLastTab);
+  //Notes.CurrentLine := TMainForm(Owner).sLastTextPos.Y;
  // SetWindowPos(handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
 end;
 
@@ -295,8 +298,6 @@ begin
     end;
   end;
 end;
-
-
 
 procedure TNotesForm.btn_fintClick(Sender: TObject);
 begin
