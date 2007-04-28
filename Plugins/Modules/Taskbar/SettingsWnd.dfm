@@ -3,8 +3,8 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Task Module Settings'
-  ClientHeight = 201
-  ClientWidth = 658
+  ClientHeight = 230
+  ClientWidth = 718
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -23,9 +23,21 @@ object SettingsForm: TSettingsForm
     Height = 13
     Caption = 'Task Style'
   end
+  object Label2: TLabel
+    Left = 296
+    Top = 152
+    Width = 329
+    Height = 41
+    AutoSize = False
+    Caption = 
+      'By default all tasks are visible. Tasks matching any exclude fil' +
+      'ter will not be displayed as long as there i no include filter w' +
+      'hich is overwriting the exclude filter.'
+    WordWrap = True
+  end
   object Button1: TButton
-    Left = 496
-    Top = 168
+    Left = 472
+    Top = 200
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -33,8 +45,8 @@ object SettingsForm: TSettingsForm
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 576
-    Top = 168
+    Left = 552
+    Top = 200
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -66,7 +78,7 @@ object SettingsForm: TSettingsForm
     TabOrder = 4
   end
   object Panel1: TPanel
-    Left = 144
+    Left = 136
     Top = 8
     Width = 145
     Height = 89
@@ -117,7 +129,7 @@ object SettingsForm: TSettingsForm
     end
   end
   object Button3: TButton
-    Left = 568
+    Left = 632
     Top = 24
     Width = 81
     Height = 25
@@ -126,16 +138,16 @@ object SettingsForm: TSettingsForm
     OnClick = Button3Click
   end
   object list_include: TCheckListBox
-    Left = 312
+    Left = 296
     Top = 24
-    Width = 121
+    Width = 161
     Height = 121
     OnClickCheck = list_includeClickCheck
     ItemHeight = 13
     TabOrder = 7
   end
   object rb_ifilter: TCheckBox
-    Left = 312
+    Left = 296
     Top = 8
     Width = 97
     Height = 17
@@ -144,16 +156,16 @@ object SettingsForm: TSettingsForm
     OnClick = rb_ifilterClick
   end
   object list_exclude: TCheckListBox
-    Left = 440
+    Left = 464
     Top = 24
-    Width = 121
+    Width = 161
     Height = 121
     OnClickCheck = list_excludeClickCheck
     ItemHeight = 13
     TabOrder = 9
   end
   object rb_efilter: TCheckBox
-    Left = 440
+    Left = 464
     Top = 8
     Width = 97
     Height = 17
@@ -184,9 +196,5 @@ object SettingsForm: TSettingsForm
     Height = 17
     Caption = 'Enable Debug Output (Developer Mode)'
     TabOrder = 13
-  end
-  object XPManifest1: TXPManifest
-    Left = 416
-    Top = 120
   end
 end

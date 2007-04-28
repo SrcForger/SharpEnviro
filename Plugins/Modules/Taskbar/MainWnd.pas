@@ -33,18 +33,18 @@ unit MainWnd;
 interface
 
 uses
-  Types, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, 
-  SharpESkinManager, SharpEScheme, SharpEButton, SharpESkin,
+  Types, Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls, GR32_Image, SharpEBaseControls,
+  SharpESkinManager,
   SharpECustomSkinSettings, ExtCtrls,
-  JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math, Contnrs,
-  SharpETaskItem,
+  JvSimpleXML, SharpApi, Menus, Math, Contnrs,
+  SharpETaskItem, SharpESkin,
   uTaskManager,
   uTaskItem,
   DateUtils,
   GR32,
   GR32_Filters,
-  GR32_PNG;
+  GR32_PNG, AppEvnts, SharpEButton;
 
 
 type
@@ -73,6 +73,9 @@ type
     ses_minall: TSharpEButton;
     ses_maxall: TSharpEButton;
     TimedCheck: TTimer;
+    ApplicationEvents1: TApplicationEvents;
+    procedure ApplicationEvents1ShowHint(var HintStr: string;
+      var CanShow: Boolean; var HintInfo: THintInfo);
     procedure ses_maxallClick(Sender: TObject);
     procedure ses_minallClick(Sender: TObject);
     procedure FlashTimerTimer(Sender: TObject);
@@ -128,6 +131,7 @@ type
     constructor CreateParented(ParentWindow : hwnd; pID : integer; pBarWnd : Hwnd; pHeight : integer);
     procedure AlignSpecialButtons;
     procedure UpdateCustomSettings;
+    procedure RepaintComponents;
 
     procedure DebugOutPutInfo(msg : String);
     procedure DebugOutPutError(msg : String);
@@ -172,6 +176,16 @@ procedure UnlockWindow(const Handle: HWND);
 begin
   SendMessage(Handle, WM_SETREDRAW, 1, 0);
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+end;
+
+procedure TMainForm.RepaintComponents;
+var
+  n : integer;
+begin
+  for n := 0 to IList.Count - 1 do
+      TSharpETaskItem(IList.Items[n]).Repaint;
+  ses_minall.Repaint;
+  ses_maxall.Repaint;
 end;
 
 procedure TMainForm.UpdateCustomSettings;
@@ -704,11 +718,23 @@ procedure TMainForm.CalculateItemWidth(ItemCount : integer);
 var
   n : integer;
   FreeSpace : integer;
+  pItem : TSharpETaskItem;
+  pTask : TTaskItem;
 begin
   DebugOutPutInfo('TMainForm.CalculateItemWidth (Procedure)');
   try
     for n := IList.Count -1 downto 0 do
-        if IList.Items[n] <> nil then TSharpETaskItem(IList.Items[n]).State := sState;
+        if IList.Items[n] <> nil then
+        begin
+          pItem := TSharpETaskItem(IList.Items[n]);
+          pTask := TM.GetItemByHandle(pItem.Tag);
+          pItem.State := sState;
+          if pItem.State = tisMini then
+          begin
+            pItem.Hint := pTask.Caption; 
+            pItem.ShowHint := True;
+          end else pItem.ShowHint := False;
+        end;
   except
   end;
   FreeSpace := Width - FSpecialButtonWidth;
@@ -815,8 +841,6 @@ var
   n : integer;
   R : TRect;
   Mon : TMonitor;
-  icount : integer;
-  mnfilter : integer;
   nm : boolean;
 begin
   if pItem = nil then
@@ -832,9 +856,7 @@ begin
     exit;
   end;
 
-  result := false;
-  icount := 0;
-  mnfilter := 0;
+  result := true;
   nm := False;
   if sIFilter then
   begin
@@ -842,31 +864,34 @@ begin
     begin
       case sIFilters[n].FilterType of
         0: if pItem.Placement.showCmd in sIFilters[n].FilterStates then
-           begin
-             icount := icount + 1;
-           end else nm := True;
+              nm := True;
         1: if pItem.WndClass = sIFilters[n].FilterClass then
-           begin
-             icount := icount + 1;
-             mnfilter := mnfilter + 1;
-           end;
+              nm := True;
         2: if pItem.FileName = sIFilters[n].FilterFile then
-           begin
-             icount := icount + 1;
-             mnfilter := mnfilter + 1;
-           end;
+              nm := True;
         3: begin
              Mon := Screen.MonitorFromWindow(Self.Handle);
              GetWindowRect(pItem.Handle,R);
              if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect))
                 or (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
-                or (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then icount := icount + 1
-                else nm := True;
+                or (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
+                   nm := True
+           end;
+        4: begin
+             Mon := Screen.MonitorFromWindow(Self.Handle);
+             GetWindowRect(pItem.Handle,R);
+             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect))
+                and not (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
+                and not (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
+                   nm := True
            end;
       end;
-      if (icount >= length(sIFilters)-mnfilter) and (not nm) then result := true;
+      if nm then break;
     end;
-  end else result := true;
+  end;
+
+  // task is supposed to be included...
+  if nm then exit;
 
   if sEFilter then
   begin
@@ -882,6 +907,13 @@ begin
              if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect))
                 or (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
                 or (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then result := false;
+           end;
+        4: begin
+             Mon := Screen.MonitorFromWindow(Self.Handle);
+             GetWindowRect(pItem.Handle,R);
+             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect))
+                and not (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
+                and not (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then result := false;
            end;
       end;
     end;
@@ -986,6 +1018,11 @@ begin
   pTaskItem.Caption := pItem.Caption;
   pTaskItem.Tag := pItem.Handle;
   pTaskItem.State := sState;
+  if pTaskItem.State = tisMini then
+  begin
+    pTaskItem.Hint := pItem.Caption;
+    pTaskItem.ShowHint := True;
+  end else pTaskItem.ShowHint := False;
   UpdateIcon(pTaskItem,pItem);
   pTaskItem.OnClick := SharpETaskItemClick;
   pTaskItem.OnMouseUp := OnTaskItemMouseUp;
@@ -1081,9 +1118,9 @@ begin
     if (not pItem.Visible) or (not TSharpETaskItem(Sender).Down) then
     begin
       pItem.Restore;
-    	BringWindowToTop(pItem.Handle);
-      SetActiveWindow(pItem.Handle);
-      SetForegroundWindow(pItem.Handle);
+    	//BringWindowToTop(pItem.Handle);
+      //SetActiveWindow(pItem.Handle);
+      //SetForegroundWindow(pItem.Handle);
     end else
     begin
       TSharpETaskItem(Sender).Down := False;
@@ -1241,6 +1278,19 @@ begin
   end;
   FLocked := False;
   RealignComponents(True);
+end;
+
+procedure TMainForm.ApplicationEvents1ShowHint(var HintStr: string;
+  var CanShow: Boolean; var HintInfo: THintInfo);
+var
+  p : TPoint;
+begin
+  p := ClientToScreen(Point(Left,Top));
+  HintInfo.HintPos.x := HintInfo.HintPos .x + 1;
+  if p.y > Monitor.Top + Monitor.Height div 2 then
+     HintInfo.HintPos.y := p.Y - 28
+     else HintInfo.HintPos.y := p.Y + Height;
+  CanShow := True;
 end;
 
 end.

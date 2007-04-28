@@ -33,8 +33,8 @@ unit SettingsWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, GR32_RangeBars, SharpApi, XPMan, ExtCtrls,
+  Windows, Messages, SysUtils, Classes, Controls, Forms,
+  Dialogs, StdCtrls, ComCtrls, SharpApi, ExtCtrls,
   CheckLst, JvSimpleXML;
 
 type
@@ -43,7 +43,6 @@ type
     Button2: TButton;
     Label1: TLabel;
     cb_tsfull: TRadioButton;
-    XPManifest1: TXPManifest;
     cb_tscompact: TRadioButton;
     cb_tsminimal: TRadioButton;
     Panel1: TPanel;
@@ -60,6 +59,7 @@ type
     cb_minall: TCheckBox;
     cb_maxall: TCheckBox;
     cb_debug: TCheckBox;
+    Label2: TLabel;
     procedure rb_efilterClick(Sender: TObject);
     procedure rb_ifilterClick(Sender: TObject);
     procedure cb_sortClick(Sender: TObject);

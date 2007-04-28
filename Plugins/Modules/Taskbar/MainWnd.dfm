@@ -18,8 +18,8 @@ object MainForm: TMainForm
   object Background: TImage32
     Left = 0
     Top = 0
-    Width = 277
-    Height = 159
+    Width = 285
+    Height = 166
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -160,5 +160,10 @@ object MainForm: TMainForm
     Interval = 500
     Left = 216
     Top = 96
+  end
+  object ApplicationEvents1: TApplicationEvents
+    OnShowHint = ApplicationEvents1ShowHint
+    Left = 136
+    Top = 72
   end
 end

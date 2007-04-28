@@ -78,6 +78,8 @@ type
                 property FilePath  : String read FFilePath;
               end;
 
+function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; external 'user32.dll';
+
 implementation
 
 
@@ -165,8 +167,10 @@ end;
 
 procedure TTaskItem.Restore;
 begin
-  if IsIconic(FHandle) then ShowWindow(FHandle, SW_Restore)
-     else OpenIcon(FHandle);
+//  if IsIconic(FHandle) then ShowWindow(FHandle, SW_Restore)
+//     else OpenIcon(FHandle);
+  if IsIconic(FHandle) then OpenIcon(FHandle)
+     else SwitchToThisWindow(FHandle,True);
   UpdateCaption;
   UpdateVisibleState;
 end;
