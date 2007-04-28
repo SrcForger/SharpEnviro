@@ -32,7 +32,7 @@ unit SharpECustomSkinSettings;
 
 interface
 
-uses JvSimpleXML,SysUtils, SharpApi;
+uses JvSimpleXML,SysUtils, SharpApi, SharpThemeApi;
 
 type
    TSharpECustomSkinSettings = class
@@ -68,7 +68,7 @@ begin
      else
      begin
        {$WARNINGS OFF}
-       dir := IncludeTrailingBackSlash(ExtractFileDir(SharpApi.GetCurrentSkinFile));
+       dir := SharpThemeApi.GetSkinDirectory;
        {$WARNINGS ON}
        if FileExists(dir + 'custom.xml') then fn := dir + 'custom.xml'
           else exit;

@@ -38,9 +38,9 @@ uses
   Messages,
   SysUtils,
   Classes,
-  Graphics,
   Controls,
   Forms,
+  Graphics,
   Dialogs,
   StdCtrls,
   gr32,
@@ -49,7 +49,7 @@ uses
   SharpEBase,
   SharpEBaseControls,
   SharpESkinManager,
-  SHarpEScheme,
+  SharpEScheme,
   SharpESkin,
   SharpESkinPart;
 

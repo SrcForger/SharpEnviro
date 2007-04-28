@@ -108,7 +108,7 @@ procedure LoadSharpEScheme(Scheme: TSharpEScheme);
 
 implementation
 uses
-  SharpEButton,
+ { SharpEButton,
   SharpEForm,
   SharpEPanel,
   SharpEBar,
@@ -118,7 +118,8 @@ uses
   SharpELabel,
   SharpEEdit,
   SharpEMiniThrobber,
-  SharpETaskItem,
+  SharpETaskItem, }
+  SharpEBaseControls,
   SharpThemeApi;
 
 constructor TSharpESkinManager.CreateRuntime(AOwner: TComponent;
@@ -225,9 +226,9 @@ end;
 
 procedure TSharpESkinManager.SystemSkinChanged(sender : TObject);
 begin
+  Skin.UpdateDynamicProperties(Scheme);
   if Assigned(FOnSkinChanged) then
      FOnSkinChanged(self);
-  //RefreshControls;
 end;
 
 procedure TSharpESkinManager.UpdateSkin;
@@ -237,6 +238,7 @@ begin
     SystemSkin.LoadSkinFromStream;
     LoadSharpEScheme(FSystemScheme);
   end;
+  Skin.UpdateDynamicProperties(Scheme);
   RefreshControls;
   if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
 end;
@@ -245,6 +247,7 @@ procedure TSharpESkinManager.UpdateScheme;
 begin
   if SkinSource = ssSystem then
      LoadSharpEScheme(FSystemScheme);
+  Skin.UpdateDynamicProperties(Scheme);
   RefreshControls;
 end;
 
@@ -263,6 +266,7 @@ begin
     if not (csDesigning in ComponentState) then
        SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
     LoadSharpEScheme(FSystemScheme);
+    Skin.UpdateDynamicProperties(Scheme);
     RefreshControls;
   end;
   if (SchemeSource = ssSystem) and
@@ -274,6 +278,7 @@ begin
       if not (csDesigning in ComponentState) then
          SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
       LoadSharpEScheme(FSystemScheme);
+      Skin.UpdateDynamicProperties(Scheme);
       if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
       RefreshControls;
     end;
@@ -300,7 +305,15 @@ begin
 
   for i := Owner.ComponentCount - 1 downto 0 do
   begin
-    if (Owner.Components[i] is TSharpEButton) then
+    if (Owner.Components[i] is TCustomSharpEGraphicControl) then
+       (Owner.Components[i] as TCustomSharpEGraphicControl).UpdateSkin(self)
+    else
+      if (Owner.Components[i] is TCustomSharpEComponent) then
+         (Owner.Components[i] as TCustomSharpEComponent).UpdateSkin(self)
+      else
+       if (Owner.Components[i] is TCustomSharpEControl) then
+         (Owner.Components[i] as TCustomSharpEControl).UpdateSkin(self);
+ {   if (Owner.Components[i] is TSharpEButton) then
       (Owner.Components[i] as TSharpEButton).UpdateSkin(self)
     else
       if (Owner.Components[i] is TSharpEForm) then
@@ -333,8 +346,7 @@ begin
                           if (Owner.Components[i] is TSharpEMiniThrobber) then
                             (Owner.Components[i] as TSharpEMiniThrobber).UpdateSkin(self)
                           else if (Owner.Components[i] is TSharpETaskItem) then
-                             (Owner.Components[i] as TSharpETaskItem).UpdateSkin(self);
-
+                             (Owner.Components[i] as TSharpETaskItem).UpdateSkin(self);}
   end;
 end;
 

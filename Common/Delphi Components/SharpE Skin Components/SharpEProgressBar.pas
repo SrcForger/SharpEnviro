@@ -35,19 +35,18 @@ uses
   Messages,
   SysUtils,
   Classes,
-  Graphics,
   Controls,
   Forms,
-  Dialogs,
   StdCtrls,
   gr32,
+  Graphics,
   SharpEBase,
   SharpEBaseControls,
   SharpEDefault,
   SharpEScheme,
   SharpESkinManager,
   math,
-  SHarpESkinPart;
+  SharpESkinPart;
 
 type
   TSharpEProgressBar = class(TCustomSharpEGraphicControl)

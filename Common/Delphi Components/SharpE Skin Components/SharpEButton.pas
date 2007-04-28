@@ -38,7 +38,6 @@ uses
   Graphics,
   Controls,
   Forms,
-  Dialogs,
   StdCtrls,
   gr32,
   gr32_resamplers,
@@ -518,8 +517,7 @@ begin
   if FCustomSkin <> nil then ButtonSkin := FCustomSkin
      else Buttonskin := FManager.Skin.ButtonSkin;
 
-  if (FAutoPosition) then
-     Top := ButtonSkin.SkinDim.YAsInt;
+  UpdateAutoPosition;
 
   if ButtonSkin.Valid then
   begin
@@ -680,8 +678,15 @@ procedure TSharpEButton.UpdateAutoPosition;
 begin
   if (FAutoPosition) then
   begin
-    if FCustomSkin <> nil then Top := FCustomSkin.SkinDim.YAsInt
-       else if (Assigned(FManager)) then Top := FManager.Skin.ButtonSkin.SkinDim.YAsInt;
+    if FCustomSkin <> nil then
+    begin
+      if Top <> FCustomSkin.SkinDim.YAsInt then
+         Top := FCustomSkin.SkinDim.YAsInt;
+    end else if (Assigned(FManager)) then
+    begin
+      if Top <> FManager.Skin.ButtonSkin.SkinDim.YAsInt then
+         Top := FManager.Skin.ButtonSkin.SkinDim.YAsInt;
+    end;
   end;
 end;
 

@@ -36,12 +36,11 @@ uses
   Messages,
   SysUtils,
   Classes,
-  Graphics,
   Controls,
   Forms,
-  Dialogs,
   StdCtrls,
   gr32,
+  Graphics,
   SharpEBase,
   SharpEBaseControls,
   SharpEDefault,
@@ -587,7 +586,8 @@ begin
   CompRect := Rect(0, 0, width, height);
 
   if FAutoPosition then
-     Top := FManager.Skin.EditSkin.SkinDim.YAsInt;
+     if Top <> FManager.Skin.EditSkin.SkinDim.YAsInt then
+        Top := FManager.Skin.EditSkin.SkinDim.YAsInt;
 
   if FAutoSize then
     begin

@@ -1,5 +1,5 @@
 {
-Source Name: SharpESkin
+Source Name: SharpESkin                               
 Description: Core Skin loading classes
 Copyright (C) Lee Green <Pixol@SharpE-Shell.org>
               Malx (Malx@techie.com)
@@ -31,19 +31,18 @@ unit SharpESkin;
 interface
 
 uses
-  Windows,
   Classes,
   Forms,
   SysUtils,
   Dialogs,
   Contnrs,
   gr32,
-  graphics,
   jvsimplexml,
   types,
   SharpESkinPart,
   SharpEBitmapList,
   SharpEBase,
+  SharpEScheme,
   Math;
 
 type
@@ -115,6 +114,7 @@ type
       override;
     procedure DefineProperties(Filer: TFiler); override;
   public
+    constructor Create(AOwner: TComponent); overload; override;
     constructor Create(AOwner: TComponent; Skins: TSharpESkinItems = ALL_SHARPE_SKINS); reintroduce; overload;
     constructor CreateBmp(AOwner: TComponent; BmpList : TSkinBitmapList; Skins: TSharpESkinItems = ALL_SHARPE_SKINS); overload;
     destructor Destroy; override;
@@ -147,6 +147,7 @@ type
     property BitmapList: TSkinBitmapList read FBitmapList write FBitmapList;
 
     procedure RemoveNotUsedBitmaps;
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
 
     procedure FreeInstance; override;
   published
@@ -217,6 +218,8 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
     function GetAutoDim(tis : TSharpETaskItemStates; r: TRect): TRect;
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
     property Full: TSharpETaskItemState read FFull write FFull;
     property Compact: TSharpETaskItemState read FCompact write FCompact;
     property Mini: TSharpETaskItemState read FMini write FMini;
@@ -237,6 +240,8 @@ type
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
     property Background : TSkinPart read FBackground;
     property TBOffset : TSkinPoint read FTBOffset;
     property LROffset : TSkinPoint read FLROffset;
@@ -262,6 +267,8 @@ type
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
     property NormalItem : TSkinPartEx read FNormalItem;
     property HoverItem  : TSkinPartEx read FHoverItem;
     property DownItem   : TSkinPartEx read FDownItem;
@@ -291,6 +298,8 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
     function GetAutoDim(r: TRect): TRect;
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
     property Normal: TSkinPart read FNormal write FNormal;
     property Down: TSkinPart read FDown write FDown;
     property Hover: TSkinPart read FHover write FHover;
@@ -317,6 +326,8 @@ type
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
     function GetAutoDim(r: TRect): TRect;
     property SkinDim: TSkinDim read FSkinDim write FSkinDim;
     property Full: TSkinPart read FFull write FFull;
@@ -340,6 +351,8 @@ type
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     function GetAutoDim(r: TRect): TRect;
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
     property Normal: TSkinPart read FNormal write FNormal;
     property Selected: TSkinPart read FSelected write FSelected;
     property Lowered: TSkinPart read FLowered write FLowered;
@@ -363,6 +376,8 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
     function GetAutoDim(r: TRect): TRect;
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
     property Normal: TSkinPart read FNormal write FNormal;
     property Down: TSkinPart read FDown write FDown;
     property Hover: TSkinPart read FHover write FHover;
@@ -387,6 +402,8 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
     function GetAutoDim(r: TRect): TRect;
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
     property Normal: TSkinPart read FNormal write FNormal;
     property Down: TSkinPart read FDown write FDown;
     property Hover: TSkinPart read FHover write FHover;
@@ -411,6 +428,8 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
     function GetAutoDim(r: TRect): TRect;
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
     property BackGround: TSkinPart read FBackGround write FBackGround;
     property Progress: TSkinPart read FProgress write FProgress;
     property SmallBackground: TSkinPart read FBackGroundSmall write
@@ -455,6 +474,8 @@ type
     function GetAutoDim(r: TRect): TRect;
     function GetThrobberDim(r: TRect): TRect;
     function GetThrobberBottomDim(r: TRect): TRect;
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
     property ThNormal: TSkinPart read FThNormal write FThNormal;
     property ThDown: TSkinPart read FThDown write FThDown;
     property ThHover: TSkinPart read FThHover write FThHover;
@@ -495,6 +516,8 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
     function GetAutoDim(r: TRect): TRect;
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
     property Normal: TSkinPart read FNormal write FNormal;
     property Focus: TSkinPart read FFocus write FFocus;
     property Disabled: TSkinPart read FDisabled write FDisabled;
@@ -520,6 +543,8 @@ type
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
     function GetAutoDim(r: TRect): TRect;
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
     property Normal: TSkinPart read FNormal write FNormal;
     property Down: TSkinPart read FDown write FDown;
     property Hover: TSkinPart read FHover write FHover;
@@ -530,7 +555,8 @@ type
 
 implementation
 
-uses SharpESkinManager,gr32_png;
+uses SharpESkinManager,
+     gr32_png;
 
 
 function LoadScriptFromFile(FileName : String) : String;
@@ -553,6 +579,11 @@ end;
 //***************************************
 //* TSharpESkin
 //***************************************
+
+constructor TSharpESkin.Create(AOwner : TComponent);
+begin
+  Create(AOwner,ALL_SHARPE_SKINS);
+end;
 
 constructor TSharpESkin.Create(AOwner: TComponent; Skins: TSharpESkinItems = ALL_SHARPE_SKINS);
 begin
@@ -612,6 +643,27 @@ begin
   if FMenuItemSkin <> nil then FMenuItemSkin.Free;
   FBitmapList.Free;
   inherited;
+end;
+
+procedure TSharpESkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  if FButtonSkin <> nil then FButtonSkin.UpdateDynamicProperties(cs);
+  if FCheckBoxSkin <> nil then FCheckBoxSkin.UpdateDynamicProperties(cs);
+  if FRadioBoxSkin <> nil then FRadioBoxSkin.UpdateDynamicProperties(cs);
+  if FProgressBarskin <> nil then FProgressBarSkin.UpdateDynamicProperties(cs);
+  if FBarSkin <> nil then FBarSkin.UpdateDynamicProperties(cs);
+  if FTaskItemSkin <> nil then FTaskItemSkin.UpdateDynamicProperties(cs);
+  if FPanelSkin <> nil then FPanelSkin.UpdateDynamicProperties(cs);
+  if FMiniThrobberSkin <> nil then FMiniThrobberSkin.UpdateDynamicProperties(cs);
+  if FEditSkin <> nil then FEditSkin.UpdateDynamicProperties(cs);
+  if FFormSkin <> nil then FFormSkin.UpdateDynamicProperties(cs);
+  if FMenuSkin <> nil then FMenuSkin.UpdateDynamicProperties(cs);
+  if FMenuItemSkin <> nil then FMenuItemSkin.UpdateDynamicProperties(cs);
+
+  FSkinText.UpdateDynamicProperties(cs);
+  FSmallText.UpdateDynamicProperties(cs);
+  FMediumText.UpdateDynamicProperties(cs);
+  FBigText.UpdateDynamicProperties(cs);
 end;
 
 procedure TSharpESkin.RemoveNotUsedBitmaps;
@@ -1164,6 +1216,11 @@ begin
   FTitelText.Free;
 end;
 
+procedure TSharpEMenuSkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FBackground.UpdateDynamicProperties(cs);
+end;
+
 procedure TSharpEMenuSkin.Clear;
 begin
   FSkinDim.SetLocation('0','0');
@@ -1253,6 +1310,17 @@ begin
   FDownItem.Free;
   FNormalSubItem.Free;
   FHoverSubItem.Free;
+end;
+
+procedure TSharpEMenuItemSkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FSeparator.UpdateDynamicProperties(cs);
+  FNormalItem.UpdateDynamicProperties(cs);
+  FLabelItem.UpdateDynamicProperties(cs);
+  FHoverItem.UpdateDynamicProperties(cs);
+  FDownItem.UpdateDynamicProperties(cs);
+  FNormalSubItem.UpdateDynamicProperties(cs);
+  FHoverSubItem.UpdateDynamicProperties(cs);
 end;
 
 procedure TSharpEMenuItemSkin.Clear;
@@ -1362,6 +1430,14 @@ begin
   FSkinDim.Free;
   FIconLROffset.Free;
   FIconTBOffset.Free;
+end;
+
+procedure TSharpEButtonSkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FNormal.UpdateDynamicProperties(cs);
+  FDown.UpdateDynamicProperties(cs);
+  FHover.UpdateDynamicProperties(cs);
+  FDisabled.UpdateDynamicProperties(cs);
 end;
 
 procedure TSharpEButtonSkin.SaveToStream(Stream: TStream);
@@ -1560,6 +1636,30 @@ begin
   FFull.Free;
   FCompact.Free;
   FMini.Free;
+end;
+
+procedure TSharpETaskItemSkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FFull.Normal.UpdateDynamicProperties(cs);
+  FFull.NormalHover.UpdateDynamicProperties(cs);
+  FFull.Down.UpdateDynamicProperties(cs);
+  FFull.DownHover.UpdateDynamicProperties(cs);
+  FFull.Highlight.UpdateDynamicProperties(cs);
+  FFull.HighlightHover.UpdateDynamicProperties(cs);
+
+  FCompact.Normal.UpdateDynamicProperties(cs);
+  FCompact.NormalHover.UpdateDynamicProperties(cs);
+  FCompact.Down.UpdateDynamicProperties(cs);
+  FCompact.DownHover.UpdateDynamicProperties(cs);
+  FCompact.Highlight.UpdateDynamicProperties(cs);
+  FCompact.HighlightHover.UpdateDynamicProperties(cs);
+
+  FMini.Normal.UpdateDynamicProperties(cs);
+  FMini.NormalHover.UpdateDynamicProperties(cs);
+  FMini.Down.UpdateDynamicProperties(cs);
+  FMini.DownHover.UpdateDynamicProperties(cs);
+  FMini.Highlight.UpdateDynamicProperties(cs);
+  FMini.HighlightHover.UpdateDynamicProperties(cs);
 end;
 
 procedure TSharpETaskItemSkin.SaveToStream(Stream: TStream);
@@ -1831,6 +1931,11 @@ begin
   FTitleDim.Free;
 end;
 
+procedure TSharpEFormSkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FFull.UpdateDynamicProperties(cs);
+end;
+
 procedure TSharpEFormSkin.SaveToStream(Stream: TStream);
 begin
   FSkinDim.SaveToStream(Stream);
@@ -1923,6 +2028,13 @@ begin
   FHover.Free;
   FSkinDim.Free;
   FBottomSkinDim.Free;
+end;
+
+procedure TSharpEMiniThrobberSkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FNormal.UpdateDynamicProperties(cs);
+  FDown.UpdateDynamicProperties(cs);
+  FHover.UpdateDynamicProperties(cs);
 end;
 
 procedure TSharpEMiniThrobberSkin.SaveToStream(Stream: TStream);
@@ -2020,6 +2132,14 @@ begin
   FEditXOffsets.Free;
   FEditYOffsets.Free;
   FSkinDim.Free;
+end;
+
+procedure TSharpEEditSkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FNormal.UpdateDynamicProperties(cs);
+  FFocus.UpdateDynamicProperties(cs);
+  FDisabled.UpdateDynamicProperties(cs);
+  FHover.UpdateDynamicProperties(cs);
 end;
 
 procedure TSharpEEditSkin.SaveToStream(Stream: TStream);
@@ -2124,6 +2244,15 @@ begin
   FSkinDim.Free;
 end;
 
+procedure TSharpECheckBoxSkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FNormal.UpdateDynamicProperties(cs);
+  FDown.UpdateDynamicProperties(cs);
+  FHover.UpdateDynamicProperties(cs);
+  FDisabled.UpdateDynamicProperties(cs);
+  FChecked.UpdateDynamicProperties(cs);
+end;
+
 procedure TSharpECheckBoxSkin.SaveToStream(Stream: TStream);
 begin
   FSkinDim.SaveToStream(Stream);
@@ -2215,6 +2344,14 @@ begin
   FBackGroundSmall.Free;
   FProgressSmall.Free;
   FSmallModeOffset.Free;
+end;
+
+procedure TSharpEProgressBarSkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FBackGround.UpdateDynamicProperties(cs);
+  FProgress.UpdateDynamicProperties(cs);
+  FBackGroundSmall.UpdateDynamicProperties(cs);
+  FProgressSmall.UpdateDynamicProperties(cs);
 end;
 
 procedure TSharpEProgressBarSkin.SaveToStream(Stream: TStream);
@@ -2331,6 +2468,15 @@ begin
   FPBYoffset.Free;
 end;
 
+procedure TSharpEBarSkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FThNormal.UpdateDynamicProperties(cs);
+  FThDown.UpdateDynamicProperties(cs);
+  FThHover.UpdateDynamicProperties(cs);
+  FBar.UpdateDynamicProperties(cs);
+  FBarBottom.UpdateDynamicProperties(cs);
+end;
+
 procedure TSharpEBarSkin.SaveToStream(Stream: TStream);
 begin
   FSkinDim.SaveToStream(Stream);
@@ -2405,9 +2551,9 @@ begin
     FFSMod.SetPoint('0', '0');
     FSBMod.SetPoint('0', '0');
     FPTXoffset.SetPoint('14', '7');
-    FPTYoffset.SetPoint('3', '4');
+    FPTYoffset.SetPoint('3', '3');
     FPBXoffset.SetPoint('14', '7');
-    FPBYoffset.SetPoint('3', '4');
+    FPBYoffset.SetPoint('3', '3');
     FBar.SkinDim.SetDimension('w', 'h');
     FBar.BlendColor := '$WorkAreaBack';
     FBar.Blend := True;
@@ -2538,6 +2684,14 @@ begin
   FRaised := TSkinPart.Create(BmpList);
   FLowered := TSkinPart.Create(BmpList);
   FSelected := TSkinPart.Create(BmpList);
+end;
+
+procedure TSharpEPanelSkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FNormal.UpdateDynamicProperties(cs);
+  FRaised.UpdateDynamicProperties(cs);
+  FLowered.UpdateDynamicProperties(cs);
+  FSelected.UpdateDynamicProperties(cs);
 end;
 
 procedure TSharpEPanelSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
@@ -2745,6 +2899,15 @@ begin
   FDisabled.Free;
   FChecked.Free;
   FSkinDim.Free;
+end;
+
+procedure TSharpERadioBoxSkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FNormal.UpdateDynamicProperties(cs);
+  FDown.UpdateDynamicProperties(cs);
+  FHover.UpdateDynamicProperties(cs);
+  FDisabled.UpdateDynamicProperties(cs);
+  FChecked.UpdateDynamicProperties(cs);
 end;
 
 procedure TSharpERadioBoxSkin.SaveToStream(Stream: TStream);

@@ -35,10 +35,7 @@ uses
   Messages,
   SysUtils,
   Classes,
-  Graphics,
   Controls,
-  Forms,
-  Dialogs,
   StdCtrls,
   gr32,
   gr32_resamplers,
@@ -48,7 +45,6 @@ uses
   SharpEScheme,
   SharpESkinManager,
   SharpESkin,
-  SharpEAnimationTimers,
   SharpESkinPart,
   math,
   Types,
@@ -151,7 +147,8 @@ begin
   TextPos := SkinText.GetXY(TextRect, CompRect);
 
   if (FAutoPosition) then
-     Top := TextPos.Y;
+     if Top <> TextPos.Y then
+        Top := TextPos.Y;
 
   FTWidth := Bmp.TextWidth(Caption);
   FTHeight := Bmp.TextHeight(Caption);

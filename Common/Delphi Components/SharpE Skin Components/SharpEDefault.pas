@@ -67,7 +67,7 @@ initialization
   DefaultSharpEScheme.AddColor('WorkAreaText','$WorkAreaText','WorkAreaText',$000000);
 
 //SharpESkin
-  DefaultSharpESkin := TSharpESkin.Create(nil);
+  DefaultSharpESkin := TSharpESkin.Create(nil,ALL_SHARPE_SKINS);
 
 //SharpESkinText
   DefaultSharpESkinText := TSkinText.Create;

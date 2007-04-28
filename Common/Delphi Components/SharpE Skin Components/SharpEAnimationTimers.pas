@@ -39,7 +39,6 @@ uses
   SysUtils,
   Math,
   Graphics,
-  SharpESkin,
   SharpESkinPart,
   SharpEScheme,
   SharpEBaseControls,
@@ -633,10 +632,20 @@ const
 var
   temp : TSkinPart;
   stype : integer;
+   n : integer;
 begin
   try
+    for n := 0 to High(FScheme.Colors) do
+    begin
+      if CompareText(Identifier, FScheme.Colors[n].Tag) = 0 then
+      begin
+        Value := FScheme.Colors[n].Color;
+        Done := True;
+      end;
+    end;
+
          if CompareText(Identifier,'BlendGradientFromColor') = 0      then stype := sBlendGradientFromColor
-    else if CompareText(Identifier, 'BlendGradientToColor') = 0        then stype := sBlendGraidentToColor
+    else if CompareText(Identifier, 'BlendGradientToColor') = 0       then stype := sBlendGraidentToColor
     else if CompareText(Identifier, 'BlendColor') = 0                 then stype := sBlendColor
     else if CompareText(Identifier, 'IncreaseAlpha') = 0              then stype := sIncraseAlpha
     else if CompareText(Identifier, 'DecreaseAlpha') = 0              then stype := sDecraseAlpha

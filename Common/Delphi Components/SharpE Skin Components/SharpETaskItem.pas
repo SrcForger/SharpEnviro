@@ -572,7 +572,8 @@ begin
   end;
 
   if (FAutoPosition) then
-     Top := CurrentState.SkinDim.YAsInt;
+     if Top <> CurrentState.SkinDim.YAsInt then
+        Top := CurrentState.SkinDim.YAsInt;
 
   if FManager.Skin.TaskItemSkin.Valid(FState) then
   begin

@@ -182,7 +182,8 @@ begin
     end;
   end;
   if FAutoPosition then
-     Top := 3;
+     if Top <> 3 then
+        Top := 3;
   with bmp do
   begin
     Clear(color32(0, 0, 0, 0));
@@ -237,7 +238,10 @@ begin
 
   if FAutoPosition then
      if FBottom then
-     top := FManager.Skin.MiniThrobberSkin.BottomSkinDim.YAsInt
+     begin
+       if top <> FManager.Skin.MiniThrobberSkin.BottomSkinDim.YAsInt then
+          top := FManager.Skin.MiniThrobberSkin.BottomSkinDim.YAsInt
+     end else if top <> FManager.Skin.MiniThrobberSkin.SkinDim.YAsInt then
         else top := FManager.Skin.MiniThrobberSkin.SkinDim.YAsInt;
 
   if FManager.Skin.MiniThrobberSkin.Valid then

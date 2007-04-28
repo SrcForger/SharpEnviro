@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils,
-  Classes, Controls, Forms, Graphics, GR32,
+  Classes, Controls, Forms, GR32,
   SharpESkin, SharpEBitmapList, SharpAPI;
 
 

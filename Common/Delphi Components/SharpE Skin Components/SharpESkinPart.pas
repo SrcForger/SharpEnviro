@@ -136,7 +136,8 @@ type
     FName: string;
     FColor: string;
     FSize: integer;
-    FAlpha: integer;
+    FAlpha: byte;
+    FAlphaString: String;
     FStyleBold : boolean;
     FStyleItalic : boolean;
     FStyleUnderline : boolean;
@@ -144,7 +145,7 @@ type
     FShadow : boolean;
     FShadowColor : string;
     FShadowType : TShadowType;
-    FShadowAlpha : integer;
+    FShadowAlpha : byte;
     FDrawText : boolean;
   public
     constructor Create;
@@ -159,6 +160,8 @@ type
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
 
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
     procedure LoadFromXML(xml: TJvSimpleXMLElem);
     function ParseCoordinate(s: string; tw, th, cw, ch: integer): integer;
     function GetXY(TextRect: TRect; CompRect: TRect): TPoint;
@@ -170,9 +173,10 @@ type
     procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme); overload;
   published
     property Color : String read FColor write FColor;
-    property Alpha : integer read FAlpha write FAlpha;
+    property Alpha : byte read FAlpha write FAlpha;
+    property AlphaString : string read FAlphaString write FAlphaString;
     property ShadowColor : String read FShadowColor write FShadowColor;
-    property ShadowAlpha : integer read FShadowAlpha write FShadowAlpha;
+    property ShadowAlpha : byte read FShadowAlpha write FShadowAlpha;
     property DrawText : boolean read FDrawText write FDrawText;
   end;
 
@@ -210,11 +214,14 @@ type
     FID: String;
     FBmpList: TSkinBitmapList;
     FBitmapId: integer;
-    FMasterAlpha: integer;
+    FMasterAlpha: byte;
+    FMasterAlphaString : String;
     FDrawMode: TSkinDrawMode;
+    FEnabled : boolean;
+    FEnabledString : String;
     FBlend: boolean;
     FBlendColor: string;
-    FBlendAlpha: integer;
+    FBlendAlpha: byte;
     FSkinDim: TSkinDim;
     FSkinText: TSkinText;
     FGradientType : string;
@@ -223,8 +230,6 @@ type
     Procedure DoCombine(F: TColor32; var B: TColor32; M: TColor32);
     procedure TileDraw(Src,Dest : TBitmap32; DestRect : TRect);
     procedure CustomDraw(Src, Dst : TBitmap32; SrcRect, DstRect : TRect);
-
-
   public
     constructor Create(BmpList: TSkinBitmapList); virtual;
     destructor Destroy; override;
@@ -233,6 +238,8 @@ type
 
     procedure SaveToStream(Stream: TStream);  virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
+
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
 
     function LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinText): boolean; virtual;
     procedure draw(bmp: TBitmap32; cs: TSharpEScheme);
@@ -248,11 +255,14 @@ type
     property LayerMode: TLayerMode read FLayerMode write FLayerMode;
     property Blend: boolean read FBlend write FBlend;
     property BlendColor: string read FBlendColor write FBlendColor;
-    property BlendAlpha: integer read FBlendAlpha write FBlendAlpha;
+    property BlendAlpha: byte read FBlendAlpha write FBlendAlpha;
     property GradientType: string read FGradientType write FGradientType;
     property GradientAlpha: TSkinPoint read FGradientAlpha write FGradientAlpha;
     property GradientColor: TSkinPoint read FGradientColor write FGradientColor;
-    property MasterAlpha : integer read FMasterAlpha write FMasterAlpha;
+    property MasterAlpha : byte read FMasterAlpha write FMasterAlpha;
+    property MasterAlphaString : String read FMasterAlphaString write FMasterAlphaString;
+    property Enabled : boolean read FEnabled write FEnabled;
+    property EnabledString : String read FEnabledString write FEnabledString;
   end;
 
   // TSkinPart with Icon!
@@ -275,6 +285,7 @@ type
   end;    
 
 function get_location(str: string): TRect;
+function EvaluateValue(str: string; cs: TSharpEScheme) : integer;
 function SchemedStringToColor(str: string; cs: TSharpEScheme): TColor;
 procedure doBlend(Dest: TBitmap32; source: TBitmap32; color: TColor);
 procedure VGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
@@ -664,6 +675,7 @@ begin
   FShadowColor := '0';
   FShadowAlpha := 255;
   FAlpha := 255;
+  FAlphaString := '255';
   Assign(DefaultSharpESkinTextRecord);
 end;
 
@@ -688,6 +700,7 @@ begin
   end;
   Stream.WriteBuffer(FShadowAlpha,SizeOf(FShadowAlpha));
   Stream.WriteBuffer(FAlpha,SizeOf(FAlpha));
+  StringSaveToStream(FAlphaString,Stream);
 end;
 
 procedure TSkinText.LoadFromStream(Stream: TStream);
@@ -712,6 +725,7 @@ begin
      else FShadowType := stRight;
   Stream.ReadBuffer(FShadowAlpha,SizeOf(FShadowAlpha));
   Stream.ReadBuffer(FAlpha,SizeOf(FAlpha));
+  FAlphaString := StringLoadFromStream(Stream);
 end;
 
 procedure TSkinText.Assign(Value: TSkinText);
@@ -730,6 +744,7 @@ begin
   FShadowAlpha := Value.FShadowAlpha;
   FShadowType := Value.FShadowType;
   FAlpha := Value.FAlpha;
+  FAlphaString := Value.FAlphaString;
   FDrawText := Value.DrawText;
 end;
 
@@ -788,6 +803,11 @@ begin
     SetLocation('', '');
 end;
 
+procedure TSkinText.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FAlpha := Min(255,Max(0,EvaluateValue(FAlphaString,cs)));
+end;
+
 procedure TSkinText.LoadFromXML(xml: TJvSimpleXMLElem);
 var
   s : string;
@@ -811,7 +831,7 @@ begin
     if ItemNamed['maxwidth'] <> nil then
       FMaxWidth := Value('maxwidth','w');
     if ItemNamed['alpha'] <> nil then
-      FAlpha := Max(0,Min(255,IntValue('alpha',255)));
+      FAlphaString := Value('alpha','255');
     if ItemNamed['shadow'] <> nil then
       FShadow := BoolValue('shadow',false);
     if ItemNamed['shadowcolor'] <> nil then
@@ -1428,16 +1448,31 @@ begin
   result := test and (FItems.Count = 0);
 end;
 
+procedure TSkinPart.UpdateDynamicProperties(cs: TSharpEScheme);
+var
+  n : integer;
+begin
+  FMasterAlpha := Min(255,Max(0,EvaluateValue(FMasterAlphaString,cs)));
+  n := EvaluateValue(FEnabledString,cs);
+  FEnabled := (n <> 0);
+  FSkinText.UpdateDynamicProperties(cs);
+  for n := 0 to FItems.Count - 1 do
+      Items[n].UpdateDynamicProperties(cs);
+end;
+
 procedure TSkinPart.SaveToStream(Stream: TStream);
 var i, count: integer;
 begin
   Stream.WriteBuffer(FBitmapId, sizeof(FBitmapId));
+  StringSaveToStream(FMasterAlphaString,Stream);
   Stream.WriteBuffer(FMasterAlpha, sizeof(FMasterAlpha));
   Stream.WriteBuffer(FDrawMode, sizeof(FDrawMode));
   Stream.WriteBuffer(FLayerMode, sizeof(FLayerMode));
   Stream.WriteBuffer(FBlend, sizeof(FBlend));
   StringSaveToStream(FBlendColor, Stream);
   StringSaveToStream(FID, Stream);
+  Stream.WriteBuffer(FEnabled,SizeOf(FEnabled));
+  StringSaveToStream(FEnabledString,Stream);
   FGradientAlpha.SaveToStream(Stream);
   FGradientColor.SaveToStream(Stream);
   StringSavetoStream(FGradientType, Stream);
@@ -1457,12 +1492,15 @@ begin
   sp := TSkinPart.create(FBmpList);
   try
     Stream.ReadBuffer(FBitmapId, sizeof(FBitmapId));
+    FMasterAlphaString := StringLoadFromStream(Stream);
     Stream.ReadBuffer(FMasterAlpha, sizeof(FMasterAlpha));
     Stream.ReadBuffer(FDrawMode, sizeof(FDrawMode));
     Stream.ReadBuffer(FLayerMode, sizeof(FLayerMode));
     Stream.ReadBuffer(FBlend, sizeof(FBlend));
     FBlendColor := StringLoadFromStream(Stream);
     FID := StringLoadFromStream(Stream);
+    Stream.ReadBuffer(FEnabled, sizeof(FEnabled));
+    FEnabledString := StringLoadFromStream(Stream);
     FGradientAlpha.LoadFromStream(Stream);
     FGradientColor.LoadFromStream(Stream);
     FGradientType := StringLoadFromStream(Stream);
@@ -1505,6 +1543,8 @@ var temp: Tbitmap32;
   isEmpty: boolean;
 
 begin
+  if not FEnabled then exit;
+
   if (FBitmapId >= 0) then
   begin
     FBitmap := TSkinBitmap(FBmpList.Items[FBitmapId]).Bitmap;
@@ -1593,6 +1633,8 @@ begin
     begin
       if ItemNamed['ID'] <> nil then
         FID := Value('ID','');
+      if ItemNamed['enabled'] <> nil then
+        FEnabledString := Value('enabled','1');
       if ItemNamed['gradienttype'] <> nil then
         FGradientType := Value('gradienttype','horizontal');
       if ItemNamed['gradientcolor'] <> nil then
@@ -1606,7 +1648,7 @@ begin
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', '0,0'));
       if ItemNamed['alpha'] <> nil then
-        FMasterAlpha := IntValue('alpha', 255);
+        FMasterAlphaString := Value('alpha', '255');
       if ItemNamed['drawmode'] <> nil then
         if lowercase(Value('drawmode', 'stretch')) = 'tile' then
           FDrawMode := sdmTile;
@@ -1681,12 +1723,15 @@ begin
   FBlend := Value.Blend;
   FBlendColor := Value.BlendColor;
   FBlendAlpha := Value.BlendAlpha;
+  FMasterAlphaString := Value.MasterAlphaString;
   FMasterAlpha := Value.FMasterAlpha;
   FDrawMode := Value.FDrawMode;
   FGradientType := Value.GradientType;
   FGradientColor.Assign(Value.GradientColor);
   FGradientAlpha.Assign(Value.GradientAlpha);
   FLayerMode := Value.LayerMode;
+  FEnabled := Value.Enabled;
+  FEnabledString := Value.FEnabledString;
   for i := 0 to Value.Items.count - 1 do
   begin
     FItems.Add(Value.Items[i]);
@@ -1702,10 +1747,13 @@ begin
   FBlend := false;
   FBlendColor := '$000000';
   FBlendAlpha := 255;
+  FMasterAlphaString := '255';
   FMasterAlpha := 255;
   FGradientColor.Clear;
   FGradientAlpha.Clear;
   FGradientType := 'horizontal';
+  FEnabled := True;
+  FEnabledString := '1';
   FSkinDim.Clear;
   FSkinText.Clear;
 end;
@@ -1726,8 +1774,11 @@ begin
   FBitmapId := -1;
   FBmpList := BmpList;
   FDrawMode := sdmStretch;
+  FMasterAlphaString := '255';
   FMasterAlpha := 255;
   FLayerMode := TLayerMode(0);
+  FEnabled := True;
+  FEnabledString := '1';
   FID := '';
 end;
 
@@ -1900,6 +1951,62 @@ begin
 
   finally
     temp.free;
+  end;
+end;
+
+function EvaluateValue(str: string; cs: TSharpEScheme) : integer;
+var
+  n : integer;
+  tmp: string;
+  sub: boolean;
+  k : integer;
+begin
+  if length(str) = 0 then
+  begin
+    result := 0;
+    exit;
+  end;
+
+  for n := 0 to High(cs.Colors) do
+      str := StringReplace(str,cs.Colors[n].Tag,inttostr(cs.Colors[n].Color),[rfReplaceAll,rfIgnoreCase]);
+
+  result := 0;
+  tmp := '';
+  sub := false;
+  n := 0;
+  while n <= length(str) do
+  begin
+    inc(n);
+    if (str[n] >= '0') and (str[n] <= '9') then
+      tmp := tmp + str[n]
+    else
+    begin
+      if (tmp <> '') then
+      begin
+        if (sub) then
+        begin
+          if trystrtoint(tmp,k) then result := result - k
+        end else
+        begin
+          if trystrtoint(tmp,k) then result := result + k;
+        end;
+      end;
+      if (str[n] = '+') then
+          sub := false
+          else if (str[n] = '-') then
+                  sub := true;
+      tmp := '';
+    end;
+  end;
+  if (tmp <> '') then
+  begin
+    if (sub) then
+    begin
+      if trystrtoint(tmp,k) then result := result - k
+    end else
+    begin
+      if trystrtoint(tmp,k) then result := result + k;
+    end;
   end;
 end;
 
