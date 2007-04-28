@@ -178,6 +178,9 @@ begin
         temp := TModule(ModuleList.Items[n]);
         TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,temp.Form.Height);
         uSharpBarAPI.PaintBarBackGround(temp.BarWnd,TMainForm(temp.Form).Background.Bitmap,Temp.Form);
+        TMainForm(temp.Form).BGBmp.Assign(TMainForm(temp.Form).Background.Bitmap);
+        TMainForm(temp.Form).LastIcon := nil;
+        TMainForm(temp.Form).RenderIcon;
         TMainForm(temp.Form).ReAlignComponents(True);
       end;
 end;
@@ -217,6 +220,9 @@ begin
     begin
       TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,temp.Form.Height);
       uSharpBarAPI.PaintBarBackGround(temp.BarWnd,TMainForm(temp.Form).Background.Bitmap,Temp.Form);
+      TMainForm(temp.Form).BGBmp.Assign(TMainForm(temp.Form).Background.Bitmap);
+      TMainForm(temp.Form).LastIcon := nil;
+      TMainForm(temp.Form).RenderIcon;
       if (part = SU_THEME) or (part = SU_SKINFILECHANGED) then
          TMainForm(temp.Form).ReAlignComponents(True);
     end;

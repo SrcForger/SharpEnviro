@@ -33,10 +33,10 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, SysUtils, Classes, Controls, Forms,
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpESkinManager,
-  SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar, GR32,
-  JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math, SharpESkinLabel;
+  ExtCtrls, SharpEProgressBar, GR32,
+  JvSimpleXML, SharpApi, Menus, Math, SharpESkinLabel;
 
 
 type
@@ -62,6 +62,7 @@ type
     FBStatus1 : TBitmap32;
     FBStatus2 : TBitmap32;
     FLastIcon : TBitmap32; // Only a pointer! Never create or free this var!
+    FBGBmp    : TBitmap32;
   public
     ModuleID : integer;
     BarWnd   : hWnd;
@@ -69,6 +70,8 @@ type
     procedure SetSize(NewWidth : integer);
     procedure RenderIcon;
     procedure ReAlignComponents(BroadCast : boolean);
+    property BGBmp : TBitmap32 read FBGBmp;
+    property LastIcon : TBitmap32 read FLastIcon write FLastIcon;
   end;
 
 
@@ -124,7 +127,7 @@ begin
        LoadstatusPercent := -1;
  end;
  Result := GetLastError;
-end; 
+end;
 
 procedure TMainForm.LoadSettings;
 var
@@ -154,6 +157,9 @@ begin
   Background.Bitmap.SetSize(Width,Height);
   uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
   Background.Bitmap.EndUpdate;
+  FBGBmp.Assign(Background.Bitmap);
+  FLastIcon := nil;
+  RenderIcon;
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
@@ -179,7 +185,8 @@ begin
     lb_info.Visible := True;
     lb_info.Left := o1-5;
     lb_info.LabelStyle := lsSmall;
-    lb_info.Top := 1 + (o2 div 2) - (lb_info.Height div 2);
+    lb_info.UpdateSkin;
+    lb_info.Top := 2 + (o2 div 2) - (lb_info.Height div 2);
     if CompareText(lb_info.Caption,'Battery') = 0 then
     begin
       lb_info.Caption := 'AC Power';
@@ -193,9 +200,10 @@ begin
   begin
     lb_pc.Visible := True;
     lb_pc.LabelStyle := lsSmall;
+    lb_pc.UpdateSkin;
     if sShowInfo then lb_pc.Left := o3 - 8
        else lb_pc.Left := o3 - 5;
-    lb_pc.Top := 1 + (o2 div 2) - (lb_pc.Height div 2);
+    lb_pc.Top := 2 + (o2 div 2) - (lb_pc.Height div 2);
     o4 := max(o4,lb_pc.Left + lb_pc.Width + 2);
   end else lb_pc.Visible := False;
   if sShowPBar then
@@ -287,6 +295,7 @@ procedure TMainForm.RenderIcon;
 begin
   if not sShowIcon then exit;
 
+  FBGBmp.DrawTo(Background.Bitmap);
   if pbar.Value < 25 then
   begin
     if FLastIcon <> FBStatus2 then
@@ -306,6 +315,8 @@ var
   TempBmp : TBitmap32;
   b : boolean;
 begin
+  FBGBmp := TBitmap32.Create;
+
   FBStatus1 := TBitmap32.Create;
   FBStatus1.DrawMode := dmBlend;
   FBStatus1.CombineMode := cmMerge;
@@ -349,6 +360,7 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FBStatus1);
   FreeAndNil(FBStatus2);
+  FreeAndNil(FBGBmp);
 end;
 
 end.

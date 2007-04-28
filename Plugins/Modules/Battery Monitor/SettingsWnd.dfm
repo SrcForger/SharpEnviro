@@ -41,12 +41,4 @@ object SettingsForm: TSettingsForm
     Caption = 'Display Icon'
     TabOrder = 2
   end
-  object OpenFile: TOpenDialog
-    FileName = '*.*'
-    Filter = 'All Files|*.*|Applications (*.exe)|*.exe'
-    Options = [ofHideReadOnly, ofEnableSizing, ofForceShowHidden]
-    Title = 'Select Target File'
-    Left = 168
-    Top = 8
-  end
 end
