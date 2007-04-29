@@ -17,7 +17,6 @@ type
 Type
   TSharpESwatchCollection = Class(TScrollBox)
   private
-    FSwatches: TSharpESwatchCollectionItems;
     FScheme: TSharpECenterScheme;
     FPopupMenu: Tpopupmenu;
     FImageList: TPngImageList;
@@ -150,6 +149,7 @@ begin
 
       Add(NewItem('Save Selected',0,False,True,MenuClickEvent,
       0,'miSaveSelSwatch'));
+
     end;
 
     Add(NewItem('Selection',0,False,True,MenuClickEvent,
@@ -162,6 +162,15 @@ begin
           0,'miSelectAll'));
       Add(NewItem('Select None',0,False,True,MenuClickEvent,
           0,'miSelectNone'));
+
+      Add(NewItem('-',0,False,True,MenuClickEvent,
+        0,'miBlank'));
+
+      Add(NewItem('Delete All',0,False,True,MenuClickEvent,
+        0,'miDeleteAll'));
+
+      Add(NewItem('Delete Selected',0,False,True,MenuClickEvent,
+        0,'miDeleteSelected'));
     end;
 
     Add(NewItem('Options',0,False,True,MenuClickEvent,
@@ -225,7 +234,7 @@ procedure TSharpESwatchCollection.MenuClickEvent(Sender: TObject);
 var
   sCol, sName: String;
   col: TColor;
-
+  i: Integer;
   tmpMI: TMenuItem;
   tmpSwatch: TSharpESwatchCollectionItem;
 begin
@@ -248,6 +257,22 @@ begin
   if tmpMI.Name = 'miDeleteSwatch' then begin
 
     FSwatchManager.Swatches.Delete(FSwatchManager.Swatches.IndexOf(tmpSwatch.DisplayName));
+    Resize;
+  end else
+  if tmpMI.Name = 'miDeleteAll' then begin
+
+    FSwatchManager.Swatches.Clear;
+    Resize;
+  end else
+  if tmpMI.Name = 'miDeleteSelected' then begin
+
+    For i := Pred(SwatchManager.Swatches.Count) downto 0 do begin
+      tmpSwatch := TSharpESwatchCollectionItem(SwatchManager.Swatches.Items[i]);
+
+      if tmpSwatch.Selected then
+        SwatchManager.Swatches.Delete(SwatchManager.Swatches.IndexOf(tmpSwatch.DisplayName));
+    end;
+
     Resize;
   end else
   if tmpMI.Name = 'miLoadSwatch' then begin
