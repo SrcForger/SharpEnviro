@@ -1,0 +1,3 @@
+COLOR_PANEL_GEAR_PNG RCDATA "res\gear.png"
+COLOR_PANEL_HEART_PNG RCDATA "res\heart2.png"
+COLOR_PANEL_ADD_PNG RCDATA "res\plus.png"
