@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, GR32_RangeBars, SharpApi, XPMan, Menus, ExtCtrls,
-  uSharpeColorBox, Mask, JvExMask, JvSpin, adCpuUsage;
+  JvSpin, adCpuUsage, SharpEColorPicker, Mask, JvExMask;
 
 type
   TSettingsForm = class(TForm)
@@ -50,11 +50,8 @@ type
     rb_line: TRadioButton;
     rb_cu: TRadioButton;
     Label2: TLabel;
-    scb_bg: TSharpEColorBox;
     Label3: TLabel;
-    scb_fg: TSharpEColorBox;
     Label5: TLabel;
-    scb_border: TSharpEColorBox;
     Label6: TLabel;
     Label7: TLabel;
     lb_update: TLabel;
@@ -68,6 +65,9 @@ type
     tb_fgalpha: TGaugeBar;
     lb_borderalpha: TLabel;
     tb_borderalpha: TGaugeBar;
+    scb_bg: TSharpEColorPicker;
+    scb_fg: TSharpEColorPicker;
+    scb_border: TSharpEColorPicker;
     procedure tb_borderalphaChange(Sender: TObject);
     procedure tb_fgalphaChange(Sender: TObject);
     procedure tb_bgalphaChange(Sender: TObject);

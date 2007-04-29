@@ -212,33 +212,6 @@ object SettingsForm: TSettingsForm
     Caption = 'Current Usage (Progress Bar)'
     TabOrder = 5
   end
-  object scb_bg: TSharpEColorBox
-    Left = 16
-    Top = 264
-    Width = 35
-    Height = 15
-    BackgroundColor = clBtnFace
-    Color = clWhite
-    ColorCode = 16777215
-  end
-  object scb_fg: TSharpEColorBox
-    Left = 16
-    Top = 288
-    Width = 35
-    Height = 15
-    BackgroundColor = clBtnFace
-    Color = clWhite
-    ColorCode = 16777215
-  end
-  object scb_border: TSharpEColorBox
-    Left = 16
-    Top = 312
-    Width = 35
-    Height = 15
-    BackgroundColor = clBtnFace
-    Color = clWhite
-    ColorCode = 16777215
-  end
   object tb_update: TGaugeBar
     Left = 8
     Top = 64
@@ -319,6 +292,33 @@ object SettingsForm: TSettingsForm
     Style = rbsMac
     Position = 255
     OnChange = tb_borderalphaChange
+  end
+  object scb_bg: TSharpEColorPicker
+    Left = 8
+    Top = 264
+    Width = 35
+    Height = 15
+    BackgroundColor = clBtnFace
+    Color = clWhite
+    ColorCode = 16777215
+  end
+  object scb_fg: TSharpEColorPicker
+    Left = 8
+    Top = 288
+    Width = 35
+    Height = 15
+    BackgroundColor = clBtnFace
+    Color = clWhite
+    ColorCode = 16777215
+  end
+  object scb_border: TSharpEColorPicker
+    Left = 8
+    Top = 312
+    Width = 35
+    Height = 15
+    BackgroundColor = clBtnFace
+    Color = clWhite
+    ColorCode = 16777215
   end
   object XPManifest1: TXPManifest
     Left = 152

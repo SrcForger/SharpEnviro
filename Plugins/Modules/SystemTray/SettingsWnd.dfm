@@ -138,24 +138,6 @@ object SettingsForm: TSettingsForm
     TabOrder = 3
     OnClick = Button2Click
   end
-  object scb_dbg: TSharpEColorBox
-    Left = 128
-    Top = 56
-    Width = 35
-    Height = 15
-    BackgroundColor = clBtnFace
-    Color = clWhite
-    ColorCode = 16777215
-  end
-  object scb_dbd: TSharpEColorBox
-    Left = 128
-    Top = 128
-    Width = 35
-    Height = 15
-    BackgroundColor = clBtnFace
-    Color = clWhite
-    ColorCode = 16777215
-  end
   object tb_dbg: TGaugeBar
     Left = 28
     Top = 96
@@ -200,15 +182,6 @@ object SettingsForm: TSettingsForm
     TabOrder = 8
     OnClick = cb_blendClick
   end
-  object scb_blend: TSharpEColorBox
-    Left = 128
-    Top = 200
-    Width = 35
-    Height = 15
-    BackgroundColor = clBtnFace
-    Color = clWhite
-    ColorCode = 16777215
-  end
   object tb_blend: TGaugeBar
     Left = 28
     Top = 240
@@ -243,5 +216,32 @@ object SettingsForm: TSettingsForm
     Style = rbsMac
     Position = 255
     OnChange = tb_alphaChange
+  end
+  object scb_dbg: TSharpEColorPicker
+    Left = 128
+    Top = 56
+    Width = 35
+    Height = 15
+    BackgroundColor = clBtnFace
+    Color = clWhite
+    ColorCode = 16777215
+  end
+  object scb_dbd: TSharpEColorPicker
+    Left = 128
+    Top = 128
+    Width = 35
+    Height = 15
+    BackgroundColor = clBtnFace
+    Color = clWhite
+    ColorCode = 16777215
+  end
+  object scb_blend: TSharpEColorPicker
+    Left = 128
+    Top = 200
+    Width = 35
+    Height = 15
+    BackgroundColor = clBtnFace
+    Color = clWhite
+    ColorCode = 16777215
   end
 end

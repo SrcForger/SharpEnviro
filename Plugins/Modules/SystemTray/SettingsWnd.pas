@@ -34,7 +34,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, uSharpeColorBox, GR32_RangeBars, ExtCtrls;
+  Dialogs, StdCtrls, GR32_RangeBars, ExtCtrls,
+  SharpEColorPicker;
 
 type
   TSettingsForm = class(TForm)
@@ -42,8 +43,6 @@ type
     cb_dbd: TCheckBox;
     Button1: TButton;
     Button2: TButton;
-    scb_dbg: TSharpEColorBox;
-    scb_dbd: TSharpEColorBox;
     Label4: TLabel;
     lb_dbg: TLabel;
     tb_dbg: TGaugeBar;
@@ -53,11 +52,13 @@ type
     Label2: TLabel;
     lb_blend: TLabel;
     cb_blend: TCheckBox;
-    scb_blend: TSharpEColorBox;
     tb_blend: TGaugeBar;
     Label3: TLabel;
     lb_alpha: TLabel;
     tb_alpha: TGaugeBar;
+    scb_dbg: TSharpEColorPicker;
+    scb_dbd: TSharpEColorPicker;
+    scb_blend: TSharpEColorPicker;
     procedure tb_alphaChange(Sender: TObject);
     procedure tb_blendChange(Sender: TObject);
     procedure cb_blendClick(Sender: TObject);
