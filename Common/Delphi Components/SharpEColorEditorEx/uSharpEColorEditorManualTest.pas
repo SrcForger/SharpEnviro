@@ -1,0 +1,68 @@
+unit uSharpEColorEditorManualTest;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, SharpEColorEditorEx, ExtCtrls, StdCtrls, XPMan, comctrls,
+  sharpthemeapi, uVistaFuncs, SharpESwatchManager;
+
+type
+  TForm2 = class(TForm)
+    SharpESwatchManager1: TSharpESwatchManager;
+    Button1: TButton;
+    procedure FormCreate(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form2: TForm2;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm2.Button1Click(Sender: TObject);
+var
+  tmp:TSharpEColorEditorEx;
+  tmpItem: TSharpEColorEditorExItem;
+begin
+  LockWindowUpdate(self.Handle);
+  Try
+
+  tmp := TSharpEColorEditorEx.Create(Self);
+  tmp.Parent := Self;
+  tmp.SwatchManager := SharpESwatchManager1;
+  tmp.Align := alClient;
+  tmp.Height := 200;
+  tmp.Color := clWindow;
+
+
+  
+    tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
+    tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
+
+    tmp.Items.Item[0].Title := 'New';
+    tmp.Items.Item[0].ColorCode := clRed;
+
+    tmp.Items.Item[1].Title := 'New';
+    tmp.Items.Item[1].ColorCode := clRed;
+    tmp.Items.Item[1].Expanded;
+  Finally
+    lockwindowupdate(0);
+  End;
+
+  
+  
+end;
+
+procedure TForm2.FormCreate(Sender: TObject);
+begin
+   loadtheme;
+end;
+
+end.

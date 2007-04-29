@@ -1,0 +1,43 @@
+object Form2: TForm2
+  Left = 0
+  Top = 0
+  Width = 434
+  Height = 320
+  Caption = 'Form2'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Button1: TButton
+    Left = 336
+    Top = 160
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 0
+    OnClick = Button1Click
+  end
+  object SharpESwatchManager1: TSharpESwatchManager
+    Swatches = <>
+    Width = 100
+    ShowCaptions = True
+    SwatchHeight = 16
+    SwatchWidth = 16
+    SwatchSpacing = 4
+    SwatchFont.Charset = DEFAULT_CHARSET
+    SwatchFont.Color = clWindowText
+    SwatchFont.Height = -11
+    SwatchFont.Name = 'Tahoma'
+    SwatchFont.Style = []
+    SwatchTextBorderColor = 16709617
+    SortMode = sortName
+    Left = 352
+    Top = 236
+  end
+end
