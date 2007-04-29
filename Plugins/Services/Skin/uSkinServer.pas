@@ -34,8 +34,7 @@ uses Windows, Dialogs, SysUtils, Classes,
      GR32,
      SharpApi,
      SharpThemeApi,
-     SharpESkin,
-     GR32_Filters;
+     SharpESkin;
 
 Type
 
@@ -90,6 +89,7 @@ begin
   end;
   FSkin.SaveToStream(FStream,true);
   FreeAndNil(FStream);
+  FSkin.Clear;
 end;
 
 procedure TSkinServer.CreateParams(var Params: TCreateParams);

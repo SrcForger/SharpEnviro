@@ -30,13 +30,8 @@ library SkinController;
 
 uses
   windows,
-  registry,
   Classes,
   Messages,
-  activex,
-  sysutils,
-  forms,
-  Jclstrings,
   uSkinServer in 'uSkinServer.pas' {SkinServer},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
