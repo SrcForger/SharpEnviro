@@ -42,11 +42,6 @@ uses
   Classes,
   Graphics,
   Registry,
-  shlobj,
-  inifiles,
-  jpeg,
-  dialogs,
-  shfolder,
 
   // Calc Express
   CalcExpress,
@@ -57,8 +52,8 @@ uses
 
   // JCL
   JclFileUtils,
-  jclSysInfo,
-  jclstrings,
+  JclSysInfo,
+  Jclstrings,
 
   // Project
   uExecServicePathIncludeList,
