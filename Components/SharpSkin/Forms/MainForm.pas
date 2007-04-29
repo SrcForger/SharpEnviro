@@ -37,11 +37,11 @@ uses
   Dialogs, JvExControls, JvComponent, JvEditorCommon, JvUnicodeEditor,
   JvUnicodeHLEditor, JvEditor, JvHLEditor, Menus, ExtCtrls, StdCtrls,
   JvExStdCtrls, JvListBox, JvSimpleXML, JvHLEditorPropertyForm, ToolWin,
-  ComCtrls, ImgList, PngImageList, Tabs, JvTabBar, GR32_Image, uSharpeColorBox,
+  ComCtrls, ImgList, PngImageList, Tabs, JvTabBar, GR32_Image,
   SharpESkin, SharpEButton, SharpESkinManager, SharpEBaseControls, SharpEScheme,
   SharpECheckBox, SharpEProgressBar, SharpEBar, gr32,
   SharpEMiniThrobber, SharpERadioBox, SharpEPanel, SharpEEdit, SharpELabel,
-  SharpETaskItem, SharpApi, Graphics;
+  SharpETaskItem, SharpApi, Graphics, SharpEColorPicker;
 
 type
   TForm1 = class(TForm)
@@ -1044,7 +1044,7 @@ procedure TForm1.UpdateColorComponents;
 var
   n,i : integer;
   TagLabel : TLabel;
-  ColorBox : TSharpEColorBox;
+  ColorPicker : TSharpEColorPicker;
   XML : TJvSimpleXML;
   fname : string;
 begin
@@ -1066,12 +1066,12 @@ begin
           TagLabel.Left := 8;
           TagLabel.Top := i;
           TagLabel.Caption := Value('Tag','');
-          ColorBox := TSharpEColorBox.Create(cpanel);
-          ColorBox.Parent := cPanel;
-          ColorBox.Left := cpanel.Width - 16 - ColorBox.Width;
-          ColorBox.Top := i;
-          ColorBox.Color := IntValue('Default',clWhite);
-          ColorBox.OnColorClick := OnColorClick;
+          ColorPicker := TSharpEColorPicker.Create(cpanel);
+          ColorPicker.Parent := cPanel;
+          ColorPicker.Left := cpanel.Width - 16 - ColorPicker.Width;
+          ColorPicker.Top := i;
+          ColorPicker.Color := IntValue('Default',clWhite);
+          ColorPicker.OnColorClick := OnColorClick;
           i := i + 24;
         end;
   except
@@ -1088,7 +1088,7 @@ begin
   if cpanel.ComponentCount = 0 then exit;
 
   for n := 0 to (cpanel.ComponentCount div 2) - 1 do
-      Scheme.AddColor(inttostr(n),TLabel(cpanel.Components[n*2]).Caption,'',TSharpEColorBox(cpanel.Components[n*2+1]).Color);
+      Scheme.AddColor(inttostr(n),TLabel(cpanel.Components[n*2]).Caption,'',TSharpEColorPicker(cpanel.Components[n*2+1]).Color);
   RepaintSkinDemo;
 end;
 

@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, JvSimpleXML, uSharpEColorBox;
+  Dialogs, ExtCtrls, StdCtrls, JvSimpleXML, SharpEColorPicker;
 
 type
   TSchemeEditForm = class(TForm)
@@ -80,7 +80,7 @@ procedure TSchemeEditForm.LoadFromFile;
 var
   XML : TJvSimpleXML;
   NameEdit, TagEdit, InfoEdit : TEdit;
-  ColorBox : TSharpEColorBox;
+  ColorPicker : TSharpEColorPicker;
   n,i :  integer;
 begin
   ClearComponents;
@@ -111,11 +111,11 @@ begin
           InfoEdit.Left := 8+128+8+128+8;
           InfoEdit.Top  := i + 8;
           InfoEdit.Text := Value('Info','');
-          ColorBox := TSharpEColorBox.Create(cpanel);
-          ColorBox.Parent := cpanel;
-          ColorBox.Left := 8+128+8+128+8+128+16;
-          ColorBox.Top := i + 8;
-          ColorBox.Color := IntValue('Default',0);
+          ColorPicker := TSharpEColorPicker.Create(cpanel);
+          ColorPicker.Parent := cpanel;
+          ColorPicker.Left := 8+128+8+128+8+128+16;
+          ColorPicker.Top := i + 8;
+          ColorPicker.Color := IntValue('Default',0);
           i := i + 32;
         end;
   except
@@ -152,7 +152,7 @@ begin
         Add('Name',TEdit(cpanel.Components[n*4]).Text);
         Add('Tag',TEdit(cpanel.Components[n*4+1]).Text);
         Add('Info',TEdit(cpanel.Components[n*4+2]).Text);
-        Add('Default',TSharpEColorBox(cpanel.Components[n*4+3]).Color);
+        Add('Default',TSharpEColorPicker(cpanel.Components[n*4+3]).Color);
       end;
     end;
   end;
@@ -165,11 +165,11 @@ end;
 procedure TSchemeEditForm.Button3Click(Sender: TObject);
 var
   NameEdit, TagEdit, InfoEdit : TEdit;
-  ColorBox : TSharpEColorBox;
+  ColorPicker : TSharpEColorPicker;
   i : integer;
 begin
   if cpanel.ComponentCount = 0 then i := 8
-     else i := TSharpEColorBox(cpanel.Components[cpanel.ComponentCount-1]).top;
+     else i := TSharpEColorPicker(cpanel.Components[cpanel.ComponentCount-1]).top;
   i := i + 32;
 
   NameEdit := TEdit.Create(cpanel);
@@ -187,10 +187,10 @@ begin
   InfoEdit.Width := 128;
   InfoEdit.Left := 8+128+8+128+8;
   InfoEdit.Top  := i;
-  ColorBox := TSharpEColorBox.Create(cpanel);
-  ColorBox.Parent := cpanel;
-  ColorBox.Left := 8+128+8+128+8+128+16;
-  ColorBox.Top := i;
+  ColorPicker := TSharpEColorPicker.Create(cpanel);
+  ColorPicker.Parent := cpanel;
+  ColorPicker.Left := 8+128+8+128+8+128+16;
+  ColorPicker.Top := i;
 
   Height := i + 8 + 32 + 8 + Panel1.Height + Panel3.Height;
 end;
