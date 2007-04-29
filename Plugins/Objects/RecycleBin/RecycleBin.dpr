@@ -196,8 +196,6 @@ var
    MenuItem : TMenuItem;
    bmp2 : TBitmap;
    n : integer;
-   s : String;
-   b : boolean;
    Layer : TLayer;
 begin
   if FirstStart then exit;
