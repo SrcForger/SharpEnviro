@@ -37,7 +37,7 @@ uses
   Dialogs, SharpESkinManager, Menus, StdCtrls, JvSimpleXML, SharpApi,
   GR32, uSharpEModuleManager, DateUtils, PngImageList, SharpEBar, SharpThemeApi,
   SharpEBaseControls, ImgList, Controls, ExtCtrls, uSkinManagerThreads,
-  uSystemFuncs, Types, AppEvnts, uSharpEColorBox, SharpESkin;
+  uSystemFuncs, Types, AppEvnts, SharpEColorPicker, SharpESkin;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -1270,7 +1270,7 @@ begin
             with XML.Root.Items.Add('Item').Items do
             begin
               Add('Tag',TLabel(EditSchemeForm.ColorPanel.Components[2*n]).Hint);
-              Add('Color',TSharpEColorBox(EditSchemeForm.ColorPanel.Components[2*n+1]).Color);
+              Add('Color',TSharpEColorPicker(EditSchemeForm.ColorPanel.Components[2*n+1]).Color);
             end;
         XML.SaveToFile(Dir + EditSchemeForm.edit_name.Text + '.xml');
         if EditSchemeForm.edit_name.Text = SharpThemeApi.GetSchemeName then

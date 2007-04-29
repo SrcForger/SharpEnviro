@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, SharpThemeApi, SharpApi, JvSimpleXML, uSharpEColorBox;
+  Dialogs, StdCtrls, ExtCtrls, SharpThemeApi, SharpApi, JvSimpleXML, SharpEColorPicker;
 
 type
   TEditSchemeForm = class(TForm)
@@ -36,7 +36,7 @@ var
   n : integer;
   cc : TSharpESkinColor;
   lb : TLabel;
-  scb : TSharpEColorBox;
+  scb : TSharpEColorPicker;
 begin
   for n := ColorPanel.ComponentCount - 1 downto 0 do
       ColorPanel.Components[n].Free;
@@ -53,7 +53,7 @@ begin
     lb.Caption := cc.Name;
     lb.Hint := cc.Tag;
 
-    scb := TSharpEColorBox.Create(ColorPanel);
+    scb := TSharpEColorPicker.Create(ColorPanel);
     scb.Parent := ColorPanel;
     scb.Top := 12 + n * 24;
     scb.Left := 225;
