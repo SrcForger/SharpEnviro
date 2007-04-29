@@ -43,7 +43,7 @@ type
     FOnChangeColor: TNotifyEvent;
     FOnLoad: TNotifyEvent;
     FTimer: TTimer;
-    procedure TimerEvent(Sender:TObject);
+
     procedure SetEditBordCol(const Value: TColor);
     procedure SetEditCol(const Value: TColor);
     procedure SetEditErrCol(const Value: TColor);
@@ -194,11 +194,6 @@ constructor TSharpECenterScheme.Create(AOwner: TComponent);
 begin
   inherited;
   SetDefaults;
-
-  Ftimer := TTimer.Create(nil);
-  FTimer.Interval := 1;
-  FTimer.OnTimer := TimerEvent;
-  FTimer.Enabled := True;
 end;
 
 destructor TSharpECenterScheme.Destroy;
@@ -495,14 +490,6 @@ begin
 
   if assigned(FOnChangeColor) then
     FOnChangeColor(Self);
-end;
-
-procedure TSharpECenterScheme.TimerEvent(Sender: TObject);
-begin
-  FTimer.Enabled := False;
-
-  if Assigned(FOnLoad) then
-    FOnLoad(self);
 end;
 
 end.
