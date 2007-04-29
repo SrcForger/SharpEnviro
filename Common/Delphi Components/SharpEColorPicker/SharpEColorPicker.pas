@@ -398,7 +398,7 @@ end;
 procedure TCustomSharpeColorPicker.SetColor(const Value: TColor);
 begin
   FColor := Value;
-  //ColorCode := Value;
+  ColorCode := Value;
 
   FCustomColor.Color := Value;
 
