@@ -35,10 +35,8 @@ interface
 uses Graphics,
      Windows,
      Sysutils,
-     Forms,
      JvSimpleXML,
-     SharpApi,
-     uSharpDeskObjectSet;
+     SharpApi;
 
 type
     TDeskSettings = class
