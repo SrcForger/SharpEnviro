@@ -607,6 +607,7 @@ begin
       begin
         SharpDesk.DeskSettings.ReloadSettings;
       end;
+  end;
 end;
 
 
