@@ -60,6 +60,7 @@ type
                    FItems          : TObjectList;
                    FSortTasks      : Boolean;
                    FSortType       : TSortType;
+                   FLastActiveTask : hwnd;
                  public
                    procedure RemoveDeadTasks;
                    procedure AddTask(pHandle : hwnd);
@@ -86,6 +87,7 @@ type
                    property OnFlashTask    : TTaskChangeEvent read FOnFlashTask write FOnFlashTask;
                    property OnTaskExchange : TTaskExChangeEvent read FOnTaskExChange write FOnTaskExChange;
                    property ItemCount      : integer          read GetCount;
+                   property LastActiveTask : hwnd             read FLastActiveTask write FLastActiveTask;
                  end;
 
 implementation
@@ -106,6 +108,7 @@ begin
   FItems.Clear;
   FSortTasks := True;
   FSortType  := stCaption;
+  FLastActiveTask := 0;
 end;
 
 destructor TTaskManager.Destroy;

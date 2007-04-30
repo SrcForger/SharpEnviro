@@ -731,7 +731,7 @@ begin
           pItem.State := sState;
           if pItem.State = tisMini then
           begin
-            pItem.Hint := pTask.Caption; 
+            pItem.Hint := pTask.Caption;
             pItem.ShowHint := True;
           end else pItem.ShowHint := False;
         end;
@@ -959,7 +959,10 @@ begin
       pTaskItem := TSharpETaskItem(IList.Items[n]);
       if pTaskItem <> nil then
          if pTaskItem.Down then
-            pTaskItem.Down := False;
+         begin
+           pTaskItem.Down := False;
+           TM.LastActiveTask := pTaskItem.Tag;
+         end;
     end;
     exit;
   end;
@@ -976,7 +979,10 @@ begin
       if pTaskItem <> nil then
       begin
         if (pItem.Handle <> pTaskItem.Tag ) and (pTaskItem.Down) then
+        begin
+           TM.LastActiveTask := pTaskItem.Tag;
            pTaskItem.Down := False
+        end
         else if pItem.Handle = pTaskItem.Tag then
         begin
           pTaskItem.Down := True;
@@ -1115,12 +1121,9 @@ begin
   if pItem <> nil then
   begin
     pItem.UpdateVisibleState;
-    if (not pItem.Visible) or (not TSharpETaskItem(Sender).Down) then
+    if (not pItem.Visible) or (TM.LastActiveTask <> TSharpETaskItem(Sender).Tag) then
     begin
       pItem.Restore;
-    	//BringWindowToTop(pItem.Handle);
-      //SetActiveWindow(pItem.Handle);
-      //SetForegroundWindow(pItem.Handle);
     end else
     begin
       TSharpETaskItem(Sender).Down := False;
