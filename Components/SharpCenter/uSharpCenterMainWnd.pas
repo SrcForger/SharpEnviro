@@ -54,9 +54,9 @@ uses
   Tabs,
   SharpEListBox, SharpESkinManager, uSharpCenterPluginTabList,
   uSharpCenterDllMethods, uSharpCenterManager,
-  ToolWin, SharpERoundPanel, XPMan, uSharpETabList,
+  ToolWin, SharpERoundPanel, XPMan, 
   GR32_Image, GR32, uVistaFuncs, JvLabel, JvPageList, SharpEListBoxEx,
-  PngBitBtn;
+  PngBitBtn, SharpETabList;
 
 const
   cEditTabHide=0;
