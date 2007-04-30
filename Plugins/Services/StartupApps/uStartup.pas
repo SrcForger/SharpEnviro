@@ -97,8 +97,12 @@ end;
 
 procedure TStartup.DeleteEntriesIn(AKey: string; AHKEY: HKEY);
 begin
-  DeleteRegKey(AKey, AHKEY);
-  CreateRegKey(AKey, '', '', AHKEY);
+  try
+    DeleteRegKey(AKey, AHKEY);
+    CreateRegKey(AKey, '', '', AHKEY);
+  except
+    Debug('Unable to Delete Key: ' + AKey, DMT_INFO);
+  end;
 end;
 
 function TStartup.FindTask(ExeFileName: string): Integer;
@@ -219,7 +223,8 @@ var
 begin
   sList := TStringList.Create;
   Reg := Tregistry.Create;
-  with Reg do begin
+  with Reg do
+  begin
     Access := KEY_READ;
     rootkey := AHKEY;
     OpenKey(AKey, False);
@@ -231,9 +236,10 @@ begin
     sCmd := '';
 
 
-    for i := 0 to Pred(sList.Count) do begin
-      sFile := sList[i];
-      if Not(AppRunning(sFile)) then
+    for i := 0 to Pred(sList.Count) do
+    begin
+      sFile := Reg.ReadString(sList[i]);
+      if Not(AppRunning(ExtractFileName(sFile))) then
         ServiceMsg('exec',pchar('_nohist,' + sFile));
     end;
 
