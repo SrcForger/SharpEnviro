@@ -606,6 +606,8 @@ begin
     SU_SHARPDESK:
       begin
         SharpDesk.DeskSettings.ReloadSettings;
+        if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
+           else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
       end;
   end;
 end;
