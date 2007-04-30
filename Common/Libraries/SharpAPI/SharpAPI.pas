@@ -55,6 +55,7 @@ const
   SU_BACKGROUND = 6; // SHARPBAR
   SU_SERVICE = 7;
   SU_DESKTOPICON = 8;
+  SU_SHARPDESK = 9;
 
   // Shell message
   WM_SHARPSHELLMESSAGE = WM_APP + 507;
