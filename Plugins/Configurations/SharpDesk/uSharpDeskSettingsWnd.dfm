@@ -44,6 +44,8 @@ object frmDeskSettings: TfrmDeskSettings
           Width = 153
           Height = 17
           Caption = 'Align Objects to Grid'
+          Checked = True
+          State = cbChecked
           TabOrder = 0
           OnClick = cb_gridClick
         end
@@ -138,7 +140,7 @@ object frmDeskSettings: TfrmDeskSettings
         Left = 0
         Top = 113
         Width = 502
-        Height = 32
+        Height = 64
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
@@ -151,6 +153,17 @@ object frmDeskSettings: TfrmDeskSettings
           Caption = 'Single Click Action'
           TabOrder = 0
           OnClick = cb_singleclickClick
+        end
+        object cb_dd: TCheckBox
+          Left = 16
+          Top = 40
+          Width = 153
+          Height = 17
+          Caption = 'Enable Drag && Drop'
+          Checked = True
+          State = cbChecked
+          TabOrder = 1
+          OnClick = cb_ddClick
         end
       end
     end

@@ -61,6 +61,8 @@ type
     Panel3: TPanel;
     cb_amm: TCheckBox;
     Label2: TLabel;
+    cb_dd: TCheckBox;
+    procedure cb_ddClick(Sender: TObject);
     procedure cb_ammClick(Sender: TObject);
     procedure cb_singleclickClick(Sender: TObject);
     procedure cb_gridClick(Sender: TObject);
@@ -128,6 +130,11 @@ begin
 end;
 
 procedure TfrmDeskSettings.cb_ammClick(Sender: TObject);
+begin
+  SendUpdate;
+end;
+
+procedure TfrmDeskSettings.cb_ddClick(Sender: TObject);
 begin
   SendUpdate;
 end;

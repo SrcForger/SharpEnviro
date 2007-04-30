@@ -68,6 +68,7 @@ begin
   frmDeskSettings.tb_gridy.Position := XMLSettings.GridY;
   frmDeskSettings.cb_singleclick.Checked := XMLSettings.SingleClick;
   frmDeskSettings.cb_amm.Checked := XMLSettings.AdvancedMM;
+  frmDeskSettings.cb_dd.Checked := XMLSettings.DragAndDrop;
 
   frmDeskSettings.Show;
   result := frmDeskSettings.Handle;
@@ -84,6 +85,7 @@ begin
       XMLSettings.GridY := frmDeskSettings.tb_gridy.Position;
       XMLSettings.SingleClick := frmDeskSettings.cb_singleclick.Checked;
       XMLSettings.AdvancedMM := frmDeskSettings.cb_amm.Checked;
+      XMLSettings.DragAndDrop := frmDeskSettings.cb_dd.Checked;
       XMLSettings.SaveSettings;
     end;
     
