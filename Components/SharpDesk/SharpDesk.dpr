@@ -41,7 +41,6 @@ uses
   Controls,
   uSharpDeskMainForm in 'Forms\uSharpDeskMainForm.pas' {SharpDeskMainForm},
   uSharpDeskSettingsForm in 'Forms\uSharpDeskSettingsForm.pas' {SettingsForm},
-  uSharpDeskDeskSettingsForm in 'Forms\uSharpDeskDeskSettingsForm.pas' {DeskSettingsForm},
   uSharpDeskLoadThemeForm in 'Forms\uSharpDeskLoadThemeForm.pas' {LoadThemeForm},
   uSharpDeskCreateForm in 'Forms\uSharpDeskCreateForm.pas' {CreateForm},
   uSharpDeskBackgroundUnit in 'Units\uSharpDeskBackgroundUnit.pas',
@@ -127,7 +126,6 @@ begin
   end;
   CloseHandle(MuteXHandle);
 
-  Application.CreateForm(TDeskSettingsForm, DeskSettingsForm);
   Application.CreateForm(TCreateForm, CreateForm);
   Application.CreateForm(TSettingsForm, SettingsForm);
   Application.CreateForm(TCreateForm, CreateForm);

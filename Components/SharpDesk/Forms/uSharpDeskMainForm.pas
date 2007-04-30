@@ -267,7 +267,6 @@ implementation
 
 uses uSharpDeskCreateForm,
      uSharpDeskSettingsForm,
-     uSharpDeskDeskSettingsForm,
      uSharpDeskAlignSettingsForm,
      uSharpDeskObjectSet;
 
@@ -369,7 +368,6 @@ end;
 procedure TSharpDeskMainForm.WMDisableDesk(var Msg : TMessage);
 begin
   if CreateForm.Visible       then CreateForm.btn_cancel.OnClick(nil);
-  if DeskSettingsForm.Visible then DeskSettingsForm.btn_Cancel.OnClick(nil);
   if SettingsForm.Visible     then SettingsForm.btn_cancel.OnClick(nil);
   SharpDesk.DisableAnimation;
   SharpDeskMainForm.Enabled := False;
@@ -443,7 +441,6 @@ begin
                         Screen.DesktopWidth, Screen.DesktopHeight, SWP_SHOWWINDOW);
            ForceForegroundWindow(SharpDeskMainForm.Handle);
            if CreateForm.Visible       then ForceForegroundWindow(CreateForm.Handle);
-           if DeskSettingsForm.Visible then ForceForegroundWindow(DeskSettingsForm.Handle);
            if LoadThemeForm <> nil then
               if LoadThemeForm.Visible then ForceForegroundWindow(LoadThemeForm.Handle);
            if SettingsForm.Visible     then ForceForegroundWindow(SettingsForm.Handle);
@@ -521,14 +518,6 @@ begin
 
     LoadThemeForm.ReDrawForm;
 
-    if DeskSettingsForm <> nil then
-       if DeskSettingsForm.visible then
-       begin
-         DeskSettingsForm.Hide;
-         Application.ProcessMessages;
-         DeskSettingsForm.Show;
-         Application.ProcessMessages;
-       end;
     SharpDeskMainForm.SendMessageToConsole('loading desktop objects',COLOR_OK,DMT_STATUS);
     LoadThemeForm.SetStatus('Loading Desktop Objects',75);
     SharpDesk.ObjectSetList.LoadFromFile;
@@ -590,8 +579,6 @@ end;
 
 procedure TSharpDeskMainForm.WMShowDesktopSettings(var msg : TMessage);
 begin
-     DeskSettingsForm.LoadSettings;
-     DeskSettingsForm.Show;
 end;
 
 
