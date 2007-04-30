@@ -306,6 +306,8 @@ begin
     Settings.LoadSettings;
     Settings.Target := '{File}';
     Settings.Caption := '{FileName}';
+    Settings.Icon := 'shell:icon';
+    Settings.MLineCaption := False;
     Settings.SaveSettings(False);
     Settings.Free;
     XML.SaveToFile(GetSharpeGlobalSettingsPath + 'SharpDesk\DragAndDrop\Link().xml');
