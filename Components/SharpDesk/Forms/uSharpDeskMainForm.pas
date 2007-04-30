@@ -596,25 +596,17 @@ end;
 
 
 // #################################################
-// Scheme has changed message - update compontens...
+// a settings has changed
 
 procedure TSharpDeskMainForm.WMSharpEUppdateSettings(var msg: TMessage);
 begin
-{     cs:=LoadColorScheme;
-     Background.LoadSettings;
-     Background.Reload;
-//     Background.ApplyEffects;
-     MainForm.Repaint;
+  if msg.WParam < 0 then exit;
 
-     for n:=0 to High(PList) do
-     begin
-          ptemp := PList[n].PluginList;
-          while ptemp.next<>nil do
-          begin
-               ptemp:=ptemp.next;
-               PList[n].SharpDeskMessage(ptemp.ObjectID,TBitmapLayer(GetLayerByObjectID(ptemp.ObjectID)),SDM_REPAINT_LAYER,0,0,0);
-          end;
-     end;}
+  case msg.WParam of
+    SU_SHARPDESK:
+      begin
+        SharpDesk.DeskSettings.ReloadSettings;
+      end;
 end;
 
 
