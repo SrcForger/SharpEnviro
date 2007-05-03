@@ -194,6 +194,7 @@ type
     property ColumnMargin: TRect read FColumnMargin write FColumnMargin;
     property Color;
     property Font;
+    property Anchors;
 
     property ItemHeight;
     property OnClickItem: TSharpEListBoxExOnClickItem read FOnClickItem write FOnClickItem stored True;
