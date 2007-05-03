@@ -108,7 +108,9 @@ type
     procedure Delete(ASharpETabListItem: TSharpETabListItem);
     Procedure Paint; override;
     constructor Create(AOwner:TComponent); override;
+
     procedure Clear;
+    destructor Destroy; override;
   published
     property Align;
     property Anchors;
@@ -613,6 +615,18 @@ procedure TSharpETabList.SetTabAlign(const Value: TLeftRight);
 begin
   FTabAlign := Value;
   Invalidate;
+end;
+
+destructor TSharpETabList.Destroy;
+begin
+
+  FTimer.Enabled := False;
+  FreeAndNil(FTimer);
+  FreeAndNil(FTabList);
+  FPngImageList := nil;
+
+  inherited;
+
 end;
 
 { TSharpETabListItem }
