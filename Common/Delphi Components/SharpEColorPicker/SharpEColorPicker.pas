@@ -384,9 +384,12 @@ begin
 end;
 
 procedure TCustomSharpeColorPicker.PopulateSkinColors;
+var
+  s:String;
 begin
-  FSchemeList.Load('bb');
-  FSchemeList.Theme := 'bb';
+  s := GetCurrentSharpEThemeName;
+  FSchemeList.Load(s);
+  FSchemeList.Theme := s;
 end;
 
 procedure TCustomSharpeColorPicker.SetBackgroundColor(const Value: TColor);
