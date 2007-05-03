@@ -15,6 +15,9 @@ object frmSchemeList: TfrmSchemeList
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
+  DesignSize = (
+    380
+    400)
   PixelsPerInch = 96
   TextHeight = 14
   object Label3: TLabel
@@ -36,11 +39,11 @@ object frmSchemeList: TfrmSchemeList
     Width = 380
     Height = 400
     Columns = <>
+    Anchors = [akLeft, akTop, akRight, akBottom]
     ItemHeight = 22
     OnClickItem = lbSchemeListClickItem
     BevelOuter = bvNone
     Borderstyle = bsNone
-    Align = alClient
   end
   object imlCol1: TPngImageList
     PngImages = <

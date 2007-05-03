@@ -60,14 +60,14 @@ begin
   frmSchemeList.Left := 0;
   frmSchemeList.Top := 0;
   frmSchemeList.BorderStyle := bsNone;
-  frmSchemeList.Show;
+  frmSchemeList.Show;  
 
   result := frmSchemeList.Handle;
 end;
 
 procedure Help;
 begin
-  SharpApi.HelpMsg('go {docs}\Theme\Scheme.sdoc');
+
 end;
 
 function SetSettingType: Integer;
@@ -82,9 +82,7 @@ begin
     frmSchemeList.SaveSchemes;
 
   FreeAndNil(frmSchemeList);
-
-  if frmEditScheme <> nil then
-    FreeAndNil(frmEditScheme);
+  FreeAndNil(frmEditScheme);
 end;
 
 procedure GetDisplayName(const APluginID:PChar; var ADisplayName:PChar);
@@ -104,7 +102,7 @@ begin
   ATabs.Add('Schemes',nil,'',IntToStr(frmSchemeList.lbSchemeList.Count));
 end;
 
-function OpenEdit(AOwner:Hwnd; AEditMode:TSCE_EditMode):Hwnd;
+function OpenEdit(AOwner:Hwnd; AEditMode:TSCE_EditMode_Enum):Hwnd;
 begin
   // Create Form
   if Not(Assigned(frmEditScheme)) then
@@ -115,21 +113,22 @@ begin
   frmEditScheme.Left := 0;
   frmEditScheme.Top := 0;
   frmEditScheme.BorderStyle := bsNone;
-  frmEditScheme.Show;
 
   // Initialise UI based on the edit mode
   frmEditScheme.InitUI(AEditMode);
 
   Result := frmEditScheme.Handle;
-
+  frmEditScheme.Show;
 end;
 
-function CloseEdit(AEditMode:TSCE_EditMode; AApply:Boolean): boolean;
+function CloseEdit(AEditMode:TSCE_EditMode_Enum; AApply:Boolean): boolean;
 begin
   Result := True;
 
+  if frmEditScheme = nil then exit;
+
   // Validation
-  if Not(frmEditScheme.ValidateEdit(AEditMode)) then Begin
+  if Not(frmEditScheme.ValidateEdit(AEditMode)) and AApply  then Begin
     Result := False;
     //frmEditScheme.InitValidateUi(frmEditScheme);
     Exit;
@@ -140,15 +139,17 @@ begin
     FreeAndNil(frmEditScheme);
     frmSchemeList.BuildSchemeList(frmSchemeList.Theme);
   end;
-
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 1);
 end;
 
 procedure GetCenterScheme(var ABackground: TColor; var AItemColor: TColor; var AItemSelectedColor: TColor);
 begin
   if frmEditScheme <> nil then begin
+
     frmEditScheme.Color := ABackground;
     frmEditScheme.pnlContainer.Color := ABackground;
+    frmEditScheme.SharpERoundPanel1.BackgroundColor := ABackground;
+    frmEditScheme.SharpERoundPanel1.Color := clWindow;
+
   end;
 
   frmSchemeList.lbSchemeList.Colors.ItemColor := AItemColor;

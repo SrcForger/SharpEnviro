@@ -51,7 +51,7 @@ uses
   GR32_Image,
   uEditSchemeWnd,
   JclGraphUtils,
-  SharpApi, SharpThemeApi, ImgList, uSharpeColorBox, SharpEListBoxEx, PngImageList,
+  SharpApi, SharpThemeApi, ImgList, SharpEListBoxEx, PngImageList,
   JvSimpleXML, uSchemeList, BarPreview, Gr32;
 
 type
@@ -459,8 +459,8 @@ end;
 procedure TfrmSchemeList.lbSchemeListClickItem(AText: string; AItem,
   ACol: Integer);
 begin
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_SETTINGS, 0);
   SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 0);
+  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_SETTINGS, 0);
 
   if frmEditScheme <> nil then begin
     if frmEditScheme.Edit then begin

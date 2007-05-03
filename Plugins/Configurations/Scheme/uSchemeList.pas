@@ -67,7 +67,7 @@ type
     constructor Create(AOwner: TObject);
     destructor Destroy; override;
 
-    procedure Assign(ADest: TobjectList);
+    procedure Assign(ADest: TobjectList); reintroduce;
     procedure LoadSkinColorDefaults(ATheme: string);
   end;
 
@@ -475,7 +475,7 @@ var
 begin
   Result := -1;
   for n := 0 to Pred(FItems.Count) do
-    if CompareText(ExtractFileName(TSchemeItem(FItems[n]).Name), ASkinName) = 0 then
+    if CompareText(TSchemeItem(FItems[n]).Name, ASkinName) = 0 then
     begin
       Result := n;
       break
