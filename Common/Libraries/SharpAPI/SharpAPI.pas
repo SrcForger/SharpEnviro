@@ -152,6 +152,7 @@ const
   SCM_EVT_BTNCLICK = 1005;
   SCM_EVT_UPDATE_PREVIEW = 1006;
   SCM_EVT_UPDATE_SETTINGS = 1007;
+  SCM_EVT_UPDATE_SIZE = 1008;
 
   SCU_SHARPDESK = 2001;
   SCU_SHARPCORE = 2002;
@@ -174,12 +175,18 @@ const
   SCB_DEL = 3009;
   SCB_CONFIGURE = 3010; // For editing the contents of a list
 
+  SCC_LOAD_SETTING = '_loadsetting';
+  SCC_CHANGE_FOLDER = '_changedir';
+  SCC_UNLOAD_DLL = '_unloaddll';
+  SCC_LOAD_DLL = '_loaddll';
+
   //showModes to use with sendTrayMessage
   smSLIDE = 1;
   smSHRINK = 2;
 
 type
-  TSCE_EDITMODE = (sceAdd, sceEdit, sceDelete);
+  TSCE_EDITMODE_ENUM = (sceAdd, sceEdit, sceDelete);
+  TSCC_COMMAND_ENUM = (sccLoadSetting, sccChangeFolder, sccUnloadDll, sccLoadDll);
 
 type
   //TColor = -$7FFFFFFF - 1..$7FFFFFFF;
@@ -203,18 +210,25 @@ type
     WorkAreaText : Tcolor;
   end;
 
+  PSharpE_DataStruct = ^TSharpE_DataStruct;
+  TSharpE_DataStruct = record
+    Command: string[255];
+    Parameter: string[255];
+    Handle: Integer;
+    LParam: Integer;
+    RParam: Integer;
+
+    // Optionals
+    PluginID: string[255];
+    Module: string[255];
+    Msg: string[255];
+  end;
+
   TMsgData = record
     Command: string[255];
     Parameters: string[255];
   end;
   pMsgData = ^TMsgData;
-
-  PSettingMsg = ^TSettingMsg;
-  TSettingMsg = record
-    Command: string[255];
-    Parameter: string[255];
-    PluginID: string[255];
-  end;
 
   TBarRect = record
               R : TRect;
@@ -233,14 +247,14 @@ function UnRegisterAction(ActionName: Pchar) : hresult; external 'SharpAPI.dll' 
 function GetSharpBarArea(Index : integer) : TBarRect; external 'SharpApi.dll' name 'GetSharpBarArea';
 function GetSharpBarCount : integer; external 'SharpApi.dll' name 'GetSharpBarCount';
 
-function HelpMsg(MsgText: Pchar): hresult; external 'SharpAPI.dll' name 'HelpMsg';
 function GetRecentItems(ReturnCount: integer): widestring; external 'SharpAPI.dll' name 'GetRecentItems';
 function GetMostUsedItems(ReturnCount: integer): widestring; external 'SharpAPI.dll' name 'GetMostUsedItems';
 function GetSharpeDirectory: PChar; external 'SharpAPI.dll' name 'GetSharpeDirectory';
 function GetSharpeUserSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeUserSettingsPath';
 function GetSharpeGlobalSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeGlobalSettingsPath';
 function GetCenterDirectory: PChar; external 'SharpAPI.dll' name 'GetCenterDirectory';
-function CenterMsg(Command, Param, PluginID : PChar): hresult; external 'SharpAPI.dll' name 'CenterMsg';
+//function CenterMsg(Command, Param, PluginID : PChar): hresult; external 'SharpAPI.dll' name 'CenterMsg';
+function CenterMsg(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID :PChar): hresult; external 'SharpAPI.dll' name 'CenterMsg';
 
 function ServiceMsg(ServiceName, Command: pChar): hresult; external 'SharpAPI.dll' name 'ServiceMsg';
 function ServiceStart(ServiceName: pChar): hresult; external 'SharpAPI.dll' name 'ServiceStart';
