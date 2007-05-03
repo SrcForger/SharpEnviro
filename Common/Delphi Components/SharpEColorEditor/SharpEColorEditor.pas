@@ -6,10 +6,10 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, SharpERoundPanel, SharpETabList, SharpEColorPicker,
     pngimagelist, pngimage, ComCtrls, JvExComCtrls, JvComCtrls, StdCtrls,
-      jvPageList, SharpGraphicsUtils, SharpECenterScheme, gr32, JvSpin,
+      jvPageList, SharpECenterScheme, gr32, JvSpin,
         JvHtControls, SharpFX, SharpThemeApi,
           SharpESwatchCollection, SharpESwatchManager, SharpApi,
-            pngspeedbutton;
+            pngspeedbutton, SharpGraphicsUtils;
 
 Type
   TSliderUpdateMode = (sumAll, sumRGB, sumHSL);
@@ -84,6 +84,8 @@ Type
     procedure GetWidth(ASender:TObject; var
       AWidth: Integer);
     procedure UpdateSwatchBitmap(ASender:TObject; const ABitmap32:TBitmap32);
+    function GetCollapseHeight: Integer;
+    function GetExpandedHeight: Integer;
 
   public
     constructor Create(AOwner:TComponent); override;
@@ -99,6 +101,9 @@ Type
 
   published
     property Align;
+
+    property CollapseHeight: Integer read GetCollapseHeight;
+    property ExpandedHeight: Integer read GetExpandedHeight;
     property Expanded: Boolean read GetExpanded write SetExpanded;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex;
     property Caption: String read FCaption write SetCaption;
@@ -916,6 +921,16 @@ end;
 procedure TSharpEColorEditor.ClickSwatchEvent(ASender: TObject; AColor: TColor);
 begin
   ColorCode := AColor;
+end;
+
+function TSharpEColorEditor.GetExpandedHeight: Integer;
+begin
+  Result := FExpandedHeight;
+end;
+
+function TSharpEColorEditor.GetCollapseHeight: Integer;
+begin
+  Result := FCollapseHeight;
 end;
 
 end.
