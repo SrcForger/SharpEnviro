@@ -98,7 +98,7 @@ end;
 function RGBtoHSL(RGB: TColor32) : THslColor;
 var
   R, G, B, D, Cmax, Cmin, HL: Integer;
-  H,S,L : byte;
+  H,S,L : integer;
 begin
   R := (RGB shr 16) and $ff;
   G := (RGB shr 8) and $ff;
