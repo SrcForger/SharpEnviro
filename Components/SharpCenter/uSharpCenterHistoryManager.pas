@@ -51,12 +51,6 @@ uses
   
   Contnrs;
 
-const
-  cLoadSetting = '_loadSetting';
-  cChangeFolder = '_navdir';
-  cUnloadDll = '_unloaddll';
-  cLoadDll = '_loaddll';
-
 type
   TSharpCenterHistoryItem = class
   private
@@ -124,7 +118,7 @@ begin
     exit;
 
   Result := TSharpCenterHistoryItem.Create;
-  Result.Command := cChangeFolder;
+  Result.Command := SCC_CHANGE_FOLDER;
   Result.Param := APath;
   Result.PluginID := '';
   Result.ID := FList.Count;
@@ -156,7 +150,7 @@ begin
     exit;
 
   Result := TSharpCenterHistoryItem.Create;
-  Result.Command := cLoadSetting;
+  Result.Command := SCC_LOAD_SETTING;
   Result.Param := ASetting;
   Result.PluginID := '';
   Result.ID := FList.Count;

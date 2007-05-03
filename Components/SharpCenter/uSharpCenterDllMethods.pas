@@ -47,8 +47,8 @@ type
     Open: function(const APluginID:Pchar; AOwner: hwnd): hwnd;
     Close: procedure(ASave: Boolean);
 
-    OpenEdit: function(AOwner:Hwnd; AEditMode:TSCE_EDITMODE):Hwnd;
-    CloseEdit: function(AEditMode:TSCE_EDITMODE; AApply:Boolean): boolean;
+    OpenEdit: function(AOwner:Hwnd; AEditMode:TSCE_EDITMODE_ENUM):Hwnd;
+    CloseEdit: function(AEditMode:TSCE_EDITMODE_ENUM; AApply:Boolean): boolean;
 
     ClickBtn: procedure (AButtonID: Integer; AText: String);
     ClickTab: procedure (ATab: TPluginTabItem);

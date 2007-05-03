@@ -252,6 +252,7 @@ end;
 
 function TSharpCenterManager.Unload: Boolean;
 begin
+
   Result := False;
   if ActivePlugin.Dllhandle = 0 then
     exit;
@@ -283,7 +284,7 @@ procedure TSharpCenterManager.UnloadTimerEvent(Sender: TObject);
 begin
   FUnloadTimer.Enabled := False;
 
-  if CompareText(FUnloadCommand.Command, cUnloadDll) = 0 then
+  if CompareText(FUnloadCommand.Command, SCC_UNLOAD_DLL) = 0 then
   begin
     if FActivePlugin.Dllhandle <> 0 then
       Unload;
@@ -291,14 +292,14 @@ begin
     if not (IsDirectory(FUnloadCommand.Param)) then
       Load(FUnloadCommand.Param, FUnloadCommand.PluginID);
   end
-  else if CompareText(FUnloadCommand.Command, cChangeFolder) = 0 then
+  else if CompareText(FUnloadCommand.Command, SCC_CHANGE_FOLDER) = 0 then
   begin
     if FActivePlugin.Dllhandle <> 0 then
       Unload;
 
     BuildNavFromPath(FUnloadCommand.Param)
   end
-  else if CompareText(FUnloadCommand.Command, cLoadSetting) = 0 then
+  else if CompareText(FUnloadCommand.Command, SCC_LOAD_SETTING) = 0 then
   begin
 
     if FActivePlugin.Dllhandle <> 0 then
@@ -428,7 +429,7 @@ begin
     FOnInitNavigation(Self);
 
   try
-    SetActiveCommand(cChangeFolder,APath,'');
+    SetActiveCommand(SCC_CHANGE_FOLDER,APath,'');
     APath := PathAddSeparator(APath);
 
     if FindFirst(APath + '*.*', SysUtils.faAnyFile, SRec) = 0 then
@@ -518,17 +519,17 @@ function TSharpCenterManager.ExecuteCommand(ACommand, AParam,
   APluginID: string): Boolean;
 begin
   Result := True;
-  if CompareText(ACommand, cChangeFolder) = 0 then
+  if CompareText(ACommand, SCC_CHANGE_FOLDER) = 0 then
   begin
-    UnloadDllTimer(cChangeFolder, AParam, APluginID);
+    UnloadDllTimer(SCC_CHANGE_FOLDER, AParam, APluginID);
   end
-  else if CompareText(ACommand, cUnloadDll) = 0 then
+  else if CompareText(ACommand, SCC_UNLOAD_DLL) = 0 then
   begin
-    UnloadDllTimer(cUnloadDll, AParam, APluginID);
+    UnloadDllTimer(SCC_UNLOAD_DLL, AParam, APluginID);
   end
-  else if CompareText(ACommand, cLoadSetting) = 0 then
+  else if CompareText(ACommand, SCC_LOAD_SETTING) = 0 then
   begin
-    UnloadDllTimer(cLoadSetting, AParam, APluginID);
+    UnloadDllTimer(SCC_LOAD_SETTING, AParam, APluginID);
 
   end else begin
     MessageDlg('Unknown command', mtError, [mbOK], 0);
@@ -580,7 +581,7 @@ begin
   // Set the default active command to the center root
   FActiveCommand := TSharpCenterHistoryItem.Create;
   FUnloadCommand := TSharpCenterHistoryItem.Create;
-  FActiveCommand.Command := cChangeFolder;
+  FActiveCommand.Command := SCC_CHANGE_FOLDER;
   FActiveCommand.Param := FRoot;
   FActiveCommand.PluginID := '';
 
@@ -590,8 +591,12 @@ end;
 
 destructor TSharpCenterManager.Destroy;
 begin
-  FHistory.Free;
-  FUnloadTimer.Free;
+  FreeAndNil(FHistory);
+  FreeAndNil(FUnloadTimer);
+  FActiveCommand.Free;
+  FUnloadCommand.Free;
+  FPluginTabs.Free;
+  FPngImageList.Free;
 
   inherited;
 end;

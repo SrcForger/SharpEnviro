@@ -54,9 +54,9 @@ uses
   Tabs,
   SharpEListBox, SharpESkinManager, uSharpCenterPluginTabList,
   uSharpCenterDllMethods, uSharpCenterManager,
-  ToolWin, SharpERoundPanel, XPMan, 
+  ToolWin, SharpERoundPanel, XPMan, SharpETabList,
   GR32_Image, GR32, uVistaFuncs, JvLabel, JvPageList, SharpEListBoxEx,
-  PngBitBtn, SharpETabList;
+  PngBitBtn, SharpThemeApi;
 
 const
   cEditTabHide=0;
@@ -81,7 +81,6 @@ type
     XPManifest1: TXPManifest;
     pnlLivePreview: TPanel;
     imgLivePreview: TImage32;
-    ImageList1: TImageList;
     tlToolbar: TSharpETabList;
     pnlToolbar: TSharpERoundPanel;
     Panel1: TPanel;
@@ -114,10 +113,9 @@ type
     miDelete: TMenuItem;
     miSep: TMenuItem;
     miConfigure: TMenuItem;
-    lbHistory: TListBox;
-    Timer1: TTimer;
     lbFavs: TSharpEListBoxEx;
     Button1: TButton;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
     procedure Timer1Timer(Sender: TObject);
@@ -135,8 +133,6 @@ type
     procedure lbTreeGetCellColor(const AItem: Integer; var AColor: TColor);
     procedure lbTreeClickItem(AText: string; AItem, ACol: Integer);
     procedure btnFavouriteClick(Sender: TObject);
-
-    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure btnCancelClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
@@ -232,11 +228,16 @@ end;
 
 procedure TSharpCenterWnd.btnHomeClick(Sender: TObject);
 begin
-  SCM.Unload;
-  InitToolbar;
-  
-  SetToolbarTabVisible(tidHistory,False);
-  SCM.BuildNavRoot;
+  LockWindowUpdate(Self.Handle);
+  Try
+    SCM.Unload;
+    InitToolbar;
+
+    SetToolbarTabVisible(tidHistory,False);
+    SCM.BuildNavRoot;
+  finally
+    LockWindowUpdate(0);
+  end;
 end;
 
 procedure TSharpCenterWnd.lbTree_MouseUp(Sender: TObject; Button:
@@ -250,15 +251,17 @@ end;
 
 procedure TSharpCenterWnd.FormResize(Sender: TObject);
 begin
-  UpdateSize;
+
+  if SCM <> nil then
+    UpdateSize;
 end;
 
 procedure TSharpCenterWnd.GetCopyData(var Msg: TMessage);
 var
-  tmpMsg: TSettingMsg;
+  tmpMsg: TsharpE_DataStruct;
   tmpHist: TSharpCenterHistoryItem;
 begin
-  tmpMsg := pSettingMsg(PCopyDataStruct(msg.lParam)^.lpData)^;
+  tmpMsg := PSharpE_DataStruct(PCopyDataStruct(msg.lParam)^.lpData)^;
   tmpHist := SCM.ActiveCommand;
 
   SCM.History.Add(tmpHist.Command, tmpHist.Param, tmpMsg.PluginID);
@@ -287,18 +290,19 @@ procedure TSharpCenterWnd.btnBackClick(Sender: TObject);
 var
   tmpItem: TSharpCenterHistoryItem;
 begin
+    tmpItem := nil;
+    if scm = nil then exit;
 
-  tmpItem := nil;
-  if SCM.History.List.Count <> 0 then
-    tmpItem := SCM.History.List.Last;
+    if SCM.History.List.Count <> 0 then
+      tmpItem := SCM.History.List.Last;
 
-  if tmpItem <> nil then
-  begin
-    SCM.ExecuteCommand(tmpItem.Command, tmpItem.Param, tmpItem.PluginID);
-    SCM.History.Delete(tmpItem);
+    if tmpItem <> nil then
+    begin
+      SCM.ExecuteCommand(tmpItem.Command, tmpItem.Param, tmpItem.PluginID);
+      SCM.History.Delete(tmpItem);
 
-    SetToolbarTabVisible(tidHistory,Not(SCM.History.List.Count = 0));
-  end;
+      SetToolbarTabVisible(tidHistory,Not(SCM.History.List.Count = 0));
+    end;
 end;
 
 procedure TSharpCenterWnd.btnHelpClick(Sender: TObject);
@@ -310,17 +314,18 @@ end;
 
 procedure TSharpCenterWnd.btnSaveClick(Sender: TObject);
 begin
-  if SCM.CheckEditState then begin
-    exit;
-  end;
-
   LockWindowUpdate(Self.Handle);
   Try
-    if SCM.Save then begin
-      SCM.Unload;
-      SCM.Reload;
-      pnlEditContainer.Hide;
+
+    if SCM.CheckEditState then begin
+      exit;
     end;
+
+    SCM.Unload;
+    SCM.Reload;
+
+    pnlEditContainer.Hide;
+
   Finally
     LockWindowUpdate(0);
   End;
@@ -341,8 +346,8 @@ begin
 
     SCM.Reload;
   finally
-    LockWindowUpdate(0);
     FCancelClicked := False;
+    LockWindowUpdate(0);
   end;
 end;
 
@@ -351,25 +356,24 @@ begin
   SendMessage(self.Handle, msg.Msg, msg.WParam, msg.LParam);
 end;
 
-procedure TSharpCenterWnd.FormCloseQuery(Sender: TObject;
-  var CanClose: Boolean);
-begin
-  inherited;
-
-  if @SCM.ActivePlugin <> nil then
-    SCM.Unload;
-end;
-
 procedure TSharpCenterWnd.UpdateLivePreview;
 begin
-  //pnlLivePreview.Visible := False;
-  imgLivePreview.Bitmap.SetSize(pnlLivePreview.Width,pnlLivePreview.Height);
-  imgLivePreview.Bitmap.Clear(clwhite32);
+  if SCM = nil then exit;
 
-  if (@SCM.ActivePlugin.UpdatePreview <> nil) then begin
-    SCM.ActivePlugin.UpdatePreview(imgLivePreview);
-    pnlLivePreview.Visible := True;
-  end;
+  //LockWindowUpdate(Self.Handle);
+  pnlLivePreview.Visible := False;
+  Try
+    imgLivePreview.Bitmap.SetSize(pnlLivePreview.Width,pnlLivePreview.Height);
+    imgLivePreview.Bitmap.Clear(clwhite32);
+
+    if (@SCM.ActivePlugin.UpdatePreview <> nil) then begin
+      SCM.ActivePlugin.UpdatePreview(imgLivePreview);
+      pnlLivePreview.Visible := True;
+    end;
+
+  Finally
+    //LockWindowUpdate(0);
+  End;
 end;
 
 procedure TSharpCenterWnd.CreateParams(var Params: TCreateParams);
@@ -416,6 +420,11 @@ var
   bEnabled:Boolean;
   iBtnID: Integer;
 begin
+  if SCM = nil then exit;
+
+  LockWindowUpdate(self.Handle);
+  try
+
   Case msg.WParam of
     SCM_SET_BUTTON_ENABLED, SCM_SET_BUTTON_DISABLED: begin
 
@@ -444,6 +453,13 @@ begin
     SCM_SET_EDIT_CANCEL_STATE: begin
       SCM.StateEditItem := False;
     end;
+    SCM_EVT_UPDATE_SIZE: begin
+      UpdateSize;
+    end;
+  end;
+
+  finally
+    LockWindowUpdate(0);
   end;
 end;
 
@@ -454,6 +470,7 @@ begin
     SCM.CancelEdit(FSelectedTabID);
   Finally
     LockWindowUpdate(0);
+    UpdateSize;
   End;
 end;
 
@@ -554,15 +571,26 @@ end;
 procedure TSharpCenterWnd.tlEditItemTabClick(ASender: TObject;
   const ATabIndex: Integer);
 begin
-  FSelectedTabID := ATabIndex;
-  SCM.LoadEdit(FSelectedTabID)
+  LockWindowUpdate(Self.Handle);
+  Try
+    FSelectedTabID := ATabIndex;
+    SCM.LoadEdit(FSelectedTabID)
+  Finally
+    LockWindowUpdate(0);
+  End;
 end;
 
 procedure TSharpCenterWnd.EditTabVisible(AVisible: Boolean);
 begin
-  if AVisible then
-    tlEditItem.Height := 25 else
-    tlEditItem.Height := 0;
+  LockWindowUpdate(Self.Handle);
+
+  Try
+    if AVisible then
+      tlEditItem.Height := 25 else
+      tlEditItem.Height := 0;
+  Finally
+    LockWindowUpdate(0);
+  End;
 end;
 
 procedure TSharpCenterWnd.InitWindow;
@@ -633,7 +661,7 @@ begin
         tmpHist.Add(tmpHistItem.Command, tmpHistItem.Param,
           tmpHistItem.PluginID);
 
-        tmpHistItem.Command := cChangeFolder;
+        tmpHistItem.Command := SCC_CHANGE_FOLDER;
         tmpHistItem.Param := PathAddSeparator(tmpItem.Path);
         tmpHistItem.PluginID := '';
 
@@ -644,7 +672,7 @@ begin
       begin
         tmpHist.Add(tmpHistItem.Command, tmpHistItem.Param, tmpHistItem.PluginID);
 
-        tmpHistItem.Command := cLoadSetting;
+        tmpHistItem.Command := SCC_LOAD_SETTING;
         tmpHistItem.Param := tmpItem.Filename;
         tmpHistItem.PluginID := '';
 
@@ -745,20 +773,22 @@ procedure TSharpCenterWnd.ShowHistory;
 var
   i:Integer;
 begin
-  lbHistory.Clear;
+  {lbHistory.Clear;
   for i := 0 to SCM.History.Count-1 do
     lbHistory.Items.Add(TSharpCenterHistoryItem(SCM.History.List[i]).Command +
       ' ' + TSharpCenterHistoryItem(SCM.History.List[i]).Param + ' (' +
-          TSharpCenterHistoryItem(SCM.History.List[i]).PluginID + ')');
+          TSharpCenterHistoryItem(SCM.History.List[i]).PluginID + ')'); }
 end;
 procedure TSharpCenterWnd.Timer1Timer(Sender: TObject);
 begin
-  ShowHistory;
+ ShowHistory;
 end;
 
 procedure TSharpCenterWnd.LoadPluginEvent(Sender: TObject);
 begin
   // Resize Plugin window
+  LockWindowUpdate(Self.Handle);
+  Try
   ResizeToFitWindow(SCM.PluginWndHandle, pnlPlugin);
 
   // Edit bar
@@ -778,7 +808,10 @@ begin
   FSelectedPluginTabID := 0;
 
   UpdateSize;
-
+  
+  Finally
+    LockWindowUpdate(0);
+  End;
 
 end;
 
@@ -832,9 +865,10 @@ end;
 
 procedure TSharpCenterWnd.UnloadPluginEvent(Sender: TObject);
 begin
+
+  // Check if Save first
   LockWindowUpdate(Self.Handle);
   Try
-  // Check if Save first
   if ((btnSave.Enabled) and not (FCancelClicked)) then
   begin
     SCM.Save;
@@ -848,7 +882,7 @@ begin
     if ((@SCM.ActivePlugin.CloseEdit <> nil) and (SCM.EditWndHandle <> 0)) then
       SCM.ActivePlugin.CloseEdit(sceEdit,False);
   end;
-  
+
   tlEditItem.Height := 0;
   btnSave.Enabled := False;
   btnCancel.Enabled := False;
@@ -861,6 +895,9 @@ procedure TSharpCenterWnd.UpdateThemeEvent(Sender: TObject);
 var
   colBackground, colItem, colSelectedItem: TColor;
 begin
+  LockWindowUpdate(Self.Handle);
+  Try
+
   if @SCM.ActivePlugin.GetCenterScheme <> nil then begin
 
     if Not(SCM.StateEditWarning) then begin
@@ -920,12 +957,21 @@ begin
 
 
   end;
+  finally
+    LockWindowUpdate(0);
+  end;
 end;
 
 procedure TSharpCenterWnd.LoadEditEvent(Sender: TObject);
 begin
-  pnlEditContainer.Show;
-  UpdateSize;
+
+  LockWindowUpdate(Self.Handle);
+  Try
+    UpdateSize;
+    pnlEditContainer.Show;
+  Finally
+    LockWindowUpdate(0);
+  End;
 end;
 
 procedure TSharpCenterWnd.SavePluginEvent(Sender: TObject);
@@ -941,11 +987,17 @@ end;
 
 procedure TSharpCenterWnd.CancelEditEvent(Sender: Tobject);
 begin
-  if Sender = nil then begin
-    tlEditItem.TabIndex := -1;
-    pnlEditContainer.Hide;
-  end else
-    tlEditItemTabClick(tlEditItem,tlEditItem.TabIndex);
+
+  LockWindowUpdate(Self.Handle);
+  Try
+    if Sender = nil then begin
+      tlEditItem.TabIndex := -1;
+      pnlEditContainer.Hide;
+    end else
+      tlEditItemTabClick(tlEditItem,tlEditItem.TabIndex);
+  Finally
+    LockWindowUpdate(0);
+  End;
 end;
 
 procedure TSharpCenterWnd.tlPluginTabsTabChange(ASender: TObject;
@@ -954,6 +1006,14 @@ begin
   if (ATabIndex > SCM.PluginTabs.Count - 1) then exit;
   if @SCM.ActivePlugin.ClickTab <> nil then
      SCM.ActivePlugin.ClickTab(SCM.PluginTabs.GetItem[ATabIndex]);
+end;
+
+procedure TSharpCenterWnd.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if @SCM.ActivePlugin <> nil then
+    SCM.Unload;
+
+  FreeAndNil(SCM);
 end;
 
 end.
