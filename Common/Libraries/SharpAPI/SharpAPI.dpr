@@ -170,19 +170,36 @@ type
     Parameter: string[255]
   end;
 
-  PConfigMsg = ^TConfigMsg;
-  TConfigMsg = record
-    Command: string[255];
-    Parameter: string[255];
-    PluginID: string[255];
-  end;
-
   PActionCmd = ^TActionCmd;
   TActionCmd = record
     Command: string[255];
     hwndid: Integer;
     lparam: Integer;
   end;
+
+  PSharpE_DataStruct = ^TSharpE_DataStruct;
+  TSharpE_DataStruct = record
+    Command: string[255];
+    Parameter: string[255];
+    Handle: Integer;
+    LParam: Integer;
+    RParam: Integer;
+
+    // Optionals
+    PluginID: string[255];
+    Module: string[255];
+    Msg: string[255];
+  end;
+
+  Const
+    SCC_LOAD_SETTING = '_loadsetting';
+    SCC_CHANGE_FOLDER = '_changedir';
+    SCC_UNLOAD_DLL = '_unloaddll';
+    SCC_LOAD_DLL = '_loaddll';
+
+  Type
+    TSCC_COMMAND_ENUM = (sccLoadSetting, sccChangeFolder, sccUnloadDll, sccLoadDll);
+
 
   TBarRect = record
               R : TRect;
@@ -522,11 +539,11 @@ begin
   end;
 end;
 
-function CenterMsg(Command, Param, PluginID :PChar): hresult;
+{function CenterMsg(Command, Param, PluginID :PChar): hresult;
 var
   cds: TCopyDataStruct;
   wnd: hWnd;
-  msg: TConfigMsg;
+  msg: TSharpE_DataStruct;
 begin
   try
     //Prepare TCopyDataStruct
@@ -536,7 +553,7 @@ begin
     with cds do
     begin
       dwData := 0;
-      cbData := SizeOf(TConfigMsg);
+      cbData := SizeOf(TSharpE_DataStruct);
       lpData := @msg;
     end;
     //Find the window
@@ -550,7 +567,7 @@ begin
   except
     result := HR_UNKNOWNERROR;
   end;
-end;
+end;   }
 
 function BarMsg(PluginName, Command: pChar): hresult;
 var
@@ -1107,100 +1124,47 @@ begin
   result := i;
 end;
 
-/////////////////////////////////////////////
-// Just here for backward compability
-/////////////////////////////////////////////
-
-function HelpMsg(MsgText: Pchar): hresult;
+function CenterMsg(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID :PChar): hresult;
 var
   cds: TCopyDataStruct;
   wnd: hWnd;
-  msg: THelpMsg;
+  msg: TSharpE_DataStruct;
   path: string;
   MutexHandle: THandle;
+
+  sCommand: String;
 begin
   Result := 0;
   wnd := 0;
-  try
-    //Prepare TCopyDataStruct
 
-    SendDebugMessageEx('SharpApi', pchar(format('Help Msg Received: %s',
-      [MsgText])), 0, DMT_INFO);
-    msg.Parameter := MsgText;
-
-    with cds do
-    begin
-      dwData := 0;
-      cbData := SizeOf(THelpMsg);
-      lpData := @msg;
-    end;
-
-    MuteXHandle := OpenMutex(MUTEX_ALL_ACCESS, False, 'SharpDocsMuteX');
-    if MuteXHandle <> 0 then
-    begin
-
-      //Find the window
-      wnd := FindWindow(nil, 'SharpDocsWnd');
-      if wnd <> 0 then
-      begin
-        SendDebugMessageEx('SharpApi',
-          pchar(format('SharpDocs Mutex Exists, Sending Msg: %s', [MsgText])),
-          0,
-          DMT_STATUS);
-        result := sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
-      end;
-      CloseHandle(MuteXHandle);
-    end
+  Case ACommand of
+    sccLoadSetting: sCommand := SCC_LOAD_SETTING;
+    sccChangeFolder: sCommand := SCC_CHANGE_FOLDER;
+    sccUnloadDll: sCommand := SCC_UNLOAD_DLL;
+    sccLoadDll: sCommand := SCC_LOAD_DLL;
     else
-    begin
-      // Start the SharpDocs application
-      Path := GetSharpeDirectory;
-      //      Path := RegReadString(HKEY_CURRENT_USER, 'Software\ldi\sharpe\SharpCore',
-      //        'SharpEPath');
-
-      if fileexists(Path + 'SharpDocs.exe') then
-      begin
-        SendDebugMessageEx('SharpApi',
-          pchar(format('SharpDocs Mutex not found, Launching file: %s', [Path +
-          'SharpDocs.exe'])), 0, DMT_STATUS);
-        ShellExecute(wnd, 'open', pchar(Path + 'SharpDocs.exe'), Pchar('-api ' +
-          MsgText), pchar(path), WM_SHOWWINDOW);
-      end
-      else
-        SendDebugMessageEx('SharpApi',
-          pchar(format('There was an error launching: %s', [Path +
-          'SharpDocs.exe'])), 0, DMT_ERROR);
-    end;
-
-  except
-    result := HR_UNKNOWNERROR;
+      sCommand := '';
   end;
-end;
 
-function ConfigMsg(ACommand: Pchar; AParameter, APluginID: PChar):
-  hresult;
-var
-  cds: TCopyDataStruct;
-  wnd: hWnd;
-  msg: TConfigMsg;
-  path: string;
-  MutexHandle: THandle;
-begin
-  Result := 0;
-  wnd := 0;
+  // Check valid command
+  if sCommand = '' then begin
+    SendDebugMessageEx('SharpApi', pchar(format('Config Msg Invalid: %s',
+      [sCommand])), 0, DMT_INFO);
+    exit;
+  end;
+
   try
-    //Prepare TCopyDataStruct
 
     SendDebugMessageEx('SharpApi', pchar(format('Config Msg Received: %s - %s',
-      [ACommand, AParameter])), 0, DMT_INFO);
-    msg.Parameter := AParameter;
-    msg.Command := ACommand;
+      [sCommand, AParam])), 0, DMT_INFO);
+    msg.Parameter := AParam;
+    msg.Command := sCommand;
     msg.PluginID := APluginID;
 
     with cds do
     begin
       dwData := 0;
-      cbData := SizeOf(TConfigMsg);
+      cbData := SizeOf(TSharpE_DataStruct);
       lpData := @msg;
     end;
 
@@ -1214,7 +1178,7 @@ begin
       begin
         SendDebugMessageEx('SharpApi',
           pchar(format('SharpCenter Mutex Exists, Sending Msg: %s - %s',
-            [ACommand, AParameter])),
+            [sCommand, AParam])),
           0,
           DMT_STATUS);
         result := sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
@@ -1234,7 +1198,7 @@ begin
           'SharpCenter.exe'])), 0, DMT_STATUS);
         ShellExecute(wnd, 'open', pchar(Path + 'SharpCenter.exe'), Pchar('-api '
           +
-          ACommand + ' ' + AParameter), pchar(path), WM_SHOWWINDOW);
+          sCommand + ' ' + AParam), pchar(path), WM_SHOWWINDOW);
       end
       else
         SendDebugMessageEx('SharpApi',
@@ -1627,15 +1591,11 @@ exports
   UpdateActionEx,
   GetDelimitedActionList,
 
-  // Help Exports
-  HelpMsg,
-
   // Bar Tool Functions
   GetSharpBarCount,
   GetSharpBarArea,
 
   // SharpCenter
-  ConfigMsg,
   CenterMsg,
   GetCenterDirectory,
 
