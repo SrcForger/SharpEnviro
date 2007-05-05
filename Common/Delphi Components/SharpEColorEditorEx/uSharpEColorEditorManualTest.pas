@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, SharpEColorEditorEx, ExtCtrls, StdCtrls, XPMan, comctrls,
-  sharpthemeapi, uVistaFuncs, SharpESwatchManager;
+  sharpthemeapi, uVistaFuncs, SharpESwatchManager, SharpEColorEditor;
 
 type
   TForm2 = class(TForm)
@@ -62,12 +62,17 @@ begin
     tmp.Items.Item[0].Title := 'New';
     tmp.Items.Item[0].ColorCode := clRed;
 
-    tmp.Items.Item[1].Title := 'New';
+    tmp.Items.Item[1].Title := 'New2';
     tmp.Items.Item[1].ColorCode := clRed;
+
+    tmp.Items.Item[1].Title := 'New3';
+
    // tmp.Items.Item[1].Expanded;
   Finally
     lockwindowupdate(0);
     tmp.EndUpdate;
+
+    tmp.Items.Item[1].ColorEditor.ColorEditorType := cetValue;
   End;
 
   
