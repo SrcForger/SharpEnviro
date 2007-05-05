@@ -4,7 +4,7 @@ object MainWnd: TMainWnd
   Width = 464
   Height = 342
   BorderWidth = 8
-  Caption = 'MainWnd'
+  Caption = 'v'
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -27,10 +27,33 @@ object MainWnd: TMainWnd
     Caption = 'Scheme Test'
     ColorCode = 0
     ColorAsTColor = clBlack
+    ColorEditorType = cetValue
+    ValueText = 'Alpha'
+    ValueMax = 0
+    ValueMin = 255
+    Value = 34
     SwatchManager = SharpESwatchManager1
     DesignSize = (
       432
       24)
+  end
+  object Button1: TButton
+    Left = 96
+    Top = 256
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 1
+    OnClick = Button1Click
+  end
+  object Button2: TButton
+    Left = 184
+    Top = 256
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 2
+    OnClick = Button2Click
   end
   object XPManifest1: TXPManifest
     Left = 8
@@ -38,7 +61,7 @@ object MainWnd: TMainWnd
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 432
+    Width = 408
     ShowCaptions = False
     SwatchHeight = 16
     SwatchWidth = 16

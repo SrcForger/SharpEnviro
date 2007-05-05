@@ -20,8 +20,12 @@ uses
   SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas',
   SharpEColorPicker in '..\SharpEColorPicker\SharpEColorPicker.pas',
   SharpEColorEditor in 'SharpEColorEditor.pas',
-  SharpESwatchManager in '..\SharpESwatchCollection\SharpESwatchManager.pas',
-  SharpESwatchCollection in '..\SharpESwatchCollection\SharpESwatchCollection.pas';
+  SharpESwatchCollection in '..\SharpESwatchCollection\SharpESwatchCollection.pas',
+  graphicsFX in '..\..\Units\SharpFX\graphicsFX.pas',
+  SharpFX in '..\..\Units\SharpFX\SharpFX.pas',
+  uSchemeList in '..\..\..\Plugins\Configurations\Scheme\uSchemeList.pas',
+  SharpECenterScheme in '..\SharpECenterScheme\SharpECenterScheme.pas',
+  SharpESwatchManager in '..\SharpESwatchManager\SharpESwatchManager.pas';
 
 {$R *.res}
 

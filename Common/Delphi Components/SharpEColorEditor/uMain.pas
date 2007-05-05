@@ -14,6 +14,9 @@ type
     XPManifest1: TXPManifest;
     SharpEColorEditor1: TSharpEColorEditor;
     SharpESwatchManager1: TSharpESwatchManager;
+    Button1: TButton;
+    Button2: TButton;
+    procedure Button2Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure JvLinkLabel1LinkClick(Sender: TObject; LinkNumber: Integer;
       LinkText, LinkParam: string);
@@ -34,7 +37,7 @@ implementation
 
 procedure TMainWnd.Button1Click(Sender: TObject);
 begin
-  SharpEColorEditor1.Expanded := Not(SharpEColorEditor1.Expanded);
+  SharpEColorEditor1.ColorEditorType := cetColor;
 
 end;
 
@@ -53,6 +56,11 @@ end;
 procedure TMainWnd.FormShow(Sender: TObject);
 begin
   SharpEColorEditor1.Expanded := True;
+end;
+
+procedure TMainWnd.Button2Click(Sender: TObject);
+begin
+  SharpEColorEditor1.ColorEditorType := cetValue;
 end;
 
 end.
