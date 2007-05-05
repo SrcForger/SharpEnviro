@@ -18,21 +18,21 @@ object frmDeskSettings: TfrmDeskSettings
   object JvPageList1: TJvPageList
     Left = 0
     Top = 0
-    Width = 502
-    Height = 563
-    ActivePage = JvSettingsPage
+    Width = 510
+    Height = 570
+    ActivePage = JvAdvSettingsPage
     PropagateEnable = False
     Align = alClient
     object JvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 502
-      Height = 563
+      Width = 510
+      Height = 570
       ParentBackground = True
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 502
+        Width = 510
         Height = 41
         Align = alTop
         BevelOuter = bvNone
@@ -53,7 +53,7 @@ object frmDeskSettings: TfrmDeskSettings
       object pn_grid: TPanel
         Left = 0
         Top = 41
-        Width = 502
+        Width = 510
         Height = 72
         Align = alTop
         BevelOuter = bvNone
@@ -139,7 +139,7 @@ object frmDeskSettings: TfrmDeskSettings
       object Panel2: TPanel
         Left = 0
         Top = 113
-        Width = 502
+        Width = 510
         Height = 64
         Align = alTop
         BevelOuter = bvNone
@@ -170,12 +170,12 @@ object frmDeskSettings: TfrmDeskSettings
     object JvAdvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 502
-      Height = 563
+      Width = 510
+      Height = 570
       object Panel3: TPanel
         Left = 0
         Top = 0
-        Width = 502
+        Width = 510
         Height = 65
         Align = alTop
         BevelOuter = bvNone
@@ -183,7 +183,7 @@ object frmDeskSettings: TfrmDeskSettings
         TabOrder = 0
         object Label2: TLabel
           Left = 40
-          Top = 28
+          Top = 36
           Width = 361
           Height = 29
           AutoSize = False
@@ -200,7 +200,7 @@ object frmDeskSettings: TfrmDeskSettings
         end
         object cb_amm: TCheckBox
           Left = 16
-          Top = 8
+          Top = 16
           Width = 257
           Height = 17
           Caption = 'Advanced Memory Management'
@@ -208,6 +208,13 @@ object frmDeskSettings: TfrmDeskSettings
           OnClick = cb_ammClick
         end
       end
+    end
+    object JvStandardPage1: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 510
+      Height = 570
+      Caption = 'JvStandardPage1'
     end
   end
 end

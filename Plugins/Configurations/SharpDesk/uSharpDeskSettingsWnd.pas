@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi,
-  JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls;
+  JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent;
 
 type
   TStringObject = Class(TObject)
@@ -62,6 +62,7 @@ type
     cb_amm: TCheckBox;
     Label2: TLabel;
     cb_dd: TCheckBox;
+    JvStandardPage1: TJvStandardPage;
     procedure cb_ddClick(Sender: TObject);
     procedure cb_ammClick(Sender: TObject);
     procedure cb_singleclickClick(Sender: TObject);

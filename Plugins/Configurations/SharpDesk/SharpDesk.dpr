@@ -1,5 +1,5 @@
 ﻿{
-Source Name: SharpDesk Confogs
+Source Name: SharpDesk Configs
 Description: SharpDesk Config Dll
 Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
 
