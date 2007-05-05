@@ -367,11 +367,11 @@ begin
     else if FMouseOver then
       TmpBitmap.Handle := LoadBitmap(HInstance, 'PIPETTE_BMP')
     else
-      TmpBitmap.Handle := LoadBitmap(HInstance, 'PIPETTEDIS_BMP');
+      TmpBitmap.Handle := LoadBitmap(HInstance, 'PIPETTE_BMP');
 
     TmpBitmap.TransparentColor := clFuchsia;
     tmpBitmap.Transparent := True;
-    osBmp.Canvas.Draw(rColorPicker.Right + 4, 1, tmpBitmap);
+    osBmp.Canvas.Draw(rColorPicker.Right + 3, 0, tmpBitmap);
     tmpBitmap.Free;
 
     // Copy off screen bitmap to canvas
