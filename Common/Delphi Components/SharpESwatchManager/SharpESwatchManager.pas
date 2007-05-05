@@ -482,8 +482,8 @@ begin
     exit;
   end;
 
-  Try
   tmpBitmap := TBitmap32.Create;
+  Try
   tmpBitmap.BeginUpdate;
 
   // Initialise
@@ -540,8 +540,12 @@ begin
     FCachedBitmap.SetSize(w,y+FSwatchHeight+FSwatchSpacing);
     tmpBitmap.DrawTo(FCachedBitmap,0,0,Rect(0,0,w,y+FSwatchHeight+FSwatchSpacing));
 
+    tmpBitmap.Free;
+
     If Assigned(FOnUpdateSwatchBitmap) then
       FOnUpdateSwatchBitmap(Self,FCachedBitmap);
+
+
   End;
 end;
 
@@ -613,6 +617,8 @@ begin
   r := ASwatch.SwatchRect;
 
   poly := TPolygon32.Create;
+  Try
+
   poly.Antialiased := True;
   poly.AntialiasMode := am32times;
   poly.Add(FixedPoint(x,y));
@@ -633,7 +639,6 @@ begin
   tmpPoly := poly.Outline;
   tmpOutline := tmpPoly.Grow(Fixed(0.1/10),255);
   tmpOutline.FillMode := pfWinding;
-  tmpPoly.Free;
 
   tmpOutline.Antialiased := true;
   tmpOutline.AntialiasMode := am32times;
@@ -658,6 +663,12 @@ begin
     ABitmap.Textout(rText,DT_SINGLELINE+DT_VCENTER+DT_LEFT,ASwatch.ColorName);
 
     end;
+
+  Finally
+    Poly.Free;
+    tmpPoly.Free;
+    tmpOutline.Free;
+  End;
 end;
 
 function TSharpESwatchManager.GetCollectionList(AC: TCollection): TList;
