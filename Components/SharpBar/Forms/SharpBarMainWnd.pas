@@ -82,6 +82,8 @@ type
     N6: TMenuItem;
     Skin1: TMenuItem;
     ColorScheme1: TMenuItem;
+    ThemeHideTimer: TTimer;
+    procedure ThemeHideTimerTimer(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
@@ -146,7 +148,7 @@ type
     procedure LoadBarModules(XMLElem : TJvSimpleXMlElem);
 
     procedure WMDeskClosing(var msg : TMessage); message WM_DESKCLOSING;
-    procedure WMThemeLoadingEnd(var msg : TMessage); message WM_THEMELOADINGEND;
+    procedure WMDeskBackgroundChange(var msg : TMessage); message WM_DESKBACKGROUNDCHANGED;
 
     // Drag and Drop between bars
     procedure WMBarInsertModule(var msg : TMessage); message WM_BARINSERTMODULE;
@@ -317,28 +319,25 @@ begin
   DelayTimer1.Enabled := True;
 end;
 
-// Temporary! remove when SharpCenter is done!
-procedure TSharpBarMainForm.WMThemeLoadingEnd(var msg : TMessage);
+procedure TSharpBarMainForm.WMDeskBackgroundChange(var msg : TMessage);
 begin
- if FSuspended then exit;
+  if FSuspended then exit;
 
   if not FStartup then LockWindow(Handle);
   FBarLock := True;
 
   UpdateBGZone;
 
-  SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
-  SkinManager.UpdateScheme;
-  SkinManager.UpdateSkin;
   SharpEBar.Throbber.UpdateSkin;
   SharpEbar.Throbber.Repaint;
 
-  ModuleManager.BroadcastPluginUpdate(SU_SKINFILECHANGED);
   ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
 
-  ModuleManager.FixModulePositions;
-
   FBarLock := False;
+
+  if ThemeHideTimer.Enabled then
+     ThemeHideTimer.OnTimer(ThemeHideTimer);
+
   if not FStartup then UnLockWindow(Handle);
 end;
 
@@ -486,10 +485,20 @@ begin
   if not FStartup then LockWindow(Handle);
   FBarLock := True;
 
-  // Step1: Update settings and prepate modules for updating
+  // Step1: Update settings and prepare modules for updating
   case msg.WParam of
-    SU_SKIN : SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
-    SU_THEME : SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme,tpIconSet]);
+    SU_SKINFILECHANGED : SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
+    SU_THEME :
+      begin
+        SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme,tpIconSet]);
+        // Check if SharpDesk is running
+        if SharpApi.IsComponentRunning('SharpDesk') then
+        begin
+          SetLayeredWindowAttributes(Handle,0, 0, LWA_ALPHA);
+          SharpEBar.abackground.Alpha := 0;
+          ThemeHideTimer.Enabled := True;
+        end;
+      end;
     SU_SCHEME :
       begin
         SharpThemeApi.LoadTheme(True,[tpScheme]);
@@ -498,7 +507,8 @@ begin
     SU_ICONSET : SharpThemeApi.LoadTheme(True,[tpIconSet]);
   end;
 
-  if (msg.WParam = SU_THEME) or (msg.WParam = SU_SCHEME)
+  if //(msg.WParam = SU_THEME) or
+     (msg.WParam = SU_SCHEME)
      or (msg.WParam = SU_SKINFILECHANGED)  then
      begin
        SkinManager.UpdateScheme;
@@ -506,7 +516,7 @@ begin
        SharpEBar.UpdateSkin;
        SharpEBar.Throbber.UpdateSkin;
        SharpEbar.Throbber.Repaint;
-       UpdateBGZone;
+       UpdateBGImage;
 //       ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
      end;
 
@@ -620,9 +630,12 @@ begin
     wnd := FindWindow('TSharpDeskMainForm',nil);
     if wnd <> 0 then
     begin
-      // try 3 times... :)
+      if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp') then
+         BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp')
+      else
       if @PrintWindow <> nil then
       begin
+        // try 3 times... :)
         if not PrintWindow(wnd,BGBmp.Handle,0) then
         begin
            sleep(750);
@@ -631,17 +644,15 @@ begin
               sleep(1500);
               if not PrintWindow(wnd,BGBmp.Handle,0) then
               begin
-                if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg') then
-                   BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg');
               end;
            end;
         end;
-      end else
-      begin
-        if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg') then
-        BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.jpg');
-      end;
-    end else PaintDesktop(BGBmp.Handle);
+      end
+    end else
+    begin
+      if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp') then
+         BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp');
+    end;
     FTopZone.SetSize(Monitor.Width,Height);
     FBottomZone.SetSize(Monitor.Width,Height);
     FTopZone.Draw(0,0,Rect(Monitor.Left,Monitor.Top,Monitor.Left + Monitor.Width,Monitor.Top + Height), BGBmp);
@@ -1842,7 +1853,7 @@ end;
 procedure TSharpBarMainForm.DelayTimer1Timer(Sender: TObject);
 begin
   DelayTimer1.Enabled := False;
-  SendMessage(Handle,WM_THEMELOADINGEND,0,0);
+  SendMessage(Handle,WM_DESKBACKGROUNDCHANGED,0,0);
 end;
 
 procedure TSharpBarMainForm.DelayTimer2Timer(Sender: TObject);
@@ -1909,6 +1920,9 @@ procedure TSharpBarMainForm.FormClose(Sender: TObject;
 begin
   if Closing then exit;
 
+  SetLayeredWindowAttributes(Handle,0, 0, LWA_ALPHA);
+  SharpEBar.abackground.Alpha := 0;
+
   Closing := True;
   FreeLibrary(FUser32DllHandle);
   FUser32DllHandle := 0;
@@ -1958,6 +1972,16 @@ procedure TSharpBarMainForm.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
   CanClose := True;
+end;
+
+procedure TSharpBarMainForm.ThemeHideTimerTimer(Sender: TObject);
+begin
+  ThemeHideTimer.Enabled := False;
+  SetLayeredWindowAttributes(Handle,0, 255, LWA_ALPHA);
+  SetLayeredWindowAttributes(Handle, RGB(255, 0, 254), 255, LWA_COLORKEY);
+  SharpEBar.abackground.Alpha := 255;
+//  SetLayeredWindowAttributes(SharpEBar.abackground.handle,0, 255, LWA_ALPHA);
+
 end;
 
 end.

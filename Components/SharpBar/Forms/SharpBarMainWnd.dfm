@@ -840,4 +840,11 @@ object SharpBarMainForm: TSharpBarMainForm
     Left = 352
     Top = 8
   end
+  object ThemeHideTimer: TTimer
+    Enabled = False
+    Interval = 5000
+    OnTimer = ThemeHideTimerTimer
+    Left = 272
+    Top = 144
+  end
 end
