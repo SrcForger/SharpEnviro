@@ -41,7 +41,6 @@ uses
   Controls,
   uSharpDeskMainForm in 'Forms\uSharpDeskMainForm.pas' {SharpDeskMainForm},
   uSharpDeskSettingsForm in 'Forms\uSharpDeskSettingsForm.pas' {SettingsForm},
-  uSharpDeskLoadThemeForm in 'Forms\uSharpDeskLoadThemeForm.pas' {LoadThemeForm},
   uSharpDeskCreateForm in 'Forms\uSharpDeskCreateForm.pas' {CreateForm},
   uSharpDeskBackgroundUnit in 'Units\uSharpDeskBackgroundUnit.pas',
   uSharpDeskFunctions in 'Units\uSharpDeskFunctions.pas',

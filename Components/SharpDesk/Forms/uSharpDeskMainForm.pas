@@ -40,7 +40,6 @@ uses
   SharpApi,
   SharpThemeApi,
   SharpDeskApi,
-  uSharpDeskLoadThemeForm,
   uSharpDeskBackgroundUnit,
   uSharpDeskFunctions,
   uSharpDeskObjectFileList,
@@ -188,7 +187,6 @@ type
     procedure WMDeskExportBackground(var Msg : TMessage); message WM_DESKEXPORTBACKGROUND;
     procedure WMEnableDesk(var Msg : TMessage);           message WM_ENABLESHARPDESK;
     procedure WMDisableDesk(var Msg : TMessage);          message WM_DISABLESHARPDESK;
-    procedure WMSharpEUpadteTheme(var Msg : TMessage);    message WM_SHARPETHEMEUPDATE;
     procedure WMUpdateBangs(var Msg : TMessage);          message WM_SHARPEUPDATEACTIONS;
     procedure WMSharpEBang(var Msg : TMessage);           message WM_SHARPEACTIONMESSAGE;
     procedure WMPosChanging(var Msg: TWMWindowPosMsg);    message WM_WINDOWPOSCHANGING;
@@ -248,8 +246,6 @@ var
   bgloaded : boolean = False;
   Disabled : boolean = False;
   startup : boolean = False;
-  firsttheme : boolean = True;
-  loadingtheme : boolean = false;
 
   wpara: wparam;
   mess: integer;
@@ -374,23 +370,6 @@ begin
   CheckThemeTimer.Enabled := True;
 end;
 
-procedure TSharpDeskMainForm.WMSharpEUpadteTheme(var Msg : TMessage);
-var
-   b : boolean;
-begin
-  if loadingtheme then
-  begin
-    loadingtheme := false;
-    exit;
-  end;
-  case Msg.LParam of
-    1 : b:= True;
-    0 : b:= False;
-    else b := False;
-  end;
-  SharpDeskMainForm.LoadTheme(b);
-end;
-
 procedure TSharpDeskMainForm.WMUpdateBangs(var Msg : TMessage);
 begin
   SharpApi.RegisterActionEx('!EditCurrentTheme','SharpTheme',SharpDeskMainForm.Handle,1);
@@ -441,8 +420,6 @@ begin
                         Screen.DesktopWidth, Screen.DesktopHeight, SWP_SHOWWINDOW);
            ForceForegroundWindow(SharpDeskMainForm.Handle);
            if CreateForm.Visible       then ForceForegroundWindow(CreateForm.Handle);
-           if LoadThemeForm <> nil then
-              if LoadThemeForm.Visible then ForceForegroundWindow(LoadThemeForm.Handle);
            if SettingsForm.Visible     then ForceForegroundWindow(SettingsForm.Handle);
 
            handle := FindWindow('SharpE_Task', nil);
@@ -480,24 +457,13 @@ end;
 
 
 procedure TSharpDeskMainForm.LoadTheme(WPChange : boolean);
-var
-   LoadThemeForm : TLoadThemeForm;
-   {SetList : TStringList;  }
 begin
   SharpDeskMainForm.SendMessageToConsole('Loading Theme',COLOR_OK,DMT_STATUS);
 
-  SharpApi.SharpEBroadCast(WM_THEMELOADINGSTART,0,0);
   try
-    LoadThemeForm := TLoadThemeForm.Create(Application);
-    SharpThemeApi.LoadTheme(False,ALL_THEME_PARTS);
-    Application.ProcessMessages;
+    SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
     SharpDesk.DeskSettings.ReloadSettings;
-    LoadThemeForm.Show;
-    LoadThemeForm.Repaint;
-    SharpDeskMainForm.SendMessageToConsole('unloading desktop objects',COLOR_OK,DMT_STATUS);
-    LoadThemeForm.SetStatus('Unloading Desktop Objects',0);
-//     MainForm.UnLoadObjects(False);
-    Application.ProcessMessages;
+
     SharpApi.SendDebugMessageEx('SharpDesk',PChar('Main Resize : ' +
                                 inttostr(Screen.DesktopLeft)+','+inttostr(Screen.DesktopTop)+','+inttostr(Screen.DesktopWidth)+','+inttostr(Screen.DesktopHeight)),clblue,DMT_INFO);
     SharpDeskMainForm.Left := Screen.DesktopLeft;
@@ -506,37 +472,20 @@ begin
     SharpDeskMainForm.Height := Screen.DesktopHeight;
     if WPChange then
     begin
-      LoadThemeForm.SetStatus('Loading Wallpaper Settings',20);
-      SharpDeskMainForm.SendMessageToConsole('loading wallpaper settings',COLOR_OK,DMT_STATUS);
-      LoadThemeForm.SetStatus('Loading Wallpaper',25);
       SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
       Background.Reload;
-      LoadThemeForm.SetStatus('Loading Wallpaper Effects',40);
     end;
     SharpDesk.UpdateAnimationLayer;
-    LoadThemeForm.SetStatus('Loading Scheme',55);
 
-    LoadThemeForm.ReDrawForm;
-
-    SharpDeskMainForm.SendMessageToConsole('loading desktop objects',COLOR_OK,DMT_STATUS);
-    LoadThemeForm.SetStatus('Loading Desktop Objects',75);
     SharpDesk.ObjectSetList.LoadFromFile;
     SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
 
-     //next broadcast will be by SharpDesk, loadingtheme = true will make the
-     //WM handler ignore the message
-    loadingtheme := true;
-    LoadThemeForm.SetStatus('Theme Loaded',100);
-    LoadThemeForm.Close;
-    LoadThemeForm.Free;
-    SharpDeskMainForm.SendMessageToConsole('theme loaded',COLOR_OK,DMT_STATUS);
-
     if SharpDesk.DeskSettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
-    FirstTheme := False;
   finally
-    BackgroundImage.Repaint;
-    Repaint;
-    SharpApi.SharpEBroadCast(WM_THEMELOADINGEND,0,0);
+    BackgroundImage.ForceFullInvalidate;
+    SharpDesk.BackgroundLayer.Update;
+    SharpDesk.BackgroundLayer.Changed;
+    SharpApi.SharpEBroadCast(WM_DESKBACKGROUNDCHANGED,0,0);
   end;
 end;
 
@@ -583,19 +532,29 @@ end;
 
 
 // #################################################
-// a settings has changed
+// a setting has changed
 
 procedure TSharpDeskMainForm.WMSharpEUppdateSettings(var msg: TMessage);
 begin
   if msg.WParam < 0 then exit;
 
-  case msg.WParam of
-    SU_SHARPDESK:
-      begin
-        SharpDesk.DeskSettings.ReloadSettings;
-        if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
-           else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
-      end;
+  if (msg.WParam = SU_THEME) then
+  begin
+    LoadTheme(True);
+    exit;
+  end;
+
+  if (msg.WParam = SU_SHARPDESK) then
+  begin
+    SharpDesk.DeskSettings.ReloadSettings;
+    if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
+       else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
+  end;
+
+  if (msg.WParam = SU_DESKTOPICON) then
+  begin
+    SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
+    SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
   end;
 end;
 
@@ -1873,7 +1832,7 @@ end;
 
 procedure TSharpDeskMainForm.WMWeatherUpdate(var msg : TMessage);
 begin
-  SharpDesk.SendMessageToAllObjects(SDM_WEATHER_UPDATE);
+  SharpDesk.SendMessageToAllObjects(SDM_WEATHER_UPDATE,0,0,0);
 end;
 
 procedure TSharpDeskMainForm.NewObjectSetClick(Sender: TObject);

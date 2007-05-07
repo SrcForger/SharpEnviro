@@ -258,7 +258,6 @@ begin
   begin
     ENDOFCUSTOMMENU.Visible := True;
     STARTOFBOTTOMMENU.Visible := True;
-    SharpApi.SendMessageTo('SharpMenuWMForm',WM_CLOSESHARPMENU,0,0);
 
     while ObjectPopUp.Items[0].Name <> 'ENDOFCUSTOMMENU' do ObjectPopUp.Items.Delete(0);
     while ObjectPopUp.Items[ObjectPopUp.Items.Count-1].Name <> 'STARTOFBOTTOMMENU' do ObjectPopUp.Items.Delete(ObjectPopUp.Items.Count-1);

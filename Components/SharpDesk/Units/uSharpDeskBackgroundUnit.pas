@@ -32,9 +32,9 @@ Unit uSharpDeskBackgroundUnit;
 
 Interface
 
-uses Windows,Graphics,SysUtils,Forms,SharpApi,Jpeg,Classes,Dialogs,Types,
+uses Windows,Graphics,SysUtils,Forms,SharpApi,Classes,Dialogs,Types,
      GR32,Math,GR32_blend,GR32_Image, GR32_resamplers,PngImage, Registry,Messages,
-     SharpThemeApi,
+     SharpThemeApi, Jpeg,
      SharpGraphicsUtils;
 
 type
@@ -178,7 +178,7 @@ var
    x,y,ny,nx : integer;
    Re : TRect;
    w,h : integer;
-   JPeg : TJpegImage;
+   //JPeg : TJpegImage;
    winWallPath: string;
    Reg : TRegistry;
 
@@ -310,20 +310,29 @@ begin
   winWallPath := ExtractFilePath(Application.ExeName) + 'SharpDeskbg';
   tBmp := TBitmap.Create;
   tBmp.Assign(SharpDesk.Image.Bitmap);
-  Jpeg := TJpegImage.Create;
+  tBmp.SaveToFile(winWallPath+'.bmp');
+{  Jpeg := TJpegImage.Create;
   Jpeg.Assign(tBmp);
   JPeg.SaveToFile(winWallPath+'.jpg');
-  JPeg.Free;
+  JPeg.Free;}
   tBmp.Free;
 
   SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Set Win Wallpaper : ') + WP.Name),clblue,DMT_trace);
   Reg := TRegistry.Create;
   Reg.RootKey := HKEY_CURRENT_USER;
   Reg.OpenKey('\Control Panel\Desktop\',False);
-  Reg.WriteString('Wallpaper', winWallPath+'.jpg');
-  Reg.WriteString('WallpaperStyle', '2');
+  Reg.WriteString('Wallpaper', winWallPath+'.bmp');
+  Reg.WriteString('WallpaperStyle', '0');
+  Reg.WriteString('TileWallpaper', '0');
+  Reg.OpenKey('\Software\Microsoft\Internet Explorer\Desktop\General',False);
+  Reg.WriteString('BackupWallpaper', winWallPath+'.bmp');
+  Reg.WriteString('Wallpaper', winWallPath+'.bmp');
+  Reg.WriteString('WallpaperStyle', '0');
+  Reg.WriteString('TileWallpaper', '0');
+  Reg.OpenKey('\Software\Microsoft\Windows\CurrentVersion\Themes\LastTheme',False);
+  Reg.WriteString('Wallpaper', winWallPath+'.bmp');
   Reg.Free;
-  SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(winWallPath+'.jpg'), SPIF_SENDCHANGE);
+  SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(winWallPath+'.bmp'), SPIF_SENDCHANGE);
 
   SendMessage(FindWindow('Progman','Program Manager'),WM_COMMAND,106597, 0);
 end;

@@ -139,7 +139,7 @@ type
       function  SelectedObjectsOfSameType(dummy : integer) : boolean; overload;
       function  SelectedObjectsOfSameType(dummy : string) : String; overload;
       procedure SendSelectedObjectsToBack;
-      procedure SendMessageToAllObjects(messageID : integer);
+      procedure SendMessageToAllObjects(messageID : integer; P1,P2,P3 : integer);
       procedure UnloadAllObjects;
       procedure UnLockAllObjects;
       procedure UnLockSelectedObjects;
@@ -233,7 +233,7 @@ begin
   FEffectLayer.Location := FBackgroundLayer.Location;
 
   FSelectLayer := TSelectionLayer.Create(FImage.Layers);
-  FSelectLayer.Visible := True;
+  FSelectLayer.Visible := False;
   FSelectLayer.Location := FloatRect(0,0,1,1);
   FSelectLayer.Tag:=-3;
   FSelectLayer.BringToFront;
@@ -1297,8 +1297,7 @@ begin
 end;
 
 
-
-procedure TSharpDeskManager.SendMessageToAllObjects(messageID : integer);
+procedure TSharpDeskManager.SendMessageToAllObjects(messageID : integer; P1,P2,P3 : integer);
 var
   i,n : integer;
   DesktopObject : TDesktopObject;
@@ -1310,7 +1309,7 @@ begin
         if DesktopObject<>nil then
            DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
                                                    DesktopObject.Layer,
-                                                   messageID,0,0,0);
+                                                   messageID,P1,P2,P3);
       end;
 end;
 
