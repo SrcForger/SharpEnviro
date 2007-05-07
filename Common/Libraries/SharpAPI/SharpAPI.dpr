@@ -42,10 +42,8 @@ uses
   shellAPI,
   Forms,
   classes,
-  dialogs,
   registry,
   jclsysinfo,
-  JvSimpleXML,
 
   uExecServiceRecentItemList in
     '..\..\..\Plugins\Services\Exec\uExecServiceRecentItemList.pas',
@@ -63,22 +61,14 @@ const
 
   WM_WEATHERUPDATE = WM_APP + 540;
 
-  WM_SHARPETHEMEUPDATE = WM_APP + 522;
   WM_DISABLESHARPDESK = WM_APP + 523;
   WM_ENABLESHARPDESK = WM_APP + 524;
   WM_EDITCURRENTTHEME = WM_APP + 525;
   WM_ADDDESKTOPOBJECT = WM_APP + 526;
-  WM_SHOWOBJECTLIST = WM_APP + 527;
   WM_SHOWDESKTOPSETTINGS = WM_APP + 528;
-  WM_DISPLAYSHARPMENU = WM_APP + 529;
-  WM_CLOSESHARPMENU = WM_APP + 530;
   WM_CLOSEDESK = WM_APP + 531;
   WM_DESKEXPORTBACKGROUND = WM_APP + 532;
   WM_FORCEOBJECTRELOAD = WM_APP + 533;
-  WM_TERMINALWND = WM_APP + 534;
-
-  WM_THEMELOADINGSTART = WM_APP + 535;
-  WM_THEMELOADINGEND = WM_APP + 536;
 
   WM_SHARPTERMINATE = WM_APP + 550;
 
@@ -1366,7 +1356,8 @@ begin
   // Check if greater than recent items capacity
   if ReturnCount > 50 then
   begin
-    ShowMessage('Must not exceed recent item count of 50');
+    //ShowMessage('Must not exceed recent item count of 50');
+    // why display this error message? useless for any normal user...  BB
     exit;
   end;
 
