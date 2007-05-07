@@ -225,7 +225,8 @@ begin
   end;                      
   if Layer = nil then exit;
   case DeskMessage of
-    SDM_DOUBLE_CLICK : ;//Layer.RecycleBinLayer.DoubleClick;
+    SDM_SETTINGS_UPDATE : Layer.RecycleBinLayer.LoadSettings;
+    SDM_DOUBLE_CLICK : Layer.RecycleBinLayer.DoubleClick;
     SDM_REPAINT_LAYER : Layer.RecycleBinLayer.LoadSettings;
     SDM_SELECT : begin
                    if P1 = 0 then Layer.RecycleBinLayer.Locked := False
