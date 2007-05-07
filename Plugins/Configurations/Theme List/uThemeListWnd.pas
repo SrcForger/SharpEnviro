@@ -58,7 +58,7 @@ type
     procedure lbThemesClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    FEditMode: TSCE_EDITMODE;
+    FEditMode: TSCE_EDITMODE_ENUM;
   private
     
   public
@@ -69,7 +69,7 @@ type
     function UpdateUI:Boolean;
     function SaveUi: Boolean;
     procedure ConfigureItem;
-    Property EditMode: TSCE_EDITMODE read FEditMode write FEditMode;
+    Property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
   end;
 
 var
@@ -372,7 +372,7 @@ begin
   if lbThemeList.ItemIndex < 0 then exit;
 
   sTheme := TThemeListItem(lbThemeList.Item[lbThemeList.ItemIndex].Data).Name;
-  SharpApi.CenterMsg('_loadsetting',PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'),pchar(sTheme));
+  SharpApi.CenterMsg(sccLoadSetting,PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'),pchar(sTheme));
 end;
 
 procedure TfrmThemeList.lbThemeListGetCellColor(const AItem: Integer;

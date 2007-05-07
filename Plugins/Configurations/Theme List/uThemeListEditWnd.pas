@@ -66,7 +66,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    function ValidateWindow(AEditMode: TSCE_EDITMODE):Boolean;
+    function ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM):Boolean;
     procedure ClearValidation;
 
     property ItemEdit: TThemeListItem read FItemEdit write FItemEdit;
@@ -89,7 +89,7 @@ begin
     frmThemeList.lbThemeList.Enabled := False;
 end;
 
-function TfrmEditItem.ValidateWindow(AEditMode: TSCE_EDITMODE): Boolean;
+function TfrmEditItem.ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
 begin
   errorinc.BeginUpdate;
   try

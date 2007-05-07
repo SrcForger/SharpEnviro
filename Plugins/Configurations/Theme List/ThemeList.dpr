@@ -89,7 +89,7 @@ begin
   end;
 end;
 
-function OpenEdit(AOwner: hwnd; AEditMode:TSCE_EDITMODE): hwnd;
+function OpenEdit(AOwner: hwnd; AEditMode:TSCE_EDITMODE_ENUM): hwnd;
 begin
   result := HR_NORECIEVERWINDOW;
   if frmEditItem = nil then frmEditItem := TfrmEditItem.Create(nil);
@@ -112,7 +112,7 @@ begin
 
 end;
 
-function CloseEdit(AEditMode:TSCE_EDITMODE; AApply: Boolean): boolean;
+function CloseEdit(AEditMode:TSCE_EDITMODE_ENUM; AApply: Boolean): boolean;
 begin
   Result := True;
 
@@ -238,6 +238,11 @@ begin
   ATabs.Add('Themes',nil,'',IntToStr(frmThemeList.lbThemeList.Count));
 end;
 
+function SetSettingType : integer;
+begin
+  result := SU_THEME;
+end;
+
 
 exports
   Open,
@@ -247,6 +252,7 @@ exports
   SetDisplayText,
   SetStatusText,
   SetBtnState,
+  SetSettingType,
   GetCenterScheme,
   AddTabs,
   ClickBtn;
