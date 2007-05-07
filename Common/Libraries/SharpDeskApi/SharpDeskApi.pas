@@ -51,7 +51,7 @@ type
                   Alpha       : integer;
                   Size        : integer;
                   ShadowColor : integer;
-                  ShadowAlpha : boolean;
+                  TextAlpha   : boolean;
                   ShadowAlphaValue : integer;
                   Shadow      : boolean;
                 end;
@@ -104,6 +104,7 @@ const
      SDM_DELETE_LAYER = 17;
      SDM_WEATHER_UPDATE = 18;
      SDM_INIT_DONE = 19;
+     SDM_SETTINGS_UPDATE = 20;
 
 
 // function GetAlphaBMP(Bmp : TBitmap32) : TBitmap32; external 'SharpDeskApi.dll';
@@ -124,7 +125,7 @@ function RenderObject(dst : TBitmap32; Icon : TDeskIcon; Font : TDeskFont; Capti
 function RenderIconCaptionAligned(dst : TBitmap32; Icon : TBitmap32; Caption : TBitmap32; CaptionAlign : TTextAlign; IconOffset : TPoint; CaptionOffset : TPoint; IconHasShadow : boolean; CaptionHasShadow : boolean) : TAlignInfo; external 'SharpDeskApi.dll';
 
 // wrapper functions
-function DeskFont(Name : String; Color : integer; Bold : boolean; Italic : boolean; Underline : boolean; AALevel : integer; Alpha : integer; Size : integer; ShadowColor : integer; ShadowAlpha : boolean; ShadowAlphaValue : integer; Shadow : boolean) : TDeskFont;
+function DeskFont(Name : String; Color : integer; Bold : boolean; Italic : boolean; Underline : boolean; AALevel : integer; Alpha : integer; Size : integer; ShadowColor : integer; TextAlpha : boolean; ShadowAlphaValue : integer; Shadow : boolean) : TDeskFont;
 function DeskIcon(Icon : TBitmap32; Size : integer; Alpha : integer; Blend : boolean; BlendColor : integer; BlendValue : integer; Shadow : boolean; ShadowColor : integer; ShadowAlpha : integer; XOffset : integer; YOffset : integer) : TDeskIcon;
 function DeskCaption(Caption : TStringList; Align : TTextAlign; Xoffset : integer; Yoffset : integer; Draw : boolean; LineSpace : integer) : TDeskCaption;
 function IntToTextAlign(value : integer) : TTextAlign;
@@ -141,7 +142,7 @@ function DeskFont(Name        : String;
                   Alpha       : integer;
                   Size        : integer;
                   ShadowColor : integer;
-                  ShadowAlpha : boolean;                  
+                  TextAlpha   : boolean;
                   ShadowAlphaValue : integer;
                   Shadow      : boolean) : TDeskFont;
 begin
@@ -154,7 +155,7 @@ begin
   DeskFont.Alpha       := Alpha;
   DeskFont.Size        := Size;
   DeskFont.ShadowColor := ShadowColor;
-  DeskFont.ShadowAlpha := ShadowAlpha;
+  DeskFont.TextAlpha   := TextAlpha;
   DeskFont.ShadowAlphaValue := ShadowAlphaValue;
   DeskFont.Shadow      := Shadow;
 end;

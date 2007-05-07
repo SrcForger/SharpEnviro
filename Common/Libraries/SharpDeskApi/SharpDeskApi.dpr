@@ -32,28 +32,12 @@ library SharpDeskApi;
 
 uses
   Windows,
-  CommCtrl,
-  Dialogs,
-  Forms,
-  ShellApi,
   Graphics,
-  JPeg,
-  pngimage,
-  SysUtils,
   gr32,
-  GR32_System,
-  GR32_Image,
-  GR32_Layers,
   GR32_BLEND,
-  GR32_Transforms,
-  GR32_Filters,
   GR32_Resamplers,
-  JvSimpleXML,
-  JclFileUtils,
-  JclShell,
   Math,
   Classes,
-  SharpAPI in '..\SharpAPI\SharpAPI.pas',
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas';
 
 {$R glyphs.res}
@@ -83,7 +67,7 @@ type
                   Alpha       : integer;
                   Size        : integer;
                   ShadowColor : integer;
-                  ShadowAlpha : boolean;
+                  TextAlpha   : boolean;
                   ShadowAlphaValue : integer;
                   Shadow      : boolean;
                 end;
@@ -340,8 +324,6 @@ begin
     exit;
   end;
 
-  if not Font.ShadowAlpha then Font.ShadowAlphaValue := 0;
-
   dst.Font.Name  := Font.Name;
   dst.Font.Color := Font.Color;
   dst.Font.Size  := Font.Size;
@@ -366,7 +348,7 @@ begin
   if Font.Shadow then
      CreateDropShadow(dst,0,1,Font.ShadowAlphaValue,Font.ShadowColor);
 
-  if Font.ShadowAlpha then dst.MasterAlpha := Font.Alpha
+  if Font.TextAlpha then dst.MasterAlpha := Font.Alpha
      else dst.MasterAlpha := 255;
   RenderText := True;
 end;
@@ -582,7 +564,11 @@ begin
   end;
 
   IconBitmap.Free;
-  if Caption.Draw then FreeAndNil(FontBitmap);
+  if Caption.Draw then
+  begin
+    FontBitmap.Free;
+    FontBitmap := nil;
+  end;
   RenderObject := True;
 end;
 
