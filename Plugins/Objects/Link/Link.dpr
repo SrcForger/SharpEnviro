@@ -197,6 +197,16 @@ var
 begin
   if FirstStart then exit;
   Layer := nil;
+
+  case DeskMessage of
+    SDM_SHUTDOWN : begin
+                     LayerList.Clear;
+                     LayerList.Free;
+                     LayerList := nil;
+                     FirstStart := True;
+                    end;
+  end;
+
   for n := 0 to LayerList.Count - 1 do
   begin
     if TLayer(LayerList.Items[n]).ObjectID = pObjectID then
@@ -207,6 +217,7 @@ begin
   end;                      
   if Layer = nil then exit;
   case DeskMessage of
+    SDM_SETTINGS_UPDATE : Layer.FolderLayer.LoadSettings;
     SDM_DOUBLE_CLICK : Layer.FolderLayer.DoubleClick;
     SDM_REPAINT_LAYER : Layer.FolderLayer.LoadSettings;
     SDM_SELECT : begin
@@ -219,12 +230,6 @@ begin
                         LayerList.Remove(Layer);
                         Layer := nil;
                       end;
-    SDM_SHUTDOWN : begin
-                     LayerList.Clear;
-                     LayerList.Free;
-                     LayerList := nil;
-                     FirstStart := True;
-                   end;
 
     SDM_MENU_POPUP : begin
                        Bmp2 := TBitmap.Create;

@@ -276,13 +276,11 @@ begin
     FFontSettings.Italic    := Theme[DS_TEXTITALIC].BoolValue;
     FFontSettings.Underline := Theme[DS_TEXTUNDERLINE].BoolValue;
     FFontSettings.AALevel   := 0;
-    if Theme[DS_TEXTALPHA].BoolValue then
-       FFontSettings.Alpha := Theme[DS_TEXTALPHAVLAUE].IntValue
-       else FFontSettings.Alpha := 255;
     FFontSettings.ShadowColor      := SharpThemeApi.SchemeCodeToColor(Theme[DS_TEXTSHADOWCOLOR].IntValue);
-    FFontSettings.ShadowAlphaValue := Theme[DS_TEXTSHADOWALPHA].IntValue;
+    FFontSettings.ShadowAlphaValue := 255-Theme[DS_TEXTSHADOWALPHA].IntValue;
     FFontSettings.Shadow           := Theme[DS_TEXTSHADOW].BoolValue;
-    FFontSettings.ShadowAlpha      := False;
+    FFontSettings.TextAlpha        := Theme[DS_TEXTALPHA].BoolValue;
+    FFontSettings.Alpha            := Theme[DS_TEXTALPHAVLAUE].IntValue;
 
 
     FCaptionSettings.Caption.Clear;
@@ -309,7 +307,7 @@ begin
     FIconSettings.BlendValue  := Theme[DS_ICONBLENDALPHA].IntValue;
     FIconSettings.Shadow      := Theme[DS_ICONSHADOW].BoolValue;
     FIconSettings.ShadowColor := SharpThemeApi.SchemeCodeToColor(Theme[DS_ICONSHADOWCOLOR].IntValue);
-    FIconSettings.ShadowAlpha := Theme[DS_ICONSHADOWALPHA].IntValue;
+    FIconSettings.ShadowAlpha := 255-Theme[DS_ICONSHADOWALPHA].IntValue;
 
     if Theme[DS_ICONSIZE].IntValue <= 8 then
        Theme[DS_ICONSIZE].IntValue:= 48;
@@ -317,10 +315,10 @@ begin
     if FIconSettings.Icon <> nil then
     begin
       bmp := TBitmap32.Create;
+      TLinearResampler.Create(Bmp);
       IconStringToIcon(FSettings.Icon,FSettings.Target,Bmp,Theme[DS_ICONSIZE].IntValue);
       bmp.DrawMode := dmBlend;
       bmp.CombineMode := cmMerge;
-      TLinearResampler.Create(bmp);
       FIconSettings.Icon.SetSize(Theme[DS_ICONSIZE].IntValue,Theme[DS_ICONSIZE].IntValue);
       FIconSettings.Icon.Clear(color32(0,0,0,0));
       bmp.DrawTo(FIconSettings.Icon,Rect(0,0,FIconSettings.Icon.Width,FIconSettings.Icon.Height));
