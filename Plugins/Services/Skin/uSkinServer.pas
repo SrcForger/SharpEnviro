@@ -108,7 +108,7 @@ end;
 
 procedure TSkinServer.UpdateSkin(var Msg: TMessage);
 begin
-  if msg.WParam = SU_SKIN then
+  if (msg.WParam = SU_SKIN) or (msg.WParam = SU_THEME) then
   begin
     UpdateStreamFile;
     SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKINFILECHANGED,0);
