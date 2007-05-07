@@ -39,7 +39,7 @@ uses
   JvExStdCtrls, JvListBox, JvSimpleXML, JvHLEditorPropertyForm, ToolWin,
   ComCtrls, ImgList, PngImageList, Tabs, JvTabBar, GR32_Image,
   SharpESkin, SharpEButton, SharpESkinManager, SharpEBaseControls, SharpEScheme,
-  SharpECheckBox, SharpEProgressBar, SharpEBar, gr32,
+  SharpECheckBox, SharpEProgressBar, SharpEBar, gr32, SharpThemeApi,
   SharpEMiniThrobber, SharpERadioBox, SharpEPanel, SharpEEdit, SharpELabel,
   SharpETaskItem, SharpApi, Graphics, SharpEColorPicker;
 
@@ -1088,7 +1088,7 @@ begin
   if cpanel.ComponentCount = 0 then exit;
 
   for n := 0 to (cpanel.ComponentCount div 2) - 1 do
-      Scheme.AddColor(inttostr(n),TLabel(cpanel.Components[n*2]).Caption,'',TSharpEColorPicker(cpanel.Components[n*2+1]).Color);
+      Scheme.AddColor(inttostr(n),TLabel(cpanel.Components[n*2]).Caption,'',TSharpEColorPicker(cpanel.Components[n*2+1]).Color,stColor);
   RepaintSkinDemo;
 end;
 
