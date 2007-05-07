@@ -112,11 +112,55 @@ begin
 end;
 
 function Close(ASave: Boolean): boolean;
+var
+  XML : TJvSimpleXML;
+  i : integer;
+  Dir,FileName : String;
 begin
   result := True;
   try
     if ASave then
     begin
+      Dir := SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmDesktopSettings.sTheme+'\';
+      FileName := Dir + 'DesktopIcon.xml';
+
+      XML := TJvSimpleXML.Create(nil);
+      XML.Root.Name := 'SharpEThemeDesktopIcon';
+      XML.Root.Items.Clear;
+
+      with XML.Root.Items do
+      begin
+        if frmDesktopSettings.rb_icon32.Checked then i := 32
+           else if frmDesktopSettings.rb_icon48.Checked then i := 48
+           else if frmDesktopSettings.rb_icon64.Checked then i := 64
+           else i := frmDesktopSettings.tb_iconsize.Position;
+        Add('IconSize',i);
+        Add('IconAlphaBlend',frmDesktopSettings.cb_alphablend.Checked);
+        Add('IconAlpha',frmDesktopSettings.tb_iconalpha.Position);
+        Add('IconBlending',frmDesktopSettings.cb_colorblend.Checked);
+        Add('IconBlendAlpha',frmDesktopSettings.tb_cblendalpha.Position);
+        Add('IconShadow',frmDesktopSettings.cb_iconshadow.Checked);
+        Add('IconShadowAlpha',frmDesktopSettings.tb_iconshadow.Position);
+        Add('IconBlendColor',frmDesktopSettings.IconColors.Items.Item[0].ColorCode);
+        Add('IconShadowColor',frmDesktopSettings.IconColors.Items.Item[1].ColorCode);
+        Add('FontName',frmDesktopSettings.cbxFontName.Text);
+        Add('TextSize',round(frmDesktopSettings.se_fontsize.Value));
+        Add('TextBold',frmDesktopSettings.cb_bold.Checked);
+        Add('TextItalic',frmDesktopSettings.cb_italic.Checked);
+        Add('TextUnderline',frmDesktopSettings.cb_underline.Checked);
+        Add('TextAlpha',frmDesktopSettings.cb_fontalphablend.Checked);
+        Add('TextAlphaValue',frmDesktopSettings.tb_fontalpha.Position);
+        Add('TextShadow',frmDesktopSettings.cb_textshadow.Checked);
+        Add('TextShadowAlpha',frmDesktopSettings.tb_textshadow.Position);
+        Add('TextColor',frmDesktopSettings.TextColors.Items.Item[0].ColorCode);
+        Add('TextShadowColor',frmDesktopSettings.TextColors.Items.Item[1].ColorCode);
+      end;
+
+      XML.SaveToFile(FileName+'~');
+      if FileExists(FileName) then
+         DeleteFile(FileName);
+      RenameFile(FileName+'~',FileName);
+      XML.Free;
     end;
 
     frmDesktopSettings.Close;
@@ -169,7 +213,7 @@ end;
 
 function SetSettingType : integer;
 begin
-  result := SU_SHARPDESK;
+  result := SU_DESKTOPICON;
 end;
 
 

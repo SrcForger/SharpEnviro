@@ -450,7 +450,7 @@ end;
 
 procedure TfrmDesktopSettings.tb_scaleChange(Sender: TObject);
 begin
-  lb_scale.Caption := inttostr(tb_scale.Position);
+  lb_scale.Caption := inttostr(tb_scale.Position) + 'px';
 end;
 
 end.

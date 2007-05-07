@@ -171,7 +171,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           Width = 225
           Height = 25
           Max = 256
-          Min = 8
+          Min = 12
           PageSize = 1
           Frequency = 8
           Position = 32
@@ -314,12 +314,16 @@ object frmDesktopSettings: TfrmDesktopSettings
             ColorCode = 0
             ColorAsTColor = clBlack
             Expanded = False
+            ColorEditor = IconColors.Item0
+            Tag = 0
           end
           item
             Title = 'Icon Shadow'
             ColorCode = 0
             ColorAsTColor = clBlack
             Expanded = False
+            ColorEditor = IconColors.Item1
+            Tag = 0
           end>
         SwatchManager = SharpESwatchManager1
       end
@@ -632,12 +636,16 @@ object frmDesktopSettings: TfrmDesktopSettings
             ColorCode = 0
             ColorAsTColor = clBlack
             Expanded = False
+            ColorEditor = textcolors.Item0
+            Tag = 0
           end
           item
             Title = 'Shadow'
             ColorCode = 0
             ColorAsTColor = clBlack
             Expanded = False
+            ColorEditor = textcolors.Item1
+            Tag = 0
           end>
         SwatchManager = SharpESwatchManager1
       end
