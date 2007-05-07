@@ -141,7 +141,7 @@ function GetDesktopIconBlendAlpha  : integer; external 'SharpThemeApi.dll' name 
 function GetDesktopIconShadow      : boolean; external 'SharpThemeApi.dll' name 'GetDesktopIconShadow';
 function GetDesktopIconShadowColor : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconShadowColor';
 function GetDesktopIconShadowAlpha : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconShadowAlpha';
-function GetDesktopFontName        : String;  external 'SharpThemeApi.dll' name 'GetDesktopFontName';
+function GetDesktopFontName        : PChar;   external 'SharpThemeApi.dll' name 'GetDesktopFontName';
 function GetDesktopDisplayText     : boolean; external 'SharpThemeApi.dll' name 'GetDesktopDisplayText';
 function GetDesktopTextSize        : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextSize';
 function GetDesktopTextBold        : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextBold';
