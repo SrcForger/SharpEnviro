@@ -211,7 +211,8 @@ begin
         TMainForm(temp.Form).SharpESkinManager1.UpdateScheme;
     if (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
     begin
-      TMainForm(temp.Form).SharpESkinManager1.UpdateSkin;
+      if (part = SU_SKINFILECHANGED) then
+         TMainForm(temp.Form).SharpESkinManager1.UpdateSkin;
       TMainForm(temp.Form).UpdateCustomSkin;
     end;
 

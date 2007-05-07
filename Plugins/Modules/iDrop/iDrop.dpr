@@ -195,7 +195,8 @@ begin
         TMainForm(temp.Form).SkinManager.UpdateScheme;
     if (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
     begin
-      TMainForm(temp.Form).SkinManager.UpdateSkin;
+      if (part = SU_SKINFILECHANGED) then
+          TMainForm(temp.Form).SkinManager.UpdateSkin;
       TMainForm(temp.Form).UpdateCustomSettings;
     end;
 

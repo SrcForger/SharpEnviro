@@ -204,7 +204,7 @@ begin
     end;
 
      // Step2: check if skin or scheme changed
-    if (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
+    if (part = SU_SKINFILECHANGED) then
        TMainForm(temp.Form).SharpESkinManager1.UpdateSkin;
 
     if (part = SU_SCHEME) or (part = SU_THEME) then

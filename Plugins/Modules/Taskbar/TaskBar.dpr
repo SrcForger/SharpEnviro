@@ -230,9 +230,10 @@ begin
      // Step2: check if skin or scheme changed
     if (part = SU_SCHEME) or (part = SU_THEME) then
         TMainForm(temp.Form).SystemSkinManager.UpdateScheme;
-    if (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
+    if (part = SU_SKINFILECHANGED) then
     begin
-      TMainForm(temp.Form).SystemSkinManager.UpdateSkin;
+      if (part = SU_SKINFILECHANGED) then
+         TMainForm(temp.Form).SystemSkinManager.UpdateSkin;
       TMainForm(temp.Form).UpdateCustomSettings;
     end;
 
