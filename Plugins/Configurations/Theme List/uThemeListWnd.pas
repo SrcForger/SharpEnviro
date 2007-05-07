@@ -372,7 +372,8 @@ begin
   if lbThemeList.ItemIndex < 0 then exit;
 
   sTheme := TThemeListItem(lbThemeList.Item[lbThemeList.ItemIndex].Data).Name;
-  SharpApi.CenterMsg(sccLoadSetting,PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'),pchar(sTheme));
+  SharpApi.CenterMsg(sccLoadSetting,PChar(SharpApi.GetCenterDirectory
+    + '_Themes\Theme.con'),pchar(sTheme))
 end;
 
 procedure TfrmThemeList.lbThemeListGetCellColor(const AItem: Integer;
