@@ -58,7 +58,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    procedure AddColor(Name,Tag,Info : String; Color : integer); overload;
+    procedure AddColor(Name,Tag,Info : String; Color : integer; sType : TSharpESchemeType); overload;
     procedure AddColor(Color : TSharpESkinColor); overload;
     function GetColorByName(Name : String) : integer;
     function GetColorByTag(Tag  : String) : integer;
@@ -125,9 +125,10 @@ begin
   FColors[High(FColors)].Tag := Color.Tag;
   FColors[High(FColors)].Info := Color.Info;
   FColors[High(FColors)].Color := Color.Color;
+  FColors[High(FColors)].SchemeType := Color.SchemeType;
 end;
 
-procedure TSharpEScheme.AddColor(Name,Tag,Info : String; Color : integer);
+procedure TSharpEScheme.AddColor(Name,Tag,Info : String; Color : integer; sType : TSharpESchemeType);
 var
   n : integer;
 begin
@@ -136,7 +137,8 @@ begin
   FColors[n].Name := Name;
   FColors[n].Tag  := Tag;
   FColors[n].Info := Info;
-  Fcolors[n].Color := Color;
+  FColors[n].Color := Color;
+  FColors[n].SchemeType := sType;
 end;
 
 function TSharpEScheme.GetColorByName(Name : String) : integer;

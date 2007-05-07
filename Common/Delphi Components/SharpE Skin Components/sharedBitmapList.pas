@@ -195,8 +195,11 @@ begin
   if FileExists(loadfile) then
   begin
     stream := TFileStream.Create(loadfile,fmOpenRead or fmShareDenyNone);
-    inherited LoadFromStream(Stream);
-    Stream.Free;
+    try
+      inherited LoadFromStream(Stream);
+    finally
+      Stream.Free;
+    end;
   end;
   if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
 end;

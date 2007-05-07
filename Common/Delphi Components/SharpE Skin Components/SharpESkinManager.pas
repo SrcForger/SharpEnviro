@@ -62,7 +62,6 @@ type
     FSystemSkin: TSystemSharpESkin;
     FComponentSkin: TSharpESkin;
     FUsingMainWnd : boolean;
-    FIsThemeLoading : boolean;
     FHandleUpdates : boolean;
     FSkinItems : TSharpESkinItems;
     FMsgWnd : Hwnd;
@@ -108,17 +107,6 @@ procedure LoadSharpEScheme(Scheme: TSharpEScheme);
 
 implementation
 uses
- { SharpEButton,
-  SharpEForm,
-  SharpEPanel,
-  SharpEBar,
-  SharpECheckBox,
-  SharpERadioBox,
-  SharpEProgressBar,
-  SharpELabel,
-  SharpEEdit,
-  SharpEMiniThrobber,
-  SharpETaskItem, }
   SharpEBaseControls,
   SharpThemeApi;
 
@@ -171,7 +159,6 @@ begin
   end;
 
   FHandleUpdates := True;
-  FIsThemeLoading := False;
 
   if not FNoSystemSchemeInit then
   begin
@@ -253,43 +240,28 @@ end;
 
 function TSharpESkinManager.MessageHook(var Msg: TMessage): Boolean;
 begin
-  if not FHandleUpdates then
-  begin
-    result := false;
-    exit;
-  end;
+  result := false;
+  if not FHandleUpdates then exit;
 
-  if (msg.Msg = WM_THEMELOADINGSTART) then FIsThemeLoading := True;
-  if (msg.Msg = WM_THEMELOADINGEND) then
+  if (Msg.Msg = WM_SHARPEUPDATESETTINGS) then
   begin
-    FIsThemeLoading := False;
-    if not (csDesigning in ComponentState) then
-       SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
-    LoadSharpEScheme(FSystemScheme);
-    Skin.UpdateDynamicProperties(Scheme);
-    RefreshControls;
-  end;
-  if (SchemeSource = ssSystem) and
-     ((Msg.Msg = WM_SHARPETHEMEUPDATE)
-     or ((Msg.Msg = WM_SHARPEUPDATESETTINGS) and (Msg.WParam = SU_SCHEME))) then
-  Begin
-    if not FIsThemeLoading then
+    if (Msg.WParam = SU_SKINFILECHANGED) then
     begin
       if not (csDesigning in ComponentState) then
          SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
-      LoadSharpEScheme(FSystemScheme);
-      Skin.UpdateDynamicProperties(Scheme);
+      UpdateSkin;
+      exit;
+    end;
+    if (Msg.WParam = SU_SCHEME) then
+    begin
+      if not (csDesigning in ComponentState) then
+         SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
+      UpdateScheme;
       if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
       RefreshControls;
+      exit;
     end;
   end;
-  if ((Msg.Msg = WM_SHARPEUPDATESETTINGS) and (Msg.WParam = SU_SKIN)) then
-  begin
-    if not (csDesigning in ComponentState) then
-       SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
-    UpdateSkin;
-  end;
-  result := false;
 end;
 
 procedure TSharpESkinManager.MessageHook2(var Msg: TMessage);

@@ -37,10 +37,8 @@ uses Graphics,
   SharpESkin,
   Messages,
   SharpESkinPart,
-  SharpApi;
-
-const
-  SharpERegPath: string = 'Software\ldi\sharpe\';
+  SharpApi,
+  SharpThemeApi;
 
 var
   DefaultSharpESkinTextRecord: TSkinTextRecord;
@@ -57,14 +55,14 @@ initialization
 
 //SharpEScheme
   DefaultSharpEScheme := TSharpEScheme.Create(nil);
-  DefaultSharpEScheme.AddColor('Throbberback','$Throbberback','Throbberback',$B68972);
-  DefaultSharpEScheme.AddColor('Throbberdark','$Throbberdark','Throbberdark',$5B4439);
-  DefaultSharpEScheme.AddColor('Throbberlight','$Throbberlight','Throbberlight',$C5958D);
-  DefaultSharpEScheme.AddColor('ThrobberText','$ThrobberText','ThrobberText',$000000);
-  DefaultSharpEScheme.AddColor('WorkAreaback','$WorkAreaback','WorkAreaback',$CACACA);
-  DefaultSharpEScheme.AddColor('WorkAreadark','$WorkAreadark','WorkAreadark',$757575);
-  DefaultSharpEScheme.AddColor('WorkArealight','$WorkArealight','WorkArealight',$F5F5F5);
-  DefaultSharpEScheme.AddColor('WorkAreaText','$WorkAreaText','WorkAreaText',$000000);
+  DefaultSharpEScheme.AddColor('Throbberback','$Throbberback','Throbberback',$B68972,stColor);
+  DefaultSharpEScheme.AddColor('Throbberdark','$Throbberdark','Throbberdark',$5B4439,stColor);
+  DefaultSharpEScheme.AddColor('Throbberlight','$Throbberlight','Throbberlight',$C5958D,stColor);
+  DefaultSharpEScheme.AddColor('ThrobberText','$ThrobberText','ThrobberText',$000000,stColor);
+  DefaultSharpEScheme.AddColor('WorkAreaback','$WorkAreaback','WorkAreaback',$CACACA,stColor);
+  DefaultSharpEScheme.AddColor('WorkAreadark','$WorkAreadark','WorkAreadark',$757575,stColor);
+  DefaultSharpEScheme.AddColor('WorkArealight','$WorkArealight','WorkArealight',$F5F5F5,stColor);
+  DefaultSharpEScheme.AddColor('WorkAreaText','$WorkAreaText','WorkAreaText',$000000,stColor);
 
 //SharpESkin
   DefaultSharpESkin := TSharpESkin.Create(nil,ALL_SHARPE_SKINS);
