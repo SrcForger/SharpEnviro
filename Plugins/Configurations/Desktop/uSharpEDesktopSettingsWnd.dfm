@@ -1,7 +1,7 @@
 object frmDesktopSettings: TfrmDesktopSettings
   Left = 0
   Top = 0
-  Width = 518
+  Width = 384
   Height = 599
   Caption = 'frmDesktopSettings'
   Color = clWindow
@@ -19,7 +19,7 @@ object frmDesktopSettings: TfrmDesktopSettings
   object JvPageList1: TJvPageList
     Left = 0
     Top = 0
-    Width = 510
+    Width = 376
     Height = 570
     ActivePage = JvIconPage
     PropagateEnable = False
@@ -27,12 +27,12 @@ object frmDesktopSettings: TfrmDesktopSettings
     object JvIconPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 510
+      Width = 376
       Height = 570
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 510
+        Width = 376
         Height = 129
         Align = alTop
         BevelOuter = bvNone
@@ -135,182 +135,140 @@ object frmDesktopSettings: TfrmDesktopSettings
       object pn_iconsize: TPanel
         Left = 0
         Top = 129
-        Width = 510
+        Width = 376
         Height = 40
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
-        object lb_iconsize: TLabel
-          Left = 320
-          Top = 2
-          Width = 36
-          Height = 13
-          AutoSize = False
-          BiDiMode = bdRightToLeft
-          Caption = '32px'
-          Color = clWindow
-          ParentBiDiMode = False
-          ParentColor = False
-          WordWrap = True
-        end
-        object lb_gridx1: TLabel
-          Left = 32
-          Top = 2
-          Width = 73
-          Height = 13
-          AutoSize = False
-          Caption = 'Custom Size'
-          Color = clWindow
-          ParentColor = False
-          WordWrap = True
-        end
-        object tb_iconsize: TJvTrackBar
-          Left = 96
+        object Panel2: TPanel
+          Left = 353
           Top = 0
-          Width = 225
-          Height = 25
-          Max = 256
-          Min = 12
-          PageSize = 1
-          Frequency = 8
-          Position = 32
+          Width = 23
+          Height = 40
+          Align = alRight
+          BevelOuter = bvNone
+          ParentColor = True
           TabOrder = 0
-          TickStyle = tsNone
-          OnChange = tb_iconsizeChange
-          ShowRange = False
+        end
+        object Panel12: TPanel
+          Left = 0
+          Top = 0
+          Width = 17
+          Height = 40
+          Align = alLeft
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 1
+        end
+        object Panel17: TPanel
+          Left = 17
+          Top = 0
+          Width = 336
+          Height = 40
+          Align = alClient
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 2
+          object sgb_iconsize: TSharpeGaugeBox
+            Left = 0
+            Top = 0
+            Width = 336
+            Height = 21
+            Align = alTop
+            Min = 12
+            Max = 256
+            Value = 96
+            Prefix = 'Custom Size: '
+            Suffix = 'px'
+            Description = 'Adjust to set the icon size'
+            PopPosition = ppBottom
+            PercentDisplay = False
+            OnChangeValue = sgb_iconalphaChangeValue
+          end
         end
       end
-      object pn_alphablend: TPanel
+      object pn_alphablendbg: TPanel
         Left = 0
         Top = 169
-        Width = 510
-        Height = 56
+        Width = 376
+        Height = 32
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 2
-        object lb_iconalpha: TLabel
-          Left = 320
-          Top = 26
-          Width = 36
-          Height = 13
-          AutoSize = False
-          BiDiMode = bdRightToLeft
-          Caption = '100%'
-          Color = clWindow
-          ParentBiDiMode = False
-          ParentColor = False
-          WordWrap = True
-        end
-        object Label3: TLabel
-          Left = 32
-          Top = 26
-          Width = 73
-          Height = 13
-          AutoSize = False
-          Caption = 'Alpha'
-          Color = clWindow
-          ParentColor = False
-          WordWrap = True
-        end
-        object tb_iconalpha: TJvTrackBar
-          Left = 96
-          Top = 24
-          Width = 225
-          Height = 25
-          Max = 256
-          PageSize = 1
-          Frequency = 8
-          Position = 255
-          TabOrder = 0
-          TickStyle = tsNone
-          OnChange = tb_iconalphaChange
-          ShowRange = False
-        end
-        object cb_alphablend: TCheckBox
-          Left = 16
+        object pn_alphablend: TPanel
+          Left = 137
           Top = 0
-          Width = 153
-          Height = 17
-          Caption = 'Alpha Blend Icon'
-          TabOrder = 1
-          OnClick = cb_alphablendClick
-        end
-      end
-      object pn_colorblend: TPanel
-        Left = 0
-        Top = 225
-        Width = 510
-        Height = 56
-        Align = alTop
-        BevelOuter = bvNone
-        ParentColor = True
-        TabOrder = 3
-        object lb_cblendalpha: TLabel
-          Left = 320
-          Top = 26
-          Width = 36
-          Height = 13
-          AutoSize = False
-          BiDiMode = bdRightToLeft
-          Caption = '100%'
-          Color = clWindow
-          ParentBiDiMode = False
-          ParentColor = False
-          WordWrap = True
-        end
-        object Label4: TLabel
-          Left = 32
-          Top = 26
-          Width = 73
-          Height = 13
-          AutoSize = False
-          Caption = 'Strength'
-          Color = clWindow
-          ParentColor = False
-          WordWrap = True
-        end
-        object tb_cblendalpha: TJvTrackBar
-          Left = 96
-          Top = 24
-          Width = 225
-          Height = 25
-          Max = 256
-          PageSize = 1
-          Frequency = 8
-          Position = 255
+          Width = 216
+          Height = 32
+          Align = alClient
+          BevelOuter = bvNone
+          ParentColor = True
           TabOrder = 0
-          TickStyle = tsNone
-          OnChange = tb_cblendalphaChange
-          ShowRange = False
+          object sgb_iconalpha: TSharpeGaugeBox
+            Left = 0
+            Top = 0
+            Width = 216
+            Height = 21
+            Align = alTop
+            Min = 16
+            Max = 255
+            Value = 192
+            Prefix = 'Alpha: '
+            Suffix = '%'
+            Description = 'Adjust to set the transparency'
+            PopPosition = ppBottom
+            PercentDisplay = True
+            OnChangeValue = sgb_iconalphaChangeValue
+          end
         end
-        object cb_colorblend: TCheckBox
-          Left = 16
+        object Panel10: TPanel
+          Left = 353
           Top = 0
-          Width = 153
-          Height = 17
-          Caption = 'Color Blend Icon'
+          Width = 23
+          Height = 32
+          Align = alRight
+          BevelOuter = bvNone
+          ParentColor = True
           TabOrder = 1
-          OnClick = cb_colorblendClick
+        end
+        object Panel11: TPanel
+          Left = 0
+          Top = 0
+          Width = 137
+          Height = 32
+          Align = alLeft
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 2
+          object cb_alphablend: TCheckBox
+            Left = 16
+            Top = 2
+            Width = 113
+            Height = 17
+            Caption = 'Alpha Blend Icon'
+            TabOrder = 0
+            OnClick = cb_alphablendClick
+          end
         end
       end
       object IconColors: TSharpEColorEditorEx
-        Left = 25
-        Top = 361
-        Width = 335
-        Height = 209
-        Align = alLeft
+        Left = 13
+        Top = 265
+        Width = 343
+        Height = 305
+        Align = alClient
         BevelInner = bvNone
         BevelOuter = bvNone
         BorderStyle = bsNone
         Color = clWindow
         ParentBackground = True
         ParentColor = False
-        TabOrder = 4
+        TabOrder = 3
         Items = <
           item
-            Title = 'Blending'
+            Title = 'Color Blending'
             ColorCode = 0
             ColorAsTColor = clBlack
             Expanded = False
@@ -327,90 +285,152 @@ object frmDesktopSettings: TfrmDesktopSettings
           end>
         SwatchManager = SharpESwatchManager1
       end
-      object Panel2: TPanel
+      object Panel4: TPanel
         Left = 0
-        Top = 337
-        Width = 510
-        Height = 24
+        Top = 265
+        Width = 13
+        Height = 305
+        Align = alLeft
+        BevelOuter = bvNone
+        ParentColor = True
+        TabOrder = 4
+      end
+      object pn_colorblendbg: TPanel
+        Left = 0
+        Top = 201
+        Width = 376
+        Height = 32
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 5
-        object Label2: TLabel
-          Left = 16
-          Top = 11
-          Width = 57
-          Height = 13
-          AutoSize = False
-          Caption = 'Colors'
-          Color = clWindow
-          ParentColor = False
-          WordWrap = True
+        object pn_colorblend: TPanel
+          Left = 137
+          Top = 0
+          Width = 216
+          Height = 32
+          Align = alClient
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 0
+          object sbg_iconcblendalpha: TSharpeGaugeBox
+            Left = 0
+            Top = 0
+            Width = 216
+            Height = 21
+            Align = alTop
+            Min = 0
+            Max = 256
+            Value = 255
+            Prefix = 'Strength: '
+            Suffix = '%'
+            Description = 'Adjust to set the color blend strength'
+            PopPosition = ppBottom
+            PercentDisplay = True
+            OnChangeValue = sgb_iconalphaChangeValue
+          end
+        end
+        object Panel13: TPanel
+          Left = 353
+          Top = 0
+          Width = 23
+          Height = 32
+          Align = alRight
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 1
+        end
+        object Panel14: TPanel
+          Left = 0
+          Top = 0
+          Width = 137
+          Height = 32
+          Align = alLeft
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 2
+          object cb_colorblend: TCheckBox
+            Left = 16
+            Top = 2
+            Width = 113
+            Height = 17
+            Caption = 'Color Blend Icon'
+            TabOrder = 0
+            OnClick = cb_colorblendClick
+          end
         end
       end
-      object pn_iconshadow: TPanel
+      object pn_iconshadowbg: TPanel
         Left = 0
-        Top = 281
-        Width = 510
-        Height = 56
+        Top = 233
+        Width = 376
+        Height = 32
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 6
-        object lb_iconshadow: TLabel
-          Left = 320
-          Top = 26
-          Width = 36
-          Height = 13
-          AutoSize = False
-          BiDiMode = bdRightToLeft
-          Caption = '100%'
-          Color = clWindow
-          ParentBiDiMode = False
-          ParentColor = False
-          WordWrap = True
-        end
-        object Label6: TLabel
-          Left = 32
-          Top = 26
-          Width = 73
-          Height = 13
-          AutoSize = False
-          Caption = 'Alpha'
-          Color = clWindow
-          ParentColor = False
-          WordWrap = True
-        end
-        object tb_iconshadow: TJvTrackBar
-          Left = 96
-          Top = 24
-          Width = 225
-          Height = 25
-          Max = 256
-          PageSize = 1
-          Frequency = 8
-          Position = 255
-          TabOrder = 0
-          TickStyle = tsNone
-          OnChange = tb_iconshadowChange
-          ShowRange = False
-        end
-        object cb_iconshadow: TCheckBox
-          Left = 16
+        object pn_iconshadow: TPanel
+          Left = 137
           Top = 0
-          Width = 153
-          Height = 17
-          Caption = 'Icon Shadow'
+          Width = 216
+          Height = 32
+          Align = alClient
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 0
+          object sgb_iconshadow: TSharpeGaugeBox
+            Left = 0
+            Top = 0
+            Width = 216
+            Height = 21
+            Align = alTop
+            Min = 0
+            Max = 256
+            Value = 255
+            Prefix = 'Alpha: '
+            Suffix = '%'
+            Description = 'Adjust to set the shadow alpha'
+            PopPosition = ppBottom
+            PercentDisplay = True
+            OnChangeValue = sgb_iconalphaChangeValue
+          end
+        end
+        object Panel15: TPanel
+          Left = 353
+          Top = 0
+          Width = 23
+          Height = 32
+          Align = alRight
+          BevelOuter = bvNone
+          ParentColor = True
           TabOrder = 1
-          OnClick = cb_iconshadowClick
+        end
+        object Panel16: TPanel
+          Left = 0
+          Top = 0
+          Width = 137
+          Height = 32
+          Align = alLeft
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 2
+          object cb_iconshadow: TCheckBox
+            Left = 16
+            Top = 2
+            Width = 113
+            Height = 17
+            Caption = 'Icon Shadow'
+            TabOrder = 0
+            OnClick = cb_iconshadowClick
+          end
         end
       end
-      object Panel4: TPanel
-        Left = 0
-        Top = 361
-        Width = 25
-        Height = 209
-        Align = alLeft
+      object Panel3: TPanel
+        Left = 356
+        Top = 265
+        Width = 20
+        Height = 305
+        Align = alRight
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 7
@@ -419,13 +439,13 @@ object frmDesktopSettings: TfrmDesktopSettings
     object JvTextPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 510
+      Width = 376
       Height = 570
       object Panel5: TPanel
         Left = 0
         Top = 0
-        Width = 510
-        Height = 49
+        Width = 376
+        Height = 41
         Align = alTop
         BevelOuter = bvNone
         Caption = 'Panel5'
@@ -447,75 +467,19 @@ object frmDesktopSettings: TfrmDesktopSettings
           DropDownCount = 12
           ItemHeight = 17
           TabOrder = 0
+          OnChange = cb_boldClick
           OnDrawItem = cbxFontNameDrawItem
-        end
-      end
-      object pn_fontalphablend: TPanel
-        Left = 0
-        Top = 169
-        Width = 510
-        Height = 56
-        Align = alTop
-        BevelOuter = bvNone
-        ParentColor = True
-        TabOrder = 1
-        object lb_fontalpha: TLabel
-          Left = 320
-          Top = 26
-          Width = 36
-          Height = 13
-          AutoSize = False
-          BiDiMode = bdRightToLeft
-          Caption = '100%'
-          Color = clWindow
-          ParentBiDiMode = False
-          ParentColor = False
-          WordWrap = True
-        end
-        object Label8: TLabel
-          Left = 32
-          Top = 26
-          Width = 73
-          Height = 13
-          AutoSize = False
-          Caption = 'Alpha'
-          Color = clWindow
-          ParentColor = False
-          WordWrap = True
-        end
-        object tb_fontalpha: TJvTrackBar
-          Left = 104
-          Top = 24
-          Width = 217
-          Height = 25
-          Max = 256
-          PageSize = 1
-          Frequency = 8
-          Position = 255
-          TabOrder = 0
-          TickStyle = tsNone
-          OnChange = tb_fontalphaChange
-          ShowRange = False
-        end
-        object cb_fontalphablend: TCheckBox
-          Left = 16
-          Top = 0
-          Width = 153
-          Height = 17
-          Caption = 'Alpha Blend Text'
-          TabOrder = 1
-          OnClick = lick
         end
       end
       object Panel7: TPanel
         Left = 0
-        Top = 49
-        Width = 510
+        Top = 41
+        Width = 376
         Height = 120
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 2
+        TabOrder = 1
         object Label9: TLabel
           Left = 16
           Top = 8
@@ -534,6 +498,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           MinValue = 4.000000000000000000
           Value = 12.000000000000000000
           TabOrder = 0
+          OnChange = cb_boldClick
         end
         object cb_bold: TCheckBox
           Left = 16
@@ -542,6 +507,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           Height = 17
           Caption = 'Bold'
           TabOrder = 1
+          OnClick = cb_boldClick
         end
         object cb_italic: TCheckBox
           Left = 16
@@ -550,6 +516,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           Height = 17
           Caption = 'Italic'
           TabOrder = 2
+          OnClick = cb_boldClick
         end
         object cb_underline: TCheckBox
           Left = 16
@@ -558,78 +525,22 @@ object frmDesktopSettings: TfrmDesktopSettings
           Height = 17
           Caption = 'Underline'
           TabOrder = 3
-        end
-      end
-      object pn_textshadow: TPanel
-        Left = 0
-        Top = 225
-        Width = 510
-        Height = 56
-        Align = alTop
-        BevelOuter = bvNone
-        ParentColor = True
-        TabOrder = 3
-        object lb_textshadow: TLabel
-          Left = 320
-          Top = 26
-          Width = 36
-          Height = 13
-          AutoSize = False
-          BiDiMode = bdRightToLeft
-          Caption = '100%'
-          Color = clWindow
-          ParentBiDiMode = False
-          ParentColor = False
-          WordWrap = True
-        end
-        object Label10: TLabel
-          Left = 32
-          Top = 26
-          Width = 73
-          Height = 13
-          AutoSize = False
-          Caption = 'Alpha'
-          Color = clWindow
-          ParentColor = False
-          WordWrap = True
-        end
-        object tb_textshadow: TJvTrackBar
-          Left = 104
-          Top = 24
-          Width = 217
-          Height = 25
-          Max = 256
-          PageSize = 1
-          Frequency = 8
-          Position = 255
-          TabOrder = 0
-          TickStyle = tsNone
-          OnChange = tb_textshadowChange
-          ShowRange = False
-        end
-        object cb_textshadow: TCheckBox
-          Left = 16
-          Top = 0
-          Width = 153
-          Height = 17
-          Caption = 'Text Shadow'
-          TabOrder = 1
-          OnClick = cb_textshadowClick
+          OnClick = cb_boldClick
         end
       end
       object textcolors: TSharpEColorEditorEx
         Left = 25
-        Top = 305
-        Width = 335
-        Height = 265
-        Align = alLeft
+        Top = 225
+        Width = 331
+        Height = 345
+        Align = alClient
         BevelInner = bvNone
         BevelOuter = bvNone
         BorderStyle = bsNone
         Color = clWindow
         ParentBackground = True
         ParentColor = False
-        TabOrder = 4
+        TabOrder = 2
         Items = <
           item
             Title = 'Text'
@@ -649,33 +560,152 @@ object frmDesktopSettings: TfrmDesktopSettings
           end>
         SwatchManager = SharpESwatchManager1
       end
-      object Panel3: TPanel
+      object Panel6: TPanel
         Left = 0
-        Top = 281
-        Width = 510
-        Height = 24
+        Top = 225
+        Width = 25
+        Height = 345
+        Align = alLeft
+        BevelOuter = bvNone
+        ParentColor = True
+        TabOrder = 3
+      end
+      object pn_textshadowbg: TPanel
+        Left = 0
+        Top = 193
+        Width = 376
+        Height = 32
+        Align = alTop
+        BevelOuter = bvNone
+        ParentColor = True
+        TabOrder = 4
+        object pn_textshadow: TPanel
+          Left = 137
+          Top = 0
+          Width = 216
+          Height = 32
+          Align = alClient
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 0
+          object sgb_textshadow: TSharpeGaugeBox
+            Left = 0
+            Top = 0
+            Width = 216
+            Height = 21
+            Align = alTop
+            Min = 16
+            Max = 255
+            Value = 255
+            Prefix = 'Alpha: '
+            Suffix = '%'
+            Description = 'Adjust to set the shadow alpha'
+            PopPosition = ppBottom
+            PercentDisplay = True
+            OnChangeValue = sgb_iconalphaChangeValue
+          end
+        end
+        object Panel20: TPanel
+          Left = 353
+          Top = 0
+          Width = 23
+          Height = 32
+          Align = alRight
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 1
+        end
+        object Panel21: TPanel
+          Left = 0
+          Top = 0
+          Width = 137
+          Height = 32
+          Align = alLeft
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 2
+          object cb_textshadow: TCheckBox
+            Left = 16
+            Top = 2
+            Width = 113
+            Height = 17
+            Caption = 'Text Shadow'
+            TabOrder = 0
+            OnClick = cb_textshadowClick
+          end
+        end
+      end
+      object pn_fontalphablendbg: TPanel
+        Left = 0
+        Top = 161
+        Width = 376
+        Height = 32
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 5
-        object Label7: TLabel
-          Left = 16
-          Top = 11
-          Width = 57
-          Height = 13
-          AutoSize = False
-          Caption = 'Colors'
-          Color = clWindow
-          ParentColor = False
-          WordWrap = True
+        object pn_fontalphablend: TPanel
+          Left = 137
+          Top = 0
+          Width = 216
+          Height = 32
+          Align = alClient
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 0
+          object sgb_fontalphablend: TSharpeGaugeBox
+            Left = 0
+            Top = 0
+            Width = 216
+            Height = 21
+            Align = alTop
+            Min = 16
+            Max = 255
+            Value = 192
+            Prefix = 'Alpha: '
+            Suffix = '%'
+            Description = 'Adjust to set the text transparency'
+            PopPosition = ppBottom
+            PercentDisplay = True
+            OnChangeValue = sgb_iconalphaChangeValue
+          end
+        end
+        object Panel24: TPanel
+          Left = 353
+          Top = 0
+          Width = 23
+          Height = 32
+          Align = alRight
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 1
+        end
+        object Panel25: TPanel
+          Left = 0
+          Top = 0
+          Width = 137
+          Height = 32
+          Align = alLeft
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 2
+          object cb_fontalphablend: TCheckBox
+            Left = 16
+            Top = 2
+            Width = 113
+            Height = 17
+            Caption = 'Alpha Blend Text'
+            TabOrder = 0
+            OnClick = cb_fontalphablendClick
+          end
         end
       end
-      object Panel6: TPanel
-        Left = 0
-        Top = 305
-        Width = 25
-        Height = 265
-        Align = alLeft
+      object Panel18: TPanel
+        Left = 356
+        Top = 225
+        Width = 20
+        Height = 345
+        Align = alRight
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 6
@@ -684,97 +714,346 @@ object frmDesktopSettings: TfrmDesktopSettings
     object JvAnimationPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 510
+      Width = 376
       Height = 570
       object pn_anim: TPanel
         Left = 0
         Top = 49
-        Width = 510
-        Height = 256
-        Align = alTop
+        Width = 376
+        Height = 521
+        Align = alClient
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
-        object Panel8: TPanel
+        object pn_animscalebg: TPanel
           Left = 0
           Top = 0
-          Width = 510
-          Height = 56
+          Width = 376
+          Height = 32
           Align = alTop
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 0
-          object lb_scale: TLabel
-            Left = 320
-            Top = 26
-            Width = 36
-            Height = 13
-            AutoSize = False
-            BiDiMode = bdRightToLeft
-            Caption = '0px'
-            Color = clWindow
-            ParentBiDiMode = False
-            ParentColor = False
-            WordWrap = True
-          end
-          object Label12: TLabel
-            Left = 32
-            Top = 26
-            Width = 73
-            Height = 13
-            AutoSize = False
-            Caption = 'Scale by'
-            Color = clWindow
-            ParentColor = False
-            WordWrap = True
-          end
-          object tb_scale: TJvTrackBar
-            Left = 104
-            Top = 24
-            Width = 217
-            Height = 25
-            Max = 128
-            Min = -128
-            PageSize = 1
-            Frequency = 8
-            TabOrder = 0
-            TickStyle = tsNone
-            OnChange = tb_scaleChange
-            ShowRange = False
-          end
-          object cb_scale: TCheckBox
-            Left = 16
+          object pn_animscale: TPanel
+            Left = 137
             Top = 0
-            Width = 153
-            Height = 17
-            Caption = 'Change Size'
+            Width = 216
+            Height = 32
+            Align = alClient
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 0
+            object sgb_animscale: TSharpeGaugeBox
+              Left = 0
+              Top = 0
+              Width = 216
+              Height = 21
+              Align = alTop
+              Min = -64
+              Max = 64
+              Value = 32
+              Prefix = 'Scale by: '
+              Suffix = 'px'
+              Description = 'Adjust to set the scale size'
+              PopPosition = ppBottom
+              PercentDisplay = False
+              OnChangeValue = sgb_iconalphaChangeValue
+            end
+          end
+          object Panel22: TPanel
+            Left = 353
+            Top = 0
+            Width = 23
+            Height = 32
+            Align = alRight
+            BevelOuter = bvNone
+            ParentColor = True
             TabOrder = 1
           end
+          object Panel23: TPanel
+            Left = 0
+            Top = 0
+            Width = 137
+            Height = 32
+            Align = alLeft
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 2
+            object cb_animscale: TCheckBox
+              Left = 16
+              Top = 2
+              Width = 113
+              Height = 17
+              Caption = 'Size'
+              TabOrder = 0
+              OnClick = cb_animscaleClick
+            end
+          end
+        end
+        object pn_animalphabg: TPanel
+          Left = 0
+          Top = 32
+          Width = 376
+          Height = 32
+          Align = alTop
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 1
+          object pn_animalpha: TPanel
+            Left = 137
+            Top = 0
+            Width = 216
+            Height = 32
+            Align = alClient
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 0
+            object sgb_animalpha: TSharpeGaugeBox
+              Left = 0
+              Top = 0
+              Width = 216
+              Height = 21
+              Align = alTop
+              Min = -255
+              Max = 255
+              Value = 64
+              Prefix = 'Change by: '
+              Suffix = '%'
+              Description = 'Adjust to set the alpha modification value'
+              PopPosition = ppBottom
+              PercentDisplay = True
+              OnChangeValue = sgb_iconalphaChangeValue
+            end
+          end
+          object Panel26: TPanel
+            Left = 353
+            Top = 0
+            Width = 23
+            Height = 32
+            Align = alRight
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 1
+          end
+          object Panel27: TPanel
+            Left = 0
+            Top = 0
+            Width = 137
+            Height = 32
+            Align = alLeft
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 2
+            object cb_animalpha: TCheckBox
+              Left = 16
+              Top = 2
+              Width = 113
+              Height = 17
+              Caption = 'Alpha'
+              TabOrder = 0
+              OnClick = cb_animscaleClick
+            end
+          end
+        end
+        object pn_animbrightnessbg: TPanel
+          Left = 0
+          Top = 64
+          Width = 376
+          Height = 32
+          Align = alTop
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 2
+          object pn_animbrightness: TPanel
+            Left = 137
+            Top = 0
+            Width = 216
+            Height = 32
+            Align = alClient
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 0
+            object sgb_animbrightness: TSharpeGaugeBox
+              Left = 0
+              Top = 0
+              Width = 216
+              Height = 21
+              Align = alTop
+              Min = -255
+              Max = 255
+              Value = 64
+              Prefix = 'Change by: '
+              Suffix = '%'
+              Description = 'Adjust to set the brightness modification value'
+              PopPosition = ppBottom
+              PercentDisplay = True
+              OnChangeValue = sgb_iconalphaChangeValue
+            end
+          end
+          object Panel28: TPanel
+            Left = 353
+            Top = 0
+            Width = 23
+            Height = 32
+            Align = alRight
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 1
+          end
+          object Panel29: TPanel
+            Left = 0
+            Top = 0
+            Width = 137
+            Height = 32
+            Align = alLeft
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 2
+            object cb_animbrightness: TCheckBox
+              Left = 16
+              Top = 2
+              Width = 113
+              Height = 17
+              Caption = 'Brightness'
+              TabOrder = 0
+              OnClick = cb_animscaleClick
+            end
+          end
+        end
+        object pn_animcolorblendbg: TPanel
+          Left = 0
+          Top = 96
+          Width = 376
+          Height = 32
+          Align = alTop
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 3
+          object pn_animcolorblend: TPanel
+            Left = 137
+            Top = 0
+            Width = 216
+            Height = 32
+            Align = alClient
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 0
+            object sgb_animcolorblend: TSharpeGaugeBox
+              Left = 0
+              Top = 0
+              Width = 216
+              Height = 21
+              Align = alTop
+              Min = 0
+              Max = 255
+              Value = 255
+              Prefix = 'Strength: '
+              Suffix = '%'
+              Description = 'Adjust to set the color blend strength'
+              PopPosition = ppBottom
+              PercentDisplay = True
+              OnChangeValue = sgb_iconalphaChangeValue
+            end
+          end
+          object Panel30: TPanel
+            Left = 353
+            Top = 0
+            Width = 23
+            Height = 32
+            Align = alRight
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 1
+          end
+          object Panel31: TPanel
+            Left = 0
+            Top = 0
+            Width = 137
+            Height = 32
+            Align = alLeft
+            BevelOuter = bvNone
+            ParentColor = True
+            TabOrder = 2
+            object cb_animcolorblend: TCheckBox
+              Left = 16
+              Top = 2
+              Width = 113
+              Height = 17
+              Caption = 'Color Blend'
+              TabOrder = 0
+              OnClick = cb_animscaleClick
+            end
+          end
+        end
+        object Panel19: TPanel
+          Left = 356
+          Top = 128
+          Width = 20
+          Height = 393
+          Align = alRight
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 4
+        end
+        object animcolors: TSharpEColorEditorEx
+          Left = 25
+          Top = 128
+          Width = 331
+          Height = 393
+          Align = alClient
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          BorderStyle = bsNone
+          Color = clWindow
+          ParentBackground = True
+          ParentColor = False
+          TabOrder = 5
+          Items = <
+            item
+              Title = 'Color Blending'
+              ColorCode = 0
+              ColorAsTColor = clBlack
+              Expanded = False
+              ColorEditor = animcolors.Item0
+              Tag = 0
+            end>
+          SwatchManager = SharpESwatchManager1
+        end
+        object Panel8: TPanel
+          Left = 0
+          Top = 128
+          Width = 25
+          Height = 393
+          Align = alLeft
+          BevelOuter = bvNone
+          ParentColor = True
+          TabOrder = 6
         end
       end
       object Panel9: TPanel
         Left = 0
         Top = 0
-        Width = 510
+        Width = 376
         Height = 49
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
-        object CheckBox2: TCheckBox
+        object cb_anim: TCheckBox
           Left = 16
           Top = 16
           Width = 153
           Height = 17
           Caption = 'Enable Hover Animation'
           TabOrder = 0
+          OnClick = cb_animClick
         end
       end
     end
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 303
+    Width = 299
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16

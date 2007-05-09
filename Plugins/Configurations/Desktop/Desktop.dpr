@@ -80,13 +80,13 @@ begin
         64: frmDesktopSettings.rb_icon64.Checked := True;
         else frmDesktopSettings.rb_iconcustom.Checked := True;
       end;
-      frmDesktopSettings.tb_iconsize.Position    := i;
+      frmDesktopSettings.sgb_iconsize.Value    := i;
       frmDesktopSettings.cb_alphablend.Checked   := BoolValue('IconAlphaBlend',False);
-      frmDesktopSettings.tb_iconalpha.Position   := IntValue('IconAlpha',255);
+      frmDesktopSettings.sgb_iconalpha.value   := IntValue('IconAlpha',255);
       frmDesktopSettings.cb_colorblend.Checked   := BoolValue('IconBlending',False);
-      frmDesktopSettings.tb_cblendalpha.Position := IntValue(' IconBlendAlpha',255);
+      frmDesktopSettings.sbg_iconcblendalpha.Value := IntValue('IconBlendAlpha',255);
       frmDesktopSettings.cb_iconshadow.Checked   := BoolValue('IconShadow',True);
-      frmDesktopSettings.tb_iconshadow.Position  := IntValue('IconShadowAlpha',196);
+      frmDesktopSettings.sgb_iconshadow.Value  := IntValue('IconShadowAlpha',196);
       frmDesktopSettings.IconColors.Items.Item[0].ColorCode := IntValue('IconBlendColor',0);
       frmDesktopSettings.IconColors.Items.Item[1].ColorCode := IntValue('IconShadowColor',0);
 
@@ -97,14 +97,33 @@ begin
       frmDesktopSettings.cb_italic.Checked       := BoolValue('TextItalic',False);
       frmDesktopSettings.cb_underline.Checked    := BoolValue('TextUnderline',False);
       frmDesktopSettings.cb_fontalphablend.Checked := BoolValue('TextAlpha',False);
-      frmDesktopSettings.tb_fontalpha.Position   := IntValue('TextAlphaValue',255);
+      frmDesktopSettings.sgb_fontalphablend.Value:= IntValue('TextAlphaValue',255);
       frmDesktopSettings.cb_textshadow.Checked   := BoolValue('TextShadow',True);
-      frmDesktopSettings.tb_textshadow.Position  := IntValue('TextShadowAlpha',196);
+      frmDesktopSettings.sgb_textshadow.Value  := IntValue('TextShadowAlpha',196);
       frmDesktopSettings.TextColors.Items.Item[0].ColorCode := IntValue('TextColor',clWhite);
       frmDesktopSettings.TextColors.Items.Item[1].ColorCode := IntValue('TextShadowColor',0);
     end;
   except
   end;
+  XML.Root.Clear;
+  try
+    XML.LoadFromFile(Dir + 'DesktopAnimation.xml');
+    with XML.Root.Items do
+    begin
+      frmDesktopSettings.cb_anim.Checked := BoolValue('UseAnimations',True);
+      frmDesktopSettings.cb_animscale.Checked := BoolValue('Scale',False);
+      frmDesktopSettings.sgb_animscale.Value := IntValue('ScaleValue',0);
+      frmDesktopSettings.cb_animalpha.Checked := BoolValue('Alpha',True);
+      frmDesktopSettings.sgb_animalpha.Value := IntValue('AlphaValue',64);
+      frmDesktopSettings.cb_animcolorblend.Checked := BoolValue('Blend',False);
+      frmDesktopSettings.sgb_animcolorblend.Value := IntValue('BlendValue',255);
+      frmDesktopSettings.cb_animbrightness.Checked := BoolValue('Brightness',True);
+      frmDesktopSettings.sgb_animbrightness.Value := IntValue('BrightnessValue',64);
+      frmDesktopSettings.AnimColors.Items.Item[0].ColorCode := IntValue('BlendColor',clWhite);
+    end;
+  except
+  end;
+
   XML.Free;
 
   frmDesktopSettings.Show;
@@ -133,14 +152,14 @@ begin
         if frmDesktopSettings.rb_icon32.Checked then i := 32
            else if frmDesktopSettings.rb_icon48.Checked then i := 48
            else if frmDesktopSettings.rb_icon64.Checked then i := 64
-           else i := frmDesktopSettings.tb_iconsize.Position;
+           else i := frmDesktopSettings.sgb_iconsize.Value;
         Add('IconSize',i);
         Add('IconAlphaBlend',frmDesktopSettings.cb_alphablend.Checked);
-        Add('IconAlpha',frmDesktopSettings.tb_iconalpha.Position);
+        Add('IconAlpha',frmDesktopSettings.sgb_iconalpha.Value);
         Add('IconBlending',frmDesktopSettings.cb_colorblend.Checked);
-        Add('IconBlendAlpha',frmDesktopSettings.tb_cblendalpha.Position);
+        Add('IconBlendAlpha',frmDesktopSettings.sbg_iconcblendalpha.Value);
         Add('IconShadow',frmDesktopSettings.cb_iconshadow.Checked);
-        Add('IconShadowAlpha',frmDesktopSettings.tb_iconshadow.Position);
+        Add('IconShadowAlpha',frmDesktopSettings.sgb_iconshadow.Value);
         Add('IconBlendColor',frmDesktopSettings.IconColors.Items.Item[0].ColorCode);
         Add('IconShadowColor',frmDesktopSettings.IconColors.Items.Item[1].ColorCode);
         Add('FontName',frmDesktopSettings.cbxFontName.Text);
@@ -149,9 +168,9 @@ begin
         Add('TextItalic',frmDesktopSettings.cb_italic.Checked);
         Add('TextUnderline',frmDesktopSettings.cb_underline.Checked);
         Add('TextAlpha',frmDesktopSettings.cb_fontalphablend.Checked);
-        Add('TextAlphaValue',frmDesktopSettings.tb_fontalpha.Position);
+        Add('TextAlphaValue',frmDesktopSettings.sgb_fontalphablend.Value);
         Add('TextShadow',frmDesktopSettings.cb_textshadow.Checked);
-        Add('TextShadowAlpha',frmDesktopSettings.tb_textshadow.Position);
+        Add('TextShadowAlpha',frmDesktopSettings.sgb_textshadow.Value);
         Add('TextColor',frmDesktopSettings.TextColors.Items.Item[0].ColorCode);
         Add('TextShadowColor',frmDesktopSettings.TextColors.Items.Item[1].ColorCode);
       end;
@@ -160,6 +179,30 @@ begin
       if FileExists(FileName) then
          DeleteFile(FileName);
       RenameFile(FileName+'~',FileName);
+
+      FileName := Dir + 'DesktopAnimation.xml';
+      XML.Root.Name := 'SharpEThemeDesktopAnimation';
+      XML.Root.Items.Clear;
+
+      with XML.Root.Items do
+      begin
+        Add('UseAnimations',frmDesktopSettings.cb_anim.Checked);
+        Add('Scale',frmDesktopSettings.cb_animscale.Checked);
+        Add('ScaleValue',frmDesktopSettings.sgb_animscale.Value);
+        Add('Alpha',frmDesktopSettings.cb_animalpha.Checked);
+        Add('AlphaValue',frmDesktopSettings.sgb_animalpha.Value);
+        Add('Blend',frmDesktopSettings.cb_animcolorblend.Checked);
+        Add('BlendValue',frmDesktopSettings.sgb_animcolorblend.Value);
+        Add('Brightness',frmDesktopSettings.cb_animbrightness.Checked);
+        Add('BrightnessValue',frmDesktopSettings.sgb_animbrightness.Value);
+        Add('BlendColor',frmDesktopSettings.AnimColors.Items.Item[0].ColorCode);
+      end;
+
+      XML.SaveToFile(FileName+'~');
+      if FileExists(FileName) then
+         DeleteFile(FileName);
+      RenameFile(FileName+'~',FileName);
+
       XML.Free;
     end;
 
