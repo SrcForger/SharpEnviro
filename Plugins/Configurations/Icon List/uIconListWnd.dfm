@@ -12,17 +12,18 @@ object frmIconList: TfrmIconList
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object lb_iconlist: TSharpEListBoxEx
     Left = 0
     Top = 0
-    Width = 418
-    Height = 284
+    Width = 426
+    Height = 192
     Columns = <
       item
-        Width = 128
+        Width = 256
         MaxWidth = 0
         MinWidth = 0
         TextColor = clBlack
@@ -31,38 +32,33 @@ object frmIconList: TfrmIconList
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         Autosize = False
-      end
-      item
-        Width = 128
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
-        HAlign = taLeftJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calLeft
-        Autosize = False
-        Images = IconImages
-        SelectedImages = IconSelImages
       end>
-    ItemHeight = 88
+    ItemHeight = 22
     OnClickItem = lb_iconlistClickItem
     Borderstyle = bsNone
     Ctl3d = False
     Align = alClient
   end
-  object IconImages: TPngImageList
-    Height = 64
-    Width = 512
-    PngImages = <>
-    Left = 304
+  object previewpanel: TPanel
+    Left = 0
     Top = 192
-  end
-  object IconSelImages: TPngImageList
-    Height = 64
-    Width = 512
-    PngImages = <>
-    Left = 336
-    Top = 192
+    Width = 426
+    Height = 99
+    Align = alBottom
+    BevelOuter = bvNone
+    Color = clWindow
+    TabOrder = 1
+    object iconpreview: TImage32
+      Left = 0
+      Top = 0
+      Width = 426
+      Height = 99
+      Align = alClient
+      Bitmap.ResamplerClassName = 'TNearestResampler'
+      BitmapAlign = baTopLeft
+      Scale = 1.000000000000000000
+      ScaleMode = smNormal
+      TabOrder = 0
+    end
   end
 end

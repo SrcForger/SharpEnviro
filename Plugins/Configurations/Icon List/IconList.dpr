@@ -90,7 +90,7 @@ begin
       begin
         XML := TJvSimpleXML.Create(nil);
         XML.Root.Name := 'SharpEThemeIconSet';
-        XML.Root.Items.Add('Name',frmIconList.lb_iconlist.Item[frmIconList.lb_iconlist.ItemIndex].SubItemText[2]);
+        XML.Root.Items.Add('Name',frmIconList.lb_iconlist.Item[frmIconList.lb_iconlist.ItemIndex].SubItemText[1]);
         XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml~');
         if FileExists(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml') then
            DeleteFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml');
