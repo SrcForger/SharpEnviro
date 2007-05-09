@@ -75,7 +75,7 @@ object SharpCenterWnd: TSharpCenterWnd
             Left = 0
             Top = 0
             Width = 153
-            Height = 403
+            Height = 413
             Align = alClient
             BevelOuter = bvNone
             ParentBackground = False
@@ -85,7 +85,7 @@ object SharpCenterWnd: TSharpCenterWnd
               Left = 0
               Top = 0
               Width = 153
-              Height = 403
+              Height = 413
               Columns = <
                 item
                   Width = 120
@@ -719,7 +719,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 145
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -170
+                Left = -174
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1169,7 +1169,7 @@ object SharpCenterWnd: TSharpCenterWnd
               object Edit2: TEdit
                 Left = 0
                 Top = 36
-                Width = -175
+                Width = -179
                 Height = 21
                 Anchors = [akLeft, akTop, akRight]
                 Ctl3D = True
@@ -1227,7 +1227,7 @@ object SharpCenterWnd: TSharpCenterWnd
           object imgLivePreview: TImage32
             Left = 0
             Top = 0
-            Width = 507
+            Width = 517
             Height = 45
             Align = alClient
             Bitmap.ResamplerClassName = 'TNearestResampler'
@@ -1281,8 +1281,8 @@ object SharpCenterWnd: TSharpCenterWnd
             object pnlPlugin: TPanel
               Left = 4
               Top = 4
-              Width = 499
-              Height = 316
+              Width = 509
+              Height = 326
               Align = alClient
               BevelOuter = bvNone
               Color = clWindow
@@ -1354,7 +1354,7 @@ object SharpCenterWnd: TSharpCenterWnd
           object pnlEditPlugin: TPanel
             Left = 4
             Top = 4
-            Width = 499
+            Width = 509
             Height = 76
             Align = alClient
             BevelOuter = bvNone
@@ -1365,7 +1365,7 @@ object SharpCenterWnd: TSharpCenterWnd
           object pnlEditToolbar: TPanel
             Left = 4
             Top = 80
-            Width = 499
+            Width = 509
             Height = 34
             Align = alBottom
             BevelOuter = bvNone

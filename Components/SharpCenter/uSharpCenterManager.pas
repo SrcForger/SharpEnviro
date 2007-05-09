@@ -269,6 +269,8 @@ begin
 
   FEditWndHandle := 0;
   FPluginWndHandle := 0;
+  FActivePlugin.Dllhandle := 0;
+  FActivePlugin.Filename := '';
   Result := True;
 end;
 

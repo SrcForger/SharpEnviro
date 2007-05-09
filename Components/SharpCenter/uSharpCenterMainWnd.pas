@@ -360,9 +360,8 @@ procedure TSharpCenterWnd.UpdateLivePreview;
 begin
   if SCM = nil then exit;
 
-  //LockWindowUpdate(Self.Handle);
   pnlLivePreview.Visible := False;
-  Try
+
     imgLivePreview.Bitmap.SetSize(pnlLivePreview.Width,pnlLivePreview.Height);
     imgLivePreview.Bitmap.Clear(clwhite32);
 
@@ -370,10 +369,6 @@ begin
       SCM.ActivePlugin.UpdatePreview(imgLivePreview);
       pnlLivePreview.Visible := True;
     end;
-
-  Finally
-    //LockWindowUpdate(0);
-  End;
 end;
 
 procedure TSharpCenterWnd.CreateParams(var Params: TCreateParams);
@@ -390,9 +385,6 @@ end;
 
 procedure TSharpCenterWnd.lbTreeClickItem(AText: string; AItem, ACol: Integer);
 begin
-  lockwindowupdate(Self.Handle);
-  try
-
     if lbTree.ItemIndex = -1 then
       exit;
 
@@ -400,12 +392,7 @@ begin
     if SCM.CheckEditState then
       exit;
 
-    SCM.Unload;
-
     ClickItem;
-  finally
-    LockWindowUpdate(0);
-  end;
 end;
 
 procedure TSharpCenterWnd.lbTreeGetCellColor(const AItem: Integer;
@@ -641,6 +628,7 @@ var
   tmpManager: TSharpCenterManager;
   sName: string;
 begin
+
   SCM.Unload;
 
   // Get the Button Data
@@ -680,19 +668,16 @@ begin
 
         if fileexists(tmpHistItem.Param) then
         begin
-
-          //InitialiseWindow(pnlMain, tmpItem.Caption);
           SCM.BuildNavFromFile(tmpItem.Filename);
-
         end;
 
       end;
     itmDll:
       begin
         SCM.Load(tmpItem.Filename,tmpItem.PluginID);
-        //SCM.LoadSelectedDll(lbTree.ItemIndex);
       end;
   end;
+
 end;
 
 procedure TSharpCenterWnd.InitToolbar;
@@ -711,6 +696,8 @@ procedure TSharpCenterWnd.UpdateSize;
 begin
   UpdateLivePreview;
 
+  LockWindowUpdate(Self.handle);
+  try
   if (@SCM.ActivePlugin.Open <> nil) then
   begin
     If SCM.PluginWndHandle <> 0 then
@@ -723,6 +710,9 @@ begin
         GetControlByHandle(SCM.EditWndHandle).Width := pnlEditPlugin.Width;
       end;
 
+  end;
+  finally
+    lockwindowupdate(0);
   end;
 end;
 
@@ -788,6 +778,7 @@ procedure TSharpCenterWnd.LoadPluginEvent(Sender: TObject);
 begin
   // Resize Plugin window
   LockWindowUpdate(Self.Handle);
+  pnlPlugin.Hide;
   Try
   ResizeToFitWindow(SCM.PluginWndHandle, pnlPlugin);
 
@@ -811,6 +802,7 @@ begin
   
   Finally
     LockWindowUpdate(0);
+    pnlPlugin.Show;
   End;
 
 end;
@@ -840,6 +832,8 @@ var
 
 begin
   tlPluginTabs.Clear;
+  LockWindowUpdate(Self.Handle);
+  Try
 
     s := '';
     if SCM.PluginTabs.Count = 0 then
@@ -860,6 +854,9 @@ begin
         tlPluginTabs.TabIndex := FSelectedPluginTabID;
       end;
     end;
+  Finally
+    LockWindowUpdate(0);
+  End;
 end;
 
 
@@ -875,19 +872,23 @@ begin
   end;
 
   // Handle proper closing of the edit window
-  tlPluginTabs.Height := 0;
   if @SCM.ActivePlugin.OpenEdit <> nil then begin
-    pnlEditContainer.Visible := False;
 
     if ((@SCM.ActivePlugin.CloseEdit <> nil) and (SCM.EditWndHandle <> 0)) then
       SCM.ActivePlugin.CloseEdit(sceEdit,False);
   end;
 
+  Finally
+    LockWindowUpdate(0);
+
+  tlPluginTabs.Height := 0;
   tlEditItem.Height := 0;
   btnSave.Enabled := False;
   btnCancel.Enabled := False;
-  Finally
-    LockWindowUpdate(0);
+  pnlLivePreview.Visible := False;
+  pnlEditContainer.Visible := False;
+
+    
   End;
 end;
 
@@ -1003,9 +1004,16 @@ end;
 procedure TSharpCenterWnd.tlPluginTabsTabChange(ASender: TObject;
   const ATabIndex: Integer; var AChange: Boolean);
 begin
+  LockWindowUpdate(Self.Handle);
+  Try
+
   if (ATabIndex > SCM.PluginTabs.Count - 1) then exit;
   if @SCM.ActivePlugin.ClickTab <> nil then
      SCM.ActivePlugin.ClickTab(SCM.PluginTabs.GetItem[ATabIndex]);
+
+  Finally
+    LockWindowUpdate(0);
+  End;
 end;
 
 procedure TSharpCenterWnd.FormClose(Sender: TObject; var Action: TCloseAction);
