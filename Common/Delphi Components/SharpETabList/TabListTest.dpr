@@ -3,8 +3,8 @@ program TabListTest;
 uses
   Forms,
   uTabListTest in 'uTabListTest.pas' {Form12},
-  uSharpETabList in 'uSharpETabList.pas',
-  graphicsFX in 'E:\SVN\Common\Units\SharpFX\graphicsFX.pas';
+  graphicsFX in '..\..\Units\SharpFX\graphicsFX.pas',
+  SharpETabList in 'SharpETabList.pas';
 
 {$R *.res}
 

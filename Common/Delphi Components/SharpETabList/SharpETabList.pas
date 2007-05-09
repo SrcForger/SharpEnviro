@@ -622,7 +622,7 @@ begin
 
   FTimer.Enabled := False;
   FreeAndNil(FTimer);
-  FreeAndNil(FTabList);
+  //FreeAndNil(FTabList);
   FPngImageList := nil;
 
   inherited;

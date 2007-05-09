@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, GR32, GR32_Image, uSharpeTabList, ExtCtrls, SharpERoundPanel,
+  Dialogs, GR32, GR32_Image, SharpeTabList, ExtCtrls, SharpERoundPanel,
   ImgList, PngImageList, JvExControls, JvComponent, JvPageList, StdCtrls;
 
 type
