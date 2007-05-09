@@ -62,6 +62,7 @@ type
     FValueEdit: TEdit;
     FBackPanel: TPanel;
     FEnabled: Boolean;
+    FPercentDisplay: Boolean;
     FOnChangeValue: TChangeValueEvent;
     FMax: Integer;
     FMin: Integer;
@@ -95,7 +96,7 @@ type
 
     procedure SetPopPosition(const Value: TPopPosition);
     procedure SetDescription(const Value: string);
-
+    procedure SetPercentDisplay(const Value : boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -117,6 +118,7 @@ type
     property Description: string read FDescription write SetDescription;
     property Enabled;
     property PopPosition: TPopPosition read FPopPosition write SetPopPosition;
+    property PercentDisplay: boolean read FPercentDisplay write SetPercentDisplay;
 
     property OnChangeValue: TChangeValueEvent read FOnChangeValue write FOnChangeValue;
   end;
@@ -148,6 +150,7 @@ begin
   BevelKind := bkNone;
   ParentBackground := False;
 
+  FPercentDisplay := False;
   FEnabled := True;
   FValue := 100;
   FMin := -100;
@@ -318,9 +321,20 @@ begin
   UpdateEditBox;
 end;
 
-procedure TSharpeGaugeBox.UpdateEditBox;
+procedure TSharpeGaugeBox.SetPercentDisplay(const Value : boolean);
 begin
-  FValueEdit.Text := Format('%s%d%s', [FPrefix, FValue, FSuffix]);
+  FPercentDisplay := Value;
+  UpdateEditBox;
+end;
+
+procedure TSharpeGaugeBox.UpdateEditBox;
+var
+  temp : integer;
+begin
+  if FPercentDisplay then
+     temp := round(FValue / FMax * 100)
+     else temp := FValue;
+  FValueEdit.Text := Format('%s%d%s', [FPrefix, temp, FSuffix]);
 end;
 
 procedure TSharpeGaugeBox.ValueEditKeyPress(Sender: TObject; var Key: Char);
@@ -407,6 +421,8 @@ begin
   if (length(s) <> 0) then
     if TryStrToInt(S, iVal) then
     begin
+      if FPercentDisplay then
+         iVal := round(iVal * FMax / 100); 
 
       if iVal > FMax then
       begin
