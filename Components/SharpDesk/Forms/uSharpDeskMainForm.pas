@@ -551,7 +551,7 @@ begin
        else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
   end;
 
-  if (msg.WParam = SU_DESKTOPICON) then
+  if (msg.WParam = SU_DESKTOPICON) or (msg.WParam = SU_ICONSET) then
   begin
     SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
     SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
