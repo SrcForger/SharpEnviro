@@ -1421,6 +1421,7 @@ begin
   SetThemeSkinDefault;
   SetThemeIconSetDefault;
   SetThemeDesktopIconDefault;
+  SetThemeDesktopAnimDefault;
   SetThemeWallpaperDefault;
 
   bInitialized := True;
@@ -1457,6 +1458,8 @@ begin
      (ct - Theme.IconSet.LastUpdate > 1) or (ForceReload) then LoadThemeIconSet;
   if (tpDesktopIcon in ThemeParts) and
      (ct - Theme.DesktopIcon.LastUpdate >1) or (ForceReload) then LoadThemeDesktopIcon;
+  if (tpDesktopAnimation in ThemeParts) and
+     (ct - Theme.DesktopAnim.LastUpdate >1) or (ForceReload) then LoadThemeDesktopAnim;
   if (tpWallpaper in ThemeParts) and
      (ct - Theme.WallpapresLastUpdate >1) or (ForceReload) then LoadThemeWallpaper;
 
