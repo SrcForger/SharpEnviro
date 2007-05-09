@@ -263,9 +263,9 @@ begin
   Self.DoubleBuffered := False;
   Self.Style := lbOwnerDrawFixed;
   Self.OnDrawItem := DrawItemEvent;
-  Self.OnClick := ClickItem;
+  //Self.OnClick := ClickItem;
   Self.OnMouseMove := MouseMoveEvent;
-  Self.OnMouseDown := MouseDownEvent;
+  Self.OnMouseUp := MouseDownEvent;
   Self.OnDblClick := DblClickItem;
   Self.ItemHeight := 24;
   Self.Color := clWindow;
