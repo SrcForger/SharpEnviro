@@ -174,8 +174,8 @@ begin
       begin
         try
           XML.LoadFromFile(Dir + sr.Name + '\IconSet.xml');
-          newItem := lb_iconlist.AddItem(XML.Root.Items.Value('name','...'),0);
-          newItem.AddSubItem(sr.Name,0);
+          newItem := lb_iconlist.AddItem(XML.Root.Items.Value('name','...'));
+          newItem.AddSubItem(sr.Name);
 
           if sr.Name = sCurrentIconSet then
           begin

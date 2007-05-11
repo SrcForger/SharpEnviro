@@ -21,7 +21,7 @@ object frmDesktopSettings: TfrmDesktopSettings
     Top = 0
     Width = 376
     Height = 570
-    ActivePage = JvIconPage
+    ActivePage = JvAnimationPage
     PropagateEnable = False
     Align = alClient
     object JvIconPage: TJvStandardPage

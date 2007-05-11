@@ -448,6 +448,7 @@ end;
 procedure TfrmDesktopSettings.cb_animClick(Sender: TObject);
 begin
   UpdateAnimationControls;
+  SendUpdate;
 end;
 
 procedure TfrmDesktopSettings.cb_animscaleClick(Sender: TObject);
