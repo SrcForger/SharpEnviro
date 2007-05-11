@@ -11,6 +11,7 @@ object FrmSharpeGaugeBox: TFrmSharpeGaugeBox
   Font.Name = 'Arial'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   OnKeyDown = FormKeyDown
   OnMouseWheelDown = FormMouseWheelDown

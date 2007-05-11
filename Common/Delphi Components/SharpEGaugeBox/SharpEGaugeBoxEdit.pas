@@ -269,7 +269,9 @@ end;
 
 destructor TSharpeGaugeBox.Destroy;
 begin
-
+  if assigned(FrmSharpeGaugeBox) then
+     FreeAndNil(FrmSharpeGaugeBox);
+     
   inherited;
 end;
 
@@ -284,10 +286,12 @@ begin
     FrmSharpeGaugeBox := TFrmSharpeGaugeBox.Create(Application.MainForm);
 
   FrmSharpeGaugeBox.GaugeBoxEdit := Self;
+  FrmSharpeGaugeBox.NoUpdate := True;
   tmpGaugeBar := FrmSharpeGaugeBox.GetGaugeBar;
   tmpGaugeBar.Max := FMax;
   tmpGaugeBar.Position := FValue;
   tmpGaugeBar.Min := FMin;
+  FrmSharpeGaugeBox.NoUpdate := False;
   FrmSharpeGaugeBox.lblGauge.Caption := FDescription;
 
   PopAnimateWindow(Self, FrmSharpeGaugeBox);

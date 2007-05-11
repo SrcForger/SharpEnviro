@@ -14,6 +14,7 @@ type
     Shape1: TPanel;
     lblGauge: TLabel;
     GaugeBar: TGaugeBar;
+    procedure FormCreate(Sender: TObject);
     procedure GaugeBarChange(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
@@ -25,6 +26,7 @@ type
     { Private declarations }
   public
     { Public declarations }
+    NoUpdate: boolean;
     GaugeBoxEdit:TSharpeGaugeBox;
     function GetGaugeBar:TGaugeBar;
     
@@ -78,9 +80,16 @@ end;
 
 procedure TFrmSharpeGaugeBox.GaugeBarChange(Sender: TObject);
 begin
+  if NoUpdate then exit;
+
   GaugeBoxEdit.Value := GaugeBar.Position;
   GaugeBoxEdit.UpdateValue;
   GaugeBoxEdit.UpdateEditBox;
+end;
+
+procedure TFrmSharpeGaugeBox.FormCreate(Sender: TObject);
+begin
+  NoUpdate := False;
 end;
 
 end.
