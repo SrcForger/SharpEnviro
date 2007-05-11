@@ -34,7 +34,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi,
-  JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent;
+  JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
+  SharpEGaugeBoxEdit;
 
 type
   TStringObject = Class(TObject)
@@ -50,11 +51,7 @@ type
     cb_grid: TCheckBox;
     pn_grid: TPanel;
     lb_gridx1: TLabel;
-    lb_gridx: TLabel;
     Label1: TLabel;
-    lb_gridy: TLabel;
-    tb_gridx: TJvTrackBar;
-    tb_gridy: TJvTrackBar;
     Panel2: TPanel;
     cb_singleclick: TCheckBox;
     JvAdvSettingsPage: TJvStandardPage;
@@ -63,13 +60,14 @@ type
     Label2: TLabel;
     cb_dd: TCheckBox;
     JvStandardPage1: TJvStandardPage;
+    sgb_gridx: TSharpeGaugeBox;
+    sgb_gridy: TSharpeGaugeBox;
+    procedure sgb_gridyChangeValue(Sender: TObject; Value: Integer);
     procedure cb_ddClick(Sender: TObject);
     procedure cb_ammClick(Sender: TObject);
     procedure cb_singleclickClick(Sender: TObject);
     procedure cb_gridClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure tb_gridyChange(Sender: TObject);
-    procedure tb_gridxChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     procedure UpdateGridBox;
@@ -94,18 +92,6 @@ end;
 procedure TfrmDeskSettings.UpdateGridBox;
 begin
   pn_grid.visible := cb_grid.Checked;
-end;
-
-procedure TfrmDeskSettings.tb_gridxChange(Sender: TObject);
-begin
-   lb_gridx.Caption := inttostr(tb_gridx.Position) +'px';
-   SendUpdate;
-end;
-
-procedure TfrmDeskSettings.tb_gridyChange(Sender: TObject);
-begin
-   lb_gridy.Caption := inttostr(tb_gridy.Position) +'px';
-   SendUpdate;
 end;
 
 procedure TfrmDeskSettings.FormShow(Sender: TObject);
@@ -136,6 +122,12 @@ begin
 end;
 
 procedure TfrmDeskSettings.cb_ddClick(Sender: TObject);
+begin
+  SendUpdate;
+end;
+
+procedure TfrmDeskSettings.sgb_gridyChangeValue(Sender: TObject;
+  Value: Integer);
 begin
   SendUpdate;
 end;

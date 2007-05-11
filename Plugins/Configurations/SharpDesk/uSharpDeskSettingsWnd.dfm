@@ -20,7 +20,7 @@ object frmDeskSettings: TfrmDeskSettings
     Top = 0
     Width = 510
     Height = 570
-    ActivePage = JvAdvSettingsPage
+    ActivePage = JvSettingsPage
     PropagateEnable = False
     Align = alClient
     object JvSettingsPage: TJvStandardPage
@@ -70,18 +70,6 @@ object frmDeskSettings: TfrmDeskSettings
           ParentColor = False
           WordWrap = True
         end
-        object lb_gridx: TLabel
-          Left = 276
-          Top = 10
-          Width = 24
-          Height = 13
-          BiDiMode = bdLeftToRight
-          Caption = '32px'
-          Color = clWindow
-          ParentBiDiMode = False
-          ParentColor = False
-          WordWrap = True
-        end
         object Label1: TLabel
           Left = 40
           Top = 42
@@ -93,47 +81,31 @@ object frmDeskSettings: TfrmDeskSettings
           ParentColor = False
           WordWrap = True
         end
-        object lb_gridy: TLabel
-          Left = 276
-          Top = 42
-          Width = 24
-          Height = 13
-          BiDiMode = bdLeftToRight
-          Caption = '32px'
-          Color = clWindow
-          ParentBiDiMode = False
-          ParentColor = False
-          WordWrap = True
-        end
-        object tb_gridx: TJvTrackBar
-          Left = 112
+        object sgb_gridx: TSharpeGaugeBox
+          Left = 128
           Top = 8
-          Width = 161
-          Height = 25
-          Max = 256
+          Width = 121
+          Height = 21
           Min = 2
-          PageSize = 1
-          Frequency = 8
-          Position = 32
-          TabOrder = 0
-          TickStyle = tsNone
-          OnChange = tb_gridxChange
-          ShowRange = False
+          Max = 256
+          Value = 32
+          Description = 'Adjust to the width of the grid'
+          PopPosition = ppBottom
+          PercentDisplay = False
+          OnChangeValue = sgb_gridyChangeValue
         end
-        object tb_gridy: TJvTrackBar
-          Left = 112
+        object sgb_gridy: TSharpeGaugeBox
+          Left = 128
           Top = 40
-          Width = 161
-          Height = 25
-          Max = 256
+          Width = 121
+          Height = 21
           Min = 2
-          PageSize = 1
-          Frequency = 8
-          Position = 32
-          TabOrder = 1
-          TickStyle = tsNone
-          OnChange = tb_gridyChange
-          ShowRange = False
+          Max = 256
+          Value = 32
+          Description = 'Adjust to set the height of the grid'
+          PopPosition = ppBottom
+          PercentDisplay = False
+          OnChangeValue = sgb_gridyChangeValue
         end
       end
       object Panel2: TPanel

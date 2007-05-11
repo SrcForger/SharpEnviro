@@ -64,8 +64,8 @@ begin
   frmDeskSettings.BorderStyle := bsNone;
 
   frmDeskSettings.cb_grid.Checked := XMLSettings.Grid;
-  frmDeskSettings.tb_gridx.Position := XMLSettings.GridX;
-  frmDeskSettings.tb_gridy.Position := XMLSettings.GridY;
+  frmDeskSettings.sgb_gridx.Value := XMLSettings.GridX;
+  frmDeskSettings.sgb_gridy.Value := XMLSettings.GridY;
   frmDeskSettings.cb_singleclick.Checked := XMLSettings.SingleClick;
   frmDeskSettings.cb_amm.Checked := XMLSettings.AdvancedMM;
   frmDeskSettings.cb_dd.Checked := XMLSettings.DragAndDrop;
@@ -81,8 +81,8 @@ begin
     if ASave then
     begin
       XMLSettings.Grid  := frmDeskSettings.cb_grid.Checked;
-      XMLSettings.GridX := frmDeskSettings.tb_gridx.Position;
-      XMLSettings.GridY := frmDeskSettings.tb_gridy.Position;
+      XMLSettings.GridX := frmDeskSettings.sgb_gridx.Value;
+      XMLSettings.GridY := frmDeskSettings.sgb_gridy.Value;
       XMLSettings.SingleClick := frmDeskSettings.cb_singleclick.Checked;
       XMLSettings.AdvancedMM := frmDeskSettings.cb_amm.Checked;
       XMLSettings.DragAndDrop := frmDeskSettings.cb_dd.Checked;
