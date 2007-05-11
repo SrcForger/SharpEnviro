@@ -56,6 +56,8 @@ const
   SU_SERVICE = 7;
   SU_DESKTOPICON = 8;
   SU_SHARPDESK = 9;
+  SU_SHARPMENU = 10;
+  SU_SHARPBAR = 11;
 
   // Shell message
   WM_SHARPSHELLMESSAGE = WM_APP + 507;
