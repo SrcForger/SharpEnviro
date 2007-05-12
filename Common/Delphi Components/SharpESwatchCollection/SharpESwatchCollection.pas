@@ -7,7 +7,7 @@ uses
   Dialogs, ExtCtrls, SharpFX, SharpGraphicsUtils, gr32, SharpECenterScheme,
   Contnrs, JvSimpleXml, menus, pngimagelist, SharpThemeApi, StdCtrls,
     GR32_Polygons, SharpApi, GR32_Image, GR32_Layers, GR32_RangeBars,
-      SharpESwatchManager;
+      SharpESwatchManager, Types;
 
 {$R SharpESwatchRes.RES}
 
@@ -27,8 +27,6 @@ Type
 
     FImage32: TImage32;
     FSwatchManager: TSharpESwatchManager;
-    FonGetWidth: TOnGetWidth;
-    FOnUpdateSwatchBitmap: TOnUpdateSwatchBitmap;
 
     procedure PopupMenuEvent(ASender:TObject);
     procedure MouseDownEvent(Sender: TObject;
@@ -104,10 +102,9 @@ end;
 
 procedure TSharpESwatchCollection.PopupMenuEvent(ASender: TObject);
 var
-  mi:TMenuItem;
   n: Integer;
   bEnabled: Boolean;
-  p,p2: TPoint;
+  p: TPoint;
   tmp: TSharpESwatchCollectionItem;
 begin
   FPopupMenu.Items.Clear;
@@ -232,8 +229,7 @@ end;
 
 procedure TSharpESwatchCollection.MenuClickEvent(Sender: TObject);
 var
-  sCol, sName: String;
-  col: TColor;
+  sName: String;
   i: Integer;
   tmpMI: TMenuItem;
   tmpSwatch: TSharpESwatchCollectionItem;
