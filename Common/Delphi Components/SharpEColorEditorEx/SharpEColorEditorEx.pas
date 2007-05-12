@@ -16,7 +16,6 @@ Type
     FColorCode: Integer;
     FColorAsTColor: TColor;
 
-    FName: string;
     FParent: Pointer;
     FExpanded: Boolean;
     FParseColor: String;
@@ -86,7 +85,6 @@ Type
     FOnChangeColor: TColorChangeEvent;
 
     procedure SetItems(const Value: TSharpEColorEditorExItems);
-    function GetSwatchManager: TSharpESwatchManager;
     procedure SetSwatchManager(const Value: TSharpESwatchManager);
     procedure ResizeEvent(Sender:TObject);
   public
@@ -345,11 +343,6 @@ destructor TSharpEColorEditorEx.Destroy;
 begin
   FItems.Free;
   inherited;
-end;
-
-function TSharpEColorEditorEx.GetSwatchManager: TSharpESwatchManager;
-begin
-  Result := FSwatchManager;
 end;
 
 procedure TSharpEColorEditorEx.Loaded;

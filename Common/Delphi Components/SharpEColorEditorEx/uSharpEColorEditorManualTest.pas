@@ -73,6 +73,7 @@ begin
     tmp.EndUpdate;
 
     tmp.Items.Item[1].ColorEditor.ColorEditorType := cetValue;
+    tmp.Items.Item[1].ColorEditor.Description := 'Please select the value:';
   End;
 
   
