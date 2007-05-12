@@ -12,10 +12,10 @@ uses
 type
   TMainWnd = class(TForm)
     XPManifest1: TXPManifest;
-    SharpEColorEditor1: TSharpEColorEditor;
     SharpESwatchManager1: TSharpESwatchManager;
     Button1: TButton;
     Button2: TButton;
+    SharpEColorEditor2: TSharpEColorEditor;
     procedure Button2Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure JvLinkLabel1LinkClick(Sender: TObject; LinkNumber: Integer;
@@ -37,7 +37,7 @@ implementation
 
 procedure TMainWnd.Button1Click(Sender: TObject);
 begin
-  SharpEColorEditor1.ColorEditorType := cetColor;
+  SharpEColorEditor2.ColorEditorType := cetColor;
 
 end;
 
@@ -55,12 +55,13 @@ end;
 
 procedure TMainWnd.FormShow(Sender: TObject);
 begin
-  SharpEColorEditor1.Expanded := True;
+  //SharpEColorEditor1.Expanded := True;
 end;
 
 procedure TMainWnd.Button2Click(Sender: TObject);
 begin
-  SharpEColorEditor1.ColorEditorType := cetValue;
+  SharpEColorEditor2.ColorEditorType := cetValue;
+  SharpEColorEditor2.Description := 'Please select the alpha value for blah:';
 end;
 
 end.

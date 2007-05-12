@@ -16,7 +16,25 @@ object MainWnd: TMainWnd
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object SharpEColorEditor1: TSharpEColorEditor
+  object Button1: TButton
+    Left = 96
+    Top = 256
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 0
+    OnClick = Button1Click
+  end
+  object Button2: TButton
+    Left = 184
+    Top = 256
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 1
+    OnClick = Button2Click
+  end
+  object SharpEColorEditor2: TSharpEColorEditor
     Left = 0
     Top = 0
     Width = 432
@@ -27,7 +45,7 @@ object MainWnd: TMainWnd
     Caption = 'Scheme Test'
     ColorCode = 0
     ColorAsTColor = clBlack
-    ColorEditorType = cetValue
+    ColorEditorType = cetColor
     ValueText = 'Alpha'
     ValueMax = 0
     ValueMin = 255
@@ -36,24 +54,6 @@ object MainWnd: TMainWnd
     DesignSize = (
       432
       24)
-  end
-  object Button1: TButton
-    Left = 96
-    Top = 256
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
-    TabOrder = 1
-    OnClick = Button1Click
-  end
-  object Button2: TButton
-    Left = 184
-    Top = 256
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
-    TabOrder = 2
-    OnClick = Button2Click
   end
   object XPManifest1: TXPManifest
     Left = 8
