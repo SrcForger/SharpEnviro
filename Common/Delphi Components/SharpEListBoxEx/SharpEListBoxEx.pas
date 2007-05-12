@@ -195,6 +195,7 @@ type
     property Color;
     property Font;
     property Anchors;
+    property PopupMenu;
 
     property ItemHeight;
     property OnClickItem: TSharpEListBoxExOnClickItem read FOnClickItem write FOnClickItem stored True;
@@ -203,7 +204,7 @@ type
     property OnGetCellCursor: TSharpEListBoxExGetColCursor read FOnGetCellCursor write FOnGetCellCursor stored True;
     property OnGetCellColor: TSharpEListBoxExGetItemColor read FOnGetCellColor write FOnGetCellColor;
     property OnGetCellFont: TSharpEListBoxExGetColFontStyle read FOnGetCellFont write FOnGetCellFont;
-
+    
     property ItemOffset: TPoint read FItemOffset write FItemOffset;
     property BevelInner;
     property BevelOuter;
