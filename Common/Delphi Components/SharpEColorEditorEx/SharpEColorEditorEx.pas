@@ -22,6 +22,12 @@ Type
     FColorEditor: TSharpEColorEditor;
     FTag: Integer;
     FData: TObject;
+    FValueMin: Integer;
+    FValueText: string;
+    FDescription: string;
+    FValue: Integer;
+    FValueMax: Integer;
+    FColorEditorType: TColorEditorType;
 
 
     procedure SetColorAsTColor(const Value: TColor);
@@ -34,6 +40,12 @@ Type
     function GetColorCode: Integer;
     function GetColorAsTColor: TColor;
     procedure SetParseColor(const Value: String);
+    procedure SetColorEditorType(const Value: TColorEditorType);
+    procedure SetDescription(const Value: string);
+    procedure SetValue(const Value: Integer);
+    procedure SetValueMax(const Value: Integer);
+    procedure SetValueMin(const Value: Integer);
+    procedure SetValueText(const Value: string);
 
 
   public
@@ -51,6 +63,15 @@ Type
     property ColorAsTColor: TColor read GetColorAsTColor write SetColorAsTColor;
     property ParseColor: String read FParseColor write SetParseColor;
     property Expanded: Boolean read GetExpanded write SetExpanded;
+
+    property ColorEditorType: TColorEditorType read FColorEditorType write
+      SetColorEditorType;
+
+    property Description: string read FDescription write SetDescription;
+    property ValueText: string read FValueText write SetValueText;
+    property ValueMax: Integer read FValueMax write SetValueMax;
+    property ValueMin: Integer read FValueMin write SetValueMin;
+    property Value: Integer read FValue write SetValue;
 
     property ColorEditor: TSharpEColorEditor read FColorEditor write FColorEditor;
 
@@ -267,6 +288,61 @@ begin
   FUpdate := False;
 end;
 
+procedure TSharpEColorEditorExItem.SetValueMin(const Value: Integer);
+begin
+  FValueMin := Value;
+
+  if FColorEditor <> nil then begin
+    FColorEditor.ValueMin := Value;
+  end;
+end;
+
+procedure TSharpEColorEditorExItem.SetValueText(const Value: string);
+begin
+  FValueText := Value;
+
+  if FColorEditor <> nil then begin
+    FColorEditor.ValueText := Value;
+  end;
+end;
+
+procedure TSharpEColorEditorExItem.SetDescription(const Value: string);
+begin
+  FDescription := Value;
+
+  if FColorEditor <> nil then begin
+    FColorEditor.Description := Value;
+  end;
+end;
+
+procedure TSharpEColorEditorExItem.SetValue(const Value: Integer);
+begin
+  FValue := Value;
+
+  if FColorEditor <> nil then begin
+    FColorEditor.Value := Value;
+  end;
+end;
+
+procedure TSharpEColorEditorExItem.SetValueMax(const Value: Integer);
+begin
+  FValueMax := Value;
+
+  if FColorEditor <> nil then begin
+    FColorEditor.ValueMax := Value;
+  end;
+end;
+
+procedure TSharpEColorEditorExItem.SetColorEditorType(
+  const Value: TColorEditorType);
+begin
+  FColorEditorType := Value;
+
+  if FColorEditor <> nil then begin
+    FColorEditor.ColorEditorType := Value;
+  end;
+end;
+
 { TSharpEColorEditorExItems }
 
 function TSharpEColorEditorExItems.Add(
@@ -399,6 +475,14 @@ begin
     tmp.ColorCode := FItems.Item[i].FColorCode;
     tmp.ColorAsTColor := FItems.Item[i].FColorAsTColor;
     tmp.Caption := FItems.Item[i].Title;
+
+    tmp.ColorEditorType := FItems.item[i].FColorEditorType;
+    tmp.ValueText := FItems.Item[i].FValueText;
+    tmp.Value := FItems.Item[i].Value;
+    tmp.ValueMax := FItems.Item[i].ValueMax;
+    tmp.ValueMin := FItems.Item[i].ValueMin;
+    tmp.Description := FItems.Item[i].Description;
+
     tmp.Expanded := FItems.Item[i].Expanded;
     tmp.Name := 'Item' + intToStr(i);
 

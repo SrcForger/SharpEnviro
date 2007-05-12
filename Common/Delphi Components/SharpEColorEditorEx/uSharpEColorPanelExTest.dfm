@@ -47,34 +47,73 @@ object Form1: TForm1
     TabOrder = 1
     Items = <
       item
+        Title = 'Alpha'
         ColorCode = 0
         ColorAsTColor = clBlack
-        Expanded = False
+        Expanded = True
+        ColorEditorType = cetValue
+        Description = 'This is an alpha value:'
+        ValueText = 'Alpha'
+        ValueMax = 255
+        ValueMin = 0
+        Value = 20
+        ColorEditor = SharpEColorEditorEx1.Item0
+        Tag = 0
       end
       item
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
+        ColorEditorType = cetColor
+        ValueMax = 0
+        ValueMin = 0
+        Value = 0
+        ColorEditor = SharpEColorEditorEx1.Item1
+        Tag = 0
       end
       item
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
+        ColorEditorType = cetColor
+        ValueMax = 0
+        ValueMin = 0
+        Value = 0
+        ColorEditor = SharpEColorEditorEx1.Item2
+        Tag = 0
       end
       item
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
+        ColorEditorType = cetColor
+        ValueMax = 0
+        ValueMin = 0
+        Value = 0
+        ColorEditor = SharpEColorEditorEx1.Item3
+        Tag = 0
       end
       item
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
+        ColorEditorType = cetColor
+        ValueMax = 0
+        ValueMin = 0
+        Value = 0
+        ColorEditor = SharpEColorEditorEx1.Item4
+        Tag = 0
       end
       item
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
+        ColorEditorType = cetColor
+        ValueMax = 0
+        ValueMin = 0
+        Value = 0
+        ColorEditor = SharpEColorEditorEx1.Item5
+        Tag = 0
       end>
     SwatchManager = SharpESwatchManager1
   end
