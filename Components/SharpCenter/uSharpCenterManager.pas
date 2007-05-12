@@ -762,7 +762,7 @@ var
 begin
   Result := True;
 
-  if ATabID = integer(tidDelete) then begin
+  {if ATabID = integer(tidDelete) then begin
     if (@ActivePlugin.ClickBtn <> nil) then
       ActivePlugin.ClickBtn(SCB_DELETE,'');
 
@@ -771,7 +771,7 @@ begin
         FOnAddPluginTabs(Self);
 
       exit;
-  end;
+  end;      }
 
   bValid := True;
   if (@ActivePlugin.CloseEdit <> nil) then begin
