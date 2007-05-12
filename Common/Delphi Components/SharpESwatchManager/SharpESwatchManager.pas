@@ -28,7 +28,6 @@ Type
     FColorName: String;
     FColor: TColor;
     FData: Pointer;
-    FOwner: TObject;
     FSwatchRect: TRect;
     FSelected: Boolean;
     procedure SetColor(const Value: TColor);
@@ -163,7 +162,6 @@ end;
 function Sort_ByHue (Item1, Item2: Pointer): Integer;
 var
   tmp,tmp2: TSharpESwatchCollectionItem;
-  val, val2: Integer;
   r1,b1,g1,r2,b2,g2: byte;
   rgb1, rgb2: integer;
   hsl1, hsl2: THSLColor;
@@ -192,7 +190,6 @@ end;
 function Sort_ByBri (Item1, Item2: Pointer): Integer;
 var
   tmp,tmp2: TSharpESwatchCollectionItem;
-  val, val2: Integer;
   r1,b1,g1,r2,b2,g2: byte;
   rgb1, rgb2: integer;
   hsl1, hsl2: THSLColor;
@@ -221,7 +218,6 @@ end;
 function Sort_BySat (Item1, Item2: Pointer): Integer;
 var
   tmp,tmp2: TSharpESwatchCollectionItem;
-  val, val2: Integer;
   r1,b1,g1,r2,b2,g2: byte;
   rgb1, rgb2: integer;
   hsl1, hsl2: THSLColor;
@@ -441,7 +437,6 @@ procedure TSharpESwatchManager.Save(AFileName: String; ASelectedOnly: Boolean);
 var
   xml: TJvSimpleXml;
   i: Integer;
-  newItem: TSharpESwatchCollectionItem;
   bAdd: Boolean;
 begin
 
@@ -474,7 +469,7 @@ procedure TSharpESwatchManager.CreateSwatchBitmap;
 var
   i:Integer;
   x,w,y,tw,swatchWidth: Integer;
-  r, rTextBorder,rText: TRect;
+  r: TRect;
 
   tmpBitmap: TBitmap32;
 begin
