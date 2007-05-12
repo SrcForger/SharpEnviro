@@ -42,7 +42,6 @@ type
     FSidePanelCol: TColor;
     FOnChangeColor: TNotifyEvent;
     FOnLoad: TNotifyEvent;
-    FTimer: TTimer;
 
     procedure SetEditBordCol(const Value: TColor);
     procedure SetEditCol(const Value: TColor);
