@@ -353,6 +353,7 @@ var
   sFirstNavFile, sFirstPluginID: String;
   newItem: TSharpCenterManagerItem;
 begin
+  LockWindowUpdate(Application.MainForm.Handle);
   Result := True;
   try
 
@@ -411,7 +412,7 @@ begin
 
   finally
     Load(sFirstNavFile,sFirstPluginID);
-
+    LockWindowUpdate(0);
   end;
 end;
 
@@ -426,6 +427,7 @@ var
 begin
   iCount := 0;
   Result := True;
+  LockWindowUpdate(Application.MainForm.Handle);
 
   if Assigned(FOnInitNavigation) then
     FOnInitNavigation(Self);
@@ -505,6 +507,7 @@ begin
   finally
     if iCount = 0 then
     begin
+
       newItem := TSharpCenterManagerItem.Create;
       newItem.Caption := 'No items found';
       newItem.ItemType := itmNone;
@@ -514,6 +517,7 @@ begin
       end;
 
     end;
+    LockWindowUpdate(0);
   end;
 end;
 
@@ -762,16 +766,8 @@ var
 begin
   Result := True;
 
-  {if ATabID = integer(tidDelete) then begin
-    if (@ActivePlugin.ClickBtn <> nil) then
-      ActivePlugin.ClickBtn(SCB_DELETE,'');
-
-      LoadPluginTabs;
-      if Assigned(FOnAddPluginTabs) then
-        FOnAddPluginTabs(Self);
-
-      exit;
-  end;      }
+  LockWindowUpdate(Application.MainForm.Handle);
+  try
 
   bValid := True;
   if (@ActivePlugin.CloseEdit <> nil) then begin
@@ -798,6 +794,10 @@ begin
   end else begin
     CheckEditState;
     Result := false;
+  end;
+
+  finally
+    LockWindowUpdate(0);
   end;
 end;
 

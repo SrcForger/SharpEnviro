@@ -79,8 +79,6 @@ type
     pnlPluginContainer_: TPanel;
     Panel4: TPanel;
     XPManifest1: TXPManifest;
-    pnlLivePreview: TPanel;
-    imgLivePreview: TImage32;
     tlToolbar: TSharpETabList;
     pnlToolbar: TSharpERoundPanel;
     Panel1: TPanel;
@@ -115,6 +113,8 @@ type
     miConfigure: TMenuItem;
     lbFavs: TSharpEListBoxEx;
     Button1: TButton;
+    pnlLivePreview: TPanel;
+    imgLivePreview: TImage32;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -324,7 +324,7 @@ begin
     SCM.Unload;
     SCM.Reload;
 
-    pnlEditContainer.Hide;
+    pnlEditContainer.Height := 0;
 
   Finally
     LockWindowUpdate(0);
@@ -360,14 +360,12 @@ procedure TSharpCenterWnd.UpdateLivePreview;
 begin
   if SCM = nil then exit;
 
-  pnlLivePreview.Visible := False;
-
     imgLivePreview.Bitmap.SetSize(pnlLivePreview.Width,pnlLivePreview.Height);
     imgLivePreview.Bitmap.Clear(clwhite32);
 
     if (@SCM.ActivePlugin.UpdatePreview <> nil) then begin
       SCM.ActivePlugin.UpdatePreview(imgLivePreview);
-      pnlLivePreview.Visible := True;
+      pnlLivePreview.Height := imgLivePreview.Height;
     end;
 end;
 
@@ -409,9 +407,6 @@ var
 begin
   if SCM = nil then exit;
 
-  LockWindowUpdate(self.Handle);
-  try
-
   Case msg.WParam of
     SCM_SET_BUTTON_ENABLED, SCM_SET_BUTTON_DISABLED: begin
 
@@ -443,10 +438,6 @@ begin
     SCM_EVT_UPDATE_SIZE: begin
       UpdateSize;
     end;
-  end;
-
-  finally
-    LockWindowUpdate(0);
   end;
 end;
 
@@ -614,7 +605,7 @@ begin
   btnSave.Enabled := False;
   btnCancel.Enabled := False;
   btnHelp.Enabled := False;
-  pnlEditContainer.Visible := False;
+  pnlEditContainer.Height := 0;
   tlEditItem.TabIndex := -1;
   pnlToolbar.Hide;
 
@@ -677,7 +668,6 @@ begin
         SCM.Load(tmpItem.Filename,tmpItem.PluginID);
       end;
   end;
-
 end;
 
 procedure TSharpCenterWnd.InitToolbar;
@@ -794,6 +784,9 @@ begin
   if (@SCM.ActivePlugin.SetBtnState <> nil) then
     SetToolbarTabVisible(tidExport,SCM.ActivePlugin.SetBtnState(SCB_EXPORT));
 
+  if (@SCM.ActivePlugin.UpdatePreview <> nil) then
+    pnlLivePreview.Height := 45;
+
   pnlToolbar.Hide;
   FSelectedTabID := 0;
   FSelectedPluginTabID := 0;
@@ -885,8 +878,8 @@ begin
   tlEditItem.Height := 0;
   btnSave.Enabled := False;
   btnCancel.Enabled := False;
-  pnlLivePreview.Visible := False;
-  pnlEditContainer.Visible := False;
+  pnlLivePreview.Height := 0;
+  pnlEditContainer.Height := 0;
 
     
   End;
@@ -896,7 +889,7 @@ procedure TSharpCenterWnd.UpdateThemeEvent(Sender: TObject);
 var
   colBackground, colItem, colSelectedItem: TColor;
 begin
-  LockWindowUpdate(Self.Handle);
+  //LockWindowUpdate(Self.Handle);
   Try
 
   if @SCM.ActivePlugin.GetCenterScheme <> nil then begin
@@ -920,7 +913,7 @@ begin
     pnlEditToolbar.Color := colBackground;
     tlEditItem.TabSelectedColor := colBackground;
 
-    if Not(pnlEditContainer.Visible) then
+    if Not(pnlLivePreview.Height <> 0) then
     tlEditItem.TabIndex := -1;
 
     btnEditCancel.Enabled := True;
@@ -954,12 +947,12 @@ begin
       btnEditCancel.Caption := 'Close';
     end;
 
-    Self.Invalidate;
+    //Self.Invalidate;
 
 
   end;
   finally
-    LockWindowUpdate(0);
+    //LockWindowUpdate(0);
   end;
 end;
 
@@ -969,7 +962,7 @@ begin
   LockWindowUpdate(Self.Handle);
   Try
     UpdateSize;
-    pnlEditContainer.Show;
+    //pnlEditContainer.Show;
   Finally
     LockWindowUpdate(0);
   End;
@@ -993,7 +986,7 @@ begin
   Try
     if Sender = nil then begin
       tlEditItem.TabIndex := -1;
-      pnlEditContainer.Hide;
+      pnlEditContainer.Height := 0;
     end else
       tlEditItemTabClick(tlEditItem,tlEditItem.TabIndex);
   Finally

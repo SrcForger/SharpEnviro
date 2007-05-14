@@ -719,7 +719,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 145
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -174
+                Left = -202
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1169,7 +1169,7 @@ object SharpCenterWnd: TSharpCenterWnd
               object Edit2: TEdit
                 Left = 0
                 Top = 36
-                Width = -179
+                Width = -207
                 Height = 21
                 Anchors = [akLeft, akTop, akRight]
                 Ctl3D = True
@@ -1205,67 +1205,42 @@ object SharpCenterWnd: TSharpCenterWnd
         TabOrder = 1
         object pnlPluginContainer_: TPanel
           Left = 6
-          Top = 198
+          Top = 180
           Width = 517
-          Height = 358
+          Height = 376
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 4
           Color = clWindow
           TabOrder = 0
         end
-        object pnlLivePreview: TPanel
-          Left = 6
-          Top = 153
-          Width = 517
-          Height = 45
-          Align = alTop
-          BevelOuter = bvNone
-          Color = clWindow
-          TabOrder = 1
-          Visible = False
-          object imgLivePreview: TImage32
-            Left = 0
-            Top = 0
-            Width = 517
-            Height = 45
-            Align = alClient
-            Bitmap.ResamplerClassName = 'TNearestResampler'
-            BitmapAlign = baTopLeft
-            ParentColor = False
-            Scale = 1.000000000000000000
-            ScaleMode = smNormal
-            TabOrder = 0
-            OnBitmapResize = btnBackClick
-          end
-        end
         object Panel3: TPanel
           Left = 6
-          Top = 149
+          Top = 176
           Width = 517
           Height = 4
           Align = alTop
           BevelOuter = bvNone
           Color = clWindow
           ParentBackground = False
-          TabOrder = 2
+          TabOrder = 1
         end
         object pnlPluginContainer: TPanel
           Left = 6
-          Top = 198
+          Top = 180
           Width = 517
-          Height = 358
+          Height = 376
           Align = alClient
           BevelOuter = bvNone
-          TabOrder = 3
+          TabOrder = 2
           DesignSize = (
             517
-            358)
+            376)
           object rpnlContent: TSharpERoundPanel
             Left = 0
             Top = 24
             Width = 517
-            Height = 334
+            Height = 352
             Anchors = [akLeft, akTop, akRight, akBottom]
             BevelOuter = bvNone
             BorderWidth = 4
@@ -1282,7 +1257,7 @@ object SharpCenterWnd: TSharpCenterWnd
               Left = 4
               Top = 4
               Width = 509
-              Height = 326
+              Height = 344
               Align = alClient
               BevelOuter = bvNone
               Color = clWindow
@@ -1344,8 +1319,7 @@ object SharpCenterWnd: TSharpCenterWnd
           BorderWidth = 4
           Color = 16510947
           ParentBackground = False
-          TabOrder = 4
-          Visible = False
+          TabOrder = 3
           DrawMode = srpNoTopLeft
           RoundValue = 10
           BorderColor = clBtnFace
@@ -2314,6 +2288,30 @@ object SharpCenterWnd: TSharpCenterWnd
               ID = 2
               Visible = True
             end>
+        end
+        object pnlLivePreview: TPanel
+          Left = 6
+          Top = 149
+          Width = 517
+          Height = 27
+          Align = alTop
+          BevelOuter = bvNone
+          Color = clWindow
+          TabOrder = 5
+          object imgLivePreview: TImage32
+            Left = 0
+            Top = 0
+            Width = 517
+            Height = 27
+            Align = alClient
+            Bitmap.ResamplerClassName = 'TNearestResampler'
+            BitmapAlign = baTopLeft
+            ParentColor = False
+            Scale = 1.000000000000000000
+            ScaleMode = smNormal
+            TabOrder = 0
+            OnBitmapResize = btnBackClick
+          end
         end
       end
     end
