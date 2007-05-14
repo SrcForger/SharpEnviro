@@ -104,10 +104,12 @@ Type
     FSwatchManager: TSharpESwatchManager;
     FUpdate: Boolean;
     FOnChangeColor: TColorChangeEvent;
+    FOnSliderChange: TNotifyEvent;
 
     procedure SetItems(const Value: TSharpEColorEditorExItems);
     procedure SetSwatchManager(const Value: TSharpESwatchManager);
     procedure ResizeEvent(Sender:TObject);
+    procedure ChangeSliderEvent(Sender:TObject);
   public
     constructor Create(Sender: TComponent); override;
 
@@ -128,6 +130,7 @@ Type
     property SwatchManager: TSharpESwatchManager read FSwatchManager write SetSwatchManager;
 
     property OnChangeColor: TColorChangeEvent read FOnChangeColor write FOnChangeColor;
+    property OnSliderChange: TNotifyEvent read FOnSliderChange write FOnSliderChange;
 end;
 
 procedure Register;
@@ -187,10 +190,17 @@ procedure TSharpEColorEditorExItem.ColorChangeEvent(ASender: TObject;
 begin
   FColorCode := TSharpEColorEditor(ASender).ColorCode;
   FColorAsTColor := TSharpEColorEditor(ASender).ColorAsTColor;
+  FValue := TSharpEColorEditor(ASender).Value;
 
   if TSharpEColorEditorEx(FParent) <> nil then
-    if Assigned(TSharpEColorEditorEx(FParent).FOnChangeColor) then
-      TSharpEColorEditorEx(FParent).OnChangeColor(Self,FColorCode);
+    if Assigned(TSharpEColorEditorEx(FParent).FOnChangeColor) then begin
+
+      if FColorEditorType = cetColor then
+      TSharpEColorEditorEx(FParent).OnChangeColor(Self,FColorCode) else
+      TSharpEColorEditorEx(FParent).OnChangeColor(Self,FValue);
+    end;
+
+  //TSharpEColorEditor(ASender).Update;
 end;
 
 procedure TSharpEColorEditorExItem.SetTitle(const Value: String);
@@ -488,6 +498,7 @@ begin
 
     tmp.OnColorChange := FItems.Item[i].ColorChangeEvent;
     tmp.OnTabClick := FItems.Item[i].TabclickEvent;
+    tmp.OnSliderChange := ChangeSliderEvent;
 
     tmp.Height := 24;
   end;
@@ -531,6 +542,12 @@ begin
   For i := 0 to Pred(FItems.Count) do begin
     FItems.Item[i].ColorEditor.SwatchManager := FSwatchManager;
   end;
+end;
+
+procedure TSharpEColorEditorEx.ChangeSliderEvent(Sender: TObject);
+begin
+  if Assigned(FOnSliderChange) then
+    FOnSliderChange(Sender);
 end;
 
 end.
