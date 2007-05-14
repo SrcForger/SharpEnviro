@@ -307,7 +307,7 @@ begin
   end;
 
   SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Export : ') + WP.Name),clblue,DMT_trace);
-  winWallPath := ExtractFilePath(Application.ExeName) + 'SharpDeskbg';
+  winWallPath := SharpApi.GetSharpeDirectory + 'SharpDeskbg';
   tBmp := TBitmap.Create;
   tBmp.Assign(SharpDesk.Image.Bitmap);
   tBmp.SaveToFile(winWallPath+'.bmp');

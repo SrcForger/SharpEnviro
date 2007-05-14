@@ -183,6 +183,7 @@ type
     procedure NewObjectSetClick(Sender: TObject);
     procedure MakeWindow1Click(Sender: TObject);
   private
+    procedure WMSettingsChange(var Msg : TMessage);       message WM_SETTINGCHANGE;
     procedure WMDisplayChange(var Msg : TMessage);        message WM_DISPLAYCHANGE;
     procedure WMDeskExportBackground(var Msg : TMessage); message WM_DESKEXPORTBACKGROUND;
     procedure WMEnableDesk(var Msg : TMessage);           message WM_ENABLESHARPDESK;
@@ -276,6 +277,76 @@ procedure TSharpDeskMainForm.WMSharpTerminate(var Msg : TMessage);
 begin
   SharpDesk.DeskSettings.SaveSettings;
   Application.Terminate;
+end;
+
+procedure TSharpDeskMainForm.WMSettingsChange(var Msg : TMessage);
+var
+  Reg : TRegistry;
+  WP : String;
+  WPStyle : String;
+  WPTile : String;
+  XML : TJvSimpleXML;
+  Dir   : String;
+  FName : String;
+  WPName : String;
+  n,i : integer;
+begin
+  if (msg.WParam = SPI_SETDESKWALLPAPER)
+    or (msg.LPAram = SPI_SETDESKWALLPAPER)  then
+    begin
+      if not SharpDesk.DeskSettings.WallpaperWatch then exit;
+
+      Reg := TRegistry.Create;
+      Reg.RootKey := HKEY_CURRENT_USER;
+      Reg.OpenKey('\Control Panel\Desktop\',False);
+      WP := Reg.ReadString('Wallpaper');
+      WPStyle := Reg.ReadString('WallpaperStyle');
+      WPTile := Reg.ReadString('TileWallpaper');
+      Reg.Free;
+      if CompareText(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp',WP) <> 0 then
+      begin
+        Dir := SharpThemeApi.GetThemeDirectory;
+        FName := Dir + 'Wallpaper.xml';
+        if FileExists(FName) then
+        begin
+          WPName := SharpThemeApi.GetMonitorWallpaper(Screen.PrimaryMonitor.MonitorNum).Name;
+          XML := TJvSimpleXML.Create(nil);
+          try
+            XML.LoadFromFile(FName);
+            if XML.Root.Items.ItemNamed['Wallpapers'] <> nil then
+               with XML.Root.Items.ItemNamed['Wallpapers'].Items do
+                    for n := 0 to Count - 1 do
+                        if Item[n].Items.Value('Name','.') = WPName then
+                        begin
+                          if CompareText(WPTile,'1') = 0 then
+                             i := 3 // twsTile
+                             else
+                             begin
+                               if CompareText(WPStyle,'0') = 0 then
+                                  i := 0 // twsCenter
+                                  else i := 1 // twsScale
+                             end;
+                          if Item[n].Items.ItemNamed['Image'] <> nil then
+                             Item[n].Items.ItemNamed['Image'].Value := WP
+                             else Item[n].Items.Add('Image',WP);
+                          if Item[n].Items.ItemNamed['Size'] <> nil then
+                             Item[n].Items.ItemNamed['Size'].IntValue := i
+                             else Item[n].Items.Add('Size',i);
+                        end;
+          except
+            XML.Free;
+            exit;
+          end;
+          XML.SaveToFile(FName + '~');
+          if FileExists(FName) then
+             DeleteFile(FName);
+          RenameFile(FName + '~',FName);
+          XML.Free;
+
+          LoadTheme(True);
+        end;
+      end;
+    end;
 end;
 
 procedure TSharpDeskMainForm.WMDisplayChange(var Msg : TMessage);
@@ -375,7 +446,7 @@ begin
   SharpApi.RegisterActionEx('!EditCurrentTheme','SharpTheme',SharpDeskMainForm.Handle,1);
   SharpApi.RegisterActionEx('!ThemeManager','SharpTheme',SharpDeskMainForm.Handle,2);
   SharpApi.RegisterActionEx('!AddDesktopObject','SharpDesk',SharpDeskMainForm.Handle,3);
-  SharpApi.RegisterActionEx('!Show/HideDesktop','SharpDesk',SharpDeskMainForm.Handle,4);
+//  SharpApi.RegisterActionEx('!Show/HideDesktop','SharpDesk',SharpDeskMainForm.Handle,4);
   SharpApi.RegisterActionEx('!SharpDeskSettings','SharpDesk',SharpDeskMainForm.Handle,5);
   SharpApi.RegisterActionEx('!CloseSharpDesk','SharpDesk',SharpDeskMainForm.Handle,6);
 end;
@@ -528,6 +599,7 @@ end;
 
 procedure TSharpDeskMainForm.WMShowDesktopSettings(var msg : TMessage);
 begin
+  SharpApi.CenterMsg(sccLoadSetting,PChar(GetCenterDirectory + 'Components.con'),'SharpMenu');
 end;
 
 

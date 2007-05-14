@@ -48,6 +48,7 @@ type
                        DragAndDrop         : boolean;
                        AdvancedCommands    : boolean;
                        AdvancedMM          : boolean;
+                       WallpaperWatch      : boolean;
                        SingleClick         : boolean;
                        Grid                : boolean;
                        GridX               : integer;
@@ -78,6 +79,7 @@ begin
   SingleClick         := False;
   Grid                := True;
   SetObjectRolledOut  := True;
+  WallpaperWatch      := True;
   GridX               := 8;
   GridY               := 8;
   XML := TJvSimpleXML.Create(nil);
@@ -125,6 +127,7 @@ begin
     Add('SingleClick',SingleClick);
     Add('CheckObjectPosition',CheckObjectPosition);
     Add('SetObjectRolledOut',SetObjectRolledOut);
+    Add('WallpaperWatch',WallpaperWatch);
   end;
   with XML.Root.Items.ItemNamed['Grid'].Items do
   begin
@@ -165,6 +168,7 @@ begin
     SingleClick         := BoolValue('SingleClick',False);
     CheckObjectPosition := ItemNamed['CheckObjectPosition'].BoolValue;
     SetObjectRolledOut  := BoolValue('SetObjectRolledOut',True);
+    WallpaperWatch      := BoolValue('WallpaperWatch',True);
   end;
   with XML.Root.Items.ItemNamed['Grid'].Items do
   begin
