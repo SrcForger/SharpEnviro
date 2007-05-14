@@ -195,12 +195,12 @@ procedure TfrmIconList.lb_iconlistClickItem(AText: string; AItem,
   ACol: Integer);
 begin
   BuildIconPreview;
+  SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
 end;
 
 procedure TfrmIconList.FormResize(Sender: TObject);
 begin
   BuildIconPreview;
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
 end;
 
 end.
