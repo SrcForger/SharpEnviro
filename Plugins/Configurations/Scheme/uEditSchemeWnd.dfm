@@ -89,7 +89,8 @@ object frmEditScheme: TfrmEditScheme
         TabOrder = 0
         Items = <>
         SwatchManager = SharpESwatchManager1
-        OnChangeColor = secExChangeColor
+        OnChangeColor = secExChangeValue
+        OnSliderChange = secExSliderChange
       end
     end
   end

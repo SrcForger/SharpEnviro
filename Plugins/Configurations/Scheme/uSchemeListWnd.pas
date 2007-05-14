@@ -127,7 +127,7 @@ Begin
   try
   bmp := TBitmap32.Create;
   try
-    if ((frmEditScheme <> nil) {and (frmEditScheme.Edit = False)}) then
+    if (frmEditScheme <> nil) then
       tmpSchemeItem := frmEditScheme.SchemeItem else
       tmpSchemeItem := TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
 
@@ -144,7 +144,7 @@ Begin
   end;
   except
     AImage32.Bitmap.Clear(clWhite32);
-  end;
+  end; 
 End;
 
 function TfrmSchemeList.SaveBitmap32ToPNG(bm32: TBitmap32; paletted, transparent: Boolean;
@@ -327,20 +327,21 @@ begin
   try
     x := 0;
     ABitmap.Height := 20;
-    ABitmap.Width := 8 * ASchemeColors.Count;
+    ABitmap.Width := 18 * ASchemeColors.Count;
     ABitmap.Canvas.Brush.Color := clWindow;
     ABitmap.Canvas.FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
 
     for i := 0 to Pred(ASchemeColors.Count) do
     begin
       tmpColor := TSchemeColorItem(ASchemeColors[i]);
-      r := Rect(x, 2, x + 6, 18);
+      r := Rect(x, 2, x + 16, 18);
 
       ABitmap.Canvas.Brush.Color := tmpColor.Color;
-      ABitmap.Canvas.Pen.Color := clBlack;
-      ABitmap.Canvas.RoundRect(r.Left, r.Top, r.Right, r.Bottom, 8, 8);
+
+      ABitmap.Canvas.Pen.Color := Darker(tmpColor.Color,20);
+      ABitmap.Canvas.RoundRect(r.Left, r.Top, r.Right, r.Bottom, 0, 0);
       //ABitmap.Canvas.Rectangle(r);
-      Inc(x, 8);
+      Inc(x, 18);
     end;
 
   finally
@@ -413,13 +414,13 @@ begin
 
   with lbSchemeList.AddColumn('Scheme') do
   begin
-    Width := (lbSchemeList.Width - 100) div 2;
+    Width := lbSchemeList.Width-150;
     Images := imlCol1;
     VAlign := taVerticalCenter;
   end;
   with lbSchemeList.AddColumn('Author') do
   begin
-    Width := (lbSchemeList.Width - 100) div 2;
+    Width := 100;
     HAlign := taRightJustify;
     VAlign := taVerticalCenter;
   end;
@@ -438,8 +439,8 @@ var
   pct: Double;
 
 const
-  Col1 = 100;
-  Col2 = 150;
+  Col1 = 150;
+  Col2 = 100;
   Col3 = 30;
 begin
   if assigned(lbSchemeList) then

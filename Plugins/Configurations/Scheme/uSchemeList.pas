@@ -169,6 +169,8 @@ begin
     begin
       Color := TSchemeColorItem(tmpList[i]).Color;
       Tag := TSchemeColorItem(tmpList[i]).Tag;
+
+      schemetype := TSchemeList(FOwner).GetSkinColorByTag(Tag).schemetype;
     end;
 end;
 
@@ -535,6 +537,7 @@ function TSchemeList.GetSkinColorByTag(ATag: String): TSharpESkinColor;
 var
   sSchemeFile:String;
   xml:TJvSimpleXML;
+  s: String;
   i: Integer;
 begin
 
@@ -549,6 +552,14 @@ begin
         Result.Tag := xml.Root.Items.Item[i].Items.Value('Tag');
         Result.Info := xml.Root.Items.Item[i].Items.Value('Info');
         Result.Color := xml.Root.Items.Item[i].Items.IntValue('Default');
+        s := xml.Root.Items.Item[i].Items.Value('Type');
+        if s <> '' then begin
+          if CompareText(s,'integer') = 0 then
+            Result.schemetype := stInteger else
+          if CompareText(s,'bool') = 0 then
+            Result.schemetype := stBoolean else
+        end else
+          Result.schemetype := stColor;
       end;
     end;
   finally
