@@ -62,6 +62,8 @@ type
     JvStandardPage1: TJvStandardPage;
     sgb_gridx: TSharpeGaugeBox;
     sgb_gridy: TSharpeGaugeBox;
+    cb_wpwatch: TCheckBox;
+    Label3: TLabel;
     procedure sgb_gridyChangeValue(Sender: TObject; Value: Integer);
     procedure cb_ddClick(Sender: TObject);
     procedure cb_ammClick(Sender: TObject);

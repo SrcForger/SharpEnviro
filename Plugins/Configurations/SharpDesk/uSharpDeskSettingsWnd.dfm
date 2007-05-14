@@ -20,7 +20,7 @@ object frmDeskSettings: TfrmDeskSettings
     Top = 0
     Width = 510
     Height = 570
-    ActivePage = JvSettingsPage
+    ActivePage = JvAdvSettingsPage
     PropagateEnable = False
     Align = alClient
     object JvSettingsPage: TJvStandardPage
@@ -148,7 +148,7 @@ object frmDeskSettings: TfrmDeskSettings
         Left = 0
         Top = 0
         Width = 510
-        Height = 65
+        Height = 137
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
@@ -170,6 +170,24 @@ object frmDeskSettings: TfrmDeskSettings
           ParentFont = False
           WordWrap = True
         end
+        object Label3: TLabel
+          Left = 40
+          Top = 92
+          Width = 361
+          Height = 45
+          AutoSize = False
+          Caption = 
+            'With enabled wallpaper monitoring the SharpDesk wallpaper of the' +
+            ' primary monitor will be changed if any other application is usi' +
+            'ng the standard windows routines to set a new desktop wallpaper'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = [fsItalic]
+          ParentFont = False
+          WordWrap = True
+        end
         object cb_amm: TCheckBox
           Left = 16
           Top = 16
@@ -177,6 +195,15 @@ object frmDeskSettings: TfrmDeskSettings
           Height = 17
           Caption = 'Advanced Memory Management'
           TabOrder = 0
+          OnClick = cb_ammClick
+        end
+        object cb_wpwatch: TCheckBox
+          Left = 16
+          Top = 72
+          Width = 257
+          Height = 17
+          Caption = 'Windows Wallpaper Monitoring'
+          TabOrder = 1
           OnClick = cb_ammClick
         end
       end

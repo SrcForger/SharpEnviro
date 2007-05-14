@@ -69,6 +69,7 @@ begin
   frmDeskSettings.cb_singleclick.Checked := XMLSettings.SingleClick;
   frmDeskSettings.cb_amm.Checked := XMLSettings.AdvancedMM;
   frmDeskSettings.cb_dd.Checked := XMLSettings.DragAndDrop;
+  frmDeskSettings.cb_wpwatch.Checked := XMLSettings.WallpaperWatch;
 
   frmDeskSettings.Show;
   result := frmDeskSettings.Handle;
@@ -86,6 +87,7 @@ begin
       XMLSettings.SingleClick := frmDeskSettings.cb_singleclick.Checked;
       XMLSettings.AdvancedMM := frmDeskSettings.cb_amm.Checked;
       XMLSettings.DragAndDrop := frmDeskSettings.cb_dd.Checked;
+      XMLSettings.WallpaperWatch := frmDeskSettings.cb_wpwatch.Checked;
       XMLSettings.SaveSettings;
     end;
     
