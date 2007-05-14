@@ -150,7 +150,8 @@ type
     procedure WMDeskClosing(var msg : TMessage); message WM_DESKCLOSING;
     procedure WMDeskBackgroundChange(var msg : TMessage); message WM_DESKBACKGROUNDCHANGED;
 
-    // Drag and Drop between bars
+    // Bar Message
+    procedure WMBarReposition(var msg : TMessage); message WM_BARREPOSITION;
     procedure WMBarInsertModule(var msg : TMessage); message WM_BARINSERTMODULE;
 
     // Plugin message (to be broadcastet to modules)
@@ -273,6 +274,47 @@ end;
 // Window Message handlers
 // ************************
 
+// Settings in the XML file have changed, the bar should reload the settings
+// and update its position
+procedure TSharpBarMainForm.WMBarReposition(var msg : TMessage);
+var
+  XML : TJvSimpleXML;
+  Dir : String;
+  FName : String;
+  n : integer;
+begin
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
+  FName := Dir + 'bars.xml';
+
+  XML := TJvSimpleXML.Create(nil);
+  try
+    if FileExists(FName) then
+    begin
+      XML.LoadFromFile(FName);
+      if XML.Root.Items.ItemNamed['bars'] <> nil then
+         with XML.Root.Items.ItemNamed['bars'].Items do
+              for n := 0 to Count - 1 do
+                  if Item[n].Items.IntValue('ID',-1) = FBarID then
+                     if Item[n].Items.ItemNamed['Settings'] <> nil then
+                        with Item[n].Items.ItemNamed['Settings'].Items do
+                        begin
+                          SharpEBar.AutoPosition   := BoolValue('AutoPosition',True);
+                          SharpEBar.PrimaryMonitor := BoolValue('PrimaryMonitor',True);
+                          SharpEBar.MonitorIndex   := IntValue('MonitorIndex',0);
+                          SharpEBar.HorizPos       := IntToHorizPos(IntValue('HorizPos',0));
+                          SharpEBar.VertPos        := IntToVertPos(IntValue('VertPos',0));
+                          SharpEBar.AutoStart      := BoolValue('AutoStart',True);
+                          SharpEBar.ShowThrobber   := BoolValue('ShowThrobber',True);
+                          SharpEBar.DisableHideBar := BoolValue('DisableHideBar',False);
+                          SharpEBar.UpdatePosition;
+                        end;
+    end;
+  finally
+    XML.Free;
+  end;
+end;
+
+// A Module is being inserted into the bar via Drag & Drop
 procedure TSharpBarMainForm.WMBarInsertModule(var msg : TMessage);
 var
   MP : TPoint;
@@ -314,11 +356,13 @@ begin
   Self.Close;
 end;
 
+// Desk is shutting down
 procedure TSharpBarMainForm.WMDeskClosing(var msg : TMessage);
 begin
   DelayTimer1.Enabled := True;
 end;
 
+// The Desktop Background has changed
 procedure TSharpBarMainForm.WMDeskBackgroundChange(var msg : TMessage);
 begin
   if FSuspended then exit;
@@ -919,28 +963,30 @@ begin
   xml := TJvSimpleXML.Create(nil);
   try
     xml.LoadFromFile(Dir + 'bars.xml');
-    with xml.root.items.ItemNamed['bars'] do
-    begin
-      for n := 0 to Items.Count - 1 do
-          if Items.Item[n].Items.IntValue('ID',0) = ID then
-          with Items.Item[n].Items.ItemNamed['Settings'] do
-          begin
-            // This is the bar with the ID we want to load
-            SharpEBar.AutoPosition   := Items.BoolValue('AutoPosition',True);
-            SharpEBar.PrimaryMonitor := Items.BoolValue('PrimaryMonitor',True);
-            SharpEBar.MonitorIndex   := Items.IntValue('MonitorIndex',0);
-            SharpEBar.HorizPos       := IntToHorizPos(Items.IntValue('HorizPos',0));
-            SharpEBar.VertPos        := IntToVertPos(Items.IntValue('VertPos',0));
-            SharpEBar.AutoStart      := Items.BoolValue('AutoStart',True);
-            SharpEBar.ShowThrobber   := Items.BoolValue('ShowThrobber',True);
-            SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar',False);
-            // Set Main Window Title to SharpBar_ID!
-            // The bar with the given ID is now loaded =)
-            FBarID := ID;
-            self.Caption := 'SharpBar_' + inttostr(ID);
-            i := n;
-            break;
-          end;
+    if xml.Root.Items.ItemNamed['bars'] <> nil then
+       with xml.root.items.ItemNamed['bars'] do
+       begin
+         for n := 0 to Items.Count - 1 do
+             if Items.Item[n].Items.IntValue('ID',0) = ID then
+                if Items.Item[n].Items.ItemNamed['Settings'] <> nil then
+                   with Items.Item[n].Items.ItemNamed['Settings'] do
+                   begin
+                     // This is the bar with the ID we want to load
+                     SharpEBar.AutoPosition   := Items.BoolValue('AutoPosition',True);
+                     SharpEBar.PrimaryMonitor := Items.BoolValue('PrimaryMonitor',True);
+                     SharpEBar.MonitorIndex   := Items.IntValue('MonitorIndex',0);
+                     SharpEBar.HorizPos       := IntToHorizPos(Items.IntValue('HorizPos',0));
+                     SharpEBar.VertPos        := IntToVertPos(Items.IntValue('VertPos',0));
+                     SharpEBar.AutoStart      := Items.BoolValue('AutoStart',True);
+                     SharpEBar.ShowThrobber   := Items.BoolValue('ShowThrobber',True);
+                     SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar',False);
+                     // Set Main Window Title to SharpBar_ID!
+                     // The bar with the given ID is now loaded =)
+                     FBarID := ID;
+                     self.Caption := 'SharpBar_' + inttostr(ID);
+                     i := n;
+                     break;
+                   end;
     end;
   except
     xml.free;
