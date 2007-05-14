@@ -15,7 +15,7 @@ type
   TSliderUpdateMode = (sumAll, sumRGB, sumHSL);
   TColorEditorType = (cetColor, cetValue);
 type
-  TColorChangeEvent = procedure(ASender: TObject; AColorCode: Integer) of
+  TColorChangeEvent = procedure(ASender: TObject; AValue: Integer) of
     object;
 
 const
@@ -57,6 +57,7 @@ type
     FValueMax: Integer;
     FValueText: string;
     FValue: Integer;
+    FOnSliderChange: TNotifyEvent;
 
     procedure CreateControls(Sender: TObject);
     procedure SetExpanded(const Value: Boolean);
@@ -108,6 +109,7 @@ type
 
     procedure ColorSliderChangeEvent(Sender: TObject);
     procedure ValSliderChangeEvent(Sender: TObject);
+
     procedure SetValue(const Value: Integer);
   public
     constructor Create(AOwner: TComponent); override;
@@ -140,6 +142,9 @@ type
     property ValueMax: Integer read FValueMax write SetValueMax;
     property ValueMin: Integer read FValueMin write SetValueMin;
     property Value: Integer read FValue write SetValue;
+
+    property OnSliderChange: TNotifyEvent read FOnSliderChange write
+      FOnSliderChange;
 
     property OnColorChange: TColorChangeEvent read FOnColorChange write
       FOnColorChange;
@@ -207,6 +212,7 @@ var
 
       OnChange := SliderChangeEvent;
       OnMouseDown := SliderMouseDownEvent;
+      OnMouseUp := SliderMouseDownEvent;
 
     end;
   end;
@@ -562,7 +568,7 @@ begin
     InitialiseSliders;
 
     if Assigned(FOnColorChange) then
-      FOnColorChange(Self, FColorCode);
+      FOnColorChange(Self, FValue);
 
   finally
     SliderEvents(True);
@@ -572,6 +578,9 @@ end;
 procedure TSharpEColorEditor.ColorClickEvent(ASender: TObject);
 begin
   ColorCode := FColorPicker.ColorCode;
+
+  if Assigned(FOnSliderChange) then
+    FOnSliderChange(Self);
 end;
 
 procedure TSharpEColorEditor.SetColorAsTColor(const Value: TColor);
@@ -803,7 +812,7 @@ begin
     rLeftSliderVal, 0, tmpTab, [akLeft, akTop],
     [akTop, akLeft, akRight]);
 
-  FValueSlider.Invalidate;
+  FValueSlider.Update;
   SetValue(FValue);
 end;
 
@@ -965,6 +974,10 @@ procedure TSharpEColorEditor.SliderMouseDownEvent(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   FreeAllSpinEdits;
+
+  if Assigned(FOnSliderChange) then
+    FOnSliderChange(Self);
+
 end;
 
 procedure TSharpEColorEditor.SpinEditKeyPressEvent(Sender: TObject;
@@ -974,6 +987,9 @@ begin
   begin
     TJvSpinEdit(Sender).Hide;
   end;
+
+  if Assigned(FOnSliderChange) then
+    FOnSliderChange(Self);
 end;
 
 procedure TSharpEColorEditor.CaptionLabelClickEvent(Sender: TObject);
@@ -1057,6 +1073,9 @@ end;
 procedure TSharpEColorEditor.ClickSwatchEvent(ASender: TObject; AColor: TColor);
 begin
   ColorCode := AColor;
+
+  if Assigned(FOnSliderChange) then
+    FOnSliderChange(Self);
 end;
 
 function TSharpEColorEditor.GetExpandedHeight: Integer;
@@ -1175,9 +1194,12 @@ begin
 
   if FValueSlider <> nil then
   begin
-    FValueSlider.Position := Value;
-    TLabel(FValueSlider.Tag).Caption := IntToStr(Value);
+    FValueSlider.Position := FValue;
+    TLabel(FValueSlider.Tag).Caption := IntToStr(FValue);
   end;
+
+  if Assigned(FOnColorChange) then
+      FOnColorChange(Self, FValue);
 end;
 
 end.
