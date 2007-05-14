@@ -42,6 +42,8 @@ type
    Lightness : Integer;
   end;
 
+  procedure ReplaceColor32(bmp : Tbitmap32; Source, New : TColor32);
+
   procedure HSLChangeImage(bmp : Tbitmap32; HMod,SMod,LMod : integer);
   function HSLtoRGB(H,S,L : integer): TColor32;
   function RGBtoHSL(RGB: TColor32) : THslColor;
@@ -67,6 +69,24 @@ asm
       CMOVL     EAX,EDX
       CMP       ECX,EAX
       CMOVL     EAX,ECX
+end;
+
+procedure ReplaceColor32(bmp : Tbitmap32; Source, New : TColor32);
+var
+  P       : PColor32;
+  i       : integer;
+begin
+  with bmp do
+  try
+    P := PixelPtr[0, 0];
+    for I := 0 to Width * Height - 1 do
+    begin
+      if P^ = Source then
+         P^ := New;
+      Inc(P);
+    end;
+  finally
+  end;
 end;
 
 function HSLtoRGB(H,S,L : integer): TColor32;
