@@ -58,6 +58,7 @@ const
   SU_SHARPDESK = 9;
   SU_SHARPMENU = 10;
   SU_SHARPBAR = 11;
+  SU_CURSOR = 12;
 
   // Shell message
   WM_SHARPSHELLMESSAGE = WM_APP + 507;
@@ -95,6 +96,7 @@ const
   WM_LOCKBARWINDOW        = WM_APP + 611;
   WM_UNLOCKBARWINDOW      = WM_APP + 612;
   WM_BARINSERTMODULE      = WM_APP + 613;
+  WM_BARREPOSITION        = WM_APP + 614;
 
   // System Tray Service
   WM_REGISTERWITHTRAY     = WM_APP + 650;
