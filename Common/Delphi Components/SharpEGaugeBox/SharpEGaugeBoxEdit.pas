@@ -271,7 +271,13 @@ destructor TSharpeGaugeBox.Destroy;
 begin
   if assigned(FrmSharpeGaugeBox) then
      FreeAndNil(FrmSharpeGaugeBox);
-     
+  if assigned(FValueEdit) then
+     FreeAndNil(FValueEdit);
+  if assigned(FBtnGauge) then
+     FreeAndNil(FBtnGauge);
+  if assigned(FBackPanel) then
+     FreeAndNil(FBackPanel);
+
   inherited;
 end;
 
