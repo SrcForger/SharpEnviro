@@ -34,6 +34,7 @@ uses
   dialogs,
   graphics,
   SysUtils,
+  StrUtils,
   uExecServiceExecute in 'uExecServiceExecute.pas',
   uExecServiceAliasList in 'uExecServiceAliasList.pas',
   uExecServicePathIncludeList in 'uExecServicePathIncludeList.pas',
@@ -66,10 +67,13 @@ end;
 //when receive message from sharpcore do this
 
 function SCMsg(msg: string): integer;
+var
+  tmpAliasName, tmpAliasValue: String;
 const
   NoHistoryParam = '_nohist,';
 begin
   Result := 0;
+  msg:=trim(msg);
   Debug(Format('*** New Command: %s ***', [msg]), DMT_INFO);
 
   // Check if message sent is in Action command
@@ -77,6 +81,19 @@ begin
     SendDebugMessageEx('Exec Service', Pchar('Action Exists: ' + msg), 0, DMT_INFO);
     ServiceMsg('actions', pchar('_execute,' + msg));
     Exit;
+  end;
+
+  // Check if message sent is supposed to add an Alias to the AliasList
+  if pos('_AddAlias',msg) <> 0 then begin
+    tmpAliasName:= Copy(msg,AnsiPos(' ',msg)+1,
+                            (posex(' ',msg,AnsiPos(' ',msg)+1)-(AnsiPos(' ',msg)+1))
+                       );
+    tmpAliasValue:= Copy(msg,posex(' ',msg,AnsiPos(' ',msg)+1)+1,Length(msg));
+    if (Length(trim(tmpAliasName)) <> 0) and (Length(trim(tmpAliasValue)) <> 0) then
+    begin
+      SharpExec.AliasList.Add(tmpAliasName, tmpAliasValue);
+      SharpExec.AliasList.Save;
+    end;
   end;
 
   // Else the command is not an Action, so process it as normal
