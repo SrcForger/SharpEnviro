@@ -46,6 +46,7 @@ type
     SharpESkinManager1: TSharpESkinManager;
     edit: TSharpEEdit;
     btn_select: TSharpEButton;
+    procedure editKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btn_selectMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure btn_selectMouseDown(Sender: TObject; Button: TMouseButton;
@@ -282,6 +283,13 @@ procedure TMainForm.btn_selectMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbRight then btn_select.OnClick(btn_select);
+end;
+
+procedure TMainForm.editKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if ((SSALT in Shift) and (Key = VK_F4)) then
+     Key := 0;
 end;
 
 end.

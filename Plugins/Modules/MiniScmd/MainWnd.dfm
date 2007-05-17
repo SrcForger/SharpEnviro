@@ -16,8 +16,8 @@ object MainForm: TMainForm
   object Background: TImage32
     Left = 0
     Top = 0
-    Width = 277
-    Height = 159
+    Width = 285
+    Height = 166
     Align = alClient
     Bitmap.ResamplerClassName = 'TNearestResampler'
     BitmapAlign = baTopLeft
@@ -87,6 +87,7 @@ object MainForm: TMainForm
       SkinManager = SharpESkinManager1
       AutoPosition = True
       OnKeyUp = editKeyUp
+      OnKeyDown = editKeyDown
     end
   end
   object MenuPopup: TPopupMenu
