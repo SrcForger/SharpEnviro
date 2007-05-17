@@ -36,8 +36,6 @@ uses
   Classes,
   ContNrs,
   SysUtils,
-  dialogs,
-  Forms,
   windows,
 
   // JCL
@@ -167,8 +165,8 @@ begin
         sMsg := 'Invalid RecentItemList File' + #13;
         //Debug(sMsg, DMT_ERROR);
 
-        sMsg := sMsg + Format('Expected "%s" found "%s"',['RecentItemList',xml.Root.Name]);
-        MessageDlg(sMsg, mtError, [mbOK], 0);
+//        sMsg := sMsg + Format('Expected "%s" found "%s"',['RecentItemList',xml.Root.Name]);
+//        MessageDlg(sMsg, mtError, [mbOK], 0);
 
         // Save empty and reload
         exit;

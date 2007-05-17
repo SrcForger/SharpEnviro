@@ -36,10 +36,8 @@ uses
   Classes,
   ContNrs,
   SysUtils,
-  dialogs,
   math,
   dateutils,
-  Forms,
   Windows,
 
   // JCL
@@ -202,8 +200,8 @@ begin
         sMsg := 'Invalid MUItemList File' + #13;
         //Debug(sMsg, DMT_ERROR);
 
-        sMsg := sMsg + Format('Expected "%s" found "%s"',['MUItemList',xml.Root.Name]);
-        MessageDlg(sMsg, mtError, [mbOK], 0);
+        //sMsg := sMsg + Format('Expected "%s" found "%s"',['MUItemList',xml.Root.Name]);
+        //MessageDlg(sMsg, mtError, [mbOK], 0);
 
         // Save empty and reload
         exit;
