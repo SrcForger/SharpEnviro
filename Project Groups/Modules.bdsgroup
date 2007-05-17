@@ -11,7 +11,6 @@
 	<Default.Personality>  <Projects>
       <Projects Name="Button.dll">..\Plugins\Modules\Button\Button.bdsproj</Projects>
       <Projects Name="Clock.dll">..\Plugins\Modules\Clock\Clock.bdsproj</Projects>
-      <Projects Name="iDrop.dll">..\Plugins\Modules\iDrop\iDrop.bdsproj</Projects>
       <Projects Name="MemoryMonitor.dll">..\Plugins\Modules\Memory Monitor\MemoryMonitor.bdsproj</Projects>
       <Projects Name="MiniScmd.dll">..\Plugins\Modules\MiniScmd\MiniScmd.bdsproj</Projects>
       <Projects Name="SystemTray.dll">..\Plugins\Modules\SystemTray\SystemTray.bdsproj</Projects>
@@ -25,7 +24,7 @@
       <Projects Name="Weather.dll">..\Plugins\Modules\Weather\Weather.bdsproj</Projects>
       <Projects Name="Menu.dll">..\Plugins\Modules\Menu\Menu.bdsproj</Projects>
       <Projects Name="ButtonBar.dll">..\Plugins\Modules\ButtonBar\ButtonBar.bdsproj</Projects>
-      <Projects Name="Targets">Button.dll Clock.dll iDrop.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll VolumeControl.dll CPUMonitor.dll MediaController.dll Notes.dll QuickScript.dll BatteryMonitor.dll Weather.dll Menu.dll ButtonBar.dll</Projects>
+      <Projects Name="Targets">Button.dll Clock.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll VolumeControl.dll CPUMonitor.dll MediaController.dll Notes.dll QuickScript.dll BatteryMonitor.dll Weather.dll Menu.dll ButtonBar.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
