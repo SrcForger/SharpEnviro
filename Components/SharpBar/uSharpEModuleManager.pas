@@ -172,6 +172,7 @@ type
                      function GetModuleIndex(ID : integer) : integer;
                      procedure SortModulesByPosition;
                      procedure RefreshMiniThrobbers;
+                     procedure UpdateBarSize(PluginWidth : integer);
                      function GetFirstRModuleIndex : integer;
                      function GenerateModuleID : integer;
                      function GetFreeBarSpace : integer;
@@ -395,10 +396,8 @@ begin
       if not hm then
          MF.UnloadDll; // No other modules loaded by that Module File... unload the dll
 
-      LockWindow(FParent);
       BroadCastModuleRefresh;
       FixModulePositions;
-      UnLockWindow(FParent);
       exit;
     end;
   end;
@@ -1092,6 +1091,7 @@ var
   MTWidth : integer; // mini Throbbers
   RCount,LCount : integer;
   CList : TObjectList;
+  nw : integer;
 begin
   try
     if FBar.ShowThrobber then
@@ -1120,7 +1120,11 @@ begin
 
   if not (FBar.HorizPos = hpFull) then
      if lo + ro + LeftSize + RightSize <> ParentControl.Width then
-        ParentControl.Width := Max(lo + ro + FSkinManager.Skin.BarSkin.ThDim.XAsInt+5,lo + ro + LeftSize + RightSize);
+  begin
+    nw := Max(lo + ro + FSkinManager.Skin.BarSkin.ThDim.XAsInt+5,lo + ro + LeftSize + RightSize);
+    FBar.UpdateSkin(nw);
+    ParentControl.Width := nw;
+  end;
 
   if FBar.HorizPos = hpFull then SetWindowLong(ParentControl.Handle,GWL_USERDATA,0)
      else SetWindowLong(ParentControl.Handle,GWL_USERDATA,Max(ParentControl.Width - lo - ro - LeftSize - Rightsize,0));
@@ -1192,6 +1196,40 @@ begin
   end;
 end;
 
+procedure TModuleManager.UpdateBarSize(PluginWidth : integer);
+var
+  lo,ro : integer;
+  MTWidth : integer;
+  ParentControl : TWinControl;
+  n : integer;
+  nw : integer;
+begin
+  try
+    if FBar.ShowThrobber then
+       lo := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.X)
+       else lo := FBar.Throbber.Left;
+    ro := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.Y);
+  except
+    lo := 0;
+    ro := 0;
+  end;
+  ParentControl := GetControlByHandle(FParent);
+
+  if FModules.Count > 0 then
+     MTWidth := TModule(FModules.Items[0]).Throbber.Width+FModuleSpacing
+     else MTWidth := FModuleSpacing;
+
+  PluginWidth := PluginWidth + MTWidth * FModules.Count;
+
+  if not (FBar.HorizPos = hpFull) then
+     if lo + ro + PluginWidth <> ParentControl.Width then
+  begin
+    nw := Max(lo + ro + FSkinManager.Skin.BarSkin.ThDim.XAsInt+5,lo + ro + PluginWidth);
+    FBar.UpdateSkin(nw);
+    ParentControl.Width := nw;
+  end;
+end;
+
 // Calculate how much space every module is taking and check how much free bar
 // space is left. Adjust the size of modules with dynamic size (task list,...)
 // if there is more space needed or of the dynamic module can have more space.
@@ -1212,6 +1250,7 @@ var
   pMon : TMonitor;
   R : TRect;
   freespace : integer;
+  newsize : integer;
 begin
   if FModules = nil then exit;
 
@@ -1246,6 +1285,27 @@ begin
         nonminmaxrequest[n] := round(Int(((nonminmaxrequest[n])/(maxsize - minsize))*FreeMinSpace));
   end;
 
+  newsize := 0;
+  // Calculate new bar size
+  i := 0;
+  for n := 0 to FModules.Count - 1 do
+  begin
+    temp := TModule(FModules.Items[n]);
+    msize.Min := temp.Control.Tag;
+    try
+      msize.Width := strtoint(temp.Control.Hint);
+    except
+      msize.Width := msize.Min;
+    end;
+    if msize.Min <> msize.Width then
+    begin
+      newsize := newsize + msize.Min + nonminmaxrequest[i];
+      i := i + 1;
+    end else newsize := newsize + msize.Min;
+  end;
+  UpdateBarSize(newsize);
+
+  // Send update messages to modules
   i := 0;
   for n := 0 to FModules.Count - 1 do
   begin
@@ -1438,7 +1498,8 @@ begin
   FThrobber.SkinManager := pModuleFile.FSkinManager;
   FThrobber.Visible := False;
   FThrobber.Tag := FID;
-  FThrobber.SpecialBackground := TSharpBarMainForm(FOwnerForm).BGImage;
+//  FThrobber.SpecialBackground := TSharpBarMainForm(FOwnerForm).BGImage;
+  FThrobber.SpecialBackground := TSharpBarMainForm(FOwnerForm).SharpEBar.Skin;
 end;
 
 destructor TModule.Destroy;

@@ -37,7 +37,8 @@ uses
   Dialogs, SharpESkinManager, Menus, StdCtrls, JvSimpleXML, SharpApi,
   GR32, uSharpEModuleManager, DateUtils, PngImageList, SharpEBar, SharpThemeApi,
   SharpEBaseControls, ImgList, Controls, ExtCtrls, uSkinManagerThreads,
-  uSystemFuncs, Types, AppEvnts, SharpEColorPicker, SharpESkin;
+  uSystemFuncs, Types, AppEvnts, SharpEColorPicker, SharpESkin, GR32_Image,
+  SharpGraphicsUtils, Math;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -83,6 +84,8 @@ type
     Skin1: TMenuItem;
     ColorScheme1: TMenuItem;
     ThemeHideTimer: TTimer;
+    procedure FormPaint(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ThemeHideTimerTimer(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -127,6 +130,7 @@ type
     procedure OnSkinSelectItemClick(Sender : TObject);
     procedure OnSchemeSelectItemClick(Sender : TObject);
     procedure OnSchemeCreateClick(Sender : TObject);
+    procedure OnBackgroundPaint(Sender : TObject; Target : TBitmap32);
   private
     { Private-Deklarationen }
     FUser32DllHandle : THandle;
@@ -195,7 +199,7 @@ type
     procedure LoadModuleSettings;
     procedure SaveBarSettings;
     procedure UpdateBGZone;
-    procedure UpdateBGImage;
+    procedure UpdateBGImage(NewWidth : integer = -1);
     property BGImage : TBitmap32 read FBGImage;
     property SkinManager : TSharpESkinManager read FSkinManager;
     property SharpEBar : TSharpEBar read FSharpEBar;
@@ -259,15 +263,22 @@ end;
 
 procedure LockWindow(const Handle: HWND);
 begin
-  SendMessage(Handle, WM_SETREDRAW, 0, 0);
+  if SharpBarMainForm.SharpEBar.HorizPos = hpFull then
+     LockWindowUpdate(Handle)
+     else SendMessage(Handle, WM_SETREDRAW, 0, 0);
 end;
 
 procedure UnlockWindow(const Handle: HWND);
 begin
   if SharpBarMainForm.ShellBCInProgress then exit;
 
-  SendMessage(Handle, WM_SETREDRAW, 1, 0);
-  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+  if SharpBarMainForm.SharpEBar.HorizPos = hpFull then
+     LockWindowUpdate(0)
+     else
+     begin
+       SendMessage(Handle, WM_SETREDRAW, 1, 0);
+       RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+     end;
 end;
 
 // ************************
@@ -521,13 +532,12 @@ begin
 end;
 
 procedure TSharpBarMainForm.WMUpdateSettings(var msg : TMessage);
+var
+  h : integer;
 begin
   if FSuspended then exit;
 
   if msg.WParam < 0 then exit;
-
-  if not FStartup then LockWindow(Handle);
-  FBarLock := True;
 
   // Step1: Update settings and prepare modules for updating
   case msg.WParam of
@@ -555,12 +565,16 @@ begin
      (msg.WParam = SU_SCHEME)
      or (msg.WParam = SU_SKINFILECHANGED)  then
      begin
+       if not FStartup then LockWindow(Handle);
+       FBarLock := True;
+       h := Height;
        SkinManager.UpdateScheme;
        SkinManager.UpdateSkin;
        SharpEBar.UpdateSkin;
        SharpEBar.Throbber.UpdateSkin;
        SharpEbar.Throbber.Repaint;
-       UpdateBGImage;
+       if h < Height then UpdateBGZone
+          else UpdateBGImage;
 //       ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
      end;
 
@@ -571,8 +585,11 @@ begin
   if (msg.WParam = SU_SKINFILECHANGED) then
      ModuleManager.FixModulePositions;
 
-  FBarLock := False;
-  if not FStartup then UnLockWindow(Handle);
+  if FBarLock then
+  begin
+    FBarLock := False;
+    if not FStartup then UnLockWindow(Handle);
+  end;
 end;
 
 // Module is requesting that the settings are saved to file
@@ -594,7 +611,8 @@ end;
 // Module is requesting the handle to the Background image
 procedure TSharpBarMainForm.WMGetBGHandle(var msg : TMessage);
 begin
-  msg.result := integer(@FBGImage);
+//  msg.result := integer(@FBGImage);
+  msg.result := integer(@SharpEBar.Skin);
 end;
 
 // Module is requesting the height of the Bar
@@ -646,17 +664,40 @@ end;
 
 // ***********************
 
-procedure TSharpBarMainForm.UpdateBGImage;
+procedure TSharpBarMainForm.OnBackgroundPaint(Sender: TObject; Target: TBitmap32);
+begin
+  FBGImage.DrawTo(Target,0,0,Rect(Left-Monitor.Left,0,FBGImage.Width,FBGImage.Height));
+end;
+
+procedure TSharpBarMainForm.UpdateBGImage(NewWidth : integer = -1);
 begin
   if FSuspended then exit;
   if FBGImage = nil then exit;
   if (Width = 0) or (Height = 0) then exit;
 
-  FBGImage.SetSize(Width,Height);
+  if NewWidth < 1 then
+     NewWidth := Width;
+
+  FBGImage.SetSize(Max(NewWidth,FTopZone.Width),Height);
   FBGImage.Clear(color32(0,0,0,0));
-  if SharpEBar.VertPos = vpTop then FBGImage.Draw(0,0,Rect(Left-Monitor.Left,0,Left-Monitor.Left+FTopZone.Width,FTopZone.Height),FTopZone)
-     else FBGImage.Draw(0,0,Rect(Left-Monitor.Left,0,Left-Monitor.Left+FBottomZone.Width,FBottomZone.Height),FBottomZone);
-  SharpEbar.Skin.DrawTo(FBGImage);
+//  if SharpEBar.VertPos = vpTop then FBGImage.Draw(0,0,Rect(Left-Monitor.Left,0,Left-Monitor.Left+FTopZone.Width,FTopZone.Height),FTopZone)
+//     else FBGImage.Draw(0,0,Rect(Left-Monitor.Left,0,Left-Monitor.Left+FBottomZone.Width,FBottomZone.Height),FBottomZone);
+  if SharpEBar.VertPos = vpTop then FBGImage.Draw(0,0,FTopZone)
+     else FBGImage.Draw(0,0,FBottomZone);
+
+  if SkinManager.Skin.BarSkin.GlassEffect then
+  begin
+    if SharpThemeApi.GetSkinGEBlend then
+       BlendImageC(FBGImage,GetSkinGEBlendColor,GetSkinGEBlendAlpha);
+    boxblur(FBGImage,GetSkinGEBlurRadius,GetSkinGEBlurIterations);
+    if GetSkinGELighten then
+       lightenBitmap(FBGImage,GetSkinGELightenAmount);
+  end;
+  //SharpEbar.Skin.DrawTo(FBGImage);
+
+//  ReplaceTransparentAreas(FBGImage,SharpEbar.SkinBorder,Color32(255,0,254,0));
+  SharpEBar.UpdateSkin;
+  Repaint;
 end;
 
 procedure TSharpBarMainForm.UpdateBGZone;
@@ -1040,6 +1081,7 @@ begin
   FSharpEBar.onThrobberMouseUp   := SharpEBar1ThrobberMouseUp;
   FSharpEBar.onThrobberMouseMove := SharpEBar1ThrobberMouseMove;
   FSharpEBar.onResetSize         := SharpEBar1ResetSize;
+  FSharpEBar.onBackgroundPaint   := OnBackgroundPaint;
 
   SharpEBar.SkinManager := FSkinManager;
   
@@ -1049,7 +1091,7 @@ begin
   FBottomZone := TBitmap32.Create;
   FTopZone    := TBitmap32.Create;
   FBGImage    := TBitmap32.Create;
-  SharpEBar.Throbber.SpecialBackground := FBGImage;
+//  SharpEBar.Throbber.SpecialBackground := FBGImage;
 
   FStartup := True;
   FBarLock := False;
@@ -1069,7 +1111,7 @@ begin
   // Create and Initialize the module manager
   // (Make sure the Skin Manager and Module Settings are ready before doing this!)
   DebugOutput('Creating Module Manager',2,1);
-  ModuleManager := TModuleManager.Create(self.Handle, SkinManager, SharpEBar, ModuleSettings);
+  ModuleManager := TModuleManager.Create(Handle, SkinManager, SharpEBar, ModuleSettings);
   ModuleManager.ThrobberMenu := ThrobberPopUp;
   DebugOutput('Loading Modules from Directory: '+ExtractFileDir(Application.ExeName) + '\Modules\',2,1);
   ModuleManager.LoadFromDirectory(ExtractFileDir(Application.ExeName) + '\Modules\');
@@ -1892,7 +1934,7 @@ begin
   if Width > Monitor.Width then
      Width := Monitor.Width; 
 
-  UpdateBGImage;
+//  UpdateBGImage;
   ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
 end;
 
@@ -2026,8 +2068,21 @@ begin
   SetLayeredWindowAttributes(Handle,0, 255, LWA_ALPHA);
   SetLayeredWindowAttributes(Handle, RGB(255, 0, 254), 255, LWA_COLORKEY);
   SharpEBar.abackground.Alpha := 255;
-//  SetLayeredWindowAttributes(SharpEBar.abackground.handle,0, 255, LWA_ALPHA);
+end;
 
+procedure TSharpBarMainForm.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if ((SSALT in Shift) and (Key = VK_F4)) then
+     Key := 0;
+end;
+
+procedure TSharpBarMainForm.FormPaint(Sender: TObject);
+begin
+  if FBGImage <> nil then
+  begin
+  //  FBGImage.DrawTo(Canvas.Handle,0,0);
+  end;
 end;
 
 end.

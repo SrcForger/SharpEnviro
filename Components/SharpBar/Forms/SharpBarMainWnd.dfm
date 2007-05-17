@@ -17,7 +17,9 @@ object SharpBarMainForm: TSharpBarMainForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnHide = FormHide
+  OnKeyDown = FormKeyDown
   OnMouseUp = FormMouseUp
+  OnPaint = FormPaint
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96

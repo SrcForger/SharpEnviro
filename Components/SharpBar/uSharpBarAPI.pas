@@ -32,7 +32,7 @@ unit uSharpBarAPI;
 
 interface
 
-uses JvSimpleXML, windows, forms,GR32, sysutils, SharpAPI, classes;
+uses JvSimpleXML, windows, Math, forms,GR32, sysutils, SharpAPI, classes;
 
 type
   TModuleSize = record
@@ -47,6 +47,7 @@ function GetModuleXMLItem(BarWnd : Hwnd; ID : integer) : TJvSimpleXMLElem;
 
 function GetFreeBarSpace(BarWnd : hWnd) : integer;
 function GetBarPluginHeight(BarWnd : Hwnd) : Integer;
+procedure PaintBarBackGround(BarWnd : Hwnd; bmp : TBitmap32; const pos : TForm; Width : integer); overload;
 procedure PaintBarBackGround(BarWnd : Hwnd; bmp : TBitmap32; const pos : TRect); overload;
 procedure PaintBarBackGround(BarWnd : Hwnd; bmp : TBitmap32; const pos : TForm); overload;
 
@@ -84,6 +85,12 @@ procedure PaintBarBackGround(BarWnd : Hwnd; bmp : TBitmap32;const pos : TForm);
 begin
   PaintBarBackGround(BarWnd,bmp,rect(pos.Left,pos.Top,
                      pos.Left + pos.Width, pos.Top + pos.Height));
+end;
+
+procedure PaintBarBackGround(BarWnd : Hwnd; bmp : TBitmap32; const pos : TForm; Width : integer);
+begin
+  PaintBarBackGround(BarWnd,bmp,rect(pos.Left,pos.Top,
+                     pos.Left + Width, pos.Top + pos.Height));
 end;
 
 
