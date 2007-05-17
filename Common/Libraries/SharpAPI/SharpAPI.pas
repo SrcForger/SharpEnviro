@@ -33,11 +33,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 unit SharpAPI;
 
 interface
+
 uses
-  Windows,
   Messages,
-  graphics,
-  classes;
+  Windows;
 
 const
   WM_SHARPTRAYMESSAGE = WM_APP + 500;
@@ -188,27 +187,6 @@ type
   TSCC_COMMAND_ENUM = (sccLoadSetting, sccChangeFolder, sccUnloadDll, sccLoadDll);
 
 type
-  //TColor = -$7FFFFFFF - 1..$7FFFFFFF;
-  TColorScheme = record
-    Throbberback: Tcolor;
-    Throbberdark: Tcolor;
-    Throbberlight: Tcolor;
-    WorkAreaback: Tcolor;
-    WorkAreadark: Tcolor;
-    WorkArealight: Tcolor;
-  end;
-
-  TColorSchemeEx = record
-    Throbberback: Tcolor;
-    Throbberdark: Tcolor;
-    Throbberlight: Tcolor;
-    ThrobberText: Tcolor;
-    WorkAreaback: Tcolor;
-    WorkAreadark: Tcolor;
-    WorkArealight: Tcolor;
-    WorkAreaText : Tcolor;
-  end;
-
   PSharpE_DataStruct = ^TSharpE_DataStruct;
   TSharpE_DataStruct = record
     Command: string[255];
@@ -234,7 +212,6 @@ type
               wnd : hwnd;
              end;
 
-function GetDelimitedActionList: WideString; external 'SharpAPI.dll' name 'GetDelimitedActionList';
 function RegisterAction(ActionName: Pchar; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterAction';
 function RegisterActionEx(ActionName: Pchar; GroupName:PChar; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterActionEx';
 
@@ -246,8 +223,6 @@ function UnRegisterAction(ActionName: Pchar) : hresult; external 'SharpAPI.dll' 
 function GetSharpBarArea(Index : integer) : TBarRect; external 'SharpApi.dll' name 'GetSharpBarArea';
 function GetSharpBarCount : integer; external 'SharpApi.dll' name 'GetSharpBarCount';
 
-function GetRecentItems(ReturnCount: integer): widestring; external 'SharpAPI.dll' name 'GetRecentItems';
-function GetMostUsedItems(ReturnCount: integer): widestring; external 'SharpAPI.dll' name 'GetMostUsedItems';
 function GetSharpeDirectory: PChar; external 'SharpAPI.dll' name 'GetSharpeDirectory';
 function GetSharpeUserSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeUserSettingsPath';
 function GetSharpeGlobalSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeGlobalSettingsPath';
@@ -263,20 +238,6 @@ function SendDebugMessage(app: string; msg: string; color: integer): hresult; ex
 function SendDebugMessageEx(module: pChar; msg: pChar; color: integer; MessageType: Integer): hresult; external 'SharpApi.dll';
 
 function SendConsoleMessage(msg: string): hresult; external 'SharpAPI.dll';
-function LoadSetting(module: string; setting: string; default: string): pChar; external 'SharpAPI.dll' name 'LoadSettingA'; overload;
-function LoadSetting(module: string; setting: string; default: Integer): Integer; external 'SharpAPI.dll' name 'LoadSettingB'; overload;
-function LoadSetting(module: string; setting: string; default: bool): boolean; external 'SharpAPI.dll' name 'LoadSettingC'; overload;
-function LoadSetting(module: string): TstringList; external 'SharpAPI.dll' name 'LoadSettingE'; overload;
-function LoadSettingColor(module: string; setting: string; default: Tcolor): Tcolor; external 'SharpAPI.dll' name 'LoadSettingD';
-function SaveSetting(module: string; setting: string; data: string): hresult; external 'SharpAPI.dll' name 'SaveSettingA'; overload;
-function SaveSetting(module: string; setting: string; data: Integer): hresult; external 'SharpAPI.dll' name 'SaveSettingB'; overload;
-function SaveSetting(module: string; setting: string; data: bool): hresult; external 'SharpAPI.dll' name 'SaveSettingC'; overload;
-function SaveSettingColor(module: string; setting: string; data: Tcolor): hresult; external 'SharpAPI.dll' name 'SaveSettingD';
-function ClearKey(Key: pChar): hresult; external 'SharpAPI.dll';
-function LoadColorScheme: TColorScheme; external 'SharpAPI.dll';
-function LoadColorSchemeEx: TColorSchemeEx; external 'SharpAPI.dll';
-function SaveColorScheme(cs : TColorScheme) : boolean; external 'SharpAPI.dll';
-function SaveColorSchemeEx(cs : TColorSchemeEx) : boolean; external 'SharpAPI.dll';
 function SharpExecute(data: string): hresult; external 'SharpAPI.dll';
 function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam): integer; external 'SharpAPI.dll';
 

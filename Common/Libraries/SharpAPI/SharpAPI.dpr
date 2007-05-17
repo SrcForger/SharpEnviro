@@ -40,15 +40,8 @@ uses
   messages,
   SysUtils,
   shellAPI,
-  Forms,
-  classes,
-  registry,
   jclsysinfo,
-
-  uExecServiceRecentItemList in
-    '..\..\..\Plugins\Services\Exec\uExecServiceRecentItemList.pas',
-  uExecServiceUsedItemList in
-    '..\..\..\Plugins\Services\Exec\uExecServiceUsedItemList.pas';
+  SimpleForms in '..\..\Units\SimpleUnits\SimpleForms.pas';
 
 {$R *.RES}
 
@@ -209,6 +202,34 @@ function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam): integer;
 
 { HELPER FUNCTIONS }
 
+function ReadRegString(const RootKey: HKEY; const Key, Name: string): string;
+var
+  Size: DWORD;
+  RK: DWORD;
+  S: string;
+  R: Longint;
+  H: HKEY;
+begin
+  Result := '';
+  RK := 0;
+  Size := 0;
+
+  R := RegOpenKeyEx(RootKey, PChar(Key), 0, KEY_READ, H);
+  if R = ERROR_SUCCESS then
+  begin
+    R := RegQueryValueEx(H, PChar(Name), nil, @RK, nil, @Size);
+    if R = ERROR_SUCCESS then
+       if RK in [REG_SZ, REG_EXPAND_SZ] then
+       begin
+         SetLength(S, Size);
+         RegQueryValueEx(H, PChar(Name), nil, @RK, PByte(S), @Size);
+         SetLength(S, StrLen(PChar(S)));
+         Result := S;
+       end;
+    RegCloseKey(H);
+  end;
+end;
+
 function CopyDir(const fromDir, toDir : String) : Boolean;
 var
   fos : TSHFileOPStruct;
@@ -239,196 +260,7 @@ begin
   SHFileOperation(shellinfo);
 end;
 
-function RegLoadStr(Key, Prop, Default: string): string;
-var
-  Reg: TRegIniFile;
-begin
-  Reg := TRegIniFile.create(REGPATH);
-  try
-    result := 'SharpE';
-    Reg.RootKey := HKEY_CURRENT_USER;
-    result := Reg.ReadString(Key, Prop, Default);
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
-function RegWriteStr(Key, Prop, Value: string): hresult;
-var
-  Reg: TRegIniFile;
-begin
-  Reg := TRegIniFile.create(REGPATH);
-  try
-    result := HR_UNKNOWNERROR;
-    Reg.RootKey := HKEY_CURRENT_USER;
-    Reg.WriteString(Key, Prop, Value);
-    result := HR_OK;
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
-function LoadColorFromRegistry(key: pChar; value: pChar; default: Tcolor):
-  Tcolor;
-var
-  Reg: TRegIniFile;
-  temp: string;
-  i: integer;
-  valid: boolean;
-begin
-  Reg := TRegIniFile.create(REGPATH);
-  try
-    result := default;
-    Reg.RootKey := HKEY_CURRENT_USER;
-    temp := Reg.ReadString(key, value, inttostr(default));
-    try
-      if length(temp) > 0 then
-      begin
-        valid := true;
-        for i := 1 to length(temp) do
-        begin
-          if ((temp[i] >= '0') and (temp[i] <= '9')) or ((lowercase(temp[i]) >=
-            'a') and (lowercase(temp[i]) <= 'f'))
-            or ((i = 1) and ((temp[i] = '$') or (temp[i] = '#'))) then
-            valid := valid
-          else
-            valid := false;
-        end;
-        if valid then
-        begin
-          if temp[1] = '#' then
-          begin //if someone has saved a color in #RGB mode
-            temp := '$' + temp[6] + temp[7] + temp[4] + temp[5] + temp[2] +
-              temp[3];
-          end;
-          result := strtoint(temp);
-        end
-        else
-          result := default;
-      end;
-    except
-      result := default;
-    end;
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
-function SaveColorToRegistry(key: pChar; value: pChar; data: Tcolor): hresult;
-var
-  Reg: TRegIniFile;
-  temp: string;
-begin
-  Reg := TRegIniFile.create(REGPATH);
-  try
-    result := HR_UNKNOWNERROR;
-    Reg.RootKey := HKEY_CURRENT_USER;
-    try
-      temp := '$' + inttohex(data, 8);
-    except
-      temp := inttostr(data);
-    end;
-    Reg.WriteString(key, value, temp);
-    result := HR_OK;
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
 {EXPORTED FUNTIONS}
-
-function SaveColorScheme(cs: TColorScheme): boolean;
-begin
-  try
-    SaveColorToRegistry(SCHEMEPATH, 'ThrobberBack', cs.Throbberback);
-    SaveColorToRegistry(SCHEMEPATH, 'ThrobberDark', cs.ThrobberDark);
-    SaveColorToRegistry(SCHEMEPATH, 'ThrobberLight', cs.ThrobberLight);
-    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaBack', cs.WorkareaBack);
-    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaDark', cs.WorkareaDark);
-    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaLight', cs.WorkareaLight);
-    result := true;
-  except
-    result := false;
-  end;
-end;
-
-function LoadColorScheme: TColorScheme;
-begin
-  try
-    result.Throbberback := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberBack',
-      $00C88200);
-    result.Throbberdark := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberDark',
-      $00996400);
-    result.Throbberlight := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberLight',
-      $00F6A710);
-    result.WorkAreaback := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaBack',
-      $00DEDFDE);
-    result.WorkAreadark := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaDark',
-      $00999999);
-    result.WorkArealight := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaLight',
-      $00FDFDFD);
-  except
-    result.Throbberback := $00C88200;
-    result.Throbberdark := $00996400;
-    result.Throbberlight := $00F6A710;
-    result.WorkAreaback := $00DEFDDE;
-    result.WorkAreadark := $00AAAAAA;
-    result.WorkArealight := $00FDFDFD;
-  end;
-end;
-
-function SaveColorSchemeEx(cs: TColorSchemeEx): boolean;
-begin
-  try
-    SaveColorToRegistry(SCHEMEPATH, 'ThrobberBack', cs.Throbberback);
-    SaveColorToRegistry(SCHEMEPATH, 'ThrobberDark', cs.ThrobberDark);
-    SaveColorToRegistry(SCHEMEPATH, 'ThrobberLight', cs.ThrobberLight);
-    SaveColorToRegistry(SCHEMEPATH, 'ThrobberText', cs.ThrobberText);
-    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaBack', cs.WorkareaBack);
-    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaDark', cs.WorkareaDark);
-    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaLight', cs.WorkareaLight);
-    SaveColorToRegistry(SCHEMEPATH, 'WorkAreaText', cs.WorkAreaText);
-    result := true;
-  except
-    result := false;
-  end;
-end;
-
-function LoadColorSchemeEx: TColorSchemeEx;
-begin
-  try
-    result.Throbberback := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberBack',
-      $00C88200);
-    result.Throbberdark := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberDark',
-      $00996400);
-    result.Throbberlight := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberLight',
-      $00F6A710);
-    result.ThrobberText := LoadColorFromRegistry(SCHEMEPATH, 'ThrobberText',
-      $00000000);
-    result.WorkAreaback := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaBack',
-      $00DEDFDE);
-    result.WorkAreadark := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaDark',
-      $00999999);
-    result.WorkArealight := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaLight',
-      $00FDFDFD);
-    result.WorkAreaText := LoadColorFromRegistry(SCHEMEPATH, 'WorkAreaText',
-      $00000000);
-  except
-    result.Throbberback := $00C88200;
-    result.Throbberdark := $00996400;
-    result.Throbberlight := $00F6A710;
-    result.ThrobberText := $00000000;
-    result.WorkAreaback := $00DEFDDE;
-    result.WorkAreadark := $00AAAAAA;
-    result.WorkArealight := $00FDFDFD;
-    result.WorkAreaText := $00000000;
-  end;
-end;
-
 
 function GetCenterDirectory: PChar;
 var
@@ -735,201 +567,6 @@ begin
   end;
 end;
 
-function ClearKey(Key: pChar): hresult;
-var
-  Reg: TRegIniFile;
-begin
-  Reg := TRegIniFile.create(OLD_REGPATH);
-  try
-    Reg.RootKey := HKEY_CURRENT_USER;
-    Reg.erasesection(Key);
-    result := HR_OK;
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
-function SaveSettingA(module: pChar; setting: pChar; data: pChar): hresult;
-var
-  Reg: TRegIniFile;
-begin
-  Reg := TRegIniFile.create(OLD_REGPATH);
-  try
-    result := HR_UNKNOWNERROR;
-    Reg.RootKey := HKEY_CURRENT_USER;
-    Reg.WriteString(string(module), string(setting), string(data));
-    result := HR_OK;
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
-function SaveSettingB(module: pChar; setting: pChar; data: integer): hresult;
-var
-  Reg: TRegIniFile;
-begin
-  Reg := TRegIniFile.create(OLD_REGPATH);
-  try
-    result := HR_UNKNOWNERROR;
-    Reg.RootKey := HKEY_CURRENT_USER;
-    Reg.WriteInteger(module, setting, data);
-    result := HR_OK;
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
-function SaveSettingC(module: pChar; setting: pChar; data: boolean): hresult;
-var
-  Reg: TRegIniFile;
-begin
-  Reg := TRegIniFile.create(OLD_REGPATH);
-  try
-    result := HR_UNKNOWNERROR;
-    Reg.RootKey := HKEY_CURRENT_USER;
-    if data then
-      Reg.WriteInteger(module, setting, 1)
-    else
-      Reg.WriteInteger(module, setting, 0);
-    result := HR_OK;
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
-function SaveSettingD(module: pChar; setting: pChar; data: Tcolor): hresult;
-var
-  Reg: TRegIniFile;
-  temp: string;
-begin
-  Reg := TRegIniFile.create(OLD_REGPATH);
-  try
-    result := HR_UNKNOWNERROR;
-    Reg.RootKey := HKEY_CURRENT_USER;
-    try
-      temp := '$' + inttohex(data, 8);
-    except
-      temp := inttostr(data);
-    end;
-    Reg.WriteString(module, setting, temp);
-    result := HR_OK;
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
-function LoadSettingA(module: pChar; setting: pChar; default: pChar): pChar;
-var
-  Reg: TRegIniFile;
-begin
-  Reg := TRegIniFile.create(OLD_REGPATH);
-  try
-    result := default;
-    Reg.RootKey := HKEY_CURRENT_USER;
-    sTemp := Reg.ReadString(module, setting, default);
-    result := pChar(sTemp);
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
-function LoadSettingB(module: pChar; setting: pChar; default: integer): integer;
-var
-  Reg: TRegIniFile;
-begin
-  Reg := TRegIniFile.create(OLD_REGPATH);
-  try
-    result := default;
-    Reg.RootKey := HKEY_CURRENT_USER;
-    result := Reg.ReadInteger(module, setting, default);
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
-function LoadSettingC(module: pChar; setting: pChar; default: boolean): boolean;
-var
-  Reg: TRegIniFile;
-begin
-  Reg := TRegIniFile.create(OLD_REGPATH);
-  try
-    result := default;
-    Reg.RootKey := HKEY_CURRENT_USER;
-    result := Reg.ReadBool(module, setting, default);
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
-function LoadSettingE(module: pChar): Tstringlist;
-var
-  Reg: TRegIniFile;
-begin
-  Reg := TRegIniFile.create(OLD_REGPATH + module + '\');
-  result := Tstringlist.create;
-  try
-    Reg.RootKey := HKEY_CURRENT_USER;
-    Reg.GetValueNames(result);
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
-function LoadSettingD(module: pChar; setting: pChar; default: Tcolor): Tcolor;
-var
-  Reg: TRegIniFile;
-  temp: string;
-  i: integer;
-  valid: boolean;
-begin
-  Reg := TRegIniFile.create(OLD_REGPATH);
-  try
-    result := default;
-    Reg.RootKey := HKEY_CURRENT_USER;
-    temp := Reg.ReadString(module, setting, inttostr(default));
-    try
-      if length(temp) > 0 then
-      begin
-        valid := true;
-        for i := 1 to length(temp) do
-        begin
-          if ((temp[i] >= '0') and (temp[i] <= '9')) or ((lowercase(temp[i]) >=
-            'a') and (lowercase(temp[i]) <= 'f'))
-            or ((i = 1) and ((temp[i] = '$') or (temp[i] = '#'))) then
-            valid := valid
-          else
-            valid := false;
-        end;
-        if valid then
-        begin
-          if temp[1] = '#' then
-          begin //if someone hase saved a color in #RGB mode
-            temp := '$' + temp[6] + temp[7] + temp[4] + temp[5] + temp[2] +
-              temp[3];
-          end;
-          result := strtoint(temp);
-        end
-        else
-          result := default;
-      end;
-    except
-      result := default;
-    end;
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
 function SharpExecute(data: pChar): hresult;
 var
   wnd: hWnd;
@@ -1070,32 +707,6 @@ begin
   except
     result := HR_UNKNOWNERROR;
   end;
-end;
-
-function GetDelimitedActionList: WideString;
-var
-  fn: string;
-  strl: tstringlist;
-begin
-  try
-    strl := TStringList.Create;
-    fn := ExtractFilePath(application.ExeName) + 'tmp';
-    ServiceMsg('actions', pchar('_buildactionlist,' + fn));
-
-    if FileExists(fn) then
-    begin
-      strl.LoadFromFile(fn);
-      Result := strl.CommaText;
-      FreeAndNil(strl);
-
-      DeleteFile(fn)
-    end;
-
-  finally
-    if Assigned(strl) then
-      FreeAndNil(strl);
-  end;
-
 end;
 
 function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam): integer;
@@ -1245,13 +856,12 @@ function GetSharpeDirectory: PChar;
 var
   Path: string;
   tmp: string;
-  Reg: TRegistry;
   sCheckResult: string;
 begin
   Result := '';
 
   // Check current dir
-  Path := ExtractFilePath(Application.ExeName);
+  Path := ExtractFilePath(Application_GetExeName);
   if DirCheck(Path, sCheckResult) then
   begin
     tmp := ExtractFilePath(sCheckResult);
@@ -1261,26 +871,13 @@ begin
   end;
 
   // check Registry Key
-  Reg := TRegistry.Create;
-  try
-    Reg.RootKey := HKEY_CURRENT_USER;
-    Reg.OpenKey('Software\SharpE', True);
-
-    if Reg.ValueExists('InstallPath') then
-    begin
-
-      Path := Reg.ReadString('InstallPath');
-      if DirCheck(Path, sCheckResult) then
-      begin
-        tmp := ExtractFilePath(sCheckResult);
-        stemp := tmp;
-        Result := pchar(stemp);
-        exit;
-      end;
-    end;
-  finally
-    Reg.CloseKey;
-    Reg.Free;
+  Path := ReadRegString(HKEY_CURRENT_USER,'Software\SharpE','InstallPath');
+  if DirCheck(Path, sCheckResult) then
+  begin
+    tmp := ExtractFilePath(sCheckResult);
+    stemp := tmp;
+    Result := pchar(stemp);
+    exit;
   end;
 end;
 
@@ -1343,71 +940,6 @@ begin
 
   Result := pchar(stemp);
   //SendDebugMessage('SharpApi Result',Result,clblack);
-end;
-
-function GetRecentItems(ReturnCount: integer): widestring;
-var
-  i: integer;
-  strl: TStringList;
-const
-  xmlfile = 'SharpCore\Services\Exec\RiList.xml';
-begin
-
-  // Check if greater than recent items capacity
-  if ReturnCount > 50 then
-  begin
-    //ShowMessage('Must not exceed recent item count of 50');
-    // why display this error message? useless for any normal user...  BB
-    exit;
-  end;
-
-  TmpRI := TRecentItemsList.Create(GetSharpeUserSettingsPath + xmlfile);
-  strl := TStringList.Create;
-
-  if ReturnCount >= TmpRI.Items.Count - 1 then
-    ReturnCount := TmpRI.Items.Count;
-
-  with TmpRI do
-  begin
-    for i := Items.Count - 1 downto (Items.Count - ReturnCount) do
-    begin
-      strl.Add(TmpRI[i].Value);
-    end;
-
-    Result := strl.CommaText;
-  end;
-
-  TmpRI.Free;
-  Strl.Free;
-
-end;
-
-function GetMostUsedItems(ReturnCount: integer): widestring;
-var
-  i: integer;
-  strl: tstringlist;
-const
-  xmlfile = 'SharpCore\Services\Exec\UiList.xml';
-begin
-
-  TmpMui := TUsedItemsList.Create(GetSharpeUserSettingsPath + xmlfile);
-  strl := TStringList.Create;
-  TmpMui.Sort;
-
-  if ReturnCount >= TmpMui.Items.Count then
-    ReturnCount := TmpMui.Items.Count;
-
-  with TmpMui do
-  begin
-    for i := 0 to ReturnCount - 1 do
-      strl.Add(TmpMui[i].Value);
-
-    Result := strl.CommaText;
-  end;
-
-  TmpMui.Free;
-  Strl.Free;
-
 end;
 
 // function based on http://www.delphipraxis.net/post452421.html
@@ -1580,7 +1112,6 @@ exports
   UnRegisterAction,
   UpdateAction,
   UpdateActionEx,
-  GetDelimitedActionList,
 
   // Bar Tool Functions
   GetSharpBarCount,
@@ -1593,27 +1124,10 @@ exports
   GetSharpeDirectory,
   GetSharpeUserSettingsPath,
   GetSharpeGlobalSettingsPath,
-  GetRecentItems,
-  GetMostUsedItems,
-
-  SaveSettingA,
-  SaveSettingB,
-  SaveSettingC,
-  SaveSettingD,
-  LoadSettingA,
-  LoadSettingB,
-  LoadSettingC,
-  LoadSettingD,
-  LoadSettingE,
 
   SendMessageTo,
 
   SharpExecute,
-  ClearKey,
-  LoadColorScheme,
-  LoadColorSchemeEx,
-  SaveColorScheme,
-  SaveColorSchemeEx,
 
   FindComponent,
   IsComponentRunning,
