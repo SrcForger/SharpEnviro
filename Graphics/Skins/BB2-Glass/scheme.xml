@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinScheme>
+  <item>
+    <Name>Border</Name>
+    <Tag>$Border</Tag>
+    <Info>Border Color</Info>
+    <Default>16777215</Default>
+  </item>
+  <item>
+    <Name>Background</Name>
+    <Tag>$Background</Tag>
+    <Info>Background Color</Info>
+    <Default>0</Default>
+  </item>
+  <item>
+    <Name>Text</Name>
+    <Tag>$Text</Tag>
+    <Info>Text Color</Info>
+    <Default>16777215</Default>
+  </item>
+  <item>
+    <Name>Text Shadow</Name>
+    <Tag>$TextShadow</Tag>
+    <Info>Text Shadow Color</Info>
+    <Default>0</Default>
+  </item>
+  <item>
+    <Name>BorderBG</Name>
+    <Tag>$BorderBG</Tag>
+    <Info>Border Background</Info>
+    <Default>8421504</Default>
+  </item>
+  <item>
+    <Name>Alpha</Name>
+    <Tag>$Alpha</Tag>
+    <Info>Background Alpha Value</Info>
+    <Default>164</Default>
+    <type>Integer</type>
+  </item>
+  <item>
+    <Name>Border Alpha</Name>
+    <Tag>$BAlpha</Tag>
+    <Info>Border Alpha Value</Info>
+    <Default>164</Default>
+    <type>Integer</type>
+  </item>
+</SharpESkinScheme>
