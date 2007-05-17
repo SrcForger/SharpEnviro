@@ -1,6 +1,6 @@
 {
 Source Name: SharpThemeApi.pas
-Description: Header unir for SharpThemeApi.dll
+Description: Header unit for SharpThemeApi.dll
 Copyright (C)  Martin Krämer <MartinKraemer@gmx.net>
 
 Source Forge Site
@@ -120,6 +120,13 @@ function GetSkinName : PChar; external 'SharpThemeApi.dll' name 'GetSkinName';
 function GetSkinColorCount : integer; external 'SharpThemeApi.dll' name 'GetSkinColorCount';
 function GetSkinColor(pIndex : integer) : TSharpESkinColor; external 'SharpThemeApi.dll' name 'GetSkinColor';
 function GetSkinDirectory : PChar; external 'SharpThemeApi.dll' name 'GetSkinDirectory';
+function GetSkinGEBlurRadius : integer; external 'SharpThemeApi.dll' name 'GetSkinGEBlurRadius';
+function GetSkinGEBlurIterations : integer; external 'SharpThemeApi.dll' name 'GetSkinGEBlurIterations';
+function GetSkinGEBlend : boolean; external 'SharpThemeApi.dll' name 'GetSkinGEBlend';
+function GetSkinGEBlendColor : integer; external 'SharpThemeApi.dll' name 'GetSkinGEBlendColor';
+function GetSkinGEBlendAlpha : integer; external 'SharpThemeApi.dll' name 'GetSkinGEBlendAlpha';
+function GetSkinGELighten : boolean; external 'SharpThemeApi.dll' name 'GetSkinGELighten';
+function GetSkinGELightenAmount : integer; external 'SharpThemeApi.dll' name 'GetSkinGELightenAmount';
 
 // Theme IconSet
 function GetIconSetName : PChar; external 'SharpThemeApi.dll' name 'GetIconSetName';

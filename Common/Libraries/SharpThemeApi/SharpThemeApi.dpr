@@ -142,6 +142,13 @@ type
     Name: string;
     Scheme: string;
     Directory: string;
+    GEBlurRadius: integer;
+    GEBlurIterations: integer;
+    GEBlend      : boolean; 
+    GEBlendColor : integer;
+    GEBlendAlpha : integer;
+    GELighten    : boolean;
+    GELightenAmount : integer;
   end;
 
   TThemeData = record
@@ -529,6 +536,13 @@ procedure SetThemeSkinDefault;
 begin
   Theme.Skin.LastUpdate := 0;
   Theme.Skin.Name := 'Default';
+  Theme.Skin.GEBlurRadius := 1;
+  Theme.Skin.GEBlurIterations := 3;
+  Theme.Skin.GEBlend := False;
+  Theme.Skin.GEBlendColor := clWhite;
+  Theme.Skin.GEBlendAlpha := 32;
+  Theme.Skin.GELighten := True;
+  Theme.Skin.GELightenAmount := 32;
 end;
 
 procedure SetThemeDesktopIconDefault;
@@ -679,8 +693,18 @@ begin
     if FileExists(Theme.Data.Directory + SKIN_FILE) then
     begin
       try
-        Xml.LoadFromFile(Theme.Data.Directory + SKIN_FILE);
-        sCurSkin := XML.Root.Items.Value('skin', 'default');
+        XML.LoadFromFile(Theme.Data.Directory + SKIN_FILE);
+        with XML.Root.Items do
+        begin
+          sCurSkin := Value('skin', 'default');
+          Theme.Skin.GEBlurRadius     := IntValue('GEBlurRadius',Theme.Skin.GEBlurRadius);
+          Theme.Skin.GEBlurIterations := IntValue('GEBlurIterations',Theme.Skin.GEBlurIterations);
+          Theme.Skin.GEBlend          := BoolValue('GEBlend',Theme.Skin.GEBlend);
+          Theme.Skin.GEBlendColor     := IntValue('GEBlendColor',Theme.Skin.GEBlendColor);
+          Theme.Skin.GEBlendAlpha     := IntValue('GEBlendAlpha',Theme.Skin.GEBlendAlpha);
+          Theme.Skin.GELighten        := BoolValue('GELighten',Theme.Skin.GELighten);
+          Theme.Skin.GELightenAmount  := IntValue('GELightenAmount',Theme.Skin.GELightenAmount);
+        end;
       except
         sCurSkin := 'default';
       end;
@@ -1025,6 +1049,41 @@ end;
 // ##########################################
 //      EXPORT: THEME SKIN
 // ##########################################
+
+function GetSkinGEBlurRadius: integer;
+begin
+  result := Theme.Skin.GEBlurRadius;
+end;
+
+function GetSkinGEBlurIterations: integer;
+begin
+  result := Theme.Skin.GEBlurIterations;
+end;
+
+function GetSkinGEBlend: boolean;
+begin
+  result := Theme.Skin.GEBlend;
+end;
+
+function GetSkinGEBlendColor: integer;
+begin
+  result := Theme.Skin.GEBlendColor;
+end;
+
+function GetSkinGEBlendAlpha: integer;
+begin
+  result := Theme.Skin.GEBlendAlpha;
+end;
+
+function GetSkinGELighten: boolean;
+begin
+  result := Theme.Skin.GELighten;
+end;
+
+function GetSkinGELightenAmount: integer;
+begin
+  result := Theme.Skin.GELightenAmount
+end;
 
 function GetSkinDirectory : PChar;
 begin
@@ -1530,6 +1589,13 @@ exports
   GetSkinColorCount,
   GetSkinColor,
   GetSkinDirectory,
+  GetSkinGEBlurRadius,
+  GetSkinGEBlurIterations,
+  GetSkinGEBlend,
+  GetSkinGEBlendColor,
+  GetSkinGEBlendAlpha,
+  GetSkinGELighten,
+  GetSkinGELightenAmount,
 
   // Theme IconSet
   GetIconSetName,
