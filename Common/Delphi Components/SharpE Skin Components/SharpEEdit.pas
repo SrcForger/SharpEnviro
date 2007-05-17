@@ -114,6 +114,7 @@ type
     procedure SetText(Value:String);
 
     procedure KeyUpEvent(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure KeyDownEvent(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure EditExitEvent(Sender:TObject);
     procedure EditEnterEvent(Sender:TObject);
     procedure EditChangeEvent(Sender:TObject);
@@ -151,6 +152,7 @@ type
     property Edit: TSharpEEditText read FEdit write FEdit;
     property AutoPosition : Boolean read FAutoPosition write FAutoPosition;
     property OnKeyUp;
+    property OnKeyDown;
   end;
 
   procedure CopyParentImage(Control: TControl; Dest: TCanvas);
@@ -383,17 +385,11 @@ begin
 
 
   FEdit.OnKeyUp := KeyUpEvent;
+  FEdit.OnKeyDown := KeyDownEvent;
 end;
 
 procedure TSharpEEdit.CMFocusChanged(var Message: TCMFocusChanged);
 begin
-  //showmessage('change');
-  {with Message do
-    if Sender.Name = TsharpeButton.ClassName then
-      FActive := Sender = Self
-    else
-      FActive := FDefault;
-  //SetButtonStyle(FActive); }
   inherited;
 end;
 
@@ -419,6 +415,13 @@ begin
 
     FEdit.SetAutoComplete;
 end;
+
+procedure TSharpEEdit.KeyDownEvent(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Assigned(OnKeyDown) then
+     OnKeyDown(Sender,Key,Shift);
+end;
+
 procedure TSharpEEdit.KeyUpEvent(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_RETURN then

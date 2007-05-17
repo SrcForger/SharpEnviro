@@ -448,7 +448,9 @@ type
     FThDown: TSkinPart;
     FThHover: TSkinPart;
     FBar: TSkinPart;
+    FBarBorder : TSkinPart;
     FBarBottom: TSkinPart;
+    FBarBottomBorder : TSkinPart;
     FFSMod: TSkinPoint;
     FSBMod: TSkinPoint;
     FPAXoffset: TSkinPoint;
@@ -457,6 +459,7 @@ type
     FEnableVFlip: boolean;
     FSpecialHideForm: boolean;
     FDefaultSkin: boolean;
+    FGlassEffect: boolean;
     FPTXoffset : TSkinPoint;
     FPTYoffset : TSkinPoint;
     FPBXoffset : TSkinPoint;
@@ -482,7 +485,9 @@ type
     property ThDim: TSkinDim read FThDim;
     property ThBDim: TSkinDim read FThBDim;
     property Bar: TSkinPart read FBar write FBar;
-    property BarBottom : TSkinPart read FBarBottom write FBarBottom;
+    property BarBorder: TSkinPart read FBarBorder write FBarBorder;
+    property BarBottom: TSkinPart read FBarBottom write FBarBottom;
+    property BarBottomBorder: TSkinPart read FBarBottomBorder write FBarBottomBorder;
     property FSMod: TSkinPoint read FFSMod write FFSMod;
     property SBMod: TSkinPoint read FSBMod write FSBMod;
     property Seed: integer read FSeed;
@@ -496,6 +501,7 @@ type
     property EnableVFlip: boolean read FEnableVFlip write FEnableVFlip;
     property SpecialHideForm : boolean read FSpecialHideForm write FSpecialHideForm;
     property DefaultSkin: boolean read FDefaultSkin write FDefaultSkin;
+    property GlassEffect: boolean read FGlassEffect write FGlassEffect;
   end;
 
   TSharpEEditSkin = class
@@ -712,6 +718,8 @@ begin
   begin
     RemoveSkinPartBitmaps(FBarSkin.Bar,List);
     RemoveSkinPartBitmaps(FBarSkin.BarBottom,List);
+    RemoveSkinPartBitmaps(FBarSkin.BarBorder,List);
+    RemoveSkinPartBitmaps(FBarSkin.BarBottomBorder,List);
     RemoveSkinPartBitmaps(FBarSkin.ThNormal,List);
     RemoveSkinPartBitmaps(FBarSkin.ThDown,List);
     RemoveSkinPartBitmaps(FBarSkin.ThHover,List);
@@ -2436,7 +2444,9 @@ begin
   FThDown := TSkinPart.Create(BmpList);
   FThHover := TSkinPart.Create(BmpList);
   FBar := TSkinPart.Create(BmpList);
+  FBarBorder := TSkinPart.Create(BmpList);
   FBarBottom := TSkinPart.Create(BmpList);
+  FBarBottomBorder := TSkinPart.Create(BmpList);
   FFSMod := TSkinPoint.Create;
   FSBMod := TSKinPoint.Create;
   FPTXoffset := TSkinPoint.Create;
@@ -2447,6 +2457,7 @@ begin
   FPAYoffset := FPTYoffset;
   FEnableVFlip := False;
   FSpecialHideForm := False;
+  FGlassEffect := False;
   Clear;
 end;
 
@@ -2457,7 +2468,9 @@ begin
   FThBDim.Free;
   FThHover.Free;
   FBar.Free;
+  FBarBorder.Free;
   FBarBottom.Free;
+  FBarBottomBorder.Free;
   FSkinDim.Free;
   FThDim.Free;
   FFSMod.Free;
@@ -2474,7 +2487,9 @@ begin
   FThDown.UpdateDynamicProperties(cs);
   FThHover.UpdateDynamicProperties(cs);
   FBar.UpdateDynamicProperties(cs);
+  FBarBorder.UpdateDynamicProperties(cs);
   FBarBottom.UpdateDynamicProperties(cs);
+  FBarBottomBorder.UpdateDynamicProperties(cs);
 end;
 
 procedure TSharpEBarSkin.SaveToStream(Stream: TStream);
@@ -2486,7 +2501,9 @@ begin
   FThDown.SaveToStream(Stream);
   FThHover.SaveToStream(Stream);
   FBar.SaveToStream(Stream);
+  FBarBorder.SaveToStream(Stream);
   FBarBottom.SaveToStream(Stream);
+  FBarBottomBorder.SaveToStream(Stream);
   FFSMod.SaveToStream(Stream);
   FSBMod.SaveToStream(Stream);
 
@@ -2499,6 +2516,9 @@ begin
      else StringSavetoStream('0', Stream);
 
   if FSpecialHideForm then StringSaveToStream('1', Stream)
+     else StringSaveToStream('0', Stream);
+
+  if FGlassEffect then StringSavetoStream('1', Stream)
      else StringSaveToStream('0', Stream);
 end;
 
@@ -2518,7 +2538,9 @@ begin
   FThDown.LoadFromStream(Stream);
   FThHover.LoadFromStream(Stream);
   FBar.LoadFromStream(Stream);
+  FBarBorder.LoadFromStream(Stream);
   FBarBottom.LoadFromStream(Stream);
+  FBarBottomBorder.LoadFromStream(Stream);
   FFSMod.LoadFromStream(Stream);
   FSBMod.LoadFromStream(Stream);
 
@@ -2531,6 +2553,8 @@ begin
      else FEnableVFlip := False;
   if StringLoadFromStream(Stream) = '1' then FSpecialHideForm := True
      else FSpecialHideForm := False;
+  if StringLoadFromStream(Stream) = '1' then FGlassEffect := True
+     else FGlassEffect := False;
 end;
 
 procedure TSharpEBarSkin.CheckValid;
@@ -2557,9 +2581,16 @@ begin
     FBar.SkinDim.SetDimension('w', 'h');
     FBar.BlendColor := '$WorkAreaBack';
     FBar.Blend := True;
+    FBarBorder.SkinDim.SetDimension('w', 'h');
+    FBarBorder.BlendColor := '$WorkAreaBack';
+    FBarBorder.Blend := True;
     FBarBottom.SkinDim.SetDimension('w','h');
     FBarBottom.BlendColor := '$WorkAreaBack';
     FBarBottom.Blend := True;
+    FBarBottomBorder.SkinDim.SetDimension('w','h');
+    FBarBottomBorder.BlendColor := '$WorkAreaBack';
+    FBarBottomBorder.Blend := True;
+    FGlassEffect := False;
   end
   else
     DefaultSkin := False;
@@ -2571,7 +2602,9 @@ begin
   FThDown.Clear;
   FThHover.Clear;
   FBar.Clear;
+  FBarBorder.Clear;
   FBarBottom.Clear;
+  FBarBottomBorder.Clear;
   FFSMod.Clear;
   FSBMod.Clear;
   FPTXoffset.Clear;
@@ -2585,6 +2618,7 @@ begin
   FThBDim.SetLocation('0', '0');
   FEnableVFlip := False;
   FSpecialHideForm := False;
+  FGlassEffect := False;
   NewSeed;
 end;
 
@@ -2629,8 +2663,12 @@ begin
         end;
       if ItemNamed['bar'] <> nil then
         FBar.LoadFromXML(ItemNamed['bar'], path, nil);
+      if ItemNamed['barborder'] <> nil then
+        FBarBorder.LoadFromXML(ItemNamed['barborder'], path, nil);
       if ItemNamed['barbottom'] <> nil then
         FBarBottom.LoadFromXML(ItemNamed['barbottom'], path, nil);
+      if ItemNamed['barbottomborder'] <> nil then
+        FBarBottomBorder.LoadFromXML(ItemNamed['barbottomborder'], path, nil);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['fsmod'] <> nil then
@@ -2649,6 +2687,8 @@ begin
         FEnablevflip := BoolValue('enablevflip', False);
       if ItemNamed['specialhideform'] <> nil then
         FSpecialHideForm := BoolValue('specialhideform', False);
+      if ItemNamed['glasseffect'] <> nil then
+        FGlassEffect := BoolValue('glasseffect',False);
     end;
   finally
   end;
