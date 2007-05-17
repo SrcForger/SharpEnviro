@@ -11,10 +11,10 @@
 	<Default.Personality>  <Projects>
       <Projects Name="SharpAPI.dll">..\Common\Libraries\SharpAPI\SharpAPI.bdsproj</Projects>
       <Projects Name="SharpDeskApi.dll">..\Common\Libraries\SharpDeskApi\SharpDeskApi.bdsproj</Projects>
-      <Projects Name="shellhook.dll">..\Common\Libraries\ShellHook\shellhook.bdsproj</Projects>
       <Projects Name="SharpThemeApi.dll">..\Common\Libraries\SharpThemeApi\SharpThemeApi.bdsproj</Projects>
       <Projects Name="SharpDialogs.dll">..\Common\Libraries\SharpDialogs\SharpDialogs.bdsproj</Projects>
-      <Projects Name="Targets">SharpAPI.dll SharpDeskApi.dll shellhook.dll SharpThemeApi.dll SharpDialogs.dll</Projects>
+      <Projects Name="SharpAPIEx.dll">..\Common\Libraries\SharpApiEx\SharpAPIEx.bdsproj</Projects>
+      <Projects Name="Targets">SharpAPI.dll SharpDeskApi.dll SharpThemeApi.dll SharpDialogs.dll SharpAPIEx.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
