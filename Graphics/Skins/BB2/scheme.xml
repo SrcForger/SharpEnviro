@@ -33,7 +33,14 @@
   <item>
     <Name>Alpha</Name>
     <Tag>$Alpha</Tag>
-    <Info>Bar Background Alpha Value</Info>
+    <Info>Background Alpha Value</Info>
+    <Default>164</Default>
+    <type>Integer</type>
+  </item>
+  <item>
+    <Name>Border Alpha</Name>
+    <Tag>$BAlpha</Tag>
+    <Info>Border Alpha Value</Info>
     <Default>164</Default>
     <type>Integer</type>
   </item>

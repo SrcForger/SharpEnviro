@@ -17,14 +17,14 @@
         <dimension>9,24</dimension>
         <image>images/BarLeftBorderBG.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$BAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>0,0</location>
         <dimension>9,24</dimension>
         <image>images/BarLeftBorder.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$BAlpha+32</alpha>
       </skinpart>
       <skinpart>
         <location>3,0</location>
@@ -45,28 +45,28 @@
         <dimension>w-18,3</dimension>
         <image>images/BarMiddleBorderBG.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$BAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>9,21</location>
         <dimension>w-18,3</dimension>
         <image>images/BarMiddleBorder.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$BAlpha+32</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,0</location>
         <dimension>9,24</dimension>
         <image>images/BarRightBorderBG.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$BAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,0</location>
         <dimension>9,24</dimension>
         <image>images/BarRightBorder.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$BAlpha+32</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,0</location>
@@ -76,6 +76,27 @@
         <alpha>$Alpha+20</alpha>
       </skinpart>
     </bar>
+    <barborder>
+      <dimension>w,h</dimension>
+      <skinpart>
+        <location>0,0</location>
+        <dimension>9,24</dimension>
+        <image>images/BarLeftBorderArea.png</image>
+        <alpha>255</alpha>
+      </skinpart>
+      <skinpart>
+        <location>9,0</location>
+        <dimension>w-18,21</dimension>
+        <image>images/BarMiddleBackgroundArea.png</image>
+        <alpha>255</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-9,0</location>
+        <dimension>9,24</dimension>
+        <image>images/BarRightBorderArea.png</image>
+        <alpha>255</alpha>
+      </skinpart>
+    </barborder>
     <barbottom>
       <dimension>w,h</dimension>
       <skinpart>
@@ -83,14 +104,14 @@
         <dimension>9,24</dimension>
         <image>images/BarLeftBorderBGDown.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$BAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>0,0</location>
         <dimension>9,24</dimension>
         <image>images/BarLeftBorderDown.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$BAlpha+32</alpha>
       </skinpart>
       <skinpart>
         <location>3,3</location>
@@ -111,28 +132,28 @@
         <dimension>w-18,3</dimension>
         <image>images/BarMiddleBorderBG.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$BAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>9,0</location>
         <dimension>w-18,3</dimension>
         <image>images/BarMiddleBorder.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$BAlpha+32</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,0</location>
         <dimension>9,24</dimension>
         <image>images/BarRightBorderBGDown.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$BAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,0</location>
         <dimension>9,24</dimension>
         <image>images/BarRightBorderDown.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$BAlpha+32</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,3</location>
@@ -142,6 +163,27 @@
         <alpha>$Alpha+20</alpha>
       </skinpart>
     </barbottom>
+    <barbottomborder>
+      <dimension>w,h</dimension>
+      <skinpart>
+        <location>0,0</location>
+        <dimension>9,24</dimension>
+        <image>images/BarLeftBorderDownArea.png</image>
+        <alpha>255</alpha>
+      </skinpart>
+      <skinpart>
+        <location>9,3</location>
+        <dimension>w-18,21</dimension>
+        <image>images/BarMiddleBackgroundArea.png</image>
+        <alpha>255</alpha>
+      </skinpart>
+      <skinpart>
+        <location>w-9,0</location>
+        <dimension>9,24</dimension>
+        <image>images/BarRightBorderDownArea.png</image>
+        <alpha>255</alpha>
+      </skinpart>
+    </barbottomborder>
     <throbber>
       <location>4,1</location>
       <locationbottom>4,4</locationbottom>
