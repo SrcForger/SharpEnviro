@@ -65,7 +65,6 @@ type
     BGBmp : TBitmap32;
     OldLBWindowProc: TWndMethod;
     lastcolor : TColor;
-    cs : TColorSchemeEx;
     procedure LBWindowProc(var Message: TMessage);
     procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;
     procedure LoadSettings;

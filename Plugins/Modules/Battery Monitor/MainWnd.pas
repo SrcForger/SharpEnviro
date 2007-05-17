@@ -34,21 +34,21 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpESkinManager,
+  Dialogs, StdCtrls, SharpEBaseControls, SharpESkinManager,
   ExtCtrls, SharpEProgressBar, GR32,
   JvSimpleXML, SharpApi, Menus, Math, SharpESkinLabel;
 
 
 type
   TMainForm = class(TForm)
-    Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     UpdateTimer: TTimer;
-    lb_info: TSharpESkinLabel;
-    pbar: TSharpEProgressBar;
     lb_pc: TSharpESkinLabel;
+    pbar: TSharpEProgressBar;
+    lb_info: TSharpESkinLabel;
+    procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure UpdateTimerTimer(Sender: TObject);
@@ -61,8 +61,8 @@ type
     sShowPC   : boolean;
     FBStatus1 : TBitmap32;
     FBStatus2 : TBitmap32;
-    FLastIcon : TBitmap32; // Only a pointer! Never create or free this var!
-    FBGBmp    : TBitmap32;
+    FLastIcon : TBitmap32;
+    Background : TBitmap32;
   public
     ModuleID : integer;
     BarWnd   : hWnd;
@@ -70,7 +70,7 @@ type
     procedure SetSize(NewWidth : integer);
     procedure RenderIcon;
     procedure ReAlignComponents(BroadCast : boolean);
-    property BGBmp : TBitmap32 read FBGBmp;
+    procedure UpdateBackground(new : integer = -1);
     property LastIcon : TBitmap32 read FLastIcon write FLastIcon;
   end;
 
@@ -149,15 +149,23 @@ begin
   UpdateTimer.OnTimer(UpdateTimer);
 end;
 
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
 procedure TMainForm.SetSize(NewWidth : integer);
 begin
+  NewWidth := Max(NewWidth,1);
+
+  UpdateBackground(NewWidth);
+
   Width := NewWidth;
 
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
-  FBGBmp.Assign(Background.Bitmap);
   FLastIcon := nil;
   RenderIcon;
 end;
@@ -295,17 +303,19 @@ procedure TMainForm.RenderIcon;
 begin
   if not sShowIcon then exit;
 
-  FBGBmp.DrawTo(Background.Bitmap);
+  //FBGBmp.DrawTo(Background.Bitmap);
   if pbar.Value < 25 then
   begin
-    if FLastIcon <> FBStatus2 then
-       FBStatus2.DrawTo(Background.Bitmap,Rect(2,2,Height-2,Height-2));
+    //if FLastIcon <> FBStatus2 then
+    //   FBStatus2.DrawTo(Background.Bitmap,Rect(2,2,Height-2,Height-2));
     FLastIcon := FBStatus2;
+    Repaint;
   end else
   begin
-    if FLastIcon <> FBStatus1 then
-       FBStatus1.DrawTo(Background.Bitmap,Rect(2,2,Height-2,Height-2));
+    //if FLastIcon <> FBStatus1 then
+    //   FBStatus1.DrawTo(Background.Bitmap,Rect(2,2,Height-2,Height-2));
     FLastIcon := FBStatus1;
+    Repaint;
   end;
 end;
 
@@ -315,8 +325,9 @@ var
   TempBmp : TBitmap32;
   b : boolean;
 begin
-  FBGBmp := TBitmap32.Create;
+  Background := TBitmap32.Create;
 
+  FLastIcon := nil;
   FBStatus1 := TBitmap32.Create;
   FBStatus1.DrawMode := dmBlend;
   FBStatus1.CombineMode := cmMerge;
@@ -360,7 +371,20 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FBStatus1);
   FreeAndNil(FBStatus2);
-  FreeAndNil(FBGBmp);
+  FreeAndNil(Background);
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+var
+  Bmp : TBitmap32;
+begin
+  Bmp := TBitmap32.Create;
+  Bmp.Assign(Background);
+  if (FLastIcon <> nil) and sShowIcon then
+//     FLastIcon.DrawTo(Canvas.Handle,Rect(2,2,Height-2,Height-2),FLastIcon.BoundsRect);
+     FLastIcon.DrawTo(Bmp,Rect(2,2,Height-2,Height-2));
+  Bmp.DrawTo(Canvas.Handle,0,0);
+  Bmp.Free;
 end;
 
 end.

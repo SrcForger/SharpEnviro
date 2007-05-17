@@ -13,53 +13,41 @@ object MainForm: TMainForm
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnPaint = FormPaint
   PixelsPerInch = 96
   TextHeight = 13
-  object Background: TImage32
-    Left = 0
-    Top = 0
-    Width = 285
-    Height = 166
-    Align = alClient
-    Bitmap.ResamplerClassName = 'TNearestResampler'
-    BitmapAlign = baTopLeft
-    PopupMenu = MenuPopup
-    Scale = 1.000000000000000000
-    ScaleMode = smNormal
-    TabOrder = 0
-    object lb_info: TSharpESkinLabel
-      Left = 2
-      Top = -1
-      Width = 12
-      Height = 21
-      SkinManager = SharpESkinManager1
-      AutoSize = True
-      Caption = '.'
-      AutoPosition = False
-      LabelStyle = lsMedium
-    end
-    object pbar: TSharpEProgressBar
-      Left = 24
-      Top = 16
-      Width = 75
-      Height = 9
-      Min = 0
-      Max = 100
-      Value = 0
-      SkinManager = SharpESkinManager1
-      AutoSize = True
-    end
-    object lb_pc: TSharpESkinLabel
-      Left = 106
-      Top = -1
-      Width = 12
-      Height = 21
-      SkinManager = SharpESkinManager1
-      AutoSize = True
-      Caption = '.'
-      AutoPosition = False
-      LabelStyle = lsMedium
-    end
+  object lb_pc: TSharpESkinLabel
+    Left = 106
+    Top = -1
+    Width = 12
+    Height = 21
+    SkinManager = SharpESkinManager1
+    AutoSize = True
+    Caption = '.'
+    AutoPosition = False
+    LabelStyle = lsMedium
+  end
+  object pbar: TSharpEProgressBar
+    Left = 24
+    Top = 16
+    Width = 75
+    Height = 9
+    Min = 0
+    Max = 100
+    Value = 0
+    SkinManager = SharpESkinManager1
+    AutoSize = True
+  end
+  object lb_info: TSharpESkinLabel
+    Left = 2
+    Top = -1
+    Width = 12
+    Height = 21
+    SkinManager = SharpESkinManager1
+    AutoSize = True
+    Caption = '.'
+    AutoPosition = False
+    LabelStyle = lsMedium
   end
   object MenuPopup: TPopupMenu
     Left = 168

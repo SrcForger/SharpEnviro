@@ -13,40 +13,28 @@ object MainForm: TMainForm
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnPaint = FormPaint
   PixelsPerInch = 96
   TextHeight = 13
-  object Background: TImage32
-    Left = 0
+  object btn: TSharpEButton
+    Left = 8
     Top = 0
-    Width = 285
-    Height = 166
-    Align = alClient
-    Bitmap.ResamplerClassName = 'TNearestResampler'
-    BitmapAlign = baTopLeft
-    PopupMenu = MenuPopup
-    Scale = 1.000000000000000000
-    ScaleMode = smNormal
-    TabOrder = 0
-    object btn: TSharpEButton
-      Left = 8
-      Top = 0
-      Width = 105
-      Height = 20
-      SkinManager = SharpESkinManager1
-      AutoSize = True
-      OnMouseUp = btnMouseUp
-      Glyph32.DrawMode = dmBlend
-      Glyph32.CombineMode = cmMerge
-      Glyph32.OuterColor = -16777216
-      Glyph32.ResamplerClassName = 'TNearestResampler'
-      Layout = blGlyphLeft
-      Margin = 0
-      DisabledAlpha = 100
-      Caption = '...'
-      AutoPosition = True
-      GlyphResize = True
-      GlyphSpacing = 4
-    end
+    Width = 105
+    Height = 20
+    SkinManager = SharpESkinManager1
+    AutoSize = True
+    OnMouseUp = btnMouseUp
+    Glyph32.DrawMode = dmBlend
+    Glyph32.CombineMode = cmMerge
+    Glyph32.OuterColor = -16777216
+    Glyph32.ResamplerClassName = 'TNearestResampler'
+    Layout = blGlyphLeft
+    Margin = 0
+    DisabledAlpha = 100
+    Caption = '...'
+    AutoPosition = True
+    GlyphResize = True
+    GlyphSpacing = 4
   end
   object MenuPopup: TPopupMenu
     Left = 168

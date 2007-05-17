@@ -178,8 +178,8 @@ begin
       if TModule(ModuleList.Items[n]).ID = ID then
       begin
         temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,temp.Form.Height);
-        uSharpBarAPI.PaintBarBackGround(temp.BarWnd,TMainForm(temp.Form).Background.Bitmap,Temp.Form);
+        TMainForm(temp.Form).UpdateBackground;
+        TMainForm(temp.Form).Repaint;
       end;
 end;
 
@@ -216,8 +216,7 @@ begin
     if (part = SU_SCHEME) or (part = SU_BACKGROUND)
         or (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
     begin
-      TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,temp.Form.Height);
-      uSharpBarAPI.PaintBarBackGround(temp.BarWnd,TMainForm(temp.Form).Background.Bitmap,Temp.Form);
+      TMainForm(temp.Form).UpdateBackground;
       if (part = SU_THEME) or (part = SU_SKINFILECHANGED) then
          TMainForm(temp.Form).ReAlignComponents(True);
     end;

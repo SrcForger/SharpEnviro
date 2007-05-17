@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, GR32_PNG, Types,
+  Dialogs, StdCtrls, GR32_PNG, Types,
   JvSimpleXML,
   SharpApi,
   uSharpBarAPI,
@@ -50,12 +50,12 @@ uses
 
 type
   TMainForm = class(TForm)
-    Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
-    Button: TSharpEButton;
     SharpESkinManager1: TSharpESkinManager;
     PngImageList1: TPngImageList;
+    Button: TSharpEButton;
+    procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ButtonMouseUp(Sender: TObject; Button: TMouseButton;
@@ -68,6 +68,7 @@ type
     FIcon    : TBitmap32;
     FMenuIcon1 : TBitmap32;
     FMenuIcon2 : TBitmap32;
+    Background : TBitmap32;
   public
     ModuleID : integer;
     BarWnd : hWnd;
@@ -76,6 +77,7 @@ type
     procedure SetWidth(new : integer);
     procedure OnScriptClick(Sender : TObject);
     procedure OnNewScriptClick(Sender : TObject);
+    procedure UpdateBackground(new : integer = -1);
   end;
 
 
@@ -101,15 +103,23 @@ begin
   end;
 end;
 
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
 procedure TMainForm.SetWidth(new : integer);
 begin
-  Width := Max(new,1);
-  Button.Width := max(1,Width - 4);
+  new := Max(new,1);
 
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
+  UpdateBackground(new);
+
+  Width := new;
+  Button.Width := max(1,Width - 4);
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
@@ -241,6 +251,8 @@ var
   TempBmp : TBitmap32;
   b : boolean;
 begin
+  Background := TBitmap32.Create;
+
   FIcon := TBitmap32.Create;
   FIcon.Assign(Button.Glyph32);
   FMenuIcon1 := TBitmap32.Create;
@@ -280,9 +292,15 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  Background.Free;
   FIcon.Free;
   FMenuIcon1.Free;
   FMenuIcon2.Free;
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+  Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

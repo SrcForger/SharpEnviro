@@ -34,21 +34,21 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpESkinManager,
+  Dialogs, StdCtrls, SharpEBaseControls, SharpESkinManager,
   SharpEScheme, SharpESkin, ExtCtrls, GR32,
-  JvSimpleXML, SharpApi, Jclsysinfo, Menus, Math, SharpESkinLabel,
-  uWeatherParser;
+  JvSimpleXML, SharpApi, Menus, Math, SharpESkinLabel,
+  uWeatherParser, GR32_Image;
 
 
 type
   TMainForm = class(TForm)
-    Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     UpdateTimer: TTimer;
-    lb_top: TSharpESkinLabel;
     lb_bottom: TSharpESkinLabel;
+    lb_top: TSharpESkinLabel;
+    procedure FormPaint(Sender: TObject);
     procedure BackgroundDblClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -62,14 +62,15 @@ type
     sBottomLabel : String;
     FIcon        : TBitmap32;
     FWeatherParser : TWeatherParser;
+    Background   : TBitmap32;
     function ReplaceDataInString(pString : String) : String;
   public
     ModuleID : integer;
     BarWnd   : hWnd;
     procedure LoadSettings;
     procedure SetSize(NewWidth : integer);
-    procedure RenderIcon;
     procedure ReAlignComponents(BroadCast : boolean);
+    procedure UpdateBackground(new : integer = -1);
     property WeatherParser : TWeatherParser read FWeatherParser;
     property WeatherLocation : String read sLocation;
     property ShowIcon : boolean read sShowIcon;
@@ -184,15 +185,23 @@ begin
 //  UpdateTimer.OnTimer(UpdateTimer);
 end;
 
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
 procedure TMainForm.SetSize(NewWidth : integer);
 begin
-  Width := NewWidth;
+  NewWidth := Max(1,NewWidth);
 
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
-  if (sShowIcon) then RenderIcon;
+  UpdateBackground(NewWidth);
+
+  Width := NewWidth;
+  Repaint;
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
@@ -216,7 +225,6 @@ begin
     if FileExists(s) then
     begin
       LoadBitmap32FromPNG(FIcon,s,b);
-      RenderIcon;
       o1 := o1 + Height - 4;
     end;
   end;
@@ -305,15 +313,9 @@ begin
   end;
 end;
 
-procedure TMainForm.RenderIcon;
-begin
-  if not sShowIcon then exit;
-
-  FIcon.DrawTo(Background.Bitmap,Rect(1,1,Height-1,Height-1));
-end;
-
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  Background := TBitmap32.Create;
   FIcon := TBitmap32.Create;
   FIcon.DrawMode := dmBlend;
   FIcon.CombineMode := cmMerge;
@@ -322,6 +324,7 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil(Background);
   FreeAndNil(FIcon);
   FreeAndNil(FWeatherParser);
 end;
@@ -329,6 +332,18 @@ end;
 procedure TMainForm.BackgroundDblClick(Sender: TObject);
 begin
   SharpApi.SharpExecute('http://www.weather.com/weather/local/'+slocation);
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+var
+  Bmp : TBitmap32;
+begin
+  Bmp := TBitmap32.Create;
+  Bmp.Assign(Background);
+  if showicon then
+     FIcon.DrawTo(Bmp,Rect(1,1,Height-1,Height-1));
+  Bmp.DrawTo(Canvas.Handle,0,0);
+  Bmp.Free;
 end;
 
 end.

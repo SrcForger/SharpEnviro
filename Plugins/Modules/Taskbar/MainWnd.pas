@@ -65,15 +65,15 @@ type
                 end;
 
   TMainForm = class(TForm)
-    Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SystemSkinManager: TSharpESkinManager;
     FlashTimer: TTimer;
-    ses_minall: TSharpEButton;
-    ses_maxall: TSharpEButton;
     TimedCheck: TTimer;
     ApplicationEvents1: TApplicationEvents;
+    ses_maxall: TSharpEButton;
+    ses_minall: TSharpEButton;
+    procedure FormPaint(Sender: TObject);
     procedure ApplicationEvents1ShowHint(var HintStr: string;
       var CanShow: Boolean; var HintInfo: THintInfo);
     procedure ses_maxallClick(Sender: TObject);
@@ -101,6 +101,7 @@ type
     FSpecialButtonWidth : integer;
     FDminA,FDmaxA : TBitmap32; // default min/max all images
     FCustomSkinSettings: TSharpECustomSkinSettings;
+    Background : TBitmap32;
   public
     TM: TTaskManager;
     IList: TObjectList;
@@ -132,6 +133,7 @@ type
     procedure AlignSpecialButtons;
     procedure UpdateCustomSettings;
     procedure RepaintComponents;
+    procedure UpdateBackground(new : integer = -1);
 
     procedure DebugOutPutInfo(msg : String);
     procedure DebugOutPutError(msg : String);
@@ -158,6 +160,15 @@ procedure TMainForm.DebugOutPutError(msg : String);
 begin
   if not sDebug then exit;
   SharpApi.SendDebugMessageEx('Module|Taskbar',PChar(msg),clMaroon,DMT_ERROR);
+end;
+
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
 end;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
@@ -563,9 +574,12 @@ end;
 procedure TMainForm.SetSize(NewWidth : integer);
 var
   i : integer;
+  new : integer;
 begin
   DebugOutPutInfo('TMainForm.SetSize (Procedure)');
-  Width := Max(NewWidth,1);
+  new := Max(NewWidth,1);
+  UpdateBackground(new);
+  Width := new;
   CalculateItemWidth(IList.Count);
   i := FSpecialButtonWidth + IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
   if i+1 < NewWidth then
@@ -573,10 +587,6 @@ begin
     Width := i+1;
     Hint := InttoStr(Width);
   end;
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
   CalculateItemWidth(IList.Count);
   AlignTaskComponents;
 end;
@@ -1013,7 +1023,7 @@ begin
 //     AlignTaskComponents;
   IList.Add(pTaskItem);
   pTaskItem.Width := sCurrentWidth;
-  pTaskItem.Parent := Background;
+  pTaskItem.Parent := self;
   pTaskItem.SkinManager := SystemSkinManager;
 //  pTaskItem.Left := FSpecialButtonWidth + (IList.Count-1) * sCurrentWidth + (IList.Count - 2) * sSpacing;
   pTaskItem.Left := Width;
@@ -1173,6 +1183,8 @@ begin
   DebugOutPutInfo('TMainForm.FormCreate (Procedure)');
   FCustomSkinSettings := TSharpECustomSkinSettings.Create;
 
+  Background := TBitmap32.Create;
+
   FDminA := TBitmap32.Create;
   FDmaxA := TBitmap32.Create;
 
@@ -1214,6 +1226,7 @@ begin
   TM.Free;
   IList.Clear;
   IList.Free;
+  FreeAndNil(Background);
   PostMessage(BarWnd,WM_UNREGISTERSHELLHOOK,self.handle,0);
 end;
 
@@ -1294,6 +1307,11 @@ begin
      HintInfo.HintPos.y := p.Y - 28
      else HintInfo.HintPos.y := p.Y + Height;
   CanShow := True;
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+  Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

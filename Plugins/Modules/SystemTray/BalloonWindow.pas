@@ -74,7 +74,6 @@ type
   end;
 
 var
-  cs : TColorScheme;
   offset: integer;
   RowCount: integer;
   BalloonRgn: hrgn;
@@ -377,17 +376,16 @@ var
   hej: hbrush;
   i: integer;
 begin
-  cs := LoadColorScheme;
-  backbuffer.Canvas.Pen.Color := cs.Throbberlight;
-  backbuffer.Canvas.Brush.Color := cs.Throbberlight;
-  self.Canvas.Brush.Color := cs.Throbberlight;
+  backbuffer.Canvas.Pen.Color := $C5958D;
+  backbuffer.Canvas.Brush.Color := $C5958D;
+  self.Canvas.Brush.Color := $C5958D;
   PaintRgn(self.canvas.Handle, BalloonRgn);
   hej := CreateSolidBrush(0);
   FrameRgn(self.canvas.Handle, BalloonRgn, hej, 1, 1);
   Deleteobject(hej);
   backbuffer.Canvas.Rectangle(0, 0, 20, 20);
   backbuffer.Canvas.Draw(0, 0, ChoosedIcon);
-  createdropshadow(@backbuffer, cs.Throbberlight, 0, 0);
+  createdropshadow(@backbuffer, $C5958D, 0, 0);
   self.Canvas.Draw(11, 8 + offset, BackBuffer);
   Canvas.Font.Style := [fsBold];
   self.Canvas.TextOut(34, 10 + offset, FixedTitle);
@@ -398,7 +396,7 @@ begin
   end;
   backbuffer.Canvas.Rectangle(0, 0, 20, 20);
   backbuffer.Canvas.Draw(0, 0, Image1.Picture.Icon);
-  changecolor(@backbuffer, clBlack, cs.Throbberdark, 1, 1, 1, 1);
+  changecolor(@backbuffer, clBlack, $5B4439, 1, 1, 1, 1);
   self.canvas.Draw(self.clientWidth - 23, 5 + offset, backbuffer);
 end;
 
@@ -422,7 +420,7 @@ begin
     begin
       backbuffer.Canvas.Rectangle(0, 0, 20, 20);
       backbuffer.Canvas.Draw(0, 0, Image1.Picture.Icon);
-      changecolor(@backbuffer, clBlack, cs.Throbberdark, 1, 1, 1, 1);
+      changecolor(@backbuffer, clBlack, $5B4439, 1, 1, 1, 1);
       self.canvas.Draw(self.clientWidth - 23, 5 + offset, backbuffer);
       bOverCross := false;
     end;

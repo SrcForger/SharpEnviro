@@ -34,21 +34,21 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, GR32, GR32_PNG, GR32_Image, SharpEBaseControls, SharpEButton,
+  Dialogs, StdCtrls, GR32, GR32_PNG, SharpEBaseControls, SharpEButton,
   SharpESkinManager,  ExtCtrls, SharpEProgressBar,
   JvSimpleXML, SharpApi, Menus, Math, SoundControls, MMSystem;
 
 
 type
   TMainForm = class(TForm)
-    Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     ClockTimer: TTimer;
-    pbar: TSharpEProgressBar;
     mute: TSharpEButton;
+    pbar: TSharpEProgressBar;
     cshape: TShape;
+    procedure FormPaint(Sender: TObject);
     procedure muteMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure cshapeMouseUp(Sender: TObject; Button: TMouseButton;
@@ -69,6 +69,7 @@ type
     FDLow,FDMed,FDHigh,FDMute : TBitmap32;
     lastvolume : integer;
     lastmute : boolean;
+    Background : TBitmap32;
     procedure InitDefaultImages;
   public
     ModuleID : integer;
@@ -76,6 +77,7 @@ type
     procedure LoadSettings;
     procedure SetSize(NewWidth : integer);
     procedure ReAlignComponents(BroadCast : boolean);
+    procedure UpdateBackground(new : integer = -1);
   end;
 
 
@@ -158,8 +160,21 @@ begin
   end;
 end;
 
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
 procedure TMainForm.SetSize(NewWidth : integer);
 begin
+  NewWidth := Max(NewWidth,1);
+
+  UpdateBackground(NewWidth);
+
   Width := NewWidth;
   
   mute.Width := Height + 2;
@@ -170,11 +185,6 @@ begin
   cshape.Top    := pbar.Top;
   cshape.Width  := pbar.Width;
   cshape.Height := pbar.Height;
-
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
@@ -241,6 +251,7 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  Background := TBitmap32.Create;
   FDLow  := TBitmap32.Create;
   FDMed  := TBitmap32.Create;
   FDHigh := TBitmap32.Create;
@@ -251,6 +262,7 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  Background.Free;
   FDLow.free;
   FDMed.free;
   FDHigh.free;
@@ -320,6 +332,11 @@ procedure TMainForm.muteMouseUp(Sender: TObject; Button: TMouseButton;
 begin
   if Button = mbRight then
        SharpApi.SharpExecute('sndvol32.exe');
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+  Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

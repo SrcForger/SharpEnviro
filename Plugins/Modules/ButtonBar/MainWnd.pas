@@ -33,10 +33,9 @@ unit MainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, ExtCtrls, Menus, Math,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, Menus, Math, GR32,
   JvSimpleXML,
-  Jclsysinfo,
   SharpApi,
   uSharpBarAPI,
   SharpEBaseControls,
@@ -56,10 +55,12 @@ type
                   end;
 
   TMainForm = class(TForm)
-    Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
+    procedure FormPaint(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure Settings1Click(Sender: TObject);
@@ -69,7 +70,8 @@ type
     sShowLabel   : boolean;
     FButtonSpacing : integer;
     sShowIcon    : boolean;
-    FButtonList : array of TButtonRecord;
+    FButtonList  : array of TButtonRecord;
+    Background   : TBitmap32;
     procedure ClearButtons;
     procedure AddButton(pTarget,pIcon,pCaption : String);
     procedure UpdateButtons;
@@ -80,6 +82,7 @@ type
     procedure LoadSettings;
     procedure ReAlignComponents(BroadCast : boolean);
     procedure SetWidth(new : integer);
+    procedure UpdateBackground(new : integer = -1);
   end;
 
 
@@ -110,7 +113,7 @@ begin
     btn.GlyphResize := True;
     btn.Hint := pTarget;
     btn.Width := sWidth;
-    btn.Parent := Background;
+    btn.Parent := self;
     btn.OnMouseUp := btnMouseUp;
     btn.SkinManager := SharpESkinManager1;
 
@@ -190,14 +193,22 @@ begin
   end;
 end;
 
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
 procedure TMainForm.SetWidth(new : integer);
 begin
-  Width := Max(new,1);
+  new := Max(new,1);
 
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
+  UpdateBackground(new);
+
+  Width := new;
 
   UpdateButtons;
 end;
@@ -284,6 +295,22 @@ begin
     if UPPERCASE(ActionStr) = '!SHOWMENU' then SetForegroundWindow(FindWindow(nil,'SharpMenuWMForm'));
     SharpApi.SharpExecute(ActionStr);
   end;
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  Background := TBitmap32.Create;
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  Background.Free;
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+  if Background <> nil then
+     Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

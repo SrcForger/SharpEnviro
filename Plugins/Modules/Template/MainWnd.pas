@@ -37,17 +37,19 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Menus, Math,
   // Custom Units
-  JvSimpleXML, Jclsysinfo, GR32, GR32_Image,
+  JvSimpleXML, GR32,
   // SharpE Units
   SharpApi, uSharpBarAPI, SharpEBaseControls, SharpESkin, SharpEScheme,
   SharpESkinManager;
 
 type
   TMainForm = class(TForm)
-    Background: TImage32;
     MenuPopup: TPopupMenu;
     MenuSettingsItem: TMenuItem;
     SkinManager: TSharpESkinManager;
+    procedure FormPaint(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure MenuSettingsItemClick(Sender: TObject);
   protected
   private
@@ -57,9 +59,11 @@ type
   public
     ModuleID : integer;
     BarWnd : hWnd;
+    Background : TBitmap32;
     procedure LoadSettings;
     procedure ReAlignComponents(BroadCast : boolean);
     procedure SetWidth(new : integer);
+    procedure UpdateBackground(new : integer = -1);
   end;
 
 // Skin Manager!
@@ -87,17 +91,26 @@ begin
   end;
 end;
 
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
 procedure TMainForm.SetWidth(new : integer);
 begin
   // The Module is receiving it's new size from the SharpBar!
   // Now change the size of the Form!
-  Width := Max(new,1);
+  new := Max(new,1);
 
   // Update the Background Bitmap!
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
+  UpdateBackground(new);
+
+  // Background is updated, now resize the form
+  Width := Max(new,1);
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
@@ -161,5 +174,20 @@ begin
   end;
 end;
 
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  Background := TBitmap32.Create;
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  Background.Free;
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+  Background.DrawTo(Canvas.Handle,0,0);
+end;
 
 end.

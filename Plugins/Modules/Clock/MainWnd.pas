@@ -34,21 +34,23 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, SharpEBaseControls,
+  Dialogs, StdCtrls, SharpEBaseControls,
   SharpESkinManager, JvSimpleXML, SharpApi, Menus, Math,
-  SharpESkinLabel, ExtCtrls;
+  SharpESkinLabel, GR32, ExtCtrls;
 
 
 type
   TMainForm = class(TForm)
-    Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
-    ClockTimer: TTimer;
-    lb_clock: TSharpESkinLabel;
     OpenWindowsDateTimesettings1: TMenuItem;
     lb_bottomclock: TSharpESkinLabel;
+    lb_clock: TSharpESkinLabel;
+    ClockTimer: TTimer;
+    procedure FormPaint(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure lb_clockDblClick(Sender: TObject);
     procedure ClockTimerTimer(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
@@ -57,12 +59,14 @@ type
     sFormat : String;
     sBottomFormat : String;
     sStyle  : TSharpELabelStyle;
+    Background : TBitmap32;
   public
     ModuleID : integer;
     BarWnd   : hWnd;
     procedure LoadSettings;
     procedure SetSize(NewWidth : integer);
     procedure ReAlignComponents(BroadCast : boolean);
+    procedure UpdateBackground(new : integer = -1);
   end;
 
 
@@ -99,19 +103,28 @@ begin
   lb_clock.Updateskin;
 end;
 
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
 procedure TMainForm.SetSize(NewWidth : integer);
 begin
+  NewWidth := Max(1,NewWidth);
+
+  UpdateBackground(NewWidth);
+
   Width := NewWidth;
+
   if lb_bottomClock.Visible then
   begin
     lb_clock.Left := newWidth div 2 - lb_clock.Width div 2;
     lb_bottomclock.Left := newWidth div 2 - lb_bottomclock.Width div 2;
   end else lb_clock.Left := 0;
-
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
@@ -218,6 +231,21 @@ end;
 procedure TMainForm.lb_clockDblClick(Sender: TObject);
 begin
   SharpApi.SharpExecute('timedate.cpl');
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  Background := TBitmap32.Create;
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  Background.Free;
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+  Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

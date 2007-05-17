@@ -34,8 +34,8 @@ interface
 
 uses
   Messages, Windows, SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, Menus, Math,
-  JvSimpleXML,
+  Dialogs, StdCtrls, Menus, Math,
+  JvSimpleXML, GR32,
   SharpApi,
   uSharpBarAPI,
   SharpEBaseControls,
@@ -51,11 +51,11 @@ uses
 
 type
   TMainForm = class(TForm)
-    Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
-    btn: TSharpEButton;
     SharpESkinManager1: TSharpESkinManager;
+    btn: TSharpEButton;
+    procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
@@ -74,6 +74,7 @@ type
     FCustomSettings : TSharpECustomSkinSettings;
     FCustomBmpList  : TSkinBitmapList;
     ModuleSize  : TModuleSize;
+    Background : TBitmap32;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
     ModuleID : integer;
@@ -84,6 +85,7 @@ type
     procedure ReAlignComponents(BroadCast : boolean);
     procedure UpdateCustomSkin;
     procedure SetWidth(new : integer);
+    procedure UpdateBackground(new : integer = -1);
   end;
 
 
@@ -181,15 +183,23 @@ begin
   UpdateIcon;
 end;
 
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
 procedure TMainForm.SetWidth(new : integer);
 begin
-  Width := Max(new,1);
-  btn.Width := max(1,Width - 4);
+  new := Max(new,1);
 
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
+  UpdateBackground(new);
+
+  Width := new;
+  btn.Width := max(1,Width - 4);
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
@@ -319,17 +329,24 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  Background := TBitmap32.Create;
   FCustomSettings := TSharpECustomSkinSettings.Create;
   FCustomBmpList  := TSkinBitmapList.Create;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  Background.Free;
   FCustomSettings.Free;
   FCustomBmpList.Clear;
   FCustomBmpList.Free;
 
   SharpApi.UnRegisterAction(PChar('!OpenMenu: '+sMenu));
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+  Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

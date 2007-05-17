@@ -34,18 +34,18 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types,
-  Dialogs, StdCtrls, GR32_Image, GR32, GR32_PNG, SharpEButton,
+  Dialogs, StdCtrls, GR32, GR32_PNG, SharpEButton,
   SharpESkinManager, JvSimpleXML, SharpApi, Menus, Math, NotesWnd,
   SharpEBaseControls;
 
 
 type
   TMainForm = class(TForm)
-    Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
-    Button: TSharpEButton;
     SharpESkinManager1: TSharpESkinManager;
+    Button: TSharpEButton;
+    procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ButtonClick(Sender: TObject);
@@ -59,6 +59,7 @@ type
     sTop         : integer;
     sWidth       : integer;
     sHeight      : integer;
+    Background   : TBitmap32;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
     procedure LoadIcon;
   public
@@ -74,6 +75,7 @@ type
     procedure UpdateBangs;
     procedure SetSize(NewWidth : integer);
     procedure ReAlignComponents(Broadcast : boolean);
+    procedure UpdateBackground(new : integer = -1);
   end;
 
 
@@ -188,15 +190,23 @@ begin
   end;
 end;
 
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
 procedure TMainForm.SetSize(NewWidth : integer);
 begin
+  NewWidth := Max(1,NewWidth);
+
+  UpdateBackground(NewWidth);
+
   Width := NewWidth;
   Button.Width := max(1,Width - 4);
-
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
 end;
 
 procedure TMainForm.ReAlignComponents;
@@ -299,12 +309,19 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  Background := TBitmap32.Create;
   NotesForm := nil;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  Background.Free;
   if NotesForm <> nil then FreeAndNil(NotesForm);
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+  Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

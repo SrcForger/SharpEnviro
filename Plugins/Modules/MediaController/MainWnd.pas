@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
+  Dialogs, StdCtrls, SharpEBaseControls, SharpEButton,
   SharpESkinManager, SharpESkin, 
   JvSimpleXML, SharpApi, Menus, Math, ShellApi,
   GR32, GR32_PNG, Types, ImgList;
@@ -44,16 +44,9 @@ type
   TMediaPlayerType = (mptFoobar,mptWinamp,mptMPC,mptQCD,mptWMP,mptVLC);
 
   TMainForm = class(TForm)
-    Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
-    btn_play: TSharpEButton;
-    btn_stop: TSharpEButton;
-    btn_pause: TSharpEButton;
-    btn_prev: TSharpEButton;
-    btn_next: TSharpEButton;
-    btn_pselect: TSharpEButton;
     playerpopup: TPopupMenu;
     Foobar20001: TMenuItem;
     Winamp1: TMenuItem;
@@ -62,6 +55,13 @@ type
     QCD1: TMenuItem;
     WindowsMediaPlayer1: TMenuItem;
     VLCMediaPlayer1: TMenuItem;
+    btn_pselect: TSharpEButton;
+    btn_next: TSharpEButton;
+    btn_prev: TSharpEButton;
+    btn_pause: TSharpEButton;
+    btn_stop: TSharpEButton;
+    btn_play: TSharpEButton;
+    procedure FormPaint(Sender: TObject);
     procedure VLCMediaPlayer1Click(Sender: TObject);
     procedure WindowsMediaPlayer1Click(Sender: TObject);
     procedure QCD1Click(Sender: TObject);
@@ -88,6 +88,7 @@ type
     FIconQCD    : TBitmap32;
     FIconWMP    : TBitmap32;
     FIconVLC    : TBitmap32;
+    Background  : TBitmap32;
   public
     ModuleID : integer;
     BarWnd : hWnd;
@@ -97,6 +98,7 @@ type
     procedure ReAlignComponents(BroadCast : boolean);
     procedure UpdatePSelectIcon;
     procedure InitDefaultImages;
+    procedure UpdateBackground(new : integer = -1);
   end;
 
 const
@@ -310,14 +312,22 @@ begin
   UpdatePSelectIcon;
 end;
 
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
 procedure TMainForm.SetSize(NewWidth : integer);
 begin
-  Width := NewWidth;
+  NewWidth := Max(1,NewWidth);
 
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
+  UpdateBackground;
+
+  Width := NewWidth;
 end;
 
 procedure TMainForm.ReAlignComponents;
@@ -597,6 +607,7 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  Background  := TBitmap32.Create;
   FIconFoobar := TBitmap32.Create;
   FIconWinAmp := TBitmap32.Create;
   FIconMPC    := TBitmap32.Create;
@@ -609,6 +620,7 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+ Background.Free;
  FIconFoobar.Free;
  FIconWinAmp.Free;
  FIconMPC.Free;
@@ -636,6 +648,11 @@ begin
   sPlayer := mptVLC;
   SaveSettings;
   UpdatePSelectIcon;
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+  Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

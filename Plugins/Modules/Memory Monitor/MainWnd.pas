@@ -34,24 +34,26 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, SharpEBaseControls,
+  Dialogs, StdCtrls, SharpEBaseControls, GR32,
   SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
   JvSimpleXML, SharpApi, Menus, Math, SharpESkinLabel;
 
 
 type
   TMainForm = class(TForm)
-    Background: TImage32;
-    rambar: TSharpEProgressBar;
     UpdateTimer: TTimer;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
-    swpbar: TSharpEProgressBar;
     SharpESkinManager1: TSharpESkinManager;
-    lb_ram: TSharpESkinLabel;
-    lb_swp: TSharpESkinLabel;
-    lb_rambar: TSharpESkinLabel;
     lb_swpbar: TSharpESkinLabel;
+    lb_rambar: TSharpESkinLabel;
+    lb_swp: TSharpESkinLabel;
+    lb_ram: TSharpESkinLabel;
+    swpbar: TSharpEProgressBar;
+    rambar: TSharpEProgressBar;
+    procedure FormPaint(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure BackgroundDblClick(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
     procedure UpdateTimerTimer(Sender: TObject);
@@ -67,12 +69,14 @@ type
     ShowSWPInfo : boolean;
     ItemAlign   : integer;
     sITC        : integer;
+    Background  : TBitmap32;
   public
     ModuleID : integer;
     BarWnd : hWnd;
     procedure LoadSettings;
     procedure SetSize(NewWidth : integer);
     procedure ReAlignComponents(BroadCast : boolean);
+    procedure UpdateBackground(new : integer = -1);
   end;
 
 
@@ -119,15 +123,23 @@ begin
   end;
 end;
 
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
 procedure TMainForm.SetSize(NewWidth : integer);
 begin
+  NewWidth := Max(1,NewWidth);
+
+  UpdateBackground(NewWidth);
+
   Width := NewWidth;
   ReAlignComponents(False);
-
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
 end;
 
 procedure TMainForm.ReAlignComponents(Broadcast : boolean);
@@ -499,6 +511,21 @@ end;
 procedure TMainForm.BackgroundDblClick(Sender: TObject);
 begin
   SharpApi.SharpExecute('TaskMgr.exe');
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  Background := TBitmap32.Create;
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  Background.Free;
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+  Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

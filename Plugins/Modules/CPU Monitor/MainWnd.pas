@@ -43,12 +43,12 @@ uses
 type
 
   TMainForm = class(TForm)
-    Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SkinManager: TSharpESkinManager;
-    pbar: TSharpEProgressBar;
     cpugraphcont: TImage32;
+    pbar: TSharpEProgressBar;
+    procedure FormPaint(Sender: TObject);
     procedure cpugraphcontDblClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -71,12 +71,13 @@ type
     ModuleID : integer;
     BarWnd   : hWnd;
     cpuusage : TCPUUsage;
-    bgbmp    : TBitmap32;
     cpugraph : TBitmap32;
+    background : TBitmap32;
     procedure SetSize(NewWidth : integer);
     procedure LoadSettings;
     procedure ReAlignComponents(broadcast : boolean);
     procedure UpdateGraph;
+    procedure UpdateBackground(new : integer = -1);
   end;
 
 
@@ -189,7 +190,7 @@ begin
              cpugraphcont.Bitmap.SetSize(Max(Width - 4,4),Height -4);
              cpugraph.SetSize(cpugraphcont.Bitmap.Width-2,cpugraphcont.Bitmap.Height-2);
              cpugraph.Clear(color32(0,0,0,0));
-             bgbmp.DrawTo(cpugraphcont.Bitmap,-2,-2);
+             background.DrawTo(cpugraphcont.Bitmap,-2,-2);
              c := ColorToColor32(sBorderColor,sBorderAlpha);
              cpugraphcont.Bitmap.FrameRectS(0,0,cpugraph.Width,cpugraph.Height,c);
              c := ColorToColor32(sBGColor,sBGAlpha);
@@ -208,17 +209,23 @@ begin
   end;
 end;
 
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
 procedure TMainForm.SetSize(NewWidth : integer);
 begin
+  NewWidth := Max(1,NewWidth);
+
+  UpdateBackground(NewWidth);
+
   Width := NewWidth;
   ReAlignComponents(False);
-
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
-
-  BGBmp.Assign(Background.Bitmap);
 end;
 
 
@@ -353,7 +360,7 @@ begin
     begin
       cpugraphcont.Bitmap.BeginUpdate;
       cpugraphcont.Bitmap.Clear(color32(0,0,0,0));
-      bgbmp.DrawTo(cpugraphcont.Bitmap,-cpugraphcont.left,-cpugraphcont.Top);
+      background.DrawTo(cpugraphcont.Bitmap,-cpugraphcont.left,-cpugraphcont.Top);
       c1 := ColorToColor32(sBorderColor,sBorderAlpha);
       cpugraphcont.Bitmap.FrameRectTS(0,0,cpugraphcont.Bitmap.Width,cpugraphcont.Bitmap.Height,c1);
       cpugraphcont.Bitmap.EndUpdate;
@@ -367,7 +374,7 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  bgbmp := TBitmap32.Create;
+  background := TBitmap32.Create;
   cpugraph := TBitmap32.Create;
   cpugraph.DrawMode := dmBlend;
   cpugraph.CombineMode := cmMerge;
@@ -376,7 +383,7 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  bgbmp.Free;
+  background.Free;
   cpugraph.Free;
   FreeAndNil(FCustomSkinSettings);
 end;
@@ -384,6 +391,11 @@ end;
 procedure TMainForm.cpugraphcontDblClick(Sender: TObject);
 begin
   SharpApi.SharpExecute('TaskMgr.exe');
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+  Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.
