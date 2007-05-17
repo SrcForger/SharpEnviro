@@ -198,7 +198,6 @@ type
     procedure WMForceObjectReload(var msg : TMessage);    message WM_FORCEOBJECTRELOAD;
     procedure WMWeatherUpdate(var msg : TMessage);        message WM_WEATHERUPDATE;
     procedure msg_EraseBkgnd(var msg : TMessage);         message WM_ERASEBKGND;
-    procedure WMKILLFOCUS(var msg : TMessage);            message WM_KILLFOCUS;
     procedure WMMouseLeave(var Msg: TMessage);            message CM_MOUSELEAVE;
     procedure WMMouseMove(var Msg: TMessage);             message WM_MOUSEMOVE;
     procedure WMSharpTerminate(var Msg : TMessage);       message WM_SHARPTERMINATE;
@@ -374,23 +373,6 @@ begin
   SharpApi.SendDebugMessage('DESK','MOUSE LEAVE',0);}
 end;
 
-procedure TSharpDeskMainForm.WMKILLFOCUS(var msg : TMessage);
-begin
-  if not Created then
-  begin
-    begin
-      if not TaskTM then setwindowpos(FindWindow('SharpE_Task', nil), HWND_NOTOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
-      if not BarTM  then setwindowpos(FindWindow('TSharpBarMainForm', nil), HWND_NOTOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
-      if not VWMTM  then setwindowpos(FindWindow('SharpE_VWM', nil), HWND_NOTOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
-      if not TrayTM then setwindowpos(FindWindow('TTrayWindow', nil), HWND_NOTOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
-      setwindowpos(SharpDeskMainForm.Handle, HWND_TOP, Screen.DesktopLeft,Screen.DesktopTop,
-                   Screen.DesktopWidth, Screen.DesktopHeight, SWP_NOZORDER);
-      SharpDeskMainForm.SetZOrder(False);
-      Created := True;
-    end;
-  end;
-end;
-
 procedure TSharpDeskMainForm.WMDeskExportBackground(var Msg : TMessage);
 var
    TempBMP : TBitmap32;
@@ -446,7 +428,6 @@ begin
   SharpApi.RegisterActionEx('!EditCurrentTheme','SharpTheme',SharpDeskMainForm.Handle,1);
   SharpApi.RegisterActionEx('!ThemeManager','SharpTheme',SharpDeskMainForm.Handle,2);
   SharpApi.RegisterActionEx('!AddDesktopObject','SharpDesk',SharpDeskMainForm.Handle,3);
-//  SharpApi.RegisterActionEx('!Show/HideDesktop','SharpDesk',SharpDeskMainForm.Handle,4);
   SharpApi.RegisterActionEx('!SharpDeskSettings','SharpDesk',SharpDeskMainForm.Handle,5);
   SharpApi.RegisterActionEx('!CloseSharpDesk','SharpDesk',SharpDeskMainForm.Handle,6);
 end;
@@ -484,41 +465,6 @@ begin
         if SharpDesk.Desksettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
       end;
    4 : begin
-         if Created then
-         begin
-           Created := False;
-           setwindowpos(SharpDeskMainForm.Handle, HWND_TOP, Screen.DesktopLeft,Screen.DesktopTop,
-                        Screen.DesktopWidth, Screen.DesktopHeight, SWP_SHOWWINDOW);
-           ForceForegroundWindow(SharpDeskMainForm.Handle);
-           if CreateForm.Visible       then ForceForegroundWindow(CreateForm.Handle);
-           if SettingsForm.Visible     then ForceForegroundWindow(SettingsForm.Handle);
-
-           handle := FindWindow('SharpE_Task', nil);
-           TaskTM := IsTopMost(handle);
-           setwindowpos(handle, HWND_TOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
-
-           handle := FindWindow('TSharpBarMainForm', nil);
-           BarTM := IsTopMost(handle);
-           setwindowpos(handle, HWND_TOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
-
-           handle := FindWindow('SharpE_VWM', nil);
-           VWMTM := IsTopMost(handle);
-           setwindowpos(handle, HWND_TOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
-
-           handle := FindWindow('TTrayWindow', nil);
-           TrayTM := IsTopMost(handle);
-           setwindowpos(handle, HWND_TOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
-         end else
-         begin
-           if not TaskTM then setwindowpos(FindWindow('SharpE_Task', nil), HWND_NOTOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
-           if not BarTM  then setwindowpos(FindWindow('TSharpBarMainForm', nil), HWND_NOTOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
-           if not VWMTM  then setwindowpos(FindWindow('SharpE_VWM', nil), HWND_NOTOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
-           if not TrayTM then setwindowpos(FindWindow('TTrayWindow', nil), HWND_NOTOPMOST, 0,0,0,0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOREPOSITION);
-           setwindowpos(SharpDeskMainForm.Handle, HWND_TOP, Screen.DesktopLeft,Screen.DesktopTop,
-                        Screen.DesktopWidth, Screen.DesktopHeight, SWP_NOZORDER);
-           SharpDeskMainForm.SetZOrder(False);
-           Created := True;
-         end;
        end;
    5 : WMShowDesktopSettings(msg);
    6 : WMCloseDesk(msg);
@@ -655,7 +601,6 @@ begin
      SharpApi.RegisterActionEx('!EditCurrentTheme','SharpTheme',SharpDeskMainForm.Handle,1);
      SharpApi.RegisterActionEx('!ThemeManager','SharpTheme',SharpDeskMainForm.Handle,2);
      SharpApi.RegisterActionEx('!AddDesktopObject','SharpDesk',SharpDeskMainForm.Handle,3);
-     SharpApi.RegisterActionEx('!Show/HideDesktop','SharpDesk',SharpDeskMainForm.Handle,4);
      SharpApi.RegisterActionEx('!SharpDeskSettings','SharpDesk',SharpDeskMainForm.Handle,5);
      SharpApi.RegisterActionEx('!CloseSharpDesk','SharpDesk',SharpDeskMainForm.Handle,6);
      SendMessageToConsole('creating main window',COLOR_OK,DMT_STATUS);
@@ -691,9 +636,6 @@ begin
      SharpDeskMainForm.Height:=Screen.DesktopHeight;
      LoadTheme(True);
      SharpDeskMainForm.BackgroundImage.RepaintMode := rmOptimizer;
-//     MainForm.BackgroundImage.UseRepaintOptimizer := True;
-//     MainForm.BackgroundImage.RenderingOptimizations := [roLayerResize,roLayerUpdate];
-//     MainForm.BackgroundImage.RenderingOptimizations := [];
 end;
 
 
@@ -701,16 +643,7 @@ end;
 
 
 procedure TSharpDeskMainForm.FormShow(Sender: TObject);
-{var
-  Owner: HWnd;  }
 begin
-  //window handling
- // Owner := GetWindow(MainForm.Handle, GW_OWNER);
- //  ShowWindow(Owner, SW_HIDE);
- // SetWindowLong(application.handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
- // SetWindowLong(MainForm.handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
- // SetWindowLong(MainForm.handle, GWL_USERDATA, magicDWord); //used for vwm
-
   if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
      else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
 end;
@@ -727,7 +660,6 @@ begin
   SharpApi.UnRegisterAction('!AddDesktopObject');
   SharpApi.UnRegisterAction('!EditCurrentTheme');
   SharpApi.UnRegisterAction('!ThemeManager');
-  SharpApi.UnRegisterAction('!Show/HideDesktop');
   SharpApi.UnRegisterAction('!SharpDeskSettings');
   SharpApi.UnRegisterAction('!Show/CloseSharpDesk');
   SharpDesk.ObjectSetList.SaveSettings;
@@ -737,9 +669,6 @@ begin
   Background.Destroy;
   SharpApi.SharpEBroadCast(WM_DESKCLOSING,0,0);
 end;
-
-
-// ######################################
 
 
 // ######################################

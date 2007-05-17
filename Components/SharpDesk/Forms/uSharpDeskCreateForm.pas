@@ -59,7 +59,6 @@ type
 
 var
    CreateForm: TCreateForm;
-   cs : TColorScheme;
    OldItem : integer;
    SettingsWnd : hwnd;
 
@@ -166,7 +165,6 @@ procedure TCreateForm.FormShow(Sender: TObject);
 var
   n : integer;
 begin
-  cs:=LoadColorScheme;
   edit_filter.Text := '';
   BuildObjectList;
   n := GetCurrentMonitor;

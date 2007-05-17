@@ -52,10 +52,6 @@ procedure CopyXML(Source,Target : TJvSimpleXMLElems);
 function GetCurrentMonitor : integer;
 function HasVisiblePixel(Bitmap: TBitmap32): Boolean;     
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
-function CodeToColor(ColorCode : integer; ColorScheme: TColorScheme) : integer;
-function ColorToCode(Color : integer; ColorScheme: TColorScheme) : integer;
-function CodeToColorEx(ColorCode : integer; ColorScheme: TColorSchemeEx) : integer;
-function ColorToCodeEx(Color : integer; ColorScheme: TColorSchemeEx) : integer;
 function GetBitmapSize(pBitmap : TBitmap32; pSList : TStringList) : TPoint;
 function ForceForegroundWindow(hwnd: THandle): Boolean;
 procedure CopyMenuItems(const Item1,Item2 : TMenuItem; ImageIndexMod : integer; UseParent : boolean);
@@ -243,59 +239,6 @@ begin
     Result := (GetForegroundWindow = hwnd);  
   end;  
 end; { ForceForegroundWindow }
-
-function CodeToColor(ColorCode : integer; ColorScheme: TColorScheme) : integer;
-begin
-  case ColorCode of
-   -1 : result := ColorScheme.Throbberback;
-   -2 : result := ColorScheme.Throbberdark;
-   -3 : result := ColorScheme.Throbberlight;
-   -4 : result := ColorScheme.WorkAreaback;
-   -5 : result := ColorScheme.WorkAreadark;
-   -6 : result := ColorScheme.WorkArealight;
-   else result := ColorCode;
-  end;
-end;
-
-function CodeToColorEx(ColorCode : integer; ColorScheme: TColorSchemeEX) : integer;
-begin
-  case ColorCode of
-   -1 : result := ColorScheme.Throbberback;
-   -2 : result := ColorScheme.Throbberdark;
-   -3 : result := ColorScheme.Throbberlight;
-   -4 : result := ColorScheme.WorkAreaback;
-   -5 : result := ColorScheme.WorkAreadark;
-   -6 : result := ColorScheme.WorkArealight;
-   -7 : result := ColorScheme.ThrobberText;
-   -8 : result := ColorScheme.WorkAreaText;
-   else result := ColorCode;
-  end;
-end;
-
-function ColorToCodeEx(Color : integer; ColorScheme: TColorSchemeEX) : integer;
-begin
-  if      Color = ColorScheme.Throbberback  then result := -1
-  else if Color = ColorScheme.Throbberdark  then result := -2
-  else if Color = ColorScheme.Throbberlight then result := -3
-  else if Color = ColorScheme.ThrobberText  then result := -7
-  else if Color = ColorScheme.WorkAreaback  then result := -4
-  else if Color = ColorScheme.WorkAreadark  then result := -5
-  else if Color = ColorScheme.WorkArealight then result := -6
-  else if Color = ColorScheme.WorkAreaText  then result := -8
-  else result := Color;
-end;
-
-function ColorToCode(Color : integer; ColorScheme: TColorScheme) : integer;
-begin
-  if      Color = ColorScheme.Throbberback  then result := -1
-  else if Color = ColorScheme.Throbberdark  then result := -2
-  else if Color = ColorScheme.Throbberlight then result := -3
-  else if Color = ColorScheme.WorkAreaback  then result := -4
-  else if Color = ColorScheme.WorkAreadark  then result := -5
-  else if Color = ColorScheme.WorkArealight then result := -6
-  else result := Color;
-end;
-
 
 function GetBitmapSize(pBitmap : TBitmap32; pSList : TStringList) : TPoint;
 var

@@ -115,17 +115,6 @@ begin
      end;
 
   Application.CreateForm(TSharpDeskMainForm, SharpDeskMainForm);
-  Application.CreateForm(TCreateForm, CreateForm);
-  //Application.CreateForm(TSharpDeskLayeredWindow, SharpDeskLayeredWindow);
-  MuteXHandle := OpenMutex(MUTEX_ALL_ACCESS,False,'SharpThemeMutex');
-  if MuteXHandle <> 0 then
-  begin
-    uSharpDeskMainForm.Sharpdesk.DisableAnimation;
-    SharpDeskMainForm.Enabled := False;
-  end;
-  CloseHandle(MuteXHandle);
-
-  Application.CreateForm(TCreateForm, CreateForm);
   Application.CreateForm(TSettingsForm, SettingsForm);
   Application.CreateForm(TCreateForm, CreateForm);
 
