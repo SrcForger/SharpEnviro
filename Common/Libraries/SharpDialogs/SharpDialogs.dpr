@@ -48,6 +48,7 @@ uses
   ShellApi,
   ShlObj,
   SharpApi,
+  SharpApiEx,
   ExPopupList,
   SharpIconUtils in '..\..\Units\SharpIconUtils\SharpIconUtils.pas',
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas',
@@ -389,7 +390,7 @@ begin
         menuItem.ImageIndex := 1;
         targetmenu.Items.Items[mindex].Add(menuItem);
 
-        SList.CommaText := SharpApi.GetRecentItems(10);
+        SList.CommaText := SharpApiEx.GetRecentItems(10);
         for n := 0 to SList.Count -1 do
         begin
           menuItem := TMenuItem.Create(targetmenu);
@@ -410,7 +411,7 @@ begin
         targetmenu.Items.Items[mindex].Add(menuItem);
         //mindex := mindex + 1;
 
-        SList.CommaText := SharpApi.GetMostUsedItems(10);
+        SList.CommaText := SharpApiEx.GetMostUsedItems(10);
         for n := 0 to SList.Count -1 do
         begin
           menuItem := TMenuItem.Create(targetmenu);
@@ -530,7 +531,7 @@ begin
       mindex := mindex + 1;
 
       SList.Clear;
-      SList.DelimitedText := SharpApi.GetDelimitedActionList;
+      SList.DelimitedText := SharpApiEx.GetDelimitedActionList;
       SList.Sort;
       s := '';
       for n := 0 to SList.Count - 1 do
