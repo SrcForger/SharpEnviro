@@ -12,6 +12,7 @@ object frmIconList: TfrmIconList
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
@@ -20,7 +21,7 @@ object frmIconList: TfrmIconList
     Left = 0
     Top = 0
     Width = 426
-    Height = 192
+    Height = 291
     Columns = <
       item
         Width = 256
@@ -38,27 +39,5 @@ object frmIconList: TfrmIconList
     Borderstyle = bsNone
     Ctl3d = False
     Align = alClient
-  end
-  object previewpanel: TPanel
-    Left = 0
-    Top = 192
-    Width = 426
-    Height = 99
-    Align = alBottom
-    BevelOuter = bvNone
-    Color = clWindow
-    TabOrder = 1
-    object iconpreview: TImage32
-      Left = 0
-      Top = 0
-      Width = 426
-      Height = 99
-      Align = alClient
-      Bitmap.ResamplerClassName = 'TNearestResampler'
-      BitmapAlign = baTopLeft
-      Scale = 1.000000000000000000
-      ScaleMode = smNormal
-      TabOrder = 0
-    end
   end
 end

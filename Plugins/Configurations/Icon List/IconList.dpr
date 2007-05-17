@@ -35,6 +35,8 @@ uses
   Forms,
   Dialogs,
   JvSimpleXml,
+  GR32,
+  GR32_Image,
   PngSpeedButton,
   uVistaFuncs,
   SysUtils,
@@ -151,6 +153,17 @@ function SetSettingType : integer;
 begin
   result := SU_ICONSET;
 end;
+procedure UpdatePreview(var AImage32:TImage32);
+begin
+  AImage32.Bitmap.Clear(clWhite32);
+  if (frmIconList.lb_iconlist.ItemIndex < 0) or
+     (frmIconList.lb_iconlist.Count = 0) then
+     exit;
+
+  frmIconList.Preview.DrawTo(AImage32.Bitmap,
+                             AImage32.Width div 2 - frmIconList.Preview.Width div 2,
+                             AImage32.Height div 2 - frmIconList.Preview.Height div 2);
+end;
 
 
 exports
@@ -162,7 +175,8 @@ exports
   SetSettingType,
   GetCenterScheme,
   AddTabs,
-  ClickBtn;
+  ClickBtn,
+  UpdatePreview;
 
 end.
 

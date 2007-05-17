@@ -47,8 +47,7 @@ type
 type
   TfrmIconList = class(TForm)
     lb_iconlist: TSharpEListBoxEx;
-    previewpanel: TPanel;
-    iconpreview: TImage32;
+    procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure lb_iconlistClickItem(AText: string; AItem, ACol: Integer);
     procedure FormCreate(Sender: TObject);
@@ -58,6 +57,7 @@ type
   public
     sCurrentIconSet : String;
     sTheme : String;
+    Preview : TBitmap32;
     procedure BuildIconList;
   end;
 
@@ -82,7 +82,8 @@ end;
 
 procedure TfrmIconList.FormCreate(Sender: TObject);
 begin
-  Self.DoubleBuffered := true;
+  Preview := TBitmap32.Create;
+  DoubleBuffered := true;
 end;
 
 procedure TfrmIconList.BuildIconPreview;
@@ -98,7 +99,11 @@ var
   w,h : integer;
   IconCount : integer;
 begin
-  if lb_iconlist.ItemIndex < 0 then exit;
+  if lb_iconlist.ItemIndex < 0 then
+  begin
+    SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 0);
+    exit;
+  end;
 
   Dir := SharpApi.GetSharpeDirectory + 'Icons\' + lb_iconlist.Item[lb_iconlist.ItemIndex].SubItemText[1] + '\';
 
@@ -110,7 +115,7 @@ begin
 
   Bmp32 := TBitmap32.Create;
   Bmp32.SetSize(32,32);
-  Bmp32.Clear(color32(IconPreview.Color));
+  Bmp32.Clear(color32(clWhite));
 
   try
     if FileExists(Dir + 'IconSet.xml') then
@@ -119,11 +124,11 @@ begin
       if XML.Root.Items.ItemNamed['Icons'] <> nil then
       begin
         IconCount := XML.Root.Items.ItemNamed['Icons'].Items.Count;
-        w := (IconPreview.Width div IconSize) * IconSize;
+        w := ((Width - 64) div IconSize) * IconSize;
         h := (IconCount div (w div IconSize) + 1) * IconSize;
 
         Bmp32.SetSize(w,h);
-        Bmp32.Clear(color32(IconPreview.Color));
+        Bmp32.Clear(color32(clWhite));
 
         x := 0;
         y := 0;
@@ -145,12 +150,13 @@ begin
   except
   end;
 
-  IconPreview.Bitmap.Assign(bmp32);
-  previewpanel.Height := bmp32.Height;
+  Preview.Assign(bmp32);
 
   Icon.Free;
   Bmp32.Free;
   XML.Free;
+
+  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 0);
 end;
 
 procedure TfrmIconList.BuildIconList;
@@ -201,6 +207,11 @@ end;
 procedure TfrmIconList.FormResize(Sender: TObject);
 begin
   BuildIconPreview;
+end;
+
+procedure TfrmIconList.FormDestroy(Sender: TObject);
+begin
+  Preview.Free;
 end;
 
 end.
