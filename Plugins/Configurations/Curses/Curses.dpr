@@ -34,6 +34,8 @@ uses
   Windows,
   Forms,
   Dialogs,
+  GR32_Image,
+  GR32,
   JvSimpleXml,
   PngSpeedButton,
   uVistaFuncs,
@@ -159,6 +161,18 @@ begin
   result := SU_CURSOR;
 end;
 
+procedure UpdatePreview(var AImage32:TImage32);
+begin
+  AImage32.Bitmap.Clear(clWhite32);
+  if (frmCursesList.lb_CursorList.ItemIndex < 0) or
+     (frmCursesList.lb_CursorList.Count = 0) then
+     exit;
+
+  frmCursesList.Preview.DrawTo(AImage32.Bitmap,
+                               AImage32.Width div 2 - frmCursesList.Preview.Width div 2,
+                               AImage32.Height div 2 - frmCursesList.Preview.Height div 2); 
+end;
+
 
 exports
   Open,
@@ -169,7 +183,8 @@ exports
   SetSettingType,
   GetCenterScheme,
   AddTabs,
-  ClickBtn;
+  ClickBtn,
+  UpdatePreview;
 
 end.
 

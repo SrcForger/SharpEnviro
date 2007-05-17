@@ -48,11 +48,10 @@ type
 type
   TfrmCursesList = class(TForm)
     lb_CursorList: TSharpEListBoxEx;
-    previewpanel: TPanel;
-    cursorpreview: TImage32;
     Panel1: TPanel;
     SharpESwatchManager1: TSharpESwatchManager;
     ccolors: TSharpEColorEditorEx;
+    procedure FormDestroy(Sender: TObject);
     procedure ccolorsChangeColor(ASender: TObject; AColorCode: Integer);
     procedure FormResize(Sender: TObject);
     procedure lb_CursorListClickItem(AText: string; AItem, ACol: Integer);
@@ -61,6 +60,7 @@ type
   private
     procedure BuildCursorPreview;
   public
+    Preview : TBitmap32;
     sCurrentCursor : String;
     sTheme : String;
     procedure BuildCursorList;
@@ -69,7 +69,7 @@ type
 var
   frmCursesList: TfrmCursesList;
 
-  CursorItemArray: array[0..9] of string = ('appstarting.bmp', 'wait.bmp',
+  CursorItemArray: array[0..10] of string = ('normal.bmp','appstarting.bmp', 'wait.bmp',
     'hand.bmp', 'no.bmp', 'ibeam.bmp', 'sizeall.bmp',
     'sizenesw.bmp', 'sizens.bmp', 'sizenwse.bmp', 'sizewe.bmp');
 
@@ -91,7 +91,8 @@ end;
 
 procedure TfrmCursesList.FormCreate(Sender: TObject);
 begin
-  Self.DoubleBuffered := true;
+  Preview := TBitmap32.Create;
+  DoubleBuffered := true;
 end;
 
 procedure TfrmCursesList.BuildCursorPreview;
@@ -106,7 +107,11 @@ var
   w,h : integer;
   IconCount : integer;
 begin
-  if lb_CursorList.ItemIndex < 0 then exit;
+  if (lb_CursorList.ItemIndex < 0) or (lb_CursorList.Count = 0) then
+  begin
+    SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 0);
+    exit;
+  end;
 
   Dir := SharpApi.GetSharpeDirectory + 'Cursors\' + lb_CursorList.Item[lb_CursorList.ItemIndex].SubItemText[2] + '\';
 
@@ -119,11 +124,11 @@ begin
   Bmp.CombineMode := cmMerge;
 
   IconCount := length(CursorItemArray);
-  w := (CursorPreview.Width div IconSize) * IconSize;
+  w := ((Width - 64) div IconSize) * IconSize;
   h := (IconCount div (w div IconSize) + 1) * IconSize;
 
   Bmp32.SetSize(w,h);
-  Bmp32.Clear(color32(CursorPreview.Color));
+  Bmp32.Clear(color32(clWhite));
 
   x := 0;
   y := 0;
@@ -143,17 +148,18 @@ begin
     end;
   end;
 
-  ReplaceColor32(bmp32,color32(1,1,1,255),color32(CursorPreview.Color));
+  ReplaceColor32(bmp32,color32(1,1,1,255),color32(clWhite));
   ReplaceColor32(bmp32,color32(255,1,1,255),color32(ccolors.Items.Item[0].ColorAsTColor));
   ReplaceColor32(bmp32,color32(1,1,255,255),color32(ccolors.Items.Item[1].ColorAsTColor));
   ReplaceColor32(bmp32,color32(1,255,1,255),color32(ccolors.Items.Item[2].ColorAsTColor));
   ReplaceColor32(bmp32,color32(255,255,1,255),color32(ccolors.Items.Item[3].ColorAsTColor));
 
-  CursorPreview.Bitmap.Assign(bmp32);
-  previewpanel.Height := bmp32.Height;
+  Preview.Assign(bmp32);
 
   Bmp.Free;
   Bmp32.Free;
+
+  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 0);
 end;
 
 procedure TfrmCursesList.BuildCursorList;
@@ -216,6 +222,11 @@ begin
   BuildCursorPreview;
   if Visible then
      SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
+end;
+
+procedure TfrmCursesList.FormDestroy(Sender: TObject);
+begin
+  Preview.Free;
 end;
 
 end.

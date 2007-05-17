@@ -12,48 +12,26 @@ object frmCursesList: TfrmCursesList
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object previewpanel: TPanel
-    Left = 0
-    Top = 40
-    Width = 426
-    Height = 32
-    Align = alBottom
-    BevelOuter = bvNone
-    Color = clWindow
-    TabOrder = 0
-    object cursorpreview: TImage32
-      Left = 0
-      Top = 0
-      Width = 426
-      Height = 32
-      Align = alClient
-      Bitmap.ResamplerClassName = 'TNearestResampler'
-      BitmapAlign = baTopLeft
-      ParentColor = False
-      Scale = 1.000000000000000000
-      ScaleMode = smNormal
-      TabOrder = 0
-    end
-  end
   object Panel1: TPanel
     Left = 0
     Top = 0
     Width = 426
-    Height = 40
+    Height = 72
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Panel1'
     ParentColor = True
-    TabOrder = 1
+    TabOrder = 0
     object lb_CursorList: TSharpEListBoxEx
       Left = 0
       Top = 0
       Width = 426
-      Height = 40
+      Height = 72
       Columns = <
         item
           Width = 256
@@ -95,13 +73,17 @@ object frmCursesList: TfrmCursesList
     BorderStyle = bsNone
     Color = clWindow
     ParentColor = False
-    TabOrder = 2
+    TabOrder = 1
     Items = <
       item
         Title = 'Primary Color'
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
+        ColorEditorType = cetColor
+        ValueMax = 0
+        ValueMin = 0
+        Value = 0
         ColorEditor = ccolors.Item0
         Tag = 0
       end
@@ -110,6 +92,10 @@ object frmCursesList: TfrmCursesList
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
+        ColorEditorType = cetColor
+        ValueMax = 0
+        ValueMin = 0
+        Value = 0
         ColorEditor = ccolors.Item1
         Tag = 0
       end
@@ -118,6 +104,10 @@ object frmCursesList: TfrmCursesList
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
+        ColorEditorType = cetColor
+        ValueMax = 0
+        ValueMin = 0
+        Value = 0
         ColorEditor = ccolors.Item2
         Tag = 0
       end
@@ -126,6 +116,10 @@ object frmCursesList: TfrmCursesList
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
+        ColorEditorType = cetColor
+        ValueMax = 0
+        ValueMin = 0
+        Value = 0
         ColorEditor = ccolors.Item3
         Tag = 0
       end>
