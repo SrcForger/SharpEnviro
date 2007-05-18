@@ -98,12 +98,13 @@ begin
   ListOfServices := new(TServiceList);
   ListOfServices.next := nil;
   list := tstringlist.create;
-  reg := TRegIniFile.Create;
+  //reg := TRegIniFile.Create;
   try
     wChar := Allocmem(100);
-    reg.RootKey := HKEY_LOCAL_MACHINE;
+    list.add('{730F6CDC-2C86-11D2-8773-92E220524153}');
+{    reg.RootKey := HKEY_LOCAL_MACHINE;
     reg.OpenKeyReadOnly('\Software\Microsoft\Windows\CurrentVersion\explorer\ShellServiceObjects');
-    reg.GetKeyNames(list);
+    reg.GetKeyNames(list);}
     tempList := ListOfServices;
     for i := 0 to list.count - 1 do
     begin
@@ -127,10 +128,10 @@ begin
       end;
     end;
     freemem(WChar, 100);
-    reg.CloseKey;
+    //reg.CloseKey;
   finally
     list.Free;
-    reg.Free;
+    //reg.Free;
   end;
 end;
 
