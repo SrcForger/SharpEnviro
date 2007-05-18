@@ -36,6 +36,34 @@ type
 
   pDispInfo = ^tagNMTTDISPINFO;
 
+  TNotifyIconDataV7 = record
+    cbSize: DWORD;
+    Wnd: HWND;
+    uID: UINT;
+    uFlags: UINT;
+    uCallbackMessage: UINT;
+    Icon: HICON;
+    szTip: ArrayWideChar128; //<5 gives [0..64]
+    //Version 5
+    dwState: DWORD;
+    dwStateMask: DWORD;
+    szInfo: ArrayWideChar256;
+
+    //This two below should be Uninon?
+    Union: record
+      case Integer of
+        0: (uTimeout: UINT);
+        1: (uVersion: UINT);
+    end;
+
+    szInfoTitle: ArrayWideChar64;
+    dwInfoFlags: DWORD;
+    //Version 6
+    guidItem: TGUID;
+    //Version 7? (Vista)
+    hBalloonIcon : HICON;
+  end;
+
   TNotifyIconDataV6 = record
     cbSize: DWORD;
     Wnd: HWND;
@@ -96,6 +124,7 @@ type
     szTip: array[0..63] of WideChar;
   end;
 
+  pNotifyIconDataV7 = ^TNotifyIconDataV7;
   pNotifyIconDataV6 = ^TNotifyIconDataV6;
   pNotifyIconDataV5 = ^TNotifyIconDataV5;
   pNotifyIconDataV4 = ^TNotifyIconDataV4;
@@ -133,6 +162,11 @@ const
   NIN_BALLOONHIDE = $0400 + 3;
   NIN_BALLOONTIMEOUT = $0400 + 4;
   NIN_BALLOONUSERCLICK = $0400 + 5;
+  NIN_POPUPOPEN  = $0400 + 6;
+  NIN_POPUPCLOSE = $0400 + 7;
+
+  NIF_REALTIME   = $00000040;
+  NIF_SHOWTIP    = $00000080;
 
   NIM_ADD = $00000000;
   NIM_MODIFY = $00000001;

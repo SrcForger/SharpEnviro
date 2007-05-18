@@ -38,7 +38,7 @@ type
   TTrayIcon = class
   private
   public
-    data : TNotifyIconDataV6;
+    data : TNotifyIconDataV7;
     hidden : boolean;
     shared : boolean;
     valid  : boolean;
@@ -55,11 +55,11 @@ type
     FWarmup : boolean;
     FWarmupstart : int64;
     FNotifyWindow : hwnd;
-    function FindTrayIcon(pData : TNotifyIconDataV6) : TTrayIcon;
+    function FindTrayIcon(pData : TNotifyIconDataV7) : TTrayIcon;
     procedure ResetIcon(pItem : TTrayIcon);
     procedure ResetSharing(pItem : TTrayIcon);
     procedure RemoveTrayIcon(pItem : TTrayIcon);
-    procedure ModifyTrayIcon(pItem : TTrayIcon; pData : TNotifyIconDataV6; Hidden,Shared : boolean; Action : integer);
+    procedure ModifyTrayIcon(pItem : TTrayIcon; pData : TNotifyIconDataV7; Hidden,Shared : boolean; Action : integer);
     procedure CheckForDeadIcons;
     procedure IncomingTrayMsg(var Msg: TMessage); message WM_COPYDATA;
     procedure IncomingRegisterMessage(var Msg: TMessage); message WM_REGISTERWITHTRAY;
@@ -185,7 +185,7 @@ begin
       with cds do
       begin
         dwData := 1;
-        cbData := SizeOf(TNotifyIconDataV6);
+        cbData := SizeOf(TNotifyIconDataV7);
         lpData := @pItem.data;
       end;
     end;
@@ -227,7 +227,7 @@ begin
       // 1 = add/modify
       // 2 = delete
       dwData := action;
-      cbData := SizeOf(TNotifyIconDataV6);
+      cbData := SizeOf(TNotifyIconDataV7);
       lpData := @pItem.data;
     end;
 
@@ -309,7 +309,7 @@ begin
   end;
 end;
 
-function TTrayMessageWnd.FindTrayIcon(pData : TNotifyIconDataV6) : TTrayIcon;
+function TTrayMessageWnd.FindTrayIcon(pData : TNotifyIconDataV7) : TTrayIcon;
 var
   n : integer;
   pItem : TTrayIcon;
@@ -342,7 +342,7 @@ begin
   pItem.Free;
 end;
 
-procedure TTrayMessageWnd.ModifyTrayIcon(pItem : TTrayIcon; pData : TNotifyIconDataV6; Hidden,Shared : boolean; Action : integer);
+procedure TTrayMessageWnd.ModifyTrayIcon(pItem : TTrayIcon; pData : TNotifyIconDataV7; Hidden,Shared : boolean; Action : integer);
 var
   n : integer;
   tempItem : TTrayIcon;
@@ -438,7 +438,7 @@ end;
 procedure TTrayMessageWnd.IncomingTrayMsg(var Msg: TMessage);
 var
   TrayCmd: integer;
-  Icondata: TNotifyIconDataV6;
+  Icondata: TNotifyIconDataV7;
   data: pCopyDataStruct;
   hidden : boolean;
   shared : boolean;
@@ -465,7 +465,7 @@ begin
       end;
 
       TrayCmd := pINT(PCHAR(Data.lpdata) + 4)^;
-      Icondata := pNotifyIconDataV6(PCHAR(Data.lpdata) + 8)^;
+      Icondata := pNotifyIconDataV7(PCHAR(Data.lpdata) + 8)^;
       hidden := false;
       shared := false;
       state := 0;
