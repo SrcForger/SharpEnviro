@@ -115,7 +115,7 @@ begin
 
   Bmp32 := TBitmap32.Create;
   Bmp32.SetSize(32,32);
-  Bmp32.Clear(color32(clWhite));
+  Bmp32.Clear(color32(0,0,0,0));
 
   try
     if FileExists(Dir + 'IconSet.xml') then
@@ -128,7 +128,7 @@ begin
         h := (IconCount div (w div IconSize) + 1) * IconSize;
 
         Bmp32.SetSize(w,h);
-        Bmp32.Clear(color32(clWhite));
+        Bmp32.Clear(color32(0,0,0,0));
 
         x := 0;
         y := 0;

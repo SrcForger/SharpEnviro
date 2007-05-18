@@ -128,7 +128,7 @@ begin
   h := (IconCount div (w div IconSize) + 1) * IconSize;
 
   Bmp32.SetSize(w,h);
-  Bmp32.Clear(color32(clWhite));
+  Bmp32.Clear(color32(0,0,0,0));
 
   x := 0;
   y := 0;
@@ -148,11 +148,11 @@ begin
     end;
   end;
 
-  ReplaceColor32(bmp32,color32(1,1,1,255),color32(clWhite));
-  ReplaceColor32(bmp32,color32(255,1,1,255),color32(ccolors.Items.Item[0].ColorAsTColor));
-  ReplaceColor32(bmp32,color32(1,1,255,255),color32(ccolors.Items.Item[1].ColorAsTColor));
-  ReplaceColor32(bmp32,color32(1,255,1,255),color32(ccolors.Items.Item[2].ColorAsTColor));
-  ReplaceColor32(bmp32,color32(255,255,1,255),color32(ccolors.Items.Item[3].ColorAsTColor));
+  ReplaceColor32(bmp32,color32(0,0,0,255),color32(clWindow));
+  ReplaceColor32(bmp32,color32(255,0,0,255),color32(ccolors.Items.Item[0].ColorAsTColor));
+  ReplaceColor32(bmp32,color32(0,0,255,255),color32(ccolors.Items.Item[1].ColorAsTColor));
+  ReplaceColor32(bmp32,color32(0,255,0,255),color32(ccolors.Items.Item[2].ColorAsTColor));
+  ReplaceColor32(bmp32,color32(255,255,0,255),color32(ccolors.Items.Item[3].ColorAsTColor));
 
   Preview.Assign(bmp32);
 

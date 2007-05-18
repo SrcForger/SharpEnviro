@@ -161,16 +161,15 @@ begin
   result := SU_CURSOR;
 end;
 
-procedure UpdatePreview(var AImage32:TImage32);
+procedure UpdatePreview(var ABmp: TBitmap32);
 begin
-  AImage32.Bitmap.Clear(clWhite32);
   if (frmCursesList.lb_CursorList.ItemIndex < 0) or
      (frmCursesList.lb_CursorList.Count = 0) then
      exit;
 
-  frmCursesList.Preview.DrawTo(AImage32.Bitmap,
-                               AImage32.Width div 2 - frmCursesList.Preview.Width div 2,
-                               AImage32.Height div 2 - frmCursesList.Preview.Height div 2); 
+  ABmp.SetSize(frmCursesList.Preview.Width,frmCursesList.Preview.Height);
+  ABmp.Clear(color32(0,0,0,0));
+  frmCursesList.Preview.DrawTo(ABmp);
 end;
 
 

@@ -153,16 +153,14 @@ function SetSettingType : integer;
 begin
   result := SU_ICONSET;
 end;
-procedure UpdatePreview(var AImage32:TImage32);
+procedure UpdatePreview(var ABmp: TBitmap32);
 begin
-  AImage32.Bitmap.Clear(clWhite32);
   if (frmIconList.lb_iconlist.ItemIndex < 0) or
      (frmIconList.lb_iconlist.Count = 0) then
      exit;
-
-  frmIconList.Preview.DrawTo(AImage32.Bitmap,
-                             AImage32.Width div 2 - frmIconList.Preview.Width div 2,
-                             AImage32.Height div 2 - frmIconList.Preview.Height div 2);
+  ABmp.SetSize(frmIconList.Preview.Width,frmIconList.Preview.Height);
+  ABmp.Clear(color32(0,0,0,0));
+  frmIconList.Preview.DrawTo(ABmp);
 end;
 
 
