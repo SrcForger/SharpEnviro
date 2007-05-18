@@ -89,8 +89,8 @@ type
                    FTip : ArrayWideChar128;
                    FInfo : ArrayWideChar256;
                    FInfoTitle : ArrayWideChar64;
-                   function AssignFromNIDv6(NIDv6 : TNotifyIconDataV6) : boolean;
-                   constructor Create(NIDv6 : TNotifyIconDataV6); reintroduce;
+                   function AssignFromNIDv6(NIDv6 : TNotifyIconDataV7) : boolean;
+                   constructor Create(NIDv6 : TNotifyIconDataV7); reintroduce;
                    destructor Destroy; override;
                  published
                    property UID : Cardinal read FUID;
@@ -140,10 +140,10 @@ type
                  public
                    function  GetTrayIconIndex(pWnd : THandle; UID : Cardinal) : integer;
                    function  GetTrayIcon(pWnd : THandle; UID : Cardinal) : TTrayItem;
-                   procedure AddOrModifyTrayIcon(NIDv6 : TNotifyIconDataV6);
-                   procedure AddTrayIcon(NIDv6 : TNotifyIconDataV6);
-                   procedure ModifyTrayIcon(NIDv6 : TNotifyIconDataV6);
-                   procedure DeleteTrayIcon(NIDv6 : TNotifyIconDataV6);
+                   procedure AddOrModifyTrayIcon(NIDv6 : TNotifyIconDataV7);
+                   procedure AddTrayIcon(NIDv6 : TNotifyIconDataV7);
+                   procedure ModifyTrayIcon(NIDv6 : TNotifyIconDataV7);
+                   procedure DeleteTrayIcon(NIDv6 : TNotifyIconDataV7);
                    procedure DeleteTrayIconByIndex(index : integer);
                    procedure RenderIcons;
                    procedure SpecialRender(target : TBitmap32; si, ei : integer);
@@ -608,7 +608,7 @@ end;
 procedure TMsgWnd.IncomingTrayMsg(var Msg: TMessage);
 var
   TrayCmd: integer;
-  Icondata: TNotifyIconDataV6;
+  Icondata: TNotifyIconDataV7;
   data: pCopyDataStruct;
 begin
   if isClosing then exit;
@@ -617,7 +617,7 @@ begin
     if (Data.dwData = 1) or (Data.dwData = 2) then
     begin
       TrayCmd := Data.dwData;
-      Icondata := pNotifyIconDataV6(Data.lpdata)^;
+      Icondata := pNotifyIconDataV7(Data.lpdata)^;
       case TrayCmd of
         1 : begin
               TTrayClient(FTrayClient).AddOrModifyTrayIcon(IconData);
@@ -655,7 +655,7 @@ end;
 {$ENDREGION}
 {$REGION 'TTrayItem'}
 
-constructor TTrayItem.Create(NIDv6 : TNotifyIconDataV6);
+constructor TTrayItem.Create(NIDv6 : TNotifyIconDataV7);
 begin
   FBitmap := TBitmap32.Create;
   FBitmap.SetSize(16,16);
@@ -671,7 +671,7 @@ begin
 end;
 
 // return value = True if icon changed
-function TTrayItem.AssignFromNIDv6(NIDv6 : TNotifyIconDataV6) : boolean;
+function TTrayItem.AssignFromNIDv6(NIDv6 : TNotifyIconDataV7) : boolean;
 begin
   if NIDv6.uCallbackMessage <> 0 then
      FCallbackMessage := NIDv6.uCallbackMessage;
@@ -923,7 +923,7 @@ begin
  FLastTipItem := nil;
 end;
 
-procedure TTrayClient.AddTrayIcon(NIDv6 : TNotifyIconDataV6);
+procedure TTrayClient.AddTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
   tempItem : TTrayItem;
 begin
@@ -959,7 +959,7 @@ begin
   result := -1;
 end;
 
-procedure TTrayClient.AddOrModifyTrayIcon(NIDv6 : TNotifyIconDataV6);
+procedure TTrayClient.AddOrModifyTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
   item : TTrayItem;
 begin
@@ -975,7 +975,7 @@ begin
   end;
 end;
 
-procedure TTrayClient.ModifyTrayIcon(NIDv6 : TNotifyIconDataV6);
+procedure TTrayClient.ModifyTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
   tempItem : TTrayItem;
 begin
@@ -994,7 +994,7 @@ begin
   end;
 end;
 
-procedure TTrayClient.DeleteTrayIcon(NIDv6 : TNotifyIconDataV6);
+procedure TTrayClient.DeleteTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
   n : integer;
   temp : TTrayItem;
@@ -1161,15 +1161,15 @@ begin
         wp := MakeLParam(ix,iy);
 
         // Stop the tip timer on any other message
-        if (msg <> WM_MOUSEMOVE) then
-            StopTipTimer;
+      {  if (msg <> WM_MOUSEMOVE) then
+            StopTipTimer;  }
 
         case msg of
           WM_LBUTTONUP,WM_LBUTTONDOWN,
           WM_LBUTTONDBLCLK,WM_RBUTTONDOWN: lp := MakeLParam(msg,tempItem.uID);
           WM_MOUSEMOVE: begin
                           lp := MakeLParam(WM_MOUSEMOVE,tempItem.uID);
-                          if (tempItem.Flags and NIF_SHOWTIP) = NIF_SHOWTIP then
+                       {   if (tempItem.Flags and NIF_SHOWTIP) = NIF_SHOWTIP then
                           begin
                             // Pre Vista Tooltips
                             StartTipTimer(x,y,gx,gy);
@@ -1178,11 +1178,11 @@ begin
                             // Vista Tooltips
                             if FV4Popup = nil then // not already showing one...
                             begin
-                              SendMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
+                              //SendMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
                               //FV4Popup := tempItem;
                               //lp := MakeLParam(NIN_POPUPOPEN,tempItem.uID);
                             end;
-                          end;
+                          end;  }
                         end;
           WM_RBUTTONUP: begin
                           lp := MakeLParam(WM_RBUTTONUP,tempItem.uID);
@@ -1195,10 +1195,10 @@ begin
       end else
       begin
         // NotifyIcon Version < 4
-        SendMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
+        PostMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
 
-        if Msg = WM_MOUSEMOVE then
-           StartTipTimer(x,y,gx,gy);
+       { if Msg = WM_MOUSEMOVE then
+           StartTipTimer(x,y,gx,gy);   }
       end;
 
       // Old code below;

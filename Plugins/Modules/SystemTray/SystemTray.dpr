@@ -47,7 +47,6 @@ uses
   MainWnd in 'MainWnd.pas' {MainForm},
   SettingsWnd in 'SettingsWnd.pas' {SettingsForm},
   BalloonWindow in 'BalloonWindow.pas',
-  declaration in 'declaration.pas',
   TipWnd in 'TipWnd.pas',
   TrayIconsManager in 'TrayIconsManager.pas',
   winver in 'winver.pas',
@@ -57,7 +56,8 @@ uses
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
+  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
+  declaration in '..\..\Services\SystemTray\declaration.pas';
 
 type
   TTimerObject = object
