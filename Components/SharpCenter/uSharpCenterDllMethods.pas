@@ -54,7 +54,7 @@ type
     ClickTab: procedure (ATab: TPluginTabItem);
     AddTabs: procedure(var ATabs:TPluginTabItemList);
 
-    UpdatePreview: procedure (var AImage32:TImage32);
+    UpdatePreview: procedure (var ABmp:TBitmap32);
 
     SetDisplayText: procedure (const APluginID:Pchar; var ADisplayText:PChar);
     SetStatusText: procedure (var AStatusText: PChar);

@@ -357,16 +357,28 @@ begin
 end;
 
 procedure TSharpCenterWnd.UpdateLivePreview;
+var
+  Bmp : TBitmap32;
 begin
   if SCM = nil then exit;
 
-    imgLivePreview.Bitmap.SetSize(pnlLivePreview.Width,pnlLivePreview.Height);
-    imgLivePreview.Bitmap.Clear(clwhite32);
+  if (@SCM.ActivePlugin.UpdatePreview <> nil) then
+  begin
+    Bmp := TBitmap32.Create;
+    Bmp.DrawMode := dmBlend;
+    Bmp.CombineMode := cmMerge;
 
-    if (@SCM.ActivePlugin.UpdatePreview <> nil) then begin
-      SCM.ActivePlugin.UpdatePreview(imgLivePreview);
-      pnlLivePreview.Height := imgLivePreview.Height;
-    end;
+    SCM.ActivePlugin.UpdatePreview(Bmp);
+
+    imgLivePreview.Bitmap.SetSize(Bmp.Width,Bmp.Height);
+    imgLivePreview.Bitmap.Clear(color32(clWindow));
+    Bmp.DrawTo(imgLivePreview.Bitmap,0,0);
+
+    imgLivePreview.Height := Bmp.Height;
+    pnlLivePreview.Height := Bmp.Height;
+
+    Bmp.Free;
+  end else pnlLivePreview.Height := 0;
 end;
 
 procedure TSharpCenterWnd.CreateParams(var Params: TCreateParams);

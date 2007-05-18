@@ -719,7 +719,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 145
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -202
+                Left = -210
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1169,7 +1169,7 @@ object SharpCenterWnd: TSharpCenterWnd
               object Edit2: TEdit
                 Left = 0
                 Top = 36
-                Width = -207
+                Width = -215
                 Height = 21
                 Anchors = [akLeft, akTop, akRight]
                 Ctl3D = True
@@ -2305,7 +2305,7 @@ object SharpCenterWnd: TSharpCenterWnd
             Height = 27
             Align = alClient
             Bitmap.ResamplerClassName = 'TNearestResampler'
-            BitmapAlign = baTopLeft
+            BitmapAlign = baCenter
             ParentColor = False
             Scale = 1.000000000000000000
             ScaleMode = smNormal
