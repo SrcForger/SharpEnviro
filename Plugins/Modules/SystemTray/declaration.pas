@@ -136,6 +136,9 @@ const
   NIN_POPUPOPEN        = $0400 + 6;
   NIN_POPUPCLOSE       = $0400 + 7;
 
+  NIF_REALTIME         = $00000040;
+  NIF_SHOWTIP          = $00000080;
+
   NIM_ADD = $00000000;
   NIM_MODIFY = $00000001;
   NIM_DELETE = $00000002;

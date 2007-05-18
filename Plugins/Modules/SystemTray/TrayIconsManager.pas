@@ -1129,12 +1129,14 @@ begin
     begin
       tempItem := TTrayItem(FItems.Items[n+imod]);
 
+      // Check if there was a tray icon which displayed a new Vista tooltip
       if (TempItem <> FV4Popup) and
          (FV4Popup <> nil) then
       begin
         wp := MakeWParam(0,0);
         lp := MakeLParam(NIN_POPUPCLOSE,FV4Popup.uID);
         PostMessage(FV4Popup.Wnd,FV4Popup.CallbackMessage,wp,lp);
+        FV4Popup := nil;
       end;
 
       if not iswindow(tempItem.Wnd) then
@@ -1153,34 +1155,52 @@ begin
                                 + ' | uID:' + inttostr(tempItem.uID)),0);
       if (tempItem.BInfoFlags >= 4) then
       begin
-        StopTipTimer;
+        // NotifyIcon Version 4
         ix := gx;
         iy := gy;
         wp := MakeLParam(ix,iy);
+
+        // Stop the tip timer on any other message
+        if (msg <> WM_MOUSEMOVE) then
+            StopTipTimer;
+
         case msg of
           WM_LBUTTONUP,WM_LBUTTONDOWN,
           WM_LBUTTONDBLCLK,WM_RBUTTONDOWN: lp := MakeLParam(msg,tempItem.uID);
           WM_MOUSEMOVE: begin
-//                          FV4Popup := tempItem;
                           lp := MakeLParam(WM_MOUSEMOVE,tempItem.uID);
-                          //lp := MakeLParam(NIN_POPUPOPEN,tempItem.uID);
+                          if (tempItem.Flags and NIF_SHOWTIP) = NIF_SHOWTIP then
+                          begin
+                            // Pre Vista Tooltips
+                            StartTipTimer(x,y,gx,gy);
+                          end else
+                          begin
+                            // Vista Tooltips
+                            if FV4Popup = nil then // not already showing one...
+                            begin
+                              SendMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
+                              //FV4Popup := tempItem;
+                              //lp := MakeLParam(NIN_POPUPOPEN,tempItem.uID);
+                            end;
+                          end;
                         end;
           WM_RBUTTONUP: begin
                           lp := MakeLParam(WM_RBUTTONUP,tempItem.uID);
-                          PostMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
+                          SendMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
                           lp := MakeLParam(WM_CONTEXTMENU,tempItem.uID);
                         end;
           else exit;
         end;
-        PostMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
+        SendMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
       end else
       begin
+        // NotifyIcon Version < 4
+        SendMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
+
         if Msg = WM_MOUSEMOVE then
-           StartTipTimer(x,y,gx,gy)
-           else StopTipTimer;
+           StartTipTimer(x,y,gx,gy);
       end;
-       // always send this to fix icons with fucked up versions
-      postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
+
       // Old code below;
  {     case Msg of
         WM_MOUSEMOVE:
