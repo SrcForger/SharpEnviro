@@ -61,6 +61,9 @@ uses
 const
   cEditTabHide=0;
   cEditTabShow=25;
+  cEdit_Add=0;
+  cEdit_Edit=1;
+  cEdit_Delete=2;
 
 type
   TSharpCenterWnd = class(TForm)
@@ -76,13 +79,11 @@ type
     PopupMenu1: TPopupMenu;
     pnlContent: TPanel;
     MiAdd: TMenuItem;
-    pnlPluginContainer_: TPanel;
-    Panel4: TPanel;
+    pnlForm: TPanel;
     XPManifest1: TXPManifest;
     tlToolbar: TSharpETabList;
     pnlToolbar: TSharpERoundPanel;
     Panel1: TPanel;
-    Panel3: TPanel;
     plToolbar: TJvPageList;
     pnlPluginContainer: TPanel;
     tlPluginTabs: TSharpETabList;
@@ -90,13 +91,7 @@ type
     pnlPlugin: TPanel;
     lbTree: TSharpEListBoxEx;
     picMain: TPngImageList;
-    pnlEditContainer: TSharpERoundPanel;
-    tlEditItem: TSharpETabList;
     pilIcons: TPngImageList;
-    pnlEditPlugin: TPanel;
-    pnlEditToolbar: TPanel;
-    btnEditCancel: TPngSpeedButton;
-    btnEditApply: TPngSpeedButton;
     pagFav: TJvStandardPage;
     pagHistory: TJvStandardPage;
     pagImport: TJvStandardPage;
@@ -115,6 +110,14 @@ type
     Button1: TButton;
     pnlLivePreview: TPanel;
     imgLivePreview: TImage32;
+    pnlEditContainer: TPanel;
+    pnlEditPluginContainer: TSharpERoundPanel;
+    pnlEditPlugin: TPanel;
+    pnlEditToolbar: TPanel;
+    btnEditCancel: TPngSpeedButton;
+    btnEditApply: TPngSpeedButton;
+    tlEditItem: TSharpETabList;
+    pnlSpacer: TPanel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -152,8 +155,6 @@ type
     procedure UpdateLivePreview;
     procedure CenterMessage(var Msg: TMessage); message WM_SHARPCENTERMESSAGE;
     Procedure ClickItem;
-    
-    procedure EditTabVisible(AVisible:Boolean);
 
     procedure ShowHistory;
   public
@@ -324,7 +325,7 @@ begin
     SCM.Unload;
     SCM.Reload;
 
-    pnlEditContainer.Height := 0;
+    
 
   Finally
     LockWindowUpdate(0);
@@ -367,6 +368,7 @@ begin
     Bmp := TBitmap32.Create;
     Bmp.DrawMode := dmBlend;
     Bmp.CombineMode := cmMerge;
+    Bmp.SetSize(pnlLivePreview.Width,50);
 
     SCM.ActivePlugin.UpdatePreview(Bmp);
 
@@ -374,11 +376,11 @@ begin
     imgLivePreview.Bitmap.Clear(color32(clWindow));
     Bmp.DrawTo(imgLivePreview.Bitmap,0,0);
 
-    imgLivePreview.Height := Bmp.Height;
+    //imgLivePreview.Height := Bmp.Height;
     pnlLivePreview.Height := Bmp.Height;
 
     Bmp.Free;
-  end else pnlLivePreview.Height := 0;
+  end else pnlLivePreview.Visible := False;
 end;
 
 procedure TSharpCenterWnd.CreateParams(var Params: TCreateParams);
@@ -427,9 +429,18 @@ begin
       case iBtnID of
         SCB_IMPORT: SetToolbarTabVisible(tidImport,bEnabled);
         SCB_EXPORT: SetToolbarTabVisible(tidExport,bEnabled);
-        SCB_DELETE : btnEditApply.Enabled := bEnabled;
+        SCB_DELETE: btnEditApply.Enabled := bEnabled;
         SCB_HELP : btnHelp.Enabled := bEnabled;
+        SCB_ADD_TAB: tlEditItem.TabList.Item[cEdit_Add].Visible := bEnabled;
+        SCB_EDIT_TAB: tlEditItem.TabList.Item[cEdit_Edit].Visible := bEnabled;
+        SCB_DEL_TAB: tlEditItem.TabList.Item[cEdit_Delete].Visible := bEnabled;
       end;
+
+      if Not((tlEditItem.TabList.Item[cEdit_Add].Visible) and
+        (tlEditItem.TabList.Item[cEdit_Edit].Visible) and
+          (tlEditItem.TabList.Item[cEdit_Delete].Visible)) then
+            pnlEditContainer.Height := cEditTabhide else
+            pnlEditContainer.Height := cEditTabshow;
     end;
 
     SCM_SET_SETTINGS_CHANGED: begin
@@ -570,27 +581,12 @@ begin
   End;
 end;
 
-procedure TSharpCenterWnd.EditTabVisible(AVisible: Boolean);
-begin
-  LockWindowUpdate(Self.Handle);
-
-  Try
-    if AVisible then
-      tlEditItem.Height := 25 else
-      tlEditItem.Height := 0;
-  Finally
-    LockWindowUpdate(0);
-  End;
-end;
-
 procedure TSharpCenterWnd.InitWindow;
 begin
   // Vista
+  pnlMain.Parent := Panel4;
   SetVistaFonts(Self);
   HideAllTaskbarButton;
-
-  // Hide Edit Tab
-  EditTabVisible(False);
 
   // Set Listbox defaults
   lbTree.Colors.BorderColorSelected := $00C1F4FE;
@@ -618,6 +614,8 @@ begin
   btnCancel.Enabled := False;
   btnHelp.Enabled := False;
   pnlEditContainer.Height := 0;
+  pnlLivePreview.Visible := False;
+  pnlPluginContainer.Visible := False;
   tlEditItem.TabIndex := -1;
   pnlToolbar.Hide;
 
@@ -631,7 +629,7 @@ var
   tmpManager: TSharpCenterManager;
   sName: string;
 begin
-
+  LockWindowUpdate(Self.Handle);
   SCM.Unload;
 
   // Get the Button Data
@@ -680,6 +678,7 @@ begin
         SCM.Load(tmpItem.Filename,tmpItem.PluginID);
       end;
   end;
+  LockWindowUpdate(0);
 end;
 
 procedure TSharpCenterWnd.InitToolbar;
@@ -708,7 +707,7 @@ begin
     if @SCM.ActivePlugin.OpenEdit <> nil then
       if SCM.EditWndHandle <> 0 then begin
         pnlEditContainer.Height := GetControlByHandle(SCM.EditWndHandle).Height+
-          pnlEditToolbar.Height;
+          pnlEditToolbar.Height + tlEditItem.Height;
         GetControlByHandle(SCM.EditWndHandle).Width := pnlEditPlugin.Width;
       end;
 
@@ -785,9 +784,13 @@ begin
   ResizeToFitWindow(SCM.PluginWndHandle, pnlPlugin);
 
   // Edit bar
-  tlEditItem.Height := 0;
+  pnlEditContainer.Height := 0;
   if (@SCM.ActivePlugin.OpenEdit <> nil) then
-    tlEditItem.Height := 25;
+    pnlEditContainer.Height := 25;
+
+  tlEditItem.TabList.Item[cEdit_Add].Visible := True;
+  tlEditItem.TabList.Item[cEdit_Edit].Visible := True;
+  tlEditItem.TabList.Item[cEdit_Delete].Visible := True;
 
   // Toolbar
   if (@SCM.ActivePlugin.SetBtnState <> nil) then
@@ -796,8 +799,10 @@ begin
   if (@SCM.ActivePlugin.SetBtnState <> nil) then
     SetToolbarTabVisible(tidExport,SCM.ActivePlugin.SetBtnState(SCB_EXPORT));
 
-  if (@SCM.ActivePlugin.UpdatePreview <> nil) then
+  if (@SCM.ActivePlugin.UpdatePreview <> nil) then begin
     pnlLivePreview.Height := 45;
+    pnlLivePreview.Visible := True;
+  end;
 
   pnlToolbar.Hide;
   FSelectedTabID := 0;
@@ -808,6 +813,7 @@ begin
   Finally
     LockWindowUpdate(0);
     pnlPlugin.Show;
+    pnlPluginContainer.Show;
   End;
 
 end;
@@ -887,11 +893,12 @@ begin
     LockWindowUpdate(0);
 
   tlPluginTabs.Height := 0;
-  tlEditItem.Height := 0;
+  tlEditItem.TabIndex := -1;
   btnSave.Enabled := False;
   btnCancel.Enabled := False;
-  pnlLivePreview.Height := 0;
+  pnlLivePreview.Hide;
   pnlEditContainer.Height := 0;
+  pnlPluginContainer.Hide;
 
     
   End;
@@ -920,13 +927,14 @@ begin
       colItem, colSelectedItem);
 
     pnlEditContainer.Color := colBackground;
+    pnlEditPluginContainer.Color := colBackground;
     pnlEditPlugin.Color := colBackground;
     pnlEditContainer.Color := colBackground;
     pnlEditToolbar.Color := colBackground;
     tlEditItem.TabSelectedColor := colBackground;
 
-    if Not(pnlLivePreview.Height <> 0) then
-    tlEditItem.TabIndex := -1;
+    //if Not(pnlLivePreview.Visible) then
+    //tlEditItem.TabIndex := -1;
 
     btnEditCancel.Enabled := True;
 
@@ -974,7 +982,6 @@ begin
   LockWindowUpdate(Self.Handle);
   Try
     UpdateSize;
-    //pnlEditContainer.Show;
   Finally
     LockWindowUpdate(0);
   End;
@@ -998,7 +1005,7 @@ begin
   Try
     if Sender = nil then begin
       tlEditItem.TabIndex := -1;
-      pnlEditContainer.Height := 0;
+      pnlEditContainer.Height := 25;
     end else
       tlEditItemTabClick(tlEditItem,tlEditItem.TabIndex);
   Finally

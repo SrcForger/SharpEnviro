@@ -39,4 +39,4 @@ begin
   Application.CreateForm(TSharpCenterWnd, SharpCenterWnd);
   Application.Run;
   end;
-end.
+ end.
