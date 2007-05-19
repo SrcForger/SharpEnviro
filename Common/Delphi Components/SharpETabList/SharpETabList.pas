@@ -445,6 +445,7 @@ var
   tr: TRect;
 begin
   inherited;
+  if Height = 0 then exit;
 
   FImage32.Bitmap.Setsize(Self.Width,Self.Height);
   FImage32.Bitmap.Clear(Color32(FBkgColor));
