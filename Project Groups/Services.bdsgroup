@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <PersonalityInfo>
+    <Option>
+      <Option Name="Personality">Default.Personality</Option>
+      <Option Name="ProjectType"></Option>
+      <Option Name="Version">1.0</Option>
+      <Option Name="GUID">{5CDCD3A9-9840-469A-8788-FFFE1C901F3A}</Option>
+    </Option>
+  </PersonalityInfo>
+  <Default.Personality>
+    
+    <Projects>
+      <Projects Name="components.ser">..\Plugins\Services\Components\components.bdsproj</Projects>
+      <Projects Name="curses.ser">..\Plugins\Services\Curses\curses.bdsproj</Projects>
+      <Projects Name="DeskArea.ser">..\Plugins\Services\DeskArea\DeskArea.bdsproj</Projects>
+      <Projects Name="Exec.ser">..\Plugins\Services\Exec\Exec.bdsproj</Projects>
+      <Projects Name="Hotkeys.ser">..\Plugins\Services\Hotkeys\Hotkeys.bdsproj</Projects>
+      <Projects Name="Prism.ser">..\Plugins\Services\Prism\Prism.bdsproj</Projects>
+      <Projects Name="SkinController.ser">..\Plugins\Services\Skin\SkinController.bdsproj</Projects>
+      <Projects Name="Startup.ser">..\Plugins\Services\StartupApps\Startup.bdsproj</Projects>
+      <Projects Name="SystemTray.ser">..\Plugins\Services\SystemTray\SystemTray.bdsproj</Projects>
+      <Projects Name="Weather.ser">..\Plugins\Services\Weather\Weather.bdsproj</Projects>
+      <Projects Name="Targets">components.ser curses.ser DeskArea.ser Exec.ser Hotkeys.ser Prism.ser SkinController.ser Startup.ser SystemTray.ser Weather.ser</Projects>
+    </Projects>
+    <Dependencies/>
+  </Default.Personality>
+</BorlandProject>
