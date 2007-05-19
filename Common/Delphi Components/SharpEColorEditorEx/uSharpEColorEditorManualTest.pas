@@ -28,24 +28,21 @@ implementation
 
 procedure TForm2.Button1Click(Sender: TObject);
 var
-  tmp:TSharpEColorEditorEx;
+  tmp: TSharpEColorEditorEx;
   tmpItem: TSharpEColorEditorExItem;
 begin
-  
-  Try
-  LockWindowUpdate(Self.Handle);
-  tmp := TSharpEColorEditorEx.Create(Self);
-  tmp.Parent := Self;
 
-  
-  tmp.BeginUpdate;
+  try
+    LockWindowUpdate(Self.Handle);
+    tmp := TSharpEColorEditorEx.Create(Self);
+    tmp.Parent := Self;
 
-  tmp.SwatchManager := SharpESwatchManager1;
-  tmp.Align := alClient;
-  tmp.Height := 200;
-  tmp.Color := clWindow;
+    tmp.BeginUpdate;
 
-
+    tmp.SwatchManager := SharpESwatchManager1;
+    tmp.Align := alClient;
+    tmp.Height := 200;
+    tmp.Color := clWindow;
 
     tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
     tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
@@ -57,7 +54,6 @@ begin
     tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
     tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
     tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
-
 
     tmp.Items.Item[0].Title := 'New';
     tmp.Items.Item[0].ColorCode := clRed;
@@ -67,22 +63,21 @@ begin
 
     tmp.Items.Item[1].Title := 'New3';
 
-   // tmp.Items.Item[1].Expanded;
-  Finally
+    // tmp.Items.Item[1].Expanded;
+  finally
     lockwindowupdate(0);
     tmp.EndUpdate;
 
     tmp.Items.Item[1].ColorEditor.ValueEditorType := vetValue;
     tmp.Items.Item[1].ColorEditor.Description := 'Please select the value:';
-  End;
-
-  
+  end;
 
 end;
 
 procedure TForm2.FormCreate(Sender: TObject);
 begin
-   loadtheme;
+  loadtheme;
 end;
 
 end.
+
