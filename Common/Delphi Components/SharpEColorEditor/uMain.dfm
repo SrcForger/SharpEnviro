@@ -45,15 +45,25 @@ object MainWnd: TMainWnd
     Caption = 'Scheme Test'
     ColorCode = 0
     ColorAsTColor = clBlack
-    ColorEditorType = cetColor
+    ValueEditorType = vetColor
     ValueText = 'Alpha'
     ValueMax = 0
     ValueMin = 255
     Value = 34
+    Visible = True
     SwatchManager = SharpESwatchManager1
     DesignSize = (
       432
       24)
+  end
+  object Button3: TButton
+    Left = 268
+    Top = 256
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 3
+    OnClick = Button3Click
   end
   object XPManifest1: TXPManifest
     Left = 8

@@ -16,6 +16,8 @@ type
     Button1: TButton;
     Button2: TButton;
     SharpEColorEditor2: TSharpEColorEditor;
+    Button3: TButton;
+    procedure Button3Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure JvLinkLabel1LinkClick(Sender: TObject; LinkNumber: Integer;
@@ -37,7 +39,7 @@ implementation
 
 procedure TMainWnd.Button1Click(Sender: TObject);
 begin
-  SharpEColorEditor2.ColorEditorType := cetColor;
+  SharpEColorEditor2.ValueEditorType := vetColor;
 
 end;
 
@@ -60,8 +62,13 @@ end;
 
 procedure TMainWnd.Button2Click(Sender: TObject);
 begin
-  SharpEColorEditor2.ColorEditorType := cetValue;
+  SharpEColorEditor2.ValueEditorType := vetValue;
   SharpEColorEditor2.Description := 'Please select the alpha value for blah:';
+end;
+
+procedure TMainWnd.Button3Click(Sender: TObject);
+begin
+  SharpEColorEditor2.Visible := Not(SharpEColorEditor2.Visible);
 end;
 
 end.
