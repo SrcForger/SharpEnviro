@@ -168,9 +168,9 @@ const
   SCB_CLEAR = 3004;
   SCB_DELETE = 3005;
   SCB_HELP = 3006;
-  SCB_ADD = 3007;
-  SCB_EDIT = 3008;
-  SCB_DEL = 3009;
+  SCB_ADD_TAB = 3007;
+  SCB_EDIT_TAB = 3008;
+  SCB_DEL_TAB = 3009;
   SCB_CONFIGURE = 3010; // For editing the contents of a list
 
   SCC_LOAD_SETTING = '_loadsetting';
