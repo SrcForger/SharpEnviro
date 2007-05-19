@@ -150,6 +150,7 @@ type
                    function PerformIconAction(x,y,gx,gy,imod : integer; msg : uint) : boolean;
                    procedure StartTipTimer(x,y,gx,gy : integer);
                    procedure StopTipTimer;
+                   procedure CloseVistaInfoTip;
                    function  GetIconPos(item : TTrayItem) : TPoint;
                    function  IconExists(item : TTrayItem) : Boolean;
                    procedure RegisterWithTray;
@@ -864,7 +865,26 @@ var
   n : integer;
   mon : TMonitor;
   x,y : integer;
+  wp : wparam;
+  lp : lparam;
 begin
+
+  // Vista Popup?
+  if (FV4Popup <> nil) then
+  begin
+    if FTipWnd.Visible then
+       FTipWnd.Hide;
+    FLastTipItem := nil;
+    FTipTimer.Enabled := False;
+
+    wp := MakeLParam(FTipGPoint.x,FTipGPoint.y);
+    lp := MakeLParam(NIN_POPUPOPEN,FV4Popup.uID);
+    SendMessage(FV4Popup.Wnd,FV4Popup.CallbackMessage,wp,lp);
+
+    exit;
+  end;
+
+
   for n := 0 to FItems.Count - 1 do
   begin
     If PointInRect(Point(FTipPoint.x,FTipPoint.y),Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing)) then
@@ -916,11 +936,25 @@ begin
   end;
 end;
 
+procedure TTrayClient.CloseVistaInfoTip;
+var
+  wp : wparam;
+  lp : lparam;
+begin
+  if (FV4Popup <> nil) then
+  begin
+    wp := MakeWParam(0,0);
+    lp := MakeLParam(NIN_POPUPCLOSE,FV4Popup.uID);
+    SendMessage(FV4Popup.Wnd,FV4Popup.CallbackMessage,wp,lp);
+    FV4Popup := nil;
+  end;
+end;
+
 procedure TTrayClient.StopTipTimer;
 begin
- FTipTimer.Enabled := False;
- FTipWnd.Hide;
- FLastTipItem := nil;
+  FTipTimer.Enabled := False;
+  FTipWnd.Hide;
+  FLastTipItem := nil;
 end;
 
 procedure TTrayClient.AddTrayIcon(NIDv6 : TNotifyIconDataV7);
@@ -1120,6 +1154,7 @@ var
   ix,iy : DWORD;
   lp : lparam;
   wp : wparam;
+  p : TPoint;
 begin
   result := false;
   for n := 0 to FItems.Count - 1 do
@@ -1130,14 +1165,8 @@ begin
       tempItem := TTrayItem(FItems.Items[n+imod]);
 
       // Check if there was a tray icon which displayed a new Vista tooltip
-      if (TempItem <> FV4Popup) and
-         (FV4Popup <> nil) then
-      begin
-        wp := MakeWParam(0,0);
-        lp := MakeLParam(NIN_POPUPCLOSE,FV4Popup.uID);
-        PostMessage(FV4Popup.Wnd,FV4Popup.CallbackMessage,wp,lp);
-        FV4Popup := nil;
-      end;
+      if (TempItem <> FV4Popup) and (FV4Popup <> nil) then
+          CloseVistaInfoTip;
 
       if not iswindow(tempItem.Wnd) then
       begin
@@ -1150,46 +1179,38 @@ begin
       GetWindowThreadProcessId(tempItem.Wnd, @PID);
       AllowSetForegroundWindow(PID);
 
-      SharpApi.SendDebugMessage('Module: SystemTray',PChar('Wnd:' + inttostr(tempItem.Wnd)
+{      SharpApi.SendDebugMessage('Module: SystemTray',PChar('Wnd:' + inttostr(tempItem.Wnd)
                                 + ' | CallBack:' + inttostr(tempItem.CallbackMessage)
-                                + ' | uID:' + inttostr(tempItem.uID)),0);
+                                + ' | uID:' + inttostr(tempItem.uID)
+                                + ' | uVersion:' + inttostr(tempItem.BInfoFlags)
+                                + ' | Title:' + tempItem.FTip),0);}
       if (tempItem.BInfoFlags >= 4) then
       begin
-        // NotifyIcon Version 4
+        // NotifyIcon Version > 4
         ix := gx;
         iy := gy;
-        wp := MakeLParam(ix,iy);
+        wp := MakeWParam(ix,iy);
 
         // Stop the tip timer on any other message
-      {  if (msg <> WM_MOUSEMOVE) then
-            StopTipTimer;  }
+        if (msg <> WM_MOUSEMOVE) then
+        begin
+          StopTipTimer;
+          CloseVistaInfoTip;
+        end;
 
+        lp := MakeLParam(msg,tempItem.uID);
         case msg of
-          WM_LBUTTONUP,WM_LBUTTONDOWN,
-          WM_LBUTTONDBLCLK,WM_RBUTTONDOWN: lp := MakeLParam(msg,tempItem.uID);
           WM_MOUSEMOVE: begin
-                          lp := MakeLParam(WM_MOUSEMOVE,tempItem.uID);
-                       {   if (tempItem.Flags and NIF_SHOWTIP) = NIF_SHOWTIP then
-                          begin
-                            // Pre Vista Tooltips
-                            StartTipTimer(x,y,gx,gy);
-                          end else
-                          begin
-                            // Vista Tooltips
-                            if FV4Popup = nil then // not already showing one...
-                            begin
-                              //SendMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
-                              //FV4Popup := tempItem;
-                              //lp := MakeLParam(NIN_POPUPOPEN,tempItem.uID);
-                            end;
-                          end;  }
+                          // Tooltip check
+                          if not ((tempItem.Flags and NIF_SHOWTIP) = NIF_SHOWTIP) then
+                             FV4Popup := tempItem;
+                          StartTipTimer(x,y,gx,gy);
                         end;
           WM_RBUTTONUP: begin
                           lp := MakeLParam(WM_RBUTTONUP,tempItem.uID);
                           SendMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
                           lp := MakeLParam(WM_CONTEXTMENU,tempItem.uID);
                         end;
-          else exit;
         end;
         SendMessage(tempItem.Wnd,tempItem.CallbackMessage,wp,lp);
       end else
@@ -1197,48 +1218,11 @@ begin
         // NotifyIcon Version < 4
         PostMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
 
-       { if Msg = WM_MOUSEMOVE then
-           StartTipTimer(x,y,gx,gy);   }
+        if Msg = WM_MOUSEMOVE then
+           StartTipTimer(x,y,gx,gy);
       end;
-
-      // Old code below;
- {     case Msg of
-        WM_MOUSEMOVE:
-        begin
-          StartTipTimer(x,y,gx,gy);
-          postmessage(tempItem.Wnd, tempItem.CallbackMessage,tempItem.uID, Msg);
-        end;
-        WM_LBUTTONUP :
-        begin
-          StopTipTimer;
-          SetForegroundWindow(tempItem.Wnd);
-          postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID, WM_LBUTTONDOWN);
-          postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID, WM_LBUTTONUP);
-        end;
-        WM_RBUTTONUP :
-        begin
-          StopTipTimer;
-          SetForegroundWindow(tempItem.Wnd);
-          postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID, WM_CONTEXTMENU);
-          postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID, WM_RBUTTONDOWN);
-          postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID, WM_RBUTTONUP);
-        end;
-        WM_LBUTTONDBLCLK :
-        begin
-          StopTipTimer;
-          SetForegroundWindow(tempItem.wnd);
-          postmessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,WM_LBUTTONDBLCLK);
-        end;
-        else if (Msg <> WM_RBUTTONDOWN) then
-        begin
-          StopTipTimer;
-          postmessage(tempItem.Wnd, tempItem.CallbackMessage,tempItem.uID, Msg);
-        end;
-      end;
-      exit; }
     end;
   end;
-  StopTipTimer;
 end;
 {$ENDREGION}
 

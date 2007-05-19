@@ -343,9 +343,17 @@ begin
   end;
 end;
 
+function PointInRect(P : TPoint; Rect : TRect) : boolean;
+begin
+  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
+     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
+     else PointInRect:=False;
+end;
+
 procedure TMainForm.BackgroundMouseLeave(Sender: TObject);
 begin
   FTrayClient.StopTipTimer;
+  FTrayClient.CloseVistaInfoTip;
 end;
 procedure TMainForm.BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer; Layer: TCustomLayer);
