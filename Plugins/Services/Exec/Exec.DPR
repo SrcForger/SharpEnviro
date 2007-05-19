@@ -44,7 +44,7 @@ uses
   CalcExpress in '..\..\..\Common\3rd party\CalcExpress\Source\CalcExpress.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas';
 
-{$E service}
+{$E ser}
 
 {$R *.RES}
 

@@ -119,7 +119,7 @@
 			<Linker Name="GenerateHpps">False</Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir">..\..\..\..\SharpE\Services</Directories>
+			<Directories Name="OutputDir">..\..\..\..\SharpE\Services\</Directories>
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
@@ -127,7 +127,7 @@
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
 			<Directories Name="UsePackages">True</Directories>
-			<Directories Name="SearchPath"></Directories></Directories>
+			<Directories Name="SearchPath">..\..\..\Common\Libraries\SharpAPI</Directories></Directories>
 		<Parameters>
 			<Parameters Name="RunParams">-ext .ser</Parameters>
 			<Parameters Name="HostApplication">..\..\..\..\SharpE\SharpCenter.exe</Parameters>
@@ -168,6 +168,13 @@
 			<VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
-		</VersionInfoKeys>
-	</Delphi.Personality>
+		</VersionInfoKeys>  <Language>
+      <Language Name="ActiveLang"></Language>
+      <Language Name="ProjectLang">$00000000</Language>
+      <Language Name="RootDir"></Language>
+    </Language>
+    <Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
+    </Excluded_Packages>
+  </Delphi.Personality>
 </BorlandProject>

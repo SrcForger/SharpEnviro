@@ -39,7 +39,7 @@ uses
   uHotkeyServiceMain in 'uHotkeyServiceMain.pas',
   uHotkeyServiceList in '..\..\Configurations\Hotkeys\uHotkeyServiceList.pas';
 
-{$E service}
+{$E ser}
 
 procedure Stop;
 begin

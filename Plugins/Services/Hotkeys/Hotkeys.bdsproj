@@ -115,7 +115,7 @@
 			<Linker Name="ExeDescription"></Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir">..\..\..\..\SharpE\Services</Directories>
+			<Directories Name="OutputDir">..\..\..\..\SharpE\Services\</Directories>
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
@@ -164,8 +164,14 @@
 			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
 			<VersionInfoKeys Name="PrivateBuild"></VersionInfoKeys>
-		</VersionInfoKeys>  <Excluded_Packages>
-      <Excluded_Packages Name="C:\Documents and Settings\Lee Green\My Documents\Borland Studio Projects\Bpl\cepack.bpl">(untitled)</Excluded_Packages>
+		</VersionInfoKeys>  <Language>
+      <Language Name="ActiveLang"></Language>
+      <Language Name="ProjectLang">$00000000</Language>
+      <Language Name="RootDir"></Language>
+    </Language>
+    
+    <Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
     </Excluded_Packages>
   </Delphi.Personality>
 </BorlandProject>

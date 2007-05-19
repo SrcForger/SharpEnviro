@@ -41,7 +41,8 @@ uses
   uCompServiceMain in 'uCompServiceMain.pas',
   uCompServiceAppStatus in 'uCompServiceAppStatus.pas';
 
-{$E service}
+{$E ser}
+
 {$WARN SYMBOL_DEPRECATED OFF}
 
 {$R *.res}
