@@ -103,6 +103,8 @@ var
   n : integer;
   throbberpos : TPoint;
   buttonpos : TPoint;
+  st : TSharpESchemeType;
+  s : String;
 begin
   try
     XML := TJvSimpleXML.Create(nil);
@@ -124,7 +126,13 @@ begin
                colorvalue := Value('Default','0')
                else colorvalue := Value('Color','0');
             colorint := SharpThemeApi.ParseColor(PChar(colorvalue));
-            BarWnd.SharpEScheme1.AddColor('temp',Value('Tag','temp'),'temp',colorint,IntValue('type',0));
+            s := Value('type','color');
+            if CompareText(s,'boolean') = 0 then
+               st := stBoolean
+               else if CompareText(s,'integer') = 0 then
+                    st := stInteger
+                    else st := stColor;
+            BarWnd.SharpEScheme1.AddColor('temp',Value('Tag','temp'),'temp',colorint,st));
           end;
     except
     end;
