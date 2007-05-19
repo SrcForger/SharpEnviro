@@ -620,12 +620,8 @@ end;
 
 destructor TSharpETabList.Destroy;
 begin
-
-  FTimer.Enabled := False;
-  FreeAndNil(FTimer);
-  FreeAndNil(Fimage32);
-  FreeAndNil(FTabList);
-  FPngImageList := nil;
+  FImage32.Free;
+  FTimer.Free;
 
   inherited;
 
