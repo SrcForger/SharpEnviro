@@ -50,13 +50,14 @@ object Form1: TForm1
         Title = 'Alpha'
         ColorCode = 0
         ColorAsTColor = clBlack
-        Expanded = True
-        ColorEditorType = cetValue
+        Expanded = False
+        ValueEditorType = vetColor
         Description = 'This is an alpha value:'
         ValueText = 'Alpha'
         ValueMax = 255
         ValueMin = 0
         Value = 20
+        Visible = True
         ColorEditor = SharpEColorEditorEx1.Item0
         Tag = 0
       end
@@ -64,10 +65,11 @@ object Form1: TForm1
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
-        ColorEditorType = cetColor
+        ValueEditorType = vetColor
         ValueMax = 0
         ValueMin = 0
         Value = 0
+        Visible = True
         ColorEditor = SharpEColorEditorEx1.Item1
         Tag = 0
       end
@@ -75,10 +77,11 @@ object Form1: TForm1
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
-        ColorEditorType = cetColor
+        ValueEditorType = vetColor
         ValueMax = 0
         ValueMin = 0
         Value = 0
+        Visible = True
         ColorEditor = SharpEColorEditorEx1.Item2
         Tag = 0
       end
@@ -86,10 +89,11 @@ object Form1: TForm1
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
-        ColorEditorType = cetColor
+        ValueEditorType = vetColor
         ValueMax = 0
         ValueMin = 0
         Value = 0
+        Visible = True
         ColorEditor = SharpEColorEditorEx1.Item3
         Tag = 0
       end
@@ -97,10 +101,11 @@ object Form1: TForm1
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
-        ColorEditorType = cetColor
+        ValueEditorType = vetColor
         ValueMax = 0
         ValueMin = 0
         Value = 0
+        Visible = True
         ColorEditor = SharpEColorEditorEx1.Item4
         Tag = 0
       end
@@ -108,23 +113,24 @@ object Form1: TForm1
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
-        ColorEditorType = cetColor
+        ValueEditorType = vetColor
         ValueMax = 0
         ValueMin = 0
         Value = 0
+        Visible = True
         ColorEditor = SharpEColorEditorEx1.Item5
         Tag = 0
       end>
     SwatchManager = SharpESwatchManager1
-  end
-  object Button1: TButton
-    Left = 184
-    Top = 384
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
-    TabOrder = 2
-    OnClick = Button1Click
+    object Button2: TButton
+      Left = 264
+      Top = 380
+      Width = 75
+      Height = 25
+      Caption = 'Button2'
+      TabOrder = 6
+      OnClick = Button2Click
+    end
   end
   object XPManifest1: TXPManifest
     Left = 136

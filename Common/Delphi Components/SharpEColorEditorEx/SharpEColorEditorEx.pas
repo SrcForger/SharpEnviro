@@ -27,7 +27,8 @@ Type
     FDescription: string;
     FValue: Integer;
     FValueMax: Integer;
-    FColorEditorType: TColorEditorType;
+    FValueEditorType: TValueEditorType;
+    FVisible: Boolean;
 
 
     procedure SetColorAsTColor(const Value: TColor);
@@ -40,12 +41,13 @@ Type
     function GetColorCode: Integer;
     function GetColorAsTColor: TColor;
     procedure SetParseColor(const Value: String);
-    procedure SetColorEditorType(const Value: TColorEditorType);
+    procedure SetValueEditorType(const Value: TValueEditorType);
     procedure SetDescription(const Value: string);
     procedure SetValue(const Value: Integer);
     procedure SetValueMax(const Value: Integer);
     procedure SetValueMin(const Value: Integer);
     procedure SetValueText(const Value: string);
+    procedure SetVisible(const Value: Boolean);
 
 
   public
@@ -64,14 +66,15 @@ Type
     property ParseColor: String read FParseColor write SetParseColor;
     property Expanded: Boolean read GetExpanded write SetExpanded;
 
-    property ColorEditorType: TColorEditorType read FColorEditorType write
-      SetColorEditorType;
+    property ValueEditorType: TValueEditorType read FValueEditorType write
+      SetValueEditorType;
 
     property Description: string read FDescription write SetDescription;
     property ValueText: string read FValueText write SetValueText;
     property ValueMax: Integer read FValueMax write SetValueMax;
     property ValueMin: Integer read FValueMin write SetValueMin;
     property Value: Integer read FValue write SetValue;
+    property Visible: Boolean read FVisible write SetVisible;
 
     property ColorEditor: TSharpEColorEditor read FColorEditor write FColorEditor;
 
@@ -103,13 +106,13 @@ Type
     FDesignLabel: TLabel;
     FSwatchManager: TSharpESwatchManager;
     FUpdate: Boolean;
-    FOnChangeColor: TColorChangeEvent;
-    FOnSliderChange: TNotifyEvent;
+    FOnChangeColor: tvaluechangeevent;
+    FOnUiChange: TNotifyEvent;
 
     procedure SetItems(const Value: TSharpEColorEditorExItems);
     procedure SetSwatchManager(const Value: TSharpESwatchManager);
     procedure ResizeEvent(Sender:TObject);
-    procedure ChangeSliderEvent(Sender:TObject);
+    procedure UiChangeEvent(Sender:TObject);
   public
     constructor Create(Sender: TComponent); override;
 
@@ -129,8 +132,8 @@ Type
     property Items: TSharpEColorEditorExItems read FItems write SetItems stored True;
     property SwatchManager: TSharpESwatchManager read FSwatchManager write SetSwatchManager;
 
-    property OnChangeColor: TColorChangeEvent read FOnChangeColor write FOnChangeColor;
-    property OnSliderChange: TNotifyEvent read FOnSliderChange write FOnSliderChange;
+    property OnChangeColor: tvaluechangeevent read FOnChangeColor write FOnChangeColor;
+    property OnUiChange: TNotifyEvent read FOnUiChange write FOnUiChange;
 end;
 
 procedure Register;
@@ -195,7 +198,7 @@ begin
   if TSharpEColorEditorEx(FParent) <> nil then
     if Assigned(TSharpEColorEditorEx(FParent).FOnChangeColor) then begin
 
-      if FColorEditorType = cetColor then
+      if FValueEditorType = vetColor then
       TSharpEColorEditorEx(FParent).OnChangeColor(Self,FColorCode) else
       TSharpEColorEditorEx(FParent).OnChangeColor(Self,FValue);
     end;
@@ -208,7 +211,8 @@ begin
   FTitle := Value;
 
   if FColorEditor <> nil then
-    FColorEditor.Caption := Value;
+    if FColorEditor.Caption <> Value then
+      FColorEditor.Caption := Value;
 end;
 
 
@@ -303,7 +307,8 @@ begin
   FValueMin := Value;
 
   if FColorEditor <> nil then begin
-    FColorEditor.ValueMin := Value;
+    if FColorEditor.ValueMin <> Value then
+      FColorEditor.ValueMin := Value;
   end;
 end;
 
@@ -312,7 +317,8 @@ begin
   FValueText := Value;
 
   if FColorEditor <> nil then begin
-    FColorEditor.ValueText := Value;
+    if FColorEditor.ValueText <> Value then
+      FColorEditor.ValueText := Value;
   end;
 end;
 
@@ -321,7 +327,8 @@ begin
   FDescription := Value;
 
   if FColorEditor <> nil then begin
-    FColorEditor.Description := Value;
+    if FColorEditor.Description <> Value then
+      FColorEditor.Description := Value;
   end;
 end;
 
@@ -330,7 +337,8 @@ begin
   FValue := Value;
 
   if FColorEditor <> nil then begin
-    FColorEditor.Value := Value;
+    if FColorEditor.Value <> Value then
+      FColorEditor.Value := Value;
   end;
 end;
 
@@ -339,17 +347,29 @@ begin
   FValueMax := Value;
 
   if FColorEditor <> nil then begin
-    FColorEditor.ValueMax := Value;
+    if FColorEditor.ValueMax <> Value then
+      FColorEditor.ValueMax := Value;
   end;
 end;
 
-procedure TSharpEColorEditorExItem.SetColorEditorType(
-  const Value: TColorEditorType);
+procedure TSharpEColorEditorExItem.SetValueEditorType(
+  const Value: TValueEditorType);
 begin
-  FColorEditorType := Value;
+  FValueEditorType := Value;
 
   if FColorEditor <> nil then begin
-    FColorEditor.ColorEditorType := Value;
+    if FColorEditor.ValueEditorType <> Value then
+      FColorEditor.ValueEditorType := Value;
+  end;
+end;
+
+procedure TSharpEColorEditorExItem.SetVisible(const Value: Boolean);
+begin
+  FVisible := Value;
+
+  if FColorEditor <> nil then begin
+    if FColorEditor.Visible <> Value then
+      FColorEditor.Visible := Value;
   end;
 end;
 
@@ -486,7 +506,7 @@ begin
     tmp.ColorAsTColor := FItems.Item[i].FColorAsTColor;
     tmp.Caption := FItems.Item[i].Title;
 
-    tmp.ColorEditorType := FItems.item[i].FColorEditorType;
+    tmp.ValueEditorType := FItems.item[i].FValueEditorType;
     tmp.ValueText := FItems.Item[i].FValueText;
     tmp.Value := FItems.Item[i].Value;
     tmp.ValueMax := FItems.Item[i].ValueMax;
@@ -496,11 +516,12 @@ begin
     tmp.Expanded := FItems.Item[i].Expanded;
     tmp.Name := 'Item' + intToStr(i);
 
-    tmp.OnColorChange := FItems.Item[i].ColorChangeEvent;
+    tmp.OnValueChange := FItems.Item[i].ColorChangeEvent;
     tmp.OnTabClick := FItems.Item[i].TabclickEvent;
-    tmp.OnSliderChange := ChangeSliderEvent;
+    tmp.OnUiChange := UiChangeEvent;
 
     tmp.Height := 24;
+    tmp.Visible := FItems.Item[i].Visible;
   end;
 
   Finally
@@ -521,6 +542,8 @@ end;
 
 procedure TSharpEColorEditorEx.SetItems(const Value: TSharpEColorEditorExItems);
 begin
+  if Value = FItems then exit;
+  
   FItems.Assign(Value);
 end;
 
@@ -529,7 +552,8 @@ begin
   inherited;
 
   if FDesignLabel <> nil then
-    FDesignLabel.Caption := Value;
+    if FDesignLabel.Caption <> Value then
+      FDesignLabel.Caption := Value;
 end;
 
 procedure TSharpEColorEditorEx.SetSwatchManager(
@@ -537,6 +561,7 @@ procedure TSharpEColorEditorEx.SetSwatchManager(
 var
   i:Integer;
 begin
+  if FSwatchManager = Value then exit;
   FSwatchManager := Value;
 
   For i := 0 to Pred(FItems.Count) do begin
@@ -544,10 +569,10 @@ begin
   end;
 end;
 
-procedure TSharpEColorEditorEx.ChangeSliderEvent(Sender: TObject);
+procedure TSharpEColorEditorEx.UiChangeEvent(Sender: TObject);
 begin
-  if Assigned(FOnSliderChange) then
-    FOnSliderChange(Sender);
+  if Assigned(FOnUiChange) then
+    FOnUiChange(Sender);
 end;
 
 end.

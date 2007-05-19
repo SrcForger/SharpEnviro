@@ -15,7 +15,8 @@ type
     Timer1: TTimer;
     SharpESwatchManager1: TSharpESwatchManager;
     SharpEColorEditorEx1: TSharpEColorEditorEx;
-    Button1: TButton;
+    Button2: TButton;
+    procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
@@ -43,7 +44,6 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   loadtheme;
-  
 end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);
@@ -115,6 +115,12 @@ begin
     //tmp.EndUpdate;
     //tmp.PopulateItems;
   End;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  SharpEColorEditorEx1.Items.Item[2].ColorEditor.Visible  :=
+    Not(SharpEColorEditorEx1.Items.Item[2].ColorEditor.Visible);
 end;
 
 end.

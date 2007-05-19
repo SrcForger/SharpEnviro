@@ -72,7 +72,7 @@ begin
     lockwindowupdate(0);
     tmp.EndUpdate;
 
-    tmp.Items.Item[1].ColorEditor.ColorEditorType := cetValue;
+    tmp.Items.Item[1].ColorEditor.ValueEditorType := vetValue;
     tmp.Items.Item[1].ColorEditor.Description := 'Please select the value:';
   End;
 
