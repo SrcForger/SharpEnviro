@@ -124,7 +124,7 @@ begin
                colorvalue := Value('Default','0')
                else colorvalue := Value('Color','0');
             colorint := SharpThemeApi.ParseColor(PChar(colorvalue));
-            BarWnd.SharpEScheme1.AddColor('temp',Value('Tag','temp'),'temp',colorint);
+            BarWnd.SharpEScheme1.AddColor('temp',Value('Tag','temp'),'temp',colorint,IntValue('type',0));
           end;
     except
     end;
