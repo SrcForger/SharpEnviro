@@ -245,6 +245,7 @@ end;
 
 procedure TSharpECenterScheme.SetMainListItemSelCol(const Value: TColor);
 begin
+  if FMainListItemSelCol = Value then exit;
   FMainListItemSelCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -253,6 +254,7 @@ end;
 
 procedure TSharpECenterScheme.SetMainListCol(const Value: TColor);
 begin
+  if FMainListCol = Value then exit;
   FMainListCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -261,6 +263,7 @@ end;
 
 procedure TSharpECenterScheme.SetMainTabBordCol(const Value: TColor);
 begin
+  if FMainTabBordCol = Value then exit;
   FMainTabBordCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -269,6 +272,7 @@ end;
 
 procedure TSharpECenterScheme.SetMainListItemBordCol(const Value: TColor);
 begin
+  if FMainListItemBordCol = Value then exit;
   FMainListItemBordCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -277,6 +281,7 @@ end;
 
 procedure TSharpECenterScheme.SetEditTabSelCol(const Value: TColor);
 begin
+  if FEditTabSelCol = Value then exit;
   FEditTabSelCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -285,6 +290,7 @@ end;
 
 procedure TSharpECenterScheme.SetSidePanelTextCol(const Value: TColor);
 begin
+  if FSidePanelTextCol = Value then exit;
   FSidePanelTextCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -293,6 +299,7 @@ end;
 
 procedure TSharpECenterScheme.SetEditErrCol(const Value: TColor);
 begin
+  if FEditErrCol = Value then exit;
   FEditErrCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -301,6 +308,7 @@ end;
 
 procedure TSharpECenterScheme.SetEditTabBordCol(const Value: TColor);
 begin
+  if FEditTabBordCol = Value then exit;
   FEditTabBordCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -309,6 +317,7 @@ end;
 
 procedure TSharpECenterScheme.SetMainTabTextStatCol(const Value: TColor);
 begin
+  if FMainTabTextStatCol = Value then exit;
   FMainTabTextStatCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -317,6 +326,7 @@ end;
 
 procedure TSharpECenterScheme.SetEditCol(const Value: TColor);
 begin
+  if FEditCol = Value then exit;
   FEditCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -325,6 +335,7 @@ end;
 
 procedure TSharpECenterScheme.SetSidePanelItemTextCol(const Value: TColor);
 begin
+  if FSidePanelItemTextCol = Value then exit;
   FSidePanelItemTextCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -333,6 +344,7 @@ end;
 
 procedure TSharpECenterScheme.SetSidePanelItemSelBordCol(const Value: TColor);
 begin
+  if FSidePanelItemSelBordCol = Value then exit;
   FSidePanelItemSelBordCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -341,6 +353,7 @@ end;
 
 procedure TSharpECenterScheme.SetMainTextCol(const Value: TColor);
 begin
+  if FMainTextCol = Value then exit;
   FMainTextCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -349,6 +362,7 @@ end;
 
 procedure TSharpECenterScheme.SetSidePanelTextDisCol(const Value: TColor);
 begin
+  if FSidePanelTextDisCol = Value then exit;
   FSidePanelTextDisCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -357,6 +371,7 @@ end;
 
 procedure TSharpECenterScheme.SetSidePanelTabCol(const Value: TColor);
 begin
+  if FSidePanelTabCol = Value then exit;
   FSidePanelTabCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -365,6 +380,7 @@ end;
 
 procedure TSharpECenterScheme.SetSidePanelBordCol(const Value: TColor);
 begin
+  if FSidePanelBordCol = Value then exit;
   FSidePanelBordCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -373,6 +389,7 @@ end;
 
 procedure TSharpECenterScheme.SetEditTextCol(const Value: TColor);
 begin
+  if FEditTextCol = Value then exit;
   FEditTextCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -381,6 +398,7 @@ end;
 
 procedure TSharpECenterScheme.SetSidePanelItemCol(const Value: TColor);
 begin
+  if FSidePanelItemCol = Value then exit;
   FSidePanelItemCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -389,6 +407,7 @@ end;
 
 procedure TSharpECenterScheme.SetMainTextDisCol(const Value: TColor);
 begin
+  if FMainTextDisCol = Value then exit;
   FMainTextDisCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -397,6 +416,7 @@ end;
 
 procedure TSharpECenterScheme.SetMainTabCol(const Value: TColor);
 begin
+  if FMainTabCol = Value then exit;
   FMainTabCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -405,6 +425,7 @@ end;
 
 procedure TSharpECenterScheme.SetMainListItemCol(const Value: TColor);
 begin
+  if FMainListItemCol = Value then exit;
   FMainListItemCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -413,6 +434,7 @@ end;
 
 procedure TSharpECenterScheme.SetEditTabErrCol(const Value: TColor);
 begin
+  if FEditTabErrCol = Value then exit;
   FEditTabErrCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -421,6 +443,7 @@ end;
 
 procedure TSharpECenterScheme.SetSidePanelTabSelCol(const Value: TColor);
 begin
+  if FSidePanelTabSelCol = Value then exit;
   FSidePanelTabSelCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -429,6 +452,7 @@ end;
 
 procedure TSharpECenterScheme.SetEditTextDisCol(const Value: TColor);
 begin
+  if FEditTextDisCol = Value then exit;
   FEditTextDisCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -437,6 +461,7 @@ end;
 
 procedure TSharpECenterScheme.SetEditTabCol(const Value: TColor);
 begin
+  if FEditTabCol = Value then exit;
   FEditTabCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -445,6 +470,7 @@ end;
 
 procedure TSharpECenterScheme.SetEditBordCol(const Value: TColor);
 begin
+  if FEditBordCol = Value then exit;
   FEditBordCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -453,6 +479,7 @@ end;
 
 procedure TSharpECenterScheme.SetMainListItemDisCol(const Value: TColor);
 begin
+  if FMainListItemDisCol = Value then exit;
   FMainListItemDisCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -461,6 +488,7 @@ end;
 
 procedure TSharpECenterScheme.SetSidePanelTabBordCol(const Value: TColor);
 begin
+  if FSidePanelTabBordCol = Value then exit;
   FSidePanelTabBordCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -469,6 +497,7 @@ end;
 
 procedure TSharpECenterScheme.SetSidePanelItemSelCol(const Value: TColor);
 begin
+  if FSidePanelItemSelCol = Value then exit;
   FSidePanelItemSelCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -477,6 +506,7 @@ end;
 
 procedure TSharpECenterScheme.SetMainTabSelCol(const Value: TColor);
 begin
+  if FMainTabSelCol = Value then exit;
   FMainTabSelCol := Value;
 
   if assigned(FOnChangeColor) then
@@ -485,6 +515,7 @@ end;
 
 procedure TSharpECenterScheme.SetSidePanelCol(const Value: TColor);
 begin
+  if FSidePanelCol = Value then exit;
   FSidePanelCol := Value;
 
   if assigned(FOnChangeColor) then
