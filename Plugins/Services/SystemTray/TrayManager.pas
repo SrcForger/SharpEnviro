@@ -60,6 +60,7 @@ type
     procedure ResetSharing(pItem : TTrayIcon);
     procedure RemoveTrayIcon(pItem : TTrayIcon);
     procedure ModifyTrayIcon(pItem : TTrayIcon; pData : TNotifyIconDataV7; Hidden,Shared : boolean; Action : integer);
+    procedure UpdateTrayVersion(pItem : TTrayIcon; pData : TNotifyIconDataV7);
     procedure CheckForDeadIcons;
     procedure IncomingTrayMsg(var Msg: TMessage); message WM_COPYDATA;
     procedure IncomingRegisterMessage(var Msg: TMessage); message WM_REGISTERWITHTRAY;
@@ -342,6 +343,17 @@ begin
   pItem.Free;
 end;
 
+procedure TTrayMessageWnd.UpdateTrayVersion(pItem : TTrayIcon; pData : TNotifyIconDataV7);
+begin
+  if pItem = nil then exit;
+  
+  pItem.data.Union.uVersion := pData.Union.uVersion;
+
+  if pItem.valid then
+     BroadCastTrayMessage(pItem,1)
+     else BroadCastTrayMessage(pItem,2);
+end;
+
 procedure TTrayMessageWnd.ModifyTrayIcon(pItem : TTrayIcon; pData : TNotifyIconDataV7; Hidden,Shared : boolean; Action : integer);
 var
   n : integer;
@@ -358,6 +370,7 @@ begin
     pItem := TTrayIcon.Create;
     pItem.data.Wnd := pData.Wnd;
     pItem.data.uID := pdata.uID;
+    pItem.data.Union.uVersion := 0;
     FIcons.Add(pItem);
     //cmd := NIM_ADD;
   end;
@@ -377,12 +390,7 @@ begin
     pItem.data.szInfoTitle := pData.szInfoTitle;
     pItem.data.dwInfoFlags := pData.dwInfoFlags;
   end;
-  pItem.data.Union.uTimeout := pData.Union.uTimeout;
-  
-  case cmd of
-    NIM_ADD: pItem.data.Union.uVersion := 0;
-    NIM_SETVERSION: pItem.data.Union.uVersion := pData.Union.uVersion;
-  end;
+//  pItem.data.Union.uTimeout := pData.Union.uTimeout;
 
   foundshared := False;
   if (pData.uFlags and NIF_ICON) = NIF_ICON then
@@ -512,6 +520,18 @@ begin
                                        ' | ' + s8+
                                        ' | pItem:' + s9 ));
 
+      if pItem <> nil then
+      SendMiniConsoleMsg(PChar('TRAY: ' + 'State: ' + s1 +
+                                       ' | statemask: ' +  s2 +
+                                       ' | Cmd: ' + s4 +
+                                       ' | Hidden: ' + s5 +
+                                       ' | Shared: ' + s6 +
+                                       ' | Title: ' + s3+IconData.szInfoTitle+
+                                       ' | Callback: ' + inttostr(pItem.data.uCallbackMessage)+
+                                       ' | Version: ' + inttostr(pItem.data.Union.uVersion)+
+                                       ' | ' + s8+
+                                       ' | pItem:' + s9 ));
+
       e := True;
 
       if (IconData.uID = 1) and (Shared) then e := False;
@@ -524,7 +544,8 @@ begin
                         else if pItem = nil then ModifyTrayIcon(pItem,IconData,False,False,TrayCmd)
                         else e := False;
                    end;
-          NIM_MODIFY,NIM_SETVERSION: begin
+          NIM_SETVERSION: UpdateTrayVersion(pItem,IconData);
+          NIM_MODIFY: begin
                         if (pItem = nil) and (IconData.Icon <> 0) and (not shared) and
                            ((IconData.uFlags and NIF_ICON) = NIF_ICON) and
                            ((IconData.uFlags and NIF_MESSAGE) = NIF_MESSAGE) and
@@ -540,6 +561,20 @@ begin
                       end;
         end;
       end;
+
+      if pItem <> nil then
+      SendMiniConsoleMsg(PChar('TRAY: ' + 'State: ' + s1 +
+                                       ' | statemask: ' +  s2 +
+                                       ' | Cmd: ' + s4 +
+                                       ' | Hidden: ' + s5 +
+                                       ' | Shared: ' + s6 +
+                                       ' | Title: ' + s3+IconData.szInfoTitle+
+                                       ' | Callback: ' + inttostr(pItem.data.uCallbackMessage)+
+                                       ' | Version: ' + inttostr(pItem.data.Union.uVersion)+
+                                       ' | ' + s8+
+                                       ' | pItem:' + s9 ));
+
+
       if e then msg.Result := -1
          else msg.Result := 0;
     end else msg.Result := DefWindowProc(Handle, Msg.Msg, Msg.WParam, Msg.LParam);
