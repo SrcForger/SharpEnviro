@@ -103,14 +103,14 @@ end;
 procedure TMainForm.SetWidth(new : integer);
 begin
   // The Module is receiving it's new size from the SharpBar!
-  // Now change the size of the Form!
+  // Make sure the new width is not negative or zero
   new := Max(new,1);
 
   // Update the Background Bitmap!
   UpdateBackground(new);
 
   // Background is updated, now resize the form
-  Width := Max(new,1);
+  Width := new;
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
