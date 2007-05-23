@@ -1,0 +1,65 @@
+<SharpCompile>
+  <package Name="Configuration">
+     <project Name="Curses" Type="DLL">Plugins\Configurations\Curses\Curses.bdsproj</project>  
+     <project Name="Desktop" Type="DLL">Plugins\Configurations\Desktop\Desktop.bdsproj</project>  
+     <project Name="Icon List" Type="DLL">Plugins\Configurations\Icon List\IconList.bdsproj</project>  
+     <project Name="Scheme" Type="DLL">Plugins\Configurations\Scheme\Scheme.bdsproj</project>  
+     <project Name="SharpBar Manager" Type="DLL">Plugins\Configurations\SharpBar List\SharpBarList.bdsproj</project>  
+     <project Name="SharpDesk" Type="DLL">Plugins\Configurations\SharpDesk\SharpDesk.bdsproj</project>  
+     <project Name="SharpMenu" Type="DLL">Plugins\Configurations\SharpMenu\SharpMenu.bdsproj</project>  
+     <project Name="Theme List" Type="DLL">Plugins\Configurations\Theme List\ThemeList.bdsproj</project>  
+     <project Name="Skin" Type="DLL">Plugins\Configurations\Theme Skin\ThemeSkinList.bdsproj</project>  
+  </package>
+  <package Name="Components">
+     <project Name="SharpBar" Type="Application">Components\SharpBar\SharpBar.bdsproj</project>  
+     <project Name="SharpCenter" Type="Application">Components\SharpCenter\SharpCenter.bdsproj</project>  
+     <project Name="SharpCore" Type="Application">Components\SharpCore\SharpCore.bdsproj</project>  
+     <project Name="SharpDesk" Type="Application">Components\SharpDesk\SharpDesk.bdsproj</project>  
+     <project Name="SharpMenu" Type="Application">Components\SharpMenu\SharpMenu.bdsproj</project>  
+     <project Name="SharpScript" Type="Application">Components\SharpScript\SharpScript.bdsproj</project>  
+     <project Name="SharpShellServices" Type="Application">Components\SharpShellServices\SharpShellServices.bdsproj</project>  
+     <project Name="SharpShutdown" Type="Application">Components\SharpShutdown\SharpShutdown.bdsproj</project>  
+     <project Name="SharpSkin" Type="Application">Components\SharpSkin\SharpSkin.bdsproj</project>  
+     <project Name="SharpSplash" Type="Application">Components\SharpSplash\SharpSplash.bdsproj</project>  
+  </package>
+  <package Name="Libraries">
+     <project Name="SharpApi" Type="DLL" >Common\Libraries\SharpAPI\SharpApi.bdsproj</project>  
+     <project Name="SharpApiEx" Type="DLL">Common\Libraries\SharpApiEx\SharpApiEx.bdsproj</project>  
+     <project Name="SharpDeskApi" Type="DLL">Common\Libraries\SharpDeskApi\SharpDeskApi.bdsproj</project>  
+     <project Name="SharpDialogs" Type="DLL">Common\Libraries\SharpDialogs\SharpDialogs.bdsproj</project>  
+     <project Name="SharpThemeApi" Type="DLL">Common\Libraries\SharpThemeApi\SharpThemeApi.bdsproj</project>  
+  </package>
+  <package Name="Modules">
+     <project Name="Battery Monitor" Type="DLL" >Plugins\Modules\Battery Monitor\BatteryMonitor.bdsproj</project>  
+     <project Name="Button" Type="DLL" >Plugins\Modules\Button\Button.bdsproj</project>  
+     <project Name="ButtonBar" Type="DLL" >Plugins\Modules\ButtonBar\ButtonBar.bdsproj</project>  
+     <project Name="Clock" Type="DLL" >Plugins\Modules\Clock\Clock.bdsproj</project>  
+     <project Name="CPU Monitor" Type="DLL" >Plugins\Modules\CPU Monitor\CPUMonitor.bdsproj</project>  
+     <project Name="DropZone" Type="DLL" >Plugins\Modules\DropZone\DropZone.bdsproj</project>  
+     <project Name="Media Controller" Type="DLL" >Plugins\Modules\MediaController\MediaController.bdsproj</project>  
+     <project Name="Memory Monitor" Type="DLL" >Plugins\Modules\Memory Monitor\MemoryMonitor.bdsproj</project>  
+     <project Name="Menu" Type="DLL" >Plugins\Modules\Menu\Menu.bdsproj</project>  
+     <project Name="MiniScmd" Type="DLL" >Plugins\Modules\MiniScmd\MiniScmd.bdsproj</project>  
+     <project Name="Notes" Type="DLL" >Plugins\Modules\Notes\Notes.bdsproj</project>  
+     <project Name="Quick Script" Type="DLL" >Plugins\Modules\QuickScript\QuickScript.bdsproj</project>  
+     <project Name="SystemTray" Type="DLL" >Plugins\Modules\SystemTray\SystemTray.bdsproj</project>  
+     <project Name="Taskbar" Type="DLL" >Plugins\Modules\Taskbar\Taskbar.bdsproj</project>  
+     <project Name="Volume Control" Type="DLL" >Plugins\Modules\VolumeControl\VolumeControl.bdsproj</project>  
+     <project Name="Weather" Type="DLL">Plugins\Modules\Weather\Weather.bdsproj</project>   
+  </package>
+  <package Name="Objects">
+     <project Name="Link" Type="DLL" >Plugins\Objects\Link\Link.bdsproj</project>  
+     <project Name="Recycle Bin" Type="DLL" >Plugins\Objects\RecycleBin\RecycleBin.bdsproj</project>  
+  </package>
+  <package Name="Services">
+     <project Name="Components" Type="DLL" >Plugins\Services\Components\Components.bdsproj</project>  
+     <project Name="Curses" Type="DLL" >Plugins\Services\Curses\Curses.bdsproj</project>  
+     <project Name="DeskArea" Type="DLL" >Plugins\Services\DeskArea\DeskArea.bdsproj</project>  
+     <project Name="Exec" Type="DLL" >Plugins\Services\Exec\Exec.bdsproj</project>  
+     <project Name="Hotkeys" Type="DLL" >Plugins\Services\Hotkeys\Hotkeys.bdsproj</project>  
+     <project Name="Skin" Type="DLL" >Plugins\Services\Skin\SkinController.bdsproj</project>  
+     <project Name="Startup" Type="DLL" >Plugins\Services\StartupApps\Startup.bdsproj</project>  
+     <project Name="SystemTray" Type="DLL" >Plugins\Services\SystemTray\SystemTray.bdsproj</project>  
+     <project Name="Weather" Type="DLL" requ="Delphi 2005 Professional">Plugins\Services\Weather\Weather.bdsproj</project>  
+  </package>
+</SharpCompile>
