@@ -761,6 +761,7 @@ var
   n : integer;
   R : TRect;
   freespace : integer;
+  MTWidth : integer;
 begin
   pForm := GetControlByHandle(FParent);
 
@@ -793,6 +794,10 @@ begin
   end;
   setlength(harray,0);
 
+  if FModules.Count > 0 then
+     MTWidth := TModule(FModules.Items[0]).Throbber.Width
+     else MTWidth := 0;
+
   // get left/right offets for plugin area
   try
     if FBar.ShowThrobber then
@@ -804,7 +809,7 @@ begin
     ro := 0;
   end;
 
-  result := maxsize - ro - lo;
+  result := maxsize - ro - lo - FModules.Count * MTWidth;
 end;
 
 function TModuleManager.GetModuleIndex(ID : integer) : integer;
