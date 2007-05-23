@@ -21,7 +21,7 @@ object frmDesktopSettings: TfrmDesktopSettings
     Top = 0
     Width = 376
     Height = 570
-    ActivePage = JvAnimationPage
+    ActivePage = JvIconPage
     PropagateEnable = False
     Align = alClient
     object JvIconPage: TJvStandardPage
@@ -272,6 +272,11 @@ object frmDesktopSettings: TfrmDesktopSettings
             ColorCode = 0
             ColorAsTColor = clBlack
             Expanded = False
+            ValueEditorType = vetColor
+            ValueMax = 0
+            ValueMin = 0
+            Value = 0
+            Visible = True
             ColorEditor = IconColors.Item0
             Tag = 0
           end
@@ -279,7 +284,12 @@ object frmDesktopSettings: TfrmDesktopSettings
             Title = 'Icon Shadow'
             ColorCode = 0
             ColorAsTColor = clBlack
-            Expanded = False
+            Expanded = True
+            ValueEditorType = vetColor
+            ValueMax = 0
+            ValueMin = 0
+            Value = 0
+            Visible = True
             ColorEditor = IconColors.Item1
             Tag = 0
           end>
@@ -547,6 +557,11 @@ object frmDesktopSettings: TfrmDesktopSettings
             ColorCode = 0
             ColorAsTColor = clBlack
             Expanded = False
+            ValueEditorType = vetColor
+            ValueMax = 0
+            ValueMin = 0
+            Value = 0
+            Visible = False
             ColorEditor = textcolors.Item0
             Tag = 0
           end
@@ -555,6 +570,11 @@ object frmDesktopSettings: TfrmDesktopSettings
             ColorCode = 0
             ColorAsTColor = clBlack
             Expanded = False
+            ValueEditorType = vetColor
+            ValueMax = 0
+            ValueMin = 0
+            Value = 0
+            Visible = False
             ColorEditor = textcolors.Item1
             Tag = 0
           end>
@@ -1014,6 +1034,11 @@ object frmDesktopSettings: TfrmDesktopSettings
               ColorCode = 0
               ColorAsTColor = clBlack
               Expanded = False
+              ValueEditorType = vetColor
+              ValueMax = 0
+              ValueMin = 0
+              Value = 0
+              Visible = False
               ColorEditor = animcolors.Item0
               Tag = 0
             end>
@@ -1053,7 +1078,7 @@ object frmDesktopSettings: TfrmDesktopSettings
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 299
+    Width = 311
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16
