@@ -53,16 +53,21 @@ type
   TSkinPartInfo = record
                     ID : String;
                     spart : TSkinPart;
-                    BlendColor : String;
+                    BlendColor : integer;
+                    BlendColorString : string;
                     BlendAlpha : integer;
                     GradientColorFrom : String;
                     GradientColorTo   : String;
+                    GradientColorFromS : String;
+                    GradientColorToS   : String;
                     MasterAlpha : integer;
                     GradientAlphaFrom : String;
                     GradientAlphaTo   : String;
-                    TextColor : String;
+                    TextColorString : String;
+                    TextColor : integer;
                     TextAlpha : integer;
-                    TextShadowColor : String;
+                    TextShadowColor : integer;
+                    TextShadowColorString : String;
                     TextShadowAlpha : integer;
                   end;
 
@@ -144,17 +149,17 @@ end;
 
 function Script_GetGradientFromColor(SP : TSkinPart) : String;
 begin
-  result := SP.GradientColor.X;
+  result := SP.GradientColorS.X;
 end;
 
 function Script_GetGradientToColor(SP : TSkinPart) : String;
 begin
-  result := SP.GradientColor.Y;
+  result := SP.GradientColorS.Y;
 end;
 
 function Script_GetColor(SP : TSkinPart) : String;
 begin
-  result := SP.BlendColor;
+  result := SP.BlendColorString;
 end;
 
 function Script_GetTextAlpha(SP : TSkinPart) : integer;
@@ -164,12 +169,12 @@ end;
 
 function Script_GetTextColor(SP : TSkinPart) : String;
 begin
-  result := SP.SkinText.Color;
+  result := SP.SkinText.ColorString;
 end;
 
 function Script_GetTextShadowColor(SP : TSkinPart) : String;
 begin
-  result := SP.SkinText.ShadowColor;
+  result := SP.SkinText.ShadowColorString;
 end;
 
 function Script_GetTextShadowAlpha(SP : TSkinPart) : integer;
@@ -197,14 +202,16 @@ begin
   SP.SkinText.ShadowAlpha := Max(0,Min(255,NewAlpha));
 end;
 
-procedure Script_SetTextShadowColor(SP : TSkinPart; NewColor : String);
+procedure Script_SetTextShadowColor(SP : TSkinPart; NewColor : String; Scheme : TSharpEScheme);
 begin
-  SP.SkinText.ShadowColor := NewColor;
+  SP.SkinText.ShadowColorString := NewColor;
+  SP.SkinText.ShadowColor := SchemedStringToColor(NewColor,Scheme);
 end;
 
-procedure Script_setColor(SP : TSkinPart; NewColor : String);
+procedure Script_setColor(SP : TSkinPart; NewColor : String; Scheme : TSharpEScheme);
 begin
-  SP.BlendColor := NewColor;
+  SP.BlendColorString := NewColor;
+  SP.BlendColor := SchemedStringToColor(NewColor,Scheme);
 end;
 
 procedure Script_IncreaseTextShadowAlpha(SP : TSkinPart; Amount : integeR);
@@ -271,9 +278,10 @@ begin
   SP.GradientAlpha.SetPoint(SP.GradientAlpha.X,inttostr(n));
 end;
 
-procedure Script_SetTextColor(SP : TSkinPart; NewColor : String);
+procedure Script_SetTextColor(SP : TSkinPart; NewColor : String; Scheme : TSharpEScheme);
 begin
-  SP.SkinText.Color := NewColor;
+  SP.SkinText.ColorString := NewColor;
+  SP.SkinText.Color := SchemedStringToColor(NewColor,Scheme);
 end;
 
 function Script_GetGradientFromAlpha(SP : TSkinPart) : integer;
@@ -344,11 +352,19 @@ var
 begin
   FromColor := SchemedStringToColor(pFromColor, Scheme);
   ToColor := SchemedStringToColor(pToColor, Scheme);
-  CurrentColor := SchemedStringToColor(SP.SkinText.ShadowColor, Scheme);
+  CurrentColor := SchemedStringToColor(SP.SkinText.ShadowColorString, Scheme);
   NewColor := StepBlendColor(FromColor,ToColor,CurrentColor,Step);
 
-  if NewColor = ToColor then SP.SkinText.ShadowColor := pToColor
-     else SP.SkinText.ShadowColor := inttostr(NewColor);
+  if NewColor = ToColor then
+  begin
+    SP.SkinText.ShadowColorString := pToColor;
+    SP.SkinText.ShadowColor := SchemedStringToColor(pToColor, Scheme)
+  end
+  else
+  begin
+    SP.SkinText.ShadowColorString := inttostr(NewColor);
+    SP.SkinText.ShadowColor := NewColor;
+  end;
 end;
 
 procedure Script_BlendTextColor(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
@@ -358,11 +374,19 @@ var
 begin
   FromColor := SchemedStringToColor(pFromColor, Scheme);
   ToColor := SchemedStringToColor(pToColor, Scheme);
-  CurrentColor := SchemedStringToColor(SP.SkinText.Color, Scheme);
+  CurrentColor := SchemedStringToColor(SP.SkinText.ColorString, Scheme);
   NewColor := StepBlendColor(FromColor,ToColor,CurrentColor,Step);
 
-  if NewColor = ToColor then SP.SkinText.Color := pToColor
-     else SP.SkinText.Color := inttostr(NewColor);
+  if NewColor = ToColor then
+  begin
+    SP.SkinText.Color := SchemedStringToColor(pToColor,Scheme);
+    SP.SkinText.ColorString := pToColor;
+  end
+  else
+  begin
+    SP.SkinText.ColorString := inttostr(NewColor);
+    SP.SkinText.Color := NewColor;
+  end;
 end;
 
 procedure Script_BlendColor(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
@@ -372,11 +396,19 @@ var
 begin
   FromColor := SchemedStringToColor(pFromColor, Scheme);
   ToColor := SchemedStringToColor(pToColor, Scheme);
-  CurrentColor := SchemedStringToColor(SP.BlendColor, Scheme);
+  CurrentColor := SchemedStringToColor(SP.BlendColorString, Scheme);
   NewColor := StepBlendColor(FromColor,ToColor,CurrentColor,Step);
 
-  if NewColor = ToColor then SP.BlendColor := pToColor
-     else SP.BlendColor := inttostr(NewColor);
+  if NewColor = ToColor then
+  begin
+    SP.BlendColor := SchemedStringToColor(pToColor,Scheme);
+    SP.BlendColorString := pToColor;
+  end
+  else
+  begin
+    SP.BlendColorString := inttostr(NewColor);
+    SP.BlendColor := NewColor;
+  end;
 end;
 
 procedure Script_BlendGradientFrom(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
@@ -386,11 +418,19 @@ var
 begin
   FromColor := SchemedStringToColor(pFromColor, Scheme);
   ToColor := SchemedStringToColor(pToColor, Scheme);
-  CurrentColor := SchemedStringToColor(SP.GradientColor.X, Scheme);
+  CurrentColor := SchemedStringToColor(SP.GradientColorS.X, Scheme);
   NewColor := StepBlendColor(FromColor,ToColor,CurrentColor,Step);
 
-  if NewColor = ToColor then SP.GradientColor.SetPoint(pToColor,SP.GradientColor.Y)
-     else SP.GradientColor.SetPoint(inttostr(NewColor),SP.GradientColor.Y);
+  if NewColor = ToColor then
+  begin
+    SP.GradientColor.SetPoint(inttostr(SchemedStringToColor(pToColor,Scheme)),SP.GradientColor.Y);
+    SP.GradientColorS.SetPoint(pToColor,SP.GradientColorS.Y);
+  end
+  else
+  begin
+    SP.GradientColorS.SetPoint(inttostr(NewColor),SP.GradientColorS.Y);
+    SP.GradientColor.SetPoint(inttostr(NewColor),SP.GradientColor.Y);
+  end;
 end;
 
 procedure Script_BlendGradientTo(SP : TSkinPart; pFromColor, pToColor : String; Step : integer; Scheme : TSharpEScheme);
@@ -400,11 +440,18 @@ var
 begin
   FromColor := SchemedStringToColor(pFromColor, Scheme);
   ToColor := SchemedStringToColor(pToColor, Scheme);
-  CurrentColor := SchemedStringToColor(SP.GradientColor.Y, Scheme);
+  CurrentColor := SchemedStringToColor(SP.GradientColorS.Y, Scheme);
   NewColor := StepBlendColor(FromColor,ToColor,CurrentColor,Step);
 
-  if NewColor = ToColor then SP.GradientColor.SetPoint(SP.GradientColor.X,pToColor)
-     else SP.GradientColor.SetPoint(SP.GradientColor.X,inttostr(NewColor));
+  if NewColor = ToColor then
+  begin
+    SP.GradientColor.SetPoint(SP.GradientColor.X,inttostr(SchemedStringToColor(pToColor,Scheme)))
+  end
+  else
+  begin
+    SP.GradientColor.SetPoint(SP.GradientColor.X,inttostr(NewColor));
+    SP.GradientColorS.SetPoint(SP.GradientColorS.X,inttostr(NewColor));
+  end;
 end;
 
 constructor TSharpEAnimTimer.Create(pComponent : TObject;
@@ -446,14 +493,18 @@ begin
   with ML[n] do
   begin
     SP.BlendColor := BlendColor;
+    SP.BlendColorString := BlendColorString;
     SP.GradientColor.SetPoint(GradientColorFrom,GradientColorTo);
+    SP.GradientColorS.SetPoint(GradientColorFromS,GradientColorToS);
     SP.BlendAlpha := BlendAlpha;
     SP.MasterAlpha := MasterAlpha;
     SP.GradientAlpha.SetPoint(GradientAlphaFrom,GradientAlphaTo);
+    SP.SkinText.ColorString := TextColorString;
     SP.SkinText.Color := TextColor;
     SP.SkinText.Alpha := TextAlpha;
     SP.SkinText.ShadowAlpha := TextShadowAlpha;
     SP.SkinText.ShadowColor := TextShadowColor;
+    SP.SkinText.ShadowColorString := TextShadowColorString;
   end;
 end;
 
@@ -479,16 +530,21 @@ begin
     ID := SP.ID;
     spart := SP;
     BlendColor := SP.BlendColor;
+    BlendColorString := SP.BlendColorString;
     GradientColorFrom := SP.GradientColor.X;
     GradientColorTo := SP.GradientColor.Y;
+    GradientColorFromS := SP.GradientColorS.X;
+    GradientColorToS := SP.GradientColorS.Y;
     BlendAlpha := SP.BlendAlpha;
     MasterAlpha := SP.MasterAlpha;
     GradientAlphaFrom := SP.GradientAlpha.X;
     GradientAlphaTo  := SP.GradientAlpha.Y;
     TextColor := SP.SkinText.Color;
+    TextColorString := SP.SkinText.ColorString;
     TextAlpha := SP.SkinText.Alpha;
     TextShadowAlpha := SP.SkinText.ShadowAlpha;
     TextShadowColor := SP.SkinText.ShadowColor;
+    TextShadowColorString := SP.SkinText.ShadowColorString;
   end;
 end;
 
@@ -512,8 +568,13 @@ begin
       if spart <> nil then
       begin
         spart.BlendColor := FModList[n].BlendColor;
-        spart.BlendColor := FModList[n].BlendColor;
+        spart.SkinText.ShadowColor := FModList[n].TextShadowColor;
+        spart.SkinText.Color := FModList[n].TextColor;
+        spart.BlendColorString := FModList[n].BlendColorString;
+        spart.SkinText.ShadowColorString := FModList[n].TextShadowColorString;
+        spart.SkinText.ColorString := FModList[n].TextColorString;
         spart.GradientColor.SetPoint(FModList[n].GradientColorFrom,FModList[n].GradientColorTo);
+        spart.GradientColorS.SetPoint(FModList[n].GradientColorFromS,FModList[n].GradientColorToS);
         spart.BlendAlpha := FModList[n].BlendAlpha;
         spart.MasterAlpha := FModList[n].MasterAlpha;
         spart.GradientAlpha.SetPoint(FModList[n].GradientAlphaFrom,FModList[n].GradientAlphaTo);
@@ -717,7 +778,7 @@ begin
           sBlendTextColor            : Script_BlendTextColor(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
           sIncraseAlpha              : Script_IncreaseAlpha(temp,Args.Values[1]);
           sDecraseAlpha              : Script_DecreaseAlpha(temp,Args.Values[1]);
-          sSetTextColor              : Script_SetTextColor(temp,Args.Values[1]);
+          sSetTextColor              : Script_SetTextColor(temp,Args.Values[1],FScheme);
           sSetAlpha                  : Script_SetAlpha(temp,Args.Values[1]);
           sSetGradientFromAlpha      : Script_SetGradientFromAlpha(temp,Args.Values[1]);
           sSetGradientToAlpha        : Script_SetGradientToAlpha(temp,Args.Values[1]);
@@ -729,11 +790,11 @@ begin
           sIncreaseTextAlpha         : Script_IncreaseTextAlpha(temp,Args.Values[1]);
           sDecreaseTextAlpha         : Script_DecreaseTextAlpha(temp,Args.Values[1]);
           sSetTextShadowAlpha        : Script_SetTextShadowAlpha(temp,Args.Values[1]);
-          sSetTextShadowColor        : Script_SetTextShadowColor(temp,Args.Values[1]);
+          sSetTextShadowColor        : Script_SetTextShadowColor(temp,Args.Values[1],FScheme);
           sIncreaseTextShadowAlpha   : Script_IncreaseTextShadowAlpha(temp,Args.Values[1]);
           sDecreaseTextShadowAlpha   : Script_DecreaseTextShadowAlphA(temp,Args.Values[1]);
           sBlendTextShadowColor      : Script_BlendTextShadowColor(temp,VarToStr(Args.Values[1]),VarToStr(Args.Values[2]),Args.Values[3],FScheme);
-          sSetColor                  : Script_SetColor(temp,Args.Values[1]);
+          sSetColor                  : Script_SetColor(temp,Args.Values[1],FScheme);
         end;
         AddToModList(temp, FLMList);
       end;

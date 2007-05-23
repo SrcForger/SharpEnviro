@@ -134,7 +134,8 @@ type
     FX: string;
     FY: string;
     FName: string;
-    FColor: string;
+    FColor: integer;
+    FColorString: String;
     FSize: integer;
     FAlpha: byte;
     FAlphaString: String;
@@ -143,7 +144,8 @@ type
     FStyleUnderline : boolean;
     FMaxWidth : String;
     FShadow : boolean;
-    FShadowColor : string;
+    FShadowColor : integer;
+    FShadowColorString : String;
     FShadowType : TShadowType;
     FShadowAlpha : byte;
     FDrawText : boolean;
@@ -172,10 +174,12 @@ type
                        var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String); overload;
     procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme); overload;
   published
-    property Color : String read FColor write FColor;
+    property Color : integer read FColor write FColor;
+    property ColorString : String read FColorString write FColorString;
     property Alpha : byte read FAlpha write FAlpha;
     property AlphaString : string read FAlphaString write FAlphaString;
-    property ShadowColor : String read FShadowColor write FShadowColor;
+    property ShadowColor : integer read FShadowColor write FShadowColor;
+    property ShadowColorString : String read FShadowColorString write FShadowColorString;
     property ShadowAlpha : byte read FShadowAlpha write FShadowAlpha;
     property DrawText : boolean read FDrawText write FDrawText;
   end;
@@ -220,12 +224,14 @@ type
     FEnabled : boolean;
     FEnabledString : String;
     FBlend: boolean;
-    FBlendColor: string;
+    FBlendColor: integer;
+    FBlendColorString : String;
     FBlendAlpha: byte;
     FSkinDim: TSkinDim;
     FSkinText: TSkinText;
     FGradientType : string;
     FGradientColor : TSkinPoint;
+    FGradientColorS : TSkinPoint;
     FGradientAlpha : TSkinPoint;
     Procedure DoCombine(F: TColor32; var B: TColor32; M: TColor32);
     procedure TileDraw(Src,Dest : TBitmap32; DestRect : TRect);
@@ -254,11 +260,13 @@ type
     property SkinText: TSkinText read FSkinText write FSkinText;
     property LayerMode: TLayerMode read FLayerMode write FLayerMode;
     property Blend: boolean read FBlend write FBlend;
-    property BlendColor: string read FBlendColor write FBlendColor;
+    property BlendColor: integer read FBlendColor write FBlendColor;
+    property BlendColorString : string read FBlendColorString write FBlendColorString;
     property BlendAlpha: byte read FBlendAlpha write FBlendAlpha;
     property GradientType: string read FGradientType write FGradientType;
     property GradientAlpha: TSkinPoint read FGradientAlpha write FGradientAlpha;
     property GradientColor: TSkinPoint read FGradientColor write FGradientColor;
+    property GradientColorS : TSkinPoint read FGradientColorS write FGradientColorS;
     property MasterAlpha : byte read FMasterAlpha write FMasterAlpha;
     property MasterAlphaString : String read FMasterAlphaString write FMasterAlphaString;
     property Enabled : boolean read FEnabled write FEnabled;
@@ -672,7 +680,8 @@ begin
   FStyleUnderline := False;
   FShadow := False;
   FShadowType := stRight;
-  FShadowColor := '0';
+  FShadowColor := 0;
+  FShadowColorString := '0';
   FShadowAlpha := 255;
   FAlpha := 255;
   FAlphaString := '255';
@@ -684,7 +693,7 @@ begin
   StringSaveToStream(FX, Stream);
   StringSaveToStream(FY, Stream);
   StringSaveToStream(FName, Stream);
-  StringSaveToStream(FColor, Stream);
+  StringSaveToStream(FColorString, Stream);
   StringSaveToStream(BoolToStr(FStyleBold),Stream);
   StringSaveToStream(BoolToStr(FStyleItalic),Stream);
   StringSaveToStream(BoolToStr(FStyleUnderline),Stream);
@@ -692,7 +701,7 @@ begin
   StringSaveToStream(FMaxWidth, Stream);
   Stream.WriteBuffer(FSize, sizeof(FSize));
   StringSaveToStream(BoolToStr(FShadow),Stream);
-  StringSaveToStream(FShadowColor,Stream);
+  StringSaveToStream(FShadowColorString,Stream);
   case FShadowType of
     stLeft    : StringSaveToStream('0',Stream);
     stOutline : StringSaveToStream('2',Stream);
@@ -710,7 +719,7 @@ begin
   FX := StringLoadFromStream(Stream);
   FY := StringLoadFromStream(Stream);
   FName := StringLoadFromStream(Stream);
-  FColor := StringLoadFromStream(Stream);
+  FColorString := StringLoadFromStream(Stream);
   FStyleBold := StrToBool(StringLoadFromStream(Stream));
   FStyleItalic := StrToBool(StringLoadfromStream(Stream));
   FStyleUnderline := StrToBool(StringLoadFromStream(Stream));
@@ -718,7 +727,7 @@ begin
   FMaxwidth := StringLoadFromStream(Stream);
   Stream.ReadBuffer(FSize, sizeof(FSize));
   FShadow := StrToBool(StringLoadFromStream(Stream));
-  FShadowColor := StringLoadFromStream(Stream);
+  FShadowColorString := StringLoadFromStream(Stream);
   s := StringLoadFromStream(Stream);
   if CompareText(s,'0') = 0 then FShadowType := stLeft
      else if CompareText(s,'2') = 0 then FShadowType := stOutline
@@ -734,6 +743,7 @@ begin
   FY := Value.FY;
   FName := Value.FName;
   FColor := Value.FColor;
+  FColorString := Value.FColorString;
   FSize := Value.FSize;
   FStyleBold := Value.FStyleBold;
   FStyleItalic := Value.FStyleItalic;
@@ -741,6 +751,7 @@ begin
   FMaxWidth := Value.FMaxWidth;
   FShadow := Value.FShadow;
   FShadowColor := Value.FShadowColor;
+  FShadowColorString := Value.FShadowColorString;
   FShadowAlpha := Value.FShadowAlpha;
   FShadowType := Value.FShadowType;
   FAlpha := Value.FAlpha;
@@ -751,7 +762,7 @@ end;
 procedure TSkinText.Assign(Value: TSkinTextRecord);
 begin
   FName := Value.FName;
-  FColor := Value.FColor;
+  FColorString := Value.FColor;
   FSize := Value.FSize;
 end;
 
@@ -787,7 +798,7 @@ begin
   if FStyleBold then result.Style := result.Style + [fsBold];
   if FStyleItalic then result.Style := result.Style + [fsItalic];
   if FStyleUnderline then result.Style := result.Style + [fsUnderline];
-  result.Color := SchemedStringToColor(FColor, cs);
+  result.Color := FColor;
 end;
 
 procedure TSkinText.SetLocation(str: string);
@@ -806,6 +817,8 @@ end;
 procedure TSkinText.UpdateDynamicProperties(cs: TSharpEScheme);
 begin
   FAlpha := Min(255,Max(0,EvaluateValue(FAlphaString,cs)));
+  FShadowColor := SchemedStringToColor(FShadowColorString,cs);
+  FColor       := SchemedStringToColor(FColorString,cs);
 end;
 
 procedure TSkinText.LoadFromXML(xml: TJvSimpleXMLElem);
@@ -819,7 +832,7 @@ begin
     if ItemNamed['size'] <> nil then
       FSize := IntValue('size', 7);
     if ItemNamed['color'] <> nil then
-      FColor := Value('color', '$000000');
+      FColorString := Value('color', '$000000');
     if ItemNamed['location'] <> nil then
       SetLocation(Value('location', '0,0'));
     if ItemNamed['bold'] <> nil then
@@ -835,7 +848,7 @@ begin
     if ItemNamed['shadow'] <> nil then
       FShadow := BoolValue('shadow',false);
     if ItemNamed['shadowcolor'] <> nil then
-      FShadowColor := Value('shadowcolor','0');
+      FShadowColorString := Value('shadowcolor','0');
     if ItemNamed['shadowalpha'] <> nil then
       FShadowAlpha := Max(0,Min(255,IntValue('shadowalpha',255)));
     if ItemNamed['shadowtype'] <> nil then
@@ -1123,7 +1136,7 @@ begin
       ShadowBmp.SetSize(TempBmp.Width,TempBmp.Height);
       ShadowBmp.Clear(color32(0,0,0,0));
       ShadowBmp.Font.Assign(Bmp.Font);
-      c := SchemedStringToColor(FShadowColor, cs);
+      c := FShadowColor;
       R := GetRValue(c);
       G := GetGValue(c);
       B := GetBValue(c);
@@ -1152,7 +1165,7 @@ begin
       ShadowBmp.Free;
     end;
   end;
-  c := SchemedStringToColor(FColor, cs);
+  c := FColor;
   R := GetRValue(c);
   G := GetGValue(c);
   B := GetBValue(c);
@@ -1187,7 +1200,8 @@ begin
     begin
       pPrecacheText := TSkinText.Create;
       pPrecacheText.Clear;
-      pPrecacheText.FColor := '-1';
+      pPrecacheText.FColorString := '-1';
+      pPrecacheText.UpdateDynamicProperties(cs);
     end;
   end else new := False;
 
@@ -1195,9 +1209,9 @@ begin
   // Check if something changed since cache bmp has been created.
   if ((CompareText(pPrecacheText.FName,FName) <> 0) or
 //     (CompareText(pPrecacheText.FColor,FColor) <> 0) or
-     (strtoint(pPrecacheText.FColor) <> SchemedStringToColor(FColor,cs)) or
+     (pPrecacheText.FColor <> FColor) or
      (CompareText(pPrecacheText.FMaxWidth,FMaxWidth) <> 0) or
-     (CompareText(pPrecacheText.FShadowColor,FShadowColor) <> 0) or
+     (pPrecacheText.FShadowColor <> FShadowColor) or
      (pPrecacheText.FSize <> FSize) or
      (pPrecacheText.FStyleBold <> FStyleBold) or
      (pPrecacheText.FStyleItalic <> FStyleItalic) or
@@ -1225,7 +1239,7 @@ begin
         ShadowBmp.SetSize(pPrecacheBmp.Width,pPrecacheBmp.Height);
         ShadowBmp.Clear(color32(0,0,0,0));
         ShadowBmp.Font.Assign(Bmp.Font);
-        c := SchemedStringToColor(FShadowColor, cs);
+        c := FShadowColor;
         R := GetRValue(c);
         G := GetGValue(c);
         B := GetBValue(c);
@@ -1254,8 +1268,8 @@ begin
         ShadowBmp.Free;
       end;
     end;
-    c := SchemedStringToColor(FColor, cs);
-    pPrecacheText.FColor := inttostr(c);
+    c := FColor;
+    pPrecacheText.FColor := c;
     R := GetRValue(c);
     G := GetGValue(c);
     B := GetBValue(c);
@@ -1452,6 +1466,9 @@ procedure TSkinPart.UpdateDynamicProperties(cs: TSharpEScheme);
 var
   n : integer;
 begin
+  FBlendColor := SchemedStringToColor(FBlendColorString,cs);
+  FGradientColor.FX := inttostr(SchemedStringToColor(FGradientColorS.X,cs));
+  FGradientColor.FY := inttostr(SchemedStringToColor(FGradientColorS.Y,cs));
   FMasterAlpha := Min(255,Max(0,EvaluateValue(FMasterAlphaString,cs)));
   n := EvaluateValue(FEnabledString,cs);
   FEnabled := (n <> 0);
@@ -1469,12 +1486,12 @@ begin
   Stream.WriteBuffer(FDrawMode, sizeof(FDrawMode));
   Stream.WriteBuffer(FLayerMode, sizeof(FLayerMode));
   Stream.WriteBuffer(FBlend, sizeof(FBlend));
-  StringSaveToStream(FBlendColor, Stream);
+  StringSaveToStream(FBlendColorString, Stream);
   StringSaveToStream(FID, Stream);
   Stream.WriteBuffer(FEnabled,SizeOf(FEnabled));
   StringSaveToStream(FEnabledString,Stream);
   FGradientAlpha.SaveToStream(Stream);
-  FGradientColor.SaveToStream(Stream);
+  FGradientColorS.SaveToStream(Stream);
   StringSavetoStream(FGradientType, Stream);
   FSkinDim.SaveToStream(Stream);
   FSkinText.SaveToStream(Stream);
@@ -1497,12 +1514,12 @@ begin
     Stream.ReadBuffer(FDrawMode, sizeof(FDrawMode));
     Stream.ReadBuffer(FLayerMode, sizeof(FLayerMode));
     Stream.ReadBuffer(FBlend, sizeof(FBlend));
-    FBlendColor := StringLoadFromStream(Stream);
+    FBlendColorString := StringLoadFromStream(Stream);
     FID := StringLoadFromStream(Stream);
     Stream.ReadBuffer(FEnabled, sizeof(FEnabled));
     FEnabledString := StringLoadFromStream(Stream);
     FGradientAlpha.LoadFromStream(Stream);
-    FGradientColor.LoadFromStream(Stream);
+    FGradientColorS.LoadFromStream(Stream);
     FGradientType := StringLoadFromStream(Stream);
     FSkinDim.LoadFromStream(Stream);
     FSkinText.LoadFromStream(Stream);
@@ -1560,7 +1577,7 @@ begin
     if IsEmpty then
     begin
       FBitmap.SetSize(r.Right - r.Left, R.Bottom - R.Top);
-      FBitmap.Clear(color32(SchemedStringToColor(BlendColor, cs)));
+      FBitmap.Clear(color32(BlendColor));
     end;
     TKernelResampler.Create(bmp).Kernel := TLanczosKernel.Create;
     if (Fblend) and not (IsEmpty) then
@@ -1569,7 +1586,7 @@ begin
       temp.DrawMode := dmBlend;
       temp.CombineMode := cmMerge;
       try
-        doBlend(temp, FBitmap, SchemedStringToColor(BlendColor, cs));
+        doBlend(temp, FBitmap, BlendColor);
         temp.MasterAlpha := FMasterAlpha;
         if FDrawMode = sdmStretch then CustomDraw(temp, bmp, rect(0,0, temp.width, temp.height), r)
            else TileDraw(temp,bmp,r);
@@ -1598,14 +1615,14 @@ begin
     r := FSkinDim.GetRect(rect(0, 0, bmp.Width, bmp.Height));
     if GradientType = 'horizontal' then
        HGradient(Bmp,
-                 SchemedStringToColor(FGradientColor.X,cs),
-                 SchemedStringToColor(FGradientColor.Y,cs),
+                 FGradientColor.XAsInt,
+                 FGradientColor.YAsInt,
                  FGradientAlpha.XAsInt,
                  FGradientAlpha.YAsInt,
                  r)
        else VGradient(Bmp,
-                 SchemedStringToColor(FGradientColor.X,cs),
-                 SchemedStringToColor(FGradientColor.Y,cs),
+                 FGradientColor.XAsInt,
+                 FGradientColor.YAsInt,
                  FGradientAlpha.XAsInt,
                  FGradientAlpha.YAsInt,
                  r);
@@ -1638,7 +1655,7 @@ begin
       if ItemNamed['gradienttype'] <> nil then
         FGradientType := Value('gradienttype','horizontal');
       if ItemNamed['gradientcolor'] <> nil then
-        FGradientColor.SetPoint(Value('gradientcolor','0,0'));
+        FGradientColorS.SetPoint(Value('gradientcolor','0,0'));
       if ItemNamed['gradientalpha'] <> nil then
         FGradientAlpha.SetPoint(Value('gradientalpha','0,0'));
       if ItemNamed['text'] <> nil then
@@ -1668,7 +1685,7 @@ begin
 
       if ItemNamed['color'] <> nil then
       begin
-        FBlendColor := Value('color', '');
+        FBlendColorString := Value('color', '');
         FBlend := true;
       end;
       if ItemNamed['blendalpha'] <> nil then
@@ -1721,6 +1738,7 @@ begin
   FBitmapId := Value.FBitmapId;
   FSkinDim.Assign(Value.SkinDim);
   FBlend := Value.Blend;
+  FBlendColorString := Value.BlendColorString;
   FBlendColor := Value.BlendColor;
   FBlendAlpha := Value.BlendAlpha;
   FMasterAlphaString := Value.MasterAlphaString;
@@ -1729,6 +1747,7 @@ begin
   FGradientType := Value.GradientType;
   FGradientColor.Assign(Value.GradientColor);
   FGradientAlpha.Assign(Value.GradientAlpha);
+  FGradientColorS.Assign(Value.GradientColorS);
   FLayerMode := Value.LayerMode;
   FEnabled := Value.Enabled;
   FEnabledString := Value.FEnabledString;
@@ -1745,11 +1764,13 @@ begin
   FID := '';
   FBitmapID := -1;
   FBlend := false;
-  FBlendColor := '$000000';
+  FBlendColor := 0;
+  FBlendColorString := '$000000';
   FBlendAlpha := 255;
   FMasterAlphaString := '255';
   FMasterAlpha := 255;
   FGradientColor.Clear;
+  FGradientColorS.Clear;
   FGradientAlpha.Clear;
   FGradientType := 'horizontal';
   FEnabled := True;
@@ -1766,10 +1787,12 @@ begin
   FSkinDim := TSkinDim.create;
   FSkinText := TSkinText.create;
   FGradientColor := TSkinPoint.Create;
+  FGradientColorS := TSkinPoint.Create;
   FGradientAlpha := TSkinPoint.Create;
   FGradientType := 'horizontal';
   FBlend := false;
-  FBlendColor := '$000000';
+  FBlendColor := 0;
+  FBlendColorString := '$000000';
   FBlendAlpha := 255;
   FBitmapId := -1;
   FBmpList := BmpList;
@@ -1794,6 +1817,7 @@ begin
   FSkinDim.Free;
   FSkinText.Free;
   FGradientColor.Free;
+  FGradientColorS.Free;
   FGradientAlpha.Free;
   inherited Destroy;
 end;

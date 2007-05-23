@@ -2579,16 +2579,16 @@ begin
     FPBXoffset.SetPoint('14', '7');
     FPBYoffset.SetPoint('3', '3');
     FBar.SkinDim.SetDimension('w', 'h');
-    FBar.BlendColor := '$WorkAreaBack';
+    FBar.BlendColorString := '$WorkAreaBack';
     FBar.Blend := True;
     FBarBorder.SkinDim.SetDimension('w', 'h');
-    FBarBorder.BlendColor := '$WorkAreaBack';
+    FBarBorder.BlendColorString := '$WorkAreaBack';
     FBarBorder.Blend := True;
     FBarBottom.SkinDim.SetDimension('w','h');
-    FBarBottom.BlendColor := '$WorkAreaBack';
+    FBarBottom.BlendColorString := '$WorkAreaBack';
     FBarBottom.Blend := True;
     FBarBottomBorder.SkinDim.SetDimension('w','h');
-    FBarBottomBorder.BlendColor := '$WorkAreaBack';
+    FBarBottomBorder.BlendColorString := '$WorkAreaBack';
     FBarBottomBorder.Blend := True;
     FGlassEffect := False;
   end
