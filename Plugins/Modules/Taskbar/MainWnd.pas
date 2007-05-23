@@ -178,17 +178,6 @@ begin
      else PointInRect:=False;
 end;
 
-procedure LockWindow(const Handle: HWND);
-begin
-  SendMessage(Handle, WM_SETREDRAW, 0, 0);
-end;
-
-procedure UnlockWindow(const Handle: HWND);
-begin
-  SendMessage(Handle, WM_SETREDRAW, 1, 0);
-  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
-end;
-
 procedure TMainForm.RepaintComponents;
 var
   n : integer;
@@ -580,13 +569,14 @@ begin
   new := Max(NewWidth,1);
   UpdateBackground(new);
   Width := new;
+  InttoStr(Width);
   CalculateItemWidth(IList.Count);
-  i := FSpecialButtonWidth + IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
+  {i := FSpecialButtonWidth + IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
   if i+1 < NewWidth then
   begin
     Width := i+1;
     Hint := InttoStr(Width);
-  end;
+  end;}
   CalculateItemWidth(IList.Count);
   AlignTaskComponents;
 end;
