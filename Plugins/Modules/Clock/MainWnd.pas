@@ -235,6 +235,7 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  DoubleBuffered := True;
   Background := TBitmap32.Create;
 end;
 
