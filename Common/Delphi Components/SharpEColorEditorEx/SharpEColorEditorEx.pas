@@ -44,8 +44,6 @@ Type
     procedure SetValueEditorType(const Value: TValueEditorType);
     procedure SetDescription(const Value: string);
     procedure SetValue(const Value: Integer);
-    procedure SetValueMax(const Value: Integer);
-    procedure SetValueMin(const Value: Integer);
     procedure SetValueText(const Value: string);
     procedure SetVisible(const Value: Boolean);
 
@@ -71,8 +69,6 @@ Type
 
     property Description: string read FDescription write SetDescription;
     property ValueText: string read FValueText write SetValueText;
-    property ValueMax: Integer read FValueMax write SetValueMax;
-    property ValueMin: Integer read FValueMin write SetValueMin;
     property Value: Integer read FValue write SetValue;
     property Visible: Boolean read FVisible write SetVisible;
 
@@ -154,7 +150,7 @@ begin
 
   if FColorEditor <> nil then begin
     FColorEditor.OverrideSliderUpdateMode(sumAll);
-    FColorEditor.ColorCode := Value;
+    FColorEditor.Value := Value;
   end;
 end;
 
@@ -164,7 +160,7 @@ begin
   FColorCode := Value;
 
   if FColorEditor <> nil then
-    FColorEditor.ColorAsTColor := Value;
+    FColorEditor.ValueAsTColor := Value;
 end;
 
 function TSharpEColorEditorExItem.GetExpanded: Boolean;
@@ -191,8 +187,8 @@ end;
 procedure TSharpEColorEditorExItem.ColorChangeEvent(ASender: TObject;
   AColorCode: Integer);
 begin
-  FColorCode := TSharpEColorEditor(ASender).ColorCode;
-  FColorAsTColor := TSharpEColorEditor(ASender).ColorAsTColor;
+  FColorCode := TSharpEColorEditor(ASender).Value;
+  FColorAsTColor := TSharpEColorEditor(ASender).ValueAsTColor;
   FValue := TSharpEColorEditor(ASender).Value;
 
   if TSharpEColorEditorEx(FParent) <> nil then
@@ -266,13 +262,13 @@ end;
 function TSharpEColorEditorExItem.GetColorCode: Integer;
 begin
   if FColorEditor <> nil then
-    Result := FColorEditor.ColorCode;
+    Result := FColorEditor.Value;
 end;
 
 function TSharpEColorEditorExItem.GetColorAsTColor: TColor;
 begin
   if FColorEditor <> nil then
-    Result := FColorEditor.ColorAsTColor;
+    Result := FColorEditor.ValueAsTColor;
 end;
 
 procedure TSharpEColorEditorExItem.SetParseColor(const Value: String);
@@ -285,7 +281,7 @@ begin
 
   if FColorEditor <> nil then begin
     FColorEditor.OverrideSliderUpdateMode(sumAll);
-    FColorEditor.ColorCode := col;
+    FColorEditor.Value := col;
   end;
   except
   end;
@@ -300,16 +296,6 @@ end;
 procedure TSharpEColorEditorEx.BeginUpdate;
 begin
   FUpdate := False;
-end;
-
-procedure TSharpEColorEditorExItem.SetValueMin(const Value: Integer);
-begin
-  FValueMin := Value;
-
-  if FColorEditor <> nil then begin
-    if FColorEditor.ValueMin <> Value then
-      FColorEditor.ValueMin := Value;
-  end;
 end;
 
 procedure TSharpEColorEditorExItem.SetValueText(const Value: string);
@@ -339,16 +325,6 @@ begin
   if FColorEditor <> nil then begin
     if FColorEditor.Value <> Value then
       FColorEditor.Value := Value;
-  end;
-end;
-
-procedure TSharpEColorEditorExItem.SetValueMax(const Value: Integer);
-begin
-  FValueMax := Value;
-
-  if FColorEditor <> nil then begin
-    if FColorEditor.ValueMax <> Value then
-      FColorEditor.ValueMax := Value;
   end;
 end;
 
@@ -502,15 +478,13 @@ begin
 
     tmp.Align := alTop;
     tmp.GroupIndex := 0;
-    tmp.ColorCode := FItems.Item[i].FColorCode;
-    tmp.ColorAsTColor := FItems.Item[i].FColorAsTColor;
+    tmp.Value := FItems.Item[i].FColorCode;
+    tmp.ValueAsTColor := FItems.Item[i].FColorAsTColor;
     tmp.Caption := FItems.Item[i].Title;
 
     tmp.ValueEditorType := FItems.item[i].FValueEditorType;
     tmp.ValueText := FItems.Item[i].FValueText;
     tmp.Value := FItems.Item[i].Value;
-    tmp.ValueMax := FItems.Item[i].ValueMax;
-    tmp.ValueMin := FItems.Item[i].ValueMin;
     tmp.Description := FItems.Item[i].Description;
 
     tmp.Expanded := FItems.Item[i].Expanded;

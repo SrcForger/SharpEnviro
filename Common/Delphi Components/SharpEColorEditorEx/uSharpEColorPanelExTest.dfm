@@ -51,7 +51,7 @@ object Form1: TForm1
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
-        ValueEditorType = vetColor
+        ValueEditorType = vetBoolean
         Description = 'This is an alpha value:'
         ValueText = 'Alpha'
         ValueMax = 255
