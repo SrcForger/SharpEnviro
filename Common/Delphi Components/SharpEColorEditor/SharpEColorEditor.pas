@@ -45,8 +45,7 @@ type
     FGroupIndex: Integer;
     FExpandedHeight: Integer;
     FCollapseHeight: Integer;
-    FColorCode: Integer;
-    FColorAsTColor: TColor;
+    FValueAsTColor: TColor;
     FCaption: string;
     FOnValueChange: TValueChangeEvent;
     FOnTabClick: TNotifyEvent;
@@ -67,9 +66,8 @@ type
     function GetExpanded: Boolean;
     procedure TabClickEvent(ASender: TObject; const ATabIndex: Integer);
     procedure ColorClickEvent(ASender: TObject);
-    procedure SetColorCode(const Value: Integer);
 
-    procedure SetColorAsTColor(const Value: TColor);
+    procedure SetValueAsTColor(const Value: TColor);
     procedure LabelClickEvent(Sender: TObject);
 
     procedure PositionSlider(ASlider: TJvTrackBar; ACaption: string;
@@ -103,7 +101,7 @@ type
     procedure UpdateSwatchBitmap(ASender: TObject; const ABitmap32: TBitmap32);
     function GetCollapseHeight: Integer;
     function GetExpandedHeight: Integer;
-    procedure SeTValueEditorType(const Value: TValueEditorType);
+    procedure SetValueEditorType(const Value: TValueEditorType);
     procedure SetDescription(const Value: string);
     procedure SetValueMax(const Value: Integer);
     procedure SetValueMin(const Value: Integer);
@@ -120,7 +118,8 @@ type
     procedure SelectDefaultTab;
     procedure Collapse;
 
-    procedure OverrideSliderUpdateMode(ASliderUpdateMode: TColorSliderUpdateMode);
+    procedure OverrideSliderUpdateMode(ASliderUpdateMode:
+      TColorSliderUpdateMode);
     property SwatchCollection: TSharpESwatchCollection read
       FSharpESwatchCollection write
       FSharpESwatchCollection;
@@ -135,15 +134,14 @@ type
     property Expanded: Boolean read GetExpanded write SetExpanded;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex;
     property Caption: string read FCaption write SetCaption;
-    property ColorCode: Integer read FColorCode write SetColorCode;
-    property ColorAsTColor: TColor read FColorAsTColor write SetColorAsTColor;
+
+    property ValueAsTColor: TColor read FValueAsTColor write SetValueAsTColor;
     property ValueEditorType: TValueEditorType read FValueEditorType write
       SeTValueEditorType;
 
     property Description: string read FDescription write SetDescription;
     property ValueText: string read FValueText write FValueText;
-    property ValueMax: Integer read FValueMax write SetValueMax;
-    property ValueMin: Integer read FValueMin write SetValueMin;
+
     property Value: Integer read FValue write SetValue;
 
     property Visible: boolean read FVisible write SetVisible;
@@ -201,6 +199,7 @@ var
     begin
 
       Parent := FTabContainer;
+      DoubleBuffered := True;
       Frequency := 1;
       ShowRange := False;
       Ctl3D := False;
@@ -467,7 +466,8 @@ var
   i: Integer;
   tmp: TSharpEColorEditor;
 begin
- If FExpanded = Value then exit;
+  if FExpanded = Value then
+    exit;
 
   FExpanded := Value;
   try
@@ -481,19 +481,25 @@ begin
         begin
           tmp := TSharpEColorEditor(Owner.Components[i]);
 
-          if Not(tmp.Visible) then tmp.Height := 0 else
-          tmp.Collapse;
+          if not (tmp.Visible) then
+            tmp.Height := 0
+          else
+            tmp.Collapse;
 
           if ((tmp <> nil) and (tmp <> self) and (tmp.GroupIndex =
             Self.GroupIndex)) then
-            if Not(tmp.Visible) then tmp.Height := 0 else
-            tmp.Height := FCollapseHeight;
+            if not (tmp.Visible) then
+              tmp.Height := 0
+            else
+              tmp.Height := FCollapseHeight;
 
         end;
       end;
 
-      if Not(FVisible) then Self.Height := 0 else
-      Self.Height := FExpandedHeight;
+      if not (FVisible) then
+        Self.Height := 0
+      else
+        Self.Height := FExpandedHeight;
 
       FTabs.TabIndex := cTabDefine;
 
@@ -502,19 +508,22 @@ begin
     begin
       if Value then
       begin
-        if Not(FVisible) then Self.Height := 0 else
-        Self.Height := FExpandedHeight;
+        if not (FVisible) then
+          Self.Height := 0
+        else
+          Self.Height := FExpandedHeight;
         FTabs.TabIndex := cTabDefine;
       end
       else
       begin
-        if Not(FVisible) then Self.Height := 0 else
-        Self.Height := FCollapseHeight;
+        if not (FVisible) then
+          Self.Height := 0
+        else
+          Self.Height := FCollapseHeight;
 
         FTabs.TabIndex := -1;
       end;
     end;
-
 
   except
   end;
@@ -551,14 +560,6 @@ begin
       FColDefinePage.Show
     else
       FValDefinePage.Show;
-
-    FRedSlider.Invalidate;
-    FBlueSlider.Invalidate;
-    FGreenSlider.Invalidate;
-    FHueSlider.Invalidate;
-    FSatSlider.Invalidate;
-    FLumSlider.Invalidate;
-    FValueSlider.Invalidate;
   end
   else if ATabIndex = 1 then
   begin
@@ -572,40 +573,20 @@ begin
 
 end;
 
-procedure TSharpEColorEditor.SetColorCode(const Value: Integer);
-begin
-  SliderEvents(False);
-  try
-
-    FColorCode := ColorToSchemeCode(Value);
-    FColorAsTColor := SchemeCodeToColor(Value);
-
-    if FColorPicker <> nil then
-      FColorPicker.ColorCode := FColorCode;
-
-    InitialiseColSliders;
-
-    if Assigned(FOnValueChange) then
-      FOnValueChange(Self, FValue);
-
-  finally
-    SliderEvents(True);
-  end;
-end;
-
 procedure TSharpEColorEditor.ColorClickEvent(ASender: TObject);
 begin
-  ColorCode := FColorPicker.ColorCode;
+  Value := FColorPicker.ColorCode;
 
   if Assigned(FOnUiChange) then
     FOnUiChange(Self);
 end;
 
-procedure TSharpEColorEditor.SetColorAsTColor(const Value: TColor);
+procedure TSharpEColorEditor.SetValueAsTColor(const Value: TColor);
 begin
-  if FColorCode = Value then exit;
+  if FValue = Value then
+    exit;
 
-  ColorCode := Value;
+  Self.Value := Value;
 end;
 
 procedure TSharpEColorEditor.PositionSlider(ASlider: TJvTrackBar; ACaption:
@@ -660,8 +641,9 @@ begin
     Anchors := ALabelAnchors;
 
     if ASlider <> FValueSlider then
-    Caption := ACaption else
-    Caption := IntToStr(FValue);
+      Caption := ACaption
+    else
+      Caption := IntToStr(FValue);
 
     AutoSize := False;
     Transparent := False;
@@ -714,6 +696,7 @@ var
     rRightText: TRect;
 begin
 
+
   // Set Tab Container Height
   n := Self.Height - FTabs.Height + 1;
   if n <> FTabContainer.Height then
@@ -728,14 +711,14 @@ begin
     FTabs.Width := Self.Width;
 
   // Show color picker
-  if Not(FColorPicker.Visible) then
+  if not (FColorPicker.Visible) then
     FColorPicker.Show;
 
   // Show add color button?
   FAddColorButton.Visible := FExpanded;
 
   // Show swatch tab
-  if Not(FTabs.TabList.Item[cTabColSwatch].Visible) then
+  if not (FTabs.TabList.Item[cTabColSwatch].Visible) then
     FTabs.TabList.Item[cTabColSwatch].Visible := True;
 
   // Free all existing labels
@@ -753,13 +736,18 @@ begin
 
   iY := iSpacer;
 
-  rLeftText := Rect(iSpacer, iSpacer, iWidthLT , iY + 10);
-  rLeftSlider := Rect(rLeftText.Right , iY, rLeftText.Right + iSliderWidth , iY + 10);
-  rLeftSliderVal := Rect(rLeftSlider.Right , iY, rLeftSlider.Right + iWidthVal, iy + 10);
+  rLeftText := Rect(iSpacer, iSpacer, iWidthLT, iY + 10);
+  rLeftSlider := Rect(rLeftText.Right, iY, rLeftText.Right + iSliderWidth, iY +
+    10);
+  rLeftSliderVal := Rect(rLeftSlider.Right, iY, rLeftSlider.Right + iWidthVal, iy
+    + 10);
 
-  rRightText := Rect(rLeftSliderVal.Right + 4 , iY, rLeftSliderVal.Right + iWidthLT , iY + 10);
-  rRightSlider := Rect(rRightText.Right , iY, rRightText.Right - iSpacer + iSliderWidth, iY + 10);
-  rRightSliderVal := Rect(rRightSlider.Right , iY, Self.Width - iSpacer - 4, iY + 10);
+  rRightText := Rect(rLeftSliderVal.Right + 4, iY, rLeftSliderVal.Right +
+    iWidthLT, iY + 10);
+  rRightSlider := Rect(rRightText.Right, iY, rRightText.Right - iSpacer +
+    iSliderWidth, iY + 10);
+  rRightSliderVal := Rect(rRightSlider.Right, iY, Self.Width - iSpacer - 4, iY +
+    10);
 
   PositionSlider(FHueSlider, 'Hue:', rLeftText, rLeftSlider, rLeftSliderVal, 0,
     tmpTab, [akLeft, akTop], [akTop, akLeft, akRight]);
@@ -781,7 +769,6 @@ begin
 
   FSliderUpdateMode := sumAll;
   InitialiseColSliders;
-
 end;
 
 procedure TSharpEColorEditor.ResizeDefineValPage;
@@ -792,6 +779,7 @@ var
   rLeftSlider, rLeftSliderVal, rLeftText: TRect;
 
 begin
+  
 
   FTabContainer.Height := Self.Height - FTabs.Height + 1;
   FTabContainer.Width := Self.Width;
@@ -824,7 +812,7 @@ begin
       Width := tmpTab.Width - iSpacer;
       Caption := FDescription;
     end;
-    iY := (iSpacer*2) + Self.Canvas.TextHeight(FDescription);
+    iY := (iSpacer * 2) + Self.Canvas.TextHeight(FDescription);
   end
   else
     iY := iSpacer;
@@ -835,11 +823,11 @@ begin
   rLeftSliderVal := Rect(rLeftSlider.Right {+iSpacer}, iY, rLeftSlider.Right +
     {+iSpacer+}iWidthVal, iy + 10);
 
+
   PositionSlider(FValueSlider, FValueText + ':', rLeftText, rLeftSlider,
     rLeftSliderVal, 0, tmpTab, [akLeft, akTop],
     [akTop, akLeft, akRight]);
 
-  FValueSlider.Update;
   SetValue(FValue);
 end;
 
@@ -871,10 +859,10 @@ var
   end;
 begin
 
-  if FColorCode < 0 then
-    col := SchemeCodeToColor(FColorCode)
+  if FValue < 0 then
+    col := SchemeCodeToColor(FValue)
   else
-    col := FColorCode;
+    col := FValue;
 
   if col < 0 then
     col := 0;
@@ -931,7 +919,8 @@ end;
 
 procedure TSharpEColorEditor.SetCaption(const Value: string);
 begin
-  if FCaption = Value then exit;
+  if FCaption = Value then
+    exit;
 
   FCaption := Value;
 
@@ -991,7 +980,8 @@ begin
     exit;
 
   if FValueEditorType = vetColor then
-    tmpCtrl := FColDefinePage else
+    tmpCtrl := FColDefinePage
+  else
     tmpCtrl := FValDefinePage;
 
   for i := 0 to Pred(tmpCtrl.ControlCount) do
@@ -1069,7 +1059,7 @@ end;
 procedure TSharpEColorEditor.AddSwatchEvent(ASender: TObject);
 begin
   if FSwatchManager <> nil then
-    FSwatchManager.AddSwatch(FColorAsTColor, '');
+    FSwatchManager.AddSwatch(FValueAsTColor, '');
 end;
 
 procedure TSharpEColorEditor.SetSwatchManager(
@@ -1102,7 +1092,7 @@ end;
 
 procedure TSharpEColorEditor.ClickSwatchEvent(ASender: TObject; AColor: TColor);
 begin
-  ColorCode := AColor;
+  Value := AColor;
 
   if Assigned(FOnUiChange) then
     FOnUiChange(Self);
@@ -1118,15 +1108,20 @@ begin
   Result := FCollapseHeight;
 end;
 
-procedure TSharpEColorEditor.SeTValueEditorType(const Value: TValueEditorType);
+procedure TSharpEColorEditor.SetValueEditorType(const Value: TValueEditorType);
 begin
-  if ((FValueEditorType = Value) and Not(csloading in ComponentState)) then exit;
+  if (FValueEditorType = Value) then
+    exit;
 
   FValueEditorType := Value;
-  if FValueEditorType = vetColor then
-    FColDefinePage.Show
-  else
-    FValDefinePage.Show;
+  case FValueEditorType of
+    vetColor: FColDefinePage.Show;
+    vetValue: begin
+      if ((FValue < 0) or (FValue > 255)) then
+        FValue := 0;
+      FValDefinePage.Show;
+    end;
+  end;
 
   if FTabs.TabIndex <> -1 then
     FTabs.TabIndex := 0;
@@ -1190,7 +1185,7 @@ begin
   begin
 
     FSliderUpdateMode := sumHSL;
-    ColorCode := RGB(r, g, b);
+    Value := RGB(r, g, b);
 
   end
   else
@@ -1198,7 +1193,7 @@ begin
     Color32ToRGB(SharpGraphicsUtils.HSLtoRGB(h, s, l), r, g, b);
 
     FSliderUpdateMode := sumRGB;
-    ColorCode := RGB(r, g, b);
+    Value := RGB(r, g, b);
 
   end;
 
@@ -1221,33 +1216,59 @@ end;
 
 procedure TSharpEColorEditor.SetValue(const Value: Integer);
 begin
-  if FValue = Value then exit;
 
   FValue := Value;
 
-  if FValueSlider <> nil then
-  begin
-    FValueSlider.Position := FValue;
-    TLabel(FValueSlider.Tag).Caption := IntToStr(FValue);
+  case FValueEditorType of
+    vetColor:
+      begin
+        SliderEvents(False);
+        try
+
+          FValue := ColorToSchemeCode(Value);
+          FValueAsTColor := SchemeCodeToColor(Value);
+
+          if FColorPicker <> nil then
+            FColorPicker.ColorCode := FValue;
+
+          InitialiseColSliders;
+
+        finally
+          SliderEvents(True);
+        end;
+      end;
+    vetValue:
+      begin
+        if FValueSlider <> nil then
+        begin
+          FValueSlider.Position := FValue;
+          TLabel(FValueSlider.Tag).Caption := IntToStr(FValue);
+        end;
+      end;
+    vetBoolean: ;
   end;
 
   if Assigned(FOnValueChange) then
-      FOnValueChange(Self, FValue);
+    FOnValueChange(Self, FValue);
 end;
 
 procedure TSharpEColorEditor.SetVisible(const Value: boolean);
 begin
-  if FVisible = Value then exit;
-  
+  if FVisible = Value then
+    exit;
+
   FVisible := Value;
 
-  if Not(FVisible) then
-    Self.Height := 0 else begin
-      if FExpanded then
-         self.Height := FExpandedHeight else
-         Self.Height := FCollapseHeight;
+  if not (FVisible) then
+    Self.Height := 0
+  else
+  begin
+    if FExpanded then
+      self.Height := FExpandedHeight
+    else
+      Self.Height := FCollapseHeight;
 
-    end;
+  end;
 end;
 
 end.

@@ -17,6 +17,8 @@ type
     Button2: TButton;
     SharpEColorEditor2: TSharpEColorEditor;
     Button3: TButton;
+    Button4: TButton;
+    procedure Button4Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -69,6 +71,12 @@ end;
 procedure TMainWnd.Button3Click(Sender: TObject);
 begin
   SharpEColorEditor2.Visible := Not(SharpEColorEditor2.Visible);
+end;
+
+procedure TMainWnd.Button4Click(Sender: TObject);
+begin
+  SharpEColorEditor2.ValueEditorType := vetBoolean;
+  SharpEColorEditor2.Description := 'Do you want the show enabled?';
 end;
 
 end.

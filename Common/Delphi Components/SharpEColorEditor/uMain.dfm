@@ -17,20 +17,20 @@ object MainWnd: TMainWnd
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton
-    Left = 96
-    Top = 256
+    Left = 44
+    Top = 252
     Width = 75
     Height = 25
-    Caption = 'Button1'
+    Caption = 'Color'
     TabOrder = 0
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 184
-    Top = 256
+    Left = 124
+    Top = 252
     Width = 75
     Height = 25
-    Caption = 'Button1'
+    Caption = 'Value'
     TabOrder = 1
     OnClick = Button2Click
   end
@@ -43,13 +43,10 @@ object MainWnd: TMainWnd
     Expanded = False
     GroupIndex = 0
     Caption = 'Scheme Test'
-    ColorCode = 0
-    ColorAsTColor = clBlack
+    ValueAsTColor = clBlack
     ValueEditorType = vetColor
     ValueText = 'Alpha'
-    ValueMax = 0
-    ValueMin = 255
-    Value = 34
+    Value = 0
     Visible = True
     SwatchManager = SharpESwatchManager1
     DesignSize = (
@@ -57,13 +54,22 @@ object MainWnd: TMainWnd
       24)
   end
   object Button3: TButton
-    Left = 268
-    Top = 256
+    Left = 284
+    Top = 252
     Width = 75
     Height = 25
-    Caption = 'Button1'
+    Caption = 'ToggleVis'
     TabOrder = 3
     OnClick = Button3Click
+  end
+  object Button4: TButton
+    Left = 204
+    Top = 252
+    Width = 75
+    Height = 25
+    Caption = 'Bool'
+    TabOrder = 4
+    OnClick = Button4Click
   end
   object XPManifest1: TXPManifest
     Left = 8
