@@ -159,7 +159,7 @@ type
     procedure UpdateColumnSizes;
     procedure SetColumns(const Value: TSharpEListBoxExColumns);
     procedure DblClickItem(Sender:TObject);
-    procedure ClickItem(Sender:TObject);
+    //procedure ClickItem(Sender:TObject);
 
     function IsImageIndexValid(AItem: TSharpEListItem; ACol,
       AImageIndex: Integer; ASelected:Boolean): Boolean;
@@ -168,8 +168,8 @@ type
 
     function CalcColumnRect(AColumnID: Integer;AColumn: TSharpEListBoxExColumn;
       AItemRect:TRect; var AX,AY:Integer): TRect;
-    procedure MeasureItemEvent(Control: TWinControl;
-  Index: Integer; var Height: Integer);
+    //procedure MeasureItemEvent(Control: TWinControl;
+  //Index: Integer; var Height: Integer);
   public
     constructor Create(Sender: TComponent); override;
     destructor Destroy; override;
@@ -266,7 +266,7 @@ begin
   Self.OnDrawItem := DrawItemEvent;
   //Self.OnClick := ClickItem;
   Self.OnMouseMove := MouseMoveEvent;
-  Self.OnMouseUp := MouseDownEvent;
+  Self.OnMouseDown := MouseDownEvent;
   Self.OnDblClick := DblClickItem;
   Self.ItemHeight := 24;
   Self.Color := clWindow;
@@ -598,7 +598,7 @@ begin
   inherited;
 end;
 
-procedure TSharpEListBoxEx.ClickItem(Sender: TObject);
+{procedure TSharpEListBoxEx.ClickItem(Sender: TObject);
 var
   i: Integer;
   id: Integer;
@@ -627,7 +627,8 @@ begin
             FOnClickItem(Item[id].SubItemText[i], id, i);
   end;
   inherited;
-end;
+end;   }
+
 procedure TSharpEListBoxEx.Loaded;
 begin
   inherited;
@@ -644,17 +645,19 @@ begin
         Result := Types.Rect(AX+columnMargin.Left, AY, AX + AColumn.Width -columnMargin.Right, AY + ItemHeight - ItemOffset.Y);
 end;
 
-procedure TSharpEListBoxEx.MeasureItemEvent(Control: TWinControl;
+{procedure TSharpEListBoxEx.MeasureItemEvent(Control: TWinControl;
   Index: Integer; var Height: Integer);
 begin
-
-end;
+      
+end;  }
 
 { TSharpEListItem }
 
 function TSharpEListItem.AddSubItem(AText: string; AImageIndex: Integer = -1;
       ASelectedImageIndex:Integer=-1): Integer;
 begin
+  Result := -1;
+
   FSubItems.Add(AText);
   FSubItemImages.Add(Pointer(AImageIndex));
   FSubItemSelectedImages.Add(Pointer(ASelectedImageIndex));
