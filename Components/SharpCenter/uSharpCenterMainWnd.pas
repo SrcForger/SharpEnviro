@@ -556,8 +556,6 @@ begin
 
   // Set tab defaults
   tlPluginTabs.TextBounds := Rect(8,8,8,4);
-  pnlEditContainer.DoubleBuffered := true;
-  pnlPlugin.DoubleBuffered := True;
 
    // Reinit values
   FSelectedTabID := -1;
