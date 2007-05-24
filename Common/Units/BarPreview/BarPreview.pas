@@ -132,7 +132,7 @@ begin
                else if CompareText(s,'integer') = 0 then
                     st := stInteger
                     else st := stColor;
-            BarWnd.SharpEScheme1.AddColor('temp',Value('Tag','temp'),'temp',colorint,st));
+            BarWnd.SharpEScheme1.AddColor('temp',Value('Tag','temp'),'temp',colorint,st);
           end;
     except
     end;
