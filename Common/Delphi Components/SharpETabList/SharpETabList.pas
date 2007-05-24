@@ -254,7 +254,7 @@ begin
   Fimage32 := Timage32.Create(self);
   FImage32.Parent := Self;
   Fimage32.Align := alClient;
-  FImage32.OnMouseDown := MouseDownEvent;
+  FImage32.OnMouseUp := MouseDownEvent;
   FImage32.OnMouseMove := MouseMoveEvent;
 
   FTimer := TTimer.Create(Self);
