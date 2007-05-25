@@ -143,6 +143,7 @@ type
     Panel19: TPanel;
     animcolors: TSharpEColorEditorEx;
     Panel8: TPanel;
+    procedure IconColorsUiChange(Sender: TObject);
     procedure cb_animscaleClick(Sender: TObject);
     procedure cb_animClick(Sender: TObject);
     procedure cb_boldClick(Sender: TObject);
@@ -458,6 +459,11 @@ end;
 procedure TfrmDesktopSettings.cb_animscaleClick(Sender: TObject);
 begin
   UpdateAnimationControls;
+  SendUpdate;
+end;
+
+procedure TfrmDesktopSettings.IconColorsUiChange(Sender: TObject);
+begin
   SendUpdate;
 end;
 

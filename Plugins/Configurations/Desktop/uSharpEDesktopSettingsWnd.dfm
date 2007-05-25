@@ -290,6 +290,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             Tag = 0
           end>
         SwatchManager = SharpESwatchManager1
+        OnUiChange = IconColorsUiChange
       end
       object Panel4: TPanel
         Left = 0
