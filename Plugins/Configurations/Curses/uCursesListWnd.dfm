@@ -80,10 +80,11 @@ object frmCursesList: TfrmCursesList
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
-        ColorEditorType = cetColor
+        ValueEditorType = vetColor
         ValueMax = 0
         ValueMin = 0
         Value = 0
+        Visible = True
         ColorEditor = ccolors.Item0
         Tag = 0
       end
@@ -92,10 +93,11 @@ object frmCursesList: TfrmCursesList
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
-        ColorEditorType = cetColor
+        ValueEditorType = vetColor
         ValueMax = 0
         ValueMin = 0
         Value = 0
+        Visible = True
         ColorEditor = ccolors.Item1
         Tag = 0
       end
@@ -104,10 +106,11 @@ object frmCursesList: TfrmCursesList
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
-        ColorEditorType = cetColor
+        ValueEditorType = vetColor
         ValueMax = 0
         ValueMin = 0
         Value = 0
+        Visible = True
         ColorEditor = ccolors.Item2
         Tag = 0
       end
@@ -116,10 +119,11 @@ object frmCursesList: TfrmCursesList
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
-        ColorEditorType = cetColor
+        ValueEditorType = vetColor
         ValueMax = 0
         ValueMin = 0
         Value = 0
+        Visible = True
         ColorEditor = ccolors.Item3
         Tag = 0
       end>

@@ -284,6 +284,7 @@ begin
   pn_animalpha.Visible := cb_animalpha.Checked;
   pn_animbrightness.Visible := cb_animbrightness.Checked;
   pn_animcolorblend.Visible := cb_animcolorblend.Checked;
+  AnimColors.Items.Item[0].Visible := cb_animcolorblend.checked;
 end;
 
 procedure TfrmDesktopSettings.UpdateFontAlphaControls;
@@ -299,16 +300,19 @@ end;
 procedure TfrmDesktopSettings.UpdateBlendControls;
 begin
   pn_colorblend.visible := cb_colorblend.checked;
+  IconColors.Items.Item[0].Visible := cb_colorblend.checked;
 end;
 
 procedure TfrmDesktopSettings.UpdateTextShadowControls;
 begin
   pn_textshadow.visible := cb_textshadow.checked;
+  TextColors.Items.Item[1].Visible := cb_textshadow.checked;
 end;
 
 procedure TfrmDesktopSettings.UpdateIconShadowControls;
 begin
   pn_iconshadow.Visible := cb_iconshadow.Checked;
+  IconColors.Items.Item[1].Visible := cb_iconshadow.Checked;
 end;
 
 procedure TfrmDesktopSettings.SendUpdate;

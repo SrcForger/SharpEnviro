@@ -284,7 +284,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             Title = 'Icon Shadow'
             ColorCode = 0
             ColorAsTColor = clBlack
-            Expanded = True
+            Expanded = False
             ValueEditorType = vetColor
             ValueMax = 0
             ValueMin = 0
@@ -561,7 +561,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             ValueMax = 0
             ValueMin = 0
             Value = 0
-            Visible = False
+            Visible = True
             ColorEditor = textcolors.Item0
             Tag = 0
           end
@@ -574,7 +574,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             ValueMax = 0
             ValueMin = 0
             Value = 0
-            Visible = False
+            Visible = True
             ColorEditor = textcolors.Item1
             Tag = 0
           end>
@@ -1038,7 +1038,7 @@ object frmDesktopSettings: TfrmDesktopSettings
               ValueMax = 0
               ValueMin = 0
               Value = 0
-              Visible = False
+              Visible = True
               ColorEditor = animcolors.Item0
               Tag = 0
             end>
@@ -1078,7 +1078,7 @@ object frmDesktopSettings: TfrmDesktopSettings
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 311
+    Width = 299
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16
