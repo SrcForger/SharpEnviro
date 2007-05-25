@@ -99,12 +99,13 @@ type
     procedure SetPercentDisplay(const Value : boolean);
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure Paint; override;
     procedure UpdateValue;
     procedure UpdateEditBox;
+    procedure BeforeDestruction; override;
 
   protected
+    
   published
     property Owner;
     property Align;
@@ -267,20 +268,6 @@ begin
 
 end;
 
-destructor TSharpeGaugeBox.Destroy;
-begin
-  if assigned(FrmSharpeGaugeBox) then
-     FreeAndNil(FrmSharpeGaugeBox);
-  if assigned(FValueEdit) then
-     FreeAndNil(FValueEdit);
-  if assigned(FBtnGauge) then
-     FreeAndNil(FBtnGauge);
-  if assigned(FBackPanel) then
-     FreeAndNil(FBackPanel);
-
-  inherited;
-end;
-
 procedure TSharpeGaugeBox.BtnGaugeClick(Sender: TObject);
 var
   tmpGaugeBar: TGaugeBar;
@@ -289,7 +276,7 @@ begin
   UpdateEditBox;
 
   if not (assigned(FrmSharpeGaugeBox)) then
-    FrmSharpeGaugeBox := TFrmSharpeGaugeBox.Create(Application.MainForm);
+    FrmSharpeGaugeBox := TFrmSharpeGaugeBox.Create(Self);
 
   FrmSharpeGaugeBox.GaugeBoxEdit := Self;
   FrmSharpeGaugeBox.NoUpdate := True;
@@ -478,6 +465,19 @@ end;
 procedure TSharpeGaugeBox.SetDescription(const Value: string);
 begin
   FDescription := Value;
+end;
+
+procedure TSharpeGaugeBox.BeforeDestruction;
+begin
+  inherited;
+
+  if assigned(FValueEdit) then
+     FreeAndNil(FValueEdit);
+  if assigned(FBtnGauge) then
+     FreeAndNil(FBtnGauge);
+  if assigned(FBackPanel) then
+     FreeAndNil(FBackPanel);
+
 end;
 
 end.

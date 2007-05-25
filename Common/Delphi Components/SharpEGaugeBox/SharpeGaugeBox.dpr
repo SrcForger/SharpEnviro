@@ -2,14 +2,15 @@ program SharpeGaugeBox;
 
 uses
   Forms,
-  uSharpeGaugeBoxEdit in 'uSharpeGaugeBoxEdit.pas',
   uSharpeGaugeBoxTest in 'uSharpeGaugeBoxTest.pas' {Form1},
-  uSharpeGaugeBoxWnd in 'uSharpeGaugeBoxWnd.pas' {FrmSharpeGaugeBox};
+  SharpeGaugeBoxWnd in 'SharpeGaugeBoxWnd.pas' {FrmSharpeGaugeBox},
+  SharpEGaugeBoxEdit in 'SharpEGaugeBoxEdit.pas';
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TFrmSharpeGaugeBox, FrmSharpeGaugeBox);
   Application.Run;
 end.

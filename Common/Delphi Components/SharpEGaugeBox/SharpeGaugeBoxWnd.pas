@@ -4,9 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, GR32_RangeBars, ExtCtrls, SharpeGaugeBoxEdit, ComCtrls,
-  JvExComCtrls, JvComCtrls, JvExExtCtrls, JvComponent, JvPanel, buttons,
-  StdCtrls, JvExControls, JvGradient;
+  Dialogs, GR32_RangeBars, ExtCtrls, SharpeGaugeBoxEdit, StdCtrls, ComCtrls,
+  JvExComCtrls, JvComCtrls;
 
 type
   TFrmSharpeGaugeBox = class(TForm)
@@ -46,8 +45,11 @@ uses
 procedure TFrmSharpeGaugeBox.FormDeactivate(Sender: TObject);
 begin
   Self.Hide;
-  GaugeBoxEdit.UpdateValue;
-  GaugeBoxEdit.SetFocus;
+
+  if GaugeBoxEdit <> nil then begin
+    GaugeBoxEdit.UpdateValue;
+    GaugeBoxEdit.SetFocus;
+  end;
 end;
 
 function TFrmSharpeGaugeBox.GetGaugeBar: TGaugeBar;
@@ -82,9 +84,11 @@ procedure TFrmSharpeGaugeBox.GaugeBarChange(Sender: TObject);
 begin
   if NoUpdate then exit;
 
-  GaugeBoxEdit.Value := GaugeBar.Position;
-  GaugeBoxEdit.UpdateValue;
-  GaugeBoxEdit.UpdateEditBox;
+  if GaugeBoxEdit <> nil then begin
+    GaugeBoxEdit.Value := GaugeBar.Position;
+    GaugeBoxEdit.UpdateValue;
+    GaugeBoxEdit.UpdateEditBox;
+  end;
 end;
 
 procedure TFrmSharpeGaugeBox.FormCreate(Sender: TObject);

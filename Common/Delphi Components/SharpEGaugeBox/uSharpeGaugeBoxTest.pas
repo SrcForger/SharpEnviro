@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, uSharpeGaugeBoxEdit, StdCtrls, Mask,
+  Dialogs, ExtCtrls, SharpeGaugeBoxEdit, StdCtrls, Mask,
   JvExMask, JvSpin, JvExStdCtrls, JvEdit, ComCtrls, JvExExtCtrls, JvComponent,
   JvPanel, DBCtrls, ActnMan, ActnColorMaps, XPMan;
 
