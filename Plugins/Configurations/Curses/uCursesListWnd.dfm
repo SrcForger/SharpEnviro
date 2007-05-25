@@ -81,8 +81,6 @@ object frmCursesList: TfrmCursesList
         ColorAsTColor = clBlack
         Expanded = False
         ValueEditorType = vetColor
-        ValueMax = 0
-        ValueMin = 0
         Value = 0
         Visible = True
         ColorEditor = ccolors.Item0
@@ -94,8 +92,6 @@ object frmCursesList: TfrmCursesList
         ColorAsTColor = clBlack
         Expanded = False
         ValueEditorType = vetColor
-        ValueMax = 0
-        ValueMin = 0
         Value = 0
         Visible = True
         ColorEditor = ccolors.Item1
@@ -107,8 +103,6 @@ object frmCursesList: TfrmCursesList
         ColorAsTColor = clBlack
         Expanded = False
         ValueEditorType = vetColor
-        ValueMax = 0
-        ValueMin = 0
         Value = 0
         Visible = True
         ColorEditor = ccolors.Item2
@@ -120,8 +114,6 @@ object frmCursesList: TfrmCursesList
         ColorAsTColor = clBlack
         Expanded = False
         ValueEditorType = vetColor
-        ValueMax = 0
-        ValueMin = 0
         Value = 0
         Visible = True
         ColorEditor = ccolors.Item3
@@ -132,7 +124,7 @@ object frmCursesList: TfrmCursesList
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 394
+    Width = 393
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16

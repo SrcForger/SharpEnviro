@@ -273,8 +273,6 @@ object frmDesktopSettings: TfrmDesktopSettings
             ColorAsTColor = clBlack
             Expanded = False
             ValueEditorType = vetColor
-            ValueMax = 0
-            ValueMin = 0
             Value = 0
             Visible = True
             ColorEditor = IconColors.Item0
@@ -286,8 +284,6 @@ object frmDesktopSettings: TfrmDesktopSettings
             ColorAsTColor = clBlack
             Expanded = False
             ValueEditorType = vetColor
-            ValueMax = 0
-            ValueMin = 0
             Value = 0
             Visible = True
             ColorEditor = IconColors.Item1
@@ -558,8 +554,6 @@ object frmDesktopSettings: TfrmDesktopSettings
             ColorAsTColor = clBlack
             Expanded = False
             ValueEditorType = vetColor
-            ValueMax = 0
-            ValueMin = 0
             Value = 0
             Visible = True
             ColorEditor = textcolors.Item0
@@ -571,8 +565,6 @@ object frmDesktopSettings: TfrmDesktopSettings
             ColorAsTColor = clBlack
             Expanded = False
             ValueEditorType = vetColor
-            ValueMax = 0
-            ValueMin = 0
             Value = 0
             Visible = True
             ColorEditor = textcolors.Item1
@@ -1035,8 +1027,6 @@ object frmDesktopSettings: TfrmDesktopSettings
               ColorAsTColor = clBlack
               Expanded = False
               ValueEditorType = vetColor
-              ValueMax = 0
-              ValueMin = 0
               Value = 0
               Visible = True
               ColorEditor = animcolors.Item0
