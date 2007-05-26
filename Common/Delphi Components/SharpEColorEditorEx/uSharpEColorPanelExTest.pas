@@ -44,6 +44,8 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   loadtheme;
+
+  SharpEColorEditorEx1.Items.Item[4].ColorCode := clBlue;
 end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);
@@ -69,15 +71,15 @@ end;
 procedure TForm1.FormShow(Sender: TObject);
 begin
 
-  SharpEColorEditorEx1.Items.Item[0].ColorAsTColor := $000000FF;
+  {SharpEColorEditorEx1.Items.Item[0].ColorAsTColor := $000000FF;
   SharpEColorEditorEx1.Items.Item[0].Title := 'Bar';
   SharpEColorEditorEx1.Items.Item[1].ColorAsTColor := $0000FF00;
   SharpEColorEditorEx1.Items.Item[1].Title := 'Bar Shadow';
   SharpEColorEditorEx1.Items.Item[2].ColorAsTColor := $00FF0000;
-  SharpEColorEditorEx1.Items.Item[2].Title := 'Bar Glow';
+  SharpEColorEditorEx1.Items.Item[2].Title := 'Bar Glow';  }
   SharpEColorEditorEx1.Items.Item[3].ColorAsTColor := clLime;
   SharpEColorEditorEx1.Items.Item[3].Title := 'Text Color';
-  SharpEColorEditorEx1.Items.Item[4].ColorAsTColor := clOlive;
+  //SharpEColorEditorEx1.Items.Item[4].ColorCode := clOlive;
   SharpEColorEditorEx1.Items.Item[4].Title := 'Text Shadow';
   SharpEColorEditorEx1.Items.Item[5].ColorCode := -1;
   SharpEColorEditorEx1.Items.Item[5].Title := 'Text Hover Glow';

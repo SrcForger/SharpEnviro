@@ -48,39 +48,37 @@ object Form1: TForm1
     Items = <
       item
         Title = 'Alpha'
-        ColorCode = 0
+        ColorCode = -1
         ColorAsTColor = clBlack
         Expanded = False
         ValueEditorType = vetBoolean
         Description = 'This is an alpha value:'
         ValueText = 'Alpha'
-        ValueMax = 255
-        ValueMin = 0
-        Value = 20
+        Value = -1
         Visible = True
         ColorEditor = SharpEColorEditorEx1.Item0
         Tag = 0
       end
       item
+        Title = 'Enable Shadow'
         ColorCode = 0
         ColorAsTColor = clBlack
         Expanded = False
-        ValueEditorType = vetColor
-        ValueMax = 0
-        ValueMin = 0
+        ValueEditorType = vetBoolean
+        Description = 'Enable Bar Shadow?'
         Value = 0
         Visible = True
         ColorEditor = SharpEColorEditorEx1.Item1
         Tag = 0
       end
       item
-        ColorCode = 0
+        Title = 'Shadow Opacity'
+        ColorCode = 100
         ColorAsTColor = clBlack
         Expanded = False
-        ValueEditorType = vetColor
-        ValueMax = 0
-        ValueMin = 0
-        Value = 0
+        ValueEditorType = vetValue
+        ValueText = 'Opacity'
+        Value = 100
         Visible = True
         ColorEditor = SharpEColorEditorEx1.Item2
         Tag = 0
@@ -90,8 +88,6 @@ object Form1: TForm1
         ColorAsTColor = clBlack
         Expanded = False
         ValueEditorType = vetColor
-        ValueMax = 0
-        ValueMin = 0
         Value = 0
         Visible = True
         ColorEditor = SharpEColorEditorEx1.Item3
@@ -102,8 +98,6 @@ object Form1: TForm1
         ColorAsTColor = clBlack
         Expanded = False
         ValueEditorType = vetColor
-        ValueMax = 0
-        ValueMin = 0
         Value = 0
         Visible = True
         ColorEditor = SharpEColorEditorEx1.Item4
@@ -114,8 +108,6 @@ object Form1: TForm1
         ColorAsTColor = clBlack
         Expanded = False
         ValueEditorType = vetColor
-        ValueMax = 0
-        ValueMin = 0
         Value = 0
         Visible = True
         ColorEditor = SharpEColorEditorEx1.Item5

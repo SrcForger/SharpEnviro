@@ -7,18 +7,16 @@ uses
   Dialogs, ExtCtrls, StdCtrls, SharpEColorEditor, SharpThemeApi, SharpApi,
   SharpESwatchCollection, SharpESwatchManager;
 
-
-
-Type
-  TSharpEColorEditorExItem = Class(TCollectionItem)
+type
+  TSharpEColorEditorExItem = class(TCollectionItem)
   private
-    FTitle: String;
+    FTitle: string;
     FColorCode: Integer;
     FColorAsTColor: TColor;
 
     FParent: Pointer;
     FExpanded: Boolean;
-    FParseColor: String;
+    FParseColor: string;
     FColorEditor: TSharpEColorEditor;
     FTag: Integer;
     FData: TObject;
@@ -30,23 +28,24 @@ Type
     FValueEditorType: TValueEditorType;
     FVisible: Boolean;
 
+    FLastTab: Integer;
+    FLastColorEditor: TSharpEColorEditor;
 
     procedure SetColorAsTColor(const Value: TColor);
     procedure SetColorCode(const Value: Integer);
     function GetExpanded: Boolean;
     procedure SetExpanded(const Value: Boolean);
-    procedure SetTitle(const Value: String);
+    procedure SetTitle(const Value: string);
     procedure ColorChangeEvent(ASender: TObject; AColorCode: Integer);
     procedure TabclickEvent(Sender: TObject);
     function GetColorCode: Integer;
     function GetColorAsTColor: TColor;
-    procedure SetParseColor(const Value: String);
+    procedure SetParseColor(const Value: string);
     procedure SetValueEditorType(const Value: TValueEditorType);
     procedure SetDescription(const Value: string);
     procedure SetValue(const Value: Integer);
     procedure SetValueText(const Value: string);
     procedure SetVisible(const Value: Boolean);
-
 
   public
 
@@ -58,10 +57,10 @@ Type
     function GetNamePath: string; reintroduce;
 
   published
-    Property Title: String read FTitle write SetTitle;
+    property Title: string read FTitle write SetTitle;
     property ColorCode: Integer read GetColorCode write SetColorCode;
     property ColorAsTColor: TColor read GetColorAsTColor write SetColorAsTColor;
-    property ParseColor: String read FParseColor write SetParseColor;
+    property ParseColor: string read FParseColor write SetParseColor;
     property Expanded: Boolean read GetExpanded write SetExpanded;
 
     property ValueEditorType: TValueEditorType read FValueEditorType write
@@ -72,31 +71,33 @@ Type
     property Value: Integer read FValue write SetValue;
     property Visible: Boolean read FVisible write SetVisible;
 
-    property ColorEditor: TSharpEColorEditor read FColorEditor write FColorEditor;
+    property ColorEditor: TSharpEColorEditor read FColorEditor write
+      FColorEditor;
 
     property Tag: Integer read FTag write FTag;
     property Data: TObject read FData write FData;
-end;
+  end;
 
 type
-  TSharpEColorEditorExItems = Class(TOwnedCollection)
+  TSharpEColorEditorExItems = class(TOwnedCollection)
   private
     function GetItem(Index: Integer): TSharpEColorEditorExItem;
     procedure SetItem(Index: Integer; const Value: TSharpEColorEditorExItem);
   protected
-     procedure Update(Item: TCollectionItem); override;
+    procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(AOwner: TPersistent);
 
-    function Add(AOwner:TComponent):TSharpEColorEditorExItem;
+    function Add(AOwner: TComponent): TSharpEColorEditorExItem;
     procedure Delete(AIndex: Integer); overload;
     procedure Delete(AItem: TSharpEColorEditorExItem); overload;
-    property Item[Index: Integer]: TSharpEColorEditorExItem read GetItem write SetItem;
+    property Item[Index: Integer]: TSharpEColorEditorExItem read GetItem write
+      SetItem;
     function IndexOf(const Name: string): Integer;
   end;
 
-Type
-  TSharpEColorEditorEx = Class(TScrollBox)
+type
+  TSharpEColorEditorEx = class(TScrollBox)
   private
     FItems: TSharpEColorEditorExItems;
     FDesignLabel: TLabel;
@@ -107,8 +108,8 @@ Type
 
     procedure SetItems(const Value: TSharpEColorEditorExItems);
     procedure SetSwatchManager(const Value: TSharpESwatchManager);
-    procedure ResizeEvent(Sender:TObject);
-    procedure UiChangeEvent(Sender:TObject);
+    procedure ResizeEvent(Sender: TObject);
+    procedure UiChangeEvent(Sender: TObject);
   public
     constructor Create(Sender: TComponent); override;
 
@@ -121,16 +122,19 @@ Type
   protected
     procedure SetName(const Value: TComponentName); override;
     procedure Loaded; override;
-    
+
   published
     property Align;
     property Anchors;
-    property Items: TSharpEColorEditorExItems read FItems write SetItems stored True;
-    property SwatchManager: TSharpESwatchManager read FSwatchManager write SetSwatchManager;
+    property Items: TSharpEColorEditorExItems read FItems write SetItems stored
+      True;
+    property SwatchManager: TSharpESwatchManager read FSwatchManager write
+      SetSwatchManager;
 
-    property OnChangeColor: tvaluechangeevent read FOnChangeColor write FOnChangeColor;
+    property OnChangeColor: tvaluechangeevent read FOnChangeColor write
+      FOnChangeColor;
     property OnUiChange: TNotifyEvent read FOnUiChange write FOnUiChange;
-end;
+  end;
 
 procedure Register;
 
@@ -148,7 +152,8 @@ begin
   FColorCode := Value;
   FColorAsTColor := Value;
 
-  if FColorEditor <> nil then begin
+  if FColorEditor <> nil then
+  begin
     FColorEditor.OverrideSliderUpdateMode(sumAll);
     FColorEditor.Value := Value;
   end;
@@ -173,8 +178,9 @@ procedure TSharpEColorEditorExItem.SetExpanded(const Value: Boolean);
 begin
   FExpanded := Value;
 
-  if FExpanded then begin
-    TabclickEvent(Self);
+  if FExpanded then
+  begin
+    TabclickEvent(Self.ColorEditor);
   end;
 end;
 
@@ -192,17 +198,19 @@ begin
   FValue := TSharpEColorEditor(ASender).Value;
 
   if TSharpEColorEditorEx(FParent) <> nil then
-    if Assigned(TSharpEColorEditorEx(FParent).FOnChangeColor) then begin
+    if Assigned(TSharpEColorEditorEx(FParent).FOnChangeColor) then
+    begin
 
       if FValueEditorType = vetColor then
-      TSharpEColorEditorEx(FParent).OnChangeColor(Self,FColorCode) else
-      TSharpEColorEditorEx(FParent).OnChangeColor(Self,FValue);
+        TSharpEColorEditorEx(FParent).OnChangeColor(Self, FColorCode)
+      else
+        TSharpEColorEditorEx(FParent).OnChangeColor(Self, FValue);
     end;
 
   //TSharpEColorEditor(ASender).Update;
 end;
 
-procedure TSharpEColorEditorExItem.SetTitle(const Value: String);
+procedure TSharpEColorEditorExItem.SetTitle(const Value: string);
 begin
   FTitle := Value;
 
@@ -210,7 +218,6 @@ begin
     if FColorEditor.Caption <> Value then
       FColorEditor.Caption := Value;
 end;
-
 
 function TSharpEColorEditorExItem.GetDisplayName: string;
 begin
@@ -224,38 +231,58 @@ end;
 
 procedure TSharpEColorEditorExItem.TabclickEvent(Sender: TObject);
 var
-  i:Integer;
+  i: Integer;
+  bExpand: Boolean;
 begin
-  if FColorEditor = nil then exit;
+  if FColorEditor = nil then
+    exit;
 
-  if FParent <> nil then begin
+  if ((TSharpEColorEditor(Sender).GetTabIndex = FLastTab) and
+    (TSharpEColorEditor(Sender) = FLastColorEditor) and
+      (TSharpEColorEditor(Sender).Expanded)) then
+    begin
+      bExpand := False;
+    end else begin
+      bExpand := True;
+    end;
+
+  if FParent <> nil then
+  begin
     TSharpEColorEditorEx(FParent).DisableAlign;
     TSharpEColorEditorEx(FParent).DisableAutoRange;
   end;
 
   // collapse all
-  For i := 0 to Pred(Collection.Count) do begin
+  for i := 0 to Pred(Collection.Count) do
+  begin
     TSharpEColorEditor(TSharpEColorEditorExItem(Collection.Items[i]).ColorEditor).Collapse;
     TSharpEColorEditorExItem(Collection.Items[i]).Expanded := False;
 
   end;
 
   // Expand selected
-  For i := 0 to Pred(Collection.Count) do begin
-    if TSharpEColorEditorExItem(Collection.Items[i]) = Self then begin
-      FColorEditor.Expanded := True;
+  for i := 0 to Pred(Collection.Count) do
+  begin
+    if TSharpEColorEditorExItem(Collection.Items[i]) = Self then
+    begin
+
+      FColorEditor.Expanded := bExpand;
       FColorEditor.SelectDefaultTab;
 
     end;
   end;
 
-  if FParent <> nil then begin
+  if FParent <> nil then
+  begin
     TSharpEColorEditorEx(FParent).EnableAlign;
     TSharpEColorEditorEx(FParent).EnableAutoRange;
   end;
 
   FColorEditor.SwatchManager :=
     TSharpEColorEditorEx(FParent).SwatchManager;
+
+  FLastTab := FColorEditor.GetTabIndex;
+  FLastColorEditor := FColorEditor;
 
 end;
 
@@ -271,18 +298,19 @@ begin
     Result := FColorEditor.ValueAsTColor;
 end;
 
-procedure TSharpEColorEditorExItem.SetParseColor(const Value: String);
+procedure TSharpEColorEditorExItem.SetParseColor(const Value: string);
 var
   col: TColor;
 begin
 
   try
-  col := sharpthemeapi.parsecolor(PChar(Value));
+    col := sharpthemeapi.parsecolor(PChar(Value));
 
-  if FColorEditor <> nil then begin
-    FColorEditor.OverrideSliderUpdateMode(sumAll);
-    FColorEditor.Value := col;
-  end;
+    if FColorEditor <> nil then
+    begin
+      FColorEditor.OverrideSliderUpdateMode(sumAll);
+      FColorEditor.Value := col;
+    end;
   except
   end;
 end;
@@ -302,7 +330,8 @@ procedure TSharpEColorEditorExItem.SetValueText(const Value: string);
 begin
   FValueText := Value;
 
-  if FColorEditor <> nil then begin
+  if FColorEditor <> nil then
+  begin
     if FColorEditor.ValueText <> Value then
       FColorEditor.ValueText := Value;
   end;
@@ -312,7 +341,8 @@ procedure TSharpEColorEditorExItem.SetDescription(const Value: string);
 begin
   FDescription := Value;
 
-  if FColorEditor <> nil then begin
+  if FColorEditor <> nil then
+  begin
     if FColorEditor.Description <> Value then
       FColorEditor.Description := Value;
   end;
@@ -322,7 +352,8 @@ procedure TSharpEColorEditorExItem.SetValue(const Value: Integer);
 begin
   FValue := Value;
 
-  if FColorEditor <> nil then begin
+  if FColorEditor <> nil then
+  begin
     if FColorEditor.Value <> Value then
       FColorEditor.Value := Value;
   end;
@@ -333,7 +364,8 @@ procedure TSharpEColorEditorExItem.SetValueEditorType(
 begin
   FValueEditorType := Value;
 
-  if FColorEditor <> nil then begin
+  if FColorEditor <> nil then
+  begin
     if FColorEditor.ValueEditorType <> Value then
       FColorEditor.ValueEditorType := Value;
   end;
@@ -343,7 +375,8 @@ procedure TSharpEColorEditorExItem.SetVisible(const Value: Boolean);
 begin
   FVisible := Value;
 
-  if FColorEditor <> nil then begin
+  if FColorEditor <> nil then
+  begin
     if FColorEditor.Visible <> Value then
       FColorEditor.Visible := Value;
   end;
@@ -397,7 +430,7 @@ begin
   inherited Update(Item);
 
   if Owner <> nil then
-     TSharpEColorEditorEx(Owner).PopulateItems;
+    TSharpEColorEditorEx(Owner).PopulateItems;
 end;
 
 { TSharpEColorEditorEx }
@@ -434,17 +467,20 @@ end;
 
 procedure TSharpEColorEditorEx.PopulateItems;
 var
-  tmp:TSharpEColorEditor;
-  i:Integer;
+  tmp: TSharpEColorEditor;
+  i: Integer;
 
   procedure InitTabs;
   var
-    i:Integer;
+    i: Integer;
   begin
-    For i := 0 to Pred(FItems.Count) do begin
+    for i := 0 to Pred(FItems.Count) do
+    begin
 
       if i = 0 then
-        FItems.Item[i].Expanded := True else begin
+        FItems.Item[i].Expanded := True
+      else
+      begin
         FItems.Item[i].Expanded := False;
       end;
     end;
@@ -452,7 +488,8 @@ var
 
 begin
 
-  if Not(FUpdate) then begin
+  if not (FUpdate) then
+  begin
     exit;
   end;
 
@@ -461,51 +498,51 @@ begin
   Self.Updating;
   Self.Visible := False;
 
-  Try
-  For i := Pred(ComponentCount) downto 0 do
-    if Components[i] is TSharpEColorEditor then begin
-      TSharpEColorEditor(Components[i]).Free;
+  try
+    for i := Pred(ComponentCount) downto 0 do
+      if Components[i] is TSharpEColorEditor then
+      begin
+        TSharpEColorEditor(Components[i]).Free;
+      end;
+
+    for i := 0 to Pred(FItems.Count) do
+    begin
+      tmp := TSharpEColorEditor.Create(Self);
+      tmp.Parent := self;
+      tmp.SwatchManager := FSwatchManager;
+
+      FItems.Item[i].ColorEditor := tmp;
+      FItems.Item[i].Parent := Self;
+
+      tmp.Align := alTop;
+      tmp.GroupIndex := 0;
+      tmp.Value := FItems.Item[i].FColorCode;
+      tmp.ValueAsTColor := FItems.Item[i].FColorAsTColor;
+      tmp.ValueEditorType := FItems.item[i].FValueEditorType;
+
+      tmp.Caption := FItems.Item[i].Title;
+      tmp.ValueText := FItems.Item[i].FValueText;
+      tmp.Value := FItems.Item[i].Value;
+      tmp.Description := FItems.Item[i].Description;
+
+      tmp.Expanded := FItems.Item[i].Expanded;
+      tmp.Name := 'Item' + intToStr(i);
+
+      tmp.OnValueChange := FItems.Item[i].ColorChangeEvent;
+      tmp.OnTabClick := FItems.Item[i].TabclickEvent;
+      tmp.OnUiChange := UiChangeEvent;
+
+      tmp.Height := 24;
+      tmp.Visible := FItems.Item[i].Visible;
     end;
 
-  For i := 0 to Pred(FItems.Count) do begin
-    tmp := TSharpEColorEditor.Create(Self);
-    tmp.Parent := self;
-    tmp.SwatchManager := FSwatchManager;
-
-    FItems.Item[i].ColorEditor := tmp;
-    FItems.Item[i].Parent := Self;
-
-
-    tmp.Align := alTop;
-    tmp.GroupIndex := 0;
-    tmp.Value := FItems.Item[i].FColorCode;
-    tmp.ValueAsTColor := FItems.Item[i].FColorAsTColor;
-    tmp.Caption := FItems.Item[i].Title;
-
-    tmp.ValueEditorType := FItems.item[i].FValueEditorType;
-    tmp.ValueText := FItems.Item[i].FValueText;
-    tmp.Value := FItems.Item[i].Value;
-    tmp.Description := FItems.Item[i].Description;
-
-    tmp.Expanded := FItems.Item[i].Expanded;
-    tmp.Name := 'Item' + intToStr(i);
-
-    tmp.OnValueChange := FItems.Item[i].ColorChangeEvent;
-    tmp.OnTabClick := FItems.Item[i].TabclickEvent;
-    tmp.OnUiChange := UiChangeEvent;
-
-    tmp.Height := 24;
-    tmp.Visible := FItems.Item[i].Visible;
-  end;
-
-  Finally
-
+  finally
 
     Self.EnableAlign;
     Self.EnableAutoRange;
     Self.Updated;
     self.Visible := True;
-  End;
+  end;
 end;
 
 procedure TSharpEColorEditorEx.ResizeEvent(Sender: TObject);
@@ -516,8 +553,9 @@ end;
 
 procedure TSharpEColorEditorEx.SetItems(const Value: TSharpEColorEditorExItems);
 begin
-  if Value = FItems then exit;
-  
+  if Value = FItems then
+    exit;
+
   FItems.Assign(Value);
 end;
 
@@ -533,12 +571,14 @@ end;
 procedure TSharpEColorEditorEx.SetSwatchManager(
   const Value: TSharpESwatchManager);
 var
-  i:Integer;
+  i: Integer;
 begin
-  if FSwatchManager = Value then exit;
+  if FSwatchManager = Value then
+    exit;
   FSwatchManager := Value;
 
-  For i := 0 to Pred(FItems.Count) do begin
+  for i := 0 to Pred(FItems.Count) do
+  begin
     FItems.Item[i].ColorEditor.SwatchManager := FSwatchManager;
   end;
 end;
