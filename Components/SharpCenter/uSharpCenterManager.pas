@@ -97,7 +97,6 @@ type
     FOnLoadEdit: TNotifyEvent;
     FOnCancelEdit: TNotifyEvent;
     FOnApplyEdit: TNotifyEvent;
-    FSaveSettings: Boolean;
 
     // Events
     procedure UnloadTimerEvent(Sender:TObject);
@@ -177,8 +176,6 @@ type
     property OnLoadEdit: TNotifyEvent read FOnLoadEdit write FOnLoadEdit;
     property OnApplyEdit: TNotifyEvent read FOnApplyEdit write FOnApplyEdit;
     property OnCancelEdit: TNotifyEvent read FOnCancelEdit write FOnCancelEdit;
-
-    property SaveSettings: Boolean read FSaveSettings write FSaveSettings;
 end;
 
 var
@@ -265,7 +262,7 @@ begin
 
   // Handle proper closing of the setting
   if @FActivePlugin.Close <> nil then
-    FActivePlugin.Close(False);
+    FActivePlugin.Close(false);
 
   // Unload dll
   UnloadPlugin(@FActivePlugin);
@@ -356,7 +353,7 @@ var
   sFirstNavFile, sFirstPluginID: String;
   newItem: TSharpCenterManagerItem;
 begin
-  lockwindowupdate(Application.MainForm.Handle);
+  LockWindowUpdate(Application.MainForm.Handle);
   Result := True;
   try
 
@@ -394,7 +391,6 @@ begin
 
           newItem.Filename := sPath + sDll;
           newItem.PluginID := SCM.ActivePluginID;
-          newItem.Status := sStatus;
 
           pngfile := sPath + sIcon;
           SCM.AssignIconIndex(pngfile, newItem);
@@ -416,7 +412,7 @@ begin
 
   finally
     Load(sFirstNavFile,sFirstPluginID);
-    lockwindowupdate(0);
+    LockWindowUpdate(0);
   end;
 end;
 
@@ -431,7 +427,7 @@ var
 begin
   iCount := 0;
   Result := True;
-  lockwindowupdate(Application.MainForm.Handle);
+  LockWindowUpdate(Application.MainForm.Handle);
 
   if Assigned(FOnInitNavigation) then
     FOnInitNavigation(Self);
@@ -521,7 +517,7 @@ begin
       end;
 
     end;
-    lockwindowupdate(0);
+    LockWindowUpdate(0);
   end;
 end;
 
@@ -770,7 +766,7 @@ var
 begin
   Result := True;
 
-  lockwindowupdate(Application.MainForm.Handle);
+  LockWindowUpdate(Application.MainForm.Handle);
   try
 
   bValid := True;
@@ -801,7 +797,7 @@ begin
   end;
 
   finally
-    lockwindowupdate(0);
+    LockWindowUpdate(0);
   end;
 end;
 
@@ -844,6 +840,4 @@ finalization
   FreeAndNil(SCM);
 
 end.
-
-
 
