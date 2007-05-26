@@ -20,11 +20,9 @@ type
     FColorEditor: TSharpEColorEditor;
     FTag: Integer;
     FData: TObject;
-    FValueMin: Integer;
     FValueText: string;
     FDescription: string;
     FValue: Integer;
-    FValueMax: Integer;
     FValueEditorType: TValueEditorType;
     FVisible: Boolean;
 
@@ -237,14 +235,18 @@ begin
   if FColorEditor = nil then
     exit;
 
-  if ((TSharpEColorEditor(Sender).GetTabIndex = FLastTab) and
+  if ((TSharpEColorEditor(Sender).GetTabIndex = 0) and
     (TSharpEColorEditor(Sender) = FLastColorEditor) and
-      (TSharpEColorEditor(Sender).Expanded)) then
+      (TSharpEColorEditor(Sender).Expanded) and
+        (FLastTab <> 1)) then
     begin
       bExpand := False;
     end else begin
       bExpand := True;
     end;
+
+  FLastTab := FColorEditor.GetTabIndex;
+  FLastColorEditor := FColorEditor;
 
   if FParent <> nil then
   begin
@@ -281,8 +283,7 @@ begin
   FColorEditor.SwatchManager :=
     TSharpEColorEditorEx(FParent).SwatchManager;
 
-  FLastTab := FColorEditor.GetTabIndex;
-  FLastColorEditor := FColorEditor;
+
 
 end;
 
