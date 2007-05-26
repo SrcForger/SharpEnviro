@@ -586,12 +586,13 @@ begin
     FSwatchesPage.Show;
   end;
 
+  FTabs.TabIndex := ATabIndex;
   if Assigned(FOnTabClick) then
     FOnTabClick(Self)
   else
     Expanded := True;
 
-  FTabs.TabIndex := ATabIndex;
+  
 
 end;
 
@@ -1313,8 +1314,7 @@ procedure TSharpEColorEditor.ResizeDefineBoolPage;
 var
   tmpTab: TJvcustomPage;
   tmpLbl: TLabel;
-  iWidthLT, iWidthVal, iSliderWidth, iSpacer, iY, n: Integer;
-  rLeftSlider, rLeftSliderVal, rLeftText: TRect;
+  iSpacer, iY, n: Integer;
 
 begin
 
@@ -1332,9 +1332,6 @@ begin
   tmptab := FBoolDefinePage;
   iSpacer := 12;
   Self.Canvas.Font.Assign(Self.Font);
-  iWidthLT := Self.Canvas.TextWidth(FValueText + ':XX');
-  iWidthVal := Self.Canvas.TextWidth('XXXXXXX');
-  iSliderWidth := (tmpTab.Width - (iWidthVal * 2));
 
   // Create value description label
   if FDescription <> '' then
