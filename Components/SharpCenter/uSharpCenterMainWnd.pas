@@ -584,7 +584,6 @@ end;
 procedure TSharpCenterWnd.InitWindow;
 begin
   // Vista
-  pnlMain.Parent := Panel4;
   SetVistaFonts(Self);
   HideAllTaskbarButton;
 
