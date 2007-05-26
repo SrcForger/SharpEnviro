@@ -725,13 +725,12 @@ begin
   result := i;
 end;
 
-function SharpCenterBroadCast(msg: integer; wpar: wparam; lpar: lparam): boolean;
+function SharpCenterBroadCast(wpar: wparam; lpar: lparam): boolean;
 var
   wnd: hWnd;
   MutexHandle: THandle;
 begin
   Result := False;
-  mess := msg;
   wpara := wpar;
   lpara := lpar;
 
@@ -744,7 +743,7 @@ begin
       if wnd <> 0 then
       begin
         Result := True;
-        PostMessage(wnd, mess, wpara, lpara);
+        PostMessage(wnd, WM_SHARPCENTERMESSAGE, wpara, lpara);
       end else
         Result := False;
       CloseHandle(MuteXHandle);

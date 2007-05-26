@@ -229,7 +229,7 @@ function GetSharpeUserSettingsPath: PChar; external 'SharpAPI.dll' name 'GetShar
 function GetSharpeGlobalSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeGlobalSettingsPath';
 function GetCenterDirectory: PChar; external 'SharpAPI.dll' name 'GetCenterDirectory';
 function CenterMsg(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID :PChar): hresult; external 'SharpAPI.dll' name 'CenterMsg';
-function SharpCenterBroadCast(msg: integer; wpar: wparam; lpar: lparam): boolean; external 'SharpAPI.dll';
+function SharpCenterBroadCast(wpar: wparam; lpar: lparam): boolean; external 'SharpAPI.dll';
 
 
 function ServiceMsg(ServiceName, Command: pChar): hresult; external 'SharpAPI.dll' name 'ServiceMsg';
