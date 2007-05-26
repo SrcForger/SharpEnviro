@@ -65,14 +65,17 @@ begin
   frmThemeList.BorderStyle := bsNone;
   frmThemeList.Show;
   result := frmThemeList.Handle;
+
+  frmThemeList.UpdateEditTabs;
 end;
 
-function Close(ASave: Boolean): boolean;
+procedure Save;
 begin
-  result := True;
-  try
-    if ASave then
-      frmThemeList.ThemeList.Save;
+   frmThemeList.ThemeList.Save;
+end;
+
+procedure Close;
+begin
 
     frmThemeList.Close;
     frmThemeList.Free;
@@ -83,10 +86,6 @@ begin
       frmEditItem.Free;
       frmEditItem := nil;
     end;
-
-  except
-    result := False;
-  end;
 end;
 
 function OpenEdit(AOwner: hwnd; AEditMode:TSCE_EDITMODE_ENUM): hwnd;
@@ -127,7 +126,7 @@ begin
   // If Validation ok then continue
   if AApply then begin
     frmThemeList.SaveUi;
-    SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
+    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
   end;
 
   if frmEditItem <> nil then begin
@@ -139,6 +138,7 @@ begin
   if frmThemeList <> nil then begin
     frmThemeList.lbThemeList.Enabled := True;
     frmThemeList.BuildThemeList;
+    frmThemeList.UpdateEditTabs;
   end;
 end;
 
@@ -173,27 +173,6 @@ var
   tmp: TThemeListItem;
 begin
   Case AButtonID of
-      SCB_DELETE: begin
-        id := frmThemeList.lbThemeList.ItemIndex;
-
-        if id <> -1 then begin
-          tmp := TThemeListItem(frmThemeList.lbThemeList.Item[id].Data);
-          tmp.Deleted := True;
-          frmThemeList.lbThemeList.DeleteSelected;
-
-          if id > (frmThemeList.ThemeList.Count-2) then begin
-            if id-1 >= 0 then
-               newID := id-1 else
-               newid := 0;
-          end else
-            newid := id;
-
-          if frmThemeList.lbThemeList.Count <> 0 then
-            frmThemeList.lbThemeList.ItemIndex := newId;
-
-          SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
-        end;
-      end;
       SCB_IMPORT: begin
       end;
       SCB_CONFIGURE: begin
@@ -247,6 +226,7 @@ end;
 exports
   Open,
   Close,
+  Save,
   OpenEdit,
   CloseEdit,
   SetDisplayText,

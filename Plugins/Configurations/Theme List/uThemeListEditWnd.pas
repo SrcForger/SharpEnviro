@@ -35,8 +35,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvExControls, JvComponent, JvLabel, ImgList,
   PngImageList, JvExStdCtrls, JvEdit, JvValidateEdit, JvValidators,
-  JvComponentBase, JvErrorIndicator, ExtCtrls, JvPageList, SharpApi,
-    uThemeListManager, JclStrings;
+    JvErrorIndicator, ExtCtrls, JvPageList, SharpApi,
+  uThemeListManager, JclStrings, JvComponentBase;
 
 type
   TfrmEditItem = class(TForm)
@@ -66,7 +66,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    function ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM):Boolean;
+    function ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
     procedure ClearValidation;
 
     property ItemEdit: TThemeListItem read FItemEdit write FItemEdit;
@@ -85,26 +85,33 @@ uses
 
 procedure TfrmEditItem.edThemeNameKeyPress(Sender: TObject; var Key: Char);
 begin
-    SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_EDIT_STATE,0);
-    frmThemeList.lbThemeList.Enabled := False;
+  SharpCenterBroadCast( SCM_SET_EDIT_STATE, 0);
+  frmThemeList.lbThemeList.Enabled := False;
 end;
 
 function TfrmEditItem.ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
 begin
-  errorinc.BeginUpdate;
-  try
-    errorinc.ClearErrors;
-    vals.ValidationSummary := nil;
+  case AEditMode of
+    sceAdd, sceEdit:
+      begin
 
-    Result := vals.Validate;
-  finally
-    errorinc.EndUpdate;
+        errorinc.BeginUpdate;
+        try
+          errorinc.ClearErrors;
+          vals.ValidationSummary := nil;
+
+          Result := vals.Validate;
+        finally
+          errorinc.EndUpdate;
+        end;
+      end;
+    sceDelete: Result := True;
   end;
 end;
 
 procedure TfrmEditItem.cbBasedOnSelect(Sender: TObject);
 begin
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_EDIT_STATE,0);
+  SharpCenterBroadCast( SCM_SET_EDIT_STATE, 0);
   frmThemeList.lbThemeList.Enabled := False;
 end;
 
@@ -122,25 +129,30 @@ end;
 procedure TfrmEditItem.valThemeDirNotExistsValidate(Sender: TObject;
   ValueToValidate: Variant; var Valid: Boolean);
 var
-  sValidName, sThemeDir: String;
+  sValidName, sThemeDir: string;
   i: Integer;
 begin
   Valid := True;
-  if ItemEdit = nil then begin
+  if ItemEdit = nil then
+  begin
     sValidName := trim(StrRemoveChars(string(ValueToValidate),
       ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
 
     sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
     if DirectoryExists(sThemeDir + sValidName) then
       Valid := False;
-  end else begin
+  end
+  else
+  begin
 
     sValidName := trim(StrRemoveChars(string(ValueToValidate),
       ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
 
-    For i := 0 to Pred(frmThemeList.ThemeList.Count) do begin
-      if FItemEdit <> frmThemeList.ThemeList[i] then begin
-        if CompareText(sValidName,frmThemeList.ThemeList[i].Name) = 0 then
+    for i := 0 to Pred(frmThemeList.ThemeList.Count) do
+    begin
+      if FItemEdit <> frmThemeList.ThemeList[i] then
+      begin
+        if CompareText(sValidName, frmThemeList.ThemeList[i].Name) = 0 then
           Valid := False;
       end;
     end;
@@ -148,3 +160,4 @@ begin
 end;
 
 end.
+

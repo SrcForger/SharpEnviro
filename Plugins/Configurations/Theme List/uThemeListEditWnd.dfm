@@ -90,7 +90,7 @@ object frmEditItem: TfrmEditItem
         Width = 137
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 3
         OnSelect = cbBasedOnSelect
       end

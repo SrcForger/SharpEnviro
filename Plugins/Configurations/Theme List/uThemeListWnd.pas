@@ -64,6 +64,7 @@ type
   public
     ThemeList: TThemeList;
     //procedure EditTheme;
+    procedure UpdateEditTabs;
     procedure BuildThemeList;
     function UpdateEditText:Boolean;
     function UpdateUI:Boolean;
@@ -82,6 +83,30 @@ uses uThemeListEditWnd, SharpThemeApi;
 {$R *.dfm}
 
 { TfrmConfigListWnd }
+
+procedure TfrmThemeList.UpdateEditTabs;
+
+  procedure BC(AEnabled:Boolean; AButton:Integer);
+  begin
+    if AEnabled then
+    SharpCenterBroadCast( SCM_SET_BUTTON_ENABLED, AButton) else
+    SharpCenterBroadCast( SCM_SET_BUTTON_DISABLED, AButton);
+  end;
+
+begin
+  if lbThemeList.Count = 0 then
+  begin
+    BC(False, SCB_EDIT_TAB);
+    BC(False, SCB_DEL_TAB);
+    BC(True, SCB_ADD_TAB);
+  end
+  else
+  begin
+    BC(True, SCB_ADD_TAB);
+    BC(True, SCB_EDIT_TAB);
+    BC(True, SCB_DEL_TAB);
+  end;
+end;
 
 procedure TfrmThemeList.FormShow(Sender: TObject);
 begin
@@ -157,10 +182,10 @@ begin
     end;
     sceDelete: begin
       if frmThemeList.lbThemeList.ItemIndex <> -1 then begin
-        SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_BUTTON_ENABLED,
+        SharpCenterBroadCast(SCM_SET_BUTTON_ENABLED,
           SCB_DELETE);
       end else begin
-        SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_BUTTON_DISABLED,
+        SharpCenterBroadCast(SCM_SET_BUTTON_DISABLED,
           SCB_DELETE);
       end;
     end;
@@ -257,7 +282,7 @@ begin
   if FrmEditItem <> nil then
     UpdateEditText;
 
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
+  SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
 end;
 
 function TfrmThemeList.UpdateUI: Boolean;
@@ -317,21 +342,24 @@ begin
 
       frmEditItem.pagDelete.Show;
 
-      SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_BUTTON_ENABLED,
+      SharpCenterBroadCast(SCM_SET_BUTTON_ENABLED,
         SCB_DELETE);
       end else begin
-        SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_BUTTON_DISABLED,
+        SharpCenterBroadCast(SCM_SET_BUTTON_DISABLED,
           SCB_DELETE);
       end;
       
     Result := True;
   end;
   end;
+
+
 end;
 
 function TfrmThemeList.SaveUi: Boolean;
 var
   tmp: TThemeListItem;
+  id, newid: Integer;
 begin
   Result := True;
 
@@ -354,6 +382,25 @@ begin
       tmp.Website := frmEditItem.edWebsite.Text;
     end;
     sceDelete: begin
+      id := frmThemeList.lbThemeList.ItemIndex;
+
+        if id <> -1 then begin
+          tmp := TThemeListItem(frmThemeList.lbThemeList.Item[id].Data);
+          tmp.Deleted := True;
+          frmThemeList.lbThemeList.DeleteSelected;
+
+          if id > (frmThemeList.ThemeList.Count-2) then begin
+            if id-1 >= 0 then
+               newID := id-1 else
+               newid := 0;
+          end else
+            newid := id;
+
+          if frmThemeList.lbThemeList.Count <> 0 then
+            frmThemeList.lbThemeList.ItemIndex := newId;
+
+          SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+        end;
     end;
   end;
 
