@@ -427,7 +427,7 @@ begin
     TmpWeatherList.Delete(obj);
 
     UpdateDisplay(TmpWeatherList);
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
   end;
 
 end;
@@ -459,7 +459,7 @@ begin
                   obj.Location := tmpWl.Location;
                   obj.LocationID := tmpWl.LocationId;
                   ModalResult := -1;
-                  SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+                  SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
                 end;
               end;
             end;
@@ -506,7 +506,7 @@ begin
               TmpWeatherList.Add(tmpWl.Location, tmpWl.LocationID, '-1', '-1',
                 -1, -1, True);
               ModalResult := -1;
-              SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+              SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
             end;
           end;
       end;
@@ -552,7 +552,7 @@ begin
   begin
     TmpWeatherList.Clear;
     UpdateDisplay(TmpWeatherList);
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
   end;
 end;
 
@@ -572,7 +572,7 @@ begin
   begin
     TmpWeatherList.Load(dlgImport.FileName);
     UpdateDisplay(TmpWeatherList);
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
   end;
 end;
 

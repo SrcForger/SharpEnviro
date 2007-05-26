@@ -113,7 +113,7 @@ end;
 
 procedure TfrmEditItem.edThemeNameKeyPress(Sender: TObject; var Key: Char);
 begin
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_EDIT_STATE,0);
+  SharpCenterBroadCast(SCM_SET_EDIT_STATE,0);
   frmBarList.lbBarList.Enabled := False;
 end;
 
@@ -132,7 +132,7 @@ end;
 
 procedure TfrmEditItem.cbBasedOnSelect(Sender: TObject);
 begin
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_EDIT_STATE,0);
+  SharpCenterBroadCast(SCM_SET_EDIT_STATE,0);
   frmBarList.lbBarList.Enabled := False;
 end;
 

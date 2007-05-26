@@ -105,7 +105,7 @@ end;
 procedure TfrmMenuSettings.SendUpdate;
 begin
   if Visible then
-     SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 0);
+     SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 0);
 end;
 
 procedure TfrmMenuSettings.cb_cacheiconsClick(Sender: TObject);

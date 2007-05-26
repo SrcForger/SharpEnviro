@@ -1,7 +1,7 @@
 ﻿{
 Source Name: uIconeListWnd.pas
 Description: Icon List Window
-Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
+Copyright (C) Martin KrÃ¤mer (MartinKraemer@gmx.net)
 
 3rd Party Libraries used: JCL, JVCL
 Common: SharpApi
@@ -109,7 +109,7 @@ var
 begin
   if (lb_CursorList.ItemIndex < 0) or (lb_CursorList.Count = 0) then
   begin
-    SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 0);
+    SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
     exit;
   end;
 
@@ -159,7 +159,7 @@ begin
   Bmp.Free;
   Bmp32.Free;
 
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 0);
+  SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
 end;
 
 procedure TfrmCursesList.BuildCursorList;
@@ -208,7 +208,7 @@ procedure TfrmCursesList.lb_CursorListClickItem(AText: string; AItem,
   ACol: Integer);
 begin
   BuildCursorPreview;
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
+  SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
 end;
 
 procedure TfrmCursesList.FormResize(Sender: TObject);
@@ -221,7 +221,7 @@ procedure TfrmCursesList.ccolorsChangeColor(ASender: TObject;
 begin
   BuildCursorPreview;
   if Visible then
-     SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
+     SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
 end;
 
 procedure TfrmCursesList.FormDestroy(Sender: TObject);
@@ -230,4 +230,5 @@ begin
 end;
 
 end.
+
 

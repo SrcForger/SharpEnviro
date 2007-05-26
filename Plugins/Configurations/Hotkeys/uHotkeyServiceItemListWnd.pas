@@ -227,7 +227,7 @@ begin
           FHotkeyList.Add(hkeCommand.Text, mmoCommand.Lines.Text, False);
         end;
     end;
-    SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 1);
+    SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 1);
     RefreshHotkeys;
   end;  }
 end;
@@ -243,7 +243,7 @@ begin
 
   FHotkeyList.Delete(tmpItem);
 
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 1);
+  SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 1);
   RefreshHotkeys;
 end;
 
@@ -279,7 +279,7 @@ begin
           tmpItem.Command := mmoCommand.Lines.Text;
         end;
     end;
-    SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 1);
+    SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 1);
     RefreshHotkeys;
   end;  }
 end;
@@ -300,7 +300,7 @@ begin
   begin
     FHotkeyList.Load(dlgImport.FileName);
     RefreshHotkeys;
-    SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 1);
+    SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 1);
   end;
 end;
 

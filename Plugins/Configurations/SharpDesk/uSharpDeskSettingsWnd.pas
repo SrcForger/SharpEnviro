@@ -110,7 +110,7 @@ end;
 procedure TfrmDeskSettings.SendUpdate;
 begin
   if Visible then
-     SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 0);
+     SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 0);
 end;
 
 procedure TfrmDeskSettings.cb_singleclickClick(Sender: TObject);

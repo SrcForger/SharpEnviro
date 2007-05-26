@@ -20,8 +20,8 @@ object frmCursesList: TfrmCursesList
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 426
-    Height = 72
+    Width = 418
+    Height = 65
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Panel1'
@@ -30,8 +30,8 @@ object frmCursesList: TfrmCursesList
     object lb_CursorList: TSharpEListBoxEx
       Left = 0
       Top = 0
-      Width = 426
-      Height = 72
+      Width = 418
+      Height = 65
       Columns = <
         item
           Width = 256
@@ -64,8 +64,8 @@ object frmCursesList: TfrmCursesList
   end
   object ccolors: TSharpEColorEditorEx
     Left = 0
-    Top = 72
-    Width = 426
+    Top = 65
+    Width = 418
     Height = 219
     Align = alBottom
     BevelInner = bvNone
@@ -124,7 +124,7 @@ object frmCursesList: TfrmCursesList
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 393
+    Width = 386
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16

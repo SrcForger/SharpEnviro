@@ -146,7 +146,7 @@ begin
     else
       lbItems.ItemIndex := lbItems.Count - 1;
 
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
     UpdateButtonStates;
   end;
 end;
@@ -165,7 +165,7 @@ begin
     ItemStorage.Add(ExtractFileName(sFilename), 'Untitled', sFileName,
       False, False, False, 0);
     UpdateDisplay(ItemStorage);
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
     UpdateButtonStates;
   end;
 end;
@@ -191,7 +191,7 @@ begin
       end;
     end;
     UpdateDisplay(ItemStorage);
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
     UpdateButtonStates;
   end;
 end;
@@ -227,7 +227,7 @@ begin
     tmpInfo := TComponentItem(lbitems.Items.Objects[lbitems.ItemIndex]);
     tmpInfo.AutoStart := not (miAutoStart.Checked);
     lbitems.Invalidate;
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
   end;
 end;
 
@@ -320,7 +320,7 @@ begin
       GetSharpeDirectory + 'SharpDocs.exe', True, False, False, 0);
 
   UpdateDisplay(ItemStorage);
-  SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+  SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
   UpdateButtonStates;
 end;
 
@@ -345,7 +345,7 @@ begin
     end;
   end;
   UpdateDisplay(ItemStorage);
-  SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+  SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
   UpdateButtonStates;
 end;
 
@@ -369,7 +369,7 @@ begin
     end;
   end;
   UpdateDisplay(ItemStorage);
-  SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+  SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
   UpdateButtonStates;
 end;
 
@@ -388,7 +388,7 @@ begin
       tmpInfo.Name := s;
 
     UpdateDisplay(ItemStorage);
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
     UpdateButtonStates;
   end;
 end;
@@ -408,7 +408,7 @@ begin
       tmpInfo.Command := s;
 
     UpdateDisplay(ItemStorage);
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
     UpdateButtonStates;
   end;
 end;
@@ -423,62 +423,62 @@ begin
   // Update Move Up/Down State
   if lbItems.ItemIndex = -1 then
   begin
-    SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEUP, 0);
-    SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEDOWN, 0);
+    SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEUP, 0);
+    SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEDOWN, 0);
   end
   else if lbItems.ItemIndex = 0 then
   begin
 
     if lbItems.Count <> 0 then
-      SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEDOWN, 1)
+      SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEDOWN, 1)
     else
-      SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEDOWN, 0);
+      SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEDOWN, 0);
 
-    SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEUP, 0);
+    SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEUP, 0);
   end
   else if lbItems.ItemIndex = lbItems.Count - 1 then
   begin
 
     if lbItems.Count <> 0 then
-      SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEUP, 1)
+      SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEUP, 1)
     else
-      SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEUP, 0);
+      SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEUP, 0);
 
-    SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEDOWN, 0);
+    SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEDOWN, 0);
   end
   else
   begin
-    SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEUP, 1);
-    SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEDOWN, 1);
+    SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEUP, 1);
+    SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_MOVEDOWN, 1);
   end;
 
   // Update Edit State
   if lbItems.Count = 0 then
-    SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_EDIT, 0)
+    SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_EDIT, 0)
   else
   begin
     if lbItems.ItemIndex <> -1 then
-      SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_EDIT, 1)
+      SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_EDIT, 1)
     else
-      SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_EDIT, 0);
+      SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_EDIT, 0);
   end;
 
   // Update Delete State
   if lbItems.Count = 0 then
-    SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_DEL, 0)
+    SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_DEL, 0)
   else
   begin
     if lbItems.ItemIndex <> -1 then
-      SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_DEL, 1)
+      SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_DEL, 1)
     else
-      SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_DEL, 0);
+      SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_DEL, 0);
   end;
 
   // Update Export State
   if (lbItems.Count = 0) then
-    SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_EXPORT, 0)
+    SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_EXPORT, 0)
   else
-    SharpEBroadCast(WM_SCGLOBALBTNMSG, SCB_EXPORT, 1);
+    SharpCenterBroadCast(WM_SCGLOBALBTNMSG, SCB_EXPORT, 1);
 
 end;
 
@@ -503,7 +503,7 @@ begin
   begin
     ItemStorage.Load(dlgImport.FileName);
     UpdateDisplay(ItemStorage);
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
   end;
 end;
 
@@ -514,7 +514,7 @@ begin
   begin
     ItemStorage.Clear;
     frmCompItems.UpdateDisplay(ItemStorage);
-    SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+    SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
   end;
 end;
 

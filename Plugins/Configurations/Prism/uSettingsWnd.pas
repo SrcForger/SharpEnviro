@@ -125,7 +125,7 @@ procedure TfrmSettingsWnd.chkMemOptimerClick(Sender: TObject);
 begin
   if FInitialising then exit;
   PrismSettings.EnableMemOptim := chkMemOptimer.Checked;
-  SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+  SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
   InitialiseSettings;
 end;
 
@@ -133,7 +133,7 @@ procedure TfrmSettingsWnd.spnedtMemEvtIntChange(Sender: TObject);
 begin
   if FInitialising then exit;
   PrismSettings.MemEventInterval := TSpinEdit(Sender).Value;
-  SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+  SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
   InitialiseSettings;
 end;
 
@@ -141,7 +141,7 @@ procedure TfrmSettingsWnd.spnedtMemLowThresChange(Sender: TObject);
 begin
   if FInitialising then exit;
   PrismSettings.MemLowThreshold := TSpinEdit(Sender).Value;
-  SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+  SharpCenterBroadCast(WM_SETTINGSCHANGED, 1, 1);
   InitialiseSettings;
 end;
 

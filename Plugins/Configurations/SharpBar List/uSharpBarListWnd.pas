@@ -401,12 +401,12 @@ begin
       begin
         Result := True;
         frmEditItem.pagDelete.Show;
-        SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_BUTTON_ENABLED,SCB_DELETE);
+        SharpCenterBroadCast(SCM_SET_BUTTON_ENABLED,SCB_DELETE);
       end
       else
       begin
         Result := False;
-        SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_BUTTON_DISABLED,SCB_DELETE);
+        SharpCenterBroadCast(SCM_SET_BUTTON_DISABLED,SCB_DELETE);
       end;
     end;
   end;
