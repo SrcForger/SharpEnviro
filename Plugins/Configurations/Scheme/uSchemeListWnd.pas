@@ -79,7 +79,8 @@ type
     FTheme: string;
     FDefault: string;
     FSchemeItems: TSchemeList;
-    procedure CreateSchemeBitmap(ASchemeColors: TobjectList; var ABitmap: TBitmap);
+    procedure CreateSchemeBitmap(ASchemeColors: TobjectList; var ABitmap:
+      TBitmap);
     procedure CreateColumns;
 
     function SaveBitmap32ToPNG(bm32: TBitmap32; paletted, transparent: Boolean;
@@ -88,7 +89,7 @@ type
       InterlaceMethod: TInterlaceMethod = imNone): tPNGObject;
   public
     property SchemeItems: TSchemeList read FSchemeItems write FSchemeItems;
-    procedure CreatePreviewBitmap(var AImage32:TImage32);
+    procedure CreatePreviewBitmap(var ABmp: TBitmap32);
 
     { Public declarations }
     procedure InitialiseSettings(APluginID: string);
@@ -96,10 +97,11 @@ type
     procedure DeleteScheme;
     procedure AddScheme;
 
-    function SaveSchemes:Boolean;
+    procedure UpdateEditTabs;
 
-    property Theme: String Read FTheme write FTheme;
+    function SaveSchemes: Boolean;
 
+    property Theme: string read FTheme write FTheme;
 
   end;
 
@@ -115,39 +117,72 @@ uses
 
 {$R *.dfm}
 
-procedure TfrmSchemeList.CreatePreviewBitmap(var AImage32:TImage32);
+procedure TfrmSchemeList.UpdateEditTabs;
+
+  procedure BC(AEnabled:Boolean; AButton:Integer);
+  begin
+    if AEnabled then
+    SharpCenterBroadCast( SCM_SET_BUTTON_ENABLED, AButton) else
+    SharpCenterBroadCast( SCM_SET_BUTTON_DISABLED, AButton);
+  end;
+
+begin
+  if lbSchemeList.Count = 0 then
+  begin
+    BC(False, SCB_EDIT_TAB);
+    BC(False, SCB_DEL_TAB);
+
+    if FSchemeItems.GetSkinValid(FTheme) then
+      BC(True, SCB_ADD_TAB) else
+      BC(False, SCB_ADD_TAB);
+
+    lbSchemeList.AddItem('There is no skin defined, please launch the skin configuration first.',2);
+    lbSchemeList.Enabled := False;
+  end
+  else
+  begin
+    BC(True, SCB_ADD_TAB);
+    BC(True, SCB_EDIT_TAB);
+    BC(True, SCB_DEL_TAB);
+    lbSchemeList.Enabled := True;
+  end;
+end;
+
+procedure TfrmSchemeList.CreatePreviewBitmap(var ABmp: TBitmap32);
 var
   bmp: TBitmap32;
   bmpTint: TBitmap32;
   y, x: Integer;
   c: TColor;
   cx, cy: Integer;
-  tmpSchemeItem:TSchemeItem;
-Begin
-  try
+  tmpSchemeItem: TSchemeItem;
+begin
   bmp := TBitmap32.Create;
+
   try
     if (frmEditScheme <> nil) then
-      tmpSchemeItem := frmEditScheme.SchemeItem else
-      tmpSchemeItem := TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
+      tmpSchemeItem := frmEditScheme.SchemeItem
+    else
+      tmpSchemeItem :=
+        TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
 
     BarPreview.CreateBarPreview(bmp, FSchemeItems.GetSkinName(FTheme),
-    tmpSchemeItem.GetItemAsColorArray(tmpSchemeItem.Colors), 200);
+      tmpSchemeItem.GetItemAsColorArray(tmpSchemeItem.Colors), 200);
 
     bmp.DrawMode := dmBlend;
+    bmp.savetofile('e:\test.bmp');
 
-    cx := (AImage32.Width div 2) - (bmp.Width div 2);
-    cy := (AImage32.Height div 2) - (bmp.Height div 2);
+    cx := (ABmp.Width div 2) - (bmp.Width div 2);
+    cy := (ABmp.Height div 2) - (bmp.Height div 2);
 
-    bmp.DrawTo(AImage32.Bitmap, cX, CY);
+    bmp.DrawTo(ABmp, cX, CY);
   finally
+    bmp.Free;
   end;
-  except
-    AImage32.Bitmap.Clear(clWhite32);
-  end; 
-End;
+end;
 
-function TfrmSchemeList.SaveBitmap32ToPNG(bm32: TBitmap32; paletted, transparent: Boolean;
+function TfrmSchemeList.SaveBitmap32ToPNG(bm32: TBitmap32; paletted,
+  transparent: Boolean;
   bgcolor: TColor;
   CompressionLevel: Integer = 9;
   InterlaceMethod: TInterlaceMethod = imNone): tPNGObject;
@@ -221,8 +256,8 @@ begin
 
   BuildSchemeList(FTheme);
 
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_SETTINGS, 1);
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 1);
+  SharpCenterBroadCast( SCM_EVT_UPDATE_SETTINGS, 1);
+  SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 1);
 end;
 
 procedure TfrmSchemeList.BuildSchemeList(APluginID: string);
@@ -253,7 +288,7 @@ begin
       Bmp := TBitmap.Create;
       Bmp32 := TBitmap32.Create;
       try
-        CreateSchemeBitmap(FSchemeItems[i].Colors, Bmp);
+        {CreateSchemeBitmap(FSchemeItems[i].Colors, Bmp);
 
         if lbSchemeList.Column[0].Images.Width <> Bmp.Width then
           lbSchemeList.Column[0].Images.Width := Bmp.Width;
@@ -261,9 +296,9 @@ begin
         if lbSchemeList.Column[0].Images.Height <> Bmp.Height then
           lbSchemeList.Column[0].Images.Height := Bmp.Height;
 
-        n := lbSchemeList.Column[0].Images.AddMasked(Bmp, clWhite);
+        n := lbSchemeList.Column[0].Images.AddMasked(Bmp, clWhite); }
 
-        tmpItem := lbSchemeList.AddItem(FSchemeItems[i].Name, n);
+        tmpItem := lbSchemeList.AddItem(FSchemeItems[i].Name, 1);
         tmpItem.AddSubItem(FSchemeItems[i].Author, -1);
 
         if CompareText(FDefault, FSchemeItems[i].Name) = 0 then
@@ -296,6 +331,10 @@ begin
   FSchemeItems.Load(FTheme);
 
   BuildSchemeList(FTheme);
+  UpdateEditTabs;
+
+  // Hide Deletr Tab - Not Implemented
+  SharpCenterBroadCast(SCM_SET_BUTTON_DISABLED,SCB_DEL_TAB);
 end;
 
 procedure TfrmSchemeList.chkCpuEnableClick(Sender: TObject);
@@ -338,7 +377,7 @@ begin
 
       ABitmap.Canvas.Brush.Color := tmpColor.Color;
 
-      ABitmap.Canvas.Pen.Color := Darker(tmpColor.Color,20);
+      ABitmap.Canvas.Pen.Color := Darker(tmpColor.Color, 20);
       ABitmap.Canvas.RoundRect(r.Left, r.Top, r.Right, r.Bottom, 0, 0);
       //ABitmap.Canvas.Rectangle(r);
       Inc(x, 18);
@@ -357,46 +396,46 @@ var
   Index, i: Integer;
 begin
 
- { tmpItem := TSchemeItem.Create(FSchemeItems);
-  tmpItem.Name := 'Untitled';
-  tmpItem.Author := 'Anon';
-  tmpItem.LoadSkinColorDefaults(FTheme);
+  { tmpItem := TSchemeItem.Create(FSchemeItems);
+   tmpItem.Name := 'Untitled';
+   tmpItem.Author := 'Anon';
+   tmpItem.LoadSkinColorDefaults(FTheme);
 
-  try
+   try
 
-    frmEditScheme.Colors := tmpItem.Colors;
-    frmEditScheme.SchemeName := tmpItem.Name;
-    frmEditScheme.Author := tmpItem.Author;
-    frmEditScheme.SchemeItem := tmpItem;
-    frmEditScheme.SkinName := FSchemeItems.GetSkinName(FTheme);
-    frmEditScheme.Edit := False;
+     frmEditScheme.Colors := tmpItem.Colors;
+     frmEditScheme.SchemeName := tmpItem.Name;
+     frmEditScheme.Author := tmpItem.Author;
+     frmEditScheme.SchemeItem := tmpItem;
+     frmEditScheme.SkinName := FSchemeItems.GetSkinName(FTheme);
+     frmEditScheme.Edit := False;
 
-    if frmEditScheme.ShowModal = mrOk then
-    begin
-      tmpItem.Name := frmEditScheme.EdtSkinName.Text;
-      tmpItem.Author := frmEditScheme.EdtAuthor.Text;
-      tmpItem.FileName := GetSchemeDirectory + trim(StrRemoveChars(tmpItem.Name,
-        ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':'])) + '.xml';
+     if frmEditScheme.ShowModal = mrOk then
+     begin
+       tmpItem.Name := frmEditScheme.EdtSkinName.Text;
+       tmpItem.Author := frmEditScheme.EdtAuthor.Text;
+       tmpItem.FileName := GetSchemeDirectory + trim(StrRemoveChars(tmpItem.Name,
+         ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':'])) + '.xml';
 
-      SchemeItems.Add(tmpItem);
+       SchemeItems.Add(tmpItem);
 
-      SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_SETTINGS, 1);
-      SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 1);
-    end;
+       SharpCenterBroadCast( SCM_EVT_UPDATE_SETTINGS, 1);
+       SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 1);
+     end;
 
-  finally
-    FreeAndNil(frmEditScheme);
-    BuildSchemeList(FTheme);
-  end;    }
+   finally
+     FreeAndNil(frmEditScheme);
+     BuildSchemeList(FTheme);
+   end;    }
 end;
 
-function TfrmSchemeList.SaveSchemes:Boolean;
+function TfrmSchemeList.SaveSchemes: Boolean;
 var
   tmp: TSchemeItem;
   sDefault: string;
 begin
   tmp := TSchemeItem(frmSchemeList.lbSchemeList.
-        Item[frmSchemeList.lbSchemeList.ItemIndex].Data);
+    Item[frmSchemeList.lbSchemeList.ItemIndex].Data);
   sDefault := tmp.Name;
 
   FSchemeItems.Save;
@@ -414,8 +453,8 @@ begin
 
   with lbSchemeList.AddColumn('Scheme') do
   begin
-    Width := lbSchemeList.Width-150;
-    Images := imlCol1;
+    Width := lbSchemeList.Width - 150;
+    Images := imlCol2;
     VAlign := taVerticalCenter;
   end;
   with lbSchemeList.AddColumn('Author') do
@@ -444,6 +483,8 @@ const
   Col3 = 30;
 begin
   if assigned(lbSchemeList) then
+
+    if FSchemeItems.Count > 0 then begin
     if lbSchemeList.ColumnCount = 3 then
     begin
 
@@ -455,24 +496,30 @@ begin
       lbSchemeList.Column[1].Width := round(pct * Col2);
       lbSchemeList.Column[2].Width := round(pct * Col3);
     end;
+    end else begin
+      lbSchemeList.Column[0].Width := lbSchemeList.Width;
+      lbSchemeList.Column[1].Width := 0;
+      lbSchemeList.Column[2].Width := 0;
+    end;
 end;
 
 procedure TfrmSchemeList.lbSchemeListClickItem(AText: string; AItem,
   ACol: Integer);
 begin
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 0);
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_SETTINGS, 0);
+  SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
+  SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED, 0);
 
-  if frmEditScheme <> nil then begin
-    if frmEditScheme.Edit then begin
+
+  if frmEditScheme <> nil then
+  begin
+    if frmEditScheme.Edit then
+    begin
       frmEditScheme.InitUI(sceEdit);
     end;
   end;
-
 
   lbSchemeList.Update;
 end;
 
 end.
-
 

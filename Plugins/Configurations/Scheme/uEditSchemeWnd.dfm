@@ -90,7 +90,7 @@ object frmEditScheme: TfrmEditScheme
         Items = <>
         SwatchManager = SharpESwatchManager1
         OnChangeColor = secExChangeValue
-        OnSliderChange = secExSliderChange
+        OnUiChange = secExUiChange
       end
     end
   end

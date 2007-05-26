@@ -65,24 +65,20 @@ begin
   result := frmSchemeList.Handle;
 end;
 
-procedure Help;
-begin
-
-end;
-
 function SetSettingType: Integer;
 begin
   Result := SU_SCHEME;
 end;
 
-procedure Close(ASave:Boolean);
+procedure Close;
 begin
-
-  if ASave then
-    frmSchemeList.SaveSchemes;
-
   FreeAndNil(frmSchemeList);
   FreeAndNil(frmEditScheme);
+end;
+
+procedure Save;
+begin
+  frmSchemeList.SaveSchemes;
 end;
 
 procedure GetDisplayName(const APluginID:PChar; var ADisplayName:PChar);
@@ -90,15 +86,21 @@ begin
   ADisplayName := PChar('Scheme');
 end;
 
-procedure UpdatePreview(var AImage32:TImage32);
+procedure UpdatePreview(var ABmp:TBitmap32);
 begin
-  if (frmSchemeList.SchemeItems.Count <> 0) or (frmSchemeList <> nil) then
-    frmSchemeList.CreatePreviewBitmap(AImage32) else
-    AImage32.Bitmap.Clear(clWhite32);
+  if (frmSchemeList.SchemeItems.Count = 0) or (frmSchemeList = nil) then begin
+    ABmp.SetSize(0,0);
+    exit;
+  end;
+
+  ABmp.Clear(color32(0,0,0,0));
+  frmSchemeList.CreatePreviewBitmap(ABmp);
 end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);
 begin
+  if frmSchemeList.SchemeItems.Count = 0 then
+  ATabs.Add('Schemes',nil,'','NA') else
   ATabs.Add('Schemes',nil,'',IntToStr(frmSchemeList.lbSchemeList.Count));
 end;
 
@@ -160,9 +162,9 @@ end;
 exports
   Open,
   Close,
+  Save,
   OpenEdit,
   CloseEdit,
-  Help,
   SetSettingType,
   AddTabs,
   GetCenterScheme,

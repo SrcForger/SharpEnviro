@@ -50,6 +50,7 @@ type
     SharpECenterScheme1: TSharpECenterScheme;
     SharpERoundPanel1: TSharpERoundPanel;
     secEx: TSharpEColorEditorEx;
+    procedure secExUiChange(Sender: TObject);
     procedure secExSliderChange(Sender: TObject);
 
     procedure FormShow(Sender: TObject);
@@ -141,14 +142,13 @@ begin
         Tag := Integer(tmpItem);
 
         if tmpSkinColor.schemetype = stInteger then
-          ColorEditorType := cetValue
+          ValueEditorType := vetValue
         else
-          ColorEditorType := cetColor;
+          ValueEditorType := vetColor;
 
+        Visible := True;
         Value := tmpItem.Color;
         Description := tmpSkinColor.Info + ':';
-        ValueMax := 255;
-        ValueMin := 0;
         ValueText := tmpSkinColor.Name;
       end;
 
@@ -243,6 +243,7 @@ begin
         tmpItem.Name := '';
         tmpItem.Author := '';
         tmpItem.LoadSkinColorDefaults(sTheme);
+
         edName.Text := '';
         edAuthor.Text := '';
 
@@ -322,7 +323,7 @@ begin
         tmpSchemeItems.Add(newItem);
         FSchemeItem.Free;
 
-        SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 0);
+        SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 0);
         Result := True;
       end;
     sceEdit:
@@ -341,7 +342,7 @@ begin
           FSchemeItem.Assign(lstItem.Colors);
         end;
 
-        SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 0);
+        SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 0);
 
         Result := True;
       end;
@@ -355,7 +356,7 @@ end;
 procedure TfrmEditScheme.edNameKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_EDIT_STATE, 0);
+  SharpCenterBroadCast( SCM_SET_EDIT_STATE, 0);
 end;
 
 procedure TfrmEditScheme.secExChangeValue(ASender: TObject;
@@ -365,7 +366,7 @@ var
 begin
   tmpItem := TSchemeColorItem(TSharpEColorEditorExItem(ASender).Tag);
 
-  if TSharpEColorEditorExItem(ASender).ColorEditorType = cetColor then
+  if TSharpEColorEditorExItem(ASender).ValueEditorType = vetColor then
   begin
     tmpItem.Color := AValue;
     tmpItem.UnparsedColor := ColorToString(AValue);
@@ -384,8 +385,14 @@ end;
 
 procedure TfrmEditScheme.secExSliderChange(Sender: TObject);
 begin
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 0);
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_EDIT_STATE, 0);
+  SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
+  SharpCenterBroadCast( SCM_SET_EDIT_STATE, 0);
+end;
+
+procedure TfrmEditScheme.secExUiChange(Sender: TObject);
+begin
+  SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
+  SharpCenterBroadCast( SCM_SET_EDIT_STATE, 0);
 end;
 
 end.

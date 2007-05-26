@@ -68,7 +68,7 @@ type
     destructor Destroy; override;
 
     procedure Assign(ADest: TobjectList); reintroduce;
-    procedure LoadSkinColorDefaults(ATheme: string);
+    function LoadSkinColorDefaults(ATheme: string):Boolean;
   end;
 
   TSchemeList = class
@@ -104,6 +104,7 @@ type
     function GetSkinSchemeDir(ATheme: String): String;
     function GetSkinName(ATheme: String): String;
     function GetSkinColorByTag(ATag: String):TSharpESkinColor;
+    function GetSkinValid(ATheme: String): Boolean;
 
   end;
 
@@ -184,19 +185,23 @@ begin
   Result := TSchemeList(FOwner).Theme;
 end;
 
-procedure TSchemeItem.LoadSkinColorDefaults(ATheme: string);
+function TSchemeItem.LoadSkinColorDefaults(ATheme: string):Boolean;
 var
   s: string;
   xml: TJvSimpleXml;
   i: Integer;
   tmpColor: TSchemeColorItem;
 begin
+  Result := False;
   s := TSchemeList(FOwner).GetSkinScheme(ATheme);
+  if s = '' then exit;
+
   xml := TJvSimpleXML.Create(nil);
   try
 
     xml.LoadFromFile(s);
     Colors.Clear;
+    Result := True;
 
     for i := 0 to Pred(xml.Root.Items.Count) do
     begin
@@ -206,6 +211,7 @@ begin
       tmpColor.Color := ParseColor(PChar(xml.Root.Items[i].Items.Value('Default', '0')));
       Colors.Add(tmpColor);
     end;
+
   finally
     xml.Free;
   end;
@@ -503,7 +509,9 @@ begin
     try
       xml.LoadFromFile(sFile);
       sSkin := xml.Root.Items.Value('Skin');
-      Result := GetSharpeDirectory+'Skins\' + sSkin + '\Scheme.xml';
+
+      if sSkin <> '' then
+        Result := GetSharpeDirectory+'Skins\' + sSkin + '\Scheme.xml';
 
     finally
       xml.Free;
@@ -565,6 +573,11 @@ begin
   finally
     xml.Free;
   end;
+end;
+
+function TSchemeList.GetSkinValid(ATheme: String): Boolean;
+begin
+  Result := Not(GetSkinScheme(ATheme) = '');
 end;
 
 end.
