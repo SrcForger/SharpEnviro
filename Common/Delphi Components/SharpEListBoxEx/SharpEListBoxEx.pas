@@ -279,9 +279,9 @@ begin
 
   FColumns := TSharpEListBoxExColumns.Create(TSharpEListBoxExColumn);
 
-  FItemOffset := Point(2, 2);
+  FItemOffset := Point(0, 0);
   FMargin := Rect(2,2,2,2);
-  FColumnMargin := Rect(2,2,2,2);
+  FColumnMargin := Rect(0,0,0,0);
 
 end;
 
