@@ -101,7 +101,7 @@ var
 begin
   if lb_iconlist.ItemIndex < 0 then
   begin
-    SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 0);
+    SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
     exit;
   end;
 
@@ -156,7 +156,7 @@ begin
   Bmp32.Free;
   XML.Free;
 
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_EVT_UPDATE_PREVIEW, 0);
+  SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
 end;
 
 procedure TfrmIconList.BuildIconList;
@@ -201,7 +201,7 @@ procedure TfrmIconList.lb_iconlistClickItem(AText: string; AItem,
   ACol: Integer);
 begin
   BuildIconPreview;
-  SharpEBroadCast(WM_SHARPCENTERMESSAGE,SCM_SET_SETTINGS_CHANGED,0);
+  SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
 end;
 
 procedure TfrmIconList.FormResize(Sender: TObject);

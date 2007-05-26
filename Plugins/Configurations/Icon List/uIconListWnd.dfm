@@ -20,8 +20,8 @@ object frmIconList: TfrmIconList
   object lb_iconlist: TSharpEListBoxEx
     Left = 0
     Top = 0
-    Width = 426
-    Height = 291
+    Width = 418
+    Height = 284
     Columns = <
       item
         Width = 256
