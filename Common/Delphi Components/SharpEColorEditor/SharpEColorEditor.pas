@@ -39,7 +39,8 @@ type
     FSliderUpdateMode: TColorSliderUpdateMode;
     FSCS: TSharpECenterScheme;
 
-    FColDefinePage, FValDefinePage, FSwatchesPage: TJvStandardPage;
+    FColDefinePage, FValDefinePage, FBoolDefinePage, FSwatchesPage: TJvStandardPage;
+    FBoolCheckbox: TCheckBox;
 
     FExpanded: Boolean;
     FGroupIndex: Integer;
@@ -66,7 +67,7 @@ type
     function GetExpanded: Boolean;
     procedure TabClickEvent(ASender: TObject; const ATabIndex: Integer);
     procedure ColorClickEvent(ASender: TObject);
-
+    procedure CheckClickEvent(ASender: TObject);
     procedure SetValueAsTColor(const Value: TColor);
     procedure LabelClickEvent(Sender: TObject);
 
@@ -79,6 +80,7 @@ type
 
     procedure ResizeDefineColsPage;
     procedure ResizeDefineValPage;
+    procedure ResizeDefineBoolPage;
 
     procedure InitialiseColSliders;
     procedure SetCaption(const Value: string);
@@ -103,8 +105,6 @@ type
     function GetExpandedHeight: Integer;
     procedure SetValueEditorType(const Value: TValueEditorType);
     procedure SetDescription(const Value: string);
-    procedure SetValueMax(const Value: Integer);
-    procedure SetValueMin(const Value: Integer);
 
     procedure ColorSliderChangeEvent(Sender: TObject);
     procedure ValSliderChangeEvent(Sender: TObject);
@@ -117,6 +117,7 @@ type
     property OnTabClick: TNotifyEvent read FOnTabClick write FOnTabClick;
     procedure SelectDefaultTab;
     procedure Collapse;
+    function GetTabIndex:Integer;
 
     procedure OverrideSliderUpdateMode(ASliderUpdateMode:
       TColorSliderUpdateMode);
@@ -141,7 +142,6 @@ type
 
     property Description: string read FDescription write SetDescription;
     property ValueText: string read FValueText write FValueText;
-
     property Value: Integer read FValue write SetValue;
 
     property Visible: boolean read FVisible write SetVisible;
@@ -182,7 +182,7 @@ begin
   FValueEditorType := vetColor;
   FValueMin := 0;
   FValueMax := 255;
-  FValueText := 'Alpha';
+  FValueText := '';
   FVisible := True;
 
   CreateControls(nil);
@@ -411,7 +411,7 @@ begin
   FBlueSlider := TJvTrackBar.Create(FColDefinePage);
   AssignDefaultSliderProps(FBlueSlider);
 
-  // Create the customisation page
+  // Create the val define page
   FValDefinePage := TJvStandardPage.Create(Self);
   with FValDefinePage do
   begin
@@ -422,6 +422,23 @@ begin
 
   FValueSlider := TJvTrackBar.Create(FValDefinePage);
   AssignDefaultSliderProps(FValueSlider);
+
+  // Create the bool define page
+  FBoolDefinePage := TJvStandardPage.Create(Self);
+  with FBoolDefinePage do
+  begin
+    Parent := FPages;
+    PageList := FPages;
+    Caption := 'Bool Edit';
+  end;
+
+  FBoolCheckbox := TCheckBox.Create(FBoolDefinePage);
+  with FBoolCheckbox do begin
+    Parent := FBoolDefinePage;
+    DoubleBuffered := True;
+    FBoolCheckbox.Width := 100;
+    FBoolCheckbox.OnClick := CheckClickEvent;
+  end;
 
   // Create the swatches page
   FSwatchesPage := TJvStandardPage.Create(Self);
@@ -551,15 +568,18 @@ end;
 procedure TSharpEColorEditor.TabClickEvent(ASender: TObject; const ATabIndex:
   Integer);
 begin
+
   if ATabIndex = 0 then
   begin
     FSliderUpdateMode := sumAll;
     InitialiseColSliders;
 
-    if FValueEditorType = vetColor then
-      FColDefinePage.Show
-    else
-      FValDefinePage.Show;
+    case FValueEditorType of
+    vetColor: FColDefinePage.Show;
+    vetValue: FValDefinePage.Show;
+    vetBoolean: FBoolDefinePage.Show;
+    End;
+
   end
   else if ATabIndex = 1 then
   begin
@@ -570,6 +590,8 @@ begin
     FOnTabClick(Self)
   else
     Expanded := True;
+
+  FTabs.TabIndex := ATabIndex;
 
 end;
 
@@ -683,6 +705,7 @@ begin
   case FValueEditorType of
     vetColor: ResizeDefineColsPage;
     vetValue: ResizeDefineValPage;
+    vetBoolean: ResizeDefineBoolPage;
   end;
 
   FreeAllSpinEdits;
@@ -779,7 +802,7 @@ var
   rLeftSlider, rLeftSliderVal, rLeftText: TRect;
 
 begin
-  
+
 
   FTabContainer.Height := Self.Height - FTabs.Height + 1;
   FTabContainer.Width := Self.Width;
@@ -919,17 +942,29 @@ end;
 
 procedure TSharpEColorEditor.SetCaption(const Value: string);
 begin
-  if FCaption = Value then
-    exit;
+  //if FCaption = Value then
+  //  exit;
 
   FCaption := Value;
 
-  if FNameLabel <> nil then
-    FNameLabel.Caption := Value;
+  if FNameLabel <> nil then begin
+
+    case FValueEditorType of
+    vetColor: begin
+      FNameLabel.Caption := Format('%s (%s):',[FCaption,'Color']);
+    end;
+    vetValue: begin
+      FNameLabel.Caption := Format('%s (%s):',[FCaption,'Val']);
+    end;
+    vetBoolean: begin
+      FNameLabel.Caption := Format('%s (%s):',[FCaption,'Bool']);
+    end;
+  end;
+  end;
 
   if (FNameLabel <> nil) then
   begin
-    if (Value = '') then
+    if (FCaption = '') then
       FNameLabel.Hide
     else
       FNameLabel.Show;
@@ -1110,16 +1145,21 @@ end;
 
 procedure TSharpEColorEditor.SetValueEditorType(const Value: TValueEditorType);
 begin
-  if (FValueEditorType = Value) then
-    exit;
 
   FValueEditorType := Value;
   case FValueEditorType of
-    vetColor: FColDefinePage.Show;
+    vetColor: begin
+      FColDefinePage.Show;
+    end;
     vetValue: begin
       if ((FValue < 0) or (FValue > 255)) then
         FValue := 0;
       FValDefinePage.Show;
+    end;
+    vetBoolean: begin
+      if ((FValue < -1) or (FValue > 0)) then
+        FValue := 1;
+      FBoolDefinePage.Show;
     end;
   end;
 
@@ -1129,19 +1169,10 @@ begin
   ResizeEvent(nil);
 end;
 
-procedure TSharpEColorEditor.SetValueMin(const Value: Integer);
-begin
-  FValueMin := Value;
-end;
-
 procedure TSharpEColorEditor.SetDescription(const Value: string);
 begin
   FDescription := Value;
-end;
-
-procedure TSharpEColorEditor.SetValueMax(const Value: Integer);
-begin
-  FValueMax := Value;
+  ResizeEvent(nil);
 end;
 
 procedure TSharpEColorEditor.ColorSliderChangeEvent(Sender: TObject);
@@ -1245,7 +1276,14 @@ begin
           TLabel(FValueSlider.Tag).Caption := IntToStr(FValue);
         end;
       end;
-    vetBoolean: ;
+    vetBoolean: begin
+      if FBoolCheckbox <> nil then begin
+        FBoolCheckbox.Checked := StrToBool(IntToStr(FValue));
+        if FBoolCheckbox.Checked then
+          FBoolCheckbox.Caption := 'Enabled' else
+          FBoolCheckbox.Caption := 'Disabled';
+      end;
+    end;
   end;
 
   if Assigned(FOnValueChange) then
@@ -1269,6 +1307,73 @@ begin
       Self.Height := FCollapseHeight;
 
   end;
+end;
+
+procedure TSharpEColorEditor.ResizeDefineBoolPage;
+var
+  tmpTab: TJvcustomPage;
+  tmpLbl: TLabel;
+  iWidthLT, iWidthVal, iSliderWidth, iSpacer, iY, n: Integer;
+  rLeftSlider, rLeftSliderVal, rLeftText: TRect;
+
+begin
+
+  FTabContainer.Height := Self.Height - FTabs.Height + 1;
+  FTabContainer.Width := Self.Width;
+  FTabs.Width := Self.Width;
+  FColorPicker.Hide;
+  FAddColorButton.Hide;
+  FTabs.TabList.Item[1].Visible := False;
+
+  for n := Pred(FBoolDefinePage.ControlCount) downto 0 do
+    if FBoolDefinePage.Controls[n] is TLabel then
+      FBoolDefinePage.Controls[n].Free;
+
+  tmptab := FBoolDefinePage;
+  iSpacer := 12;
+  Self.Canvas.Font.Assign(Self.Font);
+  iWidthLT := Self.Canvas.TextWidth(FValueText + ':XX');
+  iWidthVal := Self.Canvas.TextWidth('XXXXXXX');
+  iSliderWidth := (tmpTab.Width - (iWidthVal * 2));
+
+  // Create value description label
+  if FDescription <> '' then
+  begin
+    tmpLbl := TLabel.Create(tmpTab);
+    with tmpLbl do
+    begin
+      Parent := tmpTab;
+      Font.Assign(Self.Font);
+      Top := iSpacer;
+      Left := iSpacer;
+      Width := tmpTab.Width - iSpacer;
+      Caption := FDescription;
+    end;
+    iY := (iSpacer * 2) + Self.Canvas.TextHeight(FDescription);
+  end
+  else
+    iY := iSpacer;
+
+  FBoolCheckbox.Left := iSpacer;
+  FBoolCheckbox.Top := iy;
+
+  SetValue(FValue);
+end;
+
+procedure TSharpEColorEditor.CheckClickEvent(ASender: TObject);
+begin
+  Value := StrToInt(BoolToStr(FBoolCheckbox.Checked));
+
+  if Assigned(FOnUiChange) then
+    FOnUiChange(Self);
+end;
+
+function TSharpEColorEditor.GetTabIndex: Integer;
+begin
+  Result := -1;
+
+  if FTabs <> nil then
+    Result := FTabs.TabIndex;
 end;
 
 end.

@@ -41,14 +41,15 @@ implementation
 
 procedure TMainWnd.Button1Click(Sender: TObject);
 begin
+  
   SharpEColorEditor2.ValueEditorType := vetColor;
-
+  SharpEColorEditor2.Value := clRed;
 end;
 
 procedure TMainWnd.FormCreate(Sender: TObject);
 begin
   loadtheme;
-  SetVistaFonts(Self);
+   SetVistaFonts(Self);
 end;
 
 procedure TMainWnd.JvLinkLabel1LinkClick(Sender: TObject; LinkNumber: Integer;
@@ -59,7 +60,7 @@ end;
 
 procedure TMainWnd.FormShow(Sender: TObject);
 begin
-  //SharpEColorEditor1.Expanded := True;
+  SharpEColorEditor2.Value := clRed;
 end;
 
 procedure TMainWnd.Button2Click(Sender: TObject);
@@ -75,6 +76,7 @@ end;
 
 procedure TMainWnd.Button4Click(Sender: TObject);
 begin
+
   SharpEColorEditor2.ValueEditorType := vetBoolean;
   SharpEColorEditor2.Description := 'Do you want the show enabled?';
 end;
