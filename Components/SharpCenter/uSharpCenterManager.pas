@@ -262,7 +262,7 @@ begin
 
   // Handle proper closing of the setting
   if @FActivePlugin.Close <> nil then
-    FActivePlugin.Close(false);
+    FActivePlugin.Close;
 
   // Unload dll
   UnloadPlugin(@FActivePlugin);
@@ -326,8 +326,8 @@ var
 begin
   Result := True;
   
-  if (@FActivePlugin.Close <> nil) then
-    FActivePlugin.Close(True);
+  if (@FActivePlugin.Save <> nil) then
+    FActivePlugin.Save;
 
   iSettingType := 0;
   if (@FActivePlugin.SetSettingType) <> nil then

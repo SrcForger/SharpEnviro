@@ -45,7 +45,8 @@ type
     Dllhandle: Thandle;
 
     Open: function(const APluginID:Pchar; AOwner: hwnd): hwnd;
-    Close: procedure(ASave: Boolean);
+    Close: procedure;
+    Save: procedure;
 
     OpenEdit: function(AOwner:Hwnd; AEditMode:TSCE_EDITMODE_ENUM):Hwnd;
     CloseEdit: function(AEditMode:TSCE_EDITMODE_ENUM; AApply:Boolean): boolean;
@@ -81,6 +82,7 @@ begin
 
     plugin.Open := nil;
     plugin.Close := nil;
+    plugin.Save := nil;
 
     plugin.OpenEdit := nil;
     plugin.CloseEdit := nil;
@@ -118,6 +120,8 @@ begin
 
       @result.Open := GetProcAddress(result.Dllhandle, 'Open');
       @result.Close := GetProcAddress(result.Dllhandle, 'Close');
+      @result.Save := GetProcAddress(result.Dllhandle, 'Save');
+
       @result.OpenEdit := GetProcAddress(result.Dllhandle, 'OpenEdit');
       @result.CloseEdit := GetProcAddress(result.Dllhandle, 'CloseEdit');
 

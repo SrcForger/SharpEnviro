@@ -322,13 +322,14 @@ begin
       exit;
     end;
 
-    SCM.Unload;
-    SCM.Reload;
-
-    
+    SCM.StateEditItem := False;
+    SCM.StateEditWarning := False;
+    SCM.Save;
 
   Finally
     LockWindowUpdate(0);
+    btnSave.Enabled := False;
+    btnCancel.Enabled := False;
   End;
 end;
 
@@ -436,11 +437,11 @@ begin
         SCB_DEL_TAB: tlEditItem.TabList.Item[cEdit_Delete].Visible := bEnabled;
       end;
 
-      if Not((tlEditItem.TabList.Item[cEdit_Add].Visible) and
+      {if Not((tlEditItem.TabList.Item[cEdit_Add].Visible) and
         (tlEditItem.TabList.Item[cEdit_Edit].Visible) and
           (tlEditItem.TabList.Item[cEdit_Delete].Visible)) then
             pnlEditContainer.Height := cEditTabhide else
-            pnlEditContainer.Height := cEditTabshow;
+            pnlEditContainer.Height := cEditTabshow;    }
     end;
 
     SCM_SET_SETTINGS_CHANGED: begin
