@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, SharpApi, uSEListboxPainter, JclFileUtils,
-  uSharpCenterSectionList, uSharpCenterCommon, ImgList, PngImageList,
+  uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
   SharpEListBox, graphicsfx, SharpThemeApi, SharpEListBoxEx, BarPreview, GR32, GR32_PNG, pngimage;
 
 type
@@ -106,7 +106,6 @@ var
   b: boolean;
   n: Integer;
   sScheme: String;
-  //str:TStringObject;
 begin
   dir := SharpApi.GetSharpeDirectory + 'Skins\';
   lbSkinList.Clear;
@@ -123,7 +122,7 @@ begin
 
           sScheme := GetDefaultScheme(FTheme,sr.Name)+'.xml';
           CreateBarPreview(Bmp32, sr.Name, sScheme, 100);
-          png := lbSkinList.Column[0]. Pngimagelist.PngImages.Add(false);
+          png := lbSkinList.Column[0].Images.PngImages.Add(false);
           png.PngImage := SaveBitmap32ToPNG(bmp32,False,True,ClWhite);
 
           li := lbSkinList.AddItem('',png.id);
@@ -147,7 +146,7 @@ begin
     exit;
 
   // str := TStringObject(skinlist.Items.Objects[skinlist.ItemIndex]);
-  SharpApi.CenterMsg('_loadConfig', PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'), pchar(str.Str));
+  SharpApi.CenterMsg(sccLoadSetting,PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'), pchar(str.Str));
 end;
 
 procedure TfrmSkinListWnd.FormCreate(Sender: TObject);
@@ -158,8 +157,8 @@ begin
   with lbSkinList.AddColumn('Icon') do
   begin
     Width := 108;
-    PngImageList := ThemeImages;
-    PngImageList.Height := 30;
+    Images := ThemeImages;
+    Images.Height := 30;
     HAlign := taleftJustify;
     VAlign := taVerticalCenter;
   end;
@@ -282,19 +281,15 @@ procedure TfrmSkinListWnd.lbSkinListGetCellColor(const AItem: Integer;
 begin
 
   if (CompareText(lbSkinList.Item[AItem].SubItemText[1], FDefaultSkin) = 0) then
-    AColor := Lighter(clLime, 85);
-
-  if lbSkinList.ItemIndex = AItem then
-    AColor := clBtnFace;
+    AColor := lbskinList.colors.ItemColorSelected;
 end;
 
 procedure TfrmSkinListWnd.lbSkinListDblClickItem(AText: string; AItem,
   ACol: Integer);
 begin
   FDefaultSkin := lbSkinList.Item[Aitem].SubItemText[1];
-  //BuildSkinList;
 
-  SharpEBroadCast(WM_SETTINGSCHANGED, 1, 1);
+  SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 1);
   lbSkinList.Update;
 
 end;

@@ -35,15 +35,16 @@ uses
   Windows,
   Forms,
   Dialogs,
+  graphics,
   PngSpeedButton,
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   uSEListboxPainter in '..\..\..\Common\Units\SEListboxPainter\uSEListboxPainter.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  uSharpCenterSectionList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterSectionList.pas',
   uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
-  uThemeSkinListWnd in 'uThemeSkinListWnd.pas' {frmSkinListWnd};
+  uThemeSkinListWnd in 'uThemeSkinListWnd.pas' {frmSkinListWnd},
+  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas';
 
 {$E .dll}
 
@@ -64,24 +65,15 @@ begin
   result := frmSkinListWnd.Handle;
 end;            
 
-function Close(owner: hwnd; SaveSettings: Boolean): boolean;
+procedure Close;
 begin
-  result := True;
-  try
-    if SaveSettings then
-      frmSkinListWnd.Save;
-
     frmSkinListWnd.Free;
     frmSkinListWnd := nil;
-
-    
-  except
-    result := False;
-  end;
 end;
 
-procedure Help;
+procedure Save;
 begin
+  frmSkinListWnd.Save;
 end;
 
 procedure GetDisplayName(const APluginID: Pchar; var ADisplayName: PChar);
@@ -89,36 +81,60 @@ begin
   ADisplayName := PChar('Skin');
 end;
 
-procedure BtnAdd(var AButton:TPngSpeedButton);
+function SetSettingType: Integer;
 begin
-//  frmConfigListWnd.AddScheme(nil);
+  Result := SU_SKIN;
 end;
 
-procedure BtnEdit(var AButton:TPngSpeedButton);
+procedure AddTabs(var ATabs:TPluginTabItemList);
 begin
-  //if frmConfigListWnd <> nil then frmConfigListWnd.EditTheme
+  if frmSkinListWnd.lbSkinList.Count = 0 then
+  ATabs.Add('Skins',nil,'','NA') else
+  ATabs.Add('Skins',nil,'',IntToStr(frmSkinListWnd.lbSkinList.Count));
 end;
 
-procedure BtnDelete(var AButton:TPngSpeedButton);
+procedure SetDisplayText(const APluginID:Pchar; var ADisplayText:PChar);
 begin
-//  frmConfigListWnd.DeleteScheme;
+  ADisplayText := PChar('Skin');
 end;
 
-function ConfigDllType: Integer;
+procedure SetStatusText(var AStatusText: PChar);
+var
+  sr: TSearchRec;
+  dir: string;
+  n: Integer;
 begin
-  Result := SCU_SERVICE;
+  dir := SharpApi.GetSharpeDirectory + 'Skins\';
+  n := 0;
+
+  if FindFirst(dir + '*.*', faDirectory, sr) = 0 then
+  begin
+    repeat
+        if FileExists(dir + sr.Name + '\Skin.xml') then
+          inc(n);
+    until FindNext(sr) <> 0;
+    SysUtils.FindClose(sr);
+  end;
+
+  AStatusText := PChar(IntToStr(n));
+end;
+
+procedure GetCenterScheme(var ABackground: TColor; var AItemColor: TColor; var AItemSelectedColor: TColor);
+begin
+  frmSkinListWnd.lbSkinList.Colors.ItemColorSelected := AItemSelectedColor;
+  frmSkinListWnd.lbSkinList.Colors.ItemColor := AItemColor;
 end;
 
 exports
   Open,
   Close,
-  Help,
+  Save,
+  SetDisplayText,
+  SetStatusText,
+  SetSettingType,
 
-  ConfigDllType;
-
-//  BtnAdd,
-//  BtnEdit;
-//  BtnDelete;
+  AddTabs,
+  GetCenterScheme;
 
 end.
 

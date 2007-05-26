@@ -20,8 +20,9 @@ object frmSkinListWnd: TfrmSkinListWnd
     Top = 0
     Width = 418
     Height = 284
+    Columns = <>
     ItemHeight = 66
-    OnDblClickItem = lbSkinListDblClickItem
+    OnClickItem = lbSkinListDblClickItem
     OnGetCellTextColor = lbSkinListGetCellTextColor
     OnGetCellColor = lbSkinListGetCellColor
     BevelOuter = bvNone
