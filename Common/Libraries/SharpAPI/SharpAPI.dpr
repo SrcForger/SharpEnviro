@@ -725,6 +725,32 @@ begin
   result := i;
 end;
 
+function SharpCenterBroadCast(msg: integer; wpar: wparam; lpar: lparam): boolean;
+var
+  wnd: hWnd;
+  MutexHandle: THandle;
+begin
+  Result := False;
+  mess := msg;
+  wpara := wpar;
+  lpara := lpar;
+
+  MuteXHandle := OpenMutex(MUTEX_ALL_ACCESS, False, 'SharpCenterMutexX');
+    if MuteXHandle <> 0 then
+    begin
+
+      //Find the window
+      wnd := FindWindow('TSharpCenterWnd', nil);
+      if wnd <> 0 then
+      begin
+        Result := True;
+        PostMessage(wnd, mess, wpara, lpara);
+      end else
+        Result := False;
+      CloseHandle(MuteXHandle);
+    end
+end;
+
 function CenterMsg(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID :PChar): hresult;
 var
   cds: TCopyDataStruct;
@@ -1118,6 +1144,7 @@ exports
   GetSharpBarArea,
 
   // SharpCenter
+  SharpCenterBroadCast,
   CenterMsg,
   GetCenterDirectory,
 
