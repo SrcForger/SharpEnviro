@@ -961,7 +961,6 @@ begin
          if pTaskItem.Down then
          begin
            pTaskItem.Down := False;
-           TM.LastActiveTask := pTaskItem.Tag;
          end;
     end;
     exit;
@@ -972,6 +971,7 @@ begin
   pTaskItem := nil;
   CheckFilterAll;
 
+  TM.LastActiveTask := pItem.Handle;
   try
     for n := IList.Count -1 downto 0 do
     begin
@@ -980,7 +980,6 @@ begin
       begin
         if (pItem.Handle <> pTaskItem.Tag ) and (pTaskItem.Down) then
         begin
-           TM.LastActiveTask := pTaskItem.Tag;
            pTaskItem.Down := False
         end
         else if pItem.Handle = pTaskItem.Tag then
@@ -1118,6 +1117,7 @@ begin
   except
     exit;
   end;
+  
   if pItem <> nil then
   begin
     pItem.UpdateVisibleState;
