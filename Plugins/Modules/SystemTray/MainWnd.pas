@@ -307,9 +307,9 @@ begin
 
   b := False;
   case Button of
-    mbRight:  b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_RBUTTONUP);
-    mbMiddle: b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_MBUTTONUP);
-    mbLeft:   b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_LBUTTONUP);
+    mbRight:  b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_RBUTTONUP,self);
+    mbMiddle: b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_MBUTTONUP,self);
+    mbLeft:   b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_LBUTTONUP,self);
   end;
   if not b then Background.PopupMenu.Popup(p.x,p.y);
 end;
@@ -329,16 +329,16 @@ begin
   begin
     doubleclick := True;
     case Button of
-      mbRight: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_RBUTTONDBLCLK);
-      mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_MBUTTONDBLCLK);
-      mbLeft: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_LBUTTONDBLCLK);
+      mbRight: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_RBUTTONDBLCLK,self);
+      mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_MBUTTONDBLCLK,self);
+      mbLeft: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_LBUTTONDBLCLK,self);
     end;
   end else
   begin
     case Button of
-      mbRight: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_RBUTTONDOWN);
-      mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_MBUTTONDOWN);
-      mbLeft: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_LBUTTONDOWN);
+      mbRight: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_RBUTTONDOWN,self);
+      mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_MBUTTONDOWN,self);
+      mbLeft: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_LBUTTONDOWN,self);
     end;
   end;
 end;
@@ -370,7 +370,7 @@ begin
   if sb_left.Visible then
      modx := x // + offset - sb_left.Width - sb_left.Left
      else modx := x;
-  FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_MOUSEMOVE);
+  FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_MOUSEMOVE,self);
 end;
 
 procedure TMainForm.sb_leftClick(Sender: TObject);

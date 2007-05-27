@@ -147,7 +147,7 @@ type
                    procedure DeleteTrayIconByIndex(index : integer);
                    procedure RenderIcons;
                    procedure SpecialRender(target : TBitmap32; si, ei : integer);
-                   function PerformIconAction(x,y,gx,gy,imod : integer; msg : uint) : boolean;
+                   function PerformIconAction(x,y,gx,gy,imod : integer; msg : uint; parent : TForm) : boolean;
                    procedure StartTipTimer(x,y,gx,gy : integer);
                    procedure StopTipTimer;
                    procedure CloseVistaInfoTip;
@@ -162,6 +162,7 @@ type
                    procedure SetBackgroundAlpha(Value : integer);
                    procedure SetBlendAlpha(Value : integer);
                    procedure SetIconAlpha(Value : integer);
+                   procedure PositionTrayWindow(x,y : integer; parent : TForm);
                    constructor Create; reintroduce;
                    destructor  Destroy; override;
                  published
@@ -192,6 +193,8 @@ function AllowSetForegroundWindow(ProcessID : DWORD) : boolean; stdcall; externa
 {$R *.dfm}
 
 implementation
+
+uses MainWnd;
 
 {$REGION 'Tool functions'}
 function HSLtoRGB(H,S,L : integer): TColor32;
@@ -1146,7 +1149,23 @@ begin
   end;
 end;
 
-function TTrayClient.PerformIconAction(x,y,gx,gy,imod : integer; msg : uint) : boolean;
+procedure TTrayClient.PositionTrayWindow(x,y : integer; parent : TForm);
+var
+  wnd : hwnd;
+  p : TPoint;
+begin
+  p := parent.ClientToScreen(Point(x,y));
+
+  wnd := FindWindow('Shell_TrayWnd',nil);
+  if wnd <> 0 then
+     SetWindowPos(wnd,parent.Handle,p.x,p.y,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE);
+
+  wnd := FindWindow('TrayNotifyWnd',nil);
+  if wnd <> 0 then
+     SetWindowPos(wnd,parent.Handle,p.x,p.y,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE);
+end;
+
+function TTrayClient.PerformIconAction(x,y,gx,gy,imod : integer; msg : uint; parent : TForm) : boolean;
 var
   n : integer;
   tempItem : TTrayItem;
@@ -1154,7 +1173,6 @@ var
   ix,iy : DWORD;
   lp : lparam;
   wp : wparam;
-  p : TPoint;
 begin
   result := false;
   for n := 0 to FItems.Count - 1 do
@@ -1184,6 +1202,11 @@ begin
                                 + ' | uID:' + inttostr(tempItem.uID)
                                 + ' | uVersion:' + inttostr(tempItem.BInfoFlags)
                                 + ' | Title:' + tempItem.FTip),0);}
+
+      // reposition the tray window (some stupid shell services are using
+      // it for positioning)
+      PositionTrayWindow(x,0,parent);
+
       if (tempItem.BInfoFlags >= 4) then
       begin
         // NotifyIcon Version > 4
