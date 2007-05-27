@@ -44,6 +44,7 @@ uses Windows, Dialogs, SysUtils,
      declaration,
      BalloonWindow,
      DateUtils,
+     JvHint,
      Math;
 
 type
@@ -135,6 +136,7 @@ type
                    FRepaintHash     : integer;
                    FScreenPos       : TPoint;
                    FLastMessage     : Int64;
+                   FHint            : TJvHint;
                    procedure FOnTipTimer(Sender : TObject);
                    procedure NewRepaintHash;
                  public
@@ -733,6 +735,9 @@ begin
   FBalloonWnd := TBalloonForm.Create(nil);
   FBalloonWnd.TrayManager := self;
 
+  FHint := TJvHint.Create(nil);
+  FHint.AutoHide := True;
+
   FMsgWnd := TMsgWnd.Create(nil);
   FMsgWnd.FTrayClient := self;
 end;
@@ -815,6 +820,7 @@ begin
   FTipTimer.Enabled := False;
   FTipTimer.Free;
   FTipWnd.Free;
+  FHint.Free;
   inherited Destroy;
 end;
 
@@ -913,12 +919,13 @@ begin
            y := FTipGPoint.Y + 2 ;
         FTipWnd.Left := x;
         FTipWnd.Top := y;
+        FHint.ActivateHintAt(Rect(0,0,100,100),tempItem.FTip,FTipGPoint);
       end;
     end;
   end;
 
-  if not FTipWnd.Visible then
-     FTipWnd.Show;
+//  if not FTipWnd.Visible then
+//     FTipWnd.Show;
 end;
 
 procedure TTrayClient.StartTipTimer(x,y,gx,gy : integer);
@@ -1152,17 +1159,20 @@ end;
 procedure TTrayClient.PositionTrayWindow(x,y : integer; parent : TForm);
 var
   wnd : hwnd;
+  wnd2 : hwnd;
   p : TPoint;
 begin
   p := parent.ClientToScreen(Point(x,y));
 
   wnd := FindWindow('Shell_TrayWnd',nil);
   if wnd <> 0 then
-     SetWindowPos(wnd,parent.Handle,p.x,p.y,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE);
+  begin
+    SetWindowPos(wnd,parent.Handle,p.x,p.y,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE);
 
-  wnd := FindWindow('TrayNotifyWnd',nil);
-  if wnd <> 0 then
-     SetWindowPos(wnd,parent.Handle,p.x,p.y,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE);
+    wnd2 := FindWindow('TrayNotifyWnd',nil);
+    if wnd2 <> 0 then
+       SetWindowPos(wnd2,wnd,0,0,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE);
+  end;
 end;
 
 function TTrayClient.PerformIconAction(x,y,gx,gy,imod : integer; msg : uint; parent : TForm) : boolean;

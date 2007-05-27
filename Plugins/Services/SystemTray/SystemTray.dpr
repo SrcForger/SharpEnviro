@@ -71,7 +71,11 @@ end;
 
 function Start(owner: hwnd): hwnd;
 begin
-  if TrayMessageWnd = nil then TrayMessageWnd := TTrayMessageWnd.Create(nil);
+  if TrayMessageWnd = nil then
+  begin
+    TrayMessageWnd := TTrayMessageWnd.Create(nil);
+    SetParent (TrayNWnd.Handle,TrayMessageWnd.Handle);
+  end;
   TerminateShellServices;
   sleep(200);
   StartShellServices;

@@ -8,7 +8,7 @@ uses
 
 type
   TTrayNWnd = class(TForm)
-    procedure CreateParams(var Params: TCreateParams);
+    procedure CreateParams(var Params: TCreateParams); override;
   private
 
   public

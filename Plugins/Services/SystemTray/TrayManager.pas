@@ -257,13 +257,13 @@ begin
   FWndList.Duplicates := dupIgnore;
   FWndList.Clear;                
 
-  TrayNWnd := TTrayNWnd.Create(self);
-
   left := 100;
   top := 100;
   Width := 100;
   Height := 100;
   Setwindowlong(handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
+
+  TrayNWnd := TTrayNWnd.CreateParented(self.Handle);
 
   PostMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
 end;
