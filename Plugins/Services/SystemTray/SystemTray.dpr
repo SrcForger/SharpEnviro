@@ -36,7 +36,8 @@ uses
   winver in 'winver.pas',
   declaration in 'declaration.pas',
   TrayManager in 'TrayManager.pas' {TrayMessageWnd},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas';
+  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
+  TrayNotifyWnd in 'TrayNotifyWnd.pas' {TrayNWnd};
 
 {$E ser}
 

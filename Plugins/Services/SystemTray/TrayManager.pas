@@ -54,7 +54,6 @@ type
     FWndList : TStringList;
     FWarmup : boolean;
     FWarmupstart : int64;
-    FNotifyWindow : hwnd;
     function FindTrayIcon(pData : TNotifyIconDataV7) : TTrayIcon;
     procedure ResetIcon(pItem : TTrayIcon);
     procedure ResetSharing(pItem : TTrayIcon);
@@ -75,6 +74,8 @@ var
   TrayMessageWnd: TTrayMessageWnd;
 
 implementation
+
+uses TrayNotifyWnd;
 
 {$R *.dfm}
 
@@ -245,7 +246,6 @@ begin
 end;
 
 procedure TTrayMessageWnd.FormCreate(Sender: TObject);
-var WindowClass: TWndClassEx;
 begin
   FWarmup := False;
   FWarmupstart := DateTimeToUnix(Now);
@@ -255,33 +255,15 @@ begin
   FIcons.Clear;
   FWndList := TStringList.Create;
   FWndList.Duplicates := dupIgnore;
-  FWndList.Clear;
+  FWndList.Clear;                
 
-  left := Monitor.Top;
-  top := Monitor.Height - 24;
-  Width := Monitor.Width;
-  Height := 24;
+  TrayNWnd := TTrayNWnd.Create(self);
+
+  left := 100;
+  top := 100;
+  Width := 100;
+  Height := 100;
   Setwindowlong(handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
-
-  WindowClass.cbSize := sizeOf(TWndClassEx);
-  WindowClass.style := cs_VRedraw or cs_HRedraw or cs_DBLCLKS;
-  WindowClass.lpszClassName := 'TrayNotifyWnd';
-  WindowClass.hInstance := HInstance;
-  WindowClass.lpfnWndProc := @PlainWinProc;
-  WindowClass.cbClsExtra := 0;
-  WindowClass.cbWndExtra := 0;
-  WindowClass.hIcon := LoadIcon(hInstance,MakeIntResource('MAINICON'));
-  WindowClass.hIconSm := LoadIcon(hInstance,MakeIntResource('MAINICON'));
-  WindowClass.hCursor := LoadCursor(0, idc_Arrow); ;
-  WindowClass.hbrBackground := GetStockObject(white_Brush);
-  WindowClass.lpszMenuName := nil;
-  // register the class
-  if RegisterClassEx(WindowClass) <> 0 then
-  begin
-    FNotifyWindow := CreateWindowEx(0,'TrayNotifyWnd',nil,WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN,100,100,154,22,Handle,0,hInstance,nil);
-    if (FNotifywindow = 0) then
-       Windows.UnregisterClass('TrayNotifyWnd',hinstance)
-  end;
 
   PostMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
 end;
@@ -585,16 +567,11 @@ end;
 
 procedure TTrayMessageWnd.FormDestroy(Sender: TObject);
 begin
-  if FNotifyWindow <> 0 then
-  begin
-    DestroyWindow(FNotifyWindow);
-    Windows.UnregisterClass('TrayNotifyWnd',hinstance);
-  end;
-
   FWndList.Free;
   FWndList := nil;
   FIcons.Clear;
   FIcons.Free;
+  TrayNWnd.Free;
 end;
 
 end.
