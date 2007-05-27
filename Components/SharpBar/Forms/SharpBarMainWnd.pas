@@ -234,6 +234,7 @@ uses PluginManagerWnd,
      EditSchemeWnd;
 
 {$R *.dfm}
+{$R SharpBarCR.RES}
 
 
 function GetControlByHandle(AHandle: THandle): TWinControl;
@@ -1055,6 +1056,7 @@ end;
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
   Closing := False;
+  DoubleBuffered := True;
 
   WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
 
