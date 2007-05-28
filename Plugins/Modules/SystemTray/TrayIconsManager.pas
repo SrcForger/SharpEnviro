@@ -37,14 +37,12 @@ uses Windows, Dialogs, SysUtils,
      GR32,
      SharpApi,
      SharpThemeApi,
-     TipWnd,
      GR32_Filters,
      GR32_Resamplers,
      WinVer,
      declaration,
      BalloonWindow,
      DateUtils,
-     JvHint,
      Math;
 
 type
@@ -58,6 +56,10 @@ type
      Saturation,
      Lightness : Integer;
     end;
+
+    TTrayChangeEvent = (tceIcon,tceTip,tceVersion);
+    TTrayChangeEvents = Set of TTrayChangeEvent;
+
  {$REGION '### Classes ###'}
   {$REGION 'TMsgWnd class'}
 
@@ -86,11 +88,12 @@ type
                    FBTimeOut : Cardinal;
                    FBInfoFlags : DWORD;
                    FOwner : TObject;
+                   FTipIndex : integer;
                  public
                    FTip : ArrayWideChar128;
                    FInfo : ArrayWideChar256;
                    FInfoTitle : ArrayWideChar64;
-                   function AssignFromNIDv6(NIDv6 : TNotifyIconDataV7) : boolean;
+                   function AssignFromNIDv6(NIDv6 : TNotifyIconDataV7) : TTrayChangeEvents;
                    constructor Create(NIDv6 : TNotifyIconDataV7); reintroduce;
                    destructor Destroy; override;
                  published
@@ -103,6 +106,7 @@ type
                    property BTimeout : Cardinal read FBTimeout;
                    property BInfoFlags : DWORD read FBInfoFlags;
                    property Owner : TObject read FOwner write FOwner;
+                   property TipIndex : integer read FTipIndex write FTipIndex;
                  end;
   {$ENDREGION}
   {$REGION 'TTrayClient Class'}
@@ -110,6 +114,7 @@ type
   TTrayClient = class
                  private
                    FMsgWnd: TMsgWnd;
+                   FWndList : TObjectList;
                    FBalloonWnd : TBalloonForm;
                    FV4Popup : TTrayItem;
                    FIconSize : integer;
@@ -119,7 +124,6 @@ type
                    FBitmap : TBitmap32;
                    FWinVersion : Cardinal;
                    FTipTimer : TTimer;
-                   FTipWnd   : TTipForm;
                    FLastTipItem : TTrayItem;
                    FTipPoint : TPoint;
                    FTipGPoint : TPoint;
@@ -136,7 +140,6 @@ type
                    FRepaintHash     : integer;
                    FScreenPos       : TPoint;
                    FLastMessage     : Int64;
-                   FHint            : TJvHint;
                    procedure FOnTipTimer(Sender : TObject);
                    procedure NewRepaintHash;
                  public
@@ -165,6 +168,9 @@ type
                    procedure SetBlendAlpha(Value : integer);
                    procedure SetIconAlpha(Value : integer);
                    procedure PositionTrayWindow(x,y : integer; parent : TForm);
+                   procedure AddWindow(wnd : TObject);
+                   procedure RemoveWindow(wnd : TObject);
+                   function GetFreeTipIndex : integer;
                    constructor Create; reintroduce;
                    destructor  Destroy; override;
                  published
@@ -186,6 +192,9 @@ type
                    property RepaintHash    : integer read FRepaintHash      write FRepaintHash;
                    property ScreenPos      : TPoint  read FScreenPos        write FScreenPos;
                    property LastMessage    : Int64   read FLastMessage;
+                   property LastTipItem    : TTrayItem read FLastTipItem;
+                   property TipGPoint      : TPoint read FTipGPoint;
+                   property WndList        : TObjectList read FWndList;
                  end;
   {$ENDREGION}
 {$ENDREGION}
@@ -196,7 +205,17 @@ function AllowSetForegroundWindow(ProcessID : DWORD) : boolean; stdcall; externa
 
 implementation
 
-uses MainWnd;
+uses ToolTipApi,MainWnd;
+
+
+type
+
+  TTrayWnd = class
+             public
+               Wnd : TMainForm;
+               TipWnd : hwnd;
+             end;
+
 
 {$REGION 'Tool functions'}
 function HSLtoRGB(H,S,L : integer): TColor32;
@@ -677,17 +696,31 @@ begin
 end;
 
 // return value = True if icon changed
-function TTrayItem.AssignFromNIDv6(NIDv6 : TNotifyIconDataV7) : boolean;
+function TTrayItem.AssignFromNIDv6(NIDv6 : TNotifyIconDataV7) : TTrayChangeEvents;
+var
+  oTip : String;
+  oVersion : integer;
 begin
+  result := [];
   if NIDv6.uCallbackMessage <> 0 then
      FCallbackMessage := NIDv6.uCallbackMessage;
   FUID := NIDv6.UID;
   FWnd := NIDv6.Wnd;
+
+  oTip := FTip;
   FTip := NIDv6.szTip;
+  if CompareText(oTip,FTip) <> 0 then
+     result := result + [tceTip];
+
   FInfo := NIDv6.szInfo;
   FInfoTitle := NIDv6.szInfoTitle;
   FBTimeOut := NIDv6.Union.uTimeOut;
+
+  oVersion := NIDv6.Union.uVersion;
   FBInfoFlags := NIDv6.Union.uVersion;
+  if oVersion <> FBInfoFlags then
+     result := result + [tceVersion];
+
   FFlags := NIDv6.uFlags;
 
   if NIDv6.Icon <> FIcon then
@@ -695,8 +728,8 @@ begin
     FIcon := NIDv6.Icon;
     FBitmap.Clear(color32(0,0,0,0));
     IconToImage(FBitmap,NIDv6.icon);
-    result := True;
-  end else result := False;
+    result := result + [tceIcon];
+  end;
 end;
 {$ENDREGION}
 {$REGION 'TTrayClient'}
@@ -706,6 +739,8 @@ begin
   inherited Create;
   Randomize;
   NewRepaintHash;
+  FWndList := TObjectList.Create(True);
+  FWndList.Clear;
   FColorBlend := False;
   FIconAlpha  := 255;
   FBlendAlpha := 255;
@@ -726,8 +761,6 @@ begin
   FTipTimer.Interval := 500;
   FTipTimer.Enabled := False;
   FTipTimer.OnTimer := FOnTipTimer;
-  FTipWnd := TTipForm.Create(nil);
-  FTipWnd.Visible := False;
   FLastTipItem := nil;
   FBackGroundColor := Color32(128,128,128,128);
   FBorderColor     := Color32(0,0,0,128);
@@ -735,11 +768,46 @@ begin
   FBalloonWnd := TBalloonForm.Create(nil);
   FBalloonWnd.TrayManager := self;
 
-  FHint := TJvHint.Create(nil);
-  FHint.AutoHide := True;
 
   FMsgWnd := TMsgWnd.Create(nil);
   FMsgWnd.FTrayClient := self;
+end;
+
+procedure TTrayClient.AddWindow(wnd : TObject);
+var
+  item : TTrayWnd;
+  item2 : TTrayItem;
+  n : integer;
+begin
+  item := TTrayWnd.Create;
+  item.Wnd := TMainForm(wnd);
+  item.TipWnd := ToolTipApi.RegisterToolTip(TMainForm(wnd));
+  FWndList.Add(item);
+  for n := 0 to FItems.Count - 1 do
+  begin
+    item2 := TTrayItem(FItems.Items[n]);
+    ToolTipApi.AddToolTipByCallback(item.TipWnd,
+                                    item.Wnd,
+                                    item2.TipIndex,
+                                    Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
+  end;
+end;
+
+procedure TTrayClient.RemoveWindow(wnd : TObject);
+var
+  n,i : integer;
+begin
+  for n := 0 to FWndList.Count - 1 do
+      if TTrayWnd(FWndList.Items[n]).wnd = wnd then
+      begin
+        for i := 0 to FItems.Count - 1 do
+            ToolTipApi.DeleteToolTip(TTrayWnd(FWndList.Items[n]).TipWnd,
+                                     TTrayWnd(FWndList.Items[n]).Wnd,     
+                                     TTrayItem(FItems).TipIndex);
+        DestroyWindow(TTrayWnd(FWndList.Items[n]).TipWnd);
+        FWndList.Delete(n);
+        break;
+      end; 
 end;
 
 procedure TTrayClient.SetIconAlpha(Value : integer);
@@ -812,6 +880,7 @@ end;
 
 destructor TTrayClient.Destroy;
 begin
+  FWndList.Free;
   FMsgWnd.Free;
   if FBalloonWnd.Visible then FBalloonWnd.Close;
   FBalloonWnd.Free;
@@ -819,8 +888,6 @@ begin
   FBitmap.Free;
   FTipTimer.Enabled := False;
   FTipTimer.Free;
-  FTipWnd.Free;
-  FHint.Free;
   inherited Destroy;
 end;
 
@@ -870,10 +937,6 @@ end;
 
 procedure TTrayClient.FOnTipTimer(Sender : TObject);
 var
-  tempItem : TTrayItem;
-  n : integer;
-  mon : TMonitor;
-  x,y : integer;
   wp : wparam;
   lp : lparam;
 begin
@@ -881,8 +944,6 @@ begin
   // Vista Popup?
   if (FV4Popup <> nil) then
   begin
-    if FTipWnd.Visible then
-       FTipWnd.Hide;
     FLastTipItem := nil;
     FTipTimer.Enabled := False;
 
@@ -892,51 +953,10 @@ begin
 
     exit;
   end;
-
-
-  for n := 0 to FItems.Count - 1 do
-  begin
-    If PointInRect(Point(FTipPoint.x,FTipPoint.y),Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing)) then
-    begin
-      tempItem := TTrayItem(FItems.Items[n]);
-      if TempItem.FTip = '' then
-      begin
-        StopTipTimer;
-        exit;
-      end;
-      if FlastTipItem <> tempItem then
-      begin
-        FLastTipItem := tempItem;
-        FTipWnd.InfoLabel.Caption := tempItem.FTip;
-        FTipWnd.Width := FTipWnd.InfoLabel.Width + 8; // FTipWnd.InfoLabel.Canvas.TextWidth(tempItem.Title)+16;
-        FTipWnd.Height := FTipWnd.InfoLabel.Height + 6;
-        x := FTipGPoint.X+2;
-        y := FTipGPoint.Y - FTipWnd.Height - 1;
-        mon := Screen.Monitors[GetCurrentMonitor];
-        if x + FTipWnd.Width > mon.Left + mon.Width then
-           x := mon.Left + mon.Width - FTipWnd.Width;
-        if y < mon.top then
-           y := FTipGPoint.Y + 2 ;
-        FTipWnd.Left := x;
-        FTipWnd.Top := y;
-        FHint.ActivateHintAt(Rect(0,0,100,100),tempItem.FTip,FTipGPoint);
-      end;
-    end;
-  end;
-
-//  if not FTipWnd.Visible then
-//     FTipWnd.Show;
 end;
 
 procedure TTrayClient.StartTipTimer(x,y,gx,gy : integer);
 begin
-  if FTipWnd.Visible then
-  begin
-    FTipPoint := Point(x,y);
-    FTipGPoint := Point(gx,gy);
-    FOnTipTimer(nil);
-    exit;
-  end;
   if (FTipPoint.X <> x) or (FTipPoint.Y <> y) then
   begin
     FTipTimer.Enabled := False;
@@ -950,6 +970,7 @@ procedure TTrayClient.CloseVistaInfoTip;
 var
   wp : wparam;
   lp : lparam;
+  n : integer;
 begin
   if (FV4Popup <> nil) then
   begin
@@ -957,23 +978,53 @@ begin
     lp := MakeLParam(NIN_POPUPCLOSE,FV4Popup.uID);
     SendMessage(FV4Popup.Wnd,FV4Popup.CallbackMessage,wp,lp);
     FV4Popup := nil;
+    for n := 0 to FWndList.Count - 1 do
+        ToolTipApi.EnableToolTip(TTrayWnd(FWndList.Items[n]).TipWnd);
   end;
 end;
 
 procedure TTrayClient.StopTipTimer;
 begin
   FTipTimer.Enabled := False;
-  FTipWnd.Hide;
   FLastTipItem := nil;
+end;
+
+function TTrayClient.GetFreeTipIndex : integer;
+var
+  b : boolean;
+  n : integer;
+  i : integer;
+begin
+  i := -1;
+  repeat
+    i := i + 1;
+    b := True;
+    for n := 0 to FItems.Count - 1 do
+        if TTrayItem(FItems.Items[n]).TipIndex = i then
+        begin
+          b := False;
+          break;
+        end;
+  until b;
+  result := i;
 end;
 
 procedure TTrayClient.AddTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
   tempItem : TTrayItem;
+  i,n : integer;
 begin
   tempItem := TTrayItem.Create(NIDv6);
   tempItem.Owner := self;
+  tempItem.TipIndex := GetFreeTipIndex;
   FItems.Add(TempItem);
+  n := FItems.Count - 1;
+  for i := 0 to FWndList.Count - 1 do
+      ToolTipApi.AddToolTipByCallback(TTrayWnd(FWndList.Items[i]).TipWnd,
+                                      TTrayWnd(FWndList.Items[i]).Wnd,
+                                      tempItem.TipIndex,
+                                      Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
+
   RenderIcons;
 end;
 
@@ -1022,31 +1073,44 @@ end;
 procedure TTrayClient.ModifyTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
   tempItem : TTrayItem;
+  rs : TTrayChangeEvents;
+  k : integer;
 begin
   tempItem := GetTrayIcon(NIDv6.wnd,NIDv6.UID);
   if tempItem <> nil then
   begin
-    if TempItem.AssignFromNIDv6(NIDv6) then RenderIcons;
-    if FTipWnd.Visible then
-    begin
-      if TempItem = FlastTipItem then
-      begin
-        FlastTipItem := nil;
-        FOnTipTimer(nil);
-      end;
-    end;
+    rs := TempItem.AssignFromNIDv6(NIDv6);
+    if tceIcon in rs then RenderIcons;
+    if tceTip in rs then
+       for k := 0 to FWndList.Count - 1 do
+           ToolTipApi.UpdateToolTipTextByCallback(TTrayWnd(FWndList.Items[k]).TipWnd,
+                                                  TTrayWnd(FWndList.Items[k]).Wnd,
+                                                  tempItem.TipIndex);
   end;
 end;
 
 procedure TTrayClient.DeleteTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
-  n : integer;
+  n,i,k : integer;
   temp : TTrayItem;
 begin
   n := GetTrayIconIndex(NIDv6.Wnd,NIDv6.UID);
   if n <> -1 then
   begin
     temp := TTrayItem(FItems.Items[n]);
+    if n < FItems.Count - 1 then
+      for k := 0 to FWndList.Count - 1 do
+      begin
+        ToolTipApi.DeleteToolTip(TTrayWnd(FWndList.Items[k]).TipWnd,
+                                 TTrayWnd(FWndList.Items[k]).Wnd,
+                                 temp.TipIndex);
+
+        for i := n + 1 to FItems.Count - 1 do
+            ToolTipApi.UpdateToolTipRect(TTrayWnd(FWndList.Items[k]).TipWnd,
+                                         TTrayWnd(FWndList.Items[k]).Wnd,
+                                         TTrayItem(FItems.Items[i]).TipIndex,
+                                         Rect(FTopSpacing+(i-1)*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+(i-1)*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
+      end;
     FItems.Extract(temp);
     FreeAndNil(Temp);
     RenderIcons;
@@ -1183,6 +1247,7 @@ var
   ix,iy : DWORD;
   lp : lparam;
   wp : wparam;
+  i : integer;
 begin
   result := false;
   for n := 0 to FItems.Count - 1 do
@@ -1217,6 +1282,7 @@ begin
       // it for positioning)
       PositionTrayWindow(x,0,parent);
 
+      FLastTipItem := tempItem;
       if (tempItem.BInfoFlags >= 4) then
       begin
         // NotifyIcon Version > 4
@@ -1236,8 +1302,12 @@ begin
           WM_MOUSEMOVE: begin
                           // Tooltip check
                           if not ((tempItem.Flags and NIF_SHOWTIP) = NIF_SHOWTIP) then
-                             FV4Popup := tempItem;
-                          StartTipTimer(x,y,gx,gy);
+                          begin
+                            FV4Popup := tempItem;
+                            StartTipTimer(x,y,gx,gy);
+                            for i := 0 to FWndList.Count - 1 do
+                                ToolTipApi.DisableToolTip(TTrayWnd(FWndList.Items[i]).TipWnd);
+                          end;
                         end;
           WM_RBUTTONUP: begin
                           lp := MakeLParam(WM_RBUTTONUP,tempItem.uID);
@@ -1250,9 +1320,6 @@ begin
       begin
         // NotifyIcon Version < 4
         PostMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
-
-        if Msg = WM_MOUSEMOVE then
-           StartTipTimer(x,y,gx,gy);
       end;
     end;
   end;

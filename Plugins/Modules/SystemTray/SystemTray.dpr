@@ -47,7 +47,6 @@ uses
   MainWnd in 'MainWnd.pas' {MainForm},
   SettingsWnd in 'SettingsWnd.pas' {SettingsForm},
   BalloonWindow in 'BalloonWindow.pas',
-  TipWnd in 'TipWnd.pas',
   TrayIconsManager in 'TrayIconsManager.pas',
   winver in 'winver.pas',
   DateUtils,
@@ -57,7 +56,8 @@ uses
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  declaration in '..\..\Services\SystemTray\declaration.pas';
+  declaration in '..\..\Services\SystemTray\declaration.pas',
+  ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas';
 
 type
   TTimerObject = object
@@ -158,8 +158,8 @@ begin
   FForm := TMainForm.CreateParented(pParent);
   TMainForm(FForm).FTrayClient := TrayClient;
   TrayClient.ScreenPos := TMainForm(FForm).ClientToScreen(
-                               Point(TMainForm(FForm).Background.Left,
-                               TMainForm(FForm).Background.Top));
+                               Point(TMainForm(FForm).Left,
+                               TMainForm(FForm).Top));
   FForm.BorderStyle := bsNone;
   try
     FForm.Height :=  GetBarPluginHeight(FBarWnd);
@@ -175,8 +175,8 @@ begin
     LoadSettings;
     ReAlignComponents(False);
     TrayClient.ScreenPos := TMainForm(FForm).ClientToScreen(
-                                 Point(TMainForm(FForm).Background.Left,
-                                 TMainForm(FForm).Background.Top));
+                                 Point(TMainForm(FForm).Left,
+                                 TMainForm(FForm).Top));
     Show;
   end;
 end;
@@ -214,6 +214,7 @@ begin
        MouseTimer := TMouseTimer.Create;
 
     temp := TModule.Create(ID,parent);
+    TrayClient.AddWindow(temp.Form);
     ModuleList.Add(temp);
   except
     result := 0;
@@ -238,6 +239,7 @@ begin
           MouseTimer.RemoveWinControl(TModule(ModuleList.Items[n]).Form);
           if MouseTimer.ControlList.Count = 0 then
              FreeAndNil(MouseTimer);
+          TrayClient.RemoveWindow(TModule(ModuleList.Items[n]).Form);
           ModuleList.Delete(n);
           result := True;
           exit;
@@ -260,16 +262,14 @@ begin
       if TModule(ModuleList.Items[n]).ID = ID then
       begin
         temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,
-                                                       temp.Form.Height);
-        uSharpBarAPI.PaintBarBackGround(temp.BarWnd,
-                                        TMainForm(temp.Form).Background.Bitmap,
-                                        Temp.Form);
+        TMainForm(temp.Form).UpdateBackground;
 
         TrayClient.ScreenPos :=
              TMainForm(temp.FForm).ClientToScreen(
-                                    Point(TMainForm(temp.FForm).Background.Left,
-                                    TMainForm(temp.FForm).Background.Top));
+                                    Point(TMainForm(temp.FForm).Left,
+                                    TMainForm(temp.FForm).Top));
+        TMainForm(temp.Form).RepaintIcons;
+        
         lastrepaint := -1;
         FUpdateTimer.OnTimer(FUpdateTimer);
       end;
@@ -327,8 +327,8 @@ begin
     if (part = SU_SCHEME) or (part = SU_BACKGROUND)
         or (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
     begin
-      TMainForm(temp.Form).Background.Bitmap.SetSize(temp.Form.Width,temp.Form.Height);
-      uSharpBarAPI.PaintBarBackGround(temp.BarWnd,TMainForm(temp.Form).Background.Bitmap,Temp.Form);
+      TMainForm(temp.Form).UpdateBackground;
+      TMainForm(temp.Form).RepaintIcons;
       if (part = SU_THEME) or (part = SU_SKINFILECHANGED) then
          TMainForm(temp.Form).ReAlignComponents((part = SU_SKINFILECHANGED));
     end;

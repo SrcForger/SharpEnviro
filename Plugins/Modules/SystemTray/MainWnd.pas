@@ -37,26 +37,23 @@ uses
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
   SharpESkinManager, JvSimpleXML, SharpApi, Menus, GR32_Layers, Types,
   TrayIconsManager, Math, GR32, SharpECustomSkinSettings, SharpESkinLabel,
-  JvHint;
+  ToolTipApi,Commctrl;
 
 
 type
   TMainForm = class(TForm)
-    Background: TImage32;
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
-    sb_left: TSharpEButton;
     SkinManager: TSharpESkinManager;
-    sb_right: TSharpEButton;
     lb_servicenotrunning: TSharpESkinLabel;
+    procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure sb_rightClick(Sender: TObject);
-    procedure sb_leftClick(Sender: TObject);
-    procedure BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
-    procedure BackgroundMouseLeave(Sender: TObject);
-    procedure BackgroundMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
-    procedure BackgroundMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
     procedure Settings1Click(Sender: TObject);
   protected
   private
@@ -74,15 +71,19 @@ type
     doubleclick      : boolean;
     refreshed        : boolean;
     FCustomSkinSettings: TSharpECustomSkinSettings;
+    procedure CMMOUSELEAVE(var msg : TMessage); message CM_MOUSELEAVE;
+    procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
   public
     ModuleID : integer;
-    Offset : integer;
     BarWnd : hWnd;
     FTrayClient : TTrayClient;
+    Background : TBitmap32;
+    Buffer     : TBitmap32;
     procedure LoadSettings;
     procedure RepaintIcons;
     procedure SetSize(NewWidth : integer);
     procedure ReAlignComponents(SendUpdate : boolean);
+    procedure UpdateBackground(new : integer = -1);
   end;
 
 
@@ -93,6 +94,13 @@ uses SettingsWnd,
      SharpESkinPart,
      SharpThemeApi;
 
+type
+  TTrayWnd = class
+             public
+               Wnd : TMainForm;
+               TipWnd : hwnd;
+             end;
+
 {$R *.dfm}
 
 function Li2Double(x: LARGE_INTEGER): Double;
@@ -100,13 +108,69 @@ begin
   Result := x.HighPart * 4.294967296E9 + x.LowPart
 end;
 
+procedure TMainForm.UpdateBackground(new : integer = -1);
+begin
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
+procedure TMainForm.CMMOUSELEAVE(var msg : TMessage);
+begin
+  FTrayClient.StopTipTimer;
+  FTrayClient.CloseVistaInfoTip;
+end;
+
+procedure TMainForm.WMNotify(var msg : TWMNotify);
+var
+  result : boolean;
+  n : integer;
+  s : String;
+begin
+  Result := (Msg.NMHdr.code = TTN_NEEDTEXT);
+  for n := 0 to FTrayClient.WndList.Count - 1 do
+      if (TTrayWnd(FTrayClient.WndList.Items[n]).Wnd = self) and
+         (TTrayWnd(FTrayClient.WndList.Items[n]).TipWnd = Msg.NMHdr.hwndFrom)
+         then
+         begin
+           Result := Result and True;
+           break;
+         end;
+
+  if result then msg.result := 1
+     else msg.result := 0;
+
+  if result then
+  begin
+    SendMessage(Msg.NMHdr.hwndFrom, TTM_SETMAXTIPWIDTH, 0, 300);
+    
+    if FTrayClient.LastTipItem = nil then exit;
+
+    if Msg.NMHdr.code = TTN_NEEDTEXTA then
+    begin
+      with PNMTTDispInfoA(Msg.NMHdr)^ do
+      begin
+        s := FTrayClient.LastTipItem.FTip;
+        lpszText := PChar(s);
+        hinst := 0;
+      end;
+    end
+    else
+      with PNMTTDispInfoW(Msg.NMHdr)^ do
+      begin
+        lpszText := PWideChar(WideString(FTrayClient.LastTipItem.FTip));
+        hinst := 0;
+      end;
+  end;
+end;
+
 procedure TMainForm.LoadSettings;
 var
   item : TJvSimpleXMLElem;
   skin : String;
 begin
-  Offset   := 0;
-
   // Load Skin custom settings as default
   sShowBackground  := False;
   sBackgroundColor := 0;
@@ -161,12 +225,15 @@ begin
 end;
 
 procedure TMainForm.SetSize(NewWidth : integer);
+var
+  new : integer;
 begin
-  Width := NewWidth;
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
+  new := Max(1,NewWidth);
+
+  UpdateBackground(new);
+
+  Width := new;
+  RepaintIcons;
 end;
 
 procedure TMainForm.ReAlignComponents(SendUpdate : boolean);
@@ -195,24 +262,8 @@ begin
       FTrayClient.IconAlpha       := sIconAlpha;
       FTrayClient.RenderIcons;
       NewWidth := FTrayClient.Bitmap.Width;
-   {   if FTrayClient.Bitmap.Width > Width then
-      begin
-        Width := MaxWidth;
-        sb_left.Left := 0;
-        sb_left.Top := Height div 2 - sb_left.Height div 2;
-        sb_left.Height := Height;
-        sb_right.Left := Width-sb_right.Width;
-        sb_right.Top := Height div 2 - sb_right.Height div 2;
-        sb_right.Height := Height;
-        sb_left.Visible := True;
-        sb_right.Visible := True;
-        cWidth := Max(sb_right.Left - sb_left.Left - sb_left.Width,0);
-      end else  }
       begin
         cwidth := Width;
-        offset := 1;
-        sb_left.Visible := False;
-        sb_right.Visible := False;
       end;
     end else NewWidth := 64;
   end;
@@ -288,8 +339,73 @@ begin
   SettingsForm.Free;
 end;
 
-procedure TMainForm.BackgroundMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
+function PointInRect(P : TPoint; Rect : TRect) : boolean;
+begin
+  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
+     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
+     else PointInRect:=False;
+end;
+
+procedure TMainForm.RepaintIcons;
+begin
+  Buffer.Assign(Background);
+  if FTrayClient = nil then exit;
+  FTrayClient.Bitmap.DrawMode := dmBlend;
+  FTrayClient.Bitmap.DrawTo(Background,0,Height div 2 - FTrayClient.Bitmap.Height div 2);
+  Repaint;
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  DoubleBuffered := True;
+  FCustomSkinSettings := TSharpECustomSkinSettings.Create;
+  Background := TBitmap32.Create;
+  Buffer := TBitmap32.Create;
+  Buffer.DrawMode := dmBlend;
+  Buffer.CombineMode := cmMerge;
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(FCustomSkinSettings);
+  Buffer.Free;
+  Background.Free;
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+  Buffer.DrawTo(Canvas.Handle,0,0);
+end;
+
+procedure TMainForm.FormMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  p : TPoint;
+  modx : integer;
+begin
+  p := ClientToScreen(point(x,y));
+  modx := x;
+
+  if ssDouble in Shift then
+  begin
+    doubleclick := True;
+    case Button of
+      mbRight: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_RBUTTONDBLCLK,self);
+      mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_MBUTTONDBLCLK,self);
+      mbLeft: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_LBUTTONDBLCLK,self);
+    end;
+  end else
+  begin
+    case Button of
+      mbRight: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_RBUTTONDOWN,self);
+      mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_MBUTTONDOWN,self);
+      mbLeft: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_LBUTTONDOWN,self);
+    end;
+  end;
+end;
+
+procedure TMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
 var
   p : TPoint;
   b : boolean;
@@ -301,63 +417,20 @@ begin
     exit;
   end;
 
-  p := Background.ClientToScreen(point(x,y));
-  if sb_left.Visible then
-     modx := x // + offset - sb_left.Width - sb_left.Left
-     else modx := x;
+  p := ClientToScreen(point(x,y));
+  modx := x;
 
   b := False;
   case Button of
-    mbRight:  b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_RBUTTONUP,self);
-    mbMiddle: b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_MBUTTONUP,self);
-    mbLeft:   b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_LBUTTONUP,self);
+    mbRight:  b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_RBUTTONUP,self);
+    mbMiddle: b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_MBUTTONUP,self);
+    mbLeft:   b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_LBUTTONUP,self);
   end;
-  if not b then Background.PopupMenu.Popup(p.x,p.y);
+  if not b then PopupMenu.Popup(p.x,p.y);
 end;
 
-procedure TMainForm.BackgroundMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
-var
-  p : TPoint;
-  modx : integer;
-begin
-  p := Background.ClientToScreen(point(x,y));
-  if sb_left.Visible then
-     modx := x //+ offset - sb_left.Width - sb_left.Left
-     else modx := x;
-
-  if ssDouble in Shift then
-  begin
-    doubleclick := True;
-    case Button of
-      mbRight: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_RBUTTONDBLCLK,self);
-      mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_MBUTTONDBLCLK,self);
-      mbLeft: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_LBUTTONDBLCLK,self);
-    end;
-  end else
-  begin
-    case Button of
-      mbRight: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_RBUTTONDOWN,self);
-      mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_MBUTTONDOWN,self);
-      mbLeft: FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_LBUTTONDOWN,self);
-    end;
-  end;
-end;
-
-function PointInRect(P : TPoint; Rect : TRect) : boolean;
-begin
-  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
-     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
-     else PointInRect:=False;
-end;
-
-procedure TMainForm.BackgroundMouseLeave(Sender: TObject);
-begin
-  FTrayClient.StopTipTimer;
-  FTrayClient.CloseVistaInfoTip;
-end;
-procedure TMainForm.BackgroundMouseMove(Sender: TObject; Shift: TShiftState; X,
-  Y: Integer; Layer: TCustomLayer);
+procedure TMainForm.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
 var
   p : TPoint;
   modx : integer;
@@ -367,65 +440,10 @@ begin
     refreshed := False;
     exit;
   end;
-  p := Background.ClientToScreen(point(x,y));
-  if sb_left.Visible then
-     modx := x // + offset - sb_left.Width - sb_left.Left
-     else modx := x;
-  FTrayClient.PerformIconAction(modx,y,p.x,p.y,offset-1,WM_MOUSEMOVE,self);
-end;
+  p := ClientToScreen(point(x,y));
+  modx := x;
+  FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_MOUSEMOVE,self);
 
-procedure TMainForm.sb_leftClick(Sender: TObject);
-begin
-  if offset >0 then
-     offset := offset - 1;
-  if offset < 0 then offset := 0;
-  RepaintIcons;
-end;
-
-procedure TMainForm.sb_rightClick(Sender: TObject);
-var
-  icount : integer;
-begin
-  icount := (cwidth - 2*FTrayClient.TopSpacing - ((cwidth div FTrayClient.IconSize) - 1)* FTrayClient.IconSpacing) div FTrayClient.IconSize;
-  offset := offset + 1;
-  if offset > FTrayClient.Items.Count - icount then
-     offset := FTrayClient.Items.Count - icount;
-  RepaintIcons;
-end;
-
-procedure TMainForm.RepaintIcons;
-var
-  icount : integer;
-  tempbmp : TBitmap32;
-begin
- uSharpBarAPI.PaintBarBackGround(BarWnd,
-                                 Background.Bitmap,
-                                 self);
- if FTrayClient = nil then exit;
- FTrayClient.Bitmap.DrawMode := dmBlend;
- if FTrayClient.Bitmap.Width > Width then
- begin
-   tempbmp := TBitmap32.Create;
-   try
-     icount := (cwidth - 2*FTrayClient.TopSpacing - ((cwidth div FTrayClient.IconSize) - 1)* FTrayClient.IconSpacing) div FTrayClient.IconSize;
-     tempbmp.DrawMode := dmBlend;
-     tempbmp.CombineMode := cmMerge;
-     FTrayClient.SpecialRender(tempbmp,offset,offset+icount);
-     tempbmp.DrawTo(Background.Bitmap,sb_left.Width + sb_left.Left,Height div 2 - FTrayClient.Bitmap.Height div 2);
-     finally
-       tempbmp.free;
-     end;
-   end else FTrayClient.Bitmap.DrawTo(Background.Bitmap,0,Height div 2 - FTrayClient.Bitmap.Height div 2);
-end;
-
-procedure TMainForm.FormCreate(Sender: TObject);
-begin
-  FCustomSkinSettings := TSharpECustomSkinSettings.Create;
-end;
-
-procedure TMainForm.FormDestroy(Sender: TObject);
-begin
-  FreeAndNil(FCustomSkinSettings);
 end;
 
 end.
