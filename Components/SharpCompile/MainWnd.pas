@@ -313,6 +313,7 @@ begin
       end else
       begin
         lvitem.ImageIndex := 2;
+        fcount := fcount + 1;
         lb_output.Items.Add('File does not exist: ' + pItem.Path);
         lvitem.SubItems.Add(lb_output.Items[lb_output.Items.Count - 1]);
       end;
