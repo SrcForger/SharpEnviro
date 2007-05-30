@@ -34,9 +34,9 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, SharpEBaseControls,
+  Dialogs, StdCtrls, SharpEBaseControls, Commctrl,
   SharpESkinManager, JvSimpleXML, SharpApi, Menus, Math,
-  SharpESkinLabel, GR32, ExtCtrls;
+  SharpESkinLabel, GR32, ExtCtrls, ToolTipApi;
 
 
 type
@@ -48,6 +48,7 @@ type
     lb_bottomclock: TSharpESkinLabel;
     lb_clock: TSharpESkinLabel;
     ClockTimer: TTimer;
+    procedure FormShow(Sender: TObject);
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -60,6 +61,9 @@ type
     sBottomFormat : String;
     sStyle  : TSharpELabelStyle;
     Background : TBitmap32;
+    FTipWnd : hwnd;
+    FTipSet : boolean;
+    FOldTip : String;
   public
     ModuleID : integer;
     BarWnd   : hWnd;
@@ -119,6 +123,8 @@ begin
   UpdateBackground(NewWidth);
 
   Width := NewWidth;
+  if FTipSet then
+     ToolTipApi.UpdateToolTipRect(FTipWnd,Self,0,Rect(0,0,Width,Height));
 
   if lb_bottomClock.Visible then
   begin
@@ -201,6 +207,7 @@ end;
 
 procedure TMainForm.ClockTimerTimer(Sender: TObject);
 var
+  d : String;
   s : string;
   ow,nw : integer;
   ov : boolean;
@@ -224,6 +231,16 @@ begin
     nw := lb_clock.Width;
     lb_bottomclock.Visible := False;
   end;
+
+  DateTimeToString(d,'DDDD - DD.MM.YYYY',now());
+  if (CompareText(d,FOldTip) <> 0) and (FTipSet) then
+  begin
+    ToolTipApi.UpdateToolTipText(FTipWnd,Self,0,d);
+    FOldTip := d;
+  end;
+  if IsWindowVisible(FTipWnd) then
+     SendMessage(FTipWnd,TTM_UPDATE,0,0);
+
   if (nw - ow > 4) or (lb_bottomclock.visible <> ov) then
      RealignComponents(True);
 end;
@@ -235,18 +252,32 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  FTipSet := False;
+  FOldTip := '.';
   DoubleBuffered := True;
   Background := TBitmap32.Create;
+
+  FTipWnd := ToolTipApi.RegisterToolTip(self);
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   Background.Free;
+  ToolTipApi.DeleteToolTip(FTipWnd,Self,0);
+  if FTipWnd <> 0 then
+     DestroyWindow(FTipWnd);
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
   Background.DrawTo(Canvas.Handle,0,0);
+end;
+
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  if not FTipSet then
+     ToolTipApi.AddToolTip(FTipWnd,self,0,Rect(0,0,Width,Height),'.');
+  FTipSet := True;
 end;
 
 end.
