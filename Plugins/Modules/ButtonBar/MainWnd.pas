@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, Math, GR32,
+  Dialogs, Menus, Math, GR32, ToolTipApi,
   JvSimpleXML,
   SharpApi,
   uSharpBarAPI,
@@ -72,6 +72,7 @@ type
     sShowIcon    : boolean;
     FButtonList  : array of TButtonRecord;
     Background   : TBitmap32;
+    FHintWnd     : hwnd; 
     procedure ClearButtons;
     procedure AddButton(pTarget,pIcon,pCaption : String);
     procedure UpdateButtons;
@@ -97,7 +98,10 @@ var
   n : integer;
 begin
   for n := 0 to High(FButtonList) do
-      FButtonList[n].btn.Free;
+  begin
+    FButtonList[n].btn.Free;
+    ToolTipApi.DeleteToolTip(FHintWnd,self,n);
+  end;
   setlength(FButtonList,0);
 end;
 
@@ -114,8 +118,12 @@ begin
     btn.Hint := pTarget;
     btn.Width := sWidth;
     btn.Parent := self;
+    btn.left := FButtonSpacing + High(FButtonList)*FButtonSpacing + High(FButtonList)*sWidth;
     btn.OnMouseUp := btnMouseUp;
     btn.SkinManager := SharpESkinManager1;
+    ToolTipApi.AddToolTip(FHintWnd,self,High(FButtonList),
+                          Rect(btn.left,btn.top,btn.Left + btn.Width,btn.Top + btn.Height),
+                          pCaption);
 
     caption := pCaption;
     target := pTarget;
@@ -163,6 +171,8 @@ begin
         if btn.Left + btn.Width < Width then
            btn.Visible := True
            else btn.Visible := False;
+        ToolTipApi.UpdateToolTipRect(FHintWnd,self,High(FButtonList),
+                                     Rect(btn.left,btn.top,btn.Left + btn.Width,btn.Top + btn.Height));
       end;
 end;
 
@@ -300,11 +310,15 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   Background := TBitmap32.Create;
+  DoubleBuffered := True;
+  FHintWnd := ToolTipApi.RegisterToolTip(self);
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   Background.Free;
+  if FHintWnd <> 0 then
+     DestroyWindow(FHintWnd);
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
