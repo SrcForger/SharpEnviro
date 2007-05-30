@@ -116,6 +116,10 @@ object SharpBarMainForm: TSharpBarMainForm
         Caption = 'Disable Bar Hiding'
         OnClick = DisableBarHiding1Click
       end
+      object ShowMiniThrobbers1: TMenuItem
+        Caption = 'Show Mini Throbbers'
+        OnClick = ShowMiniThrobbers1Click
+      end
     end
     object N3: TMenuItem
       Caption = '-'

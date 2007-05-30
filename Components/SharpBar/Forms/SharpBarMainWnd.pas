@@ -84,6 +84,8 @@ type
     Skin1: TMenuItem;
     ColorScheme1: TMenuItem;
     ThemeHideTimer: TTimer;
+    ShowMiniThrobbers1: TMenuItem;
+    procedure ShowMiniThrobbers1Click(Sender: TObject);
     procedure FormPaint(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ThemeHideTimerTimer(Sender: TObject);
@@ -130,7 +132,7 @@ type
     procedure OnSkinSelectItemClick(Sender : TObject);
     procedure OnSchemeSelectItemClick(Sender : TObject);
     procedure OnSchemeCreateClick(Sender : TObject);
-    procedure OnBackgroundPaint(Sender : TObject; Target : TBitmap32);
+    procedure OnBackgroundPaint(Sender : TObject; Target : TBitmap32; x : integer);
   private
     { Private-Deklarationen }
     FUser32DllHandle : THandle;
@@ -193,7 +195,7 @@ type
     procedure WMGetCopyData(var msg: TMessage); message WM_COPYDATA;
     procedure WMUpdateSettings(var msg : TMessage); message WM_SHARPEUPDATESETTINGS;
 
-    procedure OnBarPositionUpdate(Sender : TObject);
+    procedure OnBarPositionUpdate(Sender : TObject; var X,Y : Integer);
   public
     procedure LoadBarFromID(ID : integer);
     procedure LoadModuleSettings;
@@ -264,6 +266,7 @@ end;
 
 procedure LockWindow(const Handle: HWND);
 begin
+  exit;
   if SharpBarMainForm.SharpEBar.HorizPos = hpFull then
      LockWindowUpdate(Handle)
      else SendMessage(Handle, WM_SETREDRAW, 0, 0);
@@ -271,6 +274,7 @@ end;
 
 procedure UnlockWindow(const Handle: HWND);
 begin
+  exit;
   if SharpBarMainForm.ShellBCInProgress then exit;
 
   if SharpBarMainForm.SharpEBar.HorizPos = hpFull then
@@ -388,6 +392,7 @@ begin
   SharpEbar.Throbber.Repaint;
 
   ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
+  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
 
   FBarLock := False;
 
@@ -509,6 +514,8 @@ end;
 // A Module which was registered to receive shell messages unregisters itself
 procedure TSharpBarMainForm.WMUnregisterShellHook(var msg : TMessage);
 begin
+  if (Closing) or (FShellHookList = nil) then exit;
+
   FShellHookList.Delete(FShellHookList.IndexOf(inttostr(msg.WParam)));
 
   if FShellHookList.Count = 0 then
@@ -571,12 +578,12 @@ begin
        h := Height;
        SkinManager.UpdateScheme;
        SkinManager.UpdateSkin;
+       if h < Height then UpdateBGZone
+          else UpdateBGZone;
        SharpEBar.UpdateSkin;
        SharpEBar.Throbber.UpdateSkin;
        SharpEbar.Throbber.Repaint;
-       if h < Height then UpdateBGZone
-          else UpdateBGImage;
-//       ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
+       ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
      end;
 
   // Step2: Update modules
@@ -584,7 +591,11 @@ begin
 
   // Step3: Modules updated, now update the bar
   if (msg.WParam = SU_SKINFILECHANGED) then
-     ModuleManager.FixModulePositions;
+     ModuleManager.ReCalculateModuleSize;
+
+  if (msg.WParam = SU_SKINFILECHANGED) or
+     (msg.Wparam = SU_SCHEME) then
+      RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
 
   if FBarLock then
   begin
@@ -665,9 +676,9 @@ end;
 
 // ***********************
 
-procedure TSharpBarMainForm.OnBackgroundPaint(Sender: TObject; Target: TBitmap32);
+procedure TSharpBarMainForm.OnBackgroundPaint(Sender: TObject; Target: TBitmap32; x : integer);
 begin
-  FBGImage.DrawTo(Target,0,0,Rect(Left-Monitor.Left,0,FBGImage.Width,FBGImage.Height));
+  FBGImage.DrawTo(Target,0,0,Rect(x-Monitor.Left,0,FBGImage.Width,FBGImage.Height));
 end;
 
 procedure TSharpBarMainForm.UpdateBGImage(NewWidth : integer = -1);
@@ -861,6 +872,7 @@ begin
               Items.Add('AutoStart',SharpEbar.AutoStart);
               Items.Add('ShowThrobber',SharpEBar.ShowThrobber);
               Items.Add('DisableHideBar',SharpEBar.DisableHideBar);
+              Items.Add('ShowMiniThrobbers',ModuleManager.ShowMiniThrobbers);
             end;
             // Save the Module List
             Items.Item[n].Items.ItemNamed['Modules'].Items.Clear;
@@ -1022,6 +1034,7 @@ begin
                      SharpEBar.AutoStart      := Items.BoolValue('AutoStart',True);
                      SharpEBar.ShowThrobber   := Items.BoolValue('ShowThrobber',True);
                      SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar',False);
+                     ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers',True);
                      // Set Main Window Title to SharpBar_ID!
                      // The bar with the given ID is now loaded =)
                      FBarID := ID;
@@ -1136,8 +1149,6 @@ begin
   SkinManagerLoadThread.Free;
 
   FSkinManager.onSkinChanged := SkinManager1SkinChanged;
-  SharpEBar.UpdateSkin;
-  SharpEBar.Throbber.UpdateSkin;
 
   DelayTimer2.Enabled := True;
 
@@ -1152,6 +1163,9 @@ begin
 
   UpdateBGZone;
   SkinManager.UpdateSkin;
+  SharpEBar.Seed := - 1;
+  SharpEBar.UpdateSkin;
+  SharpEBar.Throbber.UpdateSkin;
 
   SharpApi.RegisterActionEx(PChar('!FocusBar ('+inttostr(FBarID)+')'),'SharpBar',Handle,1);
 end;
@@ -1278,6 +1292,7 @@ begin
 
   AutoStart1.Checked := SharpEBar.AutoStart;
   DisableBarHiding1.Checked := SharpEBar.DisableHideBar;
+  ShowMiniThrobbers1.Checked := ModuleManager.ShowMiniThrobbers;
 
   // Build Skin List
   Skin1.Clear;
@@ -1425,9 +1440,18 @@ begin
 
   // Change Skin
   try
-    XML.Root.Name := 'SharpEThemeSkin';
-    XML.Root.Clear;
-    XML.Root.Items.Add('Skin',NewSkin);
+    if FileExists(Dir + 'Skin.xml') then
+    begin
+      XML.LoadFromFile(Dir + 'Skin.xml');
+      if XML.Root.Items.ItemNamed['Skin'] <> nil then
+         XML.Root.Items.ItemNamed['Skin'].Value := NewSkin
+         else XML.Root.Items.Add('Skin',NewSkin);
+    end else
+    begin
+      XML.Root.Name := 'SharpEThemeSkin';
+      XML.Root.Clear;
+      XML.Root.Items.Add('Skin',NewSkin);
+    end;
     XML.SaveToFile(Dir + 'Skin.xml');
   finally
     XML.Free;
@@ -1666,27 +1690,29 @@ begin
       if (oMon <> SharpEBar.MonitorIndex) or (oPMon <> SharpEBar.PrimaryMonitor) then
       begin
         UpdateBGZone;
+        SharpEBar.UpdateSkin;
+        ModuleManager.FixModulePositions;
         ModuleManager.RefreshMiniThrobbers;
+        ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND,-2);
+        RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
       end;
       if oVP <> SharpEBar.VertPos then
       begin
         UpdateBGImage;
-        LockWindow(Handle);
         SharpEBar.UpdateSkin;
         ModuleManager.FixModulePositions;
-        ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
+        ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND,-2);
         ModuleManager.RefreshMiniThrobbers;
-        UnLockWindow(Handle);
+        RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
       end;
-      if oHP <> SharpEBar.HorizPos then
+      {if oHP <> SharpEBar.HorizPos then
       begin
         UpdateBGImage;
-        LockWindow(Handle);
         ModuleManager.FixModulePositions;
-        ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
+        ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND,-2);
         ModuleManager.RefreshMiniThrobbers;
-        UnLockWindow(Handle);
-      end;
+        RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+      end;     }
     end;
     if BarHideForm <> nil then BarHideForm.UpdateStatus;
   end;
@@ -1714,16 +1740,23 @@ begin
      if (Y=Height-1) and (SharpEBar.VertPos = vpBottom)
         or (Y=0) and (SharpEBar.VertPos = vpTop) then
      begin
-       if ModuleManager.Modules.Count = 0 then
+       if ssShift in Shift then
        begin
-         SharpEBar.ShowThrobber := True;
-         exit;
+         // Toggle Mini Throbbers
+         ModuleManager.ShowMiniThrobbers := not ModuleManager.ShowMiniThrobbers;
+         ModuleManager.ReCalculateModuleSize;
+       end else
+       begin
+         // Toggle Main Throbber
+         if ModuleManager.Modules.Count = 0 then
+         begin
+           SharpEBar.ShowThrobber := True;
+           exit;
+         end;
+         SharpEBar.ShowThrobber := not SharpEBar.ShowThrobber;
+         ModuleManager.FixModulePositions;
+         if SharpEBar.ShowThrobber then SharpEBar.Throbber.Repaint;
        end;
-       SharpEBar.ShowThrobber := not SharpEBar.ShowThrobber;
-       LockWindow(Handle);
-       ModuleManager.FixModulePositions;
-       UnLockWindow(Handle);
-       if SharpEBar.ShowThrobber then SharpEBar.Throbber.Repaint;
      end;
   if (Button = mbLeft) and (not SharpEBar.DisableHideBar) then
   begin
@@ -1853,6 +1886,7 @@ begin
  // if FThemeUpdating then exit;
 
   ModuleManager.RefreshMiniThrobbers;
+  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
 end;
 
 procedure TSharpBarMainForm.CreateemptySharpBar1Click(Sender: TObject);
@@ -1927,17 +1961,19 @@ begin
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
 end;
 
-procedure TSharpBarMainForm.OnBarPositionUpdate(Sender : TObject);
+procedure TSharpBarMainForm.OnBarPositionUpdate(Sender : TObject; var X,Y : Integer);
+var
+  n : integer;
 begin
   if FSuspended then exit;
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
 
-  if Left < 0 then Left := 0;
+  if x < Monitor.Left then x := Monitor.Left;
   if Width > Monitor.Width then
-     Width := Monitor.Width; 
+     Width := Monitor.Width;
 
 //  UpdateBGImage;
-  ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
+  ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND,-2);
 end;
 
 procedure TSharpBarMainForm.DelayTimer1Timer(Sender: TObject);
@@ -1989,6 +2025,12 @@ procedure TSharpBarMainForm.ApplicationEvents1Message(var Msg: tagMSG;
 var
   n : integer;
 begin
+  if (FShellHookList = nil) or (Closing) then
+  begin
+    Handled := False;
+    exit;
+  end;
+  
   if msg.message = WM_SHELLHOOK then
   begin
    // bar received a shell hook, forward it to all registered modules
@@ -2033,8 +2075,6 @@ begin
     RegisterShellHook(Handle,0);
   //  SHUnSetHook;
   end;
-  FShellHookList.Clear;
-  FShellHookList.Free;
 
   // We want to produce good code, so let's free stuff before the app is closed ;)
   ForceDirectories(ExtractFileDir(ModuleSettings.FileName));
@@ -2044,6 +2084,11 @@ begin
      DeleteFile(ModuleSettings.FileName);
   RenameFile(ModuleSettings.FileName + '~',ModuleSettings.FileName);
   ModuleManager.Free;
+
+  Application.ProcessMessages;
+  FShellHookList.Clear;
+  FreeAndNil(FShellHookList);
+  
  // ModuleSettings.Free;
   //ModuleSettings := nil;
 
@@ -2085,6 +2130,14 @@ begin
   begin
   //  FBGImage.DrawTo(Canvas.Handle,0,0);
   end;
+end;
+
+procedure TSharpBarMainForm.ShowMiniThrobbers1Click(Sender: TObject);
+begin
+  ShowMiniThrobbers1.Checked := not ShowMiniThrobbers1.Checked;
+  ModuleManager.ShowMiniThrobbers := ShowMiniThrobbers1.Checked;
+  SaveBarSettings;
+  ModuleManager.ReCalculateModuleSize;
 end;
 
 end.

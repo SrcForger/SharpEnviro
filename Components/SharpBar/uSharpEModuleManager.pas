@@ -95,7 +95,7 @@ type
                      DllShowSettingsWnd : procedure(ID : integer);
                      DllRefresh         : procedure(ID : integer);
                      DllSetSize         : procedure(ID : integer; NewWidth : integer);
-                     DllUpdateMessage   : procedure(Part : integer);
+                     DllUpdateMessage   : procedure(Part : integer; Param : integer);
                      procedure Clear;
                      constructor Create(pFileName : string; pParent : hwnd;
                                         pSkinManager : TSharpESkinManager;
@@ -151,6 +151,8 @@ type
                      FThrobberMove      : Boolean;
                      FThrobberMoveID    : integer;
                      FModuleSpacing     : integer;
+                     FShowMiniThrobbers : Boolean;
+                     FShutdown          : Boolean;
                    public
                      constructor Create(pParent : hwnd;
                                         pSkinManager : TSharpESkinManager;
@@ -181,7 +183,7 @@ type
                      procedure MoveModule(Index, Direction : integer);
                      function SendPluginMessage(ID : integer; msg : string) : integer;
                      procedure BroadcastPluginMessage(msg : string);
-                     procedure BroadcastPluginUpdate(part : integer);
+                     procedure BroadcastPluginUpdate(part : integer; param : integer = 0);
                      procedure BroadCastModuleRefresh;
                      procedure ReCalculateModuleSize;
                      procedure OnMiniThrobberClick(Sender : TObject);
@@ -196,6 +198,7 @@ type
                      property Modules         : TObjectList  read FModules;
                      property ModuleSettings  : TJvSimpleXML read FModuleSettings;
                      property ThrobberMenu    : TPopupMenu   read FThrobberMenu write FThrobberMenu;
+                     property ShowMiniThrobbers : Boolean    read FShowMiniThrobbers write FShowMiniThrobbers;
                    end;
 
 implementation
@@ -232,11 +235,13 @@ constructor TModuleManager.Create(pParent : hwnd;
                                   pModuleSettings : TJvSimpleXML);
 begin
   inherited Create;
+  FShutdown     := False;
   FDragLastBar  := 0;
   FDragForm     := nil;
   FParent       := pParent;
   FSkinManager  := pSkinManager;
   FBar          := pBar;
+  FShowMiniThrobbers := True;
   FModuleSpacing := 4;
   FModules  := TObjectList.Create;
   FModules.Clear;
@@ -251,6 +256,7 @@ end;
 
 destructor TModuleManager.Destroy;
 begin
+  FShutdown := True;
   Clear;
   FModules.Free;
   FModules := nil;
@@ -271,7 +277,7 @@ begin
 end;
 
 // Sends an update message to all modules
-procedure TModuleManager.BroadcastPluginUpdate(part : integer);
+procedure TModuleManager.BroadcastPluginUpdate(part : integer; param : integer = 0);
 var
   n : integer;
   mf : TModuleFile;
@@ -280,7 +286,7 @@ begin
   begin
     mf := TModuleFile(FModuleFiles.Items[n]);
     if @mf.DllUpdateMessage <> nil then
-       mf.DllUpdateMessage(part);
+       mf.DllUpdateMessage(part,param);
   end;
 end;
 
@@ -439,9 +445,7 @@ begin
       if not hm then
          MF.UnloadDll; // No other modules loaded by that Module File... unload the dll
 
-      LockWindow(FParent);
       FixModulePositions;
-      UnLockWindow(FParent);
       exit;
     end;
   end;
@@ -794,7 +798,7 @@ begin
   end;
   setlength(harray,0);
 
-  if FModules.Count > 0 then
+  if (FModules.Count > 0) and (FShowMiniThrobbers) then
      MTWidth := TModule(FModules.Items[0]).Throbber.Width
      else MTWidth := 0;
 
@@ -1098,6 +1102,8 @@ var
   CList : TObjectList;
   nw : integer;
 begin
+  if FShutdown then exit;
+
   try
     if FBar.ShowThrobber then
        lo := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.X)
@@ -1109,7 +1115,7 @@ begin
   end;
   ParentControl := GetControlByHandle(FParent);
 
-  if FModules.Count > 0 then
+  if (FModules.Count > 0) and (FShowMiniThrobbers) then
      MTWidth := TModule(FModules.Items[0]).Throbber.Width+FModuleSpacing
      else MTWidth := FModuleSpacing;
 
@@ -1174,7 +1180,8 @@ begin
     TempModule.Throbber.OnMouseDown := OnMiniThrobberMouseDown;
     TempModule.Throbber.OnMouseMove := OnMiniThrobberMouseMove;
     TempModule.Throbber.OnMouseUp   := OnMiniThrobberMouseUp;
-    if not TempModule.Throbber.Visible then TempModule.Throbber.Visible := True;
+    if (FShowMiniThrobbers) and (not TempModule.Throbber.Visible) then TempModule.Throbber.Visible := True
+       else if (not FShowMiniThrobbers) then tempModule.Throbber.Visible := False;
   end;
 
   for n := 0 to Clist.Count -1 do
@@ -1206,7 +1213,6 @@ var
   lo,ro : integer;
   MTWidth : integer;
   ParentControl : TWinControl;
-  n : integer;
   nw : integer;
 begin
   try
@@ -1220,7 +1226,7 @@ begin
   end;
   ParentControl := GetControlByHandle(FParent);
 
-  if FModules.Count > 0 then
+  if (FModules.Count > 0) and (FShowMiniThrobbers) then
      MTWidth := TModule(FModules.Items[0]).Throbber.Width+FModuleSpacing
      else MTWidth := FModuleSpacing;
 
@@ -1257,6 +1263,7 @@ var
   freespace : integer;
   newsize : integer;
 begin
+  if FShutdown then exit;
   if FModules = nil then exit;
 
   minsize := 0;
@@ -1275,7 +1282,9 @@ begin
     end;
     minsize := minsize + msize.Min;
     maxsize := maxsize + msize.Width;
-    smod := smod + temp.Throbber.Width + FModuleSpacing;
+    if temp.Throbber.Visible then
+       smod := smod + temp.Throbber.Width + FModuleSpacing
+       else smod := smod + FModuleSpacing;
     if msize.Min <> msize.Width then
     begin
       setlength(nonminmaxrequest,length(nonminmaxrequest)+1);

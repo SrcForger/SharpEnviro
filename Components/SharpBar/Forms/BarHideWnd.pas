@@ -127,16 +127,23 @@ begin
    if (Y=Height-1) and (SharpBarMainForm.SharpEBar.VertPos = vpBottom)
       or (Y=0) and (SharpBarMainForm.SharpEBar.VertPos = vpTop) then
    begin
-     if ModuleManager.Modules.Count = 0 then
+     if ssShift in Shift then
      begin
-       SharpBarMainForm.SharpEBar.ShowThrobber := True;
-       exit;
+       // Toggle Mini Throbbers
+       ModuleManager.ShowMiniThrobbers := not ModuleManager.ShowMiniThrobbers;
+       ModuleManager.ReCalculateModuleSize;
+     end else
+     begin
+       // Toggle Main Throbber
+       if ModuleManager.Modules.Count = 0 then
+       begin
+         SharpBarMainForm.SharpEBar.ShowThrobber := True;
+         exit;
+       end;
+       SharpBarMainForm.SharpEBar.ShowThrobber := not SharpBarMainForm.SharpEBar.ShowThrobber;
+       ModuleManager.FixModulePositions;
+       if SharpBarMainForm.SharpEBar.ShowThrobber then SharpBarMainForm.SharpEBar.Throbber.Repaint;
      end;
-     SharpBarMainForm.SharpEBar.ShowThrobber := not SharpBarMainForm.SharpEBar.ShowThrobber;
-     LockWindow(SharpBarMainForm.Handle);
-     ModuleManager.FixModulePositions;
-     UnLockWindow(SharpBarMainForm.Handle);
-     if SharpBarMainForm.SharpEBar.ShowThrobber then SharpBarMainForm.SharpEBar.Throbber.Repaint;
    end;
 end;
 
