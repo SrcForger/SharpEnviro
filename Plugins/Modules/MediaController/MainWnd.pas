@@ -607,6 +607,7 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  DoubleBuffered := True;
   Background  := TBitmap32.Create;
   FIconFoobar := TBitmap32.Create;
   FIconWinAmp := TBitmap32.Create;

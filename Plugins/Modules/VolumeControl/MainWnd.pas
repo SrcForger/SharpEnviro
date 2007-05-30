@@ -252,6 +252,7 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   Background := TBitmap32.Create;
+  DoubleBuffered := True;
   FDLow  := TBitmap32.Create;
   FDMed  := TBitmap32.Create;
   FDHigh := TBitmap32.Create;

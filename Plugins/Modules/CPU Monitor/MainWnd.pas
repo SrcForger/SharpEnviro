@@ -375,6 +375,7 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   background := TBitmap32.Create;
+  DoubleBuffered := True;
   cpugraph := TBitmap32.Create;
   cpugraph.DrawMode := dmBlend;
   cpugraph.CombineMode := cmMerge;

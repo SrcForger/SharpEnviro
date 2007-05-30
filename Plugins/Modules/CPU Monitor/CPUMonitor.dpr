@@ -198,7 +198,7 @@ begin
       end;
 end;
 
-procedure UpdateMessage(part : integer);
+procedure UpdateMessage(part : integer; param : integer);
 var
   temp : TModule;
   n,i : integer;
@@ -234,6 +234,9 @@ begin
         or (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
     begin
       TMainForm(temp.Form).UpdateBackground;
+      TMainForm(temp.Form).UpdateGraph;
+      if param <> -2 then
+         TMainForm(temp.Form).Repaint;
       if (part = SU_THEME) or (part = SU_SKINFILECHANGED) then
          TMainForm(temp.Form).ReAlignComponents((part = SU_SKINFILECHANGED));
     end;

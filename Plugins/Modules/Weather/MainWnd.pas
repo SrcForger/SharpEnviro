@@ -316,6 +316,7 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   Background := TBitmap32.Create;
+  DoubleBuffered := True;
   FIcon := TBitmap32.Create;
   FIcon.DrawMode := dmBlend;
   FIcon.CombineMode := cmMerge;

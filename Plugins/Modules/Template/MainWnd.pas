@@ -178,6 +178,7 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   Background := TBitmap32.Create;
+  DoubleBuffered := True;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);

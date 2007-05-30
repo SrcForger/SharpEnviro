@@ -310,6 +310,7 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   Background := TBitmap32.Create;
+  DoubleBuffered := True;
   NotesForm := nil;
 end;
 

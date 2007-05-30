@@ -68,7 +68,7 @@ type
     BarWnd   : hWnd;
     procedure LoadSettings;
     procedure SetSize(NewWidth : integer);
-    procedure RenderIcon;
+    procedure RenderIcon(pRepaint : boolean = True);
     procedure ReAlignComponents(BroadCast : boolean);
     procedure UpdateBackground(new : integer = -1);
     property LastIcon : TBitmap32 read FLastIcon write FLastIcon;
@@ -299,7 +299,7 @@ begin
   end;
 end;
 
-procedure TMainForm.RenderIcon;
+procedure TMainForm.RenderIcon(pRepaint : boolean = True);
 begin
   if not sShowIcon then exit;
 
@@ -309,14 +309,13 @@ begin
     //if FLastIcon <> FBStatus2 then
     //   FBStatus2.DrawTo(Background.Bitmap,Rect(2,2,Height-2,Height-2));
     FLastIcon := FBStatus2;
-    Repaint;
   end else
   begin
     //if FLastIcon <> FBStatus1 then
     //   FBStatus1.DrawTo(Background.Bitmap,Rect(2,2,Height-2,Height-2));
     FLastIcon := FBStatus1;
-    Repaint;
   end;
+  if pRepaint then Repaint;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -326,6 +325,7 @@ var
   b : boolean;
 begin
   Background := TBitmap32.Create;
+  DoubleBuffered := True;
 
   FLastIcon := nil;
   FBStatus1 := TBitmap32.Create;

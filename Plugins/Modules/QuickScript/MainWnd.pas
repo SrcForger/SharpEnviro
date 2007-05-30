@@ -252,6 +252,7 @@ var
   b : boolean;
 begin
   Background := TBitmap32.Create;
+  DoubleBuffered := True;
 
   FIcon := TBitmap32.Create;
   FIcon.Assign(Button.Glyph32);

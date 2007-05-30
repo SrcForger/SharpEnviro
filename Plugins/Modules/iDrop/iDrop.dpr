@@ -167,7 +167,7 @@ begin
       end;
 end;
 
-procedure UpdateMessage(part : integer);
+procedure UpdateMessage(part : integer; param : integer);
 var
   temp : TModule;
   n,i : integer;
