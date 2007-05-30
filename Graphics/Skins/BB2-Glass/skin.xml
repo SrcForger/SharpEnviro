@@ -976,8 +976,8 @@
         <location>cw-twh+10,3</location>
       </icon>
       <spacing>1</spacing>
-      <location>0,1</location>
-      <dimension>80,20</dimension>
+      <location>0,0</location>
+      <dimension>80,19</dimension>
       <OnNormalMouseEnter>Scripts\ButtonNormalMouseEnter.skinscript</OnNormalMouseEnter>
       <OnNormalMouseLeave>Scripts\ButtonNormalMouseLeave.skinscript</OnNormalMouseLeave>
       <OnDownMouseEnter>Scripts\TaskItemDownMouseEnter.skinscript</OnDownMouseEnter>
@@ -1253,8 +1253,8 @@
         <location>3,3</location>
       </icon>
       <spacing>2</spacing>
-      <location>0,1</location>
-      <dimension>21,20</dimension>
+      <location>0,0</location>
+      <dimension>21,19</dimension>
       <OnNormalMouseEnter>Scripts\ButtonNormalMouseEnter.skinscript</OnNormalMouseEnter>
       <OnNormalMouseLeave>Scripts\ButtonNormalMouseLeave.skinscript</OnNormalMouseLeave>
       <OnDownMouseEnter>Scripts\TaskItemDownMouseEnter.skinscript</OnDownMouseEnter>
