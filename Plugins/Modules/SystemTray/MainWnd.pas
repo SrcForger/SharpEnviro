@@ -80,7 +80,7 @@ type
     Background : TBitmap32;
     Buffer     : TBitmap32;
     procedure LoadSettings;
-    procedure RepaintIcons;
+    procedure RepaintIcons(pRepaint : boolean = True);
     procedure SetSize(NewWidth : integer);
     procedure ReAlignComponents(SendUpdate : boolean);
     procedure UpdateBackground(new : integer = -1);
@@ -128,6 +128,7 @@ var
   result : boolean;
   n : integer;
   s : String;
+  ws : WideString;
 begin
   Result := (Msg.NMHdr.code = TTN_NEEDTEXT);
   for n := 0 to FTrayClient.WndList.Count - 1 do
@@ -144,8 +145,8 @@ begin
 
   if result then
   begin
-    SendMessage(Msg.NMHdr.hwndFrom, TTM_SETMAXTIPWIDTH, 0, 300);
-    
+    SendMessage(Msg.NMHdr.hwndFrom, TTM_SETMAXTIPWIDTH, 0, 512);
+
     if FTrayClient.LastTipItem = nil then exit;
 
     if Msg.NMHdr.code = TTN_NEEDTEXTA then
@@ -153,14 +154,20 @@ begin
       with PNMTTDispInfoA(Msg.NMHdr)^ do
       begin
         s := FTrayClient.LastTipItem.FTip;
-        lpszText := PChar(s);
+        if length(s) > 80 then
+           lpszText := PAnsiChar(s)
+           else for n := 0 to length(s)-1 do
+                szText[n] := Char(FTrayClient.LastTipItem.FTip[n]);
         hinst := 0;
       end;
     end
     else
       with PNMTTDispInfoW(Msg.NMHdr)^ do
       begin
-        lpszText := PWideChar(WideString(FTrayClient.LastTipItem.FTip));
+        ws := FTrayClient.LastTipItem.FTip;
+        if length(ws) > 80 then
+           lpszText := PWideChar(ws)
+           else szText[n] := FTrayClient.LastTipItem.FTip[n];
         hinst := 0;
       end;
   end;
@@ -346,13 +353,14 @@ begin
      else PointInRect:=False;
 end;
 
-procedure TMainForm.RepaintIcons;
+procedure TMainForm.RepaintIcons(pRepaint : boolean = True);
 begin
   Buffer.Assign(Background);
   if FTrayClient = nil then exit;
   FTrayClient.Bitmap.DrawMode := dmBlend;
-  FTrayClient.Bitmap.DrawTo(Background,0,Height div 2 - FTrayClient.Bitmap.Height div 2);
-  Repaint;
+  FTrayClient.Bitmap.DrawTo(Buffer,0,Height div 2 - FTrayClient.Bitmap.Height div 2);
+  if pRepaint then
+     Repaint;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -443,7 +451,6 @@ begin
   p := ClientToScreen(point(x,y));
   modx := x;
   FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_MOUSEMOVE,self);
-
 end;
 
 end.
