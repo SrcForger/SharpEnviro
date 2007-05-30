@@ -34,17 +34,10 @@ interface
 
 uses
   Types, Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, GR32_Image, SharpEBaseControls,
-  SharpESkinManager,
-  SharpECustomSkinSettings, ExtCtrls,
-  JvSimpleXML, SharpApi, Menus, Math, Contnrs,
-  SharpETaskItem, SharpESkin,
-  uTaskManager,
-  uTaskItem,
-  DateUtils,
-  GR32,
-  GR32_Filters,
-  GR32_PNG, AppEvnts, SharpEButton;
+  Forms, Dialogs, StdCtrls, ExtCtrls, JvSimpleXML, SharpApi, Menus,
+  Math, Contnrs, SharpESkinManager, SharpETaskItem, SharpESkin,
+  SharpEBaseControls, SharpECustomSkinSettings, uTaskManager, uTaskItem,
+  DateUtils, GR32, GR32_PNG, SharpIconUtils, SharpEButton;
 
 
 type
@@ -68,17 +61,11 @@ type
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SystemSkinManager: TSharpESkinManager;
-    FlashTimer: TTimer;
-    TimedCheck: TTimer;
-    ApplicationEvents1: TApplicationEvents;
     ses_maxall: TSharpEButton;
     ses_minall: TSharpEButton;
     procedure FormPaint(Sender: TObject);
-    procedure ApplicationEvents1ShowHint(var HintStr: string;
-      var CanShow: Boolean; var HintInfo: THintInfo);
     procedure ses_maxallClick(Sender: TObject);
     procedure ses_minallClick(Sender: TObject);
-    procedure FlashTimerTimer(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
@@ -102,6 +89,7 @@ type
     FDminA,FDmaxA : TBitmap32; // default min/max all images
     FCustomSkinSettings: TSharpECustomSkinSettings;
     Background : TBitmap32;
+    FTipWnd : hwnd;
   public
     TM: TTaskManager;
     IList: TObjectList;
@@ -143,7 +131,7 @@ type
 implementation
 
 uses SettingsWnd,
-     uSharpBarAPI;
+     uSharpBarAPI, ToolTipApi;
 
 var
   SysMenuHandle : hwnd;
@@ -301,15 +289,17 @@ begin
   begin
     ses_minall.visible := True;
     ses_minall.Left := n;
+    ses_minall.width := ses_minall.Height;
     n := n + ses_minall.Width + 2;
   end else ses_minall.Visible := False;
   if sMaxAllButton then
   begin
     ses_maxall.Visible := True;
     ses_maxall.Left := n;
+    ses_maxall.Width := ses_maxall.Height;
     n := n + ses_maxall.Width + 2;
   end else ses_maxall.Visible := False;
-  FSpecialButtonWidth := n;
+  FSpecialButtonWidth := n + 4;
 end;
 
 procedure TMainForm.DisplaySystemMenu(pHandle : hwnd);
@@ -351,80 +341,6 @@ begin
   DebugOutPutInfo('TMainForm.OnTaskItemMouseUp (Procedure)');
   if not (Sender is TSharpETaskItem) then exit;
   if Button = mbRight then DisplaySystemMenu(TSharpETaskItem(Sender).Tag);
-end;
-
-procedure IconToImage(Bmp : TBitmap32; const icon : hicon);
-var
-   w,h,i    : Integer;
-   p        : PColorArray;
-   p2       : pColor32;
-   bmi      : BITMAPINFO;
-   AlphaBmp : Tbitmap32;
-   tempbmp  : Tbitmap;
-   info     : Ticoninfo;
-   alphaUsed : boolean;
-begin
-     Alphabmp := nil;
-     tempbmp := Tbitmap.Create;
-//     dc := createcompatibledc(0);
-     try
-        //get info about icon
-        GetIconInfo(icon,info);
-        tempbmp.handle := info.hbmColor;
-        ///////////////////////////////////////////////////////
-        // Here comes a ugly step were it tries to paint it as
-        // a 32 bit icon and check if it is successful.
-        // If failed it will paint it as an icon with fewer colors.
-        // No way of deciding bitcount in the beginning has been
-        // found reliable , try if you want too.   /Malx
-        ///////////////////////////////////////////////////////
-        AlphaUsed := false;
-        if true then
-        begin //32-bit icon with alpha
-              w := tempbmp.Width;
-              h := tempbmp.Height;
-              Bmp.setsize(w,h);
-              with bmi.bmiHeader do
-              begin
-                   biSize := SizeOf(bmi.bmiHeader);
-                   biWidth := w;
-                   biHeight := -h;
-                   biPlanes := 1;
-                   biBitCount := 32;
-                   biCompression := BI_RGB;
-                   biSizeImage := 0;
-                   biXPelsPerMeter := 1; //dont care
-                   biYPelsPerMeter := 1; //dont care
-                   biClrUsed := 0;
-                   biClrImportant := 0;
-              end;
-              GetMem(p,w*h*SizeOf(TColorRec));
-              GetDIBits(tempbmp.Canvas.Handle,tempbmp.Handle,0,h,p,bmi,DIB_RGB_COLORS);
-              P2 := Bmp.PixelPtr[0, 0];
-              for i := 0 to w*h-1 do
-              begin
-                   if (p[i].a > 0) then alphaused := true;
-                   P2^ := color32(p[i].r,p[i].g,p[i].b,p[i].a);
-                   Inc(P2);// proceed to the next pixel
-              end;
-              FreeMem(p);
-        end;
-        if not(alphaused) then
-        begin // 24,16,8,4,2 bit icons
-              Bmp.Assign(tempbmp);
-              AlphaBmp := Tbitmap32.Create;
-              tempbmp.handle := info.hbmMask;
-              AlphaBmp.Assign(tempbmp);
-              Invert(AlphaBmp,AlphaBmp);
-              Intensitytoalpha(Bmp,AlphaBmp);
-        end;
-     finally
-//            DeleteDC(dc);
-            AlphaBmp.free;
-            DeleteObject(info.hbmMask);
-            DeleteObject(info.hbmColor);
-            tempbmp.free;
-     end;
 end;
 
 procedure LoadFilterFromXML(var filter : TTaskFilter; XML : TJvSimpleXMLElem);
@@ -549,9 +465,13 @@ begin
 end;
 
 procedure TMainForm.CompleteRefresh;
+var
+  n : integer;
 begin
   DebugOutPutInfo('TMainForm.CompleteRefresh (Procedure)');
   try
+    for n := 0 to IList.Count - 1 do
+        ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList[n]).Tag);
     IList.Clear;
     TM.CompleteRefresh;
     AlignTaskComponents;
@@ -562,7 +482,6 @@ end;
 
 procedure TMainForm.SetSize(NewWidth : integer);
 var
-  i : integer;
   new : integer;
 begin
   DebugOutPutInfo('TMainForm.SetSize (Procedure)');
@@ -596,6 +515,10 @@ begin
   end;
 
   NewWidth := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1);
+
+  if sState = tisMini then
+     ToolTipApi.EnableToolTip(FTipWnd)
+     else ToolTipApi.DisableToolTip(FTipWnd);
 
   if sState = tisMini then Tag := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1)
      else Tag := Max(FSpecialButtonWidth + IList.Count * 16 + (IList.Count - 1) * sSpacing,1);
@@ -719,7 +642,6 @@ var
   n : integer;
   FreeSpace : integer;
   pItem : TSharpETaskItem;
-  pTask : TTaskItem;
 begin
   DebugOutPutInfo('TMainForm.CalculateItemWidth (Procedure)');
   try
@@ -727,13 +649,7 @@ begin
         if IList.Items[n] <> nil then
         begin
           pItem := TSharpETaskItem(IList.Items[n]);
-          pTask := TM.GetItemByHandle(pItem.Tag);
           pItem.State := sState;
-          if pItem.State = tisMini then
-          begin
-            pItem.Hint := pTask.Caption;
-            pItem.ShowHint := True;
-          end else pItem.ShowHint := False;
         end;
   except
   end;
@@ -766,6 +682,10 @@ begin
           pTaskItem.Left := FSpecialButtonWidth + n*sMaxWidth + n*sSpacing;
           pTaskItem.AutoSize := True;
         end;
+        ToolTipApi.UpdateToolTipRect(FTipWnd,Self,pTaskItem.Tag,
+                                     Rect(pTaskItem.Left,pTaskItem.Top,
+                                          pTaskItem.Left + pTaskItem.Width,
+                                          pTaskItem.Top + pTaskItem.Height));
       end;
     end;
   except
@@ -938,7 +858,6 @@ begin
          begin
            if pTaskItem.Down then exit;
            pTaskItem.Flashing := True;
-           //if not FlashTimer.Enabled then FlashTimer.Enabled := True;
            exit;
          end;
     end;
@@ -999,39 +918,32 @@ end;
 procedure TMainForm.NewTask(pItem : TTaskItem; Index : integer);
 var
   pTaskItem : TSharpETaskItem;
-//  oWidth : integer;
 begin
   DebugOutPutInfo('TMainForm.NewTask (Procedure)');
   if pItem = nil then exit;
-  
+
   if not CheckFilter(pItem) then exit;
   pTaskItem := TSharpETaskItem.Create(self);
-//  oWidth := sCurrentWidth;
   CalculateItemWidth(IList.Count + 1);
-//  if oWidth <> sCurrentWidth then
-//     AlignTaskComponents;
   IList.Add(pTaskItem);
   pTaskItem.Width := sCurrentWidth;
   pTaskItem.Parent := self;
   pTaskItem.SkinManager := SystemSkinManager;
-//  pTaskItem.Left := FSpecialButtonWidth + (IList.Count-1) * sCurrentWidth + (IList.Count - 2) * sSpacing;
   pTaskItem.Left := Width;
   pTaskItem.AutoPosition := True;
-//  pTaskItem.AutoSize := True;
   pTaskItem.Margin := 0;
   pTaskItem.Flashing := False;
   pTaskItem.Caption := pItem.Caption;
   pTaskItem.Tag := pItem.Handle;
   pTaskItem.State := sState;
-  if pTaskItem.State = tisMini then
-  begin
-    pTaskItem.Hint := pItem.Caption;
-    pTaskItem.ShowHint := True;
-  end else pTaskItem.ShowHint := False;
   UpdateIcon(pTaskItem,pItem);
   pTaskItem.OnClick := SharpETaskItemClick;
   pTaskItem.OnMouseUp := OnTaskItemMouseUp;
-//  pTaskItem.Show;
+  ToolTipApi.AddToolTip(FTipWnd,Self,pTaskItem.Tag,
+                        Rect(pTaskItem.Left,pTaskItem.Top,
+                             pTaskItem.Left + pTaskItem.Width,
+                             pTaskItem.Top + pTaskItem.Height),
+                             pTaskItem.Caption);
   if not FLocked then ReAlignComponents(True);
 end;
 
@@ -1069,7 +981,10 @@ begin
   try
     for n := IList.Count -1 downto 0 do
         if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
-           IList.Delete(n);
+        begin
+          ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList.Items[n]).Tag);
+          IList.Delete(n);
+        end;
   except
   end;
   CalculateItemWidth(IList.Count);
@@ -1101,6 +1016,7 @@ begin
   try
     UpdateIcon(pTaskItem,pItem);
     pTaskItem.Caption := pItem.Caption;
+    ToolTipApi.UpdateToolTipText(FTipWnd,Self,pTaskItem.Tag,pTaskItem.Caption);
   except
   end;
 end;
@@ -1134,7 +1050,6 @@ end;
 
 procedure TMainForm.WMShellHook(var msg : TMessage);
 begin
- //Hide;
  DebugOutPutInfo('TMainForm.WMShellHook (Message Procedure)');
  if msg.LParam = self.Handle then exit;
  case msg.WParam of
@@ -1170,8 +1085,11 @@ procedure TMainForm.FormCreate(Sender: TObject);
   end;
 
 begin
+  FTipWnd := ToolTipApi.RegisterToolTip(self);
+
   DebugOutPutInfo('TMainForm.FormCreate (Procedure)');
   FCustomSkinSettings := TSharpECustomSkinSettings.Create;
+  DoubleBuffered := True;
 
   Background := TBitmap32.Create;
 
@@ -1209,6 +1127,9 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  if FTipWnd <> 0 then
+     DestroyWindow(FTipWnd); 
+
   DebugOutPutInfo('TMainForm.FormDestroy (Procedure)');
   FCustomSkinSettings.Free;
   FDminA.Free;
@@ -1218,26 +1139,6 @@ begin
   IList.Free;
   FreeAndNil(Background);
   PostMessage(BarWnd,WM_UNREGISTERSHELLHOOK,self.handle,0);
-end;
-
-procedure TMainForm.FlashTimerTimer(Sender: TObject);
-//var
- // fc,n : integer;
- // pTaskItem : TSharpETaskItem;
-begin
-  DebugOutPutInfo('TMainForm.FlashTimerTimer (Procedure)');
-  FlashTimer.Enabled := False;
- { fc := 0;
-  for n := 0 to IList.Count -1 do
-  begin
-    pTaskItem := TSharpETaskItem(IList.Items[n]);
-    if pTaskItem.Flashing then
-    begin
-      fc := fc + 1;
-     // pTaskItem.FlashState := not pTaskItem.FlashState;
-    end;
-  end;
-  if fc = 0 then FlashTimer.Enabled := False;     }
 end;
 
 procedure TMainForm.ses_minallClick(Sender: TObject);
@@ -1284,19 +1185,6 @@ begin
   end;
   FLocked := False;
   RealignComponents(True);
-end;
-
-procedure TMainForm.ApplicationEvents1ShowHint(var HintStr: string;
-  var CanShow: Boolean; var HintInfo: THintInfo);
-var
-  p : TPoint;
-begin
-  p := ClientToScreen(Point(Left,Top));
-  HintInfo.HintPos.x := HintInfo.HintPos .x + 1;
-  if p.y > Monitor.Top + Monitor.Height div 2 then
-     HintInfo.HintPos.y := p.Y - 28
-     else HintInfo.HintPos.y := p.Y + Height;
-  CanShow := True;
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);

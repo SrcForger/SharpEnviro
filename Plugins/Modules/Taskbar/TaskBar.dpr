@@ -55,7 +55,9 @@ uses
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
+  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
+  ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas',
+  SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas';
 
 type
   TModule = class
@@ -115,6 +117,7 @@ begin
     BarWnd   := FBarWnd;
     RealignComponents(False);
     Show;
+    TMainForm(FForm).CompleteRefresh;
   end;
 end;
 
@@ -201,7 +204,7 @@ begin
       end;
 end;
 
-procedure UpdateMessage(part : integer);
+procedure UpdateMessage(part : integer; param : integer);
 var
   temp : TModule;
   n,i : integer;
@@ -239,6 +242,8 @@ begin
         or (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
     begin
       TMainForm(temp.Form).UpdateBackground;
+      if param <> -2 then
+         TMainForm(temp.Form).Repaint;
       if (part = SU_THEME) or (part = SU_SKINFILECHANGED) then
          TMainForm(temp.Form).ReAlignComponents(True);
     end;

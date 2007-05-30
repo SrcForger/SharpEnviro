@@ -136,22 +136,4 @@ object MainForm: TMainForm
     Left = 176
     Top = 56
   end
-  object FlashTimer: TTimer
-    Enabled = False
-    Interval = 500
-    OnTimer = FlashTimerTimer
-    Left = 200
-    Top = 32
-  end
-  object TimedCheck: TTimer
-    Enabled = False
-    Interval = 500
-    Left = 216
-    Top = 96
-  end
-  object ApplicationEvents1: TApplicationEvents
-    OnShowHint = ApplicationEvents1ShowHint
-    Left = 136
-    Top = 72
-  end
 end
