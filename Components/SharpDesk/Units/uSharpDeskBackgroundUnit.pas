@@ -170,7 +170,7 @@ end;
 
 procedure TBackground.Reload;
 var
-   n : integer;
+   n,i : integer;
    PMon : TMonitor;
    MonRect : TRect;
    TempBmp,DrawBmp : TBitmap32;
@@ -185,6 +185,7 @@ var
    loaded : boolean;
    WP : TThemeWallpaper;
    img : TBitmap32;
+   SList : TStringList;
 begin
   img := SharpDesk.Image.Bitmap;
   img.SetSize(Screen.DesktopWidth,Screen.DesktopHeight);
@@ -208,12 +209,19 @@ begin
     TLinearResampler.Create(DrawBmp);
 
     loaded := False;
-    if FileExists(WP.Image) then
-    try
-      TempBmp.LoadFromFile(WP.Image);
-      loaded := True;
-    except
-    end;
+    SList := TStringList.Create;
+    SList.Add(SharpThemeApi.GetThemeDirectory + WP.Image);
+    SList.Add(WP.Image);
+    SList.Add(SharpApi.GetSharpeDirectory + WP.Image);
+    for i := 0 to SList.Count - 1 do
+        if FileExists(SList[i]) then
+        try
+          TempBmp.LoadFromFile(WP.Image);
+          loaded := True;
+          break;
+        except
+        end;
+    SList.Free;
     if not loaded then
     begin
       TempBmp.SetSize(MonRect.Right-MonRect.Left,MonRect.Bottom-MonRect.Top);

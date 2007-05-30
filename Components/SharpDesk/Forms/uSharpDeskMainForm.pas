@@ -447,8 +447,6 @@ begin
 end;
 
 procedure TSharpDeskMainForm.WMSharpEBang(var Msg : TMessage);
-var
-  handle : hwnd;
 begin
   case msg.LParam of
    1: begin
