@@ -34,18 +34,18 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
-  SharpESkinManager, JvSimpleXML, SharpApi, Menus, Math, SharpEEdit;
+  Dialogs, StdCtrls, GR32, SharpEBaseControls, SharpEButton,
+  SharpESkinManager, JvSimpleXML, SharpApi, Math, SharpEEdit, Menus;
 
 
 type
   TMainForm = class(TForm)
-    Background: TImage32;
-    MenuPopup: TPopupMenu;
-    Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     edit: TSharpEEdit;
     btn_select: TSharpEButton;
+    procedure FormPaint(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure editKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btn_selectMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -53,19 +53,21 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure btn_selectClick(Sender: TObject);
     procedure editKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure Settings1Click(Sender: TObject);
   protected
   private
     sWidth   : integer;
     sButton  : boolean;
+    Background : TBitmap32;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
     ModuleID : integer;
     BarWnd : hWnd;
+    procedure ShowSettings;
     procedure UpdateBangs;
     procedure LoadSettings;
     procedure SetSize(NewWidth : integer);
     procedure ReAlignComponents(BroadCast : boolean);
+    procedure UpdateBackground(new : integer = -1);
   end;
 
 var
@@ -98,9 +100,25 @@ begin
   end;
 end;
 
-procedure TMainForm.SetSize(NewWidth : integer);
+procedure TMainForm.UpdateBackground(new : integer = -1);
 begin
-  Width := NewWidth;
+  if (new <> -1) then
+     Background.SetSize(new,Height)
+     else if (Width <> Background.Width) then
+              Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
+procedure TMainForm.SetSize(NewWidth : integer);
+var
+  new : integer;
+begin
+  new := Max(NewWidth,1);
+
+  UpdateBackground(new);
+
+  Width := new;
+
   if sButton then
   begin
     btn_select.Width := btn_select.Height;
@@ -112,11 +130,6 @@ begin
     edit.Width := max(1,(Width - 4));
     btn_select.Hide;
   end;
-
-  Background.Bitmap.BeginUpdate;
-  Background.Bitmap.SetSize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background.Bitmap,self);
-  Background.Bitmap.EndUpdate;
 end;
 
 
@@ -139,7 +152,7 @@ begin
 end;
 
 
-procedure TMainForm.Settings1Click(Sender: TObject);
+procedure TMainForm.ShowSettings;
 var
   SettingsForm : TSettingsForm;
   item : TJvSimpleXMLElem;
@@ -290,6 +303,23 @@ procedure TMainForm.editKeyDown(Sender: TObject; var Key: Word;
 begin
   if ((SSALT in Shift) and (Key = VK_F4)) then
      Key := 0;
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
+begin
+  DoubleBuffered := True;
+  Background := TBitmap32.Create;
+end;
+
+procedure TMainForm.FormDestroy(Sender: TObject);
+begin
+  Background.Free;
+end;
+
+procedure TMainForm.FormPaint(Sender: TObject);
+begin
+  if Background <> nil then
+     Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.
