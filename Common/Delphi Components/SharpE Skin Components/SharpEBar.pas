@@ -61,7 +61,8 @@ type
   TSharpEBarHorizPos = (hpLeft, hpMiddle, hpRight, hpFull);
   TSharpEBarVertPos = (vpTop, vpBottom);
   TThrobberMouseEvent = procedure(Sender: TObject; X, Y: Integer) of object;
-  TBackgroundPaintEvent = procedure(Sender: TObject; Target: TBitmap32) of object;
+  TBackgroundPaintEvent = procedure(Sender: TObject; Target: TBitmap32; x : integer) of object;
+  TBarPositionEvent = procedure(Sender : TObject; var X, Y : Integer) of object;
 
   TSharpEBar = class(TCustomSharpEComponent)
   private
@@ -85,7 +86,7 @@ type
     FonMouseMove: TMouseMoveEvent;
     FOldOnPaint: TNotifyEvent;
     FOnResetSize: TNotifyEvent;
-    FOnPositionUpdate: TNotifyEvent;
+    FOnPositionUpdate: TBarPositionEvent;
     FBackGround: TSharpEBarBackground;
     FAutoPosition: boolean;
     FHorizPos: TSharpEBarHorizPos;
@@ -110,7 +111,7 @@ type
     function GetSpecialHideForm : boolean;
   protected
     procedure DrawDefaultSkin(Scheme: TSharpEScheme); virtual;
-    procedure DrawManagedSkin(Scheme: TSharpEScheme; NewWidth : integer = -1); virtual;
+    procedure DrawManagedSkin(Scheme: TSharpEScheme; NewWidth : integer = -1; NewLeft : integer = -1); virtual;
     procedure WndProc(var msg: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
@@ -124,6 +125,7 @@ type
     property ThrobberPosX: string read FThrobberPosX;
     property ThrobberPosY: string read FThrobberPosY;
     property Skin: TBitmap32 read FSkin;
+    property Seed: integer read FSkinSeed write FSkinSeed;
   published
     property SkinManager;
     property AutoPosition: Boolean read FAutoPosition write SetAutoPosition;
@@ -140,7 +142,7 @@ type
     property onThrobberMouseUp: TMouseEvent read FonMouseUp write FonMouseUp;
     property onThrobberMouseMove: TMouseMoveEvent read FonMouseMove write FonMouseMove;
     property onResetSize: TNotifyEvent read FonResetsize write FonResetSize;
-    property onPositionUpdate: TNotifyEvent read FOnPositionUpdate write FOnPositionUpdate;
+    property onPositionUpdate: TBarPositionEvent read FOnPositionUpdate write FOnPositionUpdate;
     property OnBackgroundPaint: TBackgroundPaintEvent read FOnBackgroundPaint write FOnBackgroundPaint;
   end;
 
@@ -463,6 +465,7 @@ procedure TSharpEBar.UpdatePosition;
 var
   Mon: TMonitor;
   x, y: integer;
+  u : boolean;
 begin
   if (not FAutoPosition) or (csDesigning in ComponentState) then
     exit;
@@ -503,11 +506,6 @@ begin
     x := Mon.Left;
   end;
 
-  if x <> Form.Left then
-    form.Left := x;
-  if y <> Form.Top then
-    Form.Top := y;
-
   if not (csDesigning in ComponentState) then
   begin
     if Assigned(FThrobber) then
@@ -518,10 +516,9 @@ begin
     SetBitmapSizes;
     FBuffer.Clear(Color32(255, 0, 254, 0));
     if Assigned(FManager) then
-      DrawManagedSkin(FManager.Scheme)
+      DrawManagedSkin(FManager.Scheme,-1,x)
     else
       DrawDefaultSkin(DefaultSharpEScheme);
-    FormPaint(nil);
   end
   else
   begin
@@ -530,11 +527,26 @@ begin
       (Owner as TForm).Color := DefaultSharpEScheme.GetColorByName('WorkAreaback');
     end;
   end;
+
+  if Assigned(FOnPositionUpdate) then
+     FOnPositionUpdate(self,x,y);
+
+  u := (x <> Form.Left) or (y <> Form.Top);
+  if x <> Form.Left then
+    form.Left := x;
+  if y <> Form.Top then
+    Form.Top := y;
+
+  if u then
+  begin
+    FormPaint(nil);
+    RedrawWindow(form.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+    Application.ProcessMessages;
+  end;
+
   if Assigned(FThrobber) then
     FThrobber.Repaint;
 
-  if Assigned(FOnPositionUpdate) then
-     FOnPositionUpdate(self);
 end;
 
 function TSharpEBar.GetSpecialHideForm : Boolean;
@@ -681,7 +693,7 @@ begin
   FBackGround.UpdateSkin(FBuffer);
 end;
 
-procedure TSharpEBar.DrawManagedSkin(Scheme: TSharpEScheme; NewWidth : integer = -1);
+procedure TSharpEBar.DrawManagedSkin(Scheme: TSharpEScheme; NewWidth : integer = -1; NewLeft : integer = - 1);
 var
   r, CompRect: TRect;
   fsmod: TPoint; // used for left/right cut off - offsets defined by skin
@@ -734,10 +746,12 @@ begin
     end;
 
     NewWidth := Max(NewWidth,form.Width);
+    if NewLeft = -1 then
+       NewLeft := Form.Left;
     r := FManager.Skin.BarSkin.GetAutoDim(Rect(0, 0, NewWidth + fsmod.X +
       fsmod.Y, form.height - sbmod.Y));
-    if (r.Right <> NewWidth + fsmod.X + fsmod.Y) or (r.Bottom <> form.height +
-      SBMod.Y) then
+    if ((r.Right <> NewWidth + fsmod.X + fsmod.Y) or (r.Bottom <> form.height + SBMod.Y))
+       and ((NewWidth < 0) or (NewWidth = form.Width))  then
     begin
       form.width := max(r.Right - fsmod.X - fsmod.Y,4);
       form.height := max(r.Bottom - sbmod.Y,4);
@@ -756,7 +770,7 @@ begin
       FSkin.Clear(Color32(0, 0, 0, 0));
 
       if Assigned(FOnBackgroundPaint) then
-         FOnBackgroundPaint(self,FSkin);
+         FOnBackgroundPaint(self,FSkin,NewLeft);
 
       // Draw Border Alpha Bitmap
       Bmp2 := TBitmap32.Create;
@@ -1020,6 +1034,7 @@ procedure TSharpEThrobber.DrawManagedSkin(bmp: TBitmap32; Scheme:
 var
   r, CompRect: TRect;
   tempdim : TSkinDim;
+  e : boolean;
 begin
   if not Assigned(FManager) then
   begin
@@ -1045,6 +1060,7 @@ begin
   begin
     if FAutoSize then
     begin
+      e := False;
       if (not FManager.Skin.BarSkin.BarBottom.Empty) and (FPar.VertPos = vpBottom) then
          r := FManager.Skin.BarSkin.GetThrobberBottomDim(CompRect)
          else r := FManager.Skin.BarSkin.GetThrobberDim(CompRect);
@@ -1052,14 +1068,15 @@ begin
       begin
         width := r.Right - r.Left;
         height := r.Bottom - r.Top;
-        Exit;
+        e := True;
       end;
       if (r.Left <> Left) or (r.Top <> Top) then
       begin
         Left := r.Left;
         Top := r.Top;
-        Exit;
+        e := True;
       end;
+      if e then exit;
     end;
     FSkin.SetSize(Width,Height);
     FSkin.Clear(Color32(0, 0, 0, 0));
