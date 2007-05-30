@@ -36,9 +36,13 @@ uses
    SysUtils,Controls,Classes,Windows,Messages,Commctrl;
 
 
+function RegisterBallonWindow(Control : TWinControl) : hwnd;
+procedure AddBalloonWindowCallBack(BWnd : hwnd; Control : TWinControl; Icon : integer; Titel : String; Rect : TRect);
+
 function RegisterToolTip(Control: TWinControl) : hwnd;
 procedure EnableToolTip(TipWnd : hwnd);
 procedure DisableToolTip(TipWnd : hwnd);
+procedure SetTipTitel(TipWnd : hwnd; Icon : integer; Titel : String);
 procedure AddToolTip(TipWnd : hwnd; Control: TWinControl; ID : integer; Rect : TRect; Text : String);
 procedure AddToolTipByCallBack(TipWnd : hwnd; Control: TWinControl; ID : integer; Rect : TRect);
 procedure DeleteToolTip(TipWnd : hwnd; Control: TWinControl; ID : integer);
@@ -49,11 +53,52 @@ procedure UpdateToolTipRect(TipWnd : hwnd; Control: TWinControl; ID : integer; R
 const
  TTS_NOANIMATE = $10;
  TTS_NOFADE = $20;
+ TTM_SETTITLE = (WM_USER + 32);
 
 
 implementation
 
-                                                                 
+
+function RegisterBallonWindow(Control : TWinControl) : hwnd;
+var
+  hWnd, hWndB: THandle;
+begin
+  hWnd    := Control.Handle;
+  hWndB   := CreateWindow(TOOLTIPS_CLASS, nil,
+                          WS_POPUP or TTS_NOPREFIX or TTS_ALWAYSTIP or TTS_NOFADE or TTS_NOANIMATE,
+                          0, 0, 0, 0, hWnd, 0, HInstance, nil);
+  if hWndB <> 0 then
+     SetWindowPos(hWndB, HWND_TOPMOST, 0, 0, 0, 0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+
+  result := hWndB;
+end;
+
+procedure AddBalloonWindowCallBack(BWnd : hwnd; Control : TWinControl; Icon : integer; Titel : String; Rect : TRect);
+var
+  ti: TToolInfo;
+  P : PChar;
+begin
+  ti.cbSize := SizeOf(ti);
+  ti.uFlags := TTF_TRANSPARENT or TTF_SUBCLASS;
+  ti.hwnd := Control.Handle;
+  ti.lpszText := LPSTR_TEXTCALLBACK;
+  ti.lpszText := PChar(Titel);
+  ti.uId := 0;
+  ti.rect := Rect;
+  P := PChar(Titel);
+  SendMessage(BWnd, TTM_ADDTOOL, 0, Integer(@ti));
+  SendMessagE(BWnd, TTM_SETTITLE, 1, Integer(P));
+end;
+
+procedure SetTipTitel(TipWnd : hwnd; Icon : integer; Titel : String);
+var
+  P : PChar;
+begin
+  P := PChar(Titel);
+  SendMessagE(TipWnd, TTM_SETTITLE, Icon, Integer(P));
+end;
+
+
 function RegisterToolTip(Control: TWinControl) : hwnd;
 var
   hWnd, hWndTip: THandle;
