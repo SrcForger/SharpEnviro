@@ -58,6 +58,7 @@ const
   SU_SHARPMENU = 10;
   SU_SHARPBAR = 11;
   SU_CURSOR = 12;
+  SU_WALLPAPER = 13;
 
   // Shell message
   WM_SHARPSHELLMESSAGE = WM_APP + 507;
