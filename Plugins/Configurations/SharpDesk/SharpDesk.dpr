@@ -75,22 +75,25 @@ begin
   result := frmDeskSettings.Handle;
 end;
 
+procedure Save;
+begin
+  XMLSettings.Grid  := frmDeskSettings.cb_grid.Checked;
+  XMLSettings.GridX := frmDeskSettings.sgb_gridx.Value;
+  XMLSettings.GridY := frmDeskSettings.sgb_gridy.Value;
+  XMLSettings.SingleClick := frmDeskSettings.cb_singleclick.Checked;
+  XMLSettings.AdvancedMM := frmDeskSettings.cb_amm.Checked;
+  XMLSettings.DragAndDrop := frmDeskSettings.cb_dd.Checked;
+  XMLSettings.WallpaperWatch := frmDeskSettings.cb_wpwatch.Checked;
+  XMLSettings.SaveSettings;
+end;
+
 function Close(ASave: Boolean): boolean;
 begin
   result := True;
   try
     if ASave then
-    begin
-      XMLSettings.Grid  := frmDeskSettings.cb_grid.Checked;
-      XMLSettings.GridX := frmDeskSettings.sgb_gridx.Value;
-      XMLSettings.GridY := frmDeskSettings.sgb_gridy.Value;
-      XMLSettings.SingleClick := frmDeskSettings.cb_singleclick.Checked;
-      XMLSettings.AdvancedMM := frmDeskSettings.cb_amm.Checked;
-      XMLSettings.DragAndDrop := frmDeskSettings.cb_dd.Checked;
-      XMLSettings.WallpaperWatch := frmDeskSettings.cb_wpwatch.Checked;
-      XMLSettings.SaveSettings;
-    end;
-    
+       Save;
+
     XMLSettings.Free;
     XMLSettings := nil;
 
@@ -150,6 +153,7 @@ end;
 exports
   Open,
   Close,
+  Save,
   SetDisplayText,
   SetStatusText,
   SetBtnState,

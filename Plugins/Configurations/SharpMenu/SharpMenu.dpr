@@ -92,37 +92,40 @@ begin
   result := frmMenuSettings.Handle;
 end;
 
-function Close(ASave: Boolean): boolean;
+procedure Save;
 var
   XML : TJvSimpleXML;
   Dir : String;
   FName : String;
 begin
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Settings\';
+  if not DirectoryExists(Dir) then
+     ForceDirectories(Dir);
+  FName := Dir + 'SharpMenu.xml';
+
+  XML := TJvSimpleXML.Create(nil);
+  XML.Root.Name := 'SharpEMenuSettings';
+  with XML.Root.Items.Add('Settings').Items do
+  begin
+   Add('WrapMenu',frmMenuSettings.cb_wrap.Checked);
+   AdD('WrapCount',frmMenuSettings.sgb_wrapcount.Value);
+   Add('WrapPosition',frmMenuSettings.cobo_wrappos.ItemIndex);
+   Add('CacheIcons',frmMenuSettings.cb_cacheicons.Checked);
+  end;
+  XML.SaveToFile(FName + '~');
+  if FileExists(FName) then
+     DeleteFile(FName);
+  RenameFile(FName + '~',
+             FName);
+  XML.Free;
+end;
+
+function Close(ASave: Boolean): boolean;
+begin
   result := True;
   try
     if ASave then
-    begin
-      Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Settings\';
-      if not DirectoryExists(Dir) then
-         ForceDirectories(Dir);
-      FName := Dir + 'SharpMenu.xml';
-
-      XML := TJvSimpleXML.Create(nil);
-      XML.Root.Name := 'SharpEMenuSettings';
-      with XML.Root.Items.Add('Settings').Items do
-      begin
-       Add('WrapMenu',frmMenuSettings.cb_wrap.Checked);
-       AdD('WrapCount',frmMenuSettings.sgb_wrapcount.Value);
-       Add('WrapPosition',frmMenuSettings.cobo_wrappos.ItemIndex);
-       Add('CacheIcons',frmMenuSettings.cb_cacheicons.Checked);
-      end;
-      XML.SaveToFile(FName + '~');
-      if FileExists(FName) then
-         DeleteFile(FName);
-      RenameFile(FName + '~',
-                 FName);
-      XML.Free;
-    end;
+       Save;
 
     frmMenuSettings.Close;
     frmMenuSettings.Free;

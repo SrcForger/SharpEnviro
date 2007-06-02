@@ -150,13 +150,6 @@ begin
   result := frmDesktopSettings.Handle;
 end;
 
-procedure Close;
-begin
-  frmDesktopSettings.Close;
-  frmDesktopSettings.Free;
-  frmDesktopSettings := nil;
-end;
-
 procedure Save;
 var
   XML: TJvSimpleXML;
@@ -237,6 +230,21 @@ begin
   XML.Free;
 end;
 
+function Close(ASave: Boolean): boolean;
+begin
+  try
+    if ASave then
+       Save;
+
+    frmDesktopSettings.Close;
+    frmDesktopSettings.Free;
+    frmDesktopSettings := nil;
+    result := True;
+  except
+    result := False;
+  end;
+end;
+
 procedure SetDisplayText(const APluginID: Pchar; var ADisplayText: PChar);
 begin
   ADisplayText := PChar('Desktop');
@@ -284,6 +292,7 @@ end;
 exports
   Open,
   Close,
+  Save,
   SetDisplayText,
   SetStatusText,
   SetBtnState,

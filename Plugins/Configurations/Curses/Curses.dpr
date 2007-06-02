@@ -83,32 +83,36 @@ begin
   result := frmCursesList.Handle;
 end;
 
-function Close(ASave: Boolean): boolean;
+procedure Save;
 var
   XML : TJvSimpleXML;
   FName : String;
   n : integer;
 begin
+  if frmCursesList.lb_cursorlist.ItemIndex >= 0 then
+  begin
+    FName := SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmCursesList.sTheme+'\Cursor.xml';
+
+    XML := TJvSimpleXML.Create(nil);
+    XML.Root.Name := 'SharpEThemeCursor';
+    XML.Root.Items.Add('CurrentSkin',frmCursesList.lb_cursorlist.Item[frmCursesList.lb_cursorlist.ItemIndex].SubItemText[2]);
+    for n := 0 to frmCursesList.ccolors.Items.Count - 1 do
+        XML.Root.Items.Add('Color' + inttostr(n),frmCursesList.ccolors.Items.Item[n].ColorCode);
+    XML.SaveToFile(FName + '~');
+    if FileExists(FName) then
+       DeleteFile(FName);
+    RenameFile(FName + '~',FName);
+    XML.Free;
+  end;
+end;
+
+function Close(ASave: Boolean): boolean;
+
+begin
   result := True;
   try
     if ASave then
-    begin
-      if frmCursesList.lb_cursorlist.ItemIndex >= 0 then
-      begin
-        FName := SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmCursesList.sTheme+'\Cursor.xml';
-
-        XML := TJvSimpleXML.Create(nil);
-        XML.Root.Name := 'SharpEThemeCursor';
-        XML.Root.Items.Add('CurrentSkin',frmCursesList.lb_cursorlist.Item[frmCursesList.lb_cursorlist.ItemIndex].SubItemText[2]);
-        for n := 0 to frmCursesList.ccolors.Items.Count - 1 do
-            XML.Root.Items.Add('Color' + inttostr(n),frmCursesList.ccolors.Items.Item[n].ColorCode);
-        XML.SaveToFile(FName + '~');
-        if FileExists(FName) then
-           DeleteFile(FName);
-        RenameFile(FName + '~',FName);
-        XML.Free;
-      end;
-    end;
+       Save;
 
     frmCursesList.Close;
     frmCursesList.Free;
@@ -176,6 +180,7 @@ end;
 exports
   Open,
   Close,
+  Save,
   SetDisplayText,
   SetStatusText,
   SetBtnState,

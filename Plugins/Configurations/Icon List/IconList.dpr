@@ -80,27 +80,30 @@ begin
   result := frmIconList.Handle;
 end;
 
-function Close(ASave: Boolean): boolean;
+procedure Save;
 var
   XML : TJvSimpleXML;
+begin
+  if frmIconList.lb_iconlist.ItemIndex >= 0 then
+  begin
+    XML := TJvSimpleXML.Create(nil);
+    XML.Root.Name := 'SharpEThemeIconSet';
+    XML.Root.Items.Add('Name',frmIconList.lb_iconlist.Item[frmIconList.lb_iconlist.ItemIndex].SubItemText[1]);
+    XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml~');
+    if FileExists(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml') then
+       DeleteFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml');
+    RenameFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml~',
+               SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml');
+    XML.Free;
+  end;
+end;
+
+function Close(ASave: Boolean): boolean;
 begin
   result := True;
   try
     if ASave then
-    begin
-      if frmIconList.lb_iconlist.ItemIndex >= 0 then
-      begin
-        XML := TJvSimpleXML.Create(nil);
-        XML.Root.Name := 'SharpEThemeIconSet';
-        XML.Root.Items.Add('Name',frmIconList.lb_iconlist.Item[frmIconList.lb_iconlist.ItemIndex].SubItemText[1]);
-        XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml~');
-        if FileExists(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml') then
-           DeleteFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml');
-        RenameFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml~',
-                   SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml');
-        XML.Free;
-      end;
-    end;
+       Save;
 
     frmIconList.Close;
     frmIconList.Free;
@@ -167,6 +170,7 @@ end;
 exports
   Open,
   Close,
+  Save,
   SetDisplayText,
   SetStatusText,
   SetBtnState,
