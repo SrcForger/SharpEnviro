@@ -42,14 +42,15 @@
      <project Name="MiniScmd" Type="DLL" >Plugins\Modules\MiniScmd\MiniScmd.bdsproj</project>  
      <project Name="Notes" Type="DLL" >Plugins\Modules\Notes\Notes.bdsproj</project>  
      <project Name="Quick Script" Type="DLL" >Plugins\Modules\QuickScript\QuickScript.bdsproj</project>  
-     <project Name="SystemTray" Type="DLL" >Plugins\Modules\SystemTray\SystemTray.bdsproj</project>  
-     <project Name="Taskbar" Type="DLL" >Plugins\Modules\Taskbar\Taskbar.bdsproj</project>  
+     <project Name="Screenshot" Type="DLL" >Plugins\Modules\Screenshot\Screenshot.bdsproj</project>
+     <project Name="SystemTray" Type="DLL" >Plugins\Modules\SystemTray\SystemTray.bdsproj</project>
+     <project Name="Taskbar" Type="DLL" >Plugins\Modules\Taskbar\Taskbar.bdsproj</project>
      <project Name="Volume Control" Type="DLL" >Plugins\Modules\VolumeControl\VolumeControl.bdsproj</project>  
      <project Name="Weather" Type="DLL">Plugins\Modules\Weather\Weather.bdsproj</project>   
   </package>
   <package Name="Objects">
      <project Name="Link" Type="DLL" >Plugins\Objects\Link\Link.bdsproj</project>  
-     <project Name="Recycle Bin" Type="DLL" >Plugins\Objects\RecycleBin\RecycleBin.bdsproj</project>  
+     <project Name="Recycle Bin" Type="DLL" >Plugins\Objects\RecycleBin\RecycleBin.bdsproj</project>
   </package>
   <package Name="Services">
      <project Name="Components" Type="DLL" >Plugins\Services\Components\Components.bdsproj</project>  
