@@ -83,8 +83,13 @@ type
     MirrorHoriz     : boolean;
     MirrorVert      : boolean;
   end;
+  TWallpaperMonitor = record
+                        Name : String;
+                        ID   : integer; 
+                      end;
+
   TThemeWallpapers = array of TThemeWallpaper;
-  TMonitorWallpapers = array of String;
+  TMonitorWallpapers = array of TWallpaperMonitor;
 
 
   TThemeDesktopAnim = record
@@ -596,7 +601,8 @@ procedure SetThemeWallpaperDefault;
 begin
   setlength(Theme.Wallpapers,1);
   setlength(Theme.MonitorWallpapers,1);
-  Theme.MonitorWallpapers[0] := 'Default';
+  Theme.MonitorWallpapers[0].Name := 'Default';
+  Theme.MonitorWallpapers[0].ID := -100;
   with Theme.Wallpapers[0] do
   begin
     Name            := 'Default';
@@ -984,7 +990,8 @@ begin
              begin
                if n <> 0 then
                   setlength(Theme.MonitorWallpapers,length(Theme.MonitorWallpapers)+1);
-               Theme.MonitorWallpapers[High(Theme.MonitorWallpapers)] := Value('Name','Default');
+               Theme.MonitorWallpapers[High(Theme.MonitorWallpapers)].Name := Value('Name','Default');
+               Theme.MonitorWallpapers[High(Theme.MonitorWallpapers)].ID := IntValue('ID',-100);
              end;
     except
       SetThemeWallpaperDefault;
@@ -1264,19 +1271,16 @@ end;
 
 function GetMonitorWallpaper(Index : integer) : TThemeWallpaper;
 var
-  n : integer;
+  n,i : integer;
 begin
-  Index := abs(Index);
-
-  if Index > High(Theme.MonitorWallpapers) then
-     Index := 0;
-
-  for n := 0 to High(Theme.Wallpapers) do
-      if CompareText(Theme.MonitorWallpapers[Index],Theme.Wallpapers[n].Name) = 0 then
-      begin
-        result := Theme.Wallpapers[n];
-        exit;
-      end;
+  for n := 0 to High(Theme.MonitorWallpapers) do
+      if Theme.MonitorWallpapers[n].ID = index then
+         for i := 0 to High(Theme.Wallpapers) do
+             if CompareText(Theme.Wallpapers[i].Name,Theme.MonitorWallpapers[n].Name) = 0 then
+             begin
+               result := Theme.Wallpapers[i];
+               exit;
+             end;
 
   result := Theme.Wallpapers[0];
 end;
