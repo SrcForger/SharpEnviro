@@ -167,6 +167,7 @@ type
     procedure SetZOrder;
     property handle: hwnd read WindowHandle;
     property Alpha : byte read FAlpha write SetAlpha;
+    property Skin : TBitmap32 read FBmp;
   end;
 
   TSharpEThrobber = class(TCustomSharpEGraphicControl)
