@@ -9,6 +9,7 @@
      <project Name="SharpMenu" Type="DLL">Plugins\Configurations\SharpMenu\SharpMenu.bdsproj</project>  
      <project Name="Theme List" Type="DLL">Plugins\Configurations\Theme List\ThemeList.bdsproj</project>  
      <project Name="Skin" Type="DLL">Plugins\Configurations\Theme Skin\ThemeSkinList.bdsproj</project>  
+     <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Wallpaper\Wallpaper.bdsproj</project>  
   </package>
   <package Name="Components">
      <project Name="SharpBar" Type="Application">Components\SharpBar\SharpBar.bdsproj</project>  
