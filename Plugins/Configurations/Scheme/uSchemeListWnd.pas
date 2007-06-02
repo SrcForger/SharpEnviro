@@ -166,11 +166,10 @@ begin
       tmpSchemeItem :=
         TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
 
-    BarPreview.CreateBarPreview(bmp, FSchemeItems.GetSkinName(FTheme),
+    BarPreview.CreateBarPreview(bmp, FTheme, FSchemeItems.GetSkinName(FTheme),
       tmpSchemeItem.GetItemAsColorArray(tmpSchemeItem.Colors), 200);
 
     bmp.DrawMode := dmBlend;
-    bmp.savetofile('e:\test.bmp');
 
     cx := (ABmp.Width div 2) - (bmp.Width div 2);
     cy := (ABmp.Height div 2) - (bmp.Height div 2);
