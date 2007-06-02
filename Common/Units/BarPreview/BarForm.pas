@@ -35,22 +35,26 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, SharpEBaseControls, SharpEBar, SharpESkinManager, SharpEScheme, SharpESkin,
-  SharpEButton;
+  SharpEButton, GR32, SharpGraphicsUtils;
 
 type
   TBarWnd = class(TForm)
-    SharpESkin1: TSharpESkin;
     SharpEScheme1: TSharpEScheme;
     Button: TSharpEButton;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { Private-Deklarationen }
+    procedure OnBackgroundPaint(Sender : TObject; Target : TBitmap32; x : integer);
   public
     SharpEBar1: TSharpEBar;
     SkinManager : TSharpESkinManager;
+    SkinComp : TSharpESkin;
+    Background : TBitmap32;
+    procedure ApplyGlassEffect(GEBlurRadius,GEBlurIterations : integer; GEBlend : boolean;
+                               GEBlendColor,GEBlendAlpha : integer; GELighten : boolean;
+                               GELightenAmount : integer);
   end;
-
 
 implementation
 
@@ -58,18 +62,47 @@ implementation
 
 procedure TBarWnd.FormCreate(Sender: TObject);
 begin
-  SkinManager := TSharpESkinManager.CreateRuntime(self,SharpESkin1,SharpEScheme1,True);
+  Background := TBitmap32.Create;
+  Background.SetSize(1,1);
+  Background.Clear(color32(0,0,0,0));
+
+  SkinComp := TSharpESkin.Create(self,[scBar,scButton]);
+
+  SkinManager := TSharpESkinManager.CreateRuntime(self,SkinComp,SharpEScheme1,True,[scBar,scButton]);
   SkinManager.SkinSource := ssComponent;
   SkinManager.SchemeSource := ssComponent;
 
   SharpEBar1 := TSharpEBar.CreateRuntime(self,SkinManager);
   Button.SkinManager := SkinManager;
+  SharpEBar1.OnBackgroundPaint := OnBackgroundPaint;
 end;
 
 procedure TBarWnd.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(SharpEbar1);
   FreeAndNil(SkinManager);
+  FreeAndNil(SkinComp);
+  FreeAndNil(Background);
+end;
+
+procedure TBarWnd.OnBackgroundPaint(Sender : TObject; Target : TBitmap32; x : integer);
+begin
+  if Background <> nil then
+     Background.DrawTo(Target);
+end;
+
+procedure TBarWnd.ApplyGlassEffect(GEBlurRadius,GEBlurIterations : integer; GEBlend : boolean;
+                                   GEBlendColor,GEBlendAlpha : integer; GELighten : boolean;
+                                   GELightenAmount : integer);
+begin
+  if SkinManager.Skin.BarSkin.GlassEffect then
+  begin
+    if GEBlend then
+       BlendImageC(Background,GEBlendColor,GEBlendAlpha);
+    boxblur(Background,GEBlurRadius,GEBlurIterations);
+    if GELighten then
+       lightenBitmap(Background,GELightenAmount);
+  end;
 end;
 
 end.

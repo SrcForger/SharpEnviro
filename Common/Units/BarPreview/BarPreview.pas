@@ -32,25 +32,27 @@ unit BarPreview;
 
 interface
 
-uses SharpApi, SharpThemeApi, Math, GR32, JvSimpleXML, BarForm, SharpEBar,
-     Windows, SysUtils, Dialogs;
+uses SharpApi, Types, SharpThemeApi, Math, GR32, JvSimpleXML, BarForm, SharpEBar,
+     Windows, SysUtils, Dialogs, Graphics;
 
 procedure CreateBarPreview(ABitmap : TBitmap32; pSkin,pScheme : String; Width : integer); overload;
-procedure CreateBarPreview(ABitmap : TBitmap32; pSkin : String; pSchemeList: TSharpEColorSet; Width : integer); overload;
+procedure CreateBarPreview(ABitmap : TBitmap32; pTheme,pSkin : String; pSchemeList: TSharpEColorSet; Width : integer; drawbg : boolean = true); overload;
 
 implementation
 
-procedure CreateBarPreview(ABitmap : TBitmap32; pSkin : String; pSchemeList: TSharpEColorSet; Width : integer);
+procedure CreateBarPreview(ABitmap : TBitmap32; pTheme,pSkin : String; pSchemeList: TSharpEColorSet; Width : integer; drawbg : boolean = true);
+const
+  csize = 12;
 var
   BarWnd: TBarWnd;
   Dir : String;
   skinfile : String;
-  colorvalue : String;
-  colorint   : integer;
+  themeskinfile : String;
   XML : TJvSimpleXML;
   n : integer;
   ThrobberPos : TPoint;
   ButtonPos : TPoint;
+  x,y : integer;
 begin
   try
     XML := TJvSimpleXML.Create(nil);
@@ -58,10 +60,13 @@ begin
     BarWnd := TBarWnd.Create(nil);
     Dir := SharpApi.GetSharpeDirectory;
     skinfile := Dir + 'Skins\' + pSkin + '\skin.xml';
-    if FileExists(skinfile) then BarWnd.SharpESkin1.LoadFromXmlFile(skinfile);
+    themeskinfile := SharpThemeApi.GetThemeDirectory(PChar(pTheme)) + 'skin.xml';
+    if FileExists(skinfile) then BarWnd.SkinComp.LoadFromXmlFile(skinfile);
     BarWnd.SharpEScheme1.ClearColors;
     for n := 0 to High(pSchemeList) do
         BarWnd.SharpEScheme1.AddColor(pSchemeList[n]);
+
+    BarWnd.SkinComp.UpdateDynamicProperties(BarWnd.SharpEScheme1);
 
     ThrobberPos := Point(BarWnd.SkinManager.Skin.BarSkin.ThDim.XAsInt,
                          BarWnd.SkinManager.Skin.BarSkin.ThDim.YAsInt);
@@ -74,17 +79,48 @@ begin
 
     BarWnd.SharpEBar1.UpdateSkin;
     ShowWindow(BarWnd.SharpEBar1.abackground.handle,SW_HIDE);
-    ABitmap.SetSize(max(width,1),BarWnd.SkinManager.Skin.BarSkin.SkinDim.HeightAsInt);
-    ABitmap.Clear(color32(0,0,0,0));
+    ABitmap.SetSize(max(width,1)+3*csize,BarWnd.SkinManager.Skin.BarSkin.SkinDim.HeightAsInt+3*csize);
+    ABitmap.Clear(color32(255,0,254,0));
+
+    if drawbg then
+       with BarWnd.Background do
+       begin
+         SetSize(ABitmap.Width + 2*csize,ABitmap.Height + 2*csize);
+         Clear(color32(clsilver));
+         for x := 0 to ABitmap.Width div (2 * csize) do
+             for y := 0 to ABitmap.Height div (csize) do
+                 if y mod 2 = 0 then
+                    FillRect(2*x*csize,y*csize,2*x*csize + csize,y*csize + csize,clWhite32)
+                 else FillRect(2*x*csize + csize,y*csize,2*x*csize + 2*csize,y*csize + csize,clWhite32);
+         DrawTo(ABitmap,-round(1.5*csize),-round(1.5*csize));
+       end else BarWnd.Background.Clear(color32(0,0,0,0));
+       
+    try
+      XML.LoadFromFile(themeskinfile);
+      with XML.Root.Items do
+      begin
+         BarWnd.ApplyGlassEffect(IntValue('GEBlurRadius',2),
+                                 IntValue('GEBlurIterations',2),
+                                 BoolValue('GEBlend',False),
+                                 IntValue('GEBlendColor',clblue),
+                                 IntValue('GEBlendAlpha',32),
+                                 BoolValue('GELighten',True),
+                                 IntValue('GELightenAmount',23));
+      end;
+    except
+    end;
+
     BarWnd.SharpEBar1.VertPos := vpTop;
     BarWnd.SharpEBar1.UpdateSkin;
-    BarWnd.SharpEBar1.Skin.DrawTo(ABitmap,0,0);
+    BarWnd.SharpEBar1.abackground.Skin.Drawto(ABitmap,round(1.5*csize),round(1.5*csize));
+    BarWnd.SharpEBar1.Skin.DrawTo(ABitmap,round(1.5*csize),round(1.5*csize));
     BarWnd.SharpEBar1.Throbber.UpdateSkin;
     BarWnd.SharpEBar1.Throbber.Skin.DrawTo(ABitmap,
-                                           ThrobberPos.X,
-                                           ThrobberPos.Y);
+                                           ThrobberPos.X + round(1.5*csize),
+                                           ThrobberPos.Y + round(1.5*csize));
     BarWnd.Button.UpdateSkin;
-    BarWnd.Button.Skin.DrawTo(ABitmap,ButtonPos.X,ButtonPos.Y);
+
+    BarWnd.Button.Skin.DrawTo(ABitmap,ButtonPos.X + round(1.5*csize),ButtonPos.Y+round(1.5*csize));
   finally
     XML.Free;
     FreeAndNil(barWnd);
@@ -112,7 +148,7 @@ begin
     BarWnd := TBarWnd.Create(nil);
     Dir := SharpApi.GetSharpeDirectory;
     skinfile := Dir + 'Skins\' + pSkin + '\skin.xml';
-    if FileExists(skinfile) then BarWnd.SharpESkin1.LoadFromXmlFile(skinfile);
+    if FileExists(skinfile) then BarWnd.SkinComp.LoadFromXmlFile(skinfile);
     schemefile := Dir + 'Skins\' + pSkin + '\Schemes\' + pScheme;
     if not FileExists(schemefile) then schemefile := Dir + 'Skins\' + pSkin + '\scheme.xml';
     if FileExists(schemefile) then
