@@ -308,7 +308,8 @@ begin
         FName := Dir + 'Wallpaper.xml';
         if FileExists(FName) then
         begin
-          WPName := SharpThemeApi.GetMonitorWallpaper(Screen.PrimaryMonitor.MonitorNum).Name;
+          // Get the name of the primary monitor (ID:-100 = Primary Mon)
+          WPName := SharpThemeApi.GetMonitorWallpaper(-100).Name;
           XML := TJvSimpleXML.Create(nil);
           try
             XML.LoadFromFile(FName);
@@ -558,6 +559,16 @@ begin
   begin
     LoadTheme(True);
     exit;
+  end;
+
+  if (msg.WParam = SU_WALLPAPER) then
+  begin
+    SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
+    Background.Reload;
+    BackgroundImage.ForceFullInvalidate;
+    SharpDesk.BackgroundLayer.Update;
+    SharpDesk.BackgroundLayer.Changed;
+    SharpApi.SharpEBroadCast(WM_DESKBACKGROUNDCHANGED,0,0);
   end;
 
   if (msg.WParam = SU_SHARPDESK) then
