@@ -33,7 +33,7 @@ unit SharpGraphicsUtils;
 
 interface
 
-uses Windows, Graphics, GR32, GR32_Blend, Math;
+uses Windows, Graphics, GR32, GR32_Blend, Math, SharpThemeApi;
 
 type
   THSLColor = record
@@ -51,6 +51,11 @@ type
   procedure HSLChangeImage(bmp : Tbitmap32; HMod,SMod,LMod : integer);
   function HSLtoRGB(H,S,L : integer): TColor32;
   function RGBtoHSL(RGB: TColor32) : THslColor;
+
+  procedure VGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
+  procedure HGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
+  procedure ApplyGradient(Bmp : TBitmap32; gtype : TThemeWallpaperGradientType;
+                          GDStartColor, GDEndColor, GDStartAlpha, GDEndAlpha : integer);
 
   procedure BlendImageA(bmp : Tbitmap32; color : TColor; blendalpha : integer);
   procedure BlendImageC(bmp : Tbitmap32; color : TColor; alpha:integer);
@@ -73,6 +78,86 @@ asm
       CMOVL     EAX,EDX
       CMP       ECX,EAX
       CMOVL     EAX,ECX
+end;
+
+procedure VGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
+var
+   nR,nG,nB,nt : real;
+   sR,sG,sB : integer;
+   eR,eG,eB : integer;
+   y : integer;
+begin
+  sR := GetRValue(color1);
+  sG := GetGValue(color1);
+  sB := GetBValue(color1);
+  eR := GetRValue(color2);
+  eG := GetGValue(color2);
+  eB := GetBValue(color2);
+  nR:=(eR-sR)/(Rect.Bottom-Rect.Top);
+  nG:=(eG-sG)/(Rect.Bottom-Rect.Top);
+  nB:=(eB-sB)/(Rect.Bottom-Rect.Top);
+  nt:=(et-st)/(Rect.Bottom-Rect.Top);
+  for y:=0 to Rect.Bottom-Rect.Top do
+      Bmp.HorzLineT(Rect.Left,y+Rect.Top,Rect.Right,
+                    color32(sr+round(nr*y),sg+round(ng*y),sb+round(nb*y),st+round(nt*y)));
+end;
+
+
+// ######################################
+
+
+procedure HGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
+var
+   nR,nG,nB,nt : real;
+   sR,sG,sB : integer;
+   eR,eG,eB : integer;
+   x : integer;
+begin
+  sR := GetRValue(color1);
+  sG := GetGValue(color1);
+  sB := GetBValue(color1);
+  eR := GetRValue(color2);
+  eG := GetGValue(color2);
+  eB := GetBValue(color2);
+  nR:=(eR-sR)/(Rect.Right-Rect.Left);
+  nG:=(eG-sG)/(Rect.Right-Rect.Left);
+  nB:=(eB-sB)/(Rect.Right-Rect.Left);
+  nt:=(et-st)/(Rect.Right-Rect.Left);
+  for x:=0 to Rect.Right-Rect.Left do
+      Bmp.VertLineT(x+Rect.Left,Rect.Top,Rect.Bottom,
+                    color32(sr+round(nr*x),sg+round(ng*x),sb+round(nb*x),st+round(nt*x)));
+end;
+
+procedure ApplyGradient(Bmp : TBitmap32; gtype : TThemeWallpaperGradientType;
+                        GDStartColor, GDEndColor, GDStartAlpha, GDEndAlpha : integer);
+var
+  R,R2 : TRect;
+begin
+  R := Bmp.Canvas.ClipRect;
+  R.Right := R.Right - 1;
+  R.Bottom := R.Bottom - 1;
+  case gtype of
+    twgtHoriz: HGradient(Bmp,GDStartColor,GDEndColor,255-GDStartAlpha,255-GDEndAlpha,R);
+    twgtVert: VGradient(Bmp,GDStartColor,GDEndColor,255-GDStartAlpha,255-GDEndAlpha,R);
+    twgtTSHoriz:
+    begin
+      R2 := R;
+      R2.Right := R2.Right div 2;
+      HGradient(Bmp,GDStartColor,GDEndColor,255-GDStartAlpha,255-GDEndAlpha,R2);
+      R2 := R;
+      R2.Left := R2.Right div 2 + 1;
+      HGradient(Bmp,GDEndColor,GDStartColor,255-GDEndAlpha,255-GDStartAlpha,R2);
+    end;
+    twgtTSVert:
+    begin
+      R2 := R;
+      R2.Bottom := R2.Bottom div 2;
+      VGradient(Bmp,GDStartColor,GDEndColor,255-GDStartAlpha,255-GDEndAlpha,R2);
+      R2 := R;
+      R2.Top := R2.Bottom div 2 + 1;
+      VGradient(Bmp,GDEndColor,GDStartColor,255-GDEndAlpha,255-GDStartAlpha,R2);
+    end;
+  end;
 end;
 
 procedure lightenBitmap(bmp : Tbitmap32; amount :integer);
