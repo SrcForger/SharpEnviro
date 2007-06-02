@@ -72,6 +72,7 @@ type
     strAppend : string;
     strLocation : string;
     hwndActive : hWnd;
+    hwndDesktop : hWnd;
 
   public
     ModuleID : integer;
@@ -199,6 +200,7 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  hwndDesktop :=  GetDesktopWindow;
   Background := TBitmap32.Create;
   DoubleBuffered := True;
 end;
@@ -224,17 +226,21 @@ begin
   try
     begin
       bitMap := TBitmap.Create;
-      if (blnActiveWin) Or (hwndActive <> 0)then
+      if (blnActiveWin) then
       begin
-       SetForeGroundWindow(hwndActive);
-       dc := GetWindowDC(hwndActive);
-       GetWindowRect(hwndActive,r);
-       bitMap.Width := r.Right - r.Left;
-       bitMap.Height := r.Bottom - r.Top;
-       BitBlt(bitMap.Canvas.Handle, 0, 0, bitMap.Width, bitMap.Height,dc, 0, 0, SRCCOPY);
-      end
+       if (hwndActive <> 0)then
+        begin
+         SetForeGroundWindow(hwndActive);
+         dc := GetWindowDC(hwndActive);
+         GetWindowRect(hwndActive,r);
+         bitMap.Width := r.Right - r.Left;
+         bitMap.Height := r.Bottom - r.Top;
+         BitBlt(bitMap.Canvas.Handle, 0, 0, bitMap.Width, bitMap.Height,dc, 0, 0, SRCCOPY);
+        end
+       end
       else
       begin
+//        hdcSrc := GetWindowDC(hwndDesktop);
         hdcSrc := GetWindowDC(GetDesktopWindow);
         bitMap.Width  := Screen.Width;
         bitMap.Height := Screen.Height;
