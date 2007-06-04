@@ -11,25 +11,13 @@ uses
   Classes,
   Graphics,
   Controls,
-  Forms,
-  Dialogs,
   StdCtrls,
   sharpapi,
   ExtCtrls,
-  Buttons,
-  ImgList,
-  ComCtrls,
-  ToolWin,
   ShellApi,
-  Menus,
-  tlhelp32,
   Types,
   PngImageList,
-  JclFileUtils,
-  Tabs,
-  SharpFX,
-  JclGraphics,
-  SharpESkinManager;
+  JclFileUtils;
 
 procedure PaintListbox(AListbox: TListBox; ARect: TRect; ALeftOffset:Integer; AState:
   TOwnerDrawState; AText: string; APngCollection: TPngImageCollection; AIconIndex:
