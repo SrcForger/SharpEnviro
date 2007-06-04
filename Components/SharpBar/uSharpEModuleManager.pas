@@ -325,6 +325,7 @@ begin
   end;
 end;
 
+// Clone a Module
 procedure TModuleManager.Clone(ID : integer);
 var
   tempModule : TModule;
@@ -356,7 +357,10 @@ begin
             Add('ID',newID);
             Add('Settings').LoadFromString(tempsettings);
           end;
-          FModuleSettings.SaveToFile(FModuleSettings.FileName);
+          FModuleSettings.SaveToFile(FModuleSettings.FileName + '~');
+          if FileExists(FModuleSettings.FileName) then
+             DeleteFile(FModuleSettings.FileName);
+          RenameFile(FModuleSettings.FileName + '~',FModuleSettings.FileName);
           break;
         end;
       end;
@@ -364,6 +368,7 @@ begin
   LoadModule(newID,ExtractFileName(tempModule.ModuleFile.FileName),TempModule.Position,GetModuleIndex(ID)+1);
 end;
 
+// Delete and Module (also deletes the module settings)
 procedure TModuleManager.Delete(ID : integer);
 var
   n,i : integer;
@@ -385,7 +390,10 @@ begin
           begin
             FModuleSettings.Root.Items.Delete(i);
             ForceDirectories(ExtractFileDir(FModuleSettings.FileName));
-            FModuleSettings.SaveToFile(FModuleSettings.FileName);
+            FModuleSettings.SaveToFile(FModuleSettings.FileName + '~');
+            if FileExists(FModuleSettings.FileName) then
+               DeleteFile(FModuleSettings.FileName);
+            RenameFile(FModuleSettings.FileName + '~',FModuleSettings.FileName);
             break;
           end;
 
@@ -409,12 +417,14 @@ begin
   end;
 end;
 
+// Unload all modules
 procedure TModuleManager.UnloadModules;
 begin
   while FModules.Count <> 0 do
         Unload(TModule(FModules.Items[0]).ID);
 end;
 
+// Unload a module
 procedure TModuleManager.Unload(ID : integer);
 var
   n : integer;
@@ -638,7 +648,10 @@ begin
           Add('ID',ID);
           //XMLItem := Add('Settings');
           Add('Settings');
-          FModuleSettings.SaveToFile(FModuleSettings.FileName);
+          FModuleSettings.SaveToFile(FModuleSettings.FileName + '~');
+          if FileExists(FModuleSettings.FileName) then
+             DeleteFile(FModuleSettings.FileName);
+          RenameFile(FModuleSettings.FileName + '~',FModuleSettings.FileName);
         end;
       end;
       pModule := TModule.Create(FBar.aform,pFile,ID,FParent,Position);
@@ -693,6 +706,7 @@ begin
   RefreshFromDirectory(pDirectory);
 end;
 
+// Calculate and return how much free bar space is left
 function TModuleManager.GetFreeBarSpace : integer;
 var
   n : integer;
@@ -755,6 +769,9 @@ begin
   Result := Rec.Res;
 end;
 
+// Calculate how much space is available
+// This function also takes care of other SharpBar windows which are
+// poditioned at the same screen border!
 function TModuleManager.GetMaxBarSpace : integer;
 var
   maxsize : integer;
@@ -1208,6 +1225,7 @@ begin
   end;
 end;
 
+// Calculate and update the size of the bar
 procedure TModuleManager.UpdateBarSize(PluginWidth : integer);
 var
   lo,ro : integer;

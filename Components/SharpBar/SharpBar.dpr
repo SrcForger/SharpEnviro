@@ -45,8 +45,7 @@ uses
   SharpApi,
   PluginManagerWnd in 'Forms\PluginManagerWnd.pas' {PluginManagerForm},
   AddPluginWnd in 'Forms\AddPluginWnd.pas' {AddPluginForm},
-  BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm},
-  EditSchemeWnd in 'Forms\EditSchemeWnd.pas' {EditSchemeForm};
+  BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm};
 
 {$R *.res}
 
@@ -99,7 +98,10 @@ begin
           end;
         end;
       end;
-      xml.SaveToFile(Dir + 'bars.xml');
+      xml.SaveToFile(Dir + 'bars.xml~');
+      if FileExists(Dir + 'bars.xml') then
+         DeleteFile(Dir + 'bars.xml');
+      RenameFile(Dir + 'bars.xml~',Dir + 'bars.xml');
     except
       xml.free;
       result := False;
@@ -292,6 +294,7 @@ begin
   Application.Title := 'SharpBar';
   mfParamID := ParamID;
   Application.CreateForm(TSharpBarMainForm, SharpBarMainForm);
+  SharpBarMainForm.InitBar;
   if (x <> - 1) and (y <> - 1) then
      for n := 0 to Screen.MonitorCount - 1 do
      begin

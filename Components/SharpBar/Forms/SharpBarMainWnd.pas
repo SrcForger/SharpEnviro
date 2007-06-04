@@ -37,7 +37,7 @@ uses
   Dialogs, SharpESkinManager, Menus, StdCtrls, JvSimpleXML, SharpApi,
   GR32, uSharpEModuleManager, DateUtils, PngImageList, SharpEBar, SharpThemeApi,
   SharpEBaseControls, ImgList, Controls, ExtCtrls, uSkinManagerThreads,
-  uSystemFuncs, Types, AppEvnts, SharpEColorPicker, SharpESkin, GR32_Image,
+  uSystemFuncs, Types, AppEvnts, SharpESkin,
   SharpGraphicsUtils, Math;
 
 type
@@ -86,7 +86,6 @@ type
     ThemeHideTimer: TTimer;
     ShowMiniThrobbers1: TMenuItem;
     procedure ShowMiniThrobbers1Click(Sender: TObject);
-    procedure FormPaint(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ThemeHideTimerTimer(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -131,7 +130,6 @@ type
     procedure OnQuickAddModuleItemClick(Sender : TObject);
     procedure OnSkinSelectItemClick(Sender : TObject);
     procedure OnSchemeSelectItemClick(Sender : TObject);
-    procedure OnSchemeCreateClick(Sender : TObject);
     procedure OnBackgroundPaint(Sender : TObject; Target : TBitmap32; x : integer);
   private
     { Private-Deklarationen }
@@ -173,7 +171,6 @@ type
     // shell hooks
     procedure WMRegisterShellHook(var msg : TMessage); message WM_REGISTERSHELLHOOK;
     procedure WMUnregisterShellHook(var msg : TMessage); message WM_UNREGISTERSHELLHOOK;
-//    procedure WMShellHook(var msg : TMessage); message WM_SHELLHOOK;
 
     // SharpE Actions
     procedure WMUpdateBangs(var Msg : TMessage); message WM_SHARPEUPDATEACTIONS;
@@ -202,6 +199,7 @@ type
     procedure SaveBarSettings;
     procedure UpdateBGZone;
     procedure UpdateBGImage(NewWidth : integer = -1);
+    procedure InitBar;
     property BGImage : TBitmap32 read FBGImage;
     property SkinManager : TSharpESkinManager read FSkinManager;
     property SharpEBar : TSharpEBar read FSharpEBar;
@@ -232,8 +230,7 @@ implementation
 uses PluginManagerWnd,
      SharpEMiniThrobber,
      BarHideWnd,
-     AddPluginWnd,
-     EditSchemeWnd;
+     AddPluginWnd;
 
 {$R *.dfm}
 {$R SharpBarCR.RES}
@@ -389,7 +386,8 @@ begin
   UpdateBGZone;
 
   SharpEBar.Throbber.UpdateSkin;
-  SharpEbar.Throbber.Repaint;
+  if SharpEBar.Throbber.Visible then
+     SharpEbar.Throbber.Repaint;
 
   ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
@@ -434,7 +432,10 @@ procedure TSharpBarMainForm.WMPowerBroadcast(var msg : TMessage);
 begin
   case msg.WParam of
     PBT_APMSUSPEND: FSuspended := True;
-    PBT_APMRESUMESUSPEND: FSuspended := False;
+    PBT_APMRESUMESUSPEND: begin
+                            FSuspended := False;
+                            RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+                          end;
   end;
   msg.Result := 1;
 end;
@@ -459,24 +460,6 @@ begin
   SendMessage(SharpEBar.abackground.handle, WM_SETREDRAW, 1, 0);
   RedrawWindow(SharpEBar.abackground.handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
 end;
-
-// Shell hook received (task list,...) -> forward to all registered shell modules
-{procedure TSharpBarMainForm.WMShellHook(var msg : TMessage);
-var
-  n : integer;
-begin
-  // bar received a shell hook, forward it to all registered modules
-
-  try
-    for n := 0 to FShellHookList.Count - 1 do
-    begin
-      if (n = 0) and (n <> FShellHookList.Count - 1) then FShellBCInProgress := True
-         else if n = FShellHookList.Count -1 then FShellBCInProgress := False;
-      PostMessage(strtoint(FShellHookList[n]),WM_ShellHook,msg.WParam,msg.LParam);
-    end;
-  except
-  end;
-end;        }
 
 // A module is requesting to be notified on shell messages (task list,...)
 procedure TSharpBarMainForm.WMRegisterShellHook(var msg : TMessage);
@@ -505,9 +488,6 @@ begin
     // first module requestion a shell hook -> register the global hook
     RegisterShellHook(0,1);
     RegisterShellHook(Handle,3);
-//    SHSetMainHandle(self.handle);
-//    SHSetCallBack(@dllcallback);
-//    SHSetHook;
   end;
 end;
 
@@ -519,10 +499,7 @@ begin
   FShellHookList.Delete(FShellHookList.IndexOf(inttostr(msg.WParam)));
 
   if FShellHookList.Count = 0 then
-  begin
-    RegisterShellHook(Handle,0);
-//    SHUnsetHook;
-  end;
+     RegisterShellHook(Handle,0);
 end;
 
 
@@ -539,6 +516,7 @@ begin
   DelayTimer3.Enabled := True;
 end;
 
+// SharpE Settings Update... check what setting has changed...
 procedure TSharpBarMainForm.WMUpdateSettings(var msg : TMessage);
 var
   h : integer;
@@ -556,6 +534,7 @@ begin
         // Check if SharpDesk is running
         if SharpApi.IsComponentRunning('SharpDesk') then
         begin
+          // SharpDesk is running -> the background is going to change
           SetLayeredWindowAttributes(Handle,0, 0, LWA_ALPHA);
           SharpEBar.abackground.Alpha := 0;
           ThemeHideTimer.Enabled := True;
@@ -573,6 +552,7 @@ begin
      (msg.WParam = SU_SCHEME)
      or (msg.WParam = SU_SKINFILECHANGED)  then
      begin
+       // Only update the skin if scheme or skin file changed...
        if not FStartup then LockWindow(Handle);
        FBarLock := True;
        h := Height;
@@ -581,8 +561,11 @@ begin
        if h < Height then UpdateBGZone
           else UpdateBGZone;
        SharpEBar.UpdateSkin;
-       SharpEBar.Throbber.UpdateSkin;
-       SharpEbar.Throbber.Repaint;
+       if SharpEBar.Throbber.Visible then
+       begin
+         SharpEBar.Throbber.UpdateSkin;
+         SharpEbar.Throbber.Repaint;
+       end;
        ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
      end;
 
@@ -676,11 +659,13 @@ end;
 
 // ***********************
 
+// the SharpEBar skin component is requesting the bar background for drawing
 procedure TSharpBarMainForm.OnBackgroundPaint(Sender: TObject; Target: TBitmap32; x : integer);
 begin
   FBGImage.DrawTo(Target,0,0,Rect(x-Monitor.Left,0,FBGImage.Width,FBGImage.Height));
 end;
 
+// Update the background image based on bar position and add glass effects
 procedure TSharpBarMainForm.UpdateBGImage(NewWidth : integer = -1);
 begin
   if FSuspended then exit;
@@ -692,11 +677,10 @@ begin
 
   FBGImage.SetSize(Max(NewWidth,FTopZone.Width),Height);
   FBGImage.Clear(color32(0,0,0,0));
-//  if SharpEBar.VertPos = vpTop then FBGImage.Draw(0,0,Rect(Left-Monitor.Left,0,Left-Monitor.Left+FTopZone.Width,FTopZone.Height),FTopZone)
-//     else FBGImage.Draw(0,0,Rect(Left-Monitor.Left,0,Left-Monitor.Left+FBottomZone.Width,FBottomZone.Height),FBottomZone);
   if SharpEBar.VertPos = vpTop then FBGImage.Draw(0,0,FTopZone)
      else FBGImage.Draw(0,0,FBottomZone);
 
+  // Apply Glass Effects
   if SkinManager.Skin.BarSkin.GlassEffect then
   begin
     if SharpThemeApi.GetSkinGEBlend then
@@ -705,13 +689,12 @@ begin
     if GetSkinGELighten then
        lightenBitmap(FBGImage,GetSkinGELightenAmount);
   end;
-  //SharpEbar.Skin.DrawTo(FBGImage);
 
-//  ReplaceTransparentAreas(FBGImage,SharpEbar.SkinBorder,Color32(255,0,254,0));
   SharpEBar.UpdateSkin;
   Repaint;
 end;
 
+// Update the images which are holding the bar background
 procedure TSharpBarMainForm.UpdateBGZone;
 var
   BGBmp : TBitmap32;
@@ -727,6 +710,8 @@ begin
     wnd := FindWindow('TSharpDeskMainForm',nil);
     if wnd <> 0 then
     begin
+      // First try to load the SharpDesk background image
+      // if this fails then try to use PrintWindow on SharpDesk
       if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp') then
          BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp')
       else
@@ -750,6 +735,8 @@ begin
       if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp') then
          BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp');
     end;
+    // Update the images holding the top and bottom background image
+    // (no need to hold the whole image, only the areas used by bars are of interest)
     FTopZone.SetSize(Monitor.Width,Height);
     FBottomZone.SetSize(Monitor.Width,Height);
     FTopZone.Draw(0,0,Rect(Monitor.Left,Monitor.Top,Monitor.Left + Monitor.Width,Monitor.Top + Height), BGBmp);
@@ -968,7 +955,10 @@ begin
     exit;
   end;
   ForceDirectories(Dir);
-  xml.SaveToFile(Dir + 'bars.xml');
+  xml.SaveToFile(Dir + 'bars.xml~');
+  if FileExists(Dir + 'bars.xml') then
+     DeleteFile(Dir + 'bars.xml~');
+  RenameFile(Dir + 'bars.xml~',Dir + 'bars.xml');
   xml.Free;
   // New bar is now loaded!
   // Set window caption to SharpBar_ID
@@ -1066,20 +1056,9 @@ begin
   xml.free;
 end;
 
-procedure TSharpBarMainForm.FormCreate(Sender: TObject);
+// Init all skin and module management classes
+procedure TSharpBarMainForm.InitBar;
 begin
-  Closing := False;
-  DoubleBuffered := True;
-
-  WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
-
-  FUser32DllHandle := LoadLibrary('user32.dll');
-  if FUser32DllHandle <> 0 then
-     @PrintWindow := GetProcAddress(FUser32DllHandle, 'PrintWindow');
-
-  FSuspended := False;
-  FShellBCInProgress := False;
-
   FSkinManager := TSharpESkinManager.Create(self, [scBar,scMiniThrobber]);
   FSkinManager.HandleUpdates := False;
 
@@ -1099,7 +1078,7 @@ begin
   FSharpEBar.onBackgroundPaint   := OnBackgroundPaint;
 
   SharpEBar.SkinManager := FSkinManager;
-  
+
   // Load System Skin and Scheme in a Thread
   SkinManagerLoadThread := TSystemSkinLoadThread.Create(FSkinManager);
 
@@ -1131,14 +1110,6 @@ begin
   DebugOutput('Loading Modules from Directory: '+ExtractFileDir(Application.ExeName) + '\Modules\',2,1);
   ModuleManager.LoadFromDirectory(ExtractFileDir(Application.ExeName) + '\Modules\');
 
-  // VWM Compatible | Taskhide | Alt+f4 lock
-  DebugOutput('Setting Form properties',2,1);
-  SetWindowLong(Handle, GWL_USERDATA, magicDWord);
-  Setwindowlong(Application.handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
-  SetWindowPos(application.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
-  ShowWindow(Application.Handle, SW_HIDE);
-
-  KeyPreview := true;
 
   SharpEBar.onPositionUpdate := OnBarPositionUpdate;
 
@@ -1166,6 +1137,29 @@ begin
   SharpEBar.Seed := - 1;
   SharpEBar.UpdateSkin;
   SharpEBar.Throbber.UpdateSkin;
+end;
+
+procedure TSharpBarMainForm.FormCreate(Sender: TObject);
+begin
+  Closing := False;
+  DoubleBuffered := True;
+
+  WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
+
+  FUser32DllHandle := LoadLibrary('user32.dll');
+  if FUser32DllHandle <> 0 then
+     @PrintWindow := GetProcAddress(FUser32DllHandle, 'PrintWindow');
+
+  FSuspended := False;
+  FShellBCInProgress := False;
+
+  DebugOutput('Setting Form properties',2,1);
+  SetWindowLong(Handle, GWL_USERDATA, magicDWord);
+  Setwindowlong(Application.handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
+  SetWindowPos(application.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+  ShowWindow(Application.Handle, SW_HIDE);
+
+  KeyPreview := true;
 
   SharpApi.RegisterActionEx(PChar('!FocusBar ('+inttostr(FBarID)+')'),'SharpBar',Handle,1);
 end;
@@ -1319,20 +1313,6 @@ begin
   // Build Scheme List
   ColorScheme1.Clear;
   item := TMenuItem.Create(ColorScheme1);
-  item.ImageIndex := 27;
-  item.Caption := 'Create New Scheme';
-  item.Hint := 'My Scheme';
-  item.OnClick := OnSchemeCreateClick;
-  ColorScheme1.Add(item);
-
-  item := TMenuItem.Create(ColorScheme1);
-  item.ImageIndex := 27;
-  item.Caption := 'Edit Current Scheme';
-  item.Hint := SharpThemeApi.GetSchemeName;
-  item.OnClick := OnSchemeCreateClick;
-  ColorScheme1.Add(item);
-
-  item := TMenuItem.Create(ColorScheme1);
   item.ImageIndex := -1;
   item.Caption := '-';
   ColorScheme1.Add(item);
@@ -1352,55 +1332,6 @@ begin
     ColorScheme1.Add(item);
   until FindNext(sr) <> 0;
   FindClose(sr);
-end;
-
-procedure TSharpBarMainForm.OnSchemeCreateClick(Sender : TObject);
-var
-  EditSchemeForm: TEditSchemeForm;
-  XML : TJvSimpleXML;
-  Dir : String;
-  n : integer;
-  reload : boolean;
-begin
-  reload := False;
-
-  EditSchemeForm := TEditSchemeForm.Create(self);
-  try
-    EditSchemeForm.InitForm('');
-    EditSchemeForm.Caption := 'Create/Edit SharpE Color Scheme';
-    EditSchemeForm.edit_name.Text := TMenuItem(Sender).Hint;
-    if EditSchemeForm.ShowModal = mrOk then
-    begin
-      Dir := SharpThemeApi.GetSkinDirectory + 'Schemes\';
-      XML := TJvSimpleXML.Create(nil);
-      try
-        XML.Root.Name := 'SharpESkinScheme';
-        XML.Root.Clear;
-        with XML.Root.Items.Add('Info').Items do
-        begin
-          Add('Name',EditSchemeForm.edit_name.Text);
-          Add('Author','...');
-        end;
-        
-        for n := 0 to SharpThemeApi.GetSchemeColorCount - 1 do
-            with XML.Root.Items.Add('Item').Items do
-            begin
-              Add('Tag',TLabel(EditSchemeForm.ColorPanel.Components[2*n]).Hint);
-              Add('Color',TSharpEColorPicker(EditSchemeForm.ColorPanel.Components[2*n+1]).Color);
-            end;
-        XML.SaveToFile(Dir + EditSchemeForm.edit_name.Text + '.xml');
-        if EditSchemeForm.edit_name.Text = SharpThemeApi.GetSchemeName then
-           reload := True
-           else reload := False;
-      finally
-        XML.Free;
-      end;
-    end;
-  finally
-    EditSchemeForm.Free;
-  end;
-
-  if reload then SharpApi.SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKIN,0);
 end;
 
 procedure TSharpBarMainForm.OnSchemeSelectItemClick(Sender : TObject);
@@ -1499,9 +1430,11 @@ begin
   if FSuspended then exit;
   if ModuleManager.Modules.Count = 0 then
      SharpEBar.ShowThrobber := True;
-  SharpEBar.Throbber.Repaint;
+  if SharpEBar.Throbber.Visible then
+     SharpEBar.Throbber.Repaint;
   ShowWindow(application.Handle, SW_HIDE);
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
+  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
 end;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
@@ -1875,18 +1808,19 @@ begin
   if ModuleManager = nil then exit;
 
   SharpEBar.UpdateSkin;
-  SharpEBar.Throbber.UpdateSkin;
-  SharpEbar.Throbber.Repaint;
+  if SharpEBar.Throbber.Visible then
+  begin
+    SharpEBar.Throbber.UpdateSkin;
+    SharpEbar.Throbber.Repaint;
+  end;
   UpdateBGImage;
 
   //ModuleManager.UpdateModuleSkins;
   ModuleManager.FixModulePositions;
   ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
 
- // if FThemeUpdating then exit;
-
-  ModuleManager.RefreshMiniThrobbers;
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+  ModuleManager.RefreshMiniThrobbers;
 end;
 
 procedure TSharpBarMainForm.CreateemptySharpBar1Click(Sender: TObject);
@@ -1962,8 +1896,6 @@ begin
 end;
 
 procedure TSharpBarMainForm.OnBarPositionUpdate(Sender : TObject; var X,Y : Integer);
-var
-  n : integer;
 begin
   if FSuspended then exit;
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
@@ -2071,10 +2003,7 @@ begin
 
   // check if shell hook functions have been used for any module
   if FShellHookList.Count > 0 then
-  begin
-    RegisterShellHook(Handle,0);
-  //  SHUnSetHook;
-  end;
+     RegisterShellHook(Handle,0);
 
   // We want to produce good code, so let's free stuff before the app is closed ;)
   ForceDirectories(ExtractFileDir(ModuleSettings.FileName));
@@ -2122,14 +2051,6 @@ procedure TSharpBarMainForm.FormKeyDown(Sender: TObject; var Key: Word;
 begin
   if ((SSALT in Shift) and (Key = VK_F4)) then
      Key := 0;
-end;
-
-procedure TSharpBarMainForm.FormPaint(Sender: TObject);
-begin
-  if FBGImage <> nil then
-  begin
-  //  FBGImage.DrawTo(Canvas.Handle,0,0);
-  end;
 end;
 
 procedure TSharpBarMainForm.ShowMiniThrobbers1Click(Sender: TObject);

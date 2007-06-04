@@ -19,7 +19,6 @@ object SharpBarMainForm: TSharpBarMainForm
   OnHide = FormHide
   OnKeyDown = FormKeyDown
   OnMouseUp = FormMouseUp
-  OnPaint = FormPaint
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
