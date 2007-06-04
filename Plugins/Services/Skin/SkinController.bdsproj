@@ -119,7 +119,7 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Units\SEListboxPainter\;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SCHotkeyEdit;..\..\..\Common\Delphi Components\SharpE Skin Components</Directories>
+			<Directories Name="SearchPath">..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Units\SEListboxPainter\;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Units\SharpGraphicsUtils\</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
