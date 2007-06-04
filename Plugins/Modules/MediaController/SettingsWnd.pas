@@ -64,35 +64,33 @@ type
   public
     ActionStr : String;
     procedure UpdateStatus;
-    procedure GetFooPathFromRegistry;
   end;
+
+function GetFooPathFromRegistry : String;
 
 
 implementation
 
 {$R *.dfm}
 
-function RegLoadStr(Key, Prop, Default : String): string;
+function GetFooPathFromRegistry : String;
 var
-  Reg: TRegIniFile;
+  Reg : TRegistry;
 begin
-  Reg := TRegIniFile.create('Software\');
-  try
-    result := 'C:\Program Files\Foobar2000\';
-    Reg.RootKey := HKEY_LOCAL_MACHINE;
-    result := Reg.ReadString(Key,Prop,Default);
-  finally
-    Reg.CloseKey;
-    Reg.free;
-  end;
-end;
-
-procedure TSettingsForm.GetFooPathFromRegistry;
-begin
+  result := 'C:\Program Files\Foobar2000\foobar2000.exe';
   {$WARNINGS OFF}
-  Edit_FooPath.Text := IncludeTrailingBackSlash(
-                          RegLoadStr('FooBar2000','InstallDir','C:\Program Files\Foobar2000\'))
-                       + 'FooBar2000.exe';
+  Reg := TRegistry.Create;
+  try
+    Reg.Access := KEY_READ;
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if Reg.OpenKey('\Software\FooBar2000',False) then
+    begin
+      result := IncludeTrailingBackSlash(Reg.ReadString('InstallDir')) + 'foobar2000.exe';
+      Reg.CloseKey;
+    end;
+  finally
+    Reg.Free;
+  end;
   {$WARNINGS ON}
 end;
 
@@ -143,7 +141,8 @@ end;
 procedure TSettingsForm.FormShow(Sender: TObject);
 begin
   UpdateStatus;
-  if edit_foopath.Text = '-1' then GetFooPathFromRegistry;
+  if edit_foopath.Text = '-1' then
+     Edit_FooPath.Text := GetFooPathFromRegistry;
 end;
 
 procedure TSettingsForm.btn_openfooClick(Sender: TObject);

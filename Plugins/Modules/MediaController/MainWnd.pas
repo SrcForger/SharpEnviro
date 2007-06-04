@@ -34,10 +34,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, SharpEBaseControls, SharpEButton,
-  SharpESkinManager, SharpESkin, 
+  Dialogs, StdCtrls, SharpEButton, SharpESkinManager, 
   JvSimpleXML, SharpApi, Menus, Math, ShellApi,
-  GR32, GR32_PNG, Types, ImgList;
+  GR32, GR32_PNG, Types, ImgList, SharpEBaseControls;
 
 
 type
@@ -309,6 +308,10 @@ begin
     sPlayerFile := Value('PlayerFile','-1');
     sPSelect    := BoolValue('QuickPlayerSelect',True);
   end;
+
+  if sPlayerFile = '-1' then
+     sPlayerFile := GetFooPathFromRegistry;
+
   UpdatePSelectIcon;
 end;
 

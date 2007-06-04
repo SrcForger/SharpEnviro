@@ -40,7 +40,6 @@ uses
   Forms,
   Classes,
   Contnrs,
-  SharpESkinManager,
   SharpEBar,
   StdCtrls,
   JvSimpleXML,
