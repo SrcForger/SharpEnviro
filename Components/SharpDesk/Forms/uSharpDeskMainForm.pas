@@ -655,6 +655,7 @@ procedure TSharpDeskMainForm.FormShow(Sender: TObject);
 begin
   if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
      else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
+  ShowWindow(application.handle, SW_HIDE);
 end;
 
 

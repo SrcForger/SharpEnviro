@@ -187,7 +187,7 @@ begin
     finally
       FDllhandle := 0;
     end;
-    SharpApi.SendDebugMessageEx('SharpDesk',PChar('Filaed to initialize ' + FPath),clmaroon,DMT_ERROR);
+    SharpApi.SendDebugMessageEx('SharpDesk',PChar('Failed to initialize ' + FPath),clmaroon,DMT_ERROR);
   end;
 end;
 
