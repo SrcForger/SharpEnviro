@@ -37,33 +37,40 @@ uses
   Windows, Messages, Types, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls,
   // SharpE Units
-  SharpApi, Buttons, JvExStdCtrls, JvListBox, JvDriveCtrls, JvCombobox;
+  SharpApi, Buttons, JvExStdCtrls, JvListBox, JvDriveCtrls, JvCombobox, JvgPage,
+  ShellCtrls;
 
 type
   TSettingsForm = class(TForm)
-    GroupBox1: TGroupBox;
-    cbxClipboard: TCheckBox;
-    cbxSaveAs: TCheckBox;
+    Button1: TButton;
+    Button2: TButton;
+    JvgPageControl1: TJvgPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
     GroupBox2: TGroupBox;
     GroupBox3: TGroupBox;
-    DlbFolders: TJvDirectoryListBox;
-    GroupBox4: TGroupBox;
-    Label2: TLabel;
-    tbxFilename: TEdit;
-    cbxSaveToFile: TCheckBox;
-    tbxNum: TEdit;
-    cbxNum: TCheckBox;
     GroupBox5: TGroupBox;
     cbxDateTime: TCheckBox;
     cbxDateTimeFormat: TComboBox;
+    GroupBox1: TGroupBox;
+    cbxClipboard: TCheckBox;
+    cbxSaveAs: TCheckBox;
+    cbxSaveToFile: TCheckBox;
     cbxActive: TCheckBox;
-    Button1: TButton;
-    Button2: TButton;
+    GroupBox4: TGroupBox;
+    Label2: TLabel;
+    tbxFilename: TEdit;
+    tbxNum: TEdit;
+    cbxNum: TCheckBox;
+    cbxFormat: TComboBox;
+    Label1: TLabel;
+    DlbFolders: TJvDirectoryListBox;
     JvDriveCombo1: TJvDriveCombo;
+    procedure cbxFormatChange(Sender: TObject);
     procedure cbxDateTimeClick(Sender: TObject);
     procedure cbxNumClick(Sender: TObject);
     procedure cbxSaveToFileClick(Sender: TObject);
-    procedure SpeedButton1Click(Sender: TObject);
+
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private
@@ -86,18 +93,6 @@ begin
   self.ModalResult := mrCancel;
 end;
 
-procedure TSettingsForm.SpeedButton1Click(Sender: TObject);
-var
-  OpenDlg: TOpenDialog;
-begin
-  OpenDlg := TOpenDialog.Create(Self);
-  if OpenDlg.Execute then
-  begin
-
-  end;
-  OpenDlg.Free;
-end;
-
 procedure TSettingsForm.cbxSaveToFileClick(Sender: TObject);
 begin
   cbxNum.Enabled := cbxSaveToFile.Checked;
@@ -114,7 +109,11 @@ begin
   cbxDateTimeFormat.Enabled := cbxDateTime.Checked;
 end;
 
-
+procedure TSettingsForm.cbxFormatChange(Sender: TObject);
+begin
+   if (cbxFormat.Text <> 'Bmp') or (cbxFormat.Text <> 'Jpg') or (cbxFormat.Text <> 'Png') then
+      cbxFormat.Text := 'Bmp';
+end;
 
 end.
 

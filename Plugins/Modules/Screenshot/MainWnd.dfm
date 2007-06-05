@@ -2,8 +2,8 @@ object MainForm: TMainForm
   Tag = 25
   Left = 0
   Top = 0
-  Width = 261
-  Height = 188
+  Width = 230
+  Height = 186
   Hint = '25'
   Caption = 'Menu'
   Color = clBtnFace

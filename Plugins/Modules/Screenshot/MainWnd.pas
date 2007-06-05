@@ -35,12 +35,13 @@ interface
 uses             
   // Default Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Menus, Math, Clipbrd, 
+  Dialogs, StdCtrls, ExtCtrls, Menus, Math, Clipbrd, shellctrls, jpeg,
   // Custom Units
   JvSimpleXML, GR32, SharpESkinManager, SharpEBaseControls, SharpEButton,
-  GR32_Image,
+  GR32_Image, PngImage,
   // SharpE Units
-  SharpApi, uSharpBarAPI, SharpESkin, SharpEScheme, SharpEImage32;
+  SharpApi, uSharpBarAPI, SharpESkin, SharpEScheme, SharpEImage32, Buttons,
+  PngBitBtn;
 type
   TMainForm = class(TForm)
     MenuPopup: TPopupMenu;
@@ -57,6 +58,7 @@ type
     procedure SaveAsDlg(bitMap: TBitmap);
     procedure AutoGen(bitMap: TBitmap);
     procedure DateTime(bitMap: TBitmap);
+    procedure saveFormat(bitMap: TBitmap; strFormat: string; strFilename: string);
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
 
   protected
@@ -71,8 +73,8 @@ type
     strFilename : string;
     strAppend : string;
     strLocation : string;
+    strFormat : string;
     hwndActive : hWnd;
-    hwndDesktop : hWnd;
 
   public
     ModuleID : integer;
@@ -107,6 +109,7 @@ begin
     strFilename := Value('Filename', 'Screenshot');
     strAppend := Value('Append', '0');
     strLocation := Value('Location', strLocation);
+    strFormat := Value('Format', 'Bmp');
   end;
 end;
 
@@ -145,6 +148,7 @@ var
   item : TJvSimpleXMLElem;
 begin
   try
+
     SettingsForm := TSettingsForm.Create(nil);
     SettingsForm.cbxClipboard.Checked := blnClipboard;
     SettingsForm.cbxSaveAs.Checked := blnSaveDlg;
@@ -160,7 +164,7 @@ begin
     SettingsForm.cbxDateTimeFormat.Enabled := blnDateTime;
     SettingsForm.cbxDateTimeFormat.ItemIndex := intDateTimeFormat;
     SettingsForm.cbxActive.Checked := blnActiveWin;
-
+    SettingsForm.cbxFormat.Text := strFormat;
     if SettingsForm.ShowModal = mrOk then
     begin
       blnClipboard := SettingsForm.cbxClipboard.Checked;
@@ -173,7 +177,7 @@ begin
       strAppend := SettingsForm.tbxNum.Text;
       strLocation := SettingsForm.DlbFolders.Directory;
       intDateTimeFormat := SettingsForm.cbxDateTimeFormat.ItemIndex;
-
+      strFormat := SettingsForm.cbxFormat.Text;
       item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
       if item <> nil then with item.Items do
       begin
@@ -188,6 +192,7 @@ begin
         Add('Filename', strFilename);
         Add('Append', strAppend);
         Add('Location', strLocation);
+        Add('Format', strFormat);
       end;
       uSharpBarAPI.SaveXMLFile(BarWnd);
     end;
@@ -200,7 +205,6 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  hwndDesktop :=  GetDesktopWindow;
   Background := TBitmap32.Create;
   DoubleBuffered := True;
 end;
@@ -240,7 +244,6 @@ begin
        end
       else
       begin
-//        hdcSrc := GetWindowDC(hwndDesktop);
         hdcSrc := GetWindowDC(GetDesktopWindow);
         bitMap.Width  := Screen.Width;
         bitMap.Height := Screen.Height;
@@ -261,7 +264,7 @@ begin
     svdSave.InitialDir := strLocation;
     if svdSave.Execute then
     begin
-      bitMap.SaveToFile(svdSave.FileName);
+      saveFormat(bitMap, strFormat, svdSave.FileName);
     end;
 end;
 
@@ -275,8 +278,8 @@ begin
   strFile := strFile + '\';
   strFile := strfile + strFilename;
   if blnAutoGenNum then strFile := strFile + strAppend;
-  strFile := strFile + '.bmp';
-  bitMap.SaveToFile(strFile);
+  //strFile := strFile + '.bmp';
+  saveFormat(bitMap, strFormat, strFile);
   if blnAutoGenNum then
   begin
     count := StrToInt(strAppend);
@@ -302,9 +305,39 @@ begin
   else strFormat := 'MMDDYYYYHHMMSS';
   dtmDate := Now();
   DateTimeToString(strName, strFormat, dtmDate);
-  strName := strName + '.bmp';
-  bitMap.SaveToFile(strName);
+  //strName := strName + '.bmp';
+  saveFormat(bitMap, strFormat, strName);
 end;
+
+procedure TMainForm.saveFormat(bitMap: TBitmap; strFormat: string; strFilename: string);
+var
+  JPG: TJPEGImage;
+  PNG: TPNGObject;
+begin
+   if (strFormat = 'Jpg') then
+   begin
+      JPG := TJPEGImage.Create;
+      JPG.Assign(bitMap);
+      strFilename := strFilename + '.jpg';
+      JPG.SaveToFile(strFilename);
+      JPG.Free;
+   end
+   else if (strFormat = 'Png') then
+   begin
+       PNG := TPNGObject.Create;
+       PNG.Assign(bitMap);
+       strFilename := strFilename + '.png';
+       PNG.SaveToFile(strFilename);
+       PNG.Free;
+   end
+   else
+   begin
+      strFilename := strFilename + '.bmp';
+      bitMap.SaveToFile(strFilename);
+   end;
+
+end;
+
 
 procedure TMainForm.btnSSMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
