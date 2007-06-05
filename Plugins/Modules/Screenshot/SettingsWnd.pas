@@ -66,6 +66,10 @@ type
     Label1: TLabel;
     DlbFolders: TJvDirectoryListBox;
     JvDriveCombo1: TJvDriveCombo;
+    TabSheet3: TTabSheet;
+    GroupBox6: TGroupBox;
+    Label3: TLabel;
+    GroupBox7: TGroupBox;
     procedure cbxFormatChange(Sender: TObject);
     procedure cbxDateTimeClick(Sender: TObject);
     procedure cbxNumClick(Sender: TObject);

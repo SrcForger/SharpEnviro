@@ -133,8 +133,7 @@ object MainForm: TMainForm
     Top = 112
   end
   object svdSave: TSaveDialog
-    DefaultExt = 'bmp'
-    Filter = 'bitmap (*.bmp)|bmp'
+    Filter = 'Graphics files (*.bmp,*.jpg,*.png)|*.bmp;*.jpg;*.png'
     Left = 112
     Top = 112
   end

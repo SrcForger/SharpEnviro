@@ -252,5 +252,32 @@ object SettingsForm: TSettingsForm
         end
       end
     end
+    object TabSheet3: TTabSheet
+      Caption = 'Options'
+      ImageIndex = 2
+      object GroupBox6: TGroupBox
+        Left = 0
+        Top = 0
+        Width = 233
+        Height = 137
+        Caption = 'Jpeg Options'
+        TabOrder = 0
+        object Label3: TLabel
+          Left = 64
+          Top = 60
+          Width = 86
+          Height = 13
+          Caption = 'Not Implemented!'
+        end
+      end
+      object GroupBox7: TGroupBox
+        Left = 0
+        Top = 136
+        Width = 233
+        Height = 137
+        Caption = 'Png Options'
+        TabOrder = 1
+      end
+    end
   end
 end
