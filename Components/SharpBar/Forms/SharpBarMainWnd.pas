@@ -1136,7 +1136,10 @@ begin
   SkinManager.UpdateSkin;
   SharpEBar.Seed := - 1;
   SharpEBar.UpdateSkin;
-  SharpEBar.Throbber.UpdateSkin;
+  if SharpEBar.Throbber.Visible then
+     SharpEBar.Throbber.UpdateSkin;
+
+  SharpApi.RegisterActionEx(PChar('!FocusBar ('+inttostr(FBarID)+')'),'SharpBar',Handle,1);
 end;
 
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
@@ -1160,8 +1163,6 @@ begin
   ShowWindow(Application.Handle, SW_HIDE);
 
   KeyPreview := true;
-
-  SharpApi.RegisterActionEx(PChar('!FocusBar ('+inttostr(FBarID)+')'),'SharpBar',Handle,1);
 end;
 
 procedure TSharpBarMainForm.AutoPos1Click(Sender: TObject);
