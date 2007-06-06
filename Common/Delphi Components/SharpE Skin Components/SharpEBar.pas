@@ -546,7 +546,8 @@ begin
   end;
 
   if Assigned(FThrobber) then
-    FThrobber.Repaint;
+     if FThrobber.Visible then
+        FThrobber.Repaint;
 
 end;
 
@@ -924,8 +925,9 @@ begin
     else
       DrawDefaultSkin(DefaultSharpEScheme);
     FormPaint(nil);
-    if Assigned(FThrobber) then
-      FThrobber.UpdateSkin;
+    if Assigned(FThrobber)  then
+       if FThrobber.Visible then
+          FThrobber.UpdateSkin;
   end
   else
   begin
