@@ -60,6 +60,7 @@ type
     btn_pause: TSharpEButton;
     btn_stop: TSharpEButton;
     btn_play: TSharpEButton;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormPaint(Sender: TObject);
     procedure VLCMediaPlayer1Click(Sender: TObject);
     procedure WindowsMediaPlayer1Click(Sender: TObject);
@@ -88,6 +89,7 @@ type
     FIconWMP    : TBitmap32;
     FIconVLC    : TBitmap32;
     Background  : TBitmap32;
+    procedure WMExecAction(var msg : TMessage); message WM_SHARPEACTIONMESSAGE;
   public
     ModuleID : integer;
     BarWnd : hWnd;
@@ -98,6 +100,7 @@ type
     procedure UpdatePSelectIcon;
     procedure InitDefaultImages;
     procedure UpdateBackground(new : integer = -1);
+    procedure UpdateActions;
   end;
 
 const
@@ -283,6 +286,26 @@ begin
    Add('QuickPlayerSelect',sPSelect);
  end;
  uSharpBarAPI.SaveXMLFile(BarWnd);
+end;
+
+procedure TMainForm.UpdateActions;
+begin
+  SharpApi.RegisterActionEx('!MC-Play','Modules',Handle,1);
+  SharpApi.RegisterActionEx('!MC-Pause','Modules',Handle,2);
+  SharpApi.RegisterActionEx('!MC-Stop','Modules',Handle,3);
+  SharpApi.RegisterActionEx('!MC-Prev','Modules',Handle,4);
+  SharpApi.RegisterActionEx('!MC-Next','Modules',Handle,5);
+end;
+
+procedure TMainForm.WMExecAction(var msg : TMessage);
+begin
+  case msg.LParam of
+    1: btn_play.OnClick(btn_play);
+    2: btn_pause.OnClick(btn_pause);
+    3: btn_stop.OnClick(btn_stop);
+    4: btn_prev.OnClick(btn_prev);
+    5: btn_next.OnClick(btn_next);
+  end;
 end;
 
 procedure TMainForm.LoadSettings;
@@ -620,6 +643,8 @@ begin
   FIconVLC    := TBitmap32.Create;
 
   InitDefaultImages;
+
+  UpdateActions;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -657,6 +682,15 @@ end;
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
   Background.DrawTo(Canvas.Handle,0,0);
+end;
+
+procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  SharpApi.UnRegisterAction('!MC-Play');
+  SharpApi.UnRegisterAction('!MC-Pause');
+  SharpApi.UnRegisterAction('!MC-Stop');
+  SharpApi.UnRegisterAction('!MC-Prev');
+  SharpApi.UnRegisterAction('!MC-Next');
 end;
 
 end.
