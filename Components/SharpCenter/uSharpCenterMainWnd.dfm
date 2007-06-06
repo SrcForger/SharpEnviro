@@ -12,8 +12,8 @@ object SharpCenterWnd: TSharpCenterWnd
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  KeyPreview = True
   OldCreateOrder = False
+  ScreenSnap = True
   OnClose = FormClose
   OnResize = FormResize
   OnShow = FormShow
@@ -28,7 +28,6 @@ object SharpCenterWnd: TSharpCenterWnd
     BevelOuter = bvNone
     Color = clWindow
     Ctl3D = False
-    ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
     object pnlMain: TPanel
@@ -40,7 +39,6 @@ object SharpCenterWnd: TSharpCenterWnd
       BevelOuter = bvNone
       Color = clWindow
       Ctl3D = False
-      ParentBackground = False
       ParentCtl3D = False
       TabOrder = 0
       object splMain: TSplitter
@@ -720,7 +718,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 145
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -266
+                Left = -290
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1170,7 +1168,7 @@ object SharpCenterWnd: TSharpCenterWnd
               object Edit2: TEdit
                 Left = 0
                 Top = 36
-                Width = -271
+                Width = -295
                 Height = 21
                 Anchors = [akLeft, akTop, akRight]
                 Ctl3D = True
@@ -1202,7 +1200,6 @@ object SharpCenterWnd: TSharpCenterWnd
         BevelOuter = bvNone
         BorderWidth = 6
         Color = clWindow
-        ParentBackground = False
         TabOrder = 1
         object pnlPluginContainer: TPanel
           Left = 6
@@ -1241,7 +1238,6 @@ object SharpCenterWnd: TSharpCenterWnd
               Align = alClient
               BevelOuter = bvNone
               Color = clWindow
-              FullRepaint = False
               PopupMenu = PopupMenu1
               TabOrder = 0
             end
@@ -3727,10 +3723,6 @@ object SharpCenterWnd: TSharpCenterWnd
       Default = True
       OnClick = MiClick
     end
-  end
-  object XPManifest1: TXPManifest
-    Left = 444
-    Top = 368
   end
   object picMain: TPngImageList
     PngImages = <

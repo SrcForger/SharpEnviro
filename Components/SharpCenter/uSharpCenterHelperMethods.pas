@@ -55,7 +55,7 @@ implementation
   begin
     GetControlByHandle(AHandle).Height := AControl.Height;
     GetControlByHandle(AHandle).Width := AControl.Width;
-    GetControlByHandle(AHandle).Invalidate;
+    GetControlByHandle(AHandle).Refresh;
   end;
 
   function GetControlByHandle(AHandle: THandle): TWinControl;

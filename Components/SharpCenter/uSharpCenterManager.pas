@@ -254,7 +254,7 @@ function TSharpCenterManager.Unload: Boolean;
 begin
 
   Result := False;
-  if ActivePlugin.Dllhandle = 0 then
+  if (ActivePlugin.Dllhandle = 0) then
     exit;
 
   if Assigned(FOnUnloadPlugin) then
