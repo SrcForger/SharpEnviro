@@ -426,8 +426,6 @@ end;
 
 procedure TSharpDeskMainForm.WMUpdateBangs(var Msg : TMessage);
 begin
-  SharpApi.RegisterActionEx('!EditCurrentTheme','SharpTheme',SharpDeskMainForm.Handle,1);
-  SharpApi.RegisterActionEx('!ThemeManager','SharpTheme',SharpDeskMainForm.Handle,2);
   SharpApi.RegisterActionEx('!AddDesktopObject','SharpDesk',SharpDeskMainForm.Handle,3);
   SharpApi.RegisterActionEx('!SharpDeskSettings','SharpDesk',SharpDeskMainForm.Handle,5);
   SharpApi.RegisterActionEx('!CloseSharpDesk','SharpDesk',SharpDeskMainForm.Handle,6);
@@ -450,14 +448,6 @@ end;
 procedure TSharpDeskMainForm.WMSharpEBang(var Msg : TMessage);
 begin
   case msg.LParam of
-   1: begin
-        SharpApi.SharpExecute(ExtractFileDir(Application.ExeName)+'\SharpTheme.exe');
-        sleep(500);
-        SharpApi.SendMessageTo('SharpTheme - Theme Manager',WM_EDITCURRENTTHEME,0,0);
-      end;
-   2: begin
-        SharpApi.SharpExecute(ExtractFileDir(Application.ExeName)+'\SharpTheme.exe');
-      end;
    3: begin
         if not CreateForm.Visible then
            CreateForm.Showmodal;
@@ -607,8 +597,6 @@ begin
      ObjectPopupImageCount := ObjectPopUp.Images.Count;
 
      startup := True;
-     SharpApi.RegisterActionEx('!EditCurrentTheme','SharpTheme',SharpDeskMainForm.Handle,1);
-     SharpApi.RegisterActionEx('!ThemeManager','SharpTheme',SharpDeskMainForm.Handle,2);
      SharpApi.RegisterActionEx('!AddDesktopObject','SharpDesk',SharpDeskMainForm.Handle,3);
      SharpApi.RegisterActionEx('!SharpDeskSettings','SharpDesk',SharpDeskMainForm.Handle,5);
      SharpApi.RegisterActionEx('!CloseSharpDesk','SharpDesk',SharpDeskMainForm.Handle,6);
@@ -668,8 +656,6 @@ procedure TSharpDeskMainForm.FormClose(Sender: TObject; var Action: TCloseAction
 begin
   SendMessageToConsole('Closing main window',COLOR_OK,DMT_STATUS);
   SharpApi.UnRegisterAction('!AddDesktopObject');
-  SharpApi.UnRegisterAction('!EditCurrentTheme');
-  SharpApi.UnRegisterAction('!ThemeManager');
   SharpApi.UnRegisterAction('!SharpDeskSettings');
   SharpApi.UnRegisterAction('!Show/CloseSharpDesk');
   SharpDesk.ObjectSetList.SaveSettings;

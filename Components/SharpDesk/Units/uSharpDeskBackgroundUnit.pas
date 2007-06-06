@@ -244,7 +244,13 @@ begin
   winWallPath := SharpApi.GetSharpeDirectory + 'SharpDeskbg';
   tBmp := TBitmap.Create;
   tBmp.Assign(SharpDesk.Image.Bitmap);
-  tBmp.SaveToFile(winWallPath+'.bmp');
+  try
+    tBmp.SaveToFile(winWallPath+'.bmp');
+  except
+    // try again...
+    sleep(2000);
+    tBmp.SaveToFile(winWallPath+'.bmp');
+  end;
 {  Jpeg := TJpegImage.Create;
   Jpeg.Assign(tBmp);
   JPeg.SaveToFile(winWallPath+'.jpg');
