@@ -57,7 +57,7 @@ type
     procedure ScreenShot();
     procedure SaveAsDlg(bitMap: TBitmap);
     procedure AutoGen(bitMap: TBitmap);
-    procedure DateTime(bitMap: TBitmap);
+//    procedure DateTime(bitMap: TBitmap);
     procedure saveFormat(bitMap: TBitmap; strFormat: string; strFilename: string);
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
 
@@ -252,7 +252,7 @@ begin
       if (blnClipboard) then Clipboard.Assign(bitMap);
       if (blnSaveDlg) then SaveAsDlg(bitMap);
       if (blnAutoGen) then AutoGen(bitMap);
-      if (blnDateTime) then DateTime(bitMap);
+//      if (blnDateTime) then DateTime(bitMap);
       end;
   finally
     ReleaseDC(0, hdcSrc);
@@ -272,20 +272,30 @@ procedure TMainForm.AutoGen(bitMap : TBitmap);
 var
   count: integer;
   strFile: string;
+  strName : string;
+  strDTFormat : string;
+  dtmDate : TDateTime;
   item : TJvSimpleXMLElem;
 begin
   strFile := strLocation;
   strFile := strFile + '\';
   strFile := strfile + strFilename;
-  if blnAutoGenNum then strFile := strFile + strAppend;
-  //strFile := strFile + '.bmp';
-  saveFormat(bitMap, strFormat, strFile);
+  if blnAutoGenNum then strFile := strFile + ' ' + strAppend;
+  if (blnDateTime) then
+  begin
+    if intDateTimeFormat = 0 then strDTFormat := 'DDMMYYYYHHMMSS'
+    else strDTFormat := 'MMDDYYYYHHMMSS';
+    dtmDate := Now();
+    DateTimeToString(strName, strDTFormat, dtmDate);
+    strFile := strFile + ' - ' + strName;
+  end;
   if blnAutoGenNum then
   begin
     count := StrToInt(strAppend);
     count := count + 1;
     strAppend := IntToStr(count);
   end;
+  saveFormat(bitMap, strFormat, strFile);
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
   if item <> nil then with item.Items do
   begin
@@ -294,7 +304,7 @@ begin
   end;
   uSharpBarAPI.SaveXMLFile(BarWnd);
 end;
-
+{
 procedure TMainForm.DateTime(bitMap: TBitmap);
 var
   strName : string;
@@ -305,10 +315,9 @@ begin
   else strFormat := 'MMDDYYYYHHMMSS';
   dtmDate := Now();
   DateTimeToString(strName, strFormat, dtmDate);
-  //strName := strName + '.bmp';
   saveFormat(bitMap, strFormat, strName);
 end;
-
+}
 procedure TMainForm.saveFormat(bitMap: TBitmap; strFormat: string; strFilename: string);
 var
   JPG: TJPEGImage;
@@ -317,27 +326,36 @@ begin
    if (strFormat = 'Jpg') then
    begin
       JPG := TJPEGImage.Create;
-      JPG.Assign(bitMap);
-      strFilename := strFilename + '.jpg';
-      JPG.SaveToFile(strFilename);
-      JPG.Free;
+      Try
+        JPG.Assign(bitMap);
+        strFilename := strFilename + '.jpg';
+        JPG.SaveToFile(strFilename);
+      Finally
+        JPG.Free;
+      end;
    end
    else if (strFormat = 'Png') then
    begin
        PNG := TPNGObject.Create;
-       PNG.Assign(bitMap);
-       strFilename := strFilename + '.png';
-       PNG.SaveToFile(strFilename);
-       PNG.Free;
+       Try
+        PNG.Assign(bitMap);
+        strFilename := strFilename + '.png';
+        PNG.SaveToFile(strFilename);
+       Finally
+        PNG.Free;
+       end;
    end
    else
    begin
-      strFilename := strFilename + '.bmp';
-      bitMap.SaveToFile(strFilename);
+      Try
+        strFilename := strFilename + '.bmp';
+        bitMap.SaveToFile(strFilename);
+      Finally
+        bitMap.Free;
+      end;
    end;
 
 end;
-
 
 procedure TMainForm.btnSSMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
