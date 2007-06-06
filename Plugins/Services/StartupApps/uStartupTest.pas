@@ -24,28 +24,28 @@ var
 implementation
 
 uses
-  uStartupList,
-  uSettingsWnd,
   uStartup;
 
 {$R *.dfm}
 
 procedure TForm1.btn1Click(Sender: TObject);
 begin
-  tempstartup := TStartup.Create;
-  StartupList := TStartupStore.Create;
+  //tempstartup := TStartup.Create;
+  //StartupList := TStartupStore.Create;
 
-  tempstartup.UpdateStartupItems;
-  tempstartup.CreateIconBitmaps;
-  tempstartup.UpdateStartupItemsView(false, stNone);
+  //tempstartup.UpdateStartupItems;
+ // tempstartup.CreateIconBitmaps;
+ // tempstartup.UpdateStartupItemsView(false, stNone);
 
-  FrmSettingsWnd.Show;
+  //FrmSettingsWnd.Show;
 end;
 
 procedure TForm1.btn2Click(Sender: TObject);
+var
+  tmp:TStartup;
 begin
-  tempstartup := TStartup.Create;
-  TempStartup.LoadStartupApps;
+  tmp := TStartup.Create;
+  tmp.LoadStartupApps;
 end;
 
 end.

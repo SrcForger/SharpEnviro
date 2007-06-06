@@ -225,7 +225,7 @@ begin
   Reg := Tregistry.Create;
   with Reg do
   begin
-    Access := KEY_READ;
+     Access := KEY_READ;
     rootkey := AHKEY;
     OpenKey(AKey, False);
     GetValueNames(sList);
@@ -239,8 +239,11 @@ begin
     for i := 0 to Pred(sList.Count) do
     begin
       sFile := Reg.ReadString(sList[i]);
-      if Not(AppRunning(ExtractFileName(sFile))) then
-        ServiceMsg('exec',pchar('_nohist,' + sFile));
+
+      if sFile <> '' then begin
+        if Not(AppRunning(ExtractFileName(sFile))) then
+          ServiceMsg('exec',pchar('_nohist,' + sFile));
+      end;
     end;
 
   finally
@@ -268,9 +271,9 @@ begin
   RunEntriesIn(RunOncePath, HKEY_LOCAL_MACHINE);
   RunEntriesIn(RunOncePath, HKEY_CURRENT_USER);
 
-  Debug('Delete RunOnce', DMT_INFO);
-  DeleteEntriesIn(runOncePath, HKEY_LOCAL_MACHINE);
-  DeleteEntriesIn(runOncePath, HKEY_CURRENT_USER);
+ // Debug('Delete RunOnce', DMT_INFO);
+ // DeleteEntriesIn(runOncePath, HKEY_LOCAL_MACHINE);
+ DeleteEntriesIn(runOncePath, HKEY_CURRENT_USER);
 
 
   Debug('Execute Run', DMT_INFO);
