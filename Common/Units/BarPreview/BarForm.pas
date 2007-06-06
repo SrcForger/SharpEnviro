@@ -66,7 +66,7 @@ begin
   Background.SetSize(1,1);
   Background.Clear(color32(0,0,0,0));
 
-  SkinComp := TSharpESkin.Create(self,[scBar,scButton]);
+  SkinComp := TSharpESkin.Create(self,[scBar,scButton,scMenu,scMenuItem]);
 
   SkinManager := TSharpESkinManager.CreateRuntime(self,SkinComp,SharpEScheme1,True,[scBar,scButton]);
   SkinManager.SkinSource := ssComponent;

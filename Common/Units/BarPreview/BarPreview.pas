@@ -33,7 +33,7 @@ unit BarPreview;
 interface
 
 uses SharpApi, Types, SharpThemeApi, Math, GR32, JvSimpleXML, BarForm, SharpEBar,
-     Windows, SysUtils, Dialogs, Graphics;
+     Windows, SysUtils, Dialogs, Graphics, uSharpEMenu, uSharpEMenuSettings;
 
 procedure CreateBarPreview(ABitmap : TBitmap32; pSkin,pScheme : String; Width : integer); overload;
 procedure CreateBarPreview(ABitmap : TBitmap32; pTheme,pSkin : String; pSchemeList: TSharpEColorSet; Width : integer; drawbg : boolean = true); overload;
@@ -53,10 +53,13 @@ var
   ThrobberPos : TPoint;
   ButtonPos : TPoint;
   x,y : integer;
+  menu : TSharpEMenu;
+  menusettings : TSharpEMenuSettings;
+  menubmp : TBitmap32;
 begin
+  menuBmp := TBitmap32.Create;
+  XML := TJvSimpleXML.Create(nil);
   try
-    XML := TJvSimpleXML.Create(nil);
-
     BarWnd := TBarWnd.Create(nil);
     Dir := SharpApi.GetSharpeDirectory;
     skinfile := Dir + 'Skins\' + pSkin + '\skin.xml';
@@ -73,28 +76,41 @@ begin
     ButtonPos := Point(BarWnd.SkinManager.Skin.BarSkin.PAXoffset.XAsInt+8,
                        BarWnd.SkinManager.Skin.BarSkin.PAYoffset.XAsInt+BarWnd.SkinManager.Skin.ButtonSkin.SkinDim.YAsInt);
 
+    // Draw Menu
+    menuBmp.DrawMode := dmBlend;
+    menuBmp.CombineMode := cmMerge;
+    menusettings := TSharpEMenuSettings.Create;
+    menusettings.CacheIcons := False;
+    menusettings.WrapMenu := False;
+    menu := TSharpEMenu.Create(BarWnd.SkinManager,menusettings);
+    menu.AddLabelItem('SharpE Menu',False);
+    menu.AddSeparatorItem(False);
+    menu.AddSubMenuItem('Sub Menu','','',False);
+    menu.AddLinkItem('Menu Item','','',False);
+    menu.RenderTo(menuBmp);
+
     BarWnd.Left := -100;
     BarWnd.Top := -100;
-    BarWnd.Width := width;
+    BarWnd.Width := width - menuBmp.Width - 32;
 
     BarWnd.SharpEBar1.UpdateSkin;
     ShowWindow(BarWnd.SharpEBar1.abackground.handle,SW_HIDE);
-    ABitmap.SetSize(max(width,1)+3*csize,BarWnd.SkinManager.Skin.BarSkin.SkinDim.HeightAsInt+3*csize);
+    ABitmap.SetSize(max(width,1)+2*csize,max(BarWnd.SkinManager.Skin.BarSkin.SkinDim.HeightAsInt,menuBmp.Height)+2*csize);
     ABitmap.Clear(color32(255,0,254,0));
 
     if drawbg then
        with BarWnd.Background do
        begin
-         SetSize(ABitmap.Width + 2*csize,ABitmap.Height + 2*csize);
+         SetSize(ABitmap.Width + 3*csize,ABitmap.Height + 3*csize);
          Clear(color32(clsilver));
-         for x := 0 to ABitmap.Width div (2 * csize) do
-             for y := 0 to ABitmap.Height div (csize) do
+         for x := 0 to (ABitmap.Width + 2*csize) div (2 * csize) do
+             for y := 0 to (ABitmap.Height + 2*csize) div (csize) do
                  if y mod 2 = 0 then
                     FillRect(2*x*csize,y*csize,2*x*csize + csize,y*csize + csize,clWhite32)
                  else FillRect(2*x*csize + csize,y*csize,2*x*csize + 2*csize,y*csize + csize,clWhite32);
          DrawTo(ABitmap,-round(1.5*csize),-round(1.5*csize));
        end else BarWnd.Background.Clear(color32(0,0,0,0));
-       
+
     try
       XML.LoadFromFile(themeskinfile);
       with XML.Root.Items do
@@ -121,9 +137,17 @@ begin
     BarWnd.Button.UpdateSkin;
 
     BarWnd.Button.Skin.DrawTo(ABitmap,ButtonPos.X + round(1.5*csize),ButtonPos.Y+round(1.5*csize));
+
+    menuBmp.DrawTo(ABitmap,ABitmap.Width - menuBmp.Width - 16,ABitmap.Height div 2 - menuBmp.Height div 2);
   finally
     XML.Free;
-    FreeAndNil(barWnd);
+    menuBmp.Free;
+    if menu <> nil then
+       FreeAndNil(menu);
+    if menusettings <> nil then
+       FreeAndNil(menusettings);
+    if barWnd <> nil then
+       FreeAndNil(barWnd);
   end;
 end;
 
