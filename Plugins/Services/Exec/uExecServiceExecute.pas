@@ -54,6 +54,7 @@ uses
   JclFileUtils,
   JclSysInfo,
   Jclstrings,
+  JclShell,
 
   // Project
   uExecServicePathIncludeList,
@@ -130,7 +131,7 @@ var
 
 implementation
 
-uses Math, uExecServiceExtractShortcut;
+uses Math;
 
 {=============================================================================
   Procedure: StrtoFileandCmd
@@ -278,7 +279,7 @@ var
   Valid: Boolean;
   iResult: Integer;
 
-  msi: TLinkParams;
+  link: TShellLink;
 begin
   // Initialise the local variables
   url := text;
@@ -291,15 +292,17 @@ begin
   try
 
     // Expand the Environment Variable in the string
+    Debug('Passed Execution Text: ' + text, DMT_TRACE);
     text := FileUtils.ExpandEnvVars(text);
     text := Copy(text, 1, Length(text) - 2);
+    Debug('Expanded Env Execution Text: ' + text, DMT_TRACE);
 
     // *** PROCESS THE TEXT BASED ON THE FOLLOWING CONDITIONS ***
 
     // LNK files
     if (ExtractFileExt(text) = '.lnk') then begin
-      if ResolveLink(text, msi) = S_OK then begin
-        if ShellOpenFile(Handle, msi.Target, msi.Parameters, msi.WorkDir) = 1 then begin
+      if JclShell.ShellLinkResolve(text, link) = S_OK then begin
+        if ShellOpenFile(Handle, link.Target, link.Arguments, link.WorkingDirectory) = 1 then begin
 
         // Save to recent item list
           SaveMostUsedItem(text, SaveHistory);
@@ -468,6 +471,7 @@ var
 begin
 
   // Check if text is an Alias
+  Debug('Original: ' + text, DMT_TRACE);
   UseAlias := ProcessAliases(Text);
 
   // Execute alias or if no other commands can be found process the

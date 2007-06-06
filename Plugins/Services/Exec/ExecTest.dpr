@@ -5,7 +5,6 @@ uses
   uExecTest in 'uExecTest.pas' {Form1},
   uExecServiceAliasList in 'uExecServiceAliasList.pas',
   uExecServiceExecute in 'uExecServiceExecute.pas',
-  uExecServiceExtractShortcut in 'uExecServiceExtractShortcut.pas',
   uExecServicePathIncludeList in 'uExecServicePathIncludeList.pas',
   uExecServiceRecentItemList in 'uExecServiceRecentItemList.pas',
   uExecServiceSettings in 'uExecServiceSettings.pas',
