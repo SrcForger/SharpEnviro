@@ -38,6 +38,7 @@ uses
   PngSpeedButton,
   uVistaFuncs,
   SysUtils,
+  GR32,
   SharpThemeApi,
   JvPageList,
   Graphics,
@@ -296,6 +297,13 @@ end;
 procedure GetCenterScheme(var ABackground: TColor;
       var AItemColor: TColor; var AItemSelectedColor: TColor);
 begin
+  frmWPSettings.tabs.BkgColor := clWindow;
+  frmWPSettings.tabs.TabSelectedColor := clWindow;
+  frmWPSettings.srr_bg.BackgroundColor := clWindow;
+  frmWPSettings.srr_bg.BorderColor := $00FBEFE3;
+  frmWPSettings.tabs.TabColor := $00F7F7F7;
+  frmWPSettings.tabs.BorderColor := $00FBEFE3;
+  frmWPSettings.tabs.BorderSelectedColor := $00FBEFE3;
 end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);
@@ -322,6 +330,19 @@ begin
   result := SU_WALLPAPER;
 end;
 
+procedure UpdatePreview(var ABmp: TBitmap32);
+begin
+  if frmWPSettings.currentWP = nil then
+  begin
+    ABmp.SetSize(0,0);
+    exit;
+  end;
+
+  ABmp.SetSize(frmWPSettings.currentWP.BmpPreview.Width,frmWPSettings.currentWP.BmpPreview.Height);
+  ABmp.Clear(color32(0,0,0,0));
+  frmWPSettings.currentWP.BmpPreview.DrawTo(ABmp);
+end;
+
 
 exports
   Open,
@@ -332,6 +353,7 @@ exports
   SetBtnState,
   SetSettingType,
   GetCenterScheme,
+  UpdatePreview,
   AddTabs,
   ClickTab,
   ClickBtn;

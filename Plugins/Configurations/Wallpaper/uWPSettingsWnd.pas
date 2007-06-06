@@ -37,7 +37,7 @@ uses
   JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
   SharpEGaugeBoxEdit, Buttons, PngBitBtn, GR32_Image, SharpEColorEditorEx, Mask,
   JvExMask, JvToolEdit, SharpThemeApi, Contnrs, GR32, GR32_Resamplers,
-  SharpESwatchManager, SharpGraphicsUtils, JPeg;
+  SharpESwatchManager, SharpGraphicsUtils, JPeg, SharpETabList, SharpERoundPanel;
 
 type
   TWPItem = class
@@ -76,7 +76,7 @@ type
     JvPageList1: TJvPageList;
     JvWPPage: TJvStandardPage;
     Panel1: TPanel;
-    pimage: TImage32;
+    wpimage: TImage32;
     pn_cchange: TPanel;
     cb_colorchange: TCheckBox;
     sgb_cchue: TSharpeGaugeBox;
@@ -91,7 +91,7 @@ type
     cb_gradient: TCheckBox;
     sgb_gstartalpha: TSharpeGaugeBox;
     sgb_gendalpha: TSharpeGaugeBox;
-    colors: TSharpEColorEditorEx;
+    wpcolors: TSharpEColorEditorEx;
     Panel2: TPanel;
     Panel3: TPanel;
     fedit_image: TJvFilenameEdit;
@@ -99,10 +99,21 @@ type
     cb_gtype: TComboBox;
     Label2: TLabel;
     pgradient: TImage32;
+    JvCCPage: TJvStandardPage;
+    JvGDPage: TJvStandardPage;
+    gdcolors: TSharpEColorEditorEx;
+    Panel4: TPanel;
+    Panel5: TPanel;
+    Panel6: TPanel;
+    srr_bg: TSharpERoundPanel;
+    ccimage: TImage32;
+    tabs: TSharpETabList;
+    procedure tabsTabChange(ASender: TObject; const ATabIndex: Integer;
+      var AChange: Boolean);
     procedure cb_mhorizClick(Sender: TObject);
     procedure cb_alignmentChange(Sender: TObject);
     procedure cb_gtypeChange(Sender: TObject);
-    procedure colorsUiChange(Sender: TObject);
+    procedure wpcolorsUiChange(Sender: TObject);
     procedure sgb_gstartalphaChangeValue(Sender: TObject; Value: Integer);
     procedure fedit_imageChange(Sender: TObject);
     procedure sgb_cchueChangeValue(Sender: TObject; Value: Integer);
@@ -121,8 +132,8 @@ type
     update : boolean;
     procedure UpdateGUIFromWPItem(WPItem : TWPItem);
     procedure UpdateWPItemFromGuid;
-    procedure RenderPreview;
     procedure UpdatePreview;
+    procedure RenderPreview;
     procedure UpdateGradientPreview;
   end;
 
@@ -223,8 +234,8 @@ begin
 
   pgradient.BeginUpdate;
   ApplyGradient(pgradient.Bitmap,gt,
-                colors.Items.Item[1].ColorCode,
-                colors.Items.Item[2].ColorCode,
+                gdcolors.Items.Item[0].ColorCode,
+                gdcolors.Items.Item[1].ColorCode,
                 sgb_gstartalpha.Value,
                 sgb_gendalpha.Value);
   pgradient.EndUpdate;
@@ -234,8 +245,7 @@ end;
 
 procedure TfrmWPSettings.UpdatePreview;
 begin
-  if CurrentWP = nil then exit;
-  pimage.bitmap.assign(CurrentWP.BmpPreview);
+  SharpCenterBroadCast(SCM_EVT_UPDATE_PREVIEW, 0);
 end;
 
 procedure TfrmWPSettings.RenderPreview;
@@ -258,12 +268,12 @@ begin
     // decide size
     if Mon.Width > Mon.Height then
     begin
-      w := pimage.Width;
-      h := round(pimage.Width * (Mon.Height / Mon.Width));
+      w := wpimage.Width;
+      h := round(wpimage.Width * (Mon.Height / Mon.Width));
     end else
     begin
-      h := pimage.Height;
-      w := round(pimage.Height * (Mon.Width / Mon.Height));
+      h := wpimage.Height;
+      w := round(wpimage.Height * (Mon.Width / Mon.Height));
     end;
     w2 := round(Bmp.Width * (w / Mon.Width));
     h2 := round(Bmp.Height * (h / Mon.Height));
@@ -293,14 +303,19 @@ begin
                 RSBmp.DrawTo(WPBmp,x*w2,y*h2);
     end;
 
+    wpimage.bitmap.assign(WPBmp);
+    wpimage.bitmap.FrameRectS(0,0,w,h,Color32(0,0,0,255));
+
     if MirrorHoriz then
        WPBmp.Canvas.CopyRect(Rect(WPBmp.Width,0,0,WPBmp.Height),WPBmp.Canvas,Rect(0,0,WPBmp.Width,WPBmp.Height));
     if MirrorVert then
        WPBmp.Canvas.CopyRect(Rect(0,WPBmp.Height,WPBmp.Width,0),WPBmp.Canvas,Rect(0,0,WPBmp.Width,WPBmp.Height));
 
-
     if ColorChange then
        HSLChangeImage(WPBmp,Hue,Saturation,Lightness);
+
+    ccimage.bitmap.assign(WPBmp);
+    ccimage.bitmap.FrameRectS(0,0,w,h,Color32(0,0,0,255));
 
     if Gradient then
        ApplyGradient(WPBmp,GradientType,
@@ -320,7 +335,6 @@ procedure TfrmWPSettings.UpdateWPItemFromGuid;
 begin
   if update then exit;
   if currentWP = nil then exit;
-  SendUpdate;
 
   case cb_alignment.ItemIndex of
     0: currentWP.Size := twsCenter;
@@ -345,12 +359,13 @@ begin
   end;
   currentWP.GDStartAlpha := sgb_gstartalpha.Value;
   currentWP.GDEndAlpha   := sgb_gendalpha.Value;
-  currentWP.Color        := colors.Items.Item[0].ColorCode;
-  currentWP.GDStartColor := colors.Items.Item[1].ColorCode;
-  currentWP.GDEndColor   := colors.Items.Item[2].ColorCode;
+  currentWP.Color        := wpcolors.Items.Item[0].ColorCode;
+  currentWP.GDStartColor := gdcolors.Items.Item[0].ColorCode;
+  currentWP.GDEndColor   := gdcolors.Items.Item[1].ColorCode;
 
   RenderPreview;
   UpdatePreview;
+  SendUpdate;
 end;
 
 procedure TfrmWPSettings.UpdateGUIFromWPItem(WPItem : TWPItem);
@@ -380,9 +395,9 @@ begin
   end;
   sgb_gstartalpha.Value := WPItem.GDStartAlpha;
   sgb_gendalpha.Value   := WPItem.GDEndAlpha;
-  colors.Items.Item[0].ColorCode := WPItem.Color;
-  colors.Items.Item[1].ColorCode := WPItem.GDStartColor;
-  colors.Items.Item[2].ColorCode := WPItem.GDEndColor;
+  wpcolors.Items.Item[0].ColorCode := WPItem.Color;
+  gdcolors.Items.Item[0].ColorCode := WPItem.GDStartColor;
+  gdcolors.Items.Item[1].ColorCode := WPItem.GDEndColor;
 
   Update := False;
   RenderPreview;
@@ -392,20 +407,20 @@ end;
 procedure TfrmWPSettings.UpdateCCControls;
 begin
   if cb_colorchange.checked then
-     pn_cchange.Height := 128
+     pn_cchange.Height := 193
      else pn_cchange.Height := 32;
 end;
 procedure TfrmWPSettings.UpdateGDControls;
 begin
   if cb_gradient.Checked then
-     pn_gradient.Height := 136
+     pn_gradient.Height := 145
      else pn_gradient.Height := 32;
 
   if cb_gradient.Checked then
      UpdateGradientPreview;
 
-  colors.Items.Item[1].Visible := cb_gradient.Checked;
-  colors.Items.Item[2].Visible := cb_gradient.Checked;
+  gdcolors.Items.Item[0].Visible := cb_gradient.Checked;
+  gdcolors.Items.Item[1].Visible := cb_gradient.Checked;
 end;
 
 procedure TfrmWPSettings.FormCreate(Sender: TObject);
@@ -466,7 +481,7 @@ begin
   UpdateWPItemFromGuid;
 end;
 
-procedure TfrmWPSettings.colorsUiChange(Sender: TObject);
+procedure TfrmWPSettings.wpcolorsUiChange(Sender: TObject);
 begin
   UpdateWPItemFromGuid;
   UpdateGradientPreview;
@@ -486,6 +501,18 @@ end;
 procedure TfrmWPSettings.cb_mhorizClick(Sender: TObject);
 begin
   UpdateWPItemFromGuid;
+end;
+
+procedure TfrmWPSettings.tabsTabChange(ASender: TObject;
+  const ATabIndex: Integer; var AChange: Boolean);
+begin
+  AChange := True;
+  case ATabIndex of
+    0: JvPageList1.ActivePage := JvWPPage;
+    1: JvPageList1.ActivePage := JvCCPage;
+    2: JvPageList1.ActivePage := JvGDPage;
+    else AChange := False;
+  end;
 end;
 
 end.
