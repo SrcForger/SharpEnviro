@@ -18,7 +18,8 @@
       <Projects Name="SharpCore.exe">..\Components\SharpCore\SharpCore.bdsproj</Projects>
       <Projects Name="SharpShellServices.exe">..\Components\SharpShellServices\SharpShellServices.bdsproj</Projects>
       <Projects Name="SharpMenu.exe">..\Components\SharpMenu\SharpMenu.bdsproj</Projects>
-      <Projects Name="Targets">SharpBar.exe SharpCenter.exe SharpDesk.exe SharpSkin.exe SharpSplash.exe SharpScript.exe SharpCore.exe SharpShellServices.exe SharpMenu.exe</Projects>
+      <Projects Name="SharpConsole.exe">..\Components\SharpConsole\SharpConsole.bdsproj</Projects>
+      <Projects Name="Targets">SharpBar.exe SharpCenter.exe SharpDesk.exe SharpSkin.exe SharpSplash.exe SharpScript.exe SharpCore.exe SharpShellServices.exe SharpMenu.exe SharpConsole.exe</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
