@@ -57,7 +57,6 @@ type
     procedure ScreenShot();
     procedure SaveAsDlg(bitMap: TBitmap);
     procedure AutoGen(bitMap: TBitmap);
-//    procedure DateTime(bitMap: TBitmap);
     procedure saveFormat(bitMap: TBitmap; strFormat: string; strFilename: string);
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
 
@@ -85,6 +84,8 @@ type
     procedure SetWidth(new : integer);
     procedure UpdateBackground(new : integer = -1);
   end;
+
+const CAPTUREBLT = $40000000;
 
 implementation
 
@@ -239,7 +240,7 @@ begin
          GetWindowRect(hwndActive,r);
          bitMap.Width := r.Right - r.Left;
          bitMap.Height := r.Bottom - r.Top;
-         BitBlt(bitMap.Canvas.Handle, 0, 0, bitMap.Width, bitMap.Height,dc, 0, 0, SRCCOPY);
+         BitBlt(bitMap.Canvas.Handle, 0, 0, bitMap.Width, bitMap.Height,dc, 0, 0, SRCCOPY or CAPTUREBLT);
         end
        end
       else
@@ -247,12 +248,12 @@ begin
         hdcSrc := GetWindowDC(GetDesktopWindow);
         bitMap.Width  := Screen.Width;
         bitMap.Height := Screen.Height;
-        BitBlt(bitMap.Canvas.Handle, 0, 0, bitMap.Width, bitMap.Height,hdcSrc, 0, 0, SRCCOPY);
+        BitBlt(bitMap.Canvas.Handle, 0, 0, bitMap.Width, bitMap.Height,hdcSrc, 0, 0, SRCCOPY or CAPTUREBLT);
       end;
       if (blnClipboard) then Clipboard.Assign(bitMap);
       if (blnSaveDlg) then SaveAsDlg(bitMap);
       if (blnAutoGen) then AutoGen(bitMap);
-//      if (blnDateTime) then DateTime(bitMap);
+
       end;
   finally
     ReleaseDC(0, hdcSrc);
@@ -304,20 +305,7 @@ begin
   end;
   uSharpBarAPI.SaveXMLFile(BarWnd);
 end;
-{
-procedure TMainForm.DateTime(bitMap: TBitmap);
-var
-  strName : string;
-  strFormat : string;
-  dtmDate : TDateTime;
-begin
-  if intDateTimeFormat = 0 then strFormat := 'DDMMYYYYHHMMSS'
-  else strFormat := 'MMDDYYYYHHMMSS';
-  dtmDate := Now();
-  DateTimeToString(strName, strFormat, dtmDate);
-  saveFormat(bitMap, strFormat, strName);
-end;
-}
+
 procedure TMainForm.saveFormat(bitMap: TBitmap; strFormat: string; strFilename: string);
 var
   JPG: TJPEGImage;
