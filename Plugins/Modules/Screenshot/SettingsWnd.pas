@@ -38,7 +38,7 @@ uses
   Dialogs, StdCtrls, ComCtrls,
   // SharpE Units
   SharpApi, Buttons, JvExStdCtrls, JvListBox, JvDriveCtrls, JvCombobox, JvgPage,
-  ShellCtrls;
+  ShellCtrls, Mask, JvExMask, JvSpin, Spin;
 
 type
   TSettingsForm = class(TForm)
@@ -68,8 +68,12 @@ type
     JvDriveCombo1: TJvDriveCombo;
     TabSheet3: TTabSheet;
     GroupBox6: TGroupBox;
-    Label3: TLabel;
     GroupBox7: TGroupBox;
+    Label3: TLabel;
+    chkJpgGrayscale: TCheckBox;
+    Label4: TLabel;
+    speJpgCompression: TSpinEdit;
+    spePngCompression: TSpinEdit;
     procedure cbxFormatChange(Sender: TObject);
     procedure cbxDateTimeClick(Sender: TObject);
     procedure cbxNumClick(Sender: TObject);

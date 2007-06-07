@@ -259,24 +259,61 @@ object SettingsForm: TSettingsForm
         Left = 0
         Top = 0
         Width = 233
-        Height = 137
+        Height = 51
         Caption = 'Jpeg Options'
         TabOrder = 0
         object Label3: TLabel
-          Left = 64
-          Top = 60
-          Width = 86
+          Left = 6
+          Top = 22
+          Width = 71
           Height = 13
-          Caption = 'Not Implemented!'
+          AutoSize = False
+          Caption = 'Compression:'
+        end
+        object chkJpgGrayscale: TCheckBox
+          Left = 142
+          Top = 20
+          Width = 77
+          Height = 17
+          Caption = 'Grayscale'
+          TabOrder = 0
+        end
+        object speJpgCompression: TSpinEdit
+          Left = 74
+          Top = 17
+          Width = 51
+          Height = 22
+          MaxValue = 100
+          MinValue = 1
+          TabOrder = 1
+          Value = 1
         end
       end
       object GroupBox7: TGroupBox
         Left = 0
-        Top = 136
+        Top = 52
         Width = 233
-        Height = 137
+        Height = 53
         Caption = 'Png Options'
         TabOrder = 1
+        object Label4: TLabel
+          Left = 6
+          Top = 22
+          Width = 71
+          Height = 13
+          AutoSize = False
+          Caption = 'Compression:'
+        end
+        object spePngCompression: TSpinEdit
+          Left = 74
+          Top = 17
+          Width = 51
+          Height = 22
+          MaxValue = 9
+          MinValue = 0
+          TabOrder = 0
+          Value = 0
+        end
       end
     end
   end

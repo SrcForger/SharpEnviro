@@ -74,6 +74,9 @@ type
     strLocation : string;
     strFormat : string;
     hwndActive : hWnd;
+    blnJpgGrayScale : boolean;
+    intJpgCompression : integer;
+    intPngCompression : integer;
 
   public
     ModuleID : integer;
@@ -111,6 +114,9 @@ begin
     strAppend := Value('Append', '0');
     strLocation := Value('Location', strLocation);
     strFormat := Value('Format', 'Bmp');
+    intJpgCompression := IntValue('JpgCompression', 75);
+    blnJpgGrayScale := BoolValue('JpgGrayScale', False);
+    intPngCompression := IntValue('PngCompression', 5);
   end;
 end;
 
@@ -166,6 +172,9 @@ begin
     SettingsForm.cbxDateTimeFormat.ItemIndex := intDateTimeFormat;
     SettingsForm.cbxActive.Checked := blnActiveWin;
     SettingsForm.cbxFormat.Text := strFormat;
+    SettingsForm.speJpgCompression.Value := intJpgCompression;
+    SettingsForm.chkJpgGrayscale.Checked := blnJpgGrayscale;
+    SettingsForm.spePngCompression.Value := intPngCompression;
     if SettingsForm.ShowModal = mrOk then
     begin
       blnClipboard := SettingsForm.cbxClipboard.Checked;
@@ -179,6 +188,9 @@ begin
       strLocation := SettingsForm.DlbFolders.Directory;
       intDateTimeFormat := SettingsForm.cbxDateTimeFormat.ItemIndex;
       strFormat := SettingsForm.cbxFormat.Text;
+      intJpgCompression := SettingsForm.speJpgCompression.Value;
+      blnJpgGrayscale := SettingsForm.chkJpgGrayscale.Checked;
+      intPngCompression := SettingsForm.spePngCompression.Value;
       item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
       if item <> nil then with item.Items do
       begin
@@ -194,6 +206,9 @@ begin
         Add('Append', strAppend);
         Add('Location', strLocation);
         Add('Format', strFormat);
+        Add('JpgCompression', intJpgCompression);
+        Add('JpgGrayscale', blnJpgGrayscale);
+        Add('PngCompression', intPngCompression);
       end;
       uSharpBarAPI.SaveXMLFile(BarWnd);
     end;
@@ -315,6 +330,8 @@ begin
    begin
       JPG := TJPEGImage.Create;
       Try
+        JPG.Grayscale := blnJpgGrayscale;
+        JPG.CompressionQuality := intJpgCompression;
         JPG.Assign(bitMap);
         strFilename := strFilename + '.jpg';
         JPG.SaveToFile(strFilename);
@@ -326,6 +343,7 @@ begin
    begin
        PNG := TPNGObject.Create;
        Try
+        PNG.CompressionLevel := intPngCompression;
         PNG.Assign(bitMap);
         strFilename := strFilename + '.png';
         PNG.SaveToFile(strFilename);
