@@ -271,7 +271,7 @@ end;
 
 function TSharpExec.ExecuteText(text: string; SaveHistory: Boolean): boolean;
 var
-  search, url: string;
+  search, url, s: string;
   FileCommandl: TExecFileCommandl;
   handle: hwnd;
   oldhandle: hwnd;
@@ -294,10 +294,29 @@ begin
     // Expand the Environment Variable in the string
     Debug('Passed Execution Text: ' + text, DMT_TRACE);
     text := FileUtils.ExpandEnvVars(text);
-    text := Copy(text, 1, Length(text) - 2);
-    Debug('Expanded Env Execution Text: ' + text, DMT_TRACE);
+    s := Copy(text, 1, Length(text) - 2);
 
+    if s <> text then
+      Debug('Expanded Env Execution Text: ' + text, DMT_TRACE);
+    text := s;
+    
     // *** PROCESS THE TEXT BASED ON THE FOLLOWING CONDITIONS ***
+
+    // New Vista control panel
+    if (Pos('microsoft.', LowerCase(text)) = 1) then begin
+        Debug('Execute CPL:', DMT_TRACE);
+
+        if ShellOpenFile(Handle, GetWindowsSystemFolder+'/control.exe', '/name ' + text, '') = 1 then begin
+
+        // Save to recent item list
+          SaveMostUsedItem(text, SaveHistory);
+          SaveRecentItem(text, SaveHistory);
+
+          Result := True;
+          Exit;
+        end;
+      end
+    else
 
     // LNK files
     if (ExtractFileExt(text) = '.lnk') then begin
@@ -597,7 +616,6 @@ var
   i, j: integer;
   alval: string;
   tokens: tstringlist;
-  tmpFC: TExecFileCommandl;
 begin
 
 
@@ -706,7 +724,7 @@ function TSharpExec.FileExistsIn(FileName: string; location: string; extension:
 var
   templist: TStrings;
   i: Integer;
-  withoute, withe, withpath: string;
+  withoute, withe: string;
 
 begin
 
@@ -804,7 +822,6 @@ function TSharpExec.ShellOpenFile(hWnd: HWND; AFileName, AParams, ADefaultDir:
 begin
   Debug('FileName: ' + AFileName, DMT_TRACE);
   Debug('dir: ' + ADefaultDir, DMT_TRACE);
-  result := 0;
 
   if FUseDebug then begin
     FDebugText := AFileName + ' ' + ADefaultDir + ' ' + AParams;
