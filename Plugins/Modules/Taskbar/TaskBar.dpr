@@ -276,6 +276,19 @@ begin
       end;
 end;
 
+procedure InitModule(ID : integer);
+var
+  n : integer;
+  temp : TModule;
+begin
+  for n := 0 to ModuleList.Count - 1 do
+      if TModule(ModuleList.Items[n]).ID = ID then
+      begin
+        temp := TModule(ModuleList.Items[n]);
+        TMainForm(temp.FForm).InitHook;
+      end;
+end;
+
 Exports
   CreateModule,
   CloseModule,
@@ -283,7 +296,8 @@ Exports
   Refresh,
   UpdateMessage,
   ShowSettingsWnd,
-  SetSize;
+  SetSize,
+  InitModule;
 
 begin
 

@@ -149,11 +149,12 @@ begin
       if (not IsWindow(pItem.Handle)) or
          ((not visible) and (not minimized)) then
       begin
+        FItems.Extract(pItem);
         try
           if Assigned(OnRemoveTask) then OnRemoveTask(pItem,n);
-        except
+        finally
+          pItem.Free;
         end;
-        FItems.Delete(n);
       end;
     end;
   except

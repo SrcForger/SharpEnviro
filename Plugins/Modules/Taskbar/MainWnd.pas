@@ -37,7 +37,8 @@ uses
   Forms, Dialogs, StdCtrls, ExtCtrls, JvSimpleXML, SharpApi, Menus,
   Math, Contnrs, SharpESkinManager, SharpETaskItem, SharpESkin,
   SharpEBaseControls, SharpECustomSkinSettings, uTaskManager, uTaskItem,
-  DateUtils, GR32, GR32_PNG, SharpIconUtils, SharpEButton;
+  DateUtils, GR32, GR32_PNG, SharpIconUtils, SharpEButton, JvComponentBase,
+  JvDragDrop;
 
 
 type
@@ -63,6 +64,11 @@ type
     SystemSkinManager: TSharpESkinManager;
     ses_maxall: TSharpEButton;
     ses_minall: TSharpEButton;
+    DDHandler: TJvDragDrop;
+    DropTarget: TJvDropTarget;
+    procedure DropTargetDragOver(Sender: TJvDropTarget;
+      var Effect: TJvDropEffect);
+    procedure FormShow(Sender: TObject);
     procedure FormPaint(Sender: TObject);
     procedure ses_maxallClick(Sender: TObject);
     procedure ses_minallClick(Sender: TObject);
@@ -90,6 +96,8 @@ type
     FCustomSkinSettings: TSharpECustomSkinSettings;
     Background : TBitmap32;
     FTipWnd : hwnd;
+    FLastDragItem : TSharpETaskItem; // Only a pointer, don't free it...
+    FLastDragMinimized : Boolean;
   public
     TM: TTaskManager;
     IList: TObjectList;
@@ -111,6 +119,7 @@ type
     procedure TaskExchange(pItem1,pItem2 : TTaskItem; n,i : integer);
     procedure SharpETaskItemClick(Sender: TObject);
     procedure OnTaskItemMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+    procedure OnDragEventEnter(Sender: TJvDropTarget; var Effect: TJvDropEffect);
     procedure DisplaySystemMenu(pHandle : hwnd);
     procedure GetSpacing;
     procedure CompleteRefresh;
@@ -277,6 +286,15 @@ begin
   if (sAutoHeight > Height) or (sAutoHeight <=0) then
      sAutoHeight := Height;
   if sMaxWidth <= 0 then sMaxWidth := 128;
+end;
+
+procedure TMainForm.OnDragEventEnter(Sender: TJvDropTarget; var Effect: TJvDropEffect);
+var
+  pitem : TTaskItem;
+begin
+  pitem := TM.GetItemByHandle(TSharpETaskItem(Sender.Control).Tag);
+  if pitem <> nil then
+     pitem.Restore; 
 end;
 
 procedure TMainForm.AlignSpecialButtons;
@@ -1115,7 +1133,7 @@ begin
   TM.OnFlashTask    := FlashTask;
   TM.OnTaskExchange := TaskExChange;
 
-  InitHook;
+  //InitHook;
   LoadSettings;
 
   FLocked := True;
@@ -1190,6 +1208,46 @@ end;
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
   Background.DrawTo(Canvas.Handle,0,0);
+end;
+
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  DropTarget.Control := self
+end;
+
+procedure TMainForm.DropTargetDragOver(Sender: TJvDropTarget;
+  var Effect: TJvDropEffect);
+var
+  p : TPoint;
+  n : integer;
+  pItem : TSharpETaskItem;
+  ptmitem,ptmitemold : TTaskItem;
+begin
+  p := ScreenToClient(Mouse.CursorPos);
+  for n := 0 to IList.Count - 1 do
+  begin
+    pItem := TSharpETaskItem(IList.Items[n]);
+    if PointInRect(p,Rect(pItem.Left,pItem.Top,pItem.Left + pItem.Width,pItem.Top + pItem.Height)) then
+    begin
+      if pItem <> FLastDragItem then
+      begin
+        ptmitem := TM.GetItemByHandle(pItem.Tag);
+        if ptmitem <> nil then
+        begin
+          if (FLastDragMinimized) and (FLastDragItem <> nil) then
+          begin
+            ptmitemold := TM.GetItemByHandle(FLastDragItem.Tag);
+            if ptmitemold <> nil then
+               ptmitemold.Minimize;
+          end;
+          FLastDragMinimized := IsIconic(ptmitem.Handle);
+          ptmitem.Restore;
+          FLastDragItem := pItem;
+        end;
+      end;
+      exit;
+    end;
+  end;
 end;
 
 end.

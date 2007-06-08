@@ -14,6 +14,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnPaint = FormPaint
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object ses_maxall: TSharpEButton
@@ -134,6 +135,16 @@ object MainForm: TMainForm
     ComponentSkins = [scButton, scTaskItem]
     HandleUpdates = False
     Left = 176
+    Top = 56
+  end
+  object DDHandler: TJvDragDrop
+    DropTarget = Owner
+    Left = 144
+    Top = 56
+  end
+  object DropTarget: TJvDropTarget
+    OnDragOver = DropTargetDragOver
+    Left = 112
     Top = 56
   end
 end
