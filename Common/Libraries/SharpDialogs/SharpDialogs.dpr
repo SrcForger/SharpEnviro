@@ -115,7 +115,7 @@ begin
  SList.Add('shell:History=History');
  SList.Add('shell:InternetFolder=Internet Folder');
  SList.Add('shell:Local AppData=Local Application Data');
- SList.Add('shell:Menu=Menu');
+// SList.Add('shell:Menu=Menu');
  SList.Add('shell:DriveFolder=My Computer');
  SList.Add('shell:Personal=My Documents');
  SList.Add('shell:My Music=My Music');
@@ -302,13 +302,17 @@ var
   menuItem : TMenuItem;
   SList : TStringList;
   n : integer;
-  i : integer;
   mindex : integer;
   sr : TSearchRec;
   s,dir : String;
   targetmenuclick : TTargetDialogClickHandler;
   iml : TPngImageList;
   bmp : TBitmap;
+  sn : String;
+  Tmp: array [0..104] of Char;
+  Info: TSHFileInfo;
+  P: PChar;
+  SC : String;
 begin
   targetmenuresult := '';
   targetmenu := TPopupMenu.Create(nil);
@@ -435,7 +439,37 @@ begin
       targetmenu.Items.Add(menuItem);
       mindex := mindex + 1;
 
-      for i := 0 to 25 do
+      try
+        FillChar(Tmp[0], SizeOf(Tmp), #0);
+        GetLogicalDriveStrings(SizeOf(Tmp), Tmp);
+        P := Tmp;
+        while P^ <> #0 do
+        begin
+          SC := P;
+          Inc(P, 4);
+          SHGetFileInfo(PChar(SC), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or SHGFI_TYPENAME);
+          sn := '';
+          sn := Trim(Info.szDisplayName);// + '[' + Trim(Info.szTypeName) + ']';
+          s := '['+ SC[1] + ':] - ' + sn;
+          menuItem := TMenuItem.Create(targetmenu);
+          menuItem.Caption := sn;
+          case GetDriveType(PChar(SC[1] + ':\')) of
+            DRIVE_UNKNOWN: menuItem.ImageIndex := 5;
+            DRIVE_NO_ROOT_DIR: menuItem.ImageIndex := 5;
+            DRIVE_REMOVABLE: menuItem.ImageIndex := 5;
+            DRIVE_FIXED: menuItem.ImageIndex := 4;
+            DRIVE_REMOTE: menuItem.ImageIndex := 5;
+            DRIVE_CDROM: menuItem.ImageIndex := 3;
+            DRIVE_RAMDISK: menuItem.ImageIndex := 4;
+            else menuItem.ImageIndex := 5;
+          end;
+          menuItem.Hint := SC[1] + ':\';
+          menuItem.OnClick := targetmenuclick.OnDriveClick;
+          targetmenu.Items.Items[mindex].Add(menuItem);
+        end;
+      except
+      end;
+      {for i := 0 to 25 do
           if DriveExists(i) then
           begin
             menuItem := TMenuItem.Create(targetmenu);
@@ -455,7 +489,7 @@ begin
             menuItem.OnClick := targetmenuclick.OnDriveClick;
 
             targetmenu.Items.Items[mindex].Add(menuItem);
-          end;
+          end;  }
     end;
 
     if stiDirectory in TargetItems then
