@@ -67,9 +67,6 @@ type
     Move1: TMenuItem;
     Left2: TMenuItem;
     Right1: TMenuItem;
-    CreateNewBar1: TMenuItem;
-    OutofallRightModules1: TMenuItem;
-    AllModulestotheLeft1: TMenuItem;
     Settings: TMenuItem;
     DisableBarHiding1: TMenuItem;
     BarManagment1: TMenuItem;
@@ -1688,7 +1685,7 @@ begin
            exit;
          end;
          SharpEBar.ShowThrobber := not SharpEBar.ShowThrobber;
-         ModuleManager.FixModulePositions;
+         ModuleManager.ReCalculateModuleSize;
          if SharpEBar.ShowThrobber then SharpEBar.Throbber.Repaint;
        end;
      end;

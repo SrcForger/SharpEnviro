@@ -767,6 +767,7 @@ object SharpBarMainForm: TSharpBarMainForm
     Top = 40
     object Information1: TMenuItem
       Caption = 'About'
+      Enabled = False
       ImageIndex = 18
       OnClick = Information1Click
     end
@@ -801,21 +802,6 @@ object SharpBarMainForm: TSharpBarMainForm
         Caption = 'Right'
         ImageIndex = 20
         OnClick = Right1Click
-      end
-    end
-    object CreateNewBar1: TMenuItem
-      Caption = 'Create New Bar'
-      Enabled = False
-      ImageIndex = 22
-      object AllModulestotheLeft1: TMenuItem
-        Caption = 'All Modules to the Left'
-        Enabled = False
-        ImageIndex = 21
-      end
-      object OutofallRightModules1: TMenuItem
-        Caption = 'All Modules to the Right'
-        Enabled = False
-        ImageIndex = 20
       end
     end
   end

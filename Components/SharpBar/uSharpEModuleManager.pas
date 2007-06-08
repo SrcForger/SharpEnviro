@@ -96,6 +96,7 @@ type
                      DllRefresh         : procedure(ID : integer);
                      DllSetSize         : procedure(ID : integer; NewWidth : integer);
                      DllUpdateMessage   : procedure(Part : integer; Param : integer);
+                     DllInitModule      : procedure(ID : integer);
                      procedure Clear;
                      constructor Create(pFileName : string; pParent : hwnd;
                                         pSkinManager : TSharpESkinManager;
@@ -657,6 +658,8 @@ begin
       pModule := TModule.Create(FBar.aform,pFile,ID,FParent,Position);
       if Index <> -1 then FModules.Insert(Index,pModule)
          else FModules.Add(pModule);
+      if @pModule.ModuleFile.DllInitModule <> nil then
+         pModule.ModuleFile.DllInitModule(pModule.ID);
       result := pModule;
     end;
   end;
@@ -783,6 +786,7 @@ var
   R : TRect;
   freespace : integer;
   MTWidth : integer;
+  mbar : boolean;
 begin
   pForm := GetControlByHandle(FParent);
 
@@ -800,6 +804,7 @@ begin
   setlength(harray,0);
   // find all SharpBar windows and store their handle in harray
   harray := FindAllWindows('TSharpBarMainForm');
+  mbar := False;
   for n := 0 to High(harray) do
   begin
     if harray[n] <> pForm.Handle then
@@ -809,7 +814,15 @@ begin
       if (R.Top = pForm.Top) and (Screen.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
       begin
         freespace := GetWindowLong(harray[n],GWL_USERDATA);
-        MaxSize := MaxSize - (R.Right - R.Left) + freespace;
+        if (FBar.HorizPos = hpLeft) or (FBar.HorizPos = hpRight) then
+        begin
+          if (R.Left > pMon.Left) and (R.Left < pMon.Left + pMon.Width div 2) then
+          begin
+            mbar := True;
+            MaxSize := R.Left - pMon.Left + freespace div 2;
+          end else if (not mbar) then
+                       MaxSize := MaxSize - (R.Right - R.Left) + freespace;
+        end else MaxSize := Min(MaxSize,pMon.Width - 2 * (R.Right - R.Left) + freespace);
       end;
     end;
   end;
@@ -1453,6 +1466,7 @@ begin
       @DllShowSettingsWnd := GetProcAddress(FDllHandle, 'ShowSettingsWnd');
       @DllRefresh         := GetProcAddress(FDllHandle, 'Refresh');
       @DllSetSize         := GetProcAddress(FDllHandle, 'SetSize');
+      @DllInitModule      := GetProcAddress(FDllHandle, 'InitModule');
     end;
 
     if (@DllCreateModule = nil) or
@@ -1471,6 +1485,7 @@ begin
       DllShowSettingsWnd   := nil;
       DllRefresh           := nil;
       DllSetSize           := nil;
+      DllInitModule        := nil;
       exit;
     end;
 
@@ -1502,6 +1517,7 @@ begin
     DllShowSettingsWnd   := nil;
     DllRefresh           := nil;
     DllSetSize           := nil;
+    DllInitModule        := nil; 
   end;
 end;
 

@@ -141,7 +141,7 @@ begin
          exit;
        end;
        SharpBarMainForm.SharpEBar.ShowThrobber := not SharpBarMainForm.SharpEBar.ShowThrobber;
-       ModuleManager.FixModulePositions;
+       ModuleManager.ReCalculateModuleSize;
        if SharpBarMainForm.SharpEBar.ShowThrobber then SharpBarMainForm.SharpEBar.Throbber.Repaint;
      end;
    end;
