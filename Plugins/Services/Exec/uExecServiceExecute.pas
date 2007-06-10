@@ -55,6 +55,7 @@ uses
   JclSysInfo,
   Jclstrings,
   JclShell,
+  JclRegistry,
 
   // Project
   uExecServicePathIncludeList,
@@ -74,11 +75,8 @@ type
   private
 
     Calc: TCalcExpress;
-
-    FAliasValue: string;
     FDebugText: String;
     FUseDebug: Boolean;
-    procedure SetAliasValue(const Value: string);
 
   public
     PathIncludeList: TPathIncludeList;
@@ -88,26 +86,27 @@ type
     ExecSettings: TExecSettings;
     slAliases: Tstringlist;
     calcanswer: string;
-
+    FAppPathList: TStringList;
     constructor Create;
+
     destructor Destroy; override;
     function ProcessString(Text: string; SaveHistory: Boolean = True): Boolean;
     property UseDebug: Boolean read FUseDebug write FUseDebug;
     property DebugText: String read FDebugText write FDebugText;
+
+    property AppPathList: TStringList read FAppPathList write
+      FAppPathList;
   protected
 
   private
-    function ForceForegroundWindow(hwnd: THandle): Boolean;
-    function ProcessAliases(text: string): boolean;
-    function ProcessAppPaths(text: string): boolean;
-    property AliasValue: string read FAliasValue write SetAliasValue;
+    function ForceForegroundWindow(hwnd: Thandle; var oldhwnd: THandle): Boolean;
     function ExecuteText(text: string; SaveHistory: Boolean): boolean;
     function GetAltExplorer(): string;
 
     function IsDirectory(const FileName: string): Boolean;
     function StrtoFileandCmd(str: string): TExecFileCommandl;
-    procedure AddFilesToList(var strl: tstrings; directory: string; extension:
-      string);
+    procedure AddFilesToList(strl: tstrings; directory: string; extension:
+      string; fullpath:boolean);
     function FileExistsIn(FileName: string; location: string; extension:
       string): string;
     function IsCalcStrValid(Str: string): Boolean;
@@ -115,6 +114,10 @@ type
       integer;
     procedure SaveRecentItem(Str: string; SaveHistory: Boolean);
     procedure SaveMostUsedItem(Str: string; SaveHistory: Boolean);
+
+    procedure PopulateAppPathsList;
+    procedure ExpandCommonFiles(var AText:String);
+    procedure ExpandAliases(var AText:String);
   end;
 
 const
@@ -183,16 +186,18 @@ begin
         for j := 0 to Pred(PathIncludeList.Items.Count) do begin
           FileToExecute := fileexistsin(tmp, PathIncludeList[j].Path,
             PathIncludeList[j].WildCard);
+
+          if FileToExecute <> tmp then break;
         end;
 
         rs := False;
         if (filetoexecute <> tmp) and (filetoexecute <> str) then
           rs := True;
 
-    // if the string is now an actual file then return the remainder as a command
+        // if the string is now an actual file then return the remainder as a command
         if FileExists(filetoexecute) and (isDirectory(filetoexecute) = false) then begin
           if rs then begin
-            StrReplace(str, tmp, '');
+            StrReplace(str, tmp, '',[rfIgnoreCase]);
             str := filetoexecute + str;
           end;
 
@@ -219,10 +224,12 @@ end;
     Adds files to a StringList
 ==============================================================================}
 
-procedure TSharpExec.AddFilesToList(var strl: tstrings; directory: string;
-  extension: string);
+procedure TSharpExec.AddFilesToList(strl: tstrings; directory: string;
+  extension: string; fullpath:boolean);
 begin
-  BuildFileList(PathAddSeparator(directory) + extension, faAnyFile, strl);
+  if fullpath then
+    AdvBuildFileList(PathAddSeparator(directory) + extension, faAnyFile, strl,amAny,[flFullNames]) else
+    AdvBuildFileList(PathAddSeparator(directory) + extension, faAnyFile, strl);
 end;
 
 {=============================================================================
@@ -242,9 +249,9 @@ begin
   // Create Calculator Component
   Calc := TCalcExpress.Create(nil);
   UseDebug := False;
+
   // Initialise XML Filenames
-  SrvSettingsPath := GetSharpeUserSettingsPath +
-    'SharpCore\Services\Exec\';
+  SrvSettingsPath := GetSharpeUserSettingsPath + 'SharpCore\Services\Exec\';
   ExecSettingsFn := SrvSettingsPath + 'Exec.xml';
   PiListFn := SrvSettingsPath + 'PiList.xml';
   PiAliasFn := SrvSettingsPath + 'AliasList.xml';
@@ -257,6 +264,10 @@ begin
   RecentItemList := TRecentItemsList.Create(RiListFn);
   ExecSettings := TExecSettings.Create(ExecSettingsFn);
   UsedItemList := TUsedItemsList.Create(UiListFn);
+
+  FAppPathList := TStringList.Create;
+  PopulateAppPathsList;
+
 
   inherited;
 end;
@@ -271,10 +282,10 @@ end;
 
 function TSharpExec.ExecuteText(text: string; SaveHistory: Boolean): boolean;
 var
-  search, url, s: string;
+  search, url: string;
   FileCommandl: TExecFileCommandl;
-  handle: hwnd;
-  oldhandle: hwnd;
+  handle: THandle;
+  oldhandle: THandle;
   args: array[0..100] of extended; // array of arguments - variable values
   Valid: Boolean;
   iResult: Integer;
@@ -285,20 +296,13 @@ begin
   url := text;
   showans := False;
   calcanswer := '';
-  oldhandle := GetActiveWindow;
+  //oldhandle := GetActiveWindow;
   handle := Application.MainFormHandle;
 
-  ForceForegroundWindow(handle);
+  ForceForegroundWindow(handle, oldhandle);
   try
 
-    // Expand the Environment Variable in the string
     Debug('Passed Execution Text: ' + text, DMT_TRACE);
-    text := FileUtils.ExpandEnvVars(text);
-    s := Copy(text, 1, Length(text) - 2);
-
-    if s <> text then
-      Debug('Expanded Env Execution Text: ' + text, DMT_TRACE);
-    text := s;
     
     // *** PROCESS THE TEXT BASED ON THE FOLLOWING CONDITIONS ***
 
@@ -470,7 +474,7 @@ begin
     end;
 
   finally
-    ForceForegroundWindow(oldhandle);
+    ForceForegroundWindow(oldhandle, oldhandle);
 
   end;
 end;
@@ -486,201 +490,24 @@ end;
 
 function TSharpExec.ProcessString(Text: string; SaveHistory: Boolean = True): Boolean;
 var
-  UseAlias: Boolean;
-begin
-
-  // Check if text is an Alias
-  Debug('Original: ' + text, DMT_TRACE);
-  UseAlias := ProcessAliases(Text);
-
-  // Execute alias or if no other commands can be found process the
-  // actual text passed to this function}
-
-  if UseAlias = True then begin
-    Debug(Format('Alias/ApplicationPath Exists: %s', [Text]), DMT_STATUS);
-    Result := ExecuteText(AliasValue, SaveHistory);
-    BarMsg('scmd', '_execupdate');
-    Exit;
-  end
-  else begin
-    Result := ExecuteText(Text, SaveHistory);
-    BarMsg('scmd', '_execupdate');
-    Exit;
-  end;
-end;
-
-{=============================================================================
-  Procedure: ProcessAliases
-    Arguments: text: String
-    Result:    boolean
-
-  Process the Alias, and if necessary expand advanced aliases
-==============================================================================}
-
-function TSharpExec.ProcessAliases(text: string): boolean;
-var
-  i, j: integer;
-  strl: tstringlist;
-  s1: string;
-
-  AliasName: string;
-  ParamPos: Integer;
-  Params: string;
-  ParamsStrl: TStringList;
+  s:String;
 begin
   Result := False;
+  s := Trim(Text);
+  if s = '' then exit;
+  Text := s;
+  Debug('Original: ' + text, DMT_TRACE);
 
-  // Initialise the String Lists
-  ParamsStrl := TStringList.Create;
-  Strl := TStringList.Create;
-  try
+  // Expand Enviro Vars
+  Text := FileUtils.ExpandEnvVars(text);
+  s := Copy(text, 1, Length(text) - 2);
+  Text := s;
 
-  // Extract Name
-    StrTokenToStrings(text, ' ', strl);
-    if strl.Count > 0 then
-      AliasName := Strl.Strings[0];
-
-  // Extract Params
-    ParamPos := Pos(' ', text);
-    Params := Copy(text, ParamPos + 1, length(text) - ParamPos + 1);
-    StrTokenToStrings(Params, ',', ParamsStrl);
-
-    for i := 0 to Pred(AliasList.Items.Count) do begin
-
-    // Check if there is a match in the Alias List
-      if StrCompare(AliasName, AliasList[i].AliasName) = 0 then begin
-
-        Debug('Alias Property: ' + AliasList[i].AliasName + ' - ' +
-          AliasList[i].AliasValue, DMT_TRACE);
-
-        Result := true;
-        AliasValue := AliasList[i].AliasValue;
-
-      // Check for various defined application paths
-        for j := 0 to Pred(PathIncludeList.Items.Count) do begin
-          AliasValue := fileexistsin(AliasValue, PathIncludeList[j].Path,
-            PathIncludeList[j].WildCard);
-        end;
-
-      // Expand the Environment Vars
-        aliasvalue := FileUtils.ExpandEnvVars(aliasvalue);
-        aliasvalue := Copy(aliasvalue, 1, Length(aliasvalue) - 2);
-
-      // Expand the advanced alias
-        if ParamsStrl.Count >= 1 then begin
-
-          s1 := AliasValue;
-          for j := 0 to ParamsStrl.Count - 1 do begin
-            StrReplace(s1, '%' + inttostr(j + 1), ParamsStrl.Strings[j]);
-          end;
-
-          AliasValue := s1;
-
-          if ParamsStrl.count = 0 then
-            SetAliasValue(AliasValue + ' ' + Params)
-          else
-            SetAliasValue(AliasValue);
-
-        end;
-      end;
-    end;
-
-  // if the text is not an alias then check to see if it is actually an
-  // application path, and if it does exist then return this as the result.
-  // If not then return nothing and result will equal to false
-
-    if result <> true then
-      result := ProcessAppPaths(text)
-    else
-      exit;
-
-  finally
-    ParamsStrl.Free;
-    strl.Free;
-  end;
-end;
-
-{=============================================================================
-  Procedure: ProcessAppPaths
-    Arguments: text: String
-    Result:    boolean
-
-  Check the passed string with Windows Application Paths
-==============================================================================}
-
-function TSharpExec.ProcessAppPaths(text: string): boolean;
-var
-  reg: tregistry;
-  strlist, windowsfolderlist, systemfolderlist: tstringlist;
-  str: string;
-  i, j: integer;
-  alval: string;
-  tokens: tstringlist;
-begin
-
-
-  // StringList Intialisation
-  windowsfolderlist := TStringList.Create;
-  systemfolderlist := TStringList.Create;
-  tokens := tstringlist.Create;
-  reg := Tregistry.Create;
-  strlist := TStringlist.create;
-  Try
-
-    // Store Common Paths into a StringList
-    reg.rootkey := HKEY_LOCAL_MACHINE;
-    Reg.OpenKey(capppaths, true);
-    Reg.GetKeyNames(strlist);
-
-    for i := 0 to (Strlist.count - 1) do begin
-
-      // Remove Extension
-      str := strlist.Strings[i];
-      str := StrChopRight(str, 4);
-
-      // If there is match return the Application path
-      if StrCompare(str, pathremoveextension(text)) = 0 then begin
-        reg.OpenKey(strlist.Strings[i], false);
-        AliasValue := reg.ReadString('');
-        result := true;
-        exit;
-      end
-    end;
-
-    alval := text;
-
-    // If there is no match check against the pathinclusions
-    for j := 0 to Pred(PathIncludeList.Items.Count) do begin
-      AliasValue := fileexistsin(text, PathIncludeList[j].Path,
-        PathIncludeList[j].WildCard);
-
-      if ((StrCompare(AliasValue, alval) <> 0) and (AliasValue <> '')) then begin
-        Result := True;
-        Exit;
-      end;
-    end;
-
-    // If there are no matches then the result is false}
-    Result := False;
-
-  finally
-    windowsfolderlist.Free;
-    systemfolderlist.Free;
-    reg.Free;
-    strlist.Free;
-    tokens.Free;
-  end;
-end;
-
-{=============================================================================
-  Procedure: SetAliasValue
-    Arguments: Const Value: String
-    Result:    None
-==============================================================================}
-
-procedure TSharpExec.SetAliasValue(const Value: string);
-begin
-  FAliasValue := Value;
+  // Expand Common Files - Scans the text and expands the filename
+  ExpandCommonFiles(Text);
+  ExpandAliases(Text);
+  Result := ExecuteText(Text, SaveHistory);
+  BarMsg('scmd', '_execupdate');
 end;
 
 {=============================================================================
@@ -732,7 +559,7 @@ begin
 
   // Populate the StringList
   templist := TStringList.Create;
-  AddFilesToList(templist, location, extension);
+  AddFilesToList(templist, location, extension,false);
 
   try
 
@@ -775,6 +602,8 @@ begin
   Calc.Free;
   RecentItemList.Free;
   UsedItemList.Free;
+
+  FAppPathList.Free;
 
   inherited Destroy;
 end;
@@ -821,10 +650,11 @@ function TSharpExec.ShellOpenFile(hWnd: HWND; AFileName, AParams, ADefaultDir:
   string): integer;
 begin
   Debug('FileName: ' + AFileName, DMT_TRACE);
+  Debug('Params: ' + AParams, DMT_TRACE);
   Debug('dir: ' + ADefaultDir, DMT_TRACE);
 
   if FUseDebug then begin
-    FDebugText := AFileName + ' ' + ADefaultDir + ' ' + AParams;
+    FDebugText := Format('File: %s -- Param: %s -- Dir: %s',[AFileName, AParams, ADefaultDir]);
     Result := 1;
   end else
   result := shellapi.ShellExecute(hWnd, nil, pChar(AFileName),
@@ -880,7 +710,7 @@ begin
   end;
 end;
 
-function TSharpExec.ForceForegroundWindow(hwnd: THandle): Boolean;
+function TSharpExec.ForceForegroundWindow(hwnd: Thandle; var oldhwnd: THandle): Boolean;
 const
   SPI_GETFOREGROUNDLOCKTIMEOUT = $2000;
   SPI_SETFOREGROUNDLOCKTIMEOUT = $2001;
@@ -893,7 +723,9 @@ begin
   if IsIconic(hwnd) then
     ShowWindow(hwnd, SW_RESTORE);
 
-  if GetForegroundWindow = hwnd then
+  oldhwnd := GetActiveWindow;
+
+  if oldhwnd = hwnd then
     Result := True
   else begin
     // Windows 98/2000 doesn't want to foreground a window when some other
@@ -934,6 +766,179 @@ begin
     Result := (GetForegroundWindow = hwnd);
   end;
 end; { ForceForegroundWindow }
+
+procedure TSharpExec.PopulateAppPathsList;
+var
+  reg:TRegistry;
+  iList, iFile: Integer;
+  sName, sVal: String;
+  tmpStrings: TStringList;
+const
+  cAppPath = 'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths';
+begin
+  FAppPathList.Clear;
+
+  reg := Tregistry.Create;
+  Try
+    reg.rootkey := HKEY_LOCAL_MACHINE;
+    reg.Access := KEY_READ;
+    reg.OpenKeyReadOnly(cAppPath);
+    reg.GetKeyNames(FAppPathList);
+    reg.closeKey;
+
+    for iList := 0 to Pred(FAppPathList.Count) do begin
+
+      reg.OpenKeyReadOnly(cAppPath);
+      sName := FAppPathList.Strings[iList];
+      if reg.OpenKeyReadOnly(sName) then
+        sVal := reg.ReadString('');
+
+      //
+      sVal := reg.ReadString('');
+      FAppPathList[iList] := (Format('%s=%s',[sName,sVal]));
+
+      reg.CloseKey;
+    end;
+
+
+    tmpStrings := TStringList.Create;
+    Try
+      For iList := 0 to Pred(PathIncludeList.Items.Count) do begin
+        tmpStrings.Clear;
+
+        AddFilesToList(tmpStrings,PathIncludeList.Item[iList].Path,
+          PathIncludeList.Item[iList].WildCard,True);
+
+        For iFile := 0 to Pred(tmpStrings.Count) do begin
+          sName := ExtractFileName(tmpStrings[iFile]);
+          sVal := tmpStrings[iFile];
+          FAppPathList.Add(Format('%s=%s',[sName,sVal]));
+        end;
+
+      end;
+    Finally
+      tmpStrings.Free;
+    End;
+  Finally
+    reg.Free;
+
+    //FAppPathList.AddStrings();
+  End;
+end;
+
+procedure TSharpExec.ExpandCommonFiles(var AText: String);
+var
+  s:String;
+  iList, iPos: Integer;
+  withe, withoute: String;
+begin
+  s := AText;
+  Try
+
+  For iList := 0 to Pred(FAppPathList.Count) do begin
+
+    s := AText;
+    withoute := FAppPathList.Names[iList];
+    withoute := StrChopRight(withoute, 4);
+    withe := FAppPathList.Names[iList];
+
+    // Try with extension
+    iPos := StrFind(withe,s);
+    if iPos = 1 then begin
+      StrReplace(s,withe,FAppPathList.ValueFromIndex[iList],[rfIgnoreCase]);
+      exit;
+    end;
+
+    // Try without extension
+    iPos := StrFind(withoute,s);
+    if iPos = 1 then begin
+        StrReplace(s,withoute,FAppPathList.ValueFromIndex[iList],[rfIgnoreCase]);
+        exit;
+    end;
+  end;
+
+  Finally
+    AText := s;
+  End;
+end;
+
+procedure TSharpExec.ExpandAliases(var AText: String);
+var
+  i, j: integer;
+  strl: tstringlist;
+  s1: string;
+
+  AliasName: string;
+  ParamPos: Integer;
+  Params: string;
+  ParamsStrl: TStringList;
+
+  bMatch: Boolean;
+begin
+
+  // Initialise the String Lists
+  ParamsStrl := TStringList.Create;
+  Strl := TStringList.Create;
+  bMatch := False;
+
+  try
+
+  // Extract Name
+    StrTokenToStrings(AText, ' ', strl);
+    if strl.Count > 0 then
+      AliasName := Strl.Strings[0];
+
+  // Extract Params
+    ParamPos := Pos(' ', AText);
+
+    if ParamPos <> 0 then begin
+      Params := Copy(AText, ParamPos + 1, length(AText) - ParamPos + 1);
+      StrTokenToStrings(Params, ',', ParamsStrl);
+    end;
+
+    for i := 0 to Pred(AliasList.Items.Count) do begin
+
+      // Check if there is a match in the Alias List
+      if StrCompare(AliasName, AliasList[i].AliasName) = 0 then begin
+
+        bMatch := True;
+        Debug('Alias Property: ' + AliasList[i].AliasName + ' - ' +
+          AliasList[i].AliasValue, DMT_TRACE);
+
+        //Result := true;
+        AText := AliasList[i].AliasValue;
+
+        // Check for various defined application paths
+        for j := 0 to Pred(PathIncludeList.Items.Count) do begin
+          AText := fileexistsin(AText, PathIncludeList[j].Path,
+            PathIncludeList[j].WildCard);
+
+          if AText <> AliasList[i].AliasValue then
+            break;
+        end;
+
+        // Expand the advanced alias
+        if ParamsStrl.Count >= 1 then begin
+
+          s1 := AText;
+          for j := 0 to ParamsStrl.Count - 1 do begin
+            StrReplace(s1, '%' + inttostr(j + 1), ParamsStrl.Strings[j],[rfIgnoreCase]);
+          end;
+
+          AText := s1;
+        end;
+        break;
+      end;
+    end;
+
+  finally
+    if ((bMatch) and (ParamsStrl.Count > 0)) then
+      AText := AText + ' ' + Params;
+
+    ParamsStrl.Free;
+    strl.Free;
+  end;
+end;
 
 end.
 

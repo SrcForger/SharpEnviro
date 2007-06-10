@@ -47,47 +47,54 @@ uses
   JvSimpleXml;
 
 type
-  // "Private" Object, TPathIncludeList needs it...
+
   TPathIncludeItem = class(TObject)
   private
     FRemovePath: Boolean;
     FRemoveExtension: Boolean;
     FPath: string;
     FWildCard: string;
+    FInternal: Boolean;
   public
     property Path: string read FPath write FPath;
     property WildCard: string read FWildCard write FWildCard;
     property RemoveExtension: Boolean read FRemoveExtension write
       FRemoveExtension;
     property RemovePath: Boolean read FRemovePath write FRemovePath;
+    property Internal: Boolean read FInternal write FInternal;
   end;
 
   TPathIncludeList = class(TObject)
   private
     FOnAddItem: TNotifyEvent;
     FFileName: string;
-    function GeTPathIncludeItem(Index: integer): TPathIncludeItem;
+    function GetPathIncludeItem(AIndex: integer): TPathIncludeItem;
+    procedure AddInternals;
   public
-    Items:TObjectList;
-    constructor Create(FileName: string);
+    FItems: TObjectList;
+
+    constructor Create(AFileName: string);
     destructor Destroy; override;
 
-    function Add(Path, WildCard: string; RemoveExtension, RemovePath: Boolean):
-      TPathIncludeItem;
+    function Add(APath, AWildCard: string; ARemoveExtension, ARemovePath:
+      Boolean;
+      AInternal: Boolean = False): TPathIncludeItem;
 
     procedure Load; overload;
     procedure Save; overload;
-    procedure Load(FileName: string); overload;
-    procedure Save(FileName: string); overload;
+    procedure Load(AFileName: string); overload;
+    procedure Save(AFileName: string); overload;
 
-    property Item[Index: integer]: TPathIncludeItem read GeTPathIncludeItem; default;
+    property Items: TObjectList read FItems write FItems;
+    property Item[AIndex: integer]: TPathIncludeItem read GetPathIncludeItem;
+    default;
 
     property OnAddItem: TNotifyEvent read FOnAddItem write FOnAddItem;
     property FileName: string read FFileName write FFileName;
 
   end;
 
-procedure Debug(Text: string; DebugType: Integer);
+procedure Debug(AText: string; ADebugType: Integer);
 
 implementation
 
@@ -96,104 +103,133 @@ uses
 
 { TPathIncludeList }
 
-procedure Debug(Text: string; DebugType: Integer);
+procedure Debug(AText: string; ADebugType: Integer);
 begin
-  SendDebugMessageEx('Exec Service', Pchar(Text), 0, DebugType);
+  SendDebugMessageEx('Exec Service', Pchar(AText), 0, ADebugType);
 end;
 
-function TPathIncludeList.Add(Path, WildCard: string; RemoveExtension,
-  RemovePath: Boolean): TPathIncludeItem;
-
+function TPathIncludeList.Add(APath, AWildCard: string; ARemoveExtension,
+  ARemovePath: Boolean; AInternal: Boolean = False): TPathIncludeItem;
+var
+  i: Integer;
+  bAdd: Boolean;
 begin
-  Result := TPathIncludeItem.Create;
-  Result.Path := Path;
-  Result.WildCard := WildCard;
-  Result.RemoveExtension := RemoveExtension;
-  Result.RemovePath := RemovePath;
-  Items.Add(Result);
+  bAdd := True;
+  Result := nil;
+
+  // Check for duplicates, update existing 
+  for i := 0 to Pred(FItems.Count) do
+  begin
+    if ((CompareText(Item[i].Path, APath) = 0) and
+      (CompareText(Item[i].WildCard, APath) = 0) and
+      (Item[i].RemovePath = ARemovePath) and
+      (Item[i].RemoveExtension = ARemoveExtension) and Not(AInternal)) then
+    begin
+      Result := item[i];
+      bAdd := False;
+      break;
+    end;
+  end;
+
+  if bAdd then
+    Result := TPathIncludeItem.Create;
+
+  with Result do
+  begin
+    Path := APath;
+    WildCard := AWildCard;
+    RemoveExtension := ARemoveExtension;
+    RemovePath := ARemovePath;
+    Internal := AInternal;
+  end;
+
+  if bAdd then
+    FItems.Add(Result);
 
   if Assigned(FOnAddItem) then
     FOnAddItem(Result);
 end;
 
-constructor TPathIncludeList.Create(FileName: string);
+constructor TPathIncludeList.Create(AFileName: string);
 var
-  i:Integer;
-  bSave:Boolean;
+  i: Integer;
+  bSave: Boolean;
 begin
   inherited Create;
-  FFileName := FileName;
-  Items := TObjectList.Create;
+  FFileName := AFileName;
+  FItems := TObjectList.Create;
   bSave := False;
 
-  if FileExists(FileName) then begin
+  // Load Internals
+  AddInternals;
+
+  if FileExists(AFileName) then
+  begin
+
     Load;
-
-    Try
-    for i := 0 to Pred(Self.Items.Count) do begin
-      if (DirectoryExists(Self.Item[i].Path) = False) then begin
-        Self.Item[i].Path := 'invalid';
-        Self.Item[i].WildCard := '';
-        bSave := True;
+    try
+      for i := Pred(FItems.Count) downto 0 do
+      begin
+        if (DirectoryExists(Item[i].Path) = False) then
+        begin
+          FItems.Delete(FItems.IndexOf(item[i]));
+          bSave := True;
+        end;
       end;
+    finally
+      if bSave then
+        Save;
     end;
-    Finally
-      if bSave then Self.Save;
-      Self.Add(GetSharpeDirectory,'*.exe',False,True);
-      Self.Add(GetSharpeDirectory,'*.exe',False,False);
-      Self.Add(GetSharpeDirectory,'*.exe',True,True);
-      Self.Add(GetSharpeDirectory,'*.exe',False,False);
-    End;
-
-
   end
-  else begin
-    Add(GetWindowsFolder, '*.exe', False, True);
-    Add(GetWindowsSystemFolder, '*.exe', False, True);
-    Add(ExtractFilePath(Application.exename), '*.exe', False, True);
+  else
     Save;
-  end;
 end;
 
 destructor TPathIncludeList.Destroy;
 begin
-  Items.Free;
+  FItems.Free;
   inherited;
 end;
 
-function TPathIncludeList.GeTPathIncludeItem(Index: integer): TPathIncludeItem;
+function TPathIncludeList.GeTPathIncludeItem(AIndex: integer): TPathIncludeItem;
 begin
-  Result := (Items[Index] as TPathIncludeItem);
+  Result := (FItems[AIndex] as TPathIncludeItem);
 end;
 
-procedure TPathIncludeList.Save(FileName: string);
+procedure TPathIncludeList.Save(AFileName: string);
 var
   i: Integer;
   Xml: TjvSimpleXml;
 begin
-  DeleteFile(Pchar(FileName));
+  DeleteFile(Pchar(AFileName));
   Xml := TJvSimpleXml.Create(nil);
 
   try
     try
       Xml.Root.Name := 'PathInclude';
-      xml.Root.Properties.Add('ItemCount', Items.Count);
+      xml.Root.Properties.Add('ItemCount', FItems.Count);
 
-      for i := 0 to Items.Count - 1 do begin
-        Xml.Root.Items.Add(Format('PathInclude%d', [i]));
-        Xml.Root.Items.Item[i].Items.Add('Path',
-          Self[i].Path);
-        Xml.Root.Items.Item[i].Items.Add('WildCard',
-          Self[i].WildCard);
-        Xml.Root.Items.Item[i].Items.Add('RemoveExtension',
-          Self[i].RemoveExtension);
-        Xml.Root.Items.Item[i].Items.Add('RemovePath',
-          Self[i].RemovePath);
+      for i := 0 to FItems.Count - 1 do
+      begin
+        if Item[i].Internal = False then
+        begin
+
+          Xml.Root.Items.Add(Format('PathInclude%d', [i]));
+          Xml.Root.Items.Item[i].Items.Add('Path',
+            Item[i].Path);
+          Xml.Root.Items.Item[i].Items.Add('WildCard',
+            Item[i].WildCard);
+          Xml.Root.Items.Item[i].Items.Add('RemoveExtension',
+            Item[i].RemoveExtension);
+          Xml.Root.Items.Item[i].Items.Add('RemovePath',
+            Item[i].RemovePath);
+        end;
       end;
 
       Xml.SaveToFile(FileName);
     except
-      on E: Exception do begin
+      on E: Exception do
+      begin
         Debug('Error While Saving Xml File', DMT_ERROR);
         Debug(E.Message, DMT_TRACE);
       end;
@@ -214,12 +250,12 @@ begin
   Load(FFileName);
 end;
 
-procedure TPathIncludeList.Load(FileName: string);
+procedure TPathIncludeList.Load(AFileName: string);
 var
   ItemCount, Loop: Integer;
   xml: TjvSimpleXml;
   prop: string;
-  sMsg: String;
+  sMsg: string;
 begin
 
   xml := TJvSimpleXml.Create(nil);
@@ -228,23 +264,27 @@ begin
     try
       xml.LoadFromFile(FileName);
 
-      if xml.Root.Name <> 'PathInclude' then begin
+      if xml.Root.Name <> 'PathInclude' then
+      begin
         sMsg := 'Invalid Path Inclusion File' + #13;
         Debug(sMsg, DMT_ERROR);
 
-        sMsg := sMsg + Format('Expected "%s" found "%s"',['PathInclude',xml.Root.Name]);
+        sMsg := sMsg + Format('Expected "%s" found "%s"', ['PathInclude',
+          xml.Root.Name]);
         MessageDlg(sMsg, mtError, [mbOK], 0);
 
         exit;
       end;
 
       Itemcount := xml.Root.Properties.Item[0].IntValue;
-      for Loop := 0 to itemcount - 1 do begin
+      for Loop := 0 to itemcount - 1 do
+      begin
         prop := 'PathInclude' + inttostr(loop);
 
-        with xml.Root.Items do begin
+        with xml.Root.Items do
+        begin
 
-          self.Add(
+          Self.Add(
             ItemNamed['PathInclude' +
             inttostr(loop)].Items.Value('Path', ''),
               ItemNamed['PathInclude' +
@@ -257,7 +297,8 @@ begin
       end;
     except
 
-      on E: Exception do begin
+      on E: Exception do
+      begin
         Debug('Error While Loading Xml File', DMT_ERROR);
         Debug(E.Message, DMT_TRACE);
 
@@ -269,9 +310,12 @@ begin
   end;
 end;
 
+procedure TPathIncludeList.AddInternals;
+begin
+  Add(GetWindowsFolder, '*.exe', False, True, True);
+  Add(GetWindowsSystemFolder, '*.exe', False, True, True);
+  Add(GetSharpeDirectory, '*.exe', False, True, True);
+end;
+
 end.
-
-
-
-
 

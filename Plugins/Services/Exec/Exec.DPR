@@ -74,6 +74,7 @@ const
 begin
   Result := 0;
   msg:=trim(msg);
+
   Debug(Format('*** New Command: %s ***', [msg]), DMT_INFO);
 
   // Check if message sent is in Action command
