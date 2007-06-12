@@ -84,17 +84,17 @@ begin
 
   // Action Commands, _execute, _updateaction, _registeraction, _unregisteraction, _buildactionlist
 
-  if Cmd = acActionExists then // _exists
+  if Cmd = AC_ACTION_EXISTS then // _exists
     Result := ActionMgr.ActionExists(Val)
-  else if Cmd = acRegisterAction then // _registeraction
+  else if Cmd = AC_REGISTER_ACTION then // _registeraction
     ActionMgr.AddAction(Val)
-  else if Cmd = acUpdateAction then // _updateaction
+  else if Cmd = AC_UPDATE_ACTION then // _updateaction
     ActionMgr.AddAction(Val)
-  else if Cmd = acUnregisterAction then // _unregisteraction
+  else if Cmd = AC_UNREGISTER_ACTION then // _unregisteraction
     ActionMgr.DelAction(Val)
-  else if Cmd = acBuildActionList then // _buildactionlist
+  else if Cmd = AC_BUILD_ACTION_LIST then // _buildactionlist
     ActionMgr.BuildList(Val)
-  else if Cmd = acExecuteAction then // _execute
+  else if Cmd = AC_EXECUTE_ACTION then // _execute
     ActionMgr.ExecAction(Val);
 
 end;

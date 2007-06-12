@@ -72,14 +72,6 @@ procedure Debug(DebugText: string; DebugType: Integer);
 
 var
   ActionMgr: TActionMgr;
-const
-  acRegisterAction = '_registeraction';
-  acUnregisterAction = '_unregisteraction';
-  acUpdateAction = '_updateaction';
-  acBuildActionList = '_buildactionlist';
-  acActionExists = '_exists';
-  acExecuteAction = '_execute';
-  dbgServiceName = 'Actions Service';
 
 implementation
 
@@ -88,7 +80,7 @@ implementation
 
 Procedure Debug(DebugText:String; DebugType:Integer);
 Begin
-  SendDebugMessageEx(dbgServiceName,Pchar(DebugText),0,DebugType);
+  SendDebugMessageEx(AC_SERVICE_NAME,Pchar(DebugText),0,DebugType);
 End;
 
 function TActionMgr.ActionExists(ParamText: string): Integer;
@@ -108,7 +100,7 @@ begin
 
     // Check Actionlist for Action Name
     for i := 0 to ActionList.Count - 1 do begin
-      if lowercase(prmActionName) = lowercase(ActionList.Info[i].ActionName) then begin
+      if CompareText(prmActionName,ActionList.Info[i].ActionName) = 0 then begin
 
         // Action does exist, return 1 (True)
         Result := 1;
@@ -144,21 +136,23 @@ begin
     // Check whether the Action already exists
     NewItem := -1;
     for i := 0 to ActionList.Count - 1 do begin
-      if lowercase(prmActionName) = LowerCase(ActionList.Info[i].ActionName) then
+      if CompareText(prmActionName,ActionList.Info[i].ActionName) = 0 then begin
         NewItem := i;
+        break;
+      end;
     end;
 
     if NewItem < 0 then begin
       // If the action did not exist, then add it to the Action list
       ActionList.Add(prmActionName, prmGroupName, prmWindowHandle, prmLParam);
-      Debug(Format('AddAction %s (%s)', [prmActionName, prmGroupName]), DMT_STATUS);
+      Debug(Format('%s %s (%s)', [AC_REGISTER_ACTION, prmActionName, prmGroupName]), DMT_STATUS);
     end
     else begin
       // Action exists, change the existing properties
       ActionList.Info[NewItem].GroupName := prmGroupName;
       ActionList.Info[NewItem].WindowHandle := prmWindowHandle;
       ActionList.Info[NewItem].LParamID := prmLParam;
-      Debug(Format('UpdateAction %s (%s)', [prmActionName, prmGroupName]), DMT_STATUS);
+      Debug(Format('%s %s (%s)', [AC_UPDATE_ACTION, prmActionName, prmGroupName]), DMT_STATUS);
     end;
   finally
     strlParams.Free;
@@ -219,7 +213,7 @@ begin
     // Check if the Action Exists
     NewItem := -1;
     for i := ActionList.Count - 1 downto 0 do begin
-      if lowercase(prmActionName) = LowerCase(ActionList.Info[i].ActionName) then
+      if CompareText(prmActionName,ActionList.Info[i].ActionName) = 0 then
         NewItem := i;
     end;
 
@@ -261,11 +255,11 @@ begin
     // If successfull post the message to the window handle
     // LParamID contains the id of the Action
     for i := 0 to ActionList.Count - 1 do
-      if lowercase(prmActionName) = lowercase(ActionList.Info[i].ActionName) then begin
+      if CompareText(prmActionName,ActionList.Info[i].ActionName) = 0 then begin
         with ActionList.Info[i] do
           b := PostMessage(WindowHandle, WM_SHARPEACTIONMESSAGE, 0, LParamID);
 
-        Debug(Format('ExecAction %s %s', [prmActionName, booltostr(b)]), DMT_STATUS);
+        Debug(Format('%s %s %s', [AC_EXECUTE_ACTION, prmActionName, booltostr(b)]), DMT_STATUS);
       end;
   finally
     StrlParams.Free;
