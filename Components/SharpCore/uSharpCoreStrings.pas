@@ -37,10 +37,9 @@ resourcestring
 
   // Parameters
   prmEx = '-explorer';
-  prmExs = '-e';
-  prmSep = '-setexplorerprocess';
   prmSeps = '-sep';
   prmExt = '-ext';
+  prmDebug = '-debug';
 
 implementation
 

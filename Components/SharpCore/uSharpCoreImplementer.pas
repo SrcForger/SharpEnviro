@@ -43,7 +43,8 @@ uses
 
   // Jedi
   JclSecurity,
-  JclRegistry;
+  JclRegistry,
+  JclStrings;
 
 type
   TShellMgr = class(TObject)
@@ -63,7 +64,8 @@ type
     procedure AppInitialise;
     procedure ApplySep;
     procedure CheckMutex(var Terminate: Boolean);
-    procedure CheckParams(pCount: Integer; var ExitApp: Boolean; var Extension: string);
+    procedure CheckParams(AParamCount: Integer; var AExitApp: Boolean; var AExtension: string;
+      var ADebug: Boolean);
     procedure CreateClasses;
     procedure ShowSplash;
   end;
@@ -164,42 +166,44 @@ begin
   DStatus(dsMutexNotFound);
 end;
 
-procedure TSCImplementer.CheckParams(pCount: Integer; var ExitApp: Boolean; var Extension: string);
+procedure TSCImplementer.CheckParams(AParamCount: Integer; var AExitApp: Boolean; var AExtension: string;
+  var ADebug: Boolean);
 var
   ShutDown: TScShutDown;
-  Parameter: string;
+  sParam, s: string;
+  bBreak: Boolean;
+  i,n: Integer;
 begin
   // Shell Check
-  ExitApp := false;
+  AExitApp := false;
 
   ShutDown := TScShutDown.Create(nil);
   try
-    if (pCount >= 1) then begin
+    if (AParamCount >= 1) then begin
 
       // Get parameter
-      Parameter := LowerCase(ParamStr(1));
+      sParam := GetCommandLine;
 
       // Passed parameter
-      DInfo(Format(dsParamPassed, [Parameter]));
+      DInfo(Format(dsParamPassed, [sParam]));
 
-      // Command to set explorer as shell
-      if (Parameter = prmEx) or (parameter = prmExs) then begin
+      if (StrFind(prmEx,sParam) <> 0) then begin
         if MessageDlg(rsRevertShellExplorer, mtWarning, [mbYes, mbNo], 0) = mrYes then begin
           ShellMgr.WriteExplorer;
           MessageDlg(rsExplorerRestored, mtInformation, [mbok], 0);
-          ExitApp := True;
+          AExitApp := True;
         end
         else
-          ExitApp := True;
+          AExitApp := True;
       end;
 
       // Command to seperate explorer process
-      if (Parameter = prmSep) or (Parameter = prmSeps) then begin
+      if (StrFind(prmSeps,sParam,1) <> 0) then begin
 
         // Must have administrator account
         if not (IsAdministrator) then begin
           MessageDlg(rsAdminAccountRequired, mtError, mbOKCancel, 0);
-          ExitApp := True;
+          AExitApp := True;
         end;
 
         // Show Seperate Explorer Process dialog
@@ -213,20 +217,36 @@ begin
               end;
             end
             else
-              ExitApp := True;
+              AExitApp := True;
           end
           else begin
             MessageDlg(rsFixAlreadyApplied, mtError, mbOKCancel, 0);
-            ExitApp := True;
+            AExitApp := True;
           end;
         end
         else
-          ExitApp := True;
+          AExitApp := True;
+      end;
+
+      // Used for console debugging
+      if (StrFind(prmDebug,sParam,1)) <> 0 then begin
+        ADebug := True;
       end;
 
       // Used for debugging services
-      if Parameter = prmExt then
-        Extension := ParamStr(2);
+      if (StrFind(prmExt,sParam,1)) <> 0 then begin
+        s := '';
+        n := StrFind(prmExt,sParam,1)+length(prmExt)+1;
+        repeat
+          if sParam[n] = ' ' then
+            bBreak := True;
+
+          s := s + sParam[n];
+          inc(n);
+
+        until (n > Length(sParam)) or (bBreak);
+        AExtension := s;
+      end;
     end;
   finally
     ShutDown.Free;

@@ -9,6 +9,7 @@ uses
   Messages,
   Controls,
   SharpApi,
+  JclShell,
   Windows,
   uSharpCoreMainWnd in 'uSharpCoreMainWnd.pas' {SharpCoreMainWnd},
   uSharpCoreServiceMan in 'uSharpCoreServiceMan.pas',
@@ -23,27 +24,34 @@ uses
 
 {$R *.res}
 var
-  exit: boolean;
-  newExtension: string;
+  bExit: boolean;
+  sExtension: string;
+  bDebug: Boolean;
 
 begin
 
   SCI := TSCImplementer.Create;
   with SCI do begin
 
-    newExtension := '';
-    CheckParams(ParamCount, exit, newExtension);
-    CheckMutex(exit);
+    sExtension := '';
+    bDebug := False;
+    CheckParams(ParamCount, bExit, sExtension, bDebug);
+    CheckMutex(bExit);
 
-    if not exit then begin
+    if not bExit then begin
+
+      // Load Debug
+      if bDebug then
+        ShellExec(hInstance,'open',GetSharpeDirectory+'SharpConsole.exe',
+        '',GetSharpeDirectory,0);
 
       // Initialisation
       CreateClasses;
       AppInitialise;
 
       // Assign the extension (if custom)
-      if newExtension <> '' then
-        ServiceManager.ServiceExt := newExtension;
+      if sExtension <> '' then
+        ServiceManager.ServiceExt := sExtension;
 
       // Check for default Shell
       ShellMgr.Check;
@@ -63,7 +71,12 @@ begin
       RegisterActionEx('!ToggleServiceManager', 'SharpCore', SharpCoreMainWnd.Handle, 0);
       SharpCoreMainWnd.Trayicon.IconVisible := True;
 
+      // Load Components
+      ShellExec(hInstance,'open',GetSharpeDirectory+'SharpDesk.exe',
+        '',GetSharpeDirectory,0);
 
+      ShellExec(hInstance,'open',GetSharpeDirectory+'SharpBar.exe',
+        '',GetSharpeDirectory,0);
 
       Application.Title := 'SharpCore';
       Application.Run;

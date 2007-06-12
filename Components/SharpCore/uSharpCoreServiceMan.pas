@@ -65,6 +65,7 @@ type
     function IsServiceFile(filename: string): Boolean;
     procedure AddNewItemCallBack(Sender: TObject);
     procedure UpdateLiveServiceListXml;
+
   public
     ItemSelectedID: Integer;
     ServiceExt: string;
@@ -149,7 +150,6 @@ begin
   until FindNext(sr) <> 0;
   FindClose(sr);
   SendDebugMessageEx('SharpCore',pchar('ServiceCount: ' + inttostr(Files.Count)),clBlack,DMT_INFO);
-//  BuildFileList(SharpCoreServicePath + '*' + ServiceExt, faAnyFile, Files);
 
    // Move Actions to top of list
   i := Files.IndexOf('Actions' + ServiceExt);
