@@ -187,6 +187,7 @@ const
   AC_BUILD_ACTION_LIST = '_buildactionlist';
   AC_ACTION_EXISTS = '_exists';
   AC_EXECUTE_ACTION = '_execute';
+  AC_SERVICE_NAME = 'Actions';
 
   //showModes to use with sendTrayMessage
   smSLIDE = 1;
