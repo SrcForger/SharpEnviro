@@ -61,7 +61,6 @@ type
     procedure RunEntriesIn(AKey: string; AHKEY: HKEY);
     procedure RunDir(Idl: Integer);
     function FindTask(ExeFileName: string): Integer;
-    function GetShortcutTarget(ShortcutFilename: string): string;
     procedure Debug(Str: string; MessageType: Integer);
     function StrtoFileandCmd(str: string):TExecFileCommand;
 
@@ -114,8 +113,8 @@ var
   FProcessEntry32: TProcessEntry32;
   currentscan, currenttask: string;
 begin
+  Result := -1;
   try
-    Result := -1;
 
     FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     FProcessEntry32.dwSize := Sizeof(FProcessEntry32);
@@ -145,31 +144,6 @@ begin
   end;
 end;
 
-function TStartup.GetShortcutTarget(ShortcutFilename: string): string;
-var
-  Psl: IShellLink;
-  Ppf: IPersistFile;
-  WideName: array[0..MAX_PATH] of widechar;
-  pResult: array[0..MAX_PATH - 1] of char;
-  Data: TWin32FindData;
-const
-  IID_IPersistFile: TGUID = (D1: $0000010B; D2: $0000; D3: $0000;
-    D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
-begin
-  try
-    CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
-      IID_IShellLinkA, psl);
-    psl.QueryInterface(IID_IPersistFile, ppf);
-    MultiByteToWideChar(CP_ACP, 0, PChar(SHORTCUTFilename), -1, WideName,
-      Max_Path);
-    ppf.Load(WideName, STGM_READ);
-    //psl.Resolve(0, SLR_NO_UI + SLR_NOUPDATE);
-    psl.GetPath(@pResult, MAX_PATH, Data, SLGP_UNCPRIORITY);
-    Result := StrPas(@pResult);
-  except
-  end;
-end;
-
 procedure TStartup.RunDir(Idl: Integer);
 var
   sdir: PChar;
@@ -179,6 +153,7 @@ var
   hwin: THandle;
   lpShortcut: TShellLink;
 begin
+  hwin := 0;
   try
     GetMem(sdir, MAX_PATH + 1);
     if SHGetSpecialFolderLocation(hWin, IDL, pp) = NOERROR then
@@ -212,13 +187,8 @@ procedure TStartup.RunEntriesIn(AKey: string; AHKEY: HKEY);
 var
   Reg: Tregistry;
   sList: TStringList;
-  i, j: integer;
-  sTheFile: string;
-  res: integer;
-  sFile, sCmd, sDir: string;
-  cont: boolean;
-
-
+  i: integer;
+  sFile, sCmd: string;
 
 begin
   sList := TStringList.Create;
@@ -258,8 +228,6 @@ begin
 end;
 
 procedure TStartup.LoadStartupApps;
-var
-  sVal:String;
 begin
   //Debug('Execute UserInit', DMT_INFO);
   //ServiceMsg('exec',pchar('_nohist,' + GetWindowsSystemFolder+'\userinit.exe'));
@@ -288,7 +256,7 @@ end;
 function TStartup.StrtoFileandCmd(str: string):TExecFileCommand;
 var
   filetoexecute, commandline: string;
-  i, j: Integer;
+  i: Integer;
   tmp, s: string;
   tokens: Tstringlist;
   rs: boolean;
