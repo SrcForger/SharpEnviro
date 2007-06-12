@@ -14,7 +14,7 @@ object SharpCenterWnd: TSharpCenterWnd
   Font.Style = []
   OldCreateOrder = False
   ScreenSnap = True
-  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
@@ -718,7 +718,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 145
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -290
+                Left = -294
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1168,7 +1168,7 @@ object SharpCenterWnd: TSharpCenterWnd
               object Edit2: TEdit
                 Left = 0
                 Top = 36
-                Width = -295
+                Width = -299
                 Height = 21
                 Anchors = [akLeft, akTop, akRight]
                 Ctl3D = True

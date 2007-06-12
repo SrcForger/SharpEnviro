@@ -129,7 +129,7 @@ type
     btnEditApply: TPngSpeedButton;
     tlEditItem: TSharpETabList;
     pnlSpacer: TPanel;
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
     procedure Timer1Timer(Sender: TObject);
@@ -165,6 +165,7 @@ type
 
     procedure UpdateLivePreview;
     procedure CenterMessage(var Msg: TMessage); message WM_SHARPCENTERMESSAGE;
+    procedure WMTerminateMessage(var Msg: TMessage); message WM_SHARPTERMINATE;
     procedure ClickItem;
 
     procedure ShowHistory;
@@ -1078,12 +1079,23 @@ begin
   end;
 end;
 
-procedure TSharpCenterWnd.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TSharpCenterWnd.WMTerminateMessage(var Msg: TMessage);
 begin
-  if @SCM.ActivePlugin <> nil then
-    SCM.Unload;
+  Close;
+end;
 
-  FreeAndNil(SCM);
+procedure TSharpCenterWnd.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
+begin
+  Try
+    if @SCM.ActivePlugin <> nil then
+      SCM.Unload;
+
+    FreeAndNil(SCM);
+
+  Finally
+    CanClose := True;
+  End;
 end;
 
 end.
