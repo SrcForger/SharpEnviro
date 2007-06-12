@@ -180,6 +180,14 @@ type
     SCC_UNLOAD_DLL = '_unloaddll';
     SCC_LOAD_DLL = '_loaddll';
 
+    AC_REGISTER_ACTION = '_registeraction';
+    AC_UNREGISTER_ACTION = '_unregisteraction';
+    AC_UPDATE_ACTION = '_updateaction';
+    AC_BUILD_ACTION_LIST = '_buildactionlist';
+    AC_ACTION_EXISTS = '_exists';
+    AC_EXECUTE_ACTION = '_execute';
+    AC_SERVICE_NAME = 'Actions';
+
   Type
     TSCC_COMMAND_ENUM = (sccLoadSetting, sccChangeFolder, sccUnloadDll, sccLoadDll);
 
@@ -612,16 +620,16 @@ begin
   try
 
     // Check if the Actions service is running
-    if IsServiceStarted('actions') = MR_STOPPED then
+    if IsServiceStarted(AC_SERVICE_NAME) = MR_STOPPED then
     begin
       Result := MR_ActionSERVICE_NOT_AVAIL;
       Exit;
     end;
 
     // Send the message to register the Action
-    Result := ServiceMsg('actions',
-      pchar(Format('_registeraction,%s,Undefined,%d,%d',
-      [ActionName, WindowHandle, LParamID])));
+    Result := ServiceMsg(AC_SERVICE_NAME,
+      pchar(Format('%s,%s,Undefined,%d,%d',
+      [AC_REGISTER_ACTION, ActionName, WindowHandle, LParamID])));
   except
     result := HR_UNKNOWNERROR;
   end;
@@ -634,15 +642,15 @@ begin
   try
 
     // Check if the Actions service is running
-    if IsServiceStarted('actions') = MR_STOPPED then
+    if IsServiceStarted(AC_SERVICE_NAME) = MR_STOPPED then
     begin
       Result := MR_ActionSERVICE_NOT_AVAIL;
       Exit;
     end;
 
     // Send the message to register the Action
-    Result := ServiceMsg('actions', pchar(Format('_registeraction,%s,%s,%d,%d',
-      [ActionName, GroupName, WindowHandle, LParamID])));
+    Result := ServiceMsg(AC_SERVICE_NAME, pchar(Format('%s,%s,%s,%d,%d',
+      [AC_REGISTER_ACTION, ActionName, GroupName, WindowHandle, LParamID])));
   except
     result := HR_UNKNOWNERROR;
   end;
@@ -653,15 +661,15 @@ begin
   try
 
     // Check if the Actions service is running
-    if IsServiceStarted('actions') = MR_STOPPED then
+    if IsServiceStarted(AC_SERVICE_NAME) = MR_STOPPED then
     begin
       Result := MR_ActionSERVICE_NOT_AVAIL;
       Exit;
     end;
 
     // Send the message to unregister the Action
-    Result := ServiceMsg('actions', pchar(Format('_unregisteraction,%s',
-      [ActionName])));
+    Result := ServiceMsg(AC_SERVICE_NAME, pchar(Format('%s,%s',
+      [AC_UNREGISTER_ACTION, ActionName])));
   except
     result := HR_UNKNOWNERROR;
   end;
@@ -673,16 +681,16 @@ begin
   try
 
     // Check if the Actions service is running
-    if IsServiceStarted('Actions') = MR_STOPPED then
+    if IsServiceStarted(AC_SERVICE_NAME) = MR_STOPPED then
     begin
       Result := MR_ACTIONSERVICE_NOT_AVAIL;
       Exit;
     end;
 
     // Send the message to update the Action
-    Result := ServiceMsg('actions',
-      pchar(Format('_updateaction,%s,Undefined,%d,%d',
-      [ActionName, WindowHandle, LParamID])));
+    Result := ServiceMsg(AC_SERVICE_NAME,
+      pchar(Format('%s,%s,Undefined,%d,%d',
+      [AC_UPDATE_ACTION, ActionName, WindowHandle, LParamID])));
   except
     result := HR_UNKNOWNERROR;
   end;
@@ -695,15 +703,15 @@ begin
   try
 
     // Check if the Actions service is running
-    if IsServiceStarted('Actions') = MR_STOPPED then
+    if IsServiceStarted(AC_SERVICE_NAME) = MR_STOPPED then
     begin
       Result := MR_ACTIONSERVICE_NOT_AVAIL;
       Exit;
     end;
 
     // Send the message to update the Action
-    Result := ServiceMsg('actions', pchar(Format('_updateaction,%s,%s,%d,%d',
-      [ActionName, GroupName, WindowHandle, LParamID])));
+    Result := ServiceMsg(AC_SERVICE_NAME, pchar(Format('%s,%s,%s,%d,%d',
+      [AC_UPDATE_ACTION, ActionName, GroupName, WindowHandle, LParamID])));
   except
     result := HR_UNKNOWNERROR;
   end;

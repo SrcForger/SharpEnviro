@@ -180,6 +180,14 @@ const
   SCC_UNLOAD_DLL = '_unloaddll';
   SCC_LOAD_DLL = '_loaddll';
 
+  // Action Consts
+  AC_REGISTER_ACTION = '_registeraction';
+  AC_UNREGISTER_ACTION = '_unregisteraction';
+  AC_UPDATE_ACTION = '_updateaction';
+  AC_BUILD_ACTION_LIST = '_buildactionlist';
+  AC_ACTION_EXISTS = '_exists';
+  AC_EXECUTE_ACTION = '_execute';
+
   //showModes to use with sendTrayMessage
   smSLIDE = 1;
   smSHRINK = 2;
