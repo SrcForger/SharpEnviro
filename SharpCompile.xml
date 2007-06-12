@@ -55,7 +55,6 @@
      <project Name="Recycle Bin" Type="DLL" >Plugins\Objects\RecycleBin\RecycleBin.bdsproj</project>
   </package>
   <package Name="Services">
-     <project Name="Components" Type="DLL" >Plugins\Services\Components\Components.bdsproj</project>  
      <project Name="Curses" Type="DLL" >Plugins\Services\Curses\Curses.bdsproj</project>  
      <project Name="DeskArea" Type="DLL" >Plugins\Services\DeskArea\DeskArea.bdsproj</project>  
      <project Name="Exec" Type="DLL" >Plugins\Services\Exec\Exec.bdsproj</project>  
