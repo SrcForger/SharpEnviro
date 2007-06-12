@@ -42,9 +42,9 @@ uses
   shellapi,
 
   jclstrings,
+  jclshell,
   jclfileutils,
-  sharpapi,
-  uExecServiceExtractShortcut;
+  sharpapi;
 
 
 type
@@ -177,7 +177,7 @@ var
   a: integer;
   Data: TWin32FindData;
   hwin: THandle;
-  lpShortcut: TLinkParams;
+  lpShortcut: TShellLink;
 begin
   try
     GetMem(sdir, MAX_PATH + 1);
@@ -193,7 +193,7 @@ begin
               outputdebugstring('not loading')
             else begin
 
-              ResolveLink(sdir + '\' + Data.cFileName,lpShortcut);
+              JclShell.ShellLinkResolve(sdir + '\' + Data.cFileName,lpShortcut);
 
               if findtask(lpShortcut.Target) = -1
                 then begin

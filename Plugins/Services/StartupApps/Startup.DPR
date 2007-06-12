@@ -33,8 +33,7 @@ uses
   graphics,
   sysutils,
   uStartup in 'uStartup.pas',
-  FileUtils in '..\Exec\FileUtils.pas',
-  uExecServiceExtractShortcut in '..\Exec\uExecServiceExtractShortcut.pas';
+  FileUtils in '..\Exec\FileUtils.pas';
 
 {$E .ser}
 
