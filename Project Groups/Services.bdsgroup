@@ -9,7 +9,6 @@
 		</Option>
 	</PersonalityInfo>
 	<Default.Personality>  <Projects>
-      <Projects Name="components.ser">..\Plugins\Services\Components\components.bdsproj</Projects>
       <Projects Name="curses.ser">..\Plugins\Services\Curses\curses.bdsproj</Projects>
       <Projects Name="DeskArea.ser">..\Plugins\Services\DeskArea\DeskArea.bdsproj</Projects>
       <Projects Name="Exec.ser">..\Plugins\Services\Exec\Exec.bdsproj</Projects>
@@ -20,7 +19,7 @@
       <Projects Name="SystemTray.ser">..\Plugins\Services\SystemTray\SystemTray.bdsproj</Projects>
       <Projects Name="Weather.ser">..\Plugins\Services\Weather\Weather.bdsproj</Projects>
       <Projects Name="Actions.ser">..\Plugins\Services\Actions\Actions.bdsproj</Projects>
-      <Projects Name="Targets">components.ser curses.ser DeskArea.ser Exec.ser Hotkeys.ser Prism.ser SkinController.ser Startup.ser SystemTray.ser Weather.ser Actions.ser</Projects>
+      <Projects Name="Targets">curses.ser DeskArea.ser Exec.ser Hotkeys.ser Prism.ser SkinController.ser Startup.ser SystemTray.ser Weather.ser Actions.ser</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
