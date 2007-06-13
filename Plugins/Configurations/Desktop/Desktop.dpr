@@ -230,12 +230,9 @@ begin
   XML.Free;
 end;
 
-function Close(ASave: Boolean): boolean;
+function Close : boolean;
 begin
   try
-    if ASave then
-       Save;
-
     frmDesktopSettings.Close;
     frmDesktopSettings.Free;
     frmDesktopSettings := nil;

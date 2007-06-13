@@ -20,7 +20,7 @@ object frmDeskSettings: TfrmDeskSettings
     Top = 0
     Width = 510
     Height = 570
-    ActivePage = JvAdvSettingsPage
+    ActivePage = JvSettingsPage
     PropagateEnable = False
     Align = alClient
     object JvSettingsPage: TJvStandardPage
@@ -207,13 +207,6 @@ object frmDeskSettings: TfrmDeskSettings
           OnClick = cb_ammClick
         end
       end
-    end
-    object JvStandardPage1: TJvStandardPage
-      Left = 0
-      Top = 0
-      Width = 510
-      Height = 570
-      Caption = 'JvStandardPage1'
     end
   end
 end

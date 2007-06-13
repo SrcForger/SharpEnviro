@@ -59,7 +59,6 @@ type
     cb_amm: TCheckBox;
     Label2: TLabel;
     cb_dd: TCheckBox;
-    JvStandardPage1: TJvStandardPage;
     sgb_gridx: TSharpeGaugeBox;
     sgb_gridy: TSharpeGaugeBox;
     cb_wpwatch: TCheckBox;

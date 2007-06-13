@@ -18,8 +18,8 @@ object frmSkinListWnd: TfrmSkinListWnd
   object lbSkinList: TSharpEListBoxEx
     Left = 0
     Top = 0
-    Width = 418
-    Height = 284
+    Width = 426
+    Height = 291
     Columns = <>
     ItemHeight = 66
     OnClickItem = lbSkinListDblClickItem

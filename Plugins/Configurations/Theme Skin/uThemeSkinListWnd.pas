@@ -122,7 +122,7 @@ begin
           bmp32.SetSize(70, 30);
 
           sScheme := GetDefaultScheme(FTheme,sr.Name)+'.xml';
-          CreateBarPreview(Bmp32, sr.Name, sScheme, 100);
+          CreateBarPreview(Bmp32, FTheme, sr.Name, sScheme, 100);
           png := lbSkinList.Column[0].Images.PngImages.Add(false);
           png.PngImage := SaveBitmap32ToPNG(bmp32,False,True,ClWhite);
 

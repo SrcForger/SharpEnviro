@@ -254,13 +254,10 @@ begin
   end;
 end;
 
-function Close(ASave: Boolean): boolean;
+function Close : boolean;
 begin
   result := True;
   try
-    if ASave then
-       Save;
-
     frmWPSettings.Close;
     frmWPSettings.Free;
     frmWPSettings := nil;
