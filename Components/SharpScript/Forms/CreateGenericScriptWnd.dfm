@@ -19,7 +19,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
     Left = 0
     Top = 38
     Width = 862
-    Height = 422
+    Height = 424
     Cursor = crIBeam
     Lines.Strings = (
       'begin'
@@ -137,7 +137,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
   end
   object lb_errors: TListBox
     Left = 0
-    Top = 460
+    Top = 462
     Width = 862
     Height = 97
     Align = alBottom
@@ -415,6 +415,16 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
             OnClick = GenericPopupClick
           end
         end
+        object Messages1: TMenuItem
+          Caption = 'Messages'
+          object functionBroadCastMessagemsgintegerwparintegerlparintegerinteger1: TMenuItem
+            Caption = 
+              'function BroadCastMessage(msg : integer; wpar: integer; lpar: in' +
+              'teger) : integer;'
+            Hint = 'BroadCastMessage(WM_MyMessage,0,0);'
+            OnClick = GenericPopupClick
+          end
+        end
       end
       object FileUtils1: TMenuItem
         Caption = 'FileUtils'
@@ -456,6 +466,19 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
           object functionGetFileVersionFilePathStrhingString1: TMenuItem
             Caption = 'function GetFileVersion(FilePath : Strhing) : String;'
             Hint = 'GetFileVersion('#39'FilePath'#39')'
+            OnClick = GenericPopupClick
+          end
+        end
+      end
+      object Windows2: TMenuItem
+        Caption = 'Windows'
+        object WindowHandling1: TMenuItem
+          Caption = 'Window Handling'
+          object functionFindWindowClassNameStringWindowNameStringhwnd1: TMenuItem
+            Caption = 
+              'function FindWindow(ClassName : String; WindowName : String) : h' +
+              'wnd;'
+            Hint = 'FindWindow('#39'MyWindowClass'#39','#39#39');'
             OnClick = GenericPopupClick
           end
         end
@@ -523,6 +546,97 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
           object MRFORCECONFIGDISABLE1: TMenuItem
             Caption = 'MR_FORCECONFIGDISABLE'
             Hint = 'MR_FORCECONFIGDISABLE'
+            OnClick = GenericPopupClick
+          end
+        end
+        object ApiMessages: TMenuItem
+          Caption = 'Messages'
+          object WMSHARPEUPDATESETTINGS1: TMenuItem
+            Caption = 'WM_SHARPEUPDATESETTINGS'
+            Hint = 'WM_SHARPEUPDATESETTINGS'
+            OnClick = GenericPopupClick
+          end
+          object WMWEATHERUPDATE1: TMenuItem
+            Caption = 'WM_WEATHERUPDATE'
+            Hint = 'WM_WEATHERUPDATE'
+            OnClick = GenericPopupClick
+          end
+          object WMDESKBACKGROUNDCHANGED1: TMenuItem
+            Caption = 'WM_DESKBACKGROUNDCHANGED'
+            Hint = 'WM_DESKBACKGROUNDCHANGED'
+            OnClick = GenericPopupClick
+          end
+          object WMSHARPTERMINATE1: TMenuItem
+            Caption = 'WM_SHARPTERMINATE'
+            Hint = 'WM_SHARPTERMINATE'
+            OnClick = GenericPopupClick
+          end
+        end
+        object UpdateMessageParams1: TMenuItem
+          Caption = 'Update Message Params'
+          object SUSKIN1: TMenuItem
+            Caption = 'SU_SKIN'
+            Hint = 'SU_SKIN'
+            OnClick = GenericPopupClick
+          end
+          object SUSKINFILECHANGED1: TMenuItem
+            Caption = 'SU_SKINFILECHANGED'
+            Hint = 'SU_SKINFILECHANGED'
+            OnClick = GenericPopupClick
+          end
+          object SUSCHEME1: TMenuItem
+            Caption = 'SU_SCHEME'
+            Hint = 'SU_SCHEME'
+            OnClick = GenericPopupClick
+          end
+          object SUTHEME1: TMenuItem
+            Caption = 'SU_THEME'
+            Hint = 'SU_THEME'
+            OnClick = GenericPopupClick
+          end
+          object SUICONSET1: TMenuItem
+            Caption = 'SU_ICONSET'
+            Hint = 'SU_ICONSET'
+            OnClick = GenericPopupClick
+          end
+          object SUBACKGROUND1: TMenuItem
+            Caption = 'SU_BACKGROUND'
+            Hint = 'SU_BACKGROUND'
+            OnClick = GenericPopupClick
+          end
+          object SUSERVICE1: TMenuItem
+            Caption = 'SU_SERVICE'
+            Hint = 'SU_SERVICE'
+            OnClick = GenericPopupClick
+          end
+          object SUDESKTOPICON1: TMenuItem
+            Caption = 'SU_DESKTOPICON'
+            Hint = 'SU_DESKTOPICON'
+            OnClick = GenericPopupClick
+          end
+          object SUSHARPDESK1: TMenuItem
+            Caption = 'SU_SHARPDESK'
+            Hint = 'SU_SHARPDESK'
+            OnClick = GenericPopupClick
+          end
+          object SUSHARPMENU1: TMenuItem
+            Caption = 'SU_SHARPMENU'
+            Hint = 'SU_SHARPMENU'
+            OnClick = GenericPopupClick
+          end
+          object SUSHARPBAR1: TMenuItem
+            Caption = 'SU_SHARPBAR'
+            Hint = 'SU_SHARPBAR'
+            OnClick = GenericPopupClick
+          end
+          object SUCURSOR1: TMenuItem
+            Caption = 'SU_CURSOR'
+            Hint = 'SU_CURSOR'
+            OnClick = GenericPopupClick
+          end
+          object SUWALLPAPERP1: TMenuItem
+            Caption = 'SU_WALLPAPER'
+            Hint = 'SU_WALLPAPER'
             OnClick = GenericPopupClick
           end
         end
