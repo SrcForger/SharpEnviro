@@ -448,12 +448,10 @@ end;
 
 destructor TRecycleBinLayer.Destroy;
 begin
-  DebugFree(FPicture);
   DebugFree(FIconEmpty);
   DebugFree(FIconFull);
   DebugFree(FBinTimer);
   DebugFree(FCaptionSettings.Caption);
-  DebugFree(FIconSettings.Icon);
   DebugFree(FSettings);
   FHLTimer.Enabled := False;
   DebugFree(FHLTimer);

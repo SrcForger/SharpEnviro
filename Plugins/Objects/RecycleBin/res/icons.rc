@@ -1,4 +1,3 @@
 100 BITMAP "open.bmp"
-101 BITMAP "search.bmp"
-102 BITMAP "properties.bmp"
-103 BITMAP "openwith.bmp"
+101 BITMAP "properties.bmp"
+102 BITMAP "empty.bmp"

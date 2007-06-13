@@ -48,6 +48,7 @@ uses
   GR32_Transforms,
   JclFileUtils,
   uSharpDeskFunctions,
+  PngImageList,
   SharpApi,
   SharpDeskApi,
   uRecycleBinObjectLayer in 'uRecycleBinObjectLayer.pas',
@@ -192,7 +193,7 @@ end;
 
 procedure SharpDeskMessage(pObjectID : integer; pLayer : TBitmapLayer; DeskMessage,P1,P2,P3 : integer);
 var
-   Menu,Menu2 : TPopupMenu;
+   Menu2 : TPopupMenu;
    MenuItem : TMenuItem;
    bmp2 : TBitmap;
    n : integer;
@@ -241,32 +242,31 @@ begin
 
     SDM_MENU_POPUP : begin
                        Bmp2 := TBitmap.Create;
-                       Menu := TForm(Layer.RecycleBinLayer.FParentImage.Parent).PopupMenu;
-                       Menu2 := Layer.RecycleBinLayer.FParentImage.PopupMenu;                       
+                       Menu2 := Layer.RecycleBinLayer.FParentImage.PopupMenu;
 
-                       MenuItem := TMenuItem.Create(Menu.Items);
+                       MenuItem := TMenuItem.Create(Menu2.Items);
                        MenuItem.Caption := 'Open';
-                       MenuItem.ImageIndex := 0;
+                       MenuItem.ImageIndex := Menu2.Images.Count;
                        MenuItem.OnClick := Layer.RecycleBinLayer.OnOpenClick;
-                       Menu.Items.Add(MenuItem);
+                       Menu2.Items.Insert(0,MenuItem);
                        Bmp2.LoadFromResourceID(HInstance,100);
-                       Menu.Images.AddMasked(bmp2,clFuchsia);
+                       TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
 
-                       MenuItem := TMenuItem.Create(Menu.Items);
+                       MenuItem := TMenuItem.Create(Menu2.Items);
                        MenuItem.Caption := 'Empty Recycle Bin';
-                       MenuItem.ImageIndex := 1;
+                       MenuItem.ImageIndex := Menu2.Images.Count;
                        MenuItem.OnClick := Layer.RecycleBinLayer.OnEmptyBinClick;
-                       Menu.Items.Add(MenuItem);
-                       Bmp2.LoadFromResourceID(HInstance,103);
-                       Menu.Images.AddMasked(Bmp2,clFuchsia);
+                       Menu2.Items.Insert(1,MenuItem);
+                       Bmp2.LoadFromResourceID(HInstance,102);
+                       TPngImageList(Menu2.Images).AddMasked(Bmp2,clFuchsia);
 
                        MenuItem := TMenuItem.Create(Menu2.Items);
                        MenuItem.Caption := 'Properties';
                        MenuItem.ImageIndex := Menu2.Images.Count;
                        MenuItem.OnClick := Layer.RecycleBinLayer.OnPropertiesClick;
                        Menu2.Items.Add(MenuItem);
-                       Bmp2.LoadFromResourceID(HInstance,102);
-                       Menu2.Images.AddMasked(bmp2,clFuchsia);
+                       Bmp2.LoadFromResourceID(HInstance,101);
+                       TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
 
                        Bmp2.Free;
                      end;
