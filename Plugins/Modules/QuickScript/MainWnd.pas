@@ -297,6 +297,9 @@ begin
   FIcon.Free;
   FMenuIcon1.Free;
   FMenuIcon2.Free;
+
+  if SharpEMenuPopups <> nil then
+     FreeAndNil(SharpEMenuPopups);
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
