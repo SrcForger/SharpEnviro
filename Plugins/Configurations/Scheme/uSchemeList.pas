@@ -311,7 +311,7 @@ begin
   Result := TSchemeItem.Create(Self);
   Result.Filename := AFilename;
   Result.ID := FItems.Count;
-  Result.Colors := TObjectList.Create;
+  //Result.Colors := TObjectList.Create;
 
   xml := TJvSimpleXML.Create(nil);
   try
