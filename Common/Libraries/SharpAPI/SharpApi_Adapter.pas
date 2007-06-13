@@ -198,6 +198,16 @@ begin
   end;
 end;
 
+procedure Adapter_SharpEBroadCast(var Value: Variant; Args: TJvInterpreterArgs);
+begin
+  try
+    Value := SharpApi.SharpEBroadCast(Args.Values[0],Args.Values[1],Args.Values[2]);
+    AddLog('SharpEBroadCast("'+VarToStr(Args.Values[0])+',' +VarToStr(Args.Values[1])+','+VarToStr(Args.Values[2])+'") -> ' + IntToStr(Value));
+  except
+    AddLog('IsServiceStarted("'+VarToStr(Args.Values[0])+'") -> ' + IntToStr(Value));
+  end;
+end;
+
 
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
@@ -217,6 +227,25 @@ begin
     AddConst('SharpApi','MR_STARTED',MR_STARTED);
     AddConst('SharpApi','MR_FORCECONFIGDISABLE',MR_FORCECONFIGDISABLE);
 
+    AddConst('SharpApi','WM_SHARPEUPDATESETTINGS',WM_SHARPEUPDATESETTINGS);
+    AddConst('SharpApi','WM_WEATHERUPDATE',WM_WEATHERUPDATE);
+    AddConst('SharpApi','WM_DESKBACKGROUNDCHANGED',WM_DESKBACKGROUNDCHANGED);
+    AddConst('SharpApi','WM_SHARPTERMINATE',WM_SHARPTERMINATE);
+
+    AddConst('SharpApi','SU_SKIN',SU_SKIN);
+    AddConst('SharpApi','SU_SKINFILECHANGED',SU_SKINFILECHANGED);
+    AddConst('SharpApi','SU_SCHEME',SU_SCHEME);
+    AddConst('SharpApi','SU_THEME',SU_THEME);
+    AddConst('SharpApi','SU_ICONSET',SU_ICONSET);
+    AddConst('SharpApi','SU_BACKGROUND',SU_BACKGROUND);
+    AddConst('SharpApi','SU_SERVICE',SU_SERVICE);
+    AddConst('SharpApi','SU_DESKTOPICON',SU_DESKTOPICON);
+    AddConst('SharpApi','SU_SHARPDESK',SU_SHARPDESK);
+    AddConst('SharpApi','SU_SHARPMENU',SU_SHARPMENU);
+    AddConst('SharpApi','SU_SHARPBAR',SU_SHARPBAR);
+    AddConst('SharpApi','SU_CURSOR',SU_CURSOR);
+    AddConst('SharpApi','SU_WALLPAPER',SU_WALLPAPER);
+
     AddFunction('SharpApi','GetSharpEDirectory',Adapter_GetSharpeDirectory,0,[],varString);
     AddFunction('SharpApi','GetSharpeUserSettingsPath',Adapter_GetSharpeUserSettingsPath,0,[],varString);
     AddFunction('SharpApi','GetSharpeGlobalSettingsPath',Adapter_GetSharpeGlobalSettingsPath,0,[],varString);
@@ -228,6 +257,7 @@ begin
     AddFunction('SharpApi','StartComponent',Adapter_StartComponent,1,[varString],varEmpty);
 
     AddFunction('SharpApi','Execute',Adapter_SharpExecute,1,[varString],varInteger);
+    AddFunction('SharpApi','BroadCastMessage',Adapter_SharpEBroadCast,3,[varInteger,varInteger,varInteger],varInteger);
 
     AddFunction('SharpApi','ServiceStart',Adapter_ServiceStart,1,[varString],varInteger);
     AddFunction('SharpApi','ServiceStop',Adapter_ServiceStop,1,[varString],varInteger);
