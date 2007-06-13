@@ -39,6 +39,7 @@ uses
   Contnrs,
   Classes,
   pngimage,
+  pngimagelist,
   ExtCtrls,
   JvSimpleXML,
   controls,
@@ -187,7 +188,7 @@ end;
 
 procedure SharpDeskMessage(pObjectID : integer; pLayer : TBitmapLayer; DeskMessage,P1,P2,P3 : integer);
 var
-   Menu,Menu2 : TPopupMenu;
+   Menu2 : TPopupMenu;
    MenuItem : TMenuItem;
    bmp2 : TBitmap;
    n : integer;
@@ -233,37 +234,36 @@ begin
 
     SDM_MENU_POPUP : begin
                        Bmp2 := TBitmap.Create;
-                       Menu := TForm(Layer.FolderLayer.FParentImage.Parent).PopupMenu;
-                       Menu2 := Layer.FolderLayer.FParentImage.PopupMenu;                       
+                       Menu2 := Layer.FolderLayer.FParentImage.PopupMenu;
 
-                       MenuItem := TMenuItem.Create(Menu.Items);
+                       MenuItem := TMenuItem.Create(Menu2.Items);
                        MenuItem.Caption := 'Open';
-                       MenuItem.ImageIndex := 0;
+                       MenuItem.ImageIndex := Menu2.Images.Count;
                        MenuItem.OnClick := Layer.FolderLayer.OnOpenClick;
-                       Menu.Items.Add(MenuItem);
+                       Menu2.Items.Insert(0,MenuItem);
                        Bmp2.LoadFromResourceID(HInstance,100);
-                       Menu.Images.AddMasked(bmp2,clFuchsia);
+                       TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
 
-                       MenuItem := TMenuItem.Create(Menu.Items);
+                       MenuItem := TMenuItem.Create(Menu2.Items);
                        MenuItem.Caption := 'Open With...';
-                       MenuItem.ImageIndex := 1;
+                       MenuItem.ImageIndex := Menu2.Images.Count;
                        MenuItem.OnClick := Layer.FolderLayer.OnOpenWith;
-                       Menu.Items.Add(MenuItem);
+                       Menu2.Items.Insert(1,MenuItem);
                        Bmp2.LoadFromResourceID(HInstance,103);
-                       Menu.Images.AddMasked(bmp2,clFuchsia);
+                       TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
                        if (FileExists(Layer.FolderLayer.Settings.Target))
-                          and (LOWERCASE(ExtractFileExt(Layer.FolderLayer.Settings.Target))<>'.exe') then
+                          and (CompareText(ExtractFileExt(Layer.FolderLayer.Settings.Target),'.exe') = 0) then
                               MenuItem.Visible := True
                               else MenuItem.Visible := False;
 
-                       MenuItem := TMenuItem.Create(Menu.Items);
+                       {MenuItem := TMenuItem.Create(Menu2.Items);
                        MenuItem.Caption := 'Search';
-                       MenuItem.ImageIndex := 2;
+                       MenuItem.ImageIndex := Menu2.Images.Count;
                        MenuItem.OnClick := Layer.FolderLayer.OnSearchClick;
                        MenuItem.Visible := False;
-                       Menu.Items.Add(MenuItem);
+                       Menu2.Items.Insert(2,MenuItem);
                        Bmp2.LoadFromResourceID(HInstance,101);
-                       Menu.Images.AddMasked(bmp2,clFuchsia);
+                       TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);  }
 
                        s := Layer.FolderLayer.Settings.Target;
                        b := False;
@@ -279,7 +279,7 @@ begin
                          MenuItem.OnClick := Layer.FolderLayer.OnPropertiesClick;
                          Menu2.Items.Add(MenuItem);
                          Bmp2.LoadFromResourceID(HInstance,102);
-                         Menu2.Images.AddMasked(bmp2,clFuchsia);
+                         TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
                        end;
 
                        Bmp2.Free;
