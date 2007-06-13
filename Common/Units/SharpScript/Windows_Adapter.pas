@@ -33,6 +33,7 @@ unit Windows_Adapter;
 interface
 
 uses Windows,
+     Messages,
      SysUtils,
      Classes,
      JvInterpreter,
@@ -76,6 +77,24 @@ begin
   end;
 end;
 
+procedure Adapter_FindWindow(var Value: Variant; Args: TJvInterpreterArgs);
+var
+  P1,P2 : String;
+begin
+  try
+    P1 := VarToStr(Args.Values[0]);
+    P2 := VarToStr(Args.Values[1]);
+    if length(P1) = 0 then
+       Value := Windows.FindWindow(nil,PChar(P2))
+       else if length(P2) = 0 then
+            Value := Windows.FindWindow(PChar(P1),nil)
+            else Value := Windows.FindWindow(PChar(P1),PChar(P2));
+    AddLog('FindWindow("'+VarToStr(Args.Values[0])+','+VarToStr(Args.Values[1])+'") -> ' + IntToStr(Value));
+  except
+    AddLog('Failed to call FindWindow("'+VarToStr(Args.Values[0])+'")');
+  end;
+end;
+
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 begin
@@ -93,7 +112,15 @@ begin
     AddConst('Windows','USER_NAME',GetLocalUserName);
     AddConst('Windows','COMPUTER_NAME',GetLocalComputerName);
     AddConst('Windows','DOMAIN_NAME',GetDomainName);
-    
+
+    // Messages
+    AddConst('Windows','WM_SHOWWINDOW',WM_SHOWWINDOW);
+    AddConst('Windows','WM_CLOSE',WM_CLOSE);
+    AddConst('Windows','WM_WININICHANGE',WM_WININICHANGE);
+    AddConst('Windows','WM_ACTIVATE',WM_ACTIVATE);
+
+    // Window Functions
+    AddFunction('Windows','FindWindow',Adapter_FindWindow,2,[varString,varString],varInteger);
   end;
 end;
 
