@@ -88,8 +88,6 @@ type
     Saveas1: TMenuItem;
     DeletePreset1: TMenuItem;
     LoadAll1: TMenuItem;
-    ObjectMenu: TPopupMenu;
-    ObjectMenuImages: TImageList;
     ApplicationEvents1: TApplicationEvents;
     ObjectPopup2: TPopupMenu;
     Delete1: TMenuItem;
@@ -134,6 +132,8 @@ type
     Lock1: TMenuItem;
     N6: TMenuItem;
     N1: TMenuItem;
+    N10: TMenuItem;
+    N14: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -437,7 +437,8 @@ begin
   SharpDesk.ObjectSetList.LoadFromFile;
   SharpDesk.ObjectFileList.RefreshDirectory;
   SharpDesk.ObjectFileList.ReLoadAllObjects;
-  SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
+  SharpDesk.LoadObjectSets('0');
+  //SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
 end;
 
 function IsTopMost(wnd: HWND): Boolean;
@@ -484,7 +485,8 @@ begin
     SharpDesk.UpdateAnimationLayer;
 
     SharpDesk.ObjectSetList.LoadFromFile;
-    SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
+    SharpDesk.LoadObjectSets('0');
+    //SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
 
     if SharpDesk.DeskSettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
   finally
@@ -753,8 +755,6 @@ begin
       while ObjectPopUp.Items[0].Name <> 'ENDOFCUSTOMMENU' do ObjectPopUp.Items.Delete(0);
       while ObjectPopUp.Items[ObjectPopUp.Items.Count-1].Name <> 'STARTOFBOTTOMMENU' do ObjectPopUp.Items.Delete(ObjectPopUp.Items.Count-1);
       while ObjectPopUp.Images.Count > ObjectPopUpImageCount do ObjectPopUp.Images.Delete(ObjectPopUpImageCount);
-      ObjectMenu.Items.Clear;
-      ObjectMenuImages.Clear;
       try
         DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
                                                 DesktopObject.Layer,
@@ -766,9 +766,9 @@ begin
          SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
         end;
       end;
-      i := ObjectPopUp.Images.Count;
-      ObjectPopUp.Images.AddImages(ObjectMenu.Images);
-      CopyMenuItems(ObjectMenu.Items,ObjectPopUp.Items[0],ObjectPopUpImageCount-(ObjectPopUpImageCount-i),True);
+      //i := ObjectPopUp.Images.Count;
+      //ObjectPopUp.Images.AddImages(ObjectMenu.Images);
+      //CopyMenuItems(ObjectMenu.Items,ObjectPopUp.Items[0],ObjectPopUpImageCount-(ObjectPopUpImageCount-i),True);
 
       if ObjectPopUp.Items[0].Name = 'ENDOFCUSTOMMENU' then ObjectPopUp.Items[0].Visible := False
          else ObjectPopUp.Items[0].Visible := True;
@@ -1786,7 +1786,8 @@ end;
 procedure TSharpDeskMainForm.LoadObjects1Click(Sender: TObject);
 begin
   SharpDesk.ObjectFileList.ReLoadAllObjects;
-  SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
+  SharpDesk.LoadObjectSets('0');
+  //SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
 end;
 
 procedure TSharpDeskMainForm.RefreshObjectDirectory1Click(Sender: TObject);
@@ -1794,7 +1795,8 @@ begin
   SharpDesk.ObjectFileList.UnLoadAll;
   SharpDesk.ObjectFileList.RefreshDirectory;
   SharpDesk.ObjectFileList.ReLoadAllObjects;
-  SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
+  SharpDesk.LoadObjectSets('0');
+//  SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
 end;
 
 procedure TSharpDeskMainForm.LockObjects1Click(Sender: TObject);

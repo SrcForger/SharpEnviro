@@ -12,7 +12,6 @@ object SharpDeskMainForm: TSharpDeskMainForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  PopupMenu = ObjectMenu
   Position = poDesktopCenter
   OnClose = FormClose
   OnCreate = FormCreate
@@ -95,28 +94,34 @@ object SharpDeskMainForm: TSharpDeskMainForm
       object N1: TMenuItem
         Caption = '-'
       end
+      object AlignObjecttoGrid1: TMenuItem
+        Caption = 'Align Object to Grid'
+        ImageIndex = 8
+        OnClick = AlignObjecttoGrid1Click
+      end
+      object BringtoFront1: TMenuItem
+        Caption = 'Bring to Front'
+        ImageIndex = 10
+        OnClick = BringtoFront1Click
+      end
+      object MovetoBack1: TMenuItem
+        Caption = 'Send to Back'
+        ImageIndex = 9
+        OnClick = MovetoBack1Click
+      end
+      object N10: TMenuItem
+        Caption = '-'
+        Visible = False
+      end
       object Align1: TMenuItem
         Caption = 'Align'
         ImageIndex = 8
-        object AlignObjecttoGrid1: TMenuItem
-          Caption = 'Align Object to Grid'
-          ImageIndex = 8
-          OnClick = AlignObjecttoGrid1Click
-        end
-        object BringtoFront1: TMenuItem
-          Caption = 'Bring to Front'
-          ImageIndex = 10
-          OnClick = BringtoFront1Click
-        end
-        object MovetoBack1: TMenuItem
-          Caption = 'Send to Back'
-          ImageIndex = 9
-          OnClick = MovetoBack1Click
-        end
+        Visible = False
       end
       object Objectselections1: TMenuItem
         Caption = 'Select'
         ImageIndex = 3
+        Visible = False
         object All1: TMenuItem
           Caption = 'All'
           ImageIndex = 4
@@ -134,6 +139,7 @@ object SharpDeskMainForm: TSharpDeskMainForm
       object ObjectSet2: TMenuItem
         Caption = 'Assign to set'
         ImageIndex = 3
+        Visible = False
         object Newobjectset1: TMenuItem
           Caption = 'New object set'
           ImageIndex = 11
@@ -885,16 +891,6 @@ object SharpDeskMainForm: TSharpDeskMainForm
       FFFF8010F81FFFFFFFFF8019FFFFFFFF00000000000000000000000000000000
       000000000000}
   end
-  object ObjectMenu: TPopupMenu
-    AutoPopup = False
-    Images = ObjectMenuImages
-    Left = 192
-    Top = 8
-  end
-  object ObjectMenuImages: TImageList
-    Left = 192
-    Top = 40
-  end
   object ApplicationEvents1: TApplicationEvents
     OnDeactivate = ApplicationEvents1Deactivate
     Left = 16
@@ -917,6 +913,25 @@ object SharpDeskMainForm: TSharpDeskMainForm
     end
     object N8: TMenuItem
       Caption = '-'
+    end
+    object Aligntogrid1: TMenuItem
+      Caption = 'Align to grid'
+      ImageIndex = 8
+      OnClick = AlignObjecttoGrid1Click
+    end
+    object BringtoFront2: TMenuItem
+      Caption = 'Bring to front'
+      ImageIndex = 10
+      OnClick = BringtoFront1Click
+    end
+    object SendtoBack1: TMenuItem
+      Caption = 'Send to back'
+      ImageIndex = 9
+      OnClick = MovetoBack1Click
+    end
+    object N14: TMenuItem
+      Caption = '-'
+      Visible = False
     end
     object Align2: TMenuItem
       Caption = 'Align sets'
@@ -942,21 +957,7 @@ object SharpDeskMainForm: TSharpDeskMainForm
     object ObjectAlig1: TMenuItem
       Caption = 'Align'
       ImageIndex = 3
-      object Aligntogrid1: TMenuItem
-        Caption = 'Align to grid'
-        ImageIndex = 8
-        OnClick = AlignObjecttoGrid1Click
-      end
-      object BringtoFront2: TMenuItem
-        Caption = 'Bring to front'
-        ImageIndex = 10
-        OnClick = BringtoFront1Click
-      end
-      object SendtoBack1: TMenuItem
-        Caption = 'Send to back'
-        ImageIndex = 9
-        OnClick = MovetoBack1Click
-      end
+      Visible = False
     end
     object ObjectPreset2: TMenuItem
       Caption = 'Object preset'
@@ -970,6 +971,7 @@ object SharpDeskMainForm: TSharpDeskMainForm
     object ObjectSet1: TMenuItem
       Caption = 'Assign to set'
       ImageIndex = 3
+      Visible = False
       object NewObjectSet: TMenuItem
         Caption = 'New object set'
         ImageIndex = 11
@@ -2544,7 +2546,7 @@ object SharpDeskMainForm: TSharpDeskMainForm
         Background = clMenu
       end>
     Left = 224
-    Top = 96
+    Top = 40
     Bitmap = {}
   end
 end

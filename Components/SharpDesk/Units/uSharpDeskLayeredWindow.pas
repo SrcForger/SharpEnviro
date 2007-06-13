@@ -262,8 +262,6 @@ begin
     while ObjectPopUp.Items[0].Name <> 'ENDOFCUSTOMMENU' do ObjectPopUp.Items.Delete(0);
     while ObjectPopUp.Items[ObjectPopUp.Items.Count-1].Name <> 'STARTOFBOTTOMMENU' do ObjectPopUp.Items.Delete(ObjectPopUp.Items.Count-1);
     while ObjectPopUp.Images.Count > ObjectPopUpImageCount do ObjectPopUp.Images.Delete(ObjectPopUpImageCount);
-    ObjectMenu.Items.Clear;
-    ObjectMenuImages.Clear;
     try
       pDesktopObject.Owner.DllSharpDeskMessage(pDesktopObject.Settings.ObjectID,
                                                pDesktopObject.Layer,
@@ -275,9 +273,6 @@ begin
          SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
         end;
       end;
-      i := ObjectPopUp.Images.Count;
-      ObjectPopUp.Images.AddImages(ObjectMenu.Images);
-      CopyMenuItems(ObjectMenu.Items,ObjectPopUp.Items[0],ObjectPopUpImageCount-(ObjectPopUpImageCount-i),True);
 
       if ObjectPopUp.Items[0].Name = 'ENDOFCUSTOMMENU' then ObjectPopUp.Items[0].Visible := False
          else ObjectPopUp.Items[0].Visible := True;

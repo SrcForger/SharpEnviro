@@ -100,7 +100,7 @@ uses uSharpDeskMainForm,
 procedure TSettingsForm.Updatesize;
 begin
   SettingsForm.Width := SettingsPanel.Left + SettingsPanel.Width + 2*SettingsPanel.Left;
-  SettingsForm.Height := SettingsPanel.Top + SettingsPanel.Height + 76 + ObjectRollout.Height;
+  SettingsForm.Height := SettingsPanel.Top + SettingsPanel.Height + 76;// + ObjectRollout.Height;
 end;
 
 procedure TSettingsForm.BuildObjectSets;
@@ -192,7 +192,7 @@ end;
 procedure TSettingsForm.btn_applyClick(Sender: TObject);
 begin
   Save := True;
-  if ObjectSets.Selected = nil then exit;
+  //if ObjectSets.Selected = nil then exit;
   ObjectFile.DllCloseSettingsWnd(ObjectID,True);
   ObjectFile.DllSharpDeskMessage(ObjectID,DesktopObject.Layer,SDM_REPAINT_LAYER,0,0,0);
   DesktopObject.Settings.Pos := Point(round(DesktopObject.Layer.Location.Left),
@@ -208,34 +208,32 @@ var
    tempSetting : TObjectSetItem;
    ObjectSet : TObjectSet;
 begin
-  SharpDesk.DeskSettings.SetObjectRolledOut := not ObjectRollout.Collapsed;
+ { SharpDesk.DeskSettings.SetObjectRolledOut := not ObjectRollout.Collapsed;
   SharpDesk.DeskSettings.SaveSettings;
 
   if (ObjectSets.Selected = nil) and (Save) then
   begin
     showmessage('Please select an object set!');
     exit;
-  end;
+  end;  }
   
   ObjectFile.DllCloseSettingsWnd(ObjectID,Save);
   if Save then
   begin
     if CreateMode then
     begin
-      ObjectSet := TObjectSet(SharpDesk.ObjectSetList.GetSetByID(ObjectSets.Selected.StateIndex));
+      //ObjectSet := TObjectSet(SharpDesk.ObjectSetList.GetSetByID(ObjectSets.Selected.StateIndex));
+      ObjectSet := TObjectSet(SharpDesk.ObjectSetList.Items[0]);
       tempsetting := ObjectSet.AddDesktopObject(ObjectID,
                                                 ObjectFile.FileName,
                                                 Point(LastX,LastY),
                                                 False,
                                                 False);
-{      tempSetting := SharpDesk.DeskSettings.ObjectSet.AddDesktopObject(ObjectID,
-                                                                       ObjectFile.FileName,
-                                                                       Point(LastX,LastY),
-                                                                       False);}
       DesktopObject := TDesktopObject(ObjectFile.AddDesktopObject(tempsetting));
     end else
     begin
-      ObjectSet := TObjectSet(SharpDesk.ObjectSetList.GetSetByID(ObjectSets.Selected.StateIndex));
+      //ObjectSet := TObjectSet(SharpDesk.ObjectSetList.GetSetByID(ObjectSets.Selected.StateIndex));
+      ObjectSet := TObjectSet(SharpDesk.ObjectSetList.Items[0]);
       if TObjectSet(DesktopObject.Settings.Owner) <> ObjectSet then
       begin
         TObjectSet(DesktopObject.Settings.Owner).Remove(DesktopObject.Settings);

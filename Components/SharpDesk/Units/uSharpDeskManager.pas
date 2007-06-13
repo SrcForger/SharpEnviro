@@ -531,9 +531,12 @@ begin
     end;
   end;
 
-  UnselectAll;
+  UnselectAll; // <-- resets FSelectionCount to 0
   for n := 0 to NewList.Count - 1 do
-      TDesktopObject(NewList.Items[n]).Selected := True;
+  begin
+    FSelectionCount := FSelectionCount + 1;
+    TDesktopObject(NewList.Items[n]).Selected := True;
+  end;
   newList.Free;
   FObjectSetList.SaveSettings;
 end;
@@ -1071,16 +1074,19 @@ var
    sr : TSearchRec;
    ObjTitle : String;
 begin
-     if FindFirst(ExtractFilePath(application.exename)+'Objects\*.dll', faAnyFile, sr) = 0 then
-     begin
-         repeat
-               ObjTitle   := sr.Name;
-               SetLength(ObjTitle,length(ObjTitle)-4);
-               If FileExists(ExtractFilePath(application.exename)+'Objects\'+ObjTitle+'.object') then DeleteFile(PChar(ExtractFilePath(application.exename)+'Objects\'+ObjTitle+'.object'));
-               MoveFile(PChar(ExtractFilePath(application.exename)+'Objects\'+ObjTitle+'.dll'),PChar(ExtractFilePath(application.exename)+'Objects\'+ObjTitle+'.object'));
-         until FindNext(sr) <> 0;
-         FindClose(sr);
-     end;
+  if CompareText(FObjectExt,'.object') <> 0 then exit;
+
+  if FindFirst(ExtractFilePath(application.exename)+'Objects\*.dll', faAnyFile, sr) = 0 then
+  begin
+    repeat
+      ObjTitle   := sr.Name;
+      SetLength(ObjTitle,length(ObjTitle)-4);
+      If FileExists(ExtractFilePath(application.exename)+'Objects\'+ObjTitle+'.object') then
+         DeleteFile(PChar(ExtractFilePath(application.exename)+'Objects\'+ObjTitle+'.object'));
+      MoveFile(PChar(ExtractFilePath(application.exename)+'Objects\'+ObjTitle+'.dll'),PChar(ExtractFilePath(application.exename)+'Objects\'+ObjTitle+'.object'));
+    until FindNext(sr) <> 0;
+    FindClose(sr);
+  end;
 end;
 
 

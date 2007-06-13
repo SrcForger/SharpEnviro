@@ -3,7 +3,7 @@ object SettingsForm: TSettingsForm
   Top = 260
   BorderStyle = bsToolWindow
   Caption = 'Object Settings'
-  ClientHeight = 387
+  ClientHeight = 268
   ClientWidth = 457
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -27,7 +27,7 @@ object SettingsForm: TSettingsForm
   end
   object Panel2: TPanel
     Left = 0
-    Top = 348
+    Top = 229
     Width = 457
     Height = 2
     Align = alBottom
@@ -36,7 +36,7 @@ object SettingsForm: TSettingsForm
   end
   object bottompanel: TPanel
     Left = 0
-    Top = 350
+    Top = 231
     Width = 457
     Height = 37
     Align = alBottom
@@ -80,8 +80,9 @@ object SettingsForm: TSettingsForm
     Left = 0
     Top = 208
     Width = 449
-    Height = 137
+    Height = 22
     Caption = 'Object Sets'
+    Collapsed = True
     ImageOptions.IndexCollapsed = 2
     ImageOptions.IndexExpanded = 1
     ImageOptions.Images = ImageList1
@@ -89,6 +90,7 @@ object SettingsForm: TSettingsForm
     ShowFocus = False
     TabOrder = 3
     ToggleAnywhere = False
+    Visible = False
     OnExpand = ObjectRolloutExpand
     OnCollapse = ObjectRolloutCollapse
     FAWidth = 145
