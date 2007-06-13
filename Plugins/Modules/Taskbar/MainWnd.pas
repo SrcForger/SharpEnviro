@@ -324,6 +324,7 @@ procedure TMainForm.DisplaySystemMenu(pHandle : hwnd);
 var
   cp: TPoint;
   AppMenu: hMenu;
+  MenuItemInfo: TMenuItemInfo;
 begin
   DebugOutPutInfo('TMainForm.DisplaySystemMenu (Procedure)');
   SysMenuHandle := pHandle;
@@ -351,7 +352,17 @@ begin
     EnableMenuItem(AppMenu, SC_Minimize, mf_bycommand or mf_enabled);
   end;
 
-   TrackPopupMenu(AppMenu, tpm_leftalign or tpm_leftbutton, cp.x, cp.y, 0, Handle, nil);
+   { Add a seperator }
+  { FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+   MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
+   MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or
+     MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+   MenuItemInfo.fType := MFT_SEPARATOR;
+   MenuItemInfo.wID := $EFFF;
+   InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);   }
+
+  TrackPopupMenu(AppMenu, tpm_leftalign or tpm_leftbutton, cp.x, cp.y, 0, Handle, nil);
+  //GetSystemMenu(pHandle, True);
 end;
 
 procedure TMainForm.OnTaskItemMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
