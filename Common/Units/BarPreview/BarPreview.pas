@@ -35,7 +35,7 @@ interface
 uses SharpApi, Types, SharpThemeApi, Math, GR32, JvSimpleXML, BarForm, SharpEBar,
      Windows, SysUtils, Dialogs, Graphics, uSharpEMenu, uSharpEMenuSettings;
 
-procedure CreateBarPreview(ABitmap : TBitmap32; pSkin,pScheme : String; Width : integer); overload;
+procedure CreateBarPreview(ABitmap : TBitmap32; pTheme,pSkin,pScheme : String; Width : integer); overload;
 procedure CreateBarPreview(ABitmap : TBitmap32; pTheme,pSkin : String; pSchemeList: TSharpEColorSet; Width : integer; drawbg : boolean = true); overload;
 
 implementation
@@ -60,6 +60,7 @@ begin
   menuBmp := TBitmap32.Create;
   XML := TJvSimpleXML.Create(nil);
   try
+    BarWndUseMenu := True;
     BarWnd := TBarWnd.Create(nil);
     Dir := SharpApi.GetSharpeDirectory;
     skinfile := Dir + 'Skins\' + pSkin + '\skin.xml';
@@ -139,6 +140,7 @@ begin
     BarWnd.Button.Skin.DrawTo(ABitmap,ButtonPos.X + round(1.5*csize),ButtonPos.Y+round(1.5*csize));
 
     menuBmp.DrawTo(ABitmap,ABitmap.Width - menuBmp.Width - 16,ABitmap.Height div 2 - menuBmp.Height div 2);
+
   finally
     XML.Free;
     menuBmp.Free;
@@ -148,15 +150,20 @@ begin
        FreeAndNil(menusettings);
     if barWnd <> nil then
        FreeAndNil(barWnd);
+    FreeAndNil(SharpEMenuPopups);
+    setlength(pSchemeList,0);
   end;
 end;
 
-procedure CreateBarPreview(ABitmap : TBitmap32; pSkin,pScheme : String; Width : integer);
+procedure CreateBarPreview(ABitmap : TBitmap32; pTheme,pSkin,pScheme : String; Width : integer);
+const
+  csize = 12;
 var
   BarWnd: TBarWnd;
   Dir : String;
   skinfile : String;
   schemefile : String;
+  themeskinfile : String;
   colorvalue : String;
   colorint   : integer;
   XML : TJvSimpleXML;
@@ -165,16 +172,20 @@ var
   buttonpos : TPoint;
   st : TSharpESchemeType;
   s : String;
+  x,y : integer;
 begin
   try
     XML := TJvSimpleXML.Create(nil);
 
+    BarWndUseMenu := False;
     BarWnd := TBarWnd.Create(nil);
     Dir := SharpApi.GetSharpeDirectory;
     skinfile := Dir + 'Skins\' + pSkin + '\skin.xml';
+    themeskinfile := SharpThemeApi.GetThemeDirectory(PChar(pTheme)) + 'skin.xml';
     if FileExists(skinfile) then BarWnd.SkinComp.LoadFromXmlFile(skinfile);
-    schemefile := Dir + 'Skins\' + pSkin + '\Schemes\' + pScheme;
-    if not FileExists(schemefile) then schemefile := Dir + 'Skins\' + pSkin + '\scheme.xml';
+    //schemefile := Dir + 'Skins\' + pSkin + '\Schemes\' + pScheme;
+    //if not FileExists(schemefile) then
+    schemefile := Dir + 'Skins\' + pSkin + '\scheme.xml';
     if FileExists(schemefile) then
     try
       BarWnd.SharpEScheme1.ClearColors;
@@ -197,6 +208,8 @@ begin
     except
     end;
 
+    BarWnd.SkinComp.UpdateDynamicProperties(BarWnd.SharpEScheme1);
+
     ThrobberPos := Point(BarWnd.SkinManager.Skin.BarSkin.ThDim.XAsInt,
                          BarWnd.SkinManager.Skin.BarSkin.ThDim.YAsInt);
     ButtonPos := Point(BarWnd.SkinManager.Skin.BarSkin.PAXoffset.XAsInt+8,
@@ -210,8 +223,40 @@ begin
     ShowWindow(BarWnd.SharpEBar1.abackground.handle,SW_HIDE);
     ABitmap.SetSize(max(width,1),BarWnd.SkinManager.Skin.BarSkin.SkinDim.HeightAsInt);
     ABitmap.Clear(color32(0,0,0,0));
+
+       with BarWnd.Background do
+       begin
+         SetSize(ABitmap.Width + 3*csize,ABitmap.Height + 3*csize);
+         Clear(color32(clsilver));
+         for x := 0 to (ABitmap.Width + 2*csize) div (2 * csize) do
+             for y := 0 to (ABitmap.Height + 2*csize) div (csize) do
+                 if y mod 2 = 0 then
+                    FillRect(2*x*csize,y*csize,2*x*csize + csize,y*csize + csize,clWhite32)
+                 else FillRect(2*x*csize + csize,y*csize,2*x*csize + 2*csize,y*csize + csize,clWhite32);
+         DrawTo(ABitmap,-round(1.5*csize),-round(1.5*csize));
+       end;
+
+    if BarWnd.SkinManager.Skin.BarSkin.GlassEffect then
+    begin
+      try
+        XML.LoadFromFile(themeskinfile);
+        with XML.Root.Items do
+        begin
+           BarWnd.ApplyGlassEffect(IntValue('GEBlurRadius',2),
+                                   IntValue('GEBlurIterations',2),
+                                   BoolValue('GEBlend',False),
+                                   IntValue('GEBlendColor',clblue),
+                                   IntValue('GEBlendAlpha',32),
+                                   BoolValue('GELighten',True),
+                                   IntValue('GELightenAmount',23));
+        end;
+      except
+      end;
+    end;
+
     BarWnd.SharpEBar1.VertPos := vpTop;
     BarWnd.SharpEBar1.UpdateSkin;
+    BarWnd.SharpEBar1.abackground.Skin.Drawto(ABitmap,0,0);
     BarWnd.SharpEBar1.Skin.DrawTo(ABitmap,0,0);
     BarWnd.SharpEBar1.Throbber.UpdateSkin;
     BarWnd.SharpEBar1.Throbber.Skin.DrawTo(ABitmap,

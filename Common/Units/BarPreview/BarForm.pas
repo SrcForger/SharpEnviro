@@ -56,6 +56,9 @@ type
                                GELightenAmount : integer);
   end;
 
+var
+  BarWndUseMenu : boolean;
+
 implementation
 
 {$R *.dfm}
@@ -66,7 +69,9 @@ begin
   Background.SetSize(1,1);
   Background.Clear(color32(0,0,0,0));
 
-  SkinComp := TSharpESkin.Create(self,[scBar,scButton,scMenu,scMenuItem]);
+  if BarWndUseMenu then
+     SkinComp := TSharpESkin.Create(self,[scBar,scButton,scMenu,scMenuItem])
+     else SkinComp := TSharpESkin.Create(self,[scBar,scButton]);
 
   SkinManager := TSharpESkinManager.CreateRuntime(self,SkinComp,SharpEScheme1,True,[scBar,scButton]);
   SkinManager.SkinSource := ssComponent;
