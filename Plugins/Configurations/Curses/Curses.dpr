@@ -106,14 +106,11 @@ begin
   end;
 end;
 
-function Close(ASave: Boolean): boolean;
+function Close : boolean;
 
 begin
   result := True;
   try
-    if ASave then
-       Save;
-
     frmCursesList.Close;
     frmCursesList.Free;
     frmCursesList := nil;
@@ -151,7 +148,8 @@ begin
     frmCursesList.lb_cursorlist.Colors.ItemColorSelected := AItemSelectedColor;
     frmCursesList.lb_cursorlist.Colors.BorderColor := AItemSelectedColor;
     frmCursesList.lb_cursorlist.Colors.BorderColorSelected := AItemSelectedColor;
-    frmCursesList.BuildCursorList;
+    if frmCursesList.lb_CursorList.Count = 0 then
+       frmCursesList.BuildCursorList;
   end;
 end;
 

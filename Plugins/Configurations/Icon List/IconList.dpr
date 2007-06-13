@@ -98,13 +98,10 @@ begin
   end;
 end;
 
-function Close(ASave: Boolean): boolean;
+function Close : boolean;
 begin
   result := True;
   try
-    if ASave then
-       Save;
-
     frmIconList.Close;
     frmIconList.Free;
     frmIconList := nil;
@@ -142,7 +139,8 @@ begin
     frmIconList.lb_iconlist.Colors.ItemColorSelected := AItemSelectedColor;
     frmIconList.lb_iconlist.Colors.BorderColor := AItemSelectedColor;
     frmIconList.lb_iconlist.Colors.BorderColorSelected := AItemSelectedColor;
-    frmIconList.BuildIconList;
+    if frmIconList.lb_iconlist.Count = 0 then
+       frmIconList.BuildIconList;
   end;
 end;
 
