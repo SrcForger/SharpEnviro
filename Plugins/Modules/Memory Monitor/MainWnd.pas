@@ -384,7 +384,8 @@ begin
   NewWidth := max(o1,max(max(o3,o4),o5));
   Tag := NewWidth;
   Hint := inttostr(NewWidth);
-  if (BroadCast) and (NewWidth <> Width) then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  if (BroadCast) and (NewWidth <> Width) then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0)
+     else Repaint;
 end;
 
 
@@ -411,13 +412,15 @@ begin
     if (lb_rambar.Visible) then
     begin
       case sITC of
-        0: begin
-             if CompareText(inttostr(i) + '%',lb_rambar.Caption) <> 0 then
+        0: if CompareText(inttostr(i) + '%',lb_rambar.Caption) <> 0 then
+           begin
              lb_rambar.Caption := inttostr(i) + '%';
+             repaint;
            end;
-        else begin
-              if CompareText(inttostr(t) + ' MB free',lb_rambar.Caption) <> 0 then
-              lb_rambar.Caption := inttostr(t) + ' MB free';
+        else if CompareText(inttostr(t) + ' MB free',lb_rambar.Caption) <> 0 then
+             begin
+               lb_rambar.Caption := inttostr(t) + ' MB free';
+               repaint;
              end;
        end;
     end;
@@ -434,13 +437,15 @@ begin
     if lb_swpbar.Visible then
     begin
       case sITC of
-        0: begin
-             if CompareText(inttostr(i) + '%',lb_swpbar.Caption) <> 0 then
+        0: if CompareText(inttostr(i) + '%',lb_swpbar.Caption) <> 0 then
+           begin
              lb_swpbar.Caption := inttostr(i) + '%';
+             repaint;
            end;
-        else begin
-              if CompareText(inttostr(t) + ' MB free',lb_swpbar.Caption) <> 0 then
-              lb_swpbar.Caption := inttostr(t) + ' MB free';
+        else if CompareText(inttostr(t) + ' MB free',lb_swpbar.Caption) <> 0 then
+             begin
+               lb_swpbar.Caption := inttostr(t) + ' MB free';
+               repaint;
              end;
       end;
     end;
@@ -504,6 +509,7 @@ begin
     end;
     uSharpBarAPI.SaveXMLFile(BarWnd);
     ReAlignComponents(true);
+    repaint;
   end;
   FreeAndNil(SettingsForm);
 end;

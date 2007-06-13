@@ -254,7 +254,7 @@ begin
       UpdateTimer.OnTimer(UpdateTimer);
     end;
     ReAlignComponents(True);
-
+    Repaint;
   finally
     FreeAndNil(SettingsForm);
   end;
@@ -294,7 +294,7 @@ begin
        if pbar.Value <> LoadStatusPercent then
        begin
          pbar.Value := LoadStatusPercent;
-         RenderIcon;
+         RenderIcon(True);
        end;
   end;
 end;
