@@ -230,7 +230,7 @@ uses PluginManagerWnd,
      AddPluginWnd;
 
 {$R *.dfm}
-{$R SharpBarCR.RES}
+// {$R SharpBarCR.RES}
 
 
 function GetControlByHandle(AHandle: THandle): TWinControl;

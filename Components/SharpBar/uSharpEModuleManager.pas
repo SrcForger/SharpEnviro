@@ -1293,6 +1293,7 @@ var
   R : TRect;
   freespace : integer;
   newsize : integer;
+  csize : integer;
 begin
   if FShutdown then exit;
   if FModules = nil then exit;
@@ -1313,9 +1314,10 @@ begin
     end;
     minsize := minsize + msize.Min;
     maxsize := maxsize + msize.Width;
-    if temp.Throbber.Visible then
-       smod := smod + temp.Throbber.Width + FModuleSpacing
-       else smod := smod + FModuleSpacing;
+  //  if temp.Throbber.Visible then
+  //     smod := smod + temp.Throbber.Width + FModuleSpacing
+  //     else smod := smod + FModuleSpacing;
+    smod := smod + FModuleSpacing;
     if msize.Min <> msize.Width then
     begin
       setlength(nonminmaxrequest,length(nonminmaxrequest)+1);
@@ -1324,7 +1326,7 @@ begin
   end;
 
   FreeMinSpace := Max(0,maxbarsize - minsize - smod);
-  if (length(nonminmaxrequest) > 0) and (FreeMinSpace > 0) and (maxsize > maxbarsize)then
+  if (length(nonminmaxrequest) > 0) and (FreeMinSpace > 0) and (maxsize > maxbarsize - smod)then
   begin
     for n := 0 to High(nonminmaxrequest) do
         nonminmaxrequest[n] := round(Int(((nonminmaxrequest[n])/(maxsize - minsize))*FreeMinSpace));
@@ -1333,6 +1335,7 @@ begin
   newsize := 0;
   // Calculate new bar size
   i := 0;
+  csize := 0;
   for n := 0 to FModules.Count - 1 do
   begin
     temp := TModule(FModules.Items[n]);
@@ -1342,16 +1345,23 @@ begin
     except
       msize.Width := msize.Min;
     end;
-    if msize.Min <> msize.Width then
+    csize := csize + msize.Min;
+    if csize > maxbarsize - smod then
+       newsize := newsize + 1
+    else
     begin
-      newsize := newsize + msize.Min + nonminmaxrequest[i];
-      i := i + 1;
-    end else newsize := newsize + msize.Min;
+      if msize.Min <> msize.Width then
+         newsize := newsize + msize.Min + nonminmaxrequest[i]
+      else newsize := newsize + msize.Min;
+    end;
+    if msize.Min <> msize.Width then
+       i := i + 1;
   end;
   UpdateBarSize(newsize);
 
   // Send update messages to modules
   i := 0;
+  csize := 0;
   for n := 0 to FModules.Count - 1 do
   begin
     temp := TModule(FModules.Items[n]);
@@ -1361,20 +1371,23 @@ begin
     except
       msize.Width := msize.Min;
     end;
-    if msize.Min <> msize.Width then
+    csize := csize + msize.Min;
+    if csize > maxbarsize - smod then
     begin
-      try
-        temp.ModuleFile.DllSetSize(temp.ID,msize.Min + nonminmaxrequest[i]);
-      finally
-        i := i + 1;
-      end;
+      // module out of bar area... hide it and make it small...
+      // Check if the module is too big...
+      temp.Control.Visible := False;
+      temp.ModuleFile.DllSetSize(temp.ID,1);
     end else
     begin
-      try
-        temp.ModuleFile.DllSetSize(temp.ID,msize.Min);
-      except
-      end;
+      if not temp.control.Visible then
+         temp.control.Visible := True;
+      if msize.Min <> msize.Width then
+         temp.ModuleFile.DllSetSize(temp.ID,msize.Min + nonminmaxrequest[i])
+      else temp.ModuleFile.DllSetSize(temp.ID,msize.Min);
     end;
+    if msize.Min <> msize.Width then
+       i := i + 1;
   end;
 
   setlength(nonminmaxrequest,0);
