@@ -186,7 +186,7 @@ type
                      procedure BroadcastPluginMessage(msg : string);
                      procedure BroadcastPluginUpdate(part : integer; param : integer = 0);
                      procedure BroadCastModuleRefresh;
-                     procedure ReCalculateModuleSize;
+                     procedure ReCalculateModuleSize(Broadcast : boolean = True);
                      procedure OnMiniThrobberClick(Sender : TObject);
                      procedure OnMiniThrobberMouseDown(Sender : TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
                      procedure OnMiniThrobberMouseUp(Sender : TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -202,6 +202,11 @@ type
                      property ShowMiniThrobbers : Boolean    read FShowMiniThrobbers write FShowMiniThrobbers;
                    end;
 
+type
+  THandleArray = array of HWND;
+
+function FindAllWindows(const WindowClass: string): THandleArray;
+
 implementation
 
 
@@ -209,9 +214,6 @@ uses uSharpBarApi,
      SharpApi,
      SharpBarMainWnd;
 
-
-type
-  THandleArray = array of HWND;
 
 
 function GetControlByHandle(AHandle: THandle): TWinControl;
@@ -821,8 +823,8 @@ begin
             mbar := True;
             MaxSize := R.Left - pMon.Left + freespace div 2;
           end else if (not mbar) then
-                       MaxSize := MaxSize - (R.Right - R.Left) + freespace;
-        end else MaxSize := Min(MaxSize,pMon.Width - 2 * (R.Right - R.Left) + freespace);
+                       MaxSize := MaxSize - (R.Right - R.Left) + freespace div 2;
+        end else MaxSize := Min(MaxSize,pMon.Width - 2 * (R.Right - R.Left) + freespace div 2);
       end;
     end;
   end;
@@ -1167,8 +1169,8 @@ begin
     ParentControl.Width := nw;
   end;
 
-  if FBar.HorizPos = hpFull then SetWindowLong(ParentControl.Handle,GWL_USERDATA,0)
-     else SetWindowLong(ParentControl.Handle,GWL_USERDATA,Max(ParentControl.Width - lo - ro - LeftSize - Rightsize,0));
+  if FBar.HorizPos = hpFull then SetWindowLong(ParentControl.Handle,GWL_USERDATA,0);
+//     else SetWindowLong(ParentControl.Handle,GWL_USERDATA,Max(ParentControl.Width - lo - ro - LeftSize - Rightsize,0));
 
   x := 0;
   rx := 0;
@@ -1275,7 +1277,7 @@ end;
 // Calculate how much space every module is taking and check how much free bar
 // space is left. Adjust the size of modules with dynamic size (task list,...)
 // if there is more space needed or of the dynamic module can have more space.
-procedure TModuleManager.ReCalculateModuleSize;
+procedure TModuleManager.ReCalculateModuleSize(Broadcast : boolean = True);
 var
   n : integer;
   temp : TModule;
@@ -1394,8 +1396,6 @@ begin
   FixModulePositions;
 
   ParentControl := GetControlByHandle(FParent);
- // if (minsize-maxsize) <> 0 then
- //    SetWindowLong(ParentControl.Handle,GWL_USERDATA,minsize-maxsize);
 
   // Check if there is no bar space left and if other bars which have
   // free space left should resize
@@ -1403,33 +1403,39 @@ begin
   maxSize := pMon.Width - ParentControl.Width;
 
   setlength(harray,0);
-  // find all SharpBar windows and store their handle in harray
-  harray := FindAllWindows('TSharpBarMainForm');
-  for n := 0 to High(harray) do
-    if harray[n] <> ParentControl.Handle then
-    begin
-      GetWindowRect(harray[n],R);
-      // another bar on the same monitor with the same top position?
-      if (R.Top = ParentControl.Top) and (Screen.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
-          MaxSize := MaxSize - (R.Right - R.Left);
-    end;
-//  if MaxSize < 0 then
+
+  if Broadcast then
+  begin
+    SetWindowLong(ParentControl.Handle,GWL_USERDATA,0);
+    // find all SharpBar windows and store their handle in harray
+    harray := FindAllWindows('TSharpBarMainForm');
     for n := 0 to High(harray) do
       if harray[n] <> ParentControl.Handle then
       begin
         GetWindowRect(harray[n],R);
         // another bar on the same monitor with the same top position?
         if (R.Top = ParentControl.Top) and (Screen.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
+            MaxSize := MaxSize - (R.Right - R.Left);
+      end;
+  //  if MaxSize < 0 then
+      for n := 0 to High(harray) do
+        if harray[n] <> ParentControl.Handle then
         begin
-          freespace := GetWindowLong(harray[n],GWL_USERDATA);
-          if (MaxSize < 0) and (FreeSpace > 0) then
+          GetWindowRect(harray[n],R);
+          // another bar on the same monitor with the same top position?
+          if (R.Top = ParentControl.Top) and (Screen.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
           begin
-             PostMessage(harray[n],WM_UPDATEBARWIDTH,0,0);
-             break;
+            //freespace := GetWindowLong(harray[n],GWL_USERDATA);
+            //if (MaxSize < 0) and (FreeSpace > 0) then
+            begin
+               PostMessage(harray[n],WM_UPDATEBARWIDTH,1,0);
+               break;
+            end;
           end;
         end;
-      end;
-  setlength(harray,0);
+    setlength(harray,0);
+  end;
+  SetWindowLong(ParentControl.Handle,GWL_USERDATA,abs(maxsize - minsize))
 end;
 
 

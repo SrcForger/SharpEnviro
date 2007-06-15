@@ -490,13 +490,20 @@ end;
 
 // A Module which was registered to receive shell messages unregisters itself
 procedure TSharpBarMainForm.WMUnregisterShellHook(var msg : TMessage);
+var
+  harray : THandleArray;
 begin
   if (Closing) or (FShellHookList = nil) then exit;
 
   FShellHookList.Delete(FShellHookList.IndexOf(inttostr(msg.WParam)));
 
-  if FShellHookList.Count = 0 then
+  harray := FindAllWindows('TSharpBarMainForm');
+  if (FShellHookList.Count = 0) and (length(harray) <= 1) then
      RegisterShellHook(Handle,0);
+  setlength(harray,0);
+
+//  if FShellHookList.Count = 0 then
+//     RegisterShellHook(Handle,0);
 end;
 
 
@@ -648,7 +655,7 @@ begin
   DebugOutput('WM_UpdateBarWidth',2,1);
   if not FStartup then LockWindow(Handle);
   try
-    ModuleManager.ReCalculateModuleSize;
+    ModuleManager.ReCalculateModuleSize((msg.wparam = 0));
   finally
     if not FStartup then UnLockwindow(Handle);
   end;
@@ -1154,7 +1161,6 @@ begin
   FShellBCInProgress := False;
 
   DebugOutput('Setting Form properties',2,1);
-  SetWindowLong(Handle, GWL_USERDATA, magicDWord);
   Setwindowlong(Application.handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
   SetWindowPos(application.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
   ShowWindow(Application.Handle, SW_HIDE);
@@ -1979,6 +1985,8 @@ end;
 
 procedure TSharpBarMainForm.FormClose(Sender: TObject;
   var Action: TCloseAction);
+var
+  harray : THandleArray;
 begin
   if Closing then exit;
 
@@ -1999,9 +2007,13 @@ begin
   if AddPluginForm <> nil then FreeAndNil(AddPluginForm);
   if PluginManagerForm <> nil then FreeAndNil(PluginManagerForm);
 
-  // check if shell hook functions have been used for any module
-  if FShellHookList.Count > 0 then
+  harray := FindAllWindows('TSharpBarMainForm');
+  if length(harray) <= 1 then
      RegisterShellHook(Handle,0);
+  setlength(harray,0);
+  // check if shell hook functions have been used for any module
+{  if (FShellHookList.Count > 0) and (FindWindow('TSharpBarMainForm',nil)  then
+     RegisterShellHook(Handle,0);}
 
   // We want to produce good code, so let's free stuff before the app is closed ;)
   ForceDirectories(ExtractFileDir(ModuleSettings.FileName));
