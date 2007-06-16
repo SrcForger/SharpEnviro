@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, JvComponentBase, JvInterpreter, XPMan, ImgList, PngImageList,
+  Dialogs, JvComponentBase, JvInterpreter, ImgList, PngImageList,
   StdCtrls, ComCtrls, ToolWin, JvExControls, JvComponent, JvEditorCommon,
   JvEditor, JvHLEditor, Menus, JcLSysUtils;
 
@@ -17,7 +17,6 @@ type
     ToolButton2: TToolButton;
     lb_errors: TListBox;
     PngImageList1: TPngImageList;
-    XPManifest1: TXPManifest;
     JvInterpreter: TJvInterpreterProgram;
     ToolButton4: TToolButton;
     OpenScript: TOpenDialog;
@@ -125,7 +124,6 @@ type
     procedure ToolButton2Click(Sender: TObject);
     procedure ed_scriptPaintGutter(Sender: TObject; Canvas: TCanvas);
   private
-    { Private-Deklarationen }
   public
     { Public-Deklarationen }
   end;

@@ -2,7 +2,7 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Width = 434
-  Height = 191
+  Height = 211
   Caption = 'SharpScript'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,16 +19,16 @@ object MainForm: TMainForm
   object Label1: TLabel
     Left = 32
     Top = 32
-    Width = 118
+    Width = 247
     Height = 13
-    Caption = 'Welcome to SharpScript.'
+    Caption = 'SharpSript is still in a very early development state!'
   end
   object Label2: TLabel
     Left = 32
     Top = 56
-    Width = 225
+    Width = 109
     Height = 13
-    Caption = 'Use the menu to select what you want to do...'
+    Caption = 'Use at your own risk :)'
   end
   object MainMenu1: TMainMenu
     Left = 360
@@ -49,20 +49,23 @@ object MainForm: TMainForm
       object Create1: TMenuItem
         Caption = 'Create'
         object Generic1: TMenuItem
-          Caption = 'Generic'
+          Caption = 'Generic Script'
           OnClick = Generic1Click
         end
         object Install1: TMenuItem
           Caption = 'Install'
+          Enabled = False
           OnClick = Install1Click
         end
         object Skin1: TMenuItem
           Caption = 'Skin'
           Enabled = False
+          Visible = False
         end
       end
       object Edit1: TMenuItem
         Caption = 'Edit...'
+        Visible = False
       end
     end
   end

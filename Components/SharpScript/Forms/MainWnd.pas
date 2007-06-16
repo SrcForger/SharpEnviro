@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Menus, XPMan, JvComponentBase, JvInterpreter, AbArcTyp;
+  Dialogs, StdCtrls, Menus, XPMan, SharpApi,
+  JvComponentBase, JvInterpreter, AbArcTyp;
 
 type
   TMainForm = class(TForm)
@@ -29,6 +30,7 @@ type
     procedure Install1Click(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
   private
+    procedure WMSharpTerminate(var msg : TMessage); message WM_SHARPTERMINATE;
   public
     { Public-Deklarationen }
   end;
@@ -39,7 +41,6 @@ var
 implementation
 
 uses DateUtils,
-     SharpApi,
      InstallWnd,
      CreateInstallScriptWnd,
      CreateGenericScriptWnd,
@@ -48,6 +49,10 @@ uses DateUtils,
 {$R *.dfm}
 
 
+procedure TMainForm.WMSharpTerminate(var msg : TMessage);
+begin
+  Application.Terminate;
+end;
 
 procedure TMainForm.Exit1Click(Sender: TObject);
 begin
@@ -62,10 +67,16 @@ end;
 
 procedure TMainForm.Execute1Click(Sender: TObject);
 var
-  Ext : String;
+  Ext,Dir : String;
   installscript : TSharpEInstallerScript;
   genericscript : TSharpEGenericScript;
 begin
+  if OpenScript.InitialDir = '' then
+  begin
+    Dir :=  SharpApi.GetSharpeUserSettingsPath + 'Scripts\';
+    ForceDirectories(Dir);
+    OpenScript.InitialDir := Dir;
+  end;
   if OpenScript.Execute then
   begin
     Ext := ExtractFileExt(OpenScript.FileName);

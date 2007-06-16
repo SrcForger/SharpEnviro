@@ -288,10 +288,6 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
     Top = 184
     Bitmap = {}
   end
-  object XPManifest1: TXPManifest
-    Left = 272
-    Top = 240
-  end
   object JvInterpreter: TJvInterpreterProgram
     OnStatement = JvInterpreterStatement
     Left = 472
