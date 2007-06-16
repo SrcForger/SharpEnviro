@@ -171,6 +171,8 @@ begin
   if cpuUsage.UpdateTimer.Interval = 1001 then cpuUsage.UpdateTimer.Interval := sUpdate
      else sUpdate := cpuUsage.UpdateTimer.Interval;
 
+
+  if Width < 10 then exit;
   newWidth := sWidth + 4;
   Tag := NewWidth;
   Hint := inttostr(NewWidth);
