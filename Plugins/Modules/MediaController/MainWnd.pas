@@ -60,7 +60,6 @@ type
     btn_pause: TSharpEButton;
     btn_stop: TSharpEButton;
     btn_play: TSharpEButton;
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormPaint(Sender: TObject);
     procedure VLCMediaPlayer1Click(Sender: TObject);
     procedure WindowsMediaPlayer1Click(Sender: TObject);
@@ -313,6 +312,8 @@ var
   item : TJvSimpleXMLElem;
   s : String;
 begin
+  UpdateActions;
+
   sPlayer     := mptWinAmp;
   sPlayerFile := '-1';
   sPSelect    := True;
@@ -351,7 +352,7 @@ procedure TMainForm.SetSize(NewWidth : integer);
 begin
   NewWidth := Max(1,NewWidth);
 
-  UpdateBackground;
+  UpdateBackground(NewWidth);
 
   Width := NewWidth;
 end;
@@ -643,19 +644,23 @@ begin
   FIconVLC    := TBitmap32.Create;
 
   InitDefaultImages;
-
-  UpdateActions;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
- Background.Free;
- FIconFoobar.Free;
- FIconWinAmp.Free;
- FIconMPC.Free;
- FIconQCD.Free;
- FIconWMP.Free;
- FIconVLC.Free;
+  SharpApi.UnRegisterAction('!MC-Play');
+  SharpApi.UnRegisterAction('!MC-Pause');
+  SharpApi.UnRegisterAction('!MC-Stop');
+  SharpApi.UnRegisterAction('!MC-Prev');
+  SharpApi.UnRegisterAction('!MC-Next');
+
+  Background.Free;
+  FIconFoobar.Free;
+  FIconWinAmp.Free;
+  FIconMPC.Free;
+  FIconQCD.Free;
+  FIconWMP.Free;
+  FIconVLC.Free;
 end;
 
 procedure TMainForm.QCD1Click(Sender: TObject);
@@ -682,15 +687,6 @@ end;
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
   Background.DrawTo(Canvas.Handle,0,0);
-end;
-
-procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  SharpApi.UnRegisterAction('!MC-Play');
-  SharpApi.UnRegisterAction('!MC-Pause');
-  SharpApi.UnRegisterAction('!MC-Stop');
-  SharpApi.UnRegisterAction('!MC-Prev');
-  SharpApi.UnRegisterAction('!MC-Next');
 end;
 
 end.
