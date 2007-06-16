@@ -26,12 +26,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 library DeskArea;
 uses
+  Messages,
   windows,
+  Classes,
   SysUtils,
+  SharpApi,
   uDeskAreaManager in 'uDeskAreaManager.pas';
+
+type
+  TActionEvent = Class(Tobject)
+  Procedure MessageHandler(var Message: TMessage);
+  end;
 
 var
   DeskAreaManager : TDeskAreaManager;
+  AE:TActionEvent;
+  h:THandle;
 
 {$E ser}
 
@@ -40,6 +50,12 @@ var
 procedure Stop;
 begin
   DeskAreaManager.Free;
+
+  DeallocateHWnd(h);
+  AE.Free;
+
+  UnRegisterAction('!EnableDeskArea');
+  UnRegisterAction('!DisableDeskArea');
 end;
 
 function Start(owner: hwnd): hwnd;
@@ -47,6 +63,12 @@ begin
   DeskAreaManager := TDeskAreaManager.Create;
   DeskAreaManager.LoadSettings;
   Result := owner;
+
+  ae := TActionEvent.Create;
+  h := allocatehwnd(Ae.MessageHandler);
+
+  RegisterActionEx('!EnableDeskArea','Services',h,0);
+  RegisterActionEx('!DisableDeskArea','Services',h,1);
 end;
 
 function SCMsg(msg: string): integer;
@@ -55,6 +77,23 @@ begin
 
   if CompareText(msg,'Update') = 0 then
      DeskAreaManager.SetDeskArea;
+end;
+
+procedure TActionEvent.MessageHandler(var Message: TMessage);
+begin
+  if message.Msg = WM_SHARPEACTIONMESSAGE then
+  begin
+    case Message.LParam of
+      0 : DeskAreaManager.Enable;
+      1 : DeskAreaManager.Disable;
+    end;
+  end;
+
+  if Message.Msg = WM_SHARPEUPDATEACTIONS then
+  begin
+    RegisterActionEx('!EnableDeskArea','Services',h,0);
+    RegisterActionEx('!DisableDeskArea','Services',h,1);
+  end;
 end;
 
 

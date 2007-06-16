@@ -45,6 +45,9 @@ type
     procedure LoadSettings;
     procedure SetDeskArea;
     procedure SetFullScreenArea;
+
+    procedure Enable;
+    procedure Disable;
   published
   end;
 
@@ -80,6 +83,18 @@ begin
   setlength(FOffsetList,0);
 
   inherited Destroy;
+end;
+
+procedure TDeskAreaManager.Enable;
+begin
+  FTimer.Enabled := True;
+  SetDeskArea;
+end;
+
+procedure TDeskAreaManager.Disable;
+begin
+  FTimer.Enabled := False;
+  SetFullScreenArea;
 end;
 
 procedure TDeskAreaManager.OnTimer(Sender : TObject);
@@ -140,11 +155,13 @@ var
   n : integer;
   i : cardinal;
   Area : TRect;
+  Mon : TMonitor;
 begin
   i := 0;
   for n := 0 to Screen.MonitorCount - 1 do
   begin
-    Area := Screen.Monitors[n].BoundsRect;
+    Mon := Screen.Monitors[n];
+    Area := Rect(Mon.Left,Mon.Top,Mon.Left + Mon.Width, Mon.Top + Mon.Height);
     SystemParametersInfo(SPI_SETWORKAREA, i, @Area, SPIF_SENDWININICHANGE);
   end;
 end;
