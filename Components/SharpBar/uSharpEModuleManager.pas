@@ -1296,6 +1296,7 @@ var
   freespace : integer;
   newsize : integer;
   csize : integer;
+  sdif : integer;
 begin
   if FShutdown then exit;
   if FModules = nil then exit;
@@ -1396,6 +1397,7 @@ begin
   FixModulePositions;
 
   ParentControl := GetControlByHandle(FParent);
+  sdif := maxsize - minsize;
 
   // Check if there is no bar space left and if other bars which have
   // free space left should resize
@@ -1435,7 +1437,7 @@ begin
         end;
     setlength(harray,0);
   end;
-  SetWindowLong(ParentControl.Handle,GWL_USERDATA,abs(maxsize - minsize))
+  SetWindowLong(ParentControl.Handle,GWL_USERDATA,abs(sdif));
 end;
 
 

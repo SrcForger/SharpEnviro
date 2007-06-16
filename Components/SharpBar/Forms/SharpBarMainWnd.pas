@@ -832,6 +832,7 @@ begin
        end;
      end;
   ModuleManager.ReCalculateModuleSize;
+  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
 end;
 
 procedure TSharpBarMainForm.SaveBarSettings;
