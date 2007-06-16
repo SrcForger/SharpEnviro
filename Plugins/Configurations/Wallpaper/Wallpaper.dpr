@@ -219,9 +219,9 @@ begin
           Add('Alpha',WPItem.Alpha);
           case WPItem.Size of
             twsCenter  : k := 0;
-            twsStretch : k := 1;
+            twsStretch : k := 2;
             twsTile    : k := 3;
-            else         k := 2;
+            else         k := 1;
           end;
           Add('Size',k);
           Add('ColorChange',WPItem.ColorChange);
