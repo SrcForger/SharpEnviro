@@ -32,7 +32,7 @@ unit uSharpEMenuIcons;
 
 interface
 
-uses SysUtils,Contnrs,Classes,GR32,uSharpEMenuIcon;
+uses SysUtils,Contnrs,Classes,GR32,SharpThemeApi,uSharpEMenuIcon;
 
 type
   TSharpEMenuIcons = class
@@ -214,7 +214,8 @@ begin
   begin
     Item := TSharpEMenuIcon(FItems.Items[n]);
     if (not Item.Cached) and (length(Item.IconSource) > 0) and
-       (Item.Icon.Width > 0) and (Item.Icon.Height > 0) then
+       (Item.Icon.Width > 0) and (Item.Icon.Height > 0)
+       and (not SharpThemeApi.IsIconInIconSet(PChar(Item.IconSource))) then
     begin
       StringSaveToStream(Item.IconSource,Stream);
       case Item.IconType of
