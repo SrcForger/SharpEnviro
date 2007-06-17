@@ -73,8 +73,6 @@ begin
 end;
 
 procedure TSkinServer.UpdateStreamFile;
-var
-  n : integer;
 begin
   //Load new skin
   SharpThemeApi.LoadTheme(True,[tpSkin]);

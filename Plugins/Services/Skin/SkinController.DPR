@@ -84,18 +84,14 @@ exports
 { TActionEvent }
 
 procedure TActionEvent.MessageHandler(var Message: TMessage);
-var
-  sdexe:String;
-const
-  fsCommand = '%s %s';
 begin
   if message.Msg = WM_SHARPEACTIONMESSAGE then begin
 
     case Message.LParam of
       0 : begin
-        SkinServer.UpdateStreamFile;
-        SharpEBroadCast(WM_SYSTEMSKINUPDATE,0,0);
-      end;
+            SkinServer.UpdateStreamFile;
+            SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKINFILECHANGED,0);
+          end;
     end;
   end;
 
