@@ -806,7 +806,7 @@ begin
                                      TTrayItem(FItems).TipIndex);
         DestroyWindow(TTrayWnd(FWndList.Items[n]).TipWnd);
         FWndList.Delete(n);
-        break;
+        exit;
       end; 
 end;
 
@@ -1091,36 +1091,36 @@ end;
 
 procedure TTrayClient.DeleteTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
-  n,i,k : integer;
-  temp : TTrayItem;
+  n : integer;
 begin
   n := GetTrayIconIndex(NIDv6.Wnd,NIDv6.UID);
-  if n <> -1 then
-  begin
-    temp := TTrayItem(FItems.Items[n]);
-    if n < FItems.Count - 1 then
-      for k := 0 to FWndList.Count - 1 do
-      begin
-        ToolTipApi.DeleteToolTip(TTrayWnd(FWndList.Items[k]).TipWnd,
-                                 TTrayWnd(FWndList.Items[k]).Wnd,
-                                 temp.TipIndex);
-
-        for i := n + 1 to FItems.Count - 1 do
-            ToolTipApi.UpdateToolTipRect(TTrayWnd(FWndList.Items[k]).TipWnd,
-                                         TTrayWnd(FWndList.Items[k]).Wnd,
-                                         TTrayItem(FItems.Items[i]).TipIndex,
-                                         Rect(FTopSpacing+(i-1)*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+(i-1)*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
-      end;
-    FItems.Extract(temp);
-    FreeAndNil(Temp);
-    RenderIcons;
-  end;
+  if (n <> -1) and (n < FItems.Count) then
+     DeleteTrayIconByIndex(n);
 end;
 
 procedure TTrayClient.DeleteTrayIconByIndex(index : integer);
+var
+  i,k : integer;
+  temp : TTrayItem;
 begin
   if index > FItems.Count - 1 then exit;
-  Fitems.Delete(index);
+
+  temp := TTrayItem(FItems.Items[index]);
+  if index < FItems.Count - 1 then
+     for k := 0 to FWndList.Count - 1 do
+     begin
+       ToolTipApi.DeleteToolTip(TTrayWnd(FWndList.Items[k]).TipWnd,
+                                TTrayWnd(FWndList.Items[k]).Wnd,
+                                temp.TipIndex);
+
+       for i := index + 1 to FItems.Count - 1 do
+           ToolTipApi.UpdateToolTipRect(TTrayWnd(FWndList.Items[k]).TipWnd,
+                                        TTrayWnd(FWndList.Items[k]).Wnd,
+                                        TTrayItem(FItems.Items[i]).TipIndex,
+                                        Rect(FTopSpacing+(i-1)*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+(i-1)*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
+    end;
+  FItems.Extract(temp);
+  FreeAndNil(Temp);
   RenderIcons;
 end;
 
