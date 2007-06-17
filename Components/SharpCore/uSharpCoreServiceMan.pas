@@ -49,6 +49,7 @@ uses
   graphicsfx,
   jvGradient,
   uVersInfo,
+  JclShell,
   uSharpCoreServiceList;
 
 type
@@ -163,13 +164,9 @@ begin
   i := Files.IndexOf('SystemTray' + ServiceExt);
   if i <> -1 then Files.Move(i,0);
 
-  // Move Components to top of list
+  // Move SkinController to top of list
   i := Files.IndexOf('SkinController' + ServiceExt);
   if i <> -1 then Files.Move(i,0);
-
-  // Move Components to end of list
-  i := Files.IndexOf('Components' + ServiceExt);
-  if i <> -1 then Files.Move(i,Files.Count-1);
 
   // Move Startup to end of list
   i := Files.IndexOf('Startup' + ServiceExt);
@@ -733,7 +730,17 @@ begin
       fn := FileName;
 
       if (st = stAlways) or (st = stOnce) then
+      begin
         Start(fn, False);
+
+        // Start SharpBar after the Skin Controller
+        if Name = 'SkinController' then
+        begin
+          // SharpBar must be started before the startup components are executed
+          ShellExec(hInstance,'open',GetSharpeDirectory+'SharpBar.exe','',GetSharpeDirectory,0);
+          sleep(6000);
+        end;
+      end;
     end;
   end;
   Finally

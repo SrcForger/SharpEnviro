@@ -163,7 +163,8 @@ uses
   uSharpCoreStrings,
   uSharpCoreImplementer,
   uSharpCoreHelperMethods,
-  uSharpCoreSettings;
+  uSharpCoreSettings,
+  uSharpCoreShutdown;
 
 {$R *.dfm}
 
@@ -390,7 +391,44 @@ begin
 end;
 
 procedure TSharpCoreMainWnd.ActionMsg(var Msg: TMessage);
+var
+  ShutDown : TScShutDown;
+  dmsg : String;
 begin
+  // shutdown?
+  if (Msg.LParam >= 1) and (Msg.LParam <=4) then
+  begin
+    ShutDown := TScShutDown.Create(nil);
+    try
+      case Msg.LParam of
+        1: begin
+             ShutDown.ActionType := sdReboot;
+             dmsg := 'Reboot';
+           end;
+        2: begin
+             ShutDown.ActionType := sdPowerOff;
+             dmsg := 'Shutdown';
+           end;
+        3: begin
+             ShutDown.ActionType := sdLogOff;
+             dmsg := 'Logout';
+           end;
+        4: begin
+             ShutDown.ActionType := sdHibernate;
+             dmsg := 'Hibernate';
+           end;
+      end;
+      ShutDown.Force := True;
+      if MessageBox(Handle,
+                    PChar('Do you really want to ' + dmsg + ' your Computer now?'),
+                    PChar('Confirm ' + dmsg),MB_YESNO) = ID_YES then
+         ShutDown.Execute;
+    finally
+      ShutDown.Free;
+    end;
+    exit;
+  end;
+
   case Msg.LParam of
     0: begin
         SharpCoreMainWnd.Visible := not (SharpCoreMainWnd.Visible);

@@ -56,6 +56,10 @@ begin
       // Check for default Shell
       ShellMgr.Check;
 
+      // Load Components
+      ShellExec(hInstance,'open',GetSharpeDirectory+'SharpDesk.exe',
+        '',GetSharpeDirectory,0);
+
       // If enabled show the splash logo
       if CompSettings.ShowSplash then
         ShowSplash;
@@ -69,14 +73,11 @@ begin
 
       // Register Actions
       RegisterActionEx('!ToggleServiceManager', 'SharpCore', SharpCoreMainWnd.Handle, 0);
+      RegisterActionEx('!Restart', 'Shutdown', SharpCoreMainWnd.Handle, 1);
+      RegisterActionEx('!Shutdown', 'Shutdown', SharpCoreMainWnd.Handle, 2);
+      RegisterActionEx('!Logout', 'Shutdown', SharpCoreMainWnd.Handle, 3);
+      RegisterActionEx('!Hibernate', 'Shutdown', SharpCoreMainWnd.Handle, 4);
       SharpCoreMainWnd.Trayicon.IconVisible := True;
-
-      // Load Components
-      ShellExec(hInstance,'open',GetSharpeDirectory+'SharpDesk.exe',
-        '',GetSharpeDirectory,0);
-
-      ShellExec(hInstance,'open',GetSharpeDirectory+'SharpBar.exe',
-        '',GetSharpeDirectory,0);
 
       Application.Title := 'SharpCore';
       Application.Run;
