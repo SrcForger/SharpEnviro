@@ -1,0 +1,28 @@
+<SharpCenter>
+  <Sections>
+    <Icons> 
+      <Dll>_themedlls\IconList.dll</Dll>
+      <Icon>_themedlls\Icons\IconSet.png</Icon>
+    </Icons>
+    <Desktop> 
+      <Dll>_themedlls\Desktop.dll</Dll>
+      <Icon>_themedlls\Icons\Desktop.png</Icon>
+    </Desktop>
+    <Curses> 
+      <Dll>_themedlls\Curses.dll</Dll>
+      <Icon>_themedlls\Icons\Curses.png</Icon>
+    </Curses>
+    <Scheme> 
+      <Dll>_themedlls\Scheme.dll</Dll>
+      <Icon>_themedlls\Icons\Scheme.png</Icon>
+    </Scheme>
+    <Skin> 
+      <Dll>_themedlls\ThemeSkinList.dll</Dll>
+      <Icon>_themedlls\Icons\Skin.png</Icon>
+    </Skin>
+    <Wallpaper> 
+      <Dll>_themedlls\Wallpaper.dll</Dll>
+      <Icon>_themedlls\Icons\wallpaper.png</Icon>
+    </Wallpaper>
+  </Sections> 
+</SharpCenter>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <ThemeList>
+      <Dll>_Themes\_Themedlls\ThemeList.dll</Dll>
+      <Icon>_Themes\ThemeList.png</Icon>
+    </ThemeList>
+  </Sections>
+</SharpCenter>
