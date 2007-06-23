@@ -930,9 +930,11 @@ begin
   if not (DirectoryExists(Path)) then
   begin
     // check if the default settings dir exists
-    if DirectoryExists(Fn + 'Settings\'+DEFAULTSETTINGSDIR) then
+    if DirectoryExists(Fn + 'Settings\'+DEFAULTSETTINGSDIR)
+       and not DirectoryExists(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR) then
     begin
-      CopyDir(Fn + 'Settings\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User\');
+      SysUtils.ForceDirectories(Fn + 'Settings\User\');
+      CopyDir(Fn + 'Settings\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User');
       RenameDir(Fn + 'Settings\User\'+DEFAULTSETTINGSDIR,Fn + 'Settings\User\'+User);
     end else
     begin
