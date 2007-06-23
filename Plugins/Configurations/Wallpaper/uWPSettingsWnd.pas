@@ -43,6 +43,7 @@ type
   TWPItem = class
     private
     public
+      WPLoaded        : boolean;
       BmpPreview      : TBitmap32;
       Bmp             : TBitmap32;
       MonID           : integer;
@@ -108,6 +109,8 @@ type
     srr_bg: TSharpERoundPanel;
     ccimage: TImage32;
     tabs: TSharpETabList;
+    procedure fedit_imageKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure tabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
     procedure cb_mhorizClick(Sender: TObject);
@@ -150,6 +153,8 @@ implementation
 constructor TWPItem.Create;
 begin
   inherited Create;
+
+  wploaded := False;
 
   Bmp := TBitmap32.Create;
   BmpPreview := TBitmap32.Create;
@@ -199,7 +204,9 @@ begin
     if Mon <> nil then
        Bmp.SetSize(Mon.Width,Mon.Height)
        else Bmp.SetSize(187,144);
+    Bmp.Clear(color32(0,0,0,0));
   end;
+  wploaded := b;
 end;
 
 procedure TfrmWPSettings.UpdateGradientPreview;
@@ -427,7 +434,7 @@ procedure TfrmWPSettings.FormCreate(Sender: TObject);
 begin
   Update := False;
   Self.DoubleBuffered := true;
-  
+
   WPList := TObjecTList.Create(False);
 end;
 
@@ -466,12 +473,52 @@ begin
 end;
 
 procedure TfrmWPSettings.fedit_imageChange(Sender: TObject);
+var
+  SList : TStringList;
+  loaded : boolean;
+  exists : boolean;
+  i : integer;
+  os : boolean;
 begin
   if CurrentWP = nil then exit;
-  CurrentWP.Image := fedit_image.text;
-  CurrentWP.LoadFromFile;
-  RenderPreview;
-  UpdatePreview;
+
+  os := CurrentWP.WPLoaded;
+  loaded := False;
+  exists := False;
+  SList := TStringList.Create;
+  SList.Add(SharpApi.GetSharpeUserSettingsPath + '\Themes\' + sTheme + '\' + fedit_image.text);
+  SList.Add(fedit_image.text);
+  SList.Add(SharpApi.GetSharpeDirectory + fedit_image.text);
+  for i := 0 to SList.Count - 1 do
+  if FileExists(SList[i]) then
+     try
+       CurrentWP.Image := SList[i];
+       CurrentWP.LoadFromFile;
+       exists := True;
+       loaded := True;
+       break;
+     except
+     end;
+  SList.Free;
+  if not loaded then
+  begin
+    if not exists then
+    begin
+      CurrentWP.Image := fedit_image.Text;
+      CurrentWP.LoadFromFile;
+    end;
+
+    if loaded <> os then
+    begin
+      RenderPreview;
+      UpdatePreview;
+    end;
+  end else
+  begin
+    RenderPreview;
+    UpdatePreview;
+  end;
+  SendUpdate;
 end;
 
 procedure TfrmWPSettings.sgb_gstartalphaChangeValue(Sender: TObject;
@@ -513,6 +560,12 @@ begin
     2: JvPageList1.ActivePage := JvGDPage;
     else AChange := False;
   end;
+end;
+
+procedure TfrmWPSettings.fedit_imageKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  fedit_image.OnChange(fedit_image);
 end;
 
 end.

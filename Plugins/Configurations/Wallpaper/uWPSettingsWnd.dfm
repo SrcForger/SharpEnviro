@@ -153,10 +153,10 @@ object frmWPSettings: TfrmWPSettings
                 'All Image Files (*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.' +
                 'bmp'
               DialogTitle = 'Select Wallpaper'
-              DirectInput = False
               Anchors = [akLeft, akTop, akRight]
               TabOrder = 5
               OnChange = fedit_imageChange
+              OnKeyUp = fedit_imageKeyUp
             end
           end
           object wpcolors: TSharpEColorEditorEx
@@ -302,15 +302,11 @@ object frmWPSettings: TfrmWPSettings
             BevelOuter = bvNone
             ParentColor = True
             TabOrder = 0
-            DesignSize = (
-              439
-              145)
             object Label2: TLabel
               Left = 233
               Top = 32
               Width = 28
               Height = 13
-              Anchors = [akTop, akRight]
               Caption = 'Type:'
             end
             object cb_gradient: TCheckBox
@@ -358,7 +354,6 @@ object frmWPSettings: TfrmWPSettings
               Width = 145
               Height = 21
               Style = csDropDownList
-              Anchors = [akTop, akRight]
               ItemHeight = 13
               TabOrder = 3
               OnChange = cb_gtypeChange
@@ -373,7 +368,6 @@ object frmWPSettings: TfrmWPSettings
               Top = 36
               Width = 193
               Height = 88
-              Anchors = [akLeft, akTop, akRight]
               Bitmap.ResamplerClassName = 'TNearestResampler'
               BitmapAlign = baCenter
               Scale = 1.000000000000000000
