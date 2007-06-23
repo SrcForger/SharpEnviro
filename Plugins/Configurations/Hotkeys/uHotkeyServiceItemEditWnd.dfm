@@ -25,6 +25,7 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
     Height = 75
     Align = alClient
     BevelOuter = bvNone
+    ParentColor = True
     TabOrder = 0
     object Panel1: TPanel
       Left = 284
@@ -32,6 +33,7 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
       Width = 575
       Height = 365
       BevelOuter = bvNone
+      ParentColor = True
       TabOrder = 0
     end
     object pMain: TJvPageList
@@ -110,7 +112,7 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
           Left = 56
           Top = 8
           Width = 197
-          Height = 21
+          Height = 22
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 30
           EditLabel.Height = 14
@@ -123,7 +125,7 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
           Left = 84
           Top = 40
           Width = 313
-          Height = 21
+          Height = 22
           Anchors = [akLeft, akTop, akRight]
           EditLabel.Width = 50
           EditLabel.Height = 14
@@ -132,14 +134,6 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
           LabelSpacing = 6
           TabOrder = 1
         end
-        object edHotkey: TScHotkeyEdit
-          Left = 324
-          Top = 8
-          Width = 157
-          Height = 22
-          Modifier = []
-          Anchors = [akTop, akRight]
-        end
         object Button1: TButton
           Left = 408
           Top = 40
@@ -147,8 +141,15 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
           Height = 25
           Anchors = [akTop, akRight]
           Caption = 'Browse'
-          TabOrder = 3
+          TabOrder = 2
           OnClick = cmdbrowseclick
+        end
+        object edHotkey: TSharpEHotkeyEdit
+          Left = 320
+          Top = 8
+          Width = 161
+          Height = 21
+          Modifier = []
         end
       end
     end

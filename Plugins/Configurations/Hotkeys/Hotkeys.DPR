@@ -43,6 +43,9 @@ uses
   uHotkeyServiceItemEditWnd in 'uHotkeyServiceItemEditWnd.pas' {FrmHotkeyEdit},
   uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas';
 
+var
+  CenterBGColor : integer;
+
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 begin
   FrmConfig := TFrmConfig.Create(nil);
@@ -58,12 +61,14 @@ begin
   result := FrmConfig.Handle;
 end;
 
-function Close(ASave: Boolean): boolean;
+function Save : boolean;
+begin
+  FHotkeyList.Save;
+end;
+
+function Close : boolean;
 begin
   Result := False;
-
-  if ASave then
-    FHotkeyList.Save;
 
   if FrmHotkeyEdit <> nil then
     FreeAndNil(FrmHotkeyEdit);
@@ -73,7 +78,7 @@ begin
   end;
 end;
 
-function OpenEdit(AOwner:Hwnd; AEditMode:TSCE_EDITMODE):Hwnd;
+function OpenEdit(AOwner:Hwnd; AEditMode:TSCE_EDITMODE_ENUM):Hwnd;
 begin
   // Create Form
   if Not(Assigned(FrmHotkeyEdit)) then
@@ -87,6 +92,7 @@ begin
   FrmHotkeyEdit.Top := 0;
   FrmHotkeyEdit.BorderStyle := bsNone;
   FrmHotkeyEdit.Show;
+  FrmHotkeyEdit.Color := CenterBGColor;
 
   // Initialise UI based on the edit mode
   FrmHotkeyEdit.InitUI(AEditMode);
@@ -95,7 +101,7 @@ begin
 
 end;
 
-function CloseEdit(AEditMode:TSCE_EditMode; AApply:Boolean): boolean;
+function CloseEdit(AEditMode:TSCE_EDITMODE_ENUM; AApply:Boolean): boolean;
 begin
   Result := True;
 
@@ -121,6 +127,7 @@ procedure GetCenterScheme(var ABackground: TColor; var AItemColor: TColor; var A
 begin
   if FrmHotkeyEdit <> nil then
     FrmHotkeyEdit.Color := ABackground;
+  CenterBGColor := ABackground;
 
   frmConfig.lbHotkeys.Colors.ItemColor := AItemColor;
   frmConfig.lbHotkeys.Colors.ItemColorSelected := AItemSelectedColor;
@@ -130,6 +137,7 @@ end;
 exports
   Open,
   Close,
+  Save,
   OpenEdit,
   CloseEdit,
   //ClickBtn,

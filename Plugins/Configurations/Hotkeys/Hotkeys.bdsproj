@@ -115,11 +115,11 @@
 			<Linker Name="ExeDescription"></Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir">..\..\..\..\SharpE\Center\Root\Plugins\_Services\</Directories>
+			<Directories Name="OutputDir">..\..\..\..\SharpE\Center\Root\_Services\_Servicedlls\</Directories>
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Units\SEListboxPainter\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SCHotkeyEdit;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpEListBoxEx</Directories>
+			<Directories Name="SearchPath">..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Units\SEListboxPainter\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Delphi Components\SharpEHotkeyEdit;..\..\..\Common\Units\SharpGraphicsUtils</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
@@ -169,8 +169,6 @@
 			<Language Name="ActiveLang"></Language>
 			<Language Name="ProjectLang">$00000000</Language>
 			<Language Name="RootDir"></Language>
-		</Language>  <Excluded_Packages>
-      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
-    </Excluded_Packages>
-  </Delphi.Personality>
+		</Language>
+	</Delphi.Personality>
 </BorlandProject>

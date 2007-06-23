@@ -50,8 +50,8 @@ uses
   JvGradient,
 
   // Project
-  uHotkeyServiceList, PngImageList, uScHotkeyEdit, JvExControls,
-  JvComponent, JvLabel, SharpERoundPanel, SharpEListBoxEx, JvHint;
+  uHotkeyServiceList, PngImageList, SharpEHotkeyEdit, JvExControls,
+  JvComponent, JvLabel, SharpEListBoxEx, JvHint;
 
 type
   TfrmConfig = class(TForm)

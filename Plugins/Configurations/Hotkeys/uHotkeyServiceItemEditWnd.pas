@@ -53,7 +53,7 @@ uses
   JvComponent,
 
   // Project
-  uScHotkeyEdit,
+  SharpEHotkeyEdit,
 
   // JCL
   jclStrings,
@@ -76,8 +76,8 @@ type
     Label3: TJvLabel;
     edName: TLabeledEdit;
     edCommand: TLabeledEdit;
-    edHotkey: TScHotkeyEdit;
     Button1: TButton;
+    edHotkey: TSharpEHotkeyEdit;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
@@ -91,10 +91,10 @@ type
   public
     { Public declarations }
     SelectedText: string;
-    procedure InitUi(AEditMode: TSCE_EDITMODE);
-    function ValidateEdit(AEditMode: TSCE_EDITMODE):Boolean;
-    procedure ShowValidationErrors(AEditMode: TSCE_EDITMODE);
-    function Save(AApply: Boolean;AEditMode: TSCE_EDITMODE):Boolean;
+    procedure InitUi(AEditMode: TSCE_EDITMODE_ENUM);
+    function ValidateEdit(AEditMode: TSCE_EDITMODE_ENUM):Boolean;
+    procedure ShowValidationErrors(AEditMode: TSCE_EDITMODE_ENUM);
+    function Save(AApply: Boolean;AEditMode: TSCE_EDITMODE_ENUM):Boolean;
   end;
 
 var
@@ -149,7 +149,7 @@ begin
   end;   }
 end;
 
-procedure TFrmHotkeyEdit.InitUi(AEditMode: TSCE_EDITMODE);
+procedure TFrmHotkeyEdit.InitUi(AEditMode: TSCE_EDITMODE_ENUM);
 begin
   Case AEditMode of
     sceAdd: ;
@@ -158,18 +158,18 @@ begin
   end;
 end;
 
-function TFrmHotkeyEdit.ValidateEdit(AEditMode: TSCE_EDITMODE): Boolean;
+function TFrmHotkeyEdit.ValidateEdit(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
 begin
   Result := True;
 end;
 
 function TFrmHotkeyEdit.Save(AApply: Boolean;
-  AEditMode: TSCE_EDITMODE): Boolean;
+  AEditMode: TSCE_EDITMODE_ENUM): Boolean;
 begin
   Result := True;
 end;
 
-procedure TFrmHotkeyEdit.ShowValidationErrors(AEditMode: TSCE_EDITMODE);
+procedure TFrmHotkeyEdit.ShowValidationErrors(AEditMode: TSCE_EDITMODE_ENUM);
 begin
 
 end;

@@ -22,7 +22,7 @@ object frmConfig: TfrmConfig
     Height = 367
     Columns = <
       item
-        Width = 100
+        Width = 200
         MaxWidth = 0
         MinWidth = 0
         TextColor = clBlack
@@ -34,7 +34,7 @@ object frmConfig: TfrmConfig
         Images = imlList
       end
       item
-        Width = 150
+        Width = 100
         MaxWidth = 0
         MinWidth = 0
         TextColor = clBlack
@@ -45,7 +45,7 @@ object frmConfig: TfrmConfig
         Autosize = False
       end
       item
-        Width = 100
+        Width = 150
         MaxWidth = 0
         MinWidth = 0
         TextColor = clBlack
