@@ -142,7 +142,7 @@ begin
     for i := 0 to SList.Count - 1 do
         if FileExists(SList[i]) then
         try
-          TempBmp.LoadFromFile(WP.Image);
+          TempBmp.LoadFromFile(SList[i]);
           loaded := True;
           break;
         except
