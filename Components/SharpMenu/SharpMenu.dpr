@@ -204,7 +204,7 @@ begin
   wnd.Show;
 
   // Check if another application got the focus while the menu was initialized
-  handle := GetForegroundWindow;
+{  handle := GetForegroundWindow;
   if handle <> 0 then
   begin
     GetClassName(handle,buff,sizeof(buff));
@@ -213,7 +213,7 @@ begin
     begin
       Application.Terminate;
     end;
-  end;
+  end;}
 
   // Register Shell Hook
   RegisterShellHook(0,1);
