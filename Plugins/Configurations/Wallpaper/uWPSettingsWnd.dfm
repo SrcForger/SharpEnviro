@@ -354,7 +354,7 @@ object frmWPSettings: TfrmWPSettings
               Width = 145
               Height = 21
               Style = csDropDownList
-              ItemHeight = 13
+              ItemHeight = 0
               TabOrder = 3
               OnChange = cb_gtypeChange
               Items.Strings = (
@@ -455,6 +455,7 @@ object frmWPSettings: TfrmWPSettings
       StatusUnSelectedColor = 12644838
       TabAlign = taLeftJustify
       AutoSizeTabs = True
+      BottomBorder = False
       Border = True
       BorderColor = 16510947
       BorderSelectedColor = 16510947

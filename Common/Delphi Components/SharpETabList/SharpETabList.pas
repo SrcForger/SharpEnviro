@@ -70,6 +70,7 @@ type
     FIconBounds: TRect;
     FBorderColor: TColor;
     FBorder: Boolean;
+    FBottomBorder : Boolean;
     FBorderSelectedColor: TColor;
     FOnTabClick: TSharpETabClick;
     FTabAlign: TLeftRight;
@@ -93,6 +94,7 @@ type
     procedure SetBorderColor(const Value: TColor);
     procedure SetBorderSelectedColor(const Value: TColor);
     procedure SetTabAlign(const Value: TLeftRight);
+    procedure SetBottomBorder(const Value: boolean);
   protected
     procedure DrawTab(ATabRect:TRect; ATabItem: TSharpETabListItem);
   public
@@ -138,6 +140,7 @@ type
     Property IconBounds: TRect read FIconBounds write FIconBounds;
     Property AutoSizeTabs: Boolean read FAutoSizeTabs write SetAutoSizeTabs;
 
+    property BottomBorder: Boolean read FBottomBorder write SetBottomBorder;
     Property Border: Boolean read FBorder write SetBorder;
     Property BorderColor: TColor read FBorderColor write SetBorderColor;
     Property BorderSelectedColor: TColor read FBorderSelectedColor write SetBorderSelectedColor;
@@ -238,6 +241,8 @@ begin
 
   FMouseOverID := -1;
 
+  FBottomBorder := True;
+
   FTabWidth := 62;
   FTabColor := $00EFEFEF;
   FTabSelectedColor := $00C0F1E6;
@@ -318,7 +323,7 @@ begin
   RoundRect(FImage32.Bitmap.Canvas.Handle,ATabRect.Left,ATabRect.Top,ATabRect.Right,ATabRect.bottom+5,10,10);
 
   // Draw Tab Bottom Border
-  if FBorder then
+  if FBorder and FBottomBorder then
   if FTabIndex = ATabItem.ID then
     FImage32.Bitmap.Line(ATabRect.Left+1,ATabRect.Bottom-1,ATabRect.Right-1,ATabRect.Bottom-1,Color32(FTabSelectedColor)) else
     FImage32.Bitmap.Line(ATabRect.Left,ATabRect.Bottom-1,ATabRect.Right,ATabRect.Bottom-1,Color32(FBorderColor));
@@ -451,7 +456,7 @@ begin
   FImage32.Bitmap.Clear(Color32(FBkgColor));
 
   // Draw bottom line
-  If FBorder then begin
+  If FBorder and FBottomBorder then begin
     if FTabAlign = taLeftJustify then
       FImage32.Bitmap.Line(0,Self.Height-1,Self.Width-4,Self.Height-1,Color32(FBorderColor)) else
       FImage32.Bitmap.Line(4,Self.Height-1,Self.Width,Self.Height-1,Color32(FBorderColor))
@@ -510,6 +515,12 @@ end;
 procedure TSharpETabList.SetBorderColor(const Value: TColor);
 begin
   FBorderColor := Value;
+  Invalidate;
+end;
+
+procedure TSharpETabList.SetBottomBorder(const Value: Boolean);
+begin
+  FBottomBorder := Value;
   Invalidate;
 end;
 
