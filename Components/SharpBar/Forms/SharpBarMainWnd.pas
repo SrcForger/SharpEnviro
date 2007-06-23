@@ -369,6 +369,8 @@ end;
 // Desk is shutting down
 procedure TSharpBarMainForm.WMDeskClosing(var msg : TMessage);
 begin
+  if Closing then exit;
+
   DelayTimer1.Enabled := True;
 end;
 
@@ -376,6 +378,7 @@ end;
 procedure TSharpBarMainForm.WMDeskBackgroundChange(var msg : TMessage);
 begin
   if FSuspended then exit;
+  if Closing then exit;
 
   if not FStartup then LockWindow(Handle);
   FBarLock := True;
@@ -526,6 +529,7 @@ var
   h : integer;
 begin
   if FSuspended then exit;
+  if Closing then exit;
 
   if msg.WParam < 0 then exit;
 
@@ -650,6 +654,7 @@ end;
 // Module is requesting update of bar width
 procedure TSharpBarMainForm.WMUpdateBarWidth(var msg : TMessage);
 begin
+  if Closing then exit;
   if FSuspended then exit;
 
   DebugOutput('WM_UpdateBarWidth',2,1);
@@ -2032,15 +2037,15 @@ begin
  // ModuleSettings.Free;
   //ModuleSettings := nil;
 
-  FBottomZone.Free;
-  FTopZone.Free;
-  FBGImage.Free;
-
   FSharpEBar.Free;
   FSharpEBar := nil;
 
   FSkinManager.Free;
   FSkinManager := nil;
+
+  FBottomZone.Free;
+  FTopZone.Free;
+  FBGImage.Free;
 end;
 
 procedure TSharpBarMainForm.FormCloseQuery(Sender: TObject;
