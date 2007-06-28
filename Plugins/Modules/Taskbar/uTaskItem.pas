@@ -169,7 +169,7 @@ procedure TTaskItem.Restore;
 begin
 //  if IsIconic(FHandle) then ShowWindow(FHandle, SW_Restore)
 //     else OpenIcon(FHandle);
-  if IsIconic(FHandle) then OpenIcon(FHandle)
+  if IsIconic(FHandle) then ShowWindow(FHandle, SW_Restore)
      else SwitchToThisWindow(FHandle,True);
   UpdateCaption;
   UpdateVisibleState;
