@@ -795,10 +795,10 @@ begin
   begin
     if (@SCM.ActivePlugin.ClickBtn <> nil) then
       SCM.ActivePlugin.ClickBtn(SCB_CONFIGURE, miConfigure.Caption);
+      
+    h := getnextWindow(handle, GW_HWNDNEXT);
+    Setforegroundwindow(h);
   end;
-
-  //h := getnextWindow(handle, GW_HWNDNEXT);
-  //Setforegroundwindow(h);
 end;
 
 procedure TSharpCenterWnd.ShowHistory;
