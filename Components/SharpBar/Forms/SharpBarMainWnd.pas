@@ -72,7 +72,6 @@ type
     BarManagment1: TMenuItem;
     CreateemptySharpBar1: TMenuItem;
     DelayTimer1: TTimer;
-    DelayTimer2: TTimer;
     DelayTimer3: TTimer;
     Clone1: TMenuItem;
     QuickAddModule1: TMenuItem;
@@ -90,7 +89,6 @@ type
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure Clone1Click(Sender: TObject);
     procedure DelayTimer3Timer(Sender: TObject);
-    procedure DelayTimer2Timer(Sender: TObject);
     procedure DelayTimer1Timer(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -201,7 +199,8 @@ type
     property SkinManager : TSharpESkinManager read FSkinManager;
     property SharpEBar : TSharpEBar read FSharpEBar;
     property ShellBCInProgress : boolean read FShellBCInProgress;
-    property BarID : integer read FBarID; 
+    property BarID : integer read FBarID;
+    property Startup : boolean read FStartup write FStartup;
   end;
 
 const
@@ -656,6 +655,7 @@ procedure TSharpBarMainForm.WMUpdateBarWidth(var msg : TMessage);
 begin
   if Closing then exit;
   if FSuspended then exit;
+  if FStartup then exit;
 
   DebugOutput('WM_UpdateBarWidth',2,1);
   if not FStartup then LockWindow(Handle);
@@ -1131,7 +1131,7 @@ begin
 
   FSkinManager.onSkinChanged := SkinManager1SkinChanged;
 
-  DelayTimer2.Enabled := True;
+  //DelayTimer2.Enabled := True;
 
   // Initialize the bar content
   // ID > 0 try load from xml
@@ -1445,6 +1445,7 @@ begin
   ShowWindow(application.Handle, SW_HIDE);
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+  ModuleManager.RefreshMiniThrobbers;
 end;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
@@ -1924,18 +1925,6 @@ begin
   SendMessage(Handle,WM_DESKBACKGROUNDCHANGED,0,0);
 end;
 
-procedure TSharpBarMainForm.DelayTimer2Timer(Sender: TObject);
-begin
-  DelayTimer2.Enabled := False;
-
-  if (FStartup) or (not Visible) then
-  begin
-    FStartup := False;
-    UnlockWindow(Handle);
-    Show;
-  end;
-end;
-
 procedure TSharpBarMainForm.DelayTimer3Timer(Sender: TObject);
 begin
   DelayTimer3.Enabled := False;
@@ -2046,6 +2035,8 @@ begin
   FBottomZone.Free;
   FTopZone.Free;
   FBGImage.Free;
+
+  sleep(500);
 end;
 
 procedure TSharpBarMainForm.FormCloseQuery(Sender: TObject;

@@ -185,6 +185,7 @@ begin
                    + NO_LOAD_AUTO_START_BARS_PARAM + ' '
                    + NO_REMOVE_EMPTY_BARS_PARAM + ' '
                    + LOAD_BY_ID_PARAM+inttostr(BarID)) = HR_OK then lab := true;
+                sleep(500);
               end else lab := true; // an auto start bar is already running!
             end;
       end;
@@ -309,5 +310,7 @@ begin
          break;
        end;
     end;
+  SharpBarMainForm.Startup := False;
+  SharpBarMainForm.Show;
   Application.Run;
 end.

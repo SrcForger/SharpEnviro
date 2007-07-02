@@ -154,6 +154,7 @@ type
                      FModuleSpacing     : integer;
                      FShowMiniThrobbers : Boolean;
                      FShutdown          : Boolean;
+                     procedure SetShowMiniThrobbers(Value : Boolean);
                    public
                      constructor Create(pParent : hwnd;
                                         pSkinManager : TSharpESkinManager;
@@ -199,7 +200,7 @@ type
                      property Modules         : TObjectList  read FModules;
                      property ModuleSettings  : TJvSimpleXML read FModuleSettings;
                      property ThrobberMenu    : TPopupMenu   read FThrobberMenu write FThrobberMenu;
-                     property ShowMiniThrobbers : Boolean    read FShowMiniThrobbers write FShowMiniThrobbers;
+                     property ShowMiniThrobbers : Boolean    read FShowMiniThrobbers write SetShowMiniThrobbers;
                    end;
 
 type
@@ -266,6 +267,15 @@ begin
   FModuleFiles.Free;
   FModuleFiles := nil;
   inherited Destroy;
+end;
+
+procedure TModuleManager.SetShowMiniThrobbers(Value : Boolean);
+begin
+  FShowMiniThrobbers := Value;
+
+  if FShowMiniThrobbers then
+     FModuleSpacing := 4
+     else FModuleSpacing := 6;
 end;
 
 procedure TModuleManager.OnDragReleaseTimerOnTimer(Sender : TObject);
