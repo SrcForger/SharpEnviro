@@ -2,68 +2,85 @@ object FrmSharpeGaugeBox: TFrmSharpeGaugeBox
   Left = 0
   Top = 0
   BorderStyle = bsNone
-  ClientHeight = 41
-  ClientWidth = 149
+  ClientHeight = 46
+  ClientWidth = 247
   Color = clBtnFace
-  Font.Charset = ANSI_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'Arial'
-  Font.Style = []
+  ParentFont = True
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   OnKeyDown = FormKeyDown
   OnMouseWheelDown = FormMouseWheelDown
   OnMouseWheelUp = FormMouseWheelUp
+  OnShow = FormShow
   PixelsPerInch = 96
-  TextHeight = 14
-  object BorderPanel: TPanel
+  TextHeight = 13
+  object BorderPanel: TJvPanel
     Left = 0
     Top = 0
-    Width = 149
-    Height = 41
+    Width = 247
+    Height = 46
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -11
+    HotTrackFont.Name = 'Tahoma'
+    HotTrackFont.Style = []
+    FlatBorder = True
     Align = alClient
+    BevelOuter = bvNone
+    BorderWidth = 1
     TabOrder = 0
-    object Shape1: TPanel
+    object Shape1: TJvPanel
       Left = 1
       Top = 1
-      Width = 147
-      Height = 39
+      Width = 245
+      Height = 44
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'Tahoma'
+      HotTrackFont.Style = []
       Align = alClient
       BevelOuter = bvNone
-      BorderWidth = 4
+      BorderWidth = 2
+      Color = clWindow
+      ParentBackground = False
       TabOrder = 0
       object lblGauge: TLabel
-        Left = 4
-        Top = 4
-        Width = 139
-        Height = 14
+        Left = 2
+        Top = 2
+        Width = 241
+        Height = 13
         Align = alTop
+        Alignment = taCenter
         Caption = 'lblGauge'
         Color = clBtnShadow
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
-        Font.Name = 'Arial'
+        Font.Name = 'Tahoma'
         Font.Style = []
         ParentColor = False
         ParentFont = False
         Transparent = True
         Layout = tlCenter
       end
-      object GaugeBar: TGaugeBar
-        Left = 4
-        Top = 21
-        Width = 139
-        Height = 14
+      object GaugeBar: TJvTrackBar
+        Left = 2
+        Top = 17
+        Width = 241
+        Height = 25
         Align = alBottom
-        Color = clBtnFace
-        Backgnd = bgPattern
-        Max = 255
-        ShowHandleGrip = True
-        Position = 255
+        Ctl3D = False
+        ParentCtl3D = False
+        ParentShowHint = False
+        PageSize = -1
+        ShowHint = False
+        TabOrder = 0
+        TickStyle = tsNone
         OnChange = GaugeBarChange
+        ShowRange = False
+        OnMouseDown = GaugeBarMouseDown
       end
     end
   end

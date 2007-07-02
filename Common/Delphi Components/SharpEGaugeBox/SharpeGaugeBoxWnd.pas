@@ -5,14 +5,17 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, GR32_RangeBars, ExtCtrls, SharpeGaugeBoxEdit, StdCtrls, ComCtrls,
-  JvExComCtrls, JvComCtrls;
+  JvExComCtrls, JvComCtrls, uVistaFuncs, JvExExtCtrls, JvExtComponent, JvPanel;
 
 type
   TFrmSharpeGaugeBox = class(TForm)
-    BorderPanel: TPanel;
-    Shape1: TPanel;
+    BorderPanel: TJvPanel;
+    Shape1: TJvPanel;
     lblGauge: TLabel;
-    GaugeBar: TGaugeBar;
+    GaugeBar: TJvTrackBar;
+    procedure FormShow(Sender: TObject);
+    procedure GaugeBarMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure FormCreate(Sender: TObject);
     procedure GaugeBarChange(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -27,7 +30,7 @@ type
     { Public declarations }
     NoUpdate: boolean;
     GaugeBoxEdit:TSharpeGaugeBox;
-    function GetGaugeBar:TGaugeBar;
+    function GetGaugeBar:TJvTrackBar;
     
   end;
 
@@ -48,11 +51,10 @@ begin
 
   if GaugeBoxEdit <> nil then begin
     GaugeBoxEdit.UpdateValue;
-    GaugeBoxEdit.SetFocus;
   end;
 end;
 
-function TFrmSharpeGaugeBox.GetGaugeBar: TGaugeBar;
+function TFrmSharpeGaugeBox.GetGaugeBar: TJvTrackBar;
 begin
   Result := GaugeBar;
 end;
@@ -89,11 +91,24 @@ begin
     GaugeBoxEdit.UpdateValue;
     GaugeBoxEdit.UpdateEditBox;
   end;
+  BorderPanel.SetFocus;
 end;
 
 procedure TFrmSharpeGaugeBox.FormCreate(Sender: TObject);
 begin
   NoUpdate := False;
+
+end;
+
+procedure TFrmSharpeGaugeBox.GaugeBarMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  BorderPanel.SetFocus;
+end;
+
+procedure TFrmSharpeGaugeBox.FormShow(Sender: TObject);
+begin
+  SetVistaFonts(Self);
 end;
 
 end.

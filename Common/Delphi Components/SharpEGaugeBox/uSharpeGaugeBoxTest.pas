@@ -6,13 +6,15 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, SharpeGaugeBoxEdit, StdCtrls, Mask,
   JvExMask, JvSpin, JvExStdCtrls, JvEdit, ComCtrls, JvExExtCtrls, JvComponent,
-  JvPanel, DBCtrls, ActnMan, ActnColorMaps, XPMan;
+  JvPanel, DBCtrls, ActnMan, ActnColorMaps, XPMan, Buttons;
 
 type
   TForm1 = class(TForm)
     Button1: TButton;
     XPManifest1: TXPManifest;
     XPColorMap1: TXPColorMap;
+    ComboBox1: TComboBox;
+    BitBtn1: TBitBtn;
     procedure Edit1KeyPress(Sender: TObject; var Key: Char);
     procedure Button1Click(Sender: TObject);
   private

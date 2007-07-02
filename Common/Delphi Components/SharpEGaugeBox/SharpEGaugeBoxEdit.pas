@@ -47,7 +47,9 @@ uses
   ComCtrls,
   JvEdit,
   JvPanel,
-  GR32;
+  Types,
+  GR32,
+  JvExComCtrls, JvComCtrls;
 
   {$R SharpEGaugeBoxBitmaps.res}
 
@@ -110,6 +112,8 @@ type
     property Owner;
     property Align;
     property Color;
+    property Anchors;
+    property Font;
     property Min: Integer read FMin write SetMin;
     property Max: Integer read FMax write SetMax;
     property Value: Integer read FValue write SetValue;
@@ -219,34 +223,9 @@ begin
     BevelOuter := bvNone;
     BevelKind := bkNone;
     ParentBackground := False;
+    ParentFont := True;
     Color := Self.Color;
   end;
-
-  FBtnGauge := TSpeedButton.Create(FBackPanel);
-  with FBtnGauge do
-  begin
-    Parent := FBackPanel;
-    Align := alRight;
-    Width := ButtonWidth;
-    Font.Style := [fsBold];
-    Caption := '';
-    Flat := True;
-    Color := Self.Color;
-    OnMouseUp := BtnGaugeMouseUp;
-  end;
-
-  FBtnGauge.Glyph.LoadFromResourceName(HInstance,'DROPLEFT_GRAY');
-
-  {FSpacer := TShape.Create(FBackPanel);
-  with FSpacer do
-  begin
-    Parent := FBackPanel;
-    Width := 4;
-    Align := alLeft;
-    ParentBackground := False;
-    Pen.Color := Self.Color;
-    Brush.Color := Self.Color;
-  end;     }
 
   FValueEdit := TEdit.Create(FBackPanel);
   with FValueEdit do
@@ -261,16 +240,32 @@ begin
     //Flat := True;
     //Ctl3D := False;
     //BorderStyle := bsNone;
-    font.Name := 'Arial';
-    font.Size := 8;
+    ParentFont := True;
     MaxLength := 6;
+  end;
+
+  FBtnGauge := TSpeedButton.Create(FValueEdit);
+  FBtnGauge.Glyph.LoadFromResourceName(HInstance,'DROPLEFT_GRAY');
+
+  with FBtnGauge do
+  begin
+    Parent := FValueEdit;
+    Align := alRight;
+    Width := ButtonWidth;
+    Font.Style := [fsBold];
+    Caption := '';
+    Flat := True;
+    Color := Self.Color;
+    OnMouseUp := BtnGaugeMouseUp;
+    Cursor := crArrow;
+    width := 13;
   end;
 
 end;
 
 procedure TSharpeGaugeBox.BtnGaugeClick(Sender: TObject);
 var
-  tmpGaugeBar: TGaugeBar;
+  tmpGaugeBar: TJvTrackBar;
 begin
   UpdateValue;
   UpdateEditBox;
@@ -288,6 +283,7 @@ begin
   FrmSharpeGaugeBox.lblGauge.Caption := FDescription;
 
   PopAnimateWindow(Self, FrmSharpeGaugeBox);
+  FrmSharpeGaugeBox.BorderPanel.SetFocus;
 end;
 
 procedure TSharpeGaugeBox.SetMax(const Value: Integer);
@@ -361,10 +357,9 @@ var
 begin
   h := PopWindow.Height;
 
-  Self.Canvas.Font.Size := 8;
-  w := Self.Canvas.TextWidth(FDescription)+15;
-  if w < 100 then
-    w := 100;
+  w := Self.Canvas.TextWidth(FDescription)+50;
+  if w < 30 then
+    w := 120;
 
   xPos := Popper.ClientToScreen(Point(0, Popper.ClientHeight));
 
@@ -374,7 +369,9 @@ begin
         xPos.Y := xPos.Y - self.Height - h - 3;
         xPos.X := xpos.X + 1;
       end;
-    ppBottom: xPos.X := xpos.X + 1;
+    ppBottom: begin
+      xPos.X := xPos.X + self.Width - w;
+    end;
     ppLeft:
       begin
         xPos.X := xPos.X - Self.Width + 1;
@@ -393,7 +390,6 @@ begin
   PopWindow.Height := h;
 
   PopWindow.Show;
-  PopWindow.SetFocus;
 end;
 
 procedure TSharpeGaugeBox.BtnGaugeMouseUp(Sender: TObject; Button: TMouseButton;
@@ -471,10 +467,10 @@ procedure TSharpeGaugeBox.BeforeDestruction;
 begin
   inherited;
 
-  if assigned(FValueEdit) then
-     FreeAndNil(FValueEdit);
   if assigned(FBtnGauge) then
      FreeAndNil(FBtnGauge);
+  if assigned(FValueEdit) then
+     FreeAndNil(FValueEdit);
   if assigned(FBackPanel) then
      FreeAndNil(FBackPanel);
 

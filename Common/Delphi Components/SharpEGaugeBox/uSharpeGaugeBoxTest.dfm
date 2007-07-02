@@ -22,6 +22,23 @@ object Form1: TForm1
     TabOrder = 0
     OnClick = Button1Click
   end
+  object ComboBox1: TComboBox
+    Left = 52
+    Top = 80
+    Width = 145
+    Height = 21
+    ItemHeight = 13
+    TabOrder = 1
+    Text = 'ComboBox1'
+  end
+  object BitBtn1: TBitBtn
+    Left = 148
+    Top = 124
+    Width = 75
+    Height = 25
+    Caption = 'BitBtn1'
+    TabOrder = 2
+  end
   object XPManifest1: TXPManifest
     Left = 196
     Top = 180
