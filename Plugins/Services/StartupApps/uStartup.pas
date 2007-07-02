@@ -82,16 +82,14 @@ implementation
 function TStartup.AppRunning(AFile:String):Boolean;
 var
   s:String;
-  fileCmd: TExecFileCommand;
 begin
   Result := False;
   s := AFile;
   s := ExpandEnvVars(s);
   s := Copy(s, 1, Length(s) - 2);
-  fileCmd := StrtoFileandCmd(s);
 
-  if (findtask(fileCmd.Filename) = -1) and (fileCmd.Filename <> '') then
-    Result := True;
+  if findtask(s) = 1 then
+     Result := True;
 end;
 
 procedure TStartup.DeleteEntriesIn(AKey: string; AHKEY: HKEY);
@@ -114,33 +112,28 @@ var
   currentscan, currenttask: string;
 begin
   Result := -1;
+  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
   try
-
-    FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     FProcessEntry32.dwSize := Sizeof(FProcessEntry32);
     ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
 
-    while integer(ContinueLoop) <> 0 do begin
+    currenttask := extractfilename(exefilename);
+    Debug('Searching For: ' + currenttask,DMT_INFO);
+    while integer(ContinueLoop) <> 0 do
+    begin
+      currentscan := string(FProcessEntry32.szExeFile);
 
-      currentscan := lowercase(string(FProcessEntry32.szExeFile));
-      currenttask := lowercase(extractfilename(exefilename));
-      StrReplace(currentscan, ' ', '', [rfreplaceall]);
-      StrReplace(currenttask, ' ', '', [rfreplaceall]);
-
-      outputdebugstring(pchar('Searching For: ' + currenttask));
-      outputdebugstring(pchar('Current Scan: ' + currentscan));
-
-      if currenttask = currentscan then begin
-        outputdebugstring(pchar('Found: ' + currenttask));
+      //Debug('Current Scan: ' + currentscan,DMT_INFO);
+      if CompareText(currenttask,currentscan) = 0 then
+      begin
+        Debug('Found: ' + currenttask,DMT_INFO);
         Result := 1;
         exit;
       end;
       ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
     end;
-    outputdebugstring(pchar('Could not find: ' + currenttask +
-      ' LAUNCHING!! '));
+  finally
     CloseHandle(FSnapshotHandle);
-  except
   end;
 end;
 
