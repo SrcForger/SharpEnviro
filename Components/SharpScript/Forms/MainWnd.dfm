@@ -2,7 +2,7 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Width = 434
-  Height = 211
+  Height = 231
   Caption = 'SharpScript'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

@@ -18,8 +18,8 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
   object ed_script: TJvHLEditor
     Left = 0
     Top = 38
-    Width = 567
-    Height = 445
+    Width = 559
+    Height = 440
     Cursor = crIBeam
     Lines.Strings = (
       'unit InstallScript;'
@@ -116,7 +116,7 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
   object ToolBar2: TToolBar
     Left = 0
     Top = 0
-    Width = 797
+    Width = 789
     Height = 38
     AutoSize = True
     ButtonHeight = 36
@@ -150,17 +150,17 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
     end
   end
   object Panel1: TPanel
-    Left = 567
+    Left = 559
     Top = 38
     Width = 230
-    Height = 445
+    Height = 440
     Align = alRight
     TabOrder = 2
     object Panel2: TPanel
       Left = 1
       Top = 257
       Width = 228
-      Height = 187
+      Height = 182
       Align = alClient
       BevelOuter = bvNone
       BorderWidth = 5
@@ -168,7 +168,7 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
       object Label1: TLabel
         Left = 5
         Top = 5
-        Width = 218
+        Width = 25
         Height = 13
         Align = alTop
         Caption = 'Files:'
@@ -184,7 +184,7 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
       end
       object ToolBar1: TToolBar
         Left = 5
-        Top = 158
+        Top = 153
         Width = 218
         Height = 24
         Align = alBottom
@@ -221,7 +221,7 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
       object Label2: TLabel
         Left = 5
         Top = 5
-        Width = 218
+        Width = 55
         Height = 13
         Align = alTop
         Caption = 'Changelog:'
@@ -271,8 +271,8 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
   end
   object lb_errors: TListBox
     Left = 0
-    Top = 483
-    Width = 797
+    Top = 478
+    Width = 789
     Height = 97
     Align = alBottom
     ItemHeight = 13

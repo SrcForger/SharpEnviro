@@ -2,7 +2,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
   Left = 0
   Top = 0
   Width = 870
-  Height = 588
+  Height = 568
   Caption = 'Create Generic SharpE Script'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,8 +18,8 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
   object ed_script: TJvHLEditor
     Left = 0
     Top = 38
-    Width = 862
-    Height = 424
+    Width = 854
+    Height = 397
     Cursor = crIBeam
     Lines.Strings = (
       'begin'
@@ -77,7 +77,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
   object ToolBar2: TToolBar
     Left = 0
     Top = 0
-    Width = 862
+    Width = 854
     Height = 38
     AutoSize = True
     ButtonHeight = 36
@@ -137,8 +137,8 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
   end
   object lb_errors: TListBox
     Left = 0
-    Top = 462
-    Width = 862
+    Top = 435
+    Width = 854
     Height = 97
     Align = alBottom
     ItemHeight = 13
@@ -449,6 +449,15 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
           object functionFileExistsFilePathStringboolean1: TMenuItem
             Caption = 'function FileExists(FilePath : String) : boolean;'
             Hint = 'FileExists('#39'FilePath'#39')'
+            OnClick = GenericPopupClick
+          end
+          object functionCopyFilesSrcDirDstDirSrcExtDestExtStringOverwritebooleanboolean2: TMenuItem
+            Caption = 
+              'function CopyFiles(SrcDir, DstDir, SrcExt, DestExt: String; Over' +
+              'write : boolean) : boolean;'
+            Hint = 
+              'CopyFiles('#39'SourceDir'#39','#39'DestinationDir'#39','#39'SourceExtension'#39','#39'DestEx' +
+              'tension'#39',True)'
             OnClick = GenericPopupClick
           end
         end

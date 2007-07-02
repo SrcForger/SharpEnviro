@@ -114,6 +114,7 @@ type
     Windows2: TMenuItem;
     WindowHandling1: TMenuItem;
     functionFindWindowClassNameStringWindowNameStringhwnd1: TMenuItem;
+    functionCopyFilesSrcDirDstDirSrcExtDestExtStringOverwritebooleanboolean2: TMenuItem;
     procedure LOGWINDOWOFF1Click(Sender: TObject);
     procedure JvInterpreterStatement(Sender: TObject);
     procedure btn_insertClick(Sender: TObject);
