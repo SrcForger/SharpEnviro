@@ -36,6 +36,7 @@ interface
 uses Windows,
      Classes,
      SysUtils,
+     JclFileUtils,
      JvInterpreter;
 
 const
@@ -134,6 +135,49 @@ begin
   end;
 end;
 
+procedure Adapter_CopyFiles(var Value: Variant; Args: TJvInterpreterArgs);
+var
+  sDirFrom, sDirTo, sSrcExtension, sDestExtension, sFileFrom, sFileTo: String;
+  bReplace, bOk: Boolean;
+  strl:TStringList;
+  i:Integer;
+begin
+  strl := TStringList.Create;
+  try
+    try
+      sDirFrom := VarToStr(Args.Values[0]);
+      sDirTo := VarToStr(Args.Values[1]);
+      sSrcExtension := VarToStr(Args.Values[2]);
+      sDestExtension := VarToStr(Args.Values[3]);
+      bReplace := Not(Args.Values[4]);
+
+      AdvBuildFileList(sDirFrom+'*.*',faAnyFile,strl,amAny,[flFullNames],'',nil);
+
+      for i := 0 to Pred(strl.Count) do begin
+
+        if ExtractFileExt(strl[i]) = sSrcExtension then begin
+
+          sFileFrom := strl[i];
+          sFileTo := PathAddSeparator(sDirTo)+ExtractFileName(strl[i]);
+
+          if sDestExtension <> '' then
+            sFileTo := ChangeFileExt(sFileTo,sDestExtension);
+
+          bOk := CopyFile(PChar(sFileFrom), PChar(sFileTo), bReplace);
+          if bOk then AddLog(Format('File copied from: (%s) to: %s',[sFileFrom,sFileTo])) else
+          AddLog(Format('Failed to copy from: (%s) to: %s',[sFileFrom,sFileTo]));
+        end;
+      end;
+
+  except
+    AddLog('Failed to call CopyFile "'+VarToStr(Args.Values[0])+'" -> "' +VarToStr(Args.Values[1])+'"');
+  end;
+
+  finally
+    strl.Free;
+  end;
+end;
+
 procedure Adapter_DeleteFile(var Value: Variant; Args: TJvInterpreterArgs);
 begin
   try
@@ -224,6 +268,7 @@ begin
   with JvInterpreterAdapter do
   begin
     AddFunction('SharpFileUtils','CopyFile',Adapter_CopyFile,3,[varString,varString,varBoolean],varBoolean);
+    AddFunction('SharpFileUtils','CopyFiles',Adapter_CopyFiles,5,[varString,varString,varString,varString,varBoolean],varBoolean);
     AddFunction('SharpFileUtils','DeleteFile',Adapter_DeleteFile,1,[varString],varBoolean);
     AddFunction('SharpFileUtils','FileExists',Adapter_FileExists,1,[varString],varBoolean);
     AddFunction('SharpFileUtils','CreateDirectory',Adapter_CreateDirectory,0,[varString],varEmpty);
