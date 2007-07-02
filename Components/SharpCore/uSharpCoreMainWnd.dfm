@@ -30,7 +30,7 @@ object SharpCoreMainWnd: TSharpCoreMainWnd
     Left = 0
     Top = 0
     Width = 442
-    Height = 320
+    Height = 321
     Align = alClient
     Caption = 'Panel3'
     TabOrder = 0
@@ -39,7 +39,7 @@ object SharpCoreMainWnd: TSharpCoreMainWnd
     Left = 0
     Top = 0
     Width = 442
-    Height = 320
+    Height = 321
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Panel1'
@@ -48,7 +48,7 @@ object SharpCoreMainWnd: TSharpCoreMainWnd
       Left = 0
       Top = 0
       Width = 442
-      Height = 320
+      Height = 321
       HorzScrollBar.Visible = False
       VertScrollBar.ButtonSize = 5
       VertScrollBar.Margin = 15
@@ -1046,5 +1046,9 @@ object SharpCoreMainWnd: TSharpCoreMainWnd
     Left = 376
     Top = 248
     Bitmap = {}
+  end
+  object XPManifest1: TXPManifest
+    Left = 312
+    Top = 152
   end
 end

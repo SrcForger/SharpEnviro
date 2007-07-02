@@ -61,7 +61,7 @@ uses
   // Program Units
   uSharpCoreServiceList,
   pngimage,
-  AppEvnts, PngImageList, SharpESkinManager;
+  AppEvnts, PngImageList, SharpESkinManager, XPMan;
 
 type
   TSharpCoreMainWnd = class(TForm)
@@ -96,6 +96,7 @@ type
     PngImageList1: TPngImageList;
     N3: TMenuItem;
     ShutdownSharpEcloseallcomponents1: TMenuItem;
+    XPManifest1: TXPManifest;
     procedure ShutdownSharpEcloseallcomponents1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -585,6 +586,7 @@ end;
 procedure TSharpCoreMainWnd.ShutdownSharpEcloseallcomponents1Click(
   Sender: TObject);
 begin
+  SharpApi.CloseComponent('SharpBar');
   SharpApi.SharpEBroadCast(WM_SHARPTERMINATE,0,0);
 end;
 
