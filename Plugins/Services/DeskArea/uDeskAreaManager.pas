@@ -29,7 +29,8 @@ unit uDeskAreaManager;
 interface
 
 uses
-  Windows,SysUtils,Forms,ExtCtrls,Types,Math,SharpApi,JvSimpleXML;
+  Windows,SysUtils,Forms,ExtCtrls,Types,Math,SharpApi,JvSimpleXML,
+  uxTheme;
 
 type
   TDeskAreaManager = class
@@ -132,6 +133,7 @@ begin
            end;
       end;
     end;
+
     // apply custom monitor offsets
     if n <= High(FOffsetList) then
     begin
@@ -140,6 +142,13 @@ begin
       Area.Right  := Area.Right - FOffsetList[n].Right;
       Area.Bottom := Area.Bottom - FOffsetList[n].Bottom;
     end;
+
+    if not uxTheme.IsThemeActive then
+    begin
+      Area.Top := Area.Top + 4;
+      Area.Bottom := Area.Bottom - 4;
+    end;
+
     k := 0;
     if (Area.Left <> Screen.Monitors[n].WorkareaRect.Left) or
        (Area.Right <> Screen.Monitors[n].WorkareaRect.Right) or
