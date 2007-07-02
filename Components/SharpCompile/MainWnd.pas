@@ -84,8 +84,6 @@ var
 
 implementation
 
-uses VersChangeWnd;
-
 {$R *.dfm}
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -409,7 +407,7 @@ var
   pItem : TDelphiProject;
   s : String;
 begin
-  with VersChangeForm  do
+  {with VersChangeForm  do
   begin
     lb_plist.Clear;
 
@@ -478,7 +476,7 @@ begin
                end;
              end;
        end;
-  end;
+  end;    }
 end;
 
 end.

@@ -32,8 +32,7 @@ program SharpCompile;
 uses
   Forms,
   MainWnd in 'MainWnd.pas' {MainForm},
-  DelphiCompiler in 'DelphiCompiler.pas',
-  VersChangeWnd in 'VersChangeWnd.pas' {VersChangeForm};
+  DelphiCompiler in 'DelphiCompiler.pas';
 
 {$R *.res}
 
@@ -41,6 +40,5 @@ begin
   Application.Initialize;
   Application.Title := 'SharpCompile';
   Application.CreateForm(TMainForm, MainForm);
-  Application.CreateForm(TVersChangeForm, VersChangeForm);
   Application.Run;
 end.
