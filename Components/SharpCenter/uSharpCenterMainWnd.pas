@@ -68,7 +68,7 @@ uses
   SharpEListBoxEx,
   PngBitBtn,
   SharpThemeApi,
-  Types;
+  Types, XPMan, VistaAltFixUnit;
 
 const
   cEditTabHide = 0;
@@ -129,6 +129,8 @@ type
     btnEditApply: TPngSpeedButton;
     tlEditItem: TSharpETabList;
     pnlSpacer: TPanel;
+    XPManifest1: TXPManifest;
+    procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -1096,6 +1098,11 @@ begin
   Finally
     CanClose := True;
   End;
+end;
+
+procedure TSharpCenterWnd.FormCreate(Sender: TObject);
+begin
+  TVistaAltFix.Create(Self);
 end;
 
 end.

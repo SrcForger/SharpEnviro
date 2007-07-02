@@ -15,6 +15,7 @@ object SharpCenterWnd: TSharpCenterWnd
   OldCreateOrder = False
   ScreenSnap = True
   OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
@@ -22,8 +23,8 @@ object SharpCenterWnd: TSharpCenterWnd
   object pnlForm: TPanel
     Left = 0
     Top = 0
-    Width = 694
-    Height = 591
+    Width = 686
+    Height = 584
     Align = alClient
     BevelOuter = bvNone
     Color = clWindow
@@ -33,8 +34,8 @@ object SharpCenterWnd: TSharpCenterWnd
     object pnlMain: TPanel
       Left = 0
       Top = 0
-      Width = 694
-      Height = 559
+      Width = 686
+      Height = 552
       Align = alClient
       BevelOuter = bvNone
       Color = clWindow
@@ -45,7 +46,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Left = 165
         Top = 0
         Width = 2
-        Height = 559
+        Height = 552
         ParentColor = False
         OnMoved = FormResize
       end
@@ -53,7 +54,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Left = 0
         Top = 0
         Width = 165
-        Height = 559
+        Height = 552
         Align = alLeft
         BevelOuter = bvNone
         BorderWidth = 6
@@ -64,7 +65,7 @@ object SharpCenterWnd: TSharpCenterWnd
           Left = 6
           Top = 143
           Width = 153
-          Height = 410
+          Height = 403
           Align = alClient
           BevelOuter = bvNone
           Color = clWindow
@@ -74,7 +75,7 @@ object SharpCenterWnd: TSharpCenterWnd
             Left = 0
             Top = 0
             Width = 153
-            Height = 410
+            Height = 403
             Align = alClient
             BevelOuter = bvNone
             ParentBackground = False
@@ -84,7 +85,7 @@ object SharpCenterWnd: TSharpCenterWnd
               Left = 0
               Top = 0
               Width = 153
-              Height = 410
+              Height = 403
               Columns = <
                 item
                   Width = 120
@@ -719,7 +720,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 145
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -298
+                Left = -302
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1169,7 +1170,7 @@ object SharpCenterWnd: TSharpCenterWnd
               object Edit2: TEdit
                 Left = 0
                 Top = 36
-                Width = -303
+                Width = -307
                 Height = 21
                 Anchors = [akLeft, akTop, akRight]
                 Ctl3D = True
@@ -1195,8 +1196,8 @@ object SharpCenterWnd: TSharpCenterWnd
       object pnlContent: TPanel
         Left = 167
         Top = 0
-        Width = 527
-        Height = 559
+        Width = 519
+        Height = 552
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 6
@@ -1205,16 +1206,16 @@ object SharpCenterWnd: TSharpCenterWnd
         object pnlPluginContainer: TPanel
           Left = 6
           Top = 173
-          Width = 515
-          Height = 380
+          Width = 507
+          Height = 373
           Align = alClient
           BevelOuter = bvNone
           Color = clWindow
           UseDockManager = False
           TabOrder = 0
           DesignSize = (
-            515
-            380)
+            507
+            373)
           object rpnlContent: TSharpERoundPanel
             Left = 0
             Top = 24
@@ -1291,7 +1292,7 @@ object SharpCenterWnd: TSharpCenterWnd
         object pnlLivePreview: TPanel
           Left = 6
           Top = 6
-          Width = 515
+          Width = 507
           Height = 27
           Align = alTop
           BevelOuter = bvNone
@@ -1302,7 +1303,7 @@ object SharpCenterWnd: TSharpCenterWnd
           object imgLivePreview: TImage32
             Left = 0
             Top = 0
-            Width = 515
+            Width = 507
             Height = 27
             Align = alClient
             Bitmap.ResamplerClassName = 'TNearestResampler'
@@ -1317,7 +1318,7 @@ object SharpCenterWnd: TSharpCenterWnd
         object pnlEditContainer: TPanel
           Left = 6
           Top = 37
-          Width = 515
+          Width = 507
           Height = 136
           Align = alTop
           BevelOuter = bvNone
@@ -1327,7 +1328,7 @@ object SharpCenterWnd: TSharpCenterWnd
           ParentBackground = False
           TabOrder = 2
           DesignSize = (
-            515
+            507
             136)
           object pnlEditPluginContainer: TSharpERoundPanel
             Left = 0
@@ -2269,7 +2270,7 @@ object SharpCenterWnd: TSharpCenterWnd
           object tlEditItem: TSharpETabList
             Left = 0
             Top = 0
-            Width = 515
+            Width = 507
             Height = 25
             Align = alTop
             OnTabChange = tlEditItemTabChange
@@ -2314,7 +2315,7 @@ object SharpCenterWnd: TSharpCenterWnd
         object pnlSpacer: TPanel
           Left = 6
           Top = 33
-          Width = 515
+          Width = 507
           Height = 4
           Align = alTop
           BevelOuter = bvNone
@@ -2326,8 +2327,8 @@ object SharpCenterWnd: TSharpCenterWnd
     end
     object PnlButtons: TPanel
       Left = 0
-      Top = 559
-      Width = 694
+      Top = 552
+      Width = 686
       Height = 32
       Align = alBottom
       BevelOuter = bvNone
@@ -2337,7 +2338,7 @@ object SharpCenterWnd: TSharpCenterWnd
       ParentBackground = False
       TabOrder = 1
       DesignSize = (
-        694
+        686
         32)
       object btnHelp: TPngSpeedButton
         Left = 468
@@ -9941,5 +9942,9 @@ object SharpCenterWnd: TSharpCenterWnd
     Left = 540
     Top = 364
     Bitmap = {}
+  end
+  object XPManifest1: TXPManifest
+    Left = 164
+    Top = 96
   end
 end
