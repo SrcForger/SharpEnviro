@@ -57,12 +57,14 @@ begin
   FrmConfig.Top := 0;
   FrmConfig.BorderStyle := bsNone;
   FrmConfig.Show;
+  FrmConfig.UpdateEditTabs;
 
   result := FrmConfig.Handle;
 end;
 
 function Save : boolean;
 begin
+  Result := True;
   FHotkeyList.Save;
 end;
 
@@ -93,9 +95,10 @@ begin
   FrmHotkeyEdit.BorderStyle := bsNone;
   FrmHotkeyEdit.Show;
   FrmHotkeyEdit.Color := CenterBGColor;
+  frmConfig.EditMode := AEditMode;
 
   // Initialise UI based on the edit mode
-  FrmHotkeyEdit.InitUI(AEditMode);
+  FrmHotkeyEdit.InitUI(AEditMode, True);
 
   Result := FrmHotkeyEdit.Handle;
 
@@ -106,15 +109,20 @@ begin
   Result := True;
 
   // Validation
-  if Not(FrmHotkeyEdit.ValidateEdit(AEditMode)) then Begin
+  if (AApply) and Not(FrmHotkeyEdit.ValidateEdit(AEditMode)) then Begin
     Result := False;
-    FrmHotkeyEdit.ShowValidationErrors(AEditMode);
     Exit;
   End;
 
   // Define whether we add/edit or delete the item
   if FrmHotkeyEdit.Save(AApply, AEditMode) then Begin
-    FreeAndNil(FrmHotkeyEdit);
+    FrmConfig.UpdateEditTabs;
+  end;
+
+  if FrmHotkeyEdit <> nil then begin
+      FrmHotkeyEdit.Close;
+      FrmHotkeyEdit.Free;
+      FrmHotkeyEdit := nil;
   end;
 end;
 
@@ -133,6 +141,17 @@ begin
   frmConfig.lbHotkeys.Colors.ItemColorSelected := AItemSelectedColor;
 end;
 
+function SetBtnState(AButtonID: Integer): Boolean;
+begin
+  Result := False;
+end;
+
+function SetSettingType : integer;
+begin
+  result := SU_SERVICE;
+end;
+
+
 //Ordinary Dll code, tells delphi what functions to export.
 exports
   Open,
@@ -140,13 +159,9 @@ exports
   Save,
   OpenEdit,
   CloseEdit,
-  //ClickBtn,
-  //SetBtnState,
-  //AddTabs,
-  //ClickTabs,
-
+  SetBtnState,
   SetDisplayText,
-  //SetSettingType,
+  SetSettingType,
   GetCenterScheme;
 
 begin

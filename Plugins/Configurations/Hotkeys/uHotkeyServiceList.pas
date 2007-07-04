@@ -43,13 +43,11 @@ type
   private
     FCommand: string;
     FHotkey: string;
-    FIsAction: Boolean;
     FName: string;
   public
     property Command: string read FCommand write FCommand;
     property Hotkey: string read Fhotkey write Fhotkey;
     property Name: string read FName write FName;
-    property IsAction: Boolean read FIsAction write FIsAction;
   end;
 
   THotkeyList = class(TObject)
@@ -62,9 +60,12 @@ type
     constructor Create(FileName: string);
     destructor Destroy; override;
 
-    function Add(Hotkey, Command, Name: String; IsAction: Boolean): THotkeyItem;
+    function Add(Hotkey, Command, Name: String): THotkeyItem;
     procedure Delete(Index: integer); overload;
     procedure Delete(AItem:  THotkeyItem); overload;
+    function IndexOfName(AName: String):Integer;
+    function IndexOfHotkey(AHotkey: String):Integer;
+    function IndexOfHotkeyItem(AHotkeyItem: THotkeyItem):Integer;
 
     property Count: integer read GetCount;
     property Filename: string read FFileName write FFileName;
@@ -76,8 +77,11 @@ type
     procedure Save; overload;
     procedure Load(XmlFile: string); overload;
     procedure Save(XmlFile: string); overload;
+    procedure Sort;
 
   end;
+
+  function CustomSort(AItem1, AItem2:Pointer):Integer;
 
 implementation
 
@@ -87,13 +91,21 @@ uses
 
 { THotkeyList }
 
-function THotkeyList.Add(Hotkey, Command, Name: String; IsAction: Boolean): THotkeyItem;
+function CustomSort(AItem1, AItem2:Pointer):Integer;
+var
+  tmp1,tmp2: THotkeyItem;
+begin
+  tmp1 := THotkeyItem(AItem1);
+  tmp2 := THotkeyItem(AItem2);
+  Result := CompareText(tmp1.Name,tmp2.Name);
+end;
+
+function THotkeyList.Add(Hotkey, Command, Name: String): THotkeyItem;
 begin
   Result := THotkeyItem.Create;
   Result.Hotkey := Hotkey;
   Result.Command := Command;
   Result.Name := Name;
-  Result.IsAction := IsAction;
   FItems.Add(Result);
 end;
 
@@ -170,8 +182,7 @@ begin
             ItemNamed['hotkey' + inttostr(loop)].Items.Value('Hotkey', ''),
             ItemNamed['hotkey' + inttostr(loop)].Items.Value('Command', ''),
             ItemNamed['hotkey' + inttostr(loop)].Items.Value('Name', ''),
-            ItemNamed['hotkey' + inttostr(loop)].Items.BoolValue('IsAction', False)
-            );
+          );
         end;
       end;
     except
@@ -204,7 +215,6 @@ begin
         xml.Root.Items.Item[loop].Items.Add('Name', Self.HotkeyItem[loop].Name);
         xml.Root.Items.Item[loop].Items.Add('Hotkey', Self.HotkeyItem[loop].Hotkey);
         xml.Root.Items.Item[loop].Items.Add('Command', Self.HotkeyItem[loop].Command);
-        xml.Root.Items.Item[loop].Items.Add('IsAction', Self.HotkeyItem[loop].IsAction);
       end;
 
       forcedirectories(extractfilepath(xmlfile));
@@ -228,6 +238,46 @@ begin
   n := FItems.IndexOf(AItem);
   if n <> -1 then
     FItems.Delete(n);
+end;
+
+procedure THotkeyList.Sort;
+begin
+  FItems.Sort(CustomSort);
+end;
+
+function THotkeyList.IndexOfName(AName: String): Integer;
+var
+  tmp: THotkeyItem;
+  i:Integer;
+begin
+  Result := -1;
+  For i := 0 to Pred(FItems.Count) do begin
+    tmp := THotkeyItem(FItems[i]);
+    if CompareText(tmp.Name,AName) = 0 then begin
+      Result := i;
+      break;
+    end;
+  end;
+end;
+
+function THotkeyList.IndexOfHotkey(AHotkey: String): Integer;
+var
+  tmp: THotkeyItem;
+  i:Integer;
+begin
+  Result := -1;
+  For i := 0 to Pred(FItems.Count) do begin
+    tmp := THotkeyItem(FItems[i]);
+    if CompareText(tmp.Hotkey,AHotkey) = 0 then begin
+      Result := i;
+      break;
+    end;
+  end;
+end;
+
+function THotkeyList.IndexOfHotkeyItem(AHotkeyItem: THotkeyItem): Integer;
+begin
+  Result := FItems.IndexOf(AHotkeyItem);
 end;
 
 { THotkeyItem }

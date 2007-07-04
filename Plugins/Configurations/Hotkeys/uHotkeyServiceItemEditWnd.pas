@@ -63,37 +63,52 @@ uses
   // PNG Image
   pngimage, JvExExtCtrls, JvShape, JvComponentBase,
   SharpEBaseControls, SharpEEdit, TranComp, JvLabel, PngImageList, PngBitBtn,
-  JvExStdCtrls, JvMemo;
+  JvExStdCtrls, JvMemo, VistaAltFixUnit, PngSpeedButton, JvErrorIndicator,
+  JvValidators, JvBalloonHint, uHotkeyServiceList;
 
 type
   TFrmHotkeyEdit = class(TForm)
     pnl1: TPanel;
     Panel1: TPanel;
     pMain: TJvPageList;
-    spEdit: TJvStandardPage;
     spDelete: TJvStandardPage;
+    spEdit: TJvStandardPage;
     cmdBrowse: TPngBitBtn;
-    Label3: TJvLabel;
     edName: TLabeledEdit;
     edCommand: TLabeledEdit;
-    Button1: TButton;
     edHotkey: TSharpEHotkeyEdit;
-    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormShow(Sender: TObject);
-
+    Button1: TPngSpeedButton;
+    Label3: TLabel;
+    vals: TJvValidators;
+    valHotkey: TJvRequiredFieldValidator;
+    valName: TJvRequiredFieldValidator;
+    pilError: TPngImageList;
+    errorinc: TJvErrorIndicator;
+    valCommand: TJvRequiredFieldValidator;
+    Label1: TJvLabel;
+    Label2: TLabel;
+    valNameExists: TJvCustomValidator;
+    valHotkeyExists: TJvCustomValidator;
+    JvBalloonHint1: TJvBalloonHint;
+    procedure valHotkeyExistsValidate(Sender: TObject; ValueToValidate: Variant;
+      var Valid: Boolean);
+    procedure valNameExistsValidate(Sender: TObject;
+      ValueToValidate: Variant; var Valid: Boolean);
+    procedure edHotkeyKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure UpdateEditState(Sender: TObject);
     procedure cmdbrowseclick(Sender: TObject);
 
 
   private
     { Private declarations }
+    FItemEdit: ThotkeyItem;
 
   public
     { Public declarations }
     SelectedText: string;
-    procedure InitUi(AEditMode: TSCE_EDITMODE_ENUM);
+    procedure InitUi(AEditMode: TSCE_EDITMODE_ENUM; AChangePage:Boolean=False);
     function ValidateEdit(AEditMode: TSCE_EDITMODE_ENUM):Boolean;
-    procedure ShowValidationErrors(AEditMode: TSCE_EDITMODE_ENUM);
+    procedure ClearValidation;
     function Save(AApply: Boolean;AEditMode: TSCE_EDITMODE_ENUM):Boolean;
   end;
 
@@ -109,7 +124,7 @@ const
 implementation
 
 uses
-  uHotkeyServiceItemListWnd;
+  uHotkeyServiceItemListWnd, SharpEListBoxEx;
 
 {$R *.dfm}
 
@@ -118,60 +133,195 @@ begin
   edCommand.Text := SharpDialogs.TargetDialog(STI_ALL_TARGETS, Mouse.CursorPos);
 end;
 
-procedure TFrmHotkeyEdit.FormShow(Sender: TObject);
+procedure TFrmHotkeyEdit.InitUi(AEditMode: TSCE_EDITMODE_ENUM;
+  AChangePage:Boolean=False);
+var
+  tmpItem:TSharpEListItem;
+  tmpHotkey: THotkeyItem;
 begin
-  edCommand.SetFocus;
-end;
+  edName.OnChange := nil;
+  edCommand.OnChange := nil;
+  Try
 
-procedure TFrmHotkeyEdit.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  //if Key = VK_RETURN then
-  //  cmdAddEdit.Click;
-end;
-
-procedure TFrmHotkeyEdit.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-begin
-  {if Self.ModalResult <> mrCancel then
-  begin
-    if mmoCommand.Lines.Text = '' then
-    begin
-      MessageDlg('Please enter a command to execute, or click Browse for some command options', mtWarning, [mbOK], 0);
-      Canclose := False;
-      exit;
-    end;
-    if hkeCommand.Text = '' then
-    begin
-      MessageDlg('Please assign a hotkey, by pressing the sequence within the hotkey control', mtInformation, [mbOK], 0);
-      CanClose := False;
-      exit;
-    end;
-  end;   }
-end;
-
-procedure TFrmHotkeyEdit.InitUi(AEditMode: TSCE_EDITMODE_ENUM);
-begin
   Case AEditMode of
-    sceAdd: ;
-    sceEdit: ;
-    sceDelete: ;
+    sceAdd: begin
+      edName.Text := '';
+      edCommand.Text := '';
+      edHotkey.Text := '';
+
+      if AChangePage then
+        spEdit.Show;
+
+      if spEdit.Visible then
+        edName.SetFocus;
+
+      FItemEdit := nil;
+    end;
+    sceEdit: begin
+
+      if frmConfig.lbHotkeys.SelCount = 0 then exit;
+
+      tmpItem := frmConfig.lbHotkeys.Item[frmConfig.lbHotkeys.ItemIndex];
+      tmpHotkey := THotkeyItem(tmpItem.Data);
+      FItemEdit := tmpHotkey;
+      
+      edName.Text := tmpHotkey.Name;
+      edCommand.Text := tmpHotkey.Command;
+      edHotkey.Text := tmpHotkey.Hotkey;
+
+      if AChangePage then
+        spEdit.Show;
+
+      if spEdit.Visible then
+        edName.SetFocus;
+    end;
+  sceDelete: begin
+    if ((AChangePage) and (frmConfig.lbHotkeys.Count <> 0)) then
+        spDelete.Show;
+  end;
+  end;
+
+  finally
+    edName.OnChange := UpdateEditState;
+    edCommand.OnChange := UpdateEditState;
+
+    if frmConfig.lbHotkeys.ItemIndex <> -1 then begin
+        SharpCenterBroadCast(SCM_SET_BUTTON_ENABLED,
+          SCB_DELETE);
+      end else begin
+        SharpCenterBroadCast(SCM_SET_BUTTON_DISABLED,
+          SCB_DELETE);
+      end;
+
+    frmConfig.UpdateEditTabs;
   end;
 end;
 
 function TFrmHotkeyEdit.ValidateEdit(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
 begin
-  Result := True;
+  Result := False;
+  JvBalloonHint1.CancelHint;
+  
+  case AEditMode of
+    sceAdd, sceEdit:
+      begin
+
+        errorinc.BeginUpdate;
+        try
+          errorinc.ClearErrors;
+          vals.ValidationSummary := nil;
+
+          Result := vals.Validate;
+        finally
+          errorinc.EndUpdate;
+        end;
+      end;
+    sceDelete: Result := True;
+  end;
 end;
 
 function TFrmHotkeyEdit.Save(AApply: Boolean;
   AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+var
+  tmpItem:TSharpEListItem;
+  tmpHotkey: THotkeyItem;
 begin
-  Result := True;
+  Result := false;
+  if Not(AApply) then Exit;
+
+  case AEditMode of
+  sceAdd: begin
+    FHotkeyList.Add(edHotkey.Text,edCommand.Text,edName.Text);
+    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+    frmConfig.RefreshHotkeys;
+    Result := True;
+  end;
+  sceEdit: begin
+    tmpItem := frmConfig.lbHotkeys.Item[frmConfig.lbHotkeys.ItemIndex];
+    tmpHotkey := THotkeyItem(tmpItem.Data);
+    tmpHotkey.Name := edName.Text;
+    tmpHotkey.Hotkey := edHotkey.Text;
+    tmpHotkey.Command := edCommand.Text;
+
+    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+    frmConfig.RefreshHotkeys;
+    Result := True;
+  end;
+  sceDelete: begin
+    tmpItem := frmConfig.lbHotkeys.Item[frmConfig.lbHotkeys.ItemIndex];
+    tmpHotkey := THotkeyItem(tmpItem.Data);
+    FHotkeyList.Items.Delete(FHotkeyList.Items.IndexOf(tmpHotkey));
+
+    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+    frmConfig.RefreshHotkeys;
+    frmConfig.UpdateEditTabs;
+      
+    Result := True;
+  end;
+  end;
 end;
 
-procedure TFrmHotkeyEdit.ShowValidationErrors(AEditMode: TSCE_EDITMODE_ENUM);
+procedure TFrmHotkeyEdit.UpdateEditState(Sender: TObject);
 begin
+  SharpApi.SharpCenterBroadCast(SCM_SET_EDIT_STATE,0);
+end;
 
+procedure TFrmHotkeyEdit.ClearValidation;
+begin
+  errorinc.BeginUpdate;
+  try
+    errorinc.ClearErrors;
+  finally
+    errorinc.EndUpdate;
+  end;
+end;
+
+procedure TFrmHotkeyEdit.edHotkeyKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  UpdateEditState(nil);
+end;
+
+procedure TFrmHotkeyEdit.valNameExistsValidate(Sender: TObject;
+  ValueToValidate: Variant; var Valid: Boolean);
+var
+  idx: Integer;
+begin
+  Valid := True;
+  idx := FHotkeyList.IndexOfName(ValueToValidate);
+
+  if (idx <> -1) then begin
+
+    if FItemEdit <> nil then
+      if FItemEdit.Name = ValueToValidate then
+        exit;
+
+    if Not(JvBalloonHint1.Active) then
+      JvBalloonHint1.ActivateHint(edName,valNameExists.ErrorMessage);
+
+    Valid := False;
+  end;
+end;
+
+procedure TFrmHotkeyEdit.valHotkeyExistsValidate(Sender: TObject;
+  ValueToValidate: Variant; var Valid: Boolean);
+var
+  idx: Integer;
+begin
+  Valid := True;
+  idx := FHotkeyList.IndexOfHotkey(ValueToValidate);
+
+  if (idx <> -1) then begin
+
+    if FItemEdit <> nil then
+      if FItemEdit.Hotkey = ValueToValidate then
+        exit;
+
+    if Not(JvBalloonHint1.Active) then
+      JvBalloonHint1.ActivateHint(edHotkey,valHotkeyExists.ErrorMessage);
+
+    Valid := False;
+  end;
 end;
 
 end.
