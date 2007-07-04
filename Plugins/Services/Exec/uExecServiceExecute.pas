@@ -504,8 +504,10 @@ begin
   Text := s;
 
   // Expand Common Files - Scans the text and expands the filename
-  ExpandCommonFiles(Text);
-  ExpandAliases(Text);
+  if (Pos('shell:', LowerCase(text)) <> 1) then begin
+    ExpandCommonFiles(Text);
+    ExpandAliases(Text);
+  end;
   Result := ExecuteText(Text, SaveHistory);
   BarMsg('scmd', '_execupdate');
 end;
