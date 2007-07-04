@@ -1,3 +1,29 @@
+{
+Source Name: uWeatherList
+Description: Weather List Class
+Copyright (C) Pixol (pixol@sharpe-shell.org)
+
+Sourceforge Project Site
+https://sourceforge.net/projects/sharpe/
+
+Main SharpE Site
+http://www.sharpe-shell.org
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+}
+
 unit uWeatherList;
 
 interface
@@ -136,7 +162,7 @@ begin
   Result := FItems.Count;
 end;
 
-function TWeatherList.GeTWeatherItem(Index: integer): TWeatherItem;
+function TWeatherList.GetWeatherItem(Index: integer): TWeatherItem;
 begin
   Result := (FItems[Index] as TWeatherItem);
 end;
@@ -151,7 +177,6 @@ var
   ItemCount, Loop: Integer;
   xml: TjvSimpleXml;
   prop: string;
-  sMsg: string;
 begin
 
   xml := TJvSimpleXml.Create(nil);
@@ -159,17 +184,6 @@ begin
   try
     try
       xml.LoadFromFile(xmlfile);
-
-      if xml.Root.Name <> 'WeatherLocations' then begin
-        sMsg := 'Invalid WeatherLocations File' + #13;
-        //Debug(sMsg, DMT_ERROR);
-
-        sMsg := sMsg + Format('Expected "%s" found "%s"',['WeatherLocations',xml.Root.Name]);
-        MessageDlg(sMsg, mtError, [mbOK], 0);
-
-        // Save empty and reload
-        exit;
-      end;
 
       Itemcount := xml.Root.Properties.Item[0].IntValue;
       for Loop := 0 to itemcount - 1 do begin
@@ -259,9 +273,6 @@ begin
 end;
 
 { TWeatherItem }
-
-{ TWeatherItem }
-
 constructor TWeatherItem.Create;
 begin
   FLocation := '';

@@ -1,128 +1,152 @@
+{
+Source Name: uWeatherMgr
+Description: Weather Management Class
+Copyright (C) Pixol (pixol@sharpe-shell.org)
+
+Sourceforge Project Site
+https://sourceforge.net/projects/sharpe/
+
+Main SharpE Site
+http://www.sharpe-shell.org
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+}
+
 unit uWeatherMgr;
 
 interface
 uses
   Classes,
-
   ContNrs,
   SysUtils,
-
-  dialogs,
+  Dialogs,
   Forms,
 
   JvSimpleXml,
-
   JclStrings,
   jclIniFiles,
-  uWeatherList,
-  Windows,
-  ExtCtrls,
-  //httpget,
   jclFileUtils,
 
+  Windows,
+  ExtCtrls,
   Wininet,
 
+  uWeatherList,
   SharpApi;
 
 type
-  TConnectionKind = (ckModem, ckLan, ckProxy, ckRAS, ckModemBusy, ckOtherConnected, ckNotConnected);
+  TConnectionKind = (ckModem, ckLan, ckProxy, ckRAS, ckModemBusy,
+    ckOtherConnected, ckNotConnected);
 
 type
   TWeatherMgr = class
   private
-    Ftimer: TTimer;
+    FTimer: TTimer;
+    FForce: Boolean;
     FErrorCount: Integer;
     FNextUpdate: Double;
     procedure Download(UrlTarget: string; Target: string);
     procedure WeatherUpdateCheck(Sender: TObject);
-    Function ConnectionKind :TConnectionKind;
+    function ConnectionKind: TConnectionKind;
   public
     constructor Create;
     destructor Destroy; override;
 
     procedure ForceUpdate;
-    procedure DoneFile(Sender: TObject; FileName: String; FileSize: Integer);
 
   end;
 
 var
   WeatherMgr: TWeatherMgr;
-  force: Boolean = False;
 
 const
   sPOST_FileExt = '.sop';
-  sPOST_Filter  = 'SOAP POST Files (*.sop)|*.SOP';
+  sPOST_Filter = 'SOAP POST Files (*.sop)|*.SOP';
   sPOST_Request = 'Request';
-  sPOST_URL     = 'URL';
-  sPOST_Action  = 'SOAPAction';
-  sPOST_Untitled= 'Untitled' + sPOST_FileExt;
-  STRRequest    = '  Request: ';
-  STRResponse   = '  Response: ';
-  STRDateTime   = '  AT: ';
-  STRSeparator  = '-----------------------------------------------------------';
+  sPOST_URL = 'URL';
+  sPOST_Action = 'SOAPAction';
+  sPOST_Untitled = 'Untitled' + sPOST_FileExt;
+  STRRequest = '  Request: ';
+  STRResponse = '  Response: ';
+  STRDateTime = '  AT: ';
+  STRSeparator = '-----------------------------------------------------------';
 
 implementation
 
 uses
-  uWeatherOptions,SOAPHTTPTrans   ;
+  uWeatherOptions,
+  SOAPHTTPTrans;
 
 { TWeatherMgr }
 
-Function TWeatherMgr.ConnectionKind :TConnectionKind;
+function TWeatherMgr.ConnectionKind: TConnectionKind;
 var
- flags: dword;
- bState: Boolean;
+  flags: dword;
+  bState: Boolean;
 begin
   Result := ckOtherConnected;
- bState := InternetGetConnectedState(@flags, 0);
- if bState then
- begin
-   if (flags and INTERNET_CONNECTION_MODEM) = INTERNET_CONNECTION_MODEM then
-    Result := ckModem else
-   if (flags and INTERNET_CONNECTION_LAN) = INTERNET_CONNECTION_LAN then
-    Result := ckLan else
-   if (flags and INTERNET_CONNECTION_PROXY) = INTERNET_CONNECTION_PROXY then
-    Result := ckProxy else
-   if (flags and INTERNET_CONNECTION_MODEM_BUSY)=INTERNET_CONNECTION_MODEM_BUSY then
-    Result := ckModemBusy;
- end
- else
-  Result := ckNotConnected;
+  bState := InternetGetConnectedState(@flags, 0);
+  if bState then
+  begin
+    if (flags and INTERNET_CONNECTION_MODEM) = INTERNET_CONNECTION_MODEM then
+      Result := ckModem
+    else if (flags and INTERNET_CONNECTION_LAN) = INTERNET_CONNECTION_LAN then
+      Result := ckLan
+    else if (flags and INTERNET_CONNECTION_PROXY) = INTERNET_CONNECTION_PROXY
+      then
+      Result := ckProxy
+    else if (flags and INTERNET_CONNECTION_MODEM_BUSY) =
+      INTERNET_CONNECTION_MODEM_BUSY then
+      Result := ckModemBusy;
+  end
+  else
+    Result := ckNotConnected;
 end;
 
 constructor TWeatherMgr.Create;
 var
-  interval:Integer;
+  interval: Integer;
+  iMin: Integer;
 begin
 
   FErrorCount := 0;
   FNextUpdate := -1;
+  iMin := 600000;
+  FForce := False;
   Ftimer := TTimer.Create(nil);
 
-  // Check for less than 30 seconds, would be too much cpu
+  // Check for less than 60 seconds, would be too much cpu
   try
-  interval := WeatherOptions.CheckInterval*1000;
-    if (interval < 30000) then interval := 30000;
+    interval := WeatherOptions.CheckInterval * 1000;
+    if (interval < iMin) then
+      interval := iMin;
   except
-    interval := 30000;
+    interval := iMin;
   end;
 
   FTimer.Interval := interval;
   FTimer.OnTimer := WeatherUpdateCheck;
+
+  // Check Now
   WeatherUpdateCheck(Self);
 end;
 
 destructor TWeatherMgr.Destroy;
 begin
-  Ftimer.Free;
-
+  FTimer.Free;
   inherited;
-end;
-
-procedure TWeatherMgr.DoneFile(Sender: TObject; FileName: String;
-  FileSize: Integer);
-begin
-  Debug(format('%s completed: size %d',[filename,filesize]),DMT_TRACE);
 end;
 
 procedure TWeatherMgr.Download(UrlTarget: string; Target: string);
@@ -134,30 +158,26 @@ begin
   Stream := TMemoryStream.Create;
   HTTPReqResp1 := THTTPReqResp.Create(nil);
   try
-  try
-
-    HTTPReqResp1.URL := UrlTarget;
-    HTTPReqResp1.UseUTF8InHeader := False;
-
-    HTTPReqResp1.Execute(UrlTarget, Stream);
-
-    Debug(STRSeparator,DMT_INFO);
-    Debug(STRRequest + Target,DMT_INFO);
-    Debug(STRDateTime + DateTimeToStr(now),DMT_INFO);
-    Debug(STRSeparator,DMT_INFO);
-
-    //StrStream := TStringStream.Create('');
     try
-      Stream.SaveToFile(Target);
-    finally
-      //StrStream.Free;
+
+      HTTPReqResp1.URL := UrlTarget;
+      HTTPReqResp1.UseUTF8InHeader := False;
+      HTTPReqResp1.Execute(UrlTarget, Stream);
+
+      Debug(STRSeparator, DMT_INFO);
+      Debug(STRRequest + Target, DMT_INFO);
+      Debug(STRDateTime + DateTimeToStr(now), DMT_INFO);
+      Debug(STRSeparator, DMT_INFO);
+
+    except
+      Inc(FErrorCount);
+      Debug(Format('Error downloading %s (Connection Issue)', [Target]),
+        DMT_ERROR);
+      exit;
     end;
-  except
-    Inc(FErrorCount);
-    Debug(Format('Error downloading %s (Connection Issue)',[Target]),DMT_ERROR);
-    exit;
-  end;
   finally
+    Stream.SaveToFile(Target);
+
     Stream.Destroy;
     HTTPReqResp1.Free;
 
@@ -167,147 +187,185 @@ end;
 
 procedure TWeatherMgr.ForceUpdate;
 begin
-  force := true;
+  FForce := true;
   WeatherUpdateCheck(Self);
-  force := false;
+  FForce := false;
 end;
 
 procedure TWeatherMgr.WeatherUpdateCheck(Sender: TObject);
 var
   currentdt, compareddt, tmpd: TDateTime;
-  path,locpath, url: string;
+  path, locpath, url: string;
   tmps: string;
   i: Integer;
-  tmpInfo:TWeatherItem;
-  xml:TJvSimpleXML;
+  tmpInfo: TWeatherItem;
+  xml: TJvSimpleXML;
   interval: Integer;
 const
   MaxErrors = 5;
 
+{$REGION 'Private'}
   fsCCUrl =
     'http://xoap.weather.com/weather/local/%s?&unit=%s&cc=*&prod=xoap&par=1003043975&key=d387802826c0d318';
   fsForecastUrl =
     'http://xoap.weather.com/weather/local/%s?&unit=%s&dayf=10&prod=xoap&par=1003043975&key=d387802826c0d318';
+{$ENDREGION}
+
 begin
-  if now < FNextUpdate then exit;
-  
-  // If continous errors do not attempt to download
-  If FErrorCount > MaxErrors then begin
-    Debug('Updating has been disabled due to too many errors, to re-enable'+
-      'stop/start the service',DMT_ERROR);
+  if now < FNextUpdate then
+    exit;
+
+  // Check so that we do not hammer the server
+  {$REGION 'Max Error Check'}
+  if FErrorCount > MaxErrors then
+  begin
+    Debug('Updating has been disabled due to too many errors, to re-enable' +
+      'stop/start the service', DMT_ERROR);
     Exit;
   end;
-  
-  // check Connection
-  Case ConnectionKind of
-    ckModem: Debug('Connected via modem: Check Weather Sources',DMT_STATUS);
-    ckModemBusy: begin
-      Debug('Modem busy: Delayed Updating',DMT_STATUS);
-      exit;
-    end;
-    ckNotConnected: begin
-      Debug('No Internet connection: Delayed Updating',DMT_STATUS);
-      Exit;
-    end;
-    ckLan: Debug('Connected via LAN: Check Weather Sources',DMT_STATUS);
-    ckProxy: Debug('Connected behind a proxy: Check Weather Sources',DMT_STATUS);
-    ckOtherConnected: Debug('Unknown connection to internet: Check Weather Sources',DMT_STATUS);
+{$ENDREGION}
+
+  {$REGION 'Check Connection Type'}
+  case ConnectionKind of
+    ckModem: Debug('Connected via modem: Check Weather Sources', DMT_STATUS);
+    ckModemBusy:
+      begin
+        Debug('Modem busy: Delayed Updating', DMT_STATUS);
+        exit;
+      end;
+    ckNotConnected:
+      begin
+        Debug('No Internet connection: Delayed Updating', DMT_STATUS);
+        Exit;
+      end;
+    ckLan: Debug('Connected via LAN: Check Weather Sources', DMT_STATUS);
+    ckProxy: Debug('Connected behind a proxy: Check Weather Sources',
+      DMT_STATUS);
+    ckOtherConnected:
+      Debug('Unknown connection to internet: Check Weather Sources', DMT_STATUS);
   end;
+{$ENDREGION}
 
   currentdt := now;
   path := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\Data\';
   forcedirectories(path);
 
-  for i := 0 to WeatherList.Count - 1 do begin
+  for i := 0 to WeatherList.Count - 1 do
+  begin
     Application.ProcessMessages;
     tmpInfo := WeatherList.Info[i];
 
     // Check for imperial or metric
-    if WeatherOptions.Metric then tmps := 'm' else
+    if WeatherOptions.Metric then
+      tmps := 'm'
+    else
       tmps := 's';
 
     // Check for locationID, Create directory
-    if tmpInfo.LocationID = '' then begin
-      Debug(Format('%s: LocationID Error, does not exist',[tmpInfo.LocationID]),DMT_WARN);
+    if tmpInfo.LocationID = '' then
+    begin
+      Debug(Format('%s: LocationID Error, does not exist',
+        [tmpInfo.LocationID]), DMT_WARN);
       break;
-    end else begin
+    end
+    else
+    begin
       locpath := path + tmpInfo.LocationID + '\';
       forcedirectories(locpath);
     end;
 
-    // Check for CCLastUpdate
-    Try
+    {$REGION 'Check for CCLastUpdate'}
+    try
 
-    // Check for less than 30 minutes, must not be less
-    Try
-      interval := WeatherOptions.CCondInterval;
-      if (interval < 30) then interval := 30;
-    Except
-      Interval := 30;
-    End;
-
-    tmpd := StrToFloat(WeatherList.Info[i].CCLastUpdated);
-    compareddt := tmpd + (interval / MinsPerDay);
-    if (currentdt > compareddt) or not(FileExists(locpath + 'cc.xml')) or force then begin
-
-      if now > FNextUpdate then begin
-
-      Debug(Format('%s: CCUpdate',[tmpInfo.LocationID]),DMT_INFO);
-      url := Format(fsCCUrl, [tmpInfo.LocationID,tmps]);
-      Download(url, locpath + 'cc.xml');
-
-      // Get Last Icon + Last Temp
-      xml := TJvSimpleXML.Create(nil);
-      Try
-        xml.LoadFromFile(locpath + 'cc.xml');
-        tmpInfo.LastIconID :=  xml.Root.Items.ItemNamed['cc'].Items.ItemNamed['icon'].IntValue;
-        tmpInfo.LastTemp := xml.Root.Items.ItemNamed['cc'].Items.ItemNamed['tmp'].IntValue;
-      finally
-        xml.Free;
+      // Check for less than 30 minutes, must not be less
+      try
+        interval := WeatherOptions.CCondInterval;
+        if (interval < 30) then
+          interval := 30;
+      except
+        Interval := 30;
       end;
 
-      tmpInfo.CCLastUpdated := FloatToStr(now);
-      FErrorCount := 0;
+      if not (TryStrToDateTime(tmpInfo.CCLastUpdated, tmpd)) then
+        tmpd := 0;
 
-      WeatherList.Save;
+      compareddt := tmpd + (interval / MinsPerDay);
+      if (currentdt > compareddt) or not (FileExists(locpath + 'cc.xml')) or
+        FForce then
+      begin
 
-      SharpEBroadCast(WM_WEATHERUPDATE,0,0);
-    end;
-    end;
+        if now > FNextUpdate then
+        begin
+
+          Debug(Format('%s: CCUpdate', [tmpInfo.LocationID]), DMT_INFO);
+          url := Format(fsCCUrl, [tmpInfo.LocationID, tmps]);
+          Download(url, locpath + 'cc.xml');
+
+          // Get Last Icon + Last Temp
+          xml := TJvSimpleXML.Create(nil);
+          try
+            xml.LoadFromFile(locpath + 'cc.xml');
+            tmpInfo.LastIconID :=
+              xml.Root.Items.ItemNamed['cc'].Items.ItemNamed['icon'].IntValue;
+            tmpInfo.LastTemp :=
+              xml.Root.Items.ItemNamed['cc'].Items.ItemNamed['tmp'].IntValue;
+          finally
+            xml.Free;
+          end;
+
+          tmpInfo.CCLastUpdated := DateTimeToStr(now);
+          FErrorCount := 0;
+
+          WeatherList.Save;
+
+          SharpEBroadCast(WM_WEATHERUPDATE, 0, 0);
+        end;
+      end;
     except
-      Debug(Format('%s: CC.xml update error, error downloading',[tmpInfo.LocationID]),DMT_WARN);
+      Debug(Format('%s: CC.xml update error, error downloading',
+        [tmpInfo.LocationID]), DMT_WARN);
     end;
+{$ENDREGION}
 
-    // Check for FCLastUpdate
-    Try
+    {$REGION 'Check for FCLastUpdate'}
+    try
 
-    // Check for less than 2 hours, must not be less
-    Try
-      interval := WeatherOptions.FCastInterval;
-      if (interval < 120) then interval := 120;
-    Except
-      interval := 120;
-    End;
+      // Check for less than 2 hours, must not be less
+      try
+        interval := WeatherOptions.FCastInterval;
+        if (interval < 120) then
+          interval := 120;
+      except
+        interval := 120;
+      end;
 
-    tmpd := StrToFloat(WeatherList.Info[i].FCLastUpdated);
-    compareddt := tmpd + (interval / MinsPerDay);
-    if (currentdt > compareddt) or not(FileExists(locpath + 'forecast.xml')) or force then begin
-      if now > FNextUpdate then begin
+      if not (TryStrToDateTime(tmpInfo.FCLastUpdated, tmpd)) then
+        tmpd := 0;
 
-      Debug(Format('%s: FCUpdate',[tmpInfo.LocationID]),DMT_INFO);
-      url := Format(fsForecastUrl, [tmpInfo.LocationID,tmps]);
-      Download(url, locpath + 'forecast.xml');
-      tmpInfo.FCLastUpdated := FloatToStr(now);
-      FErrorCount := 0;
+      compareddt := tmpd + (interval / MinsPerDay);
+      if (currentdt > compareddt) or not (FileExists(locpath + 'forecast.xml'))
+        or FForce then
+      begin
+        if now > FNextUpdate then
+        begin
 
-      WeatherList.Save;
-        
-      SharpEBroadCast(WM_WEATHERUPDATE,0,0);
-    end;
-    end;
+          Debug(Format('%s: FCUpdate', [tmpInfo.LocationID]), DMT_INFO);
+          url := Format(fsForecastUrl, [tmpInfo.LocationID, tmps]);
+          Download(url, locpath + 'forecast.xml');
+          tmpInfo.FCLastUpdated := DateTimeToStr(now);
+          FErrorCount := 0;
+
+          WeatherList.Save;
+
+          SharpEBroadCast(WM_WEATHERUPDATE, 0, 0);
+        end;
+      end;
     except
-      Debug(Format('%s: Forecast.xml update error, error downloading',[tmpInfo.LocationID]),DMT_WARN);
+      Debug(Format('%s: Forecast.xml update error, error downloading',
+        [tmpInfo.LocationID]), DMT_WARN);
     end;
+{$ENDREGION}
+
   end;
 end;
 
