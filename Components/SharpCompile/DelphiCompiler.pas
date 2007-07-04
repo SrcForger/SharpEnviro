@@ -314,6 +314,8 @@ begin
        result := True;
 
   DeleteFile(PChar(Dir + 'Dcc32.cfg'));
+  if (FileExists(DP.OutputDir + s + '.ser')) then
+    MoveFile(PChar(DP.OutputDir + s + '.ser'), PChar(DP.OutputDir + s + '.service'));
 
   DC.Free;
   DP.Free;
