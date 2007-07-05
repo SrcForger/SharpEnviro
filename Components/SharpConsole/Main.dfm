@@ -461,10 +461,10 @@ object SharpConsoleWnd: TSharpConsoleWnd
           ItemSelStyle.Gradient.Orientation = fgdHorizontal
           ItemSelStyle.Color = 16510947
           ItemSelStyle.DelineateColor = clBlack
-          ItemSelStyle.Font.Charset = DEFAULT_CHARSET
+          ItemSelStyle.Font.Charset = ANSI_CHARSET
           ItemSelStyle.Font.Color = clWindowText
           ItemSelStyle.Font.Height = -11
-          ItemSelStyle.Font.Name = 'Arial'
+          ItemSelStyle.Font.Name = 'Segoe UI'
           ItemSelStyle.Font.Style = []
           ItemSelStyle.Bevel.Inner = bvNone
           ItemSelStyle.Bevel.Outer = bvNone
@@ -601,10 +601,10 @@ object SharpConsoleWnd: TSharpConsoleWnd
         ItemSelStyle.Gradient.Orientation = fgdHorizontal
         ItemSelStyle.Color = 14875898
         ItemSelStyle.DelineateColor = clBlack
-        ItemSelStyle.Font.Charset = DEFAULT_CHARSET
+        ItemSelStyle.Font.Charset = ANSI_CHARSET
         ItemSelStyle.Font.Color = clWindowText
         ItemSelStyle.Font.Height = -11
-        ItemSelStyle.Font.Name = 'Arial'
+        ItemSelStyle.Font.Name = 'Segoe UI'
         ItemSelStyle.Font.Style = []
         ItemSelStyle.Bevel.Inner = bvNone
         ItemSelStyle.Bevel.Outer = bvNone
