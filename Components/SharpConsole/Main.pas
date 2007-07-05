@@ -857,7 +857,9 @@ begin
 
   TextMemo.Lines.Clear;
   mmoCopy.Lines.Clear;
-  TextMemo.Hide;
+
+  if tlLog.TabIndex = 0 then
+    TextMemo.Hide;
 
   n := DebugList.Count div 10;
   nDiv := n;
@@ -892,7 +894,9 @@ begin
     end;
   end;
 
-  TextMemo.Show;
+  if tlLog.TabIndex = 0 then
+    TextMemo.Show;
+
   prgRefresh.Hide;
 end;
 
