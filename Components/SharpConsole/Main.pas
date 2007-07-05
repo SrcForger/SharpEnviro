@@ -41,7 +41,8 @@ uses
   CheckLst,
   Buttons,
   uDebugging,
-  CoolTrayIcon, pngimage;
+  CoolTrayIcon, pngimage, XPMan, PngImageList, SharpERoundPanel, SharpETabList,
+  JvExControls, JvPageList, clipbrd, JvExCheckLst, JvCheckListBox, JvgListBox;
 
 type
   PConsoleMsg = ^TConsoleMsg;
@@ -52,11 +53,6 @@ type
 
 type
   TSharpConsoleWnd = class(TForm)
-    Popupmenu: TPopupMenu;
-    Minimize1: TMenuItem;
-    Close1: TMenuItem;
-    StayOnTop1: TMenuItem;
-    N1: TMenuItem;
     bug: TImage;
     notSmile: TImage;
     blink: TImage;
@@ -67,39 +63,20 @@ type
     smile: TImage;
     warning: TImage;
     Panel1: TPanel;
-    Splitter1: TSplitter;
     imlTbNorm: TImageList;
     imgError: TImage;
     imgInfo: TImage;
     Panel2: TPanel;
-    Panel3: TPanel;
-    Panel4: TPanel;
-    Panel5: TPanel;
-    imlTbHot: TImageList;
-    imlTbDisabled: TImageList;
     panMemo: TPanel;
-    mnuListMenu: TPopupMenu;
-    SelectAll1: TMenuItem;
-    Infi1: TMenuItem;
-    clbModuleList: TCheckListBox;
-    clbDebugLevel: TCheckListBox;
     Timer1: TTimer;
-    panMemoBody: TPanel;
+    panMemoBody_: TPanel;
     Label1: TLabel;
     sbMain: TStatusBar;
-    prgRefresh: TProgressBar;
-    Panel6: TPanel;
-    chkRefreshDebug: TCheckBox;
-    Panel7: TPanel;
-    chkRefreshModules: TCheckBox;
-    Shape1: TShape;
-    Shape2: TShape;
     mnuSave: TPopupMenu;
     SaveAllHistory1: TMenuItem;
     SaveVisible1: TMenuItem;
     dlgSaveFile: TSaveDialog;
     mnuClear: TPopupMenu;
-    ClearAll1: TMenuItem;
     DeleteAllHistory1: TMenuItem;
     tiMain: TCoolTrayIcon;
     mnuTi: TPopupMenu;
@@ -112,18 +89,37 @@ type
     TrayMain: TImage;
     TrayFlash: TImage;
     tmrRevertNorm: TTimer;
-    MainMenu1: TMainMenu;
-    File1: TMenuItem;
-    Edit1: TMenuItem;
-    SaveFiltered1: TMenuItem;
-    SaveAll1: TMenuItem;
-    Copy1: TMenuItem;
-    ClearVisible1: TMenuItem;
-    DeleteAll1: TMenuItem;
     ToolBar1: TToolBar;
     tbPause: TToolButton;
     tbRefresh: TToolButton;
     tbCopy: TToolButton;
+    XPManifest1: TXPManifest;
+    SharpERoundPanel1: TSharpERoundPanel;
+    SharpERoundPanel2: TSharpERoundPanel;
+    Label2: TLabel;
+    Panel3: TPanel;
+    SharpERoundPanel3: TSharpERoundPanel;
+    SharpERoundPanel4: TSharpERoundPanel;
+    Label3: TLabel;
+    Panel6: TPanel;
+    Panel9: TPanel;
+    clbModuleList_: TCheckListBox;
+    chkRefreshModules: TCheckBox;
+    tlLog: TSharpETabList;
+    pnlTabBorder: TSharpERoundPanel;
+    prgRefresh: TProgressBar;
+    plMain: TJvPageList;
+    pagTextLog: TJvStandardPage;
+    pagRoLog: TJvStandardPage;
+    mmoCopy: TMemo;
+    sbClear: TToolButton;
+    clbDebugLevel: TJvgCheckListBox;
+    clbModuleList: TJvgCheckListBox;
+    chkRefreshDebug: TCheckBox;
+    procedure clbDebugLevelClick(Sender: TObject);
+    procedure clbModuleListClick(Sender: TObject);
+    procedure tlLogTabChange(ASender: TObject;
+      const ATabIndex: Integer; var AChange: Boolean);
     procedure Close1Click(Sender: TObject);
     procedure Minimize1Click(Sender: TObject);
     procedure TextMemoLinkClick(Sender: TObject; Link: string);
@@ -136,15 +132,14 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure ThrobberMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure Restore(Sender: TObject);
 
     procedure Image1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure Delete1Click(Sender: TObject);
     procedure SelectAll1Click(Sender: TObject);
     procedure Infi1Click(Sender: TObject);
-    procedure clbModuleListClickCheck(Sender: TObject);
-    procedure clbDebugLevelClickCheck(Sender: TObject);
+    procedure clbModuleList_ClickCheck(Sender: TObject);
+    procedure clbDebugLevel_ClickCheck(Sender: TObject);
     procedure tbRefreshClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure chkRefreshListClick(Sender: TObject);
@@ -154,20 +149,20 @@ type
 
     procedure tbCopyTextClick(Sender: TObject);
     procedure tiMainDblClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
-    procedure clbModuleListClick(Sender: TObject);
-    procedure clbDebugLevelClick(Sender: TObject);
+    procedure clbModuleList_Click(Sender: TObject);
+    procedure clbDebugLevel_Click(Sender: TObject);
 
-    procedure clbDebugLevelMouseMove(Sender: TObject; Shift: TShiftState;
+    procedure clbDebugLevel_MouseMove(Sender: TObject; Shift: TShiftState;
       X, Y: Integer);
-    procedure clbModuleListMouseMove(Sender: TObject; Shift: TShiftState;
+    procedure clbModuleList_MouseMove(Sender: TObject; Shift: TShiftState;
       X, Y: Integer);
     procedure tbPauseClick(Sender: TObject);
     procedure tmrRevertNormTimer(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     FNotChecked: TStringList;
+    procedure Restore(Sender: TObject);
     procedure GetCopyData(var Msg: TMessage); message wm_CopyData;
     procedure UpdateLog(Sender: TObject);
     procedure UpdateModulesList;
@@ -467,7 +462,7 @@ begin
     SharpConsoleWnd.textmemo.TopIndex := SharpConsoleWnd.textmemo.BarVert.max;
     SharpConsoleWnd.textmemo.BarVert.Position := SharpConsoleWnd.textmemo.BarVert.max;
 
-    SharpConsoleWnd.textmemo.Paint;
+    //SharpConsoleWnd.textmemo.Paint;
 
   except
     SendConsoleErrorMessage('Problem drawing incoming message: §' + sMess +
@@ -507,16 +502,18 @@ end;
 
 procedure TSharpConsoleWnd.FormCreate(Sender: TObject);
 begin
+  pagRoLog.Show;
+  tlLog.TabIndex := 0;
+  
   SystemParametersInfo(SPI_GETDRAGFULLWINDOWS, 0, @bDragFullWindows, 0);
   Playing := True;
   application.OnRestore := SharpConsoleWnd.Restore;
-  TextMemo := TFatMemo.Create(panMemoBody);
-  TextMemo.Font.name := 'arial';
+  TextMemo := TFatMemo.Create(pagRoLog);
+  TextMemo.Font.name := 'segoe ui';
   TextMemo.Font.size := 8;
   TextMemo.Color := clWhite;
   TextMemo.BorderStyle := bsNone;
-  //TextMemo.Left := 5;
-  //TextMemo.Top := 25;
+  //TextMemo.ParentFont := True;
   TextMemo.Width := SharpConsoleWnd.Width - 13;
   TextMemo.Height := SharpConsoleWnd.height - 66;
   TextMemo.Align := alClient;
@@ -587,16 +584,6 @@ procedure TSharpConsoleWnd.ThrobberMouseDown(Sender: TObject;
 begin
   ReleaseCapture;
   SendMessage(SharpConsoleWnd.Handle, wm_SysCommand, $F012, 0);
-end;
-
-procedure TSharpConsoleWnd.Restore(Sender: TObject);
-begin
-  if SharpConsoleWnd.StayOnTop1.Checked then
-    SetWindowpos(SharpConsoleWnd.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE or
-      SWP_NOMOVE or SWP_NOREDRAW)
-  else
-    SetWindowpos(SharpConsoleWnd.handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE or
-      SWP_NOMOVE or SWP_NOREDRAW);
 end;
 
 procedure TSharpConsoleWnd.Image1MouseDown(Sender: TObject;
@@ -673,8 +660,13 @@ begin
   if Playing then begin
     if not (IsModuleNotChecked(errorstr)) then begin
       if not (IsModuleNotChecked(TInfo(Sender).Module)) then begin
+
         DrawText(TInfo(Sender).MessageText, clnone, TInfo(Sender).ErrorType,
           TInfo(Sender).DTLogged);
+
+        mmoCopy.Lines.Add(Format('%s : %s',
+          [FormatDateTime('hh:nn:ss dd/mm/yy', TInfo(Sender).DTLogged),
+          RemoveTags(TInfo(Sender).MessageText)]));
 
         // Update Icon
         ConsoleFlashInc := 0;
@@ -693,7 +685,7 @@ var
 begin
   if IsModuleWndClicked then begin
     for i := 0 to clbModuleList.items.count - 1 do begin
-      clbModuleList.Checked[i] := True;
+      clbModuleList.Checked[i] := cbChecked;
       n := FNotChecked.IndexOf(clbModuleList.Items[i]);
       if n <> -1 then
         FNotChecked.Delete(n);
@@ -701,7 +693,7 @@ begin
   end
   else if not (IsModuleWndClicked) then
     for i := 0 to clbDebugLevel.items.count - 1 do
-      clbDebugLevel.Checked[i] := True;
+      clbDebugLevel.Checked[i] := cbChecked;
 
   RefreshDebugList
 end;
@@ -724,9 +716,9 @@ begin
   for i := 0 to strl.Count - 1 do begin
     clbModuleList.AddItem(strl.Strings[i], nil);
 
-    clbModuleList.Checked[i] := True;
+    clbModuleList.Checked[i] := cbChecked;
     if IsModuleNotChecked(strl.Strings[i]) then
-      clbModuleList.Checked[i] := False;
+      clbModuleList.Checked[i] := cbUnchecked;
   end;
   strl.Free;
   clbModuleList.Items.endupdate;
@@ -739,14 +731,14 @@ begin
   if IsModuleWndClicked then begin
     FNotChecked.Clear;
     for i := 0 to clbModuleList.items.count - 1 do begin
-      clbModuleList.Checked[i] := False;
+      clbModuleList.Checked[i] := cbUnchecked;
       if FNotchecked.IndexOf(clbModuleList.Items.Strings[i]) = -1 then
         FNotChecked.Add(clbModuleList.Items.Strings[i])
     end;
   end
   else if not (IsModuleWndClicked) then
     for i := 0 to clbDebugLevel.items.count - 1 do
-      clbDebugLevel.Checked[i] := False;
+      clbDebugLevel.Checked[i] := cbUnchecked;
   RefreshDebugList;
 end;
 
@@ -774,12 +766,12 @@ begin
   end;
 end;
 
-procedure TSharpConsoleWnd.clbModuleListClickCheck(Sender: TObject);
+procedure TSharpConsoleWnd.clbModuleList_ClickCheck(Sender: TObject);
 var
   index: integer;
 begin
   index := clbModuleList.ItemIndex;
-  if not (clbModuleList.Checked[index]) then
+  if clbModuleList.Checked[index] = cbUnchecked then
     FNotChecked.Add(clbModuleList.Items.Strings[index])
   else
     RemoveNotChecked(clbModuleList.Items.Strings[index]);
@@ -799,16 +791,16 @@ begin
 
   clbDebugLevel.Clear;
   with clbDebugLevel do begin
-    Items.Add('ERROR');
-    Items.Add('INFO');
-    Items.Add('TRACE');
-    Items.Add('WARN');
-    Items.Add('STATUS');
+    Items.Add('Error');
+    Items.Add('Info');
+    Items.Add('Trace');
+    Items.Add('Warning');
+    Items.Add('Status');
 
     for i := 0 to 4 do begin
-      clbDebugLevel.Checked[i] := True;
+      clbDebugLevel.Checked[i] := cbChecked;
       if IsModuleNotChecked(clbDebugLevel.items.Strings[i]) then
-        clbDebugLevel.Checked[i] := False;
+        clbDebugLevel.Checked[i] := cbUnchecked;
     end;
   end;
 
@@ -817,12 +809,14 @@ begin
 
 end;
 
-procedure TSharpConsoleWnd.clbDebugLevelClickCheck(Sender: TObject);
+procedure TSharpConsoleWnd.clbDebugLevel_ClickCheck(Sender: TObject);
 var
   index: integer;
 begin
   index := clbDebugLevel.ItemIndex;
-  if not (clbDebugLevel.Checked[index]) then
+  if Index = -1 then exit;
+
+  if clbDebugLevel.Checked[index] = cbUnchecked then
     FNotChecked.Add(clbDebugLevel.Items.Strings[index])
   else
     RemoveNotChecked(clbDebugLevel.Items.Strings[index]);
@@ -854,16 +848,28 @@ end;
 
 procedure TSharpConsoleWnd.RefreshDebugList;
 var
-  i: integer;
+  i,nDiv,n : integer;
   errorstr: string;
 begin
   prgRefresh.Show;
   prgRefresh.Position := 0;
-  prgRefresh.Max := DebugList.Count;
-  TextMemo.Hide;
+  prgRefresh.Max := 100;
+
   TextMemo.Lines.Clear;
+  mmoCopy.Lines.Clear;
+  TextMemo.Hide;
+
+  n := DebugList.Count div 10;
+  nDiv := n;
   for i := 0 to DebugList.Count - 1 do begin
-    prgRefresh.Position := prgRefresh.Position + 1;
+
+    if i = n then begin
+      prgRefresh.Position := prgRefresh.Position + 10;
+      n := n + nDiv;
+    end;
+
+    if i >= DebugList.Count-1 then
+      prgRefresh.Position := 100;
 
     // Draw the text
     case DebugList.Info[i].ErrorType of
@@ -878,6 +884,10 @@ begin
       if not (IsModuleNotChecked(DebugList.Info[i].Module)) then begin
         DrawText(DebugList.Info[i].MessageText, clnone,
           DebugList.Info[i].ErrorType, DebugList.Info[i].DTLogged);
+
+        mmoCopy.Lines.Add(Format('%s : %s',
+          [FormatDateTime('hh:nn:ss dd/mm/yy', DebugList.Info[i].DTLogged),
+          RemoveTags(DebugList.Info[i].MessageText)]));
       end;
     end;
   end;
@@ -949,6 +959,7 @@ end;
 procedure TSharpConsoleWnd.ClearAll1Click(Sender: TObject);
 begin
   TextMemo.Lines.Clear;
+  mmoCopy.Lines.Clear;
 end;
 procedure TSharpConsoleWnd.tbCopyTextClick(Sender: TObject);
 var
@@ -977,8 +988,7 @@ begin
     end;
   end;
 
-  frmCopyText.memoCopy.Lines := strl;
-  frmCopyText.ShowModal;
+  Clipboard.AsText := strl.Text;
   Strl.Free;
 
 end;
@@ -987,11 +997,6 @@ procedure TSharpConsoleWnd.tiMainDblClick(Sender: TObject);
 begin
   Application.Restore;
   SharpConsoleWnd.Show;
-end;
-
-procedure TSharpConsoleWnd.FormShow(Sender: TObject);
-begin
-  textmemo.SetFocus;
 end;
 
 procedure TSharpConsoleWnd.Exit1Click(Sender: TObject);
@@ -1004,23 +1009,23 @@ begin
   sbMain.Panels.Items[2].Text := Application.Hint;
 end;
 
-procedure TSharpConsoleWnd.clbModuleListClick(Sender: TObject);
+procedure TSharpConsoleWnd.clbModuleList_Click(Sender: TObject);
 begin
   IsModuleWndClicked := True;
 end;
 
-procedure TSharpConsoleWnd.clbDebugLevelClick(Sender: TObject);
+procedure TSharpConsoleWnd.clbDebugLevel_Click(Sender: TObject);
 begin
   IsModuleWndClicked := False;
 end;
 
-procedure TSharpConsoleWnd.clbDebugLevelMouseMove(Sender: TObject;
+procedure TSharpConsoleWnd.clbDebugLevel_MouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 begin
   IsModuleWndClicked := False;
 end;
 
-procedure TSharpConsoleWnd.clbModuleListMouseMove(Sender: TObject;
+procedure TSharpConsoleWnd.clbModuleList_MouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 begin
   IsModuleWndClicked := True;
@@ -1028,14 +1033,16 @@ end;
 
 procedure TSharpConsoleWnd.tbPauseClick(Sender: TObject);
 begin
-  if tbPause.ImageIndex = 10 then begin // pause
-    tbPause.ImageIndex := 9;
+  if tbPause.ImageIndex = 9 then begin // pause
+    tbPause.ImageIndex := 10;
+    tbPause.Caption := 'Auto';
     SharpConsoleWnd.Caption := 'SharpConsole';
     Playing := True;
     exit;
   end
   else begin
-    tbPause.ImageIndex := 10;
+    tbPause.ImageIndex := 9;
+    tbPause.Caption := 'Manual';
     SharpConsoleWnd.Caption := 'SharpConsole (Paused)';
     Playing := False;
     exit;
@@ -1057,6 +1064,48 @@ procedure TSharpConsoleWnd.FormClose(Sender: TObject;
 begin
   Action := caNone;
   Hide;
+end;
+
+procedure TSharpConsoleWnd.tlLogTabChange(ASender: TObject;
+  const ATabIndex: Integer; var AChange: Boolean);
+begin
+  plMain.ActivePageIndex := ATabIndex;
+end;
+
+procedure TSharpConsoleWnd.Restore(Sender: TObject);
+begin
+  SetWindowpos(SharpConsoleWnd.handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE or
+      SWP_NOMOVE or SWP_NOREDRAW);
+end;
+
+procedure TSharpConsoleWnd.clbModuleListClick(Sender: TObject);
+var
+  index: integer;
+begin
+  index := clbModuleList.ItemIndex;
+  if clbModuleList.Checked[index] = cbUnchecked then
+    FNotChecked.Add(clbModuleList.Items.Strings[index])
+  else
+    RemoveNotChecked(clbModuleList.Items.Strings[index]);
+
+  if chkRefreshModules.Checked then
+    RefreshDebugList;
+end;
+
+procedure TSharpConsoleWnd.clbDebugLevelClick(Sender: TObject);
+var
+  index: integer;
+begin
+  index := clbDebugLevel.ItemIndex;
+  if Index = -1 then exit;
+
+  if clbDebugLevel.Checked[index] = cbUnchecked then
+    FNotChecked.Add(clbDebugLevel.Items.Strings[index])
+  else
+    RemoveNotChecked(clbDebugLevel.Items.Strings[index]);
+
+  if chkRefreshDebug.Checked then
+    RefreshDebugList; 
 end;
 
 end.
