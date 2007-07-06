@@ -51,7 +51,7 @@ type
     property OnKeyUp;
     property Align;
     property Anchors;
-    //property Text;
+    property Text;
   end;
 
 procedure Register;
