@@ -205,6 +205,7 @@ begin
                      LayerList.Free;
                      LayerList := nil;
                      FirstStart := True;
+                     exit;
                     end;
   end;
 

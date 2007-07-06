@@ -212,6 +212,7 @@ begin
                      finally
                        Dllhandle := 0;
                      end;
+                     exit;
                     end;
   end;
 
