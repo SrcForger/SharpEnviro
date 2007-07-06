@@ -286,14 +286,25 @@ procedure TFrmHotkeyEdit.valNameExistsValidate(Sender: TObject;
   ValueToValidate: Variant; var Valid: Boolean);
 var
   idx: Integer;
+  s: String;
 begin
   Valid := True;
-  idx := FHotkeyList.IndexOfName(ValueToValidate);
+
+  s := '';
+  if ValueToValidate <> null then
+    s := VarToStr(ValueToValidate);
+
+  if s = '' then begin
+    Valid := False;
+    Exit;
+  end;
+
+  idx := FHotkeyList.IndexOfName(s);
 
   if (idx <> -1) then begin
 
     if FItemEdit <> nil then
-      if FItemEdit.Name = ValueToValidate then
+      if FItemEdit.Name = s then
         exit;
 
     if Not(JvBalloonHint1.Active) then
@@ -307,14 +318,25 @@ procedure TFrmHotkeyEdit.valHotkeyExistsValidate(Sender: TObject;
   ValueToValidate: Variant; var Valid: Boolean);
 var
   idx: Integer;
+  s: String;
 begin
   Valid := True;
-  idx := FHotkeyList.IndexOfHotkey(ValueToValidate);
+
+  s := '';
+  if ValueToValidate <> null then
+    s := VarToStr(ValueToValidate);
+
+  if s = '' then begin
+    Valid := False;
+    Exit;
+  end;
+
+  idx := FHotkeyList.IndexOfHotkey(s);
 
   if (idx <> -1) then begin
 
     if FItemEdit <> nil then
-      if FItemEdit.Hotkey = ValueToValidate then
+      if FItemEdit.Hotkey = s then
         exit;
 
     if Not(JvBalloonHint1.Active) then
