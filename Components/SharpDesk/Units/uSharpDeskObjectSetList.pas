@@ -104,12 +104,12 @@ begin
   XML := TJvSimpleXML.Create(nil);
   try
     XML.Root.Name := 'ObjectSets';
-    with XML.Root.Items.Add('SetList').Items.Add('1').Items do
+    with XML.Root.Items.Add('SetList').Items.Add('0').Items do
     begin
       Add('Name','Default');
       Add('Themes',SharpThemeApi.GetThemeName);
     end;
-    XML.Root.Items.Add('Objects').Items.Add('1');
+    XML.Root.Items.Add('Objects').Items.Add('0');
     XML.SaveToFile(FFileName);
   finally
     XML.Free;
@@ -235,17 +235,21 @@ begin
       end;
     end;
   end;
-  for n:= 0 to FXML.Root.Items.ItemNamed['SetList'].Items.Count - 1 do
+
+  if FXML.Root.Items.ItemNamed['SetList'] <> nil then
   begin
-    if strtoint(FXML.Root.Items.ItemNamed['SetList'].Items.Item[n].Name) = 0 then
+    for n:= 0 to FXML.Root.Items.ItemNamed['SetList'].Items.Count - 1 do
     begin
-      oset := TObjectSet.Create(strtoint(FXML.Root.Items.ItemNamed['SetList'].Items.Item[n].Name),
-                                FXML.Root.Items.ItemNamed['SetList'].Items.Item[n].Items.Value('Name','#'),
-                                self);
-      oset.ThemeList.CommaText := FXML.Root.Items.ItemNamed['SetList'].Items.Item[n].Items.Value('Themes','#');
-      Add(oset);
+      if strtoint(FXML.Root.Items.ItemNamed['SetList'].Items.Item[n].Name) = 0 then
+      begin
+        oset := TObjectSet.Create(strtoint(FXML.Root.Items.ItemNamed['SetList'].Items.Item[n].Name),
+                                  FXML.Root.Items.ItemNamed['SetList'].Items.Item[n].Items.Value('Name','#'),
+                                  self);
+        oset.ThemeList.CommaText := FXML.Root.Items.ItemNamed['SetList'].Items.Item[n].Items.Value('Themes','#');
+        Add(oset);
+      end;
     end;
-  end;
+  end else FXML.Root.Items.Add('SetList');
   if Count = 0 then
   begin
     oset := TObjectSet.Create(0,'Default',self);
