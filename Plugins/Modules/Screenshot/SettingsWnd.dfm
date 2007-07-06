@@ -315,6 +315,34 @@ object SettingsForm: TSettingsForm
           Value = 0
         end
       end
+      object GroupBox8: TGroupBox
+        Left = 0
+        Top = 106
+        Width = 233
+        Height = 167
+        Caption = 'Hotkeys'
+        TabOrder = 2
+        object Memo1: TMemo
+          Left = 8
+          Top = 20
+          Width = 215
+          Height = 137
+          BorderStyle = bsNone
+          Color = clMenu
+          Lines.Strings = (
+            '    You can now set hotkeys to take your '
+            'screenshots.  The hotkeys are set in '
+            'Sharpcenter. Choose Hotkeys then add.'
+            ''
+            'The Action is either: '
+            '      !PrintScreen'
+            '           to do the whole screen.'
+            '      !PrintWindow'
+            '           to do the active window.'
+            '   All other settings remain the same.')
+          TabOrder = 0
+        end
+      end
     end
   end
 end

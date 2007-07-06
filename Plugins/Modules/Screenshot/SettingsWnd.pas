@@ -74,6 +74,8 @@ type
     Label4: TLabel;
     speJpgCompression: TSpinEdit;
     spePngCompression: TSpinEdit;
+    GroupBox8: TGroupBox;
+    Memo1: TMemo;
     procedure cbxFormatChange(Sender: TObject);
     procedure cbxDateTimeClick(Sender: TObject);
     procedure cbxNumClick(Sender: TObject);
@@ -122,6 +124,8 @@ begin
    if (cbxFormat.Text <> 'Bmp') or (cbxFormat.Text <> 'Jpg') or (cbxFormat.Text <> 'Png') then
       cbxFormat.Text := 'Bmp';
 end;
+
+
 
 end.
 

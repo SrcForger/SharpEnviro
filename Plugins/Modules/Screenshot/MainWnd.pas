@@ -59,6 +59,8 @@ type
     procedure AutoGen(bitMap: TBitmap);
     procedure saveFormat(bitMap: TBitmap; strFormat: string; strFilename: string);
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
+    procedure ActionMsg(var Msg: TMessage); message WM_SHARPEACTIONMESSAGE;
+
 
   protected
   private
@@ -223,6 +225,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   Background := TBitmap32.Create;
   DoubleBuffered := True;
+
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -379,6 +382,25 @@ begin
   case msg.WParam of
      HSHELL_WINDOWACTIVATED : hwndActive := msg.LParam;
   end;
+end;
+
+procedure TMainForm.ActionMsg(var Msg: TMessage);
+var
+    blnActiveWinOrg : boolean;
+begin
+   blnActiveWinOrg := blnActiveWin;
+   case Msg.LParam of
+     0: begin
+         //Add code to printScreen
+         blnActiveWin := false;
+       end;
+     1: begin
+         //Add code to printwindow
+         blnActiveWin := true;
+       end;
+   end;
+   Screenshot();
+   blnActiveWin := blnActiveWinOrg;
 end;
 
 end.

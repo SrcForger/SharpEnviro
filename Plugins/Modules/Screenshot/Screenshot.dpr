@@ -96,6 +96,8 @@ begin
     RealignComponents(False);
     Show;
     PostMessage(BarWnd,WM_REGISTERSHELLHOOK,ModuleID,0);
+    RegisterActionEx('!PrintScreen', 'SharpCore', FForm.Handle, 0);
+    RegisterActionEx('!PrintWindow', 'SharpCore', FForm.Handle, 1);
   end;
 end;
 
