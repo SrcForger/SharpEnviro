@@ -63,7 +63,7 @@ type
   procedure Debug(Message: string; DebugType: Integer);
 
 var
-  WeatherOptions, tmpWeatherOptions: TWeatherSettings;
+  WeatherOptions: TWeatherSettings;
 
   { TWeatherItem }
 

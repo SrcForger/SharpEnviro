@@ -97,7 +97,6 @@ type
   end;
 
   var
-    TmpWeatherList: TWeatherList;
     WeatherList:TWeatherList;
 
 implementation

@@ -294,7 +294,7 @@ begin
         FForce then
       begin
 
-        if now > FNextUpdate then
+        if ((now > FNextUpdate) or FForce) then
         begin
 
           Debug(Format('%s: CCUpdate', [tmpInfo.LocationID]), DMT_INFO);
@@ -346,7 +346,7 @@ begin
       if (currentdt > compareddt) or not (FileExists(locpath + 'forecast.xml'))
         or FForce then
       begin
-        if now > FNextUpdate then
+        if ((now > FNextUpdate) or (FForce)) then
         begin
 
           Debug(Format('%s: FCUpdate', [tmpInfo.LocationID]), DMT_INFO);
