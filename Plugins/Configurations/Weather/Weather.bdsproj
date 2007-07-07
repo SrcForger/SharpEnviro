@@ -119,14 +119,14 @@
 			<Linker Name="GenerateHpps">False</Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir">..\..\..\..\SharpE\Center\Root\Plugins\_Services</Directories>
+			<Directories Name="OutputDir">..\..\..\..\SharpE\Center\Root\_Services\_ServiceDlls</Directories>
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\Services\Weather\;..\..\..\Common\Delphi Components\SharpE Skin Components\;..\..\..\Common\Units\SEListboxPainter;..\..\..\Common\3rd Party\GR32 Addons\</Directories>
+			<Directories Name="SearchPath">..\..\Services\Weather\;..\..\..\Common\Delphi Components\SharpE Skin Components\;..\..\..\Common\Units\SEListboxPainter;..\..\..\Common\3rd Party\GR32 Addons\;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFx;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\Units\VistaFuncs</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
-			<Directories Name="DebugSourceDirs"></Directories>
+			<Directories Name="DebugSourceDirs">E:\SVN\Components\SharpCenter\</Directories>
 			<Directories Name="UsePackages">False</Directories>
 		</Directories>
 		<Parameters>
@@ -170,5 +170,12 @@
 			<VersionInfoKeys Name="ProductName"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
 		</VersionInfoKeys>
-	</Delphi.Personality>
+		<Language>
+			<Language Name="ActiveLang"></Language>
+			<Language Name="ProjectLang">$00000000</Language>
+			<Language Name="RootDir"></Language>
+		</Language>  <Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
+    </Excluded_Packages>
+  </Delphi.Personality>
 </BorlandProject>

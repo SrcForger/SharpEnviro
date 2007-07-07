@@ -3,225 +3,368 @@ unit uWeatherItemEditWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Buttons, pngimage, uWeatherList, jvSimpleXml,
-  PngSpeedButton;
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  ExtCtrls,
+  Buttons,
+  pngimage,
+  uWeatherList,
+  jvSimpleXml,
+  PngSpeedButton,
+  JvPageList,
+  JvExControls,
+  SharpEListBoxEx,
+  Menus,
+  SharpApi, JvLabel, VistaAltFixUnit, ImgList, PngImageList, JvValidators,
+  JvComponentBase, JvErrorIndicator;
 
 type
-  TWeatherLocation = Class
-    Location: String;
-    LocationID: String;
+  TWeatherLocation = class
+    Location: string;
+    LocationID: string;
   end;
 
 type
-  TfrmWeatherItem = class(TForm)
-    gbx1: TPanel;
-    lbResults: TListBox;
-    Panel1: TPanel;
-    Panel2: TPanel;
-    btnCancel: TButton;
-    btnOk: TButton;
-    edtLocation: TEdit;
-    Label1: TLabel;
-    sbLookup: TPngSpeedButton;
-    ImageLb: TImage;
-    procedure edtLocationKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure FormShow(Sender: TObject);
+  TfrmItemEdit = class(TForm)
+    plMain: TJvPageList;
+    pagEdit: TJvStandardPage;
+    pagDelete: TJvStandardPage;
+    edName: TLabeledEdit;
+    btnSearch: TPngSpeedButton;
+    edWeatherID: TLabeledEdit;
+    mnuSearch: TPopupMenu;
+    chkMetric: TCheckBox;
+    Label1: TJvLabel;
+    Label2: TLabel;
+    errorinc: TJvErrorIndicator;
+    vals: TJvValidators;
+    valID: TJvRequiredFieldValidator;
+    valName: TJvRequiredFieldValidator;
+    pilError: TPngImageList;
     procedure FormCreate(Sender: TObject);
-    procedure lbResultsDrawItem(Control: TWinControl; Index: Integer;
-      Rect: TRect; State: TOwnerDrawState);
-    procedure lbResultsClick(Sender: TObject);
-    procedure sbLookupClick(Sender: TObject);
+    procedure UpdateEditState(Sender: TObject);
+    procedure btnSearchClick(Sender: TObject);
   private
     { Private declarations }
-    Procedure DownloadLocationData(Location:String);
-    Procedure UpdateSearchList(AResults:String);
+    FItemEdit: TWeatherItem;
+    procedure DownloadLocationData(Location: string);
+    procedure UpdateSearchList(AResults: string);
     procedure Debug(Str: string; ErrorType: Integer);
-    
+    procedure ClickItem(Sender: TObject);
   public
     { Public declarations }
-    procedure ClearListbox;
+    procedure InitUi(AEditMode: TSCE_EDITMODE_ENUM; AChangePage: Boolean =
+      False);
+    function ValidateEdit(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+    procedure ClearValidation;
+    function Save(AApply: Boolean; AEditMode: TSCE_EDITMODE_ENUM): Boolean;
   end;
 
 var
-  frmWeatherItem: TfrmWeatherItem;
+  frmItemEdit: TfrmItemEdit;
 
 implementation
 
 uses
-  uWeatherItemsListWnd, uWeatherMgr, SharpApi, SOAPHTTPTrans;
+  uWeatherItemsListWnd,
+  uWeatherOptions,
+  uWeatherMgr,
+  SOAPHTTPTrans,
+  JclSimpleXml;
 
 {$R *.dfm}
 
 { TForm1 }
 
-procedure TfrmWeatherItem.ClearListbox;
-var
-  i: Integer;
-begin
-  for i := 0 to lbResults.Items.Count - 1 do
-  begin
-    if Assigned(lbResults.Items.Objects[i]) then
-      lbResults.Items.Objects[i].Free;
-  end;
-  lbResults.Items.Clear;
-end;
-
-procedure TfrmWeatherItem.DownloadLocationData(Location: String);
+procedure TfrmItemEdit.DownloadLocationData(Location: string);
 var
   Stream: TMemoryStream;
-  StrStream:TStringStream;
+  StrStream: TStringStream;
   HTTPReqResp1: THTTPReqResp;
-  UrlTarget: String;
+  UrlTarget: string;
 begin
   Stream := TMemoryStream.Create;
   HTTPReqResp1 := THTTPReqResp.Create(Self);
   try
-  try
-    HTTPReqResp1.UseUTF8InHeader := False;
-
-    UrlTarget := Format('http://xoap.weather.com/search/search?where=%s',[Location]);
-    HTTPReqResp1.URL := UrlTarget;
-    HTTPReqResp1.Execute(UrlTarget, Stream);
-
-    Debug(STRSeparator,DMT_INFO);
-    Debug(STRRequest + UrlTarget,DMT_INFO);
-    Debug(STRDateTime + DateTimeToStr(now),DMT_INFO);
-    Debug(STRSeparator,DMT_INFO);
-
-    StrStream := TStringStream.Create('');
-    StrStream.CopyFrom(Stream, 0);
     try
-      
-      UpdateSearchList(StrStream.DataString);
-    finally
-      StrStream.Free;
+      HTTPReqResp1.UseUTF8InHeader := False;
+
+      UrlTarget := Format('http://xoap.weather.com/search/search?where=%s',
+        [Location]);
+      HTTPReqResp1.URL := UrlTarget;
+      HTTPReqResp1.Execute(UrlTarget, Stream);
+
+      Debug(STRSeparator, DMT_INFO);
+      Debug(STRRequest + UrlTarget, DMT_INFO);
+      Debug(STRDateTime + DateTimeToStr(now), DMT_INFO);
+      Debug(STRSeparator, DMT_INFO);
+
+      StrStream := TStringStream.Create('');
+      StrStream.CopyFrom(Stream, 0);
+      try
+
+        UpdateSearchList(StrStream.DataString);
+      finally
+        StrStream.Free;
+      end;
+    except
+      Debug(Format('Error Searching for %s (Connection Issue)', [Location]),
+        DMT_ERROR);
+      exit;
     end;
-  except
-    Debug(Format('Error Searching for %s (Connection Issue)',[Location]),DMT_ERROR);
-    exit;
-  end;
   finally
     Stream.Free;
     HTTPReqResp1.Free;
   end;
 end;
 
-procedure TfrmWeatherItem.edtLocationKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if (Key = VK_RETURN) then
-    sbLookup.Click;
-end;
-
-procedure TfrmWeatherItem.FormCreate(Sender: TObject);
-begin
-  lbResults.Enabled := False;
-end;
-
-procedure TfrmWeatherItem.FormShow(Sender: TObject);
-begin
-  edtLocation.SetFocus;
-end;
-
-procedure TfrmWeatherItem.UpdateSearchList(AResults: String);
+procedure TfrmItemEdit.UpdateSearchList(AResults: string);
 var
   xml: TJvSimpleXML;
-  n:integer;
+  n: integer;
   tmpWl: TWeatherLocation;
+  newMi: TMenuItem;
+  sErrType: string;
+  cp: TPoint;
 begin
-  ClearListbox;
-  
+  mnuSearch.Items.Clear;
+
   xml := TJvSimpleXML.Create(nil);
   try
     xml.LoadFromString(AResults);
 
-    // check for nodes
-    if XML.Root.Items.Count = 0 then begin
-      lbResults.AddItem('No Items Found',nil);
+    // check for errors
+    if Xml.Root.Items.Count = 0 then
+    begin
+      newMi := TMenuItem.Create(nil);
+      newMi.Caption := 'No Items Found';
+      newMi.Tag := -1;
+      mnuSearch.Items.Add(newMi);
     end
-    else begin
-      for n:=0 to XML.Root.Items.Count-1 do
+    else if Xml.Root.Name = 'error' then
+    begin
+
+      if Xml.Root.Items.ItemNamed['err'] <> nil then
+        sErrType := Xml.Root.Items.ItemNamed['err'].Value;
+
+      newMi := TMenuItem.Create(nil);
+      newMi.Caption := sErrType;
+      newMi.Tag := -1;
+      mnuSearch.Items.Add(newMi);
+    end
+    else
+    begin
+      for n := 0 to XML.Root.Items.Count - 1 do
       begin
         tmpWl := TWeatherLocation.Create;
         tmpWl.Location := XML.Root.Items.Item[n].Value;
-        tmpWl.LocationID := Xml.Root.Items.Item[n].Properties.ItemNamed['id'].Value;
-        lbResults.AddItem(tmpWl.Location,tmpWl);
+        tmpWl.LocationID :=
+          Xml.Root.Items.Item[n].Properties.ItemNamed['id'].Value;
+
+        newMi := TMenuItem.Create(nil);
+        newMi.Caption := tmpWl.Location;
+        newMi.Tag := Integer(tmpWl);
+        newMi.OnClick := ClickItem;
+        mnuSearch.Items.Add(newMi);
       end;
     end;
 
   finally
     xml.Free;
+    cp := btnSearch.Parent.ClientToScreen(Point(btnSearch.Left +
+      btnSearch.Width, btnSearch.Top));
+    mnuSearch.Popup(cp.x, cp.y);
   end;
 end;
 
-procedure TfrmWeatherItem.Debug(Str: string; ErrorType: Integer);
+procedure TfrmItemEdit.Debug(Str: string; ErrorType: Integer);
 begin
-  SendDebugMessageEx('Weather Service',PChar(Str),0,ErrorType);
+  SendDebugMessageEx('Weather Service', PChar(Str), 0, ErrorType);
 end;
 
-procedure TfrmWeatherItem.sbLookupClick(Sender: TObject);
+procedure TfrmItemEdit.btnSearchClick(Sender: TObject);
 begin
-  DownloadLocationData(edtLocation.Text);
-  if lbResults.Count <> 0 then
-    lbResults.Enabled := True;
+  DownloadLocationData(edWeatherID.Text);
 end;
 
-procedure TfrmWeatherItem.lbResultsClick(Sender: TObject);
+procedure TfrmItemEdit.ClickItem(Sender: TObject);
 var
-  s:String;
+  tmpWeather: TWeatherLocation;
 begin
-  if lbResults.ItemIndex <> -1 then begin
-    s := lbResults.Items.Strings[lbResults.itemindex];
+  tmpWeather := TWeatherLocation(TMenuItem(Sender).Tag);
+  if tmpWeather = nil then
+    exit;
 
-    if (s <> 'No Items Found') and (s <> 'No location provided') then
-      edtLocation.Text := s;
+  edName.Text := tmpWeather.Location;
+  edWeatherID.Text := tmpWeather.LocationID;
+end;
+
+procedure TfrmItemEdit.InitUi(AEditMode: TSCE_EDITMODE_ENUM;
+  AChangePage: Boolean);
+var
+  tmpItem: TSharpEListItem;
+  tmpWeather: TWeatherItem;
+begin
+  edName.OnChange := nil;
+  edWeatherID.OnChange := nil;
+  chkMetric.OnClick := nil;
+  try
+
+    case AEditMode of
+      sceAdd:
+        begin
+          edName.Text := '';
+          edWeatherID.Text := '';
+          chkMetric.Checked := WeatherOptions.Metric;
+
+          if AChangePage then
+            pagEdit.Show;
+
+          if pagEdit.Visible then
+            edName.SetFocus;
+
+          FItemEdit := nil;
+        end;
+      sceEdit:
+        begin
+
+          if frmItemsList.lbWeatherList.ItemIndex = -1 then
+            exit;
+
+          tmpItem := frmItemsList.lbWeatherList.Item[frmItemsList.lbWeatherList.ItemIndex];
+          tmpWeather := TWeatherItem(tmpItem.Data);
+          FItemEdit := tmpWeather;
+
+          edName.Text := tmpWeather.Location;
+          edWeatherID.Text := tmpWeather.LocationID;
+          chkMetric.Checked := WeatherOptions.Metric;
+
+          if AChangePage then
+            pagEdit.Show;
+
+          if pagEdit.Visible then
+            edName.SetFocus;
+        end;
+      sceDelete:
+        begin
+          if ((AChangePage) and (frmItemsList.lbWeatherList.Count <> 0)) then
+            pagDelete.Show;
+        end;
+    end;
+
+  finally
+    edName.OnChange := UpdateEditState;
+    edWeatherID.OnChange := UpdateEditState;
+    chkMetric.OnClick := UpdateEditState;
+
+    if frmItemsList.lbWeatherList.ItemIndex <> -1 then
+    begin
+      SharpCenterBroadCast(SCM_SET_BUTTON_ENABLED,
+        SCB_DELETE);
+    end
+    else
+    begin
+      SharpCenterBroadCast(SCM_SET_BUTTON_DISABLED,
+        SCB_DELETE);
+    end;
+
+    frmItemsList.UpdateEditTabs;
   end;
 end;
 
-procedure TfrmWeatherItem.lbResultsDrawItem(Control: TWinControl;
-  Index: Integer; Rect: TRect; State: TOwnerDrawState);
-var
-  sLocation: string;
-
-  R, ARect: Trect;
-  lst: TlistBox;
-  
-  cs:tcolorschemeex;
+procedure TfrmItemEdit.ClearValidation;
 begin
-  if Index = -1 then exit;
-  lst:= TlistBox(Control);
-  if lst.Style = lbStandard then exit;
-
-  ARect := Rect;
-  R := ARect;
-  if R.Top > lst.Height then exit;
-
-  cs := LoadColorSchemeEx;
-  sLocation := lst.Items[Index];
-
-  lst.Canvas.Font := lst.Font ;
-  if odSelected in state then
-    begin
-      lst.Canvas.Font.Color := cs.WorkAreaText;
-      lst.Canvas.Brush.Color := cs.WorkArealight;
-    end;
-
-  if (odFocused in state) and (odSelected in state) then
-    begin
-      lst.Canvas.Font.Color := cs.WorkAreaText;
-      lst.Canvas.Brush.Color := cs.WorkArealight;
-    end;
-
-  if not (odDefault in state) then
-    lst.Canvas.FillRect (Arect)
-  else
-    lst.Canvas.FillRect (R);
-
-  lst.Canvas.TextOut(R.Left+ImageLb.Width+6,R.Top+4,sLocation);
-
-  lst.Canvas.Draw (R.Left+3, R.top + 3, ImageLb.Picture.Graphic);
+  errorinc.BeginUpdate;
+  try
+    errorinc.ClearErrors;
+  finally
+    errorinc.EndUpdate;
+  end;
 end;
 
-end.                                                 
+function TfrmItemEdit.ValidateEdit(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+begin
+  Result := False;
+
+  case AEditMode of
+    sceAdd, sceEdit:
+      begin
+
+        errorinc.BeginUpdate;
+        try
+          errorinc.ClearErrors;
+          vals.ValidationSummary := nil;
+
+          Result := vals.Validate;
+        finally
+          errorinc.EndUpdate;
+        end;
+      end;
+    sceDelete: Result := True;
+  end;
+end;
+
+function TfrmItemEdit.Save(AApply: Boolean;
+  AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+var
+  tmpItem:TSharpEListItem;
+  tmpWeather: TWeatherItem;
+begin
+  Result := false;
+  if Not(AApply) then Exit;
+
+  case AEditMode of
+  sceAdd: begin
+
+    WeatherList.Add(edName.Text,edWeatherID.Text,'-1','-1',-1,-1,True);
+    WeatherOptions.Metric := chkMetric.Checked;
+
+    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+    frmItemsList.UpdateDisplay(WeatherList);
+    Result := True;
+  end;
+  sceEdit: begin
+    tmpItem := frmItemsList.lbWeatherList.Item[frmItemsList.lbWeatherList.ItemIndex];
+    tmpWeather := TWeatherItem(tmpItem.Data);
+    tmpWeather.Location := edName.Text;
+    tmpWeather.LocationID := edWeatherID.Text;
+    WeatherOptions.Metric := chkMetric.Checked;
+
+    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+    frmItemsList.UpdateDisplay(WeatherList);
+    Result := True;
+  end;
+  sceDelete: begin
+    tmpItem := frmItemsList.lbWeatherList.Item[frmItemsList.lbWeatherList.ItemIndex];
+    tmpWeather := TWeatherItem(tmpItem.Data);
+    WeatherList.Delete(tmpWeather);
+
+    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+    frmItemsList.UpdateDisplay(WeatherList);
+    frmItemsList.UpdateEditTabs;
+
+    Result := True;
+  end;
+  end;
+end;
+
+procedure TfrmItemEdit.UpdateEditState(Sender: TObject);
+begin
+  SharpApi.SharpCenterBroadCast(SCM_SET_EDIT_STATE,0);
+end;
+
+procedure TfrmItemEdit.FormCreate(Sender: TObject);
+begin
+  TVistaAltFix.Create(Self);
+end;
+
+end.
+

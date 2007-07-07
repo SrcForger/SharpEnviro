@@ -5,15 +5,17 @@ uses
   registry,
   Classes,
   Messages,
+  graphics,
   activex,
   sysutils,
   Jclstrings,
   forms,
   SharpApi,
   PngSpeedButton,
-  uWeatherItemsListWnd in 'uWeatherItemsListWnd.pas' {FrmWeatherItemsList},
+  uVistaFuncs,
+  uWeatherItemsListWnd in 'uWeatherItemsListWnd.pas' {frmItemsList},
   uWeatherOptionsWnd in 'uWeatherOptionsWnd.pas' {frmWeatherOptions},
-  uWeatherItemEditWnd in 'uWeatherItemEditWnd.pas' {frmWeatherItem},
+  uWeatherItemEditWnd in 'uWeatherItemEditWnd.pas' {frmItemEdit},
   uWeatherList in '..\..\Services\Weather\uWeatherList.pas',
   uWeatherMgr in '..\..\Services\Weather\uWeatherMgr.pas',
   uWeatherOptions in '..\..\Services\Weather\uWeatherOptions.pas';
@@ -22,133 +24,137 @@ uses
 
 {$R *.RES}
 
-function Open(const APluginID:Integer; owner: hwnd):hwnd;
+function Open(const APluginID:Pchar; AOwner: hwnd): hwnd;
 var
-  fn:String;
+  sFileName:String;
 begin
 
-  if FrmWeatherItemsList = nil then
-    FrmWeatherItemsList := TFrmWeatherItemsList.Create(nil);
+  if frmItemsList = nil then
+    frmItemsList := TfrmItemsList.Create(nil);
+  SetVistaFonts(frmItemsList);
 
-  fn := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatheroptions.xml';
-  tmpWeatherOptions := TWeatherSettings.Create(fn);
+  sFileName := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatheroptions.xml';
+  WeatherOptions := TWeatherSettings.Create(sFileName);
 
-  fn := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatherlist.xml';
-  TmpWeatherList := TWeatherList.Create(fn);
+  sFileName := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatherlist.xml';
+  WeatherList := TWeatherList.Create(sFileName);
 
-  FrmWeatherItemsList.ParentWindow := owner;
-  FrmWeatherItemsList.Left := 0;
-  FrmWeatherItemsList.Top := 0;
-  FrmWeatherItemsList.BorderStyle := bsNone;
-  FrmWeatherItemsList.UpdateDisplay(TmpWeatherList);
-  FrmWeatherItemsList.Show;
-  
-  result := FrmWeatherItemsList.Handle;
+  frmItemsList.ParentWindow := AOwner;
+  frmItemsList.Left := 0;
+  frmItemsList.Top := 0;
+  frmItemsList.BorderStyle := bsNone;
+  frmItemsList.UpdateDisplay(WeatherList);
+  frmItemsList.Show;
+  frmItemsList.UpdateEditTabs;
 
-
+  result := frmItemsList.Handle;
 end;
 
-function New(const APluginID:Integer; owner: hwnd):hwnd;
-var
-  fn:String;
+function Close: boolean;
 begin
-  if FrmWeatherItemsList = nil then
-    FrmWeatherItemsList := TFrmWeatherItemsList.Create(nil);
-
-  fn := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatheroptions.xml';
-  tmpWeatherOptions := TWeatherSettings.Create(fn);
-
-  fn := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatherlist.xml';
-  TmpWeatherList := TWeatherList.Create(fn);
-
-  FrmWeatherItemsList.ParentWindow := owner;
-  FrmWeatherItemsList.Left := 0;
-  FrmWeatherItemsList.Top := 0;
-  FrmWeatherItemsList.BorderStyle := bsNone;
-  FrmWeatherItemsList.UpdateDisplay(TmpWeatherList);
-  FrmWeatherItemsList.Show;
-
-  result := FrmWeatherItemsList.Handle;
-end;
-
-procedure Help;
-begin
-  SharpApi.HelpMsg('go {docs}\SharpCore\Services\weather.sdoc');
-end;
-
-function Close(owner: hwnd; SaveSettings: Boolean): boolean;
-begin
-
+  result := True;
   try
+    frmItemsList.Close;
+    frmItemsList.Free;
+    frmItemsList := nil;
 
-    if SaveSettings then begin
-      TmpWeatherList.Save;
-      tmpWeatherOptions.Save;
+    if frmItemEdit <> nil then begin
+      frmItemEdit.Close;
+      frmItemEdit.Free;
+      frmItemEdit := nil;
     end;
-
-    FrmWeatherItemsList.Close;
-    FrmWeatherItemsList.Free;
-    FrmWeatherItemsList := nil;
-
-    result := True;
   except
     result := False;
   end;
 end;
 
-function ConfigDllType: Integer;
+function Save:Boolean;
+begin
+  result := True;
+  try
+    WeatherList.Save;
+    WeatherOptions.Save;
+    SharpApi.ServiceMsg('weather','_forceupdate');
+  except
+    result := false;
+  end;
+end;
+
+function OpenEdit(AOwner:Hwnd; AEditMode:TSCE_EDITMODE_ENUM):Hwnd;
+begin
+  if Not(Assigned(frmItemEdit)) then
+    frmItemEdit := TfrmItemEdit.Create(nil);
+
+  SetVistaFonts(frmItemEdit);
+  with frmItemEdit do begin
+    ParentWindow := AOwner;
+    Left := 0;
+    Top := 0;
+    BorderStyle := bsNone;
+    Show;
+  end;
+
+  frmItemsList.EditMode := AEditMode;
+  frmItemEdit.InitUI(AEditMode, True);
+  Result :=  frmItemEdit.Handle;
+end;
+
+function CloseEdit(AEditMode:TSCE_EDITMODE_ENUM; AApply:Boolean): boolean;
+begin
+
+  // Validation
+  if (AApply) and Not(frmItemEdit.ValidateEdit(AEditMode)) then Begin
+    Result := False;
+    Exit;
+  End;
+
+  // Define whether we add/edit or delete the item
+  if frmItemEdit.Save(AApply, AEditMode) then Begin
+    frmItemsList.UpdateEditTabs;
+  end;
+
+  FreeAndNil(frmItemEdit);
+  Result := True;
+end;
+
+procedure SetDisplayText(const APluginID:Pchar; var ADisplayText:PChar);
+begin
+  ADisplayText := 'Weather';
+end;
+
+procedure SetStatusText(var AStatusText: PChar);
+begin
+  AStatusText := '0';
+end;
+
+function  SetSettingType: Integer;
 begin
   Result := SCU_SERVICE;
 end;
 
-procedure GetDisplayName(const APluginID:Integer; var ADisplayName:PChar);
+procedure GetCenterScheme(var ABackground: TColor;
+  var AItemColor: TColor; var AItemSelectedColor: TColor);
 begin
-  ADisplayName := PChar('Weather');
-end;
+  frmItemsList.lbWeatherList.Colors.ItemColor := AItemColor;
+  frmItemsList.lbWeatherList.Colors.ItemColorSelected := AItemSelectedColor;
 
-procedure BtnAdd(var AButton:TPngSpeedButton);
-begin
-  FrmWeatherItemsList.AddItem;
-end;
-
-procedure BtnEdit(var AButton:TPngSpeedButton);
-begin
-  FrmWeatherItemsList.EditItem;
-end;
-
-procedure BtnDelete(var AButton:TPngSpeedButton);
-begin
-  FrmWeatherItemsList.DeleteItem;
-end;
-
-procedure BtnImport(var AButton:TPngSpeedButton);
-begin
-  FrmWeatherItemsList.ImportList;
-end;
-
-procedure BtnExport(var AButton:TPngSpeedButton);
-begin
-  FrmWeatherItemsList.ExportList;
-end;
-
-procedure BtnClear(var AButton:TPngSpeedButton);
-begin
-  FrmWeatherItemsList.ClearList;
+  if Assigned(frmItemEdit) then
+    frmItemEdit.Color := ABackground;
 end;
 
 exports
   Open,
-  New,
   Close,
-  Help,
-  BtnAdd,
-  BtnEdit,
-  BtnDelete,
-  BtnClear,
-  BtnImport,
-  BtnExport,
-  ConfigDllType,
-  GetDisplayName;
+  Save,
+
+  OpenEdit,
+  CloseEdit,
+
+  SetDisplayText,
+  SetStatusText,
+  SetSettingType,
+
+  GetCenterScheme;
 
 begin
 

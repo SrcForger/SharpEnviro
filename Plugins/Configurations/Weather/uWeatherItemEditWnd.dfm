@@ -1,10 +1,10 @@
-object frmWeatherItem: TfrmWeatherItem
+object frmItemEdit: TfrmItemEdit
   Left = 0
   Top = 0
-  BorderStyle = bsDialog
+  BorderStyle = bsNone
   Caption = 'Edit Form'
-  ClientHeight = 250
-  ClientWidth = 337
+  ClientHeight = 92
+  ClientWidth = 490
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,166 +15,176 @@ object frmWeatherItem: TfrmWeatherItem
   OldCreateOrder = False
   Position = poDesigned
   OnCreate = FormCreate
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object gbx1: TPanel
+  object plMain: TJvPageList
     Left = 0
     Top = 0
-    Width = 337
-    Height = 250
+    Width = 490
+    Height = 92
+    ActivePage = pagEdit
+    PropagateEnable = False
     Align = alClient
-    BevelOuter = bvNone
-    BorderWidth = 2
-    Caption = 'Forecast Location'
-    TabOrder = 0
-    object lbResults: TListBox
-      Left = 2
-      Top = 55
-      Width = 333
-      Height = 162
-      Style = lbOwnerDrawFixed
-      Align = alClient
-      Enabled = False
-      ItemHeight = 22
-      Sorted = True
-      TabOrder = 0
-      OnClick = lbResultsClick
-      OnDrawItem = lbResultsDrawItem
+    ParentBackground = True
+    object pagEdit: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 490
+      Height = 92
+      DesignSize = (
+        490
+        92)
+      object btnSearch: TPngSpeedButton
+        Left = 391
+        Top = 40
+        Width = 75
+        Height = 25
+        Anchors = [akTop, akRight]
+        Caption = 'Search'
+        OnClick = btnSearchClick
+      end
+      object edName: TLabeledEdit
+        Left = 56
+        Top = 8
+        Width = 409
+        Height = 21
+        Anchors = [akLeft, akTop, akRight]
+        EditLabel.Width = 31
+        EditLabel.Height = 13
+        EditLabel.Caption = 'Name:'
+        LabelPosition = lpLeft
+        LabelSpacing = 6
+        TabOrder = 0
+        OnChange = UpdateEditState
+      end
+      object edWeatherID: TLabeledEdit
+        Left = 56
+        Top = 40
+        Width = 313
+        Height = 21
+        Anchors = [akLeft, akTop, akRight]
+        EditLabel.Width = 15
+        EditLabel.Height = 13
+        EditLabel.Caption = 'ID:'
+        LabelPosition = lpLeft
+        LabelSpacing = 6
+        TabOrder = 1
+        OnChange = UpdateEditState
+      end
+      object chkMetric: TCheckBox
+        Left = 56
+        Top = 68
+        Width = 197
+        Height = 17
+        Caption = 'Display values as metric?'
+        TabOrder = 2
+        OnClick = UpdateEditState
+      end
     end
-    object Panel1: TPanel
-      Left = 2
-      Top = 2
-      Width = 333
-      Height = 53
-      Align = alTop
-      BevelOuter = bvNone
-      TabOrder = 1
-      object Label1: TLabel
+    object pagDelete: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 490
+      Height = 92
+      BorderWidth = 8
+      Caption = 'pagDelete'
+      ParentBackground = True
+      object Label1: TJvLabel
         Left = 0
         Top = 0
-        Width = 333
-        Height = 27
+        Width = 78
+        Height = 13
         Align = alTop
-        AutoSize = False
-        Caption = 
-          'Please enter the location specifier that you wish to search for.' +
-          ' Such as: a City, Town or US Zip'
-        WordWrap = True
+        Caption = 'Confirmation:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
       end
-      object sbLookup: TPngSpeedButton
-        Left = 307
-        Top = 29
-        Width = 23
-        Height = 20
-        Flat = True
-        OnClick = sbLookupClick
+      object Label2: TLabel
+        Left = 0
+        Top = 13
+        Width = 335
+        Height = 13
+        Align = alTop
+        Caption = 
+          'Are you sure you want to delete the currently selected weather i' +
+          'tem?'
+      end
+    end
+  end
+  object mnuSearch: TPopupMenu
+    AutoHotkeys = maManual
+    Left = 4
+    Top = 60
+  end
+  object errorinc: TJvErrorIndicator
+    BlinkRate = 200
+    BlinkStyle = ebsNeverBlink
+    Images = pilError
+    ImageIndex = 0
+    Left = 272
+    Top = 64
+  end
+  object vals: TJvValidators
+    ErrorIndicator = errorinc
+    Left = 304
+    Top = 64
+    object valID: TJvRequiredFieldValidator
+      Valid = True
+      ControlToValidate = edWeatherID
+      PropertyToValidate = 'Text'
+      Enabled = True
+      ErrorMessage = 'Required Field'
+    end
+    object valName: TJvRequiredFieldValidator
+      Valid = True
+      ControlToValidate = edName
+      PropertyToValidate = 'Text'
+      Enabled = True
+      ErrorMessage = 'Required Field'
+    end
+  end
+  object pilError: TPngImageList
+    PngImages = <
+      item
         PngImage.Data = {
           89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
-          6100000006624B474400FF00FF00FFA0BDA793000000097048597300000DD700
-          000DD70142289B780000000774494D45000000000000000973942E0000034F49
-          44415478DA95937D48545918C6DF7367EE1DE73A1FCEA453D9358BB2A4CD60D3
-          820D1B0DA3486A5B022982CC32629D714DA9CC4CB28FB132CCCC9C062388B20D
-          4A1622C865FB603708CB48A532EC43719D6C669DC9719A51EFCCBDDD73F63A94
-          F4F54F0F1C9E9703E7C7F3BEE71C045FA8B46CF79570885F8D10526382112164
-          54ABD5351DB11D2B806F087D2CF694ED368FF1FCCDDC4DB98C5E6F4482281189
-          0062140882816172F1D2C5B04EA7CD9241AD5F012A0F562CF2FBFD6D56CB0E74
-          BBC32574FB94A12896554B98D063232381D47888CAFA9163EAEA4F60539C29AD
-          625F65E76780C222CB685161317BED9157FC2FCC2A737EE286A74D62B184B1A1
-          B3CFEFBCD7ED4DE4D4FCFB35A92619523B623FEDD04E002AF69797FE306FBE8D
-          574D275D7E96DE96356BD0A06194B412D17C58D2F846C57F5B9F7B5D2F5DC1F4
-          74EEBD38E6E9C63DBD3D65072B0F9F8A000AACDB49C98E9D50D3E282158B6709
-          29D3F5948A5680820232DE826F447877FDA1DB1DE0459D9E16E3372CD6819C02
-          1CF6B391F4A8A8D88A2D9662D4782F08590BA63C9AAC67A8284619562A908031
-          496AFABBBF5AC4584330180822BB4A96C7424D6D35A9AFB3531140615181B0B3
-          A49476DCF591A906CD8DB99C96925B90C282E4767AC7A23BFBFD2D0A828CF261
-          93280AE5BF2D332A4E9DAE151AEA1DAA08E070D581FBCB3296A7DD753268C027
-          B6A9D56C2BA1C083103588308945407AE5519B86BC9E8DC9894673E60C49BC75
-          E7E6838AF2FD9911C0D16ADB5651940EACCDC94BB8D03A0492441A294AD18710
-          7881E04440A84B0885E630512A5BDE1223D8EBAABC5AADA6A1E6F8C94313D768
-          29FCD56D5E9A491B66A64DFAEB59003CAE378F634D932F138014CF9BD7F3E213
-          672E5C97A2848EB67F483010E49DCE7E69C83734B7F9CA1FEE08E0D8F1AA0503
-          03036D49B393DF66FFB281BBF578109C3E910818A1A4381ACCC906B09FB4E19F
-          D7ACA5DA3BDB6178D8870381C05B8666564E3CE57188D3F9BA252E362E141363
-          645217A6C624242468AF365F7DF1AAE7853ACC8B87620CBA73D9ABB2E149D753
-          30A767E0DF2F375108BE900CDA225B8E9C28437696E3B83F656F2E2BDD77DE6A
-          B51E4114D9BB39370FA2A33570C6D1005F0164511F16FAE4B38D3B192FF2F3F3
-          73D5ACEAEC87BDF5DF027C97FE07AFCB71B02BBFEBE40000000049454E44AE42
-          6082}
-      end
-      object edtLocation: TEdit
-        Left = 0
-        Top = 29
-        Width = 305
-        Height = 21
-        TabOrder = 0
-        OnKeyUp = edtLocationKeyUp
-      end
-    end
-    object Panel2: TPanel
-      Left = 2
-      Top = 217
-      Width = 333
-      Height = 31
-      Align = alBottom
-      BevelOuter = bvNone
-      TabOrder = 2
-      object ImageLb: TImage
-        Left = 0
-        Top = 6
-        Width = 16
-        Height = 16
-        AutoSize = True
-        Picture.Data = {
-          0A54504E474F626A65637489504E470D0A1A0A0000000D494844520000001000
-          00001008060000001FF3FF6100000006624B474400FF00FF00FFA0BDA7930000
-          00097048597300000DD700000DD70142289B780000000774494D450000000000
-          00000973942E000003214944415478DAA593494C53511486FFD7D779A02D0261
-          105AC0010165505B277024B1C401351216262E4C08312E8C31A038C585437481
-          8961E142DDA86163AC1AE6A0629568834A44299432B43688166C2DA5E37BAF3E
-          9E95188D2B6FF2E7DEDC73F2DD7BEEFD0F81FF1CC49F1BDAF24B6922227A1924
-          6908D38C9A6053847CC24D509439C010D5E3ADF5CE7F02320D176A081EEF7AF6
-          622D3F2D3D050A858C4B08068398704E6278688C42247C69A8E5F4D9BF005AC3
-          C5434AA5ECC686926232579B888CD42424C9A248514BE0F187F1F4AD1D7D3617
-          DEBD1D8094C75CEDB97BB4761ED070C7A46B6C7AF9AC6257A9E4D8BE02CC0642
-          104A154855F241B2190E970F8FBA2DE8EA1D83223E1E3DA6DE28685A3BDA76DA
-          C101CA8FDC6CA2F8D2CAD2955944C5FA6C2C4850832D058802229241EF8013A6
-          8F5FE1F17C075F2040BF75028E21DB93A1D6335B39C0B28A2B767DC9EA8CE438
-          01F69415233D5E82E900C06719DF3C33B876AB1D5E7F083C3E8959B69CAC451A
-          BC7A6EF60D3EAC5510B1970F55EC2D13E6A7ABB0A96821A6FC8050C0473842A3
-          C3F41E2FCC166E1D8A50108844282CCAC563632733D67C92E40099E517BDFBF7
-          6F579CAACC83CBEDC7E0840F84480E8AA63162FF828EEE770804230884C28850
-          0C4A4A57E3D1834E66BC2506607FA06747F97ADD89AA62522D17E1FE9301986D
-          DF909FA3654FA5D9EB0761B17EC2A0D5CEBDFB8A821C98BA7AA6465AEA137F95
-          703E2F4773BC6AA75EEA744C60D8318D940405C4EA040458C06C200C920E8308
-          F92196CBF1E6E3A7A8CD62BB676B3B73E017208D47C0B2718B5E3EE30B10F651
-          27942A0536AFCB657F8B064347B15CA38441AF45DBEB31DC6E7AEA2245629DB1
-          E1E0F8BC9132CACE1D9629558DFAB5859872B9410A85E091245B338D249504BB
-          D76642B7340993935391BEFEC1E6A6DB0D75EDEDEDD6DFADAC4A5E537D5CACD6
-          D42D5E9AC559392E4ECE0566BE7B4179BE304B1205DE2519F2E1996967474D4D
-          4D2345519FFF6CA6646972FEBAD4BC6DD5A464812E44F394739B4C78D6CBF89C
-          1F566988376A19CF6A341A9BDD6EB7830D45FFEAC698BDE3582963B3885568EE
-          22AC3CACBCE03CFA73FC003E874620306956960000000049454E44AE426082}
-        Visible = False
-      end
-      object btnCancel: TButton
-        Left = 256
-        Top = 6
-        Width = 75
-        Height = 23
-        Caption = 'Cancel'
-        ModalResult = 2
-        TabOrder = 0
-      end
-      object btnOk: TButton
-        Left = 175
-        Top = 6
-        Width = 75
-        Height = 23
-        Caption = 'Add'
-        ModalResult = 1
-        TabOrder = 1
-      end
-    end
+          610000002A744558744372656174696F6E2054696D65004D692035204D727A20
+          323030332030313A31363A3336202B303130302D49F2060000000774494D4500
+          0000000000000973942E000000097048597300000AF000000AF00142AC349800
+          0002564944415478DAA5D35D4893511807F0FFBBBDEF9C4BA732537A474E215C
+          D95DC22C8AA5284178679A4111751154170979652F8CCAF0030283A246102548
+          D942E8630515097E93294936C7A08D9ACDD636DC74DFDBFBD161441FD0CAF081
+          73F1F03CE777CE79E050586750D90AB357A18FD33A0B64794558B69DD8D381E7
+          FF05CCDFCA1FD1353E30D254126F9F747C61A30B95156D88AC0970DD410BA36F
+          B3149455037C08D1B0070B8F7ABBEA3970FF049C2FA05C59D2D9B7EE33953BA7
+          AF811762D8BEB316EF8627E3E2E27C95E11C3EFE15B099C169765FBC94CB8FA1
+          A866066A350BDBD30454253B307B77C8D2C089AD5981C5FB6043F26AC7E69AE3
+          798AE000D8DAAF28D9580AEB3D2FB46C053E4CBAA465FB27631D87F13F027366
+          F46BEBBA8F52F208347933D8DBE4449CD7627AC285B04F0D3A3706EB0DF79B16
+          4EA8211BA5DF00C74D1824EDFEA9D22AA34C487BA05205601E18C5E740252E9B
+          96108DAF80C98DC0FD3E8EE9C7E2B1233DE8FF15A066AF6F98D8D2D8BB2B9D74
+          93CC0F9A0922AD706335560CB6700E922C04794E0A0A1560ED81271D86BEA90B
+          D10C30DC89C3BADA53031A6D3999BA071415404E8E0FA30F5F43A662D0702806
+          414A8051125B0E043DC02087CED3FD3065805757CA1C86D6EECA54C4411EE627
+          4D0114324ED437079060F4981A1B87C0C721A37F5EF9591F561BCFA220938F98
+          ABBD8603EDA5A9988B7478C9F291D37CA0150E088A222895767C9FD98F18BA00
+          6FF3796CCA0083ED3858ACDBD627A7A97C498C419278B212A492842825040969
+          9213428448122912803FE4C59993B7F132EB5F586BAC1BF8061506EE110DE119
+          B00000000049454E44AE426082}
+        Name = 'PngImage0'
+        Background = clWindow
+      end>
+    Left = 336
+    Top = 64
+    Bitmap = {}
   end
 end
