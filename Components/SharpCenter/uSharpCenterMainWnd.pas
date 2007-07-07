@@ -444,6 +444,29 @@ begin
     exit;
 
   case msg.WParam of
+
+    SCM_SET_TAB_SELECTED: begin
+
+      SCM.StateEditItem := False;
+      SCM.StateEditWarning := False;
+
+      case Msg.LParam of
+        SCB_ADD_TAB: begin
+          tlEditItem.TabIndex := cEdit_Add;
+          FSelectedTabID := cEdit_Add;
+        end;
+        SCB_EDIT_TAB: begin
+          tlEditItem.TabIndex := cEdit_Edit;
+          FSelectedTabID := cEdit_Edit;
+        end;
+        SCB_DELETE: begin
+          tlEditItem.TabIndex := cEdit_Delete;
+          FSelectedTabID := cEdit_Delete;
+        end;
+      end;
+      UpdateThemeEvent(nil);
+    end;
+
     SCM_SET_BUTTON_ENABLED, SCM_SET_BUTTON_DISABLED:
       begin
 
@@ -459,12 +482,6 @@ begin
           SCB_DEL_TAB: tlEditItem.TabList.Item[cEdit_Delete].Visible :=
             bEnabled;
         end;
-
-        {if Not((tlEditItem.TabList.Item[cEdit_Add].Visible) and
-          (tlEditItem.TabList.Item[cEdit_Edit].Visible) and
-            (tlEditItem.TabList.Item[cEdit_Delete].Visible)) then
-              pnlEditContainer.Height := cEditTabhide else
-              pnlEditContainer.Height := cEditTabshow;    }
       end;
 
     SCM_SET_SETTINGS_CHANGED:
@@ -524,6 +541,8 @@ end;
 procedure TSharpCenterWnd.tlToolbarTabChange(ASender: TObject;
   const ATabIndex: Integer; var AChange: Boolean);
 begin
+  if pnlToolbar = nil then exit;
+  
   if SCM.CheckEditState then
   begin
     AChange := False;
@@ -617,7 +636,7 @@ begin
   LockWindowUpdate(Self.Handle);
   try
     FSelectedTabID := ATabIndex;
-    SCM.LoadEdit(FSelectedTabID)
+    SCM.LoadEdit(FSelectedTabID);
   finally
     LockWindowUpdate(0);
   end;
@@ -647,7 +666,7 @@ begin
   //pnlPlugin.DoubleBuffered := True;
 
   // Reinit values
-  FSelectedTabID := -1;
+  FSelectedTabID := 0;
   FCancelClicked := False;
 
   // Update UI
@@ -851,6 +870,12 @@ begin
     pnlToolbar.Hide;
     FSelectedTabID := 0;
     FSelectedPluginTabID := 0;
+
+    if (@SCM.ActivePlugin.OpenEdit <> nil) then begin
+      tlEditItemTabClick(nil,FSelectedTabID);
+      tlEditItem.TabIndex := FSelectedTabID;
+    end;
+
 
     UpdateSize;
 

@@ -720,7 +720,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 145
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -302
+                Left = -342
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1170,7 +1170,7 @@ object SharpCenterWnd: TSharpCenterWnd
               object Edit2: TEdit
                 Left = 0
                 Top = 36
-                Width = -307
+                Width = -347
                 Height = 21
                 Anchors = [akLeft, akTop, akRight]
                 Ctl3D = True
@@ -1354,7 +1354,6 @@ object SharpCenterWnd: TSharpCenterWnd
               Align = alClient
               BevelOuter = bvNone
               Color = 16510947
-              ParentBackground = False
               TabOrder = 0
             end
             object pnlEditToolbar: TPanel
