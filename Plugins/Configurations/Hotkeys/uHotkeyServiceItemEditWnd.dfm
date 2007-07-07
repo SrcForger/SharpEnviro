@@ -171,8 +171,14 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
           Left = 305
           Top = 8
           Width = 161
-          Height = 21
+          Height = 22
           Modifier = []
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clGray
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          ParentFont = False
           OnKeyUp = edHotkeyKeyUp
           Anchors = [akTop, akRight]
         end
