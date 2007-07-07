@@ -1073,7 +1073,8 @@ end;
 procedure TSharpConsoleWnd.tlLogTabChange(ASender: TObject;
   const ATabIndex: Integer; var AChange: Boolean);
 begin
-  plMain.ActivePageIndex := ATabIndex;
+  if plMain <> nil then
+    plMain.ActivePageIndex := ATabIndex;
 end;
 
 procedure TSharpConsoleWnd.Restore(Sender: TObject);
