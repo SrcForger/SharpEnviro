@@ -45,6 +45,8 @@ type
   private
   public
   published
+    property Font;
+    property ParentFont;
     property Modifier;
     property Key;
     property OnChange;
