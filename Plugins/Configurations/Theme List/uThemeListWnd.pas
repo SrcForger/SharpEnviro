@@ -94,10 +94,15 @@ procedure TfrmThemeList.UpdateEditTabs;
   end;
 
 begin
-  if lbThemeList.Count = 0 then
+  if ((lbThemeList.Count = 0) or (lbThemeList.ItemIndex = -1)) then
   begin
     BC(False, SCB_EDIT_TAB);
-    BC(False, SCB_DEL_TAB);
+
+    if (lbThemeList.Count = 0) then begin
+      BC(False, SCB_DEL_TAB);
+      SharpCenterBroadCast(SCM_SET_TAB_SELECTED,SCB_ADD_TAB);
+    end;
+
     BC(True, SCB_ADD_TAB);
   end
   else
