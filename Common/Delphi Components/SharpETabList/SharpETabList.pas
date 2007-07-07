@@ -537,8 +537,15 @@ begin
 end;
 
 procedure TSharpETabList.SetTabIndex(const Value: Integer);
+var
+  bChange:Boolean;
 begin
   FTabIndex := Value;
+  bChange := True;
+
+  if Assigned(FOnTabChange) then
+    FOnTabChange(Self,Value,bChange);
+
   Invalidate;
 end;
 
