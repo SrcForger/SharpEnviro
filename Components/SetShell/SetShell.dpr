@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 program SetShell;
 
 uses
+  VistaTheme,
   Forms,
   MainWnd in 'Forms\MainWnd.pas' {MainForm},
   uShellSwitcher in 'Units\uShellSwitcher.pas',
