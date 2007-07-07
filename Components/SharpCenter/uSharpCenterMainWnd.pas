@@ -790,8 +790,8 @@ begin
   if (@SCM.ActivePlugin.SetBtnState <> nil) then
     if SCM.ActivePlugin.SetBtnState(SCB_CONFIGURE) then
     begin
-      miConfigure.Visible := True;
-      miSep.Visible := True;
+      //miConfigure.Visible := True;
+      //miSep.Visible := True;
     end;
 
   MiAdd.Visible := (@SCM.ActivePlugin.OpenEdit <> nil);
@@ -816,9 +816,6 @@ begin
   begin
     if (@SCM.ActivePlugin.ClickBtn <> nil) then
       SCM.ActivePlugin.ClickBtn(SCB_CONFIGURE, miConfigure.Caption);
-      
-    h := getnextWindow(handle, GW_HWNDNEXT);
-    Setforegroundwindow(h);
   end;
 end;
 

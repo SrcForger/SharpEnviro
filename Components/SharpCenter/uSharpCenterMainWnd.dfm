@@ -720,7 +720,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 145
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -342
+                Left = -346
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1170,7 +1170,7 @@ object SharpCenterWnd: TSharpCenterWnd
               object Edit2: TEdit
                 Left = 0
                 Top = 36
-                Width = -347
+                Width = -351
                 Height = 21
                 Anchors = [akLeft, akTop, akRight]
                 Ctl3D = True
