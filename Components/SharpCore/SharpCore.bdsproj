@@ -160,27 +160,22 @@
 			<VersionInfo Name="CodePage">1252</VersionInfo>
 		</VersionInfo>
 		<VersionInfoKeys>
-			<VersionInfoKeys Name="CompanyName">Lowdimension International</VersionInfoKeys>
-			<VersionInfoKeys Name="FileDescription">Core Component for SharpE</VersionInfoKeys>
+			<VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
+			<VersionInfoKeys Name="FileDescription"></VersionInfoKeys>
 			<VersionInfoKeys Name="FileVersion">0.5.0.21</VersionInfoKeys>
 			<VersionInfoKeys Name="InternalName">SharpCore.exe</VersionInfoKeys>
 			<VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys>
 			<VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
 			<VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName">SharpE</VersionInfoKeys>
-			<VersionInfoKeys Name="ProductVersion">PB5 CVS Release</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductVersion"></VersionInfoKeys>
 			<VersionInfoKeys Name="Comments"></VersionInfoKeys>
 		</VersionInfoKeys>
 		<Language>
 			<Language Name="ActiveLang"></Language>
 			<Language Name="ProjectLang">$00000000</Language>
 			<Language Name="RootDir"></Language>
-		</Language>  
-    
-    
-    
-    
-    <Excluded_Packages>
+		</Language>  <Excluded_Packages>
       <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
     </Excluded_Packages>
   </Delphi.Personality>
