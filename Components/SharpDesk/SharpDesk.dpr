@@ -33,6 +33,11 @@ program SharpDesk;
              
 
 uses
+  madExcept,
+  madLinkDisAsm,
+  madListHardware,
+  madListProcesses,
+  madListModules,
   Forms,
   windows,
   Messages,

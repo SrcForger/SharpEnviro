@@ -451,7 +451,7 @@ begin
   case msg.LParam of
    3: begin
         if not CreateForm.Visible then
-           CreateForm.Showmodal;
+           CreateForm.Show;
         if SharpDesk.Desksettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
       end;
    4 : begin
