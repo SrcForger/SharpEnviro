@@ -46,7 +46,6 @@ var
 {$E ser}
 
 {$R *.RES}
-{$R DeskAreaCR.RES}
 
 procedure Stop;
 begin

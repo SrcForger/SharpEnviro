@@ -135,6 +135,7 @@ begin
     end;
 
     // apply custom monitor offsets
+    //Try
     if n <= High(FOffsetList) then
     begin
       Area.Left   := Area.Left + FOffsetList[n].Left;
@@ -143,11 +144,13 @@ begin
       Area.Bottom := Area.Bottom - FOffsetList[n].Bottom;
     end;
 
-    if not uxTheme.IsThemeActive then
+    {if not uxTheme.IsThemeActive then
     begin
       Area.Top := Area.Top + 4;
       Area.Bottom := Area.Bottom - 4;
-    end;
+    end; }
+   // Except
+   // End;
 
     k := 0;
     if (Area.Left <> Screen.Monitors[n].WorkareaRect.Left) or
