@@ -144,13 +144,14 @@ begin
       Area.Bottom := Area.Bottom - FOffsetList[n].Bottom;
     end;
 
-    {if not uxTheme.IsThemeActive then
+    if (Win32MajorVersion = 5) and (Win32MinorVersion >= 1) then
     begin
-      Area.Top := Area.Top + 4;
-      Area.Bottom := Area.Bottom - 4;
-    end; }
-   // Except
-   // End;
+      if not uxTheme.IsThemeActive then
+      begin
+        Area.Top := Area.Top + 4;
+        Area.Bottom := Area.Bottom - 4;
+      end;
+    end;
 
     k := 0;
     if (Area.Left <> Screen.Monitors[n].WorkareaRect.Left) or
