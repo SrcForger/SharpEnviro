@@ -204,7 +204,8 @@ var
   n,i : integer;
 begin
   if (part <> SU_SKINFILECHANGED) and (part <> SU_BACKGROUND)
-     and (part <> SU_THEME) and (part <> SU_SKIN) then exit;
+     and (part <> SU_THEME) and (part <> SU_SKIN)
+     and (part <> SU_SCHEME) then exit;
 
   if ModuleList = nil then exit;
 
