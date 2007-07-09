@@ -230,6 +230,7 @@ const
 
 type
     pTBitmap = ^Tbitmap;
+    THandleArray = array of HWND;
 
 
 var
@@ -267,6 +268,48 @@ uses uSharpDeskCreateForm,
      uSharpDeskObjectSet;
 
 {$R *.dfm}
+
+function FindAllWindows(const WindowClass: string): THandleArray;
+type
+  PParam = ^TParam;
+  TParam = record
+    ClassName: string;
+    Res: THandleArray;
+  end;
+var
+  Rec: TParam;
+
+  function GetWndClass(pHandle: hwnd): string;
+  var
+    buf: array[0..254] of Char;
+  begin
+    GetClassName(pHandle, buf, SizeOf(buf));
+    result := buf;
+  end;
+
+  function _EnumProc(_hWnd: HWND; _LParam: LPARAM): LongBool; stdcall;
+  begin
+    with PParam(_LParam)^ do
+    begin
+      if (CompareText(GetWndClass(_hWnd), ClassName) = 0) then
+      begin
+        SetLength(Res, Length(Res) + 1);
+        Res[Length(Res) - 1] := _hWnd;
+      end;
+      Result := True;
+    end;
+  end;
+
+begin
+  try
+    Rec.ClassName := WindowClass;
+    SetLength(Rec.Res, 0);
+    EnumWindows(@_EnumProc, Integer(@Rec));
+  except
+    SetLength(Rec.Res, 0);
+  end;
+  Result := Rec.Res;
+end;
 
 
 // ######################################
@@ -697,11 +740,8 @@ procedure TSharpDeskMainForm.BackgroundImageMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer;
   Layer: TCustomLayer);
 var
-   B,i : integer;
-   //cpos : TPoint;
+   B : integer;
    DesktopObject : TDesktopObject;
-   wnd : hwnd;
-   //MenuItem : TMenuItem;
 begin
   if not SharpDesk.Enabled then exit;
   SharpDesk.MouseDown:=False;
@@ -790,9 +830,6 @@ begin
     else
     if (Button = mbRight) then
     begin
-      wnd := FindWindow('TSharpEMenuWnd',nil);
-      if wnd <> 0 then
-         SendMessage(wnd,WM_CLOSE,0,0);
       SharpApi.SharpExecute(SharpApi.GetSharpeDirectory+'SharpMenu.exe '
                             + inttostr(Mouse.CursorPos.X) + ' ' + inttostr(Mouse.CursorPos.Y));
       //sleep(1000);
@@ -811,13 +848,25 @@ procedure TSharpDeskMainForm.BackgroundImageMouseDown(Sender: TObject;
 var
    CPos : TPoint;
    DesktopObject : TDesktopObject;
-   wnd : hwnd;
+   R : TRect;
+   n : integer;
+   HA : THandleArray;
 begin
   if not SharpDesk.Enabled then exit;
 
-  wnd := FindWindow('TSharpEMenuWnd',nil);
-  if wnd <> 0 then
-     SendMessage(wnd,WM_CLOSE,0,0);
+  // Check if the click was in an area of visible SharpE Menu
+  HA := FindAllWindows('TSharpEMenuWnd');
+  if length(HA) > 0 then
+  begin
+    for n := 0 to High(HA) do
+    begin
+      GetWindowRect(HA[n],R);
+      if PointInRect(Mouse.CursorPos,R) then
+         exit;
+    end;
+    SendMessage(HA[0],WM_SHARPTERMINATE,0,0);
+  end;
+  setlength(HA,0);
 
   if SharpDesk.DoubleClick then
   begin

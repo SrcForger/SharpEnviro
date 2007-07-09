@@ -228,7 +228,6 @@ procedure TSharpDeskLayeredWindow.FormMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   pDesktopObject : TDesktopObject;
-  i : integer;
   b : integer;
 begin
   pDesktopObject := TDesktopObject(FDesktopObject);
