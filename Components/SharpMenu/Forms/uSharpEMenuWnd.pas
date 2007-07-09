@@ -94,6 +94,7 @@ type
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure WMNCHitTest(var Message: TWMNCHitTest);
+    procedure WMSharpTerminate(var Msg : TMessage); message WM_SHARPTERMINATE;
   public
     procedure DrawWindow;
     procedure PreMul(Bitmap: TBitmap32);
@@ -177,6 +178,12 @@ begin
   FParentMenu := nil;
 
   InitMenu(pMenu,False);
+end;
+
+procedure TSharpEMenuWnd.WMSharpTerminate(var Msg : TMessage);
+begin
+  Application.ProcessMessages;
+  CloseAll;
 end;
 
 procedure TSharpEMenuWnd.WMPaint(var Msg: TWMPaint);
