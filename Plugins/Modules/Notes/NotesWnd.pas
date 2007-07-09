@@ -46,7 +46,7 @@ type
     tabs: TJvTabBar;
     JvModernTabBarPainter1: TJvModernTabBarPainter;
     tb_paste: TToolButton;
-    tb_selectall: TToolButton;
+    btn_selectall: TToolButton;
     tb_copy: TToolButton;
     ToolButton7: TToolButton;
     tb_close: TToolButton;
@@ -57,19 +57,21 @@ type
     ImportDialog: TOpenDialog;
     ExportDialog: TSaveDialog;
     ToolButton1: TToolButton;
-    btn_fint: TToolButton;
+    btn_find: TToolButton;
     FindDialog: TJvFindReplace;
     btn_linewrap: TToolButton;
     btn_monofont: TToolButton;
     ToolButton2: TToolButton;
     Notes: TJvMemo;
+    procedure NotesKeyPress(Sender: TObject; var Key: Char);
+    procedure NotesKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btn_monofontClick(Sender: TObject);
     procedure btn_linewrapClick(Sender: TObject);
-    procedure btn_fintClick(Sender: TObject);
+    procedure btn_findClick(Sender: TObject);
     procedure ToolButton1Click(Sender: TObject);
     procedure tb_importClick(Sender: TObject);
     procedure tb_exportClick(Sender: TObject);
-    procedure tb_selectallClick(Sender: TObject);
+    procedure btn_selectallClick(Sender: TObject);
     procedure tb_pasteClick(Sender: TObject);
     procedure tb_copyClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -259,7 +261,7 @@ begin
   Notes.PasteFromClipboard;
 end;
 
-procedure TNotesForm.tb_selectallClick(Sender: TObject);
+procedure TNotesForm.btn_selectallClick(Sender: TObject);
 begin
   Notes.SelectAll;
 end;
@@ -299,7 +301,7 @@ begin
   end;
 end;
 
-procedure TNotesForm.btn_fintClick(Sender: TObject);
+procedure TNotesForm.btn_findClick(Sender: TObject);
 begin
   FindDialog.Find;
 end;
@@ -315,6 +317,31 @@ procedure TNotesForm.btn_monofontClick(Sender: TObject);
 begin
   if btn_monofont.Down then Notes.Font.Name := 'Courier New'
      else Notes.Font.Name := 'Tahoma';
+end;
+
+procedure TNotesForm.NotesKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = ord('F')) and (Shift = [ssCtrl]) then
+      btn_find.OnClick(btn_find)
+  else
+  if (Key = ord('A')) and (Shift = [ssCtrl]) then
+      btn_selectall.OnClick(btn_selectall);
+end;
+
+procedure TNotesForm.NotesKeyPress(Sender: TObject; var Key: Char);
+var
+  KS: TKeyboardState;
+  Shift : TShiftState;
+begin
+  if (Key = 'F') or (Key = 'A')
+     or (ord(Key) = 1) or (ord(Key) = 6) then
+  begin
+    GetKeyboardState(KS);
+    Shift := KeyboardStateToShiftState(KS);
+    if (Shift = [ssCtrl]) then
+       Key := #0;
+  end;
 end;
 
 end.

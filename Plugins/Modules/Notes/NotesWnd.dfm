@@ -51,6 +51,7 @@ object NotesForm: TNotesForm
     000080010000800200008000000080010000C0070000EAAF0000FFFF0000}
   OldCreateOrder = False
   OnClose = FormClose
+  OnKeyUp = NotesKeyUp
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -159,7 +160,7 @@ object NotesForm: TNotesForm
       ShowHint = True
       OnClick = ToolButton1Click
     end
-    object tb_selectall: TToolButton
+    object btn_selectall: TToolButton
       Left = 178
       Top = 0
       Hint = 'Select All'
@@ -168,18 +169,18 @@ object NotesForm: TNotesForm
       ImageIndex = 2
       ParentShowHint = False
       ShowHint = True
-      OnClick = tb_selectallClick
+      OnClick = btn_selectallClick
     end
-    object btn_fint: TToolButton
+    object btn_find: TToolButton
       Left = 205
       Top = 0
       Hint = 'Find Text'
       AutoSize = True
-      Caption = 'btn_fint'
+      Caption = 'btn_find'
       ImageIndex = 12
       ParentShowHint = False
       ShowHint = True
-      OnClick = btn_fintClick
+      OnClick = btn_findClick
     end
     object ToolButton2: TToolButton
       Left = 232
@@ -257,6 +258,8 @@ object NotesForm: TNotesForm
       'Notes')
     ScrollBars = ssBoth
     TabOrder = 2
+    OnKeyPress = NotesKeyPress
+    OnKeyUp = NotesKeyUp
   end
   object PngImageList1: TPngImageList
     PngImages = <
