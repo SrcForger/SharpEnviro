@@ -103,7 +103,7 @@
 			<Compiler Name="DuplicatesIgnored">True</Compiler>
 		</Compiler>
 		<Linker>
-			<Linker Name="MapFile">0</Linker>
+			<Linker Name="MapFile">3</Linker>
 			<Linker Name="OutputObjs">0</Linker>
 			<Linker Name="ConsoleApp">1</Linker>
 			<Linker Name="DebugInfo">False</Linker>
@@ -121,7 +121,7 @@
 			<Directories Name="PackageDCPOutputDir"></Directories>
 			<Directories Name="SearchPath">..\..\Common\3rd Party\DosCommand</Directories>
 			<Directories Name="Packages">vclx;vcl;VclSmp;rtl;vclactnband;vclshlctrls;JvStdCtrlsD9R;JvAppFrmD9R;JvCoreD9R;JvBandsD9R;JvCmpD9R;JvCryptD9R;JvCtrlsD9R;JvCustomD9R;JvDlgsD9R;JvDockingD9R;JvJansD9R;JvManagedThreadsD9R;JvMMD9R;JvNetD9R;JvPageCompsD9R;JvPluginD9R;JvPrintPreviewD9R;JvSystemD9R;JvTimeFrameworkD9R;JvValidatorsD9R;JvWizardD9R;JvXPCtrlsD9R;GR32_D2005;GR32_DSGN_D2005;CoolTrayIconPackage;xmlrtl;DJclVcl;DJcl;SharpEFontSelector;SharpEStuff;PNG_D9;PngComponentsD9;SharpE</Directories>
-			<Directories Name="Conditionals"></Directories>
+			<Directories Name="Conditionals">madExcept</Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
 			<Directories Name="UsePackages">False</Directories>
 		</Directories>
@@ -130,12 +130,13 @@
 			<Parameters Name="HostApplication"></Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
-			<Parameters Name="DebugCWD"></Parameters>  <Parameters Name="RemoteHost"></Parameters>
-      <Parameters Name="RemotePath"></Parameters>
-      <Parameters Name="RemoteLauncher"></Parameters>
-      <Parameters Name="RemoteCWD"></Parameters>
-      <Parameters Name="RemoteDebug">False</Parameters>
-    </Parameters>
+			<Parameters Name="DebugCWD"></Parameters>
+			<Parameters Name="RemoteHost"></Parameters>
+			<Parameters Name="RemotePath"></Parameters>
+			<Parameters Name="RemoteLauncher"></Parameters>
+			<Parameters Name="RemoteCWD"></Parameters>
+			<Parameters Name="RemoteDebug">False</Parameters>
+		</Parameters>
 		<VersionInfo>
 			<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
 			<VersionInfo Name="AutoIncBuild">False</VersionInfo>
@@ -154,10 +155,11 @@
 		<VersionInfoKeys>
 			<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
-		</VersionInfoKeys>  <Language>
-      <Language Name="ActiveLang"></Language>
-      <Language Name="ProjectLang">$00000000</Language>
-      <Language Name="RootDir"></Language>
-    </Language>
-  </Delphi.Personality>
+		</VersionInfoKeys>
+		<Language>
+			<Language Name="ActiveLang"></Language>
+			<Language Name="ProjectLang">$00000000</Language>
+			<Language Name="RootDir"></Language>
+		</Language>
+	</Delphi.Personality>
 </BorlandProject>

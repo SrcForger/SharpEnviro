@@ -57,6 +57,8 @@ type
     XPManifest1: TXPManifest;
     ToolButton1: TToolButton;
     btn_changeversion: TToolButton;
+    btn_debugcompile: TToolButton;
+    procedure btn_debugcompileClick(Sender: TObject);
     procedure btn_changeversionClick(Sender: TObject);
     procedure lv_projectsSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
@@ -73,7 +75,7 @@ type
     procedure LoadCompileSettings(pXMLFile : String);
     procedure ClearPackageList;
     procedure BuildProjectList;
-    procedure CompileProjects;
+    procedure CompileProjects(bmadExcept: boolean = False);
   public
     { Public-Deklarationen }
   end;
@@ -115,10 +117,15 @@ var
   list : TObjectList;
   pitem : TDelphiProject;
   pName,pType,pRequ,pPath : String;
+  pSettings : String;
 begin
   ClearPackageList;
   lv_projects.Clear;
 
+  pSettings := ExtractFileDir(pXMLFile) + '\Default.mes';
+  if FileExists(pSettings) then
+    Compiler.madSettings := pSettings;
+    
   XML := TJvSimpleXML.Create(nil);
   try
     if FileExists(pXMLFile) then
@@ -222,6 +229,7 @@ begin
     lb_output.Clear;
     RootDir := IncludeTrailingBackSlash(ExtractFileDir(ODFDialog.FileName));
     btn_compile.Enabled := True;
+    btn_debugcompile.Enabled := True;
     LoadCompileSettings(ODFDialog.FileName);
   end;
 end;
@@ -231,7 +239,7 @@ begin
   BuildProjectList;
 end;
 
-procedure TMainForm.CompileProjects;
+procedure TMainForm.CompileProjects(bmadExcept: boolean = False);
 var
   n,i : integer;
   pItem : TDelphiProject;
@@ -246,6 +254,7 @@ begin
   clb_groups.Enabled := False;
   btn_open.Enabled := False;
   btn_compile.Enabled := False;
+  btn_debugcompile.Enabled := False;
 
   lb_output.Clear;
   Compiler.UpdateBDSData;
@@ -298,7 +307,7 @@ begin
       lb_output.Items.Add('----------------------------------------------');
       if FileExists(pItem.Path) then
       begin
-        if Compiler.CompileProject(pItem.Path) then
+        if Compiler.CompileProject(pItem.Path, bmadExcept) then
         begin
           lvitem.ImageIndex := 1;
           ccount := ccount + 1;
@@ -335,6 +344,7 @@ begin
   clb_groups.Enabled := True;
   btn_open.Enabled := True;
   btn_compile.Enabled := True;
+  btn_debugcompile.Enabled := True;
 
   if lv_projects.SelCount > 0 then
      for n := 0 to lv_projects.Items.Count - 1 do
@@ -477,6 +487,11 @@ begin
              end;
        end;
   end;    }
+end;
+
+procedure TMainForm.btn_debugcompileClick(Sender: TObject);
+begin
+  CompileProjects(True);
 end;
 
 end.

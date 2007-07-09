@@ -79,15 +79,18 @@ type
     FBDSInstalled : boolean;
     FSearchPath   : String;
     FBrowsePath   : String;
+    FmadExceptPath : String;
+    FmadSettings : String;
     procedure OnCompilerNewLine(Sender: TObject; NewLine: string; OutputType: TOutputType);
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
 
-    function CompileProject(pBDSProjFile : String) : boolean;
+    function CompileProject(pBDSProjFile : String; bmadExcept : boolean = False) : boolean;
     procedure UpdateBDSData;
   published
     property OnCompilerCmdOutput : TCompileEvent read FOnCompilerCmdOutput write FOnCompilerCmdOutput;
+    property madSettings    : String read FmadSettings write FmadSettings;
   end;
 
 implementation
@@ -211,6 +214,14 @@ begin
       FBrowsePath := Reg.ReadString('Browsing Path');
       Reg.CloseKey;
     end;
+
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if Reg.OpenKey('Software\madshi\madCollection',False) then
+    begin
+      FmadExceptPath := Reg.ReadString('') +
+        '\madExcept\Tools\madExceptPatch.exe';
+      Reg.CloseKey;
+    end;
   finally
     Reg.Free;
   end;
@@ -219,7 +230,7 @@ begin
   FBrowsePath := StringReplace(FBrowsePath,'$(ProgramFiles)',JclSysInfo.GetProgramFilesFolder,[rfReplaceAll,rfIgnoreCase]);
 end;
 
-function TDelphiCompiler.CompileProject(pBDSProjFile : String) : boolean;
+function TDelphiCompiler.CompileProject(pBDSProjFile : String; bmadExcept : boolean = False) : boolean;
 var
   DP : TDelphiProject;
   DC : TDosCommand;
@@ -233,6 +244,9 @@ var
   exest  : TDateTime;
   serst  : TDateTime;
   targetfile : String;
+  tempDpr : TextFile;
+  origDpr : TextFile;
+  bufDpr : string;
 begin
   result := False;
   
@@ -263,6 +277,34 @@ begin
   DCC32.Add('-U"' + DP.SearchPath + '"');
   DCC32.Add('-R"' + DP.SearchPath + '"');
 
+  if bmadExcept then
+  begin
+    DCC32.Add('-GD');
+    
+    s := pBDSProjFile;
+    SetLength(s, Length(s) - Length(ExtractFileExt(pBDSProjFile)));
+    s := s + '.dpr';
+    AssignFile(origDpr, s);
+    AssignFile(tempDpr, s + '~');
+    Reset(origDpr);
+    Rewrite(tempDpr);
+    while not EOF(origDpr) do
+    begin
+      ReadLn(origDpr, bufDpr);
+      WriteLn(tempDpr, bufDpr);
+      if (pos('uses', lowercase(bufDpr)) <> 0) then
+      begin
+        WriteLn(tempDpr, 'madExcept,');
+        WriteLn(tempDpr, 'madLinkDisAsm,');
+        WriteLn(tempDpr, 'madListHardware,');
+        WriteLn(tempDpr, 'madListProcesses,');
+        WriteLn(tempDpr, 'madListModules,');
+      end;
+    end;
+    CloseFile(tempDpr);
+    CloseFile(origDpr);
+  end;
+
   DCC32.SaveToFile(Dir + 'Dcc32.cfg');
   DCC32.Free;
 
@@ -271,7 +313,10 @@ begin
 
   s := pBDSProjFile;
   setlength(s,length(s) - length(ExtractFileExt(pBDSProjFile)));
-  cmd := 'DCC32 "' + s + '.dpr"';
+  if not bmadExcept then
+    cmd := 'DCC32 "' + s + '.dpr"';
+  if bmadExcept then
+    cmd := 'DCC32 "' + s + '.dpr~"';
 
   SetCurrentDirectory(PChar(Dir));
   ForceDirectories(DP.OutputDir);
@@ -290,6 +335,7 @@ begin
 
   DC.CommandLine := cmd;
   DC.Execute2;
+  DC.Free;
 
   if (FileExists(DP.OutputDir + s + '.dll')) and (dllst <> 0) then
   begin
@@ -314,10 +360,30 @@ begin
        result := True;
 
   DeleteFile(PChar(Dir + 'Dcc32.cfg'));
+  if FileExists(Dir + s + '.dpr~') then
+    DeleteFile(PChar(Dir + s + '.dpr~'));
+
+  if FileExists(FmadExceptPath) and bmadExcept then
+  begin
+    if result then
+    begin
+      DC := TDosCommand.Create(nil);
+      DC.OnNewLine := OnCompilerNewLine;
+      if FileExists(DP.OutputDir + s + '.exe') then
+        cmd := FmadExceptPath + ' ' + DP.OutputDir + s + '.exe ' + FmadSettings;
+      if FileExists(DP.OutputDir + s + '.dll') then
+        cmd := FmadExceptPath + ' ' + DP.OutputDir + s + '.dll ' + FmadSettings;
+      if FileExists(DP.OutputDir + s + '.ser') then
+        cmd := FmadExceptPath + ' ' + DP.OutputDir + s + '.ser ' + FmadSettings;
+      DC.CommandLine := cmd;
+      DC.Execute2;
+      DC.Free;
+    end;
+  end;
+
   if (FileExists(DP.OutputDir + s + '.ser')) then
     MoveFile(PChar(DP.OutputDir + s + '.ser'), PChar(DP.OutputDir + s + '.service'));
 
-  DC.Free;
   DP.Free;
 end;
 

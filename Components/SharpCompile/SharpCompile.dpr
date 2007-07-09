@@ -30,6 +30,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 program SharpCompile;
 
 uses
+  madExcept,
+  madLinkDisAsm,
+  madListHardware,
+  madListProcesses,
+  madListModules,
   Forms,
   MainWnd in 'MainWnd.pas' {MainForm},
   DelphiCompiler in 'DelphiCompiler.pas';

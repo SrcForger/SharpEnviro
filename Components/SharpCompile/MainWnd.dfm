@@ -173,8 +173,19 @@ object MainForm: TMainForm
         ShowHint = True
         OnClick = btn_compileClick
       end
-      object ToolButton1: TToolButton
+      object btn_debugcompile: TToolButton
         Left = 54
+        Top = 0
+        Hint = 'Compile with madExcept'
+        Caption = 'Compile with madExcept'
+        Enabled = False
+        ImageIndex = 1
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = btn_debugcompileClick
+      end
+      object ToolButton1: TToolButton
+        Left = 77
         Top = 0
         Width = 8
         Caption = 'ToolButton1'
@@ -183,11 +194,10 @@ object MainForm: TMainForm
         Visible = False
       end
       object btn_changeversion: TToolButton
-        Left = 62
+        Left = 85
         Top = 0
         Hint = 'Change Version of all Selected Projects'
         Caption = 'Change Version'
-        Enabled = False
         ImageIndex = 2
         ParentShowHint = False
         ShowHint = True
