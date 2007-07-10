@@ -490,8 +490,13 @@ begin
 end;
 
 procedure TMainForm.btn_debugcompileClick(Sender: TObject);
+var
+  bContinue: integer;
 begin
-  CompileProjects(True);
+  bContinue := MessageBox(0, 'WARNING: Compiling with madExcept will make your compilation considerably larger! Are you sure?',
+    'madExcept Warning', MB_YESNO + MB_ICONWARNING);
+  if bContinue = IDYES then
+    CompileProjects(True);
 end;
 
 end.
