@@ -80,7 +80,6 @@ type
     FSearchPath   : String;
     FBrowsePath   : String;
     FmadExceptPath : String;
-    FmadSettings : String;
     procedure OnCompilerNewLine(Sender: TObject; NewLine: string; OutputType: TOutputType);
   public
     constructor Create; reintroduce;
@@ -90,7 +89,6 @@ type
     procedure UpdateBDSData;
   published
     property OnCompilerCmdOutput : TCompileEvent read FOnCompilerCmdOutput write FOnCompilerCmdOutput;
-    property madSettings    : String read FmadSettings write FmadSettings;
   end;
 
 implementation
@@ -364,18 +362,18 @@ begin
   if FileExists(Dir + s + '.dpr~') then
     DeleteFile(PChar(Dir + s + '.dpr~'));
 
-  if FileExists(FmadExceptPath) and bmadExcept and FileExists(FmadSettings) then
+  if FileExists(FmadExceptPath) and bmadExcept then
   begin
     if result then
     begin
       DC := TDosCommand.Create(nil);
       DC.OnNewLine := OnCompilerNewLine;
       if FileExists(DP.OutputDir + s + '.exe') then
-        cmd := FmadExceptPath + ' "' + FmadSettings + '" "' + DP.OutputDir + s + '.exe"' ;
+        cmd := FmadExceptPath + ' "' + DP.OutputDir + s + '.exe"' ;
       if FileExists(DP.OutputDir + s + '.dll') then
-        cmd := FmadExceptPath + ' "' + FmadSettings + '" "' + DP.OutputDir + s + '.dll"';
+        cmd := FmadExceptPath + ' "' + DP.OutputDir + s + '.dll"';
       if FileExists(DP.OutputDir + s + '.ser') then
-        cmd := FmadExceptPath + ' "' + FmadSettings + '" "' + DP.OutputDir + s + '.ser"';
+        cmd := FmadExceptPath + ' "' + DP.OutputDir + s + '.ser"';
       DC.CommandLine := cmd;
       DC.Execute2;
       DC.Free;

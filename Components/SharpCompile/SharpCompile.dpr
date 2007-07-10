@@ -35,6 +35,7 @@ uses
   madListHardware,
   madListProcesses,
   madListModules,
+  VistaTheme in 'VistaTheme.pas',
   Forms,
   MainWnd in 'MainWnd.pas' {MainForm},
   DelphiCompiler in 'DelphiCompiler.pas';

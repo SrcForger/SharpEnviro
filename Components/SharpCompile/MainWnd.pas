@@ -121,10 +121,6 @@ var
 begin
   ClearPackageList;
   lv_projects.Clear;
-
-  pSettings := ExtractFileDir(pXMLFile) + '\Default.mes';
-  if FileExists(pSettings) then
-    Compiler.madSettings := pSettings;
     
   XML := TJvSimpleXML.Create(nil);
   try
