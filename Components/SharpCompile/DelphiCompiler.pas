@@ -364,30 +364,34 @@ begin
   if FileExists(Dir + s + '.dpr~') then
     DeleteFile(PChar(Dir + s + '.dpr~'));
 
-  if FileExists(FmadExceptPath) and bmadExcept then
+  if FileExists(FmadExceptPath) and bmadExcept and FileExists(FmadSettings) then
   begin
     if result then
     begin
       DC := TDosCommand.Create(nil);
       DC.OnNewLine := OnCompilerNewLine;
       if FileExists(DP.OutputDir + s + '.exe') then
-        cmd := FmadExceptPath + ' ' + DP.OutputDir + s + '.exe ' + FmadSettings;
+        cmd := FmadExceptPath + ' "' + FmadSettings + '" "' + DP.OutputDir + s + '.exe"' ;
       if FileExists(DP.OutputDir + s + '.dll') then
-        cmd := FmadExceptPath + ' ' + DP.OutputDir + s + '.dll ' + FmadSettings;
+        cmd := FmadExceptPath + ' "' + FmadSettings + '" "' + DP.OutputDir + s + '.dll"';
       if FileExists(DP.OutputDir + s + '.ser') then
-        cmd := FmadExceptPath + ' ' + DP.OutputDir + s + '.ser ' + FmadSettings;
+        cmd := FmadExceptPath + ' "' + FmadSettings + '" "' + DP.OutputDir + s + '.ser"';
       DC.CommandLine := cmd;
       DC.Execute2;
       DC.Free;
     end;
   end;
 
-  if (FileExists(DP.OutputDir + s + '.ser')) then
+  if FileExists(DP.OutputDir + s + '.ser') then
+  begin
+    if FileExists(DP.OutputDir + s + '.service') then
+      DeleteFile(PChar(DP.OutputDir + s + '.service'));
     MoveFile(PChar(DP.OutputDir + s + '.ser'), PChar(DP.OutputDir + s + '.service'));
+  end;
 
   if FileExists(DP.OutputDir + s + '.map') then
     DeleteFile(PChar(DP.OutputDir + s + '.map'));
-  
+
   DP.Free;
 end;
 
