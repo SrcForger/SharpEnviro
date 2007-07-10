@@ -260,7 +260,8 @@ begin
 
   DCC32.Clear;
   DCC32.Add('-E"' + DP.OutputDir + '"');
-  if DP.UsePackages then
+  // Apparently madExcept doesn't work when compiled with runtime packages
+  if DP.UsePackages and not bmadExcept then
      DCC32.Add('-LU"' + DP.Packages + '"');
 
   DCC32.Add('');
@@ -384,6 +385,9 @@ begin
   if (FileExists(DP.OutputDir + s + '.ser')) then
     MoveFile(PChar(DP.OutputDir + s + '.ser'), PChar(DP.OutputDir + s + '.service'));
 
+  if FileExists(DP.OutputDir + s + '.map') then
+    DeleteFile(PChar(DP.OutputDir + s + '.map'));
+  
   DP.Free;
 end;
 
