@@ -258,6 +258,7 @@ var
   temp : TModule;
 begin
   result := 0;
+  if ModuleList = nil then exit;
   if CompareText(msg,'MM_WEATHERUPDATE') <> 0 then exit;
 
   for n := 0 to ModuleList.Count - 1 do
