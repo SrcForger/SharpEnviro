@@ -376,6 +376,7 @@ end;
 // The Desktop Background has changed
 procedure TSharpBarMainForm.WMDeskBackgroundChange(var msg : TMessage);
 begin
+  if ModuleManager = nil then exit;
   if FSuspended then exit;
   if Closing then exit;
 
@@ -402,6 +403,7 @@ end;
 // SharpE Actions
 procedure TSharpBarMainForm.WMUpdateBangs(var Msg : TMessage);
 begin
+   if ModuleManager = nil then exit;
    ModuleManager.BroadcastPluginMessage('MM_SHARPEUPDATEACTIONS');
 
    SharpApi.RegisterActionEx(PChar('!FocusBar ('+inttostr(FBarID)+')'),'SharpBar',Handle,1);
@@ -423,6 +425,7 @@ end;
 // Weather Service updated the xml files -> broadcast as message to all modules
 procedure TSharpBarMainForm.WMWeatherUpdate(var msg : TMessage);
 begin
+  if ModuleManager = nil then exit;
   ModuleManager.BroadcastPluginMessage('MM_WEATHERUPDATE');
 end;
 

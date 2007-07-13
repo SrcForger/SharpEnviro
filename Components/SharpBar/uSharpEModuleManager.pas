@@ -312,7 +312,7 @@ begin
   for n := 0 to FModules.Count - 1 do
   begin
     tempModule := TModule(FModules.Items[n]);
-    if assigned(tempModule.ModuleFile.DllModuleMessage) then
+    if @tempModule.ModuleFile.DllModuleMessage <> nil then
        tempModule.ModuleFile.DllModuleMessage(tempModule.ID,msg);
   end;
 end;
@@ -1465,6 +1465,16 @@ begin
   FSkinManager    := pSkinManager;
   FBar            := pBar;
   FLoaded         := False;
+
+  DllCreateModule      := nil;
+  DllCloseModule       := nil;
+  DllPosChanged        := nil;
+  DllUpdateMessage     := nil;
+  DllModuleMessage     := nil;
+  DllShowSettingsWnd   := nil;
+  DllRefresh           := nil;
+  DllSetSize           := nil;
+  DllInitModule        := nil;
   //LoadDll;
 end;
 
