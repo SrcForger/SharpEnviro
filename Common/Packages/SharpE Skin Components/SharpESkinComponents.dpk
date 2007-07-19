@@ -30,13 +30,21 @@ requires
   designide,
   xmlrtl,
   vcl,
-  JvSystemD9R,
   Jcl,
-  JvCoreD9R,
   JclVcl,
-  GR32_D2005,
   PNG_D9,
+{$IFDEF VER170}
+  GR32_D2005,
+  JvSystemD9R,
+  JvCoreD9R,
   JvInterpreterD9R;
+{$ENDIF}
+{$IFDEF VER180}
+  GR32_BDS2006,
+  JvSystemD10R,
+  JvCoreD10R,
+  JvInterpreterD10R;
+{$ENDIF}
 
 contains
   sharedBitmapList in '..\..\Delphi Components\SharpE Skin Components\sharedBitmapList.pas',

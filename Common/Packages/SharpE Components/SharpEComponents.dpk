@@ -27,23 +27,34 @@ package SharpEComponents;
 requires
   rtl,
   vcl,
+  xmlrtl,
+  designide,
+  Jcl,
+  JclVcl,
+  VclSmp,
+  SharpESkinComponents,
   PNG_D9,
+  PngComponentsD9,
+{$IFDEF VER170}
   GR32_D2005,
   JvCoreD9R,
   JvSystemD9R,
-  xmlrtl,
-  designide,
   JvStdCtrlsD9R,
   JvCustomD9R,
   JvMMD9R,
   JvCtrlsD9R,
-  PngComponentsD9,
-  Jcl,
-  JclVcl,
-  SharpESkinComponents,
-  VclSmp,
   JvPageCompsD9R;
-
+{$ENDIF}
+{$IFDEF VER180}
+  GR32_BDS2006,
+  JvCoreD10R,
+  JvSystemD10R,
+  JvStdCtrlsD10R,
+  JvCustomD10R,
+  JvMMD10R,
+  JvCtrlsD10R,
+  JvPageCompsD10R;
+{$ENDIF}
 contains
   SharpEFontSelector in '..\..\Delphi Components\SharpEFontSelector\SharpEFontSelector.pas',
   SharpEFontSelectorWnd in '..\..\Delphi Components\SharpEFontSelector\SharpEFontSelectorWnd.pas',
