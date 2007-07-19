@@ -197,7 +197,7 @@ begin
   Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_CURRENT_USER;
-    if Reg.OpenKey('\Software\Borland\BDS\3.0',False) then
+    if Reg.OpenKey('\Software\Borland\BDS\4.0',False) then
     begin
       FBDSEdition := Reg.ReadString('Edition');
       FBDSVersion := Reg.ReadString('ProductVersion');
@@ -206,7 +206,7 @@ begin
       Reg.CloseKey;
     end;
 
-    if Reg.OpenKey('\Software\Borland\BDS\3.0\Library',False) then
+    if Reg.OpenKey('\Software\Borland\BDS\4.0\Library',False) then
     begin
       FSearchPath := Reg.ReadString('Search Path');
       FBrowsePath := Reg.ReadString('Browsing Path');

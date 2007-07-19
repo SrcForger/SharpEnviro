@@ -707,7 +707,6 @@ object MainForm: TMainForm
       end>
     Left = 256
     Top = 136
-    Bitmap = {}
   end
   object XPManifest1: TXPManifest
     Left = 384
