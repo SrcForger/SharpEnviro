@@ -41,6 +41,7 @@ object SharpDeskMainForm: TSharpDeskMainForm
     OnMouseDown = BackgroundImageMouseDown
     OnMouseMove = BackgroundImageMouseMove
     OnMouseUp = BackgroundImageMouseUp
+    OnMouseLeave = BackgroundImageMouseLeave
   end
   object ObjectPopUp: TPopupMenu
     AutoLineReduction = maManual
