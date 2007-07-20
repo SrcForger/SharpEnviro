@@ -49,7 +49,7 @@ object FrmSharpeGaugeBox: TFrmSharpeGaugeBox
       object lblGauge: TLabel
         Left = 2
         Top = 2
-        Width = 241
+        Width = 41
         Height = 13
         Align = alTop
         Alignment = taCenter
