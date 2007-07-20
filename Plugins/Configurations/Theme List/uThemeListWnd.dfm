@@ -1,9 +1,9 @@
 object frmThemeList: TfrmThemeList
   Left = 0
   Top = 0
-  Width = 434
-  Height = 320
   Caption = 'frmThemeList'
+  ClientHeight = 284
+  ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -520,6 +520,5 @@ object frmThemeList: TfrmThemeList
       end>
     Left = 268
     Top = 192
-    Bitmap = {}
   end
 end

@@ -1,9 +1,9 @@
 object frmDesktopSettings: TfrmDesktopSettings
   Left = 0
   Top = 0
-  Width = 384
-  Height = 599
   Caption = 'frmDesktopSettings'
+  ClientHeight = 563
+  ClientWidth = 368
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,20 +19,20 @@ object frmDesktopSettings: TfrmDesktopSettings
   object JvPageList1: TJvPageList
     Left = 0
     Top = 0
-    Width = 376
-    Height = 570
+    Width = 368
+    Height = 563
     ActivePage = JvIconPage
     PropagateEnable = False
     Align = alClient
     object JvIconPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 376
-      Height = 570
+      Width = 368
+      Height = 563
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 376
+        Width = 368
         Height = 129
         Align = alTop
         BevelOuter = bvNone
@@ -135,14 +135,14 @@ object frmDesktopSettings: TfrmDesktopSettings
       object pn_iconsize: TPanel
         Left = 0
         Top = 129
-        Width = 376
+        Width = 368
         Height = 40
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
         object Panel2: TPanel
-          Left = 353
+          Left = 345
           Top = 0
           Width = 23
           Height = 40
@@ -164,7 +164,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         object Panel17: TPanel
           Left = 17
           Top = 0
-          Width = 336
+          Width = 328
           Height = 40
           Align = alClient
           BevelOuter = bvNone
@@ -173,7 +173,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           object sgb_iconsize: TSharpeGaugeBox
             Left = 0
             Top = 0
-            Width = 336
+            Width = 328
             Height = 21
             Align = alTop
             Min = 12
@@ -191,7 +191,7 @@ object frmDesktopSettings: TfrmDesktopSettings
       object pn_alphablendbg: TPanel
         Left = 0
         Top = 169
-        Width = 376
+        Width = 368
         Height = 32
         Align = alTop
         BevelOuter = bvNone
@@ -200,7 +200,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         object pn_alphablend: TPanel
           Left = 137
           Top = 0
-          Width = 216
+          Width = 208
           Height = 32
           Align = alClient
           BevelOuter = bvNone
@@ -209,7 +209,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           object sgb_iconalpha: TSharpeGaugeBox
             Left = 0
             Top = 0
-            Width = 216
+            Width = 208
             Height = 21
             Align = alTop
             Min = 16
@@ -224,7 +224,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           end
         end
         object Panel10: TPanel
-          Left = 353
+          Left = 345
           Top = 0
           Width = 23
           Height = 32
@@ -256,8 +256,8 @@ object frmDesktopSettings: TfrmDesktopSettings
       object IconColors: TSharpEColorEditorEx
         Left = 13
         Top = 265
-        Width = 343
-        Height = 305
+        Width = 335
+        Height = 298
         Align = alClient
         BevelInner = bvNone
         BevelOuter = bvNone
@@ -296,7 +296,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         Left = 0
         Top = 265
         Width = 13
-        Height = 305
+        Height = 298
         Align = alLeft
         BevelOuter = bvNone
         ParentColor = True
@@ -305,7 +305,7 @@ object frmDesktopSettings: TfrmDesktopSettings
       object pn_colorblendbg: TPanel
         Left = 0
         Top = 201
-        Width = 376
+        Width = 368
         Height = 32
         Align = alTop
         BevelOuter = bvNone
@@ -314,7 +314,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         object pn_colorblend: TPanel
           Left = 137
           Top = 0
-          Width = 216
+          Width = 208
           Height = 32
           Align = alClient
           BevelOuter = bvNone
@@ -323,7 +323,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           object sbg_iconcblendalpha: TSharpeGaugeBox
             Left = 0
             Top = 0
-            Width = 216
+            Width = 208
             Height = 21
             Align = alTop
             Min = 0
@@ -338,7 +338,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           end
         end
         object Panel13: TPanel
-          Left = 353
+          Left = 345
           Top = 0
           Width = 23
           Height = 32
@@ -370,7 +370,7 @@ object frmDesktopSettings: TfrmDesktopSettings
       object pn_iconshadowbg: TPanel
         Left = 0
         Top = 233
-        Width = 376
+        Width = 368
         Height = 32
         Align = alTop
         BevelOuter = bvNone
@@ -379,7 +379,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         object pn_iconshadow: TPanel
           Left = 137
           Top = 0
-          Width = 216
+          Width = 208
           Height = 32
           Align = alClient
           BevelOuter = bvNone
@@ -388,7 +388,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           object sgb_iconshadow: TSharpeGaugeBox
             Left = 0
             Top = 0
-            Width = 216
+            Width = 208
             Height = 21
             Align = alTop
             Min = 0
@@ -403,7 +403,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           end
         end
         object Panel15: TPanel
-          Left = 353
+          Left = 345
           Top = 0
           Width = 23
           Height = 32
@@ -433,10 +433,10 @@ object frmDesktopSettings: TfrmDesktopSettings
         end
       end
       object Panel3: TPanel
-        Left = 356
+        Left = 348
         Top = 265
         Width = 20
-        Height = 305
+        Height = 298
         Align = alRight
         BevelOuter = bvNone
         ParentColor = True
@@ -446,18 +446,19 @@ object frmDesktopSettings: TfrmDesktopSettings
     object JvTextPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 376
-      Height = 570
+      Width = 368
+      Height = 563
       object Panel5: TPanel
         Left = 0
         Top = 0
-        Width = 376
+        Width = 368
         Height = 41
         Align = alTop
         BevelOuter = bvNone
         Caption = 'Panel5'
         ParentColor = True
         TabOrder = 0
+        ExplicitWidth = 376
         object Label5: TLabel
           Left = 16
           Top = 16
@@ -481,12 +482,13 @@ object frmDesktopSettings: TfrmDesktopSettings
       object Panel7: TPanel
         Left = 0
         Top = 41
-        Width = 376
+        Width = 368
         Height = 120
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
+        ExplicitWidth = 376
         object Label9: TLabel
           Left = 16
           Top = 8
@@ -538,8 +540,8 @@ object frmDesktopSettings: TfrmDesktopSettings
       object textcolors: TSharpEColorEditorEx
         Left = 25
         Top = 225
-        Width = 331
-        Height = 345
+        Width = 323
+        Height = 338
         Align = alClient
         BevelInner = bvNone
         BevelOuter = bvNone
@@ -577,21 +579,23 @@ object frmDesktopSettings: TfrmDesktopSettings
         Left = 0
         Top = 225
         Width = 25
-        Height = 345
+        Height = 338
         Align = alLeft
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 3
+        ExplicitHeight = 345
       end
       object pn_textshadowbg: TPanel
         Left = 0
         Top = 193
-        Width = 376
+        Width = 368
         Height = 32
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 4
+        ExplicitWidth = 376
         object pn_textshadow: TPanel
           Left = 137
           Top = 0
@@ -651,12 +655,13 @@ object frmDesktopSettings: TfrmDesktopSettings
       object pn_fontalphablendbg: TPanel
         Left = 0
         Top = 161
-        Width = 376
+        Width = 368
         Height = 32
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 5
+        ExplicitWidth = 376
         object pn_fontalphablend: TPanel
           Left = 137
           Top = 0
@@ -714,26 +719,28 @@ object frmDesktopSettings: TfrmDesktopSettings
         end
       end
       object Panel18: TPanel
-        Left = 356
+        Left = 348
         Top = 225
         Width = 20
-        Height = 345
+        Height = 338
         Align = alRight
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 6
+        ExplicitLeft = 356
+        ExplicitHeight = 345
       end
     end
     object JvAnimationPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 376
-      Height = 570
+      Width = 368
+      Height = 563
       object pn_anim: TPanel
         Left = 0
         Top = 49
-        Width = 376
-        Height = 521
+        Width = 368
+        Height = 514
         Align = alClient
         BevelOuter = bvNone
         ParentColor = True
@@ -741,13 +748,14 @@ object frmDesktopSettings: TfrmDesktopSettings
         object pn_animscalebg: TPanel
           Left = 0
           Top = 96
-          Width = 376
+          Width = 368
           Height = 32
           Align = alTop
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 0
           Visible = False
+          ExplicitWidth = 376
           object pn_animscale: TPanel
             Left = 137
             Top = 0
@@ -807,12 +815,13 @@ object frmDesktopSettings: TfrmDesktopSettings
         object pn_animalphabg: TPanel
           Left = 0
           Top = 0
-          Width = 376
+          Width = 368
           Height = 32
           Align = alTop
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 1
+          ExplicitWidth = 376
           object pn_animalpha: TPanel
             Left = 137
             Top = 0
@@ -872,12 +881,13 @@ object frmDesktopSettings: TfrmDesktopSettings
         object pn_animbrightnessbg: TPanel
           Left = 0
           Top = 32
-          Width = 376
+          Width = 368
           Height = 32
           Align = alTop
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 2
+          ExplicitWidth = 376
           object pn_animbrightness: TPanel
             Left = 137
             Top = 0
@@ -937,12 +947,13 @@ object frmDesktopSettings: TfrmDesktopSettings
         object pn_animcolorblendbg: TPanel
           Left = 0
           Top = 64
-          Width = 376
+          Width = 368
           Height = 32
           Align = alTop
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 3
+          ExplicitWidth = 376
           object pn_animcolorblend: TPanel
             Left = 137
             Top = 0
@@ -1000,20 +1011,22 @@ object frmDesktopSettings: TfrmDesktopSettings
           end
         end
         object Panel19: TPanel
-          Left = 356
+          Left = 348
           Top = 128
           Width = 20
-          Height = 393
+          Height = 386
           Align = alRight
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 4
+          ExplicitLeft = 356
+          ExplicitHeight = 393
         end
         object animcolors: TSharpEColorEditorEx
           Left = 25
           Top = 128
-          Width = 331
-          Height = 393
+          Width = 323
+          Height = 386
           Align = alClient
           BevelInner = bvNone
           BevelOuter = bvNone
@@ -1040,22 +1053,24 @@ object frmDesktopSettings: TfrmDesktopSettings
           Left = 0
           Top = 128
           Width = 25
-          Height = 393
+          Height = 386
           Align = alLeft
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 6
+          ExplicitHeight = 393
         end
       end
       object Panel9: TPanel
         Left = 0
         Top = 0
-        Width = 376
+        Width = 368
         Height = 49
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
+        ExplicitWidth = 376
         object cb_anim: TCheckBox
           Left = 16
           Top = 16
@@ -1070,7 +1085,7 @@ object frmDesktopSettings: TfrmDesktopSettings
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 299
+    Width = 291
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16

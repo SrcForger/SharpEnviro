@@ -1,9 +1,9 @@
 object frmBarList: TfrmBarList
   Left = 0
   Top = 0
-  Width = 434
-  Height = 320
   Caption = 'frmBarList'
+  ClientHeight = 284
+  ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,8 +19,8 @@ object frmBarList: TfrmBarList
   object lbBarList: TSharpEListBoxEx
     Left = 0
     Top = 0
-    Width = 426
-    Height = 291
+    Width = 418
+    Height = 284
     Columns = <
       item
         Width = 32
@@ -133,7 +133,6 @@ object frmBarList: TfrmBarList
       end>
     Left = 304
     Top = 192
-    Bitmap = {}
   end
   object pilDefault: TPngImageList
     PngImages = <
@@ -584,7 +583,6 @@ object frmBarList: TfrmBarList
       end>
     Left = 268
     Top = 192
-    Bitmap = {}
   end
   object Timer1: TTimer
     Interval = 500

@@ -1,9 +1,9 @@
 object frmCursesList: TfrmCursesList
   Left = 0
   Top = 0
-  Width = 434
-  Height = 320
   Caption = 'frmCursesList'
+  ClientHeight = 284
+  ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

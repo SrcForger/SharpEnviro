@@ -185,6 +185,5 @@ object frmItemEdit: TfrmItemEdit
       end>
     Left = 336
     Top = 64
-    Bitmap = {}
   end
 end

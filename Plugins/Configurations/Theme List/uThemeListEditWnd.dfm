@@ -199,6 +199,5 @@ object frmEditItem: TfrmEditItem
       end>
     Left = 412
     Top = 16
-    Bitmap = {}
   end
 end

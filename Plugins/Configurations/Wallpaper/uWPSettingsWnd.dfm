@@ -1,9 +1,9 @@
 object frmWPSettings: TfrmWPSettings
   Left = 0
   Top = 0
-  Width = 461
-  Height = 592
   Caption = 'frmWPSettings'
+  ClientHeight = 556
+  ClientWidth = 445
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,8 +19,8 @@ object frmWPSettings: TfrmWPSettings
   object Panel6: TPanel
     Left = 0
     Top = 0
-    Width = 453
-    Height = 563
+    Width = 445
+    Height = 556
     Align = alClient
     AutoSize = True
     BevelOuter = bvNone
@@ -30,8 +30,8 @@ object frmWPSettings: TfrmWPSettings
     object srr_bg: TSharpERoundPanel
       Left = 5
       Top = 30
-      Width = 443
-      Height = 528
+      Width = 435
+      Height = 521
       Align = alClient
       Alignment = taLeftJustify
       BevelOuter = bvNone
@@ -50,28 +50,28 @@ object frmWPSettings: TfrmWPSettings
       object JvPageList1: TJvPageList
         Left = 2
         Top = 2
-        Width = 439
-        Height = 524
+        Width = 431
+        Height = 517
         ActivePage = JvWPPage
         PropagateEnable = False
         Align = alClient
         object JvWPPage: TJvStandardPage
           Left = 0
           Top = 0
-          Width = 439
-          Height = 524
+          Width = 431
+          Height = 517
           Caption = 'JvWPPage'
           object Panel1: TPanel
             Left = 0
             Top = 0
-            Width = 439
+            Width = 431
             Height = 217
             Align = alTop
             BevelOuter = bvNone
             ParentColor = True
             TabOrder = 0
             DesignSize = (
-              439
+              431
               217)
             object Label1: TLabel
               Left = 216
@@ -148,7 +148,7 @@ object frmWPSettings: TfrmWPSettings
               Height = 21
               AddQuotes = False
               Flat = False
-              ParentCtl3D = False
+              ParentFlat = False
               Filter = 
                 'All Image Files (*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.' +
                 'bmp'
@@ -162,8 +162,8 @@ object frmWPSettings: TfrmWPSettings
           object wpcolors: TSharpEColorEditorEx
             Left = 8
             Top = 217
-            Width = 423
-            Height = 307
+            Width = 415
+            Height = 300
             Align = alClient
             AutoSize = True
             BevelInner = bvNone
@@ -191,17 +191,17 @@ object frmWPSettings: TfrmWPSettings
             Left = 0
             Top = 217
             Width = 8
-            Height = 307
+            Height = 300
             Align = alLeft
             BevelOuter = bvNone
             ParentColor = True
             TabOrder = 2
           end
           object Panel3: TPanel
-            Left = 431
+            Left = 423
             Top = 217
             Width = 8
-            Height = 307
+            Height = 300
             Align = alRight
             BevelOuter = bvNone
             ParentColor = True
@@ -211,9 +211,11 @@ object frmWPSettings: TfrmWPSettings
         object JvCCPage: TJvStandardPage
           Left = 0
           Top = 0
-          Width = 439
-          Height = 524
+          Width = 431
+          Height = 517
           Caption = 'JvCCPage'
+          ExplicitWidth = 439
+          ExplicitHeight = 524
           object pn_cchange: TPanel
             Left = 0
             Top = 0
@@ -290,18 +292,19 @@ object frmWPSettings: TfrmWPSettings
         object JvGDPage: TJvStandardPage
           Left = 0
           Top = 0
-          Width = 439
-          Height = 524
+          Width = 431
+          Height = 517
           Caption = 'JvGDPage'
           object pn_gradient: TPanel
             Left = 0
             Top = 0
-            Width = 439
+            Width = 431
             Height = 145
             Align = alTop
             BevelOuter = bvNone
             ParentColor = True
             TabOrder = 0
+            ExplicitWidth = 439
             object Label2: TLabel
               Left = 233
               Top = 32
@@ -378,8 +381,8 @@ object frmWPSettings: TfrmWPSettings
           object gdcolors: TSharpEColorEditorEx
             Left = 8
             Top = 145
-            Width = 423
-            Height = 379
+            Width = 415
+            Height = 372
             Align = alClient
             AutoSize = True
             BevelInner = bvNone
@@ -415,24 +418,27 @@ object frmWPSettings: TfrmWPSettings
             OnUiChange = wpcolorsUiChange
           end
           object Panel4: TPanel
-            Left = 431
+            Left = 423
             Top = 145
             Width = 8
-            Height = 379
+            Height = 372
             Align = alRight
             BevelOuter = bvNone
             ParentColor = True
             TabOrder = 2
+            ExplicitLeft = 431
+            ExplicitHeight = 379
           end
           object Panel5: TPanel
             Left = 0
             Top = 145
             Width = 8
-            Height = 379
+            Height = 372
             Align = alLeft
             BevelOuter = bvNone
             ParentColor = True
             TabOrder = 3
+            ExplicitHeight = 379
           end
         end
       end
@@ -440,7 +446,7 @@ object frmWPSettings: TfrmWPSettings
     object tabs: TSharpETabList
       Left = 5
       Top = 5
-      Width = 443
+      Width = 435
       Height = 25
       Align = alTop
       OnTabChange = tabsTabChange
@@ -482,7 +488,7 @@ object frmWPSettings: TfrmWPSettings
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 391
+    Width = 383
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16

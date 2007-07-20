@@ -530,6 +530,5 @@ object frmItemsList: TfrmItemsList
       end>
     Left = 300
     Top = 220
-    Bitmap = {}
   end
 end

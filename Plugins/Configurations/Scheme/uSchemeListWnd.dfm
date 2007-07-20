@@ -78,7 +78,6 @@ object frmSchemeList: TfrmSchemeList
       end>
     Left = 284
     Top = 64
-    Bitmap = {}
   end
   object imlCol2: TPngImageList
     PngImages = <
@@ -595,7 +594,6 @@ object frmSchemeList: TfrmSchemeList
       end>
     Left = 280
     Top = 112
-    Bitmap = {}
   end
   object bmlMain: TBitmap32List
     Bitmaps = <

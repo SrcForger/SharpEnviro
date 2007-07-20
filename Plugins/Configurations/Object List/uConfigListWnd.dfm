@@ -1,9 +1,9 @@
 object frmConfigListWnd: TfrmConfigListWnd
   Left = 0
   Top = 0
-  Width = 434
-  Height = 320
   Caption = 'frmConfigListWnd'
+  ClientHeight = 284
+  ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,8 +17,8 @@ object frmConfigListWnd: TfrmConfigListWnd
   object ListBox1: TListBox
     Left = 0
     Top = 0
-    Width = 426
-    Height = 291
+    Width = 418
+    Height = 284
     Align = alClient
     BorderStyle = bsNone
     Ctl3D = False

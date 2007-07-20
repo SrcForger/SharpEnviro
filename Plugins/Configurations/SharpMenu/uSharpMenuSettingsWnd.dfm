@@ -1,9 +1,9 @@
 object frmMenuSettings: TfrmMenuSettings
   Left = 0
   Top = 0
-  Width = 518
-  Height = 599
   Caption = 'frmMenuSettings'
+  ClientHeight = 563
+  ClientWidth = 502
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,21 +18,21 @@ object frmMenuSettings: TfrmMenuSettings
   object JvPageList1: TJvPageList
     Left = 0
     Top = 0
-    Width = 510
-    Height = 570
+    Width = 502
+    Height = 563
     ActivePage = JvSettingsPage
     PropagateEnable = False
     Align = alClient
     object JvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 510
-      Height = 570
+      Width = 502
+      Height = 563
       ParentBackground = True
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 510
+        Width = 502
         Height = 33
         Align = alTop
         BevelOuter = bvNone
@@ -53,7 +53,7 @@ object frmMenuSettings: TfrmMenuSettings
       object Panel2: TPanel
         Left = 0
         Top = 97
-        Width = 510
+        Width = 502
         Height = 64
         Align = alTop
         BevelOuter = bvNone
@@ -63,7 +63,7 @@ object frmMenuSettings: TfrmMenuSettings
       object pn_wrap: TPanel
         Left = 0
         Top = 33
-        Width = 510
+        Width = 502
         Height = 64
         Align = alTop
         BevelOuter = bvNone
@@ -122,8 +122,10 @@ object frmMenuSettings: TfrmMenuSettings
     object JvAdvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 510
-      Height = 570
+      Width = 502
+      Height = 563
+      ExplicitWidth = 510
+      ExplicitHeight = 570
       object Panel3: TPanel
         Left = 0
         Top = 0
@@ -168,9 +170,11 @@ object frmMenuSettings: TfrmMenuSettings
     object JvStandardPage1: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 510
-      Height = 570
+      Width = 502
+      Height = 563
       Caption = 'JvStandardPage1'
+      ExplicitWidth = 510
+      ExplicitHeight = 570
     end
   end
 end

@@ -98,7 +98,7 @@ object frmEditItem: TfrmEditItem
         Width = 137
         Height = 21
         Style = csDropDownList
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 1
         OnSelect = cbBasedOnSelect
       end
@@ -109,7 +109,7 @@ object frmEditItem: TfrmEditItem
         Height = 21
         Style = csDropDownList
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 2
         OnSelect = cbBasedOnSelect
       end
@@ -120,7 +120,7 @@ object frmEditItem: TfrmEditItem
         Height = 21
         Style = csDropDownList
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 13
+        ItemHeight = 0
         ItemIndex = 0
         TabOrder = 3
         Text = 'Top'
@@ -136,7 +136,7 @@ object frmEditItem: TfrmEditItem
         Height = 21
         Style = csDropDownList
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 13
+        ItemHeight = 0
         ItemIndex = 0
         TabOrder = 4
         Text = 'Left'
@@ -157,7 +157,7 @@ object frmEditItem: TfrmEditItem
       object Label2: TLabel
         Left = 0
         Top = 26
-        Width = 459
+        Width = 197
         Height = 13
         Align = alTop
         Caption = '(Settings for all used modules will be lost)'
@@ -165,7 +165,7 @@ object frmEditItem: TfrmEditItem
       object Label1: TJvLabel
         Left = 0
         Top = 0
-        Width = 459
+        Width = 78
         Height = 13
         Align = alTop
         Caption = 'Confirmation:'
@@ -185,7 +185,7 @@ object frmEditItem: TfrmEditItem
       object Label4: TLabel
         Left = 0
         Top = 13
-        Width = 459
+        Width = 316
         Height = 13
         Align = alTop
         Caption = 'Are you sure you want to delete the currently selected SharpBar?'
@@ -208,6 +208,7 @@ object frmEditItem: TfrmEditItem
           'There is no space left to create another SharpBar at any possibl' +
           'e position.'
         WordWrap = True
+        ExplicitWidth = 357
       end
       object JvLabel4: TJvLabel
         Left = 0
@@ -228,6 +229,7 @@ object frmEditItem: TfrmEditItem
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
         Images = pilError
+        ExplicitWidth = 33
       end
       object Label6: TLabel
         Left = 0
@@ -239,6 +241,7 @@ object frmEditItem: TfrmEditItem
           'Reduce the size of already existing bars or disable another Shar' +
           'pBar to free some screen space.'
         WordWrap = True
+        ExplicitWidth = 431
       end
     end
   end
@@ -295,6 +298,5 @@ object frmEditItem: TfrmEditItem
       end>
     Left = 108
     Top = 64
-    Bitmap = {}
   end
 end
