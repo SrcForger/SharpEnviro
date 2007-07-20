@@ -41,8 +41,9 @@ uses
   CheckLst,
   Buttons,
   uDebugging,
-  CoolTrayIcon, pngimage, XPMan, PngImageList, SharpERoundPanel, SharpETabList,
-  JvExControls, JvPageList, clipbrd, JvExCheckLst, JvCheckListBox, JvgListBox;
+  pngimage, XPMan, PngImageList, SharpERoundPanel, SharpETabList,
+  JvExControls, JvPageList, clipbrd, JvExCheckLst, JvCheckListBox, JvgListBox,
+  JvComponentBase, JvTrayIcon;
 
 type
   PConsoleMsg = ^TConsoleMsg;
@@ -78,7 +79,6 @@ type
     dlgSaveFile: TSaveDialog;
     mnuClear: TPopupMenu;
     DeleteAllHistory1: TMenuItem;
-    tiMain: TCoolTrayIcon;
     mnuTi: TPopupMenu;
     Exit1: TMenuItem;
     imgDebugTrace: TImage;
@@ -116,6 +116,7 @@ type
     clbDebugLevel: TJvgCheckListBox;
     clbModuleList: TJvgCheckListBox;
     chkRefreshDebug: TCheckBox;
+    tiMain: TJvTrayIcon;
     procedure clbDebugLevelClick(Sender: TObject);
     procedure clbModuleListClick(Sender: TObject);
     procedure tlLogTabChange(ASender: TObject;
