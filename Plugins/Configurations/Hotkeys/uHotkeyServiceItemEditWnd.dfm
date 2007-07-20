@@ -260,7 +260,6 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
       end>
     Left = 352
     Top = 32
-    Bitmap = {}
   end
   object errorinc: TJvErrorIndicator
     BlinkRate = 200
