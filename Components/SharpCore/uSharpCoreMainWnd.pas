@@ -52,16 +52,13 @@ uses
   // Jedi
   JclFileUtils,
 
-  // CoolTray
-  CoolTrayIcon,
-
   // SharpE
   SharpAPI,
 
   // Program Units
   uSharpCoreServiceList,
   pngimage,
-  AppEvnts, PngImageList, SharpESkinManager, XPMan;
+  AppEvnts, PngImageList, SharpESkinManager, XPMan, JvComponentBase, JvTrayIcon;
 
 type
   TSharpCoreMainWnd = class(TForm)
@@ -71,7 +68,6 @@ type
     N1: TMenuItem;
     Panel1: TPanel;
     Panel3: TPanel;
-    trayicon: TCoolTrayIcon;
     sbList: TScrollBox;
     Settings1: TMenuItem;
     miCheckShell: TMenuItem;
@@ -97,6 +93,7 @@ type
     N3: TMenuItem;
     ShutdownSharpEcloseallcomponents1: TMenuItem;
     XPManifest1: TXPManifest;
+    trayicon: TJvTrayIcon;
     procedure ShutdownSharpEcloseallcomponents1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
