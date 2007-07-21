@@ -77,6 +77,9 @@ begin
       RegisterActionEx('!Shutdown', 'Shutdown', SharpCoreMainWnd.Handle, 2);
       RegisterActionEx('!Logout', 'Shutdown', SharpCoreMainWnd.Handle, 3);
       RegisterActionEx('!Hibernate', 'Shutdown', SharpCoreMainWnd.Handle, 4);
+      RegisterActionEx('!MinimizeAll', 'Tasks', SharpCoreMainWnd.Handle, 5);
+      RegisterActionEx('!RestoreAll', 'Tasks', SharpCoreMainWnd.Handle, 6);
+      RegisterActionEx('!ToggleAllBars', 'SharpBar', SharpCoreMainWnd.Handle, 7);
       SharpCoreMainWnd.Trayicon.IconVisible := True;
 
       Application.Title := 'SharpCore';

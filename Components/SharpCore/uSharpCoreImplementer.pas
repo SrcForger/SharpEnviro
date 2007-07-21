@@ -172,7 +172,7 @@ var
   ShutDown: TScShutDown;
   sParam, s: string;
   bBreak: Boolean;
-  i,n: Integer;
+  n: Integer;
 begin
   // Shell Check
   AExitApp := false;
