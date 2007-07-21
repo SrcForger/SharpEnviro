@@ -149,6 +149,10 @@ type
     procedure WMDeskClosing(var msg : TMessage); message WM_DESKCLOSING;
     procedure WMDeskBackgroundChange(var msg : TMessage); message WM_DESKBACKGROUNDCHANGED;
 
+    // Bad Show/Hide Messages
+    procedure WMShowBar(var msg : TMessage); message WM_SHOWBAR;
+    procedure WMHideBar(var msg : TMessage); message WM_HIDEBAR;
+
     // Bar Message
     procedure WMBarReposition(var msg : TMessage); message WM_BARREPOSITION;
     procedure WMBarInsertModule(var msg : TMessage); message WM_BARINSERTMODULE;
@@ -282,6 +286,25 @@ end;
 // ************************
 // Window Message handlers
 // ************************
+
+procedure TSharpBarMainForm.WMShowBar(var msg : TMessage);
+begin
+  if not SharpbarMainForm.Visible then
+  begin
+    SharpBarMainForm.Show;
+    BarHideForm.UpdateStatus;
+  end;
+end;
+
+procedure TSharpBarMainForm.WMHideBar(var msg : TMessage);
+begin
+  if SharpBarMainForm.Visible then
+  begin
+    SharpBarMainForm.Hide;
+    ShowWindow(SharpEBar.abackground.Handle, SW_HIDE);
+    BarHideForm.UpdateStatus;
+  end;
+end;
 
 // Settings in the XML file have changed, the bar should reload the settings
 // and update its position
@@ -1159,6 +1182,7 @@ procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
   Closing := False;
   DoubleBuffered := True;
+  SharpThemeApi.LoadTheme;
 
   WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
 
