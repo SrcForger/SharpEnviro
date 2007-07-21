@@ -1,10 +1,10 @@
 object NotesForm: TNotesForm
   Left = 0
   Top = 0
-  Width = 485
-  Height = 301
   BorderIcons = [biSystemMenu]
   Caption = 'Notes'
+  ClientHeight = 272
+  ClientWidth = 477
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -63,10 +63,8 @@ object NotesForm: TNotesForm
     AutoSize = True
     ButtonWidth = 27
     Caption = 'ToolBar1'
-    EdgeBorders = []
     EdgeInner = esNone
     EdgeOuter = esNone
-    Flat = True
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -11
@@ -642,7 +640,6 @@ object NotesForm: TNotesForm
       end>
     Left = 312
     Top = 120
-    Bitmap = {}
   end
   object JvModernTabBarPainter1: TJvModernTabBarPainter
     Font.Charset = DEFAULT_CHARSET

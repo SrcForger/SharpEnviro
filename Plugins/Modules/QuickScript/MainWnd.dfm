@@ -1,9 +1,9 @@
 object MainForm: TMainForm
   Left = 0
   Top = 0
-  Width = 293
-  Height = 175
   Caption = 'Sharp Menu'
+  ClientHeight = 146
+  ClientWidth = 285
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -157,6 +157,5 @@ object MainForm: TMainForm
       end>
     Left = 184
     Top = 24
-    Bitmap = {}
   end
 end
