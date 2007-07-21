@@ -134,7 +134,6 @@ type
     N1: TMenuItem;
     N10: TMenuItem;
     N14: TMenuItem;
-    procedure BackgroundImageMouseLeave(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -1910,13 +1909,6 @@ begin
 //  if MakeWindow1.ImageIndex = 29 then
   //   DesktopObject.MakeWindow
 //     else DesktopObject.MakeLayer;
-end;
-
-procedure TSharpDeskMainForm.BackgroundImageMouseLeave(Sender: TObject);
-begin
-  SharpDesk.SelectionCount:=0;
-  SharpDesk.UnselectAll;
-  SharpDesk.LastLayer := -1;
 end;
 
 end.

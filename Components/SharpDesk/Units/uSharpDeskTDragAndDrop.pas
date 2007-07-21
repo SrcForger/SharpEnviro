@@ -146,7 +146,7 @@ var
    ObjectFile : TObjectFile;
    ObjectSet : TObjectSet;
    ObjectSetItem : TObjectSetItem;
-   SList : TStringList;
+   //SList : TStringList;
 begin  
   n := GetIndexByExt(pFile);
   if n = -1 then exit;
@@ -168,12 +168,14 @@ begin
   oXML.Root.Name := s+'ObjectSettings';
   ID := inttostr(TSharpDeskManager(FOwner).GenerateObjectID);
 
-  SList := TStringList.Create;
+{  SList := TStringList.Create;
   SList.Clear;
   for n := 0 to TSharpDeskManager(FOwner).ObjectSetList.Count - 1 do
     if TObjectSet(TSharpDeskManager(FOwner).ObjectSetList.Items[n]).ThemeList.IndexOf(SharpThemeApi.GetThemeName) >= 0 then
        SList.Add(inttostr(TObjectSet(TSharpDeskManager(FOwner).ObjectSetList.Items[n]).SetID));
   ObjectSet := TObjectset(TSharpDeskManager(FOwner).ObjectSetList.GetSetByID(strtoint(SList[0])));
+  SList.Free;}
+  ObjectSet := TObjectset(TSharpDeskManager(FOwner).ObjectSetList.Items[0]);
   if ObjectSet = nil then exit;
   ObjectSetItem := ObjectSet.AddDesktopObject(strtoint(ID),ObjectFile.FileName,Point(X,Y),False,False);
 

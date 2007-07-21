@@ -41,7 +41,6 @@ object SharpDeskMainForm: TSharpDeskMainForm
     OnMouseDown = BackgroundImageMouseDown
     OnMouseMove = BackgroundImageMouseMove
     OnMouseUp = BackgroundImageMouseUp
-    OnMouseLeave = BackgroundImageMouseLeave
   end
   object ObjectPopUp: TPopupMenu
     AutoLineReduction = maManual
@@ -2548,6 +2547,5 @@ object SharpDeskMainForm: TSharpDeskMainForm
       end>
     Left = 224
     Top = 40
-    Bitmap = {}
   end
 end
