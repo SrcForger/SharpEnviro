@@ -13,13 +13,12 @@
       <Projects Name="DeskArea.ser">..\Plugins\Services\DeskArea\DeskArea.bdsproj</Projects>
       <Projects Name="Exec.ser">..\Plugins\Services\Exec\Exec.bdsproj</Projects>
       <Projects Name="Hotkeys.ser">..\Plugins\Services\Hotkeys\Hotkeys.bdsproj</Projects>
-      <Projects Name="Prism.ser">..\Plugins\Services\Prism\Prism.bdsproj</Projects>
       <Projects Name="SkinController.ser">..\Plugins\Services\Skin\SkinController.bdsproj</Projects>
       <Projects Name="Startup.ser">..\Plugins\Services\StartupApps\Startup.bdsproj</Projects>
       <Projects Name="SystemTray.ser">..\Plugins\Services\SystemTray\SystemTray.bdsproj</Projects>
       <Projects Name="Weather.ser">..\Plugins\Services\Weather\Weather.bdsproj</Projects>
       <Projects Name="Actions.ser">..\Plugins\Services\Actions\Actions.bdsproj</Projects>
-      <Projects Name="Targets">curses.ser DeskArea.ser Exec.ser Hotkeys.ser Prism.ser SkinController.ser Startup.ser SystemTray.ser Weather.ser Actions.ser</Projects>
+      <Projects Name="Targets">curses.ser DeskArea.ser Exec.ser Hotkeys.ser SkinController.ser Startup.ser SystemTray.ser Weather.ser Actions.ser</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
