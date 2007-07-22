@@ -1319,6 +1319,8 @@ begin
       end else
       begin
         // NotifyIcon Version < 4
+        if msg = WM_RBUTTONUP then
+           PostMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,WM_CONTEXTMENU);
         PostMessage(tempItem.Wnd,tempItem.CallbackMessage,tempItem.uID,msg);
       end;
     end;
