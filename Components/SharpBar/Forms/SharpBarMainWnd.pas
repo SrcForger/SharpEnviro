@@ -61,7 +61,6 @@ type
     Settings1: TMenuItem;
     AutoStart1: TMenuItem;
     ThrobberPopUp: TPopupMenu;
-    Information1: TMenuItem;
     N5: TMenuItem;
     Delete1: TMenuItem;
     Move1: TMenuItem;
@@ -99,7 +98,6 @@ type
     procedure Left2Click(Sender: TObject);
     procedure Delete1Click(Sender: TObject);
     procedure SettingsClick(Sender: TObject);
-    procedure Information1Click(Sender: TObject);
     procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure SharpEBar1ThrobberMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1753,11 +1751,6 @@ begin
       SharpApi.ServiceMsg('DeskArea','Update');
     end;
   end;
-end;
-
-procedure TSharpBarMainForm.Information1Click(Sender: TObject);
-begin
-  Showmessage('Someone should create a nice Informations Dialog!');
 end;
 
 procedure TSharpBarMainForm.SettingsClick(Sender: TObject);

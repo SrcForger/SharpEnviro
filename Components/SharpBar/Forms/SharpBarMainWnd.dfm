@@ -764,12 +764,6 @@ object SharpBarMainForm: TSharpBarMainForm
     Images = PngImageList1
     Left = 352
     Top = 40
-    object Information1: TMenuItem
-      Caption = 'About'
-      Enabled = False
-      ImageIndex = 18
-      OnClick = Information1Click
-    end
     object Settings: TMenuItem
       Tag = -1
       Caption = 'Settings'
