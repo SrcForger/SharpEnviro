@@ -2037,7 +2037,6 @@ object SharpCoreMainWnd: TSharpCoreMainWnd
     Hint = 'SharpCore'
     PopupMenu = mnuTray
     OnDblClick = trayiconDblClick
-    OnMouseUp = trayiconMouseUp
     Left = 296
     Top = 72
   end

@@ -127,8 +127,6 @@ type
     procedure Sourceforge1Click(Sender: TObject);
     procedure trayiconDblClick(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure trayiconMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
   private
     { Private declarations }
     procedure CloseCore(var Msg: TMessage); message WM_APP + 1;
@@ -652,13 +650,6 @@ procedure TSharpCoreMainWnd.trayiconDblClick(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   SharpCoreMainWnd.Show;
-end;
-
-procedure TSharpCoreMainWnd.trayiconMouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  if Button = mbRight then
-     mnuTray.Popup(x,y);
 end;
 
 procedure TSharpCoreMainWnd.Sourceforge1Click(Sender: TObject);
