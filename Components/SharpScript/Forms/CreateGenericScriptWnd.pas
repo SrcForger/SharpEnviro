@@ -18,7 +18,7 @@ type
     lb_errors: TListBox;
     PngImageList1: TPngImageList;
     JvInterpreter: TJvInterpreterProgram;
-    ToolButton4: TToolButton;
+    tb_saveas: TToolButton;
     OpenScript: TOpenDialog;
     SaveScript: TSaveDialog;
     ToolButton5: TToolButton;
@@ -115,18 +115,23 @@ type
     WindowHandling1: TMenuItem;
     functionFindWindowClassNameStringWindowNameStringhwnd1: TMenuItem;
     functionCopyFilesSrcDirDstDirSrcExtDestExtStringOverwritebooleanboolean2: TMenuItem;
+    ToolButton6: TToolButton;
+    ToolButton7: TToolButton;
     procedure LOGWINDOWOFF1Click(Sender: TObject);
     procedure JvInterpreterStatement(Sender: TObject);
     procedure btn_insertClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure GenericPopupClick(Sender: TObject);
-    procedure ToolButton4Click(Sender: TObject);
+    procedure tb_saveasClick(Sender: TObject);
     procedure ToolButton1Click(Sender: TObject);
     procedure ToolButton2Click(Sender: TObject);
     procedure ed_scriptPaintGutter(Sender: TObject; Canvas: TCanvas);
+    procedure ToolButton6Click(Sender: TObject);
+    procedure ToolButton7Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
   public
-    { Public-Deklarationen }
+    CFile : String;
   end;
 
 var
@@ -192,6 +197,23 @@ begin
   SharpFileUtils_Adapter.UnRegisterFileUtilsLog;
 end;
 
+procedure TCreateGenericScriptForm.ToolButton6Click(Sender: TObject);
+begin
+  if length(CFile) > 0 then
+     ed_script.Lines.SaveToFile(CFile)
+     else tb_saveas.OnClick(tb_saveas);
+end;
+
+procedure TCreateGenericScriptForm.ToolButton7Click(Sender: TObject);
+begin
+  ed_script.Lines.Clear;
+  ed_script.Lines.Add('begin');
+  ed_script.Lines.Add('');
+  ed_script.Lines.Add('end;');
+  CFile := '';
+  Caption := 'Create SharpE Script (' + CFile +')';
+end;
+
 procedure TCreateGenericScriptForm.ToolButton1Click(Sender: TObject);
 var
   Dir : String;
@@ -206,10 +228,12 @@ begin
   if OpenScript.Execute then
   begin
     ed_script.Lines.LoadFromFile(OpenScript.FileName);
+    CFile := OpenScript.FileName;
+    Caption := 'Create SharpE Script (' + CFile +')';
   end;
 end;
 
-procedure TCreateGenericScriptForm.ToolButton4Click(Sender: TObject);
+procedure TCreateGenericScriptForm.tb_saveasClick(Sender: TObject);
 var
   Dir : String;
 begin
@@ -223,8 +247,16 @@ begin
   if SaveScript.Execute then
   begin
     if CompareText(ExtractFileExt(SaveScript.FileName),'.sescript') = 0 then
-       ed_script.Lines.SaveToFile(SaveScript.FileName)
-       else ed_script.Lines.SaveToFile(SaveScript.FileName + '.sescript');
+    begin
+      ed_script.Lines.SaveToFile(SaveScript.FileName);
+      CFile := SaveScript.FileName;
+    end else
+    begin
+      ed_script.Lines.SaveToFile(SaveScript.FileName + '.sescript');
+      CFile := SaveScript.FileName + '.sescript';
+    end;
+
+    Caption := 'Create SharpE Script (' + CFile +')';
   end;
 end;
 
@@ -239,7 +271,12 @@ end;
 procedure TCreateGenericScriptForm.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-  MainForm.Show;
+//  MainForm.Show;
+end;
+
+procedure TCreateGenericScriptForm.FormCreate(Sender: TObject);
+begin
+  CFile := '';;
 end;
 
 procedure TCreateGenericScriptForm.btn_insertClick(Sender: TObject);

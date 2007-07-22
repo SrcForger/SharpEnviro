@@ -1,9 +1,9 @@
 object CreateGenericScriptForm: TCreateGenericScriptForm
   Left = 0
   Top = 0
-  Width = 870
-  Height = 568
-  Caption = 'Create Generic SharpE Script'
+  Caption = 'Create SharpE Script'
+  ClientHeight = 539
+  ClientWidth = 862
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,13 +13,14 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object ed_script: TJvHLEditor
     Left = 0
-    Top = 38
-    Width = 854
-    Height = 397
+    Top = 36
+    Width = 862
+    Height = 388
     Cursor = crIBeam
     Lines.Strings = (
       'begin'
@@ -73,36 +74,51 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
     Colors.Statement.BackColor = clWindow
     Colors.PlainText.ForeColor = clWindowText
     Colors.PlainText.BackColor = clWindow
+    ExplicitTop = 38
+    ExplicitHeight = 404
   end
   object ToolBar2: TToolBar
     Left = 0
     Top = 0
-    Width = 854
-    Height = 38
+    Width = 862
+    Height = 36
     AutoSize = True
     ButtonHeight = 36
-    ButtonWidth = 36
+    ButtonWidth = 58
     Caption = 'ToolBar2'
-    Flat = True
     Images = PngImageList1
     ShowCaptions = True
     TabOrder = 1
-    object ToolButton1: TToolButton
+    object ToolButton7: TToolButton
       Left = 0
+      Top = 0
+      Caption = 'New'
+      ImageIndex = 7
+      OnClick = ToolButton7Click
+    end
+    object ToolButton1: TToolButton
+      Left = 58
       Top = 0
       Caption = 'Open'
       ImageIndex = 4
       OnClick = ToolButton1Click
     end
-    object ToolButton4: TToolButton
-      Left = 36
+    object ToolButton6: TToolButton
+      Left = 116
       Top = 0
       Caption = 'Save'
+      ImageIndex = 6
+      OnClick = ToolButton6Click
+    end
+    object tb_saveas: TToolButton
+      Left = 174
+      Top = 0
+      Caption = 'Save As...'
       ImageIndex = 2
-      OnClick = ToolButton4Click
+      OnClick = tb_saveasClick
     end
     object ToolButton3: TToolButton
-      Left = 72
+      Left = 232
       Top = 0
       Width = 8
       Caption = 'ToolButton3'
@@ -110,14 +126,14 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
       Style = tbsSeparator
     end
     object ToolButton2: TToolButton
-      Left = 80
+      Left = 240
       Top = 0
       Caption = 'Run'
       ImageIndex = 3
       OnClick = ToolButton2Click
     end
     object ToolButton5: TToolButton
-      Left = 116
+      Left = 298
       Top = 0
       Width = 8
       Caption = 'ToolButton5'
@@ -125,7 +141,7 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
       Style = tbsSeparator
     end
     object btn_insert: TToolButton
-      Left = 124
+      Left = 306
       Top = 0
       AutoSize = True
       Caption = 'Insert'
@@ -137,9 +153,9 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
   end
   object lb_errors: TListBox
     Left = 0
-    Top = 435
-    Width = 854
-    Height = 97
+    Top = 424
+    Width = 862
+    Height = 115
     Align = alBottom
     ItemHeight = 13
     TabOrder = 2
@@ -283,10 +299,65 @@ object CreateGenericScriptForm: TCreateGenericScriptForm
           FC06303FF1D9EB62ADE50000000049454E44AE426082}
         Name = 'PngImage5'
         Background = clMenu
+      end
+      item
+        PngImage.Data = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          6100000006624B4744000000000000F943BB7F000000097048597300000B1300
+          000B1301009A9C180000000774494D45000000000000000973942E0000008C74
+          455874436F6D6D656E74004D656E752D73697A65642069636F6E0A3D3D3D3D3D
+          3D3D3D3D3D0A0A2863292032303033204A616B756220276A696D6D6163272053
+          7465696E65722C200A687474703A2F2F6A696D6D61632E6D7573696368616C6C
+          2E637A0A0A637265617465642077697468207468652047494D502C0A68747470
+          3A2F2F7777772E67696D702E6F7267678AC7470000029F4944415478DA9D925B
+          4853711CC7BFE76C6ED35DD84A5749E6CC28A62F1504929097878CA807835004
+          CDCC9758794D2C372F7BB034CDCC48460476951EAC17237ACC0ABB500B241DDB
+          32352F135DEA99BBB8CBE974CE311D0B7DE90B7FBEFFFFFFF0FDFCFEBF1F87B8
+          D05C6B9870C793F30B010A4002BB8EB12B358A64FC7289F797421CB8FFB4E5AA
+          1E9B88C8AEE82AD2ECD56A12B7A9C7F627C55524AAA20F7A4234461CCBF8F271
+          E0B77D7216FB5443BBBA8DBDD31B02748D2DDD41D7FCF91043629656C2278E83
+          401885829CC3488EDF82CE67EF404F99A1112D6C943712BACA32A6B6A61C093B
+          76E3C74F0B9C1E319EBCB5E2937918D5A579703829BC19FC0063C971A468E2D7
+          931E8F0775865A1055353AA6ADA50B1445816118B83C144C2F8730F0D58EACCC
+          0CA865423C7FF51AE5B987907520957D331767201289A0375C065156A1633ADA
+          6E61915AC2497D4FC4FB38C0D8FC32C687CD11F72F9ACF422C16435FFF17D07E
+          FD261617973031634399E93D8AF373611D9F5C0F906CD9E49DDBF1B0AF1F85D9
+          7B703A331D9268090C0D5756016DAD1D2008027373739870D8517DEF330FB18F
+          4FF180346D226EF4F4A1202309A78EA441A95482A669D437D68501DC50643259
+          04E452693E9C6E3F1EB195F3D213F8B05AAD86DBED86402008035AAFB5C3E974
+          422A95F2104EDF6C66549A06E10FD228C9D1A2F8C45190240997CBC51793CBE5
+          6868D2AF023A3B6EF32D6C262EC0C9E7F3F1BEB2B21209282E3A87603018110A
+          8542100A85EBFB7FA552A960BA7B270CE0E8369B8D1F10479748243C8073ABD5
+          0AAD560B8BC5C2BBC3E1E0018F7B1FAC02CE1496C0EBF5B21F661013238542A1
+          E0FBE500DCB046BF8F429BC2024646584FC1CCF434B6C6C68601E517ABF8BF70
+          4D7EBF9FF74020B0E95CB896D7004DECB911FF27E31FE2832F126DB0627E0000
+          000049454E44AE426082}
+        Name = 'PngImage6'
+        Background = clMenu
+      end
+      item
+        PngImage.Data = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          6100000006624B474400FC00E9004F34D7B10D000000097048597300000B1300
+          000B1301009A9C180000000774494D45000000000000000973942E0000018249
+          44415478DA9593BD4BC34014C0DF7DA4AD943462412CD87F417071F44F10DC9D
+          3AD6C1D925A5DDA4E0E82405114450A858A9828E2E8AF5A39D3A38B45197B429
+          5215DB26172F95C626A6D13E08EF7897DFEFDEBD1094CBE576154559019F0887
+          7B108D7EC0A4F4098B0B37D929A9720ED0B946227B45E974DA9465D98F87766B
+          1B047C0B043F8161747A865EBF08879E0F00DEF76D41B3D904C6581F4008D9B0
+          80AF20488A20D07B40788E573030BDCC98513F0C5075D316A8AAEA800739808F
+          20448F81D01820BAC42B04CC5E018CEE6959A06AD62170C35604499E3F052E98
+          E58265BE49B920CF05271581A8B22D68341ABF606B4DD1E5F71548951F3E6F55
+          C1D41FCC6EA77636117C591B2918648CDA20A022505CE2435478C5045D9F612D
+          ADBA1E9B2E651D0237FCD3CD1B1FE61D1F5F8DAF43B0B3F708C9E4467FD3F115
+          BC60F7952449824C2603A9546A3CC120FB0AAC97BCC0E12E229188B740D3B491
+          E0701645F16F815F172305E38443F09FBFD11DF1787C2B9148ACF605631DED11
+          5FE97CCC01A69112BD0000000049454E44AE426082}
+        Name = 'PngImage7'
+        Background = clMenu
       end>
     Left = 384
     Top = 184
-    Bitmap = {}
   end
   object JvInterpreter: TJvInterpreterProgram
     OnStatement = JvInterpreterStatement

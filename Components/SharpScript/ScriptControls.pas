@@ -9,17 +9,16 @@ uses Forms,
      Classes,
      Types,
      JvComponentBase,
-     JvInterpreter,
-     AbArcTyp;
+     JvInterpreter;
 
 type
-  TSharpEInstallerScript = class
+  {TSharpEInstallerScript = class
                            private
                              FUnzipList : TStringList;
                            public
                              procedure UnzipProcess(Sender : TObject; Item : TAbArchiveItem; Progress : Byte; var Abort : Boolean);
                              procedure DoInstall(FileName : String);
-                           end;
+                           end;      }
 
   TSharpEGenericScript = class
                          private
@@ -33,18 +32,13 @@ implementation
 
 uses  DateUtils,
       SharpApi,
-      AbUtils,
-      AbBase,
-      AbBrowse,
-      AbZBrows,
-      AbUnzper,
       InstallWnd,
       LogWnd,
       SharpApi_Adapter,
       SharpBase_Adapter,
       SharpFileUtils_Adapter;
 
-procedure TSharpEInstallerScript.UnzipProcess(Sender : TObject; Item : TAbArchiveItem; Progress : Byte; var Abort : Boolean);
+{procedure TSharpEInstallerScript.UnzipProcess(Sender : TObject; Item : TAbArchiveItem; Progress : Byte; var Abort : Boolean);
 begin
   if FUnzipList.IndexOf(Item.FileName) < 0 then
      FUnzipList.Add(Item.FileName);
@@ -153,7 +147,7 @@ begin
     UnZipper.Free;
     RenameFile(s,FileName);
   end;
-end;
+end;                               }
 
 procedure TSharpEGenericScript.OnInterpreterStatement(Sender : TObject);
 begin

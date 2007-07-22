@@ -22,7 +22,7 @@ uses
 var
   Prm : String;
   Ext : String;
-  installscript : TSharpEInstallerScript;
+  //installscript : TSharpEInstallerScript;
   genericscript : TSharpEGenericScript;
   newgeneric : boolean;
 
@@ -30,7 +30,7 @@ begin
   SharpBase_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   SharpApi_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   SharpFileUtils_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
-  SharpArchiveUtils_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
+  //SharpArchiveUtils_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
   Windows_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
 
@@ -46,7 +46,7 @@ begin
     if FileExists(Prm) then
     begin
       Ext := ExtractFileExt(Prm);
-      if Ext = '.sip' then
+      {if Ext = '.sip' then
       begin
         installscript := TSharpEInstallerScript.Create;
         try
@@ -55,7 +55,8 @@ begin
           installscript.Free;
           Halt;
         end;
-      end else if Ext = '.sescript' then
+      end else }
+      if Ext = '.sescript' then
       begin
         genericscript := TSharpEGenericScript.Create;
         try
@@ -69,10 +70,8 @@ begin
   end;
 
   Application.Initialize;
-  Application.CreateForm(TMainForm, MainForm);
-  Application.CreateForm(TCreateInstallScriptForm, CreateInstallScriptForm);
   Application.CreateForm(TCreateGenericScriptForm, CreateGenericScriptForm);
-  if newgeneric then
-     CreateGenericScriptForm.show;
+  //if newgeneric then
+  //   CreateGenericScriptForm.show;
   Application.Run;
 end.

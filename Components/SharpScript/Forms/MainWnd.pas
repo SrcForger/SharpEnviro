@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Menus, XPMan, SharpApi,
-  JvComponentBase, JvInterpreter, AbArcTyp;
+  JvComponentBase, JvInterpreter;
 
 type
   TMainForm = class(TForm)
@@ -68,7 +68,7 @@ end;
 procedure TMainForm.Execute1Click(Sender: TObject);
 var
   Ext,Dir : String;
-  installscript : TSharpEInstallerScript;
+  //installscript : TSharpEInstallerScript;
   genericscript : TSharpEGenericScript;
 begin
   if OpenScript.InitialDir = '' then
@@ -80,7 +80,7 @@ begin
   if OpenScript.Execute then
   begin
     Ext := ExtractFileExt(OpenScript.FileName);
-    if Ext = '.sip' then
+    {if Ext = '.sip' then
     begin
       installscript := TSharpEInstallerScript.Create;
       try
@@ -88,7 +88,8 @@ begin
       finally
         installscript.Free;
       end;
-    end else if Ext = '.sescript' then
+    end else }
+    if Ext = '.sescript' then
     begin
       genericscript := TSharpEGenericScript.Create;
       try

@@ -1,9 +1,9 @@
 object CreateInstallScriptForm: TCreateInstallScriptForm
   Left = 0
   Top = 0
-  Width = 805
-  Height = 611
   Caption = 'Create Install Script'
+  ClientHeight = 582
+  ClientWidth = 797
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,9 +17,9 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
   TextHeight = 13
   object ed_script: TJvHLEditor
     Left = 0
-    Top = 38
-    Width = 559
-    Height = 440
+    Top = 36
+    Width = 567
+    Height = 449
     Cursor = crIBeam
     Lines.Strings = (
       'unit InstallScript;'
@@ -112,17 +112,18 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
     Colors.Statement.BackColor = clWindow
     Colors.PlainText.ForeColor = clWindowText
     Colors.PlainText.BackColor = clWindow
+    ExplicitTop = 38
+    ExplicitHeight = 447
   end
   object ToolBar2: TToolBar
     Left = 0
     Top = 0
-    Width = 789
-    Height = 38
+    Width = 797
+    Height = 36
     AutoSize = True
     ButtonHeight = 36
     ButtonWidth = 74
     Caption = 'ToolBar2'
-    Flat = True
     Images = PngImageList1
     ShowCaptions = True
     TabOrder = 1
@@ -150,17 +151,17 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
     end
   end
   object Panel1: TPanel
-    Left = 559
-    Top = 38
+    Left = 567
+    Top = 36
     Width = 230
-    Height = 440
+    Height = 449
     Align = alRight
     TabOrder = 2
     object Panel2: TPanel
       Left = 1
       Top = 257
       Width = 228
-      Height = 182
+      Height = 191
       Align = alClient
       BevelOuter = bvNone
       BorderWidth = 5
@@ -168,31 +169,33 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
       object Label1: TLabel
         Left = 5
         Top = 5
-        Width = 25
+        Width = 218
         Height = 13
         Align = alTop
         Caption = 'Files:'
+        ExplicitWidth = 25
       end
       object lb_files: TListBox
         Left = 5
         Top = 18
         Width = 218
-        Height = 140
+        Height = 146
         Align = alClient
         ItemHeight = 13
         TabOrder = 0
+        ExplicitHeight = 144
       end
       object ToolBar1: TToolBar
         Left = 5
-        Top = 153
+        Top = 164
         Width = 218
-        Height = 24
+        Height = 22
         Align = alBottom
         AutoSize = True
         Caption = 'ToolBar1'
-        Flat = True
         Images = PngImageList1
         TabOrder = 1
+        ExplicitTop = 162
         object btn_addfile: TToolButton
           Left = 0
           Top = 0
@@ -221,10 +224,11 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
       object Label2: TLabel
         Left = 5
         Top = 5
-        Width = 55
+        Width = 218
         Height = 13
         Align = alTop
         Caption = 'Changelog:'
+        ExplicitWidth = 55
       end
       object ed_changelog: TMemo
         Left = 5
@@ -252,6 +256,7 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
         Height = 13
         Align = alTop
         Caption = 'Release Notes:'
+        ExplicitWidth = 73
       end
       object ed_rnotes: TMemo
         Left = 5
@@ -271,8 +276,8 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
   end
   object lb_errors: TListBox
     Left = 0
-    Top = 478
-    Width = 789
+    Top = 485
+    Width = 797
     Height = 97
     Align = alBottom
     ItemHeight = 13
@@ -370,7 +375,6 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
       end>
     Left = 216
     Top = 184
-    Bitmap = {}
   end
   object AddFileDialog: TOpenDialog
     Filter = 'Any File (*.*)|*.*'
@@ -383,13 +387,6 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofNoReadOnlyReturn, ofEnableSizing, ofForceShowHidden]
     Left = 320
     Top = 192
-  end
-  object AbZipper1: TAbZipper
-    AutoSave = False
-    DOSMode = False
-    StoreOptions = [soStripDrive, soRemoveDots, soReplace]
-    Left = 344
-    Top = 112
   end
   object XPManifest1: TXPManifest
     Left = 272

@@ -5,9 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, JvExControls, JvComponent, JvEditorCommon, JvEditor, JvHLEditor,
-  StdCtrls, ExtCtrls, ToolWin, ComCtrls, ImgList, PngImageList, AbBase,
-  AbBrowse, AbZBrows, AbZipper, AbUtils, DateUtils, XPMan, JvComponentBase,
-  JvInterpreter;
+  StdCtrls, ExtCtrls, ToolWin, ComCtrls, ImgList, PngImageList,
+  DateUtils, XPMan, JvComponentBase, JvInterpreter;
 
 type
   TCreateInstallScriptForm = class(TForm)
@@ -32,7 +31,6 @@ type
     Panel4: TPanel;
     Label3: TLabel;
     ed_rnotes: TMemo;
-    AbZipper1: TAbZipper;
     XPManifest1: TXPManifest;
     JvInterpreter: TJvInterpreterProgram;
     lb_errors: TListBox;
@@ -87,7 +85,7 @@ var
   b : boolean;
   s : String;
 begin
-  if SavePackageDialog.Execute then
+ { if SavePackageDialog.Execute then
   begin
     b := False;
     AbZipper1.ArchiveType := atZip;
@@ -124,7 +122,7 @@ begin
     RenameFile(s,SavePackageDialog.FileName + '.sip');
     
     if not b then showmessage('PANIC: something went wrong!');
-  end;
+  end;    }
 end;
 
 procedure TCreateInstallScriptForm.ToolButton2Click(Sender: TObject);

@@ -35,13 +35,7 @@ interface
 
 uses Windows,
      SysUtils,
-     JvInterpreter,
-     AbUtils,
-     AbArcTyp,
-     AbBase,
-     AbBrowse,
-     AbZBrows,
-     AbUnzper;
+     JvInterpreter;
 
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
@@ -55,7 +49,7 @@ uses Variants,
      JclStrings,
      SharpApi;
 
-procedure Adapter_DecompressFile(var Value: Variant; Args: TJvInterpreterArgs);
+{procedure Adapter_DecompressFile(var Value: Variant; Args: TJvInterpreterArgs);
 var
   UnZipper : TAbUnZipper;
   fname : String;
@@ -83,14 +77,14 @@ begin
   end;
   UnZipper.Free;
   Value := Error;
-end;
+end;              }
 
 
 procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapter);
 begin
   with JvInterpreterAdapter do
   begin
-    AddFunction('SharpArchiveUtils','DecompressFile',Adapter_DecompressFile,2,[varString,varString],varBoolean);
+    //AddFunction('SharpArchiveUtils','DecompressFile',Adapter_DecompressFile,2,[varString,varString],varBoolean);
   end;
 end;
 
