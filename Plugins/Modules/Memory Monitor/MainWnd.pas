@@ -213,7 +213,7 @@ begin
           lb_swp.LabelStyle := lsSmall;
           lb_swp.UpdateSkin;
           lb_swp.Left := o4 - 5;
-          lb_swp.Top := 1 + (o2 div 2) - (lb_swp.Height div 2);
+          lb_swp.Top := 2 + (o2 div 2) - (lb_swp.Height div 2);
           o3 := lb_swp.Left + lb_swp.Width + 2;
           o5 := o3;
         end else lb_swp.visible := False;
