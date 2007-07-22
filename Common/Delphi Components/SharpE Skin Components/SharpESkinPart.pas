@@ -405,7 +405,7 @@ begin
   while i <= length(s) do
   begin
     inc(i);
-    if (s[i] >= '0') and (s[i] <= '9') then
+    if (ord(s[i]) >= 48) and (ord(s[i]) <= 57) then
       tmp := tmp + s[i]
     else
       if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'cw') then
@@ -574,7 +574,7 @@ begin
   sub := false;
   for i := 1 to length(s) do
   begin
-    if (s[i] >= '0') and (s[i] <= '9') then
+    if (ord(s[i]) >= 48) and (ord(s[i]) <= 57) then
       tmp := tmp + s[i]
     else
       if (lowercase(s[i]) = 'w') then
@@ -881,7 +881,7 @@ begin
   while i <= length(s) do
   begin
     inc(i);
-    if (s[i] >= '0') and (s[i] <= '9') and (s[i] <> #0) then
+    if (ord(s[i]) >= 48) and (ord(s[i]) <= 57) and (s[i] <> #0) then
       tmp := tmp + s[i]
     else
       if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'cw') then
@@ -1857,7 +1857,7 @@ begin
   while n <= length(str) do
   begin
     inc(n);
-    if (str[n] >= '0') and (str[n] <= '9') then
+    if (ord(str[n]) >= 48) and (ord(str[n]) <= 57) then
       tmp := tmp + str[n]
     else
     begin
