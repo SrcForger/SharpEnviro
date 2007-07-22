@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, GR32_RangeBars, ExtCtrls, SharpeGaugeBoxEdit, StdCtrls, ComCtrls,
-  JvExComCtrls, JvComCtrls, uVistaFuncs, JvExExtCtrls, JvPanel, JvComponent;
+  JvExComCtrls, JvComCtrls, uVistaFuncs, JvExExtCtrls, JvPanel, JvComponent,
+  JvExtComponent;
 
 type
   TFrmSharpeGaugeBox = class(TForm)
@@ -98,6 +99,8 @@ procedure TFrmSharpeGaugeBox.FormCreate(Sender: TObject);
 begin
   NoUpdate := False;
 
+  // remove the window from the task list
+  Setwindowlong(handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
 end;
 
 procedure TFrmSharpeGaugeBox.GaugeBarMouseDown(Sender: TObject;

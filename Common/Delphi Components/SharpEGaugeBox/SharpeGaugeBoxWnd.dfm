@@ -49,7 +49,7 @@ object FrmSharpeGaugeBox: TFrmSharpeGaugeBox
       object lblGauge: TLabel
         Left = 2
         Top = 2
-        Width = 41
+        Width = 241
         Height = 13
         Align = alTop
         Alignment = taCenter
@@ -64,6 +64,7 @@ object FrmSharpeGaugeBox: TFrmSharpeGaugeBox
         ParentFont = False
         Transparent = True
         Layout = tlCenter
+        ExplicitWidth = 41
       end
       object GaugeBar: TJvTrackBar
         Left = 2
