@@ -180,6 +180,7 @@ end;
 exports
   Open,
   Close,
+  Save,
   SetDisplayText,
   SetStatusText,
   SetBtnState,
