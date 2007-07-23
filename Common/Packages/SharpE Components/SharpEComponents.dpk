@@ -35,17 +35,6 @@ requires
   SharpESkinComponents,
   PNG_D9,
   PngComponentsD9,
-{$IFDEF VER170}
-  GR32_D2005,
-  JvCoreD9R,
-  JvSystemD9R,
-  JvStdCtrlsD9R,
-  JvCustomD9R,
-  JvMMD9R,
-  JvCtrlsD9R,
-  JvPageCompsD9R;
-{$ENDIF}
-{$IFDEF VER180}
   GR32_BDS2006,
   JvCoreD10R,
   JvSystemD10R,
@@ -54,7 +43,7 @@ requires
   JvMMD10R,
   JvCtrlsD10R,
   JvPageCompsD10R;
-{$ENDIF}
+
 contains
   SharpEFontSelector in '..\..\Delphi Components\SharpEFontSelector\SharpEFontSelector.pas',
   SharpEFontSelectorWnd in '..\..\Delphi Components\SharpEFontSelector\SharpEFontSelectorWnd.pas',
@@ -70,6 +59,7 @@ contains
   SharpEColorEditorEx in '..\..\Delphi Components\SharpEColorEditorEx\SharpEColorEditorEx.pas',
   SharpEHotkeyEdit in '..\..\Delphi Components\SharpEHotkeyEdit\SharpEHotkeyEdit.pas',
   SharpESwatchCollection in '..\..\Delphi Components\SharpESwatchCollection\SharpESwatchCollection.pas',
-  SharpESwatchManager in '..\..\Delphi Components\SharpESwatchManager\SharpESwatchManager.pas';
+  SharpESwatchManager in '..\..\Delphi Components\SharpESwatchManager\SharpESwatchManager.pas',
+  SharpEPageControl in '..\..\Delphi Components\SharpEPageControl\SharpEPageControl.pas';
 
 end.
