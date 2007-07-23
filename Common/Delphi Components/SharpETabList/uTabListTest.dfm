@@ -1,10 +1,10 @@
 object Form12: TForm12
   Left = 0
   Top = 0
-  Width = 584
-  Height = 604
   BorderWidth = 10
   Caption = 'Form12'
+  ClientHeight = 548
+  ClientWidth = 548
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -27,6 +27,7 @@ object Form12: TForm12
     ParentBackground = False
     TabOrder = 1
     DrawMode = srpNoTopRight
+    NoTopBorder = False
     RoundValue = 10
     BorderColor = clBlack
     Border = True
@@ -39,7 +40,7 @@ object Form12: TForm12
     Height = 25
     Align = alTop
     TabWidth = 62
-    TabIndex = 2
+    TabIndex = -1
     TabColor = 15724527
     TabSelectedColor = clWindow
     BkgColor = clWindow
@@ -49,11 +50,25 @@ object Form12: TForm12
     StatusUnSelectedColor = clGreen
     TabAlign = taRightJustify
     AutoSizeTabs = False
+    BottomBorder = True
     Border = True
     BorderColor = clBlack
     BorderSelectedColor = clRed
     PngImageList = PngImageList1
-    TabList = <>
+    TabList = <
+      item
+        ImageIndex = 0
+        Visible = True
+      end
+      item
+        ImageIndex = 0
+        Visible = True
+      end
+      item
+        ImageIndex = 0
+        Visible = True
+      end>
+    Minimized = False
   end
   object Button1: TButton
     Left = 160
@@ -63,6 +78,24 @@ object Form12: TForm12
     Caption = 'Button1'
     TabOrder = 2
     OnClick = Button1Click
+  end
+  object Button2: TButton
+    Left = 241
+    Top = 360
+    Width = 75
+    Height = 25
+    Caption = 'Clear'
+    TabOrder = 3
+    OnClick = Button2Click
+  end
+  object Button3: TButton
+    Left = 322
+    Top = 360
+    Width = 75
+    Height = 25
+    Caption = 'Add'
+    TabOrder = 4
+    OnClick = Button3Click
   end
   object PngImageList1: TPngImageList
     PngImages = <
@@ -161,6 +194,5 @@ object Form12: TForm12
       end>
     Left = 516
     Top = 136
-    Bitmap = {}
   end
 end

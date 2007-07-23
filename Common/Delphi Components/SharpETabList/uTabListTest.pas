@@ -13,8 +13,12 @@ type
     SharpETabList1: TSharpETabList;
     SharpERoundPanel3: TSharpERoundPanel;
     Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
   private
     { Private declarations }
 
@@ -28,6 +32,20 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TForm12.Button2Click(Sender: TObject);
+begin
+  SharpETabList1.Clear;
+end;
+
+procedure TForm12.Button3Click(Sender: TObject);
+var
+  n:Integer;
+  tmp: TSharpETabListItem;
+begin
+  tmp := SharpETabList1.Add('Item1');
+  tmp.Status := IntToStr(tmp.Index);
+end;
 
 procedure TForm12.FormCreate(Sender: TObject);
 begin
@@ -55,7 +73,7 @@ end;
 
 procedure TForm12.Button1Click(Sender: TObject);
 begin
-  SharpETabList1.ClickTab(SharpETabList1.TabList.Item[1])
+  SharpETabList1.ClickTab(SharpETabList1.TabList.Item[1]);
 end;
 
 end.

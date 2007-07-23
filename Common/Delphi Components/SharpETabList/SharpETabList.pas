@@ -11,14 +11,12 @@ type
   TSharpETabListItem = Class(TCollectionItem)
   private
     FCaption: String;
-    FID: Integer;
     FTabRect: Trect;
     FOnClick: TNotifyEvent;
     FStatus: String;
     FImageIndex: Integer;
     FVisible: Boolean;
     procedure SetImageIndex(const Value: Integer);
-    procedure SetID(const Value: Integer);
     procedure SetVisible(const Value: Boolean);
   public
     constructor Create; reintroduce;
@@ -27,7 +25,6 @@ type
     Property Status: String read FStatus write FStatus;
     Property TabRect: Trect read FTabRect write FTabRect;
     Property ImageIndex: Integer read FImageIndex write SetImageIndex;
-    Property ID: Integer read FID write SetID;
     Property Visible: Boolean read FVisible write SetVisible;
 
     Property Onclick: TNotifyEvent read FOnClick write FOnClick;
@@ -74,6 +71,7 @@ type
     FBorderSelectedColor: TColor;
     FOnTabClick: TSharpETabClick;
     FTabAlign: TLeftRight;
+    FMinimized: Boolean;
 
     function GetCount: Integer;
     procedure SetTabIndex(const Value: Integer);
@@ -95,6 +93,7 @@ type
     procedure SetBorderSelectedColor(const Value: TColor);
     procedure SetTabAlign(const Value: TLeftRight);
     procedure SetBottomBorder(const Value: boolean);
+    procedure SetMinimized(const Value: Boolean);
   protected
     procedure DrawTab(ATabRect:TRect; ATabItem: TSharpETabListItem);
   public
@@ -149,6 +148,7 @@ type
       FPngImageList write FPngImageList;
 
     Property TabList: TSharpETabListItems read FTabList write FTabList;
+    Property Minimized: Boolean read FMinimized write SetMinimized;
     
 end;
 
@@ -163,7 +163,6 @@ uses Types;
 function TSharpETabListItems.Add: TSharpETabListItem;
 begin
   result := inherited Add as TSharpETabListItem;
-  result.ID := Count-1;
 end;
 
 function TSharpETabListItems.GetItem(Index: Integer): TSharpETabListItem;
@@ -288,6 +287,7 @@ end;
 procedure TSharpETabList.DrawTab(ATabRect: TRect; ATabItem: TSharpETabListItem);
 var
   iTabWidth, iIconWidth, {iIconHeight, }iStatusWidth, iCaptionWidth:Integer;
+  r: Trect;
   s: String;
 begin
   iTabWidth := ATabRect.Right-ATabRect.Left;
@@ -305,7 +305,7 @@ begin
   iCaptionWidth := iTabWidth - iIconWidth - iStatusWidth;
 
   // Tab Colour
-  if ATabItem.ID = FTabIndex then begin
+  if ATabItem.Index = FTabIndex then begin
     FImage32.Bitmap.Canvas.Brush.Color := FTabSelectedColor;
 
     if FBorder then
@@ -320,11 +320,13 @@ begin
       FImage32.Bitmap.Canvas.Pen.Color := FtabColor;
   end;
 
+  if FMinimized then
+  RoundRect(FImage32.Bitmap.Canvas.Handle,ATabRect.Left,ATabRect.Top,ATabRect.Right,ATabRect.bottom-1,10,10) else
   RoundRect(FImage32.Bitmap.Canvas.Handle,ATabRect.Left,ATabRect.Top,ATabRect.Right,ATabRect.bottom+5,10,10);
 
   // Draw Tab Bottom Border
   if FBorder and FBottomBorder then
-  if FTabIndex = ATabItem.ID then
+  if FTabIndex = ATabItem.Index then
     FImage32.Bitmap.Line(ATabRect.Left+1,ATabRect.Bottom-1,ATabRect.Right-1,ATabRect.Bottom-1,Color32(FTabSelectedColor)) else
     FImage32.Bitmap.Line(ATabRect.Left,ATabRect.Bottom-1,ATabRect.Right,ATabRect.Bottom-1,Color32(FBorderColor));
 
@@ -342,14 +344,14 @@ begin
     // Text Underline?
   FImage32.Bitmap.Font.Style := [];
   if FMouseOverID <> -1 then
-    if FMouseOverID = ATabItem.ID then
+    if FMouseOverID = ATabItem.Index then
       FImage32.Bitmap.Font.Style := [fsUnderline];
 
-  if FTabIndex = ATabItem.ID then
+  if FTabIndex = ATabItem.Index then
     FImage32.Bitmap.Font.Style := [fsUnderline]; 
 
   // Caption Color
-  if FTabIndex = ATabItem.ID then
+  if FTabIndex = ATabItem.Index then
   FImage32.Bitmap.Font.Color := FCaptionSelectedColor else
   FImage32.Bitmap.Font.Color := FCaptionUnSelectedColor;
 
@@ -360,7 +362,7 @@ begin
     FTextBounds.Top,s);
 
   // Status Text Color
-  if FTabIndex = ATabItem.ID then
+  if FTabIndex = ATabItem.Index then
   FImage32.Bitmap.Font.Color := FStatusSelectedColor else
   FImage32.Bitmap.Font.Color := FStatusUnSelectedColor;
 
@@ -524,6 +526,12 @@ begin
   Invalidate;
 end;
 
+procedure TSharpETabList.SetMinimized(const Value: Boolean);
+begin
+  FMinimized := Value;
+  Invalidate;
+end;
+
 procedure TSharpETabList.SetBorder(const Value: Boolean);
 begin
   FBorder := Value;
@@ -602,6 +610,7 @@ begin
 
   finally
     AList.Free;
+    Self.Invalidate;
   end;
 end;
 
@@ -653,11 +662,6 @@ begin
    FCaption := '';
    FStatus := '';
    FVisible := True;
-end;
-
-procedure TSharpETabListItem.SetID(const Value: Integer);
-begin
-  FID := Value;
 end;
 
 procedure TSharpETabListItem.SetImageIndex(const Value: Integer);

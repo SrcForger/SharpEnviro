@@ -4,7 +4,8 @@ uses
   Forms,
   uTabListTest in 'uTabListTest.pas' {Form12},
   graphicsFX in '..\..\Units\SharpFX\graphicsFX.pas',
-  SharpETabList in 'SharpETabList.pas';
+  SharpETabList in 'SharpETabList.pas',
+  SharpERoundPanel in '..\SharpERoundPanel\SharpERoundPanel.pas';
 
 {$R *.res}
 
