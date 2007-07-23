@@ -9,6 +9,7 @@ uses
 type
   TForm4 = class(TForm)
     SharpEPageControl1: TSharpEPageControl;
+    Button1: TButton;
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
@@ -24,12 +25,8 @@ implementation
 {$R *.dfm}
 
 procedure TForm4.Button1Click(Sender: TObject);
-var
-  tmp:TSharpEPageControl;
 begin
-  tmp := TSharpEPageControl.Create(self);
-  tmp.parent := self;
-  tmp.Align := alClient;
+  SharpEPageControl1.Minimized := Not(SharpEPageControl1.Minimized);
 end;
 
 end.

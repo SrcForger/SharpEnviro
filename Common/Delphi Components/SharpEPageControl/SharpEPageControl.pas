@@ -4,16 +4,18 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, SharpERoundPanel, SharpETabList, ExtCtrls;
+  Dialogs, SharpERoundPanel, SharpETabList, ExtCtrls, pngimagelist;
 
 type
   TSharpEPageControl = Class(TCustomPanel)
     private
-      FTabList: TSharpETabList;
-      FPnlContent: TSharpERoundPanel;
-    FTabs: TSharpETabListItems;
-    function GetTabs: TSharpETabListItems;
-    procedure SetTabs(const Value: TSharpETabListItems);
+    FTabList: TSharpETabList;
+    FPnlContent: TSharpERoundPanel;
+    FMinimized: Boolean;
+    FOldHeight: Integer;
+    FExpandedHeight: Integer;
+    function GetTabItems: TSharpETabListItems;
+    procedure SetTabItems(const Value: TSharpETabListItems);
     procedure CreateControls;
     function GetOnTabChange: TSharpETabChange;
     procedure SetOnTabChange(const Value: TSharpETabChange);
@@ -24,37 +26,44 @@ type
     function GetTabCount: Integer;
     function GetTabWidth: Integer;
     procedure SetTabWidth(const Value: Integer);
-    function GetTab_BkgColor: TColor;
-    function GetTab_CaptionSelectedColor: TColor;
-    function GetTab_CaptionUnSelectedColor: TColor;
-    function GetTab_Color: TColor;
-    function GetTab_SelectedColor: TColor;
-    function GetTab_StatusSelectedColor: TColor;
-    function GetTab_StatusUnSelectedColor: TColor;
-    procedure SetTab_BkgColor(const Value: TColor);
-    procedure SetTab_CaptionSelectedColor(const Value: TColor);
-    procedure SetTab_CaptionUnSelectedColor(const Value: TColor);
-    procedure SetTab_Color(const Value: TColor);
-    procedure SetTab_SelectedColor(const Value: TColor);
-    procedure SetTab_StatusSelectedColor(const Value: TColor);
-    procedure SetTab_StatusUnSelectedColor(const Value: TColor);
+
+    function GetTabCaptionSelColor: TColor;
+    function GetTabCaptionColor: TColor;
+    function GetTabColor: TColor;
+    function GetTabSelColor: TColor;
+    function GetTabStatusSelColor: TColor;
+    function GetTabStatusColor: TColor;
+
+    procedure SetTabCaptionSelColor(const Value: TColor);
+    procedure SetTabCaptionColor(const Value: TColor);
+    procedure SetTabColor(const Value: TColor);
+    procedure SetTabSelColor(const Value: TColor);
+    procedure SetTabStatusSelColor(const Value: TColor);
+    procedure SetTabStatusColor(const Value: TColor);
     function GetRoundValue: Integer;
     procedure SetRoundValue(const Value: Integer);
     function GetTabAlign: TLeftRight;
     procedure SetTabAlign(const Value: TLeftRight);
-    function GetTab_AutoSize: Boolean;
-    procedure SetTab_AutoSize(const Value: Boolean);
-    function GetPanel_BkgColor: TColor;
-    procedure SetPanel_BkgColor(const Value: TColor);
+    function GetAutoSizeTabs: Boolean;
+    procedure SetAutoSizeTabs(const Value: Boolean);
+    function GetBackgroundColor: TColor;
+    procedure SetBackgroundColor(const Value: TColor);
     function GetBorder: Boolean;
     function GetBorderColor: TColor;
     procedure SetBorder(const Value: Boolean);
     procedure SetBorderColor(const Value: TColor);
+    function GetTabImageList: TPngImageList;
+    procedure SetTabImageList(const Value: TPngImageList);
+    function GetMinimized: Boolean;
+    procedure SetMinimized(const Value: Boolean);
+    function GetTabBackgroundColor: TColor;
+    procedure SetTabBackgroundColor(const Value: TColor);
   protected
     procedure Loaded; override;
     public
       constructor Create(AOwner:TComponent); override;
       property TabList: TSharpETabList read FTabList write FTabList;
+      property Minimized: Boolean read GetMinimized write SetMinimized;
     published
       property Align;
       property Anchors;
@@ -62,34 +71,33 @@ type
       Property Font;
       Property ParentFont;
 
-      property Tabs: TSharpETabListItems read GetTabs write SetTabs;
-
-      property Panel_RoundValue: Integer read GetRoundValue write SetRoundValue;
-      property Panel_BkgColor: TColor read GetPanel_BkgColor write SetPanel_BkgColor;
-
-      property BorderColor: TColor read GetBorderColor write SetBorderColor;
+      property ExpandedHeight: Integer read FExpandedHeight write FExpandedHeight;
+      property TabItems: TSharpETabListItems read GetTabItems write SetTabItems;
+      property RoundValue: Integer read GetRoundValue write SetRoundValue;
       property Border: Boolean read GetBorder write SetBorder;
 
+      property TabCount: Integer read GetTabCount;
+      Property TabWidth: Integer read GetTabWidth write SetTabWidth;
+      property TabIndex: Integer read GetTabIndex write SetTabIndex;
+      property TabAlignment: TLeftRight read GetTabAlign write SetTabAlign;
+      Property AutoSizeTabs: Boolean read GetAutoSizeTabs write SetAutoSizeTabs;
+      Property TabImageList: TPngImageList read GetTabImageList write SetTabImageList;
 
-      property Tab_Count: Integer read GetTabCount;
-      Property Tab_Width: Integer read GetTabWidth write SetTabWidth;
-      property Tab_Index: Integer read GetTabIndex write SetTabIndex;
-      property Tab_Align: TLeftRight read GetTabAlign write SetTabAlign;
-      Property Tab_AutoSize: Boolean read GetTab_AutoSize write SetTab_AutoSize;
-
-
-      Property Tab_Color: TColor read GetTab_Color write SetTab_Color;
-      Property Tab_SelectedColor: TColor read GetTab_SelectedColor write SetTab_SelectedColor;
-      Property Tab_BkgColor: TColor read GetTab_BkgColor write SetTab_BkgColor;
-      Property Tab_CaptionSelectedColor: TColor read GetTab_CaptionSelectedColor write SetTab_CaptionSelectedColor;
-      Property Tab_StatusSelectedColor: TColor read GetTab_StatusSelectedColor write SetTab_StatusSelectedColor;
-      Property Tab_CaptionUnSelectedColor: TColor read GetTab_CaptionUnSelectedColor write SetTab_CaptionUnSelectedColor;
-      Property Tab_StatusUnSelectedColor: TColor read GetTab_StatusUnSelectedColor write SetTab_StatusUnSelectedColor;
+      property TabBackgroundColor: TColor read GetTabBackgroundColor write SetTabBackgroundColor;
+      property BackgroundColor: TColor read GetBackgroundColor write SetBackgroundColor;
+      property BorderColor: TColor read GetBorderColor write SetBorderColor;
+      Property TabColor: TColor read GetTabColor write SetTabColor;
+      Property TabSelColor: TColor read GetTabSelColor write SetTabSelColor;
+      Property TabCaptionSelColor: TColor read GetTabCaptionSelColor write SetTabCaptionSelColor;
+      Property TabStatusSelColor: TColor read GetTabStatusSelColor write SetTabStatusSelColor;
+      Property TabCaptionColor: TColor read GetTabCaptionColor write SetTabCaptionColor;
+      Property TabStatusColor: TColor read GetTabStatusColor write SetTabStatusColor;
 
       property OnTabChange: TSharpETabChange read GetOnTabChange write SetOnTabChange;
       property OnTabClick: TSharpETabClick read GetOnTabClick write SetOnTabClick;
 
       procedure ResizeEvent(Sender: TObject);
+
       
   End;
 
@@ -110,6 +118,8 @@ begin
   Self.BevelInner := bvNone;
   Self.BevelOuter := bvNone;
   Self.OnResize := ResizeEvent;
+  Height := 200;
+  ExpandedHeight := 200;
 
   CreateControls;
 end;
@@ -165,6 +175,11 @@ begin
   Result := FPnlContent.BorderColor;
 end;
 
+function TSharpEPageControl.GetMinimized: Boolean;
+begin
+  Result := FMinimized;
+end;
+
 function TSharpEPageControl.GetOnTabChange: TSharpETabChange;
 begin
   Result := FTabList.OnTabChange;
@@ -175,7 +190,7 @@ begin
   Result := FTabList.OnTabClick;
 end;
 
-function TSharpEPageControl.GetPanel_BkgColor: TColor;
+function TSharpEPageControl.GetBackgroundColor: TColor;
 begin
   Result := FPnlContent.BackgroundColor;
 end;
@@ -190,6 +205,11 @@ begin
   Result := FTabList.TabAlign;
 end;
 
+function TSharpEPageControl.GetTabBackgroundColor: TColor;
+begin
+  Result := FTabList.BkgColor;
+end;
+
 function TSharpEPageControl.GetTabCount: Integer;
 begin
   Result := FTabList.Count;
@@ -200,7 +220,7 @@ begin
   Result := FTabList.TabIndex;
 end;
 
-function TSharpEPageControl.GetTabs: TSharpETabListItems;
+function TSharpEPageControl.GetTabItems: TSharpETabListItems;
 begin
   Result := FTabList.TabList;
 end;
@@ -210,42 +230,42 @@ begin
   Result := FTabList.TabWidth;
 end;
 
-function TSharpEPageControl.GetTab_AutoSize: Boolean;
+function TSharpEPageControl.GetAutoSizeTabs: Boolean;
 begin
   Result := FTabList.AutoSizeTabs;
 end;
 
-function TSharpEPageControl.GetTab_BkgColor: TColor;
-begin
-  Result := FTabList.BkgColor;
-end;
-
-function TSharpEPageControl.GetTab_CaptionSelectedColor: TColor;
+function TSharpEPageControl.GetTabCaptionSelColor: TColor;
 begin
   Result := FTabList.CaptionSelectedColor;
 end;
 
-function TSharpEPageControl.GetTab_CaptionUnSelectedColor: TColor;
+function TSharpEPageControl.GetTabCaptionColor: TColor;
 begin
   Result := FTabList.CaptionUnSelectedColor;
 end;
 
-function TSharpEPageControl.GetTab_Color: TColor;
+function TSharpEPageControl.GetTabColor: TColor;
 begin
   Result := FTabList.TabColor;
 end;
 
-function TSharpEPageControl.GetTab_SelectedColor: TColor;
+function TSharpEPageControl.GetTabImageList: TPngImageList;
+begin
+  Result := FTabList.PngImageList;
+end;
+
+function TSharpEPageControl.GetTabSelColor: TColor;
 begin
   Result := FTabList.TabSelectedColor;
 end;
 
-function TSharpEPageControl.GetTab_StatusSelectedColor: TColor;
+function TSharpEPageControl.GetTabStatusSelColor: TColor;
 begin
   Result := FTabList.StatusSelectedColor;
 end;
 
-function TSharpEPageControl.GetTab_StatusUnSelectedColor: TColor;
+function TSharpEPageControl.GetTabStatusColor: TColor;
 begin
   Result := FTabList.StatusUnSelectedColor;
 end;
@@ -258,6 +278,7 @@ end;
 
 procedure TSharpEPageControl.ResizeEvent(Sender: TObject);
 begin
+
     with FTabList do
     begin
       Top := 0;
@@ -289,6 +310,19 @@ begin
   FTabList.BorderSelectedColor := Value;
 end;
 
+procedure TSharpEPageControl.SetMinimized(const Value: Boolean);
+begin
+  FMinimized := Value;
+
+  if FMinimized then begin
+    Self.Height := FTabList.Height-1;
+    FTabList.Minimized := True;
+  end else begin
+    Self.Height := FExpandedHeight;
+    FTabList.Minimized := False;
+  end;
+end;
+
 procedure TSharpEPageControl.SetOnTabChange(const Value: TSharpETabChange);
 begin
   FTabList.OnTabChange := Value;
@@ -299,7 +333,7 @@ begin
   FTabList.OnTabClick := Value;
 end;
 
-procedure TSharpEPageControl.SetPanel_BkgColor(const Value: TColor);
+procedure TSharpEPageControl.SetBackgroundColor(const Value: TColor);
 begin
   FPnlContent.BackgroundColor := Value;
 end;
@@ -318,12 +352,17 @@ begin
   
 end;
 
+procedure TSharpEPageControl.SetTabBackgroundColor(const Value: TColor);
+begin
+  FTabList.BkgColor := Value;
+end;
+
 procedure TSharpEPageControl.SetTabIndex(const Value: Integer);
 begin
   FTabList.TabIndex := Value;
 end;
 
-procedure TSharpEPageControl.SetTabs(const Value: TSharpETabListItems);
+procedure TSharpEPageControl.SetTabItems(const Value: TSharpETabListItems);
 begin
   FTabList.TabList := Value;
 end;
@@ -333,42 +372,42 @@ begin
   FTabList.TabWidth := Value;
 end;
 
-procedure TSharpEPageControl.SetTab_AutoSize(const Value: Boolean);
+procedure TSharpEPageControl.SetAutoSizeTabs(const Value: Boolean);
 begin
   FTabList.AutoSizeTabs := Value;
 end;
 
-procedure TSharpEPageControl.SetTab_BkgColor(const Value: TColor);
-begin
-  FTabList.BkgColor := Value;
-end;
-
-procedure TSharpEPageControl.SetTab_CaptionSelectedColor(const Value: TColor);
+procedure TSharpEPageControl.SetTabCaptionSelColor(const Value: TColor);
 begin
   FTabList.CaptionSelectedColor := Value;
 end;
 
-procedure TSharpEPageControl.SetTab_CaptionUnSelectedColor(const Value: TColor);
+procedure TSharpEPageControl.SetTabCaptionColor(const Value: TColor);
 begin
   FTabList.CaptionUnSelectedColor := Value;
 end;
 
-procedure TSharpEPageControl.SetTab_Color(const Value: TColor);
+procedure TSharpEPageControl.SetTabColor(const Value: TColor);
 begin
   FTabList.TabColor := Value;
 end;
 
-procedure TSharpEPageControl.SetTab_SelectedColor(const Value: TColor);
+procedure TSharpEPageControl.SetTabImageList(const Value: TPngImageList);
+begin
+  FTabList.PngImageList := Value;
+end;
+
+procedure TSharpEPageControl.SetTabSelColor(const Value: TColor);
 begin
   FTabList.TabSelectedColor := Value;
 end;
 
-procedure TSharpEPageControl.SetTab_StatusSelectedColor(const Value: TColor);
+procedure TSharpEPageControl.SetTabStatusSelColor(const Value: TColor);
 begin
   FTabList.StatusSelectedColor := Value;
 end;
 
-procedure TSharpEPageControl.SetTab_StatusUnSelectedColor(const Value: TColor);
+procedure TSharpEPageControl.SetTabStatusColor(const Value: TColor);
 begin
   FTabList.StatusUnSelectedColor := Value;
 end;

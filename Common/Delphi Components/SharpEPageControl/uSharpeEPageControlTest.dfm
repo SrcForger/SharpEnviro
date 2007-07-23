@@ -18,37 +18,35 @@ object Form4: TForm4
     Left = 0
     Top = 0
     Width = 402
-    Height = 268
-    Align = alClient
-    Tabs = <
-      item
-        Caption = 'Item1'
-        Status = '3'
-        ImageIndex = 0
-        ID = 0
-        Visible = True
-      end
-      item
-        Caption = 'Item2'
-        Status = '4'
-        ImageIndex = 0
-        ID = 1
-        Visible = True
-      end>
-    Panel_RoundValue = 10
-    Tab_Width = 62
-    Tab_Index = 0
-    Tab_Align = taRightJustify
-    Tab_AutoSize = True
-    Tab_Color = 15724527
-    Tab_SelectedColor = clWhite
-    Tab_BkgColor = clWindow
-    Tab_CaptionSelectedColor = clBlack
-    Tab_StatusSelectedColor = clGreen
-    Tab_CaptionUnSelectedColor = clBlack
-    Tab_StatusUnSelectedColor = clGreen
+    Height = 209
+    Align = alTop
+    ExpandedHeight = 200
+    TabItems = <>
+    RoundValue = 10
+    Border = True
+    TabWidth = 62
+    TabIndex = 0
+    TabAlignment = taLeftJustify
+    AutoSizeTabs = True
+    BackgroundColor = clBtnFace
+    BorderColor = clBlack
+    TabColor = 15724527
+    TabSelColor = clWhite
+    TabCaptionSelColor = clBlack
+    TabStatusSelColor = clGreen
+    TabCaptionColor = clBlack
+    TabStatusColor = clGreen
     DesignSize = (
       402
-      268)
+      209)
+  end
+  object Button1: TButton
+    Left = 0
+    Top = 215
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 1
+    OnClick = Button1Click
   end
 end
