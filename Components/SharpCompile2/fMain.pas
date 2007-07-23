@@ -7,7 +7,7 @@ uses
   Dialogs, ExtCtrls, ComCtrls, Contnrs, SharpERoundPanel, StdCtrls, JvExComCtrls,
   JvgTreeView, JvgListBox, SharpETabList, ToolWin, ImgList, uVistaFuncs,
   JvSimpleXML, JvComCtrls, JvCheckTreeView, CheckLst, JvExCheckLst,
-  JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler;
+  JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx;
 
 type
   TfrmMain = class(TForm)
@@ -38,16 +38,18 @@ type
     procedure stlMainTabClick(ASender: TObject; const ATabIndex: Integer);
     procedure tbClearClick(Sender: TObject);
     procedure tbCompileClick(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
+    procedure mDetailedChange(Sender: TObject);
+    procedure mSummaryChange(Sender: TObject);
+    procedure ctvProjectsSelectionChange(Sender: TObject);
   private
-    { Private declarations }
+    procedure CompilerNewLine(Sender: TObject; CmdOutput: string);
+    procedure CompileProject(Project: TDelphiProject);
   public
     { Public declarations }
   end;
 
 var
   frmMain: TfrmMain;
-  olProjects: TObjectList;
   sPath: String;
 
 implementation
@@ -57,13 +59,16 @@ implementation
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   uVistaFuncs.SetVistaFonts(frmMain);
-  olProjects := TObjectList.Create(True);
 end;
 
-
-procedure TfrmMain.FormDestroy(Sender: TObject);
+procedure TfrmMain.mDetailedChange(Sender: TObject);
 begin
-  olProjects.Free;
+  mDetailed.Perform(EM_LINESCROLL, 0, mDetailed.Lines.Count);
+end;
+
+procedure TfrmMain.mSummaryChange(Sender: TObject);
+begin
+  mSummary.Perform(EM_LINESCROLL, 0, mSummary.Lines.Count);
 end;
 
 procedure TfrmMain.stlMainTabClick(ASender: TObject; const ATabIndex: Integer);
@@ -87,8 +92,52 @@ begin
 end;
 
 procedure TfrmMain.tbCompileClick(Sender: TObject);
+var
+  i: integer;
 begin
-  // compile code
+  for i := 0 to ctvProjects.Items.Count - 1 do
+  begin
+    if ctvProjects.Checked[ctvProjects.Items[i]] then
+    begin
+      if TDelphiProject(ctvProjects.Items[i].Data) <> nil then
+        CompileProject(TDelphiProject(ctvProjects.Items[i].Data));
+    end;
+  end;
+end;
+
+procedure TfrmMain.CompileProject(Project: TDelphiProject);
+var
+  dCompiler: TDelphiCompiler;
+  sSummary: String;
+begin
+  mSummary.Lines.Add('Compiling ' + Project.Name);
+  Project.SIndex := mSummary.Lines.Count -1;
+  sSummary := mSummary.Lines[mSummary.Lines.Count - 1];
+  mDetailed.Lines.Add(sSummary);
+  Project.DIndex := mDetailed.Lines.Count -1;
+  dCompiler := TDelphiCompiler.Create;
+  dCompiler.OnCompilerCmdOutput := CompilerNewLine;
+  if dCompiler.CompileProject(Project) then
+    sSummary := sSummary + '...Success!'
+  else
+    sSummary := sSummary + '...Failed!';
+  mSummary.Lines[mSummary.Lines.Count - 1] := sSummary;
+end;
+
+procedure TfrmMain.CompilerNewLine(Sender: TObject; CmdOutput: string);
+begin
+  mDetailed.Lines.Add(CmdOutput);
+end;
+
+procedure TfrmMain.ctvProjectsSelectionChange(Sender: TObject);
+begin
+  if ctvProjects.Selected.Data <> nil then
+  begin
+    mSummary.Perform(EM_LINESCROLL, 0, 0 - mSummary.Lines.Count);
+    mSummary.Perform(EM_LINESCROLL, 0, TDelphiProject(ctvProjects.Selected.Data).SIndex);
+    mDetailed.Perform(EM_LINESCROLL, 0, 0 - mDetailed.Lines.Count);
+    mDetailed.Perform(EM_LINESCROLL, 0, TDelphiProject(ctvProjects.Selected.Data).DIndex);
+  end;
 end;
 
 procedure TfrmMain.tbOpenClick(Sender: TObject);
@@ -96,7 +145,6 @@ var
   n,i: integer;
   xFile: TJvSimpleXML;
   nProject,nComponent: TTreeNode;
-  dpProject: TDelphiProject;
 begin
   if dlgOpen.Execute then
   begin
@@ -114,20 +162,18 @@ begin
         with xFile.Root.Items.Item[n] do
         begin
           nProject := ctvProjects.Items.Add(nil, Properties.Value('Name', 'error'));
+          nProject.Data := nil;
           ctvProjects.SetChecked(nProject, True);
           for i := 0 to Items.Count - 1 do
             with Items.Item[i] do
             begin
               nComponent := ctvProjects.Items.AddChild(nProject, Properties.Value('Name', 'error'));
+              nComponent.Data := TDelphiProject.Create(sPath + Value, Properties.Value('Name', 'error'));
               ctvProjects.SetChecked(nComponent, True);
               mDetailed.Lines.Add('Loaded ' + Properties.Value('Name', 'error'));
               mDetailed.Lines.Add('Type: ' + Properties.Value('Type', 'Application'));
               mDetailed.Lines.Add('Requires: ' + Properties.Value('Requ', 'Turbo Delphi Explorer 2006'));
-              dpProject := TDelphiProject.Create(sPath + Value);
-              olProjects.Add(dpProject);
-              nComponent := nil;
             end;
-          nProject := nil;
         end;
       mSummary.Lines.Add('Loaded ' + ExtractFileName(dlgOpen.FileName));
 	  end;

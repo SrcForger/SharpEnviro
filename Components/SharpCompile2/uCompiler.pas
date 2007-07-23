@@ -47,6 +47,9 @@ type
     FOutputDir    : String;
     FPath         : String;
     FDir          : String;
+    FName         : String;
+    FSIndex       : Integer;
+    FDIndex       : Integer;
     procedure LoadFromFile(pBDSProjFile : String);
 
   public
@@ -56,9 +59,12 @@ type
     property OutputDir   : String  read FOutputDir;
     property Dir         : String  read FDir;
     property Path        : String  read FPath;
+    property Name        : String  read FName;
+    property SIndex      : Integer read FSIndex write FSIndex;
+    property DIndex      : Integer read FDIndex write FDIndex;
 
   published
-    constructor Create(pBDSProjFile: String); reintroduce;
+    constructor Create(pBDSProjFile: String; sName: String); reintroduce;
     destructor Destroy; override;
 
   end;
@@ -77,7 +83,7 @@ type
     constructor Create; reintroduce;
     destructor Destroy; override;
 
-    function CompileProject(pBDSProjFile : String; bDebug : boolean = False) : boolean;
+    function CompileProject(Project: TDelphiProject; bDebug : boolean = False) : boolean;
     procedure UpdateBDSData;
   published
     property OnCompilerCmdOutput : TCompileEvent read FOnCompilerCmdOutput write FOnCompilerCmdOutput;
@@ -86,11 +92,12 @@ type
 implementation
 
 
-constructor TDelphiProject.Create(pBDSProjFile: String);
+constructor TDelphiProject.Create(pBDSProjFile: String; sName: String);
 begin
   Inherited Create;
 
   FPath := pBDSProjFile;
+  FName := sName;
   FDir  := IncludeTrailingBackSlash(ExtractFileDir(FPath));
 
   LoadFromFile(pBDSProjFile);
@@ -206,39 +213,32 @@ begin
   FBrowsePath := StringReplace(FBrowsePath,'$(ProgramFiles)',JclSysInfo.GetProgramFilesFolder,[rfReplaceAll,rfIgnoreCase]);
 end;
 
-function TDelphiCompiler.CompileProject(pBDSProjFile : String; bDebug : boolean = False) : boolean;
+function TDelphiCompiler.CompileProject(Project: TDelphiProject; bDebug : boolean = False) : boolean;
 var
-  DP : TDelphiProject;
   DC : TDosCommand;
   Dir : String;
   DCC32 : TStringList;
-  n : integer;
   cmd : String;
   s : String;
   tempst : TDateTime;
   dllst  : TDateTime;
   exest  : TDateTime;
   serst  : TDateTime;
-  targetfile : String;
-  tempDpr : TextFile;
-  origDpr : TextFile;
-  bufDpr : string;
 begin
   result := False;
 
-  if not FileExists(pBDSProjFile) then
+  if not FileExists(Project.Path) then
      exit;
 
-  Dir := IncludeTrailingBackSlash(ExtractFileDir(pBDSProjFile));
+  Dir := IncludeTrailingBackSlash(ExtractFileDir(Project.Path));
 
-  DP := TDelphiProject.Create(pBDSProjFile);
   DCC32 := TStringList.Create;
 
   DCC32.Clear;
-  DCC32.Add('-E"' + DP.OutputDir + '"');
+  DCC32.Add('-E"' + Project.OutputDir + '"');
 
-  if DP.UsePackages then
-     DCC32.Add('-LU"' + DP.Packages + '"');
+  if Project.UsePackages then
+     DCC32.Add('-LU"' + Project.Packages + '"');
 
   DCC32.Add('');
   DCC32.Add('-U"' + FBrowsePath + '"');
@@ -251,8 +251,11 @@ begin
   DCC32.Add('-R"' + FSearchPath + '"');
 
   DCC32.Add('');
-  DCC32.Add('-U"' + DP.SearchPath + '"');
-  DCC32.Add('-R"' + DP.SearchPath + '"');
+  DCC32.Add('-U"' + Project.SearchPath + '"');
+  DCC32.Add('-R"' + Project.SearchPath + '"');
+
+  if bDebug then
+    DCC32.Add('-GD');
 
   DCC32.SaveToFile(Dir + 'Dcc32.cfg');
   DCC32.Free;
@@ -260,64 +263,63 @@ begin
   DC := TDosCommand.Create(nil);
   DC.OnNewLine := OnCompilerNewLine;
 
-  s := pBDSProjFile;
-  setlength(s,length(s) - length(ExtractFileExt(pBDSProjFile)));
+  s := Project.Path;
+  setlength(s,length(s) - length(ExtractFileExt(Project.Path)));
   cmd := 'DCC32 "' + s + '.dpr"';
 
   SetCurrentDirectory(PChar(Dir));
-  ForceDirectories(DP.OutputDir);
+  ForceDirectories(Project.OutputDir);
 
-  s := ExtractFileName(pBDSProjFile);
-  setlength(s,length(s) - length(ExtractFileExt(pBDSProjFile)));
-  if FileExists(DP.OutputDir + s + '.dll') then
-     GetFileLastWrite(DP.OutputDir + s + '.dll',dllst)
+  s := ExtractFileName(Project.Path);
+  setlength(s,length(s) - length(ExtractFileExt(Project.Path)));
+  if FileExists(Project.OutputDir + s + '.dll') then
+     GetFileLastWrite(Project.OutputDir + s + '.dll',dllst)
      else dllst := 0;
-  if FileExists(DP.OutputDir + s + '.exe') then
-     GetFileLastWrite(DP.OutputDir + s + '.exe',exest)
+  if FileExists(Project.OutputDir + s + '.exe') then
+     GetFileLastWrite(Project.OutputDir + s + '.exe',exest)
      else exest := 0;
-  if FileExists(DP.OutputDir + s + '.ser') then
-     GetFileLastWrite(DP.OutputDir + s + '.ser',serst)
+  if FileExists(Project.OutputDir + s + '.ser') then
+     GetFileLastWrite(Project.OutputDir + s + '.ser',serst)
      else serst := 0;
 
   DC.CommandLine := cmd;
   DC.Execute2;
   DC.Free;
 
-  if (FileExists(DP.OutputDir + s + '.dll')) and (dllst <> 0) then
+  if (FileExists(Project.OutputDir + s + '.dll')) and (dllst <> 0) then
   begin
-    GetFileLastWrite(DP.OutputDir + s + '.dll',tempst);
+    GetFileLastWrite(Project.OutputDir + s + '.dll',tempst);
     result := (CompareDateTime(dllst,tempst) <> 0);
   end
   else
-  if (FileExists(DP.OutputDir + s + '.exe')) and (exest <> 0) then
+  if (FileExists(Project.OutputDir + s + '.exe')) and (exest <> 0) then
   begin
-    GetFileLastWrite(DP.OutputDir + s + '.exe',tempst);
+    GetFileLastWrite(Project.OutputDir + s + '.exe',tempst);
     result := (CompareDateTime(exest,tempst) <> 0);
   end
     else
-  if (FileExists(DP.OutputDir + s + '.ser')) and (serst <> 0) then
+  if (FileExists(Project.OutputDir + s + '.ser')) and (serst <> 0) then
   begin
-    GetFileLastWrite(DP.OutputDir + s + '.ser',tempst);
+    GetFileLastWrite(Project.OutputDir + s + '.ser',tempst);
     result := (CompareDateTime(serst,tempst) <> 0);
   end
-  else if    (FileExists(DP.OutputDir + s + '.dll'))
-          or (FileExists(DP.OutputDir + s + '.exe'))
-          or (FileExists(DP.OutputDir + s + '.ser')) then
+  else if    (FileExists(Project.OutputDir + s + '.dll'))
+          or (FileExists(Project.OutputDir + s + '.exe'))
+          or (FileExists(Project.OutputDir + s + '.ser')) then
        result := True;
 
   DeleteFile(PChar(Dir + 'Dcc32.cfg'));
 
-  if FileExists(DP.OutputDir + s + '.ser') then
+  if FileExists(Project.OutputDir + s + '.ser') then
   begin
-    if FileExists(DP.OutputDir + s + '.service') then
-      DeleteFile(PChar(DP.OutputDir + s + '.service'));
-    MoveFile(PChar(DP.OutputDir + s + '.ser'), PChar(DP.OutputDir + s + '.service'));
+    if FileExists(Project.OutputDir + s + '.service') then
+      DeleteFile(PChar(Project.OutputDir + s + '.service'));
+    MoveFile(PChar(Project.OutputDir + s + '.ser'), PChar(Project.OutputDir + s + '.service'));
   end;
 
-  if FileExists(DP.OutputDir + s + '.map') then
-    DeleteFile(PChar(DP.OutputDir + s + '.map'));
+  if FileExists(Project.OutputDir + s + '.map') then
+    DeleteFile(PChar(Project.OutputDir + s + '.map'));
 
-  DP.Free;
 end;
 
 end.
