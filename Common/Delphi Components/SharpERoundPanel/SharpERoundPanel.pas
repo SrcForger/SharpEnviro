@@ -17,6 +17,7 @@ type
     FBorder: Boolean;
     FBackgroundColor: TColor;
     FDrawMode: TSharpERoundPanelDrawMode;
+    FNoTopBorder: Boolean;
     procedure SetBorderColor(const Value: TColor);
     procedure SetBorder(const Value: Boolean);
     procedure SetBackgroundColor(const Value: TColor);
@@ -30,6 +31,7 @@ type
   published
     property DrawMode: TSharpERoundPanelDrawMode read FDrawMode write SetDrawMode;
 
+    property NoTopBorder: Boolean read FNoTopBorder write FNoTopBorder;
     property RoundValue: Integer read FRoundValue write SetRoundValue;
     property BorderColor: TColor read FBorderColor write SetBorderColor;
     property Border: Boolean read FBorder write SetBorder;

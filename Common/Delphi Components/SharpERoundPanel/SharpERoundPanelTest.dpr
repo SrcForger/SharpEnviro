@@ -3,7 +3,9 @@ program SharpERoundPanelTest;
 uses
   Forms,
   uMain in 'uMain.pas' {Form2},
-  SharpERoundPanel in 'SharpERoundPanel.pas';
+  SharpERoundPanel in 'SharpERoundPanel.pas',
+  SharpETabList in '..\SharpETabList\SharpETabList.pas',
+  graphicsFX in '..\..\Units\SharpFX\graphicsFX.pas';
 
 {$R *.res}
 
