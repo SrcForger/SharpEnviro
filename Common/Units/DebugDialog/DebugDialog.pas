@@ -219,6 +219,7 @@ var
 procedure TDebugDialog.AfterCreateDetails;
 begin
   SendBtn.Enabled := True;
+  CopyReportToClipboard;
 end;
 
 //----------------------------------------------------------------------------
