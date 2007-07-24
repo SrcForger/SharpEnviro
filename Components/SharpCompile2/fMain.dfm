@@ -1033,21 +1033,23 @@ object frmMain: TfrmMain
     ParentCtl3D = False
     TabOrder = 0
     object Splitter1: TSplitter
-      Left = 193
+      Left = 185
       Top = 6
       Width = 9
       Height = 430
       ResizeStyle = rsUpdate
+      ExplicitLeft = 193
     end
     object panLeft: TPanel
       Left = 6
       Top = 6
-      Width = 187
+      Width = 179
       Height = 430
       Margins.Bottom = 0
       Align = alLeft
       BevelOuter = bvNone
       Color = clWindow
+      Constraints.MinWidth = 150
       Ctl3D = True
       ParentBackground = False
       ParentCtl3D = False
@@ -1056,7 +1058,7 @@ object frmMain: TfrmMain
         AlignWithMargins = True
         Left = 4
         Top = 4
-        Width = 183
+        Width = 175
         Height = 327
         Margins.Left = 4
         Margins.Top = 4
@@ -1075,10 +1077,11 @@ object frmMain: TfrmMain
         BorderColor = 16244164
         Border = True
         BackgroundColor = clWindow
+        ExplicitWidth = 183
         object sepProjLbl: TSharpERoundPanel
           Left = 6
           Top = 6
-          Width = 171
+          Width = 163
           Height = 19
           Align = alTop
           BevelOuter = bvNone
@@ -1091,11 +1094,12 @@ object frmMain: TfrmMain
           BorderColor = clBtnFace
           Border = False
           BackgroundColor = 16510947
+          ExplicitWidth = 171
           object lblProjects: TLabel
             AlignWithMargins = True
             Left = 3
             Top = 3
-            Width = 165
+            Width = 157
             Height = 13
             Align = alClient
             Alignment = taCenter
@@ -1111,7 +1115,7 @@ object frmMain: TfrmMain
           AlignWithMargins = True
           Left = 9
           Top = 28
-          Width = 165
+          Width = 157
           Height = 290
           Align = alClient
           BorderStyle = bsNone
@@ -1123,13 +1127,14 @@ object frmMain: TfrmMain
           OnSelectionChange = ctvProjectsSelectionChange
           CheckBoxOptions.Style = cbsJVCL
           CheckBoxOptions.CascadeLevels = 99
+          ExplicitWidth = 165
         end
       end
       object sepOptions: TSharpERoundPanel
         AlignWithMargins = True
         Left = 4
         Top = 340
-        Width = 183
+        Width = 175
         Height = 87
         Margins.Left = 4
         Margins.Top = 0
@@ -1147,10 +1152,11 @@ object frmMain: TfrmMain
         BorderColor = 12709113
         Border = True
         BackgroundColor = clWindow
+        ExplicitWidth = 183
         object sepOptLbl: TSharpERoundPanel
           Left = 6
           Top = 6
-          Width = 171
+          Width = 163
           Height = 19
           Align = alTop
           BevelOuter = bvNone
@@ -1164,11 +1170,12 @@ object frmMain: TfrmMain
           BorderColor = clBtnFace
           Border = False
           BackgroundColor = 14875898
+          ExplicitWidth = 171
           object lblOptions: TLabel
             AlignWithMargins = True
             Left = 3
             Top = 3
-            Width = 165
+            Width = 157
             Height = 13
             Align = alClient
             Alignment = taCenter
@@ -1180,7 +1187,7 @@ object frmMain: TfrmMain
           AlignWithMargins = True
           Left = 9
           Top = 31
-          Width = 165
+          Width = 157
           Height = 47
           Margins.Top = 6
           Align = alClient
@@ -1192,26 +1199,27 @@ object frmMain: TfrmMain
             'Commit to SVN'
             'Package Release')
           TabOrder = 1
+          ExplicitWidth = 165
         end
       end
     end
     object panRight: TPanel
-      Left = 202
+      Left = 194
       Top = 6
-      Width = 420
+      Width = 428
       Height = 430
       Margins.Bottom = 0
       Align = alClient
       BevelOuter = bvNone
       Color = clWindow
       TabOrder = 1
-      ExplicitLeft = 196
-      ExplicitWidth = 426
+      ExplicitLeft = 202
+      ExplicitWidth = 420
       object tbMain: TToolBar
         AlignWithMargins = True
         Left = 9
         Top = 404
-        Width = 408
+        Width = 416
         Height = 22
         Margins.Left = 9
         Margins.Bottom = 4
@@ -1223,7 +1231,7 @@ object frmMain: TfrmMain
         List = True
         ShowCaptions = True
         TabOrder = 0
-        ExplicitWidth = 414
+        ExplicitWidth = 408
         object tbOpen: TToolButton
           Left = 0
           Top = 0
@@ -1256,7 +1264,7 @@ object frmMain: TfrmMain
         AlignWithMargins = True
         Left = 0
         Top = 0
-        Width = 416
+        Width = 424
         Height = 398
         Margins.Left = 0
         Margins.Top = 0
@@ -1291,15 +1299,15 @@ object frmMain: TfrmMain
         TabCaptionColor = clBlack
         TabStatusColor = clGreen
         OnTabClick = stlMainTabClick
-        ExplicitLeft = 6
+        ExplicitWidth = 416
         DesignSize = (
-          416
+          424
           398)
         object mSummary: TJvMemo
           AlignWithMargins = True
           Left = 6
           Top = 30
-          Width = 404
+          Width = 412
           Height = 362
           Margins.Left = 6
           Margins.Top = 30
@@ -1319,12 +1327,13 @@ object frmMain: TfrmMain
           ScrollBars = ssVertical
           TabOrder = 0
           OnChange = mSummaryChange
+          ExplicitWidth = 404
         end
         object mDetailed: TJvMemo
           AlignWithMargins = True
           Left = 6
           Top = 30
-          Width = 404
+          Width = 412
           Height = 362
           Margins.Left = 6
           Margins.Top = 30
@@ -1345,6 +1354,7 @@ object frmMain: TfrmMain
           TabOrder = 1
           Visible = False
           OnChange = mDetailedChange
+          ExplicitWidth = 404
         end
       end
     end
