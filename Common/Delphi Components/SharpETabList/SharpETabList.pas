@@ -347,8 +347,8 @@ begin
     if FMouseOverID = ATabItem.Index then
       FImage32.Bitmap.Font.Style := [fsUnderline];
 
-  if FTabIndex = ATabItem.Index then
-    FImage32.Bitmap.Font.Style := [fsUnderline]; 
+  //if FTabIndex = ATabItem.Index then
+    FImage32.Bitmap.Font.Style := []; 
 
   // Caption Color
   if FTabIndex = ATabItem.Index then
