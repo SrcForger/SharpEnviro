@@ -7,7 +7,8 @@ uses
   Dialogs, ExtCtrls, ComCtrls, Contnrs, SharpERoundPanel, StdCtrls, JvExComCtrls,
   JvgTreeView, JvgListBox, SharpETabList, ToolWin, ImgList, uVistaFuncs,
   JvSimpleXML, JvComCtrls, JvCheckTreeView, CheckLst, JvExCheckLst,
-  JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx;
+  JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx,
+  SharpEPageControl;
 
 type
   TfrmMain = class(TForm)
@@ -20,8 +21,6 @@ type
     sepOptLbl: TSharpERoundPanel;
     lblOptions: TLabel;
     panRight: TPanel;
-    stlMain: TSharpETabList;
-    sepLog: TSharpERoundPanel;
     tbMain: TToolBar;
     tbOpen: TToolButton;
     tbCompile: TToolButton;
@@ -31,8 +30,10 @@ type
     dlgOpen: TOpenDialog;
     ctvProjects: TJvCheckTreeView;
     clbOptions: TJvCheckListBox;
+    sepLog: TSharpEPageControl;
     mSummary: TJvMemo;
     mDetailed: TJvMemo;
+    Splitter1: TSplitter;
     procedure FormCreate(Sender: TObject);
     procedure tbOpenClick(Sender: TObject);
     procedure stlMainTabClick(ASender: TObject; const ATabIndex: Integer);
