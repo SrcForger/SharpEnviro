@@ -86,6 +86,7 @@ type
     FData: Pointer;
     FHint: string;
     FID: Integer;
+    FOwner: TComponent;
     
 
     function GetSubItemText(ASubItem: Integer): string;
@@ -98,15 +99,21 @@ type
     function GetSubItemImageIndex(ASubItemIndex: Integer): Integer;
     procedure SetSubItemImageIndex(ASubItemIndex: Integer;
       const Value: Integer);
+    function GetCaption: String;
+    procedure SetCaption(const Value: String);
+    function GetImageIndex: Integer;
+    procedure SetImageIndex(const Value: Integer);
 
   public
-    constructor Create;
+    constructor Create(AOwner: TComponent);
     destructor Destroy; override;
     function AddSubItem(AText: string; AImageIndex: Integer = -1;
       ASelectedImageIndex:Integer=-1): Integer;
     property Hint: string read FHint write FHint;
     property Data: Pointer read FData write FData;
     property ID: Integer read FID write FID;
+    property Caption: String read GetCaption write SetCaption;
+    property ImageIndex: Integer read GetImageIndex write SetImageIndex;
 
     property SubItemImageIndex[ASubItemIndex: Integer]: Integer read GetSubItemImageIndex write
     SetSubItemImageIndex; default;
@@ -663,8 +670,9 @@ begin
   FSubItemSelectedImages.Add(Pointer(ASelectedImageIndex));
 end;
 
-constructor TSharpEListItem.Create;
+constructor TSharpEListItem.Create(AOwner: TComponent);
 begin
+  FOwner := AOwner;
   FSubItems := TStringList.Create;
   FSubItemImages := TList.Create;
   FSubItemSelectedImages := TList.Create;
@@ -684,6 +692,16 @@ begin
   Result := Integer(FSubItemSelectedImages[ASubItemIndex]);
 end;
 
+function TSharpEListItem.GetCaption: String;
+begin
+  Result := FSubItems[0];
+end;
+
+function TSharpEListItem.GetImageIndex: Integer;
+begin
+  Result := Integer(FSubItemImages[0]);
+end;
+
 function TSharpEListItem.GetSubItemImageIndex(ASubItemIndex: Integer): Integer;
 begin
   Result := Integer(FSubItemImages[ASubItemIndex]);
@@ -697,7 +715,7 @@ end;
 function TSharpEListBoxEx.AddItem(AText: string;
   AImageIndex: Integer=-1; ASelectedImageIndex:Integer=-1): TSharpEListItem;
 begin
-  Result := TSharpEListItem.Create;
+  Result := TSharpEListItem.Create(Self);
   Result.AddSubItem(AText, AImageIndex, ASelectedImageIndex);
 
   Result.ID := Self.Items.AddObject(AText, Result);
@@ -709,15 +727,29 @@ begin
   FSubItemSelectedImages[ASubItemIndex] := Pointer(Value);
 end;
 
+procedure TSharpEListItem.SetCaption(const Value: String);
+begin
+  FSubItems[0] := Value;
+  TSharpEListBoxEx(FOwner).Invalidate;
+end;
+
+procedure TSharpEListItem.SetImageIndex(const Value: Integer);
+begin
+  FSubItemImages[0] := Pointer(Value);
+  TSharpEListBoxEx(FOwner).Invalidate;
+end;
+
 procedure TSharpEListItem.SetSubItemImageIndex(ASubItemIndex: Integer;
   const Value: Integer);
 begin
   FSubItemImages[ASubItemIndex] := Pointer(Value);
+  TSharpEListBoxEx(FOwner).Invalidate;
 end;
 
 procedure TSharpEListItem.SetSubItemText(ASubItem: Integer; const Value: string);
 begin
   FSubItems[ASubItem] := Value;
+  TSharpEListBoxEx(FOwner).Invalidate;
 end;
 
 function TSharpEListItem.SubItemCount: Integer;
