@@ -34,7 +34,8 @@ interface
 
 uses
   SysUtils,Windows,Registry,Classes,DateUtils,
-  JvSimpleXML,JclFileUtils,JclSysInfo,DosCommand;
+  JvSimpleXML,JclFileUtils,JclSysInfo,DosCommand,
+  JclDebug;
 
 type
   TCompileEvent = procedure(Sender: TObject; CmdOutput: string) of object;
@@ -50,6 +51,7 @@ type
     FName         : String;
     FSIndex       : Integer;
     FDIndex       : Integer;
+    FDataSize     : Integer;
     procedure LoadFromFile(pBDSProjFile : String);
 
   public
@@ -62,6 +64,7 @@ type
     property Name        : String  read FName;
     property SIndex      : Integer read FSIndex write FSIndex;
     property DIndex      : Integer read FDIndex write FDIndex;
+    property DataSize    : Integer read FDataSize write FDataSize;
 
   published
     constructor Create(pBDSProjFile: String; sName: String); reintroduce;
@@ -77,7 +80,6 @@ type
     FBDSVersion   : String;
     FSearchPath   : String;
     FBrowsePath   : String;
-    FDebugPath : String;
     procedure OnCompilerNewLine(Sender: TObject; NewLine: string; OutputType: TOutputType);
   public
     constructor Create; reintroduce;
@@ -220,10 +222,15 @@ var
   DCC32 : TStringList;
   cmd : String;
   s : String;
+  sExt : String;
   tempst : TDateTime;
   dllst  : TDateTime;
   exest  : TDateTime;
   serst  : TDateTime;
+  iMapSize,iDataSize : Integer;
+  tempDpr : TextFile;
+  origDpr : TextFile;
+  bufDpr : string;
 begin
   result := False;
 
@@ -240,6 +247,12 @@ begin
   if Project.UsePackages then
      DCC32.Add('-LU"' + Project.Packages + '"');
 
+  if bDebug then
+  begin
+    FBrowsePath := FBrowsePath + '..\..\Common\Units\DebugDialog\';
+    FSearchPath := FSearchPath + '..\..\Common\Units\DebugDialog\';
+  end;
+
   DCC32.Add('');
   DCC32.Add('-U"' + FBrowsePath + '"');
   DCC32.Add('-I"' + FBrowsePath + '"');
@@ -251,8 +264,8 @@ begin
   DCC32.Add('-R"' + FSearchPath + '"');
 
   DCC32.Add('');
-  DCC32.Add('-U"' + Project.SearchPath + '"');
-  DCC32.Add('-R"' + Project.SearchPath + '"');
+  DCC32.Add('-U"' + Project.SearchPath + '..\..\Common\Units\DebugDialog\' + '"');
+  DCC32.Add('-R"' + Project.SearchPath + '..\..\Common\Units\DebugDialog\' + '"');
 
   if bDebug then
     DCC32.Add('-GD');
@@ -265,7 +278,30 @@ begin
 
   s := Project.Path;
   setlength(s,length(s) - length(ExtractFileExt(Project.Path)));
-  cmd := 'DCC32 "' + s + '.dpr"';
+  if bDebug then
+  begin
+    if FileExists(s + '.dpr~') then
+      DeleteFile(PChar(s + '.dpr~'));
+    AssignFile(origDpr, s + '.dpr');
+    AssignFile(tempDpr, s + '.dpr~');
+    Reset(origDpr);
+    Rewrite(tempDpr);
+    while not EOF(origDpr) do
+    begin
+      ReadLn(origDpr, bufDpr);
+      WriteLn(tempDpr, bufDpr);
+      if (pos('uses', lowercase(bufDpr)) <> 0) then
+      begin
+        WriteLn(tempDpr, 'DebugDialog in ''..\..\Common\Units\DebugDialog\DebugDialog.pas'',');
+      end;
+    end;
+    CloseFile(tempDpr);
+    CloseFile(origDpr);
+    cmd := 'DCC32 "' + s + '.dpr~"';
+  end
+  else
+    cmd := 'DCC32 "' + s + '.dpr"';
+
 
   SetCurrentDirectory(PChar(Dir));
   ForceDirectories(Project.OutputDir);
@@ -289,18 +325,21 @@ begin
   if (FileExists(Project.OutputDir + s + '.dll')) and (dllst <> 0) then
   begin
     GetFileLastWrite(Project.OutputDir + s + '.dll',tempst);
+    sExt := '.dll';
     result := (CompareDateTime(dllst,tempst) <> 0);
   end
   else
   if (FileExists(Project.OutputDir + s + '.exe')) and (exest <> 0) then
   begin
     GetFileLastWrite(Project.OutputDir + s + '.exe',tempst);
+    sExt := '.exe';
     result := (CompareDateTime(exest,tempst) <> 0);
   end
     else
   if (FileExists(Project.OutputDir + s + '.ser')) and (serst <> 0) then
   begin
     GetFileLastWrite(Project.OutputDir + s + '.ser',tempst);
+    sExt := '.ser';
     result := (CompareDateTime(serst,tempst) <> 0);
   end
   else if    (FileExists(Project.OutputDir + s + '.dll'))
@@ -309,6 +348,18 @@ begin
        result := True;
 
   DeleteFile(PChar(Dir + 'Dcc32.cfg'));
+
+  if bDebug then
+  begin
+    s := Project.Path;
+    s := s + ChangeFileExt(ExtractFileName(Project.Path), '');
+    s := s + '.dpr~';
+    if FileExists(s) then
+      DeleteFile(PChar(s));
+    s := ChangeFileExt(ExtractFileName(Project.Path), '');
+    result := InsertDebugDataIntoExecutableFile(PChar(Project.OutputDir + s + sExt), PChar(Project.OutputDir + s + '.map'), iMapSize, iDataSize);
+    Project.DataSize := iDataSize;
+  end;
 
   if FileExists(Project.OutputDir + s + '.ser') then
   begin

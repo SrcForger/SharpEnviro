@@ -177,33 +177,6 @@
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     <Excluded_Packages>
       <Excluded_Packages Name="c:\program files\borland\bds\4.0\Bin\dcldb100.bpl">Borland Database Components</Excluded_Packages>
       <Excluded_Packages Name="c:\program files\borland\bds\4.0\bin\dclado100.bpl">Borland ADO DB Components</Excluded_Packages>

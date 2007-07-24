@@ -43,7 +43,7 @@ type
     procedure ctvProjectsSelectionChange(Sender: TObject);
   private
     procedure CompilerNewLine(Sender: TObject; CmdOutput: string);
-    procedure CompileProject(Project: TDelphiProject);
+    procedure CompileProject(Project: TDelphiProject; bDebug: Boolean);
   public
     { Public declarations }
   end;
@@ -100,12 +100,12 @@ begin
     if ctvProjects.Checked[ctvProjects.Items[i]] then
     begin
       if TDelphiProject(ctvProjects.Items[i].Data) <> nil then
-        CompileProject(TDelphiProject(ctvProjects.Items[i].Data));
+        CompileProject(TDelphiProject(ctvProjects.Items[i].Data), clbOptions.Checked[0]);
     end;
   end;
 end;
 
-procedure TfrmMain.CompileProject(Project: TDelphiProject);
+procedure TfrmMain.CompileProject(Project: TDelphiProject; bDebug: Boolean);
 var
   dCompiler: TDelphiCompiler;
   sSummary: String;
@@ -117,11 +117,17 @@ begin
   Project.DIndex := mDetailed.Lines.Count -1;
   dCompiler := TDelphiCompiler.Create;
   dCompiler.OnCompilerCmdOutput := CompilerNewLine;
-  if dCompiler.CompileProject(Project) then
-    sSummary := sSummary + '...Success!'
+  if dCompiler.CompileProject(Project, bDebug) then
+  begin
+    sSummary := sSummary + '...Success!';
+    mDetailed.Lines.Add('Inserted ' + IntToStr(Project.DataSize) + ' bytes of debug data');
+  end
   else
+  begin
     sSummary := sSummary + '...Failed!';
-  mSummary.Lines[mSummary.Lines.Count - 1] := sSummary;
+  end;
+  mSummary.Lines[Project.SIndex] := sSummary;
+  mDetailed.Lines[Project.DIndex] := sSummary;
 end;
 
 procedure TfrmMain.CompilerNewLine(Sender: TObject; CmdOutput: string);
