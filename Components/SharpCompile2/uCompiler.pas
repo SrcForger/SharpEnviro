@@ -247,12 +247,6 @@ begin
   if Project.UsePackages then
      DCC32.Add('-LU"' + Project.Packages + '"');
 
-  if bDebug then
-  begin
-    FBrowsePath := FBrowsePath + '..\..\Common\Units\DebugDialog\';
-    FSearchPath := FSearchPath + '..\..\Common\Units\DebugDialog\';
-  end;
-
   DCC32.Add('');
   DCC32.Add('-U"' + FBrowsePath + '"');
   DCC32.Add('-I"' + FBrowsePath + '"');
@@ -264,8 +258,8 @@ begin
   DCC32.Add('-R"' + FSearchPath + '"');
 
   DCC32.Add('');
-  DCC32.Add('-U"' + Project.SearchPath + '..\..\Common\Units\DebugDialog\' + '"');
-  DCC32.Add('-R"' + Project.SearchPath + '..\..\Common\Units\DebugDialog\' + '"');
+  DCC32.Add('-U"' + Project.SearchPath + '"');
+  DCC32.Add('-R"' + Project.SearchPath + '"');
 
   if bDebug then
     DCC32.Add('-GD');
