@@ -165,6 +165,8 @@ var
   sSummary,sStatus: String;
   newItem: TSharpEListItem;
   dtStart,dtEnd,dtTotalEnd: TDateTime;
+  iChars, i: Integer;
+  sSplitter: String;
 begin
   newItem := lbSummary.AddItem('Compiling ' + Project.Name + '...',2);
   lbSummary.ItemIndex := lbSummary.Count-1;
@@ -202,6 +204,12 @@ begin
     mDetailed.Lines.Add('Build Failed!');
   end;
 
+  iChars := Trunc(mDetailed.ClientWidth / Abs(Canvas.TextWidth('-')));
+  sSplitter := '';
+  for i := 0 to iChars - 3 do
+    sSplitter := sSplitter + '-';
+  mDetailed.Lines.Add(sSplitter);
+
   if iPercent = 100 then
   begin
     dtTotalEnd := Now;
@@ -210,8 +218,11 @@ begin
 end;
 
 procedure TfrmMain.CompilerNewLine(Sender: TObject; CmdOutput: string);
+var
+  sTemp: String;
 begin
-  if mDetailed.Lines[mDetailed.Lines.Count - 1] <> CmdOutput then
+  sTemp := mDetailed.Lines[mDetailed.Lines.Count - 1];
+  if (RightStr(sTemp, Length(sTemp) - 9) <> CmdOutput) and (CmdOutput <> '') then
     mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' ' + CmdOutput);
 end;
 
