@@ -82,9 +82,7 @@ type
 
     procedure MouseDownEvent(Sender: TObject; Button: TMouseButton;
     Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
-    procedure MouseMoveEvent(Sender: TObject; Shift: TShiftState;
-    X, Y: Integer; Layer: TCustomLayer);
-    procedure TimeEvent(Sender: TObject);
+
     function WithinRect(AX,AY: Integer; ARect:TRect):Boolean;
     procedure SetAutoSizeTabs(const Value: Boolean);
     function CalculateMaxTabSize: Integer;
@@ -96,6 +94,8 @@ type
     procedure SetMinimized(const Value: Boolean);
   protected
     procedure DrawTab(ATabRect:TRect; ATabItem: TSharpETabListItem);
+    procedure Loaded; override;
+
   public
 
     function ClickTab(ATab: TSharpETabListItem):Boolean; overload;
@@ -252,19 +252,18 @@ begin
   Height := 25;
   FTextBounds := Rect(8,8,8,4);
   FIconBounds := Rect(4,4,8,4);
-  FAutoSizeTabs := False;
+  FAutoSizeTabs := True;
   FTabAlign := taLeftJustify;
 
   Fimage32 := Timage32.Create(self);
   FImage32.Parent := Self;
   Fimage32.Align := alClient;
   FImage32.OnMouseUp := MouseDownEvent;
-  FImage32.OnMouseMove := MouseMoveEvent;
 
-  FTimer := TTimer.Create(Self);
+  {FTimer := TTimer.Create(Self);
   Ftimer.Interval := 500;
   Ftimer.OnTimer := TimeEvent;
-  Ftimer.Enabled := True;
+  Ftimer.Enabled := False;   }
 
   
 end;
@@ -287,7 +286,6 @@ end;
 procedure TSharpETabList.DrawTab(ATabRect: TRect; ATabItem: TSharpETabListItem);
 var
   iTabWidth, iIconWidth, {iIconHeight, }iStatusWidth, iCaptionWidth:Integer;
-  r: Trect;
   s: String;
 begin
   iTabWidth := ATabRect.Right-ATabRect.Left;
@@ -390,6 +388,12 @@ begin
   end;
 end;
 
+procedure TSharpETabList.Loaded;
+begin
+  inherited;
+  Invalidate;
+end;
+
 procedure TSharpETabList.MouseDownEvent(Sender: TObject; Button: TMouseButton;
     Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
 var
@@ -414,31 +418,6 @@ begin
 
         TabIndex := i;
       end;
-      break;
-    end;
-  end;
-end;
-
-procedure TSharpETabList.MouseMoveEvent(Sender: TObject; Shift: TShiftState; X,
-  Y: Integer; Layer: TCustomLayer);
-var
-  i:Integer;
-  r:TRect;
-  tmpTab:TSharpETabListItem;
-begin
-  If Count = 0 then exit;
-
-  FMouseOverID := -1;
-  For i := 0 to Pred(FTabList.Count) do begin
-
-    tmpTab := FTabList.Item[i];
-    r := tmpTab.TabRect;
-    //r := Rect(r.Left+FTextBounds.Left,r.Top+FTextBounds.Top,
-    //  r.Right-FTextBounds.Right, r.Bottom-FTextBounds.Bottom);
-
-    if WithinRect(X,Y,r) then begin
-      FMouseOverID := i;
-      Invalidate;
       break;
     end;
   end;
@@ -567,20 +546,6 @@ procedure TSharpETabList.SetTabWidth(const Value: Integer);
 begin
   FTabWidth := Value;
   Invalidate;
-end;
-
-procedure TSharpETabList.TimeEvent(Sender: TObject);
-begin
-  if Count = 0 then exit;
-
-  if (Self.ScreenToClient(Mouse.CursorPos).Y > Height) or
-    (Self.ScreenToClient(Mouse.CursorPos).Y < Top) or
-      (Self.ScreenToClient(Mouse.CursorPos).X > Width) or
-        (Self.ScreenToClient(Mouse.CursorPos).X < Left)
-   then begin
-    FMouseOverID := -1;
-    Invalidate;
-  end;
 end;
 
 function TSharpETabList.WithinRect(AX, AY: Integer; ARect: TRect): Boolean;
