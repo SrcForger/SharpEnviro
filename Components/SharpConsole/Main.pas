@@ -43,7 +43,7 @@ uses
   uDebugging,
   pngimage, XPMan, PngImageList, SharpERoundPanel, SharpETabList,
   JvExControls, JvPageList, clipbrd, JvExCheckLst, JvCheckListBox, JvgListBox,
-  JvComponentBase, JvTrayIcon;
+  JvComponentBase, JvTrayIcon, SharpEPageControl;
 
 type
   PConsoleMsg = ^TConsoleMsg;
@@ -63,15 +63,10 @@ type
     smilemore: TImage;
     smile: TImage;
     warning: TImage;
-    Panel1: TPanel;
     imlTbNorm: TImageList;
     imgError: TImage;
     imgInfo: TImage;
-    Panel2: TPanel;
-    panMemo: TPanel;
     Timer1: TTimer;
-    panMemoBody_: TPanel;
-    Label1: TLabel;
     sbMain: TStatusBar;
     mnuSave: TPopupMenu;
     SaveAllHistory1: TMenuItem;
@@ -81,6 +76,19 @@ type
     DeleteAllHistory1: TMenuItem;
     mnuTi: TPopupMenu;
     Exit1: TMenuItem;
+    tmrRevertNorm: TTimer;
+    XPManifest1: TXPManifest;
+    tiMain: TJvTrayIcon;
+    pnlMain: TPanel;
+    pnlSelection: TPanel;
+    pnlModuleList: TSharpERoundPanel;
+    pnlModuleTitle: TSharpERoundPanel;
+    Label3: TLabel;
+    chkRefreshModules: TCheckBox;
+    clbModuleList: TJvgCheckListBox;
+    pnlLog: TPanel;
+    pnlLogBody: TPanel;
+    Label1: TLabel;
     imgDebugTrace: TImage;
     imgDebugInfo: TImage;
     imgDebugError: TImage;
@@ -88,35 +96,23 @@ type
     imgDebugWarn: TImage;
     TrayMain: TImage;
     TrayFlash: TImage;
-    tmrRevertNorm: TTimer;
-    ToolBar1: TToolBar;
+    pcLog: TSharpEPageControl;
+    prgRefresh: TProgressBar;
+    plMain: TJvPageList;
+    pagRoLog: TJvStandardPage;
+    pagTextLog: TJvStandardPage;
+    mmoCopy: TMemo;
+    tbLog: TToolBar;
     tbPause: TToolButton;
     tbRefresh: TToolButton;
     tbCopy: TToolButton;
-    XPManifest1: TXPManifest;
-    SharpERoundPanel1: TSharpERoundPanel;
-    SharpERoundPanel2: TSharpERoundPanel;
-    Label2: TLabel;
-    Panel3: TPanel;
-    SharpERoundPanel3: TSharpERoundPanel;
-    SharpERoundPanel4: TSharpERoundPanel;
-    Label3: TLabel;
-    Panel6: TPanel;
-    Panel9: TPanel;
-    clbModuleList_: TCheckListBox;
-    chkRefreshModules: TCheckBox;
-    tlLog: TSharpETabList;
-    pnlTabBorder: TSharpERoundPanel;
-    prgRefresh: TProgressBar;
-    plMain: TJvPageList;
-    pagTextLog: TJvStandardPage;
-    pagRoLog: TJvStandardPage;
-    mmoCopy: TMemo;
     sbClear: TToolButton;
-    clbDebugLevel: TJvgCheckListBox;
-    clbModuleList: TJvgCheckListBox;
+    pnlDebugLevel: TSharpERoundPanel;
     chkRefreshDebug: TCheckBox;
-    tiMain: TJvTrayIcon;
+    pnlDebugLevelTitle: TSharpERoundPanel;
+    Label2: TLabel;
+    clbDebugLevel: TJvgCheckListBox;
+    Splitter1: TSplitter;
     procedure clbDebugLevelClick(Sender: TObject);
     procedure clbModuleListClick(Sender: TObject);
     procedure tlLogTabChange(ASender: TObject;
@@ -172,6 +168,7 @@ type
     procedure DeleteHistory;
     procedure RefreshDebugList;
     procedure ShowToolBarHint(Sender: TObject);
+    procedure AddDefaultHeader;
 
     { Private declarations }
   public
@@ -504,8 +501,8 @@ end;
 procedure TSharpConsoleWnd.FormCreate(Sender: TObject);
 begin
   pagRoLog.Show;
-  tlLog.TabIndex := 0;
-  
+  pcLog.TabIndex := 0;
+  mmoCopy.DoubleBuffered := True;
   SystemParametersInfo(SPI_GETDRAGFULLWINDOWS, 0, @bDragFullWindows, 0);
   Playing := True;
   application.OnRestore := SharpConsoleWnd.Restore;
@@ -529,6 +526,7 @@ begin
   Textmemo.ShowHint := true;
   Textmemo.LineHeight := 15;
   TextMemo.TopIndex := 0;
+  TextMemo.DoubleBuffered := True;
   DebugList.OnUpdate := UpdateLog;
   paused := false;
   bMoveMouse := false;
@@ -536,10 +534,7 @@ begin
   DeleteHistory;
 
   try
-
-    DrawText('<b>SharpE Debug Console</b>', clMessage, DMT_NONE, 9);
-    DrawText('Copyright © 2005 SharpE-Shell.org Team', clMessage, DMT_NONE, 0);
-
+    AddDefaultHeader;
   except
     SendConsoleErrorMessage('Problem in start of program');
   end;
@@ -667,7 +662,7 @@ begin
 
         mmoCopy.Lines.Add(Format('%s : %s',
           [FormatDateTime('hh:nn:ss dd/mm/yy', TInfo(Sender).DTLogged),
-          RemoveTags(TInfo(Sender).MessageText)]));
+          errorstr + ' | ' + RemoveTags(TInfo(Sender).MessageText)]));
 
         // Update Icon
         ConsoleFlashInc := 0;
@@ -755,6 +750,12 @@ begin
     end;
   end;
 
+end;
+
+procedure TSharpConsoleWnd.AddDefaultHeader;
+begin
+  DrawText('<b>SharpE Debug Console - SharpConsole</b>', clMessage, DMT_NONE, 9);
+  DrawText('Copyright © 2007 SharpE-Shell.org Team', clMessage, DMT_NONE, 0);
 end;
 
 procedure TSharpConsoleWnd.RemoveNotChecked(Module: string);
@@ -858,9 +859,10 @@ begin
 
   TextMemo.Lines.Clear;
   mmoCopy.Lines.Clear;
+  AddDefaultHeader;
 
-  if tlLog.TabIndex = 0 then
-    TextMemo.Hide;
+  //if pcLog.TabIndex = 0 then
+  //  TextMemo.Hide;
 
   n := DebugList.Count div 10;
   nDiv := n;
@@ -890,13 +892,13 @@ begin
 
         mmoCopy.Lines.Add(Format('%s : %s',
           [FormatDateTime('hh:nn:ss dd/mm/yy', DebugList.Info[i].DTLogged),
-          RemoveTags(DebugList.Info[i].MessageText)]));
+          errorstr + ' | ' + RemoveTags(DebugList.Info[i].MessageText)]));
       end;
     end;
   end;
 
-  if tlLog.TabIndex = 0 then
-    TextMemo.Show;
+  //if pcLog.TabIndex = 0 then
+  //  TextMemo.Show;
 
   prgRefresh.Hide;
 end;
@@ -965,6 +967,8 @@ procedure TSharpConsoleWnd.ClearAll1Click(Sender: TObject);
 begin
   TextMemo.Lines.Clear;
   mmoCopy.Lines.Clear;
+  AddDefaultHeader;
+
 end;
 procedure TSharpConsoleWnd.tbCopyTextClick(Sender: TObject);
 var
