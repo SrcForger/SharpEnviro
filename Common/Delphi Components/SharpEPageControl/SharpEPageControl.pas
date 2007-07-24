@@ -12,7 +12,6 @@ type
     FTabList: TSharpETabList;
     FPnlContent: TSharpERoundPanel;
     FMinimized: Boolean;
-    FOldHeight: Integer;
     FExpandedHeight: Integer;
     function GetTabItems: TSharpETabListItems;
     procedure SetTabItems(const Value: TSharpETabListItems);
