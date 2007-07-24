@@ -123,7 +123,7 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\3rd Party\DosCommand;..\..\Common\Delphi Components\SharpEListBoxEx;C:\s_code\Common\Delphi Components\SharpEPageControl</Directories>
+			<Directories Name="SearchPath">..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\3rd Party\DosCommand;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Delphi Components\SharpEPageControl</Directories>
 			<Directories Name="Packages"></Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
