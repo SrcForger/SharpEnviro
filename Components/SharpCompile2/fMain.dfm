@@ -1035,9 +1035,9 @@ object frmMain: TfrmMain
     object Splitter1: TSplitter
       Left = 193
       Top = 6
+      Width = 9
       Height = 430
-      ExplicitLeft = 254
-      ExplicitTop = 10
+      ResizeStyle = rsUpdate
     end
     object panLeft: TPanel
       Left = 6
@@ -1196,20 +1196,22 @@ object frmMain: TfrmMain
       end
     end
     object panRight: TPanel
-      Left = 196
+      Left = 202
       Top = 6
-      Width = 426
+      Width = 420
       Height = 430
       Margins.Bottom = 0
       Align = alClient
       BevelOuter = bvNone
       Color = clWindow
       TabOrder = 1
+      ExplicitLeft = 196
+      ExplicitWidth = 426
       object tbMain: TToolBar
         AlignWithMargins = True
         Left = 9
         Top = 404
-        Width = 414
+        Width = 408
         Height = 22
         Margins.Left = 9
         Margins.Bottom = 4
@@ -1221,6 +1223,7 @@ object frmMain: TfrmMain
         List = True
         ShowCaptions = True
         TabOrder = 0
+        ExplicitWidth = 414
         object tbOpen: TToolButton
           Left = 0
           Top = 0
@@ -1251,11 +1254,11 @@ object frmMain: TfrmMain
       end
       object sepLog: TSharpEPageControl
         AlignWithMargins = True
-        Left = 6
+        Left = 0
         Top = 0
         Width = 416
         Height = 398
-        Margins.Left = 6
+        Margins.Left = 0
         Margins.Top = 0
         Margins.Right = 4
         Align = alClient
@@ -1288,6 +1291,7 @@ object frmMain: TfrmMain
         TabCaptionColor = clBlack
         TabStatusColor = clGreen
         OnTabClick = stlMainTabClick
+        ExplicitLeft = 6
         DesignSize = (
           416
           398)
