@@ -52,6 +52,7 @@ type
     FSIndex       : Integer;
     FDIndex       : Integer;
     FDataSize     : Integer;
+    FPackage      : String;
     procedure LoadFromFile(pBDSProjFile : String);
 
   public
@@ -65,6 +66,7 @@ type
     property SIndex      : Integer read FSIndex write FSIndex;
     property DIndex      : Integer read FDIndex write FDIndex;
     property DataSize    : Integer read FDataSize write FDataSize;
+    property Package     : String  read FPackage write FPackage;
 
   published
     constructor Create(pBDSProjFile: String; sName: String); reintroduce;

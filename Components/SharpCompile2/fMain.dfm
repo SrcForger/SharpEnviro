@@ -1014,6 +1014,7 @@ object frmMain: TfrmMain
     FF8001FFFFFFFFFFFFC007FFFFFFFFFFFFE03FFFFFFFFFFFFFF07FFFFFFFFFFF
     FFF9FFFFFFFF}
   OldCreateOrder = False
+  Position = poScreenCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
@@ -1032,8 +1033,6 @@ object frmMain: TfrmMain
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
-    ExplicitWidth = 628
-    ExplicitHeight = 491
     object Splitter1: TSplitter
       Left = 185
       Top = 6
@@ -1057,7 +1056,6 @@ object frmMain: TfrmMain
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 0
-      ExplicitHeight = 479
       object sepProjects: TSharpERoundPanel
         AlignWithMargins = True
         Left = 4
@@ -1081,7 +1079,6 @@ object frmMain: TfrmMain
         BorderColor = 16244164
         Border = True
         BackgroundColor = clWindow
-        ExplicitHeight = 373
         object sepProjLbl: TSharpERoundPanel
           Left = 6
           Top = 6
@@ -1132,7 +1129,6 @@ object frmMain: TfrmMain
           CheckBoxOptions.CascadeLevels = 99
           CheckBoxOptions.RadioUncheckedIndex = 1
           CheckBoxOptions.RadioCheckedIndex = 2
-          ExplicitHeight = 333
         end
       end
       object sepOptions: TSharpERoundPanel
@@ -1157,7 +1153,6 @@ object frmMain: TfrmMain
         BorderColor = 12709113
         Border = True
         BackgroundColor = clWindow
-        ExplicitTop = 386
         object sepOptLbl: TSharpERoundPanel
           Left = 6
           Top = 6
@@ -1218,8 +1213,6 @@ object frmMain: TfrmMain
       BevelOuter = bvNone
       Color = clWindow
       TabOrder = 1
-      ExplicitWidth = 428
-      ExplicitHeight = 479
       object tbMain: TToolBar
         AlignWithMargins = True
         Left = 9
@@ -1236,8 +1229,6 @@ object frmMain: TfrmMain
         List = True
         ShowCaptions = True
         TabOrder = 0
-        ExplicitTop = 453
-        ExplicitWidth = 416
         object tbOpen: TToolButton
           Left = 0
           Top = 0
@@ -1305,8 +1296,6 @@ object frmMain: TfrmMain
         TabCaptionColor = clBlack
         TabStatusColor = clGreen
         OnTabClick = stlMainTabClick
-        ExplicitWidth = 424
-        ExplicitHeight = 447
         DesignSize = (
           658
           450)
@@ -1334,8 +1323,6 @@ object frmMain: TfrmMain
           ScrollBars = ssVertical
           TabOrder = 0
           OnChange = mSummary_Change
-          ExplicitWidth = 412
-          ExplicitHeight = 411
         end
         object mDetailed: TJvMemo
           AlignWithMargins = True
@@ -1362,8 +1349,6 @@ object frmMain: TfrmMain
           TabOrder = 1
           Visible = False
           OnChange = mDetailedChange
-          ExplicitWidth = 412
-          ExplicitHeight = 411
         end
         object lbSummary: TSharpEListBoxEx
           AlignWithMargins = True
@@ -1393,8 +1378,6 @@ object frmMain: TfrmMain
           OnGetCellColor = lbSummaryGetCellColor
           Borderstyle = bsNone
           Align = alClient
-          ExplicitWidth = 412
-          ExplicitHeight = 411
         end
       end
     end

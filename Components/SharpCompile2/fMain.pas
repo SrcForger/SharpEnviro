@@ -135,9 +135,11 @@ procedure TfrmMain.tbCompileClick(Sender: TObject);
 var
   i,iProjCount,iStatus: integer;
   iPercent: integer;
+  sPackage: String;
 begin
   iProjCount := 0;
   iStatus := 0;
+  sPackage := '';
   dtTotalStart := Now;
   for i := 0 to ctvProjects.Items.Count - 1 do
   begin
@@ -151,6 +153,11 @@ begin
     begin
       if TDelphiProject(ctvProjects.Items[i].Data) <> nil then
       begin
+        if sPackage <> TDelphiProject(ctvProjects.Items[i].Data).Package then
+        begin
+          sPackage := TDelphiProject(ctvProjects.Items[i].Data).Package;
+          lbSummary.AddItem(sPackage);
+        end;
         iStatus := iStatus + 1;
         iPercent := Round(iStatus * 100 / iProjCount);
         CompileProject(TDelphiProject(ctvProjects.Items[i].Data), clbOptions.Checked[0], iPercent);
@@ -235,11 +242,13 @@ begin
   end;
 end;
 
+
 procedure TfrmMain.tbOpenClick(Sender: TObject);
 var
   n,i: integer;
   xFile: TJvSimpleXML;
   nProject,nComponent: TTreeNode;
+  sPackage: String;
 begin
   if dlgOpen.Execute then
   begin
@@ -256,7 +265,8 @@ begin
       for n := 0 to xFile.Root.Items.Count - 1 do
         with xFile.Root.Items.Item[n] do
         begin
-          nProject := ctvProjects.Items.Add(nil, Properties.Value('Name', 'error'));
+          sPackage := Properties.Value('Name', 'error');
+          nProject := ctvProjects.Items.Add(nil, sPackage);
           nProject.Data := nil;
           ctvProjects.SetChecked(nProject, True);
           for i := 0 to Items.Count - 1 do
@@ -264,6 +274,7 @@ begin
             begin
               nComponent := ctvProjects.Items.AddChild(nProject, Properties.Value('Name', 'error'));
               nComponent.Data := TDelphiProject.Create(sPath + Value, Properties.Value('Name', 'error'));
+              TDelphiProject(nComponent.Data).Package := sPackage;
               ctvProjects.SetChecked(nComponent, True);
               mDetailed.Lines.Add('Loaded "' + Properties.Value('Name', 'error')
                 + '" of type ' + Properties.Value('Type', 'Application') + ' which requires '
