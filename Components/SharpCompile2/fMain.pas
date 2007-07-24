@@ -8,7 +8,7 @@ uses
   JvgTreeView, JvgListBox, SharpETabList, ToolWin, ImgList, uVistaFuncs,
   JvSimpleXML, JvComCtrls, JvCheckTreeView, CheckLst, JvExCheckLst,
   JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx,
-  SharpEPageControl;
+  SharpEPageControl, PngImageList;
 
 type
   TfrmMain = class(TForm)
@@ -31,17 +31,21 @@ type
     ctvProjects: TJvCheckTreeView;
     clbOptions: TJvCheckListBox;
     sepLog: TSharpEPageControl;
-    mSummary: TJvMemo;
+    mSummary_: TJvMemo;
     mDetailed: TJvMemo;
     Splitter1: TSplitter;
+    lbSummary: TSharpEListBoxEx;
+    pilStatus: TPngImageList;
+    pilStates: TPngImageList;
     procedure FormCreate(Sender: TObject);
     procedure tbOpenClick(Sender: TObject);
     procedure stlMainTabClick(ASender: TObject; const ATabIndex: Integer);
     procedure tbClearClick(Sender: TObject);
     procedure tbCompileClick(Sender: TObject);
     procedure mDetailedChange(Sender: TObject);
-    procedure mSummaryChange(Sender: TObject);
+    procedure mSummary_Change(Sender: TObject);
     procedure ctvProjectsSelectionChange(Sender: TObject);
+    procedure lbSummaryGetCellColor(const AItem: Integer; var AColor: TColor);
   private
     procedure CompilerNewLine(Sender: TObject; CmdOutput: string);
     procedure CompileProject(Project: TDelphiProject; bDebug: Boolean);
@@ -62,33 +66,40 @@ begin
   uVistaFuncs.SetVistaFonts(frmMain);
 end;
 
+procedure TfrmMain.lbSummaryGetCellColor(const AItem: Integer;
+  var AColor: TColor);
+begin
+  if lbSummary.Item[AItem].ImageIndex = 0 then
+    AColor := $00ECECFF;
+end;
+
 procedure TfrmMain.mDetailedChange(Sender: TObject);
 begin
   mDetailed.Perform(EM_LINESCROLL, 0, mDetailed.Lines.Count);
 end;
 
-procedure TfrmMain.mSummaryChange(Sender: TObject);
+procedure TfrmMain.mSummary_Change(Sender: TObject);
 begin
-  mSummary.Perform(EM_LINESCROLL, 0, mSummary.Lines.Count);
+  lbSummary.Perform(EM_LINESCROLL, 0, lbSummary.Count);
 end;
 
 procedure TfrmMain.stlMainTabClick(ASender: TObject; const ATabIndex: Integer);
 begin
   if ATabIndex = 0 then
   begin
-    mSummary.Visible := True;
+    lbSummary.Visible := True;
     mDetailed.Visible := False;
   end;
   if ATabIndex = 1 then
   begin
-    mSummary.Visible := False;
+    lbSummary.Visible := False;
     mDetailed.Visible := True;
   end;
 end;
 
 procedure TfrmMain.tbClearClick(Sender: TObject);
 begin
-  mSummary.Clear;
+  lbSummary.Clear;
   mDetailed.Clear;
 end;
 
@@ -110,10 +121,13 @@ procedure TfrmMain.CompileProject(Project: TDelphiProject; bDebug: Boolean);
 var
   dCompiler: TDelphiCompiler;
   sSummary: String;
+  newItem: TSharpEListItem;
 begin
-  mSummary.Lines.Add('Compiling ' + Project.Name);
-  Project.SIndex := mSummary.Lines.Count -1;
-  sSummary := mSummary.Lines[mSummary.Lines.Count - 1];
+  newItem := lbSummary.AddItem('Compiling ' + Project.Name,2);
+  lbSummary.ItemIndex := lbSummary.Count-1;
+  Project.SIndex := lbSummary.Count -1;
+  sSummary := lbSummary.Item[Project.SIndex].Caption;
+
   mDetailed.Lines.Add(sSummary);
   Project.DIndex := mDetailed.Lines.Count -1;
   dCompiler := TDelphiCompiler.Create;
@@ -121,13 +135,16 @@ begin
   if dCompiler.CompileProject(Project, bDebug) then
   begin
     sSummary := sSummary + '...Success!';
+    newItem.ImageIndex := 1;
     mDetailed.Lines.Add('Inserted ' + IntToStr(Project.DataSize) + ' bytes of debug data');
   end
   else
   begin
     sSummary := sSummary + '...Failed!';
+    newItem.ImageIndex := 0;
   end;
-  mSummary.Lines[Project.SIndex] := sSummary;
+
+  newItem.Caption := sSummary;
   mDetailed.Lines[Project.DIndex] := sSummary;
 end;
 
@@ -140,8 +157,6 @@ procedure TfrmMain.ctvProjectsSelectionChange(Sender: TObject);
 begin
   if ctvProjects.Selected.Data <> nil then
   begin
-    mSummary.Perform(EM_LINESCROLL, 0, 0 - mSummary.Lines.Count);
-    mSummary.Perform(EM_LINESCROLL, 0, TDelphiProject(ctvProjects.Selected.Data).SIndex);
     mDetailed.Perform(EM_LINESCROLL, 0, 0 - mDetailed.Lines.Count);
     mDetailed.Perform(EM_LINESCROLL, 0, TDelphiProject(ctvProjects.Selected.Data).DIndex);
   end;
@@ -182,7 +197,7 @@ begin
               mDetailed.Lines.Add('Requires: ' + Properties.Value('Requ', 'Turbo Delphi Explorer 2006'));
             end;
         end;
-      mSummary.Lines.Add('Loaded ' + ExtractFileName(dlgOpen.FileName));
+      lbSummary.AddItem('Loaded ' + ExtractFileName(dlgOpen.FileName), 2);
 	  end;
   end;
 end;
