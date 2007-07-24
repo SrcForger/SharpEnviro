@@ -2,8 +2,8 @@ object frmMain: TfrmMain
   Left = 0
   Top = 0
   Caption = 'SharpCompile'
-  ClientHeight = 491
-  ClientWidth = 628
+  ClientHeight = 494
+  ClientWidth = 862
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1020,8 +1020,8 @@ object frmMain: TfrmMain
   object panMain: TPanel
     Left = 0
     Top = 0
-    Width = 628
-    Height = 491
+    Width = 862
+    Height = 494
     Margins.Left = 155
     Margins.Bottom = 0
     Align = alClient
@@ -1032,12 +1032,13 @@ object frmMain: TfrmMain
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
-    ExplicitHeight = 442
+    ExplicitWidth = 628
+    ExplicitHeight = 491
     object Splitter1: TSplitter
       Left = 185
       Top = 6
       Width = 9
-      Height = 479
+      Height = 482
       ResizeStyle = rsUpdate
       ExplicitLeft = 193
       ExplicitHeight = 430
@@ -1046,7 +1047,7 @@ object frmMain: TfrmMain
       Left = 6
       Top = 6
       Width = 179
-      Height = 479
+      Height = 482
       Margins.Bottom = 0
       Align = alLeft
       BevelOuter = bvNone
@@ -1056,13 +1057,13 @@ object frmMain: TfrmMain
       ParentBackground = False
       ParentCtl3D = False
       TabOrder = 0
-      ExplicitHeight = 430
+      ExplicitHeight = 479
       object sepProjects: TSharpERoundPanel
         AlignWithMargins = True
         Left = 4
         Top = 4
         Width = 175
-        Height = 373
+        Height = 376
         Margins.Left = 4
         Margins.Top = 4
         Margins.Right = 0
@@ -1080,7 +1081,7 @@ object frmMain: TfrmMain
         BorderColor = 16244164
         Border = True
         BackgroundColor = clWindow
-        ExplicitHeight = 327
+        ExplicitHeight = 373
         object sepProjLbl: TSharpERoundPanel
           Left = 6
           Top = 6
@@ -1115,7 +1116,7 @@ object frmMain: TfrmMain
           Left = 9
           Top = 31
           Width = 157
-          Height = 333
+          Height = 336
           Align = alClient
           BorderStyle = bsNone
           Color = 16510947
@@ -1131,14 +1132,13 @@ object frmMain: TfrmMain
           CheckBoxOptions.CascadeLevels = 99
           CheckBoxOptions.RadioUncheckedIndex = 1
           CheckBoxOptions.RadioCheckedIndex = 2
-          ExplicitTop = 28
-          ExplicitHeight = 290
+          ExplicitHeight = 333
         end
       end
       object sepOptions: TSharpERoundPanel
         AlignWithMargins = True
         Left = 4
-        Top = 386
+        Top = 389
         Width = 175
         Height = 90
         Margins.Left = 4
@@ -1157,7 +1157,7 @@ object frmMain: TfrmMain
         BorderColor = 12709113
         Border = True
         BackgroundColor = clWindow
-        ExplicitTop = 337
+        ExplicitTop = 386
         object sepOptLbl: TSharpERoundPanel
           Left = 6
           Top = 6
@@ -1205,26 +1205,26 @@ object frmMain: TfrmMain
             'Package Release')
           Style = lbOwnerDrawFixed
           TabOrder = 1
-          ExplicitTop = 31
         end
       end
     end
     object panRight: TPanel
       Left = 194
       Top = 6
-      Width = 428
-      Height = 479
+      Width = 662
+      Height = 482
       Margins.Bottom = 0
       Align = alClient
       BevelOuter = bvNone
       Color = clWindow
       TabOrder = 1
-      ExplicitHeight = 430
+      ExplicitWidth = 428
+      ExplicitHeight = 479
       object tbMain: TToolBar
         AlignWithMargins = True
         Left = 9
-        Top = 453
-        Width = 416
+        Top = 456
+        Width = 650
         Height = 22
         Margins.Left = 9
         Margins.Bottom = 4
@@ -1236,7 +1236,8 @@ object frmMain: TfrmMain
         List = True
         ShowCaptions = True
         TabOrder = 0
-        ExplicitTop = 404
+        ExplicitTop = 453
+        ExplicitWidth = 416
         object tbOpen: TToolButton
           Left = 0
           Top = 0
@@ -1269,8 +1270,8 @@ object frmMain: TfrmMain
         AlignWithMargins = True
         Left = 0
         Top = 0
-        Width = 424
-        Height = 447
+        Width = 658
+        Height = 450
         Margins.Left = 0
         Margins.Top = 0
         Margins.Right = 4
@@ -1304,16 +1305,17 @@ object frmMain: TfrmMain
         TabCaptionColor = clBlack
         TabStatusColor = clGreen
         OnTabClick = stlMainTabClick
-        ExplicitHeight = 398
+        ExplicitWidth = 424
+        ExplicitHeight = 447
         DesignSize = (
-          424
-          447)
+          658
+          450)
         object mSummary_: TJvMemo
           AlignWithMargins = True
           Left = 6
           Top = 30
-          Width = 412
-          Height = 411
+          Width = 646
+          Height = 414
           Margins.Left = 6
           Margins.Top = 30
           Margins.Right = 6
@@ -1332,14 +1334,15 @@ object frmMain: TfrmMain
           ScrollBars = ssVertical
           TabOrder = 0
           OnChange = mSummary_Change
-          ExplicitHeight = 362
+          ExplicitWidth = 412
+          ExplicitHeight = 411
         end
         object mDetailed: TJvMemo
           AlignWithMargins = True
           Left = 6
           Top = 30
-          Width = 412
-          Height = 411
+          Width = 646
+          Height = 414
           Margins.Left = 6
           Margins.Top = 30
           Margins.Right = 6
@@ -1359,14 +1362,15 @@ object frmMain: TfrmMain
           TabOrder = 1
           Visible = False
           OnChange = mDetailedChange
-          ExplicitHeight = 362
+          ExplicitWidth = 412
+          ExplicitHeight = 411
         end
         object lbSummary: TSharpEListBoxEx
           AlignWithMargins = True
           Left = 6
           Top = 30
-          Width = 412
-          Height = 411
+          Width = 646
+          Height = 414
           Margins.Left = 6
           Margins.Top = 30
           Margins.Right = 6
@@ -1385,10 +1389,12 @@ object frmMain: TfrmMain
               Images = pilStatus
             end>
           ItemHeight = 24
+          OnDblClickItem = lbSummaryDblClickItem
           OnGetCellColor = lbSummaryGetCellColor
           Borderstyle = bsNone
           Align = alClient
-          ExplicitHeight = 362
+          ExplicitWidth = 412
+          ExplicitHeight = 411
         end
       end
     end

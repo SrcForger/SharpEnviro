@@ -8,7 +8,7 @@ uses
   JvgTreeView, JvgListBox, SharpETabList, ToolWin, ImgList, uVistaFuncs,
   JvSimpleXML, JvComCtrls, JvCheckTreeView, CheckLst, JvExCheckLst,
   JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx,
-  SharpEPageControl, PngImageList;
+  SharpEPageControl, PngImageList, StrUtils;
 
 type
   TfrmMain = class(TForm)
@@ -46,9 +46,10 @@ type
     procedure mSummary_Change(Sender: TObject);
     procedure ctvProjectsSelectionChange(Sender: TObject);
     procedure lbSummaryGetCellColor(const AItem: Integer; var AColor: TColor);
+    procedure lbSummaryDblClickItem(AText: string; AItem, ACol: Integer);
   private
     procedure CompilerNewLine(Sender: TObject; CmdOutput: string);
-    procedure CompileProject(Project: TDelphiProject; bDebug: Boolean);
+    procedure CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer);
   public
     { Public declarations }
   end;
@@ -56,6 +57,7 @@ type
 var
   frmMain: TfrmMain;
   sPath: String;
+  dtTotalStart: TDateTime;
 
 implementation
 
@@ -64,6 +66,32 @@ implementation
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   uVistaFuncs.SetVistaFonts(frmMain);
+end;
+
+procedure TfrmMain.lbSummaryDblClickItem(AText: string; AItem, ACol: Integer);
+var
+  sProjName: String;
+  i, iPos: Integer;
+begin
+  if pos('Compiling', AText) <> 0 then
+  begin
+    sProjName := RightStr(AText, Length(AText) - 10);
+    sProjName := LeftStr(sProjName, Pos('...', sProjName) - 1);
+    for i := 0 to ctvProjects.Items.Count - 1 do
+    begin
+      if ctvProjects.Items[i].Text = sProjName then
+      begin
+        mDetailed.Perform(EM_LINESCROLL, 0, 0 - mDetailed.Lines.Count);
+        iPos := TDelphiProject(ctvProjects.Items[i].Data).DIndex;
+        if Pos('Failed!', AText) <> 0 then
+          iPos := iPos - Trunc(mDetailed.Height / Abs(Canvas.TextHeight('Wg')) - 1);
+        mDetailed.Perform(EM_LINESCROLL, 0, iPos);
+        sepLog.TabIndex := 1;
+        lbSummary.Visible := False;
+        mDetailed.Visible := True;
+      end;
+    end;
+  end;
 end;
 
 procedure TfrmMain.lbSummaryGetCellColor(const AItem: Integer;
@@ -105,52 +133,86 @@ end;
 
 procedure TfrmMain.tbCompileClick(Sender: TObject);
 var
-  i: integer;
+  i,iProjCount,iStatus: integer;
+  iPercent: integer;
 begin
+  iProjCount := 0;
+  iStatus := 0;
+  dtTotalStart := Now;
+  for i := 0 to ctvProjects.Items.Count - 1 do
+  begin
+    if ctvProjects.Checked[ctvProjects.Items[i]] then
+      if not ctvProjects.Items[i].HasChildren then
+        iProjCount := iProjCount + 1;
+  end;
   for i := 0 to ctvProjects.Items.Count - 1 do
   begin
     if ctvProjects.Checked[ctvProjects.Items[i]] then
     begin
       if TDelphiProject(ctvProjects.Items[i].Data) <> nil then
-        CompileProject(TDelphiProject(ctvProjects.Items[i].Data), clbOptions.Checked[0]);
+      begin
+        iStatus := iStatus + 1;
+        iPercent := Round(iStatus * 100 / iProjCount);
+        CompileProject(TDelphiProject(ctvProjects.Items[i].Data), clbOptions.Checked[0], iPercent);
+      end;
     end;
   end;
 end;
 
-procedure TfrmMain.CompileProject(Project: TDelphiProject; bDebug: Boolean);
+procedure TfrmMain.CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer);
 var
   dCompiler: TDelphiCompiler;
-  sSummary: String;
+  sSummary,sStatus: String;
   newItem: TSharpEListItem;
+  dtStart,dtEnd,dtTotalEnd: TDateTime;
 begin
-  newItem := lbSummary.AddItem('Compiling ' + Project.Name,2);
+  newItem := lbSummary.AddItem('Compiling ' + Project.Name + '...',2);
   lbSummary.ItemIndex := lbSummary.Count-1;
   Project.SIndex := lbSummary.Count -1;
   sSummary := lbSummary.Item[Project.SIndex].Caption;
-
+  dtStart := Now;
+  mDetailed.Lines.Add('Build started at ' + FormatDateTime('hh:nn:ss', dtStart));
   mDetailed.Lines.Add(sSummary);
   Project.DIndex := mDetailed.Lines.Count -1;
+
   dCompiler := TDelphiCompiler.Create;
   dCompiler.OnCompilerCmdOutput := CompilerNewLine;
   if dCompiler.CompileProject(Project, bDebug) then
   begin
-    sSummary := sSummary + '...Success!';
+    sStatus := 'Success! (' + IntToStr(iPercent) + '%)';
     newItem.ImageIndex := 1;
-    mDetailed.Lines.Add('Inserted ' + IntToStr(Project.DataSize) + ' bytes of debug data');
+    if bDebug then
+      mDetailed.Lines.Add('Inserted ' + IntToStr(Project.DataSize) + ' bytes of debug data');
   end
   else
   begin
-    sSummary := sSummary + '...Failed!';
+    sStatus := 'Failed! (' + IntToStr(iPercent) + '%)';
     newItem.ImageIndex := 0;
   end;
 
-  newItem.Caption := sSummary;
-  mDetailed.Lines[Project.DIndex] := sSummary;
+  newItem.Caption := newItem.Caption + sStatus;
+  dtEnd := Now;
+  if LeftStr(sStatus, 8) = 'Success!' then
+  begin
+    mDetailed.Lines.Add('Finished at ' + FormatDateTime('hh:nn:ss', dtEnd) + '. Build took ' + FormatDateTime('hh:nn:ss', Frac(dtEnd) - Frac(dtStart)));
+  end
+  else
+  begin
+    Project.DIndex := mDetailed.Lines.Count - 1;
+    mDetailed.Lines.Add('Build Failed!');
+  end;
+
+  if iPercent = 100 then
+  begin
+    dtTotalEnd := Now;
+    mDetailed.Lines.Add('Total build time was ' + FormatDateTime('hh:nn:ss', Frac(dtTotalEnd) - Frac(dtTotalStart)));
+  end;
 end;
 
 procedure TfrmMain.CompilerNewLine(Sender: TObject; CmdOutput: string);
 begin
-  mDetailed.Lines.Add(CmdOutput);
+  if mDetailed.Lines[mDetailed.Lines.Count - 1] <> CmdOutput then
+    mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' ' + CmdOutput);
 end;
 
 procedure TfrmMain.ctvProjectsSelectionChange(Sender: TObject);
@@ -192,9 +254,9 @@ begin
               nComponent := ctvProjects.Items.AddChild(nProject, Properties.Value('Name', 'error'));
               nComponent.Data := TDelphiProject.Create(sPath + Value, Properties.Value('Name', 'error'));
               ctvProjects.SetChecked(nComponent, True);
-              mDetailed.Lines.Add('Loaded ' + Properties.Value('Name', 'error'));
-              mDetailed.Lines.Add('Type: ' + Properties.Value('Type', 'Application'));
-              mDetailed.Lines.Add('Requires: ' + Properties.Value('Requ', 'Turbo Delphi Explorer 2006'));
+              mDetailed.Lines.Add('Loaded "' + Properties.Value('Name', 'error')
+                + '" of type ' + Properties.Value('Type', 'Application') + ' which requires '
+                + Properties.Value('Requ', 'Turbo Delphi Explorer 2006'));
             end;
         end;
       lbSummary.AddItem('Loaded ' + ExtractFileName(dlgOpen.FileName), 2);

@@ -237,7 +237,7 @@ begin
   if not FileExists(Project.Path) then
      exit;
 
-  Dir := IncludeTrailingBackSlash(ExtractFileDir(Project.Path));
+  Dir := IncludeTrailingBackSlash(ExtractFilePath(Project.Path));
 
   DCC32 := TStringList.Create;
 
@@ -270,8 +270,10 @@ begin
   DC := TDosCommand.Create(nil);
   DC.OnNewLine := OnCompilerNewLine;
 
-  s := Project.Path;
-  setlength(s,length(s) - length(ExtractFileExt(Project.Path)));
+  SetCurrentDirectory(PChar(Dir));
+  ForceDirectories(Project.OutputDir);
+
+  s := ChangeFileExt(Project.Path, '');
   if bDebug then
   begin
     if FileExists(s + '.dpr~') then
@@ -286,7 +288,10 @@ begin
       WriteLn(tempDpr, bufDpr);
       if (pos('uses', lowercase(bufDpr)) <> 0) then
       begin
-        WriteLn(tempDpr, 'DebugDialog in ''..\..\Common\Units\DebugDialog\DebugDialog.pas'',');
+        if FileExists('..\..\Common\Units\DebugDialog\DebugDialog.pas') then
+          WriteLn(tempDpr, 'DebugDialog in ''..\..\Common\Units\DebugDialog\DebugDialog.pas'',')
+        else
+          WriteLn(tempDpr, 'DebugDialog in ''..\..\..\Common\Units\DebugDialog\DebugDialog.pas'',');
       end;
     end;
     CloseFile(tempDpr);
@@ -296,12 +301,7 @@ begin
   else
     cmd := 'DCC32 "' + s + '.dpr"';
 
-
-  SetCurrentDirectory(PChar(Dir));
-  ForceDirectories(Project.OutputDir);
-
-  s := ExtractFileName(Project.Path);
-  setlength(s,length(s) - length(ExtractFileExt(Project.Path)));
+  s := ChangeFileExt(ExtractFileName(Project.Path), '');
   if FileExists(Project.OutputDir + s + '.dll') then
      GetFileLastWrite(Project.OutputDir + s + '.dll',dllst)
      else dllst := 0;
@@ -316,38 +316,41 @@ begin
   DC.Execute2;
   DC.Free;
 
-  if (FileExists(Project.OutputDir + s + '.dll')) and (dllst <> 0) then
+  if (FileExists(Project.OutputDir + s + '.dll')) then
   begin
     GetFileLastWrite(Project.OutputDir + s + '.dll',tempst);
     sExt := '.dll';
-    result := (CompareDateTime(dllst,tempst) <> 0);
+    if (dllst <> 0) then
+      result := (CompareDateTime(dllst,tempst) <> 0)
+    else
+      result := True;
   end
   else
-  if (FileExists(Project.OutputDir + s + '.exe')) and (exest <> 0) then
+  if (FileExists(Project.OutputDir + s + '.exe')) then
   begin
     GetFileLastWrite(Project.OutputDir + s + '.exe',tempst);
     sExt := '.exe';
-    result := (CompareDateTime(exest,tempst) <> 0);
-  end
+    if (exest <> 0) then
+      result := (CompareDateTime(exest,tempst) <> 0)
     else
-  if (FileExists(Project.OutputDir + s + '.ser')) and (serst <> 0) then
+      result := True;
+  end
+  else
+  if (FileExists(Project.OutputDir + s + '.ser')) then
   begin
     GetFileLastWrite(Project.OutputDir + s + '.ser',tempst);
     sExt := '.ser';
-    result := (CompareDateTime(serst,tempst) <> 0);
-  end
-  else if    (FileExists(Project.OutputDir + s + '.dll'))
-          or (FileExists(Project.OutputDir + s + '.exe'))
-          or (FileExists(Project.OutputDir + s + '.ser')) then
-       result := True;
+    if (serst <> 0) then
+      result := (CompareDateTime(serst,tempst) <> 0)
+    else
+      result := True;
+  end;
 
   DeleteFile(PChar(Dir + 'Dcc32.cfg'));
 
   if bDebug then
   begin
-    s := Project.Path;
-    s := s + ChangeFileExt(ExtractFileName(Project.Path), '');
-    s := s + '.dpr~';
+    s := ChangeFileExt(Project.Path, '.dpr~');
     if FileExists(s) then
       DeleteFile(PChar(s));
     s := ChangeFileExt(ExtractFileName(Project.Path), '');
@@ -356,11 +359,9 @@ begin
   end;
 
   if FileExists(Project.OutputDir + s + '.ser') then
-  begin
     if FileExists(Project.OutputDir + s + '.service') then
       DeleteFile(PChar(Project.OutputDir + s + '.service'));
     MoveFile(PChar(Project.OutputDir + s + '.ser'), PChar(Project.OutputDir + s + '.service'));
-  end;
 
   if FileExists(Project.OutputDir + s + '.map') then
     DeleteFile(PChar(Project.OutputDir + s + '.map'));
