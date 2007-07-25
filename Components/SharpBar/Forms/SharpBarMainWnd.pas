@@ -37,7 +37,7 @@ uses
   Dialogs, SharpESkinManager, Menus, StdCtrls, JvSimpleXML, SharpApi,
   GR32, uSharpEModuleManager, DateUtils, PngImageList, SharpEBar, SharpThemeApi,
   SharpEBaseControls, ImgList, Controls, ExtCtrls, uSkinManagerThreads,
-  uSystemFuncs, Types, AppEvnts, SharpESkin,
+  uSystemFuncs, Types, AppEvnts, SharpESkin, Registry,
   SharpGraphicsUtils, Math;
 
 type
@@ -731,7 +731,17 @@ end;
 procedure TSharpBarMainForm.UpdateBGZone;
 var
   BGBmp : TBitmap32;
+  TempBmp : TBitmap32;
+  Reg : TRegistry;
   wnd : hwnd;
+  WinWallPath : String;
+  WinWallColor : String;
+  WinWallTile  : String;
+  WinWallStyle : String;
+  n : integer;
+  x,y : integer;
+  R,G,B : integer;
+  s : String;
 begin
   if FSuspended then exit;
   if (FTopZone = nil) or (FBottomZone = nil) then exit;
@@ -740,6 +750,7 @@ begin
   BGBmp.SetSize(Screen.Width,Screen.Height);
   BGBmp.Clear(color32(0,0,0,255));
   try
+    // check if SharpDesk is running
     wnd := FindWindow('TSharpDeskMainForm',nil);
     if wnd <> 0 then
     begin
@@ -765,8 +776,66 @@ begin
       end
     end else
     begin
-      if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp') then
-         BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp');
+      // SharpDesk isn't running, load the windows background
+
+      // Read the Windows Wallpaper settings
+      Reg := TRegistry.Create;
+      Reg.RootKey := HKEY_CURRENT_USER;
+      Reg.Access := KEY_READ;
+      if Reg.OpenKey('\Control Panel\Desktop\',False) then
+      begin
+        WinWallPath  := Reg.ReadString('Wallpaper');
+        WinWallStyle := Reg.ReadString('WallpaperStyle');
+        WinWallTile  := Reg.ReadString('TileWallpaper');
+        Reg.CloseKey;
+      end;
+      if Reg.OpenKey('\Control Panel\Colors\',False) then
+      begin
+        WinWallColor := Reg.ReadString('Background');
+        Reg.CloseKey;
+      end;
+      Reg.Free;
+
+      // convert the windows color string to R G B colors
+      s := '';
+      R := -1;
+      G := -1;
+      B := -1;
+      for n := 1 to length(WinWallColor) do
+      begin
+        if WinWallColor[n] <> ' ' then
+           s := s + WinWallColor[n]
+        else
+        begin
+          if         R = -1 then R := strtoint(s)
+             else if G = -1 then G := strtoint(s)
+             else if B = -1 then B := strtoint(s);
+          s := '';
+        end;
+      end;
+
+      // Paint the Wallpaper
+      BGBmp.Clear(color32(R,G,B,255));
+      TempBmp := TBitmap32.Create;
+      if FileExists(WinWallPath) then
+         TempBmp.LoadFromFile(WinWallPath);
+      if WinWallTile = '1' then // Tile Wallpaper
+      begin
+        for x := 0 to BGBmp.Width div TempBmp.Width + 1 do
+            for y := 0 to BGBmp.Height div TempBmp.Height + 1 do
+                TempBmp.DrawTo(BGBmp,x*TempBmp.Width,y*TempBmp.Height);
+      end
+      else
+      if WinWallStyle = '0' then // Center the Wallpaper
+         TempBmp.DrawTo(BGBmp,
+                        BGBmp.Width div 2 - TempBmp.Width div 2,
+                        BGBmp.Height div 2 - TempBmp.Height div 2)
+         else if WinWallStyle = '2' then // Scale
+                 TempBmp.DrawTo(BGBmp,Rect(0,0,BGBmp.Width,BGBmp.Height));
+
+      TempBmp.Free;
+//      if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp') then
+//         BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp');
     end;
     // Update the images holding the top and bottom background image
     // (no need to hold the whole image, only the areas used by bars are of interest)
@@ -876,13 +945,17 @@ begin
   xml := TJvSimpleXMl.Create(nil);
   try
     xml.LoadFromFile(Dir + 'bars.xml');
+    if xml.root.Items.ItemNamed['bars'] = nil then
+       xml.Root.Items.Add('bars');
     with xml.root.items.ItemNamed['bars'] do
     begin
       for n := 0 to Items.Count - 1 do
           if Items.Item[n].Items.IntValue('ID',0) = FBarID then
           begin
             // Save the Bar Settings
-            Items.Item[n].Items.ItemNamed['Settings'].Items.Clear;
+            if Items.Item[n].Items.ItemNamed['Settings'] = nil then
+               Items.Item[n].Items.Add('Settings')
+               else Items.Item[n].Items.ItemNamed['Settings'].Items.Clear;
             with Items.Item[n].Items.ItemNamed['Settings'] do
             begin
               Items.Add('AutoPosition',SharpEBar.AutoPosition);
@@ -896,7 +969,9 @@ begin
               Items.Add('ShowMiniThrobbers',ModuleManager.ShowMiniThrobbers);
             end;
             // Save the Module List
-            Items.Item[n].Items.ItemNamed['Modules'].Items.Clear;
+            if Items.Item[n].Items.ItemNamed['Modules'] = nil then
+               Items.Item[n].Items.Add('Modules')
+               else Items.Item[n].Items.ItemNamed['Modules'].Items.Clear;
             with Items.Item[n].Items.ItemNamed['Modules'] do
             begin
               for i := 0 to ModuleManager.Modules.Count -1 do
@@ -947,11 +1022,13 @@ begin
     ForceDirectories(Dir);
     xml.SaveToFile(Dir + 'bars.xml');
   end;
+
+  xml.Root.Clear;
   try
     xml.LoadFromFile(Dir + 'bars.xml');
 
     // Generate a new unique bar ID and make sure that there is no other
-    // bar with the same ID 
+    // bar with the same ID
     repeat
       NewID := '';
       for n := 1 to 8 do NewID := NewID + inttostr(random(9)+1);
@@ -969,6 +1046,8 @@ begin
     until not b;
     FBarID := strtoint(NewID);
 
+    if xml.root.Items.ItemNamed['bars'] = nil then
+       xml.Root.Items.Add('bars');
     with xml.Root.Items.ItemNamed['bars'].Items.Add('Item') do
     begin
       Items.Add('ID',NewID);
@@ -979,7 +1058,7 @@ begin
     // PANIC : something went wrong!!!!!
     // we now might have a bar without any place to store the settings
     // not good!
-    // can't think of anything good what to do now... 
+    // can't think of anything good what to do now...
     // let's just give an error and terminate the app =)
     DebugOutput('FATAL ERROR: Unable to register new bar settings!',1,3);
     xml.Free;
