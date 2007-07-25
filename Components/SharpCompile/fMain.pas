@@ -31,7 +31,6 @@ type
     ctvProjects: TJvCheckTreeView;
     clbOptions: TJvCheckListBox;
     sepLog: TSharpEPageControl;
-    mSummary_: TJvMemo;
     mDetailed: TJvMemo;
     Splitter1: TSplitter;
     lbSummary: TSharpEListBoxEx;
@@ -66,6 +65,9 @@ implementation
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   uVistaFuncs.SetVistaFonts(frmMain);
+  lbSummary.DoubleBuffered := True;
+  sepLog.DoubleBuffered := True;
+  panMain.DoubleBuffered := True;
 end;
 
 procedure TfrmMain.lbSummaryDblClickItem(AText: string; AItem, ACol: Integer);
@@ -98,7 +100,9 @@ procedure TfrmMain.lbSummaryGetCellColor(const AItem: Integer;
   var AColor: TColor);
 begin
   if lbSummary.Item[AItem].ImageIndex = 0 then
-    AColor := $00ECECFF;
+    AColor := $00ECECFF else
+  if lbSummary.Item[AItem].ImageIndex = -1 then
+    AColor := $00FBEFE3;
 end;
 
 procedure TfrmMain.mDetailedChange(Sender: TObject);

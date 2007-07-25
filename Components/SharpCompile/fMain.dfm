@@ -1212,6 +1212,7 @@ object frmMain: TfrmMain
       Align = alClient
       BevelOuter = bvNone
       Color = clWindow
+      ParentBackground = False
       TabOrder = 1
       object tbMain: TToolBar
         AlignWithMargins = True
@@ -1299,31 +1300,6 @@ object frmMain: TfrmMain
         DesignSize = (
           658
           450)
-        object mSummary_: TJvMemo
-          AlignWithMargins = True
-          Left = 6
-          Top = 30
-          Width = 646
-          Height = 414
-          Margins.Left = 6
-          Margins.Top = 30
-          Margins.Right = 6
-          Margins.Bottom = 6
-          AutoSize = False
-          MaxLines = 0
-          HideCaret = False
-          Align = alClient
-          BorderStyle = bsNone
-          Flat = True
-          Lines.Strings = (
-            'SharpE Compiler Helper'
-            'Copyright 2005 SharpE Team')
-          ParentFlat = False
-          ReadOnly = True
-          ScrollBars = ssVertical
-          TabOrder = 0
-          OnChange = mSummary_Change
-        end
         object mDetailed: TJvMemo
           AlignWithMargins = True
           Left = 6
@@ -1346,7 +1322,7 @@ object frmMain: TfrmMain
           ParentFlat = False
           ReadOnly = True
           ScrollBars = ssVertical
-          TabOrder = 1
+          TabOrder = 0
           Visible = False
           OnChange = mDetailedChange
         end
