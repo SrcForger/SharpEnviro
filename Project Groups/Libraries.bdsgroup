@@ -14,7 +14,8 @@
       <Projects Name="SharpThemeApi.dll">..\Common\Libraries\SharpThemeApi\SharpThemeApi.bdsproj</Projects>
       <Projects Name="SharpDialogs.dll">..\Common\Libraries\SharpDialogs\SharpDialogs.bdsproj</Projects>
       <Projects Name="SharpAPIEx.dll">..\Common\Libraries\SharpApiEx\SharpAPIEx.bdsproj</Projects>
-      <Projects Name="Targets">SharpAPI.dll SharpDeskApi.dll SharpThemeApi.dll SharpDialogs.dll SharpAPIEx.dll</Projects>
+      <Projects Name="SharpCenterAPI.dll">..\Common\Libraries\SharpCenterApi\SharpCenterAPI.bdsproj</Projects>
+      <Projects Name="Targets">SharpAPI.dll SharpDeskApi.dll SharpThemeApi.dll SharpDialogs.dll SharpAPIEx.dll SharpCenterAPI.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
