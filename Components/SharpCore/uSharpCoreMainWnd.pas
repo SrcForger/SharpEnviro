@@ -54,6 +54,7 @@ uses
 
   // SharpE
   SharpAPI,
+  SharpcenterApi,
 
   // Program Units
   uSharpCoreServiceList,
@@ -673,8 +674,7 @@ begin
   if Msg.WParam = SCM_EVT_UPDATE_SETTINGS then begin
   with ServiceManager do begin
     case Msg.LParam of
-      SCU_SHARPCORE: ; // reload sharpcore settings
-      SCU_SERVICE: begin
+      integer(suService): begin
           tmpInfo := ServiceList.FindObject(Msg.LParam);
 
           if tmpInfo.Status = ssStarted then
