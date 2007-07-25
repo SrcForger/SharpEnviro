@@ -153,7 +153,7 @@ type
 
   PHelpMsg = ^THelpMsg;
   THelpMsg = record
-    Parameter: string[255]
+    Parameter: string[255];
   end;
 
   PActionCmd = ^TActionCmd;
@@ -177,12 +177,7 @@ type
     Msg: string[255];
   end;
 
-  Const
-    SCC_LOAD_SETTING = '_loadsetting';
-    SCC_CHANGE_FOLDER = '_changedir';
-    SCC_UNLOAD_DLL = '_unloaddll';
-    SCC_LOAD_DLL = '_loaddll';
-
+const
     AC_REGISTER_ACTION = '_registeraction';
     AC_UNREGISTER_ACTION = '_unregisteraction';
     AC_UPDATE_ACTION = '_updateaction';
@@ -191,10 +186,7 @@ type
     AC_EXECUTE_ACTION = '_execute';
     AC_SERVICE_NAME = 'Actions';
 
-  Type
-    TSCC_COMMAND_ENUM = (sccLoadSetting, sccChangeFolder, sccUnloadDll, sccLoadDll);
-
-
+type
   TBarRect = record
               R : TRect;
               wnd : hwnd;
@@ -371,36 +363,6 @@ begin
     result := HR_UNKNOWNERROR;
   end;
 end;
-
-{function CenterMsg(Command, Param, PluginID :PChar): hresult;
-var
-  cds: TCopyDataStruct;
-  wnd: hWnd;
-  msg: TSharpE_DataStruct;
-begin
-  try
-    //Prepare TCopyDataStruct
-    msg.PluginID := Pluginid;
-    msg.Command := Command;
-    msg.Parameter := Param;
-    with cds do
-    begin
-      dwData := 0;
-      cbData := SizeOf(TSharpE_DataStruct);
-      lpData := @msg;
-    end;
-    //Find the window
-    wnd := FindWindow('TSharpCenterWnd', nil);
-    if wnd <> 0 then
-    begin
-      result := sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
-    end
-    else
-      result := HR_NORECIEVERWINDOW;
-  except
-    result := HR_UNKNOWNERROR;
-  end;
-end;   }
 
 function BarMsg(PluginName, Command: pChar): hresult;
 var
@@ -736,118 +698,6 @@ begin
   result := i;
 end;
 
-function SharpCenterBroadCast(wpar: wparam; lpar: lparam): boolean;
-var
-  wnd: hWnd;
-  MutexHandle: THandle;
-begin
-  Result := False;
-  wpara := wpar;
-  lpara := lpar;
-
-  MuteXHandle := OpenMutex(MUTEX_ALL_ACCESS, False, 'SharpCenterMutexX');
-    if MuteXHandle <> 0 then
-    begin
-
-      //Find the window
-      wnd := FindWindow('TSharpCenterWnd', nil);
-      if wnd <> 0 then
-      begin
-        Result := True;
-        PostMessage(wnd, WM_SHARPCENTERMESSAGE, wpara, lpara);
-      end else
-        Result := False;
-      CloseHandle(MuteXHandle);
-    end
-end;
-
-function CenterMsg(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID :PChar): hresult;
-var
-  cds: TCopyDataStruct;
-  wnd: hWnd;
-  msg: TSharpE_DataStruct;
-  path: string;
-  MutexHandle: THandle;
-
-  sCommand: String;
-begin
-  Result := 0;
-  wnd := 0;
-
-  Case ACommand of
-    sccLoadSetting: sCommand := SCC_LOAD_SETTING;
-    sccChangeFolder: sCommand := SCC_CHANGE_FOLDER;
-    sccUnloadDll: sCommand := SCC_UNLOAD_DLL;
-    sccLoadDll: sCommand := SCC_LOAD_DLL;
-    else
-      sCommand := '';
-  end;
-
-  // Check valid command
-  if sCommand = '' then begin
-    SendDebugMessageEx('SharpApi', pchar(format('Config Msg Invalid: %s',
-      [sCommand])), 0, DMT_INFO);
-    exit;
-  end;
-
-  try
-
-    SendDebugMessageEx('SharpApi', pchar(format('Config Msg Received: %s - %s',
-      [sCommand, AParam])), 0, DMT_INFO);
-    msg.Parameter := AParam;
-    msg.Command := sCommand;
-    msg.PluginID := APluginID;
-
-    with cds do
-    begin
-      dwData := 0;
-      cbData := SizeOf(TSharpE_DataStruct);
-      lpData := @msg;
-    end;
-
-    MuteXHandle := OpenMutex(MUTEX_ALL_ACCESS, False, 'SharpCenterMutexX');
-    if MuteXHandle <> 0 then
-    begin
-
-      //Find the window
-      wnd := FindWindow('TSharpCenterWnd', nil);
-      if wnd <> 0 then
-      begin
-        SendDebugMessageEx('SharpApi',
-          pchar(format('SharpCenter Mutex Exists, Sending Msg: %s - %s',
-            [sCommand, AParam])),
-          0,
-          DMT_STATUS);
-        result := sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
-      end;
-      CloseHandle(MuteXHandle);
-    end
-    else
-    begin
-      // Start the SharpCenter application
-      Path := GetSharpeDirectory;
-
-      if fileexists(Path + 'SharpCenter.exe') then
-      begin
-        SendDebugMessageEx('SharpApi',
-          pchar(format('SharpCenter Mutex not found, Launching file: %s', [Path
-            +
-          'SharpCenter.exe'])), 0, DMT_STATUS);
-        ShellExecute(wnd, 'open', pchar(Path + 'SharpCenter.exe'), Pchar('-api '
-          +
-          sCommand + ' ' + AParam), pchar(path), WM_SHOWWINDOW);
-      end
-      else
-        SendDebugMessageEx('SharpApi',
-          pchar(format('There was an error launching: %s', [Path +
-          'SharpCenter.exe'])), 0, DMT_ERROR);
-    end;
-
-  except
-    result := HR_UNKNOWNERROR;
-  end;
-end;
-
 function SendMessageTo(WndName: string; msg: integer; wpar: wparam; lpar:
   lparam): boolean;
 var
@@ -1155,11 +1005,7 @@ exports
   GetSharpBarCount,
   GetSharpBarArea,
 
-  // SharpCenter
-  SharpCenterBroadCast,
-  CenterMsg,
   GetCenterDirectory,
-
   GetSharpeDirectory,
   GetSharpeUserSettingsPath,
   GetSharpeGlobalSettingsPath,

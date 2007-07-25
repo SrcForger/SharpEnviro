@@ -39,11 +39,11 @@ uses
   Windows;
 
 const
+  WM_SHARPEUPDATESETTINGS = WM_APP + 506;
   WM_SHARPTRAYMESSAGE = WM_APP + 500;
   WM_SHARPCONSOLEMESSAGE = WM_APP + 502;
   WM_SHARPDESKMESSAGE = WM_APP + 504;
   WM_SHARPBARMESSAGE = WM_APP + 505;
-  WM_SHARPEUPDATESETTINGS = WM_APP + 506;
 
   // WM_SHARPEUPDATESETTINGS Params
   SU_SKIN = 1;
@@ -142,45 +142,6 @@ const
   DMT_ERROR = 3;
   DMT_TRACE = 4;
   DMT_NONE = -1;
-  
-  // SharpCenter
-  WM_SHARPCENTERMESSAGE = WM_APP + 660;
-  SCM_SET_EDIT_STATE = 1000;
-  SCM_SET_EDIT_CANCEL_STATE = 1001;
-  SCM_SET_BUTTON_ENABLED = 1002;
-  SCM_SET_BUTTON_DISABLED = 1003;
-  SCM_SET_TAB_SELECTED = 1004;
-  SCM_SET_SETTINGS_CHANGED = 1005;
-  SCM_EVT_BTNCLICK = 1006;
-  SCM_EVT_UPDATE_PREVIEW = 1007;
-  SCM_EVT_UPDATE_SETTINGS = 1008;
-  SCM_EVT_UPDATE_SIZE = 1009;
-
-  SCU_SHARPDESK = 2001;
-  SCU_SHARPCORE = 2002;
-  SCU_SHARPBAR = 2003;
-  SCU_SHARPMENU = 2004;
-  SCU_SHARPTHEME = 2005;
-  SCU_SERVICE = 2006;
-  SCU_OBJECT = 2007;
-  SCU_MODULE = 2008;
-
-  SCB_MOVEUP = 3000;
-  SCB_MOVEDOWN = 3001;
-  SCB_IMPORT = 3002;
-  SCB_EXPORT = 3003;
-  SCB_CLEAR = 3004;
-  SCB_DELETE = 3005;
-  SCB_HELP = 3006;
-  SCB_ADD_TAB = 3007;
-  SCB_EDIT_TAB = 3008;
-  SCB_DEL_TAB = 3009;
-  SCB_CONFIGURE = 3010; // For editing the contents of a list
-
-  SCC_LOAD_SETTING = '_loadsetting';
-  SCC_CHANGE_FOLDER = '_changedir';
-  SCC_UNLOAD_DLL = '_unloaddll';
-  SCC_LOAD_DLL = '_loaddll';
 
   // Action Consts
   AC_REGISTER_ACTION = '_registeraction';
@@ -190,14 +151,6 @@ const
   AC_ACTION_EXISTS = '_exists';
   AC_EXECUTE_ACTION = '_execute';
   AC_SERVICE_NAME = 'Actions';
-
-  //showModes to use with sendTrayMessage
-  smSLIDE = 1;
-  smSHRINK = 2;
-
-type
-  TSCE_EDITMODE_ENUM = (sceAdd, sceEdit, sceDelete);
-  TSCC_COMMAND_ENUM = (sccLoadSetting, sccChangeFolder, sccUnloadDll, sccLoadDll);
 
 type
   PSharpE_DataStruct = ^TSharpE_DataStruct;
@@ -240,9 +193,6 @@ function GetSharpeDirectory: PChar; external 'SharpAPI.dll' name 'GetSharpeDirec
 function GetSharpeUserSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeUserSettingsPath';
 function GetSharpeGlobalSettingsPath: PChar; external 'SharpAPI.dll' name 'GetSharpeGlobalSettingsPath';
 function GetCenterDirectory: PChar; external 'SharpAPI.dll' name 'GetCenterDirectory';
-function CenterMsg(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID :PChar): hresult; external 'SharpAPI.dll' name 'CenterMsg';
-function SharpCenterBroadCast(wpar: wparam; lpar: lparam): boolean; external 'SharpAPI.dll';
-
 
 function ServiceMsg(ServiceName, Command: pChar): hresult; external 'SharpAPI.dll' name 'ServiceMsg';
 function ServiceStart(ServiceName: pChar): hresult; external 'SharpAPI.dll' name 'ServiceStart';
