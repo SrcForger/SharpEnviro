@@ -1,9 +1,9 @@
 object Form1: TForm1
   Left = 8
   Top = 8
-  Width = 580
-  Height = 355
   Caption = 'Form1'
+  ClientHeight = 319
+  ClientWidth = 564
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -37,32 +37,6 @@ object Form1: TForm1
         Autosize = False
         Images = PngImageList1
         SelectedImages = col1
-      end
-      item
-        Width = 150
-        MaxWidth = 150
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
-        HAlign = taLeftJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calLeft
-        Autosize = True
-        Images = col1
-        SelectedImages = PngImageList1
-      end
-      item
-        Width = 100
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
-        HAlign = taLeftJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calRight
-        Autosize = False
-        Images = col1
-        SelectedImages = PngImageList1
       end>
     ItemHeight = 24
     OnGetCellFont = SharpEListBoxEx1GetCellFont
@@ -173,7 +147,6 @@ object Form1: TForm1
     PngOptions = []
     Left = 440
     Top = 232
-    Bitmap = {}
   end
   object PngImageList1: TPngImageList
     BlendColor = clBlack
@@ -271,6 +244,5 @@ object Form1: TForm1
     PngOptions = []
     Left = 488
     Top = 224
-    Bitmap = {}
   end
 end

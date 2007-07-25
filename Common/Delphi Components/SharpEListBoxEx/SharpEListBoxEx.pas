@@ -318,7 +318,7 @@ var
 begin
 try
   tmpItem := TSharpEListItem(Self.Items.Objects[Index]);
-
+  Rect.Right := Self.ClientWidth-4;
 
   bSelected := (Index = ItemIndex);
 
@@ -493,7 +493,7 @@ begin
   Self.Canvas.Brush.Color := tmpColor;
   Self.Canvas.Pen.Color := tmpColor;
   Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top + Itemoffset.Y,
-      ARect.Right - ItemOffset.X, ARect.Bottom - itemoffset.Y, 10, 10);
+      ARect.Right - (ItemOffset.X), ARect.Bottom - itemoffset.Y, 10, 10);
 
   //Self.Canvas.FillRect(ARect);
 
@@ -512,7 +512,7 @@ begin
     Self.Canvas.Pen.Color := tmpColor;
 
     Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top + Itemoffset.Y,
-      ARect.Right - ItemOffset.X, ARect.Bottom - itemoffset.Y, 10, 10);
+      ARect.Right - (ItemOffset.X), ARect.Bottom - itemoffset.Y, 10, 10);
   end;
   if (odFocused in AState) and (odSelected in AState) then
   begin
@@ -525,7 +525,7 @@ begin
     end;
 
     Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top + Itemoffset.Y,
-      ARect.Right - ItemOffset.X, ARect.Bottom - itemoffset.Y, 10, 10);
+      ARect.Right - (ItemOffset.X), ARect.Bottom - itemoffset.Y, 10, 10);
   end;
 end;
 
@@ -647,7 +647,7 @@ function TSharpEListBoxEx.CalcColumnRect(
 begin
 
   if AColumnID = Pred(ColumnCount) then
-        Result := Types.Rect(AX+columnMargin.Left, AY, AItemRect.Right - (itemoffset.X * 2) -columnMargin.Right, AY + ItemHeight - ItemOffset.Y)
+        Result := Types.Rect(AX+columnMargin.Left, AY, AItemRect.Right - (itemoffset.X * 2) -(columnMargin.Right), AY + ItemHeight - ItemOffset.Y)
       else
         Result := Types.Rect(AX+columnMargin.Left, AY, AX + AColumn.Width -columnMargin.Right, AY + ItemHeight - ItemOffset.Y);
 end;
