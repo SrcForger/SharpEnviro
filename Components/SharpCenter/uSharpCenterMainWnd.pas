@@ -68,7 +68,7 @@ uses
   SharpEListBoxEx,
   PngBitBtn,
   SharpThemeApi,
-  Types, XPMan, VistaAltFixUnit, SharpEPageControl;
+  Types, XPMan, VistaAltFixUnit, SharpEPageControl, SharpCenterApi;
 
 const
   cEditTabHide = 0;
@@ -123,6 +123,7 @@ type
     pnlEditToolbar: TPanel;
     btnEditCancel: TPngSpeedButton;
     btnEditApply: TPngSpeedButton;
+    Button1: TButton;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -153,6 +154,7 @@ type
 
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -274,7 +276,8 @@ begin
   tmpHist := SCM.ActiveCommand;
 
   SCM.History.Add(tmpHist.Command, tmpHist.Param, tmpMsg.PluginID);
-  SCM.ExecuteCommand(tmpMsg.Command, tmpMsg.Parameter, tmpMsg.PluginID);
+  SCM.ExecuteCommand(CenterCommandAsEnum(tmpMsg.Command),
+    tmpMsg.Parameter, tmpMsg.PluginID);
 end;
 
 procedure TSharpCenterWnd.WMSyscommand(var Message: TWmSysCommand);
@@ -318,8 +321,8 @@ end;
 procedure TSharpCenterWnd.btnHelpClick(Sender: TObject);
 begin
   if (@SCM.ActivePlugin.SetBtnState) <> nil then
-    if SCM.ActivePlugin.SetBtnState(SCB_HELP) = True then
-      SCM.ActivePlugin.ClickBtn(SCB_HELP, '');
+    if SCM.ActivePlugin.SetBtnState(scbHelp) = True then
+      SCM.ActivePlugin.ClickBtn(scbHelp, '');
 end;
 
 procedure TSharpCenterWnd.btnSaveClick(Sender: TObject);
@@ -341,6 +344,14 @@ begin
     btnSave.Enabled := False;
     btnCancel.Enabled := False;
   end;
+end;
+
+procedure TSharpCenterWnd.Button1Click(Sender: TObject);
+var
+  n,n2:Integer;
+begin
+  n := 0;
+  n2 := n div n;
 end;
 
 procedure TSharpCenterWnd.btnCancelClick(Sender: TObject);
@@ -445,15 +456,15 @@ begin
       SCM.StateEditWarning := False;
 
       case Msg.LParam of
-        SCB_ADD_TAB: begin
+        integer(scbAddTab): begin
           pnlEditContainer.TabIndex := cEdit_Add;
           FSelectedTabID := cEdit_Add;
         end;
-        SCB_EDIT_TAB: begin
+        integer(scbEditTab): begin
           pnlEditContainer.TabIndex := cEdit_Edit;
           FSelectedTabID := cEdit_Edit;
         end;
-        SCB_DELETE: begin
+        integer(scbDeleteTab): begin
           pnlEditContainer.TabIndex := cEdit_Delete;
           FSelectedTabID := cEdit_Delete;
         end;
@@ -467,13 +478,13 @@ begin
         bEnabled := (msg.WParam = SCM_SET_BUTTON_ENABLED);
         iBtnID := msg.LParam;
         case iBtnID of
-          SCB_IMPORT: SetToolbarTabVisible(tidImport, bEnabled);
-          SCB_EXPORT: SetToolbarTabVisible(tidExport, bEnabled);
-          SCB_DELETE: btnEditApply.Enabled := bEnabled;
-          SCB_HELP: btnHelp.Enabled := bEnabled;
-          SCB_ADD_TAB: pnlEditContainer.TabItems.Item[cEdit_Add].Visible := bEnabled;
-          SCB_EDIT_TAB: pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := bEnabled;
-          SCB_DEL_TAB: pnlEditContainer.TabItems.Item[cEdit_Delete].Visible :=
+          integer(scbImport): SetToolbarTabVisible(tidImport, bEnabled);
+          integer(scbExport): SetToolbarTabVisible(tidExport, bEnabled);
+          integer(scbDelete): btnEditApply.Enabled := bEnabled;
+          integer(scbHelp): btnHelp.Enabled := bEnabled;
+          integer(scbAddTab): pnlEditContainer.TabItems.Item[cEdit_Add].Visible := bEnabled;
+          integer(scbEditTab): pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := bEnabled;
+          integer(scbDeleteTab): pnlEditContainer.TabItems.Item[cEdit_Delete].Visible :=
             bEnabled;
         end;
       end;
@@ -496,10 +507,6 @@ begin
     SCM_SET_EDIT_CANCEL_STATE:
       begin
         SCM.StateEditItem := False;
-      end;
-    SCM_EVT_UPDATE_SIZE:
-      begin
-        UpdateSize;
       end;
   end;
 end;
@@ -705,7 +712,7 @@ begin
         tmpHist.Add(tmpHistItem.Command, tmpHistItem.Param,
           tmpHistItem.PluginID);
 
-        tmpHistItem.Command := SCC_CHANGE_FOLDER;
+        tmpHistItem.Command := sccChangeFolder;
         tmpHistItem.Param := PathAddSeparator(tmpItem.Path);
         tmpHistItem.PluginID := '';
 
@@ -717,7 +724,7 @@ begin
         tmpHist.Add(tmpHistItem.Command, tmpHistItem.Param,
           tmpHistItem.PluginID);
 
-        tmpHistItem.Command := SCC_LOAD_SETTING;
+        tmpHistItem.Command := sccLoadSetting;
         tmpHistItem.Param := tmpItem.Filename;
         tmpHistItem.PluginID := '';
 
@@ -778,7 +785,7 @@ end;
 procedure TSharpCenterWnd.btnImportClick(Sender: TObject);
 begin
   if (@SCM.ActivePlugin.ClickBtn <> nil) then
-    SCM.ActivePlugin.ClickBtn(SCB_IMPORT, PChar(edImportFileName.Text));
+    SCM.ActivePlugin.ClickBtn(scbImport, PChar(edImportFileName.Text));
 end;
 
 procedure TSharpCenterWnd.PopupMenu1Popup(Sender: TObject);
@@ -787,7 +794,7 @@ begin
   miSep.Visible := False;
 
   if (@SCM.ActivePlugin.SetBtnState <> nil) then
-    if SCM.ActivePlugin.SetBtnState(SCB_CONFIGURE) then
+    if SCM.ActivePlugin.SetBtnState(scbConfigure) then
     begin
       //miConfigure.Visible := True;
       //miSep.Visible := True;
@@ -812,7 +819,7 @@ begin
   else if Sender = miConfigure then
   begin
     if (@SCM.ActivePlugin.ClickBtn <> nil) then
-      SCM.ActivePlugin.ClickBtn(SCB_CONFIGURE, miConfigure.Caption);
+      SCM.ActivePlugin.ClickBtn(scbconfigure, miConfigure.Caption);
   end;
 end;
 
@@ -850,10 +857,10 @@ begin
 
     // Toolbar
     if (@SCM.ActivePlugin.SetBtnState <> nil) then
-      SetToolbarTabVisible(tidImport, SCM.ActivePlugin.SetBtnState(SCB_IMPORT));
+      SetToolbarTabVisible(tidImport, SCM.ActivePlugin.SetBtnState(scbImport));
 
     if (@SCM.ActivePlugin.SetBtnState <> nil) then
-      SetToolbarTabVisible(tidExport, SCM.ActivePlugin.SetBtnState(SCB_EXPORT));
+      SetToolbarTabVisible(tidExport, SCM.ActivePlugin.SetBtnState(scbExport));
 
     if (@SCM.ActivePlugin.UpdatePreview <> nil) then
     begin

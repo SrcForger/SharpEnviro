@@ -48,19 +48,20 @@ uses
   PngImageList,
   PngImage,
   StdCtrls,
-  
+
+  SharpCenterApi,
   Contnrs;
 
 type
   TSharpCenterHistoryItem = class
   private
-    FCommand: string;
+    FCommand: TSCC_COMMAND_ENUM;
     FParam: string;
     FPluginID: String;
     FID: Integer;
   public
     property ID: Integer read FID write FID;
-    property Command: string read FCommand write FCommand;
+    property Command: TSCC_COMMAND_ENUM read FCommand write FCommand;
     property Param: string read FParam write FParam;
     property PluginID: String read FPluginID write FPluginID;
   end;
@@ -79,7 +80,7 @@ type
     function AddFolder(APath: string): TSharpCenterHistoryItem;
     function AddDll(ADll, APluginID: String): TSharpCenterHistoryItem;
     function AddSetting(ASetting: string): TSharpCenterHistoryItem;
-    function Add(ACommand, AParameter, APluginID: String): TSharpCenterHistoryItem;
+    function Add(ACommand: TSCC_COMMAND_ENUM; AParameter, APluginID: string): TSharpCenterHistoryItem;
     function GetLastEntry: TSharpCenterHistoryItem;
     property List: TList read FList write FList;
 
@@ -118,7 +119,7 @@ begin
     exit;
 
   Result := TSharpCenterHistoryItem.Create;
-  Result.Command := SCC_CHANGE_FOLDER;
+  Result.Command := sccChangeFolder;
   Result.Param := APath;
   Result.PluginID := '';
   Result.ID := FList.Count;
@@ -134,7 +135,7 @@ begin
     exit;
 
   Result := TSharpCenterHistoryItem.Create;
-  Result.Command := '_loaddll';
+  Result.Command := sccLoadDll;
   Result.Param := ADll;
   Result.PluginID := APluginID;
   Result.ID := FList.Count;
@@ -150,7 +151,7 @@ begin
     exit;
 
   Result := TSharpCenterHistoryItem.Create;
-  Result.Command := SCC_LOAD_SETTING;
+  Result.Command := sccLoadSetting;
   Result.Param := ASetting;
   Result.PluginID := '';
   Result.ID := FList.Count;
@@ -165,7 +166,7 @@ begin
     Result := TSharpCenterHistoryItem(FList.Last);
 end;
 
-function TSharpCenterHistoryManager.Add(ACommand, AParameter, APluginID: string): TSharpCenterHistoryItem;
+function TSharpCenterHistoryManager.Add(ACommand: TSCC_COMMAND_ENUM; AParameter, APluginID: string): TSharpCenterHistoryItem;
 begin
   Result := TSharpCenterHistoryItem.Create;
   Result.Command := ACommand;

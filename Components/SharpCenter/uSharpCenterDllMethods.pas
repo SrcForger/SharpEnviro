@@ -37,7 +37,8 @@ uses
   Tabs,
   GR32_Image,
   GR32,
-  uSharpCenterPluginTabList;
+  uSharpCenterPluginTabList,
+  SharpCenterApi;
 
 type
   TSetting = record
@@ -51,7 +52,7 @@ type
     OpenEdit: function(AOwner:Hwnd; AEditMode:TSCE_EDITMODE_ENUM):Hwnd;
     CloseEdit: function(AEditMode:TSCE_EDITMODE_ENUM; AApply:Boolean): boolean;
 
-    ClickBtn: procedure (AButtonID: Integer; AText: String);
+    ClickBtn: procedure (AButton: TSCB_BUTTON_ENUM; AText: String);
     ClickTab: procedure (ATab: TPluginTabItem);
     AddTabs: procedure(var ATabs:TPluginTabItemList);
 
@@ -60,7 +61,7 @@ type
     SetDisplayText: procedure (const APluginID:Pchar; var ADisplayText:PChar);
     SetStatusText: procedure (var AStatusText: PChar);
     SetSettingType: function(): Integer;
-    SetBtnState : function(AButtonID: Integer): Boolean;
+    SetBtnState : function(AButton: TSCB_BUTTON_ENUM): Boolean;
 
     GetCenterScheme: procedure (var ABackground: TColor;
       var AItemColor: TColor; var AItemSelectedColor: TColor);

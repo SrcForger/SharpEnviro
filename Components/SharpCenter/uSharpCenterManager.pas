@@ -25,7 +25,8 @@ uses
 
   uSharpCenterHistoryManager,
   uSharpCenterDllMethods,
-  uSharpCenterPluginTabList;
+  uSharpCenterPluginTabList,
+  SharpCenterApi;
 
 type
   TSharpCenterItemType = (itmNone, itmFolder, itmSetting, itmDll);
@@ -103,7 +104,8 @@ type
 
     // Dll Methods
 
-    Function UnloadDllTimer(ACommand, AParam, APluginID: string):Boolean;
+    Function UnloadDllTimer(ACommand: TSCC_COMMAND_ENUM; AParam,
+      APluginID: string): Boolean;
     Function LoadPluginTabs: Boolean;
 
     procedure SetStateEditItem(const Value: Boolean);
@@ -114,8 +116,9 @@ type
     function GetRoot: String;
     procedure AssignIconIndex(AFile: string; AItem: TSharpCenterManagerItem);
 
-    procedure SetActiveCommand(ACommand, AParam, APluginID:String);
-    procedure SetUnloadCommand(ACommand, AParam, APluginID:String);
+    procedure SetActiveCommand(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID:String);
+    procedure SetUnloadCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
+      APluginID: String);
 
     function GetDisplayName(AFile, APluginID: string): string;
     function GetStatusText(AFile, APluginID: string): string;
@@ -140,7 +143,8 @@ type
 
     function CheckEditState:Boolean;
 
-    Function ExecuteCommand(ACommand, AParam, APluginID: string):Boolean;
+    Function ExecuteCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
+      APluginID: string): Boolean;
 
     property OnAddNavItem: TSharpCenterManagerAddNavItem read FOnAddNavItem write FOnAddNavItem;
     property PngImageList: TPngImageList read FPngImageList write FPngImageList;
@@ -274,7 +278,7 @@ begin
   Result := True;
 end;
 
-function TSharpCenterManager.UnloadDllTimer(ACommand, AParam,
+function TSharpCenterManager.UnloadDllTimer(ACommand: TSCC_COMMAND_ENUM; AParam,
   APluginID: string): Boolean;
 begin
   Result := True;
@@ -286,7 +290,7 @@ procedure TSharpCenterManager.UnloadTimerEvent(Sender: TObject);
 begin
   FUnloadTimer.Enabled := False;
 
-  if CompareText(FUnloadCommand.Command, SCC_UNLOAD_DLL) = 0 then
+  if FUnloadCommand.Command = sccUnloadDll then
   begin
     if FActivePlugin.Dllhandle <> 0 then
       Unload;
@@ -294,14 +298,14 @@ begin
     if not (IsDirectory(FUnloadCommand.Param)) then
       Load(FUnloadCommand.Param, FUnloadCommand.PluginID);
   end
-  else if CompareText(FUnloadCommand.Command, SCC_CHANGE_FOLDER) = 0 then
+  else if FUnloadCommand.Command = sccChangeFolder then
   begin
     if FActivePlugin.Dllhandle <> 0 then
       Unload;
 
     BuildNavFromPath(FUnloadCommand.Param)
   end
-  else if CompareText(FUnloadCommand.Command, SCC_LOAD_SETTING) = 0 then
+  else if FUnloadCommand.Command = sccLoadSetting then
   begin
 
     if FActivePlugin.Dllhandle <> 0 then
@@ -433,7 +437,7 @@ begin
     FOnInitNavigation(Self);
 
   try
-    SetActiveCommand(SCC_CHANGE_FOLDER,APath,'');
+    SetActiveCommand(sccChangeFolder,APath,'');
     APath := PathAddSeparator(APath);
 
     if FindFirst(APath + '*.*', SysUtils.faAnyFile, SRec) = 0 then
@@ -521,21 +525,21 @@ begin
   end;
 end;
 
-function TSharpCenterManager.ExecuteCommand(ACommand, AParam,
+function TSharpCenterManager.ExecuteCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
   APluginID: string): Boolean;
 begin
   Result := True;
-  if CompareText(ACommand, SCC_CHANGE_FOLDER) = 0 then
+  if ACommand = sccChangeFolder then
   begin
-    UnloadDllTimer(SCC_CHANGE_FOLDER, AParam, APluginID);
-  end
-  else if CompareText(ACommand, SCC_UNLOAD_DLL) = 0 then
+    UnloadDllTimer(sccChangeFolder, AParam, APluginID);
+  end else
+  if ACommand = sccUnloadDll then
   begin
-    UnloadDllTimer(SCC_UNLOAD_DLL, AParam, APluginID);
-  end
-  else if CompareText(ACommand, SCC_LOAD_SETTING) = 0 then
+    UnloadDllTimer(sccUnloadDll, AParam, APluginID);
+  end else
+  if ACommand = sccLoadSetting then
   begin
-    UnloadDllTimer(SCC_LOAD_SETTING, AParam, APluginID);
+    UnloadDllTimer(sccLoadSetting, AParam, APluginID);
 
   end else begin
     MessageDlg('Unknown command', mtError, [mbOK], 0);
@@ -587,7 +591,7 @@ begin
   // Set the default active command to the center root
   FActiveCommand := TSharpCenterHistoryItem.Create;
   FUnloadCommand := TSharpCenterHistoryItem.Create;
-  FActiveCommand.Command := SCC_CHANGE_FOLDER;
+  FActiveCommand.Command := sccChangeFolder;
   FActiveCommand.Param := FRoot;
   FActiveCommand.PluginID := '';
 
@@ -648,14 +652,14 @@ begin
     AItem.IconIndex := SCE_ICON_FOLDER;
 end;
 
-procedure TSharpCenterManager.SetActiveCommand(ACommand, AParam, APluginID:String);
+procedure TSharpCenterManager.SetActiveCommand(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID:String);
 begin
   FActiveCommand.Command := ACommand;
   FActiveCommand.Param := AParam;
   FActiveCommand.PluginID := APluginID;
 end;
 
-procedure TSharpCenterManager.SetUnloadCommand(ACommand, AParam,
+procedure TSharpCenterManager.SetUnloadCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
   APluginID: String);
 begin
   FUnloadCommand.Command := ACommand;
