@@ -59,6 +59,7 @@ uses
   jclStrings,
   SharpDialogs,
   SharpApi,
+  SharpCenterApi,
 
   // PNG Image
   pngimage, JvExExtCtrls, JvShape, JvComponentBase,
@@ -186,11 +187,9 @@ begin
     edCommand.OnChange := UpdateEditState;
 
     if frmConfig.lbHotkeys.ItemIndex <> -1 then begin
-        SharpCenterBroadCast(SCM_SET_BUTTON_ENABLED,
-          SCB_DELETE);
+        CenterDefineButtonState(scbDelete,True);
       end else begin
-        SharpCenterBroadCast(SCM_SET_BUTTON_DISABLED,
-          SCB_DELETE);
+        CenterDefineButtonState(scbDelete,False);
       end;
 
     frmConfig.UpdateEditTabs;
@@ -232,7 +231,8 @@ begin
   case AEditMode of
   sceAdd: begin
     FHotkeyList.Add(edHotkey.Text,edCommand.Text,edName.Text);
-    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+    CenterDefineSettingsChanged;
+
     frmConfig.RefreshHotkeys;
     Result := True;
   end;
@@ -243,7 +243,7 @@ begin
     tmpHotkey.Hotkey := edHotkey.Text;
     tmpHotkey.Command := edCommand.Text;
 
-    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+    CenterDefineSettingsChanged;
     frmConfig.RefreshHotkeys;
     Result := True;
   end;
@@ -252,7 +252,7 @@ begin
     tmpHotkey := THotkeyItem(tmpItem.Data);
     FHotkeyList.Items.Delete(FHotkeyList.Items.IndexOf(tmpHotkey));
 
-    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+    CenterDefineSettingsChanged;
     frmConfig.RefreshHotkeys;
     frmConfig.UpdateEditTabs;
       
@@ -263,7 +263,7 @@ end;
 
 procedure TFrmHotkeyEdit.UpdateEditState(Sender: TObject);
 begin
-  SharpApi.SharpCenterBroadCast(SCM_SET_EDIT_STATE,0);
+  CenterDefineEditState(True);
 end;
 
 procedure TFrmHotkeyEdit.ClearValidation;

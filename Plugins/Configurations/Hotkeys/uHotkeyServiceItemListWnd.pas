@@ -51,7 +51,7 @@ uses
 
   // Project
   uHotkeyServiceList, PngImageList, SharpEHotkeyEdit, JvExControls,
-  JvComponent, JvLabel, SharpEListBoxEx, JvHint, SharpApi;
+  JvComponent, JvLabel, SharpEListBoxEx, JvHint, SharpApi, SharpCenterApi;
 
 type
   TfrmConfig = class(TForm)
@@ -181,7 +181,8 @@ begin
   begin
     FHotkeyList.Load(dlgImport.FileName);
     RefreshHotkeys;
-    SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 1);
+
+    CenterDefineSettingsChanged;
   end;
 end;
 
@@ -211,31 +212,31 @@ end;
 
 procedure TfrmConfig.UpdateEditTabs;
 
-  procedure BC(AEnabled:Boolean; AButton:Integer);
+  procedure BC(AEnabled:Boolean; AButton:TSCB_BUTTON_ENUM);
   begin
     if AEnabled then
-    SharpCenterBroadCast( SCM_SET_BUTTON_ENABLED, AButton) else
-    SharpCenterBroadCast( SCM_SET_BUTTON_DISABLED, AButton);
+    CenterDefineButtonState(AButton,True) else
+    CenterDefineButtonState(AButton,False);
   end;
 
 begin
   if ((lbHotkeys.Count = 0) or (lbHotkeys.ItemIndex = -1)) then
   begin
-    BC(False, SCB_EDIT_TAB);
+    BC(False, scbEditTab);
 
     if (lbHotkeys.Count = 0) then begin
-      BC(False, SCB_DEL_TAB);
-      SharpCenterBroadCast(SCM_SET_TAB_SELECTED,SCB_ADD_TAB);
+      BC(False, scbDeleteTab);
+      CenterSelectEditTab(scbAddTab);
     end;
 
-    BC(True, SCB_ADD_TAB);
+    BC(True, scbAddTab);
 
   end
   else
   begin
-    BC(True, SCB_ADD_TAB);
-    BC(True, SCB_EDIT_TAB);
-    BC(True, SCB_DEL_TAB);
+    BC(True, scbAddTab);
+    BC(True, scbEditTab);
+    BC(True, scbDeleteTab);
   end;
 end;
 

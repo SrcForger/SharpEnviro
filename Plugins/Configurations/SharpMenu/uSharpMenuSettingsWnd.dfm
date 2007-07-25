@@ -1,9 +1,10 @@
 object frmMenuSettings: TfrmMenuSettings
   Left = 0
   Top = 0
+  BorderStyle = bsNone
   Caption = 'frmMenuSettings'
-  ClientHeight = 563
-  ClientWidth = 502
+  ClientHeight = 105
+  ClientWidth = 518
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,26 +19,32 @@ object frmMenuSettings: TfrmMenuSettings
   object JvPageList1: TJvPageList
     Left = 0
     Top = 0
-    Width = 502
-    Height = 563
-    ActivePage = JvSettingsPage
+    Width = 518
+    Height = 105
+    ActivePage = JvAdvSettingsPage
     PropagateEnable = False
     Align = alClient
+    ExplicitWidth = 502
+    ExplicitHeight = 563
     object JvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 502
-      Height = 563
+      Width = 518
+      Height = 105
+      Caption = '``````'
       ParentBackground = True
+      ExplicitWidth = 502
+      ExplicitHeight = 563
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 502
+        Width = 518
         Height = 33
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
+        ExplicitWidth = 502
         object cb_wrap: TCheckBox
           Left = 16
           Top = 16
@@ -53,22 +60,24 @@ object frmMenuSettings: TfrmMenuSettings
       object Panel2: TPanel
         Left = 0
         Top = 97
-        Width = 502
+        Width = 518
         Height = 64
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
+        ExplicitWidth = 502
       end
       object pn_wrap: TPanel
         Left = 0
         Top = 33
-        Width = 502
+        Width = 518
         Height = 64
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 2
+        ExplicitWidth = 502
         object lb_gridx1: TLabel
           Left = 40
           Top = 10
@@ -122,19 +131,20 @@ object frmMenuSettings: TfrmMenuSettings
     object JvAdvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 502
-      Height = 563
-      ExplicitWidth = 510
-      ExplicitHeight = 570
+      Width = 518
+      Height = 105
+      ExplicitWidth = 502
+      ExplicitHeight = 563
       object Panel3: TPanel
         Left = 0
         Top = 0
-        Width = 510
+        Width = 518
         Height = 105
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
+        ExplicitWidth = 502
         object Label2: TLabel
           Left = 40
           Top = 36
@@ -170,11 +180,11 @@ object frmMenuSettings: TfrmMenuSettings
     object JvStandardPage1: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 502
-      Height = 563
+      Width = 518
+      Height = 105
       Caption = 'JvStandardPage1'
-      ExplicitWidth = 510
-      ExplicitHeight = 570
+      ExplicitWidth = 502
+      ExplicitHeight = 563
     end
   end
 end

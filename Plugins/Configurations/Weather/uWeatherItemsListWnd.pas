@@ -32,7 +32,7 @@ uses
   PngSpeedButton,
   PngImageList,
   uWeatherList,
-  SharpEListBoxEx, SharpApi;
+  SharpEListBoxEx, SharpApi, SharpCenterApi;
 
 type
   TfrmItemsList = class(TForm)
@@ -146,35 +146,35 @@ end;
 
 procedure TfrmItemsList.UpdateEditTabs;
 
-  procedure BC(AEnabled:Boolean; AButton:Integer);
+  procedure BC(AEnabled:Boolean; AButton:TSCB_BUTTON_ENUM);
   begin
     if AEnabled then
-    SharpCenterBroadCast( SCM_SET_BUTTON_ENABLED, AButton) else
-    SharpCenterBroadCast( SCM_SET_BUTTON_DISABLED, AButton);
+    CenterDefineButtonState(Abutton,True) else
+    CenterDefineButtonState(Abutton,False)
   end;
 
 begin
   if ((lbWeatherList.Count = 0) or (lbWeatherList.ItemIndex = -1)) then
   begin
-    BC(False, SCB_EDIT_TAB);
+    BC(False, scbEditTab);
 
     if (lbWeatherList.Count = 0) then begin
-      BC(False, SCB_DEL_TAB);
+      BC(False, scbDeleteTab);
 
       if frmItemEdit <> nil then
         frmItemEdit.pagEdit.Show;
-        
-      SharpCenterBroadCast(SCM_SET_TAB_SELECTED,SCB_ADD_TAB);
+
+      CenterSelectEditTab(scbAddTab);
     end;
 
-    BC(True, SCB_ADD_TAB);
+    BC(True, scbAddTab);
 
   end
   else
   begin
-    BC(True, SCB_ADD_TAB);
-    BC(True, SCB_EDIT_TAB);
-    BC(True, SCB_DEL_TAB);
+    BC(True, scbAddTab);
+    BC(True, scbEditTab);
+    BC(True, scbDeleteTab);
   end;
 end;
 

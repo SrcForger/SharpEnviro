@@ -24,7 +24,7 @@ uses
   SharpEListBoxEx,
   Menus,
   SharpApi, JvLabel, VistaAltFixUnit, ImgList, PngImageList, JvValidators,
-  JvComponentBase, JvErrorIndicator;
+  JvComponentBase, JvErrorIndicator, SharpCenterApi;
 
 type
   TWeatherLocation = class
@@ -267,13 +267,11 @@ begin
 
     if frmItemsList.lbWeatherList.ItemIndex <> -1 then
     begin
-      SharpCenterBroadCast(SCM_SET_BUTTON_ENABLED,
-        SCB_DELETE);
+      CenterDefineButtonState(scbDelete,True);
     end
     else
     begin
-      SharpCenterBroadCast(SCM_SET_BUTTON_DISABLED,
-        SCB_DELETE);
+      CenterDefineButtonState(scbDelete,False);
     end;
 
     frmItemsList.UpdateEditTabs;
@@ -327,7 +325,7 @@ begin
     WeatherList.Add(edName.Text,edWeatherID.Text,'-1','-1',-1,-1,True);
     WeatherOptions.Metric := chkMetric.Checked;
 
-    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+    CenterDefineSettingsChanged;
     frmItemsList.UpdateDisplay(WeatherList);
     Result := True;
   end;
@@ -338,7 +336,7 @@ begin
     tmpWeather.LocationID := edWeatherID.Text;
     WeatherOptions.Metric := chkMetric.Checked;
 
-    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+    CenterDefineSettingsChanged;
     frmItemsList.UpdateDisplay(WeatherList);
     Result := True;
   end;
@@ -347,7 +345,7 @@ begin
     tmpWeather := TWeatherItem(tmpItem.Data);
     WeatherList.Delete(tmpWeather);
 
-    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+    CenterDefineSettingsChanged;
     frmItemsList.UpdateDisplay(WeatherList);
     frmItemsList.UpdateEditTabs;
 
@@ -358,7 +356,7 @@ end;
 
 procedure TfrmItemEdit.UpdateEditState(Sender: TObject);
 begin
-  SharpApi.SharpCenterBroadCast(SCM_SET_EDIT_STATE,0);
+  CenterDefineEditState(True);
 end;
 
 procedure TfrmItemEdit.FormCreate(Sender: TObject);

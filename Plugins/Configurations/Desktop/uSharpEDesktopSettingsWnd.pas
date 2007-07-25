@@ -183,6 +183,9 @@ var
 
 implementation
 
+uses
+  SharpCenterApi;
+
 {$R *.dfm}
 {$R icons.res}
 
@@ -319,7 +322,7 @@ end;
 procedure TfrmDesktopSettings.SendUpdate;
 begin
   if Visible then
-     SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 0);
+     CenterDefineSettingsChanged;
 end;
 
 procedure TfrmDesktopSettings.rb_iconcustomClick(Sender: TObject);

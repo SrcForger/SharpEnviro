@@ -1,9 +1,10 @@
 object frmDeskSettings: TfrmDeskSettings
   Left = 0
   Top = 0
+  BorderStyle = bsNone
   Caption = 'frmDeskSettings'
-  ClientHeight = 563
-  ClientWidth = 502
+  ClientHeight = 201
+  ClientWidth = 428
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,196 +19,287 @@ object frmDeskSettings: TfrmDeskSettings
   object JvPageList1: TJvPageList
     Left = 0
     Top = 0
-    Width = 502
-    Height = 563
+    Width = 428
+    Height = 201
     ActivePage = JvSettingsPage
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 221
     object JvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 502
-      Height = 563
+      Width = 428
+      Height = 201
       ParentBackground = True
-      object Panel1: TPanel
-        Left = 0
-        Top = 0
-        Width = 502
-        Height = 41
+      ExplicitHeight = 221
+      object Label1: TJvLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 71
+        Width = 386
+        Height = 26
+        Margins.Left = 26
+        Margins.Top = 4
+        Margins.Right = 8
+        Margins.Bottom = 0
         Align = alTop
-        BevelOuter = bvNone
-        ParentColor = True
+        Caption = 
+          'Enable this option to enable hyperlink click functionalty for ob' +
+          'jects.  Disablied all objects will require a double click to lau' +
+          'nch.'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        WordWrap = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
+        ImageIndex = 0
+        Spacing = 3
+      end
+      object JvLabel1: TJvLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 29
+        Width = 357
+        Height = 13
+        Margins.Left = 26
+        Margins.Top = 4
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 
+          'Enable this option to enable drag and drop functionality within ' +
+          'SharpDesk.'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        WordWrap = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
+        ImageIndex = 0
+        Spacing = 3
+      end
+      object JvLabel2: TJvLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 126
+        Width = 362
+        Height = 26
+        Margins.Left = 26
+        Margins.Top = 4
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 
+          'Enable this option to enable snap to grid functionality for obje' +
+          'cts. Disabled objects can be freely positioned.'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGrayText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        WordWrap = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
+        ImageIndex = 0
+        Spacing = 3
+      end
+      object cb_grid: TCheckBox
+        AlignWithMargins = True
+        Left = 8
+        Top = 105
+        Width = 412
+        Height = 17
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Align Objects to Grid'
+        Checked = True
+        State = cbChecked
         TabOrder = 0
-        object cb_grid: TCheckBox
-          Left = 16
-          Top = 16
-          Width = 153
-          Height = 17
-          Caption = 'Align Objects to Grid'
-          Checked = True
-          State = cbChecked
-          TabOrder = 0
-          OnClick = cb_gridClick
-        end
+        OnClick = cb_gridClick
       end
-      object pn_grid: TPanel
-        Left = 0
-        Top = 41
-        Width = 502
-        Height = 72
+      object cb_dd: TCheckBox
+        AlignWithMargins = True
+        Left = 8
+        Top = 8
+        Width = 412
+        Height = 17
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
         Align = alTop
-        BevelOuter = bvNone
-        ParentColor = True
+        Caption = 'Enable Drag && Drop'
+        Checked = True
+        State = cbChecked
         TabOrder = 1
-        object lb_gridx1: TLabel
-          Left = 40
-          Top = 10
-          Width = 73
-          Height = 13
-          AutoSize = False
-          Caption = 'Grid Width'
-          Color = clWindow
-          ParentColor = False
-          WordWrap = True
-        end
-        object Label1: TLabel
-          Left = 40
-          Top = 42
-          Width = 73
-          Height = 13
-          AutoSize = False
-          Caption = 'Grid Height'
-          Color = clWindow
-          ParentColor = False
-          WordWrap = True
-        end
-        object sgb_gridx: TSharpeGaugeBox
-          Left = 128
-          Top = 8
-          Width = 121
-          Height = 21
-          Min = 2
-          Max = 256
-          Value = 32
-          Description = 'Adjust to the width of the grid'
-          PopPosition = ppBottom
-          PercentDisplay = False
-          OnChangeValue = sgb_gridyChangeValue
-        end
-        object sgb_gridy: TSharpeGaugeBox
-          Left = 128
-          Top = 40
-          Width = 121
-          Height = 21
-          Min = 2
-          Max = 256
-          Value = 32
-          Description = 'Adjust to set the height of the grid'
-          PopPosition = ppBottom
-          PercentDisplay = False
-          OnChangeValue = sgb_gridyChangeValue
-        end
+        OnClick = cb_ddClick
       end
-      object Panel2: TPanel
-        Left = 0
-        Top = 113
-        Width = 502
-        Height = 64
+      object cb_singleclick: TCheckBox
+        AlignWithMargins = True
+        Left = 8
+        Top = 50
+        Width = 412
+        Height = 17
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
         Align = alTop
-        BevelOuter = bvNone
-        ParentColor = True
+        Caption = 'Single Click Action'
         TabOrder = 2
-        object cb_singleclick: TCheckBox
-          Left = 16
-          Top = 8
-          Width = 153
-          Height = 17
-          Caption = 'Single Click Action'
-          TabOrder = 0
-          OnClick = cb_singleclickClick
-        end
-        object cb_dd: TCheckBox
-          Left = 16
-          Top = 40
-          Width = 153
-          Height = 17
-          Caption = 'Enable Drag && Drop'
-          Checked = True
-          State = cbChecked
-          TabOrder = 1
-          OnClick = cb_ddClick
-        end
+        OnClick = cb_singleclickClick
+      end
+      object sgb_gridx: TSharpeGaugeBox
+        Left = 160
+        Top = 171
+        Width = 120
+        Height = 21
+        Min = 2
+        Max = 128
+        Value = 32
+        Prefix = 'Width: '
+        Suffix = 'px'
+        Description = 'Grid Width'
+        PopPosition = ppRight
+        PercentDisplay = False
+        OnChangeValue = sgb_gridyChangeValue
+      end
+      object sgb_gridy: TSharpeGaugeBox
+        Left = 26
+        Top = 171
+        Width = 120
+        Height = 21
+        Min = 2
+        Max = 128
+        Value = 32
+        Prefix = 'Height: '
+        Suffix = 'px'
+        Description = 'Grid Height'
+        PopPosition = ppRight
+        PercentDisplay = False
+        OnChangeValue = sgb_gridyChangeValue
       end
     end
     object JvAdvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 502
-      Height = 563
-      ExplicitWidth = 510
-      ExplicitHeight = 570
-      object Panel3: TPanel
-        Left = 0
-        Top = 0
-        Width = 510
-        Height = 137
+      Width = 428
+      Height = 201
+      ExplicitHeight = 175
+      object Label2: TJvLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 97
+        Width = 383
+        Height = 26
+        Margins.Left = 26
+        Margins.Top = 4
+        Margins.Right = 8
+        Margins.Bottom = 0
         Align = alTop
-        BevelOuter = bvNone
-        ParentColor = True
+        Caption = 
+          'Enabling this option will reduce the memory usage of SharpDesk b' +
+          'y moving non constantly used data to the swap file.'
+        FrameColor = clWindow
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGray
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Layout = tlCenter
+        ParentColor = False
+        ParentFont = False
+        WordWrap = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
+        Spacing = 3
+      end
+      object Label3: TJvLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 29
+        Width = 377
+        Height = 39
+        Margins.Left = 26
+        Margins.Top = 4
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 
+          'With enabled wallpaper monitoring the SharpDesk wallpaper of the' +
+          ' primary monitor will be changed if any other application is usi' +
+          'ng the standard windows routines to set a new desktop wallpaper'
+        FrameColor = clWindow
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGray
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Layout = tlCenter
+        ParentColor = False
+        ParentFont = False
+        WordWrap = True
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
+        ImageIndex = 0
+        Spacing = 3
+      end
+      object cb_amm: TCheckBox
+        AlignWithMargins = True
+        Left = 8
+        Top = 76
+        Width = 412
+        Height = 17
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Advanced Memory Management'
         TabOrder = 0
-        object Label2: TLabel
-          Left = 40
-          Top = 36
-          Width = 361
-          Height = 29
-          AutoSize = False
-          Caption = 
-            'Enabling this option will reduce the memory usage of SharpDesk b' +
-            'y moving non constantly used data to the swap file.'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          Font.Style = [fsItalic]
-          ParentFont = False
-          WordWrap = True
-        end
-        object Label3: TLabel
-          Left = 40
-          Top = 92
-          Width = 361
-          Height = 45
-          AutoSize = False
-          Caption = 
-            'With enabled wallpaper monitoring the SharpDesk wallpaper of the' +
-            ' primary monitor will be changed if any other application is usi' +
-            'ng the standard windows routines to set a new desktop wallpaper'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          Font.Style = [fsItalic]
-          ParentFont = False
-          WordWrap = True
-        end
-        object cb_amm: TCheckBox
-          Left = 16
-          Top = 16
-          Width = 257
-          Height = 17
-          Caption = 'Advanced Memory Management'
-          TabOrder = 0
-          OnClick = cb_ammClick
-        end
-        object cb_wpwatch: TCheckBox
-          Left = 16
-          Top = 72
-          Width = 257
-          Height = 17
-          Caption = 'Windows Wallpaper Monitoring'
-          TabOrder = 1
-          OnClick = cb_ammClick
-        end
+        OnClick = cb_ammClick
+        ExplicitTop = 88
+      end
+      object cb_wpwatch: TCheckBox
+        AlignWithMargins = True
+        Left = 8
+        Top = 8
+        Width = 412
+        Height = 17
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Windows Wallpaper Monitoring'
+        TabOrder = 1
+        OnClick = cb_ammClick
       end
     end
   end

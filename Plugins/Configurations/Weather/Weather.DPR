@@ -11,6 +11,7 @@ uses
   Jclstrings,
   forms,
   SharpApi,
+  SharpCenterApi,
   PngSpeedButton,
   uVistaFuncs,
   uWeatherItemsListWnd in 'uWeatherItemsListWnd.pas' {frmItemsList},
@@ -18,7 +19,8 @@ uses
   uWeatherItemEditWnd in 'uWeatherItemEditWnd.pas' {frmItemEdit},
   uWeatherList in '..\..\Services\Weather\uWeatherList.pas',
   uWeatherMgr in '..\..\Services\Weather\uWeatherMgr.pas',
-  uWeatherOptions in '..\..\Services\Weather\uWeatherOptions.pas';
+  uWeatherOptions in '..\..\Services\Weather\uWeatherOptions.pas',
+  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas';
 
 {$E dll}
 
@@ -129,7 +131,7 @@ end;
 
 function  SetSettingType: Integer;
 begin
-  Result := SCU_SERVICE;
+  Result := SU_SERVICE;
 end;
 
 procedure GetCenterScheme(var ABackground: TColor;
@@ -142,10 +144,17 @@ begin
     frmItemEdit.Color := ABackground;
 end;
 
+procedure AddTabs(var ATabs:TPluginTabItemList);
+begin
+  ATabs.Add('Weather',nil,'',IntToStr(frmItemsList.lbWeatherList.Count));
+end;
+
 exports
   Open,
   Close,
   Save,
+
+  AddTabs,
 
   OpenEdit,
   CloseEdit,

@@ -38,7 +38,7 @@ uses
   GraphicsFx, pngimage, JvExStdCtrls, JvEdit, GR32_Image, BarPreview, GR32,
   uSchemeList, PngImageList,
   SharpELabel, SharpERoundPanel, PngSpeedButton, ImgList, JvShape, JclIniFiles,
-  SharpApi, SharpThemeApi, SharpESwatchManager, SharpECenterScheme,
+  SharpApi, SharpCenterApi, SharpThemeApi, SharpESwatchManager, SharpECenterScheme,
   SharpEColorEditor;
 
 type
@@ -323,7 +323,7 @@ begin
         tmpSchemeItems.Add(newItem);
         FSchemeItem.Free;
 
-        SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 0);
+        CenterUpdateSettings;
         Result := True;
       end;
     sceEdit:
@@ -342,8 +342,7 @@ begin
           FSchemeItem.Assign(lstItem.Colors);
         end;
 
-        SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 0);
-
+        CenterUpdateSettings;
         Result := True;
       end;
     sceDelete:
@@ -356,7 +355,7 @@ end;
 procedure TfrmEditScheme.edNameKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  SharpCenterBroadCast( SCM_SET_EDIT_STATE, 0);
+  CenterDefineEditState(True);
 end;
 
 procedure TfrmEditScheme.secExChangeValue(ASender: TObject;
@@ -385,14 +384,14 @@ end;
 
 procedure TfrmEditScheme.secExSliderChange(Sender: TObject);
 begin
-  SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
-  SharpCenterBroadCast( SCM_SET_EDIT_STATE, 0);
+  CenterUpdatePreview;
+  CenterDefineEditState(True);
 end;
 
 procedure TfrmEditScheme.secExUiChange(Sender: TObject);
 begin
-  SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
-  SharpCenterBroadCast( SCM_SET_EDIT_STATE, 0);
+  CenterUpdatePreview;
+  CenterDefineEditState(True);
 end;
 
 end.

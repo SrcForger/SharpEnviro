@@ -38,6 +38,7 @@ uses
   JvSimpleXml,
   PngSpeedButton,
   uVistaFuncs,
+  SharpCenterApi,
   SysUtils,
   uThemeListWnd in 'uThemeListWnd.pas' {frmThemeList},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
@@ -126,7 +127,7 @@ begin
   // If Validation ok then continue
   if AApply then begin
     frmThemeList.SaveUi;
-    SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+    CenterDefineSettingsChanged;
   end;
 
   if frmEditItem <> nil then begin
@@ -167,33 +168,29 @@ begin
   AStatusText := Pchar(IntToStr(n));
 end;
 
-procedure ClickBtn(AButtonID: Integer; AButton:TPngSpeedButton; AText:String);
+procedure ClickBtn(AButtonID: TSCB_BUTTON_ENUM; AButton:TPngSpeedButton; AText:String);
 var
   id, newid:Integer;
   tmp: TThemeListItem;
 begin
   Case AButtonID of
-      SCB_IMPORT: begin
-      end;
-      SCB_CONFIGURE: begin
+      scbConfigure: begin
         frmThemeList.ConfigureItem;
       end;
   end;
 end;
 
-function SetBtnState(AButtonID: Integer): Boolean;
+function SetBtnState(AButtonID: TSCB_BUTTON_ENUM): Boolean;
 begin
   Result := False;
 
   Case AButtonID of
-    SCB_IMPORT: Result := False;
-    SCB_EXPORT: Result := False;
-    SCB_DELETE: Begin
+    scbDelete: Begin
       if frmThemeList.lbThemeList.ItemIndex <> -1 then
         Result := True else
         Result := False;
     end;
-    SCB_CONFIGURE: Result := True;
+    scbConfigure: Result := True;
   end;
 end;
 

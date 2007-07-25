@@ -36,7 +36,7 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, uSEListboxPainter, JclFileUtils,
   uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
   SharpEListBox, uThemeListManager, SharpEListBoxEx,GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, JclInifiles;
+  ExtCtrls, Menus, JclStrings, JclInifiles, SharpCenterApi;
 
 type
   TStringObject = Class(TObject)
@@ -86,30 +86,30 @@ uses uThemeListEditWnd, SharpThemeApi;
 
 procedure TfrmThemeList.UpdateEditTabs;
 
-  procedure BC(AEnabled:Boolean; AButton:Integer);
+  procedure BC(AEnabled:Boolean; AButton:TSCB_BUTTON_ENUM);
   begin
     if AEnabled then
-    SharpCenterBroadCast( SCM_SET_BUTTON_ENABLED, AButton) else
-    SharpCenterBroadCast( SCM_SET_BUTTON_DISABLED, AButton);
+      CenterDefineButtonState(AButton,True) else
+      CenterDefineButtonState(AButton,False);
   end;
 
 begin
   if ((lbThemeList.Count = 0) or (lbThemeList.ItemIndex = -1)) then
   begin
-    BC(False, SCB_EDIT_TAB);
+    BC(False, scbEditTab);
 
     if (lbThemeList.Count = 0) then begin
-      BC(False, SCB_DEL_TAB);
-      SharpCenterBroadCast(SCM_SET_TAB_SELECTED,SCB_ADD_TAB);
+      BC(False, scbDeleteTab);
+      CenterSelectEditTab(scbAddTab);
     end;
 
-    BC(True, SCB_ADD_TAB);
+    BC(True, scbAddTab);
   end
   else
   begin
-    BC(True, SCB_ADD_TAB);
-    BC(True, SCB_EDIT_TAB);
-    BC(True, SCB_DEL_TAB);
+    BC(True, scbAddTab);
+    BC(True, scbEditTab);
+    BC(True, scbDeleteTab);
   end;
 end;
 
@@ -187,11 +187,9 @@ begin
     end;
     sceDelete: begin
       if frmThemeList.lbThemeList.ItemIndex <> -1 then begin
-        SharpCenterBroadCast(SCM_SET_BUTTON_ENABLED,
-          SCB_DELETE);
+        CenterDefineButtonState(scbDelete,True);
       end else begin
-        SharpCenterBroadCast(SCM_SET_BUTTON_DISABLED,
-          SCB_DELETE);
+        CenterDefineButtonState(scbDelete,False);
       end;
     end;
   end;
@@ -287,7 +285,7 @@ begin
   if FrmEditItem <> nil then
     UpdateEditText;
 
-  SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+  CenterDefineSettingsChanged;
 end;
 
 function TfrmThemeList.UpdateUI: Boolean;
@@ -347,11 +345,9 @@ begin
 
       frmEditItem.pagDelete.Show;
 
-      SharpCenterBroadCast(SCM_SET_BUTTON_ENABLED,
-        SCB_DELETE);
+      CenterDefineButtonState(scbDelete,True);
       end else begin
-        SharpCenterBroadCast(SCM_SET_BUTTON_DISABLED,
-          SCB_DELETE);
+        CenterDefineButtonState(scbDelete,False);
       end;
       
     Result := True;
@@ -404,7 +400,7 @@ begin
           if frmThemeList.lbThemeList.Count <> 0 then
             frmThemeList.lbThemeList.ItemIndex := newId;
 
-          SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+          CenterDefineSettingsChanged;
         end;
     end;
   end;
@@ -424,7 +420,7 @@ begin
   if lbThemeList.ItemIndex < 0 then exit;
 
   sTheme := TThemeListItem(lbThemeList.Item[lbThemeList.ItemIndex].Data).Name;
-  SharpApi.CenterMsg(sccLoadSetting,PChar(SharpApi.GetCenterDirectory
+  CenterCommand(sccLoadSetting,PChar(SharpApi.GetCenterDirectory
     + '_Themes\Theme.con'),pchar(sTheme))
 end;
 

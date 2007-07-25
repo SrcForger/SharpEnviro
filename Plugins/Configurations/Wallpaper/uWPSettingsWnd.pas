@@ -36,7 +36,7 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi,
   JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
   SharpEGaugeBoxEdit, Buttons, PngBitBtn, GR32_Image, SharpEColorEditorEx, Mask,
-  JvExMask, JvToolEdit, SharpThemeApi, Contnrs, GR32, GR32_Resamplers,
+  JvExMask, JvToolEdit, SharpThemeApi, Contnrs, GR32, GR32_Resamplers, SharpCenterApi,
   SharpESwatchManager, SharpGraphicsUtils, JPeg, SharpETabList, SharpERoundPanel;
 
 type
@@ -252,7 +252,7 @@ end;
 
 procedure TfrmWPSettings.UpdatePreview;
 begin
-  SharpCenterBroadCast(SCM_EVT_UPDATE_PREVIEW, 0);
+
 end;
 
 procedure TfrmWPSettings.RenderPreview;

@@ -119,11 +119,11 @@
 			<Linker Name="GenerateHpps">False</Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir">..\..\..\..\SharpE\Center\Root\_Services\_ServiceDlls</Directories>
+			<Directories Name="OutputDir">..\..\..\..\SharpE\Center\Root\_Services\_Servicedlls\</Directories>
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\Services\Weather\;..\..\..\Common\Delphi Components\SharpE Skin Components\;..\..\..\Common\Units\SEListboxPainter;..\..\..\Common\3rd Party\GR32 Addons\;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFx;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\Units\VistaFuncs</Directories>
+			<Directories Name="SearchPath">..\..\Services\Weather\;..\..\..\Common\Delphi Components\SharpE Skin Components\;..\..\..\Common\Units\SEListboxPainter;..\..\..\Common\3rd Party\GR32 Addons\;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFx;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Libraries\SharpCenterApi</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs">E:\SVN\Components\SharpCenter\</Directories>

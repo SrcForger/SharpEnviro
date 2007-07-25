@@ -43,6 +43,7 @@ object frmWPSettings: TfrmWPSettings
       TabOrder = 0
       VerticalAlignment = taAlignTop
       DrawMode = srpNoTopLeft
+      NoTopBorder = False
       RoundValue = 10
       BorderColor = clBtnFace
       Border = True
@@ -357,7 +358,7 @@ object frmWPSettings: TfrmWPSettings
               Width = 145
               Height = 21
               Style = csDropDownList
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 3
               OnChange = cb_gtypeChange
               Items.Strings = (
@@ -469,21 +470,19 @@ object frmWPSettings: TfrmWPSettings
         item
           Caption = 'Wallpaper'
           ImageIndex = 0
-          ID = 0
           Visible = True
         end
         item
           Caption = 'Color Modification'
           ImageIndex = 0
-          ID = 1
           Visible = True
         end
         item
           Caption = 'Gradient'
           ImageIndex = 0
-          ID = 2
           Visible = True
         end>
+      Minimized = False
     end
   end
   object SharpESwatchManager1: TSharpESwatchManager

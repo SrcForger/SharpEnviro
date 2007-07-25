@@ -59,8 +59,8 @@ begin
 
   uVistaFuncs.SetVistaFonts(frmDeskSettings);
   frmDeskSettings.ParentWindow := aowner;
-  frmDeskSettings.Left := 2;
-  frmDeskSettings.Top := 2;
+  frmDeskSettings.Left := 0;
+  frmDeskSettings.Top := 0;
   frmDeskSettings.BorderStyle := bsNone;
 
   frmDeskSettings.cb_grid.Checked := XMLSettings.Grid;

@@ -37,6 +37,7 @@ uses
   sysutils,
   ExtCtrls,
   sharpapi,
+  sharpcenterapi,
   graphics,
   forms,
   GR32,

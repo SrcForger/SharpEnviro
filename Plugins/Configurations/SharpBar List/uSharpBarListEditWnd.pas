@@ -36,7 +36,7 @@ uses
   Dialogs, StdCtrls, JvExControls, JvComponent, JvLabel, ImgList,
   PngImageList, JvExStdCtrls, JvEdit, JvValidateEdit, JvValidators,
   JvComponentBase, JvErrorIndicator, ExtCtrls, JvPageList, SharpApi,
-  JclStrings;
+  JclStrings, SharpCenterApi;
 
 type
   TfrmEditItem = class(TForm)
@@ -113,7 +113,7 @@ end;
 
 procedure TfrmEditItem.edThemeNameKeyPress(Sender: TObject; var Key: Char);
 begin
-  SharpCenterBroadCast(SCM_SET_EDIT_STATE,0);
+  CenterDefineEditState(True);
   frmBarList.lbBarList.Enabled := False;
 end;
 
@@ -132,7 +132,7 @@ end;
 
 procedure TfrmEditItem.cbBasedOnSelect(Sender: TObject);
 begin
-  SharpCenterBroadCast(SCM_SET_EDIT_STATE,0);
+  CenterDefineEditState(True);
   frmBarList.lbBarList.Enabled := False;
 end;
 

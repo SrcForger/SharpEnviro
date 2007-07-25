@@ -35,7 +35,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, uSEListboxPainter, JclFileUtils, Math,
   uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
-  SharpEListBox, SharpEListBoxEx,GR32, GR32_PNG, SharpApi,
+  SharpEListBox, SharpEListBoxEx,GR32, GR32_PNG, SharpApi, SharpCenterApi,
   ExtCtrls, Menus, Contnrs, Types;
 
 type
@@ -401,12 +401,12 @@ begin
       begin
         Result := True;
         frmEditItem.pagDelete.Show;
-        SharpCenterBroadCast(SCM_SET_BUTTON_ENABLED,SCB_DELETE);
+        CenterDefineButtonState(scbDelete,True);
       end
       else
       begin
         Result := False;
-        SharpCenterBroadCast(SCM_SET_BUTTON_DISABLED,SCB_DELETE);
+        CenterDefineButtonState(scbDelete,False);
       end;
     end;
   end;

@@ -51,11 +51,11 @@ uses
   GR32_Image,
   uEditSchemeWnd,
   JclGraphUtils,
-  SharpApi, SharpThemeApi, ImgList, SharpEListBoxEx, PngImageList,
+  SharpApi, SharpCenterApi, SharpThemeApi, ImgList, SharpEListBoxEx, PngImageList,
   JvSimpleXML, uSchemeList, BarPreview, Gr32;
 
 type
-  TARGB = packed record b, g, r, a: Byte
+  TARGB = packed record b, g, r, a: Byte;
   end;
 
 type
@@ -119,31 +119,31 @@ uses
 
 procedure TfrmSchemeList.UpdateEditTabs;
 
-  procedure BC(AEnabled:Boolean; AButton:Integer);
+  procedure BC(AEnabled:Boolean; AButton:TSCB_BUTTON_ENUM);
   begin
     if AEnabled then
-    SharpCenterBroadCast( SCM_SET_BUTTON_ENABLED, AButton) else
-    SharpCenterBroadCast( SCM_SET_BUTTON_DISABLED, AButton);
+    CenterDefineButtonState(AButton,True) else
+    CenterDefineButtonState(AButton,False);
   end;
 
 begin
   if lbSchemeList.Count = 0 then
   begin
-    BC(False, SCB_EDIT_TAB);
-    BC(False, SCB_DEL_TAB);
+    BC(False, scbEditTab);
+    BC(False, scbDeleteTab);
 
     if FSchemeItems.GetSkinValid(FTheme) then
-      BC(True, SCB_ADD_TAB) else
-      BC(False, SCB_ADD_TAB);
+      BC(True, scbAddTab) else
+      BC(False, scbAddTab);
 
     lbSchemeList.AddItem('There is no skin defined, please launch the skin configuration first.',2);
     lbSchemeList.Enabled := False;
   end
   else
   begin
-    BC(True, SCB_ADD_TAB);
-    BC(True, SCB_EDIT_TAB);
-    BC(True, SCB_DEL_TAB);
+    BC(True, scbAddTab);
+    BC(True, scbEditTab);
+    BC(True, scbDeleteTab);
     lbSchemeList.Enabled := True;
   end;
 end;
@@ -251,8 +251,8 @@ begin
 
   BuildSchemeList(FTheme);
 
-  SharpCenterBroadCast( SCM_EVT_UPDATE_SETTINGS, 1);
-  SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 1);
+  CenterUpdateSettings;
+  CenterUpdatePreview;
 end;
 
 procedure TfrmSchemeList.BuildSchemeList(APluginID: string);
@@ -329,7 +329,7 @@ begin
   UpdateEditTabs;
 
   // Hide Deletr Tab - Not Implemented
-  SharpCenterBroadCast(SCM_SET_BUTTON_DISABLED,SCB_DEL_TAB);
+  CenterDefineButtonState(scbDeleteTab,False);
 end;
 
 procedure TfrmSchemeList.chkCpuEnableClick(Sender: TObject);
@@ -501,9 +501,8 @@ end;
 procedure TfrmSchemeList.lbSchemeListClickItem(AText: string; AItem,
   ACol: Integer);
 begin
-  SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
-  SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED, 0);
-
+  CenterUpdatePreview;
+  CenterUpdateSettings;
 
   if frmEditScheme <> nil then
   begin

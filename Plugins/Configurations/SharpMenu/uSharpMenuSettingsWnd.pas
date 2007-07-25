@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi,
+  Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterApi,
   JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
   SharpEGaugeBoxEdit;
 
@@ -105,7 +105,7 @@ end;
 procedure TfrmMenuSettings.SendUpdate;
 begin
   if Visible then
-     SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 0);
+     CenterDefineSettingsChanged;
 end;
 
 procedure TfrmMenuSettings.cb_cacheiconsClick(Sender: TObject);

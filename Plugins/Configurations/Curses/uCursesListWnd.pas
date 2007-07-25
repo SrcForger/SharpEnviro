@@ -76,7 +76,8 @@ var
 implementation
 
 uses SharpThemeApi,
-     SharpIconUtils;
+     SharpIconUtils,
+     SharpCenterApi;
 
 {$R *.dfm}
 
@@ -109,7 +110,7 @@ var
 begin
   if (lb_CursorList.ItemIndex < 0) or (lb_CursorList.Count = 0) then
   begin
-    SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
+    CenterUpdatePreview;
     exit;
   end;
 
@@ -159,7 +160,7 @@ begin
   Bmp.Free;
   Bmp32.Free;
 
-  SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
+  CenterUpdatePreview;
 end;
 
 procedure TfrmCursesList.BuildCursorList;
@@ -208,7 +209,7 @@ procedure TfrmCursesList.lb_CursorListClickItem(AText: string; AItem,
   ACol: Integer);
 begin
   BuildCursorPreview;
-  SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+  CenterDefineSettingsChanged;
 end;
 
 procedure TfrmCursesList.FormResize(Sender: TObject);
@@ -221,7 +222,7 @@ procedure TfrmCursesList.ccolorsChangeColor(ASender: TObject;
 begin
   BuildCursorPreview;
   if Visible then
-     SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+     CenterDefineSettingsChanged;
 end;
 
 procedure TfrmCursesList.FormDestroy(Sender: TObject);

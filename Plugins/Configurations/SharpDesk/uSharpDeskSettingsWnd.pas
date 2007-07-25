@@ -33,9 +33,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi,
+  Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterApi,
   JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
-  SharpEGaugeBoxEdit;
+  SharpEGaugeBoxEdit, ImgList, PngImageList, JvLabel;
 
 type
   TStringObject = Class(TObject)
@@ -47,22 +47,19 @@ type
   TfrmDeskSettings = class(TForm)
     JvPageList1: TJvPageList;
     JvSettingsPage: TJvStandardPage;
-    Panel1: TPanel;
-    cb_grid: TCheckBox;
-    pn_grid: TPanel;
-    lb_gridx1: TLabel;
-    Label1: TLabel;
-    Panel2: TPanel;
     cb_singleclick: TCheckBox;
     JvAdvSettingsPage: TJvStandardPage;
-    Panel3: TPanel;
     cb_amm: TCheckBox;
-    Label2: TLabel;
     cb_dd: TCheckBox;
+    cb_wpwatch: TCheckBox;
+    cb_grid: TCheckBox;
     sgb_gridx: TSharpeGaugeBox;
     sgb_gridy: TSharpeGaugeBox;
-    cb_wpwatch: TCheckBox;
-    Label3: TLabel;
+    Label1: TJvLabel;
+    Label2: TJvLabel;
+    Label3: TJvLabel;
+    JvLabel1: TJvLabel;
+    JvLabel2: TJvLabel;
     procedure sgb_gridyChangeValue(Sender: TObject; Value: Integer);
     procedure cb_ddClick(Sender: TObject);
     procedure cb_ammClick(Sender: TObject);
@@ -92,7 +89,8 @@ end;
 
 procedure TfrmDeskSettings.UpdateGridBox;
 begin
-  pn_grid.visible := cb_grid.Checked;
+  sgb_gridx.Visible := cb_grid.Checked;
+  sgb_gridy.Visible := cb_grid.Checked;
 end;
 
 procedure TfrmDeskSettings.FormShow(Sender: TObject);
@@ -109,7 +107,7 @@ end;
 procedure TfrmDeskSettings.SendUpdate;
 begin
   if Visible then
-     SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 0);
+     CenterDefineSettingsChanged;
 end;
 
 procedure TfrmDeskSettings.cb_singleclickClick(Sender: TObject);

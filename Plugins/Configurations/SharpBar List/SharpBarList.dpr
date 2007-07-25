@@ -39,6 +39,7 @@ uses
   PngSpeedButton,
   uVistaFuncs,
   SysUtils,
+  SharpCenterApi,
   uSharpBarListWnd in 'uSharpBarListWnd.pas' {frmBarList},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   uSEListboxPainter in '..\..\..\Common\Units\SEListboxPainter\uSEListboxPainter.pas',
@@ -150,39 +151,32 @@ begin
   AStatusText := Pchar(IntToStr(1));
 end;
 
-procedure ClickBtn(AButtonID: Integer; AButton:TPngSpeedButton; AText:String);
+procedure ClickBtn(AButtonID: TSCB_BUTTON_ENUM; AButton:TPngSpeedButton; AText:String);
 var
   id, newid:Integer;
  // tmp: TThemeListItem;
 begin
   Case AButtonID of
-      SCB_DELETE:
-      begin
-//
-      end;
-      SCB_IMPORT:
-      begin
-      end;
-      SCB_CONFIGURE:
+      scbConfigure:
       begin
         frmBarList.ConfigureItem;
       end;
   end;
 end;
 
-function SetBtnState(AButtonID: Integer): Boolean;
+function SetBtnState(AButtonID: TSCB_BUTTON_ENUM): Boolean;
 begin
   Result := False;
 
   Case AButtonID of
-    SCB_IMPORT: Result := False;
-    SCB_EXPORT: Result := False;
-    SCB_DELETE: Begin
+    scbImport: Result := False;
+    scbExport: Result := False;
+    scbDelete: Begin
       if frmBarList.lbBarList.ItemIndex <> -1 then
         Result := True else
         Result := False;
     end;
-    SCB_CONFIGURE: Result := True;
+    scbConfigure: Result := True;
   end;
 end;
 

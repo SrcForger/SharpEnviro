@@ -34,6 +34,7 @@ uses
   dialogs,
   graphics,
   sysutils,
+  SharpCenterApi,
   SharpAPI,
   XPMan,
   uVistaFuncs,
@@ -41,7 +42,8 @@ uses
   uHotkeyServiceList in 'uHotkeyServiceList.pas',
   uHotkeyServiceItemListWnd in 'uHotkeyServiceItemListWnd.pas' {frmConfig},
   uHotkeyServiceItemEditWnd in 'uHotkeyServiceItemEditWnd.pas' {FrmHotkeyEdit},
-  uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas';
+  uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas',
+  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas';
 
 var
   CenterBGColor : integer;
@@ -151,12 +153,18 @@ begin
   result := SU_SERVICE;
 end;
 
+procedure AddTabs(var ATabs:TPluginTabItemList);
+begin
+  ATabs.Add('Hotkeys',nil,'',IntToStr(frmConfig.lbHotkeys.Count));
+end;
+
 
 //Ordinary Dll code, tells delphi what functions to export.
 exports
   Open,
   Close,
   Save,
+  AddTabs,
   OpenEdit,
   CloseEdit,
   SetBtnState,

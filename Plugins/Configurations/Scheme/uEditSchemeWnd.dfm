@@ -71,6 +71,7 @@ object frmEditScheme: TfrmEditScheme
       ParentBackground = False
       TabOrder = 2
       DrawMode = srpNormal
+      NoTopBorder = False
       RoundValue = 10
       BorderColor = clBtnShadow
       Border = False

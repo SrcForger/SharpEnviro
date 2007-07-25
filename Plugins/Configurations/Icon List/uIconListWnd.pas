@@ -66,7 +66,7 @@ var
 
 implementation
 
-uses SharpThemeApi,
+uses SharpThemeApi, SharpCenterApi,
      SharpIconUtils;
 
 {$R *.dfm}
@@ -101,7 +101,8 @@ var
 begin
   if lb_iconlist.ItemIndex < 0 then
   begin
-    SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
+    CenterUpdatePreview;
+
     exit;
   end;
 
@@ -156,7 +157,7 @@ begin
   Bmp32.Free;
   XML.Free;
 
-  SharpCenterBroadCast( SCM_EVT_UPDATE_PREVIEW, 0);
+  CenterUpdatePreview;
 end;
 
 procedure TfrmIconList.BuildIconList;
@@ -201,7 +202,7 @@ procedure TfrmIconList.lb_iconlistClickItem(AText: string; AItem,
   ACol: Integer);
 begin
   BuildIconPreview;
-  SharpCenterBroadCast(SCM_SET_SETTINGS_CHANGED,0);
+  CenterDefineSettingsChanged;
 end;
 
 procedure TfrmIconList.FormResize(Sender: TObject);

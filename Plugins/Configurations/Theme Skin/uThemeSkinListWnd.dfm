@@ -1,9 +1,9 @@
 object frmSkinListWnd: TfrmSkinListWnd
   Left = 0
   Top = 0
-  Width = 434
-  Height = 320
   Caption = 'Skin List'
+  ClientHeight = 284
+  ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,8 +18,8 @@ object frmSkinListWnd: TfrmSkinListWnd
   object lbSkinList: TSharpEListBoxEx
     Left = 0
     Top = 0
-    Width = 426
-    Height = 291
+    Width = 418
+    Height = 284
     Columns = <>
     ItemHeight = 66
     OnClickItem = lbSkinListDblClickItem
@@ -28,6 +28,8 @@ object frmSkinListWnd: TfrmSkinListWnd
     BevelOuter = bvNone
     Borderstyle = bsNone
     Align = alClient
+    ExplicitWidth = 426
+    ExplicitHeight = 291
   end
   object ThemeImages: TPngImageList
     Height = 48

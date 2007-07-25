@@ -36,7 +36,7 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, SharpApi, uSEListboxPainter, JclFileUtils,
   uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
   SharpEListBox, graphicsfx, SharpThemeApi, SharpEListBoxEx, BarPreview, GR32, GR32_PNG, pngimage,
-  ExtCtrls;
+  ExtCtrls, SharpCenterApi;
 
 type
   TStringObject = class(TObject)
@@ -147,7 +147,7 @@ begin
     exit;
 
   // str := TStringObject(skinlist.Items.Objects[skinlist.ItemIndex]);
-  SharpApi.CenterMsg(sccLoadSetting,PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'), pchar(str.Str));
+  CenterCommand(sccLoadSetting,PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'), pchar(str.Str));
 end;
 
 procedure TfrmSkinListWnd.FormCreate(Sender: TObject);
@@ -290,7 +290,7 @@ procedure TfrmSkinListWnd.lbSkinListDblClickItem(AText: string; AItem,
 begin
   FDefaultSkin := lbSkinList.Item[Aitem].SubItemText[1];
 
-  SharpCenterBroadCast( SCM_SET_SETTINGS_CHANGED, 1);
+  CenterDefineSettingsChanged;
   lbSkinList.Update;
 
 end;

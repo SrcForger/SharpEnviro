@@ -35,7 +35,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvExControls, JvComponent, JvLabel, ImgList,
   PngImageList, JvExStdCtrls, JvEdit, JvValidateEdit, JvValidators,
-    JvErrorIndicator, ExtCtrls, JvPageList, SharpApi,
+    JvErrorIndicator, ExtCtrls, JvPageList, SharpApi, SharpCenterApi,
   uThemeListManager, JclStrings, JvComponentBase;
 
 type
@@ -85,7 +85,7 @@ uses
 
 procedure TfrmEditItem.edThemeNameKeyPress(Sender: TObject; var Key: Char);
 begin
-  SharpCenterBroadCast( SCM_SET_EDIT_STATE, 0);
+  CenterDefineEditState(True);
   frmThemeList.lbThemeList.Enabled := False;
 end;
 
@@ -111,7 +111,7 @@ end;
 
 procedure TfrmEditItem.cbBasedOnSelect(Sender: TObject);
 begin
-  SharpCenterBroadCast( SCM_SET_EDIT_STATE, 0);
+  CenterDefineEditState(True);
   frmThemeList.lbThemeList.Enabled := False;
 end;
 
