@@ -265,7 +265,8 @@ implementation
 uses uSharpDeskCreateForm,
      uSharpDeskSettingsForm,
      uSharpDeskAlignSettingsForm,
-     uSharpDeskObjectSet;
+     uSharpDeskObjectSet,
+     SharpCenterApi;
 
 {$R *.dfm}
 
@@ -579,7 +580,9 @@ end;
 
 procedure TSharpDeskMainForm.WMShowDesktopSettings(var msg : TMessage);
 begin
-  SharpApi.CenterMsg(sccLoadSetting,PChar(GetCenterDirectory + 'Components.con'),'SharpMenu');
+  CenterCommand(sccLoadSetting,PChar(GetCenterDirectory + 'Components.con'),
+    'SharpMenu');
+
 end;
 
 

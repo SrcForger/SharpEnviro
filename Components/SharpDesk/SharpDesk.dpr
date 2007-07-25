@@ -59,7 +59,8 @@ uses
   SharpFX in '..\..\Common\Units\SharpFX\SharpFX.pas',
   SharpThemeApi in '..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
   SharpGraphicsUtils in '..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
-  uSharpDeskTDeskSettings in 'Units\uSharpDeskTDeskSettings.pas';
+  uSharpDeskTDeskSettings in 'Units\uSharpDeskTDeskSettings.pas',
+  SharpCenterAPI in '..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
 
 {$R *.res}
 
@@ -117,7 +118,6 @@ begin
   Application.CreateForm(TSharpDeskMainForm, SharpDeskMainForm);
   Application.CreateForm(TSettingsForm, SettingsForm);
   Application.CreateForm(TCreateForm, CreateForm);
-
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
 
   Application.Run;
