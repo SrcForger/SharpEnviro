@@ -192,6 +192,8 @@ function CreateModule(ID : integer;
                       parent : hwnd) : hwnd;
 var
   temp : TModule;
+  i : integer;
+  wfs : boolean;
 begin
   if firststart then
   begin
@@ -204,7 +206,8 @@ begin
     ServiceCheck := 15;
     servicerunning := true;
     firststart := false;
-  end;
+    wfs := True;
+  end else wfs := False;
 
   try
     if ModuleList = nil then
@@ -216,6 +219,19 @@ begin
     temp := TModule.Create(ID,parent);
     TrayClient.AddWindow(temp.Form);
     ModuleList.Add(temp);
+
+    if wfs then
+    begin
+      i := GetBarPluginHeight(temp.BarWnd);
+      if i < 20 then
+         TrayClient.IconSize := i - 4
+      else TrayClient.IconSize := 16;
+      {if TrayClient.IconSize < 16 then
+      begin
+        TrayClient.IconSize := TrayClient.IconSize;
+        TrayClient.topspacing := 2;
+      end else TrayClient.TopSpacing := 2;}
+    end;
   except
     result := 0;
     exit;
@@ -302,15 +318,14 @@ begin
         begin
           if temp.Form.Height < 20 then
              TrayClient.IconSize := temp.Form.Height - 4
-          else
-             TrayClient.IconSize := 16;
-          if TrayClient.IconSize < 16 then begin
+          else TrayClient.IconSize := 16;
+          {if TrayClient.IconSize < 16 then begin
             TrayClient.IconSize := TrayClient.IconSize + 3;
             TrayClient.topspacing := 2;
           end else
           begin
             TrayClient.TopSpacing := 2;
-          end;
+          end;        }
           TrayClient.RenderIcons;
         end;
       end;
