@@ -81,9 +81,6 @@ var
   mn : TSharpEMenu;
   wnd : TSharpEMenuWnd;
   events : TEventClass;
-  handle : THandle;
-  buff : array[0..255] of Char;
-  s : string;
   iconcachefile : String;
   mfile : String;
   Pos : TPoint;
@@ -203,18 +200,6 @@ begin
 
   wnd.Show;
 
-  // Check if another application got the focus while the menu was initialized
-{  handle := GetForegroundWindow;
-  if handle <> 0 then
-  begin
-    GetClassName(handle,buff,sizeof(buff));
-    s := buff;
-    if CompareText(s,wnd.ClassName) <> 0 then
-    begin
-      Application.Terminate;
-    end;
-  end;}
-
   // Register Shell Hook
   RegisterShellHook(0,1);
   RegisterShellHook(wnd.Handle,3);
@@ -228,5 +213,5 @@ begin
   events.Free;
   
   CloseHandle(MuteXHandle);
-  RegisterShellHook(Handle,0);
+  RegisterShellHook(wnd.Handle,0);
 end.

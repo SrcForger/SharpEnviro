@@ -84,12 +84,12 @@ begin
   FIconHandle := 0;
   FIconType := itCustomIcon;
   FIconSource := pIconSource;
-  TLinearResampler.Create(FIcon);
   FCount := 1;
 
   FIcon.Assign(pBmp);
   FIcon.DrawMode := dmBlend;
   FIcon.CombineMode := cmMerge;
+  TLinearResampler.Create(FIcon);  
 end;
 
 constructor TSharpEMenuIcon.Create(pIconSource,pIconData : String);
