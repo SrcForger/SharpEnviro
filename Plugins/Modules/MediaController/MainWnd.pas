@@ -35,8 +35,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms,
   Dialogs, StdCtrls, SharpEButton, SharpESkinManager, 
-  JvSimpleXML, SharpApi, Menus, Math, ShellApi,
-  GR32, GR32_PNG, Types, ImgList, SharpEBaseControls;
+  JvSimpleXML, SharpApi, Menus, Math, ShellApi, Registry,
+  GR32, GR32_PNG, Types, ImgList, SharpEBaseControls,
+  uSharpEMenuWnd, uSharpEMenu, uSharpEMenuSettings, uSharpEMenuItem;
 
 
 type
@@ -46,14 +47,6 @@ type
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
-    playerpopup: TPopupMenu;
-    Foobar20001: TMenuItem;
-    Winamp1: TMenuItem;
-    MediaPlayerClassic1: TMenuItem;
-    ImageList1: TImageList;
-    QCD1: TMenuItem;
-    WindowsMediaPlayer1: TMenuItem;
-    VLCMediaPlayer1: TMenuItem;
     btn_pselect: TSharpEButton;
     btn_next: TSharpEButton;
     btn_prev: TSharpEButton;
@@ -61,21 +54,22 @@ type
     btn_stop: TSharpEButton;
     btn_play: TSharpEButton;
     procedure FormPaint(Sender: TObject);
-    procedure VLCMediaPlayer1Click(Sender: TObject);
-    procedure WindowsMediaPlayer1Click(Sender: TObject);
-    procedure QCD1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure Winamp1Click(Sender: TObject);
-    procedure MediaPlayerClassic1Click(Sender: TObject);
-    procedure Foobar20001Click(Sender: TObject);
-    procedure btn_pselectClick(Sender: TObject);
     procedure btn_nextClick(Sender: TObject);
     procedure btn_prevClick(Sender: TObject);
     procedure btn_stopClick(Sender: TObject);
     procedure btn_pauseClick(Sender: TObject);
     procedure btn_playClick(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
+    procedure btn_pselectMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure mnFooClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure mnMPCClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure mnQCDClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure mnVLCClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure mnAMPClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure mnWMPClick(pItem : TSharpEMenuItem; var CanClose : boolean);
   protected
   private
     sPlayer     : TMediaPlayerType;
@@ -88,7 +82,13 @@ type
     FIconWMP    : TBitmap32;
     FIconVLC    : TBitmap32;
     Background  : TBitmap32;
+    sWinAmpPath : String;
+    sMPCPath    : String;
+    sQCDPath    : String;
+    sWMPPath    : String;
+    sVLCPath    : String;
     procedure WMExecAction(var msg : TMessage); message WM_SHARPEACTIONMESSAGE;
+    function GetStartPlayer(Root : HKEY; Key : String; Value : String) : String;
   public
     ModuleID : integer;
     BarWnd : hWnd;
@@ -152,10 +152,11 @@ implementation
 
 
 uses SettingsWnd,
+     PlayerSelectWnd,
      uSharpBarAPI;
 
 {$R *.dfm}
-{$R glyphs.res}
+{$R playerglyphs.res}
 
 procedure TMainForm.InitDefaultImages;
 var
@@ -223,6 +224,33 @@ begin
   end;
 end;
 
+function TMainForm.GetStartPlayer(Root : HKEY; Key : String; Value : String) : String;
+var
+  Reg : TRegistry;
+  PlayerPath : String;
+  PlayerSelectForm: TPlayerSelectForm;
+begin
+  Reg := TRegistry.Create;
+  Reg.RootKey := Root;
+  Reg.Access := KEY_READ;
+  PlayerPath := '';
+  if Reg.OpenKey(Key,False) then
+  begin
+    PlayerPath := Reg.ReadString(Value);
+    Reg.CloseKey;
+  end;
+  if not FileExists(PlayerPath) then
+  begin
+    PlayerSelectForm := TPlayerSelectForm.Create(self);
+    if PlayerSelectForm.ShowModal = mrOk then
+       PlayerPath := PlayerSelectForm.edit_player.Text
+       else PlayerPath := '';
+    PlayerSelectForm.Free;
+  end;
+  result := PlayerPath;
+  SharpApi.SharpExecute('_nohist,' + PlayerPath);
+end;
+
 procedure TMainForm.UpdatePSelectIcon;
 begin
   case sPlayer of
@@ -233,6 +261,7 @@ begin
     mptWMP    : btn_pselect.Glyph32.Assign(FIconWMP);
     mptVLC    : btn_pselect.Glyph32.Assign(FIconVLC);
   end;
+  btn_pselect.Repaint;
 end;
 
 function GetVLCHandle : hwnd;
@@ -268,23 +297,43 @@ end;
 procedure TMainForm.SaveSettings;
 var
   item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  Dir : String;
+  FName : String;
 begin
- item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
- if item <> nil then with item.Items do
- begin
-   clear;
-   case sPlayer of
-     mptFooBar : Add('Player','mptFooBar');
-     mptWinAmp : Add('Player','mptWinAmp');
-     mptMPC    : Add('Player','mptMPC');
-     mptQCD    : Add('Player','mptQCD');
-     mptWMP    : Add('Player','mptWMP');
-     mptVLC    : Add('Player','mptVLC');
-   end;
-   Add('PlayerFile',sPlayerFile);
-   Add('QuickPlayerSelect',sPSelect);
- end;
- uSharpBarAPI.SaveXMLFile(BarWnd);
+  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
+  if item <> nil then with item.Items do
+  begin
+    clear;
+    case sPlayer of
+      mptFooBar : Add('Player','mptFooBar');
+      mptWinAmp : Add('Player','mptWinAmp');
+      mptMPC    : Add('Player','mptMPC');
+      mptQCD    : Add('Player','mptQCD');
+      mptWMP    : Add('Player','mptWMP');
+      mptVLC    : Add('Player','mptVLC');
+    end;
+    Add('PlayerFile',sPlayerFile);
+    Add('QuickPlayerSelect',sPSelect);
+  end;
+  uSharpBarAPI.SaveXMLFile(BarWnd);
+
+  XML := TJvSimpleXMl.Create(nil);
+  XML.Root.Name := 'MediaControllerPlayers';
+  XML.Root.Items.Add('WinAmpPath',sWinAmpPath);
+  XML.Root.Items.Add('MPCPath',sMPCPath);
+  XML.Root.Items.Add('QCDPath',sQCDPath);
+  XML.Root.Items.Add('WMPPath',sWMPPath);
+  XML.Root.Items.Add('VLCPath',sVLCPath);
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\';
+  FName := Dir + 'MediaPlayers.xml';
+  if not DirectoryExists(Dir) then
+     ForceDirectories(Dir);
+  XML.SaveToFile(FName + '~');
+  if FileExists(FName) then
+     DeleteFile(FName);
+  RenameFile(FName + '~',FName);
+  XML.Free;
 end;
 
 procedure TMainForm.UpdateActions;
@@ -311,6 +360,9 @@ procedure TMainForm.LoadSettings;
 var
   item : TJvSimpleXMLElem;
   s : String;
+  XML : TJvSimpleXML;
+  Dir : String;
+  FName : String;
 begin
   UpdateActions;
 
@@ -337,6 +389,29 @@ begin
      sPlayerFile := GetFooPathFromRegistry;
 
   UpdatePSelectIcon;
+
+  sWinAmpPath := '';
+  sMPCPath := '';
+  sQCDPath := '';
+  sWMPPath := '';
+  sVLCPath := '';
+
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\';
+  FName := Dir + 'MediaPlayers.xml';
+  if FileExists(FName) then
+  begin
+    XML := TJvSimpleXML.Create(nil);
+    try
+      XML.LoadFromFile(FName);
+      sWinAmpPath := XML.Root.Items.Value('WinAmpPath');
+      sMPCPath    := XML.Root.Items.Value('MPCPath');
+      sQCDPath    := XML.Root.Items.Value('QCDPath');
+      sWMPPath    := XML.Root.Items.Value('WMPPath');
+      sVLCPath    := XML.Root.Items.Value('VLCPath');
+    finally
+      XML.Free;
+    end;
+  end;
 end;
 
 procedure TMainForm.UpdateBackground(new : integer = -1);
@@ -440,23 +515,68 @@ begin
     mptFooBar: Shellapi.ShellExecute(Handle, nil, pChar(sPlayerFile),pChar('/play'),pChar(ExtractFileDir(sPlayerFile)),SW_SHOWNORMAL);
     mptWinamp: begin
                  wnd := GetWinampHandle;
-                 if wnd <> 0 then SendMessage(wnd,WM_COMMAND,WINAMP_BUTTON2,0);
+                 if wnd = 0 then
+                 begin
+                   if FileExists(sWinAmpPath) then
+                      SharpApi.SharpExecute('_nohist,' + sWinAmpPath)
+                      else
+                      begin
+                        sWinAmpPath := GetStartPlayer(HKEY_LOCAL_MACHINE,'.','.');
+                        SaveSettings;
+                      end;
+                 end else SendMessage(wnd,WM_COMMAND,WINAMP_BUTTON2,0);
                end;
     mptMPC   : begin
                  wnd := GetMPCHandle;
-                 if wnd <> 0 then SendMessage(wnd,WM_COMMAND,MEDIA_PLAY,0);
+                 if wnd = 0 then
+                 begin
+                   if FileExists(sMPCPath) then
+                      SharpApi.SharpExecute('_nohist,' + sMPCPath)
+                      else
+                      begin
+                        sMPCPath := GetStartPlayer(HKEY_LOCAL_MACHINE,'SOFTWARE\Gabest\Media Player Classic','ExePath');
+                        SaveSettings;
+                      end;
+                 end else SendMessage(wnd,WM_COMMAND,MEDIA_PLAY,0);
                end;
     mptQCD   : begin
                  wnd := GetQCDHandle;
-                 if wnd <> 0 then SendMessage(wnd,WM_COMMAND,QCD_COMMAND_PLAY,0);
+                 if wnd = 0 then
+                 begin
+                   if FileExists(sQCDPath) then
+                      SharpApi.SharpExecute('_nohist,' + sQCDPath)
+                      else
+                      begin
+                        sQCDPath := GetStartPlayer(HKEY_LOCAL_MACHINE,'.','.');
+                        SaveSettings;
+                      end;
+                 end else SendMessage(wnd,WM_COMMAND,QCD_COMMAND_PLAY,0);
                end;
     mptWMP   : begin
                  wnd := GetWMPHandle;
-                 if wnd <> 0 then SendMessage(wnd,WM_APPCOMMAND,0,WMP_MEDIA_PLAY_PAUSE);
+                 if wnd = 0 then
+                 begin
+                   if FileExists(sWmpPath) then
+                      SharpApi.SharpExecute('_nohist,' + sWmpPath)
+                      else
+                      begin
+                        sWMPPath := GetStartPlayer(HKEY_LOCAL_MACHINE,'SOFTWARE\Microsoft\Multimedia\WMPlayer','Player.Path');
+                        SaveSettings;
+                      end;
+                 end else SendMessage(wnd,WM_APPCOMMAND,0,WMP_MEDIA_PLAY_PAUSE);
                end;
     mptVLC   : begin
                  wnd := GetVLCHandle;
-                 if wnd <> 0 then SendMessage(wnd,WM_COMMAND,VLC_PLAY_PAUSE,0);
+                 if wnd = 0 then
+                 begin
+                   if FileExists(sVLCPath) then
+                      SharpApi.SharpExecute('_nohist,' + sVLCPath)
+                      else
+                      begin
+                        sVLCPath := GetStartPlayer(HKEY_LOCAL_MACHINE,'.','.');
+                        SaveSettings;
+                      end;
+                 end else SendMessage(wnd,WM_COMMAND,VLC_PLAY_PAUSE,0);
                end;
   end;
 end;
@@ -603,33 +723,53 @@ begin
   end;
 end;
 
-procedure TMainForm.btn_pselectClick(Sender: TObject);
+procedure TMainForm.btn_pselectMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
 var
+  sr : TSearchRec;
+  Dir : String;
+  s : string;
   p : TPoint;
+  mn : TSharpEMenu;
+  ms : TSharpEMenuSettings;
+  wnd : TSharpEMenuWnd;
 begin
-  p := ClientToScreen(Point(btn_pselect.Left, btn_pselect.Top + btn_pselect.Height));
-  playerpopup.Popup(p.x,p.y);
-end;
+  if Button = mbLeft then
+  begin
+    ms := TSharpEMenuSettings.Create;
+    ms.LoadFromXML;
+    ms.CacheIcons := False;
+    ms.WrapMenu := False;
 
-procedure TMainForm.Foobar20001Click(Sender: TObject);
-begin
-  sPlayer := mptFoobar;
-  SaveSettings;
-  UpdatePSelectIcon;
-end;
+    mn := TSharpEMenu.Create(SharpESkinManager1,ms);
+    ms.Free;
 
-procedure TMainForm.MediaPlayerClassic1Click(Sender: TObject);
-begin
-  sPlayer := mptMPC;
-  SaveSettings;
-  UpdatePSelectIcon;
-end;
+    TSharpEMenuItem(mn.AddCustomItem('Foobar2000','Foobar',FIconFoobar)).OnClick := mnFooClick;
+    TSharpEMenuItem(mn.AddCustomItem('Media Player Classic','MPC',FIconMPC)).OnClick := mnMPCClick;
+    TSharpEMenuItem(mn.AddCustomItem('Quintessential Player','QCD',FIconQCD)).OnClick := mnQCDClick;
+    TSharpEMenuItem(mn.AddCustomItem('VLC Media Player','VLC',FIconVLC)).OnClick := mnVLCClick;
+    TSharpEMenuItem(mn.AddCustomItem('WinAmp','WinAmp',FIconWinAmp)).OnClick := mnAMPClick;
+    TSharpEMenuItem(mn.AddCustomItem('Windows Media Player','WMP',FIconWMP)).OnClick := mnWMPClick;
 
-procedure TMainForm.Winamp1Click(Sender: TObject);
-begin
-  sPlayer := mptWinAmp;
-  SaveSettings;
-  UpdatePSelectIcon;
+    //mn.AddSeparatorItem(False);
+    mn.RenderBackground;
+
+    wnd := TSharpEMenuWnd.Create(self,mn);
+    wnd.FreeMenu := True; // menu will free itself when closed
+
+    p := ClientToScreen(Point(btn_pselect.Left + btn_pselect.Width div 2, self.Height + self.Top));
+    p.x := p.x + SharpESkinManager1.Skin.MenuSkin.SkinDim.XAsInt - mn.Background.Width div 2;
+    if p.x < Monitor.Left then
+       p.x := Monitor.Left;
+    if p.x + mn.Background.Width  > Monitor.Left + Monitor.Width then
+       p.x := Monitor.Left + Monitor.Width - mn.Background.Width;
+    wnd.Left := p.x;
+    if p.Y < Monitor.Top + Monitor.Height div 2 then
+       wnd.Top := p.y + SharpESkinManager1.Skin.MenuSkin.SkinDim.YAsInt
+       else wnd.Top := p.y - Top - Height - mn.Background.Height - SharpESkinManager1.Skin.MenuSkin.SkinDim.YAsInt;
+    wnd.Show;
+  end;
+
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -661,32 +801,62 @@ begin
   FIconQCD.Free;
   FIconWMP.Free;
   FIconVLC.Free;
-end;
 
-procedure TMainForm.QCD1Click(Sender: TObject);
-begin
-  sPlayer := mptQCD;
-  SaveSettings;
-  UpdatePSelectIcon;
-end;
-
-procedure TMainForm.WindowsMediaPlayer1Click(Sender: TObject);
-begin
-  sPlayer := mptWMP;
-  SaveSettings;
-  UpdatePSelectIcon;
-end;
-
-procedure TMainForm.VLCMediaPlayer1Click(Sender: TObject);
-begin
-  sPlayer := mptVLC;
-  SaveSettings;
-  UpdatePSelectIcon;
+  if SharpEMenuPopups <> nil then
+     FreeAndNil(SharpEMenuPopups);  
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
   Background.DrawTo(Canvas.Handle,0,0);
+end;
+
+procedure TMainForm.mnFooClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+begin
+  sPlayer := mptFooBar;
+  SaveSettings;
+  UpdatePSelectIcon;
+  CanClose := True;
+end;
+
+procedure TMainForm.mnMPCClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+begin
+  sPlayer := mptMPC;
+  SaveSettings;
+  UpdatePSelectIcon;
+  CanClose := True;
+end;
+
+procedure TMainForm.mnQCDClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+begin
+  sPlayer := mptQCD;
+  SaveSettings;
+  UpdatePSelectIcon;
+  CanClose := True;
+end;
+
+procedure TMainForm.mnVLCClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+begin
+  sPlayer := mptVLC;
+  SaveSettings;
+  UpdatePSelectIcon;
+  CanClose := True;
+end;
+
+procedure TMainForm.mnAMPClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+begin
+  sPlayer := mptWinAmp;
+  SaveSettings;
+  UpdatePSelectIcon;
+  CanClose := True;
+end;
+
+procedure TMainForm.mnWMPClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+begin
+  sPlayer := mptWMP;
+  SaveSettings;
+  UpdatePSelectIcon;
+  CanClose := True;
 end;
 
 end.
