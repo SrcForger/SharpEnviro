@@ -433,18 +433,18 @@ begin
   inherited;
   if Height = 0 then exit;
 
-  FImage32.Bitmap.Setsize(Self.Width,Self.Height);
+  FImage32.Bitmap.Setsize(Self.ClientWidth,Self.Height);
   FImage32.Bitmap.Clear(Color32(FBkgColor));
 
   // Draw bottom line
   If FBorder and FBottomBorder then begin
     if FTabAlign = taLeftJustify then
-      FImage32.Bitmap.Line(0,Self.Height-1,Self.Width-4,Self.Height-1,Color32(FBorderColor)) else
-      FImage32.Bitmap.Line(4,Self.Height-1,Self.Width,Self.Height-1,Color32(FBorderColor))
+      FImage32.Bitmap.Line(0,Self.Height-1,Self.ClientWidth-4,Self.Height-1,Color32(FBorderColor)) else
+      FImage32.Bitmap.Line(4,Self.Height-1,Self.ClientWidth,Self.Height-1,Color32(FBorderColor))
   end;
 
   if Count = 0 then exit;
-  w := Self.Width;
+  w := Self.ClientWidth;
   iMaxTabSize := CalculateMaxTabSize;
 
   iPosTabs := w div (iMaxTabSize+3);
@@ -453,7 +453,7 @@ begin
   // What allignment?
   if FTabAlign = taLeftJustify then
     x := 0 else
-    x := Self.Width;
+    x := Self.ClientWidth;
 
   // How many are visible
   if Count < iPosTabs then
