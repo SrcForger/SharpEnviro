@@ -25,7 +25,8 @@ uses
   SharpFX in '..\..\Units\SharpFX\SharpFX.pas',
   uSchemeList in '..\..\..\Plugins\Configurations\Scheme\uSchemeList.pas',
   SharpECenterScheme in '..\SharpECenterScheme\SharpECenterScheme.pas',
-  SharpESwatchManager in '..\SharpESwatchManager\SharpESwatchManager.pas';
+  SharpESwatchManager in '..\SharpESwatchManager\SharpESwatchManager.pas',
+  SharpETabList in '..\SharpETabList\SharpETabList.pas';
 
 {$R *.res}
 

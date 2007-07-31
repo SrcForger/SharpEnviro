@@ -176,7 +176,7 @@ constructor TSharpEColorEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Self.Height := 135;
-  Self.Width := 200;
+  Self.ClientWidth := 200;
   FCollapseHeight := 24;
   FExpandedHeight := 135;
   FValueEditorType := vetColor;
@@ -243,9 +243,10 @@ begin
     TabAlign := taRightJustify;
     IconBounds := Rect(12, 3, 0, 0);
     TabWidth := 40;
+    AutoSizeTabs := False;
 
     Top := 0;
-    FTabs.Width := Self.Width;
+    FTabs.Width := Self.ClientWidth;
     Left := 0;
     Border := True;
     PngImageList := FPngImageList;
@@ -366,7 +367,7 @@ begin
     FTabContainer.Top := FTabs.Height - 1;
     FTabContainer.Left := 0;
     FTabContainer.Height := Height - FTabs.Height;
-    FTabContainer.Width := Self.Width;
+    FTabContainer.Width := Self.ClientWidth;
 
     BorderColor := FSCS.EditBordCol;
     Color := FSCS.EditCol;
@@ -727,12 +728,12 @@ begin
     FTabContainer.Height := n;
 
   // Set Tab Container Width
-  if FTabContainer.Width <> Self.Width then
-    FTabContainer.Width := Self.Width;
+  if FTabContainer.Width <> Self.ClientWidth then
+    FTabContainer.Width := Self.ClientWidth;
 
   // Set TabList width
-  if FTabs.Width <> Self.Width then
-    FTabs.Width := Self.Width;
+  if FTabs.Width <> Self.ClientWidth then
+    FTabs.Width := Self.ClientWidth;
 
   // Show color picker
   if not (FColorPicker.Visible) then
@@ -770,7 +771,7 @@ begin
     iWidthLT, iY + 10);
   rRightSlider := Rect(rRightText.Right, iY, rRightText.Right - iSpacer +
     iSliderWidth, iY + 10);
-  rRightSliderVal := Rect(rRightSlider.Right, iY, Self.Width - iSpacer - 4, iY +
+  rRightSliderVal := Rect(rRightSlider.Right, iY, Self.ClientWidth - iSpacer - 4, iY +
     10);
 
   PositionSlider(FHueSlider, 'Hue:', rLeftText, rLeftSlider, rLeftSliderVal, 0,
@@ -806,8 +807,8 @@ begin
 
 
   FTabContainer.Height := Self.Height - FTabs.Height + 1;
-  FTabContainer.Width := Self.Width;
-  FTabs.Width := Self.Width;
+  FTabContainer.Width := Self.ClientWidth;
+  FTabs.Width := Self.ClientWidth;
   FColorPicker.Hide;
   FAddColorButton.Hide;
   FTabs.TabList.Item[1].Visible := False;
@@ -1319,8 +1320,8 @@ var
 begin
 
   FTabContainer.Height := Self.Height - FTabs.Height + 1;
-  FTabContainer.Width := Self.Width;
-  FTabs.Width := Self.Width;
+  FTabContainer.Width := Self.ClientWidth;
+  FTabs.Width := Self.ClientWidth;
   FColorPicker.Hide;
   FAddColorButton.Hide;
   FTabs.TabList.Item[1].Visible := False;
