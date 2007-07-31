@@ -50,6 +50,7 @@ uses
   JvExControls,
   JvComponent,
   JclFileUtils,
+  JclStrings,
   jvSimpleXml,
   Tabs,
   SharpEListBox,
@@ -123,6 +124,7 @@ type
     pnlEditToolbar: TPanel;
     btnEditCancel: TPngSpeedButton;
     btnEditApply: TPngSpeedButton;
+    VistaAltFix1: TVistaAltFix;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -152,8 +154,6 @@ type
     procedure btnHomeClick(Sender: TObject);
 
     procedure FormShow(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -165,6 +165,7 @@ type
     procedure ClickItem;
 
     procedure ShowHistory;
+    procedure InitCommandLine;
   public
 
     procedure GetCopyData(var Msg: TMessage); message wm_CopyData;
@@ -231,8 +232,7 @@ begin
 
   InitWindow;
   InitToolbar;
-
-  SCM.BuildNavRoot;
+  InitCommandLine;
 
 end;
 
@@ -297,6 +297,35 @@ begin
   end;
 end;
 
+procedure TSharpCenterWnd.InitCommandLine;
+var
+  enumCommandType: TSCC_COMMAND_ENUM;
+  strlTokens: TStringList;
+  sApiParam: string;
+  n: Integer;
+  sPluginID: string;
+  sCmd: string;
+begin
+  n := Pos('-api', CmdLine);
+  if n <> 0 then
+  begin
+    sApiParam := Copy(CmdLine, n + 4, length(CmdLine));
+    strlTokens := TStringlist.Create;
+    try
+      StrTokenToStrings(sApiParam, '|', strlTokens);
+      enumCommandType := TSCC_COMMAND_ENUM(StrToInt(strlTokens[0]));
+      sCmd := strlTokens[1];
+      if 2 < strlTokens.Count then
+        sPluginID := strlTokens[2];
+      SCM.ExecuteCommand(enumCommandType, scmd, sPluginID);
+    finally
+      strlTokens.Free;
+    end;
+  end
+  else
+    SCM.BuildNavRoot;
+end;
+
 procedure TSharpCenterWnd.btnBackClick(Sender: TObject);
 var
   tmpItem: TSharpCenterHistoryItem;
@@ -343,14 +372,6 @@ begin
     btnSave.Enabled := False;
     btnCancel.Enabled := False;
   end;
-end;
-
-procedure TSharpCenterWnd.Button1Click(Sender: TObject);
-var
-  n,n2:Integer;
-begin
-  n := 0;
-  n2 := n div n;
 end;
 
 procedure TSharpCenterWnd.btnCancelClick(Sender: TObject);
@@ -451,25 +472,25 @@ begin
 
     SCM_SET_TAB_SELECTED: begin
 
-      SCM.StateEditItem := False;
-      SCM.StateEditWarning := False;
+        SCM.StateEditItem := False;
+        SCM.StateEditWarning := False;
 
-      case Msg.LParam of
-        integer(scbAddTab): begin
-          pnlEditContainer.TabIndex := cEdit_Add;
-          FSelectedTabID := cEdit_Add;
+        case Msg.LParam of
+          integer(scbAddTab): begin
+              pnlEditContainer.TabIndex := cEdit_Add;
+              FSelectedTabID := cEdit_Add;
+            end;
+          integer(scbEditTab): begin
+              pnlEditContainer.TabIndex := cEdit_Edit;
+              FSelectedTabID := cEdit_Edit;
+            end;
+          integer(scbDeleteTab): begin
+              pnlEditContainer.TabIndex := cEdit_Delete;
+              FSelectedTabID := cEdit_Delete;
+            end;
         end;
-        integer(scbEditTab): begin
-          pnlEditContainer.TabIndex := cEdit_Edit;
-          FSelectedTabID := cEdit_Edit;
-        end;
-        integer(scbDeleteTab): begin
-          pnlEditContainer.TabIndex := cEdit_Delete;
-          FSelectedTabID := cEdit_Delete;
-        end;
+        UpdateThemeEvent(nil);
       end;
-      UpdateThemeEvent(nil);
-    end;
 
     SCM_SET_BUTTON_ENABLED, SCM_SET_BUTTON_DISABLED:
       begin
@@ -542,7 +563,7 @@ procedure TSharpCenterWnd.tlToolbarTabChange(ASender: TObject;
   const ATabIndex: Integer; var AChange: Boolean);
 begin
   if pnlToolbar = nil then exit;
-  
+
   if SCM.CheckEditState then
   begin
     AChange := False;
@@ -661,9 +682,7 @@ begin
   lbFavs.Colors.ItemColorSelected := $0080E7FD;
 
   // Set tab defaults
-  //tlPluginTabs.TextBounds := Rect(8, 8, 8, 4);
   pnlEditContainer.DoubleBuffered := true;
-  //pnlPlugin.DoubleBuffered := True;
 
   // Reinit values
   FSelectedTabID := 0;
@@ -757,7 +776,7 @@ end;
 
 procedure TSharpCenterWnd.UpdateSize;
 var
-  h:Integer;
+  h: Integer;
 begin
   UpdateLivePreview;
 
@@ -773,7 +792,7 @@ begin
       if SCM.EditWndHandle <> 0 then
       begin
         pnlEditContainer.Minimized := False;
-        pnlEditContainer.Height := 80+GetControlByHandle(SCM.EditWndHandle).Height;
+        pnlEditContainer.Height := 80 + GetControlByHandle(SCM.EditWndHandle).Height;
         GetControlByHandle(SCM.EditWndHandle).Width := pnlEditPlugin.Width;
       end else
         pnlEditContainer.Minimized := True;
@@ -839,6 +858,8 @@ begin
 end;
 
 procedure TSharpCenterWnd.LoadPluginEvent(Sender: TObject);
+var
+  i: Integer;
 begin
   // Resize Plugin window
   LockWindowUpdate(Self.Handle);
@@ -872,8 +893,18 @@ begin
     FSelectedPluginTabID := 0;
 
     if (@SCM.ActivePlugin.OpenEdit <> nil) then begin
-      tlEditItemTabClick(nil,FSelectedTabID);
-      pnlEditContainer.TabList.TabIndex := FSelectedTabID;
+      //tlEditItemTabClick(nil, FSelectedTabID);
+      pnlEditContainer.TabList.TabIndex := -1;
+    end;
+
+    // Select in list
+    For i := 0 to Pred(lbTree.Count) do begin
+      if CompareText(TSharpCenterManagerItem(lbTree.Item[i].Data).Filename,
+        SCM.ActivePlugin.Filename) = 0 then begin
+          lbTree.ItemIndex := i;
+          break;
+        end;
+
     end;
 
 
@@ -897,8 +928,8 @@ begin
   tmp.AddSubItem(AItem.Status);
   tmp.Data := AItem;
 
-  if ((AIndex < lbTree.count) and (AIndex <> -1)) then
-    lbTree.ItemIndex := AIndex;
+  //if ((AIndex < lbTree.count) and (AIndex <> -1)) then
+  //  lbTree.ItemIndex := AIndex;
 end;
 
 procedure TSharpCenterWnd.InitNavEvent(Sender: TObject);
@@ -917,14 +948,14 @@ begin
   try
 
     s := '';
-      for i := 0 to Pred(SCM.PluginTabs.Count) do
-      begin
-        pnlPluginContainer.TabList.Add(SCM.PluginTabs[i].Caption, -1,
-          SCM.PluginTabs[i].Status);
+    for i := 0 to Pred(SCM.PluginTabs.Count) do
+    begin
+      pnlPluginContainer.TabList.Add(SCM.PluginTabs[i].Caption, -1,
+        SCM.PluginTabs[i].Status);
 
-        
-      end;
-      pnlPluginContainer.TabIndex := FSelectedPluginTabID;
+
+    end;
+    pnlPluginContainer.TabIndex := FSelectedPluginTabID;
   finally
     LockWindowUpdate(0);
   end;
@@ -996,6 +1027,7 @@ begin
       pnlEditPlugin.Color := colBackground;
       pnlEditToolbar.Color := colBackground;
       pnlEditContainer.TabSelColor := colBackground;
+      lbTree.Enabled := Not(SCM.StateEditItem);
 
       btnEditCancel.Enabled := True;
 
@@ -1102,20 +1134,15 @@ end;
 procedure TSharpCenterWnd.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
-  Try
+  try
     if @SCM.ActivePlugin <> nil then
       SCM.Unload;
 
     FreeAndNil(SCM);
 
-  Finally
+  finally
     CanClose := True;
-  End;
-end;
-
-procedure TSharpCenterWnd.FormCreate(Sender: TObject);
-begin
-  TVistaAltFix.Create(Self);
+  end;
 end;
 
 end.

@@ -15,7 +15,6 @@ object SharpCenterWnd: TSharpCenterWnd
   OldCreateOrder = False
   ScreenSnap = True
   OnCloseQuery = FormCloseQuery
-  OnCreate = FormCreate
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
@@ -699,7 +698,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 157
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -486
+                Left = -518
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1227,7 +1226,7 @@ object SharpCenterWnd: TSharpCenterWnd
           AutoSizeTabs = True
           TabBackgroundColor = clWindow
           BackgroundColor = clWindow
-          BorderColor = 16510947
+          BorderColor = 15724527
           TabColor = 15724527
           TabSelColor = clWhite
           TabCaptionSelColor = clBlack
@@ -1351,6 +1350,8 @@ object SharpCenterWnd: TSharpCenterWnd
               BevelOuter = bvNone
               Color = 16510947
               TabOrder = 0
+              ExplicitLeft = 0
+              ExplicitTop = -2
             end
             object pnlEditToolbar: TPanel
               Left = 4
@@ -9889,5 +9890,9 @@ object SharpCenterWnd: TSharpCenterWnd
   object XPManifest1: TXPManifest
     Left = 84
     Top = 440
+  end
+  object VistaAltFix1: TVistaAltFix
+    Left = 32
+    Top = 272
   end
 end
