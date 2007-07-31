@@ -173,7 +173,9 @@ begin
           'SharpCenter.exe'])), 0, DMT_STATUS);
         ShellExecute(wnd, 'open', pchar(Path + 'SharpCenter.exe'), Pchar('-api '
           +
-          sCommand + ' ' + AParam), pchar(path), WM_SHOWWINDOW);
+          IntToStr(Integer(ACommand)) + '|' + AParam + '|' + APluginID),
+            pchar(path), WM_SHOWWINDOW);
+
       end
       else
         SendDebugMessageEx('SharpApi',
