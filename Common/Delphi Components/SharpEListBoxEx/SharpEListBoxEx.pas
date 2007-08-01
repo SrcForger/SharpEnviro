@@ -147,6 +147,7 @@ type
     FMargin: TRect;
     FColumnMargin: TRect;
     FOnGetCellFont: TSharpEListBoxExGetColFontStyle;
+    FAutoSizeGrid: Boolean;
     procedure ResizeEvent(Sender: TObject);
     procedure DrawItemEvent(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
@@ -175,6 +176,7 @@ type
 
     function CalcColumnRect(AColumnID: Integer;AColumn: TSharpEListBoxExColumn;
       AItemRect:TRect; var AX,AY:Integer): TRect;
+    procedure SetAutoSizeGrid(const Value: Boolean);
     //procedure MeasureItemEvent(Control: TWinControl;
   //Index: Integer; var Height: Integer);
   public
@@ -203,6 +205,8 @@ type
     property Font;
     property Anchors;
     property PopupMenu;
+    property Constraints;
+    property OnResize;
 
     property ItemHeight;
     property OnClickItem: TSharpEListBoxExOnClickItem read FOnClickItem write FOnClickItem stored True;
@@ -213,6 +217,7 @@ type
     property OnGetCellFont: TSharpEListBoxExGetColFontStyle read FOnGetCellFont write FOnGetCellFont;
     
     property ItemOffset: TPoint read FItemOffset write FItemOffset;
+    property AutosizeGrid: Boolean read FAutoSizeGrid write SetAutoSizeGrid;
     property BevelInner;
     property BevelOuter;
     property Borderstyle;
@@ -268,7 +273,7 @@ end;
 constructor TSharpEListBoxEx.Create(Sender: TComponent);
 begin
   inherited;
-  Self.DoubleBuffered := True;
+  Self.DoubleBuffered := False;
   Self.Style := lbOwnerDrawFixed;
   Self.OnDrawItem := DrawItemEvent;
 
@@ -540,6 +545,14 @@ begin
   Result := FColumns.Item[AColumn];
 end;
 
+procedure TSharpEListBoxEx.SetAutoSizeGrid(const Value: Boolean);
+begin
+  FAutoSizeGrid := Value;
+
+  if FAutoSizeGrid then
+    Self.Height := Self.Count*Self.ItemHeight;
+end;
+
 procedure TSharpEListBoxEx.SetColors(const Value: TSharpEListBoxExColors);
 begin
   FColors := Value;
@@ -720,6 +733,9 @@ begin
   Result.AddSubItem(AText, AImageIndex, ASelectedImageIndex);
 
   Result.ID := Self.Items.AddObject(AText, Result);
+
+  if FAutoSizeGrid then
+    Self.Height := Self.Count*Self.ItemHeight;
 end;
 
 procedure TSharpEListItem.SetSubItemSelectedImageIndex(ASubItemIndex: Integer;

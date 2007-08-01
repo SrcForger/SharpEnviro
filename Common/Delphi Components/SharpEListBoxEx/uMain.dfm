@@ -40,6 +40,7 @@ object Form1: TForm1
       end>
     ItemHeight = 24
     OnGetCellFont = SharpEListBoxEx1GetCellFont
+    AutosizeGrid = False
     Align = alClient
   end
   object Button1: TButton
