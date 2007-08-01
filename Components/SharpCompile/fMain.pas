@@ -49,6 +49,7 @@ type
   private
     procedure CompilerNewLine(Sender: TObject; CmdOutput: string);
     procedure CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer);
+    procedure OpenFile(sXML: String);
   public
     { Public declarations }
   end;
@@ -68,6 +69,8 @@ begin
   lbSummary.DoubleBuffered := True;
   sepLog.DoubleBuffered := True;
   panMain.DoubleBuffered := True;
+  if ParamStr(1) <> '' then
+    OpenFile(ParamStr(1));
 end;
 
 procedure TfrmMain.lbSummaryDblClickItem(AText: string; AItem, ACol: Integer);
@@ -247,25 +250,23 @@ begin
 end;
 
 
-procedure TfrmMain.tbOpenClick(Sender: TObject);
+procedure TfrmMain.OpenFile(sXML: String);
 var
   n,i: integer;
   xFile: TJvSimpleXML;
   nProject,nComponent: TTreeNode;
   sPackage: String;
 begin
-  if dlgOpen.Execute then
-  begin
     if ctvProjects.Items.Count > 0 then
       for n := 0 to ctvProjects.Items.Count - 1 do
       begin
         ctvProjects.Items[n].Delete;
       end;
     xFile := TJvSimpleXML.Create(nil);
-    if FileExists(dlgOpen.FileName) then
+    if FileExists(sXML) then
     begin
-      sPath := IncludeTrailingBackslash(ExtractFileDir(dlgOpen.FileName));
-      xFile.LoadFromFile(dlgOpen.FileName);
+      sPath := IncludeTrailingBackslash(ExtractFileDir(sXML));
+      xFile.LoadFromFile(sXML);
       for n := 0 to xFile.Root.Items.Count - 1 do
         with xFile.Root.Items.Item[n] do
         begin
@@ -285,9 +286,14 @@ begin
                 + Properties.Value('Requ', 'Turbo Delphi Explorer 2006'));
             end;
         end;
-      lbSummary.AddItem('Loaded ' + ExtractFileName(dlgOpen.FileName), 2);
+      lbSummary.AddItem('Loaded ' + ExtractFileName(sXML), 2);
 	  end;
-  end;
+
 end;
 
+procedure TfrmMain.tbOpenClick(Sender: TObject);
+begin
+  if dlgOpen.Execute then
+    OpenFile(dlgOpen.FileName);
+end;
 end.
