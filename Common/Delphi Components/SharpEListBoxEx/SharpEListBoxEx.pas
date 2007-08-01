@@ -147,7 +147,7 @@ type
     FMargin: TRect;
     FColumnMargin: TRect;
     FOnGetCellFont: TSharpEListBoxExGetColFontStyle;
-
+    procedure ResizeEvent(Sender: TObject);
     procedure DrawItemEvent(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure DrawSelection(ARect: TRect; AState: TOwnerDrawState; AItem: TSharpEListItem);
@@ -268,13 +268,14 @@ end;
 constructor TSharpEListBoxEx.Create(Sender: TComponent);
 begin
   inherited;
-  Self.DoubleBuffered := False;
+  Self.DoubleBuffered := True;
   Self.Style := lbOwnerDrawFixed;
   Self.OnDrawItem := DrawItemEvent;
-  //Self.OnClick := ClickItem;
+
   Self.OnMouseMove := MouseMoveEvent;
   Self.OnMouseDown := MouseDownEvent;
   Self.OnDblClick := DblClickItem;
+  Self.OnResize := ResizeEvent;
   Self.ItemHeight := 24;
   Self.Color := clWindow;
 
@@ -318,7 +319,7 @@ var
 begin
 try
   tmpItem := TSharpEListItem(Self.Items.Objects[Index]);
-  Rect.Right := Self.ClientWidth-4;
+  Rect.Right := Self.ClientWidth;
 
   bSelected := (Index = ItemIndex);
 
@@ -874,6 +875,11 @@ begin
       Self.Cursor := cur;
     end;
   end;
+end;
+
+procedure TSharpEListBoxEx.ResizeEvent(Sender: TObject);
+begin
+  Self.Refresh;
 end;
 
 destructor TSharpEListBoxExColumn.Destroy;
