@@ -698,7 +698,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 157
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -518
+                Left = -550
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1150,13 +1150,14 @@ object SharpCenterWnd: TSharpCenterWnd
               object Edit2: TEdit
                 Left = 0
                 Top = 36
-                Width = 0
+                Width = -4
                 Height = 21
                 Anchors = [akLeft, akTop, akRight]
                 Ctl3D = True
                 ParentCtl3D = False
                 TabOrder = 0
                 Text = 'Edit1'
+                ExplicitWidth = 0
               end
             end
           end
@@ -1247,11 +1248,14 @@ object SharpCenterWnd: TSharpCenterWnd
             Margins.Top = 32
             Margins.Right = 6
             Margins.Bottom = 6
+            VertScrollBar.Smooth = True
+            VertScrollBar.Tracking = True
             Align = alClient
             BorderStyle = bsNone
             Color = clWindow
             ParentColor = False
             TabOrder = 2
+            OnResize = sbPluginResize
             object pnlPlugin: TPanel
               Left = 0
               Top = 0
@@ -1259,12 +1263,11 @@ object SharpCenterWnd: TSharpCenterWnd
               Height = 99
               Margins.Left = 6
               Margins.Top = 6
-              Margins.Right = 6
+              Margins.Right = 0
               Margins.Bottom = 6
               Align = alTop
               BevelOuter = bvNone
               Color = clWindow
-              Padding.Right = 4
               PopupMenu = PopupMenu1
               TabOrder = 0
             end
@@ -1350,8 +1353,6 @@ object SharpCenterWnd: TSharpCenterWnd
               BevelOuter = bvNone
               Color = 16510947
               TabOrder = 0
-              ExplicitLeft = 0
-              ExplicitTop = -2
             end
             object pnlEditToolbar: TPanel
               Left = 4
@@ -9890,9 +9891,5 @@ object SharpCenterWnd: TSharpCenterWnd
   object XPManifest1: TXPManifest
     Left = 84
     Top = 440
-  end
-  object VistaAltFix1: TVistaAltFix
-    Left = 32
-    Top = 272
   end
 end

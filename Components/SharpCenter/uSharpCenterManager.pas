@@ -605,18 +605,24 @@ end;
 
 procedure TSharpCenterManager.SetStateEditWarning(const Value: Boolean);
 begin
-  FStateEditWarning := Value;
+  if FStateEditWarning <> Value then begin
 
-  if Assigned(FonUpdateTheme) then
-    FOnUpdateTheme(Self);
+    FStateEditWarning := Value;
+
+    if Assigned(FonUpdateTheme) then
+      FOnUpdateTheme(Self);
+  end;
 end;
 
 procedure TSharpCenterManager.SetStateEditItem(const Value: Boolean);
 begin
-  FStateEditItem := Value;
+  if FStateEditItem <> Value then begin
 
-  if Assigned(FonUpdateTheme) then
-    FOnUpdateTheme(Self);
+    FStateEditItem := Value;
+
+    if Assigned(FonUpdateTheme) then
+      FOnUpdateTheme(Self);
+  end;
 end;
 
 function TSharpCenterManager.GetHistory: TSharpCenterHistoryManager;

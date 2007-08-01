@@ -124,7 +124,6 @@ type
     pnlEditToolbar: TPanel;
     btnEditCancel: TPngSpeedButton;
     btnEditApply: TPngSpeedButton;
-    VistaAltFix1: TVistaAltFix;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -154,6 +153,7 @@ type
     procedure btnHomeClick(Sender: TObject);
 
     procedure FormShow(Sender: TObject);
+    procedure sbPluginResize(Sender: TObject);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -522,11 +522,13 @@ begin
       end;
     SCM_SET_EDIT_STATE:
       begin
-        SCM.StateEditItem := True;
+        if SCM.StateEditItem <> True then
+          SCM.StateEditItem := True;
       end;
     SCM_SET_EDIT_CANCEL_STATE:
       begin
-        SCM.StateEditItem := False;
+        if SCM.StateEditItem <> False then
+          SCM.StateEditItem := False;
       end;
   end;
 end;
@@ -689,6 +691,16 @@ begin
   FCancelClicked := False;
 
   // Update UI
+  pnlPlugin.DoubleBuffered := True;
+  sbPlugin.DoubleBuffered := True;
+  pnlPluginContainer.DoubleBuffered := True;
+  pnlContent.DoubleBuffered := True;
+  pnlMain.DoubleBuffered := True;
+  pnlForm.DoubleBuffered := True;
+  pnlTree.DoubleBuffered := True;
+  pnlSettingTree.DoubleBuffered := True;
+  lbTree.DoubleBuffered := True;
+  
   btnSave.Enabled := False;
   btnCancel.Enabled := False;
   btnHelp.Enabled := False;
@@ -999,7 +1011,7 @@ procedure TSharpCenterWnd.UpdateThemeEvent(Sender: TObject);
 var
   colBackground, colItem, colSelectedItem: TColor;
 begin
-  LockWindowUpdate(Self.Handle);
+  //LockWindowUpdate(Self.Handle);
   try
 
     if @SCM.ActivePlugin.GetCenterScheme <> nil then
@@ -1067,7 +1079,7 @@ begin
 
     end;
   finally
-    lockWindowUpdate(0);
+    //lockWindowUpdate(0);
   end;
 end;
 
@@ -1086,6 +1098,13 @@ procedure TSharpCenterWnd.SavePluginEvent(Sender: TObject);
 begin
   btnSave.Enabled := False;
   btnCancel.Enabled := False;
+end;
+
+procedure TSharpCenterWnd.sbPluginResize(Sender: TObject);
+begin
+  if sbPlugin.VertScrollBar.IsScrollBarVisible then
+    sbPlugin.Padding.Right := 6 else
+    sbPlugin.Padding.Right := 0;  
 end;
 
 procedure TSharpCenterWnd.ApplyEditEvent(Sender: TObject);
