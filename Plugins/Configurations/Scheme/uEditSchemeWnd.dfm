@@ -3,7 +3,7 @@ object frmEditScheme: TfrmEditScheme
   Top = 0
   BorderStyle = bsNone
   Caption = 'Create/Edit Color Scheme'
-  ClientHeight = 291
+  ClientHeight = 206
   ClientWidth = 498
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -22,7 +22,7 @@ object frmEditScheme: TfrmEditScheme
     Left = 0
     Top = 0
     Width = 498
-    Height = 291
+    Height = 206
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 4
@@ -30,7 +30,7 @@ object frmEditScheme: TfrmEditScheme
     TabOrder = 0
     DesignSize = (
       498
-      291)
+      206)
     object edName: TLabeledEdit
       Left = 42
       Top = 8
@@ -60,10 +60,10 @@ object frmEditScheme: TfrmEditScheme
     end
     object SharpERoundPanel1: TSharpERoundPanel
       Left = 4
-      Top = 40
-      Width = 489
-      Height = 241
-      Anchors = [akLeft, akTop, akRight, akBottom]
+      Top = 36
+      Width = 490
+      Height = 166
+      Align = alBottom
       BevelOuter = bvNone
       BorderWidth = 4
       Caption = 'SharpERoundPanel1'
@@ -79,8 +79,8 @@ object frmEditScheme: TfrmEditScheme
       object secEx: TSharpEColorEditorEx
         Left = 4
         Top = 4
-        Width = 481
-        Height = 233
+        Width = 482
+        Height = 158
         Align = alClient
         BevelInner = bvNone
         BevelOuter = bvNone
@@ -109,8 +109,8 @@ object frmEditScheme: TfrmEditScheme
     SwatchFont.Style = []
     SwatchTextBorderColor = 16709617
     SortMode = sortName
-    Left = 452
-    Top = 232
+    Left = 196
+    Top = 136
   end
   object SharpECenterScheme1: TSharpECenterScheme
     SidePanelCol = clWindow
@@ -144,7 +144,7 @@ object frmEditScheme: TfrmEditScheme
     MainListItemBordCol = 16250871
     MainListItemSelCol = 16250871
     MainListItemDisCol = 12303291
-    Left = 452
-    Top = 192
+    Left = 156
+    Top = 136
   end
 end

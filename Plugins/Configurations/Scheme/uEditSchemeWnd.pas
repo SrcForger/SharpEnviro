@@ -159,11 +159,11 @@ begin
     secEx.EndUpdate;
 
     if FColors.Count <> 0 then
-      h := (FColors.Count - 1) * secEx.Items.Item[0].ColorEditor.CollapseHeight
+      h := 3 * secEx.Items.Item[0].ColorEditor.CollapseHeight
         +
         secEx.Items.Item[0].ColorEditor.ExpandedHeight;
 
-    Self.Height := h + 70;
+    Self.Height := h+10;
     LockWindowUpdate(0);
   end;
 
@@ -374,7 +374,7 @@ begin
   begin
     tmpItem.Color := AValue;
     tmpItem.UnparsedColor := '';
-  end;
+  end; 
 end;
 
 procedure TfrmEditScheme.FormShow(Sender: TObject);

@@ -2,7 +2,7 @@ object frmThemeList: TfrmThemeList
   Left = 0
   Top = 0
   Caption = 'frmThemeList'
-  ClientHeight = 284
+  ClientHeight = 232
   ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object frmThemeList: TfrmThemeList
     Left = 0
     Top = 0
     Width = 418
-    Height = 284
+    Height = 192
     Columns = <
       item
         Width = 70
@@ -57,19 +57,21 @@ object frmThemeList: TfrmThemeList
         ColumnAlign = calLeft
         Autosize = False
       end>
+    OnResize = lbThemeListResize
     ItemHeight = 65
     OnClickItem = lbThemeListClickItem
     OnDblClickItem = lbThemeListDblClickItem
+    AutosizeGrid = True
     Borderstyle = bsNone
     Ctl3d = False
-    Align = alClient
+    Align = alTop
   end
   object ThemeImages: TPngImageList
     Height = 48
     Width = 62
     PngImages = <>
-    Left = 304
-    Top = 192
+    Left = 368
+    Top = 240
   end
   object pilDefault: TPngImageList
     PngImages = <
@@ -518,7 +520,7 @@ object frmThemeList: TfrmThemeList
         Name = 'PngImage0'
         Background = clWindow
       end>
-    Left = 268
-    Top = 192
+    Left = 332
+    Top = 240
   end
 end

@@ -57,6 +57,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure lbThemesClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure lbThemeListResize(Sender: TObject);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
   private
@@ -428,6 +429,11 @@ procedure TfrmThemeList.lbThemeListGetCellColor(const AItem: Integer;
   var AColor: TColor);
 begin
   if AItem = 2 then AColor := clRed;
+end;
+
+procedure TfrmThemeList.lbThemeListResize(Sender: TObject);
+begin
+  Self.Height := lbThemeList.Height;
 end;
 
 end.

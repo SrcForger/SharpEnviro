@@ -127,7 +127,7 @@
 			<Directories Name="Packages">rtl;vcl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
-			<Directories Name="UsePackages">False</Directories>
+			<Directories Name="UsePackages">True</Directories>
 		</Directories>
 		<Parameters>
 			<Parameters Name="RunParams"></Parameters>
@@ -168,7 +168,7 @@
 			<Language Name="ProjectLang">$00000000</Language>
 			<Language Name="RootDir"></Language>
 		</Language>  <Excluded_Packages>
-      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\B305vd70.bpl">TurboPower Abbrevia 3.05 Design-time package - VCL70</Excluded_Packages>
     </Excluded_Packages>
   </Delphi.Personality>
 </BorlandProject>

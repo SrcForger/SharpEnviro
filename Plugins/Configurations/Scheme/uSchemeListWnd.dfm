@@ -3,9 +3,9 @@ object frmSchemeList: TfrmSchemeList
   Top = 245
   BorderStyle = bsNone
   Caption = 'frmSchemeList'
-  ClientHeight = 400
+  ClientHeight = 245
   ClientWidth = 380
-  Color = clBtnFace
+  Color = clWindow
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -15,9 +15,6 @@ object frmSchemeList: TfrmSchemeList
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
-  DesignSize = (
-    380
-    400)
   PixelsPerInch = 96
   TextHeight = 14
   object Label3: TLabel
@@ -37,13 +34,15 @@ object frmSchemeList: TfrmSchemeList
     Left = 0
     Top = 0
     Width = 380
-    Height = 400
+    Height = 97
     Columns = <>
-    Anchors = [akLeft, akTop, akRight, akBottom]
+    OnResize = lbSchemeListResize
     ItemHeight = 22
     OnClickItem = lbSchemeListClickItem
+    AutosizeGrid = True
     BevelOuter = bvNone
     Borderstyle = bsNone
+    Align = alTop
   end
   object imlCol1: TPngImageList
     PngImages = <

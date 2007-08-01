@@ -73,6 +73,7 @@ type
     //procedure lbSchemeListDrawItem(Control: TWinControl; Index: Integer;
     //  Rect: TRect; State: TOwnerDrawState);
     procedure chkCpuEnableClick(Sender: TObject);
+    procedure lbSchemeListResize(Sender: TObject);
   private
     { Private declarations }
     FInitialising: Boolean;
@@ -513,6 +514,11 @@ begin
   end;
 
   lbSchemeList.Update;
+end;
+
+procedure TfrmSchemeList.lbSchemeListResize(Sender: TObject);
+begin
+  Self.Height := lbSchemeList.Height;
 end;
 
 end.
