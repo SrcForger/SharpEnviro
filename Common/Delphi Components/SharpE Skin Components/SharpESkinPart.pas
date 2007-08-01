@@ -1857,7 +1857,8 @@ begin
   while n <= length(str) do
   begin
     inc(n);
-    if (str[n] <> #0) and (ord(str[n]) >= 48) and (ord(str[n]) <= 57) then
+    if (str[n] <> #0) then
+      if (ord(str[n]) >= 48) and (ord(str[n]) <= 57) then
       tmp := tmp + str[n]
     else
     begin
