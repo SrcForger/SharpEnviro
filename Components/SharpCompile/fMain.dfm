@@ -1127,20 +1127,17 @@ object frmMain: TfrmMain
           Width = 157
           Height = 336
           Align = alClient
+          BevelInner = bvNone
+          BevelOuter = bvNone
           BorderStyle = bsNone
           Color = 16510947
-          Ctl3D = False
           Indent = 19
-          ParentCtl3D = False
-          StateImages = pilStates
           TabOrder = 1
           LineColor = clScrollBar
           Checkboxes = True
           OnSelectionChange = ctvProjectsSelectionChange
           CheckBoxOptions.Style = cbsJVCL
           CheckBoxOptions.CascadeLevels = 99
-          CheckBoxOptions.RadioUncheckedIndex = 1
-          CheckBoxOptions.RadioCheckedIndex = 2
         end
       end
       object sepOptions: TSharpERoundPanel
@@ -1205,12 +1202,11 @@ object frmMain: TfrmMain
           Align = alClient
           BorderStyle = bsNone
           Color = 14875898
-          ItemHeight = 15
+          ItemHeight = 13
           Items.Strings = (
             'Debug Build'
             'Commit to SVN'
             'Package Release')
-          Style = lbOwnerDrawFixed
           TabOrder = 1
         end
       end
@@ -1238,7 +1234,6 @@ object frmMain: TfrmMain
         AutoSize = True
         ButtonWidth = 64
         Caption = 'tbMain'
-        Ctl3D = True
         EdgeInner = esNone
         EdgeOuter = esNone
         GradientEndColor = clWindow
@@ -1386,8 +1381,6 @@ object frmMain: TfrmMain
           Color = clWindow
           TabOrder = 4
           Visible = False
-          ExplicitLeft = -6
-          ExplicitTop = 33
           object btnBrowse: TJvSpeedButton
             Left = 404
             Top = 276
@@ -1401,6 +1394,7 @@ object frmMain: TfrmMain
             HotTrackFont.Height = -11
             HotTrackFont.Name = 'Tahoma'
             HotTrackFont.Style = []
+            OnClick = btnBrowseClick
           end
           object lblSVNSettings: TLabel
             Left = 6
@@ -3511,10 +3505,12 @@ object frmMain: TfrmMain
     Left = 424
     Top = 248
   end
-  object abZip: TAbZipper
-    AutoSave = False
-    DOSMode = False
-    Left = 464
-    Top = 256
+  object dlgSave: TSaveDialog
+    DefaultExt = '.zip'
+    Filter = 'Zip File|.zip'
+    Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
+    Title = 'Save Package'
+    Left = 432
+    Top = 384
   end
 end

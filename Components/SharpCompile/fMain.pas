@@ -10,7 +10,7 @@ uses
   JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx,
   SharpEPageControl, PngImageList, StrUtils, JvExControls, JvSpeedButton, Mask,
   JvExMask, JvToolEdit, JvMaskEdit, JvEdit, XPMan, JvComponentBase,
-  JvZlibMultiple, AbBase, AbBrowse, AbZBrows, AbZipper;
+  AbBase, AbBrowse, AbZBrows, AbZipper;
 
 type
   TfrmMain = class(TForm)
@@ -47,7 +47,7 @@ type
     leUser: TLabeledEdit;
     lePassword: TLabeledEdit;
     lePackage: TLabeledEdit;
-    abZip: TAbZipper;
+    dlgSave: TSaveDialog;
     procedure FormCreate(Sender: TObject);
     procedure tbOpenClick(Sender: TObject);
     procedure stlMainTabClick(ASender: TObject; const ATabIndex: Integer);
@@ -60,6 +60,7 @@ type
     procedure lbSummaryDblClickItem(AText: string; AItem, ACol: Integer);
     procedure FormDestroy(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
+    procedure btnBrowseClick(Sender: TObject);
   private
     procedure CompilerNewLine(Sender: TObject; CmdOutput: string);
     procedure CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer);
@@ -67,6 +68,7 @@ type
     procedure SaveSettings();
     procedure LoadSettings();
     procedure PackageRelease();
+    procedure AddFiles(sPath, sMask: string; abZip: TAbZipper);
   public
     { Public declarations }
   end;
@@ -216,6 +218,12 @@ begin
 
 end;
 
+procedure TfrmMain.btnBrowseClick(Sender: TObject);
+begin
+  if dlgSave.Execute then
+    lePackage.Text := dlgSave.FileName;
+end;
+
 procedure TfrmMain.btnSaveClick(Sender: TObject);
 begin
   SaveSettings;
@@ -277,6 +285,7 @@ begin
     dtTotalEnd := Now;
     mDetailed.Lines.Add('Total build time was ' + FormatDateTime('hh:nn:ss', Frac(dtTotalEnd) - Frac(dtTotalStart)));
   end;
+
 end;
 
 procedure TfrmMain.CompilerNewLine(Sender: TObject; CmdOutput: string);
@@ -298,10 +307,57 @@ begin
 end;
 
 procedure TfrmMain.PackageRelease();
+var
+  newItem: TSharpEListItem;
+  abZip: TAbZipper;
 begin
-
+  mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' Beginning compression..');
+  newItem := lbSummary.AddItem('Packaging release...', 2);
+  lbSummary.ItemIndex := lbSummary.Count - 1;
+  abZip := TAbZipper.Create(nil);
+  abZip.FileName := lePackage.Text;
+  if FileExists(lePackage.Text) then
+    DeleteFile(PChar(lePackage.Text));
+  Application.ProcessMessages;
+  abZip.BaseDirectory := ExtractFilePath(ParamStr(0)) + '\';
+  AddFiles(abZip.BaseDirectory, 'Thumbs.db;*.map;' + ExtractFileName(abZip.FileName), abZip);
+  abZip.Save;
+  abZip.Free;
+  mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' Compression complete');
+  newItem.Caption := newItem.Caption + 'Finished';
+  newItem.ImageIndex := 1;
 end;
 
+procedure TfrmMain.AddFiles(sPath, sMask: string; abZip: TAbZipper);
+var
+  srFile: TSearchRec;
+  slDir: TStringList;
+  bFound: Boolean;
+  i: integer;
+begin
+
+  bFound := FindFirst(sPath + '*.*', faAnyFile-faDirectory, srFile) = 0;
+  while bFound do begin
+    if srFile.Name <> ExtractFileName(lePackage.Text) then
+      abZip.AddFilesEx(sPath + srFile.Name, sMask, 0);
+    bFound := FindNext(srFile) = 0;
+  end;
+  FindClose(srFile);
+
+  slDir := TStringList.Create;
+  bFound := FindFirst(sPath + '*.*', faDirectory, srFile) = 0;
+  while bFound do begin
+    if (srFile.Attr = faDirectory) and (srFile.Name[1] <> '.') then
+      slDir.Add(sPath + srFile.Name + '\');
+    bFound := FindNext(srFile) = 0;
+  end;
+  FindClose(srFile);
+
+  for i := 0 to slDir.Count - 1 do
+    AddFiles(slDir[i], sMask, abZip);
+
+  slDir.Free;
+end;
 
 procedure TfrmMain.OpenFile(sXML: String);
 var
@@ -394,6 +450,7 @@ procedure TfrmMain.SaveSettings();
 var
   xFile: TJvSimpleXML;
 begin
+  SetCurrentDirectory(PChar(ExtractFilePath(ParamStr(0))));
   xFile := TJvSimpleXML.Create(nil);
   xFile.Root.Name := 'SharpCompile';
   with xFile.Root.Items.Add('Options') do
