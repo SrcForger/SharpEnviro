@@ -698,7 +698,7 @@ object SharpCenterWnd: TSharpCenterWnd
                 157
                 98)
               object PngSpeedButton2: TPngSpeedButton
-                Left = -550
+                Left = -554
                 Top = 35
                 Width = 23
                 Height = 22
@@ -1150,14 +1150,13 @@ object SharpCenterWnd: TSharpCenterWnd
               object Edit2: TEdit
                 Left = 0
                 Top = 36
-                Width = -4
+                Width = 0
                 Height = 21
                 Anchors = [akLeft, akTop, akRight]
                 Ctl3D = True
                 ParentCtl3D = False
                 TabOrder = 0
                 Text = 'Edit1'
-                ExplicitWidth = 0
               end
             end
           end
@@ -1260,7 +1259,7 @@ object SharpCenterWnd: TSharpCenterWnd
               Left = 0
               Top = 0
               Width = 491
-              Height = 99
+              Height = 331
               Margins.Left = 6
               Margins.Top = 6
               Margins.Right = 0
