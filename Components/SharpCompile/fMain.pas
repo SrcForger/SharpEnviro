@@ -8,7 +8,9 @@ uses
   JvgTreeView, JvgListBox, SharpETabList, ToolWin, ImgList, uVistaFuncs,
   JvSimpleXML, JvComCtrls, JvCheckTreeView, CheckLst, JvExCheckLst,
   JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx,
-  SharpEPageControl, PngImageList, StrUtils;
+  SharpEPageControl, PngImageList, StrUtils, JvExControls, JvSpeedButton, Mask,
+  JvExMask, JvToolEdit, JvMaskEdit, JvEdit, XPMan, JvComponentBase,
+  JvZlibMultiple, AbBase, AbBrowse, AbZBrows, AbZipper;
 
 type
   TfrmMain = class(TForm)
@@ -25,17 +27,27 @@ type
     tbOpen: TToolButton;
     tbCompile: TToolButton;
     tbClear: TToolButton;
-    tbSettings: TToolButton;
     ilToolbar: TImageList;
     dlgOpen: TOpenDialog;
     ctvProjects: TJvCheckTreeView;
     clbOptions: TJvCheckListBox;
     sepLog: TSharpEPageControl;
     mDetailed: TJvMemo;
-    Splitter1: TSplitter;
+    splMain: TSplitter;
     lbSummary: TSharpEListBoxEx;
     pilStatus: TPngImageList;
     pilStates: TPngImageList;
+    panSettings: TPanel;
+    btnBrowse: TJvSpeedButton;
+    lblSVNSettings: TLabel;
+    lblPackageSettings: TLabel;
+    btnSave: TJvSpeedButton;
+    XPManifest1: TXPManifest;
+    leRepo: TLabeledEdit;
+    leUser: TLabeledEdit;
+    lePassword: TLabeledEdit;
+    lePackage: TLabeledEdit;
+    abZip: TAbZipper;
     procedure FormCreate(Sender: TObject);
     procedure tbOpenClick(Sender: TObject);
     procedure stlMainTabClick(ASender: TObject; const ATabIndex: Integer);
@@ -46,10 +58,15 @@ type
     procedure ctvProjectsSelectionChange(Sender: TObject);
     procedure lbSummaryGetCellColor(const AItem: Integer; var AColor: TColor);
     procedure lbSummaryDblClickItem(AText: string; AItem, ACol: Integer);
+    procedure FormDestroy(Sender: TObject);
+    procedure btnSaveClick(Sender: TObject);
   private
     procedure CompilerNewLine(Sender: TObject; CmdOutput: string);
     procedure CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer);
     procedure OpenFile(sXML: String);
+    procedure SaveSettings();
+    procedure LoadSettings();
+    procedure PackageRelease();
   public
     { Public declarations }
   end;
@@ -58,6 +75,12 @@ var
   frmMain: TfrmMain;
   sPath: String;
   dtTotalStart: TDateTime;
+  sSettingsFile: String;
+  sRepo: String;
+  sUser: String;
+  sPassword: String;
+  sPackage: String;
+  bDebug, bSVN, bPackage: Boolean;
 
 implementation
 
@@ -71,6 +94,14 @@ begin
   panMain.DoubleBuffered := True;
   if ParamStr(1) <> '' then
     OpenFile(ParamStr(1));
+  ForceDirectories('.\Settings\Global\SharpCompile');
+  sSettingsFile := 'Settings\Global\SharpCompile\Settings.xml';
+  LoadSettings;
+end;
+
+procedure TfrmMain.FormDestroy(Sender: TObject);
+begin
+  SaveSettings;
 end;
 
 procedure TfrmMain.lbSummaryDblClickItem(AText: string; AItem, ACol: Integer);
@@ -124,11 +155,19 @@ begin
   begin
     lbSummary.Visible := True;
     mDetailed.Visible := False;
+    panSettings.Visible := False;
   end;
   if ATabIndex = 1 then
   begin
     lbSummary.Visible := False;
     mDetailed.Visible := True;
+    panSettings.Visible := False;
+  end;
+  if ATabIndex = 2 then
+  begin
+    lbSummary.Visible := False;
+    mDetailed.Visible := False;
+    panSettings.Visible := True;
   end;
 end;
 
@@ -171,6 +210,15 @@ begin
       end;
     end;
   end;
+
+  if clbOptions.Checked[2] then
+    PackageRelease;
+
+end;
+
+procedure TfrmMain.btnSaveClick(Sender: TObject);
+begin
+  SaveSettings;
 end;
 
 procedure TfrmMain.CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer);
@@ -249,6 +297,11 @@ begin
   end;
 end;
 
+procedure TfrmMain.PackageRelease();
+begin
+
+end;
+
 
 procedure TfrmMain.OpenFile(sXML: String);
 var
@@ -296,4 +349,69 @@ begin
   if dlgOpen.Execute then
     OpenFile(dlgOpen.FileName);
 end;
+
+procedure TfrmMain.LoadSettings();
+var
+  xFile: TJvSimpleXML;
+begin
+  if FileExists(sSettingsFile) then
+  begin
+    xFile := TJvSimpleXML.Create(nil);
+    xFile.LoadFromFile(sSettingsFile);
+    if xFile.Root.Items.ItemNamed['Options'] <> nil then
+      with xFile.Root.Items.ItemNamed['Options'] do
+      begin
+        clbOptions.Checked[0] := StrToBool(Properties.Value('Debug', 'False'));
+        clbOptions.Checked[1] := StrToBool(Properties.Value('Commit', 'False'));
+        clbOptions.Checked[2] := StrToBool(Properties.Value('Package', 'False'));
+      end;
+    if xFile.Root.Items.ItemNamed['SVN'] <> nil then
+      with xFile.Root.Items.ItemNamed['SVN'] do
+      begin
+        leRepo.Text := Properties.Value('Repository', '');
+        leUser.Text := Properties.Value('Username', '');
+        lePassword.Text := Properties.Value('Password', '');
+      end;
+    if xFile.Root.Items.ItemNamed['Package'] <> nil then
+      with xFile.Root.Items.ItemNamed['Package'] do
+        lePackage.Text := Properties.Value('Path', '');
+    xFile.Free;
+  end
+  else
+  begin
+    sRepo := '';
+    sUser := '';
+    sPassword := '';
+    sPackage := '';
+    bDebug := False;
+    bSVN := False;
+    bPackage := False;
+    SaveSettings;
+  end;
+end;
+
+procedure TfrmMain.SaveSettings();
+var
+  xFile: TJvSimpleXML;
+begin
+  xFile := TJvSimpleXML.Create(nil);
+  xFile.Root.Name := 'SharpCompile';
+  with xFile.Root.Items.Add('Options') do
+  begin
+    Properties.Add('Debug', clbOptions.Checked[0]);
+    Properties.Add('Commit', clbOptions.Checked[1]);
+    Properties.Add('Package', clbOptions.Checked[2]);
+  end;
+  with xFile.Root.Items.Add('SVN') do
+  begin
+    Properties.Add('Repository', leRepo.Text);
+    Properties.Add('Username', leUser.Text);
+    Properties.Add('Password', lePassword.Text);
+  end;
+  with xFile.Root.Items.Add('Package') do
+    Properties.Add('Path', lePackage.Text);
+  xFile.SaveToFile(sSettingsFile);
+  xFile.Free;
+end;
+
 end.

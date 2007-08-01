@@ -1016,8 +1016,20 @@ object frmMain: TfrmMain
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
+  object TJvSpeedButton
+    Left = 424
+    Top = 256
+    Width = 25
+    Height = 25
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -11
+    HotTrackFont.Name = 'Tahoma'
+    HotTrackFont.Style = []
+  end
   object panMain: TPanel
     Left = 0
     Top = 0
@@ -1033,7 +1045,7 @@ object frmMain: TfrmMain
     ParentBackground = False
     ParentCtl3D = False
     TabOrder = 0
-    object Splitter1: TSplitter
+    object splMain: TSplitter
       Left = 185
       Top = 6
       Width = 9
@@ -1224,12 +1236,17 @@ object frmMain: TfrmMain
         Margins.Bottom = 4
         Align = alBottom
         AutoSize = True
-        ButtonWidth = 66
+        ButtonWidth = 64
         Caption = 'tbMain'
+        Ctl3D = True
+        EdgeInner = esNone
+        EdgeOuter = esNone
+        GradientEndColor = clWindow
         Images = ilToolbar
         List = True
         ShowCaptions = True
         TabOrder = 0
+        Transparent = False
         object tbOpen: TToolButton
           Left = 0
           Top = 0
@@ -1238,24 +1255,18 @@ object frmMain: TfrmMain
           OnClick = tbOpenClick
         end
         object tbCompile: TToolButton
-          Left = 66
+          Left = 64
           Top = 0
           Caption = 'Compile'
           ImageIndex = 3
           OnClick = tbCompileClick
         end
         object tbClear: TToolButton
-          Left = 132
+          Left = 128
           Top = 0
           Caption = 'Clear'
           ImageIndex = 2
           OnClick = tbClearClick
-        end
-        object tbSettings: TToolButton
-          Left = 198
-          Top = 0
-          Caption = 'Settings'
-          ImageIndex = 0
         end
       end
       object sepLog: TSharpEPageControl
@@ -1278,6 +1289,11 @@ object frmMain: TfrmMain
           end
           item
             Caption = 'Detailed'
+            ImageIndex = 0
+            Visible = True
+          end
+          item
+            Caption = 'Settings'
             ImageIndex = 0
             Visible = True
           end>
@@ -1354,6 +1370,108 @@ object frmMain: TfrmMain
           OnGetCellColor = lbSummaryGetCellColor
           Borderstyle = bsNone
           Align = alClient
+        end
+        object panSettings: TPanel
+          AlignWithMargins = True
+          Left = 6
+          Top = 30
+          Width = 646
+          Height = 414
+          Margins.Left = 6
+          Margins.Top = 30
+          Margins.Right = 6
+          Margins.Bottom = 6
+          Align = alClient
+          BevelOuter = bvNone
+          Color = clWindow
+          TabOrder = 4
+          Visible = False
+          ExplicitLeft = -6
+          ExplicitTop = 33
+          object btnBrowse: TJvSpeedButton
+            Left = 404
+            Top = 276
+            Width = 33
+            Height = 21
+            Caption = '...'
+            Color = clWindow
+            Flat = True
+            HotTrackFont.Charset = DEFAULT_CHARSET
+            HotTrackFont.Color = clWindowText
+            HotTrackFont.Height = -11
+            HotTrackFont.Name = 'Tahoma'
+            HotTrackFont.Style = []
+          end
+          object lblSVNSettings: TLabel
+            Left = 6
+            Top = 24
+            Width = 61
+            Height = 13
+            Caption = 'SVN Settings'
+          end
+          object lblPackageSettings: TLabel
+            Left = 6
+            Top = 236
+            Width = 82
+            Height = 13
+            Caption = 'Package Settings'
+          end
+          object btnSave: TJvSpeedButton
+            Left = 576
+            Top = 384
+            Width = 65
+            Height = 25
+            Caption = 'Save'
+            Color = clWindow
+            Flat = True
+            HotTrackFont.Charset = DEFAULT_CHARSET
+            HotTrackFont.Color = clWindowText
+            HotTrackFont.Height = -11
+            HotTrackFont.Name = 'Tahoma'
+            HotTrackFont.Style = []
+            OnClick = btnSaveClick
+          end
+          object leRepo: TLabeledEdit
+            Left = 40
+            Top = 64
+            Width = 361
+            Height = 21
+            EditLabel.Width = 52
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Repository'
+            TabOrder = 0
+          end
+          object leUser: TLabeledEdit
+            Left = 40
+            Top = 112
+            Width = 361
+            Height = 21
+            EditLabel.Width = 48
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Username'
+            TabOrder = 1
+          end
+          object lePassword: TLabeledEdit
+            Left = 40
+            Top = 160
+            Width = 361
+            Height = 21
+            EditLabel.Width = 46
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Password'
+            PasswordChar = '*'
+            TabOrder = 2
+          end
+          object lePackage: TLabeledEdit
+            Left = 40
+            Top = 276
+            Width = 361
+            Height = 21
+            EditLabel.Width = 22
+            EditLabel.Height = 13
+            EditLabel.Caption = 'Path'
+            TabOrder = 3
+          end
         end
       end
     end
@@ -3388,5 +3506,15 @@ object frmMain: TfrmMain
       end>
     Left = 560
     Top = 376
+  end
+  object XPManifest1: TXPManifest
+    Left = 424
+    Top = 248
+  end
+  object abZip: TAbZipper
+    AutoSave = False
+    DOSMode = False
+    Left = 464
+    Top = 256
   end
 end
