@@ -126,12 +126,12 @@
 			<Directories Name="SearchPath"></Directories>
 			<Directories Name="Packages">rtl;vcl</Directories>
 			<Directories Name="Conditionals"></Directories>
-			<Directories Name="DebugSourceDirs"></Directories>
+			<Directories Name="DebugSourceDirs">E:\SVN\Components\SharpCenter\;E:\Common\GR32\</Directories>
 			<Directories Name="UsePackages">True</Directories>
 		</Directories>
 		<Parameters>
 			<Parameters Name="RunParams"></Parameters>
-			<Parameters Name="HostApplication">..\..\..\..\SharpE\SharpBar.exe</Parameters>
+			<Parameters Name="HostApplication">..\..\..\..\SharpE\SharpCenter.exe</Parameters>
 			<Parameters Name="Launcher"></Parameters>
 			<Parameters Name="UseLauncher">False</Parameters>
 			<Parameters Name="DebugCWD"></Parameters>

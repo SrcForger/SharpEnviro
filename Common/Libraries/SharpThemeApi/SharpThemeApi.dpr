@@ -225,10 +225,13 @@ var
   h, s, l: double;
   sColorType, sParam: string;
   strlTokens: TStringList;
+  bIdent: Boolean;
   r, g, b: byte;
   c: Integer;
+  col: Integer;
   col32: TColor32;
   n : integer;
+  sIdent: String;
 
   function CMYKtoColor(C, M, Y, K: integer): TColor;
   var
@@ -313,16 +316,18 @@ begin
   if (iStart = 0) or (iEnd = 0) then
   begin
     // try to convert
-    if TryStrToInt(AColorStr,n) then result := n
+    if TryStrToInt(AColorStr,n) then begin
+      result := n;
+      exit;
+    end
     else
     begin
-      try
-        result := StringToColor(AColorStr);
-      except
+        sIdent := AColorStr;
+        bIdent := IdentToColor(sIdent,col);
+        if bIdent then result := StringToColor(AColorStr) else
         result := -1;
-      end;
+        exit;
     end;
-    exit;
   end;
 
   sColorType := Copy(AColorStr, 1, iStart - 1);
