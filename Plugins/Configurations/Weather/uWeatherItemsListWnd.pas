@@ -41,6 +41,7 @@ type
     procedure lbWeatherListClickItem(AText: string; AItem, ACol: Integer);
     procedure FormResize(Sender: TObject);
     procedure img1Click(Sender: TObject);
+    procedure lbWeatherListResize(Sender: TObject);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
     { Private declarations }
@@ -183,6 +184,11 @@ procedure TfrmItemsList.lbWeatherListClickItem(AText: string; AItem,
 begin
   if frmItemEdit <> nil then
     frmItemEdit.InitUi(FEditMode);
+end;
+
+procedure TfrmItemsList.lbWeatherListResize(Sender: TObject);
+begin
+  Self.Height := lbWeatherList.Height;
 end;
 
 end.

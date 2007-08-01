@@ -21,22 +21,19 @@ object frmDeskSettings: TfrmDeskSettings
     Top = 0
     Width = 428
     Height = 201
-    ActivePage = JvSettingsPage
+    ActivePage = JvAdvSettingsPage
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 221
     object JvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
       Width = 428
       Height = 201
-      ParentBackground = True
-      ExplicitHeight = 221
       object Label1: TJvLabel
         AlignWithMargins = True
         Left = 26
         Top = 71
-        Width = 386
+        Width = 394
         Height = 26
         Margins.Left = 26
         Margins.Top = 4
@@ -61,12 +58,13 @@ object frmDeskSettings: TfrmDeskSettings
         HotTrackFont.Style = []
         ImageIndex = 0
         Spacing = 3
+        ExplicitWidth = 386
       end
       object JvLabel1: TJvLabel
         AlignWithMargins = True
         Left = 26
         Top = 29
-        Width = 357
+        Width = 394
         Height = 13
         Margins.Left = 26
         Margins.Top = 4
@@ -90,12 +88,13 @@ object frmDeskSettings: TfrmDeskSettings
         HotTrackFont.Style = []
         ImageIndex = 0
         Spacing = 3
+        ExplicitWidth = 357
       end
       object JvLabel2: TJvLabel
         AlignWithMargins = True
         Left = 26
         Top = 126
-        Width = 362
+        Width = 394
         Height = 26
         Margins.Left = 26
         Margins.Top = 4
@@ -119,6 +118,7 @@ object frmDeskSettings: TfrmDeskSettings
         HotTrackFont.Style = []
         ImageIndex = 0
         Spacing = 3
+        ExplicitWidth = 362
       end
       object cb_grid: TCheckBox
         AlignWithMargins = True
@@ -205,12 +205,11 @@ object frmDeskSettings: TfrmDeskSettings
       Top = 0
       Width = 428
       Height = 201
-      ExplicitHeight = 175
       object Label2: TJvLabel
         AlignWithMargins = True
         Left = 26
         Top = 97
-        Width = 383
+        Width = 394
         Height = 26
         Margins.Left = 26
         Margins.Top = 4
@@ -236,12 +235,13 @@ object frmDeskSettings: TfrmDeskSettings
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
         Spacing = 3
+        ExplicitWidth = 383
       end
       object Label3: TJvLabel
         AlignWithMargins = True
         Left = 26
         Top = 29
-        Width = 377
+        Width = 394
         Height = 39
         Margins.Left = 26
         Margins.Top = 4
@@ -269,6 +269,7 @@ object frmDeskSettings: TfrmDeskSettings
         HotTrackFont.Style = []
         ImageIndex = 0
         Spacing = 3
+        ExplicitWidth = 377
       end
       object cb_amm: TCheckBox
         AlignWithMargins = True
@@ -284,7 +285,6 @@ object frmDeskSettings: TfrmDeskSettings
         Caption = 'Advanced Memory Management'
         TabOrder = 0
         OnClick = cb_ammClick
-        ExplicitTop = 88
       end
       object cb_wpwatch: TCheckBox
         AlignWithMargins = True

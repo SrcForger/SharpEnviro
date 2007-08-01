@@ -46,11 +46,13 @@ object frmConfig: TfrmConfig
         Autosize = False
         Images = imlList
       end>
+    OnResize = lbHotkeysResize
     ItemHeight = 24
     OnClickItem = lbHotkeysClickItem
     OnGetCellTextColor = lbHotkeysGetCellTextColor
+    AutosizeGrid = True
     Borderstyle = bsNone
-    Align = alClient
+    Align = alTop
   end
   object dlgImport: TOpenDialog
     DefaultExt = 'xml'

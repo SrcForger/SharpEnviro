@@ -83,6 +83,8 @@ implementation
 { TfrmConfigListWnd }
 
 procedure TfrmDeskSettings.FormCreate(Sender: TObject);
+var
+  i:integer;
 begin
   Self.DoubleBuffered := true;
 end;

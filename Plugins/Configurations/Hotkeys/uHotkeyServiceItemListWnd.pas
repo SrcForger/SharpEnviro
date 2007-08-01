@@ -75,6 +75,7 @@ type
     procedure columnclick(Sender: TObject);
     procedure ImportHotkeys;
     procedure ExportHotkeys;
+    procedure lbHotkeysResize(Sender: TObject);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
     { Private declarations }
@@ -191,6 +192,11 @@ procedure TfrmConfig.lbHotkeysGetCellTextColor(const ACol: Integer;
 begin
   if ACol = 1 then
     AColor := clNavy;
+end;
+
+procedure TfrmConfig.lbHotkeysResize(Sender: TObject);
+begin
+  Self.Height := lbHotkeys.Height;
 end;
 
 procedure TfrmConfig.FormResize(Sender: TObject);

@@ -45,10 +45,12 @@ object frmItemsList: TfrmItemsList
         Autosize = False
         Images = imlWeatherGlyphs
       end>
+    OnResize = lbWeatherListResize
     ItemHeight = 24
     OnClickItem = lbWeatherListClickItem
+    AutosizeGrid = True
     Borderstyle = bsNone
-    Align = alClient
+    Align = alTop
   end
   object imlWeatherGlyphs: TPngImageList
     PngImages = <
