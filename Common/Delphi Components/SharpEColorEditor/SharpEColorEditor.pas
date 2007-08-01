@@ -176,7 +176,7 @@ constructor TSharpEColorEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Self.Height := 135;
-  Self.ClientWidth := 200;
+  Self.Width := 200;
   FCollapseHeight := 24;
   FExpandedHeight := 135;
   FValueEditorType := vetColor;
@@ -246,7 +246,7 @@ begin
     AutoSizeTabs := False;
 
     Top := 0;
-    FTabs.Width := Self.ClientWidth;
+    FTabs.Width := Self.Width;
     Left := 0;
     Border := True;
     PngImageList := FPngImageList;
@@ -367,7 +367,7 @@ begin
     FTabContainer.Top := FTabs.Height - 1;
     FTabContainer.Left := 0;
     FTabContainer.Height := Height - FTabs.Height;
-    FTabContainer.Width := Self.ClientWidth;
+    FTabContainer.Width := Self.Width;
 
     BorderColor := FSCS.EditBordCol;
     Color := FSCS.EditCol;
