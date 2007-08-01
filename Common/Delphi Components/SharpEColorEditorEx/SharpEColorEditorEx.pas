@@ -270,7 +270,6 @@ begin
 
       FColorEditor.Expanded := bExpand;
       FColorEditor.SelectDefaultTab;
-
     end;
   end;
 
@@ -278,10 +277,12 @@ begin
   begin
     TSharpEColorEditorEx(FParent).EnableAlign;
     TSharpEColorEditorEx(FParent).EnableAutoRange;
+    TSharpEColorEditorEx(FParent).ScrollInView(FColorEditor);
   end;
 
   FColorEditor.SwatchManager :=
     TSharpEColorEditorEx(FParent).SwatchManager;
+
 
 
 
@@ -450,6 +451,12 @@ begin
   BorderStyle := bsNone;
   OnResize := ResizeEvent;
   FUpdate := True;
+  VertScrollBar.Smooth := True;
+  VertScrollBar.Tracking := True;
+
+  if VertScrollBar.IsScrollBarVisible then
+    Self.Padding.Right := 8 else
+    Self.Padding.Right := 0;
 
   FItems := TSharpEColorEditorExItems.Create(Self);
 
@@ -508,6 +515,7 @@ begin
 
     for i := 0 to Pred(FItems.Count) do
     begin
+      
       tmp := TSharpEColorEditor.Create(Self);
       tmp.Parent := self;
       tmp.SwatchManager := FSwatchManager;
@@ -550,6 +558,11 @@ procedure TSharpEColorEditorEx.ResizeEvent(Sender: TObject);
 begin
   if ((FSwatchManager <> nil) and (FUpdate)) then
     FSwatchManager.Resize;
+
+  if VertScrollBar.IsScrollBarVisible then
+    Self.Padding.Right := 8 else
+    Self.Padding.Right := 0;
+  
 end;
 
 procedure TSharpEColorEditorEx.SetItems(const Value: TSharpEColorEditorExItems);

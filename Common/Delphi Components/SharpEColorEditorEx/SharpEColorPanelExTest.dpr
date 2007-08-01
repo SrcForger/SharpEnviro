@@ -15,7 +15,9 @@ uses
   uSchemeList in '..\..\..\Plugins\Configurations\Scheme\uSchemeList.pas',
   SharpECenterScheme in '..\SharpECenterScheme\SharpECenterScheme.pas',
   SharpESwatchCollection in '..\SharpESwatchCollection\SharpESwatchCollection.pas',
-  SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas';
+  SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
+  SharpETabList in '..\SharpETabList\SharpETabList.pas',
+  SharpERoundPanel in '..\SharpERoundPanel\SharpERoundPanel.pas';
 
 {$R *.res}
 
