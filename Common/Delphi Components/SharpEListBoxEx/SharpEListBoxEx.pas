@@ -549,7 +549,7 @@ procedure TSharpEListBoxEx.SetAutoSizeGrid(const Value: Boolean);
 begin
   FAutoSizeGrid := Value;
 
-  if FAutoSizeGrid then
+  if Not(csDesigning in ComponentState) and FAutoSizeGrid then
     Self.Height := Self.Count*Self.ItemHeight;
 end;
 
