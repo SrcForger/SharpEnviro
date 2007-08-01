@@ -90,7 +90,6 @@ type
     PopupMenu1: TPopupMenu;
     pnlContent: TPanel;
     MiAdd: TMenuItem;
-    pnlForm: TPanel;
     tlToolbar: TSharpETabList;
     pnlToolbar: TSharpERoundPanel;
     plToolbar: TJvPageList;
@@ -166,6 +165,7 @@ type
 
     procedure ShowHistory;
     procedure InitCommandLine;
+    procedure DoDoubleBufferAll(AComponent: TComponent);
   public
 
     procedure GetCopyData(var Msg: TMessage); message wm_CopyData;
@@ -436,6 +436,19 @@ begin
     WS_EX_APPWINDOW;
 end;
 
+procedure TSharpCenterWnd.DoDoubleBufferAll(AComponent: TComponent);
+var i: integer;
+  begin
+    if Assigned(AComponent) then
+    begin
+      if AComponent is TWinControl then
+        TWinControl(AComponent).DoubleBuffered := True;
+
+      for i := 0 to AComponent.ComponentCount - 1 do
+        DoDoubleBufferAll(AComponent.Components[i]);
+    end;
+end;
+
 procedure TSharpCenterWnd.btnFavouriteClick(Sender: TObject);
 begin
   //pnlToolbar.Visible := False;
@@ -683,24 +696,24 @@ begin
   lbFavs.Colors.ItemColor := $00C1F4FE;
   lbFavs.Colors.ItemColorSelected := $0080E7FD;
 
-  // Set tab defaults
-  pnlEditContainer.DoubleBuffered := true;
-
   // Reinit values
   FSelectedTabID := 0;
   FCancelClicked := False;
 
   // Update UI
-  pnlPlugin.DoubleBuffered := True;
+  {pnlPlugin.DoubleBuffered := True;
   sbPlugin.DoubleBuffered := True;
   pnlPluginContainer.DoubleBuffered := True;
   pnlContent.DoubleBuffered := True;
   pnlMain.DoubleBuffered := True;
-  pnlForm.DoubleBuffered := True;
   pnlTree.DoubleBuffered := True;
   pnlSettingTree.DoubleBuffered := True;
   lbTree.DoubleBuffered := True;
-  
+  pnlEditPlugin.DoubleBuffered := True;
+  pnlEditContainer.DoubleBuffered := true;
+  pnlEditPluginContainer.DoubleBuffered := true; }
+  DoDoubleBufferAll(Self);
+
   btnSave.Enabled := False;
   btnCancel.Enabled := False;
   btnHelp.Enabled := False;
@@ -792,6 +805,8 @@ var
 begin
   UpdateLivePreview;
 
+  lockwindowupdate(Self.Handle);
+  try
   if (@SCM.ActivePlugin.Open <> nil) then
   begin
     if SCM.PluginWndHandle <> 0 then begin
@@ -809,6 +824,9 @@ begin
       end else
         pnlEditContainer.Minimized := True;
 
+  end;
+  finally
+    LockWindowUpdate(0);
   end;
 end;
 
@@ -919,7 +937,7 @@ begin
 
     end;
 
-
+    TForm(GetControlByHandle(SCM.PluginWndHandle)).Color := clWindow;
     UpdateSize;
 
   finally
