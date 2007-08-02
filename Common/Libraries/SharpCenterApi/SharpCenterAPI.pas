@@ -45,8 +45,10 @@ const
   SCM_SET_BUTTON_DISABLED = 4;
   SCM_SET_TAB_SELECTED = 5;
   SCM_SET_SETTINGS_CHANGED = 6;
-  SCM_EVT_UPDATE_PREVIEW = 8;
-  SCM_EVT_UPDATE_SETTINGS = 9;
+  SCM_SET_LIVE_CONFIG = 7;
+  SCM_SET_APPLY_CONFIG = 8;
+  SCM_EVT_UPDATE_PREVIEW = 9;
+  SCM_EVT_UPDATE_SETTINGS = 10;
 
 const
   WM_SHARPCENTERMESSAGE = WM_APP + 660;
@@ -59,6 +61,7 @@ Type
     suBackground, suService, suDesktopIcon, suSharpDesk, suSharpMenu,
       suSharpBar, suCursor, suWallpaper);
   TSCE_EDITMODE_ENUM = (sceAdd, sceEdit, sceDelete);
+  TSC_MODE_ENUM = (scmLive, scmApply);
 
 function BroadcastGlobalUpdateMessage(AUpdateType:TSU_UPDATE_ENUM;
   APluginID: Integer=-1) : boolean;
@@ -79,14 +82,14 @@ function CenterDefineButtonState(AButton: TSCB_BUTTON_ENUM; AEnabled: Boolean): 
 function CenterDefineSettingsChanged: boolean;
   external 'SharpCenterAPI.dll' name 'CenterDefineSettingsChanged';
 
+function CenterDefineConfigurationMode(AConfigMode:TSC_MODE_ENUM) : boolean;
+  external 'SharpCenterAPI.dll' name 'CenterDefineConfigurationMode';
+
 function CenterSelectEditTab(AEditTab: TSCB_BUTTON_ENUM): boolean;
   external 'SharpCenterAPI.dll' name 'CenterSelectEditTab';
 
 function CenterUpdatePreview: boolean;
   external 'SharpCenterAPI.dll' name 'CenterUpdatePreview';
-
-function CenterUpdateSettings: boolean;
-  external 'SharpCenterAPI.dll' name 'CenterUpdateSettings';
 
 function CenterCommandAsText(ACommand: TSCC_COMMAND_ENUM): string;
   external 'SharpCenterAPI.dll' name 'CenterCommandAsText';

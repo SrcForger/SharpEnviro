@@ -52,8 +52,10 @@ const
   SCM_SET_BUTTON_DISABLED = 4;
   SCM_SET_TAB_SELECTED = 5;
   SCM_SET_SETTINGS_CHANGED = 6;
-  SCM_EVT_UPDATE_PREVIEW = 8;
-  SCM_EVT_UPDATE_SETTINGS = 9;
+  SCM_SET_LIVE_CONFIG = 7;
+  SCM_SET_APPLY_CONFIG = 8;
+  SCM_EVT_UPDATE_PREVIEW = 9;
+  SCM_EVT_UPDATE_SETTINGS = 10;
 
   SCC_LOAD_SETTING = '_loadsetting';
   SCC_CHANGE_FOLDER = '_changedir';
@@ -67,6 +69,7 @@ Type
   TSU_UPDATE_ENUM = (suSkin, suSkinFileChanged, suScheme, suTheme, suIconSet,
     suBackground, suService, suDesktopIcon, suSharpDesk, suSharpMenu,
       suSharpBar, suCursor, suWallpaper);
+  TSC_MODE_ENUM = (scmLive, scmApply);
 
 var
   wpara: wparam;
@@ -228,11 +231,6 @@ begin
   Result := BroadcastCenterMessage(SCM_EVT_UPDATE_PREVIEW,0);
 end;
 
-function CenterUpdateSettings: boolean;
-begin
-  Result := BroadcastCenterMessage(SCM_EVT_UPDATE_SETTINGS,0);
-end;
-
 function CenterCommandAsText(ACommand: TSCC_COMMAND_ENUM): string;
 begin
   if ACommand = sccLoadSetting then result := SCC_LOAD_SETTING else
@@ -255,6 +253,13 @@ begin
     result := sccLoadDll;
 end;
 
+function CenterDefineConfigurationMode(AConfigMode:TSC_MODE_ENUM) : boolean;
+begin
+  if AConfigMode = scmLive then
+    Result := BroadcastCenterMessage(SCM_SET_LIVE_CONFIG,0) else
+    Result := BroadcastCenterMessage(SCM_SET_APPLY_CONFIG,0);
+end;
+
 exports
   BroadcastGlobalUpdateMessage,
   BroadcastCenterMessage,
@@ -262,9 +267,9 @@ exports
   CenterDefineEditState,
   CenterDefineButtonState,
   CenterDefineSettingsChanged,
+  CenterDefineConfigurationMode,
   CenterSelectEditTab,
   CenterUpdatePreview,
-  CenterUpdateSettings,
   CenterCommandAsText,
   CenterCommandAsEnum;
 begin
