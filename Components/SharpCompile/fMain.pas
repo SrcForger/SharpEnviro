@@ -317,10 +317,10 @@ begin
   abZip := TAbZipper.Create(nil);
   abZip.FileName := lePackage.Text;
   if FileExists(lePackage.Text) then
-    DeleteFile(PChar(lePackage.Text));
+    DeleteFile(lePackage.Text);
   Application.ProcessMessages;
   abZip.BaseDirectory := ExtractFilePath(ParamStr(0)) + '\';
-  AddFiles(abZip.BaseDirectory, 'Thumbs.db;*.map;' + ExtractFileName(abZip.FileName), abZip);
+  AddFiles(abZip.BaseDirectory, 'Thumbs.db;*.map', abZip);
   abZip.Save;
   abZip.Free;
   mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' Compression complete');
@@ -336,6 +336,8 @@ var
   i: integer;
 begin
 
+  sPath := StringReplace(sPath, abZip.BaseDirectory, '', [rfIgnoreCase, rfReplaceAll]);
+
   bFound := FindFirst(sPath + '*.*', faAnyFile-faDirectory, srFile) = 0;
   while bFound do begin
     if srFile.Name <> ExtractFileName(lePackage.Text) then
@@ -348,7 +350,11 @@ begin
   bFound := FindFirst(sPath + '*.*', faDirectory, srFile) = 0;
   while bFound do begin
     if (srFile.Attr = faDirectory) and (srFile.Name[1] <> '.') then
-      slDir.Add(sPath + srFile.Name + '\');
+      if LowerCase(sPath) <> 'settings\' then
+        slDir.Add(sPath + srFile.Name + '\')
+      else
+        if LowerCase(srFile.Name) = '#default#' then
+          slDir.Add(sPath + srFile.Name + '\');
     bFound := FindNext(srFile) = 0;
   end;
   FindClose(srFile);
