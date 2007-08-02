@@ -543,6 +543,14 @@ begin
         if SCM.StateEditItem <> False then
           SCM.StateEditItem := False;
       end;
+    SCM_SET_LIVE_CONFIG :
+      begin
+        PnlButtons.Hide;
+      end;
+    SCM_SET_APPLY_CONFIG :
+      begin
+        PnlButtons.Show;
+      end;
   end;
 end;
 
@@ -699,20 +707,6 @@ begin
   // Reinit values
   FSelectedTabID := 0;
   FCancelClicked := False;
-
-  // Update UI
-  {pnlPlugin.DoubleBuffered := True;
-  sbPlugin.DoubleBuffered := True;
-  pnlPluginContainer.DoubleBuffered := True;
-  pnlContent.DoubleBuffered := True;
-  pnlMain.DoubleBuffered := True;
-  pnlTree.DoubleBuffered := True;
-  pnlSettingTree.DoubleBuffered := True;
-  lbTree.DoubleBuffered := True;
-  pnlEditPlugin.DoubleBuffered := True;
-  pnlEditContainer.DoubleBuffered := true;
-  pnlEditPluginContainer.DoubleBuffered := true; }
-  DoDoubleBufferAll(Self);
 
   btnSave.Enabled := False;
   btnCancel.Enabled := False;
@@ -894,7 +888,6 @@ begin
   // Resize Plugin window
   LockWindowUpdate(Self.Handle);
   try
-    //ResizeToFitWindow(SCM.PluginWndHandle, pnlPlugin);
 
     // Edit bar
     pnlEditContainer.Height := 0;
@@ -965,6 +958,7 @@ end;
 procedure TSharpCenterWnd.InitNavEvent(Sender: TObject);
 begin
   lbTree.Clear;
+  PnlButtons.Show;
 end;
 
 procedure TSharpCenterWnd.AddPluginTabsEvent(Sender: TObject);
