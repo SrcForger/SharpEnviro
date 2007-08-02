@@ -503,7 +503,7 @@ procedure TfrmSchemeList.lbSchemeListClickItem(AText: string; AItem,
   ACol: Integer);
 begin
   CenterUpdatePreview;
-  CenterUpdateSettings;
+  CenterDefineSettingsChanged;
 
   if frmEditScheme <> nil then
   begin
