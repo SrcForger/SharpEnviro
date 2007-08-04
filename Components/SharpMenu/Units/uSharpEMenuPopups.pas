@@ -75,12 +75,15 @@ begin
 
   // Load image List;
   FImageList := TPngImageList.Create(Application.MainForm);
-  FImageList.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'delete');
-  FImageList.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'properties');
-  FImageList.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'application');
-  FImageList.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'folder');
-  FImageList.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'openas');
-  FImageList.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'properties'); // last one is a dummy image...
+  try
+    FImageList.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'delete');
+    FImageList.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'properties');
+    FImageList.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'application');
+    FImageList.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'folder');
+    FImageList.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'openas');
+    FImageList.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'properties'); // last one is a dummy image...
+  except
+  end;
 
   // Create Popups
   FDynamicDirPopup := TPopUpMenu.Create(Application.MainForm);
