@@ -81,15 +81,20 @@ begin
   FCached := False;
   
   FIcon := TBitmap32.Create;
+  FIcon.SetSize(16,16);
+  FIcon.Clear(Color32(0,0,0,0));
   FIconHandle := 0;
   FIconType := itCustomIcon;
   FIconSource := pIconSource;
   FCount := 1;
 
-  FIcon.Assign(pBmp);
-  FIcon.DrawMode := dmBlend;
-  FIcon.CombineMode := cmMerge;
-  TLinearResampler.Create(FIcon);  
+  if pBmp <> nil then
+  begin
+    FIcon.Assign(pBmp);
+    FIcon.DrawMode := dmBlend;
+    FIcon.CombineMode := cmMerge;
+    TLinearResampler.Create(FIcon);
+  end;
 end;
 
 constructor TSharpEMenuIcon.Create(pIconSource,pIconData : String);
