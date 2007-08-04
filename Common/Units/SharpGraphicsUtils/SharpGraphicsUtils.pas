@@ -573,7 +573,6 @@ begin
         end;
 
         leftedge := @line[0];
-        rightedge := @line[radius+1]; //start loading pixels in the end of the window
         center := @pixelbuf[0];
 
         for x := 0 to width do begin
