@@ -136,7 +136,8 @@ begin
     // Broadcast all icons to the new tray client
     BroadCastAllToOne(msg.WParam);
     // make all non shell service icons to update
-    PostMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
+    SendNotifyMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
+    // PostMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
   end;
 end;
 
