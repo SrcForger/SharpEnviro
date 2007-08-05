@@ -349,6 +349,11 @@ begin
   if self.Visible = false then
     self.Show;
   result := true;
+
+  if Left + Width > Monitor.Left + Monitor.Width then
+     Left := Monitor.Left + Monitor.Width - Width;
+  if Left < Monitor.Left then
+     Left := Monitor.Left;  
 end;
 
 procedure TBalloonForm.UpdateTimerTimer(Sender: TObject);
