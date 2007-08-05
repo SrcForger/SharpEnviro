@@ -366,7 +366,7 @@ var
 begin
   UpdateActions;
 
-  sPlayer     := mptWinAmp;
+  sPlayer     := mptWMP;
   sPlayerFile := '-1';
   sPSelect    := True;
 
