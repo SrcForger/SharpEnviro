@@ -157,6 +157,7 @@ type
 
     // Plugin message (to be broadcastet to modules)
     procedure WMWeatherUpdate(var msg : TMessage); message WM_WEATHERUPDATE;
+    procedure WMInputChange(var msg : TMessage); message WM_INPUTLANGCHANGEREQUEST;
 
     // Power Management
     procedure WMPowerBroadcast(var msg : TMessage); message WM_POWERBROADCAST;
@@ -441,6 +442,13 @@ end;
 procedure TSharpBarMainForm.WMSharpTerminate(var msg : TMessage);
 begin
   Close;
+end;
+
+// System Input Language Changed -> broadcast a message to all modules
+procedure TSharpBarMainForm.WMInputChange(var msg : TMessage);
+begin
+  if ModuleManager = nil then exit;
+  ModuleManager.BroadcastPluginMessage('MM_INPUTLANGCHANGE');
 end;
 
 // Weather Service updated the xml files -> broadcast as message to all modules
