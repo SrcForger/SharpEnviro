@@ -1420,10 +1420,15 @@ begin
       if FileExists(Dir + sr.Name + '\Skin.xml') then
       begin
         item := TMenuItem.Create(Skin1);
-        item.ImageIndex := 28;
         if sr.Name = SharpThemeApi.GetSkinName then
-           item.Caption := '(' + sr.Name + ')'
-           else item.Caption := sr.Name;
+        begin
+          item.ImageIndex := 28;
+          item.Caption := '(' + sr.Name + ')'
+        end else
+        begin
+          item.ImageIndex := 29;
+          item.Caption := sr.Name;
+        end;
         item.Hint := sr.Name;
         item.OnClick := OnSkinSelectItemClick;
         Skin1.Add(item);
@@ -1443,12 +1448,17 @@ begin
   if FindFirst(Dir + '*.xml',FAAnyFile,sr) = 0 then
   repeat
     item := TMenuItem.Create(ColorScheme1);
-    item.ImageIndex := 28;
     s := sr.Name;
     setlength(s,length(s) - length('.xml'));
     if s = SharpThemeApi.GetSchemeName then
-       item.Caption := '(' + s + ')'
-        else item.Caption := s;
+    begin
+      item.ImageIndex := 28;
+      item.Caption := '(' + s + ')'
+    end else
+    begin
+      item.ImageIndex := 29;
+      item.Caption := s;
+    end;
     item.Hint := sr.Name;
     item.OnClick := OnSchemeSelectItemClick;
     ColorScheme1.Add(item);
@@ -1860,7 +1870,7 @@ begin
   if FSuspended then exit;
   mThrobber := TSharpEMiniThrobber(ThrobberPopUp.popupcomponent);
   if mThrobber = nil then exit;
-  if MessageBox(self.handle,'Do you really want to remove this module? All settings will be lost!','Confirm : "Remove Module"',MB_YESNO) = IDYES then
+  if MessageBox(Application.handle,'Do you really want to remove this module? All settings will be lost!','Confirm : "Remove Module"',MB_YESNO) = IDYES then
   begin
     LockWindow(Handle);
     ModuleManager.Delete(mThrobber.Tag);
