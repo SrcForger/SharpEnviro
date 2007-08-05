@@ -1232,10 +1232,16 @@ begin
   if wnd <> 0 then
   begin
     SetWindowPos(wnd,parent.Handle,p.x,p.y,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE);
+    if IsWindowVisible(wnd) then
+       ShowWindow(wnd,SW_HIDE);
 
     wnd2 := FindWindow('TrayNotifyWnd',nil);
     if wnd2 <> 0 then
-       SetWindowPos(wnd2,wnd,0,0,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE);
+    begin
+      SetWindowPos(wnd2,wnd,0,0,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE);
+      if IsWindowVisible(wnd2) then
+         ShowWindow(wnd2,SW_HIDE);
+    end;
   end;
 end;
 
