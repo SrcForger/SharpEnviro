@@ -1329,7 +1329,7 @@ object frmMain: TfrmMain
           Flat = True
           Lines.Strings = (
             'SharpE Compiler Helper'
-            'Copyright 2005 SharpE Team')
+            'Copyright 2007 SharpE Team')
           ParentFlat = False
           ReadOnly = True
           ScrollBars = ssVertical
@@ -1363,7 +1363,6 @@ object frmMain: TfrmMain
           ItemHeight = 24
           OnDblClickItem = lbSummaryDblClickItem
           OnGetCellColor = lbSummaryGetCellColor
-          AutosizeGrid = False
           Borderstyle = bsNone
           Align = alClient
         end
