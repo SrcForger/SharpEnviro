@@ -490,17 +490,6 @@ begin
         NIM_SETFOCUS : s4 := 'SETFOCUS';
         NIM_SETVERSION : s4 := 'SETVERSION';
       end;
-      if (s3 <> 'Kerio Personal Firewall - Aktiviert') and (IconData.Wnd <> 0) then
-      SendMiniConsoleMsg(PChar('TRAY: ' + 'State: ' + s1 +
-                                       ' | statemask: ' +  s2 +
-                                       ' | Cmd: ' + s4 +
-                                       ' | Hidden: ' + s5 +
-                                       ' | Shared: ' + s6 +
-                                       ' | Title: ' + s3+IconData.szInfoTitle+
-                                       ' | Callback: ' + inttostr(IconData.uCallbackMessage)+
-                                       ' | Version: ' + inttostr(IconData.Union.uVersion)+
-                                       ' | ' + s8+
-                                       ' | pItem:' + s9 ));
 
       if pItem <> nil then
       SendMiniConsoleMsg(PChar('TRAY: ' + 'State: ' + s1 +
@@ -528,12 +517,13 @@ begin
                    end;
           NIM_SETVERSION: UpdateTrayVersion(pItem,IconData);
           NIM_MODIFY: begin
-                        if (pItem = nil) and (IconData.Icon <> 0) and (not shared) and
+                        {if (pItem = nil) and (IconData.Icon <> 0) and (not shared) and
                            ((IconData.uFlags and NIF_ICON) = NIF_ICON) and
                            ((IconData.uFlags and NIF_MESSAGE) = NIF_MESSAGE) and
-                           ((IconData.uFlags and NIF_TIP) = NIF_TIP) then
+                           ((IconData.uFlags and NIF_TIP) = NIF_TIP) and
+                           (CompareText(IconData.szInfoTitle,'MediaMonkey') <> 0)  then
                            ModifyTrayIcon(pItem,IconData,False,False,TrayCmd)
-                           else if (hidden) and (pItem<>nil) then RemoveTrayIcon(pItem)
+                           else }if (hidden) and (pItem<>nil) then RemoveTrayIcon(pItem)
                            else if (pItem <> nil) then ModifyTrayIcon(pItem,IconData,False,False,TrayCmd)
                            else e := False;
                       end;
