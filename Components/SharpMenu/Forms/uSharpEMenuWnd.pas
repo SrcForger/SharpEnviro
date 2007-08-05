@@ -84,6 +84,7 @@ type
     FOwner : TObject;
     FSubMenu : TSharpEMenuWnd;
     FPicture : TBitmap32;
+    FIsClosing : boolean;
     FRootMenu : boolean;
     FFreeMenu : boolean; // Set to True if the menu is a single menu without popups
                          // and if you want it to free itself OnDeactivate
@@ -122,6 +123,8 @@ implementation
 
 uses uSharpEMenuItem;
 
+
+function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; external 'shell32.dll' index 181;
 
 
 // has to be applied to the TBitmap32 before passing it to the API function
@@ -173,6 +176,7 @@ end;
 constructor TSharpEMenuWnd.Create(AOwner: TComponent; pMenu : TSharpEMenu);
 begin
   inherited Create(AOwner);
+  FIsClosing := False;
   FOwner := AOwner;
   FPicture := TBitmap32.Create;
   FParentMenu := nil;
@@ -287,6 +291,7 @@ procedure TSharpEMenuWnd.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
 var
   submenu : boolean;
 begin
+  if FIsClosing then exit;
   if FMenu = nil then exit;
 
   submenu := false;
@@ -313,6 +318,7 @@ end;
 procedure TSharpEMenuWnd.FormMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+  if FIsClosing then exit;
   if FMenu = nil then exit;
 
   if FMenu.PerformMouseDown(self,Button, X,Y) then
@@ -328,6 +334,7 @@ procedure TSharpEMenuWnd.FormMouseUp(Sender: TObject; Button: TMouseButton;
 var
   p : TPoint;
 begin
+  if FIsClosing then exit;
   if FMenu = nil then exit;
 
   p := ClientToScreen(point(X,Y));
@@ -344,6 +351,7 @@ var
   pOwner : TObject;
   lm : TSharpEMenuWnd;
 begin
+  FIsClosing := True;
   // Find the Top Most menu and close everything!
   pOwner := FOwner;
   if FOwner is TSharpEMenuWnd then lm := TSharpEMenuWnd(FOwner)
@@ -385,6 +393,8 @@ begin
   FPicture.Free;
   if (FFreeMenu or (Tag = - 1)) and (SharpEMenuPopups <> nil) then
      FreeAndNil(SharpEMenuPopups);
+  if FRootMenu then
+     RegisterShellHook(Handle,0);
   if FRootMenu then Application.Terminate;
 end;
 
@@ -393,6 +403,7 @@ var
   item : TSharpEMenuItem;
   t : integer;
 begin
+  if FIsClosing then exit;
   if FMenu = nil then exit;
 
   SubMenuTimer.Enabled := False;
@@ -440,6 +451,7 @@ procedure TSharpEMenuWnd.offsettimerTimer(Sender: TObject);
 var
   CPos : TPoint;
 begin
+  if FIsClosing then exit;
   if FMenu = nil then exit;
 
   // Reset sub menu timer!
@@ -639,6 +651,7 @@ var
   buf: array [0..254] of Char;
   cname : String;
 begin
+  if FIsClosing then exit;
   if msg.message = WM_SHELLHOOK then
   begin
     Handled := True;

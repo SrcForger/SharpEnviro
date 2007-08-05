@@ -213,5 +213,4 @@ begin
   events.Free;
   
   CloseHandle(MuteXHandle);
-  RegisterShellHook(wnd.Handle,0);
 end.
