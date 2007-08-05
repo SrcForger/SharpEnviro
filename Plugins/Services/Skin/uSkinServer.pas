@@ -83,7 +83,7 @@ begin
   try
     DeleteFile(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin');
   finally
-    FStream := TFileStream.Create(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin',fmCreate);
+    FStream := TFileStream.Create(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin',fmCreate or fmShareDenyWrite);
   end;
   FSkin.SaveToStream(FStream,true);
   FreeAndNil(FStream);
