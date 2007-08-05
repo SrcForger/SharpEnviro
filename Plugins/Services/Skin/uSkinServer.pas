@@ -80,6 +80,15 @@ begin
   FSkin.LoadFromXmlFile(FFileName);
   if FStream <> nil then
      FreeAndNil(FStream);
+
+  if FileExists(FFileName) then // read only = a bar is currently reading data from the file
+     if (GetFileAttributes(PChar(FFileName)) and FILE_ATTRIBUTE_READONLY) = FILE_ATTRIBUTE_READONLY then
+     begin
+       SetFileAttributes(PChar(FFileName),FILE_ATTRIBUTE_HIDDEN);
+       // skin manager won't load the file if it's hidden...
+       sleep(250);
+     end;
+
   try
     DeleteFile(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin');
   finally
@@ -87,6 +96,7 @@ begin
   end;
   FSkin.SaveToStream(FStream,true);
   FreeAndNil(FStream);
+  SetFileAttributes(PChar(FFileName),FILE_ATTRIBUTE_NORMAL);
   FSkin.Clear;
 end;
 

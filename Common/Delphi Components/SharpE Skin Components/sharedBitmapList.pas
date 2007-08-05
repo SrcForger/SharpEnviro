@@ -34,7 +34,8 @@ interface
 uses
   Windows, Messages, SysUtils,
   Classes, Controls, Forms, GR32,
-  SharpESkin, SharpEBitmapList, SharpAPI;
+  SharpESkin, SharpEBitmapList, SharpAPI,
+  JclFileUtils;
 
 
 
@@ -194,11 +195,20 @@ begin
   loadfile := SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin';
   if FileExists(loadfile) then
   begin
-    stream := TFileStream.Create(loadfile,fmOpenRead or fmShareDenyNone);
-    try
-      inherited LoadFromStream(Stream);
-    finally
-      Stream.Free;
+    // the skin service is hiding the skin file when it wants to update the skin
+    // it's like locking it down and waiting for all skin manages to finish
+    // reading the file... don't read data if it's hidden!
+    if not ((GetFileAttributes(PChar(loadfile)) and FILE_ATTRIBUTE_HIDDEN) = FILE_ATTRIBUTE_HIDDEN) then
+    begin
+      SetFileAttributes(PChar(loadfile),FILE_ATTRIBUTE_READONLY);
+      stream := TFileStream.Create(loadfile,fmOpenRead or fmShareDenyNone);
+      try
+        inherited LoadFromStream(Stream);
+      finally
+        Stream.Free;
+        if not ((GetFileAttributes(PChar(loadfile)) and FILE_ATTRIBUTE_HIDDEN) = FILE_ATTRIBUTE_HIDDEN) then
+           SetFileAttributes(PChar(loadfile),FILE_ATTRIBUTE_NORMAL);
+      end;
     end;
   end;
   if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
