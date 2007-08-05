@@ -1231,14 +1231,14 @@ begin
   wnd := FindWindow('Shell_TrayWnd',nil);
   if wnd <> 0 then
   begin
-    SetWindowPos(wnd,parent.Handle,p.x,p.y,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE);
+    SetWindowPos(wnd,parent.Handle,p.x,p.y,0,0,SWP_NOZORDER or SWP_NOACTIVATE or SWP_HIDEWINDOW);
     if IsWindowVisible(wnd) then
        ShowWindow(wnd,SW_HIDE);
 
     wnd2 := FindWindow('TrayNotifyWnd',nil);
     if wnd2 <> 0 then
     begin
-      SetWindowPos(wnd2,wnd,0,0,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE);
+      SetWindowPos(wnd2,wnd,0,0,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE or SWP_HIDEWINDOW);
       if IsWindowVisible(wnd2) then
          ShowWindow(wnd2,SW_HIDE);
     end;
