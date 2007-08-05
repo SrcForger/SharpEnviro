@@ -3501,10 +3501,6 @@ object frmMain: TfrmMain
     Left = 560
     Top = 376
   end
-  object XPManifest1: TXPManifest
-    Left = 424
-    Top = 248
-  end
   object dlgSave: TSaveDialog
     DefaultExt = 'zip'
     Filter = 'Zip File|*.zip'

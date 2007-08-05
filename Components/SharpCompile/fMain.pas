@@ -42,7 +42,6 @@ type
     lblSVNSettings: TLabel;
     lblPackageSettings: TLabel;
     btnSave: TJvSpeedButton;
-    XPManifest1: TXPManifest;
     leRepo: TLabeledEdit;
     leUser: TLabeledEdit;
     lePassword: TLabeledEdit;
