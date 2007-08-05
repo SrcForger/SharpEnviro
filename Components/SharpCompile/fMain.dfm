@@ -1363,6 +1363,7 @@ object frmMain: TfrmMain
           ItemHeight = 24
           OnDblClickItem = lbSummaryDblClickItem
           OnGetCellColor = lbSummaryGetCellColor
+          AutosizeGrid = False
           Borderstyle = bsNone
           Align = alClient
         end

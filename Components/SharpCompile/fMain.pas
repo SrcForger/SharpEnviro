@@ -9,7 +9,7 @@ uses
   JvSimpleXML, JvComCtrls, JvCheckTreeView, CheckLst, JvExCheckLst,
   JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx,
   SharpEPageControl, PngImageList, StrUtils, JvExControls, JvSpeedButton, Mask,
-  JvExMask, JvToolEdit, JvMaskEdit, JvEdit, XPMan, JvComponentBase,
+  JvExMask, JvToolEdit, JvMaskEdit, JvEdit, JvComponentBase,
   AbBase, AbBrowse, AbZBrows, AbZipper;
 
 type
