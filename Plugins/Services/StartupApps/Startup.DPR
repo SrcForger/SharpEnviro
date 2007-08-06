@@ -55,8 +55,13 @@ begin
   Result := Application.Handle;
 end;
 
+procedure Stop;
+begin
+end;
+
 exports
-  Start;
+  Start,
+  Stop;
 
 end.
 
