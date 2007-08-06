@@ -59,6 +59,7 @@ type
     sTheme : String;
     Preview : TBitmap32;
     procedure BuildIconList;
+    procedure SaveSettings;
   end;
 
 var
@@ -73,12 +74,29 @@ uses SharpThemeApi, SharpCenterApi,
 
 { TfrmConfigListWnd }
 
+procedure  TfrmIconList.SaveSettings;
+var
+    XML : TJvSimpleXML;
+begin
+  if lb_iconlist.ItemIndex >= 0 then
+  begin
+    XML := TJvSimpleXML.Create(nil);
+    XML.Root.Name := 'SharpEThemeIconSet';
+    XML.Root.Items.Add('Name',lb_iconlist.Item[lb_iconlist.ItemIndex].SubItemText[1]);
+    XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+sTheme+'\IconSet.xml~');
+    if FileExists(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+sTheme+'\IconSet.xml') then
+       DeleteFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+sTheme+'\IconSet.xml');
+    RenameFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+sTheme+'\IconSet.xml~',
+               SharpApi.GetSharpeUserSettingsPath + '\Themes\'+sTheme+'\IconSet.xml');
+    XML.Free;
+  end;
+end;
+
 procedure TfrmIconList.FormShow(Sender: TObject);
 begin
   lb_iconlist.Margin := Rect(0,0,0,0);
   lb_iconlist.ColumnMargin := Rect(6,0,6,0);
 end;
-
 
 procedure TfrmIconList.FormCreate(Sender: TObject);
 begin
@@ -196,13 +214,20 @@ begin
   until FindNext(sr) <> 0;
   FindClose(sr);
   XML.Free;
+
+  if (lb_iconlist.ItemIndex < 0) and (lb_iconlist.Count > 0) then
+  begin
+    lb_iconlist.ItemIndex := 0;
+    BuildIconPreview;
+  end;
 end;
 
 procedure TfrmIconList.lb_iconlistClickItem(AText: string; AItem,
   ACol: Integer);
 begin
   BuildIconPreview;
-  CenterDefineSettingsChanged;
+  SaveSettings;
+  BroadcastGlobalUpdateMessage(suIconSet);
 end;
 
 procedure TfrmIconList.FormResize(Sender: TObject);

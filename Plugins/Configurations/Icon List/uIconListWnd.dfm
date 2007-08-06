@@ -36,6 +36,7 @@ object frmIconList: TfrmIconList
       end>
     ItemHeight = 22
     OnClickItem = lb_iconlistClickItem
+    AutosizeGrid = False
     Borderstyle = bsNone
     Ctl3d = False
     Align = alClient

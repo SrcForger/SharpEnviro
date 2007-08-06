@@ -49,7 +49,8 @@ uses
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
   uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
-  SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas';
+  SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
+  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
 
 {$E .dll}
 
@@ -76,26 +77,10 @@ begin
   end;
   XML.Free;
 
+  CenterDefineConfigurationMode(scmLive);
+
   frmIconList.Show;
   result := frmIconList.Handle;
-end;
-
-procedure Save;
-var
-  XML : TJvSimpleXML;
-begin
-  if frmIconList.lb_iconlist.ItemIndex >= 0 then
-  begin
-    XML := TJvSimpleXML.Create(nil);
-    XML.Root.Name := 'SharpEThemeIconSet';
-    XML.Root.Items.Add('Name',frmIconList.lb_iconlist.Item[frmIconList.lb_iconlist.ItemIndex].SubItemText[1]);
-    XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml~');
-    if FileExists(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml') then
-       DeleteFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml');
-    RenameFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml~',
-               SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmIconList.sTheme+'\IconSet.xml');
-    XML.Free;
-  end;
 end;
 
 function Close : boolean;
@@ -150,10 +135,6 @@ begin
   ATabs.Add('Icon Set',nil,'','');
 end;
 
-function SetSettingType : integer;
-begin
-  result := SU_ICONSET;
-end;
 procedure UpdatePreview(var ABmp: TBitmap32);
 begin
   if (frmIconList.lb_iconlist.ItemIndex < 0) or
@@ -168,11 +149,9 @@ end;
 exports
   Open,
   Close,
-  Save,
   SetDisplayText,
   SetStatusText,
   SetBtnState,
-  SetSettingType,
   GetCenterScheme,
   AddTabs,
   ClickBtn,
