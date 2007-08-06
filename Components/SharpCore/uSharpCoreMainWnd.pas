@@ -186,6 +186,7 @@ end;
 
 procedure TSharpCoreMainWnd.ExitSharpCore1Click(Sender: TObject);
 begin
+  TrayIcon.Active := False;
   FreeAllBeforeExit;
 
   // Terminate the Application

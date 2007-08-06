@@ -285,6 +285,8 @@ begin
         try
           ServiceList.Info[i].Status := ssStarted;
           ServiceList.Info[i].DllProcess.Start(Application.MainForm.Handle);
+          if CompareText(ServiceList.Info[i].Name,'SystemTray') = 0 then
+             SharpCoreMainWnd.trayicon.Active := True;
         except
           Result := MR_ERRORSTARTING;
           ServiceList.Info[i].Status := ssStopped;
@@ -324,6 +326,9 @@ begin
   for i := 0 to Pred(ServiceList.count) do begin
     if lowercase(filename) = lowercase(ServiceList.Info[i].FileName) then begin
       {stop the plugin}
+
+      if CompareText(ServiceList.Info[i].Name,'SystemTray') = 0 then
+         SharpCoreMainWnd.trayicon.Active := False;
 
       try
         try
