@@ -42,6 +42,7 @@ uses
   Classes,
   Graphics,
   sharpapi,
+  SharpCenterApi,
   sharpthemeapi,
   jvSimpleXml,
   jclStrings,
@@ -140,8 +141,8 @@ procedure TCursesManager.MessageHandler(var msg: TMessage);
 begin
   if msg.Msg = WM_SHARPEUPDATESETTINGS then
   begin
-    if (msg.wparam = SU_CURSOR) or (msg.wparam = SU_SCHEME)
-       or (msg.wparam = SU_SKIN) or (msg.wparam = SU_THEME) then
+    if (msg.wparam = Integer(suCursor)) or (msg.wparam = Integer(suScheme))
+       or (msg.wparam = Integer(suSkin)) or (msg.wparam = Integer(suTheme)) then
     begin
       FCursesSettings.Load;
       if length(trim(FCursesSettings.CurrentSkin)) > 0 then

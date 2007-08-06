@@ -32,6 +32,7 @@ uses
   windows,
   Classes,
   Messages,
+  SharpCenterApi,
   uSkinServer in 'uSkinServer.pas' {SkinServer},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
@@ -90,7 +91,7 @@ begin
     case Message.LParam of
       0 : begin
             SkinServer.UpdateStreamFile;
-            SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKINFILECHANGED,0);
+            SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged);
           end;
     end;
   end;

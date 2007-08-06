@@ -34,6 +34,7 @@ uses Windows, Dialogs, SysUtils, Classes,
      GR32,
      SharpApi,
      SharpThemeApi,
+     SharpCenterApi,
      SharpESkin;
 
 Type
@@ -56,15 +57,13 @@ Type
 {$R *.dfm}
 
 implementation
-uses uInfodlg;
 
 
 procedure TSkinServer.FormCreate(Sender: TObject);
 begin
   FSkin := TSharpESkin.Create(self,ALL_SHARPE_SKINS);
-  //FStream := TFileStream.Create(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin',fmCreate or fmShareDenyWrite);
   UpdateStreamFile;
-  SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKINFILECHANGED,0);
+  SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged);
 end;
 
 procedure TSkinServer.FormDestroy(Sender: TObject);
@@ -116,10 +115,10 @@ end;
 
 procedure TSkinServer.UpdateSkin(var Msg: TMessage);
 begin
-  if (msg.WParam = SU_SKIN) or (msg.WParam = SU_THEME) then
+  if (msg.WParam = Integer(suSkin)) or (msg.WParam = Integer(suTheme)) then
   begin
     UpdateStreamFile;
-    SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKINFILECHANGED,0);
+    SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged);
   end;
 end;
 
