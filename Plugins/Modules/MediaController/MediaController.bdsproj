@@ -123,7 +123,7 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Components\SharpMenu;..\..\..\Components\SharpMenu\Units;..\..\..\Components\SharpMenu\Forms;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\PropertyList\;..\..\..\Common\Units\ControlPanelItems\</Directories>
+			<Directories Name="SearchPath">..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Components\SharpMenu;..\..\..\Components\SharpMenu\Units;..\..\..\Components\SharpMenu\Forms;..\..\..\Common\Units\SharpIconUtils\;..\..\..\Common\Units\PropertyList\;..\..\..\Common\Units\ControlPanelItems\;..\..\..\Common\Libraries\SharpCenterAPI</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>

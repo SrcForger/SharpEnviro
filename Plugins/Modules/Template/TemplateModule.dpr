@@ -39,6 +39,7 @@ uses
   JvSimpleXML,
   // SharpE Units
   SharpApi,SharpESkinManager, SharpEBar, uSharpBarApi, MouseTimer,
+  SharpCenterApi,
   // Project Units
   MainWnd in 'MainWnd.pas' {MainForm},
   SettingsWnd in 'SettingsWnd.pas' {SettingsForm};
@@ -191,15 +192,18 @@ begin
 end;
 
 // Something changed and the modules have to be updated
-// the part parameter specifies what has changed (see SharpApi.pas)
-procedure UpdateMessage(part : integer; param : integer);
+// the part parameter specifies what has changed (see SharpCenterApi.pas)
+procedure UpdateMessage(part : TSU_UPDATE_ENUM; param : integer);
+const
+  // update messages which are processed, procedure will exit on any other message
+  processed : TSU_UPDATES = [suSkinFileChanged,suBackground,suTheme,suSkin,
+                             suScheme,suIconSet];
 var
   temp : TModule;
   n,i : integer;
 begin
-  if (part <> SU_SKINFILECHANGED) and (part <> SU_BACKGROUND)
-     and (part <> SU_THEME) and (part <> SU_SKIN)
-     and (part <> SU_SCHEME) and (part <> SU_ICONSET) then exit;
+  if not (part in processed) then 
+    exit;
 
   if ModuleList = nil then exit;
 
@@ -208,8 +212,7 @@ begin
     temp := TModule(ModuleList.Items[n]);
 
     // Step1: check if height changed
-    if (part = SU_SKINFILECHANGED) or (part = SU_BACKGROUND)
-       or (part = SU_THEME) then
+    if [part] <= [suSkinFileChanged,suBackground,suTheme] then
     begin
       i := GetBarPluginHeight(temp.BarWnd);
       if temp.Form.Height <> i then
@@ -217,19 +220,18 @@ begin
     end;
 
      // Step2: check if skin or scheme changed
-    if (part = SU_SCHEME) or (part = SU_THEME) then
+    if [part] <= [suScheme,suTheme] then
        TMainForm(temp.Form).SkinManager.UpdateScheme;
-    if (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
+    if (part = suSkinFileChanged) then
        TMainForm(temp.Form).SkinManager.UpdateSkin;
 
     // Step3: update
-    if (part = SU_SCHEME) or (part = SU_BACKGROUND)
-        or (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
+    if [part] <= [suScheme,suBackground,suSkinFileChanged,suTheme] then
     begin
       TMainForm(temp.Form).UpdateBackground;
       if param <> -2 then
          TMainForm(temp.Form).Repaint;
-      if (part = SU_THEME) or (part = SU_SKINFILECHANGED) then
+      if [part] <= [suTheme,suSkinFileChanged] then
          TMainForm(temp.Form).ReAlignComponents(True);
     end;
   end;

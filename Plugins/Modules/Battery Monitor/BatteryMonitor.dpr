@@ -47,6 +47,7 @@ uses
   SharpApi,
   uSharpBarApi,
   MouseTimer,
+  SharpCenterApi,
   MainWnd in 'MainWnd.pas' {MainForm},
   SettingsWnd in 'SettingsWnd.pas' {SettingsForm};
 
@@ -184,14 +185,16 @@ begin
       end;
 end;
 
-procedure UpdateMessage(part : integer; param : integer);
+procedure UpdateMessage(part : TSU_UPDATE_ENUM; param : integer);
+const
+  processed : TSU_UPDATES = [suSkinFileChanged,suBackground,suTheme,suSkin,
+                             suScheme];
 var
   temp : TModule;
   n,i : integer;
 begin
-  if (part <> SU_SKINFILECHANGED) and (part <> SU_BACKGROUND)
-     and (part <> SU_THEME) and (part <> SU_SKIN)
-     and (part <> SU_SCHEME) then exit;
+  if not (part in processed) then 
+    exit;
 
   if ModuleList = nil then exit;
 
@@ -200,8 +203,7 @@ begin
     temp := TModule(ModuleList.Items[n]);
 
     // Step1: check if height changed
-    if (part = SU_SKINFILECHANGED) or (part = SU_BACKGROUND)
-       or (part = SU_THEME) then
+    if [part] <= [suSkinFileChanged,suBackground,suTheme] then
     begin
       i := GetBarPluginHeight(temp.BarWnd);
       if temp.Form.Height <> i then
@@ -209,19 +211,18 @@ begin
     end;
 
      // Step2: check if skin or scheme changed
-    if (part = SU_SCHEME) or (part = SU_THEME) then
+    if [part] <= [suScheme,suTheme] then
        TMainForm(temp.Form).SharpESkinManager1.UpdateScheme;
-    if (part = SU_SKINFILECHANGED) then
+    if (part = suSkinFileChanged) then
        TMainForm(temp.Form).SharpESkinManager1.UpdateSkin;
 
     // Step3: update
-    if (part = SU_SCHEME) or (part = SU_BACKGROUND)
-        or (part = SU_SKINFILECHANGED) or (part = SU_THEME) then
+    if [part] <= [suScheme,suBackground,suSkinFileChanged,suTheme] then
     begin
       TMainForm(temp.Form).UpdateBackground;
       TMainForm(temp.Form).LastIcon := nil;
       TMainForm(temp.Form).RenderIcon((param <> -2));
-      if (part = SU_THEME) or (part = SU_SKINFILECHANGED) then
+      if [part] <= [suTheme,suSkinFileChanged] then
          TMainForm(temp.Form).ReAlignComponents(True);
     end;
   end;

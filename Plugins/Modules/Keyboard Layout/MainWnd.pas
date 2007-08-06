@@ -301,7 +301,7 @@ end;
 
 procedure TMainForm.UpdateCurrentLayout;
 var
-  s,s2 : String;
+  s : String;
   List : TJclKeyboardLayoutList;
 begin
   List := TJclKeyboardLayoutList.Create;
