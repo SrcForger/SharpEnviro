@@ -8,7 +8,13 @@
 			<Option Name="GUID">{B8686083-C3F7-4FB7-BEEF-B8A5D4E26A4B}</Option>
 		</Option>
 	</PersonalityInfo>
-	<Default.Personality>  <Projects>
+	<Default.Personality>  
+    
+    
+    
+    
+    
+    <Projects>
       <Projects Name="Button.dll">..\Plugins\Modules\Button\Button.bdsproj</Projects>
       <Projects Name="Clock.dll">..\Plugins\Modules\Clock\Clock.bdsproj</Projects>
       <Projects Name="MemoryMonitor.dll">..\Plugins\Modules\Memory Monitor\MemoryMonitor.bdsproj</Projects>
@@ -24,7 +30,9 @@
       <Projects Name="Weather.dll">..\Plugins\Modules\Weather\Weather.bdsproj</Projects>
       <Projects Name="Menu.dll">..\Plugins\Modules\Menu\Menu.bdsproj</Projects>
       <Projects Name="ButtonBar.dll">..\Plugins\Modules\ButtonBar\ButtonBar.bdsproj</Projects>
-      <Projects Name="Targets">Button.dll Clock.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll VolumeControl.dll CPUMonitor.dll MediaController.dll Notes.dll QuickScript.dll BatteryMonitor.dll Weather.dll Menu.dll ButtonBar.dll</Projects>
+      <Projects Name="KeyboardLayout.dll">..\Plugins\Modules\Keyboard Layout\KeyboardLayout.bdsproj</Projects>
+      <Projects Name="Screenshot.dll">..\Plugins\Modules\Screenshot\Screenshot.bdsproj</Projects>
+      <Projects Name="Targets">Button.dll Clock.dll MemoryMonitor.dll MiniScmd.dll SystemTray.dll TaskBar.dll VolumeControl.dll CPUMonitor.dll MediaController.dll Notes.dll QuickScript.dll BatteryMonitor.dll Weather.dll Menu.dll ButtonBar.dll KeyboardLayout.dll Screenshot.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
