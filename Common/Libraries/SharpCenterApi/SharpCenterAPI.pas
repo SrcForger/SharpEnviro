@@ -63,6 +63,8 @@ Type
   TSCE_EDITMODE_ENUM = (sceAdd, sceEdit, sceDelete);
   TSC_MODE_ENUM = (scmLive, scmApply);
 
+  TSU_UPDATES = set of TSU_UPDATE_ENUM;
+
 function BroadcastGlobalUpdateMessage(AUpdateType:TSU_UPDATE_ENUM;
   APluginID: Integer=-1) : boolean;
     external 'SharpCenterAPI.dll' name 'BroadcastGlobalUpdateMessage';
