@@ -310,19 +310,33 @@ var
   newItem: TSharpEListItem;
   abZip: TAbZipper;
 begin
-  mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' Beginning compression..');
+  mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' Beginning packaging..');
   newItem := lbSummary.AddItem('Packaging release...', 2);
   lbSummary.ItemIndex := lbSummary.Count - 1;
+
+  if FileExists(lePackage.Text) then
+  begin
+    DeleteFile(PChar(lePackage.Text));
+    mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' Deleted ' + lePackage.Text);
+  end;
+  ForceDirectories(ExtractFilePath(lePackage.Text));
+
   abZip := TAbZipper.Create(nil);
   abZip.FileName := lePackage.Text;
-  if FileExists(lePackage.Text) then
-    DeleteFile(lePackage.Text);
-  Application.ProcessMessages;
+
   abZip.BaseDirectory := ExtractFilePath(ParamStr(0)) + '\';
+  SetCurrentDir(abZip.BaseDirectory);
+  Application.ProcessMessages;
   AddFiles(abZip.BaseDirectory, 'Thumbs.db;*.map', abZip);
+
+  newItem.Caption := newItem.Caption + 'Saving...';
+  mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' Saving file');
+  Application.ProcessMessages;
   abZip.Save;
+
   abZip.Free;
-  mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' Compression complete');
+
+  mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' Packaging complete');
   newItem.Caption := newItem.Caption + 'Finished';
   newItem.ImageIndex := 1;
 end;
@@ -335,7 +349,7 @@ var
   i: integer;
 begin
 
-  sPath := StringReplace(sPath, abZip.BaseDirectory, '', [rfIgnoreCase, rfReplaceAll]);
+  sPath := StringReplace(sPath, abZip.BaseDirectory, '', [rfIgnoreCase]);
 
   bFound := FindFirst(sPath + '*.*', faAnyFile-faDirectory, srFile) = 0;
   while bFound do begin
@@ -346,9 +360,9 @@ begin
   FindClose(srFile);
 
   slDir := TStringList.Create;
-  bFound := FindFirst(sPath + '*.*', faDirectory, srFile) = 0;
+  bFound := FindFirst(sPath + '*.*', faAnyFile, srFile) = 0;
   while bFound do begin
-    if (srFile.Attr = faDirectory) and (srFile.Name[1] <> '.') then
+    if ((srFile.Attr and faDirectory) <> 0) and (srFile.Name[1] <> '.') then
       if LowerCase(sPath) <> 'settings\' then
         slDir.Add(sPath + srFile.Name + '\')
       else
