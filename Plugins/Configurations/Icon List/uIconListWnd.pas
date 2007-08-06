@@ -52,6 +52,7 @@ type
     procedure lb_iconlistClickItem(AText: string; AItem, ACol: Integer);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure lb_iconlistResize(Sender: TObject);
   private
     procedure BuildIconPreview;
   public
@@ -228,6 +229,11 @@ begin
   BuildIconPreview;
   SaveSettings;
   BroadcastGlobalUpdateMessage(suIconSet);
+end;
+
+procedure TfrmIconList.lb_iconlistResize(Sender: TObject);
+begin
+  Self.Height := lb_iconlist.Height;
 end;
 
 procedure TfrmIconList.FormResize(Sender: TObject);

@@ -79,6 +79,7 @@ begin
 
   CenterDefineConfigurationMode(scmLive);
 
+  frmIconList.BuildIconList;
   frmIconList.Show;
   result := frmIconList.Handle;
 end;
@@ -124,8 +125,6 @@ begin
     frmIconList.lb_iconlist.Colors.ItemColorSelected := AItemSelectedColor;
     frmIconList.lb_iconlist.Colors.BorderColor := AItemSelectedColor;
     frmIconList.lb_iconlist.Colors.BorderColorSelected := AItemSelectedColor;
-    if frmIconList.lb_iconlist.Count = 0 then
-       frmIconList.BuildIconList;
   end;
 end;
 
