@@ -44,7 +44,8 @@ uses
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
   uThemeSkinListWnd in 'uThemeSkinListWnd.pas' {frmSkinListWnd},
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas';
+  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
+  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
 
 {$E .dll}
 
@@ -81,9 +82,9 @@ begin
   ADisplayName := PChar('Skin');
 end;
 
-function SetSettingType: Integer;
+function SetSettingType: TSU_UPDATE_ENUM;
 begin
-  Result := SU_SKIN;
+  Result := suSkin;
 end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);

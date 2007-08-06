@@ -129,9 +129,9 @@ begin
   AStatusText := '0';
 end;
 
-function  SetSettingType: Integer;
+function  SetSettingType: TSU_UPDATE_ENUM;
 begin
-  Result := SU_SERVICE;
+  Result := suService;
 end;
 
 procedure GetCenterScheme(var ABackground: TColor;

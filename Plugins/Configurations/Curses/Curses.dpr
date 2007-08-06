@@ -49,7 +49,8 @@ uses
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
   uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
-  SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas';
+  SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
+  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
 
 {$E .dll}
 
@@ -158,9 +159,9 @@ begin
   ATabs.Add('Cursor',nil,'','');
 end;
 
-function SetSettingType : integer;
+function SetSettingType : TSU_UPDATE_ENUM;
 begin
-  result := SU_CURSOR;
+  result := suCursor;
 end;
 
 procedure UpdatePreview(var ABmp: TBitmap32);

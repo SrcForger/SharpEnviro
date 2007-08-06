@@ -200,9 +200,9 @@ begin
   ATabs.Add('Bars',nil,'',IntToStr(frmBarList.lbBarList.Count));
 end;
 
-function SetSettingType : integer;
+function SetSettingType : TSU_UPDATE_ENUM;
 begin
-  result := SU_SHARPBAR;
+  result := suSharpBar;
 end;
 
 

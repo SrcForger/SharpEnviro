@@ -40,13 +40,11 @@ uses
   SysUtils,
   JvPageList,
   Graphics,
-  uSharpEDesktopSettingsWnd in 'uSharpEDesktopSettingsWnd.pas'
-    {frmDesktopSettings},
+  uSharpEDesktopSettingsWnd in 'uSharpEDesktopSettingsWnd.pas' {frmDesktopSettings},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  uSharpCenterPluginTabList in
-    '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
-  SharpEFontSelectorFontList in
-    '..\..\..\Common\Delphi Components\SharpEFontSelector\SharpEFontSelectorFontList.pas';
+  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
+  SharpEFontSelectorFontList in '..\..\..\Common\Delphi Components\SharpEFontSelector\SharpEFontSelectorFontList.pas',
+  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
 
 {$E .dll}
 
@@ -281,9 +279,9 @@ begin
   end;
 end;
 
-function SetSettingType: integer;
+function SetSettingType: TSU_UPDATE_ENUM;
 begin
-  result := SU_DESKTOPICON;
+  result := suDesktopIcon;
 end;
 
 exports

@@ -45,7 +45,8 @@ uses
   uWPSettingsWnd in 'uWPSettingsWnd.pas' {frmWPSettings},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   uSharpDeskTDeskSettings in '..\..\..\Components\SharpDesk\Units\uSharpDeskTDeskSettings.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas';
+  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
+  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
 
 {$E .dll}
 
@@ -322,9 +323,9 @@ begin
   end;
 end;
 
-function SetSettingType : integer;
+function SetSettingType : TSU_UPDATE_ENUM;
 begin
-  result := SU_WALLPAPER;
+  result := suWallpaper;
 end;
 
 procedure UpdatePreview(var ABmp: TBitmap32);

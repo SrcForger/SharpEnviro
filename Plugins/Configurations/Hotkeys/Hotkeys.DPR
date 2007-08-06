@@ -148,9 +148,9 @@ begin
   Result := False;
 end;
 
-function SetSettingType : integer;
+function SetSettingType : TSU_UPDATE_ENUM;
 begin
-  result := SU_SERVICE;
+  result := suService;
 end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);

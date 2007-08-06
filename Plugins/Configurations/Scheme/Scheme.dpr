@@ -68,7 +68,7 @@ end;
 
 function SetSettingType: Integer;
 begin
-  Result := SU_SCHEME;
+  Result := suScheme;
 end;
 
 procedure Close;
