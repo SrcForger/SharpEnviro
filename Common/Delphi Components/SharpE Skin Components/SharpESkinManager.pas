@@ -44,7 +44,8 @@ uses
   SharpESkin,
   SharedBitmapList,
   SharpEScheme,
-  SharpApi;
+  SharpApi,
+  SharpCenterApi;
 
 type
   TSkinSource = (ssDefault, ssSystem, ssComponent);
@@ -245,14 +246,14 @@ begin
 
   if (Msg.Msg = WM_SHARPEUPDATESETTINGS) then
   begin
-    if (Msg.WParam = SU_SKINFILECHANGED) then
+    if (Msg.WParam = Integer(suSkinFileChanged)) then
     begin
       if not (csDesigning in ComponentState) then
          SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
       UpdateSkin;
       exit;
     end;
-    if (Msg.WParam = SU_SCHEME) then
+    if (Msg.WParam = Integer(suScheme)) then
     begin
       if not (csDesigning in ComponentState) then
          SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
