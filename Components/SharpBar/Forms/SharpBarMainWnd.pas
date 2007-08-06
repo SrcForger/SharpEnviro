@@ -38,7 +38,7 @@ uses
   GR32, uSharpEModuleManager, DateUtils, PngImageList, SharpEBar, SharpThemeApi,
   SharpEBaseControls, ImgList, Controls, ExtCtrls, uSkinManagerThreads,
   uSystemFuncs, Types, AppEvnts, SharpESkin, Registry,
-  SharpGraphicsUtils, Math;
+  SharpGraphicsUtils, Math, SharpCenterApi;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -411,7 +411,7 @@ begin
   if SharpEBar.Throbber.Visible then
      SharpEbar.Throbber.Repaint;
 
-  ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
+  ModuleManager.BroadcastPluginUpdate(suBackground);
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
 
   FBarLock := False;
@@ -566,8 +566,8 @@ begin
 
   // Step1: Update settings and prepare modules for updating
   case msg.WParam of
-    SU_SKINFILECHANGED : SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
-    SU_THEME :
+    Integer(suSkinFileChanged) : SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
+    Integer(suTheme) :
       begin
         SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme,tpIconSet]);
         // Check if SharpDesk is running
@@ -579,17 +579,16 @@ begin
           ThemeHideTimer.Enabled := True;
         end;
       end;
-    SU_SCHEME :
+    Integer(suScheme) :
       begin
         SharpThemeApi.LoadTheme(True,[tpScheme]);
         SkinManager.UpdateScheme;
       end;
-    SU_ICONSET : SharpThemeApi.LoadTheme(True,[tpIconSet]);
+    Integer(suIconSet) : SharpThemeApi.LoadTheme(True,[tpIconSet]);
   end;
 
-  if //(msg.WParam = SU_THEME) or
-     (msg.WParam = SU_SCHEME)
-     or (msg.WParam = SU_SKINFILECHANGED)  then
+  if (msg.WParam = Integer(suScheme))
+     or (msg.WParam = Integer(suSkinFileChanged))  then
      begin
        // Only update the skin if scheme or skin file changed...
        if not FStartup then LockWindow(Handle);
@@ -605,18 +604,18 @@ begin
          SharpEBar.Throbber.UpdateSkin;
          SharpEbar.Throbber.Repaint;
        end;
-       ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
+       ModuleManager.BroadcastPluginUpdate(suBackground);
      end;
 
   // Step2: Update modules
-  ModuleManager.BroadcastPluginUpdate(msg.WParam);
+  ModuleManager.BroadcastPluginUpdate(TSU_UPDATE_ENUM(msg.WParam));
 
   // Step3: Modules updated, now update the bar
-  if (msg.WParam = SU_SKINFILECHANGED) then
+  if (msg.WParam = Integer(suSkinFileChanged)) then
      ModuleManager.ReCalculateModuleSize;
 
-  if (msg.WParam = SU_SKINFILECHANGED) or
-     (msg.Wparam = SU_SCHEME) then
+  if (msg.WParam = Integer(suSkinFileChanged)) or
+     (msg.Wparam = Integer(suScheme)) then
       RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
 
   if FBarLock then
@@ -1290,7 +1289,7 @@ procedure TSharpBarMainForm.AutoPos1Click(Sender: TObject);
 begin
   SharpEBar.VertPos := vpTop;
   SharpEBar.UpdateSkin;
-  ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
+  ModuleManager.BroadcastPluginUpdate(suBackground);
   ModuleManager.FixModulePositions;
   ModuleManager.RefreshMiniThrobbers;
   SaveBarSettings;
@@ -1300,7 +1299,7 @@ procedure TSharpBarMainForm.Bottom1Click(Sender: TObject);
 begin
   SharpEBar.VertPos := vpBottom;
   SharpEBar.UpdateSkin;
-  ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
+  ModuleManager.BroadcastPluginUpdate(suBackground);
   ModuleManager.FixModulePositions;
   SaveBarSettings;
 end;
@@ -1486,7 +1485,7 @@ begin
   finally
     XML.Free;
   end;
-  SharpApi.SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKIN,0);
+  SharpCenterApi.BroadcastGlobalUpdateMessage(suSkin);
 end;
 
 procedure TSharpBarMainForm.OnSkinSelectItemClick(Sender : TObject);
@@ -1535,7 +1534,7 @@ begin
     end;
   end;
   FindClose(sr);
-  SharpApi.SharpEBroadCast(WM_SHARPEUPDATESETTINGS,SU_SKIN,0);
+  SharpCenterApi.BroadcastGlobalUpdateMessage(suSkin);
 end;
 
 procedure TSharpBarMainForm.SharpEBar1ResetSize(Sender: TObject);
@@ -1759,7 +1758,7 @@ begin
         SharpEBar.UpdateSkin;
         ModuleManager.FixModulePositions;
         ModuleManager.RefreshMiniThrobbers;
-        ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND,-2);
+        ModuleManager.BroadcastPluginUpdate(suBackground,-2);
         RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
       end;
       if oVP <> SharpEBar.VertPos then
@@ -1767,7 +1766,7 @@ begin
         UpdateBGImage;
         SharpEBar.UpdateSkin;
         ModuleManager.FixModulePositions;
-        ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND,-2);
+        ModuleManager.BroadcastPluginUpdate(suBackground,-2);
         ModuleManager.RefreshMiniThrobbers;
         RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
       end;
@@ -1945,7 +1944,7 @@ begin
 
   //ModuleManager.UpdateModuleSkins;
   ModuleManager.FixModulePositions;
-  ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND);
+  ModuleManager.BroadcastPluginUpdate(suBackground);
 
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
   ModuleManager.RefreshMiniThrobbers;
@@ -2033,7 +2032,7 @@ begin
      Width := Monitor.Width;
 
 //  UpdateBGImage;
-  ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND,-2);
+  ModuleManager.BroadcastPluginUpdate(suBackground,-2);
 end;
 
 procedure TSharpBarMainForm.DelayTimer1Timer(Sender: TObject);

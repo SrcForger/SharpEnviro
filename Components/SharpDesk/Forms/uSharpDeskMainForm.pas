@@ -593,13 +593,13 @@ procedure TSharpDeskMainForm.WMSharpEUppdateSettings(var msg: TMessage);
 begin
   if msg.WParam < 0 then exit;
 
-  if (msg.WParam = SU_THEME) then
+  if (msg.WParam = Integer(suTheme)) then
   begin
     LoadTheme(True);
     exit;
   end;
 
-  if (msg.WParam = SU_WALLPAPER) then
+  if (msg.WParam = Integer(suWallpaper)) then
   begin
     SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
     Background.Reload;
@@ -609,14 +609,14 @@ begin
     SharpApi.SharpEBroadCast(WM_DESKBACKGROUNDCHANGED,0,0);
   end;
 
-  if (msg.WParam = SU_SHARPDESK) then
+  if (msg.WParam = Integer(suSharpDesk)) then
   begin
     SharpDesk.DeskSettings.ReloadSettings;
     if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
        else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
   end;
 
-  if (msg.WParam = SU_DESKTOPICON) or (msg.WParam = SU_ICONSET) then
+  if (msg.WParam = Integer(suDesktopIcon)) or (msg.WParam = Integer(suIconSet)) then
   begin
     SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
     SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);

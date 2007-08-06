@@ -45,6 +45,7 @@ uses
   SharpESkinManager,
   SharpEBar,
   SharpEMiniThrobber,
+  SharpCenterApi,
   JvSimpleXML,
   Controls;
 
@@ -95,7 +96,7 @@ type
                      DllShowSettingsWnd : procedure(ID : integer);
                      DllRefresh         : procedure(ID : integer);
                      DllSetSize         : procedure(ID : integer; NewWidth : integer);
-                     DllUpdateMessage   : procedure(Part : integer; Param : integer);
+                     DllUpdateMessage   : procedure(Part : TSU_UPDATE_ENUM; Param : integer);
                      DllInitModule      : procedure(ID : integer);
                      procedure Clear;
                      constructor Create(pFileName : string; pParent : hwnd;
@@ -185,7 +186,7 @@ type
                      procedure MoveModule(Index, Direction : integer);
                      function SendPluginMessage(ID : integer; msg : string) : integer;
                      procedure BroadcastPluginMessage(msg : string);
-                     procedure BroadcastPluginUpdate(part : integer; param : integer = 0);
+                     procedure BroadcastPluginUpdate(part : TSU_UPDATE_ENUM; param : integer = 0);
                      procedure BroadCastModuleRefresh;
                      procedure ReCalculateModuleSize(Broadcast : boolean = True);
                      procedure OnMiniThrobberClick(Sender : TObject);
@@ -290,7 +291,7 @@ begin
 end;
 
 // Sends an update message to all modules
-procedure TModuleManager.BroadcastPluginUpdate(part : integer; param : integer = 0);
+procedure TModuleManager.BroadcastPluginUpdate(part : TSU_UPDATE_ENUM; param : integer = 0);
 var
   n : integer;
   mf : TModuleFile;
