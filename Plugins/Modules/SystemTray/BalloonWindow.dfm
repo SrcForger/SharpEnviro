@@ -5,7 +5,7 @@ object BalloonForm: TBalloonForm
   Caption = 'BalloonForm'
   ClientHeight = 250
   ClientWidth = 434
-  Color = clBtnFace
+  Color = clInfoText
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11

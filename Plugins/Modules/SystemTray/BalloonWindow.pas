@@ -381,18 +381,19 @@ var
   hej: hbrush;
   i: integer;
 begin
-  backbuffer.Canvas.Pen.Color := $C5958D;
-  backbuffer.Canvas.Brush.Color := $C5958D;
-  self.Canvas.Brush.Color := $C5958D;
+  backbuffer.Canvas.Pen.Color := clInfoBk;
+  backbuffer.Canvas.Brush.Color := clInfoBk;
+  self.Canvas.Brush.Color := clInfoBk;
   PaintRgn(self.canvas.Handle, BalloonRgn);
   hej := CreateSolidBrush(0);
   FrameRgn(self.canvas.Handle, BalloonRgn, hej, 1, 1);
   Deleteobject(hej);
   backbuffer.Canvas.Rectangle(0, 0, 20, 20);
   backbuffer.Canvas.Draw(0, 0, ChoosedIcon);
-  createdropshadow(@backbuffer, $C5958D, 0, 0);
+  createdropshadow(@backbuffer, clInfoBk, 0, 0);
   self.Canvas.Draw(11, 8 + offset, BackBuffer);
   Canvas.Font.Style := [fsBold];
+  Canvas.Font.Color := clInfoText;
   self.Canvas.TextOut(34, 10 + offset, FixedTitle);
   canvas.Font.Style := [];
   for i := 1 to RowCount do
