@@ -59,20 +59,23 @@ function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 begin
   if frmThemeList = nil then frmThemeList := TfrmThemeList.Create(nil);
 
-  uVistaFuncs.SetVistaFonts(frmThemeList);
-  frmThemeList.ParentWindow := aowner;
-  frmThemeList.Left := 0;
-  frmThemeList.Top := 0;
-  frmThemeList.BorderStyle := bsNone;
-  frmThemeList.Show;
+  // Set configuration mode, and assign vista fonts
+  SetVistaFonts(frmThemeList);
+  CenterDefineConfigurationMode(scmLive);
+
+  with frmThemeList do begin
+    ParentWindow := aowner;
+    Left := 0;
+    Top := 0;
+    BorderStyle := bsNone;
+    Show;
+
+    // Define which tabs are visible
+    UpdateEditTabs;
+  end;
+
+  // return handle to the new window
   result := frmThemeList.Handle;
-
-  frmThemeList.UpdateEditTabs;
-end;
-
-procedure Save;
-begin
-   frmThemeList.ThemeList.Save;
 end;
 
 procedure Close;
@@ -101,9 +104,6 @@ begin
   frmEditItem.BorderStyle := bsNone;
   frmEditItem.Show;
   frmThemeList.EditMode := AEditMode;
-
-  //force
-  frmEditItem.SetFocus;
 
   if frmThemeList.UpdateUI then begin
     result := frmEditItem.Handle;
@@ -168,18 +168,6 @@ begin
   AStatusText := Pchar(IntToStr(n));
 end;
 
-procedure ClickBtn(AButtonID: TSCB_BUTTON_ENUM; AButton:TPngSpeedButton; AText:String);
-var
-  id, newid:Integer;
-  tmp: TThemeListItem;
-begin
-  Case AButtonID of
-      scbConfigure: begin
-        frmThemeList.ConfigureItem;
-      end;
-  end;
-end;
-
 function SetBtnState(AButtonID: TSCB_BUTTON_ENUM): Boolean;
 begin
   Result := False;
@@ -190,7 +178,7 @@ begin
         Result := True else
         Result := False;
     end;
-    scbConfigure: Result := True;
+    scbConfigure: Result := False;
   end;
 end;
 
@@ -214,25 +202,17 @@ begin
   ATabs.Add('Themes',nil,'',IntToStr(frmThemeList.lbThemeList.Count));
 end;
 
-function SetSettingType : integer;
-begin
-  result := SU_THEME;
-end;
-
 
 exports
   Open,
   Close,
-  Save,
   OpenEdit,
   CloseEdit,
   SetDisplayText,
   SetStatusText,
   SetBtnState,
-  SetSettingType,
   GetCenterScheme,
-  AddTabs,
-  ClickBtn;
+  AddTabs;
 
 end.
 

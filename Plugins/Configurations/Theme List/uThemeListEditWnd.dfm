@@ -4,7 +4,7 @@ object frmEditItem: TfrmEditItem
   BorderStyle = bsNone
   Caption = 'frmEditItem'
   ClientHeight = 69
-  ClientWidth = 505
+  ClientWidth = 483
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,23 +13,26 @@ object frmEditItem: TfrmEditItem
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object plEdit: TJvPageList
     Left = 0
     Top = 0
-    Width = 505
+    Width = 483
     Height = 69
     ActivePage = pagEdit
     PropagateEnable = False
     Align = alTop
-    object pagEdit: TJvStandardPage
+    ExplicitWidth = 505
+    object pagAdd: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 505
+      Width = 483
       Height = 69
+      ExplicitWidth = 505
       DesignSize = (
-        505
+        483
         69)
       object Label3: TJvLabel
         Left = 18
@@ -59,7 +62,7 @@ object frmEditItem: TfrmEditItem
       object edAuthor: TLabeledEdit
         Left = 264
         Top = 8
-        Width = 218
+        Width = 196
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 16
@@ -69,11 +72,12 @@ object frmEditItem: TfrmEditItem
         LabelSpacing = 6
         TabOrder = 1
         OnKeyPress = edThemeNameKeyPress
+        ExplicitWidth = 218
       end
       object edWebsite: TLabeledEdit
         Left = 288
         Top = 40
-        Width = 194
+        Width = 172
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 43
@@ -83,6 +87,7 @@ object frmEditItem: TfrmEditItem
         LabelSpacing = 6
         TabOrder = 2
         OnKeyPress = edThemeNameKeyPress
+        ExplicitWidth = 194
       end
       object cbBasedOn: TComboBox
         Left = 76
@@ -95,46 +100,111 @@ object frmEditItem: TfrmEditItem
         OnSelect = cbBasedOnSelect
       end
     end
-    object pagDelete: TJvStandardPage
+    object pagEdit: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 505
+      Width = 483
       Height = 69
-      BorderWidth = 8
-      object Label2: TLabel
-        Left = 0
-        Top = 13
-        Width = 304
-        Height = 13
-        Align = alTop
-        Caption = 'Are you sure you want to delete the currently selected Theme?'
+      Caption = 'pagEdit'
+      ExplicitWidth = 505
+      DesignSize = (
+        483
+        69)
+      object img: TImage
+        AlignWithMargins = True
+        Left = 8
+        Top = 8
+        Width = 65
+        Height = 53
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 8
+        Align = alLeft
       end
-      object Label1: TJvLabel
-        Left = 0
-        Top = 0
-        Width = 78
+      object lblName: TLabel
+        Left = 84
+        Top = 16
+        Width = 295
         Height = 13
-        Align = alTop
-        Caption = 'Confirmation:'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentFont = False
+        Anchors = [akLeft, akTop, akRight]
+        AutoSize = False
+        Caption = 'The Greater Eye by Lee Green'
+        EllipsisPosition = epEndEllipsis
+        Transparent = False
+        ExplicitWidth = 317
+      end
+      object lblSite: TJvLabel
+        Left = 84
+        Top = 36
+        Width = 295
+        Height = 16
+        Cursor = crHandPoint
+        AutoSize = False
+        Caption = 'http://www.sharpe-shell.org'
+        Anchors = [akLeft, akTop, akRight]
+        Layout = tlCenter
+        Transparent = True
+        OnClick = lblSiteClick
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
         Images = pilError
+        ImageIndex = 1
+        TextEllipsis = teEndEllipsis
+        ExplicitWidth = 317
+      end
+      object btnConfigure: TButton
+        Left = 391
+        Top = 22
+        Width = 81
+        Height = 25
+        Anchors = [akTop, akRight]
+        Caption = 'Configure'
+        TabOrder = 0
+        OnClick = btnConfigureClick
+        ExplicitLeft = 413
+      end
+    end
+    object pagDelete: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 483
+      Height = 69
+      BorderWidth = 8
+      ExplicitWidth = 505
+      object Label2: TLabel
+        Left = 0
+        Top = 13
+        Width = 467
+        Height = 13
+        Align = alTop
+        Caption = 'Are you sure you want to delete the currently selected Theme?'
+        ExplicitWidth = 304
+      end
+      object Label1: TJvLabel
+        Left = 0
+        Top = 0
+        Width = 467
+        Height = 13
+        Align = alTop
+        Caption = 'Confirmation:'
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
+        Images = pilError
+        ExplicitWidth = 67
       end
     end
   end
   object vals: TJvValidators
     ErrorIndicator = errorinc
-    Left = 376
-    Top = 16
+    Left = 292
+    Top = 40
     object valThemeName: TJvRequiredFieldValidator
       Valid = True
       ControlToValidate = edName
@@ -163,8 +233,8 @@ object frmEditItem: TfrmEditItem
     BlinkStyle = ebsNeverBlink
     Images = pilError
     ImageIndex = 0
-    Left = 448
-    Top = 16
+    Left = 292
+    Top = 8
   end
   object pilError: TPngImageList
     PngImages = <
@@ -196,8 +266,42 @@ object frmEditItem: TfrmEditItem
           B00000000049454E44AE426082}
         Name = 'PngImage0'
         Background = clWindow
+      end
+      item
+        PngImage.Data = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          6100000006624B474400FF00FF00FFA0BDA793000000097048597300000DD700
+          000DD70142289B780000000774494D45000000000000000973942E0000032149
+          44415478DAA593494C53511486FFD7D779A02D0261105AC0010165505B277024
+          B1C401351216262E4C08312E8C31A038C5854374818961E142DDA86163AC1AE6
+          A0629568834A44299432B43688166C2DA5E37BAF3E9E95188D2B6FF2E7DEDC73
+          F2DD7BEEFD0F81FF1CC49F1BDAF24B6922227A19246908D38C9A6053847CC24D
+          509439C010D5E3ADF5CE7F02320D176A081EEF7AF6622D3F2D3D050A858C4B08
+          068398704E6278688C42247C69A8E5F4D9BF005AC3C5434AA5ECC68692623257
+          9B888CD42424C9A248514BE0F187F1F4AD1D7D3617DEBD1D8094C75CEDB97BB4
+          761ED070C7A46B6C7AF9AC6257A9E4D8BE02CC0642104A154855F241B2190E97
+          0F8FBA2DE8EA1D83223E1E3DA6DE28685A3BDA76DAC101CA8FDC6CA2F8D2CAD2
+          955944C5FA6C2C4850832D058802229241EF8013A68F5FE1F17C075F2040BF75
+          028E21DB93A1D6335B39C0B28A2B767DC9EA8CE43801F69415233D5E82E900C0
+          6719DF3C33B876AB1D5E7F083C3E8959B69CAC451ABC7A6EF60D3EAC5510B197
+          0F55EC2D13E6A7ABB0A96821A6FC8050C0473842A3C3F41E2FCC166E1D8A5010
+          8844282CCAC563632733D67C92E40099E517BDFBF76F579CAACC83CBEDC7E084
+          0F84480E8AA63162FF828EEE770804230884C288500C4A4A57E3D1834E66BC25
+          06607FA06747F97ADD89AA62522D17E1FE9301986DDF909FA3654FA5D9EB0761
+          B17EC2A0D5CEBDFB8A821C98BA7AA6465AEA137F95703E2F4773BC6AA75EEA74
+          4C60D8318D940405C4EA040458C06C200C920E8308F92196CBF1E6E3A7A8CD62
+          BB676B3B73E017208D47C0B2718B5E3EE30B10F65127942A0536AFCB657F8B06
+          4347B15CA38441AF45DBEB31DC6E7AEA2245629DB1E1E0F8BC9132CACE1D9629
+          558DFAB5859872B9410A85E091245B338D249504BBD76642B7340993935391BE
+          FEC1E6A6DB0D75EDEDEDD6DFADAC4A5E537D5CACD6D42D5E9AC559392E4ECE05
+          66BE7B4179BE304B1205DE2519F2E1996967474D4D4D2345519FFF6CA6646972
+          FEBAD4BC6DD5A464812E44F394739B4C78D6CBF89C1F566988376A19CF6A341A
+          9BDD6EB7830D45FFEAC698BDE3582963B3885568EE22AC3CACBCE03CFA73FC00
+          3E874620306956960000000049454E44AE426082}
+        Name = 'PngImage1'
+        Background = clWindow
       end>
-    Left = 412
-    Top = 16
+    Left = 292
+    Top = 28
   end
 end

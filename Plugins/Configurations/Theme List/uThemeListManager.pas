@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, shellapi, JclFileUtils, JclStrings;
+  Dialogs, StdCtrls, JvSimpleXml, shellapi, JclFileUtils, JclStrings,
+    SharpEListBoxEx;
 
 type
   TThemeListItem = Class
@@ -15,8 +16,8 @@ type
     FWebsite: String;
     FPreviewFileName: String;
     FTemplate: Pointer;
-    FDeleted: Boolean;
     FFileName: String;
+    FIsReadOnly: Boolean;
   public
     constructor Create(AName:String; AAuthor:String);
     property FileName: String read FFileName write FFileName;
@@ -25,78 +26,91 @@ type
     Property Comment: String read FComment write FComment;
     Property Website: String read FWebsite write FWebsite;
     Property PreviewFileName: String read FPreviewFileName write FPreviewFileName;
+    property IsReadOnly: Boolean read FIsReadOnly write FIsReadOnly;
 
-    Property Deleted: Boolean read FDeleted write FDeleted;
     Property Template: Pointer read FTemplate write FTemplate;
 end;
 
-type
-  TThemeList = Class
-  private
-    FList: TList;
-    function GetItem(Index: Integer): TThemeListItem;
-    procedure SetItem(Index: Integer; const Value: TThemeListItem);
+  TThemeManager = Class
+    private
+      function CopyFolder(Asrc, ADest: String):Boolean;
+    public
+      procedure Add(AName, AAuthor, Awebsite:string;
+        ATemplate: string=''; AReadOnly:Boolean=False);
+      procedure Edit(AName, AAuthor, AWebsite: String);
+      procedure Delete(AName: String);
+      procedure SetTheme(AName: String);
+      Function GetDefaultTheme:string;
 
-    function RenameFolder(Asrc, ADest: String):Boolean;
-    function CopyFolder(Asrc, ADest: String):Boolean;
-  public
-    constructor Create;
-    destructor Destroy; override;
-
-    Function Add: TThemeListItem; overload;
-    Function Add(AName: String; AAuthor: String; AComment:String='';
-      AWebSite:String=''):TThemeListItem; overload;
-
-    Procedure Delete(AItem:TThemeListItem);
-    function IndexOf(AItem:TThemeListItem):Integer;
-    function IndexOfThemeName(AThemeName:String):Integer;
-
-    Procedure Clear;
-
-    function Count:Integer;
-    Function GetDefaultThemeIdx: Integer;
-    Procedure SetDefaultThemeIdx(AItem: TThemeListItem);
-
-    procedure Load(AThemeDir: String); overload;
-    procedure Load; overload;
-
-    procedure Save(AThemeDir: String); overload;
-    procedure Save; overload;
-
-    property Item[Index: Integer]: TThemeListItem read GetItem write SetItem; default;
-
-    procedure GetThemeList(AStringList:TStrings);
-  end;
+      procedure GetThemeList(AStringList:TStrings);
+  End;
 
 implementation
 
 uses
-  SharpApi, uThemeListWnd;
+  SharpApi, uThemeListWnd, JclSimpleXml;
 
-{ TThemeList }
+{ TThemeListItem }
 
-function TThemeList.Add(AName, AAuthor, AComment,
-  AWebSite: String): TThemeListItem;
+constructor TThemeListItem.Create(AName, AAuthor: String);
 begin
-  Result := TThemeListItem.Create(AName, AAuthor);
-  Result.Comment := AComment;
-  Result.Website := AWebSite;
-
-  FList.Add(Result);
+  FAuthor := AAuthor;
+  FName := AName;
+  FTemplate := nil;
+  FWebsite := '';
+  FComment := '';
+  FIsReadOnly := False;
 end;
 
-function TThemeList.Add: TThemeListItem;
+{ TThemeManager }
+
+procedure TThemeManager.Add(AName, AAuthor, Awebsite:string;
+  ATemplate: string=''; AReadOnly:Boolean=False);
+var
+  xml: TJvSimpleXml;
+  sThemeDir: String;
+  sSrc: string;
+  sDest: string;
 begin
-  Result := TThemeListItem.Create('','');
-  FList.Add(Result);
+  // Get theme dir
+  AName := trim(StrRemoveChars(AName,
+      ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
+
+  sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
+
+  // Check template
+  if ATemplate <> '' then begin
+    sSrc := sThemeDir + ATemplate;
+    sDest := sThemeDir + AName;
+
+    CopyFolder(sSrc,sDest);
+  end;
+
+  xml := TJvSimpleXML.Create(nil);
+  xml.Root.Name := 'SharpETheme';
+  Try
+    with Xml.Root.items do begin
+      Add('Name',AName);
+      Add('Author',AAuthor);
+      Add('Website',AWebsite);
+      Add('ReadOnly',AReadOnly);
+    end;
+  Finally
+
+    // create folder
+    if Not(DirectoryExists(sThemeDir + AName)) then
+      ForceDirectories(sThemeDir + AName);
+
+    // rename
+    //RenameFolder(extractfilepath(tmpitem.FileName),sThemeDir+tmpItem.Name+'\');
+    sDest := sThemeDir + AName+'\'+'Theme.xml';
+
+    xml.SaveToFile(sDest);
+    xml.Free;
+  End;
 end;
 
-procedure TThemeList.Clear;
-begin
-  FList.Clear;
-end;
-
-function TThemeList.CopyFolder(Asrc, ADest: String): Boolean;
+function TThemeManager.CopyFolder(Asrc, ADest: String): Boolean;
 var
   i: Integer;
   sList: TStringList;
@@ -120,56 +134,60 @@ begin
    End;
 end;
 
-function TThemeList.Count:Integer;
+procedure TThemeManager.Delete(AName: String);
+var
+  sThemeDir: PAnsiChar;
+  sSrc: PAnsiChar;
 begin
-  Result := FList.Count;
+  sThemeDir := PAnsiChar(GetSharpeUserSettingsPath + 'Themes\');
+  sSrc := PAnsiChar(sThemeDir + AName);
+
+  DeleteDirectory(sSrc,True);
 end;
 
-constructor TThemeList.Create;
+procedure TThemeManager.Edit(AName, AAuthor, AWebsite: String);
+var
+  xml: TJvSimpleXml;
+  sThemeDir: String;
+  sXml: string;
 begin
-  inherited;
+  // Get theme dir
+  sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
+  sXml := sThemeDir+AName+'\'+'theme.xml';
 
-  FList := TList.Create;
+  xml := TJvSimpleXML.Create(nil);
+  xml.LoadFromFile(sXml);
+  Try
+    with Xml.Root.items do begin
+
+      ItemNamed['Name'].Value := AName;
+      ItemNamed['Author'].Value := AAuthor;
+      ItemNamed['Website'].Value := AWebsite;
+    end;
+  Finally
+    xml.SaveToFile(sXml);
+  End;
 end;
 
-procedure TThemeList.Delete(AItem: TThemeListItem);
-begin
-  FList.Delete(IndexOf(AItem));
-end;
-
-destructor TThemeList.Destroy;
-begin
-  inherited;
-
-  FList.Free;
-end;
-
-function TThemeList.GetDefaultThemeIdx: Integer;
+function TThemeManager.GetDefaultTheme: string;
 var
   xml:TJvSimpleXML;
-  sThemeName, s: String;
+  s: String;
 begin
-  Result := -1;
-  if Self.Count = 0 then exit;
-
+  Result := '';
   s := GetSharpeUserSettingsPath + 'SharpE.xml';
   xml := TJvSimpleXML.Create(nil);
   Try
       xml.LoadFromFile(s);
-      sThemeName := xml.Root.Items.Value('Theme','');
-      Result := IndexOfThemeName(sThemeName);
+      Result := xml.Root.Items.Value('Theme','');
 
-    Finally
-      xml.Free;
-    End;
+  Finally
+    xml.Free;
+  End;
 end;
 
-function TThemeList.GetItem(Index: Integer): TThemeListItem;
-begin
-  Result := FList.Items[Index];
-end;
 
-procedure TThemeList.GetThemeList(AStringList: TStrings);
+procedure TThemeManager.GetThemeList(AStringList: TStrings);
 var
   sThemeDir, sPreview: string;
   xml: TJvSimpleXml;
@@ -212,170 +230,12 @@ begin
   End;
 end;
 
-function TThemeList.IndexOf(AItem: TThemeListItem): Integer;
-begin
-  Result := FList.IndexOf(AItem);
-end;
-
-function TThemeList.IndexOfThemeName(AThemeName: String): Integer;
-var
-  i:Integer;
-  tmp: TThemeListItem;
-begin
-  Result := -1;
-  for i := 0 to Pred(Count) do begin
-    tmp := Item[i];
-    if CompareText(tmp.Name,AThemeName) = 0 then begin
-      result := i;
-      exit;
-    end;
-  end;
-end;
-
-procedure TThemeList.Load;
-var
-  sThemeDir, sPreview: string;
-  xml: TJvSimpleXml;
-  sList: TStringList;
-  i: Integer;
-  newItem: TThemeListItem;
-begin
-  sThemeDir := GetSharpeUserSettingsPath + 'Themes\*theme.xml';
-
-  sList := TStringList.Create;
-  Try
-    AdvBuildFileList(sThemeDir,faDirectory,sList,amAny,[flRecursive,flFullNames]);
-
-    For i := 0 to Pred(sList.Count) do begin
-      xml := TJvSimpleXML.Create(nil);
-      Try
-        xml.LoadFromFile(sList[i]);
-
-        newItem := Add;
-        newItem.FileName := sList[i];
-        newItem.Name := XML.Root.Items.Value('Name','Invalid_Name');
-        newItem.Author := XML.Root.Items.Value('Author','Invalid_Author');
-        newItem.Comment := XML.Root.Items.Value('Comment','Invalid_Comment');
-        newItem.Website := XML.Root.Items.Value('Website','Invalid_Website');
-
-        sPreview := ExtractFilePath(SList[i]) + 'Preview.png';
-        if FileExists(sPreview) then
-          newItem.PreviewFileName := sPreview else
-          newItem.PreviewFileName := '';
-
-
-      Finally
-        xml.Free;
-      End;
-    end;
-  Finally
-    sList.Free;
-  End;
-end;
-
-procedure TThemeList.Load(AThemeDir: String);
-begin
-
-end;
-
-function TThemeList.RenameFolder(Asrc, ADest: String): Boolean;
-var
-  shellinfo : TShFileOpStruct;
-begin
-  Result := True;
-  with shellinfo do
-  begin
-    wnd    := 0;
-    wFunc  := FO_RENAME;
-    pFrom  := PChar(PathRemoveSeparator(Asrc));
-    pTo    := PChar(PathRemoveSeparator(ADest));
-    fFlags := FOF_FILESONLY or FOF_ALLOWUNDO or FOF_SILENT or FOF_NOCONFIRMATION;
-  end;
-  SHFileOperation(shellinfo);
-end;
-
-procedure TThemeList.Save;
-var
-  sThemeDir, sSrc, sDest: string;
-  xml: TJvSimpleXml;
-  i: Integer;
-
-  tmpItem: TThemeListItem;
-begin
-  sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
-
-  // Create and delete items
-  For i := Pred(Count) downto 0 do begin
-
-    // Create Items
-    if Item[i].Template <> nil then begin
-
-      tmpItem := Item[i];
-      sSrc := sThemeDir + TThemeListItem(tmpItem.Template).Name;
-      sDest := sThemeDir + tmpItem.Name;
-
-      CopyFolder(sSrc,sDest);
-    end
-
-    // Delete items
-    else if Item[i].Deleted then begin
-
-      tmpItem := Item[i];
-      sSrc := sThemeDir + tmpItem.Name;
-      DeleteDirectory(sSrc,True);
-      Delete(tmpItem);
-    end;
-  end;
-
-  // Save everything!
-  For i := 0 to Pred(Count) do begin
-    tmpItem := Item[i];
-
-    xml := TJvSimpleXML.Create(nil);
-    xml.Root.Name := 'SharpETheme';
-      Try
-        with Xml.Root.items do begin
-          Add('Name',tmpItem.Name);
-          Add('Author',tmpItem.Author);
-          Add('Comment',tmpItem.Comment);
-          Add('Website',tmpItem.Website)
-        end;
-
-
-      Finally
-
-        // create folder
-        if Not(DirectoryExists(extractfilepath(tmpitem.FileName))) then
-          ForceDirectories(extractfilepath(tmpitem.FileName));
-
-        // rename
-        RenameFolder(extractfilepath(tmpitem.FileName),sThemeDir+tmpItem.Name+'\');
-        sDest := sThemeDir+tmpItem.Name+'\'+'Theme.xml';
-
-        xml.SaveToFile(sDest);
-
-        xml.Free;
-      End;
-
-  end;
-
-  // Set selected theme as default
-  SetDefaultThemeIdx(TThemeListItem(frmThemeList.lbThemeList.Item[frmThemeList.lbThemeList.ItemIndex].Data));
-
-end;
-
-procedure TThemeList.Save(AThemeDir: String);
-begin
-
-end;
-
-procedure TThemeList.SetDefaultThemeIdx(AItem: TThemeListItem);
+procedure TThemeManager.SetTheme(AName: String);
 var
   xml:TJvSimpleXML;
   elem: TJvSimpleXMLElem;
   s, sDest, sThemeDir: String;
 begin
-  if Self.Count = 0 then exit;
 
   sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
   sDest := GetSharpeUserSettingsPath + 'SharpE.xml';
@@ -387,30 +247,13 @@ begin
     elem := xml.Root.Items.ItemNamed['Theme'];
 
     if elem <> nil then
-      elem.Value := AItem.Name else
-      xml.Root.Items.Add('Theme',AItem.Name);
+      elem.Value := AName else
+      xml.Root.Items.Add('Theme',AName);
 
   Finally
     xml.SaveToFile(sDest);
     xml.Free;
   End;
-end;
-
-procedure TThemeList.SetItem(Index: Integer; const Value: TThemeListItem);
-begin
-  FList.Items[Index] := Value;
-end;
-
-{ TThemeListItem }
-
-constructor TThemeListItem.Create(AName, AAuthor: String);
-begin
-  FAuthor := AAuthor;
-  FName := AName;
-  FDeleted := False;
-  FTemplate := nil;
-  FWebsite := '';
-  FComment := '';
 end;
 
 end.

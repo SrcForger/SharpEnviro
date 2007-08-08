@@ -35,13 +35,13 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, uSEListboxPainter, JclFileUtils,
   uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
-  SharpEListBox, uThemeListManager, SharpEListBoxEx,GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, JclInifiles, SharpCenterApi;
+  SharpEListBox, uThemeListManager, SharpEListBoxEx, GR32, GR32_PNG, SharpApi,
+  ExtCtrls, Menus, JclStrings, JclInifiles, SharpCenterApi, pngimage;
 
 type
-  TStringObject = Class(TObject)
+  TStringObject = class(TObject)
   public
-    Str:String;
+    Str: string;
   end;
 
 type
@@ -49,7 +49,7 @@ type
     ThemeImages: TPngImageList;
     lbThemeList: TSharpEListBoxEx;
     pilDefault: TPngImageList;
-    procedure lbThemeListGetCellColor(const AItem: Integer; var AColor: TColor);
+    DefThemeImageList: TPngImageList;
 
     procedure lbThemeListDblClickItem(AText: string; AItem, ACol: Integer);
     procedure lbThemeListClickItem(AText: string; AItem, ACol: Integer);
@@ -58,20 +58,24 @@ type
     procedure lbThemesClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure lbThemeListResize(Sender: TObject);
+    procedure lbThemeListGetCellTextColor(const ACol: Integer;
+      AItem: TSharpEListItem; var AColor: TColor);
+    procedure lbThemeListGetCellFont(const ACol: Integer;
+      AItem: TSharpEListItem; var AFont: TFont);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
   private
-    
+
   public
-    ThemeList: TThemeList;
-    //procedure EditTheme;
+    ThemeManager: TThemeManager;
+
     procedure UpdateEditTabs;
     procedure BuildThemeList;
-    function UpdateEditText:Boolean;
-    function UpdateUI:Boolean;
+    function UpdateUI: Boolean;
     function SaveUi: Boolean;
+
     procedure ConfigureItem;
-    Property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
+    property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
   end;
 
 var
@@ -79,7 +83,7 @@ var
 
 implementation
 
-uses uThemeListEditWnd, SharpThemeApi;
+uses uThemeListEditWnd;
 
 {$R *.dfm}
 
@@ -87,11 +91,11 @@ uses uThemeListEditWnd, SharpThemeApi;
 
 procedure TfrmThemeList.UpdateEditTabs;
 
-  procedure BC(AEnabled:Boolean; AButton:TSCB_BUTTON_ENUM);
+  procedure BC(AEnabled: Boolean; AButton: TSCB_BUTTON_ENUM);
   begin
     if AEnabled then
-      CenterDefineButtonState(AButton,True) else
-      CenterDefineButtonState(AButton,False);
+      CenterDefineButtonState(AButton, True) else
+      CenterDefineButtonState(AButton, False);
   end;
 
 begin
@@ -116,110 +120,40 @@ end;
 
 procedure TfrmThemeList.FormShow(Sender: TObject);
 begin
-  lbThemeList.Margin := Rect(0,0,0,0);
-  lbThemeList.ColumnMargin := Rect(6,0,6,0);
-
-  ThemeList.Load;
+  lbThemeList.Margin := Rect(0, 0, 0, 0);
+  lbThemeList.ColumnMargin := Rect(6, 0, 6, 0);
   BuildThemeList;
 
 
 end;
 
-function TfrmThemeList.UpdateEditText:Boolean;
-var
-  tmpItem: TSharpEListItem;
-  tmpThemeItem: TThemeListItem;
-begin
-
-  Result := False;
-
-  Case FEditMode of
-    sceAdd: begin
-
-      FrmEditItem.edAuthor.Text := '';
-      FrmEditItem.edName.Text := '';
-      frmEditItem.edWebsite.Text := '';
-      frmEditItem.ItemEdit := nil;
-
-      frmEditItem.cbBasedOn.Items.Clear;
-      frmEditItem.cbBasedOn.Items.AddObject('New Theme',nil);
-      ThemeList.GetThemeList(frmEditItem.cbBasedOn.Items);
-
-      frmEditItem.cbBasedOn.ItemIndex := 0;
-      frmEditItem.cbBasedOn.Enabled := True;
-
-      if FrmEditItem.pagEdit.Visible then begin
-        FrmEditItem.edName.SetFocus;
-
-        if FileExists(GetSharpeUserSettingsPath+'author.dat') then begin
-          FrmEditItem.edAuthor.Text := IniReadString(GetSharpeUserSettingsPath+'author.dat',
-            'main','author');
-        end;
-      end;
-      Result := True;
-
-    end;
-    sceEdit: begin
-
-      if frmThemeList.lbThemeList.ItemIndex <> -1 then begin
-        tmpItem := frmThemeList.lbThemeList.Item[frmThemeList.lbThemeList.ItemIndex];
-        tmpThemeItem := TThemeListItem(tmpItem.Data);
-
-        FrmEditItem.edName.Text := tmpThemeItem.Name;
-        FrmEditItem.edAuthor.Text := tmpThemeItem.Author;
-        frmEditItem.edWebsite.Text := tmpThemeItem.Website;
-        frmEditItem.ItemEdit := tmpThemeItem;
-
-        if FrmEditItem.pagEdit.Visible then
-          FrmEditItem.edName.SetFocus;
-
-        frmEditItem.cbBasedOn.Items.Clear;
-        frmEditItem.cbBasedOn.Items.AddObject('Not Applicable',nil);
-        ThemeList.GetThemeList(frmEditItem.cbBasedOn.Items);
-
-        if tmpThemeItem.Template <> nil then
-          frmEditItem.cbBasedOn.ItemIndex := frmEditItem.cbBasedOn.Items.IndexOfObject(Pointer(tmpThemeItem.Template)) else
-          frmEditItem.cbBasedOn.ItemIndex := 0;
-
-        frmEditItem.cbBasedOn.Enabled := False;
-
-        Result := True;
-      end;
-    end;
-    sceDelete: begin
-      if frmThemeList.lbThemeList.ItemIndex <> -1 then begin
-        CenterDefineButtonState(scbDelete,True);
-      end else begin
-        CenterDefineButtonState(scbDelete,False);
-      end;
-    end;
-  end;
-end;
-
 procedure TfrmThemeList.lbThemesClick(Sender: TObject);
 begin
   if FrmEditItem <> nil then
-    UpdateEditText;
+    updateui {UpdateEditText};
 end;
 
 procedure TfrmThemeList.FormCreate(Sender: TObject);
 begin
-  ThemeList := TThemeList.Create;
+  ThemeManager := TThemeManager.Create;
+
   Self.DoubleBuffered := true;
 end;
 
 procedure TfrmThemeList.FormDestroy(Sender: TObject);
 begin
-  ThemeList.Free;
+  ThemeManager.Free;
 end;
 
 procedure TfrmThemeList.BuildThemeList;
 var
-  Bmp : TBitmap;
-  Bmp32 : TBitmap32;
-  b : boolean;
+  Bmp: TBitmap;
+  Bmp32: TBitmap32;
+  b: boolean;
   i: Integer;
-  newItem:TSharpEListItem;
+  newItem: TSharpEListItem;
+  tmpTheme: TThemeListItem;
+  sl: TStringList;
 begin
   lbThemeList.Clear;
 
@@ -227,56 +161,72 @@ begin
   bmp32 := TBitmap32.Create;
   bmp.Width := ThemeImages.Width + 2;
   bmp.Height := ThemeImages.Height + 2;
-  SetBkMode(Bmp.Handle,TRANSPARENT);
+  SetBkMode(Bmp.Handle, TRANSPARENT);
 
-  For i := 0 to Pred(ThemeList.Count) do begin
+  sl := TStringList.Create;
+  try
+    ThemeManager.GetThemeList(sl);
 
-    if Not(ThemeList[i].Deleted) then begin
+    for i := 0 to Pred(sl.Count) do begin
+      tmpTheme := TThemeListItem(sl.Objects[i]);
 
-    newItem := lbThemeList.AddItem('',0);
-    newItem.AddSubItem(ThemeList[i].Name);
-    newItem.AddSubItem(ThemeList[i].Author);
-    newItem.Data := ThemeList[i];
-    bmp32.Clear(clWhite32);
+      newItem := lbThemeList.AddItem(tmpTheme.Name + ' By ' + tmpTheme.Author, 0);
 
-    if ( (ThemeList[i].PreviewFileName <> '') and
-      (FileExists(ThemeList[i].PreviewFileName))) then begin
+      if tmpTheme.Website <> '' then
+        newItem.AddSubItem('',2) else
+        newItem.AddSubItem('',-1);
 
-        GR32_PNG.LoadBitmap32FromPNG(Bmp32,ThemeList[i].PreviewFileName,b);
+      if Not(tmpTheme.IsReadOnly) then
+        newItem.AddSubItem('',1) else
+        newItem.AddSubItem('',-1);
+
+      newItem.AddSubItem('edit');
+
+      newItem.Data := tmpTheme;
+      bmp32.Clear(clWhite32);
+
+      if ((tmpTheme.PreviewFileName <> '') and
+        (FileExists(tmpTheme.PreviewFileName))) then begin
+
+        GR32_PNG.LoadBitmap32FromPNG(Bmp32, tmpTheme.PreviewFileName, b);
         bmp.Canvas.Brush.Color := clBlack;
         bmp.Canvas.Pen.Color := clBlack;
         bmp.canvas.FillRect(bmp.canvas.ClipRect);
-        bmp32.DrawTo(bmp.canvas.handle,1,1);
+        bmp32.DrawTo(bmp.canvas.handle, 1, 1);
 
         newItem.SubItemImageIndexes[0] :=
-          Pointer(themeimages.AddMasked(bmp,clFuchsia));
+          Pointer(themeimages.AddMasked(bmp, clFuchsia));
       end else begin
-        bmp.Canvas.Brush.Color := clWindow;
-        bmp.Canvas.Pen.Color := clBlack;
-        bmp.canvas.Rectangle(bmp.canvas.ClipRect);
-        bmp32.DrawTo(bmp.canvas.handle,1,1);
-        bmp.Canvas.Font.Size := 30;
-        bmp.Canvas.Font.Style := [fsbold];
-        bmp.Canvas.TextOut(20,1,'?');
+        //bmp := imgDef.Picture.Bitmap;
+        DefThemeImageList.PngImages.Items[0].PngImage.Draw(Bmp.Canvas,bmp.Canvas.ClipRect);
+        //bmp32.DrawTo(bmp.canvas.handle, 1, 1);
 
         newItem.SubItemImageIndexes[0] :=
-          Pointer(themeimages.AddMasked(bmp,clFuchsia));
+          Pointer(themeimages.AddMasked(bmp, clWindow));
       end;
     end;
-  end;
 
   // finally select the default theme
 
-  if lbThemeList.Count <> 0 then begin
-    lbThemeList.ItemIndex := ThemeList.GetDefaultThemeIdx;
+    if lbThemeList.Count <> 0 then begin
 
-    if lbThemeList.ItemIndex = -1 then
-      lbThemeList.ItemIndex := 0;
+      lbThemeList.ItemIndex := -1;
+      for i := 0 to Pred(lbThemeList.Count) do begin
+        if CompareText(TThemeListItem(lbThemeList.Item[i].Data).Name,
+          ThemeManager.GetDefaultTheme) = 0 then begin
+          lbThemeList.ItemIndex := i;
+          break;
+        end;
+      end;
+
+      if lbThemeList.ItemIndex = -1 then
+        lbThemeList.ItemIndex := 0;
+    end;
+
+    bmp32.free;
+  finally
+    lbThemeList.Refresh;
   end;
-
-
-  bmp.free;
-  bmp32.free;
 end;
 
 procedure TfrmThemeList.lbThemeListClickItem(AText: string; AItem,
@@ -284,126 +234,134 @@ procedure TfrmThemeList.lbThemeListClickItem(AText: string; AItem,
 begin
 
   if FrmEditItem <> nil then
-    UpdateEditText;
+    updateui;
 
-  CenterDefineSettingsChanged;
+  SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1);
+  ThemeManager.SetTheme(AText);
 end;
 
 function TfrmThemeList.UpdateUI: Boolean;
 var
   tmpItem: TSharpEListItem;
   tmpThemeItem: TThemeListItem;
+  i: Integer;
 begin
   Result := False;
   case FEditMode of
-  sceAdd : begin
-    frmEditItem.pagEdit.Show;
-    FrmEditItem.edAuthor.Text := '';
-    FrmEditItem.edName.Text := '';
-    frmEditItem.edWebsite.Text := '';
+    sceAdd: begin
+        frmEditItem.pagAdd.Show;
+        FrmEditItem.edAuthor.Text := '';
+        FrmEditItem.edName.Text := '';
+        frmEditItem.edWebsite.Text := '';
 
-    frmEditItem.cbBasedOn.Items.Clear;
-    frmEditItem.cbBasedOn.Items.AddObject('New Theme',nil);
-    ThemeList.GetThemeList(frmEditItem.cbBasedOn.Items);
-    frmEditItem.cbBasedOn.ItemIndex := 0;
-    frmEditItem.cbBasedOn.Enabled := True;
-    frmEditItem.ItemEdit := nil;
-
-    FrmEditItem.edName.SetFocus;
-    Result := True;
-  end;
-  sceEdit: begin
-
-    if frmThemeList.lbThemeList.ItemIndex <> -1 then begin
-
-      tmpItem := frmThemeList.lbThemeList.Item[frmThemeList.lbThemeList.ItemIndex];
-      tmpThemeItem := TThemeListItem(tmpItem.Data);
-
-      frmEditItem.pagEdit.Show;
-      FrmEditItem.edName.Text := tmpThemeItem.Name;
-      FrmEditItem.edAuthor.Text := tmpThemeItem.Author;
-      frmEditItem.edWebsite.Text := tmpThemeItem.Website;
-      FrmEditItem.edName.SetFocus;
-      frmEditItem.ItemEdit := tmpThemeItem;
-
-      frmEditItem.cbBasedOn.Items.Clear;
-      frmEditItem.cbBasedOn.Items.AddObject('Not Applicable',nil);
-      ThemeList.GetThemeList(frmEditItem.cbBasedOn.Items);
-
-      if tmpThemeItem.Template <> nil then
-        frmEditItem.cbBasedOn.ItemIndex := frmEditItem.cbBasedOn.Items.IndexOfObject(tmpThemeItem.Template) else
+        frmEditItem.cbBasedOn.Items.Clear;
+        frmEditItem.cbBasedOn.Items.AddObject('New Theme', nil);
+        ThemeManager.GetThemeList(frmEditItem.cbBasedOn.Items);
         frmEditItem.cbBasedOn.ItemIndex := 0;
+        frmEditItem.cbBasedOn.Enabled := True;
 
-      frmEditItem.cbBasedOn.Enabled := False;
+        frmEditItem.edName.Enabled := True;
 
-      Result := True;
-    end;
+        if ((frmEditItem.Visible) and (frmEditItem.edName.Enabled)) then
+          FrmEditItem.edName.SetFocus;
 
-  end;
-  sceDelete: begin
-
-    if frmThemeList.lbThemeList.ItemIndex <> -1 then begin
-
-      frmEditItem.pagDelete.Show;
-
-      CenterDefineButtonState(scbDelete,True);
-      end else begin
-        CenterDefineButtonState(scbDelete,False);
+        Result := True;
       end;
-      
-    Result := True;
-  end;
-  end;
+    sceEdit: begin
 
+        if frmThemeList.lbThemeList.ItemIndex <> -1 then begin
 
+          tmpItem := frmThemeList.lbThemeList.Item[frmThemeList.lbThemeList.ItemIndex];
+          tmpThemeItem := TThemeListItem(tmpItem.Data);
+
+          frmEditItem.pagEdit.Show;
+
+          i := lbThemeList.Item[lbThemeList.ItemIndex].ImageIndex;
+          frmEditItem.img.picture.Assign(lbThemeList.Column[0].Images.PngImages.Items[i].PngImage);
+
+          FrmEditItem.lblName.Caption := Format('%s by %s',
+            [tmpThemeItem.Name, tmpThemeItem.Author]);
+
+          frmEditItem.lblSite.Visible := True;
+          if tmpThemeItem.Website <> '' then
+            frmEditItem.lblSite.Caption := tmpThemeItem.Website else begin
+            frmEditItem.lblSite.Visible := False;
+            frmEditItem.lblSite.Caption := '';
+          end;
+
+          Result := True;
+        end;
+
+      end;
+    sceDelete: begin
+
+        if frmThemeList.lbThemeList.ItemIndex <> -1 then begin
+
+          frmEditItem.pagDelete.Show;
+
+          CenterDefineButtonState(scbDelete, True);
+        end else begin
+          CenterDefineButtonState(scbDelete, False);
+        end;
+
+        Result := True;
+      end;
+  end;
 end;
 
 function TfrmThemeList.SaveUi: Boolean;
 var
   tmp: TThemeListItem;
   id, newid: Integer;
+  sAuthor: string;
+  sWebsite: string;
+  sTemplate: string;
+  sName: string;
 begin
   Result := True;
 
   case FEditMode of
     sceAdd: begin
-      tmp := frmThemeList.ThemeList.Add;
-      tmp.Name := trim(StrRemoveChars(frmEditItem.edName.Text,
-      ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
-      tmp.Author := frmEditItem.edAuthor.Text;
-      tmp.Website := frmEditItem.edWebsite.Text;
-      tmp.FileName := GetSharpeUserSettingsPath + 'Themes\' + tmp.Name + '\' + 'Theme.xml';
-      if frmEditItem.cbBasedOn.ItemIndex <> 0 then
-        tmp.Template := frmEditItem.cbBasedOn.Items.Objects[frmEditItem.cbBasedOn.ItemIndex];
-    end;
-    sceEdit: begin
-      tmp := TThemeListItem(frmThemeList.lbThemeList.Item[frmThemeList.lbThemeList.ItemIndex].Data);
-      tmp.Name := trim(StrRemoveChars(frmEditItem.edName.Text,
-      ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
-      tmp.Author := FrmEditItem.edAuthor.Text;
-      tmp.Website := frmEditItem.edWebsite.Text;
-    end;
+        sName := frmEditItem.edName.Text;
+        sAuthor := frmEditItem.edAuthor.Text;
+        sWebsite := frmEditItem.edWebsite.Text;
+
+        sTemplate := '';
+        if frmEditItem.cbBasedOn.ItemIndex <> 0 then
+          sTemplate := frmEditItem.cbBasedOn.text;
+
+        ThemeManager.Add(sName, sAuthor, sWebsite, sTemplate);
+      end;
     sceDelete: begin
-      id := frmThemeList.lbThemeList.ItemIndex;
+
+      if lbThemeList.Count = 1 then begin
+        Result := False;
+
+        MessageDlg('Unable to delete selected theme.'+#13+#10+''+#13+#10+
+          'There must always be at least one active theme.', mtError,
+            [mbOK], 0);
+        exit;
+      end;
+
+        id := frmThemeList.lbThemeList.ItemIndex;
 
         if id <> -1 then begin
           tmp := TThemeListItem(frmThemeList.lbThemeList.Item[id].Data);
-          tmp.Deleted := True;
-          frmThemeList.lbThemeList.DeleteSelected;
 
-          if id > (frmThemeList.ThemeList.Count-2) then begin
-            if id-1 >= 0 then
-               newID := id-1 else
-               newid := 0;
+          frmThemeList.lbThemeList.DeleteSelected;
+          ThemeManager.Delete(tmp.Name);
+
+          if id > (frmThemeList.lbThemeList.Count - 2) then begin
+            if id - 1 >= 0 then
+              newID := id - 1 else
+              newid := 0;
           end else
             newid := id;
 
           if frmThemeList.lbThemeList.Count <> 0 then
             frmThemeList.lbThemeList.ItemIndex := newId;
-
-          CenterDefineSettingsChanged;
         end;
-    end;
+      end;
   end;
 
 end;
@@ -414,21 +372,29 @@ begin
   ConfigureItem;
 end;
 
+procedure TfrmThemeList.lbThemeListGetCellFont(const ACol: Integer;
+  AItem: TSharpEListItem; var AFont: TFont);
+begin
+  if (ACol = 1) or (ACol = 3) then
+    AFont.Style := [fsUnderline];
+end;
+
+procedure TfrmThemeList.lbThemeListGetCellTextColor(const ACol: Integer;
+  AItem: TSharpEListItem; var AColor: TColor);
+begin
+  if (ACol = 1) or (ACol = 3) then
+    AColor := clBlue;
+end;
+
 procedure TfrmThemeList.ConfigureItem;
 var
-  sTheme: String;
+  sTheme: string;
 begin
   if lbThemeList.ItemIndex < 0 then exit;
 
   sTheme := TThemeListItem(lbThemeList.Item[lbThemeList.ItemIndex].Data).Name;
-  CenterCommand(sccLoadSetting,PChar(SharpApi.GetCenterDirectory
-    + '_Themes\Theme.con'),pchar(sTheme))
-end;
-
-procedure TfrmThemeList.lbThemeListGetCellColor(const AItem: Integer;
-  var AColor: TColor);
-begin
-  if AItem = 2 then AColor := clRed;
+  CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
+    + '_Themes\Theme.con'), pchar(sTheme))
 end;
 
 procedure TfrmThemeList.lbThemeListResize(Sender: TObject);
