@@ -781,13 +781,53 @@ procedure TSharpEListBoxEx.UpdateColumnSizes;
 var
   i: Integer;
   x: Integer;
+  fixedwidth : integer;
+  scount : integer;
+  stretchedwidth : integer;
 begin
-  x := 0;
+{  x := 0;
   for i := 0 to Pred(ColumnCount) do
   begin
     Column[i].ColumnRect := Rect(x, 0, x + Column[i].Width, ItemHeight);
     x := x + Column[i].Width;
-  end;
+  end;    }
+  fixedwidth := 0;
+  scount := 0;
+  for i := 0 to ColumnCount - 1 do
+    if not Column[i].Stretched then
+      fixedwidth := fixedwidth + Column[i].Width
+    else scount := scount + 1;
+
+  x := 0;
+  stretchedwidth := (Width - fixedwidth - ColumnMargin.Left - ColumnMargin.Right) div scount;
+  for i := 0 to ColumnCount - 1 do
+    if Column[i].ColumnAlign = calLeft then
+    begin
+      if Column[i].Stretched then
+      begin
+        Column[i].ColumnRect := Rect(x, 0, x + stretchedwidth, ItemHeight);
+        x := x + stretchedwidth;
+      end else
+      begin
+        Column[i].ColumnRect := Rect(x, 0, x + Column[i].Width, ItemHeight);
+        x := x + Column[i].Width;
+      end;
+    end;
+
+  x := width - ColumnMargin.Right;
+  for i := ColumnCount - 1 downto 0 do
+    if Column[i].ColumnAlign = calRight then
+    begin
+      if Column[i].Stretched then
+      begin
+        Column[i].ColumnRect := Rect(x - stretchedwidth, 0, x, ItemHeight);
+        x := x - stretchedwidth;
+      end else
+      begin
+        Column[i].ColumnRect := Rect(x - Column[i].Width, 0, x, ItemHeight);
+        x := x - Column[i].Width;
+      end;
+    end;
 end;
 
 procedure TSharpEListBoxEx.MouseDownEvent(Sender: TObject;
