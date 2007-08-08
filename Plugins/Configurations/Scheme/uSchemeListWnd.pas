@@ -252,7 +252,7 @@ begin
 
   BuildSchemeList(FTheme);
 
-  CenterUpdateSettings;
+  CenterDefineSettingsChanged;
   CenterUpdatePreview;
 end;
 

@@ -300,6 +300,8 @@ var
   tmpSchemeItems: TSchemeList;
   sTheme: string;
 begin
+  if Not(AApply) then exit;
+
   sTheme := frmSchemeList.Theme;
   tmpSchemeItems := frmSchemeList.SchemeItems;
   tmpItem := FSchemeItem;
@@ -323,7 +325,7 @@ begin
         tmpSchemeItems.Add(newItem);
         FSchemeItem.Free;
 
-        CenterUpdateSettings;
+        CenterDefineSettingsChanged;
         Result := True;
       end;
     sceEdit:
@@ -342,7 +344,7 @@ begin
           FSchemeItem.Assign(lstItem.Colors);
         end;
 
-        CenterUpdateSettings;
+        CenterDefineSettingsChanged;
         Result := True;
       end;
     sceDelete:

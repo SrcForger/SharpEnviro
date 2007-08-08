@@ -81,6 +81,8 @@ object frmEditScheme: TfrmEditScheme
         Top = 4
         Width = 482
         Height = 158
+        VertScrollBar.Smooth = True
+        VertScrollBar.Tracking = True
         Align = alClient
         BevelInner = bvNone
         BevelOuter = bvNone
