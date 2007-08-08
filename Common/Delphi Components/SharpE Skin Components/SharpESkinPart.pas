@@ -1854,7 +1854,7 @@ begin
   tmp := '';
   sub := false;
   n := 0;
-  while n <= length(str) do
+  while n < length(str) do
   begin
     inc(n);
     if (str[n] <> #0) then
