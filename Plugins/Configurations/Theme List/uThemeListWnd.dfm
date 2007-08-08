@@ -37,7 +37,7 @@ object frmThemeList: TfrmThemeList
         SelectedImages = ThemeImages
       end
       item
-        Width = 30
+        Width = 50
         MaxWidth = 0
         MinWidth = 0
         TextColor = clBlack
@@ -50,12 +50,12 @@ object frmThemeList: TfrmThemeList
         Images = pilDefault
       end
       item
-        Width = 30
+        Width = 50
         MaxWidth = 0
         MinWidth = 0
         TextColor = clBlack
         SelectedTextColor = clBlack
-        HAlign = taLeftJustify
+        HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         Autosize = False
