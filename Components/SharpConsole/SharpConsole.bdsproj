@@ -124,10 +124,10 @@
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
 			<Directories Name="SearchPath">..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpThemeAPI;..\..\Common\Units\VersInfo;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpFX;..\..\Common\Units\VistaFuncs;..\..\Common\Delphi Components\SharpEPageControl</Directories>
-			<Directories Name="Packages">rtl;vcl;dbrtl;vcldb;vclx;adortl;dbxcds;dbexpress;vclib;ibxpress;IntrawebDB_72_90;Intraweb_72_90;xmlrtl;vclie;inet;inetdbbde;inetdbxpress;IndySystem;IndyCore;dclOfficeXP;VclSmp;dsnap;soaprtl;IndyProtocols;inetdb;bdertl;vcldbx;webdsnap;websnap;vclactnband;vclshlctrls;dsnapcon;teeui;teedb;tee;Jcl;JclVcl;JvCoreD9R;JvSystemD9R;JvStdCtrlsD9R;JvAppFrmD9R;JvBandsD9R;JvDBD9R;JvDlgsD9R;JvBDED9R;JvCmpD9R;JvCryptD9R;JvCtrlsD9R;JvCustomD9R;JvDockingD9R;JvDotNetCtrlsD9R;JvEDID9R;JvGlobusD9R;JvHMID9R;JvJansD9R;JvManagedThreadsD9R;JvMMD9R;JvNetD9R;JvPageCompsD9R;JvPluginD9R;JvPrintPreviewD9R;JvRuntimeDesignD9R;JvTimeFrameworkD9R;JvUIBD9R;JvValidatorsD9R;JvWizardD9R;JvXPCtrlsD9R;PngComponentsD9;GR32_D2005;CoolTrayIcon_D6plus;B304_r50;VistaStyle;GR32_DSGN_D2005;SharpESkinComponents;JvInterpreterD9R;SharpEComponents;Jv3rdD9R</Directories>
+			<Directories Name="Packages">rtl;vcl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
-			<Directories Name="UsePackages">False</Directories>
+			<Directories Name="UsePackages">True</Directories>
 		</Directories>
 		<Parameters>
 			<Parameters Name="RunParams"></Parameters>
@@ -167,7 +167,8 @@
 		<VersionInfoKeys>
 			<VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
-		</VersionInfoKeys>  <Excluded_Packages>
+		</VersionInfoKeys>  
+    <Excluded_Packages>
       <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\B305vd70.bpl">TurboPower Abbrevia 3.05 Design-time package - VCL70</Excluded_Packages>
     </Excluded_Packages>
   </Delphi.Personality>

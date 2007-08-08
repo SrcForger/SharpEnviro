@@ -7,8 +7,7 @@ uses
   uDebugging,
   uTDebugging,
   TextConverterUnit in 'TextConverterUnit.pas',
-  uDebugList in 'uDebugList.pas',
-  uCopyText in 'uCopyText.pas' {frmCopyText};
+  uDebugList in 'uDebugList.pas';
 
 {$R *.RES}
 
@@ -17,7 +16,6 @@ begin
   Application.Title := 'SharpConsole';
   Application.CreateForm(TSharpConsoleWnd, SharpConsoleWnd);
   uVistaFuncs.SetVistaFonts(SharpConsoleWnd);
-  Application.CreateForm(TfrmCopyText, frmCopyText);
   Debugging.PrintBanners := True;
   Debugging.Comment := 'SharpCore Logging System';
   Debugging.FileNaming := dfnDaily;
