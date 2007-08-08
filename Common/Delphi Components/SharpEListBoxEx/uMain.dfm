@@ -26,7 +26,7 @@ object Form1: TForm1
     Height = 319
     Columns = <
       item
-        Width = 120
+        Width = 100
         MaxWidth = 0
         MinWidth = 0
         TextColor = clRed
@@ -35,8 +35,46 @@ object Form1: TForm1
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         Autosize = False
+        StretchColumn = False
         Images = PngImageList1
         SelectedImages = col1
+      end
+      item
+        Width = 100
+        MaxWidth = 0
+        MinWidth = 0
+        TextColor = clBlack
+        SelectedTextColor = clBlack
+        HAlign = taRightJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calLeft
+        Autosize = False
+        StretchColumn = False
+      end
+      item
+        Width = 50
+        MaxWidth = 0
+        MinWidth = 0
+        TextColor = clBlack
+        SelectedTextColor = clBlack
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calLeft
+        Autosize = False
+        StretchColumn = False
+        Images = col1
+      end
+      item
+        Width = 40
+        MaxWidth = 0
+        MinWidth = 0
+        TextColor = clBlack
+        SelectedTextColor = clBlack
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calLeft
+        Autosize = False
+        StretchColumn = True
       end>
     ItemHeight = 24
     OnGetCellFont = SharpEListBoxEx1GetCellFont

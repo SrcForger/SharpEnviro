@@ -52,13 +52,10 @@ begin
   SharpEListBoxEx1.ItemOffset := Point(4,4);
   SharpEListBoxEx1.itemheight := 54;
 
-  li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa',1,2);
-  li.AddSubItem('Columnaaaaaaaaaaaaaaaaa',1,2);
-  li.AddSubItem('Column3bbbbbbbbbbbbbbbbbbbbb',1);
-  li.Hint := 'Click to set as default';
-  li := SharpEListBoxEx1.AddItem('Column1aaaaaaaaaaaa',1);
-  li.AddSubItem('Columnaaaaaaaaaaaaaaaaa',1);
-  li.AddSubItem('Column3bbbbbbbbbbbbbbbbbbbbb',1,2);
+  li := SharpEListBoxEx1.AddItem('New Theme',1);
+  li.AddSubItem('lcgreen@gmail.com',1);
+  li.AddSubItem('',1);
+  li.AddSubItem('TRUE',1,2);
   li.Hint := 'Click to set as default';
 
 end;

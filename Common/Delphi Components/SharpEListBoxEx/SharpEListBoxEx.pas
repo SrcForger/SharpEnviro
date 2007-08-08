@@ -25,6 +25,7 @@ type
     FMaxWidth: Integer;
     FMinWidth: Integer;
     FSelectedImages: TPngImageList;
+    FStretchColumn: Boolean;
 
     procedure SetWidth(const Value: Integer);
     procedure SetHAlign(const Value: TAlignment);
@@ -47,6 +48,7 @@ type
     property VAlign: TVerticalAlignment read FVAlign write SetVAlign;
     property ColumnAlign: TSEColumn_Align read FColumnAlign write FColumnAlign;
     property Autosize: Boolean read FAutosize write FAutosize;
+    property StretchColumn: Boolean read FStretchColumn write FStretchColumn;
 
     property Images: TPngImageList read
       FImages write FImages;
@@ -174,8 +176,6 @@ type
     procedure MouseDownEvent(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
 
-    function CalcColumnRect(AColumnID: Integer;AColumn: TSharpEListBoxExColumn;
-      AItemRect:TRect; var AX,AY:Integer): TRect;
     procedure SetAutoSizeGrid(const Value: Boolean);
     //procedure MeasureItemEvent(Control: TWinControl;
   //Index: Integer; var Height: Integer);
@@ -239,8 +239,6 @@ end;
 procedure TSharpEListBoxExColumn.SetWidth(const Value: Integer);
 begin
   FWidth := Value;
-
- //TSharpEListBoxEx(Owner).UpdateColumnSizes;
 end;
 
 { TSharpEListBoxEx }
@@ -323,6 +321,7 @@ var
   bSelected: Boolean;
 begin
 try
+  UpdateColumnSizes;
   tmpItem := TSharpEListItem(Self.Items.Objects[Index]);
   Rect.Right := Self.ClientWidth;
 
@@ -342,8 +341,11 @@ try
     begin
 
       tmpCol := Column[i];
-      R := CalcColumnRect(i, tmpCol, Rect, X, Y);
+      R := Column[i].ColumnRect;
       R.Left := R.Left + 8;
+      r.Right := R.Right - 12;
+      R.Top := Rect.Top;
+      R.Bottom := Rect.Bottom;
 
       if (i <= tmpItem.SubItemCount - 1) then
       begin
@@ -367,7 +369,9 @@ try
           idx := tmpItem.GetSubItemImageIndex(i);
 
           if idx <> -1 then
-            tmpPng := tmpCol.Images.PngImages.Items[idx].PngImage;
+            if tmpCol.Images <> nil then
+              if tmpCol.Images.PngImages.Items[idx] <> nil then
+                tmpPng := tmpCol.Images.PngImages.Items[idx].PngImage;
 
             if tmpPng <> nil then
               DrawItemImage(Self.Canvas, R, tmpItem, i, tmpPng);
@@ -655,23 +659,6 @@ begin
   inherited;
 end;
 
-function TSharpEListBoxEx.CalcColumnRect(
-  AColumnID:Integer; AColumn: TSharpEListBoxExColumn; AItemRect: TRect;
-    var AX,AY:Integer): TRect;
-begin
-
-  if AColumnID = Pred(ColumnCount) then
-        Result := Types.Rect(AX+columnMargin.Left, AY, AItemRect.Right - (itemoffset.X * 2) -(columnMargin.Right), AY + ItemHeight - ItemOffset.Y)
-      else
-        Result := Types.Rect(AX+columnMargin.Left, AY, AX + AColumn.Width -columnMargin.Right, AY + ItemHeight - ItemOffset.Y);
-end;
-
-{procedure TSharpEListBoxEx.MeasureItemEvent(Control: TWinControl;
-  Index: Integer; var Height: Integer);
-begin
-      
-end;  }
-
 { TSharpEListItem }
 
 function TSharpEListItem.AddSubItem(AText: string; AImageIndex: Integer = -1;
@@ -785,25 +772,20 @@ var
   scount : integer;
   stretchedwidth : integer;
 begin
-{  x := 0;
-  for i := 0 to Pred(ColumnCount) do
-  begin
-    Column[i].ColumnRect := Rect(x, 0, x + Column[i].Width, ItemHeight);
-    x := x + Column[i].Width;
-  end;    }
   fixedwidth := 0;
   scount := 0;
   for i := 0 to ColumnCount - 1 do
-    if not Column[i].Stretched then
+    if not Column[i].StretchColumn then
       fixedwidth := fixedwidth + Column[i].Width
     else scount := scount + 1;
 
   x := 0;
+  if scount > 0 then
   stretchedwidth := (Width - fixedwidth - ColumnMargin.Left - ColumnMargin.Right) div scount;
   for i := 0 to ColumnCount - 1 do
     if Column[i].ColumnAlign = calLeft then
     begin
-      if Column[i].Stretched then
+      if Column[i].StretchColumn then
       begin
         Column[i].ColumnRect := Rect(x, 0, x + stretchedwidth, ItemHeight);
         x := x + stretchedwidth;
@@ -818,7 +800,7 @@ begin
   for i := ColumnCount - 1 downto 0 do
     if Column[i].ColumnAlign = calRight then
     begin
-      if Column[i].Stretched then
+      if Column[i].StretchColumn then
       begin
         Column[i].ColumnRect := Rect(x - stretchedwidth, 0, x, ItemHeight);
         x := x - stretchedwidth;
@@ -935,6 +917,7 @@ end;
 
 procedure TSharpEListBoxEx.ResizeEvent(Sender: TObject);
 begin
+  UpdateColumnSizes;
   Self.Refresh;
 end;
 
