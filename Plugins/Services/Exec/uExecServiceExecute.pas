@@ -90,7 +90,7 @@ type
     constructor Create;
 
     destructor Destroy; override;
-    function ProcessString(Text: string; SaveHistory: Boolean = True): Boolean;
+    function ProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False): Boolean;
     property UseDebug: Boolean read FUseDebug write FUseDebug;
     property DebugText: String read FDebugText write FDebugText;
 
@@ -100,7 +100,7 @@ type
 
   private
     function ForceForegroundWindow(hwnd: Thandle; var oldhwnd: THandle): Boolean;
-    function ExecuteText(text: string; SaveHistory: Boolean): boolean;
+    function ExecuteText(text: string; SaveHistory: Boolean; Elevate: Boolean): boolean;
     function GetAltExplorer(): string;
 
     function IsDirectory(const FileName: string): Boolean;
@@ -110,7 +110,7 @@ type
     function FileExistsIn(FileName: string; location: string; extension:
       string): string;
     function IsCalcStrValid(Str: string): Boolean;
-    function ShellOpenFile(hWnd: HWND; AFileName, AParams, ADefaultDir: string):
+    function ShellOpenFile(hWnd: HWND; AFileName, AParams, ADefaultDir: string; Elevate: Boolean):
       integer;
     procedure SaveRecentItem(Str: string; SaveHistory: Boolean);
     procedure SaveMostUsedItem(Str: string; SaveHistory: Boolean);
@@ -280,7 +280,7 @@ end;
   Processes and executes the text passed to the function
 ==============================================================================}
 
-function TSharpExec.ExecuteText(text: string; SaveHistory: Boolean): boolean;
+function TSharpExec.ExecuteText(text: string; SaveHistory: Boolean; Elevate: Boolean): boolean;
 var
   search, url: string;
   FileCommandl: TExecFileCommandl;
@@ -310,7 +310,7 @@ begin
     if (Pos('microsoft.', LowerCase(text)) = 1) then begin
         Debug('Execute CPL:', DMT_TRACE);
 
-        if ShellOpenFile(Handle, GetWindowsSystemFolder+'/control.exe', '/name ' + text, '') = 1 then begin
+        if ShellOpenFile(Handle, GetWindowsSystemFolder+'/control.exe', '/name ' + text, '', Elevate) = 1 then begin
 
         // Save to recent item list
           SaveMostUsedItem(text, SaveHistory);
@@ -325,7 +325,7 @@ begin
     // LNK files
     if (ExtractFileExt(text) = '.lnk') then begin
       if JclShell.ShellLinkResolve(text, link) = S_OK then begin
-        if ShellOpenFile(Handle, link.Target, link.Arguments, link.WorkingDirectory) = 1 then begin
+        if ShellOpenFile(Handle, link.Target, link.Arguments, link.WorkingDirectory, Elevate) = 1 then begin
 
         // Save to recent item list
           SaveMostUsedItem(text, SaveHistory);
@@ -338,7 +338,7 @@ begin
     end
     else
     if ((ExtractFileExt(text) = '.sip') or (ExtractFileExt(text) = '.sescript')) then begin
-      if ShellOpenFile(Handle,GetSharpeDirectory+'SharpScript.exe','"' + text + '"',GetSharpeDirectory) = 1 then begin
+      if ShellOpenFile(Handle,GetSharpeDirectory+'SharpScript.exe','"' + text + '"',GetSharpeDirectory, Elevate) = 1 then begin
         Result := True;
         Exit;
       end;
@@ -350,7 +350,7 @@ begin
       if (Pos('shell:', LowerCase(text)) = 1) then begin
         Debug('Execute: SHELL:', DMT_TRACE);
 
-        if ShellOpenFile(Handle, GetAltExplorer, text, '') = 1 then begin
+        if ShellOpenFile(Handle, GetAltExplorer, text, '', Elevate) = 1 then begin
 
         // Save to recent item list
           SaveMostUsedItem(text, SaveHistory);
@@ -362,7 +362,7 @@ begin
       end
       else if PathIsUNC(PathAddSeparator(text)) or (isdirectory(text)) then begin
         Debug('ExecuteType: Path', DMT_TRACE);
-        iResult := ShellOpenFile(Handle, GetAltExplorer, text, '');
+        iResult := ShellOpenFile(Handle, GetAltExplorer, text, '', Elevate);
 
         if (iResult = 1) or (iResult = SE_ERR_ACCESSDENIED) then begin
 
@@ -408,7 +408,7 @@ begin
         Debug('ExecuteType: Internet Protocol', DMT_TRACE);
 
       //if ShellExecute(Handle, 'open', pchar(text), nil, nil, SW_SHOWNORMAL);
-        if ShellOpenFile(handle, text, '', '') = 1 then begin
+        if ShellOpenFile(handle, text, '', '', Elevate) = 1 then begin
 
         // Save to recent/used item list
           SaveMostUsedItem(text, SaveHistory);
@@ -422,7 +422,7 @@ begin
         Debug('ExecuteType: MSC Console', DMT_TRACE);
 
         if ShellOpenFile(Handle, GetWindowsSystemFolder + '\mmc.exe',
-          GetWindowsSystemFolder + '\' + ExtractFileName(text), '') = 1 then begin
+          GetWindowsSystemFolder + '\' + ExtractFileName(text), '', Elevate) = 1 then begin
 
           SaveMostUsedItem(text, SaveHistory);
           SaveRecentItem(text, SaveHistory);
@@ -443,7 +443,7 @@ begin
           Debug('ExecuteType: ShellOpenFile:', DMT_TRACE);
 
           if ShellOpenFile(Handle, FileCommandl.Filename, FileCommandl.Commandline,
-            ExtractFilePath(FileCommandl.Filename)) = 1 then begin
+            ExtractFilePath(FileCommandl.Filename), Elevate) = 1 then begin
 
             // Save to recent item list
             SaveMostUsedItem(text, SaveHistory);
@@ -466,7 +466,7 @@ begin
     Debug('ExecuteType: Last ShellOpenFile:', DMT_TRACE);
     result := true;
 
-    if ShellOpenFile(Handle, text, '', ExtractFilePath(text)) = 1 then begin
+    if ShellOpenFile(Handle, text, '', ExtractFilePath(text), Elevate) = 1 then begin
       SaveMostUsedItem(text, SaveHistory);
       SaveRecentItem(text, SaveHistory);
 
@@ -488,7 +488,7 @@ end;
   is part of an alias
 ==============================================================================}
 
-function TSharpExec.ProcessString(Text: string; SaveHistory: Boolean = True): Boolean;
+function TSharpExec.ProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False): Boolean;
 var
   s:String;
 begin
@@ -508,7 +508,7 @@ begin
     ExpandCommonFiles(Text);
     ExpandAliases(Text);
   end;
-  Result := ExecuteText(Text, SaveHistory);
+  Result := ExecuteText(Text, SaveHistory, Elevate);
   BarMsg('scmd', '_execupdate');
 end;
 
@@ -649,21 +649,24 @@ begin
 end;
 
 function TSharpExec.ShellOpenFile(hWnd: HWND; AFileName, AParams, ADefaultDir:
-  string): integer;
+  string; Elevate: Boolean): integer;
+var
+  sOperation: String;
 begin
   Debug('FileName: ' + AFileName, DMT_TRACE);
   Debug('Params: ' + AParams, DMT_TRACE);
   Debug('dir: ' + ADefaultDir, DMT_TRACE);
 
+  if Elevate then sOperation := 'runas';
+
   if FUseDebug then begin
     FDebugText := Format('File: %s -- Param: %s -- Dir: %s',[AFileName, AParams, ADefaultDir]);
     Result := 1;
   end else
-  result := shellapi.ShellExecute(hWnd, nil, pChar(AFileName),
+    result := shellapi.ShellExecute(hWnd, PChar(sOperation), pChar(AFileName),
     pChar(AParams),
     pChar(ADefaultDir),
     SW_SHOWNORMAL);
-
   case result of
     0: Debug('The operating system is out of memory or resources.', DMT_ERROR);
     ERROR_FILE_NOT_FOUND: Debug('The specified file was not found.', DMT_ERROR);

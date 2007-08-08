@@ -69,8 +69,10 @@ end;
 function SCMsg(msg: string): integer;
 var
   tmpAliasName, tmpAliasValue: String;
+  bNoHist, bElevate: Boolean;
 const
   NoHistoryParam = '_nohist,';
+  ElevateParam = '_elevate,';
 begin
   Result := 0;
   msg:=trim(msg);
@@ -98,11 +100,16 @@ begin
   end;
 
   // Else the command is not an Action, so process it as normal
-  if pos(NoHistoryParam, msg) <> 0 then
-    SharpExec.ProcessString(copy(msg, length(NoHistoryParam) + 1, length(msg) -
-      length(NoHistoryParam) + 1), false)
-  else
-    SharpExec.ProcessString(msg);
+  bNoHist := Pos(NoHistoryParam, msg) <> 0;
+  bElevate := Pos(ElevateParam, msg) <> 0;
+  if bElevate  then
+    msg := Copy(msg, Length(ElevateParam) + 1, Length(msg) - Length(ElevateParam) + 1);
+  if bNoHist then
+  begin
+    msg := Copy(msg, Length(NoHistoryParam) + 1, Length(msg) - Length(NoHistoryParam) + 1);
+    bNoHist := False;
+  end;
+  SharpExec.ProcessString(msg, bNoHist, bElevate);
 
   // if the cmd is a calc, return the calc id
   if ShowAns then

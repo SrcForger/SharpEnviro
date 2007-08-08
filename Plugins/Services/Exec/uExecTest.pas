@@ -36,7 +36,7 @@ end;
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   TmpExec.UseDebug := True;
-  TmpExec.ProcessString(Edit1.Text,False);
+  TmpExec.ProcessString(Edit1.Text, False, True);
   Memo1.Lines.Text := TmpExec.DebugText;
 end;
 
