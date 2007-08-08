@@ -47,7 +47,8 @@ uses
 
 type
   TSharpESkinItem = (scPanel,scButton,scBar,scProgressBar,scCheckBox,scRadioBox,
-                     scMiniThrobber,scEdit,scForm,scTaskItem,scMenu,scMenuItem);
+                     scMiniThrobber,scEdit,scForm,scTaskItem,scMenu,scMenuItem,
+                     scTaskSwitch);
   TSharpESkinItems = set of TSharpESkinItem;
 
 const
@@ -68,6 +69,7 @@ type
   TSharpETaskItemSkin = class;
   TSharpEMenuSkin = class;
   TSharpEMenuItemSkin = class;
+  TSharpETaskSwitchSkin = Class;
   TSkinEvent = procedure of object;
 
   TSkinName = string;
@@ -98,6 +100,7 @@ type
     FTaskItemSkin: TSharpETaskItemSkin;
     FMenuSkin : TSharpEMenuSkin;
     FMenuItemSkin: TSharpEMenuItemSkin;
+    FTaskSwitchSkin : TSharpETaskSwitchSkin;
 
     FSkinHeader: TSharpeSkinHeader;
     FXml: TJvSimpleXml;
@@ -140,6 +143,7 @@ type
     property MenuSkin : TSharpEMenuSkin read FMenuSkin;
     property MenuItemSkin : TSharpEMenuItemSkin read FMenuItemSkin;
     property TaskItemSkin: TSharpETaskItemSkin  read FTaskItemSkin;
+    property TaskSwitchSkin : TSharpETaskSwitchSkin read FTaskSwitchSkin;
     property SkinText: TSkinText read FSkinText;
     property SmallText  : TSkinText read FSmallText;
     property MediumText : TSkinText read FMediumText;
@@ -224,6 +228,39 @@ type
     property Compact: TSharpETaskItemState read FCompact write FCompact;
     property Mini: TSharpETaskItemState read FMini write FMini;
  end;
+
+  TSharpETaskSwitchSkin = class
+  private
+    FSkinDim          : TSkinDim;
+    FBackground       : TSkinPart;
+    FItem             : TSkinPart;
+    FItemPreview      : TSkinDim;
+    FItemHover        : TSkinPart;
+    FItemHoverPreview : TSkinDim;
+    FTBOffset         : TSkinPoint;
+    FLROffset         : TSkinPoint;
+    FWrapCount        : integer;
+    FSpacing          : integer;
+  public
+    constructor Create(BmpList : TSkinBitmapList);
+    destructor Destroy; override;
+    procedure Clear;
+    procedure SaveToStream(Stream: TStream);
+    procedure LoadFromStream(Stream: TStream);
+    procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
+    property Background : TSkinPart read FBackground;
+    property Item : TSkinPart read FItem;
+    property ItemHover : TSkinPart read FItemHover;
+    property ItemPreview : TSkinDim read FItemPreview;
+    property ItemHoverPreview : TSkinDim read FItemHoverPreview;
+    property TBOffset : TSkinPoint read FTBOffset;
+    property LROffset : TSkinPoint read FLROffset;
+    property SkinDim : TSkinDim read FSkinDim;
+    property WrapCount : integer read FWrapCount;
+    property Spacing : integer read FSpacing;
+  end;
 
   TSharpEMenuSkin = class
   private
@@ -617,7 +654,8 @@ begin
   if scEdit in FLoadSkins then FEditSkin := TSharpEEditSkin.Create(FBitmapList);
   if scMenu in FLoadSkins then FMenuSkin := TSharpEMenuSkin.Create(FBitmapList);
   if scMenuItem in FLoadSkins then FMenuItemSkin := TSharpEMenuItemSkin.Create(FBitmapList);
-
+  if scTaskSwitch in FLoadSkins then FTaskSwitchSkin := TSharpETaskSwitchSkin.Create(FBitmapList);
+  
   FXml := TJvSimpleXml.Create(nil);
 end;
 
@@ -647,6 +685,8 @@ begin
   if FFormSkin <> nil then FFormSkin.Free;
   if FMenuSkin <> nil then FMenuSkin.Free;
   if FMenuItemSkin <> nil then FMenuItemSkin.Free;
+  if FTaskSwitchSkin <> nil then FTaskSwitchSkin.Free;
+
   FBitmapList.Free;
   inherited;
 end;
@@ -665,6 +705,7 @@ begin
   if FFormSkin <> nil then FFormSkin.UpdateDynamicProperties(cs);
   if FMenuSkin <> nil then FMenuSkin.UpdateDynamicProperties(cs);
   if FMenuItemSkin <> nil then FMenuItemSkin.UpdateDynamicProperties(cs);
+  if FTaskSwitchSkin <> nil then FTaskSwitchSkin.UpdateDynamicProperties(cs);
 
   FSkinText.UpdateDynamicProperties(cs);
   FSmallText.UpdateDynamicProperties(cs);
@@ -805,6 +846,12 @@ begin
     RemoveskinPartBitmaps(FPanelSkin.Selected,List);
     RemoveskinPartBitmaps(FPanelSkin.Lowered,List);
     RemoveskinPartBitmaps(FPanelSkin.Raised,List);
+  end;
+  if FTaskSwitchSkin <> nil then
+  begin
+    RemoveskinpartBitmaps(FTaskSwitchSkin.Background,List);
+    RemoveskinpartBitmaps(FTaskSwitchSkin.Item,List);
+    RemoveskinpartBitmaps(FTaskSwitchSkin.ItemHover,List);
   end;
 
   for n := 0 to List.Count - 1 do
@@ -979,6 +1026,18 @@ begin
       Stream.CopyFrom(tempStream, Size);
     end;
 
+    //Write Task Switch Skin
+    if FTaskSwitchSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('TaskSwitchSkin', Stream);
+      FTaskSwitchSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
+
     //Write Header
     {StringSaveToStream('Header', Stream);
     FSkinHeader.SaveToStream(tempStream);
@@ -1057,7 +1116,9 @@ begin
                             else
                               if (temp = 'MenuItem') and (FMenuItemSkin <> nil) then
                                 FMenuItemSkin.LoadFromStream(Stream)
-                                else Stream.Position := Stream.Position + size;
+                              else if (temp = 'TaskSwitchSkin') and (FTaskSwitchSkin <> nil) then
+                                     FTaskSwitchSkin.LoadFromStream(Stream)
+                                    else Stream.Position := Stream.Position + size;
 
       temp := StringLoadFromStream(Stream);
     end;
@@ -1086,6 +1147,8 @@ begin
   if FMenuSkin <> nil then FMenuSkin.Clear;
   if FMenuItemSkin <> nil then FMenuItemSkin.Clear;
   if FTaskItemSkin <> nil then FTaskItemSkin.Clear;
+  if FTaskSwitchSkin <> nil then FTaskSwitchSkin.Clear;
+
   FSmallText.Clear;
   FMediumText.Clear;
   FBigText.Clear;
@@ -1190,9 +1253,142 @@ begin
     FMenuSkin.LoadFromXML(FXml.Root.Items.ItemNamed['menu'],path);
   if (FXml.Root.Items.ItemNamed['menuitem'] <> nil) and (FMenuItemSkin <> nil) then
     FMenuItemSkin.LoadFromXML(FXml.Root.Items.ItemNamed['menuitem'],path);
+  if (FXml.Root.Items.ItemNamed['taskswitch'] <> nil) and (FTaskSwitchSkin <> nil) then
+    FTaskSwitchSkin.LoadFromXML(FXML.Root.Items.ItemNamed['taskswitch'],path);
 
   if FBarSkin <> nil then
      FBarSkin.CheckValid;
+end;
+
+//***************************************
+//* TSharpETaskSwitchSkin
+//***************************************
+
+constructor TSharpETaskSwitchSkin.Create(BmpList:  TSkinBitmapList);
+begin
+  FSkinDim := TSkinDim.Create;
+  FSkinDim.SetLocation('0','0');
+  FSkinDim.SetDimension('100','100');
+  FBackground := TSkinPart.Create(BmpList);
+  FItem       := TSkinPart.Create(BmpList);
+  FItemHover  := TSkinPart.Create(BmpList);
+  FItemPreview := TSkinDim.Create;
+  FItemPreview.SetLocation('0','0');
+  FItemPreview.SetDimension('48','48');
+  FItemHoverPreview := TSkinDim.Create;
+  FItemHoverPreview.SetLocation('0','0');
+  FItemHoverPreview.SetDimension('48','48');
+  FTBOffset   := TSkinPoint.Create;
+  FTBOffset.SetPoint('0','0');
+  FLROffset   := TSkinPoint.Create;
+  FLROffset.SetPoint('0','0');
+  FWrapCount := 8;
+  FSpacing   := 2;
+end;
+
+destructor TSharpETaskSwitchSkin.Destroy;
+begin
+  FSkinDim.Free;
+  FBackground.Free;
+  FItem.Free;
+  FItemHover.Free;
+  FItemPreview.Free;
+  FItemHoverPreview.Free;
+  FTBOffset.Free;
+  FLROffset.Free;
+end;
+
+procedure TSharpETaskSwitchSkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FBackground.UpdateDynamicProperties(cs);
+  FItem.UpdateDynamicProperties(cs);
+  FItemHover.UpdateDynamicProperties(cs);
+end;
+
+procedure TSharpETaskSwitchSkin.Clear;
+begin
+  FSkinDim.SetLocation('0','0');
+  FSkinDim.SetDimension('100','100');
+  FTBOffset.SetPoint('0','0');
+  FLROffset.SetPoint('0','0');
+  FItemPreview.SetLocation('0','0');
+  FItemPreview.SetDimension('48','48');
+  FItemHoverPreview.SetLocation('0','0');
+  FItemHoverPreview.SetDimension('48','48');
+  FBackground.Clear;
+  FItem.Clear;
+  FItemHover.Clear;
+  FWrapCount := 8;
+  FSpacing   := 2;  
+end;
+
+procedure TSharpETaskSwitchSkin.LoadFromStream(Stream : TStream);
+begin
+  FSkinDim.LoadFromStream(Stream);
+  FBackground.LoadFromStream(Stream);
+  FItem.LoadFromStream(Stream);
+  FItemHover.LoadFromStream(Stream);
+  FItemPreview.LoadFromStream(Stream);
+  FItemHoverPreview.LoadFromStream(Stream);
+  FTBOffset.LoadFromStream(Stream);
+  FLROffset.LoadFromStream(Stream);
+  Stream.ReadBuffer(FWrapCount,SizeOf(FWrapCount));
+  Stream.ReadBuffer(FSpacing,SizeOf(FSpacing));
+end;
+
+procedure TSharpETaskSwitchSkin.SaveToStream(Stream : TStream);
+begin
+  FSkinDim.SaveToStream(Stream);
+  FBackground.SaveToStream(Stream);
+  FItem.SaveToStream(Stream);
+  FItemHover.SaveToStream(Stream);
+  FItemPreview.SaveToStream(Stream);
+  FItemHoverPreview.SaveToStream(Stream);
+  FTBOffset.SaveToStream(Stream);
+  FLROffset.SaveToStream(Stream);
+  Stream.WriteBuffer(FWrapCount,SizeOf(FWrapCount));
+  Stream.WriteBuffer(FSpacing,SizeOf(FSpacing));
+end;
+
+procedure TSharpETaskSwitchSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
+var
+  SkinText: TSkinText;
+begin
+  SkinText := TSkinText.Create;
+  SkinText.SetLocation('cw', 'ch');
+  try
+    with xml.Items do
+    begin
+      if ItemNamed['text'] <> nil then
+        SkinText.LoadFromXML(ItemNamed['text']);
+      if ItemNamed['background'] <> nil then
+        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText);
+      if ItemNamed['item'] <> nil then
+        FItem.LoadFromXML(ItemNamed['item'], path, SkinText);
+      if ItemNamed['itemhover'] <> nil then
+        FItemHover.LoadFromXML(ItemNamed['itemhover'], path, SkinText);
+      if ItemNamed['dimension'] <> nil then
+        FSkinDim.SetDimension(Value('dimension', 'w,h'));
+      if ItemNamed['location'] <> nil then
+        FSkinDim.SetLocation(Value('location','0,0'));
+      if ItemNamed['tboffset'] <> nil then
+        FTBOffset.SetPoint(Value('tboffset','0,0'));
+      if ItemNamed['lroffset'] <> nil then
+        FLROffset.SetPoint(Value('lroffset','0,0'));
+      if ItemNamed['previewdim'] <> nil then
+        FItemPreview.SetDimension(Value('previewdim', '48,48'));
+      if ItemNamed['previewloc'] <> nil then
+        FItemPreview.SetLocation(Value('previewloc','0,0'));
+      if ItemNamed['hoverpreviewdim'] <> nil then
+        FItemHoverPreview.SetDimension(Value('hoverpreviewdim', '48,48'));
+      if ItemNamed['hoverpreviewloc'] <> nil then
+        FItemHoverPreview.SetLocation(Value('hoverpreviewloc','0,0'));
+      FWrapCount := IntValue('WrapCount',8);
+      FSpacing := IntValue('Spacing',2);
+    end;
+  finally
+    SkinText.free;
+  end;
 end;
 
 //***************************************

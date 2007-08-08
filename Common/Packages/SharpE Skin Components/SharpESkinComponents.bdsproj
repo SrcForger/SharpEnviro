@@ -123,7 +123,7 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\Libraries\SharpAPI;..\..\Libraries\SharpThemeAPI;..\..\3rd party\GR32 Addons;..\..\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils</Directories>
+			<Directories Name="SearchPath">..\..\Libraries\SharpAPI;..\..\Libraries\SharpThemeAPI;..\..\3rd party\GR32 Addons;..\..\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils;..\..\Libraries\SharpCenterAPI</Directories>
 			<Directories Name="Packages"></Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
