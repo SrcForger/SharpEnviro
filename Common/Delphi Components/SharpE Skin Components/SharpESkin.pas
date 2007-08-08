@@ -53,7 +53,8 @@ type
 
 const
  ALL_SHARPE_SKINS = [scPanel,scButton,scBar,scProgressBar,scCheckBox,scRadioBox,
-                     scMiniThrobber,scEdit,scForm,scTaskItem,scMenu,scMenuItem];
+                     scMiniThrobber,scEdit,scForm,scTaskItem,scMenu,scMenuItem,
+                     scTaskSwitch];
 
 type
   TSharpEPanelSkin = class;
