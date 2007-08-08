@@ -93,6 +93,9 @@ function CenterSelectEditTab(AEditTab: TSCB_BUTTON_ENUM): boolean;
 function CenterUpdatePreview: boolean;
   external 'SharpCenterAPI.dll' name 'CenterUpdatePreview';
 
+function CenterUpdateSettings: boolean;
+  external 'SharpCenterAPI.dll' name 'CenterUpdateSettings';
+
 function CenterCommandAsText(ACommand: TSCC_COMMAND_ENUM): string;
   external 'SharpCenterAPI.dll' name 'CenterCommandAsText';
 
