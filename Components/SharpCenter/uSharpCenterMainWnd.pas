@@ -87,9 +87,7 @@ type
     btnHelp: TPngSpeedButton;
     btnSave: TPngSpeedButton;
     btnCancel: TPngSpeedButton;
-    PopupMenu1: TPopupMenu;
     pnlContent: TPanel;
-    MiAdd: TMenuItem;
     tlToolbar: TSharpETabList;
     pnlToolbar: TSharpERoundPanel;
     plToolbar: TJvPageList;
@@ -106,10 +104,6 @@ type
     Label2: TLabel;
     Edit2: TEdit;
     PngSpeedButton2: TPngSpeedButton;
-    MiEdit: TMenuItem;
-    miDelete: TMenuItem;
-    miSep: TMenuItem;
-    miConfigure: TMenuItem;
     lbFavs: TSharpEListBoxEx;
     pnlLivePreview: TPanel;
     imgLivePreview: TImage32;
@@ -127,8 +121,7 @@ type
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
     procedure Timer1Timer(Sender: TObject);
-    procedure MiClick(Sender: TObject);
-    procedure PopupMenu1Popup(Sender: TObject);
+
     procedure btnImportClick(Sender: TObject);
     procedure tlEditItemTabClick(ASender: TObject; const ATabIndex: Integer);
     procedure btnEditApplyClick(Sender: TObject);
@@ -438,15 +431,15 @@ end;
 
 procedure TSharpCenterWnd.DoDoubleBufferAll(AComponent: TComponent);
 var i: integer;
+begin
+  if Assigned(AComponent) then
   begin
-    if Assigned(AComponent) then
-    begin
-      if AComponent is TWinControl then
-        TWinControl(AComponent).DoubleBuffered := True;
+    if AComponent is TWinControl then
+      TWinControl(AComponent).DoubleBuffered := True;
 
-      for i := 0 to AComponent.ComponentCount - 1 do
-        DoDoubleBufferAll(AComponent.Components[i]);
-    end;
+    for i := 0 to AComponent.ComponentCount - 1 do
+      DoDoubleBufferAll(AComponent.Components[i]);
+  end;
 end;
 
 procedure TSharpCenterWnd.btnFavouriteClick(Sender: TObject);
@@ -543,13 +536,17 @@ begin
         if SCM.StateEditItem <> False then
           SCM.StateEditItem := False;
       end;
-    SCM_SET_LIVE_CONFIG :
+    SCM_SET_LIVE_CONFIG:
       begin
         PnlButtons.Hide;
       end;
-    SCM_SET_APPLY_CONFIG :
+    SCM_SET_APPLY_CONFIG:
       begin
         PnlButtons.Show;
+      end;
+    SCM_EVT_UPDATE_SETTINGS:
+      begin
+        SCM.UpdateSettingsBroadcast;
       end;
   end;
 end;
@@ -801,24 +798,24 @@ begin
 
   lockwindowupdate(Self.Handle);
   try
-  if (@SCM.ActivePlugin.Open <> nil) then
-  begin
-    if SCM.PluginWndHandle <> 0 then begin
-      h := GetControlByHandle(SCM.PluginWndHandle).Height;
-      pnlPlugin.Height := h;
-      GetControlByHandle(SCM.PluginWndHandle).Width := pnlPlugin.Width;
+    if (@SCM.ActivePlugin.Open <> nil) then
+    begin
+      if SCM.PluginWndHandle <> 0 then begin
+        h := GetControlByHandle(SCM.PluginWndHandle).Height;
+        pnlPlugin.Height := h;
+        GetControlByHandle(SCM.PluginWndHandle).Width := pnlPlugin.Width;
+      end;
+
+      if @SCM.ActivePlugin.OpenEdit <> nil then
+        if SCM.EditWndHandle <> 0 then
+        begin
+          pnlEditContainer.Minimized := False;
+          pnlEditContainer.Height := 80 + GetControlByHandle(SCM.EditWndHandle).Height;
+          GetControlByHandle(SCM.EditWndHandle).Width := pnlEditPlugin.Width;
+        end else
+          pnlEditContainer.Minimized := True;
+
     end;
-
-    if @SCM.ActivePlugin.OpenEdit <> nil then
-      if SCM.EditWndHandle <> 0 then
-      begin
-        pnlEditContainer.Minimized := False;
-        pnlEditContainer.Height := 80 + GetControlByHandle(SCM.EditWndHandle).Height;
-        GetControlByHandle(SCM.EditWndHandle).Width := pnlEditPlugin.Width;
-      end else
-        pnlEditContainer.Minimized := True;
-
-  end;
   finally
     LockWindowUpdate(0);
   end;
@@ -828,41 +825,6 @@ procedure TSharpCenterWnd.btnImportClick(Sender: TObject);
 begin
   if (@SCM.ActivePlugin.ClickBtn <> nil) then
     SCM.ActivePlugin.ClickBtn(scbImport, PChar(edImportFileName.Text));
-end;
-
-procedure TSharpCenterWnd.PopupMenu1Popup(Sender: TObject);
-begin
-  miConfigure.Visible := False;
-  miSep.Visible := False;
-
-  if (@SCM.ActivePlugin.SetBtnState <> nil) then
-    if SCM.ActivePlugin.SetBtnState(scbConfigure) then
-    begin
-      //miConfigure.Visible := True;
-      //miSep.Visible := True;
-    end;
-
-  MiAdd.Visible := (@SCM.ActivePlugin.OpenEdit <> nil);
-  MiEdit.Visible := (@SCM.ActivePlugin.OpenEdit <> nil);
-  miDelete.Visible := (@SCM.ActivePlugin.OpenEdit <> nil);
-end;
-
-procedure TSharpCenterWnd.MiClick(Sender: TObject);
-begin
-  if Sender = MiAdd then
-    pnlEditContainer.TabList.ClickTab(integer(tidAdd))
-  else if Sender = MiEdit then
-    pnlEditContainer.TabList.ClickTab(integer(tidEdit))
-  else if Sender = MiDelete then
-  begin
-    pnlEditContainer.TabList.ClickTab(integer(tidDelete));
-    btnEditApply.Click;
-  end
-  else if Sender = miConfigure then
-  begin
-    if (@SCM.ActivePlugin.ClickBtn <> nil) then
-      SCM.ActivePlugin.ClickBtn(scbconfigure, miConfigure.Caption);
-  end;
 end;
 
 procedure TSharpCenterWnd.ShowHistory;
@@ -890,6 +852,7 @@ begin
   try
 
     // Edit bar
+    PnlButtons.Show;
     pnlEditContainer.Height := 0;
     if (@SCM.ActivePlugin.OpenEdit <> nil) then
       pnlEditContainer.Minimized := True;
@@ -921,12 +884,12 @@ begin
     end;
 
     // Select in list
-    For i := 0 to Pred(lbTree.Count) do begin
+    for i := 0 to Pred(lbTree.Count) do begin
       if CompareText(TSharpCenterManagerItem(lbTree.Item[i].Data).Filename,
         SCM.ActivePlugin.Filename) = 0 then begin
-          lbTree.ItemIndex := i;
-          break;
-        end;
+        lbTree.ItemIndex := i;
+        break;
+      end;
 
     end;
 
@@ -1022,8 +985,13 @@ end;
 procedure TSharpCenterWnd.UpdateThemeEvent(Sender: TObject);
 var
   colBackground, colItem, colSelectedItem: TColor;
+  ctrl: TWinControl;
 begin
   //LockWindowUpdate(Self.Handle);
+  ctrl := nil;
+  if SCM.EditWndHandle <> 0 then
+    if GetControlByHandle(SCM.EditWndHandle) <> nil then
+      ctrl := TForm(GetControlByHandle(SCM.EditWndHandle)).ActiveControl;
   try
 
     if @SCM.ActivePlugin.GetCenterScheme <> nil then
@@ -1051,7 +1019,7 @@ begin
       pnlEditPlugin.Color := colBackground;
       pnlEditToolbar.Color := colBackground;
       pnlEditContainer.TabSelColor := colBackground;
-      lbTree.Enabled := Not(SCM.StateEditItem);
+      lbTree.Enabled := not (SCM.StateEditItem);
 
       btnEditCancel.Enabled := True;
 
@@ -1092,6 +1060,8 @@ begin
     end;
   finally
     //lockWindowUpdate(0);
+    if ctrl <> nil then
+      ctrl.SetFocus;
   end;
 end;
 
@@ -1116,7 +1086,7 @@ procedure TSharpCenterWnd.sbPluginResize(Sender: TObject);
 begin
   if sbPlugin.VertScrollBar.IsScrollBarVisible then
     sbPlugin.Padding.Right := 6 else
-    sbPlugin.Padding.Right := 0;  
+    sbPlugin.Padding.Right := 0;
 end;
 
 procedure TSharpCenterWnd.ApplyEditEvent(Sender: TObject);

@@ -60,7 +60,7 @@ type
 
     SetDisplayText: procedure (const APluginID:Pchar; var ADisplayText:PChar);
     SetStatusText: procedure (var AStatusText: PChar);
-    SetSettingType: function(): Integer;
+    SetSettingType: function(): TSU_UPDATE_ENUM;
     SetBtnState : function(AButton: TSCB_BUTTON_ENUM): Boolean;
 
     GetCenterScheme: procedure (var ABackground: TColor;

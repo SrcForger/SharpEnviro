@@ -144,6 +144,7 @@ type
 
     function CheckEditState: Boolean;
 
+    procedure UpdateSettingsBroadcast;
     function ExecuteCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
       APluginID: string): Boolean;
 
@@ -193,7 +194,7 @@ implementation
 function TSharpCenterManager.Load(AFile, APluginID: string): Boolean;
 var
   Xml: TJvSimpleXML;
-  iSettingType: Integer;
+  enumSettingType: TSU_UPDATE_ENUM;
   sFile, sName: string;
 
 begin
@@ -213,9 +214,8 @@ begin
 
         // Get setting type
         if (@ActivePlugin.SetSettingType <> nil) then
-          iSettingType := ActivePlugin.SetSettingType
-        else
-          iSettingType := -1;
+          enumSettingType := ActivePlugin.SetSettingType else
+          enumSettingType := TSU_UPDATE_ENUM(0);
 
         // load plugin tabs
         LoadPluginTabs;
@@ -231,8 +231,8 @@ begin
 
         Result := True;
 
-        case iSettingType of
-          SU_SERVICE:
+        case enumSettingType of
+          suService:
             begin
               sName := GetDisplayName(FActiveFile, FActivePluginID);
               sFile := GetSharpeUserSettingsPath + 'SharpCore\ServiceList.xml';
@@ -328,25 +328,13 @@ begin
 end;
 
 function TSharpCenterManager.Save: Boolean;
-var
-  iSettingType: Integer;
-  n: Integer;
 begin
   Result := True;
 
   if (@FActivePlugin.Save <> nil) then
     FActivePlugin.Save;
 
-  iSettingType := 0;
-  if (@FActivePlugin.SetSettingType) <> nil then
-    iSettingType := FActivePlugin.SetSettingType;
-
-  if TryStrToInt(FActivePluginID, n) then
-    n := StrToInt(FActivePluginID)
-  else
-    n := -1;
-
-  SharpEBroadCast(WM_SHARPEUPDATESETTINGS, iSettingType, n);
+  UpdateSettingsBroadcast;
 end;
 
 function TSharpCenterManager.BuildNavFromFile(AFile: string; ALoad: Boolean = True): Boolean;
@@ -558,6 +546,23 @@ begin
       end else begin
         MessageDlg('Unknown command', mtError, [mbOK], 0);
       end;
+end;
+
+procedure TSharpCenterManager.UpdateSettingsBroadcast;
+var
+  enumSettingType: TSU_UPDATE_ENUM;
+  n: Integer;
+begin
+  enumSettingType := TSU_UPDATE_ENUM(0);
+
+  if (@FActivePlugin.SetSettingType) <> nil then
+    enumSettingType := FActivePlugin.SetSettingType;
+
+  if TryStrToInt(FActivePluginID, n) then
+    n := StrToInt(FActivePluginID) else
+    n := -1;
+
+  SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(enumSettingType), n);
 end;
 
 procedure TSharpCenterManager.BuildNavFromCommandLine;

@@ -60,8 +60,12 @@ implementation
 
   function GetControlByHandle(AHandle: THandle): TWinControl;
   begin
-    Result := Pointer(GetProp(AHandle,
-    PChar(Format('Delphi%8.8x', [GetCurrentProcessID]))));
+    Try
+      Result := Pointer(GetProp(AHandle,
+      PChar(Format('Delphi%8.8x', [GetCurrentProcessID]))));
+    Except
+      Result := nil;
+    End;
   end;
 
   procedure HideAllTaskbarButton;

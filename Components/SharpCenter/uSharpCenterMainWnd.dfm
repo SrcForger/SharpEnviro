@@ -2070,7 +2070,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               98)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -570
+              Left = -594
               Top = 35
               Width = 23
               Height = 22
@@ -2522,13 +2522,14 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = 0
+              Width = -4
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
+              ExplicitWidth = 0
             end
           end
         end
@@ -2639,7 +2640,6 @@ object SharpCenterWnd: TSharpCenterWnd
             Align = alTop
             BevelOuter = bvNone
             Color = clWindow
-            PopupMenu = PopupMenu1
             TabOrder = 0
           end
         end
@@ -3638,31 +3638,6 @@ object SharpCenterWnd: TSharpCenterWnd
           end
         end
       end
-    end
-  end
-  object PopupMenu1: TPopupMenu
-    OnPopup = PopupMenu1Popup
-    Left = 76
-    Top = 368
-    object MiAdd: TMenuItem
-      Caption = 'Add'
-      OnClick = MiClick
-    end
-    object MiEdit: TMenuItem
-      Caption = 'Edit'
-      OnClick = MiClick
-    end
-    object miDelete: TMenuItem
-      Caption = 'Delete'
-      OnClick = MiClick
-    end
-    object miSep: TMenuItem
-      Caption = '-'
-    end
-    object miConfigure: TMenuItem
-      Caption = 'Configure'
-      Default = True
-      OnClick = MiClick
     end
   end
   object picMain: TPngImageList
