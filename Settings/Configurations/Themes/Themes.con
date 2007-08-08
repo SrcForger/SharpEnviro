@@ -1,8 +1,0 @@
-<SharpCenter>
-  <Sections>
-    <Scheme> 
-      <Dll>_themedlls\Scheme.dll</Dll>
-      <Icon>_themedlls\Icons\Scheme.png</Icon>
-    </Scheme>
-  </Sections> 
-</SharpCenter>
