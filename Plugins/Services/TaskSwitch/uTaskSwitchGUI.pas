@@ -530,8 +530,12 @@ begin
   FWnd.Hook := SetWindowsHookEx(13,KeyHook, HInstance,0);  
   FWnd.Left := FWnd.Monitor.Left + FWnd.Monitor.Width div 2 - FBackground.Width div 2;
   FWnd.Top := FWnd.Monitor.Top + FWnd.Monitor.Height div 2 - FBackground.Height div 2;
-  FWnd.FormStyle := fsStayOnTop;
+  
   FWnd.Show;
+  SetWindowPos(FWnd.handle, HWND_TOPMOST, FWnd.Left, FWnd.Top,
+    FWnd.Width, FWnd.Height, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+
+
   // WH_KEYBOARD_LL = 13
   UpdateHighlight;
   FPreviewIndex := 0;

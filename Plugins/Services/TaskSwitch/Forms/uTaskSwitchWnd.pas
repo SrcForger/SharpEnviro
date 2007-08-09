@@ -186,6 +186,8 @@ begin
   if SetWindowLong(Handle, GWL_EXSTYLE,
        GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED or WS_EX_TOOLWINDOW
                                           or WS_EX_TOPMOST) = 0 then
+
+  
   begin
     ShowMessage('Operation System is not supporting LayeredWindows!');
     Application.Terminate;

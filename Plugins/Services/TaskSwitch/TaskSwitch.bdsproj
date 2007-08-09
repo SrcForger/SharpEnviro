@@ -170,6 +170,9 @@
 			<Language Name="ActiveLang"></Language>
 			<Language Name="ProjectLang">$00000000</Language>
 			<Language Name="RootDir"></Language>
-		</Language>
-	</Delphi.Personality>
+		</Language>  
+    <Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\B305vd70.bpl">TurboPower Abbrevia 3.05 Design-time package - VCL70</Excluded_Packages>
+    </Excluded_Packages>
+  </Delphi.Personality>
 </BorlandProject>
