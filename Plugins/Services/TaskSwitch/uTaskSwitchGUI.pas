@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, Graphics, SysUtils, Math, Classes, ExtCtrls,
   SharpThemeApi, SharpESkin, SharpESkinPart, SharpESkinManager, uTaskSwitchWnd,
-  GR32, GR32_Resamplers, SharpIconUtils;
+  GR32, GR32_Resamplers, SharpIconUtils, Forms;
 
 type
   TTSGui = class
@@ -18,6 +18,7 @@ type
     FUser32DllHandle : integer;
     FPreviewTimer : TTimer;
     FPreviewIndex : integer;
+    FInTimer : boolean;
     PrintWindow : function (SourceWindow: hwnd; Destination: hdc; nFlags: cardinal): bool; stdcall;
     function GetWndVisible: boolean;
     procedure OnPreviewTimer(Sender : TObject);
@@ -172,15 +173,23 @@ procedure TTSGui.CloseWindow;
 begin
   UnhookWindowsHookEx(FWnd.Hook);
 
-  FWnd.Close;
-  FWnd.Picture.SetSize(0,0);
-  FBackground.SetSize(0,0);
-  FNormal.SetSize(0,0);
+  if FPreviewTimer.Enabled then
+    FPreviewTimer.Enabled := False;
+
+  try    
+    FWnd.Close;
+    FWnd.Picture.SetSize(0,0);
+    FBackground.SetSize(0,0);
+    FNormal.SetSize(0,0);
+  except
+  end;
 end;
 
 constructor TTSGui.Create;
 begin
   inherited Create;
+
+  FInTimer := False;
 
   setlength(wndlist,0);
   setlength(previews,0);
@@ -281,6 +290,7 @@ var
   n : integer;
   Spacing : integer;
 begin
+  FInTimer := True;
   pwsucc := True;
   if not IsIconic(wndlist[FPreviewIndex]) then
   begin
@@ -294,81 +304,84 @@ begin
     WndBmp.CombineMode := cmMerge;
     TLinearResampler.Create(WndBmp);
     Bmp := TBitmap32.Create;
-    Bmp.SetSize(w,h);
-    Bmp.DrawMode := dmBlend;
-    Bmp.CombineMode := cmMerge;
-    Bmp.Clear(color32(0,0,0,0));
-
-    GetWindowRect(wndlist[FPreviewIndex],R);
-    WndBmp.SetSize(R.Right-R.Left,R.Bottom-R.Top);
-    WndBmp.Clear(color32(0,0,0,0));
-    pwsucc := PrintWindow(wndlist[FPreviewIndex],WndBmp.Handle,0);
-    if pwsucc and HasVisiblePixel(WndBmp) then
-    begin
-      R2 := Rect(0,0,0,0);
-      if (WndBmp.Width/WndBmp.Height)=(w/h) then
-      begin
-        R2 := Rect(0,0,w,h);
-      end
-      else if (WndBmp.Width/WndBmp.Height)>(w/h) then
-      begin
-        R2.Left := 0;
-        R2.Top := round((h div 2 - ((w/WndBmp.Width)*WndBmp.Height) / 2));
-        R2.Right := w;
-        R2.bottom := round((h div 2 + ((w/WndBmp.Width)*WndBmp.Height) / 2));
-      end else
-      begin
-        R2.Left := round((w div 2 - ((h/WndBmp.Height)*WndBmp.Width) / 2));
-        R2.Top := 0;
-        R2.Right := round((w div 2 + ((h/WndBmp.Height)*WndBmp.Width) / 2));
-        R2.bottom := h;
-      end;
-      WndBmp.ResetAlpha(255);
-      Bmp.Draw(R2,WndBmp.ClipRect,WndBmp);
-      Previews[FPreviewIndex].DrawTo(Bmp,Rect(w-20,h-20,w,h));
-      Previews[FPreviewIndex].Clear(color32(0,0,0,0));
-      Previews[FPreviewIndex].Assign(Bmp);
-      WndBmp.Free;
-
-      TSS := FSkinManager.Skin.TaskSwitchSkin;
-
-      Spacing := TSS.Spacing;
-      x := TSS.LROffset.XAsInt;
-      y := TSS.TBOffset.XAsInt;
-
-      for n := 0 to FPreviewIndex - 1 do
-      begin
-        x := x + TSS.Item.SkinDim.WidthAsInt + Spacing;
-        if x > FBackground.Width - TSS.LROffset.YAsInt - TSS.Item.SkinDim.WidthAsInt  then
-        begin
-          x := TSS.LROffset.XAsInt;
-          y := y + TSS.Item.SkinDim.HeightAsInt + spacing;
-        end;
-      end;
-
-      w := TSS.Item.SkinDim.WidthAsInt;
-      h := TSS.Item.SkinDim.HeightAsInt;
-
-      FNormal.DrawMode := dmOpaque;
-      FNormal.FillRect(x,y,x+w,y+h,color32(0,0,0,0));
-      FNormal.DrawMode := dmBlend;
-
-      Bmp.SetSize(TSS.ItemHover.SkinDim.WidthAsInt,TSS.ItemHover.SkinDim.HeightAsInt);
-      Bmp.Clear(color32(0,0,0,0));
+    try
+      Bmp.SetSize(w,h);
       Bmp.DrawMode := dmBlend;
       Bmp.CombineMode := cmMerge;
-      TSS.Item.draw(Bmp,FSkinManager.Scheme);
-      previews[FPreviewIndex].DrawTo(Bmp,TSS.ItemPreview.XAsInt,TSS.ItemPreview.YAsInt);
-      Bmp.DrawTo(FNormal,x,y);
-      Bmp.Free;
+      Bmp.Clear(color32(0,0,0,0));
 
-      UpdateHighlight;
+      GetWindowRect(wndlist[FPreviewIndex],R);
+      WndBmp.SetSize(R.Right-R.Left,R.Bottom-R.Top);
+      WndBmp.Clear(color32(0,0,0,0));
+      pwsucc := PrintWindow(wndlist[FPreviewIndex],WndBmp.Handle,0);
+      if pwsucc and HasVisiblePixel(WndBmp) then
+      begin
+        R2 := Rect(0,0,0,0);
+        if (WndBmp.Width/WndBmp.Height)=(w/h) then
+        begin
+          R2 := Rect(0,0,w,h);
+        end
+        else if (WndBmp.Width/WndBmp.Height)>(w/h) then
+        begin
+          R2.Left := 0;
+          R2.Top := round((h div 2 - ((w/WndBmp.Width)*WndBmp.Height) / 2));
+          R2.Right := w;
+          R2.bottom := round((h div 2 + ((w/WndBmp.Width)*WndBmp.Height) / 2));
+        end else
+        begin
+          R2.Left := round((w div 2 - ((h/WndBmp.Height)*WndBmp.Width) / 2));
+          R2.Top := 0;
+          R2.Right := round((w div 2 + ((h/WndBmp.Height)*WndBmp.Width) / 2));
+          R2.bottom := h;
+        end;
+        WndBmp.ResetAlpha(255);
+        Bmp.Draw(R2,WndBmp.ClipRect,WndBmp);
+        Previews[FPreviewIndex].DrawTo(Bmp,Rect(w-20,h-20,w,h));
+        Previews[FPreviewIndex].Clear(color32(0,0,0,0));
+        Previews[FPreviewIndex].Assign(Bmp);
+
+        TSS := FSkinManager.Skin.TaskSwitchSkin;
+
+        Spacing := TSS.Spacing;
+        x := TSS.LROffset.XAsInt;
+        y := TSS.TBOffset.XAsInt;
+
+        for n := 0 to FPreviewIndex - 1 do
+        begin
+          x := x + TSS.Item.SkinDim.WidthAsInt + Spacing;
+          if x > FBackground.Width - TSS.LROffset.YAsInt - TSS.Item.SkinDim.WidthAsInt  then
+          begin
+            x := TSS.LROffset.XAsInt;
+            y := y + TSS.Item.SkinDim.HeightAsInt + spacing;
+          end;
+        end;
+
+        w := TSS.Item.SkinDim.WidthAsInt;
+        h := TSS.Item.SkinDim.HeightAsInt;
+
+        FNormal.DrawMode := dmOpaque;
+        FNormal.FillRect(x,y,x+w,y+h,color32(0,0,0,0));
+        FNormal.DrawMode := dmBlend;
+
+        Bmp.SetSize(TSS.ItemHover.SkinDim.WidthAsInt,TSS.ItemHover.SkinDim.HeightAsInt);
+        Bmp.Clear(color32(0,0,0,0));
+        Bmp.DrawMode := dmBlend;
+        Bmp.CombineMode := cmMerge;
+        TSS.Item.draw(Bmp,FSkinManager.Scheme);
+        previews[FPreviewIndex].DrawTo(Bmp,TSS.ItemPreview.XAsInt,TSS.ItemPreview.YAsInt);
+        Bmp.DrawTo(FNormal,x,y);
+        UpdateHighlight;
+      end;
+    finally
+      Bmp.Free;
+      WndBmp.Free;
     end;
   end;
 
   FPreviewIndex := FPreviewIndex + 1;
   if FPreviewIndex > High(wndlist) then
     FPreviewTimer.Enabled := False;
+  FInTimer := False;
 end;
 
 function KeyHook(Code: integer; wParam: WPARAM; LParam: LPARAM): Longint; stdcall;
@@ -477,7 +490,7 @@ begin
   FWnd.Top := FWnd.Monitor.Top + FWnd.Monitor.Height div 2 - FBackground.Height div 2;
   FWnd.Show;
   UpdateHighlight;
-  // WH_KEYBOARD_LL = 13s
+  // WH_KEYBOARD_LL = 13
   FWnd.Hook := SetWindowsHookEx(13,KeyHook, HInstance,0);
   FPreviewIndex := 0;
   FPreviewTimer.Enabled := True;
