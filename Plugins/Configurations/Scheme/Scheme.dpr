@@ -66,7 +66,7 @@ begin
   result := frmSchemeList.Handle;
 end;
 
-function SetSettingType: Integer;
+function SetSettingType: TSU_UPDATE_ENUM;
 begin
   Result := suScheme;
 end;
