@@ -5,5 +5,9 @@
       <Dll>_Services\_Servicedlls\Hotkeys.dll</Dll>
       <Icon>_Services\Icons\Hotkeys.png</Icon>
     </Hotkeys>
+	<Weather>
+      <Dll>_Services\_Servicedlls\Weather.dll</Dll>
+      <Icon>_Services\Icons\Weather.png</Icon>
+    </Weather>
   </Sections>
 </SharpCenter>
