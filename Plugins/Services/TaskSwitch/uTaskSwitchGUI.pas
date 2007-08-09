@@ -534,6 +534,7 @@ begin
   FWnd.Show;
   SetWindowPos(FWnd.handle, HWND_TOPMOST, FWnd.Left, FWnd.Top,
     FWnd.Width, FWnd.Height, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+  ForceForegroundWindow(FWnd.Handle);
 
 
   // WH_KEYBOARD_LL = 13
