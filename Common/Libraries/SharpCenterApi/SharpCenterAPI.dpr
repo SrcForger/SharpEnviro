@@ -40,12 +40,14 @@ uses
   messages,
   SysUtils,
   shellAPI,
+  JvSimpleXml,
+  JclSysInfo,
   SharpApi;
 
 {$R *.RES}
 const
   WM_SHARPCENTERMESSAGE = WM_APP + 660;
-  
+
   SCM_SET_EDIT_STATE = 1;
   SCM_SET_EDIT_CANCEL_STATE = 2;
   SCM_SET_BUTTON_ENABLED = 3;
@@ -62,14 +64,19 @@ const
   SCC_UNLOAD_DLL = '_unloaddll';
   SCC_LOAD_DLL = '_loaddll';
 
-Type
+type
   TSCC_COMMAND_ENUM = (sccLoadSetting, sccChangeFolder, sccUnloadDll, sccLoadDll);
   TSCB_BUTTON_ENUM = (scbMoveUp, scbMoveDown, scbImport, scbExport, scbClear,
     scbDelete, scbHelp, scbAddTab, scbEditTab, scbDeleteTab, scbConfigure);
   TSU_UPDATE_ENUM = (suSkin, suSkinFileChanged, suScheme, suTheme, suIconSet,
     suBackground, suService, suDesktopIcon, suSharpDesk, suSharpMenu,
-      suSharpBar, suCursor, suWallpaper);
+    suSharpBar, suCursor, suWallpaper);
   TSC_MODE_ENUM = (scmLive, scmApply);
+
+  TSC_DEFAULT_FIELDS = record
+    Author: string;
+    Website: string;
+  end;
 
 var
   wpara: wparam;
@@ -87,22 +94,22 @@ begin
   lpara := lpar;
 
   MuteXHandle := OpenMutex(MUTEX_ALL_ACCESS, False, 'SharpCenterMutexX');
-    if MuteXHandle <> 0 then
-    begin
+  if MuteXHandle <> 0 then
+  begin
 
       //Find the window
-      wnd := FindWindow('TSharpCenterWnd', nil);
-      if wnd <> 0 then
-      begin
-        Result := True;
-        PostMessage(wnd, WM_SHARPCENTERMESSAGE, wpara, lpara);
-      end else
-        Result := False;
-      CloseHandle(MuteXHandle);
-    end
+    wnd := FindWindow('TSharpCenterWnd', nil);
+    if wnd <> 0 then
+    begin
+      Result := True;
+      PostMessage(wnd, WM_SHARPCENTERMESSAGE, wpara, lpara);
+    end else
+      Result := False;
+    CloseHandle(MuteXHandle);
+  end
 end;
 
-function CenterCommand(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID :PChar): hresult;
+function CenterCommand(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID: PChar): hresult;
 var
   cds: TCopyDataStruct;
   wnd: hWnd;
@@ -110,18 +117,18 @@ var
   path: string;
   MutexHandle: THandle;
 
-  sCommand: String;
+  sCommand: string;
 begin
   Result := 0;
   wnd := 0;
 
-  Case ACommand of
+  case ACommand of
     sccLoadSetting: sCommand := SCC_LOAD_SETTING;
     sccChangeFolder: sCommand := SCC_CHANGE_FOLDER;
     sccUnloadDll: sCommand := SCC_UNLOAD_DLL;
     sccLoadDll: sCommand := SCC_LOAD_DLL;
-    else
-      sCommand := '';
+  else
+    sCommand := '';
   end;
 
   // Check valid command
@@ -156,7 +163,7 @@ begin
       begin
         SendDebugMessageEx('SharpApi',
           pchar(format('SharpCenter Mutex Exists, Sending Msg: %s - %s',
-            [sCommand, AParam])),
+          [sCommand, AParam])),
           0,
           DMT_STATUS);
         result := sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
@@ -172,12 +179,12 @@ begin
       begin
         SendDebugMessageEx('SharpApi',
           pchar(format('SharpCenter Mutex not found, Launching file: %s', [Path
-            +
-          'SharpCenter.exe'])), 0, DMT_STATUS);
+          +
+            'SharpCenter.exe'])), 0, DMT_STATUS);
         ShellExecute(wnd, 'open', pchar(Path + 'SharpCenter.exe'), Pchar('-api '
           +
           IntToStr(Integer(ACommand)) + '|' + AParam + '|' + APluginID),
-            pchar(path), WM_SHOWWINDOW);
+          pchar(path), WM_SHOWWINDOW);
 
       end
       else
@@ -191,8 +198,8 @@ begin
   end;
 end;
 
-function BroadcastGlobalUpdateMessage(AUpdateType:TSU_UPDATE_ENUM;
-  APluginID: Integer=-1) : boolean;
+function BroadcastGlobalUpdateMessage(AUpdateType: TSU_UPDATE_ENUM;
+  APluginID: Integer = -1): boolean;
 begin
   Result := True;
   SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(AUpdateType), APluginID);
@@ -201,68 +208,109 @@ end;
 function CenterDefineEditState(AEditing: Boolean): boolean;
 begin
   if AEditing then
-    Result := BroadcastCenterMessage(SCM_SET_EDIT_STATE,0) else
-    Result := BroadcastCenterMessage(SCM_SET_EDIT_CANCEL_STATE,0);
+    Result := BroadcastCenterMessage(SCM_SET_EDIT_STATE, 0) else
+    Result := BroadcastCenterMessage(SCM_SET_EDIT_CANCEL_STATE, 0);
 end;
 
 function CenterDefineButtonState(AButton: TSCB_BUTTON_ENUM; AEnabled: Boolean): boolean;
 begin
   if AEnabled then
-    Result := BroadcastCenterMessage(SCM_SET_BUTTON_ENABLED,Integer(AButton)) else
-    Result := BroadcastCenterMessage(SCM_SET_BUTTON_DISABLED,Integer(AButton));
+    Result := BroadcastCenterMessage(SCM_SET_BUTTON_ENABLED, Integer(AButton)) else
+    Result := BroadcastCenterMessage(SCM_SET_BUTTON_DISABLED, Integer(AButton));
 end;
 
 function CenterDefineSettingsChanged: boolean;
 begin
-  Result := BroadcastCenterMessage(SCM_SET_SETTINGS_CHANGED,0);
+  Result := BroadcastCenterMessage(SCM_SET_SETTINGS_CHANGED, 0);
 end;
 
 function CenterSelectEditTab(AEditTab: TSCB_BUTTON_ENUM): boolean;
 begin
   Result := False;
   case AEditTab of
-    scbAddTab,scbEditTab,scbDeleteTab:
+    scbAddTab, scbEditTab, scbDeleteTab:
       Result := BroadcastCenterMessage(SCM_SET_TAB_SELECTED, integer(AEditTab));
   end;
 end;
 
 function CenterUpdatePreview: boolean;
 begin
-  Result := BroadcastCenterMessage(SCM_EVT_UPDATE_PREVIEW,0);
+  Result := BroadcastCenterMessage(SCM_EVT_UPDATE_PREVIEW, 0);
 end;
 
 function CenterUpdateSettings: boolean;
 begin
-  Result := BroadcastCenterMessage(SCM_EVT_UPDATE_SETTINGS,0);
+  Result := BroadcastCenterMessage(SCM_EVT_UPDATE_SETTINGS, 0);
 end;
 
 function CenterCommandAsText(ACommand: TSCC_COMMAND_ENUM): string;
 begin
   if ACommand = sccLoadSetting then result := SCC_LOAD_SETTING else
-  if ACommand = sccChangeFolder then result := SCC_CHANGE_FOLDER else
-  if ACommand = sccUnloadDll then result := SCC_UNLOAD_DLL else
-  if ACommand = sccLoadDll then result := SCC_LOAD_DLL;
+    if ACommand = sccChangeFolder then result := SCC_CHANGE_FOLDER else
+      if ACommand = sccUnloadDll then result := SCC_UNLOAD_DLL else
+        if ACommand = sccLoadDll then result := SCC_LOAD_DLL;
 end;
 
 function CenterCommandAsEnum(ACommand: string): TSCC_COMMAND_ENUM;
 begin
   Result := sccLoadSetting;
 
-  if CompareText(ACommand,SCC_LOAD_SETTING) = 0 then
+  if CompareText(ACommand, SCC_LOAD_SETTING) = 0 then
     result := sccLoadSetting else
-  if CompareText(ACommand,SCC_CHANGE_FOLDER) = 0 then
-    result := sccChangeFolder else
-  if CompareText(ACommand,SCC_UNLOAD_DLL) = 0 then
-    result := sccUnloadDll else
-  if CompareText(ACommand,SCC_LOAD_DLL) = 0 then
-    result := sccLoadDll;
+    if CompareText(ACommand, SCC_CHANGE_FOLDER) = 0 then
+      result := sccChangeFolder else
+      if CompareText(ACommand, SCC_UNLOAD_DLL) = 0 then
+        result := sccUnloadDll else
+        if CompareText(ACommand, SCC_LOAD_DLL) = 0 then
+          result := sccLoadDll;
 end;
 
-function CenterDefineConfigurationMode(AConfigMode:TSC_MODE_ENUM) : boolean;
+function CenterDefineConfigurationMode(AConfigMode: TSC_MODE_ENUM): boolean;
 begin
   if AConfigMode = scmLive then
-    Result := BroadcastCenterMessage(SCM_SET_LIVE_CONFIG,0) else
-    Result := BroadcastCenterMessage(SCM_SET_APPLY_CONFIG,0);
+    Result := BroadcastCenterMessage(SCM_SET_LIVE_CONFIG, 0) else
+    Result := BroadcastCenterMessage(SCM_SET_APPLY_CONFIG, 0);
+end;
+
+procedure CenterReadDefaults(var AFields: TSC_DEFAULT_FIELDS);
+var
+  xml: TJvSimpleXml;
+  sFile: string;
+begin
+  AFields.Author := GetLocalUserName;
+  AFields.Website := '';
+
+  sFile := GetSharpeUserSettingsPath + 'SharpCenter\defaults.xml';
+  if fileExists(sFile) then begin
+
+    xml := TJvSimpleXML.Create(nil);
+    try
+      xml.LoadFromFile(sFile);
+      AFields.Author := xml.Root.Items.Value('Author', '');
+      AFields.Website := xml.Root.Items.Value('Website', '');
+    finally
+      xml.Free;
+    end;
+  end;
+end;
+
+procedure CenterWriteDefaults(var AFields: TSC_DEFAULT_FIELDS);
+var
+  xml: TJvSimpleXml;
+  sFile: string;
+begin
+  sFile := GetSharpeUserSettingsPath + 'SharpCenter\defaults.xml';
+  ForceDirectories(ExtractFilePath(sFile));
+
+  xml := TJvSimpleXML.Create(nil);
+  try
+    xml.Root.Name := 'Defaults';
+    xml.Root.Items.Add('Author', AFields.Author);
+    xml.Root.Items.Add('Website', AFields.Website);
+  finally
+    xml.SaveToFile(sFile);
+    xml.Free;
+  end;
 end;
 
 exports
@@ -277,7 +325,9 @@ exports
   CenterUpdatePreview,
   CenterUpdateSettings,
   CenterCommandAsText,
-  CenterCommandAsEnum;
+  CenterCommandAsEnum,
+  CenterReadDefaults,
+  CenterWriteDefaults;
 begin
 
 end.

@@ -65,6 +65,11 @@ Type
 
   TSU_UPDATES = set of TSU_UPDATE_ENUM;
 
+  TSC_DEFAULT_FIELDS = record
+    Author: string;
+    Website: string;
+  end;
+
 function BroadcastGlobalUpdateMessage(AUpdateType:TSU_UPDATE_ENUM;
   APluginID: Integer=-1) : boolean;
     external 'SharpCenterAPI.dll' name 'BroadcastGlobalUpdateMessage';
@@ -101,6 +106,12 @@ function CenterCommandAsText(ACommand: TSCC_COMMAND_ENUM): string;
 
 function CenterCommandAsEnum(ACommand: string): TSCC_COMMAND_ENUM;
   external 'SharpCenterAPI.dll' name 'CenterCommandAsEnum';
+
+procedure CenterReadDefaults(var AFields: TSC_DEFAULT_FIELDS);
+  external 'SharpCenterAPI.dll' name 'CenterReadDefaults';
+
+procedure CenterWriteDefaults(var AFields: TSC_DEFAULT_FIELDS);
+  external 'SharpCenterAPI.dll' name 'CenterWriteDefaults';
 
 implementation
 
