@@ -316,7 +316,6 @@ var
   tmpCol: TSharpEListBoxExColumn;
   tmpPng: TPngObject;
   R: TRect;
-  X, Y: Integer;
   i, idx: Integer;
   bSelected: Boolean;
 begin
@@ -335,8 +334,6 @@ begin
       DrawSelection(Rect, State, tmpItem);
 
     // Draw Columns
-      X := ItemOffset.X;
-      Y := Rect.Top + ItemOffset.Y;
       for i := 0 to Pred(ColumnCount) do
       begin
 
@@ -380,9 +377,6 @@ begin
             end else
               DrawItemText(Self.Canvas, R, 0, tmpItem, i, nil);
           end;
-
-          X := X + Column[i].Width;
-
         end;
       end;
 
@@ -434,7 +428,6 @@ procedure TSharpEListBoxEx.DrawItemText(ACanvas: TCanvas; ARect: TRect;
   AFlags: Integer; Aitem: TSharpEListItem; ACol: Integer; APngImage: TPNGObject);
 var
   s: string;
-  tw, th: integer;
   tmpColor: TColor;
   iImgWidth: Integer;
   tmpFont: TFont;
@@ -463,8 +456,6 @@ begin
   end;
 
   s := PathCompactPath(Self.Canvas.Handle, Aitem.SubItemText[ACol], ARect.Right - aRect.Left, cpEnd);
-  tw := ACanvas.TextWidth(s);
-  th := ACanvas.TextHeight(s);
 
   if Assigned(FOnGetCellTextColor) then
   begin
@@ -599,8 +590,6 @@ end;
 
 procedure TSharpEListBoxEx.DblClickItem(Sender: TObject);
 var
-  i: Integer;
-  id: Integer;
   R: TRect;
   X, Y: Integer;
   pt: TPoint;
@@ -645,8 +634,6 @@ end;
 
 procedure TSharpEListBoxEx.ClickItem(Sender: TObject);
 var
-  i: Integer;
-  id: Integer;
   R: TRect;
   X, Y: Integer;
   pt: TPoint;
@@ -808,6 +795,7 @@ var
   stretchedwidth: integer;
 begin
   fixedwidth := 0;
+  stretchedwidth := 0;
   scount := 0;
   for i := 0 to ColumnCount - 1 do
     if (not Column[i].StretchColumn) then
