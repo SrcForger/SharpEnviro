@@ -57,7 +57,8 @@ type
                   Name : String;
                   Action : String;
                   CForward : Boolean;
-                  UseGUI   : Boolean; 
+                  UseGUI   : Boolean;
+                  Preview : Boolean;
                   IFilters : array of String;
                   EFilters : array of String;
                 end;
@@ -311,7 +312,8 @@ begin
         setlength(TSGUI.wndlist,length(wndlist));
         for n := 0 to High(wndlist) do
           TSGUI.wndlist[n] := wndlist[n];
-        TSGUI.Index := 0;
+        TSGUI.ShowPreview := ac.Preview;
+        TSGUI.Index := 1;
         TSGUI.ShowWindow;
       end else
       begin
@@ -411,8 +413,9 @@ begin
           Action := Value('Action','');
           UseGUI := BoolValue('UseGui',False);
           CForward := BoolValue('CForward',True);
+          Preview := BoolValue('Preview',True);
           setlength(IFilters,0);
-          setlength(EFilters,0);          
+          setlength(EFilters,0);
           if ItemNamed['IFilters'] <> nil then
             for i := 0 to ItemNamed['IFilters'].Items.Count - 1 do
             begin

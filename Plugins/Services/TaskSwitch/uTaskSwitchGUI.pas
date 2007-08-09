@@ -19,6 +19,7 @@ type
     FPreviewTimer : TTimer;
     FPreviewIndex : integer;
     FInTimer : boolean;
+    FShowPreview : boolean;
     PrintWindow : function (SourceWindow: hwnd; Destination: hdc; nFlags: cardinal): bool; stdcall;
     function GetWndVisible: boolean;
     procedure OnPreviewTimer(Sender : TObject);
@@ -32,9 +33,11 @@ type
     procedure CloseWindow;
     procedure BuildPreviews;
     procedure UpdateHighlight;
+    procedure SpecialKeyTest;
   published
     property WndVisible : boolean read GetWndVisible;
     property Index : integer read FIndex write FIndex;
+    property ShowPreview : boolean read FShowPreview write FShowPreview;
   end;
 
 var
@@ -171,16 +174,16 @@ end;
 
 procedure TTSGui.CloseWindow;
 begin
-  UnhookWindowsHookEx(FWnd.Hook);
-
   if FPreviewTimer.Enabled then
     FPreviewTimer.Enabled := False;
 
-  try    
+  UnhookWindowsHookEx(FWnd.Hook);
+  
+  try
     FWnd.Close;
-    FWnd.Picture.SetSize(0,0);
-    FBackground.SetSize(0,0);
-    FNormal.SetSize(0,0);
+    FWnd.Picture.SetSize(1,1);
+    FBackground.SetSize(1,1);
+    FNormal.SetSize(1,1);
   except
   end;
 end;
@@ -292,6 +295,7 @@ var
 begin
   FInTimer := True;
   pwsucc := True;
+    
   if not IsIconic(wndlist[FPreviewIndex]) then
   begin
     w := Max(FSkinManager.Skin.TaskSwitchSkin.ItemPreview.WidthAsInt,
@@ -382,6 +386,8 @@ begin
   if FPreviewIndex > High(wndlist) then
     FPreviewTimer.Enabled := False;
   FInTimer := False;
+
+  SpecialKeyTest;  
 end;
 
 function KeyHook(Code: integer; wParam: WPARAM; LParam: LPARAM): Longint; stdcall;
@@ -394,16 +400,12 @@ type
                       dwExtraInfo: DWORD;
                     end;
   PKBDLLHOOKSTRUCT = ^KBDLLHOOKSTRUCT;
-var
-  TestState : TKeyBoardState;
-  pkh: PKBDLLHOOKSTRUCT;
-  n : integer;
 begin
   if WPARAM = WM_KEYUP then
   begin
     TSGUI.CloseWindow;
     ForceForegroundWindow(TSGUI.wndlist[TSGUI.Index]);
-  end;
+  end else TSGUI.SpecialKeyTest;
 {  else if WPARAM = WM_SYSKEYDOWN then
   begin
     pkh:=PKBDLLHOOKSTRUCT(LParam);
@@ -425,11 +427,10 @@ var
   x,y : integer;
   n: Integer;
   temp : TBitmap32;
+  Shift : TShiftState;
 begin
   if FPreviewTimer.Enabled then
     FPreviewTimer.Enabled := False;
-
-  GetKeyboardState(StartState);
 
   BuildPreviews;
 
@@ -449,9 +450,13 @@ begin
            + (Count - 1) * Spacing
     else w := w + WrapCount * TSS.Item.SkinDim.WidthAsInt
                 + (WrapCount - 1) * Spacing;
-  h := h + round((Int(Count / WrapCount) + 1)
-                  * Max(TSS.Item.SkinDim.HeightAsInt,
-                        TSS.ItemHover.SkinDim.HeightAsInt));
+  if Count mod WrapCount = 0 then
+  h := h + round((Int(Count / WrapCount))
+           * Max(TSS.Item.SkinDim.HeightAsInt,
+                 TSS.ItemHover.SkinDim.HeightAsInt))
+  else h := h + round((Int(Count / WrapCount) + 1)
+                * Max(TSS.Item.SkinDim.HeightAsInt,
+                      TSS.ItemHover.SkinDim.HeightAsInt));
 
   // Draw Background
   FBackground.SetSize(w,h);
@@ -486,14 +491,31 @@ begin
   if FWnd <> nil then
      FWnd.Free;
   FWnd := TTaskSwitchWnd.Create(nil,self);
+  FWnd.Hook := SetWindowsHookEx(13,KeyHook, HInstance,0);  
   FWnd.Left := FWnd.Monitor.Left + FWnd.Monitor.Width div 2 - FBackground.Width div 2;
   FWnd.Top := FWnd.Monitor.Top + FWnd.Monitor.Height div 2 - FBackground.Height div 2;
+  FWnd.FormStyle := fsStayOnTop;
   FWnd.Show;
-  UpdateHighlight;
   // WH_KEYBOARD_LL = 13
-  FWnd.Hook := SetWindowsHookEx(13,KeyHook, HInstance,0);
+  UpdateHighlight;
   FPreviewIndex := 0;
-  FPreviewTimer.Enabled := True;
+  if ShowPreview then
+    FPreviewTimer.Enabled := True;
+  SpecialKeyTest;
+end;
+
+procedure TTSGui.SpecialKeyTest;
+var
+  kalt,kctrl,kshift : boolean;
+begin
+  kalt := (GetAsyncKeyState(VK_MENU) <> 0);
+  kctrl := (GetAsyncKeyState(VK_CONTROL) <> 0);
+  kshift := (GetAsyncKeyState(VK_SHIFT) <> 0);
+  if (not kalt) and (not kctrl) and (not kshift) then
+  begin
+    CloseWindow;
+    ForceForegroundWindow(wndlist[FIndex]);
+  end;
 end;
 
 function GetCaption(wnd : hwnd) : String;
@@ -506,7 +528,6 @@ end;
 
 procedure TTSGui.UpdateHighlight;
 var
-  WrapCount : integer;
   Spacing : integer;
   x,y : integer;
   w,h : integer;
@@ -528,7 +549,6 @@ begin
   TSS := FSkinManager.Skin.TaskSwitchSkin;
   ST := FSkinManager.Skin.TaskSwitchSkin.Background.SkinText;
 
-  WrapCount := Max(1,TSS.WrapCount);
   Spacing := TSS.Spacing;
 
   x := TSS.LROffset.XAsInt;
@@ -586,7 +606,8 @@ begin
   begin
     repeat
       setlength(Caption,length(Caption)-1);
-    until FontBmp.TextWidth(Caption) < FBackground.Width - TSS.LROffset.XAsInt - TSS.LROffset.YAsInt - 4;
+    until (FontBmp.TextWidth(Caption) < FBackground.Width - TSS.LROffset.XAsInt - TSS.LROffset.YAsInt - 4)
+          or (length(Caption) = 0);
     setlength(Caption,Max(0,length(Caption)-1));
     Caption := Caption + '...';
   end;

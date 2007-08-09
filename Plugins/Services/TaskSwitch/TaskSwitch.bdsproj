@@ -124,10 +124,10 @@
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
 			<Directories Name="SearchPath">..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpThemeAPI;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpIconUtils</Directories>
-			<Directories Name="Packages">vclx;vcl;VclSmp;rtl;vclactnband;vclshlctrls;JvStdCtrlsD9R;JvAppFrmD9R;JvCoreD9R;JvBandsD9R;JvCmpD9R;JvCryptD9R;JvCtrlsD9R;JvCustomD9R;JvDlgsD9R;JvDockingD9R;JvJansD9R;JvManagedThreadsD9R;JvMMD9R;JvNetD9R;JvPageCompsD9R;JvPluginD9R;JvPrintPreviewD9R;JvSystemD9R;JvTimeFrameworkD9R;JvValidatorsD9R;JvWizardD9R;JvXPCtrlsD9R;GR32_D2005;GR32_DSGN_D2005;SharpEStuff;SharpE</Directories>
+			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
-			<Directories Name="UsePackages">False</Directories>
+			<Directories Name="UsePackages">True</Directories>
 		</Directories>
 		<Parameters>
 			<Parameters Name="RunParams">-ext .ser</Parameters>
