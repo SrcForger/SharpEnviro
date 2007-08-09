@@ -62,6 +62,8 @@ type
       AItem: TSharpEListItem; var AColor: TColor);
     procedure lbThemeListGetCellFont(const ACol: Integer;
       AItem: TSharpEListItem; var AFont: TFont);
+    procedure lbThemeListGetCellCursor(const ACol: Integer;
+      AItem: TSharpEListItem; var ACursor: TCursor);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
   private
@@ -113,7 +115,7 @@ begin
   else
   begin
     BC(True, scbAddTab);
-    BC(True, scbEditTab);
+    BC(False, scbEditTab);
     BC(True, scbDeleteTab);
   end;
 end;
@@ -233,11 +235,18 @@ procedure TfrmThemeList.lbThemeListClickItem(AText: string; AItem,
   ACol: Integer);
 begin
 
-  if FrmEditItem <> nil then
+  if ACol = 3 then begin
+    ConfigureItem;
+  end else begin
+    if FrmEditItem <> nil then
     updateui;
 
-  SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1);
-  ThemeManager.SetTheme(AText);
+    SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1);
+    ThemeManager.SetTheme(AText);
+  end;
+
+
+  
 end;
 
 function TfrmThemeList.UpdateUI: Boolean;
@@ -370,6 +379,13 @@ procedure TfrmThemeList.lbThemeListDblClickItem(AText: string; AItem,
   ACol: Integer);
 begin
   ConfigureItem;
+end;
+
+procedure TfrmThemeList.lbThemeListGetCellCursor(const ACol: Integer;
+  AItem: TSharpEListItem; var ACursor: TCursor);
+begin
+  if (ACol = 1) or (ACol = 3) then
+    ACursor := crHandPoint;
 end;
 
 procedure TfrmThemeList.lbThemeListGetCellFont(const ACol: Integer;

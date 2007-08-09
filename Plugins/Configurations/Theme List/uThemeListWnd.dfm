@@ -77,8 +77,8 @@ object frmThemeList: TfrmThemeList
     OnResize = lbThemeListResize
     ItemHeight = 65
     OnClickItem = lbThemeListClickItem
-    OnDblClickItem = lbThemeListDblClickItem
     OnGetCellTextColor = lbThemeListGetCellTextColor
+    OnGetCellCursor = lbThemeListGetCellCursor
     OnGetCellFont = lbThemeListGetCellFont
     AutosizeGrid = True
     Borderstyle = bsNone
