@@ -51,8 +51,10 @@ type
     pilDefault: TPngImageList;
     DefThemeImageList: TPngImageList;
 
-    procedure lbThemeListDblClickItem(AText: string; AItem, ACol: Integer);
-    procedure lbThemeListClickItem(AText: string; AItem, ACol: Integer);
+    procedure lbThemeListDblClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
+    procedure lbThemeListClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure lbThemesClick(Sender: TObject);
@@ -174,13 +176,15 @@ begin
 
       newItem := lbThemeList.AddItem(tmpTheme.Name + ' By ' + tmpTheme.Author, 0);
 
+      if (tmpTheme.IsReadOnly) then
+        newItem.AddSubItem('',1) else
+        newItem.AddSubItem('',-1);
+
       if tmpTheme.Website <> '' then
         newItem.AddSubItem('',2) else
         newItem.AddSubItem('',-1);
 
-      if Not(tmpTheme.IsReadOnly) then
-        newItem.AddSubItem('',1) else
-        newItem.AddSubItem('',-1);
+      
 
       newItem.AddSubItem('edit');
 
@@ -231,18 +235,23 @@ begin
   end;
 end;
 
-procedure TfrmThemeList.lbThemeListClickItem(AText: string; AItem,
-  ACol: Integer);
+procedure TfrmThemeList.lbThemeListClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
+var
+  sUrl: String;
 begin
 
-  if ACol = 3 then begin
-    ConfigureItem;
+  if ACol = 3 then
+    ConfigureItem else
+  if ACol = 2 then begin
+    sUrl := TThemeListItem(lbThemeList.Item[lbThemeList.ItemIndex].Data).Website;
+    SharpExecute(sUrl);
   end else begin
     if FrmEditItem <> nil then
     updateui;
 
     SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1);
-    ThemeManager.SetTheme(AText);
+    ThemeManager.SetTheme(TThemeListItem(lbThemeList.Item[lbThemeList.ItemIndex].Data).Name);
   end;
 
 
@@ -375,8 +384,8 @@ begin
 
 end;
 
-procedure TfrmThemeList.lbThemeListDblClickItem(AText: string; AItem,
-  ACol: Integer);
+procedure TfrmThemeList.lbThemeListDblClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
 begin
   ConfigureItem;
 end;
@@ -384,21 +393,21 @@ end;
 procedure TfrmThemeList.lbThemeListGetCellCursor(const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 begin
-  if (ACol = 1) or (ACol = 3) then
+  if (ACol = 2) or (ACol = 3) then
     ACursor := crHandPoint;
 end;
 
 procedure TfrmThemeList.lbThemeListGetCellFont(const ACol: Integer;
   AItem: TSharpEListItem; var AFont: TFont);
 begin
-  if (ACol = 1) or (ACol = 3) then
+  if (ACol = 3) then
     AFont.Style := [fsUnderline];
 end;
 
 procedure TfrmThemeList.lbThemeListGetCellTextColor(const ACol: Integer;
   AItem: TSharpEListItem; var AColor: TColor);
 begin
-  if (ACol = 1) or (ACol = 3) then
+  if (ACol = 3) then
     AColor := clBlue;
 end;
 

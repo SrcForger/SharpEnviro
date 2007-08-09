@@ -37,7 +37,7 @@ object frmThemeList: TfrmThemeList
         SelectedImages = ThemeImages
       end
       item
-        Width = 50
+        Width = 40
         MaxWidth = 0
         MinWidth = 0
         TextColor = clBlack
