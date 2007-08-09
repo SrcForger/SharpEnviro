@@ -77,6 +77,7 @@ object Form1: TForm1
         StretchColumn = True
       end>
     ItemHeight = 24
+    OnClickItem = SharpEListBoxEx1ClickItem
     OnGetCellFont = SharpEListBoxEx1GetCellFont
     AutosizeGrid = False
     Align = alClient

@@ -18,14 +18,13 @@ type
       var Height: Integer);
     procedure SharpEListBoxEx1GetCellFont(const ACol: Integer;
       AItem: TSharpEListItem; var AFont: TFont);
-    procedure SharpEListBox1ClickItem(AText: string; AItem, ACol: Integer);
 
     procedure Button1Click(Sender: TObject);
+    procedure SharpEListBoxEx1ClickItem(const ACol: Integer;
+      AItem: TSharpEListItem);
   private
     { Private declarations }
     lb: TSharpEListBoxEx;
-    Procedure ClickItem(AText: String; AItem:Integer; ACol:Integer);
-    Procedure GetCellText(const ACol:Integer; AItem:TSharpEListItem; var AColor:TColor);
     Procedure GetCellCursor(const ACol:Integer; AItem:TSharpEListItem; var ACursor:TCursor);
     public
     { Public declarations }
@@ -46,8 +45,6 @@ var
 
 begin
 
-  SharpEListBoxEx1.OnClickItem := ClickItem;
-  SharpEListBoxEx1.OnGetCellTextColor := GetCellText;
   SharpEListBoxEx1.OnGetCellCursor := GetCellCursor;
   SharpEListBoxEx1.ItemOffset := Point(4,4);
   SharpEListBoxEx1.itemheight := 54;
@@ -60,26 +57,17 @@ begin
 
 end;
 
-procedure TForm1.ClickItem(AText: String; AItem, ACol: Integer);
-begin
-
-end;
-
 procedure TForm1.GetCellCursor(const ACol: Integer; AItem: TSharpEListItem;
   var ACursor: TCursor);
 begin
-   if ACol = 3 then
+   if ACol >= 2 then
     ACursor := crHandPoint;
 end;
 
-procedure TForm1.GetCellText(const ACol: Integer; AItem:TSharpEListItem; var AColor: TColor);
+procedure TForm1.SharpEListBoxEx1ClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
 begin
-
-end;
-
-procedure TForm1.SharpEListBox1ClickItem(AText: string; AItem, ACol: Integer);
-begin
-  ShowMessage('Test');
+  ShowMessage(inttostr(acol));
 end;
 
 procedure TForm1.SharpEListBoxEx1GetCellFont(const ACol: Integer;
