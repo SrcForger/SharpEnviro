@@ -57,19 +57,12 @@ type
     Label2: TLabel;
     Label1: TJvLabel;
     valThemeDirNotExists: TJvCustomValidator;
-    pagEdit: TJvStandardPage;
-    btnConfigure: TButton;
-    img: TImage;
-    lblName: TLabel;
-    lblSite: TJvLabel;
     procedure valThemeDirNotExistsValidate(Sender: TObject;
       ValueToValidate: Variant; var Valid: Boolean);
     procedure cbBasedOnSelect(Sender: TObject);
 
     procedure edThemeNameKeyPress(Sender: TObject; var Key: Char);
-    procedure FormShow(Sender: TObject);
     procedure btnConfigureClick(Sender: TObject);
-    procedure lblSiteClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -93,17 +86,6 @@ procedure TfrmEditItem.edThemeNameKeyPress(Sender: TObject; var Key: Char);
 begin
   CenterDefineEditState(True);
 
-end;
-
-procedure TfrmEditItem.FormShow(Sender: TObject);
-begin
-  lblSite.Font.Style := [fsUnderline];
-  lblSite.font.Color := clNavy;
-end;
-
-procedure TfrmEditItem.lblSiteClick(Sender: TObject);
-begin
-  SharpExecute(lblSite.Caption);
 end;
 
 function TfrmEditItem.ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM): Boolean;

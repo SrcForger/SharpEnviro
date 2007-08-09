@@ -39,12 +39,6 @@ uses
   ExtCtrls, Menus, JclStrings, JclInifiles, SharpCenterApi, pngimage;
 
 type
-  TStringObject = class(TObject)
-  public
-    Str: string;
-  end;
-
-type
   TfrmThemeList = class(TForm)
     ThemeImages: TPngImageList;
     lbThemeList: TSharpEListBoxEx;
@@ -263,14 +257,17 @@ var
   tmpItem: TSharpEListItem;
   tmpThemeItem: TThemeListItem;
   i: Integer;
+  df: TSC_DEFAULT_FIELDS;
 begin
   Result := False;
   case FEditMode of
     sceAdd: begin
         frmEditItem.pagAdd.Show;
-        FrmEditItem.edAuthor.Text := '';
+
+        CenterReadDefaults(df);
+        FrmEditItem.edAuthor.Text := df.Author;
         FrmEditItem.edName.Text := '';
-        frmEditItem.edWebsite.Text := '';
+        frmEditItem.edWebsite.Text := df.Website;
 
         frmEditItem.cbBasedOn.Items.Clear;
         frmEditItem.cbBasedOn.Items.AddObject('New Theme', nil);
@@ -284,32 +281,6 @@ begin
           FrmEditItem.edName.SetFocus;
 
         Result := True;
-      end;
-    sceEdit: begin
-
-        if frmThemeList.lbThemeList.ItemIndex <> -1 then begin
-
-          tmpItem := frmThemeList.lbThemeList.Item[frmThemeList.lbThemeList.ItemIndex];
-          tmpThemeItem := TThemeListItem(tmpItem.Data);
-
-          frmEditItem.pagEdit.Show;
-
-          i := lbThemeList.Item[lbThemeList.ItemIndex].ImageIndex;
-          frmEditItem.img.picture.Assign(lbThemeList.Column[0].Images.PngImages.Items[i].PngImage);
-
-          FrmEditItem.lblName.Caption := Format('%s by %s',
-            [tmpThemeItem.Name, tmpThemeItem.Author]);
-
-          frmEditItem.lblSite.Visible := True;
-          if tmpThemeItem.Website <> '' then
-            frmEditItem.lblSite.Caption := tmpThemeItem.Website else begin
-            frmEditItem.lblSite.Visible := False;
-            frmEditItem.lblSite.Caption := '';
-          end;
-
-          Result := True;
-        end;
-
       end;
     sceDelete: begin
 
@@ -335,6 +306,7 @@ var
   sWebsite: string;
   sTemplate: string;
   sName: string;
+  df: TSC_DEFAULT_FIELDS;
 begin
   Result := True;
 
@@ -348,6 +320,9 @@ begin
         if frmEditItem.cbBasedOn.ItemIndex <> 0 then
           sTemplate := frmEditItem.cbBasedOn.text;
 
+        df.Author := sAuthor;
+        df.Website := sWebsite;
+        CenterWriteDefaults(df);
         ThemeManager.Add(sName, sAuthor, sWebsite, sTemplate);
       end;
     sceDelete: begin

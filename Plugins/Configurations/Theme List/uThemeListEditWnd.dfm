@@ -13,7 +13,6 @@ object frmEditItem: TfrmEditItem
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object plEdit: TJvPageList
@@ -21,16 +20,14 @@ object frmEditItem: TfrmEditItem
     Top = 0
     Width = 483
     Height = 69
-    ActivePage = pagEdit
+    ActivePage = pagAdd
     PropagateEnable = False
     Align = alTop
-    ExplicitWidth = 505
     object pagAdd: TJvStandardPage
       Left = 0
       Top = 0
       Width = 483
       Height = 69
-      ExplicitWidth = 505
       DesignSize = (
         483
         69)
@@ -72,7 +69,6 @@ object frmEditItem: TfrmEditItem
         LabelSpacing = 6
         TabOrder = 1
         OnKeyPress = edThemeNameKeyPress
-        ExplicitWidth = 218
       end
       object edWebsite: TLabeledEdit
         Left = 288
@@ -87,7 +83,6 @@ object frmEditItem: TfrmEditItem
         LabelSpacing = 6
         TabOrder = 2
         OnKeyPress = edThemeNameKeyPress
-        ExplicitWidth = 194
       end
       object cbBasedOn: TComboBox
         Left = 76
@@ -100,81 +95,12 @@ object frmEditItem: TfrmEditItem
         OnSelect = cbBasedOnSelect
       end
     end
-    object pagEdit: TJvStandardPage
-      Left = 0
-      Top = 0
-      Width = 483
-      Height = 69
-      Caption = 'pagEdit'
-      ExplicitWidth = 505
-      DesignSize = (
-        483
-        69)
-      object img: TImage
-        AlignWithMargins = True
-        Left = 8
-        Top = 8
-        Width = 65
-        Height = 53
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 8
-        Align = alLeft
-      end
-      object lblName: TLabel
-        Left = 84
-        Top = 16
-        Width = 295
-        Height = 13
-        Anchors = [akLeft, akTop, akRight]
-        AutoSize = False
-        Caption = 'The Greater Eye by Lee Green'
-        EllipsisPosition = epEndEllipsis
-        Transparent = False
-        ExplicitWidth = 317
-      end
-      object lblSite: TJvLabel
-        Left = 84
-        Top = 36
-        Width = 295
-        Height = 16
-        Cursor = crHandPoint
-        AutoSize = False
-        Caption = 'http://www.sharpe-shell.org'
-        Anchors = [akLeft, akTop, akRight]
-        Layout = tlCenter
-        Transparent = True
-        OnClick = lblSiteClick
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-        Images = pilError
-        ImageIndex = 1
-        TextEllipsis = teEndEllipsis
-        ExplicitWidth = 317
-      end
-      object btnConfigure: TButton
-        Left = 391
-        Top = 22
-        Width = 81
-        Height = 25
-        Anchors = [akTop, akRight]
-        Caption = 'Configure'
-        TabOrder = 0
-        OnClick = btnConfigureClick
-        ExplicitLeft = 413
-      end
-    end
     object pagDelete: TJvStandardPage
       Left = 0
       Top = 0
       Width = 483
       Height = 69
       BorderWidth = 8
-      ExplicitWidth = 505
       object Label2: TLabel
         Left = 0
         Top = 13
