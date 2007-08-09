@@ -3,9 +3,9 @@ unit uTaskSwitchGUI;
 interface
 
 uses
-  Windows, Messages, Graphics, SysUtils, Math, Classes, ExtCtrls,
+  Windows, Messages, Graphics, SysUtils, Math, Classes, ExtCtrls, Forms,
   SharpThemeApi, SharpESkin, SharpESkinPart, SharpESkinManager, uTaskSwitchWnd,
-  GR32, GR32_Resamplers, SharpIconUtils, Forms;
+  GR32, GR32_Resamplers, SharpIconUtils, SharpGraphicsUtils;
 
 type
   TTSGui = class
@@ -204,7 +204,7 @@ begin
     SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme,tpInfo]);
   end;  
 
-  FSkinManager := TSharpESkinManager.Create(nil,[scTaskSwitch]);
+  FSkinManager := TSharpESkinManager.Create(nil,[scBar,scTaskSwitch]);
   FSkinManager.SkinSource := ssSystem;
   FSkinManager.SchemeSource := ssSystem;
   FSkinManager.Skin.UpdateDynamicProperties(FSkinManager.Scheme);
@@ -418,6 +418,8 @@ begin
 end;
 
 procedure TTSGui.ShowWindow;
+const
+  CAPTUREBLT = $40000000;
 var
   WrapCount : integer;
   Spacing : integer;
@@ -428,6 +430,7 @@ var
   n: Integer;
   temp : TBitmap32;
   Shift : TShiftState;
+  dc : HDC;
 begin
   if FPreviewTimer.Enabled then
     FPreviewTimer.Enabled := False;
@@ -458,10 +461,46 @@ begin
                 * Max(TSS.Item.SkinDim.HeightAsInt,
                       TSS.ItemHover.SkinDim.HeightAsInt));
 
+  if FWnd <> nil then
+     FWnd.Free;
+  FWnd := TTaskSwitchWnd.Create(nil,self);                      
+
   // Draw Background
   FBackground.SetSize(w,h);
   FBackground.Clear(color32(0,0,0,0));
-  TSS.Background.draw(FBackground,FSkinManager.Scheme);
+
+  if FSkinManager.Skin.BarSkin.GlassEffect then
+  begin
+    dc := GetWindowDC(GetDesktopWindow);
+    Temp := TBitmap32.Create;
+    try
+      BitBlt(FBackground.Canvas.Handle,
+             0,
+             0,
+             FBackground.Width,
+             FBackground.Height,
+             dc,
+             FWnd.Monitor.Left + FWnd.Monitor.Width div 2 - FBackground.Width div 2,
+             FWnd.Monitor.Top + FWnd.Monitor.Height div 2 - FBackground.Height div 2,
+             SRCCOPY or CAPTUREBLT);
+      if SharpThemeApi.GetSkinGEBlend then
+        BlendImageC(FBackground,GetSkinGEBlendColor,GetSkinGEBlendAlpha);
+      boxblur(FBackground,GetSkinGEBlurRadius,GetSkinGEBlurIterations);
+      if GetSkinGELighten then
+         lightenBitmap(FBackground,GetSkinGELightenAmount);
+      FBackground.ResetAlpha(255);
+      Temp.SetSize(w,h);
+      Temp.Clear(color32(0,0,0,0));
+      TSS.Background.draw(Temp,FSkinManager.Scheme);
+      ReplaceTransparentAreas(FBackground,Temp,Color32(0,0,0,0));      
+      Temp.DrawMode := dmBlend;
+      Temp.CombineMode := cmMerge;
+      Temp.DrawTo(FBackground,0,0);
+    finally
+      ReleaseDC(GetDesktopWindow, dc);
+      Temp.Free;
+    end;
+  end else TSS.Background.draw(FBackground,FSkinManager.Scheme);
 
   // Draw Normal Items
   FNormal.SetSize(w,h);
@@ -488,9 +527,6 @@ begin
   end;
   temp.Free;
 
-  if FWnd <> nil then
-     FWnd.Free;
-  FWnd := TTaskSwitchWnd.Create(nil,self);
   FWnd.Hook := SetWindowsHookEx(13,KeyHook, HInstance,0);  
   FWnd.Left := FWnd.Monitor.Left + FWnd.Monitor.Width div 2 - FBackground.Width div 2;
   FWnd.Top := FWnd.Monitor.Top + FWnd.Monitor.Height div 2 - FBackground.Height div 2;
