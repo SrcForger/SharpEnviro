@@ -228,7 +228,7 @@ begin
     IconInfo.hbmColor := bitmap.handle;
     IconInfo.hbmMask := bitmap.maskhandle;
     IconInfo.xHotspot := hotspot.x;
-    IconInfo.yHotspot := hotspot.x;
+    IconInfo.yHotspot := hotspot.y;
 
     Result := CreateIconIndirect(IconInfo);
   finally
