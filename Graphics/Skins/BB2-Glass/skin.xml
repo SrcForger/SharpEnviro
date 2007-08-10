@@ -224,7 +224,7 @@
         <image>images/BarLeftBorderBGDown.png</image>
         <color>$BorderBG</color>
         <drawmode>tile</drawmode>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>0,0</location>
@@ -255,7 +255,7 @@
         <dimension>w-18,3</dimension>
         <image>images/BarMiddleBorderBG.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha-32</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>9,0</location>
@@ -270,7 +270,7 @@
         <image>images/BarRightBorderBGDown.png</image>
         <color>$BorderBG</color>
         <drawmode>tile</drawmode>
-        <alpha>$Alpha-32</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,0</location>
@@ -293,7 +293,7 @@
         <dimension>3,h-14</dimension>
         <image>images/BarMiddleBorderBorderBG.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>0,7</location>
@@ -307,7 +307,7 @@
         <dimension>3,h-14</dimension>
         <image>images/BarMiddleBorderBorderBG.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha-32</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-3,7</location>
@@ -356,7 +356,7 @@
         <dimension>w-18,3</dimension>
         <image>images/BarMiddleBorderBG.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha-32</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>9,h-3</location>
@@ -370,7 +370,7 @@
         <dimension>9,7</dimension>
         <image>images/BarRightBorderBGCut.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha-32</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,h-7</location>
@@ -421,7 +421,7 @@
         <image>images/BarLeftBorderBGDown.png</image>
         <color>$BorderBG</color>
         <drawmode>tile</drawmode>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>0,0</location>
@@ -429,7 +429,7 @@
         <image>images/BarLeftBorderDown.png</image>
         <color>$Border</color>
         <drawmode>tile</drawmode>
-        <alpha>$Alpha+32+32</alpha>
+        <alpha>$Alpha+32-32</alpha>
       </skinpart>
       <skinpart>
         <location>3,3</location>
@@ -437,7 +437,7 @@
         <image>images/BarLeftBackgroundDown.png</image>
         <color>$Background</color>
         <drawmode>tile</drawmode>
-        <alpha>$Alpha+20+32</alpha>
+        <alpha>$Alpha+20-32</alpha>
       </skinpart>
       <skinpart>
         <location>9,3</location>
@@ -445,21 +445,21 @@
         <image>images/BarMiddleBackground.png</image>
         <color>$Background</color>
         <drawmode>tile</drawmode>
-        <alpha>$Alpha+20+32</alpha>
+        <alpha>$Alpha+20-32</alpha>
       </skinpart>
       <skinpart>
         <location>9,0</location>
         <dimension>w-18,3</dimension>
         <image>images/BarMiddleBorderBG.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>9,0</location>
         <dimension>w-18,3</dimension>
         <image>images/BarMiddleBorder.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32+32</alpha>
+        <alpha>$Alpha+32-32</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,0</location>
@@ -467,7 +467,7 @@
         <image>images/BarRightBorderBGDown.png</image>
         <color>$BorderBG</color>
         <drawmode>tile</drawmode>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,0</location>
@@ -475,7 +475,7 @@
         <image>images/BarRightBorderDown.png</image>
         <color>$Border</color>
         <drawmode>tile</drawmode>
-        <alpha>$Alpha+32+32</alpha>
+        <alpha>$Alpha+32-32</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,3</location>
@@ -483,105 +483,105 @@
         <image>images/BarRightBackgroundDown.png</image>
         <color>$Background</color>
         <drawmode>tile</drawmode>
-        <alpha>$Alpha+20+32</alpha>
+        <alpha>$Alpha+20-32</alpha>
       </skinpart>
       <skinpart>
         <location>0,7</location>
         <dimension>3,h-14</dimension>
         <image>images/BarMiddleBorderBorderBG.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>0,7</location>
         <dimension>3,h-14</dimension>
         <image>images/BarMiddleBorderBorder.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32+32</alpha>
+        <alpha>$Alpha+32-32</alpha>
       </skinpart>
       <skinpart>
         <location>w-3,7</location>
         <dimension>3,h-14</dimension>
         <image>images/BarMiddleBorderBorderBG.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-3,7</location>
         <dimension>3,h-14</dimension>
         <image>images/BarMiddleBorderBorder.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32+32</alpha>
+        <alpha>$Alpha+32-32</alpha>
       </skinpart>
       <skinpart>
         <location>3,8</location>
         <dimension>w-6,h-16</dimension>
         <image>images/BarMiddleBackground.png</image>
         <color>$Background</color>
-        <alpha>$Alpha+20+32</alpha>
+        <alpha>$Alpha+20-32</alpha>
       </skinpart>
       <skinpart>
         <location>0,h-7</location>
         <dimension>9,7</dimension>
         <image>images/BarLeftBorderBGCut.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha+20+32</alpha>
+        <alpha>$Alpha+20-32</alpha>
       </skinpart>
       <skinpart>
         <location>0,h-7</location>
         <dimension>9,7</dimension>
         <image>images/BarLeftBorderCut.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32+32</alpha>
+        <alpha>$Alpha+32-32</alpha>
       </skinpart>
       <skinpart>
         <location>3,h-8</location>
         <dimension>6,5</dimension>
         <image>images/BarLeftBackgroundCut.png</image>
         <color>$Background</color>
-        <alpha>$Alpha+20+32</alpha>
+        <alpha>$Alpha+20-32</alpha>
       </skinpart>
       <skinpart>
         <location>9,h-8</location>
         <dimension>w-18,5</dimension>
         <image>images/BarMiddleBackground.png</image>
         <color>$Background</color>
-        <alpha>$Alpha+20+32</alpha>
+        <alpha>$Alpha+20-32</alpha>
       </skinpart>
       <skinpart>
         <location>9,h-3</location>
         <dimension>w-18,3</dimension>
         <image>images/BarMiddleBorderBG.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>9,h-3</location>
         <dimension>w-18,3</dimension>
         <image>images/BarMiddleBorder.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32+32</alpha>
+        <alpha>$Alpha+32-32</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,h-7</location>
         <dimension>9,7</dimension>
         <image>images/BarRightBorderBGCut.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$Alpha-32</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,h-7</location>
         <dimension>9,7</dimension>
         <image>images/BarRightBorderCut.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32+32</alpha>
+        <alpha>$Alpha+32-32</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,h-8</location>
         <dimension>-6,5</dimension>
         <image>images/BarRightBackgroundCut.png</image>
         <color>$Background</color>
-        <alpha>$Alpha+20+32</alpha>
+        <alpha>$Alpha+20-32</alpha>
       </skinpart>
     </background>
   </menu>
