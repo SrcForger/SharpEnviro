@@ -32,7 +32,9 @@ unit uSharpEMenu;
 
 interface
 
-uses SysUtils, Forms, Contnrs, Menus, Controls, GR32,Classes,Dialogs,
+uses SysUtils, Windows, Forms, Contnrs, Menus, Controls, GR32,Classes,Dialogs,
+     SharpGraphicsUtils,
+     SharpThemeApi,
      SharpESkinManager,
      uSharpEMenuPopups,
      uSharpEMenuIcons,
@@ -81,9 +83,10 @@ type
     function  AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32) : TObject;
 
     // Rendering
-    procedure RenderBackground;
+    procedure RenderBackground(pLeft, pTop : integer);
     procedure RenderNormalMenu;
-    procedure RenderTo(Dst : TBitmap32);
+    procedure RenderTo(Dst : TBitmap32); overload;
+    procedure RenderTo(Dst : TBitmap32; pLeft,pTop : integer); overload;
     procedure RecycleBitmaps;
 
     // Item Control
@@ -605,10 +608,14 @@ begin
 
 end;
 
-procedure TSharpEMenu.RenderBackground;
+procedure TSharpEMenu.RenderBackground(pLeft,pTop : integer);
+const
+  CAPTUREBLT = $40000000;
 var
   w,h : integer;
   menuskin : TSharpEMenuSkin;
+  dc : hdc;
+  temp : TBitmap32;
 begin
   ImageCheck(FBackground,Point(255,32));
   if FSkinManager = nil then exit;
@@ -628,7 +635,38 @@ begin
   FBackground.SetSize(w,h);
   FBackground.Clear(color32(0,0,0,0));
 
-  menuskin.Background.draw(FBackground,FSkinManager.Scheme);
+  if FSkinManager.Skin.BarSkin.GlassEffect then
+  begin
+    dc := GetWindowDC(GetDesktopWindow);
+    Temp := TBitmap32.Create;
+    try
+      BitBlt(FBackground.Canvas.Handle,
+             0,
+             0,
+             FBackground.Width,
+             FBackground.Height,
+             dc,
+             pLeft,
+             pTop,
+             SRCCOPY or CAPTUREBLT);
+      if SharpThemeApi.GetSkinGEBlend then
+        BlendImageC(FBackground,GetSkinGEBlendColor,GetSkinGEBlendAlpha);
+      boxblur(FBackground,GetSkinGEBlurRadius,GetSkinGEBlurIterations);
+      if GetSkinGELighten then
+         lightenBitmap(FBackground,GetSkinGELightenAmount);
+      FBackground.ResetAlpha(255);
+      Temp.SetSize(w,h);
+      Temp.Clear(color32(0,0,0,0));
+      menuskin.Background.draw(temp,FSkinManager.Scheme);
+      ReplaceTransparentAreas(FBackground,Temp,Color32(0,0,0,0));      
+      Temp.DrawMode := dmBlend;
+      Temp.CombineMode := cmMerge;
+      Temp.DrawTo(FBackground,0,0);
+    finally
+      ReleaseDC(GetDesktopWindow, dc);
+      Temp.Free;
+    end;
+  end else menuskin.Background.draw(FBackground,FSkinManager.Scheme);
 end;
 
 procedure TSharpEMenu.RenderMenuItem(Dst : TBitmap32; px,py : integer;
@@ -764,6 +802,14 @@ begin
   end;
 end;
 
+procedure TSharpEMenu.RenderTo(Dst : TBitmap32; pLeft,pTop : integer);
+begin
+  if (FSkinManager = nil) then exit;
+  RenderBackground(pLeft,pTop);
+
+  RenderTo(Dst);
+end;
+
 procedure TSharpEMenu.RenderTo(Dst : TBitmap32);
 var
   menuskin : TSharpEMenuSkin;
@@ -772,7 +818,7 @@ var
   y : integer;
 begin
   if (FSkinManager = nil) then exit;
-  if (FBackground = nil) then RenderBackground;
+  if (FBackground = nil) then RenderBackground(0,0);
   if (FNormalMenu = nil) then RenderNormalMenu;
 
   menuskin := FSkinManager.Skin.MenuSkin;

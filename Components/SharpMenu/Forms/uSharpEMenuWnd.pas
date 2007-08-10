@@ -77,6 +77,7 @@ type
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FMenu : TSharpEMenu;
     FParentMenu : TSharpeMenuWnd;
@@ -155,8 +156,6 @@ begin
   FMenu := pMenu;
 
   FMenu.RefreshDynamicContent;
-  FMenu.RenderBackground;
-
   FMenu.RenderTo(FPicture);
   PreMul(FPicture);
 
@@ -643,6 +642,12 @@ begin
      FOffset := 0;
   if o <> FOffset then
      DrawWindow;
+end;
+
+procedure TSharpEMenuWnd.FormShow(Sender: TObject);
+begin
+  FMenu.RenderTo(FPicture,Left,Top);
+  PreMul(FPicture);
 end;
 
 procedure TSharpEMenuWnd.ApplicationEvents1Message(var Msg: tagMSG;

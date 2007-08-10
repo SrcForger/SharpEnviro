@@ -28,6 +28,7 @@ object SharpEMenuWnd: TSharpEMenuWnd
   OnMouseUp = FormMouseUp
   OnMouseWheelDown = FormMouseWheelDown
   OnMouseWheelUp = FormMouseWheelUp
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object SubMenuTimer: TTimer

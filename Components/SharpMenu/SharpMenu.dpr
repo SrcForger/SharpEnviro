@@ -170,7 +170,7 @@ begin
 
   // init Classes
 
-  SkinManager := TSharpESkinManager.Create(nil,[scMenu,scMenuItem]);
+  SkinManager := TSharpESkinManager.Create(nil,[scBar,scMenu,scMenuItem]);
   SystemSkinLoadThread := TSystemSkinLoadThread.Create(SkinManager);
   mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManager);
   Application.Title := 'SharpMenu';

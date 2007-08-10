@@ -125,7 +125,7 @@ begin
            if DirectoryExists(item.PropList.GetString('Target')) then
               RemoveDir(item.PropList.GetString('Target'));
            menu.Items.Remove(item);
-           menu.RenderBackground;
+           menu.RenderBackground(menuwnd.Left,menuwnd.Top);
            menu.RenderNormalMenu;
            menu.RenderTo(menuwnd.Picture);
            menuwnd.PreMul(menuwnd.Picture);
@@ -156,7 +156,7 @@ begin
       1: begin
            JclFileUtils.FileDelete(item.PropList.GetString('Action'));
            menu.Items.Remove(item);
-           menu.RenderBackground;
+           menu.RenderBackground(menuwnd.Left,menuwnd.Top);
            menu.RenderNormalMenu;
            menu.RenderTo(menuwnd.Picture);
            menuwnd.PreMul(menuwnd.Picture);
