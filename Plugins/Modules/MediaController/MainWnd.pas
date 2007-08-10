@@ -752,7 +752,7 @@ begin
     TSharpEMenuItem(mn.AddCustomItem('Windows Media Player','WMP',FIconWMP)).OnClick := mnWMPClick;
 
     //mn.AddSeparatorItem(False);
-    mn.RenderBackground;
+    mn.RenderBackground(0,0);
 
     wnd := TSharpEMenuWnd.Create(self,mn);
     wnd.FreeMenu := True; // menu will free itself when closed

@@ -226,7 +226,7 @@ begin
       mn.AddLinkItem(s,Dir + sr.name,'customicon:scriptitem',FMenuIcon2,False);
     until FindNext(sr) <> 0;
     FindClose(sr);
-    mn.RenderBackground;
+    mn.RenderBackground(0,0);
 
     wnd := TSharpEMenuWnd.Create(self,mn);
     wnd.FreeMenu := True; // menu will free itself when closed

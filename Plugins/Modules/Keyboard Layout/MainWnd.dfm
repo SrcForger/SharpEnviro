@@ -46,7 +46,7 @@ object MainForm: TMainForm
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
-    ComponentSkins = [scButton, scMenu, scMenuItem]
+    ComponentSkins = [scButton, scBar, scMenu, scMenuItem]
     HandleUpdates = False
     Left = 232
     Top = 32

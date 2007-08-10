@@ -212,10 +212,9 @@ begin
         OnClick := OnMenuItemClick;
       end;
     end;
-
     List.Free;
 
-    mn.RenderBackground;
+    mn.RenderBackground(0,0);
 
     wnd := TSharpEMenuWnd.Create(self,mn);
     wnd.FreeMenu := True; // menu will free itself when closed
