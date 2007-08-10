@@ -48,7 +48,9 @@ Type
 
       FFileName  : string;
       FStream    : TFileStream;
+      FUpdateTimer : TTimer;
 
+      procedure OnUpdateTimer(Sender : TObject);
       procedure UpdateSkin(var Msg: TMessage); message WM_SHARPEUPDATESETTINGS;
     public
       procedure UpdateStreamFile;
@@ -61,6 +63,10 @@ implementation
 
 procedure TSkinServer.FormCreate(Sender: TObject);
 begin
+  FUpdateTimer := TTimer.Create(nil);
+  FUpdateTimer.Enabled := False;
+  FUpdateTimer.Interval := 100;
+  FUpdateTimer.OnTimer := OnUpdateTimer;
   FSkin := TSharpESkin.Create(self,ALL_SHARPE_SKINS);
   UpdateStreamFile;
   SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged);
@@ -68,7 +74,20 @@ end;
 
 procedure TSkinServer.FormDestroy(Sender: TObject);
 begin
+  FUpdateTimer.Enabled := False;
+  FUpdateTimer.Free;
   if FStream <> nil then FreeAndNil(FStream);
+end;
+
+procedure TSkinServer.OnUpdateTimer(Sender: TObject);
+begin
+  try
+    UpdateStreamFile;
+    FUpdateTimer.Enabled := False;
+    SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged);    
+  except;
+    FUpdateTimer.Enabled := True;
+  end;
 end;
 
 procedure TSkinServer.UpdateStreamFile;
@@ -108,13 +127,7 @@ end;
 procedure TSkinServer.UpdateSkin(var Msg: TMessage);
 begin
   if (msg.WParam = Integer(suSkin)) or (msg.WParam = Integer(suTheme)) then
-  begin
-    Try
-      UpdateStreamFile;
-    Finally
-      SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged);
-    End;
-  end;
+    OnUpdateTimer(FUpdateTimer);
 end;
 
 end.
