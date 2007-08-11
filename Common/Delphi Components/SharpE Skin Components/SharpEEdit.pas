@@ -484,10 +484,10 @@ end;
 
 procedure TSharpEEdit.SetText(Value:String);
 begin
-  If FText <> Value then begin
+//  If FText <> Value then begin
     FText := Value;
     FEdit.Text := Value;
-  end;
+//  end;
 end;
 
 procedure TSharpEEdit.UpdateSkin;

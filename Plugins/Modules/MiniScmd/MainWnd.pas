@@ -193,6 +193,7 @@ begin
     begin
        SharpApi.SharpExecute(trim(edit.Text));
        edit.Text := '';
+       edit.edit.text := '';
     end;
   end;
 end;
@@ -281,6 +282,7 @@ begin
     begin
       SharpApi.SharpExecute(trim(edit.Text));
       edit.Text := '';
+      edit.Edit.Text := '';
     end;
   end;
 end;
