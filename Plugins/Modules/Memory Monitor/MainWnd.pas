@@ -96,28 +96,28 @@ procedure TMainForm.LoadSettings;
 var
   item : TJvSimpleXMLElem;
 begin
-  BarWidth := 100;
+  BarWidth := 50;
   ShowRAMBar  := True;
   ShowRAMPC   := True;
-  ShowRAMInfo := False;
+  ShowRAMInfo := True;
   ShowSWPBar  := True;
   ShowSWPPC   := True;
-  ShowSWPInfo := False;
+  ShowSWPInfo := True;
   sITC        := 0;
-  ItemAlign   := 2;
+  ItemAlign   := 3;
 
   item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
   if item <> nil then with item.Items do
   begin
-    BarWidth := IntValue('Width',100);
-    ShowRAMBar  := BoolValue('ShowRAMBar',True);
-    ShowRAMPC   := BoolValue('ShowRAMPC',True);
-    ShowRAMInfo := BoolValue('ShowRAMInfo',False);
-    ShowSWPBar  := BoolValue('ShowSWPBar',True);
-    ShowSWPPC   := BoolValue('ShowSWPPC',True);
-    ShowSWPInfo := BoolValue('ShowSWPInfo',False);
-    ItemAlign   := IntValue('ItemAlign',2);
-    sITC        := IntValue('ITC',0);
+    BarWidth := IntValue('Width',BarWidth);
+    ShowRAMBar  := BoolValue('ShowRAMBar',ShowRAMBar);
+    ShowRAMPC   := BoolValue('ShowRAMPC',ShowRAMPC);
+    ShowRAMInfo := BoolValue('ShowRAMInfo',ShowRAMInfo);
+    ShowSWPBar  := BoolValue('ShowSWPBar',ShowSWPBar);
+    ShowSWPPC   := BoolValue('ShowSWPPC',ShowSWPPC);
+    ShowSWPInfo := BoolValue('ShowSWPInfo',ShowSWPInfo);
+    ItemAlign   := IntValue('ItemAlign',ItemAlign);
+    sITC        := IntValue('ITC',sITC);
     if ItemAlign >3 then ItemAlign := 3;
     if ItemAlign <1 then ItemAlign := 1;
   end;
