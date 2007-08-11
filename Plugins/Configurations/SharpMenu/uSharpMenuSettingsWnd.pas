@@ -35,7 +35,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterApi,
   JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
-  SharpEGaugeBoxEdit;
+  SharpEGaugeBoxEdit, JvLabel;
 
 type
   TStringObject = Class(TObject)
@@ -47,19 +47,16 @@ type
   TfrmMenuSettings = class(TForm)
     JvPageList1: TJvPageList;
     JvSettingsPage: TJvStandardPage;
-    Panel1: TPanel;
-    Panel2: TPanel;
     JvAdvSettingsPage: TJvStandardPage;
     Panel3: TPanel;
-    cb_cacheicons: TCheckBox;
-    JvStandardPage1: TJvStandardPage;
-    cb_wrap: TCheckBox;
     pn_wrap: TPanel;
-    lb_gridx1: TLabel;
     sgb_wrapcount: TSharpeGaugeBox;
     Label1: TLabel;
     cobo_wrappos: TComboBox;
-    Label2: TLabel;
+    cb_cacheicons: TCheckBox;
+    cb_wrap: TCheckBox;
+    Label3: TJvLabel;
+    JvLabel1: TJvLabel;
     procedure cobo_wrapposChange(Sender: TObject);
     procedure sgb_wrapcountChangeValue(Sender: TObject; Value: Integer);
     procedure cb_cacheiconsClick(Sender: TObject);
