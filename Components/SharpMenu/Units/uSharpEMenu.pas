@@ -79,8 +79,8 @@ type
     procedure AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String;  pDynamic : boolean);
     procedure AddDriveListItem(pDriveNames:  boolean; pDynamic : boolean);
     procedure AddControlPanelItem(pDynamic : boolean);
-    function  AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean) : TObject;
-    function  AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32) : TObject;
+    function  AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean) : TObject; overload;
+    function  AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32; pType :TSharpEMenuItemType = mtCustom) : TObject;
 
     // Rendering
     procedure RenderBackground(pLeft, pTop : integer);
@@ -283,11 +283,11 @@ begin
   FItems.Add(Item);
 end;
 
-function  TSharpEMenu.AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32) : TObject;
+function  TSharpEMenu.AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32; pType :TSharpEMenuItemType = mtCustom) : TObject;
 var
   item : TSharpEMenuItem;
 begin
-  item := TSharpEMenuItem.Create(mtCustom);
+  item := TSharpEMenuItem.Create(pType);
   item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon);
   item.Caption := pCaption;
   FItems.Add(Item);
