@@ -13,6 +13,7 @@
      <project Name="Hotkeys" Type="DLL">Plugins\Configurations\Hotkeys\Hotkeys.bdsproj</project> 
   </package>
   <package Name="Components">
+     <project Name="SetShell" Type="Application">Components\SetShell\SetShell.bdsproj</project>
      <project Name="SharpBar" Type="Application">Components\SharpBar\SharpBar.bdsproj</project>  
      <project Name="SharpCenter" Type="Application">Components\SharpCenter\SharpCenter.bdsproj</project>  
      <project Name="SharpCore" Type="Application">Components\SharpCore\SharpCore.bdsproj</project>  
@@ -23,7 +24,7 @@
      <project Name="SharpShutdown" Type="Application">Components\SharpShutdown\SharpShutdown.bdsproj</project>  
      <project Name="SharpSkin" Type="Application">Components\SharpSkin\SharpSkin.bdsproj</project>  
      <project Name="SharpSplash" Type="Application">Components\SharpSplash\SharpSplash.bdsproj</project>  
-	 <project Name="SharpConsole" Type="Application">Components\SharpConsole\SharpConsole.bdsproj</project>  
+     <project Name="SharpConsole" Type="Application">Components\SharpConsole\SharpConsole.bdsproj</project>  
   </package>
   <package Name="Libraries">
      <project Name="SharpApi" Type="DLL" >Common\Libraries\SharpAPI\SharpApi.bdsproj</project>  
@@ -58,7 +59,7 @@
      <project Name="Recycle Bin" Type="DLL" >Plugins\Objects\RecycleBin\RecycleBin.bdsproj</project>
   </package>
   <package Name="Services">
-     <project Name="Curses" Type="DLL" >Plugins\Services\Curses\Curses.bdsproj</project>  
+     <project Name="Cursors" Type="DLL" >Plugins\Services\Cursors\Cursors.bdsproj</project>  
      <project Name="DeskArea" Type="DLL" >Plugins\Services\DeskArea\DeskArea.bdsproj</project>  
      <project Name="Exec" Type="DLL" >Plugins\Services\Exec\Exec.bdsproj</project>  
      <project Name="Hotkeys" Type="DLL" >Plugins\Services\Hotkeys\Hotkeys.bdsproj</project>  
