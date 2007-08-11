@@ -23,7 +23,6 @@ object MainForm: TMainForm
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 8
-    Caption = 'Panel1'
     TabOrder = 0
     object rg_shell: TRadioGroup
       Left = 8
@@ -58,6 +57,7 @@ object MainForm: TMainForm
         '(This is necessary to prevent the explorer shell from starting w' +
         'hen the explorer '#39'file manager'#39' is used.)'
       WordWrap = True
+      ExplicitWidth = 232
     end
     object btn_cancel: TButton
       Left = 171
@@ -116,6 +116,11 @@ object MainForm: TMainForm
         'To change your default windows shell environment select the new ' +
         'shell and click '#39'Ok'#39'.'
       WordWrap = True
+      ExplicitWidth = 224
     end
+  end
+  object XPManifest1: TXPManifest
+    Left = 160
+    Top = 24
   end
 end

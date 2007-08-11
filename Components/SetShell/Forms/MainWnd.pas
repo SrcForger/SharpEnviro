@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, uShellSwitcher, uSharpCoreShutdown;
+  Dialogs, StdCtrls, ExtCtrls, uShellSwitcher, uSharpCoreShutdown, XPMan;
 
 type
   TMainForm = class(TForm)
@@ -48,6 +48,7 @@ type
     Panel4: TPanel;
     cb_seb: TCheckBox;
     Label2: TLabel;
+    XPManifest1: TXPManifest;
     procedure btn_okClick(Sender: TObject);
     procedure btn_cancelClick(Sender: TObject);
   private
