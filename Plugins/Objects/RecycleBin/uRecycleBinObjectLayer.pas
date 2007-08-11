@@ -97,6 +97,7 @@ type
      property ObjectId  : Integer read FObjectId  write FObjectId;
      property Locked    : boolean read FLocked    write FLocked;
      property Settings  : TRecycleXMLSettings read FSettings;
+     property BinItems  : integer read FBinItems;
   private
   end;
 

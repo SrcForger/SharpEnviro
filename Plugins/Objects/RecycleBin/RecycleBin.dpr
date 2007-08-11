@@ -242,6 +242,7 @@ begin
                       end;
 
     SDM_MENU_POPUP : begin
+                       Layer.RecycleBinLayer.GetRecycleBinStatus;
                        Bmp2 := TBitmap.Create;
                        Menu2 := Layer.RecycleBinLayer.FParentImage.PopupMenu;
 
@@ -260,6 +261,8 @@ begin
                        Menu2.Items.Insert(1,MenuItem);
                        Bmp2.LoadFromResourceID(HInstance,102);
                        TPngImageList(Menu2.Images).AddMasked(Bmp2,clFuchsia);
+                       if Layer.RecycleBinLayer.BinItems = 0 then
+                         MenuItem.Enabled := False;
 
                        MenuItem := TMenuItem.Create(Menu2.Items);
                        MenuItem.Caption := 'Properties';
