@@ -119,8 +119,4 @@ object MainForm: TMainForm
       ExplicitWidth = 224
     end
   end
-  object XPManifest1: TXPManifest
-    Left = 160
-    Top = 24
-  end
 end
