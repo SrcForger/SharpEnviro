@@ -1,2 +1,2 @@
-brcc32 glyphs.rc -fo ..\glyphs.res -v
+brcc32 icons.rc -fo ..\icons.res -v
 PAUSE

@@ -48,6 +48,7 @@ const
   STI_ALL_TARGETS = [stiFile,stiRecentFiles,stiMostUsedFiles,stiDrive,
                      stiDirectory,stiShellFolders,stiScript,stiAction];
 
+function TargetDialogSkin(TargetItems : TTargetDialogSelectItems; PopupPoint : TPoint) : PChar; external 'SharpDialogs.dll';                     
 function TargetDialog(TargetItems : TTargetDialogSelectItems; PopupPoint : TPoint) : PChar; external 'SharpDialogs.dll';
 function IconDialog(pTarget : String; IconItems : TIconMenuSelectItems; PopupPoint : TPoint) : PChar; external 'SharpDialogs.dll';
 

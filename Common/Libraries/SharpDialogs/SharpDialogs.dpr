@@ -42,12 +42,19 @@ uses
   Forms,
   Types,
   Menus,
+  GR32,
   PngImageList,
   PngImage,
   ActiveX,
   ShellApi,
   ShlObj,
   SharpApi,
+  SharpESkin,
+  SharpESkinManager,
+  uSharpEMenu,
+  uSharpEMenuItem,
+  uSharpEMenuSettings,
+  uSharpEMenuWnd,
   SharpApiEx,
   ExPopupList,
   SharpIconUtils in '..\..\Units\SharpIconUtils\SharpIconUtils.pas',
@@ -76,6 +83,13 @@ type
                             procedure OnCustomIconClick(Sender : TObject);
                             procedure OnSharpEIconClick(Sender : TObject);
                           end;
+  TTargetDialogSkinClickHandler =
+  class
+    procedure OnFileOpenClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure OnDirOpenClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure OnShellFolderClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure OnMRClick(pItem : TSharpEMenuItem; var CanClose : boolean);    
+  end;
 
 
 const
@@ -89,7 +103,7 @@ var
   targetmenu  : TPopupMenu;
   iconmenu : TPopupMenu;
 
-{$R Glyphs.res}
+{$R Icons.res}
 {$R *.res}
 
 procedure BuildShellFolderList(Slist : TStringList);
@@ -391,6 +405,309 @@ begin
   end;
 end;
 
+function AddItemToMenu(Menu : TSharpEMenu; Caption : String; IconResName : String; pType :TSharpEMenuItemType = mtCustom) : TSharpEMenuItem;
+var
+  ResStream : TResourceStream;
+  b : boolean;
+  Icon : TBitmap32;
+begin
+  Icon := TBitmap32.Create;
+  try
+    ResStream := TResourceStream.Create(HInstance, IconResName, RT_RCDATA);
+    try
+      LoadBitmap32FromPng(Icon,ResStream,b);
+    finally
+      ResStream.Free;
+    end;
+  except
+    Icon.SetSize(22,22);
+    Icon.Clear(color32(0,0,0,0));
+  end;
+  result := TSharpEMenuItem(Menu.AddCustomItem(Caption,IconResName,Icon,pType));
+  Icon.Free;
+end;
+
+procedure TTargetDialogSkinClickHandler.OnDirOpenClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+var
+  tdc : TTargetDialogClickHandler;
+begin
+  tdc := TTargetDialogClickHandler.Create;
+  tdc.OnDirOpenClick(pItem);
+  tdc.Free;
+  CanClose := True;
+end;
+
+procedure TTargetDialogSkinClickHandler.OnFileOpenClick(pItem: TSharpEMenuItem;
+  var CanClose: boolean);
+var
+  tdc : TTargetDialogClickHandler;
+begin
+  tdc := TTargetDialogClickHandler.Create;
+  tdc.OnFileOpenClick(pItem);
+  tdc.Free;
+  CanClose := True;
+end;
+
+procedure TTargetDialogSkinClickHandler.OnMRClick(pItem: TSharpEMenuItem;
+  var CanClose: boolean);
+begin
+  try
+    targetmenuresult := pItem.PropList.GetString('Action');
+  finally
+    nrevent := False;
+  end;
+  CanClose := True;
+end;
+
+procedure TTargetDialogSkinClickHandler.OnShellFolderClick(
+  pItem: TSharpEMenuItem; var CanClose: boolean);
+begin
+  try
+    targetmenuresult := pItem.Caption;
+  finally
+    nrevent := False;
+  end;
+  CanClose := True;
+end;
+
+function GetWndClass(wnd : hwnd) : String;
+var
+  buf: array [0..254] of Char;
+begin
+  GetClassName(wnd, buf, SizeOf(buf));
+  result := buf;
+end;
+
+function TargetDialogSkin(TargetItems : TTargetDialogSelectItems; PopupPoint : TPoint) : PChar;
+var
+  SM : TSharpESkinManager;
+  ms : TSharpEMenuSettings;
+  mn : TSharpEMenu;
+  mwnd : TSharpEMenuWnd;
+  click : TTargetDialogSkinClickHandler;
+  SList : TStringList;
+  n : integer;
+  s : String;
+  mIcon : TBitmap32;
+  ResStream : TResourceStream;
+  b : boolean;
+  Dir : String;
+  Info: TSHFileInfo;
+  P: PChar;
+  SC : String;
+  sn : String;
+  ic : String;
+  Tmp: array [0..104] of Char;  
+  sr : TSearchRec;
+  sub : TSharpEMenu;
+begin
+  targetmenuresult := '';
+
+  click := TTargetDialogSkinClickHandler.Create;
+  SList := TStringList.Create;
+  SList.Clear;
+
+  SM := TSharpESkinManager.Create(nil,[scBar,scMenu,scMenuItem]);
+  SM.SkinSource := ssSystem;
+  SM.SchemeSource := ssSystem;
+  SM.Skin.UpdateDynamicProperties(SM.Scheme);
+
+  ms := TSharpEMenuSettings.Create;
+  ms.CacheIcons := False;
+  ms.LoadFromXML;
+
+  mn := TSharpEMenu.Create(SM,ms);
+  ms.Free;
+
+  mIcon := TBitmap32.Create;
+  try
+    ResStream := TResourceStream.Create(HInstance, 'specialfile22', RT_RCDATA);
+    try
+      LoadBitmap32FromPng(mIcon,ResStream,b);
+    finally
+      ResStream.Free;
+    end;
+  except
+    mIcon.SetSize(22,22);
+    mIcon.Clear(color32(0,0,0,0));
+  end;
+
+  if stiFile in TargetItems then
+  with AddItemToMenu(mn,'File','file22',mtSubMenu) do
+  begin
+    SubMenu := TSharpEMenu.Create(SM,mn.Settings);
+    AddItemToMenu(TSharpEMenu(SubMenu),'Open...','open22').OnClick := click.OnFileOpenClick;
+
+    if (stiRecentFiles in TargetItems) or (stiMostUsedFiles in TargetItems) then
+    begin
+      TSharpEMenu(SubMenu).AddSeparatorItem(False);
+
+      if stiRecentFiles in TargetItems then
+      with AddItemToMenu(TSharpEMenu(SubMenu),'Recent','recentfile22',mtSubMenu) do
+      begin
+        SubMenu := TSharpEMenu.Create(SM,mn.Settings);
+        SList.CommaText := SharpApiEx.GetRecentItems(10);
+
+        for n := 0 to SList.Count -1 do
+        begin
+          s := ExtractFileName(SList[n]);
+          if length(trim(s)) = 0 then
+            s := SList[n];
+          if FileExists(SList[n]) then
+            TSharpEMenuItem(TSharpEMenu(SubMenu).AddLinkItem(s,SList[n],'shell:icon',False)).OnClick := Click.OnMRClick
+          else TSharpEMenuItem(TSharpEMenu(SubMenu).AddLinkItem(s,SList[n],'specialfile',mIcon,False)).OnClick := Click.OnMRClick;
+        end;
+      end;
+
+      if stiMostUsedFiles in TargetItems then
+      with AddItemToMenu(TSharpEMenu(SubMenu),'Most Used','recentfile22',mtSubMenu) do
+      begin
+        SubMenu := TSharpEMenu.Create(SM,mn.Settings);
+        SList.CommaText := SharpApiEx.GetMostUsedItems(10);
+
+        for n := 0 to SList.Count -1 do
+        begin
+          s := ExtractFileName(SList[n]);
+          if length(trim(s)) = 0 then
+            s := SList[n];
+          if FileExists(SList[n]) then
+            TSharpEMenuItem(TSharpEMenu(SubMenu).AddLinkItem(s,SList[n],'shell:icon',False)).OnClick := Click.OnMRClick
+          else TSharpEMenuItem(TSharpEMenu(SubMenu).AddLinkItem(s,SList[n],'specialfile',mIcon,False)).OnClick := Click.OnMRClick;
+        end;
+      end;
+    end;
+  end;
+
+  if stiDrive in TargetItems then
+  with AddItemToMenu(mn,'Drive','driveharddisk22',mtSubMenu) do
+  begin
+    SubMenu := TSharpEMenu.Create(SM,mn.Settings);
+    try
+      FillChar(Tmp[0], SizeOf(Tmp), #0);
+      GetLogicalDriveStrings(SizeOf(Tmp), Tmp);
+      P := Tmp;
+      while P^ <> #0 do
+      begin
+        SC := P;
+        Inc(P, 4);
+        SHGetFileInfo(PChar(SC), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or SHGFI_TYPENAME);
+        sn := '';
+        sn := Trim(Info.szDisplayName);// + '[' + Trim(Info.szTypeName) + ']';
+        s := '['+ SC[1] + ':] - ' + sn;
+        case GetDriveType(PChar(SC[1] + ':\')) of
+          DRIVE_UNKNOWN: ic := 'driveremovable22';
+          DRIVE_NO_ROOT_DIR: ic := 'driveremovable22';
+          DRIVE_REMOVABLE: ic := 'driveremovable22';
+          DRIVE_FIXED: ic := 'driveharddisk22';
+          DRIVE_REMOTE: ic := 'driveremovable22';
+          DRIVE_CDROM: ic := 'drivecdrom22';
+          DRIVE_RAMDISK: ic := 'driveharddisk22';
+          else ic := 'driveremovable22';
+        end;
+        with AddItemToMenu(TSharpEMenu(SubMenu),sn,ic) do
+        begin
+          PropList.Add('Action',SC[1] + ':\');
+          OnClick := click.OnMRClick;
+        end;
+      end;
+    except
+    end;
+  end;
+
+  if stiDirectory in TargetItems then
+  with AddItemToMenu(mn,'Directory','folder22',mtSubMenu) do
+  begin
+    SubMenu := TSharpEMenu.Create(SM,mn.Settings);
+    AddItemToMenu(TSharpEMenu(SubMenu),'Open...','open22').OnClick := click.OnDirOpenClick;
+
+    if stiShellFolders in TargetItems then
+    begin
+      TSharpEMenu(SubMenu).AddSeparatorItem(False);
+      with AddItemToMenu(TSharpEMenu(SubMenu),'Shell Folder','specialfolder22',mtSubMenu) do
+      begin
+        SubMenu := TSharpEMenu.Create(SM,mn.Settings);
+        TSharpEMenu(SubMenu).Settings.WrapMenu := True;
+        TSharpEMenu(SubMenu).Settings.WrapCount := 20;
+        BuildShellFolderList(Slist);
+        for n := 0 to SList.Count -1 do
+          with AddItemToMenu(TSharpEMenu(SubMenu),SList.ValueFromIndex[n],'folder22') do
+          begin
+            PropList.Add('Action',SList.Names[n]);
+            OnClick := click.OnMRClick;
+          end;
+      end;
+    end;
+  end;
+
+  if stiScript in TargetItems then
+  with AddItemToMenu(mn,'Script','scriptfile22',mtSubMenu) do
+  begin
+    SubMenu := TSharpEMenu.Create(SM,mn.Settings);
+    Dir := SharpApi.GetSharpeUserSettingsPath + 'Scripts\';
+    if FindFirst(Dir + '*.sescript',FAAnyFile,sr) = 0 then
+    repeat
+      s := sr.Name;
+      setlength(s,length(s) - length('.sescript'));
+      with AddItemToMenu(TSharpEMenu(SubMenu),s,'specialfile') do
+      begin
+        PropList.Add('Action',Dir + sr.Name);
+        OnClick := click.OnMRClick;
+      end;
+    until FindNext(sr) <> 0;
+    FindClose(sr);
+  end;
+
+  if stiAction in TargetItems then
+  with AddItemToMenu(mn,'Action','actions22',mtSubMenu) do
+  begin
+    SubMenu := TSharpEMenu.Create(SM,mn.Settings);
+
+    SList.Clear;
+    SList.DelimitedText := SharpApiEx.GetDelimitedActionList;
+    SList.Sort;
+    s := '';
+    sub := TSharpEMenu(SubMenu);
+    for n := 0 to SList.Count - 1 do
+    begin
+      if CompareText(s,SList.Names[n]) <> 0 then
+      begin
+        s := SList.Names[n];
+        sub := TSharpEMenu.Create(SM,TSharpEMenu(SubMenu).Settings);
+        AddItemToMenu(TSharpEMenu(SubMenu),s,'actionscategory22',mtSubMenu).SubMenu := sub;
+      end;
+      AddItemToMenu(sub,SList.ValueFromIndex[n],'action22').OnClick := click.OnShellFolderClick;
+    end;
+  end;
+
+  nrevent := True;
+
+  mwnd := TSharpEMenuWnd.Create(nil,mn);
+  mwnd.FreeMenu := False;
+  mwnd.Left := PopupPoint.X;
+  mwnd.Top := PopupPoint.Y;
+  mwnd.Show;
+
+  while nrevent and (mwnd.Visible) do
+  begin
+    Application.ProcessMessages;
+    if GetWndClass(GetForeGroundWindow) <> 'TSharpEMenuWnd' then
+      nrevent := False;
+    sleep(10);
+  end;
+  mwnd.Free;
+  mn.Free;
+  mIcon.Free;
+  SList.Free;
+  SM.Free;
+  click.Free;
+
+  if SharpEMenuPopups <> nil then
+     FreeAndNil(SharpEMenuPopups);
+  if SharpEMenuIcons <> nil then
+     FreeAndNil(SharpEMenuIcons);
+       
+  result := PChar(targetmenuresult);
+end;
 
 function TargetDialog(TargetItems : TTargetDialogSelectItems; PopupPoint : TPoint) : PChar;
 var
@@ -428,19 +745,19 @@ begin
     
     iml.Add(bmp,bmp);
 
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'recentfile');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'open');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'drivecdrom');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'driveharddisk');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'driveremovable');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'folder');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'specialfolder');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'file');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'specialfile');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'scriptfile');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'actions');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'actionscategory');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'action');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'recentfile16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'open16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'drivecdrom16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'driveharddisk16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'driveremovable16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'folder16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'specialfolder16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'file16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'specialfile16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'scriptfile16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'actions16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'actionscategory16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'action16');
 
     iml.Add(bmp,bmp);
 
@@ -602,18 +919,18 @@ begin
       menuItem.OnClick := targetmenuclick.OnDirOpenClick;//.OnFileOpenClick;//.;
       targetmenu.Items.Items[mindex].Add(menuItem);
 
-      menuItem := TMenuItem.Create(targetmenu);
-      menuItem.Caption := '-';
-      targetmenu.Items.Items[mindex].Add(menuItem);
-
-      menuItem := TMenuItem.Create(targetmenu);
-      menuItem.Caption := 'Shell Folder';
-      menuItem.ImageIndex := 7;
-      targetmenu.Items.Items[mindex].Add(menuItem);
-
-      BuildShellFolderList(Slist);
       if stiShellFolders in TargetItems then
       begin
+        menuItem := TMenuItem.Create(targetmenu);
+        menuItem.Caption := '-';
+        targetmenu.Items.Items[mindex].Add(menuItem);
+
+        menuItem := TMenuItem.Create(targetmenu);
+        menuItem.Caption := 'Shell Folder';
+        menuItem.ImageIndex := 7;
+        targetmenu.Items.Items[mindex].Add(menuItem);
+
+        BuildShellFolderList(Slist);
         for n := 0 to SList.Count -1 do
         begin
           menuItem := TMenuItem.Create(targetmenu);
@@ -678,7 +995,7 @@ begin
         menuItem.Hint    := SList.ValueFromIndex[n];
         menuItem.OnClick := targetmenuclick.OnActionClick;
         menuItem.ImageIndex := 13;
-        targetmenu.Items.Items[mindex].Items[targetmenu.Items.Items[mindex].Count -1 ].Add(menuItem); 
+        targetmenu.Items.Items[mindex].Items[targetmenu.Items.Items[mindex].Count -1 ].Add(menuItem);
       end;
     end;
 
@@ -859,6 +1176,7 @@ end;
 
 Exports
   TargetDialog,
+  TargetDialogSkin,
   IconDialog;
 
 
