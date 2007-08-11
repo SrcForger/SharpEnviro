@@ -1,6 +1,6 @@
 {
-Source Name: Curse.Dpr
-Description: A Curses Service for SharpE
+Source Name: Cursors.Dpr
+Description: A Cursor Service for SharpE
 Copyright (C) (2007) Martin Krämer (MartinKraemer@gmx.net)
               (2004) Pixol (Pixol@SharpE-Shell.org)
               (2004) Zack Cerza - zcerza@coe.neu.edu
@@ -29,7 +29,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 }
 
-library Curses;
+library cursors;
 
 {$WARN SYMBOL_DEPRECATED OFF}
 
