@@ -94,6 +94,7 @@ type
     FPrimaryMon: boolean;
     FMonitorIndex: integer;
     FAutoStart: boolean;
+    FAlwaysOnTop : boolean;
     FShowThrobber: Boolean;
     FDisableHideThrobber: Boolean;
     FDisableHideBar     : Boolean;
@@ -108,6 +109,7 @@ type
     procedure SetMonitorIndex(Value: integer);
     procedure SetAutoStart(Value: boolean);
     procedure SetShowThrobber(Value: boolean);
+    procedure SetAlwaysOnTop(Value: boolean);
     function GetSpecialHideForm : boolean;
   protected
     procedure DrawDefaultSkin(Scheme: TSharpEScheme); virtual;
@@ -119,6 +121,7 @@ type
     destructor Destroy; override;
     procedure UpdateSkin(NewWidth : integer = -1); reintroduce;
     procedure UpdatePosition;
+    procedure UpdateAlwaysOnTop;
     property aform: TForm read form;
     property abackground: TSharpEBarBackground read FBackGround;
     property Throbber: TSharpEThrobber read FThrobber write FThrobber;
@@ -134,6 +137,7 @@ type
     property PrimaryMonitor: Boolean read FPrimaryMon write SetPrimaryMonitor;
     property MonitorIndex: integer read FMonitorIndex write SetMonitorIndex;
     property AutoStart: Boolean read FAutoStart write SetAutoStart;
+    property AlwaysOnTop: Boolean read FAlwaysOnTop write SetAlwaysOnTop;
 
     property ShowThrobber: Boolean read FShowThrobber write SetShowThrobber;
     property DisableHideBar: Boolean read FDisableHideBar write FDisableHideBar;
@@ -462,6 +466,23 @@ begin
 end;
 
 
+procedure TSharpEBar.UpdateAlwaysOnTop;
+begin
+  if FAlwaysOnTop then
+  begin
+    SetWindowPos(aform.handle, HWND_TOPMOST, 0, 0, 0, 0,
+                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+    SetWindowPos(abackground.handle, HWND_TOPMOST, 0, 0, 0, 0,
+                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+  end else
+  begin
+    SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
+                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+    SetWindowPos(abackground.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
+                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);  
+  end;
+end;
+
 procedure TSharpEBar.UpdatePosition;
 var
   Mon: TMonitor;
@@ -591,6 +612,15 @@ begin
   begin
     FMonitorIndex := Value;
     UpdatePosition;
+  end;
+end;
+
+procedure TSharpEBar.SetAlwaysOnTop(Value: boolean);
+begin
+  if Value <> FAlwaysOnTop then
+  begin
+    FAlwaysOnTop := Value;
+    UpdateAlwaysOnTop;
   end;
 end;
 
@@ -851,6 +881,7 @@ begin
         if msg.WParam > 0 then
         begin
           ShowWindow(FBackGround.Handle, sw_ShowNormal);
+          UpdateAlwaysOnTop;
         end
         else
         begin

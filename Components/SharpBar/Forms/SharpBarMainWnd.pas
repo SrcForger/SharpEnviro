@@ -80,6 +80,7 @@ type
     ColorScheme1: TMenuItem;
     ThemeHideTimer: TTimer;
     ShowMiniThrobbers1: TMenuItem;
+    AlwaysOnTop1: TMenuItem;
     procedure ShowMiniThrobbers1Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ThemeHideTimerTimer(Sender: TObject);
@@ -124,6 +125,7 @@ type
     procedure OnSkinSelectItemClick(Sender : TObject);
     procedure OnSchemeSelectItemClick(Sender : TObject);
     procedure OnBackgroundPaint(Sender : TObject; Target : TBitmap32; x : integer);
+    procedure AlwaysOnTop1Click(Sender: TObject);
   private
     { Private-Deklarationen }
     FUser32DllHandle : THandle;
@@ -973,6 +975,7 @@ begin
               Items.Add('AutoStart',SharpEbar.AutoStart);
               Items.Add('ShowThrobber',SharpEBar.ShowThrobber);
               Items.Add('DisableHideBar',SharpEBar.DisableHideBar);
+              Items.Add('AlwaysOnTop',SharpEBar.AlwaysOnTop);
               Items.Add('ShowMiniThrobbers',ModuleManager.ShowMiniThrobbers);
             end;
             // Save the Module List
@@ -1145,6 +1148,7 @@ begin
                      SharpEBar.ShowThrobber   := Items.BoolValue('ShowThrobber',True);
                      SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar',False);
                      ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers',True);
+                     SharpEBar.AlwaysOnTop    := Items.BoolValue('AlwaysOnTop',False);
                      // Set Main Window Title to SharpBar_ID!
                      // The bar with the given ID is now loaded =)
                      FBarID := ID;
@@ -1408,6 +1412,7 @@ begin
   AutoStart1.Checked := SharpEBar.AutoStart;
   DisableBarHiding1.Checked := SharpEBar.DisableHideBar;
   ShowMiniThrobbers1.Checked := ModuleManager.ShowMiniThrobbers;
+  AlwaysOnTop1.Checked := SharpEBar.AlwaysOnTop;
 
   // Build Skin List
   Skin1.Clear;
@@ -2065,6 +2070,13 @@ begin
   ModuleManager.Clone(mThrobber.Tag);
   SaveBarSettings;
   ModuleManager.ReCalculateModuleSize;
+end;
+
+procedure TSharpBarMainForm.AlwaysOnTop1Click(Sender: TObject);
+begin
+  AlwaysOnTop1.Checked := not AlwaysOnTop1.Checked;
+  SharpEBar.AlwaysOnTop := AlwaysOnTop1.Checked;
+  SaveBarSettings;
 end;
 
 procedure TSharpBarMainForm.ApplicationEvents1Message(var Msg: tagMSG;
