@@ -426,7 +426,7 @@ begin
     begin
       backbuffer.Canvas.Rectangle(0, 0, 20, 20);
       backbuffer.Canvas.Draw(0, 0, Image1.Picture.Icon);
-      changecolor(@backbuffer, clBlack, $5B4439, 1, 1, 1, 1);
+      changecolor(@backbuffer, clBlack, $005B4439, 1, 1, 1, 1);
       self.canvas.Draw(self.clientWidth - 23, 5 + offset, backbuffer);
       bOverCross := false;
     end;
