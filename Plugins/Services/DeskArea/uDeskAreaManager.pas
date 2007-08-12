@@ -36,7 +36,7 @@ type
   TDeskAreaManager = class
   private
     FTimer : TTimer;
-    FAutoMode : boolean;
+    FAutoModeList : array of boolean;
     FOffsetList : array of TRect;
     procedure OnTimer(Sender : TObject);
   public
@@ -67,7 +67,7 @@ constructor TDeskAreaManager.Create;
 begin
   inherited Create;
 
-  FAutoMode := True;
+  setlength(FAutoModeList,0);
   setlength(FOffsetList,0);
 
   FTimer := TTimer.Create(nil);
@@ -82,6 +82,7 @@ begin
   FreeAndNil(FTimer);
   SetFullScreenArea;
   setlength(FOffsetList,0);
+  setlength(FAutoModeList,0);
 
   inherited Destroy;
 end;
@@ -108,6 +109,7 @@ var
   n,i,k : integer;
   BR : array of TBarRect;
   Area : TRect;
+  am : boolean;
 begin
   setlength(BR,0);
   for n := 0 to SharpApi.GetSharpBarCount - 1 do
@@ -118,7 +120,10 @@ begin
   for n := 0 to Screen.MonitorCount - 1 do
   begin
     Area := Screen.Monitors[n].BoundsRect;
-    if FAutoMode then
+    if n <= High(FAutoModeList) then
+      am := FAutoModeList[n]
+      else am := True;
+    if am then
     begin
       for i := 0 to High(BR) do
       begin
@@ -135,7 +140,6 @@ begin
     end;
 
     // apply custom monitor offsets
-    //Try
     if n <= High(FOffsetList) then
     begin
       Area.Left   := Area.Left + FOffsetList[n].Left;
@@ -186,21 +190,21 @@ var
   n : integer;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\';
-  FAutoMode := True;
+  setlength(FAutoModeList,0);
   setlength(FOffsetList,0);
   if FileExists(Dir + 'DeskArea.xml') then
   begin
     XML := TJvSimpleXML.Create(nil);
     try
       XML.LoadFromFile(Dir + 'DeskArea.xml');
-      if XML.Root.Items.ItemNamed['Settings'] <> nil then
-         FAutoMode := XML.Root.Items.ItemNamed['Settings'].Items.BoolValue('AutoMode',True);
-      if XML.Root.Items.ItemNamed['Offsets'] <> nil then
-         with XML.Root.Items.ItemNamed['Offsets'].Items do
+      if XML.Root.Items.ItemNamed['Monitors'] <> nil then
+         with XML.Root.Items.ItemNamed['Monitors'].Items do
          begin
            for n := 0 to Count - 1 do
-               with XML.Root.Items.ItemNamed['Offsets'].Items.Item[n].Items do
+               with XML.Root.Items.ItemNamed['Monitors'].Items.Item[n].Items do
                begin
+                 setlength(FAutoModeList,length(FAutoModeList)+1);
+                 FAutoModeList[High(FAutoModeList)] := BoolValue('AutoMode',True);
                  setlength(FOffsetList,length(FOffsetList)+1);
                  with FOffsetList[High(FOffsetList)] do
                  begin
