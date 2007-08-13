@@ -34,8 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterApi,
-  JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
-  SharpEGaugeBoxEdit, ImgList, PngImageList, JvLabel;
+  SharpEGaugeBoxEdit, ImgList, PngImageList, JvPageList, JvExControls, ExtCtrls;
 
 type
   TStringObject = Class(TObject)
@@ -55,11 +54,11 @@ type
     cb_grid: TCheckBox;
     sgb_gridx: TSharpeGaugeBox;
     sgb_gridy: TSharpeGaugeBox;
-    Label1: TJvLabel;
-    Label2: TJvLabel;
-    Label3: TJvLabel;
-    JvLabel1: TJvLabel;
-    JvLabel2: TJvLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label1: TLabel;
+    JvLabel1: TLabel;
+    JvLabel2: TLabel;
     procedure sgb_gridyChangeValue(Sender: TObject; Value: Integer);
     procedure cb_ddClick(Sender: TObject);
     procedure cb_ammClick(Sender: TObject);
@@ -83,8 +82,6 @@ implementation
 { TfrmConfigListWnd }
 
 procedure TfrmDeskSettings.FormCreate(Sender: TObject);
-var
-  i:integer;
 begin
   Self.DoubleBuffered := true;
 end;

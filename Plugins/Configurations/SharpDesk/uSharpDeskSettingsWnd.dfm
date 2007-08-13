@@ -21,7 +21,7 @@ object frmDeskSettings: TfrmDeskSettings
     Top = 0
     Width = 428
     Height = 201
-    ActivePage = JvAdvSettingsPage
+    ActivePage = JvSettingsPage
     PropagateEnable = False
     Align = alClient
     object JvSettingsPage: TJvStandardPage
@@ -29,7 +29,7 @@ object frmDeskSettings: TfrmDeskSettings
       Top = 0
       Width = 428
       Height = 201
-      object Label1: TJvLabel
+      object Label1: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 71
@@ -50,17 +50,11 @@ object frmDeskSettings: TfrmDeskSettings
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        Transparent = False
         WordWrap = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-        ImageIndex = 0
-        Spacing = 3
-        ExplicitWidth = 386
+        ExplicitWidth = 384
       end
-      object JvLabel1: TJvLabel
+      object JvLabel1: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 29
@@ -80,17 +74,11 @@ object frmDeskSettings: TfrmDeskSettings
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        Transparent = False
         WordWrap = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-        ImageIndex = 0
-        Spacing = 3
-        ExplicitWidth = 357
+        ExplicitWidth = 355
       end
-      object JvLabel2: TJvLabel
+      object JvLabel2: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 126
@@ -110,15 +98,9 @@ object frmDeskSettings: TfrmDeskSettings
         Font.Name = 'Tahoma'
         Font.Style = []
         ParentFont = False
+        Transparent = False
         WordWrap = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-        ImageIndex = 0
-        Spacing = 3
-        ExplicitWidth = 362
+        ExplicitWidth = 360
       end
       object cb_grid: TCheckBox
         AlignWithMargins = True
@@ -205,7 +187,7 @@ object frmDeskSettings: TfrmDeskSettings
       Top = 0
       Width = 428
       Height = 201
-      object Label2: TJvLabel
+      object Label2: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 97
@@ -219,25 +201,20 @@ object frmDeskSettings: TfrmDeskSettings
         Caption = 
           'Enabling this option will reduce the memory usage of SharpDesk b' +
           'y moving non constantly used data to the swap file.'
-        FrameColor = clWindow
+        Color = clWindow
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        Layout = tlCenter
         ParentColor = False
         ParentFont = False
+        Transparent = False
+        Layout = tlCenter
         WordWrap = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-        Spacing = 3
-        ExplicitWidth = 383
+        ExplicitWidth = 381
       end
-      object Label3: TJvLabel
+      object Label3: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 29
@@ -252,24 +229,18 @@ object frmDeskSettings: TfrmDeskSettings
           'With enabled wallpaper monitoring the SharpDesk wallpaper of the' +
           ' primary monitor will be changed if any other application is usi' +
           'ng the standard windows routines to set a new desktop wallpaper'
-        FrameColor = clWindow
+        Color = clWindow
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
         Font.Name = 'Tahoma'
         Font.Style = []
-        Layout = tlCenter
         ParentColor = False
         ParentFont = False
+        Transparent = False
+        Layout = tlCenter
         WordWrap = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-        ImageIndex = 0
-        Spacing = 3
-        ExplicitWidth = 377
+        ExplicitWidth = 375
       end
       object cb_amm: TCheckBox
         AlignWithMargins = True
