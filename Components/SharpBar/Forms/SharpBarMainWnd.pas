@@ -1044,6 +1044,7 @@ begin
       for n := 1 to 8 do NewID := NewID + inttostr(random(9)+1);
 
       b := False;
+      if xml.Root.Items.ItemNamed['bars'] <> nil then      
       with xml.root.items.ItemNamed['bars'] do
       begin
         for n := 0 to Items.Count - 1 do
@@ -1080,7 +1081,7 @@ begin
   ForceDirectories(Dir);
   xml.SaveToFile(Dir + 'bars.xml~');
   if FileExists(Dir + 'bars.xml') then
-     DeleteFile(Dir + 'bars.xml~');
+     DeleteFile(Dir + 'bars.xml');
   RenameFile(Dir + 'bars.xml~',Dir + 'bars.xml');
   xml.Free;
   // New bar is now loaded!
@@ -1347,6 +1348,7 @@ begin
        SharpEBar.MonitorIndex := index;
      end;
   UpdateBgZone;
+  ModuleManager.ReCalculateModuleSize;
 end;
 
 procedure TSharpBarMainForm.ExitMnClick(Sender: TObject);
@@ -1762,6 +1764,7 @@ begin
       begin
         UpdateBGZone;
         SharpEBar.UpdateSkin;
+        ModuleManager.ReCalculateModuleSize;
         ModuleManager.FixModulePositions;
         ModuleManager.RefreshMiniThrobbers;
         ModuleManager.BroadcastPluginUpdate(suBackground,-2);
