@@ -615,7 +615,7 @@ begin
         (Y > R.Top) and (Y < R.Bottom) then
       begin
 
-        if Assigned(FOnGetCellCursor) then begin
+        if Assigned(FOnDblClickItem) then begin
 
           if Item[iItem].SubItemImageIndex[iCol] = -1 then begin
             if Item[iItem].SubItemText[icol] <> '' then
@@ -659,7 +659,7 @@ begin
         (Y > R.Top) and (Y < R.Bottom) then
       begin
 
-        if Assigned(FOnGetCellCursor) then begin
+        if Assigned(FOnClickItem) then begin
 
           if Item[iItem].SubItemImageIndex[iCol] = -1 then begin
             if Item[iItem].SubItemText[icol] <> '' then
