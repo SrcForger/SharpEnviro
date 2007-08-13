@@ -132,7 +132,7 @@ type
       var AChange: Boolean);
     procedure btnEditCancelClick(Sender: TObject);
     procedure lbTreeGetCellColor(const AItem: Integer; var AColor: TColor);
-    procedure lbTreeClickItem(AText: string; AItem, ACol: Integer);
+
     procedure btnFavouriteClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
@@ -146,6 +146,7 @@ type
 
     procedure FormShow(Sender: TObject);
     procedure sbPluginResize(Sender: TObject);
+    procedure lbTreeClickItem(const ACol: Integer; AItem: TSharpEListItem);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -447,7 +448,8 @@ begin
   //pnlToolbar.Visible := False;
 end;
 
-procedure TSharpCenterWnd.lbTreeClickItem(AText: string; AItem, ACol: Integer);
+procedure TSharpCenterWnd.lbTreeClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
 begin
   if lbTree.ItemIndex = -1 then
     exit;
@@ -458,6 +460,7 @@ begin
 
   ClickItem;
 end;
+
 
 procedure TSharpCenterWnd.lbTreeGetCellColor(const AItem: Integer;
   var AColor: TColor);

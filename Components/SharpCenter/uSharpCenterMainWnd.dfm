@@ -2,11 +2,11 @@ object SharpCenterWnd: TSharpCenterWnd
   Left = 0
   Top = 0
   Caption = 'SharpCenter'
-  ClientHeight = 584
-  ClientWidth = 686
+  ClientHeight = 564
+  ClientWidth = 684
   Color = clWindow
-  Constraints.MinHeight = 200
-  Constraints.MinWidth = 488
+  Constraints.MinHeight = 600
+  Constraints.MinWidth = 700
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -21,8 +21,8 @@ object SharpCenterWnd: TSharpCenterWnd
   TextHeight = 13
   object PnlButtons: TPanel
     Left = 0
-    Top = 552
-    Width = 686
+    Top = 532
+    Width = 684
     Height = 32
     Align = alBottom
     BevelOuter = bvNone
@@ -30,11 +30,13 @@ object SharpCenterWnd: TSharpCenterWnd
     FullRepaint = False
     Locked = True
     TabOrder = 0
+    ExplicitTop = 552
+    ExplicitWidth = 686
     DesignSize = (
-      686
+      684
       32)
     object btnHelp: TPngSpeedButton
-      Left = 470
+      Left = 468
       Top = 3
       Width = 65
       Height = 26
@@ -484,10 +486,9 @@ object SharpCenterWnd: TSharpCenterWnd
         FBF48E4A5EA00C302D32FC37F568FFAC39B5521568C027620C60BF145D7D9B55
         80879D918D95F1FFAFDFFF7F7FF8F2536F692BC8809FE8060000522443F050FC
         24F40000000049454E44AE426082}
-      ExplicitLeft = 468
     end
     object btnSave: TPngSpeedButton
-      Left = 543
+      Left = 541
       Top = 3
       Width = 65
       Height = 26
@@ -934,10 +935,9 @@ object SharpCenterWnd: TSharpCenterWnd
         AFE18AF032E2F0BC84793920180C9246A341FB6C360B8EE3A056AB6958629D97
         30FF17100804CECE48B3D9C4A212F728C0E7F34980F3295F24718F023C1E8F04
         5878FB547F008BFBD79C56F3EE120000000049454E44AE426082}
-      ExplicitLeft = 541
     end
     object btnCancel: TPngSpeedButton
-      Left = 615
+      Left = 613
       Top = 3
       Width = 65
       Height = 26
@@ -1396,26 +1396,27 @@ object SharpCenterWnd: TSharpCenterWnd
         710FDEA0C051FCDEA2CB845332F13C6F44466FB0AD69511437A85300BAA20C16
         29F0DC8D6C54147067DB782C122800CD51A618B3E8DBF41F7AFC5FCF38ACED16
         CB57F80000000049454E44AE426082}
-      ExplicitLeft = 613
     end
   end
   object pnlMain: TPanel
     Left = 0
     Top = 0
-    Width = 686
-    Height = 552
+    Width = 684
+    Height = 532
     Align = alClient
     BevelOuter = bvNone
     Color = clWindow
     Ctl3D = False
     ParentCtl3D = False
     TabOrder = 1
+    ExplicitWidth = 686
+    ExplicitHeight = 552
     object pnlSettingTree: TPanel
       AlignWithMargins = True
       Left = 6
       Top = 6
       Width = 165
-      Height = 540
+      Height = 520
       Margins.Left = 6
       Margins.Top = 6
       Margins.Right = 0
@@ -1425,22 +1426,24 @@ object SharpCenterWnd: TSharpCenterWnd
       Color = clWindow
       ParentBackground = False
       TabOrder = 0
+      ExplicitHeight = 540
       object pnlTree: TPanel
         Left = 0
         Top = 131
         Width = 165
-        Height = 409
+        Height = 389
         Align = alClient
         BevelOuter = bvNone
         Color = clWindow
         ParentBackground = False
         TabOrder = 0
+        ExplicitHeight = 409
         object lbTree: TSharpEListBoxEx
           AlignWithMargins = True
           Left = 0
           Top = 6
           Width = 165
-          Height = 403
+          Height = 383
           Margins.Left = 0
           Margins.Top = 6
           Margins.Right = 0
@@ -1456,6 +1459,7 @@ object SharpCenterWnd: TSharpCenterWnd
               VAlign = taVerticalCenter
               ColumnAlign = calLeft
               Autosize = False
+              StretchColumn = False
               Images = picMain
             end
             item
@@ -1468,6 +1472,7 @@ object SharpCenterWnd: TSharpCenterWnd
               VAlign = taVerticalCenter
               ColumnAlign = calLeft
               Autosize = False
+              StretchColumn = False
             end>
           ItemHeight = 24
           OnClickItem = lbTreeClickItem
@@ -1475,6 +1480,7 @@ object SharpCenterWnd: TSharpCenterWnd
           AutosizeGrid = False
           Borderstyle = bsNone
           Align = alClient
+          ExplicitHeight = 403
         end
       end
       object tlToolbar: TSharpETabList
@@ -1573,6 +1579,7 @@ object SharpCenterWnd: TSharpCenterWnd
                   VAlign = taVerticalCenter
                   ColumnAlign = calLeft
                   Autosize = False
+                  StretchColumn = False
                 end>
               Color = 8447997
               ItemHeight = 21
@@ -2070,7 +2077,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               98)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -594
+              Left = -606
               Top = 35
               Width = 23
               Height = 22
@@ -2522,14 +2529,13 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = -4
+              Width = 0
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
-              ExplicitWidth = 0
             end
           end
         end
@@ -2538,8 +2544,8 @@ object SharpCenterWnd: TSharpCenterWnd
     object pnlContent: TPanel
       Left = 171
       Top = 0
-      Width = 515
-      Height = 552
+      Width = 513
+      Height = 532
       Margins.Left = 6
       Margins.Top = 6
       Margins.Right = 6
@@ -2552,11 +2558,13 @@ object SharpCenterWnd: TSharpCenterWnd
       Padding.Right = 6
       Padding.Bottom = 6
       TabOrder = 1
+      ExplicitWidth = 515
+      ExplicitHeight = 552
       object pnlLivePreview: TPanel
         AlignWithMargins = True
         Left = 6
         Top = 6
-        Width = 503
+        Width = 501
         Height = 27
         Margins.Left = 0
         Margins.Top = 0
@@ -2568,10 +2576,11 @@ object SharpCenterWnd: TSharpCenterWnd
         UseDockManager = False
         Locked = True
         TabOrder = 0
+        ExplicitWidth = 503
         object imgLivePreview: TImage32
           Left = 0
           Top = 0
-          Width = 503
+          Width = 501
           Height = 27
           Align = alClient
           Bitmap.ResamplerClassName = 'TNearestResampler'
@@ -2581,13 +2590,14 @@ object SharpCenterWnd: TSharpCenterWnd
           ScaleMode = smNormal
           TabOrder = 0
           OnBitmapResize = btnBackClick
+          ExplicitWidth = 503
         end
       end
       object pnlPluginContainer: TSharpEPageControl
         Left = 6
         Top = 177
-        Width = 503
-        Height = 369
+        Width = 501
+        Height = 349
         Align = alClient
         ExpandedHeight = 200
         TabItems = <>
@@ -2607,15 +2617,17 @@ object SharpCenterWnd: TSharpCenterWnd
         TabCaptionColor = clBlack
         TabStatusColor = clGreen
         OnTabChange = tlPluginTabsTabChange
+        ExplicitWidth = 503
+        ExplicitHeight = 369
         DesignSize = (
-          503
-          369)
+          501
+          349)
         object sbPlugin: TScrollBox
           AlignWithMargins = True
           Left = 6
           Top = 32
-          Width = 491
-          Height = 331
+          Width = 489
+          Height = 311
           Margins.Left = 6
           Margins.Top = 32
           Margins.Right = 6
@@ -2628,10 +2640,12 @@ object SharpCenterWnd: TSharpCenterWnd
           ParentColor = False
           TabOrder = 2
           OnResize = sbPluginResize
+          ExplicitWidth = 491
+          ExplicitHeight = 331
           object pnlPlugin: TPanel
             Left = 0
             Top = 0
-            Width = 491
+            Width = 472
             Height = 331
             Margins.Left = 6
             Margins.Top = 6
@@ -2641,6 +2655,7 @@ object SharpCenterWnd: TSharpCenterWnd
             BevelOuter = bvNone
             Color = clWindow
             TabOrder = 0
+            ExplicitWidth = 491
           end
         end
       end
@@ -2648,7 +2663,7 @@ object SharpCenterWnd: TSharpCenterWnd
         AlignWithMargins = True
         Left = 6
         Top = 37
-        Width = 503
+        Width = 501
         Height = 136
         Margins.Left = 0
         Margins.Top = 0
@@ -2690,14 +2705,15 @@ object SharpCenterWnd: TSharpCenterWnd
         TabStatusColor = clGreen
         OnTabChange = tlEditItemTabChange
         OnTabClick = tlEditItemTabClick
+        ExplicitWidth = 503
         DesignSize = (
-          503
+          501
           136)
         object pnlEditPluginContainer: TSharpERoundPanel
           AlignWithMargins = True
           Left = 0
           Top = 25
-          Width = 503
+          Width = 501
           Height = 111
           Margins.Left = 0
           Margins.Top = 25
@@ -2715,20 +2731,22 @@ object SharpCenterWnd: TSharpCenterWnd
           BorderColor = clBtnFace
           Border = False
           BackgroundColor = clWhite
+          ExplicitWidth = 503
           object pnlEditPlugin: TPanel
             Left = 4
             Top = 4
-            Width = 495
+            Width = 493
             Height = 69
             Align = alClient
             BevelOuter = bvNone
             Color = 16510947
             TabOrder = 0
+            ExplicitWidth = 495
           end
           object pnlEditToolbar: TPanel
             Left = 4
             Top = 73
-            Width = 495
+            Width = 493
             Height = 34
             Align = alBottom
             BevelOuter = bvNone
@@ -2736,11 +2754,12 @@ object SharpCenterWnd: TSharpCenterWnd
             FullRepaint = False
             ParentBackground = False
             TabOrder = 1
+            ExplicitWidth = 495
             DesignSize = (
-              495
+              493
               34)
             object btnEditCancel: TPngSpeedButton
-              Left = 426
+              Left = 424
               Top = 5
               Width = 65
               Height = 26
@@ -3192,7 +3211,7 @@ object SharpCenterWnd: TSharpCenterWnd
               ExplicitLeft = 430
             end
             object btnEditApply: TPngSpeedButton
-              Left = 354
+              Left = 352
               Top = 5
               Width = 65
               Height = 26
