@@ -106,7 +106,6 @@ begin
   end;
   FSkin.SaveToStream(FStream,true);
   FreeAndNil(FStream);
-  SetFileAttributes(PChar(FFileName),FILE_ATTRIBUTE_NORMAL);
   FSkin.Clear;
 end;
 
