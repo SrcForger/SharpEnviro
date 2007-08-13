@@ -543,36 +543,18 @@ end;
 function SharpExecute(data: pChar): hresult;
 var
   wnd: hWnd;
-  n: hresult;
-  bShellExecute: Boolean;
 begin
   Result := HR_OK;
   try
 
-    bShellExecute := True;
     wnd := FindWindow('TSharpCoreMainWnd', nil);
     if wnd <> 0 then
     begin
       if IsServiceStarted('exec') = MR_STARTED then
-      begin
-        result := ServiceMsg('exec', pchar(data));
-        bShellExecute := False;
-      end
+        result := ServiceMsg('exec', pchar(data))
       else
-      begin
-        n := ServiceStart('exec');
-        if (n <> HR_NORECIEVERWINDOW) or (n <> HR_UNKNOWNERROR) then
-        begin
-          result := ServiceMsg('exec', pchar(data));
-          bShellExecute := False;
-        end;
-      end;
+        result := ShellExecute(0, nil, PChar(data), '', PChar(ExtractFilePath(data)), SW_SHOWNORMAL);
     end;
-
-    // Only try shell execute if service could not be started.
-    if bShellExecute then
-      result := shellexecute(0, nil, pChar(data), '',
-        pchar(ExtractFilePath(data)), SW_SHOW);
 
   except
     result := HR_UNKNOWNERROR;
