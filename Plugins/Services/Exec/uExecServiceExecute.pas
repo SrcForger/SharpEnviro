@@ -296,8 +296,7 @@ begin
   url := text;
   showans := False;
   calcanswer := '';
-  //oldhandle := GetActiveWindow;
-  handle := Application.MainFormHandle;
+  handle := FindWindow('TSharpCoreMainWnd', nil);
 
   ForceForegroundWindow(handle, oldhandle);
   try
@@ -657,7 +656,7 @@ begin
   Debug('Params: ' + AParams, DMT_TRACE);
   Debug('dir: ' + ADefaultDir, DMT_TRACE);
 
-  if Elevate then sOperation := 'runas';
+  if Elevate then sOperation := 'runas' else sOperation := 'open';
 
   if FUseDebug then begin
     FDebugText := Format('File: %s -- Param: %s -- Dir: %s',[AFileName, AParams, ADefaultDir]);
@@ -728,7 +727,7 @@ begin
   if IsIconic(hwnd) then
     ShowWindow(hwnd, SW_RESTORE);
 
-  oldhwnd := GetActiveWindow;
+  oldhwnd := GetForegroundWindow;
 
   if oldhwnd = hwnd then
     Result := True
@@ -745,8 +744,8 @@ begin
       // Published in The Delphi Magazine 55, page 16
 
       Result := False;
-      ForegroundThreadID := GetWindowThreadProcessID(GetForegroundWindow, nil);
-      ThisThreadID := GetWindowThreadPRocessId(hwnd, nil);
+      ForegroundThreadID := GetWindowThreadProcessID(oldhwnd, nil);
+      ThisThreadID := GetCurrentThreadID;
       if AttachThreadInput(ThisThreadID, ForegroundThreadID, True) then begin
         BringWindowToTop(hwnd); // IE 5.5 related hack
         SetForegroundWindow(hwnd);
