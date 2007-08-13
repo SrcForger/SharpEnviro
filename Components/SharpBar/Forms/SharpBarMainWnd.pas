@@ -1346,6 +1346,7 @@ begin
        SharpEbar.PrimaryMonitor := False;
        SharpEBar.MonitorIndex := index;
      end;
+  UpdateBgZone;
 end;
 
 procedure TSharpBarMainForm.ExitMnClick(Sender: TObject);
@@ -2028,13 +2029,25 @@ begin
 end;
 
 procedure TSharpBarMainForm.OnBarPositionUpdate(Sender : TObject; var X,Y : Integer);
+var
+  Mon : TMonitor;
 begin
   if FSuspended then exit;
   if BarHideForm <> nil then BarHideForm.UpdateStatus;
 
-  if x < Monitor.Left then x := Monitor.Left;
-  if Width > Monitor.Width then
-     Width := Monitor.Width;
+  if SharpEBar.HorizPos = hpMiddle then
+  begin
+    if (SharpEBar.MonitorIndex > (Screen.MonitorCount - 1)) or (SharpEBar.PrimaryMonitor) then
+      Mon := Screen.PrimaryMonitor
+    else
+      Mon := Screen.Monitors[SharpEBar.MonitorIndex];
+    if Mon <> nil then
+    begin
+      if x < Mon.Left then x := Mon.Left;
+      if Width > Mon.Width then
+         Width := Mon.Width;
+    end;
+  end;
 
 //  UpdateBGImage;
   ModuleManager.BroadcastPluginUpdate(suBackground,-2);
