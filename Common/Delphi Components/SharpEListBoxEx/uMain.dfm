@@ -70,11 +70,12 @@ object Form1: TForm1
         MinWidth = 0
         TextColor = clBlack
         SelectedTextColor = clBlack
-        HAlign = taLeftJustify
+        HAlign = taRightJustify
         VAlign = taVerticalCenter
-        ColumnAlign = calLeft
+        ColumnAlign = calRight
         Autosize = False
         StretchColumn = True
+        Images = col1
       end>
     ItemHeight = 24
     OnClickItem = SharpEListBoxEx1ClickItem

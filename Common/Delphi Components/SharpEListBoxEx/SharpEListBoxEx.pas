@@ -342,7 +342,7 @@ begin
           Column[i].ColumnRect.Right, Rect.Bottom);
         R := Column[i].ColumnRect;
         R.Left := R.Left + 8;
-        r.Right := R.Right - 12;
+        r.Right := R.Right - 8;
 
         if (i <= tmpItem.SubItemCount - 1) then
         begin
@@ -410,7 +410,7 @@ begin
   // Horizontal position
   case Column[ACol].HAlign of
     taLeftJustify: R := Rect(ARect.Left + 0 + ItemOffset.X, R.Top, Arect.Left + iW, R.Bottom);
-    taRightJustify: R := Rect(ARect.Left + Column[ACol].Width - iW, R.Top, ARect.Left + Column[ACol].Width - ItemOffset.X, R.Bottom);
+    taRightJustify: R := Rect(ARect.Left + Column[ACol].Width - (iW*2), R.Top, ARect.Left + Column[ACol].Width - ItemOffset.X, R.Bottom);
     taCenter:
       begin
         iItemWWOffsets := Column[ACol].Width - (ItemOffset.X);
@@ -444,9 +444,10 @@ begin
   iImgWidth := 0;
 
   if APngImage <> nil then
-    iImgWidth := APngImage.Width + 10;
+    iImgWidth := APngImage.Width + 8;
 
   ARect.Left := ARect.Left + iImgWidth;
+  ARect.Right := ARect.Right - iImgWidth;
 
   ACanvas.Font := Self.Font;
   if assigned(FOnGetCellFont) then begin
