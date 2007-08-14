@@ -90,6 +90,7 @@ var
   MutexHandle : THandle;
   SystemSkinLoadThread : TSystemSkinLoadThread;
   menusettings : TSharpEMenuSettings;
+  Mon : TMonitor;
 
 function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; external 'shell32.dll' index 181;
 
@@ -180,20 +181,23 @@ begin
   SystemSkinLoadThread.Free;
 
   wnd.InitMenu(mn,true);
+  Mon := Screen.MonitorFromPoint(Pos);
+  if Mon = nil then
+    Mon := wnd.Monitor;
   i := Pos.X + SkinManager.Skin.MenuSkin.SkinDim.XAsInt;
-  if (i + wnd.Width > (wnd.Monitor.Left + wnd.Monitor.Width)) then
-     i := (wnd.Monitor.Left + wnd.Monitor.Width) - wnd.Width;
+  if (i + wnd.Width > (Mon.Left + Mon.Width)) then
+     i := (Mon.Left + Mon.Width) - wnd.Width;
   wnd.Left := i;
 
   // Check position
   i := Pos.Y + SkinManager.Skin.MenuSkin.SkinDim.YAsInt;
   if popupdir < 0 then
      i := i - wnd.Picture.Height;
-  if (i + wnd.Picture.Height) > (wnd.Monitor.Top + wnd.Monitor.Height) then
-      i := wnd.Monitor.Top + wnd.Monitor.Height - wnd.Picture.Height;
+  if (i + wnd.Picture.Height) > (Mon.Top + Mon.Height) then
+      i := Mon.Top + Mon.Height - wnd.Picture.Height;
   if i < 0 then
   begin
-    wnd.Height := wnd.Monitor.Height;
+    wnd.Height := Mon.Height;
     i := 0;
   end;
   wnd.top := i;
