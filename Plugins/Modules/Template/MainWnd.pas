@@ -38,25 +38,30 @@ uses
   Dialogs, StdCtrls, ExtCtrls, Menus, Math,
   // Custom Units
   JvSimpleXML, GR32,
-  // SharpE Units
-  SharpApi, uSharpBarAPI, SharpEBaseControls, SharpESkin, SharpEScheme,
-  SharpESkinManager;
+  // SharpE API Units
+  SharpApi, uSharpBarAPI,
+  // SharpE Skin Units
+  SharpESkin, SharpESkinManager, SharpEButton;
 
 type
   TMainForm = class(TForm)
-    MenuPopup: TPopupMenu;
-    MenuSettingsItem: TMenuItem;
-    SkinManager: TSharpESkinManager;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure MenuSettingsItemClick(Sender: TObject);
   protected
   private
+    // Events
+    procedure ButtonOnClick(Sender: TObject);
+
     // Declare your settings for the module directly in the class! (NO global vars!)
     // Example:
     // sWidth : integer;
   public
+    // visual components
+    SkinManager : TSharpESkinManager;
+    Button: TSharpEButton;
+
+    // vars and functions
     ModuleID : integer;
     BarWnd : hWnd;
     Background : TBitmap32;
@@ -64,6 +69,7 @@ type
     procedure ReAlignComponents(BroadCast : boolean);
     procedure SetWidth(new : integer);
     procedure UpdateBackground(new : integer = -1);
+    procedure ShowSettingsWindow;    
   end;
 
 // Skin Manager!
@@ -111,6 +117,10 @@ begin
 
   // Background is updated, now resize the form
   Width := new;
+
+  // Align the Components
+  Button.Left := 2;
+  Button.Width := Width - 4;
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
@@ -120,7 +130,7 @@ begin
   // The caption of the module is the description in the module manager!
   self.Caption := 'My Module' ;
 
-  newWidth := 100;
+  newWidth := Button.GetTextWidth + 16;
 
   // DO NOT set the size of the form directly in this procedure!
   // The Size of the Module is set by SharpBar when the modules SetSize function is called!
@@ -136,7 +146,7 @@ begin
 end;
 
 
-procedure TMainForm.MenuSettingsItemClick(Sender: TObject);
+procedure TMainForm.ShowSettingsWindow;
 var
   SettingsForm : TSettingsForm;
   item : TJvSimpleXMLElem;
@@ -175,15 +185,46 @@ begin
 end;
 
 
+procedure TMainForm.ButtonOnClick(Sender: TObject);
+begin
+  // what happens if the button is clicked...
+  ShowMessage('Click!');
+end;
+
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  Background := TBitmap32.Create;
   DoubleBuffered := True;
+
+  // Create all clases
+  Background := TBitmap32.Create;
+
+  // Create all visual components
+  // The second param of TSharpESkinManager.Create defines which parts of the
+  // current skin to load. If you want to use other skin components than the
+  // button then you have add those to this param.
+  // for example if you want to use a button and a progressbar:
+  // SkinManager := TSharpESkinManager.Create(nil,[scButton,scProgressBar]);
+  SkinManager := TSharpESkinManager.Create(nil,[scButton]);
+  SkinManager.SkinSource := ssSystem;  // load the global skin
+  SkinManager.SchemeSource := ssSystem;// load the global scheme
+  SkinManager.HandleUpdates := False;  // don't react on global window messages
+
+  Button := TSharpEButton.Create(self);
+  Button.SkinManager := SkinManager;   // Assign the SkinManager to the button
+  Button.Caption := 'My SharpE Module';
+  Button.AutoSize := True;             // height and top position of the button
+  Button.AutoPosition := True;         // will be auto changed to the skin values
+  Button.OnClick := ButtonOnClick;     // assign the OnClick event to the button
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  // Free all clasess
   Background.Free;
+
+  // Free all Components
+  Button.Free;
+  SkinManager.Free;
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);

@@ -247,7 +247,7 @@ begin
       if TModule(ModuleList.Items[n]).ID = ID then
       begin
         temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.FForm).MenuSettingsItem.OnClick(TMainForm(temp.FForm).MenuSettingsItem);
+        TMainForm(temp.FForm).ShowSettingsWindow;
       end;
 end;
 
