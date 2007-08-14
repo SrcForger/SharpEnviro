@@ -743,7 +743,7 @@ begin
         begin
           // SharpBar must be started before the startup components are executed
           ShellExec(hInstance,'open',GetSharpeDirectory+'SharpBar.exe','',GetSharpeDirectory,0);
-          sleep(6000);
+          sleep(10000);
         end;
       end;
     end;
