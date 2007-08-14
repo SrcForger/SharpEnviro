@@ -189,13 +189,14 @@ end;        }
 procedure TSystemSharpESkin.LoadSkinFromStream;
 var
   loadfile : String;
-  stream : TFileStream;
+  stream : TMemoryStream;
 begin
   inherited Clear;
   loadfile := SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin';
   if FileExists(loadfile) then
   begin
-    stream := TFileStream.Create(loadfile,fmOpenRead or fmShareDenyNone);
+    stream := TMemoryStream.Create;
+    stream.LoadFromFile(loadfile);
     try
       inherited LoadFromStream(Stream);
     finally
