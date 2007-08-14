@@ -405,7 +405,7 @@ procedure TfrmThemeList.lbThemeListGetCellTextColor(const ACol: Integer;
   AItem: TSharpEListItem; var AColor: TColor);
 begin
   if (ACol = 3) then
-    AColor := clBlue;
+    AColor := clNavy;
 end;
 
 procedure TfrmThemeList.ConfigureItem;
