@@ -34,10 +34,9 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvExControls, JvComponent, JvLabel, ImgList,
-  PngImageList, JvExStdCtrls, JvEdit, JvValidateEdit, JvValidators,
+  PngImageList, JvExStdCtrls, JvValidators,
   JvErrorIndicator, ExtCtrls, JvPageList, SharpApi, SharpCenterApi,
-  uThemeListManager, JclStrings, JvComponentBase, jpeg, JvHtControls, GR32_Image,
-  JvLinkLabel;
+  uThemeListManager, JclStrings, JvComponentBase, jpeg, JvHtControls, GR32_Image;
 
 type
   TfrmEditItem = class(TForm)

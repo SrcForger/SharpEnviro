@@ -36,7 +36,8 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, uSEListboxPainter, JclFileUtils,
   uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
   SharpEListBox, uThemeListManager, SharpEListBoxEx, GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, JclInifiles, SharpCenterApi, pngimage;
+  ExtCtrls, Menus, JclStrings, JclInifiles, SharpCenterApi, pngimage,
+  Jcldatetime, DateUtils;
 
 type
   TfrmThemeList = class(TForm)
@@ -44,11 +45,12 @@ type
     lbThemeList: TSharpEListBoxEx;
     pilDefault: TPngImageList;
     DefThemeImageList: TPngImageList;
+    tmrEnableUi: TTimer;
 
     procedure lbThemeListDblClickItem(const ACol: Integer;
-  AItem: TSharpEListItem);
+      AItem: TSharpEListItem);
     procedure lbThemeListClickItem(const ACol: Integer;
-  AItem: TSharpEListItem);
+      AItem: TSharpEListItem);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure lbThemesClick(Sender: TObject);
@@ -60,8 +62,10 @@ type
       AItem: TSharpEListItem; var AFont: TFont);
     procedure lbThemeListGetCellCursor(const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
+    procedure tmrEnableUiTimer(Sender: TObject);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
+    FLastClick: TDateTime;
   private
 
   public
@@ -171,14 +175,14 @@ begin
       newItem := lbThemeList.AddItem(tmpTheme.Name + ' By ' + tmpTheme.Author, 0);
 
       if (tmpTheme.IsReadOnly) then
-        newItem.AddSubItem('',1) else
-        newItem.AddSubItem('',-1);
+        newItem.AddSubItem('', 1) else
+        newItem.AddSubItem('', -1);
 
       if tmpTheme.Website <> '' then
-        newItem.AddSubItem('',2) else
-        newItem.AddSubItem('',-1);
+        newItem.AddSubItem('', 2) else
+        newItem.AddSubItem('', -1);
 
-      
+
 
       newItem.AddSubItem('edit');
 
@@ -198,7 +202,7 @@ begin
           Pointer(themeimages.AddMasked(bmp, clFuchsia));
       end else begin
         //bmp := imgDef.Picture.Bitmap;
-        DefThemeImageList.PngImages.Items[0].PngImage.Draw(Bmp.Canvas,bmp.Canvas.ClipRect);
+        DefThemeImageList.PngImages.Items[0].PngImage.Draw(Bmp.Canvas, bmp.Canvas.ClipRect);
         //bmp32.DrawTo(bmp.canvas.handle, 1, 1);
 
         newItem.SubItemImageIndexes[0] :=
@@ -232,24 +236,31 @@ end;
 procedure TfrmThemeList.lbThemeListClickItem(const ACol: Integer;
   AItem: TSharpEListItem);
 var
-  sUrl: String;
+  n: Integer;
+  tmpTheme: TThemeListItem;
 begin
+  if lbThemeList.ItemIndex <> -1 then
+    tmpTheme := TThemeListItem(lbThemeList.Item[lbThemeList.ItemIndex].Data) else
+    exit;
 
   if ACol = 3 then
     ConfigureItem else
-  if ACol = 2 then begin
-    sUrl := TThemeListItem(lbThemeList.Item[lbThemeList.ItemIndex].Data).Website;
-    SharpExecute(sUrl);
-  end else begin
-    if FrmEditItem <> nil then
-    updateui;
+    if ACol = 2 then begin
+      SharpExecute(tmpTheme.Website);
+    end else begin
+      if FrmEditItem <> nil then
+        updateui;
 
-    SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1);
-    ThemeManager.SetTheme(TThemeListItem(lbThemeList.Item[lbThemeList.ItemIndex].Data).Name);
-  end;
+      lbThemeList.Enabled := False;
+      tmrEnableUi.Enabled := True;
+      lbThemeList.Item[lbThemeList.ItemIndex].Caption :=
+        lbThemeList.Item[lbThemeList.ItemIndex].Caption + ' (Loading...)';
+
+      SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1);
+      ThemeManager.SetTheme(tmpTheme.Name);
 
 
-  
+    end;
 end;
 
 function TfrmThemeList.UpdateUI: Boolean;
@@ -327,14 +338,14 @@ begin
       end;
     sceDelete: begin
 
-      if lbThemeList.Count = 1 then begin
-        Result := False;
+        if lbThemeList.Count = 1 then begin
+          Result := False;
 
-        MessageDlg('Unable to delete selected theme.'+#13+#10+''+#13+#10+
-          'There must always be at least one active theme.', mtError,
+          MessageDlg('Unable to delete selected theme.' + #13 + #10 + '' + #13 + #10 +
+            'There must always be at least one active theme.', mtError,
             [mbOK], 0);
-        exit;
-      end;
+          exit;
+        end;
 
         id := frmThemeList.lbThemeList.ItemIndex;
 
@@ -357,6 +368,17 @@ begin
       end;
   end;
 
+end;
+
+procedure TfrmThemeList.tmrEnableUiTimer(Sender: TObject);
+var
+  tmpTheme: TThemeListItem;
+begin
+  tmrEnableUi.Enabled := False;
+  lbThemeList.Enabled := True;
+
+  tmpTheme := TThemeListItem(lbThemeList.Item[lbThemeList.ItemIndex].Data);
+  lbThemeList.Item[lbThemeList.ItemIndex].Caption := tmpTheme.Name + ' By ' + tmpTheme.Author;
 end;
 
 procedure TfrmThemeList.lbThemeListDblClickItem(const ACol: Integer;

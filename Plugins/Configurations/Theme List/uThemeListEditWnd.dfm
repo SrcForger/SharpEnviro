@@ -104,16 +104,15 @@ object frmEditItem: TfrmEditItem
       object Label2: TLabel
         Left = 0
         Top = 13
-        Width = 467
+        Width = 304
         Height = 13
         Align = alTop
         Caption = 'Are you sure you want to delete the currently selected Theme?'
-        ExplicitWidth = 304
       end
       object Label1: TJvLabel
         Left = 0
         Top = 0
-        Width = 467
+        Width = 67
         Height = 13
         Align = alTop
         Caption = 'Confirmation:'
@@ -123,7 +122,6 @@ object frmEditItem: TfrmEditItem
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
         Images = pilError
-        ExplicitWidth = 67
       end
     end
   end

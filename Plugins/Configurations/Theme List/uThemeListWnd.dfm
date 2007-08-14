@@ -923,4 +923,11 @@ object frmThemeList: TfrmThemeList
     Left = 368
     Top = 240
   end
+  object tmrEnableUi: TTimer
+    Enabled = False
+    Interval = 5000
+    OnTimer = tmrEnableUiTimer
+    Left = 360
+    Top = 196
+  end
 end
