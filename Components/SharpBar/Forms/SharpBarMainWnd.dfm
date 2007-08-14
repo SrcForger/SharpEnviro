@@ -29,7 +29,7 @@ object SharpBarMainForm: TSharpBarMainForm
     Left = 384
     Top = 40
     object BarManagment1: TMenuItem
-      Caption = 'Bar Managment'
+      Caption = 'Bar Management'
       ImageIndex = 11
       object CreateemptySharpBar1: TMenuItem
         Caption = 'Create empty SharpBar'
