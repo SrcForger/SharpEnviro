@@ -38,10 +38,13 @@ type
   TfrmItemsList = class(TForm)
     imlWeatherGlyphs: TPngImageList;
     lbWeatherList: TSharpEListBoxEx;
-    procedure lbWeatherListClickItem(AText: string; AItem, ACol: Integer);
     procedure FormResize(Sender: TObject);
     procedure img1Click(Sender: TObject);
     procedure lbWeatherListResize(Sender: TObject);
+    procedure lbWeatherListClickItem(const ACol: Integer;
+      AItem: TSharpEListItem);
+    procedure lbWeatherListGetCellTextColor(const ACol: Integer;
+      AItem: TSharpEListItem; var AColor: TColor);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
     { Private declarations }
@@ -95,8 +98,10 @@ begin
     newItem := lbWeatherList.AddItem(s,GetWeatherIndex(tmpWeather));
 
     if ((tmpWeather.FCLastUpdated = '0') or (tmpWeather.FCLastUpdated = '-1')) then
-    newItem.AddSubItem('Queued',13) else
-    newItem.AddSubItem(tmpWeather.FCLastUpdated);
+    newItem.AddSubItem('Queued',13) else begin
+      s := FormatDateTime('dd mmm hh:nn',StrToDateTime(tmpWeather.FCLastUpdated));
+      newItem.AddSubItem('Updated: ' + s);
+    end;
     newItem.Data := tmpWeather;
 
   end;
@@ -179,11 +184,18 @@ begin
   end;
 end;
 
-procedure TfrmItemsList.lbWeatherListClickItem(AText: string; AItem,
-  ACol: Integer);
+procedure TfrmItemsList.lbWeatherListClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
 begin
-  if frmItemEdit <> nil then
+   if frmItemEdit <> nil then
     frmItemEdit.InitUi(FEditMode);
+end;
+
+procedure TfrmItemsList.lbWeatherListGetCellTextColor(const ACol: Integer;
+  AItem: TSharpEListItem; var AColor: TColor);
+begin
+  if Acol = 1 then
+    AColor := clNavy;
 end;
 
 procedure TfrmItemsList.lbWeatherListResize(Sender: TObject);

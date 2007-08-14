@@ -31,6 +31,7 @@ object frmItemsList: TfrmItemsList
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         Autosize = False
+        StretchColumn = False
         Images = imlWeatherGlyphs
       end
       item
@@ -39,15 +40,17 @@ object frmItemsList: TfrmItemsList
         MinWidth = 0
         TextColor = clBlack
         SelectedTextColor = clBlack
-        HAlign = taLeftJustify
+        HAlign = taRightJustify
         VAlign = taVerticalCenter
-        ColumnAlign = calLeft
+        ColumnAlign = calRight
         Autosize = False
+        StretchColumn = False
         Images = imlWeatherGlyphs
       end>
     OnResize = lbWeatherListResize
     ItemHeight = 24
     OnClickItem = lbWeatherListClickItem
+    OnGetCellTextColor = lbWeatherListGetCellTextColor
     AutosizeGrid = True
     Borderstyle = bsNone
     Align = alTop
