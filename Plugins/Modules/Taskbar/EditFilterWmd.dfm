@@ -3,7 +3,7 @@ object EditFilterForm: TEditFilterForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Edit Filter'
-  ClientHeight = 426
+  ClientHeight = 433
   ClientWidth = 306
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -54,7 +54,7 @@ object EditFilterForm: TEditFilterForm
     Left = 24
     Top = 72
     Width = 273
-    Height = 153
+    Height = 169
     ItemHeight = 13
     Items.Strings = (
       'SW_HIDE'
@@ -67,12 +67,13 @@ object EditFilterForm: TEditFilterForm
       'SW_SHOWMINNOACTIVE'
       'SW_SHOWNA'
       'SW_RESTORE'
-      'SW_SHOWDEFAULT, SW_MAX')
+      'SW_SHOWDEFAULT, '
+      'SW_FORCEMINIMIZE, SW_MAX')
     TabOrder = 2
   end
   object rb_classname: TRadioButton
     Left = 8
-    Top = 240
+    Top = 256
     Width = 145
     Height = 17
     Caption = 'Window Class Name'
@@ -81,14 +82,14 @@ object EditFilterForm: TEditFilterForm
   end
   object edit_classname: TEdit
     Left = 24
-    Top = 256
+    Top = 272
     Width = 225
     Height = 21
     TabOrder = 4
   end
   object btn_find1: TButton
     Left = 256
-    Top = 256
+    Top = 272
     Width = 41
     Height = 22
     Caption = 'Find'
@@ -97,7 +98,7 @@ object EditFilterForm: TEditFilterForm
   end
   object rb_filename: TRadioButton
     Left = 8
-    Top = 288
+    Top = 304
     Width = 145
     Height = 17
     Caption = 'Filename'
@@ -106,7 +107,7 @@ object EditFilterForm: TEditFilterForm
   end
   object edit_filename: TEdit
     Left = 24
-    Top = 304
+    Top = 320
     Width = 225
     Height = 21
     TabOrder = 7
@@ -114,7 +115,7 @@ object EditFilterForm: TEditFilterForm
   object btn_find2: TButton
     Tag = 1
     Left = 256
-    Top = 304
+    Top = 320
     Width = 41
     Height = 22
     Caption = 'Find'
@@ -122,8 +123,8 @@ object EditFilterForm: TEditFilterForm
     OnClick = btn_find1Click
   end
   object btn_cancel: TButton
-    Left = 224
-    Top = 392
+    Left = 223
+    Top = 400
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -131,8 +132,8 @@ object EditFilterForm: TEditFilterForm
     OnClick = btn_cancelClick
   end
   object btn_ok: TButton
-    Left = 144
-    Top = 392
+    Left = 143
+    Top = 400
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -150,7 +151,7 @@ object EditFilterForm: TEditFilterForm
   end
   object rb_monvwm: TRadioButton
     Left = 8
-    Top = 336
+    Top = 352
     Width = 145
     Height = 17
     Caption = 'Current Monitor/VWM'
@@ -159,7 +160,7 @@ object EditFilterForm: TEditFilterForm
   end
   object rb_notmonvwm: TRadioButton
     Left = 8
-    Top = 360
+    Top = 376
     Width = 177
     Height = 17
     Caption = 'Not on Current Monitor/VWM'
@@ -169,12 +170,12 @@ object EditFilterForm: TEditFilterForm
   object wndclasspopup: TPopupMenu
     Images = wndcimages
     Left = 240
-    Top = 224
+    Top = 240
   end
   object wndcimages: TImageList
     BkColor = clMenu
     Left = 216
-    Top = 320
+    Top = 336
   end
   object examplefilterpopup: TPopupMenu
     Left = 120
