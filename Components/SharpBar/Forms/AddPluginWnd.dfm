@@ -3,7 +3,7 @@ object AddPluginForm: TAddPluginForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'AddPluginForm'
-  ClientHeight = 244
+  ClientHeight = 305
   ClientWidth = 219
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,6 +11,7 @@ object AddPluginForm: TAddPluginForm
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  FormStyle = fsStayOnTop
   OldCreateOrder = False
   Position = poScreenCenter
   OnShow = FormShow
@@ -18,7 +19,7 @@ object AddPluginForm: TAddPluginForm
   TextHeight = 13
   object Label1: TLabel
     Left = 16
-    Top = 184
+    Top = 248
     Width = 57
     Height = 13
     Caption = 'Alignment : '
@@ -27,13 +28,13 @@ object AddPluginForm: TAddPluginForm
     Left = 8
     Top = 8
     Width = 201
-    Height = 169
+    Height = 234
     ItemHeight = 13
     TabOrder = 0
   end
   object btn_ok: TButton
     Left = 56
-    Top = 208
+    Top = 272
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -42,7 +43,7 @@ object AddPluginForm: TAddPluginForm
   end
   object btn_cancel: TButton
     Left = 136
-    Top = 208
+    Top = 272
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -51,7 +52,7 @@ object AddPluginForm: TAddPluginForm
   end
   object rb_left: TRadioButton
     Left = 80
-    Top = 184
+    Top = 248
     Width = 49
     Height = 17
     Caption = 'Left'
@@ -61,7 +62,7 @@ object AddPluginForm: TAddPluginForm
   end
   object lb_right: TRadioButton
     Left = 144
-    Top = 184
+    Top = 248
     Width = 49
     Height = 17
     Caption = 'Right'
