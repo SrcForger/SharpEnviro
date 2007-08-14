@@ -859,10 +859,12 @@ begin
 
   TextMemo.Lines.Clear;
   mmoCopy.Lines.Clear;
+  mmoCopy.Update;
+  TextMemo.Update;
   AddDefaultHeader;
 
-  //if pcLog.TabIndex = 0 then
-  //  TextMemo.Hide;
+  LockWindowUpdate(Self.Handle);
+  Try
 
   n := DebugList.Count div 10;
   nDiv := n;
@@ -897,8 +899,9 @@ begin
     end;
   end;
 
-  //if pcLog.TabIndex = 0 then
-  //  TextMemo.Show;
+  finally
+    LockWindowUpdate(0);
+  End;
 
   prgRefresh.Hide;
 end;

@@ -414,10 +414,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
         BorderColor = 12709113
         Border = True
         BackgroundColor = clWindow
-        ExplicitLeft = 6
-        ExplicitTop = 129
-        ExplicitWidth = 149
-        ExplicitHeight = 254
         DesignSize = (
           157
           248)
@@ -438,7 +434,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
           BorderColor = clBtnFace
           Border = False
           BackgroundColor = 14875898
-          ExplicitWidth = 137
           object Label3: TLabel
             Left = 0
             Top = 0
@@ -469,7 +464,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
           TabOrder = 1
           Visible = False
           OnClick = chkRefreshListClick
-          ExplicitTop = 223
         end
         object clbModuleList: TJvgCheckListBox
           AlignWithMargins = True
@@ -520,8 +514,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
           Options = [fboExcludeGlyphs, fboHotTrack, fboWordWrap]
           ChangeGlyphColor.FromColor = clBlack
           ChangeGlyphColor.ToColor = clWhite
-          ExplicitLeft = 9
-          ExplicitHeight = 210
         end
       end
       object pnlDebugLevel: TSharpERoundPanel
@@ -564,7 +556,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
           TabOrder = 1
           Visible = False
           OnClick = chkRefreshListClick
-          ExplicitTop = 93
         end
         object pnlDebugLevelTitle: TSharpERoundPanel
           Left = 6
@@ -583,7 +574,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
           BorderColor = clBtnFace
           Border = False
           BackgroundColor = 16510947
-          ExplicitWidth = 137
           object Label2: TLabel
             Left = 0
             Top = 0
@@ -647,9 +637,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
           Options = [fboExcludeGlyphs, fboHotTrack, fboWordWrap]
           ChangeGlyphColor.FromColor = clBlack
           ChangeGlyphColor.ToColor = clWhite
-          ExplicitTop = 29
-          ExplicitWidth = 137
-          ExplicitHeight = 80
         end
       end
     end
@@ -663,8 +650,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
       Color = clWindow
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 161
-      ExplicitWidth = 435
       object pnlLogBody: TPanel
         AlignWithMargins = True
         Left = 0
@@ -681,10 +666,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
         ParentBackground = False
         ParentCtl3D = False
         TabOrder = 0
-        ExplicitLeft = 3
-        ExplicitTop = 3
-        ExplicitWidth = 429
-        ExplicitHeight = 361
         object Label1: TLabel
           Left = 8
           Top = 8
@@ -3734,10 +3715,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
           TabCaptionColor = clBlack
           TabStatusColor = clGreen
           OnTabChange = tlLogTabChange
-          ExplicitLeft = 3
-          ExplicitTop = 3
-          ExplicitWidth = 423
-          ExplicitHeight = 355
           DesignSize = (
             422
             364)
@@ -3749,8 +3726,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
             Align = alBottom
             TabOrder = 0
             Visible = False
-            ExplicitTop = 345
-            ExplicitWidth = 423
           end
           object plMain: TJvPageList
             AlignWithMargins = True
@@ -3765,16 +3740,12 @@ object SharpConsoleWnd: TSharpConsoleWnd
             ActivePage = pagTextLog
             PropagateEnable = False
             Align = alClient
-            ExplicitWidth = 411
-            ExplicitHeight = 309
             object pagRoLog: TJvStandardPage
               Left = 0
               Top = 0
               Width = 410
               Height = 318
               Caption = 'pagRoLog'
-              ExplicitWidth = 411
-              ExplicitHeight = 309
             end
             object pagTextLog: TJvStandardPage
               Left = 0
@@ -3782,8 +3753,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
               Width = 410
               Height = 318
               Caption = 'pagTextLog'
-              ExplicitWidth = 411
-              ExplicitHeight = 309
               object mmoCopy: TMemo
                 Left = 0
                 Top = 0
@@ -3800,8 +3769,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
                 ReadOnly = True
                 ScrollBars = ssVertical
                 TabOrder = 0
-                ExplicitWidth = 411
-                ExplicitHeight = 309
               end
             end
           end
@@ -3827,9 +3794,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
         TabOrder = 1
         Transparent = True
         Wrapable = False
-        ExplicitLeft = 3
-        ExplicitTop = 364
-        ExplicitWidth = 429
         object tbPause: TToolButton
           Left = 0
           Top = 0
