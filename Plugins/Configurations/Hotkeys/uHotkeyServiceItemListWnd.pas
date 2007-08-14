@@ -64,8 +64,6 @@ type
     imlList: TPngImageList;
     lbHotkeys: TSharpEListBoxEx;
     JvHint1: TJvHint;
-    procedure lbHotkeysClickItem(AText: string; AItem, ACol: Integer);
-    procedure FormResize(Sender: TObject);
 
     procedure lbHotkeysGetCellTextColor(const ACol: Integer;
       AItem: TSharpEListItem; var AColor: TColor);
@@ -76,6 +74,7 @@ type
     procedure ImportHotkeys;
     procedure ExportHotkeys;
     procedure lbHotkeysResize(Sender: TObject);
+    procedure lbHotkeysClickItem(const ACol: Integer; AItem: TSharpEListItem);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
     { Private declarations }
@@ -187,6 +186,13 @@ begin
   end;
 end;
 
+procedure TfrmConfig.lbHotkeysClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
+begin
+  if FrmHotkeyEdit <> nil then
+    FrmHotkeyEdit.InitUi(FEditMode);
+end;
+
 procedure TfrmConfig.lbHotkeysGetCellTextColor(const ACol: Integer;
   AItem: TSharpEListItem; var AColor: TColor);
 begin
@@ -197,23 +203,6 @@ end;
 procedure TfrmConfig.lbHotkeysResize(Sender: TObject);
 begin
   Self.Height := lbHotkeys.Height;
-end;
-
-procedure TfrmConfig.FormResize(Sender: TObject);
-var
-  w: Integer;
-begin
-  if lbHotkeys.ColumnCount = 0 then exit;
-
-  w := lbHotkeys.Width;
-  lbHotkeys.Column[0].Width := w-180;
-  lbHotkeys.Column[1].Width := 170;
-end;
-
-procedure TfrmConfig.lbHotkeysClickItem(AText: string; AItem, ACol: Integer);
-begin
-  if FrmHotkeyEdit <> nil then
-    FrmHotkeyEdit.InitUi(FEditMode);
 end;
 
 procedure TfrmConfig.UpdateEditTabs;

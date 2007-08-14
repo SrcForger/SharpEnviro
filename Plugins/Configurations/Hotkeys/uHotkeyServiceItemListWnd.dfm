@@ -12,7 +12,6 @@ object frmConfig: TfrmConfig
   Font.Name = 'Arial'
   Font.Style = []
   OldCreateOrder = False
-  OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 14
@@ -32,19 +31,20 @@ object frmConfig: TfrmConfig
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         Autosize = False
+        StretchColumn = True
         Images = imlList
       end
       item
-        Width = 100
+        Width = 200
         MaxWidth = 0
         MinWidth = 0
         TextColor = clBlack
         SelectedTextColor = clBlack
-        HAlign = taLeftJustify
+        HAlign = taRightJustify
         VAlign = taVerticalCenter
-        ColumnAlign = calLeft
+        ColumnAlign = calRight
         Autosize = False
-        Images = imlList
+        StretchColumn = False
       end>
     OnResize = lbHotkeysResize
     ItemHeight = 24
