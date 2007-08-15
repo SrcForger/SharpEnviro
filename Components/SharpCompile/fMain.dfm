@@ -1358,6 +1358,7 @@ object frmMain: TfrmMain
               VAlign = taVerticalCenter
               ColumnAlign = calLeft
               Autosize = False
+              StretchColumn = False
               Images = pilStatus
             end>
           ItemHeight = 24

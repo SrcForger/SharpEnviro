@@ -56,10 +56,11 @@ type
     procedure mSummary_Change(Sender: TObject);
     procedure ctvProjectsSelectionChange(Sender: TObject);
     procedure lbSummaryGetCellColor(const AItem: Integer; var AColor: TColor);
-    procedure lbSummaryDblClickItem(AText: string; AItem, ACol: Integer);
     procedure FormDestroy(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
+    procedure lbSummaryDblClickItem(const ACol: Integer;
+      AItem: TSharpEListItem);
   private
     procedure CompilerNewLine(Sender: TObject; CmdOutput: string);
     procedure CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer);
@@ -105,14 +106,16 @@ begin
   SaveSettings;
 end;
 
-procedure TfrmMain.lbSummaryDblClickItem(AText: string; AItem, ACol: Integer);
+
+procedure TfrmMain.lbSummaryDblClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
 var
   sProjName: String;
   i, iPos: Integer;
 begin
-  if pos('Compiling', AText) <> 0 then
+  if pos('Compiling', AItem.Caption) <> 0 then
   begin
-    sProjName := RightStr(AText, Length(AText) - 10);
+    sProjName := RightStr(AItem.Caption, Length(AItem.Caption) - 10);
     sProjName := LeftStr(sProjName, Pos('...', sProjName) - 1);
     for i := 0 to ctvProjects.Items.Count - 1 do
     begin
@@ -120,7 +123,7 @@ begin
       begin
         mDetailed.Perform(EM_LINESCROLL, 0, 0 - mDetailed.Lines.Count);
         iPos := TDelphiProject(ctvProjects.Items[i].Data).DIndex;
-        if Pos('Failed!', AText) <> 0 then
+        if Pos('Failed!', AItem.Caption) <> 0 then
           iPos := iPos - Trunc(mDetailed.Height / Abs(Canvas.TextHeight('Wg')) - 1);
         mDetailed.Perform(EM_LINESCROLL, 0, iPos);
         sepLog.TabIndex := 1;
@@ -129,6 +132,7 @@ begin
       end;
     end;
   end;
+
 end;
 
 procedure TfrmMain.lbSummaryGetCellColor(const AItem: Integer;
