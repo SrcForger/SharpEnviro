@@ -130,8 +130,7 @@ end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);
 begin
-//  ATabs.Add('Icon Set',nil,'',IntToStr(frmIconList.lb_iconlist.Count));
-  ATabs.Add('Icon Set',nil,'','');
+  ATabs.Add('Icons',nil,'',IntToStr(frmIconList.lb_iconlist.Count));
 end;
 
 procedure UpdatePreview(var ABmp: TBitmap32);
@@ -139,9 +138,9 @@ begin
   if (frmIconList.lb_iconlist.ItemIndex < 0) or
      (frmIconList.lb_iconlist.Count = 0) then
      exit;
-  ABmp.SetSize(frmIconList.Preview.Width,frmIconList.Preview.Height);
+
   ABmp.Clear(color32(0,0,0,0));
-  frmIconList.Preview.DrawTo(ABmp);
+  frmIconList.BuildIconPreview(ABmp);
 end;
 
 

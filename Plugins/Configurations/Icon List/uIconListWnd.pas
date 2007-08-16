@@ -35,32 +35,31 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, uSEListboxPainter, JclFileUtils,
   uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
-  SharpEListBox, SharpEListBoxEx,GR32, GR32_PNG, SharpApi,
+  SharpEListBox, SharpEListBoxEx, GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image;
 
 type
-  TStringObject = Class(TObject)
+  TStringObject = class(TObject)
   public
-    Str:String;
+    Str: string;
   end;
 
 type
   TfrmIconList = class(TForm)
     lb_iconlist: TSharpEListBoxEx;
-    procedure FormDestroy(Sender: TObject);
-    procedure FormResize(Sender: TObject);
-    procedure lb_iconlistClickItem(AText: string; AItem, ACol: Integer);
+    PngImageList1: TPngImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure lb_iconlistResize(Sender: TObject);
+    procedure lb_iconlistClickItem(const ACol: Integer; AItem: TSharpEListItem);
   private
-    procedure BuildIconPreview;
+
   public
-    sCurrentIconSet : String;
-    sTheme : String;
-    Preview : TBitmap32;
+    sCurrentIconSet: string;
+    sTheme: string;
     procedure BuildIconList;
     procedure SaveSettings;
+    procedure BuildIconPreview(var ABmp: TBitmap32);
   end;
 
 var
@@ -69,73 +68,71 @@ var
 implementation
 
 uses SharpThemeApi, SharpCenterApi,
-     SharpIconUtils;
+  SharpIconUtils;
 
 {$R *.dfm}
 
 { TfrmConfigListWnd }
 
-procedure  TfrmIconList.SaveSettings;
+procedure TfrmIconList.SaveSettings;
 var
-    XML : TJvSimpleXML;
+  XML: TJvSimpleXML;
+  sDir: string;
 begin
   if lb_iconlist.ItemIndex >= 0 then
   begin
+    sDir := SharpApi.GetSharpeUserSettingsPath + '\Themes\' + sTheme;
+
     XML := TJvSimpleXML.Create(nil);
-    XML.Root.Name := 'SharpEThemeIconSet';
-    XML.Root.Items.Add('Name',lb_iconlist.Item[lb_iconlist.ItemIndex].SubItemText[1]);
-    XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+sTheme+'\IconSet.xml~');
-    if FileExists(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+sTheme+'\IconSet.xml') then
-       DeleteFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+sTheme+'\IconSet.xml');
-    RenameFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+sTheme+'\IconSet.xml~',
-               SharpApi.GetSharpeUserSettingsPath + '\Themes\'+sTheme+'\IconSet.xml');
-    XML.Free;
+    try
+
+      XML.Root.Name := 'SharpEThemeIconSet';
+      XML.Root.Items.Add('Name', lb_iconlist.Item[lb_iconlist.ItemIndex].Caption);
+      XML.SaveToFile(sDir + '\IconSet.xml~');
+
+      if FileExists(sDir + '\IconSet.xml') then
+        DeleteFile(sDir + '\IconSet.xml');
+
+      RenameFile(sDir + '\IconSet.xml~', sDir + '\IconSet.xml');
+
+    finally
+      XML.Free;
+    end;
   end;
 end;
 
 procedure TfrmIconList.FormShow(Sender: TObject);
 begin
-  lb_iconlist.Margin := Rect(0,0,0,0);
-  lb_iconlist.ColumnMargin := Rect(6,0,6,0);
+  //lb_iconlist.Margin := Rect(0,0,0,0);
+  //lb_iconlist.ColumnMargin := Rect(6,0,6,0);
 end;
 
 procedure TfrmIconList.FormCreate(Sender: TObject);
 begin
-  Preview := TBitmap32.Create;
   DoubleBuffered := true;
 end;
 
-procedure TfrmIconList.BuildIconPreview;
+procedure TfrmIconList.BuildIconPreview(var ABmp: TBitmap32);
 const
-  IconSize = 48;
+  IconSize = 32;
 var
-  x,y : integer;
-  XML : TJvSimpleXML;
-  Dir : String;
-  icon : TBitmap32;
-  n : integer;
-  bmp32 : TBitmap32;
-  w,h : integer;
-  IconCount : integer;
+  x, y: integer;
+  XML: TJvSimpleXML;
+  Dir: string;
+  icon: TBitmap32;
+  n: integer;
+  h: integer;
+  IconCount: integer;
 begin
-  if lb_iconlist.ItemIndex < 0 then
-  begin
-    CenterUpdatePreview;
 
-    exit;
-  end;
-
-  Dir := SharpApi.GetSharpeDirectory + 'Icons\' + lb_iconlist.Item[lb_iconlist.ItemIndex].SubItemText[1] + '\';
+  Dir := SharpApi.GetSharpeDirectory + 'Icons\' +
+    lb_iconlist.Item[lb_iconlist.ItemIndex].Caption + '\';
 
   XML := TJvSimpleXML.Create(nil);
 
   Icon := TBitmap32.Create;
   Icon.DrawMode := dmBlend;
   Icon.CombineMode := cmMerge;
-
-  Bmp32 := TBitmap32.Create;
-  Bmp32.SetSize(32,32);
-  Bmp32.Clear(color32(0,0,0,0));
 
   try
     if FileExists(Dir + 'IconSet.xml') then
@@ -144,47 +141,39 @@ begin
       if XML.Root.Items.ItemNamed['Icons'] <> nil then
       begin
         IconCount := XML.Root.Items.ItemNamed['Icons'].Items.Count;
-        w := ((Width - 64) div IconSize) * IconSize;
-        h := (IconCount div (w div IconSize) + 1) * IconSize;
-
-        Bmp32.SetSize(w,h);
-        Bmp32.Clear(color32(0,0,0,0));
+        h := (IconCount div ((ABmp.Width - Icon.Width) div IconSize) + 1) * IconSize;
+        ABmp.Height := h;
 
         x := 0;
         y := 0;
         for n := 0 to XML.Root.Items.ItemNamed['Icons'].Items.Count - 1 do
-            with XML.Root.Items.ItemNamed['Icons'].Items.Item[n].Items do
+          with XML.Root.Items.ItemNamed['Icons'].Items.Item[n].Items do
+          begin
+            Application.ProcessMessages;
+            SharpIconUtils.LoadIco(Icon, Dir + Value('file'), IconSize);
+            Icon.DrawTo(ABmp, x * Icon.Width, y * Icon.Height);
+            x := x + 1;
+            if x * Icon.Width >= (ABmp.Width - Icon.Width) then
             begin
-              Application.ProcessMessages;
-              SharpIconUtils.LoadIco(Icon,Dir + Value('file'),IconSize);
-              Icon.DrawTo(bmp32,x*Icon.Width,y*Icon.Height);
-              x := x + 1;
-              if x*Icon.Width >= bmp32.Width then
-              begin
-                x := 0;
-                y := y + 1;
-              end;
+              x := 0;
+              y := y + 1;
             end;
+          end;
       end;
     end;
   except
   end;
 
-  Preview.Assign(bmp32);
-
   Icon.Free;
-  Bmp32.Free;
   XML.Free;
-
-  CenterUpdatePreview;
 end;
 
 procedure TfrmIconList.BuildIconList;
 var
-  newItem:TSharpEListItem;
-  sr : TSearchRec;
-  Dir : String;
-  XML : TJvSimpleXML;
+  newItem: TSharpEListItem;
+  sr: TSearchRec;
+  Dir: string;
+  XML: TJvSimpleXML;
 begin
   lb_iconlist.Clear;
 
@@ -192,58 +181,50 @@ begin
 
   Dir := SharpApi.GetSharpeDirectory + 'Icons\';
 
-  if FindFirst(Dir + '*',FADirectory,sr) = 0 then
-  repeat
-    if (CompareText(sr.Name,'.') <> 0) and (CompareText(sr.Name,'..') <> 0) then
-    begin
-      if FileExists(Dir + sr.Name + '\IconSet.xml') then
+  if FindFirst(Dir + '*', FADirectory, sr) = 0 then
+    repeat
+      if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then
       begin
-        try
-          XML.LoadFromFile(Dir + sr.Name + '\IconSet.xml');
-          newItem := lb_iconlist.AddItem(XML.Root.Items.Value('name','...'));
-          newItem.AddSubItem(sr.Name);
+        if FileExists(Dir + sr.Name + '\IconSet.xml') then
+        begin
+          try
+            XML.LoadFromFile(Dir + sr.Name + '\IconSet.xml');
+            newItem := lb_iconlist.AddItem(XML.Root.Items.Value('name', '...'),0);
+            newItem.AddSubItem('By ' + XML.Root.Items.Value('author', '...'));
 
-          if sr.Name = sCurrentIconSet then
-          begin
-            lb_iconlist.ItemIndex := lb_iconlist.Items.Count - 1;
-            BuildIconPreview;
+            if sr.Name = sCurrentIconSet then
+            begin
+              lb_iconlist.ItemIndex := lb_iconlist.Items.Count - 1;
+            //BuildIconPreview;
+            end;
+          except
           end;
-        except
         end;
       end;
-    end;
-  until FindNext(sr) <> 0;
+    until FindNext(sr) <> 0;
   FindClose(sr);
   XML.Free;
 
   if (lb_iconlist.ItemIndex < 0) and (lb_iconlist.Count > 0) then
   begin
     lb_iconlist.ItemIndex := 0;
-    BuildIconPreview;
+    //BuildIconPreview;
   end;
 end;
 
-procedure TfrmIconList.lb_iconlistClickItem(AText: string; AItem,
-  ACol: Integer);
+procedure TfrmIconList.lb_iconlistClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
 begin
-  BuildIconPreview;
+
   SaveSettings;
   BroadcastGlobalUpdateMessage(suIconSet);
+  CenterUpdatePreview;
+
 end;
 
 procedure TfrmIconList.lb_iconlistResize(Sender: TObject);
 begin
   Self.Height := lb_iconlist.Height;
-end;
-
-procedure TfrmIconList.FormResize(Sender: TObject);
-begin
-  BuildIconPreview;
-end;
-
-procedure TfrmIconList.FormDestroy(Sender: TObject);
-begin
-  Preview.Free;
 end;
 
 end.
