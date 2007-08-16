@@ -247,7 +247,7 @@ var
   n : integer;
 begin
   try
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(application.MainForm);
     SettingsForm.cb_labels.Checked  := sShowLabel;
     SettingsForm.cb_icon.Checked := sShowIcon;
     SettingsForm.tb_size.Position   := sWidth;

@@ -154,7 +154,7 @@ var
   item : TJvSimpleXMLElem;
 begin
   try
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(application.MainForm);
     SettingsForm.rb_caption.Checked := (sCaption and (not sIcon));
     SettingsForm.rb_icon.Checked    := (sIcon and (not sCaption));
     SettingsForm.rb_cai.Checked     := (sCaption and sIcon);

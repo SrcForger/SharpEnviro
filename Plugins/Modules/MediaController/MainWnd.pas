@@ -471,7 +471,7 @@ var
   SettingsForm : TSettingsForm;
 begin
   try
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(application.MainForm);
     case sPlayer of
       mptFooBar: SettingsForm.cb_foobar.Checked := True;
       mptWinAmp: SettingsForm.cb_winamp.Checked := True;

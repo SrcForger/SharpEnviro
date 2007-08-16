@@ -569,7 +569,7 @@ var
 begin
   DebugOutPutInfo('TMainForm.Settings1Click (Procedure)');
   try
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(application.MainForm);
     case sState of
       tisFull    : SettingsForm.cb_tsfull.Checked := True;
       tisCompact : SettingsForm.cb_tscompact.Checked := True;

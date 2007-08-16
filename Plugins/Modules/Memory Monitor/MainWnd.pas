@@ -457,7 +457,7 @@ var
   SettingsForm : TSettingsForm;
   item : TJvSimpleXMLElem;
 begin
-  SettingsForm := TSettingsForm.Create(nil);
+  SettingsForm := TSettingsForm.Create(application.MainForm);
   SettingsForm.cb_rambar.Checked  := ShowRAMBar;
   SettingsForm.cb_raminfo.checked := ShowRAMInfo;
   SettingsForm.cb_rampc.Checked   := ShowRAMPC;

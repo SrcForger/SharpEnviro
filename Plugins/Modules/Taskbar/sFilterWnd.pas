@@ -102,7 +102,7 @@ end;
 procedure Tsfilterform.btn_newClick(Sender: TObject);
 begin
   try
-    EditFilterForm := TEditFilterForm.Create(nil);
+    EditFilterForm := TEditFilterForm.Create(application.MainForm);
     EditFilterForm.showmodal;
   finally
     FreeAndNil(EditFilterForm);
@@ -121,7 +121,7 @@ procedure Tsfilterform.btn_editClick(Sender: TObject);
 begin
   if list_filters.ItemIndex <0 then exit;
   try
-    EditFilterForm := TEditFilterForm.Create(nil);
+    EditFilterForm := TEditFilterForm.Create(application.MainForm);
     EditFilterForm.LoadFromXML(list_filters.Items[list_filters.Itemindex]);
     EditFilterForm.showmodal;
   finally

@@ -170,7 +170,7 @@ end;
 procedure TSettingsForm.Button3Click(Sender: TObject);
 begin
   try
-    sFilterForm := TsFilterForm.Create(nil);
+    sFilterForm := TsFilterForm.Create(application.MainForm);
     sFilterForm.ShowModal;
   finally
     FreeAndNil(sFilterForm);

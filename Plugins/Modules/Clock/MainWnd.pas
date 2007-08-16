@@ -165,7 +165,7 @@ var
   item : TJvSimpleXMLElem;
 begin
   try
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(Application.MainForm);
     SettingsForm.edit_format.Text := sFormat;
     SettingsForm.edit_bottom.Text := sBottomFormat;
     SettingsForm.edit_bottom.OnChange(SettingsForm.edit_bottom);

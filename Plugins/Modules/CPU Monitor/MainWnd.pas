@@ -238,7 +238,7 @@ var
   skin : String;
 begin
   try
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(application.MainForm);
     SettingsForm.tb_size.Position := sWidth;
     SettingsForm.tb_update.Position := sUpdate;
     case sDrawMode of

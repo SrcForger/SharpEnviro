@@ -218,7 +218,7 @@ var
   n : integer;
 begin
   try
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(application.MainForm);
     SettingsForm.tb_size.Position := sWidth;
     for n := 0 to SettingsForm.IDList.Count -1 do
         if strtoint(SettingsForm.IDList[n]) = sMixer then

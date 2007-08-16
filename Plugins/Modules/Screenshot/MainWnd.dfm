@@ -2,10 +2,10 @@ object MainForm: TMainForm
   Tag = 25
   Left = 0
   Top = 0
-  Width = 230
-  Height = 186
   Hint = '25'
   Caption = 'Menu'
+  ClientHeight = 150
+  ClientWidth = 214
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

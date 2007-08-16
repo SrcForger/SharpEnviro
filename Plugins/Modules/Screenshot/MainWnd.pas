@@ -158,7 +158,7 @@ var
 begin
   try
 
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(application.MainForm);
     SettingsForm.cbxClipboard.Checked := blnClipboard;
     SettingsForm.cbxSaveAs.Checked := blnSaveDlg;
     SettingsForm.cbxSaveToFile.Checked := blnAutoGen;

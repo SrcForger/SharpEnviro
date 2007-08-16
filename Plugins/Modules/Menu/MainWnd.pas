@@ -247,7 +247,7 @@ var
   item : TJvSimpleXMLElem;
 begin
   try
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(application.MainForm);
     SettingsForm.cb_labels.Checked  := sShowLabel;
     SettingsForm.edit_caption.Text := sCaption;
     SettingsForm.tb_size.Position   := sWidth;

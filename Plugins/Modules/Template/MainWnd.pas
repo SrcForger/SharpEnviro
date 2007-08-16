@@ -152,7 +152,7 @@ var
   item : TJvSimpleXMLElem;
 begin
   try
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(application.MainForm);
     // Update the Settings form now...
     // (Load the current settings into the SettingsForm)
     // Example:

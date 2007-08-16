@@ -238,7 +238,7 @@ var
   item : TJvSimpleXMLElem;
 begin
   try
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(Application.MainForm);
     SettingsForm.cb_showicon.Checked := sShowIcon;
 
     if SettingsForm.ShowModal = mrOk then

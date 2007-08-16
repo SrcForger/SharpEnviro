@@ -158,7 +158,7 @@ var
   item : TJvSimpleXMLElem;
 begin
   try
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(application.MainForm);
     SettingsForm.tb_size.Position   := sWidth;
     SettingsForm.cb_selectbutton.Checked := sButton;
 

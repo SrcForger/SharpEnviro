@@ -284,7 +284,7 @@ var
   item : TJvSimpleXMLElem;
 begin
   try
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(application.MainForm);
     SettingsForm.edit_target.Text := sTarget;
     if SettingsForm.ShowModal = mrOk then
     begin

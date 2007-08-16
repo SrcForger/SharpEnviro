@@ -277,7 +277,7 @@ var
   item : TJvSimpleXMLElem;
 begin
   try
-    SettingsForm := TSettingsForm.Create(nil);
+    SettingsForm := TSettingsForm.Create(Application.MainForm);
     SettingsForm.cb_showicon.Checked := sShowIcon;
     SettingsForm.cb_info.Checked := sShowLabels;
     SettingsForm.cb_info.OnClick(SettingsForm.cb_info);

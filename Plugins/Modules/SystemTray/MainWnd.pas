@@ -290,7 +290,7 @@ var
   item : TJvSimpleXMLElem;
   skin : String;
 begin
-  SettingsForm := TSettingsForm.Create(nil);
+  SettingsForm := TSettingsForm.Create(Application.MainForm);
   SettingsForm.cb_dbg.Checked      := sShowBackground;
   SettingsForm.scb_dbg.ColorCode   := sBackgroundColor;
   SettingsForm.tb_dbg.Position     := sBackgroundAlpha;
