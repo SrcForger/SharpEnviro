@@ -106,7 +106,7 @@ end;
 
 procedure SetDisplayText(const APluginID: Pchar; var ADisplayText: PChar);
 begin
-  ADisplayText := PChar('SharpDesk');
+  ADisplayText := PChar('Desktop');
 end;
 
 procedure SetStatusText(var AStatusText: PChar);
@@ -138,7 +138,6 @@ begin
   if frmDeskSettings <> nil then
   begin
     ATabs.Add('Settings',frmDeskSettings.JvSettingsPage,'','');
-    ATabs.Add('Advanced',frmDeskSettings.JvAdvSettingsPage,'','');
   end;
 end;
 
