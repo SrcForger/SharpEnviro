@@ -48,13 +48,13 @@ type
   TfrmSkinListWnd = class(TForm)
     ThemeImages: TPngImageList;
     lbSkinList: TSharpEListBoxEx;
-    procedure lbSkinListDblClickItem(AText: string; AItem, ACol: Integer);
     procedure lbSkinListGetCellColor(const AItem: Integer; var AColor: TColor);
     procedure lbSkinListGetCellTextColor(const ACol: Integer;
       AItem: TSharpEListItem; var AColor: TColor);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     function GetDefaultScheme(ATheme, ASkinName: string): string;
+    procedure lbSkinListClickItem(const ACol: Integer; AItem: TSharpEListItem);
 
   private
     FTheme: String;
@@ -277,22 +277,22 @@ begin
     AColor := clWindowText;
 end;
 
+procedure TfrmSkinListWnd.lbSkinListClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
+begin
+  FDefaultSkin := AItem.SubItemText[1];
+
+  CenterDefineSettingsChanged;
+  lbSkinList.Update;
+
+end;
+
 procedure TfrmSkinListWnd.lbSkinListGetCellColor(const AItem: Integer;
   var AColor: TColor);
 begin
 
   if (CompareText(lbSkinList.Item[AItem].SubItemText[1], FDefaultSkin) = 0) then
     AColor := lbskinList.colors.ItemColorSelected;
-end;
-
-procedure TfrmSkinListWnd.lbSkinListDblClickItem(AText: string; AItem,
-  ACol: Integer);
-begin
-  FDefaultSkin := lbSkinList.Item[Aitem].SubItemText[1];
-
-  CenterDefineSettingsChanged;
-  lbSkinList.Update;
-
 end;
 
 procedure TfrmSkinListWnd.Save;

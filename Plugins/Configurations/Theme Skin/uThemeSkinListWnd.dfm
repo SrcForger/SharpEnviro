@@ -22,14 +22,13 @@ object frmSkinListWnd: TfrmSkinListWnd
     Height = 284
     Columns = <>
     ItemHeight = 66
-    OnClickItem = lbSkinListDblClickItem
+    OnClickItem = lbSkinListClickItem
     OnGetCellTextColor = lbSkinListGetCellTextColor
     OnGetCellColor = lbSkinListGetCellColor
+    AutosizeGrid = False
     BevelOuter = bvNone
     Borderstyle = bsNone
     Align = alClient
-    ExplicitWidth = 426
-    ExplicitHeight = 291
   end
   object ThemeImages: TPngImageList
     Height = 48
