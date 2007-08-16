@@ -881,7 +881,7 @@ begin
   while i <= length(s) do
   begin
     inc(i);
-    if (ord(s[i]) >= 48) and (ord(s[i]) <= 57) and (s[i] <> #0) then
+    if (s[i] <> #0) and (ord(s[i]) >= 48) and (ord(s[i]) <= 57) then
       tmp := tmp + s[i]
     else
       if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'cw') then
