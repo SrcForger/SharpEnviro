@@ -136,7 +136,7 @@ end;
 
 procedure SetDisplayText(const APluginID: Pchar; var ADisplayText: PChar);
 begin
-  ADisplayText := PChar('SharpMenu');
+  ADisplayText := PChar('Menu');
 end;
 
 procedure SetStatusText(var AStatusText: PChar);
@@ -168,7 +168,6 @@ begin
   if frmMenuSettings <> nil then
   begin
     ATabs.Add('Settings',frmMenuSettings.JvSettingsPage,'','');
-    ATabs.Add('Advanced',frmMenuSettings.JvAdvSettingsPage,'','');
   end;
 end;
 
