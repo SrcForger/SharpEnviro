@@ -256,9 +256,8 @@ begin
       lbThemeList.Item[lbThemeList.ItemIndex].Caption :=
         lbThemeList.Item[lbThemeList.ItemIndex].Caption + ' (Loading...)';
 
-      SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1);
       ThemeManager.SetTheme(tmpTheme.Name);
-
+      SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1);
 
     end;
 end;
