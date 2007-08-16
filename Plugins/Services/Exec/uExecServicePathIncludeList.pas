@@ -117,13 +117,13 @@ begin
   bAdd := True;
   Result := nil;
 
-  // Check for duplicates, update existing 
+  // Check for duplicates, update existing
   for i := 0 to Pred(FItems.Count) do
   begin
     if ((CompareText(Item[i].Path, APath) = 0) and
       (CompareText(Item[i].WildCard, APath) = 0) and
       (Item[i].RemovePath = ARemovePath) and
-      (Item[i].RemoveExtension = ARemoveExtension) and Not(AInternal)) then
+      (Item[i].RemoveExtension = ARemoveExtension) and not (AInternal)) then
     begin
       Result := item[i];
       bAdd := False;
@@ -281,19 +281,17 @@ begin
       begin
         prop := 'PathInclude' + inttostr(loop);
 
-        with xml.Root.Items do
-        begin
+        if xml.Root.Items.ItemNamed[prop] <> nil then
 
-          Self.Add(
-            ItemNamed['PathInclude' +
-            inttostr(loop)].Items.Value('Path', ''),
-              ItemNamed['PathInclude' +
-            inttostr(loop)].Items.Value('WildCard', ''),
-              ItemNamed['PathInclude' +
-            inttostr(loop)].Items.BoolValue('RemoveExtension', false),
-              ItemNamed['PathInclude' +
-            inttostr(loop)].Items.BoolValue('RemovePath', false));
-        end;
+          with xml.Root.Items.ItemNamed[prop].Items do
+          begin
+
+            Self.Add(
+              Value('Path', ''),
+              Value('WildCard', ''),
+              BoolValue('RemoveExtension', false),
+              BoolValue('RemovePath', false));
+          end;
       end;
     except
 

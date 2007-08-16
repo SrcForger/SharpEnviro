@@ -50,9 +50,11 @@ type
   private
     FAliasName: string;
     FAliasValue: string;
+    FElevate: boolean;
   public
     property AliasName: string read FAliasName write FAliasName;
     property AliasValue: string read FAliasValue write FAliasValue;
+    property Elevate: boolean read FElevate write FElevate;
   end;
 
   TAliasList = class(TObject)
@@ -65,7 +67,7 @@ type
     constructor Create(FileName: string);
     destructor Destroy; override;
 
-    function Add(AliasName, AliasValue: string): TAliasListItem;
+    function Add(AliasName, AliasValue: string; AElevate:Boolean=False): TAliasListItem;
 
     procedure Load; overload;
     procedure Save; overload;
@@ -92,11 +94,13 @@ begin
   SendDebugMessageEx('Exec Service', Pchar(Text), 0, DebugType);
 end;
 
-function TAliasList.Add(AliasName, AliasValue: string): TAliasListItem;
+function TAliasList.Add(AliasName, AliasValue: string;
+  AElevate:Boolean=False): TAliasListItem;
 begin
   Result := TAliasListItem.Create;
   Result.AliasName := AliasName;
   Result.AliasValue := AliasValue;
+  Result.Elevate := AElevate;
   Items.Add(Result);
 
   if Assigned(FOnAddItem) then
@@ -145,6 +149,7 @@ begin
         Xml.Root.Items.Add(Format('Alias%d', [i]));
         Xml.Root.Items.Item[i].Items.Add('AliasName', Self[i].AliasName);
         Xml.Root.Items.Item[i].Items.Add('AliasValue', Self[i].AliasValue);
+        Xml.Root.Items.Item[i].Items.Add('Elevate', Self[i].Elevate);
       end;
 
       Xml.SaveToFile(FileName);
@@ -201,9 +206,11 @@ begin
 
         with xml.Root.Items do begin
 
-          self.Add(
-            ItemNamed['Alias' + inttostr(loop)].Items.Value('AliasName', ''),
-            ItemNamed['Alias' + inttostr(loop)].Items.Value('AliasValue', ''));
+          if ItemNamed[prop] <> nil then
+            self.Add(
+              ItemNamed[prop].Items.Value('AliasName', ''),
+              ItemNamed[prop].Items.Value('AliasValue', ''),
+              ItemNamed[prop].Items.BoolValue('Elevate', False) );
         end;
       end;
     except

@@ -163,12 +163,6 @@ begin
 
       if xml.Root.Name <> 'RecentItemList' then begin
         sMsg := 'Invalid RecentItemList File' + #13;
-        //Debug(sMsg, DMT_ERROR);
-
-//        sMsg := sMsg + Format('Expected "%s" found "%s"',['RecentItemList',xml.Root.Name]);
-//        MessageDlg(sMsg, mtError, [mbOK], 0);
-
-        // Save empty and reload
         exit;
       end;
 
@@ -178,8 +172,9 @@ begin
 
         with xml.Root.Items do begin
 
-          self.Add(
-            ItemNamed['RI' + inttostr(loop)].Items.Value('Value', ''));
+          if ItemNamed[prop] <> nil then
+            self.Add(
+              ItemNamed[prop].Items.Value('Value', ''));
         end;
       end;
     except

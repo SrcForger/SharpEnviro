@@ -107,9 +107,8 @@ begin
   if bNoHist then
   begin
     msg := Copy(msg, Length(NoHistoryParam) + 1, Length(msg) - Length(NoHistoryParam) + 1);
-    bNoHist := False;
   end;
-  SharpExec.ProcessString(msg, bNoHist, bElevate);
+  SharpExec.ProcessString(msg, Not(bNoHist), bElevate);
 
   // if the cmd is a calc, return the calc id
   if ShowAns then

@@ -702,6 +702,8 @@ procedure TSharpExec.SaveMostUsedItem(Str: string; SaveHistory: Boolean);
 begin
   if SaveHistory then begin
     UsedItemList.Add(Str);
+    Debug('Add to most used items: ' + Str,DMT_INFO);
+
     UsedItemList.Save;
   end;
 end;
@@ -710,6 +712,8 @@ procedure TSharpExec.SaveRecentItem(Str: string; SaveHistory: Boolean);
 begin
   if SaveHistory then begin
     RecentItemList.Add(Str);
+    Debug('Add to recent items: ' + Str,DMT_INFO);
+
     RecentItemList.Save;
   end;
 end;
