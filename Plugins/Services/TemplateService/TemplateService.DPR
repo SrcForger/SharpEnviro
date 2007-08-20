@@ -44,10 +44,18 @@ begin
   Result := owner;
 end;
 
+// Service receives a message
+function SCMsg(msg: string): integer;
+begin
+  Result := HInstance;
+end;
+
+
 //Ordinary Dll code, tells delphi what functions to export.
 exports
   Start,
-  Stop;
+  Stop,
+  SCMsg;
 
 end.
 
