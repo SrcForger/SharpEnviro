@@ -49,6 +49,8 @@ type
                        AdvancedCommands    : boolean;
                        AdvancedMM          : boolean;
                        WallpaperWatch      : boolean;
+                       ScreenRotAdjust     : boolean;
+                       ScreenSizeAdjust    : boolean;
                        SingleClick         : boolean;
                        Grid                : boolean;
                        GridX               : integer;
@@ -80,6 +82,8 @@ begin
   Grid                := True;
   SetObjectRolledOut  := True;
   WallpaperWatch      := True;
+  ScreenRotAdjust     := True;
+  ScreenSizeAdjust    := True;
   GridX               := 8;
   GridY               := 8;
   XML := TJvSimpleXML.Create(nil);
@@ -128,6 +132,8 @@ begin
     Add('CheckObjectPosition',CheckObjectPosition);
     Add('SetObjectRolledOut',SetObjectRolledOut);
     Add('WallpaperWatch',WallpaperWatch);
+    Add('ScreenRotAdjust',ScreenRotAdjust);
+    Add('ScreenSizeAdjust',ScreenSizeAdjust);
   end;
   with XML.Root.Items.ItemNamed['Grid'].Items do
   begin
@@ -169,6 +175,8 @@ begin
     CheckObjectPosition := ItemNamed['CheckObjectPosition'].BoolValue;
     SetObjectRolledOut  := BoolValue('SetObjectRolledOut',True);
     WallpaperWatch      := BoolValue('WallpaperWatch',True);
+    ScreenRotAdjust     := BoolValue('ScreenRotAdjust',True);
+    ScreenSizeAdjust    := BoolValue('ScreenSizeAdjust',True);
   end;
   with XML.Root.Items.ItemNamed['Grid'].Items do
   begin

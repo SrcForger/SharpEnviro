@@ -106,6 +106,8 @@ var
    WP : TThemeWallpaper;
    img : TBitmap32;
    SList : TStringList;
+
+   RMode : boolean;
 begin
   img := SharpDesk.Image.Bitmap;
   img.SetSize(Screen.DesktopWidth,Screen.DesktopHeight);
@@ -120,6 +122,8 @@ begin
     MonRect.TopLeft := SharpDesk.Image.ScreenToClient(Point(PMon.Left,PMon.Top));
     MonRect.BottomRight := SharpDesk.Image.ScreenToClient(Point(PMon.Left+PMon.Width,
                                                                 PMon.Top+PMon.Height));
+
+    RMode := (PMon.Width < PMon.Height) and (SharpDesk.DeskSettings.ScreenRotAdjust);    
 
     // Background
     img.FillRect(MonRect.Left,MonRect.Top,MonRect.Right,MonRect.Bottom,color32(WP.Color));
@@ -154,8 +158,15 @@ begin
       TempBmp.Clear(Color32(WP.Color));
     end;
 
-    w := MonRect.Right - MonRect.Left;
-    h := MonRect.Bottom - MonRect.Top;
+    if RMode then
+    begin
+      h := MonRect.Right - MonRect.Left;
+      w := MonRect.Bottom - MonRect.Top;
+    end else
+    begin
+      w := MonRect.Right - MonRect.Left;
+      h := MonRect.Bottom - MonRect.Top;
+    end;
 
     // HSL Effects
     if WP.ColorChange then
@@ -167,48 +178,52 @@ begin
     if WP.MirrorVert then
        TempBmp.Canvas.CopyRect(Rect(0,TempBmp.Height,TempBmp.Width,0),TempBmp.Canvas,Rect(0,0,TempBmp.Width,TempBmp.Height));
 
+    DrawBmp.SetSize(w,h);
+
     // Draw Image and Apply Effects
     case WP.Size of
       twsStretch :
       begin
         img.BeginUpdate;
-        DrawBmp.SetSize(MonRect.Right - MonRect.Left,MonRect.Bottom - MonRect.Top);
         DrawBmp.Draw(DrawBmp.Canvas.ClipRect,TempBmp.Canvas.ClipRect,TempBmp);
         ApplyEffects(DrawBmp,WP);
+        if RMode then
+          DrawBmp.Rotate90;        
         img.Draw(MonRect.Left,MonRect.Top,DrawBmp);
         img.EndUpdate;
       end;
 
       twsTile :
       begin
-        DrawBmp.SetSize(MonRect.Right - MonRect.Left,MonRect.Bottom - MonRect.Top);
-        if TempBmp.Height=MonRect.Bottom - MonRect.Top then y:=1
-           else y:=round(Int((MonRect.Bottom - MonRect.Top)/TempBmp.Height))+1;
-        if TempBmp.Width=MonRect.Right - MonRect.Left then x:=1
-           else x:=round(Int((MonRect.Right - MonRect.Left)/TempBmp.Width))+1;
+        if TempBmp.Height=h then y:=1
+           else y:=round(Int((h)/TempBmp.Height))+1;
+        if TempBmp.Width=w then x:=1
+           else x:=round(Int((h)/TempBmp.Width))+1;
         img.BeginUpdate;
         for ny:=0 to y-1 do
             for nx:=0 to x-1 do
                 DrawBmp.Draw(nx*TempBmp.Width,ny*TempBmp.Height,TempBmp);
         ApplyEffects(DrawBmp,WP);
+        if RMode then
+          DrawBmp.Rotate90;        
         img.Draw(MonRect.Left,MonRect.Top,DrawBmp);
         img.EndUpdate;
       end;
 
       twsCenter :
       begin
-        DrawBmp.SetSize(MonRect.Right - MonRect.Left,MonRect.Bottom - MonRect.Top);
         DrawBmp.Clear(color32(WP.Color));
         img.BeginUpdate;
-        DrawBmp.Draw((MonRect.Right - MonRect.Left) div 2 - TempBmp.Width div 2, (MonRect.Bottom - MonRect.Top) div 2 - TempBmp.Height div 2, TempBmp);
+        DrawBmp.Draw(w div 2 - TempBmp.Width div 2, h div 2 - TempBmp.Height div 2, TempBmp);
         ApplyEffects(DrawBmp,WP);
+        if RMode then
+          DrawBmp.Rotate90;        
         img.Draw(MonRect.Left,MonRect.Top,DrawBmp);
         img.EndUpdate;
       end;
 
       twsScale:
       begin
-        DrawBmp.SetSize(w,h);
         DrawBmp.Clear(color32(WP.Color));
         Re := Rect(0,0,0,0);
         if (TempBmp.Width/TempBmp.Height)=(w/h) then
@@ -231,11 +246,12 @@ begin
         img.BeginUpdate;
         DrawBmp.Draw(Re,TempBmp.Canvas.ClipRect,TempBmp);
         ApplyEffects(DrawBmp,WP);
+        if RMode then
+          DrawBmp.Rotate90;        
         img.Draw(MonRect.Left,MonRect.Top,DrawBmp);
         img.EndUpdate;
       end;
     end;
-
     TempBmp.Free;
     DrawBmp.Free;
   end;
