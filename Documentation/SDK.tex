@@ -1,0 +1,116 @@
+\documentclass[a4paper]{article}
+% \setlength{\textwidth}{15cm}
+% \setlength{\textheight}{22cm}
+
+\usepackage{alltt}
+\usepackage{parskip}
+\usepackage[top=3.5cm, bottom=3.5cm, left=3cm, right=3cm]{geometry}
+\usepackage{graphicx}
+
+\makeindex
+
+\begin{document}
+
+\title{ {\bf SharpE} \break \break
+{\bf Service Development Kit }\break 
+\normalsize www.sharpenviro.com}
+\date{Version 0.7.3.0 (TD3) \break \break 20.08.2007}
+\maketitle
+\thispagestyle{empty}
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+\setcounter{page}{1}
+
+
+\section{Introduction}
+  This document will explain how to create new Services for the SharpE Core Application.\\
+  All example source code is related to the template service which is included in this package.\\
+  The template service is designed to be compiled with the free Turbo Explorer version of Delphi.
+
+  \medskip
+  No third party components are required to compile the template service.
+  
+\section{The service project file}
+\subsection{How does it work}
+  A SharpCore service is a dynamic link library (dll) which is loaded by the SharpCore host application. Services are invisible 'applications' which are providing functionality to the shell by running in the background.
+  
+  The service dll is controlled by exporting a few pre defined functions which are then executed by SharpCore.
+
+\subsection{File content and exported functions}
+  The .dpr library file contains the exported functions of the service. Whenever SharpCore wants to do something with a service those functions are called. \\
+  It is very important that all functions described below exist in a service dll file. If one of those functions is not exported then the service will not be loaded by SharpBar! 
+
+  Services should be compiled with enabled vcl and rtl runtime packages. (It is possible to compile a service without runtime packages but this will increase the memory usage of the service) \\
+  To enable compiling with runtime packages check {\it Project - Options - Packages} in Delphi and make sure that compile with runtime packages is checked and that the edit box below contains {\it vcl;rtl}
+
+    The following list shows all the functions which have to be exported by a service.
+  
+  \medskip
+  \begin{description}
+    \item[]{\alltt {\bf function} Start(owner: hwnd): hwnd;}  \medbreak    
+      The Start function is called when a service is started by SharpCore.
+      
+      In this function a service should initialize everything it needs to run in the background (hooks, actions, hotkeys, windows, ...)
+      
+      The {it owner: hwnd} parameter is the handle to the main window of the SharpCore host application
+      
+      The return value is not used at the moment, so it's not necessary to return any special handle.
+      
+      \bigbreak
+    \item[]{\alltt {\bf procedure} Stop;}  \medbreak
+      The Stop procedure is called when a service is stopped by SharpCore
+      
+      When this procedure is called a service must make sure that everything which was created in the Start procedure is properly given free. After calling the stop procedure a service is no longer allowed to have any existing windows, actions, hooks, classes, ... which might make SharpCore unable to unload the dll file.
+      
+      \bigbreak
+      
+    \item[]{\alltt {\bf function} SCMsg(msg: string): integer;}  \medbreak
+      Using the SCMsg function is optional and not required. If a service exports this function then it will be called when a message is beeing send to this service.
+      
+      The {it msg : string} parameter specifies the message which was send to the service.
+      
+      Only services which are supposed to receive and handle messages which are send to service by other parts of the shell should export this function.
+      
+      \bigbreak
+  \end{description}
+  
+\section{Global Windows Messages}
+  A service normaly can't receive global window message broadcasts because a service isn't using a window. However for some services it might be important to react on global window messages like \verb+WM_DISPLAYCHANGE+ or even to SharpE wide shell broadcasts like the \verb+WM_SETTINGSCHANGE+ message.
+  
+  You can easily make a service receive global window message by creating an invisible 'dummy' window.
+  
+  First you have to define a new class which will hold the message handler. It's also necessary to declar a new var to store the window handle of the new message window.
+  \begin{alltt}
+01  type
+02    TActionEvent = Class(TObject)
+03      Procedure MessageHandler(var Message: TMessage);
+04    end;
+05
+06  var
+07    AE:TActionEvent;
+08    h:THandle;
+  \end{alltt}
+  
+  Now in the {\it Start} function of the service the class and the message window have to be created.
+  \begin{alltt}
+01  ae := TActionEvent.Create;
+02  h := allocatehwnd(Ae.MessageHandler);
+  \end{alltt}
+
+  Of course both the class and the message window have to be given free in the In the {\it Stop} procedure of the service.
+  \begin{alltt}
+01  DeallocateHWnd(h);
+02  AE.Free;
+  \end{alltt}  
+  
+  The last step is it to declare the actual message handler of our TActionEvent class which will handle the global window messages.
+  \begin{alltt}
+01  procedure TActionEvent.MessageHandler(var Message: TMessage);
+02  begin
+03
+04  end;
+  \end{alltt}
+  The {\it Message} parameter in this function can be used to handle the received message.
+   
+\end{document}

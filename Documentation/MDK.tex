@@ -1,0 +1,216 @@
+\documentclass[a4paper]{article}
+% \setlength{\textwidth}{15cm}
+% \setlength{\textheight}{22cm}
+
+\usepackage{alltt}
+\usepackage{parskip}
+\usepackage[top=3.5cm, bottom=3.5cm, left=3cm, right=3cm]{geometry}
+\usepackage{graphicx}
+
+\makeindex
+
+\begin{document}
+
+\title{ {\bf SharpE} \break \break
+{\bf Module Development Kit }\break 
+\normalsize www.sharpenviro.com}
+\date{Version 0.7.3.0 (TD3) \break \break 15.08.2007}
+\maketitle
+\thispagestyle{empty}
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+\setcounter{page}{1}
+
+
+\section{Introduction}
+  This document will explain how to create new PlugIns (which are called modules) for the SharpE Toolbar component (SharpBar). All example source code is related to the template module which is included in this package. The template module is designed to be compiled with the free Turbo Explorer version of Delphi.
+
+  \medskip
+  Required third party component packages for compiling the template module are
+      \begin{itemize}
+        \item Graphics32 (www.graphics32.org)
+        \item Jedi Code Library (http://sourceforge.net/projects/jcl)
+        \item JEDI VCL for Delphi (http://sourceforge.net/projects/jvcl) 
+      \end{itemize}
+  \medskip
+  If this is your first time of using Delphi then see the guide about how to prepare your Delphi environment to compile SharpE (PrepareDelphi.pdf).
+
+\section{The module project file}
+\subsection{How does it work}
+  A SharpBar module is a dynamic link library (dll) which is loaded by the SharpBar host application. The module dll exports several predefined functions which are then used by SharpBar to control the module. 
+
+  The visible part of a module which is displayed in the SharpBar is nothing more than a simple window created in by the module dll. This window then is used and displayed in the SharpBar host window. 
+
+  Due to the modular design of the shell it might happen that the same instance of a module dll file is used to display multiple modules and module windows. This means that each module dll must have some kind of internal module manager which keeps track of created module windows. \\
+  A very easy to use module manager is already included in the Template module! 
+
+  Each instance of a module is clearly identified by a unique ID. All module actions and the management of modules in the dll should be based on the module IDs.
+
+\subsection{File content and exported functions}
+  The .dpr library file contains the exported functions of the module. Whenever SharpBar wants to do something with a module those functions are called. \\
+  It is very important that all functions described below exist in a module dll file. If one of those functions is not exported then the module will not be loaded by SharpBar! 
+
+  {\bf Important:} All modules must be compiled with enabled vcl and rtl runtime packages! \\
+  {\it See Project - Options - Packages} in Delphi and make sure that compile with runtime packages is checked and that the edit box below contains {\it vcl;rtl}
+
+  \newpage
+  The following list shows all the functions which have to be exported by a module.
+  
+  \medskip
+  \begin{description}
+    \item[]{\alltt {\bf function} CreateModule(ID : integer; parent : hwnd) : hwnd;}  \medbreak    
+      The CreateModule function is called by SharpBar when a new module is about to be created. 
+
+      With the {\it ID : integer} parameter the dll receives the unique module ID of the new module. This module ID is used again in other functions to tell the module dll which modules have to change/update. 
+
+      The {\it parent : hwnd} parameter gives the handle to the SharpBar window. This is the window which has to be set as parent window for the windows created in the module dll. After creating the new module window you have to set {\it TModuleForm.ParentWindow := parent} to make sure that the module window is displayed in the SharpBar. 
+
+      Most important is that the return value of the function is the handle to the newly created module window! 
+      
+      \bigbreak
+    \item[]{\alltt {\bf function} CloseModule(ID : integer) : boolean;}  \medbreak
+      The CloseModule function is called when a module is about to be closed. \\
+      You have to directly destroy the module window which is assigned to the {\it ID : integer} parameter. 
+
+      Return {\it True/False} depending if something went wrong when destroying the module window.     
+      
+      \bigbreak
+    \item[]{\alltt {\bf procedure} Refresh(ID : integer);}  \medbreak
+      The Refresh procedure is called whenever a module should update and refresh it's content. \\
+      For example a module window should check the size and position of all its components and if the size of the window is still correct.\\
+      (Note: this procedure is not used often at the moment and is included mostly for later usage)
+      
+      \bigbreak
+    \item[]{\alltt {\bf procedure} PosChanged(ID : integer);}  \medbreak
+      The PosChanged procedure is called when the position of a module has changed in the SharpBar. Most common action would be to update the background image of the module window which was moved. 
+      
+      \bigbreak
+    \item[]{\alltt {\bf procedure} ShowSettingsWnd(ID : integer);}  \medbreak
+      Whenever SharpBar wants the settings window for a module to be displayed the ShowSettingsWnd procedure is called. The settings window can be a simple window displayed top most in the center of the screen. 
+      
+      \bigbreak
+    \item[]{\alltt {\bf procedure} SetSize(ID : integer; NewWidth : integer);}  \medbreak
+      The SetSize procedure is called whenever SharpBar decides to resize a module.
+      When this procedure is called the module window which belongs to the given {\it ID : integer} parameter must change its size to the width specified in the {\it NewWidth : integer} parameter.     
+      
+      \bigbreak
+    \item[]{\alltt {\bf procedure} UpdateMessage(part : TSU_UPDATE_ENUM; param : integer);}  \medbreak
+      The UpdateMessage procedure is called whenever a SharpE setting has changed. Compared to all other functions this one does not has an {\it ID : integer} parameter. This means that all module windows have to update certain settings.
+
+      The setting which changed is given by the \verb+TSU_UPDATE_ENUM+ parameter. A set of settings constants for this parameter can be found in {\it SharpCenterApi.pas} at the declaration of the \verb+TSU_UPDATE_ENUM+ enumeration. 
+      
+      \bigbreak
+    \item[]{\alltt {\bf procedure} InitModule(ID : integer);}  \medbreak
+      Using the InitModule procedure is optional and not required. If a module exports this procedure then it will be called right after the module has been created. \\
+      This procedure can be used to initialize modules which require to be fully loaded into the SharpBar first. For example modules which are using shell hooks should create the shell hooks in the InitModule procedure (and not in CreateModule).
+      
+      \bigbreak
+  \end{description}
+  
+\section{The Module Window}
+  \subsection{Changing the size of a module window}
+    The actual size of all module windows is managed and handled by SharpBar. Therefore it is not allowed for a module to change its window size without asking the SharpBar for permission first. The only event when a module is allowed to change the size of the module window is when the {\it SetSize} library procedure is called (see above). 
+
+    It is possible to make SharpBar recalculate the size of all modules which will result in the SetSize procedure to be called. In order to do this a \verb+WM_UPDATEBARWIDTH+ message must be send to the SharpBar window. However SharpBar somehow must get to know the size the module should be so that it can calculate the module size correctly.
+    Setting the wish width for a module window is done by changing the Tag and Hint properties of the window. The Tag property is the minimum size of your module and the Hint property is the maximum size of your module. Make sure to update those properties before sending a \verb+WM_UPDATEBARWIDTH+ message to SharpBar. 
+
+    Example code: 
+    \begin{verbatim}
+01  Tag := 50;
+02  Hint := '100';
+03  
+04  SendMessage(ParentWindow,WM_UPDATEBARWIDTH,0,0);
+   \end{verbatim}
+
+    This example tells the SharpBar that the module has to be at least 50px in width, but it could also be 100px if there is enough free space in the bar available. The final size the module will be depends on how many other modules there are and on how much free space is left in the bar. Right after this message is send the {\it SetSize} library procedure should be called by SharpBar. In this {\it SetSize} call the module gets the final {\it NewWidth : integer} size for the module window.  
+  \newpage
+  \subsection{Painting the module window background}
+    Since the modules in SharpBar are simple windows the background of the SharpBar must be painted to the background of the module windows. Again there is an API function available. Painting the background of a module into a TBitmap32 can be done by using the {\it PaintBarBackGround} procedure which is declared in {\it uSharpBarApi.pas}. It's recommend to just declare a TBitmap32 in your form which holds the background. Then use the {\it FormPaint} event to draw it to the window canvas. 
+
+    Example code: 
+\begin{alltt}
+01  {\bf type} TMainForm = {\bf class}(TForm)
+02     ...
+03    {\bf private}
+04      Background : TBitmap32;
+05      ...
+06    {\bf end};
+07
+08  {\bf procedure} TMainForm.UpdateBackground(new : integer = -1);
+09  {\bf begin}
+10    {\bf if} (new <> -1) {\bf then}
+11      Background.SetSize(new,Height)
+12    {\bf else if} (Width <> Background.Width){\bf then}
+13      Background.Setsize(Width,Height);
+14
+15    // paint the bar background into the buffer bitmap
+16    uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+17  {\bf end};
+18 
+19  {\bf procedure} TMainForm.SetWidth(new : integer);
+20  {\bf begin}
+21    // The Module is receiving it's new size from the SharpBar!
+22    // Make sure it's not negative or zero
+23    new := Max(new,1);
+24 
+25    // Update the Background Bitmap!
+26    // use the new width and not the current as param
+27    UpdateBackground(new);
+28 
+29    // Background is updated, now resize the form
+30    Width := new;
+31  {\bf end};
+32
+33  {\bf procedure} TMainForm.FormPaint(Sender: TObject);
+34  {\bf begin}
+35    // paint the buffer bitmap which contains the background to the canvas of the form
+36    Background.DrawTo(Canvas.Handle,0,0);
+37  {\bf end};
+\end{alltt}
+
+\newpage
+  \subsection{Setting the module window height}
+    The height of a SharpBar is dynamic and depends on the used skin. Therefore a module has to make sure that all visible components are properly aligned and sized based on the current bar height. The best way to do this would be to simply align all components of a module to the center of the module window. But you have to make sure to update the position and dimension of the components whenever the skin changes. 
+
+    Getting the current height of the bar can be done by using the {\it GetBarPluginHeight} function which is declared in {\it uSharpBarApi.pas}.
+
+    Updating the background of the module should be done in different situation like when the skin, the position or the size of the module changes.  
+\section{Module settings}
+  The settings for all modules are stored in a central place. The directory, file and xml structure for the xml files is handled by SharpBar. 
+  Changing XML data is based on the TJvSimpleXML class which comes with the JVCL library. It is absolutely necessary that this class is used to manage the xml settings! 
+
+  If a module wants to save and load settings all it has to do is get the xml root key which is assigned to the module ID. This can be done by using the {\it GetModuleXMLItem} function which is declared in {\it uSharpBarApi.pas}. 
+
+  Example code: 
+\begin{alltt}
+01  {\bf var}
+02    item : TJvSimpleXMLElem;
+03  {\bf begin}
+04    item := uSharpBarApi.GetModuleXMLItem(HandleToBarWnd,ModuleID);
+05    {\bf if} item <> nil {\bf then}
+06    {\bf with} item.Items {\bf do}
+07    {\bf begin}
+08      // Load/Save your settings here
+09      // Example: sWidth := IntValue('Width',sWidth);
+10    {\bf end};
+11 {\bf end};
+\end{alltt}
+
+  After settings have been saved to this XML key call the {\it SaveXMLFile} procedure to make SharpBar save the changes to the xml file on your hard drive. 
+
+  \verb+uSharpBarAPI.SaveXMLFile(HandleToBarWnd);+
+
+  The parameter for the {\it SaveXMLFile} function is the handle to the parent SharpBar window(the module should have received this handle when the module window was created - see the {\it CreateModule} library function)
+
+\newpage
+\section{Using the SharpE skin components}
+All visible components used in a module should be skinable with the SharpE skin system. There is a set of custom SharpE Skin Components available which should be used whenever possible. 
+
+The core of the skin components package is a component called TSharpESkinManager. This Skin Manager takes care about loading and updating the current SharpE skin. In order to use the skin components all you have to do is drop a TSharpESkinManager on your module form (or create it at runtime). Then change the {\it SkinSource} and {\it SchemeSource} properties of the Skin Manager component to {\it ssSystem}. Also make sure to set the {\it HandleUpdates} property of the Skin Manager to {\it false}. 
+
+After the SkinManager component is created or placed on the form any other SharpE component can use it. All you have to do is change the {\it SkinManager} property of any SharpE skin component to the TSharpESkinManager component you have created. Before you assign the Skin Manager to any skin component make sure that this component type is set to true in the {\it ComponentSkins} property of the Skin Manager component. For example if you need the skin manager for a button and a progress bar then set the {\it ComponentSkins} property to {\it scButton} and {\it scProgressbar}. 
+
+That's all you have to do to make the SharpE Skin Components use the current SharpE skin
+  
+\end{document}
