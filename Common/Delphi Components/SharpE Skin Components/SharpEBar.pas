@@ -476,10 +476,12 @@ begin
                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
   end else
   begin
+    SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
+                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
     SetWindowPos(abackground.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
-    SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
-                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);                   
+    SetWindowPos(abackground.handle, aform.handle, 0, 0, 0, 0,
+                 SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);                                    
   end;
 end;
 
