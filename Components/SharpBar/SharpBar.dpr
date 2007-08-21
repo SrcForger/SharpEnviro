@@ -63,7 +63,7 @@ function RemoveEmptyBars : boolean;
 var
   Dir : String;
   xml : TJvSimpleXML;
-  n,k : integer;
+  n : integer;
   BarID : integer;
   handle  : THandle;
 begin
@@ -78,22 +78,20 @@ begin
     xml := TJvSimpleXMl.Create(nil);
     try
       xml.LoadFromFile(Dir + 'bars.xml');
-      k := 0;
       with xml.root.items.ItemNamed['bars'] do
       begin
-        for n := 0 to Items.Count - 1 - k do
+        for n := Items.Count - 1 downto 0 do
         begin
-          if Items.Item[n-k].Items.ItemNamed['Modules'] <> nil then
-             if Items.Item[n-k].Items.ItemNamed['Modules'].Items.Count > 0  then
+          if Items.Item[n].Items.ItemNamed['Modules'] <> nil then
+             if Items.Item[n].Items.ItemNamed['Modules'].Items.Count > 0  then
                 Continue;
-          BarID := Items.Item[n-k].Items.IntValue('ID',-1);
+          BarID := Items.Item[n].Items.IntValue('ID',-1);
           // check if a bar with this ID is running
           handle := FindWindow(nil,PChar('SharpBar_'+inttostr(BarID)));
           if handle = 0 then
           begin
             // delete the bar settings
-            Items.Delete(n-k);
-            k := k + 1;
+            Items.Delete(n);
             DeleteFile(Dir + 'Module Settings\' + inttostr(BarID)+'.xml');
           end;
         end;

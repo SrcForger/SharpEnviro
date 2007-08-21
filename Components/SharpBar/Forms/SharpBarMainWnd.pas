@@ -339,6 +339,7 @@ begin
                           SharpEBar.AutoStart      := BoolValue('AutoStart',True);
                           SharpEBar.ShowThrobber   := BoolValue('ShowThrobber',True);
                           SharpEBar.DisableHideBar := BoolValue('DisableHideBar',False);
+                          SharpEBar.AlwaysOnTop    := BoolValue('AlwaysOnTop',False);
                           SharpEBar.UpdatePosition;
                         end;
     end;
@@ -1004,10 +1005,13 @@ begin
     exit;
   end;
   ForceDirectories(Dir);
-  xml.SaveToFile(Dir + 'bars.xml~');
-  if FileExists(Dir + 'bars.xml') then
-     DeleteFile(Dir + 'bars.xml');
-  RenameFile(Dir + 'bars.xml~',Dir + 'bars.xml');
+  try
+    xml.SaveToFile(Dir + 'bars.xml~');
+    if FileExists(Dir + 'bars.xml') then
+       DeleteFile(Dir + 'bars.xml');
+    RenameFile(Dir + 'bars.xml~',Dir + 'bars.xml');
+  except
+  end;
   xml.Free;
 end;
 
@@ -1079,10 +1083,13 @@ begin
     exit;
   end;
   ForceDirectories(Dir);
-  xml.SaveToFile(Dir + 'bars.xml~');
-  if FileExists(Dir + 'bars.xml') then
-     DeleteFile(Dir + 'bars.xml');
-  RenameFile(Dir + 'bars.xml~',Dir + 'bars.xml');
+  try
+    xml.SaveToFile(Dir + 'bars.xml~');
+    if FileExists(Dir + 'bars.xml') then
+       DeleteFile(Dir + 'bars.xml');
+    RenameFile(Dir + 'bars.xml~',Dir + 'bars.xml');
+  except
+  end;
   xml.Free;
   // New bar is now loaded!
   // Set window caption to SharpBar_ID
