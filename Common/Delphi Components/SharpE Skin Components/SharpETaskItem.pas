@@ -536,12 +536,12 @@ procedure DrawSkinPart(state : TSkinPart; bmp : TBitmap32; scheme : TSharpESchem
                        var SkinText : TSkinText);
 begin
   state.Draw(bmp, Scheme);
-  SkinText := state.SkinText;
-  state.SkinText.AssignFontTo(bmp.Font,Scheme);
-  mw := state.SkinText.GetMaxWidth(CompRect);
+  SkinText := CreateThemedSkinText(state.SkinText);
+  SkinText.AssignFontTo(bmp.Font,Scheme);
+  mw := SkinText.GetMaxWidth(CompRect);
   DrawCaption := FixCaption(Bmp,Caption,mw);
   TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
-  TextPos := state.SkinText.GetXY(TextRect, CompRect);
+  TextPos := SkinText.GetXY(TextRect, CompRect);
 end;
 
 
@@ -640,6 +640,7 @@ begin
       if length(trim(Caption))>0 then
          SkinText.RenderTo(bmp,TextPos.X,TextPos.Y,DrawCaption,Scheme,
                            FPrecacheText,FPrecacheBmp,FPrecacheCaption);
+      SkinText.Free;                           
     end;
   end
   else

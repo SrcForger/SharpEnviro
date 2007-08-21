@@ -42,6 +42,7 @@ uses
   StdCtrls,
   gr32,
   SharpEBase,
+  SharpESkinPart,
   SharpEBaseControls,
   SharpEDefault,
   SharpEScheme,
@@ -241,9 +242,10 @@ end;
 
 procedure TSharpECheckBox.DrawManagedSkin(bmp: TBitmap32; Scheme:
   TSharpEScheme);
-var r, TextRect, CompRect: TRect;
+var
+  r, TextRect, CompRect: TRect;
   p: TPoint;
-
+  SkinText : TSkinText;
 begin
   CompRect := Rect(0, 0, width, height);
   if FManager.Skin.CheckBoxSkin.Valid then
@@ -269,37 +271,38 @@ begin
     if not (Enabled) and not (FManager.Skin.CheckBoxSkin.Disabled.Empty) then
     begin
       FManager.Skin.CheckBoxSkin.Disabled.Draw(bmp, Scheme);
-      FManager.Skin.CheckBoxSkin.Disabled.SkinText.AssignFontTo(bmp.Font,Scheme);
+      SkinText := CreateThemedSkinText(FManager.Skin.CheckBoxSkin.Disabled.SkinText);
+      SkinText.AssignFontTo(bmp.Font,Scheme);
       TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
-      p := FManager.Skin.CheckBoxSkin.Disabled.SkinText.GetXY(TextRect, CompRect);
+      p := SkinText.GetXY(TextRect, CompRect);
     end
     else
       if FButtonDown and not (FManager.Skin.CheckBoxSkin.Down.Empty) then
       begin
         FManager.Skin.CheckBoxSkin.Down.Draw(bmp, Scheme);
-        FManager.Skin.CheckBoxSkin.Down.SkinText.AssignFontTo(bmp.Font,Scheme);
+        SkinText := CreateThemedSkinText(FManager.Skin.CheckBoxSkin.Down.SkinText);
+        SkinText.AssignFontTo(bmp.Font,Scheme);
         TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
-        p := FManager.Skin.CheckBoxSkin.Down.SkinText.GetXY(TextRect, CompRect);
+        p := SkinText.GetXY(TextRect, CompRect);
       end
       else
         if FButtonOver and not (FManager.Skin.CheckBoxSkin.Hover.Empty) then
         begin
           FManager.Skin.CheckBoxSkin.Hover.Draw(bmp, Scheme);
-          FManager.Skin.CheckBoxSkin.Hover.SkinText.AssignFontTo(bmp.Font,Scheme);
-          TextRect := Rect(0, 0, bmp.TextWidth(Caption),
-            bmp.TextHeight(Caption));
-          p := FManager.Skin.CheckBoxSkin.Hover.SkinText.GetXY(TextRect,
-            CompRect);
+          SkinText := CreateThemedSkinText(FManager.Skin.CheckBoxSkin.Hover.SkinText);
+          SkinText.AssignFontTo(bmp.Font,Scheme);
+          TextRect := Rect(0, 0, bmp.TextWidth(Caption),bmp.TextHeight(Caption));
+          p := SkinText.GetXY(TextRect,CompRect);
         end
         else
         begin
           FManager.Skin.CheckBoxSkin.Normal.Draw(bmp, Scheme);
-          FManager.Skin.CheckBoxSkin.Normal.SkinText.AssignFontTo(bmp.Font,Scheme);
-          TextRect := Rect(0, 0, bmp.TextWidth(Caption),
-            bmp.TextHeight(Caption));
-          p := FManager.Skin.CheckBoxSkin.Normal.SkinText.GetXY(TextRect,
-            CompRect);
+          SkinText := CreateThemedSkinText(FManager.Skin.CheckBoxSkin.Normal.SkinText);
+          SkinText.AssignFontTo(bmp.Font,Scheme);
+          TextRect := Rect(0, 0, bmp.TextWidth(Caption),bmp.TextHeight(Caption));
+          p := SkinText.GetXY(TextRect, CompRect);
         end;
+    SkinText.Free;
     if FChecked and not (FManager.Skin.CheckBoxSkin.Checked.Empty) then
     begin
       FManager.Skin.CheckBoxSkin.Checked.Draw(bmp, Scheme);

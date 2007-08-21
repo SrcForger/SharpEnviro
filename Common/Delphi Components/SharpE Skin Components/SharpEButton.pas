@@ -543,36 +543,36 @@ begin
     if not (Enabled) and not (ButtonSkin.Disabled.Empty) then
     begin
       ButtonSkin.Disabled.Draw(bmp, Scheme);
-      SkinText := ButtonSkin.Disabled.SkinText;
-      ButtonSkin.Disabled.SkinText.AssignFontTo(bmp.Font,Scheme);
+      SkinText := CreateThemedSkinText(ButtonSkin.Disabled.SkinText);
+      SkinText.AssignFontTo(bmp.Font,Scheme);
       TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
-      TextPos := ButtonSkin.Disabled.SkinText.GetXY(TextRect, CompRect);
+      TextPos := SkinText.GetXY(TextRect, CompRect);
     end
     else
       if FButtonDown and not (ButtonSkin.Down.Empty) then
       begin
         ButtonSkin.Down.Draw(bmp, Scheme);
-        SkinText := ButtonSkin.Down.SkinText;
-        ButtonSkin.Down.SkinText.AssignFontTo(bmp.Font,Scheme);
+        SkinText := CreateThemedSkinText(ButtonSkin.Down.SkinText);
+        SkinText.AssignFontTo(bmp.Font,Scheme);
         TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
-        TextPos := ButtonSkin.Down.SkinText.GetXY(TextRect, CompRect);
+        TextPos := SkinText.GetXY(TextRect, CompRect);
       end
       else
         if ((FButtonOver) and not (ButtonSkin.Hover.Empty) and not (HasNormalHoverScript)) then
         begin
           ButtonSkin.Hover.Draw(bmp, Scheme);
-          SkinText := ButtonSkin.Hover.SkinText;
-          ButtonSkin.Hover.SkinText.AssignFontTo(bmp.Font,Scheme);
+          SkinText := CreateThemedSkinText(ButtonSkin.Hover.SkinText);
+          SkinText.AssignFontTo(bmp.Font,Scheme);
           TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
-          TextPos := ButtonSkin.Hover.SkinText.GetXY(TextRect, CompRect);
+          TextPos := SkinText.GetXY(TextRect, CompRect);
         end
         else
         begin
           ButtonSkin.Normal.Draw(bmp, Scheme);
-          SkinText := ButtonSkin.Normal.SkinText;
-          ButtonSkin.Normal.SkinText.AssignFontTo(bmp.Font,Scheme);
+          SkinText := CreateThemedSkinText(ButtonSkin.Normal.SkinText);
+          SkinText.AssignFontTo(bmp.Font,Scheme);
           TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
-          TextPos := ButtonSkin.Normal.SkinText.GetXY(TextRect, CompRect);
+          TextPos := SkinText.GetXY(TextRect, CompRect);
         end;
 
     if (FGlyph32 <> nil) and (Buttonskin <> FCustomSkin) then
@@ -636,6 +636,8 @@ begin
          SkinText.RenderTo(bmp,TextPos.X + FGlyphSpacing div 2,TextPos.Y,Caption,Scheme,
                            FPrecacheText,FPrecacheBmp,FPrecacheCaption);
     end;
+    SkinText.Free;
+    
     Bmp.DrawTo(FSkin);
   end
   else

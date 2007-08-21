@@ -136,9 +136,9 @@ begin
   end;
 
   case FLabelStyle of
-    lsSmall: SkinText := FManager.Skin.SmallText;
-    lsBig: SkinText := FManager.Skin.BigText;
-    else SkinText := FManager.Skin.MediumText;
+    lsSmall: SkinText := CreateThemedSkinText(FManager.Skin.SmallText);
+    lsBig: SkinText := CreateThemedSkinText(FManager.Skin.BigText);
+    else SkinText := CreateThemedSkinText(FManager.Skin.MediumText);
   end;
 
   CompRect := Rect(0, 0, width, height);
@@ -164,6 +164,7 @@ begin
   if length(trim(Caption))>0 then
      SkinText.RenderTo(bmp,5,5,Caption,Scheme,
                        FPrecacheText,FPrecacheBmp,FPrecacheCaption);
+  SkinText.Free;                       
 end;
 
 procedure TSharpESkinLabel.SetCaption(Value: string);

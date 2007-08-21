@@ -297,6 +297,7 @@ function SchemedStringToColor(str: string; cs: TSharpEScheme): TColor;
 procedure doBlend(Dest: TBitmap32; source: TBitmap32; color: TColor);
 procedure VGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
 procedure HGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
+function CreateThemedSkinText(Base : TSkinText) : TSkinText;
 
 implementation
 
@@ -2085,6 +2086,30 @@ begin
     lmDifference: B := ColorDifference(F, B);
     lmExclusion:  B := ColorExclusion(F, B);
   End;
+end;
+
+function CreateThemedSkinText(Base : TSkinText) : TSkinText;
+begin
+  result := TSkinText.Create;
+  result.Assign(Base);
+  if GetSkinFontModSize then
+    result.FSize := result.FSize + GetSkinFontValueSize;
+  if GetSkinFontModName then
+    result.FName := GetSkinFontValueName;
+  if GetSkinFontModAlpha then
+    result.FAlpha := result.FAlpha + GetSkinFontValueAlpha;
+  if GetSkinFontModUseShadow then
+    result.FShadow := GetSkinFontValueUseShadow;
+  if GetSkinFontModShadowType then
+    result.FShadowType := TShadowType(GetSkinFontValueShadowType);
+  if GetSkinFontModShadowAlpha then
+    result.FShadowAlpha := GetSkinFontValueShadowAlpha;
+  if GetSkinFontModBold then
+    result.FStyleBold := GetSkinFontValueBold;
+  if GetSkinFontModItalic then
+    result.FStyleItalic := GetSkinFontValueItalic;
+  if GetSkinFontModUnderline then
+    result.FStyleUnderline := GetSkinFontValueUnderline;
 end;
 
 end.
