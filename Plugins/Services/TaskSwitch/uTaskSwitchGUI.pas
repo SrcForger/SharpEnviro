@@ -588,7 +588,7 @@ begin
     FIndex := High(wndlist);
 
   TSS := FSkinManager.Skin.TaskSwitchSkin;
-  ST := FSkinManager.Skin.TaskSwitchSkin.Background.SkinText;
+  ST := CreateThemedSkinText(FSkinManager.Skin.TaskSwitchSkin.Background.SkinText);
 
   Spacing := TSS.Spacing;
 
@@ -655,6 +655,7 @@ begin
   TextPos := ST.GetXY(Rect(0, 0, FontBmp.TextWidth(Caption), FontBmp.TextHeight(Caption)),
                                  Rect(0, 0, FBackground.Width, FBackground.Height));
   ST.RenderTo(FontBmp,TextPos.x,TextPos.y,Caption,FSkinManager.Scheme);
+  ST.Free;
   FontBmp.DrawTo(FWnd.Picture,0,0);
   FontBmp.Free;
 
