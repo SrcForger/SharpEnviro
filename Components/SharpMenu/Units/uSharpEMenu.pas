@@ -447,6 +447,7 @@ var
   temp : TBitmap32;
   menuskin : TSharpEMenuSkin;
   menuitemskin : TSharpEMenuItemSkin;
+  SkinText : TSkinText;
 begin
   size := 255;
 
@@ -458,12 +459,13 @@ begin
   
   menuitemskin := FSkinManager.Skin.MenuItemSkin;
   menuskin := FSkinManager.Skin.MenuSkin;
+  SkinText := CreateThemedSkinText(menuitemskin.NormalItem.SkinText);
   temp := TBitmap32.Create;
   try
-    menuitemskin.NormalItem.SkinText.AssignFontTo(temp.font,FSkinManager.Scheme);
+    SkinText.AssignFontTo(temp.font,FSkinManager.Scheme);
     size := menuskin.WidthLimit.XAsInt;
     maxsize := menuskin.WidthLimit.YAsInt;
-    maxitemtext := menuitemskin.NormalItem.SkinText.GetMaxWidth(Rect(0,0,maxsize,64));
+    maxitemtext := SkinText.GetMaxWidth(Rect(0,0,maxsize,64));
     for n:= 0 to FItems.Count -1 do
     begin
       item := TSharpEMenuItem(FItems.Items[n]);
@@ -482,6 +484,7 @@ begin
   finally
     temp.free;
   end;
+  SkinText.Free;
   FItemWidth := size;
 end;
 
@@ -683,6 +686,7 @@ var
   drawpart : TObject;
   menuitemskin : TSharpEMenuItemSkin;
   w,h : integer;
+  ST : TSkinText;
 begin
   if FSkinManager = nil then exit;
   if Dst = nil then exit;
@@ -730,6 +734,7 @@ begin
     text.Clear(color32(0,0,0,0));
     dicon := False;
     dtext := False;
+    ST := CreateThemedSkinText(TSkinPart(drawpart).SkinText);
     if (drawpart is TSkinPartEx) then
     begin
       with drawpart as TSkinPartEx do
@@ -748,16 +753,17 @@ begin
         begin
           text.SetSize(w,h);
           text.clear(color32(0,0,0,0));
-          SkinText.AssignFontTo(text.Font,FSkinManager.Scheme);
-          Tpos := SkinText.GetXY(Rect(0, 0, text.TextWidth(item.Caption), text.TextHeight(item.Caption)),
+          ST.AssignFontTo(text.Font,FSkinManager.Scheme);
+          Tpos := ST.GetXY(Rect(0, 0, text.TextWidth(item.Caption), text.TextHeight(item.Caption)),
                                  Rect(0, 0, w, h));
-          SkinText.RenderTo(text,Tpos.x,Tpos.y,item.Caption,FSkinManager.Scheme);
+          ST.RenderTo(text,Tpos.x,Tpos.y,item.Caption,FSkinManager.Scheme);
           dtext := true;
         end;
       end;
     end
     else if (drawpart is TSkinPart) then
             h := TSkinPart(drawpart).SkinDim.HeightAsInt;
+    ST.Free;
     temp.SetSize(w,h);
     temp.Clear(color32(0,0,0,0));
     TSkinPart(drawpart).draw(temp,FSkinManager.Scheme);
