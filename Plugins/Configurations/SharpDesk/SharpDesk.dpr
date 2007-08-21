@@ -71,6 +71,8 @@ begin
   frmDeskSettings.cb_amm.Checked := XMLSettings.AdvancedMM;
   frmDeskSettings.cb_dd.Checked := XMLSettings.DragAndDrop;
   frmDeskSettings.cb_wpwatch.Checked := XMLSettings.WallpaperWatch;
+  frmDeskSettings.cb_autorotate.Checked := XMLSettings.ScreenRotAdjust;
+  frmDeskSettings.cb_adjustsize.Checked := XMLSettings.ScreenSizeAdjust;
 
   frmDeskSettings.Show;
   result := frmDeskSettings.Handle;
@@ -85,6 +87,8 @@ begin
   XMLSettings.AdvancedMM := frmDeskSettings.cb_amm.Checked;
   XMLSettings.DragAndDrop := frmDeskSettings.cb_dd.Checked;
   XMLSettings.WallpaperWatch := frmDeskSettings.cb_wpwatch.Checked;
+  XMLSettings.ScreenRotAdjust := frmDeskSettings.cb_autorotate.Checked;
+  XMLSettings.ScreenSizeAdjust := frmDeskSettings.cb_adjustsize.Checked;
   XMLSettings.SaveSettings;
 end;
 

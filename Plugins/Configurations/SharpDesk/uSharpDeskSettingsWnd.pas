@@ -60,6 +60,10 @@ type
     Label4: TLabel;
     sgb_gridy: TSharpeGaugeBox;
     sgb_gridx: TSharpeGaugeBox;
+    cb_adjustsize: TCheckBox;
+    Label5: TLabel;
+    Label6: TLabel;
+    cb_autorotate: TCheckBox;
     procedure sgb_gridyChangeValue(Sender: TObject; Value: Integer);
     procedure cb_ddClick(Sender: TObject);
     procedure cb_ammClick(Sender: TObject);
