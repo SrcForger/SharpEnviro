@@ -178,6 +178,27 @@ function GetDesktopAnimBrightnessValue : integer; external 'SharpThemeApi.dll' n
 // Theme Wallpaper
 function GetMonitorWallpaper(Index : integer) : TThemeWallpaper; external 'SharpThemeApi.dll' name 'GetMonitorWallpaper';
 
+// Theme Skin Fon
+function GetSkinFontModSize          : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModSize';
+function GetSkinFontModName          : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModName';
+function GetSkinFontModAlpha         : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModAlpha';
+function GetSkinFontModUseShadow     : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModUseShadow';
+function GetSkinFontModShadowType    : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModShadowType';
+function GetSkinFontModShadowAlpha   : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModShadowAlpha';
+function GetSkinFontModBold          : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModBold';
+function GetSkinFontModItalic        : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModItalic';
+function GetSkinFontModUnderline     : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModUnderline';
+function GetSkinFontValueSize        : integer; external 'SharpThemeApi.dll' name 'GetSkinFontValueSize';
+function GetSkinFontValueName        : String;  external 'SharpThemeApi.dll' name 'GetSkinFontValueName';
+function GetSkinFontValueAlpha       : integer; external 'SharpThemeApi.dll' name 'GetSkinFontValueAlpha';
+function GetSkinFontValueUseShadow   : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueUseShadow';
+function GetSkinFontValueShadowType  : integer; external 'SharpThemeApi.dll' name 'GetSkinFontValueShadowType';
+function GetSkinFontValueShadowAlpha : integer; external 'SharpThemeApi.dll' name 'GetSkinFontValueShadowAlpha';
+function GetSkinFontValueBold        : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueBold';
+function GetSkinFontValueItalic      : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueItalic';
+function GetSkinFontValueUnderline   : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueUnderline';
+
+
 implementation
 
 end.

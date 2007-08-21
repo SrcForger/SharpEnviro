@@ -156,6 +156,27 @@ type
     GELightenAmount : integer;
   end;
 
+  TThemeSkinFont = record
+    ModSize          : boolean;
+    ModName          : boolean;
+    ModAlpha         : boolean;
+    ModUseShadow     : boolean;
+    ModShadowType    : boolean;
+    ModShadowAlpha   : boolean;
+    ModBold          : boolean;
+    ModItalic        : boolean;
+    ModUnderline     : boolean;
+    ValueSize        : integer;
+    ValueName        : String;
+    ValueAlpha       : integer;
+    ValueUseShadow   : boolean;
+    ValueShadowType  : integer;
+    ValueShadowAlpha : integer;
+    ValueBold        : boolean;
+    ValueItalic      : boolean;
+    ValueUnderline   : boolean;
+  end;
+
   TThemeData = record
     Directory: string;
     LastUpdate: Int64;
@@ -180,6 +201,7 @@ type
     Info: TThemeInfo;
     Scheme: TThemeScheme;
     Skin: TThemeSkin;
+    SkinFont: TThemeSkinFont;
     IconSet: TThemeIconSet;
     DesktopIcon : TThemeDesktopIcon;
     DesktopAnim : TThemeDesktopAnim;
@@ -212,6 +234,7 @@ const
   DESKTOPICON_FILE = 'DesktopIcon.xml';
   DESKTOPANIM_FILE = 'DesktopAnimation.xml';
   WALLPAPER_FILE = 'Wallpaper.xml';
+  SKINFONT_FILE = 'SkinFont.xml';
 
   ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,tpDesktopAnimation,tpWallpaper];
 
@@ -517,6 +540,31 @@ end;
 //      DEFAULT SETTINGS
 // ##########################################
 
+procedure SetThemeSkinFontDefault;
+begin
+  with Theme.SkinFont do
+  begin
+    ModSize          := False;
+    ModName          := False;
+    ModAlpha         := False;
+    ModUseShadow     := False;
+    ModShadowType    := False;
+    ModShadowAlpha   := False;
+    ModBold          := False;
+    ModItalic        := False;
+    ModUnderline     := False;
+    ValueSize        := 10;
+    ValueName        := 'Verdana';
+    ValueAlpha       := 0;
+    ValueUseShadow   := True;
+    ValueShadowType  := 0;
+    ValueShadowAlpha := 0;
+    ValueBold        := False;
+    ValueItalic      := False;
+    ValueUnderline   := False;
+  end;
+end;
+
 procedure SetThemeIconSetDefault;
 begin
   Theme.IconSet.LastUpdate := 0;
@@ -633,6 +681,44 @@ end;
 // ##########################################
 //      LOAD THEME PARTS
 // ##########################################
+
+procedure LoadThemeSkinFont;
+var
+  XML : TJvSimpleXML;
+begin
+  SetThemeSkinFontDefault;
+  if not FileExists(Theme.Data.Directory + SKINFONT_FILE) then
+    exit;
+
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(Theme.Data.Directory + SKINFONT_FILE);
+    with XML.Root.Items do
+      with Theme.SkinFont do
+      begin
+        ModSize          := BoolValue('ModSize',ModSize);
+        ModName          := BoolValue('ModName',ModName);
+        ModAlpha         := BoolValue('ModAlpha',ModAlpha);
+        ModUseShadow     := BoolValue('ModUseShadow',ModUseShadow);
+        ModShadowType    := BoolValue('ModShadowType',ModShadowType);
+        ModShadowAlpha   := BoolValue('ModShadowAlpha',ModShadowAlpha);
+        ModBold          := BoolValue('ModBold',ModBold);
+        ModItalic        := BoolValue('ModItalic',ModItalic);
+        ModUnderline     := BoolValue('ModUnderline',ModUnderline);
+        ValueSize        := IntValue('ValueSize',ValueSize);
+        ValueName        := Value('ValueName',ValueName);
+        ValueAlpha       := IntValue('ValueAlpha',ValueAlpha);
+        ValueUseShadow   := BoolValue('ValueUseShadow',ValueUseShadow);
+        ValueShadowType  := IntValue('ValueShadowType',ValueShadowType);
+        ValueShadowAlpha := IntValue('ValueShadowAlpha',ValueShadowAlpha);
+        ValueBold        := BoolValue('ValueBold',ValueBold);
+        ValueItalic      := BoolValue('ValueItalic',ValueItalic);
+        ValueUnderline   := BoolValue('ValueUnderline',ValueUnderline);
+      end;
+  finally
+    XML.Free;
+  end;
+end;
 
 procedure LoadThemeIconSet;
 var
@@ -1411,6 +1497,100 @@ begin
 end;
 
 // ##########################################
+//      EXPORT: SKIN FONT
+// ##########################################
+
+function GetSkinFontModSize : boolean;
+begin
+  result := Theme.SkinFont.ModSize;
+end;
+
+function GetSkinFontModName : boolean;
+begin
+  result := Theme.SkinFont.ModName;
+end;
+
+function GetSkinFontModAlpha : boolean;
+begin
+  result := Theme.SkinFont.ModAlpha;
+end;
+
+function GetSkinFontModUseShadow : boolean;
+begin
+  result := Theme.SkinFont.ModUseShadow;
+end;
+
+function GetSkinFontModShadowType : boolean;
+begin
+  result := Theme.SkinFont.ModShadowType;
+end;
+
+function GetSkinFontModShadowAlpha : boolean;
+begin
+  result := Theme.SkinFont.ModShadowAlpha;
+end;
+
+function GetSkinFontModBold : boolean;
+begin
+  result := Theme.SkinFont.ModBold;
+end;
+
+function GetSkinFontModItalic : boolean;
+begin
+  result := Theme.SkinFont.ModItalic;
+end;
+
+function GetSkinFontModUnderline : boolean;
+begin
+  result := Theme.SkinFont.ModUnderline;
+end;
+
+function GetSkinFontValueSize : integer;
+begin
+  result := Theme.SkinFont.ValueSize;
+end;
+
+function GetSkinFontValueName : String;
+begin
+  result := Theme.SkinFont.ValueName;
+end;
+
+function GetSkinFontValueAlpha : integer;
+begin
+  result := Theme.SkinFont.ValueAlpha;
+end;
+
+function GetSkinFontValueUseShadow : boolean;
+begin
+  result := Theme.SkinFont.ValueUseShadow;
+end;
+
+function GetSkinFontValueShadowType : integer;
+begin
+  result := Theme.SkinFont.ValueShadowType;
+end;
+
+function GetSkinFontValueShadowAlpha : integer;
+begin
+  result := Theme.SkinFont.ValueShadowAlpha;
+end;
+
+function GetSkinFontValueBold : boolean;
+begin
+  result := Theme.SkinFont.ValueBold;
+end;
+
+function GetSkinFontValueItalic : boolean;
+begin
+  result := Theme.SkinFont.ValueItalic;
+end;
+
+function GetSkinFontValueUnderline : boolean;
+begin
+  result := Theme.SkinFont.ValueUnderline;
+end;
+
+// ##########################################
 //      EXPORT: SCHEME COLOR SET
 // ##########################################
 
@@ -1487,6 +1667,7 @@ begin
   SetThemeInfoDefault;
   SetThemeSchemeDefault;
   SetThemeSkinDefault;
+  SetThemeSkinFontDefault;
   SetThemeIconSetDefault;
   SetThemeDesktopIconDefault;
   SetThemeDesktopAnimDefault;
@@ -1519,7 +1700,11 @@ begin
   if (tpInfo in ThemeParts) and
      (ct - Theme.Info.LastUpdate > 1) or (ForceReload) then LoadThemeInfo;
   if (tpSkin in ThemeParts) and
-     (ct - Theme.Skin.LastUpdate > 1) or (ForceReload) then LoadThemeSkin;
+     (ct - Theme.Skin.LastUpdate > 1) or (ForceReload) then
+     begin
+       LoadThemeSkin;
+       LoadThemeSkinFont;
+     end;
   if (tpScheme  in ThemeParts) and
      (ct - Theme.Scheme.LastUpdate > 1) or (ForceReload) then LoadThemeScheme;
   if (tpIconSet in ThemeParts) and
@@ -1654,7 +1839,27 @@ exports
   GetDesktopAnimBrightnessValue,
 
   // Wallpaper
-  GetMonitorWallpaper;
+  GetMonitorWallpaper,
+
+  // Skin Font
+  GetSkinFontModSize,
+  GetSkinFontModName,
+  GetSkinFontModAlpha,
+  GetSkinFontModUseShadow,
+  GetSkinFontModShadowType,
+  GetSkinFontModShadowAlpha,
+  GetSkinFontModBold,
+  GetSkinFontModItalic,
+  GetSkinFontModUnderline,
+  GetSkinFontValueSize,
+  GetSkinFontValueName,
+  GetSkinFontValueAlpha,
+  GetSkinFontValueUseShadow,
+  GetSkinFontValueShadowType,
+  GetSkinFontValueShadowAlpha,
+  GetSkinFontValueBold,
+  GetSkinFontValueItalic,
+  GetSkinFontValueUnderline;
 
 begin
 end.
