@@ -324,13 +324,6 @@ begin
           if temp.Form.Height < 20 then
              TrayClient.IconSize := temp.Form.Height - 4
           else TrayClient.IconSize := 16;
-          {if TrayClient.IconSize < 16 then begin
-            TrayClient.IconSize := TrayClient.IconSize + 3;
-            TrayClient.topspacing := 2;
-          end else
-          begin
-            TrayClient.TopSpacing := 2;
-          end;        }
           TrayClient.RenderIcons;
         end;
       end;
@@ -351,6 +344,9 @@ begin
       TMainForm(temp.Form).RepaintIcons((param <> -2));
       if [part] <= [suTheme,suSkinFileChanged] then
          TMainForm(temp.Form).ReAlignComponents((part = suSkinFileChanged));
+
+      if n = 0 then
+         TrayClient.PositionTrayWindow(0,0,temp.Form);
     end;
   end;
 end;

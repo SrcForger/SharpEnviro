@@ -1,7 +1,7 @@
 object MainForm: TMainForm
   Left = 0
   Top = 0
-  Caption = 'Memory Monitor'
+  Caption = 'System Tray'
   ClientHeight = 159
   ClientWidth = 277
   Color = clBtnFace

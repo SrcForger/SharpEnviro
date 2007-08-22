@@ -1235,10 +1235,10 @@ begin
     if IsWindowVisible(wnd) then
        ShowWindow(wnd,SW_HIDE);
 
-    wnd2 := FindWindow('TrayNotifyWnd',nil);
+    wnd2 := FindWindowEx(wnd,0,'TrayNotifyWnd',nil);
     if wnd2 <> 0 then
     begin
-      SetWindowPos(wnd2,wnd,p.x,p.y,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE or SWP_HIDEWINDOW);
+      SetWindowPos(wnd2,wnd,0,0,parent.Width,parent.Height,SWP_NOZORDER or SWP_NOACTIVATE or SWP_HIDEWINDOW);
       if IsWindowVisible(wnd2) then
          ShowWindow(wnd2,SW_HIDE);
     end;
