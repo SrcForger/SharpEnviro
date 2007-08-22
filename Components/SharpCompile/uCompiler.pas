@@ -233,8 +233,10 @@ var
   tempDpr : TextFile;
   origDpr : TextFile;
   bufDpr : string;
+  bInserted : Boolean;
 begin
   result := False;
+  bInserted := False;
 
   if not FileExists(Project.Path) then
      exit;
@@ -288,12 +290,13 @@ begin
     begin
       ReadLn(origDpr, bufDpr);
       WriteLn(tempDpr, bufDpr);
-      if (pos('uses', lowercase(bufDpr)) <> 0) then
+      if (pos('uses', lowercase(bufDpr)) <> 0) and not bInserted then
       begin
         if FileExists('..\..\Common\Units\DebugDialog\DebugDialog.pas') then
           WriteLn(tempDpr, 'DebugDialog in ''..\..\Common\Units\DebugDialog\DebugDialog.pas'',')
         else
           WriteLn(tempDpr, 'DebugDialog in ''..\..\..\Common\Units\DebugDialog\DebugDialog.pas'',');
+        bInserted := True;
       end;
     end;
     CloseFile(tempDpr);
