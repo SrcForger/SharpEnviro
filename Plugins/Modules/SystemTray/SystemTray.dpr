@@ -289,6 +289,9 @@ begin
         
         lastrepaint := -1;
         FUpdateTimer.OnTimer(FUpdateTimer);
+
+        if n = 0 then
+          TrayClient.PositionTrayWindow(0,0,temp.Form);
       end;
 end;
 
