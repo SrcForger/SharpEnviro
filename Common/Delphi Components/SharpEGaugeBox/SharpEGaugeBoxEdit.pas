@@ -81,7 +81,7 @@ type
     procedure BtnGaugeClick(Sender: TObject);
     procedure BtnGaugeMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure SetEnabled(const Value: boolean); reintroduce;
+    procedure SetEnabled(Value: boolean); override;
     procedure SetMax(const Value: Integer);
     procedure SetMin(const Value: Integer);
     procedure SetPrefix(const Value: string);
@@ -121,7 +121,7 @@ type
     property Prefix: string read FPrefix write SetPrefix;
     property Suffix: string read FSuffix write SetSuffix;
     property Description: string read FDescription write SetDescription;
-    property Enabled;
+    //property Enabled;
     property PopPosition: TPopPosition read FPopPosition write SetPopPosition;
     property PercentDisplay: boolean read FPercentDisplay write SetPercentDisplay;
 
@@ -185,8 +185,8 @@ begin
     mBmp.Height := ClientRect.Bottom;
     mBmp.Width := ClientRect.Right;
     MBmp.Clear(Color32(Color));
-    FBtnGauge.Enabled := Self.Enabled;
-    FValueEdit.Enabled := Self.Enabled;
+    //FBtnGauge.Enabled := Self.Enabled;
+    //FValueEdit.Enabled := Self.Enabled;
 
   finally
     Canvas.CopyRect(ClientRect, mBmp.canvas, ClientRect);
@@ -195,11 +195,16 @@ begin
   end;
 end;
 
-procedure TSharpeGaugeBox.SetEnabled(const Value: boolean);
+procedure TSharpeGaugeBox.SetEnabled(Value: boolean);
 begin
+  FBackPanel.Enabled := Value;
   FBtnGauge.Enabled := Value;
   FValueEdit.Enabled := Value;
-end;
+
+  if Not(Value) then
+    FValueEdit.Font.Color := clGrayText else
+    FValueEdit.Font.Color := clBtnText;
+end; 
 
 function TSharpeGaugeBox.CreateInitialControls: Boolean;
 var
@@ -237,9 +242,6 @@ begin
     OnKeyDown := ValueEditKeyDown;
     OnExit := ValueEditExit;
     OnClick := ValueEditClick;
-    //Flat := True;
-    //Ctl3D := False;
-    //BorderStyle := bsNone;
     ParentFont := True;
     MaxLength := 6;
   end;
