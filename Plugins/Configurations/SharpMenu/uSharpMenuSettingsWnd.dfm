@@ -3,7 +3,7 @@ object frmMenuSettings: TfrmMenuSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmMenuSettings'
-  ClientHeight = 357
+  ClientHeight = 181
   ClientWidth = 518
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -20,17 +20,19 @@ object frmMenuSettings: TfrmMenuSettings
     Left = 0
     Top = 0
     Width = 518
-    Height = 357
+    Height = 181
     ActivePage = JvSettingsPage
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 357
     object JvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
       Width = 518
-      Height = 357
+      Height = 181
       Caption = '``````'
       ParentBackground = True
+      ExplicitHeight = 357
       object Label2: TLabel
         AlignWithMargins = True
         Left = 26
