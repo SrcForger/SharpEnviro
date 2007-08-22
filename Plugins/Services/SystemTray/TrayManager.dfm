@@ -3,7 +3,7 @@ object TrayMessageWnd: TTrayMessageWnd
   Top = 0
   BorderStyle = bsNone
   Caption = 'TrayMessageWnd'
-  ClientHeight = 103
+  ClientHeight = 26
   ClientWidth = 212
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

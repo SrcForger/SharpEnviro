@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Contnrs, SharpApi, DateUtils, 
+  Dialogs, Contnrs, SharpApi, DateUtils, ShellApi,
   winver,declaration;
 
 type
@@ -54,6 +54,9 @@ type
     FWndList : TStringList;
     FWarmup : boolean;
     FWarmupstart : int64;
+    FDllHandle : THandle;
+    SHLockShared : function (Handle: THandle; DWord: DWORD): pointer; stdcall;
+    SHUnlockShared : function (Pnt: Pointer): BOOL; stdcall;
     function FindTrayIcon(pData : TNotifyIconDataV7) : TTrayIcon;
     procedure ResetIcon(pItem : TTrayIcon);
     procedure ResetSharing(pItem : TTrayIcon);
@@ -66,6 +69,9 @@ type
     procedure IncomingUnregisterMessage(var Msg: TMessage); message WM_UNREGISTERWITHTRAY;
     procedure BroadCastTrayMessage(pItem: TTrayIcon; action : integer);
     procedure BroadCastAllToOne(wnd : hwnd);
+    function HandleAppBarMessage(msg : TAppBarMsgDataV2) : integer;
+    function LockAppBarMemory(abmd: TAppBarMsgDataV2): pAppBarDataV1;
+    function UnLockAppBarMempory(Pnt: pAppBarDataV1): boolean;
   public
     FIcons : TObjectList;
   end;
@@ -78,40 +84,6 @@ implementation
 uses TrayNotifyWnd;
 
 {$R *.dfm}
-
-function SendMiniConsoleMsg(msg: pChar): hresult;
-type 
-  PConsoleMsg = ^TConsoleMsg;
-  TConsoleMsg = record
-    module: string[255];
-    msg: string[255];
-  end;
-var
-  wnd: hwnd;
-  cds: TCopyDataStruct;
-  cmsg: TConsoleMsg;
-begin
-  try
-    cmsg.msg := msg;
-    with cds do
-    begin
-      dwData := 0;
-      cbData := SizeOf(TConsoleMsg);
-      lpData := @cmsg;
-    end;
-
-    wnd := FindWindow('TMiniConsoleWnd', nil);
-    if wnd <> 0 then
-    begin
-      SendMessage(wnd, WM_COPYDATA, 0, cardinal(@cds));
-      Result := HR_OK;
-    end
-    else
-      result := HR_NORECIEVERWINDOW;
-  except
-    result := HR_UNKNOWNERROR;
-  end;
-end;
 
 procedure TTrayMessageWnd.CreateParams(var Params: TCreateParams);
 begin
@@ -267,6 +239,13 @@ begin
   TrayNWnd := TTrayNWnd.CreateParented(self.Handle);
 
   PostMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
+
+  FDllHandle := LoadLibrary('SHLWAPI.DLL');
+  if FDllHandle <> 0 then
+  begin
+    @SHLockShared := GetProcAddress(FDllHandle, PChar(8));
+    @SHUnLockShared := GetProcAddress(FDllHandle, PChar(9));
+  end;
 end;
 
 procedure TTrayMessageWnd.ResetIcon(pItem : TTrayIcon);
@@ -342,9 +321,7 @@ var
   n : integer;
   tempItem : TTrayIcon;
   foundshared : boolean;
-  cmd : integer;
 begin
-  cmd := Action;
   //if (pItem = nil) and ((AM=False) and Shared) then exit;
 
   if pItem = nil then
@@ -430,127 +407,90 @@ procedure TTrayMessageWnd.IncomingTrayMsg(var Msg: TMessage);
 var
   TrayCmd: integer;
   Icondata: TNotifyIconDataV7;
+  AppBarMsgData : TAppBarMsgDataV2;
   data: pCopyDataStruct;
   hidden : boolean;
   shared : boolean;
   state  : integer;
   statemask : integer;
   pItem : TTrayIcon;
-  s1,s2,s3,s4,s5,s6,s7,s8,s9 : string;
   e : boolean;
 begin
   try
     Data := pCopyDataStruct(Msg.LParam);
-    if (Data.dwData = 1) then
-    begin
-      SendMiniConsoleMsg('------------------------');
-      if FWarmup then
+    case Data.dwData of
+      SH_APPBAR_DATA :
       begin
-        if DateTimeToUnix(Now) - FWarmupStart > 5 then
-           FWarmup := False
-        else
+        AppBarMsgData := pAppBarMsgDataV2(Data.lpData)^;
+        msg.result := HandleAppBarMessage(AppBarMsgData);
+      end;
+      SH_TRAY_DATA :
+      begin
+        if FWarmup then
         begin
-          msg.result := 0;
-          exit;
+          if DateTimeToUnix(Now) - FWarmupStart > 5 then
+             FWarmup := False
+          else
+          begin
+            msg.result := 0;
+            exit;
+          end;
         end;
-      end;
 
-      TrayCmd := pINT(PCHAR(Data.lpdata) + 4)^;
-      Icondata := pNotifyIconDataV7(PCHAR(Data.lpdata) + 8)^;
-      hidden := false;
-      shared := false;
-      state := 0;
-      statemask := 0;
-      if (IconData.uFlags and NIF_STATE) = NIF_STATE then
-      begin
-        state := IconData.dwState;
-        statemask := IconData.dwStateMask;
+        TrayCmd := pINT(PCHAR(Data.lpdata) + 4)^;
+        Icondata := pNotifyIconDataV7(PCHAR(Data.lpdata) + 8)^;
+        hidden := false;
+        shared := false;
+        if (IconData.uFlags and NIF_STATE) = NIF_STATE then
+        begin
+          state := IconData.dwState;
+          statemask := IconData.dwStateMask;
 
-
-        if (state and statemask and NIS_HIDDEN) <> 0 then
-           hidden := True;
-        if (statemask and state and NIS_SHAREDICON) <> 0 then
-           shared := True;
-      end;
-
-      pItem := FindTrayIcon(IconData);
-
-      s1 := inttostr(state);
-      s2 := inttostr(statemask);
-      s3 := IconData.szTip;
-      s7 := IconData.szInfoTitle;
-      s5 := BoolToStr(hidden);
-      s6 := BoolToStr(shared);
-      s8 := 'Wnd: ' + inttostr(IconData.Wnd) + ' | uID' + inttostr(IconData.uID);
-      if pItem = nil then s9 := 'nil'
-         else s9 := inttostr(pItem.data.uid);
-      case TrayCmd of
-        NIM_ADD: s4:= 'ADD';
-        NIM_MODIFY: s4 := 'MODIFY';
-        NIM_DELETE: s4 := 'DELETE';
-        NIM_SETFOCUS : s4 := 'SETFOCUS';
-        NIM_SETVERSION : s4 := 'SETVERSION';
-      end;
-
-      if pItem <> nil then
-      SendMiniConsoleMsg(PChar('TRAY: ' + 'State: ' + s1 +
-                                       ' | statemask: ' +  s2 +
-                                       ' | Cmd: ' + s4 +
-                                       ' | Hidden: ' + s5 +
-                                       ' | Shared: ' + s6 +
-                                       ' | Title: ' + s3+IconData.szInfoTitle+
-                                       ' | Callback: ' + inttostr(pItem.data.uCallbackMessage)+
-                                       ' | Version: ' + inttostr(pItem.data.Union.uVersion)+
-                                       ' | ' + s8+
-                                       ' | pItem:' + s9 ));
-
-      e := True;
-
-      if (IconData.uID = 1) and (Shared) then e := False;
-
-      if e then
-      begin
-        case TrayCmd of
-          NIM_ADD: begin
-                     if hidden then e := False
-                        else if pItem = nil then ModifyTrayIcon(pItem,IconData,False,False,TrayCmd)
-                        else e := False;
-                   end;
-          NIM_SETVERSION: UpdateTrayVersion(pItem,IconData);
-          NIM_MODIFY: begin
-                        {if (pItem = nil) and (IconData.Icon <> 0) and (not shared) and
-                           ((IconData.uFlags and NIF_ICON) = NIF_ICON) and
-                           ((IconData.uFlags and NIF_MESSAGE) = NIF_MESSAGE) and
-                           ((IconData.uFlags and NIF_TIP) = NIF_TIP) and
-                           (CompareText(IconData.szInfoTitle,'MediaMonkey') <> 0)  then
-                           ModifyTrayIcon(pItem,IconData,False,False,TrayCmd)
-                           else }if (hidden) and (pItem<>nil) then RemoveTrayIcon(pItem)
-                           else if (pItem <> nil) then ModifyTrayIcon(pItem,IconData,False,False,TrayCmd)
-                           else e := False;
-                      end;
-         NIM_DELETE: begin
-                        if (pItem <> nil) then RemoveTrayIcon(pItem)
-                            else e := False;
-                      end;
+          if (state and statemask and NIS_HIDDEN) <> 0 then
+             hidden := True;
+          if (statemask and state and NIS_SHAREDICON) <> 0 then
+             shared := True;
         end;
+
+        pItem := FindTrayIcon(IconData);
+
+        e := True;
+
+        if (IconData.uID = 1) and (Shared) then e := False;
+
+        if e then
+        begin
+          case TrayCmd of
+            NIM_ADD: begin
+                       if hidden then e := False
+                          else if pItem = nil then ModifyTrayIcon(pItem,IconData,False,False,TrayCmd)
+                          else e := False;
+                     end;
+            NIM_SETVERSION: UpdateTrayVersion(pItem,IconData);
+            NIM_MODIFY: begin
+                          {if (pItem = nil) and (IconData.Icon <> 0) and (not shared) and
+                             ((IconData.uFlags and NIF_ICON) = NIF_ICON) and
+                             ((IconData.uFlags and NIF_MESSAGE) = NIF_MESSAGE) and
+                             ((IconData.uFlags and NIF_TIP) = NIF_TIP) and
+                             (CompareText(IconData.szInfoTitle,'MediaMonkey') <> 0)  then
+                             ModifyTrayIcon(pItem,IconData,False,False,TrayCmd)
+                             else }if (hidden) and (pItem<>nil) then RemoveTrayIcon(pItem)
+                             else if (pItem <> nil) then ModifyTrayIcon(pItem,IconData,False,False,TrayCmd)
+                             else e := False;
+                        end;
+           NIM_DELETE: begin
+                          if (pItem <> nil) then RemoveTrayIcon(pItem)
+                              else e := False;
+                        end;
+          end;
+        end;
+
+        if e then msg.Result := -1
+           else msg.Result := 0;
       end;
-
-      if pItem <> nil then
-      SendMiniConsoleMsg(PChar('TRAY: ' + 'State: ' + s1 +
-                                       ' | statemask: ' +  s2 +
-                                       ' | Cmd: ' + s4 +
-                                       ' | Hidden: ' + s5 +
-                                       ' | Shared: ' + s6 +
-                                       ' | Title: ' + s3+IconData.szInfoTitle+
-                                       ' | Callback: ' + inttostr(pItem.data.uCallbackMessage)+
-                                       ' | Version: ' + inttostr(pItem.data.Union.uVersion)+
-                                       ' | ' + s8+
-                                       ' | pItem:' + s9 ));
-
-
-      if e then msg.Result := -1
-         else msg.Result := 0;
-    end else msg.Result := DefWindowProc(Handle, Msg.Msg, Msg.WParam, Msg.LParam);
+      
+      else msg.Result := DefWindowProc(Handle, Msg.Msg, Msg.WParam, Msg.LParam);
+    end;
   except
     msg.Result := DefWindowProc(Handle, Msg.Msg, Msg.WParam, Msg.LParam);
   end;
@@ -563,6 +503,64 @@ begin
   FIcons.Clear;
   FIcons.Free;
   TrayNWnd.Free;
+
+  if FDllHandle <> 0 then
+  begin
+    FreeLibrary(FDllHandle);
+    FDllHandle := 0;
+    SHLockShared := nil;
+    SHUnlockShared := nil;
+  end;
+end;
+
+function TTrayMessageWnd.LockAppBarMemory(abmd: TAppBarMsgDataV2) : pAppBarDataV1;
+begin
+  if (abmd.hSharedMemory <> 0) and (@SHLockShared <> nil) and (@SHUnLockShared <> nil) then
+    result := pAppBarDataV1(SHLockShared(abmd.hSharedMemory,abmd.dwSourceProcessID))
+  else result := nil;
+end;
+
+function TTrayMessageWnd.UnLockAppBarMempory(Pnt: pAppBarDataV1) : boolean;
+begin
+  if (Pnt <> nil) and (@SHUnLockShared <> nil) then
+    result := SHUnLockShared(Pnt)
+    else result := False;
+end;
+
+function GetWndClass(pHandle: hwnd): string;
+var
+  buf: array[0..254] of Char;
+begin
+  GetClassName(pHandle, buf, SizeOf(buf));
+  result := buf;
+end;
+
+function TTrayMessageWnd.HandleAppBarMessage(msg: TAppBarMsgDataV2) : integer;
+var
+  phandle : pAppBarDataV1;
+begin
+  result := 0;
+  case msg.dwMessage of
+    ABM_GETSTATE: result := 0; // Taskbar is neither in autohide nor always-on-top state
+    ABM_NEW: begin
+               if CompareText(GetWndClass(msg.abd.Wnd),'TaskSwitcherWnd') = 0 then
+                 result := 1 // allow creating of the app bar which is the Vista 2D Flip Window
+                 else result := 0; // otherwise don't allow creating of app bars                                                              
+             end; 
+    ABM_GETTASKBARPOS:
+    begin
+      phandle := LockAppBarMemory(msg);
+      if phandle <> nil then
+      begin
+        result := 1;
+        GetWindowRect(TrayNWnd.Handle,phandle.rc);
+        if Top < Monitor.Top + Monitor.Height div 2 then
+          phandle.uEdge := ABE_TOP
+        else phandle.uEdge := ABE_BOTTOM;
+        UnLockAppBarMempory(phandle);
+      end;
+    end;
+  end;
 end;
 
 end.

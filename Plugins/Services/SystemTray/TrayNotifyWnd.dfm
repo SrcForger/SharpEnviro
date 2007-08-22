@@ -3,8 +3,8 @@ object TrayNWnd: TTrayNWnd
   Top = 0
   BorderStyle = bsNone
   Caption = 'TrayNWnd'
-  ClientHeight = 132
-  ClientWidth = 210
+  ClientHeight = 32
+  ClientWidth = 200
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

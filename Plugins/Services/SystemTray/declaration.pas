@@ -36,6 +36,46 @@ type
 
   pDispInfo = ^tagNMTTDISPINFO;
 
+  TAppBarDataV2 = record
+    cbSize : DWord;
+    Wnd : HWND;
+    uCallBackMessage : UINT;
+    uEdge : UINT;
+    rc : TRECT;
+    lparam : LPARAM;
+    dw64BitAlign : DWORD;
+  end;
+
+  TAppBarDataV1 = record
+    cbSize : DWord;
+    Wnd : HWND;
+    uCallBackMessage : UINT;
+    uEdge : UINT;
+    rc : TRECT;
+    lparam : LPARAM;
+  end;
+
+  pAppBarDataV2 = ^TAppBarDataV2;  
+  pAppBarDataV1 = ^TAppBarDataV1;
+
+  TAppBarMsgDataV2 = record
+    abd : TAppBarDataV2;
+    dwMessage : DWORD;
+    hSharedMemory : HWND;
+    dwSourceProcessID : DWORD;
+    dw64BitAlign : DWORD;
+  end;
+
+  TAppBarMsgDataV1 = record
+    abd : TAppBarDataV1;
+    dwMessage : DWORD;
+    hSharedMemory : HWND;
+    dwSourceProcessID : DWORD;
+  end;
+
+  pAppBarMsgDataV2 = ^TAppBarMsgDataV2;
+  pAppBarMsgDataV1 = ^TAppBarMsgDataV1;
+
   TNotifyIconDataV7 = record
     cbSize: DWORD;
     Wnd: HWND;
@@ -152,6 +192,9 @@ type
   TinvFile = file of Tinv;
 
 const
+  SH_APPBAR_DATA   = 0;
+  SH_TRAY_DATA     = 1;
+  SH_LOADPROC_DATA = 2;
 
   //version >= 5.00
   NIN_SELECT = ($0400 + 0);
