@@ -155,7 +155,7 @@ begin
   begin
     result := False;
     Bmp.SetSize(Max(Size,1),Max(1,Size));
-    Bmp.Clear(color32(64,64,64,64));
+    Bmp.Clear(color32(clWindow));
   end;
 end;
 
