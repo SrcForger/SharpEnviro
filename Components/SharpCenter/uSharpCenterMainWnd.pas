@@ -147,6 +147,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure sbPluginResize(Sender: TObject);
     procedure lbTreeClickItem(const ACol: Integer; AItem: TSharpEListItem);
+    procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -902,8 +904,8 @@ begin
   finally
     pnlPluginContainer.Show;
 
-
     LockWindowUpdate(0);
+    sbPlugin.SetFocus;
   end;
 
 end;
@@ -1147,6 +1149,32 @@ begin
   finally
     CanClose := True;
   end;
+end;
+
+procedure TSharpCenterWnd.FormMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+ Var
+  msg: Cardinal;
+  code: Cardinal;
+  i, n: Integer;
+begin
+  If WindowFromPoint( mouse.Cursorpos ) = sbPlugin.Handle Then Begin
+    Handled := true;
+    If ssShift In Shift Then
+      msg := WM_HSCROLL
+    Else
+      msg := WM_VSCROLL;
+
+    If WheelDelta > 0 Then
+      code := SB_LINEUP
+    Else
+      code := SB_LINEDOWN;
+
+    n:= Mouse.WheelScrollLines;
+    For i:= 1 to n Do
+      sbPlugin.Perform( msg, code, 0 );
+    sbPlugin.Perform( msg, SB_ENDSCROLL, 0 );
+  End;
 end;
 
 end.

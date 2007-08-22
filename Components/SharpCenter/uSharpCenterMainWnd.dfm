@@ -15,6 +15,7 @@ object SharpCenterWnd: TSharpCenterWnd
   OldCreateOrder = False
   ScreenSnap = True
   OnCloseQuery = FormCloseQuery
+  OnMouseWheel = FormMouseWheel
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
@@ -1453,7 +1454,7 @@ object SharpCenterWnd: TSharpCenterWnd
               VAlign = taVerticalCenter
               ColumnAlign = calLeft
               Autosize = False
-              StretchColumn = False
+              StretchColumn = True
               Images = picMain
             end
             item
@@ -1464,7 +1465,7 @@ object SharpCenterWnd: TSharpCenterWnd
               SelectedTextColor = 33023
               HAlign = taLeftJustify
               VAlign = taVerticalCenter
-              ColumnAlign = calLeft
+              ColumnAlign = calRight
               Autosize = False
               StretchColumn = False
             end>
@@ -2070,7 +2071,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               98)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -610
+              Left = -618
               Top = 35
               Width = 23
               Height = 22
@@ -2522,14 +2523,13 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = -4
+              Width = 0
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
-              ExplicitWidth = 0
             end
           end
         end
