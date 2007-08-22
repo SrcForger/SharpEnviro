@@ -192,6 +192,7 @@ begin
             newItem := lb_iconlist.AddItem(XML.Root.Items.Value('name', '...'),0);
             newItem.AddSubItem('By ' + XML.Root.Items.Value('author', '...'));
 
+
             if sr.Name = sCurrentIconSet then
             begin
               lb_iconlist.ItemIndex := lb_iconlist.Items.Count - 1;
