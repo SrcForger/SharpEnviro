@@ -17,6 +17,7 @@ type
     SharpESwatchManager1: TSharpESwatchManager;
     SharpEColorEditorEx1: TSharpEColorEditorEx;
     Button2: TButton;
+    Button1: TButton;
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure FormShow(Sender: TObject);

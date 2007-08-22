@@ -38,6 +38,8 @@ object Form1: TForm1
     Top = 0
     Width = 410
     Height = 462
+    VertScrollBar.Smooth = True
+    VertScrollBar.Tracking = True
     Align = alClient
     BevelInner = bvNone
     BevelOuter = bvNone
@@ -122,6 +124,15 @@ object Form1: TForm1
       Caption = 'Button2'
       TabOrder = 6
       OnClick = Button2Click
+    end
+    object Button1: TButton
+      Left = 183
+      Top = 380
+      Width = 75
+      Height = 25
+      Caption = 'Button1'
+      TabOrder = 7
+      OnClick = Button1Click
     end
   end
   object XPManifest1: TXPManifest

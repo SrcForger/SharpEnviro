@@ -454,9 +454,10 @@ begin
   VertScrollBar.Smooth := True;
   VertScrollBar.Tracking := True;
 
-  if VertScrollBar.IsScrollBarVisible then
-    Self.Padding.Right := 8 else
-    Self.Padding.Right := 0;
+  if Parent <> nil then
+    if VertScrollBar.IsScrollBarVisible then
+      Self.Padding.Right := 8 else
+      Self.Padding.Right := 0;
 
   FItems := TSharpEColorEditorExItems.Create(Self);
 
