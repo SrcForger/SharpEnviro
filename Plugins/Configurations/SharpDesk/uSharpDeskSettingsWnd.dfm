@@ -94,11 +94,13 @@ object frmDeskSettings: TfrmDeskSettings
         Margins.Right = 8
         Margins.Bottom = 0
         Align = alTop
+        AutoSize = False
         Caption = 
           'Enabling this option will allow SharpDesk to monitor when anothe' +
           'r application changes the wallpaper, and then update automatical' +
           'ly.'
         Color = clWindow
+        EllipsisPosition = epEndEllipsis
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
@@ -107,9 +109,7 @@ object frmDeskSettings: TfrmDeskSettings
         ParentColor = False
         ParentFont = False
         Transparent = False
-        Layout = tlCenter
         WordWrap = True
-        ExplicitTop = 278
         ExplicitWidth = 370
       end
       object Label2: TLabel
@@ -123,10 +123,12 @@ object frmDeskSettings: TfrmDeskSettings
         Margins.Right = 8
         Margins.Bottom = 0
         Align = alTop
+        AutoSize = False
         Caption = 
-          'Enabling this option will reduce the memory usage of SharpDesk b' +
-          'y moving non constantly used data to the swap file.'
+          'Enable this option to reduce the memory usage of SharpDesk by mo' +
+          'ving constantly unused data to the swap file.'
         Color = clWindow
+        EllipsisPosition = epEndEllipsis
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
@@ -135,10 +137,8 @@ object frmDeskSettings: TfrmDeskSettings
         ParentColor = False
         ParentFont = False
         Transparent = False
-        Layout = tlCenter
         WordWrap = True
-        ExplicitTop = 168
-        ExplicitWidth = 381
+        ExplicitWidth = 348
       end
       object Label5: TLabel
         AlignWithMargins = True
@@ -151,10 +151,12 @@ object frmDeskSettings: TfrmDeskSettings
         Margins.Right = 8
         Margins.Bottom = 0
         Align = alTop
+        AutoSize = False
         Caption = 
           'Disable this option if you have problems with games which are of' +
           'ten changing the screen resolution.'
         Color = clWindow
+        EllipsisPosition = epEndEllipsis
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
@@ -163,7 +165,6 @@ object frmDeskSettings: TfrmDeskSettings
         ParentColor = False
         ParentFont = False
         Transparent = False
-        Layout = tlCenter
         WordWrap = True
         ExplicitWidth = 393
       end
@@ -178,11 +179,13 @@ object frmDeskSettings: TfrmDeskSettings
         Margins.Right = 8
         Margins.Bottom = 0
         Align = alTop
+        AutoSize = False
         Caption = 
-          'Enable this option to make SharpDesk rotate the desktop wallpape' +
-          'r  when the screen is rotated by 90'#176' (this will keep proper wall' +
-          'paper dimensions)'
+          'Enable this option to allow SharpDesk to rotate the desktop wall' +
+          'paper, when the screen is rotated by 90'#176' (this will keep proper ' +
+          'wallpaper dimensions)'
         Color = clWindow
+        EllipsisPosition = epEndEllipsis
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGray
         Font.Height = -11
@@ -191,9 +194,8 @@ object frmDeskSettings: TfrmDeskSettings
         ParentColor = False
         ParentFont = False
         Transparent = False
-        Layout = tlCenter
         WordWrap = True
-        ExplicitTop = 185
+        ExplicitWidth = 389
       end
       object cb_dd: TCheckBox
         AlignWithMargins = True
@@ -211,7 +213,6 @@ object frmDeskSettings: TfrmDeskSettings
         State = cbChecked
         TabOrder = 0
         OnClick = cb_ddClick
-        ExplicitTop = 105
       end
       object cb_singleclick: TCheckBox
         AlignWithMargins = True
@@ -227,7 +228,6 @@ object frmDeskSettings: TfrmDeskSettings
         Caption = 'Single Click Action'
         TabOrder = 1
         OnClick = cb_singleclickClick
-        ExplicitTop = 202
       end
       object cb_wpwatch: TCheckBox
         AlignWithMargins = True
@@ -243,7 +243,6 @@ object frmDeskSettings: TfrmDeskSettings
         Caption = 'Windows Wallpaper Monitoring (Advanced)'
         TabOrder = 2
         OnClick = cb_ammClick
-        ExplicitTop = 257
       end
       object cb_amm: TCheckBox
         AlignWithMargins = True
@@ -259,7 +258,6 @@ object frmDeskSettings: TfrmDeskSettings
         Caption = 'Memory Management (Advanced)'
         TabOrder = 3
         OnClick = cb_ammClick
-        ExplicitTop = 147
       end
       object Panel1: TPanel
         Left = 0
@@ -270,7 +268,6 @@ object frmDeskSettings: TfrmDeskSettings
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 4
-        ExplicitTop = 0
         object Label4: TLabel
           AlignWithMargins = True
           Left = 26
@@ -374,12 +371,11 @@ object frmDeskSettings: TfrmDeskSettings
         Margins.Right = 8
         Margins.Bottom = 0
         Align = alTop
-        Caption = 'Auto Rotate Wallpaper'
+        Caption = 'Auto Rotate Wallpaper (Advanced)'
         Checked = True
         State = cbChecked
         TabOrder = 6
         OnClick = cb_ammClick
-        ExplicitTop = 156
       end
     end
     object JvAdvSettingsPage: TJvStandardPage
