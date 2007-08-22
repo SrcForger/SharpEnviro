@@ -207,7 +207,7 @@ type
     DesktopAnim : TThemeDesktopAnim;
     Wallpapers : TThemeWallpapers;
     WallpapresLastUpdate : Int64;
-    MonitorWallpapers : TMonitorWallpapers
+    MonitorWallpapers : TMonitorWallpapers;
   end;
 
 var
