@@ -71,8 +71,6 @@ type
     fproc: TFarproc;
     evtTrack: tagTRACKMOUSEEVENT;
     FirstUpdate: boolean;
-    FThrobberPosX: string;
-    FThrobberPosY: string;
     FOrigWidth: integer;
 
     FOnBackgroundPaint: TBackgroundPaintEvent;
@@ -125,8 +123,6 @@ type
     property aform: TForm read form;
     property abackground: TSharpEBarBackground read FBackGround;
     property Throbber: TSharpEThrobber read FThrobber write FThrobber;
-    property ThrobberPosX: string read FThrobberPosX;
-    property ThrobberPosY: string read FThrobberPosY;
     property Skin: TBitmap32 read FSkin;
     property Seed: integer read FSkinSeed write FSkinSeed;
   published
@@ -931,20 +927,6 @@ begin
     begin
       if FThrobber.SkinManager <> FManager then
         FThrobber.SkinManager := FManager;
-
-      // Save the non modified values
-      if FSkinSeed <> FManager.Skin.BarSkin.Seed then
-      begin
-        if (not FManager.Skin.BarSkin.BarBottom.Empty) and (FVertPos = vpBottom) then
-        begin
-          FThrobberPosX := FManager.Skin.BarSkin.ThBDim.X;
-          FThrobberPosY := FManager.Skin.BarSkin.ThBDim.Y;
-        end else
-        begin
-          FThrobberPosX := FManager.Skin.BarSkin.ThDim.X;
-          FThrobberPosY := FManager.Skin.BarSkin.ThDim.Y;
-        end;
-      end;
     end;
     if Assigned(FManager) then
     begin
@@ -1069,7 +1051,6 @@ procedure TSharpEThrobber.DrawManagedSkin(bmp: TBitmap32; Scheme:
   TSharpEScheme);
 var
   r, CompRect: TRect;
-  tempdim : TSkinDim;
   e : boolean;
 begin
   if not Assigned(FManager) then
@@ -1080,17 +1061,7 @@ begin
 
   if not Visible then
     exit;
-  if (FManager.Skin.BarSkin.Valid) then
-  begin
-    if (not FManager.Skin.BarSkin.BarBottom.Empty) and (FPar.VertPos = vpBottom) then
-       tempDim := FManager.Skin.BarSkin.ThBDim
-       else tempDim := FManager.Skin.BarSkin.ThDim;
-    case FPar.HorizPos of
-      hpLeft, hpFull: tempDim.SetLocation(FPar.ThrobberPosX + '-' + FManager.Skin.BarSkin.FSMod.X, FPar.ThrobberPosY);
-      hpMiddle: tempDim.SetLocation(FPar.ThrobberPosX, FPar.ThrobberPosY);
-      hpRight: tempDim.SetLocation(FPar.ThrobberPosX, FPar.ThrobberPosY);
-    end;
-  end;
+
   CompRect := Rect(0, 0, Parent.Width, Parent.Height);
   if (FManager.Skin.BarSkin.Valid) then
   begin
@@ -1100,6 +1071,7 @@ begin
       if (not FManager.Skin.BarSkin.BarBottom.Empty) and (FPar.VertPos = vpBottom) then
          r := FManager.Skin.BarSkin.GetThrobberBottomDim(CompRect)
          else r := FManager.Skin.BarSkin.GetThrobberDim(CompRect);
+
       if ((r.Right - r.Left) <> width) or ((r.Bottom - r.Top) <> height) then
       begin
         width := r.Right - r.Left;
