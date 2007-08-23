@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SharpCenter>
   <Sections>
+    <DeskArea>
+      <Dll>_Services\_Servicedlls\DeskArea.dll</Dll>
+      <Icon>_Services\Icons\DeskArea.png</Icon>
+    </DeskArea>
     <Hotkeys>
       <Dll>_Services\_Servicedlls\Hotkeys.dll</Dll>
       <Icon>_Services\Icons\Hotkeys.png</Icon>
