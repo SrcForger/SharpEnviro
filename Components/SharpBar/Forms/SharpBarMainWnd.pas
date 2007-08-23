@@ -1300,25 +1300,30 @@ end;
 procedure TSharpBarMainForm.AutoPos1Click(Sender: TObject);
 begin
   SharpEBar.VertPos := vpTop;
+  UpdateBGImage;
   SharpEBar.UpdateSkin;
-  ModuleManager.BroadcastPluginUpdate(suBackground);
-  ModuleManager.FixModulePositions;
-  ModuleManager.RefreshMiniThrobbers;
   SaveBarSettings;
+  SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH,0,0);
+  ModuleManager.FixModulePositions;
+  ModuleManager.BroadcastPluginUpdate(suBackground);
 end;
 
 procedure TSharpBarMainForm.Bottom1Click(Sender: TObject);
 begin
   SharpEBar.VertPos := vpBottom;
+  UpdateBGImage;
   SharpEBar.UpdateSkin;
-  ModuleManager.BroadcastPluginUpdate(suBackground);
-  ModuleManager.FixModulePositions;
   SaveBarSettings;
+  SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH,0,0);
+  ModuleManager.FixModulePositions;
+  ModuleManager.BroadcastPluginUpdate(suBackground);
 end;
 
 procedure TSharpBarMainForm.Left1Click(Sender: TObject);
 begin
   SharpEBar.HorizPos := hpLeft;
+  UpdateBGImage;
+  SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH,0,0);
   ModuleManager.FixModulePositions;
   SaveBarSettings;
 end;
@@ -1326,6 +1331,8 @@ end;
 procedure TSharpBarMainForm.Middle1Click(Sender: TObject);
 begin
   SharpEBar.HorizPos := hpMiddle;
+  UpdateBGImage;
+  SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH,0,0);
   ModuleManager.FixModulePositions;
   SaveBarSettings;
 end;
@@ -1333,6 +1340,8 @@ end;
 procedure TSharpBarMainForm.Right2Click(Sender: TObject);
 begin
   SharpEBar.HorizPos := hpRight;
+  UpdateBGImage;
+  SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH,0,0);
   ModuleManager.FixModulePositions;
   SaveBarSettings;
 end;
@@ -1367,6 +1376,7 @@ end;
 procedure TSharpBarMainForm.FullScreen1Click(Sender: TObject);
 begin
   SharpEBar.HorizPos := hpFull;
+  UpdateBGImage;  
   SaveBarSettings;
 end;
 
@@ -1785,15 +1795,17 @@ begin
         ModuleManager.BroadcastPluginUpdate(suBackground,-2);
         ModuleManager.RefreshMiniThrobbers;
         RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+        SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH,0,0);
       end;
-      {if oHP <> SharpEBar.HorizPos then
+      if oHP <> SharpEBar.HorizPos then
       begin
-        UpdateBGImage;
+        SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH,0,0);
+{        UpdateBGImage;
         ModuleManager.FixModulePositions;
         ModuleManager.BroadcastPluginUpdate(SU_BACKGROUND,-2);
         ModuleManager.RefreshMiniThrobbers;
-        RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
-      end;     }
+        RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);}
+      end;
     end;
     if BarHideForm <> nil then BarHideForm.UpdateStatus;
   end;

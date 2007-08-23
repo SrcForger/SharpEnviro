@@ -1242,6 +1242,9 @@ var
   TempModule : TModule;
   n : integer;
 begin
+  if not ShowMiniThrobbers then
+    exit;
+    
   for n := 0 to FModules.Count -1 do
   begin
     TempModule := TModule(FModules.Items[n]);
