@@ -38,6 +38,7 @@ type
     FTimer : TTimer;
     FAutoModeList : array of boolean;
     FOffsetList : array of TRect;
+    FMonIDList : array of integer;
     procedure OnTimer(Sender : TObject);
   public
     constructor Create; reintroduce;
@@ -69,6 +70,7 @@ begin
 
   setlength(FAutoModeList,0);
   setlength(FOffsetList,0);
+  setlength(FMonIDList,0);
 
   FTimer := TTimer.Create(nil);
   FTimer.Interval := 1000;
@@ -83,6 +85,7 @@ begin
   SetFullScreenArea;
   setlength(FOffsetList,0);
   setlength(FAutoModeList,0);
+  setlength(FMonIDList,0);
 
   inherited Destroy;
 end;
@@ -110,6 +113,8 @@ var
   BR : array of TBarRect;
   Area : TRect;
   am : boolean;
+  MonID : integer;
+  Index : integer;
 begin
   setlength(BR,0);
   for n := 0 to SharpApi.GetSharpBarCount - 1 do
@@ -119,9 +124,21 @@ begin
   end;
   for n := 0 to Screen.MonitorCount - 1 do
   begin
+    if Screen.Monitors[n] = Screen.PrimaryMonitor then
+      MonID := -100
+      else MonID := Screen.Monitors[n].MonitorNum;
+
+    Index := -1;
+    for i := 0 to High(FMonIDList) do
+      if FMonIDList[i] = MonID then
+      begin
+        Index := i;
+        break;
+      end;
+
     Area := Screen.Monitors[n].BoundsRect;
-    if n <= High(FAutoModeList) then
-      am := FAutoModeList[n]
+    if Index <> -1 then
+      am := FAutoModeList[Index]
       else am := True;
     if am then
     begin
@@ -140,12 +157,12 @@ begin
     end;
 
     // apply custom monitor offsets
-    if n <= High(FOffsetList) then
+    if Index <> -1 then
     begin
-      Area.Left   := Area.Left + FOffsetList[n].Left;
-      Area.Top    := Area.Top + FOffsetList[n].Top;
-      Area.Right  := Area.Right - FOffsetList[n].Right;
-      Area.Bottom := Area.Bottom - FOffsetList[n].Bottom;
+      Area.Left   := Area.Left + FOffsetList[Index].Left;
+      Area.Top    := Area.Top + FOffsetList[Index].Top;
+      Area.Right  := Area.Right - FOffsetList[Index].Right;
+      Area.Bottom := Area.Bottom - FOffsetList[Index].Bottom;
     end;
 
     if (Win32MajorVersion = 5) and (Win32MinorVersion >= 1) then
@@ -189,7 +206,7 @@ var
   Dir : String;
   n : integer;
 begin
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\';
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\';
   setlength(FAutoModeList,0);
   setlength(FOffsetList,0);
   if FileExists(Dir + 'DeskArea.xml') then
@@ -203,6 +220,8 @@ begin
            for n := 0 to Count - 1 do
                with XML.Root.Items.ItemNamed['Monitors'].Items.Item[n].Items do
                begin
+                 setlength(FMonIDList,length(FMonIDList)+1);
+                 FMonIDList[High(FMonIDList)] := IntValue('ID',-1);
                  setlength(FAutoModeList,length(FAutoModeList)+1);
                  FAutoModeList[High(FAutoModeList)] := BoolValue('AutoMode',True);
                  setlength(FOffsetList,length(FOffsetList)+1);
@@ -215,7 +234,6 @@ begin
                  end;
                end;
          end;
-
     finally
       XML.Free;
     end;
