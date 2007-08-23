@@ -31,6 +31,7 @@ uses
   Classes,
   SysUtils,
   SharpApi,
+  SharpCenterApi,
   uDeskAreaManager in 'uDeskAreaManager.pas';
 
 type
@@ -87,12 +88,19 @@ begin
       0 : DeskAreaManager.Enable;
       1 : DeskAreaManager.Disable;
     end;
-  end;
-
+  end else
   if Message.Msg = WM_SHARPEUPDATEACTIONS then
   begin
     RegisterActionEx('!EnableDeskArea','Services',h,0);
     RegisterActionEx('!DisableDeskArea','Services',h,1);
+  end else
+  if Message.Msg = WM_SHARPEUPDATESETTINGS then
+  begin
+    if Message.WParam = Integer(suDeskArea) then
+    begin
+      DeskAreaManager.LoadSettings;
+      DeskAreaManager.SetDeskArea;
+    end;
   end;
 end;
 

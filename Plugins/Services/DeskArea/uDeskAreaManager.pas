@@ -207,8 +207,9 @@ var
   n : integer;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\';
-  setlength(FAutoModeList,0);
   setlength(FOffsetList,0);
+  setlength(FAutoModeList,0);
+  setlength(FMonIDList,0);
   if FileExists(Dir + 'DeskArea.xml') then
   begin
     XML := TJvSimpleXML.Create(nil);
