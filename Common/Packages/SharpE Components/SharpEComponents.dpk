@@ -60,6 +60,7 @@ contains
   SharpEHotkeyEdit in '..\..\Delphi Components\SharpEHotkeyEdit\SharpEHotkeyEdit.pas',
   SharpESwatchCollection in '..\..\Delphi Components\SharpESwatchCollection\SharpESwatchCollection.pas',
   SharpESwatchManager in '..\..\Delphi Components\SharpESwatchManager\SharpESwatchManager.pas',
-  SharpEPageControl in '..\..\Delphi Components\SharpEPageControl\SharpEPageControl.pas';
+  SharpEPageControl in '..\..\Delphi Components\SharpEPageControl\SharpEPageControl.pas',
+  SharpEUIC in '..\..\Delphi Components\SharpEUIC\SharpEUIC.pas';
 
 end.
