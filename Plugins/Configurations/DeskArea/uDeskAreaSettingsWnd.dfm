@@ -140,7 +140,7 @@ object frmDASettings: TfrmDASettings
       Value = 0
       Prefix = 'Left: '
       Suffix = 'px'
-      Description = 'Grid Height'
+      Description = 'Left Offset'
       PopPosition = ppRight
       PercentDisplay = False
       OnChangeValue = sgb_leftChangeValue
@@ -155,7 +155,7 @@ object frmDASettings: TfrmDASettings
       Value = 0
       Prefix = 'Top: '
       Suffix = 'px'
-      Description = 'Grid Width'
+      Description = 'Top Offset'
       PopPosition = ppRight
       PercentDisplay = False
       OnChangeValue = sgb_leftChangeValue
@@ -170,7 +170,7 @@ object frmDASettings: TfrmDASettings
       Value = 0
       Prefix = 'Bottom: '
       Suffix = 'px'
-      Description = 'Grid Width'
+      Description = 'Bottom Offset'
       PopPosition = ppRight
       PercentDisplay = False
       OnChangeValue = sgb_leftChangeValue
@@ -185,7 +185,7 @@ object frmDASettings: TfrmDASettings
       Value = 0
       Prefix = 'Right: '
       Suffix = 'px'
-      Description = 'Grid Width'
+      Description = 'Right Offset'
       PopPosition = ppRight
       PercentDisplay = False
       OnChangeValue = sgb_leftChangeValue
