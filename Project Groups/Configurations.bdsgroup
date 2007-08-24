@@ -1,18 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
-  <PersonalityInfo>
-    <Option>
-      <Option Name="Personality">Default.Personality</Option>
-      <Option Name="ProjectType"></Option>
-      <Option Name="Version">1.0</Option>
-      <Option Name="GUID">{CCB8D389-B60B-4A77-BAF0-AA00677DC762}</Option>
-    </Option>
-  </PersonalityInfo>
-  <Default.Personality>
-    
-    
-    
-    <Projects>
+	<PersonalityInfo>
+		<Option>
+			<Option Name="Personality">Default.Personality</Option>
+			<Option Name="ProjectType"></Option>
+			<Option Name="Version">1.0</Option>
+			<Option Name="GUID">{CCB8D389-B60B-4A77-BAF0-AA00677DC762}</Option>
+		</Option>
+	</PersonalityInfo>
+	<Default.Personality>  <Projects>
       <Projects Name="Curses.dll">..\Plugins\Configurations\Curses\Curses.bdsproj</Projects>
       <Projects Name="Desktop.dll">..\Plugins\Configurations\Desktop\Desktop.bdsproj</Projects>
       <Projects Name="Hotkeys.dll">..\Plugins\Configurations\Hotkeys\Hotkeys.bdsproj</Projects>
@@ -25,7 +21,9 @@
       <Projects Name="ThemeSkinList.dll">..\Plugins\Configurations\Theme Skin\ThemeSkinList.bdsproj</Projects>
       <Projects Name="Wallpaper.dll">..\Plugins\Configurations\Wallpaper\Wallpaper.bdsproj</Projects>
       <Projects Name="Weather.dll">..\Plugins\Configurations\Weather\Weather.bdsproj</Projects>
-      <Projects Name="Targets">Curses.dll Desktop.dll Hotkeys.dll IconList.dll Scheme.dll SharpBarList.dll SharpDesk.dll SharpMenu.dll ThemeList.dll ThemeSkinList.dll Wallpaper.dll Weather.dll</Projects>
+      <Projects Name="Font.dll">..\Plugins\Configurations\Font\Font.bdsproj</Projects>
+      <Projects Name="DeskArea.dll">..\Plugins\Configurations\DeskArea\DeskArea.bdsproj</Projects>
+      <Projects Name="Targets">Curses.dll Desktop.dll Hotkeys.dll IconList.dll Scheme.dll SharpBarList.dll SharpDesk.dll SharpMenu.dll ThemeList.dll ThemeSkinList.dll Wallpaper.dll Weather.dll Font.dll DeskArea.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
