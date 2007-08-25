@@ -53,21 +53,6 @@ object frmMenuSettings: TfrmMenuSettings
         Transparent = True
         WordWrap = True
       end
-      object cobo_wrappos: TComboBox
-        Left = 288
-        Top = 140
-        Width = 121
-        Height = 21
-        Style = csDropDownList
-        Ctl3D = True
-        ItemHeight = 13
-        ParentCtl3D = False
-        TabOrder = 0
-        OnChange = cobo_wrapposChange
-        Items.Strings = (
-          'Bottom'
-          'Top')
-      end
       object cb_cacheicons: TCheckBox
         AlignWithMargins = True
         Left = 8
@@ -80,7 +65,7 @@ object frmMenuSettings: TfrmMenuSettings
         Margins.Bottom = 0
         Align = alTop
         Caption = 'Cache Icons (Advanced)'
-        TabOrder = 1
+        TabOrder = 0
         OnClick = cb_cacheiconsClick
       end
       object Panel1: TPanel
@@ -91,7 +76,7 @@ object frmMenuSettings: TfrmMenuSettings
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
-        TabOrder = 2
+        TabOrder = 1
         object Label1: TLabel
           Left = 176
           Top = 75
@@ -157,7 +142,7 @@ object frmMenuSettings: TfrmMenuSettings
           PercentDisplay = False
           OnChangeValue = sgb_wrapcountChangeValue
         end
-        object ComboBox1: TComboBox
+        object cobo_wrappos: TComboBox
           Left = 288
           Top = 72
           Width = 121

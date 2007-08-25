@@ -47,13 +47,12 @@ type
   TfrmMenuSettings = class(TForm)
     JvPageList1: TJvPageList;
     JvSettingsPage: TJvStandardPage;
-    cobo_wrappos: TComboBox;
     cb_cacheicons: TCheckBox;
     Label2: TLabel;
     Panel1: TPanel;
     cb_wrap: TCheckBox;
     sgb_wrapcount: TSharpeGaugeBox;
-    ComboBox1: TComboBox;
+    cobo_wrappos: TComboBox;
     Label1: TLabel;
     Label4: TLabel;
     procedure cobo_wrapposChange(Sender: TObject);
