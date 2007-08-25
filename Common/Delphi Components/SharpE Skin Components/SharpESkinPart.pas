@@ -987,6 +987,8 @@ begin
   TempBmp.SetSize(w+20,h+20);
   TempBmp.Clear(color32(0,0,0,0));
   TempBmp.Font.Assign(bmp.Font);
+  TempBmp.DrawMode := dmBlend;
+  TempBmp.CombineMode := cmMerge;
 
   if FShadow then
   begin
@@ -2097,13 +2099,13 @@ begin
   if GetSkinFontModName then
     result.FName := GetSkinFontValueName;
   if GetSkinFontModAlpha then
-    result.FAlpha := result.FAlpha + GetSkinFontValueAlpha;
+    result.FAlpha := Max(0,Min(255,result.FAlpha + GetSkinFontValueAlpha));
   if GetSkinFontModUseShadow then
     result.FShadow := GetSkinFontValueUseShadow;
   if GetSkinFontModShadowType then
     result.FShadowType := TShadowType(GetSkinFontValueShadowType);
   if GetSkinFontModShadowAlpha then
-    result.FShadowAlpha := GetSkinFontValueShadowAlpha;
+    result.FShadowAlpha := Max(0,Min(255,result.FShadowAlpha + GetSkinFontValueShadowAlpha));
   if GetSkinFontModBold then
     result.FStyleBold := GetSkinFontValueBold;
   if GetSkinFontModItalic then
