@@ -61,6 +61,7 @@ var
   DAItem : TDAItem;
   Mon : TMonitor;
   MonID : integer;
+  failed : boolean;
 begin
   if frmDASettings = nil then frmDASettings := TfrmDASettings.Create(nil);
 
@@ -71,6 +72,7 @@ begin
   frmDASettings.BorderStyle := bsNone;
 
   FName := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\DeskArea.xml';
+  failed := True;
   XML := TJvSimpleXML.Create(nil);
   try
     if FileExists(FName) then
@@ -101,9 +103,26 @@ begin
         if MonID = -100 then
            frmDASettings.UpdateGUIFromDAItem(DAItem);
       end;
+      failed := False;
     end;
-  finally
-    XML.Free;
+  except
+  end;
+  XML.Free;  
+
+  if Failed then
+  begin
+    DAList.Clear;
+
+    for n := 0 to Screen.MonitorCount - 1 do
+    begin
+      Mon := Screen.Monitors[n];
+      if Mon.Primary then MonID := -100
+         else MonID := Mon.MonitorNum;
+      DAItem := TDAItem.Create;
+      DAItem.MonID := MonID;
+      DAItem.Mon := Mon;
+      DAList.Add(DAItem);
+    end;
   end;
 
   frmDASettings.Show;
@@ -198,11 +217,6 @@ var
 begin
   if frmDASettings <> nil then
   begin
-    if DAlist.Count = 0 then begin
-      ATabs.Add('Primary Monitor',nil,'','');
-      exit;
-    end;
-
     for n := 0 to DAList.Count - 1 do
         if TDAItem(DAList.Items[n]).MonID = - 100 then
         begin
