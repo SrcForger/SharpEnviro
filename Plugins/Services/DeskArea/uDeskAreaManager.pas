@@ -165,7 +165,7 @@ begin
       Area.Bottom := Area.Bottom - FOffsetList[Index].Bottom;
     end;
 
-    if (Win32MajorVersion = 5) and (Win32MinorVersion >= 1) then
+    if ((Win32MajorVersion = 5) and (Win32MinorVersion >= 1)) or (Win32MajorVersion = 6) then
     begin
       if not uxTheme.IsThemeActive then
       begin
