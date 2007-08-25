@@ -154,7 +154,7 @@ procedure TSharpEUIC.Paint;
 begin
   if FHasChanged then
   begin
-    Canvas.Brush.Color := FBackgroundColor;
+    Canvas.Brush.Color := FNormalColor;
     Canvas.FillRect(ClientRect);
 
     if FBorder then
