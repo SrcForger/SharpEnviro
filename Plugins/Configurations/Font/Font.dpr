@@ -207,7 +207,7 @@ end;
 
 function SetSettingType: TSU_UPDATE_ENUM;
 begin
-  result := suSkin;
+  result := suSkinFont;
 end;
 
 

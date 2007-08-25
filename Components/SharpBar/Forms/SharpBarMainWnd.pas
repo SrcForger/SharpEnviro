@@ -569,6 +569,11 @@ begin
 
   // Step1: Update settings and prepare modules for updating
   case msg.WParam of
+    Integer(suSkinFont) :
+      begin
+        SharpThemeApi.LoadTheme(True,[tpSkinFont]);
+        SkinManager.RefreshControls;
+      end;
     Integer(suSkinFileChanged) : SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
     Integer(suTheme) :
       begin

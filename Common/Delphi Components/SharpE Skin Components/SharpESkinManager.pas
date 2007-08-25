@@ -246,21 +246,25 @@ begin
 
   if (Msg.Msg = WM_SHARPEUPDATESETTINGS) then
   begin
-    if (Msg.WParam = Integer(suSkinFileChanged)) then
+    if (Msg.WParam = Integer(suSkinFont)) then
+    begin
+      if not (csDesigning in ComponentState) then
+        SharpThemeApi.LoadTheme(False,[tpSkinFont]);
+        RefreshControls;
+    end
+    else if (Msg.WParam = Integer(suSkinFileChanged)) then
     begin
       if not (csDesigning in ComponentState) then
          SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
       UpdateSkin;
-      exit;
-    end;
-    if (Msg.WParam = Integer(suScheme)) then
+    end
+    else if (Msg.WParam = Integer(suScheme)) then
     begin
       if not (csDesigning in ComponentState) then
          SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
       UpdateScheme;
       if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
       RefreshControls;
-      exit;
     end;
   end;
 end;
