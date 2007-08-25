@@ -486,7 +486,7 @@ begin
   loaded := False;
   exists := False;
   SList := TStringList.Create;
-  SList.Add(SharpApi.GetSharpeUserSettingsPath + '\Themes\' + sTheme + '\' + fedit_image.text);
+  SList.Add(SharpApi.GetSharpeUserSettingsPath + 'Themes\' + sTheme + '\' + fedit_image.text);
   SList.Add(fedit_image.text);
   SList.Add(SharpApi.GetSharpeDirectory + fedit_image.text);
   for i := 0 to SList.Count - 1 do

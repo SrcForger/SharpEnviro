@@ -72,7 +72,7 @@ begin
   frmWPSettings.BorderStyle := bsNone;
   frmWPSettings.sTheme := APluginID;
 
-  FName := SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmWPSettings.sTheme+'\Wallpaper.xml';
+  FName := SharpApi.GetSharpeUserSettingsPath + 'Themes\'+frmWPSettings.sTheme+'\Wallpaper.xml';
   failed := True;
   XML := TJvSimpleXML.Create(nil);
   try
@@ -171,7 +171,7 @@ var
   k : integer;
   XML : TJvsimpleXML;
 begin
-  FName := SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmWPSettings.sTheme+'\Wallpaper.xml';
+  FName := SharpApi.GetSharpeUserSettingsPath + 'Themes\'+frmWPSettings.sTheme+'\Wallpaper.xml';
   XML := TJvSimpleXML.Create(nil);
   XML.Root.Clear;
   try
