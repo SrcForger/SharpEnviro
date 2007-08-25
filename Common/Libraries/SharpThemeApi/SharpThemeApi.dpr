@@ -236,7 +236,7 @@ const
   DESKTOPICON_FILE = 'DesktopIcon.xml';
   DESKTOPANIM_FILE = 'DesktopAnimation.xml';
   WALLPAPER_FILE = 'Wallpaper.xml';
-  SKINFONT_FILE = 'SkinFont.xml';
+  SKINFONT_FILE = 'Font.xml';
 
   ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,
                      tpDesktopAnimation,tpWallpaper,tpSkinFont];
@@ -1707,7 +1707,7 @@ begin
      (ct - Theme.Info.LastUpdate > 1) or (ForceReload) then LoadThemeInfo;
   if (tpSkin in ThemeParts) and
      (ct - Theme.Skin.LastUpdate > 1) or (ForceReload) then LoadThemeSkin;
-  if (tpSkin in ThemeParts) or (tpSkinFont in ThemeParts) and
+  if ((tpSkin in ThemeParts) or (tpSkinFont in ThemeParts)) and
      (ct - Theme.SkinFont.LastUpdate > 1) or (ForceReload) then LoadThemeSkinFont;
   if (tpScheme  in ThemeParts) and
      (ct - Theme.Scheme.LastUpdate > 1) or (ForceReload) then LoadThemeScheme;
