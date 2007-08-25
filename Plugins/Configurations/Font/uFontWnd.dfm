@@ -2,7 +2,7 @@ object frmFont: TfrmFont
   Left = 0
   Top = 0
   Caption = 'frmFont'
-  ClientHeight = 369
+  ClientHeight = 463
   ClientWidth = 418
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -43,25 +43,149 @@ object frmFont: TfrmFont
     Transparent = False
     WordWrap = True
   end
+  object Label4: TLabel
+    AlignWithMargins = True
+    Left = 8
+    Top = 81
+    Width = 402
+    Height = 20
+    Margins.Left = 8
+    Margins.Top = 0
+    Margins.Right = 8
+    Margins.Bottom = 0
+    Align = alTop
+    AutoSize = False
+    Caption = 'Use this option to select a new font type'
+    EllipsisPosition = epEndEllipsis
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGrayText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    Transparent = False
+    WordWrap = True
+    ExplicitLeft = 3
+    ExplicitTop = 87
+  end
+  object Label5: TLabel
+    AlignWithMargins = True
+    Left = 8
+    Top = 131
+    Width = 402
+    Height = 20
+    Margins.Left = 8
+    Margins.Top = 0
+    Margins.Right = 8
+    Margins.Bottom = 0
+    Align = alTop
+    AutoSize = False
+    Caption = 'Change the size the font will be enlarged/shrinked by'
+    EllipsisPosition = epEndEllipsis
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGrayText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    Transparent = False
+    WordWrap = True
+    ExplicitLeft = 3
+    ExplicitTop = 141
+  end
+  object Label6: TLabel
+    AlignWithMargins = True
+    Left = 8
+    Top = 181
+    Width = 402
+    Height = 20
+    Margins.Left = 8
+    Margins.Top = 0
+    Margins.Right = 8
+    Margins.Bottom = 0
+    Align = alTop
+    AutoSize = False
+    Caption = 'Change how the font visibility will be increased/decreased'
+    EllipsisPosition = epEndEllipsis
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGrayText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    Transparent = False
+    WordWrap = True
+    ExplicitLeft = 3
+    ExplicitTop = 185
+  end
+  object Label7: TLabel
+    AlignWithMargins = True
+    Left = 8
+    Top = 359
+    Width = 402
+    Height = 16
+    Margins.Left = 8
+    Margins.Top = 4
+    Margins.Right = 8
+    Margins.Bottom = 0
+    Align = alTop
+    AutoSize = False
+    Caption = 'Use the options below to change the font style'
+    EllipsisPosition = epEndEllipsis
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGrayText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    Transparent = False
+    WordWrap = True
+    ExplicitTop = 333
+  end
+  object Label8: TLabel
+    AlignWithMargins = True
+    Left = 8
+    Top = 227
+    Width = 402
+    Height = 20
+    Margins.Left = 8
+    Margins.Top = 0
+    Margins.Right = 8
+    Margins.Bottom = 0
+    Align = alTop
+    AutoSize = False
+    Caption = 'Enable/Disable drawing ot text shadows'
+    EllipsisPosition = epEndEllipsis
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGrayText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    Transparent = False
+    WordWrap = True
+    ExplicitLeft = 3
+    ExplicitTop = 241
+  end
   object Panel1: TPanel
     Left = 0
-    Top = 321
+    Top = 455
     Width = 418
     Height = 0
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
     TabOrder = 0
-    ExplicitTop = 117
+    ExplicitTop = 321
   end
   object UIC_Size: TSharpEUIC
     AlignWithMargins = True
     Left = 3
-    Top = 84
+    Top = 102
     Width = 412
     Height = 29
     Margins.Top = 1
-    Margins.Bottom = 2
+    Margins.Bottom = 0
     Align = alTop
     BevelOuter = bvNone
     Caption = 'UIC_Size'
@@ -77,7 +201,8 @@ object frmFont: TfrmFont
     DefaultValue = '0'
     MonitorControl = sgb_size
     NormalColor = clWhite
-    ExplicitTop = 86
+    OnReset = UIC_Reset
+    ExplicitTop = 84
     object sgb_size: TSharpeGaugeBox
       Left = 6
       Top = 4
@@ -101,21 +226,22 @@ object frmFont: TfrmFont
     Width = 412
     Height = 31
     Margins.Top = 1
-    Margins.Bottom = 2
+    Margins.Bottom = 0
     Align = alTop
     BevelOuter = bvNone
+    Color = clWhite
     ParentBackground = False
     TabOrder = 2
     RoundValue = 10
     BorderColor = clBtnShadow
     Border = True
     BackgroundColor = clBtnFace
-    HasChanged = True
+    HasChanged = False
     AutoReset = False
     DefaultValue = '-1'
     MonitorControl = cbxFontName
     NormalColor = clWhite
-    ExplicitTop = 51
+    OnReset = UIC_Reset
     object Label2: TLabel
       Left = 6
       Top = 8
@@ -139,11 +265,11 @@ object frmFont: TfrmFont
   object UIC_Alpha: TSharpEUIC
     AlignWithMargins = True
     Left = 3
-    Top = 116
+    Top = 152
     Width = 412
     Height = 29
     Margins.Top = 1
-    Margins.Bottom = 2
+    Margins.Bottom = 0
     Align = alTop
     BevelOuter = bvNone
     Caption = 'UIC_Size'
@@ -159,8 +285,8 @@ object frmFont: TfrmFont
     DefaultValue = '0'
     MonitorControl = sgb_alpha
     NormalColor = clWhite
-    ExplicitLeft = 6
-    ExplicitTop = 92
+    OnReset = UIC_Reset
+    ExplicitTop = 116
     object sgb_alpha: TSharpeGaugeBox
       Left = 6
       Top = 4
@@ -180,11 +306,11 @@ object frmFont: TfrmFont
   object UIC_Shadow: TSharpEUIC
     AlignWithMargins = True
     Left = 3
-    Top = 148
+    Top = 203
     Width = 412
     Height = 24
-    Margins.Top = 1
-    Margins.Bottom = 2
+    Margins.Top = 2
+    Margins.Bottom = 0
     Align = alTop
     BevelOuter = bvNone
     Caption = 'UIC_Size'
@@ -200,6 +326,8 @@ object frmFont: TfrmFont
     DefaultValue = 'False'
     MonitorControl = cb_shadow
     NormalColor = clWhite
+    OnReset = UIC_Reset
+    ExplicitTop = 148
     object cb_shadow: TCheckBox
       Left = 6
       Top = 4
@@ -210,62 +338,51 @@ object frmFont: TfrmFont
       OnClick = cb_shadowClick
     end
   end
-  object UIC_ShadowType: TSharpEUIC
+  object UIC_Bold: TSharpEUIC
     AlignWithMargins = True
-    Left = 19
-    Top = 175
-    Width = 396
-    Height = 31
-    Margins.Left = 19
-    Margins.Top = 1
+    Left = 3
+    Top = 375
+    Width = 412
+    Height = 24
+    Margins.Top = 0
     Margins.Bottom = 2
     Align = alTop
     BevelOuter = bvNone
+    Color = clWhite
     ParentBackground = False
     TabOrder = 5
     RoundValue = 10
     BorderColor = clBtnShadow
     Border = True
     BackgroundColor = clBtnFace
-    HasChanged = True
+    HasChanged = False
     AutoReset = False
-    DefaultValue = '-1'
-    MonitorControl = cb_shadowtype
+    DefaultValue = 'False'
+    MonitorControl = cb_bold
     NormalColor = clWhite
-    object Label3: TLabel
+    OnReset = UIC_Reset
+    ExplicitTop = 332
+    object cb_bold: TCheckBox
       Left = 6
-      Top = 7
-      Width = 62
-      Height = 13
-      Caption = 'ShadowType'
-    end
-    object cb_shadowtype: TComboBox
-      Left = 84
       Top = 4
-      Width = 125
-      Height = 23
-      Style = csOwnerDrawFixed
-      DropDownCount = 12
-      ItemHeight = 17
+      Width = 97
+      Height = 17
+      Caption = 'Bold'
       TabOrder = 0
-      OnChange = cb_shadowtypeChange
-      Items.Strings = (
-        'Left'
-        'Right'
-        'Outline')
+      OnClick = cb_boldClick
     end
   end
-  object UIC_ShadowAlpha: TSharpEUIC
+  object UIC_Underline: TSharpEUIC
     AlignWithMargins = True
-    Left = 19
-    Top = 209
-    Width = 396
-    Height = 29
-    Margins.Left = 19
+    Left = 3
+    Top = 429
+    Width = 412
+    Height = 24
     Margins.Top = 1
     Margins.Bottom = 2
     Align = alTop
     BevelOuter = bvNone
+    Caption = 'UIC_Size'
     Color = clWhite
     ParentBackground = False
     TabOrder = 6
@@ -274,33 +391,26 @@ object frmFont: TfrmFont
     Border = True
     BackgroundColor = clBtnFace
     HasChanged = False
-    AutoReset = True
-    DefaultValue = '0'
-    MonitorControl = sgb_shadowalpha
+    AutoReset = False
+    DefaultValue = 'False'
+    MonitorControl = cb_Underline
     NormalColor = clWhite
-    ExplicitLeft = 8
-    ExplicitTop = 231
-    ExplicitWidth = 412
-    object sgb_shadowalpha: TSharpeGaugeBox
+    OnReset = UIC_Reset
+    ExplicitTop = 295
+    object cb_Underline: TCheckBox
       Left = 6
       Top = 4
-      Width = 147
-      Height = 21
-      Min = -255
-      Max = 255
-      Value = 0
-      Prefix = 'Shadow Opacity: '
-      Suffix = '%'
-      Description = 'Change shadow opacity'
-      PopPosition = ppRight
-      PercentDisplay = True
-      OnChangeValue = sgb_shadowalphaChangeValue
+      Width = 97
+      Height = 17
+      Caption = 'Underline'
+      TabOrder = 0
+      OnClick = cb_UnderlineClick
     end
   end
-  object UIC_Bold: TSharpEUIC
+  object UIC_Italic: TSharpEUIC
     AlignWithMargins = True
     Left = 3
-    Top = 241
+    Top = 402
     Width = 412
     Height = 24
     Margins.Top = 1
@@ -317,79 +427,10 @@ object frmFont: TfrmFont
     HasChanged = False
     AutoReset = False
     DefaultValue = 'False'
-    MonitorControl = cb_bold
-    NormalColor = clWhite
-    ExplicitLeft = -2
-    ExplicitTop = 266
-    object cb_bold: TCheckBox
-      Left = 6
-      Top = 4
-      Width = 97
-      Height = 17
-      Caption = 'Bold'
-      TabOrder = 0
-      OnClick = cb_boldClick
-    end
-  end
-  object UIC_Underline: TSharpEUIC
-    AlignWithMargins = True
-    Left = 3
-    Top = 295
-    Width = 412
-    Height = 24
-    Margins.Top = 1
-    Margins.Bottom = 2
-    Align = alTop
-    BevelOuter = bvNone
-    Caption = 'UIC_Size'
-    Color = clWhite
-    ParentBackground = False
-    TabOrder = 8
-    RoundValue = 10
-    BorderColor = clBtnShadow
-    Border = True
-    BackgroundColor = clBtnFace
-    HasChanged = False
-    AutoReset = False
-    DefaultValue = 'False'
-    MonitorControl = cb_Underline
-    NormalColor = clWhite
-    ExplicitLeft = 6
-    ExplicitTop = 247
-    object cb_Underline: TCheckBox
-      Left = 6
-      Top = 4
-      Width = 97
-      Height = 17
-      Caption = 'Underline'
-      TabOrder = 0
-      OnClick = cb_UnderlineClick
-    end
-  end
-  object UIC_Italic: TSharpEUIC
-    AlignWithMargins = True
-    Left = 3
-    Top = 268
-    Width = 412
-    Height = 24
-    Margins.Top = 1
-    Margins.Bottom = 2
-    Align = alTop
-    BevelOuter = bvNone
-    Color = clWhite
-    ParentBackground = False
-    TabOrder = 9
-    RoundValue = 10
-    BorderColor = clBtnShadow
-    Border = True
-    BackgroundColor = clBtnFace
-    HasChanged = False
-    AutoReset = False
-    DefaultValue = 'False'
     MonitorControl = cb_Italic
     NormalColor = clWhite
-    ExplicitLeft = 8
-    ExplicitTop = 264
+    OnReset = UIC_Reset
+    ExplicitTop = 268
     object cb_Italic: TCheckBox
       Left = 6
       Top = 4
@@ -398,6 +439,161 @@ object frmFont: TfrmFont
       Caption = 'Italic'
       TabOrder = 0
       OnClick = cb_ItalicClick
+    end
+  end
+  object textpanel: TPanel
+    Left = 0
+    Top = 247
+    Width = 418
+    Height = 108
+    Align = alTop
+    BevelOuter = bvNone
+    ParentColor = True
+    TabOrder = 8
+    ExplicitTop = 227
+    object lb_shadowtype: TLabel
+      AlignWithMargins = True
+      Left = 25
+      Top = 32
+      Width = 385
+      Height = 20
+      Margins.Left = 25
+      Margins.Top = 0
+      Margins.Right = 8
+      Margins.Bottom = 0
+      Align = alTop
+      AutoSize = False
+      Caption = 'Select how the text shadow will be rendered.'
+      EllipsisPosition = epEndEllipsis
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGrayText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      ExplicitTop = 259
+    end
+    object lb_shadowalpha: TLabel
+      AlignWithMargins = True
+      Left = 25
+      Top = 82
+      Width = 385
+      Height = 20
+      Margins.Left = 25
+      Margins.Top = 0
+      Margins.Right = 8
+      Margins.Bottom = 0
+      Align = alTop
+      AutoSize = False
+      Caption = 
+        'Change how the text shadow visibility will be increased/decrease' +
+        'd'
+      EllipsisPosition = epEndEllipsis
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGrayText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      Transparent = False
+      WordWrap = True
+      ExplicitLeft = 20
+      ExplicitTop = 309
+    end
+    object UIC_ShadowType: TSharpEUIC
+      AlignWithMargins = True
+      Left = 19
+      Top = 1
+      Width = 396
+      Height = 31
+      Margins.Left = 19
+      Margins.Top = 1
+      Margins.Bottom = 0
+      Align = alTop
+      BevelOuter = bvNone
+      Color = clWhite
+      ParentBackground = False
+      TabOrder = 0
+      RoundValue = 10
+      BorderColor = clBtnShadow
+      Border = True
+      BackgroundColor = clBtnFace
+      HasChanged = False
+      AutoReset = False
+      DefaultValue = '-1'
+      MonitorControl = cb_shadowtype
+      NormalColor = clWhite
+      OnReset = UIC_Reset
+      ExplicitLeft = 20
+      ExplicitTop = 2
+      ExplicitWidth = 394
+      object Label3: TLabel
+        Left = 6
+        Top = 7
+        Width = 65
+        Height = 13
+        Caption = 'Shadow Type'
+      end
+      object cb_shadowtype: TComboBox
+        Left = 84
+        Top = 4
+        Width = 125
+        Height = 23
+        Style = csOwnerDrawFixed
+        DropDownCount = 12
+        ItemHeight = 17
+        TabOrder = 0
+        OnChange = cb_shadowtypeChange
+        Items.Strings = (
+          'Left'
+          'Right'
+          'Outline')
+      end
+    end
+    object UIC_ShadowAlpha: TSharpEUIC
+      AlignWithMargins = True
+      Left = 19
+      Top = 53
+      Width = 396
+      Height = 29
+      Margins.Left = 19
+      Margins.Top = 1
+      Margins.Bottom = 0
+      Align = alTop
+      BevelOuter = bvNone
+      Color = clWhite
+      ParentBackground = False
+      TabOrder = 1
+      RoundValue = 10
+      BorderColor = clBtnShadow
+      Border = True
+      BackgroundColor = clBtnFace
+      HasChanged = False
+      AutoReset = True
+      DefaultValue = '0'
+      MonitorControl = sgb_shadowalpha
+      NormalColor = clWhite
+      OnReset = UIC_Reset
+      ExplicitLeft = 20
+      ExplicitTop = 54
+      ExplicitWidth = 394
+      object sgb_shadowalpha: TSharpeGaugeBox
+        Left = 6
+        Top = 4
+        Width = 147
+        Height = 21
+        Min = -255
+        Max = 255
+        Value = 0
+        Prefix = 'Shadow Opacity: '
+        Suffix = '%'
+        Description = 'Change shadow opacity'
+        PopPosition = ppRight
+        PercentDisplay = True
+        OnChangeValue = sgb_shadowalphaChangeValue
+      end
     end
   end
   object imlFontIcons: TImageList

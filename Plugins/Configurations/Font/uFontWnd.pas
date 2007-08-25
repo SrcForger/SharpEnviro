@@ -59,17 +59,25 @@ type
     sgb_alpha: TSharpeGaugeBox;
     UIC_Shadow: TSharpEUIC;
     cb_shadow: TCheckBox;
-    UIC_ShadowType: TSharpEUIC;
-    Label3: TLabel;
-    cb_shadowtype: TComboBox;
-    UIC_ShadowAlpha: TSharpEUIC;
-    sgb_shadowalpha: TSharpeGaugeBox;
     UIC_Bold: TSharpEUIC;
     cb_bold: TCheckBox;
     UIC_Underline: TSharpEUIC;
     cb_Underline: TCheckBox;
     UIC_Italic: TSharpEUIC;
     cb_Italic: TCheckBox;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    textpanel: TPanel;
+    UIC_ShadowType: TSharpEUIC;
+    Label3: TLabel;
+    cb_shadowtype: TComboBox;
+    lb_shadowtype: TLabel;
+    UIC_ShadowAlpha: TSharpEUIC;
+    sgb_shadowalpha: TSharpeGaugeBox;
+    lb_shadowalpha: TLabel;
+    Label8: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure sgb_sizeChangeValue(Sender: TObject; Value: Integer);
     procedure cbxFontNameDrawItem(Control: TWinControl; Index: Integer;
@@ -84,6 +92,7 @@ type
     procedure cb_UnderlineClick(Sender: TObject);
     procedure sgb_shadowalphaChangeValue(Sender: TObject; Value: Integer);
     procedure FormShow(Sender: TObject);
+    procedure UIC_Reset(Sender: TObject);
   private
     FFontList : TFontList;
   public
@@ -149,8 +158,7 @@ begin
       Add('ModItalic',UIC_Italic.HasChanged);
       Add('ModUnderline',UIC_Underline.HasChanged);
       Add('ValueSize',sgb_size.Value);
-      if cbxFontName.ItemIndex <> - 1 then
-        Add('ValueName',TFontInfo(FFontList.List.Objects[cbxFontName.ItemIndex]).FullName);
+      Add('ValueName',cbxFontName.Text);
       Add('ValueAlpha',sgb_Alpha.value);
       Add('ValueUseShadow',cb_Shadow.checked);
       Add('ValueShadowType',cb_shadowtype.ItemIndex);
@@ -186,6 +194,11 @@ end;
 procedure TfrmFont.sgb_sizeChangeValue(Sender: TObject; Value: Integer);
 begin
   UIC_Size.UpdateStatus;
+  SharpCenterApi.CenterDefineSettingsChanged;
+end;
+
+procedure TfrmFont.UIC_Reset(Sender: TObject);
+begin
   SharpCenterApi.CenterDefineSettingsChanged;
 end;
 
@@ -242,14 +255,8 @@ procedure TfrmFont.cb_shadowClick(Sender: TObject);
 begin
   UIC_Shadow.UpdateStatus;
   if cb_shadow.Checked then
-  begin
-    UIC_ShadowType.Height := 31;
-    UIC_ShadowAlpha.Height := 29;
-  end else
-  begin
-    UIC_ShadowType.Height := 0;
-    UIC_ShadowAlpha.Height := 0;
-  end;
+    textpanel.Height := 108
+    else textpanel.Height := 1;
   SharpCenterApi.CenterDefineSettingsChanged;
 end;
 

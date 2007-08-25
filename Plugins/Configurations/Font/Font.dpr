@@ -39,6 +39,7 @@ uses
   GR32,
   GR32_Image,
   PngSpeedButton,
+  SharpEUIC,
   uVistaFuncs,
   SysUtils,
   Graphics,
@@ -194,9 +195,18 @@ end;
 
 procedure GetCenterScheme(var ABackground: TColor;
       var AItemColor: TColor; var AItemSelectedColor: TColor);
+var
+  n : integer;
 begin
   if frmFont <> nil then
   begin
+    for n := 0 to frmFont.ComponentCount - 1 do
+      if frmFont.Components[n] is TSharpEUIC then
+      begin
+        TSharpEUIC(frmFont.Components[n]).NormalColor := clWindow;
+        TSharpEUIC(frmFont.Components[n]).BorderColor := AItemSelectedColor;
+        TSharpEUIC(frmFont.Components[n]).BackgroundColor := $00F7F7F7;
+      end;
   end;
 end;
 
