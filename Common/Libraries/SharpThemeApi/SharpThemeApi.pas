@@ -37,7 +37,8 @@ uses
   Classes;
 
 type
-  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,tpDesktopAnimation,tpWallpaper);
+  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,
+                tpDesktopAnimation,tpWallpaper,tpSkinFont);
   TThemeParts = set of TThemePart;
 
   TThemeWallpaperGradientType = (twgtHoriz,twgtVert,twgtTSHoriz,twgtTSVert);
@@ -81,7 +82,8 @@ type
   end;
 
 const
-  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,tpDesktopAnimation,tpWallpaper];
+  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,
+                     tpDesktopAnimation,tpWallpaper,tpSkinFont];
 
 
 // ThemeAPIControls

@@ -42,7 +42,8 @@ uses
   SharpAPI in '..\SharpAPI\SharpAPI.pas';
 
 type
-  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,tpDesktopAnimation,tpWallpaper);
+  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,
+                tpDesktopAnimation,tpWallpaper,tpSkinFont);
   TThemeParts = set of TThemePart;
 
   TSharpESchemeType = (stColor,stBoolean,stInteger);
@@ -157,6 +158,7 @@ type
   end;
 
   TThemeSkinFont = record
+    LastUpdate : Int64;
     ModSize          : boolean;
     ModName          : boolean;
     ModAlpha         : boolean;
@@ -236,7 +238,8 @@ const
   WALLPAPER_FILE = 'Wallpaper.xml';
   SKINFONT_FILE = 'SkinFont.xml';
 
-  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,tpDesktopAnimation,tpWallpaper];
+  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,
+                     tpDesktopAnimation,tpWallpaper,tpSkinFont];
 
   // ##########################################
   //   COLOR CONVERTING
@@ -544,6 +547,7 @@ procedure SetThemeSkinFontDefault;
 begin
   with Theme.SkinFont do
   begin
+    LastUpdate       := 0;
     ModSize          := False;
     ModName          := False;
     ModAlpha         := False;
@@ -718,6 +722,8 @@ begin
   finally
     XML.Free;
   end;
+
+  Theme.SkinFont.LastUpdate := DateTimeToUnix(Now());
 end;
 
 procedure LoadThemeIconSet;
@@ -1700,11 +1706,9 @@ begin
   if (tpInfo in ThemeParts) and
      (ct - Theme.Info.LastUpdate > 1) or (ForceReload) then LoadThemeInfo;
   if (tpSkin in ThemeParts) and
-     (ct - Theme.Skin.LastUpdate > 1) or (ForceReload) then
-     begin
-       LoadThemeSkin;
-       LoadThemeSkinFont;
-     end;
+     (ct - Theme.Skin.LastUpdate > 1) or (ForceReload) then LoadThemeSkin;
+  if (tpSkin in ThemeParts) or (tpSkinFont in ThemeParts) and
+     (ct - Theme.SkinFont.LastUpdate > 1) or (ForceReload) then LoadThemeSkinFont;
   if (tpScheme  in ThemeParts) and
      (ct - Theme.Scheme.LastUpdate > 1) or (ForceReload) then LoadThemeScheme;
   if (tpIconSet in ThemeParts) and
