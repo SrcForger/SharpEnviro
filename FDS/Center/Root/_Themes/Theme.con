@@ -1,17 +1,21 @@
 <SharpCenter>
   <Sections>
-    <Icons> 
-      <Dll>_themedlls\IconList.dll</Dll>
-      <Icon>_themedlls\Icons\IconSet.png</Icon>
-    </Icons>
-    <Desktop> 
-      <Dll>_themedlls\Desktop.dll</Dll>
-      <Icon>_themedlls\Icons\Desktop.png</Icon>
-    </Desktop>
     <Curses> 
       <Dll>_themedlls\Curses.dll</Dll>
       <Icon>_themedlls\Icons\Curses.png</Icon>
     </Curses>
+    <Desktop> 
+      <Dll>_themedlls\Desktop.dll</Dll>
+      <Icon>_themedlls\Icons\Desktop.png</Icon>
+    </Desktop>
+    <Font> 
+      <Dll>_themedlls\Font.dll</Dll>
+      <Icon>_themedlls\Icons\Font.png</Icon>
+    </Font>
+    <Icons> 
+      <Dll>_themedlls\IconList.dll</Dll>
+      <Icon>_themedlls\Icons\IconSet.png</Icon>
+    </Icons>
     <Scheme> 
       <Dll>_themedlls\Scheme.dll</Dll>
       <Icon>_themedlls\Icons\Scheme.png</Icon>
