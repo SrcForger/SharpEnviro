@@ -156,7 +156,7 @@ begin
   FMenu := pMenu;
 
   FMenu.RefreshDynamicContent;
-  FMenu.RenderTo(FPicture);
+  FMenu.RenderTo(FPicture,FOffset);
   PreMul(FPicture);
 
   Width  := FPicture.Width;
@@ -305,7 +305,7 @@ begin
     SubMenuTimer.Enabled := False;
     if submenu then
        SubMenuTimer.Enabled := True;
-    FMenu.RenderTo(FPicture);
+    FMenu.RenderTo(FPicture,FOffset);
     PreMul(FPicture);
     DrawWindow;
   end;
@@ -322,7 +322,7 @@ begin
 
   if FMenu.PerformMouseDown(self,Button, X,Y) then
   begin
-    FMenu.RenderTo(FPicture);
+    FMenu.RenderTo(FPicture,FOffset);
     PreMul(FPicture);
     DrawWindow;
   end;
@@ -339,7 +339,7 @@ begin
   p := ClientToScreen(point(X,Y));
   if FMenu.PerformMouseUp(self,Button, p.X,p.Y) then
   begin
-    FMenu.RenderTo(FPicture);
+    FMenu.RenderTo(FPicture,FOffset);
     PreMul(FPicture);
     DrawWindow;
   end;
@@ -465,16 +465,16 @@ begin
   begin
     if (CPos.Y >= Monitor.Top) and (CPos.Y <= Monitor.Top + 5) and (FOffset >= 0) then
     begin
-      if FMenu.ItemIndex <> -1 then
-      begin
-        FMenu.ItemIndex := -1;
-        FMenu.RenderTo(FPicture);
-        PreMul(FPicture);
-        DrawWindow;
-      end;
-
       FOffset := FOffset -15;
       if FOffset < 0 then FOffset := 0;
+      
+      if FMenu.ItemIndex <> -1 then
+        FMenu.ItemIndex := -1;
+
+      FMenu.RenderTo(FPicture,FOffset);
+      PreMul(FPicture);
+      DrawWindow;
+
       DrawWindow;
     end
     else
@@ -482,17 +482,17 @@ begin
         and (CPos.Y <= Monitor.Top + Monitor.Height)
         and (FOffset <= FPicture.Height - Monitor.Height) then
     begin
-      if FMenu.ItemIndex <> -1 then
-      begin
-        FMenu.ItemIndex := -1;
-        FMenu.RenderTo(FPicture);
-        PreMul(FPicture);
-        DrawWindow;
-      end;
-
       FOffset := FOffset +15;
       if FOffset > FPicture.Height - Monitor.Height then
          FOffset := FPicture.Height - Monitor.Height;
+
+      if FMenu.ItemIndex <> -1 then
+        FMenu.ItemIndex := -1;
+
+      FMenu.RenderTo(FPicture,FOffset);
+      PreMul(FPicture);
+      DrawWindow;
+
       DrawWindow;
     end else offsettimer.Enabled := False;
   end else offsettimer.Enabled := False;
@@ -559,7 +559,7 @@ begin
        FOffset := n - Height + FMenu.Background.Height - FMenu.NormalMenu.Height;
     if n < FOffset then
        FOffset := FOffset - FMenu.ItemsHeight[FMenu.ItemIndex];
-    FMenu.RenderTo(FPicture);
+    FMenu.RenderTo(FPicture,FOffset);
     PreMul(FPicture);
     DrawWindow;
   end else

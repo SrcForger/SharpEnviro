@@ -55,6 +55,7 @@ type
     FItems : TObjectList;
     FBackground : TBitmap32;
     FNormalMenu : TBitmap32;
+    FSpecialBackground : TBitmap32;
     FItemIndex : integer;
     FItemWidth : integer;
     FItemsHeight : TIntArray;
@@ -87,6 +88,7 @@ type
     procedure RenderNormalMenu;
     procedure RenderTo(Dst : TBitmap32); overload;
     procedure RenderTo(Dst : TBitmap32; pLeft,pTop : integer); overload;
+    procedure RenderTo(Dst : TBitmap32; Offset : integer); overload;
     procedure RecycleBitmaps;
 
     // Item Control
@@ -170,6 +172,8 @@ begin
      FreeAndNil(FBackground);
   if FNormalMenu <> nil then
      FreeAndNil(FNormalMenu);
+  if FSpecialBackground <> nil then
+     FreeAndNil(FSpecialBackground);
 
   inherited Destroy;
 end;
@@ -178,6 +182,8 @@ procedure TSharpEMenu.RecycleBitmaps;
 begin
   FreeAndNil(FBackground);
   FreeAndNil(FNormalMenu);
+  if FSpecialBackground <> nil then
+    FreeAndNil(FSpecialBackground);
 end;
 
 function DynSort(Item1 : Pointer; Item2 : Pointer) : integer;
@@ -640,36 +646,41 @@ begin
 
   if FSkinManager.Skin.BarSkin.GlassEffect then
   begin
+    ImageCheck(FSpecialBackground,Point(w,h));
+    FSpecialBackground.SetSize(w,h);
+    FSpecialBackground.Clear(color32(0,0,0,0));
     dc := GetWindowDC(GetDesktopWindow);
     Temp := TBitmap32.Create;
     try
-      BitBlt(FBackground.Canvas.Handle,
+      BitBlt(FSpecialBackground.Canvas.Handle,
              0,
              0,
-             FBackground.Width,
-             FBackground.Height,
+             FSpecialBackground.Width,
+             FSpecialBackground.Height,
              dc,
              pLeft,
              pTop,
              SRCCOPY or CAPTUREBLT);
       if SharpThemeApi.GetSkinGEBlend then
-        BlendImageC(FBackground,GetSkinGEBlendColor,GetSkinGEBlendAlpha);
-      boxblur(FBackground,GetSkinGEBlurRadius,GetSkinGEBlurIterations);
+        BlendImageC(FSpecialBackground,GetSkinGEBlendColor,GetSkinGEBlendAlpha);
+      boxblur(FSpecialBackground,GetSkinGEBlurRadius,GetSkinGEBlurIterations);
       if GetSkinGELighten then
-         lightenBitmap(FBackground,GetSkinGELightenAmount);
-      FBackground.ResetAlpha(255);
-      Temp.SetSize(w,h);
-      Temp.Clear(color32(0,0,0,0));
-      menuskin.Background.draw(temp,FSkinManager.Scheme);
-      ReplaceTransparentAreas(FBackground,Temp,Color32(0,0,0,0));      
-      Temp.DrawMode := dmBlend;
-      Temp.CombineMode := cmMerge;
-      Temp.DrawTo(FBackground,0,0);
+         lightenBitmap(FSpecialBackground,GetSkinGELightenAmount);
+      FSpecialBackground.ResetAlpha(255);
+      FBackground.SetSize(w,h);
+      FBackground.Clear(color32(0,0,0,0));
+      menuskin.Background.draw(FBackground,FSkinManager.Scheme);
+      ReplaceTransparentAreas(FSpecialBackground,FBackground,Color32(0,0,0,0));
     finally
       ReleaseDC(GetDesktopWindow, dc);
       Temp.Free;
     end;
-  end else menuskin.Background.draw(FBackground,FSkinManager.Scheme);
+  end else
+  begin
+    menuskin.Background.draw(FBackground,FSkinManager.Scheme);
+    if FSpecialBackground <> nil then
+      FreeAndNil(FSpecialBackground);
+  end;
 end;
 
 procedure TSharpEMenu.RenderMenuItem(Dst : TBitmap32; px,py : integer;
@@ -808,15 +819,7 @@ begin
   end;
 end;
 
-procedure TSharpEMenu.RenderTo(Dst : TBitmap32; pLeft,pTop : integer);
-begin
-  if (FSkinManager = nil) then exit;
-  RenderBackground(pLeft,pTop);
-
-  RenderTo(Dst);
-end;
-
-procedure TSharpEMenu.RenderTo(Dst : TBitmap32);
+procedure TSharpEMenu.RenderTo(Dst: TBitmap32; Offset: integer);
 var
   menuskin : TSharpEMenuSkin;
   temp : TBitmap32;
@@ -828,8 +831,12 @@ begin
   if (FNormalMenu = nil) then RenderNormalMenu;
 
   menuskin := FSkinManager.Skin.MenuSkin;
-  Dst.Assign(FBackground);
-  Dst.clear(color32(0,0,0,0));
+
+  Dst.SetSize(FBackground.Width,FBackground.Height);
+  Dst.Clear(color32(0,0,0,0));
+  if FSpecialBackground <> nil then
+    FSpecialBackground.DrawTo(Dst,0,Offset);
+
   FBackground.DrawTo(Dst);
 
   temp := TBitmap32.Create;
@@ -853,6 +860,20 @@ begin
   finally
     temp.Free;
   end;
+
+end;
+
+procedure TSharpEMenu.RenderTo(Dst : TBitmap32; pLeft,pTop : integer);
+begin
+  if (FSkinManager = nil) then exit;
+  RenderBackground(pLeft,pTop);
+
+  RenderTo(Dst);
+end;
+
+procedure TSharpEMenu.RenderTo(Dst : TBitmap32);
+begin
+  RenderTo(Dst,0);
 end;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
