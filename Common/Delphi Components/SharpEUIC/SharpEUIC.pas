@@ -38,6 +38,8 @@ uses
 type
   TSharpEUIC = class(TPanel)
   private
+    FOnResetEvent : TNotifyEvent;
+
     FResetBtn : TPngSpeedButton;
     FRoundValue: Integer;
     FBorderColor: TColor;
@@ -76,6 +78,8 @@ type
     property MonitorControl : TComponent read FMonitorControl write SetMonitorControl;
     property NormalColor : TColor read FNormalColor write SetNormalColor;
     property Color;
+
+    property OnReset : TNotifyEvent read FOnResetEvent write FOnResetEvent;
   end;
 
 procedure Register;
@@ -192,6 +196,9 @@ begin
 
   UpdateBtnStatus;
   Invalidate;
+
+  if Assigned(FOnResetEvent) then
+    FOnResetEvent(self);
 end;
 
 procedure TSharpEUIC.Resize;
@@ -263,8 +270,8 @@ begin
   if FHasChanged then
   begin
     FResetBtn.Visible := True;
-    FResetBtn.Top := 2;
-    FResetBtn.Height := Height - 4;
+    FResetBtn.Top := 1;
+    FResetBtn.Height := Height - 2;
     FResetBtn.Width := 24;
     FResetBtn.Left := Width - 4 - FResetBtn.Width;
   end else
