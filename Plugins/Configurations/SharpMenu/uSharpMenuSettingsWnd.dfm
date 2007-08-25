@@ -24,7 +24,6 @@ object frmMenuSettings: TfrmMenuSettings
     ActivePage = JvSettingsPage
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 357
     object JvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
@@ -32,7 +31,6 @@ object frmMenuSettings: TfrmMenuSettings
       Height = 181
       Caption = '``````'
       ParentBackground = True
-      ExplicitHeight = 357
       object Label2: TLabel
         AlignWithMargins = True
         Left = 26
@@ -51,13 +49,7 @@ object frmMenuSettings: TfrmMenuSettings
           'ace.'
         Color = clBtnFace
         EllipsisPosition = epEndEllipsis
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
         ParentColor = False
-        ParentFont = False
         Transparent = True
         WordWrap = True
       end
@@ -102,7 +94,7 @@ object frmMenuSettings: TfrmMenuSettings
         TabOrder = 2
         object Label1: TLabel
           Left = 176
-          Top = 79
+          Top = 75
           Width = 106
           Height = 13
           AutoSize = False
@@ -128,13 +120,7 @@ object frmMenuSettings: TfrmMenuSettings
             'here are too many items in a menu.'
           Color = clWindow
           EllipsisPosition = epEndEllipsis
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clGray
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          Font.Style = []
           ParentColor = False
-          ParentFont = False
           Transparent = False
           WordWrap = True
           ExplicitLeft = 34
@@ -159,7 +145,7 @@ object frmMenuSettings: TfrmMenuSettings
         end
         object sgb_wrapcount: TSharpeGaugeBox
           Left = 26
-          Top = 76
+          Top = 72
           Width = 121
           Height = 21
           Min = 5
@@ -173,7 +159,7 @@ object frmMenuSettings: TfrmMenuSettings
         end
         object ComboBox1: TComboBox
           Left = 288
-          Top = 76
+          Top = 72
           Width = 121
           Height = 21
           Style = csDropDownList

@@ -64,6 +64,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure sgb_leftChangeValue(Sender: TObject; Value: Integer);
     procedure cb_automodeClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     procedure SendUpdate;
   public
@@ -211,6 +212,12 @@ procedure TfrmDASettings.FormDestroy(Sender: TObject);
 begin
   DAList.Free;
   PreviewBmp.Free;
+end;
+
+procedure TfrmDASettings.FormShow(Sender: TObject);
+begin
+  Label4.Font.Color := clGray;
+  Label1.Font.Color := clGray;
 end;
 
 end.

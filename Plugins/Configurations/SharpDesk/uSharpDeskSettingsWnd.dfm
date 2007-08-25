@@ -3,7 +3,7 @@ object frmDeskSettings: TfrmDeskSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmDeskSettings'
-  ClientHeight = 456
+  ClientHeight = 465
   ClientWidth = 428
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -20,21 +20,23 @@ object frmDeskSettings: TfrmDeskSettings
     Left = 0
     Top = 0
     Width = 428
-    Height = 456
+    Height = 465
     ActivePage = JvSettingsPage
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 456
     object JvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
       Width = 428
-      Height = 456
+      Height = 465
+      ExplicitHeight = 456
       object Label1: TLabel
         AlignWithMargins = True
         Left = 26
-        Top = 333
+        Top = 358
         Width = 394
-        Height = 26
+        Height = 35
         Margins.Left = 26
         Margins.Top = 4
         Margins.Right = 8
@@ -46,22 +48,15 @@ object frmDeskSettings: TfrmDeskSettings
           'jects.  Disablied all objects will require a double click to lau' +
           'nch.'
         EllipsisPosition = epEndEllipsis
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGrayText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
         Transparent = False
         WordWrap = True
-        ExplicitTop = 218
       end
       object JvLabel1: TLabel
         AlignWithMargins = True
         Left = 26
-        Top = 236
+        Top = 246
         Width = 394
-        Height = 13
+        Height = 21
         Margins.Left = 26
         Margins.Top = 4
         Margins.Right = 8
@@ -71,24 +66,18 @@ object frmDeskSettings: TfrmDeskSettings
         Caption = 
           'Enable this option to enable drag and drop functionality within ' +
           'SharpDesk.'
+        Color = clWindow
         EllipsisPosition = epEndEllipsis
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGrayText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
+        ParentColor = False
         Transparent = False
         WordWrap = True
-        ExplicitLeft = 18
-        ExplicitTop = 120
       end
       object Label3: TLabel
         AlignWithMargins = True
         Left = 26
-        Top = 388
+        Top = 422
         Width = 394
-        Height = 26
+        Height = 34
         Margins.Left = 26
         Margins.Top = 4
         Margins.Right = 8
@@ -101,23 +90,16 @@ object frmDeskSettings: TfrmDeskSettings
           'ly.'
         Color = clWindow
         EllipsisPosition = epEndEllipsis
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
         ParentColor = False
-        ParentFont = False
         Transparent = False
         WordWrap = True
-        ExplicitWidth = 370
       end
       object Label2: TLabel
         AlignWithMargins = True
         Left = 26
-        Top = 278
+        Top = 296
         Width = 394
-        Height = 26
+        Height = 33
         Margins.Left = 26
         Margins.Top = 4
         Margins.Right = 8
@@ -129,23 +111,16 @@ object frmDeskSettings: TfrmDeskSettings
           'ving constantly unused data to the swap file.'
         Color = clWindow
         EllipsisPosition = epEndEllipsis
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
         ParentColor = False
-        ParentFont = False
         Transparent = False
         WordWrap = True
-        ExplicitWidth = 348
       end
       object Label5: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 29
         Width = 394
-        Height = 26
+        Height = 32
         Margins.Left = 26
         Margins.Top = 4
         Margins.Right = 8
@@ -157,23 +132,16 @@ object frmDeskSettings: TfrmDeskSettings
           'ten changing the screen resolution.'
         Color = clWindow
         EllipsisPosition = epEndEllipsis
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
         ParentColor = False
-        ParentFont = False
         Transparent = False
         WordWrap = True
-        ExplicitWidth = 393
       end
       object Label6: TLabel
         AlignWithMargins = True
         Left = 26
-        Top = 181
+        Top = 187
         Width = 394
-        Height = 26
+        Height = 30
         Margins.Left = 26
         Margins.Top = 4
         Margins.Right = 8
@@ -186,21 +154,14 @@ object frmDeskSettings: TfrmDeskSettings
           'wallpaper dimensions)'
         Color = clWindow
         EllipsisPosition = epEndEllipsis
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGray
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
         ParentColor = False
-        ParentFont = False
         Transparent = False
         WordWrap = True
-        ExplicitWidth = 389
       end
       object cb_dd: TCheckBox
         AlignWithMargins = True
         Left = 8
-        Top = 215
+        Top = 225
         Width = 412
         Height = 17
         Margins.Left = 8
@@ -213,11 +174,12 @@ object frmDeskSettings: TfrmDeskSettings
         State = cbChecked
         TabOrder = 0
         OnClick = cb_ddClick
+        ExplicitTop = 215
       end
       object cb_singleclick: TCheckBox
         AlignWithMargins = True
         Left = 8
-        Top = 312
+        Top = 337
         Width = 412
         Height = 17
         Margins.Left = 8
@@ -228,11 +190,12 @@ object frmDeskSettings: TfrmDeskSettings
         Caption = 'Single Click Action'
         TabOrder = 1
         OnClick = cb_singleclickClick
+        ExplicitTop = 320
       end
       object cb_wpwatch: TCheckBox
         AlignWithMargins = True
         Left = 8
-        Top = 367
+        Top = 401
         Width = 412
         Height = 17
         Margins.Left = 8
@@ -243,11 +206,12 @@ object frmDeskSettings: TfrmDeskSettings
         Caption = 'Windows Wallpaper Monitoring (Advanced)'
         TabOrder = 2
         OnClick = cb_ammClick
+        ExplicitTop = 375
       end
       object cb_amm: TCheckBox
         AlignWithMargins = True
         Left = 8
-        Top = 257
+        Top = 275
         Width = 412
         Height = 17
         Margins.Left = 8
@@ -258,22 +222,24 @@ object frmDeskSettings: TfrmDeskSettings
         Caption = 'Memory Management (Advanced)'
         TabOrder = 3
         OnClick = cb_ammClick
+        ExplicitTop = 265
       end
       object Panel1: TPanel
         Left = 0
-        Top = 55
+        Top = 61
         Width = 428
         Height = 97
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 4
+        ExplicitTop = 55
         object Label4: TLabel
           AlignWithMargins = True
           Left = 26
           Top = 29
           Width = 394
-          Height = 26
+          Height = 37
           Margins.Left = 26
           Margins.Top = 4
           Margins.Right = 8
@@ -284,16 +250,8 @@ object frmDeskSettings: TfrmDeskSettings
             'Enable this option to enable snap to grid functionality for obje' +
             'cts. Disabled objects can be freely positioned.'
           EllipsisPosition = epEndEllipsis
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clGrayText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
           Transparent = False
           WordWrap = True
-          ExplicitTop = 126
-          ExplicitWidth = 360
         end
         object cb_grid: TCheckBox
           AlignWithMargins = True
@@ -363,7 +321,7 @@ object frmDeskSettings: TfrmDeskSettings
       object cb_autorotate: TCheckBox
         AlignWithMargins = True
         Left = 8
-        Top = 160
+        Top = 166
         Width = 412
         Height = 17
         Margins.Left = 8
@@ -376,13 +334,15 @@ object frmDeskSettings: TfrmDeskSettings
         State = cbChecked
         TabOrder = 6
         OnClick = cb_ammClick
+        ExplicitTop = 160
       end
     end
     object JvAdvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
       Width = 428
-      Height = 456
+      Height = 465
+      ExplicitHeight = 456
     end
   end
 end

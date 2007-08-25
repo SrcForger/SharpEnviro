@@ -90,6 +90,8 @@ end;
 procedure TfrmMenuSettings.FormShow(Sender: TObject);
 begin
   UpdateWrapBox;
+  Label2.Font.Color := clGray;
+  Label4.Font.Color := clGray;
 end;
 
 procedure TfrmMenuSettings.cb_wrapClick(Sender: TObject);

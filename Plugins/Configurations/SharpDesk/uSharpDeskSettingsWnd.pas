@@ -98,8 +98,15 @@ begin
 end;
 
 procedure TfrmDeskSettings.FormShow(Sender: TObject);
+var
+  i:Integer;
 begin
   UpdateGridBox;
+
+  For i := 0 to Pred(Self.ComponentCount) do
+    if Self.Components[i].ClassName = TLabel.ClassName then
+      TLabel(Self.Components[i]).Font.Color := clGray;
+
 end;
 
 procedure TfrmDeskSettings.cb_gridClick(Sender: TObject);

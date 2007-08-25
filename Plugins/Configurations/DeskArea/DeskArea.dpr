@@ -183,7 +183,8 @@ end;
 
 procedure ClickTab(ATab: TPluginTabItem);
 begin
-  frmDASettings.UpdateGUIFromDAItem(TDAItem(ATab.Data));
+  if ATab.Data <> nil then
+    frmDASettings.UpdateGUIFromDAItem(TDAItem(ATab.Data));
 end;
 
 procedure GetCenterScheme(var ABackground: TColor;
@@ -197,6 +198,11 @@ var
 begin
   if frmDASettings <> nil then
   begin
+    if DAlist.Count = 0 then begin
+      ATabs.Add('Primary Monitor',nil,'','');
+      exit;
+    end;
+
     for n := 0 to DAList.Count - 1 do
         if TDAItem(DAList.Items[n]).MonID = - 100 then
         begin

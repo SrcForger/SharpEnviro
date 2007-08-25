@@ -13,6 +13,7 @@ object frmDASettings: TfrmDASettings
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -29,7 +30,7 @@ object frmDASettings: TfrmDASettings
       Left = 26
       Top = 29
       Width = 411
-      Height = 26
+      Height = 33
       Margins.Left = 26
       Margins.Top = 4
       Margins.Right = 8
@@ -41,16 +42,8 @@ object frmDASettings: TfrmDASettings
         'just the size of the desktop area based on the position of your ' +
         'SharpBars.'
       EllipsisPosition = epEndEllipsis
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clGrayText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
       Transparent = False
       WordWrap = True
-      ExplicitTop = 126
-      ExplicitWidth = 360
     end
     object cb_automode: TCheckBox
       AlignWithMargins = True
@@ -82,32 +75,25 @@ object frmDASettings: TfrmDASettings
     object Label2: TLabel
       AlignWithMargins = True
       Left = 8
-      Top = 4
-      Width = 433
-      Height = 13
+      Top = 0
+      Width = 429
+      Height = 17
       Margins.Left = 8
-      Margins.Top = 4
-      Margins.Right = 4
+      Margins.Top = 0
+      Margins.Right = 8
       Margins.Bottom = 0
       Align = alTop
       AutoSize = False
       Caption = 'Desk Area Offsets'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
       Transparent = False
       WordWrap = True
-      ExplicitWidth = 88
     end
     object Label1: TLabel
       AlignWithMargins = True
       Left = 26
       Top = 21
       Width = 411
-      Height = 26
+      Height = 32
       Margins.Left = 26
       Margins.Top = 4
       Margins.Right = 8
@@ -119,20 +105,12 @@ object frmDASettings: TfrmDASettings
         'uomated mode is enabled then the values will be added to the aut' +
         'omatically generated desk area.'
       EllipsisPosition = epEndEllipsis
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clGrayText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
       Transparent = False
       WordWrap = True
-      ExplicitTop = 126
-      ExplicitWidth = 360
     end
     object sgb_left: TSharpeGaugeBox
       Left = 26
-      Top = 58
+      Top = 66
       Width = 90
       Height = 21
       Min = 0
@@ -147,7 +125,7 @@ object frmDASettings: TfrmDASettings
     end
     object sgb_top: TSharpeGaugeBox
       Left = 122
-      Top = 58
+      Top = 66
       Width = 90
       Height = 21
       Min = 0
@@ -162,7 +140,7 @@ object frmDASettings: TfrmDASettings
     end
     object sgb_bottom: TSharpeGaugeBox
       Left = 314
-      Top = 58
+      Top = 66
       Width = 90
       Height = 21
       Min = 0
@@ -177,7 +155,7 @@ object frmDASettings: TfrmDASettings
     end
     object sgb_right: TSharpeGaugeBox
       Left = 218
-      Top = 58
+      Top = 66
       Width = 90
       Height = 21
       Min = 0
