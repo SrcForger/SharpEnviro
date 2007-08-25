@@ -165,6 +165,8 @@ object frmWPSettings: TfrmWPSettings
             Top = 217
             Width = 415
             Height = 300
+            VertScrollBar.Smooth = True
+            VertScrollBar.Tracking = True
             Align = alClient
             AutoSize = True
             BevelInner = bvNone
@@ -215,12 +217,10 @@ object frmWPSettings: TfrmWPSettings
           Width = 431
           Height = 517
           Caption = 'JvCCPage'
-          ExplicitWidth = 439
-          ExplicitHeight = 524
           object pn_cchange: TPanel
             Left = 0
             Top = 0
-            Width = 439
+            Width = 431
             Height = 193
             Align = alTop
             BevelOuter = bvNone
@@ -305,7 +305,6 @@ object frmWPSettings: TfrmWPSettings
             BevelOuter = bvNone
             ParentColor = True
             TabOrder = 0
-            ExplicitWidth = 439
             object Label2: TLabel
               Left = 233
               Top = 32
@@ -384,6 +383,8 @@ object frmWPSettings: TfrmWPSettings
             Top = 145
             Width = 415
             Height = 372
+            VertScrollBar.Smooth = True
+            VertScrollBar.Tracking = True
             Align = alClient
             AutoSize = True
             BevelInner = bvNone
@@ -427,8 +428,6 @@ object frmWPSettings: TfrmWPSettings
             BevelOuter = bvNone
             ParentColor = True
             TabOrder = 2
-            ExplicitLeft = 431
-            ExplicitHeight = 379
           end
           object Panel5: TPanel
             Left = 0
@@ -439,7 +438,6 @@ object frmWPSettings: TfrmWPSettings
             BevelOuter = bvNone
             ParentColor = True
             TabOrder = 3
-            ExplicitHeight = 379
           end
         end
       end

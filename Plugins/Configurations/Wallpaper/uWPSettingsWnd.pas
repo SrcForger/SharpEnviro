@@ -252,7 +252,7 @@ end;
 
 procedure TfrmWPSettings.UpdatePreview;
 begin
-
+  SharpCenterApi.CenterUpdatePreview;
 end;
 
 procedure TfrmWPSettings.RenderPreview;

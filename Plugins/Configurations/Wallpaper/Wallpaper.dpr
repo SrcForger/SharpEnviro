@@ -61,6 +61,7 @@ var
   WPItem : TWPItem;
   Mon : TMonitor;
   MonID : integer;
+  failed : boolean;
 begin
   if frmWPSettings = nil then frmWPSettings := TfrmWPSettings.Create(nil);
 
@@ -72,6 +73,7 @@ begin
   frmWPSettings.sTheme := APluginID;
 
   FName := SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmWPSettings.sTheme+'\Wallpaper.xml';
+  failed := True;
   XML := TJvSimpleXML.Create(nil);
   try
     if FileExists(FName) then
@@ -136,9 +138,24 @@ begin
         if MonID = -100 then
            frmWPSettings.UpdateGUIFromWPItem(WPItem);
       end;
+      failed := False;
     end;
-  finally
-    XML.Free;
+  except
+  end;
+  XML.Free;
+
+  if failed then
+  begin
+    for n := 0 to Screen.MonitorCount - 1 do
+    begin
+      Mon := Screen.Monitors[n];
+      if Mon.Primary then MonID := -100
+         else MonID := Mon.MonitorNum;
+      WPItem := TWPItem.Create;
+      WPItem.MonID := MonID;
+      WPItem.Mon := Mon;
+      WPList.Add(WPItem);
+    end;
   end;
 
   frmWPSettings.Show;
