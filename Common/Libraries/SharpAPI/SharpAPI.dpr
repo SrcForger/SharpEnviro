@@ -999,7 +999,7 @@ begin
   result := (shellhookwnd <> 0);
 end;
 
-function UnregisterShellHookReceiver(Wnd : hwnd) : boolean;
+function UnRegisterShellHookReceiver(Wnd : hwnd) : boolean;
 var
   shellhookwnd : hwnd;
 begin
