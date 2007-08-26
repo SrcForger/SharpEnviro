@@ -543,22 +543,33 @@ end;
 function SharpExecute(data: pChar): hresult;
 var
   wnd: hWnd;
+  iElevate: Integer;
+  iHistory: Integer;
+  sTemp: String;
 begin
   Result := HR_OK;
-  try
 
+  try
     wnd := FindWindow('TSharpCoreMainWnd', nil);
     if wnd <> 0 then
     begin
       if IsServiceStarted('exec') = MR_STARTED then
         result := ServiceMsg('exec', pchar(data))
       else
-        result := ShellExecute(0, nil, PChar(data), '', PChar(ExtractFilePath(data)), SW_SHOWNORMAL);
+      begin
+        sTemp := data;
+        iElevate := Pos(sTemp, '_elevate,');
+        if iElevate > 0 then Delete(sTemp, iElevate, 9);
+        iHistory := Pos(sTemp, '_nohist,');
+        if iHistory > 0 then Delete(sTemp, iHistory, 8);
+        sTemp := Trim(sTemp);
+        result := ShellExecute(0, nil, PChar(sTemp), '', PChar(ExtractFilePath(sTemp)), SW_SHOWNORMAL);
+      end;
     end;
-
   except
     result := HR_UNKNOWNERROR;
   end;
+
 end;
 
 function RegisterAction(ActionName: Pchar; WindowHandle: hwnd; LParamID:
