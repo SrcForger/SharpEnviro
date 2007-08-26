@@ -55,7 +55,7 @@ begin
   RegisterActionEx('!Shutdown', 'Shutdown', h, 2);
   RegisterActionEx('!Logout', 'Shutdown', h, 3);
   RegisterActionEx('!Hibernate', 'Shutdown', h, 4);
-  RegisterActionEx('!SwitchUser', 'Shutdown', h, 5);
+  RegisterActionEx('!SwitchUser/LockStation', 'Shutdown', h, 5);
   RegisterActionEx('!MinimizeAll', 'Window Management', h, 6);
   RegisterActionEx('!RestoreAll', 'Window Management', h, 7);
   RegisterActionEx('!ToggleAllBars', 'SharpBar', h, 8);
@@ -82,7 +82,7 @@ begin
   UnRegisterAction('!Shutdown');
   UnRegisterAction('!Logout');
   UnRegisterAction('!Hibernate');
-  UnRegisterAction('!SwitchUser');
+  UnRegisterAction('!SwitchUser/LockStation');
   UnRegisterAction('!MinimizeAll');
   UnRegisterAction('!RestoreAll');
   UnRegisterAction('!ToggleAllBars');
@@ -202,7 +202,7 @@ begin
       exit;
     end;
 
-    if (Msg.LParam = 5) or (Msg.LParam = 6) then
+    if (Msg.LParam = 6) or (Msg.LParam = 7) then
     begin
       setlength(EnumParam.wndlist,0);
       EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
