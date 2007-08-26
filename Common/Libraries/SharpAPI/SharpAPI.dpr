@@ -46,36 +46,52 @@ uses
 {$R *.RES}
 
 const
-  WM_SHARPTRAYMESSAGE = WM_APP + 500;
+  WM_SHARPEUPDATESETTINGS = WM_APP + 506;
   WM_SHARPCONSOLEMESSAGE = WM_APP + 502;
-  WM_SHARPBARMESSAGE = WM_APP + 505;
+
+  // Shell message
+  WM_SHARPSHELLMESSAGE = WM_APP + 507;
+
   WM_SHARPEACTIONMESSAGE = WM_APP + 520;
   WM_SHARPEUPDATEACTIONS = WM_APP + 521;
 
   WM_WEATHERUPDATE = WM_APP + 540;
 
-  WM_DISABLESHARPDESK = WM_APP + 523;
-  WM_ENABLESHARPDESK = WM_APP + 524;
-  WM_EDITCURRENTTHEME = WM_APP + 525;
-  WM_ADDDESKTOPOBJECT = WM_APP + 526;
-  WM_SHOWDESKTOPSETTINGS = WM_APP + 528;
-  WM_CLOSEDESK = WM_APP + 531;
-  WM_DESKEXPORTBACKGROUND = WM_APP + 532;
-  WM_FORCEOBJECTRELOAD = WM_APP + 533;
+  WM_DISABLESHARPDESK      = WM_APP + 523;
+  WM_ENABLESHARPDESK       = WM_APP + 524;
+  WM_EDITCURRENTTHEME      = WM_APP + 525;
+  WM_ADDDESKTOPOBJECT      = WM_APP + 526;
+  WM_SHOWDESKTOPSETTINGS   = WM_APP + 528;
+  WM_CLOSEDESK             = WM_APP + 531;
+  WM_DESKEXPORTBACKGROUND  = WM_APP + 532;
+  WM_FORCEOBJECTRELOAD     = WM_APP + 533;
   WM_DESKBACKGROUNDCHANGED = WM_APP + 534;
   WM_SHOWBAR               = WM_APP + 535;
   WM_HIDEBAR               = WM_APP + 536;
 
-  WM_SHARPTERMINATE = WM_APP + 550;
+  WM_DESKCLOSING          = WM_APP + 537;
+
+  WM_SHARPTERMINATE       = WM_APP + 550;
 
   // SharpBar (new Skin Stuff)
-  WM_UPDATEBARWIDTH = WM_APP + 601;
-  WM_SHARPEPLUGINMESSAGE = WM_APP + 602;
-  WM_SKINCHANGED = WM_APP + 603;
+  WM_UPDATEBARWIDTH       = WM_APP + 601;
+  WM_SHARPEPLUGINMESSAGE  = WM_APP + 602;
+  WM_SKINCHANGED          = WM_APP + 603;
+  WM_GETBARHEIGHT         = WM_APP + 604;
+  WM_GETBACKGROUNDHANDLE  = WM_APP + 605;
+  WM_GETXMLHANDLE         = WM_APP + 606;
+  WM_SAVEXMLFILE          = WM_APP + 607;
+  WM_GETFREEBARSPACE      = WM_APP + 608;
+  WM_REGISTERSHELLHOOK    = WM_APP + 609;
+  WM_UNREGISTERSHELLHOOK  = WM_APP + 610;
+  WM_LOCKBARWINDOW        = WM_APP + 611;
+  WM_UNLOCKBARWINDOW      = WM_APP + 612;
+  WM_BARINSERTMODULE      = WM_APP + 613;
+  WM_BARREPOSITION        = WM_APP + 614;
 
   // System Tray Service
-  WM_REGISTERWITHTRAY = WM_APP + 650;
-  WM_UNREGISTERWITHTRAY = WM_APP + 651;
+  WM_REGISTERWITHTRAY     = WM_APP + 650;
+  WM_UNREGISTERWITHTRAY   = WM_APP + 651;
 
   // SharpCenter
   WM_SHARPCENTERMESSAGE = WM_APP + 660;
@@ -973,6 +989,26 @@ begin
   setlength(ha,0);
 end;
 
+function RegisterShellHookReceiver(Wnd : hwnd) : boolean;
+var
+  shellhookwnd : hwnd;
+begin
+  shellhookwnd := FindWindow('SharpE_ShellHook',nil);
+  if shellhookwnd <> 0 then
+    PostMessage(shellhookwnd,WM_REGISTERSHELLHOOK,wnd,0);
+  result := (shellhookwnd <> 0);
+end;
+
+function UnregisterShellHookReceiver(Wnd : hwnd) : boolean;
+var
+  shellhookwnd : hwnd;
+begin
+  shellhookwnd := FindWindow('SharpE_ShellHook',nil);
+  if shellhookwnd <> 0 then
+    PostMessage(shellhookwnd,WM_UNREGISTERSHELLHOOK,wnd,0);
+  result := (shellhookwnd <> 0);
+end;
+
 exports
   SharpEBroadCast,
   SendDebugMessage, //Sends Message to SharpConsole
@@ -1011,7 +1047,10 @@ exports
   IsComponentRunning,
   CloseComponent,
   TerminateComponent,
-  StartComponent;
+  StartComponent,
+
+  RegisterShellHookReceiver,
+  UnRegisterShellHookReceiver;
 begin
 
 end.

@@ -40,10 +40,7 @@ uses
 
 const
   WM_SHARPEUPDATESETTINGS = WM_APP + 506;
-  WM_SHARPTRAYMESSAGE = WM_APP + 500;
   WM_SHARPCONSOLEMESSAGE = WM_APP + 502;
-  WM_SHARPDESKMESSAGE = WM_APP + 504;
-  WM_SHARPBARMESSAGE = WM_APP + 505;
 
   // Shell message
   WM_SHARPSHELLMESSAGE = WM_APP + 507;
@@ -69,6 +66,11 @@ const
 
   WM_SHARPTERMINATE       = WM_APP + 550;
 
+  // Shell Hooks
+  WM_REGISTERSHELLHOOK      = WM_APP + 560;
+  WM_UNREGISTERSHELLHOOK    = WM_APP + 561;
+  WM_SHELLHOOKWINDOWCREATED = WM_APP + 562;  
+
   // SharpBar (new Skin Stuff)
   WM_UPDATEBARWIDTH       = WM_APP + 601;
   WM_SHARPEPLUGINMESSAGE  = WM_APP + 602;
@@ -78,8 +80,6 @@ const
   WM_GETXMLHANDLE         = WM_APP + 606;
   WM_SAVEXMLFILE          = WM_APP + 607;
   WM_GETFREEBARSPACE      = WM_APP + 608;
-  WM_REGISTERSHELLHOOK    = WM_APP + 609;
-  WM_UNREGISTERSHELLHOOK  = WM_APP + 610;
   WM_LOCKBARWINDOW        = WM_APP + 611;
   WM_UNLOCKBARWINDOW      = WM_APP + 612;
   WM_BARINSERTMODULE      = WM_APP + 613;
@@ -89,10 +89,9 @@ const
   WM_REGISTERWITHTRAY     = WM_APP + 650;
   WM_UNREGISTERWITHTRAY   = WM_APP + 651;
 
-  // Skin Service
-  WM_ASKFORSYSTEMSKIN     = WM_APP + 700;
-  WM_SYSTEMSKINUPDATE     = WM_APP + 701;
-
+  // SharpCenter
+  WM_SHARPCENTERMESSAGE = WM_APP + 660;
+    
    //HRESULTS
   HR_NORECIEVERWINDOW = 2;
   HR_UNKNOWNERROR = 1;
@@ -201,6 +200,9 @@ function IsComponentRunning(Component : PChar) : boolean; external 'SharpApi.dll
 function CloseComponent(Component : PChar) : boolean; external 'SharpApi.dll' name 'CloseComponent';
 procedure TerminateComponent(Component : PChar); external 'SharpApi.dll' name 'TerminateComponent';
 procedure StartComponent(Component : PChar); external 'SharpApi.dll' name 'StartComponent';
+
+function RegisterShellHookReceiver(Wnd : hwnd) : boolean; external 'SharpApi.dll' name 'RegisterShellHookReceiver';
+function UnRegisterShellHookReceiver(Wnd : hwnd) : boolean; external 'SharpApi.dll' name 'UnRegisterShellHookReceiver';
 
 implementation
 
