@@ -228,11 +228,6 @@ begin
       end;
     end       }
     //else
-    if (Msg.Msg = WM_SYSTEMSKINUPDATE) then
-    begin
-      FActivated := true;
-      LoadSkinFromStream;
-    end;
   end;
 end;
 
