@@ -20,7 +20,8 @@
       <Projects Name="cursors.ser">..\Plugins\Services\Cursors\cursors.bdsproj</Projects>
       <Projects Name="TaskSwitch.ser">..\Plugins\Services\TaskSwitch\TaskSwitch.bdsproj</Projects>
       <Projects Name="TaskManager.ser">..\Plugins\Services\TaskManager\TaskManager.bdsproj</Projects>
-      <Projects Name="Targets">DeskArea.ser Exec.ser Hotkeys.ser SkinController.ser Startup.ser SystemTray.ser Weather.ser Actions.ser cursors.ser TaskSwitch.ser TaskManager.ser</Projects>
+      <Projects Name="SystemActions.ser">..\Plugins\Services\SystemActions\SystemActions.bdsproj</Projects>
+      <Projects Name="Targets">DeskArea.ser Exec.ser Hotkeys.ser SkinController.ser Startup.ser SystemTray.ser Weather.ser Actions.ser cursors.ser TaskSwitch.ser TaskManager.ser SystemActions.ser</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
