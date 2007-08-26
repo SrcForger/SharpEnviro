@@ -34,8 +34,8 @@ uses
   Forms,
   MainWnd in 'Forms\MainWnd.pas' {MainForm},
   uShellSwitcher in 'Units\uShellSwitcher.pas',
-  uSharpCoreShutdown in '..\SharpCore\uSharpCoreShutdown.pas',
-  VistaTheme in 'VistaTheme.pas';
+  VistaTheme in 'VistaTheme.pas',
+  uShutdown in '..\..\Common\Units\Shutdown\uShutdown.pas';
 
 {$R *.res}
 

@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, uShellSwitcher, uSharpCoreShutdown;
+  Dialogs, StdCtrls, ExtCtrls, uShellSwitcher, uShutdown;
 
 type
   TMainForm = class(TForm)
@@ -71,7 +71,7 @@ end;
 procedure TMainForm.btn_okClick(Sender: TObject);
 var
   dir : string;
-  Shutdown : TScShutDown;
+  Shutdown : TSEShutDown;
 begin
   case rg_shell.ItemIndex of
     0: begin
@@ -95,7 +95,7 @@ begin
                 PChar('It is necessary to reboot the computer for the changes to take effect' + #10 + #13 +
                 'Reboot now?'),'Confirm Reboot', MB_YESNO or MB_ICONQUESTION) = IDYES then
   begin
-    Shutdown := TScShutDown.Create(nil);
+    Shutdown := TSEShutDown.Create;
     try
       ShutDown.ActionType := sdReboot;
       ShutDown.Force := True;
