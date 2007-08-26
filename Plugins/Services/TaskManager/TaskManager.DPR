@@ -1,7 +1,7 @@
 {
 Source Name: TaskManager.dpr
 Description: TaskManager Service library file
-Copyright (C) Author (E-Mail)
+Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -142,7 +142,6 @@ begin
   setlength(FWndList,0);
 
   SharpApi.SharpEBroadCast(WM_SHELLHOOKWINDOWCREATED,FMsgWnd,0);
- // SendMessage(HWND_BROADCAST,WM_SHELLHOOKWINDOWCREATED,FMsgWnd,0);
 
   RegisterHook;
 end;
