@@ -9,7 +9,6 @@
 		</Option>
 	</PersonalityInfo>
 	<Default.Personality>  <Projects>
-      <Projects Name="curses.ser">..\Plugins\Services\Curses\curses.bdsproj</Projects>
       <Projects Name="DeskArea.ser">..\Plugins\Services\DeskArea\DeskArea.bdsproj</Projects>
       <Projects Name="Exec.ser">..\Plugins\Services\Exec\Exec.bdsproj</Projects>
       <Projects Name="Hotkeys.ser">..\Plugins\Services\Hotkeys\Hotkeys.bdsproj</Projects>
@@ -18,7 +17,10 @@
       <Projects Name="SystemTray.ser">..\Plugins\Services\SystemTray\SystemTray.bdsproj</Projects>
       <Projects Name="Weather.ser">..\Plugins\Services\Weather\Weather.bdsproj</Projects>
       <Projects Name="Actions.ser">..\Plugins\Services\Actions\Actions.bdsproj</Projects>
-      <Projects Name="Targets">curses.ser DeskArea.ser Exec.ser Hotkeys.ser SkinController.ser Startup.ser SystemTray.ser Weather.ser Actions.ser</Projects>
+      <Projects Name="cursors.ser">..\Plugins\Services\Cursors\cursors.bdsproj</Projects>
+      <Projects Name="TaskSwitch.ser">..\Plugins\Services\TaskSwitch\TaskSwitch.bdsproj</Projects>
+      <Projects Name="TaskManager.ser">..\Plugins\Services\TaskManager\TaskManager.bdsproj</Projects>
+      <Projects Name="Targets">DeskArea.ser Exec.ser Hotkeys.ser SkinController.ser Startup.ser SystemTray.ser Weather.ser Actions.ser cursors.ser TaskSwitch.ser TaskManager.ser</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>

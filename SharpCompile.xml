@@ -69,6 +69,7 @@
      <project Name="Startup" Type="DLL" >Plugins\Services\StartupApps\Startup.bdsproj</project>  
      <project Name="SystemTray" Type="DLL" >Plugins\Services\SystemTray\SystemTray.bdsproj</project>  
      <project Name="TaskSwitch" Type="DLL" >Plugins\Services\TaskSwitch\TaskSwitch.bdsproj</project>  
+     <project Name="TaskManager" Type="DLL" >Plugins\Services\TaskManager\TaskManager.bdsproj</project>  
      <project Name="Weather" Type="DLL" requ="Delphi 2005 Professional">Plugins\Services\Weather\Weather.bdsproj</project>  
      <project Name="Actions" Type="DLL" >Plugins\Services\Actions\Actions.bdsproj</project> 
   </package>
