@@ -41,7 +41,7 @@ procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapt
 
 implementation
 
-uses Variants,SharpApi;
+uses Variants,SharpApi,SharpCenterAPI;
 
 var
   FLog : TStrings;
@@ -232,19 +232,19 @@ begin
     AddConst('SharpApi','WM_DESKBACKGROUNDCHANGED',WM_DESKBACKGROUNDCHANGED);
     AddConst('SharpApi','WM_SHARPTERMINATE',WM_SHARPTERMINATE);
 
-    AddConst('SharpApi','SU_SKIN',SU_SKIN);
-    AddConst('SharpApi','SU_SKINFILECHANGED',SU_SKINFILECHANGED);
-    AddConst('SharpApi','SU_SCHEME',SU_SCHEME);
-    AddConst('SharpApi','SU_THEME',SU_THEME);
-    AddConst('SharpApi','SU_ICONSET',SU_ICONSET);
-    AddConst('SharpApi','SU_BACKGROUND',SU_BACKGROUND);
-    AddConst('SharpApi','SU_SERVICE',SU_SERVICE);
-    AddConst('SharpApi','SU_DESKTOPICON',SU_DESKTOPICON);
-    AddConst('SharpApi','SU_SHARPDESK',SU_SHARPDESK);
-    AddConst('SharpApi','SU_SHARPMENU',SU_SHARPMENU);
-    AddConst('SharpApi','SU_SHARPBAR',SU_SHARPBAR);
-    AddConst('SharpApi','SU_CURSOR',SU_CURSOR);
-    AddConst('SharpApi','SU_WALLPAPER',SU_WALLPAPER);
+    AddConst('SharpApi','SU_SKIN',suSkin);
+    AddConst('SharpApi','SU_SKINFILECHANGED',suSkinFileChanged);
+    AddConst('SharpApi','SU_SCHEME',suScheme);
+    AddConst('SharpApi','SU_THEME',suTheme);
+    AddConst('SharpApi','SU_ICONSET',suIconSet);
+    AddConst('SharpApi','SU_BACKGROUND',suBackground);
+    AddConst('SharpApi','SU_SERVICE',suService);
+    AddConst('SharpApi','SU_DESKTOPICON',suDesktopIcon);
+    AddConst('SharpApi','SU_SHARPDESK',suSharpDesk);
+    AddConst('SharpApi','SU_SHARPMENU',suSharpMenu);
+    AddConst('SharpApi','SU_SHARPBAR',suSharpBar);
+    AddConst('SharpApi','SU_CURSOR',suCursor);
+    AddConst('SharpApi','SU_WALLPAPER',suWallpaper);
 
     AddFunction('SharpApi','GetSharpEDirectory',Adapter_GetSharpeDirectory,0,[],varString);
     AddFunction('SharpApi','GetSharpeUserSettingsPath',Adapter_GetSharpeUserSettingsPath,0,[],varString);
