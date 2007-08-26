@@ -16,11 +16,11 @@ uses
   uSharpCorePluginMethods in 'uSharpCorePluginMethods.pas',
   uSharpCoreImplementer in 'uSharpCoreImplementer.pas',
   uSharpCoreHelperMethods in 'uSharpCoreHelperMethods.pas',
-  uSharpCoreShutdown in 'uSharpCoreShutdown.pas',
   uSharpCoreSettings in 'uSharpCoreSettings.pas',
   uSharpCoreServiceList in 'uSharpCoreServiceList.pas',
   uSharpCoreItemPnl in 'uSharpCoreItemPnl.pas',
-  uSharpCoreStrings in 'uSharpCoreStrings.pas';
+  uSharpCoreStrings in 'uSharpCoreStrings.pas',
+  uShutdown in '..\..\Common\Units\Shutdown\uShutdown.pas';
 
 {$R *.res}
 var
@@ -73,13 +73,6 @@ begin
 
       // Register Actions
       RegisterActionEx('!ToggleServiceManager', 'SharpCore', SharpCoreMainWnd.Handle, 0);
-      RegisterActionEx('!Restart', 'Shutdown', SharpCoreMainWnd.Handle, 1);
-      RegisterActionEx('!Shutdown', 'Shutdown', SharpCoreMainWnd.Handle, 2);
-      RegisterActionEx('!Logout', 'Shutdown', SharpCoreMainWnd.Handle, 3);
-      RegisterActionEx('!Hibernate', 'Shutdown', SharpCoreMainWnd.Handle, 4);
-      RegisterActionEx('!MinimizeAll', 'Tasks', SharpCoreMainWnd.Handle, 5);
-      RegisterActionEx('!RestoreAll', 'Tasks', SharpCoreMainWnd.Handle, 6);
-      RegisterActionEx('!ToggleAllBars', 'SharpBar', SharpCoreMainWnd.Handle, 7);
       SharpCoreMainWnd.Trayicon.IconVisible := True;
 
       Application.Title := 'SharpCore';

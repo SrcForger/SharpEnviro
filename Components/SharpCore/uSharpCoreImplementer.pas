@@ -82,7 +82,7 @@ const
 implementation
 
 uses
-  uSharpCoreShutDown,
+  uShutdown,
   uSharpCoreStrings,
   uSharpCoreMainWnd,
   uSharpCoreServiceMan,
@@ -119,9 +119,9 @@ end;
 
 procedure TSCImplementer.ApplySep;
 var
-  ShutDown: TScShutDown;
+  ShutDown: TSEShutDown;
 begin
-  ShutDown := TScShutDown.Create(nil);
+  ShutDown := TSEShutDown.Create;
   try
     // Must have administrator account
     if not (IsAdministrator) then begin
@@ -169,7 +169,7 @@ end;
 procedure TSCImplementer.CheckParams(AParamCount: Integer; var AExitApp: Boolean; var AExtension: string;
   var ADebug: Boolean);
 var
-  ShutDown: TScShutDown;
+  ShutDown: TSEShutDown;
   sParam, s: string;
   bBreak: Boolean;
   n: Integer;
@@ -177,7 +177,7 @@ begin
   // Shell Check
   AExitApp := false;
 
-  ShutDown := TScShutDown.Create(nil);
+  ShutDown := TSEShutDown.Create;
   try
     if (AParamCount >= 1) then begin
 
@@ -295,10 +295,10 @@ end;
 
 procedure TShellMgr.Check;
 var
-  SD: TScShutDown;
+  SD: TSEShutDown;
   CShell: string;
 begin
-  sd := TScShutDown.Create(nil);
+  sd := TSEShutDown.Create;
 
   try
     CShell := ReadRegVal(cWinLogonKey, 'shell', SharpCoreFile, HKEY_CURRENT_USER);

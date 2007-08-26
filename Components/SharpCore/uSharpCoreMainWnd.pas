@@ -155,8 +155,6 @@ type
   end;
   pMsgData = ^TMsgData;
 
-function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; external 'user32.dll';
-
 implementation
 
 uses
@@ -164,8 +162,7 @@ uses
   uSharpCoreStrings,
   uSharpCoreImplementer,
   uSharpCoreHelperMethods,
-  uSharpCoreSettings,
-  uSharpCoreShutdown;
+  uSharpCoreSettings;
 
 {$R *.dfm}
 
@@ -388,165 +385,18 @@ begin
 end;
 
 procedure TSharpCoreMainWnd.ActionMsg(var Msg: TMessage);
-type
-  PParam = ^TParam;
-  TParam = record
-    wndlist: array of hwnd;
-  end;
-  THandleArray = array of HWND;
-var
-  EnumParam : TParam;
-
-  function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
-  begin
-    if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
-       ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
-       ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
-       (GetWindowLong(Wnd, GWL_HWNDPARENT) = GetDesktopWindow)) and
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))  then
-       with PParam(LParam)^ do
-       begin
-        setlength(wndlist,length(wndlist)+1);
-        wndlist[high(wndlist)] := wnd;
-       end;
-    result := True;
-  end;
-
-  function FindAllWindows(const WindowClass: string): THandleArray;
-  type
-    PParam = ^TParam;
-    TParam = record
-      ClassName: string;
-      Res: THandleArray;
-    end;
-  var
-    Rec: TParam;
-
-    function GetWndClass(pHandle: hwnd): string;
-    var
-      buf: array[0..254] of Char;
-    begin
-      GetClassName(pHandle, buf, SizeOf(buf));
-      result := buf;
-    end;
-
-    function _EnumProc(_hWnd: HWND; _LParam: LPARAM): LongBool; stdcall;
-    begin
-      with PParam(_LParam)^ do
-      begin
-        if (CompareText(GetWndClass(_hWnd), ClassName) = 0) then
-        begin
-          SetLength(Res, Length(Res) + 1);
-          Res[Length(Res) - 1] := _hWnd;
-        end;
-        Result := True;
-      end;
-    end;
-
-  begin
-    try
-      Rec.ClassName := WindowClass;
-      SetLength(Rec.Res, 0);
-      EnumWindows(@_EnumProc, Integer(@Rec));
-    except
-      SetLength(Rec.Res, 0);
-    end;
-    Result := Rec.Res;
-  end;
-
-var
-  ShutDown : TScShutDown;
-  dmsg : String;
-  n : integer;
-  BarList : THandleArray;
-  BarHidden : boolean;
 begin
-  // shutdown?
-  if (Msg.LParam >= 1) and (Msg.LParam <=4) then
-  begin
-    ShutDown := TScShutDown.Create(nil);
-    try
-      case Msg.LParam of
-        1: begin
-             ShutDown.ActionType := sdReboot;
-             dmsg := 'Reboot';
-           end;
-        2: begin
-             ShutDown.ActionType := sdPowerOff;
-             dmsg := 'Shutdown';
-           end;
-        3: begin
-             ShutDown.ActionType := sdLogOff;
-             dmsg := 'Logout';
-           end;
-        4: begin
-             ShutDown.ActionType := sdHibernate;
-             dmsg := 'Hibernate';
-           end;
-      end;
-      ShutDown.Force := True;
-      if MessageBox(Handle,
-                    PChar('Do you really want to ' + dmsg + ' your Computer now?'),
-                    PChar('Confirm ' + dmsg),MB_YESNO) = ID_YES then
-         ShutDown.Execute;
-    finally
-      ShutDown.Free;
-    end;
-    exit;
-  end;
-
-  if (Msg.LParam = 5) or (Msg.LParam = 6) then
-  begin
-    setlength(EnumParam.wndlist,0);
-    EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
-  end;
-
   case Msg.LParam of
     0: begin
          // Show/Hide Manager
          SharpCoreMainWnd.Visible := not (SharpCoreMainWnd.Visible);
        end;
-    5: begin
-         // Minimize All Windows
-         for n := 0 to High(EnumParam.Wndlist) do
-             CloseWindow(EnumParam.WndList[n]);
-       end;
-    6: begin
-         // Restore All Windows
-         for n := 0 to High(EnumParam.WndList) do
-             if IsIconic(EnumParam.WndList[n]) then ShowWindow(EnumParam.WndList[n], SW_Restore)
-                else SwitchToThisWindow(EnumParam.WndList[n],True);
-       end;
-    7: begin
-         // Toggle (Show/Hide) all bars
-         BarList := FindAllWindows('TSharpBarMainForm');
-         BarHidden := False;
-         for n  := 0 to High(BarList) do
-             if not IsWindowVisible(BarList[n]) then
-             begin
-               BarHidden := True;
-               break;
-             end;
-         setlength(BarList,0);
-         if BarHidden then
-            SharpApi.SharpEBroadCast(WM_SHOWBAR,0,0)
-            else SharpApi.SharpEBroadCast(WM_HIDEBAR,0,0);
-         SharpApi.ServiceMsg('DeskArea','Update');            
-       end;
   end;
-  setlength(EnumParam.wndlist,0);
 end;
 
 procedure TSharpCoreMainWnd.ActionUpdateMsg(var Msg: TMessage);
 begin
   RegisterActionEx('!ToggleServiceManager', 'SharpCore', SharpCoreMainWnd.Handle, 0);
-  RegisterActionEx('!Restart', 'Shutdown', SharpCoreMainWnd.Handle, 1);
-  RegisterActionEx('!Shutdown', 'Shutdown', SharpCoreMainWnd.Handle, 2);
-  RegisterActionEx('!Logout', 'Shutdown', SharpCoreMainWnd.Handle, 3);
-  RegisterActionEx('!Hibernate', 'Shutdown', SharpCoreMainWnd.Handle, 4);
-  RegisterActionEx('!MinimizeAll', 'Tasks', SharpCoreMainWnd.Handle, 5);
-  RegisterActionEx('!RestoreAll', 'Tasks', SharpCoreMainWnd.Handle, 6);
-  RegisterActionEx('!ToggleAllBars', 'SharpBar', SharpCoreMainWnd.Handle, 7);
 end;
 
 var
