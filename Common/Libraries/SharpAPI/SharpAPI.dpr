@@ -574,9 +574,9 @@ begin
     else
     begin
       sTemp := data;
-      iElevate := Pos(sTemp, '_elevate,');
+      iElevate := Pos('_elevate,',sTemp);
       if iElevate > 0 then Delete(sTemp, iElevate, 9);
-      iHistory := Pos(sTemp, '_nohist,');
+      iHistory := Pos('_nohist,',sTemp);
       if iHistory > 0 then Delete(sTemp, iHistory, 8);
       sTemp := Trim(sTemp);
       result := ShellExecute(0, nil, PChar(sTemp), '', PChar(ExtractFilePath(sTemp)), SW_SHOWNORMAL);
