@@ -72,8 +72,6 @@ var
 
 {$R *.RES}
 
-function RegisterShellHookWindow(wnd : hwnd) : boolean; stdcall; external 'user32.dll';
-function DeregisterShellHookWindow(wnd : hwnd) : boolean; stdcall; external 'user32.dll';
 function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; external 'shell32.dll' index 181;
 
 // Service is started
@@ -143,7 +141,8 @@ begin
   AllocateMsgWnd;
   setlength(FWndList,0);
 
-  PostMessage(HWND_BROADCAST,WM_SHELLHOOKWINDOWCREATED,FMsgWnd,0);
+  SharpApi.SharpEBroadCast(WM_SHELLHOOKWINDOWCREATED,FMsgWnd,0);
+ // SendMessage(HWND_BROADCAST,WM_SHELLHOOKWINDOWCREATED,FMsgWnd,0);
 
   RegisterHook;
 end;
@@ -230,15 +229,13 @@ begin
   mm.iArrange := mm.iArrange or ARW_HIDE;
   SystemParametersInfo(SPI_SETMINIMIZEDMETRICS, sizeof(MINIMIZEDMETRICS),@mm, 0);
 
-  RegisterShellHookWindow(FMsgWnd);
-  //RegisterShellHook(0,1);
-  //RegisterShellHook(FMsgWnd,3);
+  RegisterShellHook(0,1);
+  RegisterShellHook(FMsgWnd,3);
 end;
 
 procedure TTaskManager.UnregisterHook;
 begin
-  //RegisterShellHook(FMsgWnd,0);
-  DeregisterShellHookWindow(FMsgWnd);
+  RegisterShellHook(FMsgWnd,0);
 end;
 
 end.
