@@ -74,7 +74,6 @@ type
     DelayTimer3: TTimer;
     Clone1: TMenuItem;
     QuickAddModule1: TMenuItem;
-    ApplicationEvents1: TApplicationEvents;
     N6: TMenuItem;
     Skin1: TMenuItem;
     ColorScheme1: TMenuItem;
@@ -86,7 +85,6 @@ type
     procedure ThemeHideTimerTimer(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure Clone1Click(Sender: TObject);
     procedure DelayTimer3Timer(Sender: TObject);
     procedure DelayTimer1Timer(Sender: TObject);
@@ -132,7 +130,6 @@ type
     PrintWindow : function (SourceWindow: hwnd; Destination: hdc; nFlags: cardinal): bool; stdcall;
     FSuspended : boolean;
     FBarID : integer;
-    FShellHookList : TStringList;
     FStartup : Boolean;
     FBarLock : Boolean;
     FTopZone : TBitmap32;
@@ -160,6 +157,7 @@ type
     // Plugin message (to be broadcastet to modules)
     procedure WMWeatherUpdate(var msg : TMessage); message WM_WEATHERUPDATE;
     procedure WMInputChange(var msg : TMessage); message WM_INPUTLANGCHANGEREQUEST;
+    procedure WMShellHookWindowCreate(var msg : TMessage); message WM_SHELLHOOKWINDOWCREATED;
 
     // Power Management
     procedure WMPowerBroadcast(var msg : TMessage); message WM_POWERBROADCAST;
@@ -168,17 +166,9 @@ type
     procedure WMEndSession(var msg : TMessage); message WM_ENDSESSION;
     procedure WMQueryEndSession(var msg : TMessage); message WM_QUERYENDSESSION;
 
-    // shell hooks
-    procedure WMRegisterShellHook(var msg : TMessage); message WM_REGISTERSHELLHOOK;
-    procedure WMUnregisterShellHook(var msg : TMessage); message WM_UNREGISTERSHELLHOOK;
-
     // SharpE Actions
     procedure WMUpdateBangs(var Msg : TMessage); message WM_SHARPEUPDATEACTIONS;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
-
-    //Modules (uSharpBarAPI.pas)
-    procedure WMLockBarWindow(var msg : TMessage); message WM_LOCKBARWINDOW;
-    procedure WMUnlockBarWindow(var msg : TMessage); message WM_UNLOCKBARWINDOW;
 
     procedure WMGetFreeBarSpace(var msg : TMessage); message WM_GETFREEBARSPACE;
     procedure WMSaveXMLFile(var msg : TMessage); message WM_SAVEXMLFILE;
@@ -219,12 +209,7 @@ var
   ModuleSettings : TJvSimpleXML;
   BarMove : boolean;
   BarMovePoint : TPoint;
-  WM_SHELLHOOK : integer;
   Closing : boolean;
-
-procedure LockWindow(const Handle: HWND);
-procedure UnLockWindow(const Handle: HWND);
-function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; external 'shell32.dll' index 181;
 
 implementation
 
@@ -259,29 +244,6 @@ var
 begin
   DecodeTime(now,h,m,s,ms);
   result := h*60*60*1000 + m*60*1000 + s*1000 + ms;
-end;
-
-
-procedure LockWindow(const Handle: HWND);
-begin
-  exit;
-  if SharpBarMainForm.SharpEBar.HorizPos = hpFull then
-     LockWindowUpdate(Handle)
-     else SendMessage(Handle, WM_SETREDRAW, 0, 0);
-end;
-
-procedure UnlockWindow(const Handle: HWND);
-begin
-  exit;
-  if SharpBarMainForm.ShellBCInProgress then exit;
-
-  if SharpBarMainForm.SharpEBar.HorizPos = hpFull then
-     LockWindowUpdate(0)
-     else
-     begin
-       SendMessage(Handle, WM_SETREDRAW, 1, 0);
-       RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
-     end;
 end;
 
 // ************************
@@ -405,7 +367,6 @@ begin
   if FSuspended then exit;
   if Closing then exit;
 
-  if not FStartup then LockWindow(Handle);
   FBarLock := True;
 
   UpdateBGZone;
@@ -422,7 +383,6 @@ begin
   if ThemeHideTimer.Enabled then
      ThemeHideTimer.OnTimer(ThemeHideTimer);
 
-  if not FStartup then UnLockWindow(Handle);
 end;
 
 // SharpE Actions
@@ -445,6 +405,14 @@ end;
 procedure TSharpBarMainForm.WMSharpTerminate(var msg : TMessage);
 begin
   Close;
+end;
+
+// The shell hook window has been created, all modules or windows which
+// need to receive shell hooks should now register with the service
+procedure TSharpBarMainForm.WMShellHookWindowCreate(var msg: TMessage);
+begin
+  if ModuleManager = nil then exit;
+  ModuleManager.BroadcastPluginMessage('MM_SHELLHOOKWINDOWCREATED');
 end;
 
 // System Input Language Changed -> broadcast a message to all modules
@@ -473,76 +441,6 @@ begin
   end;
   msg.Result := 1;
 end;
-
-// Module is requesting to lock the whole bar window
-procedure TSharpBarMainForm.WMLockBarWindow(var msg : TMessage);
-begin
-  if FStartup then exit;
-  if FBarLock then exit;
-
-  LockWindow(Handle);
-end;
-
-// Module is requesting the bar window to be unlocked
-procedure TSharpBarMainForm.WMUnlockBarWindow(var msg : TMessage);
-begin
-  if FStartup then exit;
-  if FBarLock then exit;
-  if FShellBCInProgress then exit;
-
-  UnLockWindow(Handle);
-  SendMessage(SharpEBar.abackground.handle, WM_SETREDRAW, 1, 0);
-  RedrawWindow(SharpEBar.abackground.handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
-end;
-
-// A module is requesting to be notified on shell messages (task list,...)
-procedure TSharpBarMainForm.WMRegisterShellHook(var msg : TMessage);
-var
-  n : integer;
-  Module : TModule;
-  mm: MINIMIZEDMETRICS;
-begin
-  for n := 0 to ModuleManager.Modules.Count - 1 do
-  begin
-    Module := TModule(ModuleManager.Modules.Items[n]);
-    if Module.ID = msg.WParam then
-       FShellHookList.Add(inttostr(Module.Handle));
-  end;
-
-  if FShellHookList.Count = 1 then
-  begin
-    FillChar(mm, SizeOf(MINIMIZEDMETRICS), 0);
-
-    mm.cbSize := SizeOf(MINIMIZEDMETRICS);
-    SystemParametersInfo(SPI_GETMINIMIZEDMETRICS, sizeof(MINIMIZEDMETRICS),@mm, 0);
-
-    mm.iArrange := mm.iArrange or ARW_HIDE;
-    SystemParametersInfo(SPI_SETMINIMIZEDMETRICS, sizeof(MINIMIZEDMETRICS),@mm, 0);
-
-    // first module requestion a shell hook -> register the global hook
-    RegisterShellHook(0,1);
-    RegisterShellHook(Handle,3);
-  end;
-end;
-
-// A Module which was registered to receive shell messages unregisters itself
-procedure TSharpBarMainForm.WMUnregisterShellHook(var msg : TMessage);
-var
-  harray : THandleArray;
-begin
-  if (Closing) or (FShellHookList = nil) then exit;
-
-  FShellHookList.Delete(FShellHookList.IndexOf(inttostr(msg.WParam)));
-
-  harray := FindAllWindows('TSharpBarMainForm');
-  if (FShellHookList.Count = 0) and (length(harray) <= 1) then
-     RegisterShellHook(Handle,0);
-  setlength(harray,0);
-
-//  if FShellHookList.Count = 0 then
-//     RegisterShellHook(Handle,0);
-end;
-
 
 // A Module is requesting how much free bar space is left
 procedure TSharpBarMainForm.WMGetFreeBarSpace(var msg : TMessage);
@@ -599,7 +497,6 @@ begin
      or (msg.WParam = Integer(suSkinFileChanged))  then
      begin
        // Only update the skin if scheme or skin file changed...
-       if not FStartup then LockWindow(Handle);
        FBarLock := True;
        h := Height;
        SkinManager.UpdateScheme;
@@ -629,7 +526,6 @@ begin
   if FBarLock then
   begin
     FBarLock := False;
-    if not FStartup then UnLockWindow(Handle);
   end;
 end;
 
@@ -697,11 +593,9 @@ begin
   if FStartup then exit;
 
   DebugOutput('WM_UpdateBarWidth',2,1);
-  if not FStartup then LockWindow(Handle);
   try
     ModuleManager.ReCalculateModuleSize((msg.wparam = 0));
   finally
-    if not FStartup then UnLockwindow(Handle);
   end;
 end;
 
@@ -1227,9 +1121,6 @@ begin
   FStartup := True;
   FBarLock := False;
 
-  FShellHookList := TStringList.Create;
-  FShellHookList.Clear;
-
   DebugOutput('Creating Main Form',1,1);
   DebugOutput('Creating SkinManager',2,1);
 
@@ -1284,8 +1175,6 @@ begin
   Closing := False;
   DoubleBuffered := True;
   SharpThemeApi.LoadTheme;
-
-  WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
 
   FUser32DllHandle := LoadLibrary('user32.dll');
   if FUser32DllHandle <> 0 then
@@ -1904,11 +1793,9 @@ begin
   if mThrobber = nil then exit;
   if MessageBox(Application.handle,'Do you really want to remove this module? All settings will be lost!','Confirm : "Remove Module"',MB_YESNO) = IDYES then
   begin
-    LockWindow(Handle);
     ModuleManager.Delete(mThrobber.Tag);
     SaveBarSettings;
     ModuleManager.ReCalculateModuleSize;
-    UnLockWindow(Handle);
   end;
 end;
 
@@ -2119,37 +2006,8 @@ begin
   SaveBarSettings;
 end;
 
-procedure TSharpBarMainForm.ApplicationEvents1Message(var Msg: tagMSG;
-  var Handled: Boolean);
-var
-  n : integer;
-begin
-  if (FShellHookList = nil) or (Closing) then
-  begin
-    Handled := False;
-    exit;
-  end;
-  
-  if msg.message = WM_SHELLHOOK then
-  begin
-   // bar received a shell hook, forward it to all registered modules
-    try
-      for n := 0 to FShellHookList.Count - 1 do
-      begin
-        if (n = 0) and (n <> FShellHookList.Count - 1) then FShellBCInProgress := True
-           else if n = FShellHookList.Count -1 then FShellBCInProgress := False;
-        PostMessage(strtoint(FShellHookList[n]),WM_SHARPSHELLMESSAGE,msg.WParam,msg.LParam);
-      end;
-    except
-    end;
-   Handled := True;
-  end else Handled := False;
-end;
-
 procedure TSharpBarMainForm.FormClose(Sender: TObject;
   var Action: TCloseAction);
-var
-  harray : THandleArray;
 begin
   if Closing then exit;
 
@@ -2170,14 +2028,6 @@ begin
   if AddPluginForm <> nil then FreeAndNil(AddPluginForm);
   if PluginManagerForm <> nil then FreeAndNil(PluginManagerForm);
 
-  harray := FindAllWindows('TSharpBarMainForm');
-  if length(harray) <= 1 then
-     RegisterShellHook(Handle,0);
-  setlength(harray,0);
-  // check if shell hook functions have been used for any module
-{  if (FShellHookList.Count > 0) and (FindWindow('TSharpBarMainForm',nil)  then
-     RegisterShellHook(Handle,0);}
-
   // We want to produce good code, so let's free stuff before the app is closed ;)
   ForceDirectories(ExtractFileDir(ModuleSettings.FileName));
   SaveBarSettings;
@@ -2188,9 +2038,7 @@ begin
   ModuleManager.Free;
 
   Application.ProcessMessages;
-  FShellHookList.Clear;
-  FreeAndNil(FShellHookList);
-  
+
  // ModuleSettings.Free;
   //ModuleSettings := nil;
 

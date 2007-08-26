@@ -984,10 +984,8 @@ begin
 
       if Update then
       begin
-        LockWindow(FParent);
         SortModulesByPosition;
         FixModulePositions;
-        UnLockWindow(FParent);
         exit;
       end;
     end else if (FThrobberMove) then // Mouse Moving but no in Bar Rect

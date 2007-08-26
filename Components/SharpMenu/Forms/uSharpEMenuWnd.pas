@@ -114,18 +114,11 @@ type
     property FreeMenu : boolean read FFreeMenu write FFreeMenu;
   end;
 
-var
-  WM_SHELLHOOK : integer;
-
-
 implementation
 
 {$R *.dfm}
 
 uses uSharpEMenuItem;
-
-
-function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; external 'shell32.dll' index 181;
 
 
 // has to be applied to the TBitmap32 before passing it to the API function
@@ -248,8 +241,6 @@ end;
 
 procedure TSharpEMenuWnd.FormCreate(Sender: TObject);
 begin
-  WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
-
   ShowWindow( Application.Handle, SW_HIDE );
   SetWindowLong( Application.Handle, GWL_EXSTYLE,
                  GetWindowLong(Application.Handle, GWL_EXSTYLE) or
@@ -393,7 +384,7 @@ begin
   if (FFreeMenu or (Tag = - 1)) and (SharpEMenuPopups <> nil) then
      FreeAndNil(SharpEMenuPopups);
   if FRootMenu then
-     RegisterShellHook(Handle,0);
+     SharpApi.UnRegisterShellHookReceiver(Handle);
   if FRootMenu then Application.Terminate;
 end;
 
@@ -657,7 +648,7 @@ var
   cname : String;
 begin
   if FIsClosing then exit;
-  if msg.message = WM_SHELLHOOK then
+  if msg.message = WM_SHARPSHELLMESSAGE then
   begin
     Handled := True;
     if (msg.lParam = Handle) or (msg.lparam = Application.Handle) then exit;

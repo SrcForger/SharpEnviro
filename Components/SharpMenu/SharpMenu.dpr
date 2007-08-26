@@ -92,8 +92,6 @@ var
   menusettings : TSharpEMenuSettings;
   Mon : TMonitor;
 
-function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; external 'shell32.dll' index 181;
-
 procedure TEventClass.OnAppDeactivate(Sender : TObject);
 begin
   if (SharpEMenuIcons <> nil) and (menusettings.CacheIcons) then
@@ -205,8 +203,7 @@ begin
   wnd.Show;
 
   // Register Shell Hook
-  RegisterShellHook(0,1);
-  RegisterShellHook(wnd.Handle,3);
+  SharpApi.RegisterShellHookReceiver(wnd.Handle);
 
   Application.Run;
 
