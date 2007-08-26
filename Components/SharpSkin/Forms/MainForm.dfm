@@ -2332,7 +2332,6 @@ object Form1: TForm1
       end>
     Left = 408
     Top = 120
-    Bitmap = {}
   end
   object PopupMenu1: TPopupMenu
     Images = PngImageList1
