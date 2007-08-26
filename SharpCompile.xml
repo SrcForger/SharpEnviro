@@ -41,8 +41,7 @@
      <project Name="Button" Type="DLL" >Plugins\Modules\Button\Button.bdsproj</project>  
      <project Name="ButtonBar" Type="DLL" >Plugins\Modules\ButtonBar\ButtonBar.bdsproj</project>  
      <project Name="Clock" Type="DLL" >Plugins\Modules\Clock\Clock.bdsproj</project>  
-     <project Name="CPU Monitor" Type="DLL" >Plugins\Modules\CPU Monitor\CPUMonitor.bdsproj</project>  
-     <project Name="DropZone" Type="DLL" >Plugins\Modules\DropZone\DropZone.bdsproj</project>  
+     <project Name="CPU Monitor" Type="DLL" >Plugins\Modules\CPU Monitor\CPUMonitor.bdsproj</project>    
      <project Name="KeyboardLayout" Type="DLL" >Plugins\Modules\Keyboard Layout\KeyboardLayout.bdsproj</project>  
      <project Name="Media Controller" Type="DLL" >Plugins\Modules\MediaController\MediaController.bdsproj</project>  
      <project Name="Memory Monitor" Type="DLL" >Plugins\Modules\Memory Monitor\MemoryMonitor.bdsproj</project>  
