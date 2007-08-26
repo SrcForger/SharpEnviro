@@ -230,7 +230,7 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  PostMessage(BarWnd,WM_UNREGISTERSHELLHOOK,self.handle,0);
+  SharpApi.UnRegisterShellHookReceiver(Handle);
   Background.Free;
 end;
 

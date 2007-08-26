@@ -1095,7 +1095,7 @@ end;
 procedure TMainForm.InitHook;
 begin
   DebugOutPutInfo('TMainForm.InitHook (Procedure)');
-  PostMessage(BarWnd,WM_REGISTERSHELLHOOK,ModuleID,0);
+  SharpApi.RegisterShellHookReceiver(Handle);
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -1167,7 +1167,7 @@ begin
   IList.Clear;
   IList.Free;
   FreeAndNil(Background);
-  PostMessage(BarWnd,WM_UNREGISTERSHELLHOOK,self.handle,0);
+  UnRegisterShellHookReceiver(Handle);
 end;
 
 procedure TMainForm.ses_minallClick(Sender: TObject);

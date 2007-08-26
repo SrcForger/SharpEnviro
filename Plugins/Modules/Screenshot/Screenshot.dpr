@@ -96,7 +96,7 @@ begin
     LoadSettings;
     RealignComponents(False);
     Show;
-    PostMessage(BarWnd,WM_REGISTERSHELLHOOK,ModuleID,0);
+    SharpApi.RegisterShellHookReceiver(Handle);
     RegisterActionEx('!PrintScreen', 'SharpCore', FForm.Handle, 0);
     RegisterActionEx('!PrintWindow', 'SharpCore', FForm.Handle, 1);
   end;
