@@ -569,21 +569,17 @@ begin
   Result := HR_OK;
 
   try
-    wnd := FindWindow('TSharpCoreMainWnd', nil);
-    if wnd <> 0 then
+    if IsServiceStarted('exec') = MR_STARTED then
+      result := ServiceMsg('exec', pchar(data))
+    else
     begin
-      if IsServiceStarted('exec') = MR_STARTED then
-        result := ServiceMsg('exec', pchar(data))
-      else
-      begin
-        sTemp := data;
-        iElevate := Pos(sTemp, '_elevate,');
-        if iElevate > 0 then Delete(sTemp, iElevate, 9);
-        iHistory := Pos(sTemp, '_nohist,');
-        if iHistory > 0 then Delete(sTemp, iHistory, 8);
-        sTemp := Trim(sTemp);
-        result := ShellExecute(0, nil, PChar(sTemp), '', PChar(ExtractFilePath(sTemp)), SW_SHOWNORMAL);
-      end;
+      sTemp := data;
+      iElevate := Pos(sTemp, '_elevate,');
+      if iElevate > 0 then Delete(sTemp, iElevate, 9);
+      iHistory := Pos(sTemp, '_nohist,');
+      if iHistory > 0 then Delete(sTemp, iHistory, 8);
+      sTemp := Trim(sTemp);
+      result := ShellExecute(0, nil, PChar(sTemp), '', PChar(ExtractFilePath(sTemp)), SW_SHOWNORMAL);
     end;
   except
     result := HR_UNKNOWNERROR;
