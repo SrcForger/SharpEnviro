@@ -34,14 +34,14 @@ uses
 {$R *.RES}
 
 // Service is started
-procedure Stop;
-begin
-end;
-
-// Service is stopped
 function Start(owner: hwnd): hwnd;
 begin
   Result := owner;
+end;
+
+// Service is stopped
+procedure Stop;
+begin
 end;
 
 // Service receives a message
