@@ -59,7 +59,7 @@ uses
   // Program Units
   uSharpCoreServiceList,
   pngimage,
-  AppEvnts, PngImageList, SharpESkinManager, XPMan, JvComponentBase, JvTrayIcon;
+  AppEvnts, PngImageList, SharpESkinManager, JvComponentBase, JvTrayIcon;
 
 type
   TSharpCoreMainWnd = class(TForm)
@@ -93,7 +93,6 @@ type
     PngImageList1: TPngImageList;
     N3: TMenuItem;
     ShutdownSharpEcloseallcomponents1: TMenuItem;
-    XPManifest1: TXPManifest;
     trayicon: TJvTrayIcon;
     procedure ShutdownSharpEcloseallcomponents1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);

@@ -1023,10 +1023,6 @@ object SharpCoreMainWnd: TSharpCoreMainWnd
     Left = 376
     Top = 248
   end
-  object XPManifest1: TXPManifest
-    Left = 312
-    Top = 152
-  end
   object trayicon: TJvTrayIcon
     Active = True
     Icon.Data = {
