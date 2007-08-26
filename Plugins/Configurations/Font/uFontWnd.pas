@@ -37,7 +37,7 @@ uses
   uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
   SharpEListBox, SharpEListBoxEx, GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit, SharpEUIC,
-  SharpEFontSelectorFontList;
+  SharpEFontSelectorFontList, JvPageList, JvExControls;
 
 type
   TStringObject = class(TObject)
@@ -49,35 +49,42 @@ type
   TfrmFont = class(TForm)
     Panel1: TPanel;
     Label1: TLabel;
+    imlFontIcons: TImageList;
+    plMain: TJvPageList;
+    pagFont: TJvStandardPage;
+    pagFontShadow: TJvStandardPage;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label2: TLabel;
     UIC_Size: TSharpEUIC;
     sgb_size: TSharpeGaugeBox;
     UIC_FontType: TSharpEUIC;
     cbxFontName: TComboBox;
-    Label2: TLabel;
-    imlFontIcons: TImageList;
     UIC_Alpha: TSharpEUIC;
     sgb_alpha: TSharpeGaugeBox;
+    Label9: TLabel;
+    Label10: TLabel;
     UIC_Shadow: TSharpEUIC;
     cb_shadow: TCheckBox;
-    UIC_Bold: TSharpEUIC;
-    cb_bold: TCheckBox;
-    UIC_Underline: TSharpEUIC;
-    cb_Underline: TCheckBox;
-    UIC_Italic: TSharpEUIC;
-    cb_Italic: TCheckBox;
-    Label4: TLabel;
-    Label5: TLabel;
-    Label6: TLabel;
-    Label7: TLabel;
     textpanel: TPanel;
-    UIC_ShadowType: TSharpEUIC;
-    Label3: TLabel;
-    cb_shadowtype: TComboBox;
     lb_shadowtype: TLabel;
+    lb_shadowalpha: TLabel;
+    UIC_ShadowType: TSharpEUIC;
+    cb_shadowtype: TComboBox;
     UIC_ShadowAlpha: TSharpEUIC;
     sgb_shadowalpha: TSharpeGaugeBox;
-    lb_shadowalpha: TLabel;
     Label8: TLabel;
+    Label7: TLabel;
+    UIC_Bold: TSharpEUIC;
+    cb_bold: TCheckBox;
+    UIC_Italic: TSharpEUIC;
+    cb_Italic: TCheckBox;
+    UIC_Underline: TSharpEUIC;
+    cb_Underline: TCheckBox;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label3: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure sgb_sizeChangeValue(Sender: TObject; Value: Integer);
     procedure cbxFontNameDrawItem(Control: TWinControl; Index: Integer;
@@ -255,8 +262,8 @@ procedure TfrmFont.cb_shadowClick(Sender: TObject);
 begin
   UIC_Shadow.UpdateStatus;
   if cb_shadow.Checked then
-    textpanel.Height := 108
-    else textpanel.Height := 1;
+    textpanel.Show
+    else textpanel.Hide;
   SharpCenterApi.CenterDefineSettingsChanged;
 end;
 
@@ -286,7 +293,18 @@ end;
 
 procedure TfrmFont.FormShow(Sender: TObject);
 begin
-  cb_shadow.OnClick(cb_shadow);
+  if cb_shadow.Checked then
+    textpanel.Show
+    else textpanel.Hide;
+
+  Label4.Font.Color := clGray;
+  Label5.Font.Color := clGray;
+  Label6.Font.Color := clGray;
+  Label7.Font.Color := clGray;
+  Label8.Font.Color := clGray;
+  lb_shadowtype.Font.Color := clGray;
+  lb_shadowalpha.Font.Color := clGray;
+
 end;
 
 end.

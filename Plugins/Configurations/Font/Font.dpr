@@ -39,6 +39,7 @@ uses
   GR32,
   GR32_Image,
   PngSpeedButton,
+  JvPageList,
   SharpEUIC,
   uVistaFuncs,
   SysUtils,
@@ -87,6 +88,12 @@ begin
   if FileExists(FName) then
   begin
     XML := TJvSimpleXML.Create(nil);
+    frmFont.cb_Underline.OnClick := nil;
+    frmFont.cb_Italic.OnClick := nil;
+    frmFont.cb_bold.OnClick := nil;
+    frmFont.cb_shadow.OnClick := nil;
+
+    try
     try
       XML.LoadFromFile(FName);
       with frmFont do
@@ -109,6 +116,8 @@ begin
                 break;
               end;
           end;
+          if cbxFontName.ItemIndex = -1 then
+            cbxFontName.ItemIndex := cbxFontName.Items.IndexOf('arial');
 
           if BoolValue('ModAlpha',False) then
           begin
@@ -154,7 +163,16 @@ begin
         end;
     except
     end;
-    XML.Free;
+
+    finally
+      XML.Free;
+
+      frmFont.cb_Underline.OnClick := frmFont.cb_UnderlineClick;
+      frmFont.cb_Italic.OnClick := frmFont.cb_ItalicClick;
+      frmFont.cb_bold.OnClick := frmFont.cb_boldClick;
+      frmFont.cb_shadow.OnClick := frmFont.cb_shadowClick;
+    end;
+
   end;
 
   frmFont.Show;
@@ -212,7 +230,19 @@ end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);
 begin
-  ATabs.Add('Font',nil,'','');
+  ATabs.Add('Font Face',frmFont.pagFont,'','');
+  ATabs.Add('Font Shadow',frmFont.pagFontShadow,'','');
+end;
+
+procedure ClickTab(ATab: TPluginTabItem);
+var
+  tmpPag: TJvStandardPage;
+begin
+  if ATab.Data <> nil then begin
+    tmpPag := TJvStandardPage(ATab.Data);
+    tmpPag.Show;
+  end;
+
 end;
 
 function SetSettingType: TSU_UPDATE_ENUM;
@@ -225,6 +255,7 @@ exports
   Open,
   Close,
   Save,
+  ClickTab,
   SetDisplayText,
   SetStatusText,
   SetBtnState,

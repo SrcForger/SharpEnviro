@@ -76,22 +76,22 @@ begin
       // Icon Tab
       i := IntValue('IconSize', 32);
       case i of
-        32: frmDesktopSettings.rb_icon32.Checked := True;
-        48: frmDesktopSettings.rb_icon48.Checked := True;
-        64: frmDesktopSettings.rb_icon64.Checked := True;
+        32: frmDesktopSettings.rbicon32.Checked := True;
+        48: frmDesktopSettings.rbicon48.Checked := True;
+        64: frmDesktopSettings.rbicon64.Checked := True;
       else
-        frmDesktopSettings.rb_iconcustom.Checked := True;
+        frmDesktopSettings.rbiconcustom.Checked := True;
       end;
-      frmDesktopSettings.sgb_iconsize.Value := i;
-      frmDesktopSettings.cb_alphablend.Checked := BoolValue('IconAlphaBlend',
+      frmDesktopSettings.sgbiconsize.Value := i;
+      frmDesktopSettings.cbalphablend.Checked := BoolValue('IconAlphaBlend',
         False);
-      frmDesktopSettings.sgb_iconalpha.value := IntValue('IconAlpha', 255);
-      frmDesktopSettings.cb_colorblend.Checked := BoolValue('IconBlending',
+      frmDesktopSettings.sgbiconalpha.value := IntValue('IconAlpha', 255);
+      frmDesktopSettings.cbcolorblend.Checked := BoolValue('IconBlending',
         False);
-      frmDesktopSettings.sbg_iconcblendalpha.Value := IntValue('IconBlendAlpha',
+      frmDesktopSettings.sbgiconcblendalpha.Value := IntValue('IconBlendAlpha',
         255);
-      frmDesktopSettings.cb_iconshadow.Checked := BoolValue('IconShadow', True);
-      frmDesktopSettings.sgb_iconshadow.Value := IntValue('IconShadowAlpha',
+      frmDesktopSettings.cbiconshadow.Checked := BoolValue('IconShadow', True);
+      frmDesktopSettings.sgbiconshadow.Value := IntValue('IconShadowAlpha',
         196);
       frmDesktopSettings.IconColors.Items.Item[0].ColorCode :=
         IntValue('IconBlendColor', 0);
@@ -100,17 +100,17 @@ begin
 
       // Text Tab
       frmDesktopSettings.sFontName := Value('FontName', 'Verdana');
-      frmDesktopSettings.se_fontsize.Value := IntValue('TextSize', 12);
-      frmDesktopSettings.cb_bold.Checked := BoolValue('TextBold', False);
-      frmDesktopSettings.cb_italic.Checked := BoolValue('TextItalic', False);
-      frmDesktopSettings.cb_underline.Checked := BoolValue('TextUnderline',
+      frmDesktopSettings.sefontsize.Value := IntValue('TextSize', 12);
+      frmDesktopSettings.cbbold.Checked := BoolValue('TextBold', False);
+      frmDesktopSettings.cbitalic.Checked := BoolValue('TextItalic', False);
+      frmDesktopSettings.cbunderline.Checked := BoolValue('TextUnderline',
         False);
-      frmDesktopSettings.cb_fontalphablend.Checked := BoolValue('TextAlpha',
+      frmDesktopSettings.cbfontalphablend.Checked := BoolValue('TextAlpha',
         False);
-      frmDesktopSettings.sgb_fontalphablend.Value := IntValue('TextAlphaValue',
+      frmDesktopSettings.sgbfontalphablend.Value := IntValue('TextAlphaValue',
         255);
-      frmDesktopSettings.cb_textshadow.Checked := BoolValue('TextShadow', True);
-      frmDesktopSettings.sgb_textshadow.Value := IntValue('TextShadowAlpha',
+      frmDesktopSettings.cbtextshadow.Checked := BoolValue('TextShadow', True);
+      frmDesktopSettings.sgbtextshadow.Value := IntValue('TextShadowAlpha',
         196);
       frmDesktopSettings.TextColors.Items.Item[0].ColorCode :=
         IntValue('TextColor', clWhite);
@@ -124,17 +124,17 @@ begin
     XML.LoadFromFile(Dir + 'DesktopAnimation.xml');
     with XML.Root.Items do
     begin
-      frmDesktopSettings.cb_anim.Checked := BoolValue('UseAnimations', True);
-      frmDesktopSettings.cb_animscale.Checked := BoolValue('Scale', False);
-      frmDesktopSettings.sgb_animscale.Value := IntValue('ScaleValue', 0);
-      frmDesktopSettings.cb_animalpha.Checked := BoolValue('Alpha', True);
-      frmDesktopSettings.sgb_animalpha.Value := IntValue('AlphaValue', 64);
-      frmDesktopSettings.cb_animcolorblend.Checked := BoolValue('Blend', False);
-      frmDesktopSettings.sgb_animcolorblend.Value := IntValue('BlendValue',
+      frmDesktopSettings.cbanim.Checked := BoolValue('UseAnimations', True);
+      frmDesktopSettings.cbanimscale.Checked := BoolValue('Scale', False);
+      frmDesktopSettings.sgbanimscale.Value := IntValue('ScaleValue', 0);
+      frmDesktopSettings.cbanimalpha.Checked := BoolValue('Alpha', True);
+      frmDesktopSettings.sgbanimalpha.Value := IntValue('AlphaValue', 64);
+      frmDesktopSettings.cbanimcolorblend.Checked := BoolValue('Blend', False);
+      frmDesktopSettings.sgbanimcolorblend.Value := IntValue('BlendValue',
         255);
-      frmDesktopSettings.cb_animbrightness.Checked := BoolValue('Brightness',
+      frmDesktopSettings.cbanimbrightness.Checked := BoolValue('Brightness',
         True);
-      frmDesktopSettings.sgb_animbrightness.Value := IntValue('BrightnessValue',
+      frmDesktopSettings.sgbanimbrightness.Value := IntValue('BrightnessValue',
         64);
       frmDesktopSettings.AnimColors.Items.Item[0].ColorCode :=
         IntValue('BlendColor', clWhite);
@@ -164,34 +164,34 @@ begin
 
   with XML.Root.Items do
   begin
-    if frmDesktopSettings.rb_icon32.Checked then
+    if frmDesktopSettings.rbicon32.Checked then
       i := 32
-    else if frmDesktopSettings.rb_icon48.Checked then
+    else if frmDesktopSettings.rbicon48.Checked then
       i := 48
-    else if frmDesktopSettings.rb_icon64.Checked then
+    else if frmDesktopSettings.rbicon64.Checked then
       i := 64
     else
-      i := frmDesktopSettings.sgb_iconsize.Value;
+      i := frmDesktopSettings.sgbiconsize.Value;
     Add('IconSize', i);
-    Add('IconAlphaBlend', frmDesktopSettings.cb_alphablend.Checked);
-    Add('IconAlpha', frmDesktopSettings.sgb_iconalpha.Value);
-    Add('IconBlending', frmDesktopSettings.cb_colorblend.Checked);
-    Add('IconBlendAlpha', frmDesktopSettings.sbg_iconcblendalpha.Value);
-    Add('IconShadow', frmDesktopSettings.cb_iconshadow.Checked);
-    Add('IconShadowAlpha', frmDesktopSettings.sgb_iconshadow.Value);
+    Add('IconAlphaBlend', frmDesktopSettings.cbalphablend.Checked);
+    Add('IconAlpha', frmDesktopSettings.sgbiconalpha.Value);
+    Add('IconBlending', frmDesktopSettings.cbcolorblend.Checked);
+    Add('IconBlendAlpha', frmDesktopSettings.sbgiconcblendalpha.Value);
+    Add('IconShadow', frmDesktopSettings.cbiconshadow.Checked);
+    Add('IconShadowAlpha', frmDesktopSettings.sgbiconshadow.Value);
     Add('IconBlendColor',
       frmDesktopSettings.IconColors.Items.Item[0].ColorCode);
     Add('IconShadowColor',
       frmDesktopSettings.IconColors.Items.Item[1].ColorCode);
     Add('FontName', frmDesktopSettings.cbxFontName.Text);
-    Add('TextSize', round(frmDesktopSettings.se_fontsize.Value));
-    Add('TextBold', frmDesktopSettings.cb_bold.Checked);
-    Add('TextItalic', frmDesktopSettings.cb_italic.Checked);
-    Add('TextUnderline', frmDesktopSettings.cb_underline.Checked);
-    Add('TextAlpha', frmDesktopSettings.cb_fontalphablend.Checked);
-    Add('TextAlphaValue', frmDesktopSettings.sgb_fontalphablend.Value);
-    Add('TextShadow', frmDesktopSettings.cb_textshadow.Checked);
-    Add('TextShadowAlpha', frmDesktopSettings.sgb_textshadow.Value);
+    Add('TextSize', round(frmDesktopSettings.sefontsize.Value));
+    Add('TextBold', frmDesktopSettings.cbbold.Checked);
+    Add('TextItalic', frmDesktopSettings.cbitalic.Checked);
+    Add('TextUnderline', frmDesktopSettings.cbunderline.Checked);
+    Add('TextAlpha', frmDesktopSettings.cbfontalphablend.Checked);
+    Add('TextAlphaValue', frmDesktopSettings.sgbfontalphablend.Value);
+    Add('TextShadow', frmDesktopSettings.cbtextshadow.Checked);
+    Add('TextShadowAlpha', frmDesktopSettings.sgbtextshadow.Value);
     Add('TextColor', frmDesktopSettings.TextColors.Items.Item[0].ColorCode);
     Add('TextShadowColor',
       frmDesktopSettings.TextColors.Items.Item[1].ColorCode);
@@ -208,15 +208,15 @@ begin
 
   with XML.Root.Items do
   begin
-    Add('UseAnimations', frmDesktopSettings.cb_anim.Checked);
-    Add('Scale', frmDesktopSettings.cb_animscale.Checked);
-    Add('ScaleValue', frmDesktopSettings.sgb_animscale.Value);
-    Add('Alpha', frmDesktopSettings.cb_animalpha.Checked);
-    Add('AlphaValue', frmDesktopSettings.sgb_animalpha.Value);
-    Add('Blend', frmDesktopSettings.cb_animcolorblend.Checked);
-    Add('BlendValue', frmDesktopSettings.sgb_animcolorblend.Value);
-    Add('Brightness', frmDesktopSettings.cb_animbrightness.Checked);
-    Add('BrightnessValue', frmDesktopSettings.sgb_animbrightness.Value);
+    Add('UseAnimations', frmDesktopSettings.cbanim.Checked);
+    Add('Scale', frmDesktopSettings.cbanimscale.Checked);
+    Add('ScaleValue', frmDesktopSettings.sgbanimscale.Value);
+    Add('Alpha', frmDesktopSettings.cbanimalpha.Checked);
+    Add('AlphaValue', frmDesktopSettings.sgbanimalpha.Value);
+    Add('Blend', frmDesktopSettings.cbanimcolorblend.Checked);
+    Add('BlendValue', frmDesktopSettings.sgbanimcolorblend.Value);
+    Add('Brightness', frmDesktopSettings.cbanimbrightness.Checked);
+    Add('BrightnessValue', frmDesktopSettings.sgbanimbrightness.Value);
     Add('BlendColor', frmDesktopSettings.AnimColors.Items.Item[0].ColorCode);
   end;
 

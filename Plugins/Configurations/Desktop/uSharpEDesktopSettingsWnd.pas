@@ -1,7 +1,7 @@
-﻿{
+{
 Source Name: uSharpDeskSettingsWnd.pas
 Description: SharpDesk Settings Window
-Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
+Copyright (C) Martin Kr�mer (MartinKraemer@gmx.net)
 
 3rd Party Libraries used: JCL, JVCL
 Common: SharpApi
@@ -37,7 +37,7 @@ uses
   JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
   GR32_Image, GR32, GR32_PNG, SharpEColorEditor, SharpESwatchManager,
   SharpEColorEditorEx, SharpEFontSelectorFontList, ImgList, Mask, JvExMask,
-  JvSpin, SharpEGaugeBoxEdit;
+  JvSpin, SharpEGaugeBoxEdit, SharpERoundPanel;
 
 type
   TStringObject = Class(TObject)
@@ -51,113 +51,108 @@ type
     JvIconPage: TJvStandardPage;
     JvTextPage: TJvStandardPage;
     JvAnimationPage: TJvStandardPage;
-    Panel1: TPanel;
-    pn_iconsize: TPanel;
-    icon32: TImage32;
-    icon48: TImage32;
-    icon64: TImage32;
-    iconcustom: TImage32;
-    rb_icon32: TRadioButton;
-    rb_icon48: TRadioButton;
-    rb_icon64: TRadioButton;
-    rb_iconcustom: TRadioButton;
-    Label1: TLabel;
-    pn_alphablendbg: TPanel;
     SharpESwatchManager1: TSharpESwatchManager;
-    IconColors: TSharpEColorEditorEx;
-    Panel4: TPanel;
     imlFontIcons: TImageList;
     Panel5: TPanel;
     cbxFontName: TComboBox;
     Label5: TLabel;
     Panel7: TPanel;
-    se_fontsize: TJvSpinEdit;
+    sefontsize: TJvSpinEdit;
     Label9: TLabel;
-    cb_bold: TCheckBox;
-    cb_italic: TCheckBox;
-    cb_underline: TCheckBox;
+    cbbold: TCheckBox;
+    cbitalic: TCheckBox;
+    cbunderline: TCheckBox;
     textcolors: TSharpEColorEditorEx;
     Panel6: TPanel;
-    pn_anim: TPanel;
+    pnanim: TPanel;
     Panel9: TPanel;
-    cb_anim: TCheckBox;
-    pn_alphablend: TPanel;
-    Panel10: TPanel;
-    sgb_iconalpha: TSharpeGaugeBox;
-    Panel11: TPanel;
-    cb_alphablend: TCheckBox;
-    pn_colorblendbg: TPanel;
-    pn_colorblend: TPanel;
-    sbg_iconcblendalpha: TSharpeGaugeBox;
-    Panel13: TPanel;
-    Panel14: TPanel;
-    cb_colorblend: TCheckBox;
-    pn_iconshadowbg: TPanel;
-    pn_iconshadow: TPanel;
-    sgb_iconshadow: TSharpeGaugeBox;
-    Panel15: TPanel;
-    Panel16: TPanel;
-    cb_iconshadow: TCheckBox;
-    Panel2: TPanel;
-    Panel12: TPanel;
-    Panel17: TPanel;
-    sgb_iconsize: TSharpeGaugeBox;
-    pn_textshadowbg: TPanel;
-    pn_textshadow: TPanel;
-    sgb_textshadow: TSharpeGaugeBox;
+    cbanim: TCheckBox;
+    pntextshadowbg: TPanel;
+    pntextshadow: TPanel;
+    sgbtextshadow: TSharpeGaugeBox;
     Panel20: TPanel;
     Panel21: TPanel;
-    cb_textshadow: TCheckBox;
-    pn_fontalphablendbg: TPanel;
-    pn_fontalphablend: TPanel;
-    sgb_fontalphablend: TSharpeGaugeBox;
+    cbtextshadow: TCheckBox;
+    pnfontalphablendbg: TPanel;
+    pnfontalphablend: TPanel;
+    sgbfontalphablend: TSharpeGaugeBox;
     Panel24: TPanel;
     Panel25: TPanel;
-    cb_fontalphablend: TCheckBox;
-    Panel3: TPanel;
+    cbfontalphablend: TCheckBox;
     Panel18: TPanel;
-    pn_animscalebg: TPanel;
-    pn_animscale: TPanel;
-    sgb_animscale: TSharpeGaugeBox;
+    pnanimscalebg: TPanel;
+    pnanimscale: TPanel;
+    sgbanimscale: TSharpeGaugeBox;
     Panel22: TPanel;
     Panel23: TPanel;
-    cb_animscale: TCheckBox;
-    pn_animalphabg: TPanel;
-    pn_animalpha: TPanel;
-    sgb_animalpha: TSharpeGaugeBox;
+    cbanimscale: TCheckBox;
+    pnanimalphabg: TPanel;
+    pnanimalpha: TPanel;
+    sgbanimalpha: TSharpeGaugeBox;
     Panel26: TPanel;
     Panel27: TPanel;
-    cb_animalpha: TCheckBox;
-    pn_animbrightnessbg: TPanel;
-    pn_animbrightness: TPanel;
-    sgb_animbrightness: TSharpeGaugeBox;
+    cbanimalpha: TCheckBox;
+    pnanimbrightnessbg: TPanel;
+    pnanimbrightness: TPanel;
+    sgbanimbrightness: TSharpeGaugeBox;
     Panel28: TPanel;
     Panel29: TPanel;
-    cb_animbrightness: TCheckBox;
-    pn_animcolorblendbg: TPanel;
-    pn_animcolorblend: TPanel;
-    sgb_animcolorblend: TSharpeGaugeBox;
+    cbanimbrightness: TCheckBox;
+    pnanimcolorblendbg: TPanel;
+    pnanimcolorblend: TPanel;
+    sgbanimcolorblend: TSharpeGaugeBox;
     Panel30: TPanel;
     Panel31: TPanel;
-    cb_animcolorblend: TCheckBox;
+    cbanimcolorblend: TCheckBox;
     Panel19: TPanel;
     animcolors: TSharpEColorEditorEx;
     Panel8: TPanel;
+    Panel3: TPanel;
+    Label2: TLabel;
+    cbalphablend: TCheckBox;
+    Panel4: TPanel;
+    Label3: TLabel;
+    CheckBox1: TLabel;
+    SharpERoundPanel1: TSharpERoundPanel;
+    icon32: TImage32;
+    rbicon32: TRadioButton;
+    SharpERoundPanel2: TSharpERoundPanel;
+    icon48: TImage32;
+    rbicon48: TRadioButton;
+    SharpERoundPanel3: TSharpERoundPanel;
+    Icon64: TImage32;
+    rbicon64: TRadioButton;
+    SharpERoundPanel4: TSharpERoundPanel;
+    rbiconcustom: TRadioButton;
+    sgbiconsize: TSharpeGaugeBox;
+    sgbiconalpha: TSharpeGaugeBox;
+    Panel1: TPanel;
+    Label1: TLabel;
+    cbcolorblend: TCheckBox;
+    sbgiconcblendalpha: TSharpeGaugeBox;
+    Panel2: TPanel;
+    Label4: TLabel;
+    cbiconshadow: TCheckBox;
+    sgbiconshadow: TSharpeGaugeBox;
+    Panel10: TPanel;
+    Label6: TLabel;
+    Label7: TLabel;
+    IconColors: TSharpEColorEditorEx;
     procedure IconColorsUiChange(Sender: TObject);
-    procedure cb_animscaleClick(Sender: TObject);
-    procedure cb_animClick(Sender: TObject);
-    procedure cb_boldClick(Sender: TObject);
-    procedure sgb_iconalphaChangeValue(Sender: TObject; Value: Integer);
-    procedure cb_textshadowClick(Sender: TObject);
-    procedure cb_fontalphablendClick(Sender: TObject);
+    procedure cbanimscaleClick(Sender: TObject);
+    procedure cbanimClick(Sender: TObject);
+    procedure cbboldClick(Sender: TObject);
+    procedure SendUpdateEvent(Sender: TObject; Value: Integer);
+    procedure cbtextshadowClick(Sender: TObject);
+    procedure cbfontalphablendClick(Sender: TObject);
     procedure cbxFontNameDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
-    procedure cb_iconshadowClick(Sender: TObject);
-    procedure cb_colorblendClick(Sender: TObject);
-    procedure cb_alphablendClick(Sender: TObject);
+    procedure cbiconshadowClick(Sender: TObject);
+    procedure cbiconblendClick(Sender: TObject);
+    procedure cbalphablendClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure rb_iconcustomClick(Sender: TObject);
+    procedure rbiconcustomClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     FBlue32,FBlue48,FBlue64 : TBitmap32;
@@ -172,7 +167,6 @@ type
     procedure UpdateIconShadowControls;
     procedure UpdateTextShadowControls;
     procedure UpdateAnimationControls;
-    procedure DrawCustomIcon;
   public
     sTheme : String;
     sFontName : String;
@@ -223,22 +217,6 @@ begin
   TempBmp.Free;
 end;
 
-procedure TfrmDesktopSettings.DrawCustomIcon;
-var
-  c : TColor32;
-begin
-  with iconcustom.Bitmap do
-  begin
-    SetSize(64,64);
-    clear(color32(iconcustom.Color));
-    Font.Size := 48;
-    if rb_iconcustom.Checked then
-       c := clBlack32
-       else c := clLightGray32;
-    RenderText(32-TextWidth('?') div 2,32-TextHeight('?') div 2,'?',1,c);
-  end;
-end;
-
 procedure TfrmDesktopSettings.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := true;
@@ -258,65 +236,59 @@ begin
   LoadBmpFromRessource(FWhite32,'White32');
   LoadBmpFromRessource(FWhite48,'White48');
   LoadBmpFromRessource(FWhite64,'White64');
-
-  DrawCustomIcon;
 end;
 
 procedure TfrmDesktopSettings.UpdateIconControls;
 begin
-  pn_iconsize.Visible := rb_iconcustom.checked;
+  sgbiconsize.Enabled := rbiconcustom.checked;
 
-  if rb_icon32.Checked then
+  if rbicon32.Checked then
      icon32.Bitmap.Assign(FBlue32)
      else icon32.Bitmap.Assign(FWhite32);
 
-  if rb_icon48.Checked then
-     icon48.Bitmap.Assign(FBlue48)
-     else icon48.Bitmap.Assign(FWhite48);
+  if rbicon48.Checked then
+     icon48.Bitmap.Assign(FBlue32)
+     else icon48.Bitmap.Assign(FWhite32);
 
-  if rb_icon64.Checked then
-     icon64.Bitmap.Assign(FBlue64)
-     else icon64.Bitmap.Assign(FWhite64);
-
-  DrawCustomIcon;
+  if rbicon64.Checked then
+     icon64.Bitmap.Assign(FBlue32)
+     else icon64.Bitmap.Assign(FWhite32);
 end;
 
 procedure TfrmDesktopSettings.UpdateAnimationControls;
 begin
-  pn_anim.Visible := cb_anim.checked;
-  pn_animscale.Visible := cb_animscale.Checked;
-  pn_animalpha.Visible := cb_animalpha.Checked;
-  pn_animbrightness.Visible := cb_animbrightness.Checked;
-  pn_animcolorblend.Visible := cb_animcolorblend.Checked;
-  AnimColors.Items.Item[0].Visible := cb_animcolorblend.checked;
+  pnanim.Visible := cbanim.checked;
+  pnanimscale.Visible := cbanimscale.Checked;
+  pnanimalpha.Visible := cbanimalpha.Checked;
+  pnanimbrightness.Visible := cbanimbrightness.Checked;
+  pnanimcolorblend.Visible := cbanimcolorblend.Checked;
+  AnimColors.Items.Item[0].Visible := cbanimcolorblend.checked;
 end;
 
 procedure TfrmDesktopSettings.UpdateFontAlphaControls;
 begin
-  pn_fontalphablend.visible := cb_fontalphablend.checked;
+  pnfontalphablend.visible := cbfontalphablend.checked;
 end;
 
 procedure TfrmDesktopSettings.UpdateAlphaControls;
 begin
-  pn_alphablend.visible := cb_alphablend.checked;
+
 end;
 
 procedure TfrmDesktopSettings.UpdateBlendControls;
 begin
-  pn_colorblend.visible := cb_colorblend.checked;
-  IconColors.Items.Item[0].Visible := cb_colorblend.checked;
+  IconColors.Items.Item[0].Visible := cbcolorblend.checked;
 end;
 
 procedure TfrmDesktopSettings.UpdateTextShadowControls;
 begin
-  pn_textshadow.visible := cb_textshadow.checked;
-  TextColors.Items.Item[1].Visible := cb_textshadow.checked;
+  pntextshadow.visible := cbtextshadow.checked;
+  TextColors.Items.Item[1].Visible := cbtextshadow.checked;
 end;
 
 procedure TfrmDesktopSettings.UpdateIconShadowControls;
 begin
-  pn_iconshadow.Visible := cb_iconshadow.Checked;
-  IconColors.Items.Item[1].Visible := cb_iconshadow.Checked;
+  IconColors.Items.Item[1].Visible := cbiconshadow.Checked;
 end;
 
 procedure TfrmDesktopSettings.SendUpdate;
@@ -325,8 +297,17 @@ begin
      CenterDefineSettingsChanged;
 end;
 
-procedure TfrmDesktopSettings.rb_iconcustomClick(Sender: TObject);
+procedure TfrmDesktopSettings.rbiconcustomClick(Sender: TObject);
 begin
+  rbicon32.Checked := False;
+  rbicon48.Checked := False;
+  rbicon64.Checked := False;
+  rbiconcustom.Checked := False;
+
+  TRadioButton(Sender).OnClick := nil;
+  TRadioButton(Sender).Checked := True;
+  TRadioButton(Sender).OnClick := rbiconcustomClick;
+
   UpdateIconControls;
   SendUpdate;
 end;
@@ -336,6 +317,14 @@ begin
   RefreshFontList;
   if cbxFontName.Items.IndexOf(sFontName) <> 0 then
      cbxFontName.ItemIndex := cbxFontName.Items.IndexOf(sFontName);
+
+  Label1.Font.Color := clGray;
+  Label2.Font.Color := clGray;
+  Label3.Font.Color := clGray;
+  Label4.Font.Color := clGray;
+  Label5.Font.Color := clGray;
+  Label6.Font.Color := clGray;
+
   UpdateIconControls;
   UpdateAlphaControls;
   UpdateFontAlphaControls;
@@ -357,19 +346,19 @@ begin
   FFontList.Free;
 end;
 
-procedure TfrmDesktopSettings.cb_alphablendClick(Sender: TObject);
+procedure TfrmDesktopSettings.cbalphablendClick(Sender: TObject);
 begin
   UpdateAlphaControls;
   SendUpdate;
 end;
 
-procedure TfrmDesktopSettings.cb_colorblendClick(Sender: TObject);
+procedure TfrmDesktopSettings.cbiconblendClick(Sender: TObject);
 begin
   UpdateBlendControls;
   SendUpdate;
 end;
 
-procedure TfrmDesktopSettings.cb_iconshadowClick(Sender: TObject);
+procedure TfrmDesktopSettings.cbiconshadowClick(Sender: TObject);
 begin
   UpdateIconShadowControls;
   SendUpdate;
@@ -430,36 +419,36 @@ begin
   cbxFontName.canvas.textout(rect.left+imlFontIcons.width+2,rect.top,fi.FullName);
 end;
 
-procedure TfrmDesktopSettings.cb_fontalphablendClick(Sender: TObject);
+procedure TfrmDesktopSettings.cbfontalphablendClick(Sender: TObject);
 begin
   UpdateFontAlphaControls;
   SendUpdate;
 end;
 
-procedure TfrmDesktopSettings.cb_textshadowClick(Sender: TObject);
+procedure TfrmDesktopSettings.cbtextshadowClick(Sender: TObject);
 begin
   UpdateTextShadowControls;
   SendUpdate;
 end;
 
-procedure TfrmDesktopSettings.sgb_iconalphaChangeValue(Sender: TObject;
+procedure TfrmDesktopSettings.SendUpdateEvent(Sender: TObject;
   Value: Integer);
 begin
   SendUpdate;
 end;
 
-procedure TfrmDesktopSettings.cb_boldClick(Sender: TObject);
+procedure TfrmDesktopSettings.cbboldClick(Sender: TObject);
 begin
   SendUpdate;
 end;
 
-procedure TfrmDesktopSettings.cb_animClick(Sender: TObject);
+procedure TfrmDesktopSettings.cbanimClick(Sender: TObject);
 begin
   UpdateAnimationControls;
   SendUpdate;
 end;
 
-procedure TfrmDesktopSettings.cb_animscaleClick(Sender: TObject);
+procedure TfrmDesktopSettings.cbanimscaleClick(Sender: TObject);
 begin
   UpdateAnimationControls;
   SendUpdate;
