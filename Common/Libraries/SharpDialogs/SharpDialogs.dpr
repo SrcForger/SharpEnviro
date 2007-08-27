@@ -1050,9 +1050,9 @@ begin
 
     iml.Add(bmp,bmp);
 
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'cube');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'open');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'graph');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'cube16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'open16');
+    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'graph16');
 
     iml.Add(bmp,bmp);
 
