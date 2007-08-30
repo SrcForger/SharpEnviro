@@ -995,13 +995,6 @@ object SharpDeskMainForm: TSharpDeskMainForm
       OnClick = UnlockObjects1Click
     end
   end
-  object CheckThemeTimer: TTimer
-    Enabled = False
-    Interval = 2500
-    OnTimer = CheckThemeTimerTimer
-    Left = 160
-    Top = 72
-  end
   object DevMenu: TPopupMenu
     Left = 128
     Top = 8

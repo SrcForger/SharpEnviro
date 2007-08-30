@@ -96,7 +96,6 @@ type
     BringtoFront2: TMenuItem;
     SendtoBack1: TMenuItem;
     ENDOFCUSTOMMENU: TMenuItem;
-    CheckThemeTimer: TTimer;
     N4: TMenuItem;
     Align2: TMenuItem;
     NewAligns1: TMenuItem;
@@ -170,7 +169,6 @@ type
     procedure Clone1Click(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormPaint(Sender: TObject);
-    procedure CheckThemeTimerTimer(Sender: TObject);
     procedure NewAligns1Click(Sender: TObject);
     procedure ObjectPopup2Popup(Sender: TObject);
     procedure UnLoadObjects1Click(Sender: TObject);
@@ -186,8 +184,6 @@ type
     procedure WMSettingsChange(var Msg : TMessage);       message WM_SETTINGCHANGE;
     procedure WMDisplayChange(var Msg : TMessage);        message WM_DISPLAYCHANGE;
     procedure WMDeskExportBackground(var Msg : TMessage); message WM_DESKEXPORTBACKGROUND;
-    procedure WMEnableDesk(var Msg : TMessage);           message WM_ENABLESHARPDESK;
-    procedure WMDisableDesk(var Msg : TMessage);          message WM_DISABLESHARPDESK;
     procedure WMUpdateBangs(var Msg : TMessage);          message WM_SHARPEUPDATEACTIONS;
     procedure WMSharpEBang(var Msg : TMessage);           message WM_SHARPEACTIONMESSAGE;
     procedure WMPosChanging(var Msg: TWMWindowPosMsg);    message WM_WINDOWPOSCHANGING;
@@ -487,22 +483,6 @@ procedure TSharpDeskMainForm.WMCloseDesk(var Msg : TMessage);
 begin
   SharpDeskMainForm.Close;
   Application.Terminate;
-end;
-
-procedure TSharpDeskMainForm.WMEnableDesk(var Msg : TMessage);
-begin
-  CheckThemeTimer.Enabled := False;
-  SharpDesk.EnableAnimation;  
-  SharpDeskMainForm.Enabled := True;
-end;
-
-procedure TSharpDeskMainForm.WMDisableDesk(var Msg : TMessage);
-begin
-  if CreateForm.Visible       then CreateForm.btn_cancel.OnClick(nil);
-  if SettingsForm.Visible     then SettingsForm.btn_cancel.OnClick(nil);
-  SharpDesk.DisableAnimation;
-  SharpDeskMainForm.Enabled := False;
-  CheckThemeTimer.Enabled := True;
 end;
 
 procedure TSharpDeskMainForm.WMUpdateBangs(var Msg : TMessage);
@@ -1647,19 +1627,6 @@ end;
 procedure TSharpDeskMainForm.FormPaint(Sender: TObject);
 begin
   Startup := False;
-end;
-
-procedure TSharpDeskMainForm.CheckThemeTimerTimer(Sender: TObject);
-var
-   MuteXHandle : THandle;
-begin
-  MutexHandle := OpenMuteX(MUTEX_ALL_ACCESS	, False, 'SharpThemeMutex');
-  if MuteXHandle = 0 then
-  begin
-    CheckThemeTimer.Enabled := False;
-    SharpDeskMainForm.Enabled := True;
-  end;
-  CloseHandle(MuteXHandle);
 end;
 
 procedure TSharpDeskMainForm.NewAligns1Click(Sender: TObject);
