@@ -428,7 +428,7 @@ begin
       begin
         if FWarmup then
         begin
-          if DateTimeToUnix(Now) - FWarmupStart > 5 then
+          if DateTimeToUnix(Now) - FWarmupStart >= 1 then
              FWarmup := False
           else
           begin

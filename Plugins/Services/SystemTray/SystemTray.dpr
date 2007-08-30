@@ -77,7 +77,7 @@ begin
     SetParent (TrayNWnd.Handle,TrayMessageWnd.Handle);
   end;
   TerminateShellServices;
-  sleep(200);
+  sleep(1000);
   StartShellServices;
   Result := owner;
 end;
