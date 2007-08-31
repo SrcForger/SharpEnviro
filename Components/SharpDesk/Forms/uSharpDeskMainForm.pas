@@ -43,7 +43,7 @@ uses
   uSharpDeskBackgroundUnit,
   uSharpDeskFunctions,
   uSharpDeskObjectFileList,
-  uSharpDeskObjectSetList,
+  uSharpDeskObjectSet,
   uSharpDeskManager,
   uSharpDeskDesktopObject, PngImageList;
 
@@ -103,10 +103,6 @@ type
     Edit1: TMenuItem;
     Delete2: TMenuItem;
     ObjectAlig1: TMenuItem;
-    DevMenu: TPopupMenu;
-    UnLoadObjects1: TMenuItem;
-    LoadObjects1: TMenuItem;
-    RefreshObjectDirectory1: TMenuItem;
     LockObjects1: TMenuItem;
     UnlockObjects1: TMenuItem;
     Aligntogrid1: TMenuItem;
@@ -171,14 +167,9 @@ type
     procedure FormPaint(Sender: TObject);
     procedure NewAligns1Click(Sender: TObject);
     procedure ObjectPopup2Popup(Sender: TObject);
-    procedure UnLoadObjects1Click(Sender: TObject);
-    procedure LoadObjects1Click(Sender: TObject);
-    procedure RefreshObjectDirectory1Click(Sender: TObject);
     procedure LockObjects1Click(Sender: TObject);
     procedure UnlockObjects1Click(Sender: TObject);
     procedure All1Click(Sender: TObject);
-    procedure sameObjectSet1Click(Sender: TObject);
-    procedure NewObjectSetClick(Sender: TObject);
     procedure MakeWindow1Click(Sender: TObject);
   private
     procedure WMSettingsChange(var Msg : TMessage);       message WM_SETTINGCHANGE;
@@ -191,7 +182,6 @@ type
     procedure WMCloseDesk(var msg : TMEssage);            message WM_CLOSEDESK;
     procedure WMAdddesktopObject(var msg : TMessage);     message WM_ADDDESKTOPOBJECT;
     procedure WMShowDesktopSettings(var msg : TMessage);  message WM_SHOWDESKTOPSETTINGS;
-    procedure WMForceObjectReload(var msg : TMessage);    message WM_FORCEOBJECTRELOAD;
     procedure WMWeatherUpdate(var msg : TMessage);        message WM_WEATHERUPDATE;
     procedure msg_EraseBkgnd(var msg : TMessage);         message WM_ERASEBKGND;
     procedure WMMouseLeave(var Msg: TMessage);            message CM_MOUSELEAVE;
@@ -206,8 +196,6 @@ type
     procedure OnObjectAlignClick(Sender : TObject);            // AlignsMenu event
     procedure OnObjectAlignDeleteClick(Sender : TObject);      // AlignsMenu event
     procedure OnObjectAlignEditClick(Sender : TObject);        // AlignsMenu event
-    procedure OnObjectAssignSetClick(Sender : TObject);        // AssignObjectSet Menu event
-    procedure OnSelectByObjectSetClick(Sender : TObject);      // SelectBy event
   public
     procedure WMDropFiles(var Message: TWMDropFiles); message WM_DROPFILES; // Drag & Drop
     procedure SendMessageToConsole(msg : string; color : integer; DebugLevel : integer);
@@ -261,7 +249,6 @@ implementation
 uses uSharpDeskCreateForm,
      uSharpDeskSettingsForm,
      uSharpDeskAlignSettingsForm,
-     uSharpDeskObjectSet,
      SharpCenterApi;
 
 {$R *.dfm}
@@ -492,16 +479,6 @@ begin
   SharpApi.RegisterActionEx('!CloseSharpDesk','SharpDesk',SharpDeskMainForm.Handle,6);
 end;
 
-procedure TSharpDeskMainForm.WMForceObjectReload(var msg : TMessage);
-begin
-  SharpDesk.ObjectFileList.UnLoadAll;
-  SharpDesk.ObjectSetList.LoadFromFile;
-  SharpDesk.ObjectFileList.RefreshDirectory;
-  SharpDesk.ObjectFileList.ReLoadAllObjects;
-  SharpDesk.LoadObjectSets('0');
-  //SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
-end;
-
 function IsTopMost(wnd: HWND): Boolean;
 begin
   Result := (GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST) <> 0;
@@ -511,6 +488,8 @@ procedure TSharpDeskMainForm.WMSharpEBang(var Msg : TMessage);
 begin
   case msg.LParam of
    3: begin
+        LastX := Left + Width div 2;
+        LastY := Top + Height div 2;
         if not CreateForm.Visible then
            CreateForm.Show;
         if SharpDesk.Desksettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
@@ -545,9 +524,7 @@ begin
     end;
     SharpDesk.UpdateAnimationLayer;
 
-    SharpDesk.ObjectSetList.LoadFromFile;
-    SharpDesk.LoadObjectSets('0');
-    //SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
+    SharpDesk.LoadObjectSet;
 
     if SharpDesk.DeskSettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
   finally
@@ -583,11 +560,7 @@ end;
 
 procedure TSharpDeskMainForm.WMAdddesktopObject(var msg : TMessage);
 begin
-  if SharpDesk.IsAnyObjectSetLoaded then CreateForm.Showmodal
-     else
-     begin
-       showmessage('No object set loaded. Please check your theme settings');
-     end;
+  CreateForm.Showmodal;
   if SharpDesk.Desksettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
 end;
 
@@ -723,7 +696,7 @@ begin
   SharpApi.UnRegisterAction('!AddDesktopObject');
   SharpApi.UnRegisterAction('!SharpDeskSettings');
   SharpApi.UnRegisterAction('!Show/CloseSharpDesk');
-  SharpDesk.ObjectSetList.SaveSettings;
+  SharpDesk.ObjectSet.Save;
   SharpDesk.DeskSettings.SaveSettings;
   SharpDesk.UnloadAllObjects;
   SharpDesk.Free;
@@ -779,7 +752,7 @@ begin
   begin
     SharpDesk.ObjectsMoved := False;
     SharpDesk.CheckObjectPosition;
-    SharpDesk.ObjectSetList.SaveSettings;
+    SharpDesk.ObjectSet.Save;
   end;
 
   if not Assigned(Layer) then exit;
@@ -846,8 +819,6 @@ begin
   begin
     LastX:=X;
     LastY:=Y;
-    if (Button = mbRight) and (Shift = [ssCtrl]) then DevMenu.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y)
-    else
     if (Button = mbRight) then
     begin
       SharpApi.SharpExecute(SharpApi.GetSharpeDirectory+'SharpMenu.exe '
@@ -913,7 +884,7 @@ begin
 
     if (ssShift in Shift) and (ssCtrl in Shift) then
     begin
-       SharpDesk.SelectBySetID(TObjectSet(DesktopObject.Settings.Owner).SetID);
+       SharpDesk.SelectAll;
     end else
     if ssShift in Shift then
     begin
@@ -1048,7 +1019,6 @@ begin
     begin
       if Shift = [ssCtrl,ssLeft] then SharpDesk.MoveSelectedLayers(X1,Y1,True)
          else SharpDesk.MoveSelectedLayers(X1,Y1,False);
-      SharpDesk.ObjectSetList.SaveSettings;
     end;
     SharpDesk.LayerMousePos := CPos;
     exit;
@@ -1300,7 +1270,7 @@ end;
 procedure TSharpDeskMainForm.AlignObjecttoGrid1Click(Sender: TObject);
 begin
   SharpDesk.AlignSelectedObjectsToGrid;
-  SharpDesk.ObjectSetList.SaveSettings;
+  SharpDesk.ObjectSet.Save;
 end;
 
 
@@ -1448,58 +1418,10 @@ var
    XML : TJvSimpleXML;
    ObjectFile : String;
    DesktopObject : TDesktopObject;
-   SList : TStringList;
-   ObjectSet : TObjectSet;
 begin
      if SharpDesk.LastLayer = -1 then exit;
 
      SharpDesk.CheckPresetsFile;
-
-     {SelectAll Menu}
-     SList := TStringList.Create;
-     SList.Clear;
-     for n := 0 to SharpDesk.ObjectSetList.Count - 1 do
-         if TObjectSet(SharpDesk.ObjectSetList.Items[n]).ThemeList.IndexOf(SharpThemeApi.GetThemeName) >= 0 then
-            SList.Add(inttostr(TObjectSet(SharpDesk.ObjectSetList.Items[n]).SetID));
-
-     while ObjectSelections1.Count > 3 do
-           ObjectSelections1.Delete(3);
-
-     for n := 0 to SList.Count - 1 do
-     begin
-       ObjectSet := TObjectSet(SharpDesk.ObjectSetList.GetSetByID(strtoint(SList[n])));
-       if ObjectSet <> nil then
-       begin
-         tempItem := TMenuItem.Create(Objectselections1);
-         tempItem.Caption := ObjectSet.Name + ' (' + inttostr(ObjectSet.Count) +')';
-         tempItem.Tag := ObjectSet.SetID;
-         tempItem.ImageIndex := 7;
-         tempItem.OnClick := OnSelectByObjectSetClick;
-         Objectselections1.Add(tempItem);
-       end;
-     end;
-     SList.Free;
-
-     {Assign To Set Menu}
-  SList := TStringList.Create;
-  SList.Clear;
-  for n := 0 to SharpDesk.ObjectSetList.Count - 1 do
-      if TObjectSet(SharpDesk.ObjectSetList.Items[n]).ThemeList.IndexOf(SharpThemeApi.GetThemeName) >= 0 then
-         SList.Add(inttostr(TObjectSet(SharpDesk.ObjectSetList.Items[n]).SetID));
-  while ObjectSet2.Count>2 do ObjectSet2.Delete(2);
-  for n := 0 to SharpDesk.ObjectSetList.Count - 1 do
-  begin
-    if SList.IndexOf(inttostr(TObjectSet(SharpDesk.ObjectSetList.Items[n]).SetID))<>-1 then
-    begin
-      tempItem := TMenuItem.Create(ObjectSet2);
-      tempItem.Caption := TObjectSet(SharpDesk.ObjectSetList.Items[n]).Name;
-      tempItem.ImageIndex := 7;
-      tempItem.Tag := n;
-      tempItem.OnClick := OnObjectAssignSetClick;
-      ObjectSet2.Add(tempItem);
-    end;
-  end;
-  SList.Free;
 
      {Preset Menu}
      Saveas1.Clear;
@@ -1668,8 +1590,6 @@ var
    n,i : integer;
    tempItem : TMenuItem;
    XML : TJvSimpleXML;
-   SList : TStringList;
-   //DesktopObject : TDesktopObject;
    ObjectFile    : String;
 begin
   i := Align2.Count - 1;
@@ -1677,26 +1597,6 @@ begin
       Align2.Delete(4);
   Delete2.Clear;
   Edit1.Clear;
-
-  SList := TStringList.Create;
-  SList.Clear;
-  for n := 0 to SharpDesk.ObjectSetList.Count - 1 do
-      if TObjectSet(SharpDesk.ObjectSetList.Items[n]).ThemeList.IndexOf(SharpThemeApi.GetThemeName) >= 0 then
-         SList.Add(inttostr(TObjectSet(SharpDesk.ObjectSetList.Items[n]).SetID));
-  while ObjectSet1.Count>2 do ObjectSet1.Delete(2);
-  for n := 0 to SharpDesk.ObjectSetList.Count - 1 do
-  begin
-    if SList.IndexOf(inttostr(TObjectSet(SharpDesk.ObjectSetList.Items[n]).SetID))<>-1 then
-    begin
-      tempItem := TMenuItem.Create(ObjectSet1);
-      tempItem.Caption := TObjectSet(SharpDesk.ObjectSetList.Items[n]).Name;
-      tempItem.ImageIndex := 7;
-      tempItem.Tag := n;
-      tempItem.OnClick := OnObjectAssignSetClick;
-      ObjectSet1.Add(tempItem);
-    end;
-  end;
-  SList.Free;
 
   SharpDesk.CheckAlignsFile;
   if not FileExists(GetSharpeUserSettingsPath + 'SharpDesk\Aligns.xml') then exit;
@@ -1758,12 +1658,6 @@ begin
   end;
 end;
 
-
-procedure TSharpDeskMainForm.OnObjectAssignSetClick(Sender : TObject);
-begin
-  if not (Sender is TMenuItem) then exit;
-  SharpDesk.AssignSelectedObjectsToSet(TMenuItem(Sender).Tag);
-end;
 
 procedure TSharpDeskMainForm.OnObjectAlignClick(Sender : TObject);
 begin
@@ -1834,27 +1728,6 @@ begin
      XML.Free;
 end;
 
-procedure TSharpDeskMainForm.UnLoadObjects1Click(Sender: TObject);
-begin
-  SharpDesk.ObjectFileList.UnLoadAll;
-end;
-
-procedure TSharpDeskMainForm.LoadObjects1Click(Sender: TObject);
-begin
-  SharpDesk.ObjectFileList.ReLoadAllObjects;
-  SharpDesk.LoadObjectSets('0');
-  //SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
-end;
-
-procedure TSharpDeskMainForm.RefreshObjectDirectory1Click(Sender: TObject);
-begin
-  SharpDesk.ObjectFileList.UnLoadAll;
-  SharpDesk.ObjectFileList.RefreshDirectory;
-  SharpDesk.ObjectFileList.ReLoadAllObjects;
-  SharpDesk.LoadObjectSets('0');
-//  SharpDesk.LoadObjectSetsFromTheme(SharpThemeApi.GetThemeName);
-end;
-
 procedure TSharpDeskMainForm.LockObjects1Click(Sender: TObject);
 begin
   SharpDesk.LockSelectedObjects;
@@ -1870,37 +1743,11 @@ begin
   SharpDesk.SelectAll;
 end;
 
-procedure TSharpDeskMainForm.OnSelectByObjectSetClick(Sender : TObject);
-begin
-  if not (Sender is TMenuItem) then exit;
-  SharpDesk.SelectBySetID(TMenuItem(Sender).Tag);
-end;
-
-procedure TSharpDeskMainForm.sameObjectSet1Click(Sender: TObject);
-var
-   DesktopObject : TDesktopObject;
-begin
-  DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));
-  if DesktopObject = nil then exit;
-  SharpDesk.SelectBySetID(TObjectSet(DesktopObject.Settings.Owner).SetID);
-end;
 
 procedure TSharpDeskMainForm.WMWeatherUpdate(var msg : TMessage);
 begin
   SharpDesk.SendMessageToAllObjects(SDM_WEATHER_UPDATE,0,0,0);
 end;
-
-procedure TSharpDeskMainForm.NewObjectSetClick(Sender: TObject);
-var
-  s : String;
-begin
-  s:= InputBox('Create Object Set','Object Set name : ','');
-  if (length(Trim(s)) = 0) or (s='') then exit;
-  SharpDesk.ObjectSetList.AddObjectSet(s,SharpThemeApi.GetThemeName);
-  SharpDesk.ObjectSetList.SaveSettings;
-  SharpDesk.AssignSelectedObjectsToSet(SharpDesk.ObjectSetList.Count-1);
-end;
-
 
 procedure TSharpDeskMainForm.MakeWindow1Click(Sender: TObject);
 var
@@ -1912,7 +1759,7 @@ begin
      else DesktopObject.MakeWindow;
   MakeWindow1.Checked := not MakeWindow1.Checked;
   SharpDesk.AlignSelectedObjectsToGrid;
-  SharpDesk.ObjectSetList.SaveSettings;
+  SharpDesk.ObjectSet.Save;
 //  if MakeWindow1.ImageIndex = 29 then
   //   DesktopObject.MakeWindow
 //     else DesktopObject.MakeLayer;

@@ -195,7 +195,7 @@ var
 begin
      if Objects.Selected = nil then exit;
 
-     ID :=  SharpDesk.ObjectSetList.GenerateObjectID;
+     ID :=  SharpDesk.ObjectSet.GenerateObjectID;
 
      SettingsForm.Load(TObjectFile(SharpDesk.ObjectFileList.Items[Objects.Selected.ImageIndex]),
                        ID,

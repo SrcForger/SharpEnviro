@@ -40,43 +40,31 @@ uses Windows,
      SysUtils,
      JvSimpleXML,
 		 SharpApi,
-     uSharpDeskObjectSetList,
      uSharpDeskObjectSetItem;
 
 type
 		 TObjectSet = class(TObjectList)
      private
-			 FSetID    : integer;
-       FName     : String;
-       FSetList  : TObjectSetList;
-       FThemeList : TStringList;
      public
-       constructor Create(pID : integer; pName : String; parent : TObjectSetList);
+       constructor Create;
        destructor Destroy; override;
        procedure Load;
-       procedure Clear; override;
+       procedure Save;
        function AddDesktopObject(pObjectID : integer;
                                  pObjectFile : String;
                                  pPos : TPoint;
                                  pLocked : boolean;
                                  pisWindow : boolean) : TObjectSetItem;
-     published           
-       property Name  : String read FName write FName;
-       property SetID : integer read FSetID;
-       property ThemeList : TStringList read FThemeList;
+       function GenerateObjectID : integer;
+     published
      end;
 
 implementation
 
-constructor TObjectSet.Create(pID : integer; pName : String; parent : TObjectSetList);
+constructor TObjectSet.Create;
 begin
   Inherited Create;
-  FSetID   := pID;
-  FName    := pName;
-  FSetList := parent;
-  FThemeList := TStringList.Create;
-  FThemeList.Clear;
-  OwnsObjects := False;  
+  OwnsObjects := True;
   Load;
 end;
 
@@ -101,29 +89,89 @@ end;
 
 destructor TObjectSet.Destroy;
 begin
-	Clear;
-  FreeAndNil(FThemeList);
   Inherited Destroy;
+end;
+
+
+function TObjectSet.GenerateObjectID: integer;
+var
+   n : integer;
+   ID : String;
+   done : boolean;
+begin
+  randomize;
+  repeat
+    done := True;
+    ID:='';
+    for n:= 0 to 6 do ID:=ID+inttostr(random(9)+1);
+    for n:= 0 to Count - 1 do
+      if TObjectSetItem(Items[n]).ObjectID = strtoint(ID) then
+      begin
+        done := False;
+        break;
+      end;
+  until done;
+  result := strtoint(ID);
 end;
 
 procedure TObjectSet.Load;
 var
-   n : integer;
+  n : integer;
+  XML : TJvSimpleXML;
+  FName : String;
 begin
   Clear;
-  for n:= 0 to FSetList.XML.Root.Items.ItemNamed['Objects'].Items.ItemNamed[inttostr(FSetID)].Items.Count - 1 do
-      with FSetList.XML.Root.Items.ItemNamed['Objects'].Items.ItemNamed[inttostr(FSetID)].Items.Item[n] do
-           AddDesktopObject(strtoint(Name),
-                            Items.Value('Object'),
-                            Point(Items.IntValue('PosX'),Items.IntValue('PosY')),
-                            Items.BoolValue('Locked'),
-                            Items.BoolValue('isWindow',False));
-      
+
+  FName := SharpApi.GetSharpeUserSettingsPath + 'SharpDesk\Objects.xml';
+  XML := TJvSimpleXML.Create(nil);
+  if FileExists(FName) then
+  begin
+    try
+      XML.LoadFromFile(FName);
+      for n := 0 to XML.Root.Items.Count - 1 do
+        with XML.Root.Items.Item[n].Items do
+        begin
+          AddDesktopObject(IntValue('ID'),
+                           Value('Object'),
+                           Point(IntValue('PosX'),IntValue('PosY')),
+                           BoolValue('Locked'),
+                           BoolValue('isWindow',False));
+        end;
+    except
+
+    end;
+  end;
+  XML.Free;
 end;
 
-procedure TObjectSet.Clear;
+procedure TObjectSet.Save;
+var
+  n : integer;
+  XML : TJvSimpleXML;
+  FName : String;
+  setitem : TObjectSetItem;
 begin
-  Inherited Clear;
+  FName := SharpApi.GetSharpeUserSettingsPath + 'SharpDesk\Objects.xml';
+  XML := TJvSimpleXML.Create(nil);
+  XML.Root.Name := 'SharpDeskObjectSet';
+  for n := 0 to Count - 1 do
+  begin
+    setitem := TObjectSetItem(Items[n]);
+    with XML.Root.Items.Add('Item').Items do
+    begin
+      Add('ID',setitem.ObjectID);
+      Add('Object',setitem.ObjectFile);
+      Add('PosX',setitem.Pos.X);
+      Add('PosY',setitem.Pos.Y);
+      Add('Locked',setitem.Locked);
+      Add('isWindow',setitem.isWindow);
+    end;
+  end;
+  XML.SaveToFile(FName + '~');
+  if FileExists(FName) then
+    DeleteFile(FName);
+  RenameFile(FName + '~',FName);
+  XML.Free;
 end;
 
 end.

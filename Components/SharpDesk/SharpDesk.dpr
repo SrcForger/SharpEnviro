@@ -48,7 +48,6 @@ uses
   uSharpDeskObjectFile in 'Units\uSharpDeskObjectFile.pas',
   uSharpDeskDesktopObject in 'Units\uSharpDeskDesktopObject.pas',
   uSharpDeskObjectFileList in 'Units\uSharpDeskObjectFileList.pas',
-  uSharpDeskObjectSetList in 'Units\uSharpDeskObjectSetList.pas',
   uSharpDeskObjectSet in 'Units\uSharpDeskObjectSet.pas',
   uSharpDeskObjectSetItem in 'Units\uSharpDeskObjectSetItem.pas',
   uSharpDeskManager in 'Units\uSharpDeskManager.pas',

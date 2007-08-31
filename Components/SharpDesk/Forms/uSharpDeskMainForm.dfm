@@ -130,7 +130,6 @@ object SharpDeskMainForm: TSharpDeskMainForm
         object sameObjectSet1: TMenuItem
           Caption = 'same Object Set'
           ImageIndex = 13
-          OnClick = sameObjectSet1Click
         end
         object N9: TMenuItem
           Caption = '-'
@@ -143,7 +142,6 @@ object SharpDeskMainForm: TSharpDeskMainForm
         object Newobjectset1: TMenuItem
           Caption = 'New object set'
           ImageIndex = 11
-          OnClick = NewObjectSetClick
         end
         object N3: TMenuItem
           Caption = '-'
@@ -975,7 +973,6 @@ object SharpDeskMainForm: TSharpDeskMainForm
       object NewObjectSet: TMenuItem
         Caption = 'New object set'
         ImageIndex = 11
-        OnClick = NewObjectSetClick
       end
       object N12: TMenuItem
         Caption = '-'
@@ -993,22 +990,6 @@ object SharpDeskMainForm: TSharpDeskMainForm
       Caption = 'Unlock objects'
       ImageIndex = 3
       OnClick = UnlockObjects1Click
-    end
-  end
-  object DevMenu: TPopupMenu
-    Left = 128
-    Top = 8
-    object UnLoadObjects1: TMenuItem
-      Caption = 'UnLoad Objects'
-      OnClick = UnLoadObjects1Click
-    end
-    object LoadObjects1: TMenuItem
-      Caption = 'Load Objects'
-      OnClick = LoadObjects1Click
-    end
-    object RefreshObjectDirectory1: TMenuItem
-      Caption = 'Refresh Object Directory'
-      OnClick = RefreshObjectDirectory1Click
     end
   end
   object ImageList1: TImageList

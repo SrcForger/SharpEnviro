@@ -50,7 +50,6 @@ uses
     gr32_layers,
     SharpApi,
     uSharpDeskDebugging,
-    uSharpDeskObjectSetList,
     uSharpDeskObjectFileList,
     uSharpDeskTDeskSettings,
     uSharpDeskTDragAndDrop,
@@ -93,7 +92,7 @@ type
       FEffectLayer     : TBitmapLayer;
       FSelectLayer     : TSelectionLayer;
       FImage           : TImage32;
-      FObjectSetList   : TObjectSetList;
+      FObjectSet       : TObjectSet;
       FObjectFileList  : TObjectFileList;
       FDeskSettings    : TDeskSettings;
       FDragAndDrop     : TDragAndDropManager;
@@ -102,12 +101,10 @@ type
       destructor Destroy; override;
       procedure AlignSelectedObjectsToGrid;
       procedure AlignSelectedObjects(aID : integer);
-      procedure AssignSelectedObjectsToSet(setID : integer);
       procedure BringSelectedObjectsToFront;
       procedure CheckObjectPosition;
       procedure CheckPresetsFile;
       procedure CheckAlignsFile;
-      procedure CheckGhostObjects;
       procedure CheckGhostLayers;
       procedure CheckInvisibleLayers;
       procedure CloneSelectedObjects;
@@ -120,11 +117,8 @@ type
       function  GetDesktopObjectByID(ID : integer) : TObject;
       function  GetNextGridPoint(Pos : TPoint) : TPoint;
       function  GetUpperLeftMostLayerPos : TPoint;
-      function  IsAnyObjectSetLoaded : boolean;
       procedure LockAllObjects;
-      procedure LoadObjectSet(OSet : TObjectSet);
-      procedure LoadObjectSets(SetList : String);
-      procedure LoadObjectSetsFromTheme(pThemeName : String);
+      procedure LoadObjectSet;
       procedure LoadPreset(pDesktopObject : TObject; pID : integer; Save : boolean);
       procedure LoadPresetForSelected(pID : integer);
       procedure LoadPresetForAll(pObjectFile : TObject; pID : integer);
@@ -135,7 +129,6 @@ type
       procedure ResizeBackgroundLayer;
       procedure SavePresetAs(pDesktopObject : TObject; PresetID : integer);
       procedure SelectAll;
-      procedure SelectBySetID(pSetID : integer);
       function  SelectedObjectsOfSameType(dummy : integer) : boolean; overload;
       function  SelectedObjectsOfSameType(dummy : string) : String; overload;
       procedure SendSelectedObjectsToBack;
@@ -158,7 +151,7 @@ type
       property MouseDown       : boolean             read FMouseDown       write FMouseDown;
       property ObjectExt       : String              read FObjectExt;
       property ObjectFileList  : TObjectFileList     read FObjectFileList;
-      property ObjectSetList   : TObjectSetList      read FObjectSetList;
+      property ObjectSet       : TObjectSet          read FObjectSet;
       property ObjectsMoved    : boolean             read FObjectsMoved    write FObjectsMoved;
       property SelectionCount  : integer             read FSelectionCount  write FSelectionCount;
       property SelectLayer     : TSelectionLayer     read FSelectLayer;
@@ -247,14 +240,13 @@ begin
     SharpApi.SendDebugMessageEx('SharpDesk','error loading SharpDesk settings',clred,DMT_ERROR);
   end;
 
-  FObjectSetList := TObjectSetList.Create(GetSharpeUserSettingsPath + 'SharpDesk\Sets.xml');
+  FObjectSet := TObjectSet.Create;
   FObjectFileList := TObjectFileList.Create(self,ExtractFileDir(Application.ExeName)+'\Objects\',FObjectExt,FImage);
   FDragAndDrop := TDragAndDropManager.Create(self,GetSharpeGlobalSettingsPath + 'SharpDesk\DragAndDrop');
   if FDesksettings.DragAndDrop then FDragAndDrop.RegisterDragAndDrop(FImage.Parent.Handle)
      else FDragAndDrop.UnregisterDragAndDrop(FImage.Parent.Handle);
 
   FEnabled := True;
-  CheckGhostObjects;
   CheckInvisibleLayers;
   CheckObjectPosition;
 end;
@@ -263,10 +255,10 @@ end;
 
 destructor TSharpDeskManager.Destroy;
 begin
-  DebugFree(FObjectSetList);
   DebugFree(FObjectFileList);
   DebugFree(FDeskSettings);
   DebugFree(FDragAndDrop);
+  DebugFree(FObjectSet);  
 end;
 
 
@@ -306,17 +298,17 @@ end;
 
 
 
-procedure TSharpDeskManager.LoadObjectSet(OSet : TObjectSet);
+procedure TSharpDeskManager.LoadObjectSet;
 var
-   n : integer;
-   ObjectFile : TObjectFile;
+  n : integer;
+  ObjectFile : TObjectFile;
 begin
-  if OSet = nil then exit;
-  for n := 0 to OSet.Count - 1 do
-      begin
-        ObjectFile := FObjectFileList.GetByObjectFile(TObjectSetItem(OSet.Items[n]).ObjectFile);
-        if ObjectFile <> nil then ObjectFile.AddDesktopObject(TObjectSetItem(OSet.Items[n]));
-      end;
+  FObjectSet.Load;
+  for n := 0 to FObjectSet.Count - 1 do
+  begin
+    ObjectFile := FObjectFileList.GetByObjectFile(TObjectSetItem(FObjectSet.Items[n]).ObjectFile);
+    if ObjectFile <> nil then ObjectFile.AddDesktopObject(TObjectSetItem(FObjectSet.Items[n]));
+  end;
 end;
 
 
@@ -456,7 +448,7 @@ begin
     if TObjectFile(FObjectFileList.Items[n]).Count = 0 then
        TObjectFile(FObjectFileList.Items[n]).Unload;
   end;
-  FObjectSetList.SaveSettings;
+  FObjectSet.Save;
   CheckGhostLayers;
   CheckInvisibleLayers;
 end;
@@ -508,7 +500,7 @@ begin
       if DesktopObject.Selected then
       begin
         ObjectSet := TObjectSet(DesktopObject.Settings.Owner);
-        newID := ObjectSetList.GenerateObjectID;
+        newID := ObjectSet.GenerateObjectID;
         fn := DesktopObject.Settings.ObjectFile;
         setlength(fn,length(fn)-length(FObjectExt));
         oldfile := SharpApi.GetSharpeUserSettingsPath +  'SharpDesk\Objects\'
@@ -538,7 +530,7 @@ begin
     TDesktopObject(NewList.Items[n]).Selected := True;
   end;
   newList.Free;
-  FObjectSetList.SaveSettings;
+  FObjectSet.Save;
 end;
 
 
@@ -552,10 +544,7 @@ var
    L : TFloatRect;
 begin
   if not FDeskSettings.CheckObjectPosition then
-  begin
-    FObjectSetList.SaveSettings;
-    exit
-  end;
+    exit;
 
   for n := 0 to FObjectFileList.Count -1 do
   begin
@@ -583,7 +572,6 @@ begin
       end;
     end;
   end;
-  FObjectSetList.SaveSettings;
 end;
 
 
@@ -595,7 +583,7 @@ begin
   for n := 0 to FObjectFileList.Count -1 do
       for i := 0 to TObjectFile(FObjectFileList.Items[n]).Count - 1 do
           TDesktopObject(TObjectFile(FObjectFileList.Items[n]).Items[i]).Settings.Locked := True;
-  FObjectSetList.SaveSettings;
+  FObjectSet.Save;
 end;
 
 
@@ -611,7 +599,7 @@ begin
         DesktopObject := TDesktopObject(TObjectFile(FObjectFileList.Items[n]).Items[i]);
         if DesktopObject.Selected then DesktopObject.Settings.Locked := True;
       end;
-  FObjectSetList.SaveSettings;
+  FObjectSet.Save;
 end;
 
 
@@ -623,7 +611,7 @@ begin
   for n := 0 to FObjectFileList.Count -1 do
       for i := 0 to TObjectFile(FObjectFileList.Items[n]).Count - 1 do
           TDesktopObject(TObjectFile(FObjectFileList.Items[n]).Items[i]).Settings.Locked := False;
-  FObjectSetList.SaveSettings;
+  FObjectSet.Save;
 end;
 
 
@@ -639,7 +627,7 @@ begin
         DesktopObject := TDesktopObject(TObjectFile(FObjectFileList.Items[n]).Items[i]);
         if DesktopObject.Selected then DesktopObject.Settings.Locked := False;
       end;
-  FObjectSetList.SaveSettings;
+  FObjectSet.Save;
 end;
 
 
@@ -685,7 +673,7 @@ begin
           DesktopObject.Layer.SendToBack;
         end;
       end;
-  FObjectSetList.SaveSettings;
+  FObjectSet.Save;
   FEffectLayer.SendToBack;
   FBackgroundLayer.SendToBack;
 end;
@@ -710,7 +698,7 @@ begin
           DesktopObject.Layer.BringToFront;
         end;
       end;
-  FObjectSetList.SaveSettings;
+  FObjectSet.Save;
 end;
 
 
@@ -1091,93 +1079,10 @@ end;
 
 
 
-procedure TSharpDeskManager.LoadObjectSetsFromTheme(pThemeName : String);
-var
-  n : integer;
-  ObjectSet : TObjectSet;
-begin
-  UnloadAllObjects;
-  for n := 0 to FObjectSetList.Count - 1 do
-  begin
-    ObjectSet := TObjectSet(FObjectSetList.Items[n]);
-    if ObjectSet.ThemeList.IndexOf(pThemeName) >= 0 then
-       LoadObjectSet(ObjectSet); 
-  end;
-  if FEffectLayer.Bitmap.MasterAlpha<>0 then FEffectLayer.BringToFront;
-end;
-
-procedure TSharpDeskManager.LoadObjectSets(SetList : String);
-var
-   SList : TStringList;
-   n : integer;
-   ObjectSet : TObjectSet;
-begin
-  UnloadAllObjects;
-  SList := TStringList.Create;
-  SList.Clear;
-  SList.CommaText := SetList;
-  for n:= 0 to SList.Count - 1 do
-  begin
-    ObjectSet := TObjectSet(ObjectSetList.GetSetByID(strtoint(SList[n])));
-    LoadObjectSet(ObjectSet);
-  end;
-  SList.Free;
-  if FEffectLayer.Bitmap.MasterAlpha<>0 then FEffectLayer.BringToFront;
-end;
-
-
-
-procedure TSharpDeskManager.SelectBySetID(pSetID : integer);
-var
-   DesktopObject : TDesktopObject;
-   n : integer;
-   i : integer;
-begin
-  UnselectAll;
-  for n := 0 to FObjectFileList.Count -1 do
-  begin
-    for i := 0 to TObjectFile(FObjectFileList.Items[n]).Count - 1 do
-    begin
-      DesktopObject := TDesktopObject(TObjectFile(FObjectFileList.Items[n]).Items[i]);
-      if DesktopObject <> nil then
-         if TObjectSet(DesktopObject.Settings.Owner).SetID = pSetID then
-         begin
-           FSelectionCount := FSelectionCount + 1;
-           DesktopObject.Selected := True;
-         end;
-    end;
-  end;
-end;
-
-
-
 function TSharpDeskManager.GenerateObjectID : integer;
 begin
-  if FObjectSetList = nil then result := -1
-     else result := FObjectSetList.GenerateObjectID;
-end;
-
-
-
-function  TSharpDeskManager.IsAnyObjectSetLoaded : boolean;
-var
-   n : integer;
-   SList : TStringList;
-begin
-  SList := TStringList.Create;
-  SList.Clear;
-  for n := 0 to ObjectSetList.Count - 1 do
-      if TObjectSet(ObjectSetList.Items[n]).ThemeList.IndexOf(SharpThemeApi.GetThemeName) >= 0 then
-         SList.Add(inttostr(TObjectSet(ObjectSetList.Items[n]).SetID));
-  for n := 0 to SList.Count - 1 do
-      if FObjectSetList.GetSetByID(strtoint(SList[n])) <> nil then
-      begin
-        result := True;
-        SList.Free;
-        exit;
-      end;
-  SList.Free;
-  result := False;
+  if FObjectSet = nil then result := -1
+     else result := FObjectSet.GenerateObjectID;
 end;
 
 
@@ -1252,55 +1157,6 @@ begin
   XML.Free;
 end;
 
-
-
-procedure TSharpDeskManager.CheckGhostObjects;
-var
-   n,i : integer;
-   ObjectSet : TObjectSet;
-   ObjectSetItem : TObjectSetItem;
-   ObjectList : TStringList;
-   sr,sr2 : TSearchRec;
-   dir : String;
-   oID : string;
-begin
-  UnloadAllObjects;
-
-  ObjectList := TStringList.Create;
-  ObjectList.Clear;
-  for n := 0 to FObjectSetList.Count - 1 do
-  begin
-    ObjectSet := TObjectSet(FObjectSetList.Items[n]);
-    for i := 0 to ObjectSet.Count - 1 do
-    begin
-      ObjectSetItem := TObjectSetItem(ObjectSet.Items[i]);
-      ObjectList.Add(Inttostr(ObjectSetItem.ObjectID));
-    end;
-  end;
-
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpDesk\Objects\';
-  if FindFirst(Dir + '*.*', faDirectory , sr) = 0 then
-  repeat
-    if (sr.Name <> '.') and (sr.Name <> '..') then
-    begin
-      if FindFirst(Dir + sr.Name + '\*.xml',faAnyFile,sr2) = 0 then
-      repeat
-        oID := sr2.Name;
-        setlength(oID,length(oID)-4);
-        if (ObjectList.IndexOf(oID) = -1) then
-        begin
-          DeleteFile(Dir + sr.Name + '\' + sr2.Name);
-          SharpApi.SendDebugMessageEx('SharpDesk',PChar('Deleting Ghost settings file: '+Dir + sr.Name + '\' + sr2.Name), clred, DMT_ERROR);
-        end;
-      until FindNext(sr2) <> 0;
-      FindClose(sr2);
-    end;
-  until FindNext(sr) <> 0;
-  FindClose(sr);
-
-  ObjectList.Free;
-  exit;
-end;
 
 
 procedure TSharpDeskManager.SendMessageToAllObjects(messageID : integer; P1,P2,P3 : integer);
@@ -1396,32 +1252,7 @@ begin
       end;     }
 end;
 
-procedure TSharpDeskManager.AssignSelectedObjectsToSet(setID : integer);
-var
-  n,i : integer;
-  DesktopObject : TDesktopObject;
-  ObjectSet     : TObjectSet;
-begin
-  if setID > ObjectSetList.Count - 1 then exit;
-  ObjectSet := TObjectSet(ObjectSetList.Items[SetID]);
-  if ObjectSet = nil then exit;
 
-  for n := 0 to FObjectFileList.Count -1 do
-      for i := 0 to TObjectFile(FObjectFileList.Items[n]).Count - 1 do
-      begin
-        DesktopObject := TDesktopObject(TObjectFile(FObjectFileList.Items[n]).Items[i]);
-        if DesktopObject.Selected then
-        begin
-          if ObjectSet <> TObjectSet(DesktopObject.Settings.Owner) then
-          begin
-            ObjectSet.AddDesktopObject(DesktopObject.Settings.ObjectID,DesktopObject.Settings.ObjectFile,DesktopObject.Settings.Pos,DesktopObject.Settings.Locked,DesktopObject.Settings.isWindow);
-            TObjectSet(DesktopObject.Settings.Owner).Remove(DesktopObject.Settings);
-            DesktopObject.Settings := TObjectsetItem(ObjectSet.Items[ObjectSet.Count-1]);
-          end;
-        end;
-      end;
-  FObjectSetList.SaveSettings;
-end;
 
 function  TSharpDeskManager.SelectedObjectsOfSameType(dummy : string) : String;
 var

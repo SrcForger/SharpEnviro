@@ -175,7 +175,7 @@ begin
        SList.Add(inttostr(TObjectSet(TSharpDeskManager(FOwner).ObjectSetList.Items[n]).SetID));
   ObjectSet := TObjectset(TSharpDeskManager(FOwner).ObjectSetList.GetSetByID(strtoint(SList[0])));
   SList.Free;}
-  ObjectSet := TObjectset(TSharpDeskManager(FOwner).ObjectSetList.Items[0]);
+  ObjectSet := TObjectset(TSharpDeskManager(FOwner).ObjectSet);
   if ObjectSet = nil then exit;
   ObjectSetItem := ObjectSet.AddDesktopObject(strtoint(ID),ObjectFile.FileName,Point(X,Y),False,False);
 
@@ -195,7 +195,7 @@ begin
   oXML.SaveToFile(SharpApi.GetSharpeUserSettingsPath +  'SharpDesk\Objects\'
                   + fn + '\' + ID + '.xml');
 
-  TSharpDeskManager(FOwner).ObjectSetList.SaveSettings;
+  TSharpDeskManager(FOwner).ObjectSet.Save;
   ObjectFile.AddDesktopObject(ObjectSetItem);
   tXML.Free;
   oXML.Free;
