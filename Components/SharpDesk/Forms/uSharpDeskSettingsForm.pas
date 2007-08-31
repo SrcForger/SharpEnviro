@@ -57,6 +57,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure btn_okClick(Sender: TObject);
     procedure btn_cancelClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     ObjectFile : TObjectFile;
     DesktopObject : TDesktopObject;
@@ -170,6 +171,9 @@ var
    tempSetting : TObjectSetItem;
    ObjectSet : TObjectSet;
 begin
+  if ObjectFile = nil then
+    exit;
+
   ObjectFile.DllCloseSettingsWnd(ObjectID,Save);
   if Save then
   begin
@@ -202,6 +206,12 @@ begin
       if ObjectFile.Count = 0 then
          ObjectFile.UnLoad;
   SharpDesk.CheckInvisibleLayers;
+  ObjectFile := nil;
+end;
+
+procedure TSettingsForm.FormCreate(Sender: TObject);
+begin
+  ObjectFile := nil;
 end;
 
 procedure TSettingsForm.FormShow(Sender: TObject);
