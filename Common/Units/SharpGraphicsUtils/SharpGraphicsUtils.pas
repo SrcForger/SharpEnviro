@@ -43,7 +43,8 @@ type
   end;
 
   procedure boxblur(img: tbitmap32; radius: integer; iterations: integer; horz: boolean = true; vert: boolean = true);
-  procedure lightenBitmap(bmp : Tbitmap32; amount :integer);
+  procedure lightenBitmap(bmp : Tbitmap32; amount :integer); overload;
+  procedure LightenBitmap(Bmp : TBitmap32; Amount :integer; Rect : TRect); overload;
 
   procedure ReplaceColor32(bmp : Tbitmap32; Source, New : TColor32);
   procedure ReplaceTransparentAreas(Dst,AlphaSource : TBitmap32; ReplaceColor : TColor32);
@@ -174,6 +175,29 @@ begin
       Inc(P); // proceed to the next pixel
     end;
   end;
+end;
+
+procedure LightenBitmap(Bmp : TBitmap32; Amount :integer; Rect : TRect);
+var
+  P: PColor32;
+  X,Y : integer;
+  pass : Array of Array of integer;
+begin
+     with Bmp do
+     begin
+          setlength(pass,width,height);
+          P := PixelPtr[0, 0];
+          inc(P,(Rect.Top-1)*width+Rect.Left);
+          for Y := Rect.Top to Rect.Bottom - 1 do
+          begin
+               for X := Rect.Left to Rect.Right- 1 do
+               begin
+                    P^ := lighten(P^,amount);
+                    inc(P);
+               end;
+               inc(P,Rect.Left+(width-Rect.Right));
+          end;
+      end
 end;
 
 procedure ReplaceTransparentAreas(Dst,AlphaSource : TBitmap32; ReplaceColor : TColor32);
