@@ -631,7 +631,7 @@ begin
     TextShadow      := False;
     TextShadowAlpha := 255;
     TextShadowColor := 0;
-    TextShadowType  := 0;
+    TextShadowType  := 1;
     TextShadowSize  := 1;
     DisplayText     := True;
   end;
