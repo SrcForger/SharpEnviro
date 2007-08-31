@@ -43,6 +43,7 @@ uses
   uSharpDeskObjectSettings,
   SharpThemeApi,
   SharpIconUtils,
+  SharpGraphicsUtils,
   GR32_Resamplers;
 type
    TColorRec = packed record
@@ -128,7 +129,7 @@ begin
   end else
   begin
     DrawBitmap;
-    SharpDeskApi.LightenBitmap(Bitmap,50);
+    LightenBitmap(Bitmap,50);
   end;
 end;
 
@@ -189,11 +190,11 @@ begin
   end;
   DrawBitmap;
   if SharpThemeApi.GetDesktopAnimBrightness then
-     SharpDeskApi.LightenBitmap(Bitmap,round(FHLTimer.Tag*(SharpThemeApi.GetDesktopAnimBrightnessValue/FAnimSteps)));
+     LightenBitmap(Bitmap,round(FHLTimer.Tag*(SharpThemeApi.GetDesktopAnimBrightnessValue/FAnimSteps)));
   if SharpThemeApi.GetDesktopAnimBlend then
-     SharpDeskApi.BlendImage(Bitmap,
-                             SharpThemeApi.GetDesktopAnimBlendColor,
-                             round(FHLTimer.Tag*(SharpThemeApi.GetDesktopAnimBlendValue/FAnimSteps)));
+     BlendImageA(Bitmap,
+                 SharpThemeApi.GetDesktopAnimBlendColor,
+                 round(FHLTimer.Tag*(SharpThemeApi.GetDesktopAnimBlendValue/FAnimSteps)));
   FParentImage.EndUpdate;
   EndUpdate;
   Changed;
@@ -277,11 +278,12 @@ begin
     FFontSettings.Underline := Theme[DS_TEXTUNDERLINE].BoolValue;
     FFontSettings.AALevel   := 0;
     FFontSettings.ShadowColor      := SharpThemeApi.SchemeCodeToColor(Theme[DS_TEXTSHADOWCOLOR].IntValue);
-    FFontSettings.ShadowAlphaValue := 255-Theme[DS_TEXTSHADOWALPHA].IntValue;
+    FFontSettings.ShadowAlphaValue := Theme[DS_TEXTSHADOWALPHA].IntValue;
     FFontSettings.Shadow           := Theme[DS_TEXTSHADOW].BoolValue;
     FFontSettings.TextAlpha        := Theme[DS_TEXTALPHA].BoolValue;
     FFontSettings.Alpha            := Theme[DS_TEXTALPHAVLAUE].IntValue;
-
+    FFontSettings.ShadowType       := Theme[DS_TEXTSHADOWTYPE].IntValue;
+    FFontSettings.ShadowSize       := Theme[DS_TEXTSHADOWSIZE].IntValue;
 
     FCaptionSettings.Caption.Clear;
     if FSettings.MLineCaption then FCaptionSettings.Caption.CommaText := FSettings.Caption

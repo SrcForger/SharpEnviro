@@ -55,7 +55,8 @@ uses
   LinkObjectSettingsWnd in 'LinkObjectSettingsWnd.pas' {SettingsWnd},
   LinkObjectXMLSettings in 'LinkObjectXMLSettings.pas',
   mlinewnd in 'mlinewnd.pas' {mlineform},
-  uSharpDeskObjectSettings in '..\..\..\Common\Units\XML\uSharpDeskObjectSettings.pas';
+  uSharpDeskObjectSettings in '..\..\..\Common\Units\XML\uSharpDeskObjectSettings.pas',
+  SharpGraphicsUtils in '..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas';
 
 {$R *.RES}
 {$R icons.res}
