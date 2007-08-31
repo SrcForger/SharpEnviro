@@ -351,6 +351,7 @@ begin
         boxblur(ShadowBmp,1,1);
         ShadowBmp.DrawTo(TempBmp,0,0);
         ShadowBmp.DrawTo(TempBmp,0,0);
+        BlendImageA(TempBmp,Font.ShadowColor,255);
       finally
         ShadowBmp.Free;
       end;
@@ -371,7 +372,9 @@ begin
                                 TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
       end;
     end;
-    TempBmp.MasterAlpha := Font.Alpha;
+    if Font.TextAlpha then
+      TempBmp.MasterAlpha := Font.Alpha
+    else TempBmp.MasterAlpha := 255;
     Bmp.Assign(TempBmp);
     result := True;
   except
@@ -476,9 +479,9 @@ begin
   result.CaptionLeft := 0;
   result.CaptionTop  := 0;
 
-  if IconHasShadow then smod := -3
+  {if IconHasShadow then smod := -3
      else if CaptionHasShadow then smod := -2
-          else smod := 0;
+          else} smod := 0;
 
   Caption.DrawMode := dmBlend;
   Caption.CombineMode := cmMerge;
