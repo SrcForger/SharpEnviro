@@ -1024,6 +1024,7 @@ begin
       boxblur(ShadowBmp,1,1);
       ShadowBmp.DrawTo(TempBmp,0,0);
       ShadowBmp.DrawTo(TempBmp,0,0);
+      BlendImageA(TempBmp,FShadowColor,255);
     finally
       ShadowBmp.Free;
     end;
@@ -1125,6 +1126,7 @@ begin
         boxblur(ShadowBmp,1,1);
         ShadowBmp.DrawTo(pPrecacheBmp,0,0);
         ShadowBmp.DrawTo(pPrecacheBmp,0,0);
+        BlendImageA(pPrecacheBmp,FShadowColor,255);
       finally
         ShadowBmp.Free;
       end;
