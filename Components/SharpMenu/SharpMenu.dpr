@@ -157,7 +157,7 @@ begin
   if not FileExists(mfile) then halt;
 
   SharpThemeApi.InitializeTheme;
-  SharpThemeApi.LoadTheme(False,[tpScheme,tpSkin,tpIconSet]);
+  SharpThemeApi.LoadTheme(True,[tpScheme,tpSkin,tpIconSet]);
 
   iconcachefile := ExtractFileName(mfile);
   setlength(iconcachefile,length(iconcachefile) - length(ExtractFileExt(iconcachefile)));
