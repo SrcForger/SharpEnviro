@@ -52,98 +52,104 @@ uses
 
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 var
-  XML: TJvSimpleXML;
-  Dir: string;
-  i: integer;
+  xml: TJvSimpleXML;
+  sDir: string;
+  iIconSize: Integer;
 begin
   if frmDesktopSettings = nil then
     frmDesktopSettings := TfrmDesktopSettings.Create(nil);
 
   uVistaFuncs.SetVistaFonts(frmDesktopSettings);
-  frmDesktopSettings.sTheme := APluginID;
-  frmDesktopSettings.ParentWindow := aowner;
-  frmDesktopSettings.Left := 2;
-  frmDesktopSettings.Top := 2;
-  frmDesktopSettings.BorderStyle := bsNone;
-  frmDesktopSettings.sFontName := 'Verdana';
 
-  Dir := SharpApi.GetSharpeUserSettingsPath + '\Themes\' + APluginID + '\';
-  XML := TJvSimpleXML.Create(nil);
-  try
-    XML.LoadFromFile(Dir + 'DesktopIcon.xml');
-    with XML.Root.Items do
-    begin
-      // Icon Tab
-      i := IntValue('IconSize', 32);
-      case i of
-        32: frmDesktopSettings.rbicon32.Checked := True;
-        48: frmDesktopSettings.rbicon48.Checked := True;
-        64: frmDesktopSettings.rbicon64.Checked := True;
-      else
-        frmDesktopSettings.rbiconcustom.Checked := True;
+  with frmDesktopSettings do begin
+    FTheme := APluginID;
+    FFontName := 'Arial';
+
+    ParentWindow := AOwner;
+    Left := 0;
+    Top := 0;
+
+    sDir := SharpApi.GetSharpeUserSettingsPath + '\Themes\' + APluginID + '\';
+    xml := TJvSimpleXML.Create(nil);
+    try
+      try
+        xml.LoadFromFile(sDir + 'DesktopIcon.xml');
+        with XML.Root.Items do
+        begin
+
+          // Icon tab options
+          {$REGION 'Load Icon Tab Options'}
+          iIconSize := IntValue('IconSize', 32);
+          case iIconSize of
+            32: rdoIcon32.Checked := True;
+            48: rdoIcon48.Checked := True;
+            64: rdoIcon64.Checked := True;
+          else
+            rdoIconcustom.Checked := True;
+          end;
+
+          sgbiconsize.Value := iIconSize;
+          chkIconTrans.Checked := BoolValue('IconAlphaBlend', False);
+          sgbIconTrans.value := IntValue('IconAlpha', 255);
+          chkColorBlend.Checked := BoolValue('IconBlending', False);
+          sgbColorBlend.Value := IntValue('IconBlendAlpha', 255);
+          chkIconShadow.Checked := BoolValue('IconShadow', True);
+          sgbIconShadow.Value := IntValue('IconShadowAlpha', 196);
+          sceIconColor.Items.Item[0].ColorCode := IntValue('IconBlendColor', 0);
+          sceShadowColor.Items.Item[0].ColorCode := IntValue('IconShadowColor', 0);
+
+          {$ENDREGION}
+
+          // Text + shadow tab
+          {$REGION 'Load Font Tab Options'}
+          FFontName := Value('FontName', 'Verdana');
+          sgbFontSize.Value := IntValue('TextSize', 12);
+          chkBold.Checked := BoolValue('TextBold', False);
+          chkItalic.Checked := BoolValue('TextItalic', False);
+          chkUnderline.Checked := BoolValue('TextUnderline', False);
+          chkFontTrans.Checked := BoolValue('TextAlpha', False);
+          sgbFontTrans.Value := IntValue('TextAlphaValue', 255);
+          chkFontShadow.Checked := BoolValue('TextShadow', True);
+          sgbFontShadowTrans.Value := IntValue('TextShadowAlpha', 196);
+          sceFontColor.Items.Item[0].ColorCode := IntValue('TextColor', clWhite);
+          sceShadowColor.Items.Item[0].ColorCode := IntValue('TextShadowColor', 0);
+
+          {$ENDREGION} end;
+
+      except
       end;
-      frmDesktopSettings.sgbiconsize.Value := i;
-      frmDesktopSettings.cbalphablend.Checked := BoolValue('IconAlphaBlend',
-        False);
-      frmDesktopSettings.sgbiconalpha.value := IntValue('IconAlpha', 255);
-      frmDesktopSettings.cbcolorblend.Checked := BoolValue('IconBlending',
-        False);
-      frmDesktopSettings.sbgiconcblendalpha.Value := IntValue('IconBlendAlpha',
-        255);
-      frmDesktopSettings.cbiconshadow.Checked := BoolValue('IconShadow', True);
-      frmDesktopSettings.sgbiconshadow.Value := IntValue('IconShadowAlpha',
-        196);
-      frmDesktopSettings.IconColors.Items.Item[0].ColorCode :=
-        IntValue('IconBlendColor', 0);
-      frmDesktopSettings.IconColors.Items.Item[1].ColorCode :=
-        IntValue('IconShadowColor', 0);
 
-      // Text Tab
-      frmDesktopSettings.sFontName := Value('FontName', 'Verdana');
-      frmDesktopSettings.sefontsize.Value := IntValue('TextSize', 12);
-      frmDesktopSettings.cbbold.Checked := BoolValue('TextBold', False);
-      frmDesktopSettings.cbitalic.Checked := BoolValue('TextItalic', False);
-      frmDesktopSettings.cbunderline.Checked := BoolValue('TextUnderline',
-        False);
-      frmDesktopSettings.cbfontalphablend.Checked := BoolValue('TextAlpha',
-        False);
-      frmDesktopSettings.sgbfontalphablend.Value := IntValue('TextAlphaValue',
-        255);
-      frmDesktopSettings.cbtextshadow.Checked := BoolValue('TextShadow', True);
-      frmDesktopSettings.sgbtextshadow.Value := IntValue('TextShadowAlpha',
-        196);
-      frmDesktopSettings.TextColors.Items.Item[0].ColorCode :=
-        IntValue('TextColor', clWhite);
-      frmDesktopSettings.TextColors.Items.Item[1].ColorCode :=
-        IntValue('TextShadowColor', 0);
+      XML.Root.Clear;
+      try
+        XML.LoadFromFile(sDir + 'DesktopAnimation.xml');
+        with XML.Root.Items, frmDesktopSettings do
+        begin
+
+          // Animation tab
+          {$REGION 'Load Animation Tab Options'}
+          chkAnim.Checked := BoolValue('UseAnimations', True);
+          chkAnimSize.Checked := BoolValue('Scale', False);
+          sgbAnimSize.Value := IntValue('ScaleValue', 0);
+          chkAnimTrans.Checked := BoolValue('Alpha', True);
+          sgbAnimTrans.Value := IntValue('AlphaValue', 64);
+          chkAnimColorBlend.Checked := BoolValue('Blend', False);
+          sgbAnimColorBlend.Value := IntValue('BlendValue', 255);
+          chkAnimBrightness.Checked := BoolValue('Brightness', True);
+          sgbAnimBrightness.Value := IntValue('BrightnessValue', 64);
+          sceAnimColor.Items.Item[0].ColorCode := IntValue('BlendColor', clWhite);
+
+          {$ENDREGION}
+
+        end;
+
+      except
+      end;
+
+    finally
+      XML.Free;
     end;
-  except
-  end;
-  XML.Root.Clear;
-  try
-    XML.LoadFromFile(Dir + 'DesktopAnimation.xml');
-    with XML.Root.Items do
-    begin
-      frmDesktopSettings.cbanim.Checked := BoolValue('UseAnimations', True);
-      frmDesktopSettings.cbanimscale.Checked := BoolValue('Scale', False);
-      frmDesktopSettings.sgbanimscale.Value := IntValue('ScaleValue', 0);
-      frmDesktopSettings.cbanimalpha.Checked := BoolValue('Alpha', True);
-      frmDesktopSettings.sgbanimalpha.Value := IntValue('AlphaValue', 64);
-      frmDesktopSettings.cbanimcolorblend.Checked := BoolValue('Blend', False);
-      frmDesktopSettings.sgbanimcolorblend.Value := IntValue('BlendValue',
-        255);
-      frmDesktopSettings.cbanimbrightness.Checked := BoolValue('Brightness',
-        True);
-      frmDesktopSettings.sgbanimbrightness.Value := IntValue('BrightnessValue',
-        64);
-      frmDesktopSettings.AnimColors.Items.Item[0].ColorCode :=
-        IntValue('BlendColor', clWhite);
-    end;
-  except
-  end;
 
-  XML.Free;
-
+  end;
   frmDesktopSettings.Show;
   result := frmDesktopSettings.Handle;
 end;
@@ -151,84 +157,94 @@ end;
 procedure Save;
 var
   XML: TJvSimpleXML;
-  i: integer;
-  Dir, FileName: string;
+  iIconSize: integer;
+  sDir, sFileName: string;
 begin
-  Dir := SharpApi.GetSharpeUserSettingsPath + '\Themes\' +
-    frmDesktopSettings.sTheme + '\';
-  FileName := Dir + 'DesktopIcon.xml';
+  // Init
+  sDir := SharpApi.GetSharpeUserSettingsPath + '\Themes\' +
+    frmDesktopSettings.FTheme + '\';
+  sFileName := sDir + 'DesktopIcon.xml';
 
-  XML := TJvSimpleXML.Create(nil);
-  XML.Root.Name := 'SharpEThemeDesktopIcon';
-  XML.Root.Items.Clear;
+  with frmDesktopSettings do begin
 
-  with XML.Root.Items do
-  begin
-    if frmDesktopSettings.rbicon32.Checked then
-      i := 32
-    else if frmDesktopSettings.rbicon48.Checked then
-      i := 48
-    else if frmDesktopSettings.rbicon64.Checked then
-      i := 64
-    else
-      i := frmDesktopSettings.sgbiconsize.Value;
-    Add('IconSize', i);
-    Add('IconAlphaBlend', frmDesktopSettings.cbalphablend.Checked);
-    Add('IconAlpha', frmDesktopSettings.sgbiconalpha.Value);
-    Add('IconBlending', frmDesktopSettings.cbcolorblend.Checked);
-    Add('IconBlendAlpha', frmDesktopSettings.sbgiconcblendalpha.Value);
-    Add('IconShadow', frmDesktopSettings.cbiconshadow.Checked);
-    Add('IconShadowAlpha', frmDesktopSettings.sgbiconshadow.Value);
-    Add('IconBlendColor',
-      frmDesktopSettings.IconColors.Items.Item[0].ColorCode);
-    Add('IconShadowColor',
-      frmDesktopSettings.IconColors.Items.Item[1].ColorCode);
-    Add('FontName', frmDesktopSettings.cbxFontName.Text);
-    Add('TextSize', round(frmDesktopSettings.sefontsize.Value));
-    Add('TextBold', frmDesktopSettings.cbbold.Checked);
-    Add('TextItalic', frmDesktopSettings.cbitalic.Checked);
-    Add('TextUnderline', frmDesktopSettings.cbunderline.Checked);
-    Add('TextAlpha', frmDesktopSettings.cbfontalphablend.Checked);
-    Add('TextAlphaValue', frmDesktopSettings.sgbfontalphablend.Value);
-    Add('TextShadow', frmDesktopSettings.cbtextshadow.Checked);
-    Add('TextShadowAlpha', frmDesktopSettings.sgbtextshadow.Value);
-    Add('TextColor', frmDesktopSettings.TextColors.Items.Item[0].ColorCode);
-    Add('TextShadowColor',
-      frmDesktopSettings.TextColors.Items.Item[1].ColorCode);
+    xml := TJvSimpleXML.Create(nil);
+    try
+      XML.Root.Name := 'SharpEThemeDesktopIcon';
+      XML.Root.Items.Clear;
+
+      with XML.Root.Items do
+      begin
+        if rdoIcon32.Checked then
+          iIconSize := 32
+        else if rdoIcon48.Checked then
+          iIconSize := 48
+        else if rdoIcon64.Checked then
+          iIconSize := 64
+        else
+          iIconSize := sgbIconSize.Value;
+
+        Add('IconSize', iIconSize);
+        Add('IconAlphaBlend', chkIconTrans.Checked);
+        Add('IconAlpha', sgbIconTrans.Value);
+        Add('IconBlending', chkColorBlend.Checked);
+        Add('IconBlendAlpha', sgbColorBlend.Value);
+        Add('IconShadow', chkIconShadow.Checked);
+        Add('IconShadowAlpha', sgbIconShadow.Value);
+        Add('IconBlendColor',
+          sceIconColor.Items.Item[0].ColorCode);
+        Add('IconShadowColor',
+          sceShadowColor.Items.Item[0].ColorCode);
+        Add('FontName', cboFontName.Text);
+        Add('TextSize', sgbFontSize.Value);
+        Add('TextBold', chkBold.Checked);
+        Add('TextItalic', chkItalic.Checked);
+        Add('TextUnderline', chkUnderline.Checked);
+        Add('TextAlpha', chkFontTrans.Checked);
+        Add('TextAlphaValue', sgbFontTrans.Value);
+        Add('TextShadow', chkFontShadow.Checked);
+        Add('TextShadowAlpha', sgbFontShadowTrans.Value);
+        Add('TextColor', sceFontColor.Items.Item[0].ColorCode);
+        Add('TextShadowColor',
+          sceShadowColor.Items.Item[0].ColorCode);
+      end;
+
+      XML.SaveToFile(sFileName + '~');
+      if FileExists(sFileName) then
+        DeleteFile(sFileName);
+      RenameFile(sFileName + '~', sFileName);
+
+      sFileName := sDir + 'DesktopAnimation.xml';
+      XML.Root.Name := 'SharpEThemeDesktopAnimation';
+      XML.Root.Items.Clear;
+
+      with XML.Root.Items do
+      begin
+        Add('UseAnimations', chkAnim.Checked);
+        Add('Scale', chkAnimSize.Checked);
+        Add('ScaleValue', sgbAnimSize.Value);
+        Add('Alpha', chkAnimTrans.Checked);
+        Add('AlphaValue', sgbAnimTrans.Value);
+        Add('Blend', chkAnimColorBlend.Checked);
+        Add('BlendValue', sgbAnimColorBlend.Value);
+        Add('Brightness', chkAnimBrightness.Checked);
+        Add('BrightnessValue', sgbAnimBrightness.Value);
+        Add('BlendColor', sceAnimColor.Items.Item[0].ColorCode);
+      end;
+
+      XML.SaveToFile(sFileName + '~');
+      if FileExists(sFileName) then
+        DeleteFile(sFileName);
+      RenameFile(sFileName + '~', sFileName);
+
+
+    finally
+      xml.Free;
+    end;
+
   end;
-
-  XML.SaveToFile(FileName + '~');
-  if FileExists(FileName) then
-    DeleteFile(FileName);
-  RenameFile(FileName + '~', FileName);
-
-  FileName := Dir + 'DesktopAnimation.xml';
-  XML.Root.Name := 'SharpEThemeDesktopAnimation';
-  XML.Root.Items.Clear;
-
-  with XML.Root.Items do
-  begin
-    Add('UseAnimations', frmDesktopSettings.cbanim.Checked);
-    Add('Scale', frmDesktopSettings.cbanimscale.Checked);
-    Add('ScaleValue', frmDesktopSettings.sgbanimscale.Value);
-    Add('Alpha', frmDesktopSettings.cbanimalpha.Checked);
-    Add('AlphaValue', frmDesktopSettings.sgbanimalpha.Value);
-    Add('Blend', frmDesktopSettings.cbanimcolorblend.Checked);
-    Add('BlendValue', frmDesktopSettings.sgbanimcolorblend.Value);
-    Add('Brightness', frmDesktopSettings.cbanimbrightness.Checked);
-    Add('BrightnessValue', frmDesktopSettings.sgbanimbrightness.Value);
-    Add('BlendColor', frmDesktopSettings.AnimColors.Items.Item[0].ColorCode);
-  end;
-
-  XML.SaveToFile(FileName + '~');
-  if FileExists(FileName) then
-    DeleteFile(FileName);
-  RenameFile(FileName + '~', FileName);
-
-  XML.Free;
 end;
 
-function Close : boolean;
+function Close: boolean;
 begin
   try
     frmDesktopSettings.Close;
@@ -273,9 +289,10 @@ procedure AddTabs(var ATabs: TPluginTabItemList);
 begin
   if frmDesktopSettings <> nil then
   begin
-    ATabs.Add('Icon', frmDesktopSettings.JvIconPage, '', '');
-    ATabs.Add('Text', frmDesktopSettings.JvTextPage, '', '');
-    ATabs.Add('Animations', frmDesktopSettings.JvAnimationPage, '', '');
+    ATabs.Add('Icon', frmDesktopSettings.pagIcon, '', '');
+    ATabs.Add('Text', frmDesktopSettings.pagFont, '', '');
+    ATabs.Add('Text Shadow', frmDesktopSettings.pagFontShadow, '', '');
+    ATabs.Add('Animations', frmDesktopSettings.pagAnimation, '', '');
   end;
 end;
 
@@ -297,4 +314,5 @@ exports
   ClickTab,
   ClickBtn;
 
-End.
+end.
+

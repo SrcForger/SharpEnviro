@@ -1,9 +1,10 @@
 object frmDesktopSettings: TfrmDesktopSettings
   Left = 0
   Top = 0
+  BorderStyle = bsNone
   Caption = 'frmDesktopSettings'
-  ClientHeight = 583
-  ClientWidth = 562
+  ClientHeight = 552
+  ClientWidth = 568
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,50 +17,74 @@ object frmDesktopSettings: TfrmDesktopSettings
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object JvPageList1: TJvPageList
+  object plMain: TJvPageList
     Left = 0
     Top = 0
-    Width = 562
-    Height = 583
-    ActivePage = JvIconPage
+    Width = 568
+    Height = 552
+    ActivePage = pagFontShadow
     PropagateEnable = False
     Align = alClient
-    object JvIconPage: TJvStandardPage
+    ExplicitHeight = 539
+    object pagIcon: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 562
-      Height = 583
+      Width = 568
+      Height = 552
+      ExplicitHeight = 539
       object Panel3: TPanel
         Left = 0
-        Top = 299
-        Width = 562
-        Height = 88
+        Top = 279
+        Width = 568
+        Height = 75
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 0
-        object Label2: TLabel
+        object lblIconTrans: TLabel
           AlignWithMargins = True
           Left = 26
-          Top = 29
-          Width = 528
-          Height = 20
+          Top = 33
+          Width = 534
+          Height = 13
           Margins.Left = 26
-          Margins.Top = 4
+          Margins.Top = 8
           Margins.Right = 8
           Margins.Bottom = 0
           Align = alTop
-          AutoSize = False
           Caption = 'This option controls the Icon transparency. 100% fully visible.'
-          EllipsisPosition = epEndEllipsis
           Transparent = False
           WordWrap = True
+          ExplicitWidth = 298
         end
-        object cbalphablend: TCheckBox
+        object sgbIconTrans: TSharpeGaugeBox
+          AlignWithMargins = True
+          Left = 26
+          Top = 54
+          Width = 250
+          Height = 21
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Constraints.MaxWidth = 534
+          ParentBackground = False
+          Min = 16
+          Max = 255
+          Value = 192
+          Prefix = 'Icon Transparency: '
+          Suffix = '%'
+          Description = 'Adjust to set the transparency'
+          PopPosition = ppBottom
+          PercentDisplay = True
+          OnChangeValue = SendUpdateEvent
+        end
+        object chkIconTrans: TJvCheckBox
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 546
+          Width = 552
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -70,38 +95,29 @@ object frmDesktopSettings: TfrmDesktopSettings
           Checked = True
           State = cbChecked
           TabOrder = 0
-          OnClick = cbalphablendClick
-        end
-        object sgbiconalpha: TSharpeGaugeBox
-          Left = 25
-          Top = 52
-          Width = 148
-          Height = 21
-          Min = 16
-          Max = 255
-          Value = 192
-          Prefix = 'Transparency: '
-          Suffix = '%'
-          Description = 'Adjust to set the transparency'
-          PopPosition = ppBottom
-          PercentDisplay = True
-          OnChangeValue = SendUpdateEvent
+          OnClick = chkIconTransClick
+          LinkedControls = <>
+          HotTrackFont.Charset = DEFAULT_CHARSET
+          HotTrackFont.Color = clWindowText
+          HotTrackFont.Height = -11
+          HotTrackFont.Name = 'Tahoma'
+          HotTrackFont.Style = []
         end
       end
       object Panel4: TPanel
         Left = 0
         Top = 0
-        Width = 562
+        Width = 568
         Height = 129
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 1
-        object Label3: TLabel
+        object lblIconSizeDet: TLabel
           AlignWithMargins = True
           Left = 26
           Top = 29
-          Width = 528
+          Width = 534
           Height = 19
           Margins.Left = 26
           Margins.Top = 4
@@ -113,12 +129,13 @@ object frmDesktopSettings: TfrmDesktopSettings
           EllipsisPosition = epEndEllipsis
           Transparent = False
           ExplicitTop = 25
+          ExplicitWidth = 528
         end
         object CheckBox1: TLabel
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 546
+          Width = 552
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -127,6 +144,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           Align = alTop
           AutoSize = False
           Caption = 'Icon Size'
+          ExplicitWidth = 546
         end
         object SharpERoundPanel1: TSharpERoundPanel
           Left = 25
@@ -166,7 +184,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             ScaleMode = smOptimalScaled
             TabOrder = 0
           end
-          object rbicon32: TRadioButton
+          object rdoIcon32: TRadioButton
             AlignWithMargins = True
             Left = 5
             Top = 4
@@ -179,7 +197,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             Checked = True
             TabOrder = 1
             TabStop = True
-            OnClick = rbiconcustomClick
+            OnClick = rdoIconCustomClick
           end
         end
         object SharpERoundPanel2: TSharpERoundPanel
@@ -214,7 +232,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             ScaleMode = smOptimalScaled
             TabOrder = 0
           end
-          object rbicon48: TRadioButton
+          object rdoIcon48: TRadioButton
             AlignWithMargins = True
             Left = 5
             Top = 4
@@ -225,7 +243,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             Align = alTop
             Caption = '48x48'
             TabOrder = 1
-            OnClick = rbiconcustomClick
+            OnClick = rdoIconCustomClick
           end
         end
         object SharpERoundPanel3: TSharpERoundPanel
@@ -260,7 +278,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             ScaleMode = smOptimalScaled
             TabOrder = 0
           end
-          object rbicon64: TRadioButton
+          object rdoIcon64: TRadioButton
             AlignWithMargins = True
             Left = 5
             Top = 4
@@ -271,7 +289,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             Align = alTop
             Caption = '64x64'
             TabOrder = 1
-            OnClick = rbiconcustomClick
+            OnClick = rdoIconCustomClick
           end
         end
         object SharpERoundPanel4: TSharpERoundPanel
@@ -290,7 +308,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           BorderColor = clWindow
           Border = False
           BackgroundColor = clWindow
-          object rbiconcustom: TRadioButton
+          object rdoIconCustom: TRadioButton
             AlignWithMargins = True
             Left = 5
             Top = 4
@@ -301,15 +319,16 @@ object frmDesktopSettings: TfrmDesktopSettings
             Align = alTop
             Caption = 'Custom'
             TabOrder = 0
-            OnClick = rbiconcustomClick
+            OnClick = rdoIconCustomClick
           end
-          object sgbiconsize: TSharpeGaugeBox
+          object sgbIconSize: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 3
             Top = 27
             Width = 113
             Height = 21
             Align = alTop
+            ParentBackground = False
             Min = 12
             Max = 256
             Value = 96
@@ -325,36 +344,58 @@ object frmDesktopSettings: TfrmDesktopSettings
       object Panel1: TPanel
         Left = 0
         Top = 129
-        Width = 562
-        Height = 85
+        Width = 568
+        Height = 75
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 2
-        object Label1: TLabel
+        object lblColorBlendDet: TLabel
           AlignWithMargins = True
           Left = 26
-          Top = 29
-          Width = 528
-          Height = 20
+          Top = 33
+          Width = 534
+          Height = 13
           Margins.Left = 26
-          Margins.Top = 4
+          Margins.Top = 8
           Margins.Right = 8
           Margins.Bottom = 0
           Align = alTop
-          AutoSize = False
           Caption = 
             'This option controls the Icon color blend strength. 100% Icon wi' +
             'll be fully blended.'
-          EllipsisPosition = epEndEllipsis
           Transparent = False
           WordWrap = True
+          ExplicitWidth = 395
         end
-        object cbcolorblend: TCheckBox
+        object sgbColorBlend: TSharpeGaugeBox
+          AlignWithMargins = True
+          Left = 26
+          Top = 54
+          Width = 250
+          Height = 21
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Constraints.MaxWidth = 534
+          ParentBackground = False
+          Min = 16
+          Max = 255
+          Value = 192
+          Prefix = 'Blend Strength: '
+          Suffix = '%'
+          Description = 'Adjust to set the transparency'
+          PopPosition = ppBottom
+          PercentDisplay = True
+          OnChangeValue = SendUpdateEvent
+        end
+        object chkColorBlend: TJvCheckBox
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 546
+          Width = 552
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -366,55 +407,68 @@ object frmDesktopSettings: TfrmDesktopSettings
           State = cbChecked
           TabOrder = 0
           OnClick = cbiconblendClick
+          LinkedControls = <>
+          HotTrackFont.Charset = DEFAULT_CHARSET
+          HotTrackFont.Color = clWindowText
+          HotTrackFont.Height = -11
+          HotTrackFont.Name = 'Tahoma'
+          HotTrackFont.Style = []
         end
-        object sbgiconcblendalpha: TSharpeGaugeBox
-          Left = 25
-          Top = 52
-          Width = 148
+      end
+      object Panel2: TPanel
+        Left = 0
+        Top = 204
+        Width = 568
+        Height = 75
+        Align = alTop
+        AutoSize = True
+        BevelOuter = bvNone
+        Color = clWindow
+        TabOrder = 3
+        object lblIconShadow: TLabel
+          AlignWithMargins = True
+          Left = 26
+          Top = 33
+          Width = 534
+          Height = 13
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 
+            'This option controls the Icon shadow transparency. 100% fully vi' +
+            'sible.'
+          Transparent = False
+          ExplicitWidth = 338
+        end
+        object sgbIconShadow: TSharpeGaugeBox
+          AlignWithMargins = True
+          Left = 26
+          Top = 54
+          Width = 250
           Height = 21
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Constraints.MaxWidth = 534
+          ParentBackground = False
           Min = 16
           Max = 255
           Value = 192
-          Prefix = 'Blend Strength: '
+          Prefix = 'Shadow Transparency: '
           Suffix = '%'
           Description = 'Adjust to set the transparency'
           PopPosition = ppBottom
           PercentDisplay = True
           OnChangeValue = SendUpdateEvent
         end
-      end
-      object Panel2: TPanel
-        Left = 0
-        Top = 214
-        Width = 562
-        Height = 85
-        Align = alTop
-        BevelOuter = bvNone
-        Color = clWindow
-        TabOrder = 3
-        object Label4: TLabel
-          AlignWithMargins = True
-          Left = 26
-          Top = 29
-          Width = 528
-          Height = 20
-          Margins.Left = 26
-          Margins.Top = 4
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alTop
-          AutoSize = False
-          Caption = 
-            'This option controls the Icon shadow transparency. 100% fully vi' +
-            'sible.'
-          EllipsisPosition = epEndEllipsis
-          Transparent = False
-        end
-        object cbiconshadow: TCheckBox
+        object chkIconShadow: TJvCheckBox
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 546
+          Width = 552
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -425,38 +479,30 @@ object frmDesktopSettings: TfrmDesktopSettings
           Checked = True
           State = cbChecked
           TabOrder = 0
-          OnClick = cbiconshadowClick
-        end
-        object sgbiconshadow: TSharpeGaugeBox
-          Left = 25
-          Top = 52
-          Width = 148
-          Height = 21
-          Min = 16
-          Max = 255
-          Value = 192
-          Prefix = 'Transparency: '
-          Suffix = '%'
-          Description = 'Adjust to set the transparency'
-          PopPosition = ppBottom
-          PercentDisplay = True
-          OnChangeValue = SendUpdateEvent
+          OnClick = chkIconShadowClick
+          LinkedControls = <>
+          HotTrackFont.Charset = DEFAULT_CHARSET
+          HotTrackFont.Color = clWindowText
+          HotTrackFont.Height = -11
+          HotTrackFont.Name = 'Tahoma'
+          HotTrackFont.Style = []
         end
       end
       object Panel10: TPanel
         Left = 0
-        Top = 387
-        Width = 562
-        Height = 196
+        Top = 354
+        Width = 568
+        Height = 198
         Align = alClient
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 4
-        object Label6: TLabel
+        ExplicitHeight = 185
+        object lblIconColorDet: TLabel
           AlignWithMargins = True
           Left = 26
           Top = 29
-          Width = 528
+          Width = 534
           Height = 19
           Margins.Left = 26
           Margins.Top = 4
@@ -468,12 +514,13 @@ object frmDesktopSettings: TfrmDesktopSettings
           EllipsisPosition = epEndEllipsis
           Transparent = False
           ExplicitTop = 25
+          ExplicitWidth = 528
         end
         object Label7: TLabel
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 546
+          Width = 552
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -482,15 +529,16 @@ object frmDesktopSettings: TfrmDesktopSettings
           Align = alTop
           AutoSize = False
           Caption = 'Icon Color Options'
+          ExplicitWidth = 546
         end
-        object IconColors: TSharpEColorEditorEx
+        object sceIconColor: TSharpEColorEditorEx
           AlignWithMargins = True
           Left = 20
-          Top = 50
-          Width = 534
-          Height = 138
+          Top = 48
+          Width = 540
+          Height = 142
           Margins.Left = 20
-          Margins.Top = 2
+          Margins.Top = 0
           Margins.Right = 8
           Margins.Bottom = 8
           VertScrollBar.Smooth = True
@@ -512,7 +560,7 @@ object frmDesktopSettings: TfrmDesktopSettings
               ValueEditorType = vetColor
               Value = 0
               Visible = True
-              ColorEditor = IconColors.Item0
+              ColorEditor = sceIconColor.Item0
               Tag = 0
             end
             item
@@ -523,120 +571,178 @@ object frmDesktopSettings: TfrmDesktopSettings
               ValueEditorType = vetColor
               Value = 0
               Visible = True
-              ColorEditor = IconColors.Item1
+              ColorEditor = sceIconColor.Item1
               Tag = 0
             end>
           SwatchManager = SharpESwatchManager1
+          ExplicitHeight = 129
         end
       end
     end
-    object JvTextPage: TJvStandardPage
+    object pagFont: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 562
-      Height = 583
-      object Panel5: TPanel
-        Left = 0
-        Top = 0
-        Width = 562
-        Height = 41
+      Width = 568
+      Height = 552
+      ExplicitHeight = 539
+      object lblFontNameDet: TLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 29
+        Width = 534
+        Height = 13
+        Margins.Left = 26
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
         Align = alTop
-        BevelOuter = bvNone
-        Caption = 'Panel5'
-        ParentColor = True
-        TabOrder = 0
-        object Label5: TLabel
-          Left = 16
-          Top = 16
-          Width = 52
-          Height = 13
-          Caption = 'Font Name'
-        end
-        object cbxFontName: TComboBox
-          Left = 88
-          Top = 14
-          Width = 247
-          Height = 23
-          Style = csOwnerDrawVariable
-          DropDownCount = 12
-          ItemHeight = 17
-          TabOrder = 0
-          OnChange = cbboldClick
-          OnDrawItem = cbxFontNameDrawItem
-        end
+        Caption = 'Select from the list of type faces below'
+        Transparent = False
+        WordWrap = True
+        ExplicitWidth = 187
       end
-      object Panel7: TPanel
-        Left = 0
-        Top = 41
-        Width = 562
-        Height = 120
+      object lblFontSizeDet: TLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 102
+        Width = 534
+        Height = 13
+        Margins.Left = 26
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
         Align = alTop
-        BevelOuter = bvNone
-        ParentColor = True
-        TabOrder = 1
-        object Label9: TLabel
-          Left = 16
-          Top = 8
-          Width = 19
-          Height = 13
-          Caption = 'Size'
-        end
-        object sefontsize: TJvSpinEdit
-          Left = 88
-          Top = 6
-          Width = 57
-          Height = 21
-          Alignment = taRightJustify
-          ButtonKind = bkClassic
-          MaxValue = 128.000000000000000000
-          MinValue = 4.000000000000000000
-          Value = 12.000000000000000000
-          TabOrder = 0
-          OnChange = cbboldClick
-        end
-        object cbbold: TCheckBox
-          Left = 16
-          Top = 40
-          Width = 153
-          Height = 17
-          Caption = 'Bold'
-          TabOrder = 1
-          OnClick = cbboldClick
-        end
-        object cbitalic: TCheckBox
-          Left = 16
-          Top = 64
-          Width = 153
-          Height = 17
-          Caption = 'Italic'
-          TabOrder = 2
-          OnClick = cbboldClick
-        end
-        object cbunderline: TCheckBox
-          Left = 16
-          Top = 88
-          Width = 153
-          Height = 17
-          Caption = 'Underline'
-          TabOrder = 3
-          OnClick = cbboldClick
-        end
+        Caption = 'Changing this value increases/decreases the size of the font'
+        Transparent = False
+        WordWrap = True
+        ExplicitWidth = 290
       end
-      object textcolors: TSharpEColorEditorEx
-        Left = 25
-        Top = 225
-        Width = 517
-        Height = 358
+      object lblFontTransDet: TLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 178
+        Width = 534
+        Height = 13
+        Margins.Left = 26
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Changing this value will make the font more or less transparent'
+        Transparent = False
+        WordWrap = True
+        ExplicitWidth = 302
+      end
+      object Label10: TLabel
+        AlignWithMargins = True
+        Left = 8
+        Top = 8
+        Width = 552
+        Height = 13
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Font Type'
+        ExplicitWidth = 49
+      end
+      object Label11: TLabel
+        AlignWithMargins = True
+        Left = 8
+        Top = 81
+        Width = 552
+        Height = 13
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Font Size'
+        ExplicitWidth = 44
+      end
+      object lblFontStyleDet: TLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 250
+        Width = 534
+        Height = 13
+        Margins.Left = 26
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Select from the available font styles below'
+        Transparent = False
+        WordWrap = True
+        ExplicitWidth = 203
+      end
+      object Label14: TLabel
+        AlignWithMargins = True
+        Left = 8
+        Top = 229
+        Width = 552
+        Height = 13
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Font Style'
+        ExplicitWidth = 49
+      end
+      object Label15: TLabel
+        AlignWithMargins = True
+        Left = 8
+        Top = 338
+        Width = 552
+        Height = 17
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        AutoSize = False
+        Caption = 'Font Color Options'
+        ExplicitLeft = -8
+        ExplicitTop = 471
+        ExplicitWidth = 562
+      end
+      object lblFontColorDet: TLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 359
+        Width = 534
+        Height = 13
+        Margins.Left = 26
+        Margins.Top = 4
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Define font color options below.'
+        Transparent = False
+        ExplicitWidth = 153
+      end
+      object sceFontColor: TSharpEColorEditorEx
+        AlignWithMargins = True
+        Left = 28
+        Top = 380
+        Width = 532
+        Height = 157
+        Margins.Left = 28
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
         VertScrollBar.Smooth = True
         VertScrollBar.Tracking = True
-        Align = alClient
+        Align = alTop
         BevelInner = bvNone
         BevelOuter = bvNone
         BorderStyle = bsNone
         Color = clWindow
         ParentBackground = True
         ParentColor = False
-        TabOrder = 2
+        TabOrder = 0
         Items = <
           item
             Title = 'Text'
@@ -646,216 +752,318 @@ object frmDesktopSettings: TfrmDesktopSettings
             ValueEditorType = vetColor
             Value = 0
             Visible = True
-            ColorEditor = textcolors.Item0
-            Tag = 0
-          end
-          item
-            Title = 'Shadow'
-            ColorCode = 0
-            ColorAsTColor = clBlack
-            Expanded = False
-            ValueEditorType = vetColor
-            Value = 0
-            Visible = True
-            ColorEditor = textcolors.Item1
+            ColorEditor = sceFontColor.Item0
             Tag = 0
           end>
         SwatchManager = SharpESwatchManager1
       end
-      object Panel6: TPanel
-        Left = 0
-        Top = 225
-        Width = 25
-        Height = 358
-        Align = alLeft
-        BevelOuter = bvNone
-        ParentColor = True
+      object cboFontName: TComboBox
+        AlignWithMargins = True
+        Left = 28
+        Top = 50
+        Width = 250
+        Height = 23
+        Margins.Left = 28
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Style = csOwnerDrawVariable
+        Constraints.MaxWidth = 250
+        DropDownCount = 12
+        ItemHeight = 17
+        TabOrder = 1
+        OnDrawItem = cboFontNameDrawItem
+      end
+      object chkUnderline: TJvCheckBox
+        AlignWithMargins = True
+        Left = 28
+        Top = 313
+        Width = 240
+        Height = 17
+        Margins.Left = 28
+        Margins.Top = 4
+        Margins.Right = 300
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Underline'
+        TabOrder = 2
+        LinkedControls = <>
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
+      end
+      object chkItalic: TJvCheckBox
+        AlignWithMargins = True
+        Left = 28
+        Top = 292
+        Width = 240
+        Height = 17
+        Margins.Left = 28
+        Margins.Top = 4
+        Margins.Right = 300
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Italic'
         TabOrder = 3
+        LinkedControls = <>
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
       end
-      object pntextshadowbg: TPanel
-        Left = 0
-        Top = 193
-        Width = 562
-        Height = 32
+      object chkBold: TJvCheckBox
+        AlignWithMargins = True
+        Left = 28
+        Top = 271
+        Width = 240
+        Height = 17
+        Margins.Left = 28
+        Margins.Top = 8
+        Margins.Right = 300
+        Margins.Bottom = 0
         Align = alTop
-        BevelOuter = bvNone
-        ParentColor = True
+        Caption = 'Bold'
         TabOrder = 4
-        object pntextshadow: TPanel
-          Left = 137
-          Top = 0
-          Width = 402
-          Height = 32
-          Align = alClient
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 0
-          object sgbtextshadow: TSharpeGaugeBox
-            Left = 0
-            Top = 0
-            Width = 402
-            Height = 21
-            Align = alTop
-            Min = 16
-            Max = 255
-            Value = 255
-            Prefix = 'Alpha: '
-            Suffix = '%'
-            Description = 'Adjust to set the shadow alpha'
-            PopPosition = ppBottom
-            PercentDisplay = True
-            OnChangeValue = SendUpdateEvent
-          end
-        end
-        object Panel20: TPanel
-          Left = 539
-          Top = 0
-          Width = 23
-          Height = 32
-          Align = alRight
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 1
-        end
-        object Panel21: TPanel
-          Left = 0
-          Top = 0
-          Width = 137
-          Height = 32
-          Align = alLeft
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 2
-          object cbtextshadow: TCheckBox
-            Left = 16
-            Top = 2
-            Width = 113
-            Height = 17
-            Caption = 'Text Shadow'
-            TabOrder = 0
-            OnClick = cbtextshadowClick
-          end
-        end
+        LinkedControls = <>
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
       end
-      object pnfontalphablendbg: TPanel
-        Left = 0
-        Top = 161
-        Width = 562
-        Height = 32
+      object Panel5: TPanel
+        AlignWithMargins = True
+        Left = 28
+        Top = 123
+        Width = 532
+        Height = 22
+        Margins.Left = 28
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
         Align = alTop
         BevelOuter = bvNone
+        ParentBackground = False
         ParentColor = True
         TabOrder = 5
-        object pnfontalphablend: TPanel
-          Left = 137
-          Top = 0
-          Width = 402
-          Height = 32
-          Align = alClient
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 0
-          object sgbfontalphablend: TSharpeGaugeBox
-            Left = 0
-            Top = 0
-            Width = 402
-            Height = 21
-            Align = alTop
-            Min = 16
-            Max = 255
-            Value = 192
-            Prefix = 'Alpha: '
-            Suffix = '%'
-            Description = 'Adjust to set the text transparency'
-            PopPosition = ppBottom
-            PercentDisplay = True
-            OnChangeValue = SendUpdateEvent
-          end
-        end
-        object Panel24: TPanel
-          Left = 539
-          Top = 0
-          Width = 23
-          Height = 32
-          Align = alRight
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 1
-        end
-        object Panel25: TPanel
+        object sgbFontSize: TSharpeGaugeBox
           Left = 0
           Top = 0
-          Width = 137
-          Height = 32
+          Width = 250
+          Height = 22
+          Margins.Left = 28
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
           Align = alLeft
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 2
-          object cbfontalphablend: TCheckBox
-            Left = 16
-            Top = 2
-            Width = 113
-            Height = 17
-            Caption = 'Alpha Blend Text'
-            TabOrder = 0
-            OnClick = cbfontalphablendClick
-          end
+          ParentBackground = False
+          Min = -8
+          Max = 8
+          Value = 0
+          Prefix = 'Size: '
+          Suffix = 'px'
+          Description = 'Change font size by'
+          PopPosition = ppRight
+          PercentDisplay = False
         end
       end
-      object Panel18: TPanel
-        Left = 542
-        Top = 225
-        Width = 20
-        Height = 358
-        Align = alRight
+      object Panel7: TPanel
+        AlignWithMargins = True
+        Left = 28
+        Top = 199
+        Width = 532
+        Height = 22
+        Margins.Left = 28
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
         BevelOuter = bvNone
+        ParentBackground = False
         ParentColor = True
         TabOrder = 6
+        object sgbFontTrans: TSharpeGaugeBox
+          Left = 0
+          Top = 0
+          Width = 250
+          Height = 22
+          Margins.Left = 28
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alLeft
+          ParentBackground = False
+          Min = -255
+          Max = 255
+          Value = 0
+          Prefix = 'Transparency: '
+          Suffix = '%'
+          Description = 'Change font opacity'
+          PopPosition = ppRight
+          PercentDisplay = True
+        end
+      end
+      object chkFontTrans: TJvCheckBox
+        AlignWithMargins = True
+        Left = 8
+        Top = 153
+        Width = 552
+        Height = 17
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Font Transparency'
+        TabOrder = 7
+        LinkedControls = <>
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
+        Layout = tlTop
       end
     end
-    object JvAnimationPage: TJvStandardPage
+    object pagAnimation: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 562
-      Height = 583
-      object pnanim: TPanel
+      Width = 568
+      Height = 552
+      ExplicitHeight = 539
+      object Label5: TLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 33
+        Width = 534
+        Height = 13
+        Margins.Left = 26
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Enable/Disable mouseover animation'
+        Transparent = False
+        WordWrap = True
+        ExplicitWidth = 175
+      end
+      object pnlAnim: TPanel
         Left = 0
-        Top = 49
-        Width = 562
-        Height = 534
+        Top = 46
+        Width = 568
+        Height = 506
         Align = alClient
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
-        object pnanimscalebg: TPanel
+        ExplicitHeight = 493
+        object Panel9: TPanel
+          AlignWithMargins = True
           Left = 0
-          Top = 96
-          Width = 562
-          Height = 32
-          Align = alTop
+          Top = 0
+          Width = 568
+          Height = 493
+          Margins.Left = 0
+          Margins.Top = 8
+          Margins.Right = 0
+          Margins.Bottom = 0
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 0
-          Visible = False
-          object pnanimscale: TPanel
-            Left = 137
-            Top = 0
-            Width = 402
-            Height = 32
-            Align = alClient
+          object lblAnimTransDet: TLabel
+            AlignWithMargins = True
+            Left = 26
+            Top = 33
+            Width = 534
+            Height = 13
+            Margins.Left = 26
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alTop
+            Caption = 'This option controls the animation transparency'
+            Transparent = False
+            WordWrap = True
+            ExplicitWidth = 228
+          end
+          object lblAnimSizeDet: TLabel
+            AlignWithMargins = True
+            Left = 26
+            Top = 185
+            Width = 534
+            Height = 13
+            Margins.Left = 26
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alTop
+            Caption = 'This option controls the animation size'
+            Transparent = False
+            WordWrap = True
+            ExplicitWidth = 182
+          end
+          object lblAnimBrightnessDet: TLabel
+            AlignWithMargins = True
+            Left = 26
+            Top = 109
+            Width = 534
+            Height = 13
+            Margins.Left = 26
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alTop
+            Caption = 'This option controls the animation brightness'
+            Transparent = False
+            WordWrap = True
+            ExplicitWidth = 214
+          end
+          object lblAnimColorBlendDet: TLabel
+            AlignWithMargins = True
+            Left = 26
+            Top = 261
+            Width = 534
+            Height = 13
+            Margins.Left = 26
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alTop
+            Caption = 'This option controls the animation color blend'
+            Transparent = False
+            WordWrap = True
+            ExplicitWidth = 216
+          end
+          object Panel12: TPanel
+            AlignWithMargins = True
+            Left = 28
+            Top = 206
+            Width = 532
+            Height = 22
+            Margins.Left = 28
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alTop
             BevelOuter = bvNone
+            ParentBackground = False
             ParentColor = True
             TabOrder = 0
-            object sgbanimscale: TSharpeGaugeBox
+            object sgbAnimSize: TSharpeGaugeBox
               Left = 0
               Top = 0
-              Width = 402
-              Height = 21
-              Align = alTop
+              Width = 250
+              Height = 22
+              Align = alLeft
+              ParentBackground = False
               Min = -64
               Max = 64
               Value = 32
-              Prefix = 'Scale by: '
+              Prefix = 'Change size by: '
               Suffix = 'px'
               Description = 'Adjust to set the scale size'
               PopPosition = ppBottom
@@ -863,129 +1071,74 @@ object frmDesktopSettings: TfrmDesktopSettings
               OnChangeValue = SendUpdateEvent
             end
           end
-          object Panel22: TPanel
-            Left = 539
-            Top = 0
-            Width = 23
-            Height = 32
-            Align = alRight
-            BevelOuter = bvNone
-            ParentColor = True
+          object chkAnimTrans: TJvCheckBox
+            AlignWithMargins = True
+            Left = 8
+            Top = 8
+            Width = 552
+            Height = 17
+            Margins.Left = 8
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alTop
+            Caption = 'Animation Transparency'
             TabOrder = 1
+            LinkedControls = <>
+            HotTrackFont.Charset = DEFAULT_CHARSET
+            HotTrackFont.Color = clWindowText
+            HotTrackFont.Height = -11
+            HotTrackFont.Name = 'Tahoma'
+            HotTrackFont.Style = []
+            Layout = tlTop
           end
-          object Panel23: TPanel
-            Left = 0
-            Top = 0
-            Width = 137
-            Height = 32
-            Align = alLeft
-            BevelOuter = bvNone
-            ParentColor = True
+          object chkAnimSize: TJvCheckBox
+            AlignWithMargins = True
+            Left = 8
+            Top = 160
+            Width = 552
+            Height = 17
+            Margins.Left = 8
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alTop
+            Caption = 'Animation Size'
             TabOrder = 2
-            object cbanimscale: TCheckBox
-              Left = 16
-              Top = 2
-              Width = 113
-              Height = 17
-              Caption = 'Size'
-              TabOrder = 0
-              OnClick = cbanimscaleClick
-            end
+            LinkedControls = <>
+            HotTrackFont.Charset = DEFAULT_CHARSET
+            HotTrackFont.Color = clWindowText
+            HotTrackFont.Height = -11
+            HotTrackFont.Name = 'Tahoma'
+            HotTrackFont.Style = []
+            Layout = tlTop
           end
-        end
-        object pnanimalphabg: TPanel
-          Left = 0
-          Top = 0
-          Width = 562
-          Height = 32
-          Align = alTop
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 1
-          object pnanimalpha: TPanel
-            Left = 137
-            Top = 0
-            Width = 402
-            Height = 32
-            Align = alClient
+          object Panel13: TPanel
+            AlignWithMargins = True
+            Left = 28
+            Top = 130
+            Width = 532
+            Height = 22
+            Margins.Left = 28
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alTop
             BevelOuter = bvNone
+            ParentBackground = False
             ParentColor = True
-            TabOrder = 0
-            object sgbanimalpha: TSharpeGaugeBox
+            TabOrder = 3
+            object sgbAnimBrightness: TSharpeGaugeBox
               Left = 0
               Top = 0
-              Width = 402
-              Height = 21
-              Align = alTop
+              Width = 250
+              Height = 22
+              Align = alLeft
+              ParentBackground = False
               Min = -255
               Max = 255
               Value = 64
-              Prefix = 'Change by: '
-              Suffix = '%'
-              Description = 'Adjust to set the alpha modification value'
-              PopPosition = ppBottom
-              PercentDisplay = True
-              OnChangeValue = SendUpdateEvent
-            end
-          end
-          object Panel26: TPanel
-            Left = 539
-            Top = 0
-            Width = 23
-            Height = 32
-            Align = alRight
-            BevelOuter = bvNone
-            ParentColor = True
-            TabOrder = 1
-          end
-          object Panel27: TPanel
-            Left = 0
-            Top = 0
-            Width = 137
-            Height = 32
-            Align = alLeft
-            BevelOuter = bvNone
-            ParentColor = True
-            TabOrder = 2
-            object cbanimalpha: TCheckBox
-              Left = 16
-              Top = 2
-              Width = 113
-              Height = 17
-              Caption = 'Alpha'
-              TabOrder = 0
-              OnClick = cbanimscaleClick
-            end
-          end
-        end
-        object pnanimbrightnessbg: TPanel
-          Left = 0
-          Top = 32
-          Width = 562
-          Height = 32
-          Align = alTop
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 2
-          object pnanimbrightness: TPanel
-            Left = 137
-            Top = 0
-            Width = 402
-            Height = 32
-            Align = alClient
-            BevelOuter = bvNone
-            ParentColor = True
-            TabOrder = 0
-            object sgbanimbrightness: TSharpeGaugeBox
-              Left = 0
-              Top = 0
-              Width = 402
-              Height = 21
-              Align = alTop
-              Min = -255
-              Max = 255
-              Value = 64
-              Prefix = 'Change by: '
+              Prefix = 'Change brightness by: '
               Suffix = '%'
               Description = 'Adjust to set the brightness modification value'
               PopPosition = ppBottom
@@ -993,64 +1146,74 @@ object frmDesktopSettings: TfrmDesktopSettings
               OnChangeValue = SendUpdateEvent
             end
           end
-          object Panel28: TPanel
-            Left = 539
-            Top = 0
-            Width = 23
-            Height = 32
-            Align = alRight
-            BevelOuter = bvNone
-            ParentColor = True
-            TabOrder = 1
+          object chkAnimBrightness: TJvCheckBox
+            AlignWithMargins = True
+            Left = 8
+            Top = 84
+            Width = 552
+            Height = 17
+            Margins.Left = 8
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alTop
+            Caption = 'Animation Brightness'
+            TabOrder = 4
+            LinkedControls = <>
+            HotTrackFont.Charset = DEFAULT_CHARSET
+            HotTrackFont.Color = clWindowText
+            HotTrackFont.Height = -11
+            HotTrackFont.Name = 'Tahoma'
+            HotTrackFont.Style = []
+            Layout = tlTop
           end
-          object Panel29: TPanel
-            Left = 0
-            Top = 0
-            Width = 137
-            Height = 32
-            Align = alLeft
-            BevelOuter = bvNone
-            ParentColor = True
-            TabOrder = 2
-            object cbanimbrightness: TCheckBox
-              Left = 16
-              Top = 2
-              Width = 113
-              Height = 17
-              Caption = 'Brightness'
-              TabOrder = 0
-              OnClick = cbanimscaleClick
-            end
+          object chkAnimColorBlend: TJvCheckBox
+            AlignWithMargins = True
+            Left = 8
+            Top = 236
+            Width = 552
+            Height = 17
+            Margins.Left = 8
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alTop
+            Caption = 'Animation Color Blend'
+            TabOrder = 5
+            LinkedControls = <>
+            HotTrackFont.Charset = DEFAULT_CHARSET
+            HotTrackFont.Color = clWindowText
+            HotTrackFont.Height = -11
+            HotTrackFont.Name = 'Tahoma'
+            HotTrackFont.Style = []
+            Layout = tlTop
           end
-        end
-        object pnanimcolorblendbg: TPanel
-          Left = 0
-          Top = 64
-          Width = 562
-          Height = 32
-          Align = alTop
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 3
-          object pnanimcolorblend: TPanel
-            Left = 137
-            Top = 0
-            Width = 402
-            Height = 32
-            Align = alClient
+          object Panel14: TPanel
+            AlignWithMargins = True
+            Left = 28
+            Top = 282
+            Width = 532
+            Height = 22
+            Margins.Left = 28
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alTop
             BevelOuter = bvNone
+            ParentBackground = False
             ParentColor = True
-            TabOrder = 0
-            object sgbanimcolorblend: TSharpeGaugeBox
+            TabOrder = 6
+            object sgbAnimColorBlend: TSharpeGaugeBox
               Left = 0
               Top = 0
-              Width = 402
-              Height = 21
-              Align = alTop
+              Width = 250
+              Height = 22
+              Align = alLeft
+              ParentBackground = False
               Min = 0
               Max = 255
               Value = 255
-              Prefix = 'Strength: '
+              Prefix = 'Change color blend by: '
               Suffix = '%'
               Description = 'Adjust to set the color blend strength'
               PopPosition = ppBottom
@@ -1058,110 +1221,344 @@ object frmDesktopSettings: TfrmDesktopSettings
               OnChangeValue = SendUpdateEvent
             end
           end
-          object Panel30: TPanel
-            Left = 539
-            Top = 0
-            Width = 23
-            Height = 32
-            Align = alRight
+          object Panel15: TPanel
+            AlignWithMargins = True
+            Left = 28
+            Top = 54
+            Width = 532
+            Height = 22
+            Margins.Left = 28
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alTop
             BevelOuter = bvNone
+            ParentBackground = False
             ParentColor = True
-            TabOrder = 1
-          end
-          object Panel31: TPanel
-            Left = 0
-            Top = 0
-            Width = 137
-            Height = 32
-            Align = alLeft
-            BevelOuter = bvNone
-            ParentColor = True
-            TabOrder = 2
-            object cbanimcolorblend: TCheckBox
-              Left = 16
-              Top = 2
-              Width = 113
-              Height = 17
-              Caption = 'Color Blend'
-              TabOrder = 0
-              OnClick = cbanimscaleClick
+            TabOrder = 7
+            object sgbAnimTrans: TSharpeGaugeBox
+              Left = 0
+              Top = 0
+              Width = 250
+              Height = 22
+              Align = alLeft
+              ParentBackground = False
+              Min = -255
+              Max = 255
+              Value = 64
+              Prefix = 'Change transparency by: '
+              Suffix = '%'
+              Description = 'Adjust to set the alpha modification value'
+              PopPosition = ppBottom
+              PercentDisplay = True
+              OnChangeValue = SendUpdateEvent
             end
           end
+          object sceAnimColor: TSharpEColorEditorEx
+            AlignWithMargins = True
+            Left = 26
+            Top = 312
+            Width = 534
+            Height = 181
+            Margins.Left = 26
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            VertScrollBar.Smooth = True
+            VertScrollBar.Tracking = True
+            Align = alClient
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            BorderStyle = bsNone
+            Color = clWindow
+            ParentBackground = True
+            ParentColor = False
+            TabOrder = 8
+            Items = <
+              item
+                Title = 'Color Blending'
+                ColorCode = 0
+                ColorAsTColor = clBlack
+                Expanded = False
+                ValueEditorType = vetColor
+                Value = 0
+                Visible = True
+                ColorEditor = sceAnimColor.Item0
+                Tag = 0
+              end>
+            SwatchManager = SharpESwatchManager1
+            ExplicitHeight = 169
+          end
         end
-        object Panel19: TPanel
-          Left = 542
-          Top = 128
-          Width = 20
-          Height = 406
-          Align = alRight
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 4
+      end
+      object chkAnim: TJvCheckBox
+        AlignWithMargins = True
+        Left = 8
+        Top = 8
+        Width = 552
+        Height = 17
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Animation'
+        TabOrder = 1
+        LinkedControls = <>
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
+      end
+    end
+    object pagFontShadow: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 568
+      Height = 552
+      Caption = 'pagFontShadow'
+      ExplicitHeight = 539
+      object lblFontShadowDet: TLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 33
+        Width = 534
+        Height = 13
+        Margins.Left = 26
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Enable/Disable drawing of font shadows'
+        Transparent = False
+        WordWrap = True
+        ExplicitWidth = 192
+      end
+      object textpanel: TPanel
+        AlignWithMargins = True
+        Left = 0
+        Top = 54
+        Width = 568
+        Height = 387
+        Margins.Left = 0
+        Margins.Top = 8
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alTop
+        BevelOuter = bvNone
+        ParentColor = True
+        TabOrder = 0
+        object lblShadowTypeDet: TLabel
+          AlignWithMargins = True
+          Left = 26
+          Top = 29
+          Width = 534
+          Height = 13
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 'Select from different shadow render types below'
+          Transparent = False
+          WordWrap = True
+          ExplicitWidth = 235
         end
-        object animcolors: TSharpEColorEditorEx
-          Left = 25
-          Top = 128
-          Width = 517
-          Height = 406
+        object lblFontShadowTrans: TLabel
+          AlignWithMargins = True
+          Left = 26
+          Top = 102
+          Width = 534
+          Height = 13
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 
+            'Changing this value will make the font shadow more or less trans' +
+            'parent'
+          Transparent = False
+          WordWrap = True
+          ExplicitWidth = 342
+        end
+        object Label18: TLabel
+          AlignWithMargins = True
+          Left = 8
+          Top = 8
+          Width = 552
+          Height = 13
+          Margins.Left = 8
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 'Shadow Type'
+          ExplicitWidth = 65
+        end
+        object Label19: TLabel
+          AlignWithMargins = True
+          Left = 8
+          Top = 81
+          Width = 552
+          Height = 13
+          Margins.Left = 8
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 'Shadow Transparency'
+          ExplicitWidth = 107
+        end
+        object Label20: TLabel
+          AlignWithMargins = True
+          Left = 8
+          Top = 153
+          Width = 552
+          Height = 13
+          Margins.Left = 8
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 'Font Shadow Color Options'
+          ExplicitWidth = 131
+        end
+        object lblFontShadowColDet: TLabel
+          AlignWithMargins = True
+          Left = 26
+          Top = 174
+          Width = 534
+          Height = 13
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 'Define font shadow color options below.'
+          Transparent = False
+          ExplicitWidth = 193
+        end
+        object sceShadowColor: TSharpEColorEditorEx
+          AlignWithMargins = True
+          Left = 28
+          Top = 195
+          Width = 532
+          Height = 32
+          Margins.Left = 28
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
           VertScrollBar.Smooth = True
           VertScrollBar.Tracking = True
-          Align = alClient
+          Align = alTop
+          AutoSize = True
           BevelInner = bvNone
           BevelOuter = bvNone
           BorderStyle = bsNone
           Color = clWindow
           ParentBackground = True
           ParentColor = False
-          TabOrder = 5
+          TabOrder = 0
           Items = <
             item
-              Title = 'Color Blending'
+              Title = 'Shadow'
               ColorCode = 0
               ColorAsTColor = clBlack
               Expanded = False
               ValueEditorType = vetColor
               Value = 0
               Visible = True
-              ColorEditor = animcolors.Item0
+              ColorEditor = sceFontColor.Item0
               Tag = 0
             end>
           SwatchManager = SharpESwatchManager1
         end
-        object Panel8: TPanel
-          Left = 0
-          Top = 128
-          Width = 25
-          Height = 406
-          Align = alLeft
+        object cbShadowType: TComboBox
+          AlignWithMargins = True
+          Left = 28
+          Top = 50
+          Width = 250
+          Height = 23
+          Margins.Left = 28
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Style = csOwnerDrawFixed
+          Constraints.MaxWidth = 250
+          DropDownCount = 12
+          ItemHeight = 17
+          TabOrder = 1
+          Items.Strings = (
+            'Left'
+            'Right'
+            'Outline')
+        end
+        object Panel11: TPanel
+          AlignWithMargins = True
+          Left = 28
+          Top = 123
+          Width = 532
+          Height = 22
+          Margins.Left = 28
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
           BevelOuter = bvNone
+          ParentBackground = False
           ParentColor = True
-          TabOrder = 6
+          TabOrder = 2
+          object sgbFontShadowTrans: TSharpeGaugeBox
+            Left = 0
+            Top = 0
+            Width = 250
+            Height = 22
+            Margins.Left = 28
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alLeft
+            Constraints.MaxWidth = 532
+            ParentBackground = False
+            Min = -255
+            Max = 255
+            Value = 0
+            Prefix = 'Shadow Transparency: '
+            Suffix = '%'
+            Description = 'Change shadow opacity'
+            PopPosition = ppRight
+            PercentDisplay = True
+          end
         end
       end
-      object Panel9: TPanel
-        Left = 0
-        Top = 0
-        Width = 562
-        Height = 49
+      object chkFontShadow: TJvCheckBox
+        AlignWithMargins = True
+        Left = 8
+        Top = 8
+        Width = 552
+        Height = 17
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
         Align = alTop
-        BevelOuter = bvNone
-        ParentColor = True
+        Caption = 'Font Shadow'
         TabOrder = 1
-        object cbanim: TCheckBox
-          Left = 16
-          Top = 16
-          Width = 153
-          Height = 17
-          Caption = 'Enable Hover Animation'
-          TabOrder = 0
-          OnClick = cbanimClick
-        end
+        LinkedControls = <>
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'Tahoma'
+        HotTrackFont.Style = []
       end
     end
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 485
+    Width = 502
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16
@@ -1173,12 +1570,12 @@ object frmDesktopSettings: TfrmDesktopSettings
     SwatchFont.Style = []
     SwatchTextBorderColor = 16709617
     SortMode = sortName
-    Left = 492
-    Top = 188
+    Left = 520
+    Top = 56
   end
   object imlFontIcons: TImageList
-    Left = 492
-    Top = 152
+    Left = 520
+    Top = 20
     Bitmap = {
       494C010103000400040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010

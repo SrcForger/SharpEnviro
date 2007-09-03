@@ -37,7 +37,8 @@ uses
   JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
   GR32_Image, GR32, GR32_PNG, SharpEColorEditor, SharpESwatchManager,
   SharpEColorEditorEx, SharpEFontSelectorFontList, ImgList, Mask, JvExMask,
-  JvSpin, SharpEGaugeBoxEdit, SharpERoundPanel;
+  JvSpin, SharpEGaugeBoxEdit, SharpERoundPanel, SharpEUIC, JvExStdCtrls,
+  JvCheckBox;
 
 type
   TStringObject = Class(TObject)
@@ -47,97 +48,97 @@ type
 
 type
   TfrmDesktopSettings = class(TForm)
-    JvPageList1: TJvPageList;
-    JvIconPage: TJvStandardPage;
-    JvTextPage: TJvStandardPage;
-    JvAnimationPage: TJvStandardPage;
+    plMain: TJvPageList;
+    pagIcon: TJvStandardPage;
+    pagFont: TJvStandardPage;
+    pagAnimation: TJvStandardPage;
     SharpESwatchManager1: TSharpESwatchManager;
     imlFontIcons: TImageList;
-    Panel5: TPanel;
-    cbxFontName: TComboBox;
-    Label5: TLabel;
-    Panel7: TPanel;
-    sefontsize: TJvSpinEdit;
-    Label9: TLabel;
-    cbbold: TCheckBox;
-    cbitalic: TCheckBox;
-    cbunderline: TCheckBox;
-    textcolors: TSharpEColorEditorEx;
-    Panel6: TPanel;
-    pnanim: TPanel;
-    Panel9: TPanel;
-    cbanim: TCheckBox;
-    pntextshadowbg: TPanel;
-    pntextshadow: TPanel;
-    sgbtextshadow: TSharpeGaugeBox;
-    Panel20: TPanel;
-    Panel21: TPanel;
-    cbtextshadow: TCheckBox;
-    pnfontalphablendbg: TPanel;
-    pnfontalphablend: TPanel;
-    sgbfontalphablend: TSharpeGaugeBox;
-    Panel24: TPanel;
-    Panel25: TPanel;
-    cbfontalphablend: TCheckBox;
-    Panel18: TPanel;
-    pnanimscalebg: TPanel;
-    pnanimscale: TPanel;
-    sgbanimscale: TSharpeGaugeBox;
-    Panel22: TPanel;
-    Panel23: TPanel;
-    cbanimscale: TCheckBox;
-    pnanimalphabg: TPanel;
-    pnanimalpha: TPanel;
-    sgbanimalpha: TSharpeGaugeBox;
-    Panel26: TPanel;
-    Panel27: TPanel;
-    cbanimalpha: TCheckBox;
-    pnanimbrightnessbg: TPanel;
-    pnanimbrightness: TPanel;
-    sgbanimbrightness: TSharpeGaugeBox;
-    Panel28: TPanel;
-    Panel29: TPanel;
-    cbanimbrightness: TCheckBox;
-    pnanimcolorblendbg: TPanel;
-    pnanimcolorblend: TPanel;
-    sgbanimcolorblend: TSharpeGaugeBox;
-    Panel30: TPanel;
-    Panel31: TPanel;
-    cbanimcolorblend: TCheckBox;
-    Panel19: TPanel;
-    animcolors: TSharpEColorEditorEx;
-    Panel8: TPanel;
+    sceFontColor: TSharpEColorEditorEx;
+    pnlAnim: TPanel;
     Panel3: TPanel;
-    Label2: TLabel;
-    cbalphablend: TCheckBox;
+    lblIconTrans: TLabel;
     Panel4: TPanel;
-    Label3: TLabel;
+    lblIconSizeDet: TLabel;
     CheckBox1: TLabel;
     SharpERoundPanel1: TSharpERoundPanel;
     icon32: TImage32;
-    rbicon32: TRadioButton;
+    rdoIcon32: TRadioButton;
     SharpERoundPanel2: TSharpERoundPanel;
     icon48: TImage32;
-    rbicon48: TRadioButton;
+    rdoIcon48: TRadioButton;
     SharpERoundPanel3: TSharpERoundPanel;
     Icon64: TImage32;
-    rbicon64: TRadioButton;
+    rdoIcon64: TRadioButton;
     SharpERoundPanel4: TSharpERoundPanel;
-    rbiconcustom: TRadioButton;
-    sgbiconsize: TSharpeGaugeBox;
-    sgbiconalpha: TSharpeGaugeBox;
+    rdoIconCustom: TRadioButton;
+    sgbIconSize: TSharpeGaugeBox;
+    sgbIconTrans: TSharpeGaugeBox;
     Panel1: TPanel;
-    Label1: TLabel;
-    cbcolorblend: TCheckBox;
-    sbgiconcblendalpha: TSharpeGaugeBox;
+    lblColorBlendDet: TLabel;
+    sgbColorBlend: TSharpeGaugeBox;
     Panel2: TPanel;
-    Label4: TLabel;
-    cbiconshadow: TCheckBox;
-    sgbiconshadow: TSharpeGaugeBox;
+    lblIconShadow: TLabel;
+    sgbIconShadow: TSharpeGaugeBox;
     Panel10: TPanel;
-    Label6: TLabel;
+    lblIconColorDet: TLabel;
     Label7: TLabel;
-    IconColors: TSharpEColorEditorEx;
+    sceIconColor: TSharpEColorEditorEx;
+    lblFontNameDet: TLabel;
+    lblFontSizeDet: TLabel;
+    lblFontTransDet: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    lblFontStyleDet: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    lblFontColorDet: TLabel;
+    pagFontShadow: TJvStandardPage;
+    lblFontShadowDet: TLabel;
+    textpanel: TPanel;
+    lblShadowTypeDet: TLabel;
+    lblFontShadowTrans: TLabel;
+    Label18: TLabel;
+    Label19: TLabel;
+    Label20: TLabel;
+    lblFontShadowColDet: TLabel;
+    sceShadowColor: TSharpEColorEditorEx;
+    cboFontName: TComboBox;
+    chkIconTrans: TJvCheckBox;
+    chkColorBlend: TJvCheckBox;
+    chkIconShadow: TJvCheckBox;
+    chkUnderline: TJvCheckBox;
+    chkItalic: TJvCheckBox;
+    chkBold: TJvCheckBox;
+    chkFontShadow: TJvCheckBox;
+    cbShadowType: TComboBox;
+    Panel5: TPanel;
+    sgbFontSize: TSharpeGaugeBox;
+    Panel7: TPanel;
+    sgbFontTrans: TSharpeGaugeBox;
+    Panel11: TPanel;
+    sgbFontShadowTrans: TSharpeGaugeBox;
+    chkAnim: TJvCheckBox;
+    Label5: TLabel;
+    Panel9: TPanel;
+    lblAnimTransDet: TLabel;
+    lblAnimSizeDet: TLabel;
+    Panel12: TPanel;
+    chkAnimTrans: TJvCheckBox;
+    chkAnimSize: TJvCheckBox;
+    Panel13: TPanel;
+    chkAnimBrightness: TJvCheckBox;
+    lblAnimBrightnessDet: TLabel;
+    chkAnimColorBlend: TJvCheckBox;
+    lblAnimColorBlendDet: TLabel;
+    Panel14: TPanel;
+    Panel15: TPanel;
+    sgbAnimTrans: TSharpeGaugeBox;
+    sgbAnimBrightness: TSharpeGaugeBox;
+    sgbAnimColorBlend: TSharpeGaugeBox;
+    sgbAnimSize: TSharpeGaugeBox;
+    sceAnimColor: TSharpEColorEditorEx;
+    chkFontTrans: TJvCheckBox;
     procedure IconColorsUiChange(Sender: TObject);
     procedure cbanimscaleClick(Sender: TObject);
     procedure cbanimClick(Sender: TObject);
@@ -145,14 +146,14 @@ type
     procedure SendUpdateEvent(Sender: TObject; Value: Integer);
     procedure cbtextshadowClick(Sender: TObject);
     procedure cbfontalphablendClick(Sender: TObject);
-    procedure cbxFontNameDrawItem(Control: TWinControl; Index: Integer;
+    procedure cboFontNameDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
-    procedure cbiconshadowClick(Sender: TObject);
+    procedure chkIconShadowClick(Sender: TObject);
     procedure cbiconblendClick(Sender: TObject);
-    procedure cbalphablendClick(Sender: TObject);
+    procedure chkIconTransClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure rbiconcustomClick(Sender: TObject);
+    procedure rdoIconCustomClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     FBlue32,FBlue48,FBlue64 : TBitmap32;
@@ -168,8 +169,8 @@ type
     procedure UpdateTextShadowControls;
     procedure UpdateAnimationControls;
   public
-    sTheme : String;
-    sFontName : String;
+    FTheme : String;
+    FFontName : String;
   end;
 
 var
@@ -240,34 +241,47 @@ end;
 
 procedure TfrmDesktopSettings.UpdateIconControls;
 begin
-  sgbiconsize.Enabled := rbiconcustom.checked;
+  sgbiconsize.Enabled := rdoIconCustom.checked;
 
-  if rbicon32.Checked then
+  if rdoIcon32.Checked then
      icon32.Bitmap.Assign(FBlue32)
      else icon32.Bitmap.Assign(FWhite32);
 
-  if rbicon48.Checked then
+  if rdoIcon48.Checked then
      icon48.Bitmap.Assign(FBlue32)
      else icon48.Bitmap.Assign(FWhite32);
 
-  if rbicon64.Checked then
+  if rdoIcon64.Checked then
      icon64.Bitmap.Assign(FBlue32)
      else icon64.Bitmap.Assign(FWhite32);
 end;
 
 procedure TfrmDesktopSettings.UpdateAnimationControls;
 begin
-  pnanim.Visible := cbanim.checked;
-  pnanimscale.Visible := cbanimscale.Checked;
-  pnanimalpha.Visible := cbanimalpha.Checked;
-  pnanimbrightness.Visible := cbanimbrightness.Checked;
-  pnanimcolorblend.Visible := cbanimcolorblend.Checked;
-  AnimColors.Items.Item[0].Visible := cbanimcolorblend.checked;
+  pnlAnim.Visible := chkAnim.checked;
+
+  // Animation Transparency
+  lblAnimTransDet.Enabled := chkAnimTrans.Checked;
+  sgbAnimTrans.Enabled := chkAnimTrans.Checked;
+
+  // Animation Brightness
+  lblAnimBrightnessDet.Enabled := chkAnimBrightness.Checked;
+  sgbAnimBrightness.Enabled := chkAnimBrightness.Checked;
+
+  // Animation Size
+  lblAnimSizeDet.Enabled := chkAnimSize.Checked;
+  sgbAnimSize.Enabled := chkAnimSize.Checked;
+
+  // Animation Color Blend
+  lblAnimColorBlendDet.Enabled := chkColorBlend.Checked;
+  sgbAnimColorBlend.Enabled := chkColorBlend.Checked;
+  sceAnimColor.Visible := chkColorBlend.Checked;
+  sceAnimColor.Items.Item[0].Visible := chkColorBlend.checked;
 end;
 
 procedure TfrmDesktopSettings.UpdateFontAlphaControls;
 begin
-  pnfontalphablend.visible := cbfontalphablend.checked;
+
 end;
 
 procedure TfrmDesktopSettings.UpdateAlphaControls;
@@ -277,18 +291,17 @@ end;
 
 procedure TfrmDesktopSettings.UpdateBlendControls;
 begin
-  IconColors.Items.Item[0].Visible := cbcolorblend.checked;
+  sceIconColor.Items.Item[0].Visible := chkColorBlend.checked;
 end;
 
 procedure TfrmDesktopSettings.UpdateTextShadowControls;
 begin
-  pntextshadow.visible := cbtextshadow.checked;
-  TextColors.Items.Item[1].Visible := cbtextshadow.checked;
+
 end;
 
 procedure TfrmDesktopSettings.UpdateIconShadowControls;
 begin
-  IconColors.Items.Item[1].Visible := cbiconshadow.Checked;
+  sceIconColor.Items.Item[1].Visible := chkIconShadow.Checked;
 end;
 
 procedure TfrmDesktopSettings.SendUpdate;
@@ -297,16 +310,16 @@ begin
      CenterDefineSettingsChanged;
 end;
 
-procedure TfrmDesktopSettings.rbiconcustomClick(Sender: TObject);
+procedure TfrmDesktopSettings.rdoIconCustomClick(Sender: TObject);
 begin
-  rbicon32.Checked := False;
-  rbicon48.Checked := False;
-  rbicon64.Checked := False;
-  rbiconcustom.Checked := False;
+  rdoIcon32.Checked := False;
+  rdoIcon48.Checked := False;
+  rdoIcon64.Checked := False;
+  rdoIconCustom.Checked := False;
 
   TRadioButton(Sender).OnClick := nil;
   TRadioButton(Sender).Checked := True;
-  TRadioButton(Sender).OnClick := rbiconcustomClick;
+  TRadioButton(Sender).OnClick := rdoIconCustomClick;
 
   UpdateIconControls;
   SendUpdate;
@@ -315,15 +328,15 @@ end;
 procedure TfrmDesktopSettings.FormShow(Sender: TObject);
 begin
   RefreshFontList;
-  if cbxFontName.Items.IndexOf(sFontName) <> 0 then
-     cbxFontName.ItemIndex := cbxFontName.Items.IndexOf(sFontName);
+  if cboFontName.Items.IndexOf(FFontName) <> 0 then
+     cboFontName.ItemIndex := cboFontName.Items.IndexOf(FFontName);
 
-  Label1.Font.Color := clGray;
-  Label2.Font.Color := clGray;
-  Label3.Font.Color := clGray;
-  Label4.Font.Color := clGray;
-  Label5.Font.Color := clGray;
-  Label6.Font.Color := clGray;
+  //Label1.Font.Color := clGray;
+  //Label2.Font.Color := clGray;
+  //Label3.Font.Color := clGray;
+  //Label4.Font.Color := clGray;
+  //Label5.Font.Color := clGray;
+  //Label6.Font.Color := clGray;
 
   UpdateIconControls;
   UpdateAlphaControls;
@@ -346,7 +359,7 @@ begin
   FFontList.Free;
 end;
 
-procedure TfrmDesktopSettings.cbalphablendClick(Sender: TObject);
+procedure TfrmDesktopSettings.chkIconTransClick(Sender: TObject);
 begin
   UpdateAlphaControls;
   SendUpdate;
@@ -358,7 +371,7 @@ begin
   SendUpdate;
 end;
 
-procedure TfrmDesktopSettings.cbiconshadowClick(Sender: TObject);
+procedure TfrmDesktopSettings.chkIconShadowClick(Sender: TObject);
 begin
   UpdateIconShadowControls;
   SendUpdate;
@@ -372,23 +385,22 @@ var
 begin
   FFontList.List.Clear;
 
-  cbxFontName.Items.Clear;
-  //cbxFontName.Sorted := True;
+  cboFontName.Items.Clear;
   try
     FFontList.RefreshFontInfo;
     for i := 0 To pred(FFontList.List.Count) do begin
       fi := TFontInfo(FFontList.List.Objects[i]);
-      DuplicateCheck := cbxFontName.Items.IndexOf(fi.FullName);
+      DuplicateCheck := cboFontName.Items.IndexOf(fi.FullName);
 
       if DuplicateCheck = -1 then
-      cbxFontName.Items.Add(FFontList.List.Strings[i]);
+      cboFontName.Items.Add(FFontList.List.Strings[i]);
     end;
   finally
-    cbxFontName.ItemIndex := 0;
+    cboFontName.ItemIndex := 0;
   end;
 end;
 
-procedure TfrmDesktopSettings.cbxFontNameDrawItem(Control: TWinControl;
+procedure TfrmDesktopSettings.cboFontNameDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   fi:TFontInfo;
@@ -396,9 +408,9 @@ var
   itemindex  : integer;
   textheight : integer;
 begin
-  cbxFontName.canvas.fillrect(rect);
+  cboFontName.canvas.fillrect(rect);
 
-  itemindex := FFontList.List.IndexOf(cbxFontName.Items.Strings[index]);
+  itemindex := FFontList.List.IndexOf(cboFontName.Items.Strings[index]);
   fi := TFontInfo(FFontList.List.Objects[itemindex]);
 
   imageindex := -1;
@@ -408,15 +420,15 @@ begin
     ftDevice   : imageindex := 2;
   end;
 
-  imlFontIcons.Draw(cbxFontName.Canvas,rect.left,rect.top,imageindex);
+  imlFontIcons.Draw(cboFontName.Canvas,rect.left,rect.top,imageindex);
 
-  cbxFontName.Canvas.Font.Name := fi.ShortName;
-  textheight := cbxFontName.Canvas.TextHeight(fi.FullName);
+  cboFontName.Canvas.Font.Name := fi.ShortName;
+  textheight := cboFontName.Canvas.TextHeight(fi.FullName);
 
-  if textheight > cbxFontName.ItemHeight then
-     cbxFontName.Canvas.Font.Name := 'Arial';
+  if textheight > cboFontName.ItemHeight then
+     cboFontName.Canvas.Font.Name := 'Arial';
 
-  cbxFontName.canvas.textout(rect.left+imlFontIcons.width+2,rect.top,fi.FullName);
+  cboFontName.canvas.textout(rect.left+imlFontIcons.width+2,rect.top,fi.FullName);
 end;
 
 procedure TfrmDesktopSettings.cbfontalphablendClick(Sender: TObject);

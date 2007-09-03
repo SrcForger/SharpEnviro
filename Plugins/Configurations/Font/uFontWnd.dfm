@@ -1,9 +1,10 @@
 object frmFont: TfrmFont
   Left = 0
   Top = 0
+  BorderStyle = bsNone
   Caption = 'frmFont'
-  ClientHeight = 400
-  ClientWidth = 418
+  ClientHeight = 436
+  ClientWidth = 434
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,7 +21,7 @@ object frmFont: TfrmFont
     AlignWithMargins = True
     Left = 8
     Top = 8
-    Width = 402
+    Width = 418
     Height = 13
     Margins.Left = 8
     Margins.Top = 8
@@ -37,32 +38,37 @@ object frmFont: TfrmFont
   object Panel1: TPanel
     Left = 0
     Top = 21
-    Width = 418
+    Width = 434
     Height = 0
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
     TabOrder = 0
+    ExplicitWidth = 418
   end
   object plMain: TJvPageList
     Left = 0
     Top = 21
-    Width = 418
-    Height = 379
-    ActivePage = pagFont
+    Width = 434
+    Height = 415
+    ActivePage = pagFontShadow
     PropagateEnable = False
     Align = alClient
+    ExplicitWidth = 418
+    ExplicitHeight = 379
     object pagFont: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 418
-      Height = 379
+      Width = 434
+      Height = 415
       Caption = 'pagFont'
+      ExplicitWidth = 418
+      ExplicitHeight = 379
       object Label4: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 29
-        Width = 384
+        Width = 400
         Height = 20
         Margins.Left = 26
         Margins.Top = 8
@@ -75,12 +81,13 @@ object frmFont: TfrmFont
         Transparent = False
         WordWrap = True
         ExplicitTop = 49
+        ExplicitWidth = 384
       end
       object Label5: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 108
-        Width = 384
+        Width = 400
         Height = 20
         Margins.Left = 26
         Margins.Top = 8
@@ -93,12 +100,13 @@ object frmFont: TfrmFont
         Transparent = False
         WordWrap = True
         ExplicitTop = 116
+        ExplicitWidth = 384
       end
       object Label6: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 187
-        Width = 384
+        Width = 400
         Height = 20
         Margins.Left = 26
         Margins.Top = 8
@@ -111,12 +119,13 @@ object frmFont: TfrmFont
         Transparent = False
         WordWrap = True
         ExplicitTop = 179
+        ExplicitWidth = 384
       end
       object Label2: TLabel
         AlignWithMargins = True
         Left = 8
         Top = 8
-        Width = 402
+        Width = 418
         Height = 13
         Margins.Left = 8
         Margins.Top = 8
@@ -130,7 +139,7 @@ object frmFont: TfrmFont
         AlignWithMargins = True
         Left = 8
         Top = 87
-        Width = 402
+        Width = 418
         Height = 13
         Margins.Left = 8
         Margins.Top = 8
@@ -144,7 +153,7 @@ object frmFont: TfrmFont
         AlignWithMargins = True
         Left = 8
         Top = 166
-        Width = 402
+        Width = 418
         Height = 13
         Margins.Left = 8
         Margins.Top = 8
@@ -158,7 +167,7 @@ object frmFont: TfrmFont
         AlignWithMargins = True
         Left = 26
         Top = 266
-        Width = 384
+        Width = 400
         Height = 16
         Margins.Left = 26
         Margins.Top = 8
@@ -178,7 +187,7 @@ object frmFont: TfrmFont
         AlignWithMargins = True
         Left = 8
         Top = 245
-        Width = 402
+        Width = 418
         Height = 13
         Margins.Left = 8
         Margins.Top = 8
@@ -192,7 +201,7 @@ object frmFont: TfrmFont
         AlignWithMargins = True
         Left = 28
         Top = 132
-        Width = 382
+        Width = 398
         Height = 26
         Margins.Left = 28
         Margins.Top = 4
@@ -214,6 +223,7 @@ object frmFont: TfrmFont
         MonitorControl = sgb_size
         NormalColor = clWhite
         OnReset = UIC_Reset
+        ExplicitWidth = 382
         object sgb_size: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 2
@@ -240,7 +250,7 @@ object frmFont: TfrmFont
         AlignWithMargins = True
         Left = 28
         Top = 53
-        Width = 382
+        Width = 398
         Height = 26
         Margins.Left = 28
         Margins.Top = 4
@@ -261,6 +271,7 @@ object frmFont: TfrmFont
         MonitorControl = cbxFontName
         NormalColor = clWhite
         OnReset = UIC_Reset
+        ExplicitWidth = 382
         object cbxFontName: TComboBox
           AlignWithMargins = True
           Left = 2
@@ -284,7 +295,7 @@ object frmFont: TfrmFont
         AlignWithMargins = True
         Left = 28
         Top = 211
-        Width = 382
+        Width = 398
         Height = 26
         Margins.Left = 28
         Margins.Top = 4
@@ -306,6 +317,7 @@ object frmFont: TfrmFont
         MonitorControl = sgb_alpha
         NormalColor = clWhite
         OnReset = UIC_Reset
+        ExplicitWidth = 382
         object sgb_alpha: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 2
@@ -332,7 +344,7 @@ object frmFont: TfrmFont
         AlignWithMargins = True
         Left = 28
         Top = 346
-        Width = 382
+        Width = 398
         Height = 26
         Margins.Left = 28
         Margins.Top = 4
@@ -353,6 +365,7 @@ object frmFont: TfrmFont
         MonitorControl = cb_bold
         NormalColor = clWhite
         OnReset = UIC_Reset
+        ExplicitWidth = 382
         object cb_bold: TCheckBox
           Left = 6
           Top = 4
@@ -367,7 +380,7 @@ object frmFont: TfrmFont
         AlignWithMargins = True
         Left = 28
         Top = 286
-        Width = 382
+        Width = 398
         Height = 26
         Margins.Left = 28
         Margins.Top = 4
@@ -388,6 +401,7 @@ object frmFont: TfrmFont
         MonitorControl = cb_Italic
         NormalColor = clWhite
         OnReset = UIC_Reset
+        ExplicitWidth = 382
         object cb_Italic: TCheckBox
           Left = 6
           Top = 6
@@ -402,7 +416,7 @@ object frmFont: TfrmFont
         AlignWithMargins = True
         Left = 28
         Top = 316
-        Width = 382
+        Width = 398
         Height = 26
         Margins.Left = 28
         Margins.Top = 4
@@ -424,6 +438,7 @@ object frmFont: TfrmFont
         MonitorControl = cb_Underline
         NormalColor = clWhite
         OnReset = UIC_Reset
+        ExplicitWidth = 382
         object cb_Underline: TCheckBox
           Left = 6
           Top = 4
@@ -438,14 +453,16 @@ object frmFont: TfrmFont
     object pagFontShadow: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 418
-      Height = 379
+      Width = 434
+      Height = 415
       Caption = 'pagFontShadow'
+      ExplicitWidth = 418
+      ExplicitHeight = 379
       object Label8: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 38
-        Width = 384
+        Width = 400
         Height = 20
         Margins.Left = 26
         Margins.Top = 4
@@ -453,7 +470,7 @@ object frmFont: TfrmFont
         Margins.Bottom = 8
         Align = alTop
         AutoSize = False
-        Caption = 'Enable/Disable drawing ot text shadows'
+        Caption = 'Enable/Disable drawing of font shadows'
         EllipsisPosition = epEndEllipsis
         Transparent = False
         WordWrap = True
@@ -465,7 +482,7 @@ object frmFont: TfrmFont
         AlignWithMargins = True
         Left = 8
         Top = 8
-        Width = 402
+        Width = 418
         Height = 26
         Margins.Left = 8
         Margins.Top = 8
@@ -487,6 +504,7 @@ object frmFont: TfrmFont
         MonitorControl = cb_shadow
         NormalColor = clWhite
         OnReset = UIC_Reset
+        ExplicitWidth = 402
         object cb_shadow: TCheckBox
           Left = 0
           Top = 0
@@ -497,7 +515,7 @@ object frmFont: TfrmFont
           Margins.Right = 2
           Margins.Bottom = 2
           Align = alLeft
-          Caption = 'Text Shadow'
+          Caption = 'Font Shadow'
           TabOrder = 0
           OnClick = cb_shadowClick
         end
@@ -505,17 +523,19 @@ object frmFont: TfrmFont
       object textpanel: TPanel
         Left = 0
         Top = 66
-        Width = 418
-        Height = 313
+        Width = 434
+        Height = 349
         Align = alClient
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
+        ExplicitWidth = 418
+        ExplicitHeight = 313
         object lb_shadowtype: TLabel
           AlignWithMargins = True
           Left = 26
           Top = 29
-          Width = 384
+          Width = 400
           Height = 20
           Margins.Left = 26
           Margins.Top = 8
@@ -535,7 +555,7 @@ object frmFont: TfrmFont
           AlignWithMargins = True
           Left = 26
           Top = 116
-          Width = 384
+          Width = 400
           Height = 20
           Margins.Left = 26
           Margins.Top = 8
@@ -557,7 +577,7 @@ object frmFont: TfrmFont
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 402
+          Width = 418
           Height = 13
           Margins.Left = 8
           Margins.Top = 8
@@ -571,7 +591,7 @@ object frmFont: TfrmFont
           AlignWithMargins = True
           Left = 8
           Top = 95
-          Width = 402
+          Width = 418
           Height = 13
           Margins.Left = 8
           Margins.Top = 8
@@ -585,7 +605,7 @@ object frmFont: TfrmFont
           AlignWithMargins = True
           Left = 26
           Top = 53
-          Width = 384
+          Width = 400
           Height = 26
           Margins.Left = 26
           Margins.Top = 4
@@ -606,6 +626,7 @@ object frmFont: TfrmFont
           MonitorControl = cb_shadowtype
           NormalColor = clWhite
           OnReset = UIC_Reset
+          ExplicitWidth = 384
           object cb_shadowtype: TComboBox
             AlignWithMargins = True
             Left = 2
@@ -632,7 +653,7 @@ object frmFont: TfrmFont
           AlignWithMargins = True
           Left = 26
           Top = 140
-          Width = 384
+          Width = 400
           Height = 29
           Margins.Left = 26
           Margins.Top = 4
@@ -653,6 +674,7 @@ object frmFont: TfrmFont
           MonitorControl = sgb_shadowalpha
           NormalColor = clWhite
           OnReset = UIC_Reset
+          ExplicitWidth = 384
           object sgb_shadowalpha: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 2
@@ -680,7 +702,7 @@ object frmFont: TfrmFont
   end
   object imlFontIcons: TImageList
     Left = 372
-    Top = 68
+    Top = 4
     Bitmap = {
       494C010103000400040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
