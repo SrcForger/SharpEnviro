@@ -69,6 +69,7 @@ type
       Property Visible;
       Property Font;
       Property ParentFont;
+      Property Color;
 
       property ExpandedHeight: Integer read FExpandedHeight write FExpandedHeight;
       property TabItems: TSharpETabListItems read GetTabItems write SetTabItems;
