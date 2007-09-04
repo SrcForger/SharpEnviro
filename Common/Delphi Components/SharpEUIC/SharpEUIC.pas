@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, ExtCtrls, Graphics, StdCtrls,
-  SharpEGaugeBoxEdit, PngSpeedButton;
+  SharpEGaugeBoxEdit, SharpEColorEditorEx, PngSpeedButton;
 
 type
   TSharpEUIC = class(TPanel)
@@ -191,6 +191,11 @@ begin
       if TComboBox(FMonitorControl).Style = csDropDown then
         TComboBox(FMonitorControl).Text := FDefaultValue
         else TComboBox(FMonitorControl).ItemIndex := StringToInteger(FDefaultValue);
+    end
+    else if FMonitorControl is TSharpEColorEditorEx then
+    begin
+      if TSharpEColorEditorEx(FMonitorControl).Items.Count > 0 then
+        TSharpEColorEditorEx(FMonitorControl).Items.Item[0].ColorCode := StringToInteger(FDefaultValue);
     end;
   end;
 
@@ -298,6 +303,11 @@ begin
     if TComboBox(FMonitorControl).Style = csDropDown then
       NewChangedState := (CompareText(TComboBox(FMonitorControl).Text,FDefaultValue) <> 0)
       else NewChangedState := (TComboBox(FMonitorControl).ItemIndex <> StringToInteger(FDefaultValue));
+  end
+  else if FMonitorControl is TSharpEColorEditorEx then
+  begin
+    if TSharpEColorEditorEx(FMonitorControl).Items.Count > 0 then
+      NewChangedState := (TSharpEColorEditorEx(FMonitorControl).Items.Item[0].ColorCode <> StringToInteger(FDefaultValue));
   end;
 
   if NewChangedState <> FHasChanged then
