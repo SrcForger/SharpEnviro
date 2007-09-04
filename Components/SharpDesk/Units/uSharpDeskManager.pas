@@ -133,6 +133,7 @@ type
       function  SelectedObjectsOfSameType(dummy : string) : String; overload;
       procedure SendSelectedObjectsToBack;
       procedure SendMessageToAllObjects(messageID : integer; P1,P2,P3 : integer);
+      procedure SendMessageToObject(messageID,ObjectID : integer; P1,P2,P3 : integer);      
       procedure UnloadAllObjects;
       procedure UnLockAllObjects;
       procedure UnLockSelectedObjects;
@@ -1155,6 +1156,25 @@ begin
     end;
   end;
   XML.Free;
+end;
+
+
+
+procedure TSharpDeskManager.SendMessageToObject(messageID,ObjectID : integer; P1,P2,P3 : integer);
+var
+  i,n : integer;
+  DesktopObject : TDesktopObject;
+begin
+  for i := 0 to  FObjectFileList.Count - 1 do
+      for n := 0 to TObjectFile(FObjectFileList.Items[i]).Count - 1 do
+      begin
+        DesktopObject := TDesktopObject(TObjectFile(FObjectFileList.Items[i]).Items[n]);
+        if DesktopObject <> nil then
+          if DesktopObject.Settings.ObjectID = ObjectID then       
+            DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
+                                                    DesktopObject.Layer,
+                                                    messageID,P1,P2,P3);
+      end;  
 end;
 
 

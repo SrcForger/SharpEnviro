@@ -611,6 +611,12 @@ begin
     SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
     SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
   end;
+
+  if (msg.WParam = Integer(suDesktopObject)) then
+  begin
+    SharpDesk.SendMessageToObject(SDM_SETTINGS_UPDATE,msg.LParam,0,0,0);
+  end;
+
 end;
 
 
@@ -1073,10 +1079,16 @@ end;
 
 
 procedure TSharpDeskMainForm.OpenObjectSettings1Click(Sender: TObject);
+var
+  obj : TDesktopObject;
+  s : string;
 begin
-//  SettingsForm.Show;
-  SettingsForm.Load(TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer)));
-  SettingsForm.ShowModal;
+  obj := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));
+  s := obj.owner.filename;
+  setlength(s,length(s) - length(ExtractFileExt(s)));
+  SharpCenterApi.CenterCommand(sccLoadSetting,
+                               PChar(SharpApi.GetCenterDirectory + '_Objects\' + s + '.con'),
+                               PChar(inttostr(obj.Settings.ObjectID)));
 end;
 
 

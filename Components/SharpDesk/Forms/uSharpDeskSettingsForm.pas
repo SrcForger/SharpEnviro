@@ -124,11 +124,11 @@ begin
      if CreateMode then
      begin
        DesktopObject := nil;
-       pSettingsWnd  := ObjectFile.DllStartSettingsWnd(0,SettingsPanel.Handle);
+//       pSettingsWnd  := ObjectFile.DllStartSettingsWnd(0,SettingsPanel.Handle);
      end else
      begin
        DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(ObjectID));
-       pSettingsWnd  := ObjectFile.DllStartSettingsWnd(ObjectID,SettingsPanel.Handle);
+//       pSettingsWnd  := ObjectFile.DllStartSettingsWnd(ObjectID,SettingsPanel.Handle);
      end;
 
      GetWindowRect(pSettingsWnd,Rect);
@@ -156,12 +156,12 @@ procedure TSettingsForm.btn_applyClick(Sender: TObject);
 begin
   Save := True;
   //if ObjectSets.Selected = nil then exit;
-  ObjectFile.DllCloseSettingsWnd(ObjectID,True);
+//  ObjectFile.DllCloseSettingsWnd(ObjectID,True);
   ObjectFile.DllSharpDeskMessage(ObjectID,DesktopObject.Layer,SDM_REPAINT_LAYER,0,0,0);
   DesktopObject.Settings.Pos := Point(round(DesktopObject.Layer.Location.Left),
                                       round(DesktopObject.Layer.Location.Top));
   SharpDesk.ObjectSet.Save;
-  pSettingsWnd := ObjectFile.DllStartSettingsWnd(ObjectID,SettingsPanel.Handle);
+//  pSettingsWnd := ObjectFile.DllStartSettingsWnd(ObjectID,SettingsPanel.Handle);
   Save := False;
 end;
 
@@ -174,7 +174,7 @@ begin
   if ObjectFile = nil then
     exit;
 
-  ObjectFile.DllCloseSettingsWnd(ObjectID,Save);
+//  ObjectFile.DllCloseSettingsWnd(ObjectID,Save);
   if Save then
   begin
     if CreateMode then

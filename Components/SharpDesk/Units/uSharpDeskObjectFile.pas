@@ -53,9 +53,7 @@ type
       FLoaded          : boolean;
       FOwner           : TObject;
     public
-      DllCloseSettingsWnd : function (ObjectID : integer; SaveSettings : boolean) : boolean;
       DllCreateLayer      : function (Image: TImage32; ObjectID : integer) : TBitmapLayer;
-      DllStartSettingsWnd : function (ObjectID : integer; owner : Hwnd): hwnd;
       DllSharpDeskMessage : procedure(ObjectID : integer; Layer : TBitmapLayer; DeskMessage,P1,P2,P3 : integer);
       DllInitSettings     : procedure();
       procedure Unload;
@@ -140,8 +138,6 @@ begin
     FLoaded    := False;
     FDllHandle := 0;
     DllCreateLayer      := nil;
-    DllStartSettingsWnd := nil;
-    DllCloseSettingsWnd := nil;
     DllSharpDeskMessage := nil;
     DllInitSettings     := nil;
   end;
@@ -159,16 +155,12 @@ begin
 
     if FDllhandle <> 0 then
     begin
-      @DllCloseSettingsWnd := GetProcAddress(dllhandle, 'CloseSettingsWnd');
       @DllCreateLayer      := GetProcAddress(dllhandle, 'CreateLayer');
       @DllSharpDeskMessage := GetProcAddress(dllhandle, 'SharpDeskMessage');
-      @DllStartSettingsWnd := GetProcAddress(dllhandle, 'StartSettingsWnd');
       @DllInitSettings     := GetProcAddress(dllhandle, 'InitSettings');
     end;
 
     if (@DllCreateLayer = nil) or
-       (@DllStartSettingsWnd = nil) or
-       (@DllCloseSettingsWnd = nil) or
        (@DllSharpDeskMessage = nil) then
     begin
       FreeLibrary(FDllhandle);
