@@ -68,7 +68,6 @@ type
     tb_alpha: TTrackBar;
     GroupBox6: TGroupBox;
     Label4: TLabel;
-    cp_cblend: TSharpEColorBox;
     Panel3: TPanel;
     cb_themesettings: TCheckBox;
     rb_file: TRadioButton;

@@ -35,166 +35,56 @@ interface
 uses JvSimpleXML,
      SysUtils,
      SharpApi,
-     uSharpDeskTDeskSettings,
-     uSharpDeskTThemeSettings,
-     uSharpDeskTObjectSettings,
+     uSharpDeskObjectSettings,
      uSharpDeskFunctions;
 
 type
-    TXMLSettings = class
+    TImageXMLSettings = class(TDesktopXMLSettings)
     private
-      FXML : TJvSimpleXML;
-      FXMLRoot : TJvSimpleXMLElem;
-      FObjectID : integer;
-      procedure SaveSetting(pXMLElems : TJvSimpleXMLElem; pName,pValue : String; copy : boolean); overload;
-      procedure SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Integer; copy : boolean); overload;
-      procedure SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Boolean; copy : boolean); overload;
     public
       {Settings Block}
-      UseThemeSettings : boolean;
-      IconFile         : String;
-      ColorBlend       : boolean;
-      BlendColor       : integer;
-      BlendValue       : integer;
-      Size             : integer;
-      AlphaValue       : integer;
-      AlphaBlend       : boolean;
-      ftURL            : boolean;
-      URLRefresh       : integer;
-      {End Settings Block}
-      constructor Create(pObjectID : integer; pXMLRoot: TJvSimpleXMLElem); reintroduce;
-      destructor Destroy;
-      procedure LoadSettings;
-      procedure SaveSettings(SaveToFile : boolean);
-      function GetSettingsFile : String;
+      IconFile   : String;
+      ftURL      : Boolean;
+      Size       : integer;
+      URLRefresh : integer;
+      procedure LoadSettings; override;
+      procedure SaveSettings(SaveToFile : boolean); reintroduce;
     published
-      property XML : TJvSimpleXML read FXML;
+      property theme : TThemeSettingsArray read ts;
     end;
-
 
 implementation
 
-constructor TXMLSettings.Create(pObjectID : integer; pXMLRoot: TJvSimpleXMLElem);
+procedure TImageXMLSettings.LoadSettings;
 begin
-  Inherited Create;
-  FObjectID := pObjectID;
-  FXMLRoot := pXMLRoot;
-  FXML := TJvSimpleXML.Create(nil);
-  FXML.Root.Name := 'ImageObjectSettings';
-  if FXMLRoot = nil then
-     FXMLRoot := FXML.Root;
-end;
-
-
-destructor TXMLSettings.Destroy;
-begin
-  FXML.Free;
-  FXML := nil;
-  Inherited Destroy;
-end;
-
-
-function TXMLSettings.GetSettingsFile : string;
-var
-  UserDir,Dir : String;
-begin
-  UserDir := SharpApi.GetSharpeUserSettingsPath;
-  Dir := UserDir + 'SharpDesk\Objects\Image\';
-  result := Dir + inttostr(FObjectID) + '.xml';
-end;
-
-procedure TXMLSettings.LoadSettings;
-var
-  n : integer;
-  SettingsFile : String;
-  csX : TColorSchemeEX;
-begin
-  if FXML = nil then exit;
-  SettingsFile := GetSettingsFile;
-  if (not FileExists(SettingsFile)) and (FObjectID <> -1) then
-  begin
-    SharpApi.SendDebugMessageEx('Image.object','Settings File does not exist',0,DMT_INFO);
-  end;
-
-  try
-    if FObjectID <> -1 then
-       FXML.LoadFromFile(SettingsFile);
-  except
-    SharpApi.SendDebugMessageEx('Image.object',PChar('Failed to load Settings File: '+Settingsfile),0,DMT_ERROR);
-  end;
-
-  csX := SharpApi.LoadColorSchemeEx;
+  inherited InitLoadSettings;
+  inherited LoadSettings;
 
   with FXMLRoot.Items do
   begin
-    AlphaBlend       := BoolValue('AlphaBlend',False);
-    ColorBlend       := BoolValue('ColorBlend',False);
-    UseThemeSettings := BoolValue('UseThemeSettings',True);
-    ftURL            := BoolValue('ftURL',False);
-    IconFile         := Value('IconFile','');
-    BlendColor       := CodeToColorEx(IntValue('BlendColor',-1),csX);
-    BlendValue       := IntValue('BlendValue',0);
-    Size             := IntValue('Size',100);
-    AlphaValue       := IntValue('AlphaValue',255);
-    URLRefresh       := IntValue('URLRefresh',30);
+    IconFile   := Value('IconFile','icon.application');
+    Size       := IntValue('Size',100);
+    URLRefresh := IntValue('URLRefresh',30);
+    ftURL      := BoolValue('ftURL',False);
   end;
 end;
 
-procedure TXMLSettings.SaveSettings(SaveToFile : boolean);
-var
-  csX : TColorSchemeEx;
-  SettingsFile,SettingsDir : String;
+procedure TImageXMLSettings.SaveSettings(SaveToFile : boolean);
 begin
-  if FXML = nil then exit;
+  if FXMLRoot = nil then exit;
 
-  FXML.Options := FXML.Options + [sxoAutoCreate];
-  FXMLRoot.Clear;
+  inherited InitSaveSettings;
+  inherited SaveSettings;
 
-  csX := SharpApi.LoadColorSchemeEx; 
-
-  SaveSetting(FXMLRoot,'ColorBlend',ColorBlend,True);
-  SaveSetting(FXMLRoot,'AlphaBlend',AlphaBlend,True);
-  SaveSetting(FXMLRoot,'UseThemeSettings',UseThemeSettings,True);
-  SaveSetting(FXMLRoot,'IconFile',IconFile,False);
-  SaveSetting(FXMLRoot,'BlendValue',BlendValue,True);
-  SaveSetting(FXMLRoot,'Size',Size,True);
-  SaveSetting(FXMLRoot,'AlphaValue',AlphaValue,True);
-  SaveSetting(FXMLRoot,'ftURL',ftURL,False);
-  SaveSetting(FXMLRoot,'URLRefresh',URLRefresh,False);
-  SaveSetting(FXMLRoot,'BlendColor',ColorToCodeEx(BlendColor,csX),True);
-
-  if SaveToFile then
+  with FXMLRoot.Items do
   begin
-    SettingsFile := GetSettingsFile;
-    SettingsDir  := ExtractFileDir(SettingsFile);
-    ForceDirectories(SettingsDir);
-    try
-      FXML.SaveToFile(SettingsDir+'~temp.xml');
-    except
-      SharpApi.SendDebugMessageEx('Image.object',PChar('Failed to save Settings to: '+SettingsDir+'~temp.xml'),0,DMT_ERROR);
-      DeleteFile(SettingsDir+'~temp.xml');
-      exit;
-    end;
-    if FileExists(SettingsFile) then
-       DeleteFile(SettingsFile);
-    if not RenameFile(SettingsDir+'~temp.xml',SettingsFile) then
-       SharpApi.SendDebugMessageEx('Image.object','Failed to Rename Settings File',0,DMT_ERROR);
-  end; 
-end;
+    Add('IconFile',IconFile).Properties.Add('SortValue',True);;
+    Add('Size',Size);
+    Add('URLRefresh',URLRefresh);
+    Add('ftURL',ftURL);
+  end;
 
-procedure TXMLSettings.SaveSetting(pXMLElems : TJvSimpleXMLElem; pName,pValue : String; copy : boolean);
-begin
-  pXMLElems.Items.Add(pName,pValue).Properties.Add('CopyValue',copy);
-end;
-
-procedure TXMLSettings.SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Integer; copy : boolean);
-begin
-  pXMLElems.Items.Add(pName,pValue).Properties.Add('CopyValue',copy);
-end;
-
-procedure TXMLSettings.SaveSetting(pXMLElems : TJvSimpleXMLElem; pName : String; pValue : Boolean; copy : boolean);
-begin
-  pXMLElems.Items.Add(pName,pValue).Properties.Add('CopyValue',copy);
+  inherited FinishSaveSettings(SaveToFile);
 end;
 
 

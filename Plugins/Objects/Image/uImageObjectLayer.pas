@@ -32,15 +32,16 @@ unit uImageObjectLayer;
 
 interface
 uses
-  Windows, StdCtrls, Classes, Controls, ExtCtrls, Dialogs,Math,
-  Messages, JPeg, SharpApi, SysUtils,ShellApi, Graphics,
-  gr32,pngimage,GR32_Image, GR32_Layers, GR32_BLEND,GR32_Transforms, GR32_Filters,
+  Windows, StdCtrls, Classes, ExtCtrls, Math,
+  Messages, SharpApi, SysUtils,ShellApi, Graphics,
+  gr32,GR32_Image, GR32_Layers,
   JvSimpleXML, Forms, SharpDeskApi, JCLShell,
-  ImageObjectSettingsWnd,
   ImageObjectXMLSettings,
-  uSharpDeskTDeskSettings,
-  uSharpDeskTThemeSettings,
-  uSharpDeskTObjectSettings,
+  uSharpDeskObjectSettings,
+  SharpIconUtils,
+  SharpImageUtils,
+  SharpGraphicsUtils,
+  SharpThemeApi,
   uSharpDeskDebugging,
   IdBaseComponent,
   IdHTTP,
@@ -50,7 +51,7 @@ type
 
   TImageLayer = class(TBitmapLayer)
   private
-    FSettings    : TXMLSettings;
+    FSettings    : TImageXMLSettings;
     FObjectID    : integer;
     FIconFile    : string;
     FHLTimer     : TTimer;
@@ -62,11 +63,7 @@ type
     FBlendValue  : integer;
     FLocked      : boolean;
     FBlend       : boolean;
-    FUseThemeSettings : boolean;
     FPicture     : TBitmap32;
-    FDeskSettings   : TDeskSettings;
-    FThemeSettings  : TThemeSettings;
-    FObjectSettings : TObjectSettings;
     FSize        : integer;
     FParentImage : TImage32;
     FftURL       : boolean;
@@ -74,11 +71,8 @@ type
     FUpdateTimer : TTimer;
 
   protected
-     procedure doLoadImage(var Bmp : TBitmap32; IconFile: string);
      procedure LoadDefaultImage(var bmp : TBitmap32);
-
   public
-
      procedure DrawBitmap;
      procedure LoadSettings;
      procedure StartHL;
@@ -89,10 +83,7 @@ type
      procedure OnPropertiesClick(Sender : TObject);
      procedure SizeOnClick(Sender : TObject);
      procedure UpdateImage;
-     constructor Create(ParentImage : Timage32; Id : integer;
-                        DeskSettings : TDeskSettings;
-                        ThemeSettings : TThemeSettings;
-                        ObjectSettings : TObjectSettings); reintroduce;
+     constructor Create(ParentImage : Timage32; Id : integer); reintroduce;
      destructor Destroy; override;
      property ObjectID: Integer read FObjectId write FObjectId;
      property Locked : boolean read FLocked write FLocked;
@@ -106,27 +97,23 @@ type
 
 implementation
 
-uses  uSharpDeskManager,
-      uSharpDeskDesktopObject,
-      uSharpDeskObjectSet,
-      uSharpDeskObjectSetItem;
 
 procedure TImageLayer.StartHL;
 begin
-  if (FDeskSettings.Theme.DeskHoverAnimation) and (not FLocked) then
+  if SharpThemeApi.GetDesktopAnimUseAnimations then
   begin
     FHLTimerI := 1;
     FHLTimer.Enabled := True;
   end else
   begin
     DrawBitmap;
-    if (not FLocked) then SharpDeskApi.LightenBitmap(Bitmap,50);
+    LightenBitmap(Bitmap,50);
   end;
 end;
 
 procedure TImageLayer.EndHL;
 begin
-  if (FDeskSettings.Theme.DeskHoverAnimation) and (not FLocked) then
+  if SharpThemeApi.GetDesktopAnimUseAnimations then
   begin
     FHLTimerI := -1;
     FHLTimer.Enabled := True;
@@ -140,30 +127,32 @@ procedure TImageLayer.OnTimer(Sender: TObject);
 var
   i : integer;
 begin
+  FParentImage.BeginUpdate;
+  BeginUpdate;
   FHLTimer.Tag := FHLTimer.Tag + FHLTimerI;
   if FHLTimer.Tag <= 0 then
   begin
     FHLTimer.Enabled := False;
     FHLTimer.Tag := 0;
-    if (FUseThemeSettings) and (FDeskSettings.Theme.DeskUseAlphaBlend) then
-       i := FDeskSettings.Theme.DeskAlphaBlend
-        else if FAlphaBlend then i := FAlphaValue
-             else i := 255;
+    if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
+       i := FSettings.Theme[DS_ICONALPHA].IntValue
+       else i := 255;
     if i > 255 then i := 255
        else if i<32 then i := 32;
     Bitmap.MasterAlpha := i;
     DrawBitmap;
+    FParentImage.EndUpdate;
+    EndUpdate;
     Changed;
     exit;
   end;
-  FParentImage.BeginUpdate;
-  if FDeskSettings.Theme.AnimAlpha then
+
+  if SharpThemeApi.GetDesktopAnimAlpha then
   begin
-    if (FUseThemeSettings) and (FDeskSettings.Theme.DeskUseAlphaBlend) then
-       i := FDeskSettings.Theme.DeskAlphaBlend
-        else if FAlphaBlend then i := FAlphaValue
-             else i := 255;
-    i := i + round(((FDeskSettings.Theme.AnimAlphaValue/FAnimSteps)*FHLTimer.Tag));
+    if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
+       i := FSettings.Theme[DS_ICONALPHA].IntValue
+       else i := 255;
+    i := i + round(((SharpThemeApi.GetDesktopAnimAlphaValue/FAnimSteps)*FHLTimer.Tag));
     if i > 255 then i := 255
        else if i<32 then i := 32;
     Bitmap.MasterAlpha := i;
@@ -174,11 +163,14 @@ begin
     FHLTimer.Tag := FAnimSteps;
   end;
   DrawBitmap;
-  if FDeskSettings.Theme.AnimBB then
-     SharpDeskApi.LightenBitmap(Bitmap,round(FHLTimer.Tag*(FDeskSettings.Theme.AnimBBValue/FAnimSteps)));
-  if FDeskSettings.Theme.AnimBlend then
-     SharpDeskApi.BlendImage(Bitmap,FDeskSettings.Theme.AnimBlendColor,round(FHLTimer.Tag*(FDeskSettings.Theme.AnimBlendValue/FAnimSteps)));
+  if SharpThemeApi.GetDesktopAnimBrightness then
+     LightenBitmap(Bitmap,round(FHLTimer.Tag*(SharpThemeApi.GetDesktopAnimBrightnessValue/FAnimSteps)));
+  if SharpThemeApi.GetDesktopAnimBlend then
+     BlendImageA(Bitmap,
+                 SharpThemeApi.GetDesktopAnimBlendColor,
+                 round(FHLTimer.Tag*(SharpThemeApi.GetDesktopAnimBlendValue/FAnimSteps)));
   FParentImage.EndUpdate;
+  EndUpdate;
   Changed;
 end;
 
@@ -191,7 +183,6 @@ procedure TImageLayer.OnPropertiesClick(Sender : TObject);
 begin
      DisplayPropDialog(Application.Handle,FIconFile);
 end;
-
 
 procedure TImageLayer.SizeOnClick(Sender : TObject);
 begin
@@ -217,7 +208,7 @@ var
   i : integer;
 begin
   tempBmp := TBitmap32.Create;
-  if not FftURL then doLoadImage(tempBmp,FIconFile)
+  if not FftURL then SharpImageUtils.LoadImage(FIconFile,tempBmp)
   else
   begin
     MimeList := TStringList.Create;
@@ -252,7 +243,7 @@ begin
             FileStream.Free;
           end;
           SharpApi.SendDebugMessage('Image.object','Loading downloaded image: '+Dir+'temp'+inttostr(i)+Ext,clblack);
-          doLoadImage(tempBmp,Dir+'temp'+inttostr(i)+Ext);
+          SharpImageUtils.LoadImage(Dir+'temp'+inttostr(i)+Ext,tempBmp)
         except
           tempBmp.SetSize(128,128);
           tempBmp.Clear(color32(128,128,128,196));
@@ -299,8 +290,6 @@ procedure TImageLayer.DrawBitmap;
 var
  R : TFloatrect;
  w,h : integer;
- tempDeskManager : TSharpDeskManager;
- tempDesktopObject : TDesktopObject;
 begin
   //Say to Image that we will update
   FParentImage.BeginUpdate;
@@ -342,8 +331,6 @@ begin
   Changed;
 end;
 
-
-
 procedure TImageLayer.LoadDefaultImage(var bmp : TBitmap32);
 begin
   try
@@ -354,28 +341,7 @@ begin
 
 end;
 
-
-procedure TImageLayer.doLoadImage(var Bmp : TBitmap32; IconFile: string);
-var
-   FileExt : String;
-begin
-  if FileExists(IconFile) = True then
-  begin
-       FileExt := ExtractFileExt(IconFile);
-       if (lowercase(FileExt) = '.jpeg') or (lowercase(FileExt) = '.jpg') then loadjpg(bmp,IconFile)
-          else if (lowercase(FileExt) = '.ico') then loadIco(bmp,IconFile,32)
-               else if (lowercase(FileExt) = '.png') then loadPng(bmp,IconFile)
-                    else if (lowercase(FileExt) = '.bmp') then LoadBmp(bmp,IconFile)
-                        else Bitmap.Clear(color32(130,130,130,0));
-  end
-  else LoadDefaultImage(bmp);
-end;
-
-
-
 procedure TImageLayer.LoadSettings;
-var
-   tempBmp : TBitmap32;
 begin
   if ObjectID=0 then exit;
 
@@ -388,28 +354,15 @@ begin
     FUpdateTimer.Enabled := True;
     FUpdateTimer.Interval := FURLRefresh*60*1000;
   end else FUpdateTimer.Enabled := False;
-  FUseThemeSettings := FSettings.UseThemeSettings;
   FSize := FSettings.Size;
-  
-  if FUseThemeSettings then
-  begin
-    FBLendValue := FDeskSettings.Theme.DeskColorBlend;
-    FBlend      := FDeskSettings.Theme.DeskUseColorBlend;
-    FAlphaValue := FDeskSettings.Theme.DeskAlphaBlend;
-    FAlphaBlend := FDeskSettings.Theme.DeskUseAlphaBlend;
-  end
-  else
-  begin
-    FBlendValue := FSettings.BlendValue;
-    FBlend      := FSettings.ColorBlend;
-    FAlphaValue := FSettings.AlphaValue;
-    FAlphaBlend := FSettings.AlphaBlend;
-  end;
 
-  if FBlend then
+  with FSettings do
   begin
-    if FUseThemeSettings then FBlendColor := FDeskSettings.Theme.DeskColorBlendColor
-       else FBlendColor := FSettings.BlendColor;
+    FBLendValue := Theme[DS_ICONBLENDALPHA].IntValue;
+    FBlendColor := SharpThemeApi.SchemeCodeToColor(Theme[DS_ICONBLENDCOLOR].IntValue);
+    FBlend      := Theme[DS_ICONBLENDING].BoolValue;
+    FAlphaValue := Theme[DS_ICONALPHA].IntValue;
+    FAlphaBlend := Theme[DS_ICONALPHABLEND].BoolValue;
   end;
 
   FIconFile := FSettings.IconFile;
@@ -421,23 +374,17 @@ begin
 
   UpdateImage;
 
-  if FBlend then BlendImage(FPicture, FBlendColor,FBlendValue);
+  if FBlend then
+    BlendImageA(FPicture, FBlendColor,FBlendValue);
 
   DrawBitmap;
   if FHLTimer.Tag >= FAnimSteps then
-     FHLTimer.OnTimer(FHLTimer);
+    FHLTimer.OnTimer(FHLTimer);
 end;
 
-
-constructor TImageLayer.Create( ParentImage:Timage32; Id : integer;
-                                DeskSettings : TDeskSettings;
-                                ThemeSettings : TThemeSettings;
-                                ObjectSettings : TObjectSettings);
+constructor TImageLayer.Create( ParentImage:Timage32; Id : integer);
 begin
   Inherited Create(ParentImage.Layers);
-  FDeskSettings   := DeskSettings;
-  FThemeSettings  := ThemeSettings;
-  FObjectSettings := ObjectSettings;
   FParentImage := ParentImage;
   FPicture := Tbitmap32.Create;
   Alphahit := False;
@@ -452,9 +399,10 @@ begin
   FUpdateTimer.Interval := 10000000;
   FUpdateTimer.Enabled := False;
   FUpdateTimer.OnTimer := OnUpdateTimer;
-  FSettings := TXMLSettings.Create(FObjectId,nil);
-  FAnimSteps       := 5;  
+  FSettings := TImageXMLSettings.Create(FObjectId,nil,'Image');
+  FAnimSteps       := 5;
   LoadSettings;
+ 
 end;
 
 destructor TImageLayer.Destroy;

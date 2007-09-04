@@ -117,7 +117,7 @@ object SettingsWnd: TSettingsWnd
         Top = 56
         Width = 345
         Height = 49
-        ActivePage = tab_file
+        ActivePage = tab_url
         Style = tsButtons
         TabOrder = 3
         object tab_file: TTabSheet
@@ -378,18 +378,6 @@ object SettingsWnd: TSettingsWnd
         Font.Style = []
         ParentFont = False
         Transparent = True
-      end
-      object cp_cblend: TSharpEColorBox
-        Left = 8
-        Top = 17
-        Width = 35
-        Height = 14
-        Cursor = 15
-        BackgroundColor = clBtnFace
-        Color = 11842740
-        ColorCode = -4
-        CustomScheme = False
-        ClickedColorID = ccWorkAreaBack
       end
     end
     object Panel3: TPanel

@@ -30,34 +30,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 library Image;
 uses
-  Forms,
   windows,
   graphics,
   Contnrs,
-  Dialogs,
   sysUtils,
   menus,
-  ImageObjectSettingsWnd in 'ImageObjectSettingsWnd.pas' {SettingsWnd},
   uImageObjectLayer in 'uImageObjectLayer.pas',
   pngimage,
   jvsimplexml,
+  pngimagelist,
   gr32,
   GR32_Image,
   GR32_Layers,
-  GR32_Transforms,
   ImageObjectXMLSettings in 'ImageObjectXMLSettings.pas',
-  uSharpDeskTDeskSettings,
-  uSharpDeskTObjectSettings,
-  uSharpDeskTThemeSettings,
-  uSharpDeskFunctions,
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpDeskApi in '..\..\..\Common\Libraries\SharpDeskApi\SharpDeskApi.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  uSharpeColorBox in '..\..\..\Common\Delphi Components\SharpEColorBox\uSharpeColorBox.pas',
-  uSharpEFontSelector in '..\..\..\Common\Delphi Components\SharpEFontSelector\uSharpEFontSelector.pas',
-  uSharpDeskDesktopPanel in '..\..\SharpDesk\Units\uSharpDeskDesktopPanel.pas',
-  uSharpDeskDesktopPanelList in '..\..\SharpDesk\Units\uSharpDeskDesktopPanelList.pas';
+  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
+  SharpGraphicsUtils in '..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
+  uSharpDeskObjectSettings in '..\..\..\Common\Units\XML\uSharpDeskObjectSettings.pas',
+  SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
+  SharpImageUtils in '..\..\..\Common\Units\SharpImageUtils\SharpImageUtils.pas';
 
 {$R *.RES}
 {$R icons.res}
@@ -101,11 +95,7 @@ type
 
 var
   LayerList : TLayerList;
-  DeskSettings   : TDeskSettings;
-  ObjectSettings : TObjectSettings;
-  ThemeSettings  : TThemeSettings;
   FirstStart : boolean = True;
-  SettingsWnd : TSettingsWnd;
 
 
 destructor TLayer.Destroy;
@@ -131,51 +121,17 @@ begin
   LayerList.Add(TLayer.Create);
   Layer := TLayer(LayerList.Items[LayerList.Count-1]);
   Layer.ObjectID := ObjectID;
-  Layer.ImageLayer := TImageLayer.create(Image, ObjectID, DeskSettings,ThemeSettings,ObjectSettings);
+  Layer.ImageLayer := TImageLayer.create(Image, ObjectID);
+ 
   Layer.ImageLayer.Tag:=ObjectID;
   result := Layer.ImageLayer;
 end;
 
-function StartSettingsWnd(ObjectID : integer; Handle : hwnd) : hwnd;
-begin
-  if SettingsWnd = nil then SettingsWnd := TSettingsWnd.Create(nil);
-  SettingsWnd.ParentWindow:=Handle;
-  SettingsWnd.Left:=2;
-  SettingsWnd.Top:=2;
-  SettingsWnd.BorderStyle:=bsNone;
-  SettingsWnd.ObjectID:=ObjectID;
-  SettingsWnd.DeskSettings := DeskSettings;
-  SettingsWnd.ObjectSettings := ObjectSettings;
-  SettingsWnd.ThemeSettings := ThemeSettings;
-  SettingsWnd.LoadSettings;
-  SettingsWnd.Show;
-  result:=SettingsWnd.Handle;
-end;
-
-function CloseSettingsWnd(ObjectID : integer; SaveSettings : boolean) : boolean;
-begin
-  try
-    if (SaveSettings) and (ObjectID<>0) then
-    begin
-      SettingsWnd.ObjectID:=ObjectID;
-      SettingsWnd.SaveSettings;
-    end;
-    SettingsWnd.Close;
-    SettingsWnd.Free;
-    SettingsWnd:=nil;
-    result:=True;
-  except
-    result:=False;
-  end;
-end;
-
-
 procedure SharpDeskMessage(pObjectID : integer; pLayer : TBitmapLayer; DeskMessage,P1,P2,P3 : integer);
 var
-   Menu : TPopupMenu;
-   MenuItem : TMenuItem;
-   MenuItem2 : TMenuItem;   
-   bmp : TBitmap;
+   Menu2 : TPopupMenu;
+   MenuItem,MenuItem2 : TMenuItem;
+   bmp2 : TBitmap;
    n : integer;
    Layer : TLayer;
    b : boolean;
@@ -194,99 +150,94 @@ begin
   if Layer = nil then exit;
 
   case DeskMessage of
+    SDM_SETTINGS_UPDATE : Layer.ImageLayer.LoadSettings;
     SDM_SELECT : begin
                    if P1 = 0 then Layer.ImageLayer.Locked := False
                       else Layer.ImageLayer.Locked := True;
                       Layer.ImageLayer.StartHL;
                    end;
     SDM_DESELECT : Layer.ImageLayer.EndHL;
-  SDM_REPAINT_LAYER : Layer.ImageLayer.LoadSettings;
-  SDM_CLOSE_LAYER : begin
-                      SharpApi.SendDebugMessageEx('Image.Object',PChar('Removing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
-                      LayerList.Remove(Layer);
-                      SharpApi.SendDebugMessageEx('Image.Object',PChar('Freeing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
-                      Layer := nil;
-                      SharpApi.SendDebugMessageEx('Image.Object',PChar('Object removed'),0,DMT_INFO);
-                    end;
-  SDM_SHUTDOWN : begin
-                   LayerList.Clear;
-                   LayerList.Free;
-                   LayerList := nil;
-                   FirstStart := True;
-                 end;
-   SDM_MENU_POPUP : begin
-                      Bmp := TBitmap.Create;
-                      Menu := TForm(Layer.ImageLayer.ParentImage.Parent).PopupMenu;
+    SDM_REPAINT_LAYER : Layer.ImageLayer.LoadSettings;
+    SDM_CLOSE_LAYER : begin
+                        SharpApi.SendDebugMessageEx('Image.Object',PChar('Removing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
+                        LayerList.Remove(Layer);
+                        SharpApi.SendDebugMessageEx('Image.Object',PChar('Freeing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
+                        Layer := nil;
+                        SharpApi.SendDebugMessageEx('Image.Object',PChar('Object removed'),0,DMT_INFO);
+                      end;
+    SDM_SHUTDOWN : begin
+                     LayerList.Clear;
+                     LayerList.Free;
+                     LayerList := nil;
+                     FirstStart := True;
+                   end;
+     SDM_MENU_POPUP : begin
+                        Bmp2 := TBitmap.Create;
+                        Menu2 := Layer.ImageLayer.ParentImage.PopupMenu;
 
-                      MenuItem := TMenuItem.Create(Menu.Items);
-                      MenuItem.Caption := 'Open';
-                      MenuItem.ImageIndex := 0;
-                      MenuItem.OnClick := Layer.ImageLayer.OnOpenClick;
-                      Menu.Items.Add(MenuItem);
-                      Bmp.LoadFromResourceID(HInstance,103);
-                      Menu.Images.AddMasked(bmp,clFuchsia);
+                        MenuItem := TMenuItem.Create(Menu2.Items);
+                        MenuItem.Caption := 'Open';
+                        MenuItem.ImageIndex := Menu2.Images.Count;
+                        MenuItem.OnClick := Layer.ImageLayer.OnOpenClick;
+                        Menu2.Items.Insert(0,MenuItem);
+                        Bmp2.LoadFromResourceID(HInstance,103);
+                        TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
 
-                      MenuItem := TMenuItem.Create(Menu.Items);
-                      MenuItem.Caption := 'Properties';
-                      MenuItem.ImageIndex := 1;
-                      MenuItem.OnClick := Layer.ImageLayer.OnPropertiesClick;
-                      Menu.Items.Add(MenuItem);
-                      Bmp.LoadFromResourceID(HInstance,102);
-                      Menu.Images.AddMasked(bmp,clFuchsia);
+                        MenuItem := TMenuItem.Create(Menu2.Items);
+                        MenuItem.Caption := 'Properties';
+                        MenuItem.ImageIndex := Menu2.Images.Count;
+                        MenuItem.OnClick := Layer.ImageLayer.OnPropertiesClick;
+                        Menu2.Items.Insert(1,MenuItem);
+                        Bmp2.LoadFromResourceID(HInstance,102);
+                        TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
 
-                      MenuItem := TMenuItem.Create(Menu.Items);
-                      MenuItem.Caption := 'Size';
-                      MenuItem.ImageIndex := 2;
-                      Menu.Items.Add(MenuItem);
-                      Bmp.LoadFromResourceID(HInstance,100);
-                      Menu.Images.AddMasked(bmp,clFuchsia);
+                        MenuItem := TMenuItem.Create(Menu2.Items);
+                        MenuItem.Caption := 'Size';
+                        MenuItem.ImageIndex := Menu2.Images.Count;
+                        Menu2.Items.Insert(2,MenuItem);
+                        Bmp2.LoadFromResourceID(HInstance,100);
+                        TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
 
-                      Bmp.LoadFromResourceID(HInstance,101);
-                      Menu.Images.AddMasked(bmp,clFuchsia);
-                      Bmp.LoadFromResourceID(HInstance,104);
-                      Menu.Images.AddMasked(bmp,clFuchsia);
+                        Bmp2.LoadFromResourceID(HInstance,101);
+                        TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
+                        Bmp2.LoadFromResourceID(HInstance,104);
+                        TPngImageList(Menu2.Images).AddMasked(bmp2,clFuchsia);
 
-                      b := False;
-                      for i:=1 to 8 do
-                      begin
-                        MenuItem2 := TMenuItem.Create(MenuItem);
-                        MenuItem2.Caption := inttostr(i*25)+'%';
-                        if i*25 = layer.ImageLayer.Size then
+                        b := False;
+                        for i:=1 to 8 do
                         begin
-                          MenuItem2.ImageIndex := 4;
-                          b := True;
-                        end else MenuItem2.ImageIndex := 3;
-                        MenuItem2.Tag := i*25;
-                        MenuItem2.OnClick := Layer.ImageLayer.SizeOnClick;
-                        MenuItem.Add(MenuItem2);
-                      end;
+                          MenuItem2 := TMenuItem.Create(MenuItem);
+                          MenuItem2.Caption := inttostr(i*25)+'%';
+                          if i*25 = layer.ImageLayer.Size then
+                          begin
+                            MenuItem2.ImageIndex := Menu2.Images.Count;
+                            b := True;
+                          end else MenuItem2.ImageIndex := Menu2.Images.Count-1;
+                          MenuItem2.Tag := i*25;
+                          MenuItem2.OnClick := Layer.ImageLayer.SizeOnClick;
+                          MenuItem.Add(MenuItem2);
+                        end;
 
-                      if not b then
-                      begin
-                        MenuItem2 := TMenuItem.Create(MenuItem);
-                        MenuItem2.Caption := 'Custom Size : ' + inttostr(Layer.ImageLayer.Size);
-                        MenuItem2.ImageIndex := 4;
-                        MenuItem2.Tag := Layer.ImageLayer.Size;
-                        MenuItem.Add(MenuItem2);
-                      end;
-                      Bmp.Free;
+                        if not b then
+                        begin
+                          MenuItem2 := TMenuItem.Create(MenuItem);
+                          MenuItem2.Caption := 'Custom Size : ' + inttostr(Layer.ImageLayer.Size);
+                          MenuItem2.ImageIndex := Menu2.Images.Count;
+                          MenuItem2.Tag := Layer.ImageLayer.Size;
+                          MenuItem.Add(MenuItem2);
+                        end;
+                        Bmp2.Free;
                     end;                     
      end;
 end;
 
-procedure GetSettings( pDeskSettings   : TDeskSettings;
-                       pThemeSettings  : TThemeSettings;
-                       pObjectSettings : TObjectSettings);
+procedure InitSettings();
 var
   XML : TJvSimpleXML;
   n : integer;
   Ext : String;
-  Settings : TXMLSettings;          
+  Settings : TImageXMLSettings;          
 begin
-  DeskSettings   := pDeskSettings;
-  ThemeSettings  := pThemeSettings;
-  ObjectSettings := pObjectSettings;
-
   XML := TJvSimpleXML.Create(nil);
   ForceDirectories(GetSharpeGlobalSettingsPath + 'SharpDesk\DragAndDrop\');  
   for n := 0 to 4 do
@@ -309,7 +260,7 @@ begin
         Add('MaxLength',0);
       end;
       XML.Root.Items.Add('DefaultSettings');
-      Settings := TXMLSettings.Create(-1,XML.Root.Items.ItemNamed['DefaultSettings']);
+      Settings := TImageXMLSettings.Create(-1,XML.Root.Items.ItemNamed['DefaultSettings'],'Image');
       Settings.LoadSettings;
       Settings.IconFile := '{File}';
       Settings.SaveSettings(False);
@@ -323,11 +274,9 @@ end;
 
 
 Exports
-  CloseSettingsWnd,
   CreateLayer,
-  StartSettingsWnd,
   SharpDeskMessage,
-  GetSettings;
+  InitSettings;
 
 begin
 end.
