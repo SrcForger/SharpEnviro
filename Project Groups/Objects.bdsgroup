@@ -11,7 +11,8 @@
 	<Default.Personality>  <Projects>
       <Projects Name="Link.dll">..\Plugins\Objects\Link\Link.bdsproj</Projects>
       <Projects Name="RecycleBin.dll">..\Plugins\Objects\RecycleBin\RecycleBin.bdsproj</Projects>
-      <Projects Name="Targets">Link.dll RecycleBin.dll</Projects>
+      <Projects Name="Image.dll">..\Plugins\Objects\Image\Image.bdsproj</Projects>
+      <Projects Name="Targets">Link.dll RecycleBin.dll Image.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
