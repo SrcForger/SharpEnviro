@@ -53,11 +53,11 @@ type
   PColorArray = ^TColorArray;
 
   PSHQueryRBInfo = ^TSHQueryRBInfo;
-  TSHQueryRBInfo = packed record
-                     cbSize: DWORD;
-                     i64Size: Int64;
-                     i64NumItems: Int64;
-                   end;  
+  TSHQUERYRBINFO = packed record
+     cbSize : DWord;
+     i64Size : Int64;
+     i64NumItems : Int64;
+  end;
 
   TRecycleBinLayer = class(TBitmapLayer)
   private
@@ -80,8 +80,8 @@ type
   protected
   public
      FParentImage : Timage32;
-     SHEmptyRecycleBin : function (hwnd: HWND; pszRootPath: PChar; dwFlags: DWord): HResult; stdcall;
-     SHQueryRecycleBin : function (pszrtootpath:pchar;QUERYRBINFO:pshqueryrbinfo):integer; stdcall;
+     SHEmptyRecycleBin : function (hWnd: HWND; pszRootPath: PChar; dwFlags: DWORD): HResult; stdcall;
+     SHQueryRecycleBin : function (pszRootPath: PChar; var pSHQueryRBInfo: TSHQueryRBInfo): HResult; stdcall;
      procedure DoubleClick;
      procedure StartHL;
      procedure EndHL;
@@ -112,7 +112,7 @@ procedure TRecycleBinLayer.OnEmptyBinClick(Sender : TObject);
 begin
   try
     if @SHEmptyRecycleBin = nil then exit;
-    SHEmptyRecycleBin(Application.Handle, '', 0);
+    SHEmptyRecycleBin(Application.Handle, nil, 0);
     GetRecycleBinStatus;
     DrawBitmap;
   except
@@ -153,36 +153,22 @@ end;
 
 procedure TRecycleBinLayer.GetRecycleBinStatus;
 var
-  rbinfo:TSHQUERYRBINFO;
+  rbinfo : TSHQUERYRBINFO;
 begin
-  try
-    if @SHQueryRecycleBin = nil then exit;
-    try
-      rbinfo.cbSize:=sizeof(rbinfo);
-      rbinfo.i64Size:=0;
-      rbinfo.i64NumItems:=0;
-      SHQueryRecycleBin('',@rbinfo);
-      FBinSize:=rbinfo.i64Size / 1024 / 1024;
-      FBinItems:=Rbinfo.i64NumItems;
-      if FBinItems = 0 then
-      begin
-        FPicture := FIconEmpty;
-      end else
-      begin
-        FPicture := FIconFull;
-      end;
-    except
-      on E: Exception do
-      begin
-        SharpApi.SendDebugMessageEx('RecycleBin.Object',PChar('Error in GetRecycleBinStatus'),0,DMT_Error);
-        SharpApi.SendDebugMessageEx('RecycleBin.Object',PChar(E.Message),clblue, DMT_TRACE);
-      end;
-    end;
-  except
-    on E: Exception do
+  if @SHQueryRecycleBin = nil then exit;
+  rbinfo.cbSize := sizeof(TSHQUERYRBINFO);
+  rbinfo.i64Size := 0;
+  rbinfo.i64NumItems := 0;
+  if SHQueryRecycleBin(nil,rbinfo) = s_OK then
+  begin
+    FBinSize:=rbinfo.i64Size / 1024 / 1024;
+    FBinItems:=Rbinfo.i64NumItems;
+    if FBinItems = 0 then
     begin
-      SharpApi.SendDebugMessageEx('RecycleBin.Object',PChar('Error in GetRecycleBinStatus'),0,DMT_Error);
-      SharpApi.SendDebugMessageEx('RecycleBin.Object',PChar(E.Message),clblue, DMT_TRACE);
+      FPicture := FIconEmpty;
+    end else
+    begin
+      FPicture := FIconFull;
     end;
   end;
 end;

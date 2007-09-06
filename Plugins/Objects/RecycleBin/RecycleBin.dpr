@@ -103,9 +103,8 @@ var
    LayerList : TLayerList;
    FirstStart : boolean = True;
    DLLHandle : THandle;
-   SHEmptyRecycleBin : function (hwnd: HWND; pszRootPath: PChar; dwFlags: DWord): HResult; stdcall;
-   SHQueryRecycleBin : function (pszrtootpath:pchar;QUERYRBINFO:pshqueryrbinfo):integer; stdcall;
-
+   SHEmptyRecycleBin : function (hWnd: HWND; pszRootPath: PChar; dwFlags: DWORD): HResult; stdcall;
+   SHQueryRecycleBin : function (pszRootPath: PChar; var pSHQueryRBInfo: TSHQueryRBInfo): HResult; stdcall;
 
 destructor TLayer.Destroy;
 begin
