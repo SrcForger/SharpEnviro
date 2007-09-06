@@ -32,11 +32,10 @@ unit uLinkObjectLayer;
 
 interface
 uses
-  Windows, StdCtrls, Forms,Classes, Controls, ExtCtrls, Dialogs,Math,
+  Windows, StdCtrls, Forms,Classes, ExtCtrls, Math,
   Messages, SharpApi, SysUtils,ShellApi, Graphics,
   gr32,GR32_Image, GR32_Layers, GR32_BLEND,GR32_Transforms, GR32_Filters,
   JvSimpleXML, SharpDeskApi, JclShell, Types,
-  LinkObjectSettingsWnd,
   LinkObjectXMLSettings,
   uSharpDeskDebugging,
   uSharpDeskFunctions,
@@ -84,15 +83,6 @@ type
      property Settings  : TLinkXMLSettings read FSettings;
   private
   end;
-
-
-const
-     DESK_SETTINGS = 'Settings\SharpDesk\SharpDesk.xml';
-     THEME_SETTINGS = 'Settings\SharpDesk\Themes.xml';
-     OBJECT_SETTINGS = 'Settings\SharpDesk\Objects.xml';
-
-var
-  SettingsWnd : TSettingsWnd;
 
 implementation
 
@@ -295,7 +285,7 @@ begin
     //   if (FCaptionSettings.Align = taLeft) or (FCaptionSettings.Align = taRight) then
     //       FCaptionSettings.Xoffset := 0
    //    else FCaptionSettings.Yoffset := 0;
-    FCaptionSettings.Draw := Theme[DS_DISPLAYTEXT].BoolValue;
+    FCaptionSettings.Draw := ShowCaption;
     FCaptionSettings.LineSpace := 0;
 
     FIconSettings.Size  := 100;

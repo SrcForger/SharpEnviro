@@ -47,6 +47,7 @@ type
       Caption          : string;
       Target           : string;
       Icon             : String;
+      ShowCaption      : boolean;
       MLineCaption     : boolean;
       procedure LoadSettings; override;
       procedure SaveSettings(SaveToFile : boolean); reintroduce;
@@ -71,6 +72,7 @@ begin
     Target       := Value('Target','explorer');
     CaptionAlign := IntValue('CaptionAlign',2);
     MLineCaption := BoolValue('MLineCaption',False);
+    ShowCaption  := BoolValue('ShowCaption',True);
   end;
 end;
 
@@ -88,6 +90,7 @@ begin
     Add('Caption',Caption).Properties.Add('SortValue',True);
     Add('CaptionAlign',CaptionAlign);
     Add('MLineCaption',MLineCaption);
+    Add('ShowCaption',ShowCaption);
   end;
 
   inherited FinishSaveSettings(SaveToFile);
