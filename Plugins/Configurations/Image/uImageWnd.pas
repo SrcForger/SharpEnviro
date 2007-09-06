@@ -67,7 +67,7 @@ type
     Label6: TLabel;
     Label7: TLabel;
     Panel1: TPanel;
-    SharpeGaugeBox1: TSharpeGaugeBox;
+    sgb_refresh: TSharpeGaugeBox;
     Panel2: TPanel;
     sgb_size: TSharpeGaugeBox;
     Panel3: TPanel;
@@ -78,7 +78,7 @@ type
     Label11: TLabel;
     UIC_colorblend: TSharpEUIC;
     cbcolorblend: TCheckBox;
-    UIC_alpha: TSharpEUIC;
+    UIC_ColorAlpha: TSharpEUIC;
     Panel5: TPanel;
     Label12: TLabel;
     UIC_alphablend: TSharpEUIC;
@@ -102,7 +102,6 @@ type
   private
   public
     sObjectID: string;
-    procedure SaveSettings;
   end;
 
 var
@@ -114,20 +113,17 @@ uses SharpThemeApi, SharpCenterApi;
 
 {$R *.dfm}
 
-procedure TfrmImage.SaveSettings;
-begin
-
-end;
-
 procedure TfrmImage.sbgimagencblendalphaChangeValue(Sender: TObject;
   Value: Integer);
 begin
-  UIC_Alpha.UpdateStatus;
+  UIC_ColorAlpha.UpdateStatus;
+  SharpCenterApi.CenterDefineSettingsChanged;
 end;
 
 procedure TfrmImage.sgbiconalphaChangeValue(Sender: TObject; Value: Integer);
 begin
   UIC_BlendAlpha.UpdateStatus;
+  SharpCenterApi.CenterDefineSettingsChanged;
 end;
 
 procedure TfrmImage.sgb_sizeChangeValue(Sender: TObject; Value: Integer);
@@ -150,11 +146,13 @@ end;
 procedure TfrmImage.cbalphablendClick(Sender: TObject);
 begin
   UIC_AlphaBlend.UpdateStatus;
+  SharpCenterApi.CenterDefineSettingsChanged;
 end;
 
 procedure TfrmImage.cbcolorblendClick(Sender: TObject);
 begin
   UIC_ColorBlend.UpdateStatus;
+  SharpCenterApi.CenterDefineSettingsChanged;
 end;
 
 procedure TfrmImage.FormCreate(Sender: TObject);
@@ -166,12 +164,19 @@ procedure TfrmImage.FormShow(Sender: TObject);
 begin
   Label3.Font.Color := clGrayText;
   Label12.Font.Color := clGrayText;
+  Label13.Font.Color := clGrayText;
+  Label4.Font.Color := clGrayText;
+  Label5.Font.Color := clGrayText;
   Label10.Font.Color := clGrayText;
+  Label1.Font.Color := clGrayText;
+  Label14.Font.Color := clGrayText;
+  Label7.Font.Color := clGrayText;
 end;
 
 procedure TfrmImage.IconColorsChangeColor(ASender: TObject; AValue: Integer);
 begin
   UIC_Colors.UpdateStatus;
+  SharpCenterApi.CenterDefineSettingsChanged;
 end;
 
 procedure TfrmImage.IconColorsResize(Sender: TObject);

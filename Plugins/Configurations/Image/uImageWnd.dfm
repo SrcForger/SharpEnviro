@@ -20,7 +20,7 @@ object frmImage: TfrmImage
     Top = 0
     Width = 427
     Height = 400
-    ActivePage = pagDisplay
+    ActivePage = pagImage
     PropagateEnable = False
     Align = alClient
     object pagImage: TJvStandardPage
@@ -42,12 +42,6 @@ object frmImage: TfrmImage
         AutoSize = False
         Caption = 'Supported image types: .bmp, .jpg, .png, .ico'
         EllipsisPosition = epEndEllipsis
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGrayText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
         Transparent = False
         WordWrap = True
         ExplicitTop = 49
@@ -67,12 +61,6 @@ object frmImage: TfrmImage
         AutoSize = False
         Caption = 'Changing this option will to enlarge or shrink the image'
         EllipsisPosition = epEndEllipsis
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGrayText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
         Transparent = False
         WordWrap = True
         ExplicitTop = 116
@@ -120,12 +108,6 @@ object frmImage: TfrmImage
         AutoSize = False
         Caption = 'Select the source the image will be loaded from.'
         EllipsisPosition = epEndEllipsis
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGrayText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
         Transparent = False
         WordWrap = True
         ExplicitWidth = 384
@@ -181,7 +163,7 @@ object frmImage: TfrmImage
           Margins.Top = 34
           Margins.Right = 8
           Margins.Bottom = 8
-          ActivePage = pageurl
+          ActivePage = pagefile
           PropagateEnable = False
           Align = alClient
           ParentBackground = True
@@ -205,12 +187,6 @@ object frmImage: TfrmImage
               AutoSize = False
               Caption = 'The image will be loaded from a local file.'
               EllipsisPosition = epEndEllipsis
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clGrayText
-              Font.Height = -11
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
               Transparent = False
               WordWrap = True
               ExplicitLeft = 18
@@ -226,6 +202,7 @@ object frmImage: TfrmImage
               Filter = 
                 'All Images (*.bmp,*.jpg,*.jpeg,*.png,*.ico)|*.bmp;*.jpg;*.jpeg;*' +
                 '.png;*.ico'
+              DirectInput = False
               TabOrder = 0
             end
           end
@@ -250,12 +227,6 @@ object frmImage: TfrmImage
               AutoSize = False
               Caption = 'The image will be downloaded from a remote internet location'
               EllipsisPosition = epEndEllipsis
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clGrayText
-              Font.Height = -11
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
               Transparent = False
               WordWrap = True
               ExplicitLeft = 18
@@ -290,12 +261,6 @@ object frmImage: TfrmImage
               AutoSize = False
               Caption = 'Change the update interval at which the image is downloaded'
               EllipsisPosition = epEndEllipsis
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clGrayText
-              Font.Height = -11
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
               Transparent = False
               WordWrap = True
               ExplicitWidth = 342
@@ -318,7 +283,7 @@ object frmImage: TfrmImage
               BevelOuter = bvNone
               ParentColor = True
               TabOrder = 1
-              object SharpeGaugeBox1: TSharpeGaugeBox
+              object sgb_refresh: TSharpeGaugeBox
                 AlignWithMargins = True
                 Left = 8
                 Top = 6
@@ -366,7 +331,7 @@ object frmImage: TfrmImage
           Align = alLeft
           Color = clWindow
           Min = 5
-          Max = 200
+          Max = 500
           Value = 100
           Prefix = 'Scale: '
           Suffix = '%'
@@ -385,15 +350,13 @@ object frmImage: TfrmImage
       Caption = 'pagDisplay'
       object Panel3: TPanel
         Left = 0
-        Top = 0
+        Top = 85
         Width = 427
         Height = 85
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 0
-        ExplicitLeft = 3
-        ExplicitTop = -3
         object Label3: TLabel
           AlignWithMargins = True
           Left = 26
@@ -435,33 +398,27 @@ object frmImage: TfrmImage
           Border = True
           BackgroundColor = clBtnFace
           HasChanged = True
-          AutoReset = True
+          AutoReset = False
           DefaultValue = 'True'
           MonitorControl = cbcolorblend
           NormalColor = clWhite
-          ExplicitLeft = 0
-          ExplicitTop = 25
-          ExplicitWidth = 427
+          OnReset = UIC_Reset
           object cbcolorblend: TCheckBox
             AlignWithMargins = True
             Left = 4
             Top = 4
-            Width = 407
+            Width = 149
             Height = 17
             Margins.Left = 4
             Margins.Top = 4
             Margins.Right = 4
             Margins.Bottom = 0
-            Align = alTop
             Caption = 'Image Color Blend'
             TabOrder = 0
             OnClick = cbcolorblendClick
-            ExplicitLeft = 8
-            ExplicitTop = 8
-            ExplicitWidth = 411
           end
         end
-        object UIC_alpha: TSharpEUIC
+        object UIC_ColorAlpha: TSharpEUIC
           AlignWithMargins = True
           Left = 22
           Top = 53
@@ -473,7 +430,7 @@ object frmImage: TfrmImage
           Margins.Bottom = 4
           Align = alTop
           BevelOuter = bvNone
-          Caption = 'UIC_alpha'
+          Caption = 'UIC_ColorAlpha'
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -481,12 +438,11 @@ object frmImage: TfrmImage
           Border = True
           BackgroundColor = clBtnFace
           HasChanged = True
-          AutoReset = True
+          AutoReset = False
           DefaultValue = '100'
           MonitorControl = sbgimagencblendalpha
           NormalColor = clWhite
-          ExplicitLeft = 0
-          ExplicitWidth = 427
+          OnReset = UIC_Reset
           object sbgimagencblendalpha: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 4
@@ -507,8 +463,6 @@ object frmImage: TfrmImage
             PopPosition = ppBottom
             PercentDisplay = True
             OnChangeValue = sbgimagencblendalphaChangeValue
-            ExplicitLeft = 25
-            ExplicitTop = 8
           end
         end
       end
@@ -521,12 +475,10 @@ object frmImage: TfrmImage
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 1
-        ExplicitTop = 173
-        ExplicitHeight = 227
         object Label10: TLabel
           AlignWithMargins = True
           Left = 26
-          Top = 29
+          Top = 4
           Width = 393
           Height = 19
           Margins.Left = 26
@@ -538,13 +490,13 @@ object frmImage: TfrmImage
           Caption = 'Define Image color options below.'
           EllipsisPosition = epEndEllipsis
           Transparent = False
-          ExplicitTop = 25
-          ExplicitWidth = 528
+          ExplicitLeft = 146
+          ExplicitTop = 1
         end
         object Label11: TLabel
           AlignWithMargins = True
           Left = 8
-          Top = 8
+          Top = 31
           Width = 411
           Height = 17
           Margins.Left = 8
@@ -554,6 +506,7 @@ object frmImage: TfrmImage
           Align = alTop
           AutoSize = False
           Caption = 'Image Color Options'
+          ExplicitTop = 8
           ExplicitWidth = 546
         end
         object UIC_Colors: TSharpEUIC
@@ -568,26 +521,24 @@ object frmImage: TfrmImage
           Margins.Bottom = 8
           Align = alTop
           BevelOuter = bvNone
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
           BorderColor = clBtnShadow
           Border = True
           BackgroundColor = clBtnFace
-          HasChanged = True
-          AutoReset = True
+          HasChanged = False
+          AutoReset = False
           DefaultValue = '0'
           MonitorControl = IconColors
           NormalColor = clWhite
-          ExplicitLeft = 7
-          ExplicitTop = 48
-          ExplicitWidth = 185
           object IconColors: TSharpEColorEditorEx
             AlignWithMargins = True
             Left = 4
             Top = 4
             Width = 361
-            Height = 33
+            Height = 32
             Margins.Left = 4
             Margins.Top = 4
             Margins.Right = 34
@@ -595,10 +546,13 @@ object frmImage: TfrmImage
             VertScrollBar.Smooth = True
             VertScrollBar.Tracking = True
             Align = alTop
+            AutoSize = True
             BevelInner = bvNone
             BevelOuter = bvNone
             BorderStyle = bsNone
+            Color = clWindow
             ParentBackground = True
+            ParentColor = False
             TabOrder = 0
             OnResize = IconColorsResize
             Items = <
@@ -614,23 +568,18 @@ object frmImage: TfrmImage
                 Tag = 0
               end>
             OnChangeColor = IconColorsChangeColor
-            ExplicitLeft = 24
-            ExplicitTop = 54
-            ExplicitWidth = 399
-            ExplicitHeight = 169
           end
         end
       end
       object Panel5: TPanel
         Left = 0
-        Top = 85
+        Top = 0
         Width = 427
         Height = 85
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 2
-        ExplicitTop = -3
         object Label12: TLabel
           AlignWithMargins = True
           Left = 26
@@ -670,28 +619,24 @@ object frmImage: TfrmImage
           Border = True
           BackgroundColor = clBtnFace
           HasChanged = True
-          AutoReset = True
+          AutoReset = False
           DefaultValue = 'True'
           MonitorControl = cbalphablend
           NormalColor = clWhite
-          ExplicitLeft = 0
-          ExplicitTop = 25
-          ExplicitWidth = 427
+          OnReset = UIC_Reset
           object cbalphablend: TCheckBox
             AlignWithMargins = True
             Left = 4
             Top = 4
-            Width = 407
+            Width = 133
             Height = 17
             Margins.Left = 4
             Margins.Top = 4
             Margins.Right = 4
             Margins.Bottom = 0
-            Align = alTop
-            Caption = 'Image Color Blend'
+            Caption = 'Image Alpha Blend'
             TabOrder = 0
             OnClick = cbalphablendClick
-            ExplicitWidth = 411
           end
         end
         object UIC_blendalpha: TSharpEUIC
@@ -714,12 +659,11 @@ object frmImage: TfrmImage
           Border = True
           BackgroundColor = clBtnFace
           HasChanged = True
-          AutoReset = True
+          AutoReset = False
           DefaultValue = '100'
           MonitorControl = sgbiconalpha
           NormalColor = clWhite
-          ExplicitLeft = 0
-          ExplicitWidth = 427
+          OnReset = UIC_Reset
           object sgbiconalpha: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 4

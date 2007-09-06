@@ -57,21 +57,58 @@ uses
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
   SharpEPageControl in '..\..\..\Common\Delphi Components\SharpEPageControl\SharpEPageControl.pas',
   SharpETabList in '..\..\..\Common\Delphi Components\SharpETabList\SharpETabList.pas',
-  SharpERoundPanel in '..\..\..\Common\Delphi Components\SharpERoundPanel\SharpERoundPanel.pas';
+  SharpERoundPanel in '..\..\..\Common\Delphi Components\SharpERoundPanel\SharpERoundPanel.pas',
+  ImageObjectXMLSettings in '..\..\Objects\Image\ImageObjectXMLSettings.pas',
+  uSharpDeskObjectSettings in '..\..\..\Common\Units\XML\uSharpDeskObjectSettings.pas',
+  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas';
 
 {$E .dll}
 
 {$R *.res}
 
 procedure Save;
+var
+  Settings : TImageXMLSettings;
 begin
   if frmImage = nil then
     exit;
 
-  frmImage.SaveSettings;
-end;      
+  with frmImage, Settings do
+  begin
+    Settings := TImageXMLSettings.Create(strtoint(frmImage.sObjectID),nil,'Image');
+    Settings.LoadSettings;
+
+    // save the normal settings
+    Size := sgb_size.Value;
+    ftUrl := (spc.TabIndex = 1);
+    if ftUrl then
+    begin
+      UrlRefresh := sgb_refresh.Value;
+      Iconfile := imageurl.Text;
+    end else IconFile := imagefile.Text;
+
+    // save which UIC items have changed and should be saved to xml
+    Theme[DS_ICONALPHABLEND].isCustom := UIC_AlphaBlend.HasChanged;
+    Theme[DS_ICONBLENDING].isCustom   := UIC_ColorBlend.HasChanged;
+    Theme[DS_ICONALPHA].isCustom      := UIC_BlendAlpha.Haschanged;
+    Theme[DS_ICONBLENDALPHA].isCustom := UIC_ColorAlpha.HasChanged;
+    Theme[DS_ICONBLENDCOLOR].isCustom := UIC_Colors.HasChanged;
+
+    // save the actual values (will only be saved to XMl if isCustom = True)
+    Theme[DS_ICONALPHABLEND].BoolValue := cbalphablend.Checked;
+    Theme[DS_ICONBLENDING].BoolValue   := cbcolorblend.Checked;
+    Theme[DS_ICONALPHA].IntValue       := sgbiconalpha.Value;
+    Theme[DS_ICONBLENDALPHA].IntValue  := sbgimagencblendalpha.Value;
+    Theme[DS_ICONBLENDCOLOR].IntValue  := IconColors.Items.Item[0].ColorCode;
+  end;
+  Settings.SaveSettings(True);
+
+  Settings.Free;
+end;
 
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
+var
+  Settings : TImageXMLSettings;
 begin
   if frmImage = nil then frmImage := TfrmImage.Create(nil);
 
@@ -81,6 +118,52 @@ begin
   frmImage.Left := 2;
   frmImage.Top := 2;
   frmImage.BorderStyle := bsNone;
+  SharpThemeapi.LoadTheme(False,[tpDesktopIcon]);
+
+  Settings := TImageXMLSettings.Create(strtoint(APluginID),nil,'Image');
+  Settings.LoadSettings;
+
+  with frmImage, Settings do
+  begin
+    sgb_size.Value := Size;
+    if ftURL then
+    begin
+      spc.TabIndex := 1;
+      sgb_refresh.Value := UrlRefresh;
+      imageurl.Text := IconFile;
+    end else
+    begin
+      spc.TabIndex := 0;
+      imagefile.Text := IconFile;
+    end;
+
+    // assign the theme default values
+    if GetDesktopIconAlphaBlend then
+      UIC_AlphaBlend.DefaultValue := 'True'
+      else UIC_AlphaBlend.DefaultValue := 'False';
+    if GetDesktopIconBlending then
+      UIC_ColorBlend.DefaultValue := 'True'
+      else UIC_ColorBlend.DefaultValue := 'False';
+    UIC_BlendAlpha.DefaultValue := inttostr(GetDesktopIconAlpha);
+    UIC_ColorAlpha.DefaultValue := inttostr(GetDesktopIconBlendAlpha);
+    UIC_Colors.DefaultValue := inttostr(GetDesktopIconBlendColor);
+
+    // load the actual values
+    cbalphablend.Checked               := Theme[DS_ICONALPHABLEND].BoolValue;
+    cbcolorblend.Checked               := Theme[DS_ICONBLENDING].BoolValue;
+    sgbiconalpha.Value                 := Theme[DS_ICONALPHA].IntValue;
+    sbgimagencblendalpha.Value         := Theme[DS_ICONBLENDALPHA].IntValue;
+    IconColors.Items.Item[0].ColorCode := Theme[DS_ICONBLENDCOLOR].IntValue;    
+
+    // load if settings are changed
+    UIC_AlphaBlend.HasChanged := Theme[DS_ICONALPHABLEND].isCustom;
+    UIC_ColorBlend.HasChanged := Theme[DS_ICONBLENDING].isCustom;
+    UIC_BlendAlpha.Haschanged := Theme[DS_ICONALPHA].isCustom;
+    UIC_ColorAlpha.HasChanged := Theme[DS_ICONBLENDALPHA].isCustom;
+    UIC_Colors.HasChanged     := Theme[DS_ICONBLENDCOLOR].isCustom;
+  end;
+
+  Settings.Free;
 
   frmImage.Show;
   result := frmImage.Handle;
@@ -120,19 +203,26 @@ end;
 
 procedure GetCenterScheme(var ABackground: TColor;
       var AItemColor: TColor; var AItemSelectedColor: TColor);
-var
-  n : integer;
+
+  procedure AssingUICColors(Container : TComponent);
+  var
+    n : integer;
+  begin
+    for n := 0 to Container.ComponentCount - 1 do
+        if Container.Components[n] is TSharpEUIC then
+        begin
+          TSharpEUIC(Container.Components[n]).NormalColor := clWindow;
+          TSharpEUIC(Container.Components[n]).BorderColor := AItemSelectedColor;
+          TSharpEUIC(Container.Components[n]).BackgroundColor := $00F7F7F7;
+        end else
+        if Container.Components[n] is TSharpEUIC then
+          AssingUICColors(Container.Components[n]);        
+  end;
+
 begin
   if frmImage <> nil then
   begin
-    for n := 0 to frmImage.ComponentCount - 1 do
-      if frmImage.Components[n] is TSharpEUIC then
-      begin
-        TSharpEUIC(frmImage.Components[n]).NormalColor := clWindow;
-        TSharpEUIC(frmImage.Components[n]).BorderColor := AItemSelectedColor;
-        TSharpEUIC(frmImage.Components[n]).BackgroundColor := $00F7F7F7;
-      end;
-
+    AssingUICColors(frmImage);
     frmImage.spc.TabColor := $00F7F7F7;
     frmImage.spc.BorderColor := $00FBEFE3;
   end;
@@ -168,6 +258,7 @@ exports
   ClickTab,
   SetDisplayText,
   SetStatusText,
+  SetSettingType,
   SetBtnState,
   GetCenterScheme,
   AddTabs,
