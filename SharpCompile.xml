@@ -4,7 +4,9 @@
      <project Name="DeskArea" Type="DLL">Plugins\Configurations\DeskArea\DeskArea.bdsproj</project>  
      <project Name="Desktop" Type="DLL">Plugins\Configurations\Desktop\Desktop.bdsproj</project>  
      <project Name="Font" Type="DLL">Plugins\Configurations\Font\Font.bdsproj</project>  
-     <project Name="Icon List" Type="DLL">Plugins\Configurations\Icon List\IconList.bdsproj</project>  
+     <project Name="Icon List" Type="DLL">Plugins\Configurations\Icon List\IconList.bdsproj</project>       
+     <project Name="Image" Type="DLL">Plugins\Configurations\Image\Image.bdsproj</project>  
+     <project Name="Link" Type="DLL">Plugins\Configurations\Link\Link.bdsproj</project>       
      <project Name="Scheme" Type="DLL">Plugins\Configurations\Scheme\Scheme.bdsproj</project>  
      <project Name="SharpBar Manager" Type="DLL">Plugins\Configurations\SharpBar List\SharpBarList.bdsproj</project>  
      <project Name="SharpDesk" Type="DLL">Plugins\Configurations\SharpDesk\SharpDesk.bdsproj</project>  
@@ -56,6 +58,7 @@
      <project Name="Weather" Type="DLL">Plugins\Modules\Weather\Weather.bdsproj</project>   
   </package>
   <package Name="Objects">
+     <project Name="Image" Type="DLL" >Plugins\Objects\Image\Image.bdsproj</project>  
      <project Name="Link" Type="DLL" >Plugins\Objects\Link\Link.bdsproj</project>  
      <project Name="Recycle Bin" Type="DLL" >Plugins\Objects\RecycleBin\RecycleBin.bdsproj</project>
   </package>
