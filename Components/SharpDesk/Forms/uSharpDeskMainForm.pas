@@ -247,7 +247,6 @@ implementation
 
 
 uses uSharpDeskCreateForm,
-     uSharpDeskSettingsForm,
      uSharpDeskAlignSettingsForm,
      SharpCenterApi;
 
@@ -524,8 +523,6 @@ begin
     end;
     SharpDesk.UpdateAnimationLayer;
 
-    SharpDesk.LoadObjectSet;
-
     if SharpDesk.DeskSettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
   finally
     BackgroundImage.ForceFullInvalidate;
@@ -676,6 +673,7 @@ begin
      SharpDeskMainForm.Width:=Screen.DesktopWidth;
      SharpDeskMainForm.Height:=Screen.DesktopHeight;
      LoadTheme(True);
+     SharpDesk.LoadObjectSet;
      SharpDeskMainForm.BackgroundImage.RepaintMode := rmOptimizer;
 end;
 
@@ -1089,6 +1087,7 @@ begin
   SharpCenterApi.CenterCommand(sccLoadSetting,
                                PChar(SharpApi.GetCenterDirectory + '_Objects\' + s + '.con'),
                                PChar(inttostr(obj.Settings.ObjectID)));
+  SharpDesk.UnselectAll;
 end;
 
 

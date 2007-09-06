@@ -65,9 +65,10 @@ var
 
 implementation
 
-uses uSharpDeskMainForm,
-     uSharpDeskSettingsForm,
+uses SharpCenterApi,
+     uSharpDeskMainForm,
      uSharpDeskObjectFile,
+     uSharpDeskObjectSetItem,
      uSharpDeskFunctions;
 
 {$R *.dfm}
@@ -192,20 +193,32 @@ end;
 procedure TCreateForm.btn_addClick(Sender: TObject);
 var
    ID : integer;
+   OFile : TObjectFile;
+   SetItem : TObjectSetItem;
+   s : String;
 begin
-     if Objects.Selected = nil then exit;
+  if Objects.Selected = nil then exit;
 
-     ID :=  SharpDesk.ObjectSet.GenerateObjectID;
+  ID :=  SharpDesk.ObjectSet.GenerateObjectID;
+  OFile := TObjectFile(SharpDesk.ObjectFileList.Items[Objects.Selected.ImageIndex]);
 
-     SettingsForm.Load(TObjectFile(SharpDesk.ObjectFileList.Items[Objects.Selected.ImageIndex]),
-                       ID,
-                       LastX,
-                       LastY,
-                       True);
-     CreateForm.Visible:=False;
-     SettingsForm.ShowModal;
+  // Add the desktop object with default settings
+  SetItem := SharpDesk.ObjectSet.AddDesktopObject(ID,
+                                                  OFile.FileName,
+                                                  Point(LastX,LastY),
+                                                  False,
+                                                  False);
+  OFile.AddDesktopObject(SetItem);
+  SharpDesk.ObjectSet.Save;
 
-     CreateForm.Close;
+  // launch SharpCenter to edit the settings
+  s := OFile.filename;
+  setlength(s,length(s) - length(ExtractFileExt(s)));
+  SharpCenterApi.CenterCommand(sccLoadSetting,
+                               PChar(SharpApi.GetCenterDirectory + '_Objects\' + s + '.con'),
+                               PChar(inttostr(SetItem.ObjectID)));
+
+  CreateForm.Close;
 end;
 
 procedure TCreateForm.edit_filterKeyPress(Sender: TObject; var Key: Char);
