@@ -210,9 +210,9 @@ begin
                           MenuItem2.Caption := inttostr(i*25)+'%';
                           if i*25 = layer.ImageLayer.Size then
                           begin
-                            MenuItem2.ImageIndex := Menu2.Images.Count;
+                            MenuItem2.ImageIndex := Menu2.Images.Count-1;
                             b := True;
-                          end else MenuItem2.ImageIndex := Menu2.Images.Count-1;
+                          end else MenuItem2.ImageIndex := Menu2.Images.Count-2;
                           MenuItem2.Tag := i*25;
                           MenuItem2.OnClick := Layer.ImageLayer.SizeOnClick;
                           MenuItem.Add(MenuItem2);
@@ -222,12 +222,12 @@ begin
                         begin
                           MenuItem2 := TMenuItem.Create(MenuItem);
                           MenuItem2.Caption := 'Custom Size : ' + inttostr(Layer.ImageLayer.Size);
-                          MenuItem2.ImageIndex := Menu2.Images.Count;
+                          MenuItem2.ImageIndex := Menu2.Images.Count - 1;
                           MenuItem2.Tag := Layer.ImageLayer.Size;
                           MenuItem.Add(MenuItem2);
                         end;
                         Bmp2.Free;
-                    end;                     
+                    end;
      end;
 end;
 
