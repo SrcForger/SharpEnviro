@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <Image>
+      <Dll>_ObjectDlls\Link.dll</Dll>
+      <Icon>Icons\Link.png</Icon>
+    </Image>
+  </Sections>
+</SharpCenter>
