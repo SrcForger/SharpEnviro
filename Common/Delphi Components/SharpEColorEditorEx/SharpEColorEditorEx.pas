@@ -235,10 +235,9 @@ begin
   if FColorEditor = nil then
     exit;
 
-  if ((TSharpEColorEditor(Sender).GetTabIndex = 0) and
+  if ((TSharpEColorEditor(Sender).GetTabIndex = FLastTab) and
     (TSharpEColorEditor(Sender) = FLastColorEditor) and
-      (TSharpEColorEditor(Sender).Expanded) and
-        (FLastTab <> 1)) then
+      (TSharpEColorEditor(Sender).Expanded)) then
     begin
       bExpand := False;
     end else begin
@@ -520,6 +519,7 @@ begin
       tmp := TSharpEColorEditor.Create(Self);
       tmp.Parent := self;
       tmp.SwatchManager := FSwatchManager;
+      tmp.ParentColor := ParentColor;
 
       FItems.Item[i].ColorEditor := tmp;
       FItems.Item[i].Parent := Self;

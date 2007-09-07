@@ -129,6 +129,7 @@ type
 
   published
     property Align;
+    property ParentColor;
 
     property CollapseHeight: Integer read GetCollapseHeight;
     property ExpandedHeight: Integer read GetExpandedHeight;
