@@ -80,6 +80,7 @@ type
 
     FBDSInstalled : boolean;
     FBDSVersion   : String;
+    FBDSPath      : String;
     FSearchPath   : String;
     FBrowsePath   : String;
     procedure OnCompilerNewLine(Sender: TObject; NewLine: string; OutputType: TOutputType);
@@ -180,6 +181,7 @@ var
 begin
   FBDSInstalled := False;
   FBDSVersion := '0';
+  FBDSPath := '';
   FSearchPath := '';
   FBrowsePath := '';
 
@@ -190,6 +192,7 @@ begin
     begin
       FBDSInstalled := True;
       FBDSVersion := '4.0';
+      FBDSPath := Reg.ReadString('RootDir');
       Reg.CloseKey;
     end;
     if not FBDSInstalled then
@@ -198,6 +201,7 @@ begin
       begin
         FBDSInstalled := True;
         FBDSVersion := '3.0';
+        FBDSPath := Reg.ReadString('RootDir');
         Reg.CloseKey;
       end;
     end;
@@ -213,8 +217,10 @@ begin
     Reg.Free;
   end;
 
-  FSearchPath := StringReplace(FSearchPath,'$(ProgramFiles)',JclSysInfo.GetProgramFilesFolder,[rfReplaceAll,rfIgnoreCase]);
-  FBrowsePath := StringReplace(FBrowsePath,'$(ProgramFiles)',JclSysInfo.GetProgramFilesFolder,[rfReplaceAll,rfIgnoreCase]);
+  FSearchPath := StringReplace(FSearchPath, '$(ProgramFiles)', JclSysInfo.GetProgramFilesFolder, [rfReplaceAll,rfIgnoreCase]);
+  FBrowsePath := StringReplace(FBrowsePath, '$(ProgramFiles)', JclSysInfo.GetProgramFilesFolder, [rfReplaceAll,rfIgnoreCase]);
+  FSearchPath := StringReplace(FSearchPath, '$(BDS)', FBDSPath, [rfReplaceAll,rfIgnoreCase]);
+  FBrowsePath := StringReplace(FBrowsePath, '$(BDS)', FBDSPath, [rfReplaceAll,rfIgnoreCase]);
 end;
 
 function TDelphiCompiler.CompileProject(Project: TDelphiProject; bDebug : boolean = False) : boolean;
