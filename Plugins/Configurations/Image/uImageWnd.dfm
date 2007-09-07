@@ -20,7 +20,7 @@ object frmImage: TfrmImage
     Top = 0
     Width = 427
     Height = 400
-    ActivePage = pagImage
+    ActivePage = pagDisplay
     PropagateEnable = False
     Align = alClient
     object pagImage: TJvStandardPage
@@ -141,7 +141,7 @@ object frmImage: TfrmImage
         TabAlignment = taLeftJustify
         AutoSizeTabs = True
         TabBackgroundColor = clWindow
-        BackgroundColor = clBtnFace
+        BackgroundColor = clWindow
         BorderColor = clBlack
         TabColor = 15724527
         TabSelColor = clWhite
@@ -550,9 +550,7 @@ object frmImage: TfrmImage
             BevelInner = bvNone
             BevelOuter = bvNone
             BorderStyle = bsNone
-            Color = clWindow
             ParentBackground = True
-            ParentColor = False
             TabOrder = 0
             OnResize = IconColorsResize
             Items = <
