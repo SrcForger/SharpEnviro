@@ -133,6 +133,9 @@ procedure TfrmLink.FormShow(Sender: TObject);
 begin
   UpdateIcon;
   cb_caption.OnClick(cb_caption);
+  Label5.Font.Color := clGrayText;
+  Label1.Font.Color := clGrayText;
+  Label4.Font.Color := clGrayText;
 end;
 
 procedure TfrmLink.IconBeforeDialog(Sender: TObject; var AName: string;

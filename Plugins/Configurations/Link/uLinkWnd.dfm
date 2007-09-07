@@ -28,7 +28,6 @@ object frmLink: TfrmLink
       Top = 0
       Width = 427
       Height = 400
-      ExplicitLeft = 3
       object Label9: TLabel
         AlignWithMargins = True
         Left = 8
@@ -74,7 +73,6 @@ object frmLink: TfrmLink
         Margins.Bottom = 0
         Align = alTop
         Caption = 'Icon'
-        ExplicitTop = 305
         ExplicitWidth = 21
       end
       object Target: TJvFilenameEdit
@@ -92,9 +90,6 @@ object frmLink: TfrmLink
         Align = alTop
         TabOrder = 0
         OnChange = TargetChange
-        ExplicitLeft = 32
-        ExplicitTop = 72
-        ExplicitWidth = 121
       end
       object pn_caption: TPanel
         Left = 0
@@ -157,9 +152,6 @@ object frmLink: TfrmLink
           Caption = 'Display Caption'
           TabOrder = 0
           OnClick = cb_captionClick
-          ExplicitLeft = 96
-          ExplicitTop = 168
-          ExplicitWidth = 97
         end
         object spc: TSharpEPageControl
           AlignWithMargins = True
@@ -216,14 +208,12 @@ object frmLink: TfrmLink
             PropagateEnable = False
             Align = alClient
             ParentBackground = True
-            ExplicitHeight = 131
             object pagesingle: TJvStandardPage
               Left = 0
               Top = 0
               Width = 359
               Height = 63
               Caption = 'pagesingle'
-              ExplicitHeight = 131
               object edit_caption: TEdit
                 Left = 0
                 Top = 0
@@ -233,9 +223,6 @@ object frmLink: TfrmLink
                 TabOrder = 0
                 Text = 'Link'
                 OnChange = edit_captionChange
-                ExplicitLeft = 56
-                ExplicitTop = 48
-                ExplicitWidth = 121
               end
             end
             object pagemulti: TJvStandardPage
@@ -245,7 +232,6 @@ object frmLink: TfrmLink
               Height = 63
               Caption = 'pagemulti'
               ParentBackground = True
-              ExplicitHeight = 131
               object memo_caption: TMemo
                 Left = 0
                 Top = 0
@@ -300,7 +286,6 @@ object frmLink: TfrmLink
         Caption = 'Panel3'
         ParentColor = True
         TabOrder = 2
-        ExplicitTop = 318
         object Panel4: TPanel
           Left = 0
           Top = 0
@@ -311,7 +296,6 @@ object frmLink: TfrmLink
           Caption = 'Panel4'
           ParentColor = True
           TabOrder = 0
-          ExplicitHeight = 67
           object Label4: TLabel
             AlignWithMargins = True
             Left = 26
@@ -347,8 +331,6 @@ object frmLink: TfrmLink
             DirectInput = False
             TabOrder = 0
             OnChange = IconChange
-            ExplicitTop = 371
-            ExplicitWidth = 393
           end
         end
         object SharpERoundPanel1: TSharpERoundPanel
@@ -371,7 +353,6 @@ object frmLink: TfrmLink
           BorderColor = clBtnFace
           Border = True
           BackgroundColor = clWindow
-          ExplicitTop = 15
           object IconPreview: TImage32
             AlignWithMargins = True
             Left = 2
