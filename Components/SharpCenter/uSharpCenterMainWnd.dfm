@@ -13,6 +13,7 @@ object SharpCenterWnd: TSharpCenterWnd
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   ScreenSnap = True
   OnCloseQuery = FormCloseQuery
   OnMouseWheel = FormMouseWheel
@@ -2071,7 +2072,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               98)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -618
+              Left = -622
               Top = 35
               Width = 23
               Height = 22
@@ -2523,13 +2524,14 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = 0
+              Width = -4
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
+              ExplicitWidth = 0
             end
           end
         end
