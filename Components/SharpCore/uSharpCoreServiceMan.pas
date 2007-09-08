@@ -152,6 +152,10 @@ begin
   FindClose(sr);
   SendDebugMessageEx('SharpCore',pchar('ServiceCount: ' + inttostr(Files.Count)),clBlack,DMT_INFO);
 
+  // Move SystemTray to top of list
+  i := Files.IndexOf('SystemTray' + ServiceExt);
+  if i <> -1 then Files.Move(i,0);
+
   // Move SkinController to top of list
   i := Files.IndexOf('SkinController' + ServiceExt);
   if i <> -1 then Files.Move(i,0);
@@ -162,10 +166,6 @@ begin
 
   // Move Exec to top of list
   i := Files.IndexOf('Exec' + ServiceExt);
-  if i <> -1 then Files.Move(i,0);
-
-  // Move SystemTray to top of list
-  i := Files.IndexOf('SystemTray' + ServiceExt);
   if i <> -1 then Files.Move(i,0);
 
   // Move Exec to top of list
