@@ -52,8 +52,6 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
   private
     FWndList : TStringList;
-    FWarmup : boolean;
-    FWarmupstart : int64;
     FDllHandle : THandle;
     SHLockShared : function (Handle: THandle; DWord: DWORD): pointer; stdcall;
     SHUnlockShared : function (Pnt: Pointer): BOOL; stdcall;
@@ -220,9 +218,6 @@ end;
 
 procedure TTrayMessageWnd.FormCreate(Sender: TObject);
 begin
-  FWarmup := False;
-  FWarmupstart := DateTimeToUnix(Now);
-
   FIcons := TObjectList.Create;
   FIcons.OwnsObjects := True;
   FIcons.Clear;
@@ -426,17 +421,6 @@ begin
       end;
       SH_TRAY_DATA :
       begin
-        if FWarmup then
-        begin
-          if DateTimeToUnix(Now) - FWarmupStart >= 1 then
-             FWarmup := False
-          else
-          begin
-            msg.result := 0;
-            exit;
-          end;
-        end;
-
         TrayCmd := pINT(PCHAR(Data.lpdata) + 4)^;
         Icondata := pNotifyIconDataV7(PCHAR(Data.lpdata) + 8)^;
         hidden := false;
