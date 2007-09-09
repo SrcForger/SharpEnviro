@@ -152,9 +152,6 @@ begin
 end;
 
 procedure ClickBtn(AButtonID: TSCB_BUTTON_ENUM; AButton:TPngSpeedButton; AText:String);
-var
-  id, newid:Integer;
- // tmp: TThemeListItem;
 begin
   Case AButtonID of
       scbConfigure:

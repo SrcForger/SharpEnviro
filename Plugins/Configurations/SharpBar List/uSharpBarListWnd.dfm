@@ -32,6 +32,7 @@ object frmBarList: TfrmBarList
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         Autosize = False
+        StretchColumn = False
         Images = StatusImages
         SelectedImages = StatusImages
       end
@@ -45,10 +46,12 @@ object frmBarList: TfrmBarList
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         Autosize = False
+        StretchColumn = False
       end>
     PopupMenu = ListPopup
     ItemHeight = 32
     OnDblClickItem = lbBarListDblClickItem
+    AutosizeGrid = False
     Borderstyle = bsNone
     Ctl3d = False
     Align = alClient

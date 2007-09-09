@@ -75,6 +75,7 @@ type
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
   public
     ModuleID : integer;
+    BarID : integer;
     BarWnd : hWnd;
     FTrayClient : TTrayClient;
     Background : TBitmap32;
@@ -175,7 +176,8 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
   skin : String;
 begin
   // Load Skin custom settings as default
@@ -209,26 +211,34 @@ begin
   except
   end;
 
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    skin := SharpThemeApi.GetSkinName;
-    if ItemNamed['skin'] <> nil then
-       if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then
-          with ItemNamed['skin'].Items.ItemNamed[skin].Items do
-          begin
-            sShowBackground  := BoolValue('ShowBackground',sShowBackground);
-            sBackgroundColor := IntValue('BackgroundColor',sBackgroundColor);
-            sBackgroundAlpha := IntValue('BackgroundAlpha',sBackgroundAlpha);
-            sShowBorder      := BoolValue('ShowBorder',sShowBorder);
-            sBorderColor     := IntValue('BorderColor',sBorderColor);
-            sBorderAlpha     := IntValue('BorderAlpha',sBorderAlpha);
-            sColorBlend      := BoolValue('ColorBlend',sColorBlend);
-            sBlendColor      := IntValue('BlendColor',sBlendColor);
-            sBlendAlpha      := IntValue('BlendAlpha',sBlendAlpha);
-            sIconAlpha       := IntValue('IconAlpha',sIconAlpha);
-          end;
-  end;               
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
+  end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      skin := SharpThemeApi.GetSkinName;
+      if ItemNamed['skin'] <> nil then
+         if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then
+            with ItemNamed['skin'].Items.ItemNamed[skin].Items do
+            begin
+              sShowBackground  := BoolValue('ShowBackground',sShowBackground);
+              sBackgroundColor := IntValue('BackgroundColor',sBackgroundColor);
+              sBackgroundAlpha := IntValue('BackgroundAlpha',sBackgroundAlpha);
+              sShowBorder      := BoolValue('ShowBorder',sShowBorder);
+              sBorderColor     := IntValue('BorderColor',sBorderColor);
+              sBorderAlpha     := IntValue('BorderAlpha',sBorderAlpha);
+              sColorBlend      := BoolValue('ColorBlend',sColorBlend);
+              sBlendColor      := IntValue('BlendColor',sBlendColor);
+              sBlendAlpha      := IntValue('BlendAlpha',sBlendAlpha);
+              sIconAlpha       := IntValue('IconAlpha',sIconAlpha);
+            end;
+    end;
+  XML.Free;
 end;
 
 procedure TMainForm.SetSize(NewWidth : integer);
@@ -287,8 +297,9 @@ end;
 procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
   skin : String;
+  fileloaded : boolean;
 begin
   SettingsForm := TSettingsForm.Create(Application.MainForm);
   SettingsForm.cb_dbg.Checked      := sShowBackground;
@@ -314,9 +325,16 @@ begin
     sBlendAlpha := SettingsForm.tb_blend.Position;
     sIconAlpha  := SettingsForm.tb_alpha.Position;
 
-    item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-    if item <> nil then
-    with item.Items do
+    XML := TJvSimpleXML.Create(nil);
+    try
+      XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      fileloaded := True;
+    except
+      fileloaded := False;
+    end;
+    if not fileloaded then
+      XML.Root.Name := 'SystemTrayModuleSettings';
+    with XML.Root.Items do
     begin
       skin := SharpThemeApi.GetSkinName;
       if ItemNamed['skin'] <> nil then
@@ -326,7 +344,7 @@ begin
       end else Add('skin').Items.Add(skin);
       with ItemNamed['skin'].Items.ItemNamed[skin].Items do
       begin
-        clear;
+        Clear;
         Add('ShowBackground',sShowBackground);
         Add('BackgroundColor',sBackgroundColor);
         Add('BackgroundAlpha',sBackgroundAlpha);
@@ -339,7 +357,8 @@ begin
         Add('IconAlpha',sIconAlpha);
       end;
     end;
-    uSharpBarAPI.SaveXMLFile(BarWnd);
+    XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.Free;
 
     ReAlignComponents(true);
   end;

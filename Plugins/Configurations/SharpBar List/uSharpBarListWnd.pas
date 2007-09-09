@@ -63,11 +63,11 @@ type
     ListPopup: TPopupMenu;
     procedure ListPopupPopup(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
-
-    procedure lbBarListDblClickItem(AText: string; AItem, ACol: Integer);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure lbBarListDblClickItem(const ACol: Integer;
+      AItem: TSharpEListItem);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
     procedure OnListPopupStartClick(Sender : TObject);
@@ -129,6 +129,12 @@ procedure TfrmBarList.FormShow(Sender: TObject);
 begin
   lbBarList.Margin := Rect(0,0,0,0);
   lbBarList.ColumnMargin := Rect(6,0,6,0);
+end;
+
+procedure TfrmBarList.lbBarListDblClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
+begin
+  ConfigureItem;
 end;
 
 procedure TfrmBarList.FormCreate(Sender: TObject);
@@ -209,47 +215,52 @@ var
   newItem:TSharpEListItem;
   XML : TJvSimpleXML;
   Dir : String;
-  FName : String;
   iindex : integer;
   BarItem : TBarItem;
   SList : TStringList;
+  sr : TSearchRec;
+  fileloaded : boolean;
 begin
   lbBarList.Clear;
   BarList.Clear;
 
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
-  FName := Dir + 'bars.xml';
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
   XML := TJvSimpleXML.Create(nil);
-  try
-    if FileExists(FName) then
+  if FindFirst(Dir + '*',FADirectory,sr) = 0 then
+  repeat
+    XML.Root.Clear;
+    if FileExists(Dir + sr.Name + '\Bar.xml') then
     begin
-      XML.LoadFromFile(FName);
-      if XML.Root.Items.ItemNamed['bars'] <> nil then
-         for n := 0 to XML.Root.Items.ItemNamed['bars'].Items.Count - 1 do
-             with XML.Root.Items.ItemNamed['bars'].Items.Item[n].Items do
-             begin
-               BarItem := TBarItem.Create;
-               with BarItem do
-               begin
-                 Name := Value('Name','Toolbar');
-                 ID   := IntValue('ID',-1);
-                 if ItemNamed['Settings'] <> nil then
-                    with ItemNamed['Settings'].Items do
-                    begin
-                      Monitor := IntValue('MonitorIndex',0);
-                      PMonitor := BoolValue('PrimaryMonitor',True);
-                      HPos := IntValue('HorizPos',0);
-                      VPos := IntValue('VertPos',0);
-                      AutoStart := BoolValue('AutoStart',True);
-                    end;
-               end;
-               BarList.Add(BarItem);
-             end;
-    end
-  finally
-    XML.Free;
-  end;
+      try
+        xml.LoadFromFile(Dir + sr.Name + '\Bar.xml');
+        fileloaded := True;
+      except
+        fileloaded := False;
+      end;
+      if fileloaded then
+      begin
+        if XML.Root.Items.ItemNamed['Settings'] <> nil then
+          with XML.Root.Items.ItemNamed['Settings'].Items do
+          begin
+            BarItem := TBarItem.Create;
+            with BarItem do
+            begin
+              Name := Value('Name','Toolbar');
+              ID := strtoint(sr.Name);
+              Monitor := IntValue('MonitorIndex',0);
+              PMonitor := BoolValue('PrimaryMonitor',True);
+              HPos := IntValue('HorizPos',0);
+              VPos := IntValue('VertPos',0);
+              AutoStart := BoolValue('AutoStart',True);
+            end;
+            BarList.Add(BarItem);            
+        end;
+      end;
+    end;
+  until FindNext(sr) <> 0;
+  FindClose(sr);
+  XML.free;
 
   SList := TStringList.Create;
   for n := 0 to BarList.Count - 1 do
@@ -416,141 +427,131 @@ function TfrmBarList.SaveUi: Boolean;
 var
   XML : TJvSimpleXML;
   Dir : String;
-  FName : String;
   NewID : String;
-  MString : String;
   CID : integer;
-  b : boolean;
   n : integer;
   BarItem : TBarItem;
   wnd : hwnd;
+  sr : TSearchRec;
+  fileloaded : boolean;
 begin
   Result := True;
 
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
-  FName := Dir + 'bars.xml';
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
-  XML := TJvSimpleXML.Create(nil);
-  try
-    if FileExists(FName) then
-    begin
-      XML.LoadFromFile(FName);
-      if XML.Root.Items.ItemNamed['bars'] = nil then
-         XML.Root.Items.Add('bars');
+  case FEditMode of
+    sceAdd:
+      begin
+        // Generate a new unique bar ID and make sure that there is no other
+        // bar with the same ID
+        repeat
+          NewID := '';
+          for n := 1 to 8 do NewID := NewID + inttostr(random(9)+1);
+        until not DirectoryExists(Dir + NewID);
 
-      case FEditMode of
-        sceAdd:
+        if FrmEditItem.cbBasedOn.ItemIndex > 0 then
+        begin
+          CID := TBarItem(FrmEditItem.cbBasedOn.Items.Objects[FrmEditItem.cbBasedOn.ItemIndex]).ID;
+
+          if FindFirst(Dir + inttostr(CID) + '\*.xml',FAAnyFile,sr) = 0 then
+          repeat
+            if FileExists(Dir + inttostr(CID) + '\' + sr.Name) then
+              CopyFile(PChar(Dir + inttostr(CID) + '\' + sr.Name),
+                       PChar(Dir + NewID + '\' + sr.Name),True);
+          until FindNext(sr) <> 0;
+          FindClose(sr);
+        end;
+
+        XML := TJvSimpleXML.Create(nil);
+        if FileExists(Dir + NewID + '\Bar.xml') then
+        begin
+          try
+            XML.LoadFromFile(Dir + NewID + '\Bar.xml');
+            fileloaded := True;
+          except
+            fileloaded := False;
+          end;
+        end else fileloaded := False;
+
+        if not fileloaded then
+          XML.Root.Name := 'SharpBar';
+
+        with XML.Root.Items do
+        begin
+          if ItemNamed['Settings'] = nil then
+            Add('Settings');
+
+          with ItemNamed['Settings'].Items do
           begin
-            // Generate a new unique bar ID and make sure that there is no other
-            // bar with the same ID
-            repeat
-              NewID := '';
-              for n := 1 to 8 do NewID := NewID + inttostr(random(9)+1);
+            clear;
+            Add('ID',NewID);
+            Add('Name',FrmEditItem.edName.Text);
+            Add('ShowThrobber',True);
+            Add('DisableHideBar',False);
+            Add('AutoStart',True);
+            Add('AutoPosition',True);
+            Add('PrimaryMonitor',(FrmEditItem.cobo_monitor.ItemIndex = 0));
+            Add('MonitorIndex',FrmEditItem.cobo_monitor.ItemIndex + 1);
+            Add('HorizPos',FrmEditItem.cobo_halign.ItemIndex);
+            Add('VertPos',FrmEditItem.cobo_valign.ItemIndex);
+          end;
 
-              b := False;
-              with xml.root.items.ItemNamed['bars'] do
-              begin
-                for n := 0 to Items.Count - 1 do
-                    if Items.Item[n].Items.Value('ID','0') = NewID then
-                    begin
-                      b := True;
-                      break;
-                    end;
-              end;
-            until not b;
+          if ItemNamed['Modules'] = nil then
+            Add('Modules');
+        end;
+        ForceDirectories(Dir + NewID);
+        XML.SaveToFile(Dir + NewID + '\Bar.xml');
+        XML.Free;
+      end;
+    sceEdit:
+      begin
+        CID := TBarItem(frmEditItem.BarItem).ID;
+        XML := TJvSimpleXML.Create(nil);
+        fileloaded := False;
+        if FileExists(Dir + inttostr(CID) + '\Bar.xml') then
+        begin
+          try
+            XML.LoadFromFile(Dir + inttostr(CID) + '\Bar.xml');
+          except
+          end;
+        end;
+        if FileLoaded then
+          with XML.Root.Items do
+          begin
+            if ItemNamed['Settings'] = nil then
+              Add('Settings');
 
-            with xml.root.items.ItemNamed['bars'].Items.Add('item').Items do
+            with ItemNamed['Settings'].Items do
             begin
+              Clear;
               Add('ID',NewID);
               Add('Name',FrmEditItem.edName.Text);
-              with Add('Settings').Items do
-              begin
-                Add('ShowThrobber',True);
-                Add('DisableHideBar',False);
-                Add('AutoStart',True);
-                Add('AutoPosition',True);
-                Add('PrimaryMonitor',(FrmEditItem.cobo_monitor.ItemIndex = 0));
-                Add('MonitorIndex',FrmEditItem.cobo_monitor.ItemIndex + 1);
-                Add('HorizPos',FrmEditItem.cobo_halign.ItemIndex);
-                Add('VertPos',FrmEditItem.cobo_valign.ItemIndex);
-              end;
-              Add('Modules');
-              if FrmEditItem.cbBasedOn.ItemIndex > 0 then
-              begin
-                CID := TBarItem(FrmEditItem.cbBasedOn.Items.Objects[FrmEditItem.cbBasedOn.ItemIndex]).ID;
-                for n := 0 to XML.root.Items.ItemNamed['bars'].Items.Count - 1 do
-                    if XML.root.Items.ItemNamed['bars'].Items.Item[n].Items.IntValue('ID',-1) = CID then
-                       if XML.root.Items.ItemNamed['bars'].Items.Item[n].Items.ItemNamed['Modules'] <> nil then
-                       begin
-                         MString := XML.root.Items.ItemNamed['bars'].Items.Item[n].Items.ItemNamed['Modules'].SaveToString;
-                         ItemNamed['Modules'].LoadFromString(MString);
-                       end;
-                CopyFile(PChar(Dir + 'Module Settings\' + inttostr(CID) + '.xml'),
-                         PChar(Dir + 'Module Settings\' + NewID + '.xml'),True);
-              end;
+              Add('ShowThrobber',True);
+              Add('DisableHideBar',False);
+              Add('AutoStart',True);
+              Add('AutoPosition',True);
+              Add('PrimaryMonitor',(FrmEditItem.cobo_monitor.ItemIndex = 0));
+              Add('MonitorIndex',FrmEditItem.cobo_monitor.ItemIndex + 1);
+              Add('HorizPos',FrmEditItem.cobo_halign.ItemIndex);
+              Add('VertPos',FrmEditItem.cobo_valign.ItemIndex);
             end;
           end;
-        sceEdit:
-          begin
-            CID := TBarItem(frmEditItem.BarItem).ID;
-            if XML.Root.Items.ItemNamed['bars'] <> nil then
-               with XML.root.items.ItemNamed['bars'].Items do
-                    for n := 0 to Count - 1 do
-                        if Item[n].Items.IntValue('ID',-1) = CID then
-                        begin
-                          if Item[n].Items.ItemNamed['Name'] <> nil then
-                             Item[n].Items.ItemNamed['Name'].Value := FrmEditItem.edName.Text
-                             else Item[n].Items.Add('Name',FrmEditItem.edName.Text);
-                          if Item[n].Items.ItemNamed['Settings'] = nil then
-                             Item[n].Items.Add('Settings');
-                          with Item[n].Items.ItemNamed['Settings'].Items do
-                          begin
-                            Clear;
-                            Add('ShowThrobber',True);
-                            Add('DisableHideBar',False);
-                            Add('AutoStart',True);
-                            Add('AutoPosition',True);
-                            Add('PrimaryMonitor',(FrmEditItem.cobo_monitor.ItemIndex = 0));
-                            Add('MonitorIndex',FrmEditItem.cobo_monitor.ItemIndex + 1);
-                            Add('HorizPos',FrmEditItem.cobo_halign.ItemIndex);
-                            Add('VertPos',FrmEditItem.cobo_valign.ItemIndex);
-                          end;
-                          break;
-                        end;
-          end;
-        sceDelete:
-          begin
-            BarItem := TBarItem(lbBarList.Item[lbBarList.ItemIndex].Data);
-            if IsBarRunning(BarItem.ID) then
-            begin
-              wnd := FindWindow(nil,PChar('SharpBar_'+inttostr(BarItem.ID)));
-              SendMessage(wnd,WM_SHARPTERMINATE,0,0);
-              // give it a second to shutdown
-              sleep(500);
-            end;
-            with xml.root.items.ItemNamed['bars'] do
-                 for n := 0 to Items.Count - 1 do
-                     if Items.Item[n].Items.IntValue('ID',-1) = BarItem.ID then
-                     begin
-                       Items.Delete(n);
-                       break;
-                     end;
-            if FileExists(Dir + 'Module Settings\' + inttostr(BarItem.ID) + '.xml') then
-               DeleteFile(PChar(Dir + 'Module Settings\' + inttostr(BarItem.ID) + '.xml'));
-          end;
+        XML.SaveToFile(Dir + inttostr(CID) + '\Bar.xml');
+        XML.Free;
       end;
-    end;
-  except
-    XML.Free;
-    Exit;
+    sceDelete:
+      begin
+        BarItem := TBarItem(lbBarList.Item[lbBarList.ItemIndex].Data);
+        if IsBarRunning(BarItem.ID) then
+        begin
+          wnd := FindWindow(nil,PChar('SharpBar_'+inttostr(BarItem.ID)));
+          SendMessage(wnd,WM_SHARPTERMINATE,0,0);
+          // give it a second to shutdown
+          sleep(500);
+        end;
+        DeleteDirectory(Dir + inttostr(BarItem.ID),True);
+      end;
   end;
-
-  if not DirectoryExists(Dir) then
-     ForceDirectories(Dir);
-  XML.SaveToFile(FName + '~');
-  if FileExists(FName) then
-     DeleteFile(FName);
-  RenameFile(FName + '~',FName);
 
   if FEditMode = sceAdd then
      SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpBar.exe'+
@@ -567,15 +568,7 @@ begin
   BuildBarList;
 end;
 
-procedure TfrmBarList.lbBarListDblClickItem(AText: string; AItem,
-  ACol: Integer);
-begin
-  ConfigureItem;
-end;
-
 procedure TfrmBarList.ConfigureItem;
-var
-  sBar: String;
 begin
   if lbBarList.ItemIndex < 0 then exit;
 
@@ -615,41 +608,35 @@ var
   Dir : String;
   FName : String;
   XML : TJvSimpleXML;
-  n : integer;
+  fileloaded : boolean;
 begin
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
-  FName := Dir + 'bars.xml';
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(TMenuItem(Sender).Tag) +'\';
+  FName := Dir + 'bar.xml';
 
   XML := TJvSimpleXML.Create(nil);
-  try
-    if FileExists(FName) then
-    begin
-      XML.LoadFromFile(FName);
-      if XML.Root.Items.ItemNamed['bars'] <> nil then
-         with XML.Root.Items.ItemNamed['bars'].Items do
-              for n := 0 to Count - 1 do
-                  if Item[n].Items.IntValue('ID',-1) = TMenuItem(Sender).Tag then
-                  begin
-                    if Item[n].Items.ItemNamed['Settings'] = nil then
-                       Item[n].Items.Add('Settings');
-                    with Item[n].Items.ItemNamed['Settings'].Items do
-                    begin
-                      if ItemNamed['AutoStart'] <> nil then
-                         ItemNamed['AutoStart'].BoolValue := True
-                         else Add('AutoStart',True);
-                    end;
-                  end;
-    end;
-  except
-    XML.Free;
-  end;
-
-  if not DirectoryExists(Dir) then
-     ForceDirectories(Dir);
-  XML.SaveToFile(FName + '~');
   if FileExists(FName) then
-     DeleteFile(FName);
-  RenameFile(FName + '~',FName);
+  begin
+    try
+      XML.LoadFromFile(FName);
+      fileloaded := True;
+    except
+      fileloaded := False;
+    end;
+    if fileloaded then
+      with XML.Root.Items do
+      begin
+        if ItemNamed['Settings'] = nil then
+          Add('Settings');
+        with ItemNamed['Settings'].Items do
+        begin
+          if ItemNamed['AutoStart'] <> nil then
+            ItemNamed['AutoStart'].BoolValue := True
+          else Add('AutoStart',True);
+        end;
+      end;
+  end;
+  XML.SaveToFile(FName);
+  XML.Free;
 
   BuildBarList;
 end;
@@ -659,43 +646,37 @@ var
   Dir : String;
   FName : String;
   XML : TJvSimpleXML;
-  n : integer;
+  fileloaded : boolean;
 begin
   OnListPopupStopClick(Sender);
 
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
-  FName := Dir + 'bars.xml';
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(TMenuItem(Sender).Tag) +'\';
+  FName := Dir + 'bar.xml';
 
   XML := TJvSimpleXML.Create(nil);
-  try
-    if FileExists(FName) then
-    begin
-      XML.LoadFromFile(FName);
-      if XML.Root.Items.ItemNamed['bars'] <> nil then
-         with XML.Root.Items.ItemNamed['bars'].Items do
-              for n := 0 to Count - 1 do
-                  if Item[n].Items.IntValue('ID',-1) = TMenuItem(Sender).Tag then
-                  begin
-                    if Item[n].Items.ItemNamed['Settings'] = nil then
-                       Item[n].Items.Add('Settings');
-                    with Item[n].Items.ItemNamed['Settings'].Items do
-                    begin
-                      if ItemNamed['AutoStart'] <> nil then
-                         ItemNamed['AutoStart'].BoolValue := False
-                         else Add('AutoStart',False);
-                    end;
-                  end;
-    end;
-  except
-    XML.Free;
-  end;
-
-  if not DirectoryExists(Dir) then
-     ForceDirectories(Dir);
-  XML.SaveToFile(FName + '~');
   if FileExists(FName) then
-     DeleteFile(FName);
-  RenameFile(FName + '~',FName);
+  begin
+    try
+      XML.LoadFromFile(FName);
+      fileloaded := True;
+    except
+      fileloaded := False;
+    end;
+    if fileloaded then
+      with XML.Root.Items do
+      begin
+        if ItemNamed['Settings'] = nil then
+          Add('Settings');
+        with ItemNamed['Settings'].Items do
+        begin
+          if ItemNamed['AutoStart'] <> nil then
+            ItemNamed['AutoStart'].BoolValue := False
+          else Add('AutoStart',False);
+        end;
+      end;
+  end;
+  XML.SaveToFile(FName);
+  XML.Free;
 
   BuildBarList;
 end;

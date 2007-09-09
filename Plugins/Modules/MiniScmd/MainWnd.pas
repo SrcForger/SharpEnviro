@@ -61,6 +61,7 @@ type
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
     ModuleID : integer;
+    BarID : integer;
     BarWnd : hWnd;
     procedure ShowSettings;
     procedure UpdateBangs;
@@ -84,7 +85,8 @@ uses SettingsWnd,
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
 begin
   UpdateBangs;
 
@@ -92,12 +94,20 @@ begin
   sButton    := True;
   rightbutton := False;
 
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    sWidth     := IntValue('Width',100);
-    sButton    := BoolValue('Button',True);
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      sWidth     := IntValue('Width',100);
+      sButton    := BoolValue('Button',True);
+    end;
+  XML.Free;
 end;
 
 procedure TMainForm.UpdateBackground(new : integer = -1);
@@ -155,7 +165,7 @@ end;
 procedure TMainForm.ShowSettings;
 var
   SettingsForm : TSettingsForm;
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
 begin
   try
     SettingsForm := TSettingsForm.Create(application.MainForm);
@@ -167,14 +177,16 @@ begin
       sWidth      := SettingsForm.tb_size.Position;
       sButton     := SettingsForm.cb_selectbutton.Checked;
 
-      item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-      if item <> nil then with item.Items do
+      XML := TJvSimpleXML.Create(nil);
+      XML.Root.Name := 'MiniScmdModuleSettings';
+      with XML.Root.Items do
       begin
         clear;
         Add('Width',sWidth);
         Add('Button',sButton);
       end;
-      uSharpBarAPI.SaveXMLFile(BarWnd);
+      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      XML.Free;
     end;
     ReAlignComponents(True);
 

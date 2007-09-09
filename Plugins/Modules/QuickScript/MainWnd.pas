@@ -71,6 +71,7 @@ type
     Background : TBitmap32;
   public
     ModuleID : integer;
+    BarID : integer;
     BarWnd : hWnd;
     procedure LoadSettings;
     procedure ReAlignComponents(BroadCast : boolean);
@@ -90,17 +91,26 @@ uses SettingsWnd;
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
 begin
   sCaption := True;
   sIcon    := True;
 
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    sCaption := BoolValue('Caption',True);
-    sIcon    := BoolValue('Icon',True); 
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      sCaption := BoolValue('Caption',True);
+      sIcon    := BoolValue('Icon',True);
+    end;
+  XML.Free;
 end;
 
 procedure TMainForm.UpdateBackground(new : integer = -1);
@@ -151,7 +161,7 @@ end;
 procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
 begin
   try
     SettingsForm := TSettingsForm.Create(application.MainForm);
@@ -164,14 +174,15 @@ begin
       sCaption := (SettingsForm.rb_caption.Checked or SettingsForm.rb_cai.Checked);
       sIcon    := (SettingsForm.rb_icon.Checked or SettingsForm.rb_cai.Checked);
 
-      item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-      if item <> nil then with item.Items do
+      XML := TJvSimpleXML.Create(nil);
+      XML.Root.Name := 'QuickScriptModuleSettings';
+      with XML.Root.Items do
       begin
-        clear;
         Add('Caption',sCaption);
         Add('Icon',sIcon);
       end;
-      uSharpBarAPI.SaveXMLFile(BarWnd);
+      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      XML.Free;
     end;
     ReAlignComponents(True);
 

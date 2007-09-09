@@ -66,6 +66,7 @@ type
     function ReplaceDataInString(pString : String) : String;
   public
     ModuleID : integer;
+    BarID    : integer;
     BarWnd   : hWnd;
     procedure LoadSettings;
     procedure SetSize(NewWidth : integer);
@@ -151,8 +152,8 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
   XML : TJvSimpleXML;
+  fileloaded : boolean;
 begin
   sShowIcon    := True;
   sShowLabels  := True;
@@ -160,15 +161,23 @@ begin
   sTopLabel    := 'Temperature: {#TEMPERATURE#}°{#UNITTEMP#}';
   sBottomLabel := 'Condition: {#CONDITION#}';
 
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  with item.Items do
-  begin
-    sShowIcon    := BoolValue('showicon',True);
-    sShowLabels  := BoolValue('showlabels',True);
-    sLocation    := Value('location',slocation);
-    sTopLabel    := Value('toplabel',sTopLabel);
-    sBottomLabel := Value('bottomlabel',sBottomLabel);
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      sShowIcon    := BoolValue('showicon',True);
+      sShowLabels  := BoolValue('showlabels',True);
+      sLocation    := Value('location',slocation);
+      sTopLabel    := Value('toplabel',sTopLabel);
+      sBottomLabel := Value('bottomlabel',sBottomLabel);
+    end;
+  XML.Free;
 
   if not DirectoryExists(GetSharpeUserSettingsPath + spath + 'Data\' + sLocation) then
   begin
@@ -274,7 +283,7 @@ end;
 procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
 begin
   try
     SettingsForm := TSettingsForm.Create(Application.MainForm);
@@ -293,17 +302,18 @@ begin
       sTopLabel := SettingsForm.edit_top.Text;
       sBottomLabel := SettingsForm.edit_bottom.Text;
       sLocation := SettingsForm.sLocation;
-      item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-      if item <> nil then with item.Items do
+      XML := TJvSimpleXML.Create(nil);
+      XML.Root.Name := 'WeatherModuleSettings';
+      with XML.Root.Items do
       begin
-        clear;
         Add('showicon',sShowIcon);
         Add('showlabels',sShowLabels);
         Add('location',sLocation);
         Add('toplabel',sTopLabel);
         Add('bottomlabel',sBottomLabel);
       end;
-      uSharpBarAPI.SaveXMLFile(BarWnd);
+      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      XML.Free;
 //      UpdateTimer.OnTimer(UpdateTimer);
     end;
     FWeatherParser.Update(sLocation);

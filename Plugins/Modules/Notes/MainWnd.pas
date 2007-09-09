@@ -63,8 +63,9 @@ type
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
     procedure LoadIcon;
   public
-    ModuleID : integer;
-    BarWnd : hWnd;
+    ModuleID     : integer;
+    BarID        : integer;
+    BarWnd       : hWnd;
     sLineWrap    : Boolean;
     sMonoFont    : Boolean;
     sLastTab     : String;
@@ -123,7 +124,7 @@ end;
 
 procedure TMainForm.SaveSettings;
 var
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
 begin
   if NotesForm <> nil then
   begin
@@ -132,10 +133,11 @@ begin
     sWidth := NotesForm.Width;
     sHeight := NotesForm.Height;
   end;
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
+
+  XML := TJvSimpleXML.Create(nil);
+  XML.Root.Name := 'NotesModuleSettings';
+  with xml.Root.Items do
   begin
-    clear;
     Add('Caption',sCaption);
     Add('Icon',sIcon);
     Add('AlwaysOnTop',sAlwaysOnTop);
@@ -149,12 +151,14 @@ begin
     Add('LastTextXPos',sLastTextPos.X);
     Add('LastTextYPos',sLastTextPos.Y);
   end;
-  uSharpBarAPI.SaveXMLFile(BarWnd);
+  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+  XML.Free;
 end;
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
   Mon : TMonitor;
 begin
   UpdateBangs;
@@ -172,22 +176,30 @@ begin
   sLeft   := Mon.Left + Mon.Width div 2 - sWidth div 2;
   sTop    := Mon.Top + Mon.Height div 2 - sHeight div 2;
 
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    sCaption     := BoolValue('Caption',True);
-    sIcon        := BoolValue('Icon',True);
-    sAlwaysOnTop := BoolValue('AlwaysOnTop',True);
-    sLeft        := IntValue('Left',sLeft);
-    sTop         := IntValue('Top',sTop);
-    sHeight      := Max(64,IntValue('Height',sHeight));
-    sWidth       := Max(64,IntValue('Width',sWidth));
-    sLineWrap    := BoolValue('LineWrap',False);
-    sMonoFont    := BoolValue('MonoFont',False);
-    sLastTab     := Value('LastTab','');
-    sLastTextPos.X := IntValue('LastTextXPos',0);
-    sLastTextPos.Y := IntValue('LastTextYPos',0);
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      sCaption     := BoolValue('Caption',True);
+      sIcon        := BoolValue('Icon',True);
+      sAlwaysOnTop := BoolValue('AlwaysOnTop',True);
+      sLeft        := IntValue('Left',sLeft);
+      sTop         := IntValue('Top',sTop);
+      sHeight      := Max(64,IntValue('Height',sHeight));
+      sWidth       := Max(64,IntValue('Width',sWidth));
+      sLineWrap    := BoolValue('LineWrap',False);
+      sMonoFont    := BoolValue('MonoFont',False);
+      sLastTab     := Value('LastTab','');
+      sLastTextPos.X := IntValue('LastTextXPos',0);
+      sLastTextPos.Y := IntValue('LastTextYPos',0);
+    end;
+  XML.Free;
 end;
 
 procedure TMainForm.UpdateBackground(new : integer = -1);

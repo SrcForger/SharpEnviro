@@ -82,6 +82,7 @@ type
 
   public
     ModuleID : integer;
+    BarID : integer;
     BarWnd : hWnd;
     Background : TBitmap32;
     procedure LoadSettings;
@@ -100,26 +101,34 @@ uses SettingsWnd;
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
 begin
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    blnClipboard := BoolValue('Clipboard', True);
-    blnSaveDlg := BoolValue('SaveAs', False);
-    blnAutoGen := BoolValue('AutoGen', False);
-    blnAutoGenNum := BoolValue('AutoGenNum', False);
-    blnActiveWin := BoolValue('ActiveWin', False);
-    blnDateTime := BoolValue('DateTime', False);
-    intDateTimeFormat := IntValue('DateTimeFormat', 0);
-    strFilename := Value('Filename', 'Screenshot');
-    strAppend := Value('Append', '0');
-    strLocation := Value('Location', strLocation);
-    strFormat := Value('Format', 'Bmp');
-    intJpgCompression := IntValue('JpgCompression', 75);
-    blnJpgGrayScale := BoolValue('JpgGrayScale', False);
-    intPngCompression := IntValue('PngCompression', 5);
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      blnClipboard := BoolValue('Clipboard', True);
+      blnSaveDlg := BoolValue('SaveAs', False);
+      blnAutoGen := BoolValue('AutoGen', False);
+      blnAutoGenNum := BoolValue('AutoGenNum', False);
+      blnActiveWin := BoolValue('ActiveWin', False);
+      blnDateTime := BoolValue('DateTime', False);
+      intDateTimeFormat := IntValue('DateTimeFormat', 0);
+      strFilename := Value('Filename', 'Screenshot');
+      strAppend := Value('Append', '0');
+      strLocation := Value('Location', strLocation);
+      strFormat := Value('Format', 'Bmp');
+      intJpgCompression := IntValue('JpgCompression', 75);
+      blnJpgGrayScale := BoolValue('JpgGrayScale', False);
+      intPngCompression := IntValue('PngCompression', 5);
+    end;
 end;
 
 procedure TMainForm.UpdateBackground(new : integer = -1);
@@ -154,10 +163,9 @@ end;
 procedure TMainForm.MenuSettingsItemClick(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
 begin
   try
-
     SettingsForm := TSettingsForm.Create(application.MainForm);
     SettingsForm.cbxClipboard.Checked := blnClipboard;
     SettingsForm.cbxSaveAs.Checked := blnSaveDlg;
@@ -193,10 +201,11 @@ begin
       intJpgCompression := SettingsForm.speJpgCompression.Value;
       blnJpgGrayscale := SettingsForm.chkJpgGrayscale.Checked;
       intPngCompression := SettingsForm.spePngCompression.Value;
-      item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-      if item <> nil then with item.Items do
+
+      XML := TJvSimpleXMl.Create(nil);
+      XML.Root.Name := 'ScreenshotModuleSettings';
+      with XML.Root.Items do
       begin
-        Clear;
         Add('Clipboard',blnClipboard);
         Add('SaveAs', blnSaveDlg);
         Add('AutoGen', blnAutoGen);
@@ -212,7 +221,8 @@ begin
         Add('JpgGrayscale', blnJpgGrayscale);
         Add('PngCompression', intPngCompression);
       end;
-      uSharpBarAPI.SaveXMLFile(BarWnd);
+      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      XML.Free;
     end;
     ReAlignComponents(True);
 
@@ -294,7 +304,8 @@ var
   strName : string;
   strDTFormat : string;
   dtmDate : TDateTime;
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
 begin
   strFile := strLocation;
   strFile := strFile + '\';
@@ -315,13 +326,22 @@ begin
     strAppend := IntToStr(count);
   end;
   saveFormat(bitMap, strFormat, strFile);
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    Clear;
-    Add('Append', strAppend);
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
-  uSharpBarAPI.SaveXMLFile(BarWnd);
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      if ItemNamed['Append'] <> nil then
+        ItemNamed['Append'].Value := strAppend
+        else Add('Append', strAppend);
+      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    end;
+  XML.Free;
 end;
 
 procedure TMainForm.saveFormat(bitMap: TBitmap; strFormat: string; strFilename: string);

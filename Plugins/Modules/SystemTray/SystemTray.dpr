@@ -71,7 +71,7 @@ type
               FPos     : integer;
               FBarWnd  : hWnd;
             public
-              constructor Create(pID : integer; pParent : hwnd); reintroduce;
+              constructor Create(pID,pBarID : integer; pParent : hwnd); reintroduce;
               destructor Destroy; override;
             published
               property ID   : integer read FID;
@@ -152,7 +152,7 @@ begin
                                            [GetCurrentProcessID]))));
 end;
 
-constructor TModule.Create(pID : integer; pParent : hwnd);
+constructor TModule.Create(pID,pBarID : integer; pParent : hwnd);
 begin
   FID   := pID;
   FBarWnd := pParent;
@@ -172,6 +172,7 @@ begin
   begin
     ModuleID := pID;
     BarWnd   := FBarWnd;
+    BarID    := pBarID;
 
     LoadSettings;
     ReAlignComponents(False);
@@ -190,6 +191,7 @@ begin
 end;
 
 function CreateModule(ID : integer;
+                      BarID : integer;
                       parent : hwnd) : hwnd;
 var
   temp : TModule;
@@ -217,7 +219,7 @@ begin
     if MouseTimer = nil then
        MouseTimer := TMouseTimer.Create;
 
-    temp := TModule.Create(ID,parent);
+    temp := TModule.Create(ID,BarID,parent);
     TrayClient.AddWindow(temp.Form);
     ModuleList.Add(temp);
 

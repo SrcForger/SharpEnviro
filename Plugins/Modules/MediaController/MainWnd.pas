@@ -91,6 +91,7 @@ type
     function GetStartPlayer(Root : HKEY; Key : String; Value : String) : String;
   public
     ModuleID : integer;
+    BarID : integer;
     BarWnd : hWnd;
     procedure LoadSettings;
     procedure SaveSettings;
@@ -296,13 +297,13 @@ end;
 
 procedure TMainForm.SaveSettings;
 var
-  item : TJvSimpleXMLElem;
   XML : TJvSimpleXML;
   Dir : String;
   FName : String;
 begin
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
+  XML := TJvSimpleXML.Create(nil);
+  XML.Root.Name := 'MediaControllerModuleSettings';
+  with XML.Root.Items do
   begin
     clear;
     case sPlayer of
@@ -316,7 +317,8 @@ begin
     Add('PlayerFile',sPlayerFile);
     Add('QuickPlayerSelect',sPSelect);
   end;
-  uSharpBarAPI.SaveXMLFile(BarWnd);
+  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+  XML.Free;
 
   XML := TJvSimpleXMl.Create(nil);
   XML.Root.Name := 'MediaControllerPlayers';
@@ -358,11 +360,11 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
   s : String;
   XML : TJvSimpleXML;
   Dir : String;
   FName : String;
+  fileloaded : boolean;
 begin
   UpdateActions;
 
@@ -370,20 +372,27 @@ begin
   sPlayerFile := '-1';
   sPSelect    := True;
 
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then
-  with item.Items do
-  begin
-    s := LowerCase(Value('Player','mptFooBar'));
-    if         s = 'mptwinamp' then sPlayer := mptWinAmp
-       else if s = 'mptmpc' then sPlayer := mptMPC
-       else if s = 'mptqcd' then sPlayer := mptQCD
-       else if s = 'mptwmp' then sPlayer := mptWMP
-       else if s = 'mptvlc' then sPlayer := mptVLC
-       else sPlayer := mptFoobar;
-    sPlayerFile := Value('PlayerFile','-1');
-    sPSelect    := BoolValue('QuickPlayerSelect',True);
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      s := LowerCase(Value('Player','mptFooBar'));
+      if         s = 'mptwinamp' then sPlayer := mptWinAmp
+         else if s = 'mptmpc' then sPlayer := mptMPC
+         else if s = 'mptqcd' then sPlayer := mptQCD
+         else if s = 'mptwmp' then sPlayer := mptWMP
+         else if s = 'mptvlc' then sPlayer := mptVLC
+         else sPlayer := mptFoobar;
+      sPlayerFile := Value('PlayerFile','-1');
+      sPSelect    := BoolValue('QuickPlayerSelect',True);
+    end;
+  XML.Free;
 
   if sPlayerFile = '-1' then
      sPlayerFile := GetFooPathFromRegistry;
@@ -726,9 +735,6 @@ end;
 procedure TMainForm.btn_pselectMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
-  sr : TSearchRec;
-  Dir : String;
-  s : string;
   p : TPoint;
   mn : TSharpEMenu;
   ms : TSharpEMenuSettings;

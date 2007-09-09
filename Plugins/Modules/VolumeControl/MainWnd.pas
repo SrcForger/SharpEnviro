@@ -73,6 +73,7 @@ type
     procedure InitDefaultImages;
   public
     ModuleID : integer;
+    BarID : integer;
     BarWnd   : hWnd;
     procedure LoadSettings;
     procedure SetSize(NewWidth : integer);
@@ -147,17 +148,26 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
 begin
   sWidth  := 100;
   sMixer  := MIXERLINE_COMPONENTTYPE_DST_SPEAKERS;
 
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    sWidth := IntValue('Width',100);
-    sMixer := IntValue('Mixer',MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      sWidth := IntValue('Width',100);
+      sMixer := IntValue('Mixer',MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
+    end;
+  XMl.Free;
 end;
 
 procedure TMainForm.UpdateBackground(new : integer = -1);
@@ -214,7 +224,7 @@ end;
 procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
   n : integer;
 begin
   try
@@ -229,17 +239,20 @@ begin
 
     if SettingsForm.ShowModal = mrOk then
     begin
-      item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
       sWidth := SettingsForm.tb_size.Position;
       if SettingsForm.IDList.Count = 0 then sMixer := 0
          else sMixer := strtoint(SettingsForm.IDList[SettingsForm.cb_mlist.ItemIndex]);
-      if item <> nil then with item.Items do
+
+      XML := TJvSimpleXML.Create(nil);
+      XML.Root.Name := 'VolumeControlModuleSettings';
+      with XML.Root.Items do
       begin
         clear;
         Add('Width',sWidth);
         Add('Mixer',sMixer);
       end;
-      uSharpBarAPI.SaveXMLFile(BarWnd);
+      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      XML.Free;
       ClockTimer.OnTimer(ClockTimer);
     end;
     ReAlignComponents(True);

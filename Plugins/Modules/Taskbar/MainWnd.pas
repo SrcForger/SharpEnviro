@@ -102,6 +102,7 @@ type
     TM: TTaskManager;
     IList: TObjectList;
     ModuleID : integer;
+    BarID : integer;
     BarWnd : hWnd;
     procedure SetSize(NewWidth : integer);
     procedure InitHook;
@@ -422,7 +423,9 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  item,fitem : TJvSimpleXMLElem;
+  fitem : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
   n : integer;
 begin
   DebugOutPutInfo('TMainForm.LoadSettings (Procedure)');
@@ -433,47 +436,56 @@ begin
   sSort      := False;
   sDebug     := False;
 
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    case IntValue('State',0) of
-      1 : sState := tisCompact;
-      2 : sState := tisMini;
-      else sState := tisFull;
-    end;
-    sSort := BoolValue('Sort',False);
-    case IntValue('SortType',0) of
-      1: sSortType := stWndClass;
-      2: sSortType := stTime;
-      3: sSortType := stIcon;
-      else sSortType := stCaption;
-    end;
-    sMinAllButton := BoolValue('MinAllButton',False);
-    sMaxAllButton := BoolValue('MaxAllButton',False);
-    sIFilter := BoolValue('IFilter',False);
-    sEFilter := BoolValue('EFilter',False);
-    sDebug   := BoolValue('Debug',False);
-    setlength(sIFilters,0);
-    setlength(sEFilters,0);
-    if ItemNamed['IFilters'] <> nil then
-    begin
-      fitem := ItemNamed['IFilters'];
-      for n := 0 to fitem.Items.Count-1 do
-      begin
-        setlength(sIFilters,length(sIFilters)+1);
-        sIFilters[High(sIFilters)].FilterName := fitem.Items.Item[n].Value;
-      end;
-    end;
-    if ItemNamed['EFilters'] <> nil then
-    begin
-      fitem := ItemNamed['EFilters'];
-      for n := 0 to fitem.Items.Count-1 do
-      begin
-        setlength(sEFilters,length(sEFilters)+1);
-        sEFilters[High(sEFilters)].FilterName := fitem.Items.Item[n].Value;
-      end;
-    end;
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      case IntValue('State',0) of
+        1 : sState := tisCompact;
+        2 : sState := tisMini;
+        else sState := tisFull;
+      end;
+      sSort := BoolValue('Sort',False);
+      case IntValue('SortType',0) of
+        1: sSortType := stWndClass;
+        2: sSortType := stTime;
+        3: sSortType := stIcon;
+        else sSortType := stCaption;
+      end;
+      sMinAllButton := BoolValue('MinAllButton',False);
+      sMaxAllButton := BoolValue('MaxAllButton',False);
+      sIFilter := BoolValue('IFilter',False);
+      sEFilter := BoolValue('EFilter',False);
+      sDebug   := BoolValue('Debug',False);
+      setlength(sIFilters,0);
+      setlength(sEFilters,0);
+      if ItemNamed['IFilters'] <> nil then
+      begin
+        fitem := ItemNamed['IFilters'];
+        for n := 0 to fitem.Items.Count-1 do
+        begin
+          setlength(sIFilters,length(sIFilters)+1);
+          sIFilters[High(sIFilters)].FilterName := fitem.Items.Item[n].Value;
+        end;
+      end;
+      if ItemNamed['EFilters'] <> nil then
+      begin
+        fitem := ItemNamed['EFilters'];
+        for n := 0 to fitem.Items.Count-1 do
+        begin
+          setlength(sEFilters,length(sEFilters)+1);
+          sEFilters[High(sEFilters)].FilterName := fitem.Items.Item[n].Value;
+        end;
+      end;
+    end;
+  XML.Free;
+  
   if length(sEFilters) = 0 then sEFilter := False;
   if length(sIFilters) = 0 then sIFilter := False;
   if (sIFilter) or (sEFilter) then LoadFilterSettingsFromXML;
@@ -564,7 +576,8 @@ end;
 procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  item,fitem : TJvSimpleXMLElem;
+  fitem : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
   n,i : integer;
 begin
   DebugOutPutInfo('TMainForm.Settings1Click (Procedure)');
@@ -628,10 +641,11 @@ begin
           end;
       sMinAllButton := SettingsForm.cb_minall.Checked;
       sMaxAllButton := SettingsForm.cb_maxall.Checked;
-      item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-      if item <> nil then with item.Items do
+
+      XML := TJvSimpleXML.Create(nil);
+      XML.Root.Name := 'TaskBarModuleSettings';
+      with XML.Root.Items do
       begin
-        clear;
         Add('Sort',sSort);
         case sSortType of
           stCaption  : Add('SortType',0);
@@ -656,7 +670,8 @@ begin
         for n := 0 to High(sEFilters) do
             fitem.Items.Add(inttostr(n),sEFilters[n].FilterName);
       end;
-      uSharpBarAPI.SaveXMLFile(BarWnd);
+      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      XML.Free;
       LoadSettings;
       AlignTaskComponents;
       RealignComponents(True);

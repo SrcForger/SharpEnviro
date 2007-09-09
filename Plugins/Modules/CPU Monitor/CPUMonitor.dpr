@@ -66,7 +66,7 @@ type
               FPos  : integer;
               FBarWnd  : hWnd;
             public
-              constructor Create(pID : integer; pParent : hwnd); reintroduce;
+              constructor Create(pID,pBarID : integer; pParent : hwnd); reintroduce;
               destructor Destroy; override;
             published
               property ID   : integer read FID;
@@ -91,7 +91,7 @@ end;
 
 
 
-constructor TModule.Create(pID : integer; pParent : hwnd);
+constructor TModule.Create(pID,pBarID : integer; pParent : hwnd);
 begin
   inherited Create;
   FID   := pID;
@@ -108,6 +108,7 @@ begin
   begin
     cpuusage := CurrentCPUUsage;
     ModuleID := pID;
+    BarID := pBarID;
     BarWnd   := FBarWnd;
     LoadSettings;
     CurrentCPUUsage.Forms.Add(FForm);
@@ -124,6 +125,7 @@ begin
 end;
 
 function CreateModule(ID : integer;
+                      BarID : integer;
                       parent : hwnd) : hwnd;
 var
   temp : TModule;
@@ -138,7 +140,7 @@ begin
     if CurrentCPUUsage = nil then
        CurrentCPUUsage := TCPUUsage.Create;
 
-    temp := TModule.Create(ID,parent);
+    temp := TModule.Create(ID,BarID,parent);
     ModuleList.Add(temp);
   except
     result := 0;

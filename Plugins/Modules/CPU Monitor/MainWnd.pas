@@ -69,6 +69,7 @@ type
     FCustomSkinSettings: TSharpECustomSkinSettings;
   public
     ModuleID : integer;
+    BarID    : integer;
     BarWnd   : hWnd;
     cpuusage : TCPUUsage;
     cpugraph : TBitmap32;
@@ -92,8 +93,9 @@ uses SettingsWnd,
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
   skin : String;
+  fileloaded : boolean;
 begin
   sWidth    := 100;
   sDrawMode := 0;
@@ -123,31 +125,39 @@ begin
     sBorderAlpha := 255;
   end;
 
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    if ItemNamed['global'] <> nil then
-       with ItemNamed['global'].Items do
-       begin
-         sWidth    := IntValue('Width',100);
-         sDrawMode := IntValue('DrawMode',0);
-         sCPU      := IntValue('CPU',0);
-         sUpdate   := IntValue('Update',250);
-       end;
-
-    skin := SharpThemeApi.GetSkinName;
-    if ItemNamed['skin'] <> nil then
-       if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then
-          with ItemNamed['skin'].Items.ItemNamed[skin].Items do
-          begin
-            sFGColor     := SchemeCodeToColor(IntValue('FGColor',sFGColor));
-            sBGColor     := SchemeCodeToColor(IntValue('BGColor',sBGColor));
-            sBorderColor := SchemeCodeToColor(IntValue('BorderColor',sBorderColor));
-            sFGAlpha     := Max(0,Min(255,IntValue('FGAlpha',sFGAlpha)));
-            sBGAlpha     := Max(0,Min(255,IntValue('BGAlpha',sBGAlpha)));
-            sBorderAlpha := Max(0,Min(255,IntValue('BorderAlpha',sBorderAlpha)));
-          end;
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      if ItemNamed['global'] <> nil then
+        with ItemNamed['global'].Items do
+         begin
+           sWidth    := IntValue('Width',100);
+           sDrawMode := IntValue('DrawMode',0);
+           sCPU      := IntValue('CPU',0);
+           sUpdate   := IntValue('Update',250);
+         end;
+
+      skin := SharpThemeApi.GetSkinName;
+      if ItemNamed['skin'] <> nil then
+         if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then
+            with ItemNamed['skin'].Items.ItemNamed[skin].Items do
+            begin
+              sFGColor     := SchemeCodeToColor(IntValue('FGColor',sFGColor));
+              sBGColor     := SchemeCodeToColor(IntValue('BGColor',sBGColor));
+              sBorderColor := SchemeCodeToColor(IntValue('BorderColor',sBorderColor));
+              sFGAlpha     := Max(0,Min(255,IntValue('FGAlpha',sFGAlpha)));
+              sBGAlpha     := Max(0,Min(255,IntValue('BGAlpha',sBGAlpha)));
+              sBorderAlpha := Max(0,Min(255,IntValue('BorderAlpha',sBorderAlpha)));
+            end;
+    end;
+  XML.Free;
   sUpdate := Max(sUpdate,100);
 end;
 
@@ -234,7 +244,8 @@ end;
 procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
   skin : String;
 begin
   try
@@ -256,7 +267,6 @@ begin
 
     if SettingsForm.ShowModal = mrOk then
     begin
-      item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
       sWidth       := SettingsForm.tb_size.Position;
       sBGColor     := SettingsForm.scb_bg.color;
       sFGColor     := SettingsForm.scb_fg.color;
@@ -269,37 +279,47 @@ begin
       if SettingsForm.rb_bar.Checked then sDrawMode := 0
          else if SettingsForm.rb_line.Checked then sDrawMode := 1
          else sDrawMode := 2;
-      if item <> nil then
-         with item.Items do
-         begin
-           if ItemNamed['global'] = nil then Add('global');
-           with ItemNamed['global'].Items do
-           begin
-             Clear; 
-             Add('Width',sWidth);
-             Add('Update',sUpdate);
-             Add('DrawMode',sDrawMode);
-             Add('CPU',sCpu);
-           end;
 
-           skin := SharpThemeApi.GetSkinName;
-           if ItemNamed['skin'] <> nil then
-           begin
-             if ItemNamed['skin'].Items.ItemNamed[skin] = nil then
-                ItemNamed['skin'].Items.Add(skin);
-           end else Add('skin').Items.Add(skin);
-           with ItemNamed['skin'].Items.ItemNamed[skin].Items do
-           begin
-             Clear;
-             Add('FGColor',ColorToSchemeCode(sFGColor));
-             Add('BGColor',ColorToSchemeCode(sBGColor));
-             Add('BorderColor',ColorToSchemeCode(sBordercolor));
-             Add('FGAlpha',sFGAlpha);
-             Add('BGAlpha',sBGAlpha);
-             Add('BorderAlpha',sBorderAlpha);
-           end;
-         end;
-      uSharpBarAPI.SaveXMLFile(BarWnd);
+      XML := TJvSimpleXML.Create(nil);
+      try
+        XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+        fileloaded := True;
+      except
+        fileloaded := False;
+      end;
+      if not fileloaded then
+        XML.Root.Name := 'CPUMonitorModuleSettings';
+      with XML.Root.Items do
+      begin
+        if ItemNamed['global'] = nil then Add('global');
+        with ItemNamed['global'].Items do
+        begin
+          Clear;
+          Add('Width',sWidth);
+          Add('Update',sUpdate);
+          Add('DrawMode',sDrawMode);
+          Add('CPU',sCpu);
+        end;
+
+        skin := SharpThemeApi.GetSkinName;
+        if ItemNamed['skin'] <> nil then
+        begin
+          if ItemNamed['skin'].Items.ItemNamed[skin] = nil then
+             ItemNamed['skin'].Items.Add(skin);
+        end else Add('skin').Items.Add(skin);
+        with ItemNamed['skin'].Items.ItemNamed[skin].Items do
+        begin
+          Clear;
+          Add('FGColor',ColorToSchemeCode(sFGColor));
+          Add('BGColor',ColorToSchemeCode(sBGColor));
+          Add('BorderColor',ColorToSchemeCode(sBordercolor));
+          Add('FGAlpha',sFGAlpha);
+          Add('BGAlpha',sBGAlpha);
+          Add('BorderAlpha',sBorderAlpha);
+        end;
+      end;
+      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      XML.Free;
       cpuUsage.UpdateTimer.Interval := sUpdate;
     end;
     ReAlignComponents(True);

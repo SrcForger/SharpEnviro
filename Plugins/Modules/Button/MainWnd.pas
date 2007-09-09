@@ -75,6 +75,7 @@ type
     Background : TBitmap32;
   public
     ModuleID : integer;
+    BarID : integer;
     BarWnd : hWnd;
     procedure UpdateIcon;
     procedure LoadSettings;
@@ -147,7 +148,8 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
 begin
   sWidth       := 100;
   sShowLabel   := True;
@@ -156,19 +158,27 @@ begin
   sSpecialSkin := False;
   FDCaption    := True;
   sIcon        := 'icon.mycomputer';
-  sShowIcon    := True; 
+  sShowIcon    := True;
 
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    sWidth       := IntValue('Width',100);
-    sShowLabel   := BoolValue('ShowLabel',True);
-    sCaption     := Value('Caption','SharpE');
-    sActionStr   := Value('ActionStr','!ShowMenu');
-    sSpecialSkin := BoolValue('SpecialSkin',False);
-    sShowIcon    := BoolValue('ShowIcon',sShowIcon);
-    sIcon        := Value('Icon',sIcon); 
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      sWidth       := IntValue('Width',100);
+      sShowLabel   := BoolValue('ShowLabel',True);
+      sCaption     := Value('Caption','SharpE');
+      sActionStr   := Value('ActionStr','!ShowMenu');
+      sSpecialSkin := BoolValue('SpecialSkin',False);
+      sShowIcon    := BoolValue('ShowIcon',sShowIcon);
+      sIcon        := Value('Icon',sIcon);
+    end;
+  xml.Free;
 
   UpdateCustomSkin;
   UpdateIcon;
@@ -237,7 +247,7 @@ end;
 procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
 begin
   try
     SettingsForm := TSettingsForm.Create(application.MainForm);
@@ -264,10 +274,10 @@ begin
       sShowIcon := SettingsForm.cb_icon.Checked;
       sIcon := SettingsForm.edit_icon.Text;
 
-      item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-      if item <> nil then with item.Items do
+      XML := TJvSimpleXML.Create(nil);
+      XML.Root.Name := 'ButtonModuleSettings';
+      with XML.Root.Items do
       begin
-        clear;
         Add('Width',sWidth);
         Add('ShowLabel',sShowLabel);
         Add('Caption',sCaption);
@@ -277,7 +287,8 @@ begin
         Add('Icon',sIcon);
       end;
       UpdateIcon;
-      uSharpBarAPI.SaveXMLFile(BarWnd);
+      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      XML.Free;
     end;
     UpdateCustomSkin;
     ReAlignComponents(True);

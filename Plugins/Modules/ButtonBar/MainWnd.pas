@@ -78,6 +78,7 @@ type
     procedure UpdateButtons;
   public
     ModuleID : integer;
+    BarID : integer;
     BarWnd : hWnd;
     procedure RefreshIcons;
     procedure LoadSettings;
@@ -178,7 +179,8 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
   n : integer;
 begin
   ClearButtons;
@@ -188,19 +190,27 @@ begin
   sShowIcon    := True;
   FButtonSpacing := 2;
 
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    sWidth       := IntValue('Width',100);
-    sShowLabel   := BoolValue('ShowLabel',True);
-    sShowIcon    := BoolValue('ShowIcon',sShowIcon);
-    if ItemNamed['Buttons'] <> nil then
-    with ItemNamed['Buttons'].Items do
-         for n := 0 to Count - 1 do
-             AddButton(Item[n].Items.Value('Target','C:\'),
-                       Item[n].Items.Value('Icon','shell:icon'),
-                       Item[n].Items.Value('Caption','C:\'));
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      sWidth       := IntValue('Width',100);
+      sShowLabel   := BoolValue('ShowLabel',True);
+      sShowIcon    := BoolValue('ShowIcon',sShowIcon);
+      if ItemNamed['Buttons'] <> nil then
+      with ItemNamed['Buttons'].Items do
+           for n := 0 to Count - 1 do
+               AddButton(Item[n].Items.Value('Target','C:\'),
+                         Item[n].Items.Value('Icon','shell:icon'),
+                         Item[n].Items.Value('Caption','C:\'));
+    end;
+  XML.Free;
 end;
 
 procedure TMainForm.UpdateBackground(new : integer = -1);
@@ -243,7 +253,7 @@ end;
 procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
   n : integer;
 begin
   try
@@ -266,10 +276,10 @@ begin
           with SettingsForm.buttons.Items.Item[n] do
                AddButton(SubItems[0],SubItems[1],Caption);
 
-      item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-      if item <> nil then with item.Items do
+      XML := TJvSimpleXMl.Create(nil);
+      XML.Root.Name := 'MenuModuleSettings';
+      with XML.Root.Items do
       begin
-        clear;
         Add('Width',sWidth);
         Add('ShowLabel',sShowLabel);
         Add('ShowIcon',sShowIcon);
@@ -285,7 +295,8 @@ begin
                end;
         end;
       end;
-      uSharpBarAPI.SaveXMLFile(BarWnd);
+      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      XML.Free;
     end;
     ReAlignComponents(True);
 

@@ -72,6 +72,7 @@ type
     Background  : TBitmap32;
   public
     ModuleID : integer;
+    BarID : integer;
     BarWnd : hWnd;
     procedure LoadSettings;
     procedure SetSize(NewWidth : integer);
@@ -94,7 +95,8 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
 begin
   BarWidth := 50;
   ShowRAMBar  := True;
@@ -106,21 +108,29 @@ begin
   sITC        := 0;
   ItemAlign   := 3;
 
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    BarWidth := IntValue('Width',BarWidth);
-    ShowRAMBar  := BoolValue('ShowRAMBar',ShowRAMBar);
-    ShowRAMPC   := BoolValue('ShowRAMPC',ShowRAMPC);
-    ShowRAMInfo := BoolValue('ShowRAMInfo',ShowRAMInfo);
-    ShowSWPBar  := BoolValue('ShowSWPBar',ShowSWPBar);
-    ShowSWPPC   := BoolValue('ShowSWPPC',ShowSWPPC);
-    ShowSWPInfo := BoolValue('ShowSWPInfo',ShowSWPInfo);
-    ItemAlign   := IntValue('ItemAlign',ItemAlign);
-    sITC        := IntValue('ITC',sITC);
-    if ItemAlign >3 then ItemAlign := 3;
-    if ItemAlign <1 then ItemAlign := 1;
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      BarWidth := IntValue('Width',BarWidth);
+      ShowRAMBar  := BoolValue('ShowRAMBar',ShowRAMBar);
+      ShowRAMPC   := BoolValue('ShowRAMPC',ShowRAMPC);
+      ShowRAMInfo := BoolValue('ShowRAMInfo',ShowRAMInfo);
+      ShowSWPBar  := BoolValue('ShowSWPBar',ShowSWPBar);
+      ShowSWPPC   := BoolValue('ShowSWPPC',ShowSWPPC);
+      ShowSWPInfo := BoolValue('ShowSWPInfo',ShowSWPInfo);
+      ItemAlign   := IntValue('ItemAlign',ItemAlign);
+      sITC        := IntValue('ITC',sITC);
+      if ItemAlign >3 then ItemAlign := 3;
+      if ItemAlign <1 then ItemAlign := 1;
+    end;
+  XML.Free;
 end;
 
 procedure TMainForm.UpdateBackground(new : integer = -1);
@@ -455,7 +465,7 @@ end;
 procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
 begin
   SettingsForm := TSettingsForm.Create(application.MainForm);
   SettingsForm.cb_rambar.Checked  := ShowRAMBar;
@@ -493,8 +503,9 @@ begin
        else if SettingsForm.rb_halign2.Checked then ItemAlign := 3
        else ItemAlign := 2;
 
-    item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-    if item <> nil then with item.Items do
+    XML := TJvSimpleXML.Create(nil);
+    XML.Root.Name := 'MemoryMonitorModuleSettings';
+    with XML.Root.Items do
     begin
       clear;
       Add('Width',BarWidth);
@@ -507,7 +518,8 @@ begin
       Add('ItemAlign',ItemAlign);
       Add('ITC',sITC);
     end;
-    uSharpBarAPI.SaveXMLFile(BarWnd);
+    XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.Free;
     ReAlignComponents(true);
     repaint;
   end;

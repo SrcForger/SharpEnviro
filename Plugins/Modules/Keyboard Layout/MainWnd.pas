@@ -64,6 +64,7 @@ type
     FMenuIcon   : TBitmap32;
   public
     ModuleID : integer;
+    BarID : integer;
     BarWnd : hWnd;
     Background : TBitmap32;
     procedure LoadSettings;
@@ -82,14 +83,23 @@ uses SettingsWnd;
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
 begin
   sShowIcon := True;
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    sShowIcon := BoolValue('ShowIcon',sShowIcon);
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with xml.Root.Items do
+    begin
+      sShowIcon := BoolValue('ShowIcon',sShowIcon);
+    end;
+  XML.Free;
 end;
 
 procedure TMainForm.UpdateBackground(new : integer = -1);
@@ -134,7 +144,7 @@ end;
 procedure TMainForm.MenuSettingsItemClick(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
 begin
   try
     SettingsForm := TSettingsForm.Create(application.MainForm);
@@ -144,13 +154,14 @@ begin
     begin
       sShowIcon := SettingsForm.cb_dispicon.Checked;
 
-      item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-      if item <> nil then with item.Items do
+      XML := TJvSimpleXMl.Create(nil);
+      XML.Root.Name := 'KeyboardLayoutModuleSettings';
+      with XML.Root.Items do
       begin
-        Clear;
         Add('ShowIcon',sShowIcon);
       end;
-      uSharpBarAPI.SaveXMLFile(BarWnd);
+      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      XML.Free;
     end;
     UpdateCurrentLayout;
 
