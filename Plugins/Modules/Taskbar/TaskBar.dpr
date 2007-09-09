@@ -107,7 +107,7 @@ begin
   except
     i := 16;
   end;
-  FForm := TMainForm.CreateParented(pParent,ID,FBarWnd,i);
+  FForm := TMainForm.CreateParented(pParent,ID,pBarID,FBarWnd,i);
   FForm.BorderStyle := bsNone;
   FForm.ParentWindow := pParent;
   FForm.Height := i;
@@ -115,7 +115,7 @@ begin
   with FForm as TMainForm do
   begin
     ModuleID := pID;
-    BarID := BarID;
+    BarID    := pBarID;
     BarWnd   := FBarWnd;
     RealignComponents(False);
     Show;

@@ -127,7 +127,7 @@ type
     function CheckFilter(pItem : TTaskItem) : boolean;
     procedure CheckFilterAll;
     procedure LoadFilterSettingsFromXML;
-    constructor CreateParented(ParentWindow : hwnd; pID : integer; pBarWnd : Hwnd; pHeight : integer);
+    constructor CreateParented(ParentWindow : hwnd; pID,pBarID : integer; pBarWnd : Hwnd; pHeight : integer);
     procedure AlignSpecialButtons;
     procedure UpdateCustomSettings;
     procedure RepaintComponents;
@@ -234,11 +234,12 @@ begin
   end;
 end;
 
-constructor TMainForm.CreateParented(ParentWindow : hwnd; pID : integer; pBarWnd : Hwnd; pHeight : integer);
+constructor TMainForm.CreateParented(ParentWindow : hwnd; pID,pBarID : integer; pBarWnd : Hwnd; pHeight : integer);
 begin
   DebugOutPutInfo('TMainForm.CreateParented (constructor)');
   Inherited CreateParented(ParentWindow);
   ModuleID := pID;
+  BarID := pBarID;
   BarWnd := pBarWnd;
   Height := pHeight;
 end;
