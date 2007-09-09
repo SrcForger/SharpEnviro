@@ -63,6 +63,7 @@ type
 
     // vars and functions
     ModuleID : integer;
+    BarID : integer;
     BarWnd : hWnd;
     Background : TBitmap32;
     procedure LoadSettings;
@@ -87,14 +88,23 @@ uses SettingsWnd;
 
 procedure TMainForm.LoadSettings;
 var
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
 begin
-  item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-  if item <> nil then with item.Items do
-  begin
-    // Load your settings heare
-    // Example: sWidth := IntValue('Width',sWidth);
+  XML := TJvSimpleXML.Create(nil);
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
   end;
+  if fileloaded then
+    with XML.Root.Items do
+    begin
+      // Load your settings heare
+      // Example: sWidth := IntValue('Width',sWidth);
+    end;
+  XML.Free;
 end;
 
 procedure TMainForm.UpdateBackground(new : integer = -1);
@@ -149,7 +159,7 @@ end;
 procedure TMainForm.ShowSettingsWindow;
 var
   SettingsForm : TSettingsForm;
-  item : TJvSimpleXMLElem;
+  XML : TJvSimpleXML;
 begin
   try
     SettingsForm := TSettingsForm.Create(application.MainForm);
@@ -166,16 +176,17 @@ begin
       // sSomeSettings := SettingsForm.MyControl.SomeSettings;
       // ...
 
-      item := uSharpBarApi.GetModuleXMLItem(BarWnd, ModuleID);
-      if item <> nil then with item.Items do
+      XML := TJvSimpleXML.Create(nil);
+      XML.Root.Name := 'TemplateModuleModuleSettings';
+      with XML.Root.Items do
       begin
-        Clear;
         // Save the settings to this XML item!
         // it's recommend to just Clear the item and add the settings again!
         // Example:
         // Add('Width',sWidth);
       end;
-      uSharpBarAPI.SaveXMLFile(BarWnd);
+      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      XML.Free;
     end;
     ReAlignComponents(True);
 
