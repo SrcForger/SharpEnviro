@@ -14,7 +14,7 @@
 \title{ {\bf SharpE} \break \break
 {\bf Module Development Kit }\break 
 \normalsize www.sharpenviro.com}
-\date{Version 0.7.3.0 (TD3) \break \break 15.08.2007}
+\date{Version 0.7.3.0 (TD3) \break \break 09.09.2007}
 \maketitle
 \thispagestyle{empty}
 \tableofcontents
@@ -59,10 +59,12 @@
   
   \medskip
   \begin{description}
-    \item[]{\alltt {\bf function} CreateModule(ID : integer; parent : hwnd) : hwnd;}  \medbreak    
+    \item[]{\alltt {\bf function} CreateModule(ID;BarID : integer; parent : hwnd) : hwnd;}  \medbreak    
       The CreateModule function is called by SharpBar when a new module is about to be created. 
 
       With the {\it ID : integer} parameter the dll receives the unique module ID of the new module. This module ID is used again in other functions to tell the module dll which modules have to change/update. 
+      
+      Make sure that the {\it BarID : integer} param is saved somewhere. This BarID is very important later to get the path to the modules configuration file.
 
       The {\it parent : hwnd} parameter gives the handle to the SharpBar window. This is the window which has to be set as parent window for the windows created in the module dll. After creating the new module window you have to set {\it TModuleForm.ParentWindow := parent} to make sure that the module window is displayed in the SharpBar. 
 
@@ -176,34 +178,14 @@
     Getting the current height of the bar can be done by using the {\it GetBarPluginHeight} function which is declared in {\it uSharpBarApi.pas}.
 
     Updating the background of the module should be done in different situation like when the skin, the position or the size of the module changes.  
+    
 \section{Module settings}
-  The settings for all modules are stored in a central place. The directory, file and xml structure for the xml files is handled by SharpBar. 
-  Changing XML data is based on the TJvSimpleXML class which comes with the JVCL library. It is absolutely necessary that this class is used to manage the xml settings! 
+  The settings for all modules are stored in a central place. The directory, file and xml structure for the xml files is handled by SharpBar.
+  
+  
+  A module can get the location of it's assigned configuration file by using the {\it GetModuleXMLFile} which is declared in {\it uSharpBarApi.pas}.
+  This function will return the path to the xml file the module should use to save its settings.  
 
-  If a module wants to save and load settings all it has to do is get the xml root key which is assigned to the module ID. This can be done by using the {\it GetModuleXMLItem} function which is declared in {\it uSharpBarApi.pas}. 
-
-  Example code: 
-\begin{alltt}
-01  {\bf var}
-02    item : TJvSimpleXMLElem;
-03  {\bf begin}
-04    item := uSharpBarApi.GetModuleXMLItem(HandleToBarWnd,ModuleID);
-05    {\bf if} item <> nil {\bf then}
-06    {\bf with} item.Items {\bf do}
-07    {\bf begin}
-08      // Load/Save your settings here
-09      // Example: sWidth := IntValue('Width',sWidth);
-10    {\bf end};
-11 {\bf end};
-\end{alltt}
-
-  After settings have been saved to this XML key call the {\it SaveXMLFile} procedure to make SharpBar save the changes to the xml file on your hard drive. 
-
-  \verb+uSharpBarAPI.SaveXMLFile(HandleToBarWnd);+
-
-  The parameter for the {\it SaveXMLFile} function is the handle to the parent SharpBar window(the module should have received this handle when the module window was created - see the {\it CreateModule} library function)
-
-\newpage
 \section{Using the SharpE skin components}
 All visible components used in a module should be skinable with the SharpE skin system. There is a set of custom SharpE Skin Components available which should be used whenever possible. 
 
