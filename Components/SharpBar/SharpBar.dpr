@@ -41,6 +41,7 @@ uses
   uSharpEModuleManager in 'uSharpEModuleManager.pas',
   uSharpBarAPI in 'uSharpBarAPI.pas',
   JvSimpleXML,
+  JclFileUtils,
   SharpEBar,
   SharpApi,
   PluginManagerWnd in 'Forms\PluginManagerWnd.pas' {PluginManagerForm},
@@ -63,82 +64,67 @@ function RemoveEmptyBars : boolean;
 var
   Dir : String;
   xml : TJvSimpleXML;
-  n : integer;
-  BarID : integer;
   handle  : THandle;
+  sr : TSearchRec;
+  fileloaded : boolean;
+  delbar : boolean;
 begin
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
-  if not FileExists(Dir + 'bars.xml') then
-  begin
-    result := False;
-    exit;
-  end else
-  begin
-    xml := TJvSimpleXMl.Create(nil);
-    try
-      xml.LoadFromFile(Dir + 'bars.xml');
-      with xml.root.items.ItemNamed['bars'] do
+  xml := TJvSimpleXMl.Create(nil);
+  if FindFirst(Dir + '*',FADirectory,sr) = 0 then
+  repeat
+    if FileExists(Dir + sr.Name + '\Bar.xml') then
+    begin
+      try
+        xml.LoadFromFile(Dir + sr.Name + '\Bar.xml');
+        fileloaded := True;
+      except
+        fileloaded := False;
+      end;
+      delbar := False;
+      if fileloaded then
       begin
-        for n := Items.Count - 1 downto 0 do
+        if xml.Root.Items.ItemNamed['Modules'] <> nil then
         begin
-          if Items.Item[n].Items.ItemNamed['Modules'] <> nil then
-             if Items.Item[n].Items.ItemNamed['Modules'].Items.Count > 0  then
-                Continue;
-          BarID := Items.Item[n].Items.IntValue('ID',-1);
-          // check if a bar with this ID is running
-          handle := FindWindow(nil,PChar('SharpBar_'+inttostr(BarID)));
+          if xml.Root.Items.ItemNamed['Modules'].Items.Count = 0 then
+            delbar := True
+        end else delbar := True;
+        if delbar then
+        begin
+          // check if this is bar is already running before deleting it
+          handle := FindWindow(nil,PChar('SharpBar_'+sr.Name));
           if handle = 0 then
-          begin
-            // delete the bar settings
-            Items.Delete(n);
-            DeleteFile(Dir + 'Module Settings\' + inttostr(BarID)+'.xml');
-          end;
+            DeleteDirectory(Dir + sr.Name,True);
         end;
       end;
-      xml.SaveToFile(Dir + 'bars.xml~');
-      if FileExists(Dir + 'bars.xml') then
-         DeleteFile(Dir + 'bars.xml');
-      RenameFile(Dir + 'bars.xml~',Dir + 'bars.xml');
-    except
-      xml.free;
-      result := False;
-      exit;
     end;
-    result := True;
-  end;
+  until FindNext(sr) <> 0;
+  FindClose(sr);
+  xml.free;
+  result := True;
 end;
 
 function CheckIfValidBar(ID : integer) : boolean;
 var
   Dir : String;
-  xml : TJvSimpleXML;
-  n   : integer;
+  sr : TSearchRec;
+  CompareID : integer;
 begin
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
-  if not FileExistS(Dir + 'bars.xml') then
-  begin
-    result := false;
-    exit;
-  end;
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
-  xml := TJvSimpleXML.Create(nil);
-  try
-    xml.LoadFromFile(Dir + 'bars.xml');
-    with xml.root.items.ItemNamed['bars'] do
-    begin
-      for n := 0 to Items.Count - 1 do
-          if Items.Item[n].Items.IntValue('ID') = ID then
-          begin
-            result := true;
-            xml.free;
-            exit;
-          end;
-    end;
-  except
-  end;
-  result := false;
-  xml.free;
+  if FindFirst(Dir + '*',FADirectory,sr) = 0 then
+  repeat
+    if TryStrToInt(sr.Name,CompareID) then
+      if CompareID = ID then
+      begin
+        result := True;
+        exit;
+      end;
+  until FindNext(sr) <> 0;
+  FindClose(sr);
+  
+  result := False;
 end;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
@@ -153,52 +139,48 @@ function LoadAutoStartBars : boolean;
 var
   Dir : String;
   xml : TJvSimpleXML;
-  n,BarID : integer;
-  lab     : boolean; // loaded any bar
   handle  : THandle;
+  sr : TSearchRec;
+  fileloaded : boolean;
+  lab : boolean;
 begin
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
-  lab := false;
-
-  if not FileExists(Dir + 'bars.xml') then
-     lab := False
-     else
-  begin
-    xml := TJvSimpleXMl.Create(nil);
-    try
-      xml.LoadFromFile(Dir + 'bars.xml');
-      with xml.root.items.ItemNamed['bars'] do
-      begin
-        for n := 0 to Items.Count - 1 do
-            if Items.Item[n].Items.ItemNamed['Settings'].Items.BoolValue('AutoStart',True) then
-            with Items.Item[n].Items do
-            begin
-              BarID := IntValue('ID',-1);
-              // check if a bar with this ID is already running
-              handle := FindWindow(nil,PChar('SharpBar_'+inttostr(BarID)));
-              if handle = 0 then
-              begin
-                if SharpApi.SharpExecute('_nohist,' + ExtractFileDir(Application.ExeName)+'\SharpBar.exe '
-                   + NO_LOAD_AUTO_START_BARS_PARAM + ' '
-                   + NO_REMOVE_EMPTY_BARS_PARAM + ' '
-                   + LOAD_BY_ID_PARAM+inttostr(BarID)) = HR_OK then lab := true;
-                sleep(500);
-              end else lab := true; // an auto start bar is already running!
-            end;
+  xml := TJvSimpleXMl.Create(nil);
+  lab := False;
+  if FindFirst(Dir + '*',FADirectory,sr) = 0 then
+  repeat
+    if FileExists(Dir + sr.Name + '\Bar.xml') then
+    begin
+      try
+        xml.LoadFromFile(Dir + sr.Name + '\Bar.xml');
+        fileloaded := True;
+      except
+        fileloaded := False;
       end;
-    except
-      lab := false;
+      if fileloaded then
+      begin
+        if xml.Root.Items.ItemNamed['Settings'] <> nil then
+          if xml.Root.Items.ItemNamed['Settings'].Items.BoolValue('AutoStart',True) then
+          begin
+            // check if this is bar is already running before deleting it
+            handle := FindWindow(nil,PChar('SharpBar_'+ sr.Name));
+            if handle = 0 then
+            begin
+              if SharpApi.SharpExecute('_nohist,' + ExtractFileDir(Application.ExeName)+'\SharpBar.exe '
+                 + NO_LOAD_AUTO_START_BARS_PARAM + ' '
+                 + NO_REMOVE_EMPTY_BARS_PARAM + ' '
+                 + LOAD_BY_ID_PARAM+sr.Name) = HR_OK then lab := true;
+              sleep(500);
+            end else lab := true; // an auto start bar is already running!
+          end;
+      end;
     end;
-    xml.free;
-  end;
+  until FindNext(sr) <> 0;
+  FindClose(sr);
+  xml.free;
 
-  if not lab then
-  begin
-    // no bar was loaded!
-    // return false and make the app continue creating a new bar
-    result := false;
-  end else result := True;
+  result := lab;
 end;
 
 var

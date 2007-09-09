@@ -85,11 +85,10 @@ type
                      FLoaded    : boolean;
                      FSkinManager : TSharpESkinManager;
                      FBar         : TSharpEBar;
-                     FModuleSettings : TJvSimpleXML;
                      procedure LoadDll;
                      procedure UnloadDll;
                    public
-                     DllCreateModule    : function(ID : integer; parent : hwnd) : hwnd;
+                     DllCreateModule    : function(ID,BarID : integer; parent : hwnd) : hwnd;
                      DllCloseModule     : function(ID : integer) : boolean;
                      DllPosChanged      : procedure(ID : integer);
                      DllModuleMessage   : function (ID : integer; msg: string): integer;
@@ -101,8 +100,7 @@ type
                      procedure Clear;
                      constructor Create(pFileName : string; pParent : hwnd;
                                         pSkinManager : TSharpESkinManager;
-                                        pBar         : TSharpEBar;
-                                        pModuleSettings : TJvSimpleXML); reintroduce;
+                                        pBar         : TSharpEBar); reintroduce;
                      destructor Destroy; override;
                    published
                      property FileName : string read FFileName;
@@ -122,6 +120,7 @@ type
                      constructor Create(pOwnerForm  : TWinControl;
                                         pModuleFile : TModuleFile;
                                         pID : integer;
+                                        pBarID : integer;
                                         pParent : hwnd;
                                         pPosition : integer); reintroduce;
                      destructor Destroy; override;
@@ -147,7 +146,6 @@ type
                      FParent            : hwnd;
                      FSkinManager       : TSharpESkinManager;
                      FBar               : TSharpEBar;
-                     FModuleSettings    : TJvSimpleXML;
                      FThrobberMenu      : TPopupMenu;
                      FThrobberMovePoint : TPoint;
                      FThrobberMove      : Boolean;
@@ -155,12 +153,12 @@ type
                      FModuleSpacing     : integer;
                      FShowMiniThrobbers : Boolean;
                      FShutdown          : Boolean;
+                     FBarID             : integer;
                      procedure SetShowMiniThrobbers(Value : Boolean);
                    public
                      constructor Create(pParent : hwnd;
                                         pSkinManager : TSharpESkinManager;
-                                        pBar         : TSharpEBar;
-                                        pModuleSettings : TJvSimpleXML); reintroduce;
+                                        pBar         : TSharpEBar); reintroduce;
                      destructor Destroy; override;
                      procedure Clear;
                      procedure UnloadModules;
@@ -199,9 +197,9 @@ type
                      property Parent          : hwnd         read FParent;
                      property ModuleFiles     : TObjectList  read FModuleFiles;
                      property Modules         : TObjectList  read FModules;
-                     property ModuleSettings  : TJvSimpleXML read FModuleSettings;
                      property ThrobberMenu    : TPopupMenu   read FThrobberMenu write FThrobberMenu;
                      property ShowMiniThrobbers : Boolean    read FShowMiniThrobbers write SetShowMiniThrobbers;
+                     property BarID           : integer      read FBarID write FBarID; 
                    end;
 
 type
@@ -236,8 +234,7 @@ end;
 
 constructor TModuleManager.Create(pParent : hwnd;
                                   pSkinManager : TSharpESkinManager;
-                                  pBar         : TSharpEBar;
-                                  pModuleSettings : TJvSimpleXML);
+                                  pBar         : TSharpEBar);
 begin
   inherited Create;
   FShutdown     := False;
@@ -250,7 +247,6 @@ begin
   FModuleSpacing := 4;
   FModules  := TObjectList.Create;
   FModules.Clear;
-  FModuleSettings := pModuleSettings;
   FModuleFiles := TObjectList.Create;
   FModuleFiles.Clear;
   FDragReleaseTimer := TTimer.Create(nil);
@@ -344,8 +340,7 @@ procedure TModuleManager.Clone(ID : integer);
 var
   tempModule : TModule;
   newID : integer;
-  tempsettings : string;
-  n : integer;
+  Dir : String;
 begin
   if GetFreeBarSpace < 50 then
      if MessageBox(Application.Handle,
@@ -357,27 +352,9 @@ begin
   if tempModule = nil then exit;
 
   newID := GenerateModuleID;
-
-  // Search the module we settings which we want to clone
-  for n := 0 to FModuleSettings.Root.Items.Count - 1 do
-      if FModuleSettings.Root.Items.Item[n].Items.IntValue('ID',-1) = ID then
-      begin
-        // Found the module -> Clone the settings
-        if FModuleSettings.Root.Items.Item[n].Items.ItemNamed['Settings'] <> nil then
-        begin
-          tempsettings := FModuleSettings.Root.Items.Item[n].Items.ItemNamed['Settings'].SaveToString;
-          with FModuleSettings.Root.Items.Add('Item').Items do
-          begin
-            Add('ID',newID);
-            Add('Settings').LoadFromString(tempsettings);
-          end;
-          FModuleSettings.SaveToFile(FModuleSettings.FileName + '~');
-          if FileExists(FModuleSettings.FileName) then
-             DeleteFile(FModuleSettings.FileName);
-          RenameFile(FModuleSettings.FileName + '~',FModuleSettings.FileName);
-          break;
-        end;
-      end;
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';
+  if FileExists(Dir + inttostr(ID) + '.xml') then
+    CopyFile(PChar(Dir + inttostr(ID) + '.xml'),PChar(Dir + inttostr(NewID) + '.xml'),False);
 
   LoadModule(newID,ExtractFileName(tempModule.ModuleFile.FileName),TempModule.Position,GetModuleIndex(ID)+1);
 end;
@@ -389,7 +366,10 @@ var
   TempModule : TModule;
   MF : TModuleFile;
   hm : boolean;
+  Dir : String;
 begin
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';
+
   for n := 0 to FModules.Count - 1 do
   begin
     TempModule := TModule(FModules.Items[n]);
@@ -399,18 +379,9 @@ begin
       MF.DLLCloseModule(ID);
       FModules.Delete(n);
 
-      for i := 0 to FModuleSettings.Root.Items.Count -1 do
-          if FModuleSettings.Root.Items.Item[i].Items.IntValue('ID',-1) = ID then
-          begin
-            FModuleSettings.Root.Items.Delete(i);
-            ForceDirectories(ExtractFileDir(FModuleSettings.FileName));
-            FModuleSettings.SaveToFile(FModuleSettings.FileName + '~');
-            if FileExists(FModuleSettings.FileName) then
-               DeleteFile(FModuleSettings.FileName);
-            RenameFile(FModuleSettings.FileName + '~',FModuleSettings.FileName);
-            break;
-          end;
-
+      if FileExists(Dir + inttostr(ID) + '.xml') then
+        DeleteFile(Dir + inttostr(ID) + '.xml');
+      
       // Check if the same module file has other modules loaded...
       hm := False;
       for i := 0 to FModules.Count - 1 do
@@ -547,7 +518,7 @@ begin
     if (Index = FModules.Count -1) and (ri <> -1) then exit;
     if ri = -1 then ri := FModules.Count;
     if Index = ri -1 then tm.Position := 1
-       else FModules.Exchange(Index, Index +1); 
+       else FModules.Exchange(Index, Index +1);
   end;
 end;
 
@@ -598,22 +569,13 @@ end;
 // Special load funtion which copies a module from another bar!
 function TModuleManager.LoadModule(ID : integer; FromBar: integer; Position,Index : integer) : TModule;
 var
-  Dir,Module : String;
-  XML : TJvSimpleXML;
+  DirA,DirB,Module : String;
 begin
   // Import the module settings from the temporary file
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\';
-  XML := TJvSimpleXML.Create(nil);
-  try
-    XML.LoadFromFile(Dir + 'temp.xml');
-    Module := XML.Root.Items.Value('Module');
-    if XML.Root.Items.ItemNamed['Data'] <> nil then
-       if XML.Root.Items.ItemNamed['Data'].Items.ItemNamed['Item'] <> nil then
-       FModuleSettings.Root.Items.Add(XML.Root.Items.ItemNamed['Data'].Items.ItemNamed['Item']);
-  finally
-    XML.Free;
-    DeleteFile(Dir + 'temp.xml');
-  end;
+  DirA := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FromBar) + '\';
+  DirB := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';
+
+  CopyFile(PChar(DirA + inttostr(ID)),PChar(DirB + inttostr(ID)),False);
 
   if length(Module) > 0 then
      result := LoadModule(ID,Module,Position,Index)
@@ -622,9 +584,8 @@ end;
 
 function TModuleManager.LoadModule(ID : integer; Module : String; Position, Index : integer) : TModule;
 var
- n,i : integer;
+ n : integer;
  pFile : TModuleFile;
- found : boolean;
  pModule : TModule;
 begin
   result := nil;
@@ -635,40 +596,7 @@ begin
     pFile := TModuleFile(FModuleFiles.Items[n]);
     if ExtractFileName(pFile.FileName) = Module then
     begin
-      found := False;
-
-      // Search the xml item for this Module
-      for i := 0 to FModuleSettings.Root.Items.Count -1 do
-      begin
-        if FModuleSettings.Root.Items.Item[i].Items.IntValue('ID',-1) = ID then
-        begin
-          // check if the xml item has a Settings sub item - if not create it
-          if FModuleSettings.Root.Items.Item[i].Items.ItemNamed['Settings'] = nil then
-             FModuleSettings.Root.Items.Item[i].Items.Add('Settings');
-          // set XMLItem to the Settings sub item (will be passed to the module)
-          //XMLItem := FModuleSettings.Root.Items.Item[n].Items.ItemNamed['Settings'];
-          // Item found
-          found := True;
-          break;
-        end;
-      end;
-
-      // there is no xml item for this Module
-      // we have to create one so that the Module will be able to save settings!
-      if not found then
-      begin
-        with FModuleSettings.Root.Items.Add('Item').Items do
-        begin
-          Add('ID',ID);
-          //XMLItem := Add('Settings');
-          Add('Settings');
-          FModuleSettings.SaveToFile(FModuleSettings.FileName + '~');
-          if FileExists(FModuleSettings.FileName) then
-             DeleteFile(FModuleSettings.FileName);
-          RenameFile(FModuleSettings.FileName + '~',FModuleSettings.FileName);
-        end;
-      end;
-      pModule := TModule.Create(FBar.aform,pFile,ID,FParent,Position);
+      pModule := TModule.Create(FBar.aform,pFile,ID,FBarID,FParent,Position);
       if Index <> -1 then FModules.Insert(Index,pModule)
          else FModules.Add(pModule);
       if @pModule.ModuleFile.DllInitModule <> nil then
@@ -709,7 +637,7 @@ begin
   repeat
     if GetModuleFileByFileName(FDirectory + sr.Name) = nil then
     begin
-      temp := TModuleFile.Create(FDirectory + sr.Name,FParent, FSkinManager, FBar, FModuleSettings);
+      temp := TModuleFile.Create(FDirectory + sr.Name,FParent, FSkinManager, FBar);
       FModuleFiles.Add(temp);
     end;
   until FindNext(sr) <> 0;
@@ -896,8 +824,6 @@ var
   pForm : TForm;
   BR : TBarRect;
   b : boolean;
-  Dir : String;
-  XML : TJvSimpleXML;
 begin
   if FThrobberMoveID = -1 then exit;
   if Shift = [ssLeft] then
@@ -1008,22 +934,8 @@ begin
                                         // the event has finished
             FreeAndNil(FDragForm);
             FDragLastBar := BR.Wnd;
-            // Save the module settings to a temp file
-            Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\';
-            XML := TJvSimpleXML.Create(nil);
-            XML.Root.Clear;
-            XML.Root.Name := 'DragDropData';
-            XML.Root.Items.Add('Module',ExtractFileName(tempModule.ModuleFile.FileName));
-            for i := 0 to FModuleSettings.Root.Items.Count - 1 do
-                if FModuleSettings.Root.Items.Item[i].Items.IntValue('ID',-1) = FThrobberMoveID then
-                begin
-                  XML.Root.Items.Add('Data').Items.Add(FModuleSettings.Root.Items.Item[i]);
-                  break;
-                end;
-            XML.SaveToFile(Dir + 'temp.xml');
-            XML.Free;
-            Delete(FThrobberMoveID);
-            SendMessage(BR.wnd,WM_BARINSERTMODULE,FThrobberMoveID,TSharpBarMainForm(pForm).BarID);
+            SendMessage(BR.wnd,WM_BARINSERTMODULE,FThrobberMoveID,FBarID);
+            Delete(FThrobberMoveID);            
             FThrobberMove := False;
             FThrobberMoveID := -1;
             b := True;
@@ -1305,7 +1217,6 @@ var
   ParentControl : TWinControl;
   pMon : TMonitor;
   R : TRect;
-  freespace : integer;
   newsize : integer;
   csize : integer;
   sdif : integer;
@@ -1457,12 +1368,10 @@ end;
 
 constructor TModuleFile.Create(pFileName : String; pParent : hwnd;
                                pSkinManager : TSharpESkinManager;
-                               pBar         : TSharpEBar;
-                               pModuleSettings : TJvSimpleXML);
+                               pBar         : TSharpEBar);
 begin
   Inherited Create;
   FParent         := pParent;
-  FModuleSettings := pModuleSettings;
   FFileName       := pFileName;
   FSkinManager    := pSkinManager;
   FBar            := pBar;
@@ -1571,14 +1480,14 @@ end;
 
 // ############## TModule #################
 
-constructor TModule.Create(pOwnerForm  : TWinControl; pModuleFile : TModuleFile; pID : integer; pParent : hwnd; pPosition : integer);
+constructor TModule.Create(pOwnerForm  : TWinControl; pModuleFile : TModuleFile; pID,pBarID : integer; pParent : hwnd; pPosition : integer);
 begin
   Inherited Create;
   FOwnerForm := pOwnerForm;
   FID := pID;
   FModuleFile := pModuleFile;
   if not FModuleFile.FLoaded then FModuleFile.LoadDll;
-  FHandle := FModuleFile.DllCreateModule(FID,pParent);
+  FHandle := FModuleFile.DllCreateModule(FID,pBarID,pParent);
   FControl := GetControlByHandle(FHandle);
   FPosition := pPosition;
   FThrobber := TSharpEMiniThrobber.Create(FOwnerForm);

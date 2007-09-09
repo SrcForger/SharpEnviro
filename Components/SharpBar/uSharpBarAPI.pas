@@ -32,7 +32,7 @@ unit uSharpBarAPI;
 
 interface
 
-uses JvSimpleXML, windows, Math, forms,GR32, sysutils, SharpAPI, classes;
+uses Forms,windows, Math, GR32, sysutils, SharpAPI, classes, JvSimpleXML;
 
 type
   TModuleSize = record
@@ -43,7 +43,7 @@ type
   PModuleSize = ^TModuleSize;
 
 
-function GetModuleXMLItem(BarWnd : Hwnd; ID : integer) : TJvSimpleXMLElem;
+function GetModuleXMLFile(BarID, ModuleID : integer) : String;
 
 function GetFreeBarSpace(BarWnd : hWnd) : integer;
 function GetBarPluginHeight(BarWnd : Hwnd) : Integer;
@@ -51,18 +51,11 @@ procedure PaintBarBackGround(BarWnd : Hwnd; bmp : TBitmap32; const pos : TForm; 
 procedure PaintBarBackGround(BarWnd : Hwnd; bmp : TBitmap32; const pos : TRect); overload;
 procedure PaintBarBackGround(BarWnd : Hwnd; bmp : TBitmap32; const pos : TForm); overload;
 
-procedure SaveXMLFile(BarWnd : hWnd);
-
 implementation
 
 function GetFreeBarSpace(BarWnd : hWnd) : integer;
 begin
   result := SendMessage(BarWnd, WM_GETFREEBARSPACE, 0,0);
-end;
-
-procedure SaveXMLFile(BarWnd : hWnd);
-begin
-  SendMessage(BarWnd, WM_SAVEXMLFILE,0,0);
 end;
 
 function GetBarPluginHeight(BarWnd : Hwnd) : Integer;
@@ -94,34 +87,20 @@ begin
 end;
 
 
-function GetModuleXMLItem(BarWnd : Hwnd; ID : integer) : TJvSimpleXMLElem;
+function GetModuleXMLFile(BarID, ModuleID : integer) : String;
 var
-  n : integer;
-  XML : ^TJvSimpleXML;
+  Dir : String;
+  XML : TJvSimpleXML;
 begin
-  XML := Pointer(SendMessage(BarWnd, WM_GETXMLHANDLE,0,0));
-
-  if (Xml = nil) or (integer(XML) <= 0) then
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(BarID) + '\';
+  if not FileExists(Dir + inttostr(ModuleID) + '.xml') then
   begin
-    result := nil;
-    exit;
+    ForceDirectories(Dir);
+    XML := TJvSimpleXML.Create(nil);
+    XML.Root.Name := 'ModuleSettings';
+    XML.SaveToFile(Dir + inttostr(ModuleID) + '.xml');
   end;
-
-  for n := 0 to XML^.Root.Items.Count -1 do
-  begin
-    if XML^.Root.Items.Item[n].Items.IntValue('ID',-1) = ID then
-    begin
-      // check if the xml item has a Settings sub item - if not create it
-      if XML^.Root.Items.Item[n].Items.ItemNamed['Settings'] = nil then
-         XML^.Root.Items.Item[n].Items.Add('Settings');
-      // set XMLItem to the Settings sub item (will be passed to the module)
-      // Item found
-      result := XML^.Root.Items.Item[n].Items.ItemNamed['Settings'];
-      exit;
-      break;
-    end;
-  end;
-  result := nil;
+  result := Dir + inttostr(ModuleID) + '.xml';
 end;
 
 end.

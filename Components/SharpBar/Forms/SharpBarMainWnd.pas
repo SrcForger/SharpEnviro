@@ -171,8 +171,6 @@ type
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
 
     procedure WMGetFreeBarSpace(var msg : TMessage); message WM_GETFREEBARSPACE;
-    procedure WMSaveXMLFile(var msg : TMessage); message WM_SAVEXMLFILE;
-    procedure WMGetXMLHandle(var msg : TMessage); message WM_GETXMLHANDLE;
     procedure WMGetBGHandle(var msg : TMessage); message WM_GETBACKGROUNDHANDLE;
     procedure WMGetBarHeight(var msg : TMessage); message WM_GETBARHEIGHT;
 
@@ -185,7 +183,6 @@ type
     procedure OnBarPositionUpdate(Sender : TObject; var X,Y : Integer);
   public
     procedure LoadBarFromID(ID : integer);
-    procedure LoadModuleSettings;
     procedure SaveBarSettings;
     procedure UpdateBGZone;
     procedure UpdateBGImage(NewWidth : integer = -1);
@@ -206,7 +203,6 @@ var
   SharpBarMainForm: TSharpBarMainForm;
   mfParamID : integer;
   ModuleManager : TModuleManager;
-  ModuleSettings : TJvSimpleXML;
   BarMove : boolean;
   BarMovePoint : TPoint;
   Closing : boolean;
@@ -529,22 +525,6 @@ begin
   end;
 end;
 
-// Module is requesting that the settings are saved to file
-procedure TSharpBarMainForm.WMSaveXMLFile(var msg : TMessage);
-begin
-  if FSuspended then exit;
-  ModuleSettings.SaveToFile(ModuleSettings.FileName + '~');
-  if FileExists(ModuleSettings.FileName) then
-     DeleteFile(ModuleSettings.FileName);
-  RenameFile(ModuleSettings.FileName + '~',ModuleSettings.FileName);
-end;
-
-// Module is requesting the handle to the xml settings class
-procedure TSharpBarMainForm.WMGetXMLHandle(var msg : TMessage);
-begin
-  msg.Result := integer(@ModuleSettings);
-end;
-
 // Module is requesting the handle to the Background image
 procedure TSharpBarMainForm.WMGetBGHandle(var msg : TMessage);
 begin
@@ -758,63 +738,6 @@ begin
   UpdateBGImage;
 end;
 
-
-procedure TSharpBarMainForm.LoadModuleSettings;
-// Load the module settings file for this bar
-// User\{}\SharpBar\Module Settings\BarID.xml
-var
-  Dir : String;
-  i : integer;
-begin
-  DebugOutput('Loading Module Settings',1,1);
-  if FBarID <= 0 then
-  begin
-    DebugOutput('No Valid Bar ID given. Aborting module settings loading!',1,3);
-    // Not initalized... No valid Bar ID!
-    exit;
-  end;
-
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\';
-  // Check if Bar Module settings file already exists - if not create a new file
-  if (not FileExists(Dir + inttostr(FBarID)+'.xml')) then
-  begin
-    ModuleSettings.Root.Clear;
-    ModuleSettings.Root.Name := 'SharpBarModules';
-    ForceDirectories(Dir);
-    ModuleSettings.SaveToFile(Dir + inttostr(FBarID)+'.xml');
-    // Set FileName property and load file!
-    ModuleSettings.FileName := Dir + inttostr(FBarID)+'.xml';
-  end;
-
-  begin
-    try
-      DebugOutput('Loading file '+Dir + inttostr(FBarID)+'.xml',2,1);
-      // Set FileName property and load file!
-      ModuleSettings.FileName := Dir + inttostr(FBarID)+'.xml';
-    except
-      DebugOutput('Error while loading or parsing the xml file',1,3);
-      // error while loading or parsing the xml file
-      // create backup and reset file
-      i := DateTimeToUnix(now());
-      if CopyFile(PChar(Dir + inttostr(FBarID)+'.xml'),PChar(Dir + inttostr(FBarID)+'.xml#Backup#'+inttostr(i)),True) = null then
-      begin
-        ShowMessage('Error Loading the Module Settings for Bar ID [' + inttostr(FBarID) + ']!' + #10#13 +
-                    'Creating a Backup failed...');
-      end else
-      begin
-        ShowMessage('Error Loading the Module Settings for Bar ID [' + inttostr(FBarID) + ']!' + #10#13 +
-                    'Backup Created to: '+ #10#13 +
-                    Dir + inttostr(FBarID)+'.xml#Backup#'+inttostr(i));
-      end;
-      ModuleSettings.Root.Clear;
-      ModuleSettings.Root.Name := 'SharpBarModules';
-      ForceDirectories(Dir);
-      ModuleSettings.SaveToFile(Dir + inttostr(FBarID)+'.xml');
-    end;
-  end;
-  ModuleManager.ReCalculateModuleSize;
-end;
-
 procedure TSharpBarMainForm.LoadBarModules(XMLElem : TJvSimpleXMlElem);
 var
   n : integer;
@@ -822,7 +745,6 @@ begin
   if XMlElem = nil then exit;
   DebugOutput('Loading Bar Modules',1,1);
 
-  LoadModuleSettings;
   ModuleManager.UnloadModules;
   if XMLElem.Items.ItemNamed['Modules'] <> nil then
      with XMlElem.Items.ItemNamed['Modules'] do
@@ -846,71 +768,46 @@ procedure TSharpBarMainForm.SaveBarSettings;
 var
   xml : TJvSimpleXML;
   Dir : String;
-  n,i   : integer;
+  i   : integer;
   tempModule : TModule;
 begin
   DebugOutput('Saving Bar Settings',1,1);
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';
   xml := TJvSimpleXMl.Create(nil);
-  try
-    xml.LoadFromFile(Dir + 'bars.xml');
-    if xml.root.Items.ItemNamed['bars'] = nil then
-       xml.Root.Items.Add('bars');
-    with xml.root.items.ItemNamed['bars'] do
+  xml.Root.Name := 'SharpBar';
+
+  // Save Bar Settings
+  with xml.Root.Items.Add('Settings') do
+  begin
+    Items.Add('AutoPosition',SharpEBar.AutoPosition);
+    Items.Add('PrimaryMonitor',SharpEBar.PrimaryMonitor);
+    Items.Add('MonitorIndex',SharpEBar.MonitorIndex);
+    Items.Add('HorizPos',HorizPosToInt(SharpEBar.HorizPos));
+    Items.Add('VertPos',VertPosToInt(SharpEbar.VertPos));
+    Items.Add('AutoStart',SharpEbar.AutoStart);
+    Items.Add('ShowThrobber',SharpEBar.ShowThrobber);
+    Items.Add('DisableHideBar',SharpEBar.DisableHideBar);
+    Items.Add('AlwaysOnTop',SharpEBar.AlwaysOnTop);
+    Items.Add('ShowMiniThrobbers',ModuleManager.ShowMiniThrobbers);
+  end;
+
+  // Save the Module List
+  with xml.Root.Items.Add('Modules') do
+  begin
+    for i := 0 to ModuleManager.Modules.Count -1 do
     begin
-      for n := 0 to Items.Count - 1 do
-          if Items.Item[n].Items.IntValue('ID',0) = FBarID then
-          begin
-            // Save the Bar Settings
-            if Items.Item[n].Items.ItemNamed['Settings'] = nil then
-               Items.Item[n].Items.Add('Settings')
-               else Items.Item[n].Items.ItemNamed['Settings'].Items.Clear;
-            with Items.Item[n].Items.ItemNamed['Settings'] do
-            begin
-              Items.Add('AutoPosition',SharpEBar.AutoPosition);
-              Items.Add('PrimaryMonitor',SharpEBar.PrimaryMonitor);
-              Items.Add('MonitorIndex',SharpEBar.MonitorIndex);
-              Items.Add('HorizPos',HorizPosToInt(SharpEBar.HorizPos));
-              Items.Add('VertPos',VertPosToInt(SharpEbar.VertPos));
-              Items.Add('AutoStart',SharpEbar.AutoStart);
-              Items.Add('ShowThrobber',SharpEBar.ShowThrobber);
-              Items.Add('DisableHideBar',SharpEBar.DisableHideBar);
-              Items.Add('AlwaysOnTop',SharpEBar.AlwaysOnTop);
-              Items.Add('ShowMiniThrobbers',ModuleManager.ShowMiniThrobbers);
-            end;
-            // Save the Module List
-            if Items.Item[n].Items.ItemNamed['Modules'] = nil then
-               Items.Item[n].Items.Add('Modules')
-               else Items.Item[n].Items.ItemNamed['Modules'].Items.Clear;
-            with Items.Item[n].Items.ItemNamed['Modules'] do
-            begin
-              for i := 0 to ModuleManager.Modules.Count -1 do
-              begin
-                tempModule := TModule(ModuleManager.Modules.Items[i]);
-                with Items.Add('Item') do
-                begin
-                  Items.Add('ID',tempModule.ID);
-                  Items.Add('Position',tempModule.Position);
-                  Items.Add('Module',ExtractFileName(tempModule.ModuleFile.FileName));
-                end;
-              end;
-            end;
-          end;
+      tempModule := TModule(ModuleManager.Modules.Items[i]);
+      with Items.Add('Item') do
+      begin
+        Items.Add('ID',tempModule.ID);
+        Items.Add('Position',tempModule.Position);
+        Items.Add('Module',ExtractFileName(tempModule.ModuleFile.FileName));
+      end;
     end;
-  except
-    DebugOutput('Error while saving bar settings',1,3);
-    xml.free;
-    showmessage('Error while saving bar settings');
-    exit;
   end;
+
   ForceDirectories(Dir);
-  try
-    xml.SaveToFile(Dir + 'bars.xml~');
-    if FileExists(Dir + 'bars.xml') then
-       DeleteFile(Dir + 'bars.xml');
-    RenameFile(Dir + 'bars.xml~',Dir + 'bars.xml');
-  except
-  end;
+  xml.SaveToFile(Dir + 'Bar.xml');
   xml.Free;
 end;
 
@@ -920,104 +817,57 @@ var
   Dir : String;
   n   : integer;
   NewID : String;
-  b   : boolean;
 begin
   DebugOutput('Creating New Bar',1,1);
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
   xml := TJvSimpleXMl.Create(nil);
-
-  // Check if SharpBar settings file already exists - if not create a new file
-  if (not FileExists(Dir + 'bars.xml')) then
-  begin
-    ForceDirectories(Dir);
-    xml.Root.Name := 'SharpEBarSettings';
-    xml.Root.Items.Add('bars');
-    ForceDirectories(Dir);
-    xml.SaveToFile(Dir + 'bars.xml');
-  end;
-
   xml.Root.Clear;
-  try
-    xml.LoadFromFile(Dir + 'bars.xml');
+  xml.Root.Name := 'SharpBar';
 
-    // Generate a new unique bar ID and make sure that there is no other
-    // bar with the same ID
-    repeat
-      NewID := '';
-      for n := 1 to 8 do NewID := NewID + inttostr(random(9)+1);
+  // Generate a new unique bar ID and make sure that there is no other
+  // bar with the same ID
+  repeat
+    NewID := '';
+    for n := 1 to 8 do NewID := NewID + inttostr(random(9)+1);
+  until not DirectoryExists(Dir + NewID);
+  FBarID := strtoint(NewID);
+  ModuleManager.BarID := FBarID;  
+  ForceDirectories(Dir + NewID);
 
-      b := False;
-      if xml.Root.Items.ItemNamed['bars'] <> nil then      
-      with xml.root.items.ItemNamed['bars'] do
-      begin
-        for n := 0 to Items.Count - 1 do
-            if Items.Item[n].Items.Value('ID','0') = NewID then
-            begin
-              b := True;
-              break;
-            end;
-      end;
-    until not b;
-    FBarID := strtoint(NewID);
+  xml.Root.Items.Add('Settings');
+  xml.Root.Items.Add('Modules');
 
-    if xml.root.Items.ItemNamed['bars'] = nil then
-       xml.Root.Items.Add('bars');
-    with xml.Root.Items.ItemNamed['bars'].Items.Add('Item') do
-    begin
-      Items.Add('ID',NewID);
-      Items.Add('Settings');
-      Items.Add('Modules');
-    end;
-  except
-    // PANIC : something went wrong!!!!!
-    // we now might have a bar without any place to store the settings
-    // not good!
-    // can't think of anything good what to do now...
-    // let's just give an error and terminate the app =)
-    DebugOutput('FATAL ERROR: Unable to register new bar settings!',1,3);
-    xml.Free;
-    ShowMessage('Unable to register the new bar settings.' + #10#13 +
-                'This Bar is going to be closed!');
-    Application.Terminate;
-    exit;
-  end;
-  ForceDirectories(Dir);
-  try
-    xml.SaveToFile(Dir + 'bars.xml~');
-    if FileExists(Dir + 'bars.xml') then
-       DeleteFile(Dir + 'bars.xml');
-    RenameFile(Dir + 'bars.xml~',Dir + 'bars.xml');
-  except
-  end;
+  xml.SaveToFile(Dir + NewID + '\Bar.xml');
   xml.Free;
+  
   // New bar is now loaded!
   // Set window caption to SharpBar_ID
   self.Caption := 'SharpBar_' + inttostr(FBarID);
 
   UpdateBGZone;
-  LoadModuleSettings;
 end;
 
 procedure TSharpBarMainForm.LoadBarFromID(ID : integer);
 var
   xml : TJvSimpleXML;
   Dir : String;
-  i,n   : integer;
   handle : THandle;
+  b : boolean;
 begin
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
-
-  FBarID := -1;
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(ID) + '\';
 
   // Check if the settings file exists!
-  if (not FileExists(Dir + 'bars.xml')) or (ID = -1) then
+  if (not FileExists(Dir + 'Bar.xml')) or (ID = -1) then
   begin
     // No settings file == fist launch, no other bars!
     // Create new bar!
     FBarID := -1;
+    ModuleManager.BarID := -1;    
     CreateNewBar;
     exit;
   end;
+  FBarID := ID;
+  ModuleManager.BarID := ID;  
 
   // There is a settings file and we have a Bar ID,
   // So let's check if the bar with this ID is already running
@@ -1032,59 +882,44 @@ begin
     exit;
   end;
 
-  // Find and load settings!
-  i := -1;
+  // Find and load settings file!
   xml := TJvSimpleXML.Create(nil);
   try
-    xml.LoadFromFile(Dir + 'bars.xml');
-    if xml.Root.Items.ItemNamed['bars'] <> nil then
-       with xml.root.items.ItemNamed['bars'] do
-       begin
-         for n := 0 to Items.Count - 1 do
-             if Items.Item[n].Items.IntValue('ID',0) = ID then
-                if Items.Item[n].Items.ItemNamed['Settings'] <> nil then
-                   with Items.Item[n].Items.ItemNamed['Settings'] do
-                   begin
-                     // This is the bar with the ID we want to load
-                     SharpEBar.AutoPosition   := Items.BoolValue('AutoPosition',True);
-                     SharpEBar.PrimaryMonitor := Items.BoolValue('PrimaryMonitor',True);
-                     SharpEBar.MonitorIndex   := Items.IntValue('MonitorIndex',0);
-                     SharpEBar.HorizPos       := IntToHorizPos(Items.IntValue('HorizPos',0));
-                     SharpEBar.VertPos        := IntToVertPos(Items.IntValue('VertPos',0));
-                     SharpEBar.AutoStart      := Items.BoolValue('AutoStart',True);
-                     SharpEBar.ShowThrobber   := Items.BoolValue('ShowThrobber',True);
-                     SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar',False);
-                     ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers',True);
-                     SharpEBar.AlwaysOnTop    := Items.BoolValue('AlwaysOnTop',False);
-                     // Set Main Window Title to SharpBar_ID!
-                     // The bar with the given ID is now loaded =)
-                     FBarID := ID;
-                     self.Caption := 'SharpBar_' + inttostr(ID);
-                     i := n;
-                     break;
-                   end;
-    end;
+    xml.LoadFromFile(Dir + 'Bar.xml');
+    b := true;
   except
-    xml.free;
-    FBarID := -1;
-    CreateNewBar;
-    exit;
+    b := False;
   end;
 
-  // ID given, but bar doesn't exist
-  // create new bar
-  if FBarID = -1 then
+  if b then
   begin
-    CreateNewBar;
-    exit;
-  end;
+    // xml file loaded properlty... use it
+    if xml.Root.Items.ItemNamed['Settings'] <> nil then
+      with xml.Root.Items.ItemNamed['Settings'] do
+      begin
+        SharpEBar.AutoPosition   := Items.BoolValue('AutoPosition',True);
+        SharpEBar.PrimaryMonitor := Items.BoolValue('PrimaryMonitor',True);
+        SharpEBar.MonitorIndex   := Items.IntValue('MonitorIndex',0);
+        SharpEBar.HorizPos       := IntToHorizPos(Items.IntValue('HorizPos',0));
+        SharpEBar.VertPos        := IntToVertPos(Items.IntValue('VertPos',0));
+        SharpEBar.AutoStart      := Items.BoolValue('AutoStart',True);
+        SharpEBar.ShowThrobber   := Items.BoolValue('ShowThrobber',True);
+        SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar',False);
+        ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers',True);
+        SharpEBar.AlwaysOnTop    := Items.BoolValue('AlwaysOnTop',False);
 
-  UpdateBGZone;
-  try
-    if i <> -1 then LoadBarModules(xml.root.items.ItemNamed['bars'].Items.Item[i]);
-  except
+        // Set Main Window Title to SharpBar_ID!
+        // The bar with the given ID is now loaded =)
+        Caption := 'SharpBar_' + inttostr(ID);
+      end;
+   UpdateBGZone;
+   LoadBarModules(xml.root);
+  end else
+  begin
+    // file is damaged... try to reconstruct
+
   end;
-  xml.free;
+  xml.Free;
 end;
 
 // Init all skin and module management classes
@@ -1125,15 +960,11 @@ begin
   DebugOutput('Creating SkinManager',2,1);
 
   randomize;
-  // Initialize module settings xml handler
-  // The Pointer to this class will be given to the Module Manager
-  // NEVER free the ModuleSettings var after this point!
-  ModuleSettings := TJvSimpleXML.Create(nil);
 
   // Create and Initialize the module manager
   // (Make sure the Skin Manager and Module Settings are ready before doing this!)
   DebugOutput('Creating Module Manager',2,1);
-  ModuleManager := TModuleManager.Create(Handle, SkinManager, SharpEBar, ModuleSettings);
+  ModuleManager := TModuleManager.Create(Handle, SkinManager, SharpEBar);
   ModuleManager.ThrobberMenu := ThrobberPopUp;
   DebugOutput('Loading Modules from Directory: '+ExtractFileDir(Application.ExeName) + '\Modules\',2,1);
   ModuleManager.LoadFromDirectory(ExtractFileDir(Application.ExeName) + '\Modules\');
@@ -2028,19 +1859,9 @@ begin
   if AddPluginForm <> nil then FreeAndNil(AddPluginForm);
   if PluginManagerForm <> nil then FreeAndNil(PluginManagerForm);
 
-  // We want to produce good code, so let's free stuff before the app is closed ;)
-  ForceDirectories(ExtractFileDir(ModuleSettings.FileName));
-  SaveBarSettings;
-  ModuleSettings.SaveToFile(ModuleSettings.FileName + '~');
-  if FileExists(ModuleSettings.FileName) then
-     DeleteFile(ModuleSettings.FileName);
-  RenameFile(ModuleSettings.FileName + '~',ModuleSettings.FileName);
   ModuleManager.Free;
 
   Application.ProcessMessages;
-
- // ModuleSettings.Free;
-  //ModuleSettings := nil;
 
   FSharpEBar.Free;
   FSharpEBar := nil;
