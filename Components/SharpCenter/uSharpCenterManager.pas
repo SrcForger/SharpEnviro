@@ -558,7 +558,14 @@ begin
   if (@FActivePlugin.SetSettingType) <> nil then
     enumSettingType := FActivePlugin.SetSettingType;
 
-  if TryStrToInt(FActivePluginID, n) then
+  // if a ':' is in the string then it's a suModule message
+  // we need to extract the ModuleID and send it as param...
+  if pos(':',FActivePluginID) <> 0 then
+  begin
+    if not TryStrToInt(copy(FActivePluginID, pos(':',FActivePluginID)+1, length(FActivePluginID) - pos(':',FActivePluginID)),n) then
+      n := -1;
+  end
+  else if TryStrToInt(FActivePluginID, n) then
     n := StrToInt(FActivePluginID) else
     n := -1;
 
