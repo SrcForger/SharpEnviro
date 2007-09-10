@@ -46,8 +46,7 @@ uses
   JvSimpleXML,
   SharpApi,
   SharpCenterApi,
-  MainWnd in 'MainWnd.pas' {MainForm},
-  SettingsWnd in 'SettingsWnd.pas' {SettingsForm};
+  MainWnd in 'MainWnd.pas' {MainForm};
 
 type
   TModule = class
@@ -186,12 +185,12 @@ end;
 procedure UpdateMessage(part : TSU_UPDATE_ENUM; param : integer);
 const
   processed : TSU_UPDATES = [suSkinFileChanged,suBackground,suTheme,suSkin,
-                             suScheme];
+                             suScheme,suModule];
 var
   temp : TModule;
   n,i : integer;
 begin
-  if not (part in processed) then 
+  if not (part in processed) then
     exit;
 
   if ModuleList = nil then exit;
@@ -199,6 +198,12 @@ begin
   for n := 0 to ModuleList.Count - 1 do
   begin
     temp := TModule(ModuleList.Items[n]);
+    if (part = suModule) and (temp.ID = param) then
+    begin
+      TMainForm(temp.Form).LoadSettings;
+      TMainForm(temp.Form).ReAlignComponents(True);
+      break;
+    end;
 
     // Step1: check if height changed
     if [part] <= [suSkinFileChanged,suBackground,suTheme] then
@@ -225,19 +230,6 @@ begin
          TMainForm(temp.Form).ReAlignComponents((part = suSkinFileChanged));
     end;
   end;
-end;
-
-procedure ShowSettingsWnd(ID : integer);
-var
-  n : integer;
-  temp : TModule;
-begin
-  for n := 0 to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.FForm).ShowSettings;
-      end;
 end;
 
 function ModuleMessage(ID : integer; msg: string): integer;
@@ -278,7 +270,6 @@ Exports
   Refresh,
   UpdateMessage,
   ModuleMessage,
-  ShowSettingsWnd,
   SetSize;
 
 

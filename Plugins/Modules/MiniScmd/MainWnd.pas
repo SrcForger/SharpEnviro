@@ -63,7 +63,6 @@ type
     ModuleID : integer;
     BarID : integer;
     BarWnd : hWnd;
-    procedure ShowSettings;
     procedure UpdateBangs;
     procedure LoadSettings;
     procedure SetSize(NewWidth : integer);
@@ -77,8 +76,7 @@ var
 
 implementation
 
-uses SettingsWnd,
-     uSharpBarAPI,
+uses uSharpBarAPI,
      SharpDialogs;
 
 {$R *.dfm}
@@ -159,40 +157,6 @@ begin
   begin
     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0)
   end else SetSize(Width);
-end;
-
-
-procedure TMainForm.ShowSettings;
-var
-  SettingsForm : TSettingsForm;
-  XML : TJvSimpleXML;
-begin
-  try
-    SettingsForm := TSettingsForm.Create(application.MainForm);
-    SettingsForm.tb_size.Position   := sWidth;
-    SettingsForm.cb_selectbutton.Checked := sButton;
-
-    if SettingsForm.ShowModal = mrOk then
-    begin
-      sWidth      := SettingsForm.tb_size.Position;
-      sButton     := SettingsForm.cb_selectbutton.Checked;
-
-      XML := TJvSimpleXML.Create(nil);
-      XML.Root.Name := 'MiniScmdModuleSettings';
-      with XML.Root.Items do
-      begin
-        clear;
-        Add('Width',sWidth);
-        Add('Button',sButton);
-      end;
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      XML.Free;
-    end;
-    ReAlignComponents(True);
-
-  finally
-    FreeAndNil(SettingsForm);
-  end;
 end;
 
 procedure TMainForm.editKeyUp(Sender: TObject; var Key: Word;
