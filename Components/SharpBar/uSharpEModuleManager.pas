@@ -570,12 +570,34 @@ end;
 function TModuleManager.LoadModule(ID : integer; FromBar: integer; Position,Index : integer) : TModule;
 var
   DirA,DirB,Module : String;
+  XML : TJvSimpleXML;
+  n : integer;
+  fileloaded : boolean;
 begin
   // Import the module settings from the temporary file
   DirA := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FromBar) + '\';
   DirB := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';
 
-  CopyFile(PChar(DirA + inttostr(ID)),PChar(DirB + inttostr(ID)),False);
+  CopyFile(PChar(DirA + inttostr(ID) + '.xml'),PChar(DirB + inttostr(ID) + '.xml'),False);
+
+  // find what module it is
+  XML := TJvSimpleXML.Create(nil);
+  fileloaded := False;
+  try
+    XML.LoadFromFile(DirA + 'Bar.xml');
+    fileloaded := True;
+  except
+  end;
+  if fileloaded then
+    if XML.Root.Items.ItemNamed['Modules'] <> nil then
+      with XML.Root.Items.ItemNamed['Modules'].Items do
+        for n := 0 to Count - 1 do
+          if Item[n].Items.IntValue('ID',-1) = ID then
+          begin
+            Module := Item[n].Items.Value('Module','');
+            break;
+          end;
+  XML.Free;
 
   if length(Module) > 0 then
      result := LoadModule(ID,Module,Position,Index)
@@ -939,6 +961,7 @@ begin
             FThrobberMove := False;
             FThrobberMoveID := -1;
             b := True;
+            TSharpBarMainForm(Application.MainForm).SaveBarSettings;
           end;
           break;
         end;
@@ -1002,6 +1025,8 @@ var
   tempModule : TModule;
   p : TPoint;
   n : integer;
+  s : String;
+  cfile : String;
 begin
   mThrobber := TSharpEMiniThrobber(Sender);
   if (mThrobber = nil) or (FThrobberMenu = nil) then exit;
@@ -1014,11 +1039,15 @@ begin
 
   // search the settings menu item and enable/disable it
   // settings menu item has .tag = -1
+  s := ExtractFileName(tempModule.ModuleFile.FileName);
+  setlength(s,length(s) - length(ExtractFileExt(s)));
+  cfile := SharpApi.GetCenterDirectory + '_Modules\' + s + '.con';
+
   for n := 0 to FThrobberMenu.Items.Count - 1 do
   begin
       if FThrobberMenu.Items.Items[n].Tag = -1 then
       begin
-        if @tempModule.ModuleFile.DllShowSettingsWnd = nil then
+        if (@tempModule.ModuleFile.DllShowSettingsWnd = nil) and (not FileExists(cfile)) then
            FThrobberMenu.Items.Items[n].Enabled := False
            else FThrobberMenu.Items.Items[n].Enabled := True;
         break;

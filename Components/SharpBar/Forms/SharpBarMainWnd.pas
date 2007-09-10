@@ -509,7 +509,7 @@ begin
      end;
 
   // Step2: Update modules
-  ModuleManager.BroadcastPluginUpdate(TSU_UPDATE_ENUM(msg.WParam));
+  ModuleManager.BroadcastPluginUpdate(TSU_UPDATE_ENUM(msg.WParam),msg.LParam);
 
   // Step3: Modules updated, now update the bar
   if (msg.WParam = Integer(suSkinFileChanged)) then
@@ -1606,13 +1606,24 @@ procedure TSharpBarMainForm.SettingsClick(Sender: TObject);
 var
   mThrobber : TSharpEMiniThrobber;
   tempModule : TModule;
+  s : String;
+  cfile : String;
 begin
   mThrobber := TSharpEMiniThrobber(ThrobberPopUp.popupcomponent);
   if mThrobber = nil then exit;
   tempModule := ModuleManager.GetModule(mThrobber.Tag);
   if tempModule = nil then exit;
-  if @tempModule.ModuleFile.DllShowSettingsWnd <> nil then
-     tempModule.ModuleFile.DllShowSettingsWnd(tempModule.ID);
+
+  s := ExtractFileName(tempModule.ModuleFile.FileName);
+  setlength(s,length(s) - length(ExtractFileExt(s)));
+  cfile := SharpApi.GetCenterDirectory + '_Modules\' + s + '.con';
+
+  if FileExists(cfile) then
+    SharpCenterApi.CenterCommand(sccLoadSetting,
+                               PChar(cfile),
+                               PChar(inttostr(FBarID) + ':' +inttostr(tempModule.ID)))
+  else if @tempModule.ModuleFile.DllShowSettingsWnd <> nil then
+    tempModule.ModuleFile.DllShowSettingsWnd(tempModule.ID);
 end;
 
 procedure TSharpBarMainForm.Delete1Click(Sender: TObject);
