@@ -53,7 +53,8 @@ uses
   MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   NotesWnd in 'NotesWnd.pas' {NotesForm},
-  NotesNewTabWnd in 'NotesNewTabWnd.pas' {NotesNewTabForm};
+  NotesNewTabWnd in 'NotesNewTabWnd.pas' {NotesNewTabForm},
+  uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas';
 
 type
   TModule = class

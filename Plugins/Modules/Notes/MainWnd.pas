@@ -83,7 +83,8 @@ type
 implementation
 
 uses SettingsWnd,
-     uSharpBarAPI;
+     uSharpBarAPI,
+     uSystemFuncs;
 
 {$R *.dfm}
 {$R glyphs.res}
@@ -96,7 +97,10 @@ end;
 procedure TMainForm.WMSharpEBang(var Msg : TMessage);
 begin
   case msg.LParam of
-    1: Button.OnClick(Button);
+    1: begin
+         Button.OnClick(Button);
+         ForceForegroundWindow(NotesForm.Handle);
+       end;
   end;
 end;
 
