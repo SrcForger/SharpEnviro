@@ -25,7 +25,8 @@
       <Projects Name="DeskArea.dll">..\Plugins\Configurations\DeskArea\DeskArea.bdsproj</Projects>
       <Projects Name="Image.dll">..\Plugins\Configurations\Image\Image.bdsproj</Projects>
       <Projects Name="Link.dll">..\Plugins\Configurations\Link\Link.bdsproj</Projects>
-      <Projects Name="Targets">Curses.dll Desktop.dll Hotkeys.dll IconList.dll Scheme.dll SharpBarList.dll SharpDesk.dll SharpMenu.dll ThemeList.dll ThemeSkinList.dll Wallpaper.dll Weather.dll Font.dll DeskArea.dll Image.dll Link.dll</Projects>
+      <Projects Name="MiniScmd.dll">..\Plugins\Configurations\MiniScmd\MiniScmd.bdsproj</Projects>
+      <Projects Name="Targets">Curses.dll Desktop.dll Hotkeys.dll IconList.dll Scheme.dll SharpBarList.dll SharpDesk.dll SharpMenu.dll ThemeList.dll ThemeSkinList.dll Wallpaper.dll Weather.dll Font.dll DeskArea.dll Image.dll Link.dll MiniScmd.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
