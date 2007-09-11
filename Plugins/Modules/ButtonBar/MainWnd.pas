@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, Math, GR32, ToolTipApi,
+  Dialogs, Menus, Math, GR32, ToolTipApi, ShellApi,
   JvSimpleXML,
   SharpApi,
   uSharpBarAPI,
@@ -58,13 +58,16 @@ type
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
+    sb_config: TSharpEButton;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure Settings1Click(Sender: TObject);
+    procedure sb_configClick(Sender: TObject);
   protected
+    procedure CreateParams(var Params: TCreateParams); override;
   private
     sWidth       : integer;
     sShowLabel   : boolean;
@@ -74,17 +77,21 @@ type
     Background   : TBitmap32;
     FHintWnd     : hwnd; 
     procedure ClearButtons;
-    procedure AddButton(pTarget,pIcon,pCaption : String);
+    procedure AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
     procedure UpdateButtons;
   public
     ModuleID : integer;
     BarID : integer;
     BarWnd : hWnd;
+    OldLBWindowProc: TWndMethod;
     procedure RefreshIcons;
     procedure LoadSettings;
+    procedure SaveSettings;
     procedure ReAlignComponents(BroadCast : boolean);
     procedure SetWidth(new : integer);
     procedure UpdateBackground(new : integer = -1);
+    procedure LBWindowProc(var Message: TMessage);
+    procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;
   end;
 
 
@@ -93,6 +100,53 @@ implementation
 uses SettingsWnd;
 
 {$R *.dfm}
+
+procedure TMainForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.ExStyle := params.ExStyle or WS_EX_ACCEPTFILES;
+end;
+
+procedure TMainForm.LBWindowProc(var Message: TMessage);
+begin
+  if Message.Msg = WM_DROPFILES then
+     WMDropFiles(Message);
+  OldLBWindowProc(Message);
+end;
+
+procedure TMainForm.WMDropFiles(var msg: TMessage);
+var
+  pcFileName: PChar;
+  i, iSize, iFileCount: integer;
+  p : TPoint;
+  n : integer;
+  index : integer;
+begin
+  index := High(FButtonList) + 1;
+  p := ScreenToClient(Mouse.CursorPos);
+  for n := 0 to High(FButtonList) do
+   if p.x < FButtonList[n].btn.Left then
+   begin
+     index := n - 1;
+     break;
+   end;
+
+  pcFileName := '';
+  iFileCount := DragQueryFile(Msg.wParam, $FFFFFFFF, pcFileName, 255);
+  for i := 0 to iFileCount - 1 do
+  begin
+     iSize := DragQueryFile(Msg.wParam, i, nil, 0) + 1;
+     pcFileName := StrAlloc(iSize);
+     DragQueryFile(Msg.wParam, i, pcFileName, iSize);
+     AddButton(pcFileName,'shell:icon',ExtractFileName(pcFileName),index);
+     StrDispose(pcFileName);
+  end;
+  DragFinish(Msg.wParam);
+  sb_config.Left := -200;  
+  UpdateButtons;
+  SaveSettings;
+  RealignComponents(True);
+end;
 
 procedure TMainForm.ClearButtons;
 var
@@ -106,10 +160,21 @@ begin
   setlength(FButtonList,0);
 end;
 
-procedure TMainForm.AddButton(pTarget,pIcon,pCaption : String);
+procedure TMainForm.AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
+var
+  n : integer;
 begin
   setlength(FButtonList,length(FButtonList)+1);
-  with FButtonList[High(FButtonList)] do
+  if (Index < Low(FButtonList)) or (Index > High(FButtonList)) then
+    Index := High(FButtonList)
+    else for n := High(FButtonList) downto Index + 1 do
+      begin
+        FButtonList[n].btn := FButtonList[n-1].btn;
+        FButtonList[n].target := FButtonList[n-1].target;
+        FButtonList[n].caption := FButtonList[n-1].caption;
+        FButtonList[n].icon := FButtonList[n-1].icon;
+      end;
+  with FButtonList[Index] do
   begin
     btn := TSharpEButton.Create(self);
     btn.Visible := False;
@@ -160,6 +225,39 @@ begin
               btn.Glyph32.SetSize(0,0)
 end;
 
+procedure TMainForm.SaveSettings;
+var
+  XML : TJvSimpleXML;
+  n : integer;
+begin
+  XML := TJvSimpleXMl.Create(nil);
+  XML.Root.Name := 'MenuModuleSettings';
+  with XML.Root.Items do
+  begin
+    Add('Width',sWidth);
+    Add('ShowLabel',sShowLabel);
+    Add('ShowIcon',sShowIcon);
+    with Add('Buttons').Items do
+    begin
+      for n := 0 to High(FButtonList) do
+      with FButtonList[n] do
+           with Add('item').Items do
+           begin
+             Add('Target',Target);
+             Add('Icon',Icon);
+             Add('Caption',Caption);
+           end;
+    end;
+  end;
+  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+  XML.Free;
+end;
+
+procedure TMainForm.sb_configClick(Sender: TObject);
+begin
+  Settings1.OnClick(Settings1);
+end;
+
 procedure TMainForm.UpdateButtons;
 var
   n : integer;
@@ -200,8 +298,8 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      sWidth       := IntValue('Width',100);
-      sShowLabel   := BoolValue('ShowLabel',True);
+      sWidth       := IntValue('Width',25);
+      sShowLabel   := BoolValue('ShowLabel',False);
       sShowIcon    := BoolValue('ShowIcon',sShowIcon);
       if ItemNamed['Buttons'] <> nil then
       with ItemNamed['Buttons'].Items do
@@ -240,7 +338,13 @@ begin
   self.Caption := 'ButtonBar';
   if sWidth<20 then sWidth := 20;
 
-  newWidth := FButtonSpacing + High(FButtonList)*FButtonSpacing + length(FButtonList)*sWidth + FButtonSpacing;
+  sb_config.Visible := (length(FButtonList) = 0);
+  if sb_config.Visible then
+  begin
+    sb_config.Left := 2;
+    newWidth := sb_config.Left + sb_config.Width + 2
+  end
+  else newWidth := FButtonSpacing + High(FButtonList)*FButtonSpacing + length(FButtonList)*sWidth + FButtonSpacing;
 
   self.Tag := NewWidth;
   self.Hint := inttostr(NewWidth);
@@ -253,7 +357,6 @@ end;
 procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  XML : TJvSimpleXML;
   n : integer;
 begin
   try
@@ -276,27 +379,7 @@ begin
           with SettingsForm.buttons.Items.Item[n] do
                AddButton(SubItems[0],SubItems[1],Caption);
 
-      XML := TJvSimpleXMl.Create(nil);
-      XML.Root.Name := 'MenuModuleSettings';
-      with XML.Root.Items do
-      begin
-        Add('Width',sWidth);
-        Add('ShowLabel',sShowLabel);
-        Add('ShowIcon',sShowIcon);
-        with Add('Buttons').Items do
-        begin
-          for n := 0 to High(FButtonList) do
-          with FButtonList[n] do
-               with Add('item').Items do
-               begin
-                 Add('Target',Target);
-                 Add('Icon',Icon);
-                 Add('Caption',Caption);
-               end;
-        end;
-      end;
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      XML.Free;
+      SaveSettings;
     end;
     ReAlignComponents(True);
 
