@@ -34,7 +34,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types,
-  Dialogs, StdCtrls, GR32, GR32_PNG, SharpEButton,
+  StdCtrls, GR32, GR32_PNG, SharpEButton,
   SharpESkinManager, JvSimpleXML, SharpApi, Menus, Math, NotesWnd,
   SharpEBaseControls;
 
@@ -79,8 +79,7 @@ type
 
 implementation
 
-uses SettingsWnd,
-     uSharpBarAPI,
+uses uSharpBarAPI,
      uSystemFuncs;
 
 {$R *.dfm}

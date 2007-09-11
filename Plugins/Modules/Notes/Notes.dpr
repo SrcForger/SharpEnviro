@@ -35,13 +35,11 @@ library Notes;
 uses
   Windows,
   Controls,
-  Dialogs,
   SysUtils,
   Forms,
   Classes,
   Contnrs,
   SharpESkinManager,
-  SharpEBar,
   StdCtrls,
   JvSimpleXML,
   SharpCenterApi,
