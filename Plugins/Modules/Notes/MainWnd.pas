@@ -41,15 +41,12 @@ uses
 
 type
   TMainForm = class(TForm)
-    MenuPopup: TPopupMenu;
-    Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     Button: TSharpEButton;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ButtonClick(Sender: TObject);
-    procedure Settings1Click(Sender: TObject);
   protected
   private
     sCaption     : Boolean;
@@ -250,31 +247,6 @@ begin
         else Button.Width := max(1,Width - 4);
 end;
 
-
-procedure TMainForm.Settings1Click(Sender: TObject);
-var
-  SettingsForm : TSettingsForm;
-begin
-  try
-    SettingsForm := TSettingsForm.Create(application.MainForm);
-    SettingsForm.rb_caption.Checked := (sCaption and (not sIcon));
-    SettingsForm.rb_icon.Checked    := (sIcon and (not sCaption));
-    SettingsForm.rb_cai.Checked     := (sCaption and sIcon);
-    SettingsForm.cb_aot.Checked     := sAlwaysOnTop;
-
-    if SettingsForm.ShowModal = mrOk then
-    begin
-      sAlwaysOnTop := SettingsForm.cb_aot.Checked;
-      sCaption := (SettingsForm.rb_caption.Checked or SettingsForm.rb_cai.Checked);
-      sIcon    := (SettingsForm.rb_icon.Checked or SettingsForm.rb_cai.Checked);
-      SaveSettings;
-    end;
-    ReAlignComponents(True);
-
-  finally
-    FreeAndNil(SettingsForm);
-  end;
-end;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
 begin
