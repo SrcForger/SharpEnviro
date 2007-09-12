@@ -631,6 +631,7 @@ var
   x,y : integer;
   R,G,B : integer;
   s : String;
+  MLeft,MTop : integer;
 begin
   if FSuspended then exit;
   if (FTopZone = nil) or (FBottomZone = nil) then exit;
@@ -723,15 +724,35 @@ begin
                  TempBmp.DrawTo(BGBmp,Rect(0,0,BGBmp.Width,BGBmp.Height));
 
       TempBmp.Free;
-//      if FileExists(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp') then
-//         BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp');
     end;
+
+    // Some monitors have a position < 0 but the bitmap starts at 0...
+    // need to calculate an offset
+    MLeft := 0;
+    MTop  := 0;
+    for n := 0 to Screen.MonitorCount - 1 do
+      with Screen.Monitors[n] do
+      begin
+        if (Left < 0) and (Left < MLeft) then
+          MLeft := Left;
+        if (Top < 0) and (Top < MTop) then
+          MTop := Top;
+      end;
+    MLeft := abs(MLeft);
+    MTop  := abs(MTop);
+
     // Update the images holding the top and bottom background image
     // (no need to hold the whole image, only the areas used by bars are of interest)
     FTopZone.SetSize(Monitor.Width,Height);
     FBottomZone.SetSize(Monitor.Width,Height);
-    FTopZone.Draw(0,0,Rect(Monitor.Left,Monitor.Top,Monitor.Left + Monitor.Width,Monitor.Top + Height), BGBmp);
-    FBottomZone.Draw(0,0,Rect(Monitor.Left,Monitor.Top + Monitor.Height - Height,Monitor.Left + Monitor.Width,Monitor.Top + Monitor.Height), BGBmp);
+    FTopZone.Draw(0,0,Rect(Monitor.Left + MLeft,
+                           Monitor.Top + MTop,
+                           Monitor.Left + MLeft + Monitor.Width,
+                           Monitor.Top + MTop + Height), BGBmp);
+    FBottomZone.Draw(0,0,Rect(Monitor.Left + MLeft,
+                              Monitor.Top + MTop + Monitor.Height - Height,
+                              Monitor.Left + MLeft + Monitor.Width,
+                              Monitor.Top + MTop + Monitor.Height), BGBmp);
   except
   end;
   BGBmp.Free;
