@@ -553,6 +553,10 @@ begin
       begin
         SCM.UpdateSettingsBroadcast;
       end;
+    SCM_EVT_UPDATE_SIZE:
+      begin
+        UpdateSize;
+      end;
   end;
 end;
 
