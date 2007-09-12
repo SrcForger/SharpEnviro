@@ -114,6 +114,9 @@ type
     property Color;
     property Anchors;
     property Font;
+    property Constraints;
+    property ParentBackground;
+
     property Min: Integer read FMin write SetMin;
     property Max: Integer read FMax write SetMax;
     property Value: Integer read FValue write SetValue;
