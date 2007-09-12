@@ -49,6 +49,7 @@ const
   SCM_SET_APPLY_CONFIG = 8;
   SCM_EVT_UPDATE_PREVIEW = 9;
   SCM_EVT_UPDATE_SETTINGS = 10;
+  SCM_EVT_UPDATE_SIZE = 11;
 
 const
   WM_SHARPCENTERMESSAGE = WM_APP + 660;
@@ -98,6 +99,9 @@ function CenterSelectEditTab(AEditTab: TSCB_BUTTON_ENUM): boolean;
 
 function CenterUpdatePreview: boolean;
   external 'SharpCenterAPI.dll' name 'CenterUpdatePreview';
+
+function CenterUpdateSize: boolean;
+  external 'SharpCenterAPI.dll' name 'CenterUpdateSize';
 
 function CenterUpdateSettings: boolean;
   external 'SharpCenterAPI.dll' name 'CenterUpdateSettings';

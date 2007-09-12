@@ -58,6 +58,7 @@ const
   SCM_SET_APPLY_CONFIG = 8;
   SCM_EVT_UPDATE_PREVIEW = 9;
   SCM_EVT_UPDATE_SETTINGS = 10;
+  SCM_EVT_UPDATE_SIZE = 11;
 
   SCC_LOAD_SETTING = '_loadsetting';
   SCC_CHANGE_FOLDER = '_changedir';
@@ -243,6 +244,11 @@ begin
   Result := BroadcastCenterMessage(SCM_EVT_UPDATE_SETTINGS, 0);
 end;
 
+function CenterUpdateSize: boolean;
+begin
+  Result := BroadcastCenterMessage(SCM_EVT_UPDATE_SIZE, 0);
+end;
+
 function CenterCommandAsText(ACommand: TSCC_COMMAND_ENUM): string;
 begin
   if ACommand = sccLoadSetting then result := SCC_LOAD_SETTING else
@@ -324,6 +330,7 @@ exports
   CenterSelectEditTab,
   CenterUpdatePreview,
   CenterUpdateSettings,
+  CenterUpdateSize,
   CenterCommandAsText,
   CenterCommandAsEnum,
   CenterReadDefaults,
