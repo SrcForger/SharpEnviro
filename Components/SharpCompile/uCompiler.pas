@@ -35,7 +35,7 @@ interface
 uses
   SysUtils,Windows,Registry,Classes,DateUtils,
   JvSimpleXML,JclFileUtils,JclSysInfo,DosCommand,
-  JclDebug;
+  JclDebug,StrUtils;
 
 type
   TCompileEvent = procedure(Sender: TObject; CmdOutput: string) of object;
@@ -175,24 +175,47 @@ begin
      FOnCompilerCmdOutput(Sender,NewLine);
 end;
 
-procedure TDelphiCompiler.UpdateBDSData;
+function Clean(const Input:string): String;
 var
-  Reg : TRegistry;
-  slBrowsePath: TStringList;
-  slSearchPath: TStringList;
-  i: Integer;
+  i: integer;
+  sTemp: String;
+  iPos: integer;
+  sInput: String;
+  sResult: String;
   bBDSFound: Boolean;
   bVCLFound: Boolean;
   bRTLFound: Boolean;
+begin
+  bBDSFound := False;
+  bVCLFound := False;
+  bRTLFound := False;
+  iPos := 1;
+  sInput := Input;
+  repeat
+    iPos := Pos(';', sInput);
+    sTemp := LeftStr(sInput, iPos);
+    bBDSFound := Pos('$(BDS)', sTemp) > 0;
+    bVCLFound := Pos('\vcl', LowerCase(sTemp)) > 0;
+    bRTLFound := Pos('\rtl', LowerCase(sTemp)) > 0;
+    if not (bBDSFound and (bVCLFound or bRTLFound)) then
+      sResult := sResult + sTemp;
+    sInput := RightStr(sInput, Length(sInput) - iPos);
+  until iPos = 0;
+  if sInput <> '' then
+    sResult := sResult + sInput;
+  result := sResult;
+end;
+
+procedure TDelphiCompiler.UpdateBDSData;
+var
+  Reg : TRegistry;
+  i: Integer;
 begin
   FBDSInstalled := False;
   FBDSVersion := '0';
   FBDSPath := '';
   FSearchPath := '';
   FBrowsePath := '';
-  bBDSFound := False;
-  bVCLFound := False;
-  bRTLFound := False;
 
   Reg := TRegistry.Create;
   try
@@ -227,41 +250,8 @@ begin
   end;
 
   // Exclude vcl and rtl from search/browse paths
-  slSearchPath := TStringList.Create;
-  slSearchPath.Delimiter := ';';
-  slSearchPath.DelimitedText := FSearchPath;
-  i := 0;
-  repeat
-    begin
-      bBDSFound := Pos('$(BDS)', slSearchPath.Strings[i]) > 0;
-      bVCLFound := Pos('\vcl', slSearchPath.Strings[i]) > 0;
-      bRTLFound := Pos('\rtl', slSearchPath.Strings[i]) > 0;
-      if bBDSFound and (bVCLFound or bRTLFound) then
-        slSearchPath.Delete(i)
-      else
-        i := i + 1;
-    end;
-  until i = slSearchPath.Count - 1;
-  FSearchPath := slSearchPath.DelimitedText;
-  slSearchPath.Free;
-
-  slBrowsePath := TStringList.Create;
-  slBrowsePath.Delimiter := ';';
-  slBrowsePath.DelimitedText := FBrowsePath;
-  i := 0;
-  repeat
-    begin
-      bBDSFound := Pos('$(BDS)', slBrowsePath.Strings[i]) > 0;
-      bVCLFound := Pos('\vcl', slBrowsePath.Strings[i]) > 0;
-      bRTLFound := Pos('\rtl', slBrowsePath.Strings[i]) > 0;
-      if bBDSFound and (bVCLFound or bRTLFound) then
-        slBrowsePath.Delete(i)
-      else
-        i := i + 1;
-    end;
-  until i = slBrowsePath.Count - 1;
-  FBrowsePath := slBrowsePath.DelimitedText;
-  slBrowsePath.Free;
+  FSearchPath := Clean(FSearchPath);
+  FBrowsePath := Clean(FBrowsePath);
 
   FSearchPath := StringReplace(FSearchPath, '$(ProgramFiles)', JclSysInfo.GetProgramFilesFolder, [rfReplaceAll,rfIgnoreCase]);
   FBrowsePath := StringReplace(FBrowsePath, '$(ProgramFiles)', JclSysInfo.GetProgramFilesFolder, [rfReplaceAll,rfIgnoreCase]);
