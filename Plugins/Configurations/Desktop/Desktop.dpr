@@ -54,7 +54,7 @@ function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 var
   xml: TJvSimpleXML;
   sDir: string;
-  iIconSize: Integer;
+  iIconSize,n: Integer;
 begin
   if frmDesktopSettings = nil then
     frmDesktopSettings := TfrmDesktopSettings.Create(nil);
@@ -113,6 +113,15 @@ begin
           sgbFontShadowTrans.Value := IntValue('TextShadowAlpha', 196);
           sceFontColor.Items.Item[0].ColorCode := IntValue('TextColor', clWhite);
           sceShadowColor.Items.Item[0].ColorCode := IntValue('TextShadowColor', 0);
+
+          n := IntValue('TextShadowType', 0);
+          Case n of
+            0: rdoShadowTypeLeft.Checked;
+            1: rdoShadowTypeRight.Checked;
+            2: rdoShadowTypeOutline.Checked;
+            else
+              rdoShadowTypeLeft.Checked;
+          End;
 
           {$ENDREGION} end;
 
@@ -203,6 +212,14 @@ begin
         Add('TextAlphaValue', sgbFontTrans.Value);
         Add('TextShadow', chkFontShadow.Checked);
         Add('TextShadowAlpha', sgbFontShadowTrans.Value);
+
+        if rdoShadowTypeLeft.Checked then
+          Add('TextShadowType', 0) else
+        if rdoShadowTypeRight.Checked then
+          Add('TextShadowType', 1) else
+        if rdoShadowTypeOutline.Checked then
+          Add('TextShadowType', 2);
+
         Add('TextColor', sceFontColor.Items.Item[0].ColorCode);
         Add('TextShadowColor',
           sceShadowColor.Items.Item[0].ColorCode);
@@ -278,6 +295,8 @@ end;
 procedure ClickTab(ATab: TPluginTabItem);
 begin
   TJvStandardPage(ATab.Data).Show;
+
+  frmDesktopSettings.UpdatePageUi;
 end;
 
 procedure GetCenterScheme(var ABackground: TColor;
@@ -290,9 +309,9 @@ begin
   if frmDesktopSettings <> nil then
   begin
     ATabs.Add('Icon', frmDesktopSettings.pagIcon, '', '');
-    ATabs.Add('Text', frmDesktopSettings.pagFont, '', '');
-    ATabs.Add('Text Shadow', frmDesktopSettings.pagFontShadow, '', '');
-    ATabs.Add('Animations', frmDesktopSettings.pagAnimation, '', '');
+    ATabs.Add('Font', frmDesktopSettings.pagFont, '', '');
+    ATabs.Add('Font Shadow', frmDesktopSettings.pagFontShadow, '', '');
+    ATabs.Add('Animation', frmDesktopSettings.pagAnimation, '', '');
   end;
 end;
 
