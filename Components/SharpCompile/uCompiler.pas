@@ -178,12 +178,21 @@ end;
 procedure TDelphiCompiler.UpdateBDSData;
 var
   Reg : TRegistry;
+  slBrowsePath: TStringList;
+  slSearchPath: TStringList;
+  i: Integer;
+  bBDSFound: Boolean;
+  bVCLFound: Boolean;
+  bRTLFound: Boolean;
 begin
   FBDSInstalled := False;
   FBDSVersion := '0';
   FBDSPath := '';
   FSearchPath := '';
   FBrowsePath := '';
+  bBDSFound := False;
+  bVCLFound := False;
+  bRTLFound := False;
 
   Reg := TRegistry.Create;
   try
@@ -216,6 +225,43 @@ begin
   finally
     Reg.Free;
   end;
+
+  // Exclude vcl and rtl from search/browse paths
+  slSearchPath := TStringList.Create;
+  slSearchPath.Delimiter := ';';
+  slSearchPath.DelimitedText := FSearchPath;
+  i := 0;
+  repeat
+    begin
+      bBDSFound := Pos('$(BDS)', slSearchPath.Strings[i]) > 0;
+      bVCLFound := Pos('\vcl', slSearchPath.Strings[i]) > 0;
+      bRTLFound := Pos('\rtl', slSearchPath.Strings[i]) > 0;
+      if bBDSFound and (bVCLFound or bRTLFound) then
+        slSearchPath.Delete(i)
+      else
+        i := i + 1;
+    end;
+  until i = slSearchPath.Count - 1;
+  FSearchPath := slSearchPath.DelimitedText;
+  slSearchPath.Free;
+
+  slBrowsePath := TStringList.Create;
+  slBrowsePath.Delimiter := ';';
+  slBrowsePath.DelimitedText := FBrowsePath;
+  i := 0;
+  repeat
+    begin
+      bBDSFound := Pos('$(BDS)', slBrowsePath.Strings[i]) > 0;
+      bVCLFound := Pos('\vcl', slBrowsePath.Strings[i]) > 0;
+      bRTLFound := Pos('\rtl', slBrowsePath.Strings[i]) > 0;
+      if bBDSFound and (bVCLFound or bRTLFound) then
+        slBrowsePath.Delete(i)
+      else
+        i := i + 1;
+    end;
+  until i = slBrowsePath.Count - 1;
+  FBrowsePath := slBrowsePath.DelimitedText;
+  slBrowsePath.Free;
 
   FSearchPath := StringReplace(FSearchPath, '$(ProgramFiles)', JclSysInfo.GetProgramFilesFolder, [rfReplaceAll,rfIgnoreCase]);
   FBrowsePath := StringReplace(FBrowsePath, '$(ProgramFiles)', JclSysInfo.GetProgramFilesFolder, [rfReplaceAll,rfIgnoreCase]);
