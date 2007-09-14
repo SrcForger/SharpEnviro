@@ -3,8 +3,8 @@ object frmDesktopSettings: TfrmDesktopSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmDesktopSettings'
-  ClientHeight = 431
-  ClientWidth = 528
+  ClientHeight = 567
+  ClientWidth = 595
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,22 +20,22 @@ object frmDesktopSettings: TfrmDesktopSettings
   object plMain: TJvPageList
     Left = 0
     Top = 0
-    Width = 528
-    Height = 431
-    ActivePage = pagFontShadow
+    Width = 595
+    Height = 567
+    ActivePage = pagAnimation
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 606
+    ExplicitHeight = 486
     object pagIcon: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 528
-      Height = 431
-      ExplicitHeight = 606
+      Width = 595
+      Height = 567
+      ExplicitHeight = 486
       object Panel3: TPanel
         Left = 0
         Top = 279
-        Width = 528
+        Width = 595
         Height = 75
         Align = alTop
         AutoSize = True
@@ -46,7 +46,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           AlignWithMargins = True
           Left = 26
           Top = 33
-          Width = 494
+          Width = 561
           Height = 15
           Margins.Left = 26
           Margins.Top = 8
@@ -58,6 +58,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           EllipsisPosition = epEndEllipsis
           Transparent = False
           WordWrap = True
+          ExplicitWidth = 494
         end
         object sgbIconTrans: TSharpeGaugeBox
           AlignWithMargins = True
@@ -85,7 +86,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 512
+          Width = 579
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -108,7 +109,7 @@ object frmDesktopSettings: TfrmDesktopSettings
       object Panel4: TPanel
         Left = 0
         Top = 0
-        Width = 528
+        Width = 595
         Height = 129
         Align = alTop
         BevelOuter = bvNone
@@ -118,7 +119,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           AlignWithMargins = True
           Left = 26
           Top = 29
-          Width = 494
+          Width = 561
           Height = 15
           Margins.Left = 26
           Margins.Top = 4
@@ -129,12 +130,13 @@ object frmDesktopSettings: TfrmDesktopSettings
           Caption = 'Please select the default icon size for desktop icons.'
           EllipsisPosition = epEndEllipsis
           Transparent = False
+          ExplicitWidth = 494
         end
         object CheckBox1: TLabel
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 512
+          Width = 579
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -337,7 +339,7 @@ object frmDesktopSettings: TfrmDesktopSettings
       object Panel1: TPanel
         Left = 0
         Top = 129
-        Width = 528
+        Width = 595
         Height = 75
         Align = alTop
         AutoSize = True
@@ -348,7 +350,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           AlignWithMargins = True
           Left = 26
           Top = 33
-          Width = 494
+          Width = 561
           Height = 15
           Margins.Left = 26
           Margins.Top = 8
@@ -362,6 +364,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           EllipsisPosition = epEndEllipsis
           Transparent = False
           WordWrap = True
+          ExplicitWidth = 494
         end
         object sgbColorBlend: TSharpeGaugeBox
           AlignWithMargins = True
@@ -389,7 +392,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 512
+          Width = 579
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -412,7 +415,7 @@ object frmDesktopSettings: TfrmDesktopSettings
       object Panel2: TPanel
         Left = 0
         Top = 204
-        Width = 528
+        Width = 595
         Height = 75
         Align = alTop
         AutoSize = True
@@ -423,7 +426,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           AlignWithMargins = True
           Left = 26
           Top = 33
-          Width = 494
+          Width = 561
           Height = 15
           Margins.Left = 26
           Margins.Top = 8
@@ -436,6 +439,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             'sible.'
           EllipsisPosition = epEndEllipsis
           Transparent = False
+          ExplicitWidth = 494
         end
         object sgbIconShadow: TSharpeGaugeBox
           AlignWithMargins = True
@@ -463,7 +467,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 512
+          Width = 579
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -486,18 +490,18 @@ object frmDesktopSettings: TfrmDesktopSettings
       object Panel10: TPanel
         Left = 0
         Top = 354
-        Width = 528
-        Height = 77
+        Width = 595
+        Height = 213
         Align = alClient
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 4
-        ExplicitHeight = 252
+        ExplicitHeight = 132
         object lblIconColorDet: TLabel
           AlignWithMargins = True
           Left = 26
           Top = 29
-          Width = 494
+          Width = 561
           Height = 15
           Margins.Left = 26
           Margins.Top = 4
@@ -508,12 +512,13 @@ object frmDesktopSettings: TfrmDesktopSettings
           Caption = 'Define Icon color options below.'
           EllipsisPosition = epEndEllipsis
           Transparent = False
+          ExplicitWidth = 494
         end
         object lblIconColor: TLabel
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 512
+          Width = 579
           Height = 17
           Margins.Left = 8
           Margins.Top = 8
@@ -528,8 +533,8 @@ object frmDesktopSettings: TfrmDesktopSettings
           AlignWithMargins = True
           Left = 20
           Top = 44
-          Width = 500
-          Height = 25
+          Width = 567
+          Height = 161
           Margins.Left = 20
           Margins.Top = 0
           Margins.Right = 8
@@ -541,7 +546,6 @@ object frmDesktopSettings: TfrmDesktopSettings
           BevelOuter = bvNone
           BorderStyle = bsNone
           Color = clWindow
-          Padding.Right = 8
           ParentBackground = True
           ParentColor = False
           TabOrder = 0
@@ -570,21 +574,21 @@ object frmDesktopSettings: TfrmDesktopSettings
             end>
           SwatchManager = SharpESwatchManager1
           OnUiChange = UpdateColorChangeEvent
-          ExplicitHeight = 200
+          ExplicitHeight = 80
         end
       end
     end
     object pagFont: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 528
-      Height = 431
-      ExplicitHeight = 606
+      Width = 595
+      Height = 567
+      ExplicitHeight = 486
       object lblFontNameDet: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 29
-        Width = 494
+        Width = 561
         Height = 15
         Margins.Left = 26
         Margins.Top = 8
@@ -596,12 +600,13 @@ object frmDesktopSettings: TfrmDesktopSettings
         EllipsisPosition = epEndEllipsis
         Transparent = False
         WordWrap = True
+        ExplicitWidth = 494
       end
       object lblFontSizeDet: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 104
-        Width = 494
+        Width = 561
         Height = 15
         Margins.Left = 26
         Margins.Top = 8
@@ -613,12 +618,13 @@ object frmDesktopSettings: TfrmDesktopSettings
         EllipsisPosition = epEndEllipsis
         Transparent = False
         WordWrap = True
+        ExplicitWidth = 494
       end
       object lblFontTransDet: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 182
-        Width = 494
+        Width = 561
         Height = 15
         Margins.Left = 26
         Margins.Top = 8
@@ -630,12 +636,13 @@ object frmDesktopSettings: TfrmDesktopSettings
         EllipsisPosition = epEndEllipsis
         Transparent = False
         WordWrap = True
+        ExplicitWidth = 494
       end
       object Label10: TLabel
         AlignWithMargins = True
         Left = 8
         Top = 8
-        Width = 512
+        Width = 579
         Height = 13
         Margins.Left = 8
         Margins.Top = 8
@@ -649,7 +656,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         AlignWithMargins = True
         Left = 8
         Top = 83
-        Width = 512
+        Width = 579
         Height = 13
         Margins.Left = 8
         Margins.Top = 8
@@ -663,7 +670,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         AlignWithMargins = True
         Left = 26
         Top = 256
-        Width = 494
+        Width = 561
         Height = 15
         Margins.Left = 26
         Margins.Top = 8
@@ -675,12 +682,13 @@ object frmDesktopSettings: TfrmDesktopSettings
         EllipsisPosition = epEndEllipsis
         Transparent = False
         WordWrap = True
+        ExplicitWidth = 494
       end
       object Label14: TLabel
         AlignWithMargins = True
         Left = 8
         Top = 235
-        Width = 512
+        Width = 579
         Height = 13
         Margins.Left = 8
         Margins.Top = 8
@@ -694,7 +702,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         AlignWithMargins = True
         Left = 8
         Top = 346
-        Width = 512
+        Width = 579
         Height = 17
         Margins.Left = 8
         Margins.Top = 8
@@ -711,7 +719,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         AlignWithMargins = True
         Left = 26
         Top = 367
-        Width = 494
+        Width = 561
         Height = 15
         Margins.Left = 26
         Margins.Top = 4
@@ -722,14 +730,15 @@ object frmDesktopSettings: TfrmDesktopSettings
         Caption = 'Define font color options below.'
         EllipsisPosition = epEndEllipsis
         Transparent = False
+        ExplicitWidth = 494
       end
       object sceFontColor: TSharpEColorEditorEx
         AlignWithMargins = True
-        Left = 28
+        Left = 20
         Top = 382
-        Width = 492
+        Width = 567
         Height = 157
-        Margins.Left = 28
+        Margins.Left = 20
         Margins.Top = 0
         Margins.Right = 8
         Margins.Bottom = 8
@@ -757,6 +766,8 @@ object frmDesktopSettings: TfrmDesktopSettings
           end>
         SwatchManager = SharpESwatchManager1
         OnUiChange = UpdateColorChangeEvent
+        ExplicitLeft = 28
+        ExplicitWidth = 559
       end
       object cboFontName: TComboBox
         AlignWithMargins = True
@@ -781,7 +792,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         AlignWithMargins = True
         Left = 28
         Top = 321
-        Width = 492
+        Width = 559
         Height = 17
         Margins.Left = 28
         Margins.Top = 4
@@ -802,7 +813,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         AlignWithMargins = True
         Left = 28
         Top = 300
-        Width = 492
+        Width = 559
         Height = 17
         Margins.Left = 28
         Margins.Top = 4
@@ -823,7 +834,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         AlignWithMargins = True
         Left = 28
         Top = 279
-        Width = 492
+        Width = 559
         Height = 17
         Margins.Left = 28
         Margins.Top = 8
@@ -844,7 +855,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         AlignWithMargins = True
         Left = 28
         Top = 127
-        Width = 492
+        Width = 559
         Height = 22
         Margins.Left = 28
         Margins.Top = 8
@@ -881,7 +892,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         AlignWithMargins = True
         Left = 28
         Top = 205
-        Width = 492
+        Width = 559
         Height = 22
         Margins.Left = 28
         Margins.Top = 8
@@ -918,7 +929,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         AlignWithMargins = True
         Left = 8
         Top = 157
-        Width = 512
+        Width = 579
         Height = 17
         Margins.Left = 8
         Margins.Top = 8
@@ -940,54 +951,57 @@ object frmDesktopSettings: TfrmDesktopSettings
     object pagAnimation: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 528
-      Height = 431
-      ExplicitHeight = 606
-      object Label5: TLabel
+      Width = 595
+      Height = 567
+      ExplicitHeight = 486
+      object lblAnimDet: TLabel
         AlignWithMargins = True
         Left = 26
-        Top = 33
-        Width = 494
+        Top = 29
+        Width = 561
         Height = 13
         Margins.Left = 26
-        Margins.Top = 8
+        Margins.Top = 4
         Margins.Right = 8
         Margins.Bottom = 0
         Align = alTop
         Caption = 'Enable/Disable mouseover animation'
         Transparent = False
         WordWrap = True
+        ExplicitTop = 33
         ExplicitWidth = 175
       end
       object pnlAnim: TPanel
         Left = 0
-        Top = 46
-        Width = 528
-        Height = 385
+        Top = 42
+        Width = 595
+        Height = 525
         Align = alClient
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
-        ExplicitHeight = 560
+        ExplicitTop = 46
+        ExplicitHeight = 440
         object Panel9: TPanel
           AlignWithMargins = True
           Left = 0
-          Top = 8
-          Width = 528
+          Top = 4
+          Width = 595
           Height = 493
           Margins.Left = 0
-          Margins.Top = 8
+          Margins.Top = 4
           Margins.Right = 0
           Margins.Bottom = 0
           Align = alTop
           BevelOuter = bvNone
           ParentColor = True
           TabOrder = 0
+          ExplicitTop = 8
           object lblAnimTransDet: TLabel
             AlignWithMargins = True
             Left = 26
             Top = 33
-            Width = 494
+            Width = 561
             Height = 13
             Margins.Left = 26
             Margins.Top = 8
@@ -1003,7 +1017,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             AlignWithMargins = True
             Left = 26
             Top = 185
-            Width = 494
+            Width = 561
             Height = 13
             Margins.Left = 26
             Margins.Top = 8
@@ -1019,7 +1033,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             AlignWithMargins = True
             Left = 26
             Top = 109
-            Width = 494
+            Width = 561
             Height = 13
             Margins.Left = 26
             Margins.Top = 8
@@ -1035,7 +1049,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             AlignWithMargins = True
             Left = 26
             Top = 261
-            Width = 494
+            Width = 561
             Height = 13
             Margins.Left = 26
             Margins.Top = 8
@@ -1051,7 +1065,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             AlignWithMargins = True
             Left = 28
             Top = 206
-            Width = 492
+            Width = 559
             Height = 22
             Margins.Left = 28
             Margins.Top = 8
@@ -1084,7 +1098,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             AlignWithMargins = True
             Left = 8
             Top = 8
-            Width = 512
+            Width = 579
             Height = 17
             Margins.Left = 8
             Margins.Top = 8
@@ -1093,6 +1107,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             Align = alTop
             Caption = 'Animation Transparency'
             TabOrder = 1
+            OnClick = UpdateAnimationPageEvent
             LinkedControls = <>
             HotTrackFont.Charset = DEFAULT_CHARSET
             HotTrackFont.Color = clWindowText
@@ -1105,7 +1120,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             AlignWithMargins = True
             Left = 8
             Top = 160
-            Width = 512
+            Width = 579
             Height = 17
             Margins.Left = 8
             Margins.Top = 8
@@ -1114,6 +1129,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             Align = alTop
             Caption = 'Animation Size'
             TabOrder = 2
+            OnClick = UpdateAnimationPageEvent
             LinkedControls = <>
             HotTrackFont.Charset = DEFAULT_CHARSET
             HotTrackFont.Color = clWindowText
@@ -1126,7 +1142,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             AlignWithMargins = True
             Left = 28
             Top = 130
-            Width = 492
+            Width = 559
             Height = 22
             Margins.Left = 28
             Margins.Top = 8
@@ -1159,7 +1175,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             AlignWithMargins = True
             Left = 8
             Top = 84
-            Width = 512
+            Width = 579
             Height = 17
             Margins.Left = 8
             Margins.Top = 8
@@ -1168,6 +1184,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             Align = alTop
             Caption = 'Animation Brightness'
             TabOrder = 4
+            OnClick = UpdateAnimationPageEvent
             LinkedControls = <>
             HotTrackFont.Charset = DEFAULT_CHARSET
             HotTrackFont.Color = clWindowText
@@ -1180,7 +1197,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             AlignWithMargins = True
             Left = 8
             Top = 236
-            Width = 512
+            Width = 579
             Height = 17
             Margins.Left = 8
             Margins.Top = 8
@@ -1189,6 +1206,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             Align = alTop
             Caption = 'Animation Color Blend'
             TabOrder = 5
+            OnClick = UpdateAnimationPageEvent
             LinkedControls = <>
             HotTrackFont.Charset = DEFAULT_CHARSET
             HotTrackFont.Color = clWindowText
@@ -1201,7 +1219,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             AlignWithMargins = True
             Left = 28
             Top = 282
-            Width = 492
+            Width = 559
             Height = 22
             Margins.Left = 28
             Margins.Top = 8
@@ -1234,7 +1252,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             AlignWithMargins = True
             Left = 28
             Top = 54
-            Width = 492
+            Width = 559
             Height = 22
             Margins.Left = 28
             Margins.Top = 8
@@ -1267,7 +1285,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             AlignWithMargins = True
             Left = 26
             Top = 312
-            Width = 494
+            Width = 561
             Height = 181
             Margins.Left = 26
             Margins.Top = 8
@@ -1296,6 +1314,7 @@ object frmDesktopSettings: TfrmDesktopSettings
                 Tag = 0
               end>
             SwatchManager = SharpESwatchManager1
+            OnUiChange = UpdateColorChangeEvent
           end
         end
       end
@@ -1303,7 +1322,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         AlignWithMargins = True
         Left = 8
         Top = 8
-        Width = 512
+        Width = 579
         Height = 17
         Margins.Left = 8
         Margins.Top = 8
@@ -1312,6 +1331,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         Align = alTop
         Caption = 'Animation'
         TabOrder = 1
+        OnClick = UpdateAnimationPageEvent
         LinkedControls = <>
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
@@ -1323,15 +1343,15 @@ object frmDesktopSettings: TfrmDesktopSettings
     object pagFontShadow: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 528
-      Height = 431
+      Width = 595
+      Height = 567
       Caption = 'pagFontShadow'
-      ExplicitHeight = 606
+      ExplicitHeight = 486
       object lblFontShadowDet: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 29
-        Width = 494
+        Width = 561
         Height = 13
         Margins.Left = 26
         Margins.Top = 4
@@ -1347,7 +1367,7 @@ object frmDesktopSettings: TfrmDesktopSettings
         AlignWithMargins = True
         Left = 0
         Top = 42
-        Width = 528
+        Width = 595
         Height = 387
         Margins.Left = 0
         Margins.Top = 0
@@ -1361,7 +1381,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           AlignWithMargins = True
           Left = 26
           Top = 29
-          Width = 494
+          Width = 561
           Height = 13
           Margins.Left = 26
           Margins.Top = 8
@@ -1376,8 +1396,8 @@ object frmDesktopSettings: TfrmDesktopSettings
         object lblFontShadowTransDet: TLabel
           AlignWithMargins = True
           Left = 26
-          Top = 138
-          Width = 494
+          Top = 102
+          Width = 561
           Height = 13
           Margins.Left = 26
           Margins.Top = 8
@@ -1389,13 +1409,14 @@ object frmDesktopSettings: TfrmDesktopSettings
             'parent'
           Transparent = False
           WordWrap = True
+          ExplicitTop = 101
           ExplicitWidth = 342
         end
         object Label18: TLabel
           AlignWithMargins = True
           Left = 8
           Top = 8
-          Width = 512
+          Width = 579
           Height = 13
           Margins.Left = 8
           Margins.Top = 8
@@ -1408,8 +1429,8 @@ object frmDesktopSettings: TfrmDesktopSettings
         object Label19: TLabel
           AlignWithMargins = True
           Left = 8
-          Top = 117
-          Width = 512
+          Top = 81
+          Width = 579
           Height = 13
           Margins.Left = 8
           Margins.Top = 8
@@ -1417,13 +1438,14 @@ object frmDesktopSettings: TfrmDesktopSettings
           Margins.Bottom = 0
           Align = alTop
           Caption = 'Shadow Transparency'
+          ExplicitTop = 80
           ExplicitWidth = 107
         end
         object Label20: TLabel
           AlignWithMargins = True
           Left = 8
-          Top = 189
-          Width = 512
+          Top = 153
+          Width = 579
           Height = 13
           Margins.Left = 8
           Margins.Top = 8
@@ -1431,28 +1453,30 @@ object frmDesktopSettings: TfrmDesktopSettings
           Margins.Bottom = 0
           Align = alTop
           Caption = 'Font Shadow Color Options'
+          ExplicitTop = 152
           ExplicitWidth = 131
         end
         object lblFontShadowColDet: TLabel
           AlignWithMargins = True
           Left = 26
-          Top = 210
-          Width = 494
+          Top = 174
+          Width = 561
           Height = 13
           Margins.Left = 26
           Margins.Top = 8
           Margins.Right = 8
-          Margins.Bottom = 4
+          Margins.Bottom = 0
           Align = alTop
           Caption = 'Define font shadow color options below.'
           Transparent = False
+          ExplicitTop = 173
           ExplicitWidth = 193
         end
         object Panel11: TPanel
           AlignWithMargins = True
           Left = 28
-          Top = 159
-          Width = 492
+          Top = 123
+          Width = 559
           Height = 22
           Margins.Left = 28
           Margins.Top = 8
@@ -1463,6 +1487,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           ParentBackground = False
           ParentColor = True
           TabOrder = 0
+          ExplicitTop = 122
           object sgbFontShadowTrans: TSharpeGaugeBox
             Left = 0
             Top = 0
@@ -1486,58 +1511,13 @@ object frmDesktopSettings: TfrmDesktopSettings
             OnChangeValue = SendUpdateEvent
           end
         end
-        object rdoShadowTypeOutline: TRadioButton
-          AlignWithMargins = True
-          Left = 28
-          Top = 92
-          Width = 492
-          Height = 17
-          Margins.Left = 28
-          Margins.Top = 4
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alTop
-          Caption = 'Outline'
-          TabOrder = 1
-        end
-        object rdoShadowTypeRight: TRadioButton
-          AlignWithMargins = True
-          Left = 28
-          Top = 71
-          Width = 492
-          Height = 17
-          Margins.Left = 28
-          Margins.Top = 4
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alTop
-          Caption = 'Right'
-          TabOrder = 2
-        end
-        object rdoShadowTypeLeft: TRadioButton
-          AlignWithMargins = True
-          Left = 28
-          Top = 50
-          Width = 492
-          Height = 17
-          Margins.Left = 28
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alTop
-          Caption = 'Left'
-          Checked = True
-          TabOrder = 3
-          TabStop = True
-          OnClick = ShadowTypeCheckEvent
-        end
         object sceShadowColor: TSharpEColorEditorEx
           AlignWithMargins = True
-          Left = 28
-          Top = 227
-          Width = 492
+          Left = 20
+          Top = 187
+          Width = 567
           Height = 157
-          Margins.Left = 28
+          Margins.Left = 20
           Margins.Top = 0
           Margins.Right = 8
           Margins.Bottom = 8
@@ -1550,7 +1530,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           Color = clWindow
           ParentBackground = True
           ParentColor = False
-          TabOrder = 4
+          TabOrder = 1
           Items = <
             item
               Title = 'Shadow'
@@ -1565,13 +1545,53 @@ object frmDesktopSettings: TfrmDesktopSettings
             end>
           SwatchManager = SharpESwatchManager1
           OnUiChange = UpdateColorChangeEvent
+          ExplicitLeft = 28
+          ExplicitTop = 190
+          ExplicitWidth = 559
+        end
+        object Panel6: TPanel
+          AlignWithMargins = True
+          Left = 28
+          Top = 50
+          Width = 559
+          Height = 23
+          Margins.Left = 28
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          BevelOuter = bvNone
+          ParentBackground = False
+          ParentColor = True
+          TabOrder = 2
+          object cboFontShadowType: TComboBox
+            Left = 0
+            Top = 0
+            Width = 250
+            Height = 21
+            Margins.Left = 28
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alLeft
+            Style = csDropDownList
+            ItemHeight = 13
+            ItemIndex = 0
+            TabOrder = 0
+            Text = 'Left Shadow'
+            OnChange = cboFontShadowTypeChange
+            Items.Strings = (
+              'Left Shadow'
+              'Right Shadow'
+              'Outline Glow')
+          end
         end
       end
       object chkFontShadow: TJvCheckBox
         AlignWithMargins = True
         Left = 8
         Top = 8
-        Width = 512
+        Width = 579
         Height = 17
         Margins.Left = 8
         Margins.Top = 8
@@ -1592,7 +1612,7 @@ object frmDesktopSettings: TfrmDesktopSettings
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 460
+    Width = 535
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16

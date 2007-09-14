@@ -117,7 +117,7 @@ type
     Panel11: TPanel;
     sgbFontShadowTrans: TSharpeGaugeBox;
     chkAnim: TJvCheckBox;
-    Label5: TLabel;
+    lblAnimDet: TLabel;
     Panel9: TPanel;
     lblAnimTransDet: TLabel;
     lblAnimSizeDet: TLabel;
@@ -137,17 +137,14 @@ type
     sgbAnimSize: TSharpeGaugeBox;
     sceAnimColor: TSharpEColorEditorEx;
     chkFontTrans: TJvCheckBox;
-    rdoShadowTypeOutline: TRadioButton;
-    rdoShadowTypeRight: TRadioButton;
-    rdoShadowTypeLeft: TRadioButton;
     sceShadowColor: TSharpEColorEditorEx;
+    Panel6: TPanel;
+    cboFontShadowType: TComboBox;
     procedure IconColorsUiChange(Sender: TObject);
-    procedure cbanimscaleClick(Sender: TObject);
-    procedure cbanimClick(Sender: TObject);
+
     procedure cbboldClick(Sender: TObject);
     procedure SendUpdateEvent(Sender: TObject; Value: Integer);
-    procedure cbtextshadowClick(Sender: TObject);
-    procedure cbfontalphablendClick(Sender: TObject);
+
     procedure cboFontNameDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure UpdateIcontPageEvent(Sender: TObject);
@@ -163,6 +160,8 @@ type
     procedure UpdateFontPageEvent(Sender: TObject);
     procedure ShadowTypeCheckEvent(Sender: TObject);
     procedure UpdateFontShadowPageEvent(Sender: TObject);
+    procedure cboFontShadowTypeChange(Sender: TObject);
+    procedure UpdateAnimationPageEvent(Sender: TObject);
   private
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
@@ -170,14 +169,6 @@ type
     procedure SendUpdate;
     procedure RefreshFontList;
 
-    procedure UpdateAlphaControls;
-    procedure UpdateFontAlphaControls;
-    procedure UpdateBlendControls;
-    procedure UpdateIconShadowControls;
-    procedure UpdateTextShadowControls;
-    procedure UpdateAnimationControls;
-
-    
     procedure UpdateIconPage;
     procedure UpdateFontPage;
     procedure UpdateFontShadowPage;
@@ -304,32 +295,53 @@ begin
   end;
 end;
 
-procedure TfrmDesktopSettings.UpdateAnimationControls;
-begin
-  pnlAnim.Visible := chkAnim.checked;
-
-  // Animation Transparency
-  lblAnimTransDet.Enabled := chkAnimTrans.Checked;
-  sgbAnimTrans.Enabled := chkAnimTrans.Checked;
-
-  // Animation Brightness
-  lblAnimBrightnessDet.Enabled := chkAnimBrightness.Checked;
-  sgbAnimBrightness.Enabled := chkAnimBrightness.Checked;
-
-  // Animation Size
-  lblAnimSizeDet.Enabled := chkAnimSize.Checked;
-  sgbAnimSize.Enabled := chkAnimSize.Checked;
-
-  // Animation Color Blend
-  lblAnimColorBlendDet.Enabled := chkColorBlend.Checked;
-  sgbAnimColorBlend.Enabled := chkColorBlend.Checked;
-  sceAnimColor.Visible := chkColorBlend.Checked;
-  sceAnimColor.Items.Item[0].Visible := chkColorBlend.checked;
-end;
-
 procedure TfrmDesktopSettings.UpdateAnimationPage;
 begin
+  LockWindowUpdate(Self.Handle);
+  try
+    // Set Grey Texts
+    lblAnimTransDet.Font.Color := clGrayText;
+    lblAnimSizeDet.Font.Color := clGrayText;
+    lblAnimBrightnessDet.Font.Color := clGrayText;
+    lblAnimColorBlendDet.Font.Color := clGrayText;
+    lblAnimDet.Font.Color := clGrayText;
 
+    // Hide/Show Animation Options
+    pnlAnim.Visible := chkAnim.checked;
+
+    // Animation Transparency
+    lblAnimTransDet.Enabled := chkAnimTrans.Checked;
+    sgbAnimTrans.Enabled := chkAnimTrans.Checked;
+
+    // Animation Brightness
+    lblAnimBrightnessDet.Enabled := chkAnimBrightness.Checked;
+    sgbAnimBrightness.Enabled := chkAnimBrightness.Checked;
+
+    // Animation Size
+    lblAnimSizeDet.Enabled := chkAnimSize.Checked;
+    sgbAnimSize.Enabled := chkAnimSize.Checked;
+
+    // Animation Color Blend
+    lblAnimColorBlendDet.Enabled := chkAnimColorBlend.Checked;
+    sgbAnimColorBlend.Enabled := chkAnimColorBlend.Checked;
+    sceAnimColor.Visible := chkAnimColorBlend.Checked;
+    sceAnimColor.Items.Item[0].Visible := chkAnimColorBlend.checked;
+
+    // Update Page Height
+    if chkAnim.Checked then begin
+
+      if sceAnimColor.Visible then
+      Self.Height := 580 else
+      Self.Height := 360;
+
+    end else
+      Self.Height := 50;
+
+    // Refresh size
+    CenterUpdateSize;
+  finally
+    LockWindowUpdate(0);
+  end;
 end;
 
 procedure TfrmDesktopSettings.LoadResources;
@@ -340,11 +352,6 @@ begin
   LoadBmpFromRessource(FWhite32, 'White32');
   LoadBmpFromRessource(FWhite48, 'White48');
   LoadBmpFromRessource(FWhite64, 'White64');
-end;
-
-procedure TfrmDesktopSettings.UpdateFontAlphaControls;
-begin
-
 end;
 
 procedure TfrmDesktopSettings.UpdateFontPage;
@@ -366,7 +373,7 @@ begin
     // Update Page Height
     Self.Height := 580;
     CenterUpdateSize;
-    
+
   finally
     LockWindowUpdate(0);
   end;
@@ -388,34 +395,14 @@ begin
 
     // Update Page Height
     if chkFontShadow.Checked then
-    Self.Height := 440 else
-    Self.Height := 50;
+      Self.Height := 440 else
+      Self.Height := 50;
 
     CenterUpdateSize;
-    
+
   finally
     LockWindowUpdate(0);
   end;
-end;
-
-procedure TfrmDesktopSettings.UpdateAlphaControls;
-begin
-
-end;
-
-procedure TfrmDesktopSettings.UpdateBlendControls;
-begin
-
-end;
-
-procedure TfrmDesktopSettings.UpdateTextShadowControls;
-begin
-
-end;
-
-procedure TfrmDesktopSettings.UpdateIconShadowControls;
-begin
-  sceIconColor.Items.Item[1].Visible := chkIconShadow.Checked;
 end;
 
 procedure TfrmDesktopSettings.SendUpdate;
@@ -475,11 +462,11 @@ procedure TfrmDesktopSettings.UpdatePageUi;
 begin
   if pagIcon.Visible then
     UpdateIconPage else
-  if pagFont.Visible then
-    UpdateFontPage else
-  if pagFontShadow.Visible then
-    UpdateFontShadowPage;
-  
+    if pagFont.Visible then
+      UpdateFontPage else
+      if pagFontShadow.Visible then
+        UpdateFontShadowPage;
+
 end;
 
 procedure TfrmDesktopSettings.RefreshFontList;
@@ -551,15 +538,14 @@ begin
   cboFontName.canvas.textout(rect.left + imlFontIcons.width + 2, rect.top, fi.FullName);
 end;
 
-procedure TfrmDesktopSettings.cbfontalphablendClick(Sender: TObject);
+procedure TfrmDesktopSettings.cboFontShadowTypeChange(Sender: TObject);
 begin
-  UpdateFontAlphaControls;
   SendUpdate;
 end;
 
-procedure TfrmDesktopSettings.cbtextshadowClick(Sender: TObject);
+procedure TfrmDesktopSettings.UpdateAnimationPageEvent(Sender: TObject);
 begin
-  UpdateTextShadowControls;
+  UpdateAnimationPage;
   SendUpdate;
 end;
 
@@ -586,18 +572,6 @@ end;
 
 procedure TfrmDesktopSettings.cbboldClick(Sender: TObject);
 begin
-  SendUpdate;
-end;
-
-procedure TfrmDesktopSettings.cbanimClick(Sender: TObject);
-begin
-  UpdateAnimationControls;
-  SendUpdate;
-end;
-
-procedure TfrmDesktopSettings.cbanimscaleClick(Sender: TObject);
-begin
-  UpdateAnimationControls;
   SendUpdate;
 end;
 
