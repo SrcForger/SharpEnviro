@@ -44,7 +44,6 @@ object frmFont: TfrmFont
     BevelOuter = bvNone
     Color = clWindow
     TabOrder = 0
-    ExplicitWidth = 418
   end
   object plMain: TJvPageList
     Left = 0
@@ -54,8 +53,6 @@ object frmFont: TfrmFont
     ActivePage = pagFontShadow
     PropagateEnable = False
     Align = alClient
-    ExplicitWidth = 418
-    ExplicitHeight = 379
     object pagFont: TJvStandardPage
       Left = 0
       Top = 0
@@ -235,6 +232,7 @@ object frmFont: TfrmFont
           Margins.Right = 2
           Margins.Bottom = 2
           Align = alLeft
+          ParentBackground = False
           Min = -8
           Max = 8
           Value = 0
@@ -277,7 +275,7 @@ object frmFont: TfrmFont
           Left = 2
           Top = 2
           Width = 170
-          Height = 23
+          Height = 22
           Margins.Left = 2
           Margins.Top = 2
           Margins.Right = 2
@@ -329,6 +327,7 @@ object frmFont: TfrmFont
           Margins.Right = 2
           Margins.Bottom = 2
           Align = alLeft
+          ParentBackground = False
           Min = -255
           Max = 255
           Value = 0
@@ -456,8 +455,6 @@ object frmFont: TfrmFont
       Width = 434
       Height = 415
       Caption = 'pagFontShadow'
-      ExplicitWidth = 418
-      ExplicitHeight = 379
       object Label8: TLabel
         AlignWithMargins = True
         Left = 26
@@ -504,7 +501,6 @@ object frmFont: TfrmFont
         MonitorControl = cb_shadow
         NormalColor = clWhite
         OnReset = UIC_Reset
-        ExplicitWidth = 402
         object cb_shadow: TCheckBox
           Left = 0
           Top = 0
@@ -529,8 +525,6 @@ object frmFont: TfrmFont
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
-        ExplicitWidth = 418
-        ExplicitHeight = 313
         object lb_shadowtype: TLabel
           AlignWithMargins = True
           Left = 26
@@ -626,7 +620,6 @@ object frmFont: TfrmFont
           MonitorControl = cb_shadowtype
           NormalColor = clWhite
           OnReset = UIC_Reset
-          ExplicitWidth = 384
           object cb_shadowtype: TComboBox
             AlignWithMargins = True
             Left = 2
@@ -674,7 +667,6 @@ object frmFont: TfrmFont
           MonitorControl = sgb_shadowalpha
           NormalColor = clWhite
           OnReset = UIC_Reset
-          ExplicitWidth = 384
           object sgb_shadowalpha: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 2
@@ -686,6 +678,7 @@ object frmFont: TfrmFont
             Margins.Right = 2
             Margins.Bottom = 2
             Align = alLeft
+            ParentBackground = False
             Min = -255
             Max = 255
             Value = 0

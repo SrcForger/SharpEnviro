@@ -3,28 +3,24 @@ Source Name: uWPSettingsWnd.pas
 Description: Theme Wallpaper Settings Window
 Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
 
-3rd Party Libraries used: JCL, JVCL
-Common: SharpApi
-
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
 
-Main SharpE Site
-http://www.sharpe-shell.org
+SharpE Site
+http://www.sharpenviro.com
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-This library is distributed in the hope that it will be useful,
+This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 unit uWPSettingsWnd;
@@ -37,7 +33,8 @@ uses
   JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
   SharpEGaugeBoxEdit, Buttons, PngBitBtn, GR32_Image, SharpEColorEditorEx, Mask,
   JvExMask, JvToolEdit, SharpThemeApi, Contnrs, GR32, GR32_Resamplers, SharpCenterApi,
-  SharpESwatchManager, SharpGraphicsUtils, JPeg, SharpETabList, SharpERoundPanel;
+  SharpESwatchManager, SharpGraphicsUtils, JPeg, SharpETabList, SharpERoundPanel,
+  SharpEPageControl;
 
 type
   TWPItem = class
@@ -76,18 +73,11 @@ type
   TfrmWPSettings = class(TForm)
     JvPageList1: TJvPageList;
     JvWPPage: TJvStandardPage;
-    Panel1: TPanel;
-    wpimage: TImage32;
     pn_cchange: TPanel;
     cb_colorchange: TCheckBox;
     sgb_cchue: TSharpeGaugeBox;
     sgb_ccsat: TSharpeGaugeBox;
     sgb_cclight: TSharpeGaugeBox;
-    cb_mhoriz: TCheckBox;
-    cb_mvert: TCheckBox;
-    sgb_wpalpha: TSharpeGaugeBox;
-    cb_alignment: TComboBox;
-    Label1: TLabel;
     pn_gradient: TPanel;
     cb_gradient: TCheckBox;
     sgb_gstartalpha: TSharpeGaugeBox;
@@ -95,7 +85,6 @@ type
     wpcolors: TSharpEColorEditorEx;
     Panel2: TPanel;
     Panel3: TPanel;
-    fedit_image: TJvFilenameEdit;
     SharpESwatchManager1: TSharpESwatchManager;
     cb_gtype: TComboBox;
     Label2: TLabel;
@@ -105,11 +94,43 @@ type
     gdcolors: TSharpEColorEditorEx;
     Panel4: TPanel;
     Panel5: TPanel;
-    Panel6: TPanel;
-    srr_bg: TSharpERoundPanel;
     ccimage: TImage32;
-    tabs: TSharpETabList;
-    procedure fedit_imageKeyUp(Sender: TObject; var Key: Word;
+    spcOptions: TSharpEPageControl;
+    lblMonitor: TLabel;
+    dlgOpen: TOpenDialog;
+    pnlMonitor: TPanel;
+    cboMonitor: TComboBox;
+    Label5: TLabel;
+    JvPageList2: TJvPageList;
+    pagWallpaper: TJvStandardPage;
+    JvStandardPage2: TJvStandardPage;
+    JvStandardPage3: TJvStandardPage;
+    lblWpFile: TLabel;
+    lblWpFileDet: TLabel;
+    Panel6: TPanel;
+    edtWpFile: TEdit;
+    btnWpBrowse: TButton;
+    lblWpAlign: TLabel;
+    lblWpAlignDet: TLabel;
+    Panel7: TPanel;
+    rdoWpAlignStretch: TRadioButton;
+    rdoWpAlignScale: TRadioButton;
+    rdoWpAlignCenter: TRadioButton;
+    rdoWpAlignTile: TRadioButton;
+    lblWpMirror: TLabel;
+    lblWpMirrorDet: TLabel;
+    Panel8: TPanel;
+    chkWpMirrorVert: TCheckBox;
+    chkWpMirrorHoriz: TCheckBox;
+    wpimage: TImage32;
+    lblWpTrans: TLabel;
+    lblWpTransDet: TLabel;
+    Panel9: TPanel;
+    sgbWpTrans: TSharpeGaugeBox;
+    lblFontColor: TLabel;
+    lblFontColorDet: TLabel;
+    Bevel1: TShape;
+    procedure fedit_image_KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure tabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -118,13 +139,14 @@ type
     procedure cb_gtypeChange(Sender: TObject);
     procedure wpcolorsUiChange(Sender: TObject);
     procedure sgb_gstartalphaChangeValue(Sender: TObject; Value: Integer);
-    procedure fedit_imageChange(Sender: TObject);
+    procedure edtWallpaperChange(Sender: TObject);
     procedure sgb_cchueChangeValue(Sender: TObject; Value: Integer);
     procedure cb_gradientClick(Sender: TObject);
     procedure cb_colorchangeClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure btnWpBrowseClick(Sender: TObject);
   private
     procedure SendUpdate;
     procedure UpdateCCControls;
@@ -298,11 +320,13 @@ begin
                                     WPBmp.Height div 2 - RSBmp.Height div 2);
       twsScale:
         begin
+          if ((w2 <> 0) and (h2 <> 0)) then begin
           if w2/h2 = w/h then
              RSBmp.Drawto(WPBmp,Rect(0,0,w,h))
           else if (w2/h2) > (w/h) then
                   RSBmp.DrawTo(WPBmp,Rect(0,round(h / 2 - (w/w2)*h2 / 2),w,round(h / 2 + (w/w2)*h2 / 2)))
           else RSBmp.DrawTo(WPBmp,Rect(round(w / 2 - (h/h2)*w2 / 2),0,round(w / 2 + (h/h2)*w2 / 2),h));
+        end;
         end;
       twsTile:
         for x := 0 to w div w2 do
@@ -343,16 +367,19 @@ begin
   if update then exit;
   if currentWP = nil then exit;
 
-  case cb_alignment.ItemIndex of
-    0: currentWP.Size := twsCenter;
-    1: currentWP.Size := twsScale;
-    2: currentWP.Size := twsStretch;
-    3: currentWP.Size:=  twsTile;
-  end;
-  currentWP.MirrorHoriz     := cb_mhoriz.Checked;
-  currentWP.MirrorVert      := cb_mvert.Checked;
-  currentWP.Image           := fedit_image.Text;
-  currentWP.Alpha           := sgb_wpalpha.Value;
+  if rdoWpAlignCenter.Checked then
+    currentWP.Size := twsCenter else
+  if rdoWpAlignScale.Checked then
+    currentWP.Size := twsScale else
+  if rdoWpAlignStretch.Checked then
+    currentWP.Size := twsStretch else
+  if rdoWpAlignTile.Checked then
+    currentWP.Size := twsTile;
+
+  currentWP.MirrorHoriz     := chkWpMirrorHoriz.Checked;
+  currentWP.MirrorVert      := chkWpMirrorVert.Checked;
+  currentWP.Image           := edtWpFile.Text;
+  currentWP.Alpha           := sgbWpTrans.Value;
   currentWP.ColorChange     := cb_colorchange.checked;
   currentWP.Hue             := sgb_cchue.Value;
   currentWP.Saturation      := sgb_ccsat.Value;
@@ -380,15 +407,15 @@ begin
   update := True;
   currentWP := WPItem;
   case WPItem.Size of
-    twsCenter  : cb_alignment.ItemIndex := 0;
-    twsScale   : cb_alignment.ItemIndex := 1;
-    twsStretch : cb_alignment.ItemIndex := 2;
-    twsTile    : cb_alignment.ItemIndex := 3;
+    twsCenter  : rdoWpAlignCenter.Checked;
+    twsScale   : rdoWpAlignScale.Checked;
+    twsStretch : rdoWpAlignStretch.Checked;
+    twsTile    : rdoWpAlignTile.Checked;
   end;
-  cb_mhoriz.Checked      := WPItem.MirrorHoriz;
-  cb_mvert.Checked       := WPItem.MirrorVert;
-  fedit_image.Text       := WPItem.Image;
-  sgb_wpalpha.Value      := WPItem.Alpha;
+  chkWpMirrorHoriz.Checked      := WPItem.MirrorHoriz;
+  chkWpMirrorVert.Checked       := WPItem.MirrorVert;
+  edtWpFile.Text       := WPItem.Image;
+  sgbWpTrans.Value      := WPItem.Alpha;
   cb_colorchange.checked := WPItem.ColorChange;
   sgb_cchue.Value        := WPItem.Hue;
   sgb_ccsat.Value        := WPItem.Saturation;
@@ -472,7 +499,7 @@ begin
   UpdateWPItemFromGuid;
 end;
 
-procedure TfrmWPSettings.fedit_imageChange(Sender: TObject);
+procedure TfrmWPSettings.edtWallpaperChange(Sender: TObject);
 var
   SList : TStringList;
   loaded : boolean;
@@ -486,9 +513,9 @@ begin
   loaded := False;
   exists := False;
   SList := TStringList.Create;
-  SList.Add(SharpApi.GetSharpeUserSettingsPath + 'Themes\' + sTheme + '\' + fedit_image.text);
-  SList.Add(fedit_image.text);
-  SList.Add(SharpApi.GetSharpeDirectory + fedit_image.text);
+  SList.Add(SharpApi.GetSharpeUserSettingsPath + 'Themes\' + sTheme + '\' + edtWpFile.text);
+  SList.Add(edtWpFile.text);
+  SList.Add(SharpApi.GetSharpeDirectory + edtWpFile.text);
   for i := 0 to SList.Count - 1 do
   if FileExists(SList[i]) then
      try
@@ -504,7 +531,7 @@ begin
   begin
     if not exists then
     begin
-      CurrentWP.Image := fedit_image.Text;
+      CurrentWP.Image := edtWpFile.Text;
       CurrentWP.LoadFromFile;
     end;
 
@@ -540,6 +567,13 @@ begin
   UpdateGradientPreview;
 end;
 
+procedure TfrmWPSettings.btnWpBrowseClick(Sender: TObject);
+begin
+  if dlgOpen.Execute then begin
+    edtWpFile.Text := dlgOpen.FileName;
+  end;
+end;
+
 procedure TfrmWPSettings.cb_alignmentChange(Sender: TObject);
 begin
   UpdateWPItemFromGuid;
@@ -562,11 +596,13 @@ begin
   end;
 end;
 
-procedure TfrmWPSettings.fedit_imageKeyUp(Sender: TObject; var Key: Word;
+procedure TfrmWPSettings.fedit_image_KeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  fedit_image.OnChange(fedit_image);
+  edtWpFile.OnChange(edtWpFile);
 end;
 
 end.
+
+
 

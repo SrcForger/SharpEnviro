@@ -1,9 +1,9 @@
 object SharpDeskMainWnd: TSharpDeskMainWnd
   Left = 0
   Top = 0
-  Width = 752
-  Height = 446
   Caption = 'SharpDesk'
+  ClientHeight = 410
+  ClientWidth = 736
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

@@ -43,6 +43,7 @@ object frmCursesList: TfrmCursesList
           VAlign = taVerticalCenter
           ColumnAlign = calLeft
           Autosize = False
+          StretchColumn = False
         end
         item
           Width = 256
@@ -54,9 +55,11 @@ object frmCursesList: TfrmCursesList
           VAlign = taVerticalCenter
           ColumnAlign = calLeft
           Autosize = False
+          StretchColumn = False
         end>
       ItemHeight = 22
       OnClickItem = lb_CursorListClickItem
+      AutosizeGrid = False
       Borderstyle = bsNone
       Ctl3d = False
       Align = alClient
@@ -67,6 +70,8 @@ object frmCursesList: TfrmCursesList
     Top = 65
     Width = 418
     Height = 219
+    VertScrollBar.Smooth = True
+    VertScrollBar.Tracking = True
     Align = alBottom
     BevelInner = bvNone
     BevelOuter = bvNone

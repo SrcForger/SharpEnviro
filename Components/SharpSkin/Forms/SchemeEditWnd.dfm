@@ -62,6 +62,7 @@ object SchemeEditForm: TSchemeEditForm
       Caption = 
         'Note: To delete colors just leave <tag> or <name> empty and clic' +
         'k '#39'ok'#39
+      ExplicitWidth = 343
     end
     object Button3: TButton
       Left = 384

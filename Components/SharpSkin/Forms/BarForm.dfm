@@ -1,9 +1,9 @@
 object BarWnd: TBarWnd
   Left = 0
   Top = 0
-  Width = 439
-  Height = 68
   Caption = 'BarWnd'
+  ClientHeight = 32
+  ClientWidth = 423
   Color = clBtnFace
   TransparentColor = True
   TransparentColorValue = clFuchsia

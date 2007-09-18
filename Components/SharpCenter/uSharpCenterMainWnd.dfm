@@ -2072,7 +2072,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               98)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -622
+              Left = -630
               Top = 35
               Width = 23
               Height = 22
@@ -2601,7 +2601,7 @@ object SharpCenterWnd: TSharpCenterWnd
         AutoSizeTabs = True
         TabBackgroundColor = clWindow
         BackgroundColor = clWindow
-        BorderColor = 15724527
+        BorderColor = 14737632
         TabColor = 15724527
         TabSelColor = clWhite
         TabCaptionSelColor = clBlack

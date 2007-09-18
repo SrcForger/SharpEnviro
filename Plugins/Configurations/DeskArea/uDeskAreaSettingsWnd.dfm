@@ -113,6 +113,7 @@ object frmDASettings: TfrmDASettings
       Top = 66
       Width = 90
       Height = 21
+      ParentBackground = False
       Min = 0
       Max = 512
       Value = 0
@@ -128,6 +129,7 @@ object frmDASettings: TfrmDASettings
       Top = 66
       Width = 90
       Height = 21
+      ParentBackground = False
       Min = 0
       Max = 512
       Value = 0
@@ -143,6 +145,7 @@ object frmDASettings: TfrmDASettings
       Top = 66
       Width = 90
       Height = 21
+      ParentBackground = False
       Min = 0
       Max = 512
       Value = 0
@@ -158,6 +161,7 @@ object frmDASettings: TfrmDASettings
       Top = 66
       Width = 90
       Height = 21
+      ParentBackground = False
       Min = 0
       Max = 512
       Value = 0
