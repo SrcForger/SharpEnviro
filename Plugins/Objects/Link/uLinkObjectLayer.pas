@@ -266,7 +266,7 @@ begin
     FFontSettings.ShadowAlphaValue := Theme[DS_TEXTSHADOWALPHA].IntValue;
     FFontSettings.Shadow           := Theme[DS_TEXTSHADOW].BoolValue;
     FFontSettings.TextAlpha        := Theme[DS_TEXTALPHA].BoolValue;
-    FFontSettings.Alpha            := Theme[DS_TEXTALPHAVLAUE].IntValue;
+    FFontSettings.Alpha            := Theme[DS_TEXTALPHAVALUE].IntValue;
     FFontSettings.ShadowType       := Theme[DS_TEXTSHADOWTYPE].IntValue;
     FFontSettings.ShadowSize       := Theme[DS_TEXTSHADOWSIZE].IntValue;
 
