@@ -62,6 +62,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure UpdateStatus(Init : boolean = False);
+    procedure UpdateStatusFromValue(Value : String; Init : boolean = False);
     procedure UpdateBtnStatus;
   published
     property RoundValue: Integer read FRoundValue write SetRoundValue;
@@ -316,6 +317,25 @@ begin
       Invalidate;
     end;
   end;
+end;
+
+procedure TSharpEUIC.UpdateStatusFromValue(Value: String; Init: boolean);
+var
+  NewChangedState : boolean;
+begin
+  NewChangedState := (CompareText(Value,DefaultValue) <> 0);
+
+  if NewChangedState <> FHasChanged then
+  begin
+    if (NewChangedState and (not AutoReset) and (not FHasChanged))
+       or (AutoReset) or (Init) then
+    begin
+      FHasChanged := NewChangedState;
+      UpdateBtnStatus;
+      Invalidate;
+    end;
+  end;  
+
 end;
 
 end.
