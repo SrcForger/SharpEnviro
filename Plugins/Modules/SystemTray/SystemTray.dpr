@@ -53,7 +53,9 @@ uses
   uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   declaration in '..\..\Services\SystemTray\declaration.pas',
-  ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas';
+  ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas',
+  SharpGraphicsUtils in '..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
+  SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas';
 
 type
   TTimerObject = object
