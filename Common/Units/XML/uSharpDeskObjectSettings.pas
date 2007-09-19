@@ -50,7 +50,7 @@ const
   DS_TEXTUNDERLINE = 14;
   DS_TEXTCOLOR = 15;
   DS_TEXTALPHA = 16;
-  DS_TEXTALPHAVLAUE = 17;
+  DS_TEXTALPHAVALUE = 17;
   DS_TEXTSHADOW = 18;
   DS_TEXTSHADOWALPHA = 19;
   DS_TEXTSHADOWCOLOR = 20;
@@ -128,11 +128,12 @@ begin
   AddArrayItem(DS_FONTNAME,'FontName',DST_STRING,False);
   AddArrayItem(DS_DISPLAYTEXT,'DisplayText',DST_BOOL,False);
   AddArrayItem(DS_TEXTSIZE,'TextSize',DST_INT,False);
+  AddArrayItem(DS_TEXTITALIC,'TextItalic',DST_BOOL,False);  
   AddArrayItem(DS_TEXTBOLD,'TextBold',DST_BOOL,False);
   AddArrayItem(DS_TEXTUNDERLINE,'TextUnderline',DST_BOOL,False);
-  AddArrayItem(DS_TEXTCOLOR,'TextColor',DST_BOOL,False);
+  AddArrayItem(DS_TEXTCOLOR,'TextColor',DST_INT,False);
   AddArrayItem(DS_TEXTALPHA,'TextAlpha',DST_BOOL,False);
-  AddArrayItem(DS_TEXTALPHAVLAUE,'TextAlphaValue',DST_INT,False);
+  AddArrayItem(DS_TEXTALPHAVALUE,'TextAlphaValue',DST_INT,False);
   AddArrayItem(DS_TEXTSHADOW,'TextShadow',DST_BOOL,False);
   AddArrayItem(DS_TEXTSHADOWALPHA,'TextShadowAlpha',DST_INT,False);
   AddArrayItem(DS_TEXTSHADOWCOLOR,'TextShadowColor',DST_INT,False);
@@ -197,7 +198,7 @@ begin
   ts[DS_TEXTUNDERLINE].BoolValue := GetDesktopTextUnderline;
   ts[DS_TEXTCOLOR].IntValue := GetDesktopTextColor;
   ts[DS_TEXTALPHA].BoolValue :=GetDesktopTextAlpha;
-  ts[DS_TEXTALPHAVLAUE].IntValue := GetDesktopTextAlphaValue;
+  ts[DS_TEXTALPHAVALUE].IntValue := GetDesktopTextAlphaValue;
   ts[DS_TEXTSHADOW].BoolValue := GetDesktopTextShadow;
   ts[DS_TEXTSHADOWALPHA].IntValue := GetDesktopTextShadowAlpha;
   ts[DS_TEXTSHADOWCOLOR].IntValue := GetDesktopTextShadowColor;
