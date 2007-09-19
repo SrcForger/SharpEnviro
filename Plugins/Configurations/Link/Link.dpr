@@ -92,9 +92,32 @@ begin
 
     // save which UIC items have changed and should be saved to xml
     // Theme[DS_ICONALPHABLEND].isCustom := UIC_AlphaBlend.HasChanged;
+    Theme[DS_ICONBLENDING].isCustom    := UICColorBlend.HasChanged;
+    Theme[DS_ICONALPHABLEND].isCustom  := UICIconTrans.HasChanged;
+    Theme[DS_ICONSHADOW].isCustom      := UICIconShadow.HasChanged;
+    Theme[DS_ICONSIZE].isCustom        := UICSize.HasChanged;
+    Theme[DS_ICONBLENDALPHA].isCustom  := UICColorBlendValue.HasChanged;
+    Theme[DS_ICONALPHA].isCustom       := UICIconTransValue.HasChanged;
+    Theme[DS_ICONSHADOWALPHA].isCustom := UICIconShadowValue.HasChanged;
+    Theme[DS_ICONBLENDCOLOR].isCustom  := UICColorBlendColor.HasChanged;
+    Theme[DS_ICONSHADOWCOLOR].isCustom := UICIconShadowColor.HasChanged;
 
     // save the actual values (will only be saved to XMl if isCustom = True)
-    // Theme[DS_ICONALPHABLEND].BoolValue := cbalphablend.Checked;
+    Theme[DS_ICONBLENDING].BoolValue   := chkColorBlend.Checked;
+    Theme[DS_ICONALPHABLEND].BoolValue := chkIconTrans.Checked;
+    Theme[DS_ICONSHADOW].BoolValue     := chkIconShadow.Checked;
+    if rdoIcon32.Checked then
+      Theme[DS_ICONSIZE].IntValue := 32
+    else if rdoIcon48.Checked then
+      Theme[DS_ICONSIZE].IntValue := 48
+    else if rdoIcon64.Checked then
+      Theme[DS_ICONSIZE].IntValue := 64
+    else Theme[DS_ICONSIZE].IntValue := sgbIconSize.Value;
+    Theme[DS_ICONBLENDALPHA].IntValue  := sgbColorBlend.Value;
+    Theme[DS_ICONALPHA].IntValue       := sgbIconTrans.Value;
+    Theme[DS_ICONSHADOWALPHA].IntValue := sgbIconShadow.Value;
+    Theme[DS_ICONBLENDCOLOR].IntValue  := sceColorBlend.Items.Item[0].ColorCode;
+    Theme[DS_ICONSHADOWCOLOR].IntValue := sceIconShadow.Items.Item[0].ColorCode;
   end;
   Settings.SaveSettings(True);
 
@@ -132,17 +155,74 @@ begin
     memo_caption.Lines.CommaText := Caption;
 
     // assign the theme default values
-    // UIC_Colors.DefaultValue := inttostr(GetDesktopIconBlendColor);
+    if GetDesktopIconBlending then
+      UICColorBlend.DefaultValue := 'True'
+      else UICColorBlend.DefaultValue := 'False';
+    if GetDesktopIconAlphaBlend then
+      UICIconTrans.DefaultValue := 'True'
+      else UICIconTrans.DefaultValue := 'False';
+    if GetDesktopIconShadow then
+      UICIconShadow.DefaultValue := 'True'
+      else UICIconShadow.DefaultValue := 'False';
+    UICSize.DefaultValue := inttostr(GetDesktopIconSize);
+    UICColorBlendColor.DefaultValue := inttostr(GetDesktopIconBlendColor);
+    UICColorBlendValue.DefaultValue := inttostr(GetDesktopIconBlendAlpha);
+    UICIconTransValue.DefaultValue  := inttostr(GetDesktopIconAlpha);
+    UICIconShadowColor.DefaultValue := inttostr(GetDesktopIconShadowColor);
+    UICIconShadowValue.DefaultValue := inttostr(GetDesktopIconShadowAlpha);
+
+    UICFontName.DefaultValue := GetDesktopFontName;
+    UICFontSize.DefaultValue := inttostr(GetDesktopTextSize);
+    if GetDesktopTextBold then
+      UICBold.DefaultValue := 'True'
+    else UICBold.DefaultValue := 'False';
+    if GetDesktopTextItalic then
+      UICItalic.DefaultValue := 'True'
+    else UICItalic.DefaultValue := 'False';
+    if GetDesktopTextUnderline then
+      UICUnderline.DefaultValue := 'True'
+    else UICUnderline.DefaultValue := 'False';
+    UICFontColor.DefaultValue := inttostr(GetDesktopTextColor);
+    if GetDesktopTextAlpha then
+      UICFontTrans.DefaultValue := 'True'
+    else UICFontTrans.DefaultValue := 'False';
+    UICFontTransValue.DefaultValue := inttostr(GetDesktopTextAlphaValue);
 
     // load the actual values
-    // cbalphablend.Checked               := Theme[DS_ICONALPHABLEND].BoolValue;
+    chkColorBlend.Checked := Theme[DS_ICONBLENDING].BoolValue;
+    chkIconTrans.Checked  := Theme[DS_ICONALPHABLEND].BoolValue;
+    chkIconShadow.Checked := Theme[DS_ICONSHADOW].BoolValue;
+    case Theme[DS_ICONSIZE].IntValue of
+      32: rdoIcon32.Checked := True;
+      48: rdoIcon48.Checked := True;
+      64: rdoIcon64.Checked := True;
+      else
+      begin
+        rdoIconCustom.Checked := True;
+        sgbIconSize.Value := Theme[DS_ICONSIZE].IntValue;
+      end;
+    end;
+    sgbColorBlend.Value := Theme[DS_ICONBLENDALPHA].IntValue;
+    sgbIconTrans.Value  := Theme[DS_ICONALPHA].IntValue;
+    sgbIconShadow.Value := Theme[DS_ICONSHADOWALPHA].IntValue;
+    sceColorBlend.Items.Item[0].ColorCode := Theme[DS_ICONBLENDCOLOR].IntValue;
+    sceIconShadow.Items.Item[0].ColorCode := Theme[DS_ICONSHADOWCOLOR].IntValue;
 
     // load if settings are changed
-    // UIC_AlphaBlend.HasChanged := Theme[DS_ICONALPHABLEND].isCustom;
+    UICColorBlend.HasChanged      := Theme[DS_ICONBLENDING].isCustom;
+    UICIconTrans.HasChanged       := Theme[DS_ICONALPHABLEND].isCustom;
+    UICIconShadow.HasChanged      := Theme[DS_ICONSHADOW].isCustom;
+    UICSize.HasChanged            := Theme[DS_ICONSIZE].isCustom;
+    UICColorBlendValue.HasChanged := Theme[DS_ICONBLENDALPHA].isCustom;
+    UICIconTransValue.HasChanged  := Theme[DS_ICONALPHA].isCustom;
+    UICIconShadowValue.HasChanged := Theme[DS_ICONSHADOWALPHA].isCustom;
+    UICColorBlendColor.HasChanged := Theme[DS_ICONBLENDCOLOR].isCustom;
+    UICIconShadowColor.HasChanged := Theme[DS_ICONSHADOWCOLOR].isCustom;
   end;
 
   Settings.Free;
 
+  frmLink.UpdateIconPage;
   frmLink.Show;
   result := frmLink.Handle;
 end;
@@ -209,6 +289,8 @@ end;
 procedure AddTabs(var ATabs:TPluginTabItemList);
 begin
   ATabs.Add('Link',frmLink.pagLink,'','');
+  ATabs.Add('Icon',frmLink.pagIcon,'','');
+  ATabs.Add('Font',frmLink.pagFont,'','');
 end;
 
 procedure ClickTab(ATab: TPluginTabItem);
