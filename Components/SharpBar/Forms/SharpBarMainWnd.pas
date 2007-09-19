@@ -1555,7 +1555,10 @@ end;
 procedure TSharpBarMainForm.SharpEBar1ThrobberMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if (Button = mbLeft) and (not BarMove) then PopUpMenu1.Popup(Left,Top);
+  if (Button = mbLeft) and (not BarMove) then
+    PopUpMenu1.Popup(Left,Top)
+  else if BarMove then
+    SaveBarSettings;
   BarMove := False;
 end;
 
@@ -1868,6 +1871,7 @@ procedure TSharpBarMainForm.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   if Closing then exit;
+  SaveBarSettings;
 
   SetLayeredWindowAttributes(Handle,0, 0, LWA_ALPHA);
   SharpEBar.abackground.Alpha := 0;
@@ -1899,8 +1903,6 @@ begin
   FBottomZone.Free;
   FTopZone.Free;
   FBGImage.Free;
-
-  sleep(500);
 end;
 
 procedure TSharpBarMainForm.FormCloseQuery(Sender: TObject;
