@@ -164,8 +164,7 @@ var
   tmp,tmp2: TSharpESwatchCollectionItem;
   r1,b1,g1,r2,b2,g2: byte;
   rgb1, rgb2: integer;
-  hsl1, hsl2: THSLColor;
-
+  h1,s1,l1, h2,s2,l2: byte;
 begin
   tmp := TSharpESwatchCollectionItem(Item1);
   tmp2 := TSharpESwatchCollectionItem(Item2);
@@ -175,16 +174,16 @@ begin
   r1 := GetRValue(rgb1);
   b1 := GetBValue(rgb1);
   g1 := GetGValue(rgb1);
-  hsl1 := SharpGraphicsUtils.RGBtoHSL(color32(r1,g1,b1,255));
+  RGBtoHSL(RGB(r1,g1,b1),h1,s1,l1);
 
   // Second Color
   rgb2 := tmp2.Color;
   r2 := GetRValue(rgb2);
   b2 := GetBValue(rgb2);
   g2 := GetGValue(rgb2);
-  hsl2 := SharpGraphicsUtils.RGBtoHSL(color32(r2,g2,b2,255));
+  RGBtoHSL(RGB(r2,g2,b2),h2,s2,l2);
 
-  Result := CompareText(inttostr(hsl2.Hue),inttostr(hsl1.Hue))
+  Result := CompareText(inttostr(h2),inttostr(h1));
 end;
 
 function Sort_ByBri (Item1, Item2: Pointer): Integer;
@@ -192,8 +191,7 @@ var
   tmp,tmp2: TSharpESwatchCollectionItem;
   r1,b1,g1,r2,b2,g2: byte;
   rgb1, rgb2: integer;
-  hsl1, hsl2: THSLColor;
-
+  h1,s1,l1, h2,s2,l2: byte;
 begin
   tmp := TSharpESwatchCollectionItem(Item1);
   tmp2 := TSharpESwatchCollectionItem(Item2);
@@ -203,16 +201,16 @@ begin
   r1 := GetRValue(rgb1);
   b1 := GetBValue(rgb1);
   g1 := GetGValue(rgb1);
-  hsl1 := SharpGraphicsUtils.RGBtoHSL(color32(r1,g1,b1,255));
+  RGBtoHSL(RGB(r1,g1,b1),h1,s1,l1);
 
   // Second Color
   rgb2 := tmp2.Color;
   r2 := GetRValue(rgb2);
   b2 := GetBValue(rgb2);
   g2 := GetGValue(rgb2);
-  hsl2 := SharpGraphicsUtils.RGBtoHSL(color32(r2,g2,b2,255));
+  RGBtoHSL(RGB(r2,g2,b2),h2,s2,l2);
 
-  Result := CompareText(inttostr(hsl2.Lightness),inttostr(hsl1.Lightness))
+  Result := CompareText(inttostr(l2),inttostr(l1));
 end;
 
 function Sort_BySat (Item1, Item2: Pointer): Integer;
@@ -220,8 +218,7 @@ var
   tmp,tmp2: TSharpESwatchCollectionItem;
   r1,b1,g1,r2,b2,g2: byte;
   rgb1, rgb2: integer;
-  hsl1, hsl2: THSLColor;
-
+  h1,s1,l1, h2,s2,l2: byte;
 begin
   tmp := TSharpESwatchCollectionItem(Item1);
   tmp2 := TSharpESwatchCollectionItem(Item2);
@@ -231,16 +228,16 @@ begin
   r1 := GetRValue(rgb1);
   b1 := GetBValue(rgb1);
   g1 := GetGValue(rgb1);
-  hsl1 := SharpGraphicsUtils.RGBtoHSL(color32(r1,g1,b1,255));
+  RGBtoHSL(RGB(r1,g1,b1),h1,s1,l1);
 
   // Second Color
   rgb2 := tmp2.Color;
   r2 := GetRValue(rgb2);
   b2 := GetBValue(rgb2);
   g2 := GetGValue(rgb2);
-  hsl2 := SharpGraphicsUtils.RGBtoHSL(color32(r2,g2,b2,255));
+  RGBtoHSL(RGB(r2,g2,b2),h2,s2,l2);
 
-  Result := CompareText(inttostr(hsl2.Saturation),inttostr(hsl1.Saturation))
+  Result := CompareText(inttostr(s2),inttostr(s1));
 end;
 
 
@@ -597,7 +594,6 @@ end;
 procedure TSharpESwatchManager.DrawSwatch(ABitmap: TBitmap32;
   ASwatch: TSharpESwatchCollectionItem);
 var
-  p: TArrayOfFixedPoint;
   hp, wp : Integer;
   tmpOutline, tmpPoly: TPolygon32;
   poly: TPolygon32;

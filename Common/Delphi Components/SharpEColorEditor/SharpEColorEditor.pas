@@ -861,7 +861,7 @@ procedure TSharpEColorEditor.InitialiseColSliders;
 var
   col: TColor;
   r, g, b: integer;
-  hsl: THSLColor;
+  h,s,l: byte;
   rgb: integer;
 
   procedure UpdateHSLLabel;
@@ -898,7 +898,7 @@ begin
   r := GetRValue(rgb);
   b := GetBValue(rgb);
   g := GetGValue(rgb);
-  hsl := SharpGraphicsUtils.RGBtoHSL(color32(r, g, b, 255));
+  RGBtoHSL(rgb,h,s,l);
 
   // RGB
   if ((FRedSlider <> nil) and ((FSliderUpdateMode = sumRGB) or (FSliderUpdateMode
@@ -923,19 +923,19 @@ begin
   if ((FHueSlider <> nil) and ((FSliderUpdateMode = sumHSL) or (FSliderUpdateMode
     = sumAll))) then
   begin
-    FHueSlider.Position := hsl.Hue;
+    FHueSlider.Position := h;
   end;
 
   if ((FSatSlider <> nil) and ((FSliderUpdateMode = sumHSL) or (FSliderUpdateMode
     = sumAll))) then
   begin
-    FSatSlider.Position := hsl.Saturation;
+    FSatSlider.Position := s;
   end;
 
   if ((FHueSlider <> nil) and ((FSliderUpdateMode = sumHSL) or (FSliderUpdateMode
     = sumAll))) then
   begin
-    FLumSlider.Position := hsl.Lightness;
+    FLumSlider.Position := l;
   end;
 
   if FTabContainer <> nil then
@@ -1224,7 +1224,7 @@ begin
   end
   else
   begin
-    Color32ToRGB(SharpGraphicsUtils.HSLtoRGB(h, s, l), r, g, b);
+    Color32ToRGB(HSLtoRGB(h, s, l), r, g, b);
 
     FSliderUpdateMode := sumRGB;
     Value := RGB(r, g, b);

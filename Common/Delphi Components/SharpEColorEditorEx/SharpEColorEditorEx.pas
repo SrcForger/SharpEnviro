@@ -169,7 +169,8 @@ end;
 function TSharpEColorEditorExItem.GetExpanded: Boolean;
 begin
   if FColorEditor <> nil then
-    Result := FColorEditor.Expanded;
+    Result := FColorEditor.Expanded
+  else Result := False;
 end;
 
 procedure TSharpEColorEditorExItem.SetExpanded(const Value: Boolean);
@@ -290,13 +291,15 @@ end;
 function TSharpEColorEditorExItem.GetColorCode: Integer;
 begin
   if FColorEditor <> nil then
-    Result := FColorEditor.Value;
+    Result := FColorEditor.Value
+  else Result := 0;
 end;
 
 function TSharpEColorEditorExItem.GetColorAsTColor: TColor;
 begin
   if FColorEditor <> nil then
-    Result := FColorEditor.ValueAsTColor;
+    Result := FColorEditor.ValueAsTColor
+  else Result := 0;
 end;
 
 procedure TSharpEColorEditorExItem.SetParseColor(const Value: string);
