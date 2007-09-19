@@ -487,7 +487,7 @@ begin
             Add('AutoStart',True);
             Add('AutoPosition',True);
             Add('PrimaryMonitor',(FrmEditItem.cobo_monitor.ItemIndex = 0));
-            Add('MonitorIndex',FrmEditItem.cobo_monitor.ItemIndex + 1);
+            Add('MonitorIndex',TIntObject(FrmEditItem.cobo_monitor.Items.Objects[FrmEditItem.cobo_monitor.ItemIndex]).Value);
             Add('HorizPos',FrmEditItem.cobo_halign.ItemIndex);
             Add('VertPos',FrmEditItem.cobo_valign.ItemIndex);
           end;
@@ -508,6 +508,7 @@ begin
         begin
           try
             XML.LoadFromFile(Dir + inttostr(CID) + '\Bar.xml');
+            fileloaded := True;
           except
           end;
         end;
@@ -527,7 +528,7 @@ begin
               Add('AutoStart',True);
               Add('AutoPosition',True);
               Add('PrimaryMonitor',(FrmEditItem.cobo_monitor.ItemIndex = 0));
-              Add('MonitorIndex',FrmEditItem.cobo_monitor.ItemIndex + 1);
+              Add('MonitorIndex',TIntObject(FrmEditItem.cobo_monitor.Items.Objects[FrmEditItem.cobo_monitor.ItemIndex]).Value);
               Add('HorizPos',FrmEditItem.cobo_halign.ItemIndex);
               Add('VertPos',FrmEditItem.cobo_valign.ItemIndex);
             end;

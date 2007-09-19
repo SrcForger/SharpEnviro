@@ -13,6 +13,7 @@ object frmEditItem: TfrmEditItem
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object plEdit: TJvPageList
@@ -120,7 +121,7 @@ object frmEditItem: TfrmEditItem
         Height = 21
         Style = csDropDownList
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 13
+        ItemHeight = 0
         ItemIndex = 0
         TabOrder = 3
         Text = 'Top'
@@ -136,7 +137,7 @@ object frmEditItem: TfrmEditItem
         Height = 21
         Style = csDropDownList
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 13
+        ItemHeight = 0
         ItemIndex = 0
         TabOrder = 4
         Text = 'Left'
@@ -201,18 +202,19 @@ object frmEditItem: TfrmEditItem
       object Label5: TLabel
         Left = 0
         Top = 13
-        Width = 357
+        Width = 459
         Height = 13
         Align = alTop
         Caption = 
           'There is no space left to create another SharpBar at any possibl' +
           'e position.'
         WordWrap = True
+        ExplicitWidth = 357
       end
       object JvLabel4: TJvLabel
         Left = 0
         Top = 0
-        Width = 33
+        Width = 459
         Height = 13
         Align = alTop
         Caption = 'Error:'
@@ -228,17 +230,19 @@ object frmEditItem: TfrmEditItem
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
         Images = pilError
+        ExplicitWidth = 33
       end
       object Label6: TLabel
         Left = 0
         Top = 26
-        Width = 431
+        Width = 459
         Height = 26
         Align = alTop
         Caption = 
           'Reduce the size of already existing bars or disable another Shar' +
           'pBar to free some screen space.'
         WordWrap = True
+        ExplicitWidth = 431
       end
     end
   end

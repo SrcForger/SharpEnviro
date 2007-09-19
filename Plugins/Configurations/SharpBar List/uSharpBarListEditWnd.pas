@@ -64,17 +64,24 @@ type
     procedure cbBasedOnSelect(Sender: TObject);
 
     procedure edThemeNameKeyPress(Sender: TObject; var Key: Char);
+    procedure FormDestroy(Sender: TObject);
   private
     FBarItem : TObject;
     { Private declarations }
   public
     { Public declarations }
     procedure BuildMonList;
+    procedure ClearMonList;
     function ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM):Boolean;
     procedure ClearValidation;
 
     property BarItem: TObject read FBarItem write FBarItem;
+  end;
 
+type
+  TIntObject = class
+    Value : Integer;
+    constructor Create(pValue : integer);
   end;
 
 var
@@ -92,8 +99,9 @@ var
   n : integer;
   s : String;
   Mon : TMonitor;
+
 begin
-  cobo_monitor.Clear;
+  ClearMonList;
   for n := 0 to Screen.MonitorCount - 1 do
   begin
     Mon := Screen.Monitors[n];
@@ -101,7 +109,8 @@ begin
        s := 'Primary'
        else s := inttostr(Mon.MonitorNum);
     s := s + ' (' + inttostr(Mon.Width) + 'x' + inttostr(Mon.Height) + ')';
-    cobo_monitor.Items.Add(s);
+    cobo_monitor.Items.AddObject(s,TIntObject.Create(Mon.MonitorNum));
+
     if Mon.Primary then
        cobo_monitor.Items.Move(n,0);
   end;
@@ -111,6 +120,11 @@ procedure TfrmEditItem.edThemeNameKeyPress(Sender: TObject; var Key: Char);
 begin
   CenterDefineEditState(True);
   frmBarList.lbBarList.Enabled := False;
+end;
+
+procedure TfrmEditItem.FormDestroy(Sender: TObject);
+begin
+  ClearMonList;
 end;
 
 function TfrmEditItem.ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
@@ -130,6 +144,15 @@ procedure TfrmEditItem.cbBasedOnSelect(Sender: TObject);
 begin
   CenterDefineEditState(True);
   frmBarList.lbBarList.Enabled := False;
+end;
+
+procedure TfrmEditItem.ClearMonList;
+var
+  n : integer;
+begin
+  for n := 0 to cobo_monitor.Items.Count - 1 do
+    TIntObject(cobo_monitor.Items.Objects[n]).Free;
+  cobo_monitor.Items.Clear;
 end;
 
 procedure TfrmEditItem.ClearValidation;
@@ -170,6 +193,15 @@ begin
          end;
 
   Valid := True;
+end;
+
+{ TIntObject }
+
+constructor TIntObject.Create(pValue: integer);
+begin
+  inherited Create;
+  
+  Value := pValue;
 end;
 
 end.
