@@ -32,11 +32,13 @@ uses
   Dialogs, StdCtrls, SharpEButton, SharpESkinManager, 
   JvSimpleXML, SharpApi, Menus, Math, ShellApi, Registry,
   GR32, GR32_PNG, Types, ImgList, SharpEBaseControls,
-  uSharpEMenuWnd, uSharpEMenu, uSharpEMenuSettings, uSharpEMenuItem;
+  uSharpEMenuWnd, uSharpEMenu, uSharpEMenuSettings, uSharpEMenuItem, GR32_Image,
+  ExtCtrls;
 
 
 type
   TMediaPlayerType = (mptFoobar,mptWinamp,mptMPC,mptQCD,mptWMP,mptVLC);
+  TMediaPlayerState = ( mpsUnknown, mpsStopped, mpsPlaying, mpsPaused );
 
   TMainForm = class(TForm)
     MenuPopup: TPopupMenu;
@@ -48,6 +50,8 @@ type
     btn_pause: TSharpEButton;
     btn_stop: TSharpEButton;
     btn_play: TSharpEButton;
+    ButtonHighlights: TBitmap32List;
+    timerPlayerState: TTimer;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -65,6 +69,7 @@ type
     procedure mnVLCClick(pItem : TSharpEMenuItem; var CanClose : boolean);
     procedure mnAMPClick(pItem : TSharpEMenuItem; var CanClose : boolean);
     procedure mnWMPClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure timerPlayerStateTimer(Sender: TObject);
   protected
   private
     sPlayer     : TMediaPlayerType;
@@ -82,6 +87,7 @@ type
     sQCDPath    : String;
     sWMPPath    : String;
     sVLCPath    : String;
+    FStates     : array[TMediaPlayerType] of TMediaPlayerState;
     procedure WMExecAction(var msg : TMessage); message WM_SHARPEACTIONMESSAGE;
     function GetStartPlayer(Root : HKEY; Key : String; Value : String) : String;
   public
@@ -95,11 +101,22 @@ type
     procedure UpdatePSelectIcon;
     procedure InitDefaultImages;
     procedure UpdateBackground(new : integer = -1);
-    procedure UpdateActions;
+    procedure UpdateSharpEActions;
+    procedure UpdatePlayerState;
+    procedure UpdatePlayerChange;
   end;
 
 const
+  // highlight indices
+  PLAY_H = 0;
+  PAUSE_H = 1;
+  STOP_H = 2;
+  // normal indices
+  PLAY_N = 3;
+  PAUSE_N = 4;
+  STOP_N = 5;
 
+const
       {WinAmp API}
   WM_WA_IPC     = WM_USER;
   IPC_PLAYFILE  = 100;
@@ -112,7 +129,6 @@ const
   WINAMP_BUTTON3 = 40046;
   WINAMP_BUTTON4 = 40047;
   WINAMP_BUTTON5 = 40048;
-
 
    {Media Player Classic API}
   MEDIA_PLAY          = 887;
@@ -258,6 +274,7 @@ begin
     mptVLC    : btn_pselect.Glyph32.Assign(FIconVLC);
   end;
   btn_pselect.Repaint;
+  UpdatePlayerState;
 end;
 
 function GetVLCHandle : hwnd;
@@ -288,6 +305,78 @@ function GetWinAmpHandle : hwnd;
 begin
   result := FindWindow('Winamp v1.x',nil);
   if result = 0 then result := FindWindow(nil,'Winamp 5.03');
+end;
+
+procedure TMainForm.UpdatePlayerChange;
+begin
+  // The player has changed, set the state buttons back to default;
+  btn_play.Glyph32.Assign( ButtonHighlights.Bitmap[PLAY_N]);
+  btn_pause.Glyph32.Assign( ButtonHighlights.Bitmap[PAUSE_N]);
+  btn_stop.Glyph32.Assign( ButtonHighlights.Bitmap[STOP_N]);
+  btn_play.UpdateSkin;
+  btn_pause.UpdateSkin;
+  btn_stop.UpdateSkin;
+
+  // reset the player state so make the new UpdatePlayerState call update it
+  FStates[sPlayer] := mpsUnknown;
+
+  UpdatePlayerState;
+end;
+
+procedure TMainForm.UpdatePlayerState;
+var
+  wnd : HWND;
+  state: TMediaPlayerState;
+begin
+  // get current player state
+  state := mpsUnknown;
+  case sPlayer of
+    mptFoobar : ;
+    mptMPC    : ; // tried getting the toolbar button states, but to no avail :(
+    mptWinAmp :
+    begin
+      wnd:=GetWinampHandle;
+      if wnd <> 0 then
+        case SendMessage( wnd, WM_WA_IPC, 0, IPC_ISPLAYING) of
+          0: state := mpsStopped;
+          1: state := mpsPlaying;
+          3: state := mpsPaused;
+        end
+    end;
+    mptQCD    : ;
+    mptWMP    : ;
+    mptVLC    : ;
+  end;
+  // update images of PLAY,PAUSE,STOP buttons
+  if state <> FStates[sPlayer] then
+  begin
+    FStates[sPlayer] := state;
+    case state of
+      mpsUnknown:begin
+        btn_play.Glyph32.Assign( ButtonHighlights.Bitmap[PLAY_N]);
+        btn_pause.Glyph32.Assign( ButtonHighlights.Bitmap[PAUSE_N]);
+        btn_stop.Glyph32.Assign( ButtonHighlights.Bitmap[STOP_N]);
+      end;
+      mpsStopped:begin
+        btn_play.Glyph32.Assign( ButtonHighlights.Bitmap[PLAY_N]);
+        btn_pause.Glyph32.Assign( ButtonHighlights.Bitmap[PAUSE_N]);
+        btn_stop.Glyph32.Assign( ButtonHighlights.Bitmap[STOP_H]);    //highlight
+      end;
+      mpsPlaying: begin
+        btn_play.Glyph32.Assign( ButtonHighlights.Bitmap[PLAY_H]);    //highlight
+        btn_pause.Glyph32.Assign( ButtonHighlights.Bitmap[PAUSE_N]);
+        btn_stop.Glyph32.Assign( ButtonHighlights.Bitmap[STOP_N]);
+      end;
+      mpsPaused: begin
+        btn_play.Glyph32.Assign( ButtonHighlights.Bitmap[PLAY_N]);
+        btn_pause.Glyph32.Assign( ButtonHighlights.Bitmap[PAUSE_H]);  //highlight
+        btn_stop.Glyph32.Assign( ButtonHighlights.Bitmap[STOP_N]);
+      end;
+    end;
+    btn_play.UpdateSkin;
+    btn_pause.UpdateSkin;
+    btn_stop.UpdateSkin;
+  end;
 end;
 
 procedure TMainForm.SaveSettings;
@@ -333,7 +422,7 @@ begin
   XML.Free;
 end;
 
-procedure TMainForm.UpdateActions;
+procedure TMainForm.UpdateSharpEActions;
 begin
   SharpApi.RegisterActionEx('!MC-Play','Modules',Handle,1);
   SharpApi.RegisterActionEx('!MC-Pause','Modules',Handle,2);
@@ -508,6 +597,11 @@ begin
 end;
 
 
+procedure TMainForm.timerPlayerStateTimer(Sender: TObject);
+begin
+  UpdatePlayerState;
+end;
+
 //#############################
 //            PLAY
 //#############################
@@ -583,6 +677,7 @@ begin
                  end else SendMessage(wnd,WM_COMMAND,VLC_PLAY_PAUSE,0);
                end;
   end;
+  UpdatePlayerState;
 end;
 
 
@@ -616,6 +711,7 @@ begin
                  if wnd <> 0 then SendMessage(wnd,WM_COMMAND,VLC_PLAY_PAUSE,0);
                end;
   end;
+  UpdatePlayerState;  
 end;
 
 
@@ -649,6 +745,7 @@ begin
                  if wnd <> 0 then SendMessage(wnd,WM_COMMAND,VLC_STOP,0);
                end;
   end;
+  UpdatePlayerState;  
 end;
 
 
@@ -692,6 +789,7 @@ begin
                  if wnd <> 0 then SendMessage(wnd,WM_COMMAND,VLC_PREV,0);
                end;
   end;
+  UpdatePlayerState;
 end;
 
 
@@ -725,6 +823,7 @@ begin
                  if wnd <> 0 then SendMessage(wnd,WM_COMMAND,VLC_NEXT,0);
                end;
   end;
+  UpdatePlayerState;
 end;
 
 procedure TMainForm.btn_pselectMouseUp(Sender: TObject; Button: TMouseButton;
@@ -818,6 +917,7 @@ begin
   SaveSettings;
   UpdatePSelectIcon;
   CanClose := True;
+  UpdatePlayerChange;
 end;
 
 procedure TMainForm.mnMPCClick(pItem : TSharpEMenuItem; var CanClose : boolean);
@@ -826,6 +926,7 @@ begin
   SaveSettings;
   UpdatePSelectIcon;
   CanClose := True;
+  UpdatePlayerChange;
 end;
 
 procedure TMainForm.mnQCDClick(pItem : TSharpEMenuItem; var CanClose : boolean);
@@ -834,6 +935,7 @@ begin
   SaveSettings;
   UpdatePSelectIcon;
   CanClose := True;
+  UpdatePlayerChange;
 end;
 
 procedure TMainForm.mnVLCClick(pItem : TSharpEMenuItem; var CanClose : boolean);
@@ -842,6 +944,7 @@ begin
   SaveSettings;
   UpdatePSelectIcon;
   CanClose := True;
+  UpdatePlayerChange;
 end;
 
 procedure TMainForm.mnAMPClick(pItem : TSharpEMenuItem; var CanClose : boolean);
@@ -850,6 +953,7 @@ begin
   SaveSettings;
   UpdatePSelectIcon;
   CanClose := True;
+  UpdatePlayerChange;
 end;
 
 procedure TMainForm.mnWMPClick(pItem : TSharpEMenuItem; var CanClose : boolean);
@@ -858,6 +962,7 @@ begin
   SaveSettings;
   UpdatePSelectIcon;
   CanClose := True;
+  UpdatePlayerChange;  
 end;
 
 end.
