@@ -188,6 +188,7 @@ type
     procedure UICFontColorClick(Sender: TObject);
     procedure sceFontColorChangeColor(ASender: TObject; AValue: Integer);
     procedure sceFontColorResize(Sender: TObject);
+    procedure pagFontShow(Sender: TObject);
   private
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
@@ -201,6 +202,7 @@ type
     sObjectID: string;
     procedure UpdateIconPage;
     procedure UpdateFontPage;
+    property FontList : TFontList read FFontList;
   end;
 
 var
@@ -358,7 +360,9 @@ begin
   FWhite32 := TBitmap32.Create;
   FWhite48 := TBitmap32.Create;
   FWhite64 := TBitmap32.Create;
-  LoadResources;  
+  LoadResources;
+
+  RefreshFontList;
 end;
 
 procedure TfrmLink.FormDestroy(Sender: TObject);
@@ -418,6 +422,11 @@ end;
 procedure TfrmLink.memo_captionChange(Sender: TObject);
 begin
   UpdateSettings;
+end;
+
+procedure TfrmLink.pagFontShow(Sender: TObject);
+begin
+  UpdateFontPage;
 end;
 
 procedure TfrmLink.pagIconShow(Sender: TObject);
@@ -486,7 +495,8 @@ begin
   cboFontName.Items.Clear;
   try
     FFontList.RefreshFontInfo;
-    for i := 0 to pred(FFontList.List.Count) do begin
+    for i := 0 to pred(FFontList.List.Count) do
+    begin
       fi := TFontInfo(FFontList.List.Objects[i]);
       DuplicateCheck := cboFontName.Items.IndexOf(fi.FullName);
 
@@ -496,7 +506,6 @@ begin
   finally
     cboFontName.ItemIndex := 0;
   end;
-
 end;
 
 procedure TfrmLink.sceColorBlendChangeColor(ASender: TObject; AValue: Integer);
@@ -520,6 +529,7 @@ end;
 procedure TfrmLink.sceFontColorResize(Sender: TObject);
 begin
   UICFontColor.Height := sceFontColor.Height + 4;
+  UpdateFontPage;
 end;
 
 procedure TfrmLink.sceIconShadowChangeColor(ASender: TObject; AValue: Integer);

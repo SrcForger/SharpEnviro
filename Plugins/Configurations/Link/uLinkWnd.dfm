@@ -426,6 +426,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICIconTrans'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -474,6 +475,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICIconTransValue'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -563,6 +565,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICSize'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -805,6 +808,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICColorBlend'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -853,6 +857,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICColorBlendValue'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -929,6 +934,7 @@ object frmLink: TfrmLink
           Margins.Bottom = 0
           Align = alTop
           BevelOuter = bvNone
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -977,6 +983,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICIconShadowValue'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -1067,6 +1074,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICColorBlendColor'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -1130,6 +1138,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'SharpEUIC1'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -1185,8 +1194,7 @@ object frmLink: TfrmLink
       Top = 0
       Width = 429
       Height = 467
-      ExplicitLeft = -3
-      ExplicitTop = -3
+      OnShow = pagFontShow
       object lblFontNameDet: TLabel
         AlignWithMargins = True
         Left = 26
@@ -1301,7 +1309,6 @@ object frmLink: TfrmLink
         Margins.Bottom = 0
         Align = alTop
         Caption = 'Font Style'
-        ExplicitTop = 238
         ExplicitWidth = 49
       end
       object lblFontColor: TLabel
@@ -1501,9 +1508,6 @@ object frmLink: TfrmLink
         MonitorControl = sgbFontTrans
         NormalColor = clWhite
         OnReset = UICFontNameReset
-        ExplicitLeft = 3
-        ExplicitTop = 233
-        ExplicitWidth = 423
         object sgbFontTrans: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 4
@@ -1516,7 +1520,7 @@ object frmLink: TfrmLink
           Margins.Bottom = 2
           Align = alLeft
           ParentBackground = False
-          Min = -255
+          Min = 0
           Max = 255
           Value = 0
           Prefix = 'Transparency: '
@@ -1525,9 +1529,6 @@ object frmLink: TfrmLink
           PopPosition = ppRight
           PercentDisplay = True
           OnChangeValue = sgbFontTransChangeValue
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitHeight = 22
         end
       end
       object UICUnderline: TSharpEUIC
@@ -1544,7 +1545,6 @@ object frmLink: TfrmLink
         Caption = 'UICUnderline'
         ParentBackground = False
         TabOrder = 4
-        OnResize = UICFontNameReset
         RoundValue = 10
         BorderColor = clBtnShadow
         Border = True
@@ -1553,9 +1553,7 @@ object frmLink: TfrmLink
         AutoReset = False
         MonitorControl = chkUnderline
         NormalColor = clWhite
-        ExplicitLeft = 3
-        ExplicitTop = 299
-        ExplicitWidth = 423
+        OnReset = UICFontNameReset
         object chkUnderline: TJvCheckBox
           AlignWithMargins = True
           Left = 4
@@ -1592,7 +1590,6 @@ object frmLink: TfrmLink
         Caption = 'UICBold'
         ParentBackground = False
         TabOrder = 5
-        OnResize = UICFontNameReset
         RoundValue = 10
         BorderColor = clBtnShadow
         Border = True
@@ -1601,9 +1598,7 @@ object frmLink: TfrmLink
         AutoReset = False
         MonitorControl = chkItalic
         NormalColor = clWhite
-        ExplicitLeft = 3
-        ExplicitTop = 299
-        ExplicitWidth = 423
+        OnReset = UICFontNameReset
         object chkItalic: TJvCheckBox
           AlignWithMargins = True
           Left = 4
@@ -1640,7 +1635,6 @@ object frmLink: TfrmLink
         Caption = 'UICBold'
         ParentBackground = False
         TabOrder = 6
-        OnResize = UICFontNameReset
         RoundValue = 10
         BorderColor = clBtnShadow
         Border = True
@@ -1649,9 +1643,7 @@ object frmLink: TfrmLink
         AutoReset = False
         MonitorControl = chkBold
         NormalColor = clWhite
-        ExplicitLeft = 3
-        ExplicitTop = 299
-        ExplicitWidth = 423
+        OnReset = UICFontNameReset
         object chkBold: TJvCheckBox
           AlignWithMargins = True
           Left = 4
@@ -1695,11 +1687,10 @@ object frmLink: TfrmLink
         Border = True
         BackgroundColor = clBtnFace
         HasChanged = True
-        AutoReset = True
+        AutoReset = False
+        MonitorControl = sceFontColor
         NormalColor = clWhite
-        ExplicitLeft = 0
-        ExplicitTop = 392
-        ExplicitWidth = 429
+        OnReset = UICFontNameReset
         object sceFontColor: TSharpEColorEditorEx
           AlignWithMargins = True
           Left = 4
@@ -1713,6 +1704,7 @@ object frmLink: TfrmLink
           VertScrollBar.Smooth = True
           VertScrollBar.Tracking = True
           Align = alTop
+          AutoSize = True
           BevelInner = bvNone
           BevelOuter = bvNone
           BorderStyle = bsNone

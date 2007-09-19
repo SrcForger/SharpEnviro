@@ -102,6 +102,15 @@ begin
     Theme[DS_ICONBLENDCOLOR].isCustom  := UICColorBlendColor.HasChanged;
     Theme[DS_ICONSHADOWCOLOR].isCustom := UICIconShadowColor.HasChanged;
 
+    Theme[DS_FONTNAME].isCustom       := UICFontName.HasChanged;
+    Theme[DS_TEXTSIZE].isCustom       := UICFontSize.HasChanged;
+    Theme[DS_TEXTALPHA].isCustom      := UICFontTrans.HasChanged;
+    Theme[DS_TEXTALPHAVALUE].isCustom := UICFontTransValue.HasChanged;
+    Theme[DS_TEXTBOLD].isCustom       := UICBold.HasChanged;
+    Theme[DS_TEXTITALIC].isCustom     := UICItalic.HasChanged;
+    Theme[DS_TEXTUNDERLINE].isCustom  := UICUnderline.HasChanged;
+    Theme[DS_TEXTCOLOR].isCustom      := UICFontColor.HasChanged;
+
     // save the actual values (will only be saved to XMl if isCustom = True)
     Theme[DS_ICONBLENDING].BoolValue   := chkColorBlend.Checked;
     Theme[DS_ICONALPHABLEND].BoolValue := chkIconTrans.Checked;
@@ -118,6 +127,15 @@ begin
     Theme[DS_ICONSHADOWALPHA].IntValue := sgbIconShadow.Value;
     Theme[DS_ICONBLENDCOLOR].IntValue  := sceColorBlend.Items.Item[0].ColorCode;
     Theme[DS_ICONSHADOWCOLOR].IntValue := sceIconShadow.Items.Item[0].ColorCode;
+
+    Theme[DS_FONTNAME].Value          := cboFontName.Text;
+    Theme[DS_TEXTSIZE].IntValue       := sgbFontSize.Value;
+    Theme[DS_TEXTALPHAVALUE].IntValue := sgbFontTrans.Value;
+    Theme[DS_TEXTALPHA].BoolValue     := chkFontTrans.Checked;
+    Theme[DS_TEXTBOLD].BoolValue      := chkBold.Checked;
+    Theme[DS_TEXTITALIC].BoolValue    := chkItalic.Checked;
+    Theme[DS_TEXTUNDERLINE].BoolValue := chkUnderline.Checked;
+    Theme[DS_TEXTCOLOR].IntValue      := sceFontColor.Items.Item[0].ColorCode;
   end;
   Settings.SaveSettings(True);
 
@@ -127,6 +145,8 @@ end;
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 var
   Settings : TLinkXMLSettings;
+  s : String;
+  n : integer;
 begin
   if frmLink = nil then frmLink := TfrmLink.Create(nil);
 
@@ -208,6 +228,23 @@ begin
     sceColorBlend.Items.Item[0].ColorCode := Theme[DS_ICONBLENDCOLOR].IntValue;
     sceIconShadow.Items.Item[0].ColorCode := Theme[DS_ICONSHADOWCOLOR].IntValue;
 
+    s := Theme[DS_FONTNAME].Value;
+    for n  := 0 to FontList.List.Count - 1 do
+    if CompareText(TFontInfo(FontList.List.Objects[n]).FullName,s) = 0 then
+    begin
+      cboFontName.ItemIndex := cboFontName.Items.IndexOf(FontList.List[n]);
+      break;
+     end;
+    if cboFontName.ItemIndex = -1 then
+      cboFontName.ItemIndex := cboFontName.Items.IndexOf('arial');
+    sgbFontSize.Value    := Theme[DS_TEXTSIZE].IntValue;
+    sgbFontTrans.Value   := Theme[DS_TEXTALPHAVALUE].IntValue;
+    chkFontTrans.Checked := Theme[DS_TEXTALPHA].BoolValue;
+    chkBold.Checked      := Theme[DS_TEXTBOLD].BoolValue;
+    chkItalic.Checked    := Theme[DS_TEXTITALIC].BoolValue;
+    chkUnderline.Checked := Theme[DS_TEXTUNDERLINE].BoolValue;
+    sceFontColor.Items.Item[0].ColorCode := Theme[DS_TEXTCOLOR].IntValue;
+
     // load if settings are changed
     UICColorBlend.HasChanged      := Theme[DS_ICONBLENDING].isCustom;
     UICIconTrans.HasChanged       := Theme[DS_ICONALPHABLEND].isCustom;
@@ -218,6 +255,15 @@ begin
     UICIconShadowValue.HasChanged := Theme[DS_ICONSHADOWALPHA].isCustom;
     UICColorBlendColor.HasChanged := Theme[DS_ICONBLENDCOLOR].isCustom;
     UICIconShadowColor.HasChanged := Theme[DS_ICONSHADOWCOLOR].isCustom;
+
+    UICFontName.HasChanged       := Theme[DS_FONTNAME].isCustom;
+    UICFontSize.HasChanged       := Theme[DS_TEXTSIZE].isCustom;
+    UICFontTrans.HasChanged      := Theme[DS_TEXTALPHA].isCustom;
+    UICFontTransValue.HasChanged := Theme[DS_TEXTALPHAVALUE].isCustom;
+    UICBold.HasChanged           := Theme[DS_TEXTBOLD].isCustom;
+    UICItalic.HasChanged         := Theme[DS_TEXTITALIC].isCustom;
+    UICUnderline.HasChanged      := Theme[DS_TEXTUNDERLINE].isCustom;
+    UICFontColor.HasChanged      := Theme[DS_TEXTCOLOR].isCustom;
   end;
 
   Settings.Free;
