@@ -133,6 +133,7 @@ type
     FShellBCInProgress : boolean;
     FSkinManager : TSharpESkinManager;
     FSharpEBar : TSharpEBar;
+    FBarName : String;
     SkinManagerLoadThread : TSystemSkinLoadThread;
 
     procedure CreateNewBar;
@@ -266,38 +267,40 @@ procedure TSharpBarMainForm.WMBarReposition(var msg : TMessage);
 var
   XML : TJvSimpleXML;
   Dir : String;
-  FName : String;
   n : integer;
+  b : boolean;
 begin
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\';
-  FName := Dir + 'bars.xml';
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';
 
-  XML := TJvSimpleXML.Create(nil);
+  // Find and load settings file!
+  xml := TJvSimpleXML.Create(nil);
   try
-    if FileExists(FName) then
-    begin
-      XML.LoadFromFile(FName);
-      if XML.Root.Items.ItemNamed['bars'] <> nil then
-         with XML.Root.Items.ItemNamed['bars'].Items do
-              for n := 0 to Count - 1 do
-                  if Item[n].Items.IntValue('ID',-1) = FBarID then
-                     if Item[n].Items.ItemNamed['Settings'] <> nil then
-                        with Item[n].Items.ItemNamed['Settings'].Items do
-                        begin
-                          SharpEBar.AutoPosition   := BoolValue('AutoPosition',True);
-                          SharpEBar.PrimaryMonitor := BoolValue('PrimaryMonitor',True);
-                          SharpEBar.MonitorIndex   := IntValue('MonitorIndex',0);
-                          SharpEBar.HorizPos       := IntToHorizPos(IntValue('HorizPos',0));
-                          SharpEBar.VertPos        := IntToVertPos(IntValue('VertPos',0));
-                          SharpEBar.AutoStart      := BoolValue('AutoStart',True);
-                          SharpEBar.ShowThrobber   := BoolValue('ShowThrobber',True);
-                          SharpEBar.DisableHideBar := BoolValue('DisableHideBar',False);
-                          SharpEBar.AlwaysOnTop    := BoolValue('AlwaysOnTop',False);
-                          SharpEBar.UpdatePosition;
-                        end;
-    end;
-  finally
-    XML.Free;
+    xml.LoadFromFile(Dir + 'Bar.xml');
+    b := true;
+  except
+    b := False;
+  end;
+
+  if b then
+  begin
+    // xml file loaded properlty... use it
+    if xml.Root.Items.ItemNamed['Settings'] <> nil then
+      with xml.Root.Items.ItemNamed['Settings'] do
+      begin
+        FBarName                 := Items.Value('Name','Toolbar');       
+        SharpEBar.AutoPosition   := Items.BoolValue('AutoPosition',True);
+        SharpEBar.PrimaryMonitor := Items.BoolValue('PrimaryMonitor',True);
+        SharpEBar.MonitorIndex   := Items.IntValue('MonitorIndex',0);
+        SharpEBar.HorizPos       := IntToHorizPos(Items.IntValue('HorizPos',0));
+        SharpEBar.VertPos        := IntToVertPos(Items.IntValue('VertPos',0));
+        SharpEBar.AutoStart      := Items.BoolValue('AutoStart',True);
+        SharpEBar.ShowThrobber   := Items.BoolValue('ShowThrobber',True);
+        SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar',False);
+        ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers',True);
+        SharpEBar.AlwaysOnTop    := Items.BoolValue('AlwaysOnTop',False);
+      end;
+   SharpEBar.UpdatePosition;
+   UpdateBGZone;
   end;
 end;
 
@@ -795,6 +798,7 @@ begin
   // Save Bar Settings
   with xml.Root.Items.Add('Settings') do
   begin
+    Items.AdD('Name',FBarName);
     Items.Add('AutoPosition',SharpEBar.AutoPosition);
     Items.Add('PrimaryMonitor',SharpEBar.PrimaryMonitor);
     Items.Add('MonitorIndex',SharpEBar.MonitorIndex);
@@ -913,6 +917,7 @@ begin
     if xml.Root.Items.ItemNamed['Settings'] <> nil then
       with xml.Root.Items.ItemNamed['Settings'] do
       begin
+        FBarName                 := Items.Value('Name','Toolbar');
         SharpEBar.AutoPosition   := Items.BoolValue('AutoPosition',True);
         SharpEBar.PrimaryMonitor := Items.BoolValue('PrimaryMonitor',True);
         SharpEBar.MonitorIndex   := Items.IntValue('MonitorIndex',0);
@@ -941,6 +946,8 @@ end;
 // Init all skin and module management classes
 procedure TSharpBarMainForm.InitBar;
 begin
+  FBarName := 'Toolbar';
+
   FSkinManager := TSharpESkinManager.Create(self, [scBar,scMiniThrobber]);
   FSkinManager.HandleUpdates := False;
 
@@ -1104,8 +1111,10 @@ begin
        SharpEbar.PrimaryMonitor := False;
        SharpEBar.MonitorIndex := index;
      end;
-  UpdateBgZone;
-  ModuleManager.ReCalculateModuleSize;
+  UpdateBGZone;
+  SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH,0,0);
+  ModuleManager.FixModulePositions;
+  SaveBarSettings;
 end;
 
 procedure TSharpBarMainForm.ExitMnClick(Sender: TObject);
