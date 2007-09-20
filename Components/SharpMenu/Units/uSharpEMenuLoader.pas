@@ -74,9 +74,12 @@ begin
           else
           if CompareText(typestring,'cpllist') = 0 then
              menu.AddControlPanelItem(False)
-          else;
+          else
           if CompareText(typestring,'label') = 0 then
              menu.AddLabelItem(Value('Caption'),False)
+          else
+          if CompareText(typestring,'objectlist') = 0 then
+            menu.AddObjectListItem(False)
           else
           if CompareText(typestring,'submenu') = 0 then
           begin

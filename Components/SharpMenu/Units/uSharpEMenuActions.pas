@@ -28,6 +28,7 @@ unit uSharpEMenuActions;
 interface
 
 uses Windows,
+     Messages,
      Classes,
      Contnrs,
      ShellApi,
@@ -43,12 +44,14 @@ type
     FOwner : TObject;
   public
     constructor Create(pOwner : TObject); reintroduce;
+    procedure OnDesktopObjectClick(pItem : TSharpEMenuItem; var CanClose : boolean);
     procedure OnLinkClick(pItem : TSharpEMenuItem; var CanClose : boolean);
     procedure OnFolderclick(pItem : TSharpEMenuItem; var CanClose : boolean);
     procedure UpdateDynamicDirectory(var pDynList : TObjectList; pDir,
                                      pFilter : String; pSort,pMaxItems : integer);
     procedure UpdateDynamicDriveList(var pDynList : TObjectList; pDriveNames : boolean);
     procedure UpdateControlPanelList(var pDynList : TObjectList);
+    procedure UpdateObjectList(var DynList : TObjectList);
   end;
 
 implementation
@@ -68,6 +71,30 @@ begin
   inherited Create;
   
   FOwner := pOwner;
+end;
+
+procedure TSharpEMenuActions.OnDesktopObjectClick(pItem: TSharpEMenuItem; var CanClose: boolean);
+var
+  wnd : hwnd;
+  msg: TSharpE_DataStruct;
+  cds: TCopyDataStruct;
+begin
+  wnd := FindWindow('TSharpDeskMainForm',nil);
+  if wnd <> 0 then
+  begin
+    msg.Parameter := ExtractFileName(pItem.PropList.GetString('ObjectFile'));
+    msg.Command := 'AddObject';
+
+    with cds do
+    begin
+      dwData := 0;
+      cbData := SizeOf(TSharpE_DataStruct);
+      lpData := @msg;
+    end;
+
+    sendmessage(wnd, WM_COPYDATA, 0, Cardinal(@cds));
+  end;
+  CanClose := True;
 end;
 
 procedure TSharpEMenuActions.OnFolderclick(pItem : TSharpEMenuItem; var CanClose : boolean);
@@ -450,6 +477,43 @@ begin
       if DriveExists(i) then
       begin
       end;
+end;
+
+procedure TSharpEMenuActions.UpdateObjectList(var DynList: TObjectList);
+var
+  sr : TSearchRec;
+  Dir : String;
+  n : integer;
+  item : TSharpEMenuItem;
+  found : boolean;
+  pMenu : TSharpEMenu;
+begin
+  pMenu := TSharpEMenu(FOwner);
+
+  Dir := SharpApi.GetSharpeDirectory + '\Objects\';
+  if FindFirst(Dir + '*.object',faAnyFile,sr) = 0 then
+  repeat
+    if (CompareText(sr.Name,'.') <> 0) and (CompareText(sr.Name,'..') <> 0) then
+    begin
+      for n := DynList.Count - 1 downto 0 do
+      begin
+        item := TSharpEMenuItem(DynList.Items[n]);
+        if item.ItemType = mtDesktopObject then
+          if CompareText(sr.Name,item.PropList.GetString('ObjectFile')) = 0 then
+          begin
+            DynList.Delete(n);
+            found := True;
+            break;
+          end;
+      end;
+
+      if not found then
+      begin
+        pMenu.AddObjectItem(sr.Name,True);
+      end;
+    end;
+  until (FindNext(sr) <> 0);
+  FindClose(sr);
 end;
 
 end.

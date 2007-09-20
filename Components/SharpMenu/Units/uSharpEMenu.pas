@@ -77,6 +77,8 @@ type
     procedure AddControlPanelItem(pDynamic : boolean);
     function  AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean) : TObject; overload;
     function  AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32; pType :TSharpEMenuItemType = mtCustom) : TObject;
+    procedure AddObjectListItem(pDynamic : boolean);
+    procedure AddObjectItem(pFile : String; pDynamic : boolean);
 
     // Rendering
     procedure RenderBackground(pLeft, pTop : integer);
@@ -240,6 +242,7 @@ begin
                                                          item.PropList.GetInt('MaxItems'));
       mtDriveList : FMenuActions.UpdateDynamicDriveList(FDynList,item.PropList.GetBool('ShowDriveNames'));
       mtCPLList : FMenuActions.UpdateControlPanelList(FDynList);
+      mtDesktopObjectList : FMenuActions.UpdateObjectList(FDynList);
     end;
   end;
 
@@ -310,6 +313,34 @@ begin
   item.isDynamic := pDynamic;
   FItems.Add(Item);
   result := item;
+end;
+
+procedure TSharpEMenu.AddObjectItem(pFile: String; pDynamic: boolean);
+var
+  item : TSharpEMenuItem;
+  s : String;
+begin
+  item := TSharpEMenuItem.Create(mtDesktopObject);
+  item.PropList.Add('ObjectFile',pFile);
+  s := ExtractFileName(pFile);
+  setlength(s,length(s) - length(ExtractFileExt(s)));
+  item.Caption := s;
+  item.OnClick := FMenuActions.OnDesktopObjectClick;
+  item.Icon := SharpEMenuIcons.AddIcon('icon.file.config','icon.file.config');
+  item.isVisible := True;
+  item.isDynamic := pDynamic;
+  FItems.Add(Item);
+end;
+
+procedure TSharpEMenu.AddObjectListItem(pDynamic: boolean);
+var
+  item : TSharpEMenuItem;
+begin
+  item := TSharpEMenuItem.Create(mtDesktopObjectList);
+  item.Icon := nil;
+  item.isVisible := False;
+  item.isDynamic := pDynamic;
+  FItems.Add(Item);
 end;
 
 function TSharpEMenu.AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean) : TObject;
