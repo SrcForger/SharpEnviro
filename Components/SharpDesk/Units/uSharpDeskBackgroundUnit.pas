@@ -104,6 +104,8 @@ var
 
    RMode : boolean;
 begin
+  SharpDeskMainForm.Monitor; // make it update the TScren Monitor Data
+
   img := SharpDesk.Image.Bitmap;
   img.SetSize(Screen.DesktopWidth,Screen.DesktopHeight);
   for n := 0 to Screen.MonitorCount - 1 do
