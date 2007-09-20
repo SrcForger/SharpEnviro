@@ -22,7 +22,7 @@ object frmDesktopSettings: TfrmDesktopSettings
     Top = 0
     Width = 595
     Height = 567
-    ActivePage = pagAnimation
+    ActivePage = pagFont
     PropagateEnable = False
     Align = alClient
     object pagIcon: TJvStandardPage
@@ -30,7 +30,6 @@ object frmDesktopSettings: TfrmDesktopSettings
       Top = 0
       Width = 595
       Height = 567
-      ExplicitHeight = 486
       object Panel3: TPanel
         Left = 0
         Top = 279
@@ -103,7 +102,6 @@ object frmDesktopSettings: TfrmDesktopSettings
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          ExplicitWidth = 111
         end
       end
       object Panel4: TPanel
@@ -410,7 +408,6 @@ object frmDesktopSettings: TfrmDesktopSettings
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          ExplicitWidth = 99
         end
       end
       object Panel2: TPanel
@@ -486,7 +483,6 @@ object frmDesktopSettings: TfrmDesktopSettings
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          ExplicitWidth = 83
         end
       end
       object Panel10: TPanel
@@ -498,7 +494,6 @@ object frmDesktopSettings: TfrmDesktopSettings
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 4
-        ExplicitHeight = 132
         object lblIconColorDet: TLabel
           AlignWithMargins = True
           Left = 26
@@ -576,7 +571,6 @@ object frmDesktopSettings: TfrmDesktopSettings
             end>
           SwatchManager = SharpESwatchManager1
           OnUiChange = UpdateColorChangeEvent
-          ExplicitHeight = 80
         end
       end
     end
@@ -585,7 +579,6 @@ object frmDesktopSettings: TfrmDesktopSettings
       Top = 0
       Width = 595
       Height = 567
-      ExplicitHeight = 486
       object lblFontNameDet: TLabel
         AlignWithMargins = True
         Left = 26
@@ -768,14 +761,12 @@ object frmDesktopSettings: TfrmDesktopSettings
           end>
         SwatchManager = SharpESwatchManager1
         OnUiChange = UpdateColorChangeEvent
-        ExplicitLeft = 28
-        ExplicitWidth = 559
       end
       object cboFontName: TComboBox
         AlignWithMargins = True
         Left = 28
         Top = 52
-        Width = 559
+        Width = 250
         Height = 23
         Margins.Left = 28
         Margins.Top = 8
@@ -810,7 +801,6 @@ object frmDesktopSettings: TfrmDesktopSettings
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
-        ExplicitWidth = 66
       end
       object chkItalic: TJvCheckBox
         AlignWithMargins = True
@@ -832,7 +822,6 @@ object frmDesktopSettings: TfrmDesktopSettings
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
-        ExplicitWidth = 44
       end
       object chkBold: TJvCheckBox
         AlignWithMargins = True
@@ -854,7 +843,6 @@ object frmDesktopSettings: TfrmDesktopSettings
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
-        ExplicitWidth = 41
       end
       object Panel5: TPanel
         AlignWithMargins = True
@@ -919,7 +907,7 @@ object frmDesktopSettings: TfrmDesktopSettings
           Margins.Bottom = 0
           Align = alLeft
           ParentBackground = False
-          Min = -255
+          Min = 0
           Max = 255
           Value = 0
           Prefix = 'Transparency: '
@@ -951,7 +939,6 @@ object frmDesktopSettings: TfrmDesktopSettings
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
         Layout = tlTop
-        ExplicitWidth = 112
       end
     end
     object pagAnimation: TJvStandardPage
@@ -1483,7 +1470,6 @@ object frmDesktopSettings: TfrmDesktopSettings
           ParentBackground = False
           ParentColor = True
           TabOrder = 0
-          ExplicitTop = 122
           object sgbFontShadowTrans: TSharpeGaugeBox
             Left = 0
             Top = 0
@@ -1496,7 +1482,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             Align = alLeft
             Constraints.MaxWidth = 532
             ParentBackground = False
-            Min = -255
+            Min = 0
             Max = 255
             Value = 0
             Prefix = 'Shadow Transparency: '
@@ -1568,7 +1554,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             Margins.Bottom = 0
             Align = alLeft
             Style = csDropDownList
-            ItemHeight = 0
+            ItemHeight = 13
             ItemIndex = 0
             TabOrder = 0
             Text = 'Left Shadow'
@@ -1600,7 +1586,6 @@ object frmDesktopSettings: TfrmDesktopSettings
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
-        ExplicitWidth = 84
       end
     end
   end
