@@ -111,6 +111,11 @@ begin
     Theme[DS_TEXTUNDERLINE].isCustom  := UICUnderline.HasChanged;
     Theme[DS_TEXTCOLOR].isCustom      := UICFontColor.HasChanged;
 
+    Theme[DS_TEXTSHADOW].isCustom      := UICFontShadow.HasChanged;
+    Theme[DS_TEXTSHADOWALPHA].isCustom := UICFontShadowTrans.HasChanged;
+    Theme[DS_TEXTSHADOWTYPE].isCustom  := UICFontShadowType.HasChanged;
+    Theme[DS_TEXTSHADOWCOLOR].isCustom := UICFontShadowColor.HasChanged;
+
     // save the actual values (will only be saved to XMl if isCustom = True)
     Theme[DS_ICONBLENDING].BoolValue   := chkColorBlend.Checked;
     Theme[DS_ICONALPHABLEND].BoolValue := chkIconTrans.Checked;
@@ -136,6 +141,11 @@ begin
     Theme[DS_TEXTITALIC].BoolValue    := chkItalic.Checked;
     Theme[DS_TEXTUNDERLINE].BoolValue := chkUnderline.Checked;
     Theme[DS_TEXTCOLOR].IntValue      := sceFontColor.Items.Item[0].ColorCode;
+
+    Theme[DS_TEXTSHADOW].BoolValue     := chkFontShadow.Checked;
+    Theme[DS_TEXTSHADOWALPHA].IntValue := sgbFontShadowTrans.Value;
+    Theme[DS_TEXTSHADOWTYPE].IntValue  := cboFontShadowType.ItemIndex;
+    Theme[DS_TEXTSHADOWCOLOR].IntValue := sceShadowColor.Items.Item[0].ColorCode;
   end;
   Settings.SaveSettings(True);
 
@@ -191,7 +201,7 @@ begin
     UICIconShadowColor.DefaultValue := inttostr(GetDesktopIconShadowColor);
     UICIconShadowValue.DefaultValue := inttostr(GetDesktopIconShadowAlpha);
 
-    UICFontName.DefaultValue := GetDesktopFontName;
+    UICFontName.DefaultValue := inttostr(cboFontName.Items.IndexOf(GetDesktopFontName));
     UICFontSize.DefaultValue := inttostr(GetDesktopTextSize);
     if GetDesktopTextBold then
       UICBold.DefaultValue := 'True'
@@ -207,6 +217,13 @@ begin
       UICFontTrans.DefaultValue := 'True'
     else UICFontTrans.DefaultValue := 'False';
     UICFontTransValue.DefaultValue := inttostr(GetDesktopTextAlphaValue);
+
+    if GetDesktopTextShadow then
+      UICFontShadow.DefaultValue := 'True'
+    else UICFontShadow.DefaultValue := 'False';
+    UICFontShadowTrans.DefaultValue := inttostr(GetDesktopTextShadowAlpha);
+    UICFontShadowColor.DefaultValue := inttostr(GetDesktopTextShadowColor);
+    UICFontShadowType.DefaultValue := inttostr(GetDesktopTextShadowType);
 
     // load the actual values
     chkColorBlend.Checked := Theme[DS_ICONBLENDING].BoolValue;
@@ -245,6 +262,11 @@ begin
     chkUnderline.Checked := Theme[DS_TEXTUNDERLINE].BoolValue;
     sceFontColor.Items.Item[0].ColorCode := Theme[DS_TEXTCOLOR].IntValue;
 
+    chkFontShadow.Checked := Theme[DS_TEXTSHADOW].BoolValue;
+    sgbFontShadowTrans.Value := Theme[DS_TEXTSHADOWALPHA].IntValue;
+    cboFontShadowType.ItemIndex := Theme[DS_TEXTSHADOWTYPE].IntValue;
+    sceShadowColor.Items.Item[0].ColorCode := Theme[DS_TEXTSHADOWCOLOR].IntValue;
+
     // load if settings are changed
     UICColorBlend.HasChanged      := Theme[DS_ICONBLENDING].isCustom;
     UICIconTrans.HasChanged       := Theme[DS_ICONALPHABLEND].isCustom;
@@ -264,6 +286,11 @@ begin
     UICItalic.HasChanged         := Theme[DS_TEXTITALIC].isCustom;
     UICUnderline.HasChanged      := Theme[DS_TEXTUNDERLINE].isCustom;
     UICFontColor.HasChanged      := Theme[DS_TEXTCOLOR].isCustom;
+
+    UICFontShadow.HasChanged      := Theme[DS_TEXTSHADOW].isCustom;
+    UICFontShadowTrans.HasChanged := Theme[DS_TEXTSHADOWALPHA].isCustom;
+    UICFontShadowType.HasChanged  := Theme[DS_TEXTSHADOWTYPE].isCustom;
+    UICFontShadowColor.HasChanged := Theme[DS_TEXTSHADOWCOLOR].isCustom;
   end;
 
   Settings.Free;
@@ -337,6 +364,7 @@ begin
   ATabs.Add('Link',frmLink.pagLink,'','');
   ATabs.Add('Icon',frmLink.pagIcon,'','');
   ATabs.Add('Font',frmLink.pagFont,'','');
+  ATabs.Add('Font Shadow',frmLink.pagFontShadow,'','');
 end;
 
 procedure ClickTab(ATab: TPluginTabItem);
@@ -347,7 +375,7 @@ begin
     tmpPag := TJvStandardPage(ATab.Data);
     tmpPag.Show;
   end;
-
+  frmLink.UpdatePageUI;
 end;
 
 function SetSettingType: TSU_UPDATE_ENUM;

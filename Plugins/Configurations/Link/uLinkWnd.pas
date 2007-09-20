@@ -138,6 +138,23 @@ type
     chkBold: TJvCheckBox;
     UICFontColor: TSharpEUIC;
     sceFontColor: TSharpEColorEditorEx;
+    pagFontShadow: TJvStandardPage;
+    lblFontShadowDet: TLabel;
+    pnlTextShadow: TPanel;
+    lblFontShadowTypeDet: TLabel;
+    lblFontShadowTransDet: TLabel;
+    Label18: TLabel;
+    Label19: TLabel;
+    Label20: TLabel;
+    lblFontShadowColDet: TLabel;
+    UICFontShadow: TSharpEUIC;
+    chkFontShadow: TJvCheckBox;
+    UICFontShadowType: TSharpEUIC;
+    cboFontShadowType: TComboBox;
+    UICFontShadowTrans: TSharpEUIC;
+    sgbFontShadowTrans: TSharpeGaugeBox;
+    UICFontShadowColor: TSharpEUIC;
+    sceShadowColor: TSharpEColorEditorEx;
     procedure FormCreate(Sender: TObject);
     procedure TargetButtonClick(Sender: TObject);
     procedure spcTabChange(ASender: TObject; const ATabIndex: Integer;
@@ -172,8 +189,6 @@ type
     procedure sceIconShadowResize(Sender: TObject);
     procedure sceColorBlendChangeColor(ASender: TObject; AValue: Integer);
     procedure sceIconShadowChangeColor(ASender: TObject; AValue: Integer);
-    procedure pagIconShow(Sender: TObject);
-    procedure pagLinkShow(Sender: TObject);
     procedure cboFontNameDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure cboFontNameChange(Sender: TObject);
@@ -188,7 +203,13 @@ type
     procedure UICFontColorClick(Sender: TObject);
     procedure sceFontColorChangeColor(ASender: TObject; AValue: Integer);
     procedure sceFontColorResize(Sender: TObject);
-    procedure pagFontShow(Sender: TObject);
+    procedure chkFontShadowClick(Sender: TObject);
+    procedure UICFontShadowTypeReset(Sender: TObject);
+    procedure cboFontShadowTypeChange(Sender: TObject);
+    procedure sgbFontShadowTransChangeValue(Sender: TObject; Value: Integer);
+    procedure sceShadowColorResize(Sender: TObject);
+    procedure sceShadowColorChangeColor(ASender: TObject; AValue: Integer);
+    procedure UICFontShadowReset(Sender: TObject);
   private
     FBlue32, FBlue48, FBlue64: TBitmap32;
     FWhite32, FWhite48, FWhite64: TBitmap32;
@@ -202,6 +223,9 @@ type
     sObjectID: string;
     procedure UpdateIconPage;
     procedure UpdateFontPage;
+    procedure UpdateFontShadowPage;
+    procedure UpdatePageUI;
+    procedure UpdateLinkPage;
     property FontList : TFontList read FFontList;
   end;
 
@@ -284,6 +308,12 @@ begin
   cboFontName.canvas.textout(rect.left + imlFontIcons.width + 2, rect.top, fi.FullName);
 end;
 
+procedure TfrmLink.cboFontShadowTypeChange(Sender: TObject);
+begin
+  UICFontShadowType.UpdateStatus;
+  SendUpdate;
+end;
+
 procedure TfrmLink.cb_calignChange(Sender: TObject);
 begin
   UpdateSettings;
@@ -309,6 +339,13 @@ begin
   UpdateIconPage;
   SendUpdate;
   UICColorBlend.UpdateStatus;
+end;
+
+procedure TfrmLink.chkFontShadowClick(Sender: TObject);
+begin
+  UICFontShadow.UpdateStatus;
+  SendUpdate;
+  UpdateFontShadowPage;
 end;
 
 procedure TfrmLink.chkFontTransClick(Sender: TObject);
@@ -424,22 +461,6 @@ begin
   UpdateSettings;
 end;
 
-procedure TfrmLink.pagFontShow(Sender: TObject);
-begin
-  UpdateFontPage;
-end;
-
-procedure TfrmLink.pagIconShow(Sender: TObject);
-begin
-  UpdateIconPage;
-end;
-
-procedure TfrmLink.pagLinkShow(Sender: TObject);
-begin
-  Height := 391;
-  CenterUpdateSize;
-end;
-
 procedure TfrmLink.rdoIcon32Click(Sender: TObject);
 begin
   rdoIcon48.Checked := False;
@@ -544,6 +565,18 @@ begin
   UpdateIconPage;
 end;
 
+procedure TfrmLink.sceShadowColorChangeColor(ASender: TObject; AValue: Integer);
+begin
+  UICFontShadowColor.UpdateStatus;
+  SendUpdate;
+end;
+
+procedure TfrmLink.sceShadowColorResize(Sender: TObject);
+begin
+  UICFontShadowColor.Height := sceShadowColor.Height + 4;
+  UpdateFontShadowPage;
+end;
+
 procedure TfrmLink.SendUpdate;
 begin
   if Visible then
@@ -553,7 +586,14 @@ end;
 procedure TfrmLink.sgbColorBlendChangeValue(Sender: TObject; Value: Integer);
 begin
   UICColorBlendValue.UpdateStatus;
-  SendUpdate;  
+  SendUpdate;
+end;
+
+procedure TfrmLink.sgbFontShadowTransChangeValue(Sender: TObject;
+  Value: Integer);
+begin
+  UICFontShadowTrans.UpdateStatus;
+  SendUpdate;
 end;
 
 procedure TfrmLink.sgbFontSizeChangeValue(Sender: TObject; Value: Integer);
@@ -633,6 +673,17 @@ begin
   SendUpdate;
 end;
 
+procedure TfrmLink.UICFontShadowReset(Sender: TObject);
+begin
+  SendUpdate;
+  UpdateFontShadowPage;
+end;
+
+procedure TfrmLink.UICFontShadowTypeReset(Sender: TObject);
+begin
+  SendUpdate;
+end;
+
 procedure TfrmLink.UICFontTransReset(Sender: TObject);
 begin
   SendUpdate;
@@ -674,6 +725,32 @@ begin
     // Update Page Height
     Self.Height := 580;
     CenterUpdateSize;
+  finally
+    LockWindowUpdate(0);
+  end;
+end;
+
+procedure TfrmLink.UpdateFontShadowPage;
+begin
+  LockWindowUpdate(Self.Handle);
+  try
+
+    // Set Grey Texts
+    lblFontShadowDet.Font.Color := clGrayText;
+    lblFontShadowTypeDet.Font.Color := clGrayText;
+    lblFontShadowTransDet.Font.Color := clGrayText;
+    lblFontShadowColDet.Font.Color := clGrayText;
+
+    // Font Shadow
+    pnlTextShadow.Visible := chkFontShadow.Checked;
+
+    // Update Page Height
+    if chkFontShadow.Checked then
+      Self.Height := 440 else
+      Self.Height := 50;
+
+    CenterUpdateSize;
+
   finally
     LockWindowUpdate(0);
   end;
@@ -744,6 +821,23 @@ begin
   finally
     LockWindowUpdate(0);
   end;
+end;
+
+procedure TfrmLink.UpdateLinkPage;
+begin
+  if pagIcon.Visible then
+    UpdateIconPage else
+    if pagFont.Visible then
+      UpdateFontPage else
+      if pagFontShadow.Visible then
+        UpdateFontShadowPage
+      else UpdateLinkPage;
+end;
+
+procedure TfrmLink.UpdatePageUI;
+begin
+  Height := 391;
+  CenterUpdateSize;
 end;
 
 procedure TfrmLink.UpdateSettings;

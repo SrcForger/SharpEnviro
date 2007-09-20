@@ -22,7 +22,7 @@ object frmLink: TfrmLink
     Top = 0
     Width = 429
     Height = 467
-    ActivePage = pagFont
+    ActivePage = pagFontShadow
     PropagateEnable = False
     Align = alClient
     object pagLink: TJvStandardPage
@@ -30,7 +30,6 @@ object frmLink: TfrmLink
       Top = 0
       Width = 429
       Height = 467
-      OnShow = pagLinkShow
       object Label9: TLabel
         AlignWithMargins = True
         Left = 8
@@ -383,7 +382,6 @@ object frmLink: TfrmLink
       Top = 0
       Width = 429
       Height = 467
-      OnShow = pagIconShow
       object Panel1: TPanel
         Left = 0
         Top = 279
@@ -460,6 +458,7 @@ object frmLink: TfrmLink
             HotTrackFont.Height = -11
             HotTrackFont.Name = 'Tahoma'
             HotTrackFont.Style = []
+            ExplicitWidth = 111
           end
         end
         object UICIconTransValue: TSharpEUIC
@@ -842,6 +841,7 @@ object frmLink: TfrmLink
             HotTrackFont.Height = -11
             HotTrackFont.Name = 'Tahoma'
             HotTrackFont.Style = []
+            ExplicitWidth = 99
           end
         end
         object UICColorBlendValue: TSharpEUIC
@@ -968,6 +968,7 @@ object frmLink: TfrmLink
             HotTrackFont.Height = -11
             HotTrackFont.Name = 'Tahoma'
             HotTrackFont.Style = []
+            ExplicitWidth = 83
           end
         end
         object UICIconShadowValue: TSharpEUIC
@@ -1194,7 +1195,6 @@ object frmLink: TfrmLink
       Top = 0
       Width = 429
       Height = 467
-      OnShow = pagFontShow
       object lblFontNameDet: TLabel
         AlignWithMargins = True
         Left = 26
@@ -1481,7 +1481,6 @@ object frmLink: TfrmLink
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          Layout = tlTop
         end
       end
       object UICFontTransValue: TSharpEUIC
@@ -1726,6 +1725,334 @@ object frmLink: TfrmLink
               Tag = 0
             end>
           OnChangeColor = sceFontColorChangeColor
+        end
+      end
+    end
+    object pagFontShadow: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 429
+      Height = 467
+      Caption = 'pagFontShadow'
+      object lblFontShadowDet: TLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 31
+        Width = 395
+        Height = 13
+        Margins.Left = 26
+        Margins.Top = 4
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Enable/Disable drawing of font shadows'
+        Transparent = False
+        WordWrap = True
+        ExplicitWidth = 192
+      end
+      object pnlTextShadow: TPanel
+        AlignWithMargins = True
+        Left = 0
+        Top = 44
+        Width = 429
+        Height = 387
+        Margins.Left = 0
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alTop
+        BevelOuter = bvNone
+        ParentColor = True
+        TabOrder = 0
+        object lblFontShadowTypeDet: TLabel
+          AlignWithMargins = True
+          Left = 26
+          Top = 29
+          Width = 395
+          Height = 13
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 'Select from different shadow render types below'
+          Transparent = False
+          WordWrap = True
+          ExplicitWidth = 235
+        end
+        object lblFontShadowTransDet: TLabel
+          AlignWithMargins = True
+          Left = 26
+          Top = 100
+          Width = 395
+          Height = 13
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 
+            'Changing this value will make the font shadow more or less trans' +
+            'parent'
+          Transparent = False
+          WordWrap = True
+          ExplicitWidth = 342
+        end
+        object Label18: TLabel
+          AlignWithMargins = True
+          Left = 8
+          Top = 8
+          Width = 413
+          Height = 13
+          Margins.Left = 8
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 'Shadow Type'
+          ExplicitWidth = 65
+        end
+        object Label19: TLabel
+          AlignWithMargins = True
+          Left = 8
+          Top = 79
+          Width = 413
+          Height = 13
+          Margins.Left = 8
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 'Shadow Transparency'
+          ExplicitWidth = 107
+        end
+        object Label20: TLabel
+          AlignWithMargins = True
+          Left = 8
+          Top = 150
+          Width = 413
+          Height = 13
+          Margins.Left = 8
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 'Font Shadow Color Options'
+          ExplicitWidth = 131
+        end
+        object lblFontShadowColDet: TLabel
+          AlignWithMargins = True
+          Left = 26
+          Top = 171
+          Width = 395
+          Height = 13
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          Caption = 'Define font shadow color options below.'
+          Transparent = False
+          ExplicitWidth = 193
+        end
+        object UICFontShadowType: TSharpEUIC
+          AlignWithMargins = True
+          Left = 22
+          Top = 46
+          Width = 403
+          Height = 25
+          Margins.Left = 22
+          Margins.Top = 4
+          Margins.Right = 4
+          Margins.Bottom = 0
+          Align = alTop
+          BevelOuter = bvNone
+          ParentBackground = False
+          TabOrder = 0
+          RoundValue = 10
+          BorderColor = clBtnShadow
+          Border = True
+          BackgroundColor = clBtnFace
+          HasChanged = True
+          AutoReset = False
+          MonitorControl = cboFontShadowType
+          NormalColor = clWhite
+          OnReset = UICFontShadowTypeReset
+          object cboFontShadowType: TComboBox
+            AlignWithMargins = True
+            Left = 4
+            Top = 2
+            Width = 250
+            Height = 21
+            Margins.Left = 4
+            Margins.Top = 2
+            Margins.Right = 4
+            Margins.Bottom = 2
+            Align = alLeft
+            Style = csDropDownList
+            ItemHeight = 13
+            ItemIndex = 0
+            TabOrder = 0
+            Text = 'Left Shadow'
+            OnChange = cboFontShadowTypeChange
+            Items.Strings = (
+              'Left Shadow'
+              'Right Shadow'
+              'Outline Glow')
+          end
+        end
+        object UICFontShadowTrans: TSharpEUIC
+          AlignWithMargins = True
+          Left = 22
+          Top = 117
+          Width = 403
+          Height = 25
+          Margins.Left = 22
+          Margins.Top = 4
+          Margins.Right = 4
+          Margins.Bottom = 0
+          Align = alTop
+          BevelOuter = bvNone
+          ParentBackground = False
+          TabOrder = 1
+          RoundValue = 10
+          BorderColor = clBtnShadow
+          Border = True
+          BackgroundColor = clBtnFace
+          HasChanged = True
+          AutoReset = False
+          MonitorControl = sgbFontShadowTrans
+          NormalColor = clWhite
+          OnReset = UICFontShadowTypeReset
+          object sgbFontShadowTrans: TSharpeGaugeBox
+            AlignWithMargins = True
+            Left = 4
+            Top = 2
+            Width = 250
+            Height = 21
+            Margins.Left = 4
+            Margins.Top = 2
+            Margins.Right = 4
+            Margins.Bottom = 2
+            Align = alLeft
+            Constraints.MaxWidth = 532
+            ParentBackground = False
+            Min = 0
+            Max = 255
+            Value = 0
+            Prefix = 'Shadow Transparency: '
+            Suffix = '%'
+            Description = 'Change shadow opacity'
+            PopPosition = ppRight
+            PercentDisplay = True
+            OnChangeValue = sgbFontShadowTransChangeValue
+          end
+        end
+        object UICFontShadowColor: TSharpEUIC
+          AlignWithMargins = True
+          Left = 17
+          Top = 188
+          Width = 409
+          Height = 35
+          Margins.Left = 17
+          Margins.Top = 4
+          Margins.Bottom = 1
+          Align = alTop
+          BevelOuter = bvNone
+          Caption = 'UICFontShadowColor'
+          ParentBackground = False
+          TabOrder = 2
+          RoundValue = 10
+          BorderColor = clBtnShadow
+          Border = True
+          BackgroundColor = clBtnFace
+          HasChanged = True
+          AutoReset = False
+          MonitorControl = sceShadowColor
+          NormalColor = clWhite
+          OnReset = UICFontShadowTypeReset
+          object sceShadowColor: TSharpEColorEditorEx
+            AlignWithMargins = True
+            Left = 4
+            Top = 1
+            Width = 373
+            Height = 32
+            Margins.Left = 4
+            Margins.Top = 1
+            Margins.Right = 32
+            Margins.Bottom = 1
+            VertScrollBar.Smooth = True
+            VertScrollBar.Tracking = True
+            Align = alTop
+            AutoSize = True
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            BorderStyle = bsNone
+            Color = clWindow
+            ParentBackground = True
+            ParentColor = False
+            TabOrder = 0
+            OnResize = sceShadowColorResize
+            Items = <
+              item
+                Title = 'Shadow'
+                ColorCode = 0
+                ColorAsTColor = clBlack
+                Expanded = False
+                ValueEditorType = vetColor
+                Value = 0
+                Visible = True
+                ColorEditor = sceShadowColor.Item0
+                Tag = 0
+              end>
+            OnChangeColor = sceShadowColorChangeColor
+          end
+        end
+      end
+      object UICFontShadow: TSharpEUIC
+        AlignWithMargins = True
+        Left = 4
+        Top = 6
+        Width = 421
+        Height = 21
+        Margins.Left = 4
+        Margins.Top = 6
+        Margins.Right = 4
+        Margins.Bottom = 0
+        Align = alTop
+        BevelOuter = bvNone
+        Caption = 'UICFontShadow'
+        ParentBackground = False
+        TabOrder = 1
+        RoundValue = 10
+        BorderColor = clBtnShadow
+        Border = True
+        BackgroundColor = clBtnFace
+        HasChanged = True
+        AutoReset = False
+        MonitorControl = chkFontShadow
+        NormalColor = clWhite
+        OnReset = UICFontShadowReset
+        object chkFontShadow: TJvCheckBox
+          AlignWithMargins = True
+          Left = 4
+          Top = 2
+          Width = 369
+          Height = 17
+          Margins.Left = 4
+          Margins.Top = 2
+          Margins.Right = 48
+          Margins.Bottom = 2
+          Align = alClient
+          Caption = 'Font Shadow'
+          TabOrder = 0
+          OnClick = chkFontShadowClick
+          LinkedControls = <>
+          HotTrackFont.Charset = DEFAULT_CHARSET
+          HotTrackFont.Color = clWindowText
+          HotTrackFont.Height = -11
+          HotTrackFont.Name = 'Tahoma'
+          HotTrackFont.Style = []
         end
       end
     end
