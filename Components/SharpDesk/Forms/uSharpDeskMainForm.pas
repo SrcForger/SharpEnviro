@@ -175,13 +175,12 @@ type
     procedure WMPosChanging(var Msg: TWMWindowPosMsg);    message WM_WINDOWPOSCHANGING;
     procedure WMSharpEUppdateSettings(var msg: TMessage); message WM_SHARPEUPDATESETTINGS;
     procedure WMCloseDesk(var msg : TMEssage);            message WM_CLOSEDESK;
-    procedure WMAdddesktopObject(var msg : TMessage);     message WM_ADDDESKTOPOBJECT;
-    procedure WMShowDesktopSettings(var msg : TMessage);  message WM_SHOWDESKTOPSETTINGS;
     procedure WMWeatherUpdate(var msg : TMessage);        message WM_WEATHERUPDATE;
     procedure msg_EraseBkgnd(var msg : TMessage);         message WM_ERASEBKGND;
     procedure WMMouseLeave(var Msg: TMessage);            message CM_MOUSELEAVE;
     procedure WMMouseMove(var Msg: TMessage);             message WM_MOUSEMOVE;
     procedure WMSharpTerminate(var Msg : TMessage);       message WM_SHARPTERMINATE;
+    procedure WMCopyData(var Msg : TMessage);             message WM_COPYDATA;
     procedure OnCreateNewPresetClick(Sender : TObject);        // PresetMenu event
     procedure OnSaveAsPresetClick(Sender : TObject);           // PresetMenu event
     procedure OnLoadPresetClick(Sender : TObject);             // PresetMenu event
@@ -195,6 +194,7 @@ type
     procedure WMDropFiles(var Message: TWMDropFiles); message WM_DROPFILES; // Drag & Drop
     procedure SendMessageToConsole(msg : string; color : integer; DebugLevel : integer);
     procedure LoadTheme(WPChange : boolean);
+    procedure UpdateSharpEActions;
   end;
 
 const
@@ -241,8 +241,9 @@ var
 implementation
 
 
-uses uSharpDeskCreateForm,
-     uSharpDeskAlignSettingsForm,
+uses uSharpDeskAlignSettingsForm,
+     uSharpDeskObjectFile,
+     uSharpDeskObjectSetItem,
      SharpCenterApi;
 
 {$R *.dfm}
@@ -466,11 +467,44 @@ begin
   Application.Terminate;
 end;
 
+procedure TSharpDeskMainForm.WMCopyData(var Msg: TMessage);
+var
+  tmpMsg: TsharpE_DataStruct;
+  ofile : TObjectFile;
+  SetItem : TObjectSetItem;
+  newID : integer;
+  s : String;
+begin
+  tmpMsg := PSharpE_DataStruct(PCopyDataStruct(msg.lParam)^.lpData)^;
+
+  if CompareText(tmpMsg.Command,'AddObject') = 0 then
+  begin
+    oFile := SharpDesk.ObjectFileList.GetByObjectFile(tmpMsg.Parameter);
+    if oFile <> nil then
+    begin
+      // Add new object
+      NewID :=  SharpDesk.ObjectSet.GenerateObjectID;
+      SetItem := SharpDesk.ObjectSet.AddDesktopObject(newID,
+                                                  OFile.FileName,
+                                                  Point(LastX,LastY),
+                                                  False,
+                                                  False);
+      OFile.AddDesktopObject(SetItem);
+      SharpDesk.ObjectSet.Save;
+
+      // Open the settings dialog in SharpCenter
+      s := OFile.filename;
+      setlength(s,length(s) - length(ExtractFileExt(s)));
+      SharpCenterApi.CenterCommand(sccLoadSetting,
+                                   PChar(SharpApi.GetCenterDirectory + '_Objects\' + s + '.con'),
+                                   PChar(inttostr(SetItem.ObjectID)));
+    end;
+  end;
+end;
+
 procedure TSharpDeskMainForm.WMUpdateBangs(var Msg : TMessage);
 begin
-  SharpApi.RegisterActionEx('!AddDesktopObject','SharpDesk',SharpDeskMainForm.Handle,3);
-  SharpApi.RegisterActionEx('!SharpDeskSettings','SharpDesk',SharpDeskMainForm.Handle,5);
-  SharpApi.RegisterActionEx('!CloseSharpDesk','SharpDesk',SharpDeskMainForm.Handle,6);
+  UpdateSharpEActions;
 end;
 
 function IsTopMost(wnd: HWND): Boolean;
@@ -481,17 +515,7 @@ end;
 procedure TSharpDeskMainForm.WMSharpEBang(var Msg : TMessage);
 begin
   case msg.LParam of
-   3: begin
-        LastX := Left + Width div 2;
-        LastY := Top + Height div 2;
-        if not CreateForm.Visible then
-           CreateForm.Show;
-        if SharpDesk.Desksettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
-      end;
-   4 : begin
-       end;
-   5 : WMShowDesktopSettings(msg);
-   6 : WMCloseDesk(msg);
+   1 : WMCloseDesk(msg);
   end;
 end;
 
@@ -544,27 +568,6 @@ begin
   inherited;
   if Created then
      Msg.WindowPos.Flags := Msg.WindowPos.Flags or SWP_NOZORDER;
-end;
-
-
-// ######################################
-
-
-procedure TSharpDeskMainForm.WMAdddesktopObject(var msg : TMessage);
-begin
-  CreateForm.Showmodal;
-  if SharpDesk.Desksettings.AdvancedMM then SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
-end;
-
-
-// ######################################
-
-
-procedure TSharpDeskMainForm.WMShowDesktopSettings(var msg : TMessage);
-begin
-  CenterCommand(sccLoadSetting,PChar(GetCenterDirectory + 'Components.con'),
-    'SharpMenu');
-
 end;
 
 
@@ -633,9 +636,7 @@ begin
      ObjectPopupImageCount := ObjectPopUp.Images.Count;
 
      startup := True;
-     SharpApi.RegisterActionEx('!AddDesktopObject','SharpDesk',SharpDeskMainForm.Handle,3);
-     SharpApi.RegisterActionEx('!SharpDeskSettings','SharpDesk',SharpDeskMainForm.Handle,5);
-     SharpApi.RegisterActionEx('!CloseSharpDesk','SharpDesk',SharpDeskMainForm.Handle,6);
+  UpdateSharpEActions;
      SendMessageToConsole('creating main window',COLOR_OK,DMT_STATUS);
      SharpDesk := TSharpDeskManager.Create(SharpDeskMainForm.BackgroundImage);
 
@@ -692,9 +693,7 @@ procedure TSharpDeskMainForm.FormClose(Sender: TObject; var Action: TCloseAction
    n : integer;  }
 begin
   SendMessageToConsole('Closing main window',COLOR_OK,DMT_STATUS);
-  SharpApi.UnRegisterAction('!AddDesktopObject');
-  SharpApi.UnRegisterAction('!SharpDeskSettings');
-  SharpApi.UnRegisterAction('!Show/CloseSharpDesk');
+  SharpApi.UnRegisterAction('!CloseSharpDesk');
   SharpDesk.ObjectSet.Save;
   SharpDesk.DeskSettings.SaveSettings;
   SharpDesk.UnloadAllObjects;
@@ -1742,6 +1741,11 @@ end;
 procedure TSharpDeskMainForm.UnlockObjects1Click(Sender: TObject);
 begin
   SharpDesk.UnLockSelectedObjects;
+end;
+
+procedure TSharpDeskMainForm.UpdateSharpEActions;
+begin
+  SharpApi.RegisterActionEx('!CloseSharpDesk','SharpDesk',SharpDeskMainForm.Handle,1);
 end;
 
 procedure TSharpDeskMainForm.All1Click(Sender: TObject);

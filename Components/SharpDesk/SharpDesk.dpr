@@ -40,7 +40,6 @@ uses
   Dialogs,
   Controls,
   uSharpDeskMainForm in 'Forms\uSharpDeskMainForm.pas' {SharpDeskMainForm},
-  uSharpDeskCreateForm in 'Forms\uSharpDeskCreateForm.pas' {CreateForm},
   uSharpDeskBackgroundUnit in 'Units\uSharpDeskBackgroundUnit.pas',
   uSharpDeskFunctions in 'Units\uSharpDeskFunctions.pas',
   uSharpDeskTDragAndDrop in 'Units\uSharpDeskTDragAndDrop.pas',
@@ -114,7 +113,6 @@ begin
      end;
 
   Application.CreateForm(TSharpDeskMainForm, SharpDeskMainForm);
-  Application.CreateForm(TCreateForm, CreateForm);
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
 
   Application.Run;
