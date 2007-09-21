@@ -814,7 +814,7 @@ begin
     // Update Page Height
     if (chkIconShadow.Checked or chkColorBlend.Checked) then
       Self.Height := 586 else
-      Self.Height := 360;
+      Self.Height := 359;
 
     // Refresh size
     CenterUpdateSize;
@@ -825,6 +825,12 @@ end;
 
 procedure TfrmLink.UpdateLinkPage;
 begin
+  Height := 391;
+  CenterUpdateSize;
+end;
+
+procedure TfrmLink.UpdatePageUI;
+begin
   if pagIcon.Visible then
     UpdateIconPage else
     if pagFont.Visible then
@@ -832,12 +838,6 @@ begin
       if pagFontShadow.Visible then
         UpdateFontShadowPage
       else UpdateLinkPage;
-end;
-
-procedure TfrmLink.UpdatePageUI;
-begin
-  Height := 391;
-  CenterUpdateSize;
 end;
 
 procedure TfrmLink.UpdateSettings;

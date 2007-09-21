@@ -553,6 +553,7 @@ end;
 procedure TfrmDesktopSettings.UpdateFontPageEvent(Sender: TObject);
 begin
   UpdateFontPage;
+  SendUpdate;
 end;
 
 procedure TfrmDesktopSettings.FontStyleCheckEvent(Sender: TObject);
