@@ -348,18 +348,13 @@ begin
     FCaptionSettings.Align := IntToTextAlign(FSettings.CaptionAlign);
     FCaptionSettings.Xoffset := 0;
     FCaptionSettings.Yoffset := 0;
-   // if FSettings.IconSpacing then
-    //   if (FCaptionSettings.Align = taLeft) or (FCaptionSettings.Align = taRight) then
-    //       FCaptionSettings.Xoffset := 0
-   //    else FCaptionSettings.Yoffset := 0;
-    FCaptionSettings.Draw := Theme[DS_DISPLAYTEXT].BoolValue;
+    FCaptionSettings.Draw := ShowCaption;
     FCaptionSettings.LineSpace := 0;
 
     FIconSettings.Size  := 100;
     FIconSettings.Alpha := 255;
     FIconSettings.XOffset     := 0;
     FIconSettings.YOffset     := 0;
-    //if FSettings.IconOffset then FIconSettings.XOffset := FSettings.IconOffsetValue;;
 
     FIconSettings.Blend       := Theme[DS_ICONBLENDING].BoolValue;
     FIconSettings.BlendColor  := SharpThemeApi.SchemeCodeToColor(Theme[DS_ICONBLENDCOLOR].IntValue);

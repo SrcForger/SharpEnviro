@@ -43,6 +43,7 @@ type
       ShowData         : boolean;
       CaptionAlign     : integer;
       Caption          : string;
+      ShowCaption      : boolean;
       Target           : string;
       MLineCaption     : boolean;
       procedure LoadSettings; override;
@@ -63,13 +64,14 @@ begin
 
   with FXMLRoot.Items do
   begin
-    Icon         := Value('Icon','icon.application');
-    Icon2        := Value('Icon2','icon.application');
+    Icon         := Value('Icon','icon.recyclebin.empty');
+    Icon2        := Value('Icon2','icon.recyclebin.full');
     Target       := 'shell:RecycleBinFolder';
     ShowData     := BoolValue('ShowData',True);
     Caption      := Value('Caption','');
     CaptionAlign := IntValue('CaptionAlign',2);
     MLineCaption := BoolValue('MLineCaption',False);
+    ShowCaption  := BoolValue('ShowCaption',True);
   end;
 end;
 
@@ -88,6 +90,7 @@ begin
     Add('Caption',Caption).Properties.Add('SortValue',True);
     Add('CaptionAlign',CaptionAlign);
     Add('MLineCaption',MLineCaption);
+    Add('ShowCaption',ShowCaption);
   end;
 
   inherited FinishSaveSettings(SaveToFile);
