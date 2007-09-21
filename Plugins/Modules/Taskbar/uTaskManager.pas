@@ -120,7 +120,7 @@ end;
 function TTaskManager.GetItemByIndex(Index : integer) : TTaskItem;
 begin
   result := nil;
-  if Index > FItems.Count -1 then exit;
+  if (Index > FItems.Count - 1) or (Index < 0) then exit;
   try
     result := TTaskItem(FItems.Items[Index]);
   except
@@ -135,24 +135,18 @@ var
   pItem : TTaskItem;
   visible,minimized : boolean;
 begin
-  try
-    for n := FItems.Count -1 downto 0 do
+  for n := FItems.Count -1 downto 0 do
+  begin
+    pItem := TTaskItem(FItems.Items[n]);
+    visible := (GetWindowLong(pItem.Handle, GWL_STYLE) and WS_VISIBLE) = WS_VISIBLE;
+    minimized := (GetWindowLong(pItem.Handle, GWL_STYLE) and WS_MINIMIZE) = WS_MINIMIZE;
+    if (not IsWindow(pItem.Handle)) or
+       ((not visible) and (not minimized)) then
     begin
-      pItem := TTaskItem(FItems.Items[n]);
-      visible := (GetWindowLong(pItem.Handle, GWL_STYLE) and WS_VISIBLE) = WS_VISIBLE;
-      minimized := (GetWindowLong(pItem.Handle, GWL_STYLE) and WS_MINIMIZE) = WS_MINIMIZE;
-      if (not IsWindow(pItem.Handle)) or
-         ((not visible) and (not minimized)) then
-      begin
-        FItems.Extract(pItem);
-        try
-          if Assigned(OnRemoveTask) then OnRemoveTask(pItem,n);
-        finally
-          pItem.Free;
-        end;
-      end;
+      FItems.Extract(pItem);
+      if Assigned(OnRemoveTask) then OnRemoveTask(pItem,n);
+      pItem.Free;
     end;
-  except
   end;
 end;
 
@@ -164,20 +158,14 @@ begin
   if not FEnabled then exit;
 
   RemoveDeadTasks;
-  try
-    for n := 0 to FItems.Count -1 do
+  for n := 0 to FItems.Count -1 do
+  begin
+    pItem := TTaskItem(FItems.Items[n]);
+    if pItem.Handle = pHandle then
     begin
-      pItem := TTaskItem(FItems.Items[n]);
-      if pItem.Handle = pHandle then
-      begin
-        try
-          if Assigned(OnFlashTask) then FOnFlashTask(pItem,n);
-        except
-        end;
-        exit;
-      end;
+      if Assigned(OnFlashTask) then FOnFlashTask(pItem,n);
+      exit;
     end;
-  except
   end;
 end;
 
@@ -190,21 +178,15 @@ begin
   if not FEnabled then exit;
 
   RemoveDeadTasks;
-  try
-    for n := 0 to FItems.Count -1 do
+  for n := 0 to FItems.Count -1 do
+  begin
+    pItem := TTaskItem(FItems.Items[n]);
+    if pItem.Handle = pHandle then
     begin
-      pItem := TTaskItem(FItems.Items[n]);
-      if pItem.Handle = pHandle then
-      begin
-        pItem.UpdateFromHwnd;
-        try
-          if Assigned(OnActivateTask) then FOnActivateTask(pItem,n);
-        except
-        end;
-        exit;
-      end;
+      pItem.UpdateFromHwnd;
+      if Assigned(OnActivateTask) then FOnActivateTask(pItem,n);
+      exit;
     end;
-  except
   end;
 
   // Windows which don't send a NewTask message will be added when they
@@ -214,7 +196,7 @@ begin
      AddTask(pHandle)
      else// Task wasn found, remove focus from any activated task
      if Assigned(OnActivateTask) then FOnActivateTask(nil,-1);
- end;
+end;
 
 
 procedure TTaskManager.CompleteRefresh;
@@ -224,13 +206,10 @@ var
 begin
   if not Assigned(FOnNewTask) then exit;
 
-  try
-    for n := 0 to FItems.Count -1 do
-    begin
-      pItem := TTaskItem(FItems.Items[n]);
-      FOnNewTask(pItem,n);
-    end;
-  except
+  for n := 0 to FItems.Count -1 do
+  begin
+    pItem := TTaskItem(FItems.Items[n]);
+    FOnNewTask(pItem,n);
   end;
 end;
 
@@ -246,10 +225,7 @@ begin
   pItem := TTaskItem.Create(pHandle);
   pItem.UpdateCaption;
   FItems.Add(pItem);
-  try
-    if Assigned(OnNewTask) then FOnNewTask(pItem, FItems.Count -1);
-  except
-  end;
+  if Assigned(OnNewTask) then FOnNewTask(pItem, FItems.Count -1);
   if FSortTasks then DoSortTasks;
 end;
 
@@ -260,24 +236,19 @@ var
 begin
   if not FEnabled then exit;
 
-  try
-    for n := 0 to FItems.Count -1 do
+  for n := FItems.Count -1 downto 0 do
+  begin
+    pItem := TTaskItem(FItems.Items[n]);
+    if pItem.Handle = pHandle then
     begin
-      pItem := TTaskItem(FItems.Items[n]);
-      if pItem.Handle = pHandle then
-      begin
-        // call the onremove event before actually removing the item
-        // this makes it possible for the application to use the still existing
-        // TTaskItem to gather informations about which window will be removed
-        try
-          if Assigned(OnRemoveTask) then FOnRemoveTask(pItem,n);
-        except
-        end;
-        FItems.Delete(n);
-        exit;
-      end;
+      // call the onremove event before actually removing the item
+      // this makes it possible for the application to use the still existing
+      // TTaskItem to gather informations about which window will be removed
+      FItems.Extract(pItem);
+      if Assigned(OnRemoveTask) then OnRemoveTask(pItem,n);
+      pItem.Free;
+      exit;
     end;
-  except
   end;
   RemoveDeadTasks;
 end;
@@ -290,20 +261,14 @@ begin
   if not FEnabled then exit;
 
   RemoveDeadTasks;
-  try
-    for n := 0 to FItems.Count - 1 do
+  for n := 0 to FItems.Count - 1 do
+  begin
+    pItem := TTaskItem(FItems.Items[n]);
+    if pItem.Handle = pHandle then
     begin
-      pItem := TTaskItem(FItems.Items[n]);
-      if pItem.Handle = pHandle then
-      begin
-        pItem.UpdateFromHwnd;
-        try
-          if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
-        except
-        end;
-      end;
+      pItem.UpdateFromHwnd;
+      if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
     end;
-  except
   end;
   if FSortTasks then DoSortTasks;
 end;
@@ -313,17 +278,14 @@ var
   n : integer;
   pItem : TTaskItem;
 begin
-  try
-    for n := 0 to FItems.Count - 1 do
+  for n := 0 to FItems.Count - 1 do
+  begin
+    pItem := TTaskItem(FItems.Items[n]);
+    if pItem.Handle = pHandle then
     begin
-      pItem := TTaskItem(FItems.Items[n]);
-      if pItem.Handle = pHandle then
-      begin
-        result := pItem;
-        exit;
-      end;
+      result := pItem;
+      exit;
     end;
-  except
   end;
   result := nil;
 end;
@@ -336,10 +298,7 @@ begin
   n := FItems.IndexOf(pItem1);
   i := FItems.IndexOf(pItem2);
   if (n < 0) or (i < 0) then exit;
-  try
-    if Assigned(FOnTaskExchange) then FOnTaskExchange(pItem1,pItem2,n,i);
-  except
-  end;
+  if Assigned(FOnTaskExchange) then FOnTaskExchange(pItem1,pItem2,n,i);
   FItems.Exchange(n,i);
 end;
 
@@ -350,37 +309,34 @@ var
   SList : TStringList;
   fixedcaption : String;
 begin
-  try
-    case FSortType of
-      stCaption,stWndClass,stTime,stIcon:
+  case FSortType of
+    stCaption,stWndClass,stTime,stIcon:
+      begin
+        SList := TStringList.Create;
+        SList.Clear;
+        for n := 0 to FItems.Count - 1 do
         begin
-          SList := TStringList.Create;
-          SList.Clear;
-          for n := 0 to FItems.Count - 1 do
-          begin
-            pItem1 := TTaskItem(FItems.Items[n]);
-            if FSortType = stCaption then fixedcaption := StrReplaceChar(pItem1.Caption,'=','-');
-            case FSortType of
-              stCaption:  SList.Add(fixedcaption+'='+inttostr(pItem1.Handle));
-              stWndClass: SList.Add(pItem1.WndClass+'='+inttostr(pItem1.Handle));
-              stTime:     SList.Add(inttostr(pItem1.TimeAdded)+'='+inttostr(pItem1.Handle));
-              stIcon:     SList.AdD(inttostr(pItem1.Icon)+'='+inttostr(pItem1.Handle));
-            end;
+          pItem1 := TTaskItem(FItems.Items[n]);
+          if FSortType = stCaption then fixedcaption := StrReplaceChar(pItem1.Caption,'=','-');
+          case FSortType of
+            stCaption:  SList.Add(fixedcaption+'='+inttostr(pItem1.Handle));
+            stWndClass: SList.Add(pItem1.WndClass+'='+inttostr(pItem1.Handle));
+            stTime:     SList.Add(inttostr(pItem1.TimeAdded)+'='+inttostr(pItem1.Handle));
+            stIcon:     SList.AdD(inttostr(pItem1.Icon)+'='+inttostr(pItem1.Handle));
           end;
-          SList.Sort;
-          for n := 0 to SList.Count - 1 do
-          begin
-            pItem1 := GetItemByHandle(strtoint(SList.ValueFromIndex[n]));
-            if pItem1 <> nil then
-            begin
-              ExChangeTasks(TTaskItem(FItems.Items[n]),pItem1);
-            end;
-          end;
-          SList.Free;
         end;
+        SList.Sort;
+        for n := 0 to SList.Count - 1 do
+        begin
+          pItem1 := GetItemByHandle(strtoint(SList.ValueFromIndex[n]));
+          if pItem1 <> nil then
+          begin
+            ExChangeTasks(TTaskItem(FItems.Items[n]),pItem1);
+          end;
+        end;
+        SList.Free;
       end;
-  except
-  end;
+    end;
 end;
 
 end.
