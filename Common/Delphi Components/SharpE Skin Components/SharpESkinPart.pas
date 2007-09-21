@@ -398,7 +398,7 @@ begin
   tmp := '';
   sub := false;
   i := 0;
-  while i <= length(s) do
+  while i < length(s) do
   begin
     inc(i);
     if (ord(s[i]) >= 48) and (ord(s[i]) <= 57) then
@@ -874,61 +874,64 @@ begin
   tmp := '';
   sub := false;
   i := 0;
-  while i <= length(s) do
+  while i < length(s) do
   begin
     inc(i);
-    if (s[i] <> #0) and (ord(s[i]) >= 48) and (ord(s[i]) <= 57) then
-      tmp := tmp + s[i]
-    else
-      if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'cw') then
-      begin
-        tmp := inttostr(floor((cw - tw) / 2));
-        inc(i);
-      end
+    if (s[i] <> #0) then
+    begin
+      if (ord(s[i]) >= 48) and (ord(s[i]) <= 57) then
+        tmp := tmp + s[i]
       else
-        if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'ch') then
+        if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'cw') then
         begin
-          tmp := inttostr(floor((ch - th) / 2));
+          tmp := inttostr(floor((cw - tw) / 2));
           inc(i);
         end
         else
-          if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'tw') then
+          if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'ch') then
           begin
-            tmp := inttostr(tw);
+            tmp := inttostr(floor((ch - th) / 2));
             inc(i);
           end
           else
-            if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'th') then
+            if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'tw') then
             begin
-              tmp := inttostr(th);
+              tmp := inttostr(tw);
               inc(i);
             end
             else
-              if (lowercase(s[i]) = 'w') then
-                tmp := inttostr(cw)
+              if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'th') then
+              begin
+                tmp := inttostr(th);
+               inc(i);
+              end
               else
-                if (lowercase(s[i]) = 'h') then
-                  tmp := inttostr(ch)
+                if (lowercase(s[i]) = 'w') then
+                  tmp := inttostr(cw)
                 else
-                begin
-                  if (tmp <> '') then
-                  begin
-                    if (sub) then
-                    begin
-                      if trystrtoint(tmp,k) then result := result - k;
-                    end
-                    else
-                    begin
-                      if trystrtoint(tmp,k) then result := result + k;
-                    end;
-                  end;
-                  if (s[i] = '+') then
-                    sub := false
+                  if (lowercase(s[i]) = 'h') then
+                    tmp := inttostr(ch)
                   else
-                    if (s[i] = '-') then
-                      sub := true;
-                  tmp := '';
-                end;
+                  begin
+                    if (tmp <> '') then
+                    begin
+                      if (sub) then
+                      begin
+                        if trystrtoint(tmp,k) then result := result - k;
+                      end
+                      else
+                      begin
+                        if trystrtoint(tmp,k) then result := result + k;
+                      end;
+                    end;
+                    if (s[i] = '+') then
+                      sub := false
+                    else
+                      if (s[i] = '-') then
+                        sub := true;
+                    tmp := '';
+                  end;
+    end;
   end;
   if (tmp <> '') then
   begin
@@ -1008,15 +1011,15 @@ begin
         begin
           ShadowBmp.RenderText(TempBmp.Width div 2 - w div 2,
                                TempBmp.Height div 2 - h div 2,Caption,0,c2);
-          boxblur(ShadowBmp,1,1);
+          fastblur(ShadowBmp,1,1);
           ShadowBmp.RenderText(TempBmp.Width div 2 - w div 2,
                                TempBmp.Height div 2 - h div 2,Caption,0,c2);
         end;
       end;
-      boxblur(ShadowBmp,1,1);
+      fastblur(ShadowBmp,1,1);
       ShadowBmp.DrawTo(TempBmp,0,0);
       ShadowBmp.DrawTo(TempBmp,0,0);
-      boxblur(ShadowBmp,1,1);
+      fastblur(ShadowBmp,1,1);
       ShadowBmp.DrawTo(TempBmp,0,0);
       ShadowBmp.DrawTo(TempBmp,0,0);
       BlendImageA(TempBmp,FShadowColor,255);
@@ -1110,15 +1113,15 @@ begin
           begin
             ShadowBmp.RenderText(pPrecacheBmp.Width div 2 - w div 2,
                                  pPrecacheBmp.Height div 2 - h div 2,Caption,0,c2);
-            boxblur(ShadowBmp,1,1);
+            fastblur(ShadowBmp,1,1);
             ShadowBmp.RenderText(pPrecacheBmp.Width div 2 - w div 2,
                                  pPrecacheBmp.Height div 2 - h div 2,Caption,0,c2);
           end;
         end;
-        boxblur(ShadowBmp,1,1);
+        fastblur(ShadowBmp,1,1);
         ShadowBmp.DrawTo(pPrecacheBmp,0,0);
         ShadowBmp.DrawTo(pPrecacheBmp,0,0);
-        boxblur(ShadowBmp,1,1);
+        fastblur(ShadowBmp,1,1);
         ShadowBmp.DrawTo(pPrecacheBmp,0,0);
         ShadowBmp.DrawTo(pPrecacheBmp,0,0);
         BlendImageA(pPrecacheBmp,FShadowColor,255);
