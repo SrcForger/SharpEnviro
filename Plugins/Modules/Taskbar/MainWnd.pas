@@ -1070,6 +1070,9 @@ end;
 
 procedure TMainForm.WMShellHook(var msg : TMessage);
 begin
+  if TM = nil then
+    exit;
+
  DebugOutPutInfo('TMainForm.WMShellHook (Message Procedure)');
  if msg.LParam = self.Handle then exit;
  case msg.WParam of
@@ -1090,6 +1093,14 @@ begin
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
+type
+  PParam = ^TParam;
+  TParam = record
+    wndlist: array of hwnd;
+  end;
+var
+  EnumParam : TParam;
+  n : integer;
 
   function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
   begin
@@ -1098,9 +1109,11 @@ procedure TMainForm.FormCreate(Sender: TObject);
        ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
        (GetWindowLong(Wnd, GWL_HWNDPARENT) = GetDesktopWindow)) and
        (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))  then
-    begin
-      TM.AddTask(wnd);
-    end;
+      with PParam(LParam)^ do
+      begin
+       setlength(wndlist,length(wndlist)+1);
+       wndlist[high(wndlist)] := wnd;
+      end;
     result := True;
   end;
 
@@ -1139,7 +1152,12 @@ begin
   LoadSettings;
 
   FLocked := True;
-  EnumWindows(@EnumWindowsProc, 0);
+  setlength(EnumParam.wndlist,0);
+  EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
+  for n := 0 to High(EnumParam.wndlist) do
+    TM.AddTask(EnumParam.wndlist[n]);    
+  setlength(EnumParam.wndlist,0);
+  //EnumWindows(@EnumWindowsProc, 0);
   FLocked := False;
   RealignComponents(False);
 end;

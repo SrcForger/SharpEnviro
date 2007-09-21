@@ -135,7 +135,9 @@ var
   pItem : TTaskItem;
   visible,minimized : boolean;
 begin
-  for n := FItems.Count -1 downto 0 do
+  if FItems.Count = 0 then exit;
+
+  for n := FItems.Count - 1 downto 0 do
   begin
     pItem := TTaskItem(FItems.Items[n]);
     visible := (GetWindowLong(pItem.Handle, GWL_STYLE) and WS_VISIBLE) = WS_VISIBLE;
@@ -155,6 +157,7 @@ var
   pItem : TTaskItem;
   n : integer;
 begin
+  if FItems.Count = 0 then exit;
   if not FEnabled then exit;
 
   RemoveDeadTasks;
@@ -178,16 +181,17 @@ begin
   if not FEnabled then exit;
 
   RemoveDeadTasks;
-  for n := 0 to FItems.Count -1 do
-  begin
-    pItem := TTaskItem(FItems.Items[n]);
-    if pItem.Handle = pHandle then
+  if FItems.Count > 0 then
+    for n := 0 to FItems.Count -1 do
     begin
-      pItem.UpdateFromHwnd;
-      if Assigned(OnActivateTask) then FOnActivateTask(pItem,n);
-      exit;
+      pItem := TTaskItem(FItems.Items[n]);
+      if pItem.Handle = pHandle then
+      begin
+        pItem.UpdateFromHwnd;
+        if Assigned(OnActivateTask) then FOnActivateTask(pItem,n);
+        exit;
+      end;
     end;
-  end;
 
   // Windows which don't send a NewTask message will be added when they
   // send an activate message
@@ -204,6 +208,7 @@ var
   n : integer;
   pItem : TTaskItem;
 begin
+  if FItems.Count = 0 then exit;
   if not Assigned(FOnNewTask) then exit;
 
   for n := 0 to FItems.Count -1 do
@@ -234,9 +239,10 @@ var
   pItem : TTaskItem;
   n : integer;
 begin
+  if FItems.Count = 0 then exit;
   if not FEnabled then exit;
 
-  for n := FItems.Count -1 downto 0 do
+  for n := FItems.Count - 1 downto 0 do
   begin
     pItem := TTaskItem(FItems.Items[n]);
     if pItem.Handle = pHandle then
@@ -258,6 +264,7 @@ var
   pItem : TTaskItem;
   n : integer;
 begin
+  if FItems.Count = 0 then exit;
   if not FEnabled then exit;
 
   RemoveDeadTasks;
@@ -278,15 +285,16 @@ var
   n : integer;
   pItem : TTaskItem;
 begin
-  for n := 0 to FItems.Count - 1 do
-  begin
-    pItem := TTaskItem(FItems.Items[n]);
-    if pItem.Handle = pHandle then
+  if FItems.Count > 0 then
+    for n := 0 to FItems.Count - 1 do
     begin
-      result := pItem;
-      exit;
+      pItem := TTaskItem(FItems.Items[n]);
+      if pItem.Handle = pHandle then
+      begin
+        result := pItem;
+        exit;
+      end;
     end;
-  end;
   result := nil;
 end;
 
@@ -309,6 +317,8 @@ var
   SList : TStringList;
   fixedcaption : String;
 begin
+  if FItems.Count = 0 then exit;
+
   case FSortType of
     stCaption,stWndClass,stTime,stIcon:
       begin
