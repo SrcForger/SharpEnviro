@@ -1018,15 +1018,12 @@ begin
   DebugOutPutInfo('TMainForm.RemoveTask (Procedure)');
   if pItem = nil then exit;
 
-  try
-    for n := IList.Count -1 downto 0 do
-        if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
-        begin
-          ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList.Items[n]).Tag);
-          IList.Delete(n);
-        end;
-  except
-  end;
+  for n := IList.Count -1 downto 0 do
+    if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
+    begin
+      ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList.Items[n]).Tag);
+      IList.Delete(n);
+    end;
   CalculateItemWidth(IList.Count);
   if not FLocked then ReAlignComponents(True);
 end;
@@ -1041,24 +1038,18 @@ begin
 
   CheckFilterAll;
   pTaskItem := nil;
-  try
-    for n := 0 to IList.Count - 1 do
-        if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
-        begin
-          pTaskItem := TSharpETaskItem(IList.Items[n]);
-          break;
-        end;
-  except
-    pTaskItem := nil;
-  end;
+  for n := 0 to IList.Count - 1 do
+    if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
+    begin
+      pTaskItem := TSharpETaskItem(IList.Items[n]);
+      break;
+    end;
+
   if pTaskItem = nil then exit;
 
-  try
-    UpdateIcon(pTaskItem,pItem);
-    pTaskItem.Caption := pItem.Caption;
-    ToolTipApi.UpdateToolTipText(FTipWnd,Self,pTaskItem.Tag,pTaskItem.Caption);
-  except
-  end;
+  UpdateIcon(pTaskItem,pItem);
+  pTaskItem.Caption := pItem.Caption;
+  ToolTipApi.UpdateToolTipText(FTipWnd,Self,pTaskItem.Tag,pTaskItem.Caption);
 end;
 
 procedure TMainForm.SharpETaskItemClick(Sender: TObject);
