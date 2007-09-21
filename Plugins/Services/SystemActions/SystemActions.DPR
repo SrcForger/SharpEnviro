@@ -104,7 +104,7 @@ var
     if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
        ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
        ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
-       (GetWindowLong(Wnd, GWL_HWNDPARENT) = GetDesktopWindow)) and
+       (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
        (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))  then
        with PParam(LParam)^ do
        begin
@@ -134,7 +134,7 @@ var
 
     function _EnumProc(_hWnd: HWND; _LParam: LPARAM): LongBool; stdcall;
     begin
-      with PParam(_LParam)^ do
+      with TParam(PParam(_LParam)^) do
       begin
         if (CompareText(GetWndClass(_hWnd), ClassName) = 0) then
         begin
@@ -251,6 +251,7 @@ exports
   Start,
   Stop;
 
+begin
 end.
 
 
