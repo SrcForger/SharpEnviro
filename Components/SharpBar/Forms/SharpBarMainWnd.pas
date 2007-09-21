@@ -605,7 +605,7 @@ begin
   begin
     if SharpThemeApi.GetSkinGEBlend then
        BlendImageC(FBGImage,GetSkinGEBlendColor,GetSkinGEBlendAlpha);
-    boxblur(FBGImage,GetSkinGEBlurRadius,GetSkinGEBlurIterations);
+    fastblur(FBGImage,GetSkinGEBlurRadius,GetSkinGEBlurIterations);
     if GetSkinGELighten then
        lightenBitmap(FBGImage,GetSkinGELightenAmount);
   end;

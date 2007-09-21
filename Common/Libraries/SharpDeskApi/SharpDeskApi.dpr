@@ -328,7 +328,7 @@ begin
                 else ShadowBmp.RenderText(TempBmp.Width div 2 - TempBmp.TextWidth(Text[n]) div 2 ,
                                           TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
               end;
-              boxblur(ShadowBmp,1,1);
+              fastblur(ShadowBmp,1,1);
               case Align of
                 -1 : ShadowBmp.RenderText(10 + 1,
                                           TempBmp.Height div 2 - h div 2 + eh * n,Text[n],0,c2);
@@ -340,10 +340,10 @@ begin
             end;
           end;
         end;
-        boxblur(ShadowBmp,1,1);
+        fastblur(ShadowBmp,1,1);
         ShadowBmp.DrawTo(TempBmp,0,0);
         ShadowBmp.DrawTo(TempBmp,0,0);
-        boxblur(ShadowBmp,1,1);
+        fastblur(ShadowBmp,1,1);
         ShadowBmp.DrawTo(TempBmp,0,0);
         ShadowBmp.DrawTo(TempBmp,0,0);
         BlendImageA(TempBmp,Font.ShadowColor,255);

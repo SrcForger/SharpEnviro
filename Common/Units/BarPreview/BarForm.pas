@@ -100,7 +100,7 @@ begin
   begin
     if GEBlend then
        BlendImageC(Background,GEBlendColor,GEBlendAlpha);
-    boxblur(Background,GEBlurRadius,GEBlurIterations);
+    fastblur(Background,GEBlurRadius,GEBlurIterations);
     if GELighten then
        lightenBitmap(Background,GELightenAmount);
   end;

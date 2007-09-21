@@ -485,7 +485,7 @@ begin
              SRCCOPY or CAPTUREBLT);
       if SharpThemeApi.GetSkinGEBlend then
         BlendImageC(FBackground,GetSkinGEBlendColor,GetSkinGEBlendAlpha);
-      boxblur(FBackground,GetSkinGEBlurRadius,GetSkinGEBlurIterations);
+      fastblur(FBackground,GetSkinGEBlurRadius,GetSkinGEBlurIterations);
       if GetSkinGELighten then
          lightenBitmap(FBackground,GetSkinGELightenAmount);
       FBackground.ResetAlpha(255);
