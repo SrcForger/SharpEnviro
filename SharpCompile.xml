@@ -9,6 +9,7 @@
      <project Name="Link" Type="DLL">Plugins\Configurations\Link\Link.bdsproj</project>       
      <project Name="MiniScmd" Type="DLL">Plugins\Configurations\MiniScmd\MiniScmd.bdsproj</project>       
      <project Name="Notes" Type="DLL">Plugins\Configurations\Notes\Notes.bdsproj</project>       
+     <project Name="RecycleBin" Type="DLL">Plugins\Configurations\RecycleBin\RecycleBin.bdsproj</project>       
      <project Name="Scheme" Type="DLL">Plugins\Configurations\Scheme\Scheme.bdsproj</project>  
      <project Name="SharpBar Manager" Type="DLL">Plugins\Configurations\SharpBar List\SharpBarList.bdsproj</project>  
      <project Name="SharpDesk" Type="DLL">Plugins\Configurations\SharpDesk\SharpDesk.bdsproj</project>  
