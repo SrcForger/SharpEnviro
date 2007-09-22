@@ -42,7 +42,10 @@ uses
   GR32,
   SharpThemeApi,
   JvPageList,
+  GR32_PNG,
+  GR32_RESAMPLERS,
   Graphics,
+
   uWPSettingsWnd in 'uWPSettingsWnd.pas' {frmWPSettings},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   uSharpDeskTDeskSettings in '..\..\..\Components\SharpDesk\Units\uSharpDeskTDeskSettings.pas',
@@ -65,7 +68,6 @@ var
   tmpRdo: TRadioButton;
 begin
   Result := True;
-  try
     XML := TJvSimpleXML.Create(nil);
     try
       s := SharpApi.GetSharpeUserSettingsPath + 'Themes\' + frmWPSettings.FTheme + '\Wallpaper.xml';
@@ -129,14 +131,12 @@ begin
               end;
           WPItem.LoadFromFile;
         end;
-      end;
-
+      end else
+        Result := False;
+        
     finally
       XML.Free;
     end;
-  except
-    Result := False;
-  end;
 end;
 
 
@@ -188,7 +188,7 @@ begin
   end;
 
   // If one item then hide the monitor selection, select first item
-  //frmWPSettings.pnlMonitor.Visible := (frmWPSettings.cboMonitor.Items.Count > 1);
+  frmWPSettings.pnlMonitor.Visible := (frmWPSettings.cboMonitor.Items.Count > 1);
   frmWPSettings.cboMonitor.ItemIndex := 0;
 
   frmWPSettings.Show;
@@ -200,11 +200,14 @@ end;
 procedure Save;
 var
   FName: string;
+  sPngFile: String;
   n: integer;
   i: integer;
   WPItem: TWPItem;
   k: integer;
   XML: TJvsimpleXML;
+  bmp: TBitmap32;
+  r: Trect;
 begin
   FName := SharpApi.GetSharpeUserSettingsPath + 'Themes\' + frmWPSettings.FTheme + '\Wallpaper.xml';
   XML := TJvSimpleXML.Create(nil);
@@ -305,6 +308,23 @@ begin
   finally
     XML.Free;
   end;
+
+  // Save image to theme dir
+  sPngFile := ExtractFilePath(FName)+'preview.png';
+  bmp := TBitmap32.Create;
+  Try
+    bmp.Width := 62;
+    bmp.Height := 48;
+    bmp.Clear(clWhite32);
+    r := frmWPSettings.FCurrentWP.BmpPreview.ClipRect;
+    InflateRect(r,-1,-1);
+
+    frmWPSettings.FCurrentWP.BmpPreview.DrawTo(bmp, Rect(0,0,62,48), frmWPSettings.FCurrentWP.BmpPreview.ClipRect);
+
+    SaveBitmap32ToPNG(bmp,sPngFile,False,False,clBlack);
+  finally
+    bmp.Free;
+  End;
 end;
 
 function Close: boolean;

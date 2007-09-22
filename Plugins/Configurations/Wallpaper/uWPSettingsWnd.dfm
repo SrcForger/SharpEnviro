@@ -27,19 +27,15 @@ object frmWPSettings: TfrmWPSettings
     Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
-    ActivePage = pagWallpaper
+    ActivePage = pagColor
     PropagateEnable = False
     Align = alClient
-    ExplicitWidth = 475
-    ExplicitHeight = 514
     object pagWallpaper: TJvStandardPage
       Left = 0
       Top = 0
       Width = 491
       Height = 475
       Caption = 'pagWallpaper'
-      ExplicitWidth = 475
-      ExplicitHeight = 410
       object lblWpFile: TLabel
         AlignWithMargins = True
         Left = 8
@@ -235,7 +231,6 @@ object frmWPSettings: TfrmWPSettings
         ParentBackground = False
         ParentColor = True
         TabOrder = 0
-        ExplicitWidth = 439
         object edtWpFile: TEdit
           Left = 0
           Top = 0
@@ -249,7 +244,6 @@ object frmWPSettings: TfrmWPSettings
           TabOrder = 0
           Text = 'edtWpFile'
           OnChange = edtWallpaperChange
-          ExplicitWidth = 361
           ExplicitHeight = 21
         end
         object btnWpBrowse: TButton
@@ -265,7 +259,6 @@ object frmWPSettings: TfrmWPSettings
           Caption = 'Browse'
           TabOrder = 1
           OnClick = btnWpBrowseClick
-          ExplicitLeft = 364
         end
       end
       object Panel7: TPanel
@@ -283,7 +276,6 @@ object frmWPSettings: TfrmWPSettings
         ParentBackground = False
         ParentColor = True
         TabOrder = 1
-        ExplicitWidth = 439
         object rdoWpAlignStretch: TRadioButton
           Left = 138
           Top = 0
@@ -342,7 +334,6 @@ object frmWPSettings: TfrmWPSettings
         ParentBackground = False
         ParentColor = True
         TabOrder = 2
-        ExplicitWidth = 439
         object chkWpMirrorVert: TCheckBox
           Left = 81
           Top = 0
@@ -391,7 +382,6 @@ object frmWPSettings: TfrmWPSettings
         ParentBackground = False
         ParentColor = True
         TabOrder = 4
-        ExplicitWidth = 439
         object sgbWpTrans: TSharpeGaugeBox
           Left = 0
           Top = 0
@@ -448,8 +438,6 @@ object frmWPSettings: TfrmWPSettings
           end>
         SwatchManager = ssmConfig
         OnUiChange = WallpaperColorUiChangeEvent
-        ExplicitTop = 350
-        ExplicitWidth = 447
       end
     end
     object pagColor: TJvStandardPage
@@ -458,8 +446,6 @@ object frmWPSettings: TfrmWPSettings
       Width = 491
       Height = 475
       Caption = 'pagColor'
-      ExplicitWidth = 475
-      ExplicitHeight = 410
       object lblApplyColorDet: TLabel
         AlignWithMargins = True
         Left = 26
@@ -493,7 +479,6 @@ object frmWPSettings: TfrmWPSettings
         Caption = 'Apply Color Effects'
         TabOrder = 0
         OnClick = ApplyColorClickEvent
-        ExplicitWidth = 459
       end
       object imgColor: TImage32
         Left = 290
@@ -521,8 +506,6 @@ object frmWPSettings: TfrmWPSettings
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 2
-        ExplicitWidth = 475
-        ExplicitHeight = 97
         object lblHSLColor: TLabel
           AlignWithMargins = True
           Left = 8
@@ -575,7 +558,6 @@ object frmWPSettings: TfrmWPSettings
           ParentBackground = False
           ParentColor = True
           TabOrder = 0
-          ExplicitWidth = 441
           object sgbLum: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 218
@@ -592,9 +574,8 @@ object frmWPSettings: TfrmWPSettings
             Max = 255
             Value = 0
             Prefix = 'Lum: '
-            Suffix = '%'
             Description = 'Change Luminance'
-            PopPosition = ppRight
+            PopPosition = ppBottom
             PercentDisplay = True
             OnChangeValue = HSLColorChangeEvent
           end
@@ -614,9 +595,8 @@ object frmWPSettings: TfrmWPSettings
             Max = 255
             Value = 0
             Prefix = 'Sat: '
-            Suffix = '%'
             Description = 'Change Saturation'
-            PopPosition = ppRight
+            PopPosition = ppBottom
             PercentDisplay = True
             OnChangeValue = HSLColorChangeEvent
           end
@@ -635,9 +615,8 @@ object frmWPSettings: TfrmWPSettings
             Max = 255
             Value = 0
             Prefix = 'Hue: '
-            Suffix = '%'
             Description = 'Change Hue'
-            PopPosition = ppRight
+            PopPosition = ppBottom
             PercentDisplay = True
             OnChangeValue = HSLColorChangeEvent
           end
@@ -650,8 +629,6 @@ object frmWPSettings: TfrmWPSettings
       Width = 491
       Height = 475
       Caption = 'pagGradient'
-      ExplicitWidth = 475
-      ExplicitHeight = 410
       object lblApplyGrad: TLabel
         AlignWithMargins = True
         Left = 26
@@ -685,7 +662,6 @@ object frmWPSettings: TfrmWPSettings
         Caption = 'Apply Gradient Effects'
         TabOrder = 0
         OnClick = ApplyGradientClickEvent
-        ExplicitWidth = 459
       end
       object pnlGrad: TPanel
         AlignWithMargins = True
@@ -701,8 +677,6 @@ object frmWPSettings: TfrmWPSettings
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 1
-        ExplicitWidth = 475
-        ExplicitHeight = 353
         object lblGradType: TLabel
           AlignWithMargins = True
           Left = 8
@@ -825,7 +799,6 @@ object frmWPSettings: TfrmWPSettings
           ParentBackground = False
           ParentColor = True
           TabOrder = 0
-          ExplicitWidth = 441
           object cboGradType: TComboBox
             Left = 0
             Top = 0
@@ -858,8 +831,6 @@ object frmWPSettings: TfrmWPSettings
           ParentBackground = False
           ParentColor = True
           TabOrder = 1
-          ExplicitTop = 126
-          ExplicitWidth = 441
           object sgbGradStartTrans: TSharpeGaugeBox
             Left = 0
             Top = 0
@@ -902,14 +873,14 @@ object frmWPSettings: TfrmWPSettings
         end
         object secGradColor: TSharpEColorEditorEx
           AlignWithMargins = True
-          Left = 24
+          Left = 20
           Top = 197
-          Width = 459
-          Height = 222
-          Margins.Left = 24
+          Width = 463
+          Height = 230
+          Margins.Left = 20
           Margins.Top = 4
           Margins.Right = 8
-          Margins.Bottom = 8
+          Margins.Bottom = 0
           VertScrollBar.Smooth = True
           VertScrollBar.Tracking = True
           Align = alClient
@@ -945,8 +916,6 @@ object frmWPSettings: TfrmWPSettings
             end>
           SwatchManager = ssmConfig
           OnUiChange = WallpaperColorUiChangeEvent
-          ExplicitWidth = 443
-          ExplicitHeight = 148
         end
       end
       object imgGradient: TImage32
@@ -1034,7 +1003,6 @@ object frmWPSettings: TfrmWPSettings
       BorderColor = clBtnFace
       Border = False
       BackgroundColor = clBtnFace
-      ExplicitWidth = 433
       object cboMonitor: TComboBox
         Left = 0
         Top = 0
@@ -1056,7 +1024,7 @@ object frmWPSettings: TfrmWPSettings
   end
   object ssmConfig: TSharpESwatchManager
     Swatches = <>
-    Width = 427
+    Width = 431
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16

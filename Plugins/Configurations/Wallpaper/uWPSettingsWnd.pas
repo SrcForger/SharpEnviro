@@ -184,6 +184,7 @@ begin
 
   Bmp := TBitmap32.Create;
   BmpPreview := TBitmap32.Create;
+  TLinearResampler.Create(BmpPreview);
 
   // Default Settings
   Color := 0;
@@ -334,9 +335,11 @@ begin
   if FCurrentWP.Mon = nil then exit;
 
   WPBmp := TBitmap32.Create;
+  TLinearResampler.Create(WPBmp);
   WPBmp.DrawMode := dmBlend;
   WPBmp.CombineMode := cmMerge;
   RSBmp := TBitmap32.Create;
+  TLinearResampler.Create(RSBmp);
 
   with FCurrentWP do
   begin

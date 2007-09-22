@@ -157,8 +157,8 @@ begin
 
   bmp := TBitmap.Create;
   bmp32 := TBitmap32.Create;
-  bmp.Width := ThemeImages.Width + 2;
-  bmp.Height := ThemeImages.Height + 2;
+  bmp.Width := ThemeImages.Width;
+  bmp.Height := ThemeImages.Height;
   SetBkMode(Bmp.Handle, TRANSPARENT);
 
   sl := TStringList.Create;
@@ -189,10 +189,12 @@ begin
         (FileExists(tmpTheme.PreviewFileName))) then begin
 
         GR32_PNG.LoadBitmap32FromPNG(Bmp32, tmpTheme.PreviewFileName, b);
+
         bmp.Canvas.Brush.Color := clBlack;
         bmp.Canvas.Pen.Color := clBlack;
         bmp.canvas.FillRect(bmp.canvas.ClipRect);
-        bmp32.DrawTo(bmp.canvas.handle, 1, 1);
+        //bmp32.drawto
+        bmp32.DrawTo(bmp.canvas.handle, Rect(0,0,62,48), bmp32.ClipRect);
 
         newItem.SubItemImageIndexes[0] :=
           Pointer(themeimages.AddMasked(bmp, clFuchsia));
