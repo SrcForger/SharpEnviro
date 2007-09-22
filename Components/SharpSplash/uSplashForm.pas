@@ -137,6 +137,7 @@ begin
     exit;
   end;
 
+  PreMul(FPicture);
   Width  := FPicture.Width;
   Height := FPicture.Height;
   left   := Screen.WorkAreaWidth div 2 - self.Width div 2;
