@@ -216,24 +216,33 @@ end;
 
 procedure TWPItem.LoadFromFile;
 var
-  b: boolean;
+  loaded: boolean;
+  SList : TStringList;
+  i : integer;
 begin
-  b := False;
-  if FileExists(Image) then
-  try
-    Bmp.LoadFromFile(Image);
-    b := True;
-  except
-  end;
+  loaded := False;
+  SList := TStringList.Create;
+  SList.Add(SharpApi.GetSharpeUserSettingsPath + 'Themes\' + frmWPSettings.FTheme + '\' + Image);
+  SList.Add(Image);
+  SList.Add(SharpApi.GetSharpeDirectory + Image);
+  for i := 0 to SList.Count - 1 do
+    if FileExists(SList[i]) then
+    try
+      Bmp.LoadFromFile(SList[i]);
+      loaded := True;
+      break;
+    except
+    end;
+  SList.Free;
 
-  if not b then
+  if not loaded then
   begin
     if Mon <> nil then
       Bmp.SetSize(Mon.Width, Mon.Height)
     else Bmp.SetSize(187, 144);
     Bmp.Clear(color32(0, 0, 0, 0));
   end;
-  wploaded := b;
+  wploaded := loaded;
 end;
 
 procedure TfrmWPSettings.UpdateColorPage;

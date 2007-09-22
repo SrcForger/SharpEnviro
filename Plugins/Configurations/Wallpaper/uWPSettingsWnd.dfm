@@ -806,7 +806,7 @@ object frmWPSettings: TfrmWPSettings
             Height = 21
             Align = alLeft
             Style = csDropDownList
-            ItemHeight = 13
+            ItemHeight = 0
             TabOrder = 0
             OnChange = cb_gtypeChange
             Items.Strings = (
