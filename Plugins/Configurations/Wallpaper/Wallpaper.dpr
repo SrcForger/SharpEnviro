@@ -53,101 +53,117 @@ uses
 
 {$R *.res}
 
-
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
+function LoadSettings: Boolean;
 var
   XML: TJvSimpleXML;
   n, i, h, k: integer;
-  FName: string;
+  s: string;
   WPItem: TWPItem;
   Mon: TMonitor;
   MonID: integer;
   failed: boolean;
   tmpRdo: TRadioButton;
 begin
-  if frmWPSettings = nil then frmWPSettings := TfrmWPSettings.Create(nil);
+  Result := True;
+  try
+    XML := TJvSimpleXML.Create(nil);
+    try
+      s := SharpApi.GetSharpeUserSettingsPath + 'Themes\' + frmWPSettings.FTheme + '\Wallpaper.xml';
+      if FileExists(s) then
+      begin
+        XML.LoadFromFile(s);
+        for n := 0 to Screen.MonitorCount - 1 do
+        begin
+          Mon := Screen.Monitors[n];
+          if Mon.Primary then MonID := -100
+          else MonID := Mon.MonitorNum;
+          WPItem := TWPItem.Create;
+          WPItem.MonID := MonID;
+          WPItem.Mon := Mon;
+          WPList.Add(WPItem);
 
+          if XML.Root.Items.ItemNamed['Monitors'] <> nil then
+            for i := 0 to XML.Root.Items.ItemNamed['Monitors'].Items.Count - 1 do
+              if XML.Root.Items.ItemNamed['Monitors'].Items.Item[i].Items.IntValue('ID', 0) = MonID then
+              begin
+                // A Wallpaper for that monitor exists, now we need to find it
+                if XML.Root.Items.ItemNamed['Wallpapers'] <> nil then
+                  for h := 0 to XML.Root.Items.ItemNamed['Wallpapers'].Items.Count - 1 do
+                    if CompareText(XML.Root.Items.ItemNamed['Wallpapers'].Items.Item[h].Items.Value('Name', '-2'),
+                      XML.Root.Items.ItemNamed['Monitors'].Items.Item[i].Items.Value('Name', '-1')) = 0 then
+                      with XML.Root.Items.ItemNamed['Wallpapers'].Items.Item[h].Items do
+                      begin
+                        // Found the matching wallpaper, load the settings
+                        WPItem.Name := Value('Name');
+                        WPItem.Image := Value('Image');
+                        WPItem.Color := IntValue('Color', 0);
+                        WPItem.Alpha := IntValue('Alpha', 255);
+                        k := IntValue('Size', 0);
+                        case k of
+                          0: WPItem.Size := twsCenter;
+                          2: WPItem.Size := twsStretch;
+                          3: WPItem.Size := twsTile;
+                        else WPItem.Size := twsScale;
+                        end;
+                        WPItem.ColorChange := BoolValue('ColorChange', False);
+                        WPItem.Hue := IntValue('Hue', 0);
+                        WPItem.Saturation := IntValue('Saturation', 0);
+                        WPItem.Lightness := IntValue('Lightness', 0);
+                        WPItem.Gradient := BoolValue('Gradient', False);
+                        k := IntValue('GradientType', 0);
+                        case k of
+                          1: WPItem.GradientType := twgtVert;
+                          2: WPItem.GradientType := twgtTSHoriz;
+                          3: WPItem.GradientType := twgtTSVert
+                        else WPItem.GradientType := twgtHoriz;
+                        end;
+                        WPItem.GDStartColor := IntValue('GDStartColor', 0);
+                        WPItem.GDStartAlpha := IntValue('GDStartAlpha', 0);
+                        WPItem.GDEndColor := IntValue('GDEndColor', 0);
+                        WPItem.GDEndAlpha := IntValue('GDEndAlpha', 255);
+                        WPItem.MirrorHoriz := BoolValue('MirrorHoriz', False);
+                        WPItem.MirrorVert := BoolValue('MirrorVert', False);
+                        break;
+                      end;
+                break;
+              end;
+          WPItem.LoadFromFile;
+        end;
+      end;
+
+    finally
+      XML.Free;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+
+function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
+var
+  XML: TJvSimpleXML;
+  n, i, h, k: integer;
+  WPItem: TWPItem;
+  Mon: TMonitor;
+  MonID: integer;
+  failed: boolean;
+  tmpRdo: TRadioButton;
+begin
+
+  // Create settings form
+  if frmWPSettings = nil then frmWPSettings := TfrmWPSettings.Create(nil);
   uVistaFuncs.SetVistaFonts(frmWPSettings);
   frmWPSettings.ParentWindow := aowner;
   frmWPSettings.Left := 2;
   frmWPSettings.Top := 2;
   frmWPSettings.BorderStyle := bsNone;
-  frmWPSettings.sTheme := APluginID;
 
-  FName := SharpApi.GetSharpeUserSettingsPath + 'Themes\' + frmWPSettings.sTheme + '\Wallpaper.xml';
-  failed := True;
-  XML := TJvSimpleXML.Create(nil);
-  //try
-  if FileExists(FName) then
-  begin
-    XML.LoadFromFile(FName);
-    for n := 0 to Screen.MonitorCount - 1 do
-    begin
-      Mon := Screen.Monitors[n];
-      if Mon.Primary then MonID := -100
-      else MonID := Mon.MonitorNum;
-      WPItem := TWPItem.Create;
-      WPItem.MonID := MonID;
-      WPItem.Mon := Mon;
-      WPList.Add(WPItem);
+  // Assign Plugin ID
+  frmWPSettings.FTheme := APluginID;
 
-      if XML.Root.Items.ItemNamed['Monitors'] <> nil then
-        for i := 0 to XML.Root.Items.ItemNamed['Monitors'].Items.Count - 1 do
-          if XML.Root.Items.ItemNamed['Monitors'].Items.Item[i].Items.IntValue('ID', 0) = MonID then
-          begin
-            // A Wallpaper for that monitor exists, now we need to find it
-            if XML.Root.Items.ItemNamed['Wallpapers'] <> nil then
-              for h := 0 to XML.Root.Items.ItemNamed['Wallpapers'].Items.Count - 1 do
-                if CompareText(XML.Root.Items.ItemNamed['Wallpapers'].Items.Item[h].Items.Value('Name', '-2'),
-                  XML.Root.Items.ItemNamed['Monitors'].Items.Item[i].Items.Value('Name', '-1')) = 0 then
-                  with XML.Root.Items.ItemNamed['Wallpapers'].Items.Item[h].Items do
-                  begin
-                    // Found the matching wallpaper, load the settings
-                    WPItem.Name := Value('Name');
-                    WPItem.Image := Value('Image');
-                    WPItem.Color := IntValue('Color', 0);
-                    WPItem.Alpha := IntValue('Alpha', 255);
-                    k := IntValue('Size', 0);
-                    case k of
-                      0: WPItem.Size := twsCenter;
-                      2: WPItem.Size := twsStretch;
-                      3: WPItem.Size := twsTile;
-                    else WPItem.Size := twsScale;
-                    end;
-                    WPItem.ColorChange := BoolValue('ColorChange', False);
-                    WPItem.Hue := IntValue('Hue', 0);
-                    WPItem.Saturation := IntValue('Saturation', 0);
-                    WPItem.Lightness := IntValue('Lightness', 0);
-                    WPItem.Gradient := BoolValue('Gradient', False);
-                    k := IntValue('GradientType', 0);
-                    case k of
-                      1: WPItem.GradientType := twgtVert;
-                      2: WPItem.GradientType := twgtTSHoriz;
-                      3: WPItem.GradientType := twgtTSVert
-                    else WPItem.GradientType := twgtHoriz;
-                    end;
-                    WPItem.GDStartColor := IntValue('GDStartColor', 0);
-                    WPItem.GDStartAlpha := IntValue('GDStartAlpha', 0);
-                    WPItem.GDEndColor := IntValue('GDEndColor', 0);
-                    WPItem.GDEndAlpha := IntValue('GDEndAlpha', 255);
-                    WPItem.MirrorHoriz := BoolValue('MirrorHoriz', False);
-                    WPItem.MirrorVert := BoolValue('MirrorVert', False);
-                    break;
-                  end;
-            break;
-          end;
-      WPItem.LoadFromFile;
-      if MonID = -100 then
-        frmWPSettings.UpdateGUIFromWPItem(WPItem);
-    end;
-    failed := False;
-  end;
-  //except
-  //end;
-  XML.Free;
-
-  if failed then
-  begin
+  // Load settings, if not successfull create a default configuration
+  if not (LoadSettings) then begin
     for n := 0 to Screen.MonitorCount - 1 do
     begin
       Mon := Screen.Monitors[n];
@@ -160,22 +176,24 @@ begin
     end;
   end;
 
-    for n := 0 to WPList.Count - 1 do
-      if TWPItem(WPList.Items[n]).MonID = -100 then
-      begin
-        frmWPSettings.cboMonitor.Items.AddObject('Primary Monitor',WPList.Items[n]);
-        break;
-      end;
+  // Add available monitors to a dropdown combo
+  for n := 0 to WPList.Count - 1 do begin
+    if TWPItem(WPList.Items[n]).MonID = -100 then begin
+      frmWPSettings.cboMonitor.Items.AddObject('Primary Monitor', WPList.Items[n]);
+      frmWPSettings.FCurrentWP := TWPItem(WPList.Items[n]);
+    end else begin
+      frmWPSettings.cboMonitor.Items.AddObject(TWPItem(WPList.Items[n]).Name,
+        WPList.Items[n]);
+    end;
+  end;
 
-    for n := 0 to WPList.Count - 1 do
-      if TWPItem(WPList.Items[n]).MonID <> -100 then
-      begin
-        frmWPSettings.cboMonitor.Items.AddObject(TWPItem(WPList.Items[n]).Name,
-          WPList.Items[n]);
-      end;
-    frmWPSettings.cboMonitor.ItemIndex := 0;
+  // If one item then hide the monitor selection, select first item
+  //frmWPSettings.pnlMonitor.Visible := (frmWPSettings.cboMonitor.Items.Count > 1);
+  frmWPSettings.cboMonitor.ItemIndex := 0;
 
   frmWPSettings.Show;
+  frmWPSettings.UpdateGUIFromWPItem(frmWPSettings.FCurrentWP);
+  frmWPSettings.RenderPreview;
   result := frmWPSettings.Handle;
 end;
 
@@ -188,7 +206,7 @@ var
   k: integer;
   XML: TJvsimpleXML;
 begin
-  FName := SharpApi.GetSharpeUserSettingsPath + 'Themes\' + frmWPSettings.sTheme + '\Wallpaper.xml';
+  FName := SharpApi.GetSharpeUserSettingsPath + 'Themes\' + frmWPSettings.FTheme + '\Wallpaper.xml';
   XML := TJvSimpleXML.Create(nil);
   XML.Root.Clear;
   try
@@ -312,10 +330,6 @@ begin
   AStatusText := '';
 end;
 
-procedure ClickBtn(AButtonID: Integer; AButton: TPngSpeedButton; AText: string);
-begin
-end;
-
 function SetBtnState(AButtonID: Integer): Boolean;
 begin
   Result := False;
@@ -323,16 +337,22 @@ end;
 
 procedure ClickTab(ATab: TPluginTabItem);
 begin
-  //frmWPSettings.UpdateGUIFromWPItem(TWPItem(ATab.Data));
+  frmWPSettings.plConfig.ActivePage := TJvStandardPage(ATab.Data);
+  if TJvStandardPage(ATab.Data) = frmWPSettings.pagWallpaper then
+    frmWPSettings.UpdateWallpaperPage else
+  if TJvStandardPage(ATab.Data) = frmWPSettings.pagColor then
+    frmWPSettings.UpdateColorPage else
+  if TJvStandardPage(ATab.Data) = frmWPSettings.pagGradient then
+    frmWPSettings.UpdateGradientPage;
 end;
 
 procedure AddTabs(var ATabs: TPluginTabItemList);
 var
   n: integer;
 begin
-  ATabs.Add('Wallpaper', nil, '', '');
-  ATabs.Add('Color', nil, '', '');
-  ATabs.Add('Gradient', nil, '', '');
+  ATabs.Add('Wallpaper', frmWPSettings.pagWallpaper, '', '');
+  ATabs.Add('Color', frmWPSettings.pagColor, '', '');
+  ATabs.Add('Gradient', frmWPSettings.pagGradient, '', '');
 end;
 
 function SetSettingType: TSU_UPDATE_ENUM;
@@ -342,15 +362,15 @@ end;
 
 procedure UpdatePreview(var ABmp: TBitmap32);
 begin
-  if frmWPSettings.currentWP = nil then
+  if frmWPSettings.FCurrentWP = nil then
   begin
     ABmp.SetSize(0, 0);
     exit;
   end;
 
-  ABmp.SetSize(frmWPSettings.currentWP.BmpPreview.Width, frmWPSettings.currentWP.BmpPreview.Height);
+  ABmp.SetSize(frmWPSettings.FCurrentWP.BmpPreview.Width, frmWPSettings.FCurrentWP.BmpPreview.Height);
   ABmp.Clear(color32(0, 0, 0, 0));
-  frmWPSettings.currentWP.BmpPreview.DrawTo(ABmp);
+  frmWPSettings.FCurrentWP.BmpPreview.DrawTo(ABmp);
 end;
 
 
@@ -364,8 +384,7 @@ exports
   SetSettingType,
   UpdatePreview,
   AddTabs,
-  ClickTab,
-  ClickBtn;
+  ClickTab;
 
 end.
 

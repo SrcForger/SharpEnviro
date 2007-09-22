@@ -38,73 +38,46 @@ uses
 
 type
   TWPItem = class
-    private
-    public
-      WPLoaded        : boolean;
-      BmpPreview      : TBitmap32;
-      Bmp             : TBitmap32;
-      MonID           : integer;
-      Mon             : TMonitor;
-      Name            : String;
-      Image           : String;
-      Color           : integer;
-      Alpha           : integer;
-      Size            : TThemeWallpaperSize;
-      ColorChange     : boolean;
-      Hue             : integer;
-      Saturation      : integer;
-      Lightness       : integer;
-      Gradient        : boolean;
-      GradientType    : TThemeWallpaperGradientType;
-      GDStartColor    : integer;
-      GDStartAlpha    : integer;
-      GDEndColor      : integer;
-      GDEndAlpha      : integer;
-      MirrorHoriz     : boolean;
-      MirrorVert      : boolean;
+  private
+  public
+    WPLoaded: boolean;
+    BmpPreview: TBitmap32;
+    Bmp: TBitmap32;
+    MonID: integer;
+    Mon: TMonitor;
+      Name: string;
+    Image: string;
+    Color: integer;
+    Alpha: integer;
+    Size: TThemeWallpaperSize;
+    ColorChange: boolean;
+    Hue: integer;
+    Saturation: integer;
+    Lightness: integer;
+    Gradient: boolean;
+    GradientType: TThemeWallpaperGradientType;
+    GDStartColor: integer;
+    GDStartAlpha: integer;
+    GDEndColor: integer;
+    GDEndAlpha: integer;
+    MirrorHoriz: boolean;
+    MirrorVert: boolean;
 
-      constructor Create; reintroduce;
-      destructor Destroy; override;
+    constructor Create; reintroduce;
+    destructor Destroy; override;
 
-      procedure LoadFromFile;
-    published
-    end;
+    procedure LoadFromFile;
+  published
+  end;
 
   TfrmWPSettings = class(TForm)
-    JvPageList1: TJvPageList;
-    JvWPPage: TJvStandardPage;
-    pn_cchange: TPanel;
-    cb_colorchange: TCheckBox;
-    sgb_cchue: TSharpeGaugeBox;
-    sgb_ccsat: TSharpeGaugeBox;
-    sgb_cclight: TSharpeGaugeBox;
-    pn_gradient: TPanel;
-    cb_gradient: TCheckBox;
-    sgb_gstartalpha: TSharpeGaugeBox;
-    sgb_gendalpha: TSharpeGaugeBox;
-    wpcolors: TSharpEColorEditorEx;
-    Panel2: TPanel;
-    Panel3: TPanel;
-    SharpESwatchManager1: TSharpESwatchManager;
-    cb_gtype: TComboBox;
-    Label2: TLabel;
-    pgradient: TImage32;
-    JvCCPage: TJvStandardPage;
-    JvGDPage: TJvStandardPage;
-    gdcolors: TSharpEColorEditorEx;
-    Panel4: TPanel;
-    Panel5: TPanel;
-    ccimage: TImage32;
-    spcOptions: TSharpEPageControl;
-    lblMonitor: TLabel;
+    secWpColor: TSharpEColorEditorEx;
+    ssmConfig: TSharpESwatchManager;
     dlgOpen: TOpenDialog;
-    pnlMonitor: TPanel;
-    cboMonitor: TComboBox;
-    Label5: TLabel;
-    JvPageList2: TJvPageList;
+    plConfig: TJvPageList;
     pagWallpaper: TJvStandardPage;
-    JvStandardPage2: TJvStandardPage;
-    JvStandardPage3: TJvStandardPage;
+    pagColor: TJvStandardPage;
+    pagGradient: TJvStandardPage;
     lblWpFile: TLabel;
     lblWpFileDet: TLabel;
     Panel6: TPanel;
@@ -122,49 +95,80 @@ type
     Panel8: TPanel;
     chkWpMirrorVert: TCheckBox;
     chkWpMirrorHoriz: TCheckBox;
-    wpimage: TImage32;
+    imgWallpaper: TImage32;
     lblWpTrans: TLabel;
     lblWpTransDet: TLabel;
     Panel9: TPanel;
     sgbWpTrans: TSharpeGaugeBox;
-    lblFontColor: TLabel;
-    lblFontColorDet: TLabel;
-    Bevel1: TShape;
+    lblWpColor: TLabel;
+    lblWpColorDet: TLabel;
+    pnlMonitor: TSharpERoundPanel;
+    lblMonitorDet: TLabel;
+    lblMonitor: TLabel;
+    Panel3: TSharpERoundPanel;
+    cboMonitor: TComboBox;
+    lblApplyColorDet: TLabel;
+    chkApplyColor: TCheckBox;
+    imgColor: TImage32;
+    pnlColor: TPanel;
+    lblHSLColor: TLabel;
+    lblHSLColorDet: TLabel;
+    Panel10: TPanel;
+    sgbLum: TSharpeGaugeBox;
+    sgbSat: TSharpeGaugeBox;
+    sgbHue: TSharpeGaugeBox;
+    chkApplyGrad: TCheckBox;
+    lblApplyGrad: TLabel;
+    pnlGrad: TPanel;
+    lblGradType: TLabel;
+    lblGradTypeDet: TLabel;
+    Panel5: TPanel;
+    cboGradType: TComboBox;
+    lblGradTrans: TLabel;
+    lblGradTransDet: TLabel;
+    Panel11: TPanel;
+    sgbGradStartTrans: TSharpeGaugeBox;
+    sgbGradEndTrans: TSharpeGaugeBox;
+    lblGradColor: TLabel;
+    lblGradColorDet: TLabel;
+    secGradColor: TSharpEColorEditorEx;
+    imgGradient: TImage32;
     procedure fedit_image_KeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure tabsTabChange(ASender: TObject; const ATabIndex: Integer;
-      var AChange: Boolean);
-    procedure cb_mhorizClick(Sender: TObject);
-    procedure cb_alignmentChange(Sender: TObject);
+
+    procedure MirrorChangeEvent(Sender: TObject);
+    procedure AlignmentChangeEvent(Sender: TObject);
     procedure cb_gtypeChange(Sender: TObject);
-    procedure wpcolorsUiChange(Sender: TObject);
-    procedure sgb_gstartalphaChangeValue(Sender: TObject; Value: Integer);
+    procedure WallpaperColorUiChangeEvent(Sender: TObject);
+    procedure WallpaperTransChangeEvent(Sender: TObject; Value: Integer);
     procedure edtWallpaperChange(Sender: TObject);
-    procedure sgb_cchueChangeValue(Sender: TObject; Value: Integer);
-    procedure cb_gradientClick(Sender: TObject);
-    procedure cb_colorchangeClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnWpBrowseClick(Sender: TObject);
+    procedure ApplyColorClickEvent(Sender: TObject);
+    procedure ApplyGradientClickEvent(Sender: TObject);
+    procedure MonitorChangeEvent(Sender: TObject);
+    procedure HSLColorChangeEvent(Sender: TObject; Value: Integer);
   private
-    procedure SendUpdate;
-    procedure UpdateCCControls;
-    procedure UpdateGDControls;
+
+    procedure RenderGradient(AW, AH: Integer;
+      AGradientType: TThemeWallpaperGradientType;
+      AColorGradFrom, AColorGradTo, AAlphaFrom, AAlphaTo: Integer; var ABitmap: TBitmap32);
   public
-    sTheme : String;
-    currentWP : TWPItem;
-    update : boolean;
-    procedure UpdateGUIFromWPItem(WPItem : TWPItem);
+    FTheme: string;
+    FCurrentWP: TWPItem;
+    procedure UpdateGUIFromWPItem(AWPItem: TWPItem);
     procedure UpdateWPItemFromGuid;
-    procedure UpdatePreview;
     procedure RenderPreview;
-    procedure UpdateGradientPreview;
+
+    procedure UpdateWallpaperPage;
+    procedure UpdateColorPage;
+    procedure UpdateGradientPage;
   end;
 
 var
   frmWPSettings: TfrmWPSettings;
-  WPList : TObjectList;
+  WPList: TObjectList;
 
 implementation
 
@@ -184,19 +188,19 @@ begin
   // Default Settings
   Color := 0;
   Alpha := 255;
-  Size  := twsScale;
+  Size := twsScale;
   ColorChange := False;
-  Hue         := 0;
-  Saturation  := 0;
-  Lightness   := 0;
-  Gradient    := False;
+  Hue := 0;
+  Saturation := 0;
+  Lightness := 0;
+  Gradient := False;
   GradientType := twgtVert;
   GDStartColor := 0;
   GDStartAlpha := 0;
-  GDEndColor   := 0;
-  GDEndAlpha   := 255;
-  MirrorHoriz  := False;
-  MirrorVert   := False;
+  GDEndColor := 0;
+  GDEndAlpha := 255;
+  MirrorHoriz := False;
+  MirrorVert := False;
 
   //TLinearResampler.Create(Bmp);
 end;
@@ -211,7 +215,7 @@ end;
 
 procedure TWPItem.LoadFromFile;
 var
-  b : boolean;
+  b: boolean;
 begin
   b := False;
   if FileExists(Image) then
@@ -224,251 +228,311 @@ begin
   if not b then
   begin
     if Mon <> nil then
-       Bmp.SetSize(Mon.Width,Mon.Height)
-       else Bmp.SetSize(187,144);
-    Bmp.Clear(color32(0,0,0,0));
+      Bmp.SetSize(Mon.Width, Mon.Height)
+    else Bmp.SetSize(187, 144);
+    Bmp.Clear(color32(0, 0, 0, 0));
   end;
   wploaded := b;
 end;
 
-procedure TfrmWPSettings.UpdateGradientPreview;
-const
-  csize = 12;
-var
-  bmp : TBitmap32;
-  x,y : integer;
-  gt  : TThemeWallpaperGradientType;
+procedure TfrmWPSettings.UpdateColorPage;
 begin
-  bmp := TBitmap32.Create;
-  bmp.DrawMode := dmBlend;
-  bmp.CombineMode := cmMerge;
-  bmp.SetSize(pgradient.Width + 2*csize,pgradient.Height + 2*csize);
-  bmp.Clear(color32(clsilver));
-  for x := 0 to pgradient.Width div (2 * csize) do
-      for y := 0 to pgradient.Height div (csize) do
-          if y mod 2 = 0 then
-             bmp.FillRect(2*x*csize,y*csize,2*x*csize + csize,y*csize + csize,clWhite32)
-             else bmp.FillRect(2*x*csize + csize,y*csize,2*x*csize + 2*csize,y*csize + csize,clWhite32);
+  LockWindowUpdate(Self.Handle);
+  try
+    lblApplyColorDet.Font.Color := clGrayText;
+    lblHSLColorDet.Font.Color := clGrayText;
 
-  case cb_gtype.ItemIndex of
-    0: gt := twgtHoriz;
-    1: gt := twgtVert;
-    2: gt := twgtTSHoriz;
-    else gt := twgtTSVert;
+    pnlColor.Visible := chkApplyColor.Checked;
+
+    if chkApplyColor.Checked then
+      Self.Height := 150 else
+      Self.Height := 60;
+
+    if pnlMonitor.Visible then
+      Self.Height := Self.Height + 100;
+
+    CenterUpdateSize;
+  finally
+    LockWindowUpdate(0);
   end;
-
-  pgradient.Bitmap.SetSize(pgradient.Width,pgradient.Height);
-  bmp.DrawTo(pgradient.Bitmap);
-  bmp.Free;
-
-  pgradient.BeginUpdate;
-  ApplyGradient(pgradient.Bitmap,gt,
-                gdcolors.Items.Item[0].ColorCode,
-                gdcolors.Items.Item[1].ColorCode,
-                sgb_gstartalpha.Value,
-                sgb_gendalpha.Value);
-  pgradient.EndUpdate;
-
-  pgradient.Bitmap.FrameRectS(0,0,pgradient.Width,pgradient.Height,Color32(0,0,0,255));
 end;
 
-procedure TfrmWPSettings.UpdatePreview;
+procedure TfrmWPSettings.UpdateGradientPage;
 begin
-  SharpCenterApi.CenterUpdatePreview;
+  LockWindowUpdate(Self.Handle);
+  try
+    lblApplyGrad.Font.Color := clGrayText;
+    lblGradTypeDet.Font.Color := clGrayText;
+    lblGradTransDet.Font.Color := clGrayText;
+    lblGradColorDet.Font.Color := clGrayText;
+
+    pnlGrad.Visible := chkApplyGrad.Checked;
+
+    if chkApplyGrad.Checked then
+      Self.Height := 450 else
+      Self.Height := 60;
+
+    if pnlMonitor.Visible then
+      Self.Height := Self.Height + 100;
+
+    CenterUpdateSize;
+  finally
+    LockWindowUpdate(0);
+  end;
+end;
+
+procedure TfrmWPSettings.RenderGradient(AW, AH: Integer;
+  AGradientType: TThemeWallpaperGradientType;
+  AColorGradFrom, AColorGradTo, AAlphaFrom, AAlphaTo: Integer; var ABitmap: TBitmap32);
+const
+  cSize = 12;
+var
+  iW, iH: Integer;
+  bmp: TBitmap32;
+  x, y: integer;
+begin
+  iW := AW + (2 * cSize);
+  iH := AH + (2 * cSize);
+
+  bmp := TBitmap32.Create;
+  try
+    bmp.DrawMode := dmBlend;
+    bmp.CombineMode := cmMerge;
+    bmp.SetSize(iW, iH);
+    bmp.Clear(color32(clsilver));
+    for x := 0 to iW do
+      for y := 0 to iH do
+        if y mod 2 = 0 then
+          bmp.FillRect(2 * x * csize, y * csize, 2 * x * csize + csize, y * csize + csize, clWhite32)
+        else bmp.FillRect(2 * x * csize + csize, y * csize, 2 * x * csize + 2 * csize, y * csize + csize, clWhite32);
+
+    ABitmap.SetSize(iW, iH);
+    bmp.DrawTo(ABitmap);
+  finally
+    bmp.Free;
+  end;
+
+  ABitmap.BeginUpdate;
+  ApplyGradient(ABitmap, AGradientType,
+    AColorGradFrom,
+    AColorGradTo,
+    AAlphaFrom,
+    AAlphaTo);
+  ABitmap.EndUpdate;
+
+  ABitmap.FrameRectS(0, 0, ABitmap.Width, ABitmap.Height, Color32(0, 0, 0, 255));
 end;
 
 procedure TfrmWPSettings.RenderPreview;
 var
-  w,w2,h,h2 : integer;
-  WPBmp : TBitmap32;
-  RSBmp : TBitmap32;
-  x,y : integer;
+  w, w2, h, h2: integer;
+  WPBmp: TBitmap32;
+  RSBmp: TBitmap32;
+  x, y: integer;
 begin
-  if CurrentWP = nil then exit;
-  if CurrentWP.Mon = nil then exit;
+  if FCurrentWP = nil then exit;
+  if FCurrentWP.Mon = nil then exit;
 
   WPBmp := TBitmap32.Create;
   WPBmp.DrawMode := dmBlend;
   WPBmp.CombineMode := cmMerge;
   RSBmp := TBitmap32.Create;
 
-  with CurrentWP do
+  with FCurrentWP do
   begin
     // decide size
     if Mon.Width > Mon.Height then
     begin
-      w := wpimage.Width;
-      h := round(wpimage.Width * (Mon.Height / Mon.Width));
+      w := imgWallpaper.Width;
+      h := round(imgWallpaper.Width * (Mon.Height / Mon.Width));
     end else
     begin
-      h := wpimage.Height;
-      w := round(wpimage.Height * (Mon.Width / Mon.Height));
+      h := imgWallpaper.Height;
+      w := round(imgWallpaper.Height * (Mon.Width / Mon.Height));
     end;
     w2 := round(Bmp.Width * (w / Mon.Width));
     h2 := round(Bmp.Height * (h / Mon.Height));
 
-    BmpPreview.SetSize(w,h);
-    BmpPreview.Clear(color32(CurrentWP.Color));
+    BmpPreview.SetSize(w, h);
+    BmpPreview.Clear(color32(FCurrentWP.Color));
 
-    RSBmp.SetSize(w2,h2);
-    Bmp.DrawTo(RSBmp,Rect(0,0,w2,h2));
-    WPBmp.SetSize(w,h);
-    WPBmp.Clear(color32(0,0,0,0));
+    RSBmp.SetSize(w2, h2);
+    Bmp.DrawTo(RSBmp, Rect(0, 0, w2, h2));
+    WPBmp.SetSize(w, h);
+    WPBmp.Clear(color32(0, 0, 0, 0));
     case Size of
-      twsStretch: RSBmp.DrawTo(WPBmp,Rect(0,0,w,h));
-      twsCenter: RSBmp.DrawTo(WPBmp,WPBmp.Width div 2 - RSBmp.Width div 2,
-                                    WPBmp.Height div 2 - RSBmp.Height div 2);
+      twsStretch: RSBmp.DrawTo(WPBmp, Rect(0, 0, w, h));
+      twsCenter: RSBmp.DrawTo(WPBmp, WPBmp.Width div 2 - RSBmp.Width div 2,
+          WPBmp.Height div 2 - RSBmp.Height div 2);
       twsScale:
         begin
           if ((w2 <> 0) and (h2 <> 0)) then begin
-          if w2/h2 = w/h then
-             RSBmp.Drawto(WPBmp,Rect(0,0,w,h))
-          else if (w2/h2) > (w/h) then
-                  RSBmp.DrawTo(WPBmp,Rect(0,round(h / 2 - (w/w2)*h2 / 2),w,round(h / 2 + (w/w2)*h2 / 2)))
-          else RSBmp.DrawTo(WPBmp,Rect(round(w / 2 - (h/h2)*w2 / 2),0,round(w / 2 + (h/h2)*w2 / 2),h));
-        end;
+            if w2 / h2 = w / h then
+              RSBmp.Drawto(WPBmp, Rect(0, 0, w, h))
+            else if (w2 / h2) > (w / h) then
+              RSBmp.DrawTo(WPBmp, Rect(0, round(h / 2 - (w / w2) * h2 / 2), w, round(h / 2 + (w / w2) * h2 / 2)))
+            else RSBmp.DrawTo(WPBmp, Rect(round(w / 2 - (h / h2) * w2 / 2), 0, round(w / 2 + (h / h2) * w2 / 2), h));
+          end;
         end;
       twsTile:
         for x := 0 to w div w2 do
-            for y := 0 to h div h2 do
-                RSBmp.DrawTo(WPBmp,x*w2,y*h2);
+          for y := 0 to h div h2 do
+            RSBmp.DrawTo(WPBmp, x * w2, y * h2);
     end;
 
-    wpimage.bitmap.assign(WPBmp);
-    wpimage.bitmap.FrameRectS(0,0,w,h,Color32(0,0,0,255));
+    imgWallpaper.bitmap.assign(WPBmp);
+    imgWallpaper.bitmap.FrameRectS(0, 0, w, h, Color32(0, 0, 0, 255));
 
     if MirrorHoriz then
-       WPBmp.Canvas.CopyRect(Rect(WPBmp.Width,0,0,WPBmp.Height),WPBmp.Canvas,Rect(0,0,WPBmp.Width,WPBmp.Height));
+      WPBmp.Canvas.CopyRect(Rect(WPBmp.Width, 0, 0, WPBmp.Height), WPBmp.Canvas, Rect(0, 0, WPBmp.Width, WPBmp.Height));
     if MirrorVert then
-       WPBmp.Canvas.CopyRect(Rect(0,WPBmp.Height,WPBmp.Width,0),WPBmp.Canvas,Rect(0,0,WPBmp.Width,WPBmp.Height));
+      WPBmp.Canvas.CopyRect(Rect(0, WPBmp.Height, WPBmp.Width, 0), WPBmp.Canvas, Rect(0, 0, WPBmp.Width, WPBmp.Height));
 
     if ColorChange then
-       HSLChangeImage(WPBmp,Hue,Saturation,Lightness);
+      HSLChangeImage(WPBmp, Hue, Saturation, Lightness);
 
-    ccimage.bitmap.assign(WPBmp);
-    ccimage.bitmap.FrameRectS(0,0,w,h,Color32(0,0,0,255));
+    imgColor.bitmap.assign(WPBmp);
+    imgColor.bitmap.FrameRectS(0, 0, w, h, Color32(0, 0, 0, 255));
 
     if Gradient then
-       ApplyGradient(WPBmp,GradientType,
-                     GDStartColor,GDEndColor,GDStartAlpha,GDEndAlpha);
+      ApplyGradient(WPBmp, GradientType,
+        GDStartColor, GDEndColor, GDStartAlpha, GDEndAlpha);
 
     WPBmp.MasterAlpha := Alpha;
-    WPBmp.DrawTo(BmpPreview,0,0);
+    WPBmp.DrawTo(BmpPreview, 0, 0);
 
-    BmpPreview.FrameRectS(0,0,w,h,Color32(0,0,0,255));
+    BmpPreview.FrameRectS(0, 0, w, h, Color32(0, 0, 0, 255));
   end;
 
   RSBmp.Free;
   WPBmp.Free;
 end;
 
+procedure TfrmWPSettings.HSLColorChangeEvent(Sender: TObject; Value: Integer);
+begin
+  UpdateWPItemFromGuid;
+  CenterDefineSettingsChanged;
+end;
+
+procedure TfrmWPSettings.UpdateWallpaperPage;
+begin
+  LockWindowUpdate(Self.Handle);
+  try
+    lblWpFileDet.Font.Color := clGrayText;
+    lblWpAlignDet.Font.Color := clGrayText;
+    lblWpMirrorDet.Font.Color := clGrayText;
+    lblWpTransDet.Font.Color := clGrayText;
+    lblWpColorDet.Font.Color := clGrayText;
+
+    if pnlMonitor.Visible then
+      Self.Height := 600 else
+      Self.Height := 500;
+
+    CenterUpdateSize;
+  finally
+    LockWindowUpdate(0);
+  end;
+end;
+
 procedure TfrmWPSettings.UpdateWPItemFromGuid;
 begin
-  if update then exit;
-  if currentWP = nil then exit;
+  if FCurrentWP = nil then exit;
 
   if rdoWpAlignCenter.Checked then
-    currentWP.Size := twsCenter else
-  if rdoWpAlignScale.Checked then
-    currentWP.Size := twsScale else
-  if rdoWpAlignStretch.Checked then
-    currentWP.Size := twsStretch else
-  if rdoWpAlignTile.Checked then
-    currentWP.Size := twsTile;
+    FCurrentWP.Size := twsCenter else
+    if rdoWpAlignScale.Checked then
+      FCurrentWP.Size := twsScale else
+      if rdoWpAlignStretch.Checked then
+        FCurrentWP.Size := twsStretch else
+        if rdoWpAlignTile.Checked then
+          FCurrentWP.Size := twsTile;
 
-  currentWP.MirrorHoriz     := chkWpMirrorHoriz.Checked;
-  currentWP.MirrorVert      := chkWpMirrorVert.Checked;
-  currentWP.Image           := edtWpFile.Text;
-  currentWP.Alpha           := sgbWpTrans.Value;
-  currentWP.ColorChange     := cb_colorchange.checked;
-  currentWP.Hue             := sgb_cchue.Value;
-  currentWP.Saturation      := sgb_ccsat.Value;
-  currentWP.Lightness       := sgb_cclight.Value;
-  currentWP.Gradient        := cb_gradient.Checked;
-  case cb_gtype.ItemIndex of
-    0: currentWP.GradientType := twgtHoriz;
-    1: currentWP.GradientType := twgtVert;
-    2: currentWP.GradientType := twgtTSHoriz;
-    3: currentWP.GradientType := twgtTSVert;
+  FCurrentWP.MirrorHoriz := chkWpMirrorHoriz.Checked;
+  FCurrentWP.MirrorVert := chkWpMirrorVert.Checked;
+  FCurrentWP.Image := edtWpFile.Text;
+  FCurrentWP.Alpha := sgbWpTrans.Value;
+  FCurrentWP.ColorChange := chkApplyColor.checked;
+  FCurrentWP.Hue := sgbHue.Value;
+  FCurrentWP.Saturation := sgbSat.Value;
+  FCurrentWP.Lightness := sgbLum.Value;
+  FCurrentWP.Gradient := chkApplyGrad.Checked;
+  case cboGradType.ItemIndex of
+    0: FCurrentWP.GradientType := twgtHoriz;
+    1: FCurrentWP.GradientType := twgtVert;
+    2: FCurrentWP.GradientType := twgtTSHoriz;
+    3: FCurrentWP.GradientType := twgtTSVert;
   end;
-  currentWP.GDStartAlpha := sgb_gstartalpha.Value;
-  currentWP.GDEndAlpha   := sgb_gendalpha.Value;
-  currentWP.Color        := wpcolors.Items.Item[0].ColorCode;
-  currentWP.GDStartColor := gdcolors.Items.Item[0].ColorCode;
-  currentWP.GDEndColor   := gdcolors.Items.Item[1].ColorCode;
+  FCurrentWP.GDStartAlpha := sgbGradStartTrans.Value;
+  FCurrentWP.GDEndAlpha := sgbGradEndTrans.Value;
+  FCurrentWP.Color := secWpColor.Items.Item[0].ColorCode;
+  FCurrentWP.GDStartColor := secGradColor.Items.Item[0].ColorCode;
+  FCurrentWP.GDEndColor := secGradColor.Items.Item[1].ColorCode;
 
   RenderPreview;
-  UpdatePreview;
-  SendUpdate;
+  CenterUpdatePreview;
 end;
 
-procedure TfrmWPSettings.UpdateGUIFromWPItem(WPItem : TWPItem);
+procedure TfrmWPSettings.UpdateGUIFromWPItem(AWPItem: TWPItem);
 begin
-  update := True;
-  currentWP := WPItem;
-  case WPItem.Size of
-    twsCenter  : rdoWpAlignCenter.Checked;
-    twsScale   : rdoWpAlignScale.Checked;
-    twsStretch : rdoWpAlignStretch.Checked;
-    twsTile    : rdoWpAlignTile.Checked;
+  chkWpMirrorVert.OnClick := nil;
+  chkWpMirrorHoriz.OnClick := nil;
+  chkApplyColor.OnClick := nil;
+  chkApplyGrad.OnClick := nil;
+  rdoWpAlignStretch.OnClick := nil;
+  rdoWpAlignScale.OnClick := nil;
+  rdoWpAlignCenter.OnClick := nil;
+  rdoWpAlignTile.OnClick := nil;
+  edtWpFile.OnChange := nil;
+  try
+
+    FCurrentWP := AWPItem;
+    case AWPItem.Size of
+      twsCenter: rdoWpAlignCenter.Checked := True;
+      twsScale: rdoWpAlignScale.Checked := True;
+      twsStretch: rdoWpAlignStretch.Checked := True;
+      twsTile: rdoWpAlignTile.Checked := True;
+    end;
+    chkWpMirrorHoriz.Checked := AWPItem.MirrorHoriz;
+    chkWpMirrorVert.Checked := AWPItem.MirrorVert;
+    edtWpFile.Text := AWPItem.Image;
+    sgbWpTrans.Value := AWPItem.Alpha;
+    chkApplyColor.checked := AWPItem.ColorChange;
+    sgbHue.Value := AWPItem.Hue;
+    sgbSat.Value := AWPItem.Saturation;
+    sgbLum.Value := AWPItem.Lightness;
+    chkApplyGrad.Checked := AWPItem.Gradient;
+    case AWPItem.GradientType of
+      twgtHoriz: cboGradType.ItemIndex := 0;
+      twgtVert: cboGradType.ItemIndex := 1;
+      twgtTSHoriz: cboGradType.ItemIndex := 2;
+      twgtTSVert: cboGradType.ItemIndex := 3;
+    end;
+    sgbGradStartTrans.Value := AWPItem.GDStartAlpha;
+    sgbGradEndTrans.Value := AWPItem.GDEndAlpha;
+    secWpColor.Items.Item[0].ColorCode := AWPItem.Color;
+    secGradColor.Items.Item[0].ColorCode := AWPItem.GDStartColor;
+    secGradColor.Items.Item[1].ColorCode := AWPItem.GDEndColor;
+
+    UpdateWPItemFromGuid;
+    RenderPreview;
+    CenterUpdatePreview;
+  finally
+    chkWpMirrorVert.OnClick := MirrorChangeEvent;
+    chkWpMirrorHoriz.OnClick := MirrorChangeEvent;
+    chkApplyColor.OnClick := ApplyColorClickEvent;
+    chkApplyGrad.OnClick := ApplyGradientClickEvent;
+    rdoWpAlignStretch.OnClick := AlignmentChangeEvent;
+    rdoWpAlignScale.OnClick := AlignmentChangeEvent;
+    rdoWpAlignCenter.OnClick := AlignmentChangeEvent;
+    rdoWpAlignTile.OnClick := AlignmentChangeEvent;
+    edtWpFile.OnChange := edtWallpaperChange;
   end;
-  chkWpMirrorHoriz.Checked      := WPItem.MirrorHoriz;
-  chkWpMirrorVert.Checked       := WPItem.MirrorVert;
-  edtWpFile.Text       := WPItem.Image;
-  sgbWpTrans.Value      := WPItem.Alpha;
-  cb_colorchange.checked := WPItem.ColorChange;
-  sgb_cchue.Value        := WPItem.Hue;
-  sgb_ccsat.Value        := WPItem.Saturation;
-  sgb_cclight.Value      := WPItem.Lightness;
-  cb_gradient.Checked    := WPItem.Gradient;
-  case WPItem.GradientType of
-    twgtHoriz   : cb_gtype.ItemIndex := 0;
-    twgtVert    : cb_gtype.ItemIndex := 1;
-    twgtTSHoriz : cb_gtype.ItemIndex := 2;
-    twgtTSVert  : cb_gtype.ItemIndex := 3;
-  end;
-  sgb_gstartalpha.Value := WPItem.GDStartAlpha;
-  sgb_gendalpha.Value   := WPItem.GDEndAlpha;
-  wpcolors.Items.Item[0].ColorCode := WPItem.Color;
-  gdcolors.Items.Item[0].ColorCode := WPItem.GDStartColor;
-  gdcolors.Items.Item[1].ColorCode := WPItem.GDEndColor;
-
-  Update := False;
-  RenderPreview;
-  UpdatePreview;
-end;
-
-procedure TfrmWPSettings.UpdateCCControls;
-begin
-  if cb_colorchange.checked then
-     pn_cchange.Height := 193
-     else pn_cchange.Height := 32;
-end;
-procedure TfrmWPSettings.UpdateGDControls;
-begin
-  if cb_gradient.Checked then
-     pn_gradient.Height := 145
-     else pn_gradient.Height := 32;
-
-  if cb_gradient.Checked then
-     UpdateGradientPreview;
-
-  gdcolors.Items.Item[0].Visible := cb_gradient.Checked;
-  gdcolors.Items.Item[1].Visible := cb_gradient.Checked;
 end;
 
 procedure TfrmWPSettings.FormCreate(Sender: TObject);
 begin
-  Update := False;
   Self.DoubleBuffered := true;
-
   WPList := TObjecTList.Create(False);
-end;
-
-procedure TfrmWPSettings.SendUpdate;
-begin
-  if Visible then
-     SharpEBroadCast(WM_SHARPCENTERMESSAGE, SCM_SET_SETTINGS_CHANGED, 0);
 end;
 
 procedure TfrmWPSettings.FormDestroy(Sender: TObject);
@@ -476,95 +540,94 @@ begin
   WPList.Free;
 end;
 
-procedure TfrmWPSettings.FormShow(Sender: TObject);
-begin
-  UpdateCCControls;
-  UpdateGDControls
-end;
-
-procedure TfrmWPSettings.cb_colorchangeClick(Sender: TObject);
-begin
-  UpdateCCControls;
-  UpdateWPItemFromGuid;
-end;
-
-procedure TfrmWPSettings.cb_gradientClick(Sender: TObject);
-begin
-  UpdateGDControls;
-  UpdateWPItemFromGuid;
-end;
-
-procedure TfrmWPSettings.sgb_cchueChangeValue(Sender: TObject; Value: Integer);
-begin
-  UpdateWPItemFromGuid;
-end;
-
 procedure TfrmWPSettings.edtWallpaperChange(Sender: TObject);
 var
-  SList : TStringList;
-  loaded : boolean;
-  exists : boolean;
-  i : integer;
-  os : boolean;
+  SList: TStringList;
+  loaded: boolean;
+  exists: boolean;
+  i: integer;
+  os: boolean;
 begin
-  if CurrentWP = nil then exit;
+  if FCurrentWP = nil then exit;
 
-  os := CurrentWP.WPLoaded;
+  os := FCurrentWP.WPLoaded;
   loaded := False;
   exists := False;
   SList := TStringList.Create;
-  SList.Add(SharpApi.GetSharpeUserSettingsPath + 'Themes\' + sTheme + '\' + edtWpFile.text);
+  SList.Add(SharpApi.GetSharpeUserSettingsPath + 'Themes\' + FTheme + '\' + edtWpFile.text);
   SList.Add(edtWpFile.text);
   SList.Add(SharpApi.GetSharpeDirectory + edtWpFile.text);
   for i := 0 to SList.Count - 1 do
-  if FileExists(SList[i]) then
-     try
-       CurrentWP.Image := SList[i];
-       CurrentWP.LoadFromFile;
-       exists := True;
-       loaded := True;
-       break;
-     except
-     end;
+    if FileExists(SList[i]) then
+    try
+      FCurrentWP.Image := SList[i];
+      FCurrentWP.LoadFromFile;
+      exists := True;
+      loaded := True;
+      break;
+    except
+    end;
   SList.Free;
   if not loaded then
   begin
     if not exists then
     begin
-      CurrentWP.Image := edtWpFile.Text;
-      CurrentWP.LoadFromFile;
+      FCurrentWP.Image := edtWpFile.Text;
+      FCurrentWP.LoadFromFile;
     end;
 
     if loaded <> os then
     begin
       RenderPreview;
-      UpdatePreview;
+      CenterUpdatePreview;
     end;
   end else
   begin
     RenderPreview;
-    UpdatePreview;
+    CenterUpdatePreview;
   end;
-  SendUpdate;
+  CenterDefineSettingsChanged;
 end;
 
-procedure TfrmWPSettings.sgb_gstartalphaChangeValue(Sender: TObject;
+procedure TfrmWPSettings.WallpaperTransChangeEvent(Sender: TObject;
   Value: Integer);
 begin
-  UpdateGradientPreview;
   UpdateWPItemFromGuid;
+  CenterDefineSettingsChanged;
 end;
 
-procedure TfrmWPSettings.wpcolorsUiChange(Sender: TObject);
+procedure TfrmWPSettings.WallpaperColorUiChangeEvent(Sender: TObject);
 begin
   UpdateWPItemFromGuid;
-  UpdateGradientPreview;
+  CenterDefineSettingsChanged;
+end;
+
+procedure TfrmWPSettings.MonitorChangeEvent(Sender: TObject);
+begin
+  FCurrentWP := TWPItem(cboMonitor.Items.Objects[cboMonitor.ItemIndex]);
+  UpdateWPItemFromGuid;
+  RenderPreview;
+  CenterUpdatePreview;
 end;
 
 procedure TfrmWPSettings.cb_gtypeChange(Sender: TObject);
 begin
   UpdateWPItemFromGuid;
-  UpdateGradientPreview;
+  CenterDefineSettingsChanged;
+end;
+
+procedure TfrmWPSettings.ApplyGradientClickEvent(Sender: TObject);
+begin
+  UpdateWPItemFromGuid;
+  UpdateGradientPage;
+  CenterDefineSettingsChanged;
+end;
+
+procedure TfrmWPSettings.ApplyColorClickEvent(Sender: TObject);
+begin
+  UpdateWPItemFromGuid;
+  UpdateColorPage;
+  CenterDefineSettingsChanged;
 end;
 
 procedure TfrmWPSettings.btnWpBrowseClick(Sender: TObject);
@@ -574,26 +637,16 @@ begin
   end;
 end;
 
-procedure TfrmWPSettings.cb_alignmentChange(Sender: TObject);
+procedure TfrmWPSettings.AlignmentChangeEvent(Sender: TObject);
 begin
   UpdateWPItemFromGuid;
+  CenterDefineSettingsChanged;
 end;
 
-procedure TfrmWPSettings.cb_mhorizClick(Sender: TObject);
+procedure TfrmWPSettings.MirrorChangeEvent(Sender: TObject);
 begin
   UpdateWPItemFromGuid;
-end;
-
-procedure TfrmWPSettings.tabsTabChange(ASender: TObject;
-  const ATabIndex: Integer; var AChange: Boolean);
-begin
-  AChange := True;
-  case ATabIndex of
-    0: JvPageList1.ActivePage := JvWPPage;
-    1: JvPageList1.ActivePage := JvCCPage;
-    2: JvPageList1.ActivePage := JvGDPage;
-    else AChange := False;
-  end;
+  CenterDefineSettingsChanged;
 end;
 
 procedure TfrmWPSettings.fedit_image_KeyUp(Sender: TObject; var Key: Word;
@@ -603,6 +656,4 @@ begin
 end;
 
 end.
-
-
 

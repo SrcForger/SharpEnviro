@@ -1,9 +1,10 @@
 object frmWPSettings: TfrmWPSettings
   Left = 0
   Top = 0
+  BorderStyle = bsNone
   Caption = 'frmWPSettings'
-  ClientHeight = 615
-  ClientWidth = 429
+  ClientHeight = 566
+  ClientWidth = 491
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,444 +15,36 @@ object frmWPSettings: TfrmWPSettings
   Position = poDesigned
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object lblMonitor: TLabel
-    AlignWithMargins = True
-    Left = 8
-    Top = 8
-    Width = 413
-    Height = 17
-    Margins.Left = 8
-    Margins.Top = 8
-    Margins.Right = 8
-    Margins.Bottom = 0
-    Align = alTop
-    AutoSize = False
-    Caption = 'Monitor'
-    ExplicitLeft = -134
-    ExplicitWidth = 579
-  end
-  object Label5: TLabel
-    AlignWithMargins = True
-    Left = 26
-    Top = 29
-    Width = 395
-    Height = 15
-    Margins.Left = 26
-    Margins.Top = 4
-    Margins.Right = 8
-    Margins.Bottom = 0
-    Align = alTop
-    AutoSize = False
-    Caption = 'Please select the monitor from the list below'
-    EllipsisPosition = epEndEllipsis
-    Transparent = False
-    ExplicitTop = 20
-    ExplicitWidth = 411
-  end
-  object Bevel1: TShape
+  object plConfig: TJvPageList
     AlignWithMargins = True
     Left = 0
-    Top = 83
-    Width = 429
-    Height = 1
-    Margins.Left = 0
-    Margins.Top = 8
-    Margins.Right = 0
-    Margins.Bottom = 0
-    Align = alTop
-    Pen.Color = clBtnFace
-  end
-  object spcOptions: TSharpEPageControl
-    Left = 8
-    Top = 320
-    Width = 445
-    Height = 400
-    Visible = False
-    ExpandedHeight = 200
-    TabItems = <
-      item
-        Caption = 'Wallpaper'
-        ImageIndex = 0
-        Visible = True
-      end
-      item
-        Caption = 'Color'
-        ImageIndex = 0
-        Visible = True
-      end
-      item
-        Caption = 'Gradient'
-        ImageIndex = 0
-        Visible = True
-      end>
-    RoundValue = 10
-    Border = True
-    TabWidth = 80
-    TabIndex = 0
-    TabAlignment = taLeftJustify
-    AutoSizeTabs = False
-    TabBackgroundColor = clWindow
-    BackgroundColor = clWindow
-    BorderColor = clBtnFace
-    TabColor = 15724527
-    TabSelColor = clWhite
-    TabCaptionSelColor = clBlack
-    TabStatusSelColor = clGreen
-    TabCaptionColor = clBlack
-    TabStatusColor = clGreen
-    DesignSize = (
-      445
-      400)
-    object JvPageList1: TJvPageList
-      AlignWithMargins = True
-      Left = 3
-      Top = 26
-      Width = 439
-      Height = 371
-      Margins.Top = 26
-      ActivePage = JvWPPage
-      PropagateEnable = False
-      Align = alClient
-      Visible = False
-      ParentBackground = True
-      ExplicitHeight = 527
-      object JvWPPage: TJvStandardPage
-        Left = 0
-        Top = 0
-        Width = 439
-        Height = 371
-        Caption = 'JvWPPage'
-        ExplicitHeight = 527
-        object Panel2: TPanel
-          Left = 0
-          Top = 0
-          Width = 8
-          Height = 371
-          Align = alLeft
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 0
-          ExplicitTop = 217
-          ExplicitHeight = 310
-        end
-        object Panel3: TPanel
-          Left = 431
-          Top = 0
-          Width = 8
-          Height = 371
-          Align = alRight
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 1
-          ExplicitTop = 217
-          ExplicitHeight = 310
-        end
-      end
-      object JvCCPage: TJvStandardPage
-        Left = 0
-        Top = 0
-        Width = 439
-        Height = 371
-        Caption = 'JvCCPage'
-        ExplicitHeight = 527
-        object pn_cchange: TPanel
-          Left = 0
-          Top = 0
-          Width = 439
-          Height = 193
-          Align = alTop
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 0
-          object cb_colorchange: TCheckBox
-            Left = 8
-            Top = 8
-            Width = 97
-            Height = 17
-            Caption = 'Change Color'
-            TabOrder = 0
-            OnClick = cb_colorchangeClick
-          end
-          object sgb_cchue: TSharpeGaugeBox
-            Left = 216
-            Top = 40
-            Width = 193
-            Height = 21
-            ParentBackground = False
-            Min = -128
-            Max = 128
-            Value = 0
-            Prefix = 'Hue: '
-            Description = 'Adjust to set the Hue modification amount'
-            PopPosition = ppBottom
-            PercentDisplay = False
-            OnChangeValue = sgb_cchueChangeValue
-          end
-          object sgb_ccsat: TSharpeGaugeBox
-            Left = 216
-            Top = 72
-            Width = 193
-            Height = 21
-            ParentBackground = False
-            Min = -255
-            Max = 255
-            Value = 0
-            Prefix = 'Saturation: '
-            Description = 'Adjust to set the Saturation modification amount'
-            PopPosition = ppBottom
-            PercentDisplay = False
-            OnChangeValue = sgb_cchueChangeValue
-          end
-          object sgb_cclight: TSharpeGaugeBox
-            Left = 216
-            Top = 104
-            Width = 193
-            Height = 21
-            ParentBackground = False
-            Min = -255
-            Max = 255
-            Value = 0
-            Prefix = 'Lightness: '
-            Description = 'Adjust to set the lightness modification amount '
-            PopPosition = ppBottom
-            PercentDisplay = False
-            OnChangeValue = sgb_cchueChangeValue
-          end
-          object ccimage: TImage32
-            Left = 16
-            Top = 36
-            Width = 187
-            Height = 144
-            Bitmap.ResamplerClassName = 'TNearestResampler'
-            BitmapAlign = baTopLeft
-            Scale = 1.000000000000000000
-            ScaleMode = smNormal
-            TabOrder = 4
-          end
-        end
-      end
-      object JvGDPage: TJvStandardPage
-        Left = 0
-        Top = 0
-        Width = 439
-        Height = 371
-        Caption = 'JvGDPage'
-        ExplicitHeight = 527
-        object pn_gradient: TPanel
-          Left = 0
-          Top = 0
-          Width = 439
-          Height = 145
-          Align = alTop
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 0
-          object Label2: TLabel
-            Left = 233
-            Top = 32
-            Width = 28
-            Height = 13
-            Caption = 'Type:'
-          end
-          object cb_gradient: TCheckBox
-            Left = 8
-            Top = 8
-            Width = 97
-            Height = 17
-            Caption = 'Gradient Effect'
-            TabOrder = 0
-            OnClick = cb_gradientClick
-          end
-          object sgb_gstartalpha: TSharpeGaugeBox
-            Left = 232
-            Top = 64
-            Width = 193
-            Height = 21
-            ParentBackground = False
-            Min = 0
-            Max = 255
-            Value = 0
-            Prefix = 'Start Transparency: '
-            Suffix = '%'
-            Description = 'Adjust to set the Hue modification amount'
-            PopPosition = ppBottom
-            PercentDisplay = True
-            OnChangeValue = sgb_gstartalphaChangeValue
-          end
-          object sgb_gendalpha: TSharpeGaugeBox
-            Left = 232
-            Top = 96
-            Width = 193
-            Height = 21
-            ParentBackground = False
-            Min = 0
-            Max = 255
-            Value = 255
-            Prefix = 'End Transparency: '
-            Suffix = '%'
-            Description = 'Adjust to set the Saturation modification amount'
-            PopPosition = ppBottom
-            PercentDisplay = True
-            OnChangeValue = sgb_gstartalphaChangeValue
-          end
-          object cb_gtype: TComboBox
-            Left = 281
-            Top = 32
-            Width = 145
-            Height = 21
-            Style = csDropDownList
-            ItemHeight = 13
-            TabOrder = 3
-            OnChange = cb_gtypeChange
-            Items.Strings = (
-              'Horizontal'
-              'Vertical'
-              'Left/Right Horizontal'
-              'Top/Bottom Vertical')
-          end
-          object pgradient: TImage32
-            Left = 16
-            Top = 36
-            Width = 193
-            Height = 88
-            Bitmap.ResamplerClassName = 'TNearestResampler'
-            BitmapAlign = baCenter
-            Scale = 1.000000000000000000
-            ScaleMode = smNormal
-            TabOrder = 4
-          end
-        end
-        object gdcolors: TSharpEColorEditorEx
-          Left = 8
-          Top = 145
-          Width = 423
-          Height = 226
-          VertScrollBar.Smooth = True
-          VertScrollBar.Tracking = True
-          Align = alClient
-          AutoSize = True
-          BevelInner = bvNone
-          BevelOuter = bvNone
-          BorderStyle = bsNone
-          Color = clWindow
-          ParentColor = False
-          TabOrder = 1
-          Items = <
-            item
-              Title = 'Gradient Start'
-              ColorCode = 0
-              ColorAsTColor = clBlack
-              Expanded = False
-              ValueEditorType = vetColor
-              Value = 0
-              Visible = True
-              ColorEditor = gdcolors.Item0
-              Tag = 0
-            end
-            item
-              Title = 'Gradient End'
-              ColorCode = 0
-              ColorAsTColor = clBlack
-              Expanded = False
-              ValueEditorType = vetColor
-              Value = 0
-              Visible = True
-              ColorEditor = gdcolors.Item1
-              Tag = 0
-            end>
-          SwatchManager = SharpESwatchManager1
-          OnUiChange = wpcolorsUiChange
-          ExplicitHeight = 382
-        end
-        object Panel4: TPanel
-          Left = 431
-          Top = 145
-          Width = 8
-          Height = 226
-          Align = alRight
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 2
-          ExplicitHeight = 382
-        end
-        object Panel5: TPanel
-          Left = 0
-          Top = 145
-          Width = 8
-          Height = 226
-          Align = alLeft
-          BevelOuter = bvNone
-          ParentColor = True
-          TabOrder = 3
-          ExplicitHeight = 382
-        end
-      end
-    end
-  end
-  object pnlMonitor: TPanel
-    AlignWithMargins = True
-    Left = 28
-    Top = 52
-    Width = 393
-    Height = 23
-    Margins.Left = 28
-    Margins.Top = 8
-    Margins.Right = 8
-    Margins.Bottom = 0
-    Align = alTop
-    BevelOuter = bvNone
-    ParentBackground = False
-    ParentColor = True
-    TabOrder = 1
-    ExplicitTop = 33
-    ExplicitWidth = 409
-    object cboMonitor: TComboBox
-      Left = 0
-      Top = 0
-      Width = 250
-      Height = 23
-      Margins.Left = 28
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alLeft
-      Style = csOwnerDrawVariable
-      Constraints.MaxWidth = 250
-      DropDownCount = 12
-      ItemHeight = 17
-      TabOrder = 0
-    end
-  end
-  object JvPageList2: TJvPageList
-    AlignWithMargins = True
-    Left = 0
-    Top = 84
-    Width = 429
-    Height = 500
+    Top = 91
+    Width = 491
+    Height = 475
     Margins.Left = 0
     Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
     ActivePage = pagWallpaper
     PropagateEnable = False
-    Align = alTop
-    ExplicitTop = 75
-    ExplicitWidth = 445
+    Align = alClient
+    ExplicitWidth = 475
+    ExplicitHeight = 514
     object pagWallpaper: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 429
-      Height = 500
+      Width = 491
+      Height = 475
       Caption = 'pagWallpaper'
-      ExplicitTop = -5
+      ExplicitWidth = 475
+      ExplicitHeight = 410
       object lblWpFile: TLabel
         AlignWithMargins = True
         Left = 8
         Top = 8
-        Width = 413
+        Width = 475
         Height = 17
         Margins.Left = 8
         Margins.Top = 8
@@ -468,7 +61,7 @@ object frmWPSettings: TfrmWPSettings
         AlignWithMargins = True
         Left = 26
         Top = 29
-        Width = 395
+        Width = 457
         Height = 15
         Margins.Left = 26
         Margins.Top = 4
@@ -487,7 +80,7 @@ object frmWPSettings: TfrmWPSettings
         AlignWithMargins = True
         Left = 8
         Top = 82
-        Width = 413
+        Width = 475
         Height = 17
         Margins.Left = 8
         Margins.Top = 8
@@ -504,7 +97,7 @@ object frmWPSettings: TfrmWPSettings
         AlignWithMargins = True
         Left = 26
         Top = 103
-        Width = 395
+        Width = 457
         Height = 15
         Margins.Left = 26
         Margins.Top = 4
@@ -522,7 +115,7 @@ object frmWPSettings: TfrmWPSettings
         AlignWithMargins = True
         Left = 8
         Top = 157
-        Width = 413
+        Width = 475
         Height = 17
         Margins.Left = 8
         Margins.Top = 8
@@ -539,7 +132,7 @@ object frmWPSettings: TfrmWPSettings
         AlignWithMargins = True
         Left = 26
         Top = 178
-        Width = 395
+        Width = 457
         Height = 15
         Margins.Left = 26
         Margins.Top = 4
@@ -558,7 +151,7 @@ object frmWPSettings: TfrmWPSettings
         AlignWithMargins = True
         Left = 8
         Top = 232
-        Width = 413
+        Width = 475
         Height = 17
         Margins.Left = 8
         Margins.Top = 8
@@ -575,7 +168,7 @@ object frmWPSettings: TfrmWPSettings
         AlignWithMargins = True
         Left = 26
         Top = 253
-        Width = 395
+        Width = 457
         Height = 15
         Margins.Left = 26
         Margins.Top = 4
@@ -592,11 +185,11 @@ object frmWPSettings: TfrmWPSettings
         ExplicitTop = 297
         ExplicitWidth = 411
       end
-      object lblFontColor: TLabel
+      object lblWpColor: TLabel
         AlignWithMargins = True
         Left = 8
         Top = 306
-        Width = 413
+        Width = 475
         Height = 17
         Margins.Left = 8
         Margins.Top = 8
@@ -609,11 +202,11 @@ object frmWPSettings: TfrmWPSettings
         ExplicitTop = 471
         ExplicitWidth = 562
       end
-      object lblFontColorDet: TLabel
+      object lblWpColorDet: TLabel
         AlignWithMargins = True
         Left = 26
         Top = 327
-        Width = 395
+        Width = 457
         Height = 15
         Margins.Left = 26
         Margins.Top = 4
@@ -631,7 +224,7 @@ object frmWPSettings: TfrmWPSettings
         AlignWithMargins = True
         Left = 28
         Top = 52
-        Width = 393
+        Width = 455
         Height = 22
         Margins.Left = 28
         Margins.Top = 8
@@ -642,13 +235,11 @@ object frmWPSettings: TfrmWPSettings
         ParentBackground = False
         ParentColor = True
         TabOrder = 0
-        ExplicitLeft = -114
-        ExplicitTop = 127
-        ExplicitWidth = 559
+        ExplicitWidth = 439
         object edtWpFile: TEdit
           Left = 0
           Top = 0
-          Width = 315
+          Width = 377
           Height = 22
           Margins.Left = 28
           Margins.Top = 8
@@ -658,12 +249,12 @@ object frmWPSettings: TfrmWPSettings
           TabOrder = 0
           Text = 'edtWpFile'
           OnChange = edtWallpaperChange
-          ExplicitWidth = 331
+          ExplicitWidth = 361
           ExplicitHeight = 21
         end
         object btnWpBrowse: TButton
           AlignWithMargins = True
-          Left = 318
+          Left = 380
           Top = 0
           Width = 75
           Height = 22
@@ -674,14 +265,14 @@ object frmWPSettings: TfrmWPSettings
           Caption = 'Browse'
           TabOrder = 1
           OnClick = btnWpBrowseClick
-          ExplicitLeft = 334
+          ExplicitLeft = 364
         end
       end
       object Panel7: TPanel
         AlignWithMargins = True
         Left = 28
         Top = 126
-        Width = 393
+        Width = 455
         Height = 23
         Margins.Left = 28
         Margins.Top = 8
@@ -692,9 +283,7 @@ object frmWPSettings: TfrmWPSettings
         ParentBackground = False
         ParentColor = True
         TabOrder = 1
-        ExplicitLeft = 8
-        ExplicitTop = 157
-        ExplicitWidth = 409
+        ExplicitWidth = 439
         object rdoWpAlignStretch: TRadioButton
           Left = 138
           Top = 0
@@ -703,7 +292,7 @@ object frmWPSettings: TfrmWPSettings
           Align = alLeft
           Caption = 'Stretch'
           TabOrder = 0
-          ExplicitLeft = 0
+          OnClick = AlignmentChangeEvent
         end
         object rdoWpAlignScale: TRadioButton
           Left = 69
@@ -713,7 +302,7 @@ object frmWPSettings: TfrmWPSettings
           Align = alLeft
           Caption = 'Scale'
           TabOrder = 1
-          ExplicitLeft = 0
+          OnClick = AlignmentChangeEvent
         end
         object rdoWpAlignCenter: TRadioButton
           Left = 0
@@ -725,6 +314,7 @@ object frmWPSettings: TfrmWPSettings
           Checked = True
           TabOrder = 2
           TabStop = True
+          OnClick = AlignmentChangeEvent
         end
         object rdoWpAlignTile: TRadioButton
           Left = 207
@@ -734,14 +324,14 @@ object frmWPSettings: TfrmWPSettings
           Align = alLeft
           Caption = 'Tile'
           TabOrder = 3
-          ExplicitLeft = 272
+          OnClick = AlignmentChangeEvent
         end
       end
       object Panel8: TPanel
         AlignWithMargins = True
         Left = 28
         Top = 201
-        Width = 393
+        Width = 455
         Height = 23
         Margins.Left = 28
         Margins.Top = 8
@@ -752,9 +342,7 @@ object frmWPSettings: TfrmWPSettings
         ParentBackground = False
         ParentColor = True
         TabOrder = 2
-        ExplicitLeft = 19
-        ExplicitTop = 226
-        ExplicitWidth = 409
+        ExplicitWidth = 439
         object chkWpMirrorVert: TCheckBox
           Left = 81
           Top = 0
@@ -763,9 +351,7 @@ object frmWPSettings: TfrmWPSettings
           Align = alLeft
           Caption = 'Vertical'
           TabOrder = 0
-          ExplicitLeft = 84
-          ExplicitTop = 12
-          ExplicitHeight = 17
+          OnClick = MirrorChangeEvent
         end
         object chkWpMirrorHoriz: TCheckBox
           Left = 0
@@ -775,13 +361,14 @@ object frmWPSettings: TfrmWPSettings
           Align = alLeft
           Caption = 'Horizontal'
           TabOrder = 1
+          OnClick = MirrorChangeEvent
         end
       end
-      object wpimage: TImage32
+      object imgWallpaper: TImage32
         Left = 309
         Top = 99
-        Width = 128
-        Height = 128
+        Width = 150
+        Height = 150
         Bitmap.ResamplerClassName = 'TNearestResampler'
         BitmapAlign = baTopLeft
         Scale = 1.000000000000000000
@@ -793,7 +380,7 @@ object frmWPSettings: TfrmWPSettings
         AlignWithMargins = True
         Left = 28
         Top = 276
-        Width = 393
+        Width = 455
         Height = 22
         Margins.Left = 28
         Margins.Top = 8
@@ -804,9 +391,7 @@ object frmWPSettings: TfrmWPSettings
         ParentBackground = False
         ParentColor = True
         TabOrder = 4
-        ExplicitLeft = 19
-        ExplicitTop = 312
-        ExplicitWidth = 409
+        ExplicitWidth = 439
         object sgbWpTrans: TSharpeGaugeBox
           Left = 0
           Top = 0
@@ -818,26 +403,25 @@ object frmWPSettings: TfrmWPSettings
           Margins.Bottom = 0
           Align = alLeft
           ParentBackground = False
-          Min = -255
+          Min = 0
           Max = 255
           Value = 0
           Prefix = 'Transparency: '
           Suffix = '%'
-          Description = 'Change font opacity'
+          Description = 'Change Wallpaper Transparency'
           PopPosition = ppRight
           PercentDisplay = True
-          ExplicitLeft = -2
-          ExplicitTop = -9
+          OnChangeValue = WallpaperTransChangeEvent
         end
       end
-      object wpcolors: TSharpEColorEditorEx
+      object secWpColor: TSharpEColorEditorEx
         AlignWithMargins = True
         Left = 20
-        Top = 350
-        Width = 401
+        Top = 346
+        Width = 463
         Height = 32
         Margins.Left = 20
-        Margins.Top = 8
+        Margins.Top = 4
         Margins.Right = 8
         Margins.Bottom = 0
         VertScrollBar.Smooth = True
@@ -859,36 +443,620 @@ object frmWPSettings: TfrmWPSettings
             ValueEditorType = vetColor
             Value = 0
             Visible = True
-            ColorEditor = wpcolors.Item0
+            ColorEditor = secWpColor.Item0
             Tag = 0
           end>
-        SwatchManager = SharpESwatchManager1
-        OnUiChange = wpcolorsUiChange
-        ExplicitWidth = 417
+        SwatchManager = ssmConfig
+        OnUiChange = WallpaperColorUiChangeEvent
+        ExplicitTop = 350
+        ExplicitWidth = 447
       end
     end
-    object JvStandardPage2: TJvStandardPage
+    object pagColor: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 429
-      Height = 500
-      Caption = 'JvStandardPage2'
-      ExplicitWidth = 445
-      ExplicitHeight = 200
+      Width = 491
+      Height = 475
+      Caption = 'pagColor'
+      ExplicitWidth = 475
+      ExplicitHeight = 410
+      object lblApplyColorDet: TLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 29
+        Width = 457
+        Height = 15
+        Margins.Left = 26
+        Margins.Top = 4
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        AutoSize = False
+        Caption = 'Apply wallpaper color blending effects'
+        EllipsisPosition = epEndEllipsis
+        Transparent = False
+        ExplicitLeft = 30
+        ExplicitTop = 33
+        ExplicitWidth = 411
+      end
+      object chkApplyColor: TCheckBox
+        AlignWithMargins = True
+        Left = 8
+        Top = 8
+        Width = 475
+        Height = 17
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Apply Color Effects'
+        TabOrder = 0
+        OnClick = ApplyColorClickEvent
+        ExplicitWidth = 459
+      end
+      object imgColor: TImage32
+        Left = 290
+        Top = 8
+        Width = 150
+        Height = 150
+        Bitmap.ResamplerClassName = 'TNearestResampler'
+        BitmapAlign = baTopLeft
+        Scale = 1.000000000000000000
+        ScaleMode = smNormal
+        TabOrder = 1
+        Visible = False
+      end
+      object pnlColor: TPanel
+        AlignWithMargins = True
+        Left = 0
+        Top = 48
+        Width = 491
+        Height = 427
+        Margins.Left = 0
+        Margins.Top = 4
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alClient
+        BevelOuter = bvNone
+        Color = clWindow
+        TabOrder = 2
+        ExplicitWidth = 475
+        ExplicitHeight = 97
+        object lblHSLColor: TLabel
+          AlignWithMargins = True
+          Left = 8
+          Top = 8
+          Width = 475
+          Height = 17
+          Margins.Left = 8
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          AutoSize = False
+          Caption = 'HSL Color Adjust'
+          ExplicitLeft = 36
+          ExplicitTop = 124
+          ExplicitWidth = 429
+        end
+        object lblHSLColorDet: TLabel
+          AlignWithMargins = True
+          Left = 26
+          Top = 29
+          Width = 457
+          Height = 15
+          Margins.Left = 26
+          Margins.Top = 4
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          AutoSize = False
+          Caption = 
+            'Change the values below to adjust the Hue, Saturation and Lumino' +
+            'sity'
+          EllipsisPosition = epEndEllipsis
+          Transparent = False
+          ExplicitTop = 122
+          ExplicitWidth = 411
+        end
+        object Panel10: TPanel
+          AlignWithMargins = True
+          Left = 26
+          Top = 52
+          Width = 457
+          Height = 22
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          BevelOuter = bvNone
+          ParentBackground = False
+          ParentColor = True
+          TabOrder = 0
+          ExplicitWidth = 441
+          object sgbLum: TSharpeGaugeBox
+            AlignWithMargins = True
+            Left = 218
+            Top = 0
+            Width = 105
+            Height = 22
+            Margins.Left = 4
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 0
+            Align = alLeft
+            ParentBackground = False
+            Min = 0
+            Max = 255
+            Value = 0
+            Prefix = 'Lum: '
+            Suffix = '%'
+            Description = 'Change Luminance'
+            PopPosition = ppRight
+            PercentDisplay = True
+            OnChangeValue = HSLColorChangeEvent
+          end
+          object sgbSat: TSharpeGaugeBox
+            AlignWithMargins = True
+            Left = 109
+            Top = 0
+            Width = 105
+            Height = 22
+            Margins.Left = 4
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 0
+            Align = alLeft
+            ParentBackground = False
+            Min = 0
+            Max = 255
+            Value = 0
+            Prefix = 'Sat: '
+            Suffix = '%'
+            Description = 'Change Saturation'
+            PopPosition = ppRight
+            PercentDisplay = True
+            OnChangeValue = HSLColorChangeEvent
+          end
+          object sgbHue: TSharpeGaugeBox
+            Left = 0
+            Top = 0
+            Width = 105
+            Height = 22
+            Margins.Left = 0
+            Margins.Top = 8
+            Margins.Right = 8
+            Margins.Bottom = 0
+            Align = alLeft
+            ParentBackground = False
+            Min = 0
+            Max = 255
+            Value = 0
+            Prefix = 'Hue: '
+            Suffix = '%'
+            Description = 'Change Hue'
+            PopPosition = ppRight
+            PercentDisplay = True
+            OnChangeValue = HSLColorChangeEvent
+          end
+        end
+      end
     end
-    object JvStandardPage3: TJvStandardPage
+    object pagGradient: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 429
-      Height = 500
-      Caption = 'JvStandardPage3'
-      ExplicitWidth = 445
-      ExplicitHeight = 200
+      Width = 491
+      Height = 475
+      Caption = 'pagGradient'
+      ExplicitWidth = 475
+      ExplicitHeight = 410
+      object lblApplyGrad: TLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 29
+        Width = 457
+        Height = 15
+        Margins.Left = 26
+        Margins.Top = 4
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        AutoSize = False
+        Caption = 'Apply wallpaper gradient effects'
+        EllipsisPosition = epEndEllipsis
+        Transparent = False
+        ExplicitLeft = 30
+        ExplicitTop = 33
+        ExplicitWidth = 411
+      end
+      object chkApplyGrad: TCheckBox
+        AlignWithMargins = True
+        Left = 8
+        Top = 8
+        Width = 475
+        Height = 17
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Apply Gradient Effects'
+        TabOrder = 0
+        OnClick = ApplyGradientClickEvent
+        ExplicitWidth = 459
+      end
+      object pnlGrad: TPanel
+        AlignWithMargins = True
+        Left = 0
+        Top = 48
+        Width = 491
+        Height = 427
+        Margins.Left = 0
+        Margins.Top = 4
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alClient
+        BevelOuter = bvNone
+        Color = clWindow
+        TabOrder = 1
+        ExplicitWidth = 475
+        ExplicitHeight = 353
+        object lblGradType: TLabel
+          AlignWithMargins = True
+          Left = 8
+          Top = 8
+          Width = 475
+          Height = 17
+          Margins.Left = 8
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          AutoSize = False
+          Caption = 'Gradient Type'
+          ExplicitLeft = 36
+          ExplicitTop = 124
+          ExplicitWidth = 429
+        end
+        object lblGradTypeDet: TLabel
+          AlignWithMargins = True
+          Left = 26
+          Top = 29
+          Width = 457
+          Height = 15
+          Margins.Left = 26
+          Margins.Top = 4
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          AutoSize = False
+          Caption = 'Please select the gradient effect you wish to apply'
+          EllipsisPosition = epEndEllipsis
+          Transparent = False
+          ExplicitTop = 122
+          ExplicitWidth = 411
+        end
+        object lblGradTrans: TLabel
+          AlignWithMargins = True
+          Left = 8
+          Top = 83
+          Width = 475
+          Height = 17
+          Margins.Left = 8
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          AutoSize = False
+          Caption = 'Gradient Transparency'
+          ExplicitLeft = -6
+          ExplicitTop = 176
+          ExplicitWidth = 459
+        end
+        object lblGradTransDet: TLabel
+          AlignWithMargins = True
+          Left = 26
+          Top = 104
+          Width = 457
+          Height = 15
+          Margins.Left = 26
+          Margins.Top = 4
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          AutoSize = False
+          Caption = 'Please define the gradient transparency'
+          EllipsisPosition = epEndEllipsis
+          Transparent = False
+          ExplicitLeft = 12
+          ExplicitTop = 172
+          ExplicitWidth = 441
+        end
+        object lblGradColor: TLabel
+          AlignWithMargins = True
+          Left = 8
+          Top = 157
+          Width = 475
+          Height = 17
+          Margins.Left = 8
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          AutoSize = False
+          Caption = 'Gradient Color'
+          ExplicitLeft = 13
+          ExplicitTop = 214
+          ExplicitWidth = 459
+        end
+        object lblGradColorDet: TLabel
+          AlignWithMargins = True
+          Left = 26
+          Top = 178
+          Width = 457
+          Height = 15
+          Margins.Left = 26
+          Margins.Top = 4
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          AutoSize = False
+          Caption = 'Please define the gradient colors below'
+          EllipsisPosition = epEndEllipsis
+          Transparent = False
+          ExplicitLeft = 31
+          ExplicitTop = 210
+          ExplicitWidth = 441
+        end
+        object Panel5: TPanel
+          AlignWithMargins = True
+          Left = 26
+          Top = 52
+          Width = 457
+          Height = 23
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          BevelOuter = bvNone
+          ParentBackground = False
+          ParentColor = True
+          TabOrder = 0
+          ExplicitWidth = 441
+          object cboGradType: TComboBox
+            Left = 0
+            Top = 0
+            Width = 250
+            Height = 21
+            Align = alLeft
+            Style = csDropDownList
+            ItemHeight = 13
+            TabOrder = 0
+            OnChange = cb_gtypeChange
+            Items.Strings = (
+              'Horizontal'
+              'Vertical'
+              'Left/Right Horizontal'
+              'Top/Bottom Vertical')
+          end
+        end
+        object Panel11: TPanel
+          AlignWithMargins = True
+          Left = 26
+          Top = 127
+          Width = 457
+          Height = 22
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Align = alTop
+          BevelOuter = bvNone
+          ParentBackground = False
+          ParentColor = True
+          TabOrder = 1
+          ExplicitTop = 126
+          ExplicitWidth = 441
+          object sgbGradStartTrans: TSharpeGaugeBox
+            Left = 0
+            Top = 0
+            Width = 125
+            Height = 22
+            Align = alLeft
+            ParentBackground = False
+            Min = 0
+            Max = 255
+            Value = 255
+            Prefix = 'Start: '
+            Suffix = '%'
+            Description = 'Set the Start Transparency'
+            PopPosition = ppBottom
+            PercentDisplay = True
+            OnChangeValue = WallpaperTransChangeEvent
+          end
+          object sgbGradEndTrans: TSharpeGaugeBox
+            AlignWithMargins = True
+            Left = 129
+            Top = 0
+            Width = 125
+            Height = 22
+            Margins.Left = 4
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 0
+            Align = alLeft
+            ParentBackground = False
+            Min = 0
+            Max = 255
+            Value = 255
+            Prefix = 'End : '
+            Suffix = '%'
+            Description = 'Set the End Transparency'
+            PopPosition = ppBottom
+            PercentDisplay = True
+            OnChangeValue = WallpaperTransChangeEvent
+          end
+        end
+        object secGradColor: TSharpEColorEditorEx
+          AlignWithMargins = True
+          Left = 24
+          Top = 197
+          Width = 459
+          Height = 222
+          Margins.Left = 24
+          Margins.Top = 4
+          Margins.Right = 8
+          Margins.Bottom = 8
+          VertScrollBar.Smooth = True
+          VertScrollBar.Tracking = True
+          Align = alClient
+          AutoSize = True
+          BevelInner = bvNone
+          BevelOuter = bvNone
+          BorderStyle = bsNone
+          Color = clWindow
+          ParentColor = False
+          TabOrder = 2
+          Items = <
+            item
+              Title = 'Gradient Start'
+              ColorCode = 0
+              ColorAsTColor = clBlack
+              Expanded = False
+              ValueEditorType = vetColor
+              Value = 0
+              Visible = True
+              ColorEditor = secGradColor.Item0
+              Tag = 0
+            end
+            item
+              Title = 'Gradient End'
+              ColorCode = 0
+              ColorAsTColor = clBlack
+              Expanded = False
+              ValueEditorType = vetColor
+              Value = 0
+              Visible = True
+              ColorEditor = secGradColor.Item1
+              Tag = 0
+            end>
+          SwatchManager = ssmConfig
+          OnUiChange = WallpaperColorUiChangeEvent
+          ExplicitWidth = 443
+          ExplicitHeight = 148
+        end
+      end
+      object imgGradient: TImage32
+        Left = 274
+        Top = 8
+        Width = 193
+        Height = 88
+        Bitmap.ResamplerClassName = 'TNearestResampler'
+        BitmapAlign = baCenter
+        Scale = 1.000000000000000000
+        ScaleMode = smNormal
+        TabOrder = 2
+        Visible = False
+      end
     end
   end
-  object SharpESwatchManager1: TSharpESwatchManager
+  object pnlMonitor: TSharpERoundPanel
+    AlignWithMargins = True
+    Left = 3
+    Top = 3
+    Width = 485
+    Height = 85
+    Align = alTop
+    BevelOuter = bvNone
+    Color = 16119285
+    ParentBackground = False
+    TabOrder = 1
+    DrawMode = srpNormal
+    NoTopBorder = False
+    RoundValue = 10
+    BorderColor = clBtnFace
+    Border = False
+    BackgroundColor = clWindow
+    object lblMonitorDet: TLabel
+      AlignWithMargins = True
+      Left = 26
+      Top = 29
+      Width = 451
+      Height = 15
+      Margins.Left = 26
+      Margins.Top = 4
+      Margins.Right = 8
+      Margins.Bottom = 0
+      Align = alTop
+      AutoSize = False
+      Caption = 'Please select the monitor from the list below'
+      EllipsisPosition = epEndEllipsis
+      Transparent = False
+      ExplicitWidth = 395
+    end
+    object lblMonitor: TLabel
+      AlignWithMargins = True
+      Left = 8
+      Top = 8
+      Width = 469
+      Height = 17
+      Margins.Left = 8
+      Margins.Top = 8
+      Margins.Right = 8
+      Margins.Bottom = 0
+      Align = alTop
+      AutoSize = False
+      Caption = 'Monitor'
+      Transparent = False
+      ExplicitWidth = 413
+    end
+    object Panel3: TSharpERoundPanel
+      AlignWithMargins = True
+      Left = 28
+      Top = 52
+      Width = 449
+      Height = 23
+      Margins.Left = 28
+      Margins.Top = 8
+      Margins.Right = 8
+      Margins.Bottom = 0
+      Align = alTop
+      BevelOuter = bvNone
+      ParentBackground = False
+      ParentColor = True
+      TabOrder = 0
+      DrawMode = srpNormal
+      NoTopBorder = False
+      RoundValue = 10
+      BorderColor = clBtnFace
+      Border = False
+      BackgroundColor = clBtnFace
+      ExplicitWidth = 433
+      object cboMonitor: TComboBox
+        Left = 0
+        Top = 0
+        Width = 250
+        Height = 21
+        Margins.Left = 28
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alLeft
+        Style = csDropDownList
+        Constraints.MaxWidth = 250
+        DropDownCount = 12
+        ItemHeight = 13
+        TabOrder = 0
+        OnChange = MonitorChangeEvent
+      end
+    end
+  end
+  object ssmConfig: TSharpESwatchManager
     Swatches = <>
-    Width = 391
+    Width = 427
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16
@@ -900,15 +1068,15 @@ object frmWPSettings: TfrmWPSettings
     SwatchFont.Style = []
     SwatchTextBorderColor = 16709617
     SortMode = sortName
-    Left = 380
-    Top = 76
+    Left = 16
+    Top = 532
   end
   object dlgOpen: TOpenDialog
     Filter = 
       'All Image Files (*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.' +
       'bmp'
     Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
-    Left = 412
-    Top = 72
+    Left = 56
+    Top = 528
   end
 end
