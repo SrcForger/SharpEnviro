@@ -172,8 +172,6 @@ type
 
     property PluginContainer: TPanel read FPluginContainer write FPluginContainer;
     property EditWndContainer: TPanel read FEditWndContainer write FEditWndContainer;
-
-
     property OnInitNavigation: TNotifyEvent read FOnInitNavigation write FOnInitNavigation;
     property OnUpdateTheme: TNotifyEvent read FOnUpdateTheme write FOnUpdateTheme;
     property OnAddPluginTabs: TNotifyEvent read FOnAddPluginTabs write FOnAddPluginTabs;
@@ -392,7 +390,7 @@ begin
           SCM.AssignIconIndex(pngfile, newItem);
 
           if Assigned(FOnAddNavItem) then begin
-            FOnAddNavItem(newItem, 0);
+            FOnAddNavItem(newItem, newItem.IconIndex);
           end;
 
           if i = 0 then begin

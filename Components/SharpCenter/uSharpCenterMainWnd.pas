@@ -224,6 +224,7 @@ begin
   SCM.PngImageList := pilIcons;
   SCM.PluginContainer := pnlPlugin;
   SCM.EditWndContainer := pnlEditPlugin;
+  SCM.PngImageList := picMain;
 
   InitWindow;
   InitToolbar;
