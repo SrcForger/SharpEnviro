@@ -34,8 +34,8 @@ begin
   FConstList.Add('{#CommonDesktopDir#}='        + IncludeTrailingBackSlash(JclSysInfo.GetCommonDesktopDirectoryFolder));
   FConstList.Add('{#MyDocumentsDir#}='          + IncludeTrailingBackSlash(JclSysInfo.GetPersonalFolder));
   FConstList.Add('{#ProgramFilesDir#}='         + IncludeTrailingBackSlash(JclSysInfo.GetProgramFilesFolder));
-  FConstList.Add('{#AppDataDir#)='              + IncludeTrailingBackSlash(JclSysInfo.GetAppdataFolder));
-  FConstList.Add('{#CommonAppDataDir#)='        + IncludeTrailingBackSlash(JclSysInfo.GetCommonAppdataFolder));
+  FConstList.Add('{#AppDataDir#}='              + IncludeTrailingBackSlash(JclSysInfo.GetAppdataFolder));
+  FConstList.Add('{#CommonAppDataDir#}='        + IncludeTrailingBackSlash(JclSysInfo.GetCommonAppdataFolder));
   {$WARNINGS ON}
 end;
 
