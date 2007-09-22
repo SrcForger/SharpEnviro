@@ -1035,7 +1035,7 @@
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$BorderBG,$BorderBG</gradientcolor>
-          <gradientalpha>32,168</gradientalpha>
+          <gradientalpha>64,192</gradientalpha>
         </skinpart>
       </down>
       <downhover>
@@ -1078,7 +1078,7 @@
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$BorderBG,$BorderBG</gradientcolor>
-          <gradientalpha>168,168</gradientalpha>
+          <gradientalpha>192,192</gradientalpha>
         </skinpart>
       </downhover>
       <highlight>
@@ -1321,7 +1321,7 @@
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$BorderBG,$BorderBG</gradientcolor>
-          <gradientalpha>32,168</gradientalpha>
+          <gradientalpha>64,192</gradientalpha>
         </skinpart>
       </down>
       <downhover>
@@ -1598,7 +1598,7 @@
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$BorderBG,$BorderBG</gradientcolor>
-          <gradientalpha>32,168</gradientalpha>
+          <gradientalpha>64,192</gradientalpha>
         </skinpart>
       </down>
       <downhover>

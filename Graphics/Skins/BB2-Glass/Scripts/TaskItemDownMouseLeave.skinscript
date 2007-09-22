@@ -17,9 +17,9 @@ begin
   DecreaseGradientFromAlpha('gradient',24);
   
   // End Condidition
-  if GetGradientFromAlpha('gradient') <= 32 then 
+  if GetGradientFromAlpha('gradient') <= 64 then 
   begin
-    SetGradientFromAlpha('gradient',32);
+    SetGradientFromAlpha('gradient',64);
 
     result := false;
   end else result := true;

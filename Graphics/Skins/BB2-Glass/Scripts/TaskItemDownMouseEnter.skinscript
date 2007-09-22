@@ -17,9 +17,9 @@ begin
   IncreaseGradientFromAlpha('gradient',24);
   
   // End Condidition
-  if GetGradientFromAlpha('gradient') >= 168 then 
+  if GetGradientFromAlpha('gradient') >= 192 then 
   begin
-    SetGradientFromAlpha('gradient',168);
+    SetGradientFromAlpha('gradient',192);
 
     result := false;
   end else result := true;
