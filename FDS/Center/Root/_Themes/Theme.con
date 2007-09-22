@@ -1,32 +1,32 @@
 <SharpCenter>
   <Sections>
-    <Curses> 
-      <Dll>_themedlls\Curses.dll</Dll>
-      <Icon>_themedlls\Icons\Curses.png</Icon>
-    </Curses>
-    <Desktop> 
-      <Dll>_themedlls\Desktop.dll</Dll>
-      <Icon>_themedlls\Icons\Desktop.png</Icon>
-    </Desktop>
-    <Font> 
-      <Dll>_themedlls\Font.dll</Dll>
-      <Icon>_themedlls\Icons\Font.png</Icon>
-    </Font>
     <Icons> 
       <Dll>_themedlls\IconList.dll</Dll>
-      <Icon>_themedlls\Icons\IconSet.png</Icon>
+      <Icon>_themedlls\IconList.png</Icon>
     </Icons>
+    <Desktop> 
+      <Dll>_themedlls\Desktop.dll</Dll>
+      <Icon>_themedlls\Desktop.png</Icon>
+    </Desktop>
+    <Curses> 
+      <Dll>_themedlls\Curses.dll</Dll>
+      <Icon>_themedlls\Curses.png</Icon>
+    </Curses>
     <Scheme> 
       <Dll>_themedlls\Scheme.dll</Dll>
-      <Icon>_themedlls\Icons\Scheme.png</Icon>
+      <Icon>_themedlls\Scheme.png</Icon>
     </Scheme>
     <Skin> 
       <Dll>_themedlls\ThemeSkinList.dll</Dll>
-      <Icon>_themedlls\Icons\Skin.png</Icon>
+      <Icon>_themedlls\ThemeSkinList.png</Icon>
     </Skin>
     <Wallpaper> 
       <Dll>_themedlls\Wallpaper.dll</Dll>
-      <Icon>_themedlls\Icons\wallpaper.png</Icon>
+	  <Icon>_themedlls\Wallpaper.png</Icon>
     </Wallpaper>
+	<Font> 
+      <Dll>_themedlls\Font.dll</Dll>
+      <Icon>_themedlls\font.png</Icon>
+    </Font>
   </Sections> 
 </SharpCenter>

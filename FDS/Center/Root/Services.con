@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SharpCenter>
   <Sections>
-    <DeskArea>
-      <Dll>_Services\_Servicedlls\DeskArea.dll</Dll>
-      <Icon>_Services\Icons\DeskArea.png</Icon>
-    </DeskArea>
     <Hotkeys>
       <Dll>_Services\_Servicedlls\Hotkeys.dll</Dll>
-      <Icon>_Services\Icons\Hotkeys.png</Icon>
+      <Icon>_Services\_Servicedlls\Hotkeys.png</Icon>
     </Hotkeys>
 	<Weather>
       <Dll>_Services\_Servicedlls\Weather.dll</Dll>
-      <Icon>_Services\Icons\Weather.png</Icon>
+      <Icon>_Services\_Servicedlls\Weather.png</Icon>
     </Weather>
+	<DeskArea>
+      <Dll>_Services\_Servicedlls\DeskArea.dll</Dll>
+      <Icon>_Services\_Servicedlls\DeskArea.png</Icon>
+    </DeskArea>
+	
   </Sections>
 </SharpCenter>

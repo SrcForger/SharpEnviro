@@ -3,7 +3,7 @@
   <Sections>
     <ThemeList>
       <Dll>_Themes\_Themedlls\ThemeList.dll</Dll>
-      <Icon>_Themes\ThemeList.png</Icon>
+      <Icon>_Themes\_Themedlls\ThemeList.png</Icon>
     </ThemeList>
   </Sections>
 </SharpCenter>
