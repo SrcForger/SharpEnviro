@@ -133,10 +133,10 @@ begin
         end;
       end;
     end;
-    DR.Left := DR.Left + OffSets.Left;
-    DR.Top  := DR.Top + OffSets.Top;
-    DR.Right := DR.Right - OffSets.Right;
-    DR.Bottom := DR.Bottom - OffSets.Bottom;
+    DR.Left := OffSets.Left;
+    DR.Top  := OffSets.Top;
+    DR.Right := DR.Right - DR.Left - OffSets.Right;
+    DR.Bottom := DR.Bottom - DR.Top - OffSets.Bottom;
     PreviewBmp.FrameRectS(round(DR.Left * F),
                           round(DR.Top * F),
                           round(DR.Right * F),
