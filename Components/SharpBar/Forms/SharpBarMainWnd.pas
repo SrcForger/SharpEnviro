@@ -294,7 +294,7 @@ begin
         SharpEBar.VertPos        := IntToVertPos(Items.IntValue('VertPos',0));
         SharpEBar.AutoStart      := Items.BoolValue('AutoStart',True);
         SharpEBar.ShowThrobber   := Items.BoolValue('ShowThrobber',True);
-        SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar',False);
+        SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar',True);
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers',True);
         SharpEBar.AlwaysOnTop    := Items.BoolValue('AlwaysOnTop',False);
       end;
@@ -924,7 +924,7 @@ begin
         SharpEBar.VertPos        := IntToVertPos(Items.IntValue('VertPos',0));
         SharpEBar.AutoStart      := Items.BoolValue('AutoStart',True);
         SharpEBar.ShowThrobber   := Items.BoolValue('ShowThrobber',True);
-        SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar',False);
+        SharpEBar.DisableHideBar := Items.BoolValue('DisableHideBar',True);
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers',True);
         SharpEBar.AlwaysOnTop    := Items.BoolValue('AlwaysOnTop',False);
 
@@ -953,7 +953,7 @@ begin
   FSharpEBar := TSharpEBar.CreateRuntime(self,SkinManager);
   FSharpEBar.AutoPosition := True;
   FSharpEBar.AutoStart := True;
-  FSharpEBar.DisableHideBar := False;
+  FSharpEBar.DisableHideBar := True;
   FSharpEBar.HorizPos := hpMiddle;
   FSharpEBar.MonitorIndex := 0;
   FSharpEBar.PrimaryMonitor := True;
