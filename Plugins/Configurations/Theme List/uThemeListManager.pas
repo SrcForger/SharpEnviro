@@ -108,6 +108,16 @@ begin
     xml.SaveToFile(sDest);
     xml.Free;
   End;
+
+  // just create a default skin file
+  xml := TJvSimpleXML.Create(nil);
+  xml.Root.Name := 'SharpEThemeSkin';
+  xml.Root.Items.Add('Skin','BB2-Glass');
+
+  sDest := sThemeDir + AName+'\'+'Skin.xml';
+
+  xml.SaveToFile(sDest);
+  xml.free;
 end;
 
 function TThemeManager.CopyFolder(Asrc, ADest: String): Boolean;
