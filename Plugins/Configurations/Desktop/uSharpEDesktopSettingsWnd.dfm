@@ -22,7 +22,7 @@ object frmDesktopSettings: TfrmDesktopSettings
     Top = 0
     Width = 595
     Height = 567
-    ActivePage = pagFont
+    ActivePage = pagAnimation
     PropagateEnable = False
     Align = alClient
     object pagIcon: TJvStandardPage
@@ -1014,6 +1014,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             Align = alTop
             Caption = 'This option controls the animation size'
             Transparent = False
+            Visible = False
             WordWrap = True
             ExplicitWidth = 182
           end
@@ -1064,6 +1065,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             ParentBackground = False
             ParentColor = True
             TabOrder = 0
+            Visible = False
             object sgbAnimSize: TSharpeGaugeBox
               Left = 0
               Top = 0
@@ -1117,6 +1119,7 @@ object frmDesktopSettings: TfrmDesktopSettings
             Align = alTop
             Caption = 'Animation Size'
             TabOrder = 2
+            Visible = False
             OnClick = UpdateAnimationPageEvent
             LinkedControls = <>
             HotTrackFont.Charset = DEFAULT_CHARSET
