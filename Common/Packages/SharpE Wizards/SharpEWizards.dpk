@@ -37,6 +37,7 @@ requires
 contains
   SharpEWizReg in '..\..\Delphi Wizards\SharpEWizReg.pas',
   frmSharpESrvWiz in '..\..\Delphi Wizards\frmSharpESrvWiz.pas',
-  SharpESrvWizard in '..\..\Delphi Wizards\SharpESrvWizard.pas';
+  SharpESrvWizard in '..\..\Delphi Wizards\SharpESrvWizard.pas',
+  OTAUtilities in '..\..\3rd party\OTAUtilities\OTAUtilities.pas';
 
 end.
