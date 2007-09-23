@@ -4,6 +4,7 @@
      <project Name="DeskArea" Type="DLL">Plugins\Configurations\DeskArea\DeskArea.bdsproj</project>  
      <project Name="Desktop" Type="DLL">Plugins\Configurations\Desktop\Desktop.bdsproj</project>  
      <project Name="Font" Type="DLL">Plugins\Configurations\Font\Font.bdsproj</project>  
+     <project Name="Hotkeys" Type="DLL">Plugins\Configurations\Hotkeys\Hotkeys.bdsproj</project> 
      <project Name="Icon List" Type="DLL">Plugins\Configurations\Icon List\IconList.bdsproj</project>       
      <project Name="Image" Type="DLL">Plugins\Configurations\Image\Image.bdsproj</project>  
      <project Name="Link" Type="DLL">Plugins\Configurations\Link\Link.bdsproj</project>       
@@ -14,15 +15,16 @@
      <project Name="SharpBar Manager" Type="DLL">Plugins\Configurations\SharpBar List\SharpBarList.bdsproj</project>  
      <project Name="SharpDesk" Type="DLL">Plugins\Configurations\SharpDesk\SharpDesk.bdsproj</project>  
      <project Name="SharpMenu" Type="DLL">Plugins\Configurations\SharpMenu\SharpMenu.bdsproj</project>  
-     <project Name="Theme List" Type="DLL">Plugins\Configurations\Theme List\ThemeList.bdsproj</project>  
      <project Name="Skin" Type="DLL">Plugins\Configurations\Theme Skin\ThemeSkinList.bdsproj</project>  
+     <project Name="Theme List" Type="DLL">Plugins\Configurations\Theme List\ThemeList.bdsproj</project>  
      <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Wallpaper\Wallpaper.bdsproj</project>  
-     <project Name="Hotkeys" Type="DLL">Plugins\Configurations\Hotkeys\Hotkeys.bdsproj</project> 
+     <project Name="Weather" Type="DLL">Plugins\Configurations\Weather\Weather.bdsproj</project>  
   </package>
   <package Name="Components">
      <project Name="SetShell" Type="Application">Components\SetShell\SetShell.bdsproj</project>
      <project Name="SharpBar" Type="Application">Components\SharpBar\SharpBar.bdsproj</project>  
      <project Name="SharpCenter" Type="Application">Components\SharpCenter\SharpCenter.bdsproj</project>  
+     <project Name="SharpConsole" Type="Application">Components\SharpConsole\SharpConsole.bdsproj</project>  
      <project Name="SharpCore" Type="Application">Components\SharpCore\SharpCore.bdsproj</project>  
      <project Name="SharpDesk" Type="Application">Components\SharpDesk\SharpDesk.bdsproj</project>  
      <project Name="SharpMenu" Type="Application">Components\SharpMenu\SharpMenu.bdsproj</project>  
@@ -31,15 +33,14 @@
      <project Name="SharpShutdown" Type="Application">Components\SharpShutdown\SharpShutdown.bdsproj</project>  
      <project Name="SharpSkin" Type="Application">Components\SharpSkin\SharpSkin.bdsproj</project>  
      <project Name="SharpSplash" Type="Application">Components\SharpSplash\SharpSplash.bdsproj</project>  
-     <project Name="SharpConsole" Type="Application">Components\SharpConsole\SharpConsole.bdsproj</project>  
   </package>
   <package Name="Libraries">
      <project Name="SharpApi" Type="DLL" >Common\Libraries\SharpAPI\SharpApi.bdsproj</project>  
      <project Name="SharpApiEx" Type="DLL">Common\Libraries\SharpApiEx\SharpApiEx.bdsproj</project>  
+     <project Name="SharpCenterApi" Type="DLL">Common\Libraries\SharpCenterApi\SharpCenterApi.bdsproj</project>  
      <project Name="SharpDeskApi" Type="DLL">Common\Libraries\SharpDeskApi\SharpDeskApi.bdsproj</project>  
      <project Name="SharpDialogs" Type="DLL">Common\Libraries\SharpDialogs\SharpDialogs.bdsproj</project>  
      <project Name="SharpThemeApi" Type="DLL">Common\Libraries\SharpThemeApi\SharpThemeApi.bdsproj</project>  
-     <project Name="SharpCenterApi" Type="DLL">Common\Libraries\SharpCenterApi\SharpCenterApi.bdsproj</project>  
   </package>
   <package Name="Modules">
      <project Name="Battery Monitor" Type="DLL" >Plugins\Modules\Battery Monitor\BatteryMonitor.bdsproj</project>  
@@ -66,6 +67,7 @@
      <project Name="Recycle Bin" Type="DLL" >Plugins\Objects\RecycleBin\RecycleBin.bdsproj</project>
   </package>
   <package Name="Services">
+     <project Name="Actions" Type="DLL" >Plugins\Services\Actions\Actions.bdsproj</project> 
      <project Name="Cursors" Type="DLL" >Plugins\Services\Cursors\Cursors.bdsproj</project>  
      <project Name="DeskArea" Type="DLL" >Plugins\Services\DeskArea\DeskArea.bdsproj</project>  
      <project Name="Exec" Type="DLL" >Plugins\Services\Exec\Exec.bdsproj</project>  
@@ -74,9 +76,8 @@
      <project Name="Startup" Type="DLL" >Plugins\Services\StartupApps\Startup.bdsproj</project>  
      <project Name="SystemActions" Type="DLL" >Plugins\Services\SystemActions\SystemActions.bdsproj</project>  
      <project Name="SystemTray" Type="DLL" >Plugins\Services\SystemTray\SystemTray.bdsproj</project>  
-     <project Name="TaskSwitch" Type="DLL" >Plugins\Services\TaskSwitch\TaskSwitch.bdsproj</project>  
      <project Name="TaskManager" Type="DLL" >Plugins\Services\TaskManager\TaskManager.bdsproj</project>  
+     <project Name="TaskSwitch" Type="DLL" >Plugins\Services\TaskSwitch\TaskSwitch.bdsproj</project>  
      <project Name="Weather" Type="DLL" requ="Delphi 2005 Professional">Plugins\Services\Weather\Weather.bdsproj</project>  
-     <project Name="Actions" Type="DLL" >Plugins\Services\Actions\Actions.bdsproj</project> 
   </package>
 </SharpCompile>
