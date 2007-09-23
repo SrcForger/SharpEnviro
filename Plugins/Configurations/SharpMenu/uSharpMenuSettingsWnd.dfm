@@ -44,8 +44,8 @@ object frmMenuSettings: TfrmMenuSettings
         Align = alTop
         AutoSize = False
         Caption = 
-          'When enabled, icons are cached to disk, resulting in a noticable' +
-          ' performace improvement, at a cost of a few megs of hard disk sp' +
+          'When enabled, icons are cached to disk, resulting in a noticeabl' +
+          'e performance improvement, at a cost of a few MB of hard disk sp' +
           'ace.'
         Color = clBtnFace
         EllipsisPosition = epEndEllipsis
@@ -133,6 +133,7 @@ object frmMenuSettings: TfrmMenuSettings
           Top = 72
           Width = 121
           Height = 21
+          ParentBackground = False
           Min = 5
           Max = 100
           Value = 25

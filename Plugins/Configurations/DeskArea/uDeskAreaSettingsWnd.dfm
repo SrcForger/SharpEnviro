@@ -102,8 +102,8 @@ object frmDASettings: TfrmDASettings
       AutoSize = False
       Caption = 
         'Use the sliders to adjust the size of the desktop area. If the a' +
-        'uomated mode is enabled then the values will be added to the aut' +
-        'omatically generated desk area.'
+        'utomated mode is enabled then the values will be added to the au' +
+        'tomatically generated desk area.'
       EllipsisPosition = epEndEllipsis
       Transparent = False
       WordWrap = True

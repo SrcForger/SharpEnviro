@@ -24,13 +24,11 @@ object frmDeskSettings: TfrmDeskSettings
     ActivePage = JvSettingsPage
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 456
     object JvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
       Width = 428
       Height = 465
-      ExplicitHeight = 456
       object Label1: TLabel
         AlignWithMargins = True
         Left = 26
@@ -45,8 +43,8 @@ object frmDeskSettings: TfrmDeskSettings
         AutoSize = False
         Caption = 
           'Enable this option to enable hyperlink click functionalty for ob' +
-          'jects.  Disablied all objects will require a double click to lau' +
-          'nch.'
+          'jects.  When disabled, all objects will require a double click t' +
+          'o launch.'
         EllipsisPosition = epEndEllipsis
         Transparent = False
         WordWrap = True
@@ -174,7 +172,6 @@ object frmDeskSettings: TfrmDeskSettings
         State = cbChecked
         TabOrder = 0
         OnClick = cb_ddClick
-        ExplicitTop = 215
       end
       object cb_singleclick: TCheckBox
         AlignWithMargins = True
@@ -190,7 +187,6 @@ object frmDeskSettings: TfrmDeskSettings
         Caption = 'Single Click Action'
         TabOrder = 1
         OnClick = cb_singleclickClick
-        ExplicitTop = 320
       end
       object cb_wpwatch: TCheckBox
         AlignWithMargins = True
@@ -206,7 +202,6 @@ object frmDeskSettings: TfrmDeskSettings
         Caption = 'Windows Wallpaper Monitoring (Advanced)'
         TabOrder = 2
         OnClick = cb_ammClick
-        ExplicitTop = 375
       end
       object cb_amm: TCheckBox
         AlignWithMargins = True
@@ -222,7 +217,6 @@ object frmDeskSettings: TfrmDeskSettings
         Caption = 'Memory Management (Advanced)'
         TabOrder = 3
         OnClick = cb_ammClick
-        ExplicitTop = 265
       end
       object Panel1: TPanel
         Left = 0
@@ -233,7 +227,6 @@ object frmDeskSettings: TfrmDeskSettings
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 4
-        ExplicitTop = 55
         object Label4: TLabel
           AlignWithMargins = True
           Left = 26
@@ -275,6 +268,7 @@ object frmDeskSettings: TfrmDeskSettings
           Top = 69
           Width = 120
           Height = 21
+          ParentBackground = False
           Min = 2
           Max = 128
           Value = 32
@@ -290,6 +284,7 @@ object frmDeskSettings: TfrmDeskSettings
           Top = 69
           Width = 120
           Height = 21
+          ParentBackground = False
           Min = 2
           Max = 128
           Value = 32
@@ -334,7 +329,6 @@ object frmDeskSettings: TfrmDeskSettings
         State = cbChecked
         TabOrder = 6
         OnClick = cb_ammClick
-        ExplicitTop = 160
       end
     end
     object JvAdvSettingsPage: TJvStandardPage
@@ -342,7 +336,6 @@ object frmDeskSettings: TfrmDeskSettings
       Top = 0
       Width = 428
       Height = 465
-      ExplicitHeight = 456
     end
   end
 end
