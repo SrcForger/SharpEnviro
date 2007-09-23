@@ -40,7 +40,7 @@ object frmItemEdit: TfrmItemEdit
         Width = 75
         Height = 25
         Anchors = [akTop, akRight]
-        Caption = 'Search'
+        Caption = 'Find station'
         OnClick = btnSearchClick
       end
       object edName: TLabeledEdit
@@ -48,12 +48,17 @@ object frmItemEdit: TfrmItemEdit
         Top = 8
         Width = 409
         Height = 21
+        Hint = 
+          'The identifier used for this location (i.e., Home, Cottage, NYC,' +
+          ' etc)'
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 31
         EditLabel.Height = 13
         EditLabel.Caption = 'Name:'
         LabelPosition = lpLeft
         LabelSpacing = 6
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 0
         OnChange = UpdateEditState
       end
@@ -62,12 +67,17 @@ object frmItemEdit: TfrmItemEdit
         Top = 40
         Width = 313
         Height = 21
+        Hint = 
+          'Enter the location here (Berlin, Germany or Seattle, Washington ' +
+          'etc)'
         Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 15
         EditLabel.Height = 13
         EditLabel.Caption = 'ID:'
         LabelPosition = lpLeft
         LabelSpacing = 6
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 1
         OnChange = UpdateEditState
       end
@@ -76,7 +86,7 @@ object frmItemEdit: TfrmItemEdit
         Top = 68
         Width = 197
         Height = 17
-        Caption = 'Display values as metric?'
+        Caption = 'Use metric system.'
         TabOrder = 2
         OnClick = UpdateEditState
       end
@@ -92,7 +102,7 @@ object frmItemEdit: TfrmItemEdit
       object Label1: TJvLabel
         Left = 0
         Top = 0
-        Width = 78
+        Width = 474
         Height = 13
         Align = alTop
         Caption = 'Confirmation:'
@@ -107,16 +117,18 @@ object frmItemEdit: TfrmItemEdit
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
+        ExplicitWidth = 78
       end
       object Label2: TLabel
         Left = 0
         Top = 13
-        Width = 335
+        Width = 474
         Height = 13
         Align = alTop
         Caption = 
           'Are you sure you want to delete the currently selected weather i' +
           'tem?'
+        ExplicitWidth = 335
       end
     end
   end

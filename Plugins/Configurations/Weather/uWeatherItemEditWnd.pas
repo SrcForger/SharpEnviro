@@ -243,7 +243,7 @@ begin
           tmpWeather := TWeatherItem(tmpItem.Data);
           FItemEdit := tmpWeather;
 
-          edName.Text := tmpWeather.Location;
+          //edName.Text := tmpWeather.Location;
           edWeatherID.Text := tmpWeather.LocationID;
           chkMetric.Checked := WeatherOptions.Metric;
 
