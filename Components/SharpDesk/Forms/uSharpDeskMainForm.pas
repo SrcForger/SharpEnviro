@@ -581,6 +581,7 @@ begin
   if (msg.WParam = Integer(suTheme)) then
   begin
     LoadTheme(True);
+    SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
     exit;
   end;
 
