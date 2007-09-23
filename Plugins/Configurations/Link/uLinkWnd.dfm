@@ -2,7 +2,7 @@ object frmLink: TfrmLink
   Left = 0
   Top = 0
   Caption = 'frmLink'
-  ClientHeight = 330
+  ClientHeight = 551
   ClientWidth = 429
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -21,17 +21,15 @@ object frmLink: TfrmLink
     Left = 0
     Top = 0
     Width = 429
-    Height = 330
-    ActivePage = pagIcon
+    Height = 551
+    ActivePage = pagFont
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 467
     object pagLink: TJvStandardPage
       Left = 0
       Top = 0
       Width = 429
-      Height = 330
-      ExplicitHeight = 494
+      Height = 551
       object Label9: TLabel
         AlignWithMargins = True
         Left = 8
@@ -268,7 +266,7 @@ object frmLink: TfrmLink
             Width = 145
             Height = 21
             Style = csDropDownList
-            ItemHeight = 13
+            ItemHeight = 0
             ItemIndex = 2
             TabOrder = 0
             Text = 'Bottom'
@@ -383,8 +381,7 @@ object frmLink: TfrmLink
       Left = 0
       Top = 0
       Width = 429
-      Height = 330
-      ExplicitHeight = 467
+      Height = 551
       object Panel1: TPanel
         Left = 0
         Top = 279
@@ -427,6 +424,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICIconTrans'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -460,6 +458,7 @@ object frmLink: TfrmLink
             HotTrackFont.Height = -11
             HotTrackFont.Name = 'Tahoma'
             HotTrackFont.Style = []
+            ExplicitWidth = 111
           end
         end
         object UICIconTransValue: TSharpEUIC
@@ -475,6 +474,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICIconTransValue'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -564,6 +564,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICSize'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -806,6 +807,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICColorBlend'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -839,6 +841,7 @@ object frmLink: TfrmLink
             HotTrackFont.Height = -11
             HotTrackFont.Name = 'Tahoma'
             HotTrackFont.Style = []
+            ExplicitWidth = 99
           end
         end
         object UICColorBlendValue: TSharpEUIC
@@ -854,6 +857,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICColorBlendValue'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -930,6 +934,7 @@ object frmLink: TfrmLink
           Margins.Bottom = 0
           Align = alTop
           BevelOuter = bvNone
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -963,6 +968,7 @@ object frmLink: TfrmLink
             HotTrackFont.Height = -11
             HotTrackFont.Name = 'Tahoma'
             HotTrackFont.Style = []
+            ExplicitWidth = 83
           end
         end
         object UICIconShadowValue: TSharpEUIC
@@ -978,6 +984,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICIconShadowValue'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -1017,12 +1024,11 @@ object frmLink: TfrmLink
         Left = 0
         Top = 354
         Width = 429
-        Height = 5
+        Height = 197
         Align = alClient
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 4
-        ExplicitHeight = 113
         object lblIconColorDet: TLabel
           AlignWithMargins = True
           Left = 26
@@ -1069,6 +1075,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICColorBlendColor'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -1132,6 +1139,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'SharpEUIC1'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -1186,8 +1194,7 @@ object frmLink: TfrmLink
       Left = 0
       Top = 0
       Width = 429
-      Height = 330
-      ExplicitHeight = 494
+      Height = 551
       object lblFontNameDet: TLabel
         AlignWithMargins = True
         Left = 26
@@ -1477,7 +1484,6 @@ object frmLink: TfrmLink
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          ExplicitWidth = 112
         end
       end
       object UICFontTransValue: TSharpEUIC
@@ -1572,7 +1578,6 @@ object frmLink: TfrmLink
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          ExplicitWidth = 66
         end
       end
       object UICItalic: TSharpEUIC
@@ -1619,7 +1624,6 @@ object frmLink: TfrmLink
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          ExplicitWidth = 44
         end
       end
       object UICBold: TSharpEUIC
@@ -1666,7 +1670,6 @@ object frmLink: TfrmLink
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          ExplicitWidth = 41
         end
       end
       object UICFontColor: TSharpEUIC
@@ -1737,9 +1740,8 @@ object frmLink: TfrmLink
       Left = 0
       Top = 0
       Width = 429
-      Height = 330
+      Height = 551
       Caption = 'pagFontShadow'
-      ExplicitHeight = 467
       object lblFontShadowDet: TLabel
         AlignWithMargins = True
         Left = 26
@@ -1873,6 +1875,7 @@ object frmLink: TfrmLink
           Margins.Bottom = 0
           Align = alTop
           BevelOuter = bvNone
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -1896,7 +1899,7 @@ object frmLink: TfrmLink
             Margins.Bottom = 2
             Align = alLeft
             Style = csDropDownList
-            ItemHeight = 13
+            ItemHeight = 0
             ItemIndex = 0
             TabOrder = 0
             Text = 'Left Shadow'
@@ -1919,6 +1922,7 @@ object frmLink: TfrmLink
           Margins.Bottom = 0
           Align = alTop
           BevelOuter = bvNone
+          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -1966,6 +1970,7 @@ object frmLink: TfrmLink
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICFontShadowColor'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 2
           RoundValue = 10
@@ -2028,6 +2033,7 @@ object frmLink: TfrmLink
         Align = alTop
         BevelOuter = bvNone
         Caption = 'UICFontShadow'
+        Color = clWhite
         ParentBackground = False
         TabOrder = 1
         RoundValue = 10
@@ -2059,6 +2065,7 @@ object frmLink: TfrmLink
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
+          ExplicitWidth = 84
         end
       end
     end

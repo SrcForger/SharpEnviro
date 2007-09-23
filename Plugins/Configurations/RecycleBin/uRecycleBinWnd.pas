@@ -705,6 +705,9 @@ end;
 
 procedure TfrmRecycleBin.UpdateFontPage;
 begin
+  if not pagFont.Visible then
+    exit;
+
   LockWindowUpdate(Self.Handle);
   try
     // Set Grey Texts
@@ -728,6 +731,9 @@ end;
 
 procedure TfrmRecycleBin.UpdateFontShadowPage;
 begin
+  if not pagFontShadow.Visible then
+    exit;
+
   LockWindowUpdate(Self.Handle);
   try
 
@@ -777,6 +783,9 @@ end;
 
 procedure TfrmRecycleBin.UpdateIconPage;
 begin
+  if not pagIcon.Visible then
+    exit;
+
   LockWindowUpdate(Self.Handle);
   try
     // Set Grey Texts
@@ -830,6 +839,9 @@ end;
 
 procedure TfrmRecycleBin.UpdateRecycleBinPage;
 begin
+  if not pagRecycleBin.Visible then
+    exit;
+
   Height := 512;
   CenterUpdateSize;
 end;

@@ -709,6 +709,9 @@ end;
 
 procedure TfrmLink.UpdateFontPage;
 begin
+  if not pagFont.Visible then
+    exit;
+
   LockWindowUpdate(Self.Handle);
   try
     // Set Grey Texts
@@ -732,6 +735,9 @@ end;
 
 procedure TfrmLink.UpdateFontShadowPage;
 begin
+  if not pagFontShadow.Visible then
+    exit;
+
   LockWindowUpdate(Self.Handle);
   try
 
@@ -772,6 +778,9 @@ end;
 
 procedure TfrmLink.UpdateIconPage;
 begin
+  if not PagIcon.Visible then
+    exit;
+
   LockWindowUpdate(Self.Handle);
   try
     // Set Grey Texts
@@ -825,6 +834,9 @@ end;
 
 procedure TfrmLink.UpdateLinkPage;
 begin
+  if not pagLink.Visible then
+    exit;
+
   Height := 391;
   CenterUpdateSize;
 end;
