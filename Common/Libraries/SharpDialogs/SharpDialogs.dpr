@@ -290,7 +290,7 @@ begin
   iconmenuresult := '';
   ofdialog := TOpenDialog.Create(nil);
   try
-    ofdialog.Filter := 'Images (*.jpg,*.png)|*.jpg;*.png';
+    ofdialog.Filter := 'Images (*.jpg,*.png,*.ico)|*.jpg;*.jpeg;*.ico;*.png';
     if ofdialog.Execute then iconmenuresult := ofdialog.FileName;
   finally
     ofdialog.Free;
@@ -1038,141 +1038,136 @@ begin
   subiml.Height := 40;
   Iconmenu.Images := iml;
 
-  try
-    // Build Image Lists
-    Bmp := TBitmap.Create;
-    Bmp.Width := 16;
-    Bmp.Height := 16;
+  // Build Image Lists
+  Bmp := TBitmap.Create;
+  Bmp.Width := 16;
+  Bmp.Height := 16;
 
-    iml.Add(bmp,bmp);
+  iml.Add(bmp,bmp);
 
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'cube16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'open16');
-    iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'graph16');
+  iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'cube16');
+  iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'open16');
+  iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'graph16');
 
-    iml.Add(bmp,bmp);
+  iml.Add(bmp,bmp);
 
-    Bmp.Width := 40;
-    Bmp.Height := 40;
-    subiml.Add(bmp,bmp);
+  Bmp.Width := 40;
+  Bmp.Height := 40;
+  subiml.Add(bmp,bmp);
 
-    if smiShellIcon in IconItems then
-    begin
-      wIcon := TIcon.Create;
-      try
-        ImageListHandle := SHGetFileInfo(pChar(pTarget), 0, FileInfo, sizeof( SHFILEINFO ),
-                                        SHGFI_ICON or SHGFI_SHELLICONSIZE);
-        if FileInfo.hicon <> 0 then
-        begin
-          wIcon.Handle := FileInfo.hicon;
-          subiml.AddIcon(wIcon);
-          wIcon.ReleaseHandle;
-          DestroyIcon(FileInfo.hIcon);
-        end else subiml.Add(bmp,bmp);
-      except
-        try
-          subiml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'error22');
-          ImageList_Destroy(ImageListHandle);
-        except
-        end;
-      end;
-      wIcon.Free;
-    end;
-
-    Iconmenu.Items.Clear;
-    mindex := -1;
-
-    // two Dummy items! do not remove!
-    menuItem := TMenuItem.Create(Iconmenu);
-    Iconmenu.Items.Add(menuItem);
-    menuItem.Visible := False;
-    mindex := mindex + 1;
-
-    menuItem := TMenuItem.Create(Iconmenu);
-    menuItem.Visible := False;
-    Iconmenu.Items.Add(menuItem);
-    mindex := mindex + 1;
-
-    if smiShellIcon in IconItems then
-    begin
-      // Files Menu
-      menuItem := TMenuItem.Create(Iconmenu);
-      menuItem.Caption := 'Shell Icon';
-      menuItem.ImageIndex := 3;
-      menuItem.SubMenuImages := subiml;
-      Iconmenu.Items.Add(menuItem);
-      mindex := mindex + 1;
-
-      menuItem := TMenuItem.Create(Iconmenu);
-      menuItem.Caption := 'Shell Icon';
-      menuItem.OnClick := iconmenuclick.OnShellIconClick;
-      menuItem.ImageIndex := 1;
-      Iconmenu.Items.Items[mindex].Add(menuItem);
-    end;
-
-    if smiSharpEIcon in IconItems then
-    begin
-      menuItem := TMenuItem.Create(Iconmenu);
-      menuItem.Caption := 'SharpE Icon';
-      menuItem.ImageIndex := 1;
-      menuItem.SubMenuImages := subiml;
-      Iconmenu.Items.Add(menuItem);
-      mindex := mindex + 1;
-
-  //    if not SharpThemeApi.Initialized then
-   //      SharpThemeApi.InitializeTheme;
-   //   SharpThemeApi.LoadTheme(False,[tpIconSet]);
-      wIcon := TIcon.Create;
-      Dir := GetIconSetDirectory;
-      for n := 0 to GetIconSetIconsCount - 1 do
+  if smiShellIcon in IconItems then
+  begin
+    wIcon := TIcon.Create;
+    try
+      ImageListHandle := SHGetFileInfo(pChar(pTarget), 0, FileInfo, sizeof( SHFILEINFO ),
+                                      SHGFI_ICON or SHGFI_SHELLICONSIZE);
+      if FileInfo.hicon <> 0 then
       begin
-        icon := GetIconSetIcon(n);
-
-        if FileExists(Dir + Icon.FileName) then
-        begin
-          wIcon.LoadFromFile(Dir + Icon.FileName);
-          subiml.AddIcon(wIcon);
-
-          menuItem := TMenuItem.Create(Iconmenu);
-          menuItem.Caption := icon.Tag;
-          menuItem.Hint := Icon.Tag;
-          menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
-          menuItem.ImageIndex := subiml.Count - 1;
-          if n mod 10  = 0 then menuItem.Break := mbBarBreak;
-          Iconmenu.Items.Items[mindex].Add(menuItem);
-        end;
+        wIcon.Handle := FileInfo.hicon;
+        subiml.AddIcon(wIcon);
+        wIcon.ReleaseHandle;
+        DestroyIcon(FileInfo.hIcon);
+      end else subiml.Add(bmp,bmp);
+    except
+      try
+        subiml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'error22');
+        ImageList_Destroy(ImageListHandle);
+      except
       end;
-      wIcon.Free;
     end;
-
-    if smiCustomIcon in IconItems then
-    begin
-      menuItem := TMenuItem.Create(Iconmenu);
-      menuItem.Caption := 'Custom Icon...';
-      menuItem.ImageIndex := 2;
-      menuItem.OnClick := iconmenuclick.OnCustomIconClick;
-      menuItem.SubMenuImages := subiml;
-      Iconmenu.Items.Add(menuItem);
-      //mindex := mindex + 1;
-    end;
-
-    subiml.Add(bmp,bmp);
-    Bmp.Free;
-
-    Iconmenu.Popup(PopupPoint.X,PopupPoint.Y);
-
-    // freeze until OnClick event is done;
-    while nrevent do
-    begin
-      Application.ProcessMessages;
-    end;
-
-  finally
-    FreeAndNil(IconMenu);
-    FreeAndNil(subiml);
-    FreeAndNil(iml);
-    FreeAndNil(Iconmenuclick);
+    wIcon.Free;
   end;
+
+  Iconmenu.Items.Clear;
+  mindex := -1;
+
+  // two Dummy items! do not remove!
+  menuItem := TMenuItem.Create(Iconmenu);
+  Iconmenu.Items.Add(menuItem);
+  menuItem.Visible := False;
+  mindex := mindex + 1;
+
+  menuItem := TMenuItem.Create(Iconmenu);
+  menuItem.Visible := False;
+  Iconmenu.Items.Add(menuItem);
+  mindex := mindex + 1;
+
+  if smiShellIcon in IconItems then
+  begin
+    // Files Menu
+    menuItem := TMenuItem.Create(Iconmenu);
+    menuItem.Caption := 'Shell Icon';
+    menuItem.ImageIndex := 3;
+    menuItem.SubMenuImages := subiml;
+    Iconmenu.Items.Add(menuItem);
+    mindex := mindex + 1;
+
+    menuItem := TMenuItem.Create(Iconmenu);
+    menuItem.Caption := 'Shell Icon';
+    menuItem.OnClick := iconmenuclick.OnShellIconClick;
+    menuItem.ImageIndex := 1;
+    Iconmenu.Items.Items[mindex].Add(menuItem);
+  end;
+
+  if smiSharpEIcon in IconItems then
+  begin
+    menuItem := TMenuItem.Create(Iconmenu);
+    menuItem.Caption := 'SharpE Icon';
+    menuItem.ImageIndex := 1;
+    menuItem.SubMenuImages := subiml;
+    Iconmenu.Items.Add(menuItem);
+    mindex := mindex + 1;
+
+    wIcon := TIcon.Create;
+    Dir := GetIconSetDirectory;
+    for n := 0 to GetIconSetIconsCount - 1 do
+    begin
+      icon := GetIconSetIcon(n);
+
+      if FileExists(Dir + Icon.FileName) then
+      begin
+        wIcon.LoadFromFile(Dir + Icon.FileName);
+        subiml.AddIcon(wIcon);
+
+        menuItem := TMenuItem.Create(Iconmenu);
+        menuItem.Caption := icon.Tag;
+        menuItem.Hint := Icon.Tag;
+        menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
+        menuItem.ImageIndex := subiml.Count - 1;
+        if n mod 10  = 0 then menuItem.Break := mbBarBreak;
+        Iconmenu.Items.Items[mindex].Add(menuItem);
+      end;
+    end;
+    wIcon.Free;
+  end;
+
+  if smiCustomIcon in IconItems then
+  begin
+    menuItem := TMenuItem.Create(Iconmenu);
+    menuItem.Caption := 'Custom Icon...';
+    menuItem.ImageIndex := 2;
+    menuItem.OnClick := iconmenuclick.OnCustomIconClick;
+    menuItem.SubMenuImages := subiml;
+    Iconmenu.Items.Add(menuItem);
+    //mindex := mindex + 1;
+  end;
+
+  subiml.Add(bmp,bmp);
+  Bmp.Free;
+
+  Iconmenu.Popup(PopupPoint.X,PopupPoint.Y);
+
+  // freeze until OnClick event is done;
+  while nrevent do
+  begin
+    Application.ProcessMessages;
+  end;
+
+  FreeAndNil(IconMenu);
+  FreeAndNil(subiml);
+  FreeAndNil(iml);
+  FreeAndNil(Iconmenuclick);
+
   result := PChar(Iconmenuresult);
 end;
 
