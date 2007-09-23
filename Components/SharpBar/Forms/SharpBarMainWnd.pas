@@ -205,11 +205,9 @@ var
 
 implementation
 
-uses PluginManagerWnd,
-     PluginManager2Wnd,
+uses PluginManager2Wnd,
      SharpEMiniThrobber,
-     BarHideWnd,
-     AddPluginWnd;
+     BarHideWnd;
 
 {$R *.dfm}
 // {$R SharpBarCR.RES}
@@ -1900,8 +1898,7 @@ begin
     if BarHideForm.Visible then BarHideForm.Close;
     FreeAndNil(BarHideForm);
   end;
-  if AddPluginForm <> nil then FreeAndNil(AddPluginForm);
-  // glacial:original - if PluginManagerForm <> nil then FreeAndNil(PluginManagerForm);
+
   if PluginManager2Form <> nil then FreeAndNil(PluginManager2Form);
   
   ModuleManager.Free;

@@ -3,7 +3,7 @@ object PluginManager2Form: TPluginManager2Form
   Top = 0
   BorderIcons = [biSystemMenu]
   Caption = 'Module Manager'
-  ClientHeight = 349
+  ClientHeight = 385
   ClientWidth = 443
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,6 +12,7 @@ object PluginManager2Form: TPluginManager2Form
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -131,5 +132,14 @@ object PluginManager2Form: TPluginManager2Form
     Caption = 'Move Right'
     TabOrder = 10
     OnClick = btnActiveLeftMoveRightClick
+  end
+  object Button1: TButton
+    Left = 360
+    Top = 355
+    Width = 75
+    Height = 25
+    Caption = 'Close'
+    TabOrder = 11
+    OnClick = Button1Click
   end
 end

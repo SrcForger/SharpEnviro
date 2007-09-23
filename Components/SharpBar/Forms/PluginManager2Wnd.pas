@@ -22,6 +22,7 @@ type
     btnActiveRightMoveRight: TButton;
     btnActiveLeftMoveLeft: TButton;
     btnActiveLeftMoveRight: TButton;
+    Button1: TButton;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure FormShow(Sender: TObject);
     procedure btnAddLeftClick(Sender: TObject);
@@ -32,6 +33,7 @@ type
     procedure btnActiveLeftMoveRightClick(Sender: TObject);
     procedure btnActiveRightMoveLeftClick(Sender: TObject);
     procedure btnActiveRightMoveRightClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -141,6 +143,8 @@ end;
 procedure TPluginManager2Form.btnRemoveLeftClick(Sender: TObject);
 
 begin
+  if MessageBox(handle,'Do you really want to delete this module?','Confirm Delete',MB_YESNO) = IDNO then
+    exit;
   if lstActiveLeft.ItemIndex = -1 then exit; // nothing selected
   if (lstActiveLeft.ItemIndex > ModuleManager.Modules.Count - 1) then exit;
   ModuleManager.Delete(TModule(ModuleManager.Modules.Items[lstActiveLeft.ItemIndex]).ID);
@@ -152,12 +156,19 @@ procedure TPluginManager2Form.btnRemoveRightClick(Sender: TObject);
 var
   ri : integer; // right-aligned index
 begin
+  if MessageBox(handle,'Do you really want to delete this module?','Confirm Delete',MB_YESNO) = IDNO then
+    exit;
   if lstActiveRight.ItemIndex = -1 then exit; // nothing selected
   if (lstActiveRight.ItemIndex > ModuleManager.Modules.Count - 1) then exit;
   ri := ModuleManager.GetFirstRModuleIndex;
   ModuleManager.Delete(TModule(ModuleManager.Modules.Items[lstActiveRight.ItemIndex+ri]).ID);
   UpdatePluginList;
   SharpBarMainForm.SaveBarSettings;
+end;
+
+procedure TPluginManager2Form.Button1Click(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TPluginManager2Form.CreateParams(var Params: TCreateParams);
