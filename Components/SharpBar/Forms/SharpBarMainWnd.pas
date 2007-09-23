@@ -206,6 +206,7 @@ var
 implementation
 
 uses PluginManagerWnd,
+     PluginManager2Wnd,
      SharpEMiniThrobber,
      BarHideWnd,
      AddPluginWnd;
@@ -1320,9 +1321,12 @@ end;
 
 procedure TSharpBarMainForm.PluginManager1Click(Sender: TObject);
 begin
-  if PluginManagerForm = nil then PluginManagerForm := TPluginManagerForm.Create(self);
-  PluginManagerForm.Showmodal;
+  // glacial:original - if PluginManagerForm = nil then PluginManagerForm := TPluginManagerForm.Create(self);
+  // glacial:original - PluginManagerForm.Showmodal;
+  if PluginManager2Form = nil then PluginManager2Form := TPluginManager2Form.Create(self);
+  PluginManager2Form.Showmodal;
 end;
+
 
 procedure TSharpBarMainForm.AutoStart1Click(Sender: TObject);
 begin
@@ -1897,8 +1901,9 @@ begin
     FreeAndNil(BarHideForm);
   end;
   if AddPluginForm <> nil then FreeAndNil(AddPluginForm);
-  if PluginManagerForm <> nil then FreeAndNil(PluginManagerForm);
-
+  // glacial:original - if PluginManagerForm <> nil then FreeAndNil(PluginManagerForm);
+  if PluginManager2Form <> nil then FreeAndNil(PluginManager2Form);
+  
   ModuleManager.Free;
 
   Application.ProcessMessages;
