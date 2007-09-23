@@ -55,7 +55,8 @@ uses
   SharpIconUtils in '..\..\Units\SharpIconUtils\SharpIconUtils.pas',
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas',
   SharpThemeApi in '..\SharpThemeApi\SharpThemeApi.pas',
-  uVistaFuncs in '..\..\Units\VistaFuncs\uVistaFuncs.pas';
+  uVistaFuncs in '..\..\Units\VistaFuncs\uVistaFuncs.pas',
+  SharpFileUtils in '..\..\Units\SharpFileUtils\SharpFileUtils.pas';
 
 type
   TTargetDialogSelectItem = (stiFile,stiRecentFiles,stiMostUsedFiles,stiDrive,
@@ -1058,16 +1059,23 @@ begin
     if smiShellIcon in IconItems then
     begin
       wIcon := TIcon.Create;
-      ImageListHandle := SHGetFileInfo(pChar(pTarget), 0, FileInfo, sizeof( SHFILEINFO ),
-                                      SHGFI_ICON or SHGFI_SHELLICONSIZE);
-      if FileInfo.hicon <> 0 then
-      begin
-        wIcon.Handle := FileInfo.hicon;
-        subiml.AddIcon(wIcon);
-        wIcon.ReleaseHandle;
-        DestroyIcon(FileInfo.hIcon);
-      end else subiml.Add(bmp,bmp);
-      ImageList_Destroy(ImageListHandle);
+      try
+        ImageListHandle := SHGetFileInfo(pChar(pTarget), 0, FileInfo, sizeof( SHFILEINFO ),
+                                        SHGFI_ICON or SHGFI_SHELLICONSIZE);
+        if FileInfo.hicon <> 0 then
+        begin
+          wIcon.Handle := FileInfo.hicon;
+          subiml.AddIcon(wIcon);
+          wIcon.ReleaseHandle;
+          DestroyIcon(FileInfo.hIcon);
+        end else subiml.Add(bmp,bmp);
+      except
+        try
+          subiml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'error22');
+          ImageList_Destroy(ImageListHandle);
+        except
+        end;
+      end;
       wIcon.Free;
     end;
 
