@@ -2,7 +2,7 @@ object SettingsForm: TSettingsForm
   Left = 0
   Top = 0
   BorderStyle = bsToolWindow
-  Caption = 'Media Controler Module Settings'
+  Caption = 'Media Controller Module Settings'
   ClientHeight = 305
   ClientWidth = 307
   Color = clBtnFace

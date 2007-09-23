@@ -1,5 +1,5 @@
 {
-Source Name: MediaControler.dpr
+Source Name: MediaController.dpr
 Description: Media Controler Module Main Project File
 Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
 
