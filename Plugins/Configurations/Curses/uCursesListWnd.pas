@@ -50,9 +50,10 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure ccolorsChangeColor(ASender: TObject; AColorCode: Integer);
     procedure FormResize(Sender: TObject);
-    procedure lb_CursorListClickItem(AText: string; AItem, ACol: Integer);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure lb_CursorListClickItem(const ACol: Integer;
+      AItem: TSharpEListItem);
   private
     procedure BuildCursorPreview;
   public
@@ -72,7 +73,6 @@ var
 implementation
 
 uses SharpThemeApi,
-     SharpIconUtils,
      SharpCenterApi;
 
 {$R *.dfm}
@@ -85,6 +85,13 @@ begin
   lb_CursorList.ColumnMargin := Rect(6,0,6,0);
 end;
 
+
+procedure TfrmCursesList.lb_CursorListClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
+begin
+  BuildCursorPreview;
+  CenterDefineSettingsChanged;
+end;
 
 procedure TfrmCursesList.FormCreate(Sender: TObject);
 begin
@@ -199,13 +206,6 @@ begin
   until FindNext(sr) <> 0;
   FindClose(sr);
   XML.Free;
-end;
-
-procedure TfrmCursesList.lb_CursorListClickItem(AText: string; AItem,
-  ACol: Integer);
-begin
-  BuildCursorPreview;
-  CenterDefineSettingsChanged;
 end;
 
 procedure TfrmCursesList.FormResize(Sender: TObject);

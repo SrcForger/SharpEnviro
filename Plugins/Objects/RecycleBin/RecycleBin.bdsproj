@@ -123,7 +123,7 @@
 			<Directories Name="UnitOutputDir"></Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
-			<Directories Name="SearchPath">..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Units\SharpIconUtils</Directories>
+			<Directories Name="SearchPath">..\..\..\Components\SharpDesk\Units;..\..\..\Components\SharpDesk\Forms\;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpDeskApi;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils</Directories>
 			<Directories Name="Packages">vcl;rtl</Directories>
 			<Directories Name="Conditionals"></Directories>
 			<Directories Name="DebugSourceDirs"></Directories>

@@ -24,7 +24,6 @@ object MainForm: TMainForm
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = sb_configClick
-    Glyph32FileName = 'plus.png'
     Glyph32.DrawMode = dmBlend
     Glyph32.CombineMode = cmMerge
     Glyph32.ResamplerClassName = 'TNearestResampler'

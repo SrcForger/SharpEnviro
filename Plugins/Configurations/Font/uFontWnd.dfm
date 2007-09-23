@@ -50,7 +50,7 @@ object frmFont: TfrmFont
     Top = 21
     Width = 434
     Height = 415
-    ActivePage = pagFontShadow
+    ActivePage = pagFont
     PropagateEnable = False
     Align = alClient
     object pagFont: TJvStandardPage
@@ -59,8 +59,6 @@ object frmFont: TfrmFont
       Width = 434
       Height = 415
       Caption = 'pagFont'
-      ExplicitWidth = 418
-      ExplicitHeight = 379
       object Label4: TLabel
         AlignWithMargins = True
         Left = 26
@@ -220,7 +218,6 @@ object frmFont: TfrmFont
         MonitorControl = sgb_size
         NormalColor = clWhite
         OnReset = UIC_Reset
-        ExplicitWidth = 382
         object sgb_size: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 2
@@ -269,13 +266,12 @@ object frmFont: TfrmFont
         MonitorControl = cbxFontName
         NormalColor = clWhite
         OnReset = UIC_Reset
-        ExplicitWidth = 382
         object cbxFontName: TComboBox
           AlignWithMargins = True
           Left = 2
           Top = 2
           Width = 170
-          Height = 22
+          Height = 23
           Margins.Left = 2
           Margins.Top = 2
           Margins.Right = 2
@@ -315,7 +311,6 @@ object frmFont: TfrmFont
         MonitorControl = sgb_alpha
         NormalColor = clWhite
         OnReset = UIC_Reset
-        ExplicitWidth = 382
         object sgb_alpha: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 2
@@ -364,7 +359,6 @@ object frmFont: TfrmFont
         MonitorControl = cb_bold
         NormalColor = clWhite
         OnReset = UIC_Reset
-        ExplicitWidth = 382
         object cb_bold: TCheckBox
           Left = 6
           Top = 4
@@ -400,7 +394,6 @@ object frmFont: TfrmFont
         MonitorControl = cb_Italic
         NormalColor = clWhite
         OnReset = UIC_Reset
-        ExplicitWidth = 382
         object cb_Italic: TCheckBox
           Left = 6
           Top = 6
@@ -437,7 +430,6 @@ object frmFont: TfrmFont
         MonitorControl = cb_Underline
         NormalColor = clWhite
         OnReset = UIC_Reset
-        ExplicitWidth = 382
         object cb_Underline: TCheckBox
           Left = 6
           Top = 4

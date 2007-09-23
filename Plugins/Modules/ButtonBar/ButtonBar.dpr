@@ -46,7 +46,8 @@ uses
   MainWnd in 'MainWnd.pas' {MainForm},
   SettingsWnd in 'SettingsWnd.pas' {SettingsForm},
   ButtonAddWnd in 'ButtonAddWnd.pas' {ButtonAddForm},
-  ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas';
+  ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas',
+  SharpFileUtils in '..\..\..\Common\Units\SharpFileUtils\SharpFileUtils.pas';
 
 type
   TModule = class
