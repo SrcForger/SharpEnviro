@@ -37,7 +37,8 @@ uses Windows,
      Math,
      GR32,
      GR32_PNG,
-     GR32_Filters;
+     GR32_Filters,
+     SharpFileUtils;
 
 procedure IconToImage(Bmp : TBitmap32; const icon : hicon);
 function extrShellIcon(Bmp : TBitmap32; FileName : String) : THandle;
@@ -212,6 +213,7 @@ var
   SEIcon : TSharpEIcon;
   Ext : String;
 begin
+  Target := GetFileNameWithoutParams(Target);
   if CompareText(Icon,'shell:icon') = 0 then
      result := (extrShellIcon(Bmp,Target) <> 0)
   else if SharpThemeApi.IsIconInIconSet(PChar(Icon)) then
