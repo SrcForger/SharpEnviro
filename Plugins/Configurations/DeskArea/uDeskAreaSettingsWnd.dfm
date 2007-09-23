@@ -114,7 +114,7 @@ object frmDASettings: TfrmDASettings
       Width = 90
       Height = 21
       ParentBackground = False
-      Min = 0
+      Min = -32
       Max = 512
       Value = 0
       Prefix = 'Left: '
@@ -130,7 +130,7 @@ object frmDASettings: TfrmDASettings
       Width = 90
       Height = 21
       ParentBackground = False
-      Min = 0
+      Min = -32
       Max = 512
       Value = 0
       Prefix = 'Top: '
@@ -146,7 +146,7 @@ object frmDASettings: TfrmDASettings
       Width = 90
       Height = 21
       ParentBackground = False
-      Min = 0
+      Min = -32
       Max = 512
       Value = 0
       Prefix = 'Bottom: '
@@ -162,7 +162,7 @@ object frmDASettings: TfrmDASettings
       Width = 90
       Height = 21
       ParentBackground = False
-      Min = 0
+      Min = -32
       Max = 512
       Value = 0
       Prefix = 'Right: '
