@@ -39,11 +39,18 @@ requires
   JvCoreD9R,
   JvInterpreterD9R;
 {$ENDIF}
+{$IFDEF VER185}
+  GR32_BDS2006,
+  JvSystemD11R,
+  JvCoreD11R,
+  JvInterpreterD11R;
+{$ELSE}
 {$IFDEF VER180}
   GR32_BDS2006,
   JvSystemD10R,
   JvCoreD10R,
   JvInterpreterD10R;
+{$ENDIF}
 {$ENDIF}
 
 contains
