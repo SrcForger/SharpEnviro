@@ -1217,7 +1217,8 @@ begin
      if lo + ro + PluginWidth <> ParentControl.Width then
   begin
     nw := Max(lo + ro + FSkinManager.Skin.BarSkin.ThDim.XAsInt+5,lo + ro + PluginWidth);
-    FBar.UpdateSkin(nw);
+    FBar.UpdatePosition(nw);
+//    FBar.UpdateSkin(nw);
     ParentControl.Width := nw;
   end;
 end;
