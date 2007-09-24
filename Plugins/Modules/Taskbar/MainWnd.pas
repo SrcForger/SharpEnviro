@@ -321,7 +321,7 @@ procedure TMainForm.DisplaySystemMenu(pHandle : hwnd);
 var
   cp: TPoint;
   AppMenu: hMenu;
-  MenuItemInfo: TMenuItemInfo;
+  //MenuItemInfo: TMenuItemInfo;
 begin
   DebugOutPutInfo('TMainForm.DisplaySystemMenu (Procedure)');
   SysMenuHandle := pHandle;
@@ -521,14 +521,9 @@ begin
   new := Max(NewWidth,1);
   UpdateBackground(new);
   Width := new;
-  InttoStr(Width);
-  CalculateItemWidth(IList.Count);
-  {i := FSpecialButtonWidth + IList.Count * sCurrentWidth + (IList.Count - 1) * sSpacing;
-  if i+1 < NewWidth then
-  begin
-    Width := i+1;
-    Hint := InttoStr(Width);
-  end;}
+  if IList.Count <= 0 then
+    exit;
+    
   CalculateItemWidth(IList.Count);
   AlignTaskComponents;
 end;
@@ -543,7 +538,7 @@ begin
   begin
     Tag := 1;
     Hint := '1';
-    if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+    if BroadCast then SendMessage(BarWnd,WM_UPDATEBARWIDTH,0,0);
     exit;
   end;
 
@@ -560,7 +555,7 @@ begin
   if Width <> NewWidth then
   begin
     //AlignTaskComponents;
-    if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+    if BroadCast then SendMessage(BarWnd,WM_UPDATEBARWIDTH,0,0);
   end else AlignTaskComponents;
 end;
 
@@ -759,7 +754,7 @@ begin
     if pItem <> nil then
     begin
       for n := IList.Count - 1 downto 0 do
-          if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
+          if TSharpETaskItem(IList.Items[n]).Tag = Integer(pItem.Handle) then
           begin
             pTaskItem := TSharpETaskItem(IList.Items[n]);
             if not CheckFilter(pItem) then
@@ -780,7 +775,7 @@ begin
     begin
       pTaskItem := nil;
       for n := 0 to IList.Count - 1 do
-          if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
+          if TSharpETaskItem(IList.Items[n]).Tag = Integer(pItem.Handle) then
           begin
             pTaskItem := TSharpETaskItem(IList.Items[n]);
             break;
@@ -802,10 +797,11 @@ end;
 
 function TMainForm.CheckFilter(pItem : TTaskItem) : boolean;
 var
-  n : integer;
+  n,i : integer;
   R : TRect;
   Mon : TMonitor;
   nm : boolean;
+  f : boolean;
 begin
   if pItem = nil then
   begin
@@ -834,20 +830,30 @@ begin
         2: if pItem.FileName = sIFilters[n].FilterFile then
               nm := True;
         3: begin
-             Mon := Screen.MonitorFromWindow(Self.Handle);
+             Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
-             if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect))
-                or (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
-                or (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
-                   nm := True
+             if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)) then
+               nm := True
            end;
         4: begin
-             Mon := Screen.MonitorFromWindow(Self.Handle);
+             Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
-             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect))
-                and not (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
-                and not (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
-                   nm := True
+             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)) then
+               nm := True
+           end;
+        5: begin
+             GetWindowRect(pItem.Handle,R);
+             f := False;
+             for i := 0 to Screen.MonitorCount - 1 do
+             begin
+               Mon := Screen.Monitors[i];
+               if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)) then
+               begin
+                 f := True;
+                 break;
+               end;
+             end;
+             nm := not f;
            end;
       end;
       if nm then break;
@@ -866,18 +872,30 @@ begin
         1: if pItem.WndClass = sEFilters[n].FilterClass then result := false;
         2: if pItem.FileName = sEFilters[n].FilterFile then result := false;
         3: begin
-             Mon := Screen.MonitorFromWindow(Self.Handle);
+             Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
              if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect))
-                or (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
-                or (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then result := false;
+               then result := false;
            end;
         4: begin
-             Mon := Screen.MonitorFromWindow(Self.Handle);
+             Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
-             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect))
-                and not (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
-                and not (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then result := false;
+             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)) then
+               result := false;
+           end;
+        5: begin
+             GetWindowRect(pItem.Handle,R);
+             f := False;
+             for i := 0 to Screen.MonitorCount - 1 do
+             begin
+               Mon := Screen.Monitors[i];
+               if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)) then
+               begin
+                 f := True;
+                 break;
+               end;
+             end;
+             result := f;
            end;
       end;
     end;
@@ -896,7 +914,7 @@ begin
   begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
     if pTaskItem <> nil then
-       if pTaskItem.Tag = pItem.Handle then
+       if pTaskItem.Tag = Integer(pItem.Handle) then
        begin
          if pTaskItem.Down then exit;
          pTaskItem.Flashing := True;
@@ -936,11 +954,11 @@ begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
     if pTaskItem <> nil then
     begin
-      if (pItem.Handle <> pTaskItem.Tag ) and (pTaskItem.Down) then
+      if (Integer(pItem.Handle) <> pTaskItem.Tag ) and (pTaskItem.Down) then
       begin
          pTaskItem.Down := False
       end
-      else if pItem.Handle = pTaskItem.Tag then
+      else if Integer(pItem.Handle) = pTaskItem.Tag then
       begin
         pTaskItem.Down := True;
         if pTaskItem.Flashing then pTaskItem.Flashing := False;
@@ -994,8 +1012,8 @@ begin
   index2 := -1;
   for n:= 0 to IList.Count - 1 do
   begin
-    if TSharpETaskItem(IList.Items[n]).Tag = pItem1.Handle then index1 := n;
-    if TSharpETaskItem(IList.Items[n]).Tag = pItem2.Handle then index2 := n;
+    if TSharpETaskItem(IList.Items[n]).Tag = Integer(pItem1.Handle) then index1 := n;
+    if TSharpETaskItem(IList.Items[n]).Tag = Integer(pItem2.Handle) then index2 := n;
     if (index1 <> -1) and (index2 <> -1) then break;
   end;
   if ((index1 = - 1) or (index2 = -1))
@@ -1012,7 +1030,7 @@ begin
   if pItem = nil then exit;
 
   for n := IList.Count - 1 downto 0 do
-    if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
+    if TSharpETaskItem(IList.Items[n]).Tag = Integer(pItem.Handle) then
     begin
       ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList.Items[n]).Tag);
       IList.Delete(n);
@@ -1032,7 +1050,7 @@ begin
   CheckFilterAll;
   pTaskItem := nil;
   for n := 0 to IList.Count - 1 do
-    if TSharpETaskItem(IList.Items[n]).Tag = pItem.Handle then
+    if TSharpETaskItem(IList.Items[n]).Tag = Integer(pItem.Handle) then
     begin
       pTaskItem := TSharpETaskItem(IList.Items[n]);
       break;
@@ -1057,7 +1075,7 @@ begin
   if pItem <> nil then
   begin
     pItem.UpdateVisibleState;
-    if (not pItem.Visible) or (TM.LastActiveTask <> TSharpETaskItem(Sender).Tag) then
+    if (not pItem.Visible) or (Integer(TM.LastActiveTask) <> TSharpETaskItem(Sender).Tag) then
     begin
       pItem.Restore;
     end else
@@ -1074,7 +1092,7 @@ begin
     exit;
 
  DebugOutPutInfo('TMainForm.WMShellHook (Message Procedure)');
- if msg.LParam = self.Handle then exit;
+ if msg.LParam = Integer(self.Handle) then exit;
  case msg.WParam of
    HSHELL_WINDOWCREATED : TM.AddTask(msg.LParam);
    HSHELL_REDRAW : TM.UpdateTask(msg.LParam);
@@ -1107,7 +1125,7 @@ var
     if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
        ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
        ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
-       (GetWindowLong(Wnd, GWL_HWNDPARENT) = GetDesktopWindow)) and
+       (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
        (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))  then
       with PParam(LParam)^ do
       begin

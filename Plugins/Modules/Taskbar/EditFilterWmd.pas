@@ -56,6 +56,7 @@ type
     ExplorerWindows1: TMenuItem;
     rb_monvwm: TRadioButton;
     rb_notmonvwm: TRadioButton;
+    rb_notanymon: TRadioButton;
     procedure btn_examplefiltersClick(Sender: TObject);
     procedure ExplorerWindows1Click(Sender: TObject);
     procedure MinimizedTasjs1Click(Sender: TObject);
@@ -146,6 +147,7 @@ begin
           1: rb_classname.Checked := True;
           3: rb_monvwm.Checked    := True;
           4: rb_notmonvwm.Checked := True;
+          5: rb_notanymon.Checked := True;
           else rb_filename.Checked := True;
         end;
         for i := 0 to clb_showstates.Count - 1 do
@@ -171,7 +173,7 @@ procedure TEditFilterForm.btn_find1Click(Sender: TObject);
     if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
        ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
        ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
-       (GetWindowLong(Wnd, GWL_HWNDPARENT) = GetDesktopWindow)) and
+       (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
        (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))  then
     begin
         item := TMenuItem.Create(EditFilterForm.wndclasspopup);
@@ -313,7 +315,8 @@ begin
          else if rb_classname.Checked then i := 1
               else if rb_monvwm.Checked then i := 3
                    else if rb_notmonvwm.Checked then i := 4
-                        else i := 2;
+                        else if rb_notanymon.Checked then i := 5
+                             else i := 2;
       Add('FilterType',i);
 
       for i := 0 to clb_showstates.Count - 1 do

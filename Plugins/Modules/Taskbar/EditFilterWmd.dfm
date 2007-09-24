@@ -3,7 +3,7 @@ object EditFilterForm: TEditFilterForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Edit Filter'
-  ClientHeight = 433
+  ClientHeight = 466
   ClientWidth = 306
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -124,7 +124,7 @@ object EditFilterForm: TEditFilterForm
   end
   object btn_cancel: TButton
     Left = 223
-    Top = 400
+    Top = 432
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -133,7 +133,7 @@ object EditFilterForm: TEditFilterForm
   end
   object btn_ok: TButton
     Left = 143
-    Top = 400
+    Top = 432
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -165,6 +165,15 @@ object EditFilterForm: TEditFilterForm
     Height = 17
     Caption = 'Not on Current Monitor/VWM'
     TabOrder = 13
+    OnClick = rb_classnameClick
+  end
+  object rb_notanymon: TRadioButton
+    Left = 8
+    Top = 399
+    Width = 217
+    Height = 17
+    Caption = 'Not on any Monitor/VWM (Minimized?)'
+    TabOrder = 14
     OnClick = rb_classnameClick
   end
   object wndclasspopup: TPopupMenu
