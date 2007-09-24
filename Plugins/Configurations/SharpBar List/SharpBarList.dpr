@@ -121,7 +121,7 @@ begin
 
   // If Validation ok then continue
   if (AApply) and (frmEditItem.plEdit.ActivePage <> frmEditItem.pagBarSpace) then
-     frmBarList.SaveUi;
+    frmBarList.SaveUi;
 
   if frmEditItem <> nil then
   begin

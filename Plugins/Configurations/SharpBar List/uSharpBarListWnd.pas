@@ -56,22 +56,23 @@ type
     lbBarList: TSharpEListBoxEx;
     pilDefault: TPngImageList;
     Timer1: TTimer;
-    ListPopup: TPopupMenu;
-    procedure ListPopupPopup(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure lbBarListDblClickItem(const ACol: Integer;
       AItem: TSharpEListItem);
+    procedure lbBarListGetCellCursor(const ACol: Integer;
+      AItem: TSharpEListItem; var ACursor: TCursor);
+    procedure lbBarListGetCellFont(const ACol: Integer; AItem: TSharpEListItem;
+      var AFont: TFont);
+    procedure lbBarListGetCellTextColor(const ACol: Integer;
+      AItem: TSharpEListItem; var AColor: TColor);
+    procedure lbBarListClickItem(const ACol: Integer; AItem: TSharpEListItem);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
-    procedure OnListPopupStartClick(Sender : TObject);
-    procedure OnListPopupStopClick(Sender : TObject);
-    procedure OnListPopupEnableClick(Sender : TObject);
-    procedure OnListPopupDisableClick(Sender : TObject);
   private
-    
+
   public
     BarList: TObjectList;
     procedure BuildBarList;
@@ -127,10 +128,114 @@ begin
   lbBarList.ColumnMargin := Rect(6,0,6,0);
 end;
 
+procedure TfrmBarList.lbBarListClickItem(const ACol: Integer;
+  AItem: TSharpEListItem);
+var
+  BarItem : TBarItem;
+  wnd : hwnd;
+  Dir : String;
+  FName : String;
+  XML : TJvSimpleXML;
+  fileloaded : boolean;
+  enable : boolean;
+begin
+ if frmEditItem <> nil then
+ begin
+   UpdateUI;
+   exit;
+ end;
+
+  // Start / Stop / Disable / Enable clicked
+  if (ACol = 2) or (ACol = 3) then
+  begin
+    BarItem :=  TBarItem(AItem.Data);
+    if (CompareText(AItem.SubItemText[2],'Start') = 0) and (ACol = 2) then
+    begin
+      SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpBar.exe'+
+                            ' -load:' + inttostr(BarItem.ID) +
+                            ' -noREB' +
+                            ' -noLASB');
+      UpdateBarStatus;
+    end
+    else if (CompareText(AItem.SubItemText[2],'Stop') = 0) and (ACol = 2)  then
+    begin
+      wnd := FindWindow(nil,PChar('SharpBar_' + inttostr(BarItem.ID)));
+      if wnd <> 0 then
+         SendMessage(wnd,WM_SHARPTERMINATE,0,0);
+
+      UpdateBarStatus;
+    end
+    else
+    begin
+      enable := (CompareText(AItem.SubItemText[3],'Enable') = 0) and (ACol = 3);
+      if not enable then
+      begin
+        wnd := FindWindow(nil,PChar('SharpBar_' + inttostr(BarItem.ID)));
+        if wnd <> 0 then
+           SendMessage(wnd,WM_SHARPTERMINATE,0,0);
+      end;
+      Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(BarItem.ID) +'\';
+      FName := Dir + 'bar.xml';
+
+      XML := TJvSimpleXML.Create(nil);
+      if FileExists(FName) then
+      begin
+        try
+          XML.LoadFromFile(FName);
+          fileloaded := True;
+        except
+          fileloaded := False;
+        end;
+        if fileloaded then
+          with XML.Root.Items do
+          begin
+            if ItemNamed['Settings'] = nil then
+              Add('Settings');
+            with ItemNamed['Settings'].Items do
+            begin
+              if ItemNamed['AutoStart'] <> nil then
+                ItemNamed['AutoStart'].BoolValue := enable
+              else Add('AutoStart',enable);
+            end;
+          end;
+      end;
+      XML.SaveToFile(FName);
+      XML.Free;
+
+      BuildBarList;
+    end;
+  end;
+end;
+
 procedure TfrmBarList.lbBarListDblClickItem(const ACol: Integer;
   AItem: TSharpEListItem);
 begin
   ConfigureItem;
+end;
+
+procedure TfrmBarList.lbBarListGetCellCursor(const ACol: Integer;
+  AItem: TSharpEListItem; var ACursor: TCursor);
+begin
+  if (ACol = 2) or (ACol = 3) then
+    ACursor := crHandPoint;
+end;
+
+procedure TfrmBarList.lbBarListGetCellFont(const ACol: Integer;
+  AItem: TSharpEListItem; var AFont: TFont);
+begin
+  if (ACol = 2) or (ACol = 3) then
+    AFont.Style := [fsUnderline];
+end;
+
+procedure TfrmBarList.lbBarListGetCellTextColor(const ACol: Integer;
+  AItem: TSharpEListItem; var AColor: TColor);
+begin
+  if (ACol = 2) or (ACol = 3) then
+  begin
+    if frmEditItem = nil then
+      AColor := clNavy
+    else AColor := clGray;
+  end;
 end;
 
 procedure TfrmBarList.FormCreate(Sender: TObject);
@@ -216,7 +321,12 @@ var
   SList : TStringList;
   sr : TSearchRec;
   fileloaded : boolean;
+  lastselected : integer;
 begin
+  if lbBarList.ItemIndex <> - 1 then
+    lastselected := TBarItem(lbBarList.Item[lbBarList.ItemIndex].Data).ID
+  else lastselected := - 1;
+
   lbBarList.Clear;
   BarList.Clear;
 
@@ -276,8 +386,36 @@ begin
         newItem := lbBarList.AddItem('',iindex);
         newItem.Data := TBarItem(BarList.Items[n]);
         newItem.AddSubItem(Name);
+        case iindex of
+          0: begin
+               newItem.AddSubItem('Stop');
+               newItem.AddSubItem('Disable');
+             end;
+          1: begin
+               newItem.AddSubItem('Start');
+               newItem.AddSubItem('Disable');
+             end;
+          2: begin
+               newItem.AddSubItem('');
+               newItem.AddSubItem('Enable');
+             end;
+        end;
         newItem.AddSubItem(inttostr(ID));
+        if ID = lastselected then
+          lbBarList.ItemIndex := n;    
       end;
+
+  if lbBarList.Items.Count = 0 then
+  begin
+    CenterDefineButtonState(scbEditTab,False);
+    CenterDefineButtonState(scbDeleteTab,False);
+  end else
+  begin
+    if lbBarList.ItemIndex = - 1 then
+      lbBarList.ItemIndex := 0;
+    CenterDefineButtonState(scbEditTab,True);
+    CenterDefineButtonState(scbDeleteTab,True);
+  end;
 end;
 
 function BarSpaceCheck : boolean;
@@ -370,7 +508,7 @@ begin
       begin
         frmEditItem.pagBarSpace.Show;
       end;
-      frmBarList.lbBarList.Enabled := False;
+//      frmBarList.lbBarList.Enabled := False;
       Result := True;
     end;
   sceEdit:
@@ -397,7 +535,7 @@ begin
         frmEditItem.cbBasedOn.ItemIndex := 0;
         frmEditItem.cbBasedOn.Enabled := False;
 
-        frmBarList.lbBarList.Enabled := False;
+//        frmBarList.lbBarList.Enabled := False;
 
         Result := True;
       end;
@@ -577,170 +715,6 @@ end;
 procedure TfrmBarList.Timer1Timer(Sender: TObject);
 begin
   UpdateBarStatus;
-end;
-
-procedure TfrmBarList.OnListPopupStartClick(Sender : TObject);
-begin
-  SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpBar.exe'+
-                        ' -load:' + inttostr(TMenuItem(Sender).Tag) +
-                        ' -noREB' +
-                        ' -noLASB');
-
-  UpdateBarStatus;
-end;
-
-procedure TfrmBarList.OnListPopupStopClick(Sender : TObject);
-var
-  wnd : hwnd;
-begin
-  wnd := FindWindow(nil,PChar('SharpBar_' + inttostr(TMenuItem(Sender).Tag)));
-  if wnd <> 0 then
-     SendMessage(wnd,WM_SHARPTERMINATE,0,0);
-
-  UpdateBarStatus;
-end;
-
-procedure TfrmBarList.OnListPopupEnableClick(Sender : TObject);
-var
-  Dir : String;
-  FName : String;
-  XML : TJvSimpleXML;
-  fileloaded : boolean;
-begin
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(TMenuItem(Sender).Tag) +'\';
-  FName := Dir + 'bar.xml';
-
-  XML := TJvSimpleXML.Create(nil);
-  if FileExists(FName) then
-  begin
-    try
-      XML.LoadFromFile(FName);
-      fileloaded := True;
-    except
-      fileloaded := False;
-    end;
-    if fileloaded then
-      with XML.Root.Items do
-      begin
-        if ItemNamed['Settings'] = nil then
-          Add('Settings');
-        with ItemNamed['Settings'].Items do
-        begin
-          if ItemNamed['AutoStart'] <> nil then
-            ItemNamed['AutoStart'].BoolValue := True
-          else Add('AutoStart',True);
-        end;
-      end;
-  end;
-  XML.SaveToFile(FName);
-  XML.Free;
-
-  BuildBarList;
-end;
-
-procedure TfrmBarList.OnListPopupDisableClick(Sender : TObject);
-var
-  Dir : String;
-  FName : String;
-  XML : TJvSimpleXML;
-  fileloaded : boolean;
-begin
-  OnListPopupStopClick(Sender);
-
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(TMenuItem(Sender).Tag) +'\';
-  FName := Dir + 'bar.xml';
-
-  XML := TJvSimpleXML.Create(nil);
-  if FileExists(FName) then
-  begin
-    try
-      XML.LoadFromFile(FName);
-      fileloaded := True;
-    except
-      fileloaded := False;
-    end;
-    if fileloaded then
-      with XML.Root.Items do
-      begin
-        if ItemNamed['Settings'] = nil then
-          Add('Settings');
-        with ItemNamed['Settings'].Items do
-        begin
-          if ItemNamed['AutoStart'] <> nil then
-            ItemNamed['AutoStart'].BoolValue := False
-          else Add('AutoStart',False);
-        end;
-      end;
-  end;
-  XML.SaveToFile(FName);
-  XML.Free;
-
-  BuildBarList;
-end;
-
-procedure TfrmBarList.ListPopupPopup(Sender: TObject);
-var
-  BarItem : TBarItem;
-  mitem : TMenuItem;
-
-  procedure AddEnableItem;
-  begin
-    mitem := TMenuItem.Create(ListPopup);
-    mitem.Caption := 'Enable';
-    mitem.ImageIndex := 1;
-    mitem.OnClick := OnListPopupEnableClick;
-    mitem.Tag := BarItem.ID;
-    ListPopup.Items.Add(mitem);
-  end;
-
-  procedure AddDisableItem;
-  begin
-    mitem := TMenuItem.Create(ListPopup);
-    mitem.Caption := 'Disable';
-    mitem.ImageIndex := 2;
-    mitem.OnClick := OnListPopupDisableClick;
-    mitem.Tag := BarItem.ID;
-    ListPopup.Items.Add(mitem);
-  end;
-
-  procedure AddStartItem;
-  begin
-    mitem := TMenuItem.Create(ListPopup);
-    mitem.Caption := 'Start';
-    mitem.ImageIndex := 0;
-    mitem.OnClick := OnListPopupStartClick;
-    mitem.Tag := BarItem.ID;
-    ListPopup.Items.Add(mitem);
-  end;
-
-  procedure AddStopItem;
-  begin
-    mitem := TMenuItem.Create(ListPopup);
-    mitem.Caption := 'Stop';
-    mitem.ImageIndex := 1;
-    mitem.OnClick := OnListPopupStopClick;
-    mitem.Tag := BarItem.ID;
-    ListPopup.Items.Add(mitem);
-  end;
-
-begin
-  ListPopup.Items.Clear;
-  if lbBarList.ItemIndex < 0 then
-     exit;
-
-  BarItem := TBarItem(lbBarList.Item[lbBarList.ItemIndex].Data);
-  if BarItem.AutoStart then
-  begin
-    if IsBarRunning(BarItem.ID) then
-       AddStopItem
-       else AddStartItem;
-    AddDisableItem;
-  end else
-  begin
-    if IsBarRunning(BarItem.ID) then
-       AddStopItem;
-    AddEnableItem;
-  end;
 end;
 
 end.

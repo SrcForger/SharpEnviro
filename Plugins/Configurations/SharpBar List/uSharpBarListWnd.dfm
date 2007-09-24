@@ -47,10 +47,37 @@ object frmBarList: TfrmBarList
         ColumnAlign = calLeft
         Autosize = False
         StretchColumn = False
+      end
+      item
+        Width = 50
+        MaxWidth = 0
+        MinWidth = 0
+        TextColor = clBlack
+        SelectedTextColor = clBlack
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        Autosize = False
+        StretchColumn = False
+      end
+      item
+        Width = 75
+        MaxWidth = 0
+        MinWidth = 0
+        TextColor = clBlack
+        SelectedTextColor = clBlack
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        Autosize = False
+        StretchColumn = False
       end>
-    PopupMenu = ListPopup
     ItemHeight = 32
+    OnClickItem = lbBarListClickItem
     OnDblClickItem = lbBarListDblClickItem
+    OnGetCellTextColor = lbBarListGetCellTextColor
+    OnGetCellCursor = lbBarListGetCellCursor
+    OnGetCellFont = lbBarListGetCellFont
     AutosizeGrid = False
     Borderstyle = bsNone
     Ctl3d = False
@@ -591,12 +618,6 @@ object frmBarList: TfrmBarList
     Interval = 500
     OnTimer = Timer1Timer
     Left = 272
-    Top = 120
-  end
-  object ListPopup: TPopupMenu
-    Images = StatusImages
-    OnPopup = ListPopupPopup
-    Left = 304
     Top = 120
   end
 end
