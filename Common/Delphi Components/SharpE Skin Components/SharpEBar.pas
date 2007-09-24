@@ -114,7 +114,7 @@ type
     constructor CreateRuntime(AOwner: TComponent; SkinManager : TSharpESkinManager);
     destructor Destroy; override;
     procedure UpdateSkin(NewWidth : integer = -1); reintroduce;
-    procedure UpdatePosition;
+    procedure UpdatePosition(NewWidth : integer = -1);
     procedure UpdateAlwaysOnTop;
     property aform: TForm read form;
     property abackground: TSharpEBarBackground read FBackGround;
@@ -477,7 +477,7 @@ begin
   end;
 end;
 
-procedure TSharpEBar.UpdatePosition;
+procedure TSharpEBar.UpdatePosition(NewWidth : integer = -1);
 var
   Mon: TMonitor;
   x, y: integer;
@@ -508,15 +508,17 @@ begin
     y := Mon.Top;
   end;
 
+  NewWidth := Max(NewWidth,Form.Width);
+
   case FHorizPos of
     hpLeft: x := Mon.Left;
-    hpMiddle: x := Mon.Left + Mon.Width div 2 - form.Width div 2;
-    hpRight: x := Mon.Left + Mon.Width - form.Width;
+    hpMiddle: x := Mon.Left + Mon.Width div 2 - NewWidth div 2;
+    hpRight: x := Mon.Left + Mon.Width - NewWidth;
     hpFull:
       begin
         x := Mon.Left;
-        FOrigWidth := Form.Width;
-        form.Width := Mon.Width;
+        FOrigWidth := NewWidth;
+        Form.Width := Mon.Width;
       end;
   else
     x := Mon.Left;
@@ -532,7 +534,7 @@ begin
     SetBitmapSizes;
     FBuffer.Clear(Color32(255, 0, 254, 0));
     if Assigned(FManager) then
-      DrawManagedSkin(FManager.Scheme,-1,x)
+      DrawManagedSkin(FManager.Scheme,NewWidth,x)
     else
       DrawDefaultSkin(DefaultSharpEScheme);
   end
