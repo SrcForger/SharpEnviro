@@ -30,7 +30,7 @@ interface
 uses
   // Default Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Menus, Math,
+  Dialogs, StdCtrls, ExtCtrls, Menus, Math, Types,
   // Custom Units
   JvSimpleXML, GR32, GR32_PNG, JCLLocales,
   // SharpE Units

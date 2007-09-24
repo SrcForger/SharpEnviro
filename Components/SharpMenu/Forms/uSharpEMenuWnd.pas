@@ -646,7 +646,7 @@ begin
   if msg.message = WM_SHARPSHELLMESSAGE then
   begin
     Handled := True;
-    if (msg.lParam = Handle) or (msg.lparam = Application.Handle) then exit;
+    if (msg.lParam = Integer(Handle)) or (msg.lparam = Integer(Application.Handle)) then exit;
 
     GetClassName(GetForegroundWindow(), buf, SizeOf(buf));
     cname := buf;

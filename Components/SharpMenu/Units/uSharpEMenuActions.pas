@@ -495,6 +495,7 @@ begin
   repeat
     if (CompareText(sr.Name,'.') <> 0) and (CompareText(sr.Name,'..') <> 0) then
     begin
+      found := false;
       for n := DynList.Count - 1 downto 0 do
       begin
         item := TSharpEMenuItem(DynList.Items[n]);

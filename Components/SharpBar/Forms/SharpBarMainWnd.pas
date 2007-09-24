@@ -266,7 +266,6 @@ procedure TSharpBarMainForm.WMBarReposition(var msg : TMessage);
 var
   XML : TJvSimpleXML;
   Dir : String;
-  n : integer;
   b : boolean;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';

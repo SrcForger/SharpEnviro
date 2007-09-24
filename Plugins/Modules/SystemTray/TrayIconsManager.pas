@@ -351,7 +351,7 @@ begin
 
   oVersion := NIDv6.Union.uVersion;
   FBInfoFlags := NIDv6.Union.uVersion;
-  if oVersion <> FBInfoFlags then
+  if oVersion <> Integer(FBInfoFlags) then
      result := result + [tceVersion];
 
   FFlags := NIDv6.uFlags;
