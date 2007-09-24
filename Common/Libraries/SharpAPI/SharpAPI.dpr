@@ -554,12 +554,11 @@ end;
 
 function SharpExecute(data: pChar): hresult;
 var
-  wnd: hWnd;
   iElevate: Integer;
   iHistory: Integer;
   sTemp: String;
 begin
-  Result := HR_OK;
+//  Result := HR_OK;
 
   try
     if IsServiceStarted('exec') = MR_STARTED then
