@@ -147,16 +147,6 @@ begin
   AStatusText := Pchar(IntToStr(1));
 end;
 
-procedure ClickBtn(AButtonID: TSCB_BUTTON_ENUM; AButton:TPngSpeedButton; AText:String);
-begin
-  Case AButtonID of
-      scbConfigure:
-      begin
-        frmBarList.ConfigureItem;
-      end;
-  end;
-end;
-
 function SetBtnState(AButtonID: TSCB_BUTTON_ENUM): Boolean;
 begin
   Result := False;
@@ -209,8 +199,7 @@ exports
   SetBtnState,
   SetSettingType,
   GetCenterScheme,
-  AddTabs,
-  ClickBtn;
+  AddTabs;
 
 end.
 

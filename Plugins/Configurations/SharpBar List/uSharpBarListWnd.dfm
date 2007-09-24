@@ -61,6 +61,18 @@ object frmBarList: TfrmBarList
         StretchColumn = False
       end
       item
+        Width = 60
+        MaxWidth = 0
+        MinWidth = 0
+        TextColor = clBlack
+        SelectedTextColor = clBlack
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        Autosize = False
+        StretchColumn = False
+      end
+      item
         Width = 75
         MaxWidth = 0
         MinWidth = 0

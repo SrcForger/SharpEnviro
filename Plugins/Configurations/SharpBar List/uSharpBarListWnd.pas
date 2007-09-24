@@ -145,6 +145,16 @@ begin
    exit;
  end;
 
+  if (ACol = 4 ) then
+  begin
+    if (CompareText(AItem.SubItemText[4],'Configure') = 0) then
+    begin
+      BarItem :=  TBarItem(AItem.Data);
+      CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
+                    + '\_Components\Module Manager.con'), pchar(inttostr(BarItem.ID)));
+    end;
+  end;
+
   // Start / Stop / Disable / Enable clicked
   if (ACol = 2) or (ACol = 3) then
   begin
@@ -216,21 +226,21 @@ end;
 procedure TfrmBarList.lbBarListGetCellCursor(const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 begin
-  if (ACol = 2) or (ACol = 3) then
+  if (ACol = 2) or (ACol = 3) or (ACol = 4) then
     ACursor := crHandPoint;
 end;
 
 procedure TfrmBarList.lbBarListGetCellFont(const ACol: Integer;
   AItem: TSharpEListItem; var AFont: TFont);
 begin
-  if (ACol = 2) or (ACol = 3) then
+  if (ACol = 2) or (ACol = 3) or (ACol = 4) then
     AFont.Style := [fsUnderline];
 end;
 
 procedure TfrmBarList.lbBarListGetCellTextColor(const ACol: Integer;
   AItem: TSharpEListItem; var AColor: TColor);
 begin
-  if (ACol = 2) or (ACol = 3) then
+  if (ACol = 2) or (ACol = 3) or (ACol = 4) then
   begin
     if frmEditItem = nil then
       AColor := clNavy
@@ -390,17 +400,19 @@ begin
           0: begin
                newItem.AddSubItem('Stop');
                newItem.AddSubItem('Disable');
+               newItem.AddSubItem('Configure');               
              end;
           1: begin
                newItem.AddSubItem('Start');
                newItem.AddSubItem('Disable');
+               newItem.AddSubItem('');
              end;
           2: begin
                newItem.AddSubItem('');
                newItem.AddSubItem('Enable');
+               newItem.AddSubItem('');               
              end;
         end;
-        newItem.AddSubItem(inttostr(ID));
         if ID = lastselected then
           lbBarList.ItemIndex := n;    
       end;
