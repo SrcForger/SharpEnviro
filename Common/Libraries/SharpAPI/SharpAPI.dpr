@@ -716,22 +716,22 @@ end;
 
 function DirCheck(APath: string; var AResult: string): Boolean;
 var
-  DirCheck: array[0..6] of string;
+  aDirCheck: array[0..6] of string;
   i: Integer;
 begin
   Result := False;
-  DirCheck[0] := 'SharpCore.exe';
-  DirCheck[1] := 'SharpBar.exe';
-  DirCheck[2] := 'SharpDesk.exe';
-  DirCheck[3] := 'SharpApi.dll';
-  DirCheck[4] := 'SharpDeskApi.dll';
-  DirCheck[5] := 'SharpThemeApi.dll';
-  DirCheck[6] := 'SharpMenu.exe';
+  aDirCheck[0] := 'SharpCore.exe';
+  aDirCheck[1] := 'SharpBar.exe';
+  aDirCheck[2] := 'SharpDesk.exe';
+  aDirCheck[3] := 'SharpApi.dll';
+  aDirCheck[4] := 'SharpDeskApi.dll';
+  aDirCheck[5] := 'SharpThemeApi.dll';
+  aDirCheck[6] := 'SharpMenu.exe';
 
-  for i := Low(DirCheck) to High(DirCheck) do
-    if FileExists(APath + DirCheck[i]) then
+  for i := Low(aDirCheck) to High(aDirCheck) do
+    if FileExists(APath + aDirCheck[i]) then
     begin
-      AResult := APath + DirCheck[i];
+      AResult := APath + aDirCheck[i];
       Result := True;
       Break;
     end;
