@@ -182,7 +182,10 @@ begin
       frmWPSettings.cboMonitor.Items.AddObject('Primary Monitor', WPList.Items[n]);
       frmWPSettings.FCurrentWP := TWPItem(WPList.Items[n]);
     end else begin
-      frmWPSettings.cboMonitor.Items.AddObject(TWPItem(WPList.Items[n]).Name,
+      frmWPSettings.cboMonitor.Items.AddObject(
+        'Monitor ' + inttostr(n) + ' (' +
+        inttostr(TWPItem(WPList.Items[n]).Mon.Width) + 'x' +
+        inttostr(TWPItem(WPList.Items[n]).Mon.Height) + ')',
         WPList.Items[n]);
     end;
   end;
