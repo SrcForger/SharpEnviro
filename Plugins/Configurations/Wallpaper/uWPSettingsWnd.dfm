@@ -570,13 +570,13 @@ object frmWPSettings: TfrmWPSettings
             Margins.Bottom = 0
             Align = alLeft
             ParentBackground = False
-            Min = 0
+            Min = -255
             Max = 255
             Value = 0
             Prefix = 'Lum: '
             Description = 'Change Luminance'
             PopPosition = ppBottom
-            PercentDisplay = True
+            PercentDisplay = False
             OnChangeValue = HSLColorChangeEvent
           end
           object sgbSat: TSharpeGaugeBox
@@ -591,13 +591,13 @@ object frmWPSettings: TfrmWPSettings
             Margins.Bottom = 0
             Align = alLeft
             ParentBackground = False
-            Min = 0
+            Min = -255
             Max = 255
             Value = 0
             Prefix = 'Sat: '
             Description = 'Change Saturation'
             PopPosition = ppBottom
-            PercentDisplay = True
+            PercentDisplay = False
             OnChangeValue = HSLColorChangeEvent
           end
           object sgbHue: TSharpeGaugeBox
@@ -611,13 +611,13 @@ object frmWPSettings: TfrmWPSettings
             Margins.Bottom = 0
             Align = alLeft
             ParentBackground = False
-            Min = 0
-            Max = 255
+            Min = -128
+            Max = 128
             Value = 0
             Prefix = 'Hue: '
             Description = 'Change Hue'
             PopPosition = ppBottom
-            PercentDisplay = True
+            PercentDisplay = False
             OnChangeValue = HSLColorChangeEvent
           end
         end
@@ -806,7 +806,7 @@ object frmWPSettings: TfrmWPSettings
             Height = 21
             Align = alLeft
             Style = csDropDownList
-            ItemHeight = 0
+            ItemHeight = 13
             TabOrder = 0
             OnChange = cb_gtypeChange
             Items.Strings = (
