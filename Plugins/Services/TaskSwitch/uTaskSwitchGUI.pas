@@ -294,7 +294,13 @@ var
   Spacing : integer;
 begin
   FInTimer := True;
-  pwsucc := True;
+
+  TSS := FSkinManager.Skin.TaskSwitchSkin;
+  if  (TSS.Item.Empty) or (TSS.ItemHover.Empty) then
+  begin
+    CloseWindow;
+    exit;
+  end;
     
   if not IsIconic(wndlist[FPreviewIndex]) then
   begin
@@ -343,8 +349,6 @@ begin
         Previews[FPreviewIndex].DrawTo(Bmp,Rect(w-20,h-20,w,h));
         Previews[FPreviewIndex].Clear(color32(0,0,0,0));
         Previews[FPreviewIndex].Assign(Bmp);
-
-        TSS := FSkinManager.Skin.TaskSwitchSkin;
 
         Spacing := TSS.Spacing;
         x := TSS.LROffset.XAsInt;
@@ -429,7 +433,6 @@ var
   x,y : integer;
   n: Integer;
   temp : TBitmap32;
-  Shift : TShiftState;
   dc : HDC;
 begin
   if FPreviewTimer.Enabled then
@@ -438,6 +441,11 @@ begin
   BuildPreviews;
 
   TSS := FSkinManager.Skin.TaskSwitchSkin;
+  if  (TSS.Item.Empty) or (TSS.ItemHover.Empty) then
+  begin
+    CloseWindow;
+    exit;
+  end;
 
   WrapCount := Max(1,TSS.WrapCount);
   Spacing := TSS.Spacing;
@@ -588,6 +596,11 @@ begin
     FIndex := High(wndlist);
 
   TSS := FSkinManager.Skin.TaskSwitchSkin;
+  if  (TSS.Item.Empty) or (TSS.ItemHover.Empty) then
+  begin
+    CloseWindow;
+    exit;
+  end;
   ST := CreateThemedSkinText(FSkinManager.Skin.TaskSwitchSkin.Background.SkinText);
 
   Spacing := TSS.Spacing;

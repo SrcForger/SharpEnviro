@@ -256,7 +256,7 @@ var
     if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
        ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
        ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
-       (GetWindowLong(Wnd, GWL_HWNDPARENT) = GetDesktopWindow)) and
+       (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
        (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) and
        (GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST = 0) then
        with PParam(LParam)^ do
@@ -284,7 +284,7 @@ begin
     if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
        ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
        ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
-       (GetWindowLong(Wnd, GWL_HWNDPARENT) = GetDesktopWindow)) and
+       (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
        (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) and
        (GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST = 0)  then
        with EnumParam do
