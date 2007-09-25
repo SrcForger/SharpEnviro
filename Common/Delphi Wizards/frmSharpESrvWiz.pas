@@ -41,11 +41,13 @@ type
     lblCopyright: TLabel;
     cbMsgHandler: TCheckBox;
     cbActions: TCheckBox;
-    BitBtn1: TBitBtn;
-    BitBtn2: TBitBtn;
+    btnOK: TBitBtn;
+    btnCancel: TBitBtn;
     lblComment: TLabel;
     procedure cbActionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure edNameKeyPress(Sender: TObject; var Key: Char);
+    procedure edNameChange(Sender: TObject);
   private
     { Private declarations }
     MsgHandlerStatus: Boolean;
@@ -70,6 +72,19 @@ begin
   end
   else
     cbMsgHandler.Checked := MsgHandlerStatus;
+end;
+
+procedure TSharpESrvWizForm.edNameChange(Sender: TObject);
+begin
+  if Pos(' ', (Sender as TEdit).Text) > 0 then
+    (Sender as TEdit).Text := StringReplace((Sender as TEdit).Text, ' ', '', [rfReplaceAll]);
+  btnOK.Enabled := (Sender as TEdit).Text <> '';
+end;
+
+procedure TSharpESrvWizForm.edNameKeyPress(Sender: TObject; var Key: Char);
+begin
+ if Key = #32 then
+   Key := #0;
 end;
 
 procedure TSharpESrvWizForm.FormCreate(Sender: TObject);

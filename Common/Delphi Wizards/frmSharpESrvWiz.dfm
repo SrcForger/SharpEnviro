@@ -54,6 +54,8 @@ object SharpESrvWizForm: TSharpESrvWizForm
     Height = 21
     TabOrder = 0
     Text = 'edName'
+    OnChange = edNameChange
+    OnKeyPress = edNameKeyPress
   end
   object edDescription: TEdit
     Left = 89
@@ -88,7 +90,7 @@ object SharpESrvWizForm: TSharpESrvWizForm
     TabOrder = 3
     OnClick = cbActionsClick
   end
-  object BitBtn1: TBitBtn
+  object btnOK: TBitBtn
     Left = 52
     Top = 272
     Width = 75
@@ -96,7 +98,7 @@ object SharpESrvWizForm: TSharpESrvWizForm
     TabOrder = 5
     Kind = bkOK
   end
-  object BitBtn2: TBitBtn
+  object btnCancel: TBitBtn
     Left = 188
     Top = 272
     Width = 75

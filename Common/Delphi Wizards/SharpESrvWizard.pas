@@ -162,14 +162,8 @@ var
   SrvActions, SrvMsgHandler: Boolean;
 
 type
-  TShESvrCreatorFile = class(TInterfacedObject, IOTAFile)
-  private
-    FAge: TDateTime;
-    FProjectName: string;
-  public
-    constructor Create(const ProjectName: string);
-    function GetSource: string;
-    function GetAge: TDateTime;
+  TShESvrCreatorFile = class(TOTAFile)
+    function GetSource: string; override;
   end;
 
   TShESvrCreatorModule = class(TInterfacedObject, IOTACreator,
@@ -195,8 +189,8 @@ type
     function GetProjectPersonality: string;
   end;
 
-  TShESvrCreatorWizard = class(TNotifierObject, IOTAWizard, IOTARepositoryWizard,
-    IOTAProjectWizard)
+  TShESvrCreatorWizard = class(TNotifierObject, IOTAWizard,
+    IOTARepositoryWizard, IOTAProjectWizard)
   public
     // IOTAWizard
     function GetIDString: string;
@@ -216,17 +210,6 @@ uses
   Dialogs, OTAUtilities, frmSharpESrvWiz;
 
 { TShESvrCreatorFile }
-
-constructor TShESvrCreatorFile.Create(const ProjectName: string);
-begin
-  FAge := -1;  // Flag age as New File
-  FProjectName := ProjectName;
-end;
-
-function TShESvrCreatorFile.GetAge: TDateTime;
-begin
-  Result := FAge;
-end;
 
 function TShESvrCreatorFile.GetSource: string;
 var
@@ -273,7 +256,7 @@ begin
   if SrvMsgHandler then
     ReqUnits := ', Classes, Messages, SharpAPI';
 
-  Result := StringReplace(Result, '%ProjectName', FProjectName, [rfReplaceAll, rfIgnoreCase]);
+  Result := StringReplace(Result, '%ProjectName', FSource, [rfReplaceAll, rfIgnoreCase]);
   Result := StringReplace(Result, '%FileExt', FileExt, [rfReplaceAll, rfIgnoreCase]);
   Result := StringReplace(Result, '%Description', SrvDescription, [rfReplaceAll, rfIgnoreCase]);
   Result := StringReplace(Result, '%Author', SrvAuthor, [rfReplaceAll, rfIgnoreCase]);
@@ -286,7 +269,7 @@ end;
 
 function TShESvrCreatorModule.GetCreatorType: string;
 begin
-  Result := '';
+  Result := ''; // Creator will provide *all* information
 end;
 
 function TShESvrCreatorModule.GetExisting: Boolean;
@@ -296,7 +279,7 @@ end;
 
 function TShESvrCreatorModule.GetFileName: string;
 begin
-  Result := SrvName + '.dpr';
+  Result := SrvName + '.dpr'; // This *must* be a fully qualified file name.
 end;
 
 function TShESvrCreatorModule.GetFileSystem: string;
@@ -306,7 +289,7 @@ end;
 
 function TShESvrCreatorModule.GetOptionFileName: string;
 begin
-  Result := ''; // C++ Only
+  Result := ''; // Deprecated!!
 end;
 
 function TShESvrCreatorModule.GetOwner: IOTAModule;
@@ -331,19 +314,19 @@ end;
 
 procedure TShESvrCreatorModule.NewDefaultModule;
 begin
-  // No default modules are created
+  // Deprecated!!
 end;
 
 procedure TShESvrCreatorModule.NewDefaultProjectModule(
   const Project: IOTAProject);
 begin
-  NewDefaultModule;
+  //
 end;
 
 function TShESvrCreatorModule.NewOptionSource(
   const ProjectName: string): IOTAFile;
 begin
-  Result := nil; // C++ Only
+  Result := nil; // Deprecated!!
 end;
 
 procedure TShESvrCreatorModule.NewProjectResource(const Project: IOTAProject);
@@ -360,6 +343,9 @@ end;
 { TShESvrCreatorWizard }
 
 procedure TShESvrCreatorWizard.Execute;
+var
+  Project: IOTAProject;
+  Options: IOTAProjectOptions;
 begin
   with TSharpESrvWizForm.Create(nil) do
   begin
@@ -367,13 +353,19 @@ begin
       if ShowModal = mrOk then
       begin
         SrvName := edName.Text;
+        SrvName := StringReplace(SrvName, ' ', '', [rfReplaceAll]);
         SrvDescription := edDescription.Text;
         SrvAuthor := edCopyright.Text;
         SrvActions := cbActions.Checked;
         SrvMsgHandler := cbMsgHandler.Checked;
         try
           // First create the Project
-          (BorlandIDEServices as IOTAModuleServices).CreateModule(TShESvrCreatorModule.Create as IOTAProjectCreator80);
+          with BorlandIDEServices as IOTAModuleServices do
+            Project := CreateModule(TShESvrCreatorModule.Create) as IOTAProject;
+          // Then create Project Options
+          Options := Project.ProjectOptions;
+          // Set search dir
+          Options.Values['UnitDir'] := '..\..\Common\Libraries\SharpApi';
         except
           MessageDlg('Error generating ' + SrvName + '.' + FileExt, mtError, [mbOK], 0);
         end;
