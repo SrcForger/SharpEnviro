@@ -131,25 +131,6 @@ begin
   end;
 end;
 
-function GetWindowBitmap(handle : hwnd; bmp : TBitmap32) : boolean;
-const
-  CAPTUREBLT = $40000000;
-var
-  hdcScreen: HDC;
-begin
-  result := True;
-
-  hdcScreen := GetWindowDC(handle);
-  BitBlt(bmp.Handle,
-    0, 0,
-    bmp.Width, bmp.Height,
-    hdcScreen,
-    0, 0,
-    SRCCOPY or CAPTUREBLT);
-
-  DeleteDC(hdcScreen);
-end;
-
 procedure TTSGui.BuildPreviews;
 var
   n : integer;
@@ -174,7 +155,7 @@ begin
   for n := 0 to High(Previews) do
   begin
     Bmp := TBitmap32.Create;
-    TLinearResampler.Create(Bmp);
+    TLinearResampler.Create(Bmp);    
     Bmp.SetSize(w,h);
     Bmp.Clear(color32(0,0,0,0));
     Bmp.DrawMode := dmBlend;
@@ -238,7 +219,7 @@ begin
      @PrintWindow := GetProcAddress(FUser32DllHandle, 'PrintWindow');
 
   FPreviewTimer := TTimer.Create(nil);
-  FPreviewTimer.Interval := 1;
+  FPreviewTimer.Interval := 10;
   FPreviewTimer.OnTimer := OnPreviewTimer;
   FPreviewTimer.Enabled := False;       
 end;
@@ -342,7 +323,7 @@ begin
       GetWindowRect(wndlist[FPreviewIndex],R);
       WndBmp.SetSize(R.Right-R.Left,R.Bottom-R.Top);
       WndBmp.Clear(color32(0,0,0,0));
-      pwsucc := GetWindowBitmap(wndlist[FPreviewIndex],WndBmp);
+      pwsucc := PrintWindow(wndlist[FPreviewIndex],WndBmp.Handle,0);
       if pwsucc and HasVisiblePixel(WndBmp) then
       begin
         R2 := Rect(0,0,0,0);
