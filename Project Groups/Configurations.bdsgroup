@@ -28,7 +28,8 @@
       <Projects Name="MiniScmd.dll">..\Plugins\Configurations\MiniScmd\MiniScmd.bdsproj</Projects>
       <Projects Name="Notes.dll">..\Plugins\Configurations\Notes\Notes.bdsproj</Projects>
       <Projects Name="RecycleBin.dll">..\Plugins\Configurations\RecycleBin\RecycleBin.bdsproj</Projects>
-      <Projects Name="Targets">Curses.dll Desktop.dll Hotkeys.dll IconList.dll Scheme.dll SharpBarList.dll SharpDesk.dll SharpMenu.dll ThemeList.dll ThemeSkinList.dll Wallpaper.dll Weather.dll Font.dll DeskArea.dll Image.dll Link.dll MiniScmd.dll Notes.dll RecycleBin.dll</Projects>
+      <Projects Name="ModuleManager.dll">..\Plugins\Configurations\Module Manager\ModuleManager.bdsproj</Projects>
+      <Projects Name="Targets">Curses.dll Desktop.dll Hotkeys.dll IconList.dll Scheme.dll SharpBarList.dll SharpDesk.dll SharpMenu.dll ThemeList.dll ThemeSkinList.dll Wallpaper.dll Weather.dll Font.dll DeskArea.dll Image.dll Link.dll MiniScmd.dll Notes.dll RecycleBin.dll ModuleManager.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
