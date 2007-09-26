@@ -34,6 +34,7 @@ uses
   sharpapi,
   sharpcenterapi,
   graphics,
+  uVistaFuncs,
   forms,
   GR32,
   GR32_Image,
@@ -49,8 +50,9 @@ function Open(const APluginID: PChar; AOwner: hwnd): HWnd;
 begin
   // Specify the Service configuration filename
   frmSchemeList := TfrmSchemeList.Create(nil);
+  SetVistaFonts(frmSchemeList); 
+
   frmSchemeList.InitialiseSettings(APluginID);
-  frmSchemeList.Theme := APluginID;
 
   frmSchemeList.ParentWindow := AOwner;
   frmSchemeList.Left := 0;
@@ -59,6 +61,9 @@ begin
   frmSchemeList.Show;  
 
   result := frmSchemeList.Handle;
+
+  // Set configuration mode
+  CenterDefineConfigurationMode(scmLive);
 end;
 
 function SetSettingType: TSU_UPDATE_ENUM;
@@ -72,11 +77,6 @@ begin
   FreeAndNil(frmEditScheme);
 end;
 
-procedure Save;
-begin
-  frmSchemeList.SaveSchemes;
-end;
-
 procedure GetDisplayName(const APluginID:PChar; var ADisplayName:PChar);
 begin
   ADisplayName := PChar('Scheme');
@@ -84,8 +84,8 @@ end;
 
 procedure UpdatePreview(var ABmp:TBitmap32);
 begin
-  if (frmSchemeList.SchemeItems.Count = 0) or (frmSchemeList = nil) then begin
-    ABmp.SetSize(0,0);
+  ABmp.SetSize(0,0);
+  if (frmSchemeList.lbSchemeList.Count = 0) or (frmSchemeList = nil) then begin
     exit;
   end;
 
@@ -95,7 +95,7 @@ end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);
 begin
-  if frmSchemeList.SchemeItems.Count = 0 then
+  if frmSchemeList.lbSchemeList.Count = 0 then
   ATabs.Add('Schemes',nil,'','NA') else
   ATabs.Add('Schemes',nil,'',IntToStr(frmSchemeList.lbSchemeList.Count));
 end;
@@ -135,7 +135,7 @@ begin
   // Define whether we add/edit or delete the item
   if frmEditScheme.Save(AEditMode, AApply) then Begin
     FreeAndNil(frmEditScheme);
-    frmSchemeList.BuildSchemeList(frmSchemeList.Theme);
+    frmSchemeList.BuildSchemeList;
   end;
 end;
 
@@ -158,7 +158,6 @@ end;
 exports
   Open,
   Close,
-  Save,
   OpenEdit,
   CloseEdit,
   SetSettingType,

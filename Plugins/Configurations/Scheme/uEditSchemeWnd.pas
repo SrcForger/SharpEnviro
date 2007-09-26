@@ -128,7 +128,7 @@ begin
     for i := 0 to Pred(FColors.Count) do
     begin
       tmpItem := TSchemeColorItem(FColors[i]);
-      tmpSkinColor := frmSchemeList.SchemeItems.GetSkinColorByTag(tmpItem.Tag);
+      tmpSkinColor := FSchemeManager.GetSkinColorByTag(tmpItem.Tag);
 
       with secEx.Items.Add(Self) do
       begin
@@ -160,7 +160,7 @@ begin
 
     Self.Height := h+10;
     LockWindowUpdate(0);
-  end;
+  end;  
 
 end;
 
@@ -170,7 +170,7 @@ var
   bExists: Boolean;
 
 begin
-  if Self.ModalResult <> mrCancel then
+  {if Self.ModalResult <> mrCancel then
   begin
     // Check if exists
     bExists := frmSchemeList.SchemeItems.IndexOfSkinName(edName.Text) <> -1;
@@ -200,7 +200,7 @@ begin
   end
   else
     MessageDlg('You have entered a duplicate FTheme name' + #13 + #10 +
-      'Please choose another name', mtError, [mbOK], 0);
+      'Please choose another name', mtError, [mbOK], 0);    }
 end;
 
 function TfrmEditScheme.GetSchemeName: string;
@@ -225,19 +225,16 @@ procedure TfrmEditScheme.InitUI(AEditMode: TSCE_EditMode_Enum);
 var
   tmpItem, lstItem: TSchemeItem;
   tmpSchemeItems: TSchemeList;
-  sTheme: string;
 begin
-  sTheme := frmSchemeList.Theme;
-  tmpSchemeItems := frmSchemeList.SchemeItems;
 
   case AEditMode of
     sceAdd:
       begin
 
-        tmpItem := TSchemeItem.Create(frmSchemeList.SchemeItems);
+        tmpItem := TSchemeItem.Create(nil);
         tmpItem.Name := '';
         tmpItem.Author := '';
-        tmpItem.LoadSkinColorDefaults(sTheme);
+        tmpItem.LoadSkinColorDefaults(FSchemeManager.Theme);
 
         edName.Text := '';
         edAuthor.Text := '';
@@ -252,7 +249,7 @@ begin
         lstItem := TSchemeItem(frmSchemeList.lbSchemeList.
           Item[frmSchemeList.lbSchemeList.ItemIndex].Data);
 
-        tmpItem := TSchemeItem.Create(frmSchemeList.SchemeItems);
+        tmpItem := TSchemeItem.Create(nil);
         tmpItem.Name := lstItem.Name;
         tmpItem.Author := lstItem.Author;
         lstItem.Assign(tmpItem.Colors);
@@ -269,16 +266,21 @@ begin
       begin
 
       end;
-  end;
+  end; 
 end;
 
 function TfrmEditScheme.ValidateEdit(AEditMode: TSCE_EditMode_Enum): Boolean;
 var
   bInvalidAuthor, bExistsName: Boolean;
+  sName, sSkinDir, sSchemeDir: String;
+  tmpSchemeItem: TSchemeItem;
 begin
+  sName := trim(StrRemoveChars(edName.Text,
+      ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
+  sSkinDir := GetSharpeDirectory + 'skins';
+  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, FSchemeManager.GetSkinName]);
 
-  bExistsName := ((frmSchemeList.SchemeItems.IndexOfSkinName(edName.Text) <>
-    -1));
+  bExistsName := FileExists(sSchemeDir+sName+'.xml');
   if ((CompareText(edName.Text, SchemeItem.Name) = 0) and (AEditMode = sceEdit))
     then
     bExistsName := False;
@@ -297,50 +299,37 @@ var
 begin
   if Not(AApply) then exit;
 
-  sTheme := frmSchemeList.Theme;
-  tmpSchemeItems := frmSchemeList.SchemeItems;
   tmpItem := FSchemeItem;
 
   case AEditMode of
     sceAdd:
       begin
 
-        newItem := TSchemeItem.Create(frmSchemeList.SchemeItems);
-        newItem.Name := edName.Text;
-        newItem.Author := edAuthor.Text;
-        newItem.DefaultItem := False;
-
-        // Assign colours
-        tmpItem.Assign(newItem.Colors);
-
-        newItem.Filename := tmpSchemeItems.GetSkinSchemeDir(sTheme)
-          + trim(StrRemoveChars(newItem.Name,
-          ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':'])) + '.xml';
-
-        tmpSchemeItems.Add(newItem);
+        FSchemeItem.Name := edName.Text;
+        FSchemeItem.Author := edAuthor.Text;
+        FSchemeItem.Save;
         FSchemeItem.Free;
 
-        CenterDefineSettingsChanged;
         Result := True;
+        frmSchemeList.UpdateEditTabs;
       end;
     sceEdit:
       begin
 
         if AApply then
         begin
+
           lstItem := TSchemeItem(frmSchemeList.lbSchemeList.
             Item[frmSchemeList.lbSchemeList.ItemIndex].Data);
 
           lstItem.Name := edName.Text;
           lstItem.Author := edAuthor.Text;
-          lstItem.Filename := tmpSchemeItems.GetSkinSchemeDir(sTheme)
-            + trim(StrRemoveChars(lstItem.Name,
-            ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':'])) + '.xml';
           FSchemeItem.Assign(lstItem.Colors);
+          lstItem.Save;
         end;
 
-        CenterDefineSettingsChanged;
         Result := True;
+        frmSchemeList.UpdateEditTabs;
       end;
     sceDelete:
       begin
