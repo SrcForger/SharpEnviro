@@ -176,6 +176,7 @@ type
                      function GetFreeBarSpace : integer;
                      function GetMaxBarSpace : integer;
                      function GetModuleFileByFileName(pFileName : String) : TModuleFile;
+                     function GetModuleFileIndexByFileName(pFileName : String) : Integer;
                      procedure MoveModule(Index, Direction : integer);
                      function SendPluginMessage(ID : integer; msg : string) : integer;
                      procedure BroadcastPluginMessage(msg : string);
@@ -632,13 +633,32 @@ begin
   for n := 0 to FModuleFiles.Count - 1 do
   begin
     temp := TModuleFile(FModuleFiles.Items[n]);
-    if CompareText(temp.FFileName,pFileName) = 0 then
+    if (CompareText(temp.FFileName,pFileName) = 0)
+      or (CompareText(ExtractFileName(temp.FFileName),pFileName) = 0) then
     begin
       result := temp;
       exit;
     end;
   end;
   result := nil;
+end;
+
+function TModuleManager.GetModuleFileIndexByFileName(pFileName: String): Integer;
+var
+  n : integer;
+  temp : TModuleFile;
+begin
+  for n := 0 to FModuleFiles.Count - 1 do
+  begin
+    temp := TModuleFile(FModuleFiles.Items[n]);
+    if (CompareText(temp.FFileName,pFileName) = 0)
+      or (CompareText(ExtractFileName(temp.FFileName),pFileName) = 0) then
+    begin
+      result := n;
+      exit;
+    end;
+  end;
+  result := -1;
 end;
 
 // Load all module dll files from a directory

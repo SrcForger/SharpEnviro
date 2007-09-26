@@ -149,6 +149,7 @@ type
     // Bar Message
     procedure WMBarReposition(var msg : TMessage); message WM_BARREPOSITION;
     procedure WMBarInsertModule(var msg : TMessage); message WM_BARINSERTMODULE;
+    procedure WMBarCommand(var msg : TMessage); message WM_BARCOMMAND;
 
     // Plugin message (to be broadcastet to modules)
     procedure WMWeatherUpdate(var msg : TMessage); message WM_WEATHERUPDATE;
@@ -303,6 +304,42 @@ begin
 end;
 
 // A Module is being inserted into the bar via Drag & Drop
+procedure TSharpBarMainForm.WMBarCommand(var msg: TMessage);
+var
+  ModuleIndex : integer;
+  Module : TModule;
+begin
+  ModuleIndex := ModuleManager.GetModuleIndex(msg.LParam);
+  if ModuleIndex = - 1 then
+    exit;
+
+  case msg.WParam of
+    BC_MOVEUP:
+      begin
+        ModuleManager.MoveModule(ModuleIndex,-1);
+        ModuleManager.SortModulesByPosition;
+        ModuleManager.FixModulePositions;
+        SaveBarSettings;
+        msg.Result := BCR_SUCCESS;
+      end;
+    BC_MOVEDOWN:
+      begin
+        ModuleManager.MoveModule(ModuleIndex,1);
+        ModuleManager.SortModulesByPosition;
+        ModuleManager.FixModulePositions;
+        SaveBarSettings;
+        msg.Result := BCR_SUCCESS;
+      end;
+    BC_DELETE:
+      begin
+        ModuleManager.Delete(msg.LParam);
+        ModuleManager.ReCalculateModuleSize;
+        SaveBarSettings;
+        msg.Result := BCR_SUCCESS;    
+      end;
+  end;
+end;
+
 procedure TSharpBarMainForm.WMBarInsertModule(var msg : TMessage);
 var
   MP : TPoint;
@@ -547,18 +584,35 @@ var
   pParams: string;
   pID    : integer;
   msgdata: TMsgData;
+  mIndex : integer;
+  sedata : TSharpE_DataStruct;
 begin
   DebugOutput('WM_CopyData',2,1);
-  // Extract the Message Data
-  msgdata := pMsgData(PCopyDataStruct(msg.lParam)^.lpData)^;
-  try
-    pID := strtoint(lowercase(msgdata.Command));
-  except
-    exit;
-  end;
-  pParams := msgdata.Parameters;
 
-  ModuleManager.SendPluginMessage(pID,pParams);
+  if msg.WParam = WM_BARCOMMAND then
+  begin
+    sedata := pSharpE_DataStruct(PCopyDataStruct(msg.lParam)^.lpData)^;
+    if sedata.LParam = BC_ADD then
+    begin
+      mIndex := ModuleManager.GetModuleFileIndexByFileName(sedata.Module);
+      if mIndex <> - 1 then
+      begin
+        ModuleManager.CreateModule(mIndex,sedata.RParam);
+        SaveBarSettings;
+        msg.Result := BCR_SUCCESS;
+      end;
+    end;
+  end else
+  begin
+    msgdata := pMsgData(PCopyDataStruct(msg.lParam)^.lpData)^;
+    try
+      pID := strtoint(lowercase(msgdata.Command));
+    except
+      exit;
+    end;
+    pParams := msgdata.Parameters;
+    ModuleManager.SendPluginMessage(pID,pParams);
+  end;
 end;
 
 // Module is requesting update of bar width
