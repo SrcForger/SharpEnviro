@@ -258,9 +258,11 @@ begin
   end;
 
   // Set Scheme
-  if lbSchemeList.Item[lbSchemeList.ItemIndex] <> nil then
+  if lbSchemeList.Item[lbSchemeList.ItemIndex] <> nil then begin
     FSchemeManager.SetDefaultScheme(TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data).Name);
-
+    SharpEBroadCast(WM_SHARPEUPDATESETTINGS,Integer(suScheme),0);
+  end;
+  
   end else
   if ACol = 1 then begin
     tmpSchemeItem := TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);

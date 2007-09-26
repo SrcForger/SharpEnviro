@@ -312,6 +312,8 @@ begin
 
         Result := True;
         frmSchemeList.UpdateEditTabs;
+        SharpEBroadCast(WM_SHARPEUPDATESETTINGS,Integer(suScheme),0);
+
       end;
     sceEdit:
       begin
@@ -330,6 +332,7 @@ begin
 
         Result := True;
         frmSchemeList.UpdateEditTabs;
+        SharpEBroadCast(WM_SHARPEUPDATESETTINGS,Integer(suScheme),0);
       end;
     sceDelete:
       begin
