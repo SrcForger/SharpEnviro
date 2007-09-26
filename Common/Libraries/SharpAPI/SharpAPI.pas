@@ -47,6 +47,7 @@ const
 
   WM_CLOSEDESK             = WM_APP + 531;
   WM_DESKEXPORTBACKGROUND  = WM_APP + 532;
+  WM_BARCOMMAND            = WM_APP + 533;
   WM_DESKBACKGROUNDCHANGED = WM_APP + 534;
   WM_SHOWBAR               = WM_APP + 535;
   WM_HIDEBAR               = WM_APP + 536;
@@ -78,7 +79,17 @@ const
 
   // SharpCenter
   WM_SHARPCENTERMESSAGE = WM_APP + 660;
-    
+
+  // WM_BARCOMMAND messages param
+  BC_ADD = 0;
+  BC_DELETE = 1;
+  BC_MOVEUP = 2;
+  BC_MOVEDOWN = 3;
+
+  // WM_BARCOMMAND message result
+  BCR_ERROR = 0;
+  BCR_SUCCESS = 1;
+
    //HRESULTS
   HR_NORECIEVERWINDOW = 2;
   HR_UNKNOWNERROR = 1;
@@ -136,6 +147,13 @@ type
     PluginID: string[255];
     Module: string[255];
     Msg: string[255];
+  end;
+
+  TModuleMetaData = record
+    Author: string[255];
+    Description: string[255];
+    Version: string[255];
+    HasPreview: Boolean;
   end;
 
   TMsgData = record
