@@ -37,46 +37,31 @@ object frmSchemeList: TfrmSchemeList
     Columns = <
       item
         Width = 0
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
-        Autosize = True
         StretchColumn = True
         Images = imlCol1
       end
       item
         Width = 50
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clNavy
-        SelectedTextColor = clNavy
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
-        Autosize = False
         StretchColumn = False
       end
       item
         Width = 50
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clNavy
-        SelectedTextColor = clNavy
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
-        Autosize = False
         StretchColumn = False
       end>
     OnResize = lbSchemeListResize
-    ItemHeight = 22
+    ItemHeight = 25
     OnClickItem = lbSchemeListClickItem
     OnGetCellCursor = lbSchemeListGetCellCursor
-    OnGetCellFont = lbSchemeListGetCellFont
+    OnGetCellText = lbSchemeListGetCellText
     AutosizeGrid = True
     BevelOuter = bvNone
     Borderstyle = bsNone

@@ -73,6 +73,8 @@ type
     procedure lbSchemeListGetCellCursor(const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure Timer1Timer(Sender: TObject);
+    procedure lbSchemeListGetCellText(const ACol: Integer;
+      AItem: TSharpEListItem; var AColText: string);
 
   private
     { Private declarations }
@@ -165,9 +167,6 @@ end;
 procedure TfrmSchemeList.InitialiseSettings(APluginID: string);
 begin
   FSchemeManager.Theme := APluginID;
-
-  lbSchemeList.Margin := Rect(0, 0, 0, 0);
-  lbSchemeList.ColumnMargin := Rect(6, 0, 6, 0);
   BuildSchemeList;
   UpdateEditTabs;
 end;
@@ -285,6 +284,26 @@ procedure TfrmSchemeList.lbSchemeListGetCellFont(const ACol: Integer;
 begin
   if ACol > 0 then
     AFont.Style := [fsUnderline];
+end;
+
+procedure TfrmSchemeList.lbSchemeListGetCellText(const ACol: Integer;
+  AItem: TSharpEListItem; var AColText: string);
+var
+  tmp:TSchemeItem;
+begin
+ tmp := TSchemeItem(AItem.Data);
+ if tmp = nil then exit;
+
+ if ACol = 0  then begin
+   AColText := Format('<b>%s</b> By %s',[tmp.Name,tmp.Author]);
+ end else
+ if ACol = 1  then begin
+   AColText := '<u><font color="clNavy">copy</u>';
+ end else
+ if ACol = 2  then begin
+   AColText := '<u><font color="clNavy">delete</u>';
+ end;
+
 end;
 
 procedure TfrmSchemeList.lbSchemeListResize(Sender: TObject);
