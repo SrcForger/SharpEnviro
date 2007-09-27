@@ -194,7 +194,7 @@ var
   SharpCenterWnd: TSharpCenterWnd;
 
 const
-  GlobalItemHeight = 22;
+  GlobalItemHeight = 25;
 
 implementation
 
@@ -700,12 +700,7 @@ begin
 
   // Set Listbox defaults
   lbTree.Colors.BorderColorSelected := $00C1F4FE;
-  lbTree.ItemOffset := Point(0, 0);
-  lbTree.ColumnMargin := Rect(0, 0, 0, 0);
   lbFavs.Colors.BorderColorSelected := $00C1F4FE;
-  lbFavs.ItemOffset := Point(0, 0);
-  lbFavs.ColumnMargin := Rect(0, 0, 0, 0);
-  lbFavs.Margin := Rect(0, 0, 0, 0);
   lbFavs.Color := $00C1F4FE;
   lbFavs.Colors.ItemColor := $00C1F4FE;
   lbFavs.Colors.ItemColorSelected := $0080E7FD;

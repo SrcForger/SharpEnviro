@@ -1447,30 +1447,20 @@ object SharpCenterWnd: TSharpCenterWnd
           Columns = <
             item
               Width = 120
-              MaxWidth = 0
-              MinWidth = 0
-              TextColor = clBlack
-              SelectedTextColor = clBlack
               HAlign = taLeftJustify
               VAlign = taVerticalCenter
               ColumnAlign = calLeft
-              Autosize = False
               StretchColumn = True
               Images = picMain
             end
             item
               Width = 20
-              MaxWidth = 0
-              MinWidth = 0
-              TextColor = 10658466
-              SelectedTextColor = 33023
               HAlign = taLeftJustify
               VAlign = taVerticalCenter
               ColumnAlign = calRight
-              Autosize = False
               StretchColumn = False
             end>
-          ItemHeight = 24
+          ItemHeight = 25
           OnClickItem = lbTreeClickItem
           OnGetCellColor = lbTreeGetCellColor
           AutosizeGrid = False
@@ -1566,14 +1556,9 @@ object SharpCenterWnd: TSharpCenterWnd
               Columns = <
                 item
                   Width = 149
-                  MaxWidth = 0
-                  MinWidth = 0
-                  TextColor = clBlack
-                  SelectedTextColor = clBlack
                   HAlign = taLeftJustify
                   VAlign = taVerticalCenter
                   ColumnAlign = calLeft
-                  Autosize = False
                   StretchColumn = False
                 end>
               Color = 8447997
@@ -2072,7 +2057,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               98)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -634
+              Left = -646
               Top = 35
               Width = 23
               Height = 22
@@ -2524,14 +2509,13 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = -8
+              Width = 0
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
-              ExplicitWidth = 0
             end
           end
         end
