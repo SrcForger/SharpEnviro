@@ -113,7 +113,7 @@ begin
     exit;
   end;
 
-  n := - 1;
+  index := -1;
   ModuleItem := TModuleItem(AItem.Data);
   for n := 0 to lbModuleList.Count - 1 do
     if lbModuleList.Item[n] = AItem then
@@ -121,8 +121,8 @@ begin
       index := n;
       break;
     end;
-    
-  if n = -1 then
+
+  if index = -1 then
     exit;
 
   wnd := FindWindow(nil,PChar('SharpBar_'+inttostr(BarID)));
@@ -222,9 +222,7 @@ var
   newItem:TSharpEListItem;
   XML : TJvSimpleXML;
   Dir : String;
-  iindex : integer;
   ModuleItem : TModuleItem;
-  SList : TStringList;
   sr : TSearchRec;
   fileloaded : boolean;
   index,oindex : integer;
@@ -280,7 +278,7 @@ begin
                  newItem.Data := nil;
                  oindex := index;
                end;
-               newItem := lbModuleList.AddItem('',iindex);
+               newItem := lbModuleList.AddItem('',index);
                newItem.Data := ModuleItem;
                newItem.AddSubItem(s);
                newItem.AddSubItem('Move Up');
@@ -305,7 +303,6 @@ begin
     newItem.AddSubItem('');
     newItem.AddSubItem('');
     newItem.Data := nil;
-    oindex := index;
   end;
 
   if lbModuleList.Items.Count = 0 then
@@ -320,11 +317,6 @@ begin
 end;
 
 function TfrmMMList.UpdateUI: Boolean;
-var
-  tmpItem: TSharpEListItem;
- // tmpThemeItem: TThemeListItem;
-  n : integer;
-  ModuleItem : TModuleItem;
 begin
   Result := False;
   case FEditMode of
@@ -353,15 +345,9 @@ end;
 
 function TfrmMMList.SaveUi: Boolean;
 var
-  XML : TJvSimpleXML;
   Dir : String;
-  NewID : String;
-  CID : integer;
-  n : integer;
   ModuleItem : TModuleItem;
   wnd : hwnd;
-  sr : TSearchRec;
-  fileloaded : boolean;
   msg: TSharpE_DataStruct;
   cds: TCopyDataStruct;
 begin

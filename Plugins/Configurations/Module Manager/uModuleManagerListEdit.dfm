@@ -3,7 +3,7 @@ object frmMMEdit: TfrmMMEdit
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmMMEdit'
-  ClientHeight = 114
+  ClientHeight = 120
   ClientWidth = 497
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object frmMMEdit: TfrmMMEdit
     Left = 0
     Top = 0
     Width = 497
-    Height = 113
+    Height = 120
     ActivePage = pagEdit
     PropagateEnable = False
     Align = alTop
@@ -28,7 +28,8 @@ object frmMMEdit: TfrmMMEdit
       Left = 0
       Top = 0
       Width = 497
-      Height = 113
+      Height = 120
+      ExplicitHeight = 113
       object lbDescription: TJvLabel
         AlignWithMargins = True
         Left = 18
@@ -41,7 +42,7 @@ object frmMMEdit: TfrmMMEdit
         Margins.Bottom = 0
         Align = alTop
         AutoSize = False
-        Caption = 'No description available for this module'
+        Caption = 'Select the module you want to add'
         WordWrap = True
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
@@ -54,18 +55,20 @@ object frmMMEdit: TfrmMMEdit
         Left = 18
         Top = 61
         Width = 471
-        Height = 16
+        Height = 13
         Margins.Left = 18
         Margins.Top = 8
         Margins.Right = 8
         Margins.Bottom = 10
         Align = alTop
         Caption = '<no one>'
+        Visible = False
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
+        ExplicitWidth = 51
       end
       object Panel1: TPanel
         Left = 0
@@ -136,7 +139,7 @@ object frmMMEdit: TfrmMMEdit
       object Preview: TImage32
         AlignWithMargins = True
         Left = 18
-        Top = 87
+        Top = 84
         Width = 461
         Height = 30
         Margins.Left = 18
@@ -149,15 +152,15 @@ object frmMMEdit: TfrmMMEdit
         Scale = 1.000000000000000000
         ScaleMode = smNormal
         TabOrder = 1
-        ExplicitTop = 79
       end
     end
     object pagDelete: TJvStandardPage
       Left = 0
       Top = 0
       Width = 497
-      Height = 113
+      Height = 120
       BorderWidth = 8
+      ExplicitHeight = 113
       object Label2: TLabel
         Left = 0
         Top = 26
