@@ -30,7 +30,8 @@
       <Projects Name="RecycleBin.dll">..\Plugins\Configurations\RecycleBin\RecycleBin.bdsproj</Projects>
       <Projects Name="ModuleManager.dll">..\Plugins\Configurations\Module Manager\ModuleManager.bdsproj</Projects>
       <Projects Name="QuickScript.dll">..\Plugins\Configurations\QuickScript\QuickScript.bdsproj</Projects>
-      <Projects Name="Targets">Curses.dll Desktop.dll Hotkeys.dll IconList.dll Scheme.dll SharpBarList.dll SharpDesk.dll SharpMenu.dll ThemeList.dll ThemeSkinList.dll Wallpaper.dll Weather.dll Font.dll DeskArea.dll Image.dll Link.dll MiniScmd.dll Notes.dll RecycleBin.dll ModuleManager.dll QuickScript.dll</Projects>
+      <Projects Name="BatteryMonitor.dll">..\Plugins\Configurations\BatteryMonitor\BatteryMonitor.bdsproj</Projects>
+      <Projects Name="Targets">Curses.dll Desktop.dll Hotkeys.dll IconList.dll Scheme.dll SharpBarList.dll SharpDesk.dll SharpMenu.dll ThemeList.dll ThemeSkinList.dll Wallpaper.dll Weather.dll Font.dll DeskArea.dll Image.dll Link.dll MiniScmd.dll Notes.dll RecycleBin.dll ModuleManager.dll QuickScript.dll BatteryMonitor.dll</Projects>
     </Projects>
     <Dependencies/>
   </Default.Personality>
