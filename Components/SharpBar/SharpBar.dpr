@@ -33,13 +33,11 @@ uses
   Types,
   StrUtils,
   SharpBarMainWnd in 'Forms\SharpBarMainWnd.pas' {SharpBarMainForm},
-  uSharpEModuleManager in 'uSharpEModuleManager.pas',
   uSharpBarAPI in 'uSharpBarAPI.pas',
   JvSimpleXML,
   JclFileUtils,
   SharpEBar,
   SharpApi,
-  PluginManager2Wnd in 'Forms\PluginManager2Wnd.pas' {PluginManager2Form},
   BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm};
 
 {$R *.res}

@@ -206,8 +206,7 @@ var
 
 implementation
 
-uses PluginManager2Wnd,
-     SharpEMiniThrobber,
+uses SharpEMiniThrobber,
      BarHideWnd;
 
 {$R *.dfm}
@@ -1371,11 +1370,13 @@ begin
 end;
 
 procedure TSharpBarMainForm.PluginManager1Click(Sender: TObject);
+var
+  cfile : String;
 begin
-  // glacial:original - if PluginManagerForm = nil then PluginManagerForm := TPluginManagerForm.Create(self);
-  // glacial:original - PluginManagerForm.Showmodal;
-  if PluginManager2Form = nil then PluginManager2Form := TPluginManager2Form.Create(self);
-  PluginManager2Form.Showmodal;
+  cfile := SharpApi.GetCenterDirectory + '_Components\Module Manager.con';
+  SharpCenterApi.CenterCommand(sccLoadSetting,
+                              PChar(cfile),
+                              PChar(inttostr(FBarID)));
 end;
 
 
@@ -1952,8 +1953,6 @@ begin
     FreeAndNil(BarHideForm);
   end;
 
-  if PluginManager2Form <> nil then FreeAndNil(PluginManager2Form);
-  
   ModuleManager.Free;
 
   Application.ProcessMessages;
