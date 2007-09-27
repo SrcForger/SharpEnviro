@@ -374,6 +374,9 @@ begin
           with SettingsForm.buttons.Items.Item[n] do
                AddButton(SubItems[0],SubItems[1],Caption);
 
+      if (length(FButtonList) > 0) and (sb_config.Visible) then
+        sb_config.Left := -200;
+
       SaveSettings;
     end;
     ReAlignComponents(True);
