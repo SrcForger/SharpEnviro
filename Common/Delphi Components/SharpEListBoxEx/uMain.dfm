@@ -27,59 +27,32 @@ object Form1: TForm1
     Columns = <
       item
         Width = 100
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clRed
-        SelectedTextColor = clGray
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
-        Autosize = False
-        StretchColumn = False
+        StretchColumn = True
         Images = PngImageList1
         SelectedImages = col1
       end
       item
-        Width = 100
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
-        HAlign = taRightJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calLeft
-        Autosize = False
-        StretchColumn = False
-      end
-      item
-        Width = 50
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
+        Width = 75
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
-        ColumnAlign = calLeft
-        Autosize = False
+        ColumnAlign = calRight
         StretchColumn = False
         Images = col1
       end
       item
-        Width = 40
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
-        HAlign = taRightJustify
+        Width = 75
+        HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
-        Autosize = False
-        StretchColumn = True
+        StretchColumn = False
         Images = col1
       end>
-    ItemHeight = 24
-    OnClickItem = SharpEListBoxEx1ClickItem
-    OnGetCellFont = SharpEListBoxEx1GetCellFont
+    ItemHeight = 26
+    OnGetCellText = SharpEListBoxEx1GetCellText
+    OnGetCellImageIndex = SharpEListBoxEx1GetCellImageIndex
     AutosizeGrid = False
     Align = alClient
   end

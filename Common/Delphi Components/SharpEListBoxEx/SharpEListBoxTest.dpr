@@ -3,8 +3,7 @@ program SharpEListBoxTest;
 uses
   Forms,
   uMain in 'uMain.pas' {Form1},
-  SharpEListBoxEx in 'SharpEListBoxEx.pas',
-  SharpEListBoxReg in 'SharpEListBoxReg.pas' {frmEditColumn};
+  SharpEListBoxEx in 'SharpEListBoxEx.pas';
 
 {$R *.res}
 
