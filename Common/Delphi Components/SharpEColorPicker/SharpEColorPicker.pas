@@ -42,7 +42,7 @@ type
     FSCS:TSharpECenterScheme;
 
     FSelectedID: Integer;
-    FSchemeList: TSchemeList;
+    FSchemeManager: TSchemeManager;
     FCustomColor: TSchemeColorItem;
 
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
@@ -116,7 +116,7 @@ begin
     skinCol.Name := 'Custom';
     skinCol.Color := tmpCol.Color;
   end else
-    skinCol := FSchemeList.GetSkinColorByTag(tmpCol.Tag);
+    skinCol := FSchemeManager.GetSkinColorByTag(tmpCol.Tag);
 
   n := 20;
 
@@ -203,7 +203,7 @@ begin
   FColor := clwhite;
   FLastColor := 0;
   FColorCode := clWhite;
-  FSchemeList := TSchemeList.Create;
+  FSchemeManager := TSchemeManager.Create;
   FCustomColor := TSchemeColorItem.Create;
   FSCS := TSharpECenterScheme.Create(nil);
   Align := alNone;
@@ -220,7 +220,7 @@ end;
 destructor TCustomSharpeColorPicker.Destroy;
 begin
   inherited;
-  FSchemeList.Free;
+  FSchemeManager.Free;
   FCustomColor.Free;
   FSCS.Free;
 end;
@@ -388,8 +388,8 @@ var
   s:String;
 begin
   s := GetCurrentSharpEThemeName;
-  FSchemeList.Load(s);
-  FSchemeList.Theme := s;
+  //FSchemeList.Load(s);
+  FSchemeManager.Theme := s;
 end;
 
 procedure TCustomSharpeColorPicker.SetBackgroundColor(const Value: TColor);
@@ -447,7 +447,7 @@ begin
   FColorMenu.Items.Clear;
   with FColorMenu.Items do
   begin
-    if FSchemeList.Count = 0 then
+    if 0{FScheme.Count} = 0 then
     begin
       bPopup := False;
       FCustomColor.Data := Pointer(FColor);
@@ -455,7 +455,7 @@ begin
     else
     begin
 
-      bPopup := True;
+      {bPopup := True;
       for i := 0 to Pred(FSchemeList.Item[0].colors.count) do
       begin
         tmpColItem := FSchemeList.Item[0].Color[i];
@@ -480,8 +480,8 @@ begin
       FCustomColor.Data := Pointer(FColor);
       Items[Count - 1].Tag := Integer(FCustomColor);
       Items[Count - 1].OnAdvancedDrawItem := AdvancedDrawItem;
-      Items[Count - 1].Hint := 'Custom';
-    end;
+      Items[Count - 1].Hint := 'Custom';  }
+    end;  
 
   end;
 
