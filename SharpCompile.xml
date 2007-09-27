@@ -11,6 +11,7 @@
      <project Name="MiniScmd" Type="DLL">Plugins\Configurations\MiniScmd\MiniScmd.bdsproj</project>       
      <project Name="ModuleManager" Type="DLL">Plugins\Configurations\Module Manager\ModuleManager.bdsproj</project>           
      <project Name="Notes" Type="DLL">Plugins\Configurations\Notes\Notes.bdsproj</project>       
+     <project Name="QuickScript" Type="DLL">Plugins\Configurations\QuickScript\QuickScript.bdsproj</project>       
      <project Name="RecycleBin" Type="DLL">Plugins\Configurations\RecycleBin\RecycleBin.bdsproj</project>       
      <project Name="Scheme" Type="DLL">Plugins\Configurations\Scheme\Scheme.bdsproj</project>  
      <project Name="SharpBar Manager" Type="DLL">Plugins\Configurations\SharpBar List\SharpBarList.bdsproj</project>  
