@@ -101,7 +101,7 @@ object frmNotes: TfrmNotes
       object rb_icon: TRadioButton
         AlignWithMargins = True
         Left = 24
-        Top = 152
+        Top = 160
         Width = 395
         Height = 17
         Margins.Left = 24
@@ -112,11 +112,12 @@ object frmNotes: TfrmNotes
         Caption = 'Icon'
         TabOrder = 1
         OnClick = rb_textClick
+        ExplicitTop = 152
       end
       object rb_text: TRadioButton
         AlignWithMargins = True
         Left = 24
-        Top = 177
+        Top = 185
         Width = 395
         Height = 17
         Margins.Left = 24
@@ -127,18 +128,16 @@ object frmNotes: TfrmNotes
         Caption = 'Text'
         TabOrder = 2
         OnClick = rb_textClick
-        ExplicitLeft = 16
-        ExplicitTop = 136
-        ExplicitWidth = 113
+        ExplicitTop = 177
       end
       object rb_icontext: TRadioButton
         AlignWithMargins = True
         Left = 24
-        Top = 127
+        Top = 135
         Width = 395
         Height = 17
         Margins.Left = 24
-        Margins.Top = 0
+        Margins.Top = 8
         Margins.Right = 8
         Margins.Bottom = 8
         Align = alTop
@@ -147,6 +146,7 @@ object frmNotes: TfrmNotes
         TabOrder = 3
         TabStop = True
         OnClick = rb_textClick
+        ExplicitTop = 127
       end
     end
   end
