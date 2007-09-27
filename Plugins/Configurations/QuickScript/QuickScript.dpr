@@ -166,7 +166,7 @@ end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);
 begin
-  ATabs.Add('Notes',frmQuickScript.pagNotes,'','');
+  ATabs.Add('QuickScript',frmQuickScript.pagNotes,'','');
 end;
 
 procedure ClickTab(ATab: TPluginTabItem);
