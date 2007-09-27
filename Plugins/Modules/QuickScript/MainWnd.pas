@@ -45,8 +45,6 @@ uses
 
 type
   TMainForm = class(TForm)
-    MenuPopup: TPopupMenu;
-    Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     PngImageList1: TPngImageList;
     Button: TSharpEButton;
@@ -55,7 +53,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure ButtonMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure Settings1Click(Sender: TObject);
   protected
   private
     sCaption : Boolean;
@@ -78,8 +75,6 @@ type
 
 
 implementation
-
-uses SettingsWnd;
 
 {$R *.dfm}
 {$R icons.res}
@@ -152,39 +147,6 @@ begin
         else Button.Width := max(1,Width - 4);
 end;
 
-
-procedure TMainForm.Settings1Click(Sender: TObject);
-var
-  SettingsForm : TSettingsForm;
-  XML : TJvSimpleXML;
-begin
-  try
-    SettingsForm := TSettingsForm.Create(application.MainForm);
-    SettingsForm.rb_caption.Checked := (sCaption and (not sIcon));
-    SettingsForm.rb_icon.Checked    := (sIcon and (not sCaption));
-    SettingsForm.rb_cai.Checked     := (sCaption and sIcon);
-
-    if SettingsForm.ShowModal = mrOk then
-    begin
-      sCaption := (SettingsForm.rb_caption.Checked or SettingsForm.rb_cai.Checked);
-      sIcon    := (SettingsForm.rb_icon.Checked or SettingsForm.rb_cai.Checked);
-
-      XML := TJvSimpleXML.Create(nil);
-      XML.Root.Name := 'QuickScriptModuleSettings';
-      with XML.Root.Items do
-      begin
-        Add('Caption',sCaption);
-        Add('Icon',sIcon);
-      end;
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      XML.Free;
-    end;
-    ReAlignComponents(True);
-
-  finally
-    FreeAndNil(SettingsForm);
-  end;
-end;
 
 procedure TMainForm.OnScriptClick(Sender : TObject);
 var

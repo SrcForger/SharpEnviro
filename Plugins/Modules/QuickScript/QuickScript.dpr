@@ -35,13 +35,13 @@ uses
   Forms,
   Classes,
   Contnrs,
+  gr32,
   SharpESkinManager,
   SharpEBar,
   StdCtrls,
   JvSimpleXML,
   SharpCenterApi,
   MainWnd in 'MainWnd.pas' {MainForm},
-  SettingsWnd in 'SettingsWnd.pas' {SettingsForm},
   uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
@@ -71,6 +71,7 @@ var
   ModuleList : TObjectList;
   MouseTimer : TMouseTimer;
 
+{$R Preview.res}
 {$R *.res}
 
 function GetControlByHandle(AHandle: THandle): TWinControl;
@@ -186,7 +187,7 @@ end;
 procedure UpdateMessage(part : TSU_UPDATE_ENUM; param : integer);
 const
   processed : TSU_UPDATES = [suSkinFileChanged,suBackground,suTheme,suSkin,
-                             suScheme];
+                             suScheme,suModule];
 var
   temp : TModule;
   n,i : integer;
@@ -199,6 +200,12 @@ begin
   for n := 0  to ModuleList.Count - 1 do
   begin
     temp := TModule(ModuleList.Items[n]);
+    if (part = suModule) and (temp.ID = param) then
+    begin
+      TMainForm(temp.Form).LoadSettings;
+      TMainForm(temp.Form).ReAlignComponents(True);
+      break;
+    end;
 
     // Step1: check if height changed
     if [part] <= [suSkinFileChanged,suBackground,suTheme] then
@@ -226,19 +233,6 @@ begin
   end;
 end;
 
-procedure ShowSettingsWnd(ID : integer);
-var
-  n : integer;
-  temp : TModule;
-begin
-  for n := 0 to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.FForm).Settings1Click(TMainForm(temp.FForm).Settings1);
-      end;
-end;
-
 procedure SetSize(ID : integer; NewWidth : integer);
 var
   n : integer;
@@ -252,6 +246,32 @@ begin
       end;
 end;
 
+function GetMetaData(Preview : TBitmap32) : TModuleMetaData;
+var
+  Bmp : TBitmap32;
+  ResStream : TResourceStream;
+  b : boolean;
+begin
+  with result do
+  begin
+    Author := 'Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Displays a Button which will open a menu for quick access to all your scripts';
+    Version := '0.7.3.3';
+    HasPreview := True;
+
+    Bmp := TBitmap32.Create;
+    ResStream := TResourceStream.Create(HInstance, 'Preview', RT_RCDATA);
+    try
+      LoadBitmap32FromPng(Bmp,ResStream,b);
+    finally
+      ResStream.Free;
+    end;
+    Preview.SetSize(Bmp.Width,Bmp.Height);
+    Bmp.DrawTo(Preview);
+    Bmp.Free;
+  end;
+end;
+
 
 Exports
   CreateModule,
@@ -259,8 +279,8 @@ Exports
   Poschanged,
   Refresh,
   UpdateMessage,
-  ShowSettingsWnd,
-  SetSize;
+  SetSize,
+  GetMetaData;
 
 
 end.
