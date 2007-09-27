@@ -12,7 +12,6 @@ object frmIconList: TfrmIconList
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object lb_iconlist: TSharpEListBoxEx
@@ -23,31 +22,22 @@ object frmIconList: TfrmIconList
     Columns = <
       item
         Width = 256
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
-        Autosize = False
         StretchColumn = True
       end
       item
-        Width = 150
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clNavy
-        SelectedTextColor = clNavy
-        HAlign = taRightJustify
+        Width = 75
+        HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
-        Autosize = False
         StretchColumn = False
       end>
     OnResize = lb_iconlistResize
-    ItemHeight = 22
+    ItemHeight = 27
     OnClickItem = lb_iconlistClickItem
+    OnGetCellText = lb_iconlistGetCellText
     AutosizeGrid = True
     Borderstyle = bsNone
     Ctl3d = False

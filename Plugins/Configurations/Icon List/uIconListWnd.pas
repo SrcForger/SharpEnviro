@@ -40,14 +40,25 @@ type
     Str: string;
   end;
 
+  TIconItem = class
+  private
+    FAuthor: String;
+    FName: String;
+  published
+    public
+      property Name: String read FName write FName;
+      property Author: String read FAuthor write FAuthor;
+  end;
+
 type
   TfrmIconList = class(TForm)
     lb_iconlist: TSharpEListBoxEx;
     PngImageList1: TPngImageList;
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure lb_iconlistResize(Sender: TObject);
     procedure lb_iconlistClickItem(const ACol: Integer; AItem: TSharpEListItem);
+    procedure lb_iconlistGetCellText(const ACol: Integer;
+      AItem: TSharpEListItem; var AColText: string);
   private
 
   public
@@ -97,15 +108,10 @@ begin
   end;
 end;
 
-procedure TfrmIconList.FormShow(Sender: TObject);
-begin
-  //lb_iconlist.Margin := Rect(0,0,0,0);
-  //lb_iconlist.ColumnMargin := Rect(6,0,6,0);
-end;
-
 procedure TfrmIconList.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := true;
+  lb_iconlist.ItemOffset := Point(2,2);
 end;
 
 procedure TfrmIconList.BuildIconPreview(var ABmp: TBitmap32);
@@ -119,10 +125,11 @@ var
   n: integer;
   h: integer;
   IconCount: integer;
+  tmp:TIconItem;
 begin
 
-  Dir := SharpApi.GetSharpeDirectory + 'Icons\' +
-    lb_iconlist.Item[lb_iconlist.ItemIndex].Caption + '\';
+  tmp := TIconItem(lb_iconlist.Item[lb_iconlist.ItemIndex].Data);
+  Dir := SharpApi.GetSharpeDirectory + 'Icons\' + tmp.Name + '\';
 
   XML := TJvSimpleXML.Create(nil);
 
@@ -170,6 +177,8 @@ var
   sr: TSearchRec;
   Dir: string;
   XML: TJvSimpleXML;
+  sName,sAuthor,s:String;
+  tmp:TIconItem;
 begin
   lb_iconlist.Clear;
 
@@ -185,8 +194,14 @@ begin
         begin
           try
             XML.LoadFromFile(Dir + sr.Name + '\IconSet.xml');
-            newItem := lb_iconlist.AddItem(XML.Root.Items.Value('name', '...'),0);
-            newItem.AddSubItem('By ' + XML.Root.Items.Value('author', '...'));
+
+            tmp := TIconItem.Create;
+            tmp.Name := XML.Root.Items.Value('name', '...');
+            tmp.Author := XML.Root.Items.Value('author', '...');
+
+            newItem := lb_iconlist.AddItem(s,0);
+            newItem.Data := tmp;
+            newItem.AddSubItem('site');
 
 
             if sr.Name = sCurrentIconSet then
@@ -217,6 +232,20 @@ begin
   BroadcastGlobalUpdateMessage(suIconSet);
   CenterUpdatePreview;
 
+end;
+
+procedure TfrmIconList.lb_iconlistGetCellText(const ACol: Integer;
+  AItem: TSharpEListItem; var AColText: string);
+var
+  tmp:TIconItem;
+begin
+  tmp := TIconItem(AItem.Data);
+  if tmp = nil then exit;
+
+  if ACol = 0 then begin
+    AColText := Format('<b>%s</b> By %s',[tmp.Name,tmp.Author]);
+  end;
+  
 end;
 
 procedure TfrmIconList.lb_iconlistResize(Sender: TObject);
