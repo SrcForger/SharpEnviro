@@ -36,8 +36,6 @@ uses
 
 type
   TMainForm = class(TForm)
-    MenuPopup: TPopupMenu;
-    Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     UpdateTimer: TTimer;
     lb_pc: TSharpESkinLabel;
@@ -47,7 +45,6 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure UpdateTimerTimer(Sender: TObject);
-    procedure Settings1Click(Sender: TObject);
   protected
   private
     sShowIcon : boolean;
@@ -73,8 +70,7 @@ type
 
 implementation
 
-uses SettingsWnd,
-     GR32_PNG,
+uses GR32_PNG,
      uSharpBarAPI;
 
 {$R *.dfm}
@@ -234,36 +230,6 @@ begin
   Hint := inttostr(NewWidth);
   if newWidth <> width then
      if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
-end;
-
-
-procedure TMainForm.Settings1Click(Sender: TObject);
-var
-  SettingsForm : TSettingsForm;
-  XML : TJvSimpleXML;
-begin
-  try
-    SettingsForm := TSettingsForm.Create(Application.MainForm);
-    SettingsForm.cb_showicon.Checked := sShowIcon;
-
-    if SettingsForm.ShowModal = mrOk then
-    begin
-      sShowIcon := SettingsForm.cb_showicon.Checked;
-      XML := TJvSimpleXML.Create(nil);
-      XML.Root.Name := 'BatteryMonitorModuleSettings';
-      with XML.Root.Items do
-      begin
-        Add('showicon',sShowIcon);
-      end;
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      XML.Free;
-      UpdateTimer.OnTimer(UpdateTimer);
-    end;
-    ReAlignComponents(True);
-    Repaint;
-  finally
-    FreeAndNil(SettingsForm);
-  end;
 end;
 
 procedure TMainForm.UpdateTimerTimer(Sender: TObject);
