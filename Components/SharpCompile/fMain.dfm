@@ -1350,18 +1350,13 @@ object frmMain: TfrmMain
           Columns = <
             item
               Width = 300
-              MaxWidth = 0
-              MinWidth = 0
-              TextColor = clBlack
-              SelectedTextColor = clBlack
               HAlign = taLeftJustify
               VAlign = taVerticalCenter
               ColumnAlign = calLeft
-              Autosize = False
               StretchColumn = False
               Images = pilStatus
             end>
-          ItemHeight = 24
+          ItemHeight = 25
           OnDblClickItem = lbSummaryDblClickItem
           OnGetCellColor = lbSummaryGetCellColor
           AutosizeGrid = False
