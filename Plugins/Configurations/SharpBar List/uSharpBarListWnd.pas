@@ -59,7 +59,6 @@ type
     procedure Timer1Timer(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure lbBarListDblClickItem(const ACol: Integer;
       AItem: TSharpEListItem);
     procedure lbBarListGetCellCursor(const ACol: Integer;
@@ -120,12 +119,6 @@ begin
   if (P.X>=Rect.Left) and (P.X<=Rect.Right)
      and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
      else PointInRect:=False;
-end;
-
-procedure TfrmBarList.FormShow(Sender: TObject);
-begin
-  lbBarList.Margin := Rect(0,0,0,0);
-  lbBarList.ColumnMargin := Rect(6,0,6,0);
 end;
 
 procedure TfrmBarList.lbBarListClickItem(const ACol: Integer;
@@ -398,18 +391,18 @@ begin
         newItem.AddSubItem(Name);
         case iindex of
           0: begin
-               newItem.AddSubItem('Stop');
-               newItem.AddSubItem('Disable');
-               newItem.AddSubItem('Configure');               
+               newItem.AddSubItem('<font color="clNavy"><u>Stop');
+               newItem.AddSubItem('<font color="clNavy"><u>Disable');
+               newItem.AddSubItem('<font color="clNavy"><u>Configure');
              end;
           1: begin
-               newItem.AddSubItem('Start');
-               newItem.AddSubItem('Disable');
+               newItem.AddSubItem('<font color="clNavy"><u>Start');
+               newItem.AddSubItem('<font color="clNavy"><u>Disable');
                newItem.AddSubItem('');
              end;
           2: begin
                newItem.AddSubItem('');
-               newItem.AddSubItem('Enable');
+               newItem.AddSubItem('<font color="clNavy"><u>Enable');
                newItem.AddSubItem('');               
              end;
         end;

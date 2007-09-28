@@ -13,7 +13,6 @@ object frmBarList: TfrmBarList
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object lbBarList: TSharpEListBoxEx
@@ -23,73 +22,46 @@ object frmBarList: TfrmBarList
     Height = 284
     Columns = <
       item
-        Width = 32
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
+        Width = 20
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
-        Autosize = False
         StretchColumn = False
         Images = StatusImages
         SelectedImages = StatusImages
       end
       item
         Width = 200
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
-        Autosize = False
-        StretchColumn = False
+        StretchColumn = True
       end
       item
         Width = 50
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
-        Autosize = False
         StretchColumn = False
       end
       item
         Width = 60
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
-        Autosize = False
         StretchColumn = False
       end
       item
         Width = 75
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
-        Autosize = False
         StretchColumn = False
       end>
     ItemHeight = 32
     OnClickItem = lbBarListClickItem
     OnDblClickItem = lbBarListDblClickItem
-    OnGetCellTextColor = lbBarListGetCellTextColor
     OnGetCellCursor = lbBarListGetCellCursor
-    OnGetCellFont = lbBarListGetCellFont
     AutosizeGrid = False
     Borderstyle = bsNone
     Ctl3d = False
