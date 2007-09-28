@@ -51,7 +51,6 @@ type
     procedure ccolorsChangeColor(ASender: TObject; AColorCode: Integer);
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure lb_CursorListClickItem(const ACol: Integer;
       AItem: TSharpEListItem);
   private
@@ -78,13 +77,6 @@ uses SharpThemeApi,
 {$R *.dfm}
 
 { TfrmConfigListWnd }
-
-procedure TfrmCursesList.FormShow(Sender: TObject);
-begin
-  lb_CursorList.Margin := Rect(0,0,0,0);
-  lb_CursorList.ColumnMargin := Rect(6,0,6,0);
-end;
-
 
 procedure TfrmCursesList.lb_CursorListClickItem(const ACol: Integer;
   AItem: TSharpEListItem);

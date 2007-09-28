@@ -14,7 +14,6 @@ object frmCursesList: TfrmCursesList
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -35,29 +34,19 @@ object frmCursesList: TfrmCursesList
       Columns = <
         item
           Width = 256
-          MaxWidth = 0
-          MinWidth = 0
-          TextColor = clBlack
-          SelectedTextColor = clBlack
           HAlign = taLeftJustify
           VAlign = taVerticalCenter
           ColumnAlign = calLeft
-          Autosize = False
           StretchColumn = False
         end
         item
           Width = 256
-          MaxWidth = 0
-          MinWidth = 0
-          TextColor = clBlack
-          SelectedTextColor = clBlack
           HAlign = taLeftJustify
           VAlign = taVerticalCenter
           ColumnAlign = calLeft
-          Autosize = False
           StretchColumn = False
         end>
-      ItemHeight = 22
+      ItemHeight = 26
       OnClickItem = lb_CursorListClickItem
       AutosizeGrid = False
       Borderstyle = bsNone
