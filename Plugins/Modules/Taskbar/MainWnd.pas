@@ -797,11 +797,10 @@ end;
 
 function TMainForm.CheckFilter(pItem : TTaskItem) : boolean;
 var
-  n,i : integer;
+  n : integer;
   R : TRect;
   Mon : TMonitor;
   nm : boolean;
-  f : boolean;
 begin
   if pItem = nil then
   begin
@@ -842,18 +841,7 @@ begin
                nm := True
            end;
         5: begin
-             GetWindowRect(pItem.Handle,R);
-             f := False;
-             for i := 0 to Screen.MonitorCount - 1 do
-             begin
-               Mon := Screen.Monitors[i];
-               if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)) then
-               begin
-                 f := True;
-                 break;
-               end;
-             end;
-             nm := not f;
+             nm := IsIconic(pItem.Handle);
            end;
       end;
       if nm then break;
@@ -884,18 +872,7 @@ begin
                result := false;
            end;
         5: begin
-             GetWindowRect(pItem.Handle,R);
-             f := False;
-             for i := 0 to Screen.MonitorCount - 1 do
-             begin
-               Mon := Screen.Monitors[i];
-               if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)) then
-               begin
-                 f := True;
-                 break;
-               end;
-             end;
-             result := f;
+             result := IsIconic(pItem.Handle);
            end;
       end;
     end;

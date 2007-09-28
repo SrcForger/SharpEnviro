@@ -291,17 +291,29 @@ function ModuleMessage(ID : integer; msg: string): integer;
 var
   n : integer;
   temp : TModule;
+
 begin
   result := 0;
   if ModuleList = nil then exit;
-  if CompareText(msg,'MM_SHELLHOOKWINDOWCREATED') <> 0 then exit;
 
-  for n := 0 to ModuleList.Count - 1 do
+  if CompareText(msg,'MM_SHELLHOOKWINDOWCREATED') = 0 then
+  begin
+    for n := 0 to ModuleList.Count - 1 do
       if TModule(ModuleList.Items[n]).ID = ID then
       begin
         temp := TModule(ModuleList.Items[n]);
         SharpApi.RegisterShellHookReceiver(temp.Form.Handle);
       end;
+  end
+  else if CompareText(msg,'MM_VWMDESKTOPCHANGED') = 0 then
+  begin
+    for n := 0 to ModuleList.Count - 1 do
+      if TModule(ModuleList.Items[n]).ID = ID then
+      begin
+        temp := TModule(ModuleList.Items[n]);
+        TMainForm(temp.Form).CheckFilterAll;
+      end;
+  end;
 end;
 
 Exports

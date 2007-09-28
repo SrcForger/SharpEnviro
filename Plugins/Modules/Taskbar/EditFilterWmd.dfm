@@ -167,12 +167,12 @@ object EditFilterForm: TEditFilterForm
     TabOrder = 13
     OnClick = rb_classnameClick
   end
-  object rb_notanymon: TRadioButton
+  object rb_minimized: TRadioButton
     Left = 8
     Top = 399
     Width = 217
     Height = 17
-    Caption = 'Not on any Monitor/VWM (Minimized?)'
+    Caption = 'Minimized'
     TabOrder = 14
     OnClick = rb_classnameClick
   end

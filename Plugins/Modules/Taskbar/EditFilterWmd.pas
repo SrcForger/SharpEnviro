@@ -56,7 +56,7 @@ type
     ExplorerWindows1: TMenuItem;
     rb_monvwm: TRadioButton;
     rb_notmonvwm: TRadioButton;
-    rb_notanymon: TRadioButton;
+    rb_minimized: TRadioButton;
     procedure btn_examplefiltersClick(Sender: TObject);
     procedure ExplorerWindows1Click(Sender: TObject);
     procedure MinimizedTasjs1Click(Sender: TObject);
@@ -147,7 +147,7 @@ begin
           1: rb_classname.Checked := True;
           3: rb_monvwm.Checked    := True;
           4: rb_notmonvwm.Checked := True;
-          5: rb_notanymon.Checked := True;
+          5: rb_minimized.Checked := True;
           else rb_filename.Checked := True;
         end;
         for i := 0 to clb_showstates.Count - 1 do
@@ -315,7 +315,7 @@ begin
          else if rb_classname.Checked then i := 1
               else if rb_monvwm.Checked then i := 3
                    else if rb_notmonvwm.Checked then i := 4
-                        else if rb_notanymon.Checked then i := 5
+                        else if rb_minimized.Checked then i := 5
                              else i := 2;
       Add('FilterType',i);
 
@@ -357,12 +357,9 @@ begin
   edit_name.Text := 'Minimized';
   edit_filename.Text := '';
   edit_classname.Text := '';
-  rb_showstate.Checked := True;
+  rb_minimized.Checked := True;
   for n := 0 to clb_showstates.Count-1 do
       clb_showstates.Checked[n] := False;
-  clb_showstates.Checked[2] := True;
-  clb_showstates.Checked[6] := True;
-  clb_showstates.Checked[7] := True;
 
   UpdateStates;
 end;
