@@ -24,71 +24,44 @@ object frmMMList: TfrmMMList
     Columns = <
       item
         Width = 32
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
-        Autosize = False
         StretchColumn = False
         Images = StatusImages
         SelectedImages = StatusImages
       end
       item
         Width = 200
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
-        Autosize = False
         StretchColumn = False
       end
       item
         Width = 75
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
-        Autosize = False
         StretchColumn = False
       end
       item
         Width = 80
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
-        Autosize = False
         StretchColumn = False
       end
       item
         Width = 85
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
-        Autosize = False
         StretchColumn = False
       end>
     ItemHeight = 32
     OnClickItem = lbModuleListClickItem
-    OnGetCellTextColor = lbModuleListGetCellTextColor
     OnGetCellCursor = lbModuleListGetCellCursor
-    OnGetCellFont = lbModuleListGetCellFont
     AutosizeGrid = False
     Borderstyle = bsNone
     Ctl3d = False

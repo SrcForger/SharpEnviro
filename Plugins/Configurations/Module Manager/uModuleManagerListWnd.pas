@@ -92,8 +92,6 @@ end;
 
 procedure TfrmMMList.FormShow(Sender: TObject);
 begin
-  lbModuleList.Margin := Rect(0,0,0,0);
-  lbModuleList.ColumnMargin := Rect(6,0,6,0);
   BuildModuleList;
 end;
 
@@ -281,11 +279,11 @@ begin
                newItem := lbModuleList.AddItem('',index);
                newItem.Data := ModuleItem;
                newItem.AddSubItem(s);
-               newItem.AddSubItem('Move Up');
-               newItem.AddSubItem('Move Down');
+               newItem.AddSubItem('<font color="clNavy"><u>Move Up');
+               newItem.AddSubItem('<font color="clNavy"><u>Move Down');
 
                if FileExists(SharpApi.GetCenterDirectory + '_Modules\' + s + '.con') then
-                 newItem.AddSubItem('Configure')
+                 newItem.AddSubItem('<font color="clNavy"><u>Configure')
                else newItem.AddSubItem('');
 
                newItem.SubItemImageIndex[0] := index;
