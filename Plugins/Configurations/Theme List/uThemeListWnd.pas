@@ -59,9 +59,10 @@ type
     procedure lbThemeListGetCellCursor(const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure tmrEnableUiTimer(Sender: TObject);
+    procedure lbThemeListGetCellText(const ACol: Integer;
+      AItem: TSharpEListItem; var AColText: string);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
-    FLastClick: TDateTime;
   private
 
   public
@@ -118,11 +119,7 @@ end;
 
 procedure TfrmThemeList.FormShow(Sender: TObject);
 begin
-  lbThemeList.Margin := Rect(0, 0, 0, 0);
-  lbThemeList.ColumnMargin := Rect(6, 0, 6, 0);
   BuildThemeList;
-
-
 end;
 
 procedure TfrmThemeList.lbThemesClick(Sender: TObject);
@@ -172,11 +169,11 @@ begin
 
       if (tmpTheme.IsReadOnly) then
         newItem.AddSubItem('', 1) else
-        newItem.AddSubItem('', -1);
+        newItem.AddSubItem('', 3);
 
       if tmpTheme.Website <> '' then
         newItem.AddSubItem('', 2) else
-        newItem.AddSubItem('', -1);
+        newItem.AddSubItem('', 4);
 
 
 
@@ -234,7 +231,6 @@ end;
 procedure TfrmThemeList.lbThemeListClickItem(const ACol: Integer;
   AItem: TSharpEListItem);
 var
-  n: Integer;
   tmpTheme: TThemeListItem;
 begin
   if lbThemeList.ItemIndex <> -1 then
@@ -262,9 +258,6 @@ end;
 
 function TfrmThemeList.UpdateUI: Boolean;
 var
-  tmpItem: TSharpEListItem;
-  tmpThemeItem: TThemeListItem;
-  i: Integer;
   df: TSC_DEFAULT_FIELDS;
 begin
   Result := False;
@@ -396,6 +389,13 @@ procedure TfrmThemeList.lbThemeListGetCellFont(const ACol: Integer;
 begin
   if (ACol = 3) then
     AFont.Style := [fsUnderline];
+end;
+
+procedure TfrmThemeList.lbThemeListGetCellText(const ACol: Integer;
+  AItem: TSharpEListItem; var AColText: string);
+begin
+  if (Acol = 3) then
+    AColText := '<font color="clNavy"><u>Edit</u>';
 end;
 
 procedure TfrmThemeList.lbThemeListGetCellTextColor(const ACol: Integer;
