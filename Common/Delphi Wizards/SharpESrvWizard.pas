@@ -365,7 +365,12 @@ begin
           // Then create Project Options
           Options := Project.ProjectOptions;
           // Set search dir
-          Options.Values['UnitDir'] := '..\..\Common\Libraries\SharpApi';
+          Options.Values['UnitDir'] := '..\..\..\Common\Libraries\SharpApi';
+          // Set output dir
+          Options.Values['OutputDir'] := '..\..\..\..\SharpE\Services';
+          // Use packages
+          Options.Values['UsePackages'] := True;
+          Options.Values['Packages'] := 'rtl;vcl';
         except
           MessageDlg('Error generating ' + SrvName + '.' + FileExt, mtError, [mbOK], 0);
         end;
