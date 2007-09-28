@@ -152,6 +152,7 @@ type
     procedure WMBarCommand(var msg : TMessage); message WM_BARCOMMAND;
 
     // Plugin message (to be broadcastet to modules)
+    procedure WMVWMDesktopChanged(var msg : TMessage); message WM_VWMDESKTOPCHANGED;
     procedure WMWeatherUpdate(var msg : TMessage); message WM_WEATHERUPDATE;
     procedure WMInputChange(var msg : TMessage); message WM_INPUTLANGCHANGEREQUEST;
     procedure WMShellHookWindowCreate(var msg : TMessage); message WM_SHELLHOOKWINDOWCREATED;
@@ -555,6 +556,12 @@ begin
   begin
     FBarLock := False;
   end;
+end;
+
+procedure TSharpBarMainForm.WMVWMDesktopChanged(var msg: TMessage);
+begin
+  if ModuleManager = nil then exit;
+  ModuleManager.BroadcastPluginMessage('MM_VWMDESKTOPCHANGED');
 end;
 
 // Module is requesting the handle to the Background image
