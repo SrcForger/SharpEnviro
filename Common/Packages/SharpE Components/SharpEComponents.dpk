@@ -33,28 +33,40 @@ requires
   JclVcl,
   VclSmp,
   SharpESkinComponents,
+{$IFDEF VER170}
   PNG_D9,
   PngComponentsD9,
+  GR32_D2005,
+  JvCoreD9R,
+  JvSystemD9R,
+  JvStdCtrlsD9R,
+  JvCustomD9R,
+  JvMMD9R,
+  JvCtrlsD9R,
+  JvPageCompsD9R;
+{$ENDIF}
+{$IFDEF VER180}
+  PNG_D10,
+  PngComponentsD10,
   GR32_BDS2006,
-  {$IFDEF VER185}
+{$IFDEF VER185}
   JvCoreD11R,
   JvSystemD11R,
   JvStdCtrlsD11R,
   JvCustomD11R,
   JvMMD11R,
   JvCtrlsD11R,
-  JvPageCompsD11R
-  {$ELSE}
-  {$IFDEF VER180}
+  JvPageCompsD11R;
+{$ELSE}
   JvCoreD10R,
   JvSystemD10R,
   JvStdCtrlsD10R,
   JvCustomD10R,
   JvMMD10R,
   JvCtrlsD10R,
-  JvPageCompsD10R
-  {$ENDIF}
-  {$ENDIF};
+  JvPageCompsD10R;
+{$ENDIF}
+{$ENDIF}
 
 contains
   SharpEFontSelector in '..\..\Delphi Components\SharpEFontSelector\SharpEFontSelector.pas',

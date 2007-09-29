@@ -32,21 +32,21 @@ requires
   vcl,
   Jcl,
   JclVcl,
-  PNG_D9,
 {$IFDEF VER170}
+  PNG_D9,
   GR32_D2005,
   JvSystemD9R,
   JvCoreD9R,
   JvInterpreterD9R;
 {$ENDIF}
-{$IFDEF VER185}
+{$IFDEF VER180}
+  PNG_D10,
   GR32_BDS2006,
+{$IFDEF VER185}
   JvSystemD11R,
   JvCoreD11R,
   JvInterpreterD11R;
 {$ELSE}
-{$IFDEF VER180}
-  GR32_BDS2006,
   JvSystemD10R,
   JvCoreD10R,
   JvInterpreterD10R;
