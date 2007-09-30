@@ -33,6 +33,8 @@ uses
 const
   WM_ICONTRAY = WM_USER + 1;
   ID_EXIT = 1;
+  ID_SHUTDOWN = 2;
+  ID_SHELLSWITCH = 3;
 
 var
   wndClass: TWndClass;
@@ -48,8 +50,10 @@ begin
   menServices := CreatePopupMenu;
 
   AppendMenu(menPopup, MF_POPUP, menServices, 'Services');
-  AppendMenu(menPopup, MF_SEPARATOR, 0, 0);
-  AppendMenu(menPopup, 0, ID_EXIT, 'Exit');
+  AppendMenu(menPopup, 0, ID_SHELLSWITCH, 'Set Explorer as shell');
+  AppendMenu(menPopup, MF_SEPARATOR, 0, nil);
+  AppendMenu(menPopup, 0, ID_SHUTDOWN, 'Shutdown SharpE');
+  AppendMenu(menPopup, 0, ID_EXIT, 'Exit SharpCore');
 end;
 
 function WindowProc(hWnd,Msg,wParam,lParam:Integer):Integer; stdcall;
@@ -57,7 +61,10 @@ begin
   case Msg of
     WM_DESTROY: PostQuitMessage(0);
 
-    WM_CLOSE: Shell_NotifyIcon(NIM_DELETE, @nidTray);  // Make sure we remove tray icon
+    WM_CLOSE: begin
+      Shell_NotifyIcon(NIM_DELETE, @nidTray);  // Make sure we remove tray icon
+      DestroyMenu(menPopup);
+    end;
 
     WM_CREATE: begin    // Create and display tray icon
       with nidTray do
@@ -80,7 +87,6 @@ begin
           GetCursorPos(curPoint); // Cursor position so we know where to put the menu
           SetForegroundWindow(hWnd);
           TrackPopupMenu(menPopup, 0, curPoint.X, curPoint.Y, 0, hWnd, nil); // Display menu
-          DestroyMenu(menPopup);
         end;
       end;
     end;
