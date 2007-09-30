@@ -22,6 +22,7 @@ package SharpEComponents;
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'SharpE Components'}
 {$IMPLICITBUILD ON}
 
 requires
@@ -29,6 +30,12 @@ requires
   vcl,
   xmlrtl,
   designide,
+  vcljpg,
+  vclx,
+  vcldb,
+  dbrtl,
+  bdertl,
+  vclactnband,
   Jcl,
   JclVcl,
   VclSmp,
@@ -43,6 +50,7 @@ requires
   JvCustomD9R,
   JvMMD9R,
   JvCtrlsD9R,
+  JvInterpreterD9R,
   JvPageCompsD9R;
 {$ENDIF}
 {$IFDEF VER180}
@@ -56,6 +64,7 @@ requires
   JvCustomD11R,
   JvMMD11R,
   JvCtrlsD11R,
+  JvInterpreterD11R,
   JvPageCompsD11R;
 {$ELSE}
   JvCoreD10R,
@@ -64,6 +73,7 @@ requires
   JvCustomD10R,
   JvMMD10R,
   JvCtrlsD10R,
+  JvInterpreterD10R,
   JvPageCompsD10R;
 {$ENDIF}
 {$ENDIF}
@@ -85,6 +95,12 @@ contains
   SharpESwatchCollection in '..\..\Delphi Components\SharpESwatchCollection\SharpESwatchCollection.pas',
   SharpESwatchManager in '..\..\Delphi Components\SharpESwatchManager\SharpESwatchManager.pas',
   SharpEPageControl in '..\..\Delphi Components\SharpEPageControl\SharpEPageControl.pas',
-  SharpEUIC in '..\..\Delphi Components\SharpEUIC\SharpEUIC.pas';
+  SharpEUIC in '..\..\Delphi Components\SharpEUIC\SharpEUIC.pas',
+  uScHotkeyMgr in '..\..\Units\SCHotkeyManager\uScHotkeyMgr.pas',
+  graphicsFX in '..\..\Units\SharpFX\graphicsFX.pas',
+  uSchemeList in '..\..\..\Plugins\Configurations\Scheme\uSchemeList.pas',
+  uVistaFuncs in '..\..\Units\VistaFuncs\uVistaFuncs.pas',
+  VKToString in '..\..\Units\SCHotkeyManager\VKToString.pas',
+  SharpFX in '..\..\Units\SharpFX\SharpFX.pas';
 
 end.

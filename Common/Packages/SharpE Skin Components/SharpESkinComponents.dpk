@@ -23,6 +23,7 @@ package SharpESkinComponents;
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DESCRIPTION 'SharpE Skin Components'}
 {$IMPLICITBUILD ON}
 
 requires
@@ -53,6 +54,7 @@ requires
 {$ENDIF}
 {$ENDIF}
 
+
 contains
   sharedBitmapList in '..\..\Delphi Components\SharpE Skin Components\sharedBitmapList.pas',
   SharpEAnimationTimers in '..\..\Delphi Components\SharpE Skin Components\SharpEAnimationTimers.pas',
@@ -82,6 +84,12 @@ contains
   SharpETaskItem in '..\..\Delphi Components\SharpE Skin Components\SharpETaskItem.pas',
   ShlIntf in '..\..\Delphi Components\SharpE Skin Components\ShlIntf.pas',
   StrConst in '..\..\Delphi Components\SharpE Skin Components\StrConst.pas',
-  StrTools in '..\..\Delphi Components\SharpE Skin Components\StrTools.pas';
+  StrTools in '..\..\Delphi Components\SharpE Skin Components\StrTools.pas',
+  TranComp in '..\..\3rd party\TransparentEdit\TranComp.pas',
+  SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
+  SharpCenterAPI in '..\..\Libraries\SharpCenterApi\SharpCenterAPI.pas',
+  SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas',
+  SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas',
+  GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas';
 
 end.
