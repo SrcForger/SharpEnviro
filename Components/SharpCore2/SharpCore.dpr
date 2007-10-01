@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 program SharpCore;
 
 uses
-  Windows, Messages, ShellAPI;
+  Windows, Messages, ShellAPI, SharpAPI, Classes, SysUtils;
 
 {$R *.res}
 
@@ -37,12 +37,17 @@ const
   ID_SHELLSWITCH = 3;
 
 var
-  wndClass: TWndClass;
+  wclClass: TWndClass;
   wndMsg: TMsg;
   nidTray: TNotifyIconData;
   menPopup: HMenu;
   curPoint: TPoint;
   menServices: HMenu;
+  hndMutex: THandle;
+  stlCmdLine: TStringList;
+  i: Integer;
+  bDebug: Boolean;
+  strExtension: String;
 
 procedure BuildMenu();
 begin
@@ -103,15 +108,44 @@ end;
 
 begin
 
- wndClass.lpszClassName:= 'SharpCore';
- wndClass.lpfnWndProc :=  @WindowProc;
- wndClass.hInstance := hInstance;
- wndClass.hbrBackground:= 1;
- wndClass.hIcon := LoadIcon(hInstance, 'MAINICON');
+ stlCmdLine := TStringList.Create;
 
- RegisterClass(wndClass);
+ bDebug := False;
+ strExtension := '.service';
+ stlCmdLine.DelimitedText := GetCommandLine;
+ for i := 0 to stlCmdLine.Count - 1 do
+ begin
+  try
+   if LowerCase(stlCmdLine[i]) = '-debug' then bDebug := True;
+   if (LowerCase(stlCmdLine[i]) = '-ext') and (stlCmdLine[i+1] <> '') then
+    strExtension := stlCmdLine[i+1];
+  except
+   strExtension := '.service';
+  end;
+ end;
+ stlCmdLine.Free;
 
- CreateWindow(wndClass.lpszClassName, 'SharpCore', 0,
+ if bDebug then
+  ShellExecute(hInstance, 'open', PChar(GetSharpEDirectory + 'SharpConsole.exe'),
+   '', PChar(GetSharpEDirectory), 0);
+
+ hndMutex := CreateMutex(nil, TRUE, 'SharpCore');
+ if hndMutex <> 0 then
+  if GetLastError = ERROR_ALREADY_EXISTS then
+  begin
+    CloseHandle(hndMutex);
+    Exit;
+  end;
+
+ wclClass.lpszClassName:= 'SharpCore';
+ wclClass.lpfnWndProc :=  @WindowProc;
+ wclClass.hInstance := hInstance;
+ wclClass.hbrBackground:= 1;
+ wclClass.hIcon := LoadIcon(hInstance, 'MAINICON');
+
+ Windows.RegisterClass(wclClass);
+
+ CreateWindow(wclClass.lpszClassName, 'SharpCore', 0,
               10, 10, 340, 220, 0, 0, hInstance, nil);
 
  while GetMessage(wndMsg, 0, 0, 0) do DispatchMessage(wndMsg);
