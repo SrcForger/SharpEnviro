@@ -29,8 +29,9 @@ Interface
 
 uses Windows,Graphics,SysUtils,Forms,SharpApi,Classes,Dialogs,Types,
      GR32,Math,GR32_blend,GR32_Image, GR32_resamplers,PngImage, Registry,Messages,
-     SharpThemeApi, Jpeg,
-     SharpGraphicsUtils;
+     SharpThemeApi, GR32_PNG, Jpeg,
+     SharpGraphicsUtils,
+     SharpImageUtils;
 
 type
     TBackground = Object
@@ -93,13 +94,12 @@ var
    x,y,ny,nx : integer;
    Re : TRect;
    w,h : integer;
-   //JPeg : TJpegImage;
    winWallPath: string;
    Reg : TRegistry;
 
    loaded : boolean;
    WP : TThemeWallpaper;
-   img : TBitmap32;
+   img,preview : TBitmap32;
    SList : TStringList;
 
    RMode : boolean;
@@ -264,11 +264,13 @@ begin
     sleep(2000);
     tBmp.SaveToFile(winWallPath+'.bmp');
   end;
-{  Jpeg := TJpegImage.Create;
-  Jpeg.Assign(tBmp);
-  JPeg.SaveToFile(winWallPath+'.jpg');
-  JPeg.Free;}
   tBmp.Free;
+
+  // save the preview bitmap
+  TempBmp := TBitmap32.Create;
+  RescaleImage(SharpDesk.Image.Bitmap,TempBmp,62,48,True);
+  SaveBitmap32ToPNG(TempBmp,GetThemeDirectory + 'preview.png',False,True,clWhite);
+  TempBmp.Free;
 
   SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Set Win Wallpaper : ') + WP.Name),clblue,DMT_trace);
   Reg := TRegistry.Create;

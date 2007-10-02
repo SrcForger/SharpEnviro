@@ -57,7 +57,10 @@ uses
   SharpThemeApi in '..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
   SharpGraphicsUtils in '..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
   uSharpDeskTDeskSettings in 'Units\uSharpDeskTDeskSettings.pas',
-  SharpCenterAPI in '..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
+  SharpCenterAPI in '..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
+  SharpImageUtils in '..\..\Common\Units\SharpImageUtils\SharpImageUtils.pas',
+  SharpIconUtils in '..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
+  SharpFileUtils in '..\..\Common\Units\SharpFileUtils\SharpFileUtils.pas';
 
 {$R *.res}
 
