@@ -1,0 +1,86 @@
+<SharpCompile>
+  <package Name="Configuration">
+     <project Name="BatteryMonitor" Type="DLL">Plugins\Configurations\BatteryMonitor\BatteryMonitor.dproj</project>       
+     <project Name="Curses" Type="DLL">Plugins\Configurations\Curses\Curses.dproj</project>  
+     <project Name="DeskArea" Type="DLL">Plugins\Configurations\DeskArea\DeskArea.dproj</project>  
+     <project Name="Desktop" Type="DLL">Plugins\Configurations\Desktop\Desktop.dproj</project>  
+     <project Name="Font" Type="DLL">Plugins\Configurations\Font\Font.dproj</project>  
+     <project Name="Hotkeys" Type="DLL">Plugins\Configurations\Hotkeys\Hotkeys.dproj</project> 
+     <project Name="Icon List" Type="DLL">Plugins\Configurations\Icon List\IconList.dproj</project>       
+     <project Name="Image" Type="DLL">Plugins\Configurations\Image\Image.dproj</project>  
+     <project Name="Link" Type="DLL">Plugins\Configurations\Link\Link.dproj</project>       
+     <project Name="MiniScmd" Type="DLL">Plugins\Configurations\MiniScmd\MiniScmd.dproj</project>       
+     <project Name="ModuleManager" Type="DLL">Plugins\Configurations\Module Manager\ModuleManager.dproj</project>           
+     <project Name="Notes" Type="DLL">Plugins\Configurations\Notes\Notes.dproj</project>       
+     <project Name="QuickScript" Type="DLL">Plugins\Configurations\QuickScript\QuickScript.dproj</project>       
+     <project Name="RecycleBin" Type="DLL">Plugins\Configurations\RecycleBin\RecycleBin.dproj</project>       
+     <project Name="Scheme" Type="DLL">Plugins\Configurations\Scheme\Scheme.dproj</project>  
+     <project Name="SharpBar Manager" Type="DLL">Plugins\Configurations\SharpBar List\SharpBarList.dproj</project>  
+     <project Name="SharpDesk" Type="DLL">Plugins\Configurations\SharpDesk\SharpDesk.dproj</project>  
+     <project Name="SharpMenu" Type="DLL">Plugins\Configurations\SharpMenu\SharpMenu.dproj</project>  
+     <project Name="Skin" Type="DLL">Plugins\Configurations\Theme Skin\ThemeSkinList.dproj</project>  
+     <project Name="Theme List" Type="DLL">Plugins\Configurations\Theme List\ThemeList.dproj</project>  
+     <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Wallpaper\Wallpaper.dproj</project>  
+     <project Name="Weather" Type="DLL">Plugins\Configurations\Weather\Weather.dproj</project>  
+  </package>
+  <package Name="Components">
+     <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
+     <project Name="SharpBar" Type="Application">Components\SharpBar\SharpBar.dproj</project>  
+     <project Name="SharpCenter" Type="Application">Components\SharpCenter\SharpCenter.dproj</project>  
+     <project Name="SharpConsole" Type="Application">Components\SharpConsole\SharpConsole.dproj</project>  
+     <project Name="SharpCore" Type="Application">Components\SharpCore\SharpCore.dproj</project>  
+     <project Name="SharpDesk" Type="Application">Components\SharpDesk\SharpDesk.dproj</project>  
+     <project Name="SharpMenu" Type="Application">Components\SharpMenu\SharpMenu.dproj</project>  
+     <project Name="SharpScript" Type="Application">Components\SharpScript\SharpScript.dproj</project>  
+     <project Name="SharpShellServices" Type="Application">Components\SharpShellServices\SharpShellServices.dproj</project>  
+     <project Name="SharpShutdown" Type="Application">Components\SharpShutdown\SharpShutdown.dproj</project>  
+     <project Name="SharpSkin" Type="Application">Components\SharpSkin\SharpSkin.dproj</project>  
+     <project Name="SharpSplash" Type="Application">Components\SharpSplash\SharpSplash.dproj</project>  
+  </package>
+  <package Name="Libraries">
+     <project Name="SharpApi" Type="DLL" >Common\Libraries\SharpAPI\SharpApi.dproj</project>  
+     <project Name="SharpApiEx" Type="DLL">Common\Libraries\SharpApiEx\SharpApiEx.dproj</project>  
+     <project Name="SharpCenterApi" Type="DLL">Common\Libraries\SharpCenterApi\SharpCenterApi.dproj</project>  
+     <project Name="SharpDeskApi" Type="DLL">Common\Libraries\SharpDeskApi\SharpDeskApi.dproj</project>  
+     <project Name="SharpDialogs" Type="DLL">Common\Libraries\SharpDialogs\SharpDialogs.dproj</project>  
+     <project Name="SharpThemeApi" Type="DLL">Common\Libraries\SharpThemeApi\SharpThemeApi.dproj</project>  
+  </package>
+  <package Name="Modules">
+     <project Name="Battery Monitor" Type="DLL" >Plugins\Modules\Battery Monitor\BatteryMonitor.dproj</project>  
+     <project Name="Button" Type="DLL" >Plugins\Modules\Button\Button.dproj</project>  
+     <project Name="ButtonBar" Type="DLL" >Plugins\Modules\ButtonBar\ButtonBar.dproj</project>  
+     <project Name="Clock" Type="DLL" >Plugins\Modules\Clock\Clock.dproj</project>  
+     <project Name="CPU Monitor" Type="DLL" >Plugins\Modules\CPU Monitor\CPUMonitor.dproj</project>    
+     <project Name="KeyboardLayout" Type="DLL" >Plugins\Modules\Keyboard Layout\KeyboardLayout.dproj</project>  
+     <project Name="Media Controller" Type="DLL" >Plugins\Modules\MediaController\MediaController.dproj</project>  
+     <project Name="Memory Monitor" Type="DLL" >Plugins\Modules\Memory Monitor\MemoryMonitor.dproj</project>  
+     <project Name="Menu" Type="DLL" >Plugins\Modules\Menu\Menu.dproj</project>  
+     <project Name="MiniScmd" Type="DLL" >Plugins\Modules\MiniScmd\MiniScmd.dproj</project>  
+     <project Name="Notes" Type="DLL" >Plugins\Modules\Notes\Notes.dproj</project>  
+     <project Name="Quick Script" Type="DLL" >Plugins\Modules\QuickScript\QuickScript.dproj</project>  
+     <project Name="Screenshot" Type="DLL" >Plugins\Modules\Screenshot\Screenshot.dproj</project>
+     <project Name="SystemTray" Type="DLL" >Plugins\Modules\SystemTray\SystemTray.dproj</project>
+     <project Name="Taskbar" Type="DLL" >Plugins\Modules\Taskbar\Taskbar.dproj</project>
+     <project Name="Volume Control" Type="DLL" >Plugins\Modules\VolumeControl\VolumeControl.dproj</project>  
+     <project Name="Weather" Type="DLL">Plugins\Modules\Weather\Weather.dproj</project>   
+  </package>
+  <package Name="Objects">
+     <project Name="Image" Type="DLL" >Plugins\Objects\Image\Image.dproj</project>  
+     <project Name="Link" Type="DLL" >Plugins\Objects\Link\Link.dproj</project>  
+     <project Name="Recycle Bin" Type="DLL" >Plugins\Objects\RecycleBin\RecycleBin.dproj</project>
+  </package>
+  <package Name="Services">
+     <project Name="Actions" Type="DLL" >Plugins\Services\Actions\Actions.dproj</project> 
+     <project Name="Cursors" Type="DLL" >Plugins\Services\Cursors\Cursors.dproj</project>  
+     <project Name="DeskArea" Type="DLL" >Plugins\Services\DeskArea\DeskArea.dproj</project>  
+     <project Name="Exec" Type="DLL" >Plugins\Services\Exec\Exec.dproj</project>  
+     <project Name="Hotkeys" Type="DLL" >Plugins\Services\Hotkeys\Hotkeys.dproj</project>  
+     <project Name="Skin" Type="DLL" >Plugins\Services\Skin\SkinController.dproj</project>  
+     <project Name="Startup" Type="DLL" >Plugins\Services\StartupApps\Startup.dproj</project>  
+     <project Name="SystemActions" Type="DLL" >Plugins\Services\SystemActions\SystemActions.dproj</project>  
+     <project Name="SystemTray" Type="DLL" >Plugins\Services\SystemTray\SystemTray.dproj</project>  
+     <project Name="TaskManager" Type="DLL" >Plugins\Services\TaskManager\TaskManager.dproj</project>  
+     <project Name="TaskSwitch" Type="DLL" >Plugins\Services\TaskSwitch\TaskSwitch.dproj</project>  
+     <project Name="Weather" Type="DLL" requ="Delphi 2005 Professional">Plugins\Services\Weather\Weather.dproj</project>  
+  </package>
+</SharpCompile>
