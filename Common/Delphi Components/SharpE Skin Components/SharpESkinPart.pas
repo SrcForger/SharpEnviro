@@ -2032,6 +2032,7 @@ var
    sR,sG,sB : integer;
    eR,eG,eB : integer;
    y : integer;
+   DX1,DX2 : integer;
 begin
   if color1 <> -1 then
   begin
@@ -2061,9 +2062,15 @@ begin
   nG:=(eG-sG)/(Rect.Bottom-Rect.Top);
   nB:=(eB-sB)/(Rect.Bottom-Rect.Top);
   nt:=(et-st)/(Rect.Bottom-Rect.Top);
+
+  DX1 := Max(0,Min(Bmp.Width,Rect.Left));
+  DX2 := Max(0,Min(Bmp.Width,Rect.Right));
   for y:=0 to Rect.Bottom-Rect.Top do
-      Bmp.HorzLineT(Rect.Left,y+Rect.Top,Rect.Right,
+  begin
+    if (y +Rect.Top >= 0) and (y +Rect.Top <= Bmp.Height) then
+      Bmp.HorzLineT(DX1,y+Rect.Top,DX2,
                     color32(sr+round(nr*y),sg+round(ng*y),sb+round(nb*y),st+round(nt*y)));
+  end;
 end;
 
 
@@ -2076,6 +2083,7 @@ var
   sR,sG,sB : integer;
   eR,eG,eB : integer;
   x : integer;
+  DY1,DY2 : integer;
 begin
   sR := GetRValue(color1);
   sG := GetGValue(color1);
@@ -2087,9 +2095,15 @@ begin
   nG:=(eG-sG)/(Rect.Right-Rect.Left);
   nB:=(eB-sB)/(Rect.Right-Rect.Left);
   nt:=(et-st)/(Rect.Right-Rect.Left);
-  for x:=0 to Rect.Right-Rect.Left do
-      Bmp.VertLineT(x+Rect.Left,Rect.Top,Rect.Bottom,
+
+  DY1 := Max(0,Min(Bmp.Height,Rect.Top));
+  DY2 := Max(0,Min(Bmp.Height,Rect.Bottom));
+  for x:= 0 to Rect.Right-Rect.Left do
+  begin
+    if (x + Rect.Left >= 0) and (x + Rect.Left <= Bmp.Width) then
+      Bmp.VertLineT(x+Rect.Left,DY1,DY2,
                     color32(sr+round(nr*x),sg+round(ng*x),sb+round(nb*x),st+round(nt*x)));
+  end;
 end;
 
 procedure TSkinPart.DoCombine(F: TColor32; var B: TColor32; M: TColor32);
