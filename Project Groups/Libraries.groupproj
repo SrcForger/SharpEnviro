@@ -1,0 +1,84 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{73f9fb46-501f-4149-9d02-fc80252f976b}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="..\Common\Libraries\SharpApiEx\SharpAPIEx.dproj" />
+    <Projects Include="..\Common\Libraries\SharpAPI\SharpAPI.dproj" />
+    <Projects Include="..\Common\Libraries\SharpCenterApi\SharpCenterAPI.dproj" />
+    <Projects Include="..\Common\Libraries\SharpDeskApi\SharpDeskApi.dproj" />
+    <Projects Include="..\Common\Libraries\SharpDialogs\SharpDialogs.dproj" />
+    <Projects Include="..\Common\Libraries\SharpThemeApi\SharpThemeApi.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="SharpAPI">
+    <MSBuild Projects="..\Common\Libraries\SharpAPI\SharpAPI.dproj" Targets="" />
+  </Target>
+  <Target Name="SharpAPI:Clean">
+    <MSBuild Projects="..\Common\Libraries\SharpAPI\SharpAPI.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SharpAPI:Make">
+    <MSBuild Projects="..\Common\Libraries\SharpAPI\SharpAPI.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SharpDeskApi">
+    <MSBuild Projects="..\Common\Libraries\SharpDeskApi\SharpDeskApi.dproj" Targets="" />
+  </Target>
+  <Target Name="SharpDeskApi:Clean">
+    <MSBuild Projects="..\Common\Libraries\SharpDeskApi\SharpDeskApi.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SharpDeskApi:Make">
+    <MSBuild Projects="..\Common\Libraries\SharpDeskApi\SharpDeskApi.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SharpThemeApi">
+    <MSBuild Projects="..\Common\Libraries\SharpThemeApi\SharpThemeApi.dproj" Targets="" />
+  </Target>
+  <Target Name="SharpThemeApi:Clean">
+    <MSBuild Projects="..\Common\Libraries\SharpThemeApi\SharpThemeApi.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SharpThemeApi:Make">
+    <MSBuild Projects="..\Common\Libraries\SharpThemeApi\SharpThemeApi.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SharpDialogs">
+    <MSBuild Projects="..\Common\Libraries\SharpDialogs\SharpDialogs.dproj" Targets="" />
+  </Target>
+  <Target Name="SharpDialogs:Clean">
+    <MSBuild Projects="..\Common\Libraries\SharpDialogs\SharpDialogs.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SharpDialogs:Make">
+    <MSBuild Projects="..\Common\Libraries\SharpDialogs\SharpDialogs.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SharpAPIEx">
+    <MSBuild Projects="..\Common\Libraries\SharpApiEx\SharpAPIEx.dproj" Targets="" />
+  </Target>
+  <Target Name="SharpAPIEx:Clean">
+    <MSBuild Projects="..\Common\Libraries\SharpApiEx\SharpAPIEx.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SharpAPIEx:Make">
+    <MSBuild Projects="..\Common\Libraries\SharpApiEx\SharpAPIEx.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SharpCenterAPI">
+    <MSBuild Projects="..\Common\Libraries\SharpCenterApi\SharpCenterAPI.dproj" Targets="" />
+  </Target>
+  <Target Name="SharpCenterAPI:Clean">
+    <MSBuild Projects="..\Common\Libraries\SharpCenterApi\SharpCenterAPI.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SharpCenterAPI:Make">
+    <MSBuild Projects="..\Common\Libraries\SharpCenterApi\SharpCenterAPI.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="SharpAPI;SharpDeskApi;SharpThemeApi;SharpDialogs;SharpAPIEx;SharpCenterAPI" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="SharpAPI:Clean;SharpDeskApi:Clean;SharpThemeApi:Clean;SharpDialogs:Clean;SharpAPIEx:Clean;SharpCenterAPI:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="SharpAPI:Make;SharpDeskApi:Make;SharpThemeApi:Make;SharpDialogs:Make;SharpAPIEx:Make;SharpCenterAPI:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>

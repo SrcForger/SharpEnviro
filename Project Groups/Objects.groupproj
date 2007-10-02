@@ -1,0 +1,54 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{3f58828e-754f-478f-aaa6-6577ceb5ee2c}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="..\Plugins\Objects\Image\Image.dproj" />
+    <Projects Include="..\Plugins\Objects\Link\Link.dproj" />
+    <Projects Include="..\Plugins\Objects\RecycleBin\RecycleBin.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="Link">
+    <MSBuild Projects="..\Plugins\Objects\Link\Link.dproj" Targets="" />
+  </Target>
+  <Target Name="Link:Clean">
+    <MSBuild Projects="..\Plugins\Objects\Link\Link.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Link:Make">
+    <MSBuild Projects="..\Plugins\Objects\Link\Link.dproj" Targets="Make" />
+  </Target>
+  <Target Name="RecycleBin">
+    <MSBuild Projects="..\Plugins\Objects\RecycleBin\RecycleBin.dproj" Targets="" />
+  </Target>
+  <Target Name="RecycleBin:Clean">
+    <MSBuild Projects="..\Plugins\Objects\RecycleBin\RecycleBin.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="RecycleBin:Make">
+    <MSBuild Projects="..\Plugins\Objects\RecycleBin\RecycleBin.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Image">
+    <MSBuild Projects="..\Plugins\Objects\Image\Image.dproj" Targets="" />
+  </Target>
+  <Target Name="Image:Clean">
+    <MSBuild Projects="..\Plugins\Objects\Image\Image.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Image:Make">
+    <MSBuild Projects="..\Plugins\Objects\Image\Image.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="Link;RecycleBin;Image" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="Link:Clean;RecycleBin:Clean;Image:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="Link:Make;RecycleBin:Make;Image:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>
