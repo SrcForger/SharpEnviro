@@ -82,7 +82,7 @@ type
                    function AssignFromNIDv6(NIDv6 : TNotifyIconDataV7) : TTrayChangeEvents;
                    constructor Create(NIDv6 : TNotifyIconDataV7); reintroduce;
                    destructor Destroy; override;
-                 published
+
                    property UID : Cardinal read FUID;
                    property Wnd : THandle read FWnd;
                    property Bitmap : TBitmap32 read FBitmap;
@@ -159,7 +159,7 @@ type
                    function GetFreeTipIndex : integer;
                    constructor Create; reintroduce;
                    destructor  Destroy; override;
-                 published
+
                    property Items : TObjectList read FItems;
                    property Bitmap : TBitmap32 read FBitmap;
                    property IconAlpha : integer read FIconAlpha write SetIconAlpha;

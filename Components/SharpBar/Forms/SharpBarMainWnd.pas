@@ -307,7 +307,6 @@ end;
 procedure TSharpBarMainForm.WMBarCommand(var msg: TMessage);
 var
   ModuleIndex : integer;
-  Module : TModule;
 begin
   ModuleIndex := ModuleManager.GetModuleIndex(msg.LParam);
   if ModuleIndex = - 1 then

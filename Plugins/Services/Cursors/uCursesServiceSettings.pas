@@ -53,7 +53,7 @@ type
     destructor Destroy; override;
     procedure Load;
     procedure Save;
-  published
+
     property FileName: string read FFileName write FFileName;
     property CurrentSkin: string read FCurrentSkin write FCurrentSkin;
     property Colors: TColorArray read FColors;

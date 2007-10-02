@@ -51,7 +51,6 @@ type
                                  pLocked : boolean;
                                  pisWindow : boolean) : TObjectSetItem;
        function GenerateObjectID : integer;
-     published
      end;
 
 implementation

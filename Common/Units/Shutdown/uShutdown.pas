@@ -53,7 +53,6 @@ type
   public
     constructor Create; reintroduce;
     function Execute: Boolean; virtual;
-  published
 
     property ActionType: TShutDownActionType read FActionType
       write FActionType default sdPowerOff;

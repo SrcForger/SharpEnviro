@@ -34,7 +34,7 @@ type
     procedure BuildPreviews;
     procedure UpdateHighlight;
     procedure SpecialKeyTest;
-  published
+
     property WndVisible : boolean read GetWndVisible;
     property Index : integer read FIndex write FIndex;
     property ShowPreview : boolean read FShowPreview write FShowPreview;

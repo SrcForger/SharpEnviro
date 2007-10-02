@@ -135,7 +135,7 @@ type
       procedure UnselectAll;
       procedure UpdateSelection(Rect : TRect);
       procedure UpdateAnimationLayer;
-    published
+
       property BackgroundLayer : TBitmapLayer        read FBackgroundLayer;
       property DeskSettings    : TDeskSettings       read FDeskSettings;
       property DoubleClick     : boolean             read FDoubleClick     write FDoubleClick;

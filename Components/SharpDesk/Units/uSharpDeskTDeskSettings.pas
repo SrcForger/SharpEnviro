@@ -56,7 +56,6 @@ type
                        procedure SaveSettings;
                        procedure ReloadSettings;
                        procedure CreateXMLFile;
-                     published
                     end;
 
 

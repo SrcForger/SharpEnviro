@@ -44,7 +44,6 @@ type
     procedure LoadFromXML(pXML : TJvSimpleXMLElems); overload;
     procedure Assign(from : TSharpEMenuSettings);
     constructor Create; reintroduce;
-  published
   end;
 
 implementation

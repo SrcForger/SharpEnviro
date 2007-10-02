@@ -90,7 +90,7 @@ type
       procedure SaveSettings; virtual;
       procedure FinishSaveSettings(SaveToFile : boolean);
       function GetSettingsFile : String;
-    published
+
       property XML : TJvSimpleXML read FXML;
     end;
 

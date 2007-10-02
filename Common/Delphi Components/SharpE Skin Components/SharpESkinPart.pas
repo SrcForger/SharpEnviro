@@ -167,7 +167,7 @@ type
     procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme;
                        var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String); overload;
     procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme); overload;
-  published
+
     property Color : integer read FColor write FColor;
     property ColorString : String read FColorString write FColorString;
     property Alpha : byte read FAlpha write FAlpha;
@@ -245,7 +245,7 @@ type
     procedure draw(bmp: TBitmap32; cs: TSharpEScheme);
     function Empty: Boolean;
     function GetBitmap: TBitmap32;
-  published
+
     property ID: String read FID;
     property Items: TSkinPartList read FItems;
     property Bitmap: TBitmap32 read GetBitmap;
@@ -281,10 +281,10 @@ type
     procedure LoadFromStream(Stream: TStream); override;
     function LoadFromXML(xml: TJvSimpleXMLElem; path: string;
                          Text: TSkinText; Icon : TSkinIcon): boolean; reintroduce;
-  published
+
     property SkinIcon : TSkinIcon read FSkinIcon;
-    property WidthMod : integer read FWidthMod;
-  end;    
+    property WidthMod : integer read FWidthMod;                         
+  end;
 
 function get_location(str: string): TRect;
 function EvaluateValue(str: string; cs: TSharpEScheme) : integer;

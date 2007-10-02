@@ -47,12 +47,13 @@ type
                          FExtension  : String;
                          FXMLFile    : String;
                          FMaxLength  : integer;
-                       published
+
                          property ObjectFile : String  read FObjectFile write FObjectFile;
                          property Extension  : String  read FExtension  write FExtension;
                          property XMLFile    : String  read FXMLFile    write FXMLFile;
                          property MaxLength  : Integer read FMaxLength  write FMaxLength;
                        end;
+
     TDragAndDropManager = class (TObjectList)
                            private
                              FOwner      : TObject;
@@ -65,8 +66,8 @@ type
                              procedure LoadDDInformations(pDirectory : String);
                              procedure RegisterDragAndDrop(handle : hwnd);
                              procedure UnRegisterDragAndDrop(handle : hwnd);
-                           published
-                             property Owner      : TObject read FOwner;                           
+                             
+                             property Owner      : TObject read FOwner;
                           end;
 
 implementation

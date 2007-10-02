@@ -48,7 +48,7 @@ type
       MLineCaption     : boolean;
       procedure LoadSettings; override;
       procedure SaveSettings(SaveToFile : boolean); reintroduce;
-    published
+
       property theme : TThemeSettingsArray read ts; 
     end;
 

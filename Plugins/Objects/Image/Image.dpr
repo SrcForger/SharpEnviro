@@ -74,7 +74,6 @@ type
     TLayerList = class (TObjectList)
                  private
                  public
-                 published
                  end;
 
     TLayer = class
@@ -83,7 +82,7 @@ type
               FLayer : TImageLayer;
              public
               destructor Destroy; override;
-             published
+
               property ObjectID : integer read FObjectID write FObjectID;
               property ImageLayer : TImageLayer read FLayer write FLayer;
              end;
@@ -134,6 +133,17 @@ var
 begin
   if FirstStart then exit;
   Layer := nil;
+
+  case DeskMessage of
+    SDM_SHUTDOWN : begin
+                     LayerList.Clear;
+                     LayerList.Free;
+                     LayerList := nil;
+                     FirstStart := True;
+                     exit;
+                    end;
+  end;
+
   for n := 0 to LayerList.Count - 1 do
   begin
     if TLayer(LayerList.Items[n]).ObjectID = pObjectID then
@@ -142,7 +152,7 @@ begin
       break;
     end;
   end;
-  if Layer = nil then exit;
+  if (Layer = nil) then exit;
 
   case DeskMessage of
     SDM_SETTINGS_UPDATE : Layer.ImageLayer.LoadSettings;
@@ -157,15 +167,8 @@ begin
                         SharpApi.SendDebugMessageEx('Image.Object',PChar('Removing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
                         LayerList.Remove(Layer);
                         SharpApi.SendDebugMessageEx('Image.Object',PChar('Freeing : ' + inttostr(Layer.ObjectID)),0,DMT_INFO);
-                        Layer := nil;
                         SharpApi.SendDebugMessageEx('Image.Object',PChar('Object removed'),0,DMT_INFO);
                       end;
-    SDM_SHUTDOWN : begin
-                     LayerList.Clear;
-                     LayerList.Free;
-                     LayerList := nil;
-                     FirstStart := True;
-                   end;
      SDM_MENU_POPUP : begin
                         Bmp2 := TBitmap.Create;
                         Menu2 := Layer.ImageLayer.ParentImage.PopupMenu;

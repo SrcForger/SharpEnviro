@@ -111,8 +111,8 @@ type
     LastUpdated: string;
     Days: array[0..9] of TWFCDay;
     constructor Create(pOwner : TObject);
-  published
-    property Owner : TObject read FOwner;    
+
+    property Owner : TObject read FOwner;
   end;
 
   TXMLCC = class
@@ -128,7 +128,7 @@ type
     string;
     FeelsLikeTemp, ObservationStation: string;
     constructor Create(pOwner : TObject);
-  published
+
     property Owner : TObject read FOwner;
   end;
 
@@ -142,7 +142,7 @@ type
     // loc
     TimeSunset, Latitude, GmtOffsett, LocationName, Longitude, TimeSunrise: string;
     constructor Create(pOwner : TObject);
-  published
+
     property Owner : TObject read FOwner;
   end;
 
@@ -157,7 +157,7 @@ type
     constructor Create(pOwner : TObject);
     destructor Destroy; override;
     property OnReadValue: TOnReadValue read FOnReadValue write FOnReadValue;
-  published
+
     property Owner : TObject read FOwner;
   end;
 

@@ -96,7 +96,7 @@ type
                        procedure RestoreFromModList(SP : TSkinPart; var ML : TSkinPartArray);
                        procedure RestoreSkinParts;
                        procedure BuildRestoreList(SP : TSkinPart);
-                     published
+
                        property Component : TObject read FComponent;
                        property Timer     : TTimer  read FTimer;
                        property OnTimerFinished : TOnTimerFinishedEvent read FOnTimerFinished write FOnTimerFinished;
@@ -117,7 +117,7 @@ type
                           procedure OnCheckTimer(Sender : TObject);
                           function HasScriptRunning(pComponent : TObject) : boolean;
                           procedure StopScript(pComponent : TObject);
-                        published
+
                           property TimerActive : boolean read FTimerActive write FTimerActive;
                         end;
 

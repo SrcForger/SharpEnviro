@@ -71,7 +71,7 @@ type
                    function GetItemByIndex(Index : integer) : TTaskItem;
                    constructor Create; reintroduce;
                    destructor Destroy; override;
-                 published
+
                    property Enabled        : boolean          read FEnabled write FEnabled;
                    property SortTasks      : boolean          read FSortTasks write FSortTasks;
                    property SortType       : TSortType        read FSortType write FSortType;

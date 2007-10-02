@@ -30,6 +30,7 @@ interface
 uses
   Windows,
   Messages,
+  Types,
   SysUtils,
   Classes,
   Graphics,

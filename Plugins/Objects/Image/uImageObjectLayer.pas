@@ -223,9 +223,9 @@ begin
     end;
     if MimeList.IndexOf(idHttp.Response.ContentType)<>-1 then
     begin
+      i := random(1000000);
       try
         try
-          i := random(1000000);
           if idHttp.Response.ContentType = 'image/jpeg' then Ext := '.jpg'
              else if idHttp.Response.ContentType = 'image/png' then Ext := '.png'
                   else Ext := '.bmp';

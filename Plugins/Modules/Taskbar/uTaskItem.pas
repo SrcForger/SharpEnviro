@@ -61,7 +61,7 @@ type
                 procedure UpdateFileInfo;
                 procedure Minimize;
                 procedure Restore;
-              published
+
                 property Icon     : hIcon   read FIcon;
                 property Caption  : String  read FCaption;
                 property Handle   : hwnd    read FHandle;

@@ -97,7 +97,7 @@ type
                                         pSkinManager : TSharpESkinManager;
                                         pBar         : TSharpEBar); reintroduce;
                      destructor Destroy; override;
-                   published
+
                      property FileName : string read FFileName;
                      property Parent   : hwnd   read FParent;
                    end;
@@ -119,7 +119,7 @@ type
                                         pParent : hwnd;
                                         pPosition : integer); reintroduce;
                      destructor Destroy; override;
-                   published
+
                      property ID      : integer     read FID;
                      property Control : TWinControl read FControl;
                      property Handle  : hwnd        read FHandle;
@@ -188,14 +188,14 @@ type
                      procedure OnMiniThrobberMouseUp(Sender : TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
                      procedure OnMiniThrobberMouseMove(Sender : TObject; Shift: TShiftState; X, Y: integer);
                      procedure OnDragReleaseTimerOnTimer(Sender : TObject);
-                   published
+
                      property ModuleDirectory : string       read FDirectory;
                      property Parent          : hwnd         read FParent;
                      property ModuleFiles     : TObjectList  read FModuleFiles;
                      property Modules         : TObjectList  read FModules;
                      property ThrobberMenu    : TPopupMenu   read FThrobberMenu write FThrobberMenu;
                      property ShowMiniThrobbers : Boolean    read FShowMiniThrobbers write SetShowMiniThrobbers;
-                     property BarID           : integer      read FBarID write FBarID; 
+                     property BarID           : integer      read FBarID write FBarID;                     
                    end;
 
 type

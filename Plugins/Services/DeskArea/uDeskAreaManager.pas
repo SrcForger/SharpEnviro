@@ -49,7 +49,6 @@ type
 
     procedure Enable;
     procedure Disable;
-  published
   end;
 
 implementation

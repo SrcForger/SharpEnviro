@@ -56,7 +56,7 @@ type
     procedure Save(filename: string); overload;
     procedure Save; overload;
     constructor Create(FileName: string);
-  published
+
     property AltExplorer: string read FAltExplorer write FAltExplorer;
     property FileName: string read FFileName write FFileName;
   end;

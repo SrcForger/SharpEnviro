@@ -77,7 +77,6 @@ type
     TLayerList = class (TObjectList)
                  private
                  public
-                 published
                  end;
 
     TLayer = class
@@ -86,7 +85,7 @@ type
               FLayer : TLinkLayer;
              public
               destructor Destroy; override;
-             published
+
               property ObjectID : integer read FObjectID write FObjectID;
               property FolderLayer : TLinkLayer read FLayer write FLayer;
              end;
@@ -174,7 +173,6 @@ begin
     SDM_DESELECT : Layer.FolderLayer.EndHL;
     SDM_CLOSE_LAYER : begin
                         LayerList.Remove(Layer);
-                        Layer := nil;
                       end;
 
     SDM_MENU_POPUP : begin

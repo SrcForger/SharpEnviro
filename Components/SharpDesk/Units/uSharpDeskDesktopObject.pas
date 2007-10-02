@@ -63,7 +63,7 @@ type
       procedure Delete;
       procedure MakeWindow;
       procedure MakeLayer;
-    published
+
       property DeskManager : TSharpDeskManager read FDeskManager;
       property Owner       : TObjectfile  read FOwner;
       property Layer		   : TBitmapLayer read FLayer write FLayer;

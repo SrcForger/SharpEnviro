@@ -52,7 +52,6 @@ type
     procedure Load; overload;
     procedure Save; overload;
 
-  published
     property Metric: boolean read FMetric Write FMetric;
     Property CCondInterval: Integer read FCCondInterval write FCCondInterval;
     property FCastInterval: Integer read FFCastInterval write FFCastInterval;

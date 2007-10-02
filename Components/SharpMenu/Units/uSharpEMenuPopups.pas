@@ -46,7 +46,7 @@ type
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
-  published
+
     property DynamicDirPopup : TPopupMenu read FDynamicDirPopup;
     property DynamicLinkPopup : TPopupMenu read FDynamicLinkPopup;
     property PopupVisible : boolean read FPopupVisible write FPopupVisible;

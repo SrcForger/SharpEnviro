@@ -54,7 +54,7 @@ type
       procedure ReLoadAllObjects;
       procedure RefreshDirectory;
       function GetByObjectFile(pFile : String) : TObjectFile;
-    published
+
       property Directory     : String read FDirectory;
       property FileExtension : String read FExtension write FExtension;
       property Owner         : TObject read FOwner;

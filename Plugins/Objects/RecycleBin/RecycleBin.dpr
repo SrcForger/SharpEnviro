@@ -80,7 +80,6 @@ type
     TLayerList = class (TObjectList)
                  private
                  public
-                 published
                  end;
 
     TLayer = class
@@ -89,7 +88,7 @@ type
               FLayer : TRecycleBinLayer;
              public
               destructor Destroy; override;
-             published
+
               property ObjectID : integer read FObjectID write FObjectID;
               property RecycleBinLayer : TRecycleBinLayer read FLayer write FLayer;
              end;
@@ -233,7 +232,6 @@ begin
     SDM_DESELECT : Layer.RecycleBinLayer.EndHL;
     SDM_CLOSE_LAYER : begin
                         LayerList.Remove(Layer);
-                        Layer := nil;
                       end;
 
     SDM_MENU_POPUP : begin

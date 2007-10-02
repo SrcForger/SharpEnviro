@@ -60,7 +60,7 @@ type
             public
               constructor Create(pID,pBarID : integer; pParent : hwnd); reintroduce;
               destructor Destroy; override;
-            published
+
               property ID   : integer read FID;
               property Pos  : integer read FPos write FPos;
               property Form : TForm   read FForm;

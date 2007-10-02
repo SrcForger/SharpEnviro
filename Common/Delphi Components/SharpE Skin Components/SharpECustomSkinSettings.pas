@@ -40,7 +40,7 @@ type
     procedure Clear;
     constructor Create; reintroduce;
     destructor Destroy; override;
-  published
+
     property xml : TJvSimpleXMLElem read GetXMLElem;
     property Path : String read FPath;
   end;

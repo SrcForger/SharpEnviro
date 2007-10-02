@@ -105,7 +105,7 @@ type
     // Wrap
     procedure WrapMenu(pMaxItems : integer);
     procedure UnWrapMenu(target : TSharpEMenu);
-  published
+
     property ItemIndex  : integer read FItemIndex write FItemIndex;
     property CurrentItem : TSharpEMenuItem read GetCurrentItem;
     property Background : TBitmap32 read FBackground;

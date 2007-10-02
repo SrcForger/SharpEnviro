@@ -202,7 +202,7 @@ procedure TTaskManager.MessageHandler(var msg: TMessage);
 var
   n : integer;
 begin
-  if msg.Msg = WM_SHELLHOOK then
+  if Integer(msg.Msg) = WM_SHELLHOOK then
   begin
     for n := High(FWndList) downto 0 do
       if IsWindow(FWndList[n]) then

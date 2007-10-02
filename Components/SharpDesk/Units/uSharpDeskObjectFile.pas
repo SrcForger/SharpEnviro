@@ -58,7 +58,7 @@ type
       function GetByObjectID(ID : integer) : TObject;
       constructor Create(pOwner : TObject; pFileName : String);
       destructor Destroy; override;
-    published
+
       property DllHandle       : THandle read FDLLHandle;
       property FileName        : String  read FFileName;
       property Path            : String  read FPath;

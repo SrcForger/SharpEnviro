@@ -75,7 +75,7 @@ type
 
     constructor Create; reintroduce;
     destructor Destroy; override;
-  published
+
   end;
 
 implementation

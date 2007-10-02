@@ -51,7 +51,7 @@ type
                   destructor Destroy; override;
                   procedure AddWinControl(control : TWinControl);
                   procedure RemoveWinControl(control : TWinControl);
-                published
+
                   property ControlList : TObjectList read FControlList;
                 end;
 

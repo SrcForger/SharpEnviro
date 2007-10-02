@@ -51,13 +51,13 @@ type
                           pPos : TPoint;
                           pLocked : boolean;
                           pisWindow : boolean);
-     published
+
        property Owner      : TObject read FOwner      write FOwner;
        property Locked     : boolean read FLocked     write FLocked;
        property Pos        : TPoint  read FPos        write FPos;
        property ObjectID   : integer read FObjectID;
        property ObjectFile : String  read FObjectFile;
-       property isWindow   : boolean read FisWindow   write FisWindow;
+       property isWindow   : boolean read FisWindow   write FisWindow;                          
      end;
 
 implementation
