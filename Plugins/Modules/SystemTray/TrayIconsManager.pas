@@ -370,6 +370,10 @@ end;
 constructor TTrayClient.Create;
 begin
   inherited Create;
+
+  FBalloonWnd := TBalloonForm.Create(nil);
+  FBalloonWnd.TrayManager := self;
+
   Randomize;
   NewRepaintHash;
   FWndList := TObjectList.Create(True);
@@ -397,10 +401,6 @@ begin
   FLastTipItem := nil;
   FBackGroundColor := Color32(128,128,128,128);
   FBorderColor     := Color32(0,0,0,128);
-
-  FBalloonWnd := TBalloonForm.Create(nil);
-  FBalloonWnd.TrayManager := self;
-
 
   FMsgWnd := TMsgWnd.Create(nil);
   FMsgWnd.FTrayClient := self;
