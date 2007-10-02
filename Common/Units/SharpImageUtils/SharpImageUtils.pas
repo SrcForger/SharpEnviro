@@ -29,9 +29,10 @@ unit SharpImageUtils;
 interface
 
 uses
-  GR32,JPeg,SharpIconUtils,SysUtils;
+  GR32,GR32_Resamplers,JPeg,SharpIconUtils,SysUtils;
 
 function LoadImage(Image : String; Bmp : TBitmap32) : Boolean;
+procedure RescaleImage(Src,Dst : TBitmap32; Width,Height : integer; Resample : boolean);
 
 implementation
 
@@ -57,6 +58,43 @@ begin
       end;
     end;
   end;
+end;
+
+procedure RescaleImage(Src,Dst : TBitmap32; Width,Height : integer; Resample : boolean);
+var
+  R : TRect;
+begin
+  if Src = nil then
+    exit;
+  if Dst = nil then
+    Dst := TBitmap32.Create;
+  Dst.SetSize(Width,Height);
+  Dst.Clear(color32(0,0,0,0));
+
+  if (Src.Width/Src.Height) = (Width/Height) then
+   begin
+     R.Left   := 0;
+     R.Top    := 0;
+     R.Right  := Width;
+     R.Bottom := Height;
+   end
+   else if (Src.Width/Src.Height) > (Width/Height) then
+   begin
+     R.Left   := 0;
+     R.Top    := round((Height div 2 - ((Width/Src.Width)*Src.Height) / 2));
+     R.Right  := Width;
+     R.bottom := round((Height div 2 + ((Width/Src.Width)*Src.Height) / 2));
+   end else
+   begin
+     R.Left   := round((Width div 2 - ((Height/Src.Height)*Src.Width) / 2));
+     R.Top    := 0;
+     R.Right  := round((Width div 2 + ((Height/Src.Height)*Src.Width) / 2));
+     R.bottom := Height;
+   end;
+
+   if Resample then
+     TLinearResampler.Create(Src);
+   Src.DrawTo(Dst,R);
 end;
 
 end.
