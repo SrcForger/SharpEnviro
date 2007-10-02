@@ -64,18 +64,11 @@ uses
 
 {$R *.res}
 
-type
-  TEventClass = class
-  public
-    procedure OnAppDeactivate(Sender : TObject);
-  end;
-
 
 var
   SkinManager : TSharpESkinManager;
   mn : TSharpEMenu;
   wnd : TSharpEMenuWnd;
-  events : TEventClass;
   iconcachefile : String;
   mfile : String;
   Pos : TPoint;
@@ -86,13 +79,6 @@ var
   SystemSkinLoadThread : TSystemSkinLoadThread;
   menusettings : TSharpEMenuSettings;
   Mon : TMonitor;
-
-procedure TEventClass.OnAppDeactivate(Sender : TObject);
-begin
-  if (SharpEMenuIcons <> nil) and (menusettings.CacheIcons) then
-     SharpEMenuIcons.SaveIconCache(iconcachefile);
-  Application.Terminate;
-end;
 
 function GetCurrentTime : Int64;
 var
@@ -114,9 +100,7 @@ end;
 
 begin
   Application.Initialize;
-  events := TEventClass.Create;
   Application.ShowMainForm := False;
-  Application.OnDeactivate := events.OnAppDeactivate;
 
   st := GetCurrentTime;
   MutexHandle := CreateMutex(nil, TRUE, 'SharpMenuMutex');
@@ -206,7 +190,6 @@ begin
   if SharpEMenuPopups <> nil then
      SharpEMenuPopups.Free;
   SkinManager.Free;
-  events.Free;
-  
+
   CloseHandle(MuteXHandle);
 end.
