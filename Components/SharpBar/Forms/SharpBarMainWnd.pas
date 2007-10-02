@@ -28,12 +28,12 @@ unit SharpBarMainWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Forms,
-  Dialogs, SharpESkinManager, Menus, StdCtrls, JvSimpleXML, SharpApi,
-  GR32, uSharpEModuleManager, DateUtils, PngImageList, SharpEBar, SharpThemeApi,
-  SharpEBaseControls, ImgList, Controls, ExtCtrls, uSkinManagerThreads,
-  uSystemFuncs, Types, AppEvnts, SharpESkin, Registry,
-  SharpGraphicsUtils, Math, SharpCenterApi;
+  Windows, Messages, SysUtils, Classes, Graphics, Forms,
+  Dialogs, SharpESkinManager, Menus, JclSimpleXML, SharpApi,
+  GR32, uSharpEModuleManager, PngImageList, SharpEBar, SharpThemeApi,
+  SharpEBaseControls, Controls, ExtCtrls, uSkinManagerThreads,
+  uSystemFuncs, Types, SharpESkin, Registry,
+  SharpGraphicsUtils, Math, SharpCenterApi, ImgList;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -137,7 +137,7 @@ type
     SkinManagerLoadThread : TSystemSkinLoadThread;
 
     procedure CreateNewBar;
-    procedure LoadBarModules(XMLElem : TJvSimpleXMlElem);
+    procedure LoadBarModules(XMLElem : TJclSimpleXMlElem);
 
     procedure WMDeskClosing(var msg : TMessage); message WM_DESKCLOSING;
     procedure WMDeskBackgroundChange(var msg : TMessage); message WM_DESKBACKGROUNDCHANGED;
@@ -265,14 +265,14 @@ end;
 // and update its position
 procedure TSharpBarMainForm.WMBarReposition(var msg : TMessage);
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   Dir : String;
   b : boolean;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';
 
   // Find and load settings file!
-  xml := TJvSimpleXML.Create(nil);
+  xml := TJclSimpleXML.Create;
   try
     xml.LoadFromFile(Dir + 'Bar.xml');
     b := true;
@@ -814,7 +814,7 @@ begin
   UpdateBGImage;
 end;
 
-procedure TSharpBarMainForm.LoadBarModules(XMLElem : TJvSimpleXMlElem);
+procedure TSharpBarMainForm.LoadBarModules(XMLElem : TJclSimpleXMlElem);
 var
   n : integer;
 begin
@@ -842,14 +842,14 @@ end;
 
 procedure TSharpBarMainForm.SaveBarSettings;
 var
-  xml : TJvSimpleXML;
+  xml : TJclSimpleXML;
   Dir : String;
   i   : integer;
   tempModule : TModule;
 begin
   DebugOutput('Saving Bar Settings',1,1);
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';
-  xml := TJvSimpleXMl.Create(nil);
+  xml := TJclSimpleXMl.Create;
   xml.Root.Name := 'SharpBar';
 
   // Save Bar Settings
@@ -890,14 +890,14 @@ end;
 
 procedure TSharpBarMainForm.CreateNewBar;
 var
-  xml : TJvSimpleXML;
+  xml : TJclSimpleXML;
   Dir : String;
   n   : integer;
   NewID : String;
 begin
   DebugOutput('Creating New Bar',1,1);
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
-  xml := TJvSimpleXMl.Create(nil);
+  xml := TJclSimpleXMl.Create;
   xml.Root.Clear;
   xml.Root.Name := 'SharpBar';
 
@@ -926,7 +926,7 @@ end;
 
 procedure TSharpBarMainForm.LoadBarFromID(ID : integer);
 var
-  xml : TJvSimpleXML;
+  xml : TJclSimpleXML;
   Dir : String;
   handle : THandle;
   b : boolean;
@@ -960,7 +960,7 @@ begin
   end;
 
   // Find and load settings file!
-  xml := TJvSimpleXML.Create(nil);
+  xml := TJclSimpleXML.Create;
   try
     xml.LoadFromFile(Dir + 'Bar.xml');
     b := true;
@@ -1299,14 +1299,14 @@ end;
 
 procedure TSharpBarMainForm.OnSchemeSelectItemClick(Sender : TObject);
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   Dir : String;
   s : String;
 begin
   Dir := SharpThemeApi.GetThemeDirectory;
 
   // Change Scheme
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
     XML.Root.Name := 'SharpEThemeScheme';
     XML.Root.Clear;
@@ -1322,12 +1322,12 @@ end;
 
 procedure TSharpBarMainForm.OnSkinSelectItemClick(Sender : TObject);
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   Dir,NewSkin,SkinDir : String;
   sr : TSearchRec;
   s : String;
 begin
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   Dir := SharpThemeApi.GetThemeDirectory;
   NewSkin := TMenuItem(Sender).Hint;
   SkinDir := SharpApi.GetSharpeDirectory + 'Skins\' + NewSkin + '\';
@@ -1353,7 +1353,7 @@ begin
 
   if FindFirst(SkinDir + 'Schemes\*.xml',FAAnyFile,sr) = 0 then
   begin
-    XML := TJvSimpleXML.Create(nil);
+    XML := TJclSimpleXML.Create;
     try
       XML.Root.Name := 'SharpEThemeScheme';
       XML.Root.Clear;

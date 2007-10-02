@@ -27,7 +27,7 @@ unit uSharpBarAPI;
 
 interface
 
-uses Forms,windows, Math, GR32, sysutils, SharpAPI, classes, JvSimpleXML;
+uses Forms, windows, GR32, sysutils, SharpAPI, classes;
 
 type
   TModuleSize = record
@@ -47,6 +47,9 @@ procedure PaintBarBackGround(BarWnd : Hwnd; bmp : TBitmap32; const pos : TRect);
 procedure PaintBarBackGround(BarWnd : Hwnd; bmp : TBitmap32; const pos : TForm); overload;
 
 implementation
+
+uses
+  JclSimpleXML;
 
 function GetFreeBarSpace(BarWnd : hWnd) : integer;
 begin
@@ -85,13 +88,13 @@ end;
 function GetModuleXMLFile(BarID, ModuleID : integer) : String;
 var
   Dir : String;
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(BarID) + '\';
   if not FileExists(Dir + inttostr(ModuleID) + '.xml') then
   begin
     ForceDirectories(Dir);
-    XML := TJvSimpleXML.Create(nil);
+    XML := TJclSimpleXML.Create;
     XML.Root.Name := 'ModuleSettings';
     XML.SaveToFile(Dir + inttostr(ModuleID) + '.xml');
   end;

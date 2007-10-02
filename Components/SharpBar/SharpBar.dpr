@@ -28,17 +28,17 @@ program SharpBar;
 uses
   Forms,
   Windows,
-  Dialogs,
   SysUtils,
   Types,
   StrUtils,
   SharpBarMainWnd in 'Forms\SharpBarMainWnd.pas' {SharpBarMainForm},
   uSharpBarAPI in 'uSharpBarAPI.pas',
-  JvSimpleXML,
+  JclSimpleXML,
   JclFileUtils,
   SharpEBar,
   SharpApi,
-  BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm};
+  BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm},
+  uSharpEModuleManager in 'uSharpEModuleManager.pas';
 
 {$R *.res}
 
@@ -55,7 +55,7 @@ const
 function RemoveEmptyBars : boolean;
 var
   Dir : String;
-  xml : TJvSimpleXML;
+  xml : TJclSimpleXML;
   handle  : THandle;
   sr : TSearchRec;
   fileloaded : boolean;
@@ -63,7 +63,7 @@ var
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
-  xml := TJvSimpleXMl.Create(nil);
+  xml := TJclSimpleXMl.Create;
   if FindFirst(Dir + '*',FADirectory,sr) = 0 then
   repeat
     if FileExists(Dir + sr.Name + '\Bar.xml') then
@@ -130,7 +130,7 @@ end;
 function LoadAutoStartBars : boolean;
 var
   Dir : String;
-  xml : TJvSimpleXML;
+  xml : TJclSimpleXML;
   handle  : THandle;
   sr : TSearchRec;
   fileloaded : boolean;
@@ -138,7 +138,7 @@ var
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
-  xml := TJvSimpleXMl.Create(nil);
+  xml := TJclSimpleXMl.Create;
   lab := False;
   if FindFirst(Dir + '*',FADirectory,sr) = 0 then
   repeat

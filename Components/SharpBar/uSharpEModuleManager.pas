@@ -29,7 +29,6 @@ interface
 
 uses 
   Windows,
-  Dialogs,
   SysUtils,
   Forms,
   Classes,
@@ -41,7 +40,6 @@ uses
   SharpEBar,
   SharpEMiniThrobber,
   SharpCenterApi,
-  JvSimpleXML,
   Controls;
 
 
@@ -208,7 +206,8 @@ implementation
 
 uses uSharpBarApi,
      SharpApi,
-     SharpBarMainWnd;
+     SharpBarMainWnd,
+     JclSimpleXML;
 
 
 
@@ -566,7 +565,7 @@ end;
 function TModuleManager.LoadModule(ID : integer; FromBar: integer; Position,Index : integer) : TModule;
 var
   DirA,DirB,Module : String;
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   n : integer;
   fileloaded : boolean;
 begin
@@ -577,7 +576,7 @@ begin
   CopyFile(PChar(DirA + inttostr(ID) + '.xml'),PChar(DirB + inttostr(ID) + '.xml'),False);
 
   // find what module it is
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   fileloaded := False;
   try
     XML.LoadFromFile(DirA + 'Bar.xml');
