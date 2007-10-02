@@ -54,8 +54,8 @@ requires
   JvPageCompsD9R;
 {$ENDIF}
 {$IFDEF VER180}
-  PNG_D10,
-  PngComponentsD10,
+  PNG_D9,
+  PngComponentsD9,
   GR32_BDS2006,
 {$IFDEF VER185}
   JvCoreD11R,

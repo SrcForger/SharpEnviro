@@ -41,7 +41,7 @@ requires
   JvInterpreterD9R;
 {$ENDIF}
 {$IFDEF VER180}
-  PNG_D10,
+  PNG_D9,
   GR32_BDS2006,
 {$IFDEF VER185}
   JvSystemD11R,
