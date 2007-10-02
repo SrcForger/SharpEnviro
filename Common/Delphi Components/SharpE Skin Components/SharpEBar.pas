@@ -546,6 +546,13 @@ begin
     end;
   end;
 
+  u := SharpESkinTextBarBottom;
+  if y > Mon.Top + Mon.Height div 2 then
+    SharpESkinTextBarBottom := True
+  else SharpESkinTextBarBottom := False;
+  if SharpESkinTextBarBottom <> u then
+    SkinManager.Skin.UpdateDynamicProperties(SkinManager.Scheme);
+
   if Assigned(FOnPositionUpdate) then
      FOnPositionUpdate(self,x,y);
 

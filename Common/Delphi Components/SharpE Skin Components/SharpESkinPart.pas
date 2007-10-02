@@ -294,6 +294,9 @@ procedure VGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect 
 procedure HGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
 function CreateThemedSkinText(Base : TSkinText) : TSkinText;
 
+var
+  SharpESkinTextBarBottom : boolean;
+
 implementation
 
 uses Sysutils,
@@ -1329,7 +1332,18 @@ begin
   FGradientColor.FX := inttostr(SchemedStringToColor(FGradientColorS.X,cs));
   FGradientColor.FY := inttostr(SchemedStringToColor(FGradientColorS.Y,cs));
   FMasterAlpha := Min(255,Max(0,EvaluateValue(FMasterAlphaString,cs)));
-  n := EvaluateValue(FEnabledString,cs);
+  n := 1;
+  if length(FEnabledString) > 0 then
+    if CompareText('$IsBarBottom',FEnabledString) = 0 then
+    begin
+      if not SharpESkinTextBarBottom then
+        n := 0
+    end else if CompareText('$IsBarTop',FEnabledString) = 0 then
+    begin
+      if SharpESkinTextBarBottom then
+        n := 0;
+    end
+    else n := EvaluateValue(FEnabledString,cs);
   FEnabled := (n <> 0);
   FSkinText.UpdateDynamicProperties(cs);
   for n := 0 to FItems.Count - 1 do

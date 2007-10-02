@@ -108,7 +108,8 @@ procedure LoadSharpEScheme(Scheme: TSharpEScheme);
 implementation
 uses
   SharpEBaseControls,
-  SharpThemeApi;
+  SharpThemeApi,
+  SharpESkinPart;
 
 constructor TSharpESkinManager.CreateRuntime(AOwner: TComponent;
                                              Skin : TSharpESkin; Scheme : TSharpEScheme;
@@ -276,8 +277,21 @@ end;
 procedure TSharpESkinManager.RefreshControls;
 var
   i: Integer;
+  u : boolean;
+  p : TPoint;
 begin
   if Owner = nil then exit;
+
+  if Owner is TForm then
+  begin
+    p := TForm(Owner).ClientToScreen(point(0,0));
+    u := SharpESkinTextBarBottom;
+    if p.y > TForm(Owner).Monitor.Top + TForm(Owner).Monitor.Height div 2 then
+      SharpESkinTextBarBottom := True
+    else SharpESkinTextBarBottom := False;
+    if SharpESkinTextBarBottom <> u then
+      Skin.UpdateDynamicProperties(Scheme);
+  end;
 
   for i := Owner.ComponentCount - 1 downto 0 do
   begin
