@@ -397,7 +397,7 @@ begin
     xFile := TJvSimpleXML.Create(nil);
     if FileExists(sXML) then
     begin
-      sPath := IncludeTrailingBackslash(ExtractFileDir(sXML));
+      sPath := IncludeTrailingPathDelimiter(ExtractFileDir(sXML));
       xFile.LoadFromFile(sXML);
       for n := 0 to xFile.Root.Items.Count - 1 do
         with xFile.Root.Items.Item[n] do

@@ -31,11 +31,11 @@ interface
 uses
   SysUtils,Windows,Registry,Classes,DateUtils,
   JvSimpleXML,JclFileUtils,JclSysInfo,DosCommand,
-  JclDebug,StrUtils;
+  JclDebug,StrUtils,XMLDoc;
 
 type
   TCompileEvent = procedure(Sender: TObject; CmdOutput: string) of object;
-
+  {$M+}
   TDelphiProject = class
   private
     FSearchPath   : String;
@@ -80,6 +80,8 @@ type
     FSearchPath   : String;
     FBrowsePath   : String;
     procedure OnCompilerNewLine(Sender: TObject; NewLine: string; OutputType: TOutputType);
+    procedure MakeCFG(Project: TDelphiProject; bDebug: Boolean);
+    procedure AddDebugUnit(Project: TDelphiProject);
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -99,7 +101,7 @@ begin
 
   FPath := pBDSProjFile;
   FName := sName;
-  FDir  := IncludeTrailingBackSlash(ExtractFileDir(FPath));
+  FDir  := IncludeTrailingPathDelimiter(ExtractFileDir(FPath));
 
   LoadFromFile(pBDSProjFile);
 end;
@@ -122,31 +124,50 @@ begin
   FOutputDir := '';
 
   XML := TJvSimpleXML.Create(nil);
-  try
+
+  if LowerCase(ExtractFileExt(pBDSProjFile)) = '.dproj' then
+  begin
+    try
     if FileExists(pBDSProjFile) then
     begin
       XML.LoadFromFile(pBDSProjFile);
-      if XML.Root.Items.ItemNamed['Delphi.Personality'] <> nil then
-         with XML.Root.Items.ItemNamed['Delphi.Personality'].Items do
-         begin
-           if ItemNamed['Directories'] <> nil then
-              with ItemNamed['Directories'].Items do
-                   for n := 0 to Count - 1 do
-                   begin
-                     s := Item[n].Properties.Value('Name','-1');
-                     if CompareText('OutputDir',s) = 0 then
-                        FOutputDir := IncludeTrailingBackSlash(Item[n].Value)
-                     else if CompareText('Packages',s) = 0 then
-                             FPackages := Item[n].Value
-                     else if CompareText('UsePackages',s) = 0 then
-                             FUsePackages := StrToBool(Item[n].Value)
-                     else if CompareText('SearchPath',s) = 0 then
-                             FSearchPath := Item[n].Value;
-                    end;
-         end;
+      if XML.Root.Items.ItemNamed['PropertyGroup'] <> nil then
+      begin
+        FOutputDir := XML.Root.Items.ItemNamed['PropertyGroup'].Items.ItemNamed['DCC_ExeOutput'].Value;
       end;
-  finally
-    XML.Free;
+    end;
+    finally
+      XML.Free;
+    end;
+  end
+  else
+  begin
+    try
+      if FileExists(pBDSProjFile) then
+      begin
+        XML.LoadFromFile(pBDSProjFile);
+        if XML.Root.Items.ItemNamed['Delphi.Personality'] <> nil then
+          with XML.Root.Items.ItemNamed['Delphi.Personality'].Items do
+          begin
+            if ItemNamed['Directories'] <> nil then
+              with ItemNamed['Directories'].Items do
+                for n := 0 to Count - 1 do
+                begin
+                  s := Item[n].Properties.Value('Name','-1');
+                  if CompareText('OutputDir',s) = 0 then
+                    FOutputDir := IncludeTrailingPathDelimiter(Item[n].Value)
+                  else if CompareText('Packages',s) = 0 then
+                    FPackages := Item[n].Value
+                  else if CompareText('UsePackages',s) = 0 then
+                    FUsePackages := StrToBool(Item[n].Value)
+                  else if CompareText('SearchPath',s) = 0 then
+                    FSearchPath := Item[n].Value;
+                end;
+          end;
+        end;
+    finally
+      XML.Free;
+    end;
   end;
   FSearchPath := StringReplace(FSearchPath,'$(ProgramFiles)',JclSysInfo.GetProgramFilesFolder,[rfReplaceAll,rfIgnoreCase]);
 end;
@@ -173,7 +194,6 @@ end;
 
 function Clean(const Input:string): String;
 var
-  i: integer;
   sTemp: String;
   iPos: integer;
   sInput: String;
@@ -182,10 +202,6 @@ var
   bVCLFound: Boolean;
   bRTLFound: Boolean;
 begin
-  bBDSFound := False;
-  bVCLFound := False;
-  bRTLFound := False;
-  iPos := 1;
   sInput := Input;
   repeat
     iPos := Pos(';', sInput);
@@ -205,7 +221,6 @@ end;
 procedure TDelphiCompiler.UpdateBDSData;
 var
   Reg : TRegistry;
-  i: Integer;
 begin
   FBDSInstalled := False;
   FBDSVersion := '0';
@@ -216,13 +231,22 @@ begin
   Reg := TRegistry.Create;
   try
     Reg.RootKey := HKEY_CURRENT_USER;
-    if Reg.OpenKey('\Software\Borland\BDS\4.0',False) then
+    if Reg.OpenKey('\Software\Borland\BDS\5.0',False) then
     begin
       FBDSInstalled := True;
-      FBDSVersion := '4.0';
+      FBDSVersion := '5.0';
       FBDSPath := Reg.ReadString('RootDir');
       Reg.CloseKey;
     end;
+    if not FBDSInstalled then
+    begin
+      if Reg.OpenKey('\Software\Borland\BDS\4.0', False) then
+      begin
+        FBDSInstalled := True;
+        FBDSVersion := '4.0';
+        FBDSPath := Reg.ReadString('RootDir');
+        Reg.CloseKey;
+      end;
     if not FBDSInstalled then
     begin
       if Reg.OpenKey('\Software\Borland\BDS\3.0', False) then
@@ -232,6 +256,7 @@ begin
         FBDSPath := Reg.ReadString('RootDir');
         Reg.CloseKey;
       end;
+    end;
     end;
 
     if Reg.OpenKey('\Software\Borland\BDS\' + FBDSVersion + '\Library',False) then
@@ -255,39 +280,17 @@ begin
   FBrowsePath := StringReplace(FBrowsePath, '$(BDS)', FBDSPath, [rfReplaceAll,rfIgnoreCase]);
 end;
 
-function TDelphiCompiler.CompileProject(Project: TDelphiProject; bDebug : boolean = False) : boolean;
+procedure TDelphiCompiler.MakeCFG(Project: TDelphiProject; bDebug: Boolean);
 var
-  DC : TDosCommand;
-  Dir : String;
-  DCC32 : TStringList;
-  cmd : String;
-  s : String;
-  sExt : String;
-  tempst : TDateTime;
-  dllst  : TDateTime;
-  exest  : TDateTime;
-  serst  : TDateTime;
-  iMapSize,iDataSize : Integer;
-  tempDpr : TextFile;
-  origDpr : TextFile;
-  bufDpr : string;
-  bInserted : Boolean;
+  DCC32: TStringList;
 begin
-  result := False;
-  bInserted := False;
-
-  if not FileExists(Project.Path) then
-     exit;
-
-  Dir := IncludeTrailingBackSlash(ExtractFilePath(Project.Path));
-
   DCC32 := TStringList.Create;
 
   DCC32.Clear;
   DCC32.Add('-E"' + Project.OutputDir + '"');
 
   if Project.UsePackages then
-     DCC32.Add('-LU"' + Project.Packages + '"');
+    DCC32.Add('-LU"' + Project.Packages + '"');
 
   DCC32.Add('');
   DCC32.Add('-U"' + FBrowsePath + '"');
@@ -306,96 +309,115 @@ begin
   if bDebug then
     DCC32.Add('-GD');
 
-  DCC32.SaveToFile(Dir + 'Dcc32.cfg');
+  DCC32.SaveToFile(IncludeTrailingPathDelimiter(ExtractFilePath(Project.Path)) + 'Dcc32.cfg');
   DCC32.Free;
+end;
+
+procedure TDelphiCompiler.AddDebugUnit(Project: TDelphiProject);
+var
+  s: String;
+  bInserted: Boolean;
+  tempDpr : TextFile;
+  origDpr : TextFile;
+  bufDpr : string;
+begin
+  bInserted := False;
+  s := ChangeFileExt(Project.Path, '');
+  if FileExists(s + '.orig') then
+    DeleteFile(PChar(s + '.orig'));
+  MoveFile(PChar(s + '.dpr'), PChar(s + '.orig'));
+  AssignFile(origDpr, s + '.orig');
+  AssignFile(tempDpr, s + '.dpr');
+  Reset(origDpr);
+  Rewrite(tempDpr);
+  while not EOF(origDpr) do
+  begin
+    ReadLn(origDpr, bufDpr);
+    WriteLn(tempDpr, bufDpr);
+    if (pos('uses', lowercase(bufDpr)) <> 0) and not bInserted then
+    begin
+      if FileExists('..\..\Common\Units\DebugDialog\DebugDialog.pas') then
+        WriteLn(tempDpr, 'DebugDialog in ''..\..\Common\Units\DebugDialog\DebugDialog.pas'',')
+      else
+        WriteLn(tempDpr, 'DebugDialog in ''..\..\..\Common\Units\DebugDialog\DebugDialog.pas'',');
+      bInserted := True;
+    end;
+  end;
+  CloseFile(tempDpr);
+  CloseFile(origDpr);
+end;
+
+function TDelphiCompiler.CompileProject(Project: TDelphiProject; bDebug : boolean = False) : boolean;
+var
+  DC : TDosCommand;
+  Dir : String;
+  cmd : String;
+  s : String;
+  sExt : String;
+  iMapSize,iDataSize : Integer;
+  bMSBuild: Boolean;
+  sPath: String;
+  iReturn: Integer;
+begin
+  result := False;
+  bMSBuild := False;
+
+  if not FileExists(Project.Path) then
+     exit;
+
+  Dir := IncludeTrailingPathDelimiter(ExtractFilePath(Project.Path));
+  SetCurrentDirectory(PChar(Dir));
+  ForceDirectories(Project.OutputDir);
+
+  if bDebug then
+    AddDebugUnit(Project);
 
   DC := TDosCommand.Create(nil);
   DC.OnNewLine := OnCompilerNewLine;
 
-  SetCurrentDirectory(PChar(Dir));
-  ForceDirectories(Project.OutputDir);
-
-  s := ChangeFileExt(Project.Path, '');
-  if bDebug then
+  if LowerCase(ExtractFileExt(Project.Path)) = '.dproj' then
   begin
-    if FileExists(s + '.dpr~') then
-      DeleteFile(PChar(s + '.dpr~'));
-    AssignFile(origDpr, s + '.dpr');
-    AssignFile(tempDpr, s + '.dpr~');
-    Reset(origDpr);
-    Rewrite(tempDpr);
-    while not EOF(origDpr) do
+    if GetEnvironmentVar('PATH', sPath) then
     begin
-      ReadLn(origDpr, bufDpr);
-      WriteLn(tempDpr, bufDpr);
-      if (pos('uses', lowercase(bufDpr)) <> 0) and not bInserted then
-      begin
-        if FileExists('..\..\Common\Units\DebugDialog\DebugDialog.pas') then
-          WriteLn(tempDpr, 'DebugDialog in ''..\..\Common\Units\DebugDialog\DebugDialog.pas'',')
-        else
-          WriteLn(tempDpr, 'DebugDialog in ''..\..\..\Common\Units\DebugDialog\DebugDialog.pas'',');
-        bInserted := True;
-      end;
+      SetEnvironmentVar('PATH', sPath + ';' + GetWindowsFolder + '\Microsoft.NET\Framework\v2.0.50727');
+      cmd := 'msbuild ' + Project.Path;
+      if bDebug then
+        cmd := cmd + ' /property:DCC_MapFile=3';
+      bMSBuild := True;
     end;
-    CloseFile(tempDpr);
-    CloseFile(origDpr);
-    cmd := 'DCC32 "' + s + '.dpr~"';
   end
   else
-    cmd := 'DCC32 "' + s + '.dpr"';
-
-  s := ChangeFileExt(ExtractFileName(Project.Path), '');
-  if FileExists(Project.OutputDir + s + '.dll') then
-     GetFileLastWrite(Project.OutputDir + s + '.dll',dllst)
-     else dllst := 0;
-  if FileExists(Project.OutputDir + s + '.exe') then
-     GetFileLastWrite(Project.OutputDir + s + '.exe',exest)
-     else exest := 0;
-  if FileExists(Project.OutputDir + s + '.ser') then
-     GetFileLastWrite(Project.OutputDir + s + '.ser',serst)
-     else serst := 0;
+    MakeCFG(Project, bDebug);
 
   DC.CommandLine := cmd;
   DC.Execute2;
+  iReturn := DC.ExitCode;
   DC.Free;
 
-  if (FileExists(Project.OutputDir + s + '.dll')) then
-  begin
-    GetFileLastWrite(Project.OutputDir + s + '.dll',tempst);
-    sExt := '.dll';
-    if (dllst <> 0) then
-      result := (CompareDateTime(dllst,tempst) <> 0)
-    else
-      result := True;
-  end
+  if bMSBuild then
+    SetEnvironmentVar('PATH', sPath)
   else
-  if (FileExists(Project.OutputDir + s + '.exe')) then
-  begin
-    GetFileLastWrite(Project.OutputDir + s + '.exe',tempst);
-    sExt := '.exe';
-    if (exest <> 0) then
-      result := (CompareDateTime(exest,tempst) <> 0)
-    else
-      result := True;
-  end
-  else
-  if (FileExists(Project.OutputDir + s + '.ser')) then
-  begin
-    GetFileLastWrite(Project.OutputDir + s + '.ser',tempst);
-    sExt := '.ser';
-    if (serst <> 0) then
-      result := (CompareDateTime(serst,tempst) <> 0)
-    else
-      result := True;
-  end;
+    DeleteFile(PChar(Dir + 'Dcc32.cfg'));
 
-  DeleteFile(PChar(Dir + 'Dcc32.cfg'));
+  s := ChangeFileExt(ExtractFileName(Project.Path), '');
+  if (FileExists(Project.OutputDir + s + '.dll')) then
+    sExt := '.dll';
+  if (FileExists(Project.OutputDir + s + '.exe')) then
+    sExt := '.exe';
+  if (FileExists(Project.OutputDir + s + '.ser')) then
+    sExt := '.ser';
+
+  result := (iReturn = 0);
+
 
   if bDebug then
   begin
-    s := ChangeFileExt(Project.Path, '.dpr~');
-    if FileExists(s) then
-      DeleteFile(PChar(s));
+    s := ChangeFileExt(Project.Path, '');
+    if FileExists(s + '.dpr') then
+    begin
+      DeleteFile(PChar(s + '.dpr'));
+      MoveFile(PChar(s + '.orig'), PChar(s + '.dpr'));
+    end;
     s := ChangeFileExt(ExtractFileName(Project.Path), '');
     result := InsertDebugDataIntoExecutableFile(PChar(Project.OutputDir + s + sExt), PChar(Project.OutputDir + s + '.map'), iMapSize, iDataSize);
     Project.DataSize := iDataSize;
