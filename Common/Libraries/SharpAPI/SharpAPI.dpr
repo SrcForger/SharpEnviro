@@ -89,6 +89,7 @@ const
   WM_VWMSWITCHDESKTOP     = WM_APP + 620;
   WM_VWMDESKTOPCHANGED    = WM_APP + 621;
   WM_VWMGETDESKCOUNT      = WM_APP + 622;
+  WM_VWMGETCURRENTDESK    = WM_APP + 623;
 
   // System Tray Service
   WM_REGISTERWITHTRAY     = WM_APP + 650;
@@ -281,6 +282,16 @@ begin
 end;
 
 {EXPORTED FUNTIONS}
+
+function GetCurrentVWM : integer;
+var
+  wnd : hwnd;
+begin
+  wnd := FindWindow('SharpE_VWM',nil);
+  if wnd <> 0 then
+    result := SendMessage(wnd,WM_VWMGETCURRENTDESK,0,0)
+  else result := 1;
+end;
 
 function GetVWMCount : integer;
 var
@@ -1058,7 +1069,8 @@ exports
   RegisterShellHookReceiver,
   UnRegisterShellHookReceiver,
 
-  GetVWMCount;
+  GetVWMCount,
+  GetCurrentVWM;
 begin
 
 end.
