@@ -40,6 +40,8 @@ type
 var
   VWMSpacing : integer;
 
+function VWMGetWindowList(pArea : TRect) : TWndArray;
+function VWMGetDeskArea(CurrentVWM,index : integer) : TRect;
 procedure VWMSwitchDesk(pCurrentDesk,pNewDesk : integer);
 procedure VWMMoveAllToOne;
 
@@ -70,7 +72,18 @@ begin
   else result := False;
 end;
 
-function GetWindowList(pArea : TRect) : TWndArray;
+function VWMGetDeskArea(CurrentVWM,index : integer) : TRect;
+begin
+  if (index + 1 <> CurrentVWM) then
+    index := index + 1
+  else index := 0;
+  result.Left := Screen.DesktopLeft + index * Screen.DesktopWidth + Max(0,index - 1) * VWMSpacing;
+  result.Right := Screen.DesktopLeft + (index + 1) * Screen.DesktopWidth + Max(0,index - 1) * VWMSpacing;
+  result.Top := Screen.DesktopTop;
+  result.Bottom := Screen.DesktopTop + Screen.DesktopHeight;
+end;
+
+function VWMGetWindowList(pArea : TRect) : TWndArray;
 type
   PParam = ^TParam;
   TParam = record
@@ -116,7 +129,7 @@ begin
   // Move the windows from the Src to the Dst Desktop
   R := Screen.DesktopRect;
   distance := (pCurrentDesk) * (Screen.DesktopWidth + VWMSpacing);
-  SrcList := GetWindowList(R);
+  SrcList := VWMGetWindowList(R);
   for n := 0 to High(SrcList) do
   begin
     GetWindowRect(SrcList[n],wndpos);
@@ -128,7 +141,7 @@ begin
   distance := (pNewDesk) * (Screen.DesktopWidth + VWMSpacing);
   R.Left := R.Left + distance;
   R.Right := R.Right + distance;
-  DstList := GetWindowList(R);
+  DstList := VWMGetWindowList(R);
   for n := 0 to High(DstList) do
   begin
     GetWindowRect(DstList[n],wndpos);
@@ -147,7 +160,7 @@ var
   desknr : integer;
   distance : integer;
 begin
-  wndlist := GetWindowList(Rect(0,0,0,0));
+  wndlist := VWMGetWindowList(Rect(0,0,0,0));
   for n := 0 to High(wndlist) do
   begin
     GetWindowRect(wndlist[n],wndpos);
@@ -162,5 +175,8 @@ begin
     end;
   end;
 end;
+
+Initialization
+   VWMSpacing := 20;
 
 end.
