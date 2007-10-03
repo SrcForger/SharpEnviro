@@ -182,6 +182,10 @@ end;
           Changed := True;          
         end;
       end;
+    WM_VWMGETDESKCOUNT:
+      begin
+        Message.result := VWMCount;
+      end;
   end;
 
   if Changed then
