@@ -76,6 +76,7 @@ const
   // VWM Functions
   WM_VWMSWITCHDESKTOP     = WM_APP + 620;
   WM_VWMDESKTOPCHANGED    = WM_APP + 621;
+  WM_VWMGETDESKCOUNT      = WM_APP + 622;
 
   // System Tray Service
   WM_REGISTERWITHTRAY     = WM_APP + 650;
@@ -212,6 +213,8 @@ procedure StartComponent(Component : PChar); external 'SharpApi.dll' name 'Start
 
 function RegisterShellHookReceiver(Wnd : hwnd) : boolean; external 'SharpApi.dll' name 'RegisterShellHookReceiver';
 function UnRegisterShellHookReceiver(Wnd : hwnd) : boolean; external 'SharpApi.dll' name 'UnRegisterShellHookReceiver';
+
+function GetVWMCount : integer; external 'SharpApi.dll' name 'GetVWMCount';
 
 implementation
 

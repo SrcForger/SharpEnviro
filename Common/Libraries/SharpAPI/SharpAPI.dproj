@@ -24,50 +24,13 @@
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType>VCLApplication</Borland.ProjectType>
     <BorlandProject>
-<BorlandProject xmlns=""> <Delphi.Personality>   <Parameters>
-      <Parameters Name="UseLauncher">False</Parameters>
-      <Parameters Name="LoadAllSymbols">True</Parameters>
-      <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
-    </Parameters>
-    <VersionInfo>
-      <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
-      <VersionInfo Name="AutoIncBuild">False</VersionInfo>
-      <VersionInfo Name="MajorVer">0</VersionInfo>
-      <VersionInfo Name="MinorVer">7</VersionInfo>
-      <VersionInfo Name="Release">0</VersionInfo>
-      <VersionInfo Name="Build">0</VersionInfo>
-      <VersionInfo Name="Debug">False</VersionInfo>
-      <VersionInfo Name="PreRelease">False</VersionInfo>
-      <VersionInfo Name="Special">False</VersionInfo>
-      <VersionInfo Name="Private">False</VersionInfo>
-      <VersionInfo Name="DLL">False</VersionInfo>
-      <VersionInfo Name="Locale">1031</VersionInfo>
-      <VersionInfo Name="CodePage">1252</VersionInfo>
-    </VersionInfo>
-    <VersionInfoKeys>
-      <VersionInfoKeys Name="CompanyName"></VersionInfoKeys>
-      <VersionInfoKeys Name="FileDescription">SharpAPI</VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion">0.7.0.0</VersionInfoKeys>
-      <VersionInfoKeys Name="InternalName">SharpAPI</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-      <VersionInfoKeys Name="OriginalFilename">SharpAPI.dll</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductName"></VersionInfoKeys>
-      <VersionInfoKeys Name="ProductVersion">0.7.0.0</VersionInfoKeys>
-      <VersionInfoKeys Name="Author">Malx@techie.com</VersionInfoKeys>
-      <VersionInfoKeys Name="Comments"></VersionInfoKeys>
-    </VersionInfoKeys>
-    <Source>
-      <Source Name="MainSource">SharpAPI.dpr</Source>
-    </Source>
-  </Delphi.Personality> </BorlandProject></BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">7</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1031</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription">SharpAPI</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.7.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName">SharpAPI</VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">SharpAPI.dll</VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.7.0.0</VersionInfoKeys><VersionInfoKeys Name="Author">Malx@techie.com</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">SharpAPI.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
-  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
     <DelphiCompile Include="SharpAPI.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="..\..\Units\SimpleUnits\SimpleForms.pas" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
 </Project>

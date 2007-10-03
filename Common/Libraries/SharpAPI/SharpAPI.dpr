@@ -85,6 +85,11 @@ const
   WM_BARINSERTMODULE      = WM_APP + 613;
   WM_BARREPOSITION        = WM_APP + 614;
 
+  // VWM Functions
+  WM_VWMSWITCHDESKTOP     = WM_APP + 620;
+  WM_VWMDESKTOPCHANGED    = WM_APP + 621;
+  WM_VWMGETDESKCOUNT      = WM_APP + 622;
+
   // System Tray Service
   WM_REGISTERWITHTRAY     = WM_APP + 650;
   WM_UNREGISTERWITHTRAY   = WM_APP + 651;
@@ -276,6 +281,16 @@ begin
 end;
 
 {EXPORTED FUNTIONS}
+
+function GetVWMCount : integer;
+var
+  wnd : hwnd;
+begin
+  wnd := FindWindow('SharpE_VWM',nil);
+  if wnd <> 0 then
+    result := SendMessage(wnd,WM_VWMGETDESKCOUNT,0,0)
+  else result := 0;
+end;
 
 function GetCenterDirectory: PChar;
 var
