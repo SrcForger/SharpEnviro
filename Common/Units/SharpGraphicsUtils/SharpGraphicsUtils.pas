@@ -54,6 +54,7 @@ type
   procedure BlendImageA(bmp : Tbitmap32; color : TColor; blendalpha : integer);
   procedure BlendImageC(bmp : Tbitmap32; color : TColor; alpha:integer);
   function ColorToColor32Alpha(Color : TColor; Alpha : integer) : TColor32;
+  function LightenColor32(Color : TColor32; Amount : integer) : TColor32;
 
 implementation
 
@@ -477,6 +478,47 @@ begin
     finally
     end;
   end;
+end;
+
+function LightenColor32(Color : TColor32; Amount : integer) : TColor32;
+var
+  R,G,B,A : integer;
+begin
+  A := Color shr 24;
+  R := (Color and $00FF0000) shr 16;
+  G := (Color and $0000FF00) shr 8;
+  B := Color and $000000FF;
+  
+  R := R + Amount;
+  G := G + Amount;
+  B := B + Amount;
+  A := A + Amount;
+
+  if R > 255 then
+    R := 255
+  else
+  if R < 0 then
+    R := 0;
+
+  if G > 255 then
+    G := 255
+  else
+  if G < 0 then
+    G := 0;
+
+  if B > 255 then
+    B := 255
+  else
+  if B < 0 then
+    B := 0;
+
+  if A > 255 then
+    A := 255
+  else
+  if A < 0 then
+    A := 0;
+
+  result := Color32(R,G,B,A);
 end;
 
 function ColorToColor32Alpha(Color : TColor; Alpha : integer) : TColor32;
