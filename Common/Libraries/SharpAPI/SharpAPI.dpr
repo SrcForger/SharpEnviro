@@ -1056,7 +1056,9 @@ exports
   StartComponent,
 
   RegisterShellHookReceiver,
-  UnRegisterShellHookReceiver;
+  UnRegisterShellHookReceiver,
+
+  GetVWMCount;
 begin
 
 end.
