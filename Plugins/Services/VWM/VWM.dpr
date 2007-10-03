@@ -186,6 +186,10 @@ end;
       begin
         Message.result := VWMCount;
       end;
+    WM_VWMGETCURRENTDESK:
+      begin
+        Message.result := CurrentDesktop;
+      end;
   end;
 
   if Changed then
@@ -196,7 +200,6 @@ end;
 function Start(Owner: HWND): HWND;                                   
 begin
   VWMCount := 4;
-  VWMSpacing := 20;
   CurrentDesktop := 1;
   VWMFunctions.VWMMoveAllToOne; // has to be called two times ...
   VWMFunctions.VWMMoveAllToOne; // ... reason ... unknown =)  
