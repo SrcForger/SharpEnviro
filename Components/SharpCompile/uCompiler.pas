@@ -133,7 +133,13 @@ begin
       XML.LoadFromFile(pBDSProjFile);
       if XML.Root.Items.ItemNamed['PropertyGroup'] <> nil then
       begin
-        FOutputDir := XML.Root.Items.ItemNamed['PropertyGroup'].Items.ItemNamed['DCC_ExeOutput'].Value;
+        with XML.Root.Items.ItemNamed['PropertyGroup'].Items do
+        begin
+          FOutputDir := ItemNamed['DCC_ExeOutput'].Value;
+          //FSearchPath := ItemNamed['DCC_IncludePath'].Value;
+          //FPackages := ItemNamed['DCC_UsePackage'].Value;
+          //FUsePackages := StrToBool(ItemNamed['DCC_EnabledPackages'].Value);
+        end;
       end;
     end;
     finally
@@ -273,11 +279,16 @@ begin
   // Exclude vcl and rtl from search/browse paths
   FSearchPath := Clean(FSearchPath);
   FBrowsePath := Clean(FBrowsePath);
-
+  if RightStr(FBDSPath, 1) = '\' then
+    FBDSPath := LeftStr(FBDSPath, Length(FBDSPath) - 1);
   FSearchPath := StringReplace(FSearchPath, '$(ProgramFiles)', JclSysInfo.GetProgramFilesFolder, [rfReplaceAll,rfIgnoreCase]);
   FBrowsePath := StringReplace(FBrowsePath, '$(ProgramFiles)', JclSysInfo.GetProgramFilesFolder, [rfReplaceAll,rfIgnoreCase]);
   FSearchPath := StringReplace(FSearchPath, '$(BDS)', FBDSPath, [rfReplaceAll,rfIgnoreCase]);
   FBrowsePath := StringReplace(FBrowsePath, '$(BDS)', FBDSPath, [rfReplaceAll,rfIgnoreCase]);
+  FSearchPath := StringReplace(FSearchPath, '$(BDSUSERDIR)', JclSysInfo.GetPersonalFolder + '\Rad Studio\5.0', [rfReplaceAll,rfIgnoreCase]);
+  FBrowsePath := StringReplace(FBrowsePath, '$(BDSUSERDIR)', JclSysInfo.GetPersonalFolder + '\Rad Studio\5.0', [rfReplaceAll,rfIgnoreCase]);
+  FSearchPath := StringReplace(FSearchPath, '$(BDSCOMMONDIR)', JclSysInfo.GetCommonDocumentsFolder + '\Rad Studio\5.0', [rfReplaceAll,rfIgnoreCase]);
+  FBrowsePath := StringReplace(FBrowsePath, '$(BDSCOMMONDIR)', JclSysInfo.GetCommonDocumentsFolder + '\Rad Studio\5.0', [rfReplaceAll,rfIgnoreCase]);  
 end;
 
 procedure TDelphiCompiler.MakeCFG(Project: TDelphiProject; bDebug: Boolean);
@@ -380,23 +391,28 @@ begin
     if GetEnvironmentVar('PATH', sPath) then
     begin
       SetEnvironmentVar('PATH', sPath + ';' + GetWindowsFolder + '\Microsoft.NET\Framework\v2.0.50727');
-      cmd := 'msbuild ' + Project.Path;
+      SetEnvironmentVar('BDS', FBDSPath);
+      SetEnvironmentVar('BDSCOMMONDIR', JclSysInfo.GetCommonDocumentsFolder + '\Rad Studio\5.0');
+      cmd := 'msbuild "' + Project.Path +'"';
       if bDebug then
         cmd := cmd + ' /property:DCC_MapFile=3';
       bMSBuild := True;
     end;
   end
   else
+  begin
     MakeCFG(Project, bDebug);
+    cmd := 'dcc32 ' + Project.Path;
+  end;
 
   DC.CommandLine := cmd;
   DC.Execute2;
   iReturn := DC.ExitCode;
   DC.Free;
 
-  if bMSBuild then
+  {if bMSBuild then
     SetEnvironmentVar('PATH', sPath)
-  else
+  else}
     DeleteFile(PChar(Dir + 'Dcc32.cfg'));
 
   s := ChangeFileExt(ExtractFileName(Project.Path), '');
@@ -408,7 +424,7 @@ begin
     sExt := '.ser';
 
   result := (iReturn = 0);
-
+  MessageBox(hInstance, PChar('Exit code: ' + IntToStr(iReturn)), PChar('Exit code'), MB_OK);
 
   if bDebug then
   begin
