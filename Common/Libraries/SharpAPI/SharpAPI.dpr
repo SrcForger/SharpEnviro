@@ -90,6 +90,7 @@ const
   WM_VWMDESKTOPCHANGED    = WM_APP + 621;
   WM_VWMGETDESKCOUNT      = WM_APP + 622;
   WM_VWMGETCURRENTDESK    = WM_APP + 623;
+  WM_VWMUPDATESETTINGS    = WM_APP + 624;  
 
   // System Tray Service
   WM_REGISTERWITHTRAY     = WM_APP + 650;
@@ -301,6 +302,16 @@ begin
   if wnd <> 0 then
     result := SendMessage(wnd,WM_VWMGETDESKCOUNT,0,0)
   else result := 0;
+end;
+
+function SwitchToVWM(Index : integer) : boolean;
+var
+  wnd : hwnd;
+begin
+  wnd := FindWindow('SharpE_VWM',nil);
+  if wnd <> 0 then
+    result := (SendMessage(wnd,WM_VWMSWITCHDESKTOP,0,Index) <> 0)
+  else result := False;
 end;
 
 function GetCenterDirectory: PChar;
@@ -1070,7 +1081,8 @@ exports
   UnRegisterShellHookReceiver,
 
   GetVWMCount,
-  GetCurrentVWM;
+  GetCurrentVWM,
+  SwitchToVWM;
 begin
 
 end.
