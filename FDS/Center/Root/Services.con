@@ -9,10 +9,13 @@
       <Dll>_Services\_Servicedlls\Weather.dll</Dll>
       <Icon>_Services\_Servicedlls\Weather.png</Icon>
     </Weather>
-	<DeskArea>
+    <DeskArea>
       <Dll>_Services\_Servicedlls\DeskArea.dll</Dll>
       <Icon>_Services\_Servicedlls\DeskArea.png</Icon>
     </DeskArea>
-	
+    <VWM>
+      <Dll>_Services\_Servicedlls\VWM.dll</Dll>
+      <Icon>_Services\_Servicedlls\VWM.png</Icon>
+    </VWM>	
   </Sections>
 </SharpCenter>
