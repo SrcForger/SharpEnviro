@@ -8,7 +8,7 @@
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\Services\VWM.ser</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>E:\SharpE\Services\VWM.ser</DCC_DependencyCheckOutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -25,10 +25,10 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\Services</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpApi</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpApi</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Common\Libraries\SharpApi</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Common\Libraries\SharpApi</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpCenterApi</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpCenterApi</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpCenterApi</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpCenterApi</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>

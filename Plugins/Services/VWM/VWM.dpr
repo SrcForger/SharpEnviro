@@ -29,8 +29,11 @@ Source Name: VWM.service
   Windows,
   Classes,
   Messages,
+  Math,
   SharpAPI,
+  SharpCenterApi,
   SysUtils,
+  JclSimpleXML,
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas';
 
 {$E ser}
@@ -93,6 +96,34 @@ begin
   Instance := Pointer(GetWindowLong(Handle, GWL_WNDPROC));
   DestroyWindow(Handle);
   if Instance <> @DefWindowProc then FreeObjectInstance(Instance);
+end;
+
+procedure LoadVWMSettings;
+var
+  XML : TJclSimpleXML;
+  Dir : String;
+  FName : String;
+  fileloaded : boolean;
+begin
+  VWMCount := 4;
+  Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\';
+  FName := Dir + 'VWM.xml';
+  if FileExists(FName) then
+  begin
+    XML := TJclSimpleXML.Create;
+    try
+      XML.LoadFromFile(FName);
+      fileloaded := True;
+    except
+      fileloaded := False;
+    end;
+    if FileLoaded then
+    begin
+      VWMCount := XML.Root.Items.IntValue('VWMCount',4);
+      VWMCount := Max(2,Min(VWMCount,12));
+    end;
+    XML.Free;
+  end;
 end;
 
 procedure RegisterSharpEActions;
@@ -174,13 +205,14 @@ end;
       end;
     WM_VWMSWITCHDESKTOP:
       begin
-        if (Message.lparam >= VWMStartMessage)
-           and (Message.lparam < VWMStartMessage + VWMCount) then
+        if (Message.lparam > 0)
+           and (Message.lparam <= VWMCount) then
         begin
-          VWMFunctions.VWMSwitchDesk(CurrentDesktop,Message.lparam - VWMStartMessage + 1);
-          CurrentDesktop := Message.lparam - VWMStartMessage + 1;
-          Changed := True;          
-        end;
+          VWMFunctions.VWMSwitchDesk(CurrentDesktop,Message.lparam);
+          CurrentDesktop := Message.lparam;
+          Changed := True;
+          Message.Result := CurrentDesktop;
+        end else Message.Result := 0;
       end;
     WM_VWMGETDESKCOUNT:
       begin
@@ -190,6 +222,16 @@ end;
       begin
         Message.result := CurrentDesktop;
       end;
+    WM_SHARPEUPDATESETTINGS:
+    begin
+      if Message.wparam = Integer(suVWM) then
+      begin
+        VWMFunctions.VWMMoveAllToOne; // has to be called two times ...
+        VWMFunctions.VWMMoveAllToOne; // ... reason ... unknown =)
+        LoadVWMSettings;
+        SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS,0,0);
+      end;
+    end;
   end;
 
   if Changed then
@@ -199,16 +241,18 @@ end;
 // Service is started                                                
 function Start(Owner: HWND): HWND;                                   
 begin
-  VWMCount := 4;
+  LoadVWMSettings;
   CurrentDesktop := 1;
   VWMFunctions.VWMMoveAllToOne; // has to be called two times ...
-  VWMFunctions.VWMMoveAllToOne; // ... reason ... unknown =)  
+  VWMFunctions.VWMMoveAllToOne; // ... reason ... unknown =)
 
   Result := Owner;                                                   
   ActionEvent := TActionEvent.Create;                                
   AllocateMsgWnd;                
   // Register Actions                                                
-  RegisterSharpEActions;                                                      
+  RegisterSharpEActions;
+
+  SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS,0,0);
 end;                                                                 
                                                                      
 // Service is stopped
@@ -220,7 +264,10 @@ end;
   // Unregister Actions                                              
   UnregisterSharpEActions;                                                      
   DeAllocateMsgWnd;                                            
-  ActionEvent.Free;                                                  
+  ActionEvent.Free;
+
+  VWMCount := 0;
+  SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS,0,0);
 end;                                                                 
                                                                      
 // Service receives a message                                        
