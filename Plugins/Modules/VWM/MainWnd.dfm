@@ -1,7 +1,7 @@
 object MainForm: TMainForm
   Left = 0
   Top = 0
-  Caption = 'Template'
+  Caption = 'VWM'
   ClientHeight = 166
   ClientWidth = 285
   Color = clBtnFace
@@ -11,6 +11,7 @@ object MainForm: TMainForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnClick = FormClick
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnPaint = FormPaint

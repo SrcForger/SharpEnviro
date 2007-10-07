@@ -43,6 +43,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
+    procedure FormClick(Sender: TObject);
   protected
   private
     sVWMSpacing : integer;
@@ -54,6 +55,10 @@ type
     sForegroundAlpha : byte;
     sHighlightColor : integer;
     sHighlightAlpha : byte;
+    sTextColor : integer;
+    sTextAlpha : byte;
+    sDisplayVWMNumbers : boolean;
+    procedure WMShellMessage(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
   public
     // visual components
 
@@ -99,10 +104,13 @@ begin
   sBorderColor     := clBlack;
   sBorderAlpha     := 128;
   sForegroundColor := clBlack;
-  sForegroundAlpha := 96;
+  sForegroundAlpha := 64;
   sVWMSpacing      := 1;
-  sHighlightColor  := clNavy;
-  sHighlightAlpha  := 128;
+  sHighlightColor  := sBackgroundColor;
+  sHighlightAlpha  := 196;
+  sTextColor       := clBlack;
+  sTextAlpha       := 255;
+  sDisplayVWMNumbers := True;
 
   XML := TJclSimpleXML.Create;
   try
@@ -137,6 +145,23 @@ begin
   VWMWidth := round(VWMHeight / Screen.PrimaryMonitor.Height * Screen.PrimaryMonitor.Width);
 end;
 
+procedure TMainForm.WMShellMessage(var msg: TMessage);
+begin
+  if VWMCount = 0 then
+    exit;
+
+  if msg.LParam = Integer(self.Handle) then exit;
+  case msg.WParam of
+   HSHELL_WINDOWCREATED,HSHELL_WINDOWDESTROYED,HSHELL_GETMINRECT,
+   HSHELL_REDRAW,HSHELL_REDRAW + 32768,HSHELL_WINDOWACTIVATED,
+   HSHELL_WINDOWACTIVATED + 32768:
+   begin
+     DrawVWM;
+     DrawVWMToForm;
+   end;
+  end;
+end;
+
 procedure TMainForm.SetWidth(new : integer);
 begin
   // The Module is receiving it's new size from the SharpBar!
@@ -149,7 +174,9 @@ begin
   // Background is updated, now resize the form
   Width := new;
 
-  // Align the Components
+  UpdateVWMSettings;
+  DrawVWM;
+  DrawVWMToForm;
 end;
 
 procedure TMainForm.Timer1Timer(Sender: TObject);
@@ -179,9 +206,9 @@ end;
 
 procedure TMainForm.DrawVWM;
 var
-  n,i : integer;
+  n,i,k : integer;
   VWMArea : TRect;
-  wndlist : TWndArray;
+  wndlist,dlist : TWndArray;
   wndrect : TRect;
   scale : double;
   wndbmp : TBitmap32;
@@ -190,6 +217,8 @@ var
   c : TColor32;
   smod : integer;
   w : integer;
+  tw,th : integer;
+  found : boolean;
 begin
   if VWMCount = 0 then
   begin
@@ -208,31 +237,47 @@ begin
   wndbmp.SetSize(VWMCount * VWMWidth + VWMSpacing * Max(0,VWMCount - 1),VWMHeight);
   wndbmp.Clear(color32(0,0,0,0));
 
-  for n := 0 to VWMCount - 1 do
+  setlength(dlist,0);
+  for n := - 1 to VWMCount - 1 do
   begin
-    VWMArea := VWMGetDeskArea(VWMIndex,n);
+    if n = - 1 then
+      index := VWMIndex - 1
+    else index := n;
+    VWMArea := VWMGetDeskArea(VWMIndex,index);
     wndlist := VWMGetWindowList(VWMArea);
 
-    if n + 1 = VWMIndex then
-      smod := 0
-    else smod := (n+1) * VWMSpacing;
-
+    smod := index + 1;
     for i := High(wndlist) downto 0 do
     begin
-      GetWindowRect(wndlist[i],wndrect);
-      w := wndRect.Right - wndRect.Left;
-      wndrect.Left := round((wndrect.Left + Screen.DesktopLeft - smod) * scale);
-      wndrect.Top := Max(0,round((wndrect.Top + Screen.DesktopTop) * scale));
-      wndrect.Right := wndrect.Left + round(w * scale);
-      wndrect.Bottom := Min(wndbmp.Height,round((wndrect.Bottom + Screen.DesktopTop) * scale));
-      c := ColorToColor32Alpha(sBackgroundColor,sForegroundAlpha);
-      if n + 1 = VWMIndex then
-        c := LightenColor32(c,64);
-      wndbmp.FillRect(wndrect.Left,wndrect.Top,wndrect.Right,wndrect.Bottom,c);
-      c := ColorToColor32Alpha(sForegroundColor,sForegroundAlpha);
-      if n + 1 = VWMIndex then
-        c := LightenColor32(c,64);
-      wndbmp.FillRect(wndrect.Left + 1 ,wndrect.Top + 1,wndrect.Right - 1,wndrect.Bottom - 1,c);
+      found := False;
+      for k := 0 to High(dlist) do
+        if dlist[k] = wndlist[i] then
+        begin
+          found := True;
+          break;
+        end;
+      if not found then
+      begin
+        setlength(dlist,length(dlist) + 1);
+        dlist[High(dlist)] := wndlist[i];
+        GetWindowRect(wndlist[i],wndrect);
+        w := wndRect.Right - wndRect.Left;
+        if index + 1 = VWMIndex then
+          wndrect.Left := (index + 1)*VWMWidth + round((wndRect.Left - Screen.DesktopLeft) * scale)
+        else
+        wndrect.Left := smod*VWMWidth + round((wndRect.Left - Screen.DesktopLeft - (smod) * (Screen.DesktopWidth + VWMWidth)) * scale);
+        wndrect.Top := Max(0,round((wndrect.Top + Screen.DesktopTop) * scale));
+        wndrect.Right := wndrect.Left + Min(VWMWidth,round(w * scale));
+        wndrect.Bottom := Min(wndbmp.Height,round((wndrect.Bottom + Screen.DesktopTop) * scale));
+        c := ColorToColor32Alpha(sBackgroundColor,sForegroundAlpha);
+        if n + 1 = VWMIndex then
+          c := LightenColor32(c,64);
+        wndbmp.FillRect(wndrect.Left,wndrect.Top,wndrect.Right,wndrect.Bottom,c);
+        c := ColorToColor32Alpha(sForegroundColor,sForegroundAlpha);
+        if n + 1 = VWMIndex then
+          c := LightenColor32(c,64);
+        wndbmp.FillRect(wndrect.Left + 1 ,wndrect.Top + 1,wndrect.Right - 1,wndrect.Bottom - 1,c);
+      end;
     end;
   end;
 
@@ -256,27 +301,24 @@ begin
       c := ColorToColor32Alpha(sHighlightColor,sHighlightAlpha);
     VWM.FillRectTS(DstRect.Left,DstRect.Top,DstRect.Right,DstRect.Bottom,c);
     index := n + 1;
-    if index = VWMIndex then
-      index := 1
-    else index := index + 1;
+    index := index + 1;
     SrcRect.Left := VWMWidth * (index - 1) ;//round((Screen.DesktopWidth * (index - 1) + Max(0,index - 2) * VWMSpacing) * scale);
     SrcRect.Right := VWMWidth * (index) ;//;round((Screen.DesktopWidth * (index)) * scale);
     SrcRect.Top := 0;
     SrcRect.Bottom := wndbmp.Height;
-//    VWM.Draw(DstRect,SrcRect,wndbmp);
     wndbmp.DrawTo(VWM,DstRect.Left,DstRect.Top,SrcRect);
 
-    {if n = VWMIndex then
+    if sDisplayVWMNumbers then
     begin
-      index := n + 1;
-      SrcRect.Left := round((Screen.DesktopWidth * (index - 1) + Max(0,index - 2) * VWMSpacing) * scale);
-      SrcRect.Right := round(SrcRect.Left + Screen.DesktopWidth*scale);
-      SrcRect.Top := 0;
-      SrcRect.Bottom := wndbmp.Height;
-      VWM.Draw(DstRect,SrcRect,wndbmp);
-    end;     }
+      tw := VWM.TextWidth(inttostr(n+1));
+      th := VWM.TextHeight('1');      
+      c := ColorToColor32Alpha(sTextColor,sTextAlpha);
+      if n + 1 = VWMIndex then
+        c := LightenColor32(c,64);
+      VWM.RenderText(DstRect.Right - tw - 2,DstRect.Bottom - th - 1,inttostr(n+1),0,c);
+    end;
   end;
-  wndbmp.Free;  
+  wndbmp.Free;
 end;
 
 procedure TMainForm.DrawVWMToForm;
@@ -288,6 +330,33 @@ begin
   VWM.DrawTo(tmp);
   tmp.DrawTo(Canvas.Handle,0,0);
   tmp.Free;
+end;
+
+procedure TMainForm.FormClick(Sender: TObject);
+var
+  NewDesk : integer;
+  p : TPoint;
+  n : integer;
+begin
+  if VWMCount = 0 then
+    exit;
+
+  NewDesk := 0;
+  p := ScreenToClient(Mouse.CursorPos);
+  for n := 0 to VWMCount do
+    if p.x < (n * (VWMWidth + 2) + n * sVWMSpacing) then
+    begin
+      NewDesk := n;
+      break;
+    end;
+
+  NewDesk := Min(NewDesk,VWMCount);
+  if SharpApi.SwitchToVWM(NewDesk) then
+  begin
+    UpdateVWMSettings;
+    DrawVWM;
+    DrawVWMToForm;
+  end;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -306,11 +375,10 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  // Free all clasess
   Background.Free;
   VWM.Free;
 
-  // Free all Components
+  SharpApi.UnRegisterShellHookReceiver(Handle);
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);

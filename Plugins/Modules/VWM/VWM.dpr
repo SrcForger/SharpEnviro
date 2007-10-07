@@ -241,6 +241,61 @@ begin
       end;
 end;
 
+procedure InitModule(ID : integer);
+var
+  n : integer;
+  temp : TModule;
+begin
+  for n := 0 to ModuleList.Count - 1 do
+      if TModule(ModuleList.Items[n]).ID = ID then
+      begin
+        temp := TModule(ModuleList.Items[n]);
+        SharpApi.RegisterShellHookReceiver(temp.Form.Handle);
+      end;
+end;
+
+function ModuleMessage(ID : integer; msg: string): integer;
+var
+  n : integer;
+  temp : TModule;
+
+begin
+  result := 0;
+  if ModuleList = nil then exit;
+
+  if CompareText(msg,'MM_SHELLHOOKWINDOWCREATED') = 0 then
+  begin
+    for n := 0 to ModuleList.Count - 1 do
+      if TModule(ModuleList.Items[n]).ID = ID then
+      begin
+        temp := TModule(ModuleList.Items[n]);
+        SharpApi.RegisterShellHookReceiver(temp.Form.Handle);
+      end;
+  end
+  else if CompareText(msg,'MM_VWMDESKTOPCHANGED') = 0 then
+  begin
+    for n := 0 to ModuleList.Count - 1 do
+      if TModule(ModuleList.Items[n]).ID = ID then
+      begin
+        temp := TModule(ModuleList.Items[n]);
+        TMainForm(temp.Form).UpdateVWMSettings;
+        TMainForm(temp.Form).DrawVWM;
+        TMainForm(temp.Form).DrawVWMToForm;
+      end;
+  end else if CompareText(msg,'MM_VWMUPDATESETTINGS') = 0 then
+  begin
+    for n := 0 to ModuleList.Count - 1 do
+      if TModule(ModuleList.Items[n]).ID = ID then
+      begin
+        temp := TModule(ModuleList.Items[n]);
+        TMainForm(temp.Form).UpdateVWMSettings;
+        TMainForm(temp.Form).ReAlignComponents(True);
+        TMainForm(temp.Form).DrawVWM;
+        TMainForm(temp.Form).DrawVWMToForm;        
+      end;
+  end;
+end;
+
 
 Exports
   CreateModule,
@@ -248,7 +303,9 @@ Exports
   Poschanged,
   Refresh,
   UpdateMessage,
-  SetSize;
+  SetSize,
+  ModuleMessage,
+  InitModule;
 
 
 begin
