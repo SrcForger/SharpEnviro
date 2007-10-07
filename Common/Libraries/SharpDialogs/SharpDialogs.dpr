@@ -1058,6 +1058,7 @@ begin
   if smiShellIcon in IconItems then
   begin
     wIcon := TIcon.Create;
+    ImageListHandle := 0;
     try
       ImageListHandle := SHGetFileInfo(pChar(pTarget), 0, FileInfo, sizeof( SHFILEINFO ),
                                       SHGFI_ICON or SHGFI_SHELLICONSIZE);
@@ -1071,8 +1072,8 @@ begin
     except
       try
         subiml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'error22');
+      finally
         ImageList_Destroy(ImageListHandle);
-      except
       end;
     end;
     wIcon.Free;
