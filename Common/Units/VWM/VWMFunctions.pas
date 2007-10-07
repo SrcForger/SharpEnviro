@@ -44,6 +44,8 @@ function VWMGetWindowList(pArea : TRect) : TWndArray;
 function VWMGetDeskArea(CurrentVWM,index : integer) : TRect;
 procedure VWMSwitchDesk(pCurrentDesk,pNewDesk : integer);
 procedure VWMMoveAllToOne;
+function VWMGetWindowVWM(pCurrentVWM,pVWMCount : integer; pHandle : hwnd) : integer;
+procedure VWMMoveWindotToVWM(pTargetVWM,pCurrentVWM,pVWMCount : integer; pHandle : hwnd);
 
 implementation
 
@@ -70,6 +72,96 @@ begin
                            WPos.Bottom),Rect)) then
     result := True
   else result := False;
+end;
+
+procedure VWMMoveWindotToVWM(pTargetVWM,pCurrentVWM,pVWMCount : integer; pHandle : hwnd);
+var
+  wndVWM : integer;
+  distance : integer;
+  wndPos : TRect;
+begin
+  if not IsWindow(pHandle) then
+    exit;
+
+  wndVWM := VWMGetWindowVWM(pCurrentVWM,pVWMCount,pHandle);
+  if pTargetVWM = wndVWM then
+    exit;
+
+  if pCurrentVWM = pTargetVWM then
+  begin
+    distance := (wndVWM) * (Screen.DesktopWidth + VWMSpacing);
+    GetWindowRect(pHandle,wndpos);
+    SetWindowPos(pHandle,0,wndpos.Left - distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
+  end
+  else
+  if pCurrentVWM = wndVWM then
+  begin
+    distance := (pTargetVWM) * (Screen.DesktopWidth + VWMSpacing);
+    GetWindowRect(pHandle,wndpos);
+    SetWindowPos(pHandle,0,wndpos.Left + distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
+    if VWMGetWindowVWM(pCurrentVWM,pVWMCount,pHandle) = pCurrentVWM then
+      SetWindowPos(pHandle,0,wndpos.Left + 2 * distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
+  end
+  else
+  begin
+    distance := (pTargetVWM - wndVWM) * (Screen.DesktopWidth + VWMSpacing);
+    GetWindowRect(pHandle,wndpos);
+    SetWindowPos(pHandle,0,wndpos.Left + distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
+  end;
+end;
+
+function VWMGetWindowVWM(pCurrentVWM,pVWMCount : integer; pHandle : hwnd) : integer;
+var
+  WPos : TRect;
+  n: Integer;
+  VWMRect : TRect;
+begin
+  result := 0;
+  if not IsWindow(pHandle) then
+    exit;
+
+  GetWindowRect(pHandle,WPos);
+ { if PointInRect(Point(WPos.Left + (WPos.Right - WPos.Left) div 2,
+                       WPos.Top),Screen.DesktopRect)
+     or PointInRect(Point(WPos.Left + (WPos.Right - WPos.Left) div 2,
+                          WPos.Top + (WPos.Bottom - WPos.Top) div 2),
+                    Screen.DesktopRect)
+     or PointInRect(Point(WPos.Left + (WPos.Right - WPos.Left) div 2,
+                          WPos.Bottom),
+                    Screen.DesktopRect) then }
+  if WindowInRect(pHandle,Screen.DesktopRect) then  
+  begin
+    // Current VWM!
+    result := pCurrentVWM;
+    exit;
+  end;
+
+  result := 0;
+  for n := 0 to pVWMCount do
+  begin
+    VWMRect := VWMGetDeskArea(pCurrentVWM,n);
+    VWMRect.Left := VWMRect.Left - VWMSpacing div 2;
+    VWMRect.Right := VWMRect.Right + VWMSpacing div 2;
+ {  if PointInRect(Point(WPos.Left + (WPos.Right - WPos.Left) div 2,
+                         WPos.Top),VWMRect)
+       or PointInRect(Point(WPos.Left + (WPos.Right - WPos.Left) div 2,
+                          WPos.Top + (WPos.Bottom - WPos.Top) div 2),
+                      VWMRect)
+       or PointInRect(Point(WPos.Left + (WPos.Right - WPos.Left) div 2,
+                          WPos.Bottom),
+                      VWMRect) then}
+    if WindowInRect(pHandle,VWMRect) then
+    begin
+      result := n + 1;
+      break;
+    end;
+  end;
+
+  if result > pVWMCount then
+    result  := pVWMCount
+  else
+  if result = 0 then
+    result := 1;
 end;
 
 function VWMGetDeskArea(CurrentVWM,index : integer) : TRect;
@@ -168,15 +260,16 @@ begin
                               wndpos.Top + (wndpos.Bottom - wndpos.Top) div 2), Screen.DesktopRect)) then
     begin
       desknr := round(Int(wndpos.Left / (Screen.DesktopWidth + VWMSpacing)));     
-      if wndpos.left < 0 then
+      if wndpos.left < Screen.DesktopLeft then
         distance := (desknr - 1) * (Screen.DesktopWidth + VWMSpacing)
       else distance := (desknr + 1) * (Screen.DesktopWidth + VWMSpacing);
       SetWindowPos(wndlist[n],0,wndpos.Left - distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
     end;
   end;
+  setlength(wndlist,0);
 end;
 
 Initialization
-   VWMSpacing := 20;
+   VWMSpacing := 32;
 
 end.
