@@ -29,11 +29,11 @@ interface
 
 uses
   Types, Windows, Messages, SysUtils, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, ExtCtrls, JvSimpleXML, SharpApi, Menus,
+  Forms, Dialogs, StdCtrls, ExtCtrls, JclSimpleXML, SharpApi, Menus,
   Math, Contnrs, SharpESkinManager, SharpETaskItem, SharpESkin,
   SharpEBaseControls, SharpECustomSkinSettings, uTaskManager, uTaskItem,
   DateUtils, GR32, GR32_PNG, SharpIconUtils, SharpEButton, JvComponentBase,
-  JvDragDrop;
+  JvDragDrop, VWMFunctions;
 
 
 type
@@ -72,6 +72,7 @@ type
     procedure Settings1Click(Sender: TObject);
   protected
   private
+    FMoveToVWMIcon : TBitmap;
     sWidth      : integer;
     sMaxWidth   : integer;
     sAutoHeight : integer;
@@ -141,6 +142,7 @@ uses SettingsWnd,
 var
   SysMenuHandle : hwnd;
 
+{$R icons.res}
 {$R *.dfm}
 
 procedure TMainForm.DebugOutPutInfo(msg : String);
@@ -240,9 +242,22 @@ begin
 end;
 
 procedure TMainForm.WMCommand(var msg: TMessage);
+var
+  VWMCount : integer;
+  VWMIndex : integeR;
 begin
   DebugOutPutInfo('TMainForm.WMCommand (Message Procedure)');
   PostMessage(SysMenuHandle, WM_SYSCOMMAND, msg.wparam, msg.lparam);
+
+  VWMCount := GetVWMCount;
+  if VWMCount > 0 then
+    if (msg.WParam >= 256) and (msg.WParam <= 256 + VWMCount) then
+    begin
+      VWMIndex := GetCurrentVWM;    
+      VWMMoveWindotToVWM(msg.WParam - 256 + 1,VWMIndex,VWMCount,SysMenuHandle);
+      SharpApi.SwitchToVWM(VWMIndex); // Refresh the current VWM
+    end;
+
   inherited;
 end;
 
@@ -321,7 +336,11 @@ procedure TMainForm.DisplaySystemMenu(pHandle : hwnd);
 var
   cp: TPoint;
   AppMenu: hMenu;
-  //MenuItemInfo: TMenuItemInfo;
+  MenuItemInfo: TMenuItemInfo;
+  n : integer;
+  VWMMenu : hMenu;
+  VWMIndex : integer;
+  VWMCount : integer;
 begin
   DebugOutPutInfo('TMainForm.DisplaySystemMenu (Procedure)');
   SysMenuHandle := pHandle;
@@ -349,17 +368,52 @@ begin
     EnableMenuItem(AppMenu, SC_Minimize, mf_bycommand or mf_enabled);
   end;
 
+  VWMMenu := 0;
+  VWMCount := GetVWMCount;
+  if (GetVWMCount > 0) and (not IsIconic(pHandle)) then
+  begin
    { Add a seperator }
-  { FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+   FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
    MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
    MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or
      MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
    MenuItemInfo.fType := MFT_SEPARATOR;
    MenuItemInfo.wID := $EFFF;
-   InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);   }
+   InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
+
+   { Add a VWM Item}
+   FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+   MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
+   MenuItemInfo.fMask := MIIM_DATA or
+     MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+   MenuItemInfo.fType := MFT_STRING;
+   MenuItemInfo.dwTypeData := 'Mote to VWM';
+   VWMMenu := CreateMenu;
+   MenuItemInfo.hSubMenu := VWMMenu;
+   MenuItemInfo.wID := $EFFF;
+ //  MenuItemInfo.hbmpItem := FMoveToVWMIcon.Handle;
+   InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
+
+   VWMIndex := SharpApi.GetCurrentVWM;
+   for n := VWMCount - 1 downto 0 do
+   begin
+     FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+     MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
+     MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or
+       MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+     MenuItemInfo.fType := MFT_STRING;
+     MenuItemInfo.dwTypeData := PChar(inttostr(n + 1));
+     MenuItemInfo.wID := 256 + n;
+     if VWMGetWindowVWM(VWMIndex,VWMCount,pHandle) = n + 1 then
+      MenuItemInfo.fState := 1;
+     InsertMenuItem(VWMMenu, DWORD(0), True, MenuItemInfo);
+   end;
+  end;
 
   TrackPopupMenu(AppMenu, tpm_leftalign or tpm_leftbutton, cp.x, cp.y, 0, Handle, nil);
-  //GetSystemMenu(pHandle, True);
+  if VWMMenu <> 0 then  
+    DestroyMenu(VWMMenu);
+  GetSystemMenu(pHandle, True);
 end;
 
 procedure TMainForm.OnTaskItemMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
@@ -369,7 +423,7 @@ begin
   if Button = mbRight then DisplaySystemMenu(TSharpETaskItem(Sender).Tag);
 end;
 
-procedure LoadFilterFromXML(var filter : TTaskFilter; XML : TJvSimpleXMLElem);
+procedure LoadFilterFromXML(var filter : TTaskFilter; XML : TJclSimpleXMLElem);
 var
   n : integer;
 begin
@@ -383,7 +437,7 @@ end;
 
 procedure TMainForm.LoadFilterSettingsFromXML;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   i,n : integer;
   fn : string;
 begin
@@ -397,7 +451,7 @@ begin
     exit;
   end;
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
     XML.LoadFromFile(fn);
     for i := 0 to High(sIFilters) do
@@ -419,8 +473,8 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  fitem : TJvSimpleXMLElem;
-  XML : TJvSimpleXML;
+  fitem : TJclSimpleXMLElem;
+  XML : TJclSimpleXML;
   fileloaded : boolean;
   n : integer;
 begin
@@ -432,7 +486,7 @@ begin
   sSort      := False;
   sDebug     := False;
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
     XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
     fileloaded := True;
@@ -526,6 +580,7 @@ begin
     
   CalculateItemWidth(IList.Count);
   AlignTaskComponents;
+  Repaint;
 end;
 
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
@@ -563,8 +618,8 @@ end;
 procedure TMainForm.Settings1Click(Sender: TObject);
 var
   SettingsForm : TSettingsForm;
-  fitem : TJvSimpleXMLElem;
-  XML : TJvSimpleXML;
+  fitem : TJclSimpleXMLElem;
+  XML : TJclSimpleXML;
   n,i : integer;
 begin
   DebugOutPutInfo('TMainForm.Settings1Click (Procedure)');
@@ -629,7 +684,7 @@ begin
       sMinAllButton := SettingsForm.cb_minall.Checked;
       sMaxAllButton := SettingsForm.cb_maxall.Checked;
 
-      XML := TJvSimpleXML.Create(nil);
+      XML := TJclSimpleXML.Create;
       XML.Root.Name := 'TaskBarModuleSettings';
       with XML.Root.Items do
       begin
@@ -1113,6 +1168,9 @@ var
   end;
 
 begin
+  FMoveToVWMIcon := TBitmap.Create;
+  FMoveToVWMIcon.LoadFromResourceName(hInstance,'movetovwm');
+
   FTipWnd := ToolTipApi.RegisterToolTip(self);
 
   DebugOutPutInfo('TMainForm.FormCreate (Procedure)');
@@ -1167,6 +1225,7 @@ begin
   FCustomSkinSettings.Free;
   FDminA.Free;
   FDmaxA.Free;
+  FMoveToVWMIcon.Free;
   TM.Free;
   IList.Clear;
   IList.Free;
