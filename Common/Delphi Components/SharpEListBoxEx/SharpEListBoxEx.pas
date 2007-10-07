@@ -57,7 +57,7 @@ type
     property Item[Index: Integer]: TSharpEListBoxExColumn read GetItem write SetItem;
   end;
 
-  TSharpEListBoxExColors = class(TObject)
+  TSharpEListBoxExColors = class(TPersistent)
   private
     FBorderColor: TColor;
     FItemColorSelected: TColor;
