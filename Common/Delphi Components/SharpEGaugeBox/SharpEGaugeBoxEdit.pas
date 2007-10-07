@@ -80,7 +80,6 @@ type
     procedure BtnGaugeClick(Sender: TObject);
     procedure BtnGaugeMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure SetEnabled(Value: boolean); override;
     procedure SetMax(const Value: Integer);
     procedure SetMin(const Value: Integer);
     procedure SetPrefix(const Value: string);
@@ -98,6 +97,8 @@ type
     procedure SetPopPosition(const Value: TPopPosition);
     procedure SetDescription(const Value: string);
     procedure SetPercentDisplay(const Value : boolean);
+  protected
+    procedure SetEnabled(Value: boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
@@ -105,8 +106,6 @@ type
     procedure UpdateEditBox;
     procedure BeforeDestruction; override;
 
-  protected
-    
   published
     property Owner;
     property Align;
