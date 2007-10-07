@@ -56,7 +56,7 @@ Type
   TSU_UPDATE_ENUM = (suSkin, suSkinFileChanged, suScheme, suTheme, suIconSet,
     suBackground, suService, suDesktopIcon, suSharpDesk, suSharpMenu,
     suSharpBar, suCursor, suWallpaper, suDeskArea, suSkinFont, suDesktopObject,
-    suModule);
+    suModule,suVWM);
   TSCE_EDITMODE_ENUM = (sceAdd, sceEdit, sceDelete);
   TSC_MODE_ENUM = (scmLive, scmApply);
 
