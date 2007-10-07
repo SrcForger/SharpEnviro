@@ -548,6 +548,12 @@ begin
     RenderObject := False;
     exit;
   end;
+
+  IconBitmap := TBitmap32.Create;
+  IconBitmap.DrawMode := dmBlend;
+  IconBitmap.CombineMode := cmMerge;
+  RenderIcon(IconBitmap,Icon,point(0,0));
+
   if (Caption.Draw) and (Caption.Caption <> nil) then
   begin
     FontBitmap := TBitmap32.Create;
@@ -564,15 +570,7 @@ begin
       FontBitmap.SetSize(64,64);
       FontBitmap.Clear(color32(0,0,0,0));
     end;
-  end;
 
-  IconBitmap := TBitmap32.Create;
-  IconBitmap.DrawMode := dmBlend;
-  IconBitmap.CombineMode := cmMerge;
-  RenderIcon(IconBitmap,Icon,point(0,0));
-
-  if (Caption.Draw) and (Caption.Caption <> nil) then
-  begin
     RenderIconCaptionAligned(dst,
                              IconBitmap,
                              FontBitmap,
@@ -581,17 +579,17 @@ begin
                              Point(Caption.Xoffset,Caption.Yoffset),
                              Icon.Shadow,
                              Font.Shadow);
-  end else
+    FontBitmap.Free;
+  end
+  else
   begin
     dst.SetSize(IconBitmap.Width,IconBitmap.Height);
     dst.Clear(color32(0,0,0,0));
     dst.Draw(0,0,IconBitmap);
   end;
 
-  IconBitmap.Free;
-  if (Caption.Draw) and (Caption.Caption <> nil) then
-    FontBitmap.Free;
   RenderObject := True;
+  IconBitmap.Free;
 end;
 
 
