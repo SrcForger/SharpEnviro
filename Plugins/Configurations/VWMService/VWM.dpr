@@ -1,0 +1,172 @@
+﻿{
+Source Name: VWM.dpr
+Description: VWM Service Config DLL
+Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
+
+Source Forge Site
+https://sourceforge.net/projects/sharpe/
+
+SharpE Site
+http://www.sharpenviro.com
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+}
+
+library VWM;
+uses
+  Controls,
+  Classes,
+  Windows,
+  Forms,
+  Dialogs,
+  JclSimpleXml,
+  PngSpeedButton,
+  uVistaFuncs,
+  SysUtils,
+  JvPageList,
+  Graphics,
+  uVWMServiceSettingsWnd in 'uVWMServiceSettingsWnd.pas' {frmVWMSettings},
+  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
+  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
+  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
+
+{$E .dll}
+
+{$R *.res}
+
+
+function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
+var
+  XML : TJclSimpleXML;
+  Dir,FName : String;
+  fileloaded : boolean;
+begin
+  if frmVWMSettings = nil then frmVWMSettings := TfrmVWMSettings.Create(nil);
+
+  uVistaFuncs.SetVistaFonts(frmVWMSettings);
+  frmVWMSettings.ParentWindow := aowner;
+  frmVWMSettings.Left := 0;
+  frmVWMSettings.Top := 0;
+  frmVWMSettings.BorderStyle := bsNone;
+
+  Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\';
+  FName := Dir + 'VWM.xml';
+  if FileExists(FName) then
+  begin
+    XML := TJclSimpleXML.Create;
+    try
+      XML.LoadFromFile(FName);
+      fileloaded := True;
+    except
+      fileloaded := False;
+    end;
+    if FileLoaded then
+    begin
+      frmVWMSettings.sgb_vwmcount.Value := XML.Root.Items.IntValue('VWMCount',4);
+    end;
+    XML.Free;
+  end;
+
+  frmVWMSettings.Show;
+  result := frmVWMSettings.Handle;
+end;
+
+procedure Save;
+var
+  XML : TJclSimpleXML;
+  Dir,FName : String;
+begin
+  Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\';
+  FName := Dir + 'VWM.xml';
+  if not DirectoryExists(Dir) then
+    ForceDirectories(Dir);
+  XML := TJclSimpleXML.Create;
+  XML.Root.Name := 'VWMServiceSettings';
+  XML.Root.Items.Add('VWMCount',frmVWMSettings.sgb_vwmcount.Value);
+  XML.SaveToFile(FName);
+  XML.Free;
+end;
+
+function Close : boolean;
+begin
+  result := True;
+  try
+    frmVWMSettings.Close;
+    frmVWMSettings.Free;
+    frmVWMSettings := nil;
+  except
+    result := False;
+  end;
+end;
+
+
+procedure SetDisplayText(const APluginID: Pchar; var ADisplayText: PChar);
+begin
+  ADisplayText := PChar('VWM');
+end;
+
+procedure SetStatusText(var AStatusText: PChar);
+begin
+  AStatusText := '';
+end;
+
+procedure ClickBtn(AButtonID: Integer; AButton:TPngSpeedButton; AText:String);
+begin
+end;
+
+function SetBtnState(AButtonID: Integer): Boolean;
+begin
+  Result := False;
+end;
+
+procedure ClickTab(ATab: TPluginTabItem);
+begin
+  TJvStandardPage(ATab.Data).Show;
+end;
+
+procedure GetCenterScheme(var ABackground: TColor;
+      var AItemColor: TColor; var AItemSelectedColor: TColor);
+begin
+end;
+
+procedure AddTabs(var ATabs:TPluginTabItemList);
+begin
+  if frmVWMSettings <> nil then
+  begin
+    ATabs.Add('VWM',frmVWMSettings.JvSettingsPage,'','');
+  end;
+end;
+
+function SetSettingType : TSU_UPDATE_ENUM;
+begin
+  result := suVWM;
+end;
+
+
+exports
+  Open,
+  Close,
+  Save,
+  SetDisplayText,
+  SetStatusText,
+  SetBtnState,
+  SetSettingType,
+  GetCenterScheme,
+  AddTabs,
+  ClickTab,
+  ClickBtn;
+
+begin
+end.
+
