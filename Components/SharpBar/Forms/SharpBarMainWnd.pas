@@ -153,6 +153,7 @@ type
 
     // Plugin message (to be broadcastet to modules)
     procedure WMVWMDesktopChanged(var msg : TMessage); message WM_VWMDESKTOPCHANGED;
+    procedure WMVWMUpdateSettings(var msg : TMessagE); message   WM_VWMUPDATESETTINGS;
     procedure WMWeatherUpdate(var msg : TMessage); message WM_WEATHERUPDATE;
     procedure WMInputChange(var msg : TMessage); message WM_INPUTLANGCHANGEREQUEST;
     procedure WMShellHookWindowCreate(var msg : TMessage); message WM_SHELLHOOKWINDOWCREATED;
@@ -561,6 +562,12 @@ procedure TSharpBarMainForm.WMVWMDesktopChanged(var msg: TMessage);
 begin
   if ModuleManager = nil then exit;
   ModuleManager.BroadcastPluginMessage('MM_VWMDESKTOPCHANGED');
+end;
+
+procedure TSharpBarMainForm.WMVWMUpdateSettings(var msg: TMessagE);
+begin
+  if ModuleManager = nil then exit;
+  ModuleManager.BroadcastPluginMessage('MM_VWMUPDATESETTINGS');
 end;
 
 // Module is requesting the handle to the Background image
