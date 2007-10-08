@@ -74,6 +74,7 @@ begin
     if FileLoaded then
     begin
       frmVWMSettings.sgb_vwmcount.Value := XML.Root.Items.IntValue('VWMCount',4);
+      frmVWMSettings.cb_focustopmost.Checked := XML.Root.Items.BoolValue('FocusTopMost',False);
     end;
     XML.Free;
   end;
@@ -94,6 +95,7 @@ begin
   XML := TJclSimpleXML.Create;
   XML.Root.Name := 'VWMServiceSettings';
   XML.Root.Items.Add('VWMCount',frmVWMSettings.sgb_vwmcount.Value);
+  XML.Root.Items.Add('FocusTopMost',frmVWMSettings.cb_focustopmost.Checked);
   XML.SaveToFile(FName);
   XML.Free;
 end;

@@ -42,12 +42,15 @@ var
 
 function VWMGetWindowList(pArea : TRect) : TWndArray;
 function VWMGetDeskArea(CurrentVWM,index : integer) : TRect;
-procedure VWMSwitchDesk(pCurrentDesk,pNewDesk : integer);
+procedure VWMSwitchDesk(pCurrentDesk,pNewDesk : integer; sFocusTopMost : boolean);
 procedure VWMMoveAllToOne;
 function VWMGetWindowVWM(pCurrentVWM,pVWMCount : integer; pHandle : hwnd) : integer;
 procedure VWMMoveWindotToVWM(pTargetVWM,pCurrentVWM,pVWMCount : integer; pHandle : hwnd);
 
 implementation
+
+uses
+  uSystemFuncs;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
 begin
@@ -121,15 +124,7 @@ begin
     exit;
 
   GetWindowRect(pHandle,WPos);
- { if PointInRect(Point(WPos.Left + (WPos.Right - WPos.Left) div 2,
-                       WPos.Top),Screen.DesktopRect)
-     or PointInRect(Point(WPos.Left + (WPos.Right - WPos.Left) div 2,
-                          WPos.Top + (WPos.Bottom - WPos.Top) div 2),
-                    Screen.DesktopRect)
-     or PointInRect(Point(WPos.Left + (WPos.Right - WPos.Left) div 2,
-                          WPos.Bottom),
-                    Screen.DesktopRect) then }
-  if WindowInRect(pHandle,Screen.DesktopRect) then  
+  if WindowInRect(pHandle,Screen.DesktopRect) then
   begin
     // Current VWM!
     result := pCurrentVWM;
@@ -142,14 +137,6 @@ begin
     VWMRect := VWMGetDeskArea(pCurrentVWM,n);
     VWMRect.Left := VWMRect.Left - VWMSpacing div 2;
     VWMRect.Right := VWMRect.Right + VWMSpacing div 2;
- {  if PointInRect(Point(WPos.Left + (WPos.Right - WPos.Left) div 2,
-                         WPos.Top),VWMRect)
-       or PointInRect(Point(WPos.Left + (WPos.Right - WPos.Left) div 2,
-                          WPos.Top + (WPos.Bottom - WPos.Top) div 2),
-                      VWMRect)
-       or PointInRect(Point(WPos.Left + (WPos.Right - WPos.Left) div 2,
-                          WPos.Bottom),
-                      VWMRect) then}
     if WindowInRect(pHandle,VWMRect) then
     begin
       result := n + 1;
@@ -209,7 +196,7 @@ begin
   setlength(EnumParam.wndlist,0);
 end;
 
-procedure VWMSwitchDesk(pCurrentDesk,pNewDesk : integer);
+procedure VWMSwitchDesk(pCurrentDesk,pNewDesk : integer; sFocusTopMost : boolean);
 var
   n : integer;
   distance : integer;
@@ -239,6 +226,9 @@ begin
     GetWindowRect(DstList[n],wndpos);
     SetWindowPos(DstList[n],0,wndpos.Left - distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
   end;
+
+  if (sFocusTopMost) and (length(DstList) > 0) then
+    ForceForeGroundWindow(DstList[0]);
 
   setlength(SrcList,0);
   setlength(DstList,0);

@@ -42,6 +42,7 @@
     <DelphiCompile Include="VWM.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <DCCReference Include="..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas" />
     <DCCReference Include="..\..\..\Common\Units\VWM\VWMFunctions.pas" />
   </ItemGroup>
 </Project>

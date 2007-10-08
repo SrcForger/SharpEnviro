@@ -34,7 +34,8 @@ Source Name: VWM.service
   SharpCenterApi,
   SysUtils,
   JclSimpleXML,
-  VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas';
+  VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
+  uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas';
 
 {$E ser}
                                                                      
@@ -67,6 +68,7 @@ Source Name: VWM.service
   Handle: THandle;
   CurrentDesktop : integer;
   VWMCount : integer;
+  sFocusTopMost : boolean;
 
 procedure AllocateMsgWnd;
 var
@@ -106,6 +108,7 @@ end;
   fileloaded : boolean;
 begin
   VWMCount := 4;
+  sFocusTopMost := False;
   Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\';
   FName := Dir + 'VWM.xml';
   if FileExists(FName) then
@@ -119,8 +122,9 @@ end;
     end;
     if FileLoaded then
     begin
-      VWMCount := XML.Root.Items.IntValue('VWMCount',4);
+      VWMCount := XML.Root.Items.IntValue('VWMCount',VWMCount);
       VWMCount := Max(2,Min(VWMCount,12));
+      sFocusTopMost := XML.Root.Items.BoolValue('FocusTopMost',sFocusTopMost);
     end;
     XML.Free;
   end;
@@ -175,7 +179,7 @@ end;
                newdesk := CurrentDesktop + 1;
                if newdesk > VWMCount then
                 newdesk := 1;
-               VWMFunctions.VWMSwitchDesk(CurrentDesktop,newdesk);
+               VWMFunctions.VWMSwitchDesk(CurrentDesktop,newdesk,sFocusTopMost);
                CurrentDesktop := newdesk;
                Changed := True;
              end;
@@ -183,7 +187,7 @@ end;
                newdesk := CurrentDesktop - 1;
                if newdesk < 1 then
                 newdesk := VWMCount;
-               VWMFunctions.VWMSwitchDesk(CurrentDesktop,newdesk);
+               VWMFunctions.VWMSwitchDesk(CurrentDesktop,newdesk,sFocusTopMost);
                CurrentDesktop := newdesk;
                Changed := True;
              end;
@@ -192,7 +196,7 @@ end;
             if (Message.lparam >= VWMStartMessage)
                and (Message.lparam < VWMStartMessage + VWMCount) then
             begin
-              VWMFunctions.VWMSwitchDesk(CurrentDesktop,Message.lparam - VWMStartMessage + 1);
+              VWMFunctions.VWMSwitchDesk(CurrentDesktop,Message.lparam - VWMStartMessage + 1,sFocusTopMost);
               CurrentDesktop := Message.lparam - VWMStartMessage + 1;
               Changed := True;
             end;
@@ -208,7 +212,7 @@ end;
         if (Message.lparam > 0)
            and (Message.lparam <= VWMCount) then
         begin
-          VWMFunctions.VWMSwitchDesk(CurrentDesktop,Message.lparam);
+          VWMFunctions.VWMSwitchDesk(CurrentDesktop,Message.lparam,sFocusTopMost);
           CurrentDesktop := Message.lparam;
           Changed := True;
           Message.Result := CurrentDesktop;

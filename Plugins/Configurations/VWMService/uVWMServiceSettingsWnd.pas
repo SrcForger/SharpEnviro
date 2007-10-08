@@ -45,9 +45,13 @@ type
     Panel1: TPanel;
     Label4: TLabel;
     sgb_vwmcount: TSharpeGaugeBox;
+    Label1: TLabel;
+    cb_focustopmost: TCheckBox;
+    Label2: TLabel;
     procedure sgb_vwmcountChangeValue(Sender: TObject; Value: Integer);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure cb_focustopmostClick(Sender: TObject);
   private
     procedure SendUpdate;
   public
@@ -62,18 +66,20 @@ implementation
 
 { TfrmConfigListWnd }
 
+procedure TfrmVWMSettings.cb_focustopmostClick(Sender: TObject);
+begin
+  SendUpdate;
+end;
+
 procedure TfrmVWMSettings.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := true;
 end;
 
 procedure TfrmVWMSettings.FormShow(Sender: TObject);
-var
-  i:Integer;
 begin
-  For i := 0 to Pred(Self.ComponentCount) do
-    if Self.Components[i].ClassName = TLabel.ClassName then
-      TLabel(Self.Components[i]).Font.Color := clGray;
+  Label4.Font.Color := clGray;
+  Label2.Font.Color := clGray;
 end;
 
 procedure TfrmVWMSettings.SendUpdate;

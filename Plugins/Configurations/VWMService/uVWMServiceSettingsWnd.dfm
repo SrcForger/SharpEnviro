@@ -29,15 +29,54 @@ object frmVWMSettings: TfrmVWMSettings
       Top = 0
       Width = 428
       Height = 465
+      object Label1: TLabel
+        AlignWithMargins = True
+        Left = 8
+        Top = 4
+        Width = 412
+        Height = 13
+        Margins.Left = 8
+        Margins.Top = 4
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        AutoSize = False
+        Caption = 'Desktop Count'
+        Transparent = False
+        WordWrap = True
+        ExplicitLeft = 18
+        ExplicitWidth = 56
+      end
+      object Label2: TLabel
+        AlignWithMargins = True
+        Left = 18
+        Top = 125
+        Width = 402
+        Height = 45
+        Margins.Left = 18
+        Margins.Top = 4
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        AutoSize = False
+        Caption = 
+          'Enable this option to make the VWM focus and enable the top most' +
+          ' window after switching to another desktop.'
+        EllipsisPosition = epEndEllipsis
+        Transparent = False
+        WordWrap = True
+        ExplicitTop = 154
+      end
       object Panel1: TPanel
         Left = 0
-        Top = 0
+        Top = 17
         Width = 428
         Height = 81
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 0
+        ExplicitTop = 0
         object Label4: TLabel
           AlignWithMargins = True
           Left = 18
@@ -74,6 +113,21 @@ object frmVWMSettings: TfrmVWMSettings
           PercentDisplay = False
           OnChangeValue = sgb_vwmcountChangeValue
         end
+      end
+      object cb_focustopmost: TCheckBox
+        AlignWithMargins = True
+        Left = 8
+        Top = 101
+        Width = 417
+        Height = 17
+        Margins.Left = 8
+        Align = alTop
+        Caption = 'Focus Top Most Window'
+        TabOrder = 1
+        OnClick = cb_focustopmostClick
+        ExplicitLeft = 48
+        ExplicitTop = 144
+        ExplicitWidth = 97
       end
     end
   end
