@@ -3,14 +3,12 @@ unit fMain;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, ComCtrls, Contnrs, SharpERoundPanel, StdCtrls, JvExComCtrls,
-  JvgTreeView, JvgListBox, SharpETabList, ToolWin, ImgList, uVistaFuncs,
+  JvgTreeView, JvgListBox, SharpETabList, ImgList, uVistaFuncs,
   JvSimpleXML, JvComCtrls, JvCheckTreeView, CheckLst, JvExCheckLst,
   JvCheckListBox, JvStatusBar, JvExStdCtrls, JvMemo, uCompiler, SharpEListBoxEx,
-  SharpEPageControl, PngImageList, StrUtils, JvExControls, JvSpeedButton, Mask,
-  JvExMask, JvToolEdit, JvMaskEdit, JvEdit, JvComponentBase,
-  AbBase, AbBrowse, AbZBrows, AbZipper;
+  SharpEPageControl, PngImageList, StrUtils, JvExControls, ToolWin;
 
 type
   TfrmMain = class(TForm)
@@ -37,15 +35,6 @@ type
     lbSummary: TSharpEListBoxEx;
     pilStatus: TPngImageList;
     pilStates: TPngImageList;
-    panSettings: TPanel;
-    btnBrowse: TJvSpeedButton;
-    lblSVNSettings: TLabel;
-    lblPackageSettings: TLabel;
-    btnSave: TJvSpeedButton;
-    leRepo: TLabeledEdit;
-    leUser: TLabeledEdit;
-    lePassword: TLabeledEdit;
-    lePackage: TLabeledEdit;
     dlgSave: TSaveDialog;
     procedure FormCreate(Sender: TObject);
     procedure tbOpenClick(Sender: TObject);
@@ -58,7 +47,6 @@ type
     procedure lbSummaryGetCellColor(const AItem: Integer; var AColor: TColor);
     procedure FormDestroy(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
-    procedure btnBrowseClick(Sender: TObject);
     procedure lbSummaryDblClickItem(const ACol: Integer;
       AItem: TSharpEListItem);
   private
@@ -67,8 +55,6 @@ type
     procedure OpenFile(sXML: String);
     procedure SaveSettings();
     procedure LoadSettings();
-    procedure PackageRelease();
-    procedure AddFiles(sPath, sMask: string; abZip: TAbZipper);
   public
     { Public declarations }
   end;
@@ -78,11 +64,7 @@ var
   sPath: String;
   dtTotalStart: TDateTime;
   sSettingsFile: String;
-  sRepo: String;
-  sUser: String;
-  sPassword: String;
-  sPackage: String;
-  bDebug, bSVN, bPackage: Boolean;
+  bDebug: Boolean;
 
 implementation
 
@@ -160,19 +142,11 @@ begin
   begin
     lbSummary.Visible := True;
     mDetailed.Visible := False;
-    panSettings.Visible := False;
   end;
   if ATabIndex = 1 then
   begin
     lbSummary.Visible := False;
     mDetailed.Visible := True;
-    panSettings.Visible := False;
-  end;
-  if ATabIndex = 2 then
-  begin
-    lbSummary.Visible := False;
-    mDetailed.Visible := False;
-    panSettings.Visible := True;
   end;
 end;
 
@@ -216,15 +190,6 @@ begin
     end;
   end;
 
-  if clbOptions.Checked[2] then
-    PackageRelease;
-
-end;
-
-procedure TfrmMain.btnBrowseClick(Sender: TObject);
-begin
-  if dlgSave.Execute then
-    lePackage.Text := dlgSave.FileName;
 end;
 
 procedure TfrmMain.btnSaveClick(Sender: TObject);
@@ -309,79 +274,6 @@ begin
   end;
 end;
 
-procedure TfrmMain.PackageRelease();
-var
-  newItem: TSharpEListItem;
-  abZip: TAbZipper;
-begin
-  mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' Beginning packaging..');
-  newItem := lbSummary.AddItem('Packaging release...', 2);
-  lbSummary.ItemIndex := lbSummary.Count - 1;
-
-  if FileExists(lePackage.Text) then
-  begin
-    DeleteFile(PChar(lePackage.Text));
-    mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' Deleted ' + lePackage.Text);
-  end;
-  ForceDirectories(ExtractFilePath(lePackage.Text));
-
-  abZip := TAbZipper.Create(nil);
-  abZip.FileName := lePackage.Text;
-
-  abZip.BaseDirectory := ExtractFilePath(ParamStr(0)) + '\';
-  SetCurrentDir(abZip.BaseDirectory);
-  Application.ProcessMessages;
-  AddFiles(abZip.BaseDirectory, 'Thumbs.db;*.map', abZip);
-
-  newItem.Caption := newItem.Caption + 'Saving...';
-  mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' Saving file');
-  Application.ProcessMessages;
-  abZip.Save;
-
-  abZip.Free;
-
-  mDetailed.Lines.Add(FormatDateTime('hh:nn:ss', Now) + ' Packaging complete');
-  newItem.Caption := newItem.Caption + 'Finished';
-  newItem.ImageIndex := 1;
-end;
-
-procedure TfrmMain.AddFiles(sPath, sMask: string; abZip: TAbZipper);
-var
-  srFile: TSearchRec;
-  slDir: TStringList;
-  bFound: Boolean;
-  i: integer;
-begin
-
-  sPath := StringReplace(sPath, abZip.BaseDirectory, '', [rfIgnoreCase]);
-
-  bFound := FindFirst(sPath + '*.*', faAnyFile-faDirectory, srFile) = 0;
-  while bFound do begin
-    if srFile.Name <> ExtractFileName(lePackage.Text) then
-      abZip.AddFilesEx(sPath + srFile.Name, sMask, 0);
-    bFound := FindNext(srFile) = 0;
-  end;
-  FindClose(srFile);
-
-  slDir := TStringList.Create;
-  bFound := FindFirst(sPath + '*.*', faAnyFile, srFile) = 0;
-  while bFound do begin
-    if ((srFile.Attr and faDirectory) <> 0) and (srFile.Name[1] <> '.') then
-      if LowerCase(sPath) <> 'settings\' then
-        slDir.Add(sPath + srFile.Name + '\')
-      else
-        if LowerCase(srFile.Name) = '#default#' then
-          slDir.Add(sPath + srFile.Name + '\');
-    bFound := FindNext(srFile) = 0;
-  end;
-  FindClose(srFile);
-
-  for i := 0 to slDir.Count - 1 do
-    AddFiles(slDir[i], sMask, abZip);
-
-  slDir.Free;
-end;
-
 procedure TfrmMain.OpenFile(sXML: String);
 var
   n,i: integer;
@@ -441,30 +333,12 @@ begin
       with xFile.Root.Items.ItemNamed['Options'] do
       begin
         clbOptions.Checked[0] := StrToBool(Properties.Value('Debug', 'False'));
-        clbOptions.Checked[1] := StrToBool(Properties.Value('Commit', 'False'));
-        clbOptions.Checked[2] := StrToBool(Properties.Value('Package', 'False'));
       end;
-    if xFile.Root.Items.ItemNamed['SVN'] <> nil then
-      with xFile.Root.Items.ItemNamed['SVN'] do
-      begin
-        leRepo.Text := Properties.Value('Repository', '');
-        leUser.Text := Properties.Value('Username', '');
-        lePassword.Text := Properties.Value('Password', '');
-      end;
-    if xFile.Root.Items.ItemNamed['Package'] <> nil then
-      with xFile.Root.Items.ItemNamed['Package'] do
-        lePackage.Text := Properties.Value('Path', '');
     xFile.Free;
   end
   else
   begin
-    sRepo := '';
-    sUser := '';
-    sPassword := '';
-    sPackage := '';
     bDebug := False;
-    bSVN := False;
-    bPackage := False;
     SaveSettings;
   end;
 end;
@@ -479,17 +353,7 @@ begin
   with xFile.Root.Items.Add('Options') do
   begin
     Properties.Add('Debug', clbOptions.Checked[0]);
-    Properties.Add('Commit', clbOptions.Checked[1]);
-    Properties.Add('Package', clbOptions.Checked[2]);
   end;
-  with xFile.Root.Items.Add('SVN') do
-  begin
-    Properties.Add('Repository', leRepo.Text);
-    Properties.Add('Username', leUser.Text);
-    Properties.Add('Password', lePassword.Text);
-  end;
-  with xFile.Root.Items.Add('Package') do
-    Properties.Add('Path', lePackage.Text);
   xFile.SaveToFile(sSettingsFile);
   xFile.Free;
 end;
