@@ -31,6 +31,7 @@ var
   exit:Boolean;
 begin
   Application.Initialize;
+  {$IFDEF VER185} Application.MainFormOnTaskBar := True; {$ENDIF}
 
   exit := False;
   CheckMutex(exit);
