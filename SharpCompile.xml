@@ -10,7 +10,7 @@
      <project Name="Image" Type="DLL">Plugins\Configurations\Image\Image.bdsproj</project>  
      <project Name="Link" Type="DLL">Plugins\Configurations\Link\Link.bdsproj</project>       
      <project Name="MiniScmd" Type="DLL">Plugins\Configurations\MiniScmd\MiniScmd.bdsproj</project>       
-     <project Name="ModuleManager" Type="DLL">Plugins\Configurations\Module Manager\ModuleManager.bdsproj</project>           
+     <project Name="ModuleManager" Type="DLL">Plugins\Configurations\Module Manager\ModuleManager.bdsproj</project>          
      <project Name="Notes" Type="DLL">Plugins\Configurations\Notes\Notes.bdsproj</project>       
      <project Name="QuickScript" Type="DLL">Plugins\Configurations\QuickScript\QuickScript.bdsproj</project>       
      <project Name="RecycleBin" Type="DLL">Plugins\Configurations\RecycleBin\RecycleBin.bdsproj</project>       
@@ -20,6 +20,8 @@
      <project Name="SharpMenu" Type="DLL">Plugins\Configurations\SharpMenu\SharpMenu.bdsproj</project>  
      <project Name="Skin" Type="DLL">Plugins\Configurations\Theme Skin\ThemeSkinList.bdsproj</project>  
      <project Name="Theme List" Type="DLL">Plugins\Configurations\Theme List\ThemeList.bdsproj</project>  
+     <project Name="VWM" Type="DLL">Plugins\Configurations\VWM\VWM.bdsproj</project>  
+     <project Name="VWMService" Type="DLL">Plugins\Configurations\VWMService\VWMService.bdsproj</project>  
      <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Wallpaper\Wallpaper.bdsproj</project>  
      <project Name="Weather" Type="DLL">Plugins\Configurations\Weather\Weather.bdsproj</project>  
   </package>
@@ -62,6 +64,7 @@
      <project Name="SystemTray" Type="DLL" >Plugins\Modules\SystemTray\SystemTray.bdsproj</project>
      <project Name="Taskbar" Type="DLL" >Plugins\Modules\Taskbar\Taskbar.bdsproj</project>
      <project Name="Volume Control" Type="DLL" >Plugins\Modules\VolumeControl\VolumeControl.bdsproj</project>  
+     <project Name="VWM" Type="DLL" >Plugins\Modules\VWM\VWM.bdsproj</project>
      <project Name="Weather" Type="DLL">Plugins\Modules\Weather\Weather.bdsproj</project>   
   </package>
   <package Name="Objects">
@@ -81,6 +84,7 @@
      <project Name="SystemTray" Type="DLL" >Plugins\Services\SystemTray\SystemTray.bdsproj</project>  
      <project Name="TaskManager" Type="DLL" >Plugins\Services\TaskManager\TaskManager.bdsproj</project>  
      <project Name="TaskSwitch" Type="DLL" >Plugins\Services\TaskSwitch\TaskSwitch.bdsproj</project>  
+     <project Name="VWM" Type="DLL" >Plugins\Services\VWM\VWM.bdsproj</project>  
      <project Name="Weather" Type="DLL" requ="Delphi 2005 Professional">Plugins\Services\Weather\Weather.bdsproj</project>  
   </package>
 </SharpCompile>
