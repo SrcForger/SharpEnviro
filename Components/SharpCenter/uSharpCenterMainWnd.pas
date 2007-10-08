@@ -68,7 +68,7 @@ uses
   SharpEListBoxEx,
   PngBitBtn,
   SharpThemeApi,
-  Types, XPMan, VistaAltFixUnit, SharpEPageControl, SharpCenterApi;
+  Types, XPMan, SharpEPageControl, SharpCenterApi;
 
 const
   cEditTabHide = 0;
@@ -186,8 +186,6 @@ type
     procedure CancelEditEvent(Sender: Tobject);
     procedure SavePluginEvent(Sender: TObject);
   protected
-    procedure CreateParams(var Params: TCreateParams); override;
-    procedure WMSyscommand(var Message: TWmSysCommand); message WM_SYSCOMMAND;
   end;
 
 var
@@ -273,24 +271,6 @@ begin
   SCM.History.Add(tmpHist.Command, tmpHist.Param, tmpMsg.PluginID);
   SCM.ExecuteCommand(CenterCommandAsEnum(tmpMsg.Command),
     tmpMsg.Parameter, tmpMsg.PluginID);
-end;
-
-procedure TSharpCenterWnd.WMSyscommand(var Message: TWmSysCommand);
-begin
-  case (Message.CmdType and $FFF0) of
-    SC_MINIMIZE:
-      begin
-        ShowWindow(Handle, SW_MINIMIZE);
-        Message.Result := 0;
-      end;
-    SC_RESTORE:
-      begin
-        ShowWindow(Handle, SW_RESTORE);
-        Message.Result := 0;
-      end;
-  else
-    inherited;
-  end;
 end;
 
 procedure TSharpCenterWnd.InitCommandLine;
@@ -423,13 +403,6 @@ begin
   end
   else
     pnlLivePreview.Visible := False;
-end;
-
-procedure TSharpCenterWnd.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  Params.ExStyle := Params.ExStyle and not WS_EX_TOOLWINDOW or
-    WS_EX_APPWINDOW;
 end;
 
 procedure TSharpCenterWnd.DoDoubleBufferAll(AComponent: TComponent);
@@ -696,7 +669,6 @@ procedure TSharpCenterWnd.InitWindow;
 begin
   // Vista
   SetVistaFonts(Self);
-  HideAllTaskbarButton;
 
   // Set Listbox defaults
   lbTree.Colors.BorderColorSelected := $00C1F4FE;

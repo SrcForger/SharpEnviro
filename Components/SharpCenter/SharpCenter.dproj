@@ -1,4 +1,5 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{988756dd-04dc-46f5-88a9-e6b121bdf304}</ProjectGuid>
     <MainSource>SharpCenter.dpr</MainSource>
@@ -6,6 +7,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
     <DCC_DependencyCheckOutputName>..\..\..\SharpE\SharpCenter.exe</DCC_DependencyCheckOutputName>
+    <DCC_UsePackage>vcl</DCC_UsePackage>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -23,55 +25,37 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
-    <DCC_Optimize>False</DCC_Optimize>
-    <DCC_RangeChecking>True</DCC_RangeChecking>
     <DCC_ExeOutput>..\..\..\SharpE\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>$(BDS)\Lib\Debug\Indy10;$(BDS)\lib\Debug;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd Party\GR32 Addons\;..\..\Common\Units\SharpCenterSupporting;..\..\Common\Units\SEListboxPainter;..\..\Common\Libraries\SharpThemeApi;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\VistaFuncs;..\..\Common\Libraries\SharpApi;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Units\SharpfX;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpGraphicsUtils;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Libraries\SharpCenterApi</DCC_UnitSearchPath>
-    <DCC_ResourcePath>$(BDS)\Lib\Debug\Indy10;$(BDS)\lib\Debug;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd Party\GR32 Addons\;..\..\Common\Units\SharpCenterSupporting;..\..\Common\Units\SEListboxPainter;..\..\Common\Libraries\SharpThemeApi;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\VistaFuncs;..\..\Common\Libraries\SharpApi;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Units\SharpfX;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpGraphicsUtils;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Libraries\SharpCenterApi</DCC_ResourcePath>
-    <DCC_ObjPath>$(BDS)\Lib\Debug\Indy10;$(BDS)\lib\Debug;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd Party\GR32 Addons\;..\..\Common\Units\SharpCenterSupporting;..\..\Common\Units\SEListboxPainter;..\..\Common\Libraries\SharpThemeApi;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\VistaFuncs;..\..\Common\Libraries\SharpApi;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Units\SharpfX;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpGraphicsUtils;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Libraries\SharpCenterApi</DCC_ObjPath>
-    <DCC_IncludePath>$(BDS)\Lib\Debug\Indy10;$(BDS)\lib\Debug;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd Party\GR32 Addons\;..\..\Common\Units\SharpCenterSupporting;..\..\Common\Units\SEListboxPainter;..\..\Common\Libraries\SharpThemeApi;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\VistaFuncs;..\..\Common\Libraries\SharpApi;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Units\SharpfX;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpGraphicsUtils;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Libraries\SharpCenterApi</DCC_IncludePath>
+    <DCC_UnitSearchPath>$(BDS)\RaveReports\Lib;C:\UNITS2~1\Jedi\JCL\lib\d11\debug;$(BDS)\Lib\Debug\Indy10;$(BDS)\lib\Debug;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd Party\GR32 Addons\;..\..\Common\Units\SharpCenterSupporting;..\..\Common\Units\SEListboxPainter;..\..\Common\Libraries\SharpThemeApi;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\VistaFuncs;..\..\Common\Libraries\SharpApi;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Units\SharpfX;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpGraphicsUtils;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Libraries\SharpCenterApi</DCC_UnitSearchPath>
+    <DCC_ResourcePath>$(BDS)\RaveReports\Lib;C:\UNITS2~1\Jedi\JCL\lib\d11\debug;$(BDS)\Lib\Debug\Indy10;$(BDS)\lib\Debug;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd Party\GR32 Addons\;..\..\Common\Units\SharpCenterSupporting;..\..\Common\Units\SEListboxPainter;..\..\Common\Libraries\SharpThemeApi;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\VistaFuncs;..\..\Common\Libraries\SharpApi;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Units\SharpfX;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpGraphicsUtils;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Libraries\SharpCenterApi</DCC_ResourcePath>
+    <DCC_ObjPath>$(BDS)\RaveReports\Lib;C:\UNITS2~1\Jedi\JCL\lib\d11\debug;$(BDS)\Lib\Debug\Indy10;$(BDS)\lib\Debug;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd Party\GR32 Addons\;..\..\Common\Units\SharpCenterSupporting;..\..\Common\Units\SEListboxPainter;..\..\Common\Libraries\SharpThemeApi;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\VistaFuncs;..\..\Common\Libraries\SharpApi;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Units\SharpfX;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpGraphicsUtils;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Libraries\SharpCenterApi</DCC_ObjPath>
+    <DCC_IncludePath>$(BDS)\RaveReports\Lib;C:\UNITS2~1\Jedi\JCL\lib\d11\debug;$(BDS)\Lib\Debug\Indy10;$(BDS)\lib\Debug;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd Party\GR32 Addons\;..\..\Common\Units\SharpCenterSupporting;..\..\Common\Units\SEListboxPainter;..\..\Common\Libraries\SharpThemeApi;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\VistaFuncs;..\..\Common\Libraries\SharpApi;..\..\Common\Delphi Components\SharpEListBoxEx;..\..\Common\Units\SharpfX;..\..\Common\Delphi Components\SharpERoundPanel;..\..\Common\Delphi Components\SharpETabList;..\..\Common\Units\SharpGraphicsUtils;..\..\Common\Delphi Components\SharpEPageControl;..\..\Common\Libraries\SharpCenterApi</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-<BorlandProject xmlns=""> <Delphi.Personality>   <Parameters>
-      <Parameters Name="DebugSourceDirs">E:\SVN\Common\Delphi Components\SharpEListBoxEx\;E:\SVN\Common\Delphi Components\SharpETabList\</Parameters>
-      <Parameters Name="UseLauncher">False</Parameters>
-      <Parameters Name="LoadAllSymbols">True</Parameters>
-      <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
-    </Parameters>
-    <VersionInfo>
-      <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
-      <VersionInfo Name="AutoIncBuild">False</VersionInfo>
-      <VersionInfo Name="MajorVer">1</VersionInfo>
-      <VersionInfo Name="MinorVer">0</VersionInfo>
-      <VersionInfo Name="Release">0</VersionInfo>
-      <VersionInfo Name="Build">0</VersionInfo>
-      <VersionInfo Name="Debug">False</VersionInfo>
-      <VersionInfo Name="PreRelease">False</VersionInfo>
-      <VersionInfo Name="Special">False</VersionInfo>
-      <VersionInfo Name="Private">False</VersionInfo>
-      <VersionInfo Name="DLL">False</VersionInfo>
-      <VersionInfo Name="Locale">2057</VersionInfo>
-      <VersionInfo Name="CodePage">1252</VersionInfo>
-    </VersionInfo>
-    <VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
-    </VersionInfoKeys>
-    <Excluded_Packages>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="DebugSourceDirs">E:\SVN\Common\Delphi Components\SharpEListBoxEx\;E:\SVN\Common\Delphi Components\SharpETabList\</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
       
       
-      <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\B305vd70.bpl">TurboPower Abbrevia 3.05 Design-time package - VCL70</Excluded_Packages>
-    </Excluded_Packages>
-    <Source>
-      <Source Name="MainSource">SharpCenter.dpr</Source>
-    </Source>
-  </Delphi.Personality> </BorlandProject></BorlandProject>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+    </Excluded_Packages><Source><Source Name="MainSource">SharpCenter.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
-  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
     <DelphiCompile Include="SharpCenter.dpr">
       <MainSource>MainSource</MainSource>
@@ -85,5 +69,4 @@
     </DCCReference>
     <DCCReference Include="uSharpCenterManager.pas" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
 </Project>

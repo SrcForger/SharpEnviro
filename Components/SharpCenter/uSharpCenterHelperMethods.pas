@@ -45,7 +45,6 @@ uses
 
   procedure ResizeToFitWindow(AHandle: THandle; AControl: TWinControl);
   function GetControlByHandle(AHandle: THandle): TWinControl;
-  procedure HideAllTaskbarButton;
 
 implementation
 
@@ -65,15 +64,6 @@ implementation
     Except
       Result := nil;
     End;
-  end;
-
-  procedure HideAllTaskbarButton;
-  begin
-    ShowWindow(Application.Handle, SW_HIDE);
-    SetWindowLong(Application.Handle, GWL_EXSTYLE,
-      GetWindowLong(Application.Handle, GWL_EXSTYLE) and not WS_EX_APPWINDOW
-    or WS_EX_TOOLWINDOW);
-      ShowWindow(Application.Handle, SW_SHOW);
   end;
 
 end.

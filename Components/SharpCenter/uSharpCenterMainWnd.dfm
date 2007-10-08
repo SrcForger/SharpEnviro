@@ -1460,7 +1460,7 @@ object SharpCenterWnd: TSharpCenterWnd
               ColumnAlign = calRight
               StretchColumn = False
             end>
-          ItemHeight = 25
+          ItemHeight = 26
           OnClickItem = lbTreeClickItem
           OnGetCellColor = lbTreeGetCellColor
           AutosizeGrid = False
@@ -1562,7 +1562,7 @@ object SharpCenterWnd: TSharpCenterWnd
                   StretchColumn = False
                 end>
               Color = 8447997
-              ItemHeight = 21
+              ItemHeight = 26
               AutosizeGrid = False
               BevelInner = bvNone
               BevelOuter = bvNone
@@ -2057,7 +2057,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               98)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -646
+              Left = -654
               Top = 35
               Width = 23
               Height = 22
@@ -2509,13 +2509,14 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = 0
+              Width = -8
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
+              ExplicitWidth = 0
             end
           end
         end
@@ -3688,6 +3689,7 @@ object SharpCenterWnd: TSharpCenterWnd
       end>
     Left = 64
     Top = 320
+    Bitmap = {}
   end
   object pilIcons: TPngImageList
     PngImages = <
@@ -9837,6 +9839,7 @@ object SharpCenterWnd: TSharpCenterWnd
       end>
     Left = 68
     Top = 260
+    Bitmap = {}
   end
   object XPManifest1: TXPManifest
     Left = 84
