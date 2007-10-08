@@ -17,7 +17,8 @@ uses
   SharpESwatchCollection in '..\SharpESwatchCollection\SharpESwatchCollection.pas',
   SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
   SharpETabList in '..\SharpETabList\SharpETabList.pas',
-  SharpERoundPanel in '..\SharpERoundPanel\SharpERoundPanel.pas';
+  SharpERoundPanel in '..\SharpERoundPanel\SharpERoundPanel.pas',
+  uVistaFuncs in '..\..\Units\VistaFuncs\uVistaFuncs.pas';
 
 {$R *.res}
 

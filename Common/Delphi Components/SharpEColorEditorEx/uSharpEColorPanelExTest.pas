@@ -5,8 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, SharpEColorEditorEx, ExtCtrls, StdCtrls, XPMan, comctrls,
-  sharpthemeapi, uVistaFuncs, SharpESwatchManager, ToolWin, JvExForms,
-  JvScrollPanel;
+  sharpthemeapi, SharpESwatchManager, ToolWin, JvExForms,
+  JvScrollPanel, uVistaFuncs;
 
 type
   TForm1 = class(TForm)
