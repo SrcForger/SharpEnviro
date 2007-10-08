@@ -387,7 +387,7 @@ begin
    MenuItemInfo.fMask := MIIM_DATA or
      MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
    MenuItemInfo.fType := MFT_STRING;
-   MenuItemInfo.dwTypeData := 'Mote to VWM';
+   MenuItemInfo.dwTypeData := 'Move to VWM';
    VWMMenu := CreateMenu;
    MenuItemInfo.hSubMenu := VWMMenu;
    MenuItemInfo.wID := $EFFF;
