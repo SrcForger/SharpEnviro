@@ -32,7 +32,7 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi,
   ExtCtrls, Buttons, PngBitBtn, GR32_Image, Math,
   SharpThemeApi, Contnrs, GR32, GR32_Resamplers, SharpCenterApi,
-  SharpGraphicsUtils, SharpEGaugeBoxEdit;
+  SharpGraphicsUtils, SharpEGaugeBoxEdit, Types;
 
 type
   TDAItem = class
@@ -41,8 +41,7 @@ type
       AutoMode : boolean;
       OffSets  : TRect;
       Mon      : TMonitor;
-      MonID    : integer; 
-    published
+      MonID    : integer;
     end;
 
   TfrmDASettings = class(TForm)
