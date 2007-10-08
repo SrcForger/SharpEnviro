@@ -23,7 +23,7 @@ uses
   JvExControls,
   SharpEListBoxEx,
   Menus,
-  SharpApi, JvLabel, VistaAltFixUnit, ImgList, PngImageList, JvValidators,
+  SharpApi, JvLabel, ImgList, PngImageList, JvValidators,
   JvComponentBase, JvErrorIndicator, SharpCenterApi;
 
 type
@@ -49,7 +49,7 @@ type
     valID: TJvRequiredFieldValidator;
     valName: TJvRequiredFieldValidator;
     pilError: TPngImageList;
-    procedure FormCreate(Sender: TObject);
+
     procedure UpdateEditState(Sender: TObject);
     procedure btnSearchClick(Sender: TObject);
   private
@@ -357,11 +357,6 @@ end;
 procedure TfrmItemEdit.UpdateEditState(Sender: TObject);
 begin
   CenterDefineEditState(True);
-end;
-
-procedure TfrmItemEdit.FormCreate(Sender: TObject);
-begin
-  TVistaAltFix.Create(Self);
 end;
 
 end.

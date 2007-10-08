@@ -14,7 +14,6 @@ object frmItemEdit: TfrmItemEdit
   KeyPreview = True
   OldCreateOrder = False
   Position = poDesigned
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object plMain: TJvPageList
@@ -102,7 +101,7 @@ object frmItemEdit: TfrmItemEdit
       object Label1: TJvLabel
         Left = 0
         Top = 0
-        Width = 474
+        Width = 78
         Height = 13
         Align = alTop
         Caption = 'Confirmation:'
@@ -112,23 +111,22 @@ object frmItemEdit: TfrmItemEdit
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
         ParentFont = False
+        Transparent = True
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
-        ExplicitWidth = 78
       end
       object Label2: TLabel
         Left = 0
         Top = 13
-        Width = 474
+        Width = 335
         Height = 13
         Align = alTop
         Caption = 
           'Are you sure you want to delete the currently selected weather i' +
           'tem?'
-        ExplicitWidth = 335
       end
     end
   end
@@ -197,5 +195,6 @@ object frmItemEdit: TfrmItemEdit
       end>
     Left = 336
     Top = 64
+    Bitmap = {}
   end
 end
