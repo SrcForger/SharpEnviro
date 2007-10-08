@@ -35,6 +35,7 @@ uses
   Classes,
   Contnrs,
   SharpESkinManager,
+  GR32,
   StdCtrls,
   JvSimpleXML,
   SharpCenterApi,
@@ -69,6 +70,7 @@ var
   ModuleList : TObjectList;
   MouseTimer : TMouseTimer;
 
+{$R Preview.res}
 {$R *.res}
 
 function GetControlByHandle(AHandle: THandle): TWinControl;
@@ -263,6 +265,32 @@ begin
       end;
 end;
 
+function GetMetaData(Preview : TBitmap32) : TModuleMetaData;
+var
+  Bmp : TBitmap32;
+  ResStream : TResourceStream;
+  b : boolean;
+begin
+  with result do
+  begin
+    Author := 'Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Quick access to an easy to use notes window (with tab support)';
+    Version := '0.7.3.3';
+    HasPreview := True;
+
+    Bmp := TBitmap32.Create;
+    ResStream := TResourceStream.Create(HInstance, 'Preview', RT_RCDATA);
+    try
+      LoadBitmap32FromPng(Bmp,ResStream,b);
+    finally
+      ResStream.Free;
+    end;
+    Preview.SetSize(Bmp.Width,Bmp.Height);
+    Bmp.DrawTo(Preview);
+    Bmp.Free;
+  end;
+end;
+
 
 Exports
   CreateModule,
@@ -271,7 +299,8 @@ Exports
   Refresh,
   UpdateMessage,
   ModuleMessage,
-  SetSize;
+  SetSize,
+  GetMetaData;
 
 
 end.
