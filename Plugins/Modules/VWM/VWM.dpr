@@ -193,7 +193,7 @@ procedure UpdateMessage(part : TSU_UPDATE_ENUM; param : integer);
 const
   // update messages which are processed, procedure will exit on any other message
   processed : TSU_UPDATES = [suSkinFileChanged,suBackground,suTheme,suSkin,
-                             suScheme,suIconSet];
+                             suScheme,suIconSet,suModule];
 var
   temp : TModule;
   n,i : integer;
@@ -206,6 +206,14 @@ begin
   for n := 0  to ModuleList.Count - 1 do
   begin
     temp := TModule(ModuleList.Items[n]);
+    if (part = suModule) and (temp.ID = param) then
+    begin
+      TMainForm(temp.Form).LoadSettings;
+      TMainForm(temp.Form).ReAlignComponents(True);
+      TMainForm(temp.Form).DrawVWM;
+      TMainForm(temp.Form).DrawVWMToForm;
+      break;
+    end;    
 
     // Step1: check if height changed
     if [part] <= [suSkinFileChanged,suBackground,suTheme] then

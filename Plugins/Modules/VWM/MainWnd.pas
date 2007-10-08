@@ -107,7 +107,7 @@ begin
   sForegroundAlpha := 64;
   sVWMSpacing      := 1;
   sHighlightColor  := sBackgroundColor;
-  sHighlightAlpha  := 196;
+  sHighlightAlpha  := 192;
   sTextColor       := clBlack;
   sTextAlpha       := 255;
   sDisplayVWMNumbers := True;
@@ -122,8 +122,17 @@ begin
   if fileloaded then
     with XML.Root.Items do
     begin
-      // Load your settings heare
-      // Example: sWidth := IntValue('Width',sWidth);
+      sDisplayVWMNumbers := BoolValue('Numbers',sDisplayVWMNumbers);
+      sBackgroundColor   := IntValue('Background',sBackgroundColor);
+      sBorderColor       := IntValue('Border',sBorderColor);
+      sForegroundColor   := IntValue('Foreground',sForegroundColor);
+      sHighlightColor    := IntValue('Highlight',sHighlightColor);
+      sTextColor         := IntValue('Text',sTextColor);
+      sBackgroundAlpha := IntValue('BackgroundAlpha',sBackgroundAlpha);
+      sBorderAlpha     := IntValue('BorderAlpha',sBorderAlpha);
+      sForegroundAlpha := IntValue('ForegroundAlpha',sForegroundAlpha);
+      sHighlightAlpha  := IntValue('HighlightAlpha',sHighlightAlpha);
+      sTextAlpha       := IntValue('TextAlpha',sTextAlpha);
     end;
   XML.Free;
 end;
