@@ -1,0 +1,244 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{af7e3be7-5a25-4829-97d9-b0533bd1d650}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="..\Plugins\Configurations\BatteryMonitor\BatteryMonitor.dproj" />
+    <Projects Include="..\Plugins\Configurations\Curses\Curses.dproj" />
+    <Projects Include="..\Plugins\Configurations\DeskArea\DeskArea.dproj" />
+    <Projects Include="..\Plugins\Configurations\Desktop\Desktop.dproj" />
+    <Projects Include="..\Plugins\Configurations\Font\Font.dproj" />
+    <Projects Include="..\Plugins\Configurations\Hotkeys\Hotkeys.dproj" />
+    <Projects Include="..\Plugins\Configurations\Icon List\IconList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Image\Image.dproj" />
+    <Projects Include="..\Plugins\Configurations\Link\Link.dproj" />
+    <Projects Include="..\Plugins\Configurations\MiniScmd\MiniScmd.dproj" />
+    <Projects Include="..\Plugins\Configurations\Module Manager\ModuleManager.dproj" />
+    <Projects Include="..\Plugins\Configurations\Notes\Notes.dproj" />
+    <Projects Include="..\Plugins\Configurations\QuickScript\QuickScript.dproj" />
+    <Projects Include="..\Plugins\Configurations\RecycleBin\RecycleBin.dproj" />
+    <Projects Include="..\Plugins\Configurations\Scheme\Scheme.dproj" />
+    <Projects Include="..\Plugins\Configurations\SharpBar List\SharpBarList.dproj" />
+    <Projects Include="..\Plugins\Configurations\SharpDesk\SharpDesk.dproj" />
+    <Projects Include="..\Plugins\Configurations\SharpMenu\SharpMenu.dproj" />
+    <Projects Include="..\Plugins\Configurations\Theme List\ThemeList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Theme Skin\ThemeSkinList.dproj" />
+    <Projects Include="..\Plugins\Configurations\Wallpaper\Wallpaper.dproj" />
+    <Projects Include="..\Plugins\Configurations\Weather\Weather.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="Curses">
+    <MSBuild Projects="..\Plugins\Configurations\Curses\Curses.dproj" Targets="" />
+  </Target>
+  <Target Name="Curses:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Curses\Curses.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Curses:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Curses\Curses.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Desktop">
+    <MSBuild Projects="..\Plugins\Configurations\Desktop\Desktop.dproj" Targets="" />
+  </Target>
+  <Target Name="Desktop:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Desktop\Desktop.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Desktop:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Desktop\Desktop.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Hotkeys">
+    <MSBuild Projects="..\Plugins\Configurations\Hotkeys\Hotkeys.dproj" Targets="" />
+  </Target>
+  <Target Name="Hotkeys:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Hotkeys\Hotkeys.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Hotkeys:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Hotkeys\Hotkeys.dproj" Targets="Make" />
+  </Target>
+  <Target Name="IconList">
+    <MSBuild Projects="..\Plugins\Configurations\Icon List\IconList.dproj" Targets="" />
+  </Target>
+  <Target Name="IconList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Icon List\IconList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="IconList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Icon List\IconList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Scheme">
+    <MSBuild Projects="..\Plugins\Configurations\Scheme\Scheme.dproj" Targets="" />
+  </Target>
+  <Target Name="Scheme:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Scheme\Scheme.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Scheme:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Scheme\Scheme.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SharpBarList">
+    <MSBuild Projects="..\Plugins\Configurations\SharpBar List\SharpBarList.dproj" Targets="" />
+  </Target>
+  <Target Name="SharpBarList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\SharpBar List\SharpBarList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SharpBarList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\SharpBar List\SharpBarList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SharpDesk">
+    <MSBuild Projects="..\Plugins\Configurations\SharpDesk\SharpDesk.dproj" Targets="" />
+  </Target>
+  <Target Name="SharpDesk:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\SharpDesk\SharpDesk.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SharpDesk:Make">
+    <MSBuild Projects="..\Plugins\Configurations\SharpDesk\SharpDesk.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SharpMenu">
+    <MSBuild Projects="..\Plugins\Configurations\SharpMenu\SharpMenu.dproj" Targets="" />
+  </Target>
+  <Target Name="SharpMenu:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\SharpMenu\SharpMenu.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SharpMenu:Make">
+    <MSBuild Projects="..\Plugins\Configurations\SharpMenu\SharpMenu.dproj" Targets="Make" />
+  </Target>
+  <Target Name="ThemeList">
+    <MSBuild Projects="..\Plugins\Configurations\Theme List\ThemeList.dproj" Targets="" />
+  </Target>
+  <Target Name="ThemeList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Theme List\ThemeList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="ThemeList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Theme List\ThemeList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="ThemeSkinList">
+    <MSBuild Projects="..\Plugins\Configurations\Theme Skin\ThemeSkinList.dproj" Targets="" />
+  </Target>
+  <Target Name="ThemeSkinList:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Theme Skin\ThemeSkinList.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="ThemeSkinList:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Theme Skin\ThemeSkinList.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Wallpaper">
+    <MSBuild Projects="..\Plugins\Configurations\Wallpaper\Wallpaper.dproj" Targets="" />
+  </Target>
+  <Target Name="Wallpaper:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Wallpaper\Wallpaper.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Wallpaper:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Wallpaper\Wallpaper.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Weather">
+    <MSBuild Projects="..\Plugins\Configurations\Weather\Weather.dproj" Targets="" />
+  </Target>
+  <Target Name="Weather:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Weather\Weather.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Weather:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Weather\Weather.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Font">
+    <MSBuild Projects="..\Plugins\Configurations\Font\Font.dproj" Targets="" />
+  </Target>
+  <Target Name="Font:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Font\Font.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Font:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Font\Font.dproj" Targets="Make" />
+  </Target>
+  <Target Name="DeskArea">
+    <MSBuild Projects="..\Plugins\Configurations\DeskArea\DeskArea.dproj" Targets="" />
+  </Target>
+  <Target Name="DeskArea:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\DeskArea\DeskArea.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="DeskArea:Make">
+    <MSBuild Projects="..\Plugins\Configurations\DeskArea\DeskArea.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Image">
+    <MSBuild Projects="..\Plugins\Configurations\Image\Image.dproj" Targets="" />
+  </Target>
+  <Target Name="Image:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Image\Image.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Image:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Image\Image.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Link">
+    <MSBuild Projects="..\Plugins\Configurations\Link\Link.dproj" Targets="" />
+  </Target>
+  <Target Name="Link:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Link\Link.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Link:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Link\Link.dproj" Targets="Make" />
+  </Target>
+  <Target Name="MiniScmd">
+    <MSBuild Projects="..\Plugins\Configurations\MiniScmd\MiniScmd.dproj" Targets="" />
+  </Target>
+  <Target Name="MiniScmd:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\MiniScmd\MiniScmd.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="MiniScmd:Make">
+    <MSBuild Projects="..\Plugins\Configurations\MiniScmd\MiniScmd.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Notes">
+    <MSBuild Projects="..\Plugins\Configurations\Notes\Notes.dproj" Targets="" />
+  </Target>
+  <Target Name="Notes:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Notes\Notes.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Notes:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Notes\Notes.dproj" Targets="Make" />
+  </Target>
+  <Target Name="RecycleBin">
+    <MSBuild Projects="..\Plugins\Configurations\RecycleBin\RecycleBin.dproj" Targets="" />
+  </Target>
+  <Target Name="RecycleBin:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\RecycleBin\RecycleBin.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="RecycleBin:Make">
+    <MSBuild Projects="..\Plugins\Configurations\RecycleBin\RecycleBin.dproj" Targets="Make" />
+  </Target>
+  <Target Name="ModuleManager">
+    <MSBuild Projects="..\Plugins\Configurations\Module Manager\ModuleManager.dproj" Targets="" />
+  </Target>
+  <Target Name="ModuleManager:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Module Manager\ModuleManager.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="ModuleManager:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Module Manager\ModuleManager.dproj" Targets="Make" />
+  </Target>
+  <Target Name="QuickScript">
+    <MSBuild Projects="..\Plugins\Configurations\QuickScript\QuickScript.dproj" Targets="" />
+  </Target>
+  <Target Name="QuickScript:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\QuickScript\QuickScript.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="QuickScript:Make">
+    <MSBuild Projects="..\Plugins\Configurations\QuickScript\QuickScript.dproj" Targets="Make" />
+  </Target>
+  <Target Name="BatteryMonitor">
+    <MSBuild Projects="..\Plugins\Configurations\BatteryMonitor\BatteryMonitor.dproj" Targets="" />
+  </Target>
+  <Target Name="BatteryMonitor:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\BatteryMonitor\BatteryMonitor.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="BatteryMonitor:Make">
+    <MSBuild Projects="..\Plugins\Configurations\BatteryMonitor\BatteryMonitor.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="Curses;Desktop;Hotkeys;IconList;Scheme;SharpBarList;SharpDesk;SharpMenu;ThemeList;ThemeSkinList;Wallpaper;Weather;Font;DeskArea;Image;Link;MiniScmd;Notes;RecycleBin;ModuleManager;QuickScript;BatteryMonitor" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="Curses:Clean;Desktop:Clean;Hotkeys:Clean;IconList:Clean;Scheme:Clean;SharpBarList:Clean;SharpDesk:Clean;SharpMenu:Clean;ThemeList:Clean;ThemeSkinList:Clean;Wallpaper:Clean;Weather:Clean;Font:Clean;DeskArea:Clean;Image:Clean;Link:Clean;MiniScmd:Clean;Notes:Clean;RecycleBin:Clean;ModuleManager:Clean;QuickScript:Clean;BatteryMonitor:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="Curses:Make;Desktop:Make;Hotkeys:Make;IconList:Make;Scheme:Make;SharpBarList:Make;SharpDesk:Make;SharpMenu:Make;ThemeList:Make;ThemeSkinList:Make;Wallpaper:Make;Weather:Make;Font:Make;DeskArea:Make;Image:Make;Link:Make;MiniScmd:Make;Notes:Make;RecycleBin:Make;ModuleManager:Make;QuickScript:Make;BatteryMonitor:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>

@@ -1,0 +1,144 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{fa73b07b-f2b7-47f2-bc98-6fdfe2348664}</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Projects Include="..\Plugins\Services\Actions\Actions.dproj" />
+    <Projects Include="..\Plugins\Services\Cursors\cursors.dproj" />
+    <Projects Include="..\Plugins\Services\DeskArea\DeskArea.dproj" />
+    <Projects Include="..\Plugins\Services\Exec\Exec.dproj" />
+    <Projects Include="..\Plugins\Services\Hotkeys\Hotkeys.dproj" />
+    <Projects Include="..\Plugins\Services\Skin\SkinController.dproj" />
+    <Projects Include="..\Plugins\Services\StartupApps\Startup.dproj" />
+    <Projects Include="..\Plugins\Services\SystemActions\SystemActions.dproj" />
+    <Projects Include="..\Plugins\Services\SystemTray\SystemTray.dproj" />
+    <Projects Include="..\Plugins\Services\TaskManager\TaskManager.dproj" />
+    <Projects Include="..\Plugins\Services\TaskSwitch\TaskSwitch.dproj" />
+    <Projects Include="..\Plugins\Services\Weather\Weather.dproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Default.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Target Name="DeskArea">
+    <MSBuild Projects="..\Plugins\Services\DeskArea\DeskArea.dproj" Targets="" />
+  </Target>
+  <Target Name="DeskArea:Clean">
+    <MSBuild Projects="..\Plugins\Services\DeskArea\DeskArea.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="DeskArea:Make">
+    <MSBuild Projects="..\Plugins\Services\DeskArea\DeskArea.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Exec">
+    <MSBuild Projects="..\Plugins\Services\Exec\Exec.dproj" Targets="" />
+  </Target>
+  <Target Name="Exec:Clean">
+    <MSBuild Projects="..\Plugins\Services\Exec\Exec.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Exec:Make">
+    <MSBuild Projects="..\Plugins\Services\Exec\Exec.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Hotkeys">
+    <MSBuild Projects="..\Plugins\Services\Hotkeys\Hotkeys.dproj" Targets="" />
+  </Target>
+  <Target Name="Hotkeys:Clean">
+    <MSBuild Projects="..\Plugins\Services\Hotkeys\Hotkeys.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Hotkeys:Make">
+    <MSBuild Projects="..\Plugins\Services\Hotkeys\Hotkeys.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SkinController">
+    <MSBuild Projects="..\Plugins\Services\Skin\SkinController.dproj" Targets="" />
+  </Target>
+  <Target Name="SkinController:Clean">
+    <MSBuild Projects="..\Plugins\Services\Skin\SkinController.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SkinController:Make">
+    <MSBuild Projects="..\Plugins\Services\Skin\SkinController.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Startup">
+    <MSBuild Projects="..\Plugins\Services\StartupApps\Startup.dproj" Targets="" />
+  </Target>
+  <Target Name="Startup:Clean">
+    <MSBuild Projects="..\Plugins\Services\StartupApps\Startup.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Startup:Make">
+    <MSBuild Projects="..\Plugins\Services\StartupApps\Startup.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SystemTray">
+    <MSBuild Projects="..\Plugins\Services\SystemTray\SystemTray.dproj" Targets="" />
+  </Target>
+  <Target Name="SystemTray:Clean">
+    <MSBuild Projects="..\Plugins\Services\SystemTray\SystemTray.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SystemTray:Make">
+    <MSBuild Projects="..\Plugins\Services\SystemTray\SystemTray.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Weather">
+    <MSBuild Projects="..\Plugins\Services\Weather\Weather.dproj" Targets="" />
+  </Target>
+  <Target Name="Weather:Clean">
+    <MSBuild Projects="..\Plugins\Services\Weather\Weather.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Weather:Make">
+    <MSBuild Projects="..\Plugins\Services\Weather\Weather.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Actions">
+    <MSBuild Projects="..\Plugins\Services\Actions\Actions.dproj" Targets="" />
+  </Target>
+  <Target Name="Actions:Clean">
+    <MSBuild Projects="..\Plugins\Services\Actions\Actions.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Actions:Make">
+    <MSBuild Projects="..\Plugins\Services\Actions\Actions.dproj" Targets="Make" />
+  </Target>
+  <Target Name="cursors">
+    <MSBuild Projects="..\Plugins\Services\Cursors\cursors.dproj" Targets="" />
+  </Target>
+  <Target Name="cursors:Clean">
+    <MSBuild Projects="..\Plugins\Services\Cursors\cursors.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="cursors:Make">
+    <MSBuild Projects="..\Plugins\Services\Cursors\cursors.dproj" Targets="Make" />
+  </Target>
+  <Target Name="TaskSwitch">
+    <MSBuild Projects="..\Plugins\Services\TaskSwitch\TaskSwitch.dproj" Targets="" />
+  </Target>
+  <Target Name="TaskSwitch:Clean">
+    <MSBuild Projects="..\Plugins\Services\TaskSwitch\TaskSwitch.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="TaskSwitch:Make">
+    <MSBuild Projects="..\Plugins\Services\TaskSwitch\TaskSwitch.dproj" Targets="Make" />
+  </Target>
+  <Target Name="TaskManager">
+    <MSBuild Projects="..\Plugins\Services\TaskManager\TaskManager.dproj" Targets="" />
+  </Target>
+  <Target Name="TaskManager:Clean">
+    <MSBuild Projects="..\Plugins\Services\TaskManager\TaskManager.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="TaskManager:Make">
+    <MSBuild Projects="..\Plugins\Services\TaskManager\TaskManager.dproj" Targets="Make" />
+  </Target>
+  <Target Name="SystemActions">
+    <MSBuild Projects="..\Plugins\Services\SystemActions\SystemActions.dproj" Targets="" />
+  </Target>
+  <Target Name="SystemActions:Clean">
+    <MSBuild Projects="..\Plugins\Services\SystemActions\SystemActions.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SystemActions:Make">
+    <MSBuild Projects="..\Plugins\Services\SystemActions\SystemActions.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Build">
+    <CallTarget Targets="DeskArea;Exec;Hotkeys;SkinController;Startup;SystemTray;Weather;Actions;cursors;TaskSwitch;TaskManager;SystemActions" />
+  </Target>
+  <Target Name="Clean">
+    <CallTarget Targets="DeskArea:Clean;Exec:Clean;Hotkeys:Clean;SkinController:Clean;Startup:Clean;SystemTray:Clean;Weather:Clean;Actions:Clean;cursors:Clean;TaskSwitch:Clean;TaskManager:Clean;SystemActions:Clean" />
+  </Target>
+  <Target Name="Make">
+    <CallTarget Targets="DeskArea:Make;Exec:Make;Hotkeys:Make;SkinController:Make;Startup:Make;SystemTray:Make;Weather:Make;Actions:Make;cursors:Make;TaskSwitch:Make;TaskManager:Make;SystemActions:Make" />
+  </Target>
+  <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
+</Project>
