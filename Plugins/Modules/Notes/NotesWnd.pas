@@ -219,6 +219,7 @@ var
   fhandle : integer;
 begin
   NotesNewTabForm := TNotesNewTabForm.Create(self);
+  NotesNewTabForm.PopupParent := self;
   try
     if NotesNewTabForm.ShowModal = mrOk then
     begin
