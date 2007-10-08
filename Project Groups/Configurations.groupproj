@@ -24,6 +24,8 @@
     <Projects Include="..\Plugins\Configurations\SharpMenu\SharpMenu.dproj" />
     <Projects Include="..\Plugins\Configurations\Theme List\ThemeList.dproj" />
     <Projects Include="..\Plugins\Configurations\Theme Skin\ThemeSkinList.dproj" />
+    <Projects Include="..\Plugins\Configurations\VWMService\VWMService.dproj" />
+    <Projects Include="..\Plugins\Configurations\VWM\VWM.dproj" />
     <Projects Include="..\Plugins\Configurations\Wallpaper\Wallpaper.dproj" />
     <Projects Include="..\Plugins\Configurations\Weather\Weather.dproj" />
   </ItemGroup>
@@ -31,7 +33,7 @@
     <Borland.Personality>Default.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+<BorlandProject xmlns=""><Default.Personality></Default.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Target Name="Curses">
     <MSBuild Projects="..\Plugins\Configurations\Curses\Curses.dproj" Targets="" />
@@ -231,14 +233,32 @@
   <Target Name="BatteryMonitor:Make">
     <MSBuild Projects="..\Plugins\Configurations\BatteryMonitor\BatteryMonitor.dproj" Targets="Make" />
   </Target>
+  <Target Name="VWMService">
+    <MSBuild Projects="..\Plugins\Configurations\VWMService\VWMService.dproj" Targets="" />
+  </Target>
+  <Target Name="VWMService:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\VWMService\VWMService.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="VWMService:Make">
+    <MSBuild Projects="..\Plugins\Configurations\VWMService\VWMService.dproj" Targets="Make" />
+  </Target>
+  <Target Name="VWM">
+    <MSBuild Projects="..\Plugins\Configurations\VWM\VWM.dproj" Targets="" />
+  </Target>
+  <Target Name="VWM:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\VWM\VWM.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="VWM:Make">
+    <MSBuild Projects="..\Plugins\Configurations\VWM\VWM.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="Curses;Desktop;Hotkeys;IconList;Scheme;SharpBarList;SharpDesk;SharpMenu;ThemeList;ThemeSkinList;Wallpaper;Weather;Font;DeskArea;Image;Link;MiniScmd;Notes;RecycleBin;ModuleManager;QuickScript;BatteryMonitor" />
+    <CallTarget Targets="Curses;Desktop;Hotkeys;IconList;Scheme;SharpBarList;SharpDesk;SharpMenu;ThemeList;ThemeSkinList;Wallpaper;Weather;Font;DeskArea;Image;Link;MiniScmd;Notes;RecycleBin;ModuleManager;QuickScript;BatteryMonitor;VWMService;VWM" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Curses:Clean;Desktop:Clean;Hotkeys:Clean;IconList:Clean;Scheme:Clean;SharpBarList:Clean;SharpDesk:Clean;SharpMenu:Clean;ThemeList:Clean;ThemeSkinList:Clean;Wallpaper:Clean;Weather:Clean;Font:Clean;DeskArea:Clean;Image:Clean;Link:Clean;MiniScmd:Clean;Notes:Clean;RecycleBin:Clean;ModuleManager:Clean;QuickScript:Clean;BatteryMonitor:Clean" />
+    <CallTarget Targets="Curses:Clean;Desktop:Clean;Hotkeys:Clean;IconList:Clean;Scheme:Clean;SharpBarList:Clean;SharpDesk:Clean;SharpMenu:Clean;ThemeList:Clean;ThemeSkinList:Clean;Wallpaper:Clean;Weather:Clean;Font:Clean;DeskArea:Clean;Image:Clean;Link:Clean;MiniScmd:Clean;Notes:Clean;RecycleBin:Clean;ModuleManager:Clean;QuickScript:Clean;BatteryMonitor:Clean;VWMService:Clean;VWM:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Curses:Make;Desktop:Make;Hotkeys:Make;IconList:Make;Scheme:Make;SharpBarList:Make;SharpDesk:Make;SharpMenu:Make;ThemeList:Make;ThemeSkinList:Make;Wallpaper:Make;Weather:Make;Font:Make;DeskArea:Make;Image:Make;Link:Make;MiniScmd:Make;Notes:Make;RecycleBin:Make;ModuleManager:Make;QuickScript:Make;BatteryMonitor:Make" />
+    <CallTarget Targets="Curses:Make;Desktop:Make;Hotkeys:Make;IconList:Make;Scheme:Make;SharpBarList:Make;SharpDesk:Make;SharpMenu:Make;ThemeList:Make;ThemeSkinList:Make;Wallpaper:Make;Weather:Make;Font:Make;DeskArea:Make;Image:Make;Link:Make;MiniScmd:Make;Notes:Make;RecycleBin:Make;ModuleManager:Make;QuickScript:Make;BatteryMonitor:Make;VWMService:Make;VWM:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>

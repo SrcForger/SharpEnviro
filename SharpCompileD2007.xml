@@ -20,6 +20,8 @@
      <project Name="SharpMenu" Type="DLL">Plugins\Configurations\SharpMenu\SharpMenu.dproj</project>  
      <project Name="Skin" Type="DLL">Plugins\Configurations\Theme Skin\ThemeSkinList.dproj</project>  
      <project Name="Theme List" Type="DLL">Plugins\Configurations\Theme List\ThemeList.dproj</project>  
+     <project Name="VWM" Type="DLL">Plugins\Configurations\VWM\VWM.dproj</project>  
+     <project Name="VWMService" Type="DLL">Plugins\Configurations\VWMService\VWMService.dproj</project>  
      <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Wallpaper\Wallpaper.dproj</project>  
      <project Name="Weather" Type="DLL">Plugins\Configurations\Weather\Weather.dproj</project>  
   </package>
@@ -62,6 +64,7 @@
      <project Name="SystemTray" Type="DLL" >Plugins\Modules\SystemTray\SystemTray.dproj</project>
      <project Name="Taskbar" Type="DLL" >Plugins\Modules\Taskbar\Taskbar.dproj</project>
      <project Name="Volume Control" Type="DLL" >Plugins\Modules\VolumeControl\VolumeControl.dproj</project>  
+     <project Name="VWM" Type="DLL" >Plugins\Modules\VWM\VWM.dproj</project>  
      <project Name="Weather" Type="DLL">Plugins\Modules\Weather\Weather.dproj</project>   
   </package>
   <package Name="Objects">
@@ -81,6 +84,7 @@
      <project Name="SystemTray" Type="DLL" >Plugins\Services\SystemTray\SystemTray.dproj</project>  
      <project Name="TaskManager" Type="DLL" >Plugins\Services\TaskManager\TaskManager.dproj</project>  
      <project Name="TaskSwitch" Type="DLL" >Plugins\Services\TaskSwitch\TaskSwitch.dproj</project>  
+     <project Name="VWM" Type="DLL" >Plugins\Services\VWM\VWM.dproj</project>  
      <project Name="Weather" Type="DLL" requ="Delphi 2005 Professional">Plugins\Services\Weather\Weather.dproj</project>  
   </package>
 </SharpCompile>

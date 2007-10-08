@@ -15,13 +15,14 @@
     <Projects Include="..\Plugins\Services\SystemTray\SystemTray.dproj" />
     <Projects Include="..\Plugins\Services\TaskManager\TaskManager.dproj" />
     <Projects Include="..\Plugins\Services\TaskSwitch\TaskSwitch.dproj" />
+    <Projects Include="..\Plugins\Services\VWM\VWM.dproj" />
     <Projects Include="..\Plugins\Services\Weather\Weather.dproj" />
   </ItemGroup>
   <ProjectExtensions>
     <Borland.Personality>Default.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+<BorlandProject xmlns=""><Default.Personality></Default.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Target Name="DeskArea">
     <MSBuild Projects="..\Plugins\Services\DeskArea\DeskArea.dproj" Targets="" />
@@ -131,14 +132,23 @@
   <Target Name="SystemActions:Make">
     <MSBuild Projects="..\Plugins\Services\SystemActions\SystemActions.dproj" Targets="Make" />
   </Target>
+  <Target Name="VWM">
+    <MSBuild Projects="..\Plugins\Services\VWM\VWM.dproj" Targets="" />
+  </Target>
+  <Target Name="VWM:Clean">
+    <MSBuild Projects="..\Plugins\Services\VWM\VWM.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="VWM:Make">
+    <MSBuild Projects="..\Plugins\Services\VWM\VWM.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="DeskArea;Exec;Hotkeys;SkinController;Startup;SystemTray;Weather;Actions;cursors;TaskSwitch;TaskManager;SystemActions" />
+    <CallTarget Targets="DeskArea;Exec;Hotkeys;SkinController;Startup;SystemTray;Weather;Actions;cursors;TaskSwitch;TaskManager;SystemActions;VWM" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="DeskArea:Clean;Exec:Clean;Hotkeys:Clean;SkinController:Clean;Startup:Clean;SystemTray:Clean;Weather:Clean;Actions:Clean;cursors:Clean;TaskSwitch:Clean;TaskManager:Clean;SystemActions:Clean" />
+    <CallTarget Targets="DeskArea:Clean;Exec:Clean;Hotkeys:Clean;SkinController:Clean;Startup:Clean;SystemTray:Clean;Weather:Clean;Actions:Clean;cursors:Clean;TaskSwitch:Clean;TaskManager:Clean;SystemActions:Clean;VWM:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="DeskArea:Make;Exec:Make;Hotkeys:Make;SkinController:Make;Startup:Make;SystemTray:Make;Weather:Make;Actions:Make;cursors:Make;TaskSwitch:Make;TaskManager:Make;SystemActions:Make" />
+    <CallTarget Targets="DeskArea:Make;Exec:Make;Hotkeys:Make;SkinController:Make;Startup:Make;SystemTray:Make;Weather:Make;Actions:Make;cursors:Make;TaskSwitch:Make;TaskManager:Make;SystemActions:Make;VWM:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>
