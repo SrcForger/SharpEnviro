@@ -63,7 +63,7 @@ uses
   // PNG Image
   pngimage, JvExExtCtrls, JvShape, JvComponentBase,
   SharpEBaseControls, SharpEEdit, TranComp, JvLabel, PngImageList, PngBitBtn,
-  JvExStdCtrls, JvMemo, VistaAltFixUnit, PngSpeedButton, JvErrorIndicator,
+  JvExStdCtrls, JvMemo, PngSpeedButton, JvErrorIndicator,
   JvValidators, JvBalloonHint, uHotkeyServiceList;
 
 type

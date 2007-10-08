@@ -62,6 +62,7 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
           Font.Name = 'Tahoma'
           Font.Style = [fsBold]
           ParentFont = False
+          Transparent = True
           HotTrackFont.Charset = DEFAULT_CHARSET
           HotTrackFont.Color = clWindowText
           HotTrackFont.Height = -11
@@ -260,6 +261,7 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
       end>
     Left = 352
     Top = 32
+    Bitmap = {}
   end
   object errorinc: TJvErrorIndicator
     BlinkRate = 200
