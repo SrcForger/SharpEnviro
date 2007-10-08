@@ -14,8 +14,8 @@
       <Icon>_Services\_Servicedlls\DeskArea.png</Icon>
     </DeskArea>
     <VWM>
-      <Dll>_Services\_Servicedlls\VWM.dll</Dll>
-      <Icon>_Services\_Servicedlls\VWM.png</Icon>
+      <Dll>_Services\_Servicedlls\VWMService.dll</Dll>
+      <Icon>_Services\_Servicedlls\VWMService.png</Icon>
     </VWM>	
   </Sections>
 </SharpCenter>
