@@ -140,7 +140,7 @@ begin
 
   if (ACol = 4 ) then
   begin
-    if (CompareText(AItem.SubItemText[4],'Configure') = 0) then
+    if (CompareText(AItem.SubItemText[4],'<font color="clNavy"><u>Configure') = 0) then
     begin
       BarItem :=  TBarItem(AItem.Data);
       CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
@@ -152,7 +152,7 @@ begin
   if (ACol = 2) or (ACol = 3) then
   begin
     BarItem :=  TBarItem(AItem.Data);
-    if (CompareText(AItem.SubItemText[2],'Start') = 0) and (ACol = 2) then
+    if (CompareText(AItem.SubItemText[2],'<font color="clNavy"><u>Start') = 0) and (ACol = 2) then
     begin
       SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpBar.exe'+
                             ' -load:' + inttostr(BarItem.ID) +
@@ -160,7 +160,7 @@ begin
                             ' -noLASB');
       UpdateBarStatus;
     end
-    else if (CompareText(AItem.SubItemText[2],'Stop') = 0) and (ACol = 2)  then
+    else if (CompareText(AItem.SubItemText[2],'<font color="clNavy"><u>Stop') = 0) and (ACol = 2)  then
     begin
       wnd := FindWindow(nil,PChar('SharpBar_' + inttostr(BarItem.ID)));
       if wnd <> 0 then
@@ -170,7 +170,7 @@ begin
     end
     else
     begin
-      enable := (CompareText(AItem.SubItemText[3],'Enable') = 0) and (ACol = 3);
+      enable := (CompareText(AItem.SubItemText[3],'<font color="clNavy"><u>Enable') = 0) and (ACol = 3);
       if not enable then
       begin
         wnd := FindWindow(nil,PChar('SharpBar_' + inttostr(BarItem.ID)));

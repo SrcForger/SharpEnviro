@@ -117,6 +117,7 @@ object frmMMList: TfrmMMList
       end>
     Left = 304
     Top = 192
+    Bitmap = {}
   end
   object pilDefault: TPngImageList
     PngImages = <
@@ -567,5 +568,6 @@ object frmMMList: TfrmMMList
       end>
     Left = 268
     Top = 192
+    Bitmap = {}
   end
 end

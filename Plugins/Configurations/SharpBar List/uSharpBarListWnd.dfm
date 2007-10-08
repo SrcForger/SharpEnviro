@@ -147,6 +147,7 @@ object frmBarList: TfrmBarList
       end>
     Left = 304
     Top = 192
+    Bitmap = {}
   end
   object pilDefault: TPngImageList
     PngImages = <
@@ -597,6 +598,7 @@ object frmBarList: TfrmBarList
       end>
     Left = 268
     Top = 192
+    Bitmap = {}
   end
   object Timer1: TTimer
     Interval = 500

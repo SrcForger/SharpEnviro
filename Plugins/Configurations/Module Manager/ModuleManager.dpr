@@ -183,7 +183,7 @@ end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);
 begin
-  ATabs.Add('Modules',nil,'',IntToStr(frmMMList.lbModuleList.Count));
+  ATabs.Add('Modules',nil,'',IntToStr(frmMMList.lbModuleList.Count - 1));
 end;
 
 function SetSettingType : TSU_UPDATE_ENUM;

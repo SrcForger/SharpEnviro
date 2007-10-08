@@ -129,7 +129,7 @@ begin
     
   if (ACol = 4 ) then
   begin
-    if (CompareText(AItem.SubItemText[4],'Configure') = 0) then
+    if (CompareText(AItem.SubItemText[4],'<font color="clNavy"><u>Configure') = 0) then
     begin
       s := ModuleItem.MFile;
       setlength(s,length(s) - length(ExtractFileExt(s)));
@@ -145,7 +145,7 @@ begin
   // Start / Stop / Disable / Enable clicked
   if (ACol = 2) or (ACol = 3) then
   begin
-    if ((CompareText(AItem.SubItemText[2],'Move Up') = 0)) and (ACol = 2) then
+    if ((CompareText(AItem.SubItemText[2],'<font color="clNavy"><u>Move Up') = 0)) and (ACol = 2) then
     begin
       // Move Up
       if SendMessage(wnd,WM_BARCOMMAND,BC_MOVEUP,ModuleItem.ID) = BCR_SUCCESS then
@@ -155,7 +155,7 @@ begin
         lbModuleList.Items.Exchange(index,max(0,index-1));
       end;
     end
-    else if ((CompareText(AItem.SubItemText[3],'Move Down') = 0)) and (ACol = 3) then
+    else if ((CompareText(AItem.SubItemText[3],'<font color="clNavy"><u>Move Down') = 0)) and (ACol = 3) then
     begin
       // Move Down
       if SendMessage(wnd,WM_BARCOMMAND,BC_MOVEDOWN,ModuleItem.ID) = BCR_SUCCESS then
