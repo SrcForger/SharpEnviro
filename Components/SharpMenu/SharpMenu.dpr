@@ -101,6 +101,7 @@ end;
 begin
   Application.Initialize;
   Application.ShowMainForm := False;
+  {$IFDEF VER185} Application.MainFormOnTaskBar := True; {$ENDIF}
 
   st := GetCurrentTime;
   MutexHandle := CreateMutex(nil, TRUE, 'SharpMenuMutex');
