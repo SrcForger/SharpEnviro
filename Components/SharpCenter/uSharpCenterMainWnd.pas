@@ -68,7 +68,7 @@ uses
   SharpEListBoxEx,
   PngBitBtn,
   SharpThemeApi,
-  Types, XPMan, SharpEPageControl, SharpCenterApi;
+  Types, SharpEPageControl, SharpCenterApi;
 
 const
   cEditTabHide = 0;
@@ -106,7 +106,6 @@ type
     lbFavs: TSharpEListBoxEx;
     pnlLivePreview: TPanel;
     imgLivePreview: TImage32;
-    XPManifest1: TXPManifest;
     pnlPluginContainer: TSharpEPageControl;
     sbPlugin: TScrollBox;
     pnlPlugin: TPanel;

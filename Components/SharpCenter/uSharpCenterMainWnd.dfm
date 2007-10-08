@@ -1460,6 +1460,10 @@ object SharpCenterWnd: TSharpCenterWnd
               ColumnAlign = calRight
               StretchColumn = False
             end>
+          Colors.BorderColor = clBtnFace
+          Colors.BorderColorSelected = clBtnShadow
+          Colors.ItemColor = clWindow
+          Colors.ItemColorSelected = clBtnFace
           ItemHeight = 26
           OnClickItem = lbTreeClickItem
           OnGetCellColor = lbTreeGetCellColor
@@ -1561,6 +1565,10 @@ object SharpCenterWnd: TSharpCenterWnd
                   ColumnAlign = calLeft
                   StretchColumn = False
                 end>
+              Colors.BorderColor = clBtnFace
+              Colors.BorderColorSelected = clBtnShadow
+              Colors.ItemColor = clWindow
+              Colors.ItemColorSelected = clBtnFace
               Color = 8447997
               ItemHeight = 26
               AutosizeGrid = False
@@ -2057,7 +2065,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               98)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -654
+              Left = -658
               Top = 35
               Width = 23
               Height = 22
@@ -2509,14 +2517,13 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = -8
+              Width = 0
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
-              ExplicitWidth = 0
             end
           end
         end
@@ -9840,9 +9847,5 @@ object SharpCenterWnd: TSharpCenterWnd
     Left = 68
     Top = 260
     Bitmap = {}
-  end
-  object XPManifest1: TXPManifest
-    Left = 84
-    Top = 440
   end
 end
