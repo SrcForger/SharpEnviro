@@ -402,7 +402,7 @@ begin
   else
   begin
     MakeCFG(Project, bDebug);
-    cmd := 'dcc32 ' + Project.Path;
+    cmd := 'dcc32 ' + LeftStr(Project.Path, Length(Project.Path) - Length(ExtractFileExt(Project.Path))) + 'dpr';
   end;
 
   DC.CommandLine := cmd;
@@ -410,10 +410,7 @@ begin
   iReturn := DC.ExitCode;
   DC.Free;
 
-  {if bMSBuild then
-    SetEnvironmentVar('PATH', sPath)
-  else}
-    DeleteFile(PChar(Dir + 'Dcc32.cfg'));
+  DeleteFile(PChar(Dir + 'Dcc32.cfg'));
 
   s := ChangeFileExt(ExtractFileName(Project.Path), '');
   if (FileExists(Project.OutputDir + s + '.dll')) then
