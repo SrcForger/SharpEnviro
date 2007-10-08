@@ -232,6 +232,7 @@ begin
   self.DoubleBuffered := True;
   Self.BorderWidth := 0;
   self.Color := clWindow;
+  Self.ParentColor := False;
   Self.ParentBackground := false;
 
   // Create the tabs
@@ -248,11 +249,12 @@ begin
 
     Top := 0;
     FTabs.Width := Self.Width;
-    Left := 0;
+    FTabs.Left := 0;
     Border := True;
     PngImageList := FPngImageList;
-    DoubleBuffered := True;
-    ParentBackground := False;
+    //DoubleBuffered := True;
+    //ParentBackground := False;
+    //ParentColor := False;
 
     BkgColor := clwindow;
     Color := clwindow;
@@ -263,7 +265,7 @@ begin
     BorderSelectedColor := FSCS.EditTabBordCol;
 
     OnTabClick := TabClickEvent;
-    SendToBack;
+    FTabs.SendToBack;
 
     Add('', 0);
     Add('', 1);
@@ -305,6 +307,7 @@ begin
     tmpPanel.BevelInner := bvNone;
     tmpPanel.BevelOuter := bvNone;
     tmpPanel.ParentBackground := False;
+    tmpPanel.ParentColor := False;
     tmpPanel.Color := clWindow;
     tmpPanel.Top := 5;
   end;
@@ -340,10 +343,10 @@ begin
     VerticalAlignment := taVerticalCenter;
 
     //AutoSize := True;
-    Left := 1;
-    Top := 1;
+    Left := 0;
+    Top := 0;
     Width := FAddColorButton.Left - 4;
-    Height := FTabs.Height - 2;
+    Height := FTabs.Height;
 
     Color := clWindow;
     ParentBackground := False;
@@ -729,12 +732,12 @@ begin
     FTabContainer.Height := n;
 
   // Set Tab Container Width
-  if FTabContainer.Width <> Self.ClientWidth then
-    FTabContainer.Width := Self.ClientWidth;
+  if FTabContainer.Width <> Self.Width then
+    FTabContainer.Width := Self.Width;
 
   // Set TabList width
-  if FTabs.Width <> Self.ClientWidth then
-    FTabs.Width := Self.ClientWidth;
+  if FTabs.Width <> Self.Width then
+    FTabs.Width := Self.Width;
 
   // Show color picker
   if not (FColorPicker.Visible) then
@@ -772,7 +775,7 @@ begin
     iWidthLT, iY + 10);
   rRightSlider := Rect(rRightText.Right, iY, rRightText.Right - iSpacer +
     iSliderWidth, iY + 10);
-  rRightSliderVal := Rect(rRightSlider.Right, iY, Self.ClientWidth - iSpacer - 4, iY +
+  rRightSliderVal := Rect(rRightSlider.Right, iY, Self.Width - iSpacer - 4, iY +
     10);
 
   PositionSlider(FHueSlider, 'Hue:', rLeftText, rLeftSlider, rLeftSliderVal, 0,
@@ -808,8 +811,8 @@ begin
 
 
   FTabContainer.Height := Self.Height - FTabs.Height + 1;
-  FTabContainer.Width := Self.ClientWidth;
-  FTabs.Width := Self.ClientWidth;
+  FTabContainer.Width := Self.Width;
+  FTabs.Width := Self.Width;
   FColorPicker.Hide;
   FAddColorButton.Hide;
   FTabs.TabList.Item[1].Visible := False;
@@ -1117,7 +1120,7 @@ end;
 
 procedure TSharpEColorEditor.GetWidth(ASender: TObject; var AWidth: Integer);
 begin
-  AWidth := FTabContainer.ClientWidth - 24;
+  AWidth := FTabContainer.Width - 24;
 end;
 
 procedure TSharpEColorEditor.UpdateSwatchBitmap(ASender: TObject;
@@ -1321,8 +1324,8 @@ var
 begin
 
   FTabContainer.Height := Self.Height - FTabs.Height + 1;
-  FTabContainer.Width := Self.ClientWidth;
-  FTabs.Width := Self.ClientWidth;
+  FTabContainer.Width := Self.Width;
+  FTabs.Width := Self.Width;
   FColorPicker.Hide;
   FAddColorButton.Hide;
   FTabs.TabList.Item[1].Visible := False;

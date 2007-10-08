@@ -1,10 +1,10 @@
 object MainWnd: TMainWnd
   Left = 0
   Top = 0
-  Width = 464
-  Height = 342
   BorderWidth = 8
   Caption = 'v'
+  ClientHeight = 290
+  ClientWidth = 432
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -40,6 +40,7 @@ object MainWnd: TMainWnd
     Width = 432
     Height = 24
     Align = alTop
+    ParentColor = False
     Expanded = False
     GroupIndex = 0
     Caption = 'Scheme Test'
@@ -49,6 +50,7 @@ object MainWnd: TMainWnd
     Value = 0
     Visible = True
     SwatchManager = SharpESwatchManager1
+    ExplicitLeft = -8
     DesignSize = (
       432
       24)

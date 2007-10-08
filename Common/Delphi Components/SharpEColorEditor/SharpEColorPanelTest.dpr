@@ -1,15 +1,6 @@
 program SharpEColorPanelTest;
 
-{%File 'ModelSupport\SharpEColorPanel\SharpEColorPanel.txvpck'}
-{%File 'ModelSupport\SharpAPI\SharpAPI.txvpck'}
-{%File 'ModelSupport\uMain\uMain.txvpck'}
-{%File 'ModelSupport\SharpGraphicsUtils\SharpGraphicsUtils.txvpck'}
-{%File 'ModelSupport\uSharpeColorBox\uSharpeColorBox.txvpck'}
-{%File 'ModelSupport\SharpCenterScheme\SharpCenterScheme.txvpck'}
-{%File 'ModelSupport\SharpERoundPanel\SharpERoundPanel.txvpck'}
-{%File 'ModelSupport\SharpThemeApi\SharpThemeApi.txvpck'}
-{%File 'ModelSupport\uSharpETabList\uSharpETabList.txvpck'}
-{%File 'ModelSupport\default.txvpck'}
+
 
 uses
   Forms,
@@ -26,7 +17,9 @@ uses
   uSchemeList in '..\..\..\Plugins\Configurations\Scheme\uSchemeList.pas',
   SharpECenterScheme in '..\SharpECenterScheme\SharpECenterScheme.pas',
   SharpESwatchManager in '..\SharpESwatchManager\SharpESwatchManager.pas',
-  SharpETabList in '..\SharpETabList\SharpETabList.pas';
+  SharpETabList in '..\SharpETabList\SharpETabList.pas',
+  uVistaFuncs in '..\..\Units\VistaFuncs\uVistaFuncs.pas',
+  SharpEPageControl in '..\SharpEPageControl\SharpEPageControl.pas';
 
 {$R *.res}
 
