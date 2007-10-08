@@ -42,10 +42,6 @@ uses
   Graphics,
   Registry,
 
-  // Calc Express
-  CalcExpress,
-
-
   // Common
   SharpApi,
 
@@ -72,8 +68,6 @@ type
 type
   TSharpExec = class
   private
-
-    Calc: TCalcExpress;
     FDebugText: String;
     FUseDebug: Boolean;
 
@@ -108,7 +102,6 @@ type
       string; fullpath:boolean);
     function FileExistsIn(FileName: string; location: string; extension:
       string): string;
-    function IsCalcStrValid(Str: string): Boolean;
     function ShellOpenFile(hWnd: HWND; AFileName, AParams, ADefaultDir: string; Elevate: Boolean):
       integer;
     procedure SaveRecentItem(Str: string; SaveHistory: Boolean);
@@ -246,7 +239,6 @@ var
   ExecSettingsFn, PiListFn, PiAliasFn, RiListFn, UiListFn: string;
 begin
   // Create Calculator Component
-  Calc := TCalcExpress.Create(nil);
   UseDebug := False;
 
   // Initialise XML Filenames
@@ -281,12 +273,10 @@ end;
 
 function TSharpExec.ExecuteText(text: string; SaveHistory: Boolean; Elevate: Boolean): boolean;
 var
-  search, url: string;
+  url: string;
   FileCommandl: TExecFileCommandl;
   handle: THandle;
   oldhandle: THandle;
-  args: array[0..100] of extended; // array of arguments - variable values
-  Valid: Boolean;
   iResult: Integer;
 
   link: TShellLink;
@@ -371,28 +361,6 @@ begin
           Result := True;
           Exit;
         end;
-      end
-      else if (Pos('#',
-        LowerCase(text)) = 1) then begin
-        Debug('ExecuteType: Calculation', DMT_TRACE);
-
-      // Extract the calculation formulae
-        search := StrAfter('#', text);
-
-      // Check the calculation formula is valid
-        Valid := IsCalcStrValid(search);
-        if Valid then begin
-          Calc.Formula := search;
-          calcanswer := search + '=' + FloatToStr(Calc.calc(args));
-        end
-        else
-          CalcAnswer := cErrorFormula;
-
-        ShowAns := True;
-        BarMsg('scmd', Pchar(CalcAnswer));
-
-        Result := True;
-        Exit;
       end
       else if (Pos('http',
         LowerCase(text)) = 1) or (Pos('www', LowerCase(text)) =
@@ -599,51 +567,12 @@ begin
   PathIncludeList.Free;
   AliasList.Free;
   ExecSettings.Free;
-  Calc.Free;
   RecentItemList.Free;
   UsedItemList.Free;
 
   FAppPathList.Free;
 
   inherited Destroy;
-end;
-
-{=============================================================================
-  Procedure: IsCalcStrValid
-    Arguments: Str: String
-    Result:    Boolean
-==============================================================================}
-
-function TSharpExec.IsCalcStrValid(Str: string): Boolean;
-var
-  i: integer;
-  Valid: Boolean;
-begin
-  Valid := False;
-
-  for i := 0 to Pred(length(Str)) do begin
-    Valid := False;
-    case Str[i + 1] of
-      '(': Valid := True;
-      ')': Valid := True;
-      '+': Valid := True;
-      '-': Valid := True;
-      '*': Valid := True;
-      '/': Valid := True;
-      '^': Valid := True;
-      '.': Valid := True;
-      'a'..'z', 'A'..'Z', '_': Valid := True;
-      '1'..'9', '0': Valid := True;
-    end;
-
-    if Valid = False then
-      Break;
-  end;
-
-  if Valid then
-    Result := True
-  else
-    Result := False;
 end;
 
 function TSharpExec.ShellOpenFile(hWnd: HWND; AFileName, AParams, ADefaultDir:
