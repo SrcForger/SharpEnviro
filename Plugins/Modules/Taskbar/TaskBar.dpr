@@ -54,7 +54,8 @@ uses
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas',
   SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
-  VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas';
+  VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
+  uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas';
 
 type
   TModule = class

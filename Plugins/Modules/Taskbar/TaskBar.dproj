@@ -46,6 +46,7 @@
     <DCCReference Include="..\..\..\Common\Units\MouseTimer\MouseTimer.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\graphicsFX.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas" />
+    <DCCReference Include="..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas" />
     <DCCReference Include="..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas" />
     <DCCReference Include="..\..\..\Common\Units\VWM\VWMFunctions.pas" />
     <DCCReference Include="..\..\..\Components\SharpBar\uSharpBarAPI.pas" />

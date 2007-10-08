@@ -45,7 +45,8 @@ uses
   SharpCenterApi,
   MainWnd in 'MainWnd.pas' {MainForm},
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
-  SharpGraphicsUtils in '..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas';
+  SharpGraphicsUtils in '..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
+  uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas';
 
 type
   TModule = class

@@ -7,7 +7,7 @@
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\Modules\VWM.dll</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>E:\SharpE\Modules\VWM.dll</DCC_DependencyCheckOutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -42,6 +42,7 @@
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas" />
+    <DCCReference Include="..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas" />
     <DCCReference Include="..\..\..\Common\Units\VWM\VWMFunctions.pas" />
     <DCCReference Include="MainWnd.pas">
       <Form>MainForm</Form>
