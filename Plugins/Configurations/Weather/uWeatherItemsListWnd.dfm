@@ -23,34 +23,27 @@ object frmItemsList: TfrmItemsList
     Columns = <
       item
         Width = 50
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
-        Autosize = False
         StretchColumn = False
         Images = imlWeatherGlyphs
       end
       item
         Width = 200
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taRightJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
-        Autosize = False
         StretchColumn = False
         Images = imlWeatherGlyphs
       end>
+    Colors.BorderColor = clBtnFace
+    Colors.BorderColorSelected = clBtnShadow
+    Colors.ItemColor = clWindow
+    Colors.ItemColorSelected = clBtnFace
     OnResize = lbWeatherListResize
-    ItemHeight = 24
+    ItemHeight = 26
     OnClickItem = lbWeatherListClickItem
-    OnGetCellTextColor = lbWeatherListGetCellTextColor
     AutosizeGrid = True
     Borderstyle = bsNone
     Align = alTop
@@ -535,5 +528,6 @@ object frmItemsList: TfrmItemsList
       end>
     Left = 300
     Top = 220
+    Bitmap = {}
   end
 end

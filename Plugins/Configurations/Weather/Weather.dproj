@@ -36,8 +36,6 @@
       
       
       
-      
-      
       <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
     </Excluded_Packages><Source><Source Name="MainSource">Weather.DPR</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
