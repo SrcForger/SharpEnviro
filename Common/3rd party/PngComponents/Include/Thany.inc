@@ -9,6 +9,18 @@
    Thany components do not support 16-bit Windows.
 {$ENDIF}
 
+
+{$IFDEF VER185}
+  {$DEFINE THANY_COMPILER_10}
+  {$IFDEF BCB}
+    {$DEFINE THANY_CPPB}
+    {$DEFINE THANY_CPPB_10}
+  {$ELSE}
+    {$DEFINE THANY_DELPHI}
+    {$DEFINE THANY_DELPHI_10}
+  {$ENDIF}
+{$ENDIF}
+
 {$IFDEF VER180}
   {$DEFINE THANY_COMPILER_10}
   {$IFDEF BCB}
