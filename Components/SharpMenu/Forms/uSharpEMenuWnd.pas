@@ -236,11 +236,9 @@ end;
 
 procedure TSharpEMenuWnd.FormCreate(Sender: TObject);
 begin
-  ShowWindow( Application.Handle, SW_HIDE );
-  SetWindowLong( Application.Handle, GWL_EXSTYLE,
-                 GetWindowLong(Application.Handle, GWL_EXSTYLE) or
-                 WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW);
-  ShowWindow( Application.Handle, SW_SHOW );
+  SetWindowLong(Handle, GWL_EXSTYLE,
+                GetWindowLong(Application.Handle, GWL_EXSTYLE) or
+                WS_EX_TOOLWINDOW and not WS_EX_APPWINDOW);
 
   FOffset := 0;
   FRootMenu := False;
