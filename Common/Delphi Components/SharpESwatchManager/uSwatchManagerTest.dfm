@@ -1,9 +1,9 @@
 object Form3: TForm3
   Left = 0
   Top = 0
-  Width = 434
-  Height = 320
   Caption = 'Form3'
+  ClientHeight = 284
+  ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -44,54 +44,6 @@ object Form3: TForm3
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <
       item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
-        Color = clBlack
-      end
-      item
         Color = 16744448
       end
       item
@@ -99,6 +51,54 @@ object Form3: TForm3
       end
       item
         Color = 65408
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
+      end
+      item
+        Color = clBlack
       end
       item
         Color = clBlack

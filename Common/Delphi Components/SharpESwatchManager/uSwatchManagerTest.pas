@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, SharpESwatchManager, GR32_Image, GR32, StdCtrls, GR32_Layers;
+  Dialogs, SharpESwatchManager, GR32_Image, GR32, StdCtrls, GR32_Layers,
+  Types;
 
 type
   TForm3 = class(TForm)

@@ -470,6 +470,9 @@ var
 
   tmpBitmap: TBitmap32;
 begin
+  y := 0;
+  swatchWidth := 0;
+
   if Not(FUpdate) then begin
     exit;
   end;
@@ -497,7 +500,6 @@ begin
   For i := 0 to Pred(FSwatches.Count) do begin
 
     r := Rect(x+FSwatchSpacing,y,x+FSwatchWidth+FSwatchSpacing,y+FSwatchHeight);
-    //tmpBitmap.SetSize(FWidth,r.Bottom+4);
 
     // Calc Width
     if ((FSwatches.Item[i].ColorName <> '') and (FShowCaptions)) then begin
@@ -601,6 +603,8 @@ var
   x, y, w, h: Integer;
   rTextBorder, rText,r : TRect;
 begin
+  tmpOutline := nil;
+  tmpPoly := nil;
   x := ASwatch.SwatchRect.Left;
   y := ASwatch.SwatchRect.Top;
   w := FSwatchWidth;
