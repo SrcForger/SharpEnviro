@@ -57,8 +57,12 @@ object frmSchemeList: TfrmSchemeList
         ColumnAlign = calRight
         StretchColumn = False
       end>
+    Colors.BorderColor = clBtnFace
+    Colors.BorderColorSelected = clBtnShadow
+    Colors.ItemColor = clWindow
+    Colors.ItemColorSelected = clBtnFace
     OnResize = lbSchemeListResize
-    ItemHeight = 25
+    ItemHeight = 26
     OnClickItem = lbSchemeListClickItem
     OnGetCellCursor = lbSchemeListGetCellCursor
     OnGetCellText = lbSchemeListGetCellText
@@ -96,6 +100,7 @@ object frmSchemeList: TfrmSchemeList
       end>
     Left = 284
     Top = 64
+    Bitmap = {}
   end
   object imlCol2: TPngImageList
     PngImages = <
@@ -612,6 +617,7 @@ object frmSchemeList: TfrmSchemeList
       end>
     Left = 280
     Top = 112
+    Bitmap = {}
   end
   object bmlMain: TBitmap32List
     Bitmaps = <

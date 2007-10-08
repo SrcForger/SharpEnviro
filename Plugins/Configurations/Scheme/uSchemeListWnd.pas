@@ -126,7 +126,7 @@ begin
   begin
     BC(True, scbAddTab);
     BC(True, scbEditTab);
-    BC(True, scbDeleteTab);
+    BC(False, scbDeleteTab);
     lbSchemeList.Enabled := True;
   end;
 end;
@@ -134,7 +134,6 @@ end;
 procedure TfrmSchemeList.CreatePreviewBitmap(var ABmp: TBitmap32);
 var
   bmp: TBitmap32;
-  bmpTint: TBitmap32;
   y, x: Integer;
   c: TColor;
   cx, cy: Integer;
@@ -267,6 +266,11 @@ begin
     tmpSchemeItem := TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
     FSchemeManager.Copy(tmpSchemeItem);
     Timer1.Enabled := True;
+  end else
+  if ACol = 2 then begin
+    tmpSchemeItem := TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
+    FSchemeManager.Delete(tmpSchemeItem);
+    Timer1.Enabled := True;
   end;
 
   lbSchemeList.Update;
@@ -314,7 +318,12 @@ end;
 procedure TfrmSchemeList.Timer1Timer(Sender: TObject);
 begin
   Timer1.Enabled := False;
-  BuildSchemeList;
+
+  Try
+    BuildSchemeList;
+  Finally
+    CenterUpdatePreview;
+  End;
 end;
 
 end.

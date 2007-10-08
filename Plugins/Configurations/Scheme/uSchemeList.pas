@@ -96,7 +96,7 @@ type
   public
 
     procedure Edit(AName, ASchemeItem: TSchemeItem);
-    procedure Delete(AName: string);
+    procedure Delete(ASchemeItem: TSchemeItem);
     procedure SetDefaultScheme(AName: string);
 
     procedure Copy(ASchemeItem: TSchemeItem);
@@ -432,8 +432,32 @@ begin
 
 end;
 
-procedure TSchemeManager.Delete(AName: string);
+procedure TSchemeManager.Delete(ASchemeItem: TSchemeItem);
+var
+  sFilename: String;
+  sSkinDir, sDeleteName: string;
+  sSchemeDir: string;
+  xml: TJvSimpleXML;
 begin
+
+  sSkinDir := GetSharpeDirectory + 'skins';
+  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, GetSkinName]);
+  sDeleteName := ASchemeItem.Filename;
+  repeat
+    sDeleteName := sDeleteName +'_'+'copy';
+    sFilename := sSchemeDir + sDeleteName + '.xml';
+  until Not(fileExists(sFilename));
+
+  FileDelete(ASchemeItem.Filename,True);
+  {xml := TJvSimpleXML.Create(nil);
+  try
+    xml.LoadFromFile(sFilename);
+    if xml.Root.Items.ItemNamed['info'] <> nil then
+      xml.Root.Items.ItemNamed['info'].Items.ItemNamed['name'].Value := sDeleteName;
+  finally
+    xml.SaveToFile(sFilename);
+    xml.Free;
+  end;  }
 
 end;
 
