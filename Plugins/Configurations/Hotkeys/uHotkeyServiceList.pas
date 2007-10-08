@@ -180,8 +180,7 @@ begin
           self.Add(
             ItemNamed['hotkey' + inttostr(loop)].Items.Value('Hotkey', ''),
             ItemNamed['hotkey' + inttostr(loop)].Items.Value('Command', ''),
-            ItemNamed['hotkey' + inttostr(loop)].Items.Value('Name', ''),
-          );
+            ItemNamed['hotkey' + inttostr(loop)].Items.Value('Name', ''));
         end;
       end;
     except
