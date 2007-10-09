@@ -2034,6 +2034,9 @@ var
    y : integer;
    DX1,DX2 : integer;
 begin
+  if (Rect.Right - Rect.Left = 0) or (Rect.Bottom - Rect.Top = 0) then
+    exit;
+
   if color1 <> -1 then
   begin
     sR := GetRValue(color1);
@@ -2067,7 +2070,7 @@ begin
   DX2 := Max(0,Min(Bmp.Width,Rect.Right));
   for y:=0 to Rect.Bottom-Rect.Top do
   begin
-    if (y +Rect.Top >= 0) and (y +Rect.Top <= Bmp.Height) then
+    if (y +Rect.Top >= 0) and (y +Rect.Top <= Bmp.Height - 1) then
       Bmp.HorzLineT(DX1,y+Rect.Top,DX2,
                     color32(sr+round(nr*y),sg+round(ng*y),sb+round(nb*y),st+round(nt*y)));
   end;
@@ -2085,6 +2088,9 @@ var
   x : integer;
   DY1,DY2 : integer;
 begin
+  if (Rect.Right - Rect.Left = 0) or (Rect.Bottom - Rect.Top = 0) then
+    exit;
+
   sR := GetRValue(color1);
   sG := GetGValue(color1);
   sB := GetBValue(color1);
@@ -2100,7 +2106,7 @@ begin
   DY2 := Max(0,Min(Bmp.Height,Rect.Bottom));
   for x:= 0 to Rect.Right-Rect.Left do
   begin
-    if (x + Rect.Left >= 0) and (x + Rect.Left <= Bmp.Width) then
+    if (x + Rect.Left >= 0) and (x + Rect.Left <= Bmp.Width - 1) then
       Bmp.VertLineT(x+Rect.Left,DY1,DY2,
                     color32(sr+round(nr*x),sg+round(ng*x),sb+round(nb*x),st+round(nt*x)));
   end;
