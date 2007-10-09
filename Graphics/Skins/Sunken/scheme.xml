@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinScheme>
+  <item>
+    <Name>Border</Name>
+    <Tag>$Border</Tag>
+    <Info>Border Color</Info>
+    <Default>16777215</Default>
+  </item>
+  <item>
+    <Name>Background</Name>
+    <Tag>$Background</Tag>
+    <Info>Background Color</Info>
+    <Default>0</Default>
+  </item>
+  <item>
+    <Name>BGAlpha</Name>
+    <Tag>$BGAlpha</Tag>
+    <Info>Background Alpha</Info>
+    <Default>148</Default>
+  </item>
+  <item>
+    <Name>Foreground</Name>
+    <Tag>$Foreground</Tag>
+    <Info>Foreground Color</Info>
+    <Default>12632256</Default>
+  </item>
+  <item>
+    <Name>Text</Name>
+    <Tag>$Text</Tag>
+    <Info>Text Color</Info>
+    <Default>16777215</Default>
+  </item>
+  <item>
+    <Name>TextShadow</Name>
+    <Tag>$TextShadow</Tag>
+    <Info>Text Shadow Color</Info>
+    <Default>0</Default>
+  </item>
+</SharpESkinScheme>

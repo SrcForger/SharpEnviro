@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpECustomSkinSettings>
+  <taskbar>
+    <minallicon>images\Modules\Taskbar\minall.png</minallicon>
+    <maxallicon>images\Modules\Taskbar\maxall.png</maxallicon>
+  </taskbar>
+  <idrop>
+    <background>images\Modules\iDrop\Background.png</background>
+    <blendcolor>$Background</blendcolor>
+  </idrop>
+  <cpumonitor>
+    <fgcolor>0</fgcolor>
+    <bgcolor>12632257</bgcolor>
+    <bordercolor>0</bordercolor>
+    <fgalpha>255</fgalpha>
+    <bgalpha>63</bgalpha>
+    <borderalpha>139</borderalpha>
+  </cpumonitor>
+  <systemtray>
+    <showbackground>-1</showbackground>
+    <showborder>-1</showborder>
+    <colorblend>-1</colorblend>
+    <backgroundcolor>12632257</backgroundcolor>
+    <backgroundalpha>64</backgroundalpha>
+    <bordercolor>0</bordercolor>
+    <borderalpha>140</borderalpha>
+    <blendcolor>6908265</blendcolor>
+    <blendalpha>255</blendalpha>
+    <iconalpha>255</iconalpha>
+  </systemtray>
+</SharpECustomSkinSettings>
