@@ -18,7 +18,7 @@ Source Name: VWM.service
 but WITHOUT ANY WARRANTY; without even the implied warranty of       
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
 GNU General Public License for more details.                         
-                                                                     
+
 You should have received a copy of the GNU General Public License    
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }                                                                    
@@ -62,13 +62,14 @@ Source Name: VWM.service
 
 const
   VWMStartMessage = 5;
-                                                                     
-var                                                                  
-  ActionEvent: TActionEvent;                                         
+
+var
+  ActionEvent: TActionEvent;
   Handle: THandle;
   CurrentDesktop : integer;
   VWMCount : integer;
   sFocusTopMost : boolean;
+  sFollowFocus : boolean;
 
 procedure AllocateMsgWnd;
 var
@@ -108,9 +109,11 @@ end;
   fileloaded : boolean;
 begin
   VWMCount := 4;
+  SharpApi.UnRegisterShellHookReceiver(Handle);
   sFocusTopMost := False;
+  sFollowFocus := False;
   Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\';
-  FName := Dir + 'VWM.xml';
+  FName := Dir + 'VWM.xml';
   if FileExists(FName) then
   begin
     XML := TJclSimpleXML.Create;
@@ -125,9 +128,12 @@ end;
       VWMCount := XML.Root.Items.IntValue('VWMCount',VWMCount);
       VWMCount := Max(2,Min(VWMCount,12));
       sFocusTopMost := XML.Root.Items.BoolValue('FocusTopMost',sFocusTopMost);
+      sFollowFocus := XML.Root.Items.BoolValue('FollowFocus',sFollowFocus);
     end;
     XML.Free;
   end;
+  if sFollowFocus then
+    SharpApi.RegisterShellHookReceiver(Handle);
 end;
 
 procedure RegisterSharpEActions;
@@ -163,6 +169,7 @@ end;
 var
   newdesk : integer;
   changed : boolean;
+  wnd : hwnd;
 begin
   changed := False;
   // Message Handlers
@@ -236,6 +243,38 @@ end;
         SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS,0,0);
       end;
     end;
+    WM_DISPLAYCHANGE:
+    begin
+      VWMFunctions.VWMMoveAllToOne; // has to be called two times ...
+      VWMFunctions.VWMMoveAllToOne; // ... reason ... unknown =)
+      SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS,0,0);
+    end;
+    WM_SHARPSHELLMESSAGE:
+    begin
+      if sFollowFocus then
+      begin
+       wnd := Message.lparam;
+       case Message.WParam of
+          HSHELL_WINDOWACTIVATED,HSHELL_WINDOWACTIVATED + 32768:
+          begin
+            if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
+               ((IsWindowVisible(Wnd) and not IsIconic(wnd)) and
+               ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
+               (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
+               (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))  then
+            begin
+              newdesk := VWMFunctions.VWMGetWindowVWM(CurrentDesktop,VWMCount,wnd);
+              if  newdesk <> CurrentDesktop then
+              begin
+                VWMFunctions.VWMSwitchDesk(CurrentDesktop,NewDesk,False);
+                CurrentDesktop := NewDesk;
+                Changed := True;
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
   end;
 
   if Changed then
@@ -245,15 +284,16 @@ end;
 // Service is started                                                
 function Start(Owner: HWND): HWND;                                   
 begin
+  ActionEvent := TActionEvent.Create;
+  AllocateMsgWnd;
+
   LoadVWMSettings;
   CurrentDesktop := 1;
   VWMFunctions.VWMMoveAllToOne; // has to be called two times ...
   VWMFunctions.VWMMoveAllToOne; // ... reason ... unknown =)
 
-  Result := Owner;                                                   
-  ActionEvent := TActionEvent.Create;                                
-  AllocateMsgWnd;                
-  // Register Actions                                                
+  Result := Owner;
+  // Register Actions
   RegisterSharpEActions;
 
   SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS,0,0);
