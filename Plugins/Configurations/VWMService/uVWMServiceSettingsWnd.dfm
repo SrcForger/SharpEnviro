@@ -52,7 +52,7 @@ object frmVWMSettings: TfrmVWMSettings
         Left = 18
         Top = 125
         Width = 402
-        Height = 45
+        Height = 36
         Margins.Left = 18
         Margins.Top = 4
         Margins.Right = 8
@@ -65,7 +65,26 @@ object frmVWMSettings: TfrmVWMSettings
         EllipsisPosition = epEndEllipsis
         Transparent = False
         WordWrap = True
-        ExplicitTop = 154
+      end
+      object Label3: TLabel
+        AlignWithMargins = True
+        Left = 18
+        Top = 188
+        Width = 402
+        Height = 37
+        Margins.Left = 18
+        Margins.Top = 4
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        AutoSize = False
+        Caption = 
+          'Enable this option to always switch to the virtual monitor on wh' +
+          'ich an application or window is activated (for example by Alt + ' +
+          'Tab) '
+        EllipsisPosition = epEndEllipsis
+        Transparent = False
+        WordWrap = True
       end
       object Panel1: TPanel
         Left = 0
@@ -76,7 +95,6 @@ object frmVWMSettings: TfrmVWMSettings
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 0
-        ExplicitTop = 0
         object Label4: TLabel
           AlignWithMargins = True
           Left = 18
@@ -125,9 +143,20 @@ object frmVWMSettings: TfrmVWMSettings
         Caption = 'Focus Top Most Window'
         TabOrder = 1
         OnClick = cb_focustopmostClick
-        ExplicitLeft = 48
-        ExplicitTop = 144
-        ExplicitWidth = 97
+      end
+      object cb_followfocus: TCheckBox
+        AlignWithMargins = True
+        Left = 8
+        Top = 164
+        Width = 417
+        Height = 17
+        Margins.Left = 8
+        Align = alTop
+        Caption = 'Follow Window Focus'
+        TabOrder = 2
+        OnClick = cb_focustopmostClick
+        ExplicitLeft = 0
+        ExplicitTop = 245
       end
     end
   end

@@ -48,6 +48,8 @@ type
     Label1: TLabel;
     cb_focustopmost: TCheckBox;
     Label2: TLabel;
+    cb_followfocus: TCheckBox;
+    Label3: TLabel;
     procedure sgb_vwmcountChangeValue(Sender: TObject; Value: Integer);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -80,6 +82,7 @@ procedure TfrmVWMSettings.FormShow(Sender: TObject);
 begin
   Label4.Font.Color := clGray;
   Label2.Font.Color := clGray;
+  Label3.Font.Color := clGray;
 end;
 
 procedure TfrmVWMSettings.SendUpdate;

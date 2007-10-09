@@ -75,6 +75,7 @@ begin
     begin
       frmVWMSettings.sgb_vwmcount.Value := XML.Root.Items.IntValue('VWMCount',4);
       frmVWMSettings.cb_focustopmost.Checked := XML.Root.Items.BoolValue('FocusTopMost',False);
+      frmVWMSettings.cb_followfocus.Checked := XML.Root.Items.BoolValue('FollowFocus',False);
     end;
     XML.Free;
   end;
@@ -96,6 +97,7 @@ begin
   XML.Root.Name := 'VWMServiceSettings';
   XML.Root.Items.Add('VWMCount',frmVWMSettings.sgb_vwmcount.Value);
   XML.Root.Items.Add('FocusTopMost',frmVWMSettings.cb_focustopmost.Checked);
+  XML.Root.Items.Add('FollowFocus',frmVWMSettings.cb_followfocus.Checked);
   XML.SaveToFile(FName);
   XML.Free;
 end;
