@@ -4,6 +4,10 @@ interface
 
 uses Types, Windows, Classes, SysUtils, ShellApi;
 
+const
+  // new shell hook param
+  HSHELL_SYSMENU = 9;
+
 function ForceForegroundWindow(hwnd: THandle): Boolean;
 
 implementation
