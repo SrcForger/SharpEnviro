@@ -276,6 +276,16 @@ var
 
 begin
   EnumParam.ac := Actions[ActionIndex];
+
+  if (EnumParam.ac.UseGUI) and (TSGUI.WndVisible) then
+  begin
+    // update the already existing gui
+    if EnumParam.ac.CForward then TSGUI.Index := TSGUI.Index + 1
+      else TSGUI.Index := TSGUI.Index - 1;
+    TSGUI.UpdateHighlight;
+    exit;
+  end;
+
   setlength(EnumParam.wndlist,0);
   //EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
   wnd := GetTopWindow(0);//GetNextWindow(FindWindow('TSharpDeskMainForm',nil),GW_HWNDPREV);
@@ -301,7 +311,6 @@ begin
   if length(EnumParam.wndlist) > 1 then
   with EnumParam do
   begin
-
     if ac.UseGUI then
     begin
       // gui usage
@@ -314,12 +323,6 @@ begin
         TSGUI.ShowPreview := ac.Preview;
         TSGUI.Index := 1;
         TSGUI.ShowWindow;
-      end else
-      begin
-        // update the already existing gui
-        if ac.CForward then TSGUI.Index := TSGUI.Index + 1
-          else TSGUI.Index := TSGUI.Index - 1;
-        TSGUI.UpdateHighlight;
       end;
     end else
     begin

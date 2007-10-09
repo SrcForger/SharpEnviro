@@ -53,6 +53,10 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
+    procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
+    procedure FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
+      MousePos: TPoint; var Handled: Boolean);
   private
     FOwner : TObject;
     FPicture : TBitmap32;
@@ -199,8 +203,19 @@ begin
   FPicture.Free;
 end;
 
+procedure TTaskSwitchWnd.FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  TSGUI.Index := TSGUI.Index - 1;
+  TSGUI.UpdateHighlight;
+end;
 
-
+procedure TTaskSwitchWnd.FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  TSGUI.Index := TSGUI.Index + 1;
+  TSGUI.UpdateHighlight;
+end;
 
 end.
 
