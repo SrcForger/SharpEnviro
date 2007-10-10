@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ToolWin, ComCtrls, ImgList, PngImageList, JvTabBar, StdCtrls,
   JvComponentBase, JvFindReplace, JvExStdCtrls, JvMemo, JvExControls,
-  JvComponent;
+  JvComponent, Menus;
 
 type
   TNotesForm = class(TForm)
@@ -58,6 +58,8 @@ type
     btn_monofont: TToolButton;
     ToolButton2: TToolButton;
     Notes: TJvMemo;
+    TabPopup: TPopupMenu;
+    tb_rename: TToolButton;
     procedure NotesKeyPress(Sender: TObject; var Key: Char);
     procedure NotesKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btn_monofontClick(Sender: TObject);
@@ -78,6 +80,7 @@ type
       var AllowClose: Boolean);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure tb_closeClick(Sender: TObject);
+    procedure tb_renameClick(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -126,8 +129,8 @@ begin
   FindClose(sr);
 
   // Hide the edit memo and tab bar if no tabs are loaded
-  if Tabs.Tabs.Count = 0 then Notes.Visible := False
-     else Notes.Visible := True;
+  Notes.Visible := (Tabs.Tabs.Count <> 0);
+  tb_rename.Enabled := Notes.Visible;
   Tabs.Visible := Notes.Visible;
 end;
 
@@ -155,6 +158,11 @@ begin
   ForceDirectories(Dir);
   fname := Tabs.SelectedTab.Caption;
   Notes.Lines.LoadFromFile(Dir + fname + NOTES_EXTENSION);
+  if Notes.Lines.Count > 0 then
+  begin
+    Notes.CaretPos := Point(length(Notes.Lines[Notes.Lines.Count - 1]),Notes.Lines.Count-1);
+    SendMessage (Notes.Handle, EM_SCROLLCARET, 0, 0);
+  end;
 end;
 
 procedure TNotesForm.tb_closeClick(Sender: TObject);
@@ -220,6 +228,7 @@ var
 begin
   NotesNewTabForm := TNotesNewTabForm.Create(self);
   NotesNewTabForm.PopupParent := self;
+  NotesNewTabForm.Caption := 'Enter the name for the new Notes tab';
   try
     if NotesNewTabForm.ShowModal = mrOk then
     begin
@@ -255,6 +264,29 @@ end;
 procedure TNotesForm.tb_pasteClick(Sender: TObject);
 begin
   Notes.PasteFromClipboard;
+end;
+
+procedure TNotesForm.tb_renameClick(Sender: TObject);
+var
+  NotesNewTabForm : TNotesNewtabForm;
+  Dir : String;
+begin
+  NotesNewTabForm := TNotesNewTabForm.Create(self);
+  NotesNewTabForm.PopupParent := self;
+  NotesNewTabForm.Caption := 'Enter the new name for the selected Notes tab';
+  try
+    if NotesNewTabForm.ShowModal = mrOk then
+    begin
+      Dir := GetNotesDir;
+      ForceDirectories(Dir);
+      RenameFile(Dir + Tabs.SelectedTab.Caption + NOTES_EXTENSION,Dir + NotesNEwTabForm.edit_name.Text + NOTES_EXTENSION);
+      DeleteFile(Dir + Tabs.SelectedTab.Caption + NOTES_EXTENSION);
+      Tabs.SelectedTab.Caption := NotesNewTabForm.edit_name.Text;
+      UpdateTabList(NotesNewTabForm.edit_name.Text);
+    end;
+  finally
+    NotesNewTabForm.Free;
+  end;
 end;
 
 procedure TNotesForm.btn_selectallClick(Sender: TObject);

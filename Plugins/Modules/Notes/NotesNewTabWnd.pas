@@ -31,17 +31,25 @@ uses JclStrings,
 procedure TNotesNewTabForm.btn_okClick(Sender: TObject);
 var
   Dir : String;
+  s : String;
 begin
-  edit_name.Text := StrRemoveChars(edit_name.Text,['"','<','>','|','/','\','*','?','.',':']);
+  s := StrRemoveChars(edit_name.Text,['"','<','>','|','/','\','*','?','.',':']);
+  if length(s) <> length(edit_name.Text) then
+  begin
+    if MessageBox(Handle,'The chosen tab name contains invalid characters (" < > | / \ * ? . :)!' + #10#13 +
+                         'Continue to automatically remove them.','Name Contains Invalid Charaters',MB_OKCANCEL) = ID_OK then
+      edit_name.Text := trim(s)
+    else exit;
+  end else edit_name.Text := trim(s);
   if length(trim(edit_name.Text)) <=0 then
   begin
-    Showmessage('Please enter a valid name first');
+    MessageBox(Handle,'Please enter a valid name first','Name Invalid',MB_OK);
     exit;
   end;
   Dir := TNotesForm(Owner).GetNotesDir;
   if FileExists(Dir + edit_name.Text + NOTES_EXTENSION) then
   begin
-    Showmessage('Another Notes tab with the same name already exists');
+    MessageBox(Handle,'Another Notes tab with the same name already exists','Name Invalid',MB_OK);
     exit;
   end;
   modalresult := mrOk;

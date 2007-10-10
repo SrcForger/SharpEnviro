@@ -26,8 +26,8 @@ object NotesNewTabForm: TNotesNewTabForm
     OnKeyPress = edit_nameKeyPress
   end
   object btn_ok: TButton
-    Left = 96
-    Top = 40
+    Left = 103
+    Top = 39
     Width = 75
     Height = 25
     Caption = 'Ok'

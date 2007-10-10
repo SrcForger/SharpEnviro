@@ -76,6 +76,7 @@ object NotesForm: TNotesForm
     TabOrder = 0
     Transparent = False
     Wrapable = False
+    ExplicitTop = -6
     object tb_new: TToolButton
       Left = 0
       Top = 0
@@ -87,8 +88,18 @@ object NotesForm: TNotesForm
       ShowHint = True
       OnClick = tb_newClick
     end
-    object ToolButton8: TToolButton
+    object tb_rename: TToolButton
       Left = 27
+      Top = 0
+      Hint = 'Rename Current Tab'
+      Caption = 'tb_rename'
+      ImageIndex = 15
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = tb_renameClick
+    end
+    object ToolButton8: TToolButton
+      Left = 54
       Top = 0
       Width = 8
       Caption = 'ToolButton8'
@@ -96,9 +107,9 @@ object NotesForm: TNotesForm
       Style = tbsSeparator
     end
     object tb_import: TToolButton
-      Left = 35
+      Left = 62
       Top = 0
-      Hint = 'Import File'
+      Hint = 'Load From File'
       AutoSize = True
       Caption = 'Import'
       ImageIndex = 10
@@ -107,9 +118,9 @@ object NotesForm: TNotesForm
       OnClick = tb_importClick
     end
     object tb_export: TToolButton
-      Left = 62
+      Left = 89
       Top = 0
-      Hint = 'Export Notes'
+      Hint = 'Save To File'
       AutoSize = True
       Caption = 'Export'
       ImageIndex = 11
@@ -118,7 +129,7 @@ object NotesForm: TNotesForm
       OnClick = tb_exportClick
     end
     object ToolButton7: TToolButton
-      Left = 89
+      Left = 116
       Top = 0
       Width = 8
       Caption = 'ToolButton7'
@@ -126,7 +137,7 @@ object NotesForm: TNotesForm
       Style = tbsSeparator
     end
     object tb_copy: TToolButton
-      Left = 97
+      Left = 124
       Top = 0
       Hint = 'Copy Selected Text'
       AutoSize = True
@@ -137,7 +148,7 @@ object NotesForm: TNotesForm
       OnClick = tb_copyClick
     end
     object tb_paste: TToolButton
-      Left = 124
+      Left = 151
       Top = 0
       Hint = 'Paste Selected Text'
       AutoSize = True
@@ -148,7 +159,7 @@ object NotesForm: TNotesForm
       OnClick = tb_pasteClick
     end
     object ToolButton1: TToolButton
-      Left = 151
+      Left = 178
       Top = 0
       Hint = 'Cut Selected Text'
       AutoSize = True
@@ -159,7 +170,7 @@ object NotesForm: TNotesForm
       OnClick = ToolButton1Click
     end
     object btn_selectall: TToolButton
-      Left = 178
+      Left = 205
       Top = 0
       Hint = 'Select All'
       AutoSize = True
@@ -170,7 +181,7 @@ object NotesForm: TNotesForm
       OnClick = btn_selectallClick
     end
     object btn_find: TToolButton
-      Left = 205
+      Left = 232
       Top = 0
       Hint = 'Find Text'
       AutoSize = True
@@ -181,7 +192,7 @@ object NotesForm: TNotesForm
       OnClick = btn_findClick
     end
     object ToolButton2: TToolButton
-      Left = 232
+      Left = 259
       Top = 0
       Width = 8
       Caption = 'ToolButton2'
@@ -189,7 +200,7 @@ object NotesForm: TNotesForm
       Style = tbsSeparator
     end
     object btn_linewrap: TToolButton
-      Left = 240
+      Left = 267
       Top = 0
       Hint = 'Enabled/Disable Line Wrap'
       AutoSize = True
@@ -201,7 +212,7 @@ object NotesForm: TNotesForm
       OnClick = btn_linewrapClick
     end
     object btn_monofont: TToolButton
-      Left = 267
+      Left = 294
       Top = 0
       Hint = 'Enable/Disable Monospaced Font'
       AutoSize = True
@@ -213,7 +224,7 @@ object NotesForm: TNotesForm
       OnClick = btn_monofontClick
     end
     object ToolButton6: TToolButton
-      Left = 294
+      Left = 321
       Top = 0
       Width = 8
       Caption = 'ToolButton6'
@@ -221,7 +232,7 @@ object NotesForm: TNotesForm
       Style = tbsSeparator
     end
     object tb_close: TToolButton
-      Left = 302
+      Left = 329
       Top = 0
       Hint = 'Close'
       AutoSize = True
@@ -236,12 +247,14 @@ object NotesForm: TNotesForm
     Left = 0
     Top = 22
     Width = 477
+    PopupMenu = TabPopup
     SelectBeforeClose = True
     Painter = JvModernTabBarPainter1
     Tabs = <>
     OnTabClosing = tabsTabClosing
     OnTabSelecting = tabsTabSelecting
     OnTabSelected = tabsTabSelected
+    ExplicitTop = 16
   end
   object Notes: TJvMemo
     Left = 0
@@ -637,6 +650,29 @@ object NotesForm: TNotesForm
           20655CA28D0000000049454E44AE426082}
         Name = 'PngImage14'
         Background = clMenu
+      end
+      item
+        PngImage.Data = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          6100000006624B474400FF00FF00FFA0BDA793000000097048597300000B1300
+          000B1301009A9C180000000774494D45000000000000000973942E000001CD49
+          44415478DA6364A01030C218471630B800A9DD40EC4A88B64960D88362404757
+          6B9A8D58F54C538F630CA777583110A2810630A21BF01F680083BAA02DC3CDF7
+          8709D2A77732C1F4C7C20D484E4C63B8B95594E187CC1E068E272E0C5F247630
+          F0BCF0C0A0419AE3271E6178787835C3813513112E282FAD6278FBF62DCEC07A
+          FEFC39C39E367D86844947191E1F5CCC70FEFAEBBFEFAEAD654631E0CE9D3B0C
+          1F3F7EC4D0FCFAF56B861B8BBCE19A2FDD7ECBF0FAD26A9094094117C06C063B
+          FBC062868B37DF32BCBFB606ACB970F9BFB3785D00B339AEF73058F3A57BEF19
+          DE5F5DCDF0D3B099A1A2AC1AA49711A70BFEFFFFCFB0244F9C21AEE710C3ED5D
+          0B18EEBCF80C76F623897C06714911EC06C05C00D2BC6AD52A86DFCF8E300405
+          04323CBC759AE1CD95B50C0C66BD0CDFBF7F676062F90F32001497FFB1BAE0EF
+          DFBF0CCB0A2419F6BE54619017156050613AC3C0E7329BC1D2D292E1C68D1B0C
+          B7EE5C87B98001C3051F3E7C60F8F9F327838D8D0D437F2413C315AE44064D4D
+          4D063B3B3B06010101B001D76E5C0619C00CD4FA0FC30520E783302C1C989898
+          C03423D0B7207CECD8319801A82E484BC9643872E408CE8404330404B019B018
+          48C590908B97000D88053100A2EC33577643D79D0000000049454E44AE426082}
+        Name = 'PngImage15'
+        Background = clMenu
       end>
     Left = 312
     Top = 120
@@ -678,5 +714,9 @@ object NotesForm: TNotesForm
     Options = [frDown, frFindNext]
     Left = 312
     Top = 48
+  end
+  object TabPopup: TPopupMenu
+    Left = 312
+    Top = 152
   end
 end

@@ -285,6 +285,7 @@ begin
   NotesForm.btn_monofont.Down := sMonoFont;
   NotesForm.btn_monofont.OnClick(NotesForm.btn_monofont);
   NotesForm.Show;
+  SendMessage(NotesForm.Notes.Handle, EM_SCROLLCARET, 0, 0);
   if sAlwaysOnTop then NotesForm.FormStyle:= fsStayOnTop
      else NotesForm.FormStyle := fsNormal;
 //  if sAlwaysOnTop then SetWindowPos(NotesForm.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
