@@ -39,9 +39,11 @@ type
   TDelphiProject = class
   private
     FSearchPath   : String;
+    FDebugSearchPath : String;
     FUsePackages  : Boolean;
     FPackages     : String;
     FOutputDir    : String;
+    FDebugOutputDir : String;
     FPath         : String;
     FDir          : String;
     FName         : String;
@@ -53,9 +55,11 @@ type
 
   public
     property SearchPath  : String  read FSearchPath;
+    property DebugSearchPath : String read FDebugSearchPath;
     property UsePackages : Boolean read FUsePackages;
     property Packages    : String  read FPackages;
     property OutputDir   : String  read FOutputDir;
+    property DebugOutputDir : String read FDebugOutputDir;
     property Dir         : String  read FDir;
     property Path        : String  read FPath;
     property Name        : String  read FName;
@@ -116,12 +120,15 @@ procedure TDelphiProject.LoadFromFile(pBDSProjFile : String);
 var
   XML : TJvSimpleXML;
   n : integer;
+  i : integer;
   s : String;
 begin
   FSearchPath := '';
+  FDebugSearchPath := '';
   FUsePackages := False;
   FPackages := '';
   FOutputDir := '';
+  FDebugOutputDir := '';
 
   XML := TJvSimpleXML.Create(nil);
 
@@ -131,15 +138,28 @@ begin
     if FileExists(pBDSProjFile) then
     begin
       XML.LoadFromFile(pBDSProjFile);
-      if XML.Root.Items.ItemNamed['PropertyGroup'] <> nil then
+      with XML.Root.Items do
       begin
-        with XML.Root.Items.ItemNamed['PropertyGroup'].Items do
-        begin
-          FOutputDir := ItemNamed['DCC_ExeOutput'].Value;
-          //FSearchPath := ItemNamed['DCC_IncludePath'].Value;
-          //FPackages := ItemNamed['DCC_UsePackage'].Value;
-          //FUsePackages := StrToBool(ItemNamed['DCC_EnabledPackages'].Value);
-        end;
+        for n := 0 to Count - 1 do
+          if Item[n].Name = 'PropertyGroup' then
+          begin
+            s := Item[n].Properties.Value('Condition', 'no');
+            if s = 'no' then
+            begin
+              FUsePackages := Item[n].Items.BoolValue('DCC_EnabledPackages', False);
+              FPackages := Item[n].Items.Value('DCC_UsePackage', '');
+            end
+            else if Pos('Release', s) > 0 then
+            begin
+              FSearchPath := Item[n].Items.Value('DCC_IncludePath', '');
+              FOutputDir := Item[n].Items.Value('DCC_ExeOutput', '');
+            end
+            else if Pos('Debug', s) > 0 then
+            begin
+              FDebugSearchPath := Item[n].Items.Value('DCC_IncludePath', '');
+              FDebugOutputDir := Item[n].Items.Value('DCC_ExeOutput', '');
+            end;
+          end;
       end;
     end;
     finally
@@ -371,7 +391,6 @@ var
   iReturn: Integer;
 begin
   result := False;
-  bMSBuild := False;
 
   if not FileExists(Project.Path) then
      exit;
@@ -385,31 +404,16 @@ begin
 
   DC := TDosCommand.Create(nil);
   DC.OnNewLine := OnCompilerNewLine;
+  MakeCFG(Project, bDebug);
 
-  if LowerCase(ExtractFileExt(Project.Path)) = '.dproj' then
-  begin
-    if GetEnvironmentVar('PATH', sPath) then
-    begin
-      SetEnvironmentVar('PATH', sPath + ';' + GetWindowsFolder + '\Microsoft.NET\Framework\v2.0.50727');
-      SetEnvironmentVar('BDS', FBDSPath);
-      SetEnvironmentVar('BDSCOMMONDIR', JclSysInfo.GetCommonDocumentsFolder + '\Rad Studio\5.0');
-      cmd := 'msbuild "' + Project.Path +'"';
-      if bDebug then
-        cmd := cmd + ' /property:DCC_MapFile=3';
-      bMSBuild := True;
-    end;
-  end
-  else
-  begin
-    MakeCFG(Project, bDebug);
-    cmd := 'dcc32 ' + LeftStr(Project.Path, Length(Project.Path) - Length(ExtractFileExt(Project.Path))) + 'dpr';
-  end;
+  cmd := 'dcc32 "' + ExtractFilePath(Project.Path) + ChangeFileExt(ExtractFileName(Project.Path), '') + '.dpr"';
 
   DC.CommandLine := cmd;
   DC.Execute2;
   iReturn := DC.ExitCode;
   DC.Free;
 
+  SetCurrentDirectory(PChar(Dir));
   DeleteFile(PChar(Dir + 'Dcc32.cfg'));
 
   s := ChangeFileExt(ExtractFileName(Project.Path), '');
@@ -421,12 +425,11 @@ begin
     sExt := '.ser';
 
   result := (iReturn = 0);
-  MessageBox(hInstance, PChar('Exit code: ' + IntToStr(iReturn)), PChar('Exit code'), MB_OK);
 
   if bDebug then
   begin
     s := ChangeFileExt(Project.Path, '');
-    if FileExists(s + '.dpr') then
+    if FileExists(s + '.dpr') and FileExists(s + '.orig') then
     begin
       DeleteFile(PChar(s + '.dpr'));
       MoveFile(PChar(s + '.orig'), PChar(s + '.dpr'));
