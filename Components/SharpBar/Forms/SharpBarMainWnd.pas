@@ -639,6 +639,7 @@ begin
     ModuleManager.ReCalculateModuleSize((msg.wparam = 0));
   finally
   end;
+  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
 end;
 
 // ***********************
