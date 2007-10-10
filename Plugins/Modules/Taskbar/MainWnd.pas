@@ -330,6 +330,14 @@ begin
     n := n + ses_maxall.Width + 2;
   end else ses_maxall.Visible := False;
   FSpecialButtonWidth := n + 4;
+
+  // Update Tooltips
+  if sMinAllButton then
+    ToolTipApi.AddToolTip(FTipWnd,self,1,ses_minall.BoundsRect,'Minimize All Windows')
+  else ToolTipApi.DeleteToolTip(FTipWnd,self,1);
+  if sMaxAllButton then
+    ToolTipApi.AddToolTip(FTipWnd,self,2,ses_minall.BoundsRect,'Restore All Windows')
+  else ToolTipApi.DeleteToolTip(FTipWnd,self,2);
 end;
 
 procedure TMainForm.DisplaySystemMenu(pHandle : hwnd);
@@ -599,9 +607,8 @@ begin
 
   NewWidth := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1);
 
-  if sState = tisMini then
-     ToolTipApi.EnableToolTip(FTipWnd)
-     else ToolTipApi.DisableToolTip(FTipWnd);
+  ToolTipApi.EnableToolTip(FTipWnd);
+//  ToolTipApi.DisableToolTip(FTipWnd);
 
   if sState = tisMini then Tag := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1)
      else Tag := Max(FSpecialButtonWidth + IList.Count * 16 + (IList.Count - 1) * sSpacing,1);

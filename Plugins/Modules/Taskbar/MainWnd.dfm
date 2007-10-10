@@ -22,6 +22,9 @@ object MainForm: TMainForm
     Top = 0
     Width = 24
     Height = 20
+    Hint = 'Restory all Windows'
+    ParentShowHint = False
+    ShowHint = False
     SkinManager = SystemSkinManager
     AutoSize = True
     OnClick = ses_maxallClick
@@ -74,6 +77,9 @@ object MainForm: TMainForm
     Top = 0
     Width = 24
     Height = 20
+    Hint = 'Minimize all Windows'
+    ParentShowHint = False
+    ShowHint = False
     SkinManager = SystemSkinManager
     AutoSize = True
     OnClick = ses_minallClick
