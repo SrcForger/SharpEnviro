@@ -279,5 +279,5 @@ Exports
   ShowSettingsWnd,
   SetSize;
 
-
+begin
 end.

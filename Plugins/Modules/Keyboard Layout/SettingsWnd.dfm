@@ -3,8 +3,8 @@ object SettingsForm: TSettingsForm
   Top = 0
   BorderStyle = bsToolWindow
   Caption = 'Keyboard Layout Module - Settings'
-  ClientHeight = 72
-  ClientWidth = 231
+  ClientHeight = 112
+  ClientWidth = 237
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,8 +16,8 @@ object SettingsForm: TSettingsForm
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton
-    Left = 72
-    Top = 40
+    Left = 74
+    Top = 76
     Width = 75
     Height = 25
     Caption = 'Ok'
@@ -25,8 +25,8 @@ object SettingsForm: TSettingsForm
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 152
-    Top = 40
+    Left = 154
+    Top = 76
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -40,5 +40,13 @@ object SettingsForm: TSettingsForm
     Height = 17
     Caption = 'Display Icon'
     TabOrder = 2
+  end
+  object cb_threelettercode: TCheckBox
+    Left = 8
+    Top = 40
+    Width = 177
+    Height = 17
+    Caption = 'Use Three Letter Keyboard Code '
+    TabOrder = 3
   end
 end

@@ -39,6 +39,7 @@ type
     Button1: TButton;
     Button2: TButton;
     cb_dispicon: TCheckBox;
+    cb_threelettercode: TCheckBox;
     procedure Button2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private

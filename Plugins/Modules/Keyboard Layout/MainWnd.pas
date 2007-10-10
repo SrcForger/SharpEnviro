@@ -55,6 +55,7 @@ type
   protected
   private
     sShowIcon : boolean;
+    s?hreeLetterCode : Boolean;
     FButtonIcon : TBitmap32;
     FMenuIcon   : TBitmap32;
   public
@@ -82,6 +83,7 @@ var
   fileloaded : boolean;
 begin
   sShowIcon := True;
+  s?hreeLetterCode := False;
   XML := TJvSimpleXML.Create(nil);
   try
     XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
@@ -93,6 +95,7 @@ begin
     with xml.Root.Items do
     begin
       sShowIcon := BoolValue('ShowIcon',sShowIcon);
+      s?hreeLetterCode := BoolValue('ThreeLetterCode',s?hreeLetterCode);
     end;
   XML.Free;
 end;
@@ -144,16 +147,18 @@ begin
   try
     SettingsForm := TSettingsForm.Create(application.MainForm);
     SettingsForm.cb_dispicon.Checked := sShowIcon;
+    SettingsForm.cb_threelettercode.Checked := s?hreeLetterCode;
 
     if SettingsForm.ShowModal = mrOk then
     begin
       sShowIcon := SettingsForm.cb_dispicon.Checked;
-
+      s?hreeLetterCode := SettingsForm.cb_threelettercode.Checked;
       XML := TJvSimpleXMl.Create(nil);
       XML.Root.Name := 'KeyboardLayoutModuleSettings';
       with XML.Root.Items do
       begin
         Add('ShowIcon',sShowIcon);
+        Add('ThreeLetterCode',s?hreeLetterCode);
       end;
       XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
       XML.Free;
@@ -169,7 +174,7 @@ procedure TMainForm.OnMenuItemClick(pItem : TSharpEMenuItem; var CanClose : bool
 var
   List : TJclKeyboardLayoutList;
   n : integer;
-  k : integer;                                                             
+  k : integer;
 begin
   List := TJclKeyboardLayoutList.Create;
   for n := 0 to List.Count - 1 do
@@ -210,8 +215,10 @@ begin
     for n := 0 to List.Count - 1 do
     begin
       s := List[n].DisplayName;
-      s2 := s;
-      setlength(s2,2);
+      if s?hreeLetterCode then
+        s2 := List[n].LocaleInfo.AbbreviatedLangName
+      else
+        s2 := UpperCase(List[n].LocaleInfo.ISOAbbreviatedLangName);
       with TSharpEMenuItem(mn.AddCustomItem('[' + s2 + '] ' + s,'icon',FMenuIcon)) do
       begin
         PropList.Add('DispName',s);
@@ -291,7 +298,7 @@ begin
   FMenuIcon.Free;
 
   if SharpEMenuPopups <> nil then
-     FreeAndNil(SharpEMenuPopups);  
+     FreeAndNil(SharpEMenuPopups);
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
@@ -311,9 +318,11 @@ var
 begin
   List := TJclKeyboardLayoutList.Create;
   List.Refresh;
-  s := List.ActiveLayout.DisplayName;
-  List.Free;  
-  setlength(s,2);
+  if s?hreeLetterCode then
+    s := List.ActiveLayout.LocaleInfo.AbbreviatedLangName
+  else
+    s := UpperCase(List.ActiveLayout.LocaleInfo.ISOAbbreviatedLangName);
+  List.Free;
   btn.Caption := '[' + s + ']';
   btn.Width := btn.GetTextWidth + 7;
   if sShowIcon then
