@@ -152,7 +152,7 @@ begin
             else if Pos('Release', s) > 0 then
             begin
               FSearchPath := Item[n].Items.Value('DCC_IncludePath', '');
-              FOutputDir := Item[n].Items.Value('DCC_ExeOutput', '');
+              FOutputDir := IncludeTrailingBackSlash(Item[n].Items.Value('DCC_ExeOutput', ''));
             end
             else if Pos('Debug', s) > 0 then
             begin
