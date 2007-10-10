@@ -1,7 +1,8 @@
-{
+﻿{
 Source Name: uSplashForm.pas
 Description: Main SharpSplash Window
-Copyright (C) Martin Kr�mer <MartinKraemer@gmx.net>
+Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
+              Aleksandar Milanovic (viking) <aleksandar.milanovic@hotmail.com>
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -39,7 +40,8 @@ uses
   Dialogs,
   StdCtrls,
   SharpApi,
-  ExtCtrls,  
+  SharpThemeApi,
+  ExtCtrls,
   GR32,
   GR32_Layers,
   GR32_Image,
@@ -53,8 +55,8 @@ type
     procedure FormActivate(Sender: TObject);
     procedure ClosetimerTimer(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormDestroy(Sender: TObject);
   private
-    FTerminate : boolean;
     FPicture : TBitmap32;
     DC: HDC;
     Blend: TBlendFunction;
@@ -66,20 +68,17 @@ type
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMNCHitTest(var Message: TWMNCHitTest);
   public
+    TerminateFlag : Boolean;
     procedure DrawWindow;
-    constructor Create(AOwner: TComponent); reintroduce; override;
   end;
-
 
 var
   SplashForm : TSplashForm;
-  temp : TSplashForm; 
+  temp : TSplashForm;
 
 implementation
 
 {$R *.dfm}
-
-
 
 // has to be applied to the TBitmap32 before passing it to the API function
 procedure PreMul(Bitmap: TBitmap32);
@@ -102,48 +101,6 @@ begin
   end;
 end;
 
-constructor TSplashForm.Create(AOwner: TComponent);
-var
-  FileName : String;
-  b : boolean;
-begin
-  inherited Create(AOwner);
-  FTerminate := False;
-
-  try
-    FileName := ParamStr(1);
-    FadeIn := strtoint(ParamStr(2));
-    ShowDelay := strtoint(ParamStr(3));
-    CloseTimer.Interval := ShowDelay;
-    FadeOut := strtoint(ParamStr(4));
-  except
-    FTerminate := True;
-    Application.Terminate;
-    exit;
-  end;
-  if length(FileName) = 0 then
-  begin
-    FTerminate := True;
-    Application.Terminate;
-    exit;
-  end;
-
-  try
-    FPicture := TBitmap32.Create;
-    LoadBitmap32FromPNG(FPicture,FileName,b);
-  except
-    FTerminate := True;
-    Application.Terminate;
-    exit;
-  end;
-
-  PreMul(FPicture);
-  Width  := FPicture.Width;
-  Height := FPicture.Height;
-  left   := Screen.WorkAreaWidth div 2 - self.Width div 2;
-  top    := Screen.WorkAreaHeight div 2 - self.Height div 2;
-end;
-
 procedure TSplashForm.WMPaint(var Msg: TWMPaint);
 begin
   inherited;
@@ -162,7 +119,7 @@ var
   BmpSize: TSize;
   Bmp : TBitmap32;
 begin
-  if FTerminate then exit;
+  if TerminateFlag then Exit;
   BmpSize.cx := Width;
   BmpSize.cy := Height;
   BmpTopLeft := Point(0, 0);
@@ -189,26 +146,75 @@ begin
   end;
 end;
 
-procedure TSplashForm.DrawWindow;begin
-
+procedure TSplashForm.DrawWindow;
+begin
   UpdateWndLayer;
 end;
 
 procedure TSplashForm.FormCreate(Sender: TObject);
+var
+  FullFileName, PassedFileName : string;
+  b : boolean;
 begin
-  if FTerminate then exit;
+  FPicture := TBitmap32.Create;
+  TerminateFlag := False;
+  InitializeTheme;
+  LoadTheme(True,[tpInfo]);
 
-  DC := 0;
+  // set defaults if no params passed
+  PassedFileName := ParamStr(1);
+  FadeIn := StrToIntDef(ParamStr(2), 3000);
+  ShowDelay := StrToIntDef(ParamStr(3), 5000);
+  FadeOut := StrToIntDef(ParamStr(4), 3000);
 
-  with Blend do
+  CloseTimer.Interval := ShowDelay;
+
+  // find splash image
+  FullFileName := GetThemeDirectory + PassedFileName;
+  if not FileExists(FullFileName) then
   begin
-    BlendOp := AC_SRC_OVER;
-    BlendFlags := 0;
-    SourceConstantAlpha := 255;
-    AlphaFormat := AC_SRC_ALPHA;
+    FullFileName := GetSharpeDirectory + PassedFileName;
+    if not FileExists(FullFileName) then
+    begin
+      FullFileName := PassedFileName;
+      if not FileExists(FullFileName) then
+        FullFileName := GetSharpeDirectory + 'Splash.png';
+    end;
   end;
 
-  if SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED) = 0 then ShowMessage('Errore in set trasparenza');
+  // set terminate flag if picture could not be loaded
+  try
+    LoadBitmap32FromPNG(FPicture, FullFileName, b);
+  except
+    TerminateFlag := True;
+  end;
+
+  if not TerminateFlag then
+  begin
+    PreMul(FPicture);
+    Width  := FPicture.Width;
+    Height := FPicture.Height;
+    left   := Screen.WorkAreaWidth div 2 - self.Width div 2;
+    top    := Screen.WorkAreaHeight div 2 - self.Height div 2;
+
+    DC := 0;
+
+    with Blend do
+    begin
+      BlendOp := AC_SRC_OVER;
+      BlendFlags := 0;
+      SourceConstantAlpha := 255;
+      AlphaFormat := AC_SRC_ALPHA;
+    end;
+
+    if SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED or WS_EX_TOOLWINDOW) = 0 then
+      SendDebugMessage('SharpSplash', 'Error setting window style.', 0);
+  end;
+end;
+
+procedure TSplashForm.FormDestroy(Sender: TObject);
+begin
+  FPicture.Free;
 end;
 
 procedure TSplashForm.FormActivate(Sender: TObject);
@@ -224,7 +230,7 @@ begin
     Blend.SourceConstantAlpha := round(n);
     DrawWindow;
     sleep(50);
-  until n>=255;              
+  until n>=255;
   CloseTimer.Enabled := True;
 end;
 
