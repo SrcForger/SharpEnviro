@@ -55,7 +55,7 @@ type
   protected
   private
     sShowIcon : boolean;
-    s?hreeLetterCode : Boolean;
+    sThreeLetterCode : Boolean;
     FButtonIcon : TBitmap32;
     FMenuIcon   : TBitmap32;
   public
@@ -83,7 +83,7 @@ var
   fileloaded : boolean;
 begin
   sShowIcon := True;
-  s?hreeLetterCode := False;
+  sThreeLetterCode := False;
   XML := TJvSimpleXML.Create(nil);
   try
     XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
@@ -95,7 +95,7 @@ begin
     with xml.Root.Items do
     begin
       sShowIcon := BoolValue('ShowIcon',sShowIcon);
-      s?hreeLetterCode := BoolValue('ThreeLetterCode',s?hreeLetterCode);
+      sThreeLetterCode := BoolValue('ThreeLetterCode',sThreeLetterCode);
     end;
   XML.Free;
 end;
@@ -147,18 +147,18 @@ begin
   try
     SettingsForm := TSettingsForm.Create(application.MainForm);
     SettingsForm.cb_dispicon.Checked := sShowIcon;
-    SettingsForm.cb_threelettercode.Checked := s?hreeLetterCode;
+    SettingsForm.cb_threelettercode.Checked := sThreeLetterCode;
 
     if SettingsForm.ShowModal = mrOk then
     begin
       sShowIcon := SettingsForm.cb_dispicon.Checked;
-      s?hreeLetterCode := SettingsForm.cb_threelettercode.Checked;
+      sThreeLetterCode := SettingsForm.cb_threelettercode.Checked;
       XML := TJvSimpleXMl.Create(nil);
       XML.Root.Name := 'KeyboardLayoutModuleSettings';
       with XML.Root.Items do
       begin
         Add('ShowIcon',sShowIcon);
-        Add('ThreeLetterCode',s?hreeLetterCode);
+        Add('ThreeLetterCode',sThreeLetterCode);
       end;
       XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
       XML.Free;
@@ -215,7 +215,7 @@ begin
     for n := 0 to List.Count - 1 do
     begin
       s := List[n].DisplayName;
-      if s?hreeLetterCode then
+      if sThreeLetterCode then
         s2 := List[n].LocaleInfo.AbbreviatedLangName
       else
         s2 := UpperCase(List[n].LocaleInfo.ISOAbbreviatedLangName);
@@ -318,7 +318,7 @@ var
 begin
   List := TJclKeyboardLayoutList.Create;
   List.Refresh;
-  if s?hreeLetterCode then
+  if sThreeLetterCode then
     s := List.ActiveLayout.LocaleInfo.AbbreviatedLangName
   else
     s := UpperCase(List.ActiveLayout.LocaleInfo.ISOAbbreviatedLangName);

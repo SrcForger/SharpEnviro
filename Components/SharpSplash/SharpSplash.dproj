@@ -7,7 +7,7 @@
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>..\..\..\SharpE\SharpSplash.exe</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>C:\SharpE\SharpSplash.exe</DCC_DependencyCheckOutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -21,6 +21,10 @@
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_Define>DEBUG</DCC_Define>
+    <DCC_UnitSearchPath>..\..\Common\Libraries\SharpThemeApi</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Common\Libraries\SharpThemeApi</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Common\Libraries\SharpThemeApi</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Common\Libraries\SharpThemeApi</DCC_IncludePath>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>

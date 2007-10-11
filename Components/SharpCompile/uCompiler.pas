@@ -120,7 +120,6 @@ procedure TDelphiProject.LoadFromFile(pBDSProjFile : String);
 var
   XML : TJvSimpleXML;
   n : integer;
-  i : integer;
   s : String;
 begin
   FSearchPath := '';
@@ -152,7 +151,7 @@ begin
             else if Pos('Release', s) > 0 then
             begin
               FSearchPath := Item[n].Items.Value('DCC_IncludePath', '');
-              FOutputDir := IncludeTrailingBackSlash(Item[n].Items.Value('DCC_ExeOutput', ''));
+              FOutputDir := IncludeTrailingPathDelimiter(Item[n].Items.Value('DCC_ExeOutput', ''));
             end
             else if Pos('Debug', s) > 0 then
             begin
@@ -195,6 +194,7 @@ begin
       XML.Free;
     end;
   end;
+  FSearchPath := FSearchPath + ';' + FDebugSearchPath;
   FSearchPath := StringReplace(FSearchPath,'$(ProgramFiles)',JclSysInfo.GetProgramFilesFolder,[rfReplaceAll,rfIgnoreCase]);
 end;
 
@@ -354,11 +354,10 @@ var
 begin
   bInserted := False;
   s := ChangeFileExt(Project.Path, '');
-  if FileExists(s + '.orig') then
-    DeleteFile(PChar(s + '.orig'));
-  MoveFile(PChar(s + '.dpr'), PChar(s + '.orig'));
-  AssignFile(origDpr, s + '.orig');
-  AssignFile(tempDpr, s + '.dpr');
+  if FileExists(s + '.dpr~') then
+    DeleteFile(PChar(s + '.dpr~'));
+  AssignFile(origDpr, s + '.dpr');
+  AssignFile(tempDpr, s + '.dpr~');
   Reset(origDpr);
   Rewrite(tempDpr);
   while not EOF(origDpr) do
@@ -386,8 +385,6 @@ var
   s : String;
   sExt : String;
   iMapSize,iDataSize : Integer;
-  bMSBuild: Boolean;
-  sPath: String;
   iReturn: Integer;
 begin
   result := False;
@@ -406,7 +403,11 @@ begin
   DC.OnNewLine := OnCompilerNewLine;
   MakeCFG(Project, bDebug);
 
-  cmd := 'dcc32 "' + ExtractFilePath(Project.Path) + ChangeFileExt(ExtractFileName(Project.Path), '') + '.dpr"';
+  cmd := 'dcc32 "' + ExtractFilePath(Project.Path) + ChangeFileExt(ExtractFileName(Project.Path), '');
+  if bDebug then
+    cmd := cmd + '.dpr~'
+  else
+    cmd := cmd + '.dpr';
 
   DC.CommandLine := cmd;
   DC.Execute2;
@@ -429,11 +430,8 @@ begin
   if bDebug then
   begin
     s := ChangeFileExt(Project.Path, '');
-    if FileExists(s + '.dpr') and FileExists(s + '.orig') then
-    begin
-      DeleteFile(PChar(s + '.dpr'));
-      MoveFile(PChar(s + '.orig'), PChar(s + '.dpr'));
-    end;
+    if FileExists(s + '.dpr~') then
+      DeleteFile(PChar(s + '.dpr~'));
     s := ChangeFileExt(ExtractFileName(Project.Path), '');
     result := InsertDebugDataIntoExecutableFile(PChar(Project.OutputDir + s + sExt), PChar(Project.OutputDir + s + '.map'), iMapSize, iDataSize);
     Project.DataSize := iDataSize;
