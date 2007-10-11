@@ -23,33 +23,26 @@ object frmConfig: TfrmConfig
     Columns = <
       item
         Width = 200
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
-        Autosize = False
         StretchColumn = True
         Images = imlList
       end
       item
         Width = 200
-        MaxWidth = 0
-        MinWidth = 0
-        TextColor = clBlack
-        SelectedTextColor = clBlack
         HAlign = taRightJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
-        Autosize = False
         StretchColumn = False
       end>
+    Colors.BorderColor = clBtnFace
+    Colors.BorderColorSelected = clBtnShadow
+    Colors.ItemColor = clWindow
+    Colors.ItemColorSelected = clBtnFace
     OnResize = lbHotkeysResize
-    ItemHeight = 24
+    ItemHeight = 26
     OnClickItem = lbHotkeysClickItem
-    OnGetCellTextColor = lbHotkeysGetCellTextColor
     AutosizeGrid = True
     Borderstyle = bsNone
     Align = alTop
@@ -130,6 +123,7 @@ object frmConfig: TfrmConfig
       end>
     Left = 380
     Top = 36
+    Bitmap = {}
   end
   object JvHint1: TJvHint
     Left = 284
