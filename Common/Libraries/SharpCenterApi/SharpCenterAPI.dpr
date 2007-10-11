@@ -180,7 +180,7 @@ begin
         ShellExecute(wnd, 'open', pchar(Path + 'SharpCenter.exe'), Pchar('-api '
           +
           IntToStr(Integer(ACommand)) + '|' + AParam + '|' + APluginID),
-          pchar(path), WM_SHOWWINDOW);
+          pchar(path), SW_SHOWNORMAL);
 
       end
       else
