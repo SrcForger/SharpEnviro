@@ -21,9 +21,12 @@ object frmSkinListWnd: TfrmSkinListWnd
     Width = 418
     Height = 284
     Columns = <>
+    Colors.BorderColor = clBtnFace
+    Colors.BorderColorSelected = clBtnShadow
+    Colors.ItemColor = clWindow
+    Colors.ItemColorSelected = clBtnFace
     ItemHeight = 66
     OnClickItem = lbSkinListClickItem
-    OnGetCellTextColor = lbSkinListGetCellTextColor
     OnGetCellColor = lbSkinListGetCellColor
     AutosizeGrid = False
     BevelOuter = bvNone
