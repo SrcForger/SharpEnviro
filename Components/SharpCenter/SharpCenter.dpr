@@ -38,8 +38,6 @@ begin
   if exit then Application.Terminate else begin
 
   Application.CreateForm(TSharpCenterWnd, SharpCenterWnd);
-  if GetWindowLong(SharpCenterWnd.Handle,GWL_STYLE) and WS_VISIBLE = 0 then
-    ShowWindow(SharpCenterWnd.Handle,SW_SHOWNORMAL);
   Application.Run;
   end;
  end.
