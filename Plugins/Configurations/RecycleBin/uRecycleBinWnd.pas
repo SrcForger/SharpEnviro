@@ -35,7 +35,8 @@ uses
   ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit, SharpEUIC,
   SharpEFontSelectorFontList, JvPageList, JvExControls, SharpEPageControl,
   ComCtrls, Mask, JvExMask, JvToolEdit, SharpEColorEditorEx,
-  SharpDialogs, SharpERoundPanel, SharpIconUtils, JvExStdCtrls, JvCheckBox;
+  SharpDialogs, SharpERoundPanel, SharpIconUtils, JvExStdCtrls, JvCheckBox,
+  SharpESwatchManager;
 
 type
   TStringObject = class(TObject)
@@ -161,6 +162,7 @@ type
     Label7: TLabel;
     cbBinStatus: TCheckBox;
     Label5: TLabel;
+    SharpESwatchManager1: TSharpESwatchManager;
     procedure FormCreate(Sender: TObject);
     procedure spcTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);

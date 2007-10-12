@@ -479,7 +479,6 @@ object frmRecycleBin: TfrmRecycleBin
       Top = 0
       Width = 429
       Height = 464
-      ExplicitHeight = 504
       object Panel1: TPanel
         Left = 0
         Top = 279
@@ -522,7 +521,6 @@ object frmRecycleBin: TfrmRecycleBin
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICIconTrans'
-          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -556,7 +554,6 @@ object frmRecycleBin: TfrmRecycleBin
             HotTrackFont.Height = -11
             HotTrackFont.Name = 'Tahoma'
             HotTrackFont.Style = []
-            ExplicitWidth = 111
           end
         end
         object UICIconTransValue: TSharpEUIC
@@ -572,7 +569,6 @@ object frmRecycleBin: TfrmRecycleBin
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICIconTransValue'
-          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -662,7 +658,6 @@ object frmRecycleBin: TfrmRecycleBin
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICSize'
-          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -905,7 +900,6 @@ object frmRecycleBin: TfrmRecycleBin
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICColorBlend'
-          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -939,7 +933,6 @@ object frmRecycleBin: TfrmRecycleBin
             HotTrackFont.Height = -11
             HotTrackFont.Name = 'Tahoma'
             HotTrackFont.Style = []
-            ExplicitWidth = 99
           end
         end
         object UICColorBlendValue: TSharpEUIC
@@ -955,7 +948,6 @@ object frmRecycleBin: TfrmRecycleBin
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICColorBlendValue'
-          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -1032,7 +1024,6 @@ object frmRecycleBin: TfrmRecycleBin
           Margins.Bottom = 0
           Align = alTop
           BevelOuter = bvNone
-          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -1066,7 +1057,6 @@ object frmRecycleBin: TfrmRecycleBin
             HotTrackFont.Height = -11
             HotTrackFont.Name = 'Tahoma'
             HotTrackFont.Style = []
-            ExplicitWidth = 83
           end
         end
         object UICIconShadowValue: TSharpEUIC
@@ -1082,7 +1072,6 @@ object frmRecycleBin: TfrmRecycleBin
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICIconShadowValue'
-          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -1127,7 +1116,6 @@ object frmRecycleBin: TfrmRecycleBin
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 4
-        ExplicitHeight = 150
         object lblIconColorDet: TLabel
           AlignWithMargins = True
           Left = 26
@@ -1174,7 +1162,6 @@ object frmRecycleBin: TfrmRecycleBin
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICColorBlendColor'
-          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -1222,6 +1209,7 @@ object frmRecycleBin: TfrmRecycleBin
                 ColorEditor = sceColorBlend.Item0
                 Tag = 0
               end>
+            SwatchManager = SharpESwatchManager1
             OnChangeColor = sceColorBlendChangeColor
           end
         end
@@ -1238,7 +1226,6 @@ object frmRecycleBin: TfrmRecycleBin
           Align = alTop
           BevelOuter = bvNone
           Caption = 'SharpEUIC1'
-          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -1284,6 +1271,7 @@ object frmRecycleBin: TfrmRecycleBin
                 ColorEditor = sceIconShadow.Item0
                 Tag = 0
               end>
+            SwatchManager = SharpESwatchManager1
             OnChangeColor = sceIconShadowChangeColor
           end
         end
@@ -1294,7 +1282,6 @@ object frmRecycleBin: TfrmRecycleBin
       Top = 0
       Width = 429
       Height = 464
-      ExplicitHeight = 504
       object lblFontNameDet: TLabel
         AlignWithMargins = True
         Left = 26
@@ -1459,7 +1446,6 @@ object frmRecycleBin: TfrmRecycleBin
         Align = alTop
         BevelOuter = bvNone
         Caption = 'UICFontName'
-        Color = clWhite
         ParentBackground = False
         TabOrder = 0
         RoundValue = 10
@@ -1475,7 +1461,7 @@ object frmRecycleBin: TfrmRecycleBin
           AlignWithMargins = True
           Left = 4
           Top = 2
-          Width = 393
+          Width = 250
           Height = 23
           Margins.Left = 4
           Margins.Top = 2
@@ -1504,7 +1490,6 @@ object frmRecycleBin: TfrmRecycleBin
         Align = alTop
         BevelOuter = bvNone
         Caption = 'UICFontSize'
-        Color = clWhite
         ParentBackground = False
         TabOrder = 1
         RoundValue = 10
@@ -1552,7 +1537,6 @@ object frmRecycleBin: TfrmRecycleBin
         Align = alTop
         BevelOuter = bvNone
         Caption = 'UICFontTrans'
-        Color = clWhite
         ParentBackground = False
         TabOrder = 2
         RoundValue = 10
@@ -1584,7 +1568,6 @@ object frmRecycleBin: TfrmRecycleBin
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          ExplicitWidth = 112
         end
       end
       object UICFontTransValue: TSharpEUIC
@@ -1600,7 +1583,6 @@ object frmRecycleBin: TfrmRecycleBin
         Align = alTop
         BevelOuter = bvNone
         Caption = 'UICFontTransValue'
-        Color = clWhite
         ParentBackground = False
         TabOrder = 3
         RoundValue = 10
@@ -1647,7 +1629,6 @@ object frmRecycleBin: TfrmRecycleBin
         Align = alTop
         BevelOuter = bvNone
         Caption = 'UICUnderline'
-        Color = clWhite
         ParentBackground = False
         TabOrder = 4
         RoundValue = 10
@@ -1679,7 +1660,6 @@ object frmRecycleBin: TfrmRecycleBin
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          ExplicitWidth = 66
         end
       end
       object UICItalic: TSharpEUIC
@@ -1694,7 +1674,6 @@ object frmRecycleBin: TfrmRecycleBin
         Align = alTop
         BevelOuter = bvNone
         Caption = 'UICBold'
-        Color = clWhite
         ParentBackground = False
         TabOrder = 5
         RoundValue = 10
@@ -1726,7 +1705,6 @@ object frmRecycleBin: TfrmRecycleBin
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          ExplicitWidth = 44
         end
       end
       object UICBold: TSharpEUIC
@@ -1741,7 +1719,6 @@ object frmRecycleBin: TfrmRecycleBin
         Align = alTop
         BevelOuter = bvNone
         Caption = 'UICBold'
-        Color = clWhite
         ParentBackground = False
         TabOrder = 6
         RoundValue = 10
@@ -1773,7 +1750,6 @@ object frmRecycleBin: TfrmRecycleBin
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          ExplicitWidth = 41
         end
       end
       object UICFontColor: TSharpEUIC
@@ -1789,7 +1765,6 @@ object frmRecycleBin: TfrmRecycleBin
         Align = alTop
         BevelOuter = bvNone
         Caption = 'UICFontColor'
-        Color = clWhite
         ParentBackground = False
         TabOrder = 7
         OnClick = UICFontColorClick
@@ -1836,6 +1811,7 @@ object frmRecycleBin: TfrmRecycleBin
               ColorEditor = sceFontColor.Item0
               Tag = 0
             end>
+          SwatchManager = SharpESwatchManager1
           OnChangeColor = sceFontColorChangeColor
         end
       end
@@ -1846,7 +1822,6 @@ object frmRecycleBin: TfrmRecycleBin
       Width = 429
       Height = 464
       Caption = 'pagFontShadow'
-      ExplicitHeight = 504
       object lblFontShadowDet: TLabel
         AlignWithMargins = True
         Left = 26
@@ -1980,7 +1955,6 @@ object frmRecycleBin: TfrmRecycleBin
           Margins.Bottom = 0
           Align = alTop
           BevelOuter = bvNone
-          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -2004,7 +1978,7 @@ object frmRecycleBin: TfrmRecycleBin
             Margins.Bottom = 2
             Align = alLeft
             Style = csDropDownList
-            ItemHeight = 0
+            ItemHeight = 13
             ItemIndex = 0
             TabOrder = 0
             Text = 'Left Shadow'
@@ -2027,7 +2001,6 @@ object frmRecycleBin: TfrmRecycleBin
           Margins.Bottom = 0
           Align = alTop
           BevelOuter = bvNone
-          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -2075,7 +2048,6 @@ object frmRecycleBin: TfrmRecycleBin
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UICFontShadowColor'
-          Color = clWhite
           ParentBackground = False
           TabOrder = 2
           RoundValue = 10
@@ -2121,6 +2093,7 @@ object frmRecycleBin: TfrmRecycleBin
                 ColorEditor = sceShadowColor.Item0
                 Tag = 0
               end>
+            SwatchManager = SharpESwatchManager1
             OnChangeColor = sceShadowColorChangeColor
           end
         end
@@ -2138,7 +2111,6 @@ object frmRecycleBin: TfrmRecycleBin
         Align = alTop
         BevelOuter = bvNone
         Caption = 'UICFontShadow'
-        Color = clWhite
         ParentBackground = False
         TabOrder = 1
         RoundValue = 10
@@ -2170,7 +2142,6 @@ object frmRecycleBin: TfrmRecycleBin
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          ExplicitWidth = 84
         end
       end
     end
@@ -2317,5 +2288,22 @@ object frmRecycleBin: TfrmRecycleBin
       C001C001C0010000C001C001C0010000E003E007E0070000F81FF81FF81F0000
       FC7FFC7FFC7F0000FFFFFFFFFFFF000000000000000000000000000000000000
       000000000000}
+  end
+  object SharpESwatchManager1: TSharpESwatchManager
+    Swatches = <>
+    Width = 340
+    ShowCaptions = True
+    SwatchHeight = 16
+    SwatchWidth = 16
+    SwatchSpacing = 4
+    SwatchFont.Charset = DEFAULT_CHARSET
+    SwatchFont.Color = clWindowText
+    SwatchFont.Height = -11
+    SwatchFont.Name = 'Tahoma'
+    SwatchFont.Style = []
+    SwatchTextBorderColor = 16709617
+    SortMode = sortName
+    Left = 392
+    Top = 8
   end
 end

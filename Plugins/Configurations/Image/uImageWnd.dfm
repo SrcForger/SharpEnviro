@@ -295,6 +295,7 @@ object frmImage: TfrmImage
                 Margins.Bottom = 0
                 Align = alLeft
                 Color = clWindow
+                ParentBackground = False
                 Min = 5
                 Max = 60
                 Value = 30
@@ -330,6 +331,7 @@ object frmImage: TfrmImage
           Margins.Bottom = 0
           Align = alLeft
           Color = clWindow
+          ParentBackground = False
           Min = 5
           Max = 500
           Value = 100
@@ -454,6 +456,7 @@ object frmImage: TfrmImage
             Margins.Right = 4
             Margins.Bottom = 4
             Align = alLeft
+            ParentBackground = False
             Min = 16
             Max = 255
             Value = 192
@@ -550,7 +553,9 @@ object frmImage: TfrmImage
             BevelInner = bvNone
             BevelOuter = bvNone
             BorderStyle = bsNone
+            Color = clWindow
             ParentBackground = True
+            ParentColor = False
             TabOrder = 0
             OnResize = IconColorsResize
             Items = <
@@ -565,6 +570,7 @@ object frmImage: TfrmImage
                 ColorEditor = IconColors.Item0
                 Tag = 0
               end>
+            SwatchManager = SharpESwatchManager1
             OnChangeColor = IconColorsChangeColor
           end
         end
@@ -673,6 +679,7 @@ object frmImage: TfrmImage
             Margins.Right = 4
             Margins.Bottom = 4
             Align = alLeft
+            ParentBackground = False
             Min = 16
             Max = 255
             Value = 192
@@ -686,5 +693,22 @@ object frmImage: TfrmImage
         end
       end
     end
+  end
+  object SharpESwatchManager1: TSharpESwatchManager
+    Swatches = <>
+    Width = 329
+    ShowCaptions = True
+    SwatchHeight = 16
+    SwatchWidth = 16
+    SwatchSpacing = 4
+    SwatchFont.Charset = DEFAULT_CHARSET
+    SwatchFont.Color = clWindowText
+    SwatchFont.Height = -11
+    SwatchFont.Name = 'Tahoma'
+    SwatchFont.Style = []
+    SwatchTextBorderColor = 16709617
+    SortMode = sortName
+    Left = 392
+    Top = 8
   end
 end

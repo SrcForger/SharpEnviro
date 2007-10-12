@@ -34,7 +34,7 @@ uses
   SharpEListBox, SharpEListBoxEx, GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit, SharpEUIC,
   SharpEFontSelectorFontList, JvPageList, JvExControls, SharpEPageControl,
-  ComCtrls, Mask, JvExMask, JvToolEdit, SharpEColorEditorEx;
+  ComCtrls, Mask, JvExMask, JvToolEdit, SharpEColorEditorEx, SharpESwatchManager;
 
 type
   TStringObject = class(TObject)
@@ -83,6 +83,7 @@ type
     sgbiconalpha: TSharpeGaugeBox;
     UIC_Colors: TSharpEUIC;
     IconColors: TSharpEColorEditorEx;
+    SharpESwatchManager1: TSharpESwatchManager;
     procedure FormCreate(Sender: TObject);
     procedure sgb_sizeChangeValue(Sender: TObject; Value: Integer);
     procedure FormShow(Sender: TObject);
