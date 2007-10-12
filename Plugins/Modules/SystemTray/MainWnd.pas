@@ -37,8 +37,6 @@ uses
 
 type
   TMainForm = class(TForm)
-    MenuPopup: TPopupMenu;
-    Settings1: TMenuItem;
     SkinManager: TSharpESkinManager;
     lb_servicenotrunning: TSharpESkinLabel;
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -49,7 +47,6 @@ type
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure Settings1Click(Sender: TObject);
   protected
   private
     sShowBackground  : Boolean;
@@ -85,8 +82,7 @@ type
 
 implementation
 
-uses SettingsWnd,
-     uSharpBarAPI,
+uses uSharpBarAPI,
      SharpESkinPart,
      SharpThemeApi;
 
@@ -286,78 +282,6 @@ begin
   begin
      SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
   end;
-end;
-
-
-procedure TMainForm.Settings1Click(Sender: TObject);
-var
-  SettingsForm : TSettingsForm;
-  XML : TJvSimpleXML;
-  skin : String;
-  fileloaded : boolean;
-begin
-  SettingsForm := TSettingsForm.Create(Application.MainForm);
-  SettingsForm.cb_dbg.Checked      := sShowBackground;
-  SettingsForm.scb_dbg.ColorCode   := sBackgroundColor;
-  SettingsForm.tb_dbg.Position     := sBackgroundAlpha;
-  SettingsForm.cb_dbd.Checked      := sShowBorder;
-  SettingsForm.scb_dbd.ColorCode   := sBorderColor;
-  SettingsForm.tb_dbd.Position     := sBorderAlpha;
-  SettingsForm.cb_blend.Checked    := sColorBlend;
-  SettingsForm.scb_blend.ColorCode := sBlendColor;
-  SettingsForm.tb_blend.Position   := sBlendAlpha;
-  SettingsForm.tb_alpha.Position   := sIconAlpha;
-  if SettingsForm.ShowModal = mrOk then
-  begin
-    sShowBackground := SettingsForm.cb_dbg.Checked;
-    sBackgroundColor := SettingsForm.scb_dbg.ColorCode;
-    sBackgroundAlpha := SettingsForm.tb_dbg.Position;
-    sShowBorder := SettingsForm.cb_dbd.Checked;
-    sBorderColor := SettingsForm.scb_dbd.ColorCode;
-    sBorderAlpha := SettingsForm.tb_dbd.Position;
-    sColorBlend := SettingsForm.cb_blend.Checked;
-    sBlendColor := SettingsForm.scb_blend.ColorCode;
-    sBlendAlpha := SettingsForm.tb_blend.Position;
-    sIconAlpha  := SettingsForm.tb_alpha.Position;
-
-    XML := TJvSimpleXML.Create(nil);
-    try
-      XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      fileloaded := True;
-    except
-      fileloaded := False;
-    end;
-    if not fileloaded then
-      XML.Root.Name := 'SystemTrayModuleSettings';
-    with XML.Root.Items do
-    begin
-      skin := SharpThemeApi.GetSkinName;
-      if ItemNamed['skin'] <> nil then
-      begin
-        if ItemNamed['skin'].Items.ItemNamed[skin] = nil then
-           ItemNamed['skin'].Items.Add(skin);
-      end else Add('skin').Items.Add(skin);
-      with ItemNamed['skin'].Items.ItemNamed[skin].Items do
-      begin
-        Clear;
-        Add('ShowBackground',sShowBackground);
-        Add('BackgroundColor',sBackgroundColor);
-        Add('BackgroundAlpha',sBackgroundAlpha);
-        Add('ShowBorder',sShowBorder);
-        Add('BorderColor',sBorderColor);
-        Add('BorderAlpha',sBorderAlpha);
-        Add('ColorBlend',sColorBlend);
-        Add('BlendColor',sBlendColor);
-        Add('BlendAlpha',sBlendAlpha);
-        Add('IconAlpha',sIconAlpha);
-      end;
-    end;
-    XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-    XML.Free;
-
-    ReAlignComponents(true);
-  end;
-  SettingsForm.Free;
 end;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;

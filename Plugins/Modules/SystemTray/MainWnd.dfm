@@ -11,7 +11,6 @@ object MainForm: TMainForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  PopupMenu = MenuPopup
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnMouseDown = FormMouseDown
@@ -30,15 +29,6 @@ object MainForm: TMainForm
     Caption = 'SharpE Tray Service not running'
     AutoPosition = True
     LabelStyle = lsMedium
-  end
-  object MenuPopup: TPopupMenu
-    AutoPopup = False
-    Left = 168
-    Top = 120
-    object Settings1: TMenuItem
-      Caption = 'Settings'
-      OnClick = Settings1Click
-    end
   end
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
