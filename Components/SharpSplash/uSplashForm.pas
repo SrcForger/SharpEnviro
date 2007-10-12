@@ -65,8 +65,6 @@ type
     ShowDelay : integer;
     procedure UpdateWndLayer;
   protected
-    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    procedure WMNCHitTest(var Message: TWMNCHitTest);
   public
     TerminateFlag : Boolean;
     procedure DrawWindow;
@@ -99,18 +97,6 @@ begin
     p^:= (c and $FF000000) or r shl 16 or g shl 8 or b;
     inc(p);
   end;
-end;
-
-procedure TSplashForm.WMPaint(var Msg: TWMPaint);
-begin
-  inherited;
-  Application.ProcessMessages;
-end;
-
-procedure TSplashForm.WMNCHitTest(var Message: TWMNCHitTest);
-begin
-  if PtInRect(ClientRect, ScreenToClient(Point(Message.XPos, Message.YPos))) then
-    Message.Result := HTClient;
 end;
 
 procedure TSplashForm.UpdateWndLayer;
