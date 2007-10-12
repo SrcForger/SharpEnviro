@@ -167,7 +167,7 @@ end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);
 begin
-  ATabs.Add('frmVWM',frmVWM.pagVWM,'','');
+  ATabs.Add('VWM',frmVWM.pagVWM,'','');
 end;
 
 procedure ClickTab(ATab: TPluginTabItem);
