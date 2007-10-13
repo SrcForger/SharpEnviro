@@ -33,7 +33,7 @@ uses
   Dialogs, StdCtrls, ComCtrls,
   // SharpE Units
   SharpApi, Buttons, JvExStdCtrls, JvListBox, JvDriveCtrls, JvCombobox, JvgPage,
-  ShellCtrls, Mask, JvExMask, JvSpin, Spin;
+  Mask, JvExMask, JvSpin, Spin;
 
 type
   TSettingsForm = class(TForm)

@@ -75,6 +75,10 @@ object SettingsForm: TSettingsForm
     Options = [ftoAutoFontDirection, ftoExcludeGlyphs]
     object TabSheet1: TTabSheet
       Caption = 'General'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object GroupBox3: TGroupBox
         Left = 0
         Top = 96
@@ -222,6 +226,10 @@ object SettingsForm: TSettingsForm
     object TabSheet2: TTabSheet
       Caption = 'File Location'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object GroupBox2: TGroupBox
         Left = 2
         Top = 0
@@ -234,7 +242,7 @@ object SettingsForm: TSettingsForm
           Top = 40
           Width = 227
           Height = 231
-          Directory = 'c:\program files\borland\bds\3.0\bin'
+          Directory = 'c:\Documents and Settings\aleksandar.milanovic\Desktop'
           DriveCombo = JvDriveCombo1
           ItemHeight = 17
           ScrollBars = ssBoth
@@ -255,6 +263,10 @@ object SettingsForm: TSettingsForm
     object TabSheet3: TTabSheet
       Caption = 'Options'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object GroupBox6: TGroupBox
         Left = 0
         Top = 0

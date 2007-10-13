@@ -30,7 +30,7 @@ interface
 uses             
   // Default Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, Menus, Math, Clipbrd, shellctrls, jpeg,
+  Dialogs, StdCtrls, ExtCtrls, Menus, Math, Clipbrd, jpeg,
   // Custom Units
   JvSimpleXML, GR32, SharpESkinManager, SharpEBaseControls, SharpEButton,
   GR32_Image, PngImage,
@@ -251,33 +251,31 @@ var
   dc : HDC;
   r : TRect;
 begin
+  hdcSrc := 0;
   try
+    bitMap := TBitmap.Create;
+    if (blnActiveWin) then
     begin
-      bitMap := TBitmap.Create;
-      if (blnActiveWin) then
+      if (hwndActive <> 0)then
       begin
-       if (hwndActive <> 0)then
-        begin
-         SetForeGroundWindow(hwndActive);
-         dc := GetWindowDC(hwndActive);
-         GetWindowRect(hwndActive,r);
-         bitMap.Width := r.Right - r.Left;
-         bitMap.Height := r.Bottom - r.Top;
-         BitBlt(bitMap.Canvas.Handle, 0, 0, bitMap.Width, bitMap.Height,dc, 0, 0, SRCCOPY or CAPTUREBLT);
-        end
-       end
-      else
-      begin
-        hdcSrc := GetWindowDC(GetDesktopWindow);
-        bitMap.Width  := Screen.Width;
-        bitMap.Height := Screen.Height;
-        BitBlt(bitMap.Canvas.Handle, 0, 0, bitMap.Width, bitMap.Height,hdcSrc, 0, 0, SRCCOPY or CAPTUREBLT);
+        SetForeGroundWindow(hwndActive);
+        dc := GetWindowDC(hwndActive);
+        GetWindowRect(hwndActive,r);
+        bitMap.Width := r.Right - r.Left;
+        bitMap.Height := r.Bottom - r.Top;
+        BitBlt(bitMap.Canvas.Handle, 0, 0, bitMap.Width, bitMap.Height,dc, 0, 0, SRCCOPY or CAPTUREBLT);
       end;
-      if (blnClipboard) then Clipboard.Assign(bitMap);
-      if (blnSaveDlg) then SaveAsDlg(bitMap);
-      if (blnAutoGen) then AutoGen(bitMap);
-
-      end;
+    end
+    else
+    begin
+      hdcSrc := GetWindowDC(GetDesktopWindow);
+      bitMap.Width  := Screen.Width;
+      bitMap.Height := Screen.Height;
+      BitBlt(bitMap.Canvas.Handle, 0, 0, bitMap.Width, bitMap.Height,hdcSrc, 0, 0, SRCCOPY or CAPTUREBLT);
+    end;
+    if (blnClipboard) then Clipboard.Assign(bitMap);
+    if (blnSaveDlg) then SaveAsDlg(bitMap);
+    if (blnAutoGen) then AutoGen(bitMap);
   finally
     ReleaseDC(0, hdcSrc);
   end;
@@ -392,7 +390,7 @@ end;
 
 procedure TMainForm.WMShellHook(var msg : TMessage);
 begin
-  if msg.LParam = self.Handle then exit;
+  if Cardinal(msg.LParam) = self.Handle then exit;
   if msg.LParam = 0 then exit;
   case msg.WParam of
      HSHELL_WINDOWACTIVATED : hwndActive := msg.LParam;
