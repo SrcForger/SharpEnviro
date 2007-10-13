@@ -439,7 +439,7 @@ end;
 
 procedure Stop;
 begin
-  DeallocateHWnd(h);
+  Classes.DeallocateHWnd(h);
   AE.Free;
   TSGUI.Free;
 
@@ -456,7 +456,7 @@ begin
   TSGUI := TTSGUI.Create;
 
   ae := TActionEvent.Create;
-  h := allocatehwnd(Ae.MessageHandler);
+  h := Classes.Allocatehwnd(Ae.MessageHandler);
 
   LoadFilterSettingsFromXML;
   LoadActionsFromXML;
@@ -479,6 +479,7 @@ exports
   Start,
   Stop;
 
+begin
 end.
 
 

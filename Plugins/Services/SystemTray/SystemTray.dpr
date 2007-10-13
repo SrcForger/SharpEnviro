@@ -42,6 +42,8 @@ uses
 
 {$R *.RES}
 
+{$WARN SYMBOL_PLATFORM OFF}
+
 //var
   //TrayManager : TTrayManager;
 
@@ -86,6 +88,7 @@ exports
   Start,
   Stop;
 
+begin
 end.
 
 

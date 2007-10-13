@@ -32,11 +32,12 @@ uses
   Classes,
   SharpApi;
 
+{$WARN SYMBOL_PLATFORM OFF}
 
 type
   TTaskManager = Class(Tobject)
     private
-      WM_SHELLHOOK : integer;    
+      WM_SHELLHOOK : integer;
       FWndList : array of hwnd;
       FMsgWnd : hwnd;
       Procedure MessageHandler(var msg: TMessage);
@@ -236,6 +237,7 @@ begin
   RegisterShellHook(FMsgWnd,0);
 end;
 
+begin
 end.
 
 

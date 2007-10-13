@@ -302,7 +302,7 @@ begin
       Result.Commandline := commandline;
       Exit;
     end;
-    AppendStr(filetoexecute, ' ');
+    filetoexecute := filetoexecute + ' ';
   end;
   Finally
     tokens.Free;

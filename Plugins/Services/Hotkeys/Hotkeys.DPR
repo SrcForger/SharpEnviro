@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Hotkeys;
 uses
+  Classes,
   Forms,
   windows,
   dialogs,
@@ -42,7 +43,7 @@ begin
   HKService.UnregisterAllKeys;
   HKService.Free;
 
-  DeallocateHWnd(h);
+  Classes.DeallocateHWnd(h);
 end;
 
 //starts the service
@@ -51,7 +52,7 @@ function Start(owner: hwnd): hwnd;
 begin
   //Application.ShowMainForm := false;
   HKService := THotkeyService.Create;
-  h := AllocateHWnd(HKService.MessageHandler);
+  h := Classes.AllocateHWnd(HKService.MessageHandler);
 
   // Load the Hotkeys
   HKService.AddHotkeys(True);
