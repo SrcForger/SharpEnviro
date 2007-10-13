@@ -530,9 +530,9 @@ begin
        h := Height;
        SkinManager.UpdateScheme;
        SkinManager.UpdateSkin;
+       SharpEBar.UpdateSkin;
        if h < Height then UpdateBGZone
           else UpdateBGZone;
-       SharpEBar.UpdateSkin;
        if SharpEBar.Throbber.Visible then
        begin
          SharpEBar.Throbber.UpdateSkin;
@@ -640,6 +640,7 @@ begin
   finally
   end;
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+  ModuleManager.BroadcastPluginUpdate(suBackground,-2);
 end;
 
 // ***********************
@@ -1191,7 +1192,9 @@ end;
 procedure TSharpBarMainForm.FullScreen1Click(Sender: TObject);
 begin
   SharpEBar.HorizPos := hpFull;
-  UpdateBGImage;  
+  UpdateBGImage;
+  SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH,0,0);
+  ModuleManager.FixModulePositions;  
   SaveBarSettings;
 end;
 
