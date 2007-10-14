@@ -192,7 +192,7 @@ var
   temp : TModule;
   n,i : integer;
 begin
-  if not (part in processed) then 
+  if not (part in processed) then
     exit;
 
   if ModuleList = nil then exit;
@@ -283,5 +283,5 @@ Exports
   SetSize,
   ModuleMessage;
 
-
+begin
 end.

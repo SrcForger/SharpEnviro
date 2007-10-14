@@ -27,7 +27,7 @@ unit MainWnd;
 
 interface
 
-uses             
+uses
   // Default Units
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Menus, Math, Clipbrd, jpeg,
@@ -49,15 +49,12 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure MenuSettingsItemClick(Sender: TObject);
-    procedure ScreenShot();
+    procedure ScreenShot;
     procedure SaveAsDlg(bitMap: TBitmap);
     procedure AutoGen(bitMap: TBitmap);
     procedure saveFormat(bitMap: TBitmap; strFormat: string; strFilename: string);
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
     procedure ActionMsg(var Msg: TMessage); message WM_SHARPEACTIONMESSAGE;
-
-
-  protected
   private
     blnClipboard : boolean;
     blnSaveDlg : boolean;
@@ -74,7 +71,7 @@ type
     blnJpgGrayScale : boolean;
     intJpgCompression : integer;
     intPngCompression : integer;
-
+  protected
   public
     ModuleID : integer;
     BarID : integer;
@@ -97,17 +94,11 @@ uses SettingsWnd;
 procedure TMainForm.LoadSettings;
 var
   XML : TJvSimpleXML;
-  fileloaded : boolean;
 begin
   XML := TJvSimpleXML.Create(nil);
   try
     XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
-    with xml.Root.Items do
+    with XML.Root.Items do
     begin
       blnClipboard := BoolValue('Clipboard', True);
       blnSaveDlg := BoolValue('SaveAs', False);
@@ -124,15 +115,19 @@ begin
       blnJpgGrayScale := BoolValue('JpgGrayScale', False);
       intPngCompression := IntValue('PngCompression', 5);
     end;
+  finally
+    XML.Free;
+  end;
 end;
 
 procedure TMainForm.UpdateBackground(new : integer = -1);
 begin
   if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+    Background.SetSize(new,Height)
+  else
+    if (Width <> Background.Width) then
+      Background.Setsize(Width,Height);
+  uSharpBarAPI.PaintBarBackGround(BarWnd, Background, self, Background.Width);
 end;
 
 procedure TMainForm.SetWidth(new : integer);
@@ -146,7 +141,7 @@ procedure TMainForm.ReAlignComponents(BroadCast : boolean);
 var
   newWidth : integer;
 begin
-  self.Caption := 'ScreenShot' ;
+  self.Caption := 'ScreenShot';
   btnSS.Width := btnSS.Height;
   btnSS.Left := 2;
   newWidth := btnSS.Width + 4;
@@ -198,29 +193,31 @@ begin
       intPngCompression := SettingsForm.spePngCompression.Value;
 
       XML := TJvSimpleXMl.Create(nil);
-      XML.Root.Name := 'ScreenshotModuleSettings';
-      with XML.Root.Items do
-      begin
-        Add('Clipboard',blnClipboard);
-        Add('SaveAs', blnSaveDlg);
-        Add('AutoGen', blnAutoGen);
-        Add('AutoGenNum', blnAutoGenNum);
-        Add('ActiveWin', blnActiveWin);
-        Add('DateTime', blnDateTime);
-        Add('DateTimeFormat', intDateTimeFormat);
-        Add('Filename', strFilename);
-        Add('Append', strAppend);
-        Add('Location', strLocation);
-        Add('Format', strFormat);
-        Add('JpgCompression', intJpgCompression);
-        Add('JpgGrayscale', blnJpgGrayscale);
-        Add('PngCompression', intPngCompression);
+      try
+        XML.Root.Name := 'ScreenshotModuleSettings';
+        with XML.Root.Items do
+        begin
+          Add('Clipboard',blnClipboard);
+          Add('SaveAs', blnSaveDlg);
+          Add('AutoGen', blnAutoGen);
+          Add('AutoGenNum', blnAutoGenNum);
+          Add('ActiveWin', blnActiveWin);
+          Add('DateTime', blnDateTime);
+          Add('DateTimeFormat', intDateTimeFormat);
+          Add('Filename', strFilename);
+          Add('Append', strAppend);
+          Add('Location', strLocation);
+          Add('Format', strFormat);
+          Add('JpgCompression', intJpgCompression);
+          Add('JpgGrayscale', blnJpgGrayscale);
+          Add('PngCompression', intPngCompression);
+        end;
+        XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      finally
+        XML.Free;
       end;
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      XML.Free;
+      ReAlignComponents(True);
     end;
-    ReAlignComponents(True);
-
   finally
     FreeAndNil(SettingsForm);
   end;
@@ -230,7 +227,6 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   Background := TBitmap32.Create;
   DoubleBuffered := True;
-
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -244,16 +240,15 @@ begin
   Background.DrawTo(Canvas.Handle,0,0);
 end;
 
-procedure TMainForm.ScreenShot();
+procedure TMainForm.ScreenShot;
 var
   bitMap: TBitmap;
-  hdcSrc : THandle;
   dc : HDC;
   r : TRect;
 begin
-  hdcSrc := 0;
+  dc := 0;
+  bitMap := TBitmap.Create;
   try
-    bitMap := TBitmap.Create;
     if (blnActiveWin) then
     begin
       if (hwndActive <> 0)then
@@ -263,31 +258,38 @@ begin
         GetWindowRect(hwndActive,r);
         bitMap.Width := r.Right - r.Left;
         bitMap.Height := r.Bottom - r.Top;
-        BitBlt(bitMap.Canvas.Handle, 0, 0, bitMap.Width, bitMap.Height,dc, 0, 0, SRCCOPY or CAPTUREBLT);
       end;
     end
     else
     begin
-      hdcSrc := GetWindowDC(GetDesktopWindow);
+      dc := GetWindowDC(GetDesktopWindow);
       bitMap.Width  := Screen.Width;
       bitMap.Height := Screen.Height;
-      BitBlt(bitMap.Canvas.Handle, 0, 0, bitMap.Width, bitMap.Height,hdcSrc, 0, 0, SRCCOPY or CAPTUREBLT);
     end;
-    if (blnClipboard) then Clipboard.Assign(bitMap);
-    if (blnSaveDlg) then SaveAsDlg(bitMap);
-    if (blnAutoGen) then AutoGen(bitMap);
+    BitBlt(bitMap.Canvas.Handle, 0, 0, bitMap.Width, bitMap.Height,dc, 0, 0, SRCCOPY or CAPTUREBLT);
+    if (bitMap.Width = 0) or (bitMap.Height = 0) then
+    begin
+      SendDebugMessage('Screenshot module', 'Empty bitmap', 0);
+    end
+    else
+    begin
+      if (blnClipboard) then Clipboard.Assign(bitMap);
+      if (blnSaveDlg) then SaveAsDlg(bitMap);
+      if (blnAutoGen) then AutoGen(bitMap);
+    end;
   finally
-    ReleaseDC(0, hdcSrc);
+    bitMap.Free;
+    ReleaseDC(0, dc);
   end;
 end;
 
 procedure TMainForm.SaveAsDlg(bitMap : TBitmap);
 begin
-    svdSave.InitialDir := strLocation;
-    if svdSave.Execute then
-    begin
-      saveFormat(bitMap, strFormat, svdSave.FileName);
-    end;
+  svdSave.InitialDir := strLocation;
+  if svdSave.Execute then
+  begin
+    saveFormat(bitMap, strFormat, svdSave.FileName);
+  end;
 end;
 
 procedure TMainForm.AutoGen(bitMap : TBitmap);
@@ -298,7 +300,6 @@ var
   strDTFormat : string;
   dtmDate : TDateTime;
   XML : TJvSimpleXML;
-  fileloaded : boolean;
 begin
   strFile := strLocation;
   strFile := strFile + '\';
@@ -322,19 +323,17 @@ begin
   XML := TJvSimpleXML.Create(nil);
   try
     XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-    fileloaded := True;
-  except
-    fileloaded := False;
-  end;
-  if fileloaded then
     with xml.Root.Items do
     begin
       if ItemNamed['Append'] <> nil then
         ItemNamed['Append'].Value := strAppend
-        else Add('Append', strAppend);
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+      else
+        Add('Append', strAppend);
     end;
-  XML.Free;
+    XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+  finally
+    XML.Free;
+  end;
 end;
 
 procedure TMainForm.saveFormat(bitMap: TBitmap; strFormat: string; strFilename: string);
@@ -342,41 +341,39 @@ var
   JPG: TJPEGImage;
   PNG: TPNGObject;
 begin
-   if (strFormat = 'Jpg') then
-   begin
-      JPG := TJPEGImage.Create;
-      Try
-        JPG.Grayscale := blnJpgGrayscale;
-        JPG.CompressionQuality := intJpgCompression;
-        JPG.Assign(bitMap);
-        strFilename := strFilename + '.jpg';
-        JPG.SaveToFile(strFilename);
-      Finally
-        JPG.Free;
-      end;
-   end
-   else if (strFormat = 'Png') then
-   begin
-       PNG := TPNGObject.Create;
-       Try
+  if (strFormat = 'Jpg') then
+  begin
+    JPG := TJPEGImage.Create;
+    try
+      JPG.Grayscale := blnJpgGrayscale;
+      JPG.CompressionQuality := intJpgCompression;
+      JPG.Assign(bitMap);
+      strFilename := strFilename + '.jpg';
+      JPG.SaveToFile(strFilename);
+    finally
+      JPG.Free;
+    end;
+  end
+  else
+  begin
+    if (strFormat = 'Png') then
+    begin
+      PNG := TPNGObject.Create;
+      try
         PNG.CompressionLevel := intPngCompression;
         PNG.Assign(bitMap);
         strFilename := strFilename + '.png';
         PNG.SaveToFile(strFilename);
-       Finally
+      finally
         PNG.Free;
-       end;
-   end
-   else
-   begin
-      Try
-        strFilename := strFilename + '.bmp';
-        bitMap.SaveToFile(strFilename);
-      Finally
-        bitMap.Free;
       end;
-   end;
-
+    end
+    else
+    begin
+      strFilename := strFilename + '.bmp';
+      bitMap.SaveToFile(strFilename);
+    end;
+  end;
 end;
 
 procedure TMainForm.btnSSMouseUp(Sender: TObject; Button: TMouseButton;
@@ -384,7 +381,7 @@ procedure TMainForm.btnSSMouseUp(Sender: TObject; Button: TMouseButton;
 begin
   if Button = mbLeft then
   begin
-        ScreenShot();
+    ScreenShot();
   end;
 end;
 
@@ -399,21 +396,21 @@ end;
 
 procedure TMainForm.ActionMsg(var Msg: TMessage);
 var
-    blnActiveWinOrg : boolean;
+  blnActiveWinOrg : boolean;
 begin
-   blnActiveWinOrg := blnActiveWin;
-   case Msg.LParam of
-     0: begin
+  blnActiveWinOrg := blnActiveWin;
+  case Msg.LParam of
+    0: begin
          //Add code to printScreen
          blnActiveWin := false;
        end;
-     1: begin
+    1: begin
          //Add code to printwindow
          blnActiveWin := true;
        end;
-   end;
-   Screenshot();
-   blnActiveWin := blnActiveWinOrg;
+  end;
+  Screenshot();
+  blnActiveWin := blnActiveWinOrg;
 end;
 
 end.
