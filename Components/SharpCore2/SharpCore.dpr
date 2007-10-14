@@ -34,7 +34,8 @@ const
   WM_ICONTRAY = WM_USER + 1;
   ID_EXIT = 1;
   ID_SHUTDOWN = 2;
-  ID_SHELLSWITCH = 3;
+  ID_REBOOT = 3;
+  ID_SHELLSWITCH = 4;
 
 var
   wclClass: TWndClass;
@@ -48,15 +49,24 @@ var
   i: Integer;
   bDebug: Boolean;
   strExtension: String;
+  bReboot: Boolean;
+  wndDebug: Integer;
+
+procedure DebugMsg(Msg: String; MsgType: Integer = DMT_TRACE);
+begin
+  SendDebugMessageEx(PChar('SharpCore'), PChar(Msg), 0, MsgType);
+end;
 
 procedure BuildMenu();
 begin
+  DebugMsg('Creating popup menu');
   menPopup := CreatePopupMenu; // Create menu and submenu for services
   menServices := CreatePopupMenu;
 
   AppendMenu(menPopup, MF_POPUP, menServices, 'Services');
   AppendMenu(menPopup, 0, ID_SHELLSWITCH, 'Set Explorer as shell');
   AppendMenu(menPopup, MF_SEPARATOR, 0, nil);
+  AppendMenu(menPopup, 0, ID_REBOOT, 'Reboot SharpE');
   AppendMenu(menPopup, 0, ID_SHUTDOWN, 'Shutdown SharpE');
   AppendMenu(menPopup, 0, ID_EXIT, 'Exit SharpCore');
 end;
@@ -72,6 +82,7 @@ begin
     end;
 
     WM_CREATE: begin    // Create and display tray icon
+      DebugMsg('Creating tray icon');
       with nidTray do
       begin
         cbSize := SizeOf(nidTray);
@@ -111,32 +122,49 @@ begin
  stlCmdLine := TStringList.Create;
 
  bDebug := False;
+ bReboot := False;
  strExtension := '.service';
+ wndDebug := 0;
  stlCmdLine.DelimitedText := GetCommandLine;
  for i := 0 to stlCmdLine.Count - 1 do
  begin
-  try
    if LowerCase(stlCmdLine[i]) = '-debug' then bDebug := True;
-   if (LowerCase(stlCmdLine[i]) = '-ext') and (stlCmdLine[i+1] <> '') then
-    strExtension := stlCmdLine[i+1];
-  except
-   strExtension := '.service';
-  end;
+   if LowerCase(stlCmdLine[i]) = '-reboot' then bReboot := True;
+   if (LowerCase(stlCmdLine[i]) = '-ext') then
+    if (i + 1) <= (stlCmdLine.Count - 1) then
+      strExtension := stlCmdLine[i + 1]
+    else
+      strExtension := '.service';
  end;
  stlCmdLine.Free;
 
  if bDebug then
-  ShellExecute(hInstance, 'open', PChar(GetSharpEDirectory + 'SharpConsole.exe'),
-   '', PChar(GetSharpEDirectory), 0);
+ begin
+  if ShellExecute(hInstance, 'open', PChar(GetSharpEDirectory + 'SharpConsole.exe'),
+   '', PChar(GetSharpEDirectory), 0) = 0 then
+    begin
+      while wndDebug = 0 do //wait for SharpConsole to open
+        wndDebug := FindWindow('TSharpConsoleWnd', nil);
+      DebugMsg('Debug flag found, started SharpConsole');
+    end
+  else
+    DebugMsg('SharpConsole could not be started');
+ end;
 
+ if bReboot then DebugMsg('Reboot flag found');
+ DebugMsg('Starting with service extension ' + strExtension);
+
+ DebugMsg('Checking mutex');
  hndMutex := CreateMutex(nil, TRUE, 'SharpCore');
  if hndMutex <> 0 then
   if GetLastError = ERROR_ALREADY_EXISTS then
   begin
+    DebugMsg('Mutex already exists, exiting');
     CloseHandle(hndMutex);
     Exit;
   end;
 
+ DebugMsg('Creating main window');
  wclClass.lpszClassName:= 'SharpCore';
  wclClass.lpfnWndProc :=  @WindowProc;
  wclClass.hInstance := hInstance;
