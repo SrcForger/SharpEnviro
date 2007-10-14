@@ -44,10 +44,6 @@ object MainForm: TMainForm
   object MenuPopup: TPopupMenu
     Left = 168
     Top = 120
-    object Settings1: TMenuItem
-      Caption = 'Settings'
-      OnClick = Settings1Click
-    end
     object OpenWindowsDateTimesettings1: TMenuItem
       Caption = 'Open Windows Date/Time Settings'
       OnClick = lb_clockDblClick

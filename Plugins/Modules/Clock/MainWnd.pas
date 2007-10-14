@@ -37,7 +37,6 @@ uses
 type
   TMainForm = class(TForm)
     MenuPopup: TPopupMenu;
-    Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     OpenWindowsDateTimesettings1: TMenuItem;
     lb_bottomclock: TSharpESkinLabel;
@@ -49,7 +48,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure lb_clockDblClick(Sender: TObject);
     procedure ClockTimerTimer(Sender: TObject);
-    procedure Settings1Click(Sender: TObject);
   protected
   private
     sFormat : String;
@@ -72,8 +70,7 @@ type
 
 implementation
 
-uses SettingsWnd,
-     uSharpBarAPI;
+uses uSharpBarAPI;
 
 {$R *.dfm}
 
@@ -164,53 +161,6 @@ begin
      if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
 end;
 
-
-procedure TMainForm.Settings1Click(Sender: TObject);
-var
-  SettingsForm : TSettingsForm;
-  XML : TJvSimpleXML;
-begin
-  try
-    SettingsForm := TSettingsForm.Create(Application.MainForm);
-    SettingsForm.edit_format.Text := sFormat;
-    SettingsForm.edit_bottom.Text := sBottomFormat;
-    SettingsForm.edit_bottom.OnChange(SettingsForm.edit_bottom);
-    case sStyle of
-      lsSmall  : SettingsForm.cb_small.Checked := True;
-      lsMedium : SettingsForm.cb_medium.Checked := True;
-      lsBig    : SettingsForm.cb_large.Checked := True;
-    end;
-
-    if SettingsForm.ShowModal = mrOk then
-    begin
-      sFormat  := SettingsForm.edit_format.Text;
-      sBottomFormat := SettingsForm.edit_bottom.Text;
-      if SettingsForm.cb_small.Checked then sStyle := lsSmall
-         else if SettingsForm.cb_large.Checked then sStyle := lsBig
-              else sStyle := lsMedium;
-
-      XML := TJvSimpleXML.Create(nil);
-      XML.Root.Name := 'ClockModuleSettings';
-      with XML.Root.Items do
-      begin
-        Add('Format',sFormat);
-        Add('BottomFormat',sBottomFormat);
-        case sStyle of
-          lsSmall  : Add('Style',0);
-          lsMedium : Add('Style',1);
-          lsBig    : Add('Style',2);
-        end;
-      end;
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      XML.Free;
-      ClockTimer.OnTimer(ClockTimer);
-    end;
-    ReAlignComponents(True);
-
-  finally
-    FreeAndNil(SettingsForm);
-  end;
-end;
 
 procedure TMainForm.ClockTimerTimer(Sender: TObject);
 var
