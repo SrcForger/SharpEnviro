@@ -1,6 +1,7 @@
 <SharpCompile>
   <package Name="Configuration">
      <project Name="BatteryMonitor" Type="DLL">Plugins\Configurations\BatteryMonitor\BatteryMonitor.dproj</project>       
+     <project Name="Clock" Type="DLL">Plugins\Configurations\Clock\Clock.dproj</project>  
      <project Name="Curses" Type="DLL">Plugins\Configurations\Curses\Curses.dproj</project>  
      <project Name="DeskArea" Type="DLL">Plugins\Configurations\DeskArea\DeskArea.dproj</project>  
      <project Name="Desktop" Type="DLL">Plugins\Configurations\Desktop\Desktop.dproj</project>  

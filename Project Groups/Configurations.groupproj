@@ -5,6 +5,7 @@
   <ItemGroup />
   <ItemGroup>
     <Projects Include="..\Plugins\Configurations\BatteryMonitor\BatteryMonitor.dproj" />
+    <Projects Include="..\Plugins\Configurations\Clock\Clock.dproj" />
     <Projects Include="..\Plugins\Configurations\Curses\Curses.dproj" />
     <Projects Include="..\Plugins\Configurations\DeskArea\DeskArea.dproj" />
     <Projects Include="..\Plugins\Configurations\Desktop\Desktop.dproj" />
@@ -261,14 +262,23 @@
   <Target Name="SystemTray:Make">
     <MSBuild Projects="..\Plugins\Configurations\SystemTray\SystemTray.dproj" Targets="Make" />
   </Target>
+  <Target Name="Clock">
+    <MSBuild Projects="..\Plugins\Configurations\Clock\Clock.dproj" Targets="" />
+  </Target>
+  <Target Name="Clock:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Clock\Clock.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Clock:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Clock\Clock.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="Curses;Desktop;Hotkeys;IconList;Scheme;SharpBarList;SharpDesk;SharpMenu;ThemeList;ThemeSkinList;Wallpaper;Weather;Font;DeskArea;Image;Link;MiniScmd;Notes;RecycleBin;ModuleManager;QuickScript;BatteryMonitor;VWMService;VWM;SystemTray" />
+    <CallTarget Targets="Curses;Desktop;Hotkeys;IconList;Scheme;SharpBarList;SharpDesk;SharpMenu;ThemeList;ThemeSkinList;Wallpaper;Weather;Font;DeskArea;Image;Link;MiniScmd;Notes;RecycleBin;ModuleManager;QuickScript;BatteryMonitor;VWMService;VWM;SystemTray;Clock" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Curses:Clean;Desktop:Clean;Hotkeys:Clean;IconList:Clean;Scheme:Clean;SharpBarList:Clean;SharpDesk:Clean;SharpMenu:Clean;ThemeList:Clean;ThemeSkinList:Clean;Wallpaper:Clean;Weather:Clean;Font:Clean;DeskArea:Clean;Image:Clean;Link:Clean;MiniScmd:Clean;Notes:Clean;RecycleBin:Clean;ModuleManager:Clean;QuickScript:Clean;BatteryMonitor:Clean;VWMService:Clean;VWM:Clean;SystemTray:Clean" />
+    <CallTarget Targets="Curses:Clean;Desktop:Clean;Hotkeys:Clean;IconList:Clean;Scheme:Clean;SharpBarList:Clean;SharpDesk:Clean;SharpMenu:Clean;ThemeList:Clean;ThemeSkinList:Clean;Wallpaper:Clean;Weather:Clean;Font:Clean;DeskArea:Clean;Image:Clean;Link:Clean;MiniScmd:Clean;Notes:Clean;RecycleBin:Clean;ModuleManager:Clean;QuickScript:Clean;BatteryMonitor:Clean;VWMService:Clean;VWM:Clean;SystemTray:Clean;Clock:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Curses:Make;Desktop:Make;Hotkeys:Make;IconList:Make;Scheme:Make;SharpBarList:Make;SharpDesk:Make;SharpMenu:Make;ThemeList:Make;ThemeSkinList:Make;Wallpaper:Make;Weather:Make;Font:Make;DeskArea:Make;Image:Make;Link:Make;MiniScmd:Make;Notes:Make;RecycleBin:Make;ModuleManager:Make;QuickScript:Make;BatteryMonitor:Make;VWMService:Make;VWM:Make;SystemTray:Make" />
+    <CallTarget Targets="Curses:Make;Desktop:Make;Hotkeys:Make;IconList:Make;Scheme:Make;SharpBarList:Make;SharpDesk:Make;SharpMenu:Make;ThemeList:Make;ThemeSkinList:Make;Wallpaper:Make;Weather:Make;Font:Make;DeskArea:Make;Image:Make;Link:Make;MiniScmd:Make;Notes:Make;RecycleBin:Make;ModuleManager:Make;QuickScript:Make;BatteryMonitor:Make;VWMService:Make;VWM:Make;SystemTray:Make;Clock:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>
