@@ -40,14 +40,11 @@ uses
 
 type
   TMainForm = class(TForm)
-    MenuPopup: TPopupMenu;
-    MenuSettingsItem: TMenuItem;
     SkinManager: TSharpESkinManager;
     btn: TSharpEButton;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure MenuSettingsItemClick(Sender: TObject);
     procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure FormShow(Sender: TObject);
@@ -71,8 +68,6 @@ type
   end;
 
 implementation
-
-uses SettingsWnd;
 
 {$R *.dfm}
 {$R Icons.res}
@@ -136,38 +131,6 @@ begin
 
   // Send a message to the bar that the module is requesting a width update
   if (BroadCast) and (newWidth <> Width) then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
-end;
-
-
-procedure TMainForm.MenuSettingsItemClick(Sender: TObject);
-var
-  SettingsForm : TSettingsForm;
-  XML : TJvSimpleXML;
-begin
-  try
-    SettingsForm := TSettingsForm.Create(application.MainForm);
-    SettingsForm.cb_dispicon.Checked := sShowIcon;
-    SettingsForm.cb_threelettercode.Checked := sThreeLetterCode;
-
-    if SettingsForm.ShowModal = mrOk then
-    begin
-      sShowIcon := SettingsForm.cb_dispicon.Checked;
-      sThreeLetterCode := SettingsForm.cb_threelettercode.Checked;
-      XML := TJvSimpleXMl.Create(nil);
-      XML.Root.Name := 'KeyboardLayoutModuleSettings';
-      with XML.Root.Items do
-      begin
-        Add('ShowIcon',sShowIcon);
-        Add('ThreeLetterCode',sThreeLetterCode);
-      end;
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      XML.Free;
-    end;
-    UpdateCurrentLayout;
-
-  finally
-    FreeAndNil(SettingsForm);
-  end;
 end;
 
 procedure TMainForm.OnMenuItemClick(pItem : TSharpEMenuItem; var CanClose : boolean);

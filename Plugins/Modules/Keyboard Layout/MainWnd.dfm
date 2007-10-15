@@ -35,14 +35,6 @@ object MainForm: TMainForm
     GlyphResize = True
     GlyphSpacing = 2
   end
-  object MenuPopup: TPopupMenu
-    Left = 224
-    Top = 72
-    object MenuSettingsItem: TMenuItem
-      Caption = 'Settings'
-      OnClick = MenuSettingsItemClick
-    end
-  end
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
