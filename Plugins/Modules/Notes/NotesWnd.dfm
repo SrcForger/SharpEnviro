@@ -676,7 +676,6 @@ object NotesForm: TNotesForm
       end>
     Left = 312
     Top = 120
-    Bitmap = {}
   end
   object JvModernTabBarPainter1: TJvModernTabBarPainter
     Font.Charset = DEFAULT_CHARSET
