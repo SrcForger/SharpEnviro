@@ -163,6 +163,13 @@ type
     HasPreview: Boolean;
   end;
 
+  TServiceMetaData = record
+    Name: String[255];
+    Description: String[255];
+    Priority: Integer;
+    Delay: Integer;
+  end;
+
   TMsgData = record
     Command: string[255];
     Parameters: string[255];

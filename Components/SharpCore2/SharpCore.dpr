@@ -26,7 +26,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 program SharpCore;
 
 uses
-  Windows, Messages, ShellAPI, SharpAPI, Classes, SysUtils;
+  Windows,
+  Messages,
+  ShellAPI,
+  SharpAPI,
+  Classes,
+  SysUtils,
+  uComponentMan in 'uComponentMan.pas';
 
 {$R *.res}
 
@@ -58,10 +64,16 @@ begin
 end;
 
 procedure BuildMenu();
+var
+  modData: TServiceMetaData;
+  strName: String;
+  i: integer;
 begin
   DebugMsg('Creating popup menu');
   menPopup := CreatePopupMenu; // Create menu and submenu for services
   menServices := CreatePopupMenu;
+
+  ScanComponents(strExtension);
 
   AppendMenu(menPopup, MF_POPUP, menServices, 'Services');
   AppendMenu(menPopup, 0, ID_SHELLSWITCH, 'Set Explorer as shell');
