@@ -37,8 +37,6 @@ uses
 type
   TMainForm = class(TForm)
     UpdateTimer: TTimer;
-    MenuPopup: TPopupMenu;
-    Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     lb_swpbar: TSharpESkinLabel;
     lb_rambar: TSharpESkinLabel;
@@ -50,7 +48,6 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure BackgroundDblClick(Sender: TObject);
-    procedure Settings1Click(Sender: TObject);
     procedure UpdateTimerTimer(Sender: TObject);
     procedure FormShow(Sender: TObject);
   protected
@@ -78,8 +75,7 @@ type
 
 implementation
 
-uses SettingsWnd,
-     uSharpBarAPI;
+uses uSharpBarAPI;
 
 {$R *.dfm}
 
@@ -455,70 +451,6 @@ begin
       end;
     end;
   end;
-end;
-
-procedure TMainForm.Settings1Click(Sender: TObject);
-var
-  SettingsForm : TSettingsForm;
-  XML : TJvSimpleXML;
-begin
-  SettingsForm := TSettingsForm.Create(application.MainForm);
-  SettingsForm.cb_rambar.Checked  := ShowRAMBar;
-  SettingsForm.cb_raminfo.checked := ShowRAMInfo;
-  SettingsForm.cb_rampc.Checked   := ShowRAMPC;
-  SettingsForm.cb_swpbar.Checked  := ShowSWPBar;
-  SettingsForm.cb_swpinfo.Checked := ShowSWPInfo;
-  SettingsForm.cb_swppc.Checked   := ShowSWPPC;
-  SettingsForm.tb_size.Position   := Barwidth;
-
-  case sITC of
-    0: SettingsForm.cb_itc_pt.Checked := True
-    else SettingsForm.cb_itc_fmb.Checked := True;
-  end;
-
-  case ItemAlign of
-    1: SettingsForm.rb_halign.Checked := True;
-    3: SettingsForm.rb_halign2.Checked := True;
-    else SettingsForm.rb_valign.Checked := True;
-  end;
-
-  if SettingsForm.ShowModal = mrOk then
-  begin
-    if SettingsForm.cb_itc_pt.Checked then sITC := 0
-       else sITC := 1;
-
-    ShowRAMBar  := SettingsForm.cb_rambar.Checked;
-    ShowRAMInfo := SettingsForm.cb_raminfo.checked;
-    ShowRAMPC   := SettingsForm.cb_rampc.Checked;
-    ShowSWPBar  := SettingsForm.cb_swpbar.Checked;
-    ShowSWPInfo := SettingsForm.cb_swpinfo.Checked;
-    ShowSWPPC   := SettingsForm.cb_swppc.Checked;
-    Barwidth    := SettingsForm.tb_size.Position;
-    if SettingsForm.rb_halign.Checked then ItemAlign := 1
-       else if SettingsForm.rb_halign2.Checked then ItemAlign := 3
-       else ItemAlign := 2;
-
-    XML := TJvSimpleXML.Create(nil);
-    XML.Root.Name := 'MemoryMonitorModuleSettings';
-    with XML.Root.Items do
-    begin
-      clear;
-      Add('Width',BarWidth);
-      Add('ShowRAMBar',ShowRAMBar);
-      Add('ShowRAMInfo',ShowRAMInfo);
-      Add('ShowRAMPC',ShowRAMPC);
-      Add('ShowSWPBar',ShowSWPBar);
-      Add('ShowSWPInfo',ShowSWPInfo);
-      Add('ShowSWPPC',ShowSWPPC);
-      Add('ItemAlign',ItemAlign);
-      Add('ITC',sITC);
-    end;
-    XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-    XML.Free;
-    ReAlignComponents(true);
-    repaint;
-  end;
-  FreeAndNil(SettingsForm);
 end;
 
 procedure TMainForm.BackgroundDblClick(Sender: TObject);

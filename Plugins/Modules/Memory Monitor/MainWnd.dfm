@@ -93,14 +93,6 @@ object MainForm: TMainForm
     Left = 216
     Top = 40
   end
-  object MenuPopup: TPopupMenu
-    Left = 168
-    Top = 120
-    object Settings1: TMenuItem
-      Caption = 'Settings'
-      OnClick = Settings1Click
-    end
-  end
   object SharpESkinManager1: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
