@@ -785,7 +785,6 @@ object SharpBarMainForm: TSharpBarMainForm
       end>
     Left = 320
     Top = 40
-    Bitmap = {}
   end
   object ThrobberPopUp: TPopupMenu
     Images = PngImageList1
