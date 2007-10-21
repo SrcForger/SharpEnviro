@@ -41,6 +41,7 @@ uses
   JvSimpleXML,
   SharpApi,
   SharpCenterApi,
+  gr32,
   MainWnd in 'MainWnd.pas' {MainForm};
 
 type
@@ -257,6 +258,18 @@ begin
       end;
 end;
 
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Mini SCmd';
+    Author := 'Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Displays a small command bar';
+    Version := '0.7.3.3';
+    ExtraData := 'preview: false';
+  end;
+end;
+
 
 Exports
   CreateModule,
@@ -265,7 +278,8 @@ Exports
   Refresh,
   UpdateMessage,
   ModuleMessage,
-  SetSize;
+  SetSize,
+  GetMetaData;
 
 
 end.

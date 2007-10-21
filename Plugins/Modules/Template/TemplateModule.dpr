@@ -31,7 +31,7 @@ uses
   // Default Units
   Windows, Controls, Dialogs, SysUtils, Forms, Classes, Contnrs, StdCtrls,
   // Custom Units
-  JvSimpleXML,
+  JvSimpleXML, gr32,
   // SharpE Units
   SharpApi,SharpESkinManager, SharpEBar, uSharpBarApi, MouseTimer,
   SharpCenterApi,
@@ -262,6 +262,19 @@ begin
       end;
 end;
 
+// Something is requesting information
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Template';
+    Author := 'Author <email>';
+    Description := 'Module Template';
+    Version := '0.7.3.3';
+    ExtraData := 'preview: false';
+  end;
+end;
+
 
 Exports
   CreateModule,
@@ -270,7 +283,8 @@ Exports
   Refresh,
   UpdateMessage,
   ShowSettingsWnd,
-  SetSize;
+  SetSize,
+  GetMetaData;
 
 
 end.

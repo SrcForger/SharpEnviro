@@ -267,6 +267,7 @@ var
 begin
   with result do
   begin
+    Name := 'ButtonBar';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Displays a Button to which links can be assigned';
     Version := '0.7.3.3';

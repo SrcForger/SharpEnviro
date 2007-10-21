@@ -41,6 +41,7 @@ uses
   StdCtrls,
   JvSimpleXML,
   SharpCenterApi,
+  gr32,
   MainWnd in 'MainWnd.pas' {MainForm},
   SettingsWnd in 'SettingsWnd.pas' {SettingsForm},
   uTaskItem in 'uTaskItem.pas',
@@ -318,6 +319,18 @@ begin
   end;
 end;
 
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Taskbar';
+    Author := 'Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Displays a task list';
+    Version := '0.7.3.3';
+    ExtraData := 'preview: false';
+  end;
+end;
+
 Exports
   CreateModule,
   CloseModule,
@@ -327,7 +340,8 @@ Exports
   ShowSettingsWnd,
   SetSize,
   InitModule,
-  ModuleMessage;
+  ModuleMessage,
+  GetMetaData;
 
 begin
 

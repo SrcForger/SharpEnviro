@@ -43,6 +43,7 @@ uses
   uSharpBarApi,
   MouseTimer,
   SharpCenterApi,
+  gr32,
   MainWnd in 'MainWnd.pas' {MainForm},
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
   SharpGraphicsUtils in '..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
@@ -305,6 +306,17 @@ begin
   end;
 end;
 
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'VWM';
+    Author := 'Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Displays a Virtual Window Manager';
+    Version := '0.7.3.3';
+    ExtraData := 'preview: false';
+  end;
+end;
 
 Exports
   CreateModule,
@@ -314,7 +326,8 @@ Exports
   UpdateMessage,
   SetSize,
   ModuleMessage,
-  InitModule;
+  InitModule,
+  GetMetaData;
 
 
 begin

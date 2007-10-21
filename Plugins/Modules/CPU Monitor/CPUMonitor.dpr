@@ -40,6 +40,7 @@ uses
   StdCtrls,
   JvSimpleXML,
   SharpCenterApi,
+  gr32,
   MainWnd in 'MainWnd.pas' {MainForm},
   SettingsWnd in 'SettingsWnd.pas' {SettingsForm},
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
@@ -268,6 +269,18 @@ begin
       end;
 end;
 
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'CPU Monitor';
+    Author := 'Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Displays a graph showing CPU usage';
+    Version := '0.7.3.3';
+    ExtraData := 'preview: false';
+  end;
+end;
+
 
 Exports
   CreateModule,
@@ -276,7 +289,8 @@ Exports
   Refresh,
   UpdateMessage,
   ShowSettingsWnd,
-  SetSize;
+  SetSize,
+  GetMetaData;
 
 
 end.

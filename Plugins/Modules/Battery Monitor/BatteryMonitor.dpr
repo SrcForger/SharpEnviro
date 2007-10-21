@@ -254,6 +254,7 @@ function GetMetaData(Preview : TBitmap32) : TMetaData;
 begin
   with result do
   begin
+    Name := 'Battery Monitor';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Battery usage and status monitor';
     Version := '0.7.3.3';

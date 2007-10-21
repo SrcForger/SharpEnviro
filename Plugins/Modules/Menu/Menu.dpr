@@ -43,6 +43,7 @@ uses
   SharpApi,
   SharpCenterApi,
   uSharpBarApi,
+  gr32,
   MainWnd in 'MainWnd.pas' {MainForm},
   SettingsWnd in 'SettingsWnd.pas' {SettingsForm};
 
@@ -274,6 +275,18 @@ begin
       end;
 end;
 
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Menu';
+    Author := 'Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Displays a button that will run SharpMenu';
+    Version := '0.7.3.3';
+    ExtraData := 'preview: false';
+  end;
+end;
+
 
 Exports
   CreateModule,
@@ -283,7 +296,8 @@ Exports
   UpdateMessage,
   ModuleMessage,
   ShowSettingsWnd,
-  SetSize;
+  SetSize,
+  GetMetaData;
 
 
 end.

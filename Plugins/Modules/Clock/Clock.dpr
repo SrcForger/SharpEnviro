@@ -243,7 +243,7 @@ begin
       end;
 end;
 
-function GetMetaData(Preview : TBitmap32) : TModuleMetaData;
+function GetMetaData(Preview : TBitmap32) : TMetaData;
 //var
 //  Bmp : TBitmap32;
 //  ResStream : TResourceStream;
@@ -251,10 +251,11 @@ function GetMetaData(Preview : TBitmap32) : TModuleMetaData;
 begin
   with result do
   begin
+    Name := 'Clock';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'A Clock Module';
     Version := '0.7.3.3';
-    HasPreview := False;
+    ExtraData := 'preview: False';
 
 {    Bmp := TBitmap32.Create;
     ResStream := TResourceStream.Create(HInstance, 'Preview', RT_RCDATA);

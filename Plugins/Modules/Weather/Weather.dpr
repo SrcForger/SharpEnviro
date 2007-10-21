@@ -43,6 +43,7 @@ uses
   uSharpBarApi,
   SharpCenterApi,
   MouseTimer,
+  gr32,
   MainWnd in 'MainWnd.pas' {MainForm},
   SettingsWnd in 'SettingsWnd.pas' {SettingsForm},
   uWeatherParser in '..\..\Objects\Weather\uWeatherParser.pas';
@@ -268,6 +269,17 @@ begin
       end;
 end;
 
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Weather';
+    Author := 'Martin Krämer <Martin@SharpEnviro.com>';
+    Description := 'Displays current weather information';
+    Version := '0.7.3.3';
+    ExtraData := 'preview: false';
+  end;
+end;
 
 Exports
   CreateModule,
@@ -277,7 +289,8 @@ Exports
   UpdateMessage,
   ShowSettingsWnd,
   SetSize,
-  ModuleMessage;
+  ModuleMessage,
+  GetMetaData;
 
 
 end.

@@ -1,5 +1,5 @@
 {
-Source Name: Template.dpr
+Source Name: Screenshot.dpr
 Description: SharpBar Module Main Project File
 Copyright (C) Ron Nicholson <Sylaei@gmail.com>
 
@@ -31,7 +31,7 @@ uses
   // Default Units
   Windows, Controls, Dialogs, SysUtils, Forms, Classes, Contnrs, StdCtrls,
   // Custom Units
-  JvSimpleXML,
+  JvSimpleXML, gr32,
   // SharpE Units
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpESkinManager, SharpEBar, uSharpBarApi, MouseTimer,
@@ -272,6 +272,18 @@ begin
       end;
 end;
 
+function GetMetaData(Preview : TBitmap32) : TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Screenshot';
+    Author := 'Ron Nicholson <Sylaei@gmail.com>';
+    Description := 'Takes screenshots';
+    Version := '0.7.3.3';
+    ExtraData := 'preview: false';
+  end;
+end;
+
 
 Exports
   CreateModule,
@@ -281,7 +293,8 @@ Exports
   UpdateMessage,
   ShowSettingsWnd,
   SetSize,
-  ModuleMessage;
+  ModuleMessage,
+  GetMetaData;
 
 begin
 end.
