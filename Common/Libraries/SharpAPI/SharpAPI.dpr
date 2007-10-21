@@ -136,6 +136,24 @@ const
   ICONSDIR = 'Icons';
   DEFAULTSETTINGSDIR = '#Default#';
 
+  // SharpCenter constants
+  SCM_SET_EDIT_STATE = 1;
+  SCM_SET_EDIT_CANCEL_STATE = 2;
+  SCM_SET_BUTTON_ENABLED = 3;
+  SCM_SET_BUTTON_DISABLED = 4;
+  SCM_SET_TAB_SELECTED = 5;
+  SCM_SET_SETTINGS_CHANGED = 6;
+  SCM_SET_LIVE_CONFIG = 7;
+  SCM_SET_APPLY_CONFIG = 8;
+  SCM_EVT_UPDATE_PREVIEW = 9;
+  SCM_EVT_UPDATE_SETTINGS = 10;
+  SCM_EVT_UPDATE_SIZE = 11;
+
+  SCC_LOAD_SETTING = '_loadsetting';
+  SCC_CHANGE_FOLDER = '_changedir';
+  SCC_UNLOAD_DLL = '_unloaddll';
+  SCC_LOAD_DLL = '_loaddll';
+
 type
   THandleArray = array of HWND;
 
@@ -214,15 +232,31 @@ type
               wnd : hwnd;
              end;
 
-  TTypeEnum = (tteComponent, tteService, tteModule, tteConfig);
+  TMetaTypeEnum = (tteComponent, tteService, tteModule, tteConfig);
 
   TMetaData = record
     Name: String[255];
     Description: String[255];
     Author: String[255];
     Version: String[255];
-    DataType: TTypeEnum;
+    DataType: TMetaTypeEnum;
     ExtraData: String[255];
+  end;
+
+  // SharpCenter types
+  TSCC_COMMAND_ENUM = (sccLoadSetting, sccChangeFolder, sccUnloadDll, sccLoadDll);
+  TSCB_BUTTON_ENUM = (scbMoveUp, scbMoveDown, scbImport, scbExport, scbClear,
+    scbDelete, scbHelp, scbAddTab, scbEditTab, scbDeleteTab, scbConfigure);
+  TSU_UPDATE_ENUM = (suSkin, suSkinFileChanged, suScheme, suTheme, suIconSet,
+    suBackground, suService, suDesktopIcon, suSharpDesk, suSharpMenu,
+    suSharpBar, suCursor, suWallpaper);
+  TSC_MODE_ENUM = (scmLive, scmApply);
+
+  TSU_UPDATES = set of TSU_UPDATE_ENUM;
+
+  TSC_DEFAULT_FIELDS = record
+    Author: string;
+    Website: string;
   end;
 
 var
@@ -1051,7 +1085,7 @@ begin
   result := (shellhookwnd <> 0);
 end;
 
-function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer): Integer;
+function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer;
 type
   TMetaDataFunc = function(): TMetaData;
 const
@@ -1062,9 +1096,11 @@ var
   i: Integer;
   s: String;
 begin
+  result := 0;
   if FileExists(strFile) then
   begin
     hndFile := LoadLibrary(PChar(strFile));
+    stlData := TStringList.Create;
     try
       @MetaDataFunc := GetProcAddress(hndFile, 'GetMetaData');
       if Assigned(MetaDataFunc) then
@@ -1076,7 +1112,6 @@ begin
           exit;
         end;
 
-        stlData := TStringList.Create;
         StrTokenToStrings(MetaData.ExtraData, '|', stlData);
 
         for i := 0 to stlData.Count - 1 do
@@ -1099,6 +1134,171 @@ begin
       else
         result := 1; //didn't find GetMetaData function
     finally
+      stlData.Free;
+      FreeLibrary(hndFile);
+    end;
+  end
+  else
+    result := 1; //couldn't open file
+end;
+
+function GetServiceMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer;
+type
+  TMetaDataFunc = function(): TMetaData;
+const
+  MetaDataFunc: TMetaDataFunc = nil;
+var
+  hndFile: THandle;
+  stlData: TStrings;
+  i: Integer;
+  s: String;
+begin
+  result := 0;
+  if FileExists(strFile) then
+  begin
+    hndFile := LoadLibrary(PChar(strFile));
+    stlData := TStringList.Create;
+    try
+      @MetaDataFunc := GetProcAddress(hndFile, 'GetMetaData');
+      if Assigned(MetaDataFunc) then
+      begin
+        MetaData := MetaDataFunc();
+        if MetaData.DataType <> tteComponent then
+        begin
+          result := 1; //wrong data type
+          exit;
+        end;
+
+        StrTokenToStrings(MetaData.ExtraData, '|', stlData);
+
+        for i := 0 to stlData.Count - 1 do
+        begin
+          if Pos('priority:', LowerCase(stlData[i])) > 0 then
+          begin
+            s := RightStr(stlData[i], Length(stlData[i]) - Length('priority:'));
+            s := Trim(s);
+            Priority := StrToInt(s);
+          end;
+
+          if Pos('delay:', LowerCase(stlData[i])) > 0 then
+          begin
+            s := RightStr(stlData[i], Length(stlData[i]) - Length('delay:'));
+            s := Trim(s);
+            Delay := StrToInt(s);
+          end;
+        end;
+      end
+      else
+        result := 1; //didn't find GetMetaData function
+    finally
+      stlData.Free;
+      FreeLibrary(hndFile);
+    end;
+  end
+  else
+    result := 1; //couldn't open file
+end;
+
+function GetConfigMetaData(strFile: String; var MetaData: TMetaData; var ConfigMode: TSC_MODE_ENUM; var ConfigType: TSU_UPDATE_ENUM) : Integer;
+type
+  TMetaDataFunc = function(): TMetaData;
+const
+  MetaDataFunc: TMetaDataFunc = nil;
+var
+  hndFile: THandle;
+  stlData: TStrings;
+  i: Integer;
+  s: String;
+begin
+  result := 0;
+  if FileExists(strFile) then
+  begin
+    hndFile := LoadLibrary(PChar(strFile));
+    stlData := TStringList.Create;
+    try
+      @MetaDataFunc := GetProcAddress(hndFile, 'GetMetaData');
+      if Assigned(MetaDataFunc) then
+      begin
+        MetaData := MetaDataFunc();
+        if MetaData.DataType <> tteConfig then
+        begin
+          result := 1; //wrong data type
+          exit;
+        end;
+
+        StrTokenToStrings(MetaData.ExtraData, '|', stlData);
+
+        for i := 0 to stlData.Count - 1 do
+        begin
+          if Pos('configmode:', LowerCase(stlData[i])) > 0 then
+          begin
+            s := RightStr(stlData[i], Length(stlData[i]) - Length('configmode:'));
+            s := Trim(s);
+            ConfigMode := TSC_MODE_ENUM(StrToInt(s));
+          end;
+
+          if Pos('configtype:', LowerCase(stlData[i])) > 0 then
+          begin
+            s := RightStr(stlData[i], Length(stlData[i]) - Length('configtype:'));
+            s := Trim(s);
+            ConfigType := TSU_UPDATE_ENUM(StrToInt(s));
+          end;
+        end;
+      end
+      else
+        result := 1; //didn't find GetMetaData function
+    finally
+      stlData.Free;
+      FreeLibrary(hndFile);
+    end;
+  end
+  else
+    result := 1; //couldn't open file
+end;
+
+function GetModuleMetaData(strFile: String; var MetaData: TMetaData; var HasPreview: Boolean) : Integer;
+type
+  TMetaDataFunc = function(): TMetaData;
+const
+  MetaDataFunc: TMetaDataFunc = nil;
+var
+  hndFile: THandle;
+  stlData: TStrings;
+  i: Integer;
+  s: String;
+begin
+  result := 0;
+  if FileExists(strFile) then
+  begin
+    hndFile := LoadLibrary(PChar(strFile));
+    stlData := TStringList.Create;
+    try
+      @MetaDataFunc := GetProcAddress(hndFile, 'GetMetaData');
+      if Assigned(MetaDataFunc) then
+      begin
+        MetaData := MetaDataFunc();
+        if MetaData.DataType <> tteComponent then
+        begin
+          result := 1; //wrong data type
+          exit;
+        end;
+
+        StrTokenToStrings(MetaData.ExtraData, '|', stlData);
+
+        for i := 0 to stlData.Count - 1 do
+        begin
+          if Pos('preview:', LowerCase(stlData[i])) > 0 then
+          begin
+            s := RightStr(stlData[i], Length(stlData[i]) - Length('preview:'));
+            s := Trim(s);
+            HasPreview := StrToBool(s);
+          end;
+        end;
+      end
+      else
+        result := 1; //didn't find GetMetaData function
+    finally
+      stlData.Free;
       FreeLibrary(hndFile);
     end;
   end
@@ -1151,7 +1351,11 @@ exports
 
   GetVWMCount,
   GetCurrentVWM,
-  SwitchToVWM;
+  SwitchToVWM,
+
+  GetComponentMetaData,
+  GetServiceMetaData,
+  GetConfigMetaData;
 begin
 
 end.

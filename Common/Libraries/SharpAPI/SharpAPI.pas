@@ -141,6 +141,24 @@ const
   AC_EXECUTE_ACTION = '_execute';
   AC_SERVICE_NAME = 'Actions';
 
+  // SharpCenter consts
+  SCM_SET_EDIT_STATE = 1;
+  SCM_SET_EDIT_CANCEL_STATE = 2;
+  SCM_SET_BUTTON_ENABLED = 3;
+  SCM_SET_BUTTON_DISABLED = 4;
+  SCM_SET_TAB_SELECTED = 5;
+  SCM_SET_SETTINGS_CHANGED = 6;
+  SCM_SET_LIVE_CONFIG = 7;
+  SCM_SET_APPLY_CONFIG = 8;
+  SCM_EVT_UPDATE_PREVIEW = 9;
+  SCM_EVT_UPDATE_SETTINGS = 10;
+  SCM_EVT_UPDATE_SIZE = 11;
+
+  SCC_LOAD_SETTING = '_loadsetting';
+  SCC_CHANGE_FOLDER = '_changedir';
+  SCC_UNLOAD_DLL = '_unloaddll';
+  SCC_LOAD_DLL = '_loaddll';
+
 type
   PSharpE_DataStruct = ^TSharpE_DataStruct;
   TSharpE_DataStruct = record
@@ -177,6 +195,22 @@ type
               R : TRect;
               wnd : hwnd;
              end;
+
+  // SharpCenter types
+  TSCC_COMMAND_ENUM = (sccLoadSetting, sccChangeFolder, sccUnloadDll, sccLoadDll);
+  TSCB_BUTTON_ENUM = (scbMoveUp, scbMoveDown, scbImport, scbExport, scbClear,
+    scbDelete, scbHelp, scbAddTab, scbEditTab, scbDeleteTab, scbConfigure);
+  TSU_UPDATE_ENUM = (suSkin, suSkinFileChanged, suScheme, suTheme, suIconSet,
+    suBackground, suService, suDesktopIcon, suSharpDesk, suSharpMenu,
+    suSharpBar, suCursor, suWallpaper);
+  TSC_MODE_ENUM = (scmLive, scmApply);
+
+  TSU_UPDATES = set of TSU_UPDATE_ENUM;
+
+  TSC_DEFAULT_FIELDS = record
+    Author: string;
+    Website: string;
+  end;
 
 function RegisterAction(ActionName: Pchar; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterAction';
 function RegisterActionEx(ActionName: Pchar; GroupName:PChar; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterActionEx';
