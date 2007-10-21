@@ -259,7 +259,7 @@ begin
       end;
 end;
 
-function GetMetaData(Preview : TBitmap32) : TModuleMetaData;
+function GetMetaData(Preview : TBitmap32) : TMetaData;
 var
   Bmp : TBitmap32;
   ResStream : TResourceStream;
@@ -270,7 +270,7 @@ begin
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Displays a Button to which links can be assigned';
     Version := '0.7.3.3';
-    HasPreview := True;
+    ExtraData := 'preview: True';
 
     Bmp := TBitmap32.Create;
     ResStream := TResourceStream.Create(HInstance, 'Preview', RT_RCDATA);
