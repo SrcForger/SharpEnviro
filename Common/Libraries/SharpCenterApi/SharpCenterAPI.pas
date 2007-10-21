@@ -31,41 +31,9 @@ interface
 
 uses
   Messages,
+  SharpApi,
   Windows;
 
-const
-  SCM_SET_EDIT_STATE = 1;
-  SCM_SET_EDIT_CANCEL_STATE = 2;
-  SCM_SET_BUTTON_ENABLED = 3;
-  SCM_SET_BUTTON_DISABLED = 4;
-  SCM_SET_TAB_SELECTED = 5;
-  SCM_SET_SETTINGS_CHANGED = 6;
-  SCM_SET_LIVE_CONFIG = 7;
-  SCM_SET_APPLY_CONFIG = 8;
-  SCM_EVT_UPDATE_PREVIEW = 9;
-  SCM_EVT_UPDATE_SETTINGS = 10;
-  SCM_EVT_UPDATE_SIZE = 11;
-
-const
-  WM_SHARPCENTERMESSAGE = WM_APP + 660;
-
-Type
-  TSCC_COMMAND_ENUM = (sccLoadSetting, sccChangeFolder, sccUnloadDll, sccLoadDll);
-  TSCB_BUTTON_ENUM = (scbMoveUp, scbMoveDown, scbImport, scbExport, scbClear,
-    scbDelete, scbHelp, scbAddTab, scbEditTab, scbDeleteTab, scbConfigure);
-  TSU_UPDATE_ENUM = (suSkin, suSkinFileChanged, suScheme, suTheme, suIconSet,
-    suBackground, suService, suDesktopIcon, suSharpDesk, suSharpMenu,
-    suSharpBar, suCursor, suWallpaper, suDeskArea, suSkinFont, suDesktopObject,
-    suModule,suVWM);
-  TSCE_EDITMODE_ENUM = (sceAdd, sceEdit, sceDelete);
-  TSC_MODE_ENUM = (scmLive, scmApply);
-
-  TSU_UPDATES = set of TSU_UPDATE_ENUM;
-
-  TSC_DEFAULT_FIELDS = record
-    Author: string;
-    Website: string;
-  end;
 
 function BroadcastGlobalUpdateMessage(AUpdateType:TSU_UPDATE_ENUM;
   APluginID: Integer=-1) : boolean;

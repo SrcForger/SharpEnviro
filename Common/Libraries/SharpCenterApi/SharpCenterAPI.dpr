@@ -40,39 +40,6 @@ uses
   SharpApi;
 
 {$R *.RES}
-const
-  WM_SHARPCENTERMESSAGE = WM_APP + 660;
-
-  SCM_SET_EDIT_STATE = 1;
-  SCM_SET_EDIT_CANCEL_STATE = 2;
-  SCM_SET_BUTTON_ENABLED = 3;
-  SCM_SET_BUTTON_DISABLED = 4;
-  SCM_SET_TAB_SELECTED = 5;
-  SCM_SET_SETTINGS_CHANGED = 6;
-  SCM_SET_LIVE_CONFIG = 7;
-  SCM_SET_APPLY_CONFIG = 8;
-  SCM_EVT_UPDATE_PREVIEW = 9;
-  SCM_EVT_UPDATE_SETTINGS = 10;
-  SCM_EVT_UPDATE_SIZE = 11;
-
-  SCC_LOAD_SETTING = '_loadsetting';
-  SCC_CHANGE_FOLDER = '_changedir';
-  SCC_UNLOAD_DLL = '_unloaddll';
-  SCC_LOAD_DLL = '_loaddll';
-
-type
-  TSCC_COMMAND_ENUM = (sccLoadSetting, sccChangeFolder, sccUnloadDll, sccLoadDll);
-  TSCB_BUTTON_ENUM = (scbMoveUp, scbMoveDown, scbImport, scbExport, scbClear,
-    scbDelete, scbHelp, scbAddTab, scbEditTab, scbDeleteTab, scbConfigure);
-  TSU_UPDATE_ENUM = (suSkin, suSkinFileChanged, suScheme, suTheme, suIconSet,
-    suBackground, suService, suDesktopIcon, suSharpDesk, suSharpMenu,
-    suSharpBar, suCursor, suWallpaper);
-  TSC_MODE_ENUM = (scmLive, scmApply);
-
-  TSC_DEFAULT_FIELDS = record
-    Author: string;
-    Website: string;
-  end;
 
 var
   wpara: wparam;
