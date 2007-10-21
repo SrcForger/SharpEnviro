@@ -102,12 +102,11 @@ end;
 
 procedure TfrmMMEdit.LoadModuleData;
 var
-  dllhandle : cardinal;
   Dir : String;
   FName : String;
-  moduleinfo : TModuleMetaData;
-  DLLGetMetaData : function (Preview : TBitmap32) : TModuleMetaData;
+  moduleinfo : TMetaData;
   Bmp : TBitmap32;
+  bHasPreview : Boolean;
 begin
   lbDescription.Caption := '';
   lbAuthor.Visible := False;
@@ -119,31 +118,24 @@ begin
 
   Dir := SharpApi.GetSharpeDirectory + 'Modules\';
   FName := Dir + cobo_modules.Text + '.dll';
+
   if FileExists(FName) then
   begin
-    dllhandle := LoadLibrary(PChar(FName));
-    if dllhandle <> 0 then
+    Bmp := TBitmap32.Create;
+    GetModuleMetaData(FName, Bmp, moduleinfo, bHasPreview);
+
+    lbDescription.Caption := moduleinfo.Description;
+    lbAuthor.Caption := 'Version ' + moduleinfo.Version + ' by ' + moduleinfo.Author;
+    lbAuthor.Visible := True;
+    if bHasPreview then
     begin
-      @DllGetMetaData := GetProcAddress(dllhandle, 'GetMetaData');
-      if @DllGetMetaData <> nil then
-      begin
-        Bmp := TBitmap32.Create;
-        moduleinfo := DLLGetMetaData(Bmp);
-        lbDescription.Caption := moduleinfo.Description;
-        lbAuthor.Caption := 'Version ' + moduleinfo.Version + ' by ' + moduleinfo.Author;
-        lbAuthor.Visible := True;
-        if moduleinfo.HasPreview then
-        begin
-          Preview.Bitmap.SetSize(Bmp.Width+2,Bmp.Height+2);
-          Preview.Bitmap.Clear(clBlack32);
-          Preview.Bitmap.Draw(1,1,Bmp);
-          Preview.Visible := True;
-          Preview.Top := 500;
-        end;
-        Bmp.Free;
-      end;
-      FreeLibrary(dllhandle);
+      Preview.Bitmap.SetSize(Bmp.Width+2,Bmp.Height+2);
+      Preview.Bitmap.Clear(clBlack32);
+      Preview.Bitmap.Draw(1,1,Bmp);
+      Preview.Visible := True;
+      Preview.Top := 500;
     end;
+    Bmp.Free;
   end;
 end;
 
