@@ -202,7 +202,9 @@ type
     scbDelete, scbHelp, scbAddTab, scbEditTab, scbDeleteTab, scbConfigure);
   TSU_UPDATE_ENUM = (suSkin, suSkinFileChanged, suScheme, suTheme, suIconSet,
     suBackground, suService, suDesktopIcon, suSharpDesk, suSharpMenu,
-    suSharpBar, suCursor, suWallpaper);
+    suSharpBar, suCursor, suWallpaper, suDeskArea, suSkinFont, suDesktopObject,
+    suModule,suVWM);
+  TSCE_EDITMODE_ENUM = (sceAdd, sceEdit, sceDelete);
   TSC_MODE_ENUM = (scmLive, scmApply);
 
   TSU_UPDATES = set of TSU_UPDATE_ENUM;

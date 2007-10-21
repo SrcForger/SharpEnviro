@@ -39,6 +39,7 @@ uses
   jclstrings,
   classes,
   strutils,
+  gr32,
   SimpleForms in '..\..\Units\SimpleUnits\SimpleForms.pas';
 
 {$R *.RES}
@@ -249,7 +250,9 @@ type
     scbDelete, scbHelp, scbAddTab, scbEditTab, scbDeleteTab, scbConfigure);
   TSU_UPDATE_ENUM = (suSkin, suSkinFileChanged, suScheme, suTheme, suIconSet,
     suBackground, suService, suDesktopIcon, suSharpDesk, suSharpMenu,
-    suSharpBar, suCursor, suWallpaper);
+    suSharpBar, suCursor, suWallpaper, suDeskArea, suSkinFont, suDesktopObject,
+    suModule,suVWM);
+  TSCE_EDITMODE_ENUM = (sceAdd, sceEdit, sceDelete);
   TSC_MODE_ENUM = (scmLive, scmApply);
 
   TSU_UPDATES = set of TSU_UPDATE_ENUM;
@@ -1256,9 +1259,9 @@ begin
     result := 1; //couldn't open file
 end;
 
-function GetModuleMetaData(strFile: String; var MetaData: TMetaData; var HasPreview: Boolean) : Integer;
+function GetModuleMetaData(strFile: String; Preview: TBitmap32; var MetaData: TMetaData; var HasPreview: Boolean) : Integer;
 type
-  TMetaDataFunc = function(): TMetaData;
+  TMetaDataFunc = function(Preview: TBitmap32): TMetaData;
 const
   MetaDataFunc: TMetaDataFunc = nil;
 var
@@ -1276,7 +1279,7 @@ begin
       @MetaDataFunc := GetProcAddress(hndFile, 'GetMetaData');
       if Assigned(MetaDataFunc) then
       begin
-        MetaData := MetaDataFunc();
+        MetaData := MetaDataFunc(Preview);
         if MetaData.DataType <> tteComponent then
         begin
           result := 1; //wrong data type
