@@ -36,6 +36,9 @@ uses
   SysUtils,
   shellAPI,
   jclsysinfo,
+  jclstrings,
+  classes,
+  strutils,
   SimpleForms in '..\..\Units\SimpleUnits\SimpleForms.pas';
 
 {$R *.RES}
@@ -210,6 +213,17 @@ type
               R : TRect;
               wnd : hwnd;
              end;
+
+  TTypeEnum = (tteComponent, tteService, tteModule, tteConfig);
+
+  TMetaData = record
+    Name: String[255];
+    Description: String[255];
+    Author: String[255];
+    Version: String[255];
+    DataType: TTypeEnum;
+    ExtraData: String[255];
+  end;
 
 var
   i: integer;
@@ -1035,6 +1049,61 @@ begin
   if shellhookwnd <> 0 then
     PostMessage(shellhookwnd,WM_UNREGISTERSHELLHOOK,wnd,0);
   result := (shellhookwnd <> 0);
+end;
+
+function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer): Integer;
+type
+  TMetaDataFunc = function(): TMetaData;
+const
+  MetaDataFunc: TMetaDataFunc = nil;
+var
+  hndFile: THandle;
+  stlData: TStrings;
+  i: Integer;
+  s: String;
+begin
+  if FileExists(strFile) then
+  begin
+    hndFile := LoadLibrary(PChar(strFile));
+    try
+      @MetaDataFunc := GetProcAddress(hndFile, 'GetMetaData');
+      if Assigned(MetaDataFunc) then
+      begin
+        MetaData := MetaDataFunc();
+        if MetaData.DataType <> tteComponent then
+        begin
+          result := 1; //wrong data type
+          exit;
+        end;
+
+        stlData := TStringList.Create;
+        StrTokenToStrings(MetaData.ExtraData, '|', stlData);
+
+        for i := 0 to stlData.Count - 1 do
+        begin
+          if Pos('priority:', LowerCase(stlData[i])) > 0 then
+          begin
+            s := RightStr(stlData[i], Length(stlData[i]) - Length('priority:'));
+            s := Trim(s);
+            Priority := StrToInt(s);
+          end;
+
+          if Pos('delay:', LowerCase(stlData[i])) > 0 then
+          begin
+            s := RightStr(stlData[i], Length(stlData[i]) - Length('delay:'));
+            s := Trim(s);
+            Delay := StrToInt(s);
+          end;
+        end;
+      end
+      else
+        result := 1; //didn't find GetMetaData function
+    finally
+      FreeLibrary(hndFile);
+    end;
+  end
+  else
+    result := 1; //couldn't open file
 end;
 
 exports

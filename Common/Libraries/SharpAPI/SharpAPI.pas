@@ -156,18 +156,15 @@ type
     Msg: string[255];
   end;
 
-  TModuleMetaData = record
-    Author: string[255];
-    Description: string[255];
-    Version: string[255];
-    HasPreview: Boolean;
-  end;
+  TTypeEnum = (tteComponent, tteService, tteModule, tteConfig);
 
-  TServiceMetaData = record
+  TMetaData = record
     Name: String[255];
     Description: String[255];
-    Priority: Integer;
-    Delay: Integer;
+    Author: String[255];
+    Version: String[255];
+    DataType: TTypeEnum;
+    ExtraData: String[255];
   end;
 
   TMsgData = record
