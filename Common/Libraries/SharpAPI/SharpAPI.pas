@@ -31,7 +31,8 @@ interface
 
 uses
   Messages,
-  Windows;
+  Windows,
+  gr32;
 
 const
   WM_SHARPEUPDATESETTINGS = WM_APP + 506;
@@ -259,6 +260,12 @@ function UnRegisterShellHookReceiver(Wnd : hwnd) : boolean; external 'SharpApi.d
 function GetVWMCount : integer; external 'SharpApi.dll' name 'GetVWMCount';
 function GetCurrentVWM : integer; external 'SharpApi.dll' name 'GetCurrentVWM';
 function SwitchToVWM(Index : integer) : boolean; external 'SharpApi.dll' name 'SwitchToVWM';
+
+//meta data functions
+function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer; external 'SharpApi.dll' name 'GetComponentMetaData';
+function GetServiceMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer; external 'SharpApi.dll' name 'GetServiceMetaData';
+function GetConfigMetaData(strFile: String; var MetaData: TMetaData; var ConfigMode: TSC_MODE_ENUM; var ConfigType: TSU_UPDATE_ENUM) : Integer; external 'SharpApi.dll' name 'GetConfigMetaData';
+function GetModuleMetaData(strFile: String; Preview: TBitmap32; var MetaData: TMetaData; var HasPreview: Boolean) : Integer; external 'SharpApi.dll' name 'GetModuleMetaData';
 
 implementation
 
