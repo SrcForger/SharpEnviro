@@ -1358,7 +1358,8 @@ exports
 
   GetComponentMetaData,
   GetServiceMetaData,
-  GetConfigMetaData;
+  GetConfigMetaData,
+  GetModuleMetaData;
 begin
 
 end.
