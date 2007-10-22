@@ -40,6 +40,7 @@ uses
   SharpEBar,
   SharpEMiniThrobber,
   SharpCenterApi,
+  SharpApi,
   Controls;
 
 
@@ -205,7 +206,6 @@ implementation
 
 
 uses uSharpBarApi,
-     SharpApi,
      SharpBarMainWnd,
      JclSimpleXML;
 
