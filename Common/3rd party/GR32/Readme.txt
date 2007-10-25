@@ -6,3 +6,5 @@ XPThemes support MUST be disabled for all SharpE components, otherwise it will c
 
 
 Make sure to either use this GR32.inc or disable the XPThemes setting in your GR32.inc!
+
+GR32.pas has been modified to allow Cleartype font rendering. To use it, set the font quality to -2 in the RenderText function.
