@@ -190,9 +190,14 @@ begin
 
   Application.Run;
 
+  if menusettings.CacheIcons then
+     SharpEMenuIcons.SaveIconCache(iconcachefile);  
+
   // Free Classes
   if SharpEMenuPopups <> nil then
      SharpEMenuPopups.Free;
+  SharpEMenuIcons.Free;     
+
   SkinManager.Free;
 
   CloseHandle(MuteXHandle);
