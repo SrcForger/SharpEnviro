@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <CPUMonitor>
+      <Dll>_ModuleDlls\CPUMonitor.dll</Dll>
+      <Icon>Icons\CPUMonitor.png</Icon>
+    </CPUMonitor>
+  </Sections>
+</SharpCenter>
