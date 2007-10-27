@@ -584,7 +584,7 @@ begin
   Debug('Params: ' + AParams, DMT_TRACE);
   Debug('dir: ' + ADefaultDir, DMT_TRACE);
 
-  if Elevate then sOperation := 'runas' else sOperation := 'open';
+  if Elevate then sOperation := 'runas' else sOperation := '';
 
   if FUseDebug then begin
     FDebugText := Format('File: %s -- Param: %s -- Dir: %s',[AFileName, AParams, ADefaultDir]);
