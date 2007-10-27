@@ -318,13 +318,27 @@ end;
 function SCMsg(msg: string): Integer;                                
 begin                                                                
   Result := HInstance;                                               
-end;                                                                 
+end;
+
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'VWM';
+    Description := 'Manages the Virtual Window Manager';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 120| delay: 0';
+  end;
+end;
                                                                      
 //Ordinary Dll code, tells delphi what functions to export.          
 exports                                                              
   Start,                                                             
   Stop,                                                              
-  SCMsg;                                                             
+  SCMsg,
+  GetMetaData;                                                             
                                                                      
 begin                                                                
 end.

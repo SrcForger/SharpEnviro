@@ -94,10 +94,24 @@ begin
 
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Weather';
+    Description := 'Updates weather information for the bar module';
+    Author := 'Lee Green (Pixol@sharpe-shell.org)';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 90| delay: 0';
+  end;
+end;
+
 exports
   Start,
   SCMsg,
-  Stop;
+  Stop,
+  GetMetaData;
 
 begin
 

@@ -83,10 +83,24 @@ begin
   Result := owner;
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'System Tray';
+    Description := 'Monitors notification area icons';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 60| delay: 0';
+  end;
+end;
+
 //Ordinary Dll code, tells delphi what functions to export.
 exports
   Start,
-  Stop;
+  Stop,
+  GetMetaData;
 
 begin
 end.

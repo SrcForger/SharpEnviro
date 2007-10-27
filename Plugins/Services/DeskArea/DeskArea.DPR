@@ -103,11 +103,25 @@ begin
   end;
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Desk Area';
+    Description := 'Sets the usable area of the desktop';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 70| delay: 0';
+  end;
+end;
+
 
 exports
   Start,
   Stop,
-  SCMsg;
+  SCMsg,
+  GetMetaData;
 
 begin
 end.

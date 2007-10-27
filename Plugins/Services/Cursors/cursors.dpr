@@ -89,11 +89,25 @@ begin
   end;
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Cursors';
+    Description := 'Changes the standard windows cursors to a fancier skinned set';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 110| delay: 0';
+  end;
+end;
+
 //Ordinary Dll code, tells delphi what functions to export.
 exports
   SCMsg,
   Start,
-  Stop;
+  Stop,
+  GetMetaData;
 
 begin
 end.

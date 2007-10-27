@@ -97,6 +97,22 @@ begin
     RegisterActionEx('!RefreshSkin','SharpSkin',h,0);
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Skin Controller';
+    Description := 'Manages skins for all of SharpE';
+    Author := 'Malx (Malx@sharpe-shell.org)';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 100| delay: 0';
+  end;
+end;
+
+exports
+  GetMetaData;
+
 begin
 
 end.

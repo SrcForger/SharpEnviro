@@ -95,10 +95,24 @@ begin
 
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Actions';
+    Description := 'Manages actions, or bang commands';
+    Author := 'Lee Green (Pixol@sharpe-shell.org)';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 30| delay: 0';
+  end;
+end;
+
 exports
   Start,
   SCMsg,
-  Stop;
+  Stop,
+  GetMetaData;
 
 begin
 

@@ -246,10 +246,24 @@ begin
   end;
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'System Actions';
+    Description := 'Adds a set of actions for system use (shutdown, reboot, etc.)';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 40| delay: 0';
+  end;
+end;
+
 //Ordinary Dll code, tells delphi what functions to export.
 exports
   Start,
-  Stop;
+  Stop,
+  GetMetaData;
 
 begin
 end.

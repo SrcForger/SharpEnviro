@@ -31,6 +31,7 @@ uses
   dialogs,
   graphics,
   sysutils,
+  SharpApi,
   uStartup in 'uStartup.pas',
   FileUtils in '..\Exec\FileUtils.pas';
 
@@ -58,9 +59,23 @@ procedure Stop;
 begin
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Startup';
+    Description := 'Runs all normal startup applications';
+    Author := 'Lee Green (Pixol@sharpe-shell.org)';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 160| delay: 0';
+  end;
+end;
+
 exports
   Start,
-  Stop;
+  Stop,
+  GetMetaData;
 
 begin  
 end.

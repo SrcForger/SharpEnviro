@@ -26,7 +26,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library TemplateService;
 
 uses
-  windows;
+  windows,
+  SharpApi;
 
 {$E ser}
 
@@ -49,13 +50,29 @@ begin
   Result := HInstance;
 end;
 
+// Data retrieved by SharpCore
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Template';
+    Description := 'Template';
+    Author := 'Author (E-Mail)';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 170| delay: 0';
+  end;
+end;
+
 
 //Ordinary Dll code, tells delphi what functions to export.
 exports
   Start,
   Stop,
-  SCMsg;
+  SCMsg,
+  GetMetaData;
 
+begin
 end.
 
 

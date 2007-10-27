@@ -123,11 +123,25 @@ begin
   SharpExec.UsedItemList.Load;
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Exec';
+    Description := 'Assists with executing strings, including process elevation and actions';
+    Author := 'Lee Gree (Pixol@sharpe-shell.org';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 20| delay: 0';
+  end;
+end;
+
 exports
   Start,
   Reload,
   SCMsg,
-  Stop;
+  Stop,
+  GetMetaData;
 
 begin   
 end.

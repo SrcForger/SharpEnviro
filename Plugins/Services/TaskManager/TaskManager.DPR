@@ -237,6 +237,22 @@ begin
   RegisterShellHook(FMsgWnd,0);
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Task Manager';
+    Description := 'Monitors all running tasks';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 50| delay: 0';
+  end;
+end;
+
+exports
+  GetMetaData;
+
 begin
 end.
 

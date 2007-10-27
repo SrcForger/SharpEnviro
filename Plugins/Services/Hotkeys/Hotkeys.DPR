@@ -61,10 +61,24 @@ begin
 
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Hotkeys';
+    Description := 'Manages system-wide hotkeys';
+    Author := 'Lee Green (Pixol@sharpe-shell.org)';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 80| delay: 0';
+  end;
+end;
+
 //Ordinary Dll code, tells delphi what functions to export.
 exports
   Start,
-  Stop;
+  Stop,
+  GetMetaData;
 begin
 
 end.

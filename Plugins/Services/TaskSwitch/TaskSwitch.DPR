@@ -475,9 +475,23 @@ begin
     RegisterActions;
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Task Switch';
+    Description := 'Replaces the standard alt-tab dialog';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteService;
+    ExtraData := 'priority: 150| delay: 0';
+  end;
+end;
+
 exports
   Start,
-  Stop;
+  Stop,
+  GetMetaData;
 
 begin
 end.
