@@ -31,13 +31,11 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32, GR32_PNG, SharpEBaseControls, SharpEButton,
   SharpESkinManager,  ExtCtrls, SharpEProgressBar,
-  JvSimpleXML, SharpApi, Menus, Math, SoundControls, MMSystem;
+  JclSimpleXML, SharpApi, Menus, Math, SoundControls, MMSystem;
 
 
 type
   TMainForm = class(TForm)
-    MenuPopup: TPopupMenu;
-    Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     ClockTimer: TTimer;
     mute: TSharpEButton;
@@ -56,7 +54,6 @@ type
     procedure ClockTimerTimer(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure Settings1Click(Sender: TObject);
   protected
   private
     sWidth  : integer;
@@ -79,8 +76,7 @@ type
 
 implementation
 
-uses SettingsWnd,
-     uSharpBarAPI;
+uses uSharpBarAPI;
 
 {$R *.dfm}
 {$R glyphs.res}
@@ -143,13 +139,13 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   fileloaded : boolean;
 begin
   sWidth  := 100;
   sMixer  := MIXERLINE_COMPONENTTYPE_DST_SPEAKERS;
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
     XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
     fileloaded := True;
@@ -213,48 +209,6 @@ begin
   cshape.Top    := pbar.Top;
   cshape.Width  := pbar.Width;
   cshape.Height := pbar.Height;
-end;
-
-
-procedure TMainForm.Settings1Click(Sender: TObject);
-var
-  SettingsForm : TSettingsForm;
-  XML : TJvSimpleXML;
-  n : integer;
-begin
-  try
-    SettingsForm := TSettingsForm.Create(application.MainForm);
-    SettingsForm.tb_size.Position := sWidth;
-    for n := 0 to SettingsForm.IDList.Count -1 do
-        if strtoint(SettingsForm.IDList[n]) = sMixer then
-        begin
-          SettingsForm.cb_mlist.ItemIndex := n;
-          break;
-        end;
-
-    if SettingsForm.ShowModal = mrOk then
-    begin
-      sWidth := SettingsForm.tb_size.Position;
-      if SettingsForm.IDList.Count = 0 then sMixer := 0
-         else sMixer := strtoint(SettingsForm.IDList[SettingsForm.cb_mlist.ItemIndex]);
-
-      XML := TJvSimpleXML.Create(nil);
-      XML.Root.Name := 'VolumeControlModuleSettings';
-      with XML.Root.Items do
-      begin
-        clear;
-        Add('Width',sWidth);
-        Add('Mixer',sMixer);
-      end;
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      XML.Free;
-      ClockTimer.OnTimer(ClockTimer);
-    end;
-    ReAlignComponents(True);
-
-  finally
-    FreeAndNil(SettingsForm);
-  end;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);

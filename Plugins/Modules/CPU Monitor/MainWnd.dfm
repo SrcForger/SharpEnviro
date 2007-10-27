@@ -2,8 +2,8 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'CPU Monitor'
-  ClientHeight = 159
-  ClientWidth = 277
+  ClientHeight = 115
+  ClientWidth = 265
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -38,14 +38,6 @@ object MainForm: TMainForm
     ScaleMode = smNormal
     TabOrder = 0
     OnDblClick = cpugraphcontDblClick
-  end
-  object MenuPopup: TPopupMenu
-    Left = 192
-    Top = 80
-    object Settings1: TMenuItem
-      Caption = 'Settings'
-      OnClick = Settings1Click
-    end
   end
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem

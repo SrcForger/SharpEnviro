@@ -31,15 +31,13 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32, GR32_PNG, GR32_Image, SharpEBaseControls,
   SharpESkinManager, ExtCtrls, SharpEProgressBar,
-  JvSimpleXML, SharpApi, Menus, Math,
+  JclSimpleXML, SharpApi, Menus, Math,
   cpuUsage, SharpThemeApi, SharpECustomSkinSettings;
 
 
 type
 
   TMainForm = class(TForm)
-    MenuPopup: TPopupMenu;
-    Settings1: TMenuItem;
     SkinManager: TSharpESkinManager;
     cpugraphcont: TImage32;
     pbar: TSharpEProgressBar;
@@ -47,7 +45,6 @@ type
     procedure cpugraphcontDblClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure Settings1Click(Sender: TObject);
   protected
   private
     sWidth       : integer;
@@ -79,8 +76,7 @@ type
 
 implementation
 
-uses SettingsWnd,
-     uSharpBarAPI,
+uses uSharpBarAPI,
      SharpESkinPart;
 
 {$R *.dfm}
@@ -88,7 +84,7 @@ uses SettingsWnd,
 
 procedure TMainForm.LoadSettings;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   skin : String;
   fileloaded : boolean;
 begin
@@ -120,7 +116,7 @@ begin
     sBorderAlpha := 255;
   end;
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
     XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
     fileloaded := True;
@@ -154,6 +150,7 @@ begin
     end;
   XML.Free;
   sUpdate := Max(sUpdate,100);
+  cpuUsage.UpdateTimer.Interval := sUpdate;
 end;
 
 function ColorToColor32(c : TColor; alpha : integer) : TColor32;
@@ -175,7 +172,6 @@ begin
 
   if cpuUsage.UpdateTimer.Interval = 1001 then cpuUsage.UpdateTimer.Interval := sUpdate
      else sUpdate := cpuUsage.UpdateTimer.Interval;
-
 
   if Width < 10 then exit;
   newWidth := sWidth + 4;
@@ -233,94 +229,6 @@ begin
 
   Width := NewWidth;
   ReAlignComponents(False);
-end;
-
-
-procedure TMainForm.Settings1Click(Sender: TObject);
-var
-  SettingsForm : TSettingsForm;
-  XML : TJvSimpleXML;
-  fileloaded : boolean;
-  skin : String;
-begin
-  try
-    SettingsForm := TSettingsForm.Create(application.MainForm);
-    SettingsForm.tb_size.Position := sWidth;
-    SettingsForm.tb_update.Position := sUpdate;
-    case sDrawMode of
-      0: SettingsForm.rb_bar.checked := True;
-      1: SettingsForm.rb_line.checked := True;
-      else SettingsForm.rb_cu.checked := True;
-    end;
-    SettingsForm.scb_bg.color := sBGColor;
-    SettingsForm.scb_fg.color := sFGColor;
-    SettingsForm.scb_border.color := sBorderColor;
-    SettingsForm.edit_cpu.Value := sCpu;
-    SettingsForm.tb_fgalpha.Position := sFGAlpha;
-    SettingsForm.tb_bgalpha.Position := sBGAlpha;
-    SettingsForm.tb_borderalpha.Position := sBorderAlpha;
-
-    if SettingsForm.ShowModal = mrOk then
-    begin
-      sWidth       := SettingsForm.tb_size.Position;
-      sBGColor     := SettingsForm.scb_bg.color;
-      sFGColor     := SettingsForm.scb_fg.color;
-      sBorderColor := SettingsForm.scb_border.color;
-      sUpdate      := SettingsForm.tb_update.Position;
-      sCpu         := round(SettingsForm.edit_cpu.Value);
-      sFGAlpha     := SettingsForm.tb_fgalpha.Position;
-      sBGAlpha     := SettingsForm.tb_bgalpha.Position;
-      sBorderAlpha := SettingsForm.tb_borderalpha.Position;
-      if SettingsForm.rb_bar.Checked then sDrawMode := 0
-         else if SettingsForm.rb_line.Checked then sDrawMode := 1
-         else sDrawMode := 2;
-
-      XML := TJvSimpleXML.Create(nil);
-      try
-        XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-        fileloaded := True;
-      except
-        fileloaded := False;
-      end;
-      if not fileloaded then
-        XML.Root.Name := 'CPUMonitorModuleSettings';
-      with XML.Root.Items do
-      begin
-        if ItemNamed['global'] = nil then Add('global');
-        with ItemNamed['global'].Items do
-        begin
-          Clear;
-          Add('Width',sWidth);
-          Add('Update',sUpdate);
-          Add('DrawMode',sDrawMode);
-          Add('CPU',sCpu);
-        end;
-
-        skin := SharpThemeApi.GetSkinName;
-        if ItemNamed['skin'] <> nil then
-        begin
-          if ItemNamed['skin'].Items.ItemNamed[skin] = nil then
-             ItemNamed['skin'].Items.Add(skin);
-        end else Add('skin').Items.Add(skin);
-        with ItemNamed['skin'].Items.ItemNamed[skin].Items do
-        begin
-          Clear;
-          Add('FGColor',ColorToSchemeCode(sFGColor));
-          Add('BGColor',ColorToSchemeCode(sBGColor));
-          Add('BorderColor',ColorToSchemeCode(sBordercolor));
-          Add('FGAlpha',sFGAlpha);
-          Add('BGAlpha',sBGAlpha);
-          Add('BorderAlpha',sBorderAlpha);
-        end;
-      end;
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      XML.Free;
-      cpuUsage.UpdateTimer.Interval := sUpdate;
-    end;
-    ReAlignComponents(True);
-  finally
-    FreeAndNil(SettingsForm);
-  end;
 end;
 
 procedure TMainForm.UpdateGraph;
@@ -416,4 +324,5 @@ begin
   Background.DrawTo(Canvas.Handle,0,0);
 end;
 
+begin
 end.
