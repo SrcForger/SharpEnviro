@@ -190,7 +190,6 @@ end;
 
 procedure TMainForm.Timer1Timer(Sender: TObject);
 begin
-  UpdateVWMSettings;
   DrawVWM;
   DrawVWMToForm;
 end;
