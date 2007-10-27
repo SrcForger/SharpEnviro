@@ -273,6 +273,7 @@ begin
     Description := 'Displays a graph showing CPU usage';
     Version := '0.7.4.9';
     ExtraData := 'preview: false';
+    DataType := tteModule;
   end;
 
  {   Bmp := TBitmap32.Create;

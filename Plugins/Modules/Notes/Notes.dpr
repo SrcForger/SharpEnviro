@@ -278,6 +278,7 @@ begin
     Description := 'Quick access to an easy to use notes window (with tab support)';
     Version := '0.7.3.3';
     ExtraData := 'preview: True';
+    DataType := tteModule;
 
     Bmp := TBitmap32.Create;
     ResStream := TResourceStream.Create(HInstance, 'Preview', RT_RCDATA);

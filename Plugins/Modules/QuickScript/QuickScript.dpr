@@ -259,6 +259,7 @@ begin
     Description := 'Displays a Button which will open a menu for quick access to all your scripts';
     Version := '0.7.3.3';
     ExtraData := 'preview: True';
+    DataType := tteModule;
 
     Bmp := TBitmap32.Create;
     ResStream := TResourceStream.Create(HInstance, 'Preview', RT_RCDATA);

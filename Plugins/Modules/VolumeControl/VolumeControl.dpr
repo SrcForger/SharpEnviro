@@ -257,6 +257,7 @@ begin
     Description := 'Controls system volume';
     Version := '0.7.4.0';
     ExtraData := 'preview: false';
+    DataType := tteModule;
 
     {Bmp := TBitmap32.Create;
     ResStream := TResourceStream.Create(HInstance, 'Preview', RT_RCDATA);

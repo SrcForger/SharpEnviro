@@ -278,6 +278,7 @@ begin
     Description := 'Displays a remote control for common media players';
     Version := '0.7.3.3';
     ExtraData := 'preview: false';
+    DataType := tteModule;
   end;
 end;
 

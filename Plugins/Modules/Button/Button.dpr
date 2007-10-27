@@ -272,6 +272,7 @@ begin
     Description := 'Displays a Button to which links can be assigned';
     Version := '0.7.3.3';
     ExtraData := 'preview: True';
+    DataType := tteModule;
 
     Bmp := TBitmap32.Create;
     ResStream := TResourceStream.Create(HInstance, 'Preview', RT_RCDATA);

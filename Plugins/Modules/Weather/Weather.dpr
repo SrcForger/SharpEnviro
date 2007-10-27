@@ -278,6 +278,7 @@ begin
     Description := 'Displays current weather information';
     Version := '0.7.3.3';
     ExtraData := 'preview: false';
+    DataType := tteModule;
   end;
 end;
 

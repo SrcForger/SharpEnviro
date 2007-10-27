@@ -266,6 +266,7 @@ begin
     Description := 'Displays a Button bar';
     Version := '0.7.3.3';
     ExtraData := 'preview: false';
+    DataType := tteModule;
   end;
 end;
 

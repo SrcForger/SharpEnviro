@@ -263,6 +263,7 @@ begin
     Description := 'Monitors memory and swap file usage ';
     Version := '0.7.3.3';
     ExtraData := 'preview: False';
+    DataType := tteModule;
 
 {    Bmp := TBitmap32.Create;
     ResStream := TResourceStream.Create(HInstance, 'Preview', RT_RCDATA);

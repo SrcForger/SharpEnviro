@@ -284,6 +284,7 @@ begin
     Description := 'Displays a button that will run SharpMenu';
     Version := '0.7.3.3';
     ExtraData := 'preview: false';
+    DataType := tteModule;
   end;
 end;
 

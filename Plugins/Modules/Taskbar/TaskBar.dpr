@@ -328,6 +328,7 @@ begin
     Description := 'Displays a task list';
     Version := '0.7.3.3';
     ExtraData := 'preview: false';
+    DataType := tteModule;
   end;
 end;
 
