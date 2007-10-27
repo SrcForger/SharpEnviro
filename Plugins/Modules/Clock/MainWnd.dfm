@@ -11,7 +11,9 @@ object MainForm: TMainForm
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  PopupMenu = MenuPopup
   OnCreate = FormCreate
+  OnDblClick = FormDblClick
   OnDestroy = FormDestroy
   OnPaint = FormPaint
   OnShow = FormShow

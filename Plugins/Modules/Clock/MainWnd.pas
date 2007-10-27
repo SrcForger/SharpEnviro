@@ -48,6 +48,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure lb_clockDblClick(Sender: TObject);
     procedure ClockTimerTimer(Sender: TObject);
+    procedure FormDblClick(Sender: TObject);
   protected
   private
     sFormat : String;
@@ -215,6 +216,11 @@ begin
   Background := TBitmap32.Create;
 
   FTipWnd := ToolTipApi.RegisterToolTip(self);
+end;
+
+procedure TMainForm.FormDblClick(Sender: TObject);
+begin
+  lb_clockDblClick(lb_clock);
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
