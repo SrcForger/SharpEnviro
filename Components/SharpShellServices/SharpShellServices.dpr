@@ -37,6 +37,7 @@ uses
   Windows,
   SysUtils,
   Classes,
+  SharpApi,
   uVistaFuncs in '..\..\Common\Units\VistaFuncs\uVistaFuncs.pas';
 
 type
@@ -69,6 +70,22 @@ type
     data: TIMOLeCommandTarget;
     next: TServiceList;
   end;
+
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'SharpShellServices';
+    Description := 'Manages shell service objects';
+    Author := 'Malx (Malx@sharpe-shell.org)';
+    Version := '0.7.4.0';
+    DataType := tteComponent;
+    ExtraData := 'priority: 0| delay: 0';
+  end;
+end;
+
+exports
+  GetMetaData;
 
 
 const

@@ -39,6 +39,22 @@ uses
   GR32_PNG in '..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
 {$R *.res}
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'SharpSkin';
+    Description := 'The graphical skin editor';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteComponent;
+    ExtraData := 'priority: 0| delay: 0';
+  end;
+end;
+
+exports
+  GetMetaData;
+
 begin
   Application.Initialize;
   Application.Title := 'SharpSkin';

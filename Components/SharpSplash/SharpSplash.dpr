@@ -8,6 +8,22 @@ uses
 
 {$R *.res}
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'SharpSplash';
+    Description := 'Displays a splash screen';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteComponent;
+    ExtraData := 'priority: 10| delay: 0';
+  end;
+end;
+
+exports
+  GetMetaData;
+
 begin
   Application.Initialize;
   Application.Title := 'SharpSplash';

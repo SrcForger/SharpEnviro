@@ -64,7 +64,21 @@ uses
 
 {$R *.res}
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'SharpDesk';
+    Description := 'The background application, also manages desktop objects and runs SharpMenu when you right click';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteComponent;
+    ExtraData := 'priority: 130| delay: 0';
+  end;
+end;
 
+exports
+  GetMetaData;
 
 var
    Parameter,FileName : String;

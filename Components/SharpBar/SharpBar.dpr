@@ -175,6 +175,22 @@ begin
   result := lab;
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'SharpBar';
+    Description := 'The toolbars displayed on screen';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteComponent;
+    ExtraData := 'priority: 140| delay: 0';
+  end;
+end;
+
+exports
+  GetMetaData;
+
 var
   ParamID : integer;
   ParamString : string;

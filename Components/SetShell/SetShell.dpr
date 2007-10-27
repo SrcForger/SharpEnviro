@@ -27,12 +27,29 @@ program SetShell;
 
 uses
   Forms,
+  SharpApi,
   MainWnd in 'Forms\MainWnd.pas' {MainForm},
   uShellSwitcher in 'Units\uShellSwitcher.pas',
   VistaTheme in 'VistaTheme.pas',
   uShutdown in '..\..\Common\Units\Shutdown\uShutdown.pas';
 
 {$R *.res}
+
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'SetShell';
+    Description := 'Assists in setting the windows shell';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteComponent;
+    ExtraData := 'priority: 0| delay: 0';
+  end;
+end;
+
+exports
+  GetMetaData;
 
 begin
   Application.Initialize;

@@ -7,7 +7,7 @@
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>..\..\..\SharpE\SharpSkin.exe</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>C:\SharpE\SharpSkin.exe</DCC_DependencyCheckOutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -34,49 +34,13 @@
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-<BorlandProject xmlns=""> <Delphi.Personality>   <Parameters>
-      <Parameters Name="UseLauncher">False</Parameters>
-      <Parameters Name="LoadAllSymbols">True</Parameters>
-      <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
-    </Parameters>
-    <VersionInfo>
-      <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
-      <VersionInfo Name="AutoIncBuild">False</VersionInfo>
-      <VersionInfo Name="MajorVer">0</VersionInfo>
-      <VersionInfo Name="MinorVer">7</VersionInfo>
-      <VersionInfo Name="Release">1</VersionInfo>
-      <VersionInfo Name="Build">0</VersionInfo>
-      <VersionInfo Name="Debug">False</VersionInfo>
-      <VersionInfo Name="PreRelease">False</VersionInfo>
-      <VersionInfo Name="Special">False</VersionInfo>
-      <VersionInfo Name="Private">False</VersionInfo>
-      <VersionInfo Name="DLL">False</VersionInfo>
-      <VersionInfo Name="Locale">1031</VersionInfo>
-      <VersionInfo Name="CodePage">1252</VersionInfo>
-    </VersionInfo>
-    <VersionInfoKeys>
-      <VersionInfoKeys Name="CompanyName">SharpE-Shell Development Team</VersionInfoKeys>
-      <VersionInfoKeys Name="FileDescription">Skin Development Software for the skin system of the SharpE Shell</VersionInfoKeys>
-      <VersionInfoKeys Name="FileVersion">0.7.1.0</VersionInfoKeys>
-      <VersionInfoKeys Name="InternalName">SharpSkin</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalCopyright">Martin Kraemer (2006) &lt;MartinKraemer@gmx.net&gt;</VersionInfoKeys>
-      <VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys>
-      <VersionInfoKeys Name="OriginalFilename">SharpSkin.exe</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductName">SharpSkin</VersionInfoKeys>
-      <VersionInfoKeys Name="ProductVersion">0.7.1.0</VersionInfoKeys>
-      <VersionInfoKeys Name="Comments"></VersionInfoKeys>
-    </VersionInfoKeys>
-    <Excluded_Packages>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">7</VersionInfo><VersionInfo Name="Release">1</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1031</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">SharpE-Shell Development Team</VersionInfoKeys><VersionInfoKeys Name="FileDescription">Skin Development Software for the skin system of the SharpE Shell</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.7.1.0</VersionInfoKeys><VersionInfoKeys Name="InternalName">SharpSkin</VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">Martin Kraemer (2006) &lt;MartinKraemer@gmx.net&gt;</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">SharpSkin.exe</VersionInfoKeys><VersionInfoKeys Name="ProductName">SharpSkin</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.7.1.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
       
       
       <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\PngComponentsD9.bpl">Png components</Excluded_Packages>
-    </Excluded_Packages>
-    <Source>
-      <Source Name="MainSource">SharpSkin.dpr</Source>
-    </Source>
-  </Delphi.Personality> </BorlandProject></BorlandProject>
+    </Excluded_Packages><Source><Source Name="MainSource">SharpSkin.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
-  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
     <DelphiCompile Include="SharpSkin.dpr">
       <MainSource>MainSource</MainSource>
@@ -102,5 +66,4 @@
     </DCCReference>
     <DCCReference Include="Units\Defaults.pas" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
 </Project>
