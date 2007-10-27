@@ -157,7 +157,7 @@ end;
 
 procedure SetDisplayText(const APluginID: Pchar; var ADisplayText: PChar);
 begin
-  ADisplayText := PChar('Module Manager');
+  ADisplayText := PChar('Memory Monitor');
 end;
 
 procedure SetStatusText(var AStatusText: PChar);
@@ -178,7 +178,7 @@ end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);
 begin
-  ATabs.Add('Module Manager',frmMM.pagNotes,'','');
+  ATabs.Add('Memory Monitor',frmMM.pagNotes,'','');
 end;
 
 procedure ClickTab(ATab: TPluginTabItem);
