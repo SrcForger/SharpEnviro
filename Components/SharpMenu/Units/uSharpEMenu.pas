@@ -81,11 +81,12 @@ type
     procedure AddObjectItem(pFile : String; pDynamic : boolean);
 
     // Rendering
-    procedure RenderBackground(pLeft, pTop : integer);
+    procedure RenderBackground(pLeft, pTop : integer; BGBmp : TBitmap32 = nil);
     procedure RenderNormalMenu;
     procedure RenderTo(Dst : TBitmap32); overload;
     procedure RenderTo(Dst : TBitmap32; pLeft,pTop : integer); overload;
     procedure RenderTo(Dst : TBitmap32; Offset : integer); overload;
+    procedure RenderTo(Dst : TBitmap32; pLeft,pTop : integer; BGBmp : TBitmap32); overload;    
     procedure RecycleBitmaps;
 
     // Item Control
@@ -643,14 +644,13 @@ begin
 
 end;
 
-procedure TSharpEMenu.RenderBackground(pLeft,pTop : integer);
+procedure TSharpEMenu.RenderBackground(pLeft,pTop : integer; BGBmp : TBitmap32 = nil);
 const
   CAPTUREBLT = $40000000;
 var
   w,h : integer;
   menuskin : TSharpEMenuSkin;
   dc : hdc;
-  temp : TBitmap32;
 begin
   ImageCheck(FBackground,Point(255,32));
   if FSkinManager = nil then exit;
@@ -676,8 +676,10 @@ begin
     FSpecialBackground.SetSize(w,h);
     FSpecialBackground.Clear(color32(0,0,0,0));
     dc := GetWindowDC(GetDesktopWindow);
-    Temp := TBitmap32.Create;
     try
+      if BGBmp <> nil then
+        BGBmp.DrawTo(FSpecialBackground,pLeft,pTop)
+      else
       BitBlt(FSpecialBackground.Canvas.Handle,
              0,
              0,
@@ -699,7 +701,6 @@ begin
       ReplaceTransparentAreas(FSpecialBackground,FBackground,Color32(0,0,0,0));
     finally
       ReleaseDC(GetDesktopWindow, dc);
-      Temp.Free;
     end;
   end else
   begin
@@ -886,7 +887,14 @@ begin
   finally
     temp.Free;
   end;
+end;
 
+procedure TSharpEMenu.RenderTo(Dst: TBitmap32; pLeft, pTop: integer; BGBmp: TBitmap32);
+begin
+  if (FSkinManager = nil) then exit;
+  RenderBackground(pLeft,pTop,BGBmp);
+
+  RenderTo(Dst);
 end;
 
 procedure TSharpEMenu.RenderTo(Dst : TBitmap32; pLeft,pTop : integer);
