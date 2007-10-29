@@ -2,7 +2,7 @@ object frmMiniScmd: TfrmMiniScmd
   Left = 0
   Top = 0
   Caption = 'frmMiniScmd'
-  ClientHeight = 400
+  ClientHeight = 166
   ClientWidth = 427
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -19,15 +19,17 @@ object frmMiniScmd: TfrmMiniScmd
     Left = 0
     Top = 0
     Width = 427
-    Height = 400
+    Height = 166
     ActivePage = pagMiniScmd
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 400
     object pagMiniScmd: TJvStandardPage
       Left = 0
       Top = 0
       Width = 427
-      Height = 400
+      Height = 166
+      ExplicitHeight = 400
       object Label5: TLabel
         AlignWithMargins = True
         Left = 26
@@ -98,6 +100,7 @@ object frmMiniScmd: TfrmMiniScmd
           Margins.Top = 0
           Margins.Bottom = 0
           Align = alLeft
+          ParentBackground = False
           Min = 25
           Max = 250
           Value = 100

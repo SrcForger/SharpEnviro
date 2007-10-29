@@ -2,7 +2,7 @@ object frmClock: TfrmClock
   Left = 0
   Top = 0
   Caption = 'frmClock'
-  ClientHeight = 400
+  ClientHeight = 346
   ClientWidth = 427
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -19,15 +19,17 @@ object frmClock: TfrmClock
     Left = 0
     Top = 0
     Width = 427
-    Height = 400
+    Height = 346
     ActivePage = pagNotes
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 400
     object pagNotes: TJvStandardPage
       Left = 0
       Top = 0
       Width = 427
-      Height = 400
+      Height = 346
+      ExplicitHeight = 400
       object Label3: TLabel
         AlignWithMargins = True
         Left = 8

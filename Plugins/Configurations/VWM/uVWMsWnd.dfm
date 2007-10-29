@@ -2,7 +2,7 @@ object frmVWM: TfrmVWM
   Left = 0
   Top = 0
   Caption = 'frmVWM'
-  ClientHeight = 587
+  ClientHeight = 531
   ClientWidth = 427
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -19,15 +19,17 @@ object frmVWM: TfrmVWM
     Left = 0
     Top = 0
     Width = 427
-    Height = 587
+    Height = 531
     ActivePage = pagVWM
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 587
     object pagVWM: TJvStandardPage
       Left = 0
       Top = 0
       Width = 427
-      Height = 587
+      Height = 531
+      ExplicitHeight = 587
       object Label5: TLabel
         AlignWithMargins = True
         Left = 26

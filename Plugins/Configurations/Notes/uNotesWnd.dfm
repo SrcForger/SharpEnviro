@@ -2,7 +2,7 @@ object frmNotes: TfrmNotes
   Left = 0
   Top = 0
   Caption = 'frmNotes'
-  ClientHeight = 400
+  ClientHeight = 226
   ClientWidth = 427
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -19,15 +19,17 @@ object frmNotes: TfrmNotes
     Left = 0
     Top = 0
     Width = 427
-    Height = 400
+    Height = 226
     ActivePage = pagNotes
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 400
     object pagNotes: TJvStandardPage
       Left = 0
       Top = 0
       Width = 427
-      Height = 400
+      Height = 226
+      ExplicitHeight = 400
       object Label5: TLabel
         AlignWithMargins = True
         Left = 26
@@ -112,7 +114,6 @@ object frmNotes: TfrmNotes
         Caption = 'Icon'
         TabOrder = 1
         OnClick = rb_textClick
-        ExplicitTop = 152
       end
       object rb_text: TRadioButton
         AlignWithMargins = True
@@ -128,7 +129,6 @@ object frmNotes: TfrmNotes
         Caption = 'Text'
         TabOrder = 2
         OnClick = rb_textClick
-        ExplicitTop = 177
       end
       object rb_icontext: TRadioButton
         AlignWithMargins = True
@@ -146,7 +146,6 @@ object frmNotes: TfrmNotes
         TabOrder = 3
         TabStop = True
         OnClick = rb_textClick
-        ExplicitTop = 127
       end
     end
   end
