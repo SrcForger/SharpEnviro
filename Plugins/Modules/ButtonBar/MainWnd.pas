@@ -216,8 +216,11 @@ begin
 
   for n := 0 to High(FButtonList) do
       with FButtonList[n] do
-           if not IconStringToIcon(Icon,Target,btn.Glyph32) then
-              btn.Glyph32.SetSize(0,0)
+      begin
+        if not IconStringToIcon(Icon,Target,btn.Glyph32) then
+          btn.Glyph32.SetSize(0,0);
+        btn.Repaint;
+      end;
 end;
 
 procedure TMainForm.SaveSettings;
