@@ -1664,6 +1664,7 @@ begin
          // Toggle Mini Throbbers
          ModuleManager.ShowMiniThrobbers := not ModuleManager.ShowMiniThrobbers;
          ModuleManager.ReCalculateModuleSize;
+         SharpEBar.Throbber.Repaint;
        end else
        begin
          // Toggle Main Throbber
@@ -2012,6 +2013,7 @@ begin
   ModuleManager.ShowMiniThrobbers := ShowMiniThrobbers1.Checked;
   SaveBarSettings;
   ModuleManager.ReCalculateModuleSize;
+  SharpEBar.Throbber.Repaint;
 end;
 
 end.

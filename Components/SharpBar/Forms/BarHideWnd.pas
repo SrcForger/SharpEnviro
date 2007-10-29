@@ -132,6 +132,7 @@ begin
        // Toggle Mini Throbbers
        ModuleManager.ShowMiniThrobbers := not ModuleManager.ShowMiniThrobbers;
        ModuleManager.ReCalculateModuleSize;
+       SharpBarMainForm.SharpEBar.Throbber.Repaint;
      end else
      begin
        // Toggle Main Throbber
