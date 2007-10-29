@@ -329,6 +329,9 @@ var
   p : TPoint;
   modx : integer;
 begin
+  if lb_servicenotrunning.Visible then
+    exit;
+
   p := ClientToScreen(point(x,y));
   modx := x;
 
@@ -357,6 +360,9 @@ var
   b : boolean;
   modx : integer;
 begin
+  if lb_servicenotrunning.Visible then
+    exit;
+
   if doubleclick then
   begin
     doubleclick := False;
@@ -381,6 +387,9 @@ var
   p : TPoint;
   modx : integer;
 begin
+  if lb_servicenotrunning.Visible then
+    exit;
+
   if refreshed then
   begin
     refreshed := False;

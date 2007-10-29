@@ -33,7 +33,7 @@ object MainForm: TMainForm
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
-    ComponentSkins = [scBar]
+    ComponentSkins = []
     HandleUpdates = False
     Left = 112
     Top = 80

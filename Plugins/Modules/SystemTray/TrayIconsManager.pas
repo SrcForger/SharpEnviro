@@ -768,7 +768,10 @@ begin
   begin
     tempItem := TTrayItem(FItems.Items[n]);
     if not iswindow(tempItem.Wnd) then
-       DeleteTrayIconByIndex(n);
+    begin
+      DeleteTrayIconByIndex(n);
+      exit;
+    end;
   end;
 
   tempBmp := TBitmap32.Create;
