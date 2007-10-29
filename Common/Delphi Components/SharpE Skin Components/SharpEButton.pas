@@ -458,6 +458,7 @@ function TSharpEButton.GetTextWidth : integer;
 var
   bmp : TBitmap32;
   ButtonSkin : TSharpEButtonSkin;
+  SkinText : TSkinText;
 begin
   bmp := TBitmap32.Create;
   try
@@ -470,8 +471,11 @@ begin
          else ButtonSkin := FManager.Skin.ButtonSkin;
 
       if ButtonSkin.Valid then
-         ButtonSkin.Normal.SkinText.AssignFontTo(bmp.Font,DefaultSharpEScheme)
-         else DefaultSharpESkinText.AssignFontTo(bmp.Font,DefaultSharpEScheme);
+      begin
+        SkinText := CreateThemedSkinText(ButtonSkin.Normal.SkinText);
+        SkinText.AssignFontTo(bmp.Font,DefaultSharpEScheme);
+        SkinText.Free;
+      end;
     end;
     result := bmp.TextWidth(FCaption);
     exit;
