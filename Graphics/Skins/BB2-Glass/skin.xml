@@ -1035,7 +1035,7 @@
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$BorderBG,$BorderBG</gradientcolor>
-          <gradientalpha>64,192</gradientalpha>
+          <gradientalpha>32,168</gradientalpha>
         </skinpart>
       </down>
       <downhover>
@@ -1078,7 +1078,7 @@
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$BorderBG,$BorderBG</gradientcolor>
-          <gradientalpha>192,192</gradientalpha>
+          <gradientalpha>168,168</gradientalpha>
         </skinpart>
       </downhover>
       <highlight>
@@ -1321,7 +1321,7 @@
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$BorderBG,$BorderBG</gradientcolor>
-          <gradientalpha>64,192</gradientalpha>
+          <gradientalpha>32,168</gradientalpha>
         </skinpart>
       </down>
       <downhover>
@@ -1598,7 +1598,7 @@
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$BorderBG,$BorderBG</gradientcolor>
-          <gradientalpha>64,192</gradientalpha>
+          <gradientalpha>32,168</gradientalpha>
         </skinpart>
       </down>
       <downhover>
@@ -2130,7 +2130,7 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>255</shadowalpha>
-      <location>0,0</location>
+      <location>0,-2</location>
     </medium>
     <big>
       <name>Verdana</name>
@@ -2141,7 +2141,7 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>196</shadowalpha>
-      <location>0,2</location>
+      <location>0,-3</location>
     </big>
   </font>
   <progressbar>

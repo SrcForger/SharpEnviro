@@ -1512,13 +1512,13 @@
       <name>Trebuchet MS</name>
       <size>8</size>
       <color>$tasktext</color>
-      <location>0,-4</location>
+      <location>0,-1</location>
     </medium>
     <big>
       <name>Trebuchet MS</name>
       <size>11</size>
       <color>$tasktext</color>
-      <location>0,-6</location>
+      <location>0,-3</location>
     </big>
   </font>
 </sharpESkin>
