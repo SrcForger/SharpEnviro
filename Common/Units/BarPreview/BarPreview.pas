@@ -83,11 +83,11 @@ begin
     menu.AddSeparatorItem(False);
     menu.AddSubMenuItem('Sub Menu','','',False);
     menu.AddLinkItem('Menu Item','','',False);
-    menu.RenderTo(menuBmp);
+    menu.RenderTo(menuBmp,0,0,ABitmap);
 
     BarWnd.Left := -100;
     BarWnd.Top := -100;
-    BarWnd.Width := width - menuBmp.Width - 32;
+    BarWnd.Width := width - menuBmp.Width - 32;       
 
     BarWnd.SharpEBar1.UpdateSkin;
     ShowWindow(BarWnd.SharpEBar1.abackground.handle,SW_HIDE);
@@ -106,6 +106,9 @@ begin
                  else FillRect(2*x*csize + csize,y*csize,2*x*csize + 2*csize,y*csize + csize,clWhite32);
          DrawTo(ABitmap,-round(1.5*csize),-round(1.5*csize));
        end else BarWnd.Background.Clear(color32(0,0,0,0));
+
+    menuBmp.Clear(color32(0,0,0,0));
+    menu.RenderTo(menuBmp,0,0,ABitmap);
 
     try
       XML.LoadFromFile(themeskinfile);
