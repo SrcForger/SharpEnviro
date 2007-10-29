@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SharpESkinScheme>
   <item>
-    <Name>Border</Name>
-    <Tag>$Border</Tag>
-    <Info>Border Color</Info>
-    <Default>16777215</Default>
-  </item>
-  <item>
     <Name>Background</Name>
     <Tag>$Background</Tag>
     <Info>Background Color</Info>

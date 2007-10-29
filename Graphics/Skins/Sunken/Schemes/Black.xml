@@ -5,10 +5,6 @@
     <Author>BB</Author>
   </Info>
   <Item>
-    <Tag>$Border</Tag>
-    <Color>16777215</Color>
-  </Item>
-  <Item>
     <Tag>$Background</Tag>
     <Color>0</Color>
   </Item>

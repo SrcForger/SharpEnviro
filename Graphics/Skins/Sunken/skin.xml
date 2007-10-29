@@ -5,9 +5,9 @@
     <fsmod>0,0</fsmod>
     <sbmod>0,0</sbmod>
     <glasseffect>1</glasseffect>
-    <paxoffsets>6,10</paxoffsets>
+    <paxoffsets>8,10</paxoffsets>
     <payoffsets>0,1</payoffsets>
-    <paxoffsetsbottom>6,10</paxoffsetsbottom>
+    <paxoffsetsbottom>8,10</paxoffsetsbottom>
     <payoffsetsbottom>1,0</payoffsetsbottom>
     <enablevflip>0</enablevflip>
     <specialhideform>1</specialhideform>
@@ -1740,7 +1740,7 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>255</shadowalpha>
-      <location>0,0</location>
+      <location>0,-1</location>
     </medium>
     <big>
       <name>Verdana</name>
@@ -1751,7 +1751,7 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>196</shadowalpha>
-      <location>0,2</location>
+      <location>0,-1</location>
     </big>
   </font>
   <progressbar>
