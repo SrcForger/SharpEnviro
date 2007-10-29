@@ -28,22 +28,24 @@ object frmIconList: TfrmIconList
         StretchColumn = True
       end
       item
-        Width = 75
+        Width = 50
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        Images = Images
       end>
     OnResize = lb_iconlistResize
     ItemHeight = 27
     OnClickItem = lb_iconlistClickItem
+    OnGetCellCursor = lb_iconlistGetCellCursor
     OnGetCellText = lb_iconlistGetCellText
     AutosizeGrid = True
     Borderstyle = bsNone
     Ctl3d = False
     Align = alTop
   end
-  object PngImageList1: TPngImageList
+  object Images: TPngImageList
     PngImages = <
       item
         PngImage.Data = {
@@ -113,5 +115,6 @@ object frmIconList: TfrmIconList
       end>
     Left = 360
     Top = 184
+    Bitmap = {}
   end
 end

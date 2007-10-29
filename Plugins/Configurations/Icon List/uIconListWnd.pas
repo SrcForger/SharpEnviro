@@ -29,10 +29,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, uSEListboxPainter, JclFileUtils,
+  Dialogs, StdCtrls, JclSimpleXML, uSEListboxPainter, JclFileUtils,
   uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
   SharpEListBox, SharpEListBoxEx, GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, GR32_Image;
+  ExtCtrls, Menus, JclStrings, GR32_Image, Types;
 
 type
   TStringObject = class(TObject)
@@ -44,21 +44,24 @@ type
   private
     FAuthor: String;
     FName: String;
-  published
-    public
-      property Name: String read FName write FName;
-      property Author: String read FAuthor write FAuthor;
+    FWebsite: String;
+  public
+    property Name: String read FName write FName;
+    property Author: String read FAuthor write FAuthor;
+    property Website: String read FWebsite write FWebsite;
   end;
 
 type
   TfrmIconList = class(TForm)
     lb_iconlist: TSharpEListBoxEx;
-    PngImageList1: TPngImageList;
+    Images: TPngImageList;
     procedure FormCreate(Sender: TObject);
     procedure lb_iconlistResize(Sender: TObject);
     procedure lb_iconlistClickItem(const ACol: Integer; AItem: TSharpEListItem);
     procedure lb_iconlistGetCellText(const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
+    procedure lb_iconlistGetCellCursor(const ACol: Integer;
+      AItem: TSharpEListItem; var ACursor: TCursor);
   private
 
   public
@@ -83,25 +86,23 @@ uses SharpThemeApi, SharpCenterApi,
 
 procedure TfrmIconList.SaveSettings;
 var
-  XML: TJvSimpleXML;
+  XML: TJclSimpleXML;
   sDir: string;
 begin
   if lb_iconlist.ItemIndex >= 0 then
   begin
     sDir := SharpApi.GetSharpeUserSettingsPath + '\Themes\' + sTheme;
 
-    XML := TJvSimpleXML.Create(nil);
+    XML := TJclSimpleXML.Create;
     try
-
       XML.Root.Name := 'SharpEThemeIconSet';
-      XML.Root.Items.Add('Name', lb_iconlist.Item[lb_iconlist.ItemIndex].Caption);
+      XML.Root.Items.Add('Name', TIconItem(lb_iconlist.Item[lb_iconlist.ItemIndex].Data).Name);
       XML.SaveToFile(sDir + '\IconSet.xml~');
 
       if FileExists(sDir + '\IconSet.xml') then
         DeleteFile(sDir + '\IconSet.xml');
 
       RenameFile(sDir + '\IconSet.xml~', sDir + '\IconSet.xml');
-
     finally
       XML.Free;
     end;
@@ -119,7 +120,7 @@ const
   IconSize = 32;
 var
   x, y: integer;
-  XML: TJvSimpleXML;
+  XML: TJclSimpleXML;
   Dir: string;
   icon: TBitmap32;
   n: integer;
@@ -127,11 +128,10 @@ var
   IconCount: integer;
   tmp:TIconItem;
 begin
-
   tmp := TIconItem(lb_iconlist.Item[lb_iconlist.ItemIndex].Data);
   Dir := SharpApi.GetSharpeDirectory + 'Icons\' + tmp.Name + '\';
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
 
   Icon := TBitmap32.Create;
   Icon.DrawMode := dmBlend;
@@ -176,13 +176,12 @@ var
   newItem: TSharpEListItem;
   sr: TSearchRec;
   Dir: string;
-  XML: TJvSimpleXML;
-  sName,sAuthor,s:String;
-  tmp:TIconItem;
+  XML: TJclSimpleXML;
+  tmp: TIconItem;
 begin
   lb_iconlist.Clear;
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
 
   Dir := SharpApi.GetSharpeDirectory + 'Icons\';
 
@@ -198,11 +197,13 @@ begin
             tmp := TIconItem.Create;
             tmp.Name := XML.Root.Items.Value('name', '...');
             tmp.Author := XML.Root.Items.Value('author', '...');
+            tmp.Website := XML.Root.Items.Value('website','');
 
-            newItem := lb_iconlist.AddItem(s,0);
+            newItem := lb_iconlist.AddItem('',0);
             newItem.Data := tmp;
-            newItem.AddSubItem('site');
-
+            if length(trim(tmp.Website)) > 0 then
+              newItem.AddSubItem('',1)
+            else newItem.AddSubItem('',-1);
 
             if sr.Name = sCurrentIconSet then
             begin
@@ -227,11 +228,22 @@ end;
 procedure TfrmIconList.lb_iconlistClickItem(const ACol: Integer;
   AItem: TSharpEListItem);
 begin
+  if (ACol = 1) and (AItem.SubItemImageIndex[1] = 1) then
+  begin
+    SharpExecute(TIconItem(AItem.Data).Website);
+    exit;
+  end;
 
   SaveSettings;
   BroadcastGlobalUpdateMessage(suIconSet);
   CenterUpdatePreview;
+end;
 
+procedure TfrmIconList.lb_iconlistGetCellCursor(const ACol: Integer;
+  AItem: TSharpEListItem; var ACursor: TCursor);
+begin
+  if (ACol = 1) then
+    ACursor := crHandPoint;
 end;
 
 procedure TfrmIconList.lb_iconlistGetCellText(const ACol: Integer;
@@ -242,10 +254,8 @@ begin
   tmp := TIconItem(AItem.Data);
   if tmp = nil then exit;
 
-  if ACol = 0 then begin
+  if ACol = 0 then
     AColText := Format('<b>%s</b> By %s',[tmp.Name,tmp.Author]);
-  end;
-  
 end;
 
 procedure TfrmIconList.lb_iconlistResize(Sender: TObject);

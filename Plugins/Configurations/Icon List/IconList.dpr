@@ -30,7 +30,7 @@ uses
   Windows,
   Forms,
   Dialogs,
-  JvSimpleXml,
+  JclSimpleXml,
   GR32,
   GR32_Image,
   PngSpeedButton,
@@ -54,7 +54,7 @@ uses
 
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
 begin
   if frmIconList = nil then frmIconList := TfrmIconList.Create(nil);
 
@@ -65,7 +65,7 @@ begin
   frmIconList.Top := 2;
   frmIconList.BorderStyle := bsNone;
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
     XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+APluginID+'\IconSet.xml');
     frmIconList.sCurrentIconSet := XML.Root.Items.Value('Name','');
