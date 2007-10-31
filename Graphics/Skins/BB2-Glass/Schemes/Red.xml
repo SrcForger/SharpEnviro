@@ -2,15 +2,15 @@
 <SharpESkinScheme>
   <Info>
     <Name>Red</Name>
-    <Author>...</Author>
+    <Author>Pixol</Author>
   </Info>
   <Item>
     <Tag>$Border</Tag>
-    <Color>0</Color>
+    <Color>$000404FC</Color>
   </Item>
   <Item>
     <Tag>$Background</Tag>
-    <Color>460600</Color>
+    <Color>$000404FC</Color>
   </Item>
   <Item>
     <Tag>$Text</Tag>
@@ -22,6 +22,14 @@
   </Item>
   <Item>
     <Tag>$BorderBG</Tag>
-    <Color>3141620</Color>
+    <Color>8421504</Color>
+  </Item>
+  <Item>
+    <Tag>$Alpha</Tag>
+    <Color>164</Color>
+  </Item>
+  <Item>
+    <Tag>$BAlpha</Tag>
+    <Color>164</Color>
   </Item>
 </SharpESkinScheme>
