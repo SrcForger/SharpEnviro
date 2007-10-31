@@ -11,6 +11,7 @@
     <Tag>$BGAlpha</Tag>
     <Info>Background Alpha</Info>
     <Default>148</Default>
+    <type>Integer</type>
   </item>
   <item>
     <Name>Foreground</Name>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpESkinScheme>
+  <Info>
+    <Name>Blue</Name>
+    <Author>Pixol</Author>
+  </Info>
+  <Item>
+    <Tag>$Background</Tag>
+    <Color>$00877C33</Color>
+  </Item>
+  <Item>
+    <Tag>$BGAlpha</Tag>
+    <Color>214</Color>
+  </Item>
+  <Item>
+    <Tag>$Foreground</Tag>
+    <Color>clWhite</Color>
+  </Item>
+  <Item>
+    <Tag>$Text</Tag>
+    <Color>16777215</Color>
+  </Item>
+  <Item>
+    <Tag>$TextShadow</Tag>
+    <Color>0</Color>
+  </Item>
+</SharpESkinScheme>

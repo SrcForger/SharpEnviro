@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
+  <header>
+    <name>Sunken</name>
+    <author>Billiberserker</author>
+    <url>http://www.sharpe-shell.org</url>
+    <info>A sunken skin</info>
+    <version>0.73</version>
+  </header>
   <sharpbar>
     <dimension>w,22</dimension>
     <fsmod>0,0</fsmod>
