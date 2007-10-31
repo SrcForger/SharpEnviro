@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
+  <header>
+    <name>Minimal</name>
+    <author>Billiberserker</author>
+    <url>http://www.sharpe-shell.org</url>
+    <version>0.73</version>
+  </header>
   <sharpbar>
     <dimension>w,28</dimension>
     <fsmod>0,0</fsmod>
