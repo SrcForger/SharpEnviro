@@ -626,7 +626,9 @@ object frmFont: TfrmFont
             Style = csOwnerDrawFixed
             DropDownCount = 12
             ItemHeight = 17
+            ItemIndex = 0
             TabOrder = 0
+            Text = 'Left'
             OnChange = cb_shadowtypeChange
             Items.Strings = (
               'Left'

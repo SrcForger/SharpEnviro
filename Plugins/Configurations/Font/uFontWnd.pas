@@ -125,7 +125,6 @@ begin
   FFontList.List.Clear;
 
   cbxFontName.Items.Clear;
-  //cbxFontName.Sorted := True;
   try
     FFontList.RefreshFontInfo;
     for i := 0 To pred(FFontList.List.Count) do begin
@@ -136,6 +135,7 @@ begin
       cbxFontName.Items.Add(FFontList.List.Strings[i]);
     end;
   finally
+    cbxFontName.ItemIndex := cbxFontName.Items.IndexOf('Arial');
   end;
 end;
 

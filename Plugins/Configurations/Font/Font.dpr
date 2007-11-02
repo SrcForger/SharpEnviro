@@ -38,6 +38,7 @@ uses
   JvPageList,
   SharpEUIC,
   uVistaFuncs,
+  SharpThemeApi,
   SysUtils,
   Graphics,
   SharpEFontSelectorFontList,
@@ -61,16 +62,17 @@ begin
     exit;
 
   frmFont.SaveSettings;
-end;      
+end;
 
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 var
-  XML : TJvSimpleXML;
-  FName : String;
-  n : integer;
-  s : string;
+  XML: TJvSimpleXML;
+  sFontName: string;
+  n: integer;
+  s: string;
 begin
-  if frmFont = nil then frmFont := TfrmFont.Create(nil);
+  if frmFont = nil then
+    frmFont := TfrmFont.Create(nil);
 
   uVistaFuncs.SetVistaFonts(frmFont);
   frmFont.sTheme := APluginID;
@@ -79,9 +81,8 @@ begin
   frmFont.Top := 2;
   frmFont.BorderStyle := bsNone;
 
-  FName := SharpApi.GetSharpeUserSettingsPath + '\Themes\'+APluginID+'\Font.xml';
-  if FileExists(FName) then
-  begin
+  sFontName := XmlGetFontFile(APluginID);
+  if FileExists(sFontName) then begin
     XML := TJvSimpleXML.Create(nil);
     frmFont.cb_Underline.OnClick := nil;
     frmFont.cb_Italic.OnClick := nil;
@@ -89,75 +90,64 @@ begin
     frmFont.cb_shadow.OnClick := nil;
 
     try
-    try
-      XML.LoadFromFile(FName);
-      with frmFont do
-        with XML.Root.Items do
-        begin
-          if BoolValue('ModSize',False) then
-          begin
-            sgb_size.Value := IntValue('ValueSize',sgb_size.Value);
-            UIC_size.UpdateStatus;
-          end;
+      try
+        XML.LoadFromFile(sFontName);
+        with frmFont do
+          with XML.Root.Items do begin
+            if BoolValue('ModSize', False) then begin
+              sgb_size.Value := IntValue('ValueSize', sgb_size.Value);
+              UIC_size.UpdateStatus;
+            end;
 
-          if BoolValue('ModName',False) then
-          begin
-            UIC_FontType.HasChanged := True;
-            s := Value('ValueName','');
-            for n  := 0 to FontList.List.Count - 1 do
-              if CompareText(TFontInfo(FontList.List.Objects[n]).FullName,s) = 0 then
-              begin
-                cbxFontName.ItemIndex := n;
-                break;
-              end;
-          end;
-          if cbxFontName.ItemIndex = -1 then
-            cbxFontName.ItemIndex := cbxFontName.Items.IndexOf('arial');
+            if BoolValue('ModName', False) then begin
+              UIC_FontType.HasChanged := True;
+              s := Value('ValueName', '');
+              for n := 0 to FontList.List.Count - 1 do
+                if CompareText(TFontInfo(FontList.List.Objects[n]).FullName, s) = 0 then begin
+                  cbxFontName.ItemIndex := n;
+                  break;
+                end;
+            end;
+            if cbxFontName.ItemIndex = -1 then
+              cbxFontName.ItemIndex := cbxFontName.Items.IndexOf('arial');
 
-          if BoolValue('ModAlpha',False) then
-          begin
-            sgb_Alpha.value := IntValue('ValueAlpha',sgb_Alpha.value);
-            UIC_Alpha.UpdateStatus;
-          end;
+            if BoolValue('ModAlpha', False) then begin
+              sgb_Alpha.value := IntValue('ValueAlpha', sgb_Alpha.value);
+              UIC_Alpha.UpdateStatus;
+            end;
 
-          if BoolValue('ModUseShadow',False) then
-          begin
-            UIC_Shadow.HasChanged := True;
-            cb_shadow.Checked := BoolValue('ValueUseShadow',cb_shadow.Checked);
-          end;
+            if BoolValue('ModUseShadow', False) then begin
+              UIC_Shadow.HasChanged := True;
+              cb_shadow.Checked := BoolValue('ValueUseShadow', cb_shadow.Checked);
+            end;
 
-          if BoolValue('ModShadowType',False) then
-          begin
-            UIC_ShadowType.HasChanged := True;
-            cb_shadowtype.ItemIndex := Max(0,Min(3,IntValue('ValueShadowType',0)));
-          end;
+            if BoolValue('ModShadowType', False) then begin
+              UIC_ShadowType.HasChanged := True;
+              cb_shadowtype.ItemIndex := Max(0, Min(3, IntValue('ValueShadowType', 0)));
+            end;
 
-          if BoolValue('ModShadowAlpha',False) then
-          begin
-            sgb_shadowAlpha.Value := IntValue('ValueShadowAlpha',sgb_shadowAlpha.Value);
-            UIC_ShadowAlpha.UpdateStatus;            
-          end;
+            if BoolValue('ModShadowAlpha', False) then begin
+              sgb_shadowAlpha.Value := IntValue('ValueShadowAlpha', sgb_shadowAlpha.Value);
+              UIC_ShadowAlpha.UpdateStatus;
+            end;
 
-          if BoolValue('ModBold',False) then
-          begin
-            UIC_Bold.HasChanged := True;
-            cb_bold.checked := BoolValue('ValueBold',cb_bold.checked);
-          end;
+            if BoolValue('ModBold', False) then begin
+              UIC_Bold.HasChanged := True;
+              cb_bold.checked := BoolValue('ValueBold', cb_bold.checked);
+            end;
 
-          if BoolValue('ModItalic',False) then
-          begin
-            UIC_Italic.HasChanged := True;
-            cb_italic.checked := BoolValue('ValueItalic',cb_bold.checked);
-          end;
+            if BoolValue('ModItalic', False) then begin
+              UIC_Italic.HasChanged := True;
+              cb_italic.checked := BoolValue('ValueItalic', cb_bold.checked);
+            end;
 
-          if BoolValue('ModUnderline',False) then
-          begin
-            UIC_Underline.HasChanged := True;
-            cb_underline.checked := BoolValue('ValueUnderline',cb_bold.checked);
+            if BoolValue('ModUnderline', False) then begin
+              UIC_Underline.HasChanged := True;
+              cb_underline.checked := BoolValue('ValueUnderline', cb_bold.checked);
+            end;
           end;
-        end;
-    except
-    end;
+      except
+      end;
 
     finally
       XML.Free;
@@ -174,7 +164,7 @@ begin
   result := frmFont.Handle;
 end;
 
-function Close : boolean;
+function Close: boolean;
 begin
   result := True;
   try
@@ -186,7 +176,6 @@ begin
   end;
 end;
 
-
 procedure SetDisplayText(const APluginID: Pchar; var ADisplayText: PChar);
 begin
   ADisplayText := PChar('Font');
@@ -197,7 +186,7 @@ begin
   AStatusText := '';
 end;
 
-procedure ClickBtn(AButtonID: Integer; AButton:TPngSpeedButton; AText:String);
+procedure ClickBtn(AButtonID: Integer; AButton: TPngSpeedButton; AText: string);
 begin
 end;
 
@@ -207,15 +196,13 @@ begin
 end;
 
 procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
+  var AItemColor: TColor; var AItemSelectedColor: TColor);
 var
-  n : integer;
+  n: integer;
 begin
-  if frmFont <> nil then
-  begin
+  if frmFont <> nil then begin
     for n := 0 to frmFont.ComponentCount - 1 do
-      if frmFont.Components[n] is TSharpEUIC then
-      begin
+      if frmFont.Components[n] is TSharpEUIC then begin
         TSharpEUIC(frmFont.Components[n]).NormalColor := clWindow;
         TSharpEUIC(frmFont.Components[n]).BorderColor := AItemSelectedColor;
         TSharpEUIC(frmFont.Components[n]).BackgroundColor := $00F7F7F7;
@@ -223,10 +210,10 @@ begin
   end;
 end;
 
-procedure AddTabs(var ATabs:TPluginTabItemList);
+procedure AddTabs(var ATabs: TPluginTabItemList);
 begin
-  ATabs.Add('Font Face',frmFont.pagFont,'','');
-  ATabs.Add('Font Shadow',frmFont.pagFontShadow,'','');
+  ATabs.Add('Font Face', frmFont.pagFont, '', '');
+  ATabs.Add('Font Shadow', frmFont.pagFontShadow, '', '');
 end;
 
 procedure ClickTab(ATab: TPluginTabItem);
@@ -244,7 +231,6 @@ function SetSettingType: TSU_UPDATE_ENUM;
 begin
   result := suSkinFont;
 end;
-
 
 exports
   Open,
