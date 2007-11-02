@@ -34,6 +34,7 @@ uses
   Buttons,
   Windows,
   Forms,
+  Types,
   Dialogs,
   JvSimpleXml,
   PngSpeedButton,
@@ -64,8 +65,6 @@ var
   WPItem: TWPItem;
   Mon: TMonitor;
   MonID: integer;
-  failed: boolean;
-  tmpRdo: TRadioButton;
 begin
   Result := True;
     XML := TJvSimpleXML.Create(nil);
@@ -97,7 +96,7 @@ begin
                       begin
                         // Found the matching wallpaper, load the settings
                         WPItem.Name := Value('Name');
-                        WPItem.Image := Value('Image');
+                        WPItem.FileName := Value('Image');
                         WPItem.Color := IntValue('Color', 0);
                         WPItem.Alpha := IntValue('Alpha', 255);
                         k := IntValue('Size', 0);
@@ -142,13 +141,10 @@ end;
 
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 var
-  XML: TJvSimpleXML;
-  n, i, h, k: integer;
+  n: integer;
   WPItem: TWPItem;
   Mon: TMonitor;
   MonID: integer;
-  failed: boolean;
-  tmpRdo: TRadioButton;
 begin
 
   // Create settings form
@@ -273,7 +269,7 @@ begin
         with Add('item').Items do
         begin
           Add('Name', WPItem.Name);
-          Add('Image', WPItem.Image);
+          Add('Image', WPItem.FileName);
           Add('Color', WPItem.Color);
           Add('Alpha', WPItem.Alpha);
           case WPItem.Size of
@@ -370,8 +366,6 @@ begin
 end;
 
 procedure AddTabs(var ATabs: TPluginTabItemList);
-var
-  n: integer;
 begin
   ATabs.Add('Wallpaper', frmWPSettings.pagWallpaper, '', '');
   ATabs.Add('Color', frmWPSettings.pagColor, '', '');

@@ -27,7 +27,7 @@ object frmWPSettings: TfrmWPSettings
     Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
-    ActivePage = pagColor
+    ActivePage = pagWallpaper
     PropagateEnable = False
     Align = alClient
     object pagWallpaper: TJvStandardPage
@@ -317,6 +317,7 @@ object frmWPSettings: TfrmWPSettings
           Caption = 'Tile'
           TabOrder = 3
           OnClick = AlignmentChangeEvent
+          ExplicitLeft = 208
         end
       end
       object Panel8: TPanel

@@ -45,8 +45,8 @@ type
     Bmp: TBitmap32;
     MonID: integer;
     Mon: TMonitor;
-      Name: string;
-    Image: string;
+    Name: string;
+    FileName: string;
     Color: integer;
     Alpha: integer;
     Size: TThemeWallpaperSize;
@@ -67,7 +67,6 @@ type
     destructor Destroy; override;
 
     procedure LoadFromFile;
-  published
   end;
 
   TfrmWPSettings = class(TForm)
@@ -150,10 +149,6 @@ type
     procedure MonitorChangeEvent(Sender: TObject);
     procedure HSLColorChangeEvent(Sender: TObject; Value: Integer);
   private
-
-    procedure RenderGradient(AW, AH: Integer;
-      AGradientType: TThemeWallpaperGradientType;
-      AColorGradFrom, AColorGradTo, AAlphaFrom, AAlphaTo: Integer; var ABitmap: TBitmap32);
   public
     FTheme: string;
     FCurrentWP: TWPItem;
@@ -222,9 +217,9 @@ var
 begin
   loaded := False;
   SList := TStringList.Create;
-  SList.Add(SharpApi.GetSharpeUserSettingsPath + 'Themes\' + frmWPSettings.FTheme + '\' + Image);
-  SList.Add(Image);
-  SList.Add(SharpApi.GetSharpeDirectory + Image);
+  SList.Add(SharpApi.GetSharpeUserSettingsPath + 'Themes\' + frmWPSettings.FTheme + '\' + FileName);
+  SList.Add(FileName);
+  SList.Add(SharpApi.GetSharpeDirectory + FileName);
   for i := 0 to SList.Count - 1 do
     if FileExists(SList[i]) then
     try
@@ -291,48 +286,6 @@ begin
   end;
 end;
 
-procedure TfrmWPSettings.RenderGradient(AW, AH: Integer;
-  AGradientType: TThemeWallpaperGradientType;
-  AColorGradFrom, AColorGradTo, AAlphaFrom, AAlphaTo: Integer; var ABitmap: TBitmap32);
-const
-  cSize = 12;
-var
-  iW, iH: Integer;
-  bmp: TBitmap32;
-  x, y: integer;
-begin
-  iW := AW + (2 * cSize);
-  iH := AH + (2 * cSize);
-
-  bmp := TBitmap32.Create;
-  try
-    bmp.DrawMode := dmBlend;
-    bmp.CombineMode := cmMerge;
-    bmp.SetSize(iW, iH);
-    bmp.Clear(color32(clsilver));
-    for x := 0 to iW do
-      for y := 0 to iH do
-        if y mod 2 = 0 then
-          bmp.FillRect(2 * x * csize, y * csize, 2 * x * csize + csize, y * csize + csize, clWhite32)
-        else bmp.FillRect(2 * x * csize + csize, y * csize, 2 * x * csize + 2 * csize, y * csize + csize, clWhite32);
-
-    ABitmap.SetSize(iW, iH);
-    bmp.DrawTo(ABitmap);
-  finally
-    bmp.Free;
-  end;
-
-  ABitmap.BeginUpdate;
-  ApplyGradient(ABitmap, AGradientType,
-    AColorGradFrom,
-    AColorGradTo,
-    AAlphaFrom,
-    AAlphaTo);
-  ABitmap.EndUpdate;
-
-  ABitmap.FrameRectS(0, 0, ABitmap.Width, ABitmap.Height, Color32(0, 0, 0, 255));
-end;
-
 procedure TfrmWPSettings.RenderPreview;
 var
   w, w2, h, h2: integer;
@@ -342,6 +295,8 @@ var
 begin
   if FCurrentWP = nil then exit;
   if FCurrentWP.Mon = nil then exit;
+  if ((Not(FileExists(FCurrentWP.FileName))) or
+    (FCurrentWP.FileName = '')) then exit;
 
   WPBmp := TBitmap32.Create;
   TLinearResampler.Create(WPBmp);
@@ -461,7 +416,7 @@ begin
 
   FCurrentWP.MirrorHoriz := chkWpMirrorHoriz.Checked;
   FCurrentWP.MirrorVert := chkWpMirrorVert.Checked;
-  FCurrentWP.Image := edtWpFile.Text;
+  FCurrentWP.FileName := edtWpFile.Text;
   FCurrentWP.Alpha := sgbWpTrans.Value;
   FCurrentWP.ColorChange := chkApplyColor.checked;
   FCurrentWP.Hue := sgbHue.Value;
@@ -506,7 +461,7 @@ begin
     end;
     chkWpMirrorHoriz.Checked := AWPItem.MirrorHoriz;
     chkWpMirrorVert.Checked := AWPItem.MirrorVert;
-    edtWpFile.Text := AWPItem.Image;
+    edtWpFile.Text := AWPItem.FileName;
     sgbWpTrans.Value := AWPItem.Alpha;
     chkApplyColor.checked := AWPItem.ColorChange;
     sgbHue.Value := AWPItem.Hue;
@@ -572,7 +527,7 @@ begin
   for i := 0 to SList.Count - 1 do
     if FileExists(SList[i]) then
     try
-      FCurrentWP.Image := SList[i];
+      FCurrentWP.FileName := SList[i];
       FCurrentWP.LoadFromFile;
       exists := True;
       loaded := True;
@@ -584,7 +539,7 @@ begin
   begin
     if not exists then
     begin
-      FCurrentWP.Image := edtWpFile.Text;
+      FCurrentWP.FileName := edtWpFile.Text;
       FCurrentWP.LoadFromFile;
     end;
 
