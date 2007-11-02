@@ -41,7 +41,9 @@ uses
   uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
   uThemeSkinListWnd in 'uThemeSkinListWnd.pas' {frmSkinListWnd},
   uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
+  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
+  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
+  uVistaFuncs in '..\..\..\Common\Units\VistaFuncs\uVistaFuncs.pas';
 
 {$E .dll}
 
@@ -50,9 +52,11 @@ uses
 function Open(const APluginID: Pchar; owner: hwnd): hwnd;
 begin
   if frmSkinListWnd = nil then frmSkinListWnd := TfrmSkinListWnd.Create(nil);
+  SetVistaFonts(frmSkinListWnd);
 
+  CenterDefineConfigurationMode(scmLive);
   frmSkinListWnd.Theme := APluginID;
-  frmSkinListWnd.DefaultSkin := frmSkinListWnd.GetDefaultSkin(frmSkinListWnd.Theme);
+  frmSkinListWnd.DefaultSkin := XmlGetSkin(frmSkinListWnd.Theme);
 
   frmSkinListWnd.ParentWindow := owner;
   frmSkinListWnd.Left := 2;
@@ -68,19 +72,9 @@ begin
     frmSkinListWnd := nil;
 end;
 
-procedure Save;
-begin
-  frmSkinListWnd.Save;
-end;
-
 procedure GetDisplayName(const APluginID: Pchar; var ADisplayName: PChar);
 begin
   ADisplayName := PChar('Skin');
-end;
-
-function SetSettingType: TSU_UPDATE_ENUM;
-begin
-  Result := suSkin;
 end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);
@@ -125,10 +119,8 @@ end;
 exports
   Open,
   Close,
-  Save,
   SetDisplayText,
   SetStatusText,
-  SetSettingType,
 
   AddTabs,
   GetCenterScheme;

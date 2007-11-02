@@ -32,7 +32,7 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, SharpApi, uSEListboxPainter, JclFileUtils,
   uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
   SharpEListBox, graphicsfx, SharpThemeApi, SharpEListBoxEx, BarPreview, GR32, GR32_PNG, pngimage,
-  ExtCtrls, SharpCenterApi;
+  ExtCtrls, SharpCenterApi, JclStrings;
 
 type
   TStringObject = class(TObject)
@@ -40,21 +40,44 @@ type
     Str: string;
   end;
 
+  TSkinItem = class
+  private
+    FName: string;
+    FAuthor: string;
+    FInfo: string;
+    FWebsite: string;
+    FVersion: string;
+  published
+  public
+    property Name: string read FName write FName;
+    property Author: string read FAuthor write FAuthor;
+    property Website: string read FWebsite write FWebsite;
+    property Info: string read FInfo write FInfo;
+    property Version: string read FVersion write FVersion;
+    
+    constructor Create(AName, AAuthor, AWebsite, AInfo, AVersion: string); overload;
+    constructor Create(ASkin:String); overload;
+  end;
+
 type
   TfrmSkinListWnd = class(TForm)
     ThemeImages: TPngImageList;
     lbSkinList: TSharpEListBoxEx;
-    procedure lbSkinListGetCellColor(const AItem: Integer; var AColor: TColor);
-    procedure lbSkinListGetCellTextColor(const ACol: Integer;
-      AItem: TSharpEListItem; var AColor: TColor);
+    PngImageList1: TPngImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    function GetDefaultScheme(ATheme, ASkinName: string): string;
     procedure lbSkinListClickItem(const ACol: Integer; AItem: TSharpEListItem);
+    procedure lbSkinListGetCellText(const ACol: Integer; AItem: TSharpEListItem;
+      var AColText: string);
+    procedure lbSkinListGetCellImageIndex(const ACol: Integer;
+      AItem: TSharpEListItem; var AImageIndex: Integer;
+      const ASelected: Boolean);
+    procedure lbSkinListGetCellCursor(const ACol: Integer;
+      AItem: TSharpEListItem; var ACursor: TCursor);
 
   private
-    FTheme: String;
-    FDefaultSkin: String;
+    FTheme: string;
+    FDefaultSkin: string;
     procedure BuildSkinList;
     function SaveBitmap32ToPNG(bm32: TBitmap32; paletted, transparent: Boolean;
       bgcolor: TColor;
@@ -62,15 +85,19 @@ type
       InterlaceMethod: TInterlaceMethod = imNone): tPNGObject;
   public
     procedure EditTheme;
-    property Theme: String read FTheme write FTheme;
-    property DefaultSkin: String read FDefaultSkin write FDefaultSkin;
-    function GetDefaultSkin(ATheme: String): String;
+    property Theme: string read FTheme write FTheme;
+    property DefaultSkin: string read FDefaultSkin write FDefaultSkin;
 
     procedure Save;
   end;
 
 var
   frmSkinListWnd: TfrmSkinListWnd;
+
+const
+  cItem = 0;
+  cUrl = 1;
+  cInfo = 2;
 
 type
   TARGB = record
@@ -94,45 +121,66 @@ end;
 
 procedure TfrmSkinListWnd.BuildSkinList;
 var
-  sr: TSearchRec;
   dir: string;
   Bmp: TBitmap;
   Bmp32: TBitmap32;
   png: TPngImageCollectionItem;
   li: tsharpelistitem;
   b: boolean;
-  n: Integer;
-  sScheme: String;
+  sScheme: string;
+
+  i, iIndex: Integer;
+  files, tokens: TStringList;
+  sSkin, s: string;
 begin
   dir := SharpApi.GetSharpeDirectory + 'Skins\';
+  iIndex := -1;
   lbSkinList.Clear;
 
-  if FindFirst(dir + '*.*', faDirectory, sr) = 0 then
-  begin
-    repeat
+  files := TStringList.Create;
+  try
+
+    AdvBuildFileList(dir + '*skin.xml', faAnyFile, files, amAny, [flFullNames, flRecursive]);
+    for i := 0 to Pred(files.count) do begin
+
+      // Get skin name
+      sSkin := ExtractFilePath(files[i]);
+      tokens := TStringList.Create;
       try
-        if FileExists(dir + sr.Name + '\Skin.xml') then
-        begin
-
-          bmp32 := TBitmap32.Create;
-          bmp32.SetSize(70, 30);
-
-          sScheme := GetDefaultScheme(FTheme,sr.Name)+'.xml';
-          CreateBarPreview(Bmp32, FTheme, sr.Name, sScheme, 100);
-          png := lbSkinList.Column[0].Images.PngImages.Add(false);
-          png.PngImage := SaveBitmap32ToPNG(bmp32,False,True,ClWhite);
-
-          li := lbSkinList.AddItem('',png.id);
-          li.AddSubItem(sr.Name);
-
-        end;
-      except
+        StrTokenToStrings(sSkin, '\', tokens);
+        sSkin := tokens[tokens.Count - 1];
+      finally
+        tokens.Free;
       end;
-    until FindNext(sr) <> 0;
-    FindClose(sr);
-  end;
 
-  bmp32.free;
+      bmp32 := TBitmap32.Create;
+      try
+        bmp32.SetSize(70, 30);
+
+        sScheme := XmlGetScheme(FTheme) + '.xml';
+        CreateBarPreview(Bmp32, FTheme, sSkin, sScheme, 100);
+        png := lbSkinList.Column[cItem].Images.PngImages.Add(false);
+        png.PngImage := SaveBitmap32ToPNG(bmp32, False, True, ClWhite);
+
+        li := lbSkinList.AddItem(sSkin, png.id);
+        li.AddSubItem('');
+        li.AddSubItem('');
+        li.Data := Pointer(TSkinItem.Create(sSkin));
+      finally
+        bmp32.free;
+      end;
+
+      s := XmlGetSkin(FTheme);
+      if s = sSkin then
+        iIndex := i;
+
+    end;
+
+  finally
+    files.Free;
+
+    lbSkinList.ItemIndex := iIndex;
+  end;
 end;
 
 procedure TfrmSkinListWnd.EditTheme;
@@ -142,29 +190,13 @@ begin
   if lbSkinList.ItemIndex < 0 then
     exit;
 
-  // str := TStringObject(skinlist.Items.Objects[skinlist.ItemIndex]);
-  CenterCommand(sccLoadSetting,PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'), pchar(str.Str));
+  CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'), pchar(str.Str));
 end;
 
 procedure TfrmSkinListWnd.FormCreate(Sender: TObject);
 begin
   lbSkinList.ItemHeight := 50;
   lbSkinList.Colors.BorderColorSelected := clBtnFace;
-
-  with lbSkinList.AddColumn('Icon') do
-  begin
-    Width := 108;
-    Images := ThemeImages;
-    Images.Height := 30;
-    HAlign := taleftJustify;
-    VAlign := taVerticalCenter;
-  end;
-  with lbSkinList.AddColumn('Name') do
-  begin
-    Width := 800;
-    HAlign := taleftJustify;
-    VAlign := taVerticalCenter;
-  end;
 end;
 
 function TfrmSkinListWnd.SaveBitmap32ToPNG(bm32: TBitmap32; paletted, transparent: Boolean;
@@ -185,16 +217,14 @@ begin
       bm.Assign(bm32);
       if paletted then
         bm.PixelFormat := pf8bit; // force paletted on TBitmap, transparent for the web must be 8 bit
-        png.InterlaceMethod := InterlaceMethod;
+      png.InterlaceMethod := InterlaceMethod;
       png.CompressionLevel := CompressionLevel;
       png.Assign(bm); //Convert data into png
     finally
       FreeAndNil(bm);
     end;
-    if transparent then
-    begin
-      if png.Header.ColorType in [COLOR_PALETTE] then
-      begin
+    if transparent then begin
+      if png.Header.ColorType in [COLOR_PALETTE] then begin
         if (png.Chunks.ItemFromClass(TChunktRNS) = nil) then
           png.CreateAlpha;
         TRNS := png.Chunks.ItemFromClass(TChunktRNS) as TChunktRNS;
@@ -203,10 +233,8 @@ begin
       end;
       if png.Header.ColorType in [COLOR_RGB, COLOR_GRAYSCALE] then
         png.CreateAlpha;
-      if png.Header.ColorType in [COLOR_RGBALPHA, COLOR_GRAYSCALEALPHA] then
-      begin
-        for y := 0 to png.Header.Height - 1 do
-        begin
+      if png.Header.ColorType in [COLOR_RGBALPHA, COLOR_GRAYSCALEALPHA] then begin
+        for y := 0 to png.Header.Height - 1 do begin
           p := png.AlphaScanline[y];
           for x := 0 to png.Header.Width - 1 do
             p[x] :=
@@ -218,77 +246,97 @@ begin
   finally
     Result := png;
   end;
-  end;
-
-function TfrmSkinListWnd.GetDefaultScheme(ATheme, ASkinName: string): string;
-var
-  xml: TJvSimpleXML;
-  s: string;
-begin
-  Result := '';
-  xml := TJvSimpleXML.Create(nil);
-  try
-    s := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'Scheme.xml';
-
-    if fileExists(s) then
-    begin
-      xml.LoadFromFile(s);
-      Result := xml.Root.Items.Value('Scheme', 'Default');
-    end;
-  finally
-    xml.Free;
-  end;
-end;
-
-function TfrmSkinListWnd.GetDefaultSkin(ATheme: String): String;
-var
-  xml: TJvSimpleXML;
-  s: string;
-begin
-  Result := '';
-  xml := TJvSimpleXML.Create(nil);
-  try
-    s := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'skin.xml';
-
-    if fileExists(s) then
-    begin
-      xml.LoadFromFile(s);
-      Result := xml.Root.Items.Value('Skin', '');
-    end;
-  finally
-    xml.Free;
-  end;
-end;
-
-procedure TfrmSkinListWnd.lbSkinListGetCellTextColor(const ACol: Integer;
-  AItem: TSharpEListItem; var AColor: TColor);
-begin
-  if ACol = 1 then
-    AColor := clLtGray;
-
-  if ((ACol = 1) and (lbSkinList.ItemIndex = AItem.ID)) then
-    AColor := clWindowText;
-
-  if ((ACol = 1) and (CompareText(lbSkinList.Item[AItem.ID].SubItemText[1], FDefaultSkin) = 0)) then
-    AColor := clWindowText;
 end;
 
 procedure TfrmSkinListWnd.lbSkinListClickItem(const ACol: Integer;
   AItem: TSharpEListItem);
+var
+  tmp: TSkinItem;
 begin
-  FDefaultSkin := AItem.SubItemText[1];
+  tmp := TSkinItem(AItem.Data);
 
-  CenterDefineSettingsChanged;
-  lbSkinList.Update;
+  if (tmp <> nil) then begin
+
+    case ACol of
+      cItem: begin
+          FDefaultSkin := tmp.Name;
+          Save;
+          
+          SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suSkin), 0);
+        end;
+        cUrl: begin
+          SharpExecute(tmp.Website);
+        end;
+        cInfo: begin
+          ShowMessage(tmp.Info);
+        end;
+    end;
+
+  end;
 
 end;
 
-procedure TfrmSkinListWnd.lbSkinListGetCellColor(const AItem: Integer;
-  var AColor: TColor);
+procedure TfrmSkinListWnd.lbSkinListGetCellCursor(const ACol: Integer;
+  AItem: TSharpEListItem; var ACursor: TCursor);
+var
+  tmp: TSkinItem;
 begin
+  tmp := TSkinItem(AItem.Data);
 
-  if (CompareText(lbSkinList.Item[AItem].SubItemText[1], FDefaultSkin) = 0) then
-    AColor := lbskinList.colors.ItemColorSelected;
+  if tmp <> nil then begin
+    if (ACol = cUrl) then begin
+      if (tmp.Website <> '') then
+        ACursor := crHandPoint
+      else
+        ACursor := crDefault;
+    end
+    else if (ACol = cInfo) then begin
+      if (tmp.Info <> '') then
+        ACursor := crHandPoint
+      else
+        ACursor := crDefault;
+    end;
+  end;
+end;
+
+procedure TfrmSkinListWnd.lbSkinListGetCellImageIndex(const ACol: Integer;
+  AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
+var
+  tmp: TSkinItem;
+begin
+  tmp := TSkinItem(AItem.Data);
+
+  if tmp <> nil then begin
+    if (ACol = cUrl) then begin
+
+      if (tmp.Website <> '') then
+        AImageIndex := 0
+      else
+        AImageIndex := -1;
+    end
+    else if (ACol = cInfo) then begin
+
+      if (tmp.Info <> '') then
+        AImageIndex := 1
+      else
+        AImageIndex := -1;
+    end;
+  end;
+end;
+
+procedure TfrmSkinListWnd.lbSkinListGetCellText(const ACol: Integer;
+  AItem: TSharpEListItem; var AColText: string);
+var
+  tmp: TSkinItem;
+begin
+  tmp := TSkinItem(AItem.Data);
+
+  if ((tmp <> nil) and (ACol = cItem)) then begin
+    if tmp.Author = '' then
+      AColText := Format('%s', [tmp.Name]) else
+      AColText := Format('%s by %s', [tmp.Name, tmp.Author]);
+  end;
+
 end;
 
 procedure TfrmSkinListWnd.Save;
@@ -298,7 +346,7 @@ var
 begin
   xml := TJvSimpleXML.Create(nil);
   try
-    s := GetSharpeUserSettingsPath + 'Themes\' + FTheme + '\' + 'skin.xml';
+    s := XmlGetSkinFile(FTheme);
     forcedirectories(ExtractFilePath(s));
 
     xml.Root.Clear;
@@ -308,6 +356,45 @@ begin
   finally
     xml.Free;
   end;
+end;
+
+{ TSkinItem }
+
+constructor TSkinItem.Create(AName, AAuthor, AWebsite, AInfo, AVersion: string);
+begin
+  FName := AName;
+  FAuthor := AAuthor;
+  FWebsite := AWebsite;
+  FInfo := AInfo;
+end;
+
+constructor TSkinItem.Create(ASkin: String);
+var
+  xml:TJvSimpleXML;
+  s:String;
+begin
+  FName := ASkin;
+
+  s := GetSharpeDirectory+'skins\' + ASkin + '\' + 'skin.xml';
+  if Not(FileExists(s)) then
+    exit;
+
+  xml := TJvSimpleXML.Create(nil);
+  Try
+    xml.LoadFromFile(s);
+    if xml.Root.Items.ItemNamed['header'] <> nil then begin
+      with xml.Root.Items.ItemNamed['header'] do begin
+        FName := ASkin;
+        FAuthor := Items.Value('author');
+        FWebsite := Items.Value('url');
+        FInfo := Items.Value('info');
+        FVersion := Items.Value('version');
+      end;
+    end;
+
+  Finally
+    xml.Free;
+  End;
 end;
 
 end.
