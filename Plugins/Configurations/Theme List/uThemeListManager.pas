@@ -223,6 +223,7 @@ begin
         newItem.Author := XML.Root.Items.Value('Author','Invalid_Author');
         newItem.Comment := XML.Root.Items.Value('Comment','Invalid_Comment');
         newItem.Website := XML.Root.Items.Value('Website','Invalid_Website');
+        newItem.IsReadOnly := XML.Root.Items.BoolValue('ReadOnly',false);
 
         sPreview := ExtractFilePath(SList[i]) + 'Preview.png';
         if FileExists(sPreview) then
