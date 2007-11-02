@@ -1742,6 +1742,61 @@ begin
   result := True;
 end;
 
+function XmlGetSkinFile(ATheme: String):String;
+begin
+  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'skin.xml';
+end;
+
+function XmlGetSchemeFile(ATheme: String):String;
+begin
+  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'scheme.xml';
+end;
+
+function XmlGetFontFile(ATheme: String):String;
+begin
+  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'font.xml';
+end;
+
+function XmlGetScheme(ATheme: string): string;
+var
+  xml: TJvSimpleXML;
+  s: string;
+begin
+  Result := '';
+  xml := TJvSimpleXML.Create(nil);
+  try
+    s := XmlGetSchemeFile(ATheme);
+
+    if fileExists(s) then
+    begin
+      xml.LoadFromFile(s);
+      Result := xml.Root.Items.Value('Scheme', 'Default');
+    end;
+  finally
+    xml.Free;
+  end;
+end;
+
+function XmlGetSkin(ATheme: String): String;
+var
+  xml: TJvSimpleXML;
+  s: string;
+begin
+  Result := '';
+  xml := TJvSimpleXML.Create(nil);
+  try
+    s := XmlGetSkinFile(ATheme);
+
+    if fileExists(s) then
+    begin
+      xml.LoadFromFile(s);
+      Result := xml.Root.Items.Value('Skin', '');
+    end;
+  finally
+    xml.Free;
+  end;
+end;
+
 
 {$R *.res}
 
@@ -1858,7 +1913,15 @@ exports
   GetSkinFontValueShadowAlpha,
   GetSkinFontValueBold,
   GetSkinFontValueItalic,
-  GetSkinFontValueUnderline;
+  GetSkinFontValueUnderline,
+
+  // Xml Accessors
+  XmlGetSkin,
+  XmlGetScheme,
+  XmlGetSkinFile,
+  XmlGetFontFile,
+  XmlGetSchemeFile;
+
 
 begin
 end.

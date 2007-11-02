@@ -195,6 +195,13 @@ function GetSkinFontValueBold        : boolean; external 'SharpThemeApi.dll' nam
 function GetSkinFontValueItalic      : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueItalic';
 function GetSkinFontValueUnderline   : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueUnderline';
 
+function XmlGetScheme(ATheme: string): string; external 'SharpThemeApi.dll' name 'XmlGetScheme';
+function XmlGetSkin(ATheme: String): String; external 'SharpThemeApi.dll' name 'XmlGetSkin';
+function XmlGetSchemeFile(ATheme: string): string; external 'SharpThemeApi.dll' name 'XmlGetSchemeFile';
+function XmlGetSkinFile(ATheme: String): String; external 'SharpThemeApi.dll' name 'XmlGetSkinFile';
+function XmlGetFontFile(ATheme: String): String; external 'SharpThemeApi.dll' name 'XmlGetFontFile';
+
+
 
 implementation
 
