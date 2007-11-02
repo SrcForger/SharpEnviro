@@ -53,23 +53,13 @@ type
     procedure edNameKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     procedure FormCreate(Sender: TObject);
-    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure btn_okClick(Sender: TObject);
-    procedure btn_cancelClick(Sender: TObject);
   private
     FColors: TObjectList;
-    FAuthor: string;
-    FName: string;
-    FSchemeName: string;
     FSchemeItem: TSchemeItem;
-    FSkinName: string;
     FSelectedColorIdx: Integer;
     FEdit: Boolean;
-    FUpdateEditState: Boolean;
-
     procedure SetColors(const Value: TObjectList);
 
-    function GetSchemeName: string;
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
@@ -91,40 +81,21 @@ uses JclStrings, uSchemeListWnd;
 
 {$R *.dfm}
 
-procedure TfrmEditScheme.btn_cancelClick(Sender: TObject);
-begin
-  modalresult := mrCancel;
-end;
-
-procedure TfrmEditScheme.btn_okClick(Sender: TObject);
-begin
-  {if length(trim(StrRemoveChars(edit_name.Text,['"','<','>','|','/','\','*','?','.',':']))) <=0 then
-  begin
-    Showmessage('Please enter a valid scheme name first');
-    exit;
-  end;
-  modalresult := mrOk;   }
-end;
-
 procedure TfrmEditScheme.SetColors(const Value: TObjectList);
 var
-  //tmpLabel: TJvHtLabel;
-  tmpEdit: TEdit;
   tmpItem: TSchemeColorItem;
   tmpSkinColor: TSharpESkinColor;
-  tmpPanel: TPanel;
 
-  colBkg: TColor;
   i: Integer;
-  h, h2: Integer;
+  h: Integer;
 begin
   FColors := Value;
-
+  h := 0;
   LockWindowUpdate(Self.Handle);
   try
     secEx.BeginUpdate;
     secEx.Items.Clear;
-    h := 0;
+    
     for i := 0 to Pred(FColors.Count) do
     begin
       tmpItem := TSchemeColorItem(FColors[i]);
@@ -160,52 +131,8 @@ begin
 
     Self.Height := h+10;
     LockWindowUpdate(0);
-  end;  
+  end;
 
-end;
-
-procedure TfrmEditScheme.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-var
-  tmpSchemeItem: TSchemeItem;
-  bExists: Boolean;
-
-begin
-  {if Self.ModalResult <> mrCancel then
-  begin
-    // Check if exists
-    bExists := frmSchemeList.SchemeItems.IndexOfSkinName(edName.Text) <> -1;
-
-    if not (FEdit) then
-    begin
-      if bExists then
-        CanClose := False
-      else
-        CanClose := True;
-    end
-    else
-    begin
-      if bExists = False then
-        Canclose := True
-      else if
-        CompareText(frmSchemeList.lbSchemeList.Item[frmSchemeList.lbSchemeList.ItemIndex].SubItemText[0],
-        edName.Text) = 0 then
-        CanClose := True
-      else
-        CanClose := False;
-    end;
-
-    if not (FEdit) then
-      IniWriteString(GetSharpeUserSettingsPath + 'author.dat', 'main', 'author',
-        edAuthor.Text);
-  end
-  else
-    MessageDlg('You have entered a duplicate FTheme name' + #13 + #10 +
-      'Please choose another name', mtError, [mbOK], 0);    }
-end;
-
-function TfrmEditScheme.GetSchemeName: string;
-begin
-  Result := FSchemeName;
 end;
 
 procedure TfrmEditScheme.FormCreate(Sender: TObject);
@@ -224,7 +151,6 @@ end;
 procedure TfrmEditScheme.InitUI(AEditMode: TSCE_EditMode_Enum);
 var
   tmpItem, lstItem: TSchemeItem;
-  tmpSchemeItems: TSchemeList;
 begin
 
   case AEditMode of
@@ -273,7 +199,6 @@ function TfrmEditScheme.ValidateEdit(AEditMode: TSCE_EditMode_Enum): Boolean;
 var
   bInvalidAuthor, bExistsName: Boolean;
   sName, sSkinDir, sSchemeDir: String;
-  tmpSchemeItem: TSchemeItem;
 begin
   sName := trim(StrRemoveChars(edName.Text,
       ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
@@ -293,13 +218,10 @@ end;
 function TfrmEditScheme.Save(AEditMode: TSCE_EditMode_Enum;
   AApply: Boolean): Boolean;
 var
-  tmpItem, lstItem, newItem: TSchemeItem;
-  tmpSchemeItems: TSchemeList;
-  sTheme: string;
+  lstItem: TSchemeItem;
 begin
+  Result := True;
   if Not(AApply) then exit;
-
-  tmpItem := FSchemeItem;
 
   case AEditMode of
     sceAdd:
@@ -333,10 +255,6 @@ begin
         Result := True;
         frmSchemeList.UpdateEditTabs;
         SharpEBroadCast(WM_SHARPEUPDATESETTINGS,Integer(suScheme),0);
-      end;
-    sceDelete:
-      begin
-
       end;
   end;
 end;

@@ -68,15 +68,12 @@ type
     procedure Assign(ADest: TobjectList); reintroduce;
     function LoadSkinColorDefaults(ATheme: string): Boolean;
 
-    function Save:boolean;
+    function Save: boolean;
   end;
 
   TSchemeList = class
   private
     FItems: TObjectList;
-    FTheme: string;
-    function GetSchemeItem(Index: integer): TSchemeItem;
-
   public
     constructor Create;
     destructor Destroy; override;
@@ -111,12 +108,10 @@ type
     property Theme: string read FTheme write FTheme;
     property DefaultScheme: string read GetDefaultScheme write FDefaultScheme;
 
-    
-
   end;
 
-  var
-    FSchemeManager:TSchemeManager;
+var
+  FSchemeManager: TSchemeManager;
 
 implementation
 
@@ -176,8 +171,7 @@ begin
 
   SetLength(Result, tmpList.Count);
   for i := 0 to Pred(tmpList.Count) do
-    with Result[i] do
-    begin
+    with Result[i] do begin
       Color := TSchemeColorItem(tmpList[i]).Color;
       Tag := TSchemeColorItem(tmpList[i]).Tag;
 
@@ -190,7 +184,7 @@ begin
   Result := TSchemeColorItem(FColors[Index]);
 end;
 
-function TSchemeItem.LoadSkinColorDefaults(ATheme: string):Boolean;
+function TSchemeItem.LoadSkinColorDefaults(ATheme: string): Boolean;
 var
   s: string;
   xml: TJvSimpleXml;
@@ -199,7 +193,8 @@ var
 begin
   Result := False;
   s := FSchemeManager.GetSkinScheme;
-  if s = '' then exit;
+  if s = '' then
+    exit;
 
   xml := TJvSimpleXML.Create(nil);
   try
@@ -208,8 +203,7 @@ begin
     Colors.Clear;
     Result := True;
 
-    for i := 0 to Pred(xml.Root.Items.Count) do
-    begin
+    for i := 0 to Pred(xml.Root.Items.Count) do begin
 
       tmpColor := TSchemeColorItem.Create;
       tmpColor.Tag := xml.Root.Items[i].Items.Value('Tag', '');
@@ -229,20 +223,17 @@ var
 begin
   Result := True;
   xml := TJvSimpleXML.Create(nil);
-  FileDelete(Filename,False);
+  FileDelete(Filename, False);
 
   try
     xml.Root.Name := 'SharpESkinScheme';
     xml.Root.Items.Add('Info');
-    with xml.Root.Items.ItemNamed['Info'] do
-    begin
+    with xml.Root.Items.ItemNamed['Info'] do begin
       Items.Add('Name', FName);
       Items.Add('Author', FAuthor);
     end;
-    for i := 0 to Pred(FColors.Count) do
-    begin
-      with xml.Root.Items.Add('Item') do
-      begin
+    for i := 0 to Pred(FColors.Count) do begin
+      with xml.Root.Items.Add('Item') do begin
         Items.Add('Tag', TSchemeColorItem(FColors[i]).Tag);
         if TSchemeColorItem(FColors[i]).UnparsedColor = '' then
           Items.Add('Color', TSchemeColorItem(FColors[i]).Color)
@@ -267,8 +258,7 @@ begin
   Result := '';
   sFile := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\Skin.xml';
 
-  if fileExists(sFile) then
-  begin
+  if fileExists(sFile) then begin
     xml := TJvSimpleXML.Create(nil);
     try
       xml.LoadFromFile(sFile);
@@ -284,11 +274,6 @@ end;
 constructor TSchemeList.Create;
 begin
   fItems := TObjectList.Create;
-end;
-
-function TSchemeList.GetSchemeItem(Index: integer): TSchemeItem;
-begin
-  Result := TSchemeItem(FItems[Index]);
 end;
 
 destructor TSchemeList.Destroy;
@@ -324,8 +309,7 @@ begin
   Result := '';
   sFile := GetSharpeUserSettingsPath + 'Themes\' + FTheme + '\Skin.xml';
 
-  if fileExists(sFile) then
-  begin
+  if fileExists(sFile) then begin
     xml := TJvSimpleXML.Create(nil);
     try
       xml.LoadFromFile(sFile);
@@ -348,8 +332,7 @@ begin
   Result := '';
   sFile := GetSharpeUserSettingsPath + 'Themes\' + FTheme + '\Skin.xml';
 
-  if fileExists(sFile) then
-  begin
+  if fileExists(sFile) then begin
     xml := TJvSimpleXML.Create(nil);
     try
       xml.LoadFromFile(sFile);
@@ -384,10 +367,12 @@ begin
         s := xml.Root.Items.Item[i].Items.Value('Type');
         if s <> '' then begin
           if CompareText(s, 'integer') = 0 then
-            Result.schemetype := stInteger else
-            if CompareText(s, 'bool') = 0 then
-              Result.schemetype := stBoolean else
-        end else
+            Result.schemetype := stInteger
+          else if CompareText(s, 'bool') = 0 then
+            Result.schemetype := stBoolean
+          else
+        end
+        else
           Result.schemetype := stColor;
       end;
     end;
@@ -405,7 +390,7 @@ end;
 
 procedure TSchemeManager.Copy(ASchemeItem: TSchemeItem);
 var
-  sFilename: String;
+  sFilename: string;
   sSkinDir, sCopyName: string;
   sSchemeDir: string;
   xml: TJvSimpleXML;
@@ -415,11 +400,11 @@ begin
   sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, GetSkinName]);
   sCopyName := ASchemeItem.Name;
   repeat
-    sCopyName := sCopyName +'_'+'copy';
+    sCopyName := sCopyName + '_' + 'copy';
     sFilename := sSchemeDir + sCopyName + '.xml';
-  until Not(fileExists(sFilename));
+  until not (fileExists(sFilename));
 
-  FileCopy(ASchemeItem.Filename,sFilename,False);
+  FileCopy(ASchemeItem.Filename, sFilename, False);
   xml := TJvSimpleXML.Create(nil);
   try
     xml.LoadFromFile(sFilename);
@@ -434,31 +419,20 @@ end;
 
 procedure TSchemeManager.Delete(ASchemeItem: TSchemeItem);
 var
-  sFilename: String;
+  sFilename: string;
   sSkinDir, sDeleteName: string;
   sSchemeDir: string;
-  xml: TJvSimpleXML;
 begin
 
   sSkinDir := GetSharpeDirectory + 'skins';
   sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, GetSkinName]);
   sDeleteName := ASchemeItem.Filename;
   repeat
-    sDeleteName := sDeleteName +'_'+'copy';
+    sDeleteName := sDeleteName + '_' + 'copy';
     sFilename := sSchemeDir + sDeleteName + '.xml';
-  until Not(fileExists(sFilename));
+  until not (fileExists(sFilename));
 
-  FileDelete(ASchemeItem.Filename,True);
-  {xml := TJvSimpleXML.Create(nil);
-  try
-    xml.LoadFromFile(sFilename);
-    if xml.Root.Items.ItemNamed['info'] <> nil then
-      xml.Root.Items.ItemNamed['info'].Items.ItemNamed['name'].Value := sDeleteName;
-  finally
-    xml.SaveToFile(sFilename);
-    xml.Free;
-  end;  }
-
+  FileDelete(ASchemeItem.Filename, True);
 end;
 
 procedure TSchemeManager.Edit(AName, ASchemeItem: TSchemeItem);
@@ -475,8 +449,7 @@ begin
 
     sFile := GetSharpeUserSettingsPath + 'Themes\' + FTheme + '\Scheme.xml';
 
-    if fileExists(sFile) then
-    begin
+    if fileExists(sFile) then begin
       xml := TJvSimpleXML.Create(nil);
       try
         xml.LoadFromFile(sFile);
@@ -488,13 +461,14 @@ begin
         FDefaultScheme := Result;
       end;
     end;
-  end else
+  end
+  else
     Result := FDefaultScheme;
 end;
 
 procedure TSchemeManager.GetSchemeList(AStringList: TStrings);
 var
-  s, sSchemeDir, sSkinDir, sXmlSearch, sPreview: string;
+  s, sSchemeDir, sSkinDir, sXmlSearch: string;
   xml: TJvSimpleXml;
   sList: TStringList;
   i, j: Integer;
@@ -519,8 +493,7 @@ begin
         newItem.FileName := sList[i];
 
         for j := 0 to Pred(xml.Root.Items.Count) do begin
-          if CompareText(xml.Root.Items.Item[j].Name, 'Info') = 0 then
-          begin
+          if CompareText(xml.Root.Items.Item[j].Name, 'Info') = 0 then begin
             newItem.Author := xml.Root.Items[j].Items.Value('Author', 'Untitled');
             newItem.Name := xml.Root.Items[j].Items.Value('Name', 'Unknown');
 
@@ -534,8 +507,7 @@ begin
             if CompareText(s, newItem.Name) = 0 then
               newItem.DefaultItem := True;
           end
-          else
-          begin
+          else begin
             newColItem := TSchemeColorItem.Create;
             newColItem.Tag := xml.Root.Items[j].Items.Value('Tag', '');
             newColItem.UnparsedColor := xml.Root.Items[j].Items.Value('Color', '');

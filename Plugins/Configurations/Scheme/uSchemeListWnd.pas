@@ -60,10 +60,10 @@ type
     imlCol1: TPngImageList;
     imlCol2: TPngImageList;
     bmlMain: TBitmap32List;
-    Timer1: TTimer;
+    tmrRefreshItems: TTimer;
 
     procedure FormDestroy(Sender: TObject);
-    procedure FormCreate(Sender: TObject); 
+    procedure FormCreate(Sender: TObject);
 
     procedure lbSchemeListResize(Sender: TObject);
     procedure lbSchemeListClickItem(const ACol: Integer;
@@ -72,9 +72,12 @@ type
       AItem: TSharpEListItem; var AFont: TFont);
     procedure lbSchemeListGetCellCursor(const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
-    procedure Timer1Timer(Sender: TObject);
+    procedure tmrRefreshItemsTimer(Sender: TObject);
     procedure lbSchemeListGetCellText(const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
+    procedure lbSchemeListGetCellImageIndex(const ACol: Integer;
+      AItem: TSharpEListItem; var AImageIndex: Integer;
+      const ASelected: Boolean);
 
   private
     { Private declarations }
@@ -105,25 +108,25 @@ procedure TfrmSchemeList.UpdateEditTabs;
   procedure BC(AEnabled: Boolean; AButton: TSCB_BUTTON_ENUM);
   begin
     if AEnabled then
-      CenterDefineButtonState(AButton, True) else
+      CenterDefineButtonState(AButton, True)
+    else
       CenterDefineButtonState(AButton, False);
   end;
 
 begin
-  if lbSchemeList.Count = 0 then
-  begin
+  if lbSchemeList.Count = 0 then begin
     BC(False, scbEditTab);
     BC(False, scbDeleteTab);
 
     if FSchemeManager.GetSkinValid then
-      BC(True, scbAddTab) else
+      BC(True, scbAddTab)
+    else
       BC(False, scbAddTab);
 
     lbSchemeList.AddItem('There is no skin defined, please launch the skin configuration first.', 2);
     lbSchemeList.Enabled := False;
   end
-  else
-  begin
+  else begin
     BC(True, scbAddTab);
     BC(True, scbEditTab);
     BC(False, scbDeleteTab);
@@ -134,9 +137,6 @@ end;
 procedure TfrmSchemeList.CreatePreviewBitmap(var ABmp: TBitmap32);
 var
   bmp: TBitmap32;
-  y, x: Integer;
-  c: TColor;
-  cx, cy: Integer;
   tmpSchemeItem: TSchemeItem;
 begin
   bmp := TBitmap32.Create;
@@ -145,10 +145,9 @@ begin
   try
     if (frmEditScheme <> nil) then
       tmpSchemeItem := frmEditScheme.SchemeItem
-    else
-      if lbSchemeList.Item[lbSchemeList.ItemIndex] <> nil then
-        tmpSchemeItem :=
-          TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
+    else if lbSchemeList.Item[lbSchemeList.ItemIndex] <> nil then
+      tmpSchemeItem :=
+        TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
 
     if tmpSchemeItem = nil then
       exit;
@@ -172,8 +171,7 @@ end;
 
 procedure TfrmSchemeList.BuildSchemeList;
 var
-  b: boolean;
-  i,iSel: Integer;
+  i, iSel: Integer;
   newItem: TSharpEListItem;
   tmpScheme: TSchemeItem;
   sl: TStringList;
@@ -182,8 +180,9 @@ begin
   if iSel = -1 then
     iSel := 0;
 
-  lbSchemeList.Clear;
   LockWindowUpdate(Self.Handle);
+  lbSchemeList.Clear;
+  
   Screen.Cursor := crHourGlass;
   sl := TStringList.Create;
   try
@@ -193,8 +192,8 @@ begin
       tmpScheme := TSchemeItem(sl.Objects[i]);
 
       newItem := lbSchemeList.AddItem(tmpScheme.Name + ' By ' + tmpScheme.Author, 0);
-      newItem.AddSubItem('copy');
-      newItem.AddSubItem('delete');
+      newItem.AddSubItem('');
+      newItem.AddSubItem('');
 
       newItem.Data := tmpScheme;
     end;
@@ -244,33 +243,31 @@ var
   tmpSchemeItem: TSchemeItem;
 begin
   if ACol = 0 then begin
-  CenterUpdatePreview;
-  CenterDefineSettingsChanged;
+    CenterUpdatePreview;
+    CenterDefineSettingsChanged;
 
-  if frmEditScheme <> nil then
-  begin
-    if frmEditScheme.Edit then
-    begin
-      frmEditScheme.InitUI(sceEdit);
+    if frmEditScheme <> nil then begin
+      if frmEditScheme.Edit then begin
+        frmEditScheme.InitUI(sceEdit);
+      end;
     end;
-  end;
 
-  // Set Scheme
-  if lbSchemeList.Item[lbSchemeList.ItemIndex] <> nil then begin
-    FSchemeManager.SetDefaultScheme(TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data).Name);
-    SharpEBroadCast(WM_SHARPEUPDATESETTINGS,Integer(suScheme),0);
-  end;
-  
-  end else
-  if ACol = 1 then begin
+    // Set Scheme
+    if lbSchemeList.Item[lbSchemeList.ItemIndex] <> nil then begin
+      FSchemeManager.SetDefaultScheme(TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data).Name);
+      SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
+    end;
+
+  end
+  else if ACol = 1 then begin
     tmpSchemeItem := TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
     FSchemeManager.Copy(tmpSchemeItem);
-    Timer1.Enabled := True;
-  end else
-  if ACol = 2 then begin
+    tmrRefreshItems.Enabled := True;
+  end
+  else if ACol = 2 then begin
     tmpSchemeItem := TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
     FSchemeManager.Delete(tmpSchemeItem);
-    Timer1.Enabled := True;
+    tmrRefreshItems.Enabled := True;
   end;
 
   lbSchemeList.Update;
@@ -290,23 +287,39 @@ begin
     AFont.Style := [fsUnderline];
 end;
 
+procedure TfrmSchemeList.lbSchemeListGetCellImageIndex(const ACol: Integer;
+  AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
+var
+  tmp: TSchemeItem;
+begin
+  tmp := TSchemeItem(AItem.Data);
+  if tmp = nil then
+    exit;
+
+  if ACol = 1 then begin
+    AImageIndex := 1;
+  end
+  else if ACol = 2 then begin
+    AImageIndex := 0;
+  end
+
+end;
+
 procedure TfrmSchemeList.lbSchemeListGetCellText(const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
-  tmp:TSchemeItem;
+  tmp: TSchemeItem;
 begin
- tmp := TSchemeItem(AItem.Data);
- if tmp = nil then exit;
+  tmp := TSchemeItem(AItem.Data);
+  if tmp = nil then
+    exit;
 
- if ACol = 0  then begin
-   AColText := Format('<b>%s</b> By %s',[tmp.Name,tmp.Author]);
- end else
- if ACol = 1  then begin
-   AColText := '<u><font color="clNavy">copy</u>';
- end else
- if ACol = 2  then begin
-   AColText := '<u><font color="clNavy">delete</u>';
- end;
+  if ACol = 0 then begin
+    if ((tmp.Author <> '') and (tmp.Author <> '...')) then
+      AColText := Format('%s by %s', [StrProper(tmp.Name), tmp.Author])
+    else
+      AColText := Format('%s', [StrProper(tmp.Name)]);
+  end;
 
 end;
 
@@ -315,15 +328,15 @@ begin
   Self.Height := lbSchemeList.Height;
 end;
 
-procedure TfrmSchemeList.Timer1Timer(Sender: TObject);
+procedure TfrmSchemeList.tmrRefreshItemsTimer(Sender: TObject);
 begin
-  Timer1.Enabled := False;
+  tmrRefreshItems.Enabled := False;
 
-  Try
+  try
     BuildSchemeList;
-  Finally
+  finally
     CenterUpdatePreview;
-  End;
+  end;
 end;
 
 end.
