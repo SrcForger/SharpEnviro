@@ -35,22 +35,7 @@ uses
   uComponentMan in 'uComponentMan.pas';
 
 {$R *.res}
-
-function GetMetaData(): TMetaData;
-begin
-  with result do
-  begin
-    Name := 'SharpCore';
-    Description := 'Runs and maintains all services and components';
-    Author := 'Nathan LaFreniere (mc@sharpe-shell.org)';
-    Version := '0.7.4.0';
-    DataType := tteComponent;
-    ExtraData := 'priority: 0| delay: 0';
-  end;
-end;
-
-exports
-  GetMetaData;
+{$R metadata.res}
 
 const
   WM_ICONTRAY = WM_USER + 1;
@@ -73,6 +58,7 @@ var
   strExtension: String;
   bReboot: Boolean;
   wndDebug: Integer;
+  lstComponents: TComponentList;
 
 procedure DebugMsg(Msg: String; MsgType: Integer = DMT_TRACE);
 begin
@@ -81,15 +67,21 @@ end;
 
 procedure BuildMenu();
 var
-  modData: TMetaData;
   strName: String;
   i: integer;
+  modData: TComponentData;
 begin
   DebugMsg('Creating popup menu');
   menPopup := CreatePopupMenu; // Create menu and submenu for services
   menServices := CreatePopupMenu;
 
-  ScanComponents(strExtension);
+  for i := 0 to lstComponents.Count - 1 do
+  begin
+    modData := TComponentData(lstComponents.Items[i]^);
+    strName := modData.MetaData.Name;
+    if modData.MetaData.DataType = tteService then // we only want to list services
+      AppendMenu(menServices, 0, modData.ID, PChar(strName));
+  end;
 
   AppendMenu(menPopup, MF_POPUP, menServices, 'Services');
   AppendMenu(menPopup, 0, ID_SHELLSWITCH, 'Set Explorer as shell');
@@ -97,6 +89,15 @@ begin
   AppendMenu(menPopup, 0, ID_REBOOT, 'Reboot SharpE');
   AppendMenu(menPopup, 0, ID_SHUTDOWN, 'Shutdown SharpE');
   AppendMenu(menPopup, 0, ID_EXIT, 'Exit SharpCore');
+end;
+
+procedure RunAll();
+var
+  i: integer;
+  modData: TComponentData;
+  hndFile: THandle;
+begin
+
 end;
 
 function WindowProc(hWnd,Msg,wParam,lParam:Integer):Integer; stdcall;
@@ -107,6 +108,7 @@ begin
     WM_CLOSE: begin
       Shell_NotifyIcon(NIM_DELETE, @nidTray);  // Make sure we remove tray icon
       DestroyMenu(menPopup);
+      lstComponents.Free;
     end;
 
     WM_CREATE: begin    // Create and display tray icon
@@ -122,6 +124,8 @@ begin
         szTip := 'SharpCore';
       end;
       Shell_NotifyIcon(NIM_ADD, @nidTray);
+      lstComponents := TComponentList.Create;
+      lstComponents.BuildList(strExtension); //enumerate services and components
       BuildMenu;
     end;
 
@@ -173,13 +177,13 @@ begin
     begin
       while wndDebug = 0 do //wait for SharpConsole to open
         wndDebug := FindWindow('TSharpConsoleWnd', nil);
-      DebugMsg('Debug flag found, started SharpConsole');
+      DebugMsg('Debug flag found, started SharpConsole'); //would be silly to send the message if sharpconsole isn't open yet
     end
   else
     DebugMsg('SharpConsole could not be started');
  end;
 
- if bReboot then DebugMsg('Reboot flag found');
+ if bReboot then DebugMsg('Reboot flag found'); //need to add sharpe reboot code
  DebugMsg('Starting with service extension ' + strExtension);
 
  DebugMsg('Checking mutex');

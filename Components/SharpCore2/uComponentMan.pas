@@ -2,48 +2,90 @@ unit uComponentMan;
 
 interface
 uses
-  Windows,
-  Messages,
-  ShellAPI,
   SharpAPI,
   Classes,
   SysUtils;
 
+type
+  TComponentList = Class(TList) //this is our list of components and services
+  public
+    function Add(Item: Pointer): Integer;
+    function BuildList(strExtension: String): Integer;
+  End;
+
+  TComponentData = record //record to store needed data
+    MetaData: TMetaData;
+    Priority: Integer;
+    Delay: Integer;
+    ID: Integer;
+    FileName: String;
+  end;
+
 implementation
 
-procedure ScanComponents(strExtension: String);
+function CheckLocation(Item1, Item2: Pointer): Integer; //function to sort by priority
+var
+  itm1Data: ^TComponentData;
+  itm2Data: ^TComponentData;
+  pri1: integer;
+begin
+  result := 0;
+  itm1Data := Item1;
+  itm2Data := Item2;
+  pri1 := itm1Data^.Priority;
+  if itm1Data^.Priority < itm2Data^.Priority then
+    result := -1
+  else if itm1Data^.Priority = itm2Data^.Priority then
+    result := 0
+  else if itm1Data^.Priority > itm2Data^.Priority then
+    result := 1;
+end;
+
+function TComponentList.Add(Item: Pointer): Integer;
+begin
+  result := 0;
+  inherited Add(Item); //add item
+  inherited Sort(@CheckLocation); //sort the list
+end;
+
+function TComponentList.BuildList(strExtension: String): Integer;
 var
   intFound: Integer;
   srFile: TSearchRec;
+  cdComponent: ^TComponentData;
+  sPath: String;
+  iPriority: Integer;
+  iDelay: Integer;
 begin
-  intFound := FindFirst(GetSharpeDirectory + 'Services\*' + strExtension, faAnyFile, srFile);
+  sPath := GetSharpeDirectory + 'Services\';
+  intFound := FindFirst(sPath + '*' + strExtension, faAnyFile, srFile); //first we loop through the services
   while intFound = 0 do
   begin
-    //add to list of items
+    new(cdComponent);
+    cdComponent^.FileName := sPath + srFile.Name;
+    GetServiceMetaData(sPath + srFile.Name, cdComponent^.MetaData, cdComponent^.Priority, cdComponent^.Delay);
+    cdComponent^.ID := Count + 50; //add 50 to ID to make sure it's unique
+    Add(cdComponent);
     intFound := FindNext(srFile);
   end;
   FindClose(srFile);
-end;
 
-function GetInfo(strFile: String): TServiceMetaData;
-type
-  TMetaDataFunc = function(): TServiceMetaData;
-const
-  MetaDataFunc: TMetaDataFunc = nil;
-var
-  hndFile: THandle;
-begin
-  if FileExists(strFile) then
+  sPath := GetSharpeDirectory;
+  intFound := FindFirst(sPath + '*.exe', faAnyFile, srFile); //then we loop through components
+  while intFound = 0 do
   begin
-    hndFile := LoadLibrary(PChar(strFile));
-    try
-      @MetaDataFunc := GetProcAddress(hndFile, 'GetMetaData');
-      if Assigned(MetaDataFunc) then
-        result := MetaDataFunc();
-    finally
-      FreeLibrary(hndFile);
+    new(cdComponent);
+    cdComponent^.FileName := sPath + srFile.Name;
+    //wrap in an if statement so we don't get blank entries for non-sharpe executables that might be in the folder
+    if GetComponentMetaData(sPath + srFile.Name, cdComponent^.MetaData, cdComponent^.Priority, cdComponent^.Delay) = 0 then
+    begin
+      cdComponent^.ID := Count + 50;
+      Add(cdComponent);
     end;
+    intFound := FindNext(srFile);
   end;
+  FindClose(srFile);
+  result := Count;
 end;
 
 end.
