@@ -63,22 +63,7 @@ uses
   SharpIconUtils in '..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas';
 
 {$R *.res}
-
-function GetMetaData(): TMetaData;
-begin
-  with result do
-  begin
-    Name := 'SharpMenu';
-    Description := 'The start menu replacement';
-    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
-    DataType := tteComponent;
-    ExtraData := 'priority: 0| delay: 0';
-  end;
-end;
-
-exports
-  GetMetaData;
+{$R metadata.res}
 
 var
   SkinManager : TSharpESkinManager;

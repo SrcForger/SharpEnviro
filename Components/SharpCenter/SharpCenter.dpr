@@ -12,6 +12,7 @@ uses
   uSharpCenterManager in 'uSharpCenterManager.pas';
 
 {$R *.res}
+{$R metadata.res}
 
 procedure CheckMutex(var Terminate: Boolean);
 var
@@ -27,22 +28,6 @@ begin
     end;
   end;
 end;
-
-function GetMetaData(): TMetaData;
-begin
-  with result do
-  begin
-    Name := 'SharpCenter';
-    Description := 'The central configuration program';
-    Author := 'Lee Green (Pixol@sharpe-shell.org)';
-    Version := '0.7.4.0';
-    DataType := tteComponent;
-    ExtraData := 'priority: 0| delay: 0';
-  end;
-end;
-
-exports
-  GetMetaData;
 
 var
   exit:Boolean;

@@ -28,7 +28,7 @@ program SharpShellServices;
 
 {$R *.res}
 {$R SharpShellServicesCR.RES}
-
+{$R metadata.res}
 
 uses
   Registry,
@@ -64,28 +64,12 @@ type
     function QueryStatus(CmdGroup: PGUID; cCmds: Cardinal; prgCmds: POleCmd; CmdText: POleCmdText): HResult; stdcall;
     function Exec(CmdGroup: PGUID; nCmdID, nCmdexecopt: DWORD; const vaIn: OleVariant; var vaOut: OleVariant): HResult; stdcall;
   end;
-  
+
   TServiceList = ^TServList;
   TServList = record
     data: TIMOLeCommandTarget;
     next: TServiceList;
   end;
-
-function GetMetaData(): TMetaData;
-begin
-  with result do
-  begin
-    Name := 'SharpShellServices';
-    Description := 'Manages shell service objects';
-    Author := 'Malx (Malx@sharpe-shell.org)';
-    Version := '0.7.4.0';
-    DataType := tteComponent;
-    ExtraData := 'priority: 0| delay: 0';
-  end;
-end;
-
-exports
-  GetMetaData;
 
 
 const
