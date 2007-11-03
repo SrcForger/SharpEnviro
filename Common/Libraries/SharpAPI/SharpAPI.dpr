@@ -227,6 +227,13 @@ const
     AC_EXECUTE_ACTION = '_execute';
     AC_SERVICE_NAME = 'Actions';
 
+    //stuff for components, since apparently loadlibrary hates us
+    IDS_NAME = 666;
+    IDS_DESCRIPTION = 667;
+    IDS_AUTHOR = 668;
+    IDS_VERSION = 669;
+    IDS_EXTRADATA = 670;
+
 type
   TBarRect = record
               R : TRect;
@@ -1089,57 +1096,76 @@ begin
 end;
 
 function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer;
-type
-  TMetaDataFunc = function(): TMetaData;
-const
-  MetaDataFunc: TMetaDataFunc = nil;
 var
   hndFile: THandle;
   stlData: TStrings;
   i: Integer;
   s: String;
+  pcName: PChar;
+  pcDescription: PChar;
+  pcAuthor: PChar;
+  pcVersion: PChar;
+  pcExtraData: PChar;
 begin
   result := 0;
   if FileExists(strFile) then
   begin
     hndFile := LoadLibrary(PChar(strFile));
     stlData := TStringList.Create;
-    try
-      @MetaDataFunc := GetProcAddress(hndFile, 'GetMetaData');
-      if Assigned(MetaDataFunc) then
-      begin
-        MetaData := MetaDataFunc();
-        if MetaData.DataType <> tteComponent then
-        begin
-          result := 1; //wrong data type
-          exit;
-        end;
 
-        StrTokenToStrings(MetaData.ExtraData, '|', stlData);
+    pcName := StrAlloc(255);
+    LoadString(hndFile, IDS_NAME, pcName, 255);
+    MetaData.Name := String(pcName);
+    StrDispose(pcName);
 
-        for i := 0 to stlData.Count - 1 do
-        begin
-          if Pos('priority:', LowerCase(stlData[i])) > 0 then
-          begin
-            s := RightStr(stlData[i], Length(stlData[i]) - Length('priority:'));
-            s := Trim(s);
-            Priority := StrToInt(s);
-          end;
+    pcDescription := StrAlloc(255);
+    LoadString(hndFile, IDS_DESCRIPTION, pcDescription, 255);
+    MetaData.Description := String(pcDescription);
+    StrDispose(pcDescription);
 
-          if Pos('delay:', LowerCase(stlData[i])) > 0 then
-          begin
-            s := RightStr(stlData[i], Length(stlData[i]) - Length('delay:'));
-            s := Trim(s);
-            Delay := StrToInt(s);
-          end;
-        end;
-      end
-      else
-        result := 1; //didn't find GetMetaData function
-    finally
-      stlData.Free;
-      FreeLibrary(hndFile);
+    pcAuthor := StrAlloc(255);
+    LoadString(hndFile, IDS_AUTHOR, pcAuthor, 255);
+    MetaData.Author := String(pcAuthor);
+    StrDispose(pcAuthor);
+
+    pcVersion := StrAlloc(255);
+    LoadString(hndFile, IDS_VERSION, pcVersion, 255);
+    MetaData.Version := String(pcVersion);
+    StrDispose(pcVersion);
+
+    pcExtraData := StrAlloc(255);
+    LoadString(hndFile, IDS_EXTRADATA, pcExtraData, 255);
+    MetaData.ExtraData := String(pcExtraData);
+    StrDispose(pcExtraData);
+
+    MetaData.DataType := tteComponent;
+
+    if MetaData.Name = '' then
+    begin
+      result := -1;
+      exit;
     end;
+
+    StrTokenToStrings(MetaData.ExtraData, '|', stlData);
+
+    for i := 0 to stlData.Count - 1 do
+    begin
+      if Pos('priority:', LowerCase(stlData[i])) > 0 then
+      begin
+        s := RightStr(stlData[i], Length(stlData[i]) - Length('priority:'));
+        s := Trim(s);
+        Priority := StrToInt(s);
+      end;
+
+      if Pos('delay:', LowerCase(stlData[i])) > 0 then
+      begin
+        stlData[i] := Trim(stlData[i]);
+        s := RightStr(stlData[i], Length(stlData[i]) - Length('delay:'));
+        s := Trim(s);
+        Delay := StrToInt(s);
+      end;
+    end;
+  FreeLibrary(hndFile);
   end
   else
     result := 1; //couldn't open file
@@ -1166,7 +1192,7 @@ begin
       if Assigned(MetaDataFunc) then
       begin
         MetaData := MetaDataFunc();
-        if MetaData.DataType <> tteComponent then
+        if not (MetaData.DataType = tteService) then
         begin
           result := 1; //wrong data type
           exit;
@@ -1178,6 +1204,7 @@ begin
         begin
           if Pos('priority:', LowerCase(stlData[i])) > 0 then
           begin
+            stlData[i] := Trim(stlData[i]);
             s := RightStr(stlData[i], Length(stlData[i]) - Length('priority:'));
             s := Trim(s);
             Priority := StrToInt(s);
@@ -1185,6 +1212,7 @@ begin
 
           if Pos('delay:', LowerCase(stlData[i])) > 0 then
           begin
+            stlData[i] := Trim(stlData[i]);
             s := RightStr(stlData[i], Length(stlData[i]) - Length('delay:'));
             s := Trim(s);
             Delay := StrToInt(s);
@@ -1223,7 +1251,7 @@ begin
       if Assigned(MetaDataFunc) then
       begin
         MetaData := MetaDataFunc();
-        if MetaData.DataType <> tteConfig then
+        if not (MetaData.DataType = tteConfig) then
         begin
           result := 1; //wrong data type
           exit;
@@ -1235,6 +1263,7 @@ begin
         begin
           if Pos('configmode:', LowerCase(stlData[i])) > 0 then
           begin
+            stlData[i] := Trim(stlData[i]);
             s := RightStr(stlData[i], Length(stlData[i]) - Length('configmode:'));
             s := Trim(s);
             ConfigMode := TSC_MODE_ENUM(StrToInt(s));
@@ -1242,6 +1271,7 @@ begin
 
           if Pos('configtype:', LowerCase(stlData[i])) > 0 then
           begin
+            stlData[i] := Trim(stlData[i]);
             s := RightStr(stlData[i], Length(stlData[i]) - Length('configtype:'));
             s := Trim(s);
             ConfigType := TSU_UPDATE_ENUM(StrToInt(s));
@@ -1280,7 +1310,7 @@ begin
       if Assigned(MetaDataFunc) then
       begin
         MetaData := MetaDataFunc(Preview);
-        if MetaData.DataType <> tteComponent then
+        if not (MetaData.DataType = tteModule) then
         begin
           result := 1; //wrong data type
           exit;
@@ -1290,6 +1320,7 @@ begin
 
         for i := 0 to stlData.Count - 1 do
         begin
+          stlData[i] := Trim(stlData[i]);
           if Pos('preview:', LowerCase(stlData[i])) > 0 then
           begin
             s := RightStr(stlData[i], Length(stlData[i]) - Length('preview:'));
