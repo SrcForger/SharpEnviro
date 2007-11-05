@@ -172,8 +172,7 @@ procedure TEditFilterForm.btn_find1Click(Sender: TObject);
   begin
     if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
        ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
-       ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
-       (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
+       (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
        (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))  then
     begin
         item := TMenuItem.Create(EditFilterForm.wndclasspopup);

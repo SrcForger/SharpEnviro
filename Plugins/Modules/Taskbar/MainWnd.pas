@@ -893,13 +893,21 @@ begin
         3: begin
              Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
-             if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)) then
+             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
                nm := True
            end;
         4: begin
              Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
-             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)) then
+             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
                nm := True
            end;
         5: begin
@@ -924,13 +932,21 @@ begin
         3: begin
              Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
-             if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect))
-               then result := false;
+             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
+               result := false;
            end;
         4: begin
              Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
-             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)) then
+             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
                result := false;
            end;
         5: begin
@@ -1161,10 +1177,10 @@ var
 
   function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
   begin
-    if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
+    if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) or
+       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
        ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
-       ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
-       (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
+       (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
        (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))  then
       with PParam(LParam)^ do
       begin

@@ -253,12 +253,12 @@ var
 
   function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
   begin
-    if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
+    if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) or
+       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
        ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
-       ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
-       (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) and
-       (GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST = 0) then
+       (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
+       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) then
+       //(GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST = 0) then
        with PParam(LParam)^ do
        begin
          if CheckFilter(wnd,ac) then
@@ -291,12 +291,12 @@ begin
   wnd := GetTopWindow(0);//GetNextWindow(FindWindow('TSharpDeskMainForm',nil),GW_HWNDPREV);
   while wnd <> 0 do
   begin
-    if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
+    if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) or
+       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
        ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
-       ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
-       (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) and
-       (GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST = 0)  then
+       (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
+       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) then
+//       (GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST = 0) then
        with EnumParam do
        begin
          if CheckFilter(wnd,ac) then
