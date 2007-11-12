@@ -135,7 +135,7 @@ begin
   // Define whether we add/edit or delete the item
   if frmEditScheme.Save(AEditMode, AApply) then Begin
     FreeAndNil(frmEditScheme);
-    frmSchemeList.BuildSchemeList;
+    frmSchemeList.AddItems;
   end;
 end;
 

@@ -68,8 +68,6 @@ type
     procedure lbSchemeListResize(Sender: TObject);
     procedure lbSchemeListClickItem(const ACol: Integer;
       AItem: TSharpEListItem);
-    procedure lbSchemeListGetCellFont(const ACol: Integer;
-      AItem: TSharpEListItem; var AFont: TFont);
     procedure lbSchemeListGetCellCursor(const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure tmrRefreshItemsTimer(Sender: TObject);
@@ -80,6 +78,8 @@ type
       const ASelected: Boolean);
 
   private
+    procedure RebuildSchemeList;
+    procedure SelectSchemeItem(ASchemeName:String);
     { Private declarations }
 
   public
@@ -88,11 +88,16 @@ type
     { Public declarations }
     procedure InitialiseSettings(APluginID: string);
     procedure UpdateEditTabs;
-    procedure BuildSchemeList;
+    procedure AddItems;
   end;
 
 var
   frmSchemeList: TfrmSchemeList;
+
+const
+  cNameColIdx = 0;
+  cCopyColIdx = 1;
+  cDeleteColIdx = 2;
 
 implementation
 
@@ -165,11 +170,11 @@ end;
 procedure TfrmSchemeList.InitialiseSettings(APluginID: string);
 begin
   FSchemeManager.Theme := APluginID;
-  BuildSchemeList;
+  AddItems;
   UpdateEditTabs;
 end;
 
-procedure TfrmSchemeList.BuildSchemeList;
+procedure TfrmSchemeList.AddItems;
 var
   i, iSel: Integer;
   newItem: TSharpEListItem;
@@ -199,7 +204,6 @@ begin
     end;
 
     // finally select the default theme
-
     if lbSchemeList.Count <> 0 then begin
 
       lbSchemeList.ItemIndex := -1;
@@ -222,6 +226,30 @@ begin
     Screen.Cursor := crDefault;
     sl.Free;
 
+    CenterUpdateSize;
+  end;
+end;
+
+procedure TfrmSchemeList.RebuildSchemeList;
+begin
+  try
+    AddItems;
+  finally
+    CenterUpdatePreview;
+  end;
+end;
+
+procedure TfrmSchemeList.SelectSchemeItem(ASchemeName: String);
+var
+  i:Integer;
+  tmpScheme: TSchemeItem;
+begin
+  for i := 0 to Pred(lbSchemeList.Count) do begin
+    tmpScheme := TSchemeItem(lbSchemeList.Item[i].Data);
+    if CompareText(ASchemeName,tmpScheme.Name) = 0 then begin
+      lbSchemeList.ItemIndex := i;
+      break;
+    end;
   end;
 end;
 
@@ -241,8 +269,9 @@ procedure TfrmSchemeList.lbSchemeListClickItem(const ACol: Integer;
   AItem: TSharpEListItem);
 var
   tmpSchemeItem: TSchemeItem;
+  sNew: String;
 begin
-  if ACol = 0 then begin
+  if ACol = cNameColIdx then begin
     CenterUpdatePreview;
     CenterDefineSettingsChanged;
 
@@ -259,32 +288,26 @@ begin
     end;
 
   end
-  else if ACol = 1 then begin
+  else if ACol = cCopyColIdx then begin
     tmpSchemeItem := TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
-    FSchemeManager.Copy(tmpSchemeItem);
-    tmrRefreshItems.Enabled := True;
+    FSchemeManager.Copy(tmpSchemeItem,sNew);
+    RebuildSchemeList;
+    
+    SelectSchemeItem(sNew);
   end
-  else if ACol = 2 then begin
+  else if ACol = cDeleteColIdx then begin
     tmpSchemeItem := TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
-    FSchemeManager.Delete(tmpSchemeItem);
-    tmrRefreshItems.Enabled := True;
-  end;
 
-  lbSchemeList.Update;
+    FSchemeManager.Delete(tmpSchemeItem);
+    RebuildSchemeList;
+  end;
 end;
 
 procedure TfrmSchemeList.lbSchemeListGetCellCursor(const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 begin
-  if ACol > 0 then
+  if ACol > cNameColIdx then
     ACursor := crHandPoint;
-end;
-
-procedure TfrmSchemeList.lbSchemeListGetCellFont(const ACol: Integer;
-  AItem: TSharpEListItem; var AFont: TFont);
-begin
-  if ACol > 0 then
-    AFont.Style := [fsUnderline];
 end;
 
 procedure TfrmSchemeList.lbSchemeListGetCellImageIndex(const ACol: Integer;
@@ -296,10 +319,10 @@ begin
   if tmp = nil then
     exit;
 
-  if ACol = 1 then begin
+  if ACol = cCopyColIdx then begin
     AImageIndex := 1;
   end
-  else if ACol = 2 then begin
+  else if ACol = cDeleteColIdx then begin
     AImageIndex := 0;
   end
 
@@ -314,7 +337,7 @@ begin
   if tmp = nil then
     exit;
 
-  if ACol = 0 then begin
+  if ACol = cNameColIdx then begin
     if ((tmp.Author <> '') and (tmp.Author <> '...')) then
       AColText := Format('%s by %s', [StrProper(tmp.Name), tmp.Author])
     else
@@ -331,12 +354,7 @@ end;
 procedure TfrmSchemeList.tmrRefreshItemsTimer(Sender: TObject);
 begin
   tmrRefreshItems.Enabled := False;
-
-  try
-    BuildSchemeList;
-  finally
-    CenterUpdatePreview;
-  end;
+  RebuildSchemeList;
 end;
 
 end.

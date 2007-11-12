@@ -96,7 +96,7 @@ type
     procedure Delete(ASchemeItem: TSchemeItem);
     procedure SetDefaultScheme(AName: string);
 
-    procedure Copy(ASchemeItem: TSchemeItem);
+    procedure Copy(ASchemeItem: TSchemeItem; var ACopyName:String);
 
     function GetDefaultScheme: string;
     function GetSkinColorByTag(ATag: string): TSharpESkinColor;
@@ -388,7 +388,7 @@ end;
 
 { TSchemeManager }
 
-procedure TSchemeManager.Copy(ASchemeItem: TSchemeItem);
+procedure TSchemeManager.Copy(ASchemeItem: TSchemeItem; var ACopyName:String);
 var
   sFilename: string;
   sSkinDir, sCopyName: string;
@@ -413,6 +413,8 @@ begin
   finally
     xml.SaveToFile(sFilename);
     xml.Free;
+
+    ACopyName := sCopyName;
   end;
 
 end;
