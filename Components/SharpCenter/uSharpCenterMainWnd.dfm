@@ -2065,7 +2065,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               98)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -658
+              Left = -662
               Top = 35
               Width = 23
               Height = 22

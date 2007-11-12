@@ -1046,6 +1046,7 @@ begin
   LockWindowUpdate(Self.Handle);
   try
     UpdateSize;
+    CenterUpdateSize;
   finally
     LockWindowUpdate(0);
   end;
