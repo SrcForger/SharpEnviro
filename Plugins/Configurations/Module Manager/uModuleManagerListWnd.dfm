@@ -37,6 +37,7 @@ object frmMMList: TfrmMMList
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         StretchColumn = False
+        CanSelect = False
       end
       item
         Width = 75
@@ -44,6 +45,7 @@ object frmMMList: TfrmMMList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
       end
       item
         Width = 80
@@ -51,6 +53,7 @@ object frmMMList: TfrmMMList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
       end
       item
         Width = 85
@@ -58,7 +61,12 @@ object frmMMList: TfrmMMList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
       end>
+    Colors.BorderColor = clBtnFace
+    Colors.BorderColorSelected = clBtnShadow
+    Colors.ItemColor = clWindow
+    Colors.ItemColorSelected = clBtnFace
     ItemHeight = 32
     OnClickItem = lbModuleListClickItem
     OnGetCellCursor = lbModuleListGetCellCursor

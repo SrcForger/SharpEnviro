@@ -32,7 +32,7 @@ object frmMMEdit: TfrmMMEdit
       object lbDescription: TJvLabel
         AlignWithMargins = True
         Left = 18
-        Top = 37
+        Top = 41
         Width = 471
         Height = 16
         Margins.Left = 18
@@ -49,11 +49,12 @@ object frmMMEdit: TfrmMMEdit
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
+        ExplicitTop = 37
       end
       object lbAuthor: TJvLabel
         AlignWithMargins = True
         Left = 18
-        Top = 61
+        Top = 65
         Width = 471
         Height = 13
         Margins.Left = 18
@@ -69,19 +70,20 @@ object frmMMEdit: TfrmMMEdit
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
+        ExplicitTop = 61
         ExplicitWidth = 51
       end
       object Panel1: TPanel
         Left = 0
         Top = 0
         Width = 497
-        Height = 29
+        Height = 33
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
         DesignSize = (
           497
-          29)
+          33)
         object Label3: TJvLabel
           Left = 18
           Top = 12
@@ -142,7 +144,7 @@ object frmMMEdit: TfrmMMEdit
       object Preview: TImage32
         AlignWithMargins = True
         Left = 18
-        Top = 84
+        Top = 88
         Width = 461
         Height = 30
         Margins.Left = 18
@@ -155,6 +157,7 @@ object frmMMEdit: TfrmMMEdit
         Scale = 1.000000000000000000
         ScaleMode = smNormal
         TabOrder = 1
+        ExplicitTop = 84
       end
     end
     object pagDelete: TJvStandardPage
@@ -163,19 +166,19 @@ object frmMMEdit: TfrmMMEdit
       Width = 497
       Height = 120
       BorderWidth = 8
-      ExplicitHeight = 113
       object Label2: TLabel
         Left = 0
         Top = 26
-        Width = 172
+        Width = 481
         Height = 13
         Align = alTop
         Caption = '(Settings for the module will be lost)'
+        ExplicitWidth = 172
       end
       object Label1: TJvLabel
         Left = 0
         Top = 0
-        Width = 78
+        Width = 481
         Height = 13
         Align = alTop
         Caption = 'Confirmation:'
@@ -192,14 +195,16 @@ object frmMMEdit: TfrmMMEdit
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
         Images = pilError
+        ExplicitWidth = 78
       end
       object Label4: TLabel
         Left = 0
         Top = 13
-        Width = 306
+        Width = 481
         Height = 13
         Align = alTop
         Caption = 'Are you sure you want to delete the currently selected module?'
+        ExplicitWidth = 306
       end
     end
   end

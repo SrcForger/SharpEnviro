@@ -42,7 +42,7 @@ object frmItemsList: TfrmItemsList
     Colors.ItemColor = clWindow
     Colors.ItemColorSelected = clBtnFace
     OnResize = lbWeatherListResize
-    ItemHeight = 26
+    ItemHeight = 30
     OnClickItem = lbWeatherListClickItem
     AutosizeGrid = True
     Borderstyle = bsNone

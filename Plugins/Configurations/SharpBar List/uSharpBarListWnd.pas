@@ -68,6 +68,7 @@ type
     procedure lbBarListGetCellTextColor(const ACol: Integer;
       AItem: TSharpEListItem; var AColor: TColor);
     procedure lbBarListClickItem(const ACol: Integer; AItem: TSharpEListItem);
+    procedure lbBarListResize(Sender: TObject);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
   private
@@ -239,6 +240,11 @@ begin
       AColor := clNavy
     else AColor := clGray;
   end;
+end;
+
+procedure TfrmBarList.lbBarListResize(Sender: TObject);
+begin
+  Self.Height := lbBarList.Height;
 end;
 
 procedure TfrmBarList.FormCreate(Sender: TObject);

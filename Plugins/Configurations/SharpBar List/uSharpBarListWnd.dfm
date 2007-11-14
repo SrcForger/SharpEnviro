@@ -36,6 +36,7 @@ object frmBarList: TfrmBarList
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         StretchColumn = True
+        CanSelect = False
       end
       item
         Width = 50
@@ -43,6 +44,7 @@ object frmBarList: TfrmBarList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
       end
       item
         Width = 60
@@ -50,6 +52,7 @@ object frmBarList: TfrmBarList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
       end
       item
         Width = 75
@@ -57,15 +60,20 @@ object frmBarList: TfrmBarList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
       end>
+    Colors.BorderColor = clBtnFace
+    Colors.BorderColorSelected = clBtnShadow
+    Colors.ItemColor = clWindow
+    Colors.ItemColorSelected = clBtnFace
+    OnResize = lbBarListResize
     ItemHeight = 32
     OnClickItem = lbBarListClickItem
-    OnDblClickItem = lbBarListDblClickItem
     OnGetCellCursor = lbBarListGetCellCursor
-    AutosizeGrid = False
+    AutosizeGrid = True
     Borderstyle = bsNone
     Ctl3d = False
-    Align = alClient
+    Align = alTop
   end
   object StatusImages: TPngImageList
     PngImages = <
