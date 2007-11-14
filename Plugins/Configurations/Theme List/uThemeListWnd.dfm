@@ -37,6 +37,7 @@ object frmThemeList: TfrmThemeList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
         Images = pilDefault
       end
       item
@@ -45,6 +46,7 @@ object frmThemeList: TfrmThemeList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
         Images = pilDefault
       end
       item
@@ -53,6 +55,7 @@ object frmThemeList: TfrmThemeList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
         Images = pilDefault
       end
       item
@@ -61,6 +64,7 @@ object frmThemeList: TfrmThemeList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnShadow

@@ -236,6 +236,7 @@ begin
     tmpTheme := TThemeListItem(AItem.Data);
 
     case ACol of
+      cReadOnly: ;
       cEdit: begin
           if not (tmpTheme.IsReadOnly) then
             ConfigureItem;
@@ -243,9 +244,7 @@ begin
         end;
       cWebsite: begin
           if tmpTheme.Website <> '' then
-            SharpExecute(tmpTheme.Website)
-          else
-            LoadTheme(tmpTheme);
+            SharpExecute(tmpTheme.Website);
         end;
       cCopy: begin
           s := InputBox('Copy Theme', 'Please enter a name for the theme:', tmpTheme.Name);
@@ -385,10 +384,6 @@ begin
 
     tmpTheme := TThemeListItem(AItem.Data);
     case ACol of
-      cReadOnly: begin
-          if tmpTheme.IsReadOnly <> False then
-            ACursor := crHandPoint;
-        end;
       cWebsite: begin
           if tmpTheme.Website <> '' then
             ACursor := crHandPoint;
