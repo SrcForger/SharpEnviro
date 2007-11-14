@@ -35,6 +35,7 @@ object frmSkinListWnd: TfrmSkinListWnd
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
         Images = PngImageList1
       end
       item
@@ -43,6 +44,7 @@ object frmSkinListWnd: TfrmSkinListWnd
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
         Images = PngImageList1
       end>
     Colors.BorderColor = clBtnFace
