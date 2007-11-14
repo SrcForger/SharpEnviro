@@ -22,13 +22,15 @@ type
     FSelectedImages: TPngImageList;
     FStretchColumn: Boolean;
     FCursorRect: TRect;
+    FCanSelect: Boolean;
 
     procedure SetWidth(const Value: Integer);
     procedure SetHAlign(const Value: TAlignment);
     procedure SetVAlign(const Value: TVerticalAlignment);
     property Owner: TComponent read FOwner write fOwner;
   public
-    constructor Create(AOwner: Tcomponent); reintroduce;
+
+    constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
     property CursorRect: TRect read FCursorRect write FCursorRect;
   published
@@ -39,6 +41,7 @@ type
     property VAlign: TVerticalAlignment read FVAlign write SetVAlign;
     property ColumnAlign: TSEColumn_Align read FColumnAlign write FColumnAlign;
     property StretchColumn: Boolean read FStretchColumn write FStretchColumn;
+    property CanSelect: Boolean read FCanSelect write FCanSelect default True;
 
     property Images: TPngImageList read
       FImages write FImages;
@@ -46,7 +49,7 @@ type
       FSelectedImages write FSelectedImages;
   end;
 
-  TSharpEListBoxExColumns = class(TCollection)
+  TSharpEListBoxExColumns = class(TOwnedCollection)
   private
     function GetItem(Index: Integer): TSharpEListBoxExColumn;
     procedure SetItem(Index: Integer; const Value: TSharpEListBoxExColumn);
@@ -124,6 +127,8 @@ type
   TSharpEListBoxExGetColText = procedure(const ACol: Integer; AItem: TSharpEListItem; var AColText: string) of object;
   TSharpEListBoxExGetColImageIndex = procedure(const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: integer; const ASelected: Boolean) of object;
 
+
+
   TSharpEListBoxEx = class(TCustomListBox)
   private
     FPngImageCollection: TPngImageCollection;
@@ -152,16 +157,11 @@ type
     procedure SetColumn(AColumn: Integer; const Value: TSharpEListBoxExColumn);
     procedure MouseMoveEvent(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer); override;
+
     function GetItem(AItem: Integer): TSharpEListItem;
     procedure SetItem(AItem: Integer; const Value: TSharpEListItem);
     procedure UpdateColumnSizes;
     procedure SetColumns(const Value: TSharpEListBoxExColumns);
-    //procedure DblClickItem(Sender: TObject);
-    //procedure ClickItem(Sender: TObject); overload;
 
     function IsImageIndexValid(AItem: TSharpEListItem; ACol,
       AImageIndex: Integer; ASelected: Boolean): Boolean;
@@ -186,9 +186,10 @@ type
     write SetColumn;
 
     function GetItemAtCursorPos(ACursorPosition: TPoint): TSharpEListItem;
+    function GetColumnAtMouseCursorPos: TSharpEListBoxExColumn;
   protected
     procedure Loaded; override;
-
+    procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
   published
     property Columns: TSharpEListBoxExColumns read FColumns write SetColumns stored True;
     property Colors: TSharpEListBoxExColors read FColors write SetColors stored True;
@@ -201,7 +202,6 @@ type
 
     property ItemHeight;
     property OnClickItem: TSharpEListBoxExOnClickItem read FOnClickItem write FOnClickItem stored True;
-    //property OnDblClickItem: TSharpEListBoxExOnClickItem read FOnDblClickItem write FOnDblClickItem stored True;
     property OnGetCellCursor: TSharpEListBoxExGetColCursor read FOnGetCellCursor write FOnGetCellCursor stored True;
     property OnGetCellColor: TSharpEListBoxExGetItemColor read FOnGetCellColor write FOnGetCellColor;
     property OnGetCellText: TSharpEListBoxExGetColText read FOnGetCellText write FOnGetCellText;
@@ -241,15 +241,6 @@ end;
 function TSharpEListBoxEx.AddColumn(AText: string): TSharpEListBoxExColumn;
 begin
   Result := FColumns.Add(Self);
-end;
-
-constructor TSharpEListBoxExColumn.Create(AOwner: TComponent);
-begin
-  FWidth := 50;
-  FVAlign := taVerticalCenter;
-  FHAlign := taLeftJustify;
-  FColumnAlign := calLeft;
-  Owner := AOwner;
 end;
 
 procedure TSharpEListBoxEx.ClickItem(Sender: TObject; ADBlClick: Boolean);
@@ -319,8 +310,6 @@ begin
   Self.OnDrawItem := DrawItemEvent;
 
   Self.OnMouseMove := MouseMoveEvent;
-  //Self.OnMouseDown := MouseDownEvent;
-  //Self.OnMouseUp := MouseUpEvent;
 
   Self.OnResize := ResizeEvent;
   Self.Color := clWindow;
@@ -331,7 +320,7 @@ begin
   FColors.BorderColor := clBtnFace;
   FColors.BorderColorSelected := clBtnShadow;
 
-  FColumns := TSharpEListBoxExColumns.Create(TSharpEListBoxExColumn);
+  FColumns := TSharpEListBoxExColumns.Create(Self,TSharpEListBoxExColumn);
 
   ItemHeight := 30;
   FItemOffset := Point(2, 2);
@@ -596,6 +585,37 @@ begin
   Result := FColumns.Item[AColumn];
 end;
 
+function TSharpEListBoxEx.GetColumnAtMouseCursorPos: TSharpEListBoxExColumn;
+var
+  iCol,X,Y: Integer;
+  R:TRect;
+  tmpItem: TSharpEListItem;
+  pt: TPoint;
+begin
+  result := nil;
+
+  tmpItem := GetItemAtCursorPos(Mouse.CursorPos);
+  if tmpItem = nil then begin
+    exit;
+  end;
+
+  pt := Self.ScreenToClient(Mouse.CursorPos);
+  X := pt.X;
+  Y := pt.Y;
+
+   for iCol := 0 to Pred(ColumnCount) do begin
+
+    R := Self.ItemRect(tmpItem.ID);
+
+    if (X > Column[iCol].ColumnRect.Left) and (X < Column[iCol].ColumnRect.Right) and
+      (Y > R.Top) and (Y < R.Bottom) then begin
+
+      Result := Column[iCol];
+      break;
+    end;
+  end;
+end;
+
 procedure TSharpEListBoxEx.SetAutoSizeGrid(const Value: Boolean);
 begin
   FAutoSizeGrid := Value;
@@ -803,6 +823,55 @@ begin
     end;
 end;
 
+procedure TSharpEListBoxEx.WMLButtonDown(var Message: TWMLButtonDown);
+var
+  ItemNo : Integer;
+  tmpItem: TSharpEListItem;
+  tmpCol: TSharpEListBoxExColumn;
+  p: TPoint;
+  ShiftState: TShiftState;
+begin
+  ShiftState := KeysToShiftState(Message.Keys);
+  if (DragMode = dmAutomatic) and FMultiSelect then
+  begin
+    if not (ssShift in ShiftState) or (ssCtrl in ShiftState) then
+    begin
+      ItemNo := ItemAtPos(SmallPointToPoint(Message.Pos), True);
+      if (ItemNo >= 0) and (Selected[ItemNo]) then
+      begin
+        BeginDrag (False);
+        Exit;
+      end;
+    end;
+  end;
+
+  p := SmallPointToPoint(Message.Pos);
+  ItemNo := ItemAtPos(p, True);
+
+  if ItemNo <> -1 then begin
+    tmpItem := Self.Item[itemNo];
+    tmpCol := GetColumnAtMouseCursorPos;
+
+    if tmpCol <> nil then begin
+
+    if tmpCol.CanSelect then begin
+      Self.ItemIndex := ItemNo;
+      Self.Invalidate;
+      if Assigned(FOnClickItem) then
+          FOnClickItem(tmpCol.ID,tmpItem);
+    end else begin
+        if Assigned(FOnClickItem) then
+          FOnClickItem(tmpCol.ID,tmpItem);
+      end;
+  end;
+  end else
+    inherited;
+
+  if (DragMode = dmAutomatic) and not (FMultiSelect and
+    ((ssCtrl in ShiftState) or (ssShift in ShiftState))) then
+    BeginDrag(False);
+end;
+
 function TSharpEListBoxEx.GetItem(AItem: Integer): TSharpEListItem;
 begin
   Result := nil;
@@ -847,15 +916,6 @@ begin
   Self.Items.Objects[AItem] := Value;
 end;
 
-procedure TSharpEListBoxEx.MouseDown(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-var
-  n:Integer;
-begin
-  //ClickItem(Self,false);
-  //Self.Invalidate;
-end;
-
 procedure TSharpEListBoxEx.MouseMoveEvent(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 var
@@ -886,19 +946,22 @@ begin
   end;
 end;
 
-procedure TSharpEListBoxEx.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-begin
-  inherited;
-  ClickItem(Self,false);
-  Self.Invalidate;
-end;
-
 procedure TSharpEListBoxEx.ResizeEvent(Sender: TObject);
 begin
   UpdateColumnSizes;
 
   Self.Invalidate;
+end;
+
+constructor TSharpEListBoxExColumn.Create(Collection: TCollection);
+begin
+  inherited;
+  FCanSelect := True;
+  FWidth := 30;
+  FVAlign := taVerticalCenter;
+  FHAlign := taLeftJustify;
+  FStretchColumn := False;
+  FOwner := TSharpEListBoxEx(Collection.Owner);
 end;
 
 destructor TSharpEListBoxExColumn.Destroy;

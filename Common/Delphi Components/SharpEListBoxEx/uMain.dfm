@@ -26,30 +26,16 @@ object Form1: TForm1
     Height = 319
     Columns = <
       item
-        Width = 100
+        Width = 30
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
-        StretchColumn = True
-        Images = PngImageList1
-        SelectedImages = col1
-      end
-      item
-        Width = 75
-        HAlign = taLeftJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calRight
         StretchColumn = False
-        Images = col1
-      end
-      item
-        Width = 75
-        HAlign = taLeftJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calRight
-        StretchColumn = False
-        Images = col1
       end>
+    Colors.BorderColor = clBtnFace
+    Colors.BorderColorSelected = clBtnShadow
+    Colors.ItemColor = clWindow
+    Colors.ItemColorSelected = clBtnFace
     ItemHeight = 26
     OnGetCellText = SharpEListBoxEx1GetCellText
     OnGetCellImageIndex = SharpEListBoxEx1GetCellImageIndex
@@ -64,6 +50,15 @@ object Form1: TForm1
     Caption = 'Button1'
     TabOrder = 0
     OnClick = Button1Click
+  end
+  object Button2: TButton
+    Left = 112
+    Top = 280
+    Width = 75
+    Height = 25
+    Caption = 'Add Col'
+    TabOrder = 2
+    OnClick = Button2Click
   end
   object col1: TPngImageList
     BlendColor = clBlack

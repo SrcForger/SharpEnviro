@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, PngImageList, ComCtrls, Buttons,
-  PngSpeedButton, SharpEListBoxEx, ImgList, ExtCtrls;
+  PngSpeedButton, SharpEListBoxEx, ImgList, ExtCtrls, JvExStdCtrls, JvListBox,
+  JvComboListBox;
 
 type
   TForm1 = class(TForm)
@@ -14,6 +15,7 @@ type
     SharpEListBoxEx1: TSharpEListBoxEx;
     col1: TPngImageList;
     PngImageList1: TPngImageList;
+    Button2: TButton;
     procedure SharpEListBoxEx1MeasureItem(Control: TWinControl; Index: Integer;
       var Height: Integer);
 
@@ -23,6 +25,7 @@ type
     procedure SharpEListBoxEx1GetCellImageIndex(const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
+    procedure Button2Click(Sender: TObject);
   private
     { Private declarations }
     Procedure GetCellCursor(const ACol:Integer; AItem:TSharpEListItem; var ACursor:TCursor);
@@ -52,6 +55,13 @@ begin
   li.AddSubItem('<u>Delete</u>',1);
   li.Hint := 'Click to set as default';
 
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+  col: TSharpEListBoxExColumn;
+begin
+  col := SharpEListBoxEx1.Columns.Add(Self);
 end;
 
 procedure TForm1.GetCellCursor(const ACol: Integer; AItem: TSharpEListItem;
