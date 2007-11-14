@@ -390,19 +390,40 @@ end;
 
 procedure TSchemeManager.Copy(ASchemeItem: TSchemeItem; var ACopyName:String);
 var
-  sFilename: string;
+  sFilename, s: string;
   sSkinDir, sCopyName: string;
   sSchemeDir: string;
   xml: TJvSimpleXML;
+  n, n2:Integer;
 begin
 
   sSkinDir := GetSharpeDirectory + 'skins';
   sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, GetSkinName]);
   sCopyName := ASchemeItem.Name;
+
+  // If already copy, remove copy symbol
+  n := pos(')',sCopyName);
+  if n <> 0 then begin
+
+    n2 := n;
+    repeat
+      s := sCopyName[n2];
+      n2 := n2 - 1;
+    until ((n2 <= 1) or (s = '(')) ;
+
+    if n2 > 1 then
+      sCopyName := System.Copy(sCopyName,1,n2-1);
+  end;
+  
+
+  n := 0;
+  s := sCopyName;
   repeat
-    sCopyName := sCopyName + '_' + 'copy';
-    sFilename := sSchemeDir + sCopyName + '.xml';
+    s := format('%s (%d)',[sCopyName,n]);
+    sFilename := sSchemeDir + s + '.xml';
+    inc(n);
   until not (fileExists(sFilename));
+  sCopyName := s;
 
   FileCopy(ASchemeItem.Filename, sFilename, False);
   xml := TJvSimpleXML.Create(nil);

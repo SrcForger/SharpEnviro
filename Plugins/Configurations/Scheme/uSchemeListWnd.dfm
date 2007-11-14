@@ -49,6 +49,7 @@ object frmSchemeList: TfrmSchemeList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
         Images = imlCol2
       end
       item
@@ -57,6 +58,7 @@ object frmSchemeList: TfrmSchemeList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
         Images = imlCol2
       end>
     Colors.BorderColor = clBtnFace

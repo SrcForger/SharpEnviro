@@ -271,6 +271,7 @@ var
   tmpSchemeItem: TSchemeItem;
   sNew: String;
 begin
+
   if ACol = cNameColIdx then begin
     CenterUpdatePreview;
     CenterDefineSettingsChanged;
@@ -282,21 +283,21 @@ begin
     end;
 
     // Set Scheme
-    if lbSchemeList.Item[lbSchemeList.ItemIndex] <> nil then begin
-      FSchemeManager.SetDefaultScheme(TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data).Name);
+    if AItem <> nil then begin
+      FSchemeManager.SetDefaultScheme(TSchemeItem(AItem.Data).Name);
       SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
     end;
 
   end
   else if ACol = cCopyColIdx then begin
-    tmpSchemeItem := TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
+    tmpSchemeItem := TSchemeItem(AItem.Data);
     FSchemeManager.Copy(tmpSchemeItem,sNew);
     RebuildSchemeList;
     
     SelectSchemeItem(sNew);
   end
   else if ACol = cDeleteColIdx then begin
-    tmpSchemeItem := TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data);
+    tmpSchemeItem := TSchemeItem(AItem.Data);
 
     FSchemeManager.Delete(tmpSchemeItem);
     RebuildSchemeList;
