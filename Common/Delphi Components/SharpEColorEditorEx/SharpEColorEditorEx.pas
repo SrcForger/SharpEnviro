@@ -46,7 +46,7 @@ type
     procedure SetVisible(const Value: Boolean);
 
   public
-
+    constructor Create(Collection: TCollection); override;
     destructor Destroy; override;
     property Parent: Pointer read FParent write FParent;
 
@@ -181,6 +181,12 @@ begin
   begin
     TabclickEvent(Self.ColorEditor);
   end;
+end;
+
+constructor TSharpEColorEditorExItem.Create(Collection: TCollection);
+begin
+  FVisible := True;
+  inherited;
 end;
 
 destructor TSharpEColorEditorExItem.Destroy;
