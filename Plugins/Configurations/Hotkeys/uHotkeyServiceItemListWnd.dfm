@@ -41,7 +41,7 @@ object frmConfig: TfrmConfig
     Colors.ItemColor = clWindow
     Colors.ItemColorSelected = clBtnFace
     OnResize = lbHotkeysResize
-    ItemHeight = 26
+    ItemHeight = 30
     OnClickItem = lbHotkeysClickItem
     AutosizeGrid = True
     Borderstyle = bsNone
