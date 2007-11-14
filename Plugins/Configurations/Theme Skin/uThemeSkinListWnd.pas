@@ -252,6 +252,14 @@ procedure TfrmSkinListWnd.lbSkinListClickItem(const ACol: Integer;
   AItem: TSharpEListItem);
 var
   tmp: TSkinItem;
+
+  procedure SetSkin;
+  begin
+    FDefaultSkin := tmp.Name;
+    Save;
+
+    SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suSkin), 0);
+  end;
 begin
   tmp := TSkinItem(AItem.Data);
 
@@ -259,16 +267,18 @@ begin
 
     case ACol of
       cItem: begin
-          FDefaultSkin := tmp.Name;
-          Save;
-          
-          SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suSkin), 0);
+          SetSkin;
         end;
         cUrl: begin
-          SharpExecute(tmp.Website);
+          if tmp.Website <> '' then
+            SharpExecute(tmp.Website) else
+            SetSkin;
         end;
         cInfo: begin
-          ShowMessage(tmp.Info);
+          if tmp.Info <> '' then
+            ShowMessage(tmp.Info) else
+            SetSkin;
+
         end;
     end;
 
