@@ -60,6 +60,8 @@ type
       const ASelected: Boolean);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
+    FLoading:Boolean;
+    procedure LoadTheme(tmpTheme: TThemeListItem);
   private
 
   public
@@ -228,36 +230,35 @@ procedure TfrmThemeList.lbThemeListClickItem(const ACol: Integer;
   AItem: TSharpEListItem);
 var
   tmpTheme: TThemeListItem;
-  s: String;
+  s: string;
 begin
   if AItem <> nil then begin
     tmpTheme := TThemeListItem(AItem.Data);
 
     case ACol of
-      cEdit: if Not(tmpTheme.IsReadOnly) then ConfigureItem;
-      cWebsite: if tmpTheme.Website <> '' then
-          SharpExecute(tmpTheme.Website);
+      cEdit: begin
+          if not (tmpTheme.IsReadOnly) then
+            ConfigureItem;
+          exit;
+        end;
+      cWebsite: begin
+          if tmpTheme.Website <> '' then
+            SharpExecute(tmpTheme.Website)
+          else
+            LoadTheme(tmpTheme);
+        end;
       cCopy: begin
-        s := InputBox('Copy Theme','Please enter an indentifier for the theme:','');
+          s := InputBox('Copy Theme', 'Please enter a name for the theme:', tmpTheme.Name);
 
-        if s <> '' then begin
-          ThemeManager.Add(s,tmpTheme.Author,tmpTheme.Website,tmpTheme.Name,False);
-          BuildThemeList;
+          if CompareText(s, tmpTheme.Name) <> 0 then begin
+            ThemeManager.Add(s, tmpTheme.Author, tmpTheme.Website, tmpTheme.Name, False);
+            BuildThemeList;
+          end;
         end;
-      end;
-      cName: begin
-          if FrmEditItem <> nil then
-            updateui;
-
-          lbThemeList.Enabled := False;
-          tmrEnableUi.Enabled := True;
-          lbThemeList.Item[lbThemeList.ItemIndex].Caption :=
-            lbThemeList.Item[lbThemeList.ItemIndex].Caption + ' (Loading...)';
-
-          ThemeManager.SetTheme(tmpTheme.Name);
-          SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1);
-        end;
+    else
+      LoadTheme(tmpTheme);
     end;
+
   end;
 end;
 
@@ -369,14 +370,10 @@ begin
 end;
 
 procedure TfrmThemeList.tmrEnableUiTimer(Sender: TObject);
-var
-  tmpTheme: TThemeListItem;
 begin
   tmrEnableUi.Enabled := False;
   lbThemeList.Enabled := True;
-
-  tmpTheme := TThemeListItem(lbThemeList.Item[lbThemeList.ItemIndex].Data);
-  lbThemeList.Item[lbThemeList.ItemIndex].Caption := tmpTheme.Name + ' By ' + tmpTheme.Author;
+  FLoading := False;
 end;
 
 procedure TfrmThemeList.lbThemeListGetCellCursor(const ACol: Integer;
@@ -398,8 +395,8 @@ begin
         end;
       cEdit: begin
 
-          if Not(tmpTheme.IsReadOnly) then
-          ACursor := crHandPoint;
+          if not (tmpTheme.IsReadOnly) then
+            ACursor := crHandPoint;
         end;
       cCopy: ACursor := crHandPoint;
     end;
@@ -419,13 +416,13 @@ begin
           if tmpTheme.IsReadOnly then
             AImageIndex := 1
           else
-            AImageIndex := 2;
+            AImageIndex := -1;
         end;
       cWebsite: begin
           if tmpTheme.Website <> '' then
             AImageIndex := 3
           else
-            AImageIndex := 4;
+            AImageIndex := -1;
         end;
       cCopy: begin
           AImageIndex := 5;
@@ -439,17 +436,23 @@ procedure TfrmThemeList.lbThemeListGetCellText(const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmpTheme: TThemeListItem;
+  s: String;
 begin
   tmpTheme := TThemeListItem(AItem.Data);
   if tmpTheme <> nil then begin
     if (Acol = cEdit) then begin
       if tmpTheme.IsReadOnly then
-        AColText := '<font color="clSilver"><u>Edit</u>' else
+        AColText := '<font color="clSilver"><u>Edit</u>'
+      else
         AColText := '<font color="clNavy"><u>Edit</u>';
     end
-    else if (ACol = cName) then
-      AColText := Format('%s by %s', [tmpTheme.Name, tmpTheme.Author]);
+    else if (ACol = cName) then begin
 
+      s := '';
+      if ((FLoading) and (AItem.ID = lbThemeList.ItemIndex)) then
+        s := ' (Loading)';
+      AColText := Format('%s by %s%s', [tmpTheme.Name, tmpTheme.Author,s]);
+    end;
   end;
 
 end;
@@ -464,6 +467,20 @@ begin
     sTheme := TThemeListItem(tmpItem.Data).Name;
     CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
       + '_Themes\Theme.con'), pchar(sTheme))
+  end;
+end;
+
+procedure TfrmThemeList.LoadTheme(tmpTheme: TThemeListItem);
+begin
+  if FrmEditItem <> nil then
+    updateui
+  else begin
+    lbThemeList.Enabled := False;
+    tmrEnableUi.Enabled := True;
+
+    FLoading := True;
+    ThemeManager.SetTheme(tmpTheme.Name);
+    SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1);
   end;
 end;
 
