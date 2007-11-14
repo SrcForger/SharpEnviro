@@ -57,15 +57,28 @@ object Form12: TForm12
     PngImageList = PngImageList1
     TabList = <
       item
+        Caption = 'NewTab-1'
         ImageIndex = 0
         Visible = True
       end
       item
+        Caption = 'NewTab-1'
         ImageIndex = 0
         Visible = True
       end
       item
+        Caption = 'NewTab-1'
         ImageIndex = 0
+        Visible = True
+      end
+      item
+        Caption = 'Hello'
+        ImageIndex = -1
+        Visible = True
+      end
+      item
+        Caption = 'ABC'
+        ImageIndex = -1
         Visible = True
       end>
     Minimized = False
@@ -194,5 +207,6 @@ object Form12: TForm12
       end>
     Left = 516
     Top = 136
+    Bitmap = {}
   end
 end

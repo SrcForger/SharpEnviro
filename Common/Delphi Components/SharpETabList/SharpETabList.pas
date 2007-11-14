@@ -18,11 +18,15 @@ type
     FVisible: Boolean;
     procedure SetImageIndex(const Value: Integer);
     procedure SetVisible(const Value: Boolean);
+    procedure SetCaption(const Value: String);
+    procedure SetStatus(const Value: String);
   public
-    constructor Create; reintroduce;
+    constructor Create(Collection: TCollection); override;
+    procedure SetCollection(Value: TCollection); override;
+
   published
-    Property Caption: String read FCaption write FCaption;
-    Property Status: String read FStatus write FStatus;
+    Property Caption: String read FCaption write SetCaption;
+    Property Status: String read FStatus write SetStatus;
     Property TabRect: Trect read FTabRect write FTabRect;
     Property ImageIndex: Integer read FImageIndex write SetImageIndex;
     Property Visible: Boolean read FVisible write SetVisible;
@@ -31,7 +35,7 @@ type
 end;
 
 type
-  TSharpETabListItems = Class(TCollection)
+  TSharpETabListItems = Class(TOwnedCollection)
   private
    function GetItem(Index: Integer): TSharpETabListItem;
  public
@@ -236,7 +240,7 @@ begin
   Self.BevelInner := bvNone;
   Self.BevelOuter := bvNone;
 
-  FTabList := TSharpETabListItems.Create(TSharpETabListItem);
+  FTabList := TSharpETabListItems.Create(Self,TSharpETabListItem);
 
   FMouseOverID := -1;
 
@@ -621,17 +625,40 @@ end;
 
 { TSharpETabListItem }
 
-constructor TSharpETabListItem.Create;
+constructor TSharpETabListItem.Create(Collection: TCollection);
 begin
+   inherited;
    FImageIndex := -1;
    FCaption := '';
    FStatus := '';
    FVisible := True;
+
+   TSharpETabList(Collection.Owner).Invalidate;
+   
+end;
+
+procedure TSharpETabListItem.SetCaption(const Value: String);
+begin
+  FCaption := Value;
+  TSharpETabList(Collection.Owner).Invalidate;
+end;
+
+procedure TSharpETabListItem.SetCollection(Value: TCollection);
+begin
+  inherited;
+  TSharpETabList(Value.Owner).Invalidate;
 end;
 
 procedure TSharpETabListItem.SetImageIndex(const Value: Integer);
 begin
   FImageIndex := Value;
+   TSharpETabList(Collection.Owner).Invalidate;
+end;
+
+procedure TSharpETabListItem.SetStatus(const Value: String);
+begin
+  FStatus := Value;
+   TSharpETabList(Collection.Owner).Invalidate;
 end;
 
 procedure TSharpETabListItem.SetVisible(const Value: Boolean);
