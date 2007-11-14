@@ -28,18 +28,23 @@ object frmIconList: TfrmIconList
         StretchColumn = True
       end
       item
-        Width = 50
-        HAlign = taCenter
+        Width = 30
+        HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
         Images = Images
       end>
+    Colors.BorderColor = clBtnFace
+    Colors.BorderColorSelected = clBtnShadow
+    Colors.ItemColor = clWindow
+    Colors.ItemColorSelected = clBtnFace
     OnResize = lb_iconlistResize
-    ItemHeight = 27
+    ItemHeight = 30
     OnClickItem = lb_iconlistClickItem
     OnGetCellCursor = lb_iconlistGetCellCursor
     OnGetCellText = lb_iconlistGetCellText
+    OnGetCellImageIndex = lb_iconlistGetCellImageIndex
     AutosizeGrid = True
     Borderstyle = bsNone
     Ctl3d = False

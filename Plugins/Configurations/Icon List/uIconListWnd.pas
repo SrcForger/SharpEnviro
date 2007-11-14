@@ -42,13 +42,13 @@ type
 
   TIconItem = class
   private
-    FAuthor: String;
-    FName: String;
-    FWebsite: String;
+    FAuthor: string;
+    FName: string;
+    FWebsite: string;
   public
-    property Name: String read FName write FName;
-    property Author: String read FAuthor write FAuthor;
-    property Website: String read FWebsite write FWebsite;
+    property Name: string read FName write FName;
+    property Author: string read FAuthor write FAuthor;
+    property Website: string read FWebsite write FWebsite;
   end;
 
 type
@@ -62,6 +62,9 @@ type
       AItem: TSharpEListItem; var AColText: string);
     procedure lb_iconlistGetCellCursor(const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
+    procedure lb_iconlistGetCellImageIndex(const ACol: Integer;
+      AItem: TSharpEListItem; var AImageIndex: Integer;
+      const ASelected: Boolean);
   private
 
   public
@@ -89,8 +92,7 @@ var
   XML: TJclSimpleXML;
   sDir: string;
 begin
-  if lb_iconlist.ItemIndex >= 0 then
-  begin
+  if lb_iconlist.ItemIndex >= 0 then begin
     sDir := SharpApi.GetSharpeUserSettingsPath + '\Themes\' + sTheme;
 
     XML := TJclSimpleXML.Create;
@@ -112,7 +114,7 @@ end;
 procedure TfrmIconList.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := true;
-  lb_iconlist.ItemOffset := Point(2,2);
+  lb_iconlist.ItemOffset := Point(2, 2);
 end;
 
 procedure TfrmIconList.BuildIconPreview(var ABmp: TBitmap32);
@@ -126,7 +128,7 @@ var
   n: integer;
   h: integer;
   IconCount: integer;
-  tmp:TIconItem;
+  tmp: TIconItem;
 begin
   tmp := TIconItem(lb_iconlist.Item[lb_iconlist.ItemIndex].Data);
   Dir := SharpApi.GetSharpeDirectory + 'Icons\' + tmp.Name + '\';
@@ -138,11 +140,9 @@ begin
   Icon.CombineMode := cmMerge;
 
   try
-    if FileExists(Dir + 'IconSet.xml') then
-    begin
+    if FileExists(Dir + 'IconSet.xml') then begin
       XML.LoadFromFile(Dir + 'IconSet.xml');
-      if XML.Root.Items.ItemNamed['Icons'] <> nil then
-      begin
+      if XML.Root.Items.ItemNamed['Icons'] <> nil then begin
         IconCount := XML.Root.Items.ItemNamed['Icons'].Items.Count;
         h := (IconCount div ((ABmp.Width - Icon.Width) div IconSize) + 1) * IconSize;
         ABmp.Height := h;
@@ -150,14 +150,12 @@ begin
         x := 0;
         y := 0;
         for n := 0 to XML.Root.Items.ItemNamed['Icons'].Items.Count - 1 do
-          with XML.Root.Items.ItemNamed['Icons'].Items.Item[n].Items do
-          begin
+          with XML.Root.Items.ItemNamed['Icons'].Items.Item[n].Items do begin
             Application.ProcessMessages;
             SharpIconUtils.LoadIco(Icon, Dir + Value('file'), IconSize);
             Icon.DrawTo(ABmp, x * Icon.Width, y * Icon.Height);
             x := x + 1;
-            if x * Icon.Width >= (ABmp.Width - Icon.Width) then
-            begin
+            if x * Icon.Width >= (ABmp.Width - Icon.Width) then begin
               x := 0;
               y := y + 1;
             end;
@@ -187,28 +185,26 @@ begin
 
   if FindFirst(Dir + '*', FADirectory, sr) = 0 then
     repeat
-      if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then
-      begin
-        if FileExists(Dir + sr.Name + '\IconSet.xml') then
-        begin
+      if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then begin
+        if FileExists(Dir + sr.Name + '\IconSet.xml') then begin
           try
             XML.LoadFromFile(Dir + sr.Name + '\IconSet.xml');
 
             tmp := TIconItem.Create;
             tmp.Name := XML.Root.Items.Value('name', '...');
             tmp.Author := XML.Root.Items.Value('author', '...');
-            tmp.Website := XML.Root.Items.Value('website','');
+            tmp.Website := XML.Root.Items.Value('website', '');
 
-            newItem := lb_iconlist.AddItem('',0);
+            newItem := lb_iconlist.AddItem('', 0);
             newItem.Data := tmp;
             if length(trim(tmp.Website)) > 0 then
-              newItem.AddSubItem('',1)
-            else newItem.AddSubItem('',-1);
+              newItem.AddSubItem('', 1)
+            else
+              newItem.AddSubItem('', -1);
 
-            if sr.Name = sCurrentIconSet then
-            begin
+            if sr.Name = sCurrentIconSet then begin
               lb_iconlist.ItemIndex := lb_iconlist.Items.Count - 1;
-            //BuildIconPreview;
+              //BuildIconPreview;
             end;
           except
           end;
@@ -218,8 +214,7 @@ begin
   FindClose(sr);
   XML.Free;
 
-  if (lb_iconlist.ItemIndex < 0) and (lb_iconlist.Count > 0) then
-  begin
+  if (lb_iconlist.ItemIndex < 0) and (lb_iconlist.Count > 0) then begin
     lb_iconlist.ItemIndex := 0;
     //BuildIconPreview;
   end;
@@ -227,35 +222,90 @@ end;
 
 procedure TfrmIconList.lb_iconlistClickItem(const ACol: Integer;
   AItem: TSharpEListItem);
+var
+  tmp: TIconItem;
+  s: string;
 begin
-  if (ACol = 1) and (AItem.SubItemImageIndex[1] = 1) then
-  begin
-    SharpExecute(TIconItem(AItem.Data).Website);
+  tmp := TIconItem(AItem.Data);
+  if tmp = nil then
     exit;
-  end;
 
-  SaveSettings;
-  BroadcastGlobalUpdateMessage(suIconSet);
-  CenterUpdatePreview;
+  if (ACol = 0) then begin
+    SaveSettings;
+    BroadcastGlobalUpdateMessage(suIconSet);
+    CenterUpdatePreview;
+  end
+  else if (ACol = 1) then begin
+    if (Pos('http', tmp.Website) <> 0) then
+      SharpExecute(TIconItem(AItem.Data).Website) else begin
+        SaveSettings;
+      BroadcastGlobalUpdateMessage(suIconSet);
+      CenterUpdatePreview;
+      end;
+  end;
 end;
 
 procedure TfrmIconList.lb_iconlistGetCellCursor(const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
+var
+  tmp: TIconItem;
+  s: string;
 begin
-  if (ACol = 1) then
-    ACursor := crHandPoint;
+  tmp := TIconItem(AItem.Data);
+  if tmp = nil then
+    exit;
+
+  if ACol = 1 then begin
+
+    if (Pos('http', tmp.Website) = 0) then
+      ACursor := crDefault
+    else
+      ACursor := crHandPoint;
+
+  end;
+
+end;
+
+procedure TfrmIconList.lb_iconlistGetCellImageIndex(const ACol: Integer;
+  AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
+var
+  tmp: TIconItem;
+  s: string;
+begin
+  tmp := TIconItem(AItem.Data);
+  if tmp = nil then
+    exit;
+
+  if ACol = 1 then begin
+
+    if (Pos('http', tmp.Website) = 0) then
+      AImageIndex := -1
+    else
+      AImageIndex := 1;
+
+  end;
+
 end;
 
 procedure TfrmIconList.lb_iconlistGetCellText(const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
-  tmp:TIconItem;
+  tmp: TIconItem;
+  s: string;
 begin
   tmp := TIconItem(AItem.Data);
-  if tmp = nil then exit;
+  if tmp = nil then
+    exit;
 
-  if ACol = 0 then
-    AColText := Format('<b>%s</b> By %s',[tmp.Name,tmp.Author]);
+  if ACol = 0 then begin
+
+    if tmp.Author <> '' then
+      s := ' by ' + tmp.Author
+    else
+      s := '';
+
+    AColText := Format('%s%s', [tmp.Name, s]);
+  end;
 end;
 
 procedure TfrmIconList.lb_iconlistResize(Sender: TObject);
