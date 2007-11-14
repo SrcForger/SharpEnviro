@@ -137,6 +137,7 @@ type
     FAutoSizeGrid: Boolean;
     FOnGetCellText: TSharpEListBoxExGetColText;
     FOnGetCellImageIndex: TSharpEListBoxExGetColImageIndex;
+    FLast: Integer;
     procedure ResizeEvent(Sender: TObject);
     procedure DrawItemEvent(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
@@ -151,18 +152,23 @@ type
     procedure SetColumn(AColumn: Integer; const Value: TSharpEListBoxExColumn);
     procedure MouseMoveEvent(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer); override;
     function GetItem(AItem: Integer): TSharpEListItem;
     procedure SetItem(AItem: Integer; const Value: TSharpEListItem);
     procedure UpdateColumnSizes;
     procedure SetColumns(const Value: TSharpEListBoxExColumns);
-    procedure DblClickItem(Sender: TObject);
-    procedure ClickItem(Sender: TObject); overload;
+    //procedure DblClickItem(Sender: TObject);
+    //procedure ClickItem(Sender: TObject); overload;
 
     function IsImageIndexValid(AItem: TSharpEListItem; ACol,
       AImageIndex: Integer; ASelected: Boolean): Boolean;
 
     procedure SetAutoSizeGrid(const Value: Boolean);
     procedure ClickItem(Sender: TObject; ADBlClick: Boolean); overload;
+
   public
     constructor Create(Sender: TComponent); override;
     destructor Destroy; override;
@@ -182,6 +188,7 @@ type
     function GetItemAtCursorPos(ACursorPosition: TPoint): TSharpEListItem;
   protected
     procedure Loaded; override;
+
   published
     property Columns: TSharpEListBoxExColumns read FColumns write SetColumns stored True;
     property Colors: TSharpEListBoxExColors read FColors write SetColors stored True;
@@ -194,7 +201,7 @@ type
 
     property ItemHeight;
     property OnClickItem: TSharpEListBoxExOnClickItem read FOnClickItem write FOnClickItem stored True;
-    property OnDblClickItem: TSharpEListBoxExOnClickItem read FOnDblClickItem write FOnDblClickItem stored True;
+    //property OnDblClickItem: TSharpEListBoxExOnClickItem read FOnDblClickItem write FOnDblClickItem stored True;
     property OnGetCellCursor: TSharpEListBoxExGetColCursor read FOnGetCellCursor write FOnGetCellCursor stored True;
     property OnGetCellColor: TSharpEListBoxExGetItemColor read FOnGetCellColor write FOnGetCellColor;
     property OnGetCellText: TSharpEListBoxExGetColText read FOnGetCellText write FOnGetCellText;
@@ -283,6 +290,17 @@ begin
       exit;
     end;
   end;
+
+  // Default to column 0
+  if not (ADBlClick) then begin
+    if Assigned(FOnClickItem) then
+      FOnClickItem(0, tmpItem);
+  end
+  else begin
+    if Assigned(FOnDblClickItem) then
+      FOnDblClickItem(0, tmpItem);
+  end;
+
 end;
 
 procedure TSharpEListBoxEx.CNDrawItem(var Message: TWMDrawItem);
@@ -301,8 +319,9 @@ begin
   Self.OnDrawItem := DrawItemEvent;
 
   Self.OnMouseMove := MouseMoveEvent;
-  Self.OnDblClick := DblClickItem;
-  Self.OnClick := ClickItem;
+  //Self.OnMouseDown := MouseDownEvent;
+  //Self.OnMouseUp := MouseUpEvent;
+
   Self.OnResize := ResizeEvent;
   Self.Color := clWindow;
 
@@ -454,8 +473,10 @@ var
 begin
   // Init
   sColText := Aitem.SubItemText[ACol];
-  if Assigned(FOnGetCellText) then
+  if Assigned(FOnGetCellText) then begin
     FOnGetCellText(ACol, Aitem, sColText);
+    //Aitem.SubItemText[ACol] := sColText;
+  end;
 
   rColRect := ARect;
 
@@ -610,15 +631,15 @@ begin
   FColumns.Assign(Value);
 end;
 
-procedure TSharpEListBoxEx.DblClickItem(Sender: TObject);
-begin
-  ClickItem(Sender, True);
-end;
+//procedure TSharpEListBoxEx.DblClickItem(Sender: TObject);
+//begin
+//  ClickItem(Sender, True);
+//end;
 
-procedure TSharpEListBoxEx.ClickItem(Sender: TObject);
-begin
-  ClickItem(Sender, False);
-end;
+//procedure TSharpEListBoxEx.ClickItem(Sender: TObject);
+//begin
+//  ClickItem(Sender, False);
+//end;
 
 procedure TSharpEListBoxEx.Loaded;
 begin
@@ -826,6 +847,15 @@ begin
   Self.Items.Objects[AItem] := Value;
 end;
 
+procedure TSharpEListBoxEx.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+var
+  n:Integer;
+begin
+  //ClickItem(Self,false);
+  //Self.Invalidate;
+end;
+
 procedure TSharpEListBoxEx.MouseMoveEvent(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 var
@@ -854,6 +884,14 @@ begin
       exit;
     end;
   end;
+end;
+
+procedure TSharpEListBoxEx.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  inherited;
+  ClickItem(Self,false);
+  Self.Invalidate;
 end;
 
 procedure TSharpEListBoxEx.ResizeEvent(Sender: TObject);
