@@ -36,7 +36,6 @@ object frmBarList: TfrmBarList
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         StretchColumn = True
-        CanSelect = False
       end
       item
         Width = 50

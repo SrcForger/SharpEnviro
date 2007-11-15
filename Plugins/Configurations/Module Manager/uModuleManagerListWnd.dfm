@@ -36,8 +36,7 @@ object frmMMList: TfrmMMList
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
-        StretchColumn = False
-        CanSelect = False
+        StretchColumn = True
       end
       item
         Width = 75
