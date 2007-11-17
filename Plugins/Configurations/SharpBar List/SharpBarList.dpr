@@ -53,6 +53,7 @@ uses
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 begin
   if frmBarList = nil then frmBarList := TfrmBarList.Create(nil);
+  CenterDefineConfigurationMode(scmLive);
 
   uVistaFuncs.SetVistaFonts(frmBarList);
   frmBarList.ParentWindow := aowner;
