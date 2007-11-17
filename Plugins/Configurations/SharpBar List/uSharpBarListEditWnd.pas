@@ -32,7 +32,7 @@ uses
   Dialogs, StdCtrls, JvExControls, JvComponent, JvLabel, ImgList,
   PngImageList, JvExStdCtrls, JvEdit, JvValidateEdit, JvValidators,
   JvComponentBase, JvErrorIndicator, ExtCtrls, JvPageList, SharpApi,
-  JclStrings, SharpCenterApi;
+  JclStrings, SharpCenterApi, uSharpBarListWnd;
 
 type
   TfrmEditItem = class(TForm)
@@ -65,8 +65,9 @@ type
 
     procedure edThemeNameKeyPress(Sender: TObject; var Key: Char);
     procedure FormDestroy(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
-    FBarItem : TObject;
+    FBarItem : TBarItem;
     { Private declarations }
   public
     { Public declarations }
@@ -75,7 +76,7 @@ type
     function ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM):Boolean;
     procedure ClearValidation;
 
-    property BarItem: TObject read FBarItem write FBarItem;
+    property BarItem: TBarItem read FBarItem write FBarItem;
   end;
 
 type
@@ -88,9 +89,6 @@ var
   frmEditItem: TfrmEditItem;
 
 implementation
-
-uses
-  uSharpBarListWnd;
 
 {$R *.dfm}
 
@@ -120,6 +118,11 @@ procedure TfrmEditItem.edThemeNameKeyPress(Sender: TObject; var Key: Char);
 begin
   CenterDefineEditState(True);
   frmBarList.lbBarList.Enabled := False;
+end;
+
+procedure TfrmEditItem.FormCreate(Sender: TObject);
+begin
+  BarItem := TBarItem.Create;
 end;
 
 procedure TfrmEditItem.FormDestroy(Sender: TObject);

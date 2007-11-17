@@ -13,6 +13,7 @@ object frmEditItem: TfrmEditItem
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
+  OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
@@ -38,6 +39,7 @@ object frmEditItem: TfrmEditItem
         Width = 50
         Height = 13
         Caption = 'Template:'
+        Transparent = True
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
@@ -50,6 +52,7 @@ object frmEditItem: TfrmEditItem
         Width = 42
         Height = 13
         Caption = 'Monitor:'
+        Transparent = True
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
@@ -62,6 +65,7 @@ object frmEditItem: TfrmEditItem
         Width = 67
         Height = 13
         Caption = 'Vertical Align:'
+        Transparent = True
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
@@ -74,6 +78,7 @@ object frmEditItem: TfrmEditItem
         Width = 80
         Height = 13
         Caption = 'Horizontal Align:'
+        Transparent = True
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
@@ -99,7 +104,7 @@ object frmEditItem: TfrmEditItem
         Width = 137
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 1
         OnSelect = cbBasedOnSelect
       end
@@ -110,7 +115,7 @@ object frmEditItem: TfrmEditItem
         Height = 21
         Style = csDropDownList
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 2
         OnSelect = cbBasedOnSelect
       end
@@ -121,7 +126,7 @@ object frmEditItem: TfrmEditItem
         Height = 21
         Style = csDropDownList
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 0
+        ItemHeight = 13
         ItemIndex = 0
         TabOrder = 3
         Text = 'Top'
@@ -137,7 +142,7 @@ object frmEditItem: TfrmEditItem
         Height = 21
         Style = csDropDownList
         Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 0
+        ItemHeight = 13
         ItemIndex = 0
         TabOrder = 4
         Text = 'Left'
@@ -176,6 +181,7 @@ object frmEditItem: TfrmEditItem
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
         ParentFont = False
+        Transparent = True
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
@@ -224,6 +230,7 @@ object frmEditItem: TfrmEditItem
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
         ParentFont = False
+        Transparent = True
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
@@ -299,5 +306,6 @@ object frmEditItem: TfrmEditItem
       end>
     Left = 108
     Top = 64
+    Bitmap = {}
   end
 end
