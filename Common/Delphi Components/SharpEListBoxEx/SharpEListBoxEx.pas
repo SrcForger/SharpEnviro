@@ -140,7 +140,7 @@ type
     FOnDblClickItem: TSharpEListBoxExOnClickItem;
     FOnGetCellColor: TSharpEListBoxExGetItemColor;
     FAutoSizeGrid: Boolean;
-    FOnGetCellText: TSharpEListBoxExGetColText;
+     FOnGetCellText: TSharpEListBoxExGetColText;
     FOnGetCellImageIndex: TSharpEListBoxExGetColImageIndex;
     FLast: Integer;
     procedure ResizeEvent(Sender: TObject);
@@ -168,8 +168,10 @@ type
 
     procedure SetAutoSizeGrid(const Value: Boolean);
     procedure ClickItem(Sender: TObject; ADBlClick: Boolean); overload;
+    function GetSelectedItem: TSharpEListItem;
 
   public
+
     constructor Create(Sender: TComponent); override;
     destructor Destroy; override;
     procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
@@ -182,6 +184,7 @@ type
     function AddItem(AText: string;
       AImageIndex: Integer = -1; ASelectedImageIndex: Integer = -1): TSharpEListItem; reintroduce;
 
+    property SelectedItem: TSharpEListItem read GetSelectedItem; 
     property Column[AColumn: Integer]: TSharpEListBoxExColumn read GetColumn
     write SetColumn;
 
@@ -698,28 +701,62 @@ end;
 
 function TSharpEListItem.GetSubItemSelectedImageIndex(
   ASubItemIndex: Integer): Integer;
+var
+  col, idx: Integer;
+  b: Boolean;
 begin
-  Result := Integer(FSubItemSelectedImages[ASubItemIndex]);
+  col := ASubItemIndex;
+  idx := Integer(FSubItemSelectedImages[ASubItemIndex]);
+  b := true;
+
+  if Assigned(TSharpEListBoxEx(FOwner).FOnGetCellImageIndex) then begin
+    TSharpEListBoxEx(FOwner).FOnGetCellImageIndex(col,Self,idx,b);
+    Result := idx;
+  end else
+    Result := idx;
+
 end;
 
 function TSharpEListItem.GetCaption: string;
 begin
-  Result := FSubItems[0];
+  Result := GetSubItemText(0);
 end;
 
 function TSharpEListItem.GetImageIndex: Integer;
 begin
-  Result := Integer(FSubItemImages[0]);
+  Result := GetSubItemImageIndex(0);
 end;
 
 function TSharpEListItem.GetSubItemImageIndex(ASubItemIndex: Integer): Integer;
+var
+  col, idx: Integer;
+  b: Boolean;
 begin
-  Result := Integer(FSubItemImages[ASubItemIndex]);
+  col := ASubItemIndex;
+  idx := Integer(FSubItemImages[ASubItemIndex]);
+  b := false;
+
+  if Assigned(TSharpEListBoxEx(FOwner).FOnGetCellImageIndex) then begin
+    TSharpEListBoxEx(FOwner).FOnGetCellImageIndex(col,Self,idx,b);
+    Result := idx;
+  end else
+    Result := idx;
+
 end;
 
 function TSharpEListItem.GetSubItemText(ASubItem: Integer): string;
+var
+  col: Integer;
+  s: String;
 begin
-  Result := FSubItems[ASubItem];
+  col := ASubItem;
+  s := FSubItems[ASubItem];
+
+  if Assigned(TSharpEListBoxEx(FOwner).FOnGetCellText) then begin
+    TSharpEListBoxEx(FOwner).FOnGetCellText(col,Self,s);
+    Result := s;
+  end else
+    Result := s;
 end;
 
 function TSharpEListBoxEx.AddItem(AText: string;
@@ -889,6 +926,13 @@ begin
   n := Self.ItemAtPos(Self.ScreenToClient(ACursorPosition), true);
   if n <> -1 then
     Result := Item[n];
+end;
+
+function TSharpEListBoxEx.GetSelectedItem: TSharpEListItem;
+begin
+  Result := nil;
+  if Self.ItemIndex <> -1 then
+    Result := Item[Self.ItemIndex];
 end;
 
 function TSharpEListBoxEx.IsImageIndexValid(AItem: TSharpEListItem;
