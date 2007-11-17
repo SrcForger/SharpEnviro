@@ -311,8 +311,9 @@ begin
       Unload;
 
     ActivePluginID := FUnloadCommand.PluginID;
-    if CompareText(ExtractFileExt(FUnloadCommand.Param), '.con') = 0 then
-      BuildNavFromFile(FUnloadCommand.Param)
+    if CompareText(ExtractFileExt(FUnloadCommand.Param), '.con') = 0 then begin
+      BuildNavFromFile(FUnloadCommand.Param);
+    end
     else begin
       BuildNavFromCommandLine;
     end;

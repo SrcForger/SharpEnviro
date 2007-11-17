@@ -1426,9 +1426,9 @@ object SharpCenterWnd: TSharpCenterWnd
       TabOrder = 0
       object pnlTree: TPanel
         Left = 0
-        Top = 131
+        Top = 167
         Width = 165
-        Height = 389
+        Height = 353
         Align = alClient
         BevelOuter = bvNone
         Color = clWindow
@@ -1439,7 +1439,7 @@ object SharpCenterWnd: TSharpCenterWnd
           Left = 0
           Top = 6
           Width = 165
-          Height = 383
+          Height = 347
           Margins.Left = 0
           Margins.Top = 6
           Margins.Right = 0
@@ -1523,7 +1523,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Left = 0
         Top = 25
         Width = 165
-        Height = 106
+        Height = 142
         Align = alTop
         BevelOuter = bvNone
         BorderWidth = 2
@@ -1541,7 +1541,7 @@ object SharpCenterWnd: TSharpCenterWnd
           Left = 2
           Top = 2
           Width = 161
-          Height = 102
+          Height = 138
           ActivePage = pagFav
           PropagateEnable = False
           Align = alClient
@@ -1549,49 +1549,69 @@ object SharpCenterWnd: TSharpCenterWnd
             Left = 0
             Top = 0
             Width = 161
-            Height = 102
+            Height = 138
             BorderWidth = 2
             Caption = 'pagFav'
-            object lbFavs: TSharpEListBoxEx
+            object lbHistory: TSharpEListBoxEx
               Left = 0
               Top = 0
               Width = 157
-              Height = 98
+              Height = 134
+              Margins.Left = 0
+              Margins.Top = 0
+              Margins.Right = 0
+              Margins.Bottom = 0
               Columns = <
                 item
                   Width = 149
                   HAlign = taLeftJustify
                   VAlign = taVerticalCenter
                   ColumnAlign = calLeft
+                  StretchColumn = True
+                  Images = pilIcons
+                end
+                item
+                  Width = 10
+                  HAlign = taLeftJustify
+                  VAlign = taVerticalCenter
+                  ColumnAlign = calRight
                   StretchColumn = False
                 end>
               Colors.BorderColor = clBtnFace
               Colors.BorderColorSelected = clBtnShadow
-              Colors.ItemColor = clWindow
-              Colors.ItemColorSelected = clBtnFace
+              Colors.ItemColor = 8447997
+              Colors.ItemColorSelected = 2480124
               Color = 8447997
+              Font.Charset = ANSI_CHARSET
+              Font.Color = clWindowText
+              Font.Height = -9
+              Font.Name = 'Tahoma'
+              Font.Style = []
               ItemHeight = 26
               AutosizeGrid = False
               BevelInner = bvNone
               BevelOuter = bvNone
               Borderstyle = bsNone
               Align = alClient
+              ParentFont = False
             end
           end
           object pagHistory: TJvStandardPage
             Left = 0
             Top = 0
             Width = 161
-            Height = 102
+            Height = 138
             Caption = 'pagHistory'
+            ExplicitHeight = 102
           end
           object pagImport: TJvStandardPage
             Left = 0
             Top = 0
             Width = 161
-            Height = 102
+            Height = 138
             BorderWidth = 4
             Caption = ' '
+            ExplicitHeight = 102
             object btnImport: TPngSpeedButton
               Left = 118
               Top = 36
@@ -2058,14 +2078,15 @@ object SharpCenterWnd: TSharpCenterWnd
             Left = 0
             Top = 0
             Width = 161
-            Height = 102
+            Height = 138
             BorderWidth = 2
             Caption = ' '
+            ExplicitHeight = 102
             DesignSize = (
               157
-              98)
+              134)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -662
+              Left = -678
               Top = 35
               Width = 23
               Height = 22
@@ -2517,13 +2538,14 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = 0
+              Width = -4
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
+              ExplicitWidth = 0
             end
           end
         end
@@ -9847,5 +9869,11 @@ object SharpCenterWnd: TSharpCenterWnd
     Left = 68
     Top = 260
     Bitmap = {}
+  end
+  object Timer1: TTimer
+    Interval = 5000
+    OnTimer = Timer1Timer
+    Left = 128
+    Top = 184
   end
 end

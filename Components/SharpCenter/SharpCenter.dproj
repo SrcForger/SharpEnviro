@@ -6,7 +6,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>C:\SharpE\SharpCenter.exe</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>E:\SharpE\SharpCenter.exe</DCC_DependencyCheckOutputName>
     <DCC_UsePackage>vcl</DCC_UsePackage>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

@@ -103,7 +103,7 @@ type
     Label2: TLabel;
     Edit2: TEdit;
     PngSpeedButton2: TPngSpeedButton;
-    lbFavs: TSharpEListBoxEx;
+    lbHistory: TSharpEListBoxEx;
     pnlLivePreview: TPanel;
     imgLivePreview: TImage32;
     pnlPluginContainer: TSharpEPageControl;
@@ -115,6 +115,7 @@ type
     pnlEditToolbar: TPanel;
     btnEditCancel: TPngSpeedButton;
     btnEditApply: TPngSpeedButton;
+    Timer1: TTimer;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -270,6 +271,7 @@ begin
   SCM.History.Add(tmpHist.Command, tmpHist.Param, tmpMsg.PluginID);
   SCM.ExecuteCommand(CenterCommandAsEnum(tmpMsg.Command),
     tmpMsg.Parameter, tmpMsg.PluginID);
+
 end;
 
 procedure TSharpCenterWnd.InitCommandLine;
@@ -671,10 +673,6 @@ begin
 
   // Set Listbox defaults
   lbTree.Colors.BorderColorSelected := $00C1F4FE;
-  lbFavs.Colors.BorderColorSelected := $00C1F4FE;
-  lbFavs.Color := $00C1F4FE;
-  lbFavs.Colors.ItemColor := $00C1F4FE;
-  lbFavs.Colors.ItemColorSelected := $0080E7FD;
 
   // Reinit values
   FSelectedTabID := 0;
@@ -803,14 +801,14 @@ begin
 end;
 
 procedure TSharpCenterWnd.ShowHistory;
-{var
-  i: Integer;  }
+var
+  i: Integer;
 begin
-  {lbHistory.Clear;
+  lbHistory.Clear;
   for i := 0 to SCM.History.Count-1 do
-    lbHistory.Items.Add(TSharpCenterHistoryItem(SCM.History.List[i]).Command +
+    lbHistory.AddItem(CenterCommandAsText(TSharpCenterHistoryItem(SCM.History.List[i]).Command) +
       ' ' + TSharpCenterHistoryItem(SCM.History.List[i]).Param + ' (' +
-          TSharpCenterHistoryItem(SCM.History.List[i]).PluginID + ')'); }
+          TSharpCenterHistoryItem(SCM.History.List[i]).PluginID + ')',4);
 end;
 
 procedure TSharpCenterWnd.Timer1Timer(Sender: TObject);
@@ -870,6 +868,7 @@ begin
 
     TForm(GetControlByHandle(SCM.PluginWndHandle)).Color := clWindow;
     UpdateSize;
+    CenterUpdateSize;
 
   finally
     pnlPluginContainer.Show;
