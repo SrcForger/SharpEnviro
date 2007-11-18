@@ -778,6 +778,11 @@ begin
     withoute := StrChopRight(withoute, 4);
     withe := FAppPathList.Names[iList];
 
+    // ignore invalid items (drives) in the app list
+    if length(withe) = 2 then
+      if withe[2] = ':' then
+        exit;
+      
     // Try with extension
     iPos := StrFind(withe,s);
     if iPos = 1 then begin
