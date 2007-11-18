@@ -739,6 +739,9 @@ begin
   if index > FItems.Count - 1 then exit;
 
   temp := TTrayItem(FItems.Items[index]);
+  if temp = FLastTipItem then
+    StopTipTimer;
+
   if index < FItems.Count - 1 then
      for k := 0 to FWndList.Count - 1 do
      begin
@@ -770,6 +773,7 @@ begin
     if not iswindow(tempItem.Wnd) then
     begin
       DeleteTrayIconByIndex(n);
+      RenderIcons;
       exit;
     end;
   end;
@@ -895,7 +899,7 @@ begin
   for n := 0 to FItems.Count - 1 do
   begin
     if PointInRect(Point(x,y),Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing)) then
-    if n + imod < FItems.Count then
+    if (n + imod >= 0 ) and (n + imod <= FItems.Count - 1) then
     begin
       tempItem := TTrayItem(FItems.Items[n+imod]);
 
