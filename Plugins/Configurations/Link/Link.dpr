@@ -246,12 +246,12 @@ begin
     sceIconShadow.Items.Item[0].ColorCode := Theme[DS_ICONSHADOWCOLOR].IntValue;
 
     s := Theme[DS_FONTNAME].Value;
-    for n  := 0 to FontList.List.Count - 1 do
-    if CompareText(TFontInfo(FontList.List.Objects[n]).FullName,s) = 0 then
+    for n  := 0 to cboFontName.Items.Count - 1 do
+    if CompareText(cboFontName.Items[n],s) = 0 then
     begin
-      cboFontName.ItemIndex := cboFontName.Items.IndexOf(FontList.List[n]);
+      cboFontName.ItemIndex := n;
       break;
-     end;
+    end;
     if cboFontName.ItemIndex = -1 then
       cboFontName.ItemIndex := cboFontName.Items.IndexOf('arial');
     sgbFontSize.Value    := Theme[DS_TEXTSIZE].IntValue;

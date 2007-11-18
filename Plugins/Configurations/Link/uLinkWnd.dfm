@@ -1378,6 +1378,7 @@ object frmLink: TfrmLink
           TabOrder = 0
           OnChange = cboFontNameChange
           OnDrawItem = cboFontNameDrawItem
+          ExplicitTop = 3
         end
       end
       object UICFontSize: TSharpEUIC
@@ -1890,6 +1891,7 @@ object frmLink: TfrmLink
               'Left Shadow'
               'Right Shadow'
               'Outline Glow')
+            ExplicitLeft = 2
           end
         end
         object UICFontShadowTrans: TSharpEUIC
@@ -2194,7 +2196,7 @@ object frmLink: TfrmLink
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 340
+    Width = 341
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16
