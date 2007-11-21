@@ -4,11 +4,12 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, PngImageList, Types, ComCtrls, Extctrls, JclFileUtils, GR32, GR32_Image, pngimage;
+  Dialogs, StdCtrls, PngImageList, PngImage, Types, ComCtrls, Extctrls, JclFileUtils, GR32, GR32_Image, JclGraphics;
 
 type
   TSEColumn_WidthType = (cwtPercent, cwtPixel);
   TSEColumn_Align = (calLeft, calRight);
+  TSEColumn_Type = (ctDefault, ctCheck);
 
   TSharpEListBoxExColumn = class(TCollectionItem)
   private
@@ -23,6 +24,7 @@ type
     FStretchColumn: Boolean;
     FCursorRect: TRect;
     FCanSelect: Boolean;
+    FColumnType: TSEColumn_Type;
 
     procedure SetWidth(const Value: Integer);
     procedure SetHAlign(const Value: TAlignment);
@@ -42,6 +44,7 @@ type
     property ColumnAlign: TSEColumn_Align read FColumnAlign write FColumnAlign;
     property StretchColumn: Boolean read FStretchColumn write FStretchColumn;
     property CanSelect: Boolean read FCanSelect write FCanSelect default True;
+    property ColumnType: TSEColumn_Type read FColumnType write FColumnType;
 
     property Images: TPngImageList read
       FImages write FImages;
@@ -65,12 +68,17 @@ type
     FBorderColor: TColor;
     FItemColorSelected: TColor;
     FBorderColorSelected: TColor;
+    FCheckColorSelected: TColor;
     FItemColor: TColor;
+    FCheckColor: TColor;
   published
     property BorderColor: TColor read FBorderColor write FBorderColor;
     property BorderColorSelected: TColor read FBorderColorSelected write FBorderColorSelected;
     property ItemColor: TColor read FItemColor write FItemColor;
     property ItemColorSelected: TColor read FItemColorSelected write FItemColorSelected;
+    property CheckColorSelected: TColor read FCheckColorSelected write FCheckColorSelected;
+    property CheckColor: TColor read FCheckColor write FCheckColor;
+
   end;
 
   TSharpEListItem = class(TPersistent)
@@ -82,6 +90,7 @@ type
     FHint: string;
     FID: Integer;
     FOwner: TComponent;
+    FSubItemCheckedStates: TList;
 
     function GetSubItemText(ASubItem: Integer): string;
     procedure SetSubItemText(ASubItem: Integer; const Value: string);
@@ -97,17 +106,22 @@ type
     procedure SetCaption(const Value: string);
     function GetImageIndex: Integer;
     procedure SetImageIndex(const Value: Integer);
+    function GetChecked: Boolean;
+    function GetSubItemChecked(ASubItemIndex: Integer): boolean;
+    procedure SetSubItemChecked(ASubItemIndex: Integer; const Value: boolean);
 
   public
     constructor Create(AOwner: TComponent);
     destructor Destroy; override;
-    function AddSubItem(AText: string; AImageIndex: Integer = -1;
-      ASelectedImageIndex: Integer = -1): Integer;
+    function AddSubItem(AText: string; AImageIndex: Integer = -1; 
+      ASelectedImageIndex: Integer = -1): Integer; overload;
+    function AddSubItem(AText: string; AChecked:Boolean): Integer; overload;
     property Hint: string read FHint write FHint;
     property Data: Pointer read FData write FData;
     property ID: Integer read FID write FID;
     property Caption: string read GetCaption write SetCaption;
     property ImageIndex: Integer read GetImageIndex write SetImageIndex;
+    property Checked: Boolean read GetChecked;
 
     property SubItemImageIndex[ASubItemIndex: Integer]: Integer read GetSubItemImageIndex write
     SetSubItemImageIndex; default;
@@ -116,18 +130,20 @@ type
 
     property SubItemImageIndexes: TList read FSubItemImages write FSubItemImages;
     property SubItemSelectedImageIndexes: TList read FSubItemSelectedImages write FSubItemSelectedImages;
+    property SubItemCheckedStates: TList read FSubItemCheckedStates write FSubItemCheckedStates;
 
+    property SubItemChecked[ASubItem: Integer]: boolean read GetSubItemChecked write SetSubItemChecked;
     property SubItemText[ASubItem: Integer]: string read GetSubItemText write SetSubItemText;
     function SubItemCount: Integer;
   end;
 
+  TSharpEListBoxExOnClickCheck = procedure(const ACol: Integer; AItem: TSharpEListItem; var AChecked:Boolean) of object;
   TSharpEListBoxExOnClickItem = procedure(const ACol: Integer; AItem: TSharpEListItem) of object;
   TSharpEListBoxExGetItemColor = procedure(const AItem: Integer; var AColor: TColor) of object;
   TSharpEListBoxExGetColCursor = procedure(const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor) of object;
   TSharpEListBoxExGetColText = procedure(const ACol: Integer; AItem: TSharpEListItem; var AColText: string) of object;
   TSharpEListBoxExGetColImageIndex = procedure(const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: integer; const ASelected: Boolean) of object;
-
-
+  TSharpEListBoxExGetColClickable = procedure(const ACol: Integer; AItem: TSharpEListItem; var AClickable: Boolean) of object;
 
   TSharpEListBoxEx = class(TCustomListBox)
   private
@@ -140,9 +156,12 @@ type
     FOnDblClickItem: TSharpEListBoxExOnClickItem;
     FOnGetCellColor: TSharpEListBoxExGetItemColor;
     FAutoSizeGrid: Boolean;
-     FOnGetCellText: TSharpEListBoxExGetColText;
+    FOnGetCellText: TSharpEListBoxExGetColText;
     FOnGetCellImageIndex: TSharpEListBoxExGetColImageIndex;
     FLast: Integer;
+    FOnGetCellClickable: TSharpEListBoxExGetColClickable;
+
+    FOnClickCheck: TSharpEListBoxExOnClickCheck;
     procedure ResizeEvent(Sender: TObject);
     procedure DrawItemEvent(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
@@ -157,6 +176,8 @@ type
     procedure SetColumn(AColumn: Integer; const Value: TSharpEListBoxExColumn);
     procedure MouseMoveEvent(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
+    procedure MeasureItemEvent(Control: TWinControl; Index: Integer;
+      var Height: Integer);
 
     function GetItem(AItem: Integer): TSharpEListItem;
     procedure SetItem(AItem: Integer; const Value: TSharpEListItem);
@@ -167,8 +188,12 @@ type
       AImageIndex: Integer; ASelected: Boolean): Boolean;
 
     procedure SetAutoSizeGrid(const Value: Boolean);
-    procedure ClickItem(Sender: TObject; ADBlClick: Boolean); overload;
+
     function GetSelectedItem: TSharpEListItem;
+    procedure DrawDefaultItem(AItem: TSharpEListItem;
+      ASelected: Boolean; AColumn: TSharpEListBoxExColumn);
+    procedure DrawCheckedItem(AItem: TSharpEListItem;
+      AChecked: Boolean; AColumn: TSharpEListBoxExColumn);
 
   public
 
@@ -182,9 +207,10 @@ type
     property ColumnCount: Integer read GetColumnCount stored True;
 
     function AddItem(AText: string;
-      AImageIndex: Integer = -1; ASelectedImageIndex: Integer = -1): TSharpEListItem; reintroduce;
+      AImageIndex: Integer = -1; ASelectedImageIndex: Integer = -1): TSharpEListItem;  overload;
+    function AddItem(AText: string; AChecked:Boolean): TSharpEListItem; overload;
 
-    property SelectedItem: TSharpEListItem read GetSelectedItem; 
+    property SelectedItem: TSharpEListItem read GetSelectedItem;
     property Column[AColumn: Integer]: TSharpEListBoxExColumn read GetColumn
     write SetColumn;
 
@@ -193,6 +219,7 @@ type
   protected
     procedure Loaded; override;
     procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
+
   published
     property Columns: TSharpEListBoxExColumns read FColumns write SetColumns stored True;
     property Colors: TSharpEListBoxExColors read FColors write SetColors stored True;
@@ -204,11 +231,13 @@ type
     property OnResize;
 
     property ItemHeight;
+    property OnClickCheck: TSharpEListBoxExOnClickCheck read FOnClickCheck write FOnClickCheck;
     property OnClickItem: TSharpEListBoxExOnClickItem read FOnClickItem write FOnClickItem stored True;
     property OnGetCellCursor: TSharpEListBoxExGetColCursor read FOnGetCellCursor write FOnGetCellCursor stored True;
     property OnGetCellColor: TSharpEListBoxExGetItemColor read FOnGetCellColor write FOnGetCellColor;
     property OnGetCellText: TSharpEListBoxExGetColText read FOnGetCellText write FOnGetCellText;
     property OnGetCellImageIndex: TSharpEListBoxExGetColImageIndex read FOnGetCellImageIndex write FOnGetCellImageIndex;
+    property OnGetCellClickable: TSharpEListBoxExGetColClickable read FOnGetCellClickable write FOnGetCellClickable;
 
     property ItemOffset: TPoint read FItemOffset write FItemOffset;
     property AutosizeGrid: Boolean read FAutoSizeGrid write SetAutoSizeGrid;
@@ -226,6 +255,8 @@ implementation
 
 uses
   JvJVCLUtils;
+
+  {$R SharpEListBoxEx.res}
 
 procedure Register;
 begin
@@ -246,57 +277,6 @@ begin
   Result := FColumns.Add(Self);
 end;
 
-procedure TSharpEListBoxEx.ClickItem(Sender: TObject; ADBlClick: Boolean);
-var
-  R: TRect;
-  X, Y: Integer;
-  pt: TPoint;
-
-  iCol: Integer;
-  tmpItem: TSharpEListItem;
-begin
-  tmpItem := GetItemAtCursorPos(Mouse.CursorPos);
-  if tmpItem = nil then
-    exit;
-
-  pt := Self.ScreenToClient(Mouse.CursorPos);
-  X := pt.X;
-  Y := pt.Y;
-
-  Self.Invalidate;
-
-  for iCol := 0 to Pred(ColumnCount) do begin
-
-    R := Self.ItemRect(tmpItem.ID);
-
-    if (X > Column[iCol].ColumnRect.Left) and (X < Column[iCol].ColumnRect.Right) and
-      (Y > R.Top) and (Y < R.Bottom) then begin
-
-      if not (ADBlClick) then begin
-        if Assigned(FOnClickItem) then
-          FOnClickItem(iCol, tmpItem);
-      end
-      else begin
-        if Assigned(FOnDblClickItem) then
-          FOnDblClickItem(iCol, tmpItem);
-      end;
-
-      exit;
-    end;
-  end;
-
-  // Default to column 0
-  if not (ADBlClick) then begin
-    if Assigned(FOnClickItem) then
-      FOnClickItem(0, tmpItem);
-  end
-  else begin
-    if Assigned(FOnDblClickItem) then
-      FOnDblClickItem(0, tmpItem);
-  end;
-
-end;
-
 procedure TSharpEListBoxEx.CNDrawItem(var Message: TWMDrawItem);
 begin
   Exclude(TOwnerDrawState(LongRec(Message.DrawItemStruct^.itemState).Lo),
@@ -309,10 +289,11 @@ constructor TSharpEListBoxEx.Create(Sender: TComponent);
 begin
   inherited;
   Self.DoubleBuffered := False;
-  Self.Style := lbOwnerDrawFixed;
+  Self.Style := lbOwnerDrawVariable;
   Self.OnDrawItem := DrawItemEvent;
 
   Self.OnMouseMove := MouseMoveEvent;
+  //Self.OnMeasureItem := MeasureItemEvent;
 
   Self.OnResize := ResizeEvent;
   Self.Color := clWindow;
@@ -320,10 +301,12 @@ begin
   FColors := TSharpEListBoxExColors.Create;
   FColors.ItemColor := clWindow;
   FColors.ItemColorSelected := clBtnFace;
+  FColors.CheckColorSelected := clBtnFace;
+  FColors.CheckColor := $00ecf1e9;
   FColors.BorderColor := clBtnFace;
   FColors.BorderColorSelected := clBtnShadow;
 
-  FColumns := TSharpEListBoxExColumns.Create(Self,TSharpEListBoxExColumn);
+  FColumns := TSharpEListBoxExColumns.Create(Self, TSharpEListBoxExColumn);
 
   ItemHeight := 30;
   FItemOffset := Point(2, 2);
@@ -345,12 +328,12 @@ end;
 procedure TSharpEListBoxEx.DrawItemEvent(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
 var
-  tmpItem: TSharpEListItem;
   tmpCol: TSharpEListBoxExColumn;
   tmpPng: TPngObject;
   R: TRect;
-  i, iImgIdx, iSelImgIdx: Integer;
+  iCol, iImgIdx, iSelImgIdx: Integer;
   bSelected: Boolean;
+  tmpItem: TSharpEListItem;
 begin
   UpdateColumnSizes;
   tmpItem := TSharpEListItem(Self.Items.Objects[Index]);
@@ -365,55 +348,22 @@ begin
     DrawSelection(Rect, State, tmpItem);
 
     // Draw Columns
-    for i := 0 to Pred(ColumnCount) do begin
+    for iCol := 0 to Pred(ColumnCount) do begin
 
-      tmpCol := Column[i];
-      Column[i].ColumnRect := Types.Rect(Column[i].ColumnRect.Left, Rect.Top,
-        Column[i].ColumnRect.Right, Rect.Bottom);
-      R := Column[i].ColumnRect;
+      tmpCol := Column[iCol];
+      Column[iCol].ColumnRect := Types.Rect(Column[iCol].ColumnRect.Left, Rect.Top,
+        Column[iCol].ColumnRect.Right, Rect.Bottom);
+      R := Column[iCol].ColumnRect;
 
-      if (i <= tmpItem.SubItemCount - 1) then begin
-        tmpPng := nil;
+      if (iCol <= tmpItem.SubItemCount - 1) then begin
 
-        iSelImgIdx := tmpItem.SubItemSelectedImageIndex[i];
-        if assigned(FOnGetCellImageIndex) then
-          FOnGetCellImageIndex(i, tmpItem, iSelImgIdx, True);
-
-        if ((bSelected) and (IsImageIndexValid(tmpItem, i,
-          iSelImgIdx, bSelected)) and (tmpCol.SelectedImages <> nil)) then begin
-
-          if iSelImgIdx <> -1 then
-            tmpPng := tmpCol.SelectedImages.PngImages.Items[iSelImgIdx].PngImage;
-
-          if tmpPng <> nil then
-            DrawItemImage(Self.Canvas, R, tmpItem, i, tmpPng);
-
-          DrawItemText(Self.Canvas, R, 0, tmpItem, i, tmpPng);
-        end
-        else begin
-
-          iImgIdx := tmpItem.SubItemImageIndex[i];
-          if assigned(FOnGetCellImageIndex) then
-            FOnGetCellImageIndex(i, tmpItem, iImgIdx, False);
-
-          if IsImageIndexValid(tmpItem, i, iImgIdx, bSelected) then begin
-
-            if iImgIdx <> -1 then
-              if tmpCol.Images <> nil then
-                if tmpCol.Images.PngImages.Items[iImgIdx] <> nil then
-                  tmpPng := tmpCol.Images.PngImages.Items[iImgIdx].PngImage;
-
-            if tmpPng <> nil then
-              DrawItemImage(Self.Canvas, R, tmpItem, i, tmpPng);
-
-            DrawItemText(Self.Canvas, R, 0, tmpItem, i, tmpPng);
-          end
-          else
-            DrawItemText(Self.Canvas, R, 0, tmpItem, i, nil);
+        case Column[iCol].ColumnType of
+          ctDefault: DrawDefaultItem(tmpItem, bSelected, tmpCol);
+          ctCheck: DrawCheckedItem(tmpItem, bSelected, tmpCol);
         end;
+
       end;
     end;
-
   end;
 end;
 
@@ -467,7 +417,6 @@ begin
   sColText := Aitem.SubItemText[ACol];
   if Assigned(FOnGetCellText) then begin
     FOnGetCellText(ACol, Aitem, sColText);
-    //Aitem.SubItemText[ACol] := sColText;
   end;
 
   rColRect := ARect;
@@ -500,7 +449,7 @@ begin
     taAlignTop: rColRect := Rect(rColRect.Left, ARect.Top + ItemOffset.Y, rColRect.Right, ARect.Top + ItemOffset.Y + iTextHeight);
     taAlignBottom: rColRect := Rect(rColRect.Left, ARect.Bottom - ItemOffset.Y - iTextHeight, rColRect.Right, ARect.Bottom - ItemOffset.Y);
     taVerticalCenter: begin
-        iItemHWOffsets := ItemHeight;
+        iItemHWOffsets := ItemHeight-ItemOffset.Y;
         n := (iItemHWOffsets div 2) - (iTextHeight div 2);
 
         rColRect := Rect(rColRect.Left, ARect.Top + n, rColRect.Right, ARect.Top + n + iTextHeight);
@@ -532,6 +481,9 @@ procedure TSharpEListBoxEx.DrawSelection(ARect: TRect;
   AState: TOwnerDrawState; AItem: TSharpEListItem);
 var
   tmpColor: TColor;
+  i:Integer;
+  col: TSharpEListBoxExColumn;
+  x,y: Integer;
 begin
   Self.Canvas.Brush.Color := Color;
   Self.Canvas.FillRect(ARect);
@@ -540,13 +492,24 @@ begin
   if Assigned(FOnGetCellColor) then
     FOnGetCellColor(AItem.ID, tmpColor);
 
+  y := 0;
+  if AItem.ID = 0 then begin
+    y := itemoffset.Y;
+  end;
+
+  // Checked
+    if AItem.Checked then  begin
+      tmpColor :=  FColors.CheckColor;
+    end;
+
   if not (Enabled) then
     tmpColor := clWindow;
 
   Self.Canvas.Brush.Color := tmpColor;
   Self.Canvas.Pen.Color := tmpColor;
-  Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top { + Itemoffset.Y},
-    ARect.Right - (ItemOffset.X), ARect.Bottom { - itemoffset.Y}, 10, 10);
+
+  Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top + y,
+      ARect.Right - (ItemOffset.X), ARect.Bottom - itemoffset.Y, 10, 10);
 
   // Get Colours
   if odSelected in AState then begin
@@ -555,15 +518,20 @@ begin
     if Assigned(FOnGetCellColor) then
       FOnGetCellColor(AItem.ID, tmpColor);
 
+    if AItem.Checked then  begin
+      tmpColor := FColors.FCheckColorSelected;
+    end;
+
     if not (Enabled) then
       tmpColor := clBtnFace;
 
     Self.Canvas.Brush.Color := tmpColor;
     Self.Canvas.Pen.Color := tmpColor;
 
-    Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top + Itemoffset.Y,
+    Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top + y,
       ARect.Right - (ItemOffset.X), ARect.Bottom - itemoffset.Y, 10, 10);
   end;
+
   if (odFocused in AState) and (odSelected in AState) then begin
     Self.Canvas.Brush.Color := Colors.ItemColorSelected;
     Self.Canvas.Pen.Color := Colors.BorderColorSelected;
@@ -573,9 +541,16 @@ begin
       Self.Canvas.Pen.Color := clBtnFace;
     end;
 
-    Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top + Itemoffset.Y,
+    if AItem.Checked then  begin
+      Self.Canvas.Brush.Color :=  $00def3d5;
+      Self.Canvas.Pen.Color := $00def3d5;
+    end;
+
+    Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top + y,
       ARect.Right - (ItemOffset.X), ARect.Bottom - itemoffset.Y, 10, 10);
   end;
+
+
 end;
 
 function TSharpEListBoxEx.GetColumnCount: Integer;
@@ -590,8 +565,8 @@ end;
 
 function TSharpEListBoxEx.GetColumnAtMouseCursorPos: TSharpEListBoxExColumn;
 var
-  iCol,X,Y: Integer;
-  R:TRect;
+  iCol, X, Y: Integer;
+  R: TRect;
   tmpItem: TSharpEListItem;
   pt: TPoint;
 begin
@@ -606,7 +581,7 @@ begin
   X := pt.X;
   Y := pt.Y;
 
-   for iCol := 0 to Pred(ColumnCount) do begin
+  for iCol := 0 to Pred(ColumnCount) do begin
 
     R := Self.ItemRect(tmpItem.ID);
 
@@ -654,21 +629,11 @@ begin
   FColumns.Assign(Value);
 end;
 
-//procedure TSharpEListBoxEx.DblClickItem(Sender: TObject);
-//begin
-//  ClickItem(Sender, True);
-//end;
-
-//procedure TSharpEListBoxEx.ClickItem(Sender: TObject);
-//begin
-//  ClickItem(Sender, False);
-//end;
-
 procedure TSharpEListBoxEx.Loaded;
 begin
   inherited;
-  if ItemHeight < 26 then
-    ItemHeight := 26;
+  if ItemHeight < 30 then
+    ItemHeight := 30;
 end;
 
 { TSharpEListItem }
@@ -679,8 +644,21 @@ begin
   Result := -1;
 
   FSubItems.Add(AText);
+  FSubItemCheckedStates.Add(Pointer(-1));
   FSubItemImages.Add(Pointer(AImageIndex));
   FSubItemSelectedImages.Add(Pointer(ASelectedImageIndex));
+  
+end;
+
+function TSharpEListItem.AddSubItem(AText: string; AChecked: Boolean): Integer;
+begin
+  Result := -1;
+
+  FSubItems.Add(AText);
+  FSubItemCheckedStates.Add(Pointer(Integer(AChecked)));
+  FSubItemImages.Add(Pointer(-1));
+  FSubItemSelectedImages.Add(Pointer(-1));
+
 end;
 
 constructor TSharpEListItem.Create(AOwner: TComponent);
@@ -689,6 +667,7 @@ begin
   FSubItems := TStringList.Create;
   FSubItemImages := TList.Create;
   FSubItemSelectedImages := TList.Create;
+  FSubItemCheckedStates := TList.Create;
 end;
 
 destructor TSharpEListItem.Destroy;
@@ -696,6 +675,7 @@ begin
   FSubItems.Free;
   FSubItemImages.Free;
   FSubItemSelectedImages.Free;
+  FSubItemCheckedStates.Free;
   inherited;
 end;
 
@@ -710,9 +690,10 @@ begin
   b := true;
 
   if Assigned(TSharpEListBoxEx(FOwner).FOnGetCellImageIndex) then begin
-    TSharpEListBoxEx(FOwner).FOnGetCellImageIndex(col,Self,idx,b);
+    TSharpEListBoxEx(FOwner).FOnGetCellImageIndex(col, Self, idx, b);
     Result := idx;
-  end else
+  end
+  else
     Result := idx;
 
 end;
@@ -722,9 +703,38 @@ begin
   Result := GetSubItemText(0);
 end;
 
+function TSharpEListItem.GetChecked: Boolean;
+var
+  i:Integer;
+  b: Boolean;
+  col: TSharpEListBoxExColumn;
+begin
+  Result := False;
+  for i := 0 to Pred(TSharpEListBoxEx(FOwner).ColumnCount) do begin
+    if SubItemChecked[i] = True then begin
+      Result := True;
+      exit;
+    end;
+  end;
+end;
+
 function TSharpEListItem.GetImageIndex: Integer;
 begin
   Result := GetSubItemImageIndex(0);
+end;
+
+function TSharpEListItem.GetSubItemChecked(ASubItemIndex: Integer): boolean;
+var
+  col, idx: Integer;
+  b: Boolean;
+begin
+  Result := False;
+
+  if (ASubItemIndex < FSubItemCheckedStates.Count ) then begin
+    col := ASubItemIndex;
+    b := Boolean(FSubItemCheckedStates[ASubItemIndex]);
+    Result := b;
+  end;
 end;
 
 function TSharpEListItem.GetSubItemImageIndex(ASubItemIndex: Integer): Integer;
@@ -737,9 +747,10 @@ begin
   b := false;
 
   if Assigned(TSharpEListBoxEx(FOwner).FOnGetCellImageIndex) then begin
-    TSharpEListBoxEx(FOwner).FOnGetCellImageIndex(col,Self,idx,b);
+    TSharpEListBoxEx(FOwner).FOnGetCellImageIndex(col, Self, idx, b);
     Result := idx;
-  end else
+  end
+  else
     Result := idx;
 
 end;
@@ -747,15 +758,16 @@ end;
 function TSharpEListItem.GetSubItemText(ASubItem: Integer): string;
 var
   col: Integer;
-  s: String;
+  s: string;
 begin
   col := ASubItem;
   s := FSubItems[ASubItem];
 
   if Assigned(TSharpEListBoxEx(FOwner).FOnGetCellText) then begin
-    TSharpEListBoxEx(FOwner).FOnGetCellText(col,Self,s);
+    TSharpEListBoxEx(FOwner).FOnGetCellText(col, Self, s);
     Result := s;
-  end else
+  end
+  else
     Result := s;
 end;
 
@@ -764,6 +776,18 @@ function TSharpEListBoxEx.AddItem(AText: string;
 begin
   Result := TSharpEListItem.Create(Self);
   Result.AddSubItem(AText, AImageIndex, ASelectedImageIndex);
+
+  Result.ID := Self.Items.AddObject(AText, Result);
+
+  if FAutoSizeGrid then
+    Self.Height := (Self.Count + 1) * Self.ItemHeight;
+end;
+
+function TSharpEListBoxEx.AddItem(AText: string;
+  AChecked: Boolean): TSharpEListItem;
+begin
+  Result := TSharpEListItem.Create(Self);
+  Result.AddSubItem(AText, AChecked);
 
   Result.ID := Self.Items.AddObject(AText, Result);
 
@@ -786,6 +810,15 @@ end;
 procedure TSharpEListItem.SetImageIndex(const Value: Integer);
 begin
   FSubItemImages[0] := Pointer(Value);
+  TSharpEListBoxEx(FOwner).Invalidate;
+end;
+
+procedure TSharpEListItem.SetSubItemChecked(ASubItemIndex: Integer;
+  const Value: boolean);
+begin
+  If ASubItemIndex < FSubItemCheckedStates.Count then
+    FSubItemCheckedStates[ASubItemIndex] := Pointer(value);
+
   TSharpEListBoxEx(FOwner).Invalidate;
 end;
 
@@ -862,21 +895,19 @@ end;
 
 procedure TSharpEListBoxEx.WMLButtonDown(var Message: TWMLButtonDown);
 var
-  ItemNo : Integer;
+  ItemNo: Integer;
   tmpItem: TSharpEListItem;
   tmpCol: TSharpEListBoxExColumn;
+  bCanSelect, bChecked: Boolean;
   p: TPoint;
   ShiftState: TShiftState;
 begin
   ShiftState := KeysToShiftState(Message.Keys);
-  if (DragMode = dmAutomatic) and FMultiSelect then
-  begin
-    if not (ssShift in ShiftState) or (ssCtrl in ShiftState) then
-    begin
+  if (DragMode = dmAutomatic) and FMultiSelect then begin
+    if not (ssShift in ShiftState) or (ssCtrl in ShiftState) then begin
       ItemNo := ItemAtPos(SmallPointToPoint(Message.Pos), True);
-      if (ItemNo >= 0) and (Selected[ItemNo]) then
-      begin
-        BeginDrag (False);
+      if (ItemNo >= 0) and (Selected[ItemNo]) then begin
+        BeginDrag(False);
         Exit;
       end;
     end;
@@ -891,22 +922,39 @@ begin
 
     if tmpCol <> nil then begin
 
-    if tmpCol.CanSelect then begin
-      Self.ItemIndex := ItemNo;
-      Self.Invalidate;
-      if Assigned(FOnClickItem) then
-          FOnClickItem(tmpCol.ID,tmpItem);
-    end else begin
-        if Assigned(FOnClickItem) then
-          FOnClickItem(tmpCol.ID,tmpItem);
+      bCanSelect := tmpCol.CanSelect;
+      if assigned(FOnGetCellClickable) then
+        FOnGetCellClickable(tmpCol.ID, tmpItem, bCanSelect);
+
+      if tmpCol.ColumnType = ctCheck then begin
+
+        bChecked := Not(tmpItem.SubItemChecked[tmpCol.ID]);
+        tmpItem.SubItemChecked[tmpCol.ID] := bChecked;
+        bCanSelect := False;
+
+        if assigned(FOnClickCheck) then
+          FOnClickCheck(tmpCol.ID, tmpItem, bChecked);
       end;
-  end;
-  end else
+
+      if bCanSelect then begin
+        Self.ItemIndex := ItemNo;
+        Self.Invalidate;
+
+        if Assigned(FOnClickItem) then
+          FOnClickItem(tmpCol.ID, tmpItem);
+      end
+      else begin
+        if Assigned(FOnClickItem) then
+          FOnClickItem(tmpCol.ID, tmpItem);
+      end;
+    end;
+  end
+  else
     inherited;
 
-  if (DragMode = dmAutomatic) and not (FMultiSelect and
+  {if (DragMode = dmAutomatic) and not (FMultiSelect and
     ((ssCtrl in ShiftState) or (ssShift in ShiftState))) then
-    BeginDrag(False);
+    BeginDrag(False); }
 end;
 
 function TSharpEListBoxEx.GetItem(AItem: Integer): TSharpEListItem;
@@ -937,27 +985,49 @@ end;
 
 function TSharpEListBoxEx.IsImageIndexValid(AItem: TSharpEListItem;
   ACol, AImageIndex: Integer; ASelected: Boolean): Boolean;
+
+  function SelectedValid: Boolean;
+  begin
+    Result := False;
+    if ((AImageIndex <> -1) and (Column[ACol].SelectedImages <> nil) and
+      (AImageIndex < Column[ACol].SelectedImages.PngImages.Count) and
+      (Column[ACol].SelectedImages.PngImages[AImageIndex] <> nil)) then
+      Result := True;
+  end;
+
+  function DefaultValid: Boolean;
+  begin
+    Result := False;
+    if ((AImageIndex <> -1) and (Column[ACol].Images <> nil) and
+      (Column[ACol].Images <> nil) and (AImageIndex < Column[ACol].Images.PngImages.Count) and
+      (Column[ACol].Images.PngImages[AImageIndex] <> nil)) then
+      Result := True;
+  end;
+
 begin
   Result := False;
 
   if ASelected then begin
     if (Column[ACol].SelectedImages = nil) then
-      Result := True
-    else if ((AImageIndex <> -1) and (Column[ACol].SelectedImages <> nil) and
-      (Column[ACol].SelectedImages.PngImages[AImageIndex] <> nil)) then
-      Result := True;
+      Result := DefaultValid
+    else
+      Result := SelectedValid;
   end
-  else begin
-    if ((AImageIndex <> -1) and (Column[ACol].Images <> nil) and
-      (Column[ACol].Images.PngImages[AImageIndex] <> nil)) then
-      Result := True;
-  end;
+  else
+    Result := DefaultValid;
 end;
 
 procedure TSharpEListBoxEx.SetItem(AItem: Integer;
   const Value: TSharpEListItem);
 begin
   Self.Items.Objects[AItem] := Value;
+end;
+
+procedure TSharpEListBoxEx.MeasureItemEvent(Control: TWinControl;
+  Index: Integer; var Height: Integer);
+begin
+  if Index = 0 then
+    Height := 20;
 end;
 
 procedure TSharpEListBoxEx.MouseMoveEvent(Sender: TObject;
@@ -967,6 +1037,7 @@ var
   R: TRect;
   cur: TCursor;
   tmpItem: TSharpEListItem;
+  b: Boolean;
 begin
   Self.Cursor := crDefault;
   tmpItem := GetItemAtCursorPos(Mouse.CursorPos);
@@ -981,8 +1052,14 @@ begin
       (Y > R.Top) and (Y < R.Bottom) then begin
 
       cur := crDefault;
-      if Assigned(FOnGetCellCursor) then
-        FOnGetCellCursor(iCol, tmpItem, cur);
+
+      b := Column[iCol].CanSelect;
+      if Assigned(FOnGetCellClickable) then
+        FOnGetCellClickable(iCol, tmpItem, b);
+
+      //if b then
+        if Assigned(FOnGetCellCursor) then
+          FOnGetCellCursor(iCol, tmpItem, cur);
 
       Self.Cursor := cur;
       exit;
@@ -1011,6 +1088,94 @@ end;
 destructor TSharpEListBoxExColumn.Destroy;
 begin
   inherited;
+end;
+
+procedure TSharpEListBoxEx.DrawCheckedItem(AItem: TSharpEListItem;
+  AChecked: Boolean; AColumn: TSharpEListBoxExColumn);
+var
+  iCol: Integer;
+  r:TRect;
+  bChecked: Boolean;
+  tmpPng: TPNGObject;
+begin
+
+  iCol := AColumn.Index;
+  r := AColumn.ColumnRect;
+
+  // Get the checked state
+  tmpPng := TPNGObject.Create;
+  Try
+    bChecked := AItem.SubItemChecked[iCol];
+    if bChecked  then
+      tmpPng.LoadFromResourceName(HInstance, 'SHARPE_LISTBOXEX_CHECK_PNG' ) else
+      tmpPng.LoadFromResourceName(HInstance, 'SHARPE_LISTBOXEX_UNCHECK_PNG' );
+
+  DrawItemImage(Self.Canvas, r, AItem, iCol, tmpPng);
+  DrawItemText(Self.Canvas, r, 0, AItem, iCol, tmpPng);
+  Finally
+    tmpPng.Free;
+  End;
+end;
+
+procedure TSharpEListBoxEx.DrawDefaultItem(AItem: TSharpEListItem;
+  ASelected: Boolean; AColumn: TSharpEListBoxExColumn);
+var
+  iSelImgIdx: Integer;
+  iImgIdx: Integer;
+  iCol: Integer;
+  tmpPng: TPNGObject;
+  r: TRect;
+begin
+
+  iCol := AColumn.Index;
+  r := AColumn.ColumnRect;
+
+  // Get the selected image index
+  iSelImgIdx := AItem.SubItemSelectedImageIndex[iCol];
+
+  // If event assigned, get this image index
+  if assigned(FOnGetCellImageIndex) then
+    FOnGetCellImageIndex(iCol, AItem, iSelImgIdx, True);
+
+  // Check Draw Selected
+  if ((ASelected) and (AColumn.SelectedImages <> nil) and
+    (IsImageIndexValid(AItem, iCol, iSelImgIdx, ASelected))) then begin
+
+    tmpPng := nil;
+    if iSelImgIdx <> -1 then
+      if AColumn.SelectedImages.PngImages[iSelImgIdx] <> nil then
+        tmpPng := AColumn.SelectedImages.PngImages.Items[iSelImgIdx].PngImage;
+
+    if tmpPng <> nil then
+      DrawItemImage(Self.Canvas, r, AItem, iCol, tmpPng);
+
+    DrawItemText(Self.Canvas, r, 0, AItem, iCol, tmpPng);
+  end
+  else begin
+    // Else Draw Default
+
+    // Get the default image index
+    iImgIdx := AItem.SubItemImageIndex[iCol];
+
+    // If event assigned, get this image index
+    if assigned(FOnGetCellImageIndex) then
+      FOnGetCellImageIndex(iCol, AItem, iImgIdx, False);
+
+    // Check if the image index is valid
+    if IsImageIndexValid(AItem, iCol, iImgIdx, ASelected) then begin
+
+      tmpPng := nil;
+      if iImgIdx <> -1 then
+        tmpPng := AColumn.Images.PngImages.Items[iImgIdx].PngImage;
+
+      if tmpPng <> nil then
+        DrawItemImage(Self.Canvas, r, AItem, iCol, tmpPng);
+        
+      DrawItemText(Self.Canvas, r, 0, AItem, iCol, tmpPng);
+    end
+    else
+      DrawItemText(Self.Canvas, r, 0, AItem, iCol, nil);
+  end;
 end;
 
 { TSharpEListBoxExColumns }

@@ -30,13 +30,44 @@ object Form1: TForm1
         HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
+        StretchColumn = True
+        ColumnType = ctDefault
+        Images = col1
+        SelectedImages = PngImageList1
+      end
+      item
+        Width = 75
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
         StretchColumn = False
+        ColumnType = ctDefault
+        Images = col1
+      end
+      item
+        Width = 75
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        StretchColumn = False
+        ColumnType = ctDefault
+        Images = col1
+      end
+      item
+        Width = 40
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        StretchColumn = False
+        ColumnType = ctCheck
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnShadow
     Colors.ItemColor = clWindow
     Colors.ItemColorSelected = clBtnFace
-    ItemHeight = 26
+    Colors.CheckColorSelected = clBtnFace
+    Colors.CheckColor = 15528425
+    ItemHeight = 30
     OnGetCellText = SharpEListBoxEx1GetCellText
     OnGetCellImageIndex = SharpEListBoxEx1GetCellImageIndex
     AutosizeGrid = False

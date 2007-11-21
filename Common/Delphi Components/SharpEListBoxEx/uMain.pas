@@ -26,6 +26,8 @@ type
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
     procedure Button2Click(Sender: TObject);
+    procedure SharpEListBoxEx1GetCellClickable(const ACol: Integer;
+      AItem: TSharpEListItem; var AClickable: Boolean);
   private
     { Private declarations }
     Procedure GetCellCursor(const ACol:Integer; AItem:TSharpEListItem; var ACursor:TCursor);
@@ -53,6 +55,7 @@ begin
   li := SharpEListBoxEx1.AddItem('<b>New Theme </b>By Lee <br>Created with creative juices',1);
   li.AddSubItem('<u>Copy</u>',0);
   li.AddSubItem('<u>Delete</u>',1);
+  li.AddSubItem('',false);
   li.Hint := 'Click to set as default';
 
 end;
@@ -71,11 +74,18 @@ begin
     ACursor := crHandPoint;
 end;
 
+procedure TForm1.SharpEListBoxEx1GetCellClickable(const ACol: Integer;
+  AItem: TSharpEListItem; var AClickable: Boolean);
+begin
+  if AItem.ID = 1 then
+    AClickable := False;
+end;
+
 procedure TForm1.SharpEListBoxEx1GetCellImageIndex(const ACol: Integer;
   AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
 begin
   if ACol = 0 then begin
-    if ASelected then AImageIndex := 0 else
+    if ASelected then AImageIndex := 2 else
     AImageIndex := 10;
   end;
 end;
