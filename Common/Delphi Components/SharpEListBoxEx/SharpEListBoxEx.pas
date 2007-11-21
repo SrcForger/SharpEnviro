@@ -153,12 +153,12 @@ type
     FColumns: TSharpEListBoxExColumns;
     FOnClickItem: TSharpEListBoxExOnClickItem;
     FOnGetCellCursor: TSharpEListBoxExGetColCursor;
-    FOnDblClickItem: TSharpEListBoxExOnClickItem;
+
     FOnGetCellColor: TSharpEListBoxExGetItemColor;
     FAutoSizeGrid: Boolean;
     FOnGetCellText: TSharpEListBoxExGetColText;
     FOnGetCellImageIndex: TSharpEListBoxExGetColImageIndex;
-    FLast: Integer;
+
     FOnGetCellClickable: TSharpEListBoxExGetColClickable;
 
     FOnClickCheck: TSharpEListBoxExOnClickCheck;
@@ -176,8 +176,6 @@ type
     procedure SetColumn(AColumn: Integer; const Value: TSharpEListBoxExColumn);
     procedure MouseMoveEvent(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure MeasureItemEvent(Control: TWinControl; Index: Integer;
-      var Height: Integer);
 
     function GetItem(AItem: Integer): TSharpEListItem;
     procedure SetItem(AItem: Integer; const Value: TSharpEListItem);
@@ -207,7 +205,7 @@ type
     property ColumnCount: Integer read GetColumnCount stored True;
 
     function AddItem(AText: string;
-      AImageIndex: Integer = -1; ASelectedImageIndex: Integer = -1): TSharpEListItem;  overload;
+      AImageIndex: Integer = -1; ASelectedImageIndex: Integer = -1): TSharpEListItem; overload;
     function AddItem(AText: string; AChecked:Boolean): TSharpEListItem; overload;
 
     property SelectedItem: TSharpEListItem read GetSelectedItem;
@@ -329,9 +327,8 @@ procedure TSharpEListBoxEx.DrawItemEvent(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
 var
   tmpCol: TSharpEListBoxExColumn;
-  tmpPng: TPngObject;
   R: TRect;
-  iCol, iImgIdx, iSelImgIdx: Integer;
+  iCol: Integer;
   bSelected: Boolean;
   tmpItem: TSharpEListItem;
 begin
@@ -481,9 +478,7 @@ procedure TSharpEListBoxEx.DrawSelection(ARect: TRect;
   AState: TOwnerDrawState; AItem: TSharpEListItem);
 var
   tmpColor: TColor;
-  i:Integer;
-  col: TSharpEListBoxExColumn;
-  x,y: Integer;
+  y: Integer;
 begin
   Self.Canvas.Brush.Color := Color;
   Self.Canvas.FillRect(ARect);
@@ -706,8 +701,6 @@ end;
 function TSharpEListItem.GetChecked: Boolean;
 var
   i:Integer;
-  b: Boolean;
-  col: TSharpEListBoxExColumn;
 begin
   Result := False;
   for i := 0 to Pred(TSharpEListBoxEx(FOwner).ColumnCount) do begin
@@ -725,13 +718,11 @@ end;
 
 function TSharpEListItem.GetSubItemChecked(ASubItemIndex: Integer): boolean;
 var
-  col, idx: Integer;
   b: Boolean;
 begin
   Result := False;
 
   if (ASubItemIndex < FSubItemCheckedStates.Count ) then begin
-    col := ASubItemIndex;
     b := Boolean(FSubItemCheckedStates[ASubItemIndex]);
     Result := b;
   end;
@@ -1005,8 +996,6 @@ function TSharpEListBoxEx.IsImageIndexValid(AItem: TSharpEListItem;
   end;
 
 begin
-  Result := False;
-
   if ASelected then begin
     if (Column[ACol].SelectedImages = nil) then
       Result := DefaultValid

@@ -61,10 +61,8 @@ begin
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
-var
-  col: TSharpEListBoxExColumn;
 begin
-  col := SharpEListBoxEx1.Columns.Add(Self);
+  SharpEListBoxEx1.Columns.Add(Self);
 end;
 
 procedure TForm1.GetCellCursor(const ACol: Integer; AItem: TSharpEListItem;
