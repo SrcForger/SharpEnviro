@@ -205,8 +205,8 @@ type
     property ColumnCount: Integer read GetColumnCount stored True;
 
     function AddItem(AText: string;
-      AImageIndex: Integer = -1; ASelectedImageIndex: Integer = -1): TSharpEListItem; overload;
-    function AddItem(AText: string; AChecked:Boolean): TSharpEListItem; overload;
+      AImageIndex: Integer = -1; ASelectedImageIndex: Integer = -1): TSharpEListItem; reintroduce; overload;
+    function AddItem(AText: string; AChecked:Boolean): TSharpEListItem; reintroduce; overload;
 
     property SelectedItem: TSharpEListItem read GetSelectedItem;
     property Column[AColumn: Integer]: TSharpEListBoxExColumn read GetColumn
@@ -348,8 +348,8 @@ begin
     for iCol := 0 to Pred(ColumnCount) do begin
 
       tmpCol := Column[iCol];
-      Column[iCol].ColumnRect := Types.Rect(Column[iCol].ColumnRect.Left, Rect.Top,
-        Column[iCol].ColumnRect.Right, Rect.Bottom);
+      Column[iCol].ColumnRect := Types.Rect(Column[iCol].ColumnRect.Left+ ItemOffset.X,
+       Rect.Top, Column[iCol].ColumnRect.Right, Rect.Bottom);
       R := Column[iCol].ColumnRect;
 
       if (iCol <= tmpItem.SubItemCount - 1) then begin
@@ -1010,13 +1010,6 @@ procedure TSharpEListBoxEx.SetItem(AItem: Integer;
   const Value: TSharpEListItem);
 begin
   Self.Items.Objects[AItem] := Value;
-end;
-
-procedure TSharpEListBoxEx.MeasureItemEvent(Control: TWinControl;
-  Index: Integer; var Height: Integer);
-begin
-  if Index = 0 then
-    Height := 20;
 end;
 
 procedure TSharpEListBoxEx.MouseMoveEvent(Sender: TObject;
