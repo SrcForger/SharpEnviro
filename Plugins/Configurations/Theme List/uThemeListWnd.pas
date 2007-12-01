@@ -85,6 +85,7 @@ const
   cWebsite = 2;
   cCopy = 3;
   cEdit = 4;
+  cSelect = 5;
 
 implementation
 
@@ -175,6 +176,7 @@ begin
       newItem.AddSubItem('');
       newItem.AddSubItem('');
       newItem.AddSubItem('');
+      //newItem.AddSubItem('',False);
 
       newItem.Data := tmpTheme;
       bmp32.Clear(clWhite32);
@@ -236,6 +238,7 @@ begin
     tmpTheme := TThemeListItem(AItem.Data);
 
     case ACol of
+      cName : LoadTheme(tmpTheme);
       cReadOnly: ;
       cEdit: begin
           if not (tmpTheme.IsReadOnly) then
@@ -254,8 +257,6 @@ begin
             BuildThemeList;
           end;
         end;
-    else
-      LoadTheme(tmpTheme);
     end;
 
   end;

@@ -28,6 +28,7 @@ object frmThemeList: TfrmThemeList
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         StretchColumn = True
+        ColumnType = ctDefault
         Images = ThemeImages
         SelectedImages = ThemeImages
       end
@@ -38,6 +39,7 @@ object frmThemeList: TfrmThemeList
         ColumnAlign = calRight
         StretchColumn = False
         CanSelect = False
+        ColumnType = ctDefault
         Images = pilDefault
       end
       item
@@ -47,6 +49,7 @@ object frmThemeList: TfrmThemeList
         ColumnAlign = calRight
         StretchColumn = False
         CanSelect = False
+        ColumnType = ctDefault
         Images = pilDefault
       end
       item
@@ -56,6 +59,7 @@ object frmThemeList: TfrmThemeList
         ColumnAlign = calRight
         StretchColumn = False
         CanSelect = False
+        ColumnType = ctDefault
         Images = pilDefault
       end
       item
@@ -65,11 +69,14 @@ object frmThemeList: TfrmThemeList
         ColumnAlign = calRight
         StretchColumn = False
         CanSelect = False
+        ColumnType = ctDefault
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnShadow
     Colors.ItemColor = clWindow
     Colors.ItemColorSelected = clBtnFace
+    Colors.CheckColorSelected = 14673882
+    Colors.CheckColor = 15528425
     OnResize = lbThemeListResize
     ItemHeight = 65
     OnClickItem = lbThemeListClickItem
