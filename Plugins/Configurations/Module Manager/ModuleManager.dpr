@@ -44,7 +44,8 @@ uses
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
   uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
-  uModuleManagerListEdit in 'uModuleManagerListEdit.pas' {frmMMEdit};
+  uModuleManagerListEdit in 'uModuleManagerListEdit.pas' {frmMMEdit},
+  SharpERoundPanel in '..\..\..\Common\Delphi Components\SharpERoundPanel\SharpERoundPanel.pas';
 
 {$E .dll}
 
@@ -133,7 +134,6 @@ begin
 
   if frmMMList <> nil then
   begin
-    frmMMList.lbModuleList.Enabled := True;
     frmMMList.BuildModuleList;
   end;
 end;
@@ -156,7 +156,8 @@ begin
     scbImport: Result := False;
     scbExport: Result := False;
     scbDelete: Begin
-      if frmMMList.lbModuleList.ItemIndex <> -1 then
+      if ((frmMMList.lbModulesLeft.ItemIndex <> -1) or
+        (frmMMList.lbModulesRight.ItemIndex <> -1)) then
         Result := True else
         Result := False;
     end;
@@ -174,16 +175,20 @@ begin
 
   if frmMMList <> nil then
   begin
-    frmMMList.lbModuleList.Colors.ItemColor := AItemColor;
-    frmMMList.lbModuleList.Colors.ItemColorSelected := AItemSelectedColor;
-    frmMMList.lbModuleList.Colors.BorderColor := AItemSelectedColor;
-    frmMMList.lbModuleList.Colors.BorderColorSelected := AItemSelectedColor;
+    frmMMList.lbModulesLeft.Colors.ItemColor := AItemColor;
+    frmMMList.lbModulesLeft.Colors.ItemColorSelected := AItemSelectedColor;
+    frmMMList.lbModulesLeft.Colors.BorderColor := AItemSelectedColor;
+    frmMMList.lbModulesLeft.Colors.BorderColorSelected := AItemSelectedColor;
+    frmMMList.lbModulesRight.Colors.ItemColor := AItemColor;
+    frmMMList.lbModulesRight.Colors.ItemColorSelected := AItemSelectedColor;
+    frmMMList.lbModulesRight.Colors.BorderColor := AItemSelectedColor;
+    frmMMList.lbModulesRight.Colors.BorderColorSelected := AItemSelectedColor;
   end;
 end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);
 begin
-  ATabs.Add('Modules',nil,'',IntToStr(frmMMList.lbModuleList.Count - 1));
+  ATabs.Add('Modules',nil,'','');
 end;
 
 function SetSettingType : TSU_UPDATE_ENUM;

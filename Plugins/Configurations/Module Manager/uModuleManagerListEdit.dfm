@@ -70,7 +70,6 @@ object frmMMEdit: TfrmMMEdit
         HotTrackFont.Height = -11
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
-        ExplicitTop = 61
         ExplicitWidth = 51
       end
       object Panel1: TPanel
@@ -157,7 +156,6 @@ object frmMMEdit: TfrmMMEdit
         Scale = 1.000000000000000000
         ScaleMode = smNormal
         TabOrder = 1
-        ExplicitTop = 84
       end
     end
     object pagDelete: TJvStandardPage
@@ -169,16 +167,15 @@ object frmMMEdit: TfrmMMEdit
       object Label2: TLabel
         Left = 0
         Top = 26
-        Width = 481
+        Width = 172
         Height = 13
         Align = alTop
         Caption = '(Settings for the module will be lost)'
-        ExplicitWidth = 172
       end
       object Label1: TJvLabel
         Left = 0
         Top = 0
-        Width = 481
+        Width = 78
         Height = 13
         Align = alTop
         Caption = 'Confirmation:'
@@ -195,16 +192,14 @@ object frmMMEdit: TfrmMMEdit
         HotTrackFont.Name = 'Tahoma'
         HotTrackFont.Style = []
         Images = pilError
-        ExplicitWidth = 78
       end
       object Label4: TLabel
         Left = 0
         Top = 13
-        Width = 481
+        Width = 306
         Height = 13
         Align = alTop
         Caption = 'Are you sure you want to delete the currently selected module?'
-        ExplicitWidth = 306
       end
     end
   end

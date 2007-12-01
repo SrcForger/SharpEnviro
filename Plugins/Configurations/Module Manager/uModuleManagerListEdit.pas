@@ -155,20 +155,20 @@ end;
 procedure TfrmMMEdit.cobo_modulesClick(Sender: TObject);
 begin
   CenterDefineEditState(True);
-  frmMMList.lbModuleList.Enabled := False;
+
   LoadModuleData;
 end;
 
 procedure TfrmMMEdit.cobo_modulesSelect(Sender: TObject);
 begin
   CenterDefineEditState(True);
-  frmMMList.lbModuleList.Enabled := False;
+
 end;
 
 procedure TfrmMMEdit.cobo_positionChange(Sender: TObject);
 begin
   CenterDefineEditState(True);
-  frmMMList.lbModuleList.Enabled := False;
+
 end;
 
 procedure TfrmMMEdit.FormShow(Sender: TObject);

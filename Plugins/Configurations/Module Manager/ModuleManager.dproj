@@ -40,6 +40,7 @@
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <DCCReference Include="..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas" />
+    <DCCReference Include="..\..\..\Common\Delphi Components\SharpERoundPanel\SharpERoundPanel.pas" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
     <DCCReference Include="..\..\..\Common\Units\SEListboxPainter\uSEListboxPainter.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas" />
