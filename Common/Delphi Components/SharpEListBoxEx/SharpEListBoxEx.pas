@@ -245,6 +245,7 @@ type
     property Ctl3d;
     property Align;
     property ParentFont;
+    property Visible;
   end;
 
 procedure Register;
@@ -378,7 +379,7 @@ begin
     taAlignTop: R := Rect(0, ARect.Top + ItemOffset.Y, 0, ARect.Top + ItemOffset.Y + iH);
     taAlignBottom: R := Rect(0, ARect.Bottom - ItemOffset.Y - iH, 0, ARect.Bottom - ItemOffset.Y);
     taVerticalCenter: begin
-        iItemHWOffsets := ItemHeight;
+        iItemHWOffsets := ItemHeight-FItemOffset.Y;
         n := (iItemHWOffsets div 2) - (iH div 2);
 
         R := Rect(0, ARect.Top + n, 0, ARect.Top + n + iH);
@@ -771,7 +772,7 @@ begin
   Result.ID := Self.Items.AddObject(AText, Result);
 
   if FAutoSizeGrid then
-    Self.Height := (Self.Count + 1) * Self.ItemHeight;
+    Self.Height := (Self.Count) * Self.ItemHeight;
 end;
 
 function TSharpEListBoxEx.AddItem(AText: string;
@@ -783,7 +784,7 @@ begin
   Result.ID := Self.Items.AddObject(AText, Result);
 
   if FAutoSizeGrid then
-    Self.Height := (Self.Count + 1) * Self.ItemHeight;
+    Self.Height := (Self.Count) * Self.ItemHeight;
 end;
 
 procedure TSharpEListItem.SetSubItemSelectedImageIndex(ASubItemIndex: Integer;
