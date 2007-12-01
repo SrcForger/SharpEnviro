@@ -33,6 +33,7 @@ uses
   Forms,
   Classes,
   Contnrs,
+  graphics,
   ExtCtrls,
   Menus,
   Math,
@@ -148,6 +149,8 @@ type
                      FShowMiniThrobbers : Boolean;
                      FShutdown          : Boolean;
                      FBarID             : integer;
+    FBarName: string;
+    FSharpEBar: String;
                      procedure SetShowMiniThrobbers(Value : Boolean);
                    public
                      constructor Create(pParent : hwnd;
@@ -165,6 +168,7 @@ type
                      procedure LoadFromDirectory(pDirectory : String);
                      procedure RefreshFromDirectory(pDirectory : String);
                      procedure FixModulePositions;
+                     procedure SaveBarSettings;
                      function GetModule(ID : integer) : TModule;
                      function GetModuleIndex(ID : integer) : integer;
                      procedure SortModulesByPosition;
@@ -187,6 +191,7 @@ type
                      procedure OnMiniThrobberMouseUp(Sender : TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
                      procedure OnMiniThrobberMouseMove(Sender : TObject; Shift: TShiftState; X, Y: integer);
                      procedure OnDragReleaseTimerOnTimer(Sender : TObject);
+                     procedure DebugOutput(Msg: string; Level, msgtype: integer);
 
                      property ModuleDirectory : string       read FDirectory;
                      property Parent          : hwnd         read FParent;
@@ -194,7 +199,8 @@ type
                      property Modules         : TObjectList  read FModules;
                      property ThrobberMenu    : TPopupMenu   read FThrobberMenu write FThrobberMenu;
                      property ShowMiniThrobbers : Boolean    read FShowMiniThrobbers write SetShowMiniThrobbers;
-                     property BarID           : integer      read FBarID write FBarID;                     
+                     property BarID           : integer      read FBarID write FBarID;
+                     property BarName         : string        read FBarName write FBarName;
                    end;
 
 type
@@ -279,6 +285,13 @@ begin
     FDragThrobber := nil;
   end;
   FBar.aform.Repaint;
+
+  SortModulesByPosition;
+  FixModulePositions;
+  SaveBarSettings;
+
+  SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
+
 end;
 
 // Sends an update message to all modules
@@ -310,6 +323,50 @@ begin
 end;
 
 // Broadcast a message to a single module by ID
+procedure TModuleManager.SaveBarSettings;
+var
+  xml: TJclSimpleXML;
+  Dir: string;
+  i: integer;
+  tempModule: TModule;
+begin
+  DebugOutput('Saving Bar Settings', 1, 1);
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';
+  xml := TJclSimpleXMl.Create;
+  xml.Root.Name := 'SharpBar';
+
+  // Save Bar Settings
+  with xml.Root.Items.Add('Settings') do begin
+    Items.AdD('Name', FBarName);
+    Items.Add('AutoPosition', FBar.AutoPosition);
+    Items.Add('PrimaryMonitor', FBar.PrimaryMonitor);
+    Items.Add('MonitorIndex', FBar.MonitorIndex);
+    Items.Add('HorizPos', HorizPosToInt(FBar.HorizPos));
+    Items.Add('VertPos', VertPosToInt(FBar.VertPos));
+    Items.Add('AutoStart', FBar.AutoStart);
+    Items.Add('ShowThrobber', FBar.ShowThrobber);
+    Items.Add('DisableHideBar', FBar.DisableHideBar);
+    Items.Add('AlwaysOnTop', FBar.AlwaysOnTop);
+    Items.Add('ShowMiniThrobbers', ModuleManager.ShowMiniThrobbers);
+  end;
+
+  // Save the Module List
+  with xml.Root.Items.Add('Modules') do begin
+    for i := 0 to ModuleManager.Modules.Count - 1 do begin
+      tempModule := TModule(ModuleManager.Modules.Items[i]);
+      with Items.Add('Item') do begin
+        Items.Add('ID', tempModule.ID);
+        Items.Add('Position', tempModule.Position);
+        Items.Add('Module', ExtractFileName(tempModule.ModuleFile.FileName));
+      end;
+    end;
+  end;
+
+  ForceDirectories(Dir);
+  xml.SaveToFile(Dir + 'Bar.xml');
+  xml.Free;
+end;
+
 function TModuleManager.SendPluginMessage(ID : integer; msg : string) : integer;
 var
   n : integer;
@@ -352,9 +409,16 @@ begin
     CopyFile(PChar(Dir + inttostr(ID) + '.xml'),PChar(Dir + inttostr(NewID) + '.xml'),False);
 
   LoadModule(newID,ExtractFileName(tempModule.ModuleFile.FileName),TempModule.Position,GetModuleIndex(ID)+1);
+  SharpCenterApi.BroadcastCenterMessage(integer(suModule),0);
 end;
 
 // Delete and Module (also deletes the module settings)
+procedure TModuleManager.DebugOutput(Msg: string; Level, msgtype: integer);
+begin
+  if (Debug) and (Level <= DebugLevel) then
+    SharpAPI.SendDebugMessageEx('SharpBar', PChar(Msg), clBlack, msgtype);
+end;
+
 procedure TModuleManager.Delete(ID : integer);
 var
   n,i : integer;
@@ -364,7 +428,6 @@ var
   Dir : String;
 begin
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(FBarID) + '\';
-
   for n := 0 to FModules.Count - 1 do
   begin
     TempModule := TModule(FModules.Items[n]);
@@ -392,6 +455,7 @@ begin
 
       BroadCastModuleRefresh;
       FixModulePositions;
+
       exit;
     end;
   end;
@@ -486,6 +550,7 @@ begin
         if (TModule(FModules.Items[n]).Position = -1) and (n > LC - 1) then
            bsdone := False;
   until bsdone;
+
 end;
 
 
@@ -515,6 +580,7 @@ begin
     if Index = ri -1 then tm.Position := 1
        else FModules.Exchange(Index, Index +1);
   end;
+
 end;
 
 
@@ -1008,8 +1074,7 @@ procedure TModuleManager.OnMiniThrobberMouseUp(Sender : TObject; Button: TMouseB
 begin
   FThrobberMoveID := -1;
   if FDragForm <> nil then FreeAndNil(FDragForm);
-  if FDragThrobber <> nil then
-     FDragReleaseTimer.Enabled := True;
+  FDragReleaseTimer.Enabled := True;
   FDragLastBar := 0;
   if FThrobberMove then FThrobberMove := False;
 end;
@@ -1187,6 +1252,7 @@ begin
   end;
   CList.Clear;
   FreeAndNil(CList);
+
 end;
 
 
