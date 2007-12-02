@@ -1022,9 +1022,7 @@ begin
   with bmp do
   begin
     Clear(color32(0, 0, 0, 0));
-    FSkin.SetSize(Width,Height);
-    FSkin.Clear(Color32(0, 0, 0, 0));
-    DefaultSharpESkinText.AssignFontTo(bmp.Font,Scheme);
+    DefaultSharpESkinText.AssignFontTo(Font,Scheme);
     DrawMode := dmBlend;
     r := Rect(0, 0, Width, Height);
     if true then
@@ -1035,20 +1033,19 @@ begin
     if FButtonDown then
     begin
       FrameRectS(r.Left, r.Top, r.Right, r.Bottom,
-      setalpha(color32(Scheme.GetColorByName('ThrobberLight')), 255));
+        setalpha(color32(Scheme.GetColorByName('ThrobberLight')), 255));
       FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1,
-      setalpha(color32(Scheme.GetColorByName('ThrobberDark')), 255));
+        setalpha(color32(Scheme.GetColorByName('ThrobberDark')), 255));
     end
     else
     begin
       FrameRectS(r.Left, r.Top, r.Right, r.Bottom,
-      setalpha(color32(Scheme.GetColorByName('Throbberdark')), 255));
+        setalpha(color32(Scheme.GetColorByName('Throbberdark')), 255));
       FrameRectS(r.Left, r.Top, r.Right - 1, r.Bottom - 1,
-      setalpha(color32(Scheme.GetColorByName('ThrobberLight')), 255));
+        setalpha(color32(Scheme.GetColorByName('ThrobberLight')), 255));
     end;
     FillRect(r.Left + 1, r.Top + 1, r.Right - 1, r.Bottom - 1,
-    setalpha(color32(Scheme.GetColorByName('ThrobberBack')), 255));
-    Bmp.DrawTo(FSkin);
+      setalpha(color32(Scheme.GetColorByName('ThrobberBack')), 255));
   end;
 end;
 
@@ -1060,7 +1057,7 @@ var
 begin
   if not Assigned(FManager) then
   begin
-    DrawDefaultSkin(bmp, Scheme);
+    DrawDefaultSkin(bmp, DefaultSharpEScheme);
     exit;
   end;
 
@@ -1097,23 +1094,23 @@ begin
     begin
       if not (FManager.Skin.BarSkin.ThDown.Empty) then
         FManager.Skin.BarSkin.ThDown.Draw(bmp, Scheme)
-      else DrawDefaultSkin(bmp, Scheme);
+      else DrawDefaultSkin(bmp, DefaultSharpEScheme);
     end
     else
       if FButtonOver then
       begin
         if not (FManager.Skin.BarSkin.ThHover.Empty) then
           FManager.Skin.BarSkin.ThHover.Draw(bmp, Scheme)
-        else DrawDefaultSkin(bmp, Scheme);
+        else DrawDefaultSkin(bmp, DefaultSharpEScheme);
       end else
         if not (FManager.Skin.BarSkin.ThNormal.Empty) then
         begin
           FManager.Skin.BarSkin.ThNormal.Draw(bmp, Scheme);
-        end else DrawDefaultSkin(bmp, Scheme);
+        end else DrawDefaultSkin(bmp, DefaultSharpEScheme);
       Bmp.DrawTo(FSkin);
   end
   else
-    DrawDefaultSkin(bmp, Scheme);
+    DrawDefaultSkin(bmp, DefaultSharpEScheme);
 end;
 
 procedure PreMul(var Bitmap: TBitmap32);

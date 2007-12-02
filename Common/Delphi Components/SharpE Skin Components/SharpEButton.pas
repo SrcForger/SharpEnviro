@@ -337,6 +337,12 @@ var
   TextSize : TPoint;
   GlyphPos, TextPos: TPoint;
 begin
+  if (Height <> 25) and (FAutoSize) then
+  begin
+    Height := 25;
+    exit;
+  end;
+    
   with bmp do
   begin
     Clear(color32(0, 0, 0, 0));
@@ -378,36 +384,36 @@ begin
       case Layout of
         blGlyphLeft:
         begin
-          GlyphPos.X := TextPos.X - (FGlyph32.Width + Margin) div 2;
-          GlyphPos.Y := TextPos.Y - Glyph32.Height div 2 + TextSize.Y div 2;
-          TextPos.X := TextPos.X + (FGlyph32.Width + Margin) div 2;
+          GlyphPos.X := TextPos.X - (16 + 4) div 2;
+          GlyphPos.Y := TextPos.Y - 16 div 2 + TextSize.Y div 2;
+          TextPos.X := TextPos.X + (16 + 4) div 2;
         end;
 
         blGlyphRight:
         begin
-          GlyphPos.Y := TextPos.Y - Glyph32.Height div 2 + TextSize.Y div 2;
-          TextPos.X := TextPos.X - (FGlyph32.Width + Margin) div 2;
-          GlyphPos.X := TextPos.X + TextSize.X + Margin;
+          GlyphPos.Y := TextPos.Y - 16 div 2 + TextSize.Y div 2;
+          TextPos.X := TextPos.X - (16 + 4) div 2;
+          GlyphPos.X := TextPos.X + TextSize.X + 4;
         end;
 
         blGlyphTop:
         begin
-          GlyphPos.X := TextPos.X + TextSize.X div 2 - Glyph32.Width div 2;
-          GlyphPos.Y := TextPos.Y - (FGlyph32.Height + Margin) div 2;
-          TextPos.Y := TextPos.Y + (FGlyph32.Height + Margin) div 2;
+          GlyphPos.X := TextPos.X + TextSize.X div 2 - 16 div 2;
+          GlyphPos.Y := TextPos.Y - (16 + 4) div 2;
+          TextPos.Y := TextPos.Y + (16 + 4) div 2;
         end;
 
         blGlyphBottom:
         begin
-          GlyphPos.X := TextPos.X + TextSize.X div 2 - Glyph32.Width div 2;
-          TextPos.Y := TextPos.Y - (FGlyph32.Height + Margin) div 2;
-          GlyphPos.Y := TextPos.Y + TextSize.Y + Margin;
+          GlyphPos.X := TextPos.X + TextSize.X div 2 - 16 div 2;
+          TextPos.Y := TextPos.Y - (16 + 4) div 2;
+          GlyphPos.Y := TextPos.Y + TextSize.Y + 4;
         end;
       end;
       FGlyph32.DrawMode := dmBlend;
       FGlyph32.CombineMode := cmMerge;
       if not Enabled then FGlyph32.MasterAlpha := FDisabledAlpha;
-      FGlyph32.DrawTo(bmp,GlyphPos.X,GlyphPos.Y);
+      FGlyph32.DrawTo(bmp,Rect(GlyphPos.X,GlyphPos.Y,GlyphPos.X+16,GlyphPos.Y+16));
       FGlyph32.MasterAlpha := 255;
       bmp.RenderText(TextPos.X,TextPos.Y,Caption,0, Color32(bmp.Font.color));
     end;

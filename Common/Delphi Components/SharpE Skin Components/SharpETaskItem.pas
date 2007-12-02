@@ -462,6 +462,7 @@ var
   TextSize : TPoint;
   GlyphPos, TextPos: TPoint;
   temp : TBitmap32;
+  drawcaption : String;
 begin
   with bmp do
   begin
@@ -511,15 +512,16 @@ begin
       Temp.Clear(color32(0,0,0,0));
       TLinearResampler.Create(FGlyph32);
       FGlyph32.DrawTo(Temp,Rect(0,0,16,16));
-      TextSize.X := bmp.TextWidth(caption);
-      TextSize.Y := bmp.TextHeight(caption);
+      drawcaption := FixCaption(Bmp,Caption,96);
+      TextSize.X := bmp.TextWidth(drawcaption);
+      TextSize.Y := bmp.TextHeight(drawcaption);
       TextPos.X := Width div 2 - TextSize.X div 2;
       TextPos.Y := Height div  2 - TextSize.Y div 2;
-      GlyphPos.X := TextPos.X - (Temp.Width + Margin) div 2;
+      GlyphPos.X := TextPos.X - (Temp.Width + 2) div 2;
       GlyphPos.Y := TextPos.Y - Temp.Height div 2 + TextSize.Y div 2;
-      TextPos.X := TextPos.X + (Temp.Width + Margin) div 2;
+      TextPos.X := TextPos.X + (Temp.Width + 2) div 2;
       Temp.DrawTo(bmp,GlyphPos.X,GlyphPos.Y);
-      bmp.RenderText(TextPos.X,TextPos.Y,Caption,0, Color32(bmp.Font.color));
+      bmp.RenderText(TextPos.X,TextPos.Y,drawcaption,0, Color32(bmp.Font.color));
       Temp.Free;
     end;
   end;
