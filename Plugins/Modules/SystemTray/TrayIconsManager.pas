@@ -902,6 +902,8 @@ begin
     if (n + imod >= 0 ) and (n + imod <= FItems.Count - 1) then
     begin
       tempItem := TTrayItem(FItems.Items[n+imod]);
+      if tempItem = nil then
+        exit;
 
       // Check if there was a tray icon which displayed a new Vista tooltip
       if (TempItem <> FV4Popup) and (FV4Popup <> nil) then
@@ -909,8 +911,8 @@ begin
 
       if not iswindow(tempItem.Wnd) then
       begin
-        DeleteTrayIconByIndex(n+imod);
         StopTipTimer;
+        DeleteTrayIconByIndex(n+imod);
         exit;
       end;
       result := true;

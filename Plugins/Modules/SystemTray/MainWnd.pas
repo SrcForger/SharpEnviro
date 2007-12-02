@@ -357,7 +357,6 @@ procedure TMainForm.FormMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   p : TPoint;
-  b : boolean;
   modx : integer;
 begin
   if lb_servicenotrunning.Visible then
@@ -372,13 +371,11 @@ begin
   p := ClientToScreen(point(x,y));
   modx := x;
 
-  b := False;
   case Button of
-    mbRight:  b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_RBUTTONUP,self);
-    mbMiddle: b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_MBUTTONUP,self);
-    mbLeft:   b := FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_LBUTTONUP,self);
+    mbRight:  FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_RBUTTONUP,self);
+    mbMiddle: FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_MBUTTONUP,self);
+    mbLeft:   FTrayClient.PerformIconAction(modx,y,p.x,p.y,0,WM_LBUTTONUP,self);
   end;
-  if not b then PopupMenu.Popup(p.x,p.y);
 end;
 
 procedure TMainForm.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
