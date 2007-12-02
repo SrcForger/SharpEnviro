@@ -40,7 +40,6 @@ type
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
-    UpdateTimer: TTimer;
     lb_bottom: TSharpESkinLabel;
     lb_top: TSharpESkinLabel;
     procedure FormPaint(Sender: TObject);
@@ -235,6 +234,7 @@ begin
 
   if (sShowLabels) then
   begin
+    lb_bottom.Caption := s;  
     lb_top.Caption := ReplaceDataInString(sTopLabel);
     lb_top.UpdateSkin;
     lb_top.Resize;

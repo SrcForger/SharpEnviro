@@ -56,9 +56,4 @@ object MainForm: TMainForm
     Left = 192
     Top = 72
   end
-  object UpdateTimer: TTimer
-    Enabled = False
-    Left = 224
-    Top = 16
-  end
 end
