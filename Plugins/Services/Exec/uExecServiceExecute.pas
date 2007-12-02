@@ -586,6 +586,13 @@ begin
 
   if Elevate then sOperation := 'runas' else sOperation := '';
 
+  if length(AFileName) = 0 then
+  begin
+    Debug('The specified file was not found.', DMT_ERROR);
+    Result := 0;
+    exit;
+  end;
+
   if FUseDebug then begin
     FDebugText := Format('File: %s -- Param: %s -- Dir: %s',[AFileName, AParams, ADefaultDir]);
     Result := 1;
