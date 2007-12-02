@@ -47,6 +47,7 @@ uses
 
 procedure Stop;
 begin
+  SharpExec.Terminate;
   SharpExec.Free;
 end;
 
@@ -103,7 +104,10 @@ begin
   begin
     msg := Copy(msg, Length(NoHistoryParam) + 1, Length(msg) - Length(NoHistoryParam) + 1);
   end;
-  SharpExec.ProcessString(msg, Not(bNoHist), bElevate);
+
+  SharpExec.AddProcessString(msg, Not(bNoHist), bElevate);
+  if SharpExec.Suspended then
+    SharpExec.Resume;
 
   // if the cmd is a calc, return the calc id
   if ShowAns then

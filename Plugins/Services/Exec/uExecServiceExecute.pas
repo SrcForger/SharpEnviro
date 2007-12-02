@@ -41,6 +41,7 @@ uses
   Classes,
   Graphics,
   Registry,
+  Contnrs,
 
   // Common
   SharpApi,
@@ -66,10 +67,17 @@ type
   end;
 
 type
-  TSharpExec = class
+  TExecItem= class
+    Text: string;
+    SaveHistory: Boolean;
+    Elevate: Boolean;
+  end;
+
+  TSharpExec = class(TThread)
   private
     FDebugText: String;
     FUseDebug: Boolean;
+    FExecList: TObjectList;
 
   public
     PathIncludeList: TPathIncludeList;
@@ -83,6 +91,7 @@ type
     constructor Create;
 
     destructor Destroy; override;
+    procedure AddProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False);
     function ProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False): Boolean;
     property UseDebug: Boolean read FUseDebug write FUseDebug;
     property DebugText: String read FDebugText write FDebugText;
@@ -90,7 +99,7 @@ type
     property AppPathList: TStringList read FAppPathList write
       FAppPathList;
   protected
-
+   procedure Execute; override;
   private
     function ForceForegroundWindow(hwnd: Thandle; var oldhwnd: THandle): Boolean;
     function ExecuteText(text: string; SaveHistory: Boolean; Elevate: Boolean): boolean;
@@ -233,11 +242,26 @@ end;
   and components used within TSharpExec
 ==============================================================================}
 
+procedure TSharpExec.AddProcessString(Text: string; SaveHistory, Elevate: Boolean);
+var
+  item : TExecItem;
+begin
+  item := TExecItem.Create;
+  item.Text := Text;
+  item.SaveHistory := SaveHistory;
+  item.Elevate := Elevate;
+  FExecList.Add(item);
+end;
+
 constructor TSharpExec.Create;
 var
   SrvSettingsPath: string;
   ExecSettingsFn, PiListFn, PiAliasFn, RiListFn, UiListFn: string;
 begin
+  inherited Create(True);
+  FExecList := TObjectList.Create(True);
+  FreeOnTerminate := False;
+
   // Create Calculator Component
   UseDebug := False;
 
@@ -259,8 +283,7 @@ begin
   FAppPathList := TStringList.Create;
   PopulateAppPathsList;
 
-
-  inherited;
+  Resume;
 end;
 
 {=============================================================================
@@ -270,6 +293,22 @@ end;
 
   Processes and executes the text passed to the function
 ==============================================================================}
+
+procedure TSharpExec.Execute;
+var
+  item : TExecItem;
+begin
+  while not Terminated do
+  begin
+    while FExecList.Count > 0 do
+    begin
+      item := TExecItem(FExecList.Items[0]);
+      ProcessString(item.Text,item.SaveHistory,item.Elevate);
+      FExecList.Remove(item);
+    end;
+    Suspend;
+  end;
+end;
 
 function TSharpExec.ExecuteText(text: string; SaveHistory: Boolean; Elevate: Boolean): boolean;
 var
@@ -564,6 +603,7 @@ end;
 
 destructor TSharpExec.Destroy;
 begin
+  FExecList.Free;
   PathIncludeList.Free;
   AliasList.Free;
   ExecSettings.Free;
@@ -586,6 +626,7 @@ begin
 
   if Elevate then sOperation := 'runas' else sOperation := '';
 
+  // don't even try to execute if no target was resolved before
   if length(AFileName) = 0 then
   begin
     Debug('The specified file was not found.', DMT_ERROR);
