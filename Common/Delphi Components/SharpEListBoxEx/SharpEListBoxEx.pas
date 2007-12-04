@@ -137,13 +137,13 @@ type
     function SubItemCount: Integer;
   end;
 
-  TSharpEListBoxExOnClickCheck = procedure(const ACol: Integer; AItem: TSharpEListItem; var AChecked:Boolean) of object;
-  TSharpEListBoxExOnClickItem = procedure(const ACol: Integer; AItem: TSharpEListItem) of object;
-  TSharpEListBoxExGetItemColor = procedure(const AItem: Integer; var AColor: TColor) of object;
-  TSharpEListBoxExGetColCursor = procedure(const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor) of object;
-  TSharpEListBoxExGetColText = procedure(const ACol: Integer; AItem: TSharpEListItem; var AColText: string) of object;
-  TSharpEListBoxExGetColImageIndex = procedure(const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: integer; const ASelected: Boolean) of object;
-  TSharpEListBoxExGetColClickable = procedure(const ACol: Integer; AItem: TSharpEListItem; var AClickable: Boolean) of object;
+  TSharpEListBoxExOnClickCheck = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem; var AChecked:Boolean) of object;
+  TSharpEListBoxExOnClickItem = procedure(Sender: TObject;const ACol: Integer; AItem: TSharpEListItem) of object;
+  TSharpEListBoxExGetItemColor = procedure(Sender: TObject;const AItem: Integer; var AColor: TColor) of object;
+  TSharpEListBoxExGetColCursor = procedure(Sender: TObject;const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor) of object;
+  TSharpEListBoxExGetColText = procedure(Sender: TObject;const ACol: Integer; AItem: TSharpEListItem; var AColText: string) of object;
+  TSharpEListBoxExGetColImageIndex = procedure(Sender: TObject;const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: integer; const ASelected: Boolean) of object;
+  TSharpEListBoxExGetColClickable = procedure(Sender: TObject;const ACol: Integer; AItem: TSharpEListItem; var AClickable: Boolean) of object;
 
   TSharpEListBoxEx = class(TCustomListBox)
   private
@@ -414,7 +414,7 @@ begin
   // Init
   sColText := Aitem.SubItemText[ACol];
   if Assigned(FOnGetCellText) then begin
-    FOnGetCellText(ACol, Aitem, sColText);
+    FOnGetCellText(Self, ACol, Aitem, sColText);
   end;
 
   rColRect := ARect;
@@ -486,7 +486,7 @@ begin
 
   tmpColor := Colors.ItemColor;
   if Assigned(FOnGetCellColor) then
-    FOnGetCellColor(AItem.ID, tmpColor);
+    FOnGetCellColor(Self, AItem.ID, tmpColor);
 
   y := 0;
   if AItem.ID = 0 then begin
@@ -512,7 +512,7 @@ begin
     tmpColor := Colors.ItemColorSelected;
 
     if Assigned(FOnGetCellColor) then
-      FOnGetCellColor(AItem.ID, tmpColor);
+      FOnGetCellColor(Self,AItem.ID, tmpColor);
 
     if AItem.Checked then  begin
       tmpColor := FColors.FCheckColorSelected;
@@ -686,7 +686,7 @@ begin
   b := true;
 
   if Assigned(TSharpEListBoxEx(FOwner).FOnGetCellImageIndex) then begin
-    TSharpEListBoxEx(FOwner).FOnGetCellImageIndex(col, Self, idx, b);
+    TSharpEListBoxEx(FOwner).FOnGetCellImageIndex(Self.FOwner, col, Self, idx, b);
     Result := idx;
   end
   else
@@ -739,7 +739,7 @@ begin
   b := false;
 
   if Assigned(TSharpEListBoxEx(FOwner).FOnGetCellImageIndex) then begin
-    TSharpEListBoxEx(FOwner).FOnGetCellImageIndex(col, Self, idx, b);
+    TSharpEListBoxEx(FOwner).FOnGetCellImageIndex(Self.FOwner, col, Self, idx, b);
     Result := idx;
   end
   else
@@ -756,7 +756,7 @@ begin
   s := FSubItems[ASubItem];
 
   if Assigned(TSharpEListBoxEx(FOwner).FOnGetCellText) then begin
-    TSharpEListBoxEx(FOwner).FOnGetCellText(col, Self, s);
+    TSharpEListBoxEx(FOwner).FOnGetCellText(Self.FOwner, col, Self, s);
     Result := s;
   end
   else
@@ -916,7 +916,7 @@ begin
 
       bCanSelect := tmpCol.CanSelect;
       if assigned(FOnGetCellClickable) then
-        FOnGetCellClickable(tmpCol.ID, tmpItem, bCanSelect);
+        FOnGetCellClickable(Self, tmpCol.ID, tmpItem, bCanSelect);
 
       if tmpCol.ColumnType = ctCheck then begin
 
@@ -925,7 +925,7 @@ begin
         bCanSelect := False;
 
         if assigned(FOnClickCheck) then
-          FOnClickCheck(tmpCol.ID, tmpItem, bChecked);
+          FOnClickCheck(Self, tmpCol.ID, tmpItem, bChecked);
       end;
 
       if bCanSelect then begin
@@ -933,11 +933,11 @@ begin
         Self.Invalidate;
 
         if Assigned(FOnClickItem) then
-          FOnClickItem(tmpCol.ID, tmpItem);
+          FOnClickItem(Self, tmpCol.ID, tmpItem);
       end
       else begin
         if Assigned(FOnClickItem) then
-          FOnClickItem(tmpCol.ID, tmpItem);
+          FOnClickItem(Self, tmpCol.ID, tmpItem);
       end;
     end;
   end
@@ -1038,11 +1038,11 @@ begin
 
       b := Column[iCol].CanSelect;
       if Assigned(FOnGetCellClickable) then
-        FOnGetCellClickable(iCol, tmpItem, b);
+        FOnGetCellClickable(Self, iCol, tmpItem, b);
 
       //if b then
         if Assigned(FOnGetCellCursor) then
-          FOnGetCellCursor(iCol, tmpItem, cur);
+          FOnGetCellCursor(Self, iCol, tmpItem, cur);
 
       Self.Cursor := cur;
       exit;
@@ -1118,7 +1118,7 @@ begin
 
   // If event assigned, get this image index
   if assigned(FOnGetCellImageIndex) then
-    FOnGetCellImageIndex(iCol, AItem, iSelImgIdx, True);
+    FOnGetCellImageIndex(Self, iCol, AItem, iSelImgIdx, True);
 
   // Check Draw Selected
   if ((ASelected) and (AColumn.SelectedImages <> nil) and
@@ -1142,7 +1142,7 @@ begin
 
     // If event assigned, get this image index
     if assigned(FOnGetCellImageIndex) then
-      FOnGetCellImageIndex(iCol, AItem, iImgIdx, False);
+      FOnGetCellImageIndex(Self, iCol, AItem, iImgIdx, False);
 
     // Check if the image index is valid
     if IsImageIndexValid(AItem, iCol, iImgIdx, ASelected) then begin
