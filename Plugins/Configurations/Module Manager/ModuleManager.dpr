@@ -61,7 +61,9 @@ begin
   frmMMList.Left := 0;
   frmMMList.Top := 0;
   frmMMList.BorderStyle := bsNone;
+  frmMMList.UpdateUI;
   frmMMList.Show;
+  frmMMList.BuildModuleList;
   result := frmMMList.Handle;
 end;
 
@@ -148,23 +150,6 @@ begin
   AStatusText := Pchar(IntToStr(1));
 end;
 
-function SetBtnState(AButtonID: TSCB_BUTTON_ENUM): Boolean;
-begin
-  Result := False;
-
-  Case AButtonID of
-    scbImport: Result := False;
-    scbExport: Result := False;
-    scbDelete: Begin
-      if ((frmMMList.lbModulesLeft.ItemIndex <> -1) or
-        (frmMMList.lbModulesRight.ItemIndex <> -1)) then
-        Result := True else
-        Result := False;
-    end;
-    scbConfigure: Result := True;
-  end;
-end;
-
 procedure GetCenterScheme(var ABackground: TColor;
       var AItemColor: TColor; var AItemSelectedColor: TColor);
 begin
@@ -204,7 +189,6 @@ exports
   CloseEdit,
   SetDisplayText,
   SetStatusText,
-  SetBtnState,
   SetSettingType,
   GetCenterScheme,
   AddTabs;

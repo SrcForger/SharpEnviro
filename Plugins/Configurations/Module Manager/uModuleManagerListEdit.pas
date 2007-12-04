@@ -97,7 +97,8 @@ begin
   until FindNext(sr) <> 0;
   FindClose(sr);
 
-  cobo_Modules.ItemIndex := - 1;
+  cobo_Modules.ItemIndex := 0;
+  LoadModuleData;
 end;
 
 procedure TfrmMMEdit.LoadModuleData;
