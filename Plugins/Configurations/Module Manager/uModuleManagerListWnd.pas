@@ -81,7 +81,7 @@ type
     FModuleList: TObjectList;
     procedure AddItemsToList;
     procedure WndProc(var msg: TMessage);
-    procedure CenterMessage(var Msg: TMessage);
+
   public
     BarID: integer;
     procedure BuildModuleList;
@@ -331,11 +331,6 @@ begin
     Self.Height := pnlRight.Height + pnlLeft.Height + 10;
   end;
 
-end;
-
-procedure TfrmMMList.CenterMessage(var Msg: TMessage);
-begin
-  ShowMessage('test');
 end;
 
 function TfrmMMList.UpdateUI: Boolean;
