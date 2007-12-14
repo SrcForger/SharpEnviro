@@ -5,5 +5,9 @@
       <Dll>_ModuleDlls\MiniScmd.dll</Dll>
       <Icon>Icons\MiniScmd.png</Icon>
     </MiniScmd>
+	<Aliases>
+      <Dll>..\_Services\_ServiceDlls\Aliases.dll</Dll>
+      <Icon>Icons\Aliases.png</Icon>
+    </Aliases>
   </Sections>
 </SharpCenter>

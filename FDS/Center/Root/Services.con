@@ -9,6 +9,10 @@
       <Dll>_Services\_Servicedlls\Weather.dll</Dll>
       <Icon>_Services\_Servicedlls\Weather.png</Icon>
     </Weather>
+	<Aliases>
+      <Dll>_Services\_Servicedlls\Aliases.dll</Dll>
+      <Icon>_Services\_Servicedlls\Aliases.png</Icon>
+    </Aliases>
     <DeskArea>
       <Dll>_Services\_Servicedlls\DeskArea.dll</Dll>
       <Icon>_Services\_Servicedlls\DeskArea.png</Icon>
