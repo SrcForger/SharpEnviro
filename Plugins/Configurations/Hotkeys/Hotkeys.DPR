@@ -47,8 +47,9 @@ var
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 begin
   FrmConfig := TFrmConfig.Create(nil);
-
   uVistaFuncs.SetVistaFonts(FrmConfig);
+
+  CenterDefineConfigurationMode(scmLive);
 
   FrmConfig.ParentWindow := AOwner;
   FrmConfig.Left := 0;
@@ -58,12 +59,6 @@ begin
   FrmConfig.UpdateEditTabs;
 
   result := FrmConfig.Handle;
-end;
-
-function Save : boolean;
-begin
-  Result := True;
-  FHotkeyList.Save;
 end;
 
 function Close : boolean;
@@ -159,7 +154,6 @@ end;
 exports
   Open,
   Close,
-  Save,
   AddTabs,
   OpenEdit,
   CloseEdit,

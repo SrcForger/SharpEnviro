@@ -89,7 +89,6 @@ type
     Label2: TLabel;
     valNameExists: TJvCustomValidator;
     valHotkeyExists: TJvCustomValidator;
-    JvBalloonHint1: TJvBalloonHint;
     procedure valHotkeyExistsValidate(Sender: TObject; ValueToValidate: Variant;
       var Valid: Boolean);
     procedure valNameExistsValidate(Sender: TObject;
@@ -98,7 +97,6 @@ type
     procedure UpdateEditState(Sender: TObject);
     procedure cmdbrowseclick(Sender: TObject);
 
-
   private
     { Private declarations }
     FItemEdit: ThotkeyItem;
@@ -106,10 +104,10 @@ type
   public
     { Public declarations }
     SelectedText: string;
-    procedure InitUi(AEditMode: TSCE_EDITMODE_ENUM; AChangePage:Boolean=False);
-    function ValidateEdit(AEditMode: TSCE_EDITMODE_ENUM):Boolean;
+    procedure InitUi(AEditMode: TSCE_EDITMODE_ENUM; AChangePage: Boolean = False);
+    function ValidateEdit(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
     procedure ClearValidation;
-    function Save(AApply: Boolean;AEditMode: TSCE_EDITMODE_ENUM):Boolean;
+    function Save(AApply: Boolean; AEditMode: TSCE_EDITMODE_ENUM): Boolean;
   end;
 
 var
@@ -134,75 +132,74 @@ begin
 end;
 
 procedure TFrmHotkeyEdit.InitUi(AEditMode: TSCE_EDITMODE_ENUM;
-  AChangePage:Boolean=False);
+  AChangePage: Boolean = False);
 var
-  tmpItem:TSharpEListItem;
+  tmpItem: TSharpEListItem;
   tmpHotkey: THotkeyItem;
 begin
   edName.OnChange := nil;
   edCommand.OnChange := nil;
-  Try
+  try
 
-  Case AEditMode of
-    sceAdd: begin
-      edName.Text := '';
-      edCommand.Text := '';
-      edHotkey.Text := '';
+    case AEditMode of
+      sceAdd: begin
+          edName.Text := '';
+          edCommand.Text := '';
+          edHotkey.Text := '';
 
-      if AChangePage then
-        spEdit.Show;
+          if AChangePage then
+            spEdit.Show;
 
-      if spEdit.Visible then
-        edName.SetFocus;
+          if spEdit.Visible then
+            edName.SetFocus;
 
-      FItemEdit := nil;
+          FItemEdit := nil;
+        end;
+      sceEdit: begin
+
+          if frmConfig.lbHotkeys.SelectedItem = nil then
+            exit;
+
+          tmpItem := frmConfig.lbHotkeys.SelectedItem;
+          tmpHotkey := THotkeyItem(tmpItem.Data);
+          FItemEdit := tmpHotkey;
+
+          edName.Text := tmpHotkey.Name;
+          edCommand.Text := tmpHotkey.Command;
+          edHotkey.Text := tmpHotkey.Hotkey;
+
+          if AChangePage then
+            spEdit.Show;
+
+          if spEdit.Visible then
+            edName.SetFocus;
+        end;
     end;
-    sceEdit: begin
-
-      if frmConfig.lbHotkeys.SelCount = 0 then exit;
-
-      tmpItem := frmConfig.lbHotkeys.Item[frmConfig.lbHotkeys.ItemIndex];
-      tmpHotkey := THotkeyItem(tmpItem.Data);
-      FItemEdit := tmpHotkey;
-      
-      edName.Text := tmpHotkey.Name;
-      edCommand.Text := tmpHotkey.Command;
-      edHotkey.Text := tmpHotkey.Hotkey;
-
-      if AChangePage then
-        spEdit.Show;
-
-      if spEdit.Visible then
-        edName.SetFocus;
-    end;
-  sceDelete: begin
-    if ((AChangePage) and (frmConfig.lbHotkeys.Count <> 0)) then
-        spDelete.Show;
-  end;
-  end;
 
   finally
     edName.OnChange := UpdateEditState;
     edCommand.OnChange := UpdateEditState;
 
-    if frmConfig.lbHotkeys.ItemIndex <> -1 then begin
-        CenterDefineButtonState(scbDelete,True);
-      end else begin
-        CenterDefineButtonState(scbDelete,False);
-      end;
+    if frmConfig.lbHotkeys.SelectedItem <> nil then begin
+      CenterDefineButtonState(scbEditTab, True);
+    end
+    else begin
+      CenterDefineButtonState(scbEditTab, False);
+      CenterSelectEditTab(scbAddTab);
 
-    frmConfig.UpdateEditTabs;
+      edName.Text := '';
+      edCommand.Text := '';
+      edHotkey.Text := '';
+    end;
   end;
 end;
 
 function TFrmHotkeyEdit.ValidateEdit(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
 begin
   Result := False;
-  JvBalloonHint1.CancelHint;
-  
+
   case AEditMode of
-    sceAdd, sceEdit:
-      begin
+    sceAdd, sceEdit: begin
 
         errorinc.BeginUpdate;
         try
@@ -221,42 +218,36 @@ end;
 function TFrmHotkeyEdit.Save(AApply: Boolean;
   AEditMode: TSCE_EDITMODE_ENUM): Boolean;
 var
-  tmpItem:TSharpEListItem;
+  tmpItem: TSharpEListItem;
   tmpHotkey: THotkeyItem;
 begin
   Result := false;
-  if Not(AApply) then Exit;
+  if not (AApply) then
+    Exit;
 
   case AEditMode of
-  sceAdd: begin
-    FHotkeyList.Add(edHotkey.Text,edCommand.Text,edName.Text);
-    CenterDefineSettingsChanged;
+    sceAdd: begin
+        FHotkeyList.Add(edHotkey.Text, edCommand.Text, edName.Text);
+        CenterDefineSettingsChanged;
 
-    frmConfig.RefreshHotkeys;
-    Result := True;
-  end;
-  sceEdit: begin
-    tmpItem := frmConfig.lbHotkeys.Item[frmConfig.lbHotkeys.ItemIndex];
-    tmpHotkey := THotkeyItem(tmpItem.Data);
-    tmpHotkey.Name := edName.Text;
-    tmpHotkey.Hotkey := edHotkey.Text;
-    tmpHotkey.Command := edCommand.Text;
+        frmConfig.RefreshHotkeys;
+        FHotkeyList.Save;
 
-    CenterDefineSettingsChanged;
-    frmConfig.RefreshHotkeys;
-    Result := True;
-  end;
-  sceDelete: begin
-    tmpItem := frmConfig.lbHotkeys.Item[frmConfig.lbHotkeys.ItemIndex];
-    tmpHotkey := THotkeyItem(tmpItem.Data);
-    FHotkeyList.Items.Delete(FHotkeyList.Items.IndexOf(tmpHotkey));
+        Result := True;
+      end;
+    sceEdit: begin
+        tmpItem := frmConfig.lbHotkeys.Item[frmConfig.lbHotkeys.ItemIndex];
+        tmpHotkey := THotkeyItem(tmpItem.Data);
+        tmpHotkey.Name := edName.Text;
+        tmpHotkey.Hotkey := edHotkey.Text;
+        tmpHotkey.Command := edCommand.Text;
 
-    CenterDefineSettingsChanged;
-    frmConfig.RefreshHotkeys;
-    frmConfig.UpdateEditTabs;
-      
-    Result := True;
-  end;
+        CenterDefineSettingsChanged;
+        frmConfig.RefreshHotkeys;
+        FHotkeyList.Save;
+
+        Result := True;
+      end;
   end;
 end;
 
@@ -285,7 +276,7 @@ procedure TFrmHotkeyEdit.valNameExistsValidate(Sender: TObject;
   ValueToValidate: Variant; var Valid: Boolean);
 var
   idx: Integer;
-  s: String;
+  s: string;
 begin
   Valid := True;
 
@@ -306,9 +297,6 @@ begin
       if FItemEdit.Name = s then
         exit;
 
-    if Not(JvBalloonHint1.Active) then
-      JvBalloonHint1.ActivateHint(edName,valNameExists.ErrorMessage);
-
     Valid := False;
   end;
 end;
@@ -317,7 +305,7 @@ procedure TFrmHotkeyEdit.valHotkeyExistsValidate(Sender: TObject;
   ValueToValidate: Variant; var Valid: Boolean);
 var
   idx: Integer;
-  s: String;
+  s: string;
 begin
   Valid := True;
 
@@ -337,9 +325,6 @@ begin
     if FItemEdit <> nil then
       if FItemEdit.Hotkey = s then
         exit;
-
-    if Not(JvBalloonHint1.Active) then
-      JvBalloonHint1.ActivateHint(edHotkey,valHotkeyExists.ErrorMessage);
 
     Valid := False;
   end;

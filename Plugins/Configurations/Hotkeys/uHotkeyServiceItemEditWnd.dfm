@@ -52,7 +52,7 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
         object Label1: TJvLabel
           Left = 0
           Top = 0
-          Width = 78
+          Width = 474
           Height = 13
           Align = alTop
           Caption = 'Confirmation:'
@@ -69,14 +69,16 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
           Images = pilError
+          ExplicitWidth = 78
         end
         object Label2: TLabel
           Left = 0
           Top = 13
-          Width = 307
+          Width = 474
           Height = 14
           Align = alTop
           Caption = 'Are you sure you want to delete the currently selected Hotkey?'
+          ExplicitWidth = 307
         end
         object cmdBrowse: TPngBitBtn
           Left = 243
@@ -270,11 +272,5 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
     ImageIndex = 0
     Left = 288
     Top = 32
-  end
-  object JvBalloonHint1: TJvBalloonHint
-    CustomAnimationStyle = atNone
-    Options = []
-    Left = 464
-    Top = 16
   end
 end

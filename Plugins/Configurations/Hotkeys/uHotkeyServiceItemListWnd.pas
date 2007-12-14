@@ -64,26 +64,27 @@ type
     lbHotkeys: TSharpEListBoxEx;
     JvHint1: TJvHint;
 
-    procedure lbHotkeysGetCellTextColor(const ACol: Integer;
-      AItem: TSharpEListItem; var AColor: TColor);
-
     procedure FormShow(Sender: TObject);
 
     procedure columnclick(Sender: TObject);
     procedure ImportHotkeys;
     procedure ExportHotkeys;
     procedure lbHotkeysResize(Sender: TObject);
-    procedure lbHotkeysClickItem(const ACol: Integer; AItem: TSharpEListItem);
+    procedure lbHotkeysClickItem(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem);
+    procedure lbHotkeysGetCellImageIndex(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var AImageIndex: Integer;
+      const ASelected: Boolean);
+    procedure lbHotkeysGetCellCursor(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var ACursor: TCursor);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
+    function CtrlDown: Boolean;
     { Private declarations }
   public
     { Public declarations }
     procedure RefreshHotkeys;
     procedure LoadHotkeyList;
     procedure UpdateEditTabs;
-
-    
 
     property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
   end;
@@ -94,6 +95,14 @@ var
   Ascending: boolean;
   ItemSelectedID: Integer = -1;
   FHotkeyList: THotkeyList;
+
+const
+  colName = 0;
+  colHotkey = 1;
+  colCopy = 2;
+  colDelete = 3;
+  iidxDelete = 0;
+  iidxCopy = 1;
 
 implementation
 
@@ -122,31 +131,38 @@ end;
 procedure TfrmConfig.RefreshHotkeys;
 var
   i: Integer;
-  idx: Integer;
   tmpItem: TSharpEListItem;
-  s:String;
+  s, sName: string;
 begin
-  idx := 0;
-  if lbHotkeys.ItemIndex <> -1 then
-    idx := lbHotkeys.ItemIndex;
+  sName := '';
+  if lbHotkeys.ItemIndex <> -1 then begin
+    sName := THotkeyItem(lbHotkeys.SelectedItem.Data).Name;
+  end;
 
   lbHotkeys.Clear;
   FHotkeyList.Sort;
 
-  for i := 0 to Pred(FHotkeyList.Count) do
-  begin
-    s := Format('%s (%s)',[FHotkeyList.HotkeyItem[i].Name,
+  for i := 0 to Pred(FHotkeyList.Count) do begin
+    s := Format('%s (%s)', [FHotkeyList.HotkeyItem[i].Name,
       FHotkeyList.HotkeyItem[i].Command]);
 
-    tmpItem := lbHotkeys.AddItem(s,0);
-    tmpItem.AddSubItem(FHotkeyList.HotkeyItem[i].Hotkey,1);
+    tmpItem := lbHotkeys.AddItem(s, 0);
+    tmpItem.AddSubItem(FHotkeyList.HotkeyItem[i].Hotkey, 1);
+    tmpItem.AddSubItem('');
+    tmpItem.AddSubItem('');
     tmpItem.Data := FHotkeyList.HotkeyItem[i];
   end;
 
-  try
-    lbHotkeys.ItemIndex := idx;
-  except
-  end;
+  if sName <> '' then begin
+    for i := 0 to Pred(lbHotkeys.Count) do begin
+      if sName = THotkeyItem(lbHotkeys.Item[i].Data).Name then begin
+        lbHotkeys.ItemIndex := i;
+        break;
+      end;
+    end;
+  end
+  else if lbHotkeys.Count <> 0 then
+    lbHotkeys.ItemIndex := 0;
 end;
 
 procedure TfrmConfig.LoadHotkeyList;
@@ -157,18 +173,24 @@ begin
   fn := GetSharpeUserSettingsPath + cSettingsLocation;
   if (not (assigned(FHotkeyList))) then
     FHotkeyList := THotkeyList.Create(fn)
-  else
-  begin
+  else begin
     FHotkeyList.Items.Clear;
     FHotkeyList.Load;
   end;
 end;
 
+function TfrmConfig.CtrlDown: Boolean;
+var
+  State: TKeyboardState;
+begin
+  GetKeyboardState(State);
+  Result := ((State[VK_CONTROL] and 128) <> 0);
+end;
+
 procedure TfrmConfig.ExportHotkeys;
 begin
   dlgExport.FileName := 'hotkeys_backup.xml';
-  if dlgExport.Execute then
-  begin
+  if dlgExport.Execute then begin
     FHotkeyList.Save(dlgExport.FileName);
 
   end;
@@ -176,8 +198,7 @@ end;
 
 procedure TfrmConfig.ImportHotkeys;
 begin
-  if dlgImport.Execute then
-  begin
+  if dlgImport.Execute then begin
     FHotkeyList.Load(dlgImport.FileName);
     RefreshHotkeys;
 
@@ -185,18 +206,84 @@ begin
   end;
 end;
 
-procedure TfrmConfig.lbHotkeysClickItem(const ACol: Integer;
+procedure TfrmConfig.lbHotkeysClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
+var
+  tmp, tmp2: THotkeyItem;
+  bDelete: Boolean;
+  sCopy: string;
+  i: Integer;
 begin
+  tmp := THotkeyItem(AItem.Data);
+  if tmp = nil then
+    exit;
+
+  case ACol of
+    colDelete: begin
+        bDelete := True;
+        if not (CtrlDown) then
+          if (MessageDlg(Format('Are you sure you want to delete: %s?', [tmp.Name]), mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
+            bDelete := False;
+
+        if bDelete then begin
+          FHotkeyList.Delete(tmp);
+          RefreshHotkeys;
+          FHotkeyList.Save;
+
+          CenterDefineSettingsChanged;
+        end;
+
+      end;
+    colCopy: begin
+        sCopy := 'Copy of ' + tmp.Name;
+        tmp2 := FHotkeyList.Add('', tmp.Command, sCopy);
+        RefreshHotkeys;
+        FHotkeyList.Save;
+
+        for i := 0 to Pred(lbHotkeys.Count) do begin
+          if tmp2.Name = THotkeyItem(lbHotkeys.Item[i].Data).Name then begin
+            lbHotkeys.ItemIndex := i;
+            break;
+          end;
+        end;
+
+        CenterDefineSettingsChanged;
+      end;
+  end;
+
+  if lbHotkeys.SelectedItem <> nil then begin
+    CenterDefineButtonState(scbEditTab, True);
+  end
+  else begin
+    CenterDefineButtonState(scbEditTab, False);
+  end;
+
   if FrmHotkeyEdit <> nil then
     FrmHotkeyEdit.InitUi(FEditMode);
+
+  CenterUpdateTabs;
+  CenterUpdateSize;
+
 end;
 
-procedure TfrmConfig.lbHotkeysGetCellTextColor(const ACol: Integer;
-  AItem: TSharpEListItem; var AColor: TColor);
+procedure TfrmConfig.lbHotkeysGetCellCursor(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor);
 begin
-  if ACol = 1 then
-    AColor := clNavy;
+  if ACol >= colCopy then
+    ACursor := crHandPoint;
+end;
+
+procedure TfrmConfig.lbHotkeysGetCellImageIndex(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
+  const ASelected: Boolean);
+begin
+  if ACol = colName then
+    AImageIndex := -1
+  else if ACol = colDelete then
+    AImageIndex := iidxDelete
+  else if ACol = colCopy then
+    AImageIndex := iidxCopy;
+
 end;
 
 procedure TfrmConfig.lbHotkeysResize(Sender: TObject);
@@ -206,16 +293,16 @@ end;
 
 procedure TfrmConfig.UpdateEditTabs;
 
-  procedure BC(AEnabled:Boolean; AButton:TSCB_BUTTON_ENUM);
+  procedure BC(AEnabled: Boolean; AButton: TSCB_BUTTON_ENUM);
   begin
     if AEnabled then
-    CenterDefineButtonState(AButton,True) else
-    CenterDefineButtonState(AButton,False);
+      CenterDefineButtonState(AButton, True)
+    else
+      CenterDefineButtonState(AButton, False);
   end;
 
 begin
-  if ((lbHotkeys.Count = 0) or (lbHotkeys.ItemIndex = -1)) then
-  begin
+  if ((lbHotkeys.Count = 0) or (lbHotkeys.ItemIndex = -1)) then begin
     BC(False, scbEditTab);
 
     if (lbHotkeys.Count = 0) then begin
@@ -226,11 +313,9 @@ begin
     BC(True, scbAddTab);
 
   end
-  else
-  begin
+  else begin
     BC(True, scbAddTab);
     BC(True, scbEditTab);
-    BC(True, scbDeleteTab);
   end;
 end;
 
