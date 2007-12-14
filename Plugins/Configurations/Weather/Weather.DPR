@@ -35,6 +35,8 @@ begin
     frmItemsList := TfrmItemsList.Create(nil);
   SetVistaFonts(frmItemsList);
 
+  CenterDefineConfigurationMode(scmLive);
+
   sFileName := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatheroptions.xml';
   WeatherOptions := TWeatherSettings.Create(sFileName);
 
@@ -47,8 +49,6 @@ begin
   frmItemsList.BorderStyle := bsNone;
   frmItemsList.UpdateDisplay(WeatherList);
   frmItemsList.Show;
-  frmItemsList.UpdateEditTabs;
-
   result := frmItemsList.Handle;
 end;
 
@@ -67,18 +67,6 @@ begin
     end;
   except
     result := False;
-  end;
-end;
-
-function Save:Boolean;
-begin
-  result := True;
-  try
-    WeatherList.Save;
-    WeatherOptions.Save;
-    SharpApi.ServiceMsg('weather','_forceupdate');
-  except
-    result := false;
   end;
 end;
 
@@ -112,7 +100,7 @@ begin
 
   // Define whether we add/edit or delete the item
   if frmItemEdit.Save(AApply, AEditMode) then Begin
-    frmItemsList.UpdateEditTabs;
+
   end;
 
   FreeAndNil(frmItemEdit);
@@ -152,7 +140,6 @@ end;
 exports
   Open,
   Close,
-  Save,
 
   AddTabs,
 

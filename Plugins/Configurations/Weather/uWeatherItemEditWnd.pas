@@ -243,7 +243,7 @@ begin
           tmpWeather := TWeatherItem(tmpItem.Data);
           FItemEdit := tmpWeather;
 
-          //edName.Text := tmpWeather.Location;
+          edName.Text := tmpWeather.Location;
           edWeatherID.Text := tmpWeather.LocationID;
           chkMetric.Checked := WeatherOptions.Metric;
 
@@ -253,11 +253,6 @@ begin
           if pagEdit.Visible then
             edName.SetFocus;
         end;
-      sceDelete:
-        begin
-          if ((AChangePage) and (frmItemsList.lbWeatherList.Count <> 0)) then
-            pagDelete.Show;
-        end;
     end;
 
   finally
@@ -265,16 +260,17 @@ begin
     edWeatherID.OnChange := UpdateEditState;
     chkMetric.OnClick := UpdateEditState;
 
-    if frmItemsList.lbWeatherList.ItemIndex <> -1 then
-    begin
-      CenterDefineButtonState(scbDelete,True);
+    if frmItemsList.lbWeatherList.SelectedItem <> nil then begin
+      CenterDefineButtonState(scbEditTab, True);
     end
-    else
-    begin
-      CenterDefineButtonState(scbDelete,False);
+    else begin
+      CenterDefineButtonState(scbEditTab, False);
+      CenterSelectEditTab(scbAddTab);
+
+      edName.Text := '';
+      edWeatherID.Text := '';
     end;
 
-    frmItemsList.UpdateEditTabs;
   end;
 end;
 
@@ -327,6 +323,12 @@ begin
 
     CenterDefineSettingsChanged;
     frmItemsList.UpdateDisplay(WeatherList);
+    WeatherList.Save;
+    WeatherOptions.Save;
+
+    // Force the service to update
+    SharpApi.ServiceMsg('weather','_forceupdate');
+
     Result := True;
   end;
   sceEdit: begin
@@ -338,16 +340,8 @@ begin
 
     CenterDefineSettingsChanged;
     frmItemsList.UpdateDisplay(WeatherList);
-    Result := True;
-  end;
-  sceDelete: begin
-    tmpItem := frmItemsList.lbWeatherList.Item[frmItemsList.lbWeatherList.ItemIndex];
-    tmpWeather := TWeatherItem(tmpItem.Data);
-    WeatherList.Delete(tmpWeather);
-
-    CenterDefineSettingsChanged;
-    frmItemsList.UpdateDisplay(WeatherList);
-    frmItemsList.UpdateEditTabs;
+    WeatherList.Save;
+    WeatherOptions.Save;
 
     Result := True;
   end;

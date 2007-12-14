@@ -38,27 +38,42 @@ type
   TfrmItemsList = class(TForm)
     imlWeatherGlyphs: TPngImageList;
     lbWeatherList: TSharpEListBoxEx;
-    procedure FormResize(Sender: TObject);
+
     procedure img1Click(Sender: TObject);
     procedure lbWeatherListResize(Sender: TObject);
-    procedure lbWeatherListClickItem(const ACol: Integer;
+    procedure lbWeatherListClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
-    procedure lbWeatherListGetCellTextColor(const ACol: Integer;
-      AItem: TSharpEListItem; var AColor: TColor);
+    procedure lbWeatherListGetCellImageIndex(Sender: TObject;
+      const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
+      const ASelected: Boolean);
+    procedure lbWeatherListGetCellText(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var AColText: string);
+    procedure lbWeatherListGetCellCursor(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var ACursor: TCursor);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
+    FWinHandle: THandle;
     { Private declarations }
     function GetWeatherIndex(AWeatherItem: TWeatherItem): Integer;
+    procedure WndProc(var msg: TMessage);
   public
     { Public declarations }
     procedure UpdateDisplay(AData: TWeatherList);
-    procedure UpdateEditTabs;
 
     property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
   end;
 
 var
   frmItemsList: TfrmItemsList;
+
+const
+  colName = 0;
+  colStatus = 1;
+  colDelete = 2;
+  iidxStatus = 13;
+  iidxDelete = 14;
 
 implementation
 
@@ -78,43 +93,53 @@ var
   n: Integer;
   newItem: TSharpEListItem;
   tmpWeather: TWeatherItem;
-  s, sTemp, sM: String;
+  s, sTemp, sM: string;
 begin
-  n := lbWeatherList.ItemIndex;
-  lbWeatherList.Clear;
+  LockWindowUpdate(Self.Handle);
+  try
+    n := lbWeatherList.ItemIndex;
+    lbWeatherList.Clear;
 
-  for i := 0 to Pred(AData.Count) do begin
-    tmpWeather := AData.Info[i];
+    for i := 0 to Pred(AData.Count) do begin
+      tmpWeather := AData.Info[i];
 
-    if WeatherOptions.Metric then
-      sM := 'C' else
-      sM := 'F';
+      newItem := lbWeatherList.AddItem(s, GetWeatherIndex(tmpWeather));
+      newItem.AddSubItem('');
+      newItem.AddSubItem('');
+      newItem.Data := tmpWeather;
 
-    if tmpWeather.LastTemp = -1 then
-      sTemp := '' else
-      sTemp := Format(' (%d%s)',[tmpWeather.LastTemp,sM]);
-
-    s := Format('%s%s',[tmpWeather.Location,sTemp]);
-    newItem := lbWeatherList.AddItem(s,GetWeatherIndex(tmpWeather));
-
-    if ((tmpWeather.FCLastUpdated = '0') or (tmpWeather.FCLastUpdated = '-1')) then
-    newItem.AddSubItem('Queued',13) else begin
-      s := FormatDateTime('dd mmm hh:nn',StrToDateTime(tmpWeather.FCLastUpdated));
-      newItem.AddSubItem('Updated: ' + s);
     end;
-    newItem.Data := tmpWeather;
+    if (n = -1) or (n > lbWeatherList.Items.Count - 1) then
+      n := 0;
 
+    if lbWeatherList.Count <> 0 then
+      lbWeatherList.ItemIndex := n;
+  finally
+    LockWindowUpdate(0);
   end;
-  if (n = -1) or (n > lbWeatherList.Items.Count - 1) then
-    n := 0;
-
-  if lbWeatherList.Count <> 0 then
-    lbWeatherList.ItemIndex := n;
 end;
 
 procedure TfrmItemsList.img1Click(Sender: TObject);
 begin
   SharpExecute('http://www.weather.com/?prod=xoap&par=1003043975')
+end;
+
+procedure TfrmItemsList.WndProc(var msg: TMessage);
+begin
+  if ((msg.Msg = WM_SHARPEUPDATESETTINGS) and (msg.WParam = integer(suCenter))) then begin
+    UpdateDisplay(WeatherList);
+    CenterUpdateSize;
+  end;
+end;
+
+procedure TfrmItemsList.FormCreate(Sender: TObject);
+begin
+  FWinHandle := AllocateHWND(WndProc);
+end;
+
+procedure TfrmItemsList.FormDestroy(Sender: TObject);
+begin
+  DeallocateHWnd(FWinHandle);
 end;
 
 function TfrmItemsList.GetWeatherIndex(
@@ -139,63 +164,119 @@ begin
   end;
 end;
 
-procedure TfrmItemsList.FormResize(Sender: TObject);
-var
-  w: Integer;
-begin
-  if lbWeatherList.ColumnCount = 0 then exit;
-
-  w := lbWeatherList.Width;
-  lbWeatherList.Column[0].Width := w-180;
-  lbWeatherList.Column[1].Width := 170;
-end;
-
-procedure TfrmItemsList.UpdateEditTabs;
-
-  procedure BC(AEnabled:Boolean; AButton:TSCB_BUTTON_ENUM);
-  begin
-    if AEnabled then
-    CenterDefineButtonState(Abutton,True) else
-    CenterDefineButtonState(Abutton,False)
-  end;
-
-begin
-  if ((lbWeatherList.Count = 0) or (lbWeatherList.ItemIndex = -1)) then
-  begin
-    BC(False, scbEditTab);
-
-    if (lbWeatherList.Count = 0) then begin
-      BC(False, scbDeleteTab);
-
-      if frmItemEdit <> nil then
-        frmItemEdit.pagEdit.Show;
-
-      CenterSelectEditTab(scbAddTab);
-    end;
-
-    BC(True, scbAddTab);
-
-  end
-  else
-  begin
-    BC(True, scbAddTab);
-    BC(True, scbEditTab);
-    BC(True, scbDeleteTab);
-  end;
-end;
-
-procedure TfrmItemsList.lbWeatherListClickItem(const ACol: Integer;
+procedure TfrmItemsList.lbWeatherListClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
+var
+  tmp: TWeatherItem;
+  bDelete: Boolean;
+
+  function CtrlDown: Boolean;
+  var
+    State: TKeyboardState;
+  begin
+    GetKeyboardState(State);
+    Result := ((State[VK_CONTROL] and 128) <> 0);
+  end;
 begin
-   if frmItemEdit <> nil then
+  tmp := TWeatherItem(AItem.Data);
+  if tmp = nil then
+    exit;
+
+  case ACol of
+    colDelete: begin
+        bDelete := True;
+        if not (CtrlDown) then
+          if (MessageDlg(Format('Are you sure you want to delete: %s?', [tmp.Location]), mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
+            bDelete := False;
+
+        if bDelete then begin
+          WeatherList.Delete(tmp);
+          UpdateDisplay(WeatherList);
+          WeatherList.Save;
+          WeatherOptions.Save;
+
+          CenterDefineSettingsChanged;
+        end;
+
+      end;
+  end;
+
+  if lbWeatherList.SelectedItem <> nil then begin
+    CenterDefineButtonState(scbEditTab, True);
+  end
+  else begin
+    CenterDefineButtonState(scbEditTab, False);
+  end;
+
+  if frmItemEdit <> nil then
     frmItemEdit.InitUi(FEditMode);
+
+  CenterUpdateTabs;
+  CenterUpdateSize;
 end;
 
-procedure TfrmItemsList.lbWeatherListGetCellTextColor(const ACol: Integer;
-  AItem: TSharpEListItem; var AColor: TColor);
+procedure TfrmItemsList.lbWeatherListGetCellCursor(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor);
 begin
-  if Acol = 1 then
-    AColor := clNavy;
+  if ACol = colDelete then
+    ACursor := crHandPoint;
+end;
+
+procedure TfrmItemsList.lbWeatherListGetCellImageIndex(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
+  const ASelected: Boolean);
+var
+  tmp: TWeatherItem;
+begin
+  tmp := TWeatherItem(AItem.Data);
+  if tmp = nil then
+    exit;
+
+  case ACol of
+    colName: AImageIndex := GetWeatherIndex(tmp);
+    colStatus: if ((tmp.FCLastUpdated = '0') or (tmp.FCLastUpdated = '-1')) then
+        AImageIndex := iidxStatus;
+    colDelete: AImageIndex := iidxDelete;
+  end;
+end;
+
+procedure TfrmItemsList.lbWeatherListGetCellText(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var AColText: string);
+var
+  tmp: TWeatherItem;
+  sM: string;
+  sTemp: string;
+  s: string;
+begin
+  tmp := TWeatherItem(AItem.Data);
+  if tmp = nil then
+    exit;
+
+  if WeatherOptions.Metric then
+    sM := 'C'
+  else
+    sM := 'F';
+
+  case ACol of
+    colName: begin
+        if tmp.LastTemp = -1 then
+          sTemp := ''
+        else
+          sTemp := Format(' (%d%s)', [tmp.LastTemp, sM]);
+
+        s := Format('%s%s', [tmp.Location, sTemp]);
+        AColText := s;
+      end;
+    colStatus: begin
+        if ((tmp.FCLastUpdated = '0') or (tmp.FCLastUpdated = '-1')) then
+          AColText := 'Queued'
+        else begin
+          s := FormatDateTime('dd mmm hh:nn', StrToDateTime(tmp.FCLastUpdated));
+          AColText := 'Updated: ' + s;
+        end;
+      end;
+  end;
+
 end;
 
 procedure TfrmItemsList.lbWeatherListResize(Sender: TObject);
