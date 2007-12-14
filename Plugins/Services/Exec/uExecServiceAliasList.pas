@@ -57,8 +57,9 @@ type
     FOnAddItem: TNotifyEvent;
     FFileName: string;
     function GeTAliasListItem(Index: integer): TAliasListItem;
+    function GetCount: Integer;
   public
-    Items: TObjectList;
+    FItems: TObjectList;
     constructor Create(FileName: string);
     destructor Destroy; override;
 
@@ -68,14 +69,20 @@ type
     procedure Save; overload;
     procedure Load(FileName: string); overload;
     procedure Save(FileName: string); overload;
+    function Delete(AItem: TAliasListItem):Boolean; overload;
+    
+    procedure Sort;
 
+    property Count: Integer read GetCount;
     property Item[Index: integer]: TAliasListItem read GeTAliasListItem; default;
 
     property OnAddItem: TNotifyEvent read FOnAddItem write FOnAddItem;
     property FileName: string read FFileName write FFileName;
+    function IndexOfName(AName: String):Integer;
   end;
 
 procedure Debug(Text: string; DebugType: Integer);
+function CustomSort(AItem1, AItem2:Pointer):Integer;
 
 implementation
 
@@ -83,6 +90,15 @@ uses
   SharpApi;
 
 { TAliasList }
+
+function CustomSort(AItem1, AItem2:Pointer):Integer;
+var
+  tmp1,tmp2: TAliasListItem;
+begin
+  tmp1 := TAliasListItem(AItem1);
+  tmp2 := TAliasListItem(AItem2);
+  Result := CompareText(tmp1.AliasName,tmp2.AliasName);
+end;
 
 procedure Debug(Text: string; DebugType: Integer);
 begin
@@ -96,7 +112,7 @@ begin
   Result.AliasName := AliasName;
   Result.AliasValue := AliasValue;
   Result.Elevate := AElevate;
-  Items.Add(Result);
+  FItems.Add(Result);
 
   if Assigned(FOnAddItem) then
     FOnAddItem(Result);
@@ -106,7 +122,7 @@ constructor TAliasList.Create(FileName: string);
 begin
   inherited Create;
   FFileName := FileName;
-  Items := TObjectList.Create;
+  FItems := TObjectList.Create;
 
   if FileExists(FileName) then
     Load
@@ -116,15 +132,49 @@ begin
   end;
 end;
 
+function TAliasList.Delete(AItem: TAliasListItem): Boolean;
+var
+  i:Integer;
+begin
+  Result := False;
+
+  i := FItems.IndexOf(AItem);
+  if i <> -1 then begin
+    FItems.Delete(i);
+    Result := True;
+  end;
+
+end;
+
 destructor TAliasList.Destroy;
 begin
-  Items.Free;
+  FItems.Free;
   inherited;
 end;
 
 function TAliasList.GeTAliasListItem(Index: integer): TAliasListItem;
 begin
-  Result := (Items[Index] as TAliasListItem);
+  Result := (FItems[Index] as TAliasListItem);
+end;
+
+function TAliasList.GetCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+function TAliasList.IndexOfName(AName: String): Integer;
+var
+  tmp: TAliasListItem;
+  i:Integer;
+begin
+  Result := -1;
+  For i := 0 to Pred(FItems.Count) do begin
+    tmp := TAliasListItem(FItems[i]);
+    if CompareText(tmp.AliasName,AName) = 0 then begin
+      Result := i;
+      break;
+    end;
+  end;
 end;
 
 procedure TAliasList.Save(FileName: string);
@@ -138,9 +188,9 @@ begin
   try
     try
       Xml.Root.Name := 'Aliases';
-      xml.Root.Properties.Add('ItemCount', Items.count);
+      xml.Root.Properties.Add('ItemCount', FItems.count);
 
-      for i := 0 to Items.Count - 1 do begin
+      for i := 0 to FItems.Count - 1 do begin
         Xml.Root.Items.Add(Format('Alias%d', [i]));
         Xml.Root.Items.Item[i].Items.Add('AliasName', Self[i].AliasName);
         Xml.Root.Items.Item[i].Items.Add('AliasValue', Self[i].AliasValue);
@@ -158,6 +208,11 @@ begin
   finally
     Xml.Free;
   end;
+end;
+
+procedure TAliasList.Sort;
+begin
+  FItems.Sort(CustomSort);
 end;
 
 procedure TAliasList.Save;
