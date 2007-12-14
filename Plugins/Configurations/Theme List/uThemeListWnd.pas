@@ -42,7 +42,7 @@ type
     pilDefault: TPngImageList;
     DefThemeImageList: TPngImageList;
     tmrEnableUi: TTimer;
-    procedure lbThemeListClickItem(const ACol: Integer;
+    procedure lbThemeListClickItem(Sender:TObject; const ACol: Integer;
       AItem: TSharpEListItem);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -50,12 +50,12 @@ type
     procedure FormShow(Sender: TObject);
     procedure lbThemeListResize(Sender: TObject);
 
-    procedure lbThemeListGetCellCursor(const ACol: Integer;
+    procedure lbThemeListGetCellCursor(Sender:TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure tmrEnableUiTimer(Sender: TObject);
-    procedure lbThemeListGetCellText(const ACol: Integer;
+    procedure lbThemeListGetCellText(Sender:TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
-    procedure lbThemeListGetCellImageIndex(const ACol: Integer;
+    procedure lbThemeListGetCellImageIndex(Sender:TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
   private
@@ -228,7 +228,7 @@ begin
   end;
 end;
 
-procedure TfrmThemeList.lbThemeListClickItem(const ACol: Integer;
+procedure TfrmThemeList.lbThemeListClickItem(Sender:TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
   tmpTheme: TThemeListItem;
@@ -376,7 +376,7 @@ begin
   FLoading := False;
 end;
 
-procedure TfrmThemeList.lbThemeListGetCellCursor(const ACol: Integer;
+procedure TfrmThemeList.lbThemeListGetCellCursor(Sender:TObject; const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 var
   tmpTheme: TThemeListItem;
@@ -399,7 +399,7 @@ begin
   end;
 end;
 
-procedure TfrmThemeList.lbThemeListGetCellImageIndex(const ACol: Integer;
+procedure TfrmThemeList.lbThemeListGetCellImageIndex(Sender:TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
 var
   tmpTheme: TThemeListItem;
@@ -428,7 +428,7 @@ begin
 
 end;
 
-procedure TfrmThemeList.lbThemeListGetCellText(const ACol: Integer;
+procedure TfrmThemeList.lbThemeListGetCellText(Sender:TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmpTheme: TThemeListItem;
