@@ -211,6 +211,11 @@ begin
   Result := BroadcastCenterMessage(SCM_EVT_UPDATE_SIZE, 0);
 end;
 
+function CenterUpdateTabs: boolean;
+begin
+  Result := BroadcastCenterMessage(SCM_EVT_UPDATE_TABS, 0);
+end;
+
 function CenterCommandAsText(ACommand: TSCC_COMMAND_ENUM): string;
 begin
   if ACommand = sccLoadSetting then result := SCC_LOAD_SETTING else
@@ -293,6 +298,7 @@ exports
   CenterUpdatePreview,
   CenterUpdateSettings,
   CenterUpdateSize,
+  CenterUpdateTabs,
   CenterCommandAsText,
   CenterCommandAsEnum,
   CenterReadDefaults,

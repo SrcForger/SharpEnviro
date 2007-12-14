@@ -66,6 +66,9 @@ function CenterUpdatePreview: boolean;
 function CenterUpdateSize: boolean;
   external 'SharpCenterAPI.dll' name 'CenterUpdateSize';
 
+function CenterUpdateTabs: boolean;
+  external 'SharpCenterAPI.dll' name 'CenterUpdateTabs';
+
 function CenterUpdateSettings: boolean;
   external 'SharpCenterAPI.dll' name 'CenterUpdateSettings';
 
