@@ -62,15 +62,15 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 
-    procedure lbBarListGetCellCursor(const ACol: Integer;
+    procedure lbBarListGetCellCursor(Sender:TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
 
-    procedure lbBarListClickItem(const ACol: Integer; AItem: TSharpEListItem);
+    procedure lbBarListClickItem(Sender:TObject; const ACol: Integer; AItem: TSharpEListItem);
     procedure lbBarListResize(Sender: TObject);
-    procedure lbBarListGetCellImageIndex(const ACol: Integer;
+    procedure lbBarListGetCellImageIndex(Sender:TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
-    procedure lbBarListGetCellText(const ACol: Integer; AItem: TSharpEListItem;
+    procedure lbBarListGetCellText(Sender:TObject; const ACol: Integer; AItem: TSharpEListItem;
       var AColText: string);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
@@ -128,7 +128,7 @@ begin
     PointInRect := False;
 end;
 
-procedure TfrmBarList.lbBarListClickItem(const ACol: Integer;
+procedure TfrmBarList.lbBarListClickItem(Sender:TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
   wnd: hwnd;
@@ -211,7 +211,7 @@ begin
   end;
 end;
 
-procedure TfrmBarList.lbBarListGetCellCursor(const ACol: Integer;
+procedure TfrmBarList.lbBarListGetCellCursor(Sender:TObject; const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 begin
   if ((AItem.SubItemText[ACol] = '') or (frmEditItem <> nil)) then
@@ -220,7 +220,7 @@ begin
     ACursor := crHandPoint;
 end;
 
-procedure TfrmBarList.lbBarListGetCellImageIndex(const ACol: Integer;
+procedure TfrmBarList.lbBarListGetCellImageIndex(Sender:TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
 var
   tmpBar: TBarItem;
@@ -243,7 +243,7 @@ begin
   end;
 end;
 
-procedure TfrmBarList.lbBarListGetCellText(const ACol: Integer;
+procedure TfrmBarList.lbBarListGetCellText(Sender:TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmpBar: TBarItem;
