@@ -75,7 +75,7 @@ const
   cEditTabShow = 25;
   cEdit_Add = 0;
   cEdit_Edit = 1;
-  cEdit_Delete = 2;
+  //cEdit_Delete = 2;
 
 type
   TSharpCenterWnd = class(TForm)
@@ -130,7 +130,7 @@ type
     procedure tlToolbarTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
     procedure btnEditCancelClick(Sender: TObject);
-    procedure lbTreeGetCellColor(const AItem: Integer; var AColor: TColor);
+    procedure lbTreeGetCellColor(Sender: TObject; const AItem: Integer; var AColor: TColor);
 
     procedure btnFavouriteClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
@@ -145,7 +145,7 @@ type
 
     procedure FormShow(Sender: TObject);
     procedure sbPluginResize(Sender: TObject);
-    procedure lbTreeClickItem(const ACol: Integer; AItem: TSharpEListItem);
+    procedure lbTreeClickItem(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem);
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
@@ -424,7 +424,7 @@ begin
   //pnlToolbar.Visible := False;
 end;
 
-procedure TSharpCenterWnd.lbTreeClickItem(const ACol: Integer;
+procedure TSharpCenterWnd.lbTreeClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 begin
   if lbTree.ItemIndex = -1 then
@@ -438,7 +438,7 @@ begin
 end;
 
 
-procedure TSharpCenterWnd.lbTreeGetCellColor(const AItem: Integer;
+procedure TSharpCenterWnd.lbTreeGetCellColor(Sender:TObject; const AItem: Integer;
   var AColor: TColor);
 begin
   if AItem = lbTree.ItemIndex then
@@ -460,6 +460,9 @@ begin
         SCM.StateEditItem := False;
         SCM.StateEditWarning := False;
 
+        if pnlEditContainer.Minimized then
+          FSelectedTabID := -1 else begin
+
         case Msg.LParam of
           integer(scbAddTab): begin
               pnlEditContainer.TabIndex := cEdit_Add;
@@ -469,11 +472,8 @@ begin
               pnlEditContainer.TabIndex := cEdit_Edit;
               FSelectedTabID := cEdit_Edit;
             end;
-          integer(scbDeleteTab): begin
-              pnlEditContainer.TabIndex := cEdit_Delete;
-              FSelectedTabID := cEdit_Delete;
-            end;
         end;
+          end;
         UpdateThemeEvent(nil);
       end;
 
@@ -489,8 +489,6 @@ begin
           integer(scbHelp): btnHelp.Enabled := bEnabled;
           integer(scbAddTab): pnlEditContainer.TabItems.Item[cEdit_Add].Visible := bEnabled;
           integer(scbEditTab): pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := bEnabled;
-          integer(scbDeleteTab): pnlEditContainer.TabItems.Item[cEdit_Delete].Visible :=
-            bEnabled;
         end;
       end;
 
@@ -530,6 +528,10 @@ begin
     SCM_EVT_UPDATE_SIZE:
       begin
         UpdateSize;
+      end;
+    SCM_EVT_UPDATE_TABS:
+      begin
+        SCM.LoadPluginTabs; 
       end;
   end;
 end;
@@ -832,7 +834,7 @@ begin
 
     pnlEditContainer.TabItems.Item[cEdit_Add].Visible := True;
     pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := True;
-    pnlEditContainer.TabItems.Item[cEdit_Delete].Visible := True;
+    //pnlEditContainer.TabItems.Item[cEdit_Delete].Visible := True; }
 
     // Toolbar
     if (@SCM.ActivePlugin.SetBtnState <> nil) then

@@ -1451,6 +1451,7 @@ object SharpCenterWnd: TSharpCenterWnd
               VAlign = taVerticalCenter
               ColumnAlign = calLeft
               StretchColumn = True
+              ColumnType = ctDefault
               Images = picMain
             end
             item
@@ -1459,12 +1460,15 @@ object SharpCenterWnd: TSharpCenterWnd
               VAlign = taVerticalCenter
               ColumnAlign = calRight
               StretchColumn = False
+              ColumnType = ctDefault
             end>
           Colors.BorderColor = clBtnFace
           Colors.BorderColorSelected = clBtnShadow
           Colors.ItemColor = clWindow
           Colors.ItemColorSelected = clBtnFace
-          ItemHeight = 26
+          Colors.CheckColorSelected = clBtnFace
+          Colors.CheckColor = 15528425
+          ItemHeight = 30
           OnClickItem = lbTreeClickItem
           OnGetCellColor = lbTreeGetCellColor
           AutosizeGrid = False
@@ -1568,6 +1572,7 @@ object SharpCenterWnd: TSharpCenterWnd
                   VAlign = taVerticalCenter
                   ColumnAlign = calLeft
                   StretchColumn = True
+                  ColumnType = ctDefault
                   Images = pilIcons
                 end
                 item
@@ -1576,18 +1581,21 @@ object SharpCenterWnd: TSharpCenterWnd
                   VAlign = taVerticalCenter
                   ColumnAlign = calRight
                   StretchColumn = False
+                  ColumnType = ctDefault
                 end>
               Colors.BorderColor = clBtnFace
               Colors.BorderColorSelected = clBtnShadow
               Colors.ItemColor = 8447997
               Colors.ItemColorSelected = 2480124
+              Colors.CheckColorSelected = clBtnFace
+              Colors.CheckColor = 15528425
               Color = 8447997
               Font.Charset = ANSI_CHARSET
               Font.Color = clWindowText
               Font.Height = -9
               Font.Name = 'Tahoma'
               Font.Style = []
-              ItemHeight = 26
+              ItemHeight = 30
               AutosizeGrid = False
               BevelInner = bvNone
               BevelOuter = bvNone
@@ -1602,7 +1610,6 @@ object SharpCenterWnd: TSharpCenterWnd
             Width = 161
             Height = 138
             Caption = 'pagHistory'
-            ExplicitHeight = 102
           end
           object pagImport: TJvStandardPage
             Left = 0
@@ -1611,7 +1618,6 @@ object SharpCenterWnd: TSharpCenterWnd
             Height = 138
             BorderWidth = 4
             Caption = ' '
-            ExplicitHeight = 102
             object btnImport: TPngSpeedButton
               Left = 118
               Top = 36
@@ -2081,12 +2087,11 @@ object SharpCenterWnd: TSharpCenterWnd
             Height = 138
             BorderWidth = 2
             Caption = ' '
-            ExplicitHeight = 102
             DesignSize = (
               157
               134)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -678
+              Left = -706
               Top = 35
               Width = 23
               Height = 22
@@ -2538,7 +2543,7 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = -4
+              Width = -16
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
@@ -2686,7 +2691,7 @@ object SharpCenterWnd: TSharpCenterWnd
           item
             Caption = 'Delete'
             ImageIndex = 2
-            Visible = True
+            Visible = False
           end>
         RoundValue = 10
         Border = False
@@ -2698,7 +2703,7 @@ object SharpCenterWnd: TSharpCenterWnd
         TabBackgroundColor = clWindow
         BackgroundColor = clWindow
         BorderColor = 16510947
-        TabColor = 15724527
+        TabColor = clWindow
         TabSelColor = 16510947
         TabCaptionSelColor = clBlack
         TabStatusSelColor = clGreen

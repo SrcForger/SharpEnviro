@@ -106,7 +106,6 @@ type
 
     function UnloadDllTimer(ACommand: TSCC_COMMAND_ENUM; AParam,
       APluginID: string): Boolean;
-    function LoadPluginTabs: Boolean;
 
     procedure SetStateEditItem(const Value: Boolean);
     procedure SetStateEditWarning(const Value: Boolean);
@@ -166,6 +165,7 @@ type
     property UnloadCommand: TSharpCenterHistoryItem read FUnloadCommand write FUnloadCommand;
 
     property PluginTabs: TPluginTabItemList read FPluginTabs write FPluginTabs;
+    function LoadPluginTabs: Boolean;
 
     property PluginWndHandle: THandle read FPluginWndHandle write FPluginWndHandle;
     property EditWndHandle: THandle read FEditWndHandle write FEditWndHandle;
@@ -220,9 +220,6 @@ begin
 
         if Assigned(FOnLoadPlugin) then
           FOnLoadPlugin(Self);
-
-        if Assigned(FOnAddPluginTabs) then
-          FOnAddPluginTabs(Self);
 
         if Assigned(FOnUpdateTheme) then
           FOnUpdateTheme(Self);
@@ -742,6 +739,9 @@ begin
   if (@ActivePlugin.AddTabs <> nil) then
     ActivePlugin.AddTabs(FPluginTabs);
 
+  if Assigned(FOnAddPluginTabs) then
+          FOnAddPluginTabs(Self);
+
   if (PluginTabs.Count > 0) and (@ActivePlugin.ClickTab <> nil) then
     ActivePlugin.ClickTab(PluginTabs.GetItem[0]);
 end;
@@ -859,8 +859,6 @@ begin
         FOnApplyEdit(Self);
 
       LoadPluginTabs;
-      if Assigned(FOnAddPluginTabs) then
-        FOnAddPluginTabs(Self);
 
     end else begin
       CheckEditState;
