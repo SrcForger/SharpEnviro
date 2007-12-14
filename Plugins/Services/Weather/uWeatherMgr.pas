@@ -43,6 +43,7 @@ uses
   Wininet,
 
   uWeatherList,
+  SharpCenterApi,
   SharpApi;
 
 type
@@ -316,6 +317,7 @@ begin
           FErrorCount := 0;
 
           WeatherList.Save;
+          SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
 
           SharpEBroadCast(WM_WEATHERUPDATE, 0, 0);
         end;
@@ -357,6 +359,7 @@ begin
           WeatherList.Save;
 
           SharpEBroadCast(WM_WEATHERUPDATE, 0, 0);
+          SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
         end;
       end;
     except

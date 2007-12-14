@@ -28,6 +28,7 @@ unit uWeatherOptions;
 interface
 uses
   Classes,
+  Windows,
   jclIniFiles,
   ContNrs,
   SysUtils,
