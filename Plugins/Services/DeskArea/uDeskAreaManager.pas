@@ -28,8 +28,7 @@ unit uDeskAreaManager;
 interface
 
 uses
-  Windows,SysUtils,Forms,ExtCtrls,Types,Math,SharpApi,JvSimpleXML,
-  uxTheme;
+  Windows,SysUtils,Forms,ExtCtrls,Types,Math,SharpApi,JvSimpleXML;
 
 type
   TDeskAreaManager = class
@@ -52,6 +51,9 @@ type
   end;
 
 implementation
+
+uses
+  uxTheme;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
 begin

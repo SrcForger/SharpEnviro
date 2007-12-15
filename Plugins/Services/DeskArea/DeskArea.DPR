@@ -31,6 +31,7 @@ uses
   SysUtils,
   SharpApi,
   SharpCenterApi,
+  uxtheme,
   uDeskAreaManager in 'uDeskAreaManager.pas';
 
 type
@@ -60,6 +61,7 @@ end;
 
 function Start(owner: hwnd): hwnd;
 begin
+  InitThemeLibrary;
   DeskAreaManager := TDeskAreaManager.Create;
   DeskAreaManager.LoadSettings;
   Result := owner;
