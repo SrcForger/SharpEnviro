@@ -23,7 +23,7 @@
      <project Name="VWM" Type="DLL">Plugins\Configurations\VWM\VWM.bdsproj</project>  
      <project Name="VWMService" Type="DLL">Plugins\Configurations\VWMService\VWMService.bdsproj</project>  
      <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Wallpaper\Wallpaper.bdsproj</project>  
-     <project Name="Weather" Type="DLL">Plugins\Configurations\Weather\Weather.bdsproj</project>  
+     <project Name="WeatherService" Type="DLL">Plugins\Configurations\WeatherService\Weather.bdsproj</project>  
   </package>
   <package Name="Components">
      <project Name="SetShell" Type="Application">Components\SetShell\SetShell.bdsproj</project>
