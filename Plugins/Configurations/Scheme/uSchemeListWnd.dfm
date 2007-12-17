@@ -41,6 +41,7 @@ object frmSchemeList: TfrmSchemeList
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         StretchColumn = True
+        ColumnType = ctDefault
         Images = imlCol1
       end
       item
@@ -50,6 +51,7 @@ object frmSchemeList: TfrmSchemeList
         ColumnAlign = calRight
         StretchColumn = False
         CanSelect = False
+        ColumnType = ctDefault
         Images = imlCol2
       end
       item
@@ -59,12 +61,15 @@ object frmSchemeList: TfrmSchemeList
         ColumnAlign = calRight
         StretchColumn = False
         CanSelect = False
+        ColumnType = ctDefault
         Images = imlCol2
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnShadow
     Colors.ItemColor = clWindow
     Colors.ItemColorSelected = clBtnFace
+    Colors.CheckColorSelected = clBtnFace
+    Colors.CheckColor = 15528425
     OnResize = lbSchemeListResize
     ItemHeight = 30
     OnClickItem = lbSchemeListClickItem

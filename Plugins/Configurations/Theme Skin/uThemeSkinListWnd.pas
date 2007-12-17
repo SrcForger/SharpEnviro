@@ -66,13 +66,13 @@ type
     PngImageList1: TPngImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure lbSkinListClickItem(const ACol: Integer; AItem: TSharpEListItem);
-    procedure lbSkinListGetCellText(const ACol: Integer; AItem: TSharpEListItem;
+    procedure lbSkinListClickItem(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem);
+    procedure lbSkinListGetCellText(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem;
       var AColText: string);
-    procedure lbSkinListGetCellImageIndex(const ACol: Integer;
+    procedure lbSkinListGetCellImageIndex(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
-    procedure lbSkinListGetCellCursor(const ACol: Integer;
+    procedure lbSkinListGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
 
   private
@@ -248,7 +248,7 @@ begin
   end;
 end;
 
-procedure TfrmSkinListWnd.lbSkinListClickItem(const ACol: Integer;
+procedure TfrmSkinListWnd.lbSkinListClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
   tmp: TSkinItem;
@@ -286,7 +286,7 @@ begin
 
 end;
 
-procedure TfrmSkinListWnd.lbSkinListGetCellCursor(const ACol: Integer;
+procedure TfrmSkinListWnd.lbSkinListGetCellCursor(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 var
   tmp: TSkinItem;
@@ -309,7 +309,7 @@ begin
   end;
 end;
 
-procedure TfrmSkinListWnd.lbSkinListGetCellImageIndex(const ACol: Integer;
+procedure TfrmSkinListWnd.lbSkinListGetCellImageIndex(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
 var
   tmp: TSkinItem;
@@ -334,7 +334,7 @@ begin
   end;
 end;
 
-procedure TfrmSkinListWnd.lbSkinListGetCellText(const ACol: Integer;
+procedure TfrmSkinListWnd.lbSkinListGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmp: TSkinItem;

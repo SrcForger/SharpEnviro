@@ -27,6 +27,7 @@ object frmSkinListWnd: TfrmSkinListWnd
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         StretchColumn = True
+        ColumnType = ctDefault
         Images = ThemeImages
       end
       item
@@ -36,6 +37,7 @@ object frmSkinListWnd: TfrmSkinListWnd
         ColumnAlign = calRight
         StretchColumn = False
         CanSelect = False
+        ColumnType = ctDefault
         Images = PngImageList1
       end
       item
@@ -45,12 +47,15 @@ object frmSkinListWnd: TfrmSkinListWnd
         ColumnAlign = calRight
         StretchColumn = False
         CanSelect = False
+        ColumnType = ctDefault
         Images = PngImageList1
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnShadow
     Colors.ItemColor = clWindow
     Colors.ItemColorSelected = clBtnFace
+    Colors.CheckColorSelected = clBtnFace
+    Colors.CheckColor = 15528425
     ItemHeight = 66
     OnClickItem = lbSkinListClickItem
     OnGetCellCursor = lbSkinListGetCellCursor

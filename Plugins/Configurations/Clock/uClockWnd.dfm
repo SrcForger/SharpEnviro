@@ -23,17 +23,15 @@ object frmClock: TfrmClock
     ActivePage = pagNotes
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 400
     object pagNotes: TJvStandardPage
       Left = 0
       Top = 0
       Width = 427
       Height = 346
-      ExplicitHeight = 400
       object Label3: TLabel
         AlignWithMargins = True
         Left = 8
-        Top = 73
+        Top = 75
         Width = 411
         Height = 13
         Margins.Left = 8
@@ -42,12 +40,13 @@ object frmClock: TfrmClock
         Margins.Bottom = 0
         Align = alTop
         Caption = 'Text Size'
+        ExplicitTop = 73
         ExplicitWidth = 44
       end
       object lbSize: TLabel
         AlignWithMargins = True
         Left = 26
-        Top = 94
+        Top = 96
         Width = 393
         Height = 13
         Margins.Left = 26
@@ -67,24 +66,24 @@ object frmClock: TfrmClock
         Left = 26
         Top = 33
         Width = 393
-        Height = 24
+        Height = 26
         Margins.Left = 26
         Margins.Top = 8
         Margins.Right = 8
         Margins.Bottom = 0
         Align = alTop
-        AutoSize = False
         Caption = 
           'Enable this option to use an alternative two line display with t' +
           'wo custom clock texts. (Note that you can'#39't change the text size' +
           ' if this option is enabled)'
         Transparent = False
         WordWrap = True
+        ExplicitWidth = 374
       end
       object Label4: TLabel
         AlignWithMargins = True
         Left = 8
-        Top = 207
+        Top = 209
         Width = 411
         Height = 13
         Margins.Left = 8
@@ -93,12 +92,13 @@ object frmClock: TfrmClock
         Margins.Bottom = 0
         Align = alTop
         Caption = 'Text Format'
+        ExplicitTop = 207
         ExplicitWidth = 59
       end
       object Label5: TLabel
         AlignWithMargins = True
         Left = 26
-        Top = 228
+        Top = 230
         Width = 393
         Height = 13
         Margins.Left = 26
@@ -110,11 +110,12 @@ object frmClock: TfrmClock
         Caption = 'Top/Primary Label'
         Transparent = False
         WordWrap = True
+        ExplicitTop = 228
       end
       object lbTwoLine: TLabel
         AlignWithMargins = True
         Left = 26
-        Top = 282
+        Top = 284
         Width = 393
         Height = 13
         Margins.Left = 26
@@ -131,7 +132,7 @@ object frmClock: TfrmClock
       object rbLarge: TRadioButton
         AlignWithMargins = True
         Left = 27
-        Top = 115
+        Top = 117
         Width = 392
         Height = 17
         Margins.Left = 27
@@ -141,11 +142,12 @@ object frmClock: TfrmClock
         Caption = 'Large'
         TabOrder = 0
         OnClick = rbLargeClick
+        ExplicitTop = 115
       end
       object rbMedium: TRadioButton
         AlignWithMargins = True
         Left = 27
-        Top = 143
+        Top = 145
         Width = 392
         Height = 17
         Margins.Left = 27
@@ -157,11 +159,12 @@ object frmClock: TfrmClock
         TabOrder = 1
         TabStop = True
         OnClick = rbLargeClick
+        ExplicitTop = 143
       end
       object rbSmall: TRadioButton
         AlignWithMargins = True
         Left = 27
-        Top = 171
+        Top = 173
         Width = 392
         Height = 17
         Margins.Left = 27
@@ -171,6 +174,7 @@ object frmClock: TfrmClock
         Caption = 'Small'
         TabOrder = 2
         OnClick = rbLargeClick
+        ExplicitTop = 171
       end
       object cbTwoLine: TCheckBox
         AlignWithMargins = True
@@ -189,13 +193,14 @@ object frmClock: TfrmClock
       end
       object Panel1: TPanel
         Left = 0
-        Top = 295
+        Top = 297
         Width = 427
         Height = 29
         Align = alTop
         BevelOuter = bvNone
         Caption = 'Panel1'
         TabOrder = 4
+        ExplicitTop = 295
         object EditTwoLine: TEdit
           AlignWithMargins = True
           Left = 24
@@ -228,13 +233,14 @@ object frmClock: TfrmClock
       end
       object Panel2: TPanel
         Left = 0
-        Top = 241
+        Top = 243
         Width = 427
         Height = 29
         Align = alTop
         BevelOuter = bvNone
         Caption = 'Panel1'
         TabOrder = 5
+        ExplicitTop = 241
         object EditSingleLine: TEdit
           AlignWithMargins = True
           Left = 24

@@ -26,20 +26,14 @@ library Scheme;
 
 uses
   windows,
-  Classes,
-  Messages,
-  Dialogs,
   sysutils,
-  ExtCtrls,
   sharpapi,
   sharpcenterapi,
   graphics,
   uVistaFuncs,
   forms,
   GR32,
-  GR32_Image,
   uSharpCenterPluginTabList,
-  PngSpeedButton,
   uSchemeListWnd in 'uSchemeListWnd.pas' {frmSchemeList},
   uEditSchemeWnd in 'uEditSchemeWnd.pas' {frmEditScheme},
   uSchemeList in 'uSchemeList.pas';

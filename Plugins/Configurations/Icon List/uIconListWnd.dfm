@@ -26,6 +26,7 @@ object frmIconList: TfrmIconList
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         StretchColumn = True
+        ColumnType = ctDefault
       end
       item
         Width = 30
@@ -33,12 +34,15 @@ object frmIconList: TfrmIconList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        ColumnType = ctDefault
         Images = Images
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnShadow
     Colors.ItemColor = clWindow
     Colors.ItemColorSelected = clBtnFace
+    Colors.CheckColorSelected = clBtnFace
+    Colors.CheckColor = 15528425
     OnResize = lb_iconlistResize
     ItemHeight = 30
     OnClickItem = lb_iconlistClickItem

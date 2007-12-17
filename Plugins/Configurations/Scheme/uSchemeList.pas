@@ -2,25 +2,15 @@ unit uSchemeList;
 
 interface
 uses
-  // Standard
   Classes,
   ContNrs,
   SysUtils,
   Forms,
-  dialogs,
   windows,
-
-  // JCL
-  jclIniFiles,
-  JclSysInfo,
-  JclSysUtils,
   JclFileUtils,
   JclStrings,
   SharpThemeApi,
-
-  // JVCL
   JvSimpleXml,
-  PngImageList,
   SharpApi,
   graphics;
 

@@ -93,7 +93,7 @@ var
   n: Integer;
   newItem: TSharpEListItem;
   tmpWeather: TWeatherItem;
-  s, sTemp, sM: string;
+  s: string;
 begin
   LockWindowUpdate(Self.Handle);
   try
@@ -252,7 +252,7 @@ begin
   if tmp = nil then
     exit;
 
-  if WeatherOptions.Metric then
+  if tmp.Metric then
     sM := 'C'
   else
     sM := 'F';

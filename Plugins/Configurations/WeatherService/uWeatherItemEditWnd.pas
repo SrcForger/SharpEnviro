@@ -223,7 +223,7 @@ begin
         begin
           edName.Text := '';
           edWeatherID.Text := '';
-          chkMetric.Checked := WeatherOptions.Metric;
+          chkMetric.Checked := True;
 
           if AChangePage then
             pagEdit.Show;
@@ -245,7 +245,7 @@ begin
 
           edName.Text := tmpWeather.Location;
           edWeatherID.Text := tmpWeather.LocationID;
-          chkMetric.Checked := WeatherOptions.Metric;
+          chkMetric.Checked := tmpWeather.Metric;
 
           if AChangePage then
             pagEdit.Show;
@@ -318,15 +318,15 @@ begin
   case AEditMode of
   sceAdd: begin
 
-    WeatherList.Add(edName.Text,edWeatherID.Text,'-1','-1',-1,-1,True);
-    WeatherOptions.Metric := chkMetric.Checked;
+    WeatherList.Add(edName.Text,edWeatherID.Text,'-1','-1',-1,-1,True,chkMetric.Checked);
 
     CenterDefineSettingsChanged;
-    frmItemsList.UpdateDisplay(WeatherList);
+    
     WeatherList.Save;
     WeatherOptions.Save;
 
     // Force the service to update
+    frmItemsList.UpdateDisplay(WeatherList);
     SharpApi.ServiceMsg('weather','_forceupdate');
 
     Result := True;
@@ -336,7 +336,7 @@ begin
     tmpWeather := TWeatherItem(tmpItem.Data);
     tmpWeather.Location := edName.Text;
     tmpWeather.LocationID := edWeatherID.Text;
-    WeatherOptions.Metric := chkMetric.Checked;
+    tmpWeather.Metric := chkMetric.Checked;
 
     CenterDefineSettingsChanged;
     frmItemsList.UpdateDisplay(WeatherList);

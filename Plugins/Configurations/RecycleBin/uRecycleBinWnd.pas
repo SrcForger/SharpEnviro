@@ -36,7 +36,7 @@ uses
   SharpEFontSelectorFontList, JvPageList, JvExControls, SharpEPageControl,
   ComCtrls, Mask, JvExMask, JvToolEdit, SharpEColorEditorEx,
   SharpDialogs, SharpERoundPanel, SharpIconUtils, JvExStdCtrls, JvCheckBox,
-  SharpESwatchManager;
+  SharpESwatchManager, JvMemo;
 
 type
   TStringObject = class(TObject)
@@ -56,7 +56,6 @@ type
     pagesingle: TJvStandardPage;
     pagemulti: TJvStandardPage;
     edit_caption: TEdit;
-    memo_caption: TMemo;
     Panel2: TPanel;
     cb_calign: TComboBox;
     Label3: TLabel;
@@ -163,6 +162,7 @@ type
     cbBinStatus: TCheckBox;
     Label5: TLabel;
     SharpESwatchManager1: TSharpESwatchManager;
+    memo_caption: TJvMemo;
     procedure FormCreate(Sender: TObject);
     procedure spcTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);

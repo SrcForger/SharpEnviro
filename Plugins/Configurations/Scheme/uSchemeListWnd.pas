@@ -38,16 +38,22 @@ uses
   Dialogs,
   StdCtrls,
   ExtCtrls,
-  Spin,
   ComCtrls,
   pngimage,
   Mask,
   ContNrs,
   GR32_Image,
   uEditSchemeWnd,
-  JclGraphUtils,
-  SharpApi, SharpCenterApi, SharpThemeApi, ImgList, SharpEListBoxEx, PngImageList,
-  JvSimpleXML, uSchemeList, BarPreview, Gr32;
+  SharpApi,
+  SharpCenterApi,
+  SharpThemeApi,
+  SharpEListBoxEx,
+  PngImageList,
+  JvSimpleXML,
+  uSchemeList,
+  BarPreview,
+  Gr32,
+  ImgList;
 
 type
   TARGB = packed record b, g, r, a: Byte;
@@ -66,20 +72,20 @@ type
     procedure FormCreate(Sender: TObject);
 
     procedure lbSchemeListResize(Sender: TObject);
-    procedure lbSchemeListClickItem(const ACol: Integer;
+    procedure lbSchemeListClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
-    procedure lbSchemeListGetCellCursor(const ACol: Integer;
+    procedure lbSchemeListGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure tmrRefreshItemsTimer(Sender: TObject);
-    procedure lbSchemeListGetCellText(const ACol: Integer;
+    procedure lbSchemeListGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
-    procedure lbSchemeListGetCellImageIndex(const ACol: Integer;
+    procedure lbSchemeListGetCellImageIndex(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
 
   private
     procedure RebuildSchemeList;
-    procedure SelectSchemeItem(ASchemeName:String);
+    procedure SelectSchemeItem(ASchemeName: string);
     { Private declarations }
 
   public
@@ -102,7 +108,6 @@ const
 implementation
 
 uses
-  uSEListboxPainter,
   JclStrings,
   SharpFx;
 
@@ -187,7 +192,7 @@ begin
 
   LockWindowUpdate(Self.Handle);
   lbSchemeList.Clear;
-  
+
   Screen.Cursor := crHourGlass;
   sl := TStringList.Create;
   try
@@ -239,14 +244,14 @@ begin
   end;
 end;
 
-procedure TfrmSchemeList.SelectSchemeItem(ASchemeName: String);
+procedure TfrmSchemeList.SelectSchemeItem(ASchemeName: string);
 var
-  i:Integer;
+  i: Integer;
   tmpScheme: TSchemeItem;
 begin
   for i := 0 to Pred(lbSchemeList.Count) do begin
     tmpScheme := TSchemeItem(lbSchemeList.Item[i].Data);
-    if CompareText(ASchemeName,tmpScheme.Name) = 0 then begin
+    if CompareText(ASchemeName, tmpScheme.Name) = 0 then begin
       lbSchemeList.ItemIndex := i;
       break;
     end;
@@ -265,11 +270,11 @@ begin
   FSchemeManager.Free;
 end;
 
-procedure TfrmSchemeList.lbSchemeListClickItem(const ACol: Integer;
+procedure TfrmSchemeList.lbSchemeListClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
   tmpSchemeItem: TSchemeItem;
-  sNew: String;
+  sNew: string;
 begin
 
   if ACol = cNameColIdx then begin
@@ -291,9 +296,9 @@ begin
   end
   else if ACol = cCopyColIdx then begin
     tmpSchemeItem := TSchemeItem(AItem.Data);
-    FSchemeManager.Copy(tmpSchemeItem,sNew);
+    FSchemeManager.Copy(tmpSchemeItem, sNew);
     RebuildSchemeList;
-    
+
     SelectSchemeItem(sNew);
   end
   else if ACol = cDeleteColIdx then begin
@@ -304,14 +309,14 @@ begin
   end;
 end;
 
-procedure TfrmSchemeList.lbSchemeListGetCellCursor(const ACol: Integer;
+procedure TfrmSchemeList.lbSchemeListGetCellCursor(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 begin
   if ACol > cNameColIdx then
     ACursor := crHandPoint;
 end;
 
-procedure TfrmSchemeList.lbSchemeListGetCellImageIndex(const ACol: Integer;
+procedure TfrmSchemeList.lbSchemeListGetCellImageIndex(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
 var
   tmp: TSchemeItem;
@@ -329,7 +334,7 @@ begin
 
 end;
 
-procedure TfrmSchemeList.lbSchemeListGetCellText(const ACol: Integer;
+procedure TfrmSchemeList.lbSchemeListGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmp: TSchemeItem;

@@ -28,12 +28,24 @@ unit uEditSchemeWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, SharpeColorEditorEx, ContNrs, Buttons, PngBitBtn,
-  GraphicsFx, pngimage, JvExStdCtrls, JvEdit, GR32_Image, BarPreview, GR32,
-  uSchemeList, PngImageList,
-  SharpELabel, SharpERoundPanel, PngSpeedButton, ImgList, JvShape, JclIniFiles,
-  SharpApi, SharpCenterApi, SharpThemeApi, SharpESwatchManager, SharpECenterScheme,
+  Windows,
+  SysUtils,
+  Classes,
+  Graphics,
+  Forms,
+  Controls,
+  StdCtrls,
+  ExtCtrls,
+  SharpeColorEditorEx,
+  ContNrs,
+  uSchemeList,
+  SharpERoundPanel,
+  JclIniFiles,
+  SharpApi,
+  SharpCenterApi,
+  SharpThemeApi,
+  SharpESwatchManager,
+  SharpECenterScheme,
   SharpEColorEditor;
 
 type
@@ -77,7 +89,8 @@ var
 
 implementation
 
-uses JclStrings, uSchemeListWnd;
+uses JclStrings,
+  uSchemeListWnd;
 
 {$R *.dfm}
 
@@ -95,14 +108,12 @@ begin
   try
     secEx.BeginUpdate;
     secEx.Items.Clear;
-    
-    for i := 0 to Pred(FColors.Count) do
-    begin
+
+    for i := 0 to Pred(FColors.Count) do begin
       tmpItem := TSchemeColorItem(FColors[i]);
       tmpSkinColor := FSchemeManager.GetSkinColorByTag(tmpItem.Tag);
 
-      with secEx.Items.Add(Self) do
-      begin
+      with secEx.Items.Add(Self) do begin
         Title := tmpSkinColor.Name;
         ColorCode := tmpItem.Color;
         Tag := Integer(tmpItem);
@@ -129,7 +140,7 @@ begin
         +
         secEx.Items.Item[0].ColorEditor.ExpandedHeight;
 
-    Self.Height := h+10;
+    Self.Height := h + 10;
     LockWindowUpdate(0);
   end;
 
@@ -139,8 +150,7 @@ procedure TfrmEditScheme.FormCreate(Sender: TObject);
 begin
   FSelectedColorIdx := 0;
 
-  if not (FEdit) then
-  begin
+  if not (FEdit) then begin
     if FileExists(GetSharpeUserSettingsPath + 'author.dat') then
       edAuthor.Text := IniReadString(GetSharpeUserSettingsPath + 'author.dat',
         'main', 'author');
@@ -154,8 +164,7 @@ var
 begin
 
   case AEditMode of
-    sceAdd:
-      begin
+    sceAdd: begin
 
         tmpItem := TSchemeItem.Create(nil);
         tmpItem.Name := '';
@@ -169,8 +178,7 @@ begin
         SchemeItem := tmpItem;
         Edit := False;
       end;
-    sceEdit:
-      begin
+    sceEdit: begin
 
         lstItem := TSchemeItem(frmSchemeList.lbSchemeList.
           Item[frmSchemeList.lbSchemeList.ItemIndex].Data);
@@ -188,26 +196,24 @@ begin
         Edit := True;
 
       end;
-    sceDelete:
-      begin
+    sceDelete: begin
 
       end;
-  end; 
+  end;
 end;
 
 function TfrmEditScheme.ValidateEdit(AEditMode: TSCE_EditMode_Enum): Boolean;
 var
   bInvalidAuthor, bExistsName: Boolean;
-  sName, sSkinDir, sSchemeDir: String;
+  sName, sSkinDir, sSchemeDir: string;
 begin
   sName := trim(StrRemoveChars(edName.Text,
-      ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
+    ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
   sSkinDir := GetSharpeDirectory + 'skins';
   sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, FSchemeManager.GetSkinName]);
 
-  bExistsName := FileExists(sSchemeDir+sName+'.xml');
-  if ((CompareText(edName.Text, SchemeItem.Name) = 0) and (AEditMode = sceEdit))
-    then
+  bExistsName := FileExists(sSchemeDir + sName + '.xml');
+  if ((CompareText(edName.Text, SchemeItem.Name) = 0) and (AEditMode = sceEdit)) then
     bExistsName := False;
 
   bInvalidAuthor := (edAuthor.Text = '');
@@ -221,11 +227,11 @@ var
   lstItem: TSchemeItem;
 begin
   Result := True;
-  if Not(AApply) then exit;
+  if not (AApply) then
+    exit;
 
   case AEditMode of
-    sceAdd:
-      begin
+    sceAdd: begin
 
         FSchemeItem.Name := edName.Text;
         FSchemeItem.Author := edAuthor.Text;
@@ -234,14 +240,12 @@ begin
 
         Result := True;
         frmSchemeList.UpdateEditTabs;
-        SharpEBroadCast(WM_SHARPEUPDATESETTINGS,Integer(suScheme),0);
+        SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
 
       end;
-    sceEdit:
-      begin
+    sceEdit: begin
 
-        if AApply then
-        begin
+        if AApply then begin
 
           lstItem := TSchemeItem(frmSchemeList.lbSchemeList.
             Item[frmSchemeList.lbSchemeList.ItemIndex].Data);
@@ -254,7 +258,7 @@ begin
 
         Result := True;
         frmSchemeList.UpdateEditTabs;
-        SharpEBroadCast(WM_SHARPEUPDATESETTINGS,Integer(suScheme),0);
+        SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
       end;
   end;
 end;
@@ -272,16 +276,14 @@ var
 begin
   tmpItem := TSchemeColorItem(TSharpEColorEditorExItem(ASender).Tag);
 
-  if TSharpEColorEditorExItem(ASender).ValueEditorType = vetColor then
-  begin
+  if TSharpEColorEditorExItem(ASender).ValueEditorType = vetColor then begin
     tmpItem.Color := AValue;
     tmpItem.UnparsedColor := ColorToString(AValue);
   end
-  else
-  begin
+  else begin
     tmpItem.Color := AValue;
     tmpItem.UnparsedColor := '';
-  end; 
+  end;
 end;
 
 procedure TfrmEditScheme.FormShow(Sender: TObject);

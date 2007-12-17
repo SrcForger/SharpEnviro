@@ -57,12 +57,12 @@ type
     Images: TPngImageList;
     procedure FormCreate(Sender: TObject);
     procedure lb_iconlistResize(Sender: TObject);
-    procedure lb_iconlistClickItem(const ACol: Integer; AItem: TSharpEListItem);
-    procedure lb_iconlistGetCellText(const ACol: Integer;
+    procedure lb_iconlistClickItem(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem);
+    procedure lb_iconlistGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
-    procedure lb_iconlistGetCellCursor(const ACol: Integer;
+    procedure lb_iconlistGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
-    procedure lb_iconlistGetCellImageIndex(const ACol: Integer;
+    procedure lb_iconlistGetCellImageIndex(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
   private
@@ -220,7 +220,7 @@ begin
   end;
 end;
 
-procedure TfrmIconList.lb_iconlistClickItem(const ACol: Integer;
+procedure TfrmIconList.lb_iconlistClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
   tmp: TIconItem;
@@ -245,7 +245,7 @@ begin
   end;
 end;
 
-procedure TfrmIconList.lb_iconlistGetCellCursor(const ACol: Integer;
+procedure TfrmIconList.lb_iconlistGetCellCursor(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 var
   tmp: TIconItem;
@@ -266,7 +266,7 @@ begin
 
 end;
 
-procedure TfrmIconList.lb_iconlistGetCellImageIndex(const ACol: Integer;
+procedure TfrmIconList.lb_iconlistGetCellImageIndex(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
 var
   tmp: TIconItem;
@@ -287,7 +287,7 @@ begin
 
 end;
 
-procedure TfrmIconList.lb_iconlistGetCellText(const ACol: Integer;
+procedure TfrmIconList.lb_iconlistGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmp: TIconItem;

@@ -222,11 +222,14 @@ object frmRecycleBin: TfrmRecycleBin
               Height = 63
               Caption = 'pagemulti'
               ParentBackground = True
-              object memo_caption: TMemo
+              object memo_caption: TJvMemo
                 Left = 0
                 Top = 0
                 Width = 361
                 Height = 63
+                AutoSize = False
+                MaxLines = 0
+                HideCaret = False
                 Align = alClient
                 Lines.Strings = (
                   'Link')
@@ -2291,7 +2294,7 @@ object frmRecycleBin: TfrmRecycleBin
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 340
+    Width = 341
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16
