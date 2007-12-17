@@ -126,21 +126,15 @@ procedure TfrmSchemeList.UpdateEditTabs;
 begin
   if lbSchemeList.Count = 0 then begin
     BC(False, scbEditTab);
-    BC(False, scbDeleteTab);
 
     if FSchemeManager.GetSkinValid then
       BC(True, scbAddTab)
     else
       BC(False, scbAddTab);
-
-    lbSchemeList.AddItem('There is no skin defined, please launch the skin configuration first.', 2);
-    lbSchemeList.Enabled := False;
   end
   else begin
     BC(True, scbAddTab);
     BC(True, scbEditTab);
-    BC(False, scbDeleteTab);
-    lbSchemeList.Enabled := True;
   end;
 end;
 
@@ -275,8 +269,17 @@ procedure TfrmSchemeList.lbSchemeListClickItem(Sender: TObject; const ACol: Inte
 var
   tmpSchemeItem: TSchemeItem;
   sNew: string;
-begin
+  bDelete: Boolean;
 
+  function CtrlDown: Boolean;
+  var
+    State: TKeyboardState;
+  begin
+    GetKeyboardState(State);
+    Result := ((State[VK_CONTROL] and 128) <> 0);
+  end;
+
+begin
   if ACol = cNameColIdx then begin
     CenterUpdatePreview;
     CenterDefineSettingsChanged;
@@ -302,11 +305,30 @@ begin
     SelectSchemeItem(sNew);
   end
   else if ACol = cDeleteColIdx then begin
+
     tmpSchemeItem := TSchemeItem(AItem.Data);
 
-    FSchemeManager.Delete(tmpSchemeItem);
-    RebuildSchemeList;
+    bDelete := True;
+    if not (CtrlDown) then
+      if (MessageDlg(Format('Are you sure you want to delete: %s?', [tmpSchemeItem.Name]), mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
+        bDelete := False;
+
+    if bDelete then begin
+      FSchemeManager.Delete(tmpSchemeItem);
+      RebuildSchemeList;
+    end;
   end;
+
+   if lbSchemeList.SelectedItem <> nil then begin
+    CenterDefineButtonState(scbEditTab, True);
+  end
+  else begin
+    CenterDefineButtonState(scbEditTab, False);
+  end;
+
+  UpdateEditTabs;
+  CenterUpdateTabs;
+  CenterUpdateSize;
 end;
 
 procedure TfrmSchemeList.lbSchemeListGetCellCursor(Sender: TObject; const ACol: Integer;

@@ -130,6 +130,7 @@ begin
   if frmEditScheme.Save(AEditMode, AApply) then Begin
     FreeAndNil(frmEditScheme);
     frmSchemeList.AddItems;
+    frmSchemeList.UpdateEditTabs;
   end;
 end;
 
