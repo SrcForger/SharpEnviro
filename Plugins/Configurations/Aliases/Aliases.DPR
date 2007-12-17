@@ -59,11 +59,6 @@ begin
   result := frmItemsWnd.Handle;
 end;
 
-function Save : boolean;
-begin
-  Result := True;
-end;
-
 function Close : boolean;
 begin
   Result := False;
@@ -109,7 +104,7 @@ begin
 
   // Define whether we add/edit or delete the item
   if frmEditWnd.Save(AApply, AEditMode) then Begin
-
+    SharpApi.ServiceMsg('exec','_refresh');
   end;
 
   if frmEditWnd <> nil then begin
@@ -154,7 +149,6 @@ end;
 exports
   Open,
   Close,
-  Save,
   AddTabs,
   OpenEdit,
   CloseEdit,

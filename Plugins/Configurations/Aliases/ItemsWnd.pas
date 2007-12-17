@@ -157,6 +157,7 @@ begin
 
           AddItems;
           FAliasItems.Save;
+          SharpApi.ServiceMsg('exec','_refresh');
 
           CenterDefineSettingsChanged;
         end;
@@ -168,6 +169,7 @@ begin
 
         AddItems;
         FAliasItems.Save;
+        SharpApi.ServiceMsg('exec','_refresh');
 
         for i := 0 to Pred(lbItems.Count) do begin
           if tmp2.AliasName = TAliasListItem(lbItems.Item[i].Data).AliasName then begin
