@@ -28,12 +28,37 @@ unit uThemeListWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, uSEListboxPainter, JclFileUtils,
-  uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
-  SharpEListBox, uThemeListManager, SharpEListBoxEx, GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, JclInifiles, SharpCenterApi, pngimage,
-  Jcldatetime, DateUtils;
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  JvSimpleXml,
+  uSEListboxPainter,
+  JclFileUtils,
+  uSharpCenterPluginTabList,
+  uSharpCenterCommon,
+  ImgList,
+  PngImageList,
+  SharpEListBox,
+  uThemeListManager,
+  SharpEListBoxEx,
+  GR32,
+  GR32_PNG,
+  SharpApi,
+  ExtCtrls,
+  Menus,
+  JclStrings,
+  JclInifiles,
+  SharpCenterApi,
+  pngimage,
+  Jcldatetime,
+  DateUtils;
 
 type
   TfrmThemeList = class(TForm)
@@ -42,7 +67,7 @@ type
     pilDefault: TPngImageList;
     DefThemeImageList: TPngImageList;
     tmrEnableUi: TTimer;
-    procedure lbThemeListClickItem(Sender:TObject; const ACol: Integer;
+    procedure lbThemeListClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -50,17 +75,17 @@ type
     procedure FormShow(Sender: TObject);
     procedure lbThemeListResize(Sender: TObject);
 
-    procedure lbThemeListGetCellCursor(Sender:TObject; const ACol: Integer;
+    procedure lbThemeListGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure tmrEnableUiTimer(Sender: TObject);
-    procedure lbThemeListGetCellText(Sender:TObject; const ACol: Integer;
+    procedure lbThemeListGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
-    procedure lbThemeListGetCellImageIndex(Sender:TObject; const ACol: Integer;
+    procedure lbThemeListGetCellImageIndex(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
-    FLoading:Boolean;
+    FLoading: Boolean;
     procedure LoadTheme(tmpTheme: TThemeListItem);
   private
 
@@ -83,9 +108,9 @@ const
   cName = 0;
   cReadOnly = 1;
   cWebsite = 2;
-  cCopy = 3;
-  cEdit = 4;
-  cSelect = 5;
+  cCopy = 4;
+  cEdit = 3;
+  cDelete = 5;
 
 implementation
 
@@ -157,15 +182,16 @@ var
   sl: TStringList;
 begin
   lbThemeList.Clear;
-
+  LockWindowUpdate(Self.Handle);
+  sl := TStringList.Create;
   bmp := TBitmap.Create;
   bmp32 := TBitmap32.Create;
-  bmp.Width := ThemeImages.Width;
-  bmp.Height := ThemeImages.Height;
-  SetBkMode(Bmp.Handle, TRANSPARENT);
 
-  sl := TStringList.Create;
   try
+    bmp.Width := ThemeImages.Width;
+    bmp.Height := ThemeImages.Height;
+    SetBkMode(Bmp.Handle, TRANSPARENT);
+
     ThemeManager.GetThemeList(sl);
 
     for i := 0 to Pred(sl.Count) do begin
@@ -176,7 +202,7 @@ begin
       newItem.AddSubItem('');
       newItem.AddSubItem('');
       newItem.AddSubItem('');
-      //newItem.AddSubItem('',False);
+      newItem.AddSubItem('');
 
       newItem.Data := tmpTheme;
       bmp32.Clear(clWhite32);
@@ -221,45 +247,107 @@ begin
       if lbThemeList.ItemIndex = -1 then
         lbThemeList.ItemIndex := 0;
     end;
-
-    bmp32.free;
   finally
-    lbThemeList.Refresh;
+    LockWindowUpdate(0);
+    sl.Free;
+    bmp.Free;
+    bmp32.Free;
   end;
 end;
 
-procedure TfrmThemeList.lbThemeListClickItem(Sender:TObject; const ACol: Integer;
+procedure TfrmThemeList.lbThemeListClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
   tmpTheme: TThemeListItem;
   s: string;
-begin
-  if AItem <> nil then begin
-    tmpTheme := TThemeListItem(AItem.Data);
+  id: Integer;
+  tmp: TThemeListItem;
+  newID: Integer;
+  bDelete: Boolean;
 
-    case ACol of
-      cName : LoadTheme(tmpTheme);
-      cReadOnly: ;
-      cEdit: begin
-          if not (tmpTheme.IsReadOnly) then
-            ConfigureItem;
+  function CtrlDown: Boolean;
+  var
+    State: TKeyboardState;
+  begin
+    GetKeyboardState(State);
+    Result := ((State[VK_CONTROL] and 128) <> 0);
+  end;
+
+begin
+  tmpTheme := TThemeListItem(AItem.Data);
+
+  case ACol of
+    cName: LoadTheme(tmpTheme);
+    cReadOnly: ;
+    cEdit: begin
+        if not (tmpTheme.IsReadOnly) then
+          ConfigureItem;
+        exit;
+      end;
+    cWebsite: begin
+        if tmpTheme.Website <> '' then
+          SharpExecute(tmpTheme.Website);
+      end;
+    cCopy: begin
+        s := InputBox('Copy Theme', 'Please enter a name for the theme:', tmpTheme.Name);
+
+        if CompareText(s, tmpTheme.Name) <> 0 then begin
+          ThemeManager.Add(s, tmpTheme.Author, tmpTheme.Website, tmpTheme.Name, False);
+          BuildThemeList;
+        end;
+      end;
+    cDelete: begin
+
+        if lbThemeList.Count = 1 then begin
+
+          MessageDlg('Unable to delete selected theme.' + #13 + #10 + '' + #13 + #10 +
+            'There must always be at least one active theme.', mtError,
+            [mbOK], 0);
           exit;
         end;
-      cWebsite: begin
-          if tmpTheme.Website <> '' then
-            SharpExecute(tmpTheme.Website);
-        end;
-      cCopy: begin
-          s := InputBox('Copy Theme', 'Please enter a name for the theme:', tmpTheme.Name);
 
-          if CompareText(s, tmpTheme.Name) <> 0 then begin
-            ThemeManager.Add(s, tmpTheme.Author, tmpTheme.Website, tmpTheme.Name, False);
-            BuildThemeList;
+        bDelete := True;
+        if not (CtrlDown) then
+          if (MessageDlg(Format('Are you sure you want to delete: %s?', [tmpTheme.Name]), mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
+            bDelete := False;
+
+        if bDelete then begin
+
+          id := frmThemeList.lbThemeList.ItemIndex;
+
+          if id <> -1 then begin
+            tmp := TThemeListItem(frmThemeList.lbThemeList.Item[id].Data);
+
+            frmThemeList.lbThemeList.DeleteSelected;
+            ThemeManager.Delete(tmp.Name);
+
+            if id > (frmThemeList.lbThemeList.Count - 2) then begin
+              if id - 1 >= 0 then
+                newID := id - 1
+              else
+                newid := 0;
+            end
+            else
+              newid := id;
+
+            if frmThemeList.lbThemeList.Count <> 0 then
+              frmThemeList.lbThemeList.ItemIndex := newId;
           end;
         end;
-    end;
-
+      end;
   end;
+
+  if lbThemeList.SelectedItem <> nil then begin
+    CenterDefineButtonState(scbEditTab, True);
+  end
+  else begin
+    CenterDefineButtonState(scbEditTab, False);
+  end;
+
+  UpdateEditTabs;
+  CenterUpdateTabs;
+  CenterUpdateSize;
+
 end;
 
 function TfrmThemeList.UpdateUI: Boolean;
@@ -333,38 +421,6 @@ begin
         CenterWriteDefaults(df);
         ThemeManager.Add(sName, sAuthor, sWebsite, sTemplate);
       end;
-    sceDelete: begin
-
-        if lbThemeList.Count = 1 then begin
-          Result := False;
-
-          MessageDlg('Unable to delete selected theme.' + #13 + #10 + '' + #13 + #10 +
-            'There must always be at least one active theme.', mtError,
-            [mbOK], 0);
-          exit;
-        end;
-
-        id := frmThemeList.lbThemeList.ItemIndex;
-
-        if id <> -1 then begin
-          tmp := TThemeListItem(frmThemeList.lbThemeList.Item[id].Data);
-
-          frmThemeList.lbThemeList.DeleteSelected;
-          ThemeManager.Delete(tmp.Name);
-
-          if id > (frmThemeList.lbThemeList.Count - 2) then begin
-            if id - 1 >= 0 then
-              newID := id - 1
-            else
-              newid := 0;
-          end
-          else
-            newid := id;
-
-          if frmThemeList.lbThemeList.Count <> 0 then
-            frmThemeList.lbThemeList.ItemIndex := newId;
-        end;
-      end;
   end;
 
 end;
@@ -376,7 +432,7 @@ begin
   FLoading := False;
 end;
 
-procedure TfrmThemeList.lbThemeListGetCellCursor(Sender:TObject; const ACol: Integer;
+procedure TfrmThemeList.lbThemeListGetCellCursor(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 var
   tmpTheme: TThemeListItem;
@@ -394,12 +450,12 @@ begin
           if not (tmpTheme.IsReadOnly) then
             ACursor := crHandPoint;
         end;
-      cCopy: ACursor := crHandPoint;
+      cCopy, cDelete: ACursor := crHandPoint;
     end;
   end;
 end;
 
-procedure TfrmThemeList.lbThemeListGetCellImageIndex(Sender:TObject; const ACol: Integer;
+procedure TfrmThemeList.lbThemeListGetCellImageIndex(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
 var
   tmpTheme: TThemeListItem;
@@ -423,16 +479,19 @@ begin
       cCopy: begin
           AImageIndex := 5;
         end;
+      cDelete: begin
+          AImageIndex := 6;
+        end;
     end;
   end;
 
 end;
 
-procedure TfrmThemeList.lbThemeListGetCellText(Sender:TObject; const ACol: Integer;
+procedure TfrmThemeList.lbThemeListGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmpTheme: TThemeListItem;
-  s: String;
+  s: string;
 begin
   tmpTheme := TThemeListItem(AItem.Data);
   if tmpTheme <> nil then begin
@@ -447,7 +506,7 @@ begin
       s := '';
       if ((FLoading) and (AItem.ID = lbThemeList.ItemIndex)) then
         s := ' (Loading)';
-      AColText := Format('%s by %s%s', [tmpTheme.Name, tmpTheme.Author,s]);
+      AColText := Format('%s by %s%s', [tmpTheme.Name, tmpTheme.Author, s]);
     end;
   end;
 
