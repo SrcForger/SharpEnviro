@@ -98,6 +98,7 @@ type
 
     property AppPathList: TStringList read FAppPathList write
       FAppPathList;
+    procedure ReloadLists;
   protected
    procedure Execute; override;
   private
@@ -118,7 +119,7 @@ type
 
     procedure PopulateAppPathsList;
     procedure ExpandCommonFiles(var AText:String);
-    procedure ExpandAliases(var AText:String);
+    function ExpandAliases(var AText:String; var AElevate:Boolean):Boolean;
   end;
 
 const
@@ -510,11 +511,30 @@ begin
 
   // Expand Common Files - Scans the text and expands the filename
   if (Pos('shell:', LowerCase(text)) <> 1) then begin
+
+    
+    if Not(ExpandAliases(Text, Elevate)) then
     ExpandCommonFiles(Text);
-    ExpandAliases(Text);
   end;
   Result := ExecuteText(Text, SaveHistory, Elevate);
   BarMsg('scmd', '_execupdate');
+end;
+
+procedure TSharpExec.ReloadLists;
+begin
+  PathIncludeList.Items.Clear;
+  PathIncludeList.Load;
+
+  AliasList.Items.Clear;
+  AliasList.Load;
+
+  ExecSettings.Load;
+
+  RecentItemList.Items.Clear;
+  RecentItemList.Load;
+
+  UsedItemList.Items.Clear;
+  UsedItemList.Load;
 end;
 
 {=============================================================================
@@ -851,7 +871,7 @@ begin
   End;
 end;
 
-procedure TSharpExec.ExpandAliases(var AText: String);
+function TSharpExec.ExpandAliases(var AText: String; var AElevate: Boolean):Boolean;
 var
   i, j: integer;
   strl: tstringlist;
@@ -896,6 +916,8 @@ begin
 
         //Result := true;
         AText := AliasList[i].AliasValue;
+        if ((AliasList[i].Elevate) and (Pos('_elevate',AliasList[i].AliasValue) = 0)) then
+          AElevate := True;
 
         // Check for various defined application paths
         for j := 0 to Pred(PathIncludeList.Items.Count) do begin
@@ -921,6 +943,7 @@ begin
     end;
 
   finally
+    Result := bMatch;
     if ((bMatch) and (ParamsStrl.Count > 0)) then
       AText := AText + ' ' + Params;
 

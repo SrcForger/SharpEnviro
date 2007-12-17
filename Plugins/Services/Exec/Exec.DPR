@@ -69,11 +69,18 @@ var
 const
   NoHistoryParam = '_nohist,';
   ElevateParam = '_elevate,';
+  RefreshParam = '_refresh';
+  AddAliasParam = '_addalias';
 begin
   Result := 0;
   msg:=trim(msg);
 
   Debug(Format('*** New Command: %s ***', [msg]), DMT_INFO);
+
+  if pos(RefreshParam,LowerCase(msg)) <> 0 then begin
+    SharpExec.ReloadLists;
+    Exit;
+  end;
 
   // Check if message sent is in Action command
   if ServiceMsg('actions', pchar('_exists,' + msg)) = 1 then begin
@@ -83,7 +90,7 @@ begin
   end;
 
   // Check if message sent is supposed to add an Alias to the AliasList
-  if pos('_AddAlias',msg) <> 0 then begin
+  if pos(AddAliasParam,lowercase(msg)) <> 0 then begin
     tmpAliasName:= Copy(msg,AnsiPos(' ',msg)+1,
                             (posex(' ',msg,AnsiPos(' ',msg)+1)-(AnsiPos(' ',msg)+1))
                        );
@@ -116,15 +123,7 @@ end;
 
 procedure Reload;
 begin
-  SharpExec.PathIncludeList.Load;
-  SharpExec.AliasList.Load;
-  SharpExec.ExecSettings.Load;
-
-  SharpExec.RecentItemList.Items.Clear;
-  SharpExec.RecentItemList.Load;
-
-  SharpExec.UsedItemList.Items.Clear;
-  SharpExec.UsedItemList.Load;
+  SharpExec.ReloadLists;
 end;
 
 function GetMetaData(): TMetaData;

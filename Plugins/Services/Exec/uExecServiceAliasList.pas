@@ -76,6 +76,7 @@ type
     property Count: Integer read GetCount;
     property Item[Index: integer]: TAliasListItem read GeTAliasListItem; default;
 
+    property Items: TObjectList read FItems write FItems;
     property OnAddItem: TNotifyEvent read FOnAddItem write FOnAddItem;
     property FileName: string read FFileName write FFileName;
     function IndexOfName(AName: String):Integer;
