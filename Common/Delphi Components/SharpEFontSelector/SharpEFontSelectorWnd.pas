@@ -16,12 +16,11 @@ uses
   SharpeColorPicker,
   ExtCtrls,
   SharpApi,
-  GR32_RangeBars,
   GR32,
   GR32_Image,
   Spin,
   graphicsfx,
-  Menus, ImgList,SharpEFontSelectorFontList;
+  Menus, ImgList,SharpEFontSelectorFontList, GR32_RangeBars;
 
 type
   TDeskFont = record

@@ -31,24 +31,18 @@ uses
   Windows,
   Messages,
   SysUtils,
-  Variants,
   Classes,
   Graphics,
   Buttons,
   Controls,
   Forms,
-  Dialogs,
   StdCtrls,
   ExtCtrls,
   SharpApi,
-  JvxSlider,
-  GR32_RangeBars,
-  ComCtrls,
-  JvEdit,
-  JvPanel,
   Types,
   GR32,
-  JvExComCtrls, JvComCtrls;
+  JvExComCtrls,
+  JvComCtrls;
 
   {$R SharpEGaugeBoxBitmaps.res}
 

@@ -3,67 +3,75 @@ unit SharpESwatchManager;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, SharpFX, SharpGraphicsUtils, gr32, SharpECenterScheme,
-  Contnrs, JvSimpleXml, menus, pngimagelist, SharpThemeApi, StdCtrls,
-    GR32_Polygons, SharpApi, GR32_Image, GR32_Layers, GR32_RangeBars,
-      JclFileUtils;
+  Windows,
+  SysUtils,
+  Classes,
+  Graphics,
+  ExtCtrls,
+  SharpFX,
+  Gr32,
+  SharpECenterScheme,
+  JvSimpleXml,
+  GR32_Polygons,
+  SharpApi,
+  GR32_Image,
+  GR32_Layers;
 
 const
-  cXmlHeader='SharpESwatchCollection';
-  cXmlColName='ColorName';
-  cXmlCol='Color';
-  cXmlOptionsFile='swatchopt.dat';
-  cXmlDefaultSwatchFile='default.swatch';
+  cXmlHeader = 'SharpESwatchCollection';
+  cXmlColName = 'ColorName';
+  cXmlCol = 'Color';
+  cXmlOptionsFile = 'swatchopt.dat';
+  cXmlDefaultSwatchFile = 'default.swatch';
 
-Type
+type
   TSharpESwatchCollectionSortType = (sortHue, sortSat, sortLum,
     sortName);
-  TOnGetWidth = Procedure(ASender:TObject; var AWidth:Integer) of object;
-  TOnUpdateSwatchBitmap = Procedure(ASender:TObject; const ABitmap32:TBitmap32) of object;
+  TOnGetWidth = procedure(ASender: TObject; var AWidth: Integer) of object;
+  TOnUpdateSwatchBitmap = procedure(ASender: TObject; const ABitmap32: TBitmap32) of object;
 
-Type
-  TSharpESwatchCollectionItem = Class(TCollectionItem)
+type
+  TSharpESwatchCollectionItem = class(TCollectionItem)
   private
-    FColorName: String;
+    FColorName: string;
     FColor: TColor;
     FData: Pointer;
     FSwatchRect: TRect;
     FSelected: Boolean;
     procedure SetColor(const Value: TColor);
-    procedure SetColorName(const Value: String);
+    procedure SetColorName(const Value: string);
     procedure SetSelected(const Value: Boolean);
-  Public
-    Property Data: Pointer read FData write FData;
+  public
+    property Data: Pointer read FData write FData;
     property SwatchRect: TRect read FSwatchRect write FSwatchRect;
-    Property Selected: Boolean read FSelected write SetSelected;
-  Published
-    Property ColorName: String read FColorName write SetColorName;
-    Property Color: TColor read FColor write SetColor;
-  Protected
+    property Selected: Boolean read FSelected write SetSelected;
+  published
+    property ColorName: string read FColorName write SetColorName;
+    property Color: TColor read FColor write SetColor;
+  protected
     function GetDisplayName: string; override;
 
-end;
+  end;
 
-Type
-  TSharpESwatchCollectionItems = Class(TOwnedCollection)
+type
+  TSharpESwatchCollectionItems = class(TOwnedCollection)
   private
     function GetItem(Index: Integer): TSharpESwatchCollectionItem;
     procedure SetItem(Index: Integer; const Value: TSharpESwatchCollectionItem);
   protected
     procedure Update(Item: TCollectionItem); override;
 
-    function Add(AOwner:TComponent):TSharpESwatchCollectionItem;
+    function Add(AOwner: TComponent): TSharpESwatchCollectionItem;
 
     property Item[Index: Integer]: TSharpESwatchCollectionItem read GetItem write SetItem;
 
   public
     constructor Create(AOwner: TPersistent);
     function IndexOf(const Name: string): Integer;
-end;
+  end;
 
-Type
-  TSharpESwatchManager = Class(TComponent)
+type
+  TSharpESwatchManager = class(TComponent)
   private
     FCachedBitmap: TBitmap32;
     FScheme: TSharpECenterScheme;
@@ -88,19 +96,19 @@ Type
     procedure SetSwatchTextBorderColor(const Value: TColor);
     procedure SetSwatchWidth(const Value: Integer);
 
-    procedure DrawSwatch(ABitmap: TBitmap32; ASwatch:TSharpESwatchCollectionItem);
+    procedure DrawSwatch(ABitmap: TBitmap32; ASwatch: TSharpESwatchCollectionItem);
     function GetCollectionList(AC: TCollection): TList;
     procedure SetWidth(const Value: Integer);
     function GetWidth: Integer;
   protected
     procedure Loaded; override;
   public
-    procedure AddSwatch(AColor: TColor; AName: String);
+    procedure AddSwatch(AColor: TColor; AName: string);
 
-    procedure Load(AFileName:String);
-    Procedure Save(AFileName:String; ASelectedOnly:Boolean=False);
-    procedure SaveOptions(AFileName:String);
-    procedure LoadOptions(AFileName:String);
+    procedure Load(AFileName: string);
+    procedure Save(AFileName: string; ASelectedOnly: Boolean = False);
+    procedure SaveOptions(AFileName: string);
+    procedure LoadOptions(AFileName: string);
 
     procedure DeselectAll;
     procedure SelectAll;
@@ -108,9 +116,8 @@ Type
     procedure Resize;
     constructor Create(AOwner: TComponent); override;
 
-
     procedure SetItemSelected(APoint: TPoint);
-    function GetItemFromPoint(APoint: TPoint):TSharpESwatchCollectionItem;
+    function GetItemFromPoint(APoint: TPoint): TSharpESwatchCollectionItem;
 
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -138,33 +145,33 @@ Type
     property OnUpdateSwatchBitmap: TOnUpdateSwatchBitmap read
       FOnUpdateSwatchBitmap write FOnUpdateSwatchBitmap;
 
-end;
+  end;
 
 procedure Register;
-function Sort_ByHue (Item1, Item2: Pointer): Integer;
-function Sort_ByBri (Item1, Item2: Pointer): Integer;
-function Sort_BySat (Item1, Item2: Pointer): Integer;
-function Sort_ByName (Item1, Item2: Pointer): Integer;
+function Sort_ByHue(Item1, Item2: Pointer): Integer;
+function Sort_ByBri(Item1, Item2: Pointer): Integer;
+function Sort_BySat(Item1, Item2: Pointer): Integer;
+function Sort_ByName(Item1, Item2: Pointer): Integer;
 
 implementation
 
 procedure Register;
 begin
-  RegisterComponents('SharpE_Common',[TSharpESwatchManager]);
+  RegisterComponents('SharpE_Common', [TSharpESwatchManager]);
 end;
 
-function Sort_ByName (Item1, Item2: Pointer): Integer;
+function Sort_ByName(Item1, Item2: Pointer): Integer;
 begin
   result := CompareText(TSharpESwatchCollectionItem(Item1).ColorName,
     TSharpESwatchCollectionItem(Item2).ColorName);
 end;
 
-function Sort_ByHue (Item1, Item2: Pointer): Integer;
+function Sort_ByHue(Item1, Item2: Pointer): Integer;
 var
-  tmp,tmp2: TSharpESwatchCollectionItem;
-  r1,b1,g1,r2,b2,g2: byte;
+  tmp, tmp2: TSharpESwatchCollectionItem;
+  r1, b1, g1, r2, b2, g2: byte;
   rgb1, rgb2: integer;
-  h1,s1,l1, h2,s2,l2: byte;
+  h1, s1, l1, h2, s2, l2: byte;
 begin
   tmp := TSharpESwatchCollectionItem(Item1);
   tmp2 := TSharpESwatchCollectionItem(Item2);
@@ -174,24 +181,24 @@ begin
   r1 := GetRValue(rgb1);
   b1 := GetBValue(rgb1);
   g1 := GetGValue(rgb1);
-  RGBtoHSL(RGB(r1,g1,b1),h1,s1,l1);
+  RGBtoHSL(RGB(r1, g1, b1), h1, s1, l1);
 
   // Second Color
   rgb2 := tmp2.Color;
   r2 := GetRValue(rgb2);
   b2 := GetBValue(rgb2);
   g2 := GetGValue(rgb2);
-  RGBtoHSL(RGB(r2,g2,b2),h2,s2,l2);
+  RGBtoHSL(RGB(r2, g2, b2), h2, s2, l2);
 
-  Result := CompareText(inttostr(h2),inttostr(h1));
+  Result := CompareText(inttostr(h2), inttostr(h1));
 end;
 
-function Sort_ByBri (Item1, Item2: Pointer): Integer;
+function Sort_ByBri(Item1, Item2: Pointer): Integer;
 var
-  tmp,tmp2: TSharpESwatchCollectionItem;
-  r1,b1,g1,r2,b2,g2: byte;
+  tmp, tmp2: TSharpESwatchCollectionItem;
+  r1, b1, g1, r2, b2, g2: byte;
   rgb1, rgb2: integer;
-  h1,s1,l1, h2,s2,l2: byte;
+  h1, s1, l1, h2, s2, l2: byte;
 begin
   tmp := TSharpESwatchCollectionItem(Item1);
   tmp2 := TSharpESwatchCollectionItem(Item2);
@@ -201,24 +208,24 @@ begin
   r1 := GetRValue(rgb1);
   b1 := GetBValue(rgb1);
   g1 := GetGValue(rgb1);
-  RGBtoHSL(RGB(r1,g1,b1),h1,s1,l1);
+  RGBtoHSL(RGB(r1, g1, b1), h1, s1, l1);
 
   // Second Color
   rgb2 := tmp2.Color;
   r2 := GetRValue(rgb2);
   b2 := GetBValue(rgb2);
   g2 := GetGValue(rgb2);
-  RGBtoHSL(RGB(r2,g2,b2),h2,s2,l2);
+  RGBtoHSL(RGB(r2, g2, b2), h2, s2, l2);
 
-  Result := CompareText(inttostr(l2),inttostr(l1));
+  Result := CompareText(inttostr(l2), inttostr(l1));
 end;
 
-function Sort_BySat (Item1, Item2: Pointer): Integer;
+function Sort_BySat(Item1, Item2: Pointer): Integer;
 var
-  tmp,tmp2: TSharpESwatchCollectionItem;
-  r1,b1,g1,r2,b2,g2: byte;
+  tmp, tmp2: TSharpESwatchCollectionItem;
+  r1, b1, g1, r2, b2, g2: byte;
   rgb1, rgb2: integer;
-  h1,s1,l1, h2,s2,l2: byte;
+  h1, s1, l1, h2, s2, l2: byte;
 begin
   tmp := TSharpESwatchCollectionItem(Item1);
   tmp2 := TSharpESwatchCollectionItem(Item2);
@@ -228,18 +235,17 @@ begin
   r1 := GetRValue(rgb1);
   b1 := GetBValue(rgb1);
   g1 := GetGValue(rgb1);
-  RGBtoHSL(RGB(r1,g1,b1),h1,s1,l1);
+  RGBtoHSL(RGB(r1, g1, b1), h1, s1, l1);
 
   // Second Color
   rgb2 := tmp2.Color;
   r2 := GetRValue(rgb2);
   b2 := GetBValue(rgb2);
   g2 := GetGValue(rgb2);
-  RGBtoHSL(RGB(r2,g2,b2),h2,s2,l2);
+  RGBtoHSL(RGB(r2, g2, b2), h2, s2, l2);
 
-  Result := CompareText(inttostr(s2),inttostr(s1));
+  Result := CompareText(inttostr(s2), inttostr(s1));
 end;
-
 
 { TSharpESwatchCollectionItem }
 
@@ -248,14 +254,14 @@ begin
   FColor := Value;
 end;
 
-procedure TSharpESwatchCollectionItem.SetColorName(const Value: String);
+procedure TSharpESwatchCollectionItem.SetColorName(const Value: string);
 begin
   FColorName := Value;
 end;
 
 function TSharpESwatchCollectionItem.GetDisplayName: string;
 begin
-  Result := 'Swatch'+ IntToStr(id);
+  Result := 'Swatch' + IntToStr(id);
 end;
 
 procedure TSharpESwatchCollectionItem.SetSelected(const Value: Boolean);
@@ -301,7 +307,7 @@ begin
   inherited Update(Item);
 
   if ((Owner <> nil) and (csDesigning in TSharpESwatchManager(Owner).ComponentState)) then
-     TSharpESwatchManager(Owner).CreateSwatchBitmap;
+    TSharpESwatchManager(Owner).CreateSwatchBitmap;
 end;
 
 { TSharpESwatchManager }
@@ -333,11 +339,11 @@ begin
   FSortMode := Value;
 
   // Sort first
-  Case FSortMode of
-  sortHue : GetCollectionList(FSwatches).Sort(@Sort_ByHue);
-  sortSat : GetCollectionList(FSwatches).Sort(@Sort_BySat);
-  sortLum : GetCollectionList(FSwatches).Sort(@Sort_ByBri);
-  sortName : GetCollectionList(FSwatches).Sort(@Sort_ByName);
+  case FSortMode of
+    sortHue: GetCollectionList(FSwatches).Sort(@Sort_ByHue);
+    sortSat: GetCollectionList(FSwatches).Sort(@Sort_BySat);
+    sortLum: GetCollectionList(FSwatches).Sort(@Sort_ByBri);
+    sortName: GetCollectionList(FSwatches).Sort(@Sort_ByName);
   end;
 
   CreateSwatchBitmap;
@@ -365,63 +371,63 @@ begin
   CreateSwatchBitmap;
 end;
 
-procedure TSharpESwatchManager.Load(AFileName: String);
+procedure TSharpESwatchManager.Load(AFileName: string);
 var
   xml: TJvSimpleXml;
   i: Integer;
   newItem: TSharpESwatchCollectionItem;
 begin
 
-  if Not(FileExists(AFileName)) then
+  if not (FileExists(AFileName)) then
     Exit;
 
   BeginUpdate;
-  Try
-
-  FSwatches.Clear;
-  xml := TJvSimpleXML.Create(nil);
   try
-    xml.LoadFromFile(AFileName);
 
-    // check for valid header
-    if xml.Root.Name <> cXmlHeader then
-      exit;
+    FSwatches.Clear;
+    xml := TJvSimpleXML.Create(nil);
+    try
+      xml.LoadFromFile(AFileName);
 
-      For i := 0 to Pred(xml.Root.Items.Count) do begin
+      // check for valid header
+      if xml.Root.Name <> cXmlHeader then
+        exit;
+
+      for i := 0 to Pred(xml.Root.Items.Count) do begin
         newItem := TSharpESwatchCollectionItem.Create(FSwatches);
-        newItem.ColorName := xml.Root.Items.Item[i].Properties.Value(cXmlColName,'');
-        newItem.Color := xml.Root.Items.Item[i].Properties.IntValue(cXmlCol,clWindow);
+        newItem.ColorName := xml.Root.Items.Item[i].Properties.Value(cXmlColName, '');
+        newItem.Color := xml.Root.Items.Item[i].Properties.IntValue(cXmlCol, clWindow);
       end;
 
     finally
       xml.Free;
     end;
 
-  Finally
+  finally
     EndUpdate;
-  End;
+  end;
 end;
 
-procedure TSharpESwatchManager.SaveOptions(AFileName: String);
+procedure TSharpESwatchManager.SaveOptions(AFileName: string);
 var
-  xml:TJvSimpleXML;
+  xml: TJvSimpleXML;
 begin
   xml := TJvSimpleXML.Create(nil);
-  Try
+  try
     xml.Root.Name := 'SharpESwatchCollectionOptions';
     with xml.Root.Items.Add('Options') do begin
-      items.Add('ShowSwatchText',FShowCaptions);
-      items.Add('SortMode',Integer(FSortMode));
+      items.Add('ShowSwatchText', FShowCaptions);
+      items.Add('SortMode', Integer(FSortMode));
     end;
-  Finally
+  finally
     xml.SaveToFile(AFileName);
     xml.Free;
-  End;
+  end;
 end;
 
-procedure TSharpESwatchManager.AddSwatch(AColor: TColor; AName: String);
+procedure TSharpESwatchManager.AddSwatch(AColor: TColor; AName: string);
 var
-  tmp:TSharpESwatchCollectionItem;
+  tmp: TSharpESwatchCollectionItem;
 begin
   tmp := FSwatches.Add(Self);
   tmp.ColorName := AName;
@@ -430,7 +436,7 @@ begin
   CreateSwatchBitmap;
 end;
 
-procedure TSharpESwatchManager.Save(AFileName: String; ASelectedOnly: Boolean);
+procedure TSharpESwatchManager.Save(AFileName: string; ASelectedOnly: Boolean);
 var
   xml: TJvSimpleXml;
   i: Integer;
@@ -441,17 +447,17 @@ begin
   try
     xml.Root.Name := cXmlHeader;
 
-    For i := 0 to Pred(FSwatches.Count) do begin
+    for i := 0 to Pred(FSwatches.Count) do begin
       bAdd := True;
 
       if ASelectedOnly then
-        if Not(FSwatches.Item[i].Selected) then
+        if not (FSwatches.Item[i].Selected) then
           bAdd := False;
 
       if bAdd then begin
         with xml.Root.Items.Add('Swatch') do begin
-          Properties.Add(cXmlColName,FSwatches.Item[i].ColorName);
-          Properties.Add(cXmlCol,FSwatches.Item[i].Color);
+          Properties.Add(cXmlColName, FSwatches.Item[i].ColorName);
+          Properties.Add(cXmlCol, FSwatches.Item[i].Color);
         end;
       end;
     end;
@@ -464,8 +470,8 @@ end;
 
 procedure TSharpESwatchManager.CreateSwatchBitmap;
 var
-  i:Integer;
-  x,w,y,tw,swatchWidth: Integer;
+  i: Integer;
+  x, w, y, tw, swatchWidth: Integer;
   r: TRect;
 
   tmpBitmap: TBitmap32;
@@ -473,84 +479,86 @@ begin
   y := 0;
   swatchWidth := 0;
 
-  if Not(FUpdate) then begin
+  if not (FUpdate) then begin
     exit;
   end;
 
   tmpBitmap := TBitmap32.Create;
-  Try
-  tmpBitmap.BeginUpdate;
+  try
+    tmpBitmap.BeginUpdate;
 
-  // Initialise
-  x := 0;
+    // Initialise
+    x := 0;
 
-  if assigned(FOnGetWidth) then begin
-    w := FWidth;
-    FOnGetWidth(Self,w);
-  end else
-    w := FWidth;
+    if assigned(FOnGetWidth) then begin
+      w := FWidth;
+      FOnGetWidth(Self, w);
+    end
+    else
+      w := FWidth;
 
-  y := FSwatchSpacing;
+    y := FSwatchSpacing;
 
-  tmpBitmap.SetSize(w,1000);
-  tmpBitmap.Clear(color32(FScheme.EditCol));
-  tmpBitmap.Font.Assign(FSwatchFont);
+    tmpBitmap.SetSize(w, 1000);
+    tmpBitmap.Clear(color32(FScheme.EditCol));
+    tmpBitmap.Font.Assign(FSwatchFont);
 
-  // Create swatches
-  For i := 0 to Pred(FSwatches.Count) do begin
+    // Create swatches
+    for i := 0 to Pred(FSwatches.Count) do begin
 
-    r := Rect(x+FSwatchSpacing,y,x+FSwatchWidth+FSwatchSpacing,y+FSwatchHeight);
+      r := Rect(x + FSwatchSpacing, y, x + FSwatchWidth + FSwatchSpacing, y + FSwatchHeight);
 
-    // Calc Width
-    if ((FSwatches.Item[i].ColorName <> '') and (FShowCaptions)) then begin
-      tw := tmpBitmap.Canvas.TextWidth(FSwatches.Item[i].ColorName);
-      r.Right := r.Left + tw+ FSwatchWidth+(FSwatchSpacing*2);
-    end else
-      r.Right := r.Left+FSwatchWidth;
+      // Calc Width
+      if ((FSwatches.Item[i].ColorName <> '') and (FShowCaptions)) then begin
+        tw := tmpBitmap.Canvas.TextWidth(FSwatches.Item[i].ColorName);
+        r.Right := r.Left + tw + FSwatchWidth + (FSwatchSpacing * 2);
+      end
+      else
+        r.Right := r.Left + FSwatchWidth;
 
-    Swatches.Item[i].FSwatchRect := r;
-    DrawSwatch(tmpBitmap,FSwatches.Item[i]);
+      Swatches.Item[i].FSwatchRect := r;
+      DrawSwatch(tmpBitmap, FSwatches.Item[i]);
 
-    // check next
-    if (i+1 <  FSwatches.Count) then begin
-      tw := tmpBitmap.Canvas.TextWidth(FSwatches.Item[i+1].ColorName);
-        swatchWidth := tw+FSwatchWidth+(FSwatchSpacing)+(R.Right-R.Left);
+      // check next
+      if (i + 1 < FSwatches.Count) then begin
+        tw := tmpBitmap.Canvas.TextWidth(FSwatches.Item[i + 1].ColorName);
+        swatchWidth := tw + FSwatchWidth + (FSwatchSpacing) + (R.Right - R.Left);
+      end;
+
+      // New line?
+      if (x + (swatchWidth + FSwatchSpacing) >= (w - (FSwatchSpacing * 2))) then begin
+        x := 0;
+        y := y + FSwatchHeight + FSwatchSpacing;
+      end
+      else
+        x := (x + (r.Right - r.Left)) + FSwatchSpacing;
+
     end;
 
-    // New line?
-    if (x + (swatchWidth+FSwatchSpacing) >= (w-(FSwatchSpacing*2))) then begin
-      x := 0;
-      y := y + FSwatchHeight + FSwatchSpacing;
-    end else
-      x := (x + (r.Right-r.Left)) + FSwatchSpacing;
-
-  end;
-
-  Finally
+  finally
     tmpBitmap.EndUpdate;
 
     FCachedBitmap.BeginUpdate;
 
-    FCachedBitmap.SetSize(w,y+FSwatchHeight+FSwatchSpacing);
-    tmpBitmap.DrawTo(FCachedBitmap,0,0,Rect(0,0,w,y+FSwatchHeight+FSwatchSpacing));
+    FCachedBitmap.SetSize(w, y + FSwatchHeight + FSwatchSpacing);
+    tmpBitmap.DrawTo(FCachedBitmap, 0, 0, Rect(0, 0, w, y + FSwatchHeight + FSwatchSpacing));
 
     tmpBitmap.Free;
 
-    If Assigned(FOnUpdateSwatchBitmap) then
-      FOnUpdateSwatchBitmap(Self,FCachedBitmap);
+    if Assigned(FOnUpdateSwatchBitmap) then
+      FOnUpdateSwatchBitmap(Self, FCachedBitmap);
 
-
-  End;
+  end;
 end;
 
-procedure TSharpESwatchManager.LoadOptions(AFileName: String);
+procedure TSharpESwatchManager.LoadOptions(AFileName: string);
 var
-  xml:TJvSimpleXML;
+  xml: TJvSimpleXML;
 begin
   if FileExists(AFileName) then begin
     xml := TJvSimpleXML.Create(nil);
     xml.LoadFromFile(AFileName);
-    Try
+    try
       if xml.Root.Name <> 'SharpESwatchCollectionOptions' then
         exit;
 
@@ -560,17 +568,17 @@ begin
       FSortMode := TSharpESwatchCollectionSortType(xml.Root.Items.
         ItemNamed['Options'].Items.ItemNamed['SortMode'].IntValue);
 
-    Finally
+    finally
       xml.Free;
-    End;
-  End;
+    end;
+  end;
 end;
 
 procedure TSharpESwatchManager.DeselectAll;
 var
-  i:Integer;
+  i: Integer;
 begin
-  For i := 0 to Pred(FSwatches.Count) do begin
+  for i := 0 to Pred(FSwatches.Count) do begin
     FSwatches.Item[i].Selected := False;
   end;
 
@@ -579,9 +587,9 @@ end;
 
 procedure TSharpESwatchManager.SelectAll;
 var
-  i:Integer;
+  i: Integer;
 begin
-  For i := 0 to Pred(FSwatches.Count) do begin
+  for i := 0 to Pred(FSwatches.Count) do begin
     FSwatches.Item[i].Selected := True;
   end;
 
@@ -596,12 +604,12 @@ end;
 procedure TSharpESwatchManager.DrawSwatch(ABitmap: TBitmap32;
   ASwatch: TSharpESwatchCollectionItem);
 var
-  hp, wp : Integer;
+  hp, wp: Integer;
   tmpOutline, tmpPoly: TPolygon32;
   poly: TPolygon32;
 
   x, y, w, h: Integer;
-  rTextBorder, rText,r : TRect;
+  rTextBorder, rText, r: TRect;
 begin
   tmpOutline := nil;
   tmpPoly := nil;
@@ -612,58 +620,57 @@ begin
   r := ASwatch.SwatchRect;
 
   poly := TPolygon32.Create;
-  Try
+  try
 
-  poly.Antialiased := True;
-  poly.AntialiasMode := am32times;
-  poly.Add(FixedPoint(x,y));
-  poly.Add(FixedPoint(x+w,y));
-  poly.Add(FixedPoint(x+w,y+h));
+    poly.Antialiased := True;
+    poly.AntialiasMode := am32times;
+    poly.Add(FixedPoint(x, y));
+    poly.Add(FixedPoint(x + w, y));
+    poly.Add(FixedPoint(x + w, y + h));
 
-  if ASwatch.Selected then begin
-    wp := w div 4;
-    hp := h div 3;
-    poly.Add(FixedPoint(x+w-wp,y+h));
-    poly.Add(FixedPoint(x+w-wp*2,y+h-hp));
-    poly.Add(FixedPoint(x+w-wp*3,y+h));
-  end;
+    if ASwatch.Selected then begin
+      wp := w div 4;
+      hp := h div 3;
+      poly.Add(FixedPoint(x + w - wp, y + h));
+      poly.Add(FixedPoint(x + w - wp * 2, y + h - hp));
+      poly.Add(FixedPoint(x + w - wp * 3, y + h));
+    end;
 
-  poly.Add(FixedPoint(x,y+h));
-  poly.Add(FixedPoint(x,y));
+    poly.Add(FixedPoint(x, y + h));
+    poly.Add(FixedPoint(x, y));
 
-  tmpPoly := poly.Outline;
-  tmpOutline := tmpPoly.Grow(Fixed(0.1/10),255);
-  tmpOutline.FillMode := pfWinding;
+    tmpPoly := poly.Outline;
+    tmpOutline := tmpPoly.Grow(Fixed(0.1 / 10), 255);
+    tmpOutline.FillMode := pfWinding;
 
-  tmpOutline.Antialiased := true;
-  tmpOutline.AntialiasMode := am32times;
+    tmpOutline.Antialiased := true;
+    tmpOutline.AntialiasMode := am32times;
 
+    poly.drawFill(ABitmap, Color32(ASwatch.Color));
 
-  poly.drawFill(ABitmap,Color32(ASwatch.Color));
+    tmpOutline.DrawEdge(ABitmap, SetAlpha(color32(darker(ASwatch.Color, 30)), 255));
 
-  tmpOutline.DrawEdge(ABitmap,SetAlpha(color32(darker(ASwatch.Color,30)), 255));
+    // Draw text
+    if ((ASwatch.ColorName <> '') and (FShowCaptions)) then begin
 
-  // Draw text
-  if ((ASwatch.ColorName <> '') and (FShowCaptions)) then begin
+      rTextBorder := Rect(r.Left + FSwatchWidth - 1,
+        r.Top, r.Right, r.Bottom + 1);
+      ABitmap.FillRectS(rTextBorder, Color32(clWhite));
+      ABitmap.FrameRectS(rTextBorder, Color32(Darker(ASwatch.Color, 40)));
 
-      rTextBorder := Rect(r.Left+FSwatchWidth-1,
-      r.Top,r.Right,r.Bottom+1);
-      ABitmap.FillRectS(rTextBorder,Color32(clWhite));
-      ABitmap.FrameRectS(rTextBorder,Color32(Darker(ASwatch.Color,40)));
+      rText := Rect(rTextBorder.Left + 4, rTextBorder.Top,
+        rTextBorder.Right, rTextBorder.Bottom);
 
-      rText := Rect(rTextBorder.Left+4,rTextBorder.Top,
-      rTextBorder.Right,rTextBorder.Bottom);
-
-    ABitmap.Font.Assign(SwatchFont);
-    ABitmap.Textout(rText,DT_SINGLELINE+DT_VCENTER+DT_LEFT,ASwatch.ColorName);
+      ABitmap.Font.Assign(SwatchFont);
+      ABitmap.Textout(rText, DT_SINGLELINE + DT_VCENTER + DT_LEFT, ASwatch.ColorName);
 
     end;
 
-  Finally
+  finally
     Poly.Free;
     tmpPoly.Free;
     tmpOutline.Free;
-  End;
+  end;
 end;
 
 function TSharpESwatchManager.GetCollectionList(AC: TCollection): TList;
@@ -712,61 +719,60 @@ end;
 function TSharpESwatchManager.GetWidth: Integer;
 begin
   if Assigned(FOnGetWidth) then
-    FOnGetWidth(Self,FWidth);
+    FOnGetWidth(Self, FWidth);
 
   if FWidth <= 0 then
     FWidth := 100;
 
   Result := FWidth;
 
-
 end;
 
 procedure TSharpESwatchManager.Loaded;
 var
-  s:String;
+  s: string;
 begin
   inherited;
 
   // Load options
-  if Not(csDesigning in ComponentState) then begin
-    s := GetSharpeUserSettingsPath+cXmlOptionsFile;
+  if not (csDesigning in ComponentState) then begin
+    s := GetSharpeUserSettingsPath + cXmlOptionsFile;
     LoadOptions(s);
 
-    s := GetSharpeUserSettingsPath+cXmlDefaultSwatchFile;
+    s := GetSharpeUserSettingsPath + cXmlDefaultSwatchFile;
     Load(s);
   end;
 end;
 
 procedure TSharpESwatchManager.SetItemSelected(APoint: TPoint);
 var
-  i:Integer;
-  r:TRect;
+  i: Integer;
+  r: TRect;
 begin
-  For i := 0 to Pred(Swatches.Count) do begin
+  for i := 0 to Pred(Swatches.Count) do begin
     r := Swatches.Item[i].SwatchRect;
     if ((APoint.X > r.Left) and (APoint.X < r.Right) and
       (APoint.Y > r.Top) and (APoint.Y < r.Bottom)) then begin
-        Swatches.Item[i].Selected := Not(Swatches.Item[i].Selected);
-        CreateSwatchBitmap;
-      end;
+      Swatches.Item[i].Selected := not (Swatches.Item[i].Selected);
+      CreateSwatchBitmap;
+    end;
   end;
 end;
 
 function TSharpESwatchManager.GetItemFromPoint(
   APoint: TPoint): TSharpESwatchCollectionItem;
 var
-  i:Integer;
-  r:TRect;
+  i: Integer;
+  r: TRect;
 begin
   Result := nil;
-  For i := 0 to Pred(Swatches.Count) do begin
+  for i := 0 to Pred(Swatches.Count) do begin
     r := Swatches.Item[i].SwatchRect;
     if ((APoint.X > r.Left) and (APoint.X < r.Right) and
       (APoint.Y > r.Top) and (APoint.Y < r.Bottom)) then begin
-        Result := FSwatches.Item[i];
-        break;
-      end;
+      Result := FSwatches.Item[i];
+      break;
+    end;
   end;
 end;
 
@@ -784,17 +790,18 @@ end;
 
 procedure TSharpESwatchManager.BeforeDestruction;
 var
-  s:String;
+  s: string;
 begin
   inherited;
 
-  if Not(csDesigning in ComponentState) then begin
-    s := GetSharpeUserSettingsPath+cXmlOptionsFile;
+  if not (csDesigning in ComponentState) then begin
+    s := GetSharpeUserSettingsPath + cXmlOptionsFile;
     SaveOptions(s);
 
-    s := GetSharpeUserSettingsPath+cXmlDefaultSwatchFile;
+    s := GetSharpeUserSettingsPath + cXmlDefaultSwatchFile;
     Save(s);
   end;
 end;
 
 end.
+

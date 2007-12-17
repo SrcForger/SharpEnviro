@@ -3,12 +3,19 @@ unit SharpEPageControl;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, SharpERoundPanel, SharpETabList, ExtCtrls, pngimagelist;
+  Windows,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  SharpERoundPanel,
+  SharpETabList,
+  ExtCtrls,
+  pngimagelist;
 
 type
-  TSharpEPageControl = Class(TCustomPanel)
-    private
+  TSharpEPageControl = class(TCustomPanel)
+  private
     FTabList: TSharpETabList;
     FPnlContent: TSharpERoundPanel;
     FMinimized: Boolean;
@@ -59,49 +66,48 @@ type
     procedure SetTabBackgroundColor(const Value: TColor);
   protected
     procedure Loaded; override;
-    public
-      constructor Create(AOwner:TComponent); override;
-      property TabList: TSharpETabList read FTabList write FTabList;
-      property Minimized: Boolean read GetMinimized write SetMinimized;
-    published
-      property Align;
-      property Anchors;
-      Property Visible;
-      Property Font;
-      Property ParentFont;
-      Property Color;
+  public
+    constructor Create(AOwner: TComponent); override;
+    property TabList: TSharpETabList read FTabList write FTabList;
+    property Minimized: Boolean read GetMinimized write SetMinimized;
+  published
+    property Align;
+    property Anchors;
+    property Visible;
+    property Font;
+    property ParentFont;
+    property Color;
 
-      property ExpandedHeight: Integer read FExpandedHeight write FExpandedHeight;
-      property TabItems: TSharpETabListItems read GetTabItems write SetTabItems;
-      property RoundValue: Integer read GetRoundValue write SetRoundValue;
-      property Border: Boolean read GetBorder write SetBorder;
+    property ExpandedHeight: Integer read FExpandedHeight write FExpandedHeight;
+    property TabItems: TSharpETabListItems read GetTabItems write SetTabItems;
+    property RoundValue: Integer read GetRoundValue write SetRoundValue;
+    property Border: Boolean read GetBorder write SetBorder;
 
-      property TabCount: Integer read GetTabCount;
-      Property TabWidth: Integer read GetTabWidth write SetTabWidth;
-      property TabIndex: Integer read GetTabIndex write SetTabIndex;
-      property TabAlignment: TLeftRight read GetTabAlign write SetTabAlign;
-      Property AutoSizeTabs: Boolean read GetAutoSizeTabs write SetAutoSizeTabs;
-      Property TabImageList: TPngImageList read GetTabImageList write SetTabImageList;
+    property TabCount: Integer read GetTabCount;
+    property TabWidth: Integer read GetTabWidth write SetTabWidth;
+    property TabIndex: Integer read GetTabIndex write SetTabIndex;
+    property TabAlignment: TLeftRight read GetTabAlign write SetTabAlign;
+    property AutoSizeTabs: Boolean read GetAutoSizeTabs write SetAutoSizeTabs;
+    property TabImageList: TPngImageList read GetTabImageList write SetTabImageList;
 
-      property TabBackgroundColor: TColor read GetTabBackgroundColor write SetTabBackgroundColor;
-      property BackgroundColor: TColor read GetBackgroundColor write SetBackgroundColor;
-      property BorderColor: TColor read GetBorderColor write SetBorderColor;
-      Property TabColor: TColor read GetTabColor write SetTabColor;
-      Property TabSelColor: TColor read GetTabSelColor write SetTabSelColor;
-      Property TabCaptionSelColor: TColor read GetTabCaptionSelColor write SetTabCaptionSelColor;
-      Property TabStatusSelColor: TColor read GetTabStatusSelColor write SetTabStatusSelColor;
-      Property TabCaptionColor: TColor read GetTabCaptionColor write SetTabCaptionColor;
-      Property TabStatusColor: TColor read GetTabStatusColor write SetTabStatusColor;
+    property TabBackgroundColor: TColor read GetTabBackgroundColor write SetTabBackgroundColor;
+    property BackgroundColor: TColor read GetBackgroundColor write SetBackgroundColor;
+    property BorderColor: TColor read GetBorderColor write SetBorderColor;
+    property TabColor: TColor read GetTabColor write SetTabColor;
+    property TabSelColor: TColor read GetTabSelColor write SetTabSelColor;
+    property TabCaptionSelColor: TColor read GetTabCaptionSelColor write SetTabCaptionSelColor;
+    property TabStatusSelColor: TColor read GetTabStatusSelColor write SetTabStatusSelColor;
+    property TabCaptionColor: TColor read GetTabCaptionColor write SetTabCaptionColor;
+    property TabStatusColor: TColor read GetTabStatusColor write SetTabStatusColor;
 
-      property OnTabChange: TSharpETabChange read GetOnTabChange write SetOnTabChange;
-      property OnTabClick: TSharpETabClick read GetOnTabClick write SetOnTabClick;
+    property OnTabChange: TSharpETabChange read GetOnTabChange write SetOnTabChange;
+    property OnTabClick: TSharpETabClick read GetOnTabClick write SetOnTabClick;
 
-      procedure ResizeEvent(Sender: TObject);
+    procedure ResizeEvent(Sender: TObject);
 
-      
-  End;
+  end;
 
-  procedure Register;
+procedure Register;
 
 implementation
 
@@ -125,44 +131,43 @@ begin
 end;
 
 {$REGION 'Control Creation'}
-  procedure TSharpEPageControl.CreateControls;
-  begin
-    FTabList := TSharpETabList.Create(Self);
-    with FTabList do
-    begin
-      Parent := Self;
-      Top := 0;
-      Left := 0;
-      Width := Self.Width;
-      BottomBorder := True;
-      BorderColor := clBlack;
-      Border := True;
-      BkgColor := clBtnFace;
-      TabSelectedColor := clWhite;
-      TextBounds := Rect(8, 8, 8, 4);
-      AutoSizeTabs := True;
-    end;
-    FPnlContent := TSharpERoundPanel.Create(Self);
-    with FPnlContent do
-    begin
-      Parent := Self;
-      Top := FTabList.Top + FTabList.Height - 1;
-      Left := 0;
-      Width := Self.Width;
-      Height := Self.Height - FTabList.Height;
-      FPnlContent.SendToBack;
-      BorderColor := clBlack;
-      Border := True;
-      DrawMode := srpNoTopLeft;
-      ParentColor := False;
-      ParentBackground := False;
 
-      Padding.Left := 8;
-      Padding.Top := 8;
-      Padding.Right := 8;
-      Padding.Bottom := 8;
-    end;
+procedure TSharpEPageControl.CreateControls;
+begin
+  FTabList := TSharpETabList.Create(Self);
+  with FTabList do begin
+    Parent := Self;
+    Top := 0;
+    Left := 0;
+    Width := Self.Width;
+    BottomBorder := True;
+    BorderColor := clBlack;
+    Border := True;
+    BkgColor := clBtnFace;
+    TabSelectedColor := clWhite;
+    TextBounds := Rect(8, 8, 8, 4);
+    AutoSizeTabs := True;
   end;
+  FPnlContent := TSharpERoundPanel.Create(Self);
+  with FPnlContent do begin
+    Parent := Self;
+    Top := FTabList.Top + FTabList.Height - 1;
+    Left := 0;
+    Width := Self.Width;
+    Height := Self.Height - FTabList.Height;
+    FPnlContent.SendToBack;
+    BorderColor := clBlack;
+    Border := True;
+    DrawMode := srpNoTopLeft;
+    ParentColor := False;
+    ParentBackground := False;
+
+    Padding.Left := 8;
+    Padding.Top := 8;
+    Padding.Right := 8;
+    Padding.Bottom := 8;
+  end;
+end;
 {$ENDREGION}
 
 function TSharpEPageControl.GetBorder: Boolean;
@@ -279,22 +284,20 @@ end;
 procedure TSharpEPageControl.ResizeEvent(Sender: TObject);
 begin
 
-    with FTabList do
-    begin
-      Top := 0;
-      Left := 0;
-      Width := Self.Width;
-      Anchors := [akLeft, akRight, akTop];
-    end;
+  with FTabList do begin
+    Top := 0;
+    Left := 0;
+    Width := Self.Width;
+    Anchors := [akLeft, akRight, akTop];
+  end;
 
-    with FPnlContent do
-    begin
-      Top := FTabList.Top + FTabList.Height - 1;
-      Left := 0;
-      Width := Self.Width;
-      Height := Self.Height - FTabList.Height;
-      Anchors := [akLeft, akRight, akTop, akBottom];
-    end;
+  with FPnlContent do begin
+    Top := FTabList.Top + FTabList.Height - 1;
+    Left := 0;
+    Width := Self.Width;
+    Height := Self.Height - FTabList.Height;
+    Anchors := [akLeft, akRight, akTop, akBottom];
+  end;
 end;
 
 procedure TSharpEPageControl.SetBorder(const Value: Boolean);
@@ -315,9 +318,10 @@ begin
   FMinimized := Value;
 
   if FMinimized then begin
-    Self.Height := FTabList.Height-1;
+    Self.Height := FTabList.Height - 1;
     FTabList.Minimized := True;
-  end else begin
+  end
+  else begin
     Self.Height := FExpandedHeight;
     FTabList.Minimized := False;
   end;
@@ -347,9 +351,10 @@ procedure TSharpEPageControl.SetTabAlign(const Value: TLeftRight);
 begin
   FTabList.TabAlign := Value;
   if Value = taLeftJustify then
-    FPnlContent.DrawMode := srpNoTopLeft else
+    FPnlContent.DrawMode := srpNoTopLeft
+  else
     FPnlContent.DrawMode := srpNoTopRight;
-  
+
 end;
 
 procedure TSharpEPageControl.SetTabBackgroundColor(const Value: TColor);
@@ -413,3 +418,4 @@ begin
 end;
 
 end.
+

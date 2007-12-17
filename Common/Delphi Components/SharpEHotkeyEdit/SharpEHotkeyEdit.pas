@@ -5,19 +5,15 @@ interface
 uses
   Messages,
   SysUtils,
-  Variants,
   Classes,
   Graphics,
   Controls,
   Forms,
   Dialogs,
   StdCtrls,
-  Contnrs,
   Windows,
   VKToString,
-  uScHotkeyMgr,
-  inifiles,
-  jclinifiles;
+  uScHotkeyMgr;
 
 type
   TCustomSharpEHotkeyEdit = class(TCustomEdit)

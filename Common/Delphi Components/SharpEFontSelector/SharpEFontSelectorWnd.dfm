@@ -304,7 +304,7 @@ object frmFontSelector: TfrmFontSelector
         Left = 0
         Top = 0
         Width = 14
-        Height = 18
+        Height = 14
         Align = alLeft
         AutoSize = True
         Picture.Data = {
@@ -332,12 +332,13 @@ object frmFontSelector: TfrmFontSelector
           FFFFFFFFFFFFFFFF0000}
         Transparent = True
         OnMouseDown = MoveForm
+        ExplicitHeight = 18
       end
       object Label2: TLabel
         Left = 18
         Top = 0
         Width = 68
-        Height = 18
+        Height = 14
         Align = alLeft
         Caption = 'Font Selection'
         OnMouseDown = MoveForm

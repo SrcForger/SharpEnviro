@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, GR32_RangeBars, ExtCtrls, SharpeGaugeBoxEdit, StdCtrls, ComCtrls,
+  Dialogs, ExtCtrls, SharpeGaugeBoxEdit, StdCtrls, ComCtrls,
   JvExComCtrls, JvComCtrls, uVistaFuncs, JvExExtCtrls, JvPanel, JvComponent,
   JvExtComponent;
 

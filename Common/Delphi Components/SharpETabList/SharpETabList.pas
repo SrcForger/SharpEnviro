@@ -3,9 +3,8 @@ unit SharpETabList;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, GR32, GR32_Image, GR32_Polygons, GR32_Layers, ExtCtrls, graphicsFX,
-    pngimagelist, JclFileUtils;
+  Windows, Messages, Classes, Graphics, Controls, Forms,
+  GR32, GR32_Image, GR32_Layers, ExtCtrls, PngImageList, JclFileUtils;
 
 type
   TSharpETabListItem = Class(TCollectionItem)

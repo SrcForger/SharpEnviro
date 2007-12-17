@@ -3,19 +3,29 @@ unit SharpESwatchCollection;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, SharpFX, SharpGraphicsUtils, gr32, SharpECenterScheme,
-  Contnrs, JvSimpleXml, menus, pngimagelist, SharpThemeApi, StdCtrls,
-    GR32_Polygons, SharpApi, GR32_Image, GR32_Layers, GR32_RangeBars,
-      SharpESwatchManager, Types;
+  Windows,
+  SysUtils,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  SharpECenterScheme,
+  menus,
+  pngimagelist,
+  SharpApi,
+  GR32_Image,
+  GR32_Layers,
+  SharpESwatchManager,
+  Types;
 
 {$R SharpESwatchRes.RES}
 
 type
-  TSelectColorEvent=Procedure (ASender: TObject; AColor: TColor) of object;
+  TSelectColorEvent = procedure(ASender: TObject; AColor: TColor) of object;
 
-Type
-  TSharpESwatchCollection = Class(TScrollBox)
+type
+  TSharpESwatchCollection = class(TScrollBox)
   private
     FScheme: TSharpECenterScheme;
     FPopupMenu: Tpopupmenu;
@@ -28,17 +38,16 @@ Type
     FImage32: TImage32;
     FSwatchManager: TSharpESwatchManager;
 
-    procedure PopupMenuEvent(ASender:TObject);
+    procedure PopupMenuEvent(ASender: TObject);
     procedure MouseDownEvent(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer;
-    ALayer:TCustomLayer);
+      Button: TMouseButton; Shift: TShiftState; X, Y: Integer;
+      ALayer: TCustomLayer);
     procedure ControlMouseDownEvent(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure MenuClickEvent(Sender:TObject);
+      Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure MenuClickEvent(Sender: TObject);
     procedure LoadResources;
 
-    procedure PopupSwatchMenu(AX,AY:Integer; ASender:TComponent);
-
+    procedure PopupSwatchMenu(AX, AY: Integer; ASender: TComponent);
 
   protected
     procedure Resize; override;
@@ -46,18 +55,16 @@ Type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Image32:TImage32 read FImage32 write FImage32;
-    
+    property Image32: TImage32 read FImage32 write FImage32;
 
   published
     property SwatchManager: TSharpESwatchManager read FSwatchManager write
       FSwatchManager;
-    property OnDblClickSwatch : TSelectColorEvent read FOnDblClickSwatch write
+    property OnDblClickSwatch: TSelectColorEvent read FOnDblClickSwatch write
       FOnDblClickSwatch;
-end;
+  end;
 
 implementation
-
 
 { TSharpESwatchCollection }
 
@@ -109,127 +116,129 @@ var
 begin
   FPopupMenu.Items.Clear;
 
-
   p := FImage32.ScreenToClient(Mouse.CursorPos);
-  tmp :=  FSwatchManager.GetItemFromPoint(p);
+  tmp := FSwatchManager.GetItemFromPoint(p);
   FPopupMenu.Tag := Integer(tmp);
   bEnabled := tmp <> nil;
 
-  if FSwatchManager = nil then exit;
+  if FSwatchManager = nil then
+    exit;
 
   // Swatch tezt
   FPopupMenu.Images := FImageList;
   with FPopupMenu.Items do begin
 
-    Add(NewItem('Rename Swatch',0,False,bEnabled,MenuClickEvent,
-      0,'miRenameSwatch'));
+    Add(NewItem('Rename Swatch', 0, False, bEnabled, MenuClickEvent,
+      0, 'miRenameSwatch'));
 
-    Add(NewItem('Delete Swatch',0,False,bEnabled,MenuClickEvent,
-      0,'miDeleteSwatch'));
+    Add(NewItem('Delete Swatch', 0, False, bEnabled, MenuClickEvent,
+      0, 'miDeleteSwatch'));
 
-    Add(NewItem('-',0,False,True,MenuClickEvent,
-      0,'miBlank'));
+    Add(NewItem('-', 0, False, True, MenuClickEvent,
+      0, 'miBlank'));
 
-    Add(NewItem('File',0,False,True,MenuClickEvent,
-      0,'miFile'));
+    Add(NewItem('File', 0, False, True, MenuClickEvent,
+      0, 'miFile'));
 
     n := IndexOf(Find('File'));
     with Items[n] do begin
-      Add(NewItem('Load',0,False,True,MenuClickEvent,
-      0,'miLoadSwatch'));
+      Add(NewItem('Load', 0, False, True, MenuClickEvent,
+        0, 'miLoadSwatch'));
 
-      Add(NewItem('-',0,False,True,MenuClickEvent,
-      0,'miBlank'));
+      Add(NewItem('-', 0, False, True, MenuClickEvent,
+        0, 'miBlank'));
 
-      Add(NewItem('Save All',0,False,True,MenuClickEvent,
-      0,'miSaveAllSwatch'));
+      Add(NewItem('Save All', 0, False, True, MenuClickEvent,
+        0, 'miSaveAllSwatch'));
 
-      Add(NewItem('Save Selected',0,False,True,MenuClickEvent,
-      0,'miSaveSelSwatch'));
+      Add(NewItem('Save Selected', 0, False, True, MenuClickEvent,
+        0, 'miSaveSelSwatch'));
 
     end;
 
-    Add(NewItem('Selection',0,False,True,MenuClickEvent,
-      0,'miSelection'));
+    Add(NewItem('Selection', 0, False, True, MenuClickEvent,
+      0, 'miSelection'));
 
     n := IndexOf(Find('Selection'));
     with Items[n] do begin
 
-      Add(NewItem('Select All',0,False,True,MenuClickEvent,
-          0,'miSelectAll'));
-      Add(NewItem('Select None',0,False,True,MenuClickEvent,
-          0,'miSelectNone'));
+      Add(NewItem('Select All', 0, False, True, MenuClickEvent,
+        0, 'miSelectAll'));
+      Add(NewItem('Select None', 0, False, True, MenuClickEvent,
+        0, 'miSelectNone'));
 
-      Add(NewItem('-',0,False,True,MenuClickEvent,
-        0,'miBlank'));
+      Add(NewItem('-', 0, False, True, MenuClickEvent,
+        0, 'miBlank'));
 
-      Add(NewItem('Delete All',0,False,True,MenuClickEvent,
-        0,'miDeleteAll'));
+      Add(NewItem('Delete All', 0, False, True, MenuClickEvent,
+        0, 'miDeleteAll'));
 
-      Add(NewItem('Delete Selected',0,False,True,MenuClickEvent,
-        0,'miDeleteSelected'));
+      Add(NewItem('Delete Selected', 0, False, True, MenuClickEvent,
+        0, 'miDeleteSelected'));
     end;
 
-    Add(NewItem('Options',0,False,True,MenuClickEvent,
-      0,'miOptions'));
+    Add(NewItem('Options', 0, False, True, MenuClickEvent,
+      0, 'miOptions'));
 
     n := IndexOf(Find('Options'));
     with Items[n] do begin
-      Add(NewItem('Show Text',0,FSwatchManager.ShowCaptions,True,MenuClickEvent,
-        0,'miShowSwatchText'));
-      Add(NewItem('Sort By',0,False,True,MenuClickEvent,
-        0,'miSortBy'));
+      Add(NewItem('Show Text', 0, FSwatchManager.ShowCaptions, True, MenuClickEvent,
+        0, 'miShowSwatchText'));
+      Add(NewItem('Sort By', 0, False, True, MenuClickEvent,
+        0, 'miSortBy'));
 
-    n := IndexOf(Find('Sort By'));
-    with Items[n] do begin
-      Add(NewItem('Hue',0,FSwatchManager.SortMode=sortHue,True,MenuClickEvent,
-      0,'miSortHue'));
-      Add(NewItem('Saturation',0,FSwatchManager.SortMode=sortSat,True,MenuClickEvent,
-      0,'miSortSat'));
-      Add(NewItem('Luminosity',0,FSwatchManager.SortMode=sortLum,True,MenuClickEvent,
-      0,'miSortLum'));
-      Add(NewItem('-',0,False,True,MenuClickEvent,
-      0,'miBlank'));
-      Add(NewItem('Name',0,FSwatchManager.SortMode=sortName,True,MenuClickEvent,
-      0,'miSortName'));
+      n := IndexOf(Find('Sort By'));
+      with Items[n] do begin
+        Add(NewItem('Hue', 0, FSwatchManager.SortMode = sortHue, True, MenuClickEvent,
+          0, 'miSortHue'));
+        Add(NewItem('Saturation', 0, FSwatchManager.SortMode = sortSat, True, MenuClickEvent,
+          0, 'miSortSat'));
+        Add(NewItem('Luminosity', 0, FSwatchManager.SortMode = sortLum, True, MenuClickEvent,
+          0, 'miSortLum'));
+        Add(NewItem('-', 0, False, True, MenuClickEvent,
+          0, 'miBlank'));
+        Add(NewItem('Name', 0, FSwatchManager.SortMode = sortName, True, MenuClickEvent,
+          0, 'miSortName'));
+      end;
+
     end;
-
-   end;
     //mi := TMenuItem.
   end;
 end;
 
 procedure TSharpESwatchCollection.MouseDownEvent(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer;
-    ALayer:TCustomLayer);
+  ALayer: TCustomLayer);
 var
-  tmp:TSharpESwatchCollectionItem;
+  tmp: TSharpESwatchCollectionItem;
 begin
   if FSwatchManager = nil then
     Exit;
 
   if Button = mbRight then
-    PopupSwatchMenu(Mouse.CursorPos.X,Mouse.CursorPos.Y,Self)
+    PopupSwatchMenu(Mouse.CursorPos.X, Mouse.CursorPos.Y, Self)
   else begin
-    tmp := FSwatchManager.GetItemFromPoint(Point(X,Y));
+    tmp := FSwatchManager.GetItemFromPoint(Point(X, Y));
     if (tmp = nil) then
-      FSwatchManager.DeselectAll else begin
+      FSwatchManager.DeselectAll
+    else begin
 
-        if Not(ssCtrl in Shift) then begin
+      if not (ssCtrl in Shift) then begin
 
-          FSwatchManager.DeselectAll;
-          if Assigned(FOnDblClickSwatch) then
-            FOnDblClickSwatch(Self,tmp.Color);
-        end else
-          FSwatchManager.SetItemSelected(Point(X,Y));
+        FSwatchManager.DeselectAll;
+        if Assigned(FOnDblClickSwatch) then
+          FOnDblClickSwatch(Self, tmp.Color);
+      end
+      else
+        FSwatchManager.SetItemSelected(Point(X, Y));
 
-      end;
     end;
+  end;
 end;
 
 procedure TSharpESwatchCollection.MenuClickEvent(Sender: TObject);
 var
-  sName: String;
+  sName: string;
   i: Integer;
   tmpMI: TMenuItem;
   tmpSwatch: TSharpESwatchCollectionItem;
@@ -244,25 +253,25 @@ begin
   if tmpMI.Name = 'miRenameSwatch' then begin
 
     sName := tmpSwatch.ColorName;
-    if InputQuery('Rename Swatch','Enter Name:',sName) then begin
+    if InputQuery('Rename Swatch', 'Enter Name:', sName) then begin
 
       tmpSwatch.ColorName := sName;
       Resize;
     end;
-  end else
-  if tmpMI.Name = 'miDeleteSwatch' then begin
+  end
+  else if tmpMI.Name = 'miDeleteSwatch' then begin
 
     FSwatchManager.Swatches.Delete(FSwatchManager.Swatches.IndexOf(tmpSwatch.DisplayName));
     Resize;
-  end else
-  if tmpMI.Name = 'miDeleteAll' then begin
+  end
+  else if tmpMI.Name = 'miDeleteAll' then begin
 
     FSwatchManager.Swatches.Clear;
     Resize;
-  end else
-  if tmpMI.Name = 'miDeleteSelected' then begin
+  end
+  else if tmpMI.Name = 'miDeleteSelected' then begin
 
-    For i := Pred(SwatchManager.Swatches.Count) downto 0 do begin
+    for i := Pred(SwatchManager.Swatches.Count) downto 0 do begin
       tmpSwatch := TSharpESwatchCollectionItem(SwatchManager.Swatches.Items[i]);
 
       if tmpSwatch.Selected then
@@ -270,53 +279,53 @@ begin
     end;
 
     Resize;
-  end else
-  if tmpMI.Name = 'miLoadSwatch' then begin
+  end
+  else if tmpMI.Name = 'miLoadSwatch' then begin
 
-    if Not(DirectoryExists(GetSharpeGlobalSettingsPath+'Swatches')) then
-      CreateDir(GetSharpeGlobalSettingsPath+'Swatches');
+    if not (DirectoryExists(GetSharpeGlobalSettingsPath + 'Swatches')) then
+      CreateDir(GetSharpeGlobalSettingsPath + 'Swatches');
 
     FOpenDialog.Title := 'Load Swatches';
-    FOpenDialog.InitialDir := GetSharpeGlobalSettingsPath+'Swatches';
+    FOpenDialog.InitialDir := GetSharpeGlobalSettingsPath + 'Swatches';
     if FOpenDialog.Execute then
       if ExtractFileExt(FOpenDialog.FileName) = '.swatch' then
-         FSwatchManager.Load(FOpenDialog.FileName);
-  end else
-  if tmpMI.Name = 'miSaveAllSwatch' then begin
+        FSwatchManager.Load(FOpenDialog.FileName);
+  end
+  else if tmpMI.Name = 'miSaveAllSwatch' then begin
 
-    if Not(DirectoryExists(GetSharpeGlobalSettingsPath+'Swatches')) then
-      CreateDir(GetSharpeGlobalSettingsPath+'Swatches');
+    if not (DirectoryExists(GetSharpeGlobalSettingsPath + 'Swatches')) then
+      CreateDir(GetSharpeGlobalSettingsPath + 'Swatches');
 
     FSaveDialog.Title := 'Save All Swatches';
-    FSaveDialog.InitialDir := GetSharpeGlobalSettingsPath+'Swatches';
+    FSaveDialog.InitialDir := GetSharpeGlobalSettingsPath + 'Swatches';
     if FSaveDialog.Execute then
       if ExtractFileExt(FSaveDialog.FileName) = '.swatch' then
         FSwatchManager.Save(FSaveDialog.FileName);
-  end else
-  if tmpMI.Name = 'miSaveSelSwatch' then begin
+  end
+  else if tmpMI.Name = 'miSaveSelSwatch' then begin
 
-    if Not(DirectoryExists(GetSharpeGlobalSettingsPath+'Swatches')) then
-      CreateDir(GetSharpeGlobalSettingsPath+'Swatches');
+    if not (DirectoryExists(GetSharpeGlobalSettingsPath + 'Swatches')) then
+      CreateDir(GetSharpeGlobalSettingsPath + 'Swatches');
 
     FSaveDialog.Title := 'Save Selected Swatches';
-    FSaveDialog.InitialDir := GetSharpeGlobalSettingsPath+'Swatches';
+    FSaveDialog.InitialDir := GetSharpeGlobalSettingsPath + 'Swatches';
     if FSaveDialog.Execute then
       if ExtractFileExt(FSaveDialog.FileName) = '.swatch' then
-        FSwatchManager.Save(FSaveDialog.FileName,True);
-  end else
-  if tmpMi.Name = 'miSelectAll' then
-    FSwatchManager.SelectAll else
-  if tmpMi.Name = 'miSelectNone' then
-    FSwatchManager.DeselectAll else
-  if tmpMi.Name = 'miShowSwatchText' then
-    FSwatchManager.ShowCaptions := not(FSwatchManager.ShowCaptions) else
-  if tmpMi.Name = 'miSortHue' then
-    FSwatchManager.SortMode := sortHue else
-  if tmpMi.Name = 'miSortSat' then
-    FSwatchManager.SortMode := sortSat else
-  if tmpMi.Name = 'miSortLum' then
-    FSwatchManager.SortMode := sortLum else
-  if tmpMi.Name = 'miSortName' then
+        FSwatchManager.Save(FSaveDialog.FileName, True);
+  end
+  else if tmpMi.Name = 'miSelectAll' then
+    FSwatchManager.SelectAll
+  else if tmpMi.Name = 'miSelectNone' then
+    FSwatchManager.DeselectAll
+  else if tmpMi.Name = 'miShowSwatchText' then
+    FSwatchManager.ShowCaptions := not (FSwatchManager.ShowCaptions)
+  else if tmpMi.Name = 'miSortHue' then
+    FSwatchManager.SortMode := sortHue
+  else if tmpMi.Name = 'miSortSat' then
+    FSwatchManager.SortMode := sortSat
+  else if tmpMi.Name = 'miSortLum' then
+    FSwatchManager.SortMode := sortLum
+  else if tmpMi.Name = 'miSortName' then
     FSwatchManager.SortMode := sortName;
 
   Invalidate;
@@ -329,36 +338,34 @@ end;
 
 procedure TSharpESwatchCollection.LoadResources;
 var
-  png:TPngImageCollectionItem;
+  png: TPngImageCollectionItem;
 begin
   FImageList := TPngImageList.Create(Self);
   png := FImageList.PngImages.Add();
-  png.PngImage.LoadFromResourceName(HInstance,'SWATCH_COLLECTION_ADD_PNG');
+  png.PngImage.LoadFromResourceName(HInstance, 'SWATCH_COLLECTION_ADD_PNG');
   png := FImageList.PngImages.Add();
-  png.PngImage.LoadFromResourceName(HInstance,'SWATCH_COLLECTION_EDIT_PNG');
+  png.PngImage.LoadFromResourceName(HInstance, 'SWATCH_COLLECTION_EDIT_PNG');
   png := FImageList.PngImages.Add();
-  png.PngImage.LoadFromResourceName(HInstance,'SWATCH_COLLECTION_CANCEL_PNG');
+  png.PngImage.LoadFromResourceName(HInstance, 'SWATCH_COLLECTION_CANCEL_PNG');
   png := FImageList.PngImages.Add();
-  png.PngImage.LoadFromResourceName(HInstance,'SWATCH_COLLECTION_LOAD_PNG');
+  png.PngImage.LoadFromResourceName(HInstance, 'SWATCH_COLLECTION_LOAD_PNG');
   png := FImageList.PngImages.Add();
-  png.PngImage.LoadFromResourceName(HInstance,'SWATCH_COLLECTION_SAVE_PNG');
+  png.PngImage.LoadFromResourceName(HInstance, 'SWATCH_COLLECTION_SAVE_PNG');
   png := FImageList.PngImages.Add();
-  png.PngImage.LoadFromResourceName(HInstance,'SWATCH_COLLECTION_SAVE_PNG');
+  png.PngImage.LoadFromResourceName(HInstance, 'SWATCH_COLLECTION_SAVE_PNG');
 end;
 
-procedure TSharpESwatchCollection.PopupSwatchMenu(AX, AY: Integer; ASender:TComponent);
+procedure TSharpESwatchCollection.PopupSwatchMenu(AX, AY: Integer; ASender: TComponent);
 begin
   FPopupMenu.Tag := Integer(ASender);
-  FPopupMenu.Popup(AX,AY);
+  FPopupMenu.Popup(AX, AY);
 end;
-
 
 procedure TSharpESwatchCollection.ControlMouseDownEvent(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  MouseDownEvent(Sender,Button,shift,x,y,nil);
+  MouseDownEvent(Sender, Button, shift, x, y, nil);
 end;
 
 end.
-
 

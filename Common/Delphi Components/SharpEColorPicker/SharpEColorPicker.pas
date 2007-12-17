@@ -424,13 +424,13 @@ end;
 procedure TCustomSharpeColorPicker.ShowColorMenu(Point: TPoint);
 var
   pt1, pt2: TPoint;
-  i: integer;
-  tmpColItem: TSchemeColorItem;
-  mi: TMenuItem;
-  n:Integer;
+  //i: integer;
+  //tmpColItem: TSchemeColorItem;
+  {mi: TMenuItem;
+  n:Integer;      }
   bPopup: Boolean;
 
-  skinCol: TSharpESkinColor;
+  {skinCol: TSharpESkinColor;     }
 begin
 
   if not (Assigned(FColorMenu)) then

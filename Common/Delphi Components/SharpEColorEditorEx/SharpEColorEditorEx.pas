@@ -3,9 +3,17 @@ unit SharpEColorEditorEx;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, SharpEColorEditor, SharpThemeApi, SharpApi,
-  SharpESwatchCollection, SharpESwatchManager;
+  Windows,
+  Messages,
+  SysUtils,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  StdCtrls,
+  SharpEColorEditor,
+  SharpThemeApi,
+  SharpESwatchManager;
 
 type
   TSharpEColorEditorExItem = class(TCollectionItem)
@@ -90,7 +98,7 @@ type
     procedure Delete(AIndex: Integer); overload;
     procedure Delete(AItem: TSharpEColorEditorExItem); overload;
     property Item[Index: Integer]: TSharpEColorEditorExItem read GetItem write
-      SetItem;
+    SetItem;
     function IndexOf(const Name: string): Integer;
   end;
 
@@ -150,8 +158,7 @@ begin
   FColorCode := Value;
   FColorAsTColor := Value;
 
-  if FColorEditor <> nil then
-  begin
+  if FColorEditor <> nil then begin
     FColorEditor.OverrideSliderUpdateMode(sumAll);
     FColorEditor.Value := Value;
   end;
@@ -170,15 +177,15 @@ function TSharpEColorEditorExItem.GetExpanded: Boolean;
 begin
   if FColorEditor <> nil then
     Result := FColorEditor.Expanded
-  else Result := False;
+  else
+    Result := False;
 end;
 
 procedure TSharpEColorEditorExItem.SetExpanded(const Value: Boolean);
 begin
   FExpanded := Value;
 
-  if FExpanded then
-  begin
+  if FExpanded then begin
     TabclickEvent(Self.ColorEditor);
   end;
 end;
@@ -203,8 +210,7 @@ begin
   FValue := TSharpEColorEditor(ASender).Value;
 
   if TSharpEColorEditorEx(FParent) <> nil then
-    if Assigned(TSharpEColorEditorEx(FParent).FOnChangeColor) then
-    begin
+    if Assigned(TSharpEColorEditorEx(FParent).FOnChangeColor) then begin
 
       if FValueEditorType = vetColor then
         TSharpEColorEditorEx(FParent).OnChangeColor(Self, FColorCode)
@@ -244,43 +250,38 @@ begin
 
   if ((TSharpEColorEditor(Sender).GetTabIndex = FLastTab) and
     (TSharpEColorEditor(Sender) = FLastColorEditor) and
-      (TSharpEColorEditor(Sender).Expanded)) then
-    begin
-      bExpand := False;
-    end else begin
-      bExpand := True;
-    end;
+    (TSharpEColorEditor(Sender).Expanded)) then begin
+    bExpand := False;
+  end
+  else begin
+    bExpand := True;
+  end;
 
   FLastTab := FColorEditor.GetTabIndex;
   FLastColorEditor := FColorEditor;
 
-  if FParent <> nil then
-  begin
+  if FParent <> nil then begin
     TSharpEColorEditorEx(FParent).DisableAlign;
     TSharpEColorEditorEx(FParent).DisableAutoRange;
   end;
 
   // collapse all
-  for i := 0 to Pred(Collection.Count) do
-  begin
+  for i := 0 to Pred(Collection.Count) do begin
     TSharpEColorEditor(TSharpEColorEditorExItem(Collection.Items[i]).ColorEditor).Collapse;
     TSharpEColorEditorExItem(Collection.Items[i]).Expanded := False;
 
   end;
 
   // Expand selected
-  for i := 0 to Pred(Collection.Count) do
-  begin
-    if TSharpEColorEditorExItem(Collection.Items[i]) = Self then
-    begin
+  for i := 0 to Pred(Collection.Count) do begin
+    if TSharpEColorEditorExItem(Collection.Items[i]) = Self then begin
 
       FColorEditor.Expanded := bExpand;
       FColorEditor.SelectDefaultTab;
     end;
   end;
 
-  if FParent <> nil then
-  begin
+  if FParent <> nil then begin
     TSharpEColorEditorEx(FParent).EnableAlign;
     TSharpEColorEditorEx(FParent).EnableAutoRange;
     TSharpEColorEditorEx(FParent).ScrollInView(FColorEditor);
@@ -289,23 +290,22 @@ begin
   FColorEditor.SwatchManager :=
     TSharpEColorEditorEx(FParent).SwatchManager;
 
-
-
-
 end;
 
 function TSharpEColorEditorExItem.GetColorCode: Integer;
 begin
   if FColorEditor <> nil then
     Result := FColorEditor.Value
-  else Result := 0;
+  else
+    Result := 0;
 end;
 
 function TSharpEColorEditorExItem.GetColorAsTColor: TColor;
 begin
   if FColorEditor <> nil then
     Result := FColorEditor.ValueAsTColor
-  else Result := 0;
+  else
+    Result := 0;
 end;
 
 procedure TSharpEColorEditorExItem.SetParseColor(const Value: string);
@@ -316,8 +316,7 @@ begin
   try
     col := sharpthemeapi.parsecolor(PChar(Value));
 
-    if FColorEditor <> nil then
-    begin
+    if FColorEditor <> nil then begin
       FColorEditor.OverrideSliderUpdateMode(sumAll);
       FColorEditor.Value := col;
     end;
@@ -340,8 +339,7 @@ procedure TSharpEColorEditorExItem.SetValueText(const Value: string);
 begin
   FValueText := Value;
 
-  if FColorEditor <> nil then
-  begin
+  if FColorEditor <> nil then begin
     if FColorEditor.ValueText <> Value then
       FColorEditor.ValueText := Value;
   end;
@@ -351,8 +349,7 @@ procedure TSharpEColorEditorExItem.SetDescription(const Value: string);
 begin
   FDescription := Value;
 
-  if FColorEditor <> nil then
-  begin
+  if FColorEditor <> nil then begin
     if FColorEditor.Description <> Value then
       FColorEditor.Description := Value;
   end;
@@ -362,8 +359,7 @@ procedure TSharpEColorEditorExItem.SetValue(const Value: Integer);
 begin
   FValue := Value;
 
-  if FColorEditor <> nil then
-  begin
+  if FColorEditor <> nil then begin
     if FColorEditor.Value <> Value then
       FColorEditor.Value := Value;
   end;
@@ -374,8 +370,7 @@ procedure TSharpEColorEditorExItem.SetValueEditorType(
 begin
   FValueEditorType := Value;
 
-  if FColorEditor <> nil then
-  begin
+  if FColorEditor <> nil then begin
     if FColorEditor.ValueEditorType <> Value then
       FColorEditor.ValueEditorType := Value;
   end;
@@ -385,8 +380,7 @@ procedure TSharpEColorEditorExItem.SetVisible(const Value: Boolean);
 begin
   FVisible := Value;
 
-  if FColorEditor <> nil then
-  begin
+  if FColorEditor <> nil then begin
     if FColorEditor.Visible <> Value then
       FColorEditor.Visible := Value;
   end;
@@ -464,7 +458,8 @@ begin
 
   if Parent <> nil then
     if VertScrollBar.IsScrollBarVisible then
-      Self.Padding.Right := 8 else
+      Self.Padding.Right := 8
+    else
       Self.Padding.Right := 0;
 
   FItems := TSharpEColorEditorExItems.Create(Self);
@@ -491,13 +486,11 @@ var
   var
     i: Integer;
   begin
-    for i := 0 to Pred(FItems.Count) do
-    begin
+    for i := 0 to Pred(FItems.Count) do begin
 
       if i = 0 then
         FItems.Item[i].Expanded := True
-      else
-      begin
+      else begin
         FItems.Item[i].Expanded := False;
       end;
     end;
@@ -505,8 +498,7 @@ var
 
 begin
 
-  if not (FUpdate) then
-  begin
+  if not (FUpdate) then begin
     exit;
   end;
 
@@ -517,14 +509,12 @@ begin
 
   try
     for i := Pred(ComponentCount) downto 0 do
-      if Components[i] is TSharpEColorEditor then
-      begin
+      if Components[i] is TSharpEColorEditor then begin
         TSharpEColorEditor(Components[i]).Free;
       end;
 
-    for i := 0 to Pred(FItems.Count) do
-    begin
-      
+    for i := 0 to Pred(FItems.Count) do begin
+
       tmp := TSharpEColorEditor.Create(Self);
       tmp.Parent := self;
       tmp.SwatchManager := FSwatchManager;
@@ -570,9 +560,10 @@ begin
     FSwatchManager.Resize;
 
   if VertScrollBar.IsScrollBarVisible then
-    Self.Padding.Right := 8 else
+    Self.Padding.Right := 8
+  else
     Self.Padding.Right := 0;
-  
+
 end;
 
 procedure TSharpEColorEditorEx.SetItems(const Value: TSharpEColorEditorExItems);
@@ -601,8 +592,7 @@ begin
     exit;
   FSwatchManager := Value;
 
-  for i := 0 to Pred(FItems.Count) do
-  begin
+  for i := 0 to Pred(FItems.Count) do begin
     FItems.Item[i].ColorEditor.SwatchManager := FSwatchManager;
   end;
 end;
