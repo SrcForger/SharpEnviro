@@ -321,7 +321,7 @@ begin
             begin
               SCMsgFunc := GetProcAddress(modData.FileHandle, 'SCMsg');
               if Assigned(SCMsgFunc) then
-                SCMsgFunc(sParams);
+                Result := SCMsgFunc(sParams);
             end;
           end;
         end;
