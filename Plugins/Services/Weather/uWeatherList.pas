@@ -48,6 +48,7 @@ type
     FFCLastUpdated: String;
     FLastIconID: Integer;
     FLastTemp: Integer;
+    FMetric: Boolean;
   public
     constructor Create;
     Property ID: Integer Read FID Write FID;
@@ -58,6 +59,7 @@ type
     Property CCLastUpdated: String read FCCLastUpdated write FCCLastUpdated;
     Property LastIconID: Integer read FLastIconID write FLastIconID;
     Property LastTemp: Integer read FLastTemp write FLastTemp;
+    property Metric: Boolean read FMetric write FMetric;
   end;
 
   TWeatherList = class(TObject)
@@ -76,7 +78,7 @@ type
 
     function Add(Location:String; LocationID:String; FCLastUpdated:String;
       CCLastUpdated: String; LastIconID:Integer; LastTemp:Integer;
-        Enabled:Boolean): TWeatherItem;
+        Enabled:Boolean; Metric:Boolean): TWeatherItem;
 
     procedure Delete(Index: integer); overload;
     procedure Delete(AObject: TWeatherItem); overload;
@@ -109,7 +111,7 @@ uses
 
 function TWeatherList.Add(Location:String; LocationID:String;
   FCLastUpdated:String; CCLastUpdated: String; LastIconID:Integer;
-    LastTemp:Integer; Enabled:Boolean): TWeatherItem;
+    LastTemp:Integer; Enabled:Boolean; Metric:Boolean): TWeatherItem;
 begin
   Result := TWeatherItem.Create;
   Result.ID := Self.Count;
@@ -120,6 +122,7 @@ begin
   Result.CCLastUpdated := CCLastUpdated;
   Result.LastIconID := LastIconID;
   Result.LastTemp := LastTemp;
+  Result.Metric := Metric;
   FItems.Add(Result);
 
   if Assigned(FOnAddItem) then
@@ -196,7 +199,8 @@ begin
             ItemNamed['Location' + inttostr(loop)].Properties.Value('CCLastUpdated','-1'),
             ItemNamed['Location' + inttostr(loop)].Properties.IntValue('LastIconID',-1),
             ItemNamed['Location' + inttostr(loop)].Properties.IntValue('LastTemp',-999),
-            ItemNamed['Location' + inttostr(loop)].Properties.BoolValue('Enabled',True));
+            ItemNamed['Location' + inttostr(loop)].Properties.BoolValue('Enabled',True),
+            ItemNamed['Location' + inttostr(loop)].Properties.BoolValue('Metric',True));
         end;
       end;
     except
@@ -240,6 +244,7 @@ begin
         Xml.Root.Items.Item[i].Properties.Add('LastIconID', Self.Info[i].LastIconID);
         Xml.Root.Items.Item[i].Properties.Add('LastTemp', Self.Info[i].LastTemp);
         Xml.Root.Items.Item[i].Properties.Add('Enabled', Self.Info[i].Enabled);
+        Xml.Root.Items.Item[i].Properties.Add('Metric', Self.Info[i].Metric);
       end;
 
       Xml.SaveToFile(xmlfile);

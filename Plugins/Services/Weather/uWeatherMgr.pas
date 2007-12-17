@@ -188,6 +188,11 @@ end;
 procedure TWeatherMgr.ForceUpdate;
 begin
   FForce := true;
+
+  // Reload
+  WeatherList.Clear;
+  WeatherList.Load;
+  
   WeatherUpdateCheck(Self);
   FForce := false;
 end;
@@ -256,7 +261,7 @@ begin
     tmpInfo := WeatherList.Info[i];
 
     // Check for imperial or metric
-    if WeatherOptions.Metric then
+    if tmpInfo.Metric then
       tmps := 'm'
     else
       tmps := 's';

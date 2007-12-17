@@ -40,7 +40,6 @@ uses
 type
   TWeatherSettings = class
   private
-    FMetric: boolean;
     FFileName: String;
     FCCondInterval: Integer;
     FFCastInterval: Integer;
@@ -53,7 +52,6 @@ type
     procedure Load; overload;
     procedure Save; overload;
 
-    property Metric: boolean read FMetric Write FMetric;
     Property CCondInterval: Integer read FCCondInterval write FCCondInterval;
     property FCastInterval: Integer read FFCastInterval write FFCastInterval;
     property CheckInterval: Integer read FCheckInterval write FCheckInterval;
@@ -70,7 +68,6 @@ implementation
 
 constructor TWeatherSettings.Create(Value: string);
 begin
-  FMetric := False;
 
   if Value <> '' then
     FFileName := Value;
@@ -105,7 +102,6 @@ begin
 
     Try
     with xml.Root.Items.ItemNamed['Main'].Items do begin
-      FMetric := BoolValue('Metric');
       FCCondInterval := IntValue('CCondInterval',30);
       FFCastInterval := IntValue('FCastInterval',120);
       FCheckInterval := IntValue('CheckInterval',60);
@@ -149,7 +145,6 @@ begin
     // Add the properties to the root node
     xml.root.Items.Add('Main');
     with xml.Root.Items.ItemNamed['Main'].items do begin
-      Add('Metric',FMetric);
       Add('CCondInterval',FCCondInterval);
       Add('FCastInterval',FCastInterval);
       Add('CheckInterval',FCheckInterval);
