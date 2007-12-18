@@ -164,6 +164,16 @@ var
   enable: boolean;
 
   tmpBar: TBarItem;
+  bDelete: Boolean;
+
+  function CtrlDown: Boolean;
+  var
+    State: TKeyboardState;
+  begin
+    GetKeyboardState(State);
+    Result := ((State[VK_CONTROL] and 128) <> 0);
+  end;
+
 begin
   if frmEditItem <> nil then begin
     UpdateUI;
@@ -201,15 +211,23 @@ begin
       end;
     colDelete: begin
 
-        Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
-        if IsBarRunning(tmpBar.ID) then begin
-          wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(tmpBar.ID)));
-          SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
-          // give it a second to shutdown
-          sleep(500);
+        bDelete := True;
+        if not (CtrlDown) then
+          if (MessageDlg(Format('Are you sure you want to delete: %s?', [tmpBar.Name]), mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
+            bDelete := False;
+
+        if bDelete then begin
+
+          Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
+          if IsBarRunning(tmpBar.ID) then begin
+            wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(tmpBar.ID)));
+            SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
+            // give it a second to shutdown
+            sleep(500);
+          end;
+          DeleteDirectory(Dir + inttostr(tmpBar.ID), True);
+          tmrUpdateTimer(nil);
         end;
-        DeleteDirectory(Dir + inttostr(tmpBar.ID), True);
-        tmrUpdateTimer(nil);
       end;
     colEnableDisable: begin
 
