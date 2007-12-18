@@ -28,11 +28,35 @@ unit uSharpBarListWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, uSEListboxPainter, JclFileUtils, Math,
-  uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
-  SharpEListBox, SharpEListBoxEx, GR32, GR32_PNG, SharpApi, SharpCenterApi,
-  ExtCtrls, Menus, Contnrs, Types, JclStrings;
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  JvSimpleXml,
+  uSEListboxPainter,
+  JclFileUtils,
+  Math,
+  uSharpCenterPluginTabList,
+  uSharpCenterCommon,
+  ImgList,
+  PngImageList,
+  SharpEListBox,
+  SharpEListBoxEx,
+  GR32,
+  GR32_PNG,
+  SharpApi,
+  SharpCenterApi,
+  ExtCtrls,
+  Menus,
+  Contnrs,
+  Types,
+  JclStrings;
 
 type
   TStringObject = class(TObject)
@@ -56,21 +80,20 @@ type
   TfrmBarList = class(TForm)
     StatusImages: TPngImageList;
     lbBarList: TSharpEListBoxEx;
-    pilDefault: TPngImageList;
-    Timer1: TTimer;
-    procedure Timer1Timer(Sender: TObject);
+    tmrUpdate: TTimer;
+    procedure tmrUpdateTimer(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 
-    procedure lbBarListGetCellCursor(Sender:TObject; const ACol: Integer;
+    procedure lbBarListGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
 
-    procedure lbBarListClickItem(Sender:TObject; const ACol: Integer; AItem: TSharpEListItem);
+    procedure lbBarListClickItem(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem);
     procedure lbBarListResize(Sender: TObject);
-    procedure lbBarListGetCellImageIndex(Sender:TObject; const ACol: Integer;
+    procedure lbBarListGetCellImageIndex(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
-    procedure lbBarListGetCellText(Sender:TObject; const ACol: Integer; AItem: TSharpEListItem;
+    procedure lbBarListGetCellText(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem;
       var AColText: string);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
@@ -83,7 +106,6 @@ type
   public
     FBarList: TObjectList;
     procedure BuildBarList;
-    procedure BuildBarList2;
     procedure UpdateBarStatus;
     function UpdateUI: Boolean;
     function SaveUi: Boolean;
@@ -98,14 +120,17 @@ const
   colStartStop = 1;
   colEnableDisable = 2;
   colEdit = 3;
+  colDelete = 4;
 
   iidxStop = 2;
   iidxPause = 1;
   iidxPlay = 0;
+  iidxDelete = 6;
 
 implementation
 
-uses uSharpBarListEditWnd, SharpThemeApi;
+uses uSharpBarListEditWnd,
+  SharpThemeApi;
 
 {$R *.dfm}
 
@@ -128,7 +153,7 @@ begin
     PointInRect := False;
 end;
 
-procedure TfrmBarList.lbBarListClickItem(Sender:TObject; const ACol: Integer;
+procedure TfrmBarList.lbBarListClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
   wnd: hwnd;
@@ -151,8 +176,9 @@ begin
 
   case ACol of
     colEdit: begin
-        CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-          + '\_Components\Module Manager.con'), pchar(inttostr(tmpBar.ID)));
+        if (IsBarRunning(tmpBar.ID)) then
+          CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
+            + '\_Components\Module Manager.con'), pchar(inttostr(tmpBar.ID)));
       end;
     colStartStop: begin
         if not (IsBarRunning(tmpBar.ID)) then begin
@@ -168,8 +194,22 @@ begin
             SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
 
           UpdateBarStatus;
+
+          BuildBarList;
         end;
 
+      end;
+    colDelete: begin
+
+        Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
+        if IsBarRunning(tmpBar.ID) then begin
+          wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(tmpBar.ID)));
+          SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
+          // give it a second to shutdown
+          sleep(500);
+        end;
+        DeleteDirectory(Dir + inttostr(tmpBar.ID), True);
+        tmrUpdateTimer(nil);
       end;
     colEnableDisable: begin
 
@@ -209,18 +249,39 @@ begin
         BuildBarList;
       end;
   end;
+
+  if lbBarList.SelectedItem <> nil then begin
+    CenterDefineButtonState(scbEditTab, True);
+  end
+  else begin
+    CenterDefineButtonState(scbEditTab, False);
+  end;
+
+  if frmEditItem <> nil then
+    frmBarList.UpdateUI;
+
+  CenterUpdateTabs;
+  CenterUpdateSize;
 end;
 
-procedure TfrmBarList.lbBarListGetCellCursor(Sender:TObject; const ACol: Integer;
+procedure TfrmBarList.lbBarListGetCellCursor(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
+var
+  tmpBar: TBarItem;
 begin
-  if ((AItem.SubItemText[ACol] = '') or (frmEditItem <> nil)) then
+
+  tmpBar := TBarItem(AItem.Data);
+  if tmpBar = nil then
     exit;
-  if (ACol = colStartStop) or (ACol = colEnableDisable) or (ACol = colEdit) then
-    ACursor := crHandPoint;
+
+  case ACol of
+    colStartStop, colEnableDisable, colDelete: ACursor := crHandPoint;
+    colEdit: if (IsBarRunning(tmpBar.ID)) then
+        ACursor := crHandPoint;
+  end;
 end;
 
-procedure TfrmBarList.lbBarListGetCellImageIndex(Sender:TObject; const ACol: Integer;
+procedure TfrmBarList.lbBarListGetCellImageIndex(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
 var
   tmpBar: TBarItem;
@@ -240,10 +301,11 @@ begin
           AImageIndex := iidxStop;
 
       end;
+    colDelete: AImageIndex := iidxDelete;
   end;
 end;
 
-procedure TfrmBarList.lbBarListGetCellText(Sender:TObject; const ACol: Integer;
+procedure TfrmBarList.lbBarListGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmpBar: TBarItem;
@@ -279,9 +341,11 @@ begin
     colEdit: begin
 
         if not (tmpBar.AutoStart) then
-          AColText := ''
+          AColText := '<font color="clGray"><u>Edit</u>'
         else if IsBarRunning(tmpBar.ID) then
-          AColText := '<font color="clNavy"><u>Edit</u>';
+          AColText := '<font color="clNavy"><u>Edit</u>'
+        else
+          AColText := '<font color="clGray"><u>Edit</u>'
       end;
   end;
 
@@ -315,22 +379,6 @@ var
   i: integer;
 begin
   BuildBarList;
-end;
-
-procedure TfrmBarList.BuildBarList;
-var
-  n: Integer;
-  newItem: TSharpEListItem;
-  XML: TJvSimpleXML;
-  Dir: string;
-  iindex: integer;
-  BarItem: TBarItem;
-  SList: TStringList;
-  sr: TSearchRec;
-  fileloaded: boolean;
-  lastselected: integer;
-begin
-  BuildBarList2;
 end;
 
 function TfrmBarList.BarSpaceCheck: boolean;
@@ -612,7 +660,7 @@ begin
   BuildBarList;
 end;
 
-procedure TfrmBarList.BuildBarList2;
+procedure TfrmBarList.BuildBarList;
 var
   newItem: TSharpEListItem;
   XML: TJvSimpleXML;
@@ -645,6 +693,7 @@ begin
     newItem.AddSubItem('');
     newItem.AddSubItem('');
     newItem.AddSubItem('');
+    newItem.AddSubItem('');
 
     if tmpBar.ID = selectedIndex then
       lbBarList.ItemIndex := i;
@@ -661,7 +710,7 @@ begin
       lbBarList.ItemIndex := 0;
     CenterDefineButtonState(scbEditTab, True);
     CenterDefineButtonState(scbDeleteTab, True);
-  end;       
+  end;
 end;
 
 procedure TfrmBarList.ConfigureItem;
@@ -674,7 +723,7 @@ begin
   //    + '_Themes\Theme.con'),pchar(sTheme))
 end;
 
-procedure TfrmBarList.Timer1Timer(Sender: TObject);
+procedure TfrmBarList.tmrUpdateTimer(Sender: TObject);
 begin
   UpdateBarStatus;
 end;
