@@ -713,7 +713,7 @@ begin
   else if AItem.ItemType = itmFolder then
     AItem.IconIndex := SCE_ICON_FOLDER
   else
-    AItem.IconIndex := SCE_ICON_FOLDER;
+    AItem.IconIndex := SCE_ICON_ITEM;
 end;
 
 procedure TSharpCenterManager.SetActiveCommand(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID: string);
