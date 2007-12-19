@@ -57,8 +57,8 @@ type
 
     UpdatePreview: procedure (var ABmp:TBitmap32);
 
-    SetDisplayText: procedure (const APluginID:Pchar; var ADisplayText:PChar);
-    SetStatusText: procedure (var AStatusText: PChar);
+    SetDisplayText: procedure (const APluginID:string; var ADisplayText:string);
+    SetStatusText: procedure (const APluginID:string; var AStatusText:string);
     SetSettingType: function(): TSU_UPDATE_ENUM;
     SetBtnState : function(AButton: TSCB_BUTTON_ENUM): Boolean;
 
@@ -111,10 +111,7 @@ end;
 
 function LoadPlugin(filename: Pchar): TSetting;
 begin
-  try
     result.filename := filename;
-    SendDebugMessageEx('SharpCenter',Pchar('Loading SettingDll: ' + filename),clBlack,DMT_Info);
-
     result.dllhandle := LoadLibrary(filename);
     if result.dllhandle <> 0 then begin
 
@@ -143,10 +140,7 @@ begin
         SendDebugMessageEx('SharpCenter','Unable to load SettingDll, Open proc missing',clRed,DMT_ERROR);
       end;
     end;
-  except
-    result.dllhandle := 0;
-    SendDebugMessageEx('SharpCenter','Loading SettingDll Failed',clRed,DMT_ERROR);
-  end;
+
 end;
 
 

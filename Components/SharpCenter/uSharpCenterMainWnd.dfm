@@ -1455,8 +1455,8 @@ object SharpCenterWnd: TSharpCenterWnd
               Images = picMain
             end
             item
-              Width = 20
-              HAlign = taLeftJustify
+              Width = 30
+              HAlign = taCenter
               VAlign = taVerticalCenter
               ColumnAlign = calRight
               StretchColumn = False
@@ -1471,6 +1471,7 @@ object SharpCenterWnd: TSharpCenterWnd
           ItemHeight = 30
           OnClickItem = lbTreeClickItem
           OnGetCellColor = lbTreeGetCellColor
+          OnGetCellText = lbTreeGetCellText
           AutosizeGrid = False
           Borderstyle = bsNone
           Align = alClient
@@ -2091,7 +2092,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               134)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -714
+              Left = -746
               Top = 35
               Width = 23
               Height = 22
@@ -2543,13 +2544,14 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = 0
+              Width = -4
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
+              ExplicitWidth = 0
             end
           end
         end

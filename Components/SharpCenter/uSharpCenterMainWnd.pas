@@ -148,6 +148,8 @@ type
     procedure lbTreeClickItem(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem);
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure lbTreeGetCellText(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var AColText: string);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -445,6 +447,45 @@ begin
     AColor := $00C1F4FE;
 end;
 
+procedure TSharpCenterWnd.lbTreeGetCellText(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var AColText: string);
+var
+  tmp: TSharpCenterManagerItem;
+  tmpSetting: TSetting;
+begin
+  tmp := TSharpCenterManagerItem(AItem.Data);
+  if tmp = nil then exit;
+
+  case ACol of
+    0: begin
+
+      if ExtractFileExt(tmp.Filename) = '.dll' then begin
+        tmpSetting := LoadPlugin(PChar(tmp.Filename));
+        try
+        if (@tmpSetting.SetDisplayText <> nil) then
+          tmpSetting.SetDisplayText(tmp.PluginID,AColText);
+        finally
+          tmpSetting.Dllhandle := 0;
+          UnloadPlugin(@tmpSetting);
+        end;
+      end;
+    end;
+    1: begin
+
+      if ExtractFileExt(tmp.Filename) = '.dll' then begin
+        tmpSetting := LoadPlugin(PChar(tmp.Filename));
+        try
+          if (@tmpSetting.SetStatusText <> nil) then
+            tmpSetting.SetStatusText(tmp.PluginID,AColText);
+        finally
+          tmpSetting.Dllhandle := 0;
+          UnloadPlugin(@tmpSetting);
+        end;
+      end;
+    end;
+  end;
+end;
+
 procedure TSharpCenterWnd.CenterMessage(var Msg: TMessage);
 var
   bEnabled: Boolean;
@@ -531,7 +572,8 @@ begin
       end;
     SCM_EVT_UPDATE_TABS:
       begin
-        SCM.LoadPluginTabs; 
+        SCM.LoadPluginTabs;
+        lbTree.Refresh; 
       end;
   end;
 end;
@@ -907,6 +949,16 @@ var
 
 begin
   pnlPluginContainer.TabList.Clear;
+
+  if SCM.PluginTabs.Count <= 1 then begin
+    pnlPluginContainer.TabList.Hide;
+    sbPlugin.Margins.Top := 6;
+    exit;
+  end else begin
+    pnlPluginContainer.TabList.Show;
+    sbPlugin.Margins.Top := 32;
+  end;
+
   LockWindowUpdate(Self.Handle);
   try
 
@@ -920,6 +972,7 @@ begin
     end;
     pnlPluginContainer.TabIndex := FSelectedPluginTabID;
   finally
+
     LockWindowUpdate(0);
   end;
 end;

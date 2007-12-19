@@ -119,8 +119,8 @@ type
     procedure SetUnloadCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
       APluginID: string);
 
-    function GetDisplayName(AFile, APluginID: string): string;
-    function GetStatusText(AFile, APluginID: string): string;
+    procedure GetItemText(AFile, APluginID: String; var ADisplayText: String;
+ var AStatusText: string);
     procedure BuildNavFromCommandLine;
 
   public
@@ -225,23 +225,6 @@ begin
           FOnUpdateTheme(Self);
 
         Result := True;
-
-        case enumSettingType of
-          suService:
-            begin
-              sName := GetDisplayName(FActiveFile, FActivePluginID);
-              sFile := GetSharpeUserSettingsPath + 'SharpCore\ServiceList.xml';
-
-              if FileExists(sFile) then
-              begin
-                Xml.LoadFromFile(sFile);
-                with Xml.Root.Items do
-
-                  if ItemNamed[sName] <> nil then
-                    FActivePluginID := ItemNamed[sName].Properties.Value('ID', '');
-              end;
-            end;
-        end;
       end;
     end;
 
@@ -373,8 +356,9 @@ begin
           if Items.Item[i].Items.ItemNamed['Icon'] <> nil then
             sIcon := Items.Item[i].Items.ItemNamed['Icon'].Value;
 
-          s := GetDisplayName(sPath + sDll, '');
-          sStatus := SCM.GetStatusText(sPath + sDll, '');
+          s := '';
+          sStatus := '';
+          //GetItemText(sPath + sDll, SCM.ActivePluginID,s,sStatus);
 
           if s = '' then
             newItem.Caption := Items.Item[i].Name
@@ -383,6 +367,7 @@ begin
 
           newItem.Filename := sPath + sDll;
           newItem.PluginID := SCM.ActivePluginID;
+          NewItem.Status := sStatus;
 
           pngfile := sPath + sIcon;
           SCM.AssignIconIndex(pngfile, newItem);
@@ -746,13 +731,16 @@ begin
     ActivePlugin.ClickTab(PluginTabs.GetItem[0]);
 end;
 
-function TSharpCenterManager.GetDisplayName(AFile, APluginID: string): string;
+procedure TSharpCenterManager.GetItemText(AFile, APluginID: String; var ADisplayText: String;
+ var AStatusText: string);
 var
   tmpSetting: Tsetting;
-  s: PChar;
+  s,s2: string;
 begin
-  Result := '';
 
+  s := '';
+  s2 := '';
+  
   if fileexists(AFile) then
   begin
     tmpSetting := LoadPlugin(PChar(Afile));
@@ -760,34 +748,17 @@ begin
     try
       if @tmpSetting.SetDisplayText <> nil then
       begin
-        tmpSetting.SetDisplayText(Pchar(APluginID), s);
-        Result := s;
-      end;
+        tmpSetting.SetDisplayText(APluginID, s);
+        ADisplayText := s;
+      end else
+        ADisplayText := '';
 
-    finally
-      UnloadPlugin(@tmpSetting);
-    end;
-  end;
-end;
-
-function TSharpCenterManager.GetStatusText(AFile,
-  APluginID: string): string;
-var
-  tmpSetting: Tsetting;
-  s: PChar;
-begin
-  Result := '';
-
-  if fileexists(AFile) then
-  begin
-    tmpSetting := LoadPlugin(PChar(AFile));
-
-    try
       if @tmpSetting.SetStatusText <> nil then
       begin
-        tmpSetting.SetStatusText(Pchar(s));
-        Result := s;
-      end;
+        tmpSetting.SetStatusText(APluginID, s2);
+        AStatusText := s2;
+      end else
+        AStatusText := '';
 
     finally
       UnloadPlugin(@tmpSetting);
