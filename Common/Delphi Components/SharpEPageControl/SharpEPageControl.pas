@@ -20,6 +20,7 @@ type
     FPnlContent: TSharpERoundPanel;
     FMinimized: Boolean;
     FExpandedHeight: Integer;
+    FTabControlVisible: boolean;
     function GetTabItems: TSharpETabListItems;
     procedure SetTabItems(const Value: TSharpETabListItems);
     procedure CreateControls;
@@ -64,12 +65,14 @@ type
     procedure SetMinimized(const Value: Boolean);
     function GetTabBackgroundColor: TColor;
     procedure SetTabBackgroundColor(const Value: TColor);
+    procedure SetTabControlVisible(const Value: boolean);
   protected
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     property TabList: TSharpETabList read FTabList write FTabList;
     property Minimized: Boolean read GetMinimized write SetMinimized;
+    property TabControlVisible: boolean read FTabControlVisible write SetTabControlVisible;
   published
     property Align;
     property Anchors;
@@ -124,6 +127,7 @@ begin
   Self.BevelInner := bvNone;
   Self.BevelOuter := bvNone;
   Self.OnResize := ResizeEvent;
+  Self.TabControlVisible := True;
   Height := 200;
   ExpandedHeight := 200;
 
@@ -292,10 +296,23 @@ begin
   end;
 
   with FPnlContent do begin
-    Top := FTabList.Top + FTabList.Height - 1;
+
+    if FTabList.Visible then begin
+      Top := FTabList.Top + FTabList.Height - 1;
+      Height := Self.Height - FTabList.Height;
+
+      if Self.TabAlignment = taLeftJustify then
+        FPnlContent.DrawMode := srpNoTopLeft
+      else if Self.TabAlignment = taRightJustify then
+        FPnlContent.DrawMode := srpNoTopRight;
+    end else begin
+      Top := 0;
+      Height := Self.Height;
+      FPnlContent.DrawMode := srpNormal;
+    end;
+
     Left := 0;
     Width := Self.Width;
-    Height := Self.Height - FTabList.Height;
     Anchors := [akLeft, akRight, akTop, akBottom];
   end;
 end;
@@ -395,6 +412,16 @@ end;
 procedure TSharpEPageControl.SetTabColor(const Value: TColor);
 begin
   FTabList.TabColor := Value;
+end;
+
+procedure TSharpEPageControl.SetTabControlVisible(const Value: boolean);
+begin
+  FTabControlVisible := Value;
+
+  if FTabList <> nil then begin
+    FTabList.Visible := Value;
+    ResizeEvent(nil);
+  end;
 end;
 
 procedure TSharpEPageControl.SetTabImageList(const Value: TPngImageList);
