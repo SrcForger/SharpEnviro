@@ -114,9 +114,25 @@ begin
   end;
 end;
 
-procedure SetDisplayText(const APluginID:Pchar; var ADisplayText:PChar);
+procedure SetDisplayText(const APluginID:string; var ADisplayText:string);
 begin
-  ADisplayText := PChar('Aliases');
+  ADisplayText := 'Aliases';
+end;
+
+procedure SetStatusText(const APluginID:string; var AStatusText:string);
+var
+  srvSettingsPath: string;
+  fileName: string;
+  tmp: TAliasList;
+begin
+  srvSettingsPath := GetSharpeUserSettingsPath + 'SharpCore\Services\Exec\';
+  fileName := SrvSettingsPath + 'AliasList.xml';
+  tmp := TAliasList.Create(fileName);
+  Try
+    AStatusText := IntToStr(tmp.Count);
+  Finally
+    tmp.Free;
+  End;
 end;
 
 procedure GetCenterScheme(var ABackground: TColor; var AItemColor: TColor; var AItemSelectedColor: TColor);
@@ -154,6 +170,7 @@ exports
   CloseEdit,
   SetBtnState,
   SetDisplayText,
+  SetStatusText,
   SetSettingType,
   GetCenterScheme;
 begin

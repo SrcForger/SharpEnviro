@@ -72,11 +72,6 @@ begin
     frmSkinListWnd := nil;
 end;
 
-procedure GetDisplayName(const APluginID: Pchar; var ADisplayName: PChar);
-begin
-  ADisplayName := PChar('Skin');
-end;
-
 procedure AddTabs(var ATabs:TPluginTabItemList);
 begin
   if frmSkinListWnd.lbSkinList.Count = 0 then
@@ -84,12 +79,12 @@ begin
   ATabs.Add('Skins',nil,'',IntToStr(frmSkinListWnd.lbSkinList.Count));
 end;
 
-procedure SetDisplayText(const APluginID:Pchar; var ADisplayText:PChar);
+procedure SetDisplayText(const APluginID:string; var ADisplayText:string);
 begin
-  ADisplayText := PChar('Skin');
+  ADisplayText := 'Skin';
 end;
 
-procedure SetStatusText(var AStatusText: PChar);
+procedure SetStatusText(const APluginID: String; var AStatusText: string);
 var
   sr: TSearchRec;
   dir: string;

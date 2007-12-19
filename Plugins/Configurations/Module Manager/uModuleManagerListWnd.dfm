@@ -66,7 +66,7 @@ object frmMMList: TfrmMMList
         end
         item
           Width = 30
-          HAlign = taLeftJustify
+          HAlign = taCenter
           VAlign = taVerticalCenter
           ColumnAlign = calRight
           StretchColumn = False
@@ -75,7 +75,7 @@ object frmMMList: TfrmMMList
         end
         item
           Width = 30
-          HAlign = taLeftJustify
+          HAlign = taCenter
           VAlign = taVerticalCenter
           ColumnAlign = calRight
           StretchColumn = False
@@ -84,7 +84,7 @@ object frmMMList: TfrmMMList
         end
         item
           Width = 30
-          HAlign = taLeftJustify
+          HAlign = taCenter
           VAlign = taVerticalCenter
           ColumnAlign = calRight
           StretchColumn = False
@@ -93,8 +93,8 @@ object frmMMList: TfrmMMList
           Images = StatusImages
         end
         item
-          Width = 40
-          HAlign = taLeftJustify
+          Width = 30
+          HAlign = taCenter
           VAlign = taVerticalCenter
           ColumnAlign = calRight
           StretchColumn = False
@@ -168,7 +168,7 @@ object frmMMList: TfrmMMList
         end
         item
           Width = 30
-          HAlign = taLeftJustify
+          HAlign = taCenter
           VAlign = taVerticalCenter
           ColumnAlign = calRight
           StretchColumn = False
@@ -177,7 +177,7 @@ object frmMMList: TfrmMMList
         end
         item
           Width = 30
-          HAlign = taLeftJustify
+          HAlign = taCenter
           VAlign = taVerticalCenter
           ColumnAlign = calRight
           StretchColumn = False
@@ -186,7 +186,7 @@ object frmMMList: TfrmMMList
         end
         item
           Width = 30
-          HAlign = taLeftJustify
+          HAlign = taCenter
           VAlign = taVerticalCenter
           ColumnAlign = calRight
           StretchColumn = False
@@ -195,8 +195,8 @@ object frmMMList: TfrmMMList
           Images = StatusImages
         end
         item
-          Width = 40
-          HAlign = taLeftJustify
+          Width = 30
+          HAlign = taCenter
           VAlign = taVerticalCenter
           ColumnAlign = calRight
           StretchColumn = False

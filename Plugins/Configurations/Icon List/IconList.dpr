@@ -93,12 +93,12 @@ begin
 end;
 
 
-procedure SetDisplayText(const APluginID: Pchar; var ADisplayText: PChar);
+procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
 begin
   ADisplayText := PChar('Icons');
 end;
 
-procedure SetStatusText(var AStatusText: PChar);
+procedure SetStatusText(const APluginID: String; var AStatusText: string);
 begin
   AStatusText := '';
 end;

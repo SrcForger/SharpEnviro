@@ -1,7 +1,7 @@
 ﻿{
 Source Name: VWM.dpr
 Description: VWM Module Config Dll
-Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
+Copyright (C) Martin KrÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤mer (MartinKraemer@gmx.net)
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -144,12 +144,12 @@ begin
 end;
 
 
-procedure SetDisplayText(const APluginID: Pchar; var ADisplayText: PChar);
+procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
 begin
   ADisplayText := PChar('VWM');
 end;
 
-procedure SetStatusText(var AStatusText: PChar);
+procedure SetStatusText(const APluginID: String; var AStatusText: string);
 begin
   AStatusText := '';
 end;
@@ -205,4 +205,9 @@ exports
 
 begin
 end.
+
+
+
+
+
 

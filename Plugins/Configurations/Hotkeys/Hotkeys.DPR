@@ -32,6 +32,7 @@ uses
   sysutils,
   SharpCenterApi,
   SharpAPI,
+  jvSimpleXml,
   XPMan,
   uVistaFuncs,
   PngSpeedButton,
@@ -42,7 +43,7 @@ uses
   uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas';
 
 var
-  CenterBGColor : integer;
+  CenterBGColor: integer;
 
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 begin
@@ -61,7 +62,7 @@ begin
   result := FrmConfig.Handle;
 end;
 
-function Close : boolean;
+function Close: boolean;
 begin
   Result := False;
 
@@ -73,10 +74,10 @@ begin
   end;
 end;
 
-function OpenEdit(AOwner:Hwnd; AEditMode:TSCE_EDITMODE_ENUM):Hwnd;
+function OpenEdit(AOwner: Hwnd; AEditMode: TSCE_EDITMODE_ENUM): Hwnd;
 begin
   // Create Form
-  if Not(Assigned(FrmHotkeyEdit)) then
+  if not (Assigned(FrmHotkeyEdit)) then
     FrmHotkeyEdit := TFrmHotkeyEdit.Create(nil);
 
   uVistaFuncs.SetVistaFonts(FrmHotkeyEdit);
@@ -97,31 +98,51 @@ begin
 
 end;
 
-function CloseEdit(AEditMode:TSCE_EDITMODE_ENUM; AApply:Boolean): boolean;
+function CloseEdit(AEditMode: TSCE_EDITMODE_ENUM; AApply: Boolean): boolean;
 begin
   Result := True;
 
   // Validation
-  if (AApply) and Not(FrmHotkeyEdit.ValidateEdit(AEditMode)) then Begin
+  if (AApply) and not (FrmHotkeyEdit.ValidateEdit(AEditMode)) then begin
     Result := False;
     Exit;
-  End;
+  end;
 
   // Define whether we add/edit or delete the item
-  if FrmHotkeyEdit.Save(AApply, AEditMode) then Begin
+  if FrmHotkeyEdit.Save(AApply, AEditMode) then begin
     FrmConfig.UpdateEditTabs;
   end;
 
   if FrmHotkeyEdit <> nil then begin
-      FrmHotkeyEdit.Close;
-      FrmHotkeyEdit.Free;
-      FrmHotkeyEdit := nil;
+    FrmHotkeyEdit.Close;
+    FrmHotkeyEdit.Free;
+    FrmHotkeyEdit := nil;
   end;
 end;
 
-procedure SetDisplayText(const APluginID:Pchar; var ADisplayText:PChar);
+procedure SetDisplayText(const APluginID: string; var ADisplayText: string);
 begin
-  ADisplayText := PChar('Hotkeys');
+  ADisplayText := 'Hotkeys';
+end;
+
+procedure SetStatusText(const APluginID: string; var AStatusText: string);
+var
+  ItemCount, Loop: Integer;
+  fn: string;
+  xml: TjvSimpleXml;
+  prop: string;
+
+begin
+  fn := GetSharpeUserSettingsPath + cSettingsLocation;
+  Xml := TJvSimpleXml.Create(nil);
+  try
+    xml.LoadFromFile(fn);
+
+    Itemcount := xml.Root.Properties.Item[0].IntValue;
+    AStatusText := IntToStr(ItemCount);
+  finally
+    xml.Free;
+  end;
 end;
 
 procedure GetCenterScheme(var ABackground: TColor; var AItemColor: TColor; var AItemSelectedColor: TColor);
@@ -139,26 +160,20 @@ begin
   Result := False;
 end;
 
-function SetSettingType : TSU_UPDATE_ENUM;
+function SetSettingType: TSU_UPDATE_ENUM;
 begin
   result := suService;
 end;
-
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  ATabs.Add('Hotkeys',nil,'',IntToStr(frmConfig.lbHotkeys.Count));
-end;
-
 
 //Ordinary Dll code, tells delphi what functions to export.
 exports
   Open,
   Close,
-  AddTabs,
   OpenEdit,
   CloseEdit,
   SetBtnState,
   SetDisplayText,
+  SetStatusText,
   SetSettingType,
   GetCenterScheme;
 

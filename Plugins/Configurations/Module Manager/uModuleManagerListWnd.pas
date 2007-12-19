@@ -97,8 +97,8 @@ const
   colName = 0;
   colMoveUp = 1;
   colMoveDown = 2;
-  colDelete = 3;
-  colEdit = 4;
+  colDelete = 4;
+  colEdit = 3;
 
   iidxMoveUp = 1;
   iidxMoveDown = 2;

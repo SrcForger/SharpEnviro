@@ -107,14 +107,23 @@ begin
   Result := True;
 end;
 
-procedure SetDisplayText(const APluginID:Pchar; var ADisplayText:PChar);
+procedure SetDisplayText(const APluginID:string; var ADisplayText:string);
 begin
   ADisplayText := 'Weather';
 end;
 
-procedure SetStatusText(var AStatusText: PChar);
+procedure SetStatusText(const APluginID:string; var AStatusText: string);
+var
+  tmpWL: TWeatherList;
+  sFileName: string;
 begin
-  AStatusText := '0';
+  sFileName := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatherlist.xml';
+  tmpWL := TWeatherList.Create(sFileName);
+  Try
+    AStatusText := IntToStr(tmpWl.Count);
+  Finally
+    tmpWL.Free;
+  End;
 end;
 
 function  SetSettingType: TSU_UPDATE_ENUM;
