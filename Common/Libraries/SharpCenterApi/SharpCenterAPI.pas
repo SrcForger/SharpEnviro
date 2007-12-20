@@ -69,8 +69,14 @@ function CenterUpdateSize: boolean;
 function CenterUpdateTabs: boolean;
   external 'SharpCenterAPI.dll' name 'CenterUpdateTabs';
 
+function CenterUpdateConfigText: boolean;
+  external 'SharpCenterAPI.dll' name 'CenterUpdateConfigText';
+
 function CenterUpdateSettings: boolean;
   external 'SharpCenterAPI.dll' name 'CenterUpdateSettings';
+
+procedure CenterUpdateConfigFull;
+  external 'SharpCenterAPI.dll' name 'CenterUpdateConfigFull';
 
 function CenterCommandAsText(ACommand: TSCC_COMMAND_ENUM): string;
   external 'SharpCenterAPI.dll' name 'CenterCommandAsText';
