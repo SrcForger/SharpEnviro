@@ -211,8 +211,7 @@ begin
   if frmItemEdit <> nil then
     frmItemEdit.InitUi(FEditMode);
 
-  CenterUpdateTabs;
-  CenterUpdateSize;
+  CenterUpdateConfigFull;
 end;
 
 procedure TfrmItemsList.lbWeatherListGetCellCursor(Sender: TObject;

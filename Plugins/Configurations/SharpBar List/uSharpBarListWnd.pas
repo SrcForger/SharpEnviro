@@ -67,7 +67,7 @@ type
 type
   TBarItem = class
     Name: string;
-    ID: integer;
+    BarID: integer;
     Monitor: integer;
     PMonitor: boolean;
     HPos: integer;
@@ -97,7 +97,6 @@ type
       var AColText: string);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
-    procedure AddItemsToList;
   private
     function IsBarRunning(ID: integer): boolean;
 
@@ -112,6 +111,8 @@ type
     procedure ConfigureItem;
     property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
   end;
+
+  procedure AddItemsToList(AList: TObjectList);
 
 var
   frmBarList: TfrmBarList;
@@ -158,7 +159,8 @@ procedure TfrmBarList.lbBarListClickItem(Sender: TObject; const ACol: Integer;
 var
   wnd: hwnd;
   Dir: string;
-  FName: string;
+  FName, s: string;
+  iBarID: Integer;
   XML: TJvSimpleXML;
   fileloaded: boolean;
   enable: boolean;
@@ -186,20 +188,20 @@ begin
 
   case ACol of
     colEdit: begin
-        if (IsBarRunning(tmpBar.ID)) then
+        if (IsBarRunning(tmpBar.BarID)) then
           CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-            + '\_Components\Module Manager.con'), pchar(inttostr(tmpBar.ID)));
+            + '\_Components\Module Manager.con'), pchar(inttostr(tmpBar.BarID)));
       end;
     colStartStop: begin
-        if not (IsBarRunning(tmpBar.ID)) then begin
+        if not (IsBarRunning(tmpBar.BarID)) then begin
           SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpBar.exe' +
-            ' -load:' + inttostr(tmpBar.ID) +
+            ' -load:' + inttostr(tmpBar.BarID) +
             ' -noREB' +
             ' -noLASB');
           UpdateBarStatus;
         end
         else begin
-          wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(tmpBar.ID)));
+          wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(tmpBar.BarID)));
           if wnd <> 0 then
             SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
 
@@ -212,6 +214,7 @@ begin
     colDelete: begin
 
         bDelete := True;
+        iBarID := tmpBar.BarID;
         if not (CtrlDown) then
           if (MessageDlg(Format('Are you sure you want to delete: %s?', [tmpBar.Name]), mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
             bDelete := False;
@@ -219,26 +222,26 @@ begin
         if bDelete then begin
 
           Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
-          if IsBarRunning(tmpBar.ID) then begin
-            wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(tmpBar.ID)));
+          if IsBarRunning(iBarID) then begin
+            wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(iBarID)));
             SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
             // give it a second to shutdown
             sleep(500);
           end;
-          DeleteDirectory(Dir + inttostr(tmpBar.ID), True);
+          DeleteDirectory(Dir + inttostr(iBarID), True);
           tmrUpdateTimer(nil);
         end;
       end;
     colEnableDisable: begin
 
         if tmpBar.AutoStart then begin
-          wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(tmpBar.ID)));
+          wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(tmpBar.BarID)));
           if wnd <> 0 then
             SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
         end;
 
         tmpBar.AutoStart := not (tmpBar.AutoStart);
-        Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(tmpBar.ID) + '\';
+        Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + inttostr(tmpBar.BarID) + '\';
         FName := Dir + 'bar.xml';
 
         XML := TJvSimpleXML.Create(nil);
@@ -278,8 +281,7 @@ begin
   if frmEditItem <> nil then
     frmBarList.UpdateUI;
 
-  CenterUpdateTabs;
-  CenterUpdateSize;
+  CenterUpdateConfigFull;
 end;
 
 procedure TfrmBarList.lbBarListGetCellCursor(Sender: TObject; const ACol: Integer;
@@ -294,7 +296,7 @@ begin
 
   case ACol of
     colStartStop, colEnableDisable, colDelete: ACursor := crHandPoint;
-    colEdit: if (IsBarRunning(tmpBar.ID)) then
+    colEdit: if (IsBarRunning(tmpBar.BarID)) then
         ACursor := crHandPoint;
   end;
 end;
@@ -311,7 +313,7 @@ begin
 
   case ACol of
     colName: begin
-        if IsBarRunning(tmpBar.ID) then
+        if IsBarRunning(tmpBar.BarID) then
           AImageIndex := iidxPlay
         else if tmpBar.AutoStart then
           AImageIndex := iidxPause
@@ -345,7 +347,7 @@ begin
 
         if not (tmpBar.AutoStart) then
           AColText := ''
-        else if IsBarRunning(tmpBar.ID) then
+        else if IsBarRunning(tmpBar.BarID) then
           AColText := '<font color="clNavy"><u>Stop</u>'
         else
           AColText := '<font color="clNavy"><u>Start</u>';
@@ -360,7 +362,7 @@ begin
 
         if not (tmpBar.AutoStart) then
           AColText := '<font color="clGray"><u>Edit</u>'
-        else if IsBarRunning(tmpBar.ID) then
+        else if IsBarRunning(tmpBar.BarID) then
           AColText := '<font color="clNavy"><u>Edit</u>'
         else
           AColText := '<font color="clGray"><u>Edit</u>'
@@ -504,7 +506,7 @@ begin
             frmEditItem.BarItem := TBarItem.Create;
 
           frmEditItem.BarItem.Name := BarItem.Name;
-          frmEditItem.BarItem.ID := BarItem.ID;
+          frmEditItem.BarItem.BarID := BarItem.BarID;
           frmEditItem.BarItem.Monitor := BarItem.Monitor;
           frmEditItem.BarItem.PMonitor := BarItem.PMonitor;
           frmEditItem.BarItem.HPos := BarItem.HPos;
@@ -568,7 +570,7 @@ begin
         until not DirectoryExists(Dir + NewID);
 
         if FrmEditItem.cbBasedOn.ItemIndex > 0 then begin
-          CID := TBarItem(FrmEditItem.cbBasedOn.Items.Objects[FrmEditItem.cbBasedOn.ItemIndex]).ID;
+          CID := TBarItem(FrmEditItem.cbBasedOn.Items.Objects[FrmEditItem.cbBasedOn.ItemIndex]).BarID;
 
           if FindFirst(Dir + inttostr(CID) + '\*.xml', FAAnyFile, sr) = 0 then
             repeat
@@ -620,7 +622,7 @@ begin
         XML.Free;
       end;
     sceEdit: begin
-        CID := TBarItem(frmEditItem.BarItem).ID;
+        CID := TBarItem(frmEditItem.BarItem).BarID;
         XML := TJvSimpleXML.Create(nil);
         fileloaded := False;
         if FileExists(Dir + inttostr(CID) + '\Bar.xml') then begin
@@ -654,13 +656,13 @@ begin
       end;
     sceDelete: begin
         BarItem := TBarItem(lbBarList.Item[lbBarList.ItemIndex].Data);
-        if IsBarRunning(BarItem.ID) then begin
-          wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(BarItem.ID)));
+        if IsBarRunning(BarItem.BarID) then begin
+          wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(BarItem.BarID)));
           SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
           // give it a second to shutdown
           sleep(500);
         end;
-        DeleteDirectory(Dir + inttostr(BarItem.ID), True);
+        DeleteDirectory(Dir + inttostr(BarItem.BarID), True);
       end;
   end;
 
@@ -675,6 +677,7 @@ begin
       SendMessage(wnd, WM_BARREPOSITION, 0, 0);
   end;
 
+  CenterUpdateConfigFull;
   BuildBarList;
 end;
 
@@ -695,12 +698,12 @@ begin
   // Get selected item
   LockWindowUpdate(Self.Handle);
   if lbBarList.ItemIndex <> -1 then
-    selectedIndex := TBarItem(lbBarList.Item[lbBarList.ItemIndex].Data).ID
+    selectedIndex := TBarItem(lbBarList.Item[lbBarList.ItemIndex].Data).BarID
   else
     selectedIndex := -1;
 
   lbBarList.Clear;
-  AddItemsToList;
+  AddItemsToList(FBarList);
 
   for i := 0 to FBarList.Count - 1 do begin
 
@@ -713,7 +716,7 @@ begin
     newItem.AddSubItem('');
     newItem.AddSubItem('');
 
-    if tmpBar.ID = selectedIndex then
+    if tmpBar.BarID = selectedIndex then
       lbBarList.ItemIndex := i;
 
   end;
@@ -748,7 +751,7 @@ end;
 
 { TBarItem }
 
-procedure TfrmBarList.AddItemsToList;
+procedure AddItemsToList(AList: TObjectList);
 var
   xml: TJvSimpleXML;
   newItem: TBarItem;
@@ -769,7 +772,7 @@ var
   end;
 
 begin
-  FBarList.Clear;
+  AList.Clear;
   dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
   slBars := TStringList.Create;
@@ -786,7 +789,7 @@ begin
           newItem := TBarItem.Create;
           with newItem do begin
             Name := Value('Name', 'Toolbar');
-            ID := ExtractBarID(slBars[i]);
+            BarID := ExtractBarID(slBars[i]);
             Monitor := IntValue('MonitorIndex', 0);
             PMonitor := BoolValue('PrimaryMonitor', True);
             HPos := IntValue('HorizPos', 0);
@@ -809,18 +812,8 @@ begin
             newItem.Modules := slModules.CommaText;
         end;
 
-      FBarList.Add(newItem);
+      AList.Add(newItem);
     end;
-
-    // Sort
-    {slBars.Clear;
-    for i := 0 to FBarList.Count - 1 do begin
-      index := GetBarIndex(TBarItem(FBarList.Items[i]));
-      slBars.AddObject(inttostr(index) + TBarItem(FBarList.Items[i]).Name, FBarList.Items[i]);
-    end;
-    slBars.Sort;
-    for i := 0 to slBars.Count - 1 do
-      FBarList.Move(FBarList.IndexOf(slBars.Objects[i]), i);   }
 
   finally
     slBars.Free;

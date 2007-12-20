@@ -51,7 +51,7 @@ type
     procedure ccolorsChangeColor(ASender: TObject; AColorCode: Integer);
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure lb_CursorListClickItem(const ACol: Integer;
+    procedure lb_CursorListClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
   private
     procedure BuildCursorPreview;
@@ -78,7 +78,7 @@ uses SharpThemeApi,
 
 { TfrmConfigListWnd }
 
-procedure TfrmCursesList.lb_CursorListClickItem(const ACol: Integer;
+procedure TfrmCursesList.lb_CursorListClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 begin
   BuildCursorPreview;

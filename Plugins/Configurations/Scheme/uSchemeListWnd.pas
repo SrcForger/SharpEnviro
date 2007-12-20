@@ -94,7 +94,7 @@ type
     { Public declarations }
     procedure InitialiseSettings(APluginID: string);
     procedure UpdateEditTabs;
-    procedure AddItems;
+    procedure AddItems(ATheme: String);
   end;
 
 var
@@ -156,7 +156,7 @@ begin
     if tmpSchemeItem = nil then
       exit;
 
-    BarPreview.CreateBarPreview(bmp, FSchemeManager.Theme, FSchemeManager.GetSkinName,
+    BarPreview.CreateBarPreview(bmp, FSchemeManager.PluginID, FSchemeManager.GetSkinName(FSchemeManager.PluginID),
       tmpSchemeItem.GetItemAsColorArray(tmpSchemeItem.Colors), 350);
 
     ABmp.SetSize(bmp.Width, bmp.height);
@@ -168,8 +168,8 @@ end;
 
 procedure TfrmSchemeList.InitialiseSettings(APluginID: string);
 begin
-  FSchemeManager.Theme := APluginID;
-  AddItems;
+  FSchemeManager.PluginID := APluginID;
+  AddItems(APluginID);
   UpdateEditTabs;
 end;
 
@@ -190,7 +190,7 @@ begin
   Screen.Cursor := crHourGlass;
   sl := TStringList.Create;
   try
-    FSchemeManager.GetSchemeList(sl);
+    FSchemeManager.GetSchemeList(FSchemeManager.PluginID, sl);
 
     for i := 0 to Pred(sl.Count) do begin
       tmpScheme := TSchemeItem(sl.Objects[i]);
@@ -232,7 +232,7 @@ end;
 procedure TfrmSchemeList.RebuildSchemeList;
 begin
   try
-    AddItems;
+    AddItems(FSchemeManager.PluginID);
   finally
     CenterUpdatePreview;
   end;
@@ -327,8 +327,7 @@ begin
   end;
 
   UpdateEditTabs;
-  CenterUpdateTabs;
-  CenterUpdateSize;
+  CenterUpdateConfigFull;
 end;
 
 procedure TfrmSchemeList.lbSchemeListGetCellCursor(Sender: TObject; const ACol: Integer;

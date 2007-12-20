@@ -79,9 +79,29 @@ begin
   ATabs.Add('Skins',nil,'',IntToStr(frmSkinListWnd.lbSkinList.Count));
 end;
 
-procedure SetDisplayText(const APluginID:string; var ADisplayText:string);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
+var
+  sr: TSearchRec;
+  dir: string;
+  n: Integer;
 begin
-  ADisplayText := 'Skin';
+  AName := 'Skin';
+
+  // Status
+  dir := SharpApi.GetSharpeDirectory + 'Skins\';
+  n := 0;
+
+  if FindFirst(dir + '*.*', faDirectory, sr) = 0 then
+  begin
+    repeat
+        if FileExists(dir + sr.Name + '\Skin.xml') then
+          inc(n);
+    until FindNext(sr) <> 0;
+    SysUtils.FindClose(sr);
+  end;
+
+  AStatus := PChar(IntToStr(n));
 end;
 
 procedure SetStatusText(const APluginID: String; var AStatusText: string);
@@ -114,9 +134,7 @@ end;
 exports
   Open,
   Close,
-  SetDisplayText,
-  SetStatusText,
-
+  SetText,
   AddTabs,
   GetCenterScheme;
 

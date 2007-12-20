@@ -115,19 +115,34 @@ begin
   end;
 end;
 
-
-procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
+var
+  xml: TJvSimpleXML;
+  sDir: String;
+  sr: TSearchRec;
+  n:Integer;
 begin
-  ADisplayText := PChar('Cursor');
-end;
+  AName := 'Cursors';
 
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
-begin
-  AStatusText := '';
-end;
+  xml := TJvSimpleXML.Create(nil);
+  try
+  sDir := SharpApi.GetSharpeDirectory + 'Cursors\';
+  n := 0;
+  if FindFirst(sDir + '*',FADirectory,sr) = 0 then
+  repeat
+    if (CompareText(sr.Name,'.') <> 0) and (CompareText(sr.Name,'..') <> 0) then
+    begin
+      if FileExists(sDir + sr.Name + '\Skin.xml') then
+        inc(n);
+    end;
+  until FindNext(sr) <> 0;
+  finally
+    FindClose(sr);
+    xml.Free;
 
-procedure ClickBtn(AButtonID: Integer; AButton:TPngSpeedButton; AText:String);
-begin
+    AStatus := IntToStr(n);
+  end;
 end;
 
 function SetBtnState(AButtonID: Integer): Boolean;
@@ -149,16 +164,6 @@ begin
   end;
 end;
 
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  ATabs.Add('Cursor',nil,'','');
-end;
-
-function SetSettingType : TSU_UPDATE_ENUM;
-begin
-  result := suCursor;
-end;
-
 procedure UpdatePreview(var ABmp: TBitmap32);
 begin
   if (frmCursesList.lb_CursorList.ItemIndex < 0) or
@@ -175,13 +180,9 @@ exports
   Open,
   Close,
   Save,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetBtnState,
-  SetSettingType,
   GetCenterScheme,
-  AddTabs,
-  ClickBtn,
   UpdatePreview;
 
 end.

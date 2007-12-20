@@ -50,13 +50,14 @@ uses
 
 {$E .dll}
 
-{$R *.res}      
+{$R *.res}
 
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 var
-  XML : TJclSimpleXML;
+  XML: TJclSimpleXML;
 begin
-  if frmIconList = nil then frmIconList := TfrmIconList.Create(nil);
+  if frmIconList = nil then
+    frmIconList := TfrmIconList.Create(nil);
 
   uVistaFuncs.SetVistaFonts(frmIconList);
   frmIconList.sTheme := APluginID;
@@ -67,8 +68,8 @@ begin
 
   XML := TJclSimpleXML.Create;
   try
-    XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+APluginID+'\IconSet.xml');
-    frmIconList.sCurrentIconSet := XML.Root.Items.Value('Name','');
+    XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\' + APluginID + '\IconSet.xml');
+    frmIconList.sCurrentIconSet := XML.Root.Items.Value('Name', '');
   except
   end;
   XML.Free;
@@ -80,7 +81,7 @@ begin
   result := frmIconList.Handle;
 end;
 
-function Close : boolean;
+function Close: boolean;
 begin
   result := True;
   try
@@ -92,19 +93,34 @@ begin
   end;
 end;
 
-
-procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
+procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
+  var ATitle: string; var ADescription: string);
+var
+  sr: TSearchRec;
+  sDir: string;
+  xml: TJclSimpleXML;
+  n: Integer;
 begin
-  ADisplayText := PChar('Icons');
-end;
+  AName := 'Icons';
 
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
-begin
-  AStatusText := '';
-end;
+  xml := TJclSimpleXML.Create;
+  try
+    sDir := SharpApi.GetSharpeDirectory + 'Icons\';
+    n := 0;
+    if FindFirst(sDir + '*', FADirectory, sr) = 0 then
+      repeat
+        if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then begin
+          if FileExists(sDir + sr.Name + '\IconSet.xml') then begin
+            n := n + 1;
+          end;
+        end;
+      until FindNext(sr) <> 0;
+    FindClose(sr);
+  finally
+    xml.Free;
+  end;
 
-procedure ClickBtn(AButtonID: Integer; AButton:TPngSpeedButton; AText:String);
-begin
+  AStatus := IntToStr(n);
 end;
 
 function SetBtnState(AButtonID: Integer): Boolean;
@@ -113,10 +129,9 @@ begin
 end;
 
 procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
+  var AItemColor: TColor; var AItemSelectedColor: TColor);
 begin
-  if frmIconList <> nil then
-  begin
+  if frmIconList <> nil then begin
     frmIconList.lb_iconlist.Colors.ItemColor := AItemColor;
     frmIconList.lb_iconlist.Colors.ItemColorSelected := AItemSelectedColor;
     frmIconList.lb_iconlist.Colors.BorderColor := AItemSelectedColor;
@@ -124,31 +139,22 @@ begin
   end;
 end;
 
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  ATabs.Add('Icons',nil,'',IntToStr(frmIconList.lb_iconlist.Count));
-end;
-
 procedure UpdatePreview(var ABmp: TBitmap32);
 begin
   if (frmIconList.lb_iconlist.ItemIndex < 0) or
-     (frmIconList.lb_iconlist.Count = 0) then
-     exit;
+    (frmIconList.lb_iconlist.Count = 0) then
+    exit;
 
-  ABmp.Clear(color32(0,0,0,0));
+  ABmp.Clear(color32(0, 0, 0, 0));
   frmIconList.BuildIconPreview(ABmp);
 end;
-
 
 exports
   Open,
   Close,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetBtnState,
   GetCenterScheme,
-  AddTabs,
-  ClickBtn,
   UpdatePreview;
 
 end.

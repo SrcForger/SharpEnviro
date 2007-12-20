@@ -144,14 +144,10 @@ begin
 end;
 
 
-procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
 begin
-  ADisplayText := PChar('VWM');
-end;
-
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
-begin
-  AStatusText := '';
+  AName := 'VWM';
 end;
 
 function SetBtnState(AButtonID: Integer): Boolean;
@@ -180,10 +176,6 @@ begin
   end;
 end;
 
-procedure ClickBtn(AButtonID: Integer; AButton:TPngSpeedButton; AText:String);
-begin
-end;
-
 function SetSettingType: TSU_UPDATE_ENUM;
 begin
   result := suModule;
@@ -195,13 +187,11 @@ exports
   Close,
   Save,
   ClickTab,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetSettingType,
   SetBtnState,
   GetCenterScheme,
-  AddTabs,
-  ClickBtn;
+  AddTabs;
 
 begin
 end.

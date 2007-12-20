@@ -115,18 +115,10 @@ begin
 end;
 
 
-procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
 begin
-  ADisplayText := 'VWM';
-end;
-
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
-begin
-  AStatusText := '';
-end;
-
-procedure ClickBtn(AButtonID: Integer; AButton:TPngSpeedButton; AText:String);
-begin
+  AName := 'VWM';
 end;
 
 function SetBtnState(AButtonID: Integer): Boolean;
@@ -162,14 +154,12 @@ exports
   Open,
   Close,
   Save,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetBtnState,
   SetSettingType,
   GetCenterScheme,
   AddTabs,
-  ClickTab,
-  ClickBtn;
+  ClickTab;
 
 begin
 end.

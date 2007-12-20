@@ -203,31 +203,15 @@ begin
   end;
 end;
 
-
-procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
 begin
-  ADisplayText := PChar('SystemTray');
-end;
-
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
-begin
-  AStatusText := '';
+  AName := 'System Tray';
 end;
 
 function SetBtnState(AButtonID: Integer): Boolean;
 begin
   Result := False;
-end;
-
-procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
-
-begin
-end;
-
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  ATabs.Add('SysTray',frmSysTray.pagSysTray,'','');
 end;
 
 procedure ClickTab(ATab: TPluginTabItem);
@@ -238,10 +222,6 @@ begin
     tmpPag := TJvStandardPage(ATab.Data);
     tmpPag.Show;
   end;
-end;
-
-procedure ClickBtn(AButtonID: Integer; AButton:TPngSpeedButton; AText:String);
-begin
 end;
 
 function SetSettingType: TSU_UPDATE_ENUM;
@@ -255,13 +235,9 @@ exports
   Close,
   Save,
   ClickTab,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetSettingType,
-  SetBtnState,
-  GetCenterScheme,
-  AddTabs,
-  ClickBtn;
+  SetBtnState;
 
 begin
 end.

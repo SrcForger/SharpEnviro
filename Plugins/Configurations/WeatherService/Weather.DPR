@@ -107,20 +107,21 @@ begin
   Result := True;
 end;
 
-procedure SetDisplayText(const APluginID:string; var ADisplayText:string);
-begin
-  ADisplayText := 'Weather';
-end;
-
-procedure SetStatusText(const APluginID:string; var AStatusText: string);
+procedure SetText(const APluginID:string; var AName:string; var AStatus: String;
+  var ATitle: String; var ADescription: String);
 var
   tmpWL: TWeatherList;
   sFileName: string;
 begin
+  // Name
+  AName := 'Weather';
+  AStatus := '';
+
+  // Status
   sFileName := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatherlist.xml';
   tmpWL := TWeatherList.Create(sFileName);
   Try
-    AStatusText := IntToStr(tmpWl.Count);
+    AStatus := IntToStr(tmpWl.Count);
   Finally
     tmpWL.Free;
   End;
@@ -155,9 +156,8 @@ exports
   OpenEdit,
   CloseEdit,
 
-  SetDisplayText,
-  SetStatusText,
   SetSettingType,
+  SetText,
 
   GetCenterScheme;
 

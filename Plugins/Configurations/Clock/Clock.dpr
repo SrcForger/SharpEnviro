@@ -139,41 +139,10 @@ begin
   end;
 end;
 
-
-procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
 begin
-  ADisplayText := PChar('Clock');
-end;
-
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
-begin
-  AStatusText := '';
-end;
-
-function SetBtnState(AButtonID: Integer): Boolean;
-begin
-  Result := False;
-end;
-
-procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
-
-begin
-end;
-
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  ATabs.Add('Clock',frmClock.pagNotes,'','');
-end;
-
-procedure ClickTab(ATab: TPluginTabItem);
-var
-  tmpPag: TJvStandardPage;
-begin
-  if ATab.Data <> nil then begin
-    tmpPag := TJvStandardPage(ATab.Data);
-    tmpPag.Show;
-  end;
+  AName := 'Clock';
 end;
 
 function SetSettingType: TSU_UPDATE_ENUM;
@@ -186,13 +155,8 @@ exports
   Open,
   Close,
   Save,
-  ClickTab,
-  SetDisplayText,
-  SetStatusText,
-  SetSettingType,
-  SetBtnState,
-  GetCenterScheme,
-  AddTabs;
+  SetText,
+  SetSettingType;
 
 begin
 end.

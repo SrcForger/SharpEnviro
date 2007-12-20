@@ -261,8 +261,7 @@ begin
   if FrmHotkeyEdit <> nil then
     FrmHotkeyEdit.InitUi(FEditMode);
 
-  CenterUpdateTabs;
-  CenterUpdateSize;
+  CenterUpdateConfigFull;
 
 end;
 

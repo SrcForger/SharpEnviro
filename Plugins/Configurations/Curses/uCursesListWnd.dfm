@@ -38,6 +38,7 @@ object frmCursesList: TfrmCursesList
           VAlign = taVerticalCenter
           ColumnAlign = calLeft
           StretchColumn = False
+          ColumnType = ctDefault
         end
         item
           Width = 256
@@ -45,8 +46,15 @@ object frmCursesList: TfrmCursesList
           VAlign = taVerticalCenter
           ColumnAlign = calLeft
           StretchColumn = False
+          ColumnType = ctDefault
         end>
-      ItemHeight = 26
+      Colors.BorderColor = clBtnFace
+      Colors.BorderColorSelected = clBtnShadow
+      Colors.ItemColor = clWindow
+      Colors.ItemColorSelected = clBtnFace
+      Colors.CheckColorSelected = clBtnFace
+      Colors.CheckColor = 15528425
+      ItemHeight = 30
       OnClickItem = lb_CursorListClickItem
       AutosizeGrid = False
       Borderstyle = bsNone

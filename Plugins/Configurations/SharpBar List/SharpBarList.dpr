@@ -30,6 +30,7 @@ uses
   Windows,
   Forms,
   Dialogs,
+  Contnrs,
   graphics,
   JvSimpleXml,
   PngSpeedButton,
@@ -138,14 +139,20 @@ begin
   end;
 end;
 
-procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
+var
+  tmpList: TObjectList;
 begin
-  ADisplayText := PChar('SharpBar');
-end;
+  AName := 'SharpBar';
 
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
-begin
-  AStatusText := Pchar(IntToStr(1));
+  tmpList := TObjectList.Create;
+  Try
+    AddItemsToList(tmpList);
+    AStatus := IntToStr(tmpList.Count);
+  Finally
+    tmpList.Free;
+  End;
 end;
 
 function SetBtnState(AButtonID: TSCB_BUTTON_ENUM): Boolean;
@@ -179,28 +186,20 @@ begin
   end;
 end;
 
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  ATabs.Add('Bars',nil,'',IntToStr(frmBarList.lbBarList.Count));
-end;
-
 function SetSettingType : TSU_UPDATE_ENUM;
 begin
   result := suSharpBar;
 end;
-
 
 exports
   Open,
   Close,
   OpenEdit,
   CloseEdit,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetBtnState,
   SetSettingType,
-  GetCenterScheme,
-  AddTabs;
+  GetCenterScheme;
 
 end.
 

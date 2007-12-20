@@ -129,19 +129,10 @@ begin
   end;
 end;
 
-
-procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
 begin
-  ADisplayText := PChar('Menu');
-end;
-
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
-begin
-  AStatusText := '';
-end;
-
-procedure ClickBtn(AButtonID: Integer; AButton:TPngSpeedButton; AText:String);
-begin
+  AName := 'Menu';
 end;
 
 function SetBtnState(AButtonID: Integer): Boolean;
@@ -152,11 +143,6 @@ end;
 procedure ClickTab(ATab: TPluginTabItem);
 begin
   TJvStandardPage(ATab.Data).Show;
-end;
-
-procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
-begin
 end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);
@@ -177,14 +163,11 @@ exports
   Open,
   Close,
   Save,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetBtnState,
   SetSettingType,
-  GetCenterScheme,
   AddTabs,
-  ClickTab,
-  ClickBtn;
+  ClickTab;
 
 end.
 

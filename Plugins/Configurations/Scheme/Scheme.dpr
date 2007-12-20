@@ -28,6 +28,7 @@ uses
   windows,
   sysutils,
   sharpapi,
+  classes,
   sharpcenterapi,
   graphics,
   uVistaFuncs,
@@ -65,15 +66,29 @@ begin
   Result := suScheme;
 end;
 
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
+var
+  sl: TStringList;
+  tmp: TSchemeManager;
+begin
+  AName := 'Schemes';
+
+  tmp := TSchemeManager.Create;
+  sl := TstringList.Create;
+  try
+    tmp.GetSchemeList(APluginID, sl);
+  finally
+    AStatus := IntToStr(sl.count);
+    tmp.Free;
+    sl.Free;
+  end;
+end;
+
 procedure Close;
 begin
   FreeAndNil(frmSchemeList);
   FreeAndNil(frmEditScheme);
-end;
-
-procedure GetDisplayName(const APluginID:PChar; var ADisplayName:PChar);
-begin
-  ADisplayName := PChar('Scheme');
 end;
 
 procedure UpdatePreview(var ABmp:TBitmap32);
@@ -85,13 +100,6 @@ begin
 
   ABmp.Clear(color32(0,0,0,0));
   frmSchemeList.CreatePreviewBitmap(ABmp);
-end;
-
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  if frmSchemeList.lbSchemeList.Count = 0 then
-  ATabs.Add('Schemes',nil,'','NA') else
-  ATabs.Add('Schemes',nil,'',IntToStr(frmSchemeList.lbSchemeList.Count));
 end;
 
 function OpenEdit(AOwner:Hwnd; AEditMode:TSCE_EditMode_Enum):Hwnd;
@@ -129,7 +137,7 @@ begin
   // Define whether we add/edit or delete the item
   if frmEditScheme.Save(AEditMode, AApply) then Begin
     FreeAndNil(frmEditScheme);
-    frmSchemeList.AddItems;
+    frmSchemeList.AddItems(FSchemeManager.PluginID);
     frmSchemeList.UpdateEditTabs;
   end;
 end;
@@ -156,7 +164,7 @@ exports
   OpenEdit,
   CloseEdit,
   SetSettingType,
-  AddTabs,
+  SetText,
   GetCenterScheme,
 
   UpdatePreview;

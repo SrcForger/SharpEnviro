@@ -169,7 +169,7 @@ begin
         tmpItem := TSchemeItem.Create(nil);
         tmpItem.Name := '';
         tmpItem.Author := '';
-        tmpItem.LoadSkinColorDefaults(FSchemeManager.Theme);
+        tmpItem.LoadSkinColorDefaults(FSchemeManager.PluginID);
 
         edName.Text := '';
         edAuthor.Text := '';
@@ -210,7 +210,7 @@ begin
   sName := trim(StrRemoveChars(edName.Text,
     ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
   sSkinDir := GetSharpeDirectory + 'skins';
-  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, FSchemeManager.GetSkinName]);
+  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, FSchemeManager.GetSkinName(FSchemeManager.PluginID)]);
 
   bExistsName := FileExists(sSchemeDir + sName + '.xml');
   if ((CompareText(edName.Text, SchemeItem.Name) = 0) and (AEditMode = sceEdit)) then
@@ -261,6 +261,8 @@ begin
         SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
       end;
   end;
+
+  CenterUpdateConfigFull;
 end;
 
 procedure TfrmEditScheme.edNameKeyDown(Sender: TObject; var Key: Word;

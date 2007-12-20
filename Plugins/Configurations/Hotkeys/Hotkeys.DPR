@@ -120,12 +120,8 @@ begin
   end;
 end;
 
-procedure SetDisplayText(const APluginID: string; var ADisplayText: string);
-begin
-  ADisplayText := 'Hotkeys';
-end;
-
-procedure SetStatusText(const APluginID: string; var AStatusText: string);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
 var
   ItemCount, Loop: Integer;
   fn: string;
@@ -133,13 +129,15 @@ var
   prop: string;
 
 begin
+  AName := 'Hotkeys';
+
   fn := GetSharpeUserSettingsPath + cSettingsLocation;
   Xml := TJvSimpleXml.Create(nil);
   try
     xml.LoadFromFile(fn);
 
     Itemcount := xml.Root.Properties.Item[0].IntValue;
-    AStatusText := IntToStr(ItemCount);
+    AStatus := IntToStr(ItemCount);
   finally
     xml.Free;
   end;
@@ -155,25 +153,17 @@ begin
   frmConfig.lbHotkeys.Colors.ItemColorSelected := AItemSelectedColor;
 end;
 
-function SetBtnState(AButtonID: Integer): Boolean;
-begin
-  Result := False;
-end;
-
 function SetSettingType: TSU_UPDATE_ENUM;
 begin
   result := suService;
 end;
 
-//Ordinary Dll code, tells delphi what functions to export.
 exports
   Open,
   Close,
   OpenEdit,
   CloseEdit,
-  SetBtnState,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetSettingType,
   GetCenterScheme;
 

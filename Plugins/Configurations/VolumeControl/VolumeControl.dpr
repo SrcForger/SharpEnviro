@@ -132,15 +132,10 @@ begin
   end;
 end;
 
-
-procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
 begin
-  ADisplayText := PChar('Volume Control');
-end;
-
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
-begin
-  AStatusText := '';
+  AName := 'Volume Control';
 end;
 
 function SetBtnState(AButtonID: Integer): Boolean;
@@ -176,8 +171,7 @@ exports
   Open,
   Close,
   Save,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetBtnState,
   SetSettingType,
   GetCenterScheme,

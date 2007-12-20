@@ -147,6 +147,8 @@ begin
         Result := True;
       end;
   end;
+
+  CenterUpdateConfigFull;
 end;
 
 function TfrmEditWnd.ValidateEdit(AEditMode: TSCE_EDITMODE_ENUM): Boolean;

@@ -27,6 +27,7 @@ library ModuleManager;
 uses
   Controls,
   Classes,
+  Contnrs,
   Windows,
   Forms,
   Dialogs,
@@ -140,14 +141,20 @@ begin
   end;
 end;
 
-procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
+var
+  tmp:TObjectList;
 begin
-  ADisplayText := PChar('ModuleManager');
-end;
+  AName := 'Modules';
 
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
-begin
-  AStatusText := Pchar(IntToStr(1));
+  tmp := TObjectList.Create;
+  try
+    AddItemsToList(APluginID,tmp);
+    AStatus := IntToStr(tmp.Count);
+  finally
+    tmp.Free;
+  end;
 end;
 
 procedure GetCenterScheme(var ABackground: TColor;
@@ -171,11 +178,6 @@ begin
   end;
 end;
 
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  ATabs.Add('Modules',nil,'','');
-end;
-
 function SetSettingType : TSU_UPDATE_ENUM;
 begin
   result := suSharpBar;
@@ -187,11 +189,9 @@ exports
   Close,
   OpenEdit,
   CloseEdit,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetSettingType,
-  GetCenterScheme,
-  AddTabs;
+  GetCenterScheme;
 
 end.
 

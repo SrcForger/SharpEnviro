@@ -139,18 +139,16 @@ begin
   end;
 end;
 
-procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
-begin
-  ADisplayText := PChar('Themes');
-end;
-
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
 var
   sr: TSearchRec;
   dir : String;
   n: Integer;
 begin
-  AStatusText := Pchar(IntToStr(1));
+  AName := 'Themes';
+
+  // Status
   dir := SharpApi.GetSharpeUserSettingsPath + 'Themes\';
   n := 0;
   if FindFirst(dir+'*.*', faDirectory, sr) = 0 then
@@ -161,7 +159,8 @@ begin
     until FindNext(sr) <> 0;
     FindClose(sr);
   end;
-  AStatusText := Pchar(IntToStr(n));
+  AStatus := IntToStr(n);
+
 end;
 
 function SetBtnState(AButtonID: TSCB_BUTTON_ENUM): Boolean;
@@ -204,8 +203,7 @@ exports
   Close,
   OpenEdit,
   CloseEdit,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetBtnState,
   GetCenterScheme,
   AddTabs;

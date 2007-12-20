@@ -76,7 +76,7 @@ type
 
   TSchemeManager = class
   private
-    FTheme: string;
+    FPluginID: string;
     FDefaultScheme: string;
     function GetSkinScheme: string;
 
@@ -90,12 +90,12 @@ type
 
     function GetDefaultScheme: string;
     function GetSkinColorByTag(ATag: string): TSharpESkinColor;
-    procedure GetSchemeList(AStringList: TStrings);
+    procedure GetSchemeList(APluginID: String; AStringList: TStrings);
     function GetSkinValid: Boolean;
     function GetSkinSchemeDir(ATheme: string): string;
-    function GetSkinName: string;
+    function GetSkinName(ATheme: string): string;
 
-    property Theme: string read FTheme write FTheme;
+    property PluginID: string read FPluginID write FPluginID;
     property DefaultScheme: string read GetDefaultScheme write FDefaultScheme;
 
   end;
@@ -233,7 +233,7 @@ begin
     end;
   finally
 
-    FFilename := FSchemeManager.GetSkinSchemeDir(FSchemeManager.Theme) + trim(StrRemoveChars(Self.Name,
+    FFilename := FSchemeManager.GetSkinSchemeDir(FSchemeManager.PluginID) + trim(StrRemoveChars(Self.Name,
       ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']) + '.xml');
     xml.SaveToFile(FFilename);
     xml.Free;
@@ -297,7 +297,7 @@ var
   sSkin, sFile: string;
 begin
   Result := '';
-  sFile := GetSharpeUserSettingsPath + 'Themes\' + FTheme + '\Skin.xml';
+  sFile := GetSharpeUserSettingsPath + 'Themes\' + FPluginID + '\Skin.xml';
 
   if fileExists(sFile) then begin
     xml := TJvSimpleXML.Create(nil);
@@ -314,13 +314,13 @@ begin
   end;
 end;
 
-function TSchemeManager.GetSkinName: string;
+function TSchemeManager.GetSkinName( ATheme: String): string;
 var
   xml: TJvSimpleXml;
   sSkin, sFile: string;
 begin
   Result := '';
-  sFile := GetSharpeUserSettingsPath + 'Themes\' + FTheme + '\Skin.xml';
+  sFile := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\Skin.xml';
 
   if fileExists(sFile) then begin
     xml := TJvSimpleXML.Create(nil);
@@ -388,7 +388,7 @@ var
 begin
 
   sSkinDir := GetSharpeDirectory + 'skins';
-  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, GetSkinName]);
+  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, GetSkinName(FPluginID)]);
   sCopyName := ASchemeItem.Name;
 
   // If already copy, remove copy symbol
@@ -438,7 +438,7 @@ var
 begin
 
   sSkinDir := GetSharpeDirectory + 'skins';
-  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, GetSkinName]);
+  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, GetSkinName(FPluginID)]);
   sDeleteName := ASchemeItem.Filename;
   repeat
     sDeleteName := sDeleteName + '_' + 'copy';
@@ -460,7 +460,7 @@ var
 begin
   if FDefaultScheme = '' then begin
 
-    sFile := GetSharpeUserSettingsPath + 'Themes\' + FTheme + '\Scheme.xml';
+    sFile := GetSharpeUserSettingsPath + 'Themes\' + FPluginID + '\Scheme.xml';
 
     if fileExists(sFile) then begin
       xml := TJvSimpleXML.Create(nil);
@@ -479,7 +479,7 @@ begin
     Result := FDefaultScheme;
 end;
 
-procedure TSchemeManager.GetSchemeList(AStringList: TStrings);
+procedure TSchemeManager.GetSchemeList(APluginID: String; AStringList: TStrings);
 var
   s, sSchemeDir, sSkinDir, sXmlSearch: string;
   xml: TJvSimpleXml;
@@ -489,7 +489,7 @@ var
   newColItem: TSchemeColorItem;
 begin
   sSkinDir := GetSharpeDirectory + 'skins';
-  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, GetSkinName]);
+  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, GetSkinName(APluginID)]);
   sXmlSearch := sSchemeDir + '*.xml';
 
   sList := TStringList.Create;
@@ -547,7 +547,7 @@ var
 begin
   xml := TJvSimpleXML.Create(nil);
   try
-    s := GetSharpeUserSettingsPath + 'Themes\' + FTheme + '\' + 'Scheme.xml';
+    s := GetSharpeUserSettingsPath + 'Themes\' + FPluginID + '\' + 'Scheme.xml';
     forcedirectories(ExtractFilePath(s));
 
     xml.Root.Clear;

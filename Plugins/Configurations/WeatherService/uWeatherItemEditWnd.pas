@@ -23,8 +23,14 @@ uses
   JvExControls,
   SharpEListBoxEx,
   Menus,
-  SharpApi, JvLabel, ImgList, PngImageList, JvValidators,
-  JvComponentBase, JvErrorIndicator, SharpCenterApi;
+  SharpApi,
+  JvLabel,
+  ImgList,
+  PngImageList,
+  JvValidators,
+  JvComponentBase,
+  JvErrorIndicator,
+  SharpCenterApi;
 
 type
   TWeatherLocation = class
@@ -142,15 +148,13 @@ begin
     xml.LoadFromString(AResults);
 
     // check for errors
-    if Xml.Root.Items.Count = 0 then
-    begin
+    if Xml.Root.Items.Count = 0 then begin
       newMi := TMenuItem.Create(nil);
       newMi.Caption := 'No Items Found';
       newMi.Tag := -1;
       mnuSearch.Items.Add(newMi);
     end
-    else if Xml.Root.Name = 'error' then
-    begin
+    else if Xml.Root.Name = 'error' then begin
 
       if Xml.Root.Items.ItemNamed['err'] <> nil then
         sErrType := Xml.Root.Items.ItemNamed['err'].Value;
@@ -160,10 +164,8 @@ begin
       newMi.Tag := -1;
       mnuSearch.Items.Add(newMi);
     end
-    else
-    begin
-      for n := 0 to XML.Root.Items.Count - 1 do
-      begin
+    else begin
+      for n := 0 to XML.Root.Items.Count - 1 do begin
         tmpWl := TWeatherLocation.Create;
         tmpWl.Location := XML.Root.Items.Item[n].Value;
         tmpWl.LocationID :=
@@ -219,8 +221,7 @@ begin
   try
 
     case AEditMode of
-      sceAdd:
-        begin
+      sceAdd: begin
           edName.Text := '';
           edWeatherID.Text := '';
           chkMetric.Checked := True;
@@ -233,8 +234,7 @@ begin
 
           FItemEdit := nil;
         end;
-      sceEdit:
-        begin
+      sceEdit: begin
 
           if frmItemsList.lbWeatherList.ItemIndex = -1 then
             exit;
@@ -289,8 +289,7 @@ begin
   Result := False;
 
   case AEditMode of
-    sceAdd, sceEdit:
-      begin
+    sceAdd, sceEdit: begin
 
         errorinc.BeginUpdate;
         try
@@ -309,43 +308,46 @@ end;
 function TfrmItemEdit.Save(AApply: Boolean;
   AEditMode: TSCE_EDITMODE_ENUM): Boolean;
 var
-  tmpItem:TSharpEListItem;
+  tmpItem: TSharpEListItem;
   tmpWeather: TWeatherItem;
 begin
   Result := false;
-  if Not(AApply) then Exit;
+  if not (AApply) then
+    Exit;
 
   case AEditMode of
-  sceAdd: begin
+    sceAdd: begin
 
-    WeatherList.Add(edName.Text,edWeatherID.Text,'-1','-1',-1,-1,True,chkMetric.Checked);
+        WeatherList.Add(edName.Text, edWeatherID.Text, '-1', '-1', -1, -1, True, chkMetric.Checked);
 
-    CenterDefineSettingsChanged;
-    
-    WeatherList.Save;
-    WeatherOptions.Save;
+        CenterDefineSettingsChanged;
 
-    // Force the service to update
-    frmItemsList.UpdateDisplay(WeatherList);
-    SharpApi.ServiceMsg('weather','_forceupdate');
+        WeatherList.Save;
+        WeatherOptions.Save;
 
-    Result := True;
+        // Force the service to update
+        frmItemsList.UpdateDisplay(WeatherList);
+        SharpApi.ServiceMsg('weather', '_forceupdate');
+
+        Result := True;
+      end;
+    sceEdit: begin
+        tmpItem := frmItemsList.lbWeatherList.Item[frmItemsList.lbWeatherList.ItemIndex];
+        tmpWeather := TWeatherItem(tmpItem.Data);
+        tmpWeather.Location := edName.Text;
+        tmpWeather.LocationID := edWeatherID.Text;
+        tmpWeather.Metric := chkMetric.Checked;
+
+        CenterDefineSettingsChanged;
+        frmItemsList.UpdateDisplay(WeatherList);
+        WeatherList.Save;
+        WeatherOptions.Save;
+
+        Result := True;
+      end;
   end;
-  sceEdit: begin
-    tmpItem := frmItemsList.lbWeatherList.Item[frmItemsList.lbWeatherList.ItemIndex];
-    tmpWeather := TWeatherItem(tmpItem.Data);
-    tmpWeather.Location := edName.Text;
-    tmpWeather.LocationID := edWeatherID.Text;
-    tmpWeather.Metric := chkMetric.Checked;
 
-    CenterDefineSettingsChanged;
-    frmItemsList.UpdateDisplay(WeatherList);
-    WeatherList.Save;
-    WeatherOptions.Save;
-
-    Result := True;
-  end;
-  end;
+  CenterUpdateConfigFull;
 end;
 
 procedure TfrmItemEdit.UpdateEditState(Sender: TObject);

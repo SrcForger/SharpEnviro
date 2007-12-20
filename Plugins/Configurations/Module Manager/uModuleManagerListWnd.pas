@@ -28,11 +28,37 @@ unit uModuleManagerListWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, uSEListboxPainter, JclFileUtils, Math,
-  uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
-  SharpEListBox, SharpEListBoxEx, GR32, GR32_PNG, SharpApi, SharpCenterApi,
-  ExtCtrls, Menus, Contnrs, Types, JclStrings, SharpERoundPanel, SharpThemeApi;
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  JvSimpleXml,
+  uSEListboxPainter,
+  JclFileUtils,
+  Math,
+  uSharpCenterPluginTabList,
+  uSharpCenterCommon,
+  ImgList,
+  PngImageList,
+  SharpEListBox,
+  SharpEListBoxEx,
+  GR32,
+  GR32_PNG,
+  SharpApi,
+  SharpCenterApi,
+  ExtCtrls,
+  Menus,
+  Contnrs,
+  Types,
+  JclStrings,
+  SharpERoundPanel,
+  SharpThemeApi;
 
 type
   TStringObject = class(TObject)
@@ -79,7 +105,6 @@ type
   private
     FWinHandle: Thandle;
     FModuleList: TObjectList;
-    procedure AddItemsToList;
     procedure WndProc(var msg: TMessage);
 
   public
@@ -89,6 +114,8 @@ type
     function SaveUi: Boolean;
     property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
   end;
+
+procedure AddItemsToList(APluginID: string; AList: TObjectList);
 
 var
   frmMMList: TfrmMMList;
@@ -163,6 +190,7 @@ begin
       end;
   end;
   BuildModuleList;
+  CenterUpdateConfigFull;
 end;
 
 procedure TfrmMMList.lbModulesGetCellCursor(Sender: TObject; const ACol: Integer;
@@ -289,7 +317,7 @@ begin
 
     lbModulesLeft.Clear;
     lbModulesRight.Clear;
-    AddItemsToList;
+    AddItemsToList(IntToStr(BarID), FModuleList);
 
     for i := 0 to FModuleList.Count - 1 do begin
 
@@ -389,9 +417,11 @@ begin
         end;
       end;
   end;
+
+  CenterUpdateConfigFull;
 end;
 
-procedure TfrmMMList.AddItemsToList;
+procedure AddItemsToList(APluginID: string; AList: TObjectList);
 var
   xml: TJvSimpleXML;
   newItem: TModuleItem;
@@ -412,7 +442,7 @@ var
   end;
 
 begin
-  FModuleList.Clear;
+  AList.Clear;
   dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
   slBars := TStringList.Create;
@@ -424,7 +454,7 @@ begin
     for i := 0 to Pred(slBars.Count) do begin
 
       n := ExtractBarID(slBars[i]);
-      if n = BarID then begin
+      if n = StrToInt(APluginID) then begin
         xml.LoadFromFile(slBars[i]);
         if xml.Root.Items.ItemNamed['Modules'] <> nil then begin
           with xml.Root.Items.ItemNamed['Modules'].Items do begin
@@ -440,7 +470,7 @@ begin
                 if FileExists(SharpApi.GetCenterDirectory + '_Modules\' + newItem.Name + '.con') then
                   newItem.Configure := True;
               end;
-              FModuleList.Add(newItem);
+              AList.Add(newItem);
             end;
           end;
         end;

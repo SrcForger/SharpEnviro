@@ -114,22 +114,20 @@ begin
   end;
 end;
 
-procedure SetDisplayText(const APluginID:string; var ADisplayText:string);
-begin
-  ADisplayText := 'Aliases';
-end;
-
-procedure SetStatusText(const APluginID:string; var AStatusText:string);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
 var
   srvSettingsPath: string;
   fileName: string;
   tmp: TAliasList;
 begin
+  AName := 'Aliases';
+
   srvSettingsPath := GetSharpeUserSettingsPath + 'SharpCore\Services\Exec\';
   fileName := SrvSettingsPath + 'AliasList.xml';
   tmp := TAliasList.Create(fileName);
   Try
-    AStatusText := IntToStr(tmp.Count);
+    AStatus := IntToStr(tmp.Count);
   Finally
     tmp.Free;
   End;
@@ -145,19 +143,9 @@ begin
   frmItemsWnd.lbItems.Colors.ItemColorSelected := AItemSelectedColor;
 end;
 
-function SetBtnState(AButtonID: Integer): Boolean;
-begin
-  Result := False;
-end;
-
 function SetSettingType : TSU_UPDATE_ENUM;
 begin
   result := suService;
-end;
-
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  ATabs.Add('Aliases',nil,'',IntToStr(frmItemsWnd.lbItems.Count));
 end;
 
 
@@ -165,12 +153,9 @@ end;
 exports
   Open,
   Close,
-  AddTabs,
   OpenEdit,
   CloseEdit,
-  SetBtnState,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetSettingType,
   GetCenterScheme;
 begin

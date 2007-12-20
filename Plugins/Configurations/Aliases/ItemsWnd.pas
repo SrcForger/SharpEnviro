@@ -192,8 +192,7 @@ begin
   if frmEditWnd <> nil then
     frmEditWnd.InitUi(frmEditWnd.EditMode);
 
-  CenterUpdateTabs;
-  CenterUpdateSize;
+  CenterUpdateConfigFull;
 end;
 
 procedure TfrmItemsWnd.lbItemsGetCellCursor(Sender: TObject;

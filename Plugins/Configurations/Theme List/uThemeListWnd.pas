@@ -345,8 +345,7 @@ begin
   end;
 
   UpdateEditTabs;
-  CenterUpdateTabs;
-  CenterUpdateSize;
+  CenterUpdateConfigFull;
 
 end;
 
@@ -423,6 +422,7 @@ begin
       end;
   end;
 
+  CenterUpdateConfigFull;
 end;
 
 procedure TfrmThemeList.tmrEnableUiTimer(Sender: TObject);

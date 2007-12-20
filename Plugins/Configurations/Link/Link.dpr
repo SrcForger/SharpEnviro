@@ -312,24 +312,10 @@ begin
   end;
 end;
 
-
-procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
 begin
-  ADisplayText := PChar('Link');
-end;
-
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
-begin
-  AStatusText := '';
-end;
-
-procedure ClickBtn(AButtonID: Integer; AButton:TPngSpeedButton; AText:String);
-begin
-end;
-
-function SetBtnState(AButtonID: Integer): Boolean;
-begin
-  Result := False;
+  AName := 'Link';
 end;
 
 procedure GetCenterScheme(var ABackground: TColor;
@@ -389,13 +375,10 @@ exports
   Close,
   Save,
   ClickTab,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetSettingType,
-  SetBtnState,
   GetCenterScheme,
-  AddTabs,
-  ClickBtn;
+  AddTabs;
 
 end.
 

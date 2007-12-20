@@ -249,6 +249,8 @@ begin
         Result := True;
       end;
   end;
+
+  CenterUpdateConfigFull;
 end;
 
 procedure TFrmHotkeyEdit.UpdateEditState(Sender: TObject);

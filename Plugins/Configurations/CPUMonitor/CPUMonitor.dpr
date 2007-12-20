@@ -226,26 +226,10 @@ begin
   end;
 end;
 
-
-procedure SetDisplayText(const APluginID: String; var ADisplayText: String);
+procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
+  var ATitle: String; var ADescription: String);
 begin
-  ADisplayText := PChar('CPU Monitor');
-end;
-
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
-begin
-  AStatusText := '';
-end;
-
-function SetBtnState(AButtonID: Integer): Boolean;
-begin
-  Result := False;
-end;
-
-procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
-
-begin
+  AName := 'CPU Monitor';
 end;
 
 procedure AddTabs(var ATabs:TPluginTabItemList);
@@ -275,11 +259,8 @@ exports
   Close,
   Save,
   ClickTab,
-  SetDisplayText,
-  SetStatusText,
+  SetText,
   SetSettingType,
-  SetBtnState,
-  GetCenterScheme,
   AddTabs;
 
 begin
