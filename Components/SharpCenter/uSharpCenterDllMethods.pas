@@ -57,8 +57,9 @@ type
 
     UpdatePreview: procedure (var ABmp:TBitmap32);
 
-    SetDisplayText: procedure (const APluginID:string; var ADisplayText:string);
-    SetStatusText: procedure (const APluginID:string; var AStatusText:string);
+    SetText: procedure (const APluginID:string; var AName:string;
+      var AStatus: string; var ATitle: string; var ADescription: string);
+
     SetSettingType: function(): TSU_UPDATE_ENUM;
     SetBtnState : function(AButton: TSCB_BUTTON_ENUM): Boolean;
 
@@ -77,9 +78,6 @@ function UnloadPlugin(plugin: PSetting): hresult;
 begin
   result := 0;
   try
-    if plugin.dllhandle <> 0 then
-      FreeLibrary(plugin.dllhandle);
-
     plugin.Open := nil;
     plugin.Close := nil;
     plugin.Save := nil;
@@ -93,15 +91,12 @@ begin
 
     plugin.UpdatePreview := nil;
 
-    plugin.SetDisplayText := nil;
-    plugin.SetStatusText := nil;
+    plugin.SetText := nil;
     plugin.SetSettingType := nil;
     plugin.GetCenterScheme := nil;
     plugin.SetBtnState := nil;
 
     plugin.DllHandle := 0;
-
-
     FreeLibrary(plugin.dllhandle);
     result := 1;
   except
@@ -128,8 +123,7 @@ begin
 
       @result.UpdatePreview := GetProcAddress(result.Dllhandle, 'UpdatePreview');
 
-      @result.SetDisplayText := GetProcAddress(result.Dllhandle,'SetDisplayText');
-      @result.SetStatusText := GetProcAddress(result.Dllhandle,'SetStatusText');
+      @result.SetText := GetProcAddress(result.Dllhandle,'SetText');
       @result.GetCenterScheme := GetProcAddress(result.Dllhandle, 'GetCenterScheme');
       @result.SetSettingType := GetProcAddress(result.Dllhandle, 'SetSettingType');
       @result.SetBtnState := GetProcAddress(result.Dllhandle, 'SetBtnState');

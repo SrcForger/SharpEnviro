@@ -457,32 +457,8 @@ begin
   if tmp = nil then exit;
 
   case ACol of
-    0: begin
-
-      if ExtractFileExt(tmp.Filename) = '.dll' then begin
-        tmpSetting := LoadPlugin(PChar(tmp.Filename));
-        try
-        if (@tmpSetting.SetDisplayText <> nil) then
-          tmpSetting.SetDisplayText(tmp.PluginID,AColText);
-        finally
-          tmpSetting.Dllhandle := 0;
-          UnloadPlugin(@tmpSetting);
-        end;
-      end;
-    end;
-    1: begin
-
-      if ExtractFileExt(tmp.Filename) = '.dll' then begin
-        tmpSetting := LoadPlugin(PChar(tmp.Filename));
-        try
-          if (@tmpSetting.SetStatusText <> nil) then
-            tmpSetting.SetStatusText(tmp.PluginID,AColText);
-        finally
-          tmpSetting.Dllhandle := 0;
-          UnloadPlugin(@tmpSetting);
-        end;
-      end;
-    end;
+    0: AColText := tmp.Caption;
+    1: AColText := tmp.Status;
   end;
 end;
 
@@ -490,6 +466,7 @@ procedure TSharpCenterWnd.CenterMessage(var Msg: TMessage);
 var
   bEnabled: Boolean;
   iBtnID: Integer;
+  sName, sStatus, sTitle, sDescription: String;
 begin
   if SCM = nil then
     exit;
@@ -573,7 +550,17 @@ begin
     SCM_EVT_UPDATE_TABS:
       begin
         SCM.LoadPluginTabs;
-        lbTree.Refresh; 
+        lbTree.Refresh;
+      end;
+    SCM_EVT_UPDATE_CONFIG_TEXT:
+      begin
+        if (@SCM.ActivePlugin <> nil) then
+          SCM.ActivePlugin.SetText(SCM.ActivePluginID, sName, sStatus,
+            sTitle, sDescription);
+
+        TSharpCenterManagerItem(lbTree.SelectedItem.Data).Caption := sName;
+        TSharpCenterManagerItem(lbTree.SelectedItem.Data).Status := sStatus;
+        lbTree.Refresh;
       end;
   end;
 end;

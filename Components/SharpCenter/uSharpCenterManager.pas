@@ -119,8 +119,8 @@ type
     procedure SetUnloadCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
       APluginID: string);
 
-    procedure GetItemText(AFile, APluginID: String; var ADisplayText: String;
- var AStatusText: string);
+    procedure GetItemText(AFile, APluginID: String; var AName: String;
+ var AStatus: string; var ATitle: string; var ADescription: String);
     procedure BuildNavFromCommandLine;
 
   public
@@ -321,10 +321,8 @@ var
   xml: TJvSimpleXML;
   i: Integer;
   pngfile: string;
-  s, sDll, sIcon: string;
-  sStatus: string;
+  sName,sStatus,sTitle, sDescription, sDll, sIcon: string;
   sPath: string;
-
   sFirstNavFile, sFirstPluginID: string;
   newItem: TSharpCenterManagerItem;
 begin
@@ -356,14 +354,14 @@ begin
           if Items.Item[i].Items.ItemNamed['Icon'] <> nil then
             sIcon := Items.Item[i].Items.ItemNamed['Icon'].Value;
 
-          s := '';
+          sName := '';
           sStatus := '';
-          //GetItemText(sPath + sDll, SCM.ActivePluginID,s,sStatus);
+          GetItemText(sPath + sDll, SCM.ActivePluginID,sName,sStatus,sTitle,sDescription);
 
-          if s = '' then
+          if sName = '' then
             newItem.Caption := Items.Item[i].Name
           else
-            newItem.Caption := s;
+            newItem.Caption := sName;
 
           newItem.Filename := sPath + sDll;
           newItem.PluginID := SCM.ActivePluginID;
@@ -731,37 +729,35 @@ begin
     ActivePlugin.ClickTab(PluginTabs.GetItem[0]);
 end;
 
-procedure TSharpCenterManager.GetItemText(AFile, APluginID: String; var ADisplayText: String;
- var AStatusText: string);
+procedure TSharpCenterManager.GetItemText(AFile, APluginID: String; var AName: String;
+ var AStatus: string; var ATitle: string; var ADescription: String);
 var
   tmpSetting: Tsetting;
-  s,s2: string;
+  sStatus,sName,sTitle,sDescription: string;
 begin
 
-  s := '';
-  s2 := '';
+  AStatus := '';
+  ATitle := '';
+  ADescription := '';
   
   if fileexists(AFile) then
   begin
     tmpSetting := LoadPlugin(PChar(Afile));
 
     try
-      if @tmpSetting.SetDisplayText <> nil then
+      if (@tmpSetting.SetText <> nil) then
       begin
-        tmpSetting.SetDisplayText(APluginID, s);
-        ADisplayText := s;
-      end else
-        ADisplayText := '';
-
-      if @tmpSetting.SetStatusText <> nil then
-      begin
-        tmpSetting.SetStatusText(APluginID, s2);
-        AStatusText := s2;
-      end else
-        AStatusText := '';
+        tmpSetting.SetText(APluginID, sName, sStatus, sTitle, sDescription);
+      end;
 
     finally
+      //tmpSetting.DllHandle := 0;
       UnloadPlugin(@tmpSetting);
+
+      AStatus := sStatus;
+      AName := sName;
+      ATitle := sTitle;
+      ADescription := sDescription;
     end;
   end;
 end;

@@ -1475,6 +1475,8 @@ object SharpCenterWnd: TSharpCenterWnd
           AutosizeGrid = False
           Borderstyle = bsNone
           Align = alClient
+          ExplicitLeft = 3
+          ExplicitTop = 7
         end
       end
       object tlToolbar: TSharpETabList
@@ -2092,7 +2094,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               134)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -746
+              Left = -754
               Top = 35
               Width = 23
               Height = 22
@@ -2544,14 +2546,13 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = -4
+              Width = 0
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
-              ExplicitWidth = 0
             end
           end
         end
