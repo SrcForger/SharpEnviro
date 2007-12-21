@@ -80,6 +80,7 @@ type
     property Font;
     property ParentFont;
     property Color;
+    property DoubleBuffered;
 
     property ExpandedHeight: Integer read FExpandedHeight write FExpandedHeight;
     property TabItems: TSharpETabListItems read GetTabItems write SetTabItems;
@@ -165,6 +166,7 @@ begin
     DrawMode := srpNoTopLeft;
     ParentColor := False;
     ParentBackground := False;
+    DoubleBuffered := True;
 
     Padding.Left := 8;
     Padding.Top := 8;
