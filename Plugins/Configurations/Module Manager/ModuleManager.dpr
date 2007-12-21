@@ -145,8 +145,15 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 var
   tmp:TObjectList;
+  sBar,sDir: String;
 begin
   AName := 'Modules';
+
+  sBar := ExtractBarName(APluginID);
+  if sBar = '' then sBar := APluginID;
+  ATitle := Format('Module Configuration for "%s"',[sBar]);
+  ADescription := 'Add new modules, and manage module placement for the selected bar.';
+
 
   tmp := TObjectList.Create;
   try

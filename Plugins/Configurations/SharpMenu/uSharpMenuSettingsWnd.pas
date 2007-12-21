@@ -41,16 +41,14 @@ type
 
 type
   TfrmMenuSettings = class(TForm)
-    JvPageList1: TJvPageList;
-    JvSettingsPage: TJvStandardPage;
     cb_cacheicons: TCheckBox;
     Label2: TLabel;
     Panel1: TPanel;
+    Label1: TLabel;
+    Label4: TLabel;
     cb_wrap: TCheckBox;
     sgb_wrapcount: TSharpeGaugeBox;
     cobo_wrappos: TComboBox;
-    Label1: TLabel;
-    Label4: TLabel;
     procedure cobo_wrapposChange(Sender: TObject);
     procedure sgb_wrapcountChangeValue(Sender: TObject; Value: Integer);
     procedure cb_cacheiconsClick(Sender: TObject);
@@ -75,6 +73,7 @@ implementation
 procedure TfrmMenuSettings.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := true;
+  Panel1.DoubleBuffered := true;
 end;
 
 procedure TfrmMenuSettings.UpdateWrapBox;

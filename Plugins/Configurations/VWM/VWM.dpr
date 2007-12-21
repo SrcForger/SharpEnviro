@@ -148,32 +148,12 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'VWM';
+  
 end;
 
 function SetBtnState(AButtonID: Integer): Boolean;
 begin
   Result := False;
-end;
-
-procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
-
-begin
-end;
-
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  ATabs.Add('VWM',frmVWM.pagVWM,'','');
-end;
-
-procedure ClickTab(ATab: TPluginTabItem);
-var
-  tmpPag: TJvStandardPage;
-begin
-  if ATab.Data <> nil then begin
-    tmpPag := TJvStandardPage(ATab.Data);
-    tmpPag.Show;
-  end;
 end;
 
 function SetSettingType: TSU_UPDATE_ENUM;
@@ -186,12 +166,9 @@ exports
   Open,
   Close,
   Save,
-  ClickTab,
   SetText,
   SetSettingType,
-  SetBtnState,
-  GetCenterScheme,
-  AddTabs;
+  SetBtnState;
 
 begin
 end.

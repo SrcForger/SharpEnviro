@@ -107,29 +107,9 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'Desktop';
-end;
+  ATitle := 'Desktop Configuration';
+  ADescription := 'Define advanced desktop and wallpaper functionality.';
 
-function SetBtnState(AButtonID: Integer): Boolean;
-begin
-  Result := False;
-end;
-
-procedure ClickTab(ATab: TPluginTabItem);
-begin
-  TJvStandardPage(ATab.Data).Show;
-end;
-
-procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
-begin
-end;
-
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  if frmDeskSettings <> nil then
-  begin
-    ATabs.Add('Settings',frmDeskSettings.JvSettingsPage,'','');
-  end;
 end;
 
 function SetSettingType : TSU_UPDATE_ENUM;
@@ -143,11 +123,7 @@ exports
   Close,
   Save,
   SetText,
-  SetBtnState,
-  SetSettingType,
-  GetCenterScheme,
-  AddTabs,
-  ClickTab;
+  SetSettingType;
 
 end.
 

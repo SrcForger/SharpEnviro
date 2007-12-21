@@ -32,7 +32,7 @@ object frmSkinListWnd: TfrmSkinListWnd
       end
       item
         Width = 30
-        HAlign = taLeftJustify
+        HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
@@ -42,7 +42,7 @@ object frmSkinListWnd: TfrmSkinListWnd
       end
       item
         Width = 30
-        HAlign = taLeftJustify
+        HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
@@ -56,15 +56,16 @@ object frmSkinListWnd: TfrmSkinListWnd
     Colors.ItemColorSelected = clBtnFace
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
+    OnResize = lbSkinListResize
     ItemHeight = 66
     OnClickItem = lbSkinListClickItem
     OnGetCellCursor = lbSkinListGetCellCursor
     OnGetCellText = lbSkinListGetCellText
     OnGetCellImageIndex = lbSkinListGetCellImageIndex
-    AutosizeGrid = False
+    AutosizeGrid = True
     BevelOuter = bvNone
     Borderstyle = bsNone
-    Align = alClient
+    Align = alTop
   end
   object ThemeImages: TPngImageList
     Height = 48

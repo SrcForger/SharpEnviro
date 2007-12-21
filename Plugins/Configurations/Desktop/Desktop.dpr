@@ -258,6 +258,8 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'Desktop';
+  ATitle := Format('Desktop Configuration for "%s"',[APluginID]);
+  ADescription := 'Define what desktop options you want to use for this theme.';
 end;
 
 function SetBtnState(AButtonID: Integer): Boolean;

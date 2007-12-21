@@ -162,7 +162,7 @@ end;
 procedure TfrmThemeList.FormCreate(Sender: TObject);
 begin
   ThemeManager := TThemeManager.Create;
-
+  lbThemeList.DoubleBuffered := True;
   Self.DoubleBuffered := true;
 end;
 

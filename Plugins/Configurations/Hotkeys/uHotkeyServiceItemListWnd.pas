@@ -76,6 +76,7 @@ type
       const ASelected: Boolean);
     procedure lbHotkeysGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
+    procedure FormCreate(Sender: TObject);
   private
     FEditMode: TSCE_EDITMODE_ENUM;
     function CtrlDown: Boolean;
@@ -113,6 +114,11 @@ uses
 
 {$R *.dfm}
 
+procedure TfrmConfig.FormCreate(Sender: TObject);
+begin
+  lbHotkeys.DoubleBuffered := True;
+end;
+
 procedure TfrmConfig.FormShow(Sender: TObject);
 begin
   // Populate Hotkey List
@@ -139,6 +145,8 @@ begin
     sName := THotkeyItem(lbHotkeys.SelectedItem.Data).Name;
   end;
 
+  LockWindowUpdate(Self.Handle);
+  Try
   lbHotkeys.Clear;
   FHotkeyList.Sort;
 
@@ -163,6 +171,9 @@ begin
   end
   else if lbHotkeys.Count <> 0 then
     lbHotkeys.ItemIndex := 0;
+  Finally
+    LockWindowUpdate(0);
+  End;
 end;
 
 procedure TfrmConfig.LoadHotkeyList;

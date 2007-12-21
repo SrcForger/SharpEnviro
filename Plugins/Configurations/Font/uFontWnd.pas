@@ -44,7 +44,6 @@ type
 type
   TfrmFont = class(TForm)
     Panel1: TPanel;
-    Label1: TLabel;
     imlFontIcons: TImageList;
     plMain: TJvPageList;
     pagFont: TJvStandardPage;

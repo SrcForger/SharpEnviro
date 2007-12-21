@@ -40,16 +40,14 @@ type
 
 type
   TfrmVWMSettings = class(TForm)
-    JvPageList1: TJvPageList;
-    JvSettingsPage: TJvStandardPage;
+    cb_focustopmost: TCheckBox;
+    cb_followfocus: TCheckBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
     Panel1: TPanel;
     Label4: TLabel;
     sgb_vwmcount: TSharpeGaugeBox;
-    Label1: TLabel;
-    cb_focustopmost: TCheckBox;
-    Label2: TLabel;
-    cb_followfocus: TCheckBox;
-    Label3: TLabel;
     procedure sgb_vwmcountChangeValue(Sender: TObject; Value: Integer);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -76,6 +74,7 @@ end;
 procedure TfrmVWMSettings.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := true;
+  Panel1.DoubleBuffered := True;
 end;
 
 procedure TfrmVWMSettings.FormShow(Sender: TObject);

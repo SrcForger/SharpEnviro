@@ -133,24 +133,9 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'Menu';
-end;
+  ATitle := 'Menu Configuration';
+  ADescription := 'Define advanced menu options, such as caching and wrapping.';
 
-function SetBtnState(AButtonID: Integer): Boolean;
-begin
-  Result := False;
-end;
-
-procedure ClickTab(ATab: TPluginTabItem);
-begin
-  TJvStandardPage(ATab.Data).Show;
-end;
-
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  if frmMenuSettings <> nil then
-  begin
-    ATabs.Add('Settings',frmMenuSettings.JvSettingsPage,'','');
-  end;
 end;
 
 function SetSettingType : TSU_UPDATE_ENUM;
@@ -164,10 +149,7 @@ exports
   Close,
   Save,
   SetText,
-  SetBtnState,
-  SetSettingType,
-  AddTabs,
-  ClickTab;
+  SetSettingType;
 
 end.
 

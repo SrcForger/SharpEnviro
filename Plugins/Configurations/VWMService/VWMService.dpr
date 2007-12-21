@@ -119,29 +119,9 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'VWM';
-end;
+  ATitle := 'Virtual Window Management Configuration';
+  ADescription := 'Define how many you require, and advanced configuration options.';
 
-function SetBtnState(AButtonID: Integer): Boolean;
-begin
-  Result := False;
-end;
-
-procedure ClickTab(ATab: TPluginTabItem);
-begin
-  TJvStandardPage(ATab.Data).Show;
-end;
-
-procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
-begin
-end;
-
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  if frmVWMSettings <> nil then
-  begin
-    ATabs.Add('VWM',frmVWMSettings.JvSettingsPage,'','');
-  end;
 end;
 
 function SetSettingType : TSU_UPDATE_ENUM;
@@ -155,11 +135,7 @@ exports
   Close,
   Save,
   SetText,
-  SetBtnState,
-  SetSettingType,
-  GetCenterScheme,
-  AddTabs,
-  ClickTab;
+  SetSettingType;
 
 begin
 end.

@@ -122,7 +122,10 @@ var
   tmp: TAliasList;
 begin
   AName := 'Aliases';
+  ATitle := 'Aliases Configuration';
+  ADescription := 'Create Alias commands for commonly used applications.';
 
+  // Status
   srvSettingsPath := GetSharpeUserSettingsPath + 'SharpCore\Services\Exec\';
   fileName := SrvSettingsPath + 'AliasList.xml';
   tmp := TAliasList.Create(fileName);

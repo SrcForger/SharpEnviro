@@ -130,6 +130,9 @@ var
 
 begin
   AName := 'Hotkeys';
+  ATitle := 'Hotkey Configuration';
+  ADescription := 'Create system wide hotkeys using actions, or commonly used applications.';
+
 
   fn := GetSharpeUserSettingsPath + cSettingsLocation;
   Xml := TJvSimpleXml.Create(nil);

@@ -99,6 +99,7 @@ var
   srvSettingsPath, sAliasPath: string;
 begin
   FWinHandle := AllocateHWND(WndProc);
+  lbItems.DoubleBuffered := True;
 
   srvSettingsPath := GetSharpeUserSettingsPath + 'SharpCore\Services\Exec\';
   sAliasPath := SrvSettingsPath + 'AliasList.xml';

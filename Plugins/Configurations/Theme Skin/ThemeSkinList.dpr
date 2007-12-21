@@ -72,13 +72,6 @@ begin
     frmSkinListWnd := nil;
 end;
 
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  if frmSkinListWnd.lbSkinList.Count = 0 then
-  ATabs.Add('Skins',nil,'','NA') else
-  ATabs.Add('Skins',nil,'',IntToStr(frmSkinListWnd.lbSkinList.Count));
-end;
-
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
   var ATitle: String; var ADescription: String);
 var
@@ -87,6 +80,9 @@ var
   n: Integer;
 begin
   AName := 'Skin';
+  ATitle := Format('Skin Configuration for "%s"',[APluginID]);
+  ADescription := 'Select which skin you want to use for this theme.';
+
 
   // Status
   dir := SharpApi.GetSharpeDirectory + 'Skins\';
@@ -104,27 +100,6 @@ begin
   AStatus := PChar(IntToStr(n));
 end;
 
-procedure SetStatusText(const APluginID: String; var AStatusText: string);
-var
-  sr: TSearchRec;
-  dir: string;
-  n: Integer;
-begin
-  dir := SharpApi.GetSharpeDirectory + 'Skins\';
-  n := 0;
-
-  if FindFirst(dir + '*.*', faDirectory, sr) = 0 then
-  begin
-    repeat
-        if FileExists(dir + sr.Name + '\Skin.xml') then
-          inc(n);
-    until FindNext(sr) <> 0;
-    SysUtils.FindClose(sr);
-  end;
-
-  AStatusText := PChar(IntToStr(n));
-end;
-
 procedure GetCenterScheme(var ABackground: TColor; var AItemColor: TColor; var AItemSelectedColor: TColor);
 begin
   frmSkinListWnd.lbSkinList.Colors.ItemColorSelected := AItemSelectedColor;
@@ -135,7 +110,6 @@ exports
   Open,
   Close,
   SetText,
-  AddTabs,
   GetCenterScheme;
 
 end.

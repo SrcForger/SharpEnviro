@@ -24,6 +24,7 @@ object frmDASettings: TfrmDASettings
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
+    ParentBackground = False
     TabOrder = 0
     object Label4: TLabel
       AlignWithMargins = True
@@ -71,6 +72,7 @@ object frmDASettings: TfrmDASettings
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
+    ParentBackground = False
     TabOrder = 1
     object Label2: TLabel
       AlignWithMargins = True

@@ -53,6 +53,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure lb_CursorListClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
+    procedure lb_CursorListResize(Sender: TObject);
   private
     procedure BuildCursorPreview;
   public
@@ -83,6 +84,11 @@ procedure TfrmCursesList.lb_CursorListClickItem(Sender: TObject; const ACol: Int
 begin
   BuildCursorPreview;
   CenterDefineSettingsChanged;
+end;
+
+procedure TfrmCursesList.lb_CursorListResize(Sender: TObject);
+begin
+  Self.Height := lb_CursorList.Height+ccolors.Height;
 end;
 
 procedure TfrmCursesList.FormCreate(Sender: TObject);

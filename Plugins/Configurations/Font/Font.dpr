@@ -180,6 +180,8 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'Skin Font';
+  ATitle := Format('Skin Font Configuration for "%s"',[APluginID]);
+  ADescription := 'Override font options for the selected skin.';
 end;
 
 

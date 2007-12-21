@@ -135,6 +135,7 @@ end;
 procedure TfrmItemsList.FormCreate(Sender: TObject);
 begin
   FWinHandle := AllocateHWND(WndProc);
+  lbWeatherList.DoubleBuffered := True;
 end;
 
 procedure TfrmItemsList.FormDestroy(Sender: TObject);

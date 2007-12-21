@@ -343,6 +343,9 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'Wallpaper';
+  ATitle := Format('Wallpaper Configuration for "%s"',[APluginID]);
+  ADescription := 'Customise your wallpaper including advanced colour blending and gradient options.';
+
 end;
 
 function SetBtnState(AButtonID: Integer): Boolean;

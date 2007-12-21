@@ -114,7 +114,7 @@ end;
 procedure TfrmIconList.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := true;
-  lb_iconlist.ItemOffset := Point(2, 2);
+  lb_iconlist.DoubleBuffered := True;
 end;
 
 procedure TfrmIconList.BuildIconPreview(var ABmp: TBitmap32);

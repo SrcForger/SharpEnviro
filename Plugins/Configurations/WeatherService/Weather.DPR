@@ -115,7 +115,8 @@ var
 begin
   // Name
   AName := 'Weather';
-  AStatus := '';
+  ATitle := 'Weather Configuration';
+  ADescription := 'Create your own weather locations. SOAP Services provided by Weather.com.';
 
   // Status
   sFileName := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatherlist.xml';

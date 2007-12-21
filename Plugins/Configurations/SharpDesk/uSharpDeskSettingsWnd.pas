@@ -40,26 +40,23 @@ type
 
 type
   TfrmDeskSettings = class(TForm)
-    JvPageList1: TJvPageList;
-    JvSettingsPage: TJvStandardPage;
-    cb_singleclick: TCheckBox;
-    JvAdvSettingsPage: TJvStandardPage;
-    cb_dd: TCheckBox;
-    Label1: TLabel;
-    JvLabel1: TLabel;
-    cb_wpwatch: TCheckBox;
-    Label3: TLabel;
-    cb_amm: TCheckBox;
-    Label2: TLabel;
-    Panel1: TPanel;
-    cb_grid: TCheckBox;
-    Label4: TLabel;
-    sgb_gridy: TSharpeGaugeBox;
-    sgb_gridx: TSharpeGaugeBox;
     cb_adjustsize: TCheckBox;
+    cb_amm: TCheckBox;
+    cb_autorotate: TCheckBox;
+    cb_dd: TCheckBox;
+    cb_singleclick: TCheckBox;
+    cb_wpwatch: TCheckBox;
+    JvLabel1: TLabel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
     Label5: TLabel;
     Label6: TLabel;
-    cb_autorotate: TCheckBox;
+    Panel1: TPanel;
+    Label4: TLabel;
+    cb_grid: TCheckBox;
+    sgb_gridy: TSharpeGaugeBox;
+    sgb_gridx: TSharpeGaugeBox;
     procedure sgb_gridyChangeValue(Sender: TObject; Value: Integer);
     procedure cb_ddClick(Sender: TObject);
     procedure cb_ammClick(Sender: TObject);
@@ -85,6 +82,7 @@ implementation
 procedure TfrmDeskSettings.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := true;
+  Panel1.DoubleBuffered := true;
 end;
 
 procedure TfrmDeskSettings.UpdateGridBox;

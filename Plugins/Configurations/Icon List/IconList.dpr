@@ -102,6 +102,8 @@ var
   n: Integer;
 begin
   AName := 'Icons';
+  ATitle := Format('Icon Set Configuration for "%s"',[APluginID]);
+  ADescription := 'Select which icon set you want to use for this theme.';
 
   xml := TJclSimpleXML.Create;
   try

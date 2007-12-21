@@ -74,6 +74,7 @@ type
       const ASelected: Boolean);
     procedure lbSkinListGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
+    procedure lbSkinListResize(Sender: TObject);
 
   private
     FTheme: string;
@@ -195,8 +196,8 @@ end;
 
 procedure TfrmSkinListWnd.FormCreate(Sender: TObject);
 begin
-  lbSkinList.ItemHeight := 50;
-  lbSkinList.Colors.BorderColorSelected := clBtnFace;
+  DoubleBuffered := True;
+  lbSkinList.DoubleBuffered := True;
 end;
 
 function TfrmSkinListWnd.SaveBitmap32ToPNG(bm32: TBitmap32; paletted, transparent: Boolean;
@@ -347,6 +348,11 @@ begin
       AColText := Format('%s by %s', [tmp.Name, tmp.Author]);
   end;
 
+end;
+
+procedure TfrmSkinListWnd.lbSkinListResize(Sender: TObject);
+begin
+  Self.Height := lbSkinList.Height;
 end;
 
 procedure TfrmSkinListWnd.Save;

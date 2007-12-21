@@ -12,6 +12,7 @@ object frmConfig: TfrmConfig
   Font.Name = 'Arial'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 14

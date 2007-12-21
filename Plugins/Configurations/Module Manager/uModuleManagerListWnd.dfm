@@ -46,6 +46,7 @@ object frmMMList: TfrmMMList
       Margins.Top = 6
       Align = alTop
       Caption = 'Right Aligned'
+      Transparent = False
       ExplicitWidth = 63
     end
     object lbModulesRight: TSharpEListBoxEx
@@ -148,6 +149,7 @@ object frmMMList: TfrmMMList
       Margins.Top = 6
       Align = alTop
       Caption = 'Left Aligned'
+      Transparent = False
       ExplicitWidth = 57
     end
     object lbModulesLeft: TSharpEListBoxEx

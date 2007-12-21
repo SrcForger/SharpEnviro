@@ -124,6 +124,8 @@ var
   n:Integer;
 begin
   AName := 'Cursors';
+  ATitle := Format('Cursor Configuration for "%s"',[APluginID]);
+  ADescription := 'Select which cursor you want to use for this theme.';
 
   xml := TJvSimpleXML.Create(nil);
   try

@@ -116,6 +116,8 @@ type
   end;
 
 procedure AddItemsToList(APluginID: string; AList: TObjectList);
+function ExtractBarID(ABarXmlFileName: string): Integer;
+function ExtractBarName(ABarID: string): string;
 
 var
   frmMMList: TfrmMMList;
@@ -266,6 +268,10 @@ begin
   FWinHandle := AllocateHWND(WndProc);
   FModuleList := TObjectList.Create;
   Self.DoubleBuffered := true;
+  lbModulesRight.DoubleBuffered := True;
+  lbModulesLeft.DoubleBuffered := True;
+  pnlRight.DoubleBuffered := False;
+  pnlLeft.DoubleBuffered := False;
 
   CenterDefineButtonState(scbEditTab, False);
 end;
@@ -297,6 +303,35 @@ begin
   lblRight.Font.Style := [fsBold];
   lblLeft.Font.Style := [fsBold];
 end;
+
+function ExtractBarID(ABarXmlFileName: string): Integer;
+  var
+    s: string;
+    n: Integer;
+  begin
+    s := PathRemoveSeparator(ExtractFilePath(ABarXmlFileName));
+    n := JclStrings.StrLastPos('\', s);
+    s := Copy(s, n + 1, length(s));
+    result := StrToInt(s);
+
+  end;
+
+function ExtractBarName(ABarID: string): String;
+  var
+    s: string;
+    n: Integer;
+    xml:TJvSimpleXML;
+  begin
+    xml := TJvSimpleXML.Create(nil);
+    try
+      xml.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + ABarID + '\Bar.xml');
+      if xml.Root.items.ItemNamed['Settings'] <> nil then
+        Result := xml.Root.items.ItemNamed['Settings'].Items.Value('Name','');
+    finally
+      xml.Free;
+    end;
+
+  end;
 
 procedure TfrmMMList.BuildModuleList;
 var
@@ -428,18 +463,6 @@ var
   dir: string;
   slBars: TStringList;
   i, j, n, index: Integer;
-
-  function ExtractBarID(ABarXmlFileName: string): Integer;
-  var
-    s: string;
-    n: Integer;
-  begin
-    s := PathRemoveSeparator(ExtractFilePath(ABarXmlFileName));
-    n := JclStrings.StrLastPos('\', s);
-    s := Copy(s, n + 1, length(s));
-    result := StrToInt(s);
-
-  end;
 
 begin
   AList.Clear;

@@ -18,7 +18,7 @@ object frmCursesList: TfrmCursesList
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 0
+    Top = 219
     Width = 418
     Height = 65
     Align = alClient
@@ -26,6 +26,7 @@ object frmCursesList: TfrmCursesList
     Caption = 'Panel1'
     ParentColor = True
     TabOrder = 0
+    ExplicitTop = 0
     object lb_CursorList: TSharpEListBoxEx
       Left = 0
       Top = 0
@@ -54,22 +55,23 @@ object frmCursesList: TfrmCursesList
       Colors.ItemColorSelected = clBtnFace
       Colors.CheckColorSelected = clBtnFace
       Colors.CheckColor = 15528425
+      OnResize = lb_CursorListResize
       ItemHeight = 30
       OnClickItem = lb_CursorListClickItem
-      AutosizeGrid = False
+      AutosizeGrid = True
       Borderstyle = bsNone
       Ctl3d = False
-      Align = alClient
+      Align = alTop
     end
   end
   object ccolors: TSharpEColorEditorEx
     Left = 0
-    Top = 65
+    Top = 0
     Width = 418
     Height = 219
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
-    Align = alBottom
+    Align = alTop
     BevelInner = bvNone
     BevelOuter = bvNone
     BorderStyle = bsNone
@@ -123,6 +125,7 @@ object frmCursesList: TfrmCursesList
       end>
     SwatchManager = SharpESwatchManager1
     OnChangeColor = ccolorsChangeColor
+    ExplicitTop = 65
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>

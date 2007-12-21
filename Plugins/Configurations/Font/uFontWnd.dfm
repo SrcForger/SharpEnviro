@@ -17,48 +17,34 @@ object frmFont: TfrmFont
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Label1: TLabel
-    AlignWithMargins = True
-    Left = 8
-    Top = 8
-    Width = 418
-    Height = 13
-    Margins.Left = 8
-    Margins.Top = 8
-    Margins.Right = 8
-    Margins.Bottom = 0
-    Align = alTop
-    Caption = 
-      'The Font options below override the current font properties of t' +
-      'he skin.'
-    Transparent = False
-    WordWrap = True
-    ExplicitWidth = 344
-  end
   object Panel1: TPanel
     Left = 0
-    Top = 21
+    Top = 0
     Width = 434
     Height = 0
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
     TabOrder = 0
+    ExplicitTop = 21
   end
   object plMain: TJvPageList
     Left = 0
-    Top = 21
+    Top = 0
     Width = 434
-    Height = 415
+    Height = 436
     ActivePage = pagFont
     PropagateEnable = False
     Align = alClient
+    ExplicitTop = 21
+    ExplicitHeight = 415
     object pagFont: TJvStandardPage
       Left = 0
       Top = 0
       Width = 434
-      Height = 415
+      Height = 436
       Caption = 'pagFont'
+      ExplicitHeight = 415
       object Label4: TLabel
         AlignWithMargins = True
         Left = 26
@@ -445,8 +431,9 @@ object frmFont: TfrmFont
       Left = 0
       Top = 0
       Width = 434
-      Height = 415
+      Height = 436
       Caption = 'pagFontShadow'
+      ExplicitHeight = 415
       object Label8: TLabel
         AlignWithMargins = True
         Left = 26
@@ -512,11 +499,12 @@ object frmFont: TfrmFont
         Left = 0
         Top = 66
         Width = 434
-        Height = 349
+        Height = 370
         Align = alClient
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
+        ExplicitHeight = 349
         object lb_shadowtype: TLabel
           AlignWithMargins = True
           Left = 26
@@ -599,14 +587,13 @@ object frmFont: TfrmFont
           Margins.Bottom = 8
           Align = alTop
           BevelOuter = bvNone
-          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
           BorderColor = clBtnShadow
           Border = True
           BackgroundColor = clBtnFace
-          HasChanged = False
+          HasChanged = True
           AutoReset = False
           DefaultValue = '-1'
           MonitorControl = cb_shadowtype

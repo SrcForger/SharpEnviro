@@ -180,6 +180,9 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'Desk Area';
+  ATitle := 'Desktop Area Configuration';
+  ADescription := 'Define how you want SharpE to manage your desktop real estate';
+
 end;
 
 procedure ClickTab(ATab: TPluginTabItem);

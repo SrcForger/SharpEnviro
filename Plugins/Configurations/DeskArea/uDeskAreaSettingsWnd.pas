@@ -181,6 +181,8 @@ procedure TfrmDASettings.FormCreate(Sender: TObject);
 begin
   Update := False;
   Self.DoubleBuffered := true;
+  Panel1.DoubleBuffered := True;
+  Panel2.DoubleBuffered := True;
 
   PreviewBmp := TBitmap32.Create;
   PreviewBmp.DrawMode := dmBlend;

@@ -145,6 +145,8 @@ var
   tmpList: TObjectList;
 begin
   AName := 'SharpBar';
+  ATitle := 'Toolbar Management';
+  ADescription := 'Create and manage SharpBar configurations. ';
 
   tmpList := TObjectList.Create;
   Try

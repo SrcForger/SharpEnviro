@@ -147,6 +147,8 @@ var
   n: Integer;
 begin
   AName := 'Themes';
+  ATitle := 'Theme Management';
+  ADescription := 'Create and manage themes that customise the appearance of SharpE.';
 
   // Status
   dir := SharpApi.GetSharpeUserSettingsPath + 'Themes\';
@@ -192,11 +194,6 @@ begin
   end;
 end;
 
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  ATabs.Add('Themes',nil,'',IntToStr(frmThemeList.lbThemeList.Count));
-end;
-
 
 exports
   Open,
@@ -205,8 +202,7 @@ exports
   CloseEdit,
   SetText,
   SetBtnState,
-  GetCenterScheme,
-  AddTabs;
+  GetCenterScheme;
 
 end.
 
