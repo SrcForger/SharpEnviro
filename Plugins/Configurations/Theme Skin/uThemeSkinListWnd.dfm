@@ -57,7 +57,7 @@ object frmSkinListWnd: TfrmSkinListWnd
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     OnResize = lbSkinListResize
-    ItemHeight = 66
+    ItemHeight = 40
     OnClickItem = lbSkinListClickItem
     OnGetCellCursor = lbSkinListGetCellCursor
     OnGetCellText = lbSkinListGetCellText
