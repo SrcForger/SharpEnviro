@@ -77,6 +77,7 @@ object frmThemeList: TfrmThemeList
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
+        CanSelect = False
         ColumnType = ctDefault
         Images = pilDefault
       end>

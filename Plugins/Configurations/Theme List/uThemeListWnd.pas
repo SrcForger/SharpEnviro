@@ -313,29 +313,25 @@ begin
 
         if bDelete then begin
 
-          id := frmThemeList.lbThemeList.ItemIndex;
-
-          if id <> -1 then begin
-            tmp := TThemeListItem(frmThemeList.lbThemeList.Item[id].Data);
-
-            frmThemeList.lbThemeList.DeleteSelected;
+            tmp := TThemeListItem(AItem.Data);
             ThemeManager.Delete(tmp.Name);
 
-            if id > (frmThemeList.lbThemeList.Count - 2) then begin
-              if id - 1 >= 0 then
-                newID := id - 1
+            if Aitem.id > (frmThemeList.lbThemeList.Count - 2) then begin
+              if Aitem.id - 1 >= 0 then
+                newID := Aitem.id - 1
               else
                 newid := 0;
             end
             else
-              newid := id;
+              newid := Aitem.id;
+
+            BuildThemeList;
 
             if frmThemeList.lbThemeList.Count <> 0 then
               frmThemeList.lbThemeList.ItemIndex := newId;
           end;
         end;
       end;
-  end;
 
   if lbThemeList.SelectedItem <> nil then begin
     CenterDefineButtonState(scbEditTab, True);
@@ -343,6 +339,7 @@ begin
   else begin
     CenterDefineButtonState(scbEditTab, False);
   end;
+
 
   UpdateEditTabs;
   CenterUpdateConfigFull;
