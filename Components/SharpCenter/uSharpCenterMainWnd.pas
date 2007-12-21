@@ -116,6 +116,10 @@ type
     btnEditCancel: TPngSpeedButton;
     btnEditApply: TPngSpeedButton;
     Timer1: TTimer;
+    pnlTitle: TPanel;
+    lblDescription: TJvLabel;
+    lblTitle: TJvLabel;
+    tmrClick: TTimer;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -150,6 +154,7 @@ type
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure lbTreeGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
+    procedure tmrClickTimer(Sender: TObject);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -163,6 +168,7 @@ type
     procedure ShowHistory;
     procedure InitCommandLine;
     procedure DoDoubleBufferAll(AComponent: TComponent);
+    procedure UpdateConfigHeader;
   public
 
     procedure GetCopyData(var Msg: TMessage); message wm_CopyData;
@@ -200,7 +206,6 @@ implementation
 
 uses
   SharpEScheme,
-  uSEListboxPainter,
   uSharpCenterHelperMethods,
   uSharpCenterHistoryManager;
 
@@ -432,11 +437,7 @@ begin
   if lbTree.ItemIndex = -1 then
     exit;
 
-  // If in edit state do not continue
-  if SCM.CheckEditState then
-    exit;
-
-  ClickItem;
+  tmrClick.Enabled := True;
 end;
 
 
@@ -560,7 +561,11 @@ begin
 
         TSharpCenterManagerItem(lbTree.SelectedItem.Data).Caption := sName;
         TSharpCenterManagerItem(lbTree.SelectedItem.Data).Status := sStatus;
+        TSharpCenterManagerItem(lbTree.SelectedItem.Data).Title := sTitle;
+        TSharpCenterManagerItem(lbTree.SelectedItem.Data).Description := sDescription;
         lbTree.Refresh;
+
+        UpdateConfigHeader;
       end;
   end;
 end;
@@ -647,6 +652,17 @@ begin
   end;
 end;
 
+procedure TSharpCenterWnd.tmrClickTimer(Sender: TObject);
+begin
+  tmrClick.Enabled := False;
+
+  // If in edit state do not continue
+  if SCM.CheckEditState then
+    exit;
+
+  ClickItem;
+end;
+
 procedure TSharpCenterWnd.tlEditItemTabChange(ASender: TObject;
   const ATabIndex: Integer; var AChange: Boolean);
 begin
@@ -701,6 +717,9 @@ procedure TSharpCenterWnd.InitWindow;
 begin
   // Vista
   SetVistaFonts(Self);
+  DoDoubleBufferAll(pnlTree);
+  DoDoubleBufferAll(pnlTitle);
+  DoDoubleBufferAll(lbTree);
 
   // Set Listbox defaults
   lbTree.Colors.BorderColorSelected := $00C1F4FE;
@@ -716,6 +735,12 @@ begin
   pnlLivePreview.Visible := False;
   pnlPluginContainer.Visible := False;
   pnlEditContainer.TabIndex := -1;
+  pnlTitle.Visible := False;
+  lblTitle.Font.Size := 10;
+  lblDescription.Font.Color := clGrayText;
+  //pnlTitle.DoubleBuffered := True;
+  //pnlEditContainer.DoubleBuffered := True;
+  //lbTree.DoubleBuffered := True;
   pnlToolbar.Hide;
 
 end;
@@ -863,7 +888,6 @@ begin
 
     pnlEditContainer.TabItems.Item[cEdit_Add].Visible := True;
     pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := True;
-    //pnlEditContainer.TabItems.Item[cEdit_Delete].Visible := True; }
 
     // Toolbar
     if (@SCM.ActivePlugin.SetBtnState <> nil) then
@@ -883,7 +907,6 @@ begin
     FSelectedPluginTabID := 0;
 
     if (@SCM.ActivePlugin.OpenEdit <> nil) then begin
-      //tlEditItemTabClick(nil, FSelectedTabID);
       pnlEditContainer.TabList.TabIndex := -1;
     end;
 
@@ -894,17 +917,24 @@ begin
         lbTree.ItemIndex := i;
         break;
       end;
-
     end;
 
-    TForm(GetControlByHandle(SCM.PluginWndHandle)).Color := clWindow;
-    UpdateSize;
-    CenterUpdateSize;
+    // Update Title and Description
+    UpdateConfigHeader;
 
+    TForm(GetControlByHandle(SCM.PluginWndHandle)).Color := clWindow;
   finally
     pnlPluginContainer.Show;
 
+    // Forces a resize
+    pnlPluginContainer.Height := pnlPluginContainer.Height+1;
+    pnlPluginContainer.Height := pnlPluginContainer.Height-1;
+
     LockWindowUpdate(0);
+    
+    UpdateSize;
+    CenterUpdateSize;
+
     sbPlugin.SetFocus;
   end;
 
@@ -961,6 +991,7 @@ begin
   finally
 
     LockWindowUpdate(0);
+    sbPlugin.Invalidate;
   end;
 end;
 
@@ -993,6 +1024,7 @@ begin
     pnlLivePreview.Hide;
     pnlEditContainer.Height := 0;
     pnlPluginContainer.Hide;
+    pnlTitle.Hide;
 
     LockWindowUpdate(0);
   end;
@@ -1097,6 +1129,26 @@ procedure TSharpCenterWnd.SavePluginEvent(Sender: TObject);
 begin
   btnSave.Enabled := False;
   btnCancel.Enabled := False;
+end;
+
+procedure TSharpCenterWnd.UpdateConfigHeader;
+var
+  tmp: TSharpCenterManagerItem;
+begin
+  // Get Title and Description
+  if lbTree.SelectedItem <> nil then
+  begin
+    tmp := TSharpCenterManagerItem(lbTree.SelectedItem.Data);
+    if tmp <> nil then
+    begin
+      if (ExtractFileExt(tmp.Filename) = '.dll') then
+      begin
+        lblTitle.Caption := tmp.Title;
+        lblDescription.Caption := tmp.Description;
+        pnlTitle.Visible := (tmp.Title <> '');
+      end;
+    end;
+  end;
 end;
 
 procedure TSharpCenterWnd.sbPluginResize(Sender: TObject);

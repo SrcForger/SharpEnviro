@@ -1475,8 +1475,6 @@ object SharpCenterWnd: TSharpCenterWnd
           AutosizeGrid = False
           Borderstyle = bsNone
           Align = alClient
-          ExplicitLeft = 3
-          ExplicitTop = 7
         end
       end
       object tlToolbar: TSharpETabList
@@ -2094,7 +2092,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               134)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -754
+              Left = -794
               Top = 35
               Width = 23
               Height = 22
@@ -2574,11 +2572,12 @@ object SharpCenterWnd: TSharpCenterWnd
       Padding.Top = 6
       Padding.Right = 6
       Padding.Bottom = 6
+      ParentBackground = False
       TabOrder = 1
       object pnlLivePreview: TPanel
         AlignWithMargins = True
         Left = 6
-        Top = 6
+        Top = 35
         Width = 501
         Height = 27
         Margins.Left = 0
@@ -2608,9 +2607,9 @@ object SharpCenterWnd: TSharpCenterWnd
       end
       object pnlPluginContainer: TSharpEPageControl
         Left = 6
-        Top = 177
+        Top = 206
         Width = 501
-        Height = 349
+        Height = 320
         Align = alClient
         ExpandedHeight = 200
         TabItems = <>
@@ -2632,13 +2631,13 @@ object SharpCenterWnd: TSharpCenterWnd
         OnTabChange = tlPluginTabsTabChange
         DesignSize = (
           501
-          349)
+          320)
         object sbPlugin: TScrollBox
           AlignWithMargins = True
           Left = 6
           Top = 32
           Width = 489
-          Height = 311
+          Height = 282
           Margins.Left = 6
           Margins.Top = 32
           Margins.Right = 6
@@ -2663,6 +2662,7 @@ object SharpCenterWnd: TSharpCenterWnd
             Align = alTop
             BevelOuter = bvNone
             Color = clWindow
+            ParentBackground = False
             TabOrder = 0
           end
         end
@@ -2670,7 +2670,7 @@ object SharpCenterWnd: TSharpCenterWnd
       object pnlEditContainer: TSharpEPageControl
         AlignWithMargins = True
         Left = 6
-        Top = 37
+        Top = 66
         Width = 501
         Height = 136
         Margins.Left = 0
@@ -3659,6 +3659,62 @@ object SharpCenterWnd: TSharpCenterWnd
               ExplicitLeft = 358
             end
           end
+        end
+      end
+      object pnlTitle: TPanel
+        AlignWithMargins = True
+        Left = 6
+        Top = 6
+        Width = 501
+        Height = 29
+        Margins.Left = 0
+        Margins.Top = 0
+        Margins.Right = 0
+        Margins.Bottom = 0
+        Align = alTop
+        AutoSize = True
+        BevelOuter = bvNone
+        Color = clWindow
+        UseDockManager = False
+        Locked = True
+        ParentBackground = False
+        TabOrder = 3
+        object lblDescription: TJvLabel
+          AlignWithMargins = True
+          Left = 0
+          Top = 13
+          Width = 497
+          Height = 13
+          Margins.Left = 0
+          Margins.Top = 0
+          Margins.Right = 4
+          Align = alTop
+          Caption = 'The most awesome configuration manager in the world!'
+          Layout = tlCenter
+          Transparent = True
+          HotTrackFont.Charset = ANSI_CHARSET
+          HotTrackFont.Color = clWindowText
+          HotTrackFont.Height = -11
+          HotTrackFont.Name = 'Tahoma'
+          HotTrackFont.Style = []
+          TextEllipsis = teEndEllipsis
+          ExplicitWidth = 268
+        end
+        object lblTitle: TJvLabel
+          Left = 0
+          Top = 0
+          Width = 501
+          Height = 13
+          Align = alTop
+          Caption = 'SharpCenter'
+          Layout = tlCenter
+          Transparent = True
+          HotTrackFont.Charset = ANSI_CHARSET
+          HotTrackFont.Color = clWindowText
+          HotTrackFont.Height = -11
+          HotTrackFont.Name = 'Tahoma'
+          HotTrackFont.Style = []
+          ExplicitWidth = 63
         end
       end
     end
@@ -9916,5 +9972,12 @@ object SharpCenterWnd: TSharpCenterWnd
     OnTimer = Timer1Timer
     Left = 128
     Top = 184
+  end
+  object tmrClick: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = tmrClickTimer
+    Left = 16
+    Top = 208
   end
 end

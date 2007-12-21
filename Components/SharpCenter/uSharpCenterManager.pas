@@ -49,10 +49,14 @@ type
     FStatus: string;
     FPluginID: string;
     FPlugin: TSetting;
+    FTitle: string;
+    FDescription: string;
   public
     constructor Create;
     property Caption: string read FCaption write FCaption;
     property Status: string read FStatus write FStatus;
+    property Title: string read FTitle write FTitle;
+    property Description: string read FDescription write FDescription;
     property PluginID: string read FPluginID write FPluginID;
     property Plugin: TSetting read FPlugin write FPlugin;
 
@@ -98,6 +102,7 @@ type
     FOnLoadEdit: TNotifyEvent;
     FOnCancelEdit: TNotifyEvent;
     FOnApplyEdit: TNotifyEvent;
+    FOnSetTitle: TNotifyEvent;
 
     // Events
     procedure UnloadTimerEvent(Sender: TObject);
@@ -176,6 +181,7 @@ type
     property OnUpdateTheme: TNotifyEvent read FOnUpdateTheme write FOnUpdateTheme;
     property OnAddPluginTabs: TNotifyEvent read FOnAddPluginTabs write FOnAddPluginTabs;
     property OnUnloadPlugin: TNotifyEvent read FOnUnloadPlugin write FOnUnloadPlugin;
+    property OnSetTitle: TNotifyEvent read FOnSetTitle write FOnSetTitle;
     property OnLoadPlugin: TNotifyEvent read FOnLoadPlugin write FOnLoadPlugin;
     property OnLoadEdit: TNotifyEvent read FOnLoadEdit write FOnLoadEdit;
     property OnApplyEdit: TNotifyEvent read FOnApplyEdit write FOnApplyEdit;
@@ -356,6 +362,8 @@ begin
 
           sName := '';
           sStatus := '';
+          sTitle := '';
+          sDescription := '';
           GetItemText(sPath + sDll, SCM.ActivePluginID,sName,sStatus,sTitle,sDescription);
 
           if sName = '' then
@@ -365,6 +373,8 @@ begin
 
           newItem.Filename := sPath + sDll;
           newItem.PluginID := SCM.ActivePluginID;
+          newItem.Title := sTitle;
+          newItem.Description := sDescription;
           NewItem.Status := sStatus;
 
           pngfile := sPath + sIcon;
