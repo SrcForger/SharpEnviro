@@ -223,6 +223,7 @@ begin
     BevelOuter := bvNone;
     BevelKind := bkNone;
     ParentBackground := False;
+    DoubleBuffered := True;
     ParentFont := True;
     Color := Self.Color;
   end;
@@ -232,6 +233,7 @@ begin
   begin
     Parent := FBackPanel;
     Align := alClient;
+    DoubleBuffered := True;
     Text := Format('%s%d%s', [FPrefix, FValue, FSuffix]);
     OnKeyPress := ValueEditKeyPress;
     OnKeyDown := ValueEditKeyDown;
@@ -247,6 +249,7 @@ begin
   with FBtnGauge do
   begin
     Parent := FValueEdit;
+    DoubleBuffered := True;
     Align := alRight;
     Width := ButtonWidth;
     Font.Style := [fsBold];
