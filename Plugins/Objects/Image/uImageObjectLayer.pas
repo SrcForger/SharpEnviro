@@ -40,7 +40,8 @@ uses
   uSharpDeskDebugging,
   IdBaseComponent,
   IdHTTP,
-  GR32_Resamplers;
+  GR32_Resamplers,
+  JCLStrings;
 
 type
 
@@ -341,6 +342,7 @@ begin
   if ObjectID=0 then exit;
 
   FSettings.LoadSettings;
+  FSettings.IconFile := StrRemoveChars(FSettings.IconFile, ['"']);
 
   FftURL := FSettings.ftURL;
   FURLRefresh := FSettings.URLRefresh;
