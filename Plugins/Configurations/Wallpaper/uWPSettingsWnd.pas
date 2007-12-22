@@ -28,12 +28,44 @@ unit uWPSettingsWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi,
-  JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
-  SharpEGaugeBoxEdit, Buttons, PngBitBtn, GR32_Image, SharpEColorEditorEx, Mask,
-  JvExMask, JvToolEdit, SharpThemeApi, Contnrs, GR32, GR32_Resamplers, SharpCenterApi,
-  SharpESwatchManager, SharpGraphicsUtils, JPeg, SharpETabList, SharpERoundPanel,
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  JvSimpleXml,
+  Menus,
+  ComCtrls,
+  SharpApi,
+  JvExComCtrls,
+  JvComCtrls,
+  ExtCtrls,
+  JvPageList,
+  JvExControls,
+  JvComponent,
+  SharpEGaugeBoxEdit,
+  Buttons,
+  PngBitBtn,
+  GR32_Image,
+  SharpEColorEditorEx,
+  Mask,
+  JvExMask,
+  JvToolEdit,
+  SharpThemeApi,
+  Contnrs,
+  GR32,
+  GR32_Resamplers,
+  SharpCenterApi,
+  SharpESwatchManager,
+  SharpGraphicsUtils,
+  JPeg,
+  SharpETabList,
+  SharpERoundPanel,
   SharpEPageControl;
 
 type
@@ -45,7 +77,7 @@ type
     Bmp: TBitmap32;
     MonID: integer;
     Mon: TMonitor;
-    Name: string;
+      Name: string;
     FileName: string;
     Color: integer;
     Alpha: integer;
@@ -212,8 +244,8 @@ end;
 procedure TWPItem.LoadFromFile;
 var
   loaded: boolean;
-  SList : TStringList;
-  i : integer;
+  SList: TStringList;
+  i: integer;
 begin
   loaded := False;
   SList := TStringList.Create;
@@ -221,8 +253,7 @@ begin
   SList.Add(FileName);
   SList.Add(SharpApi.GetSharpeDirectory + FileName);
   for i := 0 to SList.Count - 1 do
-    if FileExists(SList[i]) then
-    try
+    if FileExists(SList[i]) then try
       Bmp.LoadFromFile(SList[i]);
       loaded := True;
       break;
@@ -230,11 +261,11 @@ begin
     end;
   SList.Free;
 
-  if not loaded then
-  begin
+  if not loaded then begin
     if Mon <> nil then
       Bmp.SetSize(Mon.Width, Mon.Height)
-    else Bmp.SetSize(187, 144);
+    else
+      Bmp.SetSize(187, 144);
     Bmp.Clear(color32(0, 0, 0, 0));
   end;
   wploaded := loaded;
@@ -250,7 +281,8 @@ begin
     pnlColor.Visible := chkApplyColor.Checked;
 
     if chkApplyColor.Checked then
-      Self.Height := 150 else
+      Self.Height := 150
+    else
       Self.Height := 60;
 
     if pnlMonitor.Visible then
@@ -274,7 +306,8 @@ begin
     pnlGrad.Visible := chkApplyGrad.Checked;
 
     if chkApplyGrad.Checked then
-      Self.Height := 450 else
+      Self.Height := 450
+    else
       Self.Height := 60;
 
     if pnlMonitor.Visible then
@@ -292,11 +325,23 @@ var
   WPBmp: TBitmap32;
   RSBmp: TBitmap32;
   x, y: integer;
+  bInvalid: Boolean;
 begin
-  if FCurrentWP = nil then exit;
-  if FCurrentWP.Mon = nil then exit;
-  if ((Not(FileExists(FCurrentWP.FileName))) or
-    (FCurrentWP.FileName = '')) then exit;
+  bInvalid := false;
+  if FCurrentWP = nil then
+    bInvalid := true;
+  if FCurrentWP.Mon = nil then
+    bInvalid := true;
+  if ((not (FileExists(FCurrentWP.FileName))) or
+    (FCurrentWP.FileName = '')) then begin
+    bInvalid := True;
+  end;
+
+  if bInvalid then begin
+    FCurrentWP.FileName := '';
+    exit;
+  end;
+
 
   WPBmp := TBitmap32.Create;
   TLinearResampler.Create(WPBmp);
@@ -305,15 +350,13 @@ begin
   RSBmp := TBitmap32.Create;
   TLinearResampler.Create(RSBmp);
 
-  with FCurrentWP do
-  begin
+  with FCurrentWP do begin
     // decide size
-    if Mon.Width > Mon.Height then
-    begin
+    if Mon.Width > Mon.Height then begin
       w := imgWallpaper.Width;
       h := round(imgWallpaper.Width * (Mon.Height / Mon.Width));
-    end else
-    begin
+    end
+    else begin
       h := imgWallpaper.Height;
       w := round(imgWallpaper.Height * (Mon.Width / Mon.Height));
     end;
@@ -331,14 +374,14 @@ begin
       twsStretch: RSBmp.DrawTo(WPBmp, Rect(0, 0, w, h));
       twsCenter: RSBmp.DrawTo(WPBmp, WPBmp.Width div 2 - RSBmp.Width div 2,
           WPBmp.Height div 2 - RSBmp.Height div 2);
-      twsScale:
-        begin
+      twsScale: begin
           if ((w2 <> 0) and (h2 <> 0)) then begin
             if w2 / h2 = w / h then
               RSBmp.Drawto(WPBmp, Rect(0, 0, w, h))
             else if (w2 / h2) > (w / h) then
               RSBmp.DrawTo(WPBmp, Rect(0, round(h / 2 - (w / w2) * h2 / 2), w, round(h / 2 + (w / w2) * h2 / 2)))
-            else RSBmp.DrawTo(WPBmp, Rect(round(w / 2 - (h / h2) * w2 / 2), 0, round(w / 2 + (h / h2) * w2 / 2), h));
+            else
+              RSBmp.DrawTo(WPBmp, Rect(round(w / 2 - (h / h2) * w2 / 2), 0, round(w / 2 + (h / h2) * w2 / 2), h));
           end;
         end;
       twsTile:
@@ -392,7 +435,8 @@ begin
     lblWpColorDet.Font.Color := clGrayText;
 
     if pnlMonitor.Visible then
-      Self.Height := 600 else
+      Self.Height := 600
+    else
       Self.Height := 500;
 
     CenterUpdateSize;
@@ -403,16 +447,17 @@ end;
 
 procedure TfrmWPSettings.UpdateWPItemFromGuid;
 begin
-  if FCurrentWP = nil then exit;
+  if FCurrentWP = nil then
+    exit;
 
   if rdoWpAlignCenter.Checked then
-    FCurrentWP.Size := twsCenter else
-    if rdoWpAlignScale.Checked then
-      FCurrentWP.Size := twsScale else
-      if rdoWpAlignStretch.Checked then
-        FCurrentWP.Size := twsStretch else
-        if rdoWpAlignTile.Checked then
-          FCurrentWP.Size := twsTile;
+    FCurrentWP.Size := twsCenter
+  else if rdoWpAlignScale.Checked then
+    FCurrentWP.Size := twsScale
+  else if rdoWpAlignStretch.Checked then
+    FCurrentWP.Size := twsStretch
+  else if rdoWpAlignTile.Checked then
+    FCurrentWP.Size := twsTile;
 
   FCurrentWP.MirrorHoriz := chkWpMirrorHoriz.Checked;
   FCurrentWP.MirrorVert := chkWpMirrorVert.Checked;
@@ -515,7 +560,8 @@ var
   i: integer;
   os: boolean;
 begin
-  if FCurrentWP = nil then exit;
+  if FCurrentWP = nil then
+    exit;
 
   os := FCurrentWP.WPLoaded;
   loaded := False;
@@ -525,8 +571,7 @@ begin
   SList.Add(edtWpFile.text);
   SList.Add(SharpApi.GetSharpeDirectory + edtWpFile.text);
   for i := 0 to SList.Count - 1 do
-    if FileExists(SList[i]) then
-    try
+    if FileExists(SList[i]) then try
       FCurrentWP.FileName := SList[i];
       FCurrentWP.LoadFromFile;
       exists := True;
@@ -535,24 +580,15 @@ begin
     except
     end;
   SList.Free;
-  if not loaded then
-  begin
-    if not exists then
-    begin
+  if not loaded then begin
+    if not exists then begin
       FCurrentWP.FileName := edtWpFile.Text;
       FCurrentWP.LoadFromFile;
     end;
-
-    if loaded <> os then
-    begin
-      RenderPreview;
-      CenterUpdatePreview;
-    end;
-  end else
-  begin
-    RenderPreview;
-    CenterUpdatePreview;
   end;
+
+  RenderPreview;
+  CenterUpdatePreview;
   CenterDefineSettingsChanged;
 end;
 

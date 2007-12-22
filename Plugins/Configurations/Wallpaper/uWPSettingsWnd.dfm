@@ -317,7 +317,6 @@ object frmWPSettings: TfrmWPSettings
           Caption = 'Tile'
           TabOrder = 3
           OnClick = AlignmentChangeEvent
-          ExplicitLeft = 208
         end
       end
       object Panel8: TPanel

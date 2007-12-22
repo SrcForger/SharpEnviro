@@ -378,7 +378,7 @@ end;
 
 procedure UpdatePreview(var ABmp: TBitmap32);
 begin
-  if frmWPSettings.FCurrentWP = nil then
+  if ((frmWPSettings.FCurrentWP = nil) or (frmWPSettings.FCurrentWP.FileName = '')) then
   begin
     ABmp.SetSize(0, 0);
     exit;
