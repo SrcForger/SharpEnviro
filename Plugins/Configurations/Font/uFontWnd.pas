@@ -28,12 +28,38 @@ unit uFontWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, uSEListboxPainter, JclFileUtils,
-  uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
-  SharpEListBox, SharpEListBoxEx, GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit, SharpEUIC,
-  SharpEFontSelectorFontList, JvPageList, JvExControls;
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Math,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  JvSimpleXml,
+  uSEListboxPainter,
+  JclFileUtils,
+  uSharpCenterPluginTabList,
+  uSharpCenterCommon,
+  ImgList,
+  PngImageList,
+  SharpEListBox,
+  SharpEListBoxEx,
+  GR32,
+  GR32_PNG,
+  SharpApi,
+  ExtCtrls,
+  Menus,
+  JclStrings,
+  GR32_Image,
+  SharpEGaugeBoxEdit,
+  SharpEUIC,
+  SharpEFontSelectorFontList,
+  JvPageList,
+  JvExControls;
 
 type
   TStringObject = class(TObject)
@@ -84,7 +110,6 @@ type
     procedure sgb_sizeChangeValue(Sender: TObject; Value: Integer);
     procedure cbxFontNameDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
-    procedure FormDestroy(Sender: TObject);
     procedure cbxFontNameChange(Sender: TObject);
     procedure sgb_alphaChangeValue(Sender: TObject; Value: Integer);
     procedure cb_shadowClick(Sender: TObject);
@@ -95,13 +120,17 @@ type
     procedure sgb_shadowalphaChangeValue(Sender: TObject; Value: Integer);
     procedure FormShow(Sender: TObject);
     procedure UIC_Reset(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
-    FFontList : TFontList;
+    FFontList: TFontList;
+    FPluginID: string;
   public
     sTheme: string;
     procedure SaveSettings;
     procedure RefreshFontList;
-    property FontList : TFontList read FFontList;
+    procedure LoadSettings;
+
+    property PluginID: string read FPluginID write FPluginID;
   end;
 
 var
@@ -109,7 +138,8 @@ var
 
 implementation
 
-uses SharpThemeApi, SharpCenterApi;
+uses SharpThemeApi,
+  SharpCenterApi;
 
 {$R *.dfm}
 
@@ -121,17 +151,14 @@ var
   i: integer;
   DuplicateCheck: Integer;
 begin
-  FFontList.List.Clear;
-
   cbxFontName.Items.Clear;
   try
-    FFontList.RefreshFontInfo;
-    for i := 0 To pred(FFontList.List.Count) do begin
+    for i := 0 to pred(FFontList.List.Count) do begin
       fi := TFontInfo(FFontList.List.Objects[i]);
       DuplicateCheck := cbxFontName.Items.IndexOf(fi.FullName);
 
       if DuplicateCheck = -1 then
-      cbxFontName.Items.Add(FFontList.List.Strings[i]);
+        cbxFontName.Items.AddObject(FFontList.List.Strings[i], fi);
     end;
   finally
     cbxFontName.ItemIndex := cbxFontName.Items.IndexOf('Arial');
@@ -148,26 +175,25 @@ begin
   XML := TJvSimpleXML.Create(nil);
   try
     XML.Root.Name := 'ThemeFontSettings';
-    with XML.Root.Items do
-    begin
-      Add('ModSize',UIC_Size.HasChanged);
-      Add('ModName',UIC_FontType.HasChanged);
-      Add('ModAlpha',UIC_Alpha.HasChanged);
-      Add('ModUseShadow',UIC_Shadow.HasChanged);
-      Add('ModShadowType',UIC_ShadowType.HasChanged);
-      Add('ModShadowAlpha',UIC_ShadowAlpha.HasChanged);
-      Add('ModBold',UIC_Bold.HasChanged);
-      Add('ModItalic',UIC_Italic.HasChanged);
-      Add('ModUnderline',UIC_Underline.HasChanged);
-      Add('ValueSize',sgb_size.Value);
-      Add('ValueName',cbxFontName.Text);
-      Add('ValueAlpha',sgb_Alpha.value);
-      Add('ValueUseShadow',cb_Shadow.checked);
-      Add('ValueShadowType',cb_shadowtype.ItemIndex);
-      Add('ValueShadowAlpha',sgb_shadowalpha.Value);
-      Add('ValueBold',cb_bold.checked);
-      Add('ValueItalic',cb_italic.checked);
-      Add('ValueUnderline',cb_underline.checked);
+    with XML.Root.Items do begin
+      Add('ModSize', UIC_Size.HasChanged);
+      Add('ModName', UIC_FontType.HasChanged);
+      Add('ModAlpha', UIC_Alpha.HasChanged);
+      Add('ModUseShadow', UIC_Shadow.HasChanged);
+      Add('ModShadowType', UIC_ShadowType.HasChanged);
+      Add('ModShadowAlpha', UIC_ShadowAlpha.HasChanged);
+      Add('ModBold', UIC_Bold.HasChanged);
+      Add('ModItalic', UIC_Italic.HasChanged);
+      Add('ModUnderline', UIC_Underline.HasChanged);
+      Add('ValueSize', sgb_size.Value);
+      Add('ValueName', cbxFontName.Text);
+      Add('ValueAlpha', sgb_Alpha.value);
+      Add('ValueUseShadow', cb_Shadow.checked);
+      Add('ValueShadowType', cb_shadowtype.ItemIndex);
+      Add('ValueShadowAlpha', sgb_shadowalpha.Value);
+      Add('ValueBold', cb_bold.checked);
+      Add('ValueItalic', cb_italic.checked);
+      Add('ValueUnderline', cb_underline.checked);
     end;
     XML.SaveToFile(sDir + '\Font.xml~');
 
@@ -213,32 +239,29 @@ end;
 procedure TfrmFont.cbxFontNameDrawItem(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
 var
-  fi:TFontInfo;
-  imageindex : integer;
-  itemindex  : integer;
-  textheight : integer;
+  fi: TFontInfo;
+  imageindex: integer;
+  textheight: integer;
 begin
   cbxFontName.canvas.fillrect(rect);
-
-  itemindex := FFontList.List.IndexOf(cbxFontName.Items.Strings[index]);
-  fi := TFontInfo(FFontList.List.Objects[itemindex]);
+  fi := TFontInfo(cbxFontName.Items.Objects[Index]);
 
   imageindex := -1;
   case fi.FontType of
-    ftTrueType : imageindex := 0;
-    ftRaster   : imageindex := 1;
-    ftDevice   : imageindex := 2;
+    ftTrueType: imageindex := 0;
+    ftRaster: imageindex := 1;
+    ftDevice: imageindex := 2;
   end;
 
-  imlFontIcons.Draw(cbxFontName.Canvas,rect.left,rect.top,imageindex);
+  imlFontIcons.Draw(cbxFontName.Canvas, rect.left, rect.top, imageindex);
 
   cbxFontName.Canvas.Font.Name := fi.ShortName;
   textheight := cbxFontName.Canvas.TextHeight(fi.FullName);
 
   if textheight > cbxFontName.ItemHeight then
-     cbxFontName.Canvas.Font.Name := 'Arial';
+    cbxFontName.Canvas.Font.Name := 'Arial';
 
-  cbxFontName.canvas.textout(rect.left+imlFontIcons.width+2,rect.top,fi.FullName);
+  cbxFontName.canvas.textout(rect.left + imlFontIcons.width + 2, rect.top, fi.FullName);
 end;
 
 procedure TfrmFont.cb_boldClick(Sender: TObject);
@@ -258,7 +281,8 @@ begin
   UIC_Shadow.UpdateStatus;
   if cb_shadow.Checked then
     textpanel.Show
-    else textpanel.Hide;
+  else
+    textpanel.Hide;
   SharpCenterApi.CenterDefineSettingsChanged;
 end;
 
@@ -278,6 +302,7 @@ procedure TfrmFont.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := true;
   FFontList := TFontList.Create;
+  FFontList.RefreshFontInfo;
   RefreshFontList;
 end;
 
@@ -290,7 +315,8 @@ procedure TfrmFont.FormShow(Sender: TObject);
 begin
   if cb_shadow.Checked then
     textpanel.Show
-    else textpanel.Hide;
+  else
+    textpanel.Hide;
 
   Label4.Font.Color := clGray;
   Label5.Font.Color := clGray;
@@ -300,6 +326,92 @@ begin
   lb_shadowtype.Font.Color := clGray;
   lb_shadowalpha.Font.Color := clGray;
 
+end;
+
+procedure TfrmFont.LoadSettings;
+var
+  XML: TJvSimpleXML;
+  sFontName: string;
+  n: integer;
+  s: string;
+begin
+  sFontName := XmlGetFontFile(FPluginID);
+  if FileExists(sFontName) then begin
+    XML := TJvSimpleXML.Create(nil);
+    cb_Underline.OnClick := nil;
+    cb_Italic.OnClick := nil;
+    cb_bold.OnClick := nil;
+    cb_shadow.OnClick := nil;
+
+    try
+      try
+        XML.LoadFromFile(sFontName);
+        with frmFont do
+          with XML.Root.Items do begin
+            if BoolValue('ModSize', False) then begin
+              sgb_size.Value := IntValue('ValueSize', sgb_size.Value);
+              UIC_size.UpdateStatus;
+            end;
+
+            if BoolValue('ModName', False) then begin
+              UIC_FontType.HasChanged := True;
+              s := Value('ValueName', '');
+              for n := 0 to cbxFontName.Items.Count - 1 do
+                if CompareText(TFontInfo(cbxFontName.Items.Objects[n]).FullName, s) = 0 then begin
+                  cbxFontName.ItemIndex := n;
+                  break;
+                end;
+            end;
+            if cbxFontName.ItemIndex = -1 then
+              cbxFontName.ItemIndex := cbxFontName.Items.IndexOf('arial');
+
+            if BoolValue('ModAlpha', False) then begin
+              sgb_Alpha.value := IntValue('ValueAlpha', sgb_Alpha.value);
+              UIC_Alpha.UpdateStatus;
+            end;
+
+            if BoolValue('ModUseShadow', False) then begin
+              UIC_Shadow.HasChanged := True;
+              cb_shadow.Checked := BoolValue('ValueUseShadow', cb_shadow.Checked);
+            end;
+
+            if BoolValue('ModShadowType', False) then begin
+              UIC_ShadowType.HasChanged := True;
+              cb_shadowtype.ItemIndex := Max(0, Min(3, IntValue('ValueShadowType', 0)));
+            end;
+
+            if BoolValue('ModShadowAlpha', False) then begin
+              sgb_shadowAlpha.Value := IntValue('ValueShadowAlpha', sgb_shadowAlpha.Value);
+              UIC_ShadowAlpha.UpdateStatus;
+            end;
+
+            if BoolValue('ModBold', False) then begin
+              UIC_Bold.HasChanged := True;
+              cb_bold.checked := BoolValue('ValueBold', cb_bold.checked);
+            end;
+
+            if BoolValue('ModItalic', False) then begin
+              UIC_Italic.HasChanged := True;
+              cb_italic.checked := BoolValue('ValueItalic', cb_bold.checked);
+            end;
+
+            if BoolValue('ModUnderline', False) then begin
+              UIC_Underline.HasChanged := True;
+              cb_underline.checked := BoolValue('ValueUnderline', cb_bold.checked);
+            end;
+          end;
+      except
+      end;
+
+    finally
+      XML.Free;
+
+      cb_Underline.OnClick := cb_UnderlineClick;
+      cb_Italic.OnClick := cb_ItalicClick;
+      cb_bold.OnClick := cb_boldClick;
+      cb_shadow.OnClick := cb_shadowClick;
+    end;
+  end;
 end;
 
 end.

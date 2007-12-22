@@ -26,7 +26,6 @@ object frmFont: TfrmFont
     BevelOuter = bvNone
     Color = clWindow
     TabOrder = 0
-    ExplicitTop = 21
   end
   object plMain: TJvPageList
     Left = 0
@@ -36,15 +35,12 @@ object frmFont: TfrmFont
     ActivePage = pagFont
     PropagateEnable = False
     Align = alClient
-    ExplicitTop = 21
-    ExplicitHeight = 415
     object pagFont: TJvStandardPage
       Left = 0
       Top = 0
       Width = 434
       Height = 436
       Caption = 'pagFont'
-      ExplicitHeight = 415
       object Label4: TLabel
         AlignWithMargins = True
         Left = 26
@@ -433,7 +429,6 @@ object frmFont: TfrmFont
       Width = 434
       Height = 436
       Caption = 'pagFontShadow'
-      ExplicitHeight = 415
       object Label8: TLabel
         AlignWithMargins = True
         Left = 26
@@ -504,7 +499,6 @@ object frmFont: TfrmFont
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
-        ExplicitHeight = 349
         object lb_shadowtype: TLabel
           AlignWithMargins = True
           Left = 26

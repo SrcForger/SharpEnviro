@@ -65,11 +65,6 @@ begin
 end;
 
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  XML: TJvSimpleXML;
-  sFontName: string;
-  n: integer;
-  s: string;
 begin
   if frmFont = nil then
     frmFont := TfrmFont.Create(nil);
@@ -80,85 +75,7 @@ begin
   frmFont.Left := 2;
   frmFont.Top := 2;
   frmFont.BorderStyle := bsNone;
-
-  sFontName := XmlGetFontFile(APluginID);
-  if FileExists(sFontName) then begin
-    XML := TJvSimpleXML.Create(nil);
-    frmFont.cb_Underline.OnClick := nil;
-    frmFont.cb_Italic.OnClick := nil;
-    frmFont.cb_bold.OnClick := nil;
-    frmFont.cb_shadow.OnClick := nil;
-
-    try
-      try
-        XML.LoadFromFile(sFontName);
-        with frmFont do
-          with XML.Root.Items do begin
-            if BoolValue('ModSize', False) then begin
-              sgb_size.Value := IntValue('ValueSize', sgb_size.Value);
-              UIC_size.UpdateStatus;
-            end;
-
-            if BoolValue('ModName', False) then begin
-              UIC_FontType.HasChanged := True;
-              s := Value('ValueName', '');
-              for n := 0 to FontList.List.Count - 1 do
-                if CompareText(TFontInfo(FontList.List.Objects[n]).FullName, s) = 0 then begin
-                  cbxFontName.ItemIndex := n;
-                  break;
-                end;
-            end;
-            if cbxFontName.ItemIndex = -1 then
-              cbxFontName.ItemIndex := cbxFontName.Items.IndexOf('arial');
-
-            if BoolValue('ModAlpha', False) then begin
-              sgb_Alpha.value := IntValue('ValueAlpha', sgb_Alpha.value);
-              UIC_Alpha.UpdateStatus;
-            end;
-
-            if BoolValue('ModUseShadow', False) then begin
-              UIC_Shadow.HasChanged := True;
-              cb_shadow.Checked := BoolValue('ValueUseShadow', cb_shadow.Checked);
-            end;
-
-            if BoolValue('ModShadowType', False) then begin
-              UIC_ShadowType.HasChanged := True;
-              cb_shadowtype.ItemIndex := Max(0, Min(3, IntValue('ValueShadowType', 0)));
-            end;
-
-            if BoolValue('ModShadowAlpha', False) then begin
-              sgb_shadowAlpha.Value := IntValue('ValueShadowAlpha', sgb_shadowAlpha.Value);
-              UIC_ShadowAlpha.UpdateStatus;
-            end;
-
-            if BoolValue('ModBold', False) then begin
-              UIC_Bold.HasChanged := True;
-              cb_bold.checked := BoolValue('ValueBold', cb_bold.checked);
-            end;
-
-            if BoolValue('ModItalic', False) then begin
-              UIC_Italic.HasChanged := True;
-              cb_italic.checked := BoolValue('ValueItalic', cb_bold.checked);
-            end;
-
-            if BoolValue('ModUnderline', False) then begin
-              UIC_Underline.HasChanged := True;
-              cb_underline.checked := BoolValue('ValueUnderline', cb_bold.checked);
-            end;
-          end;
-      except
-      end;
-
-    finally
-      XML.Free;
-
-      frmFont.cb_Underline.OnClick := frmFont.cb_UnderlineClick;
-      frmFont.cb_Italic.OnClick := frmFont.cb_ItalicClick;
-      frmFont.cb_bold.OnClick := frmFont.cb_boldClick;
-      frmFont.cb_shadow.OnClick := frmFont.cb_shadowClick;
-    end;
-
-  end;
+  frmFont.PluginID := APluginID;
 
   frmFont.Show;
   result := frmFont.Handle;
@@ -183,7 +100,6 @@ begin
   ATitle := Format('Skin Font Configuration for "%s"',[APluginID]);
   ADescription := 'Override font options for the selected skin.';
 end;
-
 
 procedure GetCenterScheme(var ABackground: TColor;
   var AItemColor: TColor; var AItemSelectedColor: TColor);
