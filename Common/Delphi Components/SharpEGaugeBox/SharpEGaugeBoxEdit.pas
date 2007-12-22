@@ -53,6 +53,7 @@ type
 type
   TSharpeGaugeBox = class(TCustomPanel)
   private
+    FFrmSharpeGaugeBox: TObject;
     FBtnGauge: TSpeedButton;
     FValueEdit: TEdit;
     FBackPanel: TPanel;
@@ -129,7 +130,7 @@ implementation
 
 uses
   SharpeGaugeBoxWnd;
-
+  
 procedure Register;
 begin
   RegisterComponents('SharpE_Common', [TSharpeGaugeBox]);
@@ -270,20 +271,23 @@ begin
   UpdateValue;
   UpdateEditBox;
 
-  if not (assigned(FrmSharpeGaugeBox)) then
-    FrmSharpeGaugeBox := TFrmSharpeGaugeBox.Create(Self);
+  if not (assigned(FFrmSharpeGaugeBox)) then
+    FFrmSharpeGaugeBox := TFrmSharpeGaugeBox.Create(Self);
 
-  FrmSharpeGaugeBox.GaugeBoxEdit := Self;
-  FrmSharpeGaugeBox.NoUpdate := True;
-  tmpGaugeBar := FrmSharpeGaugeBox.GetGaugeBar;
-  tmpGaugeBar.Max := FMax;
-  tmpGaugeBar.Position := FValue;
-  tmpGaugeBar.Min := FMin;
-  FrmSharpeGaugeBox.NoUpdate := False;
-  FrmSharpeGaugeBox.lblGauge.Caption := FDescription;
+  with FFrmSharpeGaugeBox as TFrmSharpeGaugeBox do
+  begin
+    GaugeBoxEdit := Self;
+    NoUpdate := True;
+    tmpGaugeBar := GetGaugeBar;
+    tmpGaugeBar.Max := FMax;
+    tmpGaugeBar.Position := FValue;
+    tmpGaugeBar.Min := FMin;
+    NoUpdate := False;
+    lblGauge.Caption := FDescription;
+  end;
 
-  PopAnimateWindow(Self, FrmSharpeGaugeBox);
-  FrmSharpeGaugeBox.BorderPanel.SetFocus;
+  PopAnimateWindow(Self, TFrmSharpeGaugeBox(FFrmSharpeGaugeBox));
+   TFrmSharpeGaugeBox(FFrmSharpeGaugeBox).BorderPanel.SetFocus;
 end;
 
 procedure TSharpeGaugeBox.SetMax(const Value: Integer);
@@ -473,7 +477,8 @@ begin
      FreeAndNil(FValueEdit);
   if assigned(FBackPanel) then
      FreeAndNil(FBackPanel);
-
+  if assigned(FFrmSharpeGaugeBox) then
+     FreeAndNil(FFrmSharpeGaugeBox);
 end;
 
 end.

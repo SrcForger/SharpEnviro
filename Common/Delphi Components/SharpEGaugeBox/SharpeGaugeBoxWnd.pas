@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, SharpeGaugeBoxEdit, StdCtrls, ComCtrls,
   JvExComCtrls, JvComCtrls, uVistaFuncs, JvExExtCtrls, JvPanel, JvComponent,
-  JvExtComponent;
+  JvExtComponent, SharpApi;
 
 type
   TFrmSharpeGaugeBox = class(TForm)
@@ -25,6 +25,9 @@ type
     procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
     procedure FormDeactivate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  protected
+    procedure WMShellMessage(var msg : TMessagE); message WM_SHARPSHELLMESSAGE;
   private
     { Private declarations }
   public
@@ -40,24 +43,32 @@ var
 
 implementation
 
-uses
-  SharpAPI;
-
 {$R *.dfm}
 
 
 procedure TFrmSharpeGaugeBox.FormDeactivate(Sender: TObject);
 begin
-  Self.Hide;
-
   if GaugeBoxEdit <> nil then begin
     GaugeBoxEdit.UpdateValue;
   end;
+
+  Self.Close;
 end;
 
 function TFrmSharpeGaugeBox.GetGaugeBar: TJvTrackBar;
 begin
   Result := GaugeBar;
+end;
+
+procedure TFrmSharpeGaugeBox.WMShellMessage(var msg: TMessagE);
+begin
+  if (msg.lParam = Integer(Handle)) or (msg.lparam = Integer(Application.Handle)) then
+    exit;
+
+  case msg.WParam of
+    HSHELL_WINDOWACTIVATED : FormDeactivate(self);
+    HSHELL_WINDOWACTIVATED + 32768 : FormDeactivate(self);
+  end;
 end;
 
 procedure TFrmSharpeGaugeBox.FormMouseWheelUp(Sender: TObject;
@@ -95,12 +106,20 @@ begin
   BorderPanel.SetFocus;
 end;
 
+procedure TFrmSharpeGaugeBox.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  SharpApi.UnRegisterShellHookReceiver(Handle);
+end;
+
 procedure TFrmSharpeGaugeBox.FormCreate(Sender: TObject);
 begin
   NoUpdate := False;
 
   // remove the window from the task list
   Setwindowlong(handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
+
+  // register shell hook (for close notification)
 end;
 
 procedure TFrmSharpeGaugeBox.GaugeBarMouseDown(Sender: TObject;
@@ -112,6 +131,7 @@ end;
 procedure TFrmSharpeGaugeBox.FormShow(Sender: TObject);
 begin
   SetVistaFonts(Self);
+  SharpApi.RegisterShellHookReceiver(Handle);
 end;
 
 end.

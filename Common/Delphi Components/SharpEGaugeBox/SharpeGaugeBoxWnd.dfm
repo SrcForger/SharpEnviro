@@ -7,6 +7,7 @@ object FrmSharpeGaugeBox: TFrmSharpeGaugeBox
   Color = clBtnFace
   ParentFont = True
   OldCreateOrder = False
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   OnKeyDown = FormKeyDown
