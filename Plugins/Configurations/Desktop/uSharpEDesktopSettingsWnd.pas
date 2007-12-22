@@ -28,12 +28,41 @@ unit uSharpEDesktopSettingsWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi,
-  JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
-  GR32_Image, GR32, GR32_PNG, SharpEColorEditor, SharpESwatchManager,
-  SharpEColorEditorEx, SharpEFontSelectorFontList, ImgList, Mask, JvExMask,
-  JvSpin, SharpEGaugeBoxEdit, SharpERoundPanel, SharpEUIC, JvExStdCtrls,
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  JvSimpleXml,
+  Menus,
+  ComCtrls,
+  SharpApi,
+  JvExComCtrls,
+  JvComCtrls,
+  ExtCtrls,
+  JvPageList,
+  JvExControls,
+  JvComponent,
+  GR32_Image,
+  GR32,
+  GR32_PNG,
+  SharpEColorEditor,
+  SharpESwatchManager,
+  SharpEColorEditorEx,
+  SharpEFontSelectorFontList,
+  ImgList,
+  Mask,
+  JvExMask,
+  JvSpin,
+  SharpEGaugeBoxEdit,
+  SharpERoundPanel,
+  SharpEUIC,
+  JvExStdCtrls,
   JvCheckBox;
 
 type
@@ -195,7 +224,8 @@ var
   TempBmp: TBitmap32;
   b: boolean;
 begin
-  if Bmp = nil then exit;
+  if Bmp = nil then
+    exit;
 
   Bmp.DrawMode := dmBlend;
   Bmp.CombineMode := cmMerge;
@@ -250,13 +280,16 @@ begin
     sgbiconsize.Enabled := rdoIconCustom.checked;
     if rdoIcon32.Checked then
       icon32.Bitmap.Assign(FBlue32)
-    else icon32.Bitmap.Assign(FWhite32);
+    else
+      icon32.Bitmap.Assign(FWhite32);
     if rdoIcon48.Checked then
       icon48.Bitmap.Assign(FBlue32)
-    else icon48.Bitmap.Assign(FWhite32);
+    else
+      icon48.Bitmap.Assign(FWhite32);
     if rdoIcon64.Checked then
       icon64.Bitmap.Assign(FBlue32)
-    else icon64.Bitmap.Assign(FWhite32);
+    else
+      icon64.Bitmap.Assign(FWhite32);
 
     // Icon Color Blend
     lblColorBlendDet.Enabled := chkColorBlend.Checked;
@@ -281,7 +314,8 @@ begin
 
     // Update Page Height
     if (chkIconShadow.Checked or chkColorBlend.Checked) then
-      Self.Height := 580 else
+      Self.Height := 580
+    else
       Self.Height := 360;
 
     // Refresh size
@@ -327,10 +361,12 @@ begin
     if chkAnim.Checked then begin
 
       if sceAnimColor.Visible then
-      Self.Height := 580 else
-      Self.Height := 360;
+        Self.Height := 580
+      else
+        Self.Height := 360;
 
-    end else
+    end
+    else
       Self.Height := 50;
 
     // Refresh size
@@ -391,7 +427,8 @@ begin
 
     // Update Page Height
     if chkFontShadow.Checked then
-      Self.Height := 440 else
+      Self.Height := 440
+    else
       Self.Height := 50;
 
     CenterUpdateSize;
@@ -457,11 +494,13 @@ end;
 procedure TfrmDesktopSettings.UpdatePageUi;
 begin
   if pagIcon.Visible then
-    UpdateIconPage else
-    if pagFont.Visible then
-      UpdateFontPage else
-      if pagFontShadow.Visible then
-        UpdateFontShadowPage;
+    UpdateIconPage
+  else if pagFont.Visible then
+    UpdateFontPage
+  else if pagFontShadow.Visible then
+    UpdateFontShadowPage
+  else if pagAnimation.Visible then
+    UpdateAnimationPage;
 
 end;
 
@@ -548,6 +587,7 @@ end;
 procedure TfrmDesktopSettings.UpdateFontShadowPageEvent(Sender: TObject);
 begin
   UpdateFontShadowPage;
+  SendUpdate;
 end;
 
 procedure TfrmDesktopSettings.UpdateFontPageEvent(Sender: TObject);

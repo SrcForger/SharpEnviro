@@ -22,7 +22,7 @@ object frmDesktopSettings: TfrmDesktopSettings
     Top = 0
     Width = 595
     Height = 567
-    ActivePage = pagAnimation
+    ActivePage = pagFont
     PropagateEnable = False
     Align = alClient
     object pagIcon: TJvStandardPage
