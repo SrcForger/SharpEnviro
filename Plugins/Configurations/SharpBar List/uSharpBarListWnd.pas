@@ -329,6 +329,7 @@ procedure TfrmBarList.lbBarListGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmpBar: TBarItem;
+  s: String;
 begin
 
   tmpBar := TBarItem(AItem.Data);
@@ -337,10 +338,13 @@ begin
 
   case ACol of
     colName: begin
+        s := 'ID: ' + IntToStr(tmpBar.BarID);
+        if tmpBar.Name <> '' then
+          s := tmpBar.Name;
         if tmpBar.ModuleCount = 0 then
-          AColText := tmpBar.Name
+          AColText := s
         else if tmpBar.ModuleCount > 0 then
-          AColText := format('%s (%d)<br><font color="clGray">%s', [tmpBar.Name, tmpbar.ModuleCount,
+          AColText := format('%s (%d)<br><font color="clGray">%s', [s, tmpbar.ModuleCount,
             tmpBar.Modules]);
       end;
     colStartStop: begin
