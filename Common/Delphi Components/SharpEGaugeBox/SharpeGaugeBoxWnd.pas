@@ -38,9 +38,6 @@ type
     
   end;
 
-var
-  FrmSharpeGaugeBox: TFrmSharpeGaugeBox;
-
 implementation
 
 {$R *.dfm}
