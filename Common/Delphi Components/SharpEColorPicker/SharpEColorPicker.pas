@@ -388,8 +388,7 @@ var
   s:String;
 begin
   s := GetCurrentSharpEThemeName;
-  //FSchemeList.Load(s);
-  FSchemeManager.Theme := s;
+  FSchemeManager.PluginID := s;
 end;
 
 procedure TCustomSharpeColorPicker.SetBackgroundColor(const Value: TColor);
