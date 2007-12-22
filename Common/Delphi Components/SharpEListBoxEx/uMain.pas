@@ -20,17 +20,19 @@ type
       var Height: Integer);
 
     procedure Button1Click(Sender: TObject);
-    procedure SharpEListBoxEx1GetCellText(const ACol: Integer;
+    procedure SharpEListBoxEx1GetCellText(Sender: Tobject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
-    procedure SharpEListBoxEx1GetCellImageIndex(const ACol: Integer;
+    procedure SharpEListBoxEx1GetCellImageIndex(Sender: Tobject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
     procedure Button2Click(Sender: TObject);
-    procedure SharpEListBoxEx1GetCellClickable(const ACol: Integer;
+    procedure SharpEListBoxEx1GetCellClickable(Sender: Tobject; const ACol: Integer;
       AItem: TSharpEListItem; var AClickable: Boolean);
+    procedure SharpEListBoxEx1DblClickItem(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem);
   private
     { Private declarations }
-    Procedure GetCellCursor(const ACol:Integer; AItem:TSharpEListItem; var ACursor:TCursor);
+    Procedure GetCellCursor(Sender: Tobject; const ACol:Integer; AItem:TSharpEListItem; var ACursor:TCursor);
     public
     { Public declarations }
   end;
@@ -65,21 +67,27 @@ begin
   SharpEListBoxEx1.Columns.Add(Self);
 end;
 
-procedure TForm1.GetCellCursor(const ACol: Integer; AItem: TSharpEListItem;
+procedure TForm1.GetCellCursor(Sender: Tobject; const ACol: Integer; AItem: TSharpEListItem;
   var ACursor: TCursor);
 begin
    if ACol >= 2 then
     ACursor := crHandPoint;
 end;
 
-procedure TForm1.SharpEListBoxEx1GetCellClickable(const ACol: Integer;
+procedure TForm1.SharpEListBoxEx1DblClickItem(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem);
+begin
+  ShowMessage('dbl');
+end;
+
+procedure TForm1.SharpEListBoxEx1GetCellClickable(Sender: Tobject; const ACol: Integer;
   AItem: TSharpEListItem; var AClickable: Boolean);
 begin
   if AItem.ID = 1 then
     AClickable := False;
 end;
 
-procedure TForm1.SharpEListBoxEx1GetCellImageIndex(const ACol: Integer;
+procedure TForm1.SharpEListBoxEx1GetCellImageIndex(Sender: Tobject; const ACol: Integer;
   AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
 begin
   if ACol = 0 then begin
@@ -88,7 +96,7 @@ begin
   end;
 end;
 
-procedure TForm1.SharpEListBoxEx1GetCellText(const ACol: Integer;
+procedure TForm1.SharpEListBoxEx1GetCellText(Sender: Tobject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 begin
   if ACol = 0 then AColText := '<b>Red Theme</b> By Lee Green<br><u>http://www.sharpenviro.com</u>';

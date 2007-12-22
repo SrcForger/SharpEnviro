@@ -150,6 +150,8 @@ type
 
   TSharpEListBoxExOnClickCheck = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem; var AChecked: Boolean) of object;
   TSharpEListBoxExOnClickItem = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem) of object;
+  TSharpEListBoxExOnDblClickItem = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem) of object;
+
   TSharpEListBoxExGetItemColor = procedure(Sender: TObject; const AItem: Integer; var AColor: TColor) of object;
   TSharpEListBoxExGetColCursor = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor) of object;
   TSharpEListBoxExGetColText = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem; var AColText: string) of object;
@@ -173,6 +175,7 @@ type
     FOnGetCellClickable: TSharpEListBoxExGetColClickable;
 
     FOnClickCheck: TSharpEListBoxExOnClickCheck;
+    FOnDblClickItem: TSharpEListBoxExOnDblClickItem;
     procedure ResizeEvent(Sender: TObject);
     procedure DrawItemEvent(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
@@ -228,7 +231,7 @@ type
   protected
     procedure Loaded; override;
     procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
-
+    procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
   published
     property Columns: TSharpEListBoxExColumns read FColumns write SetColumns stored True;
     property Colors: TSharpEListBoxExColors read FColors write SetColors stored True;
@@ -242,6 +245,7 @@ type
     property ItemHeight;
     property OnClickCheck: TSharpEListBoxExOnClickCheck read FOnClickCheck write FOnClickCheck;
     property OnClickItem: TSharpEListBoxExOnClickItem read FOnClickItem write FOnClickItem stored True;
+    property OnDblClickItem: TSharpEListBoxExOnDblClickItem read FOnDblClickItem write FOnDblClickItem stored True;
     property OnGetCellCursor: TSharpEListBoxExGetColCursor read FOnGetCellCursor write FOnGetCellCursor stored True;
     property OnGetCellColor: TSharpEListBoxExGetItemColor read FOnGetCellColor write FOnGetCellColor;
     property OnGetCellText: TSharpEListBoxExGetColText read FOnGetCellText write FOnGetCellText;
@@ -285,6 +289,35 @@ end;
 function TSharpEListBoxEx.AddColumn(AText: string): TSharpEListBoxExColumn;
 begin
   Result := FColumns.Add(Self);
+end;
+
+procedure TSharpEListBoxEx.CNCommand(var Message: TWMCommand);
+var
+  ItemNo: Integer;
+  tmpItem: TSharpEListItem;
+  tmpCol: TSharpEListBoxExColumn;
+  p: TPoint;
+begin
+  case Message.NotifyCode of
+    LBN_DBLCLK: begin
+
+        if Assigned(FOnDblClickItem) then begin
+          p := Self.ScreenToClient(mouse.CursorPos);
+          ItemNo := ItemAtPos(p, True);
+
+          if ItemNo <> -1 then begin
+            tmpItem := Self.Item[itemNo];
+            tmpCol := GetColumnAtMouseCursorPos;
+
+            if tmpCol <> nil then begin
+
+              if Assigned(FOnDblClickItem) then
+                FOnDblClickItem(Self, tmpCol.ID, tmpItem);
+            end;
+          end;
+        end;
+      end;
+  end;
 end;
 
 procedure TSharpEListBoxEx.CNDrawItem(var Message: TWMDrawItem);
