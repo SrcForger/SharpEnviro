@@ -96,6 +96,8 @@ type
     procedure cbalphablendClick(Sender: TObject);
     procedure sbgimagencblendalphaChangeValue(Sender: TObject; Value: Integer);
     procedure cbcolorblendClick(Sender: TObject);
+    procedure imagefileChange(Sender: TObject);
+    procedure imageurlChange(Sender: TObject);
   private
   public
     sObjectID: string;
@@ -179,6 +181,16 @@ end;
 procedure TfrmImage.IconColorsResize(Sender: TObject);
 begin
   UIC_Colors.Height := IconColors.Height + 8;
+end;
+
+procedure TfrmImage.imagefileChange(Sender: TObject);
+begin
+  SharpCenterApi.CenterDefineSettingsChanged;
+end;
+
+procedure TfrmImage.imageurlChange(Sender: TObject);
+begin
+  SharpCenterApi.CenterDefineSettingsChanged;
 end;
 
 end.

@@ -20,7 +20,7 @@ object frmImage: TfrmImage
     Top = 0
     Width = 427
     Height = 400
-    ActivePage = pagDisplay
+    ActivePage = pagImage
     PropagateEnable = False
     Align = alClient
     object pagImage: TJvStandardPage
@@ -122,6 +122,7 @@ object frmImage: TfrmImage
         Margins.Right = 26
         Align = alTop
         Color = clWindow
+        DoubleBuffered = False
         ExpandedHeight = 200
         TabItems = <
           item
@@ -204,6 +205,8 @@ object frmImage: TfrmImage
                 '.png;*.ico'
               DirectInput = False
               TabOrder = 0
+              OnChange = imagefileChange
+              ExplicitTop = 23
             end
           end
           object pageurl: TJvStandardPage
@@ -273,6 +276,7 @@ object frmImage: TfrmImage
               Align = alTop
               TabOrder = 0
               Text = 'http://'
+              OnChange = imageurlChange
             end
             object Panel1: TPanel
               Left = 0
