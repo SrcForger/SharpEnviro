@@ -64,7 +64,6 @@ type
     Settings: TMenuItem;
     DisableBarHiding1: TMenuItem;
     BarManagment1: TMenuItem;
-    CreateemptySharpBar1: TMenuItem;
     DelayTimer1: TTimer;
     DelayTimer3: TTimer;
     Clone1: TMenuItem;
@@ -85,7 +84,6 @@ type
     procedure DelayTimer1Timer(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure CreateemptySharpBar1Click(Sender: TObject);
     procedure SkinManager1SkinChanged(Sender: TObject);
     procedure DisableBarHiding1Click(Sender: TObject);
     procedure Right1Click(Sender: TObject);
@@ -119,6 +117,7 @@ type
     procedure OnSchemeSelectItemClick(Sender: TObject);
     procedure OnBackgroundPaint(Sender: TObject; Target: TBitmap32; x: integer);
     procedure AlwaysOnTop1Click(Sender: TObject);
+    procedure BarManagment1Click(Sender: TObject);
   private
     { Private-Deklarationen }
     FUser32DllHandle: THandle;
@@ -964,6 +963,7 @@ begin
         ModuleManager.ShowMiniThrobbers := Items.BoolValue('ShowMiniThrobbers', True);
         SharpEBar.AlwaysOnTop := Items.BoolValue('AlwaysOnTop', False);
 
+        ModuleManager.BarName := FBarName;        
         // Set Main Window Title to SharpBar_ID!
         // The bar with the given ID is now loaded =)
         Caption := 'SharpBar_' + inttostr(ID);
@@ -1086,6 +1086,14 @@ begin
   SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH, 0, 0);
   ModuleManager.FixModulePositions;
   ModuleManager.BroadcastPluginUpdate(suBackground);
+end;
+
+procedure TSharpBarMainForm.BarManagment1Click(Sender: TObject);
+var
+  cfile: string;
+begin
+  cfile := SharpApi.GetCenterDirectory + 'Toolbars.con';
+  SharpCenterApi.CenterCommand(sccLoadSetting,PChar(cfile),'');
 end;
 
 procedure TSharpBarMainForm.Bottom1Click(Sender: TObject);
@@ -1779,65 +1787,6 @@ begin
 
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
   ModuleManager.RefreshMiniThrobbers;
-end;
-
-procedure TSharpBarMainForm.CreateemptySharpBar1Click(Sender: TObject);
-var
-  BR: array of TBarRect;
-  Mon: TMonitor;
-  n: integer;
-  lp: TPoint;
-
-  function BarAtPos(x, y: integer): boolean;
-  var
-    i: integer;
-  begin
-    for i := 0 to High(BR) do
-      if PointInRect(Point(BR[i].R.Left + (BR[i].R.Right - BR[i].R.Left) div 2,
-        BR[i].R.Top + (BR[i].R.Bottom - BR[i].R.Top) div 2),
-        Mon.BoundsRect) then
-        if PointInRect(Point(x, y), BR[i].R)
-          or PointInRect(Point(x - 75, y), BR[i].R)
-          or PointInRect(Point(x + 75, y), BR[i].R) then begin
-          result := true;
-          exit;
-        end;
-    lp := Point(x, y);
-    result := false;
-  end;
-
-begin
-  setlength(BR, 0);
-  for n := 0 to SharpApi.GetSharpBarCount - 1 do begin
-    setlength(BR, length(BR) + 1);
-    BR[High(BR)] := SharpApi.GetSharpBarArea(n);
-  end;
-
-  lp := point(-1, -1);
-  for n := -1 to Screen.MonitorCount - 1 do begin
-    // start with the current monitor
-    if n = -1 then
-      Mon := Monitor
-    else
-      Mon := Screen.Monitors[n];
-    if (n <> -1) and (Mon = Monitor) then
-      Continue; // don't test the current monitor twice
-    if BarAtPos(Mon.Left, Mon.Top) then
-      if BarAtPos(Mon.Left + Mon.Width div 2, Mon.Top) then
-        if BarAtPos(Mon.Left + Mon.Width, Mon.Top) then
-          if BarAtPos(Mon.Left, Mon.Top + Mon.Height) then
-            if BarAtPos(Mon.Left + Mon.Width div 2, Mon.Top + Mon.Height) then
-              BarAtPos(Mon.Left + Mon.Width, Mon.Top + Mon.Height);
-    if (lp.x <> -1) and (lp.y <> -1) then
-      break;
-  end;
-  setlength(BR, 0);
-  if (lp.x = -1) and (lp.y = -1) then begin
-    ShowMessage('There is not enough free space left for another SharpBar');
-    exit;
-  end;
-
-  SharpApi.SharpExecute('SharpBar.exe -load:-1 -x:' + inttostr(lp.x) + ' -y:' + inttostr(lp.y));
 end;
 
 procedure TSharpBarMainForm.FormResize(Sender: TObject);

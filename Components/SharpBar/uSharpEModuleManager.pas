@@ -149,8 +149,7 @@ type
                      FShowMiniThrobbers : Boolean;
                      FShutdown          : Boolean;
                      FBarID             : integer;
-    FBarName: string;
-    FSharpEBar: String;
+                     FBarName           : string;
                      procedure SetShowMiniThrobbers(Value : Boolean);
                    public
                      constructor Create(pParent : hwnd;
