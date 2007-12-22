@@ -44,10 +44,10 @@ type
     procedure mDetailedChange(Sender: TObject);
     procedure mSummary_Change(Sender: TObject);
     procedure ctvProjectsSelectionChange(Sender: TObject);
-    procedure lbSummaryGetCellColor(const AItem: Integer; var AColor: TColor);
+    procedure lbSummaryGetCellColor(Sender: Tobject; const AItem: Integer; var AColor: TColor);
     procedure FormDestroy(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
-    procedure lbSummaryDblClickItem(const ACol: Integer;
+    procedure lbSummaryDblClickItem(Sender: Tobject; const ACol: Integer;
       AItem: TSharpEListItem);
   private
     procedure CompilerNewLine(Sender: TObject; CmdOutput: string);
@@ -89,7 +89,7 @@ begin
 end;
 
 
-procedure TfrmMain.lbSummaryDblClickItem(const ACol: Integer;
+procedure TfrmMain.lbSummaryDblClickItem(Sender: Tobject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
   sProjName: String;
@@ -117,7 +117,7 @@ begin
 
 end;
 
-procedure TfrmMain.lbSummaryGetCellColor(const AItem: Integer;
+procedure TfrmMain.lbSummaryGetCellColor(Sender: Tobject; const AItem: Integer;
   var AColor: TColor);
 begin
   if lbSummary.Item[AItem].ImageIndex = 0 then

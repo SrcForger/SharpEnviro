@@ -1212,15 +1212,14 @@ object frmMain: TfrmMain
       object tbMain: TToolBar
         AlignWithMargins = True
         Left = 9
-        Top = 452
+        Top = 454
         Width = 648
-        Height = 24
+        Height = 22
         Margins.Left = 9
         Margins.Bottom = 4
         Align = alBottom
         AutoSize = True
-        ButtonHeight = 24
-        ButtonWidth = 68
+        ButtonWidth = 64
         Caption = 'tbMain'
         EdgeInner = esNone
         EdgeOuter = esNone
@@ -1230,6 +1229,7 @@ object frmMain: TfrmMain
         ShowCaptions = True
         TabOrder = 0
         Transparent = False
+        ExplicitTop = 452
         object tbOpen: TToolButton
           Left = 0
           Top = 0
@@ -1238,14 +1238,14 @@ object frmMain: TfrmMain
           OnClick = tbOpenClick
         end
         object tbCompile: TToolButton
-          Left = 68
+          Left = 64
           Top = 0
           Caption = 'Compile'
           ImageIndex = 3
           OnClick = tbCompileClick
         end
         object tbClear: TToolButton
-          Left = 136
+          Left = 128
           Top = 0
           Caption = 'Clear'
           ImageIndex = 2
@@ -1257,12 +1257,13 @@ object frmMain: TfrmMain
         Left = 0
         Top = 0
         Width = 656
-        Height = 446
+        Height = 448
         Margins.Left = 0
         Margins.Top = 0
         Margins.Right = 4
         Align = alClient
         Anchors = [akLeft, akRight, akBottom]
+        DoubleBuffered = False
         ExpandedHeight = 200
         TabItems = <
           item
@@ -1293,13 +1294,13 @@ object frmMain: TfrmMain
         OnTabClick = stlMainTabClick
         DesignSize = (
           656
-          446)
+          448)
         object mDetailed: TJvMemo
           AlignWithMargins = True
           Left = 6
           Top = 30
           Width = 644
-          Height = 410
+          Height = 412
           Margins.Left = 6
           Margins.Top = 30
           Margins.Right = 6
@@ -1325,7 +1326,7 @@ object frmMain: TfrmMain
           Left = 6
           Top = 30
           Width = 644
-          Height = 410
+          Height = 412
           Margins.Left = 6
           Margins.Top = 30
           Margins.Right = 6
@@ -1337,9 +1338,16 @@ object frmMain: TfrmMain
               VAlign = taVerticalCenter
               ColumnAlign = calLeft
               StretchColumn = False
+              ColumnType = ctDefault
               Images = pilStatus
             end>
-          ItemHeight = 26
+          Colors.BorderColor = clBtnFace
+          Colors.BorderColorSelected = clBtnShadow
+          Colors.ItemColor = clWindow
+          Colors.ItemColorSelected = clBtnFace
+          Colors.CheckColorSelected = clBtnFace
+          Colors.CheckColor = 15528425
+          ItemHeight = 30
           OnDblClickItem = lbSummaryDblClickItem
           OnGetCellColor = lbSummaryGetCellColor
           AutosizeGrid = False
@@ -2964,6 +2972,7 @@ object frmMain: TfrmMain
       end>
     Left = 560
     Top = 408
+    Bitmap = {}
   end
   object pilStates: TPngImageList
     PngImages = <
@@ -3247,6 +3256,7 @@ object frmMain: TfrmMain
       end>
     Left = 560
     Top = 376
+    Bitmap = {}
   end
   object dlgSave: TSaveDialog
     DefaultExt = 'zip'
