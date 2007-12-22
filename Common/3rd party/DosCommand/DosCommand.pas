@@ -321,7 +321,6 @@ var
   bread: LongWord; //bytes read
   avail: LongWord; //bytes available
   Str, Last: string;
-  PStr: PChar;
   I, II: LongWord;
   eol, EndCR:boolean; // tk
 
@@ -735,9 +734,6 @@ end;
 procedure TDosCommand.SendLine(Value: string; Eol: Boolean);
 //const
   //EolCh: array[Boolean] of Char = (' ', '_');
-var
-  i, sp, L: Integer;
-  Str: String;
 begin
 //  Sync.BeginWrite ;
   try
