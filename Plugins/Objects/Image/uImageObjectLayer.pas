@@ -96,6 +96,9 @@ implementation
 
 procedure TImageLayer.StartHL;
 begin
+  if Locked then
+    exit;
+    
   if SharpThemeApi.GetDesktopAnimUseAnimations then
   begin
     FHLTimerI := 1;
