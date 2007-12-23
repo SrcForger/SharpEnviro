@@ -30,6 +30,7 @@ uses
   Messages,
   ShellAPI,
   SharpAPI,
+  SharpCenterApi,
   Classes,
   SysUtils,
   uComponentMan in 'uComponentMan.pas';
@@ -56,20 +57,20 @@ var
   i: Integer;
   bDebug: Boolean;
   bDoStartup: Boolean;
-  strExtension: String;
+  strExtension: string;
   bReboot: Boolean;
   wndDebug: Integer;
   lstComponents: TComponentList;
   hndWindow: THandle;
 
-procedure DebugMsg(Msg: String; MsgType: Integer = DMT_TRACE);
+procedure DebugMsg(Msg: string; MsgType: Integer = DMT_TRACE);
 begin
   SendDebugMessageEx(PChar('SharpCore'), PChar(Msg), 0, MsgType);
 end;
 
 procedure BuildMenu();
 var
-  strName: String;
+  strName: string;
   i: integer;
   modData: TComponentData;
 begin
@@ -77,8 +78,7 @@ begin
   menPopup := CreatePopupMenu; // Create menu and submenu for services
   menServices := CreatePopupMenu;
 
-  for i := 0 to lstComponents.Count - 1 do
-  begin
+  for i := 0 to lstComponents.Count - 1 do begin
     modData := TComponentData(lstComponents.Items[i]);
     strName := modData.MetaData.Name;
     if modData.MetaData.DataType = tteService then // we only want to list services
@@ -100,14 +100,19 @@ const
   StartFunc: TStartFunc = nil;
 begin
   result := 1;
-  modData.FileHandle := LoadLibrary(PChar(modData.FileName));
-  @StartFunc := GetProcAddress(modData.FileHandle, 'Start');
-  if Assigned(StartFunc) then
-  begin
-    StartFunc(hndWindow);
-    modData.Running := True;
-    CheckMenuItem(menServices, modData.ID, MF_CHECKED);
-    result := 0;
+
+  if Not(modData.Disabled) then begin
+
+    modData.FileHandle := LoadLibrary(PChar(modData.FileName));
+    @StartFunc := GetProcAddress(modData.FileHandle, 'Start');
+    if Assigned(StartFunc) then begin
+      StartFunc(hndWindow);
+      modData.Running := True;
+      CheckMenuItem(menServices, modData.ID, MF_CHECKED);
+      result := 0;
+    end;
+  end else begin
+    DebugMsg('Unable to start, as service is disabled');
   end;
 end;
 
@@ -119,8 +124,7 @@ const
 begin
   result := 1;
   @StopFunc := GetProcAddress(modData.FileHandle, 'Stop');
-  if Assigned(StopFunc) then
-  begin
+  if Assigned(StopFunc) then begin
     StopFunc();
     modData.Running := False;
     CheckMenuItem(menServices, modData.ID, MF_UNCHECKED);
@@ -134,29 +138,24 @@ var
   i: integer;
   modData: TComponentData;
 begin
-  for i := 0 to lstComponents.Count - 1 do
-  begin
+  for i := 0 to lstComponents.Count - 1 do begin
     modData := TComponentData(lstComponents.Items[i]);
-    if (modData.MetaData.DataType = tteService) and (modData.Priority > 0) then
-    begin
+    if (modData.MetaData.DataType = tteService) and (modData.Priority > 0) then begin
       Sleep(modData.Delay);
       //Sleep(5000);
       if modData.MetaData.Name = 'Startup' then
-        if bDoStartup then
-        begin
+        if bDoStartup then begin
           DebugMsg('Starting ' + modData.MetaData.Name);
           StartService(modData);
         end
         else
           DebugMsg('Skipping startup service')
-      else
-      begin
+      else begin
         DebugMsg('Starting ' + modData.MetaData.Name);
         StartService(modData);
       end;
     end
-    else if (modData.MetaData.DataType = tteComponent) and (modData.Priority > 0) then
-    begin
+    else if (modData.MetaData.DataType = tteComponent) and (modData.Priority > 0) then begin
       Sleep(modData.Delay);
       //Sleep(5000);
       DebugMsg('Starting ' + modData.MetaData.Name);
@@ -170,15 +169,13 @@ procedure StopAll();
 var
   i: Integer;
   modData: TComponentData;
-  sName: String;
+  sName: string;
 begin
-  for i := 0 to lstComponents.Count - 1 do
-  begin
+  for i := 0 to lstComponents.Count - 1 do begin
     modData := TComponentData(lstComponents.Items[i]);
     if (modData.Running) and (modData.MetaData.DataType = tteService) then
       StopService(modData)
-    else if modData.MetaData.DataType = tteComponent then
-    begin
+    else if modData.MetaData.DataType = tteComponent then begin
       sName := modData.MetaData.Name;
       CloseComponent(PChar(sName));
     end;
@@ -186,15 +183,15 @@ begin
   end;
 end;
 
-function WindowProc(hWnd,Msg,wParam,lParam:Integer):Integer; stdcall;
+function WindowProc(hWnd, Msg, wParam, lParam: Integer): Integer; stdcall;
 const
   SCMsgFunc: function(msg: string): integer = nil;
 var
   modData: TComponentData;
   cdsData: TCopyDataStruct;
   tmdData: TMsgData;
-  sName: String;
-  sParams: String;
+  sName: string;
+  sParams: string;
   iPos: Integer;
   iIndex: Integer;
 begin
@@ -203,199 +200,192 @@ begin
     WM_DESTROY: PostQuitMessage(0);
 
     WM_CLOSE: begin
-      Shell_NotifyIcon(NIM_DELETE, @nidTray);  // Make sure we remove tray icon
-      DestroyMenu(menPopup);
-      lstComponents.Free;
-    end;
-
-    WM_CREATE: begin    // Create and display tray icon
-      DebugMsg('Creating tray icon');
-      with nidTray do
-      begin
-        cbSize := SizeOf(nidTray);
-        Wnd := hWnd;
-        uID := 0;
-        uFlags := NIF_MESSAGE + NIF_ICON + NIF_TIP;
-        uCallbackMessage := WM_ICONTRAY;
-        hIcon := LoadIcon(hInstance, 'MAINICON');
-        szTip := 'SharpCore';
+        Shell_NotifyIcon(NIM_DELETE, @nidTray); // Make sure we remove tray icon
+        DestroyMenu(menPopup);
+        lstComponents.Free;
       end;
-      lstComponents := TComponentList.Create;
-      lstComponents.BuildList(strExtension); //enumerate services and components
-      BuildMenu;
-      RunAll;
-      Shell_NotifyIcon(NIM_ADD, @nidTray);
-    end;
+
+    WM_CREATE: begin // Create and display tray icon
+        DebugMsg('Creating tray icon');
+        with nidTray do begin
+          cbSize := SizeOf(nidTray);
+          Wnd := hWnd;
+          uID := 0;
+          uFlags := NIF_MESSAGE + NIF_ICON + NIF_TIP;
+          uCallbackMessage := WM_ICONTRAY;
+          hIcon := LoadIcon(hInstance, 'MAINICON');
+          szTip := 'SharpCore';
+        end;
+        lstComponents := TComponentList.Create;
+        lstComponents.BuildList(strExtension); //enumerate services and components
+        BuildMenu;
+        RunAll;
+        Shell_NotifyIcon(NIM_ADD, @nidTray);
+      end;
 
     WM_ICONTRAY: begin // User clicked tray icon, lParam stores which button they used
-      case lParam of
-        WM_RBUTTONDOWN: begin
-          GetCursorPos(curPoint); // Cursor position so we know where to put the menu
-          SetForegroundWindow(hWnd);
-          TrackPopupMenu(menPopup, 0, curPoint.X, curPoint.Y, 0, hWnd, nil); // Display menu
+        case lParam of
+          WM_RBUTTONDOWN: begin
+              GetCursorPos(curPoint); // Cursor position so we know where to put the menu
+              SetForegroundWindow(hWnd);
+              TrackPopupMenu(menPopup, 0, curPoint.X, curPoint.Y, 0, hWnd, nil); // Display menu
+            end;
         end;
       end;
-    end;
 
     WM_COMMAND: begin // Menu commands
-      if HiWord(wParam) = 0 then
-        case LoWord(wParam) of
-          ID_EXIT: SendMessage(hWnd, WM_CLOSE, 0, 0);
-          ID_SHUTDOWN: begin
-            StopAll;
-            SendMessage(hWnd, WM_CLOSE, 0, 0);
-          end;
-          ID_REBOOT: begin
-            StopAll;
-            bDoStartup := False;
-            Sleep(5000);
-            RunAll;
-          end;
-        else
-          if LoWord(wParam) >= 50 then  //user clicked a service
-          begin
-            iIndex := lstComponents.FindByID(LoWord(wParam));
-            if (iIndex < lstComponents.Count) and (iIndex > -1) then
-            begin
-              modData := TComponentData(lstComponents.Items[iIndex]);
-              if modData.Running then
-                StopService(modData)
-              else
-                StartService(modData);
+        if HiWord(wParam) = 0 then
+          case LoWord(wParam) of
+            ID_EXIT: SendMessage(hWnd, WM_CLOSE, 0, 0);
+            ID_SHUTDOWN: begin
+                StopAll;
+                SendMessage(hWnd, WM_CLOSE, 0, 0);
+              end;
+            ID_REBOOT: begin
+                StopAll;
+                bDoStartup := False;
+                Sleep(5000);
+                RunAll;
+              end;
+          else
+            if LoWord(wParam) >= 50 then {//user clicked a service} begin
+              iIndex := lstComponents.FindByID(LoWord(wParam));
+              if (iIndex < lstComponents.Count) and (iIndex > -1) then begin
+                modData := TComponentData(lstComponents.Items[iIndex]);
+                if modData.Running then begin
+                  StopService(modData);
+                  BroadcastGlobalUpdateMessage(suCenter);
+                end
+                else begin
+                  StartService(modData);
+                  BroadcastGlobalUpdateMessage(suCenter);
+                end;
+              end;
             end;
           end;
-        end;
-    end;
+      end;
 
     WM_COPYDATA: begin // Message from SharpAPI
-      cdsData := PCopyDataStruct(lParam)^;
-      tmdData := PMsgData(cdsData.lpData)^;
-      if LowerCase(tmdData.Command) = '_servicestart' then //start service
-      begin
-        iIndex := lstComponents.FindByName(tmdData.Parameters);
-        if (iIndex < lstComponents.Count) and (iIndex > -1) then
-        begin
-          modData := lstComponents.Items[iIndex];
-          StartService(modData);
-          if modData.Running then
-            result := MR_STARTED
-          else
-            result := MR_STOPPED;
-        end;
-      end
-      else if LowerCase(tmdData.Command) = '_servicestop' then //stop service
-      begin
-        iIndex := lstComponents.FindByName(tmdData.Parameters);
-        if (iIndex < lstComponents.Count) and (iIndex > -1) then
-        begin
-          modData := lstComponents.Items[iIndex];
-          StopService(modData);
-          if modData.Running then
-            result := MR_STARTED
-          else
-            result := MR_STOPPED;
-        end;
-      end
-      else if LowerCase(tmdData.Command) = '_isstarted' then
-      begin
-        iIndex := lstComponents.FindByName(tmdData.Parameters);
-        if (iIndex < lstComponents.Count) and (iIndex > -1) then
-        begin
-          modData := lstComponents.Items[iIndex];
-          if modData.Running then
-            result := MR_STARTED
-          else
-            result := MR_STOPPED;
-        end;
-      end
-      else if LowerCase(tmdData.Command) = '_servicemsg' then //send a service message
-        begin
+        cdsData := PCopyDataStruct(lParam)^;
+        tmdData := PMsgData(cdsData.lpData)^;
+        if LowerCase(tmdData.Command) = '_servicestart' then {//start service} begin
+          iIndex := lstComponents.FindByName(tmdData.Parameters);
+          if (iIndex < lstComponents.Count) and (iIndex > -1) then begin
+            modData := lstComponents.Items[iIndex];
+            StartService(modData);
+            if modData.Running then
+              result := MR_STARTED
+            else
+              result := MR_STOPPED;
+          end;
+        end
+        else if LowerCase(tmdData.Command) = '_servicestop' then {//stop service} begin
+          iIndex := lstComponents.FindByName(tmdData.Parameters);
+          if (iIndex < lstComponents.Count) and (iIndex > -1) then begin
+            modData := lstComponents.Items[iIndex];
+            StopService(modData);
+            if modData.Running then
+              result := MR_STARTED
+            else
+              result := MR_STOPPED;
+          end;
+        end
+        else if LowerCase(tmdData.Command) = '_isstarted' then begin
+          iIndex := lstComponents.FindByName(tmdData.Parameters);
+          if (iIndex < lstComponents.Count) and (iIndex > -1) then begin
+            modData := lstComponents.Items[iIndex];
+            if modData.Running then
+              result := MR_STARTED
+            else
+              result := MR_STOPPED;
+          end;
+        end
+        else if LowerCase(tmdData.Command) = '_servicemsg' then {//send a service message} begin
           iPos := Pos('.', tmdData.Parameters);
           sName := Copy(tmdData.Parameters, 0, iPos - 1);
           sParams := Copy(tmdData.Parameters, iPos + 1, Length(tmdData.Parameters) - iPos + 1);
           iIndex := lstComponents.FindByName(sName);
-          if (iIndex < lstComponents.Count) and (iIndex > -1) then
-          begin
+          if (iIndex < lstComponents.Count) and (iIndex > -1) then begin
             modData := lstComponents.Items[iIndex];
-            if modData.FileHandle <> 0 then
-            begin
+            if modData.FileHandle <> 0 then begin
               SCMsgFunc := GetProcAddress(modData.FileHandle, 'SCMsg');
               if Assigned(SCMsgFunc) then
                 Result := SCMsgFunc(sParams);
             end;
           end;
         end;
-    end;
-    else
-      Result := DefWindowProc(hWnd,Msg,wParam,lParam);
+      end;
+  else
+    Result := DefWindowProc(hWnd, Msg, wParam, lParam);
   end;
 end;
 
 begin
 
- stlCmdLine := TStringList.Create;
+  stlCmdLine := TStringList.Create;
 
- bDebug := False;
- bReboot := False;
- bDoStartup := True;
- strExtension := '.service';
- wndDebug := 0;
- stlCmdLine.DelimitedText := GetCommandLine;
- for i := 0 to stlCmdLine.Count - 1 do
- begin
-   if LowerCase(stlCmdLine[i]) = '-debug' then bDebug := True;
-   if LowerCase(stlCmdLine[i]) = '-reboot' then bReboot := True;
-   if LowerCase(stlCmdLine[i]) = '-nostartup' then bDoStartup := False;
-   if (LowerCase(stlCmdLine[i]) = '-ext') then
-    if (i + 1) <= (stlCmdLine.Count - 1) then
-      strExtension := stlCmdLine[i + 1]
-    else
-      strExtension := '.service';
- end;
- stlCmdLine.Free;
+  bDebug := False;
+  bReboot := False;
+  bDoStartup := True;
+  strExtension := '.service';
+  wndDebug := 0;
+  stlCmdLine.DelimitedText := GetCommandLine;
+  for i := 0 to stlCmdLine.Count - 1 do begin
+    if LowerCase(stlCmdLine[i]) = '-debug' then
+      bDebug := True;
+    if LowerCase(stlCmdLine[i]) = '-reboot' then
+      bReboot := True;
+    if LowerCase(stlCmdLine[i]) = '-nostartup' then
+      bDoStartup := False;
+    if (LowerCase(stlCmdLine[i]) = '-ext') then
+      if (i + 1) <= (stlCmdLine.Count - 1) then
+        strExtension := stlCmdLine[i + 1]
+      else
+        strExtension := '.service';
+  end;
+  stlCmdLine.Free;
 
- if bDebug then
- begin
-  if FindWindow('TSharpConsoleWnd', nil) = 0 then
-  begin
-    if ShellExecute(hInstance, 'open', PChar(GetSharpEDirectory + 'SharpConsole.exe'),
-     '', PChar(GetSharpEDirectory), 0) = 0 then
-      begin
+  if bDebug then begin
+    if FindWindow('TSharpConsoleWnd', nil) = 0 then begin
+      if ShellExecute(hInstance, 'open', PChar(GetSharpEDirectory + 'SharpConsole.exe'),
+        '', PChar(GetSharpEDirectory), 0) = 0 then begin
         while wndDebug = 0 do //wait for SharpConsole to open
           wndDebug := FindWindow('TSharpConsoleWnd', nil);
         Sleep(5000);
         DebugMsg('Debug flag found, started SharpConsole'); //would be silly to send the message if sharpconsole isn't open yet
       end
-    else
-      DebugMsg('SharpConsole could not be started');
-  end;
- end;
-
- if bReboot then DebugMsg('Reboot flag found'); //need to add sharpe reboot code
- DebugMsg('Starting with service extension ' + strExtension);
-
- DebugMsg('Checking mutex');
- hndMutex := CreateMutex(nil, TRUE, 'SharpCore');
- if hndMutex <> 0 then
-  if GetLastError = ERROR_ALREADY_EXISTS then
-  begin
-    DebugMsg('Mutex already exists, exiting');
-    CloseHandle(hndMutex);
-    Exit;
+      else
+        DebugMsg('SharpConsole could not be started');
+    end;
   end;
 
- DebugMsg('Creating main window');
- wclClass.lpszClassName:= 'TSharpCoreMainWnd';
- wclClass.lpfnWndProc :=  @WindowProc;
- wclClass.hInstance := hInstance;
- wclClass.hbrBackground:= 1;
- wclClass.hIcon := LoadIcon(hInstance, 'MAINICON');
+  if bReboot then
+    DebugMsg('Reboot flag found'); //need to add sharpe reboot code
+  DebugMsg('Starting with service extension ' + strExtension);
 
- Windows.RegisterClass(wclClass);
+  DebugMsg('Checking mutex');
+  hndMutex := CreateMutex(nil, TRUE, 'SharpCore');
+  if hndMutex <> 0 then
+    if GetLastError = ERROR_ALREADY_EXISTS then begin
+      DebugMsg('Mutex already exists, exiting');
+      CloseHandle(hndMutex);
+      Exit;
+    end;
 
- hndWindow := CreateWindow(wclClass.lpszClassName, 'SharpCore', 0,
-              10, 10, 340, 220, 0, 0, hInstance, nil);
+  DebugMsg('Creating main window');
+  wclClass.lpszClassName := 'TSharpCoreMainWnd';
+  wclClass.lpfnWndProc := @WindowProc;
+  wclClass.hInstance := hInstance;
+  wclClass.hbrBackground := 1;
+  wclClass.hIcon := LoadIcon(hInstance, 'MAINICON');
 
- while GetMessage(wndMsg, 0, 0, 0) do DispatchMessage(wndMsg);
+  Windows.RegisterClass(wclClass);
+
+  hndWindow := CreateWindow(wclClass.lpszClassName, 'SharpCore', 0,
+    10, 10, 340, 220, 0, 0, hInstance, nil);
+
+  while GetMessage(wndMsg, 0, 0, 0) do
+    DispatchMessage(wndMsg);
 
 end.
+

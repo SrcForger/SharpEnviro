@@ -25,10 +25,10 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\SharpE</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\Common\Libraries\SharpAPI</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Common\Libraries\SharpAPI</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Common\Libraries\SharpAPI</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Common\Libraries\SharpAPI</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpCenterAPI</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpCenterAPI</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpCenterAPI</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Common\Libraries\SharpAPI;..\..\Common\Libraries\SharpCenterAPI</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>
