@@ -144,7 +144,7 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
 var
   tmpList: TObjectList;
 begin
-  AName := 'SharpBar';
+  AName := 'Toolbars';
   ATitle := 'Toolbar Management';
   ADescription := 'Create and manage SharpBar configurations. ';
 
