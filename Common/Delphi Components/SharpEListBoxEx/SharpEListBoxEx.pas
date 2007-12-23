@@ -671,8 +671,6 @@ end;
 procedure TSharpEListBoxEx.Loaded;
 begin
   inherited;
-  if ItemHeight < 30 then
-    ItemHeight := 30;
 end;
 
 { TSharpEListItem }
