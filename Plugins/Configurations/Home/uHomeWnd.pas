@@ -49,14 +49,14 @@ type
     lbWebsiteLinks: TSharpEListBoxEx;
     Label1: TLabel;
     imgLogo: TImage;
-    Shape1: TShape;
-    Shape2: TShape;
     procedure FormCreate(Sender: TObject);
     procedure lbUsersResize(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure lbUsersGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
     procedure Label1Click(Sender: TObject);
+    procedure Shape2ContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
   private
     FUsers: TList;
     procedure AddUsersToList;
@@ -120,11 +120,12 @@ procedure TfrmHome.AddUsersToList;
 var
   tmp: TUser;
 begin
+  // Main dev team
   tmp := TUser.Create('CoCo', 'Silentpyjamas', 'coco@sharpenviro.com', 'PR, Community and Pom Pom Queen.');
   FUsers.Add(tmp);
   tmp := TUser.Create('Florian', 'Captain Herisson', 'florian@sharpenviro.com', 'Graphics. Also the new Addons site developer.');
   FUsers.Add(tmp);
-  tmp := TUser.Create('Glacialfury', 'Glacialfury', 'nathan@sharpenviro.com', 'Tester, and critical bug reporter.');
+  tmp := TUser.Create('David', 'Glacialfury', 'nathan@sharpenviro.com', 'Tester, and critical bug reporter.');
   FUsers.Add(tmp);
   tmp := TUser.Create('Lee', 'Pixol', 'lee@sharpenviro.com', 'Lead Developer of SharpCenter + Configurations.');
   FUsers.Add(tmp);
@@ -158,6 +159,12 @@ procedure TfrmHome.lbUsersResize(Sender: TObject);
 begin
   Self.Height := imgLogo.Height + lbUsers.Height + lbWebsiteLinks.Height +
     (lblSharpETeam.Height*2) + 30;
+end;
+
+procedure TfrmHome.Shape2ContextPopup(Sender: TObject; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+
 end;
 
 { TUser }

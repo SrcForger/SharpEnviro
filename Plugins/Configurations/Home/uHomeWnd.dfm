@@ -3,7 +3,7 @@ object frmHome: TfrmHome
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmDeskAreaSettings'
-  ClientHeight = 385
+  ClientHeight = 622
   ClientWidth = 513
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -25,29 +25,28 @@ object frmHome: TfrmHome
     Margins.Left = 7
     Margins.Top = 4
     Margins.Right = 4
-    Margins.Bottom = 0
+    Margins.Bottom = 4
     Align = alTop
     Caption = 'Website Links'
     WordWrap = True
-    ExplicitTop = 4
     ExplicitWidth = 65
   end
   object Label1: TLabel
     AlignWithMargins = True
     Left = 7
-    Top = 185
+    Top = 184
     Width = 502
     Height = 13
     Margins.Left = 7
     Margins.Top = 4
     Margins.Right = 4
-    Margins.Bottom = 0
+    Margins.Bottom = 4
     Align = alTop
     Caption = 'SharpE Team'
     WordWrap = True
     OnClick = Label1Click
-    ExplicitLeft = 12
-    ExplicitTop = 137
+    ExplicitTop = 183
+    ExplicitWidth = 63
   end
   object imgLogo: TImage
     AlignWithMargins = True
@@ -455,41 +454,10 @@ object frmHome: TfrmHome
     ExplicitTop = 0
     ExplicitWidth = 151
   end
-  object Shape1: TShape
-    AlignWithMargins = True
-    Left = 7
-    Top = 198
-    Width = 502
-    Height = 1
-    Margins.Left = 7
-    Margins.Top = 0
-    Margins.Right = 4
-    Margins.Bottom = 4
-    Align = alTop
-    Pen.Color = clBtnShadow
-    ExplicitLeft = 4
-    ExplicitTop = 197
-    ExplicitWidth = 513
-  end
-  object Shape2: TShape
-    AlignWithMargins = True
-    Left = 7
-    Top = 75
-    Width = 502
-    Height = 1
-    Margins.Left = 7
-    Margins.Top = 0
-    Margins.Right = 4
-    Margins.Bottom = 4
-    Align = alTop
-    Pen.Color = clBtnShadow
-    ExplicitLeft = -8
-    ExplicitWidth = 513
-  end
   object lbUsers: TSharpEListBoxEx
     AlignWithMargins = True
     Left = 0
-    Top = 203
+    Top = 201
     Width = 509
     Height = 97
     Margins.Left = 0
@@ -514,17 +482,17 @@ object frmHome: TfrmHome
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     OnResize = lbUsersResize
-    ItemHeight = 20
+    ItemHeight = 25
     OnGetCellText = lbUsersGetCellText
     AutosizeGrid = True
     Borderstyle = bsNone
     Align = alTop
-    ExplicitTop = 143
+    ExplicitTop = 199
   end
   object lbWebsiteLinks: TSharpEListBoxEx
     AlignWithMargins = True
     Left = 0
-    Top = 80
+    Top = 79
     Width = 509
     Height = 97
     Margins.Left = 0
@@ -549,12 +517,12 @@ object frmHome: TfrmHome
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     OnResize = lbUsersResize
-    ItemHeight = 20
+    ItemHeight = 25
     OnGetCellText = lbUsersGetCellText
     AutosizeGrid = True
     Borderstyle = bsNone
     Align = alTop
-    ExplicitTop = 21
+    ExplicitTop = 78
   end
   object PngImageList1: TPngImageList
     PngImages = <
@@ -623,8 +591,8 @@ object frmHome: TfrmHome
         Name = 'PngImage1'
         Background = clWindow
       end>
-    Left = 64
-    Top = 292
+    Left = 464
+    Top = 568
     Bitmap = {}
   end
 end
