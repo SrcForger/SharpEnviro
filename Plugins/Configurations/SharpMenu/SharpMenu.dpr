@@ -79,6 +79,7 @@ begin
            i := Max(0,Min(1,IntValue('WrapPosition',0)));
            frmMenuSettings.cobo_wrappos.ItemIndex := i;
            frmMenuSettings.cb_cacheicons.Checked := BoolValue('CacheIcons',True);
+           frmMenuSettings.cb_useicons.Checked := BoolValue('UseIcons',True);
          end;
     end;
   finally
@@ -108,6 +109,7 @@ begin
    AdD('WrapCount',frmMenuSettings.sgb_wrapcount.Value);
    Add('WrapPosition',frmMenuSettings.cobo_wrappos.ItemIndex);
    Add('CacheIcons',frmMenuSettings.cb_cacheicons.Checked);
+   Add('UseIcons',frmMenuSettings.cb_useicons.Checked);
   end;
   XML.SaveToFile(FName + '~');
   if FileExists(FName) then
@@ -151,5 +153,6 @@ exports
   SetText,
   SetSettingType;
 
+begin
 end.
 

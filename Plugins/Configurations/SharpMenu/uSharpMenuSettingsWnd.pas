@@ -41,7 +41,7 @@ type
 
 type
   TfrmMenuSettings = class(TForm)
-    cb_cacheicons: TCheckBox;
+    cb_useicons: TCheckBox;
     Label2: TLabel;
     Panel1: TPanel;
     Label1: TLabel;
@@ -49,9 +49,11 @@ type
     cb_wrap: TCheckBox;
     sgb_wrapcount: TSharpeGaugeBox;
     cobo_wrappos: TComboBox;
+    Label3: TLabel;
+    cb_cacheicons: TCheckBox;
     procedure cobo_wrapposChange(Sender: TObject);
     procedure sgb_wrapcountChangeValue(Sender: TObject; Value: Integer);
-    procedure cb_cacheiconsClick(Sender: TObject);
+    procedure cb_useiconsClick(Sender: TObject);
     procedure cb_wrapClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -85,7 +87,9 @@ procedure TfrmMenuSettings.FormShow(Sender: TObject);
 begin
   UpdateWrapBox;
   Label2.Font.Color := clGray;
+  Label3.Font.Color := clGray;
   Label4.Font.Color := clGray;
+  cb_useiconsClick(self);
 end;
 
 procedure TfrmMenuSettings.cb_wrapClick(Sender: TObject);
@@ -100,9 +104,10 @@ begin
      CenterDefineSettingsChanged;
 end;
 
-procedure TfrmMenuSettings.cb_cacheiconsClick(Sender: TObject);
+procedure TfrmMenuSettings.cb_useiconsClick(Sender: TObject);
 begin
   SendUpdate;
+  cb_cacheicons.Enabled := cb_useicons.Checked;
 end;
 
 procedure TfrmMenuSettings.sgb_wrapcountChangeValue(Sender: TObject;

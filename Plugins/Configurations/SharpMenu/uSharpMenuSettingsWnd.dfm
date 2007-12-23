@@ -3,7 +3,7 @@ object frmMenuSettings: TfrmMenuSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmMenuSettings'
-  ClientHeight = 181
+  ClientHeight = 228
   ClientWidth = 518
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -29,6 +29,28 @@ object frmMenuSettings: TfrmMenuSettings
     Align = alTop
     AutoSize = False
     Caption = 
+      'Enable to display icons. On slow computers disabling this option' +
+      ' can increase the menu performance.'
+    Color = clBtnFace
+    EllipsisPosition = epEndEllipsis
+    ParentColor = False
+    Transparent = True
+    WordWrap = True
+    ExplicitLeft = 31
+  end
+  object Label3: TLabel
+    AlignWithMargins = True
+    Left = 26
+    Top = 90
+    Width = 484
+    Height = 32
+    Margins.Left = 26
+    Margins.Top = 4
+    Margins.Right = 8
+    Margins.Bottom = 0
+    Align = alTop
+    AutoSize = False
+    Caption = 
       'When enabled, icons are cached to disk, resulting in a noticeabl' +
       'e performance improvement, at a cost of a few MB of hard disk sp' +
       'ace.'
@@ -37,8 +59,10 @@ object frmMenuSettings: TfrmMenuSettings
     ParentColor = False
     Transparent = True
     WordWrap = True
+    ExplicitLeft = 34
+    ExplicitTop = 37
   end
-  object cb_cacheicons: TCheckBox
+  object cb_useicons: TCheckBox
     AlignWithMargins = True
     Left = 8
     Top = 8
@@ -49,13 +73,14 @@ object frmMenuSettings: TfrmMenuSettings
     Margins.Right = 8
     Margins.Bottom = 0
     Align = alTop
-    Caption = 'Cache Icons (Advanced)'
+    Caption = 'Use Icons'
     TabOrder = 0
-    OnClick = cb_cacheiconsClick
+    OnClick = cb_useiconsClick
+    ExplicitLeft = 3
   end
   object Panel1: TPanel
     Left = 0
-    Top = 61
+    Top = 122
     Width = 518
     Height = 117
     Align = alTop
@@ -63,6 +88,7 @@ object frmMenuSettings: TfrmMenuSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 1
+    ExplicitTop = 77
     object Label1: TLabel
       Left = 176
       Top = 75
@@ -146,5 +172,21 @@ object frmMenuSettings: TfrmMenuSettings
         'Bottom'
         'Top')
     end
+  end
+  object cb_cacheicons: TCheckBox
+    AlignWithMargins = True
+    Left = 8
+    Top = 69
+    Width = 502
+    Height = 17
+    Margins.Left = 8
+    Margins.Top = 8
+    Margins.Right = 8
+    Margins.Bottom = 0
+    Align = alTop
+    Caption = 'Cache Icons (Advanced)'
+    TabOrder = 2
+    OnClick = cb_useiconsClick
+    ExplicitLeft = 3
   end
 end
