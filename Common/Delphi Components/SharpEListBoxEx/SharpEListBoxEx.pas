@@ -981,9 +981,7 @@ begin
           FOnClickItem(Self, tmpCol.ID, tmpItem);
       end;
     end;
-  end
-  else
-    inherited;
+  end;
 
   {if (DragMode = dmAutomatic) and not (FMultiSelect and
     ((ssCtrl in ShiftState) or (ssShift in ShiftState))) then
