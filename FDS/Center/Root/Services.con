@@ -1,25 +1,9 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <SharpCenter>
   <Sections>
-    <Hotkeys>
-      <Dll>_Services\_Servicedlls\Hotkeys.dll</Dll>
-      <Icon>_Services\_Servicedlls\Hotkeys.png</Icon>
-    </Hotkeys>
-	<Weather>
-      <Dll>_Services\_Servicedlls\Weather.dll</Dll>
-      <Icon>_Services\_Servicedlls\Weather.png</Icon>
-    </Weather>
-	<Aliases>
-      <Dll>_Services\_Servicedlls\Aliases.dll</Dll>
-      <Icon>_Services\_Servicedlls\Aliases.png</Icon>
-    </Aliases>
-    <DeskArea>
-      <Dll>_Services\_Servicedlls\DeskArea.dll</Dll>
-      <Icon>_Services\_Servicedlls\DeskArea.png</Icon>
-    </DeskArea>
-    <VWM>
-      <Dll>_Services\_Servicedlls\VWMService.dll</Dll>
-      <Icon>_Services\_Servicedlls\VWMService.png</Icon>
-    </VWM>	
+    <Services>
+      <Dll>_Components\_Componentdlls\ServiceManager.dll</Dll>
+      <Icon>ServiceManager.png</Icon>
+    </Services>
   </Sections>
 </SharpCenter>
