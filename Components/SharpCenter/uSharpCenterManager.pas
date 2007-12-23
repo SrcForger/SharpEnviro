@@ -411,6 +411,11 @@ var
 
   sName, sIcon, sPng: string;
   iCount: Integer;
+  sPath: string;
+  sDll: string;
+  sStatus: string;
+  sTitle: string;
+  sDescription: string;
 begin
   iCount := 0;
   Result := True;
@@ -439,8 +444,8 @@ begin
             begin
               with xml.Root.Items.ItemNamed['Default'] do
               begin
-                if Items.ItemNamed['Name'] <> nil then
-                  sName := Items.ItemNamed['Name'].Value;
+                if Items.ItemNamed['Dll'] <> nil then
+                  sDll := Items.ItemNamed['Dll'].Value;
 
                 if Items.ItemNamed['Icon'] <> nil then
                   sIcon := APath + Items.ItemNamed['Icon'].Value;
@@ -448,9 +453,21 @@ begin
             end
             else
             begin
+              if xml.Root.Items.ItemNamed['Sections'] <> nil then
+                if xml.Root.Items.ItemNamed['Sections'].items.Item[0] <> nil then
+                  sDll := xml.Root.Items.ItemNamed['Sections'].items.Item[0].Items.ItemNamed['Dll'].Value;
+
               sName := PathRemoveExtension(sRec.Name);
               sIcon := APath + PathRemoveExtension(sRec.Name) + '.png';
             end;
+
+          sPath := ExtractFilePath(APath + sRec.Name);
+          sName := '';
+          sStatus := '';
+          sTitle := '';
+          sDescription := '';
+          GetItemText(sPath + sDll, SCM.ActivePluginID,sName,sStatus,sTitle,sDescription);
+
 
           finally
             Xml.Free;
@@ -458,6 +475,7 @@ begin
 
           newItem := TSharpCenterManagerItem.Create;
           newItem.Caption := sName;
+          newItem.Status := sStatus;
           newItem.ItemType := itmSetting;
           newItem.Filename := APath + sRec.Name;
           sPng := sIcon;
