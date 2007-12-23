@@ -70,6 +70,7 @@ type
 type
   TSharpCenterManagerAddNavItem = procedure(AItem: TSharpCenterManagerItem;
     const AIndex: Integer) of object;
+  TSharpCenterSetHomeTitle = procedure(ATitle: String; ADescription: String) of object;
 
 type
   TSharpCenterManager = class
@@ -103,6 +104,8 @@ type
     FOnCancelEdit: TNotifyEvent;
     FOnApplyEdit: TNotifyEvent;
     FOnSetTitle: TNotifyEvent;
+    FOnSharpCenterSetHomeText: TSharpCenterSetHomeTitle;
+    FOnSetHomeTitle: TSharpCenterSetHomeTitle;
 
     // Events
     procedure UnloadTimerEvent(Sender: TObject);
@@ -137,6 +140,7 @@ type
     function BuildNavFromFile(AFile: string; ALoad: Boolean = True): Boolean;
     function BuildNavRoot: Boolean;
 
+    function LoadHome: Boolean;
     function Load(AFile, APluginID: string): Boolean;
     function Save: Boolean;
     function Reload: Boolean;
@@ -186,6 +190,7 @@ type
     property OnLoadEdit: TNotifyEvent read FOnLoadEdit write FOnLoadEdit;
     property OnApplyEdit: TNotifyEvent read FOnApplyEdit write FOnApplyEdit;
     property OnCancelEdit: TNotifyEvent read FOnCancelEdit write FOnCancelEdit;
+    property OnSetHomeTitle: TSharpCenterSetHomeTitle read FOnSetHomeTitle write FOnSetHomeTitle;
   end;
 
 var
@@ -523,6 +528,9 @@ begin
 
     end;
     LockWindowUpdate(0);
+
+    if SCM.History.Count = 0 then
+      SCM.LoadHome;
   end;
 end;
 
@@ -823,6 +831,55 @@ begin
 
 
     end;
+  end;
+end;
+
+function TSharpCenterManager.LoadHome: Boolean;
+var
+  Xml: TJvSimpleXML;
+  enumSettingType: TSU_UPDATE_ENUM;
+  sFile, sName, sStatus, sDescription, sTitle: string;
+
+begin
+  Result := False;
+  Xml := TJvSimpleXML.Create(nil);
+  sFile := GetCenterDirectory + '_home\home.dll';
+  try
+
+    if FileExists(sFile) then begin
+      FActivePlugin := LoadPlugin(PChar(sFile));
+
+      if (@FActivePlugin.Open) <> nil then
+      begin
+        FPluginWndHandle := FActivePlugin.Open(Pchar(''), FPluginContainer.Handle);
+        FPluginContainer.ParentWindow := FPluginWndHandle;
+
+        // Get setting type
+        if (@FActivePlugin.SetSettingType <> nil) then
+          enumSettingType := FActivePlugin.SetSettingType else
+          enumSettingType := TSU_UPDATE_ENUM(0);
+
+        // Get title and description
+        if (@FActivePlugin.SetText <> nil) then
+          FActivePlugin.SetText('',sName,sStatus,sTitle,sDescription);
+
+        LoadPluginTabs;
+
+        if Assigned(FOnSetHomeTitle) then
+          FOnSetHomeTitle(sTitle, sDescription);
+
+        if Assigned(FOnLoadPlugin) then
+          FOnLoadPlugin(Self);
+
+        if Assigned(FOnUpdateTheme) then
+          FOnUpdateTheme(Self);
+
+        Result := True;
+      end;
+    end;
+
+  finally
+    Xml.Free;
   end;
 end;
 

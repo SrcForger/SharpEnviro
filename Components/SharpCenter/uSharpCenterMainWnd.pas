@@ -193,6 +193,7 @@ type
     procedure ApplyEditEvent(Sender: TObject);
     procedure CancelEditEvent(Sender: Tobject);
     procedure SavePluginEvent(Sender: TObject);
+    procedure SetHomeTitleEvent(ATitle: String; ADescription: String);
   protected
   end;
 
@@ -225,6 +226,7 @@ begin
 
   SCM.OnAddPluginTabs := AddPluginTabsEvent;
   SCM.OnUpdateTheme := UpdateThemeEvent;
+  SCM.OnSetHomeTitle := SetHomeTitleEvent;
 
   SCM.PngImageList := pilIcons;
   SCM.PluginContainer := pnlPlugin;
@@ -579,6 +581,13 @@ begin
     LockWindowUpdate(0);
     UpdateSize;
   end;
+end;
+
+procedure TSharpCenterWnd.SetHomeTitleEvent(ATitle, ADescription: String);
+begin
+  pnlTitle.Visible := True;
+  lblTitle.Caption := ATitle;
+  lblDescription.Caption := ADescription;
 end;
 
 procedure TSharpCenterWnd.SetToolbarTabVisible(ATabID: TTabID; AVisible:
