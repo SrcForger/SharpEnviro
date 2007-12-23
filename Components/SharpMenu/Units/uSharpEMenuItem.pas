@@ -98,7 +98,9 @@ destructor TSharpEMenuItem.Destroy;
 begin
   if FSubMenu <> nil then
      TSharpEMenu(FSubMenu).Free;
-  SharpEMenuIcons.RemoveIcon(Icon);
+
+  if Icon <> nil then  
+    SharpEMenuIcons.RemoveIcon(Icon);
 
   FreeAndNil(FPropList);
 

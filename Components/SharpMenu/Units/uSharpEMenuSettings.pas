@@ -38,6 +38,7 @@ type
     WrapCount : integer;
     WrapPosition : integer;
     CacheIcons : boolean;
+    UseIcons : boolean;
 
     procedure LoadFromXML; overload;
     procedure LoadFromXML(pFileName : String); overload;
@@ -60,6 +61,7 @@ begin
   WrapCount := 20;
   WrapPosition := 1;
   CacheIcons := True;
+  UseIcons := True;
 end;
 
 procedure TSharpEMenuSettings.Assign(from : TSharpeMenuSettings);
@@ -68,6 +70,7 @@ begin
   WrapCount := from.WrapCount;
   WrapPosition := from.WrapPosition;
   CacheIcons := from.CacheIcons;
+  UseIcons := from.UseIcons;
 end;
 
 procedure TSharpEMenuSettings.LoadFromXML;
@@ -83,6 +86,7 @@ begin
     WrapCount := IntValue('WrapCount',WrapCount);
     WrapPosition := IntValue('WrapPosition',WrapPosition);
     CacheIcons := BoolValue('CacheIcons',CacheIcons);
+    UseIcons := BoolValue('UseIcons',UseIcons);
   end;
 end;
 

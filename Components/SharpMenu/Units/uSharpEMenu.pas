@@ -293,7 +293,9 @@ var
   item : TSharpEMenuItem;
 begin
   item := TSharpEMenuItem.Create(pType);
-  item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon);
+  if FSettings.UseIcons then
+    item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon)
+  else item.Icon := nil;
   item.Caption := pCaption;
   FItems.Add(Item);
   result := item;
@@ -305,7 +307,9 @@ var
 begin
   pTarget := FMenuConsts.ParseString(pTarget);
   item := TSharpEMenuItem.Create(mtLink);
-  item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon);
+  if FSettings.UseIcons then
+    item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon)
+  else item.Icon := nil;
   item.Caption := pCaption;
   item.PropList.Add('Action',pTarget);
   item.OnClick := FMenuActions.OnLinkClick;
@@ -327,7 +331,9 @@ begin
   setlength(s,length(s) - length(ExtractFileExt(s)));
   item.Caption := s;
   item.OnClick := FMenuActions.OnDesktopObjectClick;
-  item.Icon := SharpEMenuIcons.AddIcon('icon.file.config','icon.file.config');
+  if FSettings.UseIcons then
+    item.Icon := SharpEMenuIcons.AddIcon('icon.file.config','icon.file.config')
+  else item.Icon := nil;
   item.isVisible := True;
   item.isDynamic := pDynamic;
   FItems.Add(Item);
@@ -351,7 +357,9 @@ begin
   pTarget := FMenuConsts.ParseString(pTarget);
   pIcon   := FMenuConsts.ParseString(pIcon);
   item := TSharpEMenuItem.Create(mtLink);
-  item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget);
+  if FSettings.UseIcons then
+    item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget)
+  else item.Icon := nil;
   item.Caption := pCaption;
   item.PropList.Add('Action',pTarget);
   item.OnClick := FMenuActions.OnLinkClick;
@@ -370,7 +378,9 @@ begin
   pTarget := FMenuConsts.ParseString(pTarget);
   pIcon   := FMenuConsts.ParseString(pIcon);
   item := TSharpEMenuItem.Create(mtSubMenu);
-  item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget);
+  if FSettings.UseIcons then
+    item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget)
+  else item.Icon := nil;
   item.Caption := pCaption;
   item.isDynamic := pDynamic;
   if length(trim(pTarget))>0 then
@@ -605,10 +615,13 @@ begin
        and (n < FItems.Count - 1) then
     begin
       item := TSharpEMenuItem.Create(mtSeparator);
+      item.Icon := nil;
       item.isDynamic := True;
 
       submenuitem := TSharpEMenuItem.Create(mtSubMenu);
-      submenuitem.Icon := SharpEMenuIcons.AddIcon('icon.folder','icon.folder');
+      if FSettings.UseIcons then
+        submenuitem.Icon := SharpEMenuIcons.AddIcon('icon.folder','icon.folder')
+      else submenuitem.Icon := nil;
       submenuitem.Caption := 'Next Page...';
       submenuitem.isDynamic := True;
       submenuitem.isWrapMenu := True;
@@ -778,7 +791,7 @@ begin
       with drawpart as TSkinPartEx do
       begin
         h := SkinDim.HeightAsInt;
-        if (item.Icon <> nil) and (SkinIcon.DrawIcon) then
+        if (item.Icon <> nil) and (SkinIcon.DrawIcon) and (FSettings.UseIcons) then
         begin
           icon.setsize(SkinIcon.WidthAsInt,SkinIcon.HeightAsInt);
           icon.Clear(color32(0,0,0,0));

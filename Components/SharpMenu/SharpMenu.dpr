@@ -147,7 +147,7 @@ begin
   iconcachefile := iconcachefile + '.iconcache';
   SharpEMenuIcons := TSharpEMenuIcons.Create;
 
-  if menusettings.CacheIcons then
+  if (menusettings.CacheIcons) and (menusettings.UseIcons) then
      SharpEMenuIcons.LoadIconCache(iconcachefile);
 
   // init Classes
@@ -190,7 +190,7 @@ begin
 
   Application.Run;
 
-  if menusettings.CacheIcons then
+  if (menusettings.CacheIcons) and (menuSettings.UseIcons) then
      SharpEMenuIcons.SaveIconCache(iconcachefile);  
 
   // Free Classes
