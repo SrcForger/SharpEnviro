@@ -2092,7 +2092,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               134)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -802
+              Left = -822
               Top = 35
               Width = 23
               Height = 22
@@ -2544,14 +2544,13 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = -8
+              Width = 0
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
-              ExplicitWidth = 0
             end
           end
         end
@@ -2578,7 +2577,7 @@ object SharpCenterWnd: TSharpCenterWnd
       object pnlLivePreview: TPanel
         AlignWithMargins = True
         Left = 6
-        Top = 35
+        Top = 40
         Width = 501
         Height = 27
         Margins.Left = 0
@@ -2608,9 +2607,9 @@ object SharpCenterWnd: TSharpCenterWnd
       end
       object pnlPluginContainer: TSharpEPageControl
         Left = 6
-        Top = 206
+        Top = 211
         Width = 501
-        Height = 320
+        Height = 315
         Align = alClient
         DoubleBuffered = False
         ExpandedHeight = 200
@@ -2633,13 +2632,13 @@ object SharpCenterWnd: TSharpCenterWnd
         OnTabChange = tlPluginTabsTabChange
         DesignSize = (
           501
-          320)
+          315)
         object sbPlugin: TScrollBox
           AlignWithMargins = True
           Left = 6
           Top = 32
           Width = 489
-          Height = 282
+          Height = 277
           Margins.Left = 6
           Margins.Top = 32
           Margins.Right = 6
@@ -2672,7 +2671,7 @@ object SharpCenterWnd: TSharpCenterWnd
       object pnlEditContainer: TSharpEPageControl
         AlignWithMargins = True
         Left = 6
-        Top = 66
+        Top = 71
         Width = 501
         Height = 136
         Margins.Left = 0
@@ -3669,7 +3668,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Left = 6
         Top = 6
         Width = 501
-        Height = 29
+        Height = 34
         Margins.Left = 0
         Margins.Top = 0
         Margins.Right = 0
@@ -3684,13 +3683,14 @@ object SharpCenterWnd: TSharpCenterWnd
         TabOrder = 3
         object lblDescription: TJvLabel
           AlignWithMargins = True
-          Left = 0
-          Top = 13
-          Width = 497
+          Left = 4
+          Top = 17
+          Width = 493
           Height = 13
-          Margins.Left = 0
+          Margins.Left = 4
           Margins.Top = 0
           Margins.Right = 4
+          Margins.Bottom = 4
           Align = alTop
           Caption = 'The most awesome configuration manager in the world!'
           Layout = tlCenter
@@ -3701,13 +3701,19 @@ object SharpCenterWnd: TSharpCenterWnd
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
           TextEllipsis = teEndEllipsis
+          ExplicitLeft = 0
           ExplicitWidth = 268
         end
         object lblTitle: TJvLabel
-          Left = 0
+          AlignWithMargins = True
+          Left = 4
           Top = 0
-          Width = 501
+          Width = 493
           Height = 13
+          Margins.Left = 4
+          Margins.Top = 0
+          Margins.Right = 4
+          Margins.Bottom = 4
           Align = alTop
           Caption = 'SharpCenter'
           Layout = tlCenter
@@ -3717,6 +3723,7 @@ object SharpCenterWnd: TSharpCenterWnd
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
+          ExplicitLeft = 0
           ExplicitWidth = 63
         end
       end
