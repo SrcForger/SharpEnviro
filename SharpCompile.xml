@@ -25,6 +25,7 @@
      <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Wallpaper\Wallpaper.bdsproj</project>  
      <project Name="WeatherService" Type="DLL">Plugins\Configurations\WeatherService\Weather.bdsproj</project> 
      <project Name="Aliases" Type="DLL">Plugins\Configurations\Aliases\Aliases.bdsproj</project>   
+	 <project Name="Home" Type="DLL">Plugins\Configurations\Home\Home.bdsproj</project>   
   </package>
   <package Name="Components">
      <project Name="SetShell" Type="Application">Components\SetShell\SetShell.bdsproj</project>
