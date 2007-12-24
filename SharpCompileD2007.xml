@@ -38,7 +38,7 @@
      <project Name="SharpBar" Type="Application">Components\SharpBar\SharpBar.dproj</project>  
      <project Name="SharpCenter" Type="Application">Components\SharpCenter\SharpCenter.dproj</project>  
      <project Name="SharpConsole" Type="Application">Components\SharpConsole\SharpConsole.dproj</project>  
-     <project Name="SharpCore" Type="Application">Components\SharpCore\SharpCore.dproj</project>  
+     <project Name="SharpCore" Type="Application">Components\SharpCore2\SharpCore.dproj</project>  
      <project Name="SharpDesk" Type="Application">Components\SharpDesk\SharpDesk.dproj</project>  
      <project Name="SharpMenu" Type="Application">Components\SharpMenu\SharpMenu.dproj</project>  
      <project Name="SharpScript" Type="Application">Components\SharpScript\SharpScript.dproj</project>  
