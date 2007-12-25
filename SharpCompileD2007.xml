@@ -1,5 +1,6 @@
 <SharpCompile>
   <package Name="Configuration">
+     <project Name="Aliases" Type="DLL">Plugins\Configurations\Aliases\Aliases.dproj</project>  
      <project Name="BatteryMonitor" Type="DLL">Plugins\Configurations\BatteryMonitor\BatteryMonitor.dproj</project>       
      <project Name="Clock" Type="DLL">Plugins\Configurations\Clock\Clock.dproj</project>  
      <project Name="CPUMonitor" Type="DLL">Plugins\Configurations\CPUMonitor\CPUMonitor.dproj</project>  
@@ -7,6 +8,7 @@
      <project Name="DeskArea" Type="DLL">Plugins\Configurations\DeskArea\DeskArea.dproj</project>  
      <project Name="Desktop" Type="DLL">Plugins\Configurations\Desktop\Desktop.dproj</project>  
      <project Name="Font" Type="DLL">Plugins\Configurations\Font\Font.dproj</project>  
+     <project Name="Home" Type="DLL">Plugins\Configurations\Home\Home.dproj</project>  
      <project Name="Hotkeys" Type="DLL">Plugins\Configurations\Hotkeys\Hotkeys.dproj</project> 
      <project Name="Icon List" Type="DLL">Plugins\Configurations\Icon List\IconList.dproj</project>       
      <project Name="Image" Type="DLL">Plugins\Configurations\Image\Image.dproj</project>  
@@ -19,6 +21,7 @@
      <project Name="QuickScript" Type="DLL">Plugins\Configurations\QuickScript\QuickScript.dproj</project>       
      <project Name="RecycleBin" Type="DLL">Plugins\Configurations\RecycleBin\RecycleBin.dproj</project>       
      <project Name="Scheme" Type="DLL">Plugins\Configurations\Scheme\Scheme.dproj</project>  
+     <project Name="Service Manager" Type="DLL">Plugins\Configurations\Service Manager\ServiceManager.dproj</project>  
      <project Name="SharpBar Manager" Type="DLL">Plugins\Configurations\SharpBar List\SharpBarList.dproj</project>  
      <project Name="SharpDesk" Type="DLL">Plugins\Configurations\SharpDesk\SharpDesk.dproj</project>  
      <project Name="SharpMenu" Type="DLL">Plugins\Configurations\SharpMenu\SharpMenu.dproj</project>  
@@ -30,8 +33,6 @@
      <project Name="VWMService" Type="DLL">Plugins\Configurations\VWMService\VWMService.dproj</project>  
      <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Wallpaper\Wallpaper.dproj</project>  
      <project Name="WeatherService" Type="DLL">Plugins\Configurations\WeatherService\Weather.dproj</project>  
-	 <project Name="Aliases" Type="DLL">Plugins\Configurations\Aliases\Aliases.dproj</project>  
-	 <project Name="Home" Type="DLL">Plugins\Configurations\Home\Home.dproj</project>  
   </package>
   <package Name="Components">
      <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
