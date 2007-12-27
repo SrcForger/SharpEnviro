@@ -32,25 +32,18 @@ uses
   Windows,
   Messages,
   SysUtils,
-  Variants,
   Classes,
-  Graphics,
   Controls,
   Forms,
   Dialogs,
   StdCtrls,
-  ComCtrls,
   ToolWin,
   ExtCtrls,
-  ImgList,
   Menus,
 
-  // JVCL
-  JvGradient,
-
   // Project
-  uHotkeyServiceList, PngImageList, SharpEHotkeyEdit, JvExControls,
-  JvComponent, JvLabel, SharpEListBoxEx, JvHint, SharpApi, SharpCenterApi;
+  uHotkeyServiceList, PngImageList, SharpEHotkeyEdit, 
+  SharpEListBoxEx, JvHint, SharpApi, SharpCenterApi, ImgList;
 
 type
   TfrmConfig = class(TForm)

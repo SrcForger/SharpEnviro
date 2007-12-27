@@ -41,15 +41,11 @@ uses
   ExtCtrls,
   StdCtrls,
   Buttons,
-  ComCtrls,
-  jpeg,
   ImgList,
 
   // JVCL
-  JvTabBar,
   JvPageList,
   JvExControls,
-  JvComponent,
 
   // Project
   SharpEHotkeyEdit,
@@ -61,9 +57,9 @@ uses
   SharpCenterApi,
 
   // PNG Image
-  pngimage, JvExExtCtrls, JvShape, JvComponentBase,
+  pngimage, JvComponentBase,
   SharpEBaseControls, SharpEEdit, TranComp, JvLabel, PngImageList, PngBitBtn,
-  JvExStdCtrls, JvMemo, PngSpeedButton, JvErrorIndicator,
+  JvExStdCtrls, PngSpeedButton, JvErrorIndicator,
   JvValidators, JvBalloonHint, uHotkeyServiceList;
 
 type

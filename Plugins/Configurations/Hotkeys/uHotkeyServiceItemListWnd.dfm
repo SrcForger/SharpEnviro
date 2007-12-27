@@ -575,7 +575,7 @@ object frmConfig: TfrmConfig
     Bitmap = {}
   end
   object JvHint1: TJvHint
-    Left = 284
-    Top = 244
+    Left = 332
+    Top = 220
   end
 end

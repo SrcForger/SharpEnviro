@@ -33,9 +33,7 @@ uses
   SharpCenterApi,
   SharpAPI,
   jvSimpleXml,
-  XPMan,
   uVistaFuncs,
-  PngSpeedButton,
   uHotkeyServiceList in 'uHotkeyServiceList.pas',
   uHotkeyServiceItemListWnd in 'uHotkeyServiceItemListWnd.pas' {frmConfig},
   uHotkeyServiceItemEditWnd in 'uHotkeyServiceItemEditWnd.pas' {FrmHotkeyEdit},
@@ -123,10 +121,9 @@ end;
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
   var ATitle: String; var ADescription: String);
 var
-  ItemCount, Loop: Integer;
+  ItemCount: Integer;
   fn: string;
   xml: TjvSimpleXml;
-  prop: string;
 
 begin
   AName := 'Hotkeys';
