@@ -216,6 +216,7 @@ begin
           hIcon := LoadIcon(hInstance, 'MAINICON');
           szTip := 'SharpCore';
         end;
+        SharpApi.GetSharpeUserSettingsPath; // initialize the user settings path
         lstComponents := TComponentList.Create;
         lstComponents.BuildList(strExtension); //enumerate services and components
         BuildMenu;
