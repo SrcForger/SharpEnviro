@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, pngimage, ExtCtrls, SharpCenterApi, StdCtrls, SharpEListBoxEx,
-  JvExControls, JvLabel, ImgList, PngImageList;
+  JvExControls, JvLabel, ImgList, PngImageList, SharpApi;
 
 type
   TUser = Class
@@ -55,8 +55,14 @@ type
     procedure lbUsersGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
     procedure Label1Click(Sender: TObject);
-    procedure Shape2ContextPopup(Sender: TObject; MousePos: TPoint;
-      var Handled: Boolean);
+    procedure lbWebsiteLinksGetCellCursor(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var ACursor: TCursor);
+    procedure lbWebsiteLinksClickItem(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem);
+    procedure lbUsersGetCellCursor(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var ACursor: TCursor);
+    procedure lbUsersClickItem(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem);
   private
     FUsers: TList;
     procedure AddUsersToList;
@@ -138,6 +144,18 @@ begin
 
 end;
 
+procedure TfrmHome.lbUsersClickItem(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem);
+begin
+  SharpExecute('mailto:staff@sharpenviro.com');
+end;
+
+procedure TfrmHome.lbUsersGetCellCursor(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem; var ACursor: TCursor);
+begin
+  Acursor := crHandPoint;
+end;
+
 procedure TfrmHome.lbUsersGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
@@ -161,10 +179,21 @@ begin
     (lblSharpETeam.Height*2) + 30;
 end;
 
-procedure TfrmHome.Shape2ContextPopup(Sender: TObject; MousePos: TPoint;
-  var Handled: Boolean);
+procedure TfrmHome.lbWebsiteLinksClickItem(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem);
+var
+  n:Integer;
+  s:String;
 begin
+  n := Pos('http',AItem.Caption);
+  s := Copy(AItem.Caption,n,length(AItem.Caption)-n+1);
+  SharpExecute(s);
+end;
 
+procedure TfrmHome.lbWebsiteLinksGetCellCursor(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor);
+begin
+  ACursor := crHandPoint;
 end;
 
 { TUser }
