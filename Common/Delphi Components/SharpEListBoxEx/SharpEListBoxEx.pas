@@ -336,7 +336,6 @@ begin
   Self.OnDrawItem := DrawItemEvent;
 
   Self.OnMouseMove := MouseMoveEvent;
-  //Self.OnMeasureItem := MeasureItemEvent;
 
   Self.OnResize := ResizeEvent;
   Self.Color := clWindow;
@@ -1061,10 +1060,12 @@ var
   tmpItem: TSharpEListItem;
   b: Boolean;
 begin
-  Self.Cursor := crDefault;
+  
   tmpItem := GetItemAtCursorPos(Mouse.CursorPos);
-  if tmpItem = nil then
+  if tmpItem = nil then begin
+    Self.Cursor := crDefault;
     exit;
+  end;
 
   for iCol := 0 to Pred(ColumnCount) do begin
 
@@ -1073,18 +1074,18 @@ begin
     if (X > Column[iCol].ColumnRect.Left) and (X < Column[iCol].ColumnRect.Right) and
       (Y > R.Top) and (Y < R.Bottom) then begin
 
-      cur := crDefault;
-
       b := Column[iCol].CanSelect;
       if Assigned(FOnGetCellClickable) then
         FOnGetCellClickable(Self, iCol, tmpItem, b);
 
-      //if b then
+      cur := crDefault;
       if Assigned(FOnGetCellCursor) then
         FOnGetCellCursor(Self, iCol, tmpItem, cur);
 
-      Self.Cursor := cur;
-      exit;
+      if Self.Cursor <> cur then
+        Self.Cursor := cur;
+
+      break;
     end;
   end;
 end;
