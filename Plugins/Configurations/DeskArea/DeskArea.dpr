@@ -127,12 +127,13 @@ end;
 
 procedure Save;
 var
-  FName : String;
+  FName,Dir : String;
   n : integer;
   DAItem : TDAItem;
   XML : TJvsimpleXML;
 begin
-  FName := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\DeskArea.xml';
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\';
+  FName := Dir + 'DeskArea.xml';
   XML := TJvSimpleXML.Create(nil);
   XML.Root.Clear;
   try
@@ -155,6 +156,8 @@ begin
       end;
     end;
 
+    if not DirectoryExists(Dir) then
+      ForceDirectories(Dir);
     XML.SaveToFile(FName + '~');
     if FileExists(FName) then
        DeleteFile(FName);
