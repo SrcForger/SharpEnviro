@@ -269,6 +269,8 @@ begin
   // save the preview bitmap
   TempBmp := TBitmap32.Create;
   RescaleImage(SharpDesk.Image.Bitmap,TempBmp,62,48,True);
+  if not DirectoryExists(GetThemeDirectory) then
+    ForceDirectories(GetThemeDirectory);
   SaveBitmap32ToPNG(TempBmp,GetThemeDirectory + 'preview.png',False,True,clWhite);
   TempBmp.Free;
 
