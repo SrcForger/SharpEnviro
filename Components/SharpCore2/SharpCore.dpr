@@ -202,7 +202,8 @@ begin
     WM_CLOSE: begin
         Shell_NotifyIcon(NIM_DELETE, @nidTray); // Make sure we remove tray icon
         DestroyMenu(menPopup);
-        lstComponents.Free;
+        if lstComponents <> nil then
+          FreeAndNil(lstComponents);
       end;
 
     WM_CREATE: begin // Create and display tray icon
