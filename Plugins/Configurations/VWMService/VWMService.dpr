@@ -60,7 +60,7 @@ begin
   frmVWMSettings.Top := 0;
   frmVWMSettings.BorderStyle := bsNone;
 
-  Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\';
+  Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\VWM\';
   FName := Dir + 'VWM.xml';
   if FileExists(FName) then
   begin
@@ -89,7 +89,7 @@ var
   XML : TJclSimpleXML;
   Dir,FName : String;
 begin
-  Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\';
+  Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\VWM\';
   FName := Dir + 'VWM.xml';
   if not DirectoryExists(Dir) then
     ForceDirectories(Dir);

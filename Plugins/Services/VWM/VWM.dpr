@@ -112,7 +112,7 @@ end;
   SharpApi.UnRegisterShellHookReceiver(Handle);
   sFocusTopMost := False;
   sFollowFocus := False;
-  Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\';
+  Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\VWM\';
   FName := Dir + 'VWM.xml';
   if FileExists(FName) then
   begin
