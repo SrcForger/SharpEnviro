@@ -102,6 +102,7 @@ type
     FID: Integer;
     FOwner: TComponent;
     FSubItemCheckedStates: TList;
+    FColor: TColor;
 
     function GetSubItemText(ASubItem: Integer): string;
     procedure SetSubItemText(ASubItem: Integer; const Value: string);
@@ -146,6 +147,7 @@ type
     property SubItemChecked[ASubItem: Integer]: boolean read GetSubItemChecked write SetSubItemChecked;
     property SubItemText[ASubItem: Integer]: string read GetSubItemText write SetSubItemText;
     function SubItemCount: Integer;
+    property Color: TColor read FColor write FColor;
   end;
 
   TSharpEListBoxExOnClickCheck = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem; var AChecked: Boolean) of object;
@@ -271,6 +273,28 @@ uses
   JvJVCLUtils;
 
 {$R SharpEListBoxEx.res}
+
+procedure HGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
+var
+   nR,nG,nB,nt : real;
+   sR,sG,sB : integer;
+   eR,eG,eB : integer;
+   x : integer;
+begin
+  sR := GetRValue(color1);
+  sG := GetGValue(color1);
+  sB := GetBValue(color1);
+  eR := GetRValue(color2);
+  eG := GetGValue(color2);                      
+  eB := GetBValue(color2);
+  nR:=(eR-sR)/(Rect.Right-Rect.Left);
+  nG:=(eG-sG)/(Rect.Right-Rect.Left);
+  nB:=(eB-sB)/(Rect.Right-Rect.Left);
+  nt:=(et-st)/(Rect.Right-Rect.Left);
+  for x:=0 to Rect.Right-Rect.Left do
+      Bmp.VertLineTS(x+Rect.Left,Rect.Top,Rect.Bottom,
+                    color32(sr+round(nr*x),sg+round(ng*x),sb+round(nb*x),st+round(nt*x)));
+end;
 
 procedure Register;
 begin
@@ -453,6 +477,10 @@ var
   bmp32: TBitmap32;
   rColRect, rTextRect: TRect;
   iItemHWOffsets, n: Integer;
+  w: integer;
+  bDrawEllipsis: Boolean;
+  rEllipsisRect: TRect;
+  col: TColor;
 begin
   // Init
   sColText := Aitem.SubItemText[ACol];
@@ -507,8 +535,24 @@ begin
 
     if rColRect.Right - rColRect.Left > 0 then
       if rColRect.Bottom - rColRect.Top > 0 then begin
+
+        bDrawEllipsis := False;
+        w := HTMLTextWidth(bmp32.Canvas, rTextRect, [], sColText, 100);
+        if w > rTextRect.Right - rTextRect.Left then
+          bDrawEllipsis := True;
+
         SetBkMode(bmp32.Canvas.Handle, TRANSPARENT);
         HTMLDrawText(bmp32.Canvas, rTextRect, [], sColText, 100);
+
+        if bDrawEllipsis then begin
+          rEllipsisRect := bmp32.ClipRect;
+          rEllipsisRect.Left := rEllipsisRect.Right - 16;
+          rEllipsisRect.Bottom := rEllipsisRect.Bottom -1;
+
+          col := Aitem.Color;
+
+          HGradient(bmp32,ColorToRGB(col),ColorToRGB(col),0,255,rEllipsisRect);
+        end;
       end;
 
   finally
@@ -547,6 +591,7 @@ begin
   Self.Canvas.Brush.Color := tmpColor;
   Self.Canvas.Pen.Color := tmpColor;
 
+  AItem.Color := tmpColor;
   Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top + y,
     ARect.Right - (ItemOffset.X), ARect.Bottom - itemoffset.Y, 10, 10);
 
@@ -567,11 +612,12 @@ begin
     Self.Canvas.Brush.Color := tmpColor;
     Self.Canvas.Pen.Color := tmpColor;
 
+    AItem.Color := tmpColor;
     Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top + y,
       ARect.Right - (ItemOffset.X), ARect.Bottom - itemoffset.Y, 10, 10);
   end;
 
-  if (odFocused in AState) and (odSelected in AState) then begin
+  {if (odFocused in AState) and (odSelected in AState) then begin
     Self.Canvas.Brush.Color := Colors.ItemColorSelected;
     Self.Canvas.Pen.Color := Colors.BorderColorSelected;
 
@@ -581,13 +627,14 @@ begin
     end;
 
     if AItem.Checked then begin
-      Self.Canvas.Brush.Color := $00DEF3D5;
-      Self.Canvas.Pen.Color := $00DEF3D5;
+      Self.Canvas.Brush.Color := Colors.CheckColorSelected;
+      Self.Canvas.Pen.Color := Colors.CheckColorSelected;
     end;
 
+    AItem.Color := Self.Canvas.Brush.Color;
     Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top + y,
       ARect.Right - (ItemOffset.X), ARect.Bottom - itemoffset.Y, 10, 10);
-  end;
+  end;   }
 
 end;
 

@@ -65,10 +65,10 @@ object Form1: TForm1
         ColumnType = ctCheck
       end>
     Colors.BorderColor = clBtnFace
-    Colors.BorderColorSelected = clBtnShadow
+    Colors.BorderColorSelected = clBtnFace
     Colors.ItemColor = clWindow
     Colors.ItemColorSelected = clBtnFace
-    Colors.CheckColorSelected = clBtnFace
+    Colors.CheckColorSelected = 33023
     Colors.CheckColor = 15528425
     ItemHeight = 30
     OnDblClickItem = SharpEListBoxEx1DblClickItem

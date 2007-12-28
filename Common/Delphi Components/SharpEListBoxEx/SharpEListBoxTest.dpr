@@ -3,7 +3,9 @@ program SharpEListBoxTest;
 uses
   Forms,
   uMain in 'uMain.pas' {Form1},
-  SharpEListBoxEx in 'SharpEListBoxEx.pas';
+  SharpEListBoxEx in 'SharpEListBoxEx.pas',
+  SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
+  SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas';
 
 {$R *.res}
 
