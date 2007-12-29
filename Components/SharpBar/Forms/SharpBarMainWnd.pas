@@ -74,7 +74,6 @@ type
     ThemeHideTimer: TTimer;
     ShowMiniThrobbers1: TMenuItem;
     AlwaysOnTop1: TMenuItem;
-    StartupTimer: TTimer;
     procedure ShowMiniThrobbers1Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ThemeHideTimerTimer(Sender: TObject);
@@ -119,7 +118,6 @@ type
     procedure OnBackgroundPaint(Sender: TObject; Target: TBitmap32; x: integer);
     procedure AlwaysOnTop1Click(Sender: TObject);
     procedure BarManagment1Click(Sender: TObject);
-    procedure StartupTimerTimer(Sender: TObject);
   private
     { Private-Deklarationen }
     FUser32DllHandle: THandle;
@@ -1395,7 +1393,6 @@ begin
     BarHideForm.UpdateStatus;
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
   ModuleManager.RefreshMiniThrobbers;
-  StartupTimer.Enabled := True;  
 end;
 
 function PointInRect(P: TPoint; Rect: TRect): boolean;
@@ -1790,23 +1787,6 @@ begin
 
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
   ModuleManager.RefreshMiniThrobbers;
-end;
-
-procedure TSharpBarMainForm.StartupTimerTimer(Sender: TObject);
-begin
-  StartupTimer.Enabled := False;
-  SkinManager.UpdateScheme;
-  SkinManager.UpdateSkin;
-  SharpEBar.UpdateSkin;
-  UpdateBGZone;
-  if SharpEBar.Throbber.Visible then
-  begin
-    SharpEBar.Throbber.UpdateSkin;
-    SharpEbar.Throbber.Repaint;
-  end;
-  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
-  ModuleManager.RefreshMiniThrobbers;
-  ModuleManager.BroadcastPluginUpdate(suBackground);
 end;
 
 procedure TSharpBarMainForm.FormResize(Sender: TObject);

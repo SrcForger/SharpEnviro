@@ -870,11 +870,4 @@ object SharpBarMainForm: TSharpBarMainForm
     Left = 272
     Top = 144
   end
-  object StartupTimer: TTimer
-    Enabled = False
-    Interval = 2000
-    OnTimer = StartupTimerTimer
-    Left = 184
-    Top = 136
-  end
 end
