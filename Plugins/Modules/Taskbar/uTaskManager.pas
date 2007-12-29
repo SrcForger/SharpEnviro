@@ -141,7 +141,7 @@ begin
   begin
     pItem := TTaskItem(FItems.Items[n]);
     visible := (GetWindowLong(pItem.Handle, GWL_STYLE) and WS_VISIBLE) = WS_VISIBLE;
-    minimized := (GetWindowLong(pItem.Handle, GWL_STYLE) and WS_MINIMIZE) = WS_MINIMIZE;
+    minimized := ((GetWindowLong(pItem.Handle, GWL_STYLE) and WS_MINIMIZE) = WS_MINIMIZE) or (IsIconic(pItem.Handle));
     if (not IsWindow(pItem.Handle)) or
        ((not visible) and (not minimized)) then
     begin
