@@ -560,7 +560,7 @@ object frmCPUMon: TfrmCPUMon
           AutoSize = False
           Caption = 
             '(A restart of your SharpBar will be necessary for the change to ' +
-            'take effekt)'
+            'take effect)'
           WordWrap = True
           ExplicitTop = 62
         end
