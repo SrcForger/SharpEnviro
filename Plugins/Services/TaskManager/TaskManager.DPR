@@ -228,7 +228,7 @@ begin
   mm.iArrange := mm.iArrange or ARW_HIDE;
   SystemParametersInfo(SPI_SETMINIMIZEDMETRICS, sizeof(MINIMIZEDMETRICS),@mm, 0);
 
-  RegisterShellHook(0,1);
+  RegisterShellHook(FMsgWnd,1);
   RegisterShellHook(FMsgWnd,3);
 end;
 
