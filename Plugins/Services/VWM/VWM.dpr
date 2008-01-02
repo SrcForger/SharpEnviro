@@ -297,6 +297,7 @@ end;
   RegisterSharpEActions;
 
   SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS,0,0);
+  ServiceDone('VWM');
 end;                                                                 
                                                                      
 // Service is stopped

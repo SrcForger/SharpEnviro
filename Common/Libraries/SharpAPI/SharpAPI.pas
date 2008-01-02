@@ -237,6 +237,7 @@ function ServiceMsg(ServiceName, Command: pChar): hresult; external 'SharpAPI.dl
 function ServiceStart(ServiceName: pChar): hresult; external 'SharpAPI.dll' name 'ServiceStart';
 function ServiceStop(ServiceName: pChar): hresult; external 'SharpAPI.dll' name 'ServiceStop';
 function IsServiceStarted(ServiceName: pchar): hresult; external 'SharpAPI.dll' name 'IsServiceStarted';
+function ServiceDone(ServiceName: pChar): hresult; external 'SharpAPI.dll' name 'ServiceDone';
 function SendDebugMessage(app: string; msg: string; color: integer): hresult; external 'SharpAPI.dll';
 function SendDebugMessageEx(module: pChar; msg: pChar; color: integer; MessageType: Integer): hresult; external 'SharpApi.dll';
 

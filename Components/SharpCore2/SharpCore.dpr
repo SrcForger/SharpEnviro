@@ -107,7 +107,9 @@ begin
     @StartFunc := GetProcAddress(modData.FileHandle, 'Start');
     if Assigned(StartFunc) then begin
       StartFunc(hndWindow);
-      modData.Running := True;
+      while not modData.Running do // wait for _servicedone message
+        if GetMessage(wndMsg, 0, 0, 0) then
+          DispatchMessage(wndMsg);
       CheckMenuItem(menServices, modData.ID, MF_CHECKED);
       result := 0;
     end;
@@ -142,7 +144,6 @@ begin
     modData := TComponentData(lstComponents.Items[i]);
     if (modData.MetaData.DataType = tteService) and (modData.Priority > 0) then begin
       Sleep(modData.Delay);
-      //Sleep(5000);
       if modData.MetaData.Name = 'Startup' then
         if bDoStartup then begin
           DebugMsg('Starting ' + modData.MetaData.Name);
@@ -157,9 +158,11 @@ begin
     end
     else if (modData.MetaData.DataType = tteComponent) and (modData.Priority > 0) then begin
       Sleep(modData.Delay);
-      //Sleep(5000);
       DebugMsg('Starting ' + modData.MetaData.Name);
       ShellExecute(hndWindow, '', PChar(modData.FileName), '', GetSharpEDirectory, SW_SHOWNORMAL);
+      while not modData.Running do
+        if GetMessage(wndMsg, 0, 0, 0) then
+            DispatchMessage(wndMsg);
     end;
     modData := nil;
   end;
@@ -178,6 +181,7 @@ begin
     else if modData.MetaData.DataType = tteComponent then begin
       sName := modData.MetaData.Name;
       CloseComponent(PChar(sName));
+      modData.Running := False;
     end;
     modData := nil;
   end;
@@ -314,6 +318,14 @@ begin
               if Assigned(SCMsgFunc) then
                 Result := SCMsgFunc(sParams);
             end;
+          end;
+        end
+        else if LowerCase(tmdData.Command) = '_servicedone' then {//service is done starting} begin
+          iIndex := lstComponents.FindByName(tmdData.Parameters);
+          if (iIndex < lstComponents.Count) and (iIndex > -1) then begin
+            modData := lstComponents.Items[iIndex];
+            modData.Running := True;
+            DebugMsg(modData.MetaData.Name + ' finished starting');
           end;
         end;
       end;

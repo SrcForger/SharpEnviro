@@ -461,6 +461,7 @@ begin
   LoadFilterSettingsFromXML;
   LoadActionsFromXML;
   RegisterActions;
+  ServiceDone('Task Switch');
 end;
 
 procedure TActionEvent.MessageHandler(var Message: TMessage);

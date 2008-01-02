@@ -473,6 +473,31 @@ begin
   end;
 end;
 
+function ServiceDone(ServiceName: pChar): hresult;
+var
+  cds: TCopyDataStruct;
+  wnd: hWnd;
+  msg: TManagerCmd;
+begin
+  try
+    msg.Parameters := ServiceName;
+    msg.Command := '_servicedone';
+    with cds do
+    begin
+      dwData := 0;
+      cbData := SizeOf(TManagerCmd);
+      lpData := @msg;
+    end;
+    wnd := FindWindow('TSharpCoreMainWnd', nil);
+    if wnd <> 0 then
+      Result := SendMessage(wnd, WM_COPYDATA, 0, Cardinal(@cds))
+    else
+      Result := HR_NORECIEVERWINDOW;
+  except
+    Result := HR_UNKNOWNERROR;
+  end;
+end;
+
 function BarMsg(PluginName, Command: pChar): hresult;
 var
   cds: TCopyDataStruct;
@@ -1353,6 +1378,7 @@ exports
   ServiceStop,
   ServiceStart,
   IsServiceStarted,
+  ServiceDone,
 
   BarMsg,
 

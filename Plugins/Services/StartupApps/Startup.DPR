@@ -52,6 +52,7 @@ begin
   finally
     tmp.Free;
   end;
+  ServiceDone('Startup');
   Result := Application.Handle;
 end;
 

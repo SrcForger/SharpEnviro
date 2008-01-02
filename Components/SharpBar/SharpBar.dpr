@@ -286,5 +286,6 @@ begin
     end;
   SharpBarMainForm.Startup := False;
   SharpBarMainForm.Show;
+  ServiceDone('SharpBar');
   Application.Run;
 end.

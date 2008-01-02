@@ -37,6 +37,7 @@ uses
 function Start(owner: hwnd): hwnd;
 begin
   Result := owner;
+  ServiceDone('Template');
 end;
 
 // Service is stopped

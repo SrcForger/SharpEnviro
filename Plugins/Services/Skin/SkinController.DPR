@@ -63,6 +63,7 @@ begin
   ae := TActionEvent.Create;
   h := allocatehwnd(Ae.MessageHandler);
   RegisterActionEx('!RefreshSkin','SharpSkin',h,0);
+  ServiceDone('Skin Controller');
 end;
 
 procedure Stop;

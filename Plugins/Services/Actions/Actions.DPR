@@ -54,6 +54,7 @@ begin
   Result := Application.Handle;
   ActionMgr := TActionMgr.Create;
   SharpEBroadCast(WM_SHARPEUPDATEACTIONS, 0, 1);
+  ServiceDone('Actions');
 end;
 
 procedure Stop;

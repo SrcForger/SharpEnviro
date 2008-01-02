@@ -60,7 +60,7 @@ begin
   CursesManager := TCursesManager.Create;
 
   h := allocatehwnd(CursesManager.MessageHandler);
-
+  ServiceDone('Cursors');
   Result := Application.Handle;
 end;
 

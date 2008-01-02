@@ -146,7 +146,7 @@ begin
   TerminateFlag := False;
   InitializeTheme;
   LoadTheme(True,[tpInfo]);
-
+  ServiceDone('SharpSplash');
   // set defaults if no params passed
   PassedFileName := ParamStr(1);
   FadeIn := StrToIntDef(ParamStr(2), 3000);
@@ -195,6 +195,7 @@ begin
 
     if SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED or WS_EX_TOOLWINDOW) = 0 then
       SendDebugMessage('SharpSplash', 'Error setting window style.', 0);
+
   end;
 end;
 

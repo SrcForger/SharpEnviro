@@ -68,7 +68,8 @@ begin
   ae := TActionEvent.Create;
   h := allocatehwnd(Ae.MessageHandler);
 
-  RegisterActions
+  RegisterActions;
+  ServiceDone('System Actions');
 end;
 
 // Service is stopped

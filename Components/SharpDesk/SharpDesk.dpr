@@ -116,6 +116,6 @@ begin
 
   Application.CreateForm(TSharpDeskMainForm, SharpDeskMainForm);
   SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
-
+  ServiceDone('SharpDesk');
   Application.Run;
 end.

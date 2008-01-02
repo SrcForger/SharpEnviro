@@ -71,6 +71,7 @@ begin
 
   RegisterActionEx('!EnableDeskArea','Services',h,0);
   RegisterActionEx('!DisableDeskArea','Services',h,1);
+  ServiceDone('Desk Area');
 end;
 
 function SCMsg(msg: string): integer;

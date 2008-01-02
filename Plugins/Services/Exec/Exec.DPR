@@ -58,6 +58,7 @@ begin
   Result := Application.Handle;
   SharpExec := tSharpExec.create;
   Handle := owner;
+  ServiceDone('Exec');
 end;
 
 //when receive message from sharpcore do this

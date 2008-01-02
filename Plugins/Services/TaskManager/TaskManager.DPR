@@ -80,6 +80,7 @@ begin
   Result := owner;
   
   TM := TTaskManager.Create;
+  ServiceDone('Task Manager');
 end;
 
 // Service is stopped

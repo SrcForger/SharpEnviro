@@ -74,7 +74,7 @@ begin
     Debug('Error Initialising TWeatherMgr',DMT_ERROR);
   End;
 
-  
+  ServiceDone('Weather');
 end;
 
 procedure Stop;

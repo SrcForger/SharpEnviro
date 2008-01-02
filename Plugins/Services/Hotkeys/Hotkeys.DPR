@@ -56,7 +56,7 @@ begin
 
   // Load the Hotkeys
   HKService.AddHotkeys(True);
-
+  ServiceDone('Hotkeys');
   result := owner;
 
 end;

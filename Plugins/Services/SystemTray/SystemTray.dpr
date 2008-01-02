@@ -80,6 +80,7 @@ begin
   TerminateShellServices;
   sleep(1000);
   StartShellServices;
+  ServiceDone('System Tray');
   Result := owner;
 end;
 
