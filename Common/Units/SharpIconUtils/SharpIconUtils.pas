@@ -41,7 +41,8 @@ uses Windows,
      SharpFileUtils;
 
 procedure IconToImage(Bmp : TBitmap32; const icon : hicon);
-function extrShellIcon(Bmp : TBitmap32; FileName : String) : THandle;
+function extrShellIcon(Bmp : TBitmap32; FileName : String; Size : Integer = -1) : THandle;
+function extrShellIconLarge(Bmp : TBitmap32; FileName : String; Size : Integer) : THandle;
 function GetShellIconHandle(FileName : String) : THandle;
 function LoadIco(Bmp : TBitmap32; IconFile : string; Size : integer) : boolean;
 function LoadPng(Bmp : TBitmap32; PngFile:string) : boolean;
@@ -49,6 +50,10 @@ function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32) : boolean; over
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32; Size : integer) : boolean; overload;
 
 implementation
+
+
+function PrivateExtractIcons(lpszFile: PChar; nIconIndex, cxIcon, cyIcon: integer; phicon: PHandle; piconid: PDWORD; nIcons, flags: DWORD): DWORD; stdcall;
+  external 'user32.dll' name 'PrivateExtractIconsA';
 
 type
   TColorRec = packed record
@@ -145,27 +150,86 @@ begin
   ImageList_Destroy(ImageListHandle);
 end;
 
-function extrShellIcon(Bmp : TBitmap32; FileName : String) : THandle;
+function ImageListExtraLarge: HIMAGELIST;
+type
+  TSHGetImageList = function (iImageList: integer; const riid: TGUID; var ppv: Pointer): hResult; stdcall;
+var
+  hInstShell32: THandle;
+  SHGetImageList: TSHGetImageList;
+const
+  //SHIL_LARGE= 0;//32X32
+  //SHIL_SMALL= 1;//16X16
+  SHIL_EXTRALARGE= 2;
+  IID_IImageList: TGUID= '{46EB5926-582E-4017-9FDF-E8998DAA0950}';
+begin
+  Result:= 0;
+  hInstShell32:= LoadLibrary('Shell32.dll');
+  if hInstShell32<> 0 then
+  try
+    SHGetImageList:= GetProcAddress(hInstShell32, PChar(727));
+    if Assigned(SHGetImageList) and (Win32Platform = VER_PLATFORM_WIN32_NT) then
+      SHGetImageList(SHIL_EXTRALARGE, IID_IImageList, pointer(Result));
+  finally
+    FreeLibrary(hInstShell32);
+  end;
+end;
+
+function extrShellIconLarge(Bmp : TBitmap32; FileName : String; Size : Integer) : THandle;
+var
+  Icon : HIcon;
+  hImgList: HIMAGELIST;
+  FileInfo : SHFILEINFO;
+begin
+  hImgList:= ImageListExtraLarge;
+  if hImgList <> 0 then
+  begin
+    SHGetFileInfo( pChar(FileName),0,FileInfo, sizeof( SHFILEINFO ),SHGFI_SYSICONINDEX);
+    Icon := commctrl.ImageList_GetIcon(hImgList, FileInfo.iIcon, 0);
+    result := Icon;
+    try
+      IconToImage(Bmp,Icon);
+    finally
+      DestroyIcon(Icon);
+    end;
+    ImageList_Destroy(hImgList);
+  end else result := extrShellIcon(Bmp, FileName, 32);
+end;
+
+function extrShellIcon(Bmp : TBitmap32; FileName : String; Size : Integer = -1) : THandle;
 var
   FileInfo : SHFILEINFO;
   ImageListHandle : THandle;
+  Flag : DWord;
 begin
-  ImageListHandle := SHGetFileInfo( pChar(FileName), 0, FileInfo, sizeof( SHFILEINFO ),
-                                    SHGFI_ICON or SHGFI_SHELLICONSIZE);
+  if Size <= 16 then
+    Flag := SHGFI_ICON or SHGFI_SMALLICON
+  else if Size <= 32 then
+    Flag := SHGFI_ICON or SHGFI_LARGEICON
+  else
+  begin
+    result := extrShellIconLarge(Bmp,FileName,Size);
+    exit;
+  end;
+
+  ImageListHandle := SHGetFileInfo( pChar(FileName),
+                                    0,
+                                    FileInfo, sizeof( SHFILEINFO ),
+                                    Flag);
   if FileInfo.hicon <> 0 then
   begin
-    IconToImage(Bmp,FileInfo.hicon);
-    DestroyIcon(FileInfo.hIcon);
-    ImageList_Destroy(ImageListHandle);
-    result := FileInfo.hicon;
+    try
+      IconToImage(Bmp,FileInfo.hicon);
+      result := FileInfo.hicon;
+    finally
+      DestroyIcon(FileInfo.hIcon);
+      ImageList_Destroy(ImageListHandle);
+    end;
   end else
   begin
     result := 0;
     Bmp.SetSize(16,16);
     Bmp.Clear(color32(64,64,64,64));
   end;
-  DestroyIcon(FileInfo.hIcon);
-  ImageList_Destroy(ImageListHandle);
 end;
 
 function LoadIco(Bmp : TBitmap32; IconFile : string; Size : integer) : boolean;
@@ -215,7 +279,7 @@ var
 begin
   Target := GetFileNameWithoutParams(Target);
   if CompareText(Icon,'shell:icon') = 0 then
-     result := (extrShellIcon(Bmp,Target) <> 0)
+     result := (extrShellIcon(Bmp,Target,Size) <> 0)
   else if SharpThemeApi.IsIconInIconSet(PChar(Icon)) then
   begin
     SEIcon := SharpThemeApi.GetIconSetIcon(PChar(Icon));
