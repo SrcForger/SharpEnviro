@@ -731,6 +731,7 @@ var
   text : TBitmap32;
   item : TSharpEMenuItem;
   Ipos : TPoint;
+  IWidth,IHeight : integer;  
   DIcon : boolean;
   Tpos : TPoint;
   DText : boolean;
@@ -793,9 +794,14 @@ begin
         h := SkinDim.HeightAsInt;
         if (item.Icon <> nil) and (SkinIcon.DrawIcon) and (FSettings.UseIcons) then
         begin
-          icon.setsize(SkinIcon.WidthAsInt,SkinIcon.HeightAsInt);
-          icon.Clear(color32(0,0,0,0));
-          item.Icon.Icon.DrawTo(icon,Rect(0,0,icon.width,icon.height));
+          IWidth := SkinIcon.WidthAsInt;
+          IHeight := SkinIcon.HeightAsInt;
+          if (IWidth <> Icon.Width) or (IHeight <> Icon.Height) then
+          begin
+            icon.setsize(IWidth,SkinIcon.HeightAsInt);
+            icon.Clear(color32(0,0,0,0));
+            item.Icon.Icon.DrawTo(icon,Rect(0,0,icon.width,icon.height));
+          end else icon.assign(item.Icon.Icon);
           dicon := true;
           Ipos.X := SkinIcon.XAsInt;
           Ipos.Y := SkinIcon.YAsInt;

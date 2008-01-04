@@ -113,7 +113,7 @@ begin
     FIconSource := pIconSource;
     FIconType := itCustomIcon;
   end;
-  SharpIconUtils.IconStringToIcon(pIconSource,pIconData,FIcon,32);
+  SharpIconUtils.IconStringToIcon(pIconSource,pIconData,FIcon,16);
 end;
 
 destructor TSharpEMenuIcon.Destroy;
