@@ -62,6 +62,10 @@ var
   wndDebug: Integer;
   lstComponents: TComponentList;
   hndWindow: THandle;
+  thrStart: THandle;
+  thrWait: THandle;
+  thrStartID: Dword;
+  thrWaitID: Dword;
 
 procedure DebugMsg(Msg: string; MsgType: Integer = DMT_TRACE);
 begin
@@ -93,26 +97,41 @@ begin
   AppendMenu(menPopup, 0, ID_EXIT, 'Exit SharpCore');
 end;
 
-function StartService(var modData: TComponentData): Integer;
+function WaitThread(Ptr : Pointer) : LongInt; stdcall;
+var
+  modData: TComponentData;
+begin
+  modData := PComponentData(Ptr)^;
+  while not modData.Running do
+    Sleep(5);
+end;
+
+function StartThread(Ptr : Pointer) : LongInt; stdcall;
+var
+  modData: TComponentData;
 type
   TStartFunc = function(owner: hwnd): hwnd;
 const
   StartFunc: TStartFunc = nil;
 begin
+  modData := PComponentData(Ptr)^;
+  modData.FileHandle := LoadLibrary(PChar(modData.FileName));
+  @StartFunc := GetProcAddress(modData.FileHandle, 'Start');
+  if Assigned(StartFunc) then begin
+    StartFunc(hndWindow);
+    thrWait := CreateThread(nil, 0, @WaitThread, @modData, 0, thrWaitID);
+    WaitForSingleObject(thrWait, 60000);
+    CheckMenuItem(menServices, modData.ID, MF_CHECKED);
+    result := 0;
+  end;
+end;
+
+function StartService(var modData: TComponentData): Integer;
+begin
   result := 1;
 
   if Not(modData.Disabled) then begin
-
-    modData.FileHandle := LoadLibrary(PChar(modData.FileName));
-    @StartFunc := GetProcAddress(modData.FileHandle, 'Start');
-    if Assigned(StartFunc) then begin
-      StartFunc(hndWindow);
-      while not modData.Running do // wait for _servicedone message
-        if GetMessage(wndMsg, 0, 0, 0) then
-          DispatchMessage(wndMsg);
-      CheckMenuItem(menServices, modData.ID, MF_CHECKED);
-      result := 0;
-    end;
+    thrStart := CreateThread(nil, 0, @StartThread, @modData, 0, thrStartID);
   end else begin
     DebugMsg('Unable to start, as service is disabled');
   end;
@@ -221,11 +240,6 @@ begin
           hIcon := LoadIcon(hInstance, 'MAINICON');
           szTip := 'SharpCore';
         end;
-        SharpApi.GetSharpeUserSettingsPath; // initialize the user settings path
-        lstComponents := TComponentList.Create;
-        lstComponents.BuildList(strExtension); //enumerate services and components
-        BuildMenu;
-        RunAll;
         Shell_NotifyIcon(NIM_ADD, @nidTray);
       end;
 
@@ -397,6 +411,12 @@ begin
 
   hndWindow := CreateWindow(wclClass.lpszClassName, 'SharpCore', 0,
     10, 10, 340, 220, 0, 0, hInstance, nil);
+
+  SharpApi.GetSharpeUserSettingsPath; // initialize the user settings path
+  lstComponents := TComponentList.Create;
+  lstComponents.BuildList(strExtension); //enumerate services and components
+  BuildMenu;
+  RunAll;
 
   while GetMessage(wndMsg, 0, 0, 0) do
     DispatchMessage(wndMsg);

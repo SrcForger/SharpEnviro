@@ -9,6 +9,7 @@ uses
 
 type
 
+  PComponentData = ^TComponentData;
   TComponentData = class(TObject)
   private
     function GetHasConfig: Boolean;
