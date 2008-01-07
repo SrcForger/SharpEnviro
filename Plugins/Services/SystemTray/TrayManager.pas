@@ -105,8 +105,8 @@ begin
     // Broadcast all icons to the new tray client
     BroadCastAllToOne(msg.WParam);
     // make all non shell service icons to update
-    SendNotifyMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
-    // PostMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
+    //SendNotifyMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
+    // 07.01.2008 Commented out by BB - see if anything changes
   end;
 end;
 
@@ -232,7 +232,7 @@ begin
 
   TrayNWnd := TTrayNWnd.CreateParented(self.Handle);
 
-  PostMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
+  SendNotifyMessage(HWND_BROADCAST, RegisterWindowMessage('TaskbarCreated'), 0, 0);
 
   FDllHandle := LoadLibrary('SHLWAPI.DLL');
   if FDllHandle <> 0 then
