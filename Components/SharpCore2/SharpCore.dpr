@@ -64,6 +64,7 @@ var
   hndWindow: THandle;
   thrStart: THandle;
   thrStartID: Dword;
+  bDoThread: Boolean;
 
 procedure DebugMsg(Msg: string; MsgType: Integer = DMT_TRACE);
 begin
@@ -99,6 +100,7 @@ function StartThread(Ptr : Pointer) : LongInt; stdcall;
 var
   modData: TComponentData;
   i : Integer;
+  iResult: Integer;
 type
   TStartFunc = function(owner: hwnd): hwnd;
 const
@@ -118,9 +120,11 @@ begin
         if Assigned(StartFunc) then
         begin
           DebugMsg('Starting ' + modData.MetaData.Name);
+          modData.Running := False;
           StartFunc(hndWindow);
           CheckMenuItem(menServices, modData.ID, MF_CHECKED);
-          SuspendThread(thrStart);
+          while not modData.Running do
+            Sleep(5);
         end;
       end
       else
@@ -130,8 +134,8 @@ begin
     begin
       Sleep(modData.Delay);
       DebugMsg('Starting ' + modData.MetaData.Name);
-      ShellExecute(hndWindow, '', PChar(modData.FileName), '', GetSharpEDirectory, SW_SHOWNORMAL);
-      SuspendThread(thrStart);
+      modData.Running := False;
+      iResult := ShellExecute(hndWindow, '', PChar(modData.FileName), '', GetSharpEDirectory, SW_SHOWNORMAL);
     end;
   end;
   result := 0;
@@ -204,6 +208,7 @@ var
   sParams: string;
   iPos: Integer;
   iIndex: Integer;
+  iResume: Integer;
 begin
   result := 0;
   case Msg of
@@ -332,7 +337,6 @@ begin
             modData := lstComponents.Items[iIndex];
             modData.Running := True;
             DebugMsg(modData.MetaData.Name + ' finished starting');
-            ResumeThread(thrStart);
           end;
         end;
       end;
@@ -345,6 +349,7 @@ begin
 
   stlCmdLine := TStringList.Create;
 
+  bDoThread := True;
   bDebug := False;
   bReboot := False;
   bDoStartup := True;
