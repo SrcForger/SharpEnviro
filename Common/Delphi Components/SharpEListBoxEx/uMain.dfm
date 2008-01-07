@@ -11,6 +11,7 @@ object Form1: TForm1
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object PngSpeedButton1: TPngSpeedButton
@@ -32,6 +33,7 @@ object Form1: TForm1
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
+        AutoSize = False
         Images = col1
         SelectedImages = PngImageList1
       end
@@ -43,6 +45,7 @@ object Form1: TForm1
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = col1
       end
       item
@@ -53,6 +56,7 @@ object Form1: TForm1
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = col1
       end
       item
@@ -63,6 +67,7 @@ object Form1: TForm1
         StretchColumn = False
         CanSelect = False
         ColumnType = ctCheck
+        AutoSize = False
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnFace
@@ -72,10 +77,14 @@ object Form1: TForm1
     Colors.CheckColor = 15528425
     ItemHeight = 30
     OnDblClickItem = SharpEListBoxEx1DblClickItem
+    OnGetCellColor = SharpEListBoxEx1GetCellColor
     OnGetCellText = SharpEListBoxEx1GetCellText
     OnGetCellImageIndex = SharpEListBoxEx1GetCellImageIndex
+    OnDragOver = SharpEListBoxEx1DragOver
     AutosizeGrid = False
     Align = alClient
+    DragMode = dmAutomatic
+    DragCursor = crDefault
   end
   object Button1: TButton
     Left = 16

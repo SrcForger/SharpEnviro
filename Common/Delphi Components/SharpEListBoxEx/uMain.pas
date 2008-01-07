@@ -30,6 +30,12 @@ type
       AItem: TSharpEListItem; var AClickable: Boolean);
     procedure SharpEListBoxEx1DblClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
+    procedure SharpEListBoxEx1DragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure FormCreate(Sender: TObject);
+    procedure SharpEListBoxEx1GetCellColor(Sender: TObject;
+      const AItem: TSharpEListItem; var AColor: TColor);
+
   private
     { Private declarations }
     Procedure GetCellCursor(Sender: Tobject; const ACol:Integer; AItem:TSharpEListItem; var ACursor:TCursor);
@@ -55,7 +61,7 @@ begin
   SharpEListBoxEx1.itemheight := 54;
 
   li := SharpEListBoxEx1.AddItem('<b>New Theme </b>By Lee <br>Created with creative juices',1);
-  li.AddSubItem('<u>Copy</u>',0);
+  li.AddSubItem(IntToStr(SharpEListBoxEx1.Count),0);
   li.AddSubItem('<u>Delete</u>',1);
   li.AddSubItem('',false);
   li.Hint := 'Click to set as default';
@@ -65,6 +71,12 @@ end;
 procedure TForm1.Button2Click(Sender: TObject);
 begin
   SharpEListBoxEx1.Columns.Add(Self);
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  SharpEListBoxEx1.DoubleBuffered := True;
+  Self.DoubleBuffered := True;
 end;
 
 procedure TForm1.GetCellCursor(Sender: Tobject; const ACol: Integer; AItem: TSharpEListItem;
@@ -80,11 +92,30 @@ begin
   ShowMessage('dbl');
 end;
 
+procedure TForm1.SharpEListBoxEx1DragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+var
+  n: Integer;
+begin
+  n := SharpEListBoxEx1.ItemAtPos(point(x,y),True);
+  if ((n <> -1) and (SharpEListBoxEx1.ItemIndex <> -1) and (n <> SharpEListBoxEx1.ItemIndex)) then begin
+    Accept := True;
+    SharpEListBoxEx1.Items.Exchange(n,SharpEListBoxEx1.ItemIndex);
+  end;
+end;
+
 procedure TForm1.SharpEListBoxEx1GetCellClickable(Sender: Tobject; const ACol: Integer;
   AItem: TSharpEListItem; var AClickable: Boolean);
 begin
   if AItem.ID = 1 then
     AClickable := False;
+end;
+
+procedure TForm1.SharpEListBoxEx1GetCellColor(Sender: TObject;
+  const AItem: TSharpEListItem; var AColor: TColor);
+begin
+  if AItem.ID = 1 then
+    AColor := clRed;
 end;
 
 procedure TForm1.SharpEListBoxEx1GetCellImageIndex(Sender: Tobject; const ACol: Integer;
