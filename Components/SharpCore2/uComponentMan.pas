@@ -30,6 +30,7 @@ type
     function IsRunning: Boolean;
   end;
 
+  PComponentList = ^TComponentList;
   TComponentList = class(TList) //this is our list of components and services
   public
     function Add(Item: TComponentData): Integer;
