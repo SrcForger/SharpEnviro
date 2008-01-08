@@ -43,6 +43,7 @@ type
   
   TSharpEMenu = class
   private
+    FParentMenuItem : TSharpEMenuItem;
     FSkinManager  : TSharpESkinManager;
     FMenuActions  : TSharpEMenuActions;
     FMenuConsts   : TSharpEMenuConsts;
@@ -64,7 +65,7 @@ type
     function GetCurrentItem : TSharpEMenuItem;
   public
     // Create/Destroy
-    constructor Create(pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings); reintroduce;
+    constructor Create(pParentMenuItem : TSharpEMenuItem; pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings); reintroduce;
     destructor Destroy; override;
 
     // Add Menu Items
@@ -116,6 +117,7 @@ type
     property ItemsHeight : TIntArray read FItemsHeight;
     property isWrapMenu : boolean read FWrapMenu write FWrapMenu;
     property Settings : TSharpeMenuSettings read FSettings;
+    property ParentMenuItem : TSharpEMenuItem read FParentMenuItem;
   end;
 
 var
@@ -130,10 +132,11 @@ uses Math,
      SharpESkinPart,
      uSharpEMenuWnd;
 
-constructor TSharpEMenu.Create(pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings);
+constructor TSharpEMenu.Create(pParentMenuItem : TSharpEMenuItem; pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings);
 begin
   inherited Create;
 
+  FParentMenuItem  := pParentMenuItem;
   FMenuActions := TSharpEMenuActions.Create(self);
   FMenuConsts  := TSharpEMenuConsts.Create;
   FSettings    := TSharpEMenuSettings.Create;
@@ -271,7 +274,7 @@ procedure TSharpEMenu.AddLabelItem(pCaption : String; pDynamic : boolean);
 var
   item : TSharpEMenuItem;
 begin
-  item := TSharpEMenuItem.Create(mtLabel);
+  item := TSharpEMenuItem.Create(self,mtLabel);
   item.isDynamic := False;
   item.Icon := nil;
   item.Caption := pCaption;
@@ -282,7 +285,7 @@ procedure TSharpEMenu.AddSeparatorItem(pDynamic : boolean);
 var
   item : TSharpEMenuItem;
 begin
-  item := TSharpEMenuItem.Create(mtSeparator);
+  item := TSharpEMenuItem.Create(self,mtSeparator);
   item.isDynamic := pDynamic;
   item.icon := nil;
   FItems.Add(Item);
@@ -292,7 +295,7 @@ function  TSharpEMenu.AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap
 var
   item : TSharpEMenuItem;
 begin
-  item := TSharpEMenuItem.Create(pType);
+  item := TSharpEMenuItem.Create(self,pType);
   if FSettings.UseIcons then
     item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon)
   else item.Icon := nil;
@@ -306,7 +309,7 @@ var
   item : TSharpEMenuItem;
 begin
   pTarget := FMenuConsts.ParseString(pTarget);
-  item := TSharpEMenuItem.Create(mtLink);
+  item := TSharpEMenuItem.Create(self,mtLink);
   if FSettings.UseIcons then
     item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon)
   else item.Icon := nil;
@@ -325,7 +328,7 @@ var
   item : TSharpEMenuItem;
   s : String;
 begin
-  item := TSharpEMenuItem.Create(mtDesktopObject);
+  item := TSharpEMenuItem.Create(self,mtDesktopObject);
   item.PropList.Add('ObjectFile',pFile);
   s := ExtractFileName(pFile);
   setlength(s,length(s) - length(ExtractFileExt(s)));
@@ -343,7 +346,7 @@ procedure TSharpEMenu.AddObjectListItem(pDynamic: boolean);
 var
   item : TSharpEMenuItem;
 begin
-  item := TSharpEMenuItem.Create(mtDesktopObjectList);
+  item := TSharpEMenuItem.Create(self,mtDesktopObjectList);
   item.Icon := nil;
   item.isVisible := False;
   item.isDynamic := pDynamic;
@@ -356,7 +359,7 @@ var
 begin
   pTarget := FMenuConsts.ParseString(pTarget);
   pIcon   := FMenuConsts.ParseString(pIcon);
-  item := TSharpEMenuItem.Create(mtLink);
+  item := TSharpEMenuItem.Create(self,mtLink);
   if FSettings.UseIcons then
     item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget)
   else item.Icon := nil;
@@ -377,7 +380,7 @@ var
 begin
   pTarget := FMenuConsts.ParseString(pTarget);
   pIcon   := FMenuConsts.ParseString(pIcon);
-  item := TSharpEMenuItem.Create(mtSubMenu);
+  item := TSharpEMenuItem.Create(self,mtSubMenu);
   if FSettings.UseIcons then
     item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget)
   else item.Icon := nil;
@@ -398,7 +401,7 @@ procedure TSharpEMenu.AddDynamicDirectoryItem(pTarget : String; pMax,pSort : int
 var
   item : TSharpEMenuItem;
 begin
-  item := TSharpEMenuItem.Create(mtDynamicDir);
+  item := TSharpEMenuItem.Create(self,mtDynamicDir);
   item.Icon := nil;
   item.PropList.Add('Action',FMenuConsts.ParseString(pTarget));
   item.PropList.Add('MaxItems',pMax);
@@ -413,7 +416,7 @@ procedure TSharpEMenu.AddDriveListItem(pDriveNames: Boolean; pDynamic : boolean)
 var
   item : TSharpEMenuItem;
 begin
-  item := TSharpEMenuItem.Create(mtDriveList);
+  item := TSharpEMenuItem.Create(self,mtDriveList);
   item.Icon := nil;
   item.isVisible := False;
   item.PropList.Add('ShowDriveNames',pDriveNames);
@@ -425,7 +428,7 @@ procedure TSharpEMenu.AddControlPanelItem(pDynamic : boolean);
 var
   item : TSharpEMenuItem;
 begin
-  item := TSharpEMenuItem.Create(mtCPLList);
+  item := TSharpEMenuItem.Create(self,mtCPLList);
   item.Icon := nil;
   item.isVisible := False;
   item.isDynamic := pDynamic;
@@ -614,18 +617,18 @@ begin
     if ((c >= pMaxItems) or (size > Screen.WorkAreaHeight - FItemsHeight[PreviousVisibleIndex]))
        and (n < FItems.Count - 1) then
     begin
-      item := TSharpEMenuItem.Create(mtSeparator);
+      item := TSharpEMenuItem.Create(self,mtSeparator);
       item.Icon := nil;
       item.isDynamic := True;
 
-      submenuitem := TSharpEMenuItem.Create(mtSubMenu);
+      submenuitem := TSharpEMenuItem.Create(self,mtSubMenu);
       if FSettings.UseIcons then
         submenuitem.Icon := SharpEMenuIcons.AddIcon('icon.folder','icon.folder')
       else submenuitem.Icon := nil;
       submenuitem.Caption := 'Next Page...';
       submenuitem.isDynamic := True;
       submenuitem.isWrapMenu := True;
-      submenuitem.SubMenu := TSharpEMenu.Create(FSkinManager,FSettings);
+      submenuitem.SubMenu := TSharpEMenu.Create(submenuitem,FSkinManager,FSettings);
       TSharpeMenu(submenuitem.SubMenu).isWrapMenu := True;
 
       if FSettings.WrapPosition = 0 then

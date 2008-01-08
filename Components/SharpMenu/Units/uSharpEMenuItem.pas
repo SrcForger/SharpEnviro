@@ -46,24 +46,27 @@ type
     FClickEvent : TSharpEMenuItemClickEvent;
     FPaintEvent : TSharpEMenuItemPaintEvent;
     // #############
-    FIcon     : TSharpEMenuIcon; // only a pointer to the icon list!
-    FSubMenu  : TObject;
-    FCaption  : String;
-    FIndex    : Integer;
-    FItemType : TSharpEMenuItemType;
-    FDynamic  : boolean;
-    FVisible  : boolean;
-    FWrapMenu : boolean;
-    FPropList : TPropertyList;
-    FPopup    : TObject;
+    FIcon      : TSharpEMenuIcon; // only a pointer to the icon list!
+    FSubMenu   : TObject;
+    FOwnerMenu : TObject;
+    FCaption   : String;
+    FIndex     : Integer;
+    FItemType  : TSharpEMenuItemType;
+    FDynamic   : boolean;
+    FVisible   : boolean;
+    FWrapMenu  : boolean;
+    FPropList  : TPropertyList;
+    FPopup     : TObject;
   public
-    constructor Create(pItemType : TSharpEMenuItemType); reintroduce;
+    constructor Create(pOwnerMenu : TObject; pItemType : TSharpEMenuItemType); reintroduce;
     destructor Destroy; override;
+    procedure MoveToMenu(Dst : TObject);
     property PropList  : TPropertyList read FPropList;
     property Caption   : String read FCaption write FCaption;
     property Icon      : TSharpEMenuIcon read FIcon write FIcon;
     property ItemType  : TSharpEMenuItemType read FItemType;
     property SubMenu   : TObject read FSubMenu write FSubMenu;
+    property OwnerMenu : TObject read FOwnerMenu;
     property isDynamic : boolean read FDynamic write FDynamic;
     property isVisible : boolean read FVisible write FVisible;
     property isWrapMenu : boolean read FWrapMenu write FWrapMenu;
@@ -77,10 +80,11 @@ implementation
 
 uses uSharpEMenu;
 
-constructor TSharpEMenuItem.Create(pItemType : TSharpEMenuItemType);
+constructor TSharpEMenuItem.Create(pOwnerMenu : TObject; pItemType : TSharpEMenuItemType);
 begin
   inherited Create;
 
+  FOwnerMenu := pOwnerMenu;
   FPropList := TPropertyList.Create;
 
   FVisible := True;
@@ -107,5 +111,20 @@ begin
   inherited Destroy;
 end;
 
+
+procedure TSharpEMenuItem.MoveToMenu(Dst: TObject);
+var
+  SrcMenu,DstMenu : TSharpEMenu;
+begin
+  if (Dst = nil) or (FOwnerMenu = nil) then
+    exit;
+  if not (Dst is TSharpEMenu) then
+    exit;
+  SrcMenu := TSharpEMenu(FOwnerMenu);
+  DstMenu := TSharpEMenu(FOwnerMenu);
+
+  SrcMenu.Items.Extract(self);
+  DstMenu.Items.Add(self);
+end;
 
 end.

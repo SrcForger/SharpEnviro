@@ -358,7 +358,7 @@ begin
         if (not found) then
         begin
           item := TSharpEMenuItem(pMenu.AddSubMenuItem(svalue,'shell:icon',Dir + svalue + '\',true));
-          item.SubMenu := TSharpEMenu.Create(pMenu.SkinManager,pmenu.Settings);
+          item.SubMenu := TSharpEMenu.Create(item,pMenu.SkinManager,pmenu.Settings);
           item.PropList.Add('Sort',pSort);
           TSharpEMenu(item.SubMenu).AddDynamicDirectoryItem(Dir + svalue + '\',
                                                             item.PropList.GetInt('MaxItems'),
