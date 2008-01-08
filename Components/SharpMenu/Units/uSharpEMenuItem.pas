@@ -121,10 +121,11 @@ begin
   if not (Dst is TSharpEMenu) then
     exit;
   SrcMenu := TSharpEMenu(FOwnerMenu);
-  DstMenu := TSharpEMenu(FOwnerMenu);
+  DstMenu := TSharpEMenu(Dst);
 
   SrcMenu.Items.Extract(self);
   DstMenu.Items.Add(self);
+  FOwnerMenu := Dst;
 end;
 
 end.
