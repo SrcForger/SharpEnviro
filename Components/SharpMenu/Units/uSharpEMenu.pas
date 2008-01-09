@@ -368,11 +368,9 @@ begin
   item := TSharpEMenuItem.Create(self,mtLink);
   item.PropList.Add('IconSource',pIcon);
   etarget := FMenuConsts.ParseString(pTarget);
+  pIcon   := FMenuConsts.ParseString(pIcon);
   if not FDesignMode then
-  begin
     pTarget := etarget;
-    pIcon   := FMenuConsts.ParseString(pIcon);
-  end;  
   if FSettings.UseIcons then
     item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget)
   else item.Icon := nil;
@@ -394,12 +392,10 @@ var
 begin
   item := TSharpEMenuItem.Create(self,mtSubMenu);
   item.PropList.Add('IconSource',pIcon);
+  pIcon   := FMenuConsts.ParseString(pIcon);
   etarget := FMenuConsts.ParseString(pTarget);
   if not FDesignMode then
-  begin
-    pIcon   := FMenuConsts.ParseString(pIcon);
     pTarget := etarget;
-  end;
   if FSettings.UseIcons then
     item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget)
   else item.Icon := nil;
