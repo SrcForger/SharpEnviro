@@ -55,7 +55,7 @@ begin
             Add('type','link');
             Add('Caption',menuitem.Caption);
             Add('Target',menuitem.PropList.GetString('Action'));
-            Add('Icon',menuitem.Icon.IconSource);
+            Add('Icon',menuitem.PropList.GetString('IconSource'));
           end;
           mtSeparator : Add('type','separator');
           mtDynamicDir : begin
@@ -79,7 +79,7 @@ begin
             Add('type','submenu');
             Add('Caption',menuitem.Caption);
             Add('Target',menuitem.PropList.GetString('Target'));
-            Add('Icon',menuitem.Icon.IconSource);
+            Add('Icon',menuitem.PropList.GetString('IconSource'));
             if menuitem.SubMenu <> nil then            
               SaveMenuToXMLNode(Add('Items').Items,TSharpEMenu(menuitem.SubMenu));
           end;
@@ -102,6 +102,7 @@ begin
     ForceDirectories(Dir);
 
   XML := TJclSimpleXML.Create;
+  XML.Root.Name := 'SharpEMenuFile';
   SaveMenuToXMLNode(XML.Root.Items,pMenu);
   try
     XML.SaveToFile(pFileName);

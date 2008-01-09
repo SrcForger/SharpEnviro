@@ -364,12 +364,13 @@ function TSharpEMenu.AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boo
 var
   item : TSharpEMenuItem;
 begin
+  item := TSharpEMenuItem.Create(self,mtLink);
+  item.PropList.Add('IconSource',pIcon);
   if not FDesignMode then
   begin
     pTarget := FMenuConsts.ParseString(pTarget);
     pIcon   := FMenuConsts.ParseString(pIcon);
-  end;
-  item := TSharpEMenuItem.Create(self,mtLink);
+  end;  
   if FSettings.UseIcons then
     item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget)
   else item.Icon := nil;
@@ -388,12 +389,13 @@ function TSharpEMenu.AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : 
 var
   item : TSharpEMenuItem;
 begin
+  item := TSharpEMenuItem.Create(self,mtSubMenu);
+  item.PropList.Add('IconSource',pIcon);
   if not FDesignMode then
   begin
-    pTarget := FMenuConsts.ParseString(pTarget);
     pIcon   := FMenuConsts.ParseString(pIcon);
+    pTarget := FMenuConsts.ParseString(pTarget);
   end;
-  item := TSharpEMenuItem.Create(self,mtSubMenu);
   if FSettings.UseIcons then
     item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget)
   else item.Icon := nil;
