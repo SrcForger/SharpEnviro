@@ -28,7 +28,7 @@ unit uSharpEMenuSettings;
 interface
 
 uses
-  SysUtils, Classes, Types, JvSimpleXML;
+  SysUtils, Classes, Types, JclSimpleXML;
 
 type
   TSharpEMenuSettings = class
@@ -42,7 +42,8 @@ type
 
     procedure LoadFromXML; overload;
     procedure LoadFromXML(pFileName : String); overload;
-    procedure LoadFromXML(pXML : TJvSimpleXMLElems); overload;
+    procedure LoadFromXML(pXML : TJclSimpleXMLElems); overload;
+    procedure SaveToXML(pXML : TJclSimpleXMLElems);
     procedure Assign(from : TSharpEMenuSettings);
     constructor Create; reintroduce;
   end;
@@ -78,7 +79,7 @@ begin
   LoadFromXML(SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Settings\SharpMenu.xml');
 end;
 
-procedure TSharpEMenuSettings.LoadFromXML(pXML : TJvSimpleXMLElems);
+procedure TSharpEMenuSettings.LoadFromXML(pXML : TJclSimpleXMLElems);
 begin
   with pXML do
   begin
@@ -90,13 +91,25 @@ begin
   end;
 end;
 
+procedure TSharpEMenuSettings.SaveToXML(pXML: TJclSimpleXMLElems);
+begin
+  with pXML do
+  begin
+    Add('WrapMenu',WrapMenu);
+    Add('WrapCount',WrapCount);
+    Add('WrapPosition',WrapPosition);
+    Add('CacheIcons',CacheIcons);
+    Add('UseIcons',UseIcons);
+  end;
+end;
+
 procedure TSharpEMenuSettings.LoadFromXML(pFileName : String);
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
 begin
   if not FileExists(pFileName) then exit;
 
-  XML := TJvSimpleXMl.Create(nil);
+  XML := TJclSimpleXMl.Create;
   try
     XML.LoadFromFile(pFileName);
     if XML.Root.Items.ItemNamed['Settings'] <> nil then

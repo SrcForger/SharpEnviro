@@ -53,6 +53,7 @@ begin
         if CompareText(pXML.Item[n].Name,'Settings') = 0 then
         begin
           // custom Settings for this menu exist...
+          menu.CustomSettings := True;
           menu.Settings.LoadFromXML(pXML.Item[n].Items);
         end else
         begin

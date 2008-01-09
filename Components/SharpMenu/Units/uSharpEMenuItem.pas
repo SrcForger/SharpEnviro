@@ -57,10 +57,11 @@ type
     FWrapMenu  : boolean;
     FPropList  : TPropertyList;
     FPopup     : TObject;
+    function GetItemIndex: integer;
   public
     constructor Create(pOwnerMenu : TObject; pItemType : TSharpEMenuItemType); reintroduce;
     destructor Destroy; override;
-    procedure MoveToMenu(Dst : TObject);
+    procedure MoveToMenu(Dst : TObject; pIndex : integer = -1);
     property PropList  : TPropertyList read FPropList;
     property Caption   : String read FCaption write FCaption;
     property Icon      : TSharpEMenuIcon read FIcon write FIcon;
@@ -72,6 +73,7 @@ type
     property isWrapMenu : boolean read FWrapMenu write FWrapMenu;
     property ListIndex : integer read FIndex write FIndex; // only used and updated before sorting!
     property Popup     : TObject read FPopup write FPopup;
+    property ItemIndex : integer read GetItemIndex;
     property OnClick   : TSharpEMenuItemClickEvent read FClickEvent write FClickEvent;
     property OnPaint   : TSharpEMenuItemPaintEvent read FPaintEvent write FPaintEvent;
   end;
@@ -103,7 +105,7 @@ begin
   if FSubMenu <> nil then
      TSharpEMenu(FSubMenu).Free;
 
-  if Icon <> nil then  
+  if Icon <> nil then
     SharpEMenuIcons.RemoveIcon(Icon);
 
   FreeAndNil(FPropList);
@@ -112,7 +114,16 @@ begin
 end;
 
 
-procedure TSharpEMenuItem.MoveToMenu(Dst: TObject);
+function TSharpEMenuItem.GetItemIndex: integer;
+begin
+  result := -1;
+  if FOwnerMenu = nil then
+    exit;
+
+  result := TSharpEMenu(FOwnerMenu).Items.IndexOf(self);
+end;
+
+procedure TSharpEMenuItem.MoveToMenu(Dst: TObject; pIndex : integer = -1);
 var
   SrcMenu,DstMenu : TSharpEMenu;
 begin
@@ -124,7 +135,10 @@ begin
   DstMenu := TSharpEMenu(Dst);
 
   SrcMenu.Items.Extract(self);
-  DstMenu.Items.Add(self);
+  if pIndex = -1 then
+    DstMenu.Items.Add(self)
+  else DstMenu.Items.Insert(pIndex,self);
+       
   FOwnerMenu := Dst;
 end;
 

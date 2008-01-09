@@ -57,6 +57,7 @@ type
     FItemsHeight : TIntArray;
     FMouseDown : boolean;
     FWrapMenu  : boolean;
+    FCustomSettings : boolean;
     procedure UpdateItemWidth;
     procedure UpdateItemsHeight;
     procedure ImageCheck(var pbmp : TBitmap32; pSize : TPoint);
@@ -118,6 +119,7 @@ type
     property isWrapMenu : boolean read FWrapMenu write FWrapMenu;
     property Settings : TSharpeMenuSettings read FSettings;
     property ParentMenuItem : TSharpEMenuItem read FParentMenuItem;
+    property CustomSettings : boolean read FCustomSettings write FCustomSettings;
   end;
 
 var
@@ -136,6 +138,7 @@ constructor TSharpEMenu.Create(pParentMenuItem : TSharpEMenuItem; pManager  : TS
 begin
   inherited Create;
 
+  FCustomSettings := False;
   FParentMenuItem  := pParentMenuItem;
   FMenuActions := TSharpEMenuActions.Create(self);
   FMenuConsts  := TSharpEMenuConsts.Create;
