@@ -58,6 +58,7 @@ type
     FMouseDown : boolean;
     FWrapMenu  : boolean;
     FCustomSettings : boolean;
+    FDesignMode : boolean;
     procedure UpdateItemWidth;
     procedure UpdateItemsHeight;
     procedure ImageCheck(var pbmp : TBitmap32; pSize : TPoint);
@@ -120,6 +121,7 @@ type
     property Settings : TSharpeMenuSettings read FSettings;
     property ParentMenuItem : TSharpEMenuItem read FParentMenuItem;
     property CustomSettings : boolean read FCustomSettings write FCustomSettings;
+    property DesignMode : boolean read FDesignMode write FDesignMode;
   end;
 
 var
@@ -139,6 +141,7 @@ begin
   inherited Create;
 
   FCustomSettings := False;
+  FDesignMode := False;
   FParentMenuItem  := pParentMenuItem;
   FMenuActions := TSharpEMenuActions.Create(self);
   FMenuConsts  := TSharpEMenuConsts.Create;
@@ -311,7 +314,8 @@ function TSharpEMenu.AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TB
 var
   item : TSharpEMenuItem;
 begin
-  pTarget := FMenuConsts.ParseString(pTarget);
+  if not FDesignMode then  
+    pTarget := FMenuConsts.ParseString(pTarget);
   item := TSharpEMenuItem.Create(self,mtLink);
   if FSettings.UseIcons then
     item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon)
@@ -360,8 +364,11 @@ function TSharpEMenu.AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boo
 var
   item : TSharpEMenuItem;
 begin
-  pTarget := FMenuConsts.ParseString(pTarget);
-  pIcon   := FMenuConsts.ParseString(pIcon);
+  if not FDesignMode then
+  begin
+    pTarget := FMenuConsts.ParseString(pTarget);
+    pIcon   := FMenuConsts.ParseString(pIcon);
+  end;
   item := TSharpEMenuItem.Create(self,mtLink);
   if FSettings.UseIcons then
     item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget)
@@ -381,8 +388,11 @@ function TSharpEMenu.AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : 
 var
   item : TSharpEMenuItem;
 begin
-  pTarget := FMenuConsts.ParseString(pTarget);
-  pIcon   := FMenuConsts.ParseString(pIcon);
+  if not FDesignMode then
+  begin
+    pTarget := FMenuConsts.ParseString(pTarget);
+    pIcon   := FMenuConsts.ParseString(pIcon);
+  end;
   item := TSharpEMenuItem.Create(self,mtSubMenu);
   if FSettings.UseIcons then
     item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget)
@@ -404,9 +414,12 @@ procedure TSharpEMenu.AddDynamicDirectoryItem(pTarget : String; pMax,pSort : int
 var
   item : TSharpEMenuItem;
 begin
+  if not FDesignMode then
+    pTarget := FMenuConsts.ParseString(pTarget);
+
   item := TSharpEMenuItem.Create(self,mtDynamicDir);
   item.Icon := nil;
-  item.PropList.Add('Action',FMenuConsts.ParseString(pTarget));
+  item.PropList.Add('Action',pTarget);
   item.PropList.Add('MaxItems',pMax);
   item.PropList.Add('Sort',pSort);
   item.PropList.Add('Filter',pFilter);

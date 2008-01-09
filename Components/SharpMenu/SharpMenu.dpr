@@ -60,7 +60,8 @@ uses
   uSharpEMenuPopups in 'Units\uSharpEMenuPopups.pas',
   uSharpEMenuSettings in 'Units\uSharpEMenuSettings.pas',
   uControlPanelItems in '..\..\Common\Units\ControlPanelItems\uControlPanelItems.pas',
-  SharpIconUtils in '..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas';
+  SharpIconUtils in '..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
+  uSharpEMenuSaver in 'Units\uSharpEMenuSaver.pas';
 
 {$R *.res}
 {$R metadata.res}
@@ -154,10 +155,9 @@ begin
 
   SkinManager := TSharpESkinManager.Create(nil,[scBar,scMenu,scMenuItem]);
   SystemSkinLoadThread := TSystemSkinLoadThread.Create(SkinManager);
-  mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManager);
+  mn := uSharpEMenuLoader.LoadMenu(mfile,SkinManager,False);
   Application.Title := 'SharpMenu';
   Application.CreateForm(TSharpEMenuwnd, wnd);
-
   SystemSkinLoadThread.WaitFor;
   SystemSkinLoadThread.Free;
 

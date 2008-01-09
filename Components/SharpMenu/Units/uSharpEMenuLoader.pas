@@ -32,13 +32,13 @@ uses JvSimpleXML,SysUtils,
      uSharpEMenuSettings,
      SharpESkinManager;
 
-function LoadMenu(pFileName : String; pManager: TSharpESkinManager) : TSharpEMenu;
+function LoadMenu(pFileName : String; pManager: TSharpESkinManager; pDesignMode : boolean) : TSharpEMenu;
 
 implementation
 
 uses uSharpEMenuItem;
 
-function LoadMenuFromXML(pParemtItem : TSharpEMenuItem; pXML : TJvSimpleXMLElems; pManager: TSharpESkinManager; pSettings : TSharpEMenuSettings) : TSharpEMenu;
+function LoadMenuFromXML(pParemtItem : TSharpEMenuItem; pXML : TJvSimpleXMLElems; pManager: TSharpESkinManager; pSettings : TSharpEMenuSettings; pDesignMode : boolean) : TSharpEMenu;
 var
   n : integer;
   menu : TSharpEMenu;
@@ -46,6 +46,7 @@ var
   typestring : String;
 begin
   menu := TSharpEMenu.Create(pParemtItem,pManager,pSettings);
+  menu.DesignMode := pDesignMode;
   result := menu;
   for n := 0 to pXML.Count - 1 do
       with pXML.Item[n].Items do
@@ -86,13 +87,13 @@ begin
           begin
             menuitem := TSharpEMenuItem(menu.AddSubMenuItem(Value('Caption'),Value('Icon'),Value('Target',''),False));
             if ItemNamed['items'] <> nil then
-               menuitem.SubMenu := LoadMenuFromXML(menuitem,ItemNamed['items'].Items,pManager,menu.settings);
+              menuitem.SubMenu := LoadMenuFromXML(menuitem,ItemNamed['items'].Items,pManager,menu.settings,menu.DesignMode);
           end;
         end;
       end;
 end;
 
-function LoadMenu(pFileName : String; pManager: TSharpESkinManager) : TSharpEMenu;
+function LoadMenu(pFileName : String; pManager: TSharpESkinManager; pDesignMode : boolean) : TSharpEMenu;
 var
   XML : TJvSimpleXML;
   RootMenu : TSharpEMenu;
@@ -107,7 +108,7 @@ begin
     if FileExists(pFileName) then
     begin
       XML.LoadFromFile(pFileName);
-      RootMenu := LoadMenuFromXML(nil,XML.Root.Items,pManager,tempSettings);
+      RootMenu := LoadMenuFromXML(nil,XML.Root.Items,pManager,tempSettings,pDesignMode);
     end;
   finally
     XML.Free;
