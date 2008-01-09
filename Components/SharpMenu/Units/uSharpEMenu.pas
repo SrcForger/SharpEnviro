@@ -363,16 +363,18 @@ end;
 function TSharpEMenu.AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean) : TObject;
 var
   item : TSharpEMenuItem;
+  etarget : String;
 begin
   item := TSharpEMenuItem.Create(self,mtLink);
   item.PropList.Add('IconSource',pIcon);
+  etarget := FMenuConsts.ParseString(pTarget);
   if not FDesignMode then
   begin
-    pTarget := FMenuConsts.ParseString(pTarget);
+    pTarget := etarget;
     pIcon   := FMenuConsts.ParseString(pIcon);
   end;  
   if FSettings.UseIcons then
-    item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget)
+    item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget)
   else item.Icon := nil;
   item.Caption := pCaption;
   item.PropList.Add('Action',pTarget);
@@ -388,16 +390,18 @@ end;
 function TSharpEMenu.AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean) : TObject;
 var
   item : TSharpEMenuItem;
+  etarget : String;
 begin
   item := TSharpEMenuItem.Create(self,mtSubMenu);
   item.PropList.Add('IconSource',pIcon);
+  etarget := FMenuConsts.ParseString(pTarget);
   if not FDesignMode then
   begin
     pIcon   := FMenuConsts.ParseString(pIcon);
-    pTarget := FMenuConsts.ParseString(pTarget);
+    pTarget := etarget;
   end;
   if FSettings.UseIcons then
-    item.Icon := SharpEMenuIcons.AddIcon(pIcon,pTarget)
+    item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget)
   else item.Icon := nil;
   item.Caption := pCaption;
   item.isDynamic := pDynamic;
