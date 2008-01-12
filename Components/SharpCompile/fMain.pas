@@ -44,17 +44,26 @@ type
     procedure mDetailedChange(Sender: TObject);
     procedure mSummary_Change(Sender: TObject);
     procedure ctvProjectsSelectionChange(Sender: TObject);
-    procedure lbSummaryGetCellColor(Sender: Tobject; const AItem: Integer; var AColor: TColor);
     procedure FormDestroy(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
     procedure lbSummaryDblClickItem(Sender: Tobject; const ACol: Integer;
       AItem: TSharpEListItem);
+    procedure lbSummaryGetCellColor(Sender: TObject;
+      const AItem: TSharpEListItem; var AColor: TColor);
+    procedure lbSummaryGetCellImageIndex(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var AImageIndex: Integer;
+      const ASelected: Boolean);
+    procedure lbSummaryClickItem(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem);
+    procedure lbSummaryGetCellCursor(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var ACursor: TCursor);
   private
     procedure CompilerNewLine(Sender: TObject; CmdOutput: string);
     procedure CompileProject(Project: TDelphiProject; bDebug: Boolean; iPercent: Integer);
     procedure OpenFile(sXML: String);
     procedure SaveSettings();
     procedure LoadSettings();
+    procedure ShowErrorDetail(AItem: TSharpEListItem);
   public
     { Public declarations }
   end;
@@ -89,41 +98,44 @@ begin
 end;
 
 
-procedure TfrmMain.lbSummaryDblClickItem(Sender: Tobject; const ACol: Integer;
+procedure TfrmMain.lbSummaryClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
-var
-  sProjName: String;
-  i, iPos: Integer;
 begin
-  if pos('Compiling', AItem.Caption) <> 0 then
-  begin
-    sProjName := RightStr(AItem.Caption, Length(AItem.Caption) - 10);
-    sProjName := LeftStr(sProjName, Pos('...', sProjName) - 1);
-    for i := 0 to ctvProjects.Items.Count - 1 do
-    begin
-      if ctvProjects.Items[i].Text = sProjName then
-      begin
-        mDetailed.Perform(EM_LINESCROLL, 0, 0 - mDetailed.Lines.Count);
-        iPos := TDelphiProject(ctvProjects.Items[i].Data).DIndex;
-        if Pos('Failed!', AItem.Caption) <> 0 then
-          iPos := iPos - Trunc(mDetailed.Height / Abs(Canvas.TextHeight('Wg')) - 1);
-        mDetailed.Perform(EM_LINESCROLL, 0, iPos);
-        sepLog.TabIndex := 1;
-        lbSummary.Visible := False;
-        mDetailed.Visible := True;
-      end;
-    end;
-  end;
-
+  if ACol = 1 then
+    if Pos('Failed!', AItem.Caption) <> 0 then
+      ShowErrorDetail(AItem);
 end;
 
-procedure TfrmMain.lbSummaryGetCellColor(Sender: Tobject; const AItem: Integer;
-  var AColor: TColor);
+procedure TfrmMain.lbSummaryDblClickItem(Sender: Tobject; const ACol: Integer;
+  AItem: TSharpEListItem);
 begin
-  if lbSummary.Item[AItem].ImageIndex = 0 then
+  ShowErrorDetail(AItem);
+end;
+
+procedure TfrmMain.lbSummaryGetCellColor(Sender: TObject;
+  const AItem: TSharpEListItem; var AColor: TColor);
+begin
+  if AItem.ImageIndex = 0 then
     AColor := $00ECECFF else
-  if lbSummary.Item[AItem].ImageIndex = -1 then
+  if AItem.ImageIndex = -1 then
     AColor := $00FBEFE3;
+end;
+
+procedure TfrmMain.lbSummaryGetCellCursor(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem; var ACursor: TCursor);
+begin
+  if ACol = 1 then
+    if Pos('Failed!', AItem.Caption) <> 0 then
+      ACursor := crHandPoint;
+end;
+
+procedure TfrmMain.lbSummaryGetCellImageIndex(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
+  const ASelected: Boolean);
+begin
+  if ACol = 1 then
+    if Pos('Failed!', AItem.Caption) <> 0 then
+      AImageIndex := 3;
 end;
 
 procedure TfrmMain.mDetailedChange(Sender: TObject);
@@ -207,6 +219,7 @@ var
   sSplitter: String;
 begin
   newItem := lbSummary.AddItem('Compiling ' + Project.Name + '...',2);
+  newItem.AddSubItem('');
   lbSummary.ItemIndex := lbSummary.Count-1;
   Project.SIndex := lbSummary.Count -1;
   sSummary := lbSummary.Item[Project.SIndex].Caption;
@@ -340,6 +353,33 @@ begin
   begin
     bDebug := False;
     SaveSettings;
+  end;
+end;
+
+procedure TfrmMain.ShowErrorDetail(AItem: TSharpEListItem);
+var
+  iPos: Integer;
+  i: Integer;
+  sProjName: string;
+begin
+  if pos('Compiling', AItem.Caption) <> 0 then
+  begin
+    sProjName := RightStr(AItem.Caption, Length(AItem.Caption) - 10);
+    sProjName := LeftStr(sProjName, Pos('...', sProjName) - 1);
+    for i := 0 to ctvProjects.Items.Count - 1 do
+    begin
+      if ctvProjects.Items[i].Text = sProjName then
+      begin
+        mDetailed.Perform(EM_LINESCROLL, 0, 0 - mDetailed.Lines.Count);
+        iPos := TDelphiProject(ctvProjects.Items[i].Data).DIndex;
+        if Pos('Failed!', AItem.Caption) <> 0 then
+          iPos := iPos - Trunc(mDetailed.Height / Abs(Canvas.TextHeight('Wg')) - 1);
+        mDetailed.Perform(EM_LINESCROLL, 0, iPos);
+        sepLog.TabIndex := 1;
+        lbSummary.Visible := False;
+        mDetailed.Visible := True;
+      end;
+    end;
   end;
 end;
 
