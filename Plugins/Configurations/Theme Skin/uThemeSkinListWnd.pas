@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, SharpApi, uSEListboxPainter, JclFileUtils,
+  Dialogs, StdCtrls, JvSimpleXml, SharpApi, JclFileUtils,
   uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
   SharpEListBox, graphicsfx, SharpThemeApi, SharpEListBoxEx, BarPreview, GR32, GR32_PNG, pngimage,
   ExtCtrls, SharpCenterApi, JclStrings;

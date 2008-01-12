@@ -29,6 +29,7 @@ object frmItemsList: TfrmItemsList
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
+        AutoSize = False
         Images = imlWeatherGlyphs
       end
       item
@@ -38,6 +39,7 @@ object frmItemsList: TfrmItemsList
         ColumnAlign = calRight
         StretchColumn = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = imlWeatherGlyphs
       end
       item
@@ -48,6 +50,7 @@ object frmItemsList: TfrmItemsList
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = imlWeatherGlyphs
       end>
     Colors.BorderColor = clBtnFace

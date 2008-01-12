@@ -240,7 +240,7 @@ object frmImage: TfrmImage
               AlignWithMargins = True
               Left = 0
               Top = 49
-              Width = 351
+              Width = 79
               Height = 13
               Margins.Left = 0
               Margins.Top = 8
@@ -248,7 +248,6 @@ object frmImage: TfrmImage
               Margins.Bottom = 0
               Align = alTop
               Caption = 'Refresh Interval'
-              ExplicitWidth = 79
             end
             object Label7: TLabel
               AlignWithMargins = True
@@ -397,6 +396,7 @@ object frmImage: TfrmImage
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UIC_colorblend'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -437,6 +437,7 @@ object frmImage: TfrmImage
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UIC_ColorAlpha'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -620,6 +621,7 @@ object frmImage: TfrmImage
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UIC_colorblend'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -660,6 +662,7 @@ object frmImage: TfrmImage
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UIC_blendalpha'
+          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10

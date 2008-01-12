@@ -28,6 +28,7 @@ object frmBarList: TfrmBarList
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
+        AutoSize = False
         Images = StatusImages
         SelectedImages = StatusImages
       end
@@ -39,6 +40,7 @@ object frmBarList: TfrmBarList
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
       end
       item
         Width = 50
@@ -48,6 +50,7 @@ object frmBarList: TfrmBarList
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
       end
       item
         Width = 30
@@ -57,6 +60,7 @@ object frmBarList: TfrmBarList
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnShadow

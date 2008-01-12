@@ -82,8 +82,7 @@ uses
   uWeatherOptions,
   uWeatherItemEditWnd,
   Types,
-  JclFileUtils,
-  uSEListboxPainter;
+  JclFileUtils;
 
 {$R *.dfm}
 

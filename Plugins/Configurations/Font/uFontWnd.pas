@@ -40,7 +40,6 @@ uses
   Dialogs,
   StdCtrls,
   JvSimpleXml,
-  uSEListboxPainter,
   JclFileUtils,
   uSharpCenterPluginTabList,
   uSharpCenterCommon,

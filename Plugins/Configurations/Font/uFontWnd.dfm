@@ -253,7 +253,7 @@ object frmFont: TfrmFont
           Left = 2
           Top = 2
           Width = 170
-          Height = 23
+          Height = 22
           Margins.Left = 2
           Margins.Top = 2
           Margins.Right = 2
@@ -581,6 +581,7 @@ object frmFont: TfrmFont
           Margins.Bottom = 8
           Align = alTop
           BevelOuter = bvNone
+          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10

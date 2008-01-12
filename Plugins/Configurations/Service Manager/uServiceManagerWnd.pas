@@ -39,7 +39,6 @@ uses
   Dialogs,
   StdCtrls,
   JvSimpleXml,
-  uSEListboxPainter,
   JclFileUtils,
   Math,
   uSharpCenterPluginTabList,
