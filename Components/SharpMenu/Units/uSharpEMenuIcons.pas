@@ -69,12 +69,28 @@ function TSharpEMenuIcons.FindIcon(pIconSource,pIconData : String) : TSharpEMenu
 var
   n : integer;
   Item : TSharpEMenuIcon;
+  isSEIcon : boolean;
+  found : boolean;
 begin
+  if pos(pIconSource,'.') <> 0 then
+    isSEIcon := SharpThemeApi.IsIconInIconSet(PChar(pIconSource))
+  else isSEIcon := False;
+
+  found := False;
   for n := 0 to FItems.Count -1 do
   begin
     Item := TSharpEMenuIcon(FItems.Items[n]);
+    if isSEIcon then
+    begin
+      if Item.IconType <> itCustomIcon then
+        if CompareText(Item.IconSource,pIconSource) = 0 then
+          found := True;
+    end else
     if (CompareText(Item.IconSource,pIconData) = 0) or
        (CompareText(Item.IconSource,pIconSource) = 0) then
+      found := True;
+
+    if found then    
     begin
       result := Item;
       exit;
