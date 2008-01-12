@@ -71,17 +71,17 @@ type
     destructor Destroy; override;
 
     // Add Menu Items
-    procedure AddSeparatorItem(pDynamic : boolean);
-    procedure AddLabelItem(pCaption : String; pDynamic : boolean);
-    function AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean) : TObject; overload;
-    function AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean) : TObject; overload;
-    procedure AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String;  pDynamic : boolean);
-    procedure AddDriveListItem(pDriveNames:  boolean; pDynamic : boolean);
-    procedure AddControlPanelItem(pDynamic : boolean);
-    function  AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean) : TObject; overload;
-    function  AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32; pType :TSharpEMenuItemType = mtCustom) : TObject;
-    procedure AddObjectListItem(pDynamic : boolean);
-    procedure AddObjectItem(pFile : String; pDynamic : boolean);
+    function AddSeparatorItem(pDynamic : boolean; pInsertPos: Integer=-1): TObject;
+    function AddLabelItem(pCaption : String; pDynamic : boolean; pInsertPos: Integer=-1): TObject;
+    function AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean; pInsertPos: Integer=-1) : TObject; overload;
+    function AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean; pInsertPos: Integer=-1) : TObject; overload;
+    function AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String;  pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
+    function AddDriveListItem(pDriveNames:  boolean; pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
+    function AddControlPanelItem(pDynamic : boolean; pInsertPos: Integer=-1): TObject;
+    function  AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean; pInsertPos: Integer=-1) : TObject; overload;
+    function  AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32; pType :TSharpEMenuItemType = mtCustom; pInsertPos: Integer=-1) : TObject;
+    function AddObjectListItem(pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
+    function AddObjectItem(pFile : String; pDynamic : boolean; pInsertPos: Integer=-1): TObject;
 
     // Rendering
     procedure RenderBackground(pLeft, pTop : integer; BGBmp : TBitmap32 = nil);
@@ -276,7 +276,7 @@ begin
   if FSettings.WrapMenu then WrapMenu(Max(5,FSettings.WrapCount));
 end;
 
-procedure TSharpEMenu.AddLabelItem(pCaption : String; pDynamic : boolean);
+function TSharpEMenu.AddLabelItem(pCaption : String; pDynamic : boolean; pInsertPos: Integer=-1): TObject;
 var
   item : TSharpEMenuItem;
 begin
@@ -284,20 +284,28 @@ begin
   item.isDynamic := False;
   item.Icon := nil;
   item.Caption := pCaption;
-  FItems.Add(item);
+  result := item;
+
+  if pInsertPos = -1 then
+  FItems.Add(item) else
+  FItems.Insert(pInsertPos,item);
 end;
 
-procedure TSharpEMenu.AddSeparatorItem(pDynamic : boolean);
+function TSharpEMenu.AddSeparatorItem(pDynamic : boolean; pInsertPos: Integer=-1): TObject;
 var
   item : TSharpEMenuItem;
 begin
   item := TSharpEMenuItem.Create(self,mtSeparator);
   item.isDynamic := pDynamic;
   item.icon := nil;
-  FItems.Add(Item);
+  result := item;
+
+  if pInsertPos = -1 then
+  FItems.Add(item) else
+  FItems.Insert(pInsertPos,item);
 end;
 
-function  TSharpEMenu.AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32; pType :TSharpEMenuItemType = mtCustom) : TObject;
+function  TSharpEMenu.AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32; pType :TSharpEMenuItemType = mtCustom; pInsertPos: Integer=-1) : TObject;
 var
   item : TSharpEMenuItem;
 begin
@@ -306,11 +314,14 @@ begin
     item.Icon := SharpEMenuIcons.AddIcon(pIconName,pIcon)
   else item.Icon := nil;
   item.Caption := pCaption;
-  FItems.Add(Item);
   result := item;
+
+  if pInsertPos = -1 then
+  FItems.Add(item) else
+  FItems.Insert(pInsertPos,item);
 end;
 
-function TSharpEMenu.AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean) : TObject;
+function TSharpEMenu.AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
 var
   item : TSharpEMenuItem;
 begin
@@ -326,11 +337,14 @@ begin
   if pDynamic and FileExists(pTarget) then
      item.Popup := SharpEMenuPopups.DynamicLinkPopup;
   item.isDynamic := pDynamic;
-  FItems.Add(Item);
   result := item;
+
+  if pInsertPos = -1 then
+  FItems.Add(item) else
+  FItems.Insert(pInsertPos,item);
 end;
 
-procedure TSharpEMenu.AddObjectItem(pFile: String; pDynamic: boolean);
+function TSharpEMenu.AddObjectItem(pFile: String; pDynamic: boolean; pInsertPos: Integer=-1): TObject;
 var
   item : TSharpEMenuItem;
   s : String;
@@ -346,10 +360,14 @@ begin
   else item.Icon := nil;
   item.isVisible := True;
   item.isDynamic := pDynamic;
-  FItems.Add(Item);
+  result := item;
+
+  if pInsertPos = -1 then
+  FItems.Add(item) else
+  FItems.Insert(pInsertPos,item);
 end;
 
-procedure TSharpEMenu.AddObjectListItem(pDynamic: boolean);
+function TSharpEMenu.AddObjectListItem(pDynamic: boolean; pInsertPos: Integer=-1): TObject;
 var
   item : TSharpEMenuItem;
 begin
@@ -357,10 +375,14 @@ begin
   item.Icon := nil;
   item.isVisible := False;
   item.isDynamic := pDynamic;
-  FItems.Add(Item);
+  result := item;
+
+  if pInsertPos = -1 then
+  FItems.Add(item) else
+  FItems.Insert(pInsertPos,item);
 end;
 
-function TSharpEMenu.AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean) : TObject;
+function TSharpEMenu.AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
 var
   item : TSharpEMenuItem;
   etarget : String;
@@ -381,11 +403,14 @@ begin
      if FileExists(pTarget) then
         item.Popup := SharpEMenuPopups.DynamicLinkPopup;
   item.isDynamic := pDynamic;
-  FItems.Add(Item);
   result := item;
+
+  if pInsertPos = -1 then
+  FItems.Add(item) else
+  FItems.Insert(pInsertPos,item);
 end;
 
-function TSharpEMenu.AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean) : TObject;
+function TSharpEMenu.AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
 var
   item : TSharpEMenuItem;
   etarget : String;
@@ -408,11 +433,14 @@ begin
     if pDynamic then
        item.popup := SharpEMenuPopups.DynamicDirPopup;
   end;
-  FItems.Add(Item);
   result := Item;
+
+  if pInsertPos = -1 then
+  FItems.Add(item) else
+  FItems.Insert(pInsertPos,item);
 end;
 
-procedure TSharpEMenu.AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String; pDynamic : boolean);
+function TSharpEMenu.AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String; pDynamic : boolean; pInsertPos: Integer=-1): TObject;
 var
   item : TSharpEMenuItem;
 begin
@@ -427,10 +455,14 @@ begin
   item.PropList.Add('Filter',pFilter);
   item.isVisible := False;
   item.isDynamic := pDynamic;
-  FItems.Add(Item);
+  result := item;
+
+  if pInsertPos = -1 then
+  FItems.Add(item) else
+  FItems.Insert(pInsertPos,item);
 end;
 
-procedure TSharpEMenu.AddDriveListItem(pDriveNames: Boolean; pDynamic : boolean);
+function TSharpEMenu.AddDriveListItem(pDriveNames: Boolean; pDynamic : boolean; pInsertPos: Integer=-1): TObject;
 var
   item : TSharpEMenuItem;
 begin
@@ -439,10 +471,14 @@ begin
   item.isVisible := False;
   item.PropList.Add('ShowDriveNames',pDriveNames);
   item.isDynamic := pDynamic;
-  FItems.Add(Item);
+  result := item;
+
+  if pInsertPos = -1 then
+  FItems.Add(item) else
+  FItems.Insert(pInsertPos,item);
 end;
 
-procedure TSharpEMenu.AddControlPanelItem(pDynamic : boolean);
+function TSharpEMenu.AddControlPanelItem(pDynamic : boolean; pInsertPos: Integer=-1): TObject;
 var
   item : TSharpEMenuItem;
 begin
@@ -450,7 +486,11 @@ begin
   item.Icon := nil;
   item.isVisible := False;
   item.isDynamic := pDynamic;
-  FItems.Add(Item);
+  result := item;
+
+  if pInsertPos = -1 then
+  FItems.Add(item) else
+  FItems.Insert(pInsertPos,item);
 end;
 
 // Calculate overall items size until pindex (-1 = all)

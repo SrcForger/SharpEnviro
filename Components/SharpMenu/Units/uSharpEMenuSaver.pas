@@ -41,6 +41,7 @@ var
   n : integer;
   menuitem : TSharpEMenuItem;
 begin
+
   if pMenu.CustomSettings then
     pMenu.Settings.SaveToXML(pXML.Add('Settings').Items);
 
@@ -60,7 +61,7 @@ begin
           mtSeparator : Add('type','separator');
           mtDynamicDir : begin
             Add('type','dynamicdirectory');
-            Add('Target',menuitem.PropList.GetString('Target'));
+            Add('Target',menuitem.PropList.GetString('Action'));
             Add('MaxItems',menuitem.PropList.GetInt('MaxItems'));
             Add('Sort',menuitem.PropList.GetInt('Sort'));
             Add('Filter',menuitem.PropList.GetString('Filter'));
