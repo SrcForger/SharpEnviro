@@ -39,6 +39,7 @@ uses
   Dialogs,
   StdCtrls,
   JclSimpleXML,
+  ShellApi,
   JclFileUtils,
   Contnrs,
   jvSimpleXml,
@@ -60,7 +61,8 @@ uses
   uSharpEMenuLoader,
   uSharpEMenuSaver,
   uSharpEMenuItem,
-  SharpESkinManager;
+  SharpESkinManager,
+  Menus;
 
 type
 
@@ -69,7 +71,7 @@ type
     MenuItem: TSharpEMenuItem;
     IsParent: Boolean;
     IconIndex: Integer;
-    function GetCaption: String;
+    function GetCaption: string;
   end;
 
   TfrmList = class(TForm)
@@ -77,6 +79,7 @@ type
     smMain: TSharpESkinManager;
     pilIcons: TPngImageList;
     pilDefault: TPngImageList;
+    tmrUpdatePosition: TTimer;
 
     procedure lbItemsResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -97,6 +100,7 @@ type
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure lbItemsGetCellClickable(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AClickable: Boolean);
+    procedure OnUpdatePosition(Sender: TObject);
   private
     FMenuFile: string;
     FMenu: TSharpEMenu;
@@ -110,9 +114,11 @@ type
     property Menu: TSharpEMenu read FMenu write FMenu;
 
     procedure UpdateTabs;
-    function IsParentMenu:Boolean;
+    function IsParentMenu: Boolean;
     procedure RenderItems(AMenu: TSharpEMenu; AClear: Boolean = True;
       AParent: Boolean = False);
+
+    procedure Save;
   end;
 
 var
@@ -154,7 +160,7 @@ procedure TfrmList.FormCreate(Sender: TObject);
 begin
   nMenuItemIndex := 0;
   nInsertIndex := 0;
-  
+
   Self.DoubleBuffered := True;
   lbItems.DoubleBuffered := True;
 end;
@@ -186,17 +192,19 @@ begin
 
   case ACol of
     colName: begin
+
         if frmEdit <> nil then begin
           nMenuItemIndex := Integer(tmp.MenuItem.ItemType);
           if frmEdit.EditMode = sceEdit then
             frmEdit.InitUI(sceEdit);
         end;
       end;
+
     colDelete: begin
 
         bDelete := True;
         if not (CtrlDown) then
-          if (MessageDlg(Format('Are you sure you want to delete: %s item?',[tmp.GetCaption]),
+          if (MessageDlg(Format('Are you sure you want to delete: %s item?', [tmp.GetCaption]),
             mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
             bDelete := False;
 
@@ -204,11 +212,13 @@ begin
 
           tmpMenu := TSharpEMenu(tmp.MenuItem.OwnerMenu);
           tmpMenu.Items.Extract(tmp.MenuItem);
-          CenterDefineSettingsChanged;
 
           if IsParentMenu then
-          RenderItemsBuffered(TSharpEMenu(tmp.MenuItem.OwnerMenu),True,True) else
-          RenderItemsBuffered(TSharpEMenu(tmp.MenuItem.OwnerMenu));
+            RenderItemsBuffered(TSharpEMenu(tmp.MenuItem.OwnerMenu), True, True)
+          else
+            RenderItemsBuffered(TSharpEMenu(tmp.MenuItem.OwnerMenu));
+
+          Save;
         end;
       end;
   end;
@@ -228,22 +238,24 @@ begin
     exit;
 
   case ACol of
-    colName: begin
+    colName:
+      begin
+
         if tmp.IsParent then begin
           if tmp.MenuItem.OwnerMenu <> nil then
             RenderItemsBuffered(TSharpEMenu(tmp.MenuItem.OwnerMenu), True, True);
 
           CenterSelectEditTab(scbAddTab);
-        end
-        else begin
-          case tmp.MenuItem.ItemType of
-            mtSubMenu: begin
-                RenderItemsBuffered(TSharpEMenu(tmp.MenuItem.SubMenu), True, True);
-                CenterSelectEditTab(scbAddTab);
-              end;
-          end;
+        end else
+      begin
+        case tmp.MenuItem.ItemType of
+          mtSubMenu: begin
+              RenderItemsBuffered(TSharpEMenu(tmp.MenuItem.SubMenu), True, True);
+              CenterSelectEditTab(scbAddTab);
+            end;
         end;
       end;
+  end;
   end;
 end;
 
@@ -256,52 +268,15 @@ var
   i: Integer;
 
 begin
-  n := lbItems.ItemAtPos(point(x, y), True);
-  if ((n <> -1) and (lbItems.ItemIndex <> -1) and (n <> lbItems.ItemIndex)) then begin
 
-    tmp := TSharpEListItem(lbItems.Items.Objects[n]);
-    tmpDest := TItemData(tmp.Data);
+  // if Ctrl down then move item into sub menu
+  if CtrlDown then
+    OnUpdatePosition(nil);
 
-    tmp := TSharpEListItem(lbItems.Items.Objects[lbItems.ItemIndex]);
-    tmpSrc := TItemData(tmp.Data);
-    tmpSrcMenu := TSharpEMenu(tmpSrc.MenuItem.OwnerMenu);
-
-    // Not possible to move the parent item
-    if (tmpSrc.IsParent) then
-      exit;
-
-    if ((tmpDest.MenuItem.ItemType = mtSubMenu) and (CtrlDown)) then begin
-
-      if tmpDest.IsParent then
-        tmpSrc.MenuItem.MoveToMenu(tmpDest.MenuItem.OwnerMenu)
-      else
-        tmpSrc.MenuItem.MoveToMenu(tmpDest.MenuItem.SubMenu);
-
-      lbItems.DeleteItem(lbItems.ItemIndex);
-      CenterUpdateConfigFull;
-
-    end
-    else begin
-
-      nTo := TSharpEMenu(tmpDest.MenuItem.OwnerMenu).Items.IndexOf(tmpDest.MenuItem);
-      tmpSrc.MenuItem.MoveToMenu(TSharpEMenu(tmpDest.MenuItem.OwnerMenu), nTo);
-      CenterDefineSettingsChanged;
-
-      if IsParentMenu then
-        RenderItemsBuffered(tmpSrcMenu, True, True)
-      else
-        RenderItemsBuffered(FMenu);
-
-      for i := 0 to Pred(lbItems.Count) do begin
-        if TItemData(lbItems.Item[i].Data).MenuItem = tmpSrc.MenuItem then begin
-          lbItems.ItemIndex := i;
-          break;
-        end;
-      end;
-
-      UpdateTabs;
-    end;
-  end;
+  tmrUpdatePosition.Enabled := False;
+  CenterUpdateConfigFull;
+  UpdateTabs;
+  Save;
 end;
 
 procedure TfrmList.lbItemsDragOver(Sender, Source: TObject; X, Y: Integer;
@@ -312,6 +287,10 @@ begin
   n := lbItems.ItemAtPos(point(x, y), True);
   if ((n <> -1) and (lbItems.ItemIndex <> -1) and (n <> lbItems.ItemIndex)) then begin
     Accept := True;
+
+    // If Ctrl is not pressed, we are simply repositioning
+    if not (CtrlDown) then
+      tmrUpdatePosition.Enabled := True;
   end;
 end;
 
@@ -511,10 +490,10 @@ begin
   if lbItems.ItemIndex = -1 then
     if lbItems.Items.Count > 0 then begin
       if IsParentMenu then
-        lbItems.ItemIndex := -1 else
+        lbItems.ItemIndex := -1
+      else
         lbItems.ItemIndex := 0;
     end;
-      
 
   UpdateTabs;
   CenterUpdateConfigFull;
@@ -528,6 +507,80 @@ begin
     RenderItems(AMenu, AClear, AParent);
   finally
     LockWindowUpdate(0);
+  end;
+end;
+
+procedure TfrmList.Save;
+begin
+  SaveMenu(Menu, MenuFile);
+end;
+
+procedure TfrmList.OnUpdatePosition(Sender: TObject);
+var
+  pt: TPoint;
+  n, nTo: Integer;
+  tmp: TSharpEListItem;
+  tmpDest, tmpSrc: TItemData;
+  tmpSrcMenu: TSharpEMenu;
+  i: Integer;
+begin
+  pt := lbItems.ScreenToClient(Mouse.CursorPos);
+  tmrUpdatePosition.Enabled := False;
+
+  n := lbItems.ItemAtPos(point(pt.x, pt.y), True);
+  if ((n <> -1) and (lbItems.ItemIndex <> -1) and (n <> lbItems.ItemIndex)) then begin
+
+    tmp := TSharpEListItem(lbItems.Items.Objects[n]);
+    tmpDest := TItemData(tmp.Data);
+
+    tmp := TSharpEListItem(lbItems.Items.Objects[lbItems.ItemIndex]);
+    tmpSrc := TItemData(tmp.Data);
+    tmpSrcMenu := TSharpEMenu(tmpSrc.MenuItem.OwnerMenu);
+
+    // Not possible to move the parent item
+    if (tmpSrc.IsParent) then
+      exit;
+
+    if (tmpDest.IsParent) and not (CtrlDown) then
+      exit;
+
+    if ((tmpDest.MenuItem.ItemType = mtSubMenu) and (CtrlDown)) then begin
+
+      if tmpDest.IsParent then
+        tmpSrc.MenuItem.MoveToMenu(tmpDest.MenuItem.OwnerMenu)
+      else
+        tmpSrc.MenuItem.MoveToMenu(tmpDest.MenuItem.SubMenu);
+
+      lbItems.DeleteItem(lbItems.ItemIndex);
+
+      for i := 0 to Pred(lbItems.Count) do begin
+        if TItemData(lbItems.Item[i].Data).MenuItem = tmpDest.MenuItem then begin
+          if not (tmpDest.IsParent) then
+            lbItems.ItemIndex := i;
+
+          break;
+        end;
+      end;
+
+    end
+    else begin
+
+      nTo := TSharpEMenu(tmpDest.MenuItem.OwnerMenu).Items.IndexOf(tmpDest.MenuItem);
+      tmpSrc.MenuItem.MoveToMenu(TSharpEMenu(tmpDest.MenuItem.OwnerMenu), nTo);
+
+      if IsParentMenu then
+        RenderItemsBuffered(tmpSrcMenu, True, True)
+      else
+        RenderItemsBuffered(FMenu);
+
+      for i := 0 to Pred(lbItems.Count) do begin
+        if TItemData(lbItems.Item[i].Data).MenuItem = tmpSrc.MenuItem then begin
+          lbItems.ItemIndex := i;
+          break;
+        end;
+      end;
+
+    end;
   end;
 end;
 
@@ -565,7 +618,7 @@ end;
 
 { TItemData }
 
-function TItemData.GetCaption: String;
+function TItemData.GetCaption: string;
 begin
   case MenuItem.ItemType of
     mtLink: Result := Self.MenuItem.Caption;

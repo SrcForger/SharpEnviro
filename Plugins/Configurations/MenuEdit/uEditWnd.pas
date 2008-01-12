@@ -135,6 +135,8 @@ begin
   case AEditMode of
     sceAdd: begin
 
+        FUpdating := True;
+        Try
         tmpMenuItemType := TPageData(cbMenuItems.Items.Objects[nMenuItemIndex]).MenuItemType;
         cbMenuItems.Enabled := True;
         cbItemPosition.Enabled := True;
@@ -178,9 +180,15 @@ begin
             end;
 
         end;
+        Finally
+          FUpdating := False;
+        End;
 
       end;
     sceEdit: begin
+
+        FUpdating := True;
+        Try
         tmpItem := TItemData(frmList.lbItems.SelectedItem.Data);
         cbMenuItems.Enabled := False;
         cbItemPosition.Enabled := False;
@@ -232,6 +240,9 @@ begin
 
         end;
 
+        Finally
+          FUpdating := False;
+        End;
       end;
   end;
 end;
@@ -467,7 +478,7 @@ begin
         else
           frmList.RenderItems(tmpMenu);
 
-        CenterDefineSettingsChanged;
+        frmList.Save;
 
         for i := 0 to Pred(frmList.lbItems.Count) do begin
           if TItemData(frmList.lbItems.Item[i].Data).MenuItem = TSharpEMenuItem(tmpMenuItem) then begin
@@ -518,7 +529,7 @@ begin
             end;
         end;
 
-        CenterDefineSettingsChanged;
+        frmList.Save;
         nMenuItemIndex := cbMenuItems.ItemIndex;
         frmList.lbItems.Invalidate;
 

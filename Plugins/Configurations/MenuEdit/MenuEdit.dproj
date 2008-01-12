@@ -10,9 +10,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
-    <DCC_DebugInformation>False</DCC_DebugInformation>
-    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
-    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\Center\Root\_Components\_Componentdlls\</DCC_ExeOutput>
     <DCC_UnitSearchPath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpeListBoxEx;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Components\SharpMenu\Units;..\..\..\Common\Units\PropertyList;..\..\..\Components\SharpMenu\Forms;..\..\..\Common\Units\ControlPanelItems;..\..\..\Components\SharpMenu\;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpeGaugeBox</DCC_UnitSearchPath>
     <DCC_ResourcePath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpeListBoxEx;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Components\SharpMenu\Units;..\..\..\Common\Units\PropertyList;..\..\..\Components\SharpMenu\Forms;..\..\..\Common\Units\ControlPanelItems;..\..\..\Components\SharpMenu\;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpeGaugeBox</DCC_ResourcePath>

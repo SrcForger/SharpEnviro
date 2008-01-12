@@ -64,6 +64,7 @@ begin
 
   // Assign vista fonts
   uVistaFuncs.SetVistaFonts(frmList);
+  CenterDefineConfigurationMode(scmLive);
 
   // Assign the menu file
   frmList.MenuFile := GetSharpeUserSettingsPath + 'SharpMenu\' + APluginID + '.xml';
@@ -124,17 +125,12 @@ begin
   FreeAndNil(frmEdit);
 end;
 
-procedure Save;
-begin
-  SaveMenu(frmList.Menu,frmList.MenuFile);
-end;
-
 procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
   var ATitle: string; var ADescription: string);
 begin
   AName := 'Menu Editor';
   ATitle := Format('Menu Configuration for "%s"', [APluginID]);
-  ADescription := 'Easily customise and create your SharpE menus';
+  ADescription := 'Drag Items to position them, hold down Ctrl to move an item into a submenu';
   AStatus := '';
 end;
 
@@ -159,7 +155,6 @@ exports
   Close,
   OpenEdit,
   CloseEdit,
-  Save,
   SetText,
   GetCenterScheme;
 

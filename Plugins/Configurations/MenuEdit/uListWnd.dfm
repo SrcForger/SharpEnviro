@@ -794,4 +794,11 @@ object frmList: TfrmList
     Top = 240
     Bitmap = {}
   end
+  object tmrUpdatePosition: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = OnUpdatePosition
+    Left = 156
+    Top = 236
+  end
 end

@@ -301,7 +301,7 @@ object frmEdit: TfrmEdit
         AlignWithMargins = True
         Left = 8
         Top = 0
-        Width = 488
+        Width = 166
         Height = 13
         Margins.Left = 8
         Margins.Top = 0
@@ -310,7 +310,6 @@ object frmEdit: TfrmEdit
         Align = alTop
         Caption = 'There are no configuration options'
         Enabled = False
-        ExplicitWidth = 166
       end
     end
   end
