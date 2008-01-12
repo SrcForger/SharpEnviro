@@ -3,16 +3,15 @@ unit GR32_PNG;
 interface
 
 uses
-  SysUtils, Windows, Classes, GR32, Graphics;
+  SysUtils, Windows, Classes, GR32, Graphics, PngImage;
 
 procedure LoadBitmap32FromPNG(DestBitmap: TBitmap32; Filename: String; out AlphaChannelAvailable: Boolean); overload;
 procedure LoadBitmap32FromPNG(DestBitmap: TBitmap32; SrcStream: TStream; out AlphaChannelAvailable: Boolean); overload;
 procedure SaveBitmap32ToPNG(SrcBitmap: TBitmap32; Filename: String; Paletted, Transparent: Boolean; BackgroundColor: TColor); overload;
 procedure SaveBitmap32ToPNG(SrcBitmap: TBitmap32; DestStream: TStream; Paletted, Transparent: Boolean; BackgroundColor: TColor); overload;
-
+function SaveBitmap32ToPNG(bm32: TBitmap32; paletted, transparent: Boolean;
+  bgcolor: TColor; CompressionLevel: Integer = 9; InterlaceMethod: TInterlaceMethod = imNone): tPNGObject; overload;
 implementation
-
-uses PNGImage;
 
 type
   TARGB = record
@@ -153,6 +152,55 @@ begin
     SaveBitmap32ToPNG(SrcBitmap, FileStream, Paletted, Transparent, BackgroundColor);
   finally
     FileStream.Free;
+  end;
+end;
+
+function SaveBitmap32ToPNG(bm32: TBitmap32; paletted, transparent: Boolean;
+  bgcolor: TColor;
+  CompressionLevel: Integer = 9;
+  InterlaceMethod: TInterlaceMethod = imNone): tPNGObject;
+var
+  bm: TBitmap;
+  png: TPngObject;
+  TRNS: TCHUNKtRNS;
+  p: PByteArray;
+  x, y: Integer;
+begin
+  try
+    png := TPngObject.Create;
+    bm := TBitmap.Create;
+    try
+      bm.Assign(bm32);
+      if paletted then
+        bm.PixelFormat := pf8bit; // force paletted on TBitmap, transparent for the web must be 8 bit
+      png.InterlaceMethod := InterlaceMethod;
+      png.CompressionLevel := CompressionLevel;
+      png.Assign(bm); //Convert data into png
+    finally
+      FreeAndNil(bm);
+    end;
+    if transparent then begin
+      if png.Header.ColorType in [COLOR_PALETTE] then begin
+        if (png.Chunks.ItemFromClass(TChunktRNS) = nil) then
+          png.CreateAlpha;
+        TRNS := png.Chunks.ItemFromClass(TChunktRNS) as TChunktRNS;
+        if Assigned(TRNS) then
+          TRNS.TransparentColor := bgcolor;
+      end;
+      if png.Header.ColorType in [COLOR_RGB, COLOR_GRAYSCALE] then
+        png.CreateAlpha;
+      if png.Header.ColorType in [COLOR_RGBALPHA, COLOR_GRAYSCALEALPHA] then begin
+        for y := 0 to png.Header.Height - 1 do begin
+          p := png.AlphaScanline[y];
+          for x := 0 to png.Header.Width - 1 do
+            p[x] :=
+              TARGB(bm32.Pixel[x, y]).a;
+        end;
+      end;
+    end;
+
+  finally
+    Result := png;
   end;
 end;
 
