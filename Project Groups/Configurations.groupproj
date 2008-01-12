@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup />
   <ItemGroup>
+    <Projects Include="..\Plugins\Configurations\Aliases\Aliases.dproj" />
     <Projects Include="..\Plugins\Configurations\BatteryMonitor\BatteryMonitor.dproj" />
     <Projects Include="..\Plugins\Configurations\Clock\Clock.dproj" />
     <Projects Include="..\Plugins\Configurations\Curses\Curses.dproj" />
@@ -13,6 +14,7 @@
     <Projects Include="..\Plugins\Configurations\Hotkeys\Hotkeys.dproj" />
     <Projects Include="..\Plugins\Configurations\Icon List\IconList.dproj" />
     <Projects Include="..\Plugins\Configurations\Image\Image.dproj" />
+    <Projects Include="..\Plugins\Configurations\KeyboardLayout\KeyboardLayout.dproj" />
     <Projects Include="..\Plugins\Configurations\Link\Link.dproj" />
     <Projects Include="..\Plugins\Configurations\MemoryMonitor\MemoryMonitor.dproj" />
     <Projects Include="..\Plugins\Configurations\MiniScmd\MiniScmd.dproj" />
@@ -21,6 +23,7 @@
     <Projects Include="..\Plugins\Configurations\QuickScript\QuickScript.dproj" />
     <Projects Include="..\Plugins\Configurations\RecycleBin\RecycleBin.dproj" />
     <Projects Include="..\Plugins\Configurations\Scheme\Scheme.dproj" />
+    <Projects Include="..\Plugins\Configurations\Service Manager\ServiceManager.dproj" />
     <Projects Include="..\Plugins\Configurations\SharpBar List\SharpBarList.dproj" />
     <Projects Include="..\Plugins\Configurations\SharpDesk\SharpDesk.dproj" />
     <Projects Include="..\Plugins\Configurations\SharpMenu\SharpMenu.dproj" />
@@ -30,8 +33,7 @@
     <Projects Include="..\Plugins\Configurations\VWMService\VWMService.dproj" />
     <Projects Include="..\Plugins\Configurations\VWM\VWM.dproj" />
     <Projects Include="..\Plugins\Configurations\Wallpaper\Wallpaper.dproj" />
-    <Projects Include="..\Plugins\Configurations\Weather\Weather.dproj" />
-    <Projects Include="..\Plugins\Modules\Keyboard Layout\KeyboardLayout.dproj" />
+    <Projects Include="..\Plugins\Configurations\WeatherService\Weather.dproj" />
   </ItemGroup>
   <ProjectExtensions>
     <Borland.Personality>Default.Personality</Borland.Personality>
@@ -137,15 +139,6 @@
   </Target>
   <Target Name="Wallpaper:Make">
     <MSBuild Projects="..\Plugins\Configurations\Wallpaper\Wallpaper.dproj" Targets="Make" />
-  </Target>
-  <Target Name="Weather">
-    <MSBuild Projects="..\Plugins\Configurations\Weather\Weather.dproj" Targets="" />
-  </Target>
-  <Target Name="Weather:Clean">
-    <MSBuild Projects="..\Plugins\Configurations\Weather\Weather.dproj" Targets="Clean" />
-  </Target>
-  <Target Name="Weather:Make">
-    <MSBuild Projects="..\Plugins\Configurations\Weather\Weather.dproj" Targets="Make" />
   </Target>
   <Target Name="Font">
     <MSBuild Projects="..\Plugins\Configurations\Font\Font.dproj" Targets="" />
@@ -274,13 +267,13 @@
     <MSBuild Projects="..\Plugins\Configurations\Clock\Clock.dproj" Targets="Make" />
   </Target>
   <Target Name="KeyboardLayout">
-    <MSBuild Projects="..\Plugins\Modules\Keyboard Layout\KeyboardLayout.dproj" Targets="" />
+    <MSBuild Projects="..\Plugins\Configurations\KeyboardLayout\KeyboardLayout.dproj" Targets="" />
   </Target>
   <Target Name="KeyboardLayout:Clean">
-    <MSBuild Projects="..\Plugins\Modules\Keyboard Layout\KeyboardLayout.dproj" Targets="Clean" />
+    <MSBuild Projects="..\Plugins\Configurations\KeyboardLayout\KeyboardLayout.dproj" Targets="Clean" />
   </Target>
   <Target Name="KeyboardLayout:Make">
-    <MSBuild Projects="..\Plugins\Modules\Keyboard Layout\KeyboardLayout.dproj" Targets="Make" />
+    <MSBuild Projects="..\Plugins\Configurations\KeyboardLayout\KeyboardLayout.dproj" Targets="Make" />
   </Target>
   <Target Name="MemoryMonitor">
     <MSBuild Projects="..\Plugins\Configurations\MemoryMonitor\MemoryMonitor.dproj" Targets="" />
@@ -291,14 +284,41 @@
   <Target Name="MemoryMonitor:Make">
     <MSBuild Projects="..\Plugins\Configurations\MemoryMonitor\MemoryMonitor.dproj" Targets="Make" />
   </Target>
+  <Target Name="Aliases">
+    <MSBuild Projects="..\Plugins\Configurations\Aliases\Aliases.dproj" Targets="" />
+  </Target>
+  <Target Name="Aliases:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Aliases\Aliases.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Aliases:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Aliases\Aliases.dproj" Targets="Make" />
+  </Target>
+  <Target Name="ServiceManager">
+    <MSBuild Projects="..\Plugins\Configurations\Service Manager\ServiceManager.dproj" Targets="" />
+  </Target>
+  <Target Name="ServiceManager:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\Service Manager\ServiceManager.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="ServiceManager:Make">
+    <MSBuild Projects="..\Plugins\Configurations\Service Manager\ServiceManager.dproj" Targets="Make" />
+  </Target>
+  <Target Name="Weather">
+    <MSBuild Projects="..\Plugins\Configurations\WeatherService\Weather.dproj" Targets="" />
+  </Target>
+  <Target Name="Weather:Clean">
+    <MSBuild Projects="..\Plugins\Configurations\WeatherService\Weather.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Weather:Make">
+    <MSBuild Projects="..\Plugins\Configurations\WeatherService\Weather.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="Curses;Desktop;Hotkeys;IconList;Scheme;SharpBarList;SharpDesk;SharpMenu;ThemeList;ThemeSkinList;Wallpaper;Weather;Font;DeskArea;Image;Link;MiniScmd;Notes;RecycleBin;ModuleManager;QuickScript;BatteryMonitor;VWMService;VWM;SystemTray;Clock;KeyboardLayout;MemoryMonitor" />
+    <CallTarget Targets="Curses;Desktop;Hotkeys;IconList;Scheme;SharpBarList;SharpDesk;SharpMenu;ThemeList;ThemeSkinList;Wallpaper;Font;DeskArea;Image;Link;MiniScmd;Notes;RecycleBin;ModuleManager;QuickScript;BatteryMonitor;VWMService;VWM;SystemTray;Clock;KeyboardLayout;MemoryMonitor;Aliases;ServiceManager;Weather" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Curses:Clean;Desktop:Clean;Hotkeys:Clean;IconList:Clean;Scheme:Clean;SharpBarList:Clean;SharpDesk:Clean;SharpMenu:Clean;ThemeList:Clean;ThemeSkinList:Clean;Wallpaper:Clean;Weather:Clean;Font:Clean;DeskArea:Clean;Image:Clean;Link:Clean;MiniScmd:Clean;Notes:Clean;RecycleBin:Clean;ModuleManager:Clean;QuickScript:Clean;BatteryMonitor:Clean;VWMService:Clean;VWM:Clean;SystemTray:Clean;Clock:Clean;KeyboardLayout:Clean;MemoryMonitor:Clean" />
+    <CallTarget Targets="Curses:Clean;Desktop:Clean;Hotkeys:Clean;IconList:Clean;Scheme:Clean;SharpBarList:Clean;SharpDesk:Clean;SharpMenu:Clean;ThemeList:Clean;ThemeSkinList:Clean;Wallpaper:Clean;Font:Clean;DeskArea:Clean;Image:Clean;Link:Clean;MiniScmd:Clean;Notes:Clean;RecycleBin:Clean;ModuleManager:Clean;QuickScript:Clean;BatteryMonitor:Clean;VWMService:Clean;VWM:Clean;SystemTray:Clean;Clock:Clean;KeyboardLayout:Clean;MemoryMonitor:Clean;Aliases:Clean;ServiceManager:Clean;Weather:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Curses:Make;Desktop:Make;Hotkeys:Make;IconList:Make;Scheme:Make;SharpBarList:Make;SharpDesk:Make;SharpMenu:Make;ThemeList:Make;ThemeSkinList:Make;Wallpaper:Make;Weather:Make;Font:Make;DeskArea:Make;Image:Make;Link:Make;MiniScmd:Make;Notes:Make;RecycleBin:Make;ModuleManager:Make;QuickScript:Make;BatteryMonitor:Make;VWMService:Make;VWM:Make;SystemTray:Make;Clock:Make;KeyboardLayout:Make;MemoryMonitor:Make" />
+    <CallTarget Targets="Curses:Make;Desktop:Make;Hotkeys:Make;IconList:Make;Scheme:Make;SharpBarList:Make;SharpDesk:Make;SharpMenu:Make;ThemeList:Make;ThemeSkinList:Make;Wallpaper:Make;Font:Make;DeskArea:Make;Image:Make;Link:Make;MiniScmd:Make;Notes:Make;RecycleBin:Make;ModuleManager:Make;QuickScript:Make;BatteryMonitor:Make;VWMService:Make;VWM:Make;SystemTray:Make;Clock:Make;KeyboardLayout:Make;MemoryMonitor:Make;Aliases:Make;ServiceManager:Make;Weather:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>
