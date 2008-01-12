@@ -35,6 +35,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure SharpEListBoxEx1GetCellColor(Sender: TObject;
       const AItem: TSharpEListItem; var AColor: TColor);
+    procedure SharpEListBoxEx1GetCellCursor(Sender: TObject;
+      const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor);
 
   private
     { Private declarations }
@@ -64,6 +66,7 @@ begin
   li.AddSubItem(IntToStr(SharpEListBoxEx1.Count),0);
   li.AddSubItem('<u>Delete</u>',1);
   li.AddSubItem('',false);
+  li.Level := SharpEListBoxEx1.Count-1;
   li.Hint := 'Click to set as default';
 
 end;
@@ -75,7 +78,7 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  SharpEListBoxEx1.DoubleBuffered := True;
+  //SharpEListBoxEx1.DoubleBuffered := True;
   Self.DoubleBuffered := True;
 end;
 
@@ -116,6 +119,12 @@ procedure TForm1.SharpEListBoxEx1GetCellColor(Sender: TObject;
 begin
   if AItem.ID = 1 then
     AColor := clRed;
+end;
+
+procedure TForm1.SharpEListBoxEx1GetCellCursor(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor);
+begin
+  ACursor := crHandPoint;
 end;
 
 procedure TForm1.SharpEListBoxEx1GetCellImageIndex(Sender: Tobject; const ACol: Integer;

@@ -106,6 +106,7 @@ type
     FOwner: TComponent;
     FSubItemCheckedStates: TList;
     FColor: TColor;
+    FLevel: Integer;
 
     function GetSubItemText(ASubItem: Integer): string;
     procedure SetSubItemText(ASubItem: Integer; const Value: string);
@@ -137,6 +138,7 @@ type
     property Caption: string read GetCaption write SetCaption;
     property ImageIndex: Integer read GetImageIndex write SetImageIndex;
     property Checked: Boolean read GetChecked;
+    property Level: Integer read FLevel write FLevel;
 
     property SubItemImageIndex[ASubItemIndex: Integer]: Integer read GetSubItemImageIndex write
     SetSubItemImageIndex; default;
@@ -185,7 +187,7 @@ type
     procedure DrawItemEvent(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure DrawSelection(ARect: TRect; AState: TOwnerDrawState; AItem: TSharpEListItem;
-      AItemIndex:Integer);
+      AItemIndex: Integer);
     procedure SetColors(const Value: TSharpEListBoxExColors);
     procedure DrawItemText(ACanvas: TCanvas; ARect: TRect; AFlags: Longint;
       Aitem: TSharpEListItem; ACol: Integer; APngImage: TPngObject);
@@ -212,7 +214,6 @@ type
       ASelected: Boolean; AColumn: TSharpEListBoxExColumn);
     procedure DrawCheckedItem(AItem: TSharpEListItem;
       AChecked: Boolean; AColumn: TSharpEListBoxExColumn);
-
   public
 
     constructor Create(Sender: TComponent); override;
@@ -227,7 +228,7 @@ type
     function AddItem(AText: string;
       AImageIndex: Integer = -1; ASelectedImageIndex: Integer = -1): TSharpEListItem; reintroduce; overload;
     function AddItem(AText: string; AChecked: Boolean): TSharpEListItem; reintroduce; overload;
-
+    procedure DeleteItem(AIndex: Integer);
     property SelectedItem: TSharpEListItem read GetSelectedItem;
     property Column[AColumn: Integer]: TSharpEListBoxExColumn read GetColumn
     write SetColumn;
@@ -238,6 +239,7 @@ type
     procedure Loaded; override;
     procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
+
   published
     property Columns: TSharpEListBoxExColumns read FColumns write SetColumns stored True;
     property Colors: TSharpEListBoxExColors read FColors write SetColors stored True;
@@ -259,6 +261,9 @@ type
     property OnGetCellClickable: TSharpEListBoxExGetColClickable read FOnGetCellClickable write FOnGetCellClickable;
     property OnDragOver;
     property OnDragDrop;
+    property OnStartDrag;
+    property OnMouseUp;
+    property OnMouseDown;
 
     property ItemOffset: TPoint read FItemOffset write FItemOffset;
     property AutosizeGrid: Boolean read FAutoSizeGrid write SetAutoSizeGrid;
@@ -283,26 +288,26 @@ uses
 
 {$R SharpEListBoxEx.res}
 
-procedure HGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
+procedure HGradient(Bmp: TBitmap32; color1, color2: TColor; st, et: byte; Rect: TRect);
 var
-   nR,nG,nB,nt : real;
-   sR,sG,sB : integer;
-   eR,eG,eB : integer;
-   x : integer;
+  nR, nG, nB, nt: real;
+  sR, sG, sB: integer;
+  eR, eG, eB: integer;
+  x: integer;
 begin
   sR := GetRValue(color1);
   sG := GetGValue(color1);
   sB := GetBValue(color1);
   eR := GetRValue(color2);
-  eG := GetGValue(color2);                      
+  eG := GetGValue(color2);
   eB := GetBValue(color2);
-  nR:=(eR-sR)/(Rect.Right-Rect.Left);
-  nG:=(eG-sG)/(Rect.Right-Rect.Left);
-  nB:=(eB-sB)/(Rect.Right-Rect.Left);
-  nt:=(et-st)/(Rect.Right-Rect.Left);
-  for x:=0 to Rect.Right-Rect.Left do
-      Bmp.VertLineTS(x+Rect.Left,Rect.Top,Rect.Bottom,
-                    color32(sr+round(nr*x),sg+round(ng*x),sb+round(nb*x),st+round(nt*x)));
+  nR := (eR - sR) / (Rect.Right - Rect.Left);
+  nG := (eG - sG) / (Rect.Right - Rect.Left);
+  nB := (eB - sB) / (Rect.Right - Rect.Left);
+  nt := (et - st) / (Rect.Right - Rect.Left);
+  for x := 0 to Rect.Right - Rect.Left do
+    Bmp.VertLineTS(x + Rect.Left, Rect.Top, Rect.Bottom,
+      color32(sr + round(nr * x), sg + round(ng * x), sb + round(nb * x), st + round(nt * x)));
 end;
 
 procedure Register;
@@ -332,6 +337,10 @@ var
   p: TPoint;
 begin
   case Message.NotifyCode of
+    LBN_SELCHANGE:
+      begin
+
+      end;
     LBN_DBLCLK: begin
 
         if Assigned(FOnDblClickItem) then begin
@@ -367,10 +376,8 @@ begin
   Self.DoubleBuffered := False;
   Self.Style := lbOwnerDrawVariable;
   Self.OnDrawItem := DrawItemEvent;
-
-  Self.OnMouseMove := MouseMoveEvent;
-
   Self.OnResize := ResizeEvent;
+  Self.OnMouseMove := MouseMoveEvent;
   Self.Color := clWindow;
 
   FColors := TSharpEListBoxExColors.Create;
@@ -385,6 +392,18 @@ begin
 
   ItemHeight := 30;
   FItemOffset := Point(2, 2);
+  Screen.Cursors[crHandPoint] := LoadCursor(HInstance, 'SHARPE_LISTBOXEX_HANDPOINT');
+end;
+
+procedure TSharpEListBoxEx.DeleteItem(AIndex: Integer);
+begin
+  if AIndex = -1 then
+    exit;
+
+  Self.Items.Delete(AIndex);
+
+  if FAutoSizeGrid then
+    Self.Height := (Self.Count) * Self.ItemHeight;
 end;
 
 destructor TSharpEListBoxEx.Destroy;
@@ -407,6 +426,7 @@ var
   R: TRect;
   iCol: Integer;
   bSelected: Boolean;
+  nLevel: Integer;
   tmpItem: TSharpEListItem;
 begin
   UpdateColumnSizes;
@@ -424,14 +444,19 @@ begin
     // Draw Columns
     for iCol := 0 to Pred(ColumnCount) do begin
 
+      nLevel := 0;
+
+      if iCol = 0 then
+        nLevel := tmpItem.Level * 24;
+
       tmpCol := Column[iCol];
-      Column[iCol].ColumnRect := Types.Rect(Column[iCol].ColumnRect.Left + ItemOffset.X,
-        Rect.Top, Column[iCol].ColumnRect.Right, Rect.Bottom);
-      R := Column[iCol].ColumnRect;
+      tmpCol.ColumnRect := Types.Rect(tmpCol.ColumnRect.Left + ItemOffset.X + nLevel,
+        Rect.Top, tmpCol.ColumnRect.Right, Rect.Bottom);
+      R := tmpCol.ColumnRect;
 
       if (iCol <= tmpItem.SubItemCount - 1) then begin
 
-        case Column[iCol].ColumnType of
+        case tmpCol.ColumnType of
           ctDefault: DrawDefaultItem(tmpItem, bSelected, tmpCol);
           ctCheck: DrawCheckedItem(tmpItem, bSelected, tmpCol);
         end;
@@ -556,11 +581,11 @@ begin
         if bDrawEllipsis then begin
           rEllipsisRect := bmp32.ClipRect;
           rEllipsisRect.Left := rEllipsisRect.Right - 16;
-          rEllipsisRect.Bottom := rEllipsisRect.Bottom -1;
+          rEllipsisRect.Bottom := rEllipsisRect.Bottom - 1;
 
           col := Aitem.Color;
 
-          HGradient(bmp32,ColorToRGB(col),ColorToRGB(col),0,255,rEllipsisRect);
+          HGradient(bmp32, ColorToRGB(col), ColorToRGB(col), 0, 255, rEllipsisRect);
         end;
       end;
 
@@ -572,7 +597,7 @@ begin
 end;
 
 procedure TSharpEListBoxEx.DrawSelection(ARect: TRect;
-  AState: TOwnerDrawState; AItem: TSharpEListItem; AItemIndex:Integer);
+  AState: TOwnerDrawState; AItem: TSharpEListItem; AItemIndex: Integer);
 var
   tmpColor: TColor;
   y: Integer;
@@ -666,7 +691,7 @@ var
 begin
   result := nil;
 
-  n := ItemAtPos(Self.ScreenToClient(Mouse.CursorPos),True);
+  n := ItemAtPos(Self.ScreenToClient(Mouse.CursorPos), True);
   if n = -1 then begin
     exit;
   end;
@@ -756,6 +781,7 @@ end;
 constructor TSharpEListItem.Create(AOwner: TComponent);
 begin
   FOwner := AOwner;
+  FLevel := 0;
   FSubItems := TStringList.Create;
   FSubItemImages := TList.Create;
   FSubItemSelectedImages := TList.Create;
@@ -967,7 +993,7 @@ begin
       end;
     end;
 
-  x := width;
+  x := clientwidth;
   for i := ColumnCount - 1 downto 0 do
     if (Column[i].ColumnAlign = calRight) then begin
       if Column[i].StretchColumn then begin
@@ -999,7 +1025,7 @@ begin
         Exit;
       end;
     end;
-  end;
+  end;  
 
   p := SmallPointToPoint(Message.Pos);
   ItemNo := ItemAtPos(p, True);
@@ -1034,7 +1060,7 @@ begin
 
         if (DragMode = dmAutomatic) and not (FMultiSelect and
           ((ssCtrl in ShiftState) or (ssShift in ShiftState))) then
-            BeginDrag(False);
+          BeginDrag(False); 
       end
       else begin
         if Assigned(FOnClickItem) then
@@ -1112,14 +1138,14 @@ end;
 procedure TSharpEListBoxEx.MouseMoveEvent(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 var
-  iCol,n: Integer;
+  iCol, n: Integer;
   R: TRect;
   cur: TCursor;
   tmpItem: TSharpEListItem;
   b: Boolean;
 begin
 
-  n := ItemAtPos(Self.ScreenToClient(Mouse.CursorPos),True);
+  n := ItemAtPos(Self.ScreenToClient(Mouse.CursorPos), True);
   if n = -1 then begin
     Self.Cursor := crDefault;
     exit;
@@ -1152,7 +1178,6 @@ end;
 procedure TSharpEListBoxEx.ResizeEvent(Sender: TObject);
 begin
   UpdateColumnSizes;
-
   Self.Invalidate;
 end;
 

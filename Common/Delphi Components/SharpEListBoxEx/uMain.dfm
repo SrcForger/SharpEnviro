@@ -35,7 +35,6 @@ object Form1: TForm1
         ColumnType = ctDefault
         AutoSize = False
         Images = col1
-        SelectedImages = PngImageList1
       end
       item
         Width = 75
@@ -77,6 +76,7 @@ object Form1: TForm1
     Colors.CheckColor = 15528425
     ItemHeight = 30
     OnDblClickItem = SharpEListBoxEx1DblClickItem
+    OnGetCellCursor = SharpEListBoxEx1GetCellCursor
     OnGetCellColor = SharpEListBoxEx1GetCellColor
     OnGetCellText = SharpEListBoxEx1GetCellText
     OnGetCellImageIndex = SharpEListBoxEx1GetCellImageIndex
