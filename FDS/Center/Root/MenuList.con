@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <MenuList>
+      <Dll>_Components\_Componentdlls\MenuList.dll</Dll>
+      <Icon>desktop.png</Icon>
+    </MenuList>
+	<Options>
+      <Dll>_Components\_Componentdlls\SharpMenu.dll</Dll>
+      <Icon>Menu.png</Icon>
+	  <Name>Menu Options</Name>
+    </Options>
+  </Sections>
+</SharpCenter>
