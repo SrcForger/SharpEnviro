@@ -341,7 +341,7 @@ begin
     FTabList.Minimized := True;
   end
   else begin
-    Self.Height := FExpandedHeight;
+    //Self.Height := FExpandedHeight;
     FTabList.Minimized := False;
   end;
 end;
