@@ -371,6 +371,9 @@ begin
           sDescription := '';
           GetItemText(sPath + sDll, SCM.ActivePluginID,sName,sStatus,sTitle,sDescription);
 
+          if Items.Item[i].Items.ItemNamed['Name'] <> nil then
+            sName := Items.Item[i].Items.ItemNamed['Name'].Value;
+
           if sName = '' then
             newItem.Caption := Items.Item[i].Name
           else
@@ -646,10 +649,10 @@ begin
   if FStateEditItem <> Value then begin
 
     FStateEditItem := Value;
-
-    if Assigned(FonUpdateTheme) then
-      FOnUpdateTheme(Self);
   end;
+
+  if Assigned(FonUpdateTheme) then
+      FOnUpdateTheme(Self);
 end;
 
 function TSharpCenterManager.GetHistory: TSharpCenterHistoryManager;

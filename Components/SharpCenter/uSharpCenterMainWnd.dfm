@@ -31,6 +31,7 @@ object SharpCenterWnd: TSharpCenterWnd
     Color = clWindow
     FullRepaint = False
     Locked = True
+    ParentBackground = False
     TabOrder = 0
     DesignSize = (
       684
@@ -1452,6 +1453,7 @@ object SharpCenterWnd: TSharpCenterWnd
               ColumnAlign = calLeft
               StretchColumn = True
               ColumnType = ctDefault
+              AutoSize = False
               Images = picMain
             end
             item
@@ -1461,6 +1463,7 @@ object SharpCenterWnd: TSharpCenterWnd
               ColumnAlign = calRight
               StretchColumn = False
               ColumnType = ctDefault
+              AutoSize = False
             end>
           Colors.BorderColor = clBtnFace
           Colors.BorderColorSelected = clBtnShadow
@@ -1574,6 +1577,7 @@ object SharpCenterWnd: TSharpCenterWnd
                   ColumnAlign = calLeft
                   StretchColumn = True
                   ColumnType = ctDefault
+                  AutoSize = False
                   Images = pilIcons
                 end
                 item
@@ -1583,6 +1587,7 @@ object SharpCenterWnd: TSharpCenterWnd
                   ColumnAlign = calRight
                   StretchColumn = False
                   ColumnType = ctDefault
+                  AutoSize = False
                 end>
               Colors.BorderColor = clBtnFace
               Colors.BorderColorSelected = clBtnShadow
@@ -2092,7 +2097,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               134)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -822
+              Left = -858
               Top = 35
               Width = 23
               Height = 22
@@ -2544,13 +2549,14 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = 0
+              Width = -4
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
+              ExplicitWidth = 0
             end
           end
         end
@@ -3701,7 +3707,6 @@ object SharpCenterWnd: TSharpCenterWnd
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
           TextEllipsis = teEndEllipsis
-          ExplicitLeft = 0
           ExplicitWidth = 268
         end
         object lblTitle: TJvLabel
@@ -3723,7 +3728,6 @@ object SharpCenterWnd: TSharpCenterWnd
           HotTrackFont.Height = -11
           HotTrackFont.Name = 'Tahoma'
           HotTrackFont.Style = []
-          ExplicitLeft = 0
           ExplicitWidth = 63
         end
       end

@@ -134,7 +134,6 @@ type
     procedure tlToolbarTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
     procedure btnEditCancelClick(Sender: TObject);
-    procedure lbTreeGetCellColor(Sender: TObject; const AItem: Integer; var AColor: TColor);
 
     procedure btnFavouriteClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
@@ -155,6 +154,8 @@ type
     procedure lbTreeGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
     procedure tmrClickTimer(Sender: TObject);
+    procedure lbTreeGetCellColor(Sender: TObject; const AItem: TSharpEListItem;
+      var AColor: TColor);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -442,11 +443,10 @@ begin
   tmrClick.Enabled := True;
 end;
 
-
-procedure TSharpCenterWnd.lbTreeGetCellColor(Sender:TObject; const AItem: Integer;
-  var AColor: TColor);
+procedure TSharpCenterWnd.lbTreeGetCellColor(Sender: TObject;
+  const AItem: TSharpEListItem; var AColor: TColor);
 begin
-  if AItem = lbTree.ItemIndex then
+  if AItem.ID = lbTree.ItemIndex then
     AColor := $00C1F4FE;
 end;
 
@@ -488,10 +488,12 @@ begin
           integer(scbAddTab): begin
               pnlEditContainer.TabIndex := cEdit_Add;
               FSelectedTabID := cEdit_Add;
+              SCM.LoadEdit(FSelectedTabID);
             end;
           integer(scbEditTab): begin
               pnlEditContainer.TabIndex := cEdit_Edit;
               FSelectedTabID := cEdit_Edit;
+              SCM.LoadEdit(FSelectedTabID);
             end;
         end;
           end;
@@ -510,6 +512,11 @@ begin
           integer(scbHelp): btnHelp.Enabled := bEnabled;
           integer(scbAddTab): pnlEditContainer.TabItems.Item[cEdit_Add].Visible := bEnabled;
           integer(scbEditTab): pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := bEnabled;
+          integer(scbConfigure): begin
+            btnEditApply.Enabled := bEnabled;
+            btnEditApply.Caption := 'Add';
+            btnEditApply.PngImage := pilIcons.PngImages.Items[10].PngImage;
+          end;
         end;
       end;
 
@@ -531,8 +538,7 @@ begin
       end;
     SCM_SET_EDIT_CANCEL_STATE:
       begin
-        if SCM.StateEditItem <> False then
-          SCM.StateEditItem := False;
+        SCM.StateEditItem := False;
       end;
     SCM_SET_LIVE_CONFIG:
       begin
