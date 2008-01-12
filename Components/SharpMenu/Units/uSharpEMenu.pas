@@ -67,7 +67,9 @@ type
     function GetCurrentItem : TSharpEMenuItem;
   public
     // Create/Destroy
-    constructor Create(pParentMenuItem : TSharpEMenuItem; pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings); reintroduce;
+    constructor Create(pParentMenuItem : TSharpEMenuItem; pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings); reintroduce; overload;
+    constructor Create(pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings); reintroduce; overload;
+
     destructor Destroy; override;
 
     // Add Menu Items
@@ -438,6 +440,12 @@ begin
   if pInsertPos = -1 then
   FItems.Add(item) else
   FItems.Insert(pInsertPos,item);
+end;
+
+constructor TSharpEMenu.Create(pManager: TSharpESkinManager;
+  pSettings: TSharpEMenuSettings);
+begin
+  Create(nil, pManager, pSettings);
 end;
 
 function TSharpEMenu.AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String; pDynamic : boolean; pInsertPos: Integer=-1): TObject;
