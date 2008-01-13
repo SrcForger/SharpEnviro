@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
-  uSharpCenterPluginTabList, uSharpCenterCommon, ImgList, PngImageList,
+  ImgList, PngImageList,
   SharpEListBox, SharpEListBoxEx, GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit, SharpEUIC,
   SharpEFontSelectorFontList, JvPageList, JvExControls, SharpEPageControl,

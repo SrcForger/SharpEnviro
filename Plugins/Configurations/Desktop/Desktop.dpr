@@ -39,7 +39,6 @@ uses
   Graphics,
   uSharpEDesktopSettingsWnd in 'uSharpEDesktopSettingsWnd.pas' {frmDesktopSettings},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
   SharpEFontSelectorFontList in '..\..\..\Common\Delphi Components\SharpEFontSelector\SharpEFontSelectorFontList.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
 
@@ -262,20 +261,20 @@ begin
   ADescription := 'Define what desktop options you want to use for this theme.';
 end;
 
-procedure ClickTab(ATab: TPluginTabItem);
+procedure ClickTab(ATab: TStringItem);
 begin
-  TJvStandardPage(ATab.Data).Show;
+  TJvStandardPage(ATab.FObject).Show;
   frmDesktopSettings.UpdatePageUi;
 end;
 
-procedure AddTabs(var ATabs: TPluginTabItemList);
+procedure AddTabs(var ATabs: TStringList);
 begin
   if frmDesktopSettings <> nil then
   begin
-    ATabs.Add('Icon', frmDesktopSettings.pagIcon, '', '');
-    ATabs.Add('Font', frmDesktopSettings.pagFont, '', '');
-    ATabs.Add('Font Shadow', frmDesktopSettings.pagFontShadow, '', '');
-    ATabs.Add('Animation', frmDesktopSettings.pagAnimation, '', '');
+    ATabs.AddObject('Icon', frmDesktopSettings.pagIcon);
+    ATabs.AddObject('Font', frmDesktopSettings.pagFont);
+    ATabs.AddObject('Font Shadow', frmDesktopSettings.pagFontShadow);
+    ATabs.AddObject('Animation', frmDesktopSettings.pagAnimation);
   end;
 end;
 

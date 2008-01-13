@@ -28,12 +28,38 @@ unit uCPUMonitorWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, JclFileUtils, Registry,
-  ImgList, PngImageList, GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
-  JvPageList, JvExControls, ComCtrls, Mask, SharpEColorEditorEx,
-  SharpESwatchManager, JvExMask, JvSpin, SharpERoundPanel;
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  JvSimpleXml,
+  JclFileUtils,
+  Registry,
+  ImgList,
+  PngImageList,
+  GR32,
+  GR32_PNG,
+  SharpApi,
+  ExtCtrls,
+  Menus,
+  JclStrings,
+  GR32_Image,
+  SharpEGaugeBoxEdit,
+  JvPageList,
+  JvExControls,
+  ComCtrls,
+  Mask,
+  SharpEColorEditorEx,
+  SharpESwatchManager,
+  JvExMask,
+  JvSpin,
+  SharpERoundPanel;
 
 type
   TStringObject = class(TObject)
@@ -102,7 +128,7 @@ type
     procedure CheckValidKeys;
   public
     sModuleID: string;
-    sBarID : string;
+    sBarID: string;
   end;
 
 var
@@ -110,24 +136,25 @@ var
 
 implementation
 
-uses SharpThemeApi, SharpCenterApi, adCPUUsage;
+uses SharpThemeApi,
+  SharpCenterApi,
+  adCPUUsage;
 
 {$R *.dfm}
 
 procedure TfrmCPUMon.Button1Click(Sender: TObject);
 var
-  Reg : TRegistry;
+  Reg: TRegistry;
 begin
   Reg := TRegistry.Create;
   Reg.Access := KEY_ALL_ACCESS;
   Reg.RootKey := HKEY_LOCAL_MACHINE;
-  
-  if Reg.OpenKey('\SYSTEM\CurrentControlSet\Services\PerfOS\Performance',False) then
-  begin
-    Reg.WriteInteger('Disable Performance Counters',0);
+
+  if Reg.OpenKey('\SYSTEM\CurrentControlSet\Services\PerfOS\Performance', False) then begin
+    Reg.WriteInteger('Disable Performance Counters', 0);
     Reg.CloseKey;
   end;
-  
+
   Reg.Free;
 
   plMain.ActivePage := sLastPage;
@@ -140,33 +167,35 @@ end;
 
 procedure TfrmCPUMon.CheckValidKeys;
 var
-  Reg : TRegistry;
-  PerfMonDisabled : Boolean;
-  PerfMonAccessDisabled : Boolean;
+  Reg: TRegistry;
+  PerfMonDisabled: Boolean;
+  PerfMonAccessDisabled: Boolean;
 begin
   Reg := TRegistry.Create;
   Reg.Access := KEY_READ;
   Reg.RootKey := HKEY_LOCAL_MACHINE;
 
   PerfMonAccessDisabled := False;
-  if not Reg.OpenKey('\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Perflib',False) then
+  if not Reg.OpenKey('\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Perflib', False) then
     PerfMonAccessDisabled := True
-  else Reg.CloseKey;
+  else
+    Reg.CloseKey;
 
-  if Reg.OpenKey('\SYSTEM\CurrentControlSet\Services\PerfOS\Performance',False) then
-  begin
+  if Reg.OpenKey('\SYSTEM\CurrentControlSet\Services\PerfOS\Performance', False) then begin
     if Reg.ValueExists('Disable Performance Counters') then
       PerfMonDisabled := (Reg.ReadInteger('Disable Performance Counters') <> 0)
-    else PerfMonDisabled := True;
+    else
+      PerfMonDisabled := True;
     Reg.CloseKey;
-  end else PerfMonDisabled := True;
-  
+  end
+  else
+    PerfMonDisabled := True;
+
   Reg.Free;
 
   if PerfMonAccessDisabled then
     pagError2.Show
-  else
-  if PerfMonDisabled then
+  else if PerfMonDisabled then
     pagError.Show;
 end;
 
@@ -199,7 +228,7 @@ end;
 
 procedure TfrmCPUMon.pagColorsShow(Sender: TObject);
 begin
-  sLastPage := pagColors; 
+  sLastPage := pagColors;
   CheckValidKeys;
 end;
 

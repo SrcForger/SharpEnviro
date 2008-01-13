@@ -40,7 +40,6 @@ uses
   uVistaFuncs,
   ItemsWnd in 'ItemsWnd.pas' {frmItemsWnd},
   EditWnd in 'EditWnd.pas' {frmEditWnd},
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
   uExecServiceAliasList in '..\..\Services\Exec\uExecServiceAliasList.pas';
 
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;

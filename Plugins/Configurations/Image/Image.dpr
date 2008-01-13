@@ -46,8 +46,6 @@ uses
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
-  uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
   SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
   SharpEPageControl in '..\..\..\Common\Delphi Components\SharpEPageControl\SharpEPageControl.pas',
@@ -211,18 +209,18 @@ begin
   end;
 end;
 
-procedure AddTabs(var ATabs:TPluginTabItemList);
+procedure AddTabs(var ATabs:TStringList);
 begin
-  ATabs.Add('Image',frmImage.pagImage,'','');
-  ATabs.Add('Display',frmImage.pagDisplay,'','');
+  ATabs.AddObject('Image',frmImage.pagImage);
+  ATabs.AddObject('Display',frmImage.pagDisplay);
 end;
 
-procedure ClickTab(ATab: TPluginTabItem);
+procedure ClickTab(ATab: TStringItem);
 var
   tmpPag: TJvStandardPage;
 begin
-  if ATab.Data <> nil then begin
-    tmpPag := TJvStandardPage(ATab.Data);
+  if ATab.FObject <> nil then begin
+    tmpPag := TJvStandardPage(ATab.FObject);
     tmpPag.Show;
   end;
 

@@ -23,7 +23,6 @@ object frmCPUMon: TfrmCPUMon
     ActivePage = pagError2
     PropagateEnable = False
     Align = alClient
-    ExplicitWidth = 427
     object pagMon: TJvStandardPage
       Left = 0
       Top = 0
@@ -538,6 +537,7 @@ object frmCPUMon: TfrmCPUMon
         Align = alTop
         BevelOuter = bvNone
         Caption = 'SharpERoundPanel1'
+        ParentBackground = False
         ParentColor = True
         TabOrder = 0
         DrawMode = srpNormal

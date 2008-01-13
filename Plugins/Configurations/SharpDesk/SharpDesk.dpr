@@ -39,7 +39,6 @@ uses
   uSharpDeskSettingsWnd in 'uSharpDeskSettingsWnd.pas' {frmDeskSettings},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   uSharpDeskTDeskSettings in '..\..\..\Components\SharpDesk\Units\uSharpDeskTDeskSettings.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
 
 {$E .dll}

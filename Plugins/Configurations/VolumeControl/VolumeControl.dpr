@@ -39,7 +39,6 @@ uses
   MMSystem,
   uVolumeControlWnd in 'uVolumeControlWnd.pas' {frmVolumeControl},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
   SoundControls in '..\..\Modules\VolumeControl\SoundControls.pas',
   uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
@@ -140,16 +139,16 @@ begin
   ADescription := 'Configure volume control module';
 end;
 
-procedure ClickTab(ATab: TPluginTabItem);
+procedure ClickTab(ATab: TStringItem);
 begin
-  TJvStandardPage(ATab.Data).Show;
+  TJvStandardPage(ATab.FObject).Show;
 end;
 
-procedure AddTabs(var ATabs:TPluginTabItemList);
+procedure AddTabs(var ATabs:TStringList);
 begin
   if frmVolumeControl <> nil then
   begin
-    ATabs.Add('Volume Control',frmVolumeControl.JvSettingsPage,'','');
+    ATabs.AddObject('Volume Control',frmVolumeControl.JvSettingsPage);
   end;
 end;
 

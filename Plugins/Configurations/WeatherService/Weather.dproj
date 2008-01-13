@@ -40,10 +40,11 @@
     <DelphiCompile Include="Weather.DPR">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas" />
     <DCCReference Include="..\..\Services\Weather\uWeatherList.pas" />
     <DCCReference Include="..\..\Services\Weather\uWeatherMgr.pas" />
-    <DCCReference Include="..\..\Services\Weather\uWeatherOptions.pas" />
+    <DCCReference Include="..\..\Services\Weather\uWeatherOptions.pas">
+      <Form>$E dll</Form>
+    </DCCReference>
     <DCCReference Include="uWeatherItemEditWnd.pas">
       <Form>frmItemEdit</Form>
     </DCCReference>

@@ -19,9 +19,7 @@ uses
   uWeatherItemEditWnd in 'uWeatherItemEditWnd.pas' {frmItemEdit},
   uWeatherList in '..\..\Services\Weather\uWeatherList.pas',
   uWeatherMgr in '..\..\Services\Weather\uWeatherMgr.pas',
-  uWeatherOptions in '..\..\Services\Weather\uWeatherOptions.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas';
-
+  uWeatherOptions in '..\..\Services\Weather\uWeatherOptions.pas';
 {$E dll}
 
 {$R *.RES}
@@ -134,11 +132,6 @@ begin
     frmItemEdit.Color := ABackground;
 end;
 
-procedure AddTabs(var ATabs:TPluginTabItemList);
-begin
-  ATabs.Add('Weather',nil,'',IntToStr(frmItemsList.lbWeatherList.Count));
-end;
-
 function GetMetaData(): TMetaData;
 begin
   with result do
@@ -157,8 +150,6 @@ end;
 exports
   Open,
   Close,
-
-  AddTabs,
 
   OpenEdit,
   CloseEdit,

@@ -37,9 +37,7 @@ uses
   uHotkeyServiceList in 'uHotkeyServiceList.pas',
   uHotkeyServiceItemListWnd in 'uHotkeyServiceItemListWnd.pas' {frmConfig},
   uHotkeyServiceItemEditWnd in 'uHotkeyServiceItemEditWnd.pas' {FrmHotkeyEdit},
-  uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas';
-
+  uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas';
 var
   CenterBGColor: integer;
 

@@ -41,8 +41,6 @@ uses
   StdCtrls,
   JvSimpleXml,
   JclFileUtils,
-  uSharpCenterPluginTabList,
-  uSharpCenterCommon,
   ImgList,
   PngImageList,
   SharpEListBox,

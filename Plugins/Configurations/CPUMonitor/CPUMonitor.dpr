@@ -46,8 +46,6 @@ uses
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
-  uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
   SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
   SharpDialogs in '..\..\..\Common\Libraries\SharpDialogs\SharpDialogs.pas',
@@ -234,18 +232,18 @@ begin
   ADescription := 'Configure cpu monitor module';
 end;
 
-procedure AddTabs(var ATabs:TPluginTabItemList);
+procedure AddTabs(var ATabs: TStringList);
 begin
-  ATabs.Add('General',frmCPUMon.pagMon,'','');
-  ATabs.Add('Colors',frmCPUMon.pagColors,'','');
+  ATabs.AddObject('General',frmCPUMon.pagMon);
+  ATabs.AddObject('Colors',frmCPUMon.pagColors);
 end;
 
-procedure ClickTab(ATab: TPluginTabItem);
+procedure ClickTab(ATab: TStringItem);
 var
   tmpPag: TJvStandardPage;
 begin
-  if ATab.Data <> nil then begin
-    tmpPag := TJvStandardPage(ATab.Data);
+  if ATab.FObject <> nil then begin
+    tmpPag := TJvStandardPage(ATab.FObject);
     tmpPag.Show;
   end;
 end;

@@ -28,7 +28,7 @@ type
     { Private declarations }
     FAliasItems: TAliasList;
     FWinHandle: THandle;
-    procedure WndProc(var msg: TMessage);
+    procedure CustomWndProc(var msg: TMessage);
   public
     { Public declarations }
     procedure AddItems;
@@ -100,7 +100,7 @@ procedure TfrmItemsWnd.FormCreate(Sender: TObject);
 var
   srvSettingsPath, sAliasPath: string;
 begin
-  FWinHandle := AllocateHWND(WndProc);
+  FWinHandle := AllocateHWND(CustomWndProc);
   lbItems.DoubleBuffered := True;
 
   srvSettingsPath := GetSharpeUserSettingsPath + 'SharpCore\Services\Exec\';
@@ -108,7 +108,7 @@ begin
   FAliasItems := TAliasList.Create(sAliasPath);
 end;
 
-procedure TfrmItemsWnd.WndProc(var msg: TMessage);
+procedure TfrmItemsWnd.CustomWndProc(var msg: TMessage);
 begin
   if ((msg.Msg = WM_SHARPEUPDATESETTINGS) and (msg.WParam = integer(suCenter))) then begin
     AddItems;

@@ -118,7 +118,6 @@ var
   df: TSC_DEFAULT_FIELDS;
   tmpItem: TSharpEListItem;
   tmpThemeItem: TThemeListItem;
-  i: integer;
 begin
   Result := False;
   case AEditMode of
@@ -178,7 +177,6 @@ var
   sTemplate: string;
   sName: string;
   df: TSC_DEFAULT_FIELDS;
-  tmpItem: TSharpEListItem;
   tmpThemeItem: TThemeListItem;
 begin
   Result := True;

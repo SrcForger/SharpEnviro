@@ -46,8 +46,6 @@ uses
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
-  uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
   SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
   SharpDialogs in '..\..\..\Common\Libraries\SharpDialogs\SharpDialogs.pas',
@@ -217,16 +215,6 @@ begin
   Result := False;
 end;
 
-procedure ClickTab(ATab: TPluginTabItem);
-var
-  tmpPag: TJvStandardPage;
-begin
-  if ATab.Data <> nil then begin
-    tmpPag := TJvStandardPage(ATab.Data);
-    tmpPag.Show;
-  end;
-end;
-
 function GetMetaData(): TMetaData;
 begin
   with result do
@@ -246,7 +234,6 @@ exports
   Open,
   Close,
   Save,
-  ClickTab,
   SetText,
   GetMetaData,
   SetBtnState;

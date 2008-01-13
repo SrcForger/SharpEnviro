@@ -38,7 +38,6 @@ uses
   Graphics,
   uVWMServiceSettingsWnd in 'uVWMServiceSettingsWnd.pas' {frmVWMSettings},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
 
 {$E .dll}

@@ -46,8 +46,6 @@ uses
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
-  uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
   SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
   SharpEPageControl in '..\..\..\Common\Delphi Components\SharpEPageControl\SharpEPageControl.pas',
@@ -346,20 +344,20 @@ begin
   end;
 end;
 
-procedure AddTabs(var ATabs:TPluginTabItemList);
+procedure AddTabs(var ATabs:TStringList);
 begin
-  ATabs.Add('Link',frmLink.pagLink,'','');
-  ATabs.Add('Icon',frmLink.pagIcon,'','');
-  ATabs.Add('Font',frmLink.pagFont,'','');
-  ATabs.Add('Font Shadow',frmLink.pagFontShadow,'','');
+  ATabs.AddObject('Link',frmLink.pagLink);
+  ATabs.AddObject('Icon',frmLink.pagIcon);
+  ATabs.AddObject('Font',frmLink.pagFont);
+  ATabs.AddObject('Font Shadow',frmLink.pagFontShadow);
 end;
 
-procedure ClickTab(ATab: TPluginTabItem);
+procedure ClickTab(ATab: TStringItem);
 var
   tmpPag: TJvStandardPage;
 begin
-  if ATab.Data <> nil then begin
-    tmpPag := TJvStandardPage(ATab.Data);
+  if ATab.FObject <> nil then begin
+    tmpPag := TJvStandardPage(ATab.FObject);
     tmpPag.Show;
   end;
   frmLink.UpdatePageUI;

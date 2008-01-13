@@ -50,7 +50,6 @@ uses
   uWPSettingsWnd in 'uWPSettingsWnd.pas' {frmWPSettings},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   uSharpDeskTDeskSettings in '..\..\..\Components\SharpDesk\Units\uSharpDeskTDeskSettings.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
 
 {$E .dll}
@@ -348,22 +347,22 @@ begin
 
 end;
 
-procedure ClickTab(ATab: TPluginTabItem);
+procedure ClickTab(ATab: TStringItem);
 begin
-  frmWPSettings.plConfig.ActivePage := TJvStandardPage(ATab.Data);
-  if TJvStandardPage(ATab.Data) = frmWPSettings.pagWallpaper then
+  frmWPSettings.plConfig.ActivePage := TJvStandardPage(ATab.FObject);
+  if TJvStandardPage(ATab.FObject) = frmWPSettings.pagWallpaper then
     frmWPSettings.UpdateWallpaperPage else
-  if TJvStandardPage(ATab.Data) = frmWPSettings.pagColor then
+  if TJvStandardPage(ATab.FObject) = frmWPSettings.pagColor then
     frmWPSettings.UpdateColorPage else
-  if TJvStandardPage(ATab.Data) = frmWPSettings.pagGradient then
+  if TJvStandardPage(ATab.FObject) = frmWPSettings.pagGradient then
     frmWPSettings.UpdateGradientPage;
 end;
 
-procedure AddTabs(var ATabs: TPluginTabItemList);
+procedure AddTabs(var ATabs: TStringList);
 begin
-  ATabs.Add('Wallpaper', frmWPSettings.pagWallpaper, '', '');
-  ATabs.Add('Color', frmWPSettings.pagColor, '', '');
-  ATabs.Add('Gradient', frmWPSettings.pagGradient, '', '');
+  ATabs.AddObject('Wallpaper', frmWPSettings.pagWallpaper);
+  ATabs.AddObject('Color', frmWPSettings.pagColor);
+  ATabs.AddObject('Gradient', frmWPSettings.pagGradient);
 end;
 
 procedure UpdatePreview(var ABmp: TBitmap32);

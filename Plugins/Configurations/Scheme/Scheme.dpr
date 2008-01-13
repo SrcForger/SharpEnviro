@@ -34,7 +34,6 @@ uses
   uVistaFuncs,
   forms,
   GR32,
-  uSharpCenterPluginTabList,
   uSchemeListWnd in 'uSchemeListWnd.pas' {frmSchemeList},
   uEditSchemeWnd in 'uEditSchemeWnd.pas' {frmEditScheme},
   uSchemeList in 'uSchemeList.pas';

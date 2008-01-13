@@ -47,8 +47,6 @@ uses
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
-  uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
 
 {$E .dll}
@@ -115,18 +113,18 @@ begin
   end;
 end;
 
-procedure AddTabs(var ATabs: TPluginTabItemList);
+procedure AddTabs(var ATabs: TStringList);
 begin
-  ATabs.Add('Font Face', frmFont.pagFont, '', '');
-  ATabs.Add('Font Shadow', frmFont.pagFontShadow, '', '');
+  ATabs.AddObject('Font Face', frmFont.pagFont);
+  ATabs.AddObject('Font Shadow', frmFont.pagFontShadow);
 end;
 
-procedure ClickTab(ATab: TPluginTabItem);
+procedure ClickTab(ATab: TStringItem);
 var
   tmpPag: TJvStandardPage;
 begin
-  if ATab.Data <> nil then begin
-    tmpPag := TJvStandardPage(ATab.Data);
+  if ATab.FObject <> nil then begin
+    tmpPag := TJvStandardPage(ATab.FObject);
     tmpPag.Show;
   end;
 

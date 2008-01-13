@@ -41,7 +41,6 @@ uses
   uDeskAreaSettingsWnd in 'uDeskAreaSettingsWnd.pas' {frmDASettings},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   uSharpDeskTDeskSettings in '..\..\..\Components\SharpDesk\Units\uSharpDeskTDeskSettings.pas',
-  uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
 
 {$E .dll}
@@ -188,13 +187,13 @@ begin
 
 end;
 
-procedure ClickTab(ATab: TPluginTabItem);
+procedure ClickTab(ATab: TStringItem);
 begin
-  if ATab.Data <> nil then
-    frmDASettings.UpdateGUIFromDAItem(TDAItem(ATab.Data));
+  if ATab.FObject <> nil then
+    frmDASettings.UpdateGUIFromDAItem(TDAItem(ATab.FObject));
 end;
 
-procedure AddTabs(var ATabs:TPluginTabItemList);
+procedure AddTabs(var ATabs:TStringList);
 var
   n : integer;
 begin
@@ -203,13 +202,13 @@ begin
     for n := 0 to DAList.Count - 1 do
         if TDAItem(DAList.Items[n]).MonID = - 100 then
         begin
-          ATabs.Add('Primary Monitor',TDAItem(DAList.Items[n]),'','');
+          ATabs.AddObject('Primary Monitor',TDAItem(DAList.Items[n]));
           break;
         end;
 
     for n := 0 to DAList.Count - 1 do
         if TDAItem(DAList.Items[n]).MonID <> - 100 then
-           ATabs.Add('Monitor (' + inttostr(n) + ')',TDAItem(DAList.Items[n]),'','');
+           ATabs.AddObject('Monitor (' + inttostr(n) + ')',TDAItem(DAList.Items[n]));
   end;
 end;
 
