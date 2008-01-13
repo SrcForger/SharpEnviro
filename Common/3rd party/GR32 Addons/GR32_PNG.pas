@@ -166,8 +166,9 @@ var
   p: PByteArray;
   x, y: Integer;
 begin
+  png := TPngObject.Create;
   try
-    png := TPngObject.Create;
+    
     bm := TBitmap.Create;
     try
       bm.Assign(bm32);
