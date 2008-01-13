@@ -348,11 +348,6 @@ begin
 
 end;
 
-function SetBtnState(AButtonID: Integer): Boolean;
-begin
-  Result := False;
-end;
-
 procedure ClickTab(ATab: TPluginTabItem);
 begin
   frmWPSettings.plConfig.ActivePage := TJvStandardPage(ATab.Data);
@@ -371,11 +366,6 @@ begin
   ATabs.Add('Gradient', frmWPSettings.pagGradient, '', '');
 end;
 
-function SetSettingType: TSU_UPDATE_ENUM;
-begin
-  result := suWallpaper;
-end;
-
 procedure UpdatePreview(var ABmp: TBitmap32);
 begin
   if ((frmWPSettings.FCurrentWP = nil) or (frmWPSettings.FCurrentWP.FileName = '')) then
@@ -389,14 +379,26 @@ begin
   frmWPSettings.FCurrentWP.BmpPreview.DrawTo(ABmp);
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Wallpaper';
+    Description := 'Wallpaper Theme Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suWallpaper)]);
+  end;
+end;
 
 exports
   Open,
   Close,
   Save,
   SetText,
-  SetBtnState,
-  SetSettingType,
+  GetMetaData,
   UpdatePreview,
   AddTabs,
   ClickTab;

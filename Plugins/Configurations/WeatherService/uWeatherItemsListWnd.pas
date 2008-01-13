@@ -57,7 +57,7 @@ type
     FWinHandle: THandle;
     { Private declarations }
     function GetWeatherIndex(AWeatherItem: TWeatherItem): Integer;
-    procedure WndProc(var msg: TMessage);
+    procedure CustomWndProc(var msg: TMessage);
   public
     { Public declarations }
     procedure UpdateDisplay(AData: TWeatherList);
@@ -123,7 +123,7 @@ begin
   SharpExecute('http://www.weather.com/?prod=xoap&par=1003043975')
 end;
 
-procedure TfrmItemsList.WndProc(var msg: TMessage);
+procedure TfrmItemsList.CustomWndProc(var msg: TMessage);
 begin
   if ((msg.Msg = WM_SHARPEUPDATESETTINGS) and (msg.WParam = integer(suCenter))) then begin
     UpdateDisplay(WeatherList);
@@ -133,7 +133,7 @@ end;
 
 procedure TfrmItemsList.FormCreate(Sender: TObject);
 begin
-  FWinHandle := AllocateHWND(WndProc);
+  FWinHandle := AllocateHWND(CustomWndProc);
   lbWeatherList.DoubleBuffered := True;
 end;
 

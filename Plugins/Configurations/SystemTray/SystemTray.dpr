@@ -68,6 +68,7 @@ begin
   if frmSysTray = nil then
     exit;
 
+  fileLoaded := false;
   fname := uSharpBarApi.GetModuleXMLFile(strtoint(frmSysTray.sBarID),strtoint(frmSysTray.sModuleID));
   XML := TJvSimpleXML.Create(nil);
   if FileExists(fname) then
@@ -207,6 +208,8 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'System Tray';
+  ATitle := 'System Tray Module';
+  ADescription := 'Configure system tray module';
 end;
 
 function SetBtnState(AButtonID: Integer): Boolean;
@@ -224,9 +227,18 @@ begin
   end;
 end;
 
-function SetSettingType: TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suModule;
+  with result do
+  begin
+    Name := 'System Tray';
+    Description := 'System Tray Module Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suModule)]);
+  end;
 end;
 
 
@@ -236,7 +248,7 @@ exports
   Save,
   ClickTab,
   SetText,
-  SetSettingType,
+  GetMetaData,
   SetBtnState;
 
 begin

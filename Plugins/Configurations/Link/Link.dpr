@@ -315,12 +315,14 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'Link';
+  ATitle := 'Link Object';
+  ADescription := 'Configure link object';
 end;
 
 procedure GetCenterScheme(var ABackground: TColor;
       var AItemColor: TColor; var AItemSelectedColor: TColor);
 
-  procedure AssingUICColors(Container : TComponent);
+  procedure AssignUICColors(Container : TComponent);
   var
     n : integer;
   begin
@@ -332,13 +334,13 @@ procedure GetCenterScheme(var ABackground: TColor;
           TSharpEUIC(Container.Components[n]).BackgroundColor := $00F7F7F7;
         end else
         if Container.Components[n] is TSharpEUIC then
-          AssingUICColors(Container.Components[n]);        
+          AssignUICColors(Container.Components[n]);
   end;
 
 begin
   if frmLink <> nil then
   begin
-    AssingUICColors(frmLink);
+    AssignUICColors(frmLink);
     frmLink.spc.TabColor := $00F7F7F7;
     frmLink.spc.BorderColor := $00FBEFE3;
   end;
@@ -363,9 +365,18 @@ begin
   frmLink.UpdatePageUI;
 end;
 
-function SetSettingType: TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suDesktopObject;
+  with result do
+  begin
+    Name := 'Link';
+    Description := 'Link Object Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suDesktopObject)]);
+  end;
 end;
 
 
@@ -375,8 +386,8 @@ exports
   Save,
   ClickTab,
   SetText,
-  SetSettingType,
   GetCenterScheme,
+  GetMetaData,
   AddTabs;
 
 end.

@@ -158,12 +158,10 @@ procedure TfrmBarList.lbBarListClickItem(Sender: TObject; const ACol: Integer;
 var
   wnd: hwnd;
   Dir: string;
-  FName, s: string;
+  FName: string;
   iBarID: Integer;
   XML: TJvSimpleXML;
   fileloaded: boolean;
-  enable: boolean;
-
   tmpBar: TBarItem;
   bDelete: Boolean;
 
@@ -393,13 +391,6 @@ begin
 end;
 
 procedure TfrmBarList.UpdateBarStatus;
-var
-  n: integer;
-  iindex: integer;
-  SelItem: TBarItem;
-  SList: TStringList;
-  c: boolean;
-  i: integer;
 begin
   BuildBarList;
 end;
@@ -561,6 +552,7 @@ begin
   Result := True;
 
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
+  CID := 0;
 
   case FEditMode of
     sceAdd: begin
@@ -687,14 +679,7 @@ end;
 procedure TfrmBarList.BuildBarList;
 var
   newItem: TSharpEListItem;
-  XML: TJvSimpleXML;
-  Dir: string;
-  BarItem: TBarItem;
-  SList: TStringList;
-  sr: TSearchRec;
-  fileloaded: boolean;
-
-  selectedIndex, i, index: Integer;
+  selectedIndex, i: Integer;
   tmpBar: TBarItem;
 begin
 
@@ -760,7 +745,7 @@ var
   newItem: TBarItem;
   dir: string;
   slBars, slModules: TStringList;
-  i, j, index: Integer;
+  i, j: Integer;
 
   function ExtractBarID(ABarXmlFileName: string): Integer;
   var
@@ -778,6 +763,7 @@ begin
   AList.Clear;
   dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
 
+  newItem := nil;
   slBars := TStringList.Create;
   slModules := TStringList.Create;
   xml := TJvSimpleXML.Create(nil);

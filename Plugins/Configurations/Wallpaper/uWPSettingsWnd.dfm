@@ -1007,7 +1007,7 @@ object frmWPSettings: TfrmWPSettings
         Left = 0
         Top = 0
         Width = 250
-        Height = 21
+        Height = 23
         Margins.Left = 28
         Margins.Top = 8
         Margins.Right = 8
@@ -1016,7 +1016,7 @@ object frmWPSettings: TfrmWPSettings
         Style = csDropDownList
         Constraints.MaxWidth = 250
         DropDownCount = 12
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 0
         OnChange = MonitorChangeEvent
       end

@@ -16,68 +16,24 @@ object frmCursesList: TfrmCursesList
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
-  object Panel1: TPanel
-    Left = 0
-    Top = 219
-    Width = 418
-    Height = 65
-    Align = alClient
-    BevelOuter = bvNone
-    Caption = 'Panel1'
-    ParentColor = True
-    TabOrder = 0
-    ExplicitTop = 0
-    object lb_CursorList: TSharpEListBoxEx
-      Left = 0
-      Top = 0
-      Width = 418
-      Height = 65
-      Columns = <
-        item
-          Width = 256
-          HAlign = taLeftJustify
-          VAlign = taVerticalCenter
-          ColumnAlign = calLeft
-          StretchColumn = False
-          ColumnType = ctDefault
-        end
-        item
-          Width = 256
-          HAlign = taLeftJustify
-          VAlign = taVerticalCenter
-          ColumnAlign = calLeft
-          StretchColumn = False
-          ColumnType = ctDefault
-        end>
-      Colors.BorderColor = clBtnFace
-      Colors.BorderColorSelected = clBtnShadow
-      Colors.ItemColor = clWindow
-      Colors.ItemColorSelected = clBtnFace
-      Colors.CheckColorSelected = clBtnFace
-      Colors.CheckColor = 15528425
-      OnResize = lb_CursorListResize
-      ItemHeight = 30
-      OnClickItem = lb_CursorListClickItem
-      AutosizeGrid = True
-      Borderstyle = bsNone
-      Ctl3d = False
-      Align = alTop
-    end
-  end
   object ccolors: TSharpEColorEditorEx
     Left = 0
-    Top = 0
+    Top = 64
     Width = 418
-    Height = 219
+    Height = 220
+    Margins.Left = 0
+    Margins.Top = 4
+    Margins.Right = 0
+    Margins.Bottom = 0
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
-    Align = alTop
+    Align = alBottom
     BevelInner = bvNone
     BevelOuter = bvNone
     BorderStyle = bsNone
     Color = clWindow
     ParentColor = False
-    TabOrder = 1
+    TabOrder = 0
     Items = <
       item
         Title = 'Primary Color'
@@ -125,7 +81,44 @@ object frmCursesList: TfrmCursesList
       end>
     SwatchManager = SharpESwatchManager1
     OnChangeColor = ccolorsChangeColor
-    ExplicitTop = 65
+  end
+  object lbCursorList: TSharpEListBoxEx
+    Left = 0
+    Top = 0
+    Width = 418
+    Height = 65
+    Columns = <
+      item
+        Width = 256
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calLeft
+        StretchColumn = True
+        ColumnType = ctDefault
+        AutoSize = False
+      end
+      item
+        Width = 256
+        HAlign = taRightJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        StretchColumn = False
+        ColumnType = ctDefault
+        AutoSize = False
+      end>
+    Colors.BorderColor = clBtnFace
+    Colors.BorderColorSelected = clBtnShadow
+    Colors.ItemColor = clWindow
+    Colors.ItemColorSelected = clBtnFace
+    Colors.CheckColorSelected = clBtnFace
+    Colors.CheckColor = 15528425
+    OnResize = lbCursorListResize
+    ItemHeight = 30
+    OnClickItem = lbCursorListClickItem
+    AutosizeGrid = True
+    Borderstyle = bsNone
+    Ctl3d = False
+    Align = alTop
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>

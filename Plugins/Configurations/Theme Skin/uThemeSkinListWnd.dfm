@@ -28,6 +28,7 @@ object frmSkinListWnd: TfrmSkinListWnd
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
+        AutoSize = False
         Images = ThemeImages
       end
       item
@@ -38,6 +39,7 @@ object frmSkinListWnd: TfrmSkinListWnd
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = PngImageList1
       end
       item
@@ -48,6 +50,7 @@ object frmSkinListWnd: TfrmSkinListWnd
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = PngImageList1
       end>
     Colors.BorderColor = clBtnFace

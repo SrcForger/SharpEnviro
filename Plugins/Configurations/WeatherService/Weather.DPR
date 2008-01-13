@@ -35,8 +35,6 @@ begin
     frmItemsList := TfrmItemsList.Create(nil);
   SetVistaFonts(frmItemsList);
 
-  CenterDefineConfigurationMode(scmLive);
-
   sFileName := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatheroptions.xml';
   WeatherOptions := TWeatherSettings.Create(sFileName);
 
@@ -128,11 +126,6 @@ begin
   End;
 end;
 
-function  SetSettingType: TSU_UPDATE_ENUM;
-begin
-  Result := suService;
-end;
-
 procedure GetCenterScheme(var ABackground: TColor;
   var AItemColor: TColor; var AItemSelectedColor: TColor);
 begin
@@ -148,6 +141,21 @@ begin
   ATabs.Add('Weather',nil,'',IntToStr(frmItemsList.lbWeatherList.Count));
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Weather';
+    Description := 'Weather Service Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suService)]);
+  end;
+end;
+
+
 exports
   Open,
   Close,
@@ -156,8 +164,8 @@ exports
 
   OpenEdit,
   CloseEdit,
+  GetMetaData,
 
-  SetSettingType,
   SetText,
 
   GetCenterScheme;

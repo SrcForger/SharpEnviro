@@ -129,12 +129,29 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'Mini SCmd';
+  ATitle := 'Mini SCmd Module';
+  ADescription := 'Configure Mini SCmd module';
+end;
+
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Mini SCmd';
+    Description := 'Mini SCmd Module Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suModule)]);
+  end;
 end;
 
 exports
   Open,
   Close,
   Save,
+  GetMetaData,
   SetText;
 
 end.

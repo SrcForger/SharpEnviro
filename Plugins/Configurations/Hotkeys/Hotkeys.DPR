@@ -48,8 +48,6 @@ begin
   FrmConfig := TFrmConfig.Create(nil);
   uVistaFuncs.SetVistaFonts(FrmConfig);
 
-  CenterDefineConfigurationMode(scmLive);
-
   FrmConfig.ParentWindow := AOwner;
   FrmConfig.Left := 0;
   FrmConfig.Top := 0;
@@ -153,9 +151,18 @@ begin
   frmConfig.lbHotkeys.Colors.ItemColorSelected := AItemSelectedColor;
 end;
 
-function SetSettingType: TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suService;
+  with result do
+  begin
+    Name := 'Hotkeys';
+    Description := 'Hotkeys Service Configuration';
+    Author := 'Lee Green (lee@sharpenviro.com)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suService)]);
+  end;
 end;
 
 exports
@@ -164,7 +171,6 @@ exports
   OpenEdit,
   CloseEdit,
   SetText,
-  SetSettingType,
   GetCenterScheme;
 
 begin

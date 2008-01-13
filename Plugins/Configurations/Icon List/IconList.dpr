@@ -73,8 +73,6 @@ begin
   end;
   XML.Free;
 
-  CenterDefineConfigurationMode(scmLive);
-
   frmIconList.BuildIconList;
   frmIconList.Show;
   result := frmIconList.Handle;
@@ -124,11 +122,6 @@ begin
   AStatus := IntToStr(n);
 end;
 
-function SetBtnState(AButtonID: Integer): Boolean;
-begin
-  Result := False;
-end;
-
 procedure GetCenterScheme(var ABackground: TColor;
   var AItemColor: TColor; var AItemSelectedColor: TColor);
 begin
@@ -150,11 +143,25 @@ begin
   frmIconList.BuildIconPreview(ABmp);
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Icon List';
+    Description := 'Icon List Theme Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suIconSet)]);
+  end;
+end;
+
 exports
   Open,
   Close,
   SetText,
-  SetBtnState,
+  GetMetaData,
   GetCenterScheme,
   UpdatePreview;
 

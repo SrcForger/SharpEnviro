@@ -558,12 +558,10 @@ var
   loaded: boolean;
   exists: boolean;
   i: integer;
-  os: boolean;
 begin
   if FCurrentWP = nil then
     exit;
 
-  os := FCurrentWP.WPLoaded;
   loaded := False;
   exists := False;
   SList := TStringList.Create;

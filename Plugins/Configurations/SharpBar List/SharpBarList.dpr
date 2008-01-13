@@ -53,7 +53,6 @@ uses
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 begin
   if frmBarList = nil then frmBarList := TfrmBarList.Create(nil);
-  CenterDefineConfigurationMode(scmLive);
 
   uVistaFuncs.SetVistaFonts(frmBarList);
   frmBarList.ParentWindow := aowner;
@@ -187,9 +186,18 @@ begin
   end;
 end;
 
-function SetSettingType : TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suSharpBar;
+  with result do
+  begin
+    Name := 'SharpBar List';
+    Description := 'SharpBar List Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suSharpBar)]);
+  end;
 end;
 
 exports
@@ -199,7 +207,7 @@ exports
   CloseEdit,
   SetText,
   SetBtnState,
-  SetSettingType,
+  GetMetaData,
   GetCenterScheme;
 
 end.

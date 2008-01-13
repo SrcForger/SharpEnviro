@@ -140,9 +140,18 @@ begin
 
 end;
 
-function SetSettingType : TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suSharpMenu;
+  with result do
+  begin
+    Name := 'Menu';
+    Description := 'Menu Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suSharpMenu)]);
+  end;
 end;
 
 
@@ -151,7 +160,7 @@ exports
   Close,
   Save,
   SetText,
-  SetSettingType;
+  GetMetaData;
 
 begin
 end.

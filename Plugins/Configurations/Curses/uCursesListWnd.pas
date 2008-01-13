@@ -43,17 +43,16 @@ type
 
 type
   TfrmCursesList = class(TForm)
-    lb_CursorList: TSharpEListBoxEx;
-    Panel1: TPanel;
+    lbCursorList: TSharpEListBoxEx;
     SharpESwatchManager1: TSharpESwatchManager;
     ccolors: TSharpEColorEditorEx;
     procedure FormDestroy(Sender: TObject);
     procedure ccolorsChangeColor(ASender: TObject; AColorCode: Integer);
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure lb_CursorListClickItem(Sender: TObject; const ACol: Integer;
+    procedure lbCursorListClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
-    procedure lb_CursorListResize(Sender: TObject);
+    procedure lbCursorListResize(Sender: TObject);
   private
     procedure BuildCursorPreview;
   public
@@ -61,6 +60,7 @@ type
     sCurrentCursor : String;
     sTheme : String;
     procedure BuildCursorList;
+    procedure Save;
   end;
 
 var
@@ -79,21 +79,45 @@ uses SharpThemeApi,
 
 { TfrmConfigListWnd }
 
-procedure TfrmCursesList.lb_CursorListClickItem(Sender: TObject; const ACol: Integer;
+procedure TfrmCursesList.lbCursorListClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 begin
   BuildCursorPreview;
-  CenterDefineSettingsChanged;
+  Save;
 end;
 
-procedure TfrmCursesList.lb_CursorListResize(Sender: TObject);
+procedure TfrmCursesList.lbCursorListResize(Sender: TObject);
 begin
-  Self.Height := lb_CursorList.Height+ccolors.Height;
+  Self.Height := lbCursorList.Height+ccolors.Height;
+end;
+
+procedure TfrmCursesList.Save;
+var
+  XML : TJvSimpleXML;
+  FName : String;
+  n : integer;
+begin
+  if frmCursesList.lbcursorlist.ItemIndex >= 0 then
+  begin
+    FName := SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmCursesList.sTheme+'\Cursor.xml';
+
+    XML := TJvSimpleXML.Create(nil);
+    XML.Root.Name := 'SharpEThemeCursor';
+    XML.Root.Items.Add('CurrentSkin',frmCursesList.lbcursorlist.Item[frmCursesList.lbcursorlist.ItemIndex].SubItemText[2]);
+    for n := 0 to frmCursesList.ccolors.Items.Count - 1 do
+        XML.Root.Items.Add('Color' + inttostr(n),frmCursesList.ccolors.Items.Item[n].ColorCode);
+    XML.SaveToFile(FName + '~');
+    if FileExists(FName) then
+       DeleteFile(FName);
+    RenameFile(FName + '~',FName);
+    XML.Free;
+  end;
 end;
 
 procedure TfrmCursesList.FormCreate(Sender: TObject);
 begin
   Preview := TBitmap32.Create;
+  lbCursorList.DoubleBuffered := True;
   DoubleBuffered := true;
 end;
 
@@ -109,13 +133,13 @@ var
   w,h : integer;
   IconCount : integer;
 begin
-  if (lb_CursorList.ItemIndex < 0) or (lb_CursorList.Count = 0) then
+  if (lbCursorList.ItemIndex < 0) or (lbCursorList.Count = 0) then
   begin
     CenterUpdatePreview;
     exit;
   end;
 
-  Dir := SharpApi.GetSharpeDirectory + 'Cursors\' + lb_CursorList.Item[lb_CursorList.ItemIndex].SubItemText[2] + '\';
+  Dir := SharpApi.GetSharpeDirectory + 'Cursors\' + lbCursorList.Item[lbCursorList.ItemIndex].SubItemText[2] + '\';
 
   Bmp32 := TBitmap32.Create;
   Bmp32.DrawMode := dmBlend;
@@ -171,7 +195,9 @@ var
   Dir : String;
   XML : TJvSimpleXML;
 begin
-  lb_CursorList.Clear;
+  lbCursorList.Clear;
+  LockWindowUpdate(Self.Handle);
+  Try
 
   XML := TJvSimpleXML.Create(nil);
 
@@ -187,13 +213,13 @@ begin
           XML.LoadFromFile(Dir + sr.Name + '\Skin.xml');
           if XML.Root.Items.ItemNamed['SknDef'] <> nil then
           begin
-            newItem := lb_CursorList.AddItem(XML.Root.Items.ItemNamed['SknDef'].Items.Value('Title','...'));
+            newItem := lbCursorList.AddItem(XML.Root.Items.ItemNamed['SknDef'].Items.Value('Title','...'));
             newItem.AddSubItem('(Author: ' + XML.Root.Items.ItemNamed['SknDef'].Items.Value('Author','Unknown') + ')');
             newItem.AddSubItem(sr.Name);
 
             if sr.Name = sCurrentCursor then
             begin
-              lb_CursorList.ItemIndex := lb_CursorList.Items.Count - 1;
+              lbCursorList.ItemIndex := lbCursorList.Items.Count - 1;
               BuildCursorPreview;
             end;
           end;
@@ -204,6 +230,11 @@ begin
   until FindNext(sr) <> 0;
   FindClose(sr);
   XML.Free;
+  Finally
+    LockWindowUpdate(0);
+  End;
+
+  CenterUpdateConfigFull;
 end;
 
 procedure TfrmCursesList.FormResize(Sender: TObject);
@@ -216,7 +247,7 @@ procedure TfrmCursesList.ccolorsChangeColor(ASender: TObject;
 begin
   BuildCursorPreview;
   if Visible then
-     CenterDefineSettingsChanged;
+     Save;
 end;
 
 procedure TfrmCursesList.FormDestroy(Sender: TObject);

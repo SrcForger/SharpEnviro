@@ -124,18 +124,25 @@ begin
 
 end;
 
-function SetSettingType : TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suVWM;
+  with result do
+  begin
+    Name := 'VWM';
+    Description := 'VWM Service Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suVWM)]);
+  end;
 end;
-
 
 exports
   Open,
   Close,
   Save,
-  SetText,
-  SetSettingType;
+  SetText;
 
 begin
 end.

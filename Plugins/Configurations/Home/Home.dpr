@@ -75,11 +75,6 @@ begin
   end;
 end;
 
-function SetSettingType : TSU_UPDATE_ENUM;
-begin
-  result := suCenter;
-end;
-
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
   var ATitle: String; var ADescription: String);
 
@@ -88,11 +83,25 @@ begin
   ADescription := 'Welcome to SharpCenter. The ultimate configurator for SharpE.';
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Home';
+    Description := 'Home Configuration';
+    Author := 'Lee Green (lee@sharpenviro.com)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suCenter)]);
+  end;
+end;
+
 exports
   Open,
   Close,
-  SetText,
-  SetSettingType;
+  GetMetaData,
+  SetText;
 
 end.
 

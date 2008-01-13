@@ -143,20 +143,30 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'Clock';
+  ATitle := 'Clock Module';
+  ADescription := 'Configure the clock module';
 end;
 
-function SetSettingType: TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suModule;
+  with result do
+  begin
+    Name := 'Clock';
+    Description := 'Clock Module Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suModule)]);
+  end;
 end;
-
 
 exports
   Open,
   Close,
   Save,
   SetText,
-  SetSettingType;
+  GetMetaData;
 
 begin
 end.

@@ -1,6 +1,6 @@
 ﻿{
-Source Name: Menu Editor
-Description: SharpMenu Editor Config
+Source Name: Menu List
+Description: SharpMenu List Config
 Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
 
 Source Forge Site
@@ -105,9 +105,18 @@ begin
   end;
 end;
 
-function SetBtnState(AButtonID: Integer): Boolean;
+function GetMetaData(): TMetaData;
 begin
-  Result := False;
+  with result do
+  begin
+    Name := 'Menu List';
+    Description := 'Menu List Configuration';
+    Author := 'Lee Green (lee@sharpenviro.com)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suCenter)]);
+  end;
 end;
 
 procedure GetCenterScheme(var ABackground: TColor;
@@ -126,7 +135,7 @@ exports
   Open,
   Close,
   SetText,
-  SetBtnState,
+  GetMetaData,
   GetCenterScheme;
 
 end.

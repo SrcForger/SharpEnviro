@@ -64,7 +64,6 @@ begin
 
   // Assign vista fonts
   uVistaFuncs.SetVistaFonts(frmList);
-  CenterDefineConfigurationMode(scmLive);
 
   // Assign the menu file
   frmList.MenuFile := GetSharpeUserSettingsPath + 'SharpMenu\' + APluginID + '.xml';
@@ -148,6 +147,20 @@ begin
 
   if frmEdit <> nil then
     frmEdit.Color := ABackground;
+end;
+
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Menu Editor';
+    Description := 'Menu Editor Configuration';
+    Author := 'Lee Green (lee@sharpenviro.com)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suCenter)]);
+  end;
 end;
 
 exports

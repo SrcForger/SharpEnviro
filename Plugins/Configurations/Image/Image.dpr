@@ -180,6 +180,8 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'Image';
+  ATitle := 'Image Object Configuration';
+  ADescription := 'Configure image object';
 end;
 
 procedure GetCenterScheme(var ABackground: TColor;
@@ -226,9 +228,18 @@ begin
 
 end;
 
-function SetSettingType: TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suDesktopObject;
+  with result do
+  begin
+    Name := 'Image';
+    Description := 'Image Object Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suDesktopObject)]);
+  end;
 end;
 
 
@@ -238,8 +249,8 @@ exports
   Save,
   ClickTab,
   SetText,
-  SetSettingType,
   GetCenterScheme,
+  GetMetaData,
   AddTabs;
 
 end.

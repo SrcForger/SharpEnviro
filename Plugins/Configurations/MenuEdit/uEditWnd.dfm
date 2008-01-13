@@ -377,7 +377,7 @@ object frmEdit: TfrmEdit
       Style = csDropDownList
       Anchors = [akLeft, akTop, akRight]
       DropDownCount = 20
-      ItemHeight = 13
+      ItemHeight = 0
       ParentShowHint = False
       ShowHint = True
       Sorted = True

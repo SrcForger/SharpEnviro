@@ -224,7 +224,6 @@ procedure TfrmIconList.lb_iconlistClickItem(Sender: TObject; const ACol: Integer
   AItem: TSharpEListItem);
 var
   tmp: TIconItem;
-  s: string;
 begin
   tmp := TIconItem(AItem.Data);
   if tmp = nil then
@@ -249,7 +248,6 @@ procedure TfrmIconList.lb_iconlistGetCellCursor(Sender: TObject; const ACol: Int
   AItem: TSharpEListItem; var ACursor: TCursor);
 var
   tmp: TIconItem;
-  s: string;
 begin
   tmp := TIconItem(AItem.Data);
   if tmp = nil then
@@ -270,7 +268,6 @@ procedure TfrmIconList.lb_iconlistGetCellImageIndex(Sender: TObject; const ACol:
   AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
 var
   tmp: TIconItem;
-  s: string;
 begin
   tmp := TIconItem(AItem.Data);
   if tmp = nil then

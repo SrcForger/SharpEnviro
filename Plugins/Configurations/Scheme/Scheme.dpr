@@ -56,9 +56,6 @@ begin
   frmSchemeList.Show;  
 
   result := frmSchemeList.Handle;
-
-  // Set configuration mode
-  CenterDefineConfigurationMode(scmLive);
 end;
 
 function SetSettingType: TSU_UPDATE_ENUM;
@@ -158,6 +155,20 @@ begin
   frmSchemeList.lbSchemeList.Colors.ItemColor := AItemColor;
   frmSchemeList.lbSchemeList.Colors.ItemColorSelected := AItemSelectedColor;
   frmSchemeList.lbSchemeList.Colors.BorderColorSelected := AItemSelectedColor;
+end;
+
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Scheme';
+    Description := 'Scheme Theme Configuration';
+    Author := 'Lee Green (lee@sharpenviro.com)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suScheme)]);
+  end;
 end;
 
 exports

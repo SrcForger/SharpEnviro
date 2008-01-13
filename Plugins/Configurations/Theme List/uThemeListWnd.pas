@@ -259,7 +259,6 @@ procedure TfrmThemeList.lbThemeListClickItem(Sender: TObject; const ACol: Intege
 var
   tmpTheme: TThemeListItem;
   s: string;
-  id: Integer;
   tmp: TThemeListItem;
   newID: Integer;
   bDelete: Boolean;
@@ -391,8 +390,6 @@ end;
 
 function TfrmThemeList.SaveUi: Boolean;
 var
-  tmp: TThemeListItem;
-  id, newid: Integer;
   sAuthor: string;
   sWebsite: string;
   sTemplate: string;

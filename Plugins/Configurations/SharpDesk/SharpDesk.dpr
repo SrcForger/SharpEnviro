@@ -112,9 +112,18 @@ begin
 
 end;
 
-function SetSettingType : TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suSharpDesk;
+  with result do
+  begin
+    Name := 'Desktop';
+    Description := 'Desktop Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suSharpDesk)]);
+  end;
 end;
 
 
@@ -123,7 +132,7 @@ exports
   Close,
   Save,
   SetText,
-  SetSettingType;
+  GetMetaData;
 
 end.
 

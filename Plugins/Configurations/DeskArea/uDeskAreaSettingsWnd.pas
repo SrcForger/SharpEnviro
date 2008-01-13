@@ -69,6 +69,8 @@ type
     procedure UpdateGUIFromDAItem(DAItem : TDAItem);
     procedure UpdateDAItemFromGui;
     procedure RenderPreview;
+
+
   end;
 
 var

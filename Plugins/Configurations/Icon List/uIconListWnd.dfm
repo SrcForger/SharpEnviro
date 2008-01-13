@@ -27,6 +27,7 @@ object frmIconList: TfrmIconList
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
+        AutoSize = False
       end
       item
         Width = 30
@@ -35,6 +36,7 @@ object frmIconList: TfrmIconList
         ColumnAlign = calRight
         StretchColumn = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = Images
       end>
     Colors.BorderColor = clBtnFace

@@ -132,10 +132,20 @@ begin
 
 end;
 
-function SetSettingType: TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suSkinFont;
+  with result do
+  begin
+    Name := 'Skin Font';
+    Description := 'Skin Font Theme Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suSkinFont)]);
+  end;
 end;
+
 
 exports
   Open,
@@ -144,6 +154,7 @@ exports
   ClickTab,
   SetText,
   GetCenterScheme,
+  GetMetaData,
   AddTabs;
 
 end.

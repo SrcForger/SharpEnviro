@@ -104,7 +104,7 @@ type
   private
     FWinHandle: Thandle;
     FModuleList: TObjectList;
-    procedure WndProc(var msg: TMessage);
+    procedure CustomWndProc(var msg: TMessage);
 
   public
     BarID: integer;
@@ -198,7 +198,6 @@ procedure TfrmMMList.lbModulesGetCellCursor(Sender: TObject; const ACol: Integer
   AItem: TSharpEListItem; var ACursor: TCursor);
 var
   tmpModule: TModuleItem;
-  wnd: THandle;
 begin
   tmpModule := TModuleItem(AItem.Data);
   if tmpModule = nil then
@@ -264,7 +263,7 @@ end;
 
 procedure TfrmMMList.FormCreate(Sender: TObject);
 begin
-  FWinHandle := AllocateHWND(WndProc);
+  FWinHandle := AllocateHWND(CustomWndProc);
   FModuleList := TObjectList.Create;
   Self.DoubleBuffered := true;
   lbModulesRight.DoubleBuffered := True;
@@ -276,18 +275,7 @@ begin
 end;
 
 procedure TfrmMMList.FormDestroy(Sender: TObject);
-var
-  n: integer;
 begin
-
-  {for n := 0 to lbModuleList.Count - 1 do
-    if Assigned(lbModuleList.Item[n].Data) then
-    begin
-      TModuleItem(lbModuleList.Item[n].Data).Free;
-      lbModuleList.Item[n].Data := nil;
-    end;
-  lbModuleList.Clear; }
-
   DeallocateHWnd(FWinHandle);
   FModuleList.Free;
 end;
@@ -317,8 +305,6 @@ function ExtractBarID(ABarXmlFileName: string): Integer;
 
 function ExtractBarName(ABarID: string): String;
   var
-    s: string;
-    n: Integer;
     xml:TJvSimpleXML;
   begin
     xml := TJvSimpleXML.Create(nil);
@@ -359,8 +345,7 @@ begin
 
       if tmpModule.Position = -1 then
         newItem := lbModulesLeft.AddItem(tmpModule.Name)
-      else if tmpModule.Position = 1 then
-        newItem := lbModulesRight.AddItem(tmpModule.Name);
+      else newItem := lbModulesRight.AddItem(tmpModule.Name);
 
       newItem.Data := tmpModule;
       newItem.AddSubItem('', -1);
@@ -410,7 +395,7 @@ begin
   end;
 end;
 
-procedure TfrmMMList.WndProc(var msg: TMessage);
+procedure TfrmMMList.CustomWndProc(var msg: TMessage);
 begin
   if ((msg.Msg = WM_SHARPEUPDATESETTINGS) and (msg.WParam = integer(suCenter))) then begin
     BuildModuleList;
@@ -421,7 +406,6 @@ end;
 function TfrmMMList.SaveUi: Boolean;
 var
   Dir: string;
-  ModuleItem: TModuleItem;
   wnd: hwnd;
   msg: TSharpE_DataStruct;
   cds: TCopyDataStruct;
@@ -461,7 +445,7 @@ var
   newItem: TModuleItem;
   dir: string;
   slBars: TStringList;
-  i, j, n, index: Integer;
+  i, j, n: Integer;
 
 begin
   AList.Clear;

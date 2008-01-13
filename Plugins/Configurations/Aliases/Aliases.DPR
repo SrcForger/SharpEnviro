@@ -53,7 +53,6 @@ begin
   frmItemsWnd.Top := 0;
   frmItemsWnd.BorderStyle := bsNone;
   frmItemsWnd.Show;
-  CenterDefineConfigurationMode(scmLive);
 
   frmItemsWnd.UpdateEditTabs;
   result := frmItemsWnd.Handle;
@@ -146,11 +145,19 @@ begin
   frmItemsWnd.lbItems.Colors.ItemColorSelected := AItemSelectedColor;
 end;
 
-function SetSettingType : TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suService;
+  with result do
+  begin
+    Name := 'Aliases';
+    Description := 'Aliases Configuration';
+    Author := 'Lee Green (lee@sharpenviro.com)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suService)]);
+  end;
 end;
-
 
 //Ordinary Dll code, tells delphi what functions to export.
 exports
@@ -159,7 +166,7 @@ exports
   OpenEdit,
   CloseEdit,
   SetText,
-  SetSettingType,
+  GetMetaData,
   GetCenterScheme;
 begin
 

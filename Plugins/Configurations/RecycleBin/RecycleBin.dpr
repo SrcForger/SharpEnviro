@@ -317,6 +317,8 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'Recycle Bin';
+  ATitle := 'Recycle Bin Object';
+  ADescription := 'Configure recycle bin object';
 end;
 
 function SetBtnState(AButtonID: Integer): Boolean;
@@ -370,10 +372,20 @@ begin
   frmRecycleBin.UpdatePageUI;
 end;
 
-function SetSettingType: TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suDesktopObject;
+  with result do
+  begin
+    Name := 'Recycle Bin';
+    Description := 'Recycle Bin Object Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suDesktopObject)]);
+  end;
 end;
+
 
 
 exports
@@ -382,7 +394,6 @@ exports
   Save,
   ClickTab,
   SetText,
-  SetSettingType,
   SetBtnState,
   GetCenterScheme,
   AddTabs;

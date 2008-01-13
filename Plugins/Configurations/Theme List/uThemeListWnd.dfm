@@ -29,6 +29,7 @@ object frmThemeList: TfrmThemeList
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
+        AutoSize = False
         Images = ThemeImages
         SelectedImages = ThemeImages
       end
@@ -40,6 +41,7 @@ object frmThemeList: TfrmThemeList
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = pilDefault
       end
       item
@@ -50,6 +52,7 @@ object frmThemeList: TfrmThemeList
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = pilDefault
       end
       item
@@ -60,6 +63,7 @@ object frmThemeList: TfrmThemeList
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
       end
       item
         Width = 30
@@ -69,6 +73,7 @@ object frmThemeList: TfrmThemeList
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = pilDefault
       end
       item
@@ -79,6 +84,7 @@ object frmThemeList: TfrmThemeList
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = pilDefault
       end>
     Colors.BorderColor = clBtnFace

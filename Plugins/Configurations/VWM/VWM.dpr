@@ -148,17 +148,22 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'VWM';
-  
+  ATitle := 'Virtual Window Manager Module';
+  ADescription := 'Configure virtual window manager module';
 end;
 
-function SetBtnState(AButtonID: Integer): Boolean;
+function GetMetaData(): TMetaData;
 begin
-  Result := False;
-end;
-
-function SetSettingType: TSU_UPDATE_ENUM;
-begin
-  result := suModule;
+  with result do
+  begin
+    Name := 'VWM';
+    Description := 'VWM Module Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suModule)]);
+  end;
 end;
 
 
@@ -167,8 +172,7 @@ exports
   Close,
   Save,
   SetText,
-  SetSettingType,
-  SetBtnState;
+  GetMetaData;
 
 begin
 end.

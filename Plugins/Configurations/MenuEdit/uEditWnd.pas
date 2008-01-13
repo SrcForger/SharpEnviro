@@ -396,8 +396,6 @@ begin
   if not (AApply) then
     exit;
 
-  tmpMenuItem := nil;
-
   case AEditMode of
     sceAdd: begin
 

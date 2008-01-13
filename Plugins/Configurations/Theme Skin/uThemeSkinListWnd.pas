@@ -47,7 +47,6 @@ type
     FInfo: string;
     FWebsite: string;
     FVersion: string;
-  published
   public
     property Name: string read FName write FName;
     property Author: string read FAuthor write FAuthor;
@@ -85,7 +84,7 @@ type
       CompressionLevel: Integer = 9;
       InterlaceMethod: TInterlaceMethod = imNone): tPNGObject;
   public
-    procedure EditTheme;
+
     property Theme: string read FTheme write FTheme;
     property DefaultSkin: string read FDefaultSkin write FDefaultSkin;
 
@@ -123,11 +122,9 @@ end;
 procedure TfrmSkinListWnd.BuildSkinList;
 var
   dir: string;
-  Bmp: TBitmap;
   Bmp32: TBitmap32;
   png: TPngImageCollectionItem;
   li: tsharpelistitem;
-  b: boolean;
   sScheme: string;
 
   i, iIndex: Integer;
@@ -184,16 +181,6 @@ begin
   end;
 end;
 
-procedure TfrmSkinListWnd.EditTheme;
-var
-  str: TStringObject;
-begin
-  if lbSkinList.ItemIndex < 0 then
-    exit;
-
-  CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory + '_Themes\Theme.con'), pchar(str.Str));
-end;
-
 procedure TfrmSkinListWnd.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := True;
@@ -211,9 +198,9 @@ var
   p: PByteArray;
   x, y: Integer;
 begin
+  png := TPngObject.Create;
+  bm := TBitmap.Create;
   try
-    png := TPngObject.Create;
-    bm := TBitmap.Create;
     try
       bm.Assign(bm32);
       if paletted then

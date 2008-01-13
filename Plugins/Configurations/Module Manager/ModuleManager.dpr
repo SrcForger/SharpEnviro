@@ -144,7 +144,7 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 var
   tmp:TObjectList;
-  sBar,sDir: String;
+  sBar: String;
 begin
   AName := 'Modules';
 
@@ -184,9 +184,18 @@ begin
   end;
 end;
 
-function SetSettingType : TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suSharpBar;
+  with result do
+  begin
+    Name := 'Module Manager';
+    Description := 'Module Manager Configuration';
+    Author := 'Lee Green (lee@sharpenviro.com)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suSharpBar)]);
+  end;
 end;
 
 
@@ -196,7 +205,6 @@ exports
   OpenEdit,
   CloseEdit,
   SetText,
-  SetSettingType,
   GetCenterScheme;
 
 end.

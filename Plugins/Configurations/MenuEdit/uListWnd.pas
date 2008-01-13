@@ -260,13 +260,6 @@ begin
 end;
 
 procedure TfrmList.lbItemsDragDrop(Sender, Source: TObject; X, Y: Integer);
-var
-  n, nTo: Integer;
-  tmp: TSharpEListItem;
-  tmpDest, tmpSrc: TItemData;
-  tmpSrcMenu: TSharpEMenu;
-  i: Integer;
-
 begin
 
   // if Ctrl down then move item into sub menu

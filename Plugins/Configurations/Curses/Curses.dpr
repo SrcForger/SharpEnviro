@@ -78,29 +78,6 @@ begin
   result := frmCursesList.Handle;
 end;
 
-procedure Save;
-var
-  XML : TJvSimpleXML;
-  FName : String;
-  n : integer;
-begin
-  if frmCursesList.lb_cursorlist.ItemIndex >= 0 then
-  begin
-    FName := SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmCursesList.sTheme+'\Cursor.xml';
-
-    XML := TJvSimpleXML.Create(nil);
-    XML.Root.Name := 'SharpEThemeCursor';
-    XML.Root.Items.Add('CurrentSkin',frmCursesList.lb_cursorlist.Item[frmCursesList.lb_cursorlist.ItemIndex].SubItemText[2]);
-    for n := 0 to frmCursesList.ccolors.Items.Count - 1 do
-        XML.Root.Items.Add('Color' + inttostr(n),frmCursesList.ccolors.Items.Item[n].ColorCode);
-    XML.SaveToFile(FName + '~');
-    if FileExists(FName) then
-       DeleteFile(FName);
-    RenameFile(FName + '~',FName);
-    XML.Free;
-  end;
-end;
-
 function Close : boolean;
 
 begin
@@ -127,9 +104,10 @@ begin
   ADescription := 'Select which cursor you want to use for this theme.';
 
   xml := TJvSimpleXML.Create(nil);
-  try
   sDir := SharpApi.GetSharpeDirectory + 'Cursors\';
   n := 0;
+  try
+  
   if FindFirst(sDir + '*',FADirectory,sr) = 0 then
   repeat
     if (CompareText(sr.Name,'.') <> 0) and (CompareText(sr.Name,'..') <> 0) then
@@ -146,29 +124,24 @@ begin
   end;
 end;
 
-function SetBtnState(AButtonID: Integer): Boolean;
-begin
-  Result := False;
-end;
-
 procedure GetCenterScheme(var ABackground: TColor;
       var AItemColor: TColor; var AItemSelectedColor: TColor);
 begin
   if frmCursesList <> nil then
   begin
-    frmCursesList.lb_cursorlist.Colors.ItemColor := AItemColor;
-    frmCursesList.lb_cursorlist.Colors.ItemColorSelected := AItemSelectedColor;
-    frmCursesList.lb_cursorlist.Colors.BorderColor := AItemSelectedColor;
-    frmCursesList.lb_cursorlist.Colors.BorderColorSelected := AItemSelectedColor;
-    if frmCursesList.lb_CursorList.Count = 0 then
+    frmCursesList.lbcursorlist.Colors.ItemColor := AItemColor;
+    frmCursesList.lbcursorlist.Colors.ItemColorSelected := AItemSelectedColor;
+    frmCursesList.lbcursorlist.Colors.BorderColor := AItemSelectedColor;
+    frmCursesList.lbcursorlist.Colors.BorderColorSelected := AItemSelectedColor;
+    if frmCursesList.lbCursorList.Count = 0 then
        frmCursesList.BuildCursorList;
   end;
 end;
 
 procedure UpdatePreview(var ABmp: TBitmap32);
 begin
-  if (frmCursesList.lb_CursorList.ItemIndex < 0) or
-     (frmCursesList.lb_CursorList.Count = 0) then
+  if (frmCursesList.lbCursorList.ItemIndex < 0) or
+     (frmCursesList.lbCursorList.Count = 0) then
      exit;
 
   ABmp.SetSize(frmCursesList.Preview.Width,frmCursesList.Preview.Height);
@@ -176,13 +149,24 @@ begin
   frmCursesList.Preview.DrawTo(ABmp);
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Cursors';
+    Description := 'Cursor Theme Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suCursor)]);
+  end;
+end;
 
 exports
   Open,
   Close,
-  Save,
   SetText,
-  SetBtnState,
   GetCenterScheme,
   UpdatePreview;
 

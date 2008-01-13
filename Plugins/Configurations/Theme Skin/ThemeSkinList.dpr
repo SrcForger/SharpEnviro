@@ -53,7 +53,6 @@ begin
   if frmSkinListWnd = nil then frmSkinListWnd := TfrmSkinListWnd.Create(nil);
   SetVistaFonts(frmSkinListWnd);
 
-  CenterDefineConfigurationMode(scmLive);
   frmSkinListWnd.Theme := APluginID;
   frmSkinListWnd.DefaultSkin := XmlGetSkin(frmSkinListWnd.Theme);
 
@@ -105,10 +104,26 @@ begin
   frmSkinListWnd.lbSkinList.Colors.ItemColor := AItemColor;
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Theme Skin List';
+    Description := 'Theme Skin List Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suSkin)]);
+  end;
+end;
+
+
 exports
   Open,
   Close,
   SetText,
+  GetMetaData,
   GetCenterScheme;
 
 end.

@@ -56,7 +56,6 @@ begin
 
   // Set configuration mode, and assign vista fonts
   SetVistaFonts(frmThemeList);
-  CenterDefineConfigurationMode(scmLive);
 
   with frmThemeList do begin
     ParentWindow := aowner;
@@ -164,20 +163,6 @@ begin
 
 end;
 
-function SetBtnState(AButtonID: TSCB_BUTTON_ENUM): Boolean;
-begin
-  Result := False;
-
-  Case AButtonID of
-    scbDelete: Begin
-      if frmThemeList.lbThemeList.ItemIndex <> -1 then
-        Result := True else
-        Result := False;
-    end;
-    scbConfigure: Result := False;
-  end;
-end;
-
 procedure GetCenterScheme(var ABackground: TColor;
       var AItemColor: TColor; var AItemSelectedColor: TColor);
 begin
@@ -193,6 +178,21 @@ begin
   end;
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Themes List';
+    Description := 'Theme List Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suTheme)]);
+  end;
+end;
+
+
 
 exports
   Open,
@@ -200,7 +200,7 @@ exports
   OpenEdit,
   CloseEdit,
   SetText,
-  SetBtnState,
+  GetMetaData,
   GetCenterScheme;
 
 end.

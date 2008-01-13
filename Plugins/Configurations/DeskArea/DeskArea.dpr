@@ -213,11 +213,6 @@ begin
   end;
 end;
 
-function SetSettingType : TSU_UPDATE_ENUM;
-begin
-  result := suDeskArea;
-end;
-
 procedure UpdatePreview(var ABmp: TBitmap32);
 begin
   if frmDASettings.currentDAItem = nil then
@@ -231,14 +226,28 @@ begin
   frmDASettings.PreviewBmp.DrawTo(ABmp,1,1);
 end;
 
+function GetMetaData(): TMetaData;
+begin
+  with result do
+  begin
+    Name := 'Desk Area';
+    Description := 'Desk Area Service Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suDeskArea)]);
+  end;
+end;
+
 
 exports
   Open,
   Close,
   Save,
   SetText,
-  SetSettingType,
   UpdatePreview,
+  GetMetaData,
   AddTabs,
   ClickTab;
 

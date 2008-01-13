@@ -146,16 +146,22 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 begin
   AName := 'Quick Script';
+  ATitle := 'Quick Script Module';
+  ADescription := 'Quick script module';
 end;
 
-function SetBtnState(AButtonID: Integer): Boolean;
+function GetMetaData(): TMetaData;
 begin
-  Result := False;
-end;
-
-function SetSettingType: TSU_UPDATE_ENUM;
-begin
-  result := suModule;
+  with result do
+  begin
+    Name := 'Quick Script';
+    Description := 'Quick Script Module Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suModule)]);
+  end;
 end;
 
 
@@ -163,9 +169,7 @@ exports
   Open,
   Close,
   Save,
-  SetText,
-  SetSettingType,
-  SetBtnState;
+  SetText;
 
 end.
 

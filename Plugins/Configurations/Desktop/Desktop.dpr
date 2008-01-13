@@ -262,11 +262,6 @@ begin
   ADescription := 'Define what desktop options you want to use for this theme.';
 end;
 
-function SetBtnState(AButtonID: Integer): Boolean;
-begin
-  Result := False;
-end;
-
 procedure ClickTab(ATab: TPluginTabItem);
 begin
   TJvStandardPage(ATab.Data).Show;
@@ -284,9 +279,18 @@ begin
   end;
 end;
 
-function SetSettingType: TSU_UPDATE_ENUM;
+function GetMetaData(): TMetaData;
 begin
-  result := suDesktopIcon;
+  with result do
+  begin
+    Name := 'Desktop';
+    Description := 'Desktop Theme Configuration';
+    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Version := '0.7.4.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+      Integer(suDesktopIcon)]);
+  end;
 end;
 
 exports
@@ -294,8 +298,7 @@ exports
   Close,
   Save,
   SetText,
-  SetBtnState,
-  SetSettingType,
+  GetMetaData,
   AddTabs,
   ClickTab;
 

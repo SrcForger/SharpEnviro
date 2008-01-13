@@ -89,7 +89,7 @@ var
   newItem: TMenuItem;
   dir: string;
   slMenus: TStringList;
-  i, j, index: Integer;
+  i: Integer;
 
   function ExtractBarID(ABarXmlFileName: string): Integer;
   var
@@ -148,7 +148,6 @@ procedure TfrmList.lbItemsClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
   tmpMenu: TMenuItem;
-  s: String;
 begin
 
   tmpMenu := TMenuItem(AItem.Data);
@@ -175,7 +174,6 @@ procedure TfrmList.lbItemsGetCellImageIndex(Sender: TObject;
   const ASelected: Boolean);
 var
   tmpMenu: TMenuItem;
-  s: String;
 begin
 
   tmpMenu := TMenuItem(AItem.Data);
@@ -193,7 +191,6 @@ procedure TfrmList.lbItemsGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmpMenu: TMenuItem;
-  s: String;
 begin
 
   tmpMenu := TMenuItem(AItem.Data);
@@ -214,14 +211,7 @@ end;
 procedure TfrmList.RenderItems;
 var
   newItem: TSharpEListItem;
-  XML: TJvSimpleXML;
-  Dir: string;
-  MenuItem: TMenuItem;
-  SList: TStringList;
-  sr: TSearchRec;
-  fileloaded: boolean;
-
-  selectedIndex, i, index: Integer;
+  selectedIndex, i: Integer;
   tmpMenu: TMenuItem;
 begin
 

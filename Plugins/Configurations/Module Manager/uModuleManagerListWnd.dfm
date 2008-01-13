@@ -63,6 +63,7 @@ object frmMMList: TfrmMMList
           ColumnAlign = calLeft
           StretchColumn = True
           ColumnType = ctDefault
+          AutoSize = False
           Images = StatusImages
         end
         item
@@ -72,6 +73,7 @@ object frmMMList: TfrmMMList
           ColumnAlign = calRight
           StretchColumn = False
           ColumnType = ctDefault
+          AutoSize = False
           Images = StatusImages
         end
         item
@@ -81,6 +83,7 @@ object frmMMList: TfrmMMList
           ColumnAlign = calRight
           StretchColumn = False
           ColumnType = ctDefault
+          AutoSize = False
           Images = StatusImages
         end
         item
@@ -91,6 +94,7 @@ object frmMMList: TfrmMMList
           StretchColumn = False
           CanSelect = False
           ColumnType = ctDefault
+          AutoSize = False
           Images = StatusImages
         end
         item
@@ -101,6 +105,7 @@ object frmMMList: TfrmMMList
           StretchColumn = False
           CanSelect = False
           ColumnType = ctDefault
+          AutoSize = False
           Images = StatusImages
         end>
       Colors.BorderColor = clBtnFace
@@ -166,6 +171,7 @@ object frmMMList: TfrmMMList
           ColumnAlign = calLeft
           StretchColumn = True
           ColumnType = ctDefault
+          AutoSize = False
           Images = StatusImages
         end
         item
@@ -175,6 +181,7 @@ object frmMMList: TfrmMMList
           ColumnAlign = calRight
           StretchColumn = False
           ColumnType = ctDefault
+          AutoSize = False
           Images = StatusImages
         end
         item
@@ -184,6 +191,7 @@ object frmMMList: TfrmMMList
           ColumnAlign = calRight
           StretchColumn = False
           ColumnType = ctDefault
+          AutoSize = False
           Images = StatusImages
         end
         item
@@ -194,6 +202,7 @@ object frmMMList: TfrmMMList
           StretchColumn = False
           CanSelect = False
           ColumnType = ctDefault
+          AutoSize = False
           Images = StatusImages
         end
         item
@@ -204,6 +213,7 @@ object frmMMList: TfrmMMList
           StretchColumn = False
           CanSelect = False
           ColumnType = ctDefault
+          AutoSize = False
           Images = StatusImages
         end>
       Colors.BorderColor = clBtnFace
