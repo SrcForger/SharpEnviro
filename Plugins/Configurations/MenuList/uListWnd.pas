@@ -1,7 +1,7 @@
 ﻿{
-Source Name: uIconeListWnd.pas
-Description: Icon List Window
-Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
+Source Name: uListWnd.pas
+Description: Menu List Window
+Copyright (C) Lee Green (lee@sharpenviro.com)
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/

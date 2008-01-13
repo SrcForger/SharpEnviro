@@ -78,7 +78,6 @@ type
     { Public declarations }
     procedure RefreshHotkeys;
     procedure LoadHotkeyList;
-    procedure UpdateEditTabs;
 
     property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
   end;
@@ -167,6 +166,9 @@ begin
   Finally
     LockWindowUpdate(0);
   End;
+
+  CenterUpdateEditTabs(lbHotkeys.Count,lbHotkeys.ItemIndex);
+  CenterUpdateConfigFull;
 end;
 
 procedure TfrmConfig.LoadHotkeyList;
@@ -255,18 +257,11 @@ begin
       end;
   end;
 
-  if lbHotkeys.SelectedItem <> nil then begin
-    CenterDefineButtonState(scbEditTab, True);
-  end
-  else begin
-    CenterDefineButtonState(scbEditTab, False);
-  end;
-
   if FrmHotkeyEdit <> nil then
     FrmHotkeyEdit.InitUi(FEditMode);
 
+  CenterUpdateEditTabs(lbHotkeys.Count,lbHotkeys.ItemIndex);
   CenterUpdateConfigFull;
-
 end;
 
 procedure TfrmConfig.lbHotkeysGetCellCursor(Sender: TObject;
@@ -292,34 +287,6 @@ end;
 procedure TfrmConfig.lbHotkeysResize(Sender: TObject);
 begin
   Self.Height := lbHotkeys.Height;
-end;
-
-procedure TfrmConfig.UpdateEditTabs;
-
-  procedure BC(AEnabled: Boolean; AButton: TSCB_BUTTON_ENUM);
-  begin
-    if AEnabled then
-      CenterDefineButtonState(AButton, True)
-    else
-      CenterDefineButtonState(AButton, False);
-  end;
-
-begin
-  if ((lbHotkeys.Count = 0) or (lbHotkeys.ItemIndex = -1)) then begin
-    BC(False, scbEditTab);
-
-    if (lbHotkeys.Count = 0) then begin
-      BC(False, scbDeleteTab);
-      CenterSelectEditTab(scbAddTab);
-    end;
-
-    BC(True, scbAddTab);
-
-  end
-  else begin
-    BC(True, scbAddTab);
-    BC(True, scbEditTab);
-  end;
 end;
 
 end.

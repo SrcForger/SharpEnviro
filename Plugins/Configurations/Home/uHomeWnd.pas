@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, pngimage, ExtCtrls, SharpCenterApi, StdCtrls, SharpEListBoxEx,
-  JvExControls, JvLabel, ImgList, PngImageList, SharpApi;
+  JvLabel, ImgList, PngImageList, SharpApi;
 
 type
   TUser = Class

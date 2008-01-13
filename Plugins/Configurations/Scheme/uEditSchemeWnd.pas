@@ -70,18 +70,19 @@ type
     FSchemeItem: TSchemeItem;
     FSelectedColorIdx: Integer;
     FEdit: Boolean;
+    FEditMode: TSCE_EDITMODE_ENUM;
     procedure SetColors(const Value: TObjectList);
 
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
-    property Edit: Boolean read FEdit write FEdit;
     property SchemeItem: TSchemeItem read FSchemeItem write FSchemeItem;
     property Colors: TObjectList read FColors write SetColors;
 
     procedure InitUI(AEditMode: TSCE_EditMode_Enum);
     function ValidateEdit(AEditMode: TSCE_EditMode_Enum): Boolean;
     function Save(AEditMode: TSCE_EditMode_Enum; AApply: Boolean): Boolean;
+    property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
   end;
 
 var
@@ -104,7 +105,7 @@ var
 begin
   FColors := Value;
   h := 0;
-  LockWindowUpdate(Self.Handle);
+  //LockWindowUpdate(Self.Handle);
   try
     secEx.BeginUpdate;
     secEx.Items.Clear;
@@ -141,7 +142,7 @@ begin
         secEx.Items.Item[0].ColorEditor.ExpandedHeight;
 
     Self.Height := h + 10;
-    LockWindowUpdate(0);
+    //LockWindowUpdate(0);
   end;
 
 end;
@@ -176,12 +177,12 @@ begin
 
         Colors := tmpItem.Colors;
         SchemeItem := tmpItem;
-        Edit := False;
       end;
     sceEdit: begin
 
-        lstItem := TSchemeItem(frmSchemeList.lbSchemeList.
-          Item[frmSchemeList.lbSchemeList.ItemIndex].Data);
+        if frmSchemeList.lbSchemeList.SelectedItem = nil then exit;
+
+        lstItem := TSchemeItem(frmSchemeList.lbSchemeList.SelectedItem.Data);
 
         tmpItem := TSchemeItem.Create(nil);
         tmpItem.Name := lstItem.Name;
@@ -193,10 +194,6 @@ begin
 
         Colors := tmpItem.Colors;
         SchemeItem := tmpItem;
-        Edit := True;
-
-      end;
-    sceDelete: begin
 
       end;
   end;
@@ -239,7 +236,6 @@ begin
         FSchemeItem.Free;
 
         Result := True;
-        frmSchemeList.UpdateEditTabs;
         SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
 
       end;
@@ -257,12 +253,11 @@ begin
         end;
 
         Result := True;
-        frmSchemeList.UpdateEditTabs;
         SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
       end;
   end;
 
-  CenterUpdateConfigFull;
+  frmSchemeList.RebuildSchemeList;
 end;
 
 procedure TfrmEditScheme.edNameKeyDown(Sender: TObject; var Key: Word;

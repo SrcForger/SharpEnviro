@@ -53,7 +53,6 @@ begin
   FrmConfig.Top := 0;
   FrmConfig.BorderStyle := bsNone;
   FrmConfig.Show;
-  FrmConfig.UpdateEditTabs;
 
   result := FrmConfig.Handle;
 end;
@@ -105,9 +104,7 @@ begin
   end;
 
   // Define whether we add/edit or delete the item
-  if FrmHotkeyEdit.Save(AApply, AEditMode) then begin
-    FrmConfig.UpdateEditTabs;
-  end;
+  FrmHotkeyEdit.Save(AApply, AEditMode);
 
   if FrmHotkeyEdit <> nil then begin
     FrmHotkeyEdit.Close;

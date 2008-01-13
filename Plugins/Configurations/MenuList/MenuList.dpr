@@ -1,7 +1,7 @@
 ﻿{
-Source Name: Menu List
-Description: SharpMenu List Config
-Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
+Source Name: MenuList.dpr
+Description: Menu List Config
+Copyright (C) Lee Green (lee@sharpenviro.com)
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -46,7 +46,8 @@ uses
   uSharpCenterPluginTabList in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas',
   uSharpCenterCommon in '..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas',
   SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
+  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
+  uEditWnd in 'uEditWnd.pas' {frmEdit};
 
 {$E .dll}
 
@@ -77,6 +78,41 @@ begin
   except
     result := False;
   end;
+end;
+
+function OpenEdit(AOwner: hwnd; AEditMode:TSCE_EDITMODE_ENUM): hwnd;
+begin
+  result := HR_NORECIEVERWINDOW;
+  if frmEdit = nil then frmEdit := TFrmEdit.Create(nil);
+  uVistaFuncs.SetVistaFonts(frmEdit);
+
+  frmEdit.ParentWindow := AOwner;
+  frmEdit.Left := 0;
+  frmEdit.Top := 0;
+  frmEdit.BorderStyle := bsNone;
+  frmEdit.Show;
+  frmEdit.EditMode := AEditMode;
+
+  frmEdit.InitUi(AEditMode);
+
+end;
+
+function CloseEdit(AEditMode:TSCE_EDITMODE_ENUM; AApply: Boolean): boolean;
+begin
+  Result := True;
+
+  // First validate
+  if AApply then
+    if Not(frmEdit.ValidateEdit(AEditMode)) then begin
+      Result := False;
+      Exit;
+    end;
+
+  // If Validation ok then continue
+  frmEdit.Save(AApply,AEditMode);
+
+  if Assigned(frmEdit) then
+    FreeAndNil(frmEdit);
 end;
 
 procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
@@ -136,6 +172,8 @@ exports
   Close,
   SetText,
   GetMetaData,
+  OpenEdit,
+  CloseEdit,
   GetCenterScheme;
 
 end.

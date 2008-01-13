@@ -84,7 +84,6 @@ end;
 
 function OpenEdit(AOwner: hwnd; AEditMode:TSCE_EDITMODE_ENUM): hwnd;
 begin
-  result := HR_NORECIEVERWINDOW;
   if frmEditItem = nil then frmEditItem := TfrmEditItem.Create(nil);
   uVistaFuncs.SetVistaFonts(frmEditItem);
 
@@ -93,17 +92,10 @@ begin
   frmEditItem.Top := 0;
   frmEditItem.BorderStyle := bsNone;
   frmEditItem.Show;
-  frmBarList.EditMode := AEditMode;
+  frmEditItem.EditMode := AEditMode;
+  frmEditItem.InitUi(AEditMode);
 
-  //force
-  frmEditItem.SetFocus;
-
-  if frmBarList.UpdateUI then
-  begin
-    result := frmEditItem.Handle;
-  end else
-    FreeAndNil(FrmEditItem);
-
+  result := frmEditItem.Handle;
 end;
 
 function CloseEdit(AEditMode:TSCE_EDITMODE_ENUM; AApply: Boolean): boolean;
@@ -116,25 +108,12 @@ begin
     begin
       Result := False;
       Exit;
-    end else
-       frmEditItem.ClearValidation;
+    end;
 
   // If Validation ok then continue
-  if (AApply) and (frmEditItem.plEdit.ActivePage <> frmEditItem.pagBarSpace) then
-    frmBarList.SaveUi;
+  frmEditItem.SaveUi(AApply,AEditMode);
 
-  if frmEditItem <> nil then
-  begin
-      frmEditItem.Close;
-      frmEditItem.Free;
-      frmEditItem := nil;
-  end;
-
-  if frmBarList <> nil then
-  begin
-    frmBarList.lbBarList.Enabled := True;
-    frmBarList.BuildBarList;
-  end;
+  FreeAndNil(frmEditItem);
 end;
 
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
@@ -176,6 +155,7 @@ procedure GetCenterScheme(var ABackground: TColor;
 begin
   if frmEditItem <> nil then begin
     FrmEditItem.Color := ABackground;
+    frmEditItem.pnlBarSpace.Color := ABackground;
   end;
 
   if frmBarList <> nil then begin

@@ -57,10 +57,20 @@ uses
   SharpCenterApi,
 
   // PNG Image
-  pngimage, JvComponentBase,
-  SharpEBaseControls, SharpEEdit, TranComp, JvLabel, PngImageList, PngBitBtn,
-  JvExStdCtrls, PngSpeedButton, JvErrorIndicator,
-  JvValidators, JvBalloonHint, uHotkeyServiceList;
+  pngimage,
+  JvComponentBase,
+  SharpEBaseControls,
+  SharpEEdit,
+  TranComp,
+  JvLabel,
+  PngImageList,
+  PngBitBtn,
+  JvExStdCtrls,
+  PngSpeedButton,
+  JvErrorIndicator,
+  JvValidators,
+  JvBalloonHint,
+  uHotkeyServiceList;
 
 type
   TFrmHotkeyEdit = class(TForm)
@@ -96,7 +106,7 @@ type
   private
     { Private declarations }
     FItemEdit: ThotkeyItem;
-
+    FUpdating: Boolean;
   public
     { Public declarations }
     SelectedText: string;
@@ -118,7 +128,8 @@ const
 implementation
 
 uses
-  uHotkeyServiceItemListWnd, SharpEListBoxEx;
+  uHotkeyServiceItemListWnd,
+  SharpEListBoxEx;
 
 {$R *.dfm}
 
@@ -133,8 +144,7 @@ var
   tmpItem: TSharpEListItem;
   tmpHotkey: THotkeyItem;
 begin
-  edName.OnChange := nil;
-  edCommand.OnChange := nil;
+  FUpdating := True;
   try
 
     case AEditMode of
@@ -173,20 +183,7 @@ begin
     end;
 
   finally
-    edName.OnChange := UpdateEditState;
-    edCommand.OnChange := UpdateEditState;
-
-    if frmConfig.lbHotkeys.SelectedItem <> nil then begin
-      CenterDefineButtonState(scbEditTab, True);
-    end
-    else begin
-      CenterDefineButtonState(scbEditTab, False);
-      CenterSelectEditTab(scbAddTab);
-
-      edName.Text := '';
-      edCommand.Text := '';
-      edHotkey.Text := '';
-    end;
+    FUpdating := False;
   end;
 end;
 
@@ -251,7 +248,8 @@ end;
 
 procedure TFrmHotkeyEdit.UpdateEditState(Sender: TObject);
 begin
-  CenterDefineEditState(True);
+  if not (FUpdating) then
+    CenterDefineEditState(True);
 end;
 
 procedure TFrmHotkeyEdit.ClearValidation;
@@ -267,7 +265,8 @@ end;
 procedure TFrmHotkeyEdit.edHotkeyKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  UpdateEditState(nil);
+  if not (FUpdating) then
+    CenterDefineEditState(True);
 end;
 
 procedure TFrmHotkeyEdit.valNameExistsValidate(Sender: TObject;

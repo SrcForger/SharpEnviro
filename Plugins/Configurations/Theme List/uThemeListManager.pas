@@ -18,10 +18,12 @@ type
     FTemplate: Pointer;
     FFileName: String;
     FIsReadOnly: Boolean;
+    FRenamedName: String;
   public
     constructor Create(AName:String; AAuthor:String);
     property FileName: String read FFileName write FFileName;
     Property Name: String read FName write FName;
+    Property RenamedName: String read FRenamedName write FRenamedName;
     Property Author: String read FAuthor write FAuthor;
     Property Comment: String read FComment write FComment;
     Property Website: String read FWebsite write FWebsite;
@@ -37,7 +39,7 @@ end;
     public
       procedure Add(AName, AAuthor, Awebsite:string;
         ATemplate: string=''; AReadOnly:Boolean=False);
-      procedure Edit(AName, AAuthor, AWebsite: String);
+      procedure Edit(AOldName, ANewName, AAuthor, AWebsite: String);
       procedure Delete(AName: String);
       procedure SetTheme(AName: String);
       Function GetDefaultTheme:string;
@@ -101,8 +103,6 @@ begin
     if Not(DirectoryExists(sThemeDir + AName)) then
       ForceDirectories(sThemeDir + AName);
 
-    // rename
-    //RenameFolder(extractfilepath(tmpitem.FileName),sThemeDir+tmpItem.Name+'\');
     sDest := sThemeDir + AName+'\'+'Theme.xml';
 
     xml.SaveToFile(sDest);
@@ -155,22 +155,37 @@ begin
   DeleteDirectory(sSrc,True);
 end;
 
-procedure TThemeManager.Edit(AName, AAuthor, AWebsite: String);
+procedure TThemeManager.Edit(AOldName, ANewName, AAuthor, AWebsite: String);
 var
   xml: TJvSimpleXml;
-  sThemeDir: String;
+  sThemeDir, sName: String;
   sXml: string;
 begin
-  // Get theme dir
+
+  // Remove invalid chars
   sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
-  sXml := sThemeDir+AName+'\'+'theme.xml';
+  ANewName := trim(StrRemoveChars(ANewName,
+      ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
+
+  // Rename
+  if CompareText(AOldName, ANewName) <> 0 then begin
+
+    CopyFolder(PathAddSeparator(sThemeDir)+AOldName,PathAddSeparator(sThemeDir)+ANewName);
+    DeleteDirectory(PathAddSeparator(sThemeDir)+AOldName,True);
+    sName := ANewName;
+  end else
+    sName := AOldName;
+
+  // Get theme dir
+  
+  sXml := sThemeDir+sName+'\'+'theme.xml';
 
   xml := TJvSimpleXML.Create(nil);
   xml.LoadFromFile(sXml);
   Try
     with Xml.Root.items do begin
 
-      ItemNamed['Name'].Value := AName;
+      ItemNamed['Name'].Value := sName;
       ItemNamed['Author'].Value := AAuthor;
       ItemNamed['Website'].Value := AWebsite;
     end;
@@ -268,3 +283,4 @@ begin
 end;
 
 end.
+

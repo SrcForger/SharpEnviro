@@ -190,6 +190,7 @@ begin
         end;
       end;
   end;
+
   BuildModuleList;
   CenterUpdateConfigFull;
 end;

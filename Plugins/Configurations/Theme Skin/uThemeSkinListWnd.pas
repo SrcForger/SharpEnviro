@@ -63,6 +63,7 @@ type
     ThemeImages: TPngImageList;
     lbSkinList: TSharpEListBoxEx;
     PngImageList1: TPngImageList;
+    tmrRefreshItems: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure lbSkinListClickItem(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem);
@@ -74,6 +75,7 @@ type
     procedure lbSkinListGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure lbSkinListResize(Sender: TObject);
+    procedure tmrRefreshItemsTimer(Sender: TObject);
 
   private
     FTheme: string;
@@ -84,7 +86,7 @@ type
       CompressionLevel: Integer = 9;
       InterlaceMethod: TInterlaceMethod = imNone): tPNGObject;
   public
-
+    procedure RefreshSkinList;
     property Theme: string read FTheme write FTheme;
     property DefaultSkin: string read FDefaultSkin write FDefaultSkin;
 
@@ -116,7 +118,7 @@ implementation
 
 procedure TfrmSkinListWnd.FormShow(Sender: TObject);
 begin
-  BuildSkinList;
+  RefreshSkinList;
 end;
 
 procedure TfrmSkinListWnd.BuildSkinList;
@@ -178,6 +180,8 @@ begin
     files.Free;
 
     lbSkinList.ItemIndex := iIndex;
+
+    CenterUpdateConfigFull;
   end;
 end;
 
@@ -234,6 +238,12 @@ begin
   finally
     Result := png;
   end;
+end;
+
+procedure TfrmSkinListWnd.tmrRefreshItemsTimer(Sender: TObject);
+begin
+  tmrRefreshItems.Enabled := False;
+  BuildSkinList;
 end;
 
 procedure TfrmSkinListWnd.lbSkinListClickItem(Sender: TObject; const ACol: Integer;
@@ -340,6 +350,11 @@ end;
 procedure TfrmSkinListWnd.lbSkinListResize(Sender: TObject);
 begin
   Self.Height := lbSkinList.Height;
+end;
+
+procedure TfrmSkinListWnd.RefreshSkinList;
+begin
+  tmrRefreshItems.Enabled := True;
 end;
 
 procedure TfrmSkinListWnd.Save;

@@ -42,6 +42,7 @@ object frmSchemeList: TfrmSchemeList
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
+        AutoSize = False
         Images = imlCol1
       end
       item
@@ -52,6 +53,7 @@ object frmSchemeList: TfrmSchemeList
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = imlCol2
       end
       item
@@ -62,6 +64,7 @@ object frmSchemeList: TfrmSchemeList
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = imlCol2
       end>
     Colors.BorderColor = clBtnFace
@@ -12722,7 +12725,7 @@ object frmSchemeList: TfrmSchemeList
     Enabled = False
     Interval = 1
     OnTimer = tmrRefreshItemsTimer
-    Left = 24
-    Top = 204
+    Left = 8
+    Top = 208
   end
 end

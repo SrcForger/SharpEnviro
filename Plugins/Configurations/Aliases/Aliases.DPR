@@ -54,7 +54,6 @@ begin
   frmItemsWnd.BorderStyle := bsNone;
   frmItemsWnd.Show;
 
-  frmItemsWnd.UpdateEditTabs;
   result := frmItemsWnd.Handle;
 end;
 

@@ -28,11 +28,35 @@ unit uThemeListEditWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvExControls, JvComponent, JvLabel, ImgList,
-  PngImageList, JvExStdCtrls, JvValidators,
-  JvErrorIndicator, ExtCtrls, JvPageList, SharpApi, SharpCenterApi,
-  uThemeListManager, JclStrings, JvComponentBase, jpeg, JvHtControls, GR32_Image;
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  JvExControls,
+  JvComponent,
+  JvLabel,
+  ImgList,
+  PngImageList,
+  JvExStdCtrls,
+  JvValidators,
+  JvErrorIndicator,
+  ExtCtrls,
+  JvPageList,
+  SharpApi,
+  SharpCenterApi,
+  uThemeListManager,
+  SharpEListBoxEx,
+  JclStrings,
+  JvComponentBase,
+  jpeg,
+  JvHtControls,
+  GR32_Image;
 
 type
   TfrmEditItem = class(TForm)
@@ -59,11 +83,17 @@ type
     procedure edThemeNameKeyPress(Sender: TObject; var Key: Char);
     procedure btnConfigureClick(Sender: TObject);
   private
+    FEditMode: TSCE_EDITMODE_ENUM;
     { Private declarations }
   public
     { Public declarations }
     function ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
     procedure ClearValidation;
+
+    function InitUi(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+    function SaveUi(AApply: Boolean; AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+
+    property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
 
   end;
 
@@ -83,13 +113,114 @@ begin
 
 end;
 
+function TfrmEditItem.InitUi(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+var
+  df: TSC_DEFAULT_FIELDS;
+  tmpItem: TSharpEListItem;
+  tmpThemeItem: TThemeListItem;
+  i: integer;
+begin
+  Result := False;
+  case AEditMode of
+    sceAdd: begin
+        frmEditItem.pagAdd.Show;
+
+        CenterReadDefaults(df);
+        FrmEditItem.edAuthor.Text := df.Author;
+        FrmEditItem.edName.Text := '';
+        frmEditItem.edWebsite.Text := df.Website;
+
+        frmEditItem.cbBasedOn.Items.Clear;
+        frmEditItem.cbBasedOn.Items.AddObject('New Theme', nil);
+        frmThemeList.ThemeManager.GetThemeList(frmEditItem.cbBasedOn.Items);
+        frmEditItem.cbBasedOn.ItemIndex := 0;
+        frmEditItem.cbBasedOn.Enabled := True;
+
+        frmEditItem.edName.Enabled := True;
+
+        if ((frmEditItem.Visible) and (frmEditItem.edName.Enabled)) then
+          FrmEditItem.edName.SetFocus;
+
+        Result := True;
+      end;
+  sceEdit: begin
+
+      if frmThemeList.lbThemeList.ItemIndex <> -1 then begin
+        tmpItem := frmThemeList.lbThemeList.Item[frmThemeList.lbThemeList.ItemIndex];
+        tmpThemeItem := TThemeListItem(tmpItem.Data);
+
+        FrmEditItem.edName.Text := tmpThemeItem.Name;
+        FrmEditItem.edAuthor.Text := tmpThemeItem.Author;
+        frmEditItem.edWebsite.Text := tmpThemeItem.Website;
+        FrmEditItem.edName.SetFocus;
+
+        frmEditItem.cbBasedOn.Items.Clear;
+        frmEditItem.cbBasedOn.Items.AddObject('Not Applicable',nil);
+        frmThemeList.ThemeManager.GetThemeList(frmEditItem.cbBasedOn.Items);
+
+        if tmpThemeItem.Template <> nil then
+          frmEditItem.cbBasedOn.ItemIndex := frmEditItem.cbBasedOn.Items.IndexOfObject(Pointer(tmpThemeItem.Template)) else
+          frmEditItem.cbBasedOn.ItemIndex := 0;
+
+        frmEditItem.cbBasedOn.Enabled := False;
+
+        Result := True;
+      end;
+    end;
+  end;
+end;
+
+function TfrmEditItem.SaveUi(AApply: Boolean;
+  AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+var
+  sAuthor: string;
+  sWebsite: string;
+  sTemplate: string;
+  sName: string;
+  df: TSC_DEFAULT_FIELDS;
+  tmpItem: TSharpEListItem;
+  tmpThemeItem: TThemeListItem;
+begin
+  Result := True;
+
+  if not (AApply) then
+    exit;
+
+  case AEditMode of
+    sceAdd: begin
+        sName := frmEditItem.edName.Text;
+        sAuthor := frmEditItem.edAuthor.Text;
+        sWebsite := frmEditItem.edWebsite.Text;
+
+        sTemplate := '';
+        if frmEditItem.cbBasedOn.ItemIndex <> 0 then
+          sTemplate := frmEditItem.cbBasedOn.text;
+
+        df.Author := sAuthor;
+        df.Website := sWebsite;
+        CenterWriteDefaults(df);
+        frmThemeList.ThemeManager.Add(sName, sAuthor, sWebsite, sTemplate);
+      end;
+    sceEdit: begin
+      tmpThemeItem := TThemeListItem(frmThemeList.lbThemeList.SelectedItem.Data);
+
+      frmThemeList.ThemeManager.Edit(tmpThemeItem.Name,frmEditItem.edName.Text,
+        frmEditItem.edAuthor.Text, frmEditItem.edWebsite.Text);
+
+      frmThemeList.lbThemeList.Invalidate;
+    end;
+
+  end;
+
+  frmThemeList.BuildThemeList;
+end;
+
 function TfrmEditItem.ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
 begin
   Result := False;
 
   case AEditMode of
-    sceAdd, sceEdit:
-      begin
+    sceAdd, sceEdit: begin
         errorinc.BeginUpdate;
         try
           errorinc.ClearErrors;

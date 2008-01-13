@@ -201,16 +201,10 @@ begin
       end;
   end;
 
-  if lbWeatherList.SelectedItem <> nil then begin
-    CenterDefineButtonState(scbEditTab, True);
-  end
-  else begin
-    CenterDefineButtonState(scbEditTab, False);
-  end;
-
   if frmItemEdit <> nil then
     frmItemEdit.InitUi(FEditMode);
 
+  CenterUpdateEditTabs(lbWeatherList.Count,lbWeatherList.ItemIndex);
   CenterUpdateConfigFull;
 end;
 

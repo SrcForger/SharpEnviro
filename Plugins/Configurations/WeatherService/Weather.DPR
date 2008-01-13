@@ -97,9 +97,7 @@ begin
   End;
 
   // Define whether we add/edit or delete the item
-  if frmItemEdit.Save(AApply, AEditMode) then Begin
-
-  end;
+  frmItemEdit.Save(AApply, AEditMode);
 
   FreeAndNil(frmItemEdit);
   Result := True;

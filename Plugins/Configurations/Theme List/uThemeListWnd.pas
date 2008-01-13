@@ -70,7 +70,7 @@ type
       AItem: TSharpEListItem);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure lbThemesClick(Sender: TObject);
+
     procedure FormShow(Sender: TObject);
     procedure lbThemeListResize(Sender: TObject);
 
@@ -83,21 +83,12 @@ type
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
   private
-    FEditMode: TSCE_EDITMODE_ENUM;
     FLoading: Boolean;
     procedure LoadTheme(tmpTheme: TThemeListItem);
-  private
-
   public
     ThemeManager: TThemeManager;
-
-    procedure UpdateEditTabs;
     procedure BuildThemeList;
-    function UpdateUI: Boolean;
-    function SaveUi: Boolean;
-
     procedure ConfigureItem;
-    property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
   end;
 
 var
@@ -119,43 +110,9 @@ uses uThemeListEditWnd;
 
 { TfrmConfigListWnd }
 
-procedure TfrmThemeList.UpdateEditTabs;
-
-  procedure BC(AEnabled: Boolean; AButton: TSCB_BUTTON_ENUM);
-  begin
-    if AEnabled then
-      CenterDefineButtonState(AButton, True)
-    else
-      CenterDefineButtonState(AButton, False);
-  end;
-
-begin
-  if ((lbThemeList.Count = 0) or (lbThemeList.ItemIndex = -1)) then begin
-    BC(False, scbEditTab);
-
-    if (lbThemeList.Count = 0) then begin
-      BC(False, scbDeleteTab);
-      CenterSelectEditTab(scbAddTab);
-    end;
-
-    BC(True, scbAddTab);
-  end
-  else begin
-    BC(True, scbAddTab);
-    BC(False, scbEditTab);
-    BC(True, scbDeleteTab);
-  end;
-end;
-
 procedure TfrmThemeList.FormShow(Sender: TObject);
 begin
   BuildThemeList;
-end;
-
-procedure TfrmThemeList.lbThemesClick(Sender: TObject);
-begin
-  if FrmEditItem <> nil then
-    updateui {UpdateEditText};
 end;
 
 procedure TfrmThemeList.FormCreate(Sender: TObject);
@@ -252,6 +209,9 @@ begin
     bmp.Free;
     bmp32.Free;
   end;
+
+  CenterUpdateConfigFull;
+  CenterUpdateEditTabs(lbThemeList.Count,lbThemeList.ItemIndex);
 end;
 
 procedure TfrmThemeList.lbThemeListClickItem(Sender: TObject; const ACol: Integer;
@@ -331,91 +291,12 @@ begin
         end;
       end;
 
-  if lbThemeList.SelectedItem <> nil then begin
-    CenterDefineButtonState(scbEditTab, True);
-  end
-  else begin
-    CenterDefineButtonState(scbEditTab, False);
-  end;
+  if frmEditItem <> nil then
+    frmEditItem.InitUi(frmEditItem.EditMode);
 
-
-  UpdateEditTabs;
+  CenterUpdateEditTabs(lbThemeList.Count,lbThemeList.ItemIndex);
   CenterUpdateConfigFull;
 
-end;
-
-function TfrmThemeList.UpdateUI: Boolean;
-var
-  df: TSC_DEFAULT_FIELDS;
-begin
-  Result := False;
-  case FEditMode of
-    sceAdd: begin
-        frmEditItem.pagAdd.Show;
-
-        CenterReadDefaults(df);
-        FrmEditItem.edAuthor.Text := df.Author;
-        FrmEditItem.edName.Text := '';
-        frmEditItem.edWebsite.Text := df.Website;
-
-        frmEditItem.cbBasedOn.Items.Clear;
-        frmEditItem.cbBasedOn.Items.AddObject('New Theme', nil);
-        ThemeManager.GetThemeList(frmEditItem.cbBasedOn.Items);
-        frmEditItem.cbBasedOn.ItemIndex := 0;
-        frmEditItem.cbBasedOn.Enabled := True;
-
-        frmEditItem.edName.Enabled := True;
-
-        if ((frmEditItem.Visible) and (frmEditItem.edName.Enabled)) then
-          FrmEditItem.edName.SetFocus;
-
-        Result := True;
-      end;
-    sceDelete: begin
-
-        if frmThemeList.lbThemeList.ItemIndex <> -1 then begin
-
-          frmEditItem.pagDelete.Show;
-
-          CenterDefineButtonState(scbDelete, True);
-        end
-        else begin
-          CenterDefineButtonState(scbDelete, False);
-        end;
-
-        Result := True;
-      end;
-  end;
-end;
-
-function TfrmThemeList.SaveUi: Boolean;
-var
-  sAuthor: string;
-  sWebsite: string;
-  sTemplate: string;
-  sName: string;
-  df: TSC_DEFAULT_FIELDS;
-begin
-  Result := True;
-
-  case FEditMode of
-    sceAdd: begin
-        sName := frmEditItem.edName.Text;
-        sAuthor := frmEditItem.edAuthor.Text;
-        sWebsite := frmEditItem.edWebsite.Text;
-
-        sTemplate := '';
-        if frmEditItem.cbBasedOn.ItemIndex <> 0 then
-          sTemplate := frmEditItem.cbBasedOn.text;
-
-        df.Author := sAuthor;
-        df.Website := sWebsite;
-        CenterWriteDefaults(df);
-        ThemeManager.Add(sName, sAuthor, sWebsite, sTemplate);
-      end;
-  end;
-
-  CenterUpdateConfigFull;
 end;
 
 procedure TfrmThemeList.tmrEnableUiTimer(Sender: TObject);
@@ -520,9 +401,7 @@ end;
 
 procedure TfrmThemeList.LoadTheme(tmpTheme: TThemeListItem);
 begin
-  if FrmEditItem <> nil then
-    updateui
-  else begin
+  begin
     lbThemeList.Enabled := False;
     tmrEnableUi.Enabled := True;
 

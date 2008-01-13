@@ -37,6 +37,7 @@ object frmEditItem: TfrmEditItem
         Width = 50
         Height = 13
         Caption = 'Template:'
+        Transparent = True
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
@@ -116,6 +117,7 @@ object frmEditItem: TfrmEditItem
         Height = 13
         Align = alTop
         Caption = 'Confirmation:'
+        Transparent = True
         HotTrackFont.Charset = DEFAULT_CHARSET
         HotTrackFont.Color = clWindowText
         HotTrackFont.Height = -11
@@ -227,5 +229,6 @@ object frmEditItem: TfrmEditItem
       end>
     Left = 292
     Top = 28
+    Bitmap = {}
   end
 end

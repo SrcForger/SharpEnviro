@@ -113,7 +113,6 @@ type
     property MenuFile: string read FMenuFile write FMenuFile;
     property Menu: TSharpEMenu read FMenu write FMenu;
 
-    procedure UpdateTabs;
     function IsParentMenu: Boolean;
     procedure RenderItems(AMenu: TSharpEMenu; AClear: Boolean = True;
       AParent: Boolean = False);
@@ -191,15 +190,6 @@ begin
     exit;
 
   case ACol of
-    colName: begin
-
-        if frmEdit <> nil then begin
-          nMenuItemIndex := Integer(tmp.MenuItem.ItemType);
-          if frmEdit.EditMode = sceEdit then
-            frmEdit.InitUI(sceEdit);
-        end;
-      end;
-
     colDelete: begin
 
         bDelete := True;
@@ -223,8 +213,11 @@ begin
       end;
   end;
 
+  if (frmEdit <> nil) then
+    frmEdit.InitUi(frmEdit.EditMode);
+
+  CenterUpdateEditTabs(lbItems.Count,lbItems.ItemIndex);
   CenterUpdateConfigFull;
-  UpdateTabs;
 end;
 
 procedure TfrmList.lbItemsDblClickItem(Sender: TObject; const ACol: Integer;
@@ -267,8 +260,9 @@ begin
     OnUpdatePosition(nil);
 
   tmrUpdatePosition.Enabled := False;
+
+  CenterUpdateEditTabs(lbItems.Count,lbItems.ItemIndex);
   CenterUpdateConfigFull;
-  UpdateTabs;
   Save;
 end;
 
@@ -488,7 +482,7 @@ begin
         lbItems.ItemIndex := 0;
     end;
 
-  UpdateTabs;
+  CenterUpdateEditTabs(lbItems.Count,lbItems.ItemIndex);
   CenterUpdateConfigFull;
 end;
 
@@ -576,40 +570,6 @@ begin
     end;
   end;
 end;
-
-{ TItemData }
-
-procedure TfrmList.UpdateTabs;
-
-  procedure BC(AEnabled: Boolean; AButton: TSCB_BUTTON_ENUM);
-  begin
-    if AEnabled then
-      CenterDefineButtonState(AButton, True)
-    else
-      CenterDefineButtonState(AButton, False);
-  end;
-
-begin
-  if lbItems.SelectedItem <> nil then begin
-    CenterDefineButtonState(scbEditTab, True);
-    //CenterSelectEditTab(scbEditTab);
-  end
-  else begin
-    CenterDefineButtonState(scbEditTab, False);
-    CenterSelectEditTab(scbAddTab);
-  end;
-
-  if lbItems.Count = 0 then begin
-    BC(False, scbEditTab);
-    BC(True, scbAddTab);
-    CenterSelectEditTab(scbAddTab)
-  end
-  else begin
-    //BC(True, scbAddTab);
-  end;
-end;
-
-{ TItemData }
 
 function TItemData.GetCaption: string;
 begin

@@ -331,6 +331,7 @@ object frmHome: TfrmHome
         StretchColumn = True
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = PngImageList1
       end>
     Colors.BorderColor = clBtnFace
@@ -367,6 +368,7 @@ object frmHome: TfrmHome
         StretchColumn = True
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = PngImageList1
       end>
     Colors.BorderColor = clBtnFace

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProjectGuid>{95fc47df-8d83-4363-bb4f-78f1ffdea869}</ProjectGuid>
     <MainSource>MenuEdit.dpr</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_UsePackage>rtl;vcl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>

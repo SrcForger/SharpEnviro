@@ -29,6 +29,7 @@ object frmConfig: TfrmConfig
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
+        AutoSize = False
         Images = imlList
       end
       item
@@ -38,6 +39,7 @@ object frmConfig: TfrmConfig
         ColumnAlign = calRight
         StretchColumn = False
         ColumnType = ctDefault
+        AutoSize = False
       end
       item
         Width = 30
@@ -47,6 +49,7 @@ object frmConfig: TfrmConfig
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = imlList
       end
       item
@@ -57,6 +60,7 @@ object frmConfig: TfrmConfig
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = imlList
       end>
     Colors.BorderColor = clBtnFace

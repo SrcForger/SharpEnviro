@@ -15,242 +15,154 @@ object frmEditItem: TfrmEditItem
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  DesignSize = (
+    475
+    107)
   PixelsPerInch = 96
   TextHeight = 13
-  object plEdit: TJvPageList
-    Left = 0
-    Top = 0
-    Width = 475
-    Height = 105
-    ActivePage = pagBarSpace
-    PropagateEnable = False
-    Align = alTop
-    object pagEdit: TJvStandardPage
+  object JvLabel1: TLabel
+    Left = 242
+    Top = 12
+    Width = 40
+    Height = 13
+    Caption = 'Monitor:'
+    Transparent = True
+  end
+  object JvLabel3: TLabel
+    Left = 242
+    Top = 76
+    Width = 78
+    Height = 13
+    Caption = 'Horizontal Align:'
+    Transparent = True
+  end
+  object JvLabel2: TLabel
+    Left = 242
+    Top = 44
+    Width = 65
+    Height = 13
+    Caption = 'Vertical Align:'
+    Transparent = True
+  end
+  object Label3: TLabel
+    Left = 18
+    Top = 44
+    Width = 48
+    Height = 13
+    Caption = 'Template:'
+    Transparent = True
+  end
+  object edName: TLabeledEdit
+    Left = 56
+    Top = 8
+    Width = 157
+    Height = 21
+    EditLabel.Width = 31
+    EditLabel.Height = 13
+    EditLabel.Caption = 'Name:'
+    LabelPosition = lpLeft
+    LabelSpacing = 6
+    TabOrder = 0
+    OnKeyPress = edThemeNameKeyPress
+  end
+  object cobo_monitor: TComboBox
+    Left = 296
+    Top = 8
+    Width = 171
+    Height = 21
+    Style = csDropDownList
+    Anchors = [akLeft, akTop, akRight]
+    ItemHeight = 13
+    TabOrder = 1
+    OnSelect = cbBasedOnSelect
+  end
+  object cbBasedOn: TComboBox
+    Left = 76
+    Top = 40
+    Width = 137
+    Height = 21
+    Style = csDropDownList
+    ItemHeight = 13
+    TabOrder = 2
+    OnSelect = cbBasedOnSelect
+  end
+  object cobo_valign: TComboBox
+    Left = 320
+    Top = 40
+    Width = 147
+    Height = 21
+    Style = csDropDownList
+    Anchors = [akLeft, akTop, akRight]
+    ItemHeight = 13
+    ItemIndex = 0
+    TabOrder = 3
+    Text = 'Top'
+    OnSelect = cbBasedOnSelect
+    Items.Strings = (
+      'Top'
+      'Bottom')
+  end
+  object cobo_halign: TComboBox
+    Left = 336
+    Top = 72
+    Width = 131
+    Height = 21
+    Style = csDropDownList
+    Anchors = [akLeft, akTop, akRight]
+    ItemHeight = 13
+    ItemIndex = 0
+    TabOrder = 4
+    Text = 'Left'
+    OnSelect = cbBasedOnSelect
+    Items.Strings = (
+      'Left'
+      'Middle'
+      'Right'
+      'Full Screen')
+  end
+  object pnlBarSpace: TPanel
+    Left = 8
+    Top = 8
+    Width = 459
+    Height = 91
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    BevelOuter = bvNone
+    ParentBackground = False
+    TabOrder = 5
+    object Label1: TLabel
       Left = 0
-      Top = 0
-      Width = 475
-      Height = 105
-      DesignSize = (
-        475
-        105)
-      object Label3: TJvLabel
-        Left = 18
-        Top = 44
-        Width = 50
-        Height = 13
-        Caption = 'Template:'
-        Transparent = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-      end
-      object JvLabel1: TJvLabel
-        Left = 242
-        Top = 12
-        Width = 42
-        Height = 13
-        Caption = 'Monitor:'
-        Transparent = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-      end
-      object JvLabel2: TJvLabel
-        Left = 242
-        Top = 44
-        Width = 67
-        Height = 13
-        Caption = 'Vertical Align:'
-        Transparent = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-      end
-      object JvLabel3: TJvLabel
-        Left = 242
-        Top = 76
-        Width = 80
-        Height = 13
-        Caption = 'Horizontal Align:'
-        Transparent = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-      end
-      object edName: TLabeledEdit
-        Left = 56
-        Top = 8
-        Width = 157
-        Height = 21
-        EditLabel.Width = 31
-        EditLabel.Height = 13
-        EditLabel.Caption = 'Name:'
-        LabelPosition = lpLeft
-        LabelSpacing = 6
-        TabOrder = 0
-        OnKeyPress = edThemeNameKeyPress
-      end
-      object cbBasedOn: TComboBox
-        Left = 76
-        Top = 40
-        Width = 137
-        Height = 21
-        Style = csDropDownList
-        ItemHeight = 13
-        TabOrder = 1
-        OnSelect = cbBasedOnSelect
-      end
-      object cobo_monitor: TComboBox
-        Left = 296
-        Top = 8
-        Width = 171
-        Height = 21
-        Style = csDropDownList
-        Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 13
-        TabOrder = 2
-        OnSelect = cbBasedOnSelect
-      end
-      object cobo_valign: TComboBox
-        Left = 320
-        Top = 40
-        Width = 147
-        Height = 21
-        Style = csDropDownList
-        Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 13
-        ItemIndex = 0
-        TabOrder = 3
-        Text = 'Top'
-        OnSelect = cbBasedOnSelect
-        Items.Strings = (
-          'Top'
-          'Bottom')
-      end
-      object cobo_halign: TComboBox
-        Left = 336
-        Top = 72
-        Width = 131
-        Height = 21
-        Style = csDropDownList
-        Anchors = [akLeft, akTop, akRight]
-        ItemHeight = 13
-        ItemIndex = 0
-        TabOrder = 4
-        Text = 'Left'
-        OnSelect = cbBasedOnSelect
-        Items.Strings = (
-          'Left'
-          'Middle'
-          'Right'
-          'Full Screen')
-      end
+      Top = 13
+      Width = 459
+      Height = 26
+      Align = alTop
+      Caption = 
+        'Reduce the size of already existing bars or disable another Shar' +
+        'pBar to free some screen space. There is no space left to create' +
+        ' another SharpBar at any possible position.'
+      WordWrap = True
+      ExplicitWidth = 431
     end
-    object pagDelete: TJvStandardPage
+    object JvLabel4: TJvLabel
       Left = 0
       Top = 0
-      Width = 475
-      Height = 105
-      BorderWidth = 8
-      object Label2: TLabel
-        Left = 0
-        Top = 26
-        Width = 197
-        Height = 13
-        Align = alTop
-        Caption = '(Settings for all used modules will be lost)'
-      end
-      object Label1: TJvLabel
-        Left = 0
-        Top = 0
-        Width = 78
-        Height = 13
-        Align = alTop
-        Caption = 'Confirmation:'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-        Images = pilError
-      end
-      object Label4: TLabel
-        Left = 0
-        Top = 13
-        Width = 316
-        Height = 13
-        Align = alTop
-        Caption = 'Are you sure you want to delete the currently selected SharpBar?'
-      end
-    end
-    object pagBarSpace: TJvStandardPage
-      Left = 0
-      Top = 0
-      Width = 475
-      Height = 105
-      BorderWidth = 8
-      Caption = 'pagBarSpace'
-      object Label5: TLabel
-        Left = 0
-        Top = 13
-        Width = 459
-        Height = 13
-        Align = alTop
-        Caption = 
-          'There is no space left to create another SharpBar at any possibl' +
-          'e position.'
-        WordWrap = True
-        ExplicitWidth = 357
-      end
-      object JvLabel4: TJvLabel
-        Left = 0
-        Top = 0
-        Width = 459
-        Height = 13
-        Align = alTop
-        Caption = 'Error:'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-        Images = pilError
-        ExplicitWidth = 33
-      end
-      object Label6: TLabel
-        Left = 0
-        Top = 26
-        Width = 459
-        Height = 26
-        Align = alTop
-        Caption = 
-          'Reduce the size of already existing bars or disable another Shar' +
-          'pBar to free some screen space.'
-        WordWrap = True
-        ExplicitWidth = 431
-      end
+      Width = 459
+      Height = 13
+      Align = alTop
+      Caption = 'Error:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Transparent = True
+      HotTrackFont.Charset = DEFAULT_CHARSET
+      HotTrackFont.Color = clWindowText
+      HotTrackFont.Height = -11
+      HotTrackFont.Name = 'Tahoma'
+      HotTrackFont.Style = []
+      Images = pilError
+      ExplicitWidth = 33
     end
   end
   object vals: TJvValidators

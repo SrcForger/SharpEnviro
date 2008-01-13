@@ -13,6 +13,7 @@ object frmBarList: TfrmBarList
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object lbBarList: TSharpEListBoxEx
@@ -686,6 +687,7 @@ object frmBarList: TfrmBarList
     Bitmap = {}
   end
   object tmrUpdate: TTimer
+    Interval = 1
     OnTimer = tmrUpdateTimer
     Left = 272
     Top = 120

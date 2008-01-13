@@ -94,21 +94,17 @@ type
       const ASelected: Boolean);
     procedure lbBarListGetCellText(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem;
       var AColText: string);
-  private
-    FEditMode: TSCE_EDITMODE_ENUM;
+    procedure FormShow(Sender: TObject);
   private
     function IsBarRunning(ID: integer): boolean;
 
     function PointInRect(P: TPoint; Rect: TRect): boolean;
-    function BarSpaceCheck: boolean;
+    procedure BuildBarList;
   public
     FBarList: TObjectList;
-    procedure BuildBarList;
-    procedure UpdateBarStatus;
-    function UpdateUI: Boolean;
-    function SaveUi: Boolean;
-    procedure ConfigureItem;
-    property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
+    
+    function BarSpaceCheck: boolean;
+
   end;
 
   procedure AddItemsToList(AList: TObjectList);
@@ -174,11 +170,6 @@ var
   end;
 
 begin
-  if frmEditItem <> nil then begin
-    UpdateUI;
-    exit;
-  end;
-
   tmpBar := TBarItem(AItem.Data);
   if tmpBar = nil then
     exit;
@@ -195,16 +186,14 @@ begin
             ' -load:' + inttostr(tmpBar.BarID) +
             ' -noREB' +
             ' -noLASB');
-          UpdateBarStatus;
+           tmrUpdate.Enabled := True;
         end
         else begin
           wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(tmpBar.BarID)));
           if wnd <> 0 then
             SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
 
-          UpdateBarStatus;
-
-          BuildBarList;
+          tmrUpdate.Enabled := True;
         end;
 
       end;
@@ -227,6 +216,8 @@ begin
           end;
           DeleteDirectory(Dir + inttostr(iBarID), True);
           tmrUpdateTimer(nil);
+
+          tmrUpdate.Enabled := True;
         end;
       end;
     colEnableDisable: begin
@@ -264,20 +255,14 @@ begin
         XML.SaveToFile(FName);
         XML.Free;
 
-        BuildBarList;
+        tmrUpdate.Enabled := True;
       end;
   end;
 
-  if lbBarList.SelectedItem <> nil then begin
-    CenterDefineButtonState(scbEditTab, True);
-  end
-  else begin
-    CenterDefineButtonState(scbEditTab, False);
-  end;
-
   if frmEditItem <> nil then
-    frmBarList.UpdateUI;
+    frmEditItem.InitUi( frmEditItem.EditMode);
 
+  CenterUpdateEditTabs(lbBarList.Count,lbBarList.ItemIndex);
   CenterUpdateConfigFull;
 end;
 
@@ -380,7 +365,6 @@ end;
 procedure TfrmBarList.FormCreate(Sender: TObject);
 begin
   FBarList := TObjectList.Create(True);
-  BuildBarList;
   Self.DoubleBuffered := true;
   lbBarList.DoubleBuffered := true;
 end;
@@ -390,7 +374,7 @@ begin
   FBarList.Free;
 end;
 
-procedure TfrmBarList.UpdateBarStatus;
+procedure TfrmBarList.FormShow(Sender: TObject);
 begin
   BuildBarList;
 end;
@@ -453,229 +437,6 @@ begin
   result := True;
 end;
 
-function TfrmBarList.UpdateUI: Boolean;
-var
-  tmpItem: TSharpEListItem;
-  tmpBar: TBarItem;
-  n: integer;
-  BarItem: TBarItem;
-begin
-  Result := False;
-  case FEditMode of
-    sceAdd: begin
-        if BarSpaceCheck then begin
-          frmEditItem.pagEdit.Show;
-          FrmEditItem.edName.Text := '';
-
-          frmEditItem.cbBasedOn.Items.Clear;
-          frmEditItem.cbBasedOn.Items.AddObject('New Bar', nil);
-          for n := 0 to lbBarList.Count - 1 do begin
-            tmpBar := TBarItem(lbBarList.Item[n].Data);
-            frmEditItem.cbBasedOn.Items.AddObject(tmpBar.Name, tmpBar);
-          end;
-          frmEditItem.cbBasedOn.ItemIndex := 0;
-          frmEditItem.cbBasedOn.Enabled := True;
-          frmEditItem.BarItem := nil;
-
-          frmEditItem.BuildMonList;
-          frmEditItem.cobo_monitor.ItemIndex := 0;
-          frmEditItem.edName.SetFocus;
-        end
-        else begin
-          frmEditItem.pagBarSpace.Show;
-        end;
-        //      frmBarList.lbBarList.Enabled := False;
-        Result := True;
-      end;
-    sceEdit: begin
-        if lbBarList.ItemIndex <> -1 then begin
-          tmpItem := lbBarList.Item[lbBarList.ItemIndex];
-          BarItem := TBarItem(tmpItem.Data);
-
-          frmEditItem.pagEdit.Show;
-          FrmEditItem.edName.Text := BarItem.Name;
-          FrmEditItem.edName.SetFocus;
-
-          if frmEditItem.BarItem = nil then
-            frmEditItem.BarItem := TBarItem.Create;
-
-          frmEditItem.BarItem.Name := BarItem.Name;
-          frmEditItem.BarItem.BarID := BarItem.BarID;
-          frmEditItem.BarItem.Monitor := BarItem.Monitor;
-          frmEditItem.BarItem.PMonitor := BarItem.PMonitor;
-          frmEditItem.BarItem.HPos := BarItem.HPos;
-          frmEditItem.BarItem.VPos := BarItem.VPos;
-          frmEditItem.BarItem.AutoStart := BarItem.AutoStart;
-
-          frmEditItem.BuildMonList;
-          if BarItem.PMonitor then
-            frmEditItem.cobo_monitor.ItemIndex := 0
-          else
-            frmEditItem.cobo_monitor.ItemIndex := Min(abs(BarItem.Monitor), frmEditItem.cobo_monitor.Items.Count - 1);
-          frmEditItem.cobo_valign.ItemIndex := BarItem.VPos;
-          frmEditItem.cobo_halign.ItemIndex := BarItem.HPos;
-
-          frmEditItem.cbBasedOn.Items.Clear;
-          frmEditItem.cbBasedOn.Items.AddObject('Not Applicable', nil);
-          frmEditItem.cbBasedOn.ItemIndex := 0;
-          frmEditItem.cbBasedOn.Enabled := False;
-
-          Result := True;
-        end;
-      end;
-    sceDelete: begin
-        if frmBarList.lbBarList.ItemIndex <> -1 then begin
-          Result := True;
-          frmEditItem.pagDelete.Show;
-          CenterDefineButtonState(scbDelete, True);
-        end
-        else begin
-          Result := False;
-          CenterDefineButtonState(scbDelete, False);
-        end;
-      end;
-  end;
-end;
-
-function TfrmBarList.SaveUi: Boolean;
-var
-  XML: TJvSimpleXML;
-  Dir: string;
-  NewID: string;
-  CID: integer;
-  n: integer;
-  BarItem: TBarItem;
-  wnd: hwnd;
-  sr: TSearchRec;
-  fileloaded: boolean;
-begin
-  Result := True;
-
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
-  CID := 0;
-
-  case FEditMode of
-    sceAdd: begin
-        // Generate a new unique bar ID and make sure that there is no other
-        // bar with the same ID
-        repeat
-          NewID := '';
-          for n := 1 to 8 do
-            NewID := NewID + inttostr(random(9) + 1);
-        until not DirectoryExists(Dir + NewID);
-
-        if FrmEditItem.cbBasedOn.ItemIndex > 0 then begin
-          CID := TBarItem(FrmEditItem.cbBasedOn.Items.Objects[FrmEditItem.cbBasedOn.ItemIndex]).BarID;
-
-          if FindFirst(Dir + inttostr(CID) + '\*.xml', FAAnyFile, sr) = 0 then
-            repeat
-              if FileExists(Dir + inttostr(CID) + '\' + sr.Name) then
-                CopyFile(PChar(Dir + inttostr(CID) + '\' + sr.Name),
-                  PChar(Dir + NewID + '\' + sr.Name), True);
-            until FindNext(sr) <> 0;
-          FindClose(sr);
-        end;
-
-        XML := TJvSimpleXML.Create(nil);
-        if FileExists(Dir + NewID + '\Bar.xml') then begin
-          try
-            XML.LoadFromFile(Dir + NewID + '\Bar.xml');
-            fileloaded := True;
-          except
-            fileloaded := False;
-          end;
-        end
-        else
-          fileloaded := False;
-
-        if not fileloaded then
-          XML.Root.Name := 'SharpBar';
-
-        with XML.Root.Items do begin
-          if ItemNamed['Settings'] = nil then
-            Add('Settings');
-
-          with ItemNamed['Settings'].Items do begin
-            clear;
-            Add('ID', NewID);
-            Add('Name', FrmEditItem.edName.Text);
-            Add('ShowThrobber', True);
-            Add('DisableHideBar', False);
-            Add('AutoStart', True);
-            Add('AutoPosition', True);
-            Add('PrimaryMonitor', (FrmEditItem.cobo_monitor.ItemIndex = 0));
-            Add('MonitorIndex', TIntObject(FrmEditItem.cobo_monitor.Items.Objects[FrmEditItem.cobo_monitor.ItemIndex]).Value);
-            Add('HorizPos', FrmEditItem.cobo_halign.ItemIndex);
-            Add('VertPos', FrmEditItem.cobo_valign.ItemIndex);
-          end;
-
-          if ItemNamed['Modules'] = nil then
-            Add('Modules');
-        end;
-        ForceDirectories(Dir + NewID);
-        XML.SaveToFile(Dir + NewID + '\Bar.xml');
-        XML.Free;
-      end;
-    sceEdit: begin
-        CID := TBarItem(frmEditItem.BarItem).BarID;
-        XML := TJvSimpleXML.Create(nil);
-        fileloaded := False;
-        if FileExists(Dir + inttostr(CID) + '\Bar.xml') then begin
-          try
-            XML.LoadFromFile(Dir + inttostr(CID) + '\Bar.xml');
-            fileloaded := True;
-          except
-          end;
-        end;
-        if FileLoaded then
-          with XML.Root.Items do begin
-            if ItemNamed['Settings'] = nil then
-              Add('Settings');
-
-            with ItemNamed['Settings'].Items do begin
-              Clear;
-              Add('ID', NewID);
-              Add('Name', FrmEditItem.edName.Text);
-              Add('ShowThrobber', True);
-              Add('DisableHideBar', False);
-              Add('AutoStart', True);
-              Add('AutoPosition', True);
-              Add('PrimaryMonitor', (FrmEditItem.cobo_monitor.ItemIndex = 0));
-              Add('MonitorIndex', TIntObject(FrmEditItem.cobo_monitor.Items.Objects[FrmEditItem.cobo_monitor.ItemIndex]).Value);
-              Add('HorizPos', FrmEditItem.cobo_halign.ItemIndex);
-              Add('VertPos', FrmEditItem.cobo_valign.ItemIndex);
-            end;
-          end;
-        XML.SaveToFile(Dir + inttostr(CID) + '\Bar.xml');
-        XML.Free;
-      end;
-    sceDelete: begin
-        BarItem := TBarItem(lbBarList.Item[lbBarList.ItemIndex].Data);
-        if IsBarRunning(BarItem.BarID) then begin
-          wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(BarItem.BarID)));
-          SendMessage(wnd, WM_SHARPTERMINATE, 0, 0);
-          // give it a second to shutdown
-          sleep(500);
-        end;
-        DeleteDirectory(Dir + inttostr(BarItem.BarID), True);
-      end;
-  end;
-
-  if FEditMode = sceAdd then
-    SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpBar.exe' +
-      ' -load:' + NewID +
-      ' -noREB' +
-      ' -noLASB')
-  else if FEditMode = sceEdit then begin
-    wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(CID)));
-    if wnd <> 0 then
-      SendMessage(wnd, WM_BARREPOSITION, 0, 0);
-  end;
-
-  CenterUpdateConfigFull;
-  BuildBarList;
-end;
-
 procedure TfrmBarList.BuildBarList;
 var
   newItem: TSharpEListItem;
@@ -710,31 +471,26 @@ begin
   end;
   LockWindowUpdate(0);
 
-  if lbBarList.Items.Count = 0 then begin
-    CenterDefineButtonState(scbEditTab, False);
-    CenterDefineButtonState(scbDeleteTab, False);
-  end
-  else begin
-    if lbBarList.ItemIndex = -1 then
+  if lbBarList.ItemIndex = -1 then
+    if lbBarList.Count <> 0 then
       lbBarList.ItemIndex := 0;
-    CenterDefineButtonState(scbEditTab, True);
-    CenterDefineButtonState(scbDeleteTab, True);
+
+  if frmBarList <> nil then begin
+    CenterUpdateEditTabs(frmBarList.lbBarList.Count,frmBarList.lbBarList.ItemIndex);
+    CenterUpdateConfigFull;
   end;
-end;
-
-procedure TfrmBarList.ConfigureItem;
-begin
-  if lbBarList.ItemIndex < 0 then
-    exit;
-
-  //  sBar := TThemeListItem(lbThemeList.Item[lbThemeList.ItemIndex].Data).Name;
-  //  SharpApi.CenterMsg(sccLoadSetting,PChar(SharpApi.GetCenterDirectory
-  //    + '_Themes\Theme.con'),pchar(sTheme))
 end;
 
 procedure TfrmBarList.tmrUpdateTimer(Sender: TObject);
 begin
-  UpdateBarStatus;
+  tmrUpdate.Enabled := False;
+  BuildBarList;
+
+  if frmEditItem <> nil then
+    frmEditItem.InitUi( frmEditItem.EditMode);
+
+  CenterUpdateEditTabs(lbBarList.Count,lbBarList.ItemIndex);
+  CenterUpdateConfigFull;
 end;
 
 { TBarItem }

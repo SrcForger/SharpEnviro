@@ -28,6 +28,7 @@ type
   private
     FEditMode: TSCE_EDITMODE_ENUM;
     FItemEdit: TAliasListItem;
+    FUpdating: Boolean;
     { Private declarations }
   public
     { Public declarations }
@@ -56,7 +57,8 @@ end;
 
 procedure TfrmEditWnd.UpdateEditState(Sender: TObject);
 begin
-  CenterDefineEditState(True);
+  if not(FUpdating) then
+    CenterDefineEditState(True);
 end;
 
 function TfrmEditWnd.InitUi(AEditMode: TSCE_EDITMODE_ENUM):Boolean;
@@ -65,9 +67,7 @@ var
   tmp: TAliasListItem;
 begin
   Result := False;
-  edName.OnChange := nil;
-  edCommand.OnChange := nil;
-  cbElevation.OnClick := nil;
+  FUpdating := True;
   try
 
     case AEditMode of
@@ -95,21 +95,7 @@ begin
     end;
 
   finally
-    edName.OnChange := UpdateEditState;
-    edCommand.OnChange := UpdateEditState;
-    cbElevation.OnClick := UpdateEditState;
-
-    if frmItemsWnd.lbItems.SelectedItem <> nil then begin
-      CenterDefineButtonState(scbEditTab, True);
-    end
-    else begin
-      CenterDefineButtonState(scbEditTab, False);
-      CenterSelectEditTab(scbAddTab);
-
-      edName.Text := '';
-      edCommand.Text := '';
-      cbElevation.Checked := False;
-    end;
+    FUpdating := False;
   end;
 end;
 

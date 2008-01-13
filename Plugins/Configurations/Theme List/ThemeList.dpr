@@ -63,9 +63,6 @@ begin
     Top := 0;
     BorderStyle := bsNone;
     Show;
-
-    // Define which tabs are visible
-    UpdateEditTabs;
   end;
 
   // return handle to the new window
@@ -88,7 +85,6 @@ end;
 
 function OpenEdit(AOwner: hwnd; AEditMode:TSCE_EDITMODE_ENUM): hwnd;
 begin
-  result := HR_NORECIEVERWINDOW;
   if frmEditItem = nil then frmEditItem := TfrmEditItem.Create(nil);
   uVistaFuncs.SetVistaFonts(frmEditItem);
 
@@ -97,12 +93,10 @@ begin
   frmEditItem.Top := 0;
   frmEditItem.BorderStyle := bsNone;
   frmEditItem.Show;
-  frmThemeList.EditMode := AEditMode;
+  frmEditItem.EditMode := AEditMode;
+  result := frmEditItem.Handle;
 
-  if frmThemeList.UpdateUI then begin
-    result := frmEditItem.Handle;
-  end else
-    FreeAndNil(FrmEditItem);
+  frmEditItem.InitUi(AEditMode);
 
 end;
 
@@ -119,22 +113,9 @@ begin
        frmEditItem.ClearValidation;
 
   // If Validation ok then continue
-  if AApply then begin
-    frmThemeList.SaveUi;
-    CenterDefineSettingsChanged;
-  end;
+  frmEditItem.SaveUi(AApply, AEditMode);
 
-  if frmEditItem <> nil then begin
-      frmEditItem.Close;
-      frmEditItem.Free;
-      frmEditItem := nil;
-  end;
-
-  if frmThemeList <> nil then begin
-    frmThemeList.lbThemeList.Enabled := True;
-    frmThemeList.BuildThemeList;
-    frmThemeList.UpdateEditTabs;
-  end;
+  FreeAndNil(frmEditItem);
 end;
 
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;

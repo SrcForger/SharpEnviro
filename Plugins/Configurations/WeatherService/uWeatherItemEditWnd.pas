@@ -42,14 +42,11 @@ type
   TfrmItemEdit = class(TForm)
     plMain: TJvPageList;
     pagEdit: TJvStandardPage;
-    pagDelete: TJvStandardPage;
     edName: TLabeledEdit;
     btnSearch: TPngSpeedButton;
     edWeatherID: TLabeledEdit;
     mnuSearch: TPopupMenu;
     chkMetric: TCheckBox;
-    Label1: TJvLabel;
-    Label2: TLabel;
     errorinc: TJvErrorIndicator;
     vals: TJvValidators;
     valID: TJvRequiredFieldValidator;
@@ -61,6 +58,7 @@ type
   private
     { Private declarations }
     FItemEdit: TWeatherItem;
+    FUpdating: Boolean;
     procedure DownloadLocationData(Location: string);
     procedure UpdateSearchList(AResults: string);
     procedure Debug(Str: string; ErrorType: Integer);
@@ -194,7 +192,7 @@ end;
 
 procedure TfrmItemEdit.btnSearchClick(Sender: TObject);
 begin
-  DownloadLocationData(edWeatherID.Text);
+  DownloadLocationData(edName.Text);
 end;
 
 procedure TfrmItemEdit.ClickItem(Sender: TObject);
@@ -215,9 +213,7 @@ var
   tmpItem: TSharpEListItem;
   tmpWeather: TWeatherItem;
 begin
-  edName.OnChange := nil;
-  edWeatherID.OnChange := nil;
-  chkMetric.OnClick := nil;
+  FUpdating := True;
   try
 
     case AEditMode of
@@ -256,21 +252,7 @@ begin
     end;
 
   finally
-    edName.OnChange := UpdateEditState;
-    edWeatherID.OnChange := UpdateEditState;
-    chkMetric.OnClick := UpdateEditState;
-
-    if frmItemsList.lbWeatherList.SelectedItem <> nil then begin
-      CenterDefineButtonState(scbEditTab, True);
-    end
-    else begin
-      CenterDefineButtonState(scbEditTab, False);
-      CenterSelectEditTab(scbAddTab);
-
-      edName.Text := '';
-      edWeatherID.Text := '';
-    end;
-
+    FUpdating := False;
   end;
 end;
 
@@ -352,7 +334,8 @@ end;
 
 procedure TfrmItemEdit.UpdateEditState(Sender: TObject);
 begin
-  CenterDefineEditState(True);
+  if Not(FUpdating) then
+    CenterDefineEditState(True);
 end;
 
 end.

@@ -84,7 +84,6 @@ type
       const ASelected: Boolean);
 
   private
-    procedure RebuildSchemeList;
     procedure SelectSchemeItem(ASchemeName: string);
     { Private declarations }
 
@@ -92,8 +91,8 @@ type
     procedure CreatePreviewBitmap(var ABmp: TBitmap32);
 
     { Public declarations }
+    procedure RebuildSchemeList;
     procedure InitialiseSettings(APluginID: string);
-    procedure UpdateEditTabs;
     procedure AddItems(ATheme: String);
   end;
 
@@ -112,31 +111,6 @@ uses
   SharpFx;
 
 {$R *.dfm}
-
-procedure TfrmSchemeList.UpdateEditTabs;
-
-  procedure BC(AEnabled: Boolean; AButton: TSCB_BUTTON_ENUM);
-  begin
-    if AEnabled then
-      CenterDefineButtonState(AButton, True)
-    else
-      CenterDefineButtonState(AButton, False);
-  end;
-
-begin
-  if lbSchemeList.Count = 0 then begin
-    BC(False, scbEditTab);
-
-    if FSchemeManager.GetSkinValid then
-      BC(True, scbAddTab)
-    else
-      BC(False, scbAddTab);
-  end
-  else begin
-    BC(True, scbAddTab);
-    BC(True, scbEditTab);
-  end;
-end;
 
 procedure TfrmSchemeList.CreatePreviewBitmap(var ABmp: TBitmap32);
 var
@@ -169,8 +143,7 @@ end;
 procedure TfrmSchemeList.InitialiseSettings(APluginID: string);
 begin
   FSchemeManager.PluginID := APluginID;
-  AddItems(APluginID);
-  UpdateEditTabs;
+  RebuildSchemeList;
 end;
 
 procedure TfrmSchemeList.AddItems;
@@ -187,7 +160,7 @@ begin
   LockWindowUpdate(Self.Handle);
   lbSchemeList.Clear;
 
-  Screen.Cursor := crHourGlass;
+  //Screen.Cursor := crHourGlass;
   sl := TStringList.Create;
   try
     FSchemeManager.GetSchemeList(FSchemeManager.PluginID, sl);
@@ -220,22 +193,19 @@ begin
 
   finally
     lbSchemeList.ItemIndex := iSel;
-    lbSchemeList.Update;
+    //lbSchemeList.Update;
     LockWindowUpdate(0);
-    Screen.Cursor := crDefault;
+    //Screen.Cursor := crDefault;
     sl.Free;
 
-    CenterUpdateSize;
+    CenterUpdateEditTabs(lbSchemeList.Count,lbSchemeList.ItemIndex);
+    CenterUpdateConfigFull;
   end;
 end;
 
 procedure TfrmSchemeList.RebuildSchemeList;
 begin
-  try
-    AddItems(FSchemeManager.PluginID);
-  finally
-    CenterUpdatePreview;
-  end;
+  tmrRefreshItems.Enabled := True;
 end;
 
 procedure TfrmSchemeList.SelectSchemeItem(ASchemeName: string);
@@ -281,14 +251,6 @@ var
 
 begin
   if ACol = cNameColIdx then begin
-    CenterUpdatePreview;
-    CenterDefineSettingsChanged;
-
-    if frmEditScheme <> nil then begin
-      if frmEditScheme.Edit then begin
-        frmEditScheme.InitUI(sceEdit);
-      end;
-    end;
 
     // Set Scheme
     if AItem <> nil then begin
@@ -319,14 +281,10 @@ begin
     end;
   end;
 
-   if lbSchemeList.SelectedItem <> nil then begin
-    CenterDefineButtonState(scbEditTab, True);
-  end
-  else begin
-    CenterDefineButtonState(scbEditTab, False);
-  end;
+  if frmEditScheme <> nil then
+    frmEditScheme.InitUi(frmEditScheme.EditMode);
 
-  UpdateEditTabs;
+  CenterUpdateEditTabs(lbSchemeList.Count,lbSchemeList.ItemIndex);
   CenterUpdateConfigFull;
 end;
 
@@ -381,7 +339,7 @@ end;
 procedure TfrmSchemeList.tmrRefreshItemsTimer(Sender: TObject);
 begin
   tmrRefreshItems.Enabled := False;
-  RebuildSchemeList;
+  AddItems(FSchemeManager.PluginID);
 end;
 
 end.

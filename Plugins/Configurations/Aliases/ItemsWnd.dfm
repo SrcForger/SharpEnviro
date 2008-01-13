@@ -30,6 +30,7 @@ object frmItemsWnd: TfrmItemsWnd
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
+        AutoSize = False
       end
       item
         Width = 30
@@ -38,6 +39,7 @@ object frmItemsWnd: TfrmItemsWnd
         ColumnAlign = calRight
         StretchColumn = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = pilIcons
       end
       item
@@ -48,6 +50,7 @@ object frmItemsWnd: TfrmItemsWnd
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = pilIcons
       end
       item
@@ -58,6 +61,7 @@ object frmItemsWnd: TfrmItemsWnd
         StretchColumn = False
         CanSelect = False
         ColumnType = ctDefault
+        AutoSize = False
         Images = pilIcons
       end>
     Colors.BorderColor = clBtnFace

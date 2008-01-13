@@ -136,113 +136,116 @@ begin
     sceAdd: begin
 
         FUpdating := True;
-        Try
-        tmpMenuItemType := TPageData(cbMenuItems.Items.Objects[nMenuItemIndex]).MenuItemType;
-        cbMenuItems.Enabled := True;
-        cbItemPosition.Enabled := True;
+        try
+          tmpMenuItemType := TPageData(cbMenuItems.Items.Objects[nMenuItemIndex]).MenuItemType;
+          cbMenuItems.Enabled := True;
+          cbItemPosition.Enabled := True;
 
-        case tmpMenuItemType of
-          mtLink: begin
-              edLinkName.Text := '';
-              edLinkIcon.Text := '';
-              edLinkTarget.Text := '';
-              SelectMenuItemType(tmpMenuItemType);
-            end;
-          mtSeparator: begin
-              SelectMenuItemType(tmpMenuItemType);
-            end;
-          mtCPLList: begin
-              SelectMenuItemType(tmpMenuItemType);
-            end;
-          mtDesktopObjectList: begin
-              SelectMenuItemType(tmpMenuItemType);
-            end;
-          mtDriveList: begin
-              chkDriveNames.Checked := False;
-              SelectMenuItemType(tmpMenuItemType);
-            end;
-          mtLabel: begin
-              edLabelCaption.Text := '';
-              SelectMenuItemType(tmpMenuItemType);
-            end;
-          mtSubMenu: begin
-              edSubmenuCaption.Text := '';
-              edSubmenuIcon.Text := '';
-              edSubmenuTarget.Text := '';
-              SelectMenuItemType(tmpMenuItemType);
-            end;
-          mtDynamicDir: begin
-              edDynamicDirTarget.Text := '';
-              edDynamicDirFilter.Text := '';
-              cbDynamicDirSort.ItemIndex := 0;
-              sgbDynamicDirMaxItems.Value := -1;
-              SelectMenuItemType(tmpMenuItemType);
-            end;
+          case tmpMenuItemType of
+            mtLink: begin
+                edLinkName.Text := '';
+                edLinkIcon.Text := '';
+                edLinkTarget.Text := '';
+                SelectMenuItemType(tmpMenuItemType);
+              end;
+            mtSeparator: begin
+                SelectMenuItemType(tmpMenuItemType);
+              end;
+            mtCPLList: begin
+                SelectMenuItemType(tmpMenuItemType);
+              end;
+            mtDesktopObjectList: begin
+                SelectMenuItemType(tmpMenuItemType);
+              end;
+            mtDriveList: begin
+                chkDriveNames.Checked := False;
+                SelectMenuItemType(tmpMenuItemType);
+              end;
+            mtLabel: begin
+                edLabelCaption.Text := '';
+                SelectMenuItemType(tmpMenuItemType);
+              end;
+            mtSubMenu: begin
+                edSubmenuCaption.Text := '';
+                edSubmenuIcon.Text := '';
+                edSubmenuTarget.Text := '';
+                SelectMenuItemType(tmpMenuItemType);
+              end;
+            mtDynamicDir: begin
+                edDynamicDirTarget.Text := '';
+                edDynamicDirFilter.Text := '';
+                cbDynamicDirSort.ItemIndex := 0;
+                sgbDynamicDirMaxItems.Value := -1;
+                SelectMenuItemType(tmpMenuItemType);
+              end;
 
-        end;
-        Finally
+          end;
+        finally
           FUpdating := False;
-        End;
+        end;
 
       end;
     sceEdit: begin
 
+        if frmList.lbItems.SelectedItem = nil then
+          exit;
+
         FUpdating := True;
-        Try
-        tmpItem := TItemData(frmList.lbItems.SelectedItem.Data);
-        cbMenuItems.Enabled := False;
-        cbItemPosition.Enabled := False;
+        try
+          tmpItem := TItemData(frmList.lbItems.SelectedItem.Data);
+          cbMenuItems.Enabled := False;
+          cbItemPosition.Enabled := False;
 
-        case tmpItem.MenuItem.ItemType of
-          mtLink: begin
-              edLinkName.Text := tmpItem.MenuItem.Caption;
-              edLinkIcon.Text := tmpItem.MenuItem.PropList.GetString('IconSource');
-              edLinkTarget.Text := tmpItem.MenuItem.PropList.GetString('Action');
-              SelectMenuItemType(tmpItem.MenuItem.ItemType);
-            end;
-          mtSeparator: begin
-              SelectMenuItemType(tmpItem.MenuItem.ItemType);
-            end;
-          mtCPLList: begin
-              SelectMenuItemType(tmpItem.MenuItem.ItemType);
-            end;
-          mtDesktopObjectList: begin
-              SelectMenuItemType(tmpItem.MenuItem.ItemType);
-            end;
-          mtDriveList: begin
-              chkDriveNames.Checked := (tmpItem.MenuItem.PropList.GetBool('ShowDriveNames'));
-              SelectMenuItemType(tmpItem.MenuItem.ItemType);
-            end;
-          mtLabel: begin
-              edLabelCaption.Text := tmpItem.MenuItem.Caption;
-              SelectMenuItemType(tmpItem.MenuItem.ItemType);
-            end;
-          mtSubMenu: begin
-              edSubmenuCaption.Text := tmpItem.MenuItem.Caption;
-              edSubmenuIcon.Text := tmpItem.MenuItem.PropList.GetString('IconSource');
-              edSubmenuTarget.Text := tmpItem.MenuItem.PropList.GetString('Target');
-              SelectMenuItemType(tmpItem.MenuItem.ItemType);
-            end;
-          mtDynamicDir: begin
-              edDynamicDirTarget.Text := tmpItem.MenuItem.PropList.GetString('Action');
-              edDynamicDirFilter.Text := tmpItem.MenuItem.PropList.GetString('Filter');
+          case tmpItem.MenuItem.ItemType of
+            mtLink: begin
+                edLinkName.Text := tmpItem.MenuItem.Caption;
+                edLinkIcon.Text := tmpItem.MenuItem.PropList.GetString('IconSource');
+                edLinkTarget.Text := tmpItem.MenuItem.PropList.GetString('Action');
+                SelectMenuItemType(tmpItem.MenuItem.ItemType);
+              end;
+            mtSeparator: begin
+                SelectMenuItemType(tmpItem.MenuItem.ItemType);
+              end;
+            mtCPLList: begin
+                SelectMenuItemType(tmpItem.MenuItem.ItemType);
+              end;
+            mtDesktopObjectList: begin
+                SelectMenuItemType(tmpItem.MenuItem.ItemType);
+              end;
+            mtDriveList: begin
+                chkDriveNames.Checked := (tmpItem.MenuItem.PropList.GetBool('ShowDriveNames'));
+                SelectMenuItemType(tmpItem.MenuItem.ItemType);
+              end;
+            mtLabel: begin
+                edLabelCaption.Text := tmpItem.MenuItem.Caption;
+                SelectMenuItemType(tmpItem.MenuItem.ItemType);
+              end;
+            mtSubMenu: begin
+                edSubmenuCaption.Text := tmpItem.MenuItem.Caption;
+                edSubmenuIcon.Text := tmpItem.MenuItem.PropList.GetString('IconSource');
+                edSubmenuTarget.Text := tmpItem.MenuItem.PropList.GetString('Target');
+                SelectMenuItemType(tmpItem.MenuItem.ItemType);
+              end;
+            mtDynamicDir: begin
+                edDynamicDirTarget.Text := tmpItem.MenuItem.PropList.GetString('Action');
+                edDynamicDirFilter.Text := tmpItem.MenuItem.PropList.GetString('Filter');
 
-              case tmpItem.MenuItem.PropList.GetInt('Sort') of
-                -1: cbDynamicDirSort.ItemIndex := 2;
-                0: cbDynamicDirSort.ItemIndex := 0;
-                1: cbDynamicDirSort.ItemIndex := 1;
-                2: cbDynamicDirSort.ItemIndex := 3;
+                case tmpItem.MenuItem.PropList.GetInt('Sort') of
+                  -1: cbDynamicDirSort.ItemIndex := 2;
+                  0: cbDynamicDirSort.ItemIndex := 0;
+                  1: cbDynamicDirSort.ItemIndex := 1;
+                  2: cbDynamicDirSort.ItemIndex := 3;
+                end;
+
+                sgbDynamicDirMaxItems.Value := tmpItem.MenuItem.PropList.GetInt('MaxItems');
+                SelectMenuItemType(tmpItem.MenuItem.ItemType);
               end;
 
-              sgbDynamicDirMaxItems.Value := tmpItem.MenuItem.PropList.GetInt('MaxItems');
-              SelectMenuItemType(tmpItem.MenuItem.ItemType);
-            end;
+          end;
 
-        end;
-
-        Finally
+        finally
           FUpdating := False;
-        End;
+        end;
       end;
   end;
 end;
@@ -418,8 +421,12 @@ begin
           end;
         end
         else begin
-          tmpMenuItem := TSharpEMenuItem(TItemData(frmList.lbItems.item[0].Data).MenuItem);
-          tmpMenu := TSharpEMenu(TSharpEMenuItem(tmpMenuItem).SubMenu);
+          if frmList.lbItems.Count = 0 then
+            tmpMenu := frmList.Menu
+          else begin
+            tmpMenuItem := TSharpEMenuItem(TItemData(frmList.lbItems.item[0].Data).MenuItem);
+            tmpMenu := TSharpEMenu(TSharpEMenuItem(tmpMenuItem).SubMenu);
+          end;
         end;
 
         case tmpMenuItemType of
@@ -484,9 +491,6 @@ begin
             Break;
           end;
         end;
-
-        frmList.UpdateTabs;
-
       end;
     sceEdit: begin
 

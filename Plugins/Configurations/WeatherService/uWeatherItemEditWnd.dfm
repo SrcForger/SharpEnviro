@@ -34,8 +34,8 @@ object frmItemEdit: TfrmItemEdit
         490
         92)
       object btnSearch: TPngSpeedButton
-        Left = 391
-        Top = 40
+        Left = 387
+        Top = 5
         Width = 75
         Height = 25
         Anchors = [akTop, akRight]
@@ -45,7 +45,7 @@ object frmItemEdit: TfrmItemEdit
       object edName: TLabeledEdit
         Left = 56
         Top = 8
-        Width = 409
+        Width = 313
         Height = 21
         Hint = 
           'The identifier used for this location (i.e., Home, Cottage, NYC,' +
@@ -64,7 +64,7 @@ object frmItemEdit: TfrmItemEdit
       object edWeatherID: TLabeledEdit
         Left = 56
         Top = 40
-        Width = 313
+        Width = 406
         Height = 21
         Hint = 
           'Enter the location here (Berlin, Germany or Seattle, Washington ' +
@@ -88,45 +88,6 @@ object frmItemEdit: TfrmItemEdit
         Caption = 'Use metric system.'
         TabOrder = 2
         OnClick = UpdateEditState
-      end
-    end
-    object pagDelete: TJvStandardPage
-      Left = 0
-      Top = 0
-      Width = 490
-      Height = 92
-      BorderWidth = 8
-      Caption = 'pagDelete'
-      ParentBackground = True
-      object Label1: TJvLabel
-        Left = 0
-        Top = 0
-        Width = 78
-        Height = 13
-        Align = alTop
-        Caption = 'Confirmation:'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-      end
-      object Label2: TLabel
-        Left = 0
-        Top = 13
-        Width = 335
-        Height = 13
-        Align = alTop
-        Caption = 
-          'Are you sure you want to delete the currently selected weather i' +
-          'tem?'
       end
     end
   end

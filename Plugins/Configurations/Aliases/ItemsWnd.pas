@@ -32,7 +32,6 @@ type
   public
     { Public declarations }
     procedure AddItems;
-    procedure UpdateEditTabs;
     property AliasItems: TAliasList read FAliasItems write FAliasItems;
 
   end;
@@ -91,6 +90,9 @@ begin
 
   finally
     LockWindowUpdate(0);
+
+    CenterUpdateEditTabs(lbItems.Count,lbItems.ItemIndex);
+    CenterUpdateConfigFull;
   end;
 end;
 
@@ -183,16 +185,10 @@ begin
       end;
   end;
 
-  if lbItems.SelectedItem <> nil then begin
-    CenterDefineButtonState(scbEditTab, True);
-  end
-  else begin
-    CenterDefineButtonState(scbEditTab, False);
-  end;
-
   if frmEditWnd <> nil then
     frmEditWnd.InitUi(frmEditWnd.EditMode);
 
+  CenterUpdateEditTabs(lbItems.Count,lbItems.ItemIndex);
   CenterUpdateConfigFull;
 end;
 
@@ -241,32 +237,5 @@ begin
   Self.Height := lbItems.Height;
 end;
 
-procedure TfrmItemsWnd.UpdateEditTabs;
-
-  procedure BC(AEnabled: Boolean; AButton: TSCB_BUTTON_ENUM);
-  begin
-    if AEnabled then
-      CenterDefineButtonState(AButton, True)
-    else
-      CenterDefineButtonState(AButton, False);
-  end;
-
-begin
-  if ((lbItems.Count = 0) or (lbItems.ItemIndex = -1)) then begin
-    BC(False, scbEditTab);
-
-    if (lbItems.Count = 0) then begin
-      BC(False, scbDeleteTab);
-      CenterSelectEditTab(scbAddTab);
-    end;
-
-    BC(True, scbAddTab);
-
-  end
-  else begin
-    BC(True, scbAddTab);
-    BC(True, scbEditTab);
-  end;
-end;
 end.
 

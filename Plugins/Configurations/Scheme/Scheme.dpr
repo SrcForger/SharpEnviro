@@ -114,6 +114,7 @@ begin
   frmEditScheme.BorderStyle := bsNone;
 
   // Initialise UI based on the edit mode
+  frmEditScheme.EditMode := AEditMode;
   frmEditScheme.InitUI(AEditMode);
 
   Result := frmEditScheme.Handle;
@@ -134,11 +135,8 @@ begin
   End;
 
   // Define whether we add/edit or delete the item
-  if frmEditScheme.Save(AEditMode, AApply) then Begin
-    FreeAndNil(frmEditScheme);
-    frmSchemeList.AddItems(FSchemeManager.PluginID);
-    frmSchemeList.UpdateEditTabs;
-  end;
+  frmEditScheme.Save(AEditMode, AApply);
+  FreeAndNil(frmEditScheme);
 end;
 
 procedure GetCenterScheme(var ABackground: TColor; var AItemColor: TColor; var AItemSelectedColor: TColor);

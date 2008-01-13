@@ -133,4 +133,10 @@ object frmSkinListWnd: TfrmSkinListWnd
     Top = 160
     Bitmap = {}
   end
+  object tmrRefreshItems: TTimer
+    Interval = 1
+    OnTimer = tmrRefreshItemsTimer
+    Left = 244
+    Top = 232
+  end
 end
