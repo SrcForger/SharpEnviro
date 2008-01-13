@@ -187,7 +187,7 @@ begin
     colEdit: begin
         if (IsBarRunning(tmpBar.BarID)) then
           CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-            + '\_Components\Module Manager.con'), pchar(inttostr(tmpBar.BarID)));
+            + '\_Components\BarEdit.con'), pchar(inttostr(tmpBar.BarID)));
       end;
     colStartStop: begin
         if not (IsBarRunning(tmpBar.BarID)) then begin
