@@ -169,12 +169,13 @@ function TSharpCenterHistoryManager.Add(ACommand: TSCC_COMMAND_ENUM; AParameter,
 var
   i:Integer;
 begin
+  Result := nil;
+
   for i := 0 to Pred(FList.Count) do begin
     if ((TSharpCenterHistoryItem(FList[i]).Param = AParameter) and
       ((TSharpCenterHistoryItem(FList[i]).Command = ACommand))) then
         exit;
   end;
-
 
   Result := TSharpCenterHistoryItem.Create;
   Result.Command := ACommand;

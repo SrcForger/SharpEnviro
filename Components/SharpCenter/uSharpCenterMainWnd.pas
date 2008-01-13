@@ -83,7 +83,6 @@ type
     pnlTree: TPanel;
     pnlMain: TPanel;
     PnlButtons: TPanel;
-    btnHelp: TPngSpeedButton;
     btnSave: TPngSpeedButton;
     btnCancel: TPngSpeedButton;
     pnlContent: TPanel;
@@ -138,7 +137,6 @@ type
     procedure btnFavouriteClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
-    procedure btnHelpClick(Sender: TObject);
 
     procedure btnBackClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -333,13 +331,6 @@ begin
   end;
 end;
 
-procedure TSharpCenterWnd.btnHelpClick(Sender: TObject);
-begin
-  if (@SCM.ActivePlugin.SetBtnState) <> nil then
-    if SCM.ActivePlugin.SetBtnState(scbHelp) = True then
-      SCM.ActivePlugin.ClickBtn(scbHelp, '');
-end;
-
 procedure TSharpCenterWnd.btnSaveClick(Sender: TObject);
 begin
   LockWindowUpdate(Self.Handle);
@@ -454,7 +445,6 @@ procedure TSharpCenterWnd.lbTreeGetCellText(Sender: TObject;
   const ACol: Integer; AItem: TSharpEListItem; var AColText: string);
 var
   tmp: TSharpCenterManagerItem;
-  tmpSetting: TSetting;
 begin
   tmp := TSharpCenterManagerItem(AItem.Data);
   if tmp = nil then exit;
@@ -509,7 +499,6 @@ begin
           integer(scbImport): SetToolbarTabVisible(tidImport, bEnabled);
           integer(scbExport): SetToolbarTabVisible(tidExport, bEnabled);
           integer(scbDelete): btnEditApply.Enabled := bEnabled;
-          integer(scbHelp): btnHelp.Enabled := bEnabled;
           integer(scbAddTab): pnlEditContainer.TabItems.Item[cEdit_Add].Visible := bEnabled;
           integer(scbEditTab): pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := bEnabled;
           integer(scbConfigure): begin
@@ -539,14 +528,6 @@ begin
     SCM_SET_EDIT_CANCEL_STATE:
       begin
         SCM.StateEditItem := False;
-      end;
-    SCM_SET_LIVE_CONFIG:
-      begin
-        PnlButtons.Hide;
-      end;
-    SCM_SET_APPLY_CONFIG:
-      begin
-        PnlButtons.Show;
       end;
     SCM_EVT_UPDATE_SETTINGS:
       begin
@@ -745,7 +726,6 @@ begin
 
   btnSave.Enabled := False;
   btnCancel.Enabled := False;
-  btnHelp.Enabled := False;
   pnlEditContainer.Height := 0;
   pnlLivePreview.Visible := False;
   pnlPluginContainer.Visible := False;
@@ -904,13 +884,6 @@ begin
     pnlEditContainer.TabItems.Item[cEdit_Add].Visible := True;
     pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := True;
 
-    // Toolbar
-    if (@SCM.ActivePlugin.SetBtnState <> nil) then
-      SetToolbarTabVisible(tidImport, SCM.ActivePlugin.SetBtnState(scbImport));
-
-    if (@SCM.ActivePlugin.SetBtnState <> nil) then
-      SetToolbarTabVisible(tidExport, SCM.ActivePlugin.SetBtnState(scbExport));
-
     if (@SCM.ActivePlugin.UpdatePreview <> nil) then
     begin
       pnlLivePreview.Height := 45;
@@ -920,6 +893,10 @@ begin
     pnlToolbar.Hide;
     FSelectedTabID := 0;
     FSelectedPluginTabID := 0;
+
+    if (SCM.ActivePlugin.ConfigMode = SharpApi.scmLive) then
+      PnlButtons.Hide else
+      PnlButtons.Show;
 
     if (@SCM.ActivePlugin.OpenEdit <> nil) then begin
       pnlEditContainer.TabList.TabIndex := -1;

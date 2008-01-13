@@ -104,7 +104,6 @@ type
     FOnCancelEdit: TNotifyEvent;
     FOnApplyEdit: TNotifyEvent;
     FOnSetTitle: TNotifyEvent;
-    FOnSharpCenterSetHomeText: TSharpCenterSetHomeTitle;
     FOnSetHomeTitle: TSharpCenterSetHomeTitle;
 
     // Events
@@ -203,9 +202,6 @@ implementation
 function TSharpCenterManager.Load(AFile, APluginID: string): Boolean;
 var
   Xml: TJvSimpleXML;
-  enumSettingType: TSU_UPDATE_ENUM;
-  sFile, sName: string;
-
 begin
   Result := False;
   Xml := TJvSimpleXML.Create(nil);
@@ -220,11 +216,6 @@ begin
       begin
         FPluginWndHandle := ActivePlugin.Open(Pchar(APluginID), FPluginContainer.Handle);
         FPluginContainer.ParentWindow := FPluginWndHandle;
-
-        // Get setting type
-        if (@ActivePlugin.SetSettingType <> nil) then
-          enumSettingType := ActivePlugin.SetSettingType else
-          enumSettingType := TSU_UPDATE_ENUM(0);
 
         // load plugin tabs
         LoadPluginTabs;
@@ -571,10 +562,7 @@ var
   enumSettingType: TSU_UPDATE_ENUM;
   n: Integer;
 begin
-  enumSettingType := TSU_UPDATE_ENUM(0);
-
-  if (@FActivePlugin.SetSettingType) <> nil then
-    enumSettingType := FActivePlugin.SetSettingType;
+  enumSettingType := FActivePlugin.ConfigType;
 
   // if a ':' is in the string then it's a suModule message
   // we need to extract the ModuleID and send it as param...
@@ -840,7 +828,6 @@ end;
 function TSharpCenterManager.LoadHome: Boolean;
 var
   Xml: TJvSimpleXML;
-  enumSettingType: TSU_UPDATE_ENUM;
   sFile, sName, sStatus, sDescription, sTitle: string;
 
 begin
@@ -856,11 +843,6 @@ begin
       begin
         FPluginWndHandle := FActivePlugin.Open(Pchar(''), FPluginContainer.Handle);
         FPluginContainer.ParentWindow := FPluginWndHandle;
-
-        // Get setting type
-        if (@FActivePlugin.SetSettingType <> nil) then
-          enumSettingType := FActivePlugin.SetSettingType else
-          enumSettingType := TSU_UPDATE_ENUM(0);
 
         // Get title and description
         if (@FActivePlugin.SetText <> nil) then

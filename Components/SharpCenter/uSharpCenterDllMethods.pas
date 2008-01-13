@@ -43,6 +43,9 @@ type
   TSetting = record
     Filename: string;
     Dllhandle: Thandle;
+    ConfigType: TSU_UPDATE_ENUM;
+    ConfigMode: TSC_MODE_ENUM;
+    MetaData: TMetaData;
 
     Open: function(const APluginID:Pchar; AOwner: hwnd): hwnd;
     Close: procedure;
@@ -59,9 +62,6 @@ type
 
     SetText: procedure (const APluginID:string; var AName:string;
       var AStatus: string; var ATitle: string; var ADescription: string);
-
-    SetSettingType: function(): TSU_UPDATE_ENUM;
-    SetBtnState : function(AButton: TSCB_BUTTON_ENUM): Boolean;
 
     GetCenterScheme: procedure (var ABackground: TColor;
       var AItemColor: TColor; var AItemSelectedColor: TColor);
@@ -92,9 +92,7 @@ begin
     plugin.UpdatePreview := nil;
 
     plugin.SetText := nil;
-    plugin.SetSettingType := nil;
     plugin.GetCenterScheme := nil;
-    plugin.SetBtnState := nil;
 
     plugin.DllHandle := 0;
     FreeLibrary(plugin.dllhandle);
@@ -107,6 +105,9 @@ end;
 function LoadPlugin(filename: Pchar): TSetting;
 begin
     result.filename := filename;
+
+    GetConfigMetaData(filename,Result.MetaData,Result.ConfigMode,Result.ConfigType);
+
     result.dllhandle := LoadLibrary(filename);
     if result.dllhandle <> 0 then begin
 
@@ -125,8 +126,6 @@ begin
 
       @result.SetText := GetProcAddress(result.Dllhandle,'SetText');
       @result.GetCenterScheme := GetProcAddress(result.Dllhandle, 'GetCenterScheme');
-      @result.SetSettingType := GetProcAddress(result.Dllhandle, 'SetSettingType');
-      @result.SetBtnState := GetProcAddress(result.Dllhandle, 'SetBtnState');
 
       if (@result.Open = nil) then begin
         freelibrary(result.dllhandle);
