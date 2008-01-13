@@ -172,8 +172,9 @@ var
   s : String;
   x,y : integer;
 begin
+  XML := TJvSimpleXML.Create(nil);
   try
-    XML := TJvSimpleXML.Create(nil);
+    
 
     BarWndUseMenu := False;
     BarWnd := TBarWnd.Create(nil);
