@@ -54,9 +54,6 @@ function CenterDefineButtonState(AButton: TSCB_BUTTON_ENUM; AEnabled: Boolean): 
 function CenterDefineSettingsChanged: boolean;
   external 'SharpCenterAPI.dll' name 'CenterDefineSettingsChanged';
 
-function CenterDefineConfigurationMode(AConfigMode:TSC_MODE_ENUM) : boolean;
-  external 'SharpCenterAPI.dll' name 'CenterDefineConfigurationMode';
-
 function CenterSelectEditTab(AEditTab: TSCB_BUTTON_ENUM): boolean;
   external 'SharpCenterAPI.dll' name 'CenterSelectEditTab';
 
@@ -77,6 +74,9 @@ function CenterUpdateSettings: boolean;
 
 procedure CenterUpdateConfigFull;
   external 'SharpCenterAPI.dll' name 'CenterUpdateConfigFull';
+
+procedure CenterUpdateEditTabs(AItemCount: Integer; AItemIndex: Integer);
+  external 'SharpCenterAPI.dll' name 'CenterUpdateEditTabs';
 
 function CenterCommandAsText(ACommand: TSCC_COMMAND_ENUM): string;
   external 'SharpCenterAPI.dll' name 'CenterCommandAsText';

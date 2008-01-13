@@ -229,6 +229,34 @@ begin
   CenterUpdateConfigText;
 end;
 
+procedure CenterUpdateEditTabs(AItemCount: Integer; AItemIndex: Integer);
+
+  procedure BC(AEnabled: Boolean; AButton: TSCB_BUTTON_ENUM);
+  begin
+    if AEnabled then
+      CenterDefineButtonState(AButton, True)
+    else
+      CenterDefineButtonState(AButton, False);
+  end;
+
+begin
+  if ((AItemCount = 0) or (AItemIndex = -1)) then begin
+    BC(False, scbEditTab);
+
+    if (AItemCount = 0) then begin
+      BC(False, scbDeleteTab);
+      CenterSelectEditTab(scbAddTab);
+    end;
+
+    BC(True, scbAddTab);
+
+  end
+  else begin
+    BC(True, scbAddTab);
+    BC(True, scbEditTab);
+  end;
+end;
+
 function CenterCommandAsText(ACommand: TSCC_COMMAND_ENUM): string;
 begin
   if ACommand = sccLoadSetting then result := SCC_LOAD_SETTING else
@@ -249,13 +277,6 @@ begin
         result := sccUnloadDll else
         if CompareText(ACommand, SCC_LOAD_DLL) = 0 then
           result := sccLoadDll;
-end;
-
-function CenterDefineConfigurationMode(AConfigMode: TSC_MODE_ENUM): boolean;
-begin
-  if AConfigMode = scmLive then
-    Result := BroadcastCenterMessage(SCM_SET_LIVE_CONFIG, 0) else
-    Result := BroadcastCenterMessage(SCM_SET_APPLY_CONFIG, 0);
 end;
 
 procedure CenterReadDefaults(var AFields: TSC_DEFAULT_FIELDS);
@@ -306,7 +327,6 @@ exports
   CenterDefineEditState,
   CenterDefineButtonState,
   CenterDefineSettingsChanged,
-  CenterDefineConfigurationMode,
   CenterSelectEditTab,
   CenterUpdatePreview,
   CenterUpdateSettings,
@@ -314,6 +334,7 @@ exports
   CenterUpdateTabs,
   CenterUpdateConfigText,
   CenterUpdateConfigFull,
+  CenterUpdateEditTabs,
   CenterCommandAsText,
   CenterCommandAsEnum,
   CenterReadDefaults,
