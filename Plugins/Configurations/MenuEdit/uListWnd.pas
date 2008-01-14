@@ -43,8 +43,6 @@ uses
   JclFileUtils,
   Contnrs,
   jvSimpleXml,
-  uSharpCenterPluginTabList,
-  uSharpCenterCommon,
   ImgList,
   SharpEListBox,
   SharpEListBoxEx,

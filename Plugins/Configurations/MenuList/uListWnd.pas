@@ -28,17 +28,37 @@ unit uListWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JclSimpleXML, JclFileUtils, Contnrs, jvSimpleXml,
-  uSharpCenterPluginTabList, uSharpCenterCommon, ImgList,
-  SharpEListBox, SharpEListBoxEx, GR32, GR32_PNG, SharpApi,
-  ExtCtrls, JclStrings, GR32_Image, Types, PngImageList;
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  JclSimpleXML,
+  JclFileUtils,
+  Contnrs,
+  jvSimpleXml,
+  ImgList,
+  SharpEListBox,
+  SharpEListBoxEx,
+  GR32,
+  GR32_PNG,
+  SharpApi,
+  ExtCtrls,
+  JclStrings,
+  GR32_Image,
+  Types,
+  PngImageList;
 
 type
   TMenuItem = class
     ID: Integer;
-    Name: String;
-    FileName: String;
+      Name: string;
+    FileName: string;
   end;
 
   TfrmList = class(TForm)
@@ -78,7 +98,8 @@ const
 
 implementation
 
-uses SharpThemeApi, SharpCenterApi,
+uses SharpThemeApi,
+  SharpCenterApi,
   SharpIconUtils;
 
 {$R *.dfm}
@@ -134,7 +155,7 @@ procedure TfrmList.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := True;
   lbItems.DoubleBuffered := True;
-  
+
   FItems := TObjectList.Create;
   RenderItems;
 end;
@@ -155,9 +176,9 @@ begin
     exit;
 
   case ACol of
-  colEdit: begin
+    colEdit: begin
         CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-            + '\_Components\MenuEdit.con'), pchar(tmpMenu.Name));
+          + '\_Components\MenuEdit.con'), pchar(tmpMenu.Name));
       end;
   end;
 end;
@@ -182,7 +203,7 @@ begin
 
   case ACol of
     colCopy: AImageIndex := iidxCopy;
-    colDelete : AImageIndex := iidxDelete;
+    colDelete: AImageIndex := iidxDelete;
   end;
 
 end;
@@ -199,7 +220,7 @@ begin
 
   case ACol of
     colName: AColText := tmpMenu.Name;
-    colEdit : AColText := '<font color="clNavy"><u>Edit</u>';
+    colEdit: AColText := '<font color="clNavy"><u>Edit</u>';
   end;
 end;
 
@@ -217,32 +238,32 @@ begin
 
   // Get selected item
   LockWindowUpdate(Self.Handle);
-  Try
-  if lbItems.ItemIndex <> -1 then
-    selectedIndex := TMenuItem(lbItems.Item[lbItems.ItemIndex].Data).ID
-  else
-    selectedIndex := -1;
+  try
+    if lbItems.ItemIndex <> -1 then
+      selectedIndex := TMenuItem(lbItems.Item[lbItems.ItemIndex].Data).ID
+    else
+      selectedIndex := -1;
 
-  lbItems.Clear;
-  AddItemsToList(FItems);
+    lbItems.Clear;
+    AddItemsToList(FItems);
 
-  for i := 0 to FItems.Count - 1 do begin
+    for i := 0 to FItems.Count - 1 do begin
 
-    tmpMenu := TMenuItem(FItems.Items[i]);
+      tmpMenu := TMenuItem(FItems.Items[i]);
 
-    newItem := lbItems.AddItem(tmpMenu.Name);
-    newItem.Data := tmpMenu;
-    newItem.AddSubItem('');
-    newItem.AddSubItem('');
-    newItem.AddSubItem('');
+      newItem := lbItems.AddItem(tmpMenu.Name);
+      newItem.Data := tmpMenu;
+      newItem.AddSubItem('');
+      newItem.AddSubItem('');
+      newItem.AddSubItem('');
 
-    if tmpMenu.ID = selectedIndex then
-      lbItems.ItemIndex := i;
+      if tmpMenu.ID = selectedIndex then
+        lbItems.ItemIndex := i;
 
-  end;
-  Finally
+    end;
+  finally
     LockWindowUpdate(0);
-  End;
+  end;
 
 end;
 
