@@ -155,6 +155,7 @@ begin
 
   Bmp32.SetSize(w,h);
   Bmp32.Clear(color32(0,0,0,0));
+  bmp32.DrawMode := dmTransparent;
 
   x := 0;
   y := 0;
@@ -174,7 +175,7 @@ begin
     end;
   end;
 
-  ReplaceColor32(bmp32,color32(0,0,0,255),color32(clWindow));
+  ReplaceColor32(bmp32,color32(0,0,0,255),color32(0,0,0,0));
   ReplaceColor32(bmp32,color32(255,0,0,255),color32(ccolors.Items.Item[0].ColorAsTColor));
   ReplaceColor32(bmp32,color32(0,0,255,255),color32(ccolors.Items.Item[1].ColorAsTColor));
   ReplaceColor32(bmp32,color32(0,255,0,255),color32(ccolors.Items.Item[2].ColorAsTColor));

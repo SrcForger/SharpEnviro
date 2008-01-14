@@ -142,7 +142,7 @@ begin
      (frmCursesList.lbCursorList.Count = 0) then
      exit;
 
-  ABmp.SetSize(frmCursesList.Preview.Width,frmCursesList.Preview.Height);
+  ABmp.SetSize(ABmp.Width,frmCursesList.Preview.Height);
   ABmp.Clear(color32(0,0,0,0));
   frmCursesList.Preview.DrawTo(ABmp);
 end;
