@@ -91,8 +91,8 @@ end;
 
 procedure UpdatePreview(var ABmp:TBitmap32);
 begin
-  ABmp.SetSize(0,0);
   if (frmSchemeList.lbSchemeList.Count = 0) or (frmSchemeList = nil) then begin
+    ABmp.SetSize(0,0);
     exit;
   end;
 
@@ -105,6 +105,8 @@ begin
   // Create Form
   if Not(Assigned(frmEditScheme)) then
     frmEditScheme := TfrmEditScheme.Create(nil);
+
+  SetVistaFonts(frmEditScheme);
 
   // Assign form to owner handle
   frmEditScheme.ParentWindow := AOwner;

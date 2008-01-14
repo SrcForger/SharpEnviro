@@ -59,17 +59,14 @@ type
     secEx: TSharpEColorEditorEx;
     procedure secExUiChange(Sender: TObject);
     procedure secExSliderChange(Sender: TObject);
-
-    procedure FormShow(Sender: TObject);
     procedure secExChangeValue(ASender: TObject; AValue: Integer);
-    procedure edNameKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     procedure FormCreate(Sender: TObject);
+    procedure edNameKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FColors: TObjectList;
     FSchemeItem: TSchemeItem;
     FSelectedColorIdx: Integer;
-    FEdit: Boolean;
     FEditMode: TSCE_EDITMODE_ENUM;
     procedure SetColors(const Value: TObjectList);
 
@@ -105,10 +102,10 @@ var
 begin
   FColors := Value;
   h := 0;
-  //LockWindowUpdate(Self.Handle);
+
   try
-    secEx.BeginUpdate;
     secEx.Items.Clear;
+    secEx.BeginUpdate;
 
     for i := 0 to Pred(FColors.Count) do begin
       tmpItem := TSchemeColorItem(FColors[i]);
@@ -142,28 +139,25 @@ begin
         secEx.Items.Item[0].ColorEditor.ExpandedHeight;
 
     Self.Height := h + 10;
-    //LockWindowUpdate(0);
   end;
 
+end;
+
+procedure TfrmEditScheme.edNameKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  CenterDefineEditState(True);
 end;
 
 procedure TfrmEditScheme.FormCreate(Sender: TObject);
 begin
   FSelectedColorIdx := 0;
-
-  if not (FEdit) then begin
-    if FileExists(GetSharpeUserSettingsPath + 'author.dat') then
-      edAuthor.Text := IniReadString(GetSharpeUserSettingsPath + 'author.dat',
-        'main', 'author');
-  end;
-
 end;
 
 procedure TfrmEditScheme.InitUI(AEditMode: TSCE_EditMode_Enum);
 var
   tmpItem, lstItem: TSchemeItem;
 begin
-
   case AEditMode of
     sceAdd: begin
 
@@ -260,12 +254,6 @@ begin
   frmSchemeList.RebuildSchemeList;
 end;
 
-procedure TfrmEditScheme.edNameKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  CenterDefineEditState(True);
-end;
-
 procedure TfrmEditScheme.secExChangeValue(ASender: TObject;
   AValue: Integer);
 var
@@ -281,11 +269,6 @@ begin
     tmpItem.Color := AValue;
     tmpItem.UnparsedColor := '';
   end;
-end;
-
-procedure TfrmEditScheme.FormShow(Sender: TObject);
-begin
-  edName.SetFocus;
 end;
 
 procedure TfrmEditScheme.secExSliderChange(Sender: TObject);

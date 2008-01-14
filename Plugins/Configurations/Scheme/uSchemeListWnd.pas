@@ -131,7 +131,7 @@ begin
       exit;
 
     BarPreview.CreateBarPreview(bmp, FSchemeManager.PluginID, FSchemeManager.GetSkinName(FSchemeManager.PluginID),
-      tmpSchemeItem.GetItemAsColorArray(tmpSchemeItem.Colors), 350);
+      tmpSchemeItem.GetItemAsColorArray(tmpSchemeItem.Colors), ABmp.Width, true);
 
     ABmp.SetSize(bmp.Width, bmp.height);
     Bmp.DrawTo(ABmp);

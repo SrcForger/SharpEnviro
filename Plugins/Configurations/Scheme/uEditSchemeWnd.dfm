@@ -14,7 +14,6 @@ object frmEditScheme: TfrmEditScheme
   OldCreateOrder = False
   Position = poDesigned
   OnCreate = FormCreate
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 14
   object pnlContainer: TPanel
@@ -41,7 +40,7 @@ object frmEditScheme: TfrmEditScheme
       LabelPosition = lpLeft
       LabelSpacing = 6
       TabOrder = 0
-      OnKeyDown = edNameKeyDown
+      OnKeyUp = edNameKeyUp
     end
     object edAuthor: TLabeledEdit
       Left = 276
@@ -55,7 +54,7 @@ object frmEditScheme: TfrmEditScheme
       LabelPosition = lpLeft
       LabelSpacing = 6
       TabOrder = 1
-      OnKeyDown = edNameKeyDown
+      OnKeyUp = edNameKeyUp
     end
     object SharpERoundPanel1: TSharpERoundPanel
       Left = 4
