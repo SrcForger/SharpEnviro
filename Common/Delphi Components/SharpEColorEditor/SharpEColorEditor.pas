@@ -594,6 +594,8 @@ procedure TSharpEColorEditor.ColorClickEvent(ASender: TObject);
 begin
   Value := FColorPicker.ColorCode;
 
+  FSliderUpdateMode := sumAll;
+  
   if Assigned(FOnUiChange) then
     FOnUiChange(Self);
 end;
@@ -1234,7 +1236,6 @@ begin
           if FColorPicker <> nil then
             FColorPicker.ColorCode := FValue;
 
-          FSliderUpdateMode := sumAll;
           InitialiseColSliders;
 
         finally
