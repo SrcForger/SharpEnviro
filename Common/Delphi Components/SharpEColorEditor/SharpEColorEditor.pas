@@ -267,9 +267,6 @@ begin
     FTabs.Left := 0;
     Border := True;
     PngImageList := FPngImageList;
-    //DoubleBuffered := True;
-    //ParentBackground := False;
-    //ParentColor := False;
 
     BkgColor := clwindow;
     Color := clwindow;
@@ -299,8 +296,6 @@ begin
     DoubleBuffered := False;
 
     BackgroundColor := clWindow;
-    //ColorCode := FColorCode;
-    //Color := clWindow;
 
     OnColorClick := ColorClickEvent;
     ParentBackground := False;
@@ -1198,10 +1193,12 @@ begin
 
   end
   else begin
-    Color32ToRGB(HSLtoRGB(h, s, l), r, g, b);
+    //Color32ToRGB(HSLtoRGB(h, s, l), r, g, b);
+
+    Value := HSLtoRGB(h,s,l);
 
     FSliderUpdateMode := sumRGB;
-    Value := RGB(r, g, b);
+    //Value := RGB(r, g, b);
 
   end;
 
