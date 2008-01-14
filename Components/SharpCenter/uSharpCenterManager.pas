@@ -94,7 +94,7 @@ type
     FEditWndHandle: THandle;
     FOnLoadPlugin: TNotifyEvent;
     FOnUnloadPlugin: TNotifyEvent;
-    FPluginTabs: TPluginTabItemList;
+    FPluginTabs: TStringList;
     FOnAddPluginTabs: TNotifyEvent;
     FOnUpdateTheme: TNotifyEvent;
     FOnInitNavigation: TNotifyEvent;
@@ -172,7 +172,7 @@ type
     property ActiveCommand: TSharpCenterHistoryItem read FActiveCommand write FActiveCommand;
     property UnloadCommand: TSharpCenterHistoryItem read FUnloadCommand write FUnloadCommand;
 
-    property PluginTabs: TPluginTabItemList read FPluginTabs write FPluginTabs;
+    property PluginTabs: TStringList read FPluginTabs write FPluginTabs;
     function LoadPluginTabs: Boolean;
 
     property PluginWndHandle: THandle read FPluginWndHandle write FPluginWndHandle;
@@ -669,7 +669,7 @@ begin
   FActiveCommand.Param := FRoot;
   FActiveCommand.PluginID := '';
 
-  FPluginTabs := TPluginTabItemList.Create;
+  FPluginTabs := TStringList.Create;
   FPngImageList := TPngImageList.Create(nil);
 end;
 
@@ -742,6 +742,8 @@ begin
 end;
 
 function TSharpCenterManager.LoadPluginTabs: Boolean;
+var
+  tmpStrItem: TStringItem;
 begin
   FPluginTabs.Clear;
   Result := True;
@@ -752,8 +754,11 @@ begin
   if Assigned(FOnAddPluginTabs) then
           FOnAddPluginTabs(Self);
 
-  if (PluginTabs.Count > 0) and (@ActivePlugin.ClickTab <> nil) then
-    ActivePlugin.ClickTab(PluginTabs.GetItem[0]);
+  if (PluginTabs.Count > 0) and (@ActivePlugin.ClickTab <> nil) then begin
+    tmpStrItem.FString := FPluginTabs.Strings[0];
+    tmpStrItem.FObject := FPluginTabs.Objects[0];
+    ActivePlugin.ClickTab(tmpStrItem);
+  end;
 end;
 
 procedure TSharpCenterManager.GetItemText(AFile, APluginID: String; var AName: String;

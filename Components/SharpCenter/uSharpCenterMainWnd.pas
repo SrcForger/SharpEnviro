@@ -124,7 +124,6 @@ type
       var AChange: Boolean);
     procedure Timer1Timer(Sender: TObject);
 
-    procedure btnImportClick(Sender: TObject);
     procedure tlEditItemTabClick(ASender: TObject; const ATabIndex: Integer);
     procedure btnEditApplyClick(Sender: TObject);
     procedure tlEditItemTabChange(ASender: TObject; const ATabIndex: Integer;
@@ -845,12 +844,6 @@ begin
   end;
 end;
 
-procedure TSharpCenterWnd.btnImportClick(Sender: TObject);
-begin
-  if (@SCM.ActivePlugin.ClickBtn <> nil) then
-    SCM.ActivePlugin.ClickBtn(scbImport, PChar(edImportFileName.Text));
-end;
-
 procedure TSharpCenterWnd.ShowHistory;
 var
   i: Integer;
@@ -974,10 +967,7 @@ begin
     s := '';
     for i := 0 to Pred(SCM.PluginTabs.Count) do
     begin
-      pnlPluginContainer.TabList.Add(SCM.PluginTabs[i].Caption, -1,
-        SCM.PluginTabs[i].Status);
-
-
+      pnlPluginContainer.TabList.Add(SCM.PluginTabs[i], -1, '');
     end;
     pnlPluginContainer.TabIndex := FSelectedPluginTabID;
   finally
@@ -1174,14 +1164,20 @@ end;
 
 procedure TSharpCenterWnd.tlPluginTabsTabChange(ASender: TObject;
   const ATabIndex: Integer; var AChange: Boolean);
+var
+  tmpStrItem: TStringItem;
 begin
   LockWindowUpdate(Self.Handle);
   try
 
     if (ATabIndex > SCM.PluginTabs.Count - 1) then
       exit;
-    if @SCM.ActivePlugin.ClickTab <> nil then
-      SCM.ActivePlugin.ClickTab(SCM.PluginTabs.GetItem[ATabIndex]);
+    if @SCM.ActivePlugin.ClickTab <> nil then begin
+
+      tmpStrItem.FString := SCM.PluginTabs[ATabIndex];
+      tmpStrItem.FObject := SCM.PluginTabs.Objects[ATabIndex];
+      SCM.ActivePlugin.ClickTab(tmpStrItem);
+    end;
 
   finally
     LockWindowUpdate(0);

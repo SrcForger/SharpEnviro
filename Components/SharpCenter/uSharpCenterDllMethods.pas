@@ -54,9 +54,8 @@ type
     OpenEdit: function(AOwner:Hwnd; AEditMode:TSCE_EDITMODE_ENUM):Hwnd;
     CloseEdit: function(AEditMode:TSCE_EDITMODE_ENUM; AApply:Boolean): boolean;
 
-    ClickBtn: procedure (AButton: TSCB_BUTTON_ENUM; AText: String);
-    ClickTab: procedure (ATab: TPluginTabItem);
-    AddTabs: procedure(var ATabs:TPluginTabItemList);
+    ClickTab: procedure (ATab: TStringItem);
+    AddTabs: procedure(var ATabs: TStringList);
 
     UpdatePreview: procedure (var ABmp:TBitmap32);
 
@@ -85,7 +84,6 @@ begin
     plugin.OpenEdit := nil;
     plugin.CloseEdit := nil;
 
-    plugin.ClickBtn := nil;
     plugin.ClickTab := nil;
     plugin.AddTabs := nil;
 
@@ -118,7 +116,6 @@ begin
       @result.OpenEdit := GetProcAddress(result.Dllhandle, 'OpenEdit');
       @result.CloseEdit := GetProcAddress(result.Dllhandle, 'CloseEdit');
 
-      @result.ClickBtn := GetProcAddress(result.Dllhandle, 'ClickBtn');
       @result.ClickTab := GetProcAddress(result.Dllhandle, 'ClickTab');
       @result.AddTabs := GetProcAddress(result.Dllhandle, 'AddTabs');
 

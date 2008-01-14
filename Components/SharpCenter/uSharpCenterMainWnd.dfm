@@ -1178,7 +1178,6 @@ object SharpCenterWnd: TSharpCenterWnd
               Width = 23
               Height = 22
               Flat = True
-              OnClick = btnImportClick
               PngImage.Data = {
                 89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
                 610000000473424954080808087C08648800000009704859730000004E000000
@@ -1645,7 +1644,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               134)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -866
+              Left = -870
               Top = 35
               Width = 23
               Height = 22
@@ -2097,13 +2096,14 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = 0
+              Width = -4
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
+              ExplicitWidth = 0
             end
           end
         end
