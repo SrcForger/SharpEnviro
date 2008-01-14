@@ -402,7 +402,7 @@ begin
     Bmp.Free;
   end
   else
-    pnlLivePreview.Visible := False;
+    pnlLivePreview.Height := 0;
 end;
 
 procedure TSharpCenterWnd.DoDoubleBufferAll(AComponent: TComponent);
@@ -725,7 +725,7 @@ begin
   btnSave.Enabled := False;
   btnCancel.Enabled := False;
   pnlEditContainer.Height := 0;
-  pnlLivePreview.Visible := False;
+  pnlLivePreview.Height := 0;
   pnlPluginContainer.Visible := False;
   pnlEditContainer.TabIndex := -1;
   pnlTitle.Visible := False;
@@ -879,7 +879,6 @@ begin
     if (@SCM.ActivePlugin.UpdatePreview <> nil) then
     begin
       pnlLivePreview.Height := 45;
-      pnlLivePreview.Visible := True;
     end;
 
     pnlToolbar.Hide;
@@ -1002,7 +1001,7 @@ begin
     pnlEditContainer.TabList.TabIndex := -1;
     btnSave.Enabled := False;
     btnCancel.Enabled := False;
-    pnlLivePreview.Hide;
+    pnlLivePreview.Height := 0;
     pnlEditContainer.Height := 0;
     pnlPluginContainer.Hide;
     pnlTitle.Hide;
