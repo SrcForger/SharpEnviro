@@ -1234,6 +1234,7 @@ begin
           if FColorPicker <> nil then
             FColorPicker.ColorCode := FValue;
 
+          FSliderUpdateMode := sumAll;
           InitialiseColSliders;
 
         finally
