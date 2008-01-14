@@ -54,7 +54,6 @@ uses
   Tabs,
   SharpEListBox,
   SharpESkinManager,
-  uSharpCenterPluginTabList,
   uSharpCenterDllMethods,
   uSharpCenterManager,
   ToolWin,

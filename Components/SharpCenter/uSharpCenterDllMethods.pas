@@ -36,7 +36,6 @@ uses
   Tabs,
   GR32_Image,
   GR32,
-  uSharpCenterPluginTabList,
   SharpCenterApi;
 
 type

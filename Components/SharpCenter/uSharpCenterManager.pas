@@ -25,7 +25,6 @@ uses
 
   uSharpCenterHistoryManager,
   uSharpCenterDllMethods,
-  uSharpCenterPluginTabList,
   SharpCenterApi;
 
 type
