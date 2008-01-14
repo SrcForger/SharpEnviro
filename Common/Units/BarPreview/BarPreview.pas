@@ -137,7 +137,7 @@ begin
 
     BarWnd.Button.Skin.DrawTo(ABitmap,ButtonPos.X + round(1.5*csize),ButtonPos.Y+round(1.5*csize));
 
-    menuBmp.DrawTo(ABitmap,ABitmap.Width - menuBmp.Width - 16,ABitmap.Height div 2 - menuBmp.Height div 2);
+    menuBmp.DrawTo(ABitmap,ABitmap.Width - menuBmp.Width - 24,ABitmap.Height div 2 - menuBmp.Height div 2);
 
   finally
     XML.Free;
