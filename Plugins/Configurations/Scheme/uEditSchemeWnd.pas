@@ -104,9 +104,10 @@ begin
   h := 0;
 
   try
-    secEx.Items.Clear;
+    
+    
     secEx.BeginUpdate;
-
+    secEx.Items.Clear;
     for i := 0 to Pred(FColors.Count) do begin
       tmpItem := TSchemeColorItem(FColors[i]);
       tmpSkinColor := FSchemeManager.GetSkinColorByTag(tmpItem.Tag);
