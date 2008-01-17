@@ -244,9 +244,9 @@ end;
 procedure TSharpEBarBackground.WndProc(var msg: TMessage);
 begin
   inherited;
-  if msg.Msg = WM_ACTIVATE then
+  if (msg.Msg = WM_ACTIVATE) or (msg.Msg = WM_ACTIVATEAPP) then
   begin
-    SetZOrder;
+   // SetZOrder;
   end;
   msg.Result := DefWindowProc(windowHandle, msg.Msg, msg.wParam, msg.lParam);
   st := inttostr(msg.result);
