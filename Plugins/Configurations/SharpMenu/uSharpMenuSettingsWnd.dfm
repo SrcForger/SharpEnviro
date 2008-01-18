@@ -58,6 +58,7 @@ object frmMenuSettings: TfrmMenuSettings
     EllipsisPosition = epEndEllipsis
     ParentColor = False
     Transparent = True
+    Visible = False
     WordWrap = True
     ExplicitLeft = 34
     ExplicitTop = 37
@@ -76,7 +77,6 @@ object frmMenuSettings: TfrmMenuSettings
     Caption = 'Use Icons'
     TabOrder = 0
     OnClick = cb_useiconsClick
-    ExplicitLeft = 3
   end
   object Panel1: TPanel
     Left = 0
@@ -88,7 +88,6 @@ object frmMenuSettings: TfrmMenuSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 1
-    ExplicitTop = 77
     object Label1: TLabel
       Left = 176
       Top = 75
@@ -186,7 +185,7 @@ object frmMenuSettings: TfrmMenuSettings
     Align = alTop
     Caption = 'Cache Icons (Advanced)'
     TabOrder = 2
+    Visible = False
     OnClick = cb_useiconsClick
-    ExplicitLeft = 3
   end
 end
