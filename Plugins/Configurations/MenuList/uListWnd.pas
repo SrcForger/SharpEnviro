@@ -55,7 +55,8 @@ uses
   PngImageList;
 
 type
-  TMenuItem = class
+  TMenuDataObject = class
+  public
     ID: Integer;
       Name: string;
     FileName: string;
@@ -79,9 +80,11 @@ type
   private
     FItems: TObjectList;
     procedure AddItemsToList(AList: TObjectList);
-    procedure RenderItems;
+    procedure SelectMenuItem(AName: string);
   public
-
+    procedure Save(AName: string; ATemplate: string);
+    procedure CopyMenu(AName: string; var ANew: String);
+    procedure RenderItems;
   end;
 
 var
@@ -100,14 +103,29 @@ implementation
 
 uses SharpThemeApi,
   SharpCenterApi,
-  SharpIconUtils;
+  SharpIconUtils,
+  uEditWnd;
 
 {$R *.dfm}
+
+procedure TfrmList.SelectMenuItem(AName: string);
+var
+  i: Integer;
+  tmpScheme: TMenuDataObject;
+begin
+  for i := 0 to Pred(lbItems.Count) do begin
+    tmpScheme := TMenuDataObject(lbItems.Item[i].Data);
+    if CompareText(AName, tmpScheme.Name) = 0 then begin
+      lbItems.ItemIndex := i;
+      break;
+    end;
+  end;
+end;
 
 procedure TfrmList.AddItemsToList(AList: TObjectList);
 var
   xml: TJvSimpleXML;
-  newItem: TMenuItem;
+  newItem: TMenuDataObject;
   dir: string;
   slMenus: TStringList;
   i: Integer;
@@ -125,6 +143,7 @@ var
   end;
 
 begin
+
   AList.Clear;
   dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
 
@@ -137,7 +156,7 @@ begin
     for i := 0 to Pred(slMenus.Count) do begin
       xml.LoadFromFile(slMenus[i]);
       if xml.Root.Name = 'SharpEMenuFile' then begin
-        newItem := TMenuItem.Create;
+        newItem := TMenuDataObject.Create;
         newItem.ID := i;
         newItem.Name := PathRemoveExtension(ExtractFileName(slMenus[i]));
         newItem.FileName := slMenus[i];
@@ -149,6 +168,48 @@ begin
     slMenus.Free;
     xml.Free;
   end;
+end;
+
+procedure TfrmList.CopyMenu(AName: string; var ANew: String);
+var
+  sCopyName, sDestFile, sSrcFile: string;
+  n: integer;
+  n2: Integer;
+  s, sFileName: string;
+  sMenuDir: string;
+begin
+  sCopyName := AName;
+  sMenuDir := GetSharpeUserSettingsPath + 'SharpMenu\';
+
+  // If already copy, remove copy symbol
+  n := pos(')',sCopyName);
+  if n <> 0 then begin
+
+    n2 := n;
+    repeat
+      s := sCopyName[n2];
+      n2 := n2 - 1;
+    until ((n2 <= 1) or (s = '(')) ;
+
+    if n2 > 1 then
+      sCopyName := System.Copy(sCopyName,1,n2-1);
+  end;
+
+  n := 0;
+  s := sCopyName;
+  repeat
+    s := format('%s (%d)',[sCopyName,n]);
+    sFilename := sMenuDir + s + '.xml';
+    inc(n);
+  until not (fileExists(sFilename));
+  sCopyName := s;
+
+  ANew := s;
+  sSrcFile := sMenuDir + AName + '.xml';
+  sDestFile := sMenuDir + sCopyName + '.xml';
+  FileCopy(sSrcFile,sDestFile,false);
+
+
 end;
 
 procedure TfrmList.FormCreate(Sender: TObject);
@@ -168,10 +229,21 @@ end;
 procedure TfrmList.lbItemsClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
-  tmpMenu: TMenuItem;
+  tmpMenu: TMenuDataObject;
+  bDelete: Boolean;
+  sNew: String;
+
+  function CtrlDown: Boolean;
+  var
+    State: TKeyboardState;
+  begin
+    GetKeyboardState(State);
+    Result := ((State[VK_CONTROL] and 128) <> 0);
+  end;
+
 begin
 
-  tmpMenu := TMenuItem(AItem.Data);
+  tmpMenu := TMenuDataObject(AItem.Data);
   if tmpMenu = nil then
     exit;
 
@@ -180,7 +252,31 @@ begin
         CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
           + '\_Components\MenuEdit.con'), pchar(tmpMenu.Name));
       end;
+    colDelete: begin
+
+        bDelete := True;
+        if not (CtrlDown) then
+          if (MessageDlg(Format('Are you sure you want to delete: %s?', [tmpMenu.Name]), mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
+            bDelete := False;
+
+        if bDelete then begin
+          DeleteFile(tmpMenu.FileName);
+          RenderItems;
+        end;
+
+      end;
+    colCopy: begin
+      CopyMenu(tmpMenu.Name, sNew);
+      RenderItems;
+      SelectMenuItem(sNew);
+    end;
   end;
+
+  if frmEdit <> nil then
+    frmEdit.InitUi(frmEdit.EditMode);
+
+  CenterUpdateEditTabs(lbItems.Count, lbItems.ItemIndex);
+  CenterUpdateConfigFull;
 end;
 
 procedure TfrmList.lbItemsGetCellCursor(Sender: TObject; const ACol: Integer;
@@ -194,10 +290,10 @@ procedure TfrmList.lbItemsGetCellImageIndex(Sender: TObject;
   const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
   const ASelected: Boolean);
 var
-  tmpMenu: TMenuItem;
+  tmpMenu: TMenuDataObject;
 begin
 
-  tmpMenu := TMenuItem(AItem.Data);
+  tmpMenu := TMenuDataObject(AItem.Data);
   if tmpMenu = nil then
     exit;
 
@@ -211,10 +307,10 @@ end;
 procedure TfrmList.lbItemsGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
-  tmpMenu: TMenuItem;
+  tmpMenu: TMenuDataObject;
 begin
 
-  tmpMenu := TMenuItem(AItem.Data);
+  tmpMenu := TMenuDataObject(AItem.Data);
   if tmpMenu = nil then
     exit;
 
@@ -233,14 +329,14 @@ procedure TfrmList.RenderItems;
 var
   newItem: TSharpEListItem;
   selectedIndex, i: Integer;
-  tmpMenu: TMenuItem;
+  tmpMenu: TMenuDataObject;
 begin
 
   // Get selected item
   LockWindowUpdate(Self.Handle);
   try
     if lbItems.ItemIndex <> -1 then
-      selectedIndex := TMenuItem(lbItems.Item[lbItems.ItemIndex].Data).ID
+      selectedIndex := TMenuDataObject(lbItems.Item[lbItems.ItemIndex].Data).ID
     else
       selectedIndex := -1;
 
@@ -249,7 +345,7 @@ begin
 
     for i := 0 to FItems.Count - 1 do begin
 
-      tmpMenu := TMenuItem(FItems.Items[i]);
+      tmpMenu := TMenuDataObject(FItems.Items[i]);
 
       newItem := lbItems.AddItem(tmpMenu.Name);
       newItem.Data := tmpMenu;
@@ -265,6 +361,43 @@ begin
     LockWindowUpdate(0);
   end;
 
+  if lbItems.ItemIndex = -1 then
+    lbItems.ItemIndex := 0;
+
+  CenterUpdateEditTabs(lbItems.Count, lbItems.ItemIndex);
+  CenterUpdateConfigFull;
+
+end;
+
+procedure TfrmList.Save(AName: string; ATemplate: string);
+var
+  xml: TJvSimpleXML;
+  sFileName: string;
+  sMenuDir: string;
+  sSrc, sDest: string;
+begin
+  // Check template
+  sMenuDir := GetSharpeUserSettingsPath + 'SharpMenu\';
+  if ATemplate <> '' then begin
+    sSrc := sMenuDir + ATemplate + '.xml';
+    sDest := sMenuDir + AName + '.xml';
+
+    FileCopy(sSrc, sDest, False);
+  end
+  else begin
+
+    xml := TJvSimpleXML.Create(nil);
+    try
+      xml.Root.Name := 'SharpEMenuFile';
+    finally
+
+      sFileName := sMenuDir + trim(StrRemoveChars(AName,
+        ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']) + '.xml');
+
+      xml.SaveToFile(sFileName);
+      xml.Free;
+    end;
+  end;
 end;
 
 end.

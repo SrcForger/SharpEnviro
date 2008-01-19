@@ -80,7 +80,6 @@ end;
 
 function OpenEdit(AOwner: hwnd; AEditMode:TSCE_EDITMODE_ENUM): hwnd;
 begin
-  result := HR_NORECIEVERWINDOW;
   if frmEdit = nil then frmEdit := TFrmEdit.Create(nil);
   uVistaFuncs.SetVistaFonts(frmEdit);
 
@@ -90,6 +89,7 @@ begin
   frmEdit.BorderStyle := bsNone;
   frmEdit.Show;
   frmEdit.EditMode := AEditMode;
+  Result := frmEdit.Handle;
 
   frmEdit.InitUi(AEditMode);
 
@@ -162,6 +162,10 @@ begin
     frmList.lbItems.Colors.ItemColorSelected := AItemSelectedColor;
     frmList.lbItems.Colors.BorderColor := AItemSelectedColor;
     frmList.lbItems.Colors.BorderColorSelected := AItemSelectedColor;
+  end;
+
+  if frmEdit <> nil then begin
+    frmEdit.Color := ABackground;
   end;
 end;
 
