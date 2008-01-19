@@ -257,7 +257,7 @@ procedure TfrmEdit.btnDynamicDirBrowseClick(Sender: TObject);
 var
   s: string;
 begin
-  s := SharpDialogs.TargetDialog([stiDirectory, stiShellFolders], Mouse.CursorPos);
+  s := SharpDialogs.TargetDialog([stiDirectory], Mouse.CursorPos);
 
   if s <> '' then
     edDynamicDirTarget.Text := s;

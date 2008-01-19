@@ -301,8 +301,8 @@ object frmEdit: TfrmEdit
       end
     end
     object pagBlank: TJvStandardPage
-      Left = 328
-      Top = 6
+      Left = 0
+      Top = 0
       Width = 500
       Height = 102
       Caption = 'pagBlank'
@@ -319,8 +319,7 @@ object frmEdit: TfrmEdit
         Align = alTop
         Caption = 'There are no configuration options'
         Enabled = False
-        ExplicitLeft = 292
-        ExplicitTop = -8
+        ExplicitWidth = 166
       end
     end
   end
