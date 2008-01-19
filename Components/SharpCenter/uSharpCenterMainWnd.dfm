@@ -1021,6 +1021,7 @@ object SharpCenterWnd: TSharpCenterWnd
           Colors.CheckColor = 15528425
           ItemHeight = 30
           OnClickItem = lbTreeClickItem
+          OnGetCellCursor = lbTreeGetCellCursor
           OnGetCellColor = lbTreeGetCellColor
           OnGetCellText = lbTreeGetCellText
           AutosizeGrid = False
@@ -1644,7 +1645,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               134)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -878
+              Left = -882
               Top = 35
               Width = 23
               Height = 22
@@ -2096,14 +2097,13 @@ object SharpCenterWnd: TSharpCenterWnd
             object Edit2: TEdit
               Left = 0
               Top = 36
-              Width = -12
+              Width = 0
               Height = 21
               Anchors = [akLeft, akTop, akRight]
               Ctl3D = True
               ParentCtl3D = False
               TabOrder = 0
               Text = 'Edit1'
-              ExplicitWidth = 0
             end
           end
         end

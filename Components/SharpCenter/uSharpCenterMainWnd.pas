@@ -152,6 +152,8 @@ type
     procedure tmrClickTimer(Sender: TObject);
     procedure lbTreeGetCellColor(Sender: TObject; const AItem: TSharpEListItem;
       var AColor: TColor);
+    procedure lbTreeGetCellCursor(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var ACursor: TCursor);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -437,6 +439,12 @@ procedure TSharpCenterWnd.lbTreeGetCellColor(Sender: TObject;
 begin
   if AItem.ID = lbTree.ItemIndex then
     AColor := $00C1F4FE;
+end;
+
+procedure TSharpCenterWnd.lbTreeGetCellCursor(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var ACursor: TCursor);
+begin
+  if ACol = 0 then ACursor := crHandPoint;
 end;
 
 procedure TSharpCenterWnd.lbTreeGetCellText(Sender: TObject;
