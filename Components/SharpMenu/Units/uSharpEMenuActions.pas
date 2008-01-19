@@ -196,6 +196,8 @@ end;
 
 procedure TSharpEMenuActions.UpdateDynamicDirectory(var pDynList : TObjectList; pDir,
           pFilter : String; pSort,pMaxItems : integer; pRecursive : Boolean);
+var
+  FilterList : TStringList;
 
   procedure InvertList(var SList : TStringList);
   var
@@ -217,33 +219,51 @@ procedure TSharpEMenuActions.UpdateDynamicDirectory(var pDynList : TObjectList; 
     sr : TSearchRec;
     dt : TDateTime;
     svalue : String;
+    n : integer;
+    found : boolean;
   begin
     {$WARNINGS OFF}
     pAddDir := IncludeTrailingBackSlash(pAddDir);
     {$WARNINGS ON}
-    if FindFirst(pAddDir + pFilter,faAnyFile,sr) = 0 then
+    if FindFirst(pAddDir + '*.*',faAnyFile,sr) = 0 then
     repeat
       if (CompareText(sr.Name,'.') <> 0) and (CompareText(sr.Name,'..') <> 0) then
       begin
+        found := False;
+        if FilterList.Count = 0 then
+          found := True
+        else
+        for n := 0 to FilterList.Count - 1 do
+          if Pos(FilterList[n],LowerCase(sr.Name)) <> 0 then
+          begin
+            found := True;
+            break;
+          end;
+
         if (sr.Attr and faDirectory) > 0 then svalue := '0'
-           else
-           begin
-             case pSort of
-               1: svalue := '1';
-               2: begin
-                    GetFileLastWrite(pAddDir + sr.Name,dt);
-                    svalue := '1' + IntToStr(DateTimeToUnix(dt));
-                   end;
-               else svalue := '1';
-             end;
-             {$WARNINGS OFF}
-             if (sr.Attr and faHidden) > 0 then
-                svalue[1] := '2';
-             {$WARNINGS ON}
-           end;
+        else
+        if found then        
+        begin
+          case abs(pSort) of
+            1: svalue := '1';
+            2: begin
+                 JclFileUtils.GetFileLastWrite(pAddDir + sr.Name,dt);
+                 svalue := '1' + IntToStr(DateTimeToUnix(dt));
+               end;
+            3: begin
+                 JclFileUtils.GetFileCreation(pAddDir + sr.Name,dt);
+                 svalue := '1' + IntToStr(DateTimeToUnix(dt));
+               end
+            else svalue := '1';
+          end;
+          {$WARNINGS OFF}
+          if (sr.Attr and faHidden) > 0 then
+             svalue[1] := '2';
+          {$WARNINGS ON}
+        end;
 
         // do not add Directories if sorting or recursive mode is enabled
-        if (not(((pSort > 1) or (pRecursive)) and ((sr.Attr and faDirectory) > 0))) then
+        if (found) and (not(((abs(pSort) > 1) or (pRecursive)) and ((sr.Attr and faDirectory) > 0))) then
             pList.Add(svalue + '#' + sr.Name + '=' + pAddDir + sr.Name);
         if pRecursive then
           AddDirToList(pList,pAddDir + sr.Name);
@@ -271,8 +291,16 @@ begin
   Dir := IncludeTrailingBackSlash(pDir);
   {$WARNINGS ON}
 
-  if length(trim(pFilter)) = 0 then
-     pFilter := '*';
+  FilterList := TStringList.Create;
+  FilterList.Clear;
+  if length(trim(pFilter)) <> 0 then
+    strtokentostrings(pFilter,';',FilterList);
+  for n := FilterList.Count - 1 downto 0 do
+  begin
+    FilterList[n] := LowerCase(StrRemovechars(FilterList[n],['*']));
+    if length(trim(FilterList[n])) = 0 then
+    FilterList.Delete(n);
+  end;
 
   item := nil;
 
@@ -280,13 +308,13 @@ begin
   SList.Clear;
   AddDirToList(SList,Dir);
   SList.Sort;
-  if pSort > 0 then InvertList(SList);
+  FilterList.Free;
 
+  if pSort > 0 then InvertList(SList);
 
   pMaxItems := pMaxItems - 1;
   if (pMaxItems <= 0) or (pMaxItems > SList.Count - 1) then
      pMaxItems := SList.Count - 1;
-
 
   itemcount := 0;
   for h := 0 to SList.Count - 1 do
