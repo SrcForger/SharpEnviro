@@ -77,7 +77,7 @@ type
     function AddLabelItem(pCaption : String; pDynamic : boolean; pInsertPos: Integer=-1): TObject;
     function AddLinkItem(pCaption,pTarget,pIcon : String; pDynamic : boolean; pInsertPos: Integer=-1) : TObject; overload;
     function AddLinkItem(pCaption,pTarget,pIconName : String; pIcon : TBitmap32; pDynamic : boolean; pInsertPos: Integer=-1) : TObject; overload;
-    function AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String;  pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
+    function AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String; pRecursive : Boolean; pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
     function AddDriveListItem(pDriveNames:  boolean; pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
     function AddControlPanelItem(pDynamic : boolean; pInsertPos: Integer=-1): TObject;
     function  AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean; pInsertPos: Integer=-1) : TObject; overload;
@@ -251,7 +251,8 @@ begin
                                                          item.PropList.GetString('Action'),
                                                          item.PropList.GetString('Filter'),
                                                          item.PropList.GetInt('Sort'),
-                                                         item.PropList.GetInt('MaxItems'));
+                                                         item.PropList.GetInt('MaxItems'),
+                                                         item.PropList.GetBool('Recursive'));
       mtDriveList : FMenuActions.UpdateDynamicDriveList(FDynList,item.PropList.GetBool('ShowDriveNames'));
       mtCPLList : FMenuActions.UpdateControlPanelList(FDynList);
       mtDesktopObjectList : FMenuActions.UpdateObjectList(FDynList);
@@ -448,7 +449,7 @@ begin
   Create(nil, pManager, pSettings);
 end;
 
-function TSharpEMenu.AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String; pDynamic : boolean; pInsertPos: Integer=-1): TObject;
+function TSharpEMenu.AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String; pRecursive : Boolean; pDynamic : boolean; pInsertPos: Integer=-1): TObject;
 var
   item : TSharpEMenuItem;
 begin
@@ -461,6 +462,7 @@ begin
   item.PropList.Add('MaxItems',pMax);
   item.PropList.Add('Sort',pSort);
   item.PropList.Add('Filter',pFilter);
+  item.PropList.Add('Recursive',pRecursive);
   item.isVisible := False;
   item.isDynamic := pDynamic;
   result := item;

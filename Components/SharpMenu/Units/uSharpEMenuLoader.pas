@@ -69,7 +69,8 @@ begin
              menu.AddDynamicDirectoryItem(Value('Target'),
                                           IntValue('MaxItems',-1),
                                           IntValue('Sort',0),
-                                          Value('Filter'), False)
+                                          Value('Filter'),
+                                          BoolValue('Recursive',False), False)
           else
           if CompareText(typestring,'drivelist') = 0 then
              menu.AddDriveListItem(BoolValue('ShowDriveNames',True),False)

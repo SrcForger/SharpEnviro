@@ -65,6 +65,7 @@ begin
             Add('MaxItems',menuitem.PropList.GetInt('MaxItems'));
             Add('Sort',menuitem.PropList.GetInt('Sort'));
             Add('Filter',menuitem.PropList.GetString('Filter'));
+            Add('Recursive',menuitem.PropList.GetBool('Recursive'));
           end;
           mtDriveList: begin
             Add('type','drivelist');
