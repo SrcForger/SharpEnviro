@@ -86,6 +86,9 @@ type
     procedure MouseDownEvent(Sender: TObject; Button: TMouseButton;
     Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
 
+    procedure MouseMoveEvent(Sender: TObject; Shift: TShiftState;
+    X, Y: Integer; Layer: TCustomLayer);
+
     function WithinRect(AX,AY: Integer; ARect:TRect):Boolean;
     procedure SetAutoSizeTabs(const Value: Boolean);
     function CalculateMaxTabSize: Integer;
@@ -262,12 +265,7 @@ begin
   FImage32.Parent := Self;
   Fimage32.Align := alClient;
   FImage32.OnMouseUp := MouseDownEvent;
-
-  {FTimer := TTimer.Create(Self);
-  Ftimer.Interval := 500;
-  Ftimer.OnTimer := TimeEvent;
-  Ftimer.Enabled := False;   }
-
+  FImage32.OnMouseMove := MouseMoveEvent;
   
 end;
 
@@ -290,6 +288,7 @@ procedure TSharpETabList.DrawTab(ATabRect: TRect; ATabItem: TSharpETabListItem);
 var
   iTabWidth, iIconWidth, {iIconHeight, }iStatusWidth, iCaptionWidth:Integer;
   s: String;
+  tf:TTextFormat;
 begin
   iTabWidth := ATabRect.Right-ATabRect.Left;
   // Get icon width
@@ -359,8 +358,15 @@ begin
   // Draw Caption Text
   s := PathCompactPath(FImage32.Bitmap.Canvas.Handle, ATabItem.Caption,
     iCaptionWidth+12, cpEnd);
-  FImage32.Bitmap.Textout(ATabrect.Left+FTextBounds.Left+iIconWidth,
+
+  {if ATabItem.Status = '' then begin
+    tf := [tfCenter,tfVerticalCenter,tfSingleLine];
+    FImage32.Bitmap.Canvas.Font.Assign(Self.Font);
+    FImage32.Bitmap.Canvas.TextRect(ATabRect,s,tf);
+  end else begin  }
+    FImage32.Bitmap.Textout(ATabrect.Left+FTextBounds.Left+iIconWidth,
     FTextBounds.Top,s);
+  //end;
 
   // Status Text Color
   if FTabIndex = ATabItem.Index then
@@ -370,6 +376,8 @@ begin
   // Draw Status Text
   FImage32.Bitmap.Textout(ATabrect.Right-iStatusWidth-FTextBounds.Right,FTextBounds.Top,
     ATabItem.Status);
+
+  
 
 end;
 
@@ -421,6 +429,34 @@ begin
 
         TabIndex := i;
       end;
+      break;
+    end;
+  end;
+end;
+
+procedure TSharpETabList.MouseMoveEvent(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer; Layer: TCustomLayer);
+var
+  i:Integer;
+  r:TRect;
+  tmpTab:TSharpETabListItem;
+begin
+  If Count = 0 then exit;
+  FImage32.Cursor := crDefault;
+
+  FMouseOverID := -1;
+  For i := 0 to Pred(FTabList.Count) do begin
+
+    tmpTab := FTabList.Item[i];
+    r := tmpTab.TabRect;
+    //r := Rect(r.Left+FTextBounds.Left,r.Top+FTextBounds.Top,
+    //  r.Right-FTextBounds.Right, r.Bottom-FTextBounds.Bottom);
+
+    if WithinRect(X,Y,r) then begin
+      FMouseOverID := i;
+      Invalidate;
+
+      FImage32.Cursor := crHandPoint;
       break;
     end;
   end;
@@ -645,7 +681,7 @@ end;
 procedure TSharpETabListItem.SetCollection(Value: TCollection);
 begin
   inherited;
-  TSharpETabList(Value.Owner).Invalidate;
+  //TSharpETabList(Value.Owner).Invalidate;
 end;
 
 procedure TSharpETabListItem.SetImageIndex(const Value: Integer);

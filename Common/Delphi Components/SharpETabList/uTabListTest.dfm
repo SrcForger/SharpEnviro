@@ -49,7 +49,7 @@ object Form12: TForm12
     CaptionUnSelectedColor = clBlack
     StatusUnSelectedColor = clGreen
     TabAlign = taRightJustify
-    AutoSizeTabs = False
+    AutoSizeTabs = True
     BottomBorder = True
     Border = True
     BorderColor = clBlack
