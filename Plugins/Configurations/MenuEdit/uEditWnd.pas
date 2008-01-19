@@ -76,6 +76,7 @@ type
     lblDescription: TLabel;
     pagBlank: TJvStandardPage;
     Label4: TLabel;
+    chkRecursive: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure cbMenuItemsSelect(Sender: TObject);
     procedure btnLinkIconBrowseClick(Sender: TObject);
@@ -175,6 +176,7 @@ begin
                 edDynamicDirTarget.Text := '';
                 edDynamicDirFilter.Text := '';
                 cbDynamicDirSort.ItemIndex := 0;
+                chkRecursive.Checked := false;
                 sgbDynamicDirMaxItems.Value := -1;
                 SelectMenuItemType(tmpMenuItemType);
               end;
@@ -237,6 +239,7 @@ begin
                   2: cbDynamicDirSort.ItemIndex := 3;
                 end;
 
+                chkRecursive.Checked := tmpItem.MenuItem.PropList.GetBool('Recursive');
                 sgbDynamicDirMaxItems.Value := tmpItem.MenuItem.PropList.GetInt('MaxItems');
                 SelectMenuItemType(tmpItem.MenuItem.ItemType);
               end;
@@ -315,7 +318,7 @@ begin
   frmList.lbItems.ControlState := frmList.lbItems.ControlState - [csLButtonDown];
 
   tmp := TPageData(cbMenuItems.Items.Objects[cbMenuItems.ItemIndex]);
-  frmEdit.Height := 140; //tmp.Height;
+  frmEdit.Height := 160; //tmp.Height;
   lblDescription.Caption := tmp.Description;
 
   nMenuItemIndex := cbMenuItems.ItemIndex;
@@ -470,7 +473,7 @@ begin
               end;
 
               tmpMenuItem := tmpMenu.AddDynamicDirectoryItem(edDynamicDirTarget.Text,
-                sgbDynamicDirMaxItems.Value, nSort, edDynamicDirFilter.Text, False,
+                sgbDynamicDirMaxItems.Value, nSort, edDynamicDirFilter.Text, chkRecursive.Checked, False,
                 nInsertPos);
             end;
 
@@ -526,8 +529,9 @@ begin
                 nSort := 0;
               end;
 
-              tmpItem.MenuItem.PropList.Add('Sort', nSort);
+              tmpItem.MenuItem.PropList.Add('Recursive', chkRecursive.Checked);
               tmpItem.MenuItem.PropList.Add('MaxItems', sgbDynamicDirMaxItems.Value);
+              tmpItem.MenuItem.PropList.Add('Sort', nSort);
             end;
         end;
 

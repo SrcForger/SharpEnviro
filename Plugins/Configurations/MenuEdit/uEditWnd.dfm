@@ -290,10 +290,19 @@ object frmEdit: TfrmEdit
         TabOrder = 4
         OnChange = GenericUpdateEditState
       end
+      object chkRecursive: TCheckBox
+        Left = 10
+        Top = 61
+        Width = 155
+        Height = 17
+        Caption = 'Include Subdirectories'
+        TabOrder = 5
+        OnClick = GenericUpdateEditState
+      end
     end
     object pagBlank: TJvStandardPage
-      Left = 0
-      Top = 0
+      Left = 328
+      Top = 6
       Width = 500
       Height = 102
       Caption = 'pagBlank'
@@ -301,7 +310,7 @@ object frmEdit: TfrmEdit
         AlignWithMargins = True
         Left = 8
         Top = 0
-        Width = 166
+        Width = 488
         Height = 13
         Margins.Left = 8
         Margins.Top = 0
@@ -310,6 +319,8 @@ object frmEdit: TfrmEdit
         Align = alTop
         Caption = 'There are no configuration options'
         Enabled = False
+        ExplicitLeft = 292
+        ExplicitTop = -8
       end
     end
   end
@@ -377,7 +388,7 @@ object frmEdit: TfrmEdit
       Style = csDropDownList
       Anchors = [akLeft, akTop, akRight]
       DropDownCount = 20
-      ItemHeight = 0
+      ItemHeight = 13
       ParentShowHint = False
       ShowHint = True
       Sorted = True
