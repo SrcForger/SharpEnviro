@@ -77,6 +77,7 @@ type
     pagBlank: TJvStandardPage;
     Label4: TLabel;
     chkRecursive: TCheckBox;
+    chkDescending: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure cbMenuItemsSelect(Sender: TObject);
     procedure btnLinkIconBrowseClick(Sender: TObject);
@@ -131,6 +132,7 @@ procedure TfrmEdit.InitUI(AEditMode: TSCE_EditMode_Enum);
 var
   tmpItem: TItemData;
   tmpMenuItemType: TSharpEMenuItemType;
+  n:Integer;
 begin
 
   case AEditMode of
@@ -177,6 +179,7 @@ begin
                 edDynamicDirFilter.Text := '';
                 cbDynamicDirSort.ItemIndex := 0;
                 chkRecursive.Checked := false;
+                chkDescending.Checked := false;
                 sgbDynamicDirMaxItems.Value := -1;
                 SelectMenuItemType(tmpMenuItemType);
               end;
@@ -232,13 +235,15 @@ begin
                 edDynamicDirTarget.Text := tmpItem.MenuItem.PropList.GetString('Action');
                 edDynamicDirFilter.Text := tmpItem.MenuItem.PropList.GetString('Filter');
 
-                case tmpItem.MenuItem.PropList.GetInt('Sort') of
-                  -1: cbDynamicDirSort.ItemIndex := 2;
-                  0: cbDynamicDirSort.ItemIndex := 0;
-                  1: cbDynamicDirSort.ItemIndex := 1;
-                  2: cbDynamicDirSort.ItemIndex := 3;
+                n := tmpItem.MenuItem.PropList.GetInt('Sort');
+                case abs(n) of
+                  1: cbDynamicDirSort.ItemIndex := 0;
+                  3: cbDynamicDirSort.ItemIndex := 1;
+                  2: cbDynamicDirSort.ItemIndex := 2;
+                  else cbDynamicDirSort.ItemIndex := 0;
                 end;
 
+                chkDescending.Checked := (n < 0);
                 chkRecursive.Checked := tmpItem.MenuItem.PropList.GetBool('Recursive');
                 sgbDynamicDirMaxItems.Value := tmpItem.MenuItem.PropList.GetInt('MaxItems');
                 SelectMenuItemType(tmpItem.MenuItem.ItemType);
@@ -399,6 +404,8 @@ var
   tmpItem: TItemData;
 begin
   Result := True;
+  tmpMenuItem := nil;
+  
   if not (AApply) then
     exit;
 
@@ -464,13 +471,14 @@ begin
           mtDynamicDir: begin
 
               case cbDynamicDirSort.ItemIndex of
-                0: nSort := 0;
-                1: nSort := 1;
-                2: nSort := -1;
-                3: nSort := 2;
-              else
-                nSort := 0;
+                0: nSort := 1;
+                1: nSort := 3;
+                2: nSort := 2;
+                else nSort := 1;
               end;
+
+              if chkDescending.Checked then
+                nSort := 0 - nSort;
 
               tmpMenuItem := tmpMenu.AddDynamicDirectoryItem(edDynamicDirTarget.Text,
                 sgbDynamicDirMaxItems.Value, nSort, edDynamicDirFilter.Text, chkRecursive.Checked, False,
@@ -521,13 +529,14 @@ begin
               tmpItem.MenuItem.PropList.Add('Filter', edDynamicDirFilter.Text);
 
               case cbDynamicDirSort.ItemIndex of
-                0: nSort := 0;
-                1: nSort := 1;
-                2: nSort := -1;
-                3: nSort := 2;
-              else
-                nSort := 0;
+                0: nSort := 1;
+                1: nSort := 3;
+                2: nSort := 2;
+                else nSort := 1;
               end;
+
+              if chkDescending.Checked then
+                nSort := 0 - nSort;
 
               tmpItem.MenuItem.PropList.Add('Recursive', chkRecursive.Checked);
               tmpItem.MenuItem.PropList.Add('MaxItems', sgbDynamicDirMaxItems.Value);

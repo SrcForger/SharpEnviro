@@ -271,9 +271,8 @@ object frmEdit: TfrmEdit
         TabOrder = 3
         OnChange = GenericUpdateEditState
         Items.Strings = (
-          'Caption'
           'Directory'
-          'Files'
+          'Creation Date'
           'Modified Date')
       end
       object edDynamicDirFilter: TLabeledEdit
@@ -299,10 +298,19 @@ object frmEdit: TfrmEdit
         TabOrder = 5
         OnClick = GenericUpdateEditState
       end
+      object chkDescending: TCheckBox
+        Left = 158
+        Top = 61
+        Width = 155
+        Height = 17
+        Caption = 'Sort Descending'
+        TabOrder = 6
+        OnClick = GenericUpdateEditState
+      end
     end
     object pagBlank: TJvStandardPage
-      Left = 0
-      Top = 0
+      Left = 348
+      Top = 6
       Width = 500
       Height = 102
       Caption = 'pagBlank'
