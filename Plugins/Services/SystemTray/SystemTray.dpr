@@ -52,7 +52,8 @@ var
   Dir : String;
 begin
   Dir := IncludeTrailingBackslash(SharpAPI.GetSharpeDirectory);
-  ShellExecute(Application.Handle, nil, pChar(Dir + 'SharpShellServices.exe'),nil,nil,SW_SHOWNORMAL);
+  //ShellExecute(Application.Handle, nil, pChar(Dir + 'SharpShellServices.exe'),nil,nil,SW_SHOWNORMAL);
+  SharpExecute(Dir + 'SharpShellServices.exe');
 end;
 
 procedure TerminateShellServices;
