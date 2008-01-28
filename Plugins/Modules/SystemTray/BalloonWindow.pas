@@ -365,7 +365,7 @@ begin
     begin
       postmessage(trayicon.Wnd, trayicon.CallbackMessage, trayicon.uID, NIN_BALLOONTIMEOUT);
       Balloonlist.Delete(0);
-      close;
+      Hide;
     end;
   end;
   ShowNext;
