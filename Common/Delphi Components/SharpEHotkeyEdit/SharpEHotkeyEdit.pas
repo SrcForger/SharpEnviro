@@ -111,7 +111,8 @@ begin
       Tlabel(self).Caption := Tlabel(self).Caption + 'WIN + ';
       modf := modf + [scmWin];
     end;
-    Self.Modifier := modf;
+    if modf <> self.Modifier then
+      Self.Modifier := modf;
 
     // check for VK_UNUSED
     {if (pos('VK_UNUSED', vkc.AsText) <> 0) then begin
@@ -121,10 +122,13 @@ begin
       end;
     end; }
 
-    if ((key > 18) or (key < 16)) and (Tlabel(self).Caption <> '') and (ord(key)
-      <> Windows.VK_LWIN) and (ord(key) <> Windows.VK_RWIN)
-        then begin
+    // what kind of super strange if/then check is this?! KEEP IT SIMPLE! :) ...BB
+//    if ((key > 18) or (key < 16)) and (Tlabel(self).Caption <> '') and (ord(key)
+//      <> Windows.VK_LWIN) and (ord(key) <> Windows.VK_RWIN)
+//        then begin
 
+    if ((key > 18) or (key < 16)) and ((key >= 166) or (modf <> [])) then
+    begin
       skey := vkc.AsText;
       Tlabel(self).Caption := Tlabel(self).Caption + skey;
       Self.Key := vkc.AsText;
@@ -170,6 +174,8 @@ procedure TCustomSharpEHotkeyEdit.SetHotkeyText(Key: string;
 var
   vkc: TVKToString;
   skey: string;
+  i : integer;
+  kindex : integer;
 begin
   vkc := TVKToString.Create;
   vkc.VKey := key;
@@ -189,8 +195,15 @@ begin
       Tlabel(self).Caption := Tlabel(self).Caption + 'WIN + ';
 
     skey := key;
-    Tlabel(self).Caption := Tlabel(self).Caption + skey;
-
+    kindex := -1;
+    for i := low(VKeyArray) to high(VKeyArray) do
+      if skey = VKeyArray[i] then
+      begin
+        kindex := i;
+        break;
+      end;
+    if (length(Tlabel(self).Caption) > 0) or (kindex >= 166) then
+      Tlabel(self).Caption := Tlabel(self).Caption + skey;
   finally
     vkc.Free;
   end;
