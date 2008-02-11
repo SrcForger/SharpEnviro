@@ -50,14 +50,13 @@ object MainForm: TMainForm
     object Label2: TLabel
       Left = 8
       Top = 25
-      Width = 236
+      Width = 232
       Height = 39
       Align = alTop
       Caption = 
         '(This is necessary to prevent the explorer shell from starting w' +
         'hen the explorer '#39'file manager'#39' is used.)'
       WordWrap = True
-      ExplicitWidth = 232
     end
     object btn_cancel: TButton
       Left = 171
@@ -109,14 +108,13 @@ object MainForm: TMainForm
     object Label1: TLabel
       Left = 8
       Top = 8
-      Width = 236
+      Width = 224
       Height = 26
       Align = alTop
       Caption = 
         'To change your default windows shell environment select the new ' +
         'shell and click '#39'Ok'#39'.'
       WordWrap = True
-      ExplicitWidth = 224
     end
   end
 end

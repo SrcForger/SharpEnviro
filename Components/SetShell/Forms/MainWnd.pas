@@ -71,8 +71,8 @@ begin
   case rg_shell.ItemIndex of
     0: begin
          dir := ExtractFileDir(Application.ExeName);
-         dir := IncludeTrailingBackSlash(dir);
-         SetNewShell(dir + 'SharpCore.exe');
+         dir := IncludeTrailingPathDelimiter(dir);
+         SetNewShell(PChar(dir + 'SharpCore.exe'));
        end;
     else uShellSwitcher.SetNewShell('explorer.exe');
   end;
