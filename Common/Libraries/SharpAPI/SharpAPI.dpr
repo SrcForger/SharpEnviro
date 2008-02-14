@@ -475,24 +475,14 @@ end;
 
 function ServiceDone(ServiceName: pChar): hresult;
 var
-  cds: TCopyDataStruct;
-  wnd: hWnd;
-  msg: TManagerCmd;
+  mhnd: THandle;
 begin
   try
-    msg.Parameters := ServiceName;
-    msg.Command := '_servicedone';
-    with cds do
-    begin
-      dwData := 0;
-      cbData := SizeOf(TManagerCmd);
-      lpData := @msg;
-    end;
-    wnd := FindWindow('TSharpCoreMainWnd', nil);
-    if wnd <> 0 then
-      Result := SendMessage(wnd, WM_COPYDATA, 0, Cardinal(@cds))
+    mhnd := CreateMutex(nil, False, PChar('started_' + ServiceName));
+    if mhnd <> 0 then
+      Result := mhnd
     else
-      Result := HR_NORECIEVERWINDOW;
+      Result := HR_UNKNOWNERROR;
   except
     Result := HR_UNKNOWNERROR;
   end;
