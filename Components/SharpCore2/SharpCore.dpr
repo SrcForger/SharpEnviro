@@ -62,10 +62,6 @@ var
   wndDebug: Integer;
   lstComponents: TComponentList;
   hndWindow: THandle;
-  thrWindow: THandle;
-  thrWindowID: Dword;
-  thrRun: THandle;
-  thrRunID: Dword;
 
 procedure DebugMsg(Msg: string; MsgType: Integer = DMT_TRACE);
 begin
@@ -134,11 +130,13 @@ begin
   end;
 end;
 
-function RunThread(Ptr: Pointer): LongInt; stdcall;
+function RunAll(): Integer;
 var
   modData: TComponentData;
   i : Integer;
   iTimeout: Integer;
+  modName: String;
+  modMutex: THandle;
 type
   TStartFunc = function(owner: hwnd): hwnd;
 const
@@ -156,13 +154,24 @@ begin
         Sleep(modData.Delay);
         StartService(modData);
         iTimeout := 10000;
+        modName := modData.MetaData.Name;
         while iTimeout > 0 do
-          if not modData.Running then
+        begin
+          modMutex := OpenMutex(MUTEX_ALL_ACCESS, False, PChar('started_' + modName));
+          if not (modMutex > 0) then
           begin
-            Sleep(100);
-            iTimeout := iTimeout - 100;
+            Sleep(1);
+            iTimeout := iTimeout - 1;
+            if iTimeout = 0 then
+              DebugMsg('Timed out waiting for ' + modName);
           end
-          else iTimeout := 0;
+          else
+          begin
+            iTimeout := 0;
+            modData.Running := True;
+            DebugMsg('Started ' + modName);
+          end;
+        end;
       end
       else
         DebugMsg('Unable to start, as service is disabled');
@@ -172,16 +181,26 @@ begin
       Sleep(modData.Delay);
       DebugMsg('Starting ' + modData.MetaData.Name);
       modData.Running := False;
-      //ShellExecute(0, '', PChar(modData.FileName), '', GetSharpEDirectory, SW_SHOWNORMAL);
       SharpExecute(modData.FileName);
-      {iTimeout := 10000;
+      iTimeout := 10000;
+      modName := modData.MetaData.Name;
       while iTimeout > 0 do
-        if not modData.Running then
+      begin
+        modMutex := OpenMutex(MUTEX_ALL_ACCESS, False, PChar('started_' + modName));
+        if not (modMutex > 0) then
         begin
-          Sleep(100);
-          iTimeout := iTimeout - 100;
+          Sleep(1);
+          iTimeout := iTimeout - 1;
+          if iTimeout = 0 then
+            DebugMsg('Timed out waiting for ' + modName);
         end
-        else iTimeout := 0;}
+        else
+        begin
+          iTimeout := 0;
+          modData.Running := True;
+          DebugMsg('Started ' + modName);
+        end;
+      end;
     end;
   end;
 end;
@@ -244,8 +263,7 @@ begin
         lstComponents := TComponentList.Create;
         lstComponents.BuildList(strExtension); //enumerate services and components
         BuildMenu;
-        //thrRun := CreateThread(nil, 0, @RunThread, nil, 0, thrRunID);
-        RunThread(nil);
+        RunAll;
       end;
 
     WM_ICONTRAY: begin // User clicked tray icon, lParam stores which button they used
@@ -270,8 +288,7 @@ begin
                 StopAll;
                 bDoStartup := False;
                 Sleep(5000);
-                //thrRun := CreateThread(nil, 0, @RunThread, nil, 0, thrRunID);
-                RunThread(nil);
+                RunAll;
               end;
           else
             if LoWord(wParam) >= 50 then {//user clicked a service} begin
@@ -340,39 +357,10 @@ begin
             end;
           end;
         end
-        else if LowerCase(tmdData.Command) = '_servicedone' then {//service is done starting} begin
-          iIndex := lstComponents.FindByName(tmdData.Parameters);
-          if (iIndex < lstComponents.Count) and (iIndex > -1) then begin
-            modData := lstComponents.Items[iIndex];
-            modData.Running := True;
-            DebugMsg(modData.MetaData.Name + ' finished starting');
-            if modData.MetaData.Name = 'System Tray' then
-              Shell_NotifyIcon(NIM_ADD, @nidTray);
-          end;
-        end;
       end;
   else
     Result := DefWindowProc(hWnd, Msg, wParam, lParam);
   end;
-end;
-
-function WindowThread(Ptr : Pointer) : LongInt; stdcall;
-begin
-  result := 1;
-  DebugMsg('Creating main window');
-  wclClass.lpszClassName := 'TSharpCoreMainWnd';
-  wclClass.lpfnWndProc := @WindowProc;
-  wclClass.hInstance := hInstance;
-  wclClass.hbrBackground := 1;
-  wclClass.hIcon := LoadIcon(hInstance, 'MAINICON');
-
-  Windows.RegisterClass(wclClass);
-
-  hndWindow := CreateWindow(wclClass.lpszClassName, 'SharpCore', 0,
-    10, 10, 340, 220, 0, 0, hInstance, nil);
-
-  while GetMessage(wndMsg, 0, 0, 0) do
-    DispatchMessage(wndMsg);
 end;
 
 begin
@@ -427,8 +415,20 @@ begin
       Exit;
     end;
 
-  thrWindow := CreateThread(nil, 0, @WindowThread, nil, 0, thrWindowID);
-  WaitForSingleObject(thrWindow, INFINITE);
+  DebugMsg('Creating main window');
+  wclClass.lpszClassName := 'TSharpCoreMainWnd';
+  wclClass.lpfnWndProc := @WindowProc;
+  wclClass.hInstance := hInstance;
+  wclClass.hbrBackground := 1;
+  wclClass.hIcon := LoadIcon(hInstance, 'MAINICON');
+
+  Windows.RegisterClass(wclClass);
+
+  hndWindow := CreateWindow(wclClass.lpszClassName, 'SharpCore', 0,
+    10, 10, 340, 220, 0, 0, hInstance, nil);
+
+  while GetMessage(wndMsg, 0, 0, 0) do
+    DispatchMessage(wndMsg);
 
 end.
 
