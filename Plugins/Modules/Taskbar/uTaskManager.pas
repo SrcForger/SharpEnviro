@@ -338,7 +338,7 @@ begin
         SList.Sort;
         for n := 0 to SList.Count - 1 do
         begin
-          pItem1 := GetItemByHandle(StrToInt64(SList.ValueFromIndex[n]));
+          pItem1 := GetItemByHandle(StrToInt64Def(SList.ValueFromIndex[n],-1));
           if pItem1 <> nil then
           begin
             ExChangeTasks(TTaskItem(FItems.Items[n]),pItem1);
