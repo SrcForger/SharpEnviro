@@ -280,11 +280,24 @@ begin
         c := ColorToColor32Alpha(sBackgroundColor,sForegroundAlpha);
         if n + 1 = VWMIndex then
           c := LightenColor32(c,64);
-        wndbmp.FillRect(wndrect.Left,wndrect.Top,wndrect.Right,wndrect.Bottom,c);
+
+        // a bug in the asm code of gr32 makes this try/except block necessary
+        // otherwise rare and random Access Violation on 64 bit systems
+        try
+          wndbmp.FillRect(wndrect.Left,wndrect.Top,wndrect.Right,wndrect.Bottom,c);
+        except
+        end;
+        
         c := ColorToColor32Alpha(sForegroundColor,sForegroundAlpha);
         if n + 1 = VWMIndex then
           c := LightenColor32(c,64);
-        wndbmp.FillRect(wndrect.Left + 1 ,wndrect.Top + 1,wndrect.Right - 1,wndrect.Bottom - 1,c);
+
+        // a bug in the asm code of gr32 makes this try/except block necessary
+        // otherwise rare and random Access Violation on 64 bit systems
+        try
+          wndbmp.FillRect(wndrect.Left + 1 ,wndrect.Top + 1,wndrect.Right - 1,wndrect.Bottom - 1,c);
+        except        
+        end;
       end;
     end;
   end;
@@ -294,11 +307,18 @@ begin
     c := ColorToColor32Alpha(sBorderColor,sBorderAlpha);
     if n + 1 = VWMIndex then
       c := LightenColor32(c,32);
-    VWM.FrameRectTS(n * (VWMWidth + 2) + n * sVWMSpacing,
-                   0,
-                   (n+1)*(VWMWidth + 2) + n * sVWMSpacing,
-                   VWMHeight + 2,
-                   c);
+
+    // a bug in the asm code of gr32 makes this try/except block necessary
+    // otherwise rare and random Access Violation on 64 bit systems  
+    try      
+      VWM.FrameRectTS(n * (VWMWidth + 2) + n * sVWMSpacing,
+                     0,
+                     (n+1)*(VWMWidth + 2) + n * sVWMSpacing,
+                     VWMHeight + 2,
+                     c);
+    except
+    end;
+
     DstRect.Left := n * (VWMWidth  + 2 ) + 1 + n * sVWMSpacing;
     DstRect.Top := 1;
     DstRect.Right := (n+1) * (VWMWidth + 2) - 1 + n * sVWMSpacing;
@@ -307,7 +327,14 @@ begin
     c := ColorToColor32Alpha(sBackgroundColor,sBackgroundAlpha);
     if n + 1 = VWMIndex then
       c := ColorToColor32Alpha(sHighlightColor,sHighlightAlpha);
-    VWM.FillRectTS(DstRect.Left,DstRect.Top,DstRect.Right,DstRect.Bottom,c);
+
+    // a bug in the asm code of gr32 makes this try/except block necessary
+    // otherwise rare and random Access Violation on 64 bit systems      
+    try
+      VWM.FillRectTS(DstRect.Left,DstRect.Top,DstRect.Right,DstRect.Bottom,c);
+    except
+    end;
+    
     index := n + 1;
     index := index + 1;
     SrcRect.Left := VWMWidth * (index - 1) ;//round((Screen.DesktopWidth * (index - 1) + Max(0,index - 2) * VWMSpacing) * scale);
