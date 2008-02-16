@@ -180,7 +180,7 @@ begin
   while n>=0 do
   begin
     try
-      wnd := strtoint(FWndList[n]);
+      wnd := StrToInt64(FWndList[n]);
     except
       wnd := 0;
     end;
