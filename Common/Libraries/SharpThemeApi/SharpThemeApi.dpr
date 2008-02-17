@@ -163,6 +163,7 @@ type
     ModBold          : boolean;
     ModItalic        : boolean;
     ModUnderline     : boolean;
+    ModClearType     : boolean;
     ValueSize        : integer;
     ValueName        : String;
     ValueAlpha       : integer;
@@ -172,6 +173,7 @@ type
     ValueBold        : boolean;
     ValueItalic      : boolean;
     ValueUnderline   : boolean;
+    ValueClearType   : Boolean;
   end;
 
   TThemeData = record
@@ -552,6 +554,7 @@ begin
     ModBold          := False;
     ModItalic        := False;
     ModUnderline     := False;
+    ModClearType     := False;
     ValueSize        := 10;
     ValueName        := 'Verdana';
     ValueAlpha       := 0;
@@ -561,6 +564,7 @@ begin
     ValueBold        := False;
     ValueItalic      := False;
     ValueUnderline   := False;
+    ValueClearType   := True;
   end;
 end;
 
@@ -704,6 +708,7 @@ begin
         ModBold          := BoolValue('ModBold',ModBold);
         ModItalic        := BoolValue('ModItalic',ModItalic);
         ModUnderline     := BoolValue('ModUnderline',ModUnderline);
+        ModClearType     := BoolValue('ModClearType',ModClearType);
         ValueSize        := IntValue('ValueSize',ValueSize);
         ValueName        := Value('ValueName',ValueName);
         ValueAlpha       := IntValue('ValueAlpha',ValueAlpha);
@@ -713,6 +718,7 @@ begin
         ValueBold        := BoolValue('ValueBold',ValueBold);
         ValueItalic      := BoolValue('ValueItalic',ValueItalic);
         ValueUnderline   := BoolValue('ValueUnderline',ValueUnderline);
+        ValueClearType   := BoolValue('ValueClearType',ValueClearType);
       end;
   finally
     XML.Free;
@@ -1546,6 +1552,11 @@ begin
   result := Theme.SkinFont.ModUnderline;
 end;
 
+function GetSkinFontModClearType : boolean;
+begin
+  result := Theme.SkinFont.ModClearType;
+end;
+
 function GetSkinFontValueSize : integer;
 begin
   result := Theme.SkinFont.ValueSize;
@@ -1589,6 +1600,11 @@ end;
 function GetSkinFontValueUnderline : boolean;
 begin
   result := Theme.SkinFont.ValueUnderline;
+end;
+
+function GetSkinFontValueClearType : boolean;
+begin
+  result := Theme.SkinFont.ValueClearType;
 end;
 
 // ##########################################
@@ -1905,6 +1921,7 @@ exports
   GetSkinFontModBold,
   GetSkinFontModItalic,
   GetSkinFontModUnderline,
+  GetSkinFontModClearType,
   GetSkinFontValueSize,
   GetSkinFontValueName,
   GetSkinFontValueAlpha,
@@ -1914,6 +1931,7 @@ exports
   GetSkinFontValueBold,
   GetSkinFontValueItalic,
   GetSkinFontValueUnderline,
+  GetSkinFontValueClearType,
 
   // Xml Accessors
   XmlGetSkin,

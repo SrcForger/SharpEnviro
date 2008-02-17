@@ -103,6 +103,10 @@ type
     Label11: TLabel;
     Label12: TLabel;
     Label3: TLabel;
+    Label1: TLabel;
+    Label13: TLabel;
+    UIC_ClearType: TSharpEUIC;
+    cb_cleartype: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure sgb_sizeChangeValue(Sender: TObject; Value: Integer);
     procedure cbxFontNameDrawItem(Control: TWinControl; Index: Integer;
@@ -118,6 +122,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure UIC_Reset(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure cb_cleartypeClick(Sender: TObject);
   private
     FFontList: TFontList;
     FPluginID: string;
@@ -182,6 +187,7 @@ begin
       Add('ModBold', UIC_Bold.HasChanged);
       Add('ModItalic', UIC_Italic.HasChanged);
       Add('ModUnderline', UIC_Underline.HasChanged);
+      Add('ModClearType', UIC_ClearType.HasChanged);
       Add('ValueSize', sgb_size.Value);
       Add('ValueName', cbxFontName.Text);
       Add('ValueAlpha', sgb_Alpha.value);
@@ -191,6 +197,7 @@ begin
       Add('ValueBold', cb_bold.checked);
       Add('ValueItalic', cb_italic.checked);
       Add('ValueUnderline', cb_underline.checked);
+      Add('ValueClearType', cb_ClearType.Checked);
     end;
     XML.SaveToFile(sDir + '\Font.xml~');
 
@@ -267,6 +274,12 @@ begin
   SharpCenterApi.CenterDefineSettingsChanged;
 end;
 
+procedure TfrmFont.cb_cleartypeClick(Sender: TObject);
+begin
+  UIC_ClearType.UpdateStatus;
+  SharpCenterApi.CenterDefineSettingsChanged;
+end;
+
 procedure TfrmFont.cb_ItalicClick(Sender: TObject);
 begin
   UIC_Italic.UpdateStatus;
@@ -339,6 +352,7 @@ begin
     cb_Italic.OnClick := nil;
     cb_bold.OnClick := nil;
     cb_shadow.OnClick := nil;
+    cb_cleartype.OnClick := nil;
 
     try
       try
@@ -396,6 +410,11 @@ begin
               UIC_Underline.HasChanged := True;
               cb_underline.checked := BoolValue('ValueUnderline', cb_bold.checked);
             end;
+
+            if BoolValue('ModClearType', False) then begin
+              UIC_ClearType.HasChanged := True;
+              cb_cleartype.checked := BoolValue('ValueClearType',cb_cleartype.checked);
+            end;
           end;
       except
       end;
@@ -403,6 +422,7 @@ begin
     finally
       XML.Free;
 
+      cb_cleartype.OnClick := cb_ClearTypeClick;
       cb_Underline.OnClick := cb_UnderlineClick;
       cb_Italic.OnClick := cb_ItalicClick;
       cb_bold.OnClick := cb_boldClick;

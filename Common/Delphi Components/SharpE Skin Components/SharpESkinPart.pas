@@ -143,6 +143,7 @@ type
     FShadowType : TShadowType;
     FShadowAlpha : byte;
     FDrawText : boolean;
+    FClearType : boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -176,6 +177,7 @@ type
     property ShadowColorString : String read FShadowColorString write FShadowColorString;
     property ShadowAlpha : byte read FShadowAlpha write FShadowAlpha;
     property DrawText : boolean read FDrawText write FDrawText;
+    property ClearType : boolean read FClearType write FClearType;
   end;
 
   TSkinPartList = class(TObject)
@@ -708,6 +710,7 @@ begin
   Stream.WriteBuffer(FShadowAlpha,SizeOf(FShadowAlpha));
   Stream.WriteBuffer(FAlpha,SizeOf(FAlpha));
   StringSaveToStream(FAlphaString,Stream);
+  StringSaveToStream(BoolToStr(FClearType),Stream);
 end;
 
 procedure TSkinText.LoadFromStream(Stream: TStream);
@@ -733,6 +736,7 @@ begin
   Stream.ReadBuffer(FShadowAlpha,SizeOf(FShadowAlpha));
   Stream.ReadBuffer(FAlpha,SizeOf(FAlpha));
   FAlphaString := StringLoadFromStream(Stream);
+  FClearType := StrToBool(StringLoadFromStream(Stream));
 end;
 
 procedure TSkinText.Assign(Value: TSkinText);
@@ -755,6 +759,7 @@ begin
   FAlpha := Value.FAlpha;
   FAlphaString := Value.FAlphaString;
   FDrawText := Value.DrawText;
+  FClearType := Value.ClearType;
 end;
 
 procedure TSkinText.Assign(Value: TSkinTextRecord);
@@ -858,6 +863,8 @@ begin
     end;
     if ItemNamed['drawtext'] <> nil then
       FDrawText := BoolValue('drawtext',true);
+    if ItemNamed['cleartype'] <> nil then
+      FClearType := BoolValue('cleartype',false);
   end;
 end;
 
@@ -981,6 +988,7 @@ var
   ShadowBmp : TBitmap32;
   TempBmp : TBitmap32;
   w,h : integer;
+  aalevel : integer;
 begin
   TempBmp := TBitmap32.Create;
   w := Bmp.TextWidth(Caption);
@@ -1035,7 +1043,10 @@ begin
   G := GetGValue(c);
   B := GetBValue(c);
   c2 := color32(R,G,B,255);
-  TempBmp.RenderText(TempBmp.Width div 2 - w div 2,TempBmp.Height div 2 - h div 2,Caption,0,c2);
+  if FClearType then
+    aalevel := -2
+  else aalevel := 0;
+  TempBmp.RenderText(TempBmp.Width div 2 - w div 2,TempBmp.Height div 2 - h div 2,Caption,aalevel,c2);
   TempBmp.MasterAlpha := FAlpha;
   TempBmp.DrawTo(Bmp,X-10,Y-10);
 
@@ -1050,6 +1061,7 @@ var
   new : boolean;
   ShadowBmp : TBitmap32;
   w,h : integer;
+  aalevel : integer;
 begin
   if (pPrecacheBmp = nil) or (pPrecacheText = nil) then
   begin
@@ -1136,7 +1148,10 @@ begin
     G := GetGValue(FColor);
     B := GetBValue(FColor);
     c2 := color32(R,G,B,255);
-    pPrecacheBmp.RenderText(pPrecacheBmp.Width div 2 - w div 2,pPrecacheBmp.Height div 2 - h div 2,Caption,0,c2);
+    if FClearType then
+      aalevel := -2
+    else aalevel := 0;
+    pPrecacheBmp.RenderText(pPrecacheBmp.Width div 2 - w div 2,pPrecacheBmp.Height div 2 - h div 2,Caption,aalevel,c2);
   end;
   pPrecacheBmp.MasterAlpha := FAlpha;
   pPrecacheBmp.DrawTo(Bmp,X-10,Y-10);
@@ -2146,6 +2161,8 @@ begin
     result.FStyleItalic := GetSkinFontValueItalic;
   if GetSkinFontModUnderline then
     result.FStyleUnderline := GetSkinFontValueUnderline;
+  if GetSkinFontModClearType then
+    result.FClearType := GetSkinFontValueClearType;
 end;
 
 end.

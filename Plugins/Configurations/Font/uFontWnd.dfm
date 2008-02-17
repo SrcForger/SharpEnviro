@@ -3,7 +3,7 @@ object frmFont: TfrmFont
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmFont'
-  ClientHeight = 436
+  ClientHeight = 523
   ClientWidth = 434
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -31,16 +31,18 @@ object frmFont: TfrmFont
     Left = 0
     Top = 0
     Width = 434
-    Height = 436
+    Height = 523
     ActivePage = pagFont
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 436
     object pagFont: TJvStandardPage
       Left = 0
       Top = 0
       Width = 434
-      Height = 436
+      Height = 523
       Caption = 'pagFont'
+      ExplicitTop = 6
       object Label4: TLabel
         AlignWithMargins = True
         Left = 26
@@ -143,7 +145,7 @@ object frmFont: TfrmFont
       object Label7: TLabel
         AlignWithMargins = True
         Left = 26
-        Top = 266
+        Top = 341
         Width = 400
         Height = 16
         Margins.Left = 26
@@ -163,7 +165,7 @@ object frmFont: TfrmFont
       object Label11: TLabel
         AlignWithMargins = True
         Left = 8
-        Top = 245
+        Top = 320
         Width = 418
         Height = 13
         Margins.Left = 8
@@ -172,7 +174,41 @@ object frmFont: TfrmFont
         Margins.Bottom = 0
         Align = alTop
         Caption = 'Font Style'
-        ExplicitWidth = 49
+        ExplicitTop = 345
+      end
+      object Label1: TLabel
+        AlignWithMargins = True
+        Left = 8
+        Top = 245
+        Width = 418
+        Height = 13
+        Margins.Left = 8
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        Caption = 'Clear Type Fonts'
+        ExplicitWidth = 82
+      end
+      object Label13: TLabel
+        AlignWithMargins = True
+        Left = 26
+        Top = 266
+        Width = 400
+        Height = 20
+        Margins.Left = 26
+        Margins.Top = 8
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        AutoSize = False
+        Caption = 
+          'Change this setting to enable or disable usage of clear type fon' +
+          'ts'
+        EllipsisPosition = epEndEllipsis
+        Transparent = False
+        WordWrap = True
+        ExplicitTop = 259
       end
       object UIC_Size: TSharpEUIC
         AlignWithMargins = True
@@ -253,7 +289,7 @@ object frmFont: TfrmFont
           Left = 2
           Top = 2
           Width = 170
-          Height = 22
+          Height = 23
           Margins.Left = 2
           Margins.Top = 2
           Margins.Right = 2
@@ -319,7 +355,7 @@ object frmFont: TfrmFont
       object UIC_Bold: TSharpEUIC
         AlignWithMargins = True
         Left = 28
-        Top = 346
+        Top = 421
         Width = 398
         Height = 26
         Margins.Left = 28
@@ -341,6 +377,7 @@ object frmFont: TfrmFont
         MonitorControl = cb_bold
         NormalColor = clWhite
         OnReset = UIC_Reset
+        ExplicitTop = 346
         object cb_bold: TCheckBox
           Left = 6
           Top = 4
@@ -354,7 +391,7 @@ object frmFont: TfrmFont
       object UIC_Italic: TSharpEUIC
         AlignWithMargins = True
         Left = 28
-        Top = 286
+        Top = 361
         Width = 398
         Height = 26
         Margins.Left = 28
@@ -376,6 +413,7 @@ object frmFont: TfrmFont
         MonitorControl = cb_Italic
         NormalColor = clWhite
         OnReset = UIC_Reset
+        ExplicitTop = 286
         object cb_Italic: TCheckBox
           Left = 6
           Top = 6
@@ -389,7 +427,7 @@ object frmFont: TfrmFont
       object UIC_Underline: TSharpEUIC
         AlignWithMargins = True
         Left = 28
-        Top = 316
+        Top = 391
         Width = 398
         Height = 26
         Margins.Left = 28
@@ -412,6 +450,7 @@ object frmFont: TfrmFont
         MonitorControl = cb_Underline
         NormalColor = clWhite
         OnReset = UIC_Reset
+        ExplicitTop = 316
         object cb_Underline: TCheckBox
           Left = 6
           Top = 4
@@ -422,12 +461,55 @@ object frmFont: TfrmFont
           OnClick = cb_UnderlineClick
         end
       end
+      object UIC_ClearType: TSharpEUIC
+        AlignWithMargins = True
+        Left = 28
+        Top = 286
+        Width = 398
+        Height = 26
+        Margins.Left = 28
+        Margins.Top = 0
+        Margins.Right = 8
+        Margins.Bottom = 0
+        Align = alTop
+        BevelOuter = bvNone
+        Color = clWhite
+        ParentBackground = False
+        TabOrder = 6
+        RoundValue = 10
+        BorderColor = clBtnShadow
+        Border = True
+        BackgroundColor = clBtnFace
+        HasChanged = False
+        AutoReset = True
+        DefaultValue = '0'
+        MonitorControl = cb_cleartype
+        NormalColor = clWhite
+        OnReset = UIC_Reset
+        ExplicitTop = 290
+        object cb_cleartype: TCheckBox
+          AlignWithMargins = True
+          Left = 8
+          Top = 0
+          Width = 103
+          Height = 26
+          Margins.Left = 8
+          Margins.Top = 0
+          Margins.Right = 0
+          Margins.Bottom = 0
+          Align = alLeft
+          Caption = 'Enable'
+          TabOrder = 0
+          OnClick = cb_cleartypeClick
+          ExplicitLeft = 6
+        end
+      end
     end
     object pagFontShadow: TJvStandardPage
       Left = 0
       Top = 0
       Width = 434
-      Height = 436
+      Height = 523
       Caption = 'pagFontShadow'
       object Label8: TLabel
         AlignWithMargins = True
@@ -494,7 +576,7 @@ object frmFont: TfrmFont
         Left = 0
         Top = 66
         Width = 434
-        Height = 370
+        Height = 457
         Align = alClient
         BevelOuter = bvNone
         ParentColor = True
@@ -581,7 +663,6 @@ object frmFont: TfrmFont
           Margins.Bottom = 8
           Align = alTop
           BevelOuter = bvNone
-          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
