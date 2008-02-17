@@ -202,7 +202,7 @@ begin
             else
               newItem.AddSubItem('', -1);
 
-            if sr.Name = sCurrentIconSet then begin
+            if CompareText(sr.Name,sCurrentIconSet) = 0 then begin
               lb_iconlist.ItemIndex := lb_iconlist.Items.Count - 1;
               //BuildIconPreview;
             end;

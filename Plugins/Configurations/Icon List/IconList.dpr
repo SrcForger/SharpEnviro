@@ -65,7 +65,7 @@ begin
 
   XML := TJclSimpleXML.Create;
   try
-    XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\' + APluginID + '\IconSet.xml');
+    XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + 'Themes\' + APluginID + '\IconSet.xml');
     frmIconList.sCurrentIconSet := XML.Root.Items.Value('Name', '');
   except
   end;
