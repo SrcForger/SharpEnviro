@@ -166,7 +166,8 @@ exports
   Close,
   SetText,
   GetCenterScheme,
-  UpdatePreview;
+  UpdatePreview,
+  GetMetaData;
 
 end.
 

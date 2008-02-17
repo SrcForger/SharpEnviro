@@ -173,7 +173,8 @@ exports
   Save,
   SetText,
   AddTabs,
-  ClickTab;
+  ClickTab,
+  GetMetaData;
 
 begin
 end.

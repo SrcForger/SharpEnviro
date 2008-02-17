@@ -141,7 +141,8 @@ exports
   Open,
   Close,
   Save,
-  SetText;
+  SetText,
+  GetMetaData;
 
 begin
 end.

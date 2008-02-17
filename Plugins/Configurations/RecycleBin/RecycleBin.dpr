@@ -394,7 +394,8 @@ exports
   SetText,
   SetBtnState,
   GetCenterScheme,
-  AddTabs;
+  AddTabs,
+  GetMetaData;
 
 end.
 

@@ -155,7 +155,8 @@ exports
   Open,
   Close,
   Save,
-  SetText;
+  SetText,
+  GetMetaData;
 
 end.
 

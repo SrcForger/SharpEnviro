@@ -178,7 +178,7 @@ exports
   SetSettingType,
   SetText,
   GetCenterScheme,
-
-  UpdatePreview;
+  UpdatePreview,
+  GetMetaData;
 end.
 

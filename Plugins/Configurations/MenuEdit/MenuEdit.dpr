@@ -167,7 +167,8 @@ exports
   OpenEdit,
   CloseEdit,
   SetText,
-  GetCenterScheme;
+  GetCenterScheme,
+  GetMetaData;
 
 end.
 
