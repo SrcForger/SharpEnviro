@@ -62,6 +62,35 @@ var
   wndDebug: Integer;
   lstComponents: TComponentList;
   hndWindow: THandle;
+  TaskBarCreated: Integer;
+
+function ProcessMessage(var Msg: TMsg): Boolean;
+var
+  Unicode: Boolean;
+  MsgExists: Boolean;
+begin
+  Result := False;
+  if PeekMessage(Msg, 0, 0, 0, PM_NOREMOVE) then
+  begin
+    Unicode := (Msg.hwnd <> 0) and IsWindowUnicode(Msg.hwnd);
+    if Unicode then
+      MsgExists := PeekMessageW(Msg, 0, 0, 0, PM_REMOVE)
+    else
+      MsgExists := PeekMessage(Msg, 0, 0, 0, PM_REMOVE);
+    if not MsgExists then Exit;
+    Result := True;
+    if Msg.Message <> WM_QUIT then
+    begin
+      TranslateMessage(Msg);
+      if Unicode then
+        DispatchMessageW(Msg)
+      else
+        DispatchMessage(Msg);
+    end
+    //else
+     // FTerminate := True;
+  end;
+end;
 
 procedure DebugMsg(Msg: string; MsgType: Integer = DMT_TRACE);
 begin
@@ -109,6 +138,7 @@ begin
       DebugMsg('Starting ' + modData.MetaData.Name);
       StartFunc(hndWindow);
       CheckMenuItem(menServices, modData.ID, MF_CHECKED);
+      modData.Running := True;
     end;
   end;
 end;
@@ -181,16 +211,18 @@ begin
       Sleep(modData.Delay);
       DebugMsg('Starting ' + modData.MetaData.Name);
       modData.Running := False;
-      SharpExecute(modData.FileName);
-      iTimeout := 10000;
+      ShellExecute(0, nil, PChar(modData.FileName), '', PChar(ExtractFilePath(modData.FileName)), SW_SHOWNORMAL);
+      iTimeout := 1000;
       modName := modData.MetaData.Name;
       while iTimeout > 0 do
       begin
+        while ProcessMessage(WndMsg) do {loop};
+
         modMutex := OpenMutex(MUTEX_ALL_ACCESS, False, PChar('started_' + modName));
         if not (modMutex > 0) then
         begin
-          Sleep(1);
-          iTimeout := iTimeout - 1;
+          Sleep(100);
+          iTimeout := iTimeout - 100;
           if iTimeout = 0 then
             DebugMsg('Timed out waiting for ' + modName);
         end
@@ -237,6 +269,10 @@ var
   iIndex: Integer;
 begin
   result := 0;
+  if Msg = TaskBarCreated then begin // system tray created/updated, add icon again
+      Shell_NotifyIcon(NIM_ADD, @nidTray);
+    end
+  else
   case Msg of
     WM_DESTROY: PostQuitMessage(0);
 
@@ -263,7 +299,6 @@ begin
         lstComponents := TComponentList.Create;
         lstComponents.BuildList(strExtension); //enumerate services and components
         BuildMenu;
-        RunAll;
       end;
 
     WM_ICONTRAY: begin // User clicked tray icon, lParam stores which button they used
@@ -423,12 +458,18 @@ begin
   wclClass.hIcon := LoadIcon(hInstance, 'MAINICON');
 
   Windows.RegisterClass(wclClass);
+  TaskBarCreated := RegisterWindowMessage('TaskbarCreated');
 
   hndWindow := CreateWindow(wclClass.lpszClassName, 'SharpCore', 0,
     10, 10, 340, 220, 0, 0, hInstance, nil);
 
+  RunAll;
+
   while GetMessage(wndMsg, 0, 0, 0) do
+  begin
+    TranslateMessage(wndMsg);
     DispatchMessage(wndMsg);
+  end;
 
 end.
 
