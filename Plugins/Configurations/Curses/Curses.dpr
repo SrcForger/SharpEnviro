@@ -64,7 +64,7 @@ begin
 
   XML := TJvSimpleXML.Create(nil);
   try
-    XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + '\Themes\'+APluginID+'\Cursor.xml');
+    XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + 'Themes\'+APluginID+'\Cursor.xml');
     frmCursesList.sCurrentCursor := XML.Root.Items.Value('CurrentSkin','');
     for n := 0 to frmCursesList.ccolors.Items.Count - 1 do
         frmCursesList.ccolors.Items.Item[n].ColorCode := XML.Root.Items.IntValue('Color' + inttostr(n),0);

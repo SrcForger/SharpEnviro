@@ -218,7 +218,7 @@ begin
             newItem.AddSubItem('(Author: ' + XML.Root.Items.ItemNamed['SknDef'].Items.Value('Author','Unknown') + ')');
             newItem.AddSubItem(sr.Name);
 
-            if sr.Name = sCurrentCursor then
+            if CompareText(sr.Name,sCurrentCursor) = 0 then
             begin
               lbCursorList.ItemIndex := lbCursorList.Items.Count - 1;
               BuildCursorPreview;
