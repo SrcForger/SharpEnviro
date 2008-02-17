@@ -123,8 +123,9 @@ begin
   repeat
     fname := ExtractFileName(sr.Name);
     setlength(fname, length(fname)-4);
-    if fname = CurrentTab then Tabs.AddTab(fname).Selected := True
-       else Tabs.AddTab(fname);
+    if CompareText(fname,CurrentTab) = 0 then
+      Tabs.AddTab(fname).Selected := True
+    else Tabs.AddTab(fname);
   until FindNext(sr) <> 0;
   FindClose(sr);
 

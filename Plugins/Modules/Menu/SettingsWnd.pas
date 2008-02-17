@@ -99,7 +99,8 @@ begin
     s := sr.Name;
     setlength(s,length(s) - length(ExtractFileExt(s)));
     cb_menulist.Items.Add(s);
-    if s = sMenu then cb_menulist.ItemIndex := cb_menulist.Items.Count - 1;
+    if CompareText(s,sMenu) = 0 then
+      cb_menulist.ItemIndex := cb_menulist.Items.Count - 1;
   until FindNext(sr) <> 0;
   FindClose(sr);
 

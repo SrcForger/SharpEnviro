@@ -1241,7 +1241,7 @@ begin
       if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then begin
         if FileExists(Dir + sr.Name + '\Skin.xml') then begin
           item := TMenuItem.Create(Skin1);
-          if sr.Name = SharpThemeApi.GetSkinName then begin
+          if CompareText(sr.Name,SharpThemeApi.GetSkinName) = 0 then begin
             item.ImageIndex := 28;
             item.Caption := '(' + sr.Name + ')'
           end
