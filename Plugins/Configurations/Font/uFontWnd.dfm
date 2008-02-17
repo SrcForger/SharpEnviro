@@ -35,14 +35,12 @@ object frmFont: TfrmFont
     ActivePage = pagFont
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 436
     object pagFont: TJvStandardPage
       Left = 0
       Top = 0
       Width = 434
       Height = 523
       Caption = 'pagFont'
-      ExplicitTop = 6
       object Label4: TLabel
         AlignWithMargins = True
         Left = 26
@@ -174,7 +172,7 @@ object frmFont: TfrmFont
         Margins.Bottom = 0
         Align = alTop
         Caption = 'Font Style'
-        ExplicitTop = 345
+        ExplicitWidth = 49
       end
       object Label1: TLabel
         AlignWithMargins = True
@@ -377,7 +375,6 @@ object frmFont: TfrmFont
         MonitorControl = cb_bold
         NormalColor = clWhite
         OnReset = UIC_Reset
-        ExplicitTop = 346
         object cb_bold: TCheckBox
           Left = 6
           Top = 4
@@ -413,7 +410,6 @@ object frmFont: TfrmFont
         MonitorControl = cb_Italic
         NormalColor = clWhite
         OnReset = UIC_Reset
-        ExplicitTop = 286
         object cb_Italic: TCheckBox
           Left = 6
           Top = 6
@@ -450,7 +446,6 @@ object frmFont: TfrmFont
         MonitorControl = cb_Underline
         NormalColor = clWhite
         OnReset = UIC_Reset
-        ExplicitTop = 316
         object cb_Underline: TCheckBox
           Left = 6
           Top = 4
@@ -481,12 +476,11 @@ object frmFont: TfrmFont
         Border = True
         BackgroundColor = clBtnFace
         HasChanged = False
-        AutoReset = True
+        AutoReset = False
         DefaultValue = '0'
         MonitorControl = cb_cleartype
         NormalColor = clWhite
         OnReset = UIC_Reset
-        ExplicitTop = 290
         object cb_cleartype: TCheckBox
           AlignWithMargins = True
           Left = 8

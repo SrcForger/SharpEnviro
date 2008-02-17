@@ -74,6 +74,7 @@ begin
   frmFont.BorderStyle := bsNone;
   frmFont.PluginID := APluginID;
 
+  frmFont.LoadSettings;
   frmFont.Show;
   result := frmFont.Handle;
 end;

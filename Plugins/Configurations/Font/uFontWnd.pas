@@ -172,7 +172,7 @@ var
   XML: TJvSimpleXML;
   sDir: string;
 begin
-  sDir := SharpApi.GetSharpeUserSettingsPath + '\Themes\' + sTheme;
+  sDir := SharpApi.GetSharpeUserSettingsPath + 'Themes\' + sTheme;
 
   XML := TJvSimpleXML.Create(nil);
   try
