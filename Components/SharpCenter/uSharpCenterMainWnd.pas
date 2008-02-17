@@ -205,6 +205,7 @@ const
 implementation
 
 uses
+  uSystemFuncs,
   SharpEScheme,
   uSharpCenterHelperMethods,
   uSharpCenterHistoryManager;
@@ -272,14 +273,16 @@ procedure TSharpCenterWnd.GetCopyData(var Msg: TMessage);
 var
   tmpMsg: TsharpE_DataStruct;
   tmpHist: TSharpCenterHistoryItem;
+  command: TSCC_COMMAND_ENUM;
 begin
   tmpMsg := PSharpE_DataStruct(PCopyDataStruct(msg.lParam)^.lpData)^;
   tmpHist := SCM.ActiveCommand;
 
+  command := CenterCommandAsEnum(tmpMsg.Command);
   SCM.History.Add(tmpHist.Command, tmpHist.Param, tmpMsg.PluginID);
-  SCM.ExecuteCommand(CenterCommandAsEnum(tmpMsg.Command),
-    tmpMsg.Parameter, tmpMsg.PluginID);
-
+  SCM.ExecuteCommand(command,tmpMsg.Parameter, tmpMsg.PluginID);
+  if command = sccLoadSetting then
+    ForceForegroundWindow(Handle);
 end;
 
 procedure TSharpCenterWnd.InitCommandLine;
