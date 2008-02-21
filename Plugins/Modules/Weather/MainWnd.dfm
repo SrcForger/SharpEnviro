@@ -18,26 +18,26 @@ object MainForm: TMainForm
   TextHeight = 13
   object lb_bottom: TSharpESkinLabel
     Left = 50
-    Top = 7
+    Top = 0
     Width = 12
     Height = 21
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnDblClick = BackgroundDblClick
     Caption = '.'
-    AutoPosition = False
+    AutoPos = apTop
     LabelStyle = lsSmall
   end
   object lb_top: TSharpESkinLabel
     Left = 2
-    Top = -1
+    Top = 0
     Width = 12
     Height = 21
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnDblClick = BackgroundDblClick
     Caption = '.'
-    AutoPosition = False
+    AutoPos = apTop
     LabelStyle = lsSmall
   end
   object MenuPopup: TPopupMenu

@@ -296,7 +296,7 @@ end;
 procedure UpdateMessage(part : TSU_UPDATE_ENUM; param : integer);
 const
   processed : TSU_UPDATES = [suSkinFileChanged,suBackground,suTheme,suSkin,
-                             suScheme,suModule];
+                             suScheme,suModule,suSkinFont];
 var
   temp : TModule;
   n,i : integer;
@@ -352,6 +352,10 @@ begin
       if n = 0 then
          TrayClient.PositionTrayWindow(0,0,temp.Form);
     end;
+
+    // Step4: Update if font changed
+    if [part] <= [suSkinFont] then
+      TMainForm(temp.Form).SkinManager.RefreshControls;
   end;
 end;
 

@@ -31,7 +31,7 @@ uses
   Windows, SysUtils, Classes, Controls, Forms,
   Dialogs, StdCtrls, SharpEBaseControls, Commctrl,
   SharpESkinManager, JvSimpleXML, SharpApi, Menus, Math,
-  SharpESkinLabel, GR32, ExtCtrls, ToolTipApi;
+  SharpESkinLabel, SharpESkin, GR32, ExtCtrls, ToolTipApi;
 
 
 type
@@ -148,13 +148,12 @@ begin
   lb_clock.UpdateSkin;
   if lb_bottomClock.Visible then
   begin
-    lb_clock.Top := 1 + ((Height - 2 - 4) div 2 div 2) - (lb_clock.Height div 2);
-    lb_bottomclock.Top := Height - 3 - ((Height - 2 - 4) div 2 div 2) - (lb_bottomclock.Height div 2); 
+    lb_clock.AutoPos := apTop;
     newWidth := max(lb_clock.Width,lb_bottomClock.Width);
   end else
   begin
     newWidth := lb_clock.Width;
-    lb_clock.Top := Height div 2 - (lb_clock.Height div 2) - 1;
+    lb_clock.AutoPos := apCenter;
   end;
   Tag := newWidth;
   Hint := inttostr(NewWidth);

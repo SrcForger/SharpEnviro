@@ -20,7 +20,7 @@ object MainForm: TMainForm
     Left = 82
     Top = 0
     Width = 16
-    Height = 20
+    Height = 25
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnMouseUp = btn_pselectMouseUp
@@ -90,17 +90,13 @@ object MainForm: TMainForm
       0000001D0000001D000000200000002400000024000000230000001D00000017
       000000100000000600000001000000000000000000000000}
     Layout = blGlyphLeft
-    Margin = -1
-    DisabledAlpha = 100
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 0
   end
   object btn_next: TSharpEButton
     Left = 66
     Top = 0
     Width = 16
-    Height = 20
+    Height = 25
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = btn_nextClick
@@ -170,17 +166,13 @@ object MainForm: TMainForm
       FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00}
     Layout = blGlyphLeft
-    Margin = -1
-    DisabledAlpha = 100
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 0
   end
   object btn_prev: TSharpEButton
     Left = 50
     Top = 0
     Width = 16
-    Height = 20
+    Height = 25
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = btn_prevClick
@@ -250,17 +242,13 @@ object MainForm: TMainForm
       FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00}
     Layout = blGlyphLeft
-    Margin = -1
-    DisabledAlpha = 100
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 0
   end
   object btn_pause: TSharpEButton
     Left = 18
     Top = 0
     Width = 16
-    Height = 20
+    Height = 25
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = btn_pauseClick
@@ -330,17 +318,13 @@ object MainForm: TMainForm
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000000000}
     Layout = blGlyphLeft
-    Margin = -1
-    DisabledAlpha = 100
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 0
   end
   object btn_stop: TSharpEButton
     Left = 34
     Top = 0
     Width = 16
-    Height = 20
+    Height = 25
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = btn_stopClick
@@ -410,17 +394,13 @@ object MainForm: TMainForm
       FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00}
     Layout = blGlyphLeft
-    Margin = -1
-    DisabledAlpha = 100
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 0
   end
   object btn_play: TSharpEButton
     Left = 2
     Top = 0
     Width = 16
-    Height = 20
+    Height = 25
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = btn_playClick
@@ -490,11 +470,7 @@ object MainForm: TMainForm
       FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00}
     Layout = blGlyphLeft
-    Margin = -1
-    DisabledAlpha = 100
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 0
   end
   object MenuPopup: TPopupMenu
     Left = 168

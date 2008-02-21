@@ -175,7 +175,6 @@ begin
     btn.Visible := False;
     btn.AutoPosition := True;
     btn.AutoSize := True;
-    btn.GlyphResize := True;
     btn.Hint := pTarget;
     btn.Width := sWidth;
     btn.Parent := self;
@@ -191,14 +190,9 @@ begin
     icon := pIcon;
 
     if sShowLabel then
-    begin
-      btn.Caption := pCaption;
-      btn.GlyphSpacing := 4;
-    end else
-    begin
+      btn.Caption := pCaption
+    else
       btn.Caption := '';
-      btn.GlyphSpacing := 0;
-    end;
 
     if sShowIcon then
     begin

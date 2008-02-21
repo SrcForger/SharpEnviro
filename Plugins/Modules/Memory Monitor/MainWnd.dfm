@@ -19,35 +19,35 @@ object MainForm: TMainForm
   TextHeight = 13
   object lb_swpbar: TSharpESkinLabel
     Left = 80
-    Top = 72
+    Top = 0
     Width = 51
     Height = 21
     SkinManager = SharpESkinManager1
     AutoSize = True
     Caption = 'lb_swpbar'
-    AutoPosition = False
+    AutoPos = apTop
     LabelStyle = lsSmall
   end
   object lb_rambar: TSharpESkinLabel
     Left = 80
-    Top = 40
+    Top = 0
     Width = 51
     Height = 21
     SkinManager = SharpESkinManager1
     AutoSize = True
     Caption = 'lb_rambar'
-    AutoPosition = False
+    AutoPos = apTop
     LabelStyle = lsSmall
   end
   object lb_swp: TSharpESkinLabel
     Left = 32
-    Top = 48
+    Top = 0
     Width = 26
     Height = 21
     SkinManager = SharpESkinManager1
     AutoSize = True
     Caption = 'swp'
-    AutoPosition = False
+    AutoPos = apTop
     LabelStyle = lsSmall
   end
   object lb_ram: TSharpESkinLabel
@@ -58,7 +58,7 @@ object MainForm: TMainForm
     SkinManager = SharpESkinManager1
     AutoSize = True
     Caption = 'ram'
-    AutoPosition = False
+    AutoPos = apTop
     LabelStyle = lsSmall
   end
   object swpbar: TSharpEProgressBar
@@ -69,6 +69,7 @@ object MainForm: TMainForm
     Min = 0
     Max = 100
     Value = 0
+    AutoPos = apCenter
     ParentShowHint = False
     ShowHint = False
     SkinManager = SharpESkinManager1
@@ -82,6 +83,7 @@ object MainForm: TMainForm
     Min = 0
     Max = 100
     Value = 0
+    AutoPos = apCenter
     ParentShowHint = False
     ShowHint = False
     SkinManager = SharpESkinManager1

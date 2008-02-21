@@ -20,7 +20,7 @@ object MainForm: TMainForm
     Left = 104
     Top = 0
     Width = 25
-    Height = 20
+    Height = 25
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = btn_selectClick
@@ -64,17 +64,13 @@ object MainForm: TMainForm
       7E8582FC79807DFC747C78FC707874FC6B736FFC666E6AFC606864FC5B625FF5
       575E5A9751585411}
     Layout = blGlyphLeft
-    Margin = 0
-    DisabledAlpha = 100
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 0
   end
   object edit: TSharpEEdit
     Left = 3
     Top = 0
-    Width = 100
-    Height = 20
+    Width = 95
+    Height = 25
     AutoSize = True
     SkinManager = SharpESkinManager1
     AutoPosition = True

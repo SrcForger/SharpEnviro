@@ -62,12 +62,8 @@ object MainForm: TMainForm
       3E3E3E1D404040284040402C3E3E3E263C3C3C1A3939390D3636360535353501
       3535350037373700}
     Layout = blGlyphLeft
-    Margin = 2
-    DisabledAlpha = 100
     Caption = 'Click to Add Buttons'
     AutoPosition = True
-    GlyphResize = False
-    GlyphSpacing = 0
   end
   object MenuPopup: TPopupMenu
     Left = 168

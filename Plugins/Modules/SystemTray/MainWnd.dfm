@@ -27,7 +27,7 @@ object MainForm: TMainForm
     SkinManager = SkinManager
     AutoSize = True
     Caption = 'SharpE Tray Service not running'
-    AutoPosition = True
+    AutoPos = apCenter
     LabelStyle = lsMedium
   end
   object SkinManager: TSharpESkinManager

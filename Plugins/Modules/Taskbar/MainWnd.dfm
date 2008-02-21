@@ -21,7 +21,7 @@ object MainForm: TMainForm
     Left = 24
     Top = 0
     Width = 24
-    Height = 20
+    Height = 25
     Hint = 'Restory all Windows'
     ParentShowHint = False
     ShowHint = False
@@ -66,17 +66,13 @@ object MainForm: TMainForm
       04733AFF04733AFF04733AFF04733AFF04733AFF04753BE8FFFFFF00FFFFFF00
       FFFFFF00FFFFFF00}
     Layout = blGlyphLeft
-    Margin = -1
-    DisabledAlpha = 100
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 0
   end
   object ses_minall: TSharpEButton
     Left = 0
     Top = 0
     Width = 24
-    Height = 20
+    Height = 25
     Hint = 'Minimize all Windows'
     ParentShowHint = False
     ShowHint = False
@@ -121,11 +117,7 @@ object MainForm: TMainForm
       04733AFF04733AFF04733AFF04733AFF04733AFF04733AFF04733AFF04733AFF
       04733AFF04733AFF}
     Layout = blGlyphLeft
-    Margin = -1
-    DisabledAlpha = 100
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 0
   end
   object MenuPopup: TPopupMenu
     Left = 168

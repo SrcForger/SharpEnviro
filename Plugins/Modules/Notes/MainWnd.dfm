@@ -20,7 +20,7 @@ object MainForm: TMainForm
     Left = 2
     Top = 0
     Width = 105
-    Height = 20
+    Height = 25
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = ButtonClick
@@ -29,12 +29,8 @@ object MainForm: TMainForm
     Glyph32.OuterColor = -16777216
     Glyph32.ResamplerClassName = 'TLinearResampler'
     Layout = blGlyphLeft
-    Margin = 0
-    DisabledAlpha = 100
     Caption = 'Notes'
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 0
   end
   object SharpESkinManager1: TSharpESkinManager
     SkinSource = ssSystem
@@ -42,6 +38,6 @@ object MainForm: TMainForm
     ComponentSkins = [scButton]
     HandleUpdates = False
     Left = 192
-    Top = 72
+    Top = 80
   end
 end

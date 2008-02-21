@@ -20,7 +20,7 @@ object MainForm: TMainForm
     Left = 8
     Top = 0
     Width = 105
-    Height = 20
+    Height = 25
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnMouseUp = btnMouseUp
@@ -29,12 +29,8 @@ object MainForm: TMainForm
     Glyph32.OuterColor = -16777216
     Glyph32.ResamplerClassName = 'TNearestResampler'
     Layout = blGlyphLeft
-    Margin = 0
-    DisabledAlpha = 100
     Caption = '...'
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 4
   end
   object MenuPopup: TPopupMenu
     Left = 168

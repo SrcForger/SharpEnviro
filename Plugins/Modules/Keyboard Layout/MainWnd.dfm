@@ -29,11 +29,7 @@ object MainForm: TMainForm
     Glyph32.CombineMode = cmMerge
     Glyph32.ResamplerClassName = 'TNearestResampler'
     Layout = blGlyphLeft
-    Margin = -1
-    DisabledAlpha = 100
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 2
   end
   object SkinManager: TSharpESkinManager
     SkinSource = ssSystem

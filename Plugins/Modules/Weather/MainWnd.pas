@@ -244,19 +244,19 @@ begin
     if length(trim(s))>0 then
     begin
       lb_top.LabelStyle := lsSmall;
-      lb_top.Top := 1 + (o2 div 2) - (lb_top.Height div 2);
+      lb_top.AutoPos := apTop;
       lb_bottom.Caption := s;
       lb_bottom.UpdateSkin;
       lb_bottom.Resize;
       lb_bottom.Left := o1;
-      lb_bottom.Top := Height - 3 - (o2 div 2) - (lb_bottom.Height div 2);
+      lb_bottom.AutoPos := apBottom;
       lb_bottom.Visible := True;
       o3 := o1 + lb_top.Width + 2;
       o4 := o1 + lb_bottom.Width + 2;
     end else
     begin
       lb_top.LabelStyle := lsMedium;
-      lb_top.Top := Height div 2 - (lb_top.Height div 2);
+      lb_top.AutoPos := apCenter;
       lb_bottom.Visible := False;
       o3 := o1 + lb_top.Width + 2;
     end;

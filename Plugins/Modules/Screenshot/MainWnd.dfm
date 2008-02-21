@@ -110,11 +110,7 @@ object MainForm: TMainForm
       0000000001010101030504090000000000000000000000000000000000000000
       000000000000000000000000}
     Layout = blGlyphLeft
-    Margin = -1
-    DisabledAlpha = 100
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 0
   end
   object MenuPopup: TPopupMenu
     Left = 144

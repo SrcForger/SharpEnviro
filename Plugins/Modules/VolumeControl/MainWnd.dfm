@@ -20,7 +20,7 @@ object MainForm: TMainForm
     Left = 2
     Top = 0
     Width = 25
-    Height = 20
+    Height = 25
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = muteClick
@@ -29,20 +29,17 @@ object MainForm: TMainForm
     Glyph32.CombineMode = cmMerge
     Glyph32.ResamplerClassName = 'TLinearResampler'
     Layout = blGlyphLeft
-    Margin = -1
-    DisabledAlpha = 100
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 0
   end
   object pbar: TSharpEProgressBar
-    Left = 32
-    Top = 4
+    Left = 33
+    Top = 8
     Width = 75
     Height = 9
     Min = 0
     Max = 65535
     Value = 0
+    AutoPos = apCenter
     SkinManager = SharpESkinManager1
     AutoSize = False
   end
@@ -60,7 +57,7 @@ object MainForm: TMainForm
   object SharpESkinManager1: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem
-    ComponentSkins = [scPanel, scButton, scProgressBar]
+    ComponentSkins = [scButton, scBar, scProgressBar]
     HandleUpdates = False
     Left = 192
     Top = 72

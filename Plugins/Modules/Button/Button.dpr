@@ -186,7 +186,7 @@ end;
 procedure UpdateMessage(part : TSU_UPDATE_ENUM; param : integer);
 const
   processed : TSU_UPDATES = [suSkinFileChanged,suBackground,suTheme,suSkin,
-                             suScheme,suIconSet];
+                             suScheme,suIconSet,suSkinFont];
 var
   temp : TModule;
   n,i : integer;
@@ -230,6 +230,10 @@ begin
     // Step4: check if Icon changed
     if [part] <= [suTheme,suIconSet] then
         TMainForm(temp.Form).UpdateIcon;
+
+    // Step5: Update if font changed
+    if [part] <= [suSkinFont] then
+      TMainForm(temp.Form).SharpESkinManager1.RefreshControls;        
   end;
 end;
 

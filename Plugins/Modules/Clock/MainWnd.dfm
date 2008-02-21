@@ -28,7 +28,7 @@ object MainForm: TMainForm
     AutoSize = True
     OnDblClick = lb_clockDblClick
     Caption = '.'
-    AutoPosition = False
+    AutoPos = apBottom
     LabelStyle = lsSmall
   end
   object lb_clock: TSharpESkinLabel
@@ -40,7 +40,7 @@ object MainForm: TMainForm
     AutoSize = True
     OnDblClick = lb_clockDblClick
     Caption = '.'
-    AutoPosition = False
+    AutoPos = apCenter
     LabelStyle = lsMedium
   end
   object MenuPopup: TPopupMenu

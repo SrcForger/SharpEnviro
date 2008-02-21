@@ -20,7 +20,7 @@ object MainForm: TMainForm
     Left = 8
     Top = 0
     Width = 105
-    Height = 20
+    Height = 25
     SkinManager = SharpESkinManager1
     AutoSize = True
     OnMouseUp = ButtonMouseUp
@@ -91,12 +91,8 @@ object MainForm: TMainForm
       000000002F3432022F3432042F3432042F3432022F3432010000000000000000
       000000000000000000000000000000000000000000000000}
     Layout = blGlyphLeft
-    Margin = 3
-    DisabledAlpha = 100
     Caption = 'Button'
     AutoPosition = True
-    GlyphResize = True
-    GlyphSpacing = 0
   end
   object SharpESkinManager1: TSharpESkinManager
     SkinSource = ssSystem
@@ -149,5 +145,6 @@ object MainForm: TMainForm
       end>
     Left = 184
     Top = 24
+    Bitmap = {}
   end
 end

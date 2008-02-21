@@ -291,12 +291,10 @@ begin
   if sShowIcon then
   begin
     btn.Glyph32.Assign(FButtonIcon);
-    btn.GlyphSpacing := 2;
-    btn.Width := btn.Width + btn.Glyph32.Width + btn.GlyphSpacing + 2;
+    btn.Width := btn.Width + btn.Glyph32.Width + 2;
   end else
   begin
     btn.Glyph32.SetSize(0,0);
-    btn.GlyphSpacing := 0;
   end;
   RealignComponents(True);
 end;
