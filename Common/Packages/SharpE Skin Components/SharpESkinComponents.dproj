@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>C:\Documents and Settings\All Users\Documents\RAD Studio\5.0\Bpl\SharpESkinComponents.bpl</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>C:\Dokumente und Einstellungen\All Users\Dokumente\RAD Studio\5.0\Bpl\SharpESkinComponents.bpl</DCC_DependencyCheckOutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -29,8 +29,7 @@
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType>Package</Borland.ProjectType>
     <BorlandProject>
-<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><Package_Options><Package_Options Name="ImplicitBuild">True</Package_Options><Package_Options Name="DesigntimeOnly">False</Package_Options><Package_Options Name="RuntimeOnly">False</Package_Options>  <Package_Options Name="PackageDescription">SharpE Skin Components</Package_Options>
-    </Package_Options><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1031</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">SharpESkinComponents.dpk</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><Package_Options><Package_Options Name="ImplicitBuild">True</Package_Options><Package_Options Name="DesigntimeOnly">False</Package_Options><Package_Options Name="RuntimeOnly">False</Package_Options><Package_Options Name="PackageDescription">SharpE Skin Components</Package_Options></Package_Options><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1031</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">SharpESkinComponents.dpk</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
@@ -48,19 +47,13 @@
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpEButton.dcr" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpEButton.dcr" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpEButton.pas" />
-    <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpECheckBox.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpECustomSkinSettings.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpEDefault.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpEDesignTime.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpEEdit.pas" />
-    <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpEForm.pas" />
-    <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpEImage32.pas" />
-    <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpELabel.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpEListBox.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpEMiniThrobber.pas" />
-    <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpEPanel.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpEProgressBar.pas" />
-    <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpERadioBox.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpEScheme.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpESkin.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\SharpESkinLabel.pas" />
@@ -73,17 +66,18 @@
     <DCCReference Include="..\..\Libraries\SharpAPI\SharpAPI.pas" />
     <DCCReference Include="..\..\Libraries\SharpCenterApi\SharpCenterAPI.pas" />
     <DCCReference Include="..\..\Libraries\SharpThemeApi\SharpThemeApi.pas" />
-    <DCCReference Include="..\..\Units\SharpFX\designide.dcp" />
-    <DCCReference Include="..\..\Units\SharpFX\GR32_BDS2006.dcp" />
-    <DCCReference Include="..\..\Units\SharpFX\Jcl.dcp" />
-    <DCCReference Include="..\..\Units\SharpFX\JclVcl.dcp" />
-    <DCCReference Include="..\..\Units\SharpFX\JvCoreD11R.dcp" />
-    <DCCReference Include="..\..\Units\SharpFX\JvInterpreterD11R.dcp" />
-    <DCCReference Include="..\..\Units\SharpFX\JvSystemD11R.dcp" />
     <DCCReference Include="..\..\Units\SharpFX\PNG_D10.dcp" />
-    <DCCReference Include="..\..\Units\SharpFX\rtl.dcp" />
-    <DCCReference Include="..\..\Units\SharpFX\vcl.dcp" />
-    <DCCReference Include="..\..\Units\SharpFX\xmlrtl.dcp" />
     <DCCReference Include="..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas" />
+    <DCCReference Include="designide.dcp" />
+    <DCCReference Include="GR32_BDS2006.dcp" />
+    <DCCReference Include="Jcl.dcp" />
+    <DCCReference Include="JclVcl.dcp" />
+    <DCCReference Include="JvCoreD11R.dcp" />
+    <DCCReference Include="JvInterpreterD11R.dcp" />
+    <DCCReference Include="JvSystemD11R.dcp" />
+    <DCCReference Include="PNG_D9.dcp" />
+    <DCCReference Include="rtl.dcp" />
+    <DCCReference Include="vcl.dcp" />
+    <DCCReference Include="xmlrtl.dcp" />
   </ItemGroup>
 </Project>

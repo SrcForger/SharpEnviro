@@ -54,7 +54,6 @@ requires
 {$ENDIF}
 {$ENDIF}
 
-
 contains
   sharedBitmapList in '..\..\Delphi Components\SharpE Skin Components\sharedBitmapList.pas',
   SharpEAnimationTimers in '..\..\Delphi Components\SharpE Skin Components\SharpEAnimationTimers.pas',
@@ -63,19 +62,13 @@ contains
   SharpEBaseControls in '..\..\Delphi Components\SharpE Skin Components\SharpEBaseControls.pas',
   SharpEBitmapList in '..\..\Delphi Components\SharpE Skin Components\SharpEBitmapList.pas',
   SharpEButton in '..\..\Delphi Components\SharpE Skin Components\SharpEButton.pas',
-  SharpECheckBox in '..\..\Delphi Components\SharpE Skin Components\SharpECheckBox.pas',
   SharpECustomSkinSettings in '..\..\Delphi Components\SharpE Skin Components\SharpECustomSkinSettings.pas',
   SharpEDefault in '..\..\Delphi Components\SharpE Skin Components\SharpEDefault.pas',
   SharpEDesignTime in '..\..\Delphi Components\SharpE Skin Components\SharpEDesignTime.pas',
   SharpEEdit in '..\..\Delphi Components\SharpE Skin Components\SharpEEdit.pas',
-  SharpEForm in '..\..\Delphi Components\SharpE Skin Components\SharpEForm.pas',
-  SharpEImage32 in '..\..\Delphi Components\SharpE Skin Components\SharpEImage32.pas',
-  SharpELabel in '..\..\Delphi Components\SharpE Skin Components\SharpELabel.pas',
   SharpEListBox in '..\..\Delphi Components\SharpE Skin Components\SharpEListBox.pas',
   SharpEMiniThrobber in '..\..\Delphi Components\SharpE Skin Components\SharpEMiniThrobber.pas',
-  SharpEPanel in '..\..\Delphi Components\SharpE Skin Components\SharpEPanel.pas',
   SharpEProgressBar in '..\..\Delphi Components\SharpE Skin Components\SharpEProgressBar.pas',
-  SharpERadioBox in '..\..\Delphi Components\SharpE Skin Components\SharpERadioBox.pas',
   SharpEScheme in '..\..\Delphi Components\SharpE Skin Components\SharpEScheme.pas',
   SharpESkin in '..\..\Delphi Components\SharpE Skin Components\SharpESkin.pas',
   SharpESkinLabel in '..\..\Delphi Components\SharpE Skin Components\SharpESkinLabel.pas',
