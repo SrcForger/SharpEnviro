@@ -147,6 +147,12 @@ begin
   frmCursesList.Preview.DrawTo(ABmp);
 end;
 
+procedure Save;
+begin
+  if frmCursesList <> nil then
+    frmCursesList.Save;
+end;
+
 function GetMetaData(): TMetaData;
 begin
   with result do
@@ -156,7 +162,7 @@ begin
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
     Version := '0.7.4.0';
     DataType := tteConfig;
-    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suCursor)]);
   end;
 end;
@@ -164,6 +170,7 @@ end;
 exports
   Open,
   Close,
+  Save,
   SetText,
   GetCenterScheme,
   UpdatePreview,

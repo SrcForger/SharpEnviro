@@ -61,6 +61,7 @@ type
     sTheme : String;
     procedure BuildCursorList;
     procedure Save;
+    procedure SendUpdate;
   end;
 
 var
@@ -83,7 +84,7 @@ procedure TfrmCursesList.lbCursorListClickItem(Sender: TObject; const ACol: Inte
   AItem: TSharpEListItem);
 begin
   BuildCursorPreview;
-  Save;
+  SendUpdate;
 end;
 
 procedure TfrmCursesList.lbCursorListResize(Sender: TObject);
@@ -112,6 +113,12 @@ begin
     RenameFile(FName + '~',FName);
     XML.Free;
   end;
+end;
+
+procedure TfrmCursesList.SendUpdate;
+begin
+  if Visible then
+    SharpCenterApi.CenterDefineSettingsChanged;
 end;
 
 procedure TfrmCursesList.FormCreate(Sender: TObject);
@@ -247,8 +254,7 @@ procedure TfrmCursesList.ccolorsChangeColor(ASender: TObject;
   AColorCode: Integer);
 begin
   BuildCursorPreview;
-  if Visible then
-     Save;
+  SendUpdate;
 end;
 
 procedure TfrmCursesList.FormDestroy(Sender: TObject);
