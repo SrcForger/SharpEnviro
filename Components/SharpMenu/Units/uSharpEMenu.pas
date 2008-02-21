@@ -810,6 +810,7 @@ var
   menuitemskin : TSharpEMenuItemSkin;
   w,h : integer;
   ST : TSkinText;
+  textrect,iconrect : TRect;
 begin
   if FSkinManager = nil then exit;
   if Dst = nil then exit;
@@ -858,34 +859,38 @@ begin
     dicon := False;
     dtext := False;
     ST := CreateThemedSkinText(TSkinPart(drawpart).SkinText);
+    textrect := Rect(0,0,0,0);
     if (drawpart is TSkinPartEx) then
     begin
       with drawpart as TSkinPartEx do
       begin
         h := SkinDim.HeightAsInt;
         if (item.Icon <> nil) and (SkinIcon.DrawIcon) and (FSettings.UseIcons) then
-        begin
-          IWidth := SkinIcon.WidthAsInt;
-          IHeight := SkinIcon.HeightAsInt;
-          if (IWidth <> Icon.Width) or (IHeight <> Icon.Height) then
-          begin
-            icon.setsize(IWidth,SkinIcon.HeightAsInt);
-            icon.Clear(color32(0,0,0,0));
-            item.Icon.Icon.DrawTo(icon,Rect(0,0,icon.width,icon.height));
-          end else icon.assign(item.Icon.Icon);
-          dicon := true;
-          Ipos.X := SkinIcon.XAsInt;
-          Ipos.Y := SkinIcon.YAsInt;
-        end;
+          iconrect := Rect(0,0,SkinIcon.Size.XAsInt,SkinIcon.Size.YAsInt)
+        else iconrect := Rect(0,0,0,0);
         if (length(item.Caption)>0) and (SkinText.DrawText) then
         begin
           text.SetSize(w,h);
           text.clear(color32(0,0,0,0));
           ST.AssignFontTo(text.Font,FSkinManager.Scheme);
           Tpos := ST.GetXY(Rect(0, 0, text.TextWidth(item.Caption), text.TextHeight(item.Caption)),
-                                 Rect(0, 0, w, h));
+                                 Rect(0, 0, w, h),iconrect);
           ST.RenderTo(text,Tpos.x,Tpos.y,item.Caption,FSkinManager.Scheme);
+          textrect := rect(TPos.X,TPos.Y,TPos.X + text.TextWidth(item.Caption),TPos.Y + text.TextHeight(item.Caption));
           dtext := true;
+        end;
+        if (item.Icon <> nil) and (SkinIcon.DrawIcon) and (FSettings.UseIcons) then
+        begin
+          IWidth := SkinIcon.Size.XAsInt;
+          IHeight := SkinIcon.Size.YAsInt;
+          if (IWidth <> Icon.Width) or (IHeight <> Icon.Height) then
+          begin
+            icon.setsize(IWidth,IHeight);
+            icon.Clear(color32(0,0,0,0));
+            item.Icon.Icon.DrawTo(icon,Rect(0,0,icon.width,icon.height));
+          end else icon.assign(item.Icon.Icon);
+          dicon := true;
+          Ipos := SkinIcon.GetXY(textrect,Rect(0,0,w,h));
         end;
       end;
     end

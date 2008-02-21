@@ -438,14 +438,15 @@ begin
   if FPreviewTimer.Enabled then
     FPreviewTimer.Enabled := False;
 
-  BuildPreviews;
-
   TSS := FSkinManager.Skin.TaskSwitchSkin;
   if  (TSS.Item.Empty) or (TSS.ItemHover.Empty) then
   begin
     CloseWindow;
     exit;
   end;
+    
+
+  BuildPreviews;
 
   WrapCount := Max(1,TSS.WrapCount);
   Spacing := TSS.Spacing;
@@ -666,7 +667,8 @@ begin
     Caption := Caption + '...';
   end;
   TextPos := ST.GetXY(Rect(0, 0, FontBmp.TextWidth(Caption), FontBmp.TextHeight(Caption)),
-                                 Rect(0, 0, FBackground.Width, FBackground.Height));
+                                 Rect(0, 0, FBackground.Width, FBackground.Height),
+                                 Rect(0, 0, 0, 0));
   ST.RenderTo(FontBmp,TextPos.x,TextPos.y,Caption,FSkinManager.Scheme);
   ST.Free;
   FontBmp.DrawTo(FWnd.Picture,0,0);
