@@ -33,7 +33,7 @@ object frmConfig: TfrmConfig
         Images = imlList
       end
       item
-        Width = 100
+        Width = 150
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
