@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
-  <header>
-    <name>BB2-Glass</name>
-    <author>Billiberserker</author>
-    <url>http://www.sharpe-shell.org</url>
-    <info>A glass inspired skin</info>
-    <version>0.73</version>
-  </header>
   <sharpbar>
     <dimension>w,24</dimension>
     <fsmod>0,0</fsmod>
@@ -594,12 +587,12 @@
   </menu>
   <menuitem>
     <icon>
-      <drawicon>1</drawicon>
+      <draw>1</draw>
       <dimension>16,16</dimension>
       <location>4,3</location>
     </icon>
     <text>
-      <drawtext>1</drawtext>
+      <draw>1</draw>
       <maxwidth>w-40</maxwidth>
       <location>23,5</location>
       <name>Small Fonts</name>
@@ -893,9 +886,9 @@
       <text>
         <draw>1</draw>
         <maxwidth>w-34</maxwidth>
-        <location>cw+6,ch</location>
-        <name>Small Fonts</name>
-        <size>7</size>
+        <location>cw+iwh+2,ch-1</location>
+        <name>Tahoma</name>
+        <size>8</size>
         <color>$Text</color>
         <shadow>1</shadow>
         <shadowcolor>$TextShadow</shadowcolor>
@@ -904,8 +897,8 @@
       </text>
       <icon>
         <draw>1</draw>
-        <size>14</size>
-        <location>cw-twh+10,3</location>
+        <size>14,14</size>
+        <location>cw-9,2</location>
       </icon>
       <spacing>2</spacing>
       <location>0,0</location>
@@ -1003,6 +996,12 @@
         </skinpart>
       </normalhover>
       <down>
+        <text>
+          <location>cw+iwh+1,ch</location>        
+        </text>
+        <icon>
+          <location>cw-10,3</location>
+        </icon>      
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
@@ -1042,10 +1041,16 @@
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$BorderBG,$BorderBG</gradientcolor>
-          <gradientalpha>32,168</gradientalpha>
+          <gradientalpha>64,192</gradientalpha>
         </skinpart>
       </down>
       <downhover>
+        <text>
+          <location>cw+iwh+1,ch</location>        
+        </text>
+        <icon>
+          <location>cw-10,3</location>
+        </icon>      
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
@@ -1085,7 +1090,7 @@
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$BorderBG,$BorderBG</gradientcolor>
-          <gradientalpha>168,168</gradientalpha>
+          <gradientalpha>192,192</gradientalpha>
         </skinpart>
       </downhover>
       <highlight>
@@ -1179,9 +1184,9 @@
       <text>
         <draw>1</draw>
         <maxwidth>w-30</maxwidth>
-        <location>cw+6,ch</location>
-        <name>Small Fonts</name>
-        <size>7</size>
+        <location>cw+iwh+2,ch-1</location>
+        <name>Tahoma</name>
+        <size>8</size>
         <color>$Text</color>
         <shadow>1</shadow>
         <shadowcolor>$TextShadow</shadowcolor>
@@ -1190,12 +1195,12 @@
       </text>
       <icon>
         <draw>1</draw>
-        <size>14</size>
-        <location>cw-twh+10,3</location>
+        <size>14,14</size>
+        <location>cw-9,2</location>
       </icon>
       <spacing>1</spacing>
       <location>0,0</location>
-      <dimension>80,19</dimension>
+      <dimension>88,19</dimension>
       <OnNormalMouseEnter>Scripts\ButtonNormalMouseEnter.skinscript</OnNormalMouseEnter>
       <OnNormalMouseLeave>Scripts\ButtonNormalMouseLeave.skinscript</OnNormalMouseLeave>
       <OnDownMouseEnter>Scripts\TaskItemDownMouseEnter.skinscript</OnDownMouseEnter>
@@ -1289,6 +1294,12 @@
         </skinpart>
       </normalhover>
       <down>
+        <text>
+          <location>cw+iwh+1,ch</location>        
+        </text>
+        <icon>
+          <location>cw-10,3</location>
+        </icon>            
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
@@ -1328,10 +1339,16 @@
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$BorderBG,$BorderBG</gradientcolor>
-          <gradientalpha>32,168</gradientalpha>
+          <gradientalpha>64,192</gradientalpha>
         </skinpart>
       </down>
       <downhover>
+        <text>
+          <location>cw+iwh+1,ch</location>        
+        </text>
+        <icon>
+          <location>cw-10,3</location>
+        </icon>            
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
@@ -1467,8 +1484,8 @@
       </text>
       <icon>
         <draw>1</draw>
-        <size>14</size>
-        <location>3,3</location>
+        <size>14,14</size>
+        <location>2,2</location>
       </icon>
       <spacing>2</spacing>
       <location>0,0</location>
@@ -1565,7 +1582,7 @@
           <gradientalpha>32,164</gradientalpha>
         </skinpart>
       </normalhover>
-      <down>
+      <down>          
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
@@ -1605,10 +1622,10 @@
           <image>images/bgempty.png</image>
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$BorderBG,$BorderBG</gradientcolor>
-          <gradientalpha>32,168</gradientalpha>
+          <gradientalpha>64,192</gradientalpha>
         </skinpart>
       </down>
-      <downhover>
+      <downhover>      
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
@@ -1962,19 +1979,22 @@
   </minithrobber>
   <button>
     <text>
-      <location>cw,ch</location>
-      <name>Small Fonts</name>
-      <size>7</size>
+      <location>cw+iwh+2,ch-1</location>
+      <name>Tahoma</name>
+      <size>8</size>
       <color>$Text</color>
       <shadow>1</shadow>
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Right</shadowtype>
       <shadowalpha>196</shadowalpha>
     </text>
+    <icon>
+      <draw>1</draw>
+      <size>14,14</size>
+      <location>cw-8,2</location>
+    </icon>
     <location>0,0</location>
     <dimension>w,19</dimension>
-    <iconlroffset>3,3</iconlroffset>
-    <icontboffset>3,3</icontboffset>
     <OnNormalMouseEnter>Scripts\ButtonNormalMouseEnter.skinscript</OnNormalMouseEnter>
     <OnNormalMouseLeave>Scripts\ButtonNormalMouseLeave.skinscript</OnNormalMouseLeave>
     <normal>
@@ -2065,8 +2085,11 @@
     </hover>
     <down>
       <text>
-        <location>cw,ch+1</location>
+        <location>cw+iwh+1,ch</location>
       </text>
+      <icon>      
+        <location>cw-9,3</location>
+      </icon>
       <skinpart>
         <ID>0</ID>
         <location>1,0</location>
@@ -2117,6 +2140,8 @@
     </disabled>
   </button>
   <font>
+    <locationTL>0,-6</locationTL>
+    <locationBL>0,5</locationBL>
     <small>
       <size>6</size>
       <name>Small Fonts</name>
@@ -2126,10 +2151,10 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>196</shadowalpha>
-      <location>0,1</location>
+      <location>0,-1</location>
     </small>
     <medium>
-      <name>Verdana</name>
+      <name>Tahoma</name>
       <size>7</size>
       <bold>1</bold>
       <color>$Text</color>
@@ -2137,10 +2162,10 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>255</shadowalpha>
-      <location>0,-2</location>
+      <location>0,-1</location>
     </medium>
     <big>
-      <name>Verdana</name>
+      <name>Tahoma</name>
       <size>8</size>
       <bold>1</bold>
       <color>$Text</color>
@@ -2152,7 +2177,12 @@
     </big>
   </font>
   <progressbar>
-    <dimension>w,h</dimension>
+    <location>0,4,</location>
+    <dimension>w,12</dimension>
+    <locationTL>0,1</locationTL>
+    <dimensionTL>w,8</dimensionTL>
+    <locationBL>0,11</locationBL>
+    <dimensionBL>w,8</dimensionBL>    
     <background>
       <skinpart>
         <location>1,0</location>

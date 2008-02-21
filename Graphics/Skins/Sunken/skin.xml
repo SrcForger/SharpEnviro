@@ -2,10 +2,10 @@
 <sharpESkin>
   <header>
     <name>Sunken</name>
-    <author>Billiberserker</author>
+    <author>Martin Krämer</author>
     <url>http://www.sharpe-shell.org</url>
     <info>A sunken skin</info>
-    <version>0.73</version>
+    <version>0.74</version>
   </header>
   <sharpbar>
     <dimension>w,22</dimension>
@@ -301,12 +301,12 @@
   </menu>
   <menuitem>
     <icon>
-      <drawicon>1</drawicon>
+      <draw>1</draw>
       <dimension>16,16</dimension>
       <location>4,3</location>
     </icon>
     <text>
-      <drawtext>1</drawtext>
+      <draw>1</draw>
       <maxwidth>w-40</maxwidth>
       <location>23,5</location>
       <name>Small Fonts</name>
@@ -430,7 +430,7 @@
     </separator>
     <label>
       <text>
-        <drawtext>1</drawtext>
+        <draw>1</draw>
         <maxwidth>w-20</maxwidth>
         <location>cw-1,3</location>
         <size>7</size>
@@ -445,9 +445,9 @@
       <text>
         <draw>1</draw>
         <maxwidth>w-34</maxwidth>
-        <location>cw+6,ch</location>
-        <name>Small Fonts</name>
-        <size>7</size>
+        <location>cw+iwh+2,ch-1</location>
+        <name>Tahoma</name>
+        <size>8</size>
         <color>$Text</color>
         <shadow>1</shadow>
         <shadowcolor>$TextShadow</shadowcolor>
@@ -456,8 +456,8 @@
       </text>
       <icon>
         <draw>1</draw>
-        <size>14</size>
-        <location>cw-twh+10,3</location>
+        <size>16,16</size>
+        <location>cw-9,2</location>
       </icon>
       <spacing>1</spacing>
       <location>0,0</location>
@@ -549,6 +549,12 @@
         </skinpart>
       </normalhover>
       <down>
+        <text>
+	<location>cw+iwh+2,ch</location>
+        </text>
+        <icon>
+	<location>cw-9,3</location> 
+        </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -592,6 +598,12 @@
         </skinpart>
       </down>
       <downhover>
+        <text>
+	<location>cw+iwh+2,ch</location>
+        </text>
+        <icon>
+	<location>cw-9,3</location> 
+        </icon>      
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -724,10 +736,10 @@
     <compact>
       <text>
         <draw>1</draw>
-        <maxwidth>w-30</maxwidth>
-        <location>cw+6,ch</location>
-        <name>Small Fonts</name>
-        <size>7</size>
+        <maxwidth>w-34</maxwidth>
+        <location>cw+iwh+2,ch-1</location>
+        <name>Tahoma</name>
+        <size>8</size>
         <color>$Text</color>
         <shadow>1</shadow>
         <shadowcolor>$TextShadow</shadowcolor>
@@ -736,8 +748,8 @@
       </text>
       <icon>
         <draw>1</draw>
-        <size>14</size>
-        <location>cw-twh+10,3</location>
+        <size>16,16</size>
+        <location>cw-9,2</location>
       </icon>
       <spacing>1</spacing>
       <location>0,0</location>
@@ -829,6 +841,12 @@
         </skinpart>
       </normalhover>
       <down>
+        <text>
+	<location>cw+iwh+2,ch</location>
+        </text>
+        <icon>
+	<location>cw-9,3</location> 
+        </icon>      
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -872,6 +890,12 @@
         </skinpart>
       </down>
       <downhover>
+        <text>
+	<location>cw+iwh+2,ch</location>
+        </text>
+        <icon>
+	<location>cw-9,3</location> 
+        </icon>      
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -1007,12 +1031,12 @@
       </text>
       <icon>
         <draw>1</draw>
-        <size>14</size>
-        <location>3,3</location>
+        <size>16,16</size>
+        <location>4,2</location>
       </icon>
       <spacing>2</spacing>
       <location>0,0</location>
-      <dimension>22,22</dimension>
+      <dimension>24,22</dimension>
       <normal>
         <skinpart>
           <location>0,0</location>
@@ -1100,6 +1124,9 @@
         </skinpart>
       </normalhover>
       <down>
+        <icon>
+	<location>4,3</location> 
+        </icon>      
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -1143,6 +1170,9 @@
         </skinpart>
       </down>
       <downhover>
+        <icon>
+	<location>4,3</location> 
+        </icon>            
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -1273,174 +1303,6 @@
       </highlight>
     </mini>
   </taskitem>
-  <form>
-    <dimension>w,10</dimension>
-    <text>
-      <location>8,7</location>
-      <name>Small Fonts</name>
-      <size>6</size>
-      <bold>0</bold>
-      <color>$ThrobberText</color>
-    </text>
-    <btndown>
-      <dimension>10,10</dimension>
-      <normal>
-        <skinpart>
-          <alpha>196</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Down.png</image>
-          <color>$Background</color>
-        </skinpart>
-      </normal>
-      <hover>
-        <skinpart>
-          <alpha>196</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Down.png</image>
-          <color>$BackgroundHover</color>
-        </skinpart>
-      </hover>
-      <down>
-        <skinpart>
-          <alpha>196</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Down.png</image>
-          <color>$Background</color>
-        </skinpart>
-      </down>
-      <disabled>
-        <skinpart>
-          <alpha>128</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Down.png</image>
-          <color>$Background</color>
-        </skinpart>
-      </disabled>
-    </btndown>
-    <btnclose>
-      <normal>
-        <skinpart>
-          <alpha>196</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Close.png</image>
-          <color>$Background</color>
-        </skinpart>
-      </normal>
-      <hover>
-        <skinpart>
-          <alpha>196</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Close.png</image>
-          <color>$BackgroundHover</color>
-        </skinpart>
-      </hover>
-      <down>
-        <skinpart>
-          <alpha>196</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Close.png</image>
-          <color>$Background</color>
-        </skinpart>
-      </down>
-      <disabled>
-        <skinpart>
-          <alpha>128</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Close.png</image>
-          <color>$Background</color>
-        </skinpart>
-      </disabled>
-    </btnclose>
-    <full>
-      <dimension>w,h</dimension>
-      <lroffset>6,6</lroffset>
-      <tboffset>27,6</tboffset>
-      <tbarlocation>6,6</tbarlocation>
-      <tbardimension>w-12,21</tbardimension>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>6,23</dimension>
-        <image>images/Form_left_top.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>0,23</location>
-        <dimension>6,h-29</dimension>
-        <image>images/Form_left_middle.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>0,h-6</location>
-        <dimension>6,6</dimension>
-        <image>images/Form_left_bottom.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>6,0</location>
-        <dimension>w-12,6</dimension>
-        <image>images/Form_middle_top.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>6,6</location>
-        <dimension>w-12,12</dimension>
-        <image>images/empty.png</image>
-        <color>$ThrobberDark</color>
-      </skinpart>
-      <skinpart>
-        <location>7,7</location>
-        <dimension>w-15,9</dimension>
-        <image>images/empty.png</image>
-        <gradienttype>horizontal</gradienttype>
-        <gradientcolor>$ForeGroundHover,$Foreground</gradientcolor>
-        <gradientalpha>255,255</gradientalpha>
-      </skinpart>
-      <skinpart>
-        <location>6,18</location>
-        <dimension>w-12,5</dimension>
-        <image>images/Form_middle_middle.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>6,23</location>
-        <dimension>w-12,h-29</dimension>
-        <image>images/empty.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>6,h-6</location>
-        <dimension>w-12,6</dimension>
-        <image>images/Form_middle_bottom.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>w-6,0</location>
-        <dimension>6,23</dimension>
-        <image>images/Form_right_top.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>w-6,23</location>
-        <dimension>6,h-29</dimension>
-        <image>images/Form_right_middle.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>w-6,h-6</location>
-        <dimension>6,6</dimension>
-        <image>images/Form_right_bottom.png</image>
-        <color>$Background</color>
-      </skinpart>
-    </full>
-  </form>
   <minithrobber>
     <dimension>5,22</dimension>
     <location>0,0</location>
@@ -1577,19 +1439,22 @@
   </minithrobber>
   <button>
     <text>
-      <location>cw,ch</location>
-      <name>Small Fonts</name>
-      <size>7</size>
+      <location>cw+iwh+2,ch-1</location>
+      <name>Tahoma</name>
+      <size>8</size>
       <color>$Text</color>
       <shadow>1</shadow>
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Right</shadowtype>
       <shadowalpha>196</shadowalpha>
     </text>
+    <icon>
+      <draw>1</draw>
+      <size>16,16</size>
+      <location>cw-8,2</location>
+    </icon>
     <location>0,0</location>
     <dimension>w,21</dimension>
-    <iconlroffset>4,4</iconlroffset>
-    <icontboffset>3,3</icontboffset>
     <normal>
       <skinpart>
         <location>0,0</location>
@@ -1677,6 +1542,14 @@
       </skinpart>
     </hover>
     <down>
+      <text>
+        <location>cw+iwh+2,ch</location>    
+      </text>
+      <icon>
+        <draw>1</draw>
+        <size>16,16</size>
+        <location>cw-8,3</location>
+      </icon>      
       <skinpart>
         <location>0,0</location>
         <dimension>w,h</dimension>
@@ -1727,6 +1600,8 @@
     </disabled>
   </button>
   <font>
+    <locationTL>0,-5</locationTL>
+    <locationBL>0,5</locationBL>
     <small>
       <size>6</size>
       <name>Small Fonts</name>
@@ -1736,7 +1611,7 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>196</shadowalpha>
-      <location>0,1</location>
+      <location>0,0</location>
     </small>
     <medium>
       <name>Verdana</name>
@@ -1747,7 +1622,7 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>255</shadowalpha>
-      <location>0,-1</location>
+      <location>0,-2</location>
     </medium>
     <big>
       <name>Verdana</name>
@@ -1758,11 +1633,16 @@
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Outline</shadowtype>
       <shadowalpha>196</shadowalpha>
-      <location>0,-1</location>
+      <location>0,-2</location>
     </big>
   </font>
   <progressbar>
-    <dimension>w,h</dimension>
+    <location>0,4,</location>
+    <dimension>w,13</dimension>
+    <locationTL>0,1</locationTL>
+    <dimensionTL>w,8</dimensionTL>
+    <locationBL>0,11</locationBL>
+    <dimensionBL>w,8</dimensionBL>
     <background>
       <skinpart>
         <location>0,0</location>

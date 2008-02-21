@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <sharpESkin>
   <header>
-    <name>Minimal</name>
-    <author>Billiberserker</author>
+    <name>Sunken</name>
+    <author>Martin Krämer</author>
     <url>http://www.sharpe-shell.org</url>
-    <version>0.73</version>
+    <info>A Minimal skin</info>
+    <version>0.74</version>
   </header>
   <sharpbar>
     <dimension>w,28</dimension>
@@ -322,12 +323,12 @@
   </menu>
   <menuitem>    
     <icon>
-      <drawicon>1</drawicon>
+      <draw>1</draw>
       <dimension>16,16</dimension>
       <location>4,3</location>
     </icon>
     <text>
-      <drawtext>1</drawtext>
+      <draw>1</draw>
       <maxwidth>w-40</maxwidth>
       <location>23,5</location>
       <name>Small Fonts</name>
@@ -697,9 +698,9 @@
       <text>
         <draw>1</draw>
         <maxwidth>w-34</maxwidth>
-        <location>cw+6,ch</location>
-        <name>Small Fonts</name>
-        <size>7</size>
+        <location>cw+iwh+2,ch</location>
+        <name>Verdana</name>
+        <size>8</size>
         <color>$Text</color>
         <shadow>1</shadow>
         <shadowcolor>$TextShadow</shadowcolor>
@@ -708,8 +709,8 @@
       </text>
       <icon>
         <draw>1</draw>
-        <size>14</size>
-        <location>cw-twh+10,3</location>
+        <size>16,16</size>
+        <location>cw-9,2</location>
       </icon>
       <spacing>2</spacing>
       <location>0,1</location>
@@ -807,6 +808,12 @@
         </skinpart>
       </normalhover>
       <down>
+        <text>
+          <location>cw+iwh+3,ch+1</location>
+        </text>
+        <icon>
+          <location>cw-8,3</location>
+        </icon>      
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
@@ -850,6 +857,12 @@
         </skinpart>
       </down>
       <downhover>
+        <text>
+          <location>cw+iwh+3,ch+1</location>
+        </text>
+        <icon>
+          <location>cw-8,3</location>
+        </icon>       
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
@@ -982,10 +995,10 @@
     <compact>
       <text>
         <draw>1</draw>
-        <maxwidth>w-30</maxwidth>
-        <location>cw+6,ch</location>
-        <name>Small Fonts</name>
-        <size>7</size>
+        <maxwidth>w-24</maxwidth>
+        <location>cw+iwh+2,ch</location>
+        <name>Verdana</name>
+        <size>8</size>
         <color>$Text</color>
         <shadow>1</shadow>
         <shadowcolor>$TextShadow</shadowcolor>
@@ -994,12 +1007,12 @@
       </text>
       <icon>
         <draw>1</draw>
-        <size>14</size>
-        <location>cw-twh+10,3</location>
+        <size>16,16</size>
+        <location>cw-9,2</location>
       </icon>
       <spacing>1</spacing>
       <location>0,1</location>
-      <dimension>80,20</dimension>
+      <dimension>88,20</dimension>
       <OnNormalMouseEnter>Scripts\TaskItemNormalMouseEnter.skinscript</OnNormalMouseEnter>
       <OnNormalMouseLeave>Scripts\TaskItemNormalMouseLeave.skinscript</OnNormalMouseLeave>
       <OnDownMouseEnter>Scripts\TaskItemDownMouseEnter.skinscript</OnDownMouseEnter>
@@ -1271,8 +1284,8 @@
       </text>
       <icon>
         <draw>1</draw>
-        <size>14</size>
-        <location>3,3</location>
+        <size>16,16</size>
+        <location>2,2</location>
       </icon>
       <spacing>2</spacing>
       <location>0,1</location>
@@ -1765,19 +1778,22 @@
   </minithrobber>
   <button>
     <text>
-      <location>cw-1,ch</location>
-      <name>Small Fonts</name>
-      <size>7</size>
+      <location>cw+iwh+2,ch</location>
+      <name>Verdana</name>
+      <size>8</size>
       <color>$Text</color>
       <shadow>1</shadow>
       <shadowcolor>$TextShadow</shadowcolor>
       <shadowtype>Right</shadowtype>
       <shadowalpha>196</shadowalpha>
     </text>
+    <icon>
+      <draw>1</draw>
+      <size>16,16</size>
+      <location>cw-8,2</location>
+    </icon>    
     <location>0,1</location>
-    <dimension>w,19</dimension>
-    <iconlroffset>3,2</iconlroffset>
-    <icontboffset>3,2</icontboffset>
+    <dimension>w,19</dimension>    
     <OnNormalMouseEnter>Scripts\ButtonNormalMouseEnter.skinscript</OnNormalMouseEnter>
     <OnNormalMouseLeave>Scripts\ButtonNormalMouseLeave.skinscript</OnNormalMouseLeave>
     <normal>
@@ -1868,8 +1884,11 @@
     </hover>
     <down>
       <text>
-        <location>cw-2,ch+1</location>
+        <location>cw+iwh+3,ch+1</location>
       </text>
+      <icon>
+        <location>cw-7,3</location>
+      </icon>    
       <skinpart>
         <ID>0</ID>
         <location>1,0</location>
@@ -1920,6 +1939,8 @@
     </disabled>
   </button>
   <font>
+    <locationTL>0,-5</locationTL>
+    <locationBL>0,6</locationBL>
     <small>
       <size>6</size>
       <name>Small Fonts</name>
@@ -1955,7 +1976,12 @@
     </big>
   </font>
   <progressbar>
-    <dimension>w,h</dimension>
+    <location>0,4,</location>
+    <dimension>w,14</dimension>
+    <locationTL>0,1</locationTL>
+    <dimensionTL>w,9</dimensionTL>
+    <locationBL>0,12</locationBL>
+    <dimensionBL>w,9</dimensionBL>
     <background>
       <skinpart>
         <location>1,0</location>
