@@ -33,6 +33,7 @@ type
   PComponentList = ^TComponentList;
   TComponentList = class(TList) //this is our list of components and services
   public
+    destructor Destroy; override;
     function Add(Item: TComponentData): Integer;
     function BuildList(strExtension: string; buildComponents: Boolean = True): Integer;
     function FindByName(Name: string): Integer;
@@ -154,6 +155,19 @@ begin
   end;
 
   result := Count;
+end;
+
+destructor TComponentList.Destroy;
+var
+  n : integer;
+begin
+  for n := Count -1 Downto 0 do
+  begin
+    TComponentData(Items[n]).Free;
+    Delete(n);
+  end;
+
+  inherited Destroy;
 end;
 
 { TComponentData }

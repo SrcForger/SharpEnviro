@@ -344,6 +344,12 @@ begin
       end;
 
     WM_COPYDATA: begin // Message from SharpAPI
+        if lstComponents = nil then
+        begin
+          result := 0;
+          exit;
+        end;
+
         cdsData := PCopyDataStruct(lParam)^;
         tmdData := PMsgData(cdsData.lpData)^;
         if LowerCase(tmdData.Command) = '_servicestart' then {//start service} begin
