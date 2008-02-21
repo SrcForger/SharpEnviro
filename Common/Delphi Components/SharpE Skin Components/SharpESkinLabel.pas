@@ -51,14 +51,14 @@ type
   TSharpESkinLabel = class(TCustomSharpEGraphicControl)
   private
     FCaption: string;
-    FAutoPosition: Boolean;
+    FAutoPos: TSharpEBarAutoPos;
     FLabelStyle: TSharpELabelStyle;
     FPrecacheText : TSkinText;
     FPrecacheBmp  : TBitmap32;
     FPrecacheCaption : String;
     FTHeight : integer;  // Text Height without shadows!
     FTWidth  : integer;  // Text Width without shadows!
-    procedure SetAutoPosition(Value: boolean);
+    procedure SetAutoPos(Value: TSharpEBarAutoPos);
     procedure SetCaption(Value: string);
     procedure SetLabelStyle(const Value : TSharpELabelStyle);
   protected
@@ -81,7 +81,7 @@ type
     property OnClick;
     property OnDblClick;
     property Caption: string read FCaption write SetCaption;
-    property AutoPosition: Boolean read FAutoPosition write SetAutoPosition;
+    property AutoPos: TSharpEBarAutoPos read FAutoPos write SetAutoPos;
     property LabelStyle: TSharpELabelStyle read FLabelStyle write SetLabelStyle;
     property TextHeight : integer read FTHeight;
     property TextWidth : integer read FTWidth;
@@ -140,11 +140,16 @@ begin
   CompRect := Rect(0, 0, width, height);
   SkinText.AssignFontTo(Bmp.Font,Scheme);
   TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
-  TextPos := SkinText.GetXY(TextRect, CompRect);
+  TextPos := SkinText.GetXY(TextRect, CompRect, Rect(0,0,0,0));
 
-  if (FAutoPosition) then
-     if Top <> TextPos.Y then
-        Top := TextPos.Y;
+  case FAutoPos of
+    apTop: if Top <> FManager.Skin.TextPosTL.YAsInt then
+             Top := FManager.Skin.TextPosTL.YAsInt;
+    apCenter: if Top <> TextPos.Y then
+                Top := TextPos.Y;
+    apBottom: if Top <> FManager.Skin.TextPosBL.YAsInt then
+             Top := FManager.Skin.TextPosBL.YAsInt;
+  end;
 
   FTWidth := Bmp.TextWidth(Caption);
   FTHeight := Bmp.TextHeight(Caption);
@@ -190,18 +195,18 @@ begin
 end;
 
 
-procedure TSharpESkinLabel.SetAutoPosition(Value: boolean);
+procedure TSharpESkinLabel.SetAutoPos(Value: TSharpEBarAutoPos);
 begin
-  if (Value <> FAutoPosition) then
+  if (Value <> FAutoPos) then
   begin
-    FAutoPosition := Value;
+    FAutoPos := Value;
     UpdateAutoPosition;
   end;
 end;
 
 procedure TSharpESkinLabel.UpdateAutoPosition;
 begin
-  if (FAutoPosition) then
+  if (FAutoPos <> apNone) then
   begin
     UpdateSkin;
   end;

@@ -57,7 +57,6 @@ type
     FY: string;
     function GetXInteger : integer;
     function GetYInteger : integer;
-    function ParseCoordinate(s: string; tw, th, cw, ch: integer): integer;
   public
     constructor Create;
     procedure Clear;
@@ -109,16 +108,23 @@ type
     property HeightAsInt : integer read GetHeightInteger;
   end;
 
-  TSkinIcon = class(TSkinDim)
+  TSkinIcon = class
   private
     FDrawIcon : boolean;
+    FSize : TSkinPoint;
+    FPosition : TSkinPoint;
   public
-    procedure Clear; override;
-    procedure Assign(Value: TSkinIcon); reintroduce;
-    procedure SaveToStream(Stream: TStream); override;
-    procedure LoadFromStream(Stream: TStream); override;
+    constructor Create; reintroduce;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Assign(Value: TSkinIcon);
+    procedure SaveToStream(Stream: TStream);
+    procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJvSimpleXMLElem);
+    procedure RenderTo(Dst,Src : TBitmap32; x,y : integer);
+    function GetXY(TextRect: TRect; CompRect: TRect): TPoint;
     property DrawIcon : boolean read FDrawIcon write FDrawIcon;
+    property Size : TSkinPoint read FSize;
   end;
 
   TShadowType = (stLeft,stRight,stOutline);
@@ -160,8 +166,7 @@ type
     procedure UpdateDynamicProperties(cs: TSharpEScheme);
 
     procedure LoadFromXML(xml: TJvSimpleXMLElem);
-    function ParseCoordinate(s: string; tw, th, cw, ch: integer): integer;
-    function GetXY(TextRect: TRect; CompRect: TRect): TPoint;
+    function GetXY(TextRect,CompRect,IconRect: TRect): TPoint;
     function GetMaxWidth(CompRect: TRect): integer;
     function GetFont(cs: TSharpEScheme): TFont;
     procedure AssignFontTo(pFont : TFont; cs: TSharpEScheme);
@@ -295,6 +300,7 @@ procedure doBlend(Dest: TBitmap32; source: TBitmap32; color: TColor);
 procedure VGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
 procedure HGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
 function CreateThemedSkinText(Base : TSkinText) : TSkinText;
+function ParseCoordinate(s: string; tw, th, cw, ch, iw, ih: integer): integer;
 
 var
   SharpESkinTextBarBottom : boolean;
@@ -382,108 +388,9 @@ begin
   tw := TextRect.Right - TextRect.Left;
   th := TextRect.Bottom - TextRect.Top;
 
-  result.X := ParseCoordinate(FX, tw, th, cw, ch);
-  result.Y := ParseCoordinate(FY, tw, th, cw, ch);
+  result.X := ParseCoordinate(FX, tw, th, cw, ch, 0, 0);
+  result.Y := ParseCoordinate(FY, tw, th, cw, ch, 0, 0);
 end;
-
-
-function TSkinPoint.ParseCoordinate(s: string; tw, th, cw, ch: integer): integer;
-var i: integer;
-  tmp: string;
-  sub: boolean;
-  k : integer;
-begin
-  if length(s) = 0 then
-  begin
-    result := 0;
-    exit;
-  end;
-
-  result := 0;
-  tmp := '';
-  sub := false;
-  i := 0;
-  while i < length(s) do
-  begin
-    inc(i);
-    if (ord(s[i]) >= 48) and (ord(s[i]) <= 57) then
-      tmp := tmp + s[i]
-    else
-      if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'cw') then
-      begin
-        tmp := inttostr(floor((cw - tw) / 2));
-        inc(i);
-      end
-      else
-        if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'ch') then
-        begin
-          tmp := inttostr(floor((ch - th) / 2));
-          inc(i);
-        end
-        else
-          if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'tw') then
-          begin
-            tmp := inttostr(tw);
-            inc(i);
-          end
-          else
-            if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'th') then
-            begin
-              tmp := inttostr(th);
-              inc(i);
-            end
-            else
-              if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'twh') then
-              begin
-                tmp := inttostr(tw div 2);
-                inc(i);
-              end
-              else
-                if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'thh') then
-                begin
-                  tmp := inttostr(th div 2);
-                 inc(i);
-                end
-                else
-                if (lowercase(s[i]) = 'w') then
-                   tmp := inttostr(cw)
-                else
-                if (lowercase(s[i]) = 'h') then
-                    tmp := inttostr(ch)
-                else
-                begin
-                  if (tmp <> '') then
-                  begin
-                    if (sub) then
-                    begin
-                      if trystrtoint(tmp,k) then result := result - k;
-                    end
-                    else
-                    begin
-                      if trystrtoint(tmp,k) then result := result + k;
-                    end;
-                  end;
-                  if (s[i] = '+') then
-                    sub := false
-                  else
-                    if (s[i] = '-') then
-                      sub := true;
-                  tmp := '';
-                end;
-  end;
-  if (tmp <> '') then
-  begin
-    if (sub) then
-    begin
-      if trystrtoint(tmp,k) then result := result - k
-    end
-    else
-    begin
-      if trystrtoint(tmp,k) then result := result + k;
-    end;
-  end;
-end;
-
 
 //***************************************
 //* TSkinDim
@@ -861,98 +768,10 @@ begin
          else if s = 'Outline' then FShadowType := stOutline
          else FShadowType := stRight;
     end;
-    if ItemNamed['drawtext'] <> nil then
-      FDrawText := BoolValue('drawtext',true);
+    if ItemNamed['draw'] <> nil then
+      FDrawText := BoolValue('draw',true);
     if ItemNamed['cleartype'] <> nil then
       FClearType := BoolValue('cleartype',false);
-  end;
-end;
-
-function TSkinText.ParseCoordinate(s: string; tw, th, cw, ch: integer): integer;
-var i: integer;
-  tmp: string;
-  sub: boolean;
-  k : integer;
-begin
-  if length(s) = 0 then
-  begin
-    result := 0;
-    exit;
-  end;
-
-  result := 0;
-  tmp := '';
-  sub := false;
-  i := 0;
-  while i < length(s) do
-  begin
-    inc(i);
-    if (s[i] <> #0) then
-    begin
-      if (ord(s[i]) >= 48) and (ord(s[i]) <= 57) then
-        tmp := tmp + s[i]
-      else
-        if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'cw') then
-        begin
-          tmp := inttostr(floor((cw - tw) / 2));
-          inc(i);
-        end
-        else
-          if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'ch') then
-          begin
-            tmp := inttostr(floor((ch - th) / 2));
-            inc(i);
-          end
-          else
-            if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'tw') then
-            begin
-              tmp := inttostr(tw);
-              inc(i);
-            end
-            else
-              if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'th') then
-              begin
-                tmp := inttostr(th);
-               inc(i);
-              end
-              else
-                if (lowercase(s[i]) = 'w') then
-                  tmp := inttostr(cw)
-                else
-                  if (lowercase(s[i]) = 'h') then
-                    tmp := inttostr(ch)
-                  else
-                  begin
-                    if (tmp <> '') then
-                    begin
-                      if (sub) then
-                      begin
-                        if trystrtoint(tmp,k) then result := result - k;
-                      end
-                      else
-                      begin
-                        if trystrtoint(tmp,k) then result := result + k;
-                      end;
-                    end;
-                    if (s[i] = '+') then
-                      sub := false
-                    else
-                      if (s[i] = '-') then
-                        sub := true;
-                    tmp := '';
-                  end;
-    end;
-  end;
-  if (tmp <> '') then
-  begin
-    if (sub) then
-    begin
-      if trystrtoint(tmp,k) then result := result - k;
-    end
-    else
-    begin
-      if trystrtoint(tmp,k) then result := result + k;
-    end;
   end;
 end;
 
@@ -962,21 +781,24 @@ var
 begin
   cw := CompRect.Right - CompRect.Left;
   ch := CompRect.Bottom - CompRect.Top;
-  result := ParseCoordinate(FMaxwidth,cw,ch,cw,ch);
+  result := ParseCoordinate(FMaxwidth,cw,ch,cw,ch,0,0);
 end;
 
-function TSkinText.GetXY(TextRect: Trect; CompRect: TRect): TPoint;
+function TSkinText.GetXY(TextRect,CompRect,IconRect: Trect): TPoint;
 var
   cw, ch: integer;
   tw, th: integer;
+  iw, ih: integer;
 begin
   cw := CompRect.Right - CompRect.Left;
   ch := CompRect.Bottom - CompRect.Top;
   tw := TextRect.Right - TextRect.Left;
   th := TextRect.Bottom - TextRect.Top;
+  iw := IconRect.Right - IconRect.Left;
+  ih := IconRect.Bottom - IconRect.Top;
 
-  result.X := ParseCoordinate(FX, tw, th, cw, ch);
-  result.Y := ParseCoordinate(FY, tw, th, cw, ch);
+  result.X := ParseCoordinate(FX, tw, th, cw, ch, iw, ih);
+  result.Y := ParseCoordinate(FY, tw, th, cw, ch, iw, ih);
 end;
 
 
@@ -1095,6 +917,7 @@ begin
      (pPrecacheText.FShadow <> FShadow) or
      (pPrecacheText.FShadowType <> FShadowType) or
      (pPrecacheText.FShadowAlpha <> FShadowAlpha) or
+     (pPrecacheText.FClearType <> FClearType) or
      (CompareText(pPrecacheCaption,Caption) <> 0)) or (new) then
   begin
     // text settings or caption changed! redraw caption
@@ -1726,39 +1549,92 @@ end;
 
 procedure TSkinIcon.Clear;
 begin
-  Inherited Clear;
   FDrawIcon := True;
+  FSize.SetPoint('16','16');
+  FPosition.SetPoint('0','0');
+end;
+
+constructor TSkinIcon.Create;
+begin
+  Inherited Create;
+
+  FSize := TSkinPoint.Create;
+  FPosition := TSkinPoint.Create;
+  Clear;
+end;
+
+destructor TSkinIcon.Destroy;
+begin
+  FSize.Free;
+  FPosition.Free;
+
+  inherited Destroy;
+end;
+
+function TSkinIcon.GetXY(TextRect, CompRect: TRect): TPoint;
+begin
+  result := FPosition.GetXY(TextRect,CompRect);
 end;
 
 procedure TSkinIcon.Assign(Value: TSkinIcon);
 begin
-  inherited Assign(Value as TSkinDim);
   FDrawIcon := Value.DrawIcon;
+  FSize.Assign(Value.FSize);
+  FPosition.Assign(Value.FPosition);
 end;
 
 procedure TSkinIcon.SaveToStream(Stream: TStream);
 begin
-  inherited SaveToStream(Stream);
   StringSaveToStream(BoolToStr(FDrawIcon),Stream);
+  FSize.SaveToStream(Stream);
+  FPosition.SaveToStream(Stream);
 end;
 
 procedure TSkinIcon.LoadFromStream(Stream: TStream);
 begin
-  inherited LoadFromStream(Stream);
   FDrawIcon := StrToBool(StringLoadFromStream(Stream));
+  FSize.LoadFromStream(Stream);
+  FPosition.LoadFromStream(Stream);
 end;
 
 procedure TSkinIcon.LoadFromXML(xml: TJvSimpleXMLElem);
 begin
   with xml.Items do
   begin
-    if ItemNamed['dimension'] <> nil then
-       SetDimension(Value('dimension', 'w,h'));
+    if ItemNamed['size'] <> nil then
+       FSize.SetPoint(Value('size', 'w,h'));
     if ItemNamed['location'] <> nil then
-       SetLocation(Value('location','0,0'));
-    if ItemNamed['drawicon'] <> nil then
-       FDrawIcon := BoolValue('drawicon',true);
+       FPosition.SetPoint(Value('location','0,0'));
+    if ItemNamed['draw'] <> nil then
+       FDrawIcon := BoolValue('draw',true);
   end;
+end;
+
+procedure TSkinIcon.RenderTo(Dst, Src: TBitmap32; x,y : integer);
+var
+  IWidth,IHeight : integer;
+  icon : TBitmap32;
+begin
+  if (src = nil) or (not DrawIcon) then
+   exit;
+
+  icon := TBitmap32.Create;
+  icon.DrawMode := dmBlend;
+  icon.CombineMode := cmMerge;
+  icon.Clear(color32(0,0,0,0));
+  IWidth := FSize.XAsInt;
+  IHeight := FSize.YAsInt;
+
+  TLinearResampler.Create(Src);
+  if (IWidth <> Icon.Width) or (IHeight <> Icon.Height) then
+  begin
+    icon.setsize(IWidth,IHeight);
+    icon.Clear(color32(0,0,0,0));
+    src.DrawTo(icon,Rect(0,0,icon.width,icon.height));
+  end else icon.assign(src);
+
+  icon.DrawTo(dst,x,y);
+  icon.free;
 end;
 
 //**********************************
@@ -2163,6 +2039,114 @@ begin
     result.FStyleUnderline := GetSkinFontValueUnderline;
   if GetSkinFontModClearType then
     result.FClearType := GetSkinFontValueClearType;
+end;
+
+function ParseCoordinate(s: string; tw, th, cw, ch, iw, ih: integer): integer;
+var i: integer;
+  tmp: string;
+  sub: boolean;
+  k : integer;
+begin
+  if length(s) = 0 then
+  begin
+    result := 0;
+    exit;
+  end;
+
+  result := 0;
+  tmp := '';
+  sub := false;
+  i := 0;
+  while i < length(s) do
+  begin
+    inc(i);
+    if (s[i] <> #0) then
+    begin
+      if (ord(s[i]) >= 48) and (ord(s[i]) <= 57) then
+        tmp := tmp + s[i]
+      else if (length(s) > i+1) and (lowercase(s[i] + s[i + 1] + s[i + 2]) = 'iwh') then
+      begin
+        tmp := inttostr(iw div 2);
+        inc(i,2);
+      end
+      else if (length(s) > i+1) and (lowercase(s[i] + s[i + 1] + s[i + 2]) = 'ihh') then
+      begin
+        tmp := inttostr(ih div 2);
+        inc(i,2);
+      end        
+      else if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'iw') then
+      begin
+        tmp := inttostr(iw);
+        inc(i);
+      end
+      else if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'ih') then
+      begin
+        tmp := inttostr(ih);
+        inc(i);
+      end
+      else if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'cw') then
+      begin
+        tmp := inttostr(floor((cw - tw) / 2));
+        inc(i);
+      end
+      else if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'ch') then
+      begin
+        tmp := inttostr(floor((ch - th) / 2));
+        inc(i);
+      end else if (length(s) > i+1) and (lowercase(s[i] + s[i + 1] + s[i + 2]) = 'twh') then
+      begin
+        tmp := inttostr(tw div 2);
+        inc(i,2);
+      end else if (length(s) > i+1) and (lowercase(s[i] + s[i + 1] + s[i + 2]) = 'thh') then
+      begin
+        tmp := inttostr(th div 2);
+        inc(i,2);
+      end
+      else if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'tw') then
+      begin
+        tmp := inttostr(tw);
+        inc(i);
+      end
+      else if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'th') then
+      begin
+        tmp := inttostr(th);
+        inc(i);
+      end else if (lowercase(s[i]) = 'w') then
+        tmp := inttostr(cw)
+      else if (lowercase(s[i]) = 'h') then
+        tmp := inttostr(ch)
+      else
+      begin
+        if (tmp <> '') then
+        begin
+          if (sub) then
+          begin
+            if trystrtoint(tmp,k) then result := result - k;
+          end
+          else
+          begin
+            if trystrtoint(tmp,k) then result := result + k;
+          end;
+        end;
+        if (s[i] = '+') then
+          sub := false
+        else if (s[i] = '-') then
+          sub := true;
+        tmp := '';
+      end;
+    end;
+  end;
+  if (tmp <> '') then
+  begin
+    if (sub) then
+    begin
+      if trystrtoint(tmp,k) then result := result - k;
+    end
+    else
+    begin
+      if trystrtoint(tmp,k) then result := result + k;
+    end;
+  end;
 end;
 
 end.

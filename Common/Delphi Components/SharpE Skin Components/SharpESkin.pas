@@ -45,27 +45,23 @@ uses
   Math;
 
 type
-  TSharpESkinItem = (scPanel,scButton,scBar,scProgressBar,scCheckBox,scRadioBox,
-                     scMiniThrobber,scEdit,scForm,scTaskItem,scMenu,scMenuItem,
-                     scTaskSwitch);
+  TSharpESkinItem = (scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
+                     scTaskItem,scMenu,scMenuItem,scTaskSwitch);
   TSharpESkinItems = set of TSharpESkinItem;
 
+  TSharpEBarAutoPos = (apTop,apCenter,apBottom,apNone);
+
 const
- ALL_SHARPE_SKINS = [scPanel,scButton,scBar,scProgressBar,scCheckBox,scRadioBox,
-                     scMiniThrobber,scEdit,scForm,scTaskItem,scMenu,scMenuItem,
-                     scTaskSwitch];
+ ALL_SHARPE_SKINS = [scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
+                     scTaskItem,scMenu,scMenuItem,scTaskSwitch];
 
 type
-  TSharpEPanelSkin = class;
   TSharpEButtonSkin = class;
   TSharpEBarSkin = class;
   TSharpEProgressBarSkin = class;
-  TSharpECheckBoxSkin = class;
   TSharpESkinHeader = class;
-  TSharpERadioBoxSkin = class;
   TSharpEMiniThrobberSkin = class;
   TSharpEEditSkin = class;
-  TSharpEFormSkin = class;
   TSharpETaskItemSkin = class;
   TSharpEMenuSkin = class;
   TSharpEMenuItemSkin = class;
@@ -83,20 +79,18 @@ type
     FSmallText  : TSkinText;
     FMediumText : TSkinText;
     FBigText    : TSkinText;
+    FTextPosTL : TSkinPoint;
+    FTextPosBL : TSkinPoint;
     FSkinVersion: Double;
     FBitmapList: TSkinBitmapList;
     FLoadSkins : TSharpESkinItems;
 
     FOnNotify: TSkinEvent;
-    FPanelSkin: TSharpEPanelSkin;
     FButtonSkin: TSharpEButtonSkin;
     FProgressBarSkin: TSharpEProgressBarSkin;
-    FCheckBoxSkin: TSharpECheckBoxSkin;
-    FRadioBoxSkin: TSharpERadioBoxSkin;
     FBarSkin: TSharpEBarSkin;
     FMiniThrobberSkin: TSharpEMiniThrobberSkin;
     FEditSkin: TSharpEEditSkin;
-    FFormSkin: TSharpEFormSkin;
     FTaskItemSkin: TSharpETaskItemSkin;
     FMenuSkin : TSharpEMenuSkin;
     FMenuItemSkin: TSharpEMenuItemSkin;
@@ -132,14 +126,10 @@ type
 
     property OnNotify: TSkinEvent read FOnNotify write FOnNotify;
     property ButtonSkin: TSharpEButtonSkin read FButtonSkin;
-    property CheckBoxSkin: TSharpECheckBoxSkin read FCheckBoxSkin;
-    property RadioBoxSkin: TSharpERadioBoxSkin read FRadioBoxSkin;
     property ProgressBarSkin: TSharpEProgressBarSkin read FProgressBarSkin;
     property BarSkin: TSharpEBarSkin read FBarSkin;
-    property PanelSkin: TSharpEPanelSkin read FPanelSkin;
     property MiniThrobberSkin: TSharpEMiniThrobberSkin read FMiniThrobberSkin;
     property EditSkin: TSharpEEditSkin read FEditSkin;
-    property FormSkin: TSharpEFormSkin read FFormSkin;
     property MenuSkin : TSharpEMenuSkin read FMenuSkin;
     property MenuItemSkin : TSharpEMenuItemSkin read FMenuItemSkin;
     property TaskItemSkin: TSharpETaskItemSkin  read FTaskItemSkin;
@@ -148,6 +138,8 @@ type
     property SmallText  : TSkinText read FSmallText;
     property MediumText : TSkinText read FMediumText;
     property BigText    : TSkinText read FBigText;
+    property TextPosTL : TSkinPoint read FTextPosTL;
+    property TextPosBL : TSkinPoint read FTextPosBL;
     property BitmapList: TSkinBitmapList read FBitmapList write FBitmapList;
 
     procedure RemoveNotUsedBitmaps;
@@ -186,17 +178,13 @@ type
 
   TSharpETaskItemStates = (tisFull,tisCompact,tisMini);
   TSharpETaskItemState = class
-                           Normal         : TSkinPart;
-                           NormalHover    : TSkinPart;
-                           Down           : TSkinPart;
-                           DownHover      : TSkinPart;
-                           Highlight      : TSkinPart;
-                           HighlightHover : TSkinPart;
+                           Normal         : TSkinPartEx;
+                           NormalHover    : TSkinPartEx;
+                           Down           : TSkinPartEx;
+                           DownHover      : TSkinPartEx;
+                           Highlight      : TSkinPartEx;
+                           HighlightHover : TSkinPartEx;
                            Spacing        : integer;
-                           DrawIcon       : Boolean;
-                           DrawText       : Boolean;
-                           IconSize       : integer;
-                           IconLocation   : TSkinPoint;
                            SkinDim        : TSkinDim;
                            OnNormalMouseEnterScript    : String;
                            OnNormalMouseLeaveScript    : String;
@@ -318,12 +306,10 @@ type
   TSharpEButtonSkin = class
   private
     FSkinDim: TSkinDim;
-    FIconLROffset: TSkinPoint;
-    FIconTBOffset: TSkinPoint;
-    FNormal: TSkinPart;
-    FDown: TSkinPart;
-    FHover: TSkinPart;
-    FDisabled: TSkinPart;
+    FNormal: TSkinPartEx;
+    FDown: TSkinPartEx;
+    FHover: TSkinPartEx;
+    FDisabled: TSkinPartEx;
     FOnNormalMouseEnterScript : String;
     FOnNormalMouseLeaveScript : String;
   public
@@ -337,120 +323,20 @@ type
     function GetAutoDim(r: TRect): TRect;
     procedure UpdateDynamicProperties(cs: TSharpEScheme);
 
-    property Normal: TSkinPart read FNormal write FNormal;
-    property Down: TSkinPart read FDown write FDown;
-    property Hover: TSkinPart read FHover write FHover;
-    property Disabled: TSkinPart read FDisabled write FDisabled;
+    property Normal: TSkinPartEx read FNormal write FNormal;
+    property Down: TSkinPartEx read FDown write FDown;
+    property Hover: TSkinPartEx read FHover write FHover;
+    property Disabled: TSkinPartEx read FDisabled write FDisabled;
     property SkinDim: TSkinDim read FSkinDim;
-    property IconLROffset: TSkinPoint read FIconLROffset;
-    property IconTBOffset: TSkinPoint read FIconTBOffset;
     property OnNormalMouseEnterScript : String read FOnNormalMouseEnterScript;
     property OnNormalMouseLeaveScript : String read FOnNormalMouseLeaveScript;
  end;
 
-  TSharpEFormSkin = class
-  private
-    FSkinDim: TSkinDim;
-    FFull: TSkinPart;
-    FFullLROffset: TSkinPoint;
-    FFullTBOffset: TSkinPoint;
-    FTitleDim: TSkinDim;
-  public
-    constructor Create(BmpList : TSkinBitmapList);
-    destructor Destroy; override;
-    procedure Clear;
-    function Valid: boolean;
-    procedure SaveToStream(Stream: TStream);
-    procedure LoadFromStream(Stream: TStream);
-    procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
-    procedure UpdateDynamicProperties(cs: TSharpEScheme);
-
-    function GetAutoDim(r: TRect): TRect;
-    property SkinDim: TSkinDim read FSkinDim write FSkinDim;
-    property Full: TSkinPart read FFull write FFull;
-    property FullLROffset: TSkinPoint read FFullLROffset write FFullLROffset;
-    property FullTBOffset: TSkinPoint read FFullTBOffset write FFullTBOffset;
-    property TitleDim: TSkinDim read FTitleDim write FTitleDim;
- end;
-
-  TSharpEPanelSkin = class
-    FSkinDim: TSkinDim;
-    FRaised: TSkinPart;
-    FLowered: TSkinPart;
-    FNormal: TSkinPart;
-    FSelected: TSkinPart;
-  public
-    constructor Create(BmpList : TSkinBitmapList);
-    destructor Destroy; override;
-    procedure Clear;
-    function Valid: boolean;
-    procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
-    procedure SaveToStream(Stream: TStream);
-    procedure LoadFromStream(Stream: TStream);
-    function GetAutoDim(r: TRect): TRect;
-    procedure UpdateDynamicProperties(cs: TSharpEScheme);
-
-    property Normal: TSkinPart read FNormal write FNormal;
-    property Selected: TSkinPart read FSelected write FSelected;
-    property Lowered: TSkinPart read FLowered write FLowered;
-    property Raised: TSkinPart read FRaised write FRaised;
-  end;
-
-  TSharpECheckBoxSkin = class
-  private
-    FSkinDim: TSkinDim;
-    FNormal: TSkinPart;
-    FDown: TSkinPart;
-    FHover: TSkinPart;
-    FDisabled: TSkinPart;
-    FChecked: TSkinPart;
-  public
-    constructor Create(BmpList : TSkinBitmapList);
-    destructor Destroy; override;
-    procedure Clear;
-    function Valid: boolean;
-    procedure SaveToStream(Stream: TStream);
-    procedure LoadFromStream(Stream: TStream);
-    procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
-    function GetAutoDim(r: TRect): TRect;
-    procedure UpdateDynamicProperties(cs: TSharpEScheme);
-
-    property Normal: TSkinPart read FNormal write FNormal;
-    property Down: TSkinPart read FDown write FDown;
-    property Hover: TSkinPart read FHover write FHover;
-    property Disabled: TSkinPart read FDisabled write FDisabled;
-    property Checked: TSkinPart read FChecked write FChecked;
-  end;
-
-  TSharpERadioBoxSkin = class
-  private
-    FSkinDim: TSkinDim;
-    FNormal: TSkinPart;
-    FDown: TSkinPart;
-    FHover: TSkinPart;
-    FDisabled: TSkinPart;
-    FChecked: TSkinPart;
-  public
-    constructor Create(BmpList : TSkinBitmapList);
-    destructor Destroy; override;
-    procedure Clear;
-    function Valid: boolean;
-    procedure SaveToStream(Stream: TStream);
-    procedure LoadFromStream(Stream: TStream);
-    procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
-    function GetAutoDim(r: TRect): TRect;
-    procedure UpdateDynamicProperties(cs: TSharpEScheme);
-
-    property Normal: TSkinPart read FNormal write FNormal;
-    property Down: TSkinPart read FDown write FDown;
-    property Hover: TSkinPart read FHover write FHover;
-    property Disabled: TSkinPart read FDisabled write FDisabled;
-    property Checked: TSkinPart read FChecked write FChecked;
-  end;
-
   TSharpEProgressBarSkin = class
   private
     FSkinDim: TSkinDim;
+    FSkinDimTL: TSkinDim;
+    FSkinDimBL: TSkinDim;
     FBackGround: TSkinPart;
     FProgress: TSkinPart;
     FBackGroundSmall: TSkinPart;
@@ -464,7 +350,7 @@ type
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
-    function GetAutoDim(r: TRect): TRect;
+    function GetAutoDim(r: TRect; vpos : TSharpEBarAutoPos): TRect;
     procedure UpdateDynamicProperties(cs: TSharpEScheme);
 
     property BackGround: TSkinPart read FBackGround write FBackGround;
@@ -638,17 +524,15 @@ begin
     FBitmapList := TSkinBitmapList.Create;
 
   if scButton in FLoadSkins then FButtonSkin := TSharpEButtonSkin.create(FBitmapList);
-  if scCheckBox in FLoadSkins then FCheckBoxSkin := TSharpECheckBoxSkin.create(FBitmapList);
-  if scRadioBox in FLoadSkins then FRadioBoxSkin := TSharpERadioBoxSkin.create(FBitmapList);
   if scProgressBar in FLoadSkins then FProgressBarSkin := TSharpEProgressBarSkin.create(FBitmapList);
-  if scForm in FLoadSkins then FFormSkin := TSharpEFormSkin.Create(FBitmapList);
   if scBar in FLoadSkins then FBarSkin := TSharpEBarSkin.create(FBitmapList);
   if scTaskItem in FLoadSkins then FTaskItemSkin := TSharpeTaskItemSkin.Create(FBitmapList);
   FSkinText := TSkinText.Create;
   FSmallText  := TSkinText.Create;
   FMediumText := TSkinText.Create;
   FBigText    := TSkinText.Create;
-  if scPanel in FLoadSkins then FPanelSkin := TSharpEPanelSkin.Create(FBitmapList);
+  FTextPosTL  := TSkinPoint.Create;
+  FTextPosBL  := TSkinPoint.Create;
   FSkinHeader := TSharpeSkinHeader.Create;
   if scMiniThrobber in FLoadSkins then FMiniThrobberskin := TSharpEMiniThrobberSkin.Create(FBitmapList);
   if scEdit in FLoadSkins then FEditSkin := TSharpEEditSkin.Create(FBitmapList);
@@ -669,8 +553,6 @@ destructor TSharpESkin.Destroy;
 begin
   FXml.Free;
   if FButtonSkin <> nil then FButtonSkin.Free;
-  if FCheckBoxSkin <> nil then FCheckBoxSkin.Free;
-  if FRadioBoxSkin <> nil then FRadioBoxSkin.Free;
   if FProgressBarskin <> nil then FProgressBarSkin.Free;
   if FBarSkin <> nil then FBarSkin.Free;
   if FTaskItemSkin <> nil then FTaskItemSkin.Free;
@@ -678,11 +560,11 @@ begin
   FSmallText.Free;
   FMediumText.Free;
   FBigText.Free;
-  if FPanelSkin <> nil then FPanelSkin.Free;
+  FTextPosTL.Free;
+  FTextPosBL.Free;
   FSkinHeader.Free;
   if FMiniThrobberSkin <> nil then FMiniThrobberSkin.Free;
   if FEditSkin <> nil then FEditSkin.Free;
-  if FFormSkin <> nil then FFormSkin.Free;
   if FMenuSkin <> nil then FMenuSkin.Free;
   if FMenuItemSkin <> nil then FMenuItemSkin.Free;
   if FTaskSwitchSkin <> nil then FTaskSwitchSkin.Free;
@@ -694,15 +576,11 @@ end;
 procedure TSharpESkin.UpdateDynamicProperties(cs: TSharpEScheme);
 begin
   if FButtonSkin <> nil then FButtonSkin.UpdateDynamicProperties(cs);
-  if FCheckBoxSkin <> nil then FCheckBoxSkin.UpdateDynamicProperties(cs);
-  if FRadioBoxSkin <> nil then FRadioBoxSkin.UpdateDynamicProperties(cs);
   if FProgressBarskin <> nil then FProgressBarSkin.UpdateDynamicProperties(cs);
   if FBarSkin <> nil then FBarSkin.UpdateDynamicProperties(cs);
   if FTaskItemSkin <> nil then FTaskItemSkin.UpdateDynamicProperties(cs);
-  if FPanelSkin <> nil then FPanelSkin.UpdateDynamicProperties(cs);
   if FMiniThrobberSkin <> nil then FMiniThrobberSkin.UpdateDynamicProperties(cs);
   if FEditSkin <> nil then FEditSkin.UpdateDynamicProperties(cs);
-  if FFormSkin <> nil then FFormSkin.UpdateDynamicProperties(cs);
   if FMenuSkin <> nil then FMenuSkin.UpdateDynamicProperties(cs);
   if FMenuItemSkin <> nil then FMenuItemSkin.UpdateDynamicProperties(cs);
   if FTaskSwitchSkin <> nil then FTaskSwitchSkin.UpdateDynamicProperties(cs);
@@ -800,31 +678,11 @@ begin
     RemoveSkinPartBitmaps(FTaskItemSkin.Mini.Highlight,List);
     RemoveSkinPartBitmaps(FTaskItemSkin.Mini.HighlightHover,List);
   end;
-  if FCheckBoxSkin <> nil then
-  begin
-    RemoveskinPartBitmaps(FCheckBoxSkin.Normal,List);
-    RemoveskinPartBitmaps(FCheckBoxSkin.Down,List);
-    RemoveskinPartBitmaps(FCheckBoxSkin.Hover,List);
-    RemoveskinPartBitmaps(FCheckBoxSkin.Disabled,List);
-    RemoveskinPartBitmaps(FCheckBoxSkin.Checked,List);
-  end;
-  if FRadioBoxSkin <> nil then
-  begin
-    RemoveskinPartBitmaps(FRadioBoxSkin.Normal,List);
-    RemoveskinPartBitmaps(FRadioBoxSkin.Down,List);
-    RemoveskinPartBitmaps(FRadioBoxSkin.Hover,List);
-    RemoveskinPartBitmaps(FRadioBoxSkin.Disabled,List);
-    RemoveskinPartBitmaps(FRadioBoxSkin.Checked,List);
-  end;
   if FMiniThrobberSkin <> nil then
   begin
     RemoveskinPartBitmaps(FMiniThrobberSkin.Normal,List);
     RemoveskinPartBitmaps(FMiniThrobberSkin.Down,List);
     RemoveskinPartBitmaps(FMiniThrobberSkin.Hover,List);
-  end;
-  if FFormSkin <> nil then
-  begin
-    RemoveskinPartBitmaps(FFormSkin.Full,List);
   end;
   if FMenuSkin <> nil then
   begin
@@ -839,13 +697,6 @@ begin
     RemoveskinPartBitmaps(FMenuItemSkin.HoverSubItem,List);
     RemoveskinPartBitmaps(FMenuItemSkin.LabelItem,List);
     RemoveskinPartBitmaps(FMenuItemSkin.Separator,List);
-  end;
-  if FPanelSkin <> nil then
-  begin
-    RemoveskinPartBitmaps(FPanelSkin.Normal,List);
-    RemoveskinPartBitmaps(FPanelSkin.Selected,List);
-    RemoveskinPartBitmaps(FPanelSkin.Lowered,List);
-    RemoveskinPartBitmaps(FPanelSkin.Raised,List);
   end;
   if FTaskSwitchSkin <> nil then
   begin
@@ -876,6 +727,8 @@ begin
   FSmallText.SaveToStream(Stream);
   FMediumText.SaveToStream(Stream);
   FBigText.SaveToStream(Stream);
+  FTextPosTL.SaveToStream(Stream);
+  FTextPosBL.SaveToStream(Stream);
   Stream.WriteBuffer(SaveBitmap, sizeof(SaveBitmap));
   if SaveBitmap then
     FBitmapList.SaveToStream(Stream);
@@ -906,48 +759,12 @@ begin
       Stream.CopyFrom(tempStream, Size);
     end;
 
-    //Write CheckBox
-    if FCheckBoxSkin <> nil then
-    begin
-      tempStream.clear;
-      StringSaveToStream('CheckBox', Stream);
-      FCheckBoxSkin.SaveToStream(tempStream);
-      size := tempStream.Size;
-      tempStream.Position := 0;
-      Stream.WriteBuffer(size, sizeof(size));
-      Stream.CopyFrom(tempStream, Size);
-    end;
-
-    //Write RadioBox
-    if FRadioBoxSkin <> nil then
-    begin
-      tempStream.clear;
-      StringSaveToStream('RadioBox', Stream);
-      FRadioBoxSkin.SaveToStream(tempStream);
-      size := tempStream.Size;
-      tempStream.Position := 0;
-      Stream.WriteBuffer(size, sizeof(size));
-      Stream.CopyFrom(tempStream, Size);
-    end;
-
     //Write Bar
     if FBarSkin <> nil then
     begin
       tempStream.clear;
       StringSaveToStream('Bar', Stream);
       FBarSkin.SaveToStream(tempStream);
-      size := tempStream.Size;
-      tempStream.Position := 0;
-      Stream.WriteBuffer(size, sizeof(size));
-      Stream.CopyFrom(tempStream, Size);
-    end;
-
-    //Write Panel
-    if FPanelSkin <> nil then
-    begin
-      tempStream.clear;
-      StringSaveToStream('Panel', Stream);
-      FPanelSkin.SaveToStream(tempStream);
       size := tempStream.Size;
       tempStream.Position := 0;
       Stream.WriteBuffer(size, sizeof(size));
@@ -972,18 +789,6 @@ begin
       tempStream.clear;
       StringSaveToStream('Edit', Stream);
       FEditSkin.SaveToStream(tempStream);
-      size := tempStream.Size;
-      tempStream.Position := 0;
-      Stream.WriteBuffer(size, sizeof(size));
-      Stream.CopyFrom(tempStream, Size);
-    end;
-
-    //Write Form
-    if FFormSkin <> nil then
-    begin
-      tempStream.clear;
-      StringSaveToStream('Form', Stream);
-      FFormSkin.SaveToStream(tempStream);
       size := tempStream.Size;
       tempStream.Position := 0;
       Stream.WriteBuffer(size, sizeof(size));
@@ -1070,6 +875,8 @@ begin
     FSmallText.LoadFromStream(Stream);
     FMediumText.LoadFromStream(Stream);
     FBigText.LoadFromStream(Stream);
+    FTextPosTL.LoadFromStream(Stream);
+    FTextPosBL.LoadFromStream(Stream);
     Stream.ReadBuffer(BmpListInStream, sizeof(BmpListInStream));
     if BmpListInStream then
       FBitmapList.LoadFromStream(Stream);
@@ -1080,45 +887,25 @@ begin
 
       if temp = 'Header' then
         FSkinHeader.LoadFromStream(Stream)
-      else
-        if (temp = 'Button') and (FButtonSkin <> nil) then
-          FButtonSkin.LoadFromStream(Stream)
-        else
-          if (temp = 'ProgressBar') and (FProgressBarSkin <> nil) then
-            FProgressBarSkin.LoadFromStream(Stream)
-          else
-            if (temp = 'CheckBox') and (FCheckBoxSkin <> nil) then
-              FCheckBoxSkin.LoadFromStream(Stream)
-            else
-              if (temp = 'RadioBox') and (FRadioBoxSkin <> nil) then
-                FRadioBoxSkin.LoadFromStream(Stream)
-              else
-                if (temp = 'Bar') and (FBarSkin <> nil) then
-                  FBarSkin.LoadFromStream(Stream)
-                else
-                  if (temp = 'Panel') and (FPanelSkin <> nil) then
-                    FPanelSkin.LoadFromStream(Stream)
-                  else
-                    if (temp = 'MiniThrobber') and (FMiniThrobberSkin <> nil) then
-                      FMiniThrobberSkin.LoadFromStream(Stream)
-                    else
-                      if (temp = 'Edit') and (FEditSkin <> nil) then
-                        FEditSkin.LoadFromStream(Stream)
-                      else
-                        if (temp = 'Form') and (FFormSkin <> nil) then
-                          FFormSkin.LoadFromStream(Stream)
-                        else
-                          if (temp = 'TaskItem') and (FTaskItemSkin <> nil) then
-                            FTaskItemSkin.LoadFromStream(Stream)
-                          else
-                            if (temp = 'Menu') and (FMenuSkin <> nil) then
-                              FMenuSkin.LoadFromStream(Stream)
-                            else
-                              if (temp = 'MenuItem') and (FMenuItemSkin <> nil) then
-                                FMenuItemSkin.LoadFromStream(Stream)
-                              else if (temp = 'TaskSwitchSkin') and (FTaskSwitchSkin <> nil) then
-                                     FTaskSwitchSkin.LoadFromStream(Stream)
-                                    else Stream.Position := Stream.Position + size;
+      else if (temp = 'Button') and (FButtonSkin <> nil) then
+        FButtonSkin.LoadFromStream(Stream)
+      else if (temp = 'ProgressBar') and (FProgressBarSkin <> nil) then
+        FProgressBarSkin.LoadFromStream(Stream)
+      else if (temp = 'Bar') and (FBarSkin <> nil) then
+        FBarSkin.LoadFromStream(Stream)
+      else if (temp = 'MiniThrobber') and (FMiniThrobberSkin <> nil) then
+        FMiniThrobberSkin.LoadFromStream(Stream)
+      else if (temp = 'Edit') and (FEditSkin <> nil) then
+        FEditSkin.LoadFromStream(Stream)
+      else if (temp = 'TaskItem') and (FTaskItemSkin <> nil) then
+        FTaskItemSkin.LoadFromStream(Stream)
+      else if (temp = 'Menu') and (FMenuSkin <> nil) then
+        FMenuSkin.LoadFromStream(Stream)
+      else if (temp = 'MenuItem') and (FMenuItemSkin <> nil) then
+        FMenuItemSkin.LoadFromStream(Stream)
+      else if (temp = 'TaskSwitchSkin') and (FTaskSwitchSkin <> nil) then
+        FTaskSwitchSkin.LoadFromStream(Stream)
+      else Stream.Position := Stream.Position + size;
 
       temp := StringLoadFromStream(Stream);
     end;
@@ -1135,15 +922,11 @@ end;
 procedure TSharpESkin.Clear;
 begin
   if FButtonSkin <> nil then FButtonSkin.Clear;
-  if FCheckBoxSkin <> nil then FCheckBoxSkin.Clear;
   if FProgressBarSkin <> nil then FProgressBarSkin.Clear;
   if FBarSkin <> nil then FBarSkin.Clear;
-  if FPanelSkin <> nil then FPanelSkin.Clear;
   FSkinHeader.Clear;
-  if FRadioBoxSkin <> nil then FRadioBoxSkin.Clear;
   if FMiniThrobberSkin <> nil then FMiniThrobberSkin.Clear;
   if FEditSkin <> nil then FEditSkin.Clear;
-  if FFormSkin <> nil then FFormSkin.Clear;
   if FMenuSkin <> nil then FMenuSkin.Clear;
   if FMenuItemSkin <> nil then FMenuItemSkin.Clear;
   if FTaskItemSkin <> nil then FTaskItemSkin.Clear;
@@ -1153,6 +936,8 @@ begin
   FMediumText.Clear;
   FBigText.Clear;
   FBitmapList.Clear;
+  FTextPosTL.Clear;
+  FTextPosBL.Clear;
 
   FSkinName := '';
 end;
@@ -1220,6 +1005,10 @@ begin
   if FXml.Root.Items.ItemNamed['font'] <> nil then
      with FXml.Root.Items.ItemNamed['font'].Items do
      begin
+       if ItemNamed['locationTL'] <> nil then
+          FTextPosTL.SetPoint(ItemNamed['locationTL'].Value);
+       if ItemNamed['locationBL'] <> nil then
+          FTextPosBL.SetPoint(ItemNamed['locationBL'].Value);
        if ItemNamed['small'] <> nil then
           FSmallText.LoadFromXML(ItemNamed['small']);
        if ItemNamed['medium'] <> nil then
@@ -1235,18 +1024,10 @@ begin
     FBarSkin.LoadFromXML(FXml.Root.Items.ItemNamed['sharpbar'], path);
   if (FXml.Root.Items.ItemNamed['progressbar'] <> nil) and (FProgressBarSkin <> nil) then
     FProgressBarSkin.LoadFromXML(FXml.Root.Items.ItemNamed['progressbar'], path);
-  if (FXml.Root.Items.ItemNamed['checkbox'] <> nil) and (FCheckBoxSkin <> nil) then
-    FCheckBoxSkin.LoadFromXML(FXml.Root.Items.ItemNamed['checkbox'], path);
-  if (FXml.Root.Items.ItemNamed['radiobox'] <> nil) and (FRadioBoxSkin <> nil) then
-    FRadioBoxSkin.LoadFromXML(FXml.Root.Items.ItemNamed['radiobox'], path);
-  if (FXml.Root.Items.ItemNamed['panel'] <> nil) and (FPanelSkin <> nil) then
-    FPanelSkin.LoadFromXML(FXml.Root.Items.ItemNamed['panel'], path);
   if (FXml.Root.Items.ItemNamed['minithrobber'] <> nil) and (FMiniThrobberSkin <> nil) then
     FMiniThrobberSkin.LoadFromXML(FXML.Root.Items.ItemNamed['minithrobber'], path);
   if (FXml.Root.Items.ItemNamed['edit'] <> nil) and (FEditSkin <> nil) then
     FEditSkin.LoadFromXML(FXML.Root.Items.ItemNamed['edit'], path);
-  if (FXml.Root.Items.ItemNamed['form'] <> nil) and (FFormSkin <> nil) then
-    FFormSkin.LoadFromXML(FXml.Root.Items.ItemNamed['form'], path);
   if (FXml.Root.Items.ItemNamed['taskitem'] <> nil) and (FTaskItemSkin <> nil) then
     FTaskItemSkin.LoadFromXML(FXml.Root.Items.ItemNamed['taskitem'],path);
   if (FXml.Root.Items.ItemNamed['menu'] <> nil) and (FMenuSkin <> nil) then
@@ -1601,6 +1382,7 @@ begin
     end;
   finally
     SkinText.free;
+    SkinIcon.Free;
   end;
 end;
 
@@ -1613,14 +1395,10 @@ begin
   FSkinDim := TSkinDim.Create;
   FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w', 'h');
-  FIconLROffset := TSkinPoint.Create;
-  FIconTBOffset := TSkinPoint.Create;
-  FIconLROffset.SetPoint('3','3');
-  FIconTBOffset.SetPoint('3','3');
-  FNormal := TSkinPart.Create(BmpList);
-  FDown := TSkinPart.Create(BmpList);
-  FHover := TSkinPart.Create(BmpList);
-  FDisabled := TSkinPart.Create(BmpList);
+  FNormal := TSkinPartEx.Create(BmpList);
+  FDown := TSkinPartEx.Create(BmpList);
+  FHover := TSkinPartEx.Create(BmpList);
+  FDisabled := TSkinPartEx.Create(BmpList);
   FOnNormalMouseEnterScript   := '';
   FOnNormalMouseLeaveScript   := '';
 end;
@@ -1632,8 +1410,6 @@ begin
   FHover.Free;
   FDisabled.Free;
   FSkinDim.Free;
-  FIconLROffset.Free;
-  FIconTBOffset.Free;
 end;
 
 procedure TSharpEButtonSkin.UpdateDynamicProperties(cs: TSharpEScheme);
@@ -1647,8 +1423,6 @@ end;
 procedure TSharpEButtonSkin.SaveToStream(Stream: TStream);
 begin
   FSkinDim.SaveToStream(Stream);
-  FIconLROffset.SaveToStream(Stream);
-  FIconTBOffset.SaveToStream(Stream);
   FNormal.SaveToStream(Stream);
   FDown.SaveToStream(Stream);
   FHover.SaveToStream(Stream);
@@ -1660,8 +1434,6 @@ end;
 procedure TSharpEButtonSkin.LoadFromStream(Stream: TStream);
 begin
   FSkinDim.LoadFromStream(Stream);
-  FIconLROffset.LoadFromStream(Stream);
-  FIconTBOffset.LoadFromStream(Stream);
   FNormal.LoadFromStream(Stream);
   FDown.LoadFromStream(Stream);
   FHover.LoadFromStream(Stream);
@@ -1678,15 +1450,17 @@ begin
   FDisabled.Clear;
   FSkinDim.SetLocation('0','0');
   FSkinDim.SetDimension('w', 'h');
-  FIconLROffset.SetPoint('3','3');
-  FIconTBOffset.SetPoint('3','3');
   FOnNormalMouseEnterScript   := '';
   FOnNormalMouseLeaveScript   := '';
 end;
 
 procedure TSharpEButtonSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
-var SkinText: TSkinText;
+var
+  SkinText: TSkinText;
+  SkinIcon: TSkinIcon;
 begin
+  SkinIcon := TSkinIcon.Create;
+  SkinIcon.DrawIcon := True;
   SkinText := TSkinText.create;
   SkinText.SetLocation('cw', 'ch');
   try
@@ -1694,24 +1468,24 @@ begin
     begin
       if ItemNamed['text'] <> nil then
         SkinText.LoadFromXML(ItemNamed['text']);
+      if ItemNamed['icon'] <> nil then
+        SkinIcon.LoadFromXML(ItemNamed['icon']);
+
       if ItemNamed['normal'] <> nil then
-        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText);
+        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText, SkinIcon);
       if ItemNamed['down'] <> nil then
-        FDown.LoadFromXML(ItemNamed['down'], path, SkinText);
+        FDown.LoadFromXML(ItemNamed['down'], path, SkinText, SkinIcon);
       if ItemNamed['hover'] <> nil then
-        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText);
+        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText, SkinIcon);
       if ItemNamed['disabled'] <> nil then
-        FDisabled.LoadFromXML(ItemNamed['disabled'], path, SkinText);
+        FDisabled.LoadFromXML(ItemNamed['disabled'], path, SkinText, SkinIcon);
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
       if ItemNamed['location'] <> nil then
         FSkinDim.SetLocation(Value('location','0,0'));
-      if ItemNamed['iconlroffset'] <> nil then
-        FIconLROffset.SetPoint(Value('iconlroffset', '3,3'));
-      if ItemNamed['icontboffset'] <> nil then
-        FIconTBOffset.SetPoint(Value('icontboffset','3,3'));
-      if ItemNamed['OnNormalMouseEnter'] <> nil then
+
       {$WARNINGS OFF}
+      if ItemNamed['OnNormalMouseEnter'] <> nil then
         FOnNormalMouseEnterScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseEnter',''));
       if ItemNamed['OnNormalMouseLeave'] <> nil then
         FOnNormalMouseLeaveScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseLeave',''));
@@ -1719,6 +1493,7 @@ begin
     end;
   finally
     SkinText.free;
+    SkinIcon.free;
   end;
 end;
 
@@ -1779,31 +1554,28 @@ begin
   FMini := TSharpETaskItemState.Create;
 
   FFull.SkinDim := TSkinDim.Create;
-  FFull.Normal         := TSkinPart.Create(BmpList);
-  FFull.NormalHover    := TSkinPart.Create(BmpList);
-  FFull.Down           := TSkinPart.Create(BmpList);
-  FFull.DownHover      := TSkinPart.Create(BmpList);
-  FFull.Highlight      := TSkinPart.Create(BmpList);
-  FFull.HighlightHover := TSkinPart.Create(BmpList);
-  FFull.IconLocation := TSkinPoint.Create;
+  FFull.Normal         := TSkinPartEx.Create(BmpList);
+  FFull.NormalHover    := TSkinPartEx.Create(BmpList);
+  FFull.Down           := TSkinPartEx.Create(BmpList);
+  FFull.DownHover      := TSkinPartEx.Create(BmpList);
+  FFull.Highlight      := TSkinPartEx.Create(BmpList);
+  FFull.HighlightHover := TSkinPartEx.Create(BmpList);
 
   FCompact.SkinDim := TSkinDim.Create;
-  FCompact.Normal         := TSkinPart.Create(BmpList);
-  FCompact.NormalHover    := TSkinPart.Create(BmpList);
-  FCompact.Down           := TSkinPart.Create(BmpList);
-  FCompact.DownHover      := TSkinPart.Create(BmpList);
-  FCompact.Highlight      := TSkinPart.Create(BmpList);
-  FCompact.HighlightHover := TSkinPart.Create(BmpList);
-  FCompact.IconLocation := TSkinPoint.Create;
+  FCompact.Normal         := TSkinPartEx.Create(BmpList);
+  FCompact.NormalHover    := TSkinPartEx.Create(BmpList);
+  FCompact.Down           := TSkinPartEx.Create(BmpList);
+  FCompact.DownHover      := TSkinPartEx.Create(BmpList);
+  FCompact.Highlight      := TSkinPartEx.Create(BmpList);
+  FCompact.HighlightHover := TSkinPartEx.Create(BmpList);
 
   FMini.SkinDim := TSkinDim.Create;
-  FMini.Normal         := TSkinPart.Create(BmpList);
-  FMini.NormalHover    := TSkinPart.Create(BmpList);
-  FMini.Down           := TSkinPart.Create(BmpList);
-  FMini.DownHover      := TSkinPart.Create(BmpList);
-  FMini.Highlight      := TSkinPart.Create(BmpList);
-  FMini.HighlightHover := TSkinPart.Create(BmpList);
-  FMini.IconLocation := TSkinPoint.Create;
+  FMini.Normal         := TSkinPartEx.Create(BmpList);
+  FMini.NormalHover    := TSkinPartEx.Create(BmpList);
+  FMini.Down           := TSkinPartEx.Create(BmpList);
+  FMini.DownHover      := TSkinPartEx.Create(BmpList);
+  FMini.Highlight      := TSkinPartEx.Create(BmpList);
+  FMini.HighlightHover := TSkinPartEx.Create(BmpList);
 
   Clear;
 end;
@@ -1817,7 +1589,6 @@ begin
   FFull.DownHover.Free;
   FFull.Highlight.Free;
   FFull.HighlightHover.Free;
-  FFull.IconLocation.Free;
 
   FCompact.SkinDim.Free;
   FCompact.Normal.Free;
@@ -1826,7 +1597,6 @@ begin
   FCompact.DownHover.Free;
   FCompact.Highlight.Free;
   FCompact.HighlightHover.Free;
-  FCompact.IconLocation.Free;
 
   FMini.SkinDim.Free;
   FMini.Normal.Free;
@@ -1835,7 +1605,6 @@ begin
   FMini.DownHover.Free;
   FMini.Highlight.Free;
   FMini.HighlightHover.Free;
-  FMini.IconLocation.Free;
 
   FFull.Free;
   FCompact.Free;
@@ -1875,11 +1644,7 @@ begin
   FFull.DownHover.SaveToStream(Stream);
   FFull.Highlight.SaveToStream(Stream);
   FFull.HighlightHover.SaveToStream(Stream);
-  FFull.IconLocation.SaveToStream(Stream);
   StringSaveToStream(inttostr(FFull.Spacing),Stream);
-  StringSaveToStream(inttostr(FFull.IconSize),Stream);
-  StringSaveToStream(BoolToStr(FFull.DrawIcon),Stream);
-  StringSaveToStream(BoolToStr(FFull.DrawText),Stream);
   SaveTIScriptsToStream(FFull,Stream);
 
   FCompact.SkinDim.SaveToStream(Stream);
@@ -1889,11 +1654,7 @@ begin
   FCompact.DownHover.SaveToStream(Stream);
   FCompact.Highlight.SaveToStream(Stream);
   FCompact.HighlightHover.SaveToStream(Stream);
-  FCompact.IconLocation.SaveToStream(Stream);
   StringSaveToStream(inttostr(FCompact.Spacing),Stream);
-  StringSaveToStream(inttostr(FCompact.IconSize),Stream);
-  StringSaveToStream(BoolToStr(FCompact.DrawIcon),Stream);
-  StringSaveToStream(BoolToStr(FCompact.DrawText),Stream);
   SaveTIScriptsToStream(FCompact,Stream);
 
   FMini.SkinDim.SaveToStream(Stream);
@@ -1903,11 +1664,7 @@ begin
   FMini.DownHover.SaveToStream(Stream);
   FMini.Highlight.SaveToStream(Stream);
   FMini.HighlightHover.SaveToStream(Stream);
-  FMini.IconLocation.SaveToStream(Stream);
   StringSaveToStream(inttostr(FMini.Spacing),Stream);
-  StringSaveToStream(inttostr(FMini.IconSize),Stream);
-  StringSaveToStream(BoolToStr(FMini.DrawIcon),Stream);
-  StringSaveToStream(BoolToStr(FMini.DrawText),Stream);
   SaveTIScriptsToStream(FMini,Stream);
 end;
 
@@ -1920,11 +1677,7 @@ begin
   FFull.DownHover.LoadFromStream(Stream);
   FFull.Highlight.LoadFromStream(Stream);
   FFull.HighlightHover.LoadFromStream(Stream);
-  FFull.IconLocation.LoadFromStream(Stream);
   FFull.Spacing := StrToInt(StringLoadFromStream(Stream));
-  FFull.IconSize := StrToInt(StringLoadFromStream(Stream));
-  FFull.DrawIcon := StrToBool(StringLoadFromStream(Stream));
-  FFull.DrawText := StrToBool(StringLoadFromStream(Stream));
   LoadTIScriptsFromStream(FFull,Stream);
 
   FCompact.SkinDim.LoadFromStream(Stream);
@@ -1934,11 +1687,7 @@ begin
   FCompact.DownHover.LoadFromStream(Stream);
   FCompact.Highlight.LoadFromStream(Stream);
   FCompact.HighlightHover.LoadFromStream(Stream);
-  FCompact.IconLocation.LoadFromStream(Stream);
   FCompact.Spacing := StrToInt(StringLoadFromStream(Stream));
-  FCompact.IconSize := StrToInt(StringLoadFromStream(Stream));
-  FCompact.DrawIcon := StrToBool(StringLoadFromStream(Stream));
-  FCompact.DrawText := StrToBool(StringLoadFromStream(Stream));
   LoadTIScriptsFromStream(FCompact,Stream);
 
   FMini.SkinDim.LoadFromStream(Stream);
@@ -1948,11 +1697,7 @@ begin
   FMini.DownHover.LoadFromStream(Stream);
   FMini.Highlight.LoadFromStream(Stream);
   FMini.HighlightHover.LoadFromStream(Stream);
-  FMini.IconLocation.LoadFromStream(Stream);
   FMini.Spacing := StrToInt(StringLoadFromStream(Stream));
-  FMini.IconSize := StrToInt(StringLoadFromStream(Stream));
-  FMini.DrawIcon := StrToBool(StringLoadFromStream(Stream));
-  FMini.DrawText := StrToBool(StringLoadFromStream(Stream));
   LoadTIScriptsFromStream(FMini,Stream);
 end;
 
@@ -1971,10 +1716,6 @@ begin
   FFull.DownHover.Clear;
   FFull.Highlight.Clear;
   FFull.HighlightHover.Clear;
-  FFull.IconSize := 16;
-  FFull.DrawIcon := True;
-  FFull.DrawText := True;
-  FFull.IconLocation.SetPoint('cw-twh','0');
   FFull.Spacing := 2;
 
   FCompact.SkinDim.Clear;
@@ -1986,10 +1727,6 @@ begin
   FCompact.DownHover.Clear;
   FCompact.Highlight.Clear;
   FCompact.HighlightHover.Clear;
-  FCompact.IconSize := 16;
-  FCompact.DrawIcon := False;
-  FCompact.DrawText := True;
-  FCompact.IconLocation.SetPoint('0','0');
   FCompact.Spacing := 2;
 
   FMini.SkinDim.Clear;
@@ -2001,16 +1738,13 @@ begin
   FMini.DownHover.Clear;
   FMini.Highlight.Clear;
   FMini.HighlightHover.Clear;
-  FMini.IconSize := 16;
-  FMini.DrawIcon := True;
-  FMini.DrawText := False;
-  FMini.IconLocation.SetPoint('0','0');
   FMini.Spacing := 2;
 end;
 
 procedure TSharpETaskItemSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
 var
  SkinText: TSkinText;
+ SkinIcon: TSkinIcon;
  n : integer;
  loadstr : string;
  st : TSharpETaskItemState;
@@ -2029,6 +1763,8 @@ begin
     end;
     SkinText := TSkinText.create;
     SkinText.SetLocation('cw', 'ch');
+    SkinIcon := TSkinIcon.Create;
+    SkinIcon.DrawIcon := True;
     try
       with xml.Items do
       begin
@@ -2036,23 +1772,21 @@ begin
         with ItemNamed[loadstr].Items do
         begin
           if ItemNamed['text'] <> nil then
-          begin
-            SkinText.LoadFromXML(ItemNamed['text']);
-            if ItemNamed['text'].Items.ItemNamed['draw'] <> nil then
-               st.DrawText := ItemNamed['text'].Items.ItemNamed['draw'].BoolValue;
-          end;
+             SkinText.LoadFromXML(ItemNamed['text']);
+          if ItemNamed['icon'] <> nil then
+             SkinIcon.LoadFromXML(ItemNamed['icon']);
           if ItemNamed['normal'] <> nil then
-             st.Normal.LoadFromXML(ItemNamed['normal'],path,SkinText);
+             st.Normal.LoadFromXML(ItemNamed['normal'],path,SkinText,SkinIcon);
           if ItemNamed['normalhover'] <> nil then
-             st.NormalHover.LoadFromXML(ItemNamed['normalhover'],path,SkinText);
+             st.NormalHover.LoadFromXML(ItemNamed['normalhover'],path,SkinText,SkinIcon);
           if ItemNamed['down'] <> nil then
-             st.Down.LoadFromXML(ItemNamed['down'],path,SkinText);
+             st.Down.LoadFromXML(ItemNamed['down'],path,SkinText,SkinIcon);
           if ItemNamed['downhover'] <> nil then
-             st.DownHover.LoadFromXML(ItemNamed['downhover'],path,SkinText);
+             st.DownHover.LoadFromXML(ItemNamed['downhover'],path,SkinText,SkinIcon);
           if ItemNamed['highlight'] <> nil then
-             st.Highlight.LoadFromXML(ItemNamed['highlight'],path,SkinText);
+             st.Highlight.LoadFromXML(ItemNamed['highlight'],path,SkinText,SkinIcon);
           if ItemNamed['highlighthover'] <> nil then
-             st.HighlightHover.LoadFromXML(ItemNamed['highlighthover'],path,SkinText);
+             st.HighlightHover.LoadFromXML(ItemNamed['highlighthover'],path,SkinText,SkinIcon);
           if ItemNamed['dimension'] <> nil then
              st.SkinDim.SetDimension(Value('dimension', 'w,h'));
           if ItemNamed['location'] <> nil then
@@ -2075,15 +1809,6 @@ begin
           if ItemNamed['OnHighlightStepEnd'] <> nil then
              st.OnHighlightStepEndScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnHighlightStepEnd',''));
           {$WARNINGS ON}
-          if ItemNamed['icon'] <> nil then
-          begin
-            if ItemNamed['icon'].Items.ItemNamed['draw'] <> nil then
-               st.DrawIcon := ItemNamed['icon'].Items.ItemNamed['draw'].BoolValue;
-            if ItemNamed['icon'].Items.ItemNamed['size'] <> nil then
-               st.IconSize := ItemNamed['icon'].Items.ItemNamed['size'].IntValue;
-            if ItemNamed['icon'].Items.ItemNamed['location'] <> nil then
-               st.IconLocation.SetPoint(ItemNamed['icon'].Items.ItemNamed['location'].Value);
-          end;
           if ItemNamed['spacing'] <> nil then
              st.Spacing := IntValue('spacing',2);
         end;
@@ -2110,102 +1835,6 @@ begin
     tisMini    : result := not FMini.Normal.Empty;
     else result := not FFull.Normal.Empty;
   end;
-end;
-
-//***************************************
-//* TSharpEFormSkin
-//***************************************
-
-constructor TSharpEFormSkin.Create(BmpList : TSkinBitmapList);
-begin
-  FSkinDim := TSkinDim.Create;
-  FSkinDim.SetDimension('w', 'h');
-  FFull := TSkinPart.Create(BmpList);
-  FFullLROffset := TSkinPoint.Create;
-  FFullTBOffset := TSkinPoint.Create;
-  FTitleDim := TSkinDim.Create;
-end;
-
-destructor TSharpEFormSkin.Destroy;
-begin
-  FFull.Free;
-  FSkinDim.Free;
-  FFullLROffset.Free;
-  FFullTBOffset.Free;
-  FTitleDim.Free;
-end;
-
-procedure TSharpEFormSkin.UpdateDynamicProperties(cs: TSharpEScheme);
-begin
-  FFull.UpdateDynamicProperties(cs);
-end;
-
-procedure TSharpEFormSkin.SaveToStream(Stream: TStream);
-begin
-  FSkinDim.SaveToStream(Stream);
-  FFull.SaveToStream(Stream);
-  FFullLROffset.SaveToStream(Stream);
-  FFullTBOffset.SaveToStream(Stream);
-  FTitleDim.SaveToStream(Stream);
-end;
-
-procedure TSharpEFormSkin.LoadFromStream(Stream: TStream);
-begin
-  FSkinDim.LoadFromStream(Stream);
-  FFull.LoadFromStream(Stream);
-  FFullLROffset.LoadFromStream(Stream);
-  FFullTBOffset.LoadFromStream(Stream);
-  FTitleDim.LoadFromStream(Stream);
-end;
-
-procedure TSharpEFormSkin.Clear;
-begin
-  FFull.Clear;
-  FSkinDim.SetDimension('w', 'h');
-  FFullLROffset.SetPoint('5','5');
-  FFullTBOffset.SetPoint('5','5');
-  FTitleDim.SetLocation('5','5');
-  FTitleDim.SetDimension('w-10','5');
-end;
-
-procedure TSharpEFormSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
-var SkinText: TSkinText;
-begin
-  SkinText := TSkinText.create;
-  SkinText.SetLocation('cw', 'ch');
-  try
-    with xml.Items do
-    begin
-      if ItemNamed['dimension'] <> nil then
-        FSkinDim.SetDimension(Value('dimension', 'w,h'));
-      if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text']);
-      if ItemNamed['full'] <> nil then
-      begin
-        FFull.LoadFromXML(ItemNamed['full'], path, SkinText);
-        if ItemNamed['full'].Items.ItemNamed['lroffset'] <> nil then
-           FFullLROffset.SetPoint(ItemNamed['full'].Items.ItemNamed['lroffset'].Value);
-        if ItemNamed['full'].Items.ItemNamed['tboffset'] <> nil then
-           FFullTBOffset.SetPoint(ItemNamed['full'].Items.ItemNamed['tboffset'].Value);
-        if ItemNamed['full'].Items.ItemNamed['tbarlocation'] <> nil then
-           FTitleDim.SetLocation(ItemNamed['full'].Items.ItemNamed['tbarlocation'].Value);
-        if ItemNamed['full'].Items.ItemNamed['tbardimension'] <> nil then
-           FTitleDim.SetDimension(ItemNamed['full'].Items.ItemNamed['tbardimension'].Value);
-      end;
-    end;
-  finally
-    SkinText.free;
-  end;
-end;
-
-function TSharpEFormSkin.GetAutoDim(r: Trect): TRect;
-begin
-  result := FSkinDim.GetRect(r);
-end;
-
-function TSharpEFormSkin.valid: boolean;
-begin
-  result := not (FFull.Empty);
 end;
 
 //***************************************
@@ -2424,120 +2053,22 @@ begin
 end;
 
 //***************************************
-//* TSharpECheckBox
-//***************************************
-
-constructor TSharpECheckBoxSkin.Create(BmpList : TSkinBitmapList);
-begin
-  FSkinDim := TSkinDim.Create;
-  FSkinDim.SetDimension('w', 'h');
-  FNormal := TSkinPart.Create(BmpList);
-  FDown := TSkinPart.Create(BmpList);
-  FHover := TSkinPart.Create(BmpList);
-  FDisabled := TSkinPart.Create(BmpList);
-  FChecked := TSkinPart.Create(BmpList);
-end;
-
-destructor TSharpECheckBoxSkin.Destroy;
-begin
-  FNormal.Free;
-  FDown.Free;
-  FHover.Free;
-  FDisabled.Free;
-  FChecked.Free;
-  FSkinDim.Free;
-end;
-
-procedure TSharpECheckBoxSkin.UpdateDynamicProperties(cs: TSharpEScheme);
-begin
-  FNormal.UpdateDynamicProperties(cs);
-  FDown.UpdateDynamicProperties(cs);
-  FHover.UpdateDynamicProperties(cs);
-  FDisabled.UpdateDynamicProperties(cs);
-  FChecked.UpdateDynamicProperties(cs);
-end;
-
-procedure TSharpECheckBoxSkin.SaveToStream(Stream: TStream);
-begin
-  FSkinDim.SaveToStream(Stream);
-  FNormal.SaveToStream(Stream);
-  FDown.SaveToStream(Stream);
-  FHover.SaveToStream(Stream);
-  FDisabled.SaveToStream(Stream);
-  FChecked.SaveToStream(Stream);
-end;
-
-procedure TSharpECheckBoxSkin.LoadFromStream(Stream: TStream);
-begin
-  FSkinDim.LoadFromStream(Stream);
-  FNormal.LoadFromStream(Stream);
-  FDown.LoadFromStream(Stream);
-  FHover.LoadFromStream(Stream);
-  FDisabled.LoadFromStream(Stream);
-  FChecked.LoadFromStream(Stream);
-end;
-
-procedure TSharpECheckBoxSkin.Clear;
-begin
-  FNormal.Clear;
-  FDown.Clear;
-  FHover.Clear;
-  FDisabled.Clear;
-  FChecked.Clear;
-  FSkinDim.SetDimension('w', 'h');
-end;
-
-procedure TSharpECheckBoxSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
-var SkinText: TSkinText;
-begin
-  SkinText := TSkinText.create;
-  SkinText.SetLocation('cw', 'ch');
-  try
-    with xml.Items do
-    begin
-      if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text']);
-      if ItemNamed['normal'] <> nil then
-        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText);
-      if ItemNamed['down'] <> nil then
-        FDown.LoadFromXML(ItemNamed['down'], path, SkinText);
-      if ItemNamed['hover'] <> nil then
-        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText);
-      if ItemNamed['disabled'] <> nil then
-        FDisabled.LoadFromXML(ItemNamed['disabled'], path, SkinText);
-      if ItemNamed['checked'] <> nil then
-        FChecked.LoadFromXML(ItemNamed['checked'], path, SkinText);
-      if ItemNamed['dimension'] <> nil then
-        FSkinDim.SetDimension(Value('dimension', 'w,h'));
-    end;
-  finally
-    SkinText.free;
-  end;
-end;
-
-function TSharpECheckBoxSkin.GetAutoDim(r: Trect): TRect;
-begin
-  result := FSkinDim.GetRect(r);
-end;
-
-function TSharpECheckBoxSkin.valid: boolean;
-begin
-  result := not (FNormal.Empty);
-end;
-
-//***************************************
 //* TSharpEProgressBarSkin
 //***************************************
 
 constructor TSharpEProgressBarSkin.Create(BmpList : TSkinBitmapList);
 begin
+  inherited Create;
+
   FSkinDim := TSkinDim.Create;
-  FSkinDim.SetDimension('w', 'h');
+  FSkinDimTL := TSkinDim.Create;
+  FSkinDimBL := TSkinDim.Create;
   FBackGround := TSkinPart.Create(BmpList);
   FProgress := TSkinPart.Create(BmpList);
   FBackGroundSmall := TSkinPart.Create(BmpList);
   FProgressSmall := TSkinPart.Create(BmpList);
   FSmallModeOffset := TSkinPoint.Create;
+  Clear;
 end;
 
 destructor TSharpEProgressBarSkin.Destroy;
@@ -2545,9 +2076,13 @@ begin
   FBackGround.Free;
   FProgress.Free;
   FSkinDim.Free;
+  FSkinDimTL.Free;
+  FSkinDimBL.Free;
   FBackGroundSmall.Free;
   FProgressSmall.Free;
   FSmallModeOffset.Free;
+
+  inherited Destroy;
 end;
 
 procedure TSharpEProgressBarSkin.UpdateDynamicProperties(cs: TSharpEScheme);
@@ -2561,6 +2096,8 @@ end;
 procedure TSharpEProgressBarSkin.SaveToStream(Stream: TStream);
 begin
   FSkinDim.SaveToStream(Stream);
+  FSkinDimTL.SaveToStream(Stream);
+  FSkinDimBL.SaveToStream(Stream);
   FBackGround.SaveToStream(Stream);
   FProgress.SaveToStream(Stream);
   FBackgroundSmall.SaveToStream(Stream);
@@ -2571,6 +2108,8 @@ end;
 procedure TSharpEProgressBarSkin.LoadFromStream(Stream: TStream);
 begin
   FSkinDim.LoadFromStream(Stream);
+  FSkinDimTL.LoadFromStream(Stream);
+  FSkinDimBL.LoadFromStream(Stream);
   FBackGround.LoadFromStream(Stream);
   FProgress.LoadFromStream(Stream);
   FBackgroundSmall.LoadFromStream(Stream);
@@ -2586,6 +2125,11 @@ begin
   FProgressSmall.Clear;
   FSmallModeOffset.Clear;
   FSkinDim.SetDimension('w', 'h');
+  FSkinDim.SetLocation('0', '0');
+  FSkinDimTL.SetDimension('w', 'h');
+  FSkinDimTL.SetLocation('0', '0');
+  FSkinDimBL.SetDimension('w', 'h');
+  FSkinDimBL.SetLocation('0', '0');
   FSmallModeOffset.SetPoint('0', '0');
 end;
 
@@ -2602,8 +2146,22 @@ begin
         FBackGround.LoadFromXML(ItemNamed['background'], path, SkinText);
       if ItemNamed['progress'] <> nil then
         FProgress.LoadFromXML(ItemNamed['progress'], path, SkinText);
+
+      if ItemNamed['location'] <> nil then
+        FSkinDim.SetLocation(Value('location', '0,0'));
       if ItemNamed['dimension'] <> nil then
         FSkinDim.SetDimension(Value('dimension', 'w,h'));
+
+      if ItemNamed['locationTL'] <> nil then
+        FSkinDimTL.SetLocation(Value('locationTL', '0,0'));
+      if ItemNamed['dimensionTL'] <> nil then
+        FSkinDimTL.SetDimension(Value('dimensionTL', 'w,h'));
+        
+      if ItemNamed['locationBL'] <> nil then
+        FSkinDimBL.SetLocation(Value('locationBL', '0,0'));
+      if ItemNamed['dimensionBL'] <> nil then
+        FSkinDimBL.SetDimension(Value('dimensionBL', 'w,h'));
+
       if ItemNamed['smallbackground'] <> nil then
         FBackGroundSmall.LoadFromXML(ItemNamed['smallbackground'], path,
           SkinText);
@@ -2617,9 +2175,13 @@ begin
   end;
 end;
 
-function TSharpEProgressBarSkin.GetAutoDim(r: Trect): TRect;
+function TSharpEProgressBarSkin.GetAutoDim(r: Trect; vpos : TSharpEBarAutoPos): TRect;
 begin
-  result := FSkinDim.GetRect(r);
+  case vpos of
+    apTop   : result := FSkinDimTL.GetRect(r);
+    apBottom: result := FSkinDimBL.GetRect(r)
+    else result := FSkinDim.GetRect(r);
+  end;
 end;
 
 function TSharpEProgressBarSkin.valid: boolean;
@@ -2910,102 +2472,10 @@ begin
   result := not (FBar.Empty);
 end;
 
-{ TSharpEPanelSkin }
-
-constructor TSharpEPanelSkin.Create(BmpList : TSkinBitmapList);
-begin
-  FSkinDim := TSkinDim.Create;
-  FSkinDim.SetDimension('w', 'h');
-  FNormal := TSkinPart.Create(BmpList);
-  FRaised := TSkinPart.Create(BmpList);
-  FLowered := TSkinPart.Create(BmpList);
-  FSelected := TSkinPart.Create(BmpList);
-end;
-
-procedure TSharpEPanelSkin.UpdateDynamicProperties(cs: TSharpEScheme);
-begin
-  FNormal.UpdateDynamicProperties(cs);
-  FRaised.UpdateDynamicProperties(cs);
-  FLowered.UpdateDynamicProperties(cs);
-  FSelected.UpdateDynamicProperties(cs);
-end;
-
-procedure TSharpEPanelSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
-var SkinText: TSkinText;
-begin
-  SkinText := TSkinText.create;
-  SkinText.SetLocation('cw', 'ch');
-  try
-    with xml.Items do
-    begin
-      if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text']);
-      if ItemNamed['normal'] <> nil then
-        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText);
-      if ItemNamed['raised'] <> nil then
-        FRaised.LoadFromXML(ItemNamed['raised'], path, SkinText);
-      if ItemNamed['lowered'] <> nil then
-        FLowered.LoadFromXML(ItemNamed['lowered'], path, SkinText);
-      if ItemNamed['selected'] <> nil then
-        FSelected.LoadFromXML(ItemNamed['selected'], path, SkinText);
-      if ItemNamed['dimension'] <> nil then
-        FSkinDim.SetDimension(Value('dimension', 'w,h'));
-    end;
-  finally
-    SkinText.free;
-  end;
-end;
-
-function TSharpEPanelSkin.GetAutoDim(r: TRect): TRect;
-begin
-  result := FSkinDim.GetRect(r);
-end;
-
-function TSharpEPanelSkin.Valid: boolean;
-begin
-  result := not (FNormal.Empty);
-end;
-
-procedure TSharpEPanelSkin.Clear;
-begin
-  FNormal.Clear;
-  FRaised.Clear;
-  FLowered.Clear;
-  FSelected.Clear;
-  FSkinDim.SetDimension('w', 'h');
-end;
-
-destructor TSharpEPanelSkin.Destroy;
-begin
-  FNormal.Free;
-  FRaised.Free;
-  FLowered.Free;
-  FSelected.Free;
-  FSkinDim.Free;
-end;
-
 procedure TSharpESkin.FreeInstance;
 begin
   inherited;
 
-end;
-
-procedure TSharpEPanelSkin.LoadFromStream(Stream: TStream);
-begin
-  FSkinDim.LoadFromStream(Stream);
-  FRaised.LoadFromStream(Stream);
-  FLowered.LoadFromStream(Stream);
-  FNormal.LoadFromStream(Stream);
-  FSelected.LoadFromStream(Stream);
-end;
-
-procedure TSharpEPanelSkin.SaveToStream(Stream: TStream);
-begin
-   FSkinDim.SaveToStream(Stream);
-  FRaised.SaveToStream(Stream);
-  FLowered.SaveToStream(Stream);
-  FNormal.SaveToStream(Stream);
-  FSelected.SaveToStream(Stream);
 end;
 
 procedure TSharpESkin.SetXmlFileName(const Value: TXmlFileName);
@@ -3112,106 +2582,6 @@ begin
   FAuthor := '';
   FName := '';
   FUrl := '';
-end;
-
-{ TSharpERadioBoxSkin }
-
-constructor TSharpERadioBoxSkin.Create(BmpList : TSkinBitmapList);
-begin
-  FSkinDim := TSkinDim.Create;
-  FSkinDim.SetDimension('w', 'h');
-  FNormal := TSkinPart.Create(BmpList);
-  FDown := TSkinPart.Create(BmpList);
-  FHover := TSkinPart.Create(BmpList);
-  FDisabled := TSkinPart.Create(BmpList);
-  FChecked := TSkinPart.Create(BmpList);
-end;
-
-destructor TSharpERadioBoxSkin.Destroy;
-begin
-  FNormal.Free;
-  FDown.Free;
-  FHover.Free;
-  FDisabled.Free;
-  FChecked.Free;
-  FSkinDim.Free;
-end;
-
-procedure TSharpERadioBoxSkin.UpdateDynamicProperties(cs: TSharpEScheme);
-begin
-  FNormal.UpdateDynamicProperties(cs);
-  FDown.UpdateDynamicProperties(cs);
-  FHover.UpdateDynamicProperties(cs);
-  FDisabled.UpdateDynamicProperties(cs);
-  FChecked.UpdateDynamicProperties(cs);
-end;
-
-procedure TSharpERadioBoxSkin.SaveToStream(Stream: TStream);
-begin
-  FSkinDim.SaveToStream(Stream);
-  FNormal.SaveToStream(Stream);
-  FDown.SaveToStream(Stream);
-  FHover.SaveToStream(Stream);
-  FDisabled.SaveToStream(Stream);
-  FChecked.SaveToStream(Stream);
-end;
-
-procedure TSharpERadioBoxSkin.LoadFromStream(Stream: TStream);
-begin
-  FSkinDim.LoadFromStream(Stream);
-  FNormal.LoadFromStream(Stream);
-  FDown.LoadFromStream(Stream);
-  FHover.LoadFromStream(Stream);
-  FDisabled.LoadFromStream(Stream);
-  FChecked.LoadFromStream(Stream);
-end;
-
-procedure TSharpERadioBoxSkin.Clear;
-begin
-  FNormal.Clear;
-  FDown.Clear;
-  FHover.Clear;
-  FDisabled.Clear;
-  FChecked.Clear;
-  FSkinDim.SetDimension('w', 'h');
-end;
-
-procedure TSharpERadioBoxSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
-var SkinText: TSkinText;
-begin
-  SkinText := TSkinText.create;
-  SkinText.SetLocation('cw', 'ch');
-  try
-    with xml.Items do
-    begin
-      if ItemNamed['text'] <> nil then
-        SkinText.LoadFromXML(ItemNamed['text']);
-      if ItemNamed['normal'] <> nil then
-        FNormal.LoadFromXML(ItemNamed['normal'], path, SkinText);
-      if ItemNamed['down'] <> nil then
-        FDown.LoadFromXML(ItemNamed['down'], path, SkinText);
-      if ItemNamed['hover'] <> nil then
-        FHover.LoadFromXML(ItemNamed['hover'], path, SkinText);
-      if ItemNamed['disabled'] <> nil then
-        FDisabled.LoadFromXML(ItemNamed['disabled'], path, SkinText);
-      if ItemNamed['checked'] <> nil then
-        FChecked.LoadFromXML(ItemNamed['checked'], path, SkinText);
-      if ItemNamed['dimension'] <> nil then
-        FSkinDim.SetDimension(Value('dimension', 'w,h'));
-    end;
-  finally
-    SkinText.free;
-  end;
-end;
-
-function TSharpERadioBoxSkin.GetAutoDim(r: Trect): TRect;
-begin
-  result := FSkinDim.GetRect(r);
-end;
-
-function TSharpERadioBoxSkin.valid: boolean;
-begin
-  result := not (FNormal.Empty);
 end;
 
 end.

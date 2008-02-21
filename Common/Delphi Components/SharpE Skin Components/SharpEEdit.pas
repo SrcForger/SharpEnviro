@@ -580,7 +580,7 @@ var
   EditRect : TRect;
   bmp : TBitmap32;
 begin
-  if not Assigned(FManager) then exit;
+  if (not Assigned(FManager)) or (Width = 0) or (Height = 0) then exit;
 
   CompRect := Rect(0, 0, width, height);
 

@@ -58,10 +58,8 @@ type
 
     FGlyph32FileName: TGlyph32FileName;
     FGlyph32: TBitmap32;
-    FGlyphResize : Boolean;
     FLayout: TButtonLayout;
     FMargin: Integer;
-    FDisabledAlpha: Integer;
     FCaption: string;
     FModalResult: TModalResult;
     FDefault: Boolean;
@@ -69,7 +67,6 @@ type
     FCustomSkin : TSharpEButtonSkin;
     FPrecacheText : TSkinText;
     FPrecacheBmp  : TBitmap32;
-    FGlyphSpacing : integer;
     FPrecacheCaption : String;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
@@ -78,14 +75,9 @@ type
     procedure SetGlyph32FileName(const Value: TGlyph32FileName);
     procedure Setglyph32(const Value: TBitmap32);
     procedure SetLayout(const Value: TButtonLayout);
-    procedure SetMargin(const Value: Integer);
-    procedure SetDisabledAlpha(const Value: Integer);
     procedure SetAutoPosition(const Value: boolean);
     procedure SetCaption(Value: string);
     procedure SetDefault(Value: Boolean);
-    procedure SetGlyphResize(Value: Boolean);
-    procedure SetGlyphSpacing(Value : Integer);
-    function GetGlyphSize : TPoint;
   protected
     procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
     procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
@@ -128,14 +120,10 @@ type
     property Glyph32FileName: TGlyph32FileName read FGlyph32FileName write  SetGlyph32FileName;
     property Glyph32: Tbitmap32 read FGlyph32 write SetGlyph32 stored True;
     property Layout: TButtonLayout read FLayout write SetLayout;
-    property Margin: Integer read FMargin write SetMargin;
-    property DisabledAlpha: Integer read FDisabledAlpha write SetDisabledAlpha;
     property Caption: string read FCaption write SetCaption;
     property ModalResult: TModalResult read FModalResult write FModalResult default 0;
     property Default: Boolean read FDefault write SetDefault default False;
     property AutoPosition: Boolean read FAutoPosition write SetAutoPosition;
-    property GlyphResize: Boolean read FGlyphResize write SetGlyphResize;
-    property GlyphSpacing: integer read FGlyphSpacing write SetGlyphSpacing;
    { Published declarations }
   end;
 
@@ -154,7 +142,6 @@ begin
  // FGlyph32.OnChange := Bitmap32ChangeEvent;
 
   FMargin := -1;
-  FDisabledAlpha := 100;
   Flayout := blGlyphleft;
   FButtonDown := False;
 end;
@@ -163,15 +150,6 @@ procedure TSharpEButton.CNCommand(var Message: TWMCommand);
 begin
   if Message.NotifyCode = BN_CLICKED then
     Click;
-end;
-
-procedure TSharpEButton.SetGlyphResize(Value: Boolean);
-begin
-  if Value <> FGlyphResize then
-  begin
-    FGlyphResize := Value;
-    UpdateSkin;
-  end;
 end;
 
 procedure TSharpEButton.SetDefault(Value: Boolean);
@@ -375,7 +353,7 @@ begin
       FrameRectS(r.Left+1, r.Top+1, r.Right-1, r.Bottom-1,
         setalpha(color32(Scheme.GetColorByName('WorkAreadark')), 200));
 
-    if FGlyph32 <> nil then
+    if (FGlyph32 <> nil) and (FGlyph32.Width>0) and (FGlyph32.Height>0) then
     begin
       TextSize.X := bmp.TextWidth(caption);
       TextSize.Y := bmp.TextHeight(caption);
@@ -412,51 +390,10 @@ begin
       end;
       FGlyph32.DrawMode := dmBlend;
       FGlyph32.CombineMode := cmMerge;
-      if not Enabled then FGlyph32.MasterAlpha := FDisabledAlpha;
       FGlyph32.DrawTo(bmp,Rect(GlyphPos.X,GlyphPos.Y,GlyphPos.X+16,GlyphPos.Y+16));
       FGlyph32.MasterAlpha := 255;
       bmp.RenderText(TextPos.X,TextPos.Y,Caption,0, Color32(bmp.Font.color));
     end;
-  end;
-end;
-
-function TSharpEButton.GetGlyphSize : TPoint;
-var
-  ox,oy : TPoint;
-  ButtonSkin : TSharpEButtonSkin;
-begin
-  if FGlyph32 = nil then
-  begin
-    result := Point(0,0);
-    exit;
-  end;
-
-  if FCustomSkin <> nil then ButtonSkin := FCustomSkin
-     else ButtonSkin := FManager.Skin.ButtonSkin;
-
-  ox := Point(3,3);
-  oy := Point(3,3);
-  if Assigned(FManager) then
-  begin
-    ox := Point(ButtonSkin.IconLROffset.XasInt,
-                ButtonSkin.IconLROffset.YasInt);
-    oy := Point(ButtonSkin.IconTBOffset.XasInt,
-                ButtonSkin.IconTBOffset.YasInt);
-  end;
-
-  if Height < FGlyph32.Height + (oy.x + oy.y) then
-  begin
-    result.y := Height - (oy.x + oy.y);
-    result.x := round((FGlyph32.Width/FGlyph32.Height)*result.y);
-  end else
-  if Width < FGlyph32.Width + (ox.x + ox.y) then
-  begin
-    result.x := Width - (ox.x + ox.y);
-    result.y := round((FGlyph32.Height/FGlyph32.Width)*result.x);
-  end else
-  begin
-    result.x := FGlyph32.Width;
-    result.y := FGlyph32.Height;
   end;
 end;
 
@@ -492,26 +429,37 @@ begin
 end;
 
 function TSharpEButton.GetIconWidth : integer;
+var
+  ButtonSkin : TSharpEButtonSkin;
 begin
   if FGlyph32 = nil then result := 0
   else
   begin
-    if FGlyphResize then
-       result := GetGlyphSize.x
-       else result := FGlyph32.Width;
+    if not assigned(FManager) then
+    begin
+      result := 16;
+      exit;
+    end;
+    ButtonSkin := FManager.Skin.ButtonSkin;
+    if not (Enabled) and not (ButtonSkin.Disabled.Empty) then
+      result := ButtonSkin.Disabled.SkinIcon.Size.XAsInt
+    else if FButtonDown and not (ButtonSkin.Down.Empty) then
+      result := ButtonSkin.Down.SkinIcon.Size.XAsInt
+    else if ((FButtonOver) and not (ButtonSkin.Hover.Empty) and not (HasNormalHoverScript)) then
+      result := ButtonSkin.Hover.SkinIcon.Size.XAsInt
+    else
+      result := ButtonSkin.Normal.SkinIcon.Size.XAsInt;
   end;
 end;
 
 procedure TSharpEButton.DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
 var
-  r, TextRect, CompRect: TRect;
+  r, TextRect, CompRect, IconRect: TRect;
   TextSize : TPoint;
   GlyphPos, TextPos: TPoint;
-  glp : TBitmap32;
-  nw,nh : integer;
-  p : TPoint;
   ButtonSkin : TSharpEButtonSkin;
   SkinText : TSkinText;
+  SkinIcon : TSkinIcon;
 begin
   CompRect := Rect(0, 0, width, height);
 
@@ -551,114 +499,55 @@ begin
     begin
       ButtonSkin.Disabled.Draw(bmp, Scheme);
       SkinText := CreateThemedSkinText(ButtonSkin.Disabled.SkinText);
-      SkinText.AssignFontTo(bmp.Font,Scheme);
-      TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
-      TextPos := SkinText.GetXY(TextRect, CompRect);
+      SkinIcon := ButtonSkin.Disabled.SkinIcon;
+    end
+    else if FButtonDown and not (ButtonSkin.Down.Empty) then
+    begin
+      ButtonSkin.Down.Draw(bmp, Scheme);
+      SkinText := CreateThemedSkinText(ButtonSkin.Down.SkinText);
+      SkinIcon := ButtonSkin.Down.SkinIcon;
+    end
+    else if ((FButtonOver) and not (ButtonSkin.Hover.Empty) and not (HasNormalHoverScript)) then
+    begin
+      ButtonSkin.Hover.Draw(bmp, Scheme);
+      SkinText := CreateThemedSkinText(ButtonSkin.Hover.SkinText);
+      SkinIcon := ButtonSkin.Hover.SkinIcon;
     end
     else
-      if FButtonDown and not (ButtonSkin.Down.Empty) then
-      begin
-        ButtonSkin.Down.Draw(bmp, Scheme);
-        SkinText := CreateThemedSkinText(ButtonSkin.Down.SkinText);
-        SkinText.AssignFontTo(bmp.Font,Scheme);
-        TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
-        TextPos := SkinText.GetXY(TextRect, CompRect);
-      end
-      else
-        if ((FButtonOver) and not (ButtonSkin.Hover.Empty) and not (HasNormalHoverScript)) then
-        begin
-          ButtonSkin.Hover.Draw(bmp, Scheme);
-          SkinText := CreateThemedSkinText(ButtonSkin.Hover.SkinText);
-          SkinText.AssignFontTo(bmp.Font,Scheme);
-          TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
-          TextPos := SkinText.GetXY(TextRect, CompRect);
-        end
-        else
-        begin
-          ButtonSkin.Normal.Draw(bmp, Scheme);
-          SkinText := CreateThemedSkinText(ButtonSkin.Normal.SkinText);
-          SkinText.AssignFontTo(bmp.Font,Scheme);
-          TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
-          TextPos := SkinText.GetXY(TextRect, CompRect);
-        end;
+    begin
+      ButtonSkin.Normal.Draw(bmp, Scheme);
+      SkinText := CreateThemedSkinText(ButtonSkin.Normal.SkinText);
+      SkinIcon := ButtonSkin.Normal.SkinIcon;
+    end;
 
-    if (FGlyph32 <> nil) and (Buttonskin <> FCustomSkin) then
+    if (FGlyph32 <> nil) and (Buttonskin <> FCustomSkin) and (SkinIcon.DrawIcon)
+       and (FGlyph32.Width>0) and (FGlyph32.Height>0) then
+      IconRect := Rect(0,0,SkinIcon.Size.XAsInt,SkinIcon.Size.YAsInt)
+    else IconRect := Rect(0,0,0,0);
+    SkinText.AssignFontTo(bmp.Font,Scheme);
+    TextRect := Rect(0, 0, bmp.TextWidth(Caption), bmp.TextHeight(Caption));
+    TextPos := SkinText.GetXY(TextRect, CompRect, IconRect);
+
+    if (FGlyph32 <> nil) and (Buttonskin <> FCustomSkin) and (SkinIcon.DrawIcon)
+       and (FGlyph32.Width>0) and (FGlyph32.Height>0) then
     begin
       TextSize.X := bmp.TextWidth(caption);
       TextSize.Y := bmp.TextHeight(caption);
 
-      glp := TBitmap32.Create;
-      glp.DrawMode := dmBlend;
-      glp.CombineMode := cmMerge;
-      FGlyph32.DrawMode := dmBlend;
-      FGlyph32.CombineMode := cmMerge;
-      if FGlyphResize then
-      begin
-        TLinearResampler.Create(FGlyph32);
-        p := GetGlyphSize;
-        nw := p.x;
-        nh := p.y;
-      end else
-      begin
-        nw := FGlyph32.Width;
-        nh := FGlyph32.Height;
-      end;
-      glp.SetSize(nw,nh);
-      glp.Clear(color32(0,0,0,0));
-      FGlyph32.DrawTo(glp,Rect(0,0,nw,nh));
-
-      case Layout of
-        blGlyphLeft:
-        begin
-          GlyphPos.X := TextPos.X - (glp.Width + Margin) div 2;
-          GlyphPos.Y := TextPos.Y + round( - glp.Height / 2 + TextSize.Y / 2);
-          TextPos.X := TextPos.X + (glp.Width + Margin) div 2;
-        end;
-
-        blGlyphRight:
-        begin
-          GlyphPos.Y := TextPos.Y - glp.Height div 2 + TextSize.Y div 2;
-          TextPos.X := TextPos.X - (glp.Width + Margin) div 2;
-          GlyphPos.X := TextPos.X + TextSize.X + Margin;
-        end;
-
-        blGlyphTop:
-        begin
-          GlyphPos.X := TextPos.X + TextSize.X div 2 - glp.Width div 2;
-          GlyphPos.Y := TextPos.Y - (glp.Height + Margin) div 2;
-          TextPos.Y := TextPos.Y + (glp.Height + Margin) div 2;
-        end;
-
-        blGlyphBottom:
-        begin
-          GlyphPos.X := TextPos.X + TextSize.X div 2 - glp.Width div 2;
-          TextPos.Y := TextPos.Y - (glp.Height + Margin) div 2;
-          GlyphPos.Y := TextPos.Y + TextSize.Y + Margin;
-        end;
-      end;
-      if not Enabled then glp.MasterAlpha := FDisabledAlpha;
-      glp.DrawTo(bmp,GlyphPos.X - FGlyphSpacing div 2,GlyphPos.Y);
-      glp.Free;
-      if length(trim(Caption))>0 then
-         SkinText.RenderTo(bmp,TextPos.X + FGlyphSpacing div 2,TextPos.Y,Caption,Scheme,
-                           FPrecacheText,FPrecacheBmp,FPrecacheCaption);
+      GlyphPos := SkinIcon.GetXY(TextRect,CompRect);
+      SkinIcon.RenderTo(bmp,FGlyph32,GlyphPos.X,GlyphPos.Y);
     end;
+
+    if length(trim(Caption))>0 then
+       SkinText.RenderTo(bmp,TextPos.X,TextPos.Y,Caption,Scheme,
+                         FPrecacheText,FPrecacheBmp,FPrecacheCaption);
+                         
     SkinText.Free;
     
     Bmp.DrawTo(FSkin);
   end
   else
     DrawDefaultSkin(bmp, DefaultSharpEScheme);
-end;
-
-procedure TSharpEButton.SetGlyphSpacing(Value : integer);
-begin
-  if Value <> FGlyphSpacing then
-  begin
-    FGlyphSpacing := Value;
-    UpdateSkin;
-    Invalidate;
-  end;
 end;
 
 procedure TSharpEButton.SetCaption(Value: string);
@@ -711,20 +600,6 @@ end;
 procedure TSharpEButton.SetLayout(const Value: TButtonLayout);
 begin
   FLayout := Value;
-  UpdateSkin;
-end;
-
-procedure TSharpEButton.SetDisabledAlpha(const Value: Integer);
-begin
-  if (Value >= 0) and (Value <= 255) then
-    FDisabledAlpha := Value;
-
-  UpdateSkin;
-end;
-
-procedure TSharpEButton.SetMargin(const Value: Integer);
-begin
-  FMargin := Value;
   UpdateSkin;
 end;
 

@@ -2,6 +2,7 @@
 Source Name: SharpEProgressBar
 Description: Skinned ProgressBar component for SharpE
 Copyright (C) Malx (Malx@techie.com)
+              Martin Krämer (MartinKraemer@gmx.net)
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -41,6 +42,7 @@ uses
   SharpEDefault,
   SharpEScheme,
   SharpESkinManager,
+  SharpESkin,
   math,
   SharpESkinPart;
 
@@ -50,10 +52,12 @@ type
     FMin: Integer;
     FMax: Integer;
     FValue: Integer;
+    FAutoPos: TSharpEBarAutoPos;
 
     procedure SetMin(Value: integer);
     procedure SetMax(Value: integer);
     procedure SetValue(Value: integer);
+    procedure SetAutoPos(Value: TSharpEBarAutoPos);
   protected
     procedure DrawDefaultSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
     procedure DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme); override;
@@ -66,6 +70,7 @@ type
     property Min: integer read FMin write SetMin;
     property Max: integer read FMax write SetMax;
     property Value: integer read FValue write SetValue;
+    property AutoPos: TSharpEBarAutoPos read FAutoPos write SetAutoPos;
 
     property Constraints;
     property Enabled;
@@ -87,6 +92,7 @@ begin
   Value := 0;
   Width := 75;
   Height := 25;
+  FAutoPos := apCenter;
 end;
 
 procedure TSharpEProgressBar.SetMin(Value: integer);
@@ -94,6 +100,15 @@ begin
   if Value <> FMin then
   begin
     FMin := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TSharpEProgressBar.SetAutoPos(Value: TSharpEBarAutoPos);
+begin
+  if Value <> FAutoPos then
+  begin
+    FAutoPos := Value;
     Invalidate;
   end;
 end;
@@ -145,6 +160,14 @@ var r, CompRect: TRect;
   skindim: TSkinDim;
   temp: TBitmap32;
 begin
+  if (Width = 0) or (Height = 0)  then
+    exit;
+    
+  if (not assigned(FManager)) then
+  begin
+    DrawDefaultSkin(bmp, DefaultSharpEScheme);
+    exit;
+  end;
 
   skindim := TSkinDim.create;
   temp := TBitmap32.create;
@@ -152,13 +175,14 @@ begin
     CompRect := Rect(0, 0, width, height);
     if FManager.Skin.ProgressBarSkin.Valid then
     begin
-      if FAutoSize then
+      if FAutoSize or (FAutoPos <> apNone) then
       begin
-        r := FManager.Skin.ProgressBarSkin.GetAutoDim(CompRect);
-        if (r.Right <> width) or (r.Bottom <> height) then
+        r := FManager.Skin.ProgressBarSkin.GetAutoDim(CompRect,FAutoPos);
+        if (r.Right <> width) or (r.Bottom - r.Top <> height) or (r.Top <> top) then
         begin
+          top := r.Top;
           width := r.Right;
-          height := r.Bottom;
+          height := r.Bottom - r.Top;
           Exit;
         end;
       end;
@@ -183,6 +207,8 @@ begin
            r.Bottom := bmp.Height - r.Top;
         temp.Height := bmp.Height - r.Top;
         temp.Width := round((r.Right - r.Left) * FValue / (FMax - FMin));
+        if temp.Width <= 0 then
+          temp.Width := 1;
         temp.Clear(Color32(0, 0, 0, 0));
         temp.DrawMode := dmBlend;
         temp.CombineMode := cmMerge;

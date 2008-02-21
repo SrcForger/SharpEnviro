@@ -527,31 +527,17 @@ begin
   end;
 end;
 
-
-procedure DrawSkinPart(state : TSkinPart; bmp : TBitmap32; scheme : TSharpEScheme;
-                       var mw : integer; var TextPos : TPoint; var TextRect : TRect;
-                       var CompRect : TRect; Caption : String; var DrawCaption : String;
-                       var SkinText : TSkinText);
-begin
-  state.Draw(bmp, Scheme);
-  SkinText := CreateThemedSkinText(state.SkinText);
-  SkinText.AssignFontTo(bmp.Font,Scheme);
-  mw := SkinText.GetMaxWidth(CompRect);
-  DrawCaption := FixCaption(Bmp,Caption,mw);
-  TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
-  TextPos := SkinText.GetXY(TextRect, CompRect);
-end;
-
-
 procedure TSharpETaskItem.DrawManagedSkin(bmp: TBitmap32; Scheme: TSharpEScheme);
 var
-  r, TextRect, CompRect: TRect;
+  r, TextRect, CompRect, IconRect: TRect;
   TextSize : TPoint;
   GlyphPos, TextPos: TPoint;
   mw : integer;
   DrawCaption : String;
   CurrentState : TSharpeTaskItemState;
   SkinText : TSkinText;
+  SkinIcon : TSkinIcon;
+  DrawPart : TSkinPartEx;
 begin
   CompRect := Rect(0, 0, width, height);
 
@@ -592,20 +578,19 @@ begin
       FButtonOver := False;
     end;
 
-    SkinText := nil;
     FSkin.Clear(Color32(0, 0, 0, 0));
     if (FButtonDown or FDown) and (not CurrentState.Down.Empty) then
     begin
       if (FButtonOver) and (not FButtonDown) and (not CurrentState.DownHover.Empty) and (not SharpEAnimManager.HasScriptRunning(self)) then
-         DrawSkinPart(CurrentState.DownHover,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText)
-         else DrawSkinPart(CurrentState.Down,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText);
+        DrawPart := CurrentState.DownHover
+      else DrawPart := CurrentState.Down;
     end else
     if (FFlashing) and (not CurrentState.Highlight.Empty) and (not SharpEAnimManager.HasScriptRunning(self))
        and (not HasHighlightAnimationScript) then
     begin
       if (FButtonOver and (not CurrentState.HighlightHover.Empty)) then
-         DrawSkinPart(CurrentState.HighlightHover,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText)
-         else DrawSkinPart(CurrentState.Highlight,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText);
+        DrawPart := CurrentState.HighlightHover
+      else DrawPart := CurrentState.Highlight;
     end else
     begin
       if FButtonOver then
@@ -613,32 +598,43 @@ begin
         if (FFlashing) then
         begin
           if (not SharpEAnimManager.HasScriptRunning(self)) then
-           DrawSkinPart(CurrentState.HighlightHover,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText)
-           else DrawSkinPart(CurrentState.Normal,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText);
+            DrawPart := CurrentState.HighlightHover
+           else DrawPart := CurrentState.Normal;
         end else
-        if (not HasNormalHoverScript) then DrawSkinPart(CurrentState.NormalHover,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText)
-           else DrawSkinPart(CurrentState.Normal,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText);
-      end else DrawSkinPart(CurrentState.Normal,bmp,Scheme,mw,TextPos,TextRect,CompRect,Caption,DrawCaption,SkinText);
+        if (not HasNormalHoverScript) then
+             DrawPart := CurrentState.NormalHover
+           else DrawPart := CurrentState.Normal;
+      end else DrawPart := CurrentState.Normal;
     end;
 
-    if (FGlyph32 <> nil) and (CurrentState.DrawIcon) then
+    SkinIcon := DrawPart.SkinIcon;
+    SkinText := CreateThemedSkinText(DrawPart.SkinText);
+    if (FGlyph32 <> nil) and (SkinIcon.DrawIcon) and (FGlyph32.Width>0) and (FGlyph32.Height>0) then
+      IconRect := Rect(0,0,SkinIcon.Size.XAsInt,SkinIcon.Size.YAsInt)
+    else IconRect := Rect(0,0,0,0);
+
+    SkinText.AssignFontTo(bmp.Font,Scheme);
+    DrawPart.Draw(bmp, Scheme);
+    mw := SkinText.GetMaxWidth(CompRect);
+    DrawCaption := FixCaption(Bmp,Caption,mw);
+    TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
+    TextPos := SkinText.GetXY(TextRect, CompRect, IconRect);
+
+    if (FGlyph32 <> nil) and (SkinIcon.DrawIcon) and (FGlyph32.Width>0) and (FGlyph32.Height>0) then
     begin
-      if CurrentState.IconSize < 0 then CurrentState.IconSize := 16;
-      TLinearResampler.Create(FGlyph32);
-      FGlyph32.DrawMode := dmBlend;
-      FGlyph32.CombineMode := cmMerge;
-      TextSize.X := bmp.TextWidth(DrawCaption);
-      TextSize.Y := bmp.TextHeight(DrawCaption);
-      //if not Enabled then DrawGlyph.MasterAlpha := FDisabledAlpha;
-      GlyphPos := CurrentState.IconLocation.GetXY(TextRect,CompRect);
-      FGlyph32.DrawTo(bmp,Rect(GlyphPos.X,GlyphPos.Y,GlyphPos.X + CurrentState.IconSize, GlyphPos.Y + CurrentState.IconSize));
-    end;
-    if (CurrentState.DrawText) and (SkinText <> nil) then
+      TextSize.X := bmp.TextWidth(caption);
+      TextSize.Y := bmp.TextHeight(caption);
+
+      GlyphPos := SkinIcon.GetXY(TextRect,CompRect);
+      SkinIcon.RenderTo(bmp,FGlyph32,GlyphPos.X,GlyphPos.Y);
+    end;    
+
+    if ((SkinText <> nil) and (SkinText.DrawText)) then
     begin
       if length(trim(Caption))>0 then
          SkinText.RenderTo(bmp,TextPos.X,TextPos.Y,DrawCaption,Scheme,
                            FPrecacheText,FPrecacheBmp,FPrecacheCaption);
-      SkinText.Free;                           
+      SkinText.Free;
     end;
   end
   else

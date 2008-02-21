@@ -74,16 +74,10 @@ uses
   SharpESkin,
   SharpEButton,
   SharpESkinManager,
-  SharpEForm,
   SharpEScheme,
-  SharpEPanel,
   SharpEProgressBar,
   SharpEBar,
-  SharpECheckBOx,
   SharpEMiniThrobber,
-  SharpELabel,
-  SharpERadioBox,
-  SharpEImage32,
   SharpEListBox,
   SharpEEdit,
   SharpETaskItem,
@@ -215,16 +209,10 @@ begin
   RegisterComponents('SharpE_Skin', [TSharpESkinManager]);
   RegisterComponents('SharpE_Skin', [TSharpEScheme]);
   RegisterComponents('SharpE_Skin', [TSharpESkin]);
-  RegisterComponents('SharpE_Skin', [TSharpEForm]);
   RegisterComponents('SharpE_Skin', [TSharpEBar]);
   RegisterComponents('SharpE_Skin', [TSharpEButton]);
-  RegisterComponents('SharpE_Skin', [TSharpECheckBox]);
   RegisterComponents('SharpE_Skin', [TSharpEProgressBar]);
-  RegisterComponents('SharpE_Skin', [TSharpEPanel]);
-  RegisterComponents('SharpE_Skin', [TSharpELabel]);
-  RegisterComponents('SharpE_Skin', [TSharpERadioBox]);
   RegisterComponents('SharpE_Skin', [TSharpEMiniThrobber]);
-  RegisterComponents('SharpE_Skin', [TSharpEImage32]);
   RegisterComponents('SharpE_Skin', [TSharpEEdit]);
   RegisterComponents('SharpE_Skin', [TSharpETaskItem]);
   RegisterComponents('SharpE_Skin', [TSharpESkinLabel]);
@@ -234,12 +222,6 @@ begin
     TXmlFileNameProperty);
   RegisterPropertyEditor(TypeInfo(TSkinName), TSharpESkin, 'Skin',
     TFileNameProperty);
-  RegisterPropertyEditor(TypeInfo(TGlyph32FileName), TSharpEPanel,
-    'Glyph32FileName',
-    TBitmap32FileNameProperty);
-  RegisterPropertyEditor(TypeInfo(TGlyph32FileName), TSharpEImage32,
-    'Glyph32FileName',
-    TBitmap32FileNameProperty);
   RegisterPropertyEditor(TypeInfo(TGlyph32FileName), TSharpEButton,
     'Glyph32FileName',
     TBitmap32FileNameProperty);
