@@ -205,8 +205,8 @@ begin
            r.right := bmp.Width - r.Left;
         if r.Bottom = 0 then
            r.Bottom := bmp.Height - r.Top;
-        temp.Height := bmp.Height - r.Top;
-        temp.Width := round((r.Right - r.Left) * FValue / (FMax - FMin));
+        temp.Height := r.Bottom - r.Top;
+        temp.Width := round((r.Right - r.Left) * FValue / (FMax - FMin)) + 1;
         if temp.Width <= 0 then
           temp.Width := 1;
         temp.Clear(Color32(0, 0, 0, 0));
