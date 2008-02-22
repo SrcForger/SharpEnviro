@@ -1273,7 +1273,7 @@ var temp: Tbitmap32;
 begin
   if not FEnabled then exit;
 
-  if (FBitmapId >= 0) then
+  if (FBitmapId >= 0) and not ((FGradientAlpha.XAsInt <> 0) or (FGradientAlpha.YAsInt <> 0)) then
   begin
     FBitmap := TSkinBitmap(FBmpList.Items[FBitmapId]).Bitmap;
     if TSkinBitmap(FBmpList.Items[FBitmapID]).FileName = 'empty' then
