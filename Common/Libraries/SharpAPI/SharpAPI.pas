@@ -270,6 +270,8 @@ function GetServiceMetaData(strFile: String; var MetaData: TMetaData; var Priori
 function GetConfigMetaData(strFile: String; var MetaData: TMetaData; var ConfigMode: TSC_MODE_ENUM; var ConfigType: TSU_UPDATE_ENUM) : Integer; external 'SharpApi.dll' name 'GetConfigMetaData';
 function GetModuleMetaData(strFile: String; Preview: TBitmap32; var MetaData: TMetaData; var HasPreview: Boolean) : Integer; external 'SharpApi.dll' name 'GetModuleMetaData';
 
+function FileCheck(pFileName : String) : boolean; external 'SharpApi.dll' name 'FileCheck';
+
 implementation
 
 end.

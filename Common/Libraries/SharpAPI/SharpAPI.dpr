@@ -1361,6 +1361,29 @@ begin
     result := 1; //couldn't open file
 end;
 
+function FileCheck(pFileName : String) : boolean;
+const
+  TimeOut = 2500;
+  SleepTime = 10;
+var
+  StartTime : Cardinal;
+  temp: OFStruct;
+  handle : hfile;
+begin
+  result := False;
+  if not FileExists(pFileName) then
+    exit;
+  StartTime := GetTickCount;    
+  repeat
+    handle := OpenFile(PChar(pFileName),temp,OF_READWRITE);
+    if not (handle = HFILE_ERROR) then
+    begin
+      CloseHandle(handle);
+      result := True
+    end else sleep(SleepTime);
+  until (result or (GetTickCount - StartTime > TimeOut));
+end;
+
 exports
   SharpEBroadCast,
   SendDebugMessage, //Sends Message to SharpConsole
@@ -1412,7 +1435,9 @@ exports
   GetComponentMetaData,
   GetServiceMetaData,
   GetConfigMetaData,
-  GetModuleMetaData;
+  GetModuleMetaData,
+
+  FileCheck;
 begin
 
 end.
