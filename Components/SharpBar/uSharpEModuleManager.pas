@@ -362,7 +362,8 @@ begin
   end;
 
   ForceDirectories(Dir);
-  xml.SaveToFile(Dir + 'Bar.xml');
+  if FileCheck(Dir + 'Bar.xml') then
+    xml.SaveToFile(Dir + 'Bar.xml');
   xml.Free;
 end;
 
@@ -644,8 +645,11 @@ begin
   XML := TJclSimpleXML.Create;
   fileloaded := False;
   try
-    XML.LoadFromFile(DirA + 'Bar.xml');
-    fileloaded := True;
+    if FileCheck(DirA + 'Bar.xml') then
+    begin
+      XML.LoadFromFile(DirA + 'Bar.xml');
+      fileloaded := True;
+    end;
   except
   end;
   if fileloaded then

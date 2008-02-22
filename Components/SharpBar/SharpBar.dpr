@@ -67,7 +67,7 @@ begin
   xml := TJclSimpleXMl.Create;
   if FindFirst(Dir + '*',FADirectory,sr) = 0 then
   repeat
-    if FileExists(Dir + sr.Name + '\Bar.xml') then
+    if FileCheck(Dir + sr.Name + '\Bar.xml') then
     begin
       try
         xml.LoadFromFile(Dir + sr.Name + '\Bar.xml');
@@ -143,7 +143,7 @@ begin
   lab := False;
   if FindFirst(Dir + '*',FADirectory,sr) = 0 then
   repeat
-    if FileExists(Dir + sr.Name + '\Bar.xml') then
+    if FileCheck(Dir + sr.Name + '\Bar.xml') then
     begin
       try
         xml.LoadFromFile(Dir + sr.Name + '\Bar.xml');

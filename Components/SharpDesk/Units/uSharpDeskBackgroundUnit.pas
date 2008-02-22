@@ -257,13 +257,8 @@ begin
   winWallPath := SharpApi.GetSharpeDirectory + 'SharpDeskbg';
   tBmp := TBitmap.Create;
   tBmp.Assign(SharpDesk.Image.Bitmap);
-  try
+  if FileCheck(winWallPath+'.bmp') then
     tBmp.SaveToFile(winWallPath+'.bmp');
-  except
-    // try again...
-    sleep(2000);
-    tBmp.SaveToFile(winWallPath+'.bmp');
-  end;
   tBmp.Free;
 
   // save the preview bitmap
@@ -271,7 +266,8 @@ begin
   RescaleImage(SharpDesk.Image.Bitmap,TempBmp,62,48,True);
   if not DirectoryExists(GetThemeDirectory) then
     ForceDirectories(GetThemeDirectory);
-  SaveBitmap32ToPNG(TempBmp,GetThemeDirectory + 'preview.png',False,True,clWhite);
+  if FileCheck(GetThemeDirectory + 'preview.png') then
+    SaveBitmap32ToPNG(TempBmp,GetThemeDirectory + 'preview.png',False,True,clWhite);
   TempBmp.Free;
 
   SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Set Win Wallpaper : ') + WP.Name),clblue,DMT_trace);

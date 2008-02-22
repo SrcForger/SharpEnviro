@@ -231,7 +231,7 @@ begin
         FName := Dir + 'bar.xml';
 
         XML := TJvSimpleXML.Create(nil);
-        if FileExists(FName) then begin
+        if FileCheck(FName) then begin
           try
             XML.LoadFromFile(FName);
             fileloaded := True;
@@ -250,7 +250,8 @@ begin
               end;
             end;
         end;
-        XML.SaveToFile(FName);
+        if FileCheck(FName) then        
+          XML.SaveToFile(FName);
         XML.Free;
 
         tmrUpdate.Enabled := True;

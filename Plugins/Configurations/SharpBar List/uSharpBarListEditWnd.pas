@@ -241,7 +241,7 @@ begin
         end;
 
         XML := TJvSimpleXML.Create(nil);
-        if FileExists(Dir + NewID + '\Bar.xml') then begin
+        if FileCheck(Dir + NewID + '\Bar.xml') then begin
           try
             XML.LoadFromFile(Dir + NewID + '\Bar.xml');
             fileloaded := True;
@@ -277,14 +277,15 @@ begin
             Add('Modules');
         end;
         ForceDirectories(Dir + NewID);
-        XML.SaveToFile(Dir + NewID + '\Bar.xml');
+        if FileCheck(Dir + NewID + '\Bar.xml') then
+          XML.SaveToFile(Dir + NewID + '\Bar.xml');
         XML.Free;
       end;
     sceEdit: begin
         CID := TBarItem(frmEditItem.BarItem).BarID;
         XML := TJvSimpleXML.Create(nil);
         fileloaded := False;
-        if FileExists(Dir + inttostr(CID) + '\Bar.xml') then begin
+        if FileCheck(Dir + inttostr(CID) + '\Bar.xml') then begin
           try
             XML.LoadFromFile(Dir + inttostr(CID) + '\Bar.xml');
             fileloaded := True;
@@ -310,7 +311,8 @@ begin
               Add('VertPos', FrmEditItem.cobo_valign.ItemIndex);
             end;
           end;
-        XML.SaveToFile(Dir + inttostr(CID) + '\Bar.xml');
+        if FileCheck(Dir + inttostr(CID) + '\Bar.xml') then
+          XML.SaveToFile(Dir + inttostr(CID) + '\Bar.xml');
         XML.Free;
       end;
   end;

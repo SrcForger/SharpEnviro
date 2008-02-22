@@ -308,9 +308,12 @@ function ExtractBarName(ABarID: string): String;
   begin
     xml := TJvSimpleXML.Create(nil);
     try
-      xml.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + ABarID + '\Bar.xml');
-      if xml.Root.items.ItemNamed['Settings'] <> nil then
-        Result := xml.Root.items.ItemNamed['Settings'].Items.Value('Name','');
+      if FileCheck(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + ABarID + '\Bar.xml') then
+      begin
+        xml.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + ABarID + '\Bar.xml');
+        if xml.Root.items.ItemNamed['Settings'] <> nil then
+          Result := xml.Root.items.ItemNamed['Settings'].Items.Value('Name','');
+      end;
     finally
       xml.Free;
     end;
@@ -460,22 +463,25 @@ begin
 
       n := ExtractBarID(slBars[i]);
       if n = StrToInt(APluginID) then begin
-        xml.LoadFromFile(slBars[i]);
-        if xml.Root.Items.ItemNamed['Modules'] <> nil then begin
-          with xml.Root.Items.ItemNamed['Modules'].Items do begin
-            for j := 0 to Pred(Count) do begin
-              newItem := TModuleItem.Create;
-              with newItem do begin
-                MFile := Item[j].Items.Value('Module', '');
-                Name := PathRemoveExtension(MFile);
-                ID := Item[j].Items.IntValue('ID', -1);
-                Position := Item[j].Items.IntValue('Position', -1);
+        if FileCheck(slBars[i]) then
+        begin
+          xml.LoadFromFile(slBars[i]);
+          if xml.Root.Items.ItemNamed['Modules'] <> nil then begin
+            with xml.Root.Items.ItemNamed['Modules'].Items do begin
+              for j := 0 to Pred(Count) do begin
+                newItem := TModuleItem.Create;
+                with newItem do begin
+                  MFile := Item[j].Items.Value('Module', '');
+                  Name := PathRemoveExtension(MFile);
+                  ID := Item[j].Items.IntValue('ID', -1);
+                  Position := Item[j].Items.IntValue('Position', -1);
 
-                newItem.Configure := False;
-                if FileExists(SharpApi.GetCenterDirectory + '_Modules\' + newItem.Name + '.con') then
-                  newItem.Configure := True;
+                  newItem.Configure := False;
+                  if FileExists(SharpApi.GetCenterDirectory + '_Modules\' + newItem.Name + '.con') then
+                    newItem.Configure := True;
+                end;
+                AList.Add(newItem);
               end;
-              AList.Add(newItem);
             end;
           end;
         end;

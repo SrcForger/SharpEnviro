@@ -319,7 +319,8 @@ begin
 
     frmWPSettings.FCurrentWP.BmpPreview.DrawTo(bmp, Rect(0,0,62,48), frmWPSettings.FCurrentWP.BmpPreview.ClipRect);
 
-    SaveBitmap32ToPNG(bmp,sPngFile,False,False,clBlack);
+    if FileCheck(sPngFile) then    
+      SaveBitmap32ToPNG(bmp,sPngFile,False,False,clBlack);
   finally
     bmp.Free;
   End;
