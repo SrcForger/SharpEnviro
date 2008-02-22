@@ -1160,6 +1160,7 @@ begin
     if MetaData.Name = '' then
     begin
       result := -1;
+      FreeLibrary(hndFile);
       exit;
     end;
 
@@ -1212,6 +1213,7 @@ begin
         if not (MetaData.DataType = tteService) then
         begin
           result := 1; //wrong data type
+          FreeLibrary(hndFile);
           exit;
         end;
 
@@ -1271,6 +1273,7 @@ begin
         if not (MetaData.DataType = tteConfig) then
         begin
           result := 1; //wrong data type
+          FreeLibrary(hndFile);
           exit;
         end;
 
@@ -1330,6 +1333,7 @@ begin
         if not (MetaData.DataType = tteModule) then
         begin
           result := 1; //wrong data type
+          FreeLibrary(hndFile);
           exit;
         end;
 
