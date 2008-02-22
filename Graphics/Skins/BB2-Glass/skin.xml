@@ -2222,12 +2222,12 @@
       </skinpart>
     </background>
     <progress>
-      <location>0,0</location>
-      <dimension>w,h</dimension>
+      <location>2,2</location>
+      <dimension>w-3,h-3</dimension>
       <skinpart>
         <ID>gradient</ID>
-        <location>2,2</location>
-        <dimension>w-5,h-5</dimension>
+        <location>0,0</location>
+        <dimension>w-2,h-2</dimension>
         <image>images/bgempty.png</image>
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$BorderBG,$BorderBG</gradientcolor>
@@ -2235,8 +2235,8 @@
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
-        <location>2,2</location>
-        <dimension>w-5,h-5</dimension>
+        <location>0,0</location>
+        <dimension>w-2,h-2</dimension>
         <image>images/bgempty.png</image>
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Border,$Border</gradientcolor>

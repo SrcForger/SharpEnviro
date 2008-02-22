@@ -2021,19 +2021,19 @@
       </skinpart>
     </background>
     <progress>
-      <location>0,0</location>
-      <dimension>w,h</dimension>
+      <location>2,2</location>
+      <dimension>w-3,h-3</dimension>
       <skinpart>
-        <location>2,2</location>
-        <dimension>w-4,h-4</dimension>
+        <location>0,0</location>
+        <dimension>w-2,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
         <alpha>128</alpha>
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
-        <location>3,3</location>
-        <dimension>w-6,h-6</dimension>
+        <location>1,1</location>
+        <dimension>w-3,h-3</dimension>
         <image>images/bgempty.png</image>
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Background,$Background</gradientcolor>

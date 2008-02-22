@@ -1673,8 +1673,8 @@
       </skinpart>
     </background>
     <progress>
-      <location>0,1</location>
-      <dimension>w,h</dimension>
+      <location>1,1</location>
+      <dimension>w-3,h-2</dimension>
       <skinpart>
         <location>0,0</location>
         <dimension>w,h</dimension>
@@ -1686,7 +1686,7 @@
         <enabled>$IsBarBottom</enabled>
         <ID>gradient</ID>
         <location>1,0</location>
-        <dimension>w-3,h-2</dimension>
+        <dimension>w,h</dimension>
         <image>images/bgempty.png</image>
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Foreground,$Foreground</gradientcolor>
@@ -1696,8 +1696,8 @@
         <enabled>$IsBarTop</enabled>
         <ID>gradient</ID>
         <location>1,0</location>
-        <dimension>w-3,h-2</dimension>
-        <image>images/bgempty.png</image>
+        <dimension>w,h</dimension>
+        <image>empty</image>
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Foreground,$Foreground</gradientcolor>
         <gradientalpha>60,175</gradientalpha>
