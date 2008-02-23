@@ -44,7 +44,6 @@
     </DelphiCompile>
     <DCCReference Include="..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas" />
-    <DCCReference Include="..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas" />
     <DCCReference Include="..\..\..\Components\SharpDesk\Units\uSharpDeskTDeskSettings.pas" />
     <DCCReference Include="uHomeWnd.pas">
       <Form>frmHome</Form>

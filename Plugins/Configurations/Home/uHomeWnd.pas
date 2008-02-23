@@ -127,19 +127,17 @@ var
   tmp: TUser;
 begin
   // Main dev team
-  tmp := TUser.Create('CoCo', 'Silentpyjamas', 'coco@sharpenviro.com', 'PR, Community and Pom Pom Queen.');
+  tmp := TUser.Create('CoCo', 'Silentpyjamas', 'coco@sharpenviro.com', 'PR, Community + Support.');
   FUsers.Add(tmp);
-  tmp := TUser.Create('Florian', 'Captain Herisson', 'florian@sharpenviro.com', 'Graphics. Also the new Addons site developer.');
+  tmp := TUser.Create('David', 'Glacialfury', 'nathan@sharpenviro.com', 'Lead Tester + Support.');
   FUsers.Add(tmp);
-  tmp := TUser.Create('David', 'Glacialfury', 'nathan@sharpenviro.com', 'Tester, and critical bug reporter.');
+  tmp := TUser.Create('Florian', 'Captain Herisson', 'florian@sharpenviro.com', 'Graphics + Design.');
   FUsers.Add(tmp);
-  tmp := TUser.Create('Lee', 'Pixol', 'lee@sharpenviro.com', 'Lead Developer of SharpCenter + Configurations.');
+  tmp := TUser.Create('Lee', 'Pixol', 'lee@sharpenviro.com', 'Lead Developer of Components, SharpCenter, Configurations.');
   FUsers.Add(tmp);
-  tmp := TUser.Create('Martin', 'Billiberserker', 'martin@sharpenviro.com', 'Lead Developer of SharpBar, SharpMenu, Modules and well, too much.');
+  tmp := TUser.Create('Martin', 'Billiberserker', 'martin@sharpenviro.com', 'Lead Developer of SharpBar, SharpDesk, SharpMenu, Modules.');
   FUsers.Add(tmp);
-  tmp := TUser.Create('Nathan', 'Mc', 'nathan@sharpenviro.com', 'Lead Developer of SharpCore, and wonders like SharpCompile.');
-  FUsers.Add(tmp);
-  tmp := TUser.Create('Skizo', 'Skizo', 'skizo@sharpenviro.com', 'Graphics, and new guy.');
+  tmp := TUser.Create('Nathan', 'Mc', 'nathan@sharpenviro.com', 'Lead Developer of SharpCore, SharpCompile.');
   FUsers.Add(tmp);
 
 end;
