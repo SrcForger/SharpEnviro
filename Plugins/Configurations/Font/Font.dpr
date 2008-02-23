@@ -141,7 +141,7 @@ begin
     Version := '0.7.4.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
-      Integer(suSkinFont)]);
+      Integer(suTheme)]);
   end;
 end;
 

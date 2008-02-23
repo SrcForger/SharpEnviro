@@ -336,6 +336,8 @@ begin
   lb_shadowtype.Font.Color := clGray;
   lb_shadowalpha.Font.Color := clGray;
 
+  LoadSettings;
+
 end;
 
 procedure TfrmFont.LoadSettings;
