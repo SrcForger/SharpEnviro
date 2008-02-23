@@ -38,16 +38,23 @@ type
     FData: Pointer;
     FSwatchRect: TRect;
     FSelected: Boolean;
+    FSystem: Boolean;
+    FColorCode: Integer;
     procedure SetColor(const Value: TColor);
     procedure SetColorName(const Value: string);
     procedure SetSelected(const Value: Boolean);
+    procedure SetSystem(const Value: Boolean);
+    procedure SetColorCode(const Value: Integer);
   public
     property Data: Pointer read FData write FData;
     property SwatchRect: TRect read FSwatchRect write FSwatchRect;
     property Selected: Boolean read FSelected write SetSelected;
+    property System: Boolean read FSystem write SetSystem;
   published
     property ColorName: string read FColorName write SetColorName;
     property Color: TColor read FColor write SetColor;
+    property ColorCode: Integer read FColorCode write SetColorCode;
+    
   protected
     function GetDisplayName: string; override;
 
@@ -87,6 +94,7 @@ type
     FonGetWidth: TOnGetWidth;
     FOnUpdateSwatchBitmap: TOnUpdateSwatchBitmap;
     FUpdate: Boolean;
+    FPopulateThemeColors: Boolean;
 
     procedure SetShowCaptions(const Value: Boolean);
     procedure SetSortMode(const Value: TSharpESwatchCollectionSortType);
@@ -100,6 +108,7 @@ type
     function GetCollectionList(AC: TCollection): TList;
     procedure SetWidth(const Value: Integer);
     function GetWidth: Integer;
+    procedure AddThemeDefaults;
   protected
     procedure Loaded; override;
   public
@@ -129,6 +138,9 @@ type
 
     procedure CreateSwatchBitmap;
 
+    property PopulateThemeColors: Boolean read FPopulateThemeColors write
+      FPopulateThemeColors;
+
     property Width: Integer read GetWidth write SetWidth;
     property ShowCaptions: Boolean read FShowCaptions write SetShowCaptions;
     property SwatchHeight: Integer read FSwatchHeight write SetSwatchHeight;
@@ -154,6 +166,9 @@ function Sort_BySat(Item1, Item2: Pointer): Integer;
 function Sort_ByName(Item1, Item2: Pointer): Integer;
 
 implementation
+
+uses
+  SharpThemeApi;
 
 procedure Register;
 begin
@@ -254,6 +269,11 @@ begin
   FColor := Value;
 end;
 
+procedure TSharpESwatchCollectionItem.SetColorCode(const Value: Integer);
+begin
+  FColorCode := Value;
+end;
+
 procedure TSharpESwatchCollectionItem.SetColorName(const Value: string);
 begin
   FColorName := Value;
@@ -267,6 +287,11 @@ end;
 procedure TSharpESwatchCollectionItem.SetSelected(const Value: Boolean);
 begin
   FSelected := Value;
+end;
+
+procedure TSharpESwatchCollectionItem.SetSystem(const Value: Boolean);
+begin
+  FSystem := Value;
 end;
 
 { TSharpESwatchCollectionItems }
@@ -385,6 +410,11 @@ begin
   try
 
     FSwatches.Clear;
+
+    // Always add theme defaults
+    if (FPopulateThemeColors) then
+      AddThemeDefaults;
+
     xml := TJvSimpleXML.Create(nil);
     try
       xml.LoadFromFile(AFileName);
@@ -453,6 +483,9 @@ begin
       if ASelectedOnly then
         if not (FSwatches.Item[i].Selected) then
           bAdd := False;
+
+      if FSwatches.Item[i].System then
+        bAdd := False;
 
       if bAdd then begin
         with xml.Root.Items.Add('Swatch') do begin
@@ -706,6 +739,7 @@ begin
   FWidth := 100;
   FUpdate := True;
   FShowCaptions := True;
+  FPopulateThemeColors := True;
 
   FSwatchFont := TFont.Create;
 
@@ -786,6 +820,30 @@ procedure TSharpESwatchManager.BeginUpdate;
 begin
   CreateSwatchBitmap;
   FUpdate := False;
+end;
+
+procedure TSharpESwatchManager.AddThemeDefaults;
+var
+  newItem: TSharpESwatchCollectionItem;
+  tmpColorSet: TSharpEColorSet;
+  tmpColor: TSharpESkinColor;
+  i: Integer;
+begin
+
+  SetLength(tmpColorSet,0);
+  XmlGetThemeScheme(tmpColorSet);
+
+  For i := 0 to high(tmpColorSet) do begin
+    tmpColor := tmpColorSet[i];
+
+    if tmpColor.schemetype = stColor then begin
+      newItem := TSharpESwatchCollectionItem.Create(FSwatches);
+      newItem.System := True;
+      newItem.ColorName := tmpColor.Name;
+      newItem.Color := tmpColor.Color;
+      newItem.ColorCode := 0 - (i+1);
+    end;
+  end;
 end;
 
 procedure TSharpESwatchManager.BeforeDestruction;
