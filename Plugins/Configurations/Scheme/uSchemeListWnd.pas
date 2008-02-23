@@ -130,7 +130,7 @@ begin
     if tmpSchemeItem = nil then
       exit;
 
-    BarPreview.CreateBarPreview(bmp, FSchemeManager.PluginID, FSchemeManager.GetSkinName(FSchemeManager.PluginID),
+    BarPreview.CreateBarPreview(bmp, FSchemeManager.PluginID, XmlGetSkin(FSchemeManager.PluginID),
       tmpSchemeItem.GetItemAsColorArray(tmpSchemeItem.Colors), ABmp.Width, true);
 
     ABmp.SetSize(bmp.Width, bmp.height);
@@ -181,7 +181,7 @@ begin
       lbSchemeList.ItemIndex := -1;
       for i := 0 to Pred(lbSchemeList.Count) do begin
         if CompareText(TSchemeItem(lbSchemeList.Item[i].Data).Name,
-          FSchemeManager.GetDefaultScheme) = 0 then begin
+          XmlGetScheme(FSchemeManager.PluginID)) = 0 then begin
           iSel := i;
           break;
         end;
@@ -254,7 +254,7 @@ begin
 
     // Set Scheme
     if AItem <> nil then begin
-      FSchemeManager.SetDefaultScheme(TSchemeItem(AItem.Data).Name);
+      XmlSetScheme(FSchemeManager.PluginID, TSchemeItem(AItem.Data).Name);
       SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
     end;
 

@@ -104,13 +104,12 @@ begin
   h := 0;
 
   try
-    
-    
+
     secEx.BeginUpdate;
     secEx.Items.Clear;
     for i := 0 to Pred(FColors.Count) do begin
       tmpItem := TSchemeColorItem(FColors[i]);
-      tmpSkinColor := FSchemeManager.GetSkinColorByTag(tmpItem.Tag);
+      tmpSkinColor := XmlGetSkinColorByTag(tmpItem.Tag);
 
       with secEx.Items.Add(Self) do begin
         Title := tmpSkinColor.Name;
@@ -202,7 +201,7 @@ begin
   sName := trim(StrRemoveChars(edName.Text,
     ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
   sSkinDir := GetSharpeDirectory + 'skins';
-  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, FSchemeManager.GetSkinName(FSchemeManager.PluginID)]);
+  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, XmlGetSkin(FSchemeManager.PluginID)]);
 
   bExistsName := FileExists(sSchemeDir + sName + '.xml');
   if ((CompareText(edName.Text, SchemeItem.Name) = 0) and (AEditMode = sceEdit)) then
@@ -263,8 +262,9 @@ begin
   tmpItem := TSchemeColorItem(TSharpEColorEditorExItem(ASender).Tag);
 
   if TSharpEColorEditorExItem(ASender).ValueEditorType = vetColor then begin
+
     tmpItem.Color := AValue;
-    tmpItem.UnparsedColor := ColorToString(AValue);
+    tmpItem.UnparsedColor := ColorToString(XmlSchemeCodeToColor(AValue));
   end
   else begin
     tmpItem.Color := AValue;

@@ -97,6 +97,7 @@ object frmEditScheme: TfrmEditScheme
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
+    PopulateThemeColors = False
     Width = 100
     ShowCaptions = True
     SwatchHeight = 16
