@@ -53,6 +53,7 @@ uses
   JclStrings,
   JclInifiles,
   SharpCenterApi,
+  SharpThemeApi,
   pngimage,
   Jcldatetime,
   DateUtils;
@@ -80,6 +81,7 @@ type
     procedure lbThemeListGetCellImageIndex(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
+    procedure Button1Click(Sender: TObject);
   private
     FLoading: Boolean;
     procedure LoadTheme(tmpTheme: TThemeListItem);
@@ -121,7 +123,14 @@ begin
 end;
 
 procedure TfrmThemeList.FormDestroy(Sender: TObject);
+var
+  i: Integer;
 begin
+  for i := pred(lbThemeList.Count) downto 0 do begin
+    TThemeListItem(lbThemeList.Item[i].Data).Free;
+    lbThemeList.DeleteItem(i);
+  end;
+
   ThemeManager.Free;
 end;
 
@@ -132,12 +141,12 @@ var
   b: boolean;
   i: Integer;
   newItem: TSharpEListItem;
-  tmpTheme: TThemeListItem;
-  sl: TStringList;
+  tmpThemeInfo: TThemeInfo;
+  themes: TThemeInfoSet;
 begin
   lbThemeList.Clear;
   LockWindowUpdate(Self.Handle);
-  sl := TStringList.Create;
+
   bmp := TBitmap.Create;
   bmp32 := TBitmap32.Create;
 
@@ -146,10 +155,11 @@ begin
     bmp.Height := ThemeImages.Height;
     SetBkMode(Bmp.Handle, TRANSPARENT);
 
-    ThemeManager.GetThemeList(sl);
+    Setlength(themes,0);
+    XmlGetThemeList(themes);
 
-    for i := 0 to Pred(sl.Count) do begin
-      tmpTheme := TThemeListItem(sl.Objects[i]);
+    for i := 0 to high(themes) do begin
+      tmpThemeInfo := themes[i];
 
       newItem := lbThemeList.AddItem('');
       newItem.AddSubItem('');
@@ -158,13 +168,13 @@ begin
       newItem.AddSubItem('');
       newItem.AddSubItem('');
 
-      newItem.Data := tmpTheme;
+      newItem.Data := TThemeListItem.Create(tmpThemeInfo);
       bmp32.Clear(clWhite32);
 
-      if ((tmpTheme.PreviewFileName <> '') and
-        (FileExists(tmpTheme.PreviewFileName))) then begin
+      if ((tmpThemeInfo.Preview <> '') and
+        (FileExists(tmpThemeInfo.Preview))) then begin
 
-        GR32_PNG.LoadBitmap32FromPNG(Bmp32, tmpTheme.PreviewFileName, b);
+        GR32_PNG.LoadBitmap32FromPNG(Bmp32, tmpThemeInfo.Preview, b);
 
         bmp.Canvas.Brush.Color := clBlack;
         bmp.Canvas.Pen.Color := clBlack;
@@ -203,7 +213,7 @@ begin
     end;
   finally
     LockWindowUpdate(0);
-    sl.Free;
+
     bmp.Free;
     bmp32.Free;
   end;
@@ -236,7 +246,7 @@ begin
     cName: LoadTheme(tmpTheme);
     cReadOnly: ;
     cEdit: begin
-        if not (tmpTheme.IsReadOnly) then
+        if not (tmpTheme.ReadOnly) then
           ConfigureItem;
         exit;
       end;
@@ -309,9 +319,9 @@ procedure TfrmThemeList.lbThemeListGetCellCursor(Sender: TObject; const ACol: In
 var
   tmpTheme: TThemeListItem;
 begin
-  if AItem <> nil then begin
+  tmpTheme := TThemeListItem(AItem.Data);
+    if tmpTheme <> nil then begin
 
-    tmpTheme := TThemeListItem(AItem.Data);
     case ACol of
       cWebsite: begin
           if tmpTheme.Website <> '' then
@@ -319,12 +329,12 @@ begin
         end;
       cEdit: begin
 
-          if not (tmpTheme.IsReadOnly) then
+          if not (tmpTheme.ReadOnly) then
             ACursor := crHandPoint;
         end;
       cCopy, cDelete: ACursor := crHandPoint;
     end;
-  end;
+    end;
 end;
 
 procedure TfrmThemeList.lbThemeListGetCellImageIndex(Sender: TObject; const ACol: Integer;
@@ -337,7 +347,7 @@ begin
 
     case ACol of
       cReadOnly: begin
-          if tmpTheme.IsReadOnly then
+          if tmpTheme.ReadOnly then
             AImageIndex := 1
           else
             AImageIndex := -1;
@@ -368,7 +378,7 @@ begin
   tmpTheme := TThemeListItem(AItem.Data);
   if tmpTheme <> nil then begin
     if (Acol = cEdit) then begin
-      if tmpTheme.IsReadOnly then
+      if tmpTheme.ReadOnly then
         AColText := '<font color="clSilver"><u>Edit</u>'
       else
         AColText := '<font color="clNavy"><u>Edit</u>';
@@ -382,6 +392,14 @@ begin
     end;
   end;
 
+end;
+
+procedure TfrmThemeList.Button1Click(Sender: TObject);
+var
+  skinCols: TSharpEColorSet;
+begin
+  SetLength(skinCols,0);
+  XmlGetThemeScheme(skinCols);
 end;
 
 procedure TfrmThemeList.ConfigureItem;

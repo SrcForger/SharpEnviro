@@ -3,80 +3,87 @@ unit uThemeListManager;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, shellapi, JclFileUtils, JclStrings,
-    SharpEListBoxEx;
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  JvSimpleXml,
+  shellapi,
+  JclFileUtils,
+  JclStrings,
+  SharpEListBoxEx,
+  SharpThemeApi;
 
 type
-  TThemeListItem = Class
+  TThemeListItem = class
   private
-    FAuthor: String;
-    FName: String;
-    FComment: String;
-    FWebsite: String;
-    FPreviewFileName: String;
-    FTemplate: Pointer;
-    FFileName: String;
-    FIsReadOnly: Boolean;
-    FRenamedName: String;
+    FThemeInfo: TThemeInfo;
+    function GetAuthor: string;
+    function GetComment: string;
+    function GetFilename: string;
+    function GetName: string;
+    function GetPreview: string;
+    function GetReadOnly: boolean;
+    function GetWebsite: string;
+    procedure SetAuthor(const Value: string);
+    procedure SetComment(const Value: string);
+    procedure SetFilename(const Value: string);
+    procedure SetName(const Value: string);
+    procedure SetPreview(const Value: string);
+    procedure SetReadOnly(const Value: boolean);
+    procedure SetWebsite(const Value: string);
   public
-    constructor Create(AName:String; AAuthor:String);
-    property FileName: String read FFileName write FFileName;
-    Property Name: String read FName write FName;
-    Property RenamedName: String read FRenamedName write FRenamedName;
-    Property Author: String read FAuthor write FAuthor;
-    Property Comment: String read FComment write FComment;
-    Property Website: String read FWebsite write FWebsite;
-    Property PreviewFileName: String read FPreviewFileName write FPreviewFileName;
-    property IsReadOnly: Boolean read FIsReadOnly write FIsReadOnly;
+    constructor Create(AThemeInfo: TThemeInfo);
 
-    Property Template: Pointer read FTemplate write FTemplate;
-end;
+    property Name: string read GetName write SetName;
+    property Author: string read GetAuthor write SetAuthor;
+    property Comment: string read GetComment write SetComment;
+    property Website: string read GetWebsite write SetWebsite;
 
-  TThemeManager = Class
-    private
-      function CopyFolder(Asrc, ADest: String):Boolean;
-    public
-      procedure Add(AName, AAuthor, Awebsite:string;
-        ATemplate: string=''; AReadOnly:Boolean=False);
-      procedure Edit(AOldName, ANewName, AAuthor, AWebsite: String);
-      procedure Delete(AName: String);
-      procedure SetTheme(AName: String);
-      Function GetDefaultTheme:string;
+    property Filename: string read GetFilename write SetFilename;
+    property Preview: string read GetPreview write SetPreview;
+    property Readonly: boolean read GetReadOnly write SetReadOnly;
+  end;
 
-      procedure GetThemeList(AStringList:TStrings);
-  End;
+  TThemeManager = class
+  private
+    function CopyFolder(Asrc, ADest: string): Boolean;
+  public
+    procedure Add(AName, AAuthor, Awebsite: string;
+      ATemplate: string = ''; AReadOnly: Boolean = False);
+    procedure Edit(AOldName, ANewName, AAuthor, AWebsite: string);
+    procedure Delete(AName: string);
+    procedure SetTheme(AName: string);
+    function GetDefaultTheme: string;
+
+  end;
 
 implementation
 
 uses
-  SharpApi, uThemeListWnd, JclSimpleXml;
-
-{ TThemeListItem }
-
-constructor TThemeListItem.Create(AName, AAuthor: String);
-begin
-  FAuthor := AAuthor;
-  FName := AName;
-  FTemplate := nil;
-  FWebsite := '';
-  FComment := '';
-  FIsReadOnly := False;
-end;
+  SharpApi,
+  uThemeListWnd,
+  JclSimpleXml;
 
 { TThemeManager }
 
-procedure TThemeManager.Add(AName, AAuthor, Awebsite:string;
-  ATemplate: string=''; AReadOnly:Boolean=False);
+procedure TThemeManager.Add(AName, AAuthor, Awebsite: string;
+  ATemplate: string = ''; AReadOnly: Boolean = False);
 var
   xml: TJvSimpleXml;
-  sThemeDir: String;
+  sThemeDir: string;
   sSrc: string;
   sDest: string;
 begin
   // Get theme dir
   AName := trim(StrRemoveChars(AName,
-      ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
+    ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
 
   sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
 
@@ -85,42 +92,42 @@ begin
     sSrc := sThemeDir + ATemplate;
     sDest := sThemeDir + AName;
 
-    CopyFolder(sSrc,sDest);
+    CopyFolder(sSrc, sDest);
   end;
 
   xml := TJvSimpleXML.Create(nil);
   xml.Root.Name := 'SharpETheme';
-  Try
+  try
     with Xml.Root.items do begin
-      Add('Name',AName);
-      Add('Author',AAuthor);
-      Add('Website',AWebsite);
-      Add('ReadOnly',AReadOnly);
+      Add('Name', AName);
+      Add('Author', AAuthor);
+      Add('Website', AWebsite);
+      Add('ReadOnly', AReadOnly);
     end;
-  Finally
+  finally
 
     // create folder
-    if Not(DirectoryExists(sThemeDir + AName)) then
+    if not (DirectoryExists(sThemeDir + AName)) then
       ForceDirectories(sThemeDir + AName);
 
-    sDest := sThemeDir + AName+'\'+'Theme.xml';
+    sDest := sThemeDir + AName + '\' + 'Theme.xml';
 
     xml.SaveToFile(sDest);
     xml.Free;
-  End;
+  end;
 
   // just create a default skin file
   xml := TJvSimpleXML.Create(nil);
   xml.Root.Name := 'SharpEThemeSkin';
-  xml.Root.Items.Add('Skin','BB2-Glass');
+  xml.Root.Items.Add('Skin', 'BB2-Glass');
 
-  sDest := sThemeDir + AName+'\'+'Skin.xml';
+  sDest := sThemeDir + AName + '\' + 'Skin.xml';
 
   xml.SaveToFile(sDest);
   xml.free;
 end;
 
-function TThemeManager.CopyFolder(Asrc, ADest: String): Boolean;
+function TThemeManager.CopyFolder(Asrc, ADest: string): Boolean;
 var
   i: Integer;
   sList: TStringList;
@@ -131,20 +138,20 @@ begin
   Asrc := PathAddSeparator(Asrc);
   ForceDirectories(ADest);
 
-   sList := TStringList.Create;
-   Try
-    AdvBuildFileList(Asrc+'*.*',faAnyFile,sList,amAny,[flFullNames]);
+  sList := TStringList.Create;
+  try
+    AdvBuildFileList(Asrc + '*.*', faAnyFile, sList, amAny, [flFullNames]);
 
-    For i := 0 to Pred(sList.Count) do begin
-      FileCopy(slist[i],ADest+ExtractFileName(sList[i]));
+    for i := 0 to Pred(sList.Count) do begin
+      FileCopy(slist[i], ADest + ExtractFileName(sList[i]));
     end;
 
-   Finally
+  finally
     sList.Free;
-   End;
+  end;
 end;
 
-procedure TThemeManager.Delete(AName: String);
+procedure TThemeManager.Delete(AName: string);
 var
   sThemeDir: PAnsiChar;
   sSrc: PAnsiChar;
@@ -152,115 +159,71 @@ begin
   sThemeDir := PAnsiChar(GetSharpeUserSettingsPath + 'Themes\');
   sSrc := PAnsiChar(sThemeDir + AName);
 
-  DeleteDirectory(sSrc,True);
+  DeleteDirectory(sSrc, True);
 end;
 
-procedure TThemeManager.Edit(AOldName, ANewName, AAuthor, AWebsite: String);
+procedure TThemeManager.Edit(AOldName, ANewName, AAuthor, AWebsite: string);
 var
   xml: TJvSimpleXml;
-  sThemeDir, sName: String;
+  sThemeDir, sName: string;
   sXml: string;
 begin
 
   // Remove invalid chars
   sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
   ANewName := trim(StrRemoveChars(ANewName,
-      ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
+    ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
 
   // Rename
   if CompareText(AOldName, ANewName) <> 0 then begin
 
-    CopyFolder(PathAddSeparator(sThemeDir)+AOldName,PathAddSeparator(sThemeDir)+ANewName);
-    DeleteDirectory(PathAddSeparator(sThemeDir)+AOldName,True);
+    CopyFolder(PathAddSeparator(sThemeDir) + AOldName, PathAddSeparator(sThemeDir) + ANewName);
+    DeleteDirectory(PathAddSeparator(sThemeDir) + AOldName, True);
     sName := ANewName;
-  end else
+  end
+  else
     sName := AOldName;
 
   // Get theme dir
-  
-  sXml := sThemeDir+sName+'\'+'theme.xml';
+
+  sXml := sThemeDir + sName + '\' + 'theme.xml';
 
   xml := TJvSimpleXML.Create(nil);
   xml.LoadFromFile(sXml);
-  Try
+  try
     with Xml.Root.items do begin
 
       ItemNamed['Name'].Value := sName;
       ItemNamed['Author'].Value := AAuthor;
       ItemNamed['Website'].Value := AWebsite;
     end;
-  Finally
+  finally
     xml.SaveToFile(sXml);
-  End;
+  end;
 end;
 
 function TThemeManager.GetDefaultTheme: string;
 var
-  xml:TJvSimpleXML;
-  s: String;
+  xml: TJvSimpleXML;
+  s: string;
 begin
   Result := '';
   s := GetSharpeUserSettingsPath + 'SharpE.xml';
   xml := TJvSimpleXML.Create(nil);
-  Try
-      xml.LoadFromFile(s);
-      Result := xml.Root.Items.Value('Theme','');
+  try
+    xml.LoadFromFile(s);
+    Result := xml.Root.Items.Value('Theme', '');
 
-  Finally
+  finally
     xml.Free;
-  End;
+  end;
 end;
 
-
-procedure TThemeManager.GetThemeList(AStringList: TStrings);
+procedure TThemeManager.SetTheme(AName: string);
 var
-  sThemeDir, sPreview: string;
-  xml: TJvSimpleXml;
-  sList: TStringList;
-  i: Integer;
-  newItem: TThemeListItem;
-begin
-  sThemeDir := GetSharpeUserSettingsPath + 'Themes\*theme.xml';
-
-  sList := TStringList.Create;
-  Try
-    AdvBuildFileList(sThemeDir,faDirectory,sList,amAny,[flRecursive,flFullNames]);
-    sList.Sort;
-
-    For i := 0 to Pred(sList.Count) do begin
-      xml := TJvSimpleXML.Create(nil);
-      Try
-        xml.LoadFromFile(sList[i]);
-
-        newItem := TThemeListItem.Create('','');
-        newItem.FileName := SList[i];
-        newItem.Name := XML.Root.Items.Value('Name','Invalid_Name');
-        newItem.Author := XML.Root.Items.Value('Author','Invalid_Author');
-        newItem.Comment := XML.Root.Items.Value('Comment','Invalid_Comment');
-        newItem.Website := XML.Root.Items.Value('Website','Invalid_Website');
-        newItem.IsReadOnly := XML.Root.Items.BoolValue('ReadOnly',false);
-
-        sPreview := ExtractFilePath(SList[i]) + 'Preview.png';
-        if FileExists(sPreview) then
-          newItem.PreviewFileName := sPreview else
-          newItem.PreviewFileName := '';
-
-        AStringList.AddObject(newItem.Name,newItem);
-
-      Finally
-        xml.Free;
-      End;
-    end;
-  Finally
-    sList.Free;
-  End;
-end;
-
-procedure TThemeManager.SetTheme(AName: String);
-var
-  xml:TJvSimpleXML;
+  xml: TJvSimpleXML;
   elem: TJvSimpleXMLElem;
-  s, sDest, sThemeDir: String;
+  s, sDest, sThemeDir: string;
 begin
 
   sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
@@ -268,18 +231,96 @@ begin
 
   s := GetSharpeUserSettingsPath + 'SharpE.xml';
   xml := TJvSimpleXML.Create(nil);
-  Try
+  try
     xml.LoadFromFile(sDest);
     elem := xml.Root.Items.ItemNamed['Theme'];
 
     if elem <> nil then
-      elem.Value := AName else
-      xml.Root.Items.Add('Theme',AName);
+      elem.Value := AName
+    else
+      xml.Root.Items.Add('Theme', AName);
 
-  Finally
+  finally
     xml.SaveToFile(sDest);
     xml.Free;
-  End;
+  end;
+end;
+
+{ TThemeListItem }
+
+constructor TThemeListItem.Create(AThemeInfo: TThemeInfo);
+begin
+  FThemeInfo := AThemeInfo;
+end;
+
+function TThemeListItem.GetAuthor: string;
+begin
+  Result := FThemeInfo.Author;
+end;
+
+function TThemeListItem.GetComment: string;
+begin
+  Result := FThemeInfo.Comment;
+end;
+
+function TThemeListItem.GetFilename: string;
+begin
+  Result := FThemeInfo.Filename;
+end;
+
+function TThemeListItem.GetName: string;
+begin
+  Result := FThemeInfo.Name;
+end;
+
+function TThemeListItem.GetPreview: string;
+begin
+  Result := FThemeInfo.Preview;
+end;
+
+function TThemeListItem.GetReadOnly: boolean;
+begin
+  Result := FThemeInfo.Readonly;
+end;
+
+function TThemeListItem.GetWebsite: string;
+begin
+  Result := FThemeInfo.Website
+end;
+
+procedure TThemeListItem.SetAuthor(const Value: string);
+begin
+  FThemeInfo.Author := Value;
+end;
+
+procedure TThemeListItem.SetComment(const Value: string);
+begin
+  FThemeInfo.Comment := Value;
+end;
+
+procedure TThemeListItem.SetFilename(const Value: string);
+begin
+  FThemeInfo.Filename := Value;
+end;
+
+procedure TThemeListItem.SetName(const Value: string);
+begin
+  FThemeInfo.Name := Value;
+end;
+
+procedure TThemeListItem.SetPreview(const Value: string);
+begin
+  FThemeInfo.Preview := Value;
+end;
+
+procedure TThemeListItem.SetReadOnly(const Value: boolean);
+begin
+  FThemeInfo.Readonly := Value;
+end;
+
+procedure TThemeListItem.SetWebsite(const Value: string);
+begin
+  FThemeInfo.Website := Value;
 end;
 
 end.

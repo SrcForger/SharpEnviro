@@ -50,6 +50,7 @@ uses
   JvPageList,
   SharpApi,
   SharpCenterApi,
+  SharpThemeApi,
   uThemeListManager,
   SharpEListBoxEx,
   JclStrings,
@@ -131,7 +132,9 @@ begin
 
         frmEditItem.cbBasedOn.Items.Clear;
         frmEditItem.cbBasedOn.Items.AddObject('New Theme', nil);
-        frmThemeList.ThemeManager.GetThemeList(frmEditItem.cbBasedOn.Items);
+
+        //XmlGetThemeList(TStringList(frmEditItem.cbBasedOn.Items));
+
         frmEditItem.cbBasedOn.ItemIndex := 0;
         frmEditItem.cbBasedOn.Enabled := True;
 
@@ -155,11 +158,6 @@ begin
 
         frmEditItem.cbBasedOn.Items.Clear;
         frmEditItem.cbBasedOn.Items.AddObject('Not Applicable',nil);
-        frmThemeList.ThemeManager.GetThemeList(frmEditItem.cbBasedOn.Items);
-
-        if tmpThemeItem.Template <> nil then
-          frmEditItem.cbBasedOn.ItemIndex := frmEditItem.cbBasedOn.Items.IndexOfObject(Pointer(tmpThemeItem.Template)) else
-          frmEditItem.cbBasedOn.ItemIndex := 0;
 
         frmEditItem.cbBasedOn.Enabled := False;
 
