@@ -1,13 +1,14 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{3772117b-4abf-4a3c-b36c-242712b06792}</ProjectGuid>
     <MainSource>SharpThemeApi.dpr</MainSource>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>rtl;vcl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\SharpThemeApi.dll</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>E:\SharpE\SharpThemeApi.dll</DCC_DependencyCheckOutputName>
+    <DCC_EnabledPackages>true</DCC_EnabledPackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -33,6 +34,8 @@
     <DelphiCompile Include="SharpThemeApi.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <DCCReference Include="..\..\Libraries" />
     <DCCReference Include="..\SharpAPI\SharpAPI.pas" />
+    <DCCReference Include="..\SharpUtil\SharpUtil.pas" />
   </ItemGroup>
 </Project>

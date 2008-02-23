@@ -29,7 +29,10 @@ interface
 
 uses
   Windows,
-  Classes;
+  Classes,
+  SysUtils,
+  SharpApi,
+  JvSimpleXml;
 
 type
   TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,
@@ -68,7 +71,6 @@ type
     Color: integer;
     schemetype : TSharpESchemeType;
   end;
-
   TSharpEColorSet = array of TSharpESkinColor;
 
   TSharpEIcon = record
@@ -76,7 +78,40 @@ type
     Tag: string;
   end;
 
+  TThemeInfo = record
+    LastUpdate : Int64;
+    Name: string;
+    Author: string;
+    Comment: string;
+    Website: string;
+
+    Filename: string;
+    Preview: string;
+    Readonly: boolean;
+  end;
+  TThemeInfoSet = array of TThemeInfo;
+
 const
+  ICONS_DIR = 'Icons';
+  THEME_DIR = 'Themes';
+
+  DEFAULT_THEME = 'Default';
+  DEFAULT_ICONSET = 'Cubeix Black';
+
+  SKINS_DIRECTORY = 'Skins';
+  SKINS_SCHEME_DIRECTORY = 'Schemes';
+
+  SHARPE_USER_SETTINGS = 'SharpE.xml';
+
+  THEME_INFO_FILE = 'Theme.xml';
+  SCHEME_FILE = 'Scheme.xml';
+  SKIN_FILE = 'Skin.xml';
+  ICONSET_FILE = 'IconSet.xml';
+  DESKTOPICON_FILE = 'DesktopIcon.xml';
+  DESKTOPANIM_FILE = 'DesktopAnimation.xml';
+  WALLPAPER_FILE = 'Wallpaper.xml';
+  SKINFONT_FILE = 'Font.xml';
+
   ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,
                      tpDesktopAnimation,tpWallpaper,tpSkinFont];
 
@@ -197,14 +232,201 @@ function GetSkinFontValueItalic      : boolean; external 'SharpThemeApi.dll' nam
 function GetSkinFontValueUnderline   : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueUnderline';
 function GetSkinFontValueClearType   : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueClearType';
 
+function XmlGetTheme: string; external 'SharpThemeApi.dll' name 'XmlGetTheme';
+
 function XmlGetScheme(ATheme: string): string; external 'SharpThemeApi.dll' name 'XmlGetScheme';
+function XmlSetScheme(AName:String; ATheme: string): string; external 'SharpThemeApi.dll' name 'XmlSetScheme';
+
 function XmlGetSkin(ATheme: String): String; external 'SharpThemeApi.dll' name 'XmlGetSkin';
 function XmlGetSchemeFile(ATheme: string): string; external 'SharpThemeApi.dll' name 'XmlGetSchemeFile';
 function XmlGetSkinFile(ATheme: String): String; external 'SharpThemeApi.dll' name 'XmlGetSkinFile';
 function XmlGetFontFile(ATheme: String): String; external 'SharpThemeApi.dll' name 'XmlGetFontFile';
+function XmlGetThemeFile(ATheme: String): String; external 'SharpThemeApi.dll' name 'XmlGetThemeFile';
 
+function GetThemeListAsCommaText: string; external 'SharpThemeApi.dll' name 'GetThemeListAsCommaText';
+procedure XmlGetThemeList(var AThemeList: TThemeInfoSet);
 
+function GetSchemeListAsCommaText(ATheme:string): string; external 'SharpThemeApi.dll' name 'GetSchemeListAsCommaText';
+procedure XmlGetThemeScheme(var AThemeScheme: TSharpEColorSet);
+
+function XmlColorToSchemeCode(AColor: integer): integer;
+function XmlSchemeCodeToColor(AColorCode: integer): integer;
+
+function XmlGetSkinColorByTag(ATag: string): TSharpESkinColor;
 
 implementation
+
+procedure XmlGetThemeList(var AThemeList: TThemeInfoSet);
+var
+  sThemeDir, sPreview: string;
+  xml: TJvSimpleXml;
+  i: Integer;
+  itm: TThemeInfo;
+  tmpStringList: TStringList;
+begin
+  sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
+
+  tmpStringList := TStringList.Create;
+  try
+
+  tmpStringList.CommaText := GetThemeListAsCommaText;
+
+  Setlength(AThemeList, 0);
+  for i := 0 to Pred(tmpStringList.Count) do begin
+    xml := TJvSimpleXML.Create(nil);
+    try
+      xml.LoadFromFile(tmpStringList[i]);
+
+      itm.Filename := tmpStringList[i];
+
+      itm.Name := XML.Root.Items.Value('Name', 'Invalid_Name');
+      itm.Author := XML.Root.Items.Value('Author', 'Invalid_Author');
+      itm.Comment := XML.Root.Items.Value('Comment', 'Invalid_Comment');
+      itm.Website := XML.Root.Items.Value('Website', 'Invalid_Website');
+      itm.ReadOnly := XML.Root.Items.BoolValue('ReadOnly', false);
+
+      sPreview := ExtractFilePath(tmpStringList[i]) + 'Preview.png';
+      if FileExists(sPreview) then
+        itm.Preview := sPreview
+      else
+        itm.Preview := '';
+
+      SetLength(AThemeList,length(AThemeList)+1);
+      AThemeList[High(AThemeList)] := itm;
+
+    finally
+      xml.Free;
+    end;
+  end;
+  finally
+    tmpStringList.Free;
+  end;
+
+end;
+
+procedure XmlGetThemeScheme(var AThemeScheme: TSharpEColorSet);
+var
+  XML: TJvSimpleXML;
+  i,j, ItemCount, Index: Integer;
+  tmpRec: TSharpESkinColor;
+  sFile, sTag, sCurScheme: string;
+  tmpColor: string;
+  s: string;
+
+  sScheme, sTheme, sSkin: string;
+  sSkinDir, sSchemeDir: string;
+begin
+  Index := 0;
+
+  sTheme := XmlGetTheme;
+  sCurScheme := XmlGetScheme(sTheme);
+  sSkin := XmlGetSkin(sTheme);
+
+  sSkinDir := GetSharpeDirectory + SKINS_DIRECTORY + '\' + sSkin + '\';
+  sSchemeDir := sSkinDir + SKINS_SCHEME_DIRECTORY + '\';
+
+  XML := TJvSimpleXML.Create(nil);
+  try
+  
+    // Get Scheme Colors
+    Setlength(AThemeScheme, 0);
+    XML.Root.Clear;
+
+      XML.LoadFromFile(sSkinDir + SCHEME_FILE);
+      for i := 0 to Pred(XML.Root.Items.Count) do begin
+
+        SetLength(AThemeScheme,length(AThemeScheme)+1);
+        tmpRec := AThemeScheme[i];
+
+        with XML.Root.Items.Item[i].Items do begin
+          tmpRec.Name := Value('name', '');
+          tmpRec.Tag := Value('tag', '');
+          tmpRec.Info := Value('info', '');
+          tmpRec.Color := ParseColor(PChar(Value('Default', '0')));
+          s := Value('type', 'color');
+          if CompareText(s, 'boolean') = 0 then
+            tmpRec.schemetype := stBoolean
+          else if CompareText(s, 'integer') = 0 then
+            tmpRec.schemetype := stInteger
+          else
+            tmpRec.schemetype := stColor;
+        end;
+
+        AThemeScheme[i] := tmpRec;
+      end;
+
+    sFile := sSchemeDir + sCurScheme + '.xml';
+    if FileExists(sFile) then begin
+        XML.LoadFromFile(sFile);
+
+        for i := 0 to Pred(XML.Root.Items.Count) do
+          with XML.Root.Items.Item[i].Items do begin
+            sTag := Value('tag', '');
+            tmpColor := Value('color', inttostr(AThemeScheme[Index].Color));
+
+            for j := 0 to high(AThemeScheme) do begin
+              if CompareText(AThemeScheme[j].Tag,sTag) = 0 then begin
+                AThemeScheme[j].Color := ParseColor(PChar(tmpColor)); 
+                break; 
+              end; 
+            end;              
+          end;
+    end;
+  finally
+    XML.Free;
+  end;
+end;
+
+function XmlColorToSchemeCode(AColor: integer): integer;
+var
+  n: integer;
+  colors: TSharpEColorSet;
+begin
+  XmlGetThemeScheme(colors);
+
+  for n := 0 to High(colors) do
+    if colors[n].Color = AColor then begin
+      result := -n - 1;
+      exit;
+    end;
+  result := AColor;
+end;
+
+function XmlSchemeCodeToColor(AColorCode: integer): integer;
+var
+  n: integer;
+  colors: TSharpEColorSet;
+begin
+  XmlGetThemeScheme(colors);
+
+  result := -1;
+  if AColorCode < 0 then begin
+    if abs(AColorCode) <= length(colors) then
+      result := colors[abs(AColorCode) - 1].Color;
+  end
+  else
+    result := AColorCode;
+end;
+
+function XmlGetSkinColorByTag(ATag: string): TSharpESkinColor;
+var
+  n: integer;
+  colors: TSharpEColorSet;
+  tmpColor: TSharpESkinColor;
+begin
+  XmlGetThemeScheme(colors);
+  Try
+
+  for n := 0 to High(colors) do
+    if CompareText(colors[n].Tag, ATag) = 0 then begin
+      tmpColor := colors[n];
+      exit;
+    end;
+  Finally
+    result := tmpColor;
+  End;
+  
+end;
+
 
 end.

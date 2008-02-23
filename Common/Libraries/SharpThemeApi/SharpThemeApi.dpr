@@ -34,21 +34,23 @@ uses
   GR32,
   Graphics,
   JclStrings,
+  JclFileUtils,
+  SharpUtil in '..\SharpUtil\SharpUtil.pas',
   SharpAPI in '..\SharpAPI\SharpAPI.pas';
 
 type
-  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,
-                tpDesktopAnimation,tpWallpaper,tpSkinFont);
+  TThemePart = (tpSkin, tpScheme, tpInfo, tpIconSet, tpDesktopIcon,
+    tpDesktopAnimation, tpWallpaper, tpSkinFont);
   TThemeParts = set of TThemePart;
 
-  TSharpESchemeType = (stColor,stBoolean,stInteger);
+  TSharpESchemeType = (stColor, stBoolean, stInteger);
 
   TSharpESkinColor = record
     Name: string;
     Tag: string;
     Info: string;
     Color: integer;
-    schemetype : TSharpESchemeType;
+    schemetype: TSharpESchemeType;
   end;
 
   TSharpEColorSet = array of TSharpESkinColor;
@@ -58,79 +60,78 @@ type
     Tag: string;
   end;
 
-  TThemeWallpaperGradientType = (twgtHoriz,twgtVert,twgtTSHoriz,twgtTSVert);
-  TThemeWallpaperSize = (twsCenter,twsScale,twsStretch,twsTile);
-  TThemeWallpaper  = record
-    Name            : String;
-    Image           : String;
-    Color           : integer;
-    Alpha           : integer;
-    Size            : TThemeWallpaperSize;
-    ColorChange     : boolean;
-    Hue             : integer;
-    Saturation      : integer;
-    Lightness       : integer;
-    Gradient        : boolean;
-    GradientType    : TThemeWallpaperGradientType;
-    GDStartColor    : integer;
-    GDStartAlpha    : integer;
-    GDEndColor      : integer;
-    GDEndAlpha      : integer;
-    MirrorHoriz     : boolean;
-    MirrorVert      : boolean;
+  TThemeWallpaperGradientType = (twgtHoriz, twgtVert, twgtTSHoriz, twgtTSVert);
+  TThemeWallpaperSize = (twsCenter, twsScale, twsStretch, twsTile);
+  TThemeWallpaper = record
+    Name: string;
+    Image: string;
+    Color: integer;
+    Alpha: integer;
+    Size: TThemeWallpaperSize;
+    ColorChange: boolean;
+    Hue: integer;
+    Saturation: integer;
+    Lightness: integer;
+    Gradient: boolean;
+    GradientType: TThemeWallpaperGradientType;
+    GDStartColor: integer;
+    GDStartAlpha: integer;
+    GDEndColor: integer;
+    GDEndAlpha: integer;
+    MirrorHoriz: boolean;
+    MirrorVert: boolean;
   end;
   TWallpaperMonitor = record
-                        Name : String;
-                        ID   : integer; 
-                      end;
+    Name: string;
+    ID: integer;
+  end;
 
   TThemeWallpapers = array of TThemeWallpaper;
   TMonitorWallpapers = array of TWallpaperMonitor;
 
-
   TThemeDesktopAnim = record
-    LastUpdate      : Int64;
-    UseAnimations   : boolean;
-    Scale           : boolean;
-    ScaleValue      : integer;
-    Alpha           : boolean;
-    AlphaValue      : integer;
-    Blend           : boolean;
-    BlendValue      : integer;
-    BlendColor      : integer;
-    Brightness      : boolean;
-    BrightnessValue : integer;
+    LastUpdate: Int64;
+    UseAnimations: boolean;
+    Scale: boolean;
+    ScaleValue: integer;
+    Alpha: boolean;
+    AlphaValue: integer;
+    Blend: boolean;
+    BlendValue: integer;
+    BlendColor: integer;
+    Brightness: boolean;
+    BrightnessValue: integer;
   end;
 
   TThemeDesktopIcon = record
-    LastUpdate      : Int64;
-    IconSize        : integer;
-    IconAlphaBlend  : boolean;
-    IconAlpha       : integer;
-    IconBlending    : boolean;
-    IconBlendColor  : integer;
-    IconBlendAlpha  : integer;
-    IconShadow      : boolean;
-    IconShadowColor : integer;
-    IconShadowAlpha : integer;
-    FontName        : String;
-    TextSize        : integer;
-    TextBold        : boolean;
-    TextItalic      : boolean;
-    TextUnderline   : boolean;
-    TextColor       : integer;
-    TextAlpha       : boolean;
-    TextAlphaValue  : integer;
-    TextShadow      : boolean;
-    TextShadowAlpha : integer;
-    TextShadowColor : integer;
-    TextShadowType  : integer;
-    TextShadowSize  : integer;
-    DisplayText     : boolean;
+    LastUpdate: Int64;
+    IconSize: integer;
+    IconAlphaBlend: boolean;
+    IconAlpha: integer;
+    IconBlending: boolean;
+    IconBlendColor: integer;
+    IconBlendAlpha: integer;
+    IconShadow: boolean;
+    IconShadowColor: integer;
+    IconShadowAlpha: integer;
+    FontName: string;
+    TextSize: integer;
+    TextBold: boolean;
+    TextItalic: boolean;
+    TextUnderline: boolean;
+    TextColor: integer;
+    TextAlpha: boolean;
+    TextAlphaValue: integer;
+    TextShadow: boolean;
+    TextShadowAlpha: integer;
+    TextShadowColor: integer;
+    TextShadowType: integer;
+    TextShadowSize: integer;
+    DisplayText: boolean;
   end;
 
   TThemeIconSet = record
-    LastUpdate : Int64;
+    LastUpdate: Int64;
     Name: string;
     Author: string;
     Website: string;
@@ -139,41 +140,41 @@ type
   end;
 
   TThemeSkin = record
-    LastUpdate : Int64;
+    LastUpdate: Int64;
     Name: string;
     Scheme: string;
     Directory: string;
     GEBlurRadius: integer;
     GEBlurIterations: integer;
-    GEBlend      : boolean; 
-    GEBlendColor : integer;
-    GEBlendAlpha : integer;
-    GELighten    : boolean;
-    GELightenAmount : integer;
+    GEBlend: boolean;
+    GEBlendColor: integer;
+    GEBlendAlpha: integer;
+    GELighten: boolean;
+    GELightenAmount: integer;
   end;
 
   TThemeSkinFont = record
-    LastUpdate : Int64;
-    ModSize          : boolean;
-    ModName          : boolean;
-    ModAlpha         : boolean;
-    ModUseShadow     : boolean;
-    ModShadowType    : boolean;
-    ModShadowAlpha   : boolean;
-    ModBold          : boolean;
-    ModItalic        : boolean;
-    ModUnderline     : boolean;
-    ModClearType     : boolean;
-    ValueSize        : integer;
-    ValueName        : String;
-    ValueAlpha       : integer;
-    ValueUseShadow   : boolean;
-    ValueShadowType  : integer;
-    ValueShadowAlpha : integer;
-    ValueBold        : boolean;
-    ValueItalic      : boolean;
-    ValueUnderline   : boolean;
-    ValueClearType   : Boolean;
+    LastUpdate: Int64;
+    ModSize: boolean;
+    ModName: boolean;
+    ModAlpha: boolean;
+    ModUseShadow: boolean;
+    ModShadowType: boolean;
+    ModShadowAlpha: boolean;
+    ModBold: boolean;
+    ModItalic: boolean;
+    ModUnderline: boolean;
+    ModClearType: boolean;
+    ValueSize: integer;
+    ValueName: string;
+    ValueAlpha: integer;
+    ValueUseShadow: boolean;
+    ValueShadowType: integer;
+    ValueShadowAlpha: integer;
+    ValueBold: boolean;
+    ValueItalic: boolean;
+    ValueUnderline: boolean;
+    ValueClearType: Boolean;
   end;
 
   TThemeData = record
@@ -182,15 +183,20 @@ type
   end;
 
   TThemeInfo = record
-    LastUpdate : Int64;
+    LastUpdate: Int64;
     Name: string;
     Author: string;
     Comment: string;
     Website: string;
+
+    Filename: string;
+    Preview: string;
+    Readonly: boolean;
   end;
+  TThemeInfos = array of TThemeInfo;
 
   TThemeScheme = record
-    LastUpdate : Int64;
+    LastUpdate: Int64;
     Name: string;
     Colors: TSharpEColorSet;
   end;
@@ -202,11 +208,11 @@ type
     Skin: TThemeSkin;
     SkinFont: TThemeSkinFont;
     IconSet: TThemeIconSet;
-    DesktopIcon : TThemeDesktopIcon;
-    DesktopAnim : TThemeDesktopAnim;
-    Wallpapers : TThemeWallpapers;
-    WallpapresLastUpdate : Int64;
-    MonitorWallpapers : TMonitorWallpapers;
+    DesktopIcon: TThemeDesktopIcon;
+    DesktopAnim: TThemeDesktopAnim;
+    Wallpapers: TThemeWallpapers;
+    WallpapresLastUpdate: Int64;
+    MonitorWallpapers: TMonitorWallpapers;
   end;
 
 var
@@ -235,8 +241,8 @@ const
   WALLPAPER_FILE = 'Wallpaper.xml';
   SKINFONT_FILE = 'Font.xml';
 
-  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,
-                     tpDesktopAnimation,tpWallpaper,tpSkinFont];
+  ALL_THEME_PARTS = [tpSkin, tpScheme, tpInfo, tpIconSet, tpDesktopIcon,
+    tpDesktopAnimation, tpWallpaper, tpSkinFont];
 
   // ##########################################
   //   COLOR CONVERTING
@@ -253,8 +259,8 @@ var
   c: Integer;
   col: Integer;
   col32: TColor32;
-  n : integer;
-  sIdent: String;
+  n: integer;
+  sIdent: string;
 
   function CMYKtoColor(C, M, Y, K: integer): TColor;
   var
@@ -336,20 +342,20 @@ begin
   iStart := Pos('(', AColorStr);
   iEnd := Pos(')', AColorStr);
 
-  if (iStart = 0) or (iEnd = 0) then
-  begin
+  if (iStart = 0) or (iEnd = 0) then begin
     // try to convert
-    if TryStrToInt(AColorStr,n) then begin
+    if TryStrToInt(AColorStr, n) then begin
       result := n;
       exit;
     end
-    else
-    begin
-        sIdent := AColorStr;
-        bIdent := IdentToColor(sIdent,col);
-        if bIdent then result := StringToColor(AColorStr) else
+    else begin
+      sIdent := AColorStr;
+      bIdent := IdentToColor(sIdent, col);
+      if bIdent then
+        result := StringToColor(AColorStr)
+      else
         result := -1;
-        exit;
+      exit;
     end;
   end;
 
@@ -455,8 +461,7 @@ end;
 function SchemeCodeToColor(pCode: integer): integer;
 begin
   result := -1;
-  if pCode < 0 then
-  begin
+  if pCode < 0 then begin
     if abs(pCode) <= length(Theme.Scheme.Colors) then
       result := Theme.Scheme.Colors[abs(pCode) - 1].Color;
   end
@@ -469,8 +474,7 @@ var
   n: integer;
 begin
   for n := 0 to High(Theme.Scheme.Colors) do
-    if Theme.Scheme.Colors[n].Color = pColor then
-    begin
+    if Theme.Scheme.Colors[n].Color = pColor then begin
       result := -n - 1;
       exit;
     end;
@@ -490,11 +494,10 @@ begin
     XML.Root.Name := 'SharpEUserSettings';
     XML.Root.Items.Clear;
     XML.Root.Items.Add('Theme', 'Default');
-    
+
     // fix for svn... only save if SharpCore.exe is in the path so that the SharpE
     // path really is correct.
-    if FileExists(SharpApi.GetSharpeDirectory + 'SharpCore.exe') then
-    begin
+    if FileExists(SharpApi.GetSharpeDirectory + 'SharpCore.exe') then begin
       ForceDirectories(SharpApi.GetSharpeUserSettingsPath);
       XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + SHARPE_USER_SETTINGS);
     end;
@@ -542,29 +545,28 @@ end;
 
 procedure SetThemeSkinFontDefault;
 begin
-  with Theme.SkinFont do
-  begin
-    LastUpdate       := 0;
-    ModSize          := False;
-    ModName          := False;
-    ModAlpha         := False;
-    ModUseShadow     := False;
-    ModShadowType    := False;
-    ModShadowAlpha   := False;
-    ModBold          := False;
-    ModItalic        := False;
-    ModUnderline     := False;
-    ModClearType     := False;
-    ValueSize        := 10;
-    ValueName        := 'Verdana';
-    ValueAlpha       := 0;
-    ValueUseShadow   := True;
-    ValueShadowType  := 0;
+  with Theme.SkinFont do begin
+    LastUpdate := 0;
+    ModSize := False;
+    ModName := False;
+    ModAlpha := False;
+    ModUseShadow := False;
+    ModShadowType := False;
+    ModShadowAlpha := False;
+    ModBold := False;
+    ModItalic := False;
+    ModUnderline := False;
+    ModClearType := False;
+    ValueSize := 10;
+    ValueName := 'Verdana';
+    ValueAlpha := 0;
+    ValueUseShadow := True;
+    ValueShadowType := 0;
     ValueShadowAlpha := 0;
-    ValueBold        := False;
-    ValueItalic      := False;
-    ValueUnderline   := False;
-    ValueClearType   := True;
+    ValueBold := False;
+    ValueItalic := False;
+    ValueUnderline := False;
+    ValueClearType := True;
   end;
 end;
 
@@ -608,76 +610,73 @@ end;
 
 procedure SetThemeDesktopIconDefault;
 begin
-  with Theme.DesktopIcon do
-  begin
-    IconSize        := 48;
-    IconAlphaBlend  := False;
-    IconAlpha       := 255;
-    IconBlending    := False;
-    IconBlendColor  := 0;
-    IconBlendAlpha  := 255;
-    IconShadow      := True;
+  with Theme.DesktopIcon do begin
+    IconSize := 48;
+    IconAlphaBlend := False;
+    IconAlpha := 255;
+    IconBlending := False;
+    IconBlendColor := 0;
+    IconBlendAlpha := 255;
+    IconShadow := True;
     IconShadowColor := 0;
     IconShadowAlpha := 128;
-    FontName        := 'Verdana';
-    TextSize        := 8;
-    TextBold        := False;
-    TextItalic      := False;
-    TextUnderline   := False;
-    TextColor       := 0;
-    TextAlpha       := False;
-    TextAlphaValue  := 255;
-    TextShadow      := False;
+    FontName := 'Verdana';
+    TextSize := 8;
+    TextBold := False;
+    TextItalic := False;
+    TextUnderline := False;
+    TextColor := 0;
+    TextAlpha := False;
+    TextAlphaValue := 255;
+    TextShadow := False;
     TextShadowAlpha := 255;
     TextShadowColor := 0;
-    TextShadowType  := 1;
-    TextShadowSize  := 1;
-    DisplayText     := True;
+    TextShadowType := 1;
+    TextShadowSize := 1;
+    DisplayText := True;
   end;
 end;
 
 procedure SetThemeDesktopAnimDefault;
 begin
-  with Theme.DesktopAnim do
-  begin
-    UseAnimations   := True;
-    Scale           := False;
-    ScaleValue      := 0;
-    Alpha           := True;
-    AlphaValue      := 128;
-    Blend           := True;
-    BlendValue      := 255;
-    BlendColor      := 11842737;
-    Brightness      := True;
+  with Theme.DesktopAnim do begin
+    UseAnimations := True;
+    Scale := False;
+    ScaleValue := 0;
+    Alpha := True;
+    AlphaValue := 128;
+    Blend := True;
+    BlendValue := 255;
+    BlendColor := 11842737;
+    Brightness := True;
     BrightnessValue := 25;
   end;
 end;
 
 procedure SetThemeWallpaperDefault;
 begin
-  setlength(Theme.Wallpapers,1);
-  setlength(Theme.MonitorWallpapers,1);
+  setlength(Theme.Wallpapers, 1);
+  setlength(Theme.MonitorWallpapers, 1);
   Theme.MonitorWallpapers[0].Name := 'Default';
   Theme.MonitorWallpapers[0].ID := -100;
-  with Theme.Wallpapers[0] do
-  begin
-    Name            := 'Default';
-    Image           := '';
-    Color           := 0;
-    Alpha           := 255;
-    Size            := twsScale;
-    ColorChange     := False;
-    Hue             := 0;
-    Saturation      := 0;
-    Lightness       := 0;
-    Gradient        := False;
-    GradientType    := twgtHoriz;
-    GDStartColor    := 0;
-    GDStartAlpha    := 0;
-    GDEndColor      := 0;
-    GDEndAlpha      := 0;
-    MirrorHoriz     := False;
-    MirrorVert      := False;
+  with Theme.Wallpapers[0] do begin
+    Name := 'Default';
+    Image := '';
+    Color := 0;
+    Alpha := 255;
+    Size := twsScale;
+    ColorChange := False;
+    Hue := 0;
+    Saturation := 0;
+    Lightness := 0;
+    Gradient := False;
+    GradientType := twgtHoriz;
+    GDStartColor := 0;
+    GDStartAlpha := 0;
+    GDEndColor := 0;
+    GDEndAlpha := 0;
+    MirrorHoriz := False;
+    MirrorVert := False;
   end;
 end;
 
@@ -687,7 +686,7 @@ end;
 
 procedure LoadThemeSkinFont;
 var
-  XML : TJvSimpleXML;
+  XML: TJvSimpleXML;
 begin
   SetThemeSkinFontDefault;
   if not FileExists(Theme.Data.Directory + SKINFONT_FILE) then
@@ -697,28 +696,27 @@ begin
   try
     XML.LoadFromFile(Theme.Data.Directory + SKINFONT_FILE);
     with XML.Root.Items do
-      with Theme.SkinFont do
-      begin
-        ModSize          := BoolValue('ModSize',ModSize);
-        ModName          := BoolValue('ModName',ModName);
-        ModAlpha         := BoolValue('ModAlpha',ModAlpha);
-        ModUseShadow     := BoolValue('ModUseShadow',ModUseShadow);
-        ModShadowType    := BoolValue('ModShadowType',ModShadowType);
-        ModShadowAlpha   := BoolValue('ModShadowAlpha',ModShadowAlpha);
-        ModBold          := BoolValue('ModBold',ModBold);
-        ModItalic        := BoolValue('ModItalic',ModItalic);
-        ModUnderline     := BoolValue('ModUnderline',ModUnderline);
-        ModClearType     := BoolValue('ModClearType',ModClearType);
-        ValueSize        := IntValue('ValueSize',ValueSize);
-        ValueName        := Value('ValueName',ValueName);
-        ValueAlpha       := IntValue('ValueAlpha',ValueAlpha);
-        ValueUseShadow   := BoolValue('ValueUseShadow',ValueUseShadow);
-        ValueShadowType  := IntValue('ValueShadowType',ValueShadowType);
-        ValueShadowAlpha := IntValue('ValueShadowAlpha',ValueShadowAlpha);
-        ValueBold        := BoolValue('ValueBold',ValueBold);
-        ValueItalic      := BoolValue('ValueItalic',ValueItalic);
-        ValueUnderline   := BoolValue('ValueUnderline',ValueUnderline);
-        ValueClearType   := BoolValue('ValueClearType',ValueClearType);
+      with Theme.SkinFont do begin
+        ModSize := BoolValue('ModSize', ModSize);
+        ModName := BoolValue('ModName', ModName);
+        ModAlpha := BoolValue('ModAlpha', ModAlpha);
+        ModUseShadow := BoolValue('ModUseShadow', ModUseShadow);
+        ModShadowType := BoolValue('ModShadowType', ModShadowType);
+        ModShadowAlpha := BoolValue('ModShadowAlpha', ModShadowAlpha);
+        ModBold := BoolValue('ModBold', ModBold);
+        ModItalic := BoolValue('ModItalic', ModItalic);
+        ModUnderline := BoolValue('ModUnderline', ModUnderline);
+        ModClearType := BoolValue('ModClearType', ModClearType);
+        ValueSize := IntValue('ValueSize', ValueSize);
+        ValueName := Value('ValueName', ValueName);
+        ValueAlpha := IntValue('ValueAlpha', ValueAlpha);
+        ValueUseShadow := BoolValue('ValueUseShadow', ValueUseShadow);
+        ValueShadowType := IntValue('ValueShadowType', ValueShadowType);
+        ValueShadowAlpha := IntValue('ValueShadowAlpha', ValueShadowAlpha);
+        ValueBold := BoolValue('ValueBold', ValueBold);
+        ValueItalic := BoolValue('ValueItalic', ValueItalic);
+        ValueUnderline := BoolValue('ValueUnderline', ValueUnderline);
+        ValueClearType := BoolValue('ValueClearType', ValueClearType);
       end;
   finally
     XML.Free;
@@ -749,8 +747,7 @@ begin
   end;
 
   if ((not DirectoryExists(Theme.IconSet.Directory))
-    or (not FileExists(Theme.IconSet.Directory + '\IconSet.xml'))) then
-  begin
+    or (not FileExists(Theme.IconSet.Directory + '\IconSet.xml'))) then begin
     SetThemeIconSetDefault;
     exit;
   end;
@@ -764,10 +761,8 @@ begin
       Theme.IconSet.Author := XML.Root.Items.Value('Author', '');
       Theme.IconSet.Website := XML.Root.Items.Value('Website', '');
       if XML.Root.Items.ItemNamed['Icons'] <> nil then
-        with XML.Root.Items.ItemNamed['Icons'].Items do
-        begin
-          for n := 0 to Count - 1 do
-          begin
+        with XML.Root.Items.ItemNamed['Icons'].Items do begin
+          for n := 0 to Count - 1 do begin
             setlength(Theme.IconSet.Icons, length(Theme.IconSet.Icons) + 1);
             Theme.IconSet.Icons[High(Theme.IconSet.Icons)].Tag := Item[n].Items.Value('Name', '');
             Theme.IconSet.Icons[High(Theme.IconSet.Icons)].FileName := Item[n].Items.Value('File', '');
@@ -794,20 +789,18 @@ begin
   XML := TJvSimpleXML.Create(nil);
   try
     // Get Scheme Name
-    if FileExists(Theme.Data.Directory + SKIN_FILE) then
-    begin
+    if FileExists(Theme.Data.Directory + SKIN_FILE) then begin
       try
         XML.LoadFromFile(Theme.Data.Directory + SKIN_FILE);
-        with XML.Root.Items do
-        begin
+        with XML.Root.Items do begin
           sCurSkin := Value('skin', 'default');
-          Theme.Skin.GEBlurRadius     := IntValue('GEBlurRadius',Theme.Skin.GEBlurRadius);
-          Theme.Skin.GEBlurIterations := IntValue('GEBlurIterations',Theme.Skin.GEBlurIterations);
-          Theme.Skin.GEBlend          := BoolValue('GEBlend',Theme.Skin.GEBlend);
-          Theme.Skin.GEBlendColor     := IntValue('GEBlendColor',Theme.Skin.GEBlendColor);
-          Theme.Skin.GEBlendAlpha     := IntValue('GEBlendAlpha',Theme.Skin.GEBlendAlpha);
-          Theme.Skin.GELighten        := BoolValue('GELighten',Theme.Skin.GELighten);
-          Theme.Skin.GELightenAmount  := IntValue('GELightenAmount',Theme.Skin.GELightenAmount);
+          Theme.Skin.GEBlurRadius := IntValue('GEBlurRadius', Theme.Skin.GEBlurRadius);
+          Theme.Skin.GEBlurIterations := IntValue('GEBlurIterations', Theme.Skin.GEBlurIterations);
+          Theme.Skin.GEBlend := BoolValue('GEBlend', Theme.Skin.GEBlend);
+          Theme.Skin.GEBlendColor := IntValue('GEBlendColor', Theme.Skin.GEBlendColor);
+          Theme.Skin.GEBlendAlpha := IntValue('GEBlendAlpha', Theme.Skin.GEBlendAlpha);
+          Theme.Skin.GELighten := BoolValue('GELighten', Theme.Skin.GELighten);
+          Theme.Skin.GELightenAmount := IntValue('GELightenAmount', Theme.Skin.GELightenAmount);
         end;
       except
         sCurSkin := 'default';
@@ -818,8 +811,7 @@ begin
       else
         sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\';
     end
-    else
-    begin
+    else begin
       if DirectoryExists(SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\') then
         sSkinDir := SharpApi.GetSharpeDirectory + SKINS_DIRECTORY + '\' + 'SharpE' + '\'
       else
@@ -842,7 +834,7 @@ var
   tmpRec: TSharpESkinColor;
   sFile, sTag, sCurScheme: string;
   tmpColor: string;
-  s : String;
+  s: string;
 begin
   Index := 0;
 
@@ -854,8 +846,7 @@ begin
   try
     // Get Scheme Name
     sCurScheme := 'default';
-    if FileExists(Theme.Data.Directory + SCHEME_FILE) then
-    begin
+    if FileExists(Theme.Data.Directory + SCHEME_FILE) then begin
       try
         Xml.LoadFromFile(Theme.Data.Directory + SCHEME_FILE);
         sCurScheme := XML.Root.Items.Value('scheme', 'default');
@@ -870,24 +861,23 @@ begin
     XML.Root.Clear;
     try
       XML.LoadFromFile(Theme.Skin.Directory + SCHEME_FILE);
-      for i := 0 to Pred(XML.Root.Items.Count) do
-      begin
+      for i := 0 to Pred(XML.Root.Items.Count) do begin
         ItemCount := high(Theme.Scheme.Colors);
         SetLength(Theme.Scheme.Colors, ItemCount + 2);
         tmpRec := Theme.Scheme.Colors[ItemCount + 1];
 
-        with XML.Root.Items.Item[i].Items do
-        begin
+        with XML.Root.Items.Item[i].Items do begin
           tmpRec.Name := Value('name', '');
           tmpRec.Tag := Value('tag', '');
           tmpRec.Info := Value('info', '');
           tmpRec.Color := ParseColor(PChar(Value('Default', '0')));
-          s := Value('type','color');
-          if CompareText(s,'boolean') = 0 then
-             tmpRec.schemetype := stBoolean
-             else if CompareText(s,'integer') = 0 then
-                  tmpRec.schemetype := stInteger
-                  else tmpRec.schemetype := stColor;
+          s := Value('type', 'color');
+          if CompareText(s, 'boolean') = 0 then
+            tmpRec.schemetype := stBoolean
+          else if CompareText(s, 'integer') = 0 then
+            tmpRec.schemetype := stInteger
+          else
+            tmpRec.schemetype := stColor;
         end;
         Theme.Scheme.Colors[ItemCount + 1] := tmpRec;
       end;
@@ -895,20 +885,21 @@ begin
     end;
 
     sFile := Theme.Skin.Directory + SKINS_SCHEME_DIRECTORY + '\' + sCurScheme + '.xml';
-    if FileExists(sFile) then
-    begin
+    if FileExists(sFile) then begin
       try
         XML.LoadFromFile(sFile);
 
         for i := 0 to Pred(XML.Root.Items.Count) do
-          with XML.Root.Items.Item[i].Items do
-          begin
+          with XML.Root.Items.Item[i].Items do begin
             sTag := Value('tag', '');
             tmpColor := Value('color', inttostr(Theme.Scheme.Colors[Index].Color));
 
             Index := GetSchemeColorIndexByTag(pchar(sTag));
-            if Index >= 0 then
+            if Index >= 0 then begin
+              if strtoint(tmpColor) < 0 then
+              Theme.Scheme.Colors[Index].Color := SchemeCodeToColor(strtoint(tmpColor)) else
               Theme.Scheme.Colors[Index].Color := ParseColor(PChar(tmpColor));
+            end;
           end;
       except
       end;
@@ -931,8 +922,7 @@ begin
   try
     try
       XML.LoadFromFile(Theme.Data.Directory + THEME_INFO_FILE);
-      with XML.Root.Items do
-      begin
+      with XML.Root.Items do begin
         Theme.Info.Name := Value('Name', 'Default');
         Theme.Info.Author := Value('Author', '');
         Theme.Info.Comment := Value('Comment', 'Default SharpE Theme');
@@ -949,7 +939,7 @@ end;
 
 procedure LoadThemeDesktopIcon;
 var
-  XML : TJvSimpleXML;
+  XML: TJvSimpleXML;
 begin
   SetThemeDesktopIconDefault;
   if not FileExists(Theme.Data.Directory + DESKTOPICON_FILE) then
@@ -960,32 +950,31 @@ begin
     try
       XML.LoadFromFile(Theme.Data.Directory + DESKTOPICON_FILE);
       with XML.Root.Items do
-      with Theme.DesktopIcon do
-      begin
-        IconSize        := IntValue('IconSize',IconSize);
-        IconAlphaBlend  := BoolValue('IconAlphaBlend',IconAlphaBlend);
-        IconAlpha       := IntValue('IconAlpha',IconAlpha);
-        IconBlending    := BoolValue('IconBlending',IconBlending);
-        IconBlendColor  := IntValue('IconBlendColor',IconBlendColor);
-        IconBlendAlpha  := IntValue('IconBlendAlpha',IconBlendAlpha);
-        IconShadow      := BoolValue('IconShadow',IconShadow);
-        IconShadowColor := IntValue('IconShadowColor',IconShadowColor);
-        IconShadowAlpha := IntValue('IconShadowAlpha',IconShadowAlpha);
-        FontName        := Value('FontName',FontName);
-        TextSize        := IntValue('TextSize',TextSize);
-        TextBold        := BoolValue('TextBold',TextBold);
-        TextItalic      := BoolValue('TextItalic',TextItalic);
-        TextUnderline   := BoolValue('TextUnderline',TextUnderline);
-        TextColor       := IntValue('TextColor',TextColor);
-        TextAlpha       := BoolValue('TextAlpha',TextAlpha);
-        TextAlphaValue  := IntValue('TextAlphaValue',TextAlphaValue);
-        TextShadow      := BoolValue('TextShadow',TextShadow);
-        TextShadowAlpha := IntValue('TextShadowAlpha',TextShadowAlpha);
-        TextShadowColor := IntValue('TextShadowColor',TextShadowColor);
-        TextShadowType  := IntValue('TextShadowType',TextShadowType);
-        TextShadowSize  := IntValue('TextShadowSize',TextShadowSize);
-        DisplayText     := BoolValue('DisplayText',DisplayText);
-      end;
+        with Theme.DesktopIcon do begin
+          IconSize := IntValue('IconSize', IconSize);
+          IconAlphaBlend := BoolValue('IconAlphaBlend', IconAlphaBlend);
+          IconAlpha := IntValue('IconAlpha', IconAlpha);
+          IconBlending := BoolValue('IconBlending', IconBlending);
+          IconBlendColor := IntValue('IconBlendColor', IconBlendColor);
+          IconBlendAlpha := IntValue('IconBlendAlpha', IconBlendAlpha);
+          IconShadow := BoolValue('IconShadow', IconShadow);
+          IconShadowColor := IntValue('IconShadowColor', IconShadowColor);
+          IconShadowAlpha := IntValue('IconShadowAlpha', IconShadowAlpha);
+          FontName := Value('FontName', FontName);
+          TextSize := IntValue('TextSize', TextSize);
+          TextBold := BoolValue('TextBold', TextBold);
+          TextItalic := BoolValue('TextItalic', TextItalic);
+          TextUnderline := BoolValue('TextUnderline', TextUnderline);
+          TextColor := IntValue('TextColor', TextColor);
+          TextAlpha := BoolValue('TextAlpha', TextAlpha);
+          TextAlphaValue := IntValue('TextAlphaValue', TextAlphaValue);
+          TextShadow := BoolValue('TextShadow', TextShadow);
+          TextShadowAlpha := IntValue('TextShadowAlpha', TextShadowAlpha);
+          TextShadowColor := IntValue('TextShadowColor', TextShadowColor);
+          TextShadowType := IntValue('TextShadowType', TextShadowType);
+          TextShadowSize := IntValue('TextShadowSize', TextShadowSize);
+          DisplayText := BoolValue('DisplayText', DisplayText);
+        end;
     except
       SetThemeDesktopIconDefault;
     end;
@@ -997,7 +986,7 @@ end;
 
 procedure LoadThemeDesktopAnim;
 var
-  XML : TJvSimpleXML;
+  XML: TJvSimpleXML;
 begin
   SetThemeDesktopAnimDefault;
   if not FileExists(Theme.Data.Directory + DESKTOPANIM_FILE) then
@@ -1008,19 +997,18 @@ begin
     try
       XML.LoadFromFile(Theme.Data.Directory + DESKTOPANIM_FILE);
       with XML.Root.Items do
-      with Theme.DesktopAnim do
-      begin
-        UseAnimations   := BoolValue('UseAnimations',UseAnimations);
-        Scale           := BoolValue('Scale',Scale);
-        ScaleValue      := IntValue('ScaleValue',ScaleValue);
-        Alpha           := BoolValue('Alpha',Alpha);
-        AlphaValue      := IntValue('AlphaValue',AlphaValue);
-        Blend           := BoolValue('Blend',Blend);
-        BlendValue      := IntValue('BlendValue',BlendValue);
-        BlendColor      := IntValue('BlendColor',BlendColor);
-        Brightness      := BoolValue('Brightness',Brightness);
-        BrightnessValue := IntValue('BrightnessValue',BrightnessValue);
-      end;
+        with Theme.DesktopAnim do begin
+          UseAnimations := BoolValue('UseAnimations', UseAnimations);
+          Scale := BoolValue('Scale', Scale);
+          ScaleValue := IntValue('ScaleValue', ScaleValue);
+          Alpha := BoolValue('Alpha', Alpha);
+          AlphaValue := IntValue('AlphaValue', AlphaValue);
+          Blend := BoolValue('Blend', Blend);
+          BlendValue := IntValue('BlendValue', BlendValue);
+          BlendColor := IntValue('BlendColor', BlendColor);
+          Brightness := BoolValue('Brightness', Brightness);
+          BrightnessValue := IntValue('BrightnessValue', BrightnessValue);
+        end;
     except
       SetThemeDesktopAnimDefault;
     end;
@@ -1032,65 +1020,64 @@ end;
 
 procedure LoadThemeWallpaper;
 var
-  XML : TJvSimpleXML;
-  n,i : integer;
+  XML: TJvSimpleXML;
+  n, i: integer;
 begin
   SetThemeWallpaperDefault;
   if not (FileExists(Theme.Data.Directory + WALLPAPER_FILE)) then
-     exit;
+    exit;
 
   XML := TJvSimpleXML.Create(nil);
   try
     try
       XML.LoadFromFile(Theme.Data.Directory + WALLPAPER_FILE);
       if XML.Root.Items.ItemNamed['Wallpapers'] <> nil then
-         for n := 0 to XML.Root.Items.ItemNamed['Wallpapers'].Items.Count - 1 do
-             with XML.Root.Items.ItemNamed['Wallpapers'].Items.Item[n].Items do
-             begin
-               if n <> 0 then
-                  setlength(Theme.Wallpapers,length(Theme.Wallpapers)+1);
-               with Theme.Wallpapers[High(Theme.Wallpapers)] do
-               begin
-                Name            := Value('Name',Name);
-                Image           := Value('Image',Image);
-                Color           := IntValue('Color',Color);
-                Alpha           := IntValue('Alpha',Alpha);
-                i               := IntValue('Size',0);
-                case i of
-                  0: Size := twsCenter;
-                  2: Size := twsStretch;
-                  3: Size := twsTile;
-                  else Size := twsScale;
-                 end;
-                 ColorChange     := BoolValue('ColorChange',ColorChange);
-                 Hue             := IntValue('Hue',Hue);
-                 Saturation      := IntValue('Saturation',Saturation);
-                 Lightness       := IntValue('Lightness',Lightness);
-                 Gradient        := BoolValue('Gradient',Gradient);
-                 i               := IntValue('GradientType',0);
-                 case i of
-                   1: GradientType := twgtVert;
-                   2: GradientType := twgtTSHoriz;
-                   3: GradientType := twgtTSVert
-                   else GradientType := twgtHoriz;
-                 end;
-                 GDStartColor    := IntValue('GDStartColor',GDStartColor);
-                 GDStartAlpha    := IntValue('GDStartAlpha',GDStartAlpha);
-                 GDEndColor      := IntValue('GDEndColor',GDEndColor);
-                 GDEndAlpha      := IntValue('GDEndAlpha',GDEndAlpha);
-                 MirrorHoriz     := BoolValue('MirrorHoriz',MirrorHoriz);
-                 MirrorVert      := BoolValue('MirrorVert',MirrorVert);
-               end;
-             end;
+        for n := 0 to XML.Root.Items.ItemNamed['Wallpapers'].Items.Count - 1 do
+          with XML.Root.Items.ItemNamed['Wallpapers'].Items.Item[n].Items do begin
+            if n <> 0 then
+              setlength(Theme.Wallpapers, length(Theme.Wallpapers) + 1);
+            with Theme.Wallpapers[High(Theme.Wallpapers)] do begin
+              Name := Value('Name', Name);
+              Image := Value('Image', Image);
+              Color := IntValue('Color', Color);
+              Alpha := IntValue('Alpha', Alpha);
+              i := IntValue('Size', 0);
+              case i of
+                0: Size := twsCenter;
+                2: Size := twsStretch;
+                3: Size := twsTile;
+              else
+                Size := twsScale;
+              end;
+              ColorChange := BoolValue('ColorChange', ColorChange);
+              Hue := IntValue('Hue', Hue);
+              Saturation := IntValue('Saturation', Saturation);
+              Lightness := IntValue('Lightness', Lightness);
+              Gradient := BoolValue('Gradient', Gradient);
+              i := IntValue('GradientType', 0);
+              case i of
+                1: GradientType := twgtVert;
+                2: GradientType := twgtTSHoriz;
+                3: GradientType := twgtTSVert
+              else
+                GradientType := twgtHoriz;
+              end;
+              GDStartColor := IntValue('GDStartColor', GDStartColor);
+              GDStartAlpha := IntValue('GDStartAlpha', GDStartAlpha);
+              GDEndColor := IntValue('GDEndColor', GDEndColor);
+              GDEndAlpha := IntValue('GDEndAlpha', GDEndAlpha);
+              MirrorHoriz := BoolValue('MirrorHoriz', MirrorHoriz);
+              MirrorVert := BoolValue('MirrorVert', MirrorVert);
+            end;
+          end;
       if XML.Root.Items.ItemNamed['Monitors'] <> nil then
-         for n := 0 to XML.Root.Items.ItemNamed['Monitors'].Items.Count - 1 do
-             with XML.Root.Items.ItemNamed['Monitors'].Items.Item[n].Items do
-             begin
-               if n <> 0 then
-                  setlength(Theme.MonitorWallpapers,length(Theme.MonitorWallpapers)+1);
-               Theme.MonitorWallpapers[High(Theme.MonitorWallpapers)].Name := Value('Name','Default');
-               Theme.MonitorWallpapers[High(Theme.MonitorWallpapers)].ID := IntValue('ID',-100);
-             end;
+        for n := 0 to XML.Root.Items.ItemNamed['Monitors'].Items.Count - 1 do
+          with XML.Root.Items.ItemNamed['Monitors'].Items.Item[n].Items do begin
+            if n <> 0 then
+              setlength(Theme.MonitorWallpapers, length(Theme.MonitorWallpapers) + 1);
+            Theme.MonitorWallpapers[High(Theme.MonitorWallpapers)].Name := Value('Name', 'Default');
+            Theme.MonitorWallpapers[High(Theme.MonitorWallpapers)].ID := IntValue('ID', -100);
+          end;
     except
       SetThemeWallpaperDefault;
     end;
@@ -1190,7 +1177,7 @@ begin
   result := Theme.Skin.GELightenAmount
 end;
 
-function GetSkinDirectory : PChar;
+function GetSkinDirectory: PChar;
 begin
   result := PChar(Theme.Skin.Directory);
 end;
@@ -1207,8 +1194,7 @@ end;
 
 function GetSkinColor(pIndex: integer): TSharpESkinColor;
 begin
-  if pIndex > GetSkinColorCount - 1 then
-  begin
+  if pIndex > GetSkinColorCount - 1 then begin
     result.Name := '';
     result.Tag := '';
     result.Color := 0;
@@ -1226,7 +1212,7 @@ end;
 //      EXPORT: THEME SCHEME
 // ##########################################
 
-function GetSchemeDirectory : PChar;
+function GetSchemeDirectory: PChar;
 begin
   rtemp := GetSkinDirectory + SKINS_SCHEME_DIRECTORY + '\';
   result := PChar(rtemp);
@@ -1268,8 +1254,7 @@ end;
 
 function GetIconSetIconByIndex(pIndex: integer): TSharpEIcon;
 begin
-  if pIndex > GetIconSetIconsCount - 1 then
-  begin
+  if pIndex > GetIconSetIconsCount - 1 then begin
     result.FileName := '';
     result.Tag := '';
     exit;
@@ -1284,8 +1269,7 @@ var
   n: integer;
 begin
   for n := 0 to GetIconSetIconsCount - 1 do
-    if Theme.IconSet.Icons[n].Tag = pTag then
-    begin
+    if Theme.IconSet.Icons[n].Tag = pTag then begin
       result.FileName := Theme.IconSet.Icons[n].FileName;
       result.Tag := Theme.IconSet.Icons[n].Tag;
       exit;
@@ -1301,64 +1285,62 @@ var
 begin
   result := False;
   for n := 0 to GetIconSetIconsCount - 1 do
-    if Theme.IconSet.Icons[n].Tag = pTag then
-    begin
+    if Theme.IconSet.Icons[n].Tag = pTag then begin
       result := True;
       exit;
     end;
 end;
 
-
 // ##########################################
 //      EXPORT: Desktop Animation
 // ##########################################
 
-function GetDesktopAnimUseAnimations : boolean;
+function GetDesktopAnimUseAnimations: boolean;
 begin
   result := Theme.DesktopAnim.UseAnimations;
 end;
 
-function GetDesktopAnimScale : boolean;
+function GetDesktopAnimScale: boolean;
 begin
   result := Theme.DesktopAnim.Scale;
 end;
 
-function GetDesktopAnimScaleValue : integer;
+function GetDesktopAnimScaleValue: integer;
 begin
   result := Theme.DesktopAnim.ScaleValue;
 end;
 
-function GetDesktopAnimAlpha : boolean;
+function GetDesktopAnimAlpha: boolean;
 begin
   result := Theme.DesktopAnim.Alpha;
 end;
 
-function GetDesktopAnimAlphaValue : integer;
+function GetDesktopAnimAlphaValue: integer;
 begin
   result := Theme.DesktopAnim.AlphaValue;
 end;
 
-function GetDesktopAnimBlend : boolean;
+function GetDesktopAnimBlend: boolean;
 begin
   result := Theme.DesktopAnim.Blend;
 end;
 
-function GetDesktopAnimBlendValue : integer;
+function GetDesktopAnimBlendValue: integer;
 begin
   result := Theme.DesktopAnim.BlendValue;
 end;
 
-function GetDesktopAnimBlendColor : integer;
+function GetDesktopAnimBlendColor: integer;
 begin
   result := Theme.DesktopAnim.BlendColor;
 end;
 
-function GetDesktopAnimBrightness : boolean;
+function GetDesktopAnimBrightness: boolean;
 begin
   result := Theme.DesktopAnim.Brightness;
 end;
 
-function GetDesktopAnimBrightnessValue : integer;
+function GetDesktopAnimBrightnessValue: integer;
 begin
   result := Theme.DesktopAnim.BrightnessValue;
 end;
@@ -1367,68 +1349,66 @@ end;
 //      EXPORT: Wallpaper
 // ##########################################
 
-function GetMonitorWallpaper(Index : integer) : TThemeWallpaper;
+function GetMonitorWallpaper(Index: integer): TThemeWallpaper;
 var
-  n,i : integer;
+  n, i: integer;
 begin
   for n := 0 to High(Theme.MonitorWallpapers) do
-      if Theme.MonitorWallpapers[n].ID = index then
-         for i := 0 to High(Theme.Wallpapers) do
-             if CompareText(Theme.Wallpapers[i].Name,Theme.MonitorWallpapers[n].Name) = 0 then
-             begin
-               result := Theme.Wallpapers[i];
-               exit;
-             end;
+    if Theme.MonitorWallpapers[n].ID = index then
+      for i := 0 to High(Theme.Wallpapers) do
+        if CompareText(Theme.Wallpapers[i].Name, Theme.MonitorWallpapers[n].Name) = 0 then begin
+          result := Theme.Wallpapers[i];
+          exit;
+        end;
 
   result := Theme.Wallpapers[0];
 end;
-
 
 // ##########################################
 //      EXPORT: Desktop Icon
 // ##########################################
 
-function GetDesktopIconSize : integer;
+function GetDesktopIconSize: integer;
 begin
   result := Theme.DesktopIcon.IconSize;
 end;
 
-function GetDesktopIconAlphaBlend : boolean;
+function GetDesktopIconAlphaBlend: boolean;
 begin
   result := Theme.DesktopIcon.IconAlphaBlend;
 end;
 
-function GetDesktopIconAlpha : integer;
+function GetDesktopIconAlpha: integer;
 begin
   result := Theme.DesktopIcon.IconAlpha;
 end;
 
-function GetDesktopIconBlending : boolean;
+function GetDesktopIconBlending: boolean;
 begin
   result := Theme.DesktopIcon.IconBlending;
 end;
 
-function GetDesktopIconBlendColor : integer;
+function GetDesktopIconBlendColor: integer;
 begin
   result := Theme.DesktopIcon.IconBlendColor;
 end;
 
-function GetDesktopIconBlendAlpha : integer;
+function GetDesktopIconBlendAlpha: integer;
 begin
   result := Theme.DesktopIcon.IconBlendAlpha;
 end;
 
-function GetDesktopIconShadow : boolean;
+function GetDesktopIconShadow: boolean;
 begin
   result := Theme.DesktopIcon.IconShadow;
 end;
 
-function GetDesktopIconShadowColor : integer;
+function GetDesktopIconShadowColor: integer;
 begin
   result := Theme.DesktopIcon.IconShadowColor;
 end;
 
-function GetDesktopIconShadowAlpha : integer;
+function GetDesktopIconShadowAlpha: integer;
 begin
   result := Theme.DesktopIcon.IconShadowAlpha;
 end;
@@ -1438,67 +1418,67 @@ begin
   result := PChar(Theme.DesktopIcon.FontName);
 end;
 
-function GetDesktopTextSize : integer;
+function GetDesktopTextSize: integer;
 begin
   result := Theme.DesktopIcon.TextSize;
 end;
 
-function GetDesktopTextBold : Boolean;
+function GetDesktopTextBold: Boolean;
 begin
   result := Theme.DesktopIcon.TextBold;
 end;
 
-function GetDesktopTextItalic : boolean;
+function GetDesktopTextItalic: boolean;
 begin
   result := Theme.DesktopIcon.TextItalic;
 end;
 
-function GetDesktopTextUnderline : Boolean;
+function GetDesktopTextUnderline: Boolean;
 begin
   result := Theme.DesktopIcon.TextUnderline;
 end;
 
-function GetDesktopTextColor : integer;
+function GetDesktopTextColor: integer;
 begin
   result := Theme.DesktopIcon.TextColor;
 end;
 
-function GetDesktopTextAlpha : boolean;
+function GetDesktopTextAlpha: boolean;
 begin
   result := Theme.DesktopIcon.TextAlpha;
 end;
 
-function GetDesktopTextAlphaValue : integer;
+function GetDesktopTextAlphaValue: integer;
 begin
   result := Theme.DesktopIcon.TextAlphaValue;
 end;
 
-function GetDesktopTextShadow : boolean;
+function GetDesktopTextShadow: boolean;
 begin
   result := Theme.DesktopIcon.TextShadow;
 end;
 
-function GetDesktopDisplayText : boolean;
+function GetDesktopDisplayText: boolean;
 begin
   result := Theme.DesktopIcon.DisplayText;
 end;
 
-function GetDesktopTextShadowAlpha : integer;
+function GetDesktopTextShadowAlpha: integer;
 begin
   result := Theme.DesktopIcon.TextShadowAlpha;
 end;
 
-function GetDesktopTextShadowColor : integer;
+function GetDesktopTextShadowColor: integer;
 begin
   result := Theme.DesktopIcon.TextShadowColor;
 end;
 
-function GetDesktopTextShadowType : integer;
+function GetDesktopTextShadowType: integer;
 begin
   result := Theme.DesktopIcon.TextShadowType;
 end;
 
-function GetDesktopTextShadowSize : integer;
+function GetDesktopTextShadowSize: integer;
 begin
   result := Theme.DesktopIcon.TextShadowSize;
 end;
@@ -1507,102 +1487,102 @@ end;
 //      EXPORT: SKIN FONT
 // ##########################################
 
-function GetSkinFontModSize : boolean;
+function GetSkinFontModSize: boolean;
 begin
   result := Theme.SkinFont.ModSize;
 end;
 
-function GetSkinFontModName : boolean;
+function GetSkinFontModName: boolean;
 begin
   result := Theme.SkinFont.ModName;
 end;
 
-function GetSkinFontModAlpha : boolean;
+function GetSkinFontModAlpha: boolean;
 begin
   result := Theme.SkinFont.ModAlpha;
 end;
 
-function GetSkinFontModUseShadow : boolean;
+function GetSkinFontModUseShadow: boolean;
 begin
   result := Theme.SkinFont.ModUseShadow;
 end;
 
-function GetSkinFontModShadowType : boolean;
+function GetSkinFontModShadowType: boolean;
 begin
   result := Theme.SkinFont.ModShadowType;
 end;
 
-function GetSkinFontModShadowAlpha : boolean;
+function GetSkinFontModShadowAlpha: boolean;
 begin
   result := Theme.SkinFont.ModShadowAlpha;
 end;
 
-function GetSkinFontModBold : boolean;
+function GetSkinFontModBold: boolean;
 begin
   result := Theme.SkinFont.ModBold;
 end;
 
-function GetSkinFontModItalic : boolean;
+function GetSkinFontModItalic: boolean;
 begin
   result := Theme.SkinFont.ModItalic;
 end;
 
-function GetSkinFontModUnderline : boolean;
+function GetSkinFontModUnderline: boolean;
 begin
   result := Theme.SkinFont.ModUnderline;
 end;
 
-function GetSkinFontModClearType : boolean;
+function GetSkinFontModClearType: boolean;
 begin
   result := Theme.SkinFont.ModClearType;
 end;
 
-function GetSkinFontValueSize : integer;
+function GetSkinFontValueSize: integer;
 begin
   result := Theme.SkinFont.ValueSize;
 end;
 
-function GetSkinFontValueName : String;
+function GetSkinFontValueName: string;
 begin
   result := Theme.SkinFont.ValueName;
 end;
 
-function GetSkinFontValueAlpha : integer;
+function GetSkinFontValueAlpha: integer;
 begin
   result := Theme.SkinFont.ValueAlpha;
 end;
 
-function GetSkinFontValueUseShadow : boolean;
+function GetSkinFontValueUseShadow: boolean;
 begin
   result := Theme.SkinFont.ValueUseShadow;
 end;
 
-function GetSkinFontValueShadowType : integer;
+function GetSkinFontValueShadowType: integer;
 begin
   result := Theme.SkinFont.ValueShadowType;
 end;
 
-function GetSkinFontValueShadowAlpha : integer;
+function GetSkinFontValueShadowAlpha: integer;
 begin
   result := Theme.SkinFont.ValueShadowAlpha;
 end;
 
-function GetSkinFontValueBold : boolean;
+function GetSkinFontValueBold: boolean;
 begin
   result := Theme.SkinFont.ValueBold;
 end;
 
-function GetSkinFontValueItalic : boolean;
+function GetSkinFontValueItalic: boolean;
 begin
   result := Theme.SkinFont.ValueItalic;
 end;
 
-function GetSkinFontValueUnderline : boolean;
+function GetSkinFontValueUnderline: boolean;
 begin
   result := Theme.SkinFont.ValueUnderline;
 end;
 
-function GetSkinFontValueClearType : boolean;
+function GetSkinFontValueClearType: boolean;
 begin
   result := Theme.SkinFont.ValueClearType;
 end;
@@ -1618,8 +1598,7 @@ end;
 
 function GetSchemeColorByIndex(pIndex: integer): TSharpESkinColor;
 begin
-  if pIndex > GetSchemeColorCount - 1 then
-  begin
+  if pIndex > GetSchemeColorCount - 1 then begin
     result.Name := '';
     result.Tag := '';
     Result.Info := '';
@@ -1640,8 +1619,7 @@ var
   i: integer;
 begin
   result := -1;
-  for i := 0 to GetSchemeColorCount - 1 do
-  begin
+  for i := 0 to GetSchemeColorCount - 1 do begin
     if CompareText(Theme.Scheme.Colors[i].Tag, pTag) = 0 then
       Result := i;
   end;
@@ -1657,10 +1635,8 @@ begin
   Result.Color := 0;
   result.SchemeType := stColor;
 
-  for i := 0 to GetSchemeColorCount - 1 do
-  begin
-    if CompareText(Theme.Scheme.Colors[i].Tag, pTag) = 0 then
-    begin
+  for i := 0 to GetSchemeColorCount - 1 do begin
+    if CompareText(Theme.Scheme.Colors[i].Tag, pTag) = 0 then begin
       result.Name := Theme.Scheme.Colors[i].Name;
       result.Tag := Theme.Scheme.Colors[i].Tag;
       result.Info := Theme.Scheme.Colors[i].Info;
@@ -1693,16 +1669,14 @@ begin
   bInitialized := True;
 end;
 
-
-function LoadTheme(pName: PChar; ForceReload: Boolean = False; ThemeParts : TThemeParts = ALL_THEME_PARTS): boolean;
+function LoadTheme(pName: PChar; ForceReload: Boolean = False; ThemeParts: TThemeParts = ALL_THEME_PARTS): boolean;
 var
   ThemeDir: string;
-  ct : Int64;
+  ct: Int64;
 begin
   ThemeDir := SharpApi.GetSharpeUserSettingsPath + THEME_DIR + '\' + pName;
 
-  if not DirectoryExists(ThemeDir) then
-  begin
+  if not DirectoryExists(ThemeDir) then begin
     // Theme dir doesn't exist!
     // return False and load default values
     result := False;
@@ -1715,62 +1689,100 @@ begin
 
   ct := DateTimeToUnix(Now());
   if (tpInfo in ThemeParts) and
-     (ct - Theme.Info.LastUpdate > 1) or (ForceReload) then LoadThemeInfo;
+    (ct - Theme.Info.LastUpdate > 1) or (ForceReload) then
+    LoadThemeInfo;
   if (tpSkin in ThemeParts) and
-     (ct - Theme.Skin.LastUpdate > 1) or (ForceReload) then LoadThemeSkin;
+    (ct - Theme.Skin.LastUpdate > 1) or (ForceReload) then
+    LoadThemeSkin;
   if ((tpSkin in ThemeParts) or (tpSkinFont in ThemeParts)) and
-     (ct - Theme.SkinFont.LastUpdate > 1) or (ForceReload) then LoadThemeSkinFont;
-  if (tpScheme  in ThemeParts) and
-     (ct - Theme.Scheme.LastUpdate > 1) or (ForceReload) then LoadThemeScheme;
+    (ct - Theme.SkinFont.LastUpdate > 1) or (ForceReload) then
+    LoadThemeSkinFont;
+  if (tpScheme in ThemeParts) and
+    (ct - Theme.Scheme.LastUpdate > 1) or (ForceReload) then
+    LoadThemeScheme;
   if (tpIconSet in ThemeParts) and
-     (ct - Theme.IconSet.LastUpdate > 1) or (ForceReload) then LoadThemeIconSet;
+    (ct - Theme.IconSet.LastUpdate > 1) or (ForceReload) then
+    LoadThemeIconSet;
   if (tpDesktopIcon in ThemeParts) and
-     (ct - Theme.DesktopIcon.LastUpdate >1) or (ForceReload) then LoadThemeDesktopIcon;
+    (ct - Theme.DesktopIcon.LastUpdate > 1) or (ForceReload) then
+    LoadThemeDesktopIcon;
   if (tpDesktopAnimation in ThemeParts) and
-     (ct - Theme.DesktopAnim.LastUpdate >1) or (ForceReload) then LoadThemeDesktopAnim;
+    (ct - Theme.DesktopAnim.LastUpdate > 1) or (ForceReload) then
+    LoadThemeDesktopAnim;
   if (tpWallpaper in ThemeParts) and
-     (ct - Theme.WallpapresLastUpdate >1) or (ForceReload) then LoadThemeWallpaper;
+    (ct - Theme.WallpapresLastUpdate > 1) or (ForceReload) then
+    LoadThemeWallpaper;
 
   result := True;
 end;
 
-function LoadCurrentTheme(ForceUpdate : boolean = False; ThemeParts : TThemeParts = ALL_THEME_PARTS) : boolean;
+function LoadCurrentTheme(ForceUpdate: boolean = False; ThemeParts: TThemeParts = ALL_THEME_PARTS): boolean;
 var
   themename: string;
 begin
   themename := GetCurrentThemeName;
-  result := LoadTheme(PChar(themename),ForceUpdate,ThemeParts);
+  result := LoadTheme(PChar(themename), ForceUpdate, ThemeParts);
 end;
 
 // ##########################################
 //      EXPORT: GLOBAL
 // ##########################################
 
-function GetCurrentSharpEThemeName : PChar;
+function GetCurrentSharpEThemeName: PChar;
 begin
   rtemp := GetCurrentThemeName;
   result := PChar(rtemp);
 end;
 
 // Temporary for compatibility
-function LoadCurrentThemeF(ForceUpdate : boolean) : boolean;
+
+function LoadCurrentThemeF(ForceUpdate: boolean): boolean;
 begin
   result := True;
 end;
 
-function XmlGetSkinFile(ATheme: String):String;
+function XmlGetSkinFile(ATheme: string): string;
 begin
   Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'skin.xml';
 end;
 
-function XmlGetSchemeFile(ATheme: String):String;
+function XmlGetSchemeFile(ATheme: string): string;
 begin
   Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'scheme.xml';
 end;
 
-function XmlGetFontFile(ATheme: String):String;
+function XmlGetFontFile(ATheme: string): string;
 begin
   Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'font.xml';
+end;
+
+function XmlGetTheme: string;
+begin
+  Result := GetCurrentThemeName;
+end;
+
+function XmlGetThemeFile(ATheme: string): string;
+begin
+  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'theme.xml';
+end;
+
+procedure XmlSetScheme(ATheme: String; AName: string);
+var
+  xml: TJvSimpleXML;
+  s: string;
+begin
+  xml := TJvSimpleXML.Create(nil);
+  try
+    s := XmlGetSchemeFile(ATheme);
+    forcedirectories(ExtractFilePath(s));
+
+    xml.Root.Clear;
+    xml.Root.Name := 'SharpEThemeScheme';
+    xml.Root.Items.Add('Scheme', AName);
+    xml.SaveToFile(s);
+  finally
+    xml.Free;
+  end;
 end;
 
 function XmlGetScheme(ATheme: string): string;
@@ -1783,8 +1795,7 @@ begin
   try
     s := XmlGetSchemeFile(ATheme);
 
-    if fileExists(s) then
-    begin
+    if fileExists(s) then begin
       xml.LoadFromFile(s);
       Result := xml.Root.Items.Value('Scheme', 'Default');
     end;
@@ -1793,7 +1804,7 @@ begin
   end;
 end;
 
-function XmlGetSkin(ATheme: String): String;
+function XmlGetSkin(ATheme: string): string;
 var
   xml: TJvSimpleXML;
   s: string;
@@ -1803,8 +1814,7 @@ begin
   try
     s := XmlGetSkinFile(ATheme);
 
-    if fileExists(s) then
-    begin
+    if fileExists(s) then begin
       xml.LoadFromFile(s);
       Result := xml.Root.Items.Value('Skin', '');
     end;
@@ -1813,6 +1823,59 @@ begin
   end;
 end;
 
+function XmlGetSchemeCount: Integer;
+begin
+
+end;
+
+function XmlGetSkinCount: Integer;
+begin
+
+end;
+
+function XmlGetThemeCount: Integer;
+begin
+
+end;
+
+function GetThemeListAsCommaText: string;
+var
+  sThemeDir: String;
+  tmpStringList: TStringList;
+begin
+  sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
+
+  tmpStringList := TStringList.Create;
+  try
+
+  FindFiles(tmpStringList,sThemeDir,'*theme.xml');
+  tmpStringList.Sort;
+  result := tmpStringList.CommaText;
+
+  finally
+    tmpStringList.Free;
+  end;
+end;
+
+function GetSchemeListAsCommaText(ATheme: String): string;
+var
+  sSchemeDir, sSkin: String;
+  tmpStringList: TStringList;
+begin
+  sSkin := XmlGetSkin(ATheme);
+  sSchemeDir := GetSharpeDirectory + 'Skins\' + sSkin + '\Schemes\';
+
+  tmpStringList := TStringList.Create;
+  try
+
+  FindFiles(tmpStringList,sSchemeDir,'*.xml');
+  tmpStringList.Sort;
+  result := tmpStringList.CommaText;
+
+  finally
+    tmpStringList.Free;
+  end;
+end;
 
 {$R *.res}
 
@@ -1934,12 +1997,18 @@ exports
   GetSkinFontValueClearType,
 
   // Xml Accessors
+  XmlGetTheme,
   XmlGetSkin,
   XmlGetScheme,
+  XmlSetScheme,
+
+  XmlGetThemeFile,
   XmlGetSkinFile,
   XmlGetFontFile,
-  XmlGetSchemeFile;
+  XmlGetSchemeFile,
 
+  GetThemeListAsCommaText,
+  GetSchemeListAsCommaText;
 
 begin
 end.
