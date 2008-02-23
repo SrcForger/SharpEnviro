@@ -592,10 +592,10 @@ end;
 
 procedure TSharpEColorEditor.ColorClickEvent(ASender: TObject);
 begin
-  Value := FColorPicker.ColorCode;
+  Value := FColorPicker.Color;
 
   FSliderUpdateMode := sumAll;
-  
+
   if Assigned(FOnUiChange) then
     FOnUiChange(Self);
 end;
@@ -868,11 +868,17 @@ var
   begin
     UpdateRGBLabel;
     UpdateHSLLabel;
+
+    // Refresh caption
+    Self.Caption := FCaption;
   end;
 begin
 
+  if csDesigning in componentState then
+    exit;
+
   if FValue < 0 then
-    col := SchemeCodeToColor(FValue)
+    col := XmlSchemeCodeToColor(FValue)
   else
     col := FValue;
 
@@ -924,23 +930,45 @@ begin
 end;
 
 procedure TSharpEColorEditor.SetCaption(const Value: string);
+var
+  colors: TSharpEColorSet;
+  s: string;
+  pct, val: double;
 begin
-  //if FCaption = Value then
-  //  exit;
-
   FCaption := Value;
 
   if FNameLabel <> nil then begin
 
     case FValueEditorType of
       vetColor: begin
-          FNameLabel.Caption := Format('%s (%s):', [FCaption, 'Color']);
+
+          if (FValue < 0) then begin
+
+            if not (csDesigning in ComponentState) then begin
+              XmlGetThemeScheme(colors);
+
+              FNameLabel.Caption := Format('%s (%s):', [FCaption,
+                colors[abs(FValue) - 1].Tag]);
+            end;
+
+          end
+          else begin
+            s := IntToHex(GetRValue(FValue), 2) +
+              IntToHex(GetGValue(FValue), 2) +
+              IntToHex(GetBValue(FValue), 2);
+
+            FNameLabel.Caption := Format('%s (%s):', [FCaption, '#' + s]);
+          end;
         end;
       vetValue: begin
-          FNameLabel.Caption := Format('%s (%s):', [FCaption, 'Val']);
+
+          val := FValueMax - FValue;
+          pct := (val / FValueMax ) * 100;
+          s := intTostr(round(pct))+'%';
+          FNameLabel.Caption := Format('%s (%s):', [FCaption, s]);
         end;
       vetBoolean: begin
-          FNameLabel.Caption := Format('%s (%s):', [FCaption, 'Bool']);
+          FNameLabel.Caption := Format('%s (%s):', [FCaption, BoolToStr(Boolean(FValue), True)]);
         end;
     end;
   end;
@@ -1104,8 +1132,14 @@ begin
 end;
 
 procedure TSharpEColorEditor.ClickSwatchEvent(ASender: TObject; AColor: TColor);
+var
+  tmp: TSharpESwatchCollectionItem;
 begin
-  Value := AColor;
+  tmp := TSharpESwatchCollectionItem(ASender);
+  if tmp.System then
+    Value := tmp.ColorCode
+  else
+    Value := AColor;
 
   if Assigned(FOnUiChange) then
     FOnUiChange(Self);
@@ -1197,7 +1231,7 @@ begin
   else begin
     //Color32ToRGB(HSLtoRGB(h, s, l), r, g, b);
 
-    Value := HSLtoRGB(h,s,l);
+    Value := HSLtoRGB(h, s, l);
 
     FSliderUpdateMode := sumRGB;
     //Value := RGB(r, g, b);
@@ -1224,18 +1258,26 @@ procedure TSharpEColorEditor.SetValue(const Value: Integer);
 begin
 
   FValue := Value;
+  if csDesigning in componentState then
+    exit;
 
   case FValueEditorType of
     vetColor: begin
         SliderEvents(False);
         try
 
-          FValue := ColorToSchemeCode(Value);
-          FValueAsTColor := SchemeCodeToColor(Value);
+          //FValue := XmlColorToSchemeCode(Value);
+          //FValueAsTColor := XmlSchemeCodeToColor(Value);
+
+          if FValue < 0 then begin
+            FValueAsTColor := XmlSchemeCodeToColor(Value);
+          end else
+            FValueAsTColor := Value;
 
           if FColorPicker <> nil then
-            FColorPicker.ColorCode := FValue;
+            FColorPicker.Color := FValueAsTColor;
 
+          FSliderUpdateMode := sumAll;
           InitialiseColSliders;
 
         finally
@@ -1246,6 +1288,8 @@ begin
         if FValueSlider <> nil then begin
           FValueSlider.Position := FValue;
           TLabel(FValueSlider.Tag).Caption := IntToStr(FValue);
+
+          Caption := FCaption;
         end;
       end;
     vetBoolean: begin
@@ -1255,6 +1299,8 @@ begin
             FBoolCheckbox.Caption := 'Enabled'
           else
             FBoolCheckbox.Caption := 'Disabled';
+
+          Caption := FCaption;
         end;
       end;
   end;
@@ -1324,6 +1370,7 @@ begin
   FBoolCheckbox.Top := iy;
 
   SetValue(FValue);
+  Caption := FCaption;
 end;
 
 procedure TSharpEColorEditor.CheckClickEvent(ASender: TObject);

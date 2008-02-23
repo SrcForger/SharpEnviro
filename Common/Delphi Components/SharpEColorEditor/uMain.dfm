@@ -79,7 +79,8 @@ object MainWnd: TMainWnd
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 408
+    PopulateThemeColors = True
+    Width = 640
     ShowCaptions = False
     SwatchHeight = 16
     SwatchWidth = 16

@@ -43,12 +43,12 @@ procedure TMainWnd.Button1Click(Sender: TObject);
 begin
   
   SharpEColorEditor2.ValueEditorType := vetColor;
-  SharpEColorEditor2.Value := clRed;
+  //SharpEColorEditor2.Value := clRed;
 end;
 
 procedure TMainWnd.FormCreate(Sender: TObject);
 begin
-  loadtheme;
+
    SetVistaFonts(Self);
 end;
 
