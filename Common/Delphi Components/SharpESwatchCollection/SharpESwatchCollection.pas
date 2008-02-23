@@ -227,7 +227,7 @@ begin
 
         FSwatchManager.DeselectAll;
         if Assigned(FOnDblClickSwatch) then
-          FOnDblClickSwatch(Self, tmp.Color);
+          FOnDblClickSwatch(tmp, tmp.Color);
       end
       else
         FSwatchManager.SetItemSelected(Point(X, Y));
