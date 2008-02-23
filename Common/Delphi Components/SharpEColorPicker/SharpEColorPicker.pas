@@ -36,7 +36,6 @@ type
     FOnColorClick: TNotifyEvent;
     FColorDialog: TColorDialog;
     FColor: TColor;
-    FColorCode: Integer;
     FLastColor: TColor;
     FCustom: Boolean;
     FSCS:TSharpECenterScheme;
@@ -57,11 +56,8 @@ type
     procedure UpdateSelCol(Sender: TObject);
     procedure ShowColorMenu(Point: TPoint);
     procedure SetColor(const Value: TColor);
-    function GetColorCode: Integer;
-    procedure SetColorCode(const Value: Integer);
     function GetColor: TColor;
 
-    procedure PopulateSkinColors;
   public
     { Public declarations }
     procedure Paint; override;
@@ -71,7 +67,6 @@ type
     { Published declarations }
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor;
     property Color: TColor read GetColor write SetColor;
-    property ColorCode: Integer read GetColorCode write SetColorCode;
     property OnColorClick: TNotifyEvent read FOnColorClick write FOnColorClick;
 
   end;
@@ -116,7 +111,7 @@ begin
     skinCol.Name := 'Custom';
     skinCol.Color := tmpCol.Color;
   end else
-    skinCol := FSchemeManager.GetSkinColorByTag(tmpCol.Tag);
+    skinCol := XmlGetSkinColorByTag(tmpCol.Tag);
 
   n := 20;
 
@@ -143,7 +138,7 @@ begin
     end;
     
 
-    if (FColorCode = Integer(tmpCol.Data)) then
+    if (FColor = Integer(tmpCol.Data)) then
     begin
 
       pen.Color := darker(FSCS.SidePanelBordCol,12);
@@ -202,7 +197,6 @@ begin
   FBackgroundColor := clBtnFace;
   FColor := clwhite;
   FLastColor := 0;
-  FColorCode := clWhite;
   FSchemeManager := TSchemeManager.Create;
   FCustomColor := TSchemeColorItem.Create;
   FSCS := TSharpECenterScheme.Create(nil);
@@ -227,16 +221,18 @@ end;
 
 procedure TCustomSharpeColorPicker.DrawColorSelector(Bmp: TBitmap; R: TRect);
 begin
+  if csDesigning in componentState then exit;
+
   // Draw border
   if FMouseOver then
   begin
-    Bmp.Canvas.Brush.Color := SchemeCodeToColor(FColorCode); //CodeToColor(FColorCode);
+    Bmp.Canvas.Brush.Color := XmlSchemeCodeToColor(FColor); //CodeToColor(FColorCode);
     Bmp.Canvas.Pen.Color := darker(Bmp.Canvas.Brush.Color, 20);
     Bmp.Canvas.RoundRect(R.Left,R.Top,R.Right,R.Bottom,0,0);
   end
   else
   begin
-    Bmp.Canvas.Brush.Color := SchemeCodeToColor(FColorCode); //CodeToColor(FColorCode);
+    Bmp.Canvas.Brush.Color := XmlSchemeCodeToColor(FColor); //CodeToColor(FColorCode);
     Bmp.Canvas.Pen.Color := darker(Bmp.Canvas.Brush.Color, 10);
     Bmp.Canvas.RoundRect(R.Left,R.Top,R.Right,R.Bottom,0,0);
   end;
@@ -245,17 +241,7 @@ end;
 
 function TCustomSharpeColorPicker.GetColor: TColor;
 begin
-  if FColorCode < 0 then
-    Result := SchemeCodeToColor(FColorCode) else // CodeToColor(FColorCode) else
-    Result := FColor;
-end;
-
-function TCustomSharpeColorPicker.GetColorCode: Integer;
-begin
-
-  if Not(FCustom) then
-    Result := ColorToSchemeCode(FColor) else
-    Result := FColor;
+  Result := FColor;
 end;
 
 procedure TCustomSharpeColorPicker.MenuClick(Sender: TObject);
@@ -288,7 +274,6 @@ begin
       FCustom := True;
 
       Color := FColorDialog.Color;
-      ColorCode := FColorDialog.Color;
       
       //TMenuItem(Sender).Tag := Color;
     end;
@@ -383,53 +368,22 @@ begin
 
 end;
 
-procedure TCustomSharpeColorPicker.PopulateSkinColors;
-var
-  s:String;
-begin
-  s := GetCurrentSharpEThemeName;
-  FSchemeManager.PluginID := s;
-end;
-
 procedure TCustomSharpeColorPicker.SetBackgroundColor(const Value: TColor);
 begin
   FBackgroundColor := Value;
-  //Paint;
 end;
 
 procedure TCustomSharpeColorPicker.SetColor(const Value: TColor);
 begin
   FColor := Value;
-  ColorCode := Value;
-
   FCustomColor.Color := Value;
-
   paint;
-
-  if Assigned(FOnColorClick) then
-    FOnColorClick(Self);
-end;
-
-procedure TCustomSharpeColorPicker.SetColorCode(const Value: Integer);
-begin
-  FColorCode := ColorToSchemeCode(Value);
-  FColor := SchemeCodeToColor(Value);
-
-  FCustomColor.Color := Value;
-
-  Self.Paint;
 end;
 
 procedure TCustomSharpeColorPicker.ShowColorMenu(Point: TPoint);
 var
   pt1, pt2: TPoint;
-  //i: integer;
-  //tmpColItem: TSchemeColorItem;
-  {mi: TMenuItem;
-  n:Integer;      }
   bPopup: Boolean;
-
-  {skinCol: TSharpESkinColor;     }
 begin
 
   if not (Assigned(FColorMenu)) then
@@ -439,60 +393,11 @@ begin
     FColorMenu.AutoHotkeys := maManual;
   end;
 
-  PopulateSkinColors;
+  FCustomColor.Data := Pointer(FColor);
+  MenuClick(nil);
 
-
-  FSelectedID := 0;
-  FColorMenu.Items.Clear;
-  with FColorMenu.Items do
-  begin
-    if 0{FScheme.Count} = 0 then
-    begin
-      bPopup := False;
-      FCustomColor.Data := Pointer(FColor);
-    end
-    else
-    begin
-
-      {bPopup := True;
-      for i := 0 to Pred(FSchemeList.Item[0].colors.count) do
-      begin
-        tmpColItem := FSchemeList.Item[0].Color[i];
-
-        n := -1  - i;
-        tmpColItem.Data := Pointer(n);
-        skinCol := FSchemeList.GetSkinColorByTag(tmpColItem.Tag);
-
-        mi := TMenuItem.Create(nil);
-        mi.Caption := skinCol.Name + 'XXX';
-        mi.Hint := skinCol.Info;
-        mi.Name := 'Color' + IntToStr(i);
-        mi.OnClick := MenuClick;
-        mi.Tag := Integer(tmpColItem);
-        mi.OnAdvancedDrawItem := AdvancedDrawItem;
-        Add(mi);
-      end;
-
-      Add(NewItem('-', 0, False, False, MenuClick, 0, 'sep'));
-      Add(NewItem('Custom', 0, False, True, MenuClick, 0, 'Custom'));
-
-      FCustomColor.Data := Pointer(FColor);
-      Items[Count - 1].Tag := Integer(FCustomColor);
-      Items[Count - 1].OnAdvancedDrawItem := AdvancedDrawItem;
-      Items[Count - 1].Hint := 'Custom';  }
-    end;  
-
-  end;
-
-  // Popup the menu
-
-  if bPopup then begin
-    pt1 := ClientToScreen(ClientRect.BottomRight);
-    pt2 := ClientToScreen(ClientRect.TopLeft);
-    FColorMenu.Popup(pt2.X, pt1.Y);
-  end else begin
-    MenuClick(nil);
-  end;
+  if Assigned(FOnColorClick) then
+    FOnColorClick(Self);
 end;
 
 procedure TCustomSharpeColorPicker.UpdateSelCol(Sender: TObject);
@@ -506,6 +411,9 @@ begin
   C := GetPixel(HDC, P.x, P.y);
   ReleaseDC(HDC, 0);
   Color := c;
+
+  if Assigned(FOnColorClick) then
+    FOnColorClick(Self);
 end;
 
 end.
