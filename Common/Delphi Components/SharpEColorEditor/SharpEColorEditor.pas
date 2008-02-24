@@ -879,9 +879,6 @@ var
   begin
     UpdateRGBLabel;
     UpdateHSLLabel;
-
-    // Refresh caption
-    Self.Caption := FCaption;
   end;
 begin
 
