@@ -287,5 +287,7 @@ begin
   SharpBarMainForm.Startup := False;
   SharpBarMainForm.Show;
   ServiceDone('SharpBar');
+  SharpApi.SharpEBroadCast(WM_BARSTATUSCHANGED,0,SharpBarMainForm.BarID);
   Application.Run;
+  SharpApi.SharpEBroadCast(WM_BARSTATUSCHANGED,1,SharpBarMainForm.BarID);  
 end.
