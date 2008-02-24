@@ -47,12 +47,12 @@ type
     SharpESwatchManager1: TSharpESwatchManager;
     ccolors: TSharpEColorEditorEx;
     procedure FormDestroy(Sender: TObject);
-    procedure ccolorsChangeColor(ASender: TObject; AColorCode: Integer);
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure lbCursorListClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
     procedure lbCursorListResize(Sender: TObject);
+    procedure ccolorsUiChange(Sender: TObject);
   private
     procedure BuildCursorPreview;
   public
@@ -250,8 +250,7 @@ begin
   BuildCursorPreview;
 end;
 
-procedure TfrmCursesList.ccolorsChangeColor(ASender: TObject;
-  AColorCode: Integer);
+procedure TfrmCursesList.ccolorsUiChange(Sender: TObject);
 begin
   BuildCursorPreview;
   SendUpdate;

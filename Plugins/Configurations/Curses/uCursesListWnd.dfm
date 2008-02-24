@@ -42,7 +42,10 @@ object frmCursesList: TfrmCursesList
         Expanded = False
         ValueEditorType = vetColor
         Value = 0
+        ValueMin = 0
+        ValueMax = 255
         Visible = True
+        DisplayPercent = False
         ColorEditor = ccolors.Item0
         Tag = 0
       end
@@ -53,7 +56,10 @@ object frmCursesList: TfrmCursesList
         Expanded = False
         ValueEditorType = vetColor
         Value = 0
+        ValueMin = 0
+        ValueMax = 255
         Visible = True
+        DisplayPercent = False
         ColorEditor = ccolors.Item1
         Tag = 0
       end
@@ -64,7 +70,10 @@ object frmCursesList: TfrmCursesList
         Expanded = False
         ValueEditorType = vetColor
         Value = 0
+        ValueMin = 0
+        ValueMax = 255
         Visible = True
+        DisplayPercent = False
         ColorEditor = ccolors.Item2
         Tag = 0
       end
@@ -75,12 +84,15 @@ object frmCursesList: TfrmCursesList
         Expanded = False
         ValueEditorType = vetColor
         Value = 0
+        ValueMin = 0
+        ValueMax = 255
         Visible = True
+        DisplayPercent = False
         ColorEditor = ccolors.Item3
         Tag = 0
       end>
     SwatchManager = SharpESwatchManager1
-    OnChangeColor = ccolorsChangeColor
+    OnUiChange = ccolorsUiChange
   end
   object lbCursorList: TSharpEListBoxEx
     Left = 0
@@ -122,6 +134,7 @@ object frmCursesList: TfrmCursesList
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
+    PopulateThemeColors = True
     Width = 386
     ShowCaptions = True
     SwatchHeight = 16
