@@ -243,18 +243,101 @@ function XmlGetSkinFile(ATheme: String): String; external 'SharpThemeApi.dll' na
 function XmlGetFontFile(ATheme: String): String; external 'SharpThemeApi.dll' name 'XmlGetFontFile';
 function XmlGetThemeFile(ATheme: String): String; external 'SharpThemeApi.dll' name 'XmlGetThemeFile';
 
-function GetThemeListAsCommaText: string; external 'SharpThemeApi.dll' name 'GetThemeListAsCommaText';
+function GetThemeListAsCommaText: string;
 procedure XmlGetThemeList(var AThemeList: TThemeInfoSet);
 
-function GetSchemeListAsCommaText(ATheme:string): string; external 'SharpThemeApi.dll' name 'GetSchemeListAsCommaText';
+function GetSchemeListAsCommaText(ATheme:string):string;
 procedure XmlGetThemeScheme(var AThemeScheme: TSharpEColorSet);
 
 function XmlColorToSchemeCode(AColor: integer): integer;
 function XmlSchemeCodeToColor(AColorCode: integer): integer;
 
 function XmlGetSkinColorByTag(ATag: string): TSharpESkinColor;
+procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string);
+
 
 implementation
+
+procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string);
+var
+  SR: TSearchRec;
+  DirList: TStringList;
+  IsFound: Boolean;
+  i: integer;
+begin
+  if StartDir[length(StartDir)] <> '\' then
+    StartDir := StartDir + '\';
+
+  { Build a list of the files in directory StartDir
+     (not the directories!)                         }
+
+  IsFound := FindFirst(StartDir+FileMask, faAnyFile-faDirectory, SR) = 0;
+  while IsFound do begin
+    FilesList.Add(StartDir + SR.Name);
+    IsFound := FindNext(SR) = 0;
+  end;
+  SysUtils.FindClose(SR);
+
+  // Build a list of subdirectories
+  DirList := TStringList.Create;
+  Try
+  IsFound := FindFirst(StartDir+'*.*', faAnyFile, SR) = 0;
+  while IsFound do begin
+    if ((SR.Attr and faDirectory) <> 0) and
+         (SR.Name[1] <> '.') then
+      DirList.Add(StartDir + SR.Name);
+    IsFound := FindNext(SR) = 0;
+  end;
+  SysUtils.FindClose(SR);
+
+  // Scan the list of subdirectories
+  for i := 0 to DirList.Count - 1 do
+    FindFiles(FilesList, DirList[i], FileMask);
+
+  Finally
+    DirList.Free;
+  End;
+
+end;
+
+function GetThemeListAsCommaText: string;
+var
+  sThemeDir: String;
+  tmpStringList: TStringList;
+begin
+  sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
+
+  tmpStringList := TStringList.Create;
+  try
+
+  FindFiles(tmpStringList,sThemeDir,'*theme.xml');
+  tmpStringList.Sort;
+  result := tmpStringList.CommaText;
+
+  finally
+    tmpStringList.Free;
+  end;
+end;
+
+function GetSchemeListAsCommaText(ATheme: String): string;
+var
+  sSchemeDir, sSkin: String;
+  tmpStringList: TStringList;
+begin
+  sSkin := XmlGetSkin(ATheme);
+  sSchemeDir := GetSharpeDirectory + 'Skins\' + sSkin + '\Schemes\';
+
+  tmpStringList := TStringList.Create;
+  try
+
+  FindFiles(tmpStringList,sSchemeDir,'*.xml');
+  tmpStringList.Sort;
+  result := tmpStringList.CommaText;
+
+  finally
+    tmpStringList.Free;
+  end;
+end;
 
 procedure XmlGetThemeList(var AThemeList: TThemeInfoSet);
 var
@@ -425,7 +508,7 @@ begin
   Finally
     result := tmpColor;
   End;
-  
+
 end;
 
 

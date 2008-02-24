@@ -35,7 +35,6 @@ uses
   Graphics,
   JclStrings,
   JclFileUtils,
-  SharpUtil in '..\SharpUtil\SharpUtil.pas',
   SharpAPI in '..\SharpAPI\SharpAPI.pas';
 
 type
@@ -1838,45 +1837,6 @@ begin
 
 end;
 
-function GetThemeListAsCommaText: string;
-var
-  sThemeDir: String;
-  tmpStringList: TStringList;
-begin
-  sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
-
-  tmpStringList := TStringList.Create;
-  try
-
-  FindFiles(tmpStringList,sThemeDir,'*theme.xml');
-  tmpStringList.Sort;
-  result := tmpStringList.CommaText;
-
-  finally
-    tmpStringList.Free;
-  end;
-end;
-
-function GetSchemeListAsCommaText(ATheme: String): string;
-var
-  sSchemeDir, sSkin: String;
-  tmpStringList: TStringList;
-begin
-  sSkin := XmlGetSkin(ATheme);
-  sSchemeDir := GetSharpeDirectory + 'Skins\' + sSkin + '\Schemes\';
-
-  tmpStringList := TStringList.Create;
-  try
-
-  FindFiles(tmpStringList,sSchemeDir,'*.xml');
-  tmpStringList.Sort;
-  result := tmpStringList.CommaText;
-
-  finally
-    tmpStringList.Free;
-  end;
-end;
-
 {$R *.res}
 
 exports
@@ -2005,10 +1965,7 @@ exports
   XmlGetThemeFile,
   XmlGetSkinFile,
   XmlGetFontFile,
-  XmlGetSchemeFile,
-
-  GetThemeListAsCommaText,
-  GetSchemeListAsCommaText;
+  XmlGetSchemeFile;
 
 begin
 end.
