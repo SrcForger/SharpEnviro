@@ -34,9 +34,10 @@
      <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Wallpaper\Wallpaper.dproj</project>  
      <project Name="WeatherService" Type="DLL">Plugins\Configurations\WeatherService\Weather.dproj</project>  
      <project Name="Aliases" Type="DLL">Plugins\Configurations\Aliases\Aliases.dproj</project>   			     
-	 <project Name="Home" Type="DLL">Plugins\Configurations\Home\Home.dproj</project>   
+     <project Name="Home" Type="DLL">Plugins\Configurations\Home\Home.dproj</project>   
      <project Name="MenuEdit" Type="DLL">Plugins\Configurations\MenuEdit\MenuEdit.dproj</project> 
-     <project Name="MenuList" Type="DLL">Plugins\Configurations\MenuList\MenuList.dproj</project> 
+     <project Name="MenuList" Type="DLL">Plugins\Configurations\MenuList\MenuList.dproj</project>
+     <project Name="MenuList" Type="DLL">Plugins\Configurations\Theme Glass\ThemeGlass.dproj</project>  
   </package>
   <package Name="Components">
      <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
