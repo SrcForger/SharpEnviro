@@ -27,12 +27,8 @@ object BarWnd: TBarWnd
     Glyph32.CombineMode = cmMerge
     Glyph32.ResamplerClassName = 'TNearestResampler'
     Layout = blGlyphLeft
-    Margin = -1
-    DisabledAlpha = 100
     Caption = 'SharpE'
     AutoPosition = False
-    GlyphResize = False
-    GlyphSpacing = 0
   end
   object SharpEScheme1: TSharpEScheme
     Left = 280
