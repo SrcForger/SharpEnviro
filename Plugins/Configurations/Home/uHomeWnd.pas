@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, pngimage, ExtCtrls, SharpCenterApi, StdCtrls, SharpEListBoxEx,
-  JvLabel, ImgList, PngImageList, SharpApi;
+  JvLabel, ImgList, PngImageList, SharpApi, JvExControls;
 
 type
   TUser = Class
@@ -49,6 +49,12 @@ type
     lbWebsiteLinks: TSharpEListBoxEx;
     Label1: TLabel;
     imgLogo: TImage;
+    Label3: TLabel;
+    Label2: TJvLabel;
+    Label4: TJvLabel;
+    Label5: TJvLabel;
+    Label6: TJvLabel;
+    Label7: TJvLabel;
     procedure FormCreate(Sender: TObject);
     procedure lbUsersResize(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -63,6 +69,11 @@ type
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure lbUsersClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
+    procedure Label2Click(Sender: TObject);
+    procedure Label6Click(Sender: TObject);
+    procedure Label5Click(Sender: TObject);
+    procedure Label4Click(Sender: TObject);
+    procedure Label7Click(Sender: TObject);
   private
     FUsers: TList;
     procedure AddUsersToList;
@@ -100,7 +111,32 @@ end;
 
 procedure TfrmHome.Label1Click(Sender: TObject);
 begin
+  SharpExecute('http://www.famfamfam.com/lab/icons/silk/');
+end;
 
+procedure TfrmHome.Label2Click(Sender: TObject);
+begin
+  SharpExecute('http://www.famfamfam.com/lab/icons/silk/');
+end;
+
+procedure TfrmHome.Label4Click(Sender: TObject);
+begin
+   SharpExecute('http://www.thany.org');
+end;
+
+procedure TfrmHome.Label5Click(Sender: TObject);
+begin
+  SharpExecute('http://jvcl.sourceforge.net');
+end;
+
+procedure TfrmHome.Label6Click(Sender: TObject);
+begin
+  SharpExecute('http://www.graphics32.org');
+end;
+
+procedure TfrmHome.Label7Click(Sender: TObject);
+begin
+  SharpExecute('http://tango.freedesktop.org');
 end;
 
 { TUser }
@@ -174,7 +210,7 @@ end;
 procedure TfrmHome.lbUsersResize(Sender: TObject);
 begin
   Self.Height := imgLogo.Height + lbUsers.Height + lbWebsiteLinks.Height +
-    (lblSharpETeam.Height*2) + 30;
+    (lblSharpETeam.Height*2) + 200;
 end;
 
 procedure TfrmHome.lbWebsiteLinksClickItem(Sender: TObject; const ACol: Integer;
