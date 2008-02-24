@@ -241,7 +241,7 @@ begin
         end;
 
         XML := TJvSimpleXML.Create(nil);
-        if FileCheck(Dir + NewID + '\Bar.xml') then begin
+        if FileCheck(Dir + NewID + '\Bar.xml',True) then begin
           try
             XML.LoadFromFile(Dir + NewID + '\Bar.xml');
             fileloaded := True;
@@ -285,7 +285,7 @@ begin
         CID := TBarItem(frmEditItem.BarItem).BarID;
         XML := TJvSimpleXML.Create(nil);
         fileloaded := False;
-        if FileCheck(Dir + inttostr(CID) + '\Bar.xml') then begin
+        if FileCheck(Dir + inttostr(CID) + '\Bar.xml',True) then begin
           try
             XML.LoadFromFile(Dir + inttostr(CID) + '\Bar.xml');
             fileloaded := True;

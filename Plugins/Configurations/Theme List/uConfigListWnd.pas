@@ -100,7 +100,7 @@ begin
 
           ThemeList.Items.AddObject(XML.Root.Items.Value('Name','Error loading XML Setting'),str);
 
-          if FileCheck(dir + sr.Name + '\Preview.png') then
+          if FileCheck(dir + sr.Name + '\Preview.png',True) then
           begin
             GR32_PNG.LoadBitmap32FromPNG(Bmp32,dir + sr.Name + '\Preview.png',b);
             bmp.Canvas.Brush.Color := clBlack;

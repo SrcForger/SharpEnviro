@@ -308,7 +308,7 @@ function ExtractBarName(ABarID: string): String;
   begin
     xml := TJvSimpleXML.Create(nil);
     try
-      if FileCheck(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + ABarID + '\Bar.xml') then
+      if FileCheck(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + ABarID + '\Bar.xml',True) then
       begin
         xml.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\' + ABarID + '\Bar.xml');
         if xml.Root.items.ItemNamed['Settings'] <> nil then
@@ -463,7 +463,7 @@ begin
 
       n := ExtractBarID(slBars[i]);
       if n = StrToInt(APluginID) then begin
-        if FileCheck(slBars[i]) then
+        if FileCheck(slBars[i],True) then
         begin
           xml.LoadFromFile(slBars[i]);
           if xml.Root.Items.ItemNamed['Modules'] <> nil then begin

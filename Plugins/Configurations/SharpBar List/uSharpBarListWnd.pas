@@ -231,7 +231,7 @@ begin
         FName := Dir + 'bar.xml';
 
         XML := TJvSimpleXML.Create(nil);
-        if FileCheck(FName) then begin
+        if FileCheck(FName,True) then begin
           try
             XML.LoadFromFile(FName);
             fileloaded := True;

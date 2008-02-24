@@ -645,7 +645,7 @@ begin
   XML := TJclSimpleXML.Create;
   fileloaded := False;
   try
-    if FileCheck(DirA + 'Bar.xml') then
+    if FileCheck(DirA + 'Bar.xml',True) then
     begin
       XML.LoadFromFile(DirA + 'Bar.xml');
       fileloaded := True;

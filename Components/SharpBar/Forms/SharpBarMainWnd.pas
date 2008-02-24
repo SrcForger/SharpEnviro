@@ -734,7 +734,7 @@ begin
     if wnd <> 0 then begin
       // First try to load the SharpDesk background image
       // if this fails then try to use PrintWindow on SharpDesk
-      if FileCheck(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp') then
+      if FileCheck(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp', True) then
         BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp')
       else if @PrintWindow <> nil then begin
         // try 3 times... :)
