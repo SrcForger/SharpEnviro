@@ -75,9 +75,9 @@ type
   end;
 
   TfrmBarList = class(TForm)
-    StatusImages: TPngImageList;
     lbBarList: TSharpEListBoxEx;
     tmrUpdate: TTimer;
+    StatusImages: TPngImageList;
     procedure tmrUpdateTimer(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -93,19 +93,22 @@ type
     procedure lbBarListGetCellText(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem;
       var AColText: string);
     procedure FormShow(Sender: TObject);
+
   private
+    FWinHandle: THandle;
     function IsBarRunning(ID: integer): boolean;
 
+    procedure CustomWndProc(var msg: TMessage);
     function PointInRect(P: TPoint; Rect: TRect): boolean;
     procedure BuildBarList;
   public
     FBarList: TObjectList;
-    
+
     function BarSpaceCheck: boolean;
 
   end;
 
-  procedure AddItemsToList(AList: TObjectList);
+procedure AddItemsToList(AList: TObjectList);
 
 var
   frmBarList: TfrmBarList;
@@ -184,7 +187,7 @@ begin
             ' -load:' + inttostr(tmpBar.BarID) +
             ' -noREB' +
             ' -noLASB');
-           tmrUpdate.Enabled := True;
+          tmrUpdate.Enabled := True;
         end
         else begin
           wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(tmpBar.BarID)));
@@ -231,7 +234,7 @@ begin
         FName := Dir + 'bar.xml';
 
         XML := TJvSimpleXML.Create(nil);
-        if FileCheck(FName,True) then begin
+        if FileCheck(FName, True) then begin
           try
             XML.LoadFromFile(FName);
             fileloaded := True;
@@ -250,7 +253,7 @@ begin
               end;
             end;
         end;
-        if FileCheck(FName) then        
+        if FileCheck(FName) then
           XML.SaveToFile(FName);
         XML.Free;
 
@@ -259,9 +262,9 @@ begin
   end;
 
   if frmEditItem <> nil then
-    frmEditItem.InitUi( frmEditItem.EditMode);
+    frmEditItem.InitUi(frmEditItem.EditMode);
 
-  CenterUpdateEditTabs(lbBarList.Count,lbBarList.ItemIndex);
+  CenterUpdateEditTabs(lbBarList.Count, lbBarList.ItemIndex);
   CenterUpdateConfigFull;
 end;
 
@@ -310,7 +313,37 @@ procedure TfrmBarList.lbBarListGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmpBar: TBarItem;
-  s: String;
+  s, sScreen, sHPos, sVPos: string;
+
+  function GetBarID: string;
+  begin
+    case tmpBar.HPos of
+      0: sHPos := 'Left';
+      1: sHPos := 'Middle';
+      2: sHPos := 'Right';
+      3: sHPos := 'Full';
+    else
+      sHPos := '';
+    end;
+
+    case tmpBar.VPos of
+      0: sVPos := 'Top';
+      1: sVPos := 'Bottom';
+    else
+      sVPos := '';
+    end;
+
+    if tmpBar.Monitor = 0 then
+      sScreen := '' else
+      sScreen := Format('Screen: %d ', [tmpBar.Monitor]);
+
+    if ((sHPos <> '') and (sVPos <> '')) then begin
+
+      Result := Format('%sBar Aligned %s %s', [sScreen, sVPos, sHPos]);
+
+    end else
+      Result := 'ID: ' + IntToStr(tmpBar.BarID);
+  end;
 begin
 
   tmpBar := TBarItem(AItem.Data);
@@ -319,7 +352,9 @@ begin
 
   case ACol of
     colName: begin
-        s := 'ID: ' + IntToStr(tmpBar.BarID);
+
+        s := GetBarID;
+
         if tmpBar.Name <> '' then
           s := tmpBar.Name;
         if tmpBar.ModuleCount = 0 then
@@ -363,6 +398,7 @@ end;
 
 procedure TfrmBarList.FormCreate(Sender: TObject);
 begin
+  FWinHandle := AllocateHWND(CustomWndProc);
   FBarList := TObjectList.Create(True);
   Self.DoubleBuffered := true;
   lbBarList.DoubleBuffered := true;
@@ -371,6 +407,15 @@ end;
 procedure TfrmBarList.FormDestroy(Sender: TObject);
 begin
   FBarList.Free;
+  DeallocateHWnd(FWinHandle);
+end;
+
+procedure TfrmBarList.CustomWndProc(var msg: TMessage);
+begin
+  if (msg.Msg = WM_BARSTATUSCHANGED) then begin
+    BuildBarList;
+    CenterUpdateSize;
+  end;
 end;
 
 procedure TfrmBarList.FormShow(Sender: TObject);
@@ -475,7 +520,7 @@ begin
       lbBarList.ItemIndex := 0;
 
   if frmBarList <> nil then begin
-    CenterUpdateEditTabs(frmBarList.lbBarList.Count,frmBarList.lbBarList.ItemIndex);
+    CenterUpdateEditTabs(frmBarList.lbBarList.Count, frmBarList.lbBarList.ItemIndex);
     CenterUpdateConfigFull;
   end;
 end;
@@ -486,9 +531,9 @@ begin
   BuildBarList;
 
   if frmEditItem <> nil then
-    frmEditItem.InitUi( frmEditItem.EditMode);
+    frmEditItem.InitUi(frmEditItem.EditMode);
 
-  CenterUpdateEditTabs(lbBarList.Count,lbBarList.ItemIndex);
+  CenterUpdateEditTabs(lbBarList.Count, lbBarList.ItemIndex);
   CenterUpdateConfigFull;
 end;
 
