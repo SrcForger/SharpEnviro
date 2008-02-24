@@ -30,6 +30,7 @@ uses
   Messages,
   ShellAPI,
   SharpAPI,
+  SharpThemeApi,
   SharpCenterApi,
   Classes,
   SysUtils,
@@ -468,6 +469,10 @@ begin
 
   hndWindow := CreateWindow(wclClass.lpszClassName, 'SharpCore', 0,
     10, 10, 340, 220, 0, 0, hInstance, nil);
+
+  // Initialize Themes... (for the services)
+  SharpThemeApi.InitializeTheme;
+  SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
 
   RunAll;
 
