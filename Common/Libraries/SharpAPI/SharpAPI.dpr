@@ -1361,7 +1361,7 @@ begin
     result := 1; //couldn't open file
 end;
 
-function FileCheck(pFileName : String) : boolean;
+function FileCheck(pFileName : String; MustExist : boolean = False) : boolean;
 const
   TimeOut = 2500;
   SleepTime = 10;
@@ -1371,8 +1371,14 @@ var
   handle : hfile;
 begin
   result := False;
-  if not FileExists(pFileName) then
+  if (MustExist and not FileExists(pFileName)) then
+    exit
+  else if (not MustExist and not FileExists(pFileName)) then
+  begin
+    result := True;
     exit;
+  end;
+
   StartTime := GetTickCount;    
   repeat
     handle := OpenFile(PChar(pFileName),temp,OF_READWRITE);
