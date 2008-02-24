@@ -35,7 +35,7 @@ uses
   JvSimpleXML, GR32, SharpESkinManager, SharpEBaseControls, SharpEButton,
   GR32_Image, PngImage,
   // SharpE Units
-  SharpApi, uSharpBarAPI, SharpESkin, SharpEScheme, SharpEImage32, Buttons,
+  SharpApi, uSharpBarAPI, SharpESkin, SharpEScheme, Buttons,
   PngBitBtn;
 type
   TMainForm = class(TForm)
