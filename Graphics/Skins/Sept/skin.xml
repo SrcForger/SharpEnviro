@@ -193,7 +193,7 @@
     <full>
       <text>
         <draw>1</draw>
-        <maxwidth>w-26</maxwidth>
+        <maxwidth>w-28</maxwidth>
         <location>25,4</location>
         <name>Trebuchet MS</name>
         <bold>0</bold>
@@ -206,7 +206,7 @@
       </text>
       <icon>
         <draw>1</draw>
-        <size>16</size>
+        <size>16,16</size>
         <location>5,4</location>
       </icon>
       <spacing>2</spacing>
@@ -472,7 +472,7 @@
       </text>
       <icon>
         <draw>1</draw>
-        <size>13</size>
+        <size>13,13</size>
         <location>2,4</location>
       </icon>
       <spacing>2</spacing>
@@ -725,7 +725,7 @@
     <mini>
       <icon>
         <draw>1</draw>
-        <size>16</size>
+        <size>16,16</size>
         <location>3,4</location>
       </icon>
       <spacing>2</spacing>
@@ -978,7 +978,7 @@
   </taskitem>
   <button>
     <text>
-      <location>cw,ch-1</location>
+      <location>cw+iwh+2,ch</location>
       <name>Small Fonts</name>
       <size>7</size>
       <color>$tasktext</color>
@@ -986,6 +986,10 @@
       <shadowtype>Right</shadowtype>
       <shadowalpha>50</shadowalpha>
     </text>
+    <icon>
+      <size>16,16</size>
+      <location>cw-8,3</location>
+    </icon>    
     <location>0,2</location>
     <dimension>w,20</dimension>
     <normal>
@@ -1113,7 +1117,12 @@
     </disabled>
   </button>
   <progressbar>
+    <location>0,8,</location>
     <dimension>w,11</dimension>
+    <locationTL>0,2</locationTL>
+    <dimensionTL>w,11</dimensionTL>
+    <locationBL>0,13</locationBL>
+    <dimensionBL>w,13</dimensionBL>    
     <progress>
       <location>0,0</location>
       <dimension>w,10</dimension>
@@ -1508,12 +1517,14 @@
     </label>
   </menuitem>
   <font>
+    <locationTL>0,-3</locationTL>
+    <locationBL>0,7</locationBL>
     <small>
       <size>6</size>
       <name>Small Fonts</name>
       <bold>0</bold>
       <color>$tasktext</color>
-      <location>0,-2</location>
+      <location>0,2</location>
     </small>
     <medium>
       <name>Trebuchet MS</name>
@@ -1525,7 +1536,7 @@
       <name>Trebuchet MS</name>
       <size>11</size>
       <color>$tasktext</color>
-      <location>0,-3</location>
+      <location>0,-4</location>
     </big>
   </font>
 </sharpESkin>
