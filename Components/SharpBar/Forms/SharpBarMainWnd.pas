@@ -1367,7 +1367,7 @@ procedure TSharpBarMainForm.PluginManager1Click(Sender: TObject);
 var
   cfile: string;
 begin
-  cfile := SharpApi.GetCenterDirectory + '_Components\Module Manager.con';
+  cfile := SharpApi.GetCenterDirectory + '_Components\BarEdit.con';
   SharpCenterApi.CenterCommand(sccLoadSetting,
     PChar(cfile),
     PChar(inttostr(FBarID)));
