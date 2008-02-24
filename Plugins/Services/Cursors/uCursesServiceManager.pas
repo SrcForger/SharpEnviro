@@ -140,6 +140,7 @@ begin
     if (msg.wparam = Integer(suCursor)) or (msg.wparam = Integer(suScheme))
        or (msg.wparam = Integer(suSkin)) or (msg.wparam = Integer(suTheme)) then
     begin
+      SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
       FCursesSettings.Load;
       if length(trim(FCursesSettings.CurrentSkin)) > 0 then
       begin
