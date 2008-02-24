@@ -3,7 +3,7 @@
   <Sections>
     <ModuleManager>
       <Dll>_ComponentDlls\ModuleManager.dll</Dll>
-      <Icon>ModuleManager.png</Icon>
+      <Icon>..\ModuleAdd.png</Icon>
     </ModuleManager>
   </Sections>
 </SharpCenter>

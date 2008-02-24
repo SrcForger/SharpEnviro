@@ -3,7 +3,7 @@
   <Sections>
     <SharpDesk>
       <Dll>_Components\_Componentdlls\SharpDesk.dll</Dll>
-      <Icon>desktop.png</Icon>
+      <Icon>desktopEdit.png</Icon>
     </SharpDesk>
   </Sections>
 </SharpCenter>

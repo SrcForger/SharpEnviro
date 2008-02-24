@@ -6,7 +6,7 @@
     </Icons>
     <Desktop> 
       <Dll>_themedlls\Desktop.dll</Dll>
-      <Icon>_themedlls\Desktop.png</Icon>
+      <Icon>..\Desktop.png</Icon>
     </Desktop>
     <Curses> 
       <Dll>_themedlls\Curses.dll</Dll>
@@ -20,6 +20,10 @@
       <Dll>_themedlls\ThemeSkinList.dll</Dll>
       <Icon>_themedlls\ThemeSkinList.png</Icon>
     </Skin>
+	<Glass> 
+      <Dll>_themedlls\ThemeGlass.dll</Dll>
+      <Icon>_themedlls\Glass.png</Icon>
+    </Glass>
     <Wallpaper> 
       <Dll>_themedlls\Wallpaper.dll</Dll>
 	  <Icon>_themedlls\Wallpaper.png</Icon>

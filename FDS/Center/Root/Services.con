@@ -3,7 +3,7 @@
   <Sections>
     <Services>
       <Dll>_Components\_Componentdlls\ServiceManager.dll</Dll>
-      <Icon>ServiceManager.png</Icon>
+      <Icon>Services.png</Icon>
     </Services>
   </Sections>
 </SharpCenter>

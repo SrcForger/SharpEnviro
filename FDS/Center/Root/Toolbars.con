@@ -3,7 +3,7 @@
   <Sections>
     <SharpBarList>
       <Dll>_Components\_Componentdlls\SharpBarList.dll</Dll>
-      <Icon>toolbars.png</Icon>
+      <Icon>toolbarEdit.png</Icon>
     </SharpBarList>
   </Sections>
 </SharpCenter>
