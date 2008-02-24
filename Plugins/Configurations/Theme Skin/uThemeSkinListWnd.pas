@@ -367,9 +367,12 @@ begin
     s := XmlGetSkinFile(FTheme);
     forcedirectories(ExtractFilePath(s));
 
-    xml.Root.Clear;
-    xml.Root.Name := 'SharpEThemeSkin';
-    xml.Root.Items.Add('Skin', FDefaultSkin);
+    xml.LoadFromFile(s);
+
+    if xml.Root.Items.ItemNamed['skin'] <> nil then
+      xml.Root.Items.ItemNamed['skin'].Value := FDefaultSkin else
+      xml.Root.Items.Add('Skin', FDefaultSkin);
+      
     xml.SaveToFile(s);
   finally
     xml.Free;
