@@ -243,9 +243,20 @@ const
   ALL_THEME_PARTS = [tpSkin, tpScheme, tpInfo, tpIconSet, tpDesktopIcon,
     tpDesktopAnimation, tpWallpaper, tpSkinFont];
 
-  // ##########################################
-  //   COLOR CONVERTING
-  // ##########################################
+// ##########################################
+//   COLOR CONVERTING
+// ##########################################
+
+function SchemeCodeToColor(pCode: integer): integer;
+begin
+  result := -1;
+  if pCode < 0 then begin
+    if abs(pCode) <= length(Theme.Scheme.Colors) then
+      result := Theme.Scheme.Colors[abs(pCode) - 1].Color;
+  end
+  else
+    result := pCode;
+end;
 
 function ParseColor(AColorStr: PChar): Integer;
 var
@@ -343,8 +354,9 @@ begin
 
   if (iStart = 0) or (iEnd = 0) then begin
     // try to convert
-    if TryStrToInt(AColorStr, n) then begin
-      result := n;
+    if TryStrToInt(AColorStr, n) then
+    begin
+      result := SchemeCodeToColor(n);
       exit;
     end
     else begin
@@ -455,17 +467,6 @@ function GetSchemeColorIndexByTag(pTag: string): Integer; forward;
 function Initialized: Boolean;
 begin
   Result := bInitialized;
-end;
-
-function SchemeCodeToColor(pCode: integer): integer;
-begin
-  result := -1;
-  if pCode < 0 then begin
-    if abs(pCode) <= length(Theme.Scheme.Colors) then
-      result := Theme.Scheme.Colors[abs(pCode) - 1].Color;
-  end
-  else
-    result := pCode;
 end;
 
 function ColorToSchemeCode(pColor: integer): integer;
@@ -894,11 +895,8 @@ begin
             tmpColor := Value('color', inttostr(Theme.Scheme.Colors[Index].Color));
 
             Index := GetSchemeColorIndexByTag(pchar(sTag));
-            if Index >= 0 then begin
-              if strtoint(tmpColor) < 0 then
-              Theme.Scheme.Colors[Index].Color := SchemeCodeToColor(strtoint(tmpColor)) else
+            if Index >= 0 then
               Theme.Scheme.Colors[Index].Color := ParseColor(PChar(tmpColor));
-            end;
           end;
       except
       end;
