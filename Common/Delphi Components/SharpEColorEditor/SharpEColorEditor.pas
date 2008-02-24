@@ -796,7 +796,7 @@ begin
   FSliderUpdateMode := sumAll;
   InitialiseColSliders;
 
-  SetValue(FValue);
+  //SetValue(FValue);
 end;
 
 procedure TSharpEColorEditor.ResizeDefineValPage;
@@ -1311,6 +1311,8 @@ begin
 
           FSliderUpdateMode := sumAll;
           InitialiseColSliders;
+
+          Caption := FCaption;
           
         finally
           SliderEvents(True);
