@@ -36,6 +36,9 @@ type
 
     FLastTab: Integer;
     FLastColorEditor: TSharpEColorEditor;
+    FDisplayPercent: boolean;
+    FValueMin: Integer;
+    FValueMax: Integer;
 
     procedure SetColorAsTColor(const Value: TColor);
     procedure SetColorCode(const Value: Integer);
@@ -52,6 +55,10 @@ type
     procedure SetValue(const Value: Integer);
     procedure SetValueText(const Value: string);
     procedure SetVisible(const Value: Boolean);
+    procedure SetDisplayPercent(const Value: boolean);
+    function GetDisplayPercent: boolean;
+    procedure SetValueMax(const Value: Integer);
+    procedure SetValueMin(const Value: Integer);
 
   public
     constructor Create(Collection: TCollection); override;
@@ -75,7 +82,12 @@ type
     property Description: string read FDescription write SetDescription;
     property ValueText: string read FValueText write SetValueText;
     property Value: Integer read FValue write SetValue;
+    property ValueMin: Integer read FValueMin write SetValueMin;
+    property ValueMax: Integer read FValueMax write SetValueMax;
     property Visible: Boolean read FVisible write SetVisible;
+
+    property DisplayPercent: boolean read GetDisplayPercent write
+      SetDisplayPercent;
 
     property ColorEditor: TSharpEColorEditor read FColorEditor write
       FColorEditor;
@@ -193,6 +205,7 @@ end;
 constructor TSharpEColorEditorExItem.Create(Collection: TCollection);
 begin
   FVisible := True;
+  FValueMax := 255;
   inherited;
 end;
 
@@ -233,6 +246,14 @@ end;
 function TSharpEColorEditorExItem.GetDisplayName: string;
 begin
   Result := 'Item' + IntToStr(id);
+end;
+
+function TSharpEColorEditorExItem.GetDisplayPercent: boolean;
+begin
+  if FColorEditor <> nil then
+    Result := FColorEditor.DisplayPercent
+  else
+    Result := False;
 end;
 
 function TSharpEColorEditorExItem.GetNamePath: string;
@@ -355,6 +376,14 @@ begin
   end;
 end;
 
+procedure TSharpEColorEditorExItem.SetDisplayPercent(const Value: boolean);
+begin
+  if FColorEditor <> nil then begin
+    if FColorEditor.DisplayPercent <> Value then
+      FColorEditor.DisplayPercent := Value;
+  end;
+end;
+
 procedure TSharpEColorEditorExItem.SetValue(const Value: Integer);
 begin
   FValue := Value;
@@ -373,6 +402,26 @@ begin
   if FColorEditor <> nil then begin
     if FColorEditor.ValueEditorType <> Value then
       FColorEditor.ValueEditorType := Value;
+  end;
+end;
+
+procedure TSharpEColorEditorExItem.SetValueMax(const Value: Integer);
+begin
+  FValueMax := Value;
+
+  if FColorEditor <> nil then begin
+    if FColorEditor.ValueMax <> Value then
+      FColorEditor.ValueMax := Value;
+  end;
+end;
+
+procedure TSharpEColorEditorExItem.SetValueMin(const Value: Integer);
+begin
+  FValueMin := Value;
+
+  if FColorEditor <> nil then begin
+    if FColorEditor.ValueMin <> Value then
+      FColorEditor.ValueMin := Value;
   end;
 end;
 
@@ -532,7 +581,15 @@ begin
       tmp.Caption := FItems.Item[i].Title;
       tmp.ValueText := FItems.Item[i].FValueText;
       tmp.Value := FItems.Item[i].Value;
+
+      tmp.ValueMax := FItems.Item[i].ValueMax;
+      if tmp.ValueMax = 0 then
+        tmp.ValueMax := 255;
+      
+
+      tmp.ValueMin := FItems.Item[i].ValueMin;
       tmp.Description := FItems.Item[i].Description;
+      tmp.DisplayPercent := FItems.Item[i].DisplayPercent;
 
       tmp.Expanded := FItems.Item[i].Expanded;
       tmp.Name := 'Item' + intToStr(i);

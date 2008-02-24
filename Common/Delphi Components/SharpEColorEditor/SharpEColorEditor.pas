@@ -76,6 +76,7 @@ type
     FValue: Integer;
     FOnUiChange: TNotifyEvent;
     FVisible: boolean;
+    FDisplayPercent: boolean;
 
     procedure CreateControls(Sender: TObject);
     procedure SetExpanded(const Value: Boolean);
@@ -128,6 +129,9 @@ type
 
     procedure SetValue(const Value: Integer);
     procedure SetVisible(const Value: boolean);
+    procedure SetDisplayPercent(const Value: boolean);
+    procedure SetValueMax(const Value: Integer);
+    procedure SetValueMin(const Value: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -148,6 +152,9 @@ type
     property Align;
     property ParentColor;
 
+    property DisplayPercent: boolean read FDisplayPercent write
+      SetDisplayPercent;
+
     property CollapseHeight: Integer read GetCollapseHeight;
     property ExpandedHeight: Integer read GetExpandedHeight;
     property Expanded: Boolean read GetExpanded write SetExpanded;
@@ -160,7 +167,10 @@ type
 
     property Description: string read FDescription write SetDescription;
     property ValueText: string read FValueText write FValueText;
+
     property Value: Integer read FValue write SetValue;
+    property ValueMin: Integer read FValueMin write SetValueMin;
+    property ValueMax: Integer read FValueMax write SetValueMax;
 
     property Visible: boolean read FVisible write SetVisible;
 
@@ -812,7 +822,6 @@ begin
   Self.Canvas.Font.Assign(Self.Font);
   iWidthLT := Self.Canvas.TextWidth(FValueText + ':XX');
   iWidthVal := Self.Canvas.TextWidth('XXXXXXX');
-  iSliderWidth := (tmpTab.Width - (iWidthVal * 2));
 
   // Create value description label
   if FDescription <> '' then begin
@@ -829,6 +838,8 @@ begin
   end
   else
     iY := iSpacer;
+
+  iSliderWidth := (tmpTab.Width -Self.Canvas.TextWidth(FValueText))-(iSpacer * 6);
 
   rLeftText := Rect(iSpacer, iSpacer, iWidthLT {+iSpacer}, iY + 10);
   rLeftSlider := Rect(rLeftText.Right {+iSpacer}, iY, rLeftText.Right +
@@ -962,9 +973,14 @@ begin
         end;
       vetValue: begin
 
-          val := FValueMax - FValue;
-          pct := (val / FValueMax ) * 100;
-          s := intTostr(round(pct))+'%';
+          if FDisplayPercent then begin
+            val := FValueMax - FValue;
+            pct := (val / FValueMax ) * 100;
+            s := intTostr(round(pct))+'%';
+          end else begin
+            s := IntToStr(fvalue) + ' / ' + IntToStr(FValueMax);
+          end;
+
           FNameLabel.Caption := Format('%s (%s):', [FCaption, s]);
         end;
       vetBoolean: begin
@@ -1181,9 +1197,29 @@ begin
   ResizeEvent(nil);
 end;
 
+procedure TSharpEColorEditor.SetValueMax(const Value: Integer);
+begin
+  FValueMax := Value;
+  FValueSlider.Max := Value;
+  ResizeEvent(nil);
+end;
+
+procedure TSharpEColorEditor.SetValueMin(const Value: Integer);
+begin
+  FValueMin := Value;
+  FValueSlider.Min := Value;
+  ResizeEvent(nil);
+end;
+
 procedure TSharpEColorEditor.SetDescription(const Value: string);
 begin
   FDescription := Value;
+  ResizeEvent(nil);
+end;
+
+procedure TSharpEColorEditor.SetDisplayPercent(const Value: boolean);
+begin
+  FDisplayPercent := Value;
   ResizeEvent(nil);
 end;
 
