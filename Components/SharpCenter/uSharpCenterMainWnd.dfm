@@ -1021,7 +1021,6 @@ object SharpCenterWnd: TSharpCenterWnd
           Colors.CheckColor = 15528425
           ItemHeight = 30
           OnClickItem = lbTreeClickItem
-          OnGetCellCursor = lbTreeGetCellCursor
           OnGetCellColor = lbTreeGetCellColor
           OnGetCellText = lbTreeGetCellText
           AutosizeGrid = False
@@ -1645,7 +1644,7 @@ object SharpCenterWnd: TSharpCenterWnd
               157
               134)
             object PngSpeedButton2: TPngSpeedButton
-              Left = -882
+              Left = -886
               Top = 35
               Width = 23
               Height = 22
