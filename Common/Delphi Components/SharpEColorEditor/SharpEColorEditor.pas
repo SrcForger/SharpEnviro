@@ -795,6 +795,8 @@ begin
 
   FSliderUpdateMode := sumAll;
   InitialiseColSliders;
+
+  SetValue(FValue);
 end;
 
 procedure TSharpEColorEditor.ResizeDefineValPage;
@@ -1299,9 +1301,6 @@ begin
         SliderEvents(False);
         try
 
-          //FValue := XmlColorToSchemeCode(Value);
-          //FValueAsTColor := XmlSchemeCodeToColor(Value);
-
           if FValue < 0 then begin
             FValueAsTColor := XmlSchemeCodeToColor(Value);
           end else
@@ -1312,7 +1311,7 @@ begin
 
           FSliderUpdateMode := sumAll;
           InitialiseColSliders;
-
+          
         finally
           SliderEvents(True);
         end;
