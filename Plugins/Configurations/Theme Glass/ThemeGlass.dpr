@@ -87,7 +87,7 @@ end;
 procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
   var ATitle: string; var ADescription: string);
 begin
-  AName := 'Skin Glass';
+  AName := 'Glass';
   ATitle := Format('Glass Skin Configuration for "%s"',[APluginID]);
   ADescription := 'Define glass options for the currently loaded glass skin.';
 end;
