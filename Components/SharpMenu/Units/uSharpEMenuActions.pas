@@ -30,6 +30,7 @@ interface
 uses Windows,
      Messages,
      Classes,
+     dialogs,
      Contnrs,
      ShellApi,
      DateUtils,
@@ -445,49 +446,43 @@ begin
 end;
 
 procedure TSharpEMenuActions.UpdateDynamicDriveList(var pDynList : TObjectList; pDriveNames : boolean);
-
-  function DriveExists(DriveByte: Byte): Boolean;
-  begin
-    Result := GetLogicalDrives and (1 shl DriveByte) <> 0;
-  end;
-
-  function DriveType(DriveByte: Byte): String;
-  begin
-    case GetDriveType(PChar(Chr(DriveByte + Ord('A')) + ':\')) of
-      DRIVE_UNKNOWN: Result := 'Unknown';
-      DRIVE_NO_ROOT_DIR: Result := 'NO ROOT DIR';
-      DRIVE_REMOVABLE: Result := 'Removeable Drive';
-      DRIVE_FIXED: Result := 'Hard Drive';
-      DRIVE_REMOTE: Result := 'Network Drive';
-      DRIVE_CDROM: Result := 'CD-ROM/DVD';
-      DRIVE_RAMDISK: Result := 'RAM Disk';
-    else
-      Result := 'Unknown Type';
-    end;
-  end;
+const
+  DRIVE_UNKNOWN = 0;
+  DRIVE_NO_ROOT_DIR = 1;
+  DRIVE_REMOVABLE = 2;
+  DRIVE_FIXED = 3;
+  DRIVE_REMOTE = 4;
+  DRIVE_CDROM = 5;
+  DRIVE_RAMDISK = 6;
 
 var
-  i,n : integer;
+  n : integer;
   item : TSharpEMenuItem;
   pMenu : TSharpEMenu;
   found : boolean;
   s,sn : String;
-  Tmp: array [0..104] of Char;
+  Drives: array [0..128] of Char;
   Info: TSHFileInfo;
-  P: PChar;
+  pDrive: PChar;
   SC : String;
 begin
   pMenu := TSharpEMenu(FOwner);
 
-  try
-    FillChar(Tmp[0], SizeOf(Tmp), #0);
-    GetLogicalDriveStrings(SizeOf(Tmp), Tmp);
-    P := Tmp;
-    while P^ <> #0 do
+    n := GetLogicalDriveStrings(SizeOf(Drives), Drives);
+    if n = 0 then Exit;
+    if n > SizeOf(Drives) then
+    raise Exception.Create(SysErrorMessage(ERROR_OUTOFMEMORY));
+
+    pDrive := Drives;
+    while pDrive^ <> #0 do
     begin
-      SC := P;
-      Inc(P, 4);
+      SC := pDrive;
+      Inc(pDrive, 4);
+
+      if GetDriveType(pDrive) > 2 then begin
+
       SHGetFileInfo(PChar(SC), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or SHGFI_TYPENAME);
+
       found := false;
       for n := pDynList.Count - 1 downto 0  do
       begin
@@ -517,14 +512,7 @@ begin
         end;
 
     end;
-  except
-  end;
-  exit;
-
-  for i := 0 to 25 do
-      if DriveExists(i) then
-      begin
-      end;
+    end;
 end;
 
 procedure TSharpEMenuActions.UpdateObjectList(var DynList: TObjectList);
