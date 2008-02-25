@@ -1320,12 +1320,12 @@
   </menu>
   <menuitem>
     <icon>
-      <drawicon>1</drawicon>
+      <draw>1</draw>
       <dimension>16,16</dimension>
       <location>4,3</location>
     </icon>
     <text>
-      <drawtext>1</drawtext>
+      <draw>1</draw>
       <maxwidth>w-40</maxwidth>
       <location>23,5</location>
       <name>Small Fonts</name>
