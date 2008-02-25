@@ -239,7 +239,7 @@ begin
   end;
 end;
 
-procedure StopAll();
+procedure StopAll(bReboot: Boolean = False);
 var
   i: Integer;
   modData: TComponentData;
@@ -249,7 +249,8 @@ begin
     modData := TComponentData(lstComponents.Items[i]);
     if (modData.Running) and (modData.MetaData.DataType = tteService) then
       StopService(modData)
-    else if modData.MetaData.DataType = tteComponent then begin
+    else if (modData.MetaData.DataType = tteComponent) then begin
+      if bReboot and (modData.MetaData.Name = 'SharpCore') then Continue;      
       sName := modData.MetaData.Name;
       CloseComponent(PChar(sName));
       modData.Running := False;
@@ -319,10 +320,9 @@ begin
             ID_EXIT: SendMessage(hWnd, WM_CLOSE, 0, 0);
             ID_SHUTDOWN: begin
                 StopAll;
-                SendMessage(hWnd, WM_CLOSE, 0, 0);
               end;
             ID_REBOOT: begin
-                StopAll;
+                StopAll(True);
                 bDoStartup := False;
                 Sleep(5000);
                 RunAll;
