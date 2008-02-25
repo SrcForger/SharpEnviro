@@ -42,6 +42,8 @@ uses
   Graphics,
   Registry,
   Contnrs,
+  ShlObj,
+  ActiveX,
 
   // Common
   SharpApi,
@@ -67,7 +69,7 @@ type
   end;
 
 type
-  TExecItem= class
+  TExecItem = class
     Text: string;
     SaveHistory: Boolean;
     Elevate: Boolean;
@@ -75,7 +77,7 @@ type
 
   TSharpExec = class(TThread)
   private
-    FDebugText: String;
+    FDebugText: string;
     FUseDebug: Boolean;
     FExecList: TObjectList;
 
@@ -94,13 +96,13 @@ type
     procedure AddProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False);
     function ProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False): Boolean;
     property UseDebug: Boolean read FUseDebug write FUseDebug;
-    property DebugText: String read FDebugText write FDebugText;
+    property DebugText: string read FDebugText write FDebugText;
 
     property AppPathList: TStringList read FAppPathList write
       FAppPathList;
     procedure ReloadLists;
   protected
-   procedure Execute; override;
+    procedure Execute; override;
   private
     function ForceForegroundWindow(hwnd: Thandle; var oldhwnd: THandle): Boolean;
     function ExecuteText(text: string; SaveHistory: Boolean; Elevate: Boolean): boolean;
@@ -109,21 +111,26 @@ type
     function IsDirectory(const FileName: string): Boolean;
     function StrtoFileandCmd(str: string): TExecFileCommandl;
     procedure AddFilesToList(strl: tstrings; directory: string; extension:
-      string; fullpath:boolean);
+      string; fullpath: boolean);
     function FileExistsIn(FileName: string; location: string; extension:
       string): string;
     function ShellOpenFile(hWnd: HWND; AFileName, AParams, ADefaultDir: string; Elevate: Boolean):
       integer;
+
     procedure SaveRecentItem(Str: string; SaveHistory: Boolean);
     procedure SaveMostUsedItem(Str: string; SaveHistory: Boolean);
 
     procedure PopulateAppPathsList;
-    procedure ExpandCommonFiles(var AText:String);
-    function ExpandAliases(var AText:String; var AElevate:Boolean):Boolean;
+    procedure ExpandCommonFiles(var AText: string);
+    function ExpandAliases(var AText: string; var AElevate: Boolean): Boolean;
+    function CreateProcessExecute(APath : String):Boolean;
   end;
 
 const
   capppaths = 'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths';
+
+  IID_IPersistFile: TGUID = (
+    D1:$0000010B;D2:$0000;D3:$0000;D4:($C0,$00,$00,$00,$00,$00,$00,$46));
 
   // ** ERROR CONSTANTS **
   cErrorFormula = 'Error in Formula';
@@ -162,7 +169,7 @@ begin
     Result.Filename := '';
     Result.Commandline := '';
 
-  // First check if the first char is a quote
+    // First check if the first char is a quote
     if str[1] = '"' then begin
       s := Copy(str, 2, length(str));
       i := Pos('"', s);
@@ -172,10 +179,10 @@ begin
       Exit;
     end;
 
-  // Remove quotes from quoted string
+    // Remove quotes from quoted string
     str := StrRemoveChars(str, ['"']);
 
-  // Get number of spaces in str
+    // Get number of spaces in str
     tokens := TStringList.Create;
     try
       StrTokenToStrings(str, ' ', tokens);
@@ -199,7 +206,7 @@ begin
         // if the string is now an actual file then return the remainder as a command
         if FileExists(filetoexecute) and (isDirectory(filetoexecute) = false) then begin
           if rs then begin
-            StrReplace(str, tmp, '',[rfIgnoreCase]);
+            StrReplace(str, tmp, '', [rfIgnoreCase]);
             str := filetoexecute + str;
           end;
 
@@ -227,10 +234,10 @@ end;
 ==============================================================================}
 
 procedure TSharpExec.AddFilesToList(strl: tstrings; directory: string;
-  extension: string; fullpath:boolean);
+  extension: string; fullpath: boolean);
 begin
   if fullpath then
-    AdvBuildFileList(PathAddSeparator(directory) + extension, faAnyFile, strl,amAny,[flFullNames]) else
+    AdvBuildFileList(PathAddSeparator(directory) + extension, faAnyFile, strl, amAny, [flFullNames]) else
     AdvBuildFileList(PathAddSeparator(directory) + extension, faAnyFile, strl);
 end;
 
@@ -245,7 +252,7 @@ end;
 
 procedure TSharpExec.AddProcessString(Text: string; SaveHistory, Elevate: Boolean);
 var
-  item : TExecItem;
+  item: TExecItem;
 begin
   item := TExecItem.Create;
   item.Text := Text;
@@ -297,17 +304,92 @@ end;
 
 procedure TSharpExec.Execute;
 var
-  item : TExecItem;
+  item: TExecItem;
 begin
   while not Terminated do
   begin
     while FExecList.Count > 0 do
     begin
       item := TExecItem(FExecList.Items[0]);
-      ProcessString(item.Text,item.SaveHistory,item.Elevate);
+      ProcessString(item.Text, item.SaveHistory, item.Elevate);
       FExecList.Remove(item);
     end;
     Suspend;
+  end;
+end;
+
+function TSharpExec.CreateProcessExecute(APath : String):Boolean;
+var
+  StartInfo : TStartupInfo;
+  ProcInfo : TProcessInformation;
+  CreateOK : Boolean;
+begin
+  { fill with known state }
+  Debug('Attempting to execute with Create Process',DMT_INFO);
+
+  Result := True;
+  FillChar(StartInfo,SizeOf(TStartupInfo),#0);
+  FillChar(ProcInfo,SizeOf(TProcessInformation),#0);
+  StartInfo.cb := SizeOf(TStartupInfo);
+  CreateOK := CreateProcess(nil, PChar(APath), nil, nil,False,
+              CREATE_NEW_PROCESS_GROUP+NORMAL_PRIORITY_CLASS,
+              nil, nil, StartInfo, ProcInfo);
+
+  if Not(CreateOK) then begin
+    Result := False;
+    Debug('Unable to execute using CreateProcess. Continue with execution.',DMT_INFO);
+  end else
+    Debug('Executed Successfully ',DMT_INFO);
+
+  CloseHandle(ProcInfo.hProcess);
+  CloseHandle(ProcInfo.hThread);
+end;
+
+function GetFilePathFromLink(const sLink: String):
+    WideString;
+var
+  sWidePath: Array [0..260] of WideChar;
+  sFoundPath: Array [0..MAX_PATH] of WideChar;
+  AShellLink : IShellLinkW;
+  wfd : _WIN32_FIND_DATAW;
+  PersistFile : IPersistFile;
+begin
+  Result := '';
+  (* Create a shellLink object *)
+  if CoCreateInstance(CLSID_ShellLink,
+                     nil,
+                     CLSCTX_INPROC_SERVER,
+                     IID_IShellLinkW,
+                     AShellLink) <> S_OK then
+    raise Exception.Create('unable to create a ShellLink');
+
+
+  (* Give the shell link a path to resolve *)
+  AShellLink.SetPath(PWideChar(sLink));
+  if AShellLink.Resolve(HInstance,SLR_UPDATE) = S_OK then
+  begin
+
+    (* Use the shelllink object to gain access to its PersistFile interface *)
+    if Failed(AShellLink.QueryInterface(IID_IPersistFile,PersistFile)) then
+      raise Exception.Create('Unable to create an IPersistFile instance');
+
+    (* Load the file into the PersistFile object *)
+    // we must convert the ansi string to be a widestring to pass to 'PersistFile.Load'
+    MultiByteToWideChar(CP_ACP,
+                        MB_PRECOMPOSED,
+                        PChar(sLink),
+                        -1,
+                        @sWidePath,
+                        MAX_PATH);
+    if PersistFile.Load(sWidePath,STGM_READ) <> S_OK then
+      raise Exception.Create('unable to load file');
+
+    (* Now the file is loaded we can ask the OS to provide us with its
+       original path *)
+    if AShellLink.GetPath(sFoundPath,MAX_PATH,wfd,SLGP_RAWPATH) <> NOERROR  then
+      raise Exception.Create('unable to get path');
+
+    result := sFoundPath;
   end;
 end;
 
@@ -331,112 +413,123 @@ begin
   try
 
     Debug('Passed Execution Text: ' + text, DMT_TRACE);
-    
+
     // *** PROCESS THE TEXT BASED ON THE FOLLOWING CONDITIONS ***
 
-    // New Vista control panel
-    if (Pos('microsoft.', LowerCase(text)) = 1) then begin
-        Debug('Execute CPL:', DMT_TRACE);
+    // First try create process
+    if not(Elevate) then
+      if CreateProcessExecute(text) then begin
 
-        if ShellOpenFile(Handle, GetWindowsSystemFolder+'/control.exe', '/name ' + text, '', Elevate) = 1 then begin
+        SaveMostUsedItem(text, SaveHistory);
+        SaveRecentItem(text, SaveHistory);
 
-        // Save to recent item list
-          SaveMostUsedItem(text, SaveHistory);
-          SaveRecentItem(text, SaveHistory);
-
-          Result := True;
-          Exit;
-        end;
-      end
-    else
-
-    // LNK files
-    if (ExtractFileExt(text) = '.lnk') then begin
-      if JclShell.ShellLinkResolve(text, link) = S_OK then begin
-        if ShellOpenFile(Handle, link.Target, link.Arguments, link.WorkingDirectory, Elevate) = 1 then begin
-
-        // Save to recent item list
-          SaveMostUsedItem(text, SaveHistory);
-          SaveRecentItem(text, SaveHistory);
-
-          Result := True;
-          Exit;
-        end;
-      end;
-    end
-    else
-    if ((ExtractFileExt(text) = '.sip') or (ExtractFileExt(text) = '.sescript')) then begin
-      if ShellOpenFile(Handle,GetSharpeDirectory+'SharpScript.exe','"' + text + '"',GetSharpeDirectory, Elevate) = 1 then begin
         Result := True;
         Exit;
       end;
 
+    // New Vista control panel
+    if (Pos('microsoft.', LowerCase(text)) = 1) then begin
+      Debug('Execute CPL:', DMT_TRACE);
+
+      if ShellOpenFile(Handle, GetWindowsSystemFolder + '/control.exe', '/name ' + text, '', Elevate) = 1 then begin
+
+        // Save to recent item list
+        SaveMostUsedItem(text, SaveHistory);
+        SaveRecentItem(text, SaveHistory);
+
+        Result := True;
+        Exit;
+      end;
     end
     else
 
-    // ** SHELL: PATHS **
-      if (Pos('shell:', LowerCase(text)) = 1) then begin
-        Debug('Execute: SHELL:', DMT_TRACE);
+      // LNK files
+      if (ExtractFileExt(text) = '.lnk') then begin
+        if JclShell.ShellLinkResolve(text, link) = S_OK then begin
+          if ShellOpenFile(Handle, link.Target, link.Arguments, link.WorkingDirectory, Elevate) = 1 then begin
 
-        if ShellOpenFile(Handle, GetAltExplorer, text, '', Elevate) = 1 then begin
+            // Save to recent item list
+            SaveMostUsedItem(text, SaveHistory);
+            SaveRecentItem(text, SaveHistory);
 
-        // Save to recent item list
-          SaveMostUsedItem(text, SaveHistory);
-          SaveRecentItem(text, SaveHistory);
-
-          Result := True;
-          Exit;
+            Result := True;
+            Exit;
+          end;
         end;
       end
-      else if PathIsUNC(PathAddSeparator(text)) or (isdirectory(text)) then begin
-        Debug('ExecuteType: Path', DMT_TRACE);
-        iResult := ShellOpenFile(Handle, GetAltExplorer, text, '', Elevate);
+      else
+        if ((ExtractFileExt(text) = '.sip') or (ExtractFileExt(text) = '.sescript')) then begin
+          if ShellOpenFile(Handle, GetSharpeDirectory + 'SharpScript.exe', '"' + text + '"', GetSharpeDirectory, Elevate) = 1 then begin
+            Result := True;
+            Exit;
+          end;
 
-        if (iResult = 1) or (iResult = SE_ERR_ACCESSDENIED) then begin
+        end
+        else
 
-        // Save to recent item list
-          SaveMostUsedItem(text, SaveHistory);
-          SaveRecentItem(text, SaveHistory);
+          // ** SHELL: PATHS **
+          if (Pos('shell:', LowerCase(text)) = 1) then begin
+            Debug('Execute: SHELL:', DMT_TRACE);
 
-          Result := True;
-          Exit;
-        end;
-      end
-      else if (Pos('http',
-        LowerCase(text)) = 1) or (Pos('www', LowerCase(text)) =
-        1)
-        or (Pos('irc', LowerCase(text)) = 1) or (Pos('ftp', LowerCase(text)) =
-        1)
-        or
-        (Pos('news', LowerCase(text)) = 1) or (Pos('telnet', LowerCase(text))
-        =
-        1) then begin
-        Debug('ExecuteType: Internet Protocol', DMT_TRACE);
+            if ShellOpenFile(Handle, GetAltExplorer, text, '', Elevate) = 1 then begin
 
-      //if ShellExecute(Handle, 'open', pchar(text), nil, nil, SW_SHOWNORMAL);
-        if ShellOpenFile(handle, text, '', '', Elevate) = 1 then begin
+              // Save to recent item list
+              SaveMostUsedItem(text, SaveHistory);
+              SaveRecentItem(text, SaveHistory);
 
-        // Save to recent/used item list
-          SaveMostUsedItem(text, SaveHistory);
-          SaveRecentItem(text, SaveHistory);
+              Result := True;
+              Exit;
+            end;
+          end
+          else if PathIsUNC(PathAddSeparator(text)) or (isdirectory(text)) then begin
+            Debug('ExecuteType: Path', DMT_TRACE);
+            iResult := ShellOpenFile(Handle, GetAltExplorer, text, '', Elevate);
 
-          Result := True;
-          Exit;
-        end;
-      end
-      else if ((ExtractFileExt(text) = '.msc') and (Pos('mmc',lowercase(text)) <> 0)) then  begin
-        Debug('ExecuteType: MSC Console', DMT_TRACE);
+            if (iResult = 1) or (iResult = SE_ERR_ACCESSDENIED) then begin
 
-        if ShellOpenFile(Handle, GetWindowsSystemFolder + '\mmc.exe',
-          GetWindowsSystemFolder + '\' + ExtractFileName(text), '', Elevate) = 1 then begin
+              // Save to recent item list
+              SaveMostUsedItem(text, SaveHistory);
+              SaveRecentItem(text, SaveHistory);
 
-          SaveMostUsedItem(text, SaveHistory);
-          SaveRecentItem(text, SaveHistory);
+              Result := True;
+              Exit;
+            end;
+          end
+          else if (Pos('http',
+            LowerCase(text)) = 1) or (Pos('www', LowerCase(text)) =
+            1)
+            or (Pos('irc', LowerCase(text)) = 1) or (Pos('ftp', LowerCase(text)) =
+            1)
+            or
+            (Pos('news', LowerCase(text)) = 1) or (Pos('telnet', LowerCase(text))
+            =
+            1) then begin
+            Debug('ExecuteType: Internet Protocol', DMT_TRACE);
 
-          Result := True;
-          Exit;
-        end;
-      end;
+            //if ShellExecute(Handle, 'open', pchar(text), nil, nil, SW_SHOWNORMAL);
+            if ShellOpenFile(handle, text, '', '', Elevate) = 1 then begin
+
+              // Save to recent/used item list
+              SaveMostUsedItem(text, SaveHistory);
+              SaveRecentItem(text, SaveHistory);
+
+              Result := True;
+              Exit;
+            end;
+          end
+          else if ((ExtractFileExt(text) = '.msc') and (Pos('mmc', lowercase(text)) <> 0)) then begin
+            Debug('ExecuteType: MSC Console', DMT_TRACE);
+
+            if ShellOpenFile(Handle, GetWindowsSystemFolder + '\mmc.exe',
+              GetWindowsSystemFolder + '\' + ExtractFileName(text), '', Elevate) = 1 then begin
+
+              SaveMostUsedItem(text, SaveHistory);
+              SaveRecentItem(text, SaveHistory);
+
+              Result := True;
+              Exit;
+            end;
+          end;
 
     // Create a temp string to try and split the text into a file
     // and a command if applicable. Also searches paths for some
@@ -496,7 +589,7 @@ end;
 
 function TSharpExec.ProcessString(Text: string; SaveHistory: Boolean = True; Elevate: Boolean = False): Boolean;
 var
-  s:String;
+  s: string;
 begin
   Result := False;
   s := Trim(Text);
@@ -512,9 +605,8 @@ begin
   // Expand Common Files - Scans the text and expands the filename
   if (Pos('shell:', LowerCase(text)) <> 1) then begin
 
-    
-    if Not(ExpandAliases(Text, Elevate)) then
-    ExpandCommonFiles(Text);
+    if not (ExpandAliases(Text, Elevate)) then
+      ExpandCommonFiles(Text);
   end;
   Result := ExecuteText(Text, SaveHistory, Elevate);
   BarMsg('scmd', '_execupdate');
@@ -586,7 +678,7 @@ begin
 
   // Populate the StringList
   templist := TStringList.Create;
-  AddFilesToList(templist, location, extension,false);
+  AddFilesToList(templist, location, extension, false);
 
   try
 
@@ -638,7 +730,7 @@ end;
 function TSharpExec.ShellOpenFile(hWnd: HWND; AFileName, AParams, ADefaultDir:
   string; Elevate: Boolean): integer;
 var
-  sOperation: String;
+  sOperation: string;
 begin
   Debug('FileName: ' + AFileName, DMT_TRACE);
   Debug('Params: ' + AParams, DMT_TRACE);
@@ -655,13 +747,13 @@ begin
   end;
 
   if FUseDebug then begin
-    FDebugText := Format('File: %s -- Param: %s -- Dir: %s',[AFileName, AParams, ADefaultDir]);
+    FDebugText := Format('File: %s -- Param: %s -- Dir: %s', [AFileName, AParams, ADefaultDir]);
     Result := 1;
   end else
     result := shellapi.ShellExecute(hWnd, PChar(sOperation), pChar(AFileName),
-    pChar(AParams),
-    pChar(ADefaultDir),
-    SW_SHOWNORMAL);
+      pChar(AParams),
+      pChar(ADefaultDir),
+      SW_SHOWNORMAL);
   case result of
     0: Debug('The operating system is out of memory or resources.', DMT_ERROR);
     ERROR_FILE_NOT_FOUND: Debug('The specified file was not found.', DMT_ERROR);
@@ -698,7 +790,7 @@ procedure TSharpExec.SaveMostUsedItem(Str: string; SaveHistory: Boolean);
 begin
   if SaveHistory then begin
     UsedItemList.Add(Str);
-    Debug('Add to most used items: ' + Str,DMT_INFO);
+    Debug('Add to most used items: ' + Str, DMT_INFO);
 
     UsedItemList.Save;
   end;
@@ -708,7 +800,7 @@ procedure TSharpExec.SaveRecentItem(Str: string; SaveHistory: Boolean);
 begin
   if SaveHistory then begin
     RecentItemList.Add(Str);
-    Debug('Add to recent items: ' + Str,DMT_INFO);
+    Debug('Add to recent items: ' + Str, DMT_INFO);
 
     RecentItemList.Save;
   end;
@@ -773,9 +865,9 @@ end; { ForceForegroundWindow }
 
 procedure TSharpExec.PopulateAppPathsList;
 var
-  reg:TRegistry;
+  reg: TRegistry;
   iList, iFile: Integer;
-  sName, sVal: String;
+  sName, sVal: string;
   tmpStrings: TStringList;
 const
   cAppPath = 'SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths';
@@ -783,7 +875,7 @@ begin
   FAppPathList.Clear;
 
   reg := Tregistry.Create;
-  Try
+  try
     reg.rootkey := HKEY_LOCAL_MACHINE;
     reg.Access := KEY_READ;
     reg.OpenKeyReadOnly(cAppPath);
@@ -799,79 +891,78 @@ begin
 
       //
       sVal := reg.ReadString('');
-      FAppPathList[iList] := (Format('%s=%s',[sName,sVal]));
+      FAppPathList[iList] := (Format('%s=%s', [sName, sVal]));
 
       reg.CloseKey;
     end;
 
-
     tmpStrings := TStringList.Create;
-    Try
-      For iList := 0 to Pred(PathIncludeList.Items.Count) do begin
+    try
+      for iList := 0 to Pred(PathIncludeList.Items.Count) do begin
         tmpStrings.Clear;
 
-        AddFilesToList(tmpStrings,PathIncludeList.Item[iList].Path,
-          PathIncludeList.Item[iList].WildCard,True);
+        AddFilesToList(tmpStrings, PathIncludeList.Item[iList].Path,
+          PathIncludeList.Item[iList].WildCard, True);
 
-        For iFile := 0 to Pred(tmpStrings.Count) do begin
+        for iFile := 0 to Pred(tmpStrings.Count) do begin
           sName := ExtractFileName(tmpStrings[iFile]);
           sVal := tmpStrings[iFile];
-          FAppPathList.Add(Format('%s=%s',[sName,sVal]));
+          FAppPathList.Add(Format('%s=%s', [sName, sVal]));
         end;
 
       end;
-    Finally
+    finally
       tmpStrings.Free;
-    End;
-  Finally
+    end;
+  finally
     reg.Free;
 
     //FAppPathList.AddStrings();
-  End;
+  end;
 end;
 
-procedure TSharpExec.ExpandCommonFiles(var AText: String);
+procedure TSharpExec.ExpandCommonFiles(var AText: string);
 var
-  s:String;
+  s: string;
   iList, iPos: Integer;
-  withe, withoute: String;
+  withe, withoute: string;
 begin
   s := AText;
-  Try
+  try
 
-  For iList := 0 to Pred(FAppPathList.Count) do begin
+    for iList := 0 to Pred(FAppPathList.Count) do begin
 
-    s := AText;
-    withoute := FAppPathList.Names[iList];
-    withoute := StrChopRight(withoute, 4);
-    withe := FAppPathList.Names[iList];
+      s := AText;
+      withoute := FAppPathList.Names[iList];
+      withoute := StrChopRight(withoute, 4);
+      withe := FAppPathList.Names[iList];
 
-    // ignore invalid items (drives) in the app list
-    if length(withe) = 2 then
-      if withe[2] = ':' then
+      // ignore invalid items (drives) in the app list
+      if length(withe) = 2 then
+        if withe[2] = ':' then
+          exit;
+
+      // Try with extension
+      iPos := StrFind(withe, s);
+      if iPos = 1 then begin
+        StrReplace(s, withe, FAppPathList.ValueFromIndex[iList], [rfIgnoreCase]);
         exit;
-      
-    // Try with extension
-    iPos := StrFind(withe,s);
-    if iPos = 1 then begin
-      StrReplace(s,withe,FAppPathList.ValueFromIndex[iList],[rfIgnoreCase]);
-      exit;
+      end;
+
+      // Try without extension
+      iPos := StrFind(withoute, s);
+      if iPos = 1 then begin
+        StrReplace(s, withoute, FAppPathList.ValueFromIndex[iList], [rfIgnoreCase]);
+        exit;
+      end;
     end;
 
-    // Try without extension
-    iPos := StrFind(withoute,s);
-    if iPos = 1 then begin
-        StrReplace(s,withoute,FAppPathList.ValueFromIndex[iList],[rfIgnoreCase]);
-        exit;
-    end;
-  end;
-
-  Finally
+  finally
     AText := s;
-  End;
+  end;
 end;
 
-function TSharpExec.ExpandAliases(var AText: String; var AElevate: Boolean):Boolean;
+function TSharpExec.ExpandAliases(var AText: string; var AElevate: Boolean): Boolean;
 var
   i, j: integer;
   strl: tstringlist;
@@ -892,12 +983,12 @@ begin
 
   try
 
-  // Extract Name
+    // Extract Name
     StrTokenToStrings(AText, ' ', strl);
     if strl.Count > 0 then
       AliasName := Strl.Strings[0];
 
-  // Extract Params
+    // Extract Params
     ParamPos := Pos(' ', AText);
 
     if ParamPos <> 0 then begin
@@ -916,7 +1007,7 @@ begin
 
         //Result := true;
         AText := AliasList[i].AliasValue;
-        if ((AliasList[i].Elevate) and (Pos('_elevate',AliasList[i].AliasValue) = 0)) then
+        if ((AliasList[i].Elevate) and (Pos('_elevate', AliasList[i].AliasValue) = 0)) then
           AElevate := True;
 
         // Check for various defined application paths
@@ -933,7 +1024,7 @@ begin
 
           s1 := AText;
           for j := 0 to ParamsStrl.Count - 1 do begin
-            StrReplace(s1, '%' + inttostr(j + 1), ParamsStrl.Strings[j],[rfIgnoreCase]);
+            StrReplace(s1, '%' + inttostr(j + 1), ParamsStrl.Strings[j], [rfIgnoreCase]);
           end;
 
           AText := s1;

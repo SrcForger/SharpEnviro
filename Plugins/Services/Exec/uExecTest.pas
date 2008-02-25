@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uExecServiceExecute, StdCtrls;
+  Dialogs, uExecServiceExecute, StdCtrls, JclShell,ShellApi;
 
 type
   TForm1 = class(TForm)
@@ -27,6 +27,8 @@ implementation
 
 {$R *.dfm}
 
+
+
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   TmpExec := TSharpExec.Create;
@@ -35,8 +37,8 @@ end;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  TmpExec.UseDebug := True;
-  TmpExec.ProcessString(Edit1.Text, True, True);
+  TmpExec.UseDebug := False;
+  TmpExec.ProcessString(Edit1.Text, True, False);
   Memo1.Lines.Text := TmpExec.DebugText;
 end;
 
