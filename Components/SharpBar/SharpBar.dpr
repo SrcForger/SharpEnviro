@@ -288,6 +288,8 @@ begin
   SharpBarMainForm.Show;
   ServiceDone('SharpBar');
   SharpApi.SharpEBroadCast(WM_BARSTATUSCHANGED,0,SharpBarMainForm.BarID);
+  ModuleManager.ReCalculateModuleSize;
+  SharpBarMainForm.SharpEBar.Throbber.Repaint;
   Application.Run;
   SharpApi.SharpEBroadCast(WM_BARSTATUSCHANGED,1,SharpBarMainForm.BarID);  
 end.

@@ -16,6 +16,7 @@ object SharpBarMainForm: TSharpBarMainForm
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnHide = FormHide
   OnKeyDown = FormKeyDown
   OnMouseUp = FormMouseUp

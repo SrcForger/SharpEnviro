@@ -118,6 +118,7 @@ type
     procedure OnBackgroundPaint(Sender: TObject; Target: TBitmap32; x: integer);
     procedure AlwaysOnTop1Click(Sender: TObject);
     procedure BarManagment1Click(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private-Deklarationen }
     FUser32DllHandle: THandle;
@@ -1077,6 +1078,28 @@ begin
   KeyPreview := true;
 end;
 
+procedure TSharpBarMainForm.FormDestroy(Sender: TObject);
+begin
+  if BarHideForm <> nil then begin
+    if BarHideForm.Visible then
+      BarHideForm.Close;
+    FreeAndNil(BarHideForm);
+  end;
+
+  ModuleManager.Free;
+  ModuleManager := nil;
+
+  FSharpEBar.Free;
+  FSharpEBar := nil;
+
+  FSkinManager.Free;
+  FSkinManager := nil;
+
+  FBottomZone.Free;
+  FTopZone.Free;
+  FBGImage.Free;
+end;
+
 procedure TSharpBarMainForm.AutoPos1Click(Sender: TObject);
 begin
   SharpEBar.VertPos := vpTop;
@@ -1878,36 +1901,19 @@ procedure TSharpBarMainForm.FormClose(Sender: TObject;
 begin
   if Closing then
     exit;
+    
+  Closing := True;
+
   SaveBarSettings;
 
   SetLayeredWindowAttributes(Handle, 0, 0, LWA_ALPHA);
   SharpEBar.abackground.Alpha := 0;
 
-  Closing := True;
   FreeLibrary(FUser32DllHandle);
   FUser32DllHandle := 0;
+  @PrintWindow := nil;
 
   SharpApi.UnRegisterAction(PChar('!FocusBar (' + inttostr(FBarID) + ')'));
-
-  if BarHideForm <> nil then begin
-    if BarHideForm.Visible then
-      BarHideForm.Close;
-    FreeAndNil(BarHideForm);
-  end;
-
-  ModuleManager.Free;
-
-  Application.ProcessMessages;
-
-  FSharpEBar.Free;
-  FSharpEBar := nil;
-
-  FSkinManager.Free;
-  FSkinManager := nil;
-
-  FBottomZone.Free;
-  FTopZone.Free;
-  FBGImage.Free;
 end;
 
 procedure TSharpBarMainForm.FormCloseQuery(Sender: TObject;
