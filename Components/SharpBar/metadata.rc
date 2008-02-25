@@ -10,5 +10,5 @@ STRINGTABLE
   IDS_DESCRIPTION "The toolbars displayed on screen"
   IDS_AUTHOR "Martin Krämer (MartinKraemer@gmx.net)"
   IDS_VERSION "0.7.4.0"
-  IDS_EXTRADATA "priority: 140|delay: 1000"
+  IDS_EXTRADATA "priority: 140|delay: 5000"
 }
