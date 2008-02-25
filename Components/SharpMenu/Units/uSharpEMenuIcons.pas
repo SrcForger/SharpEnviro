@@ -186,6 +186,7 @@ var
   IconSource : String;
   IconType : TIconType;
 begin
+  exit;
   Dir := SharpApi.GetSharpeDirectory + 'Cache';
   Fn := Dir + '\' + GetLocalUserName + pFileName;
   if not FileExists(Fn) then exit;
@@ -214,6 +215,7 @@ var
   t : integer;
   Item : TSharpEMenuIcon;
 begin
+  exit;
   Dir := SharpApi.GetSharpeDirectory + 'Cache';
   If not DirectoryExists(Dir) then ForceDirectories(Dir);
 
