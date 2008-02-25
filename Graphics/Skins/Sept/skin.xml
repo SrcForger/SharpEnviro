@@ -1061,7 +1061,7 @@
     </hover>
     <down>
       <text>
-        <location>cw,ch</location>
+        <location>cw+iwh+1,ch+1</location>
       </text>
       <!-- Down State Skin Parts -->
       <skinpart>
