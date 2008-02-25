@@ -1151,6 +1151,8 @@ var
   tmp: TSharpESwatchCollectionItem;
 begin
   tmp := TSharpESwatchCollectionItem(ASender);
+  FSliderUpdateMode := sumAll;
+
   if tmp.System then
     Value := tmp.ColorCode
   else
@@ -1309,7 +1311,6 @@ begin
           if FColorPicker <> nil then
             FColorPicker.Color := FValueAsTColor;
 
-          FSliderUpdateMode := sumAll;
           InitialiseColSliders;
 
           Caption := FCaption;
