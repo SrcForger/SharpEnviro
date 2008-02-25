@@ -70,6 +70,7 @@ object frmBarList: TfrmBarList
         StretchColumn = False
         ColumnType = ctDefault
         AutoSize = False
+        Images = StatusImages
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnShadow
