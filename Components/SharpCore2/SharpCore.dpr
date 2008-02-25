@@ -157,6 +157,7 @@ begin
     modData.Running := False;
     CheckMenuItem(menServices, modData.ID, MF_UNCHECKED);
     FreeLibrary(modData.FileHandle);
+    modData.FileHandle := 0;
     result := 0;
   end;
 end;
