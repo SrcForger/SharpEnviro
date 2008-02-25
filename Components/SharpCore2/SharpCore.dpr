@@ -191,8 +191,8 @@ begin
           modMutex := OpenMutex(MUTEX_ALL_ACCESS, False, PChar('started_' + modName));
           if not (modMutex > 0) then
           begin
-            Sleep(1);
-            iTimeout := iTimeout - 1;
+            Sleep(100);
+            iTimeout := iTimeout - 100;
             if iTimeout = 0 then
               DebugMsg('Timed out waiting for ' + modName);
           end
@@ -213,7 +213,7 @@ begin
       DebugMsg('Starting ' + modData.MetaData.Name);
       modData.Running := False;
       ShellExecute(0, nil, PChar(modData.FileName), '', PChar(ExtractFilePath(modData.FileName)), SW_SHOWNORMAL);
-      iTimeout := 1000;
+      iTimeout := 10000;
       modName := modData.MetaData.Name;
       while iTimeout > 0 do
       begin
