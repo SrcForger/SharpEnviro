@@ -529,7 +529,7 @@ begin
         end;
       end;
     Integer(suScheme): begin
-        SharpThemeApi.LoadTheme(True, [tpScheme]);
+        SharpThemeApi.LoadTheme(True, [tpSkin,tpScheme]);
         SkinManager.UpdateScheme;
       end;
     Integer(suIconSet): SharpThemeApi.LoadTheme(True, [tpIconSet]);
