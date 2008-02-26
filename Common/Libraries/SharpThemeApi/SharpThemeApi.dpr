@@ -797,7 +797,7 @@ begin
           Theme.Skin.GEBlurRadius := IntValue('GEBlurRadius', Theme.Skin.GEBlurRadius);
           Theme.Skin.GEBlurIterations := IntValue('GEBlurIterations', Theme.Skin.GEBlurIterations);
           Theme.Skin.GEBlend := BoolValue('GEBlend', Theme.Skin.GEBlend);
-          Theme.Skin.GEBlendColor := IntValue('GEBlendColor', Theme.Skin.GEBlendColor);
+          Theme.Skin.GEBlendColor := ParseColor(PChar(Value('GEBlendColor', IntToStr(Theme.Skin.GEBlendColor))));
           Theme.Skin.GEBlendAlpha := IntValue('GEBlendAlpha', Theme.Skin.GEBlendAlpha);
           Theme.Skin.GELighten := BoolValue('GELighten', Theme.Skin.GELighten);
           Theme.Skin.GELightenAmount := IntValue('GELightenAmount', Theme.Skin.GELightenAmount);

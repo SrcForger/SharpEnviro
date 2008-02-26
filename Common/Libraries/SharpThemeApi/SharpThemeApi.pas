@@ -390,13 +390,13 @@ end;
 procedure XmlGetThemeScheme(var AThemeScheme: TSharpEColorSet);
 var
   XML: TJvSimpleXML;
-  i,j, ItemCount, Index: Integer;
+  i,j, Index: Integer;
   tmpRec: TSharpESkinColor;
   sFile, sTag, sCurScheme: string;
   tmpColor: string;
   s: string;
 
-  sScheme, sTheme, sSkin: string;
+  sTheme, sSkin: string;
   sSkinDir, sSchemeDir: string;
 begin
   Index := 0;
@@ -477,7 +477,6 @@ end;
 
 function XmlSchemeCodeToColor(AColorCode: integer): integer;
 var
-  n: integer;
   colors: TSharpEColorSet;
 begin
   XmlGetThemeScheme(colors);
