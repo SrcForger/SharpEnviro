@@ -231,7 +231,7 @@ begin
 
         Result := True;
         SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
-
+        SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
       end;
     sceEdit: begin
 
@@ -247,6 +247,7 @@ begin
         end;
 
         Result := True;
+        SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
         SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
       end;
   end;
