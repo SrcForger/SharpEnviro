@@ -482,7 +482,7 @@ begin
       SC := pDrive;
       Inc(pDrive, 4);
 
-      if ((GetDriveType(pDrive) > 0)) then begin
+      //if ((GetDriveType(pDrive) > 0)) then begin
 
       if DiskSize(ord(SC[1])-$40) <> -1 then begin
       SHGetFileInfo(PChar(SC), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or SHGFI_TYPENAME);
@@ -516,7 +516,7 @@ begin
         end;
 
       end;
-    end;
+    //end;
     end;
   finally
     SetErrorMode(EMode) ;
