@@ -465,8 +465,11 @@ var
   Info: TSHFileInfo;
   pDrive: PChar;
   SC : String;
+  EMode: Word;
 begin
   pMenu := TSharpEMenu(FOwner);
+  EMode := SetErrorMode(SEM_FAILCRITICALERRORS) ;
+  try
 
     n := GetLogicalDriveStrings(SizeOf(Drives), Drives);
     if n = 0 then Exit;
@@ -479,8 +482,9 @@ begin
       SC := pDrive;
       Inc(pDrive, 4);
 
-      if GetDriveType(pDrive) > 2 then begin
+      if ((GetDriveType(pDrive) > 0)) then begin
 
+      if DiskSize(ord(SC[1])-$40) <> -1 then begin
       SHGetFileInfo(PChar(SC), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or SHGFI_TYPENAME);
 
       found := false;
@@ -511,8 +515,12 @@ begin
                             true);
         end;
 
+      end;
     end;
     end;
+  finally
+    SetErrorMode(EMode) ;
+  end;
 end;
 
 procedure TSharpEMenuActions.UpdateObjectList(var DynList: TObjectList);
