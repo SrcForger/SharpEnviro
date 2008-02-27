@@ -166,7 +166,7 @@ begin
     Version := '0.7.4.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
-      Integer(suScheme)]);
+      Integer(suTheme)]);
   end;
 end;
 
