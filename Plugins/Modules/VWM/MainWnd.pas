@@ -34,7 +34,7 @@ uses
   // Custom Units
   GR32, VWMFunctions,
   // SharpE API Units
-  SharpApi, uSharpBarAPI;
+  SharpApi, uSharpBarAPI, SharpThemeApi;
 
 type
   TMainForm = class(TForm)
@@ -123,11 +123,11 @@ begin
     with XML.Root.Items do
     begin
       sDisplayVWMNumbers := BoolValue('Numbers',sDisplayVWMNumbers);
-      sBackgroundColor   := IntValue('Background',sBackgroundColor);
-      sBorderColor       := IntValue('Border',sBorderColor);
-      sForegroundColor   := IntValue('Foreground',sForegroundColor);
-      sHighlightColor    := IntValue('Highlight',sHighlightColor);
-      sTextColor         := IntValue('Text',sTextColor);
+      sBackgroundColor   := ParseColor(PChar(Value('Background',IntToStr(sBackgroundColor))));
+      sBorderColor       := ParseColor(PChar(Value('Border',IntToStr(sBorderColor))));
+      sForegroundColor   := ParseColor(PChar(Value('Foreground',IntToStr(sForegroundColor))));
+      sHighlightColor    := ParseColor(PChar(Value('Highlight',IntToStr(sHighlightColor))));
+      sTextColor         := ParseColor(PChar(Value('Text',IntToStr(sTextColor))));
       sBackgroundAlpha := IntValue('BackgroundAlpha',sBackgroundAlpha);
       sBorderAlpha     := IntValue('BorderAlpha',sBorderAlpha);
       sForegroundAlpha := IntValue('ForegroundAlpha',sForegroundAlpha);
