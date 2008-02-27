@@ -249,10 +249,15 @@ procedure XmlGetThemeList(var AThemeList: TThemeInfoSet);
 function GetSchemeListAsCommaText(ATheme:string):string;
 procedure XmlGetThemeScheme(var AThemeScheme: TSharpEColorSet);
 
-function XmlColorToSchemeCode(AColor: integer): integer;
-function XmlSchemeCodeToColor(AColorCode: integer): integer;
+function XmlColorToSchemeCode(AColor: integer): integer; overload;
+function XmlColorToSchemeCode(AColor: integer; AThemeScheme: TSharpEColorSet): integer; overload;
 
-function XmlGetSkinColorByTag(ATag: string): TSharpESkinColor;
+function XmlSchemeCodeToColor(AColorCode: integer): integer; overload;
+function XmlSchemeCodeToColor(AColorCode: integer; AThemeScheme: TSharpEColorSet): integer; overload;
+
+function XmlGetSkinColorByTag(ATag: string): TSharpESkinColor; overload;
+function XmlGetSkinColorByTag(ATag: string; AThemeScheme: TSharpEColorSet): TSharpESkinColor; overload;
+
 procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string);
 
 
@@ -462,13 +467,18 @@ end;
 
 function XmlColorToSchemeCode(AColor: integer): integer;
 var
-  n: integer;
   colors: TSharpEColorSet;
 begin
   XmlGetThemeScheme(colors);
+  Result := XmlColorToSchemeCode(AColor,colors);
+end;
 
-  for n := 0 to High(colors) do
-    if colors[n].Color = AColor then begin
+function XmlColorToSchemeCode(AColor: integer; AThemeScheme:TSharpEColorSet): integer;
+var
+  n:Integer;
+begin
+  for n := 0 to High(AThemeScheme) do
+    if AThemeScheme[n].Color = AColor then begin
       result := -n - 1;
       exit;
     end;
@@ -480,11 +490,15 @@ var
   colors: TSharpEColorSet;
 begin
   XmlGetThemeScheme(colors);
+  Result := XmlSchemeCodeToColor(AColorCode, colors);
+end;
 
+function XmlSchemeCodeToColor(AColorCode: integer; AThemeScheme:TSharpEColorSet): integer;
+begin
   result := -1;
   if AColorCode < 0 then begin
-    if abs(AColorCode) <= length(colors) then
-      result := colors[abs(AColorCode) - 1].Color;
+    if abs(AColorCode) <= length(AThemeScheme) then
+      result := AThemeScheme[abs(AColorCode) - 1].Color;
   end
   else
     result := AColorCode;
@@ -492,16 +506,22 @@ end;
 
 function XmlGetSkinColorByTag(ATag: string): TSharpESkinColor;
 var
-  n: integer;
   colors: TSharpEColorSet;
-  tmpColor: TSharpESkinColor;
 begin
   XmlGetThemeScheme(colors);
-  Try
+  Result := XmlGetSkinColorByTag(ATag,colors);
 
-  for n := 0 to High(colors) do
-    if CompareText(colors[n].Tag, ATag) = 0 then begin
-      tmpColor := colors[n];
+end;
+
+function XmlGetSkinColorByTag(ATag: string; AThemeScheme:TSharpEColorSet): TSharpESkinColor;
+var
+  n: integer;
+  tmpColor: TSharpESkinColor;
+begin
+  Try
+  for n := 0 to High(AThemeScheme) do
+    if CompareText(AThemeScheme[n].Tag, ATag) = 0 then begin
+      tmpColor := AThemeScheme[n];
       exit;
     end;
   Finally
