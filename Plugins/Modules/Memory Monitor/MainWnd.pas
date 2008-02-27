@@ -72,17 +72,27 @@ type
     procedure UpdateBackground(new : integer = -1);
   end;
 
+type 
+  TMemoryStatusEx = packed record 
+    dwLength: DWORD; 
+    dwMemoryLoad: DWORD; 
+    ullTotalPhys: Int64; 
+    ullAvailPhys: Int64; 
+    ullTotalPageFile: Int64; 
+    ullAvailPageFile: Int64; 
+    ullTotalVirtual: Int64; 
+    ullAvailVirtual: Int64; 
+    ullAvailExtendedVirtual: Int64; 
+  end;
+
+
+function GlobalMemoryStatusEx(var lpBuffer: TMemoryStatusEx): BOOL; stdcall; external kernel32;
 
 implementation
 
 uses uSharpBarAPI;
 
 {$R *.dfm}
-
-function Li2Double(x: LARGE_INTEGER): Double; 
-begin 
-  Result := x.HighPart * 4.294967296E9 + x.LowPart 
-end;
 
 procedure TMainForm.LoadSettings;
 var
@@ -382,16 +392,16 @@ end;
 
 procedure TMainForm.UpdateTimerTimer(Sender: TObject);
 var
-  memStat : TMemoryStatus;
+  memStat : TMemoryStatusEx;
   i,t : integer;
 begin
   memStat.dwLength := SizeOf(memStat);
-  GlobalMemoryStatus(memStat);
+  GlobalMemoryStatusEx(memStat);
 
   if (RamBar.Visible) or (lb_rambar.Visible) then
   begin
-    i := round(((memstat.dwTotalPhys - memstat.dwAvailPhys) / memstat.dwTotalPhys) * 100);
-    t := memstat.dwAvailPhys div 1024 div 1024;
+    i := round(((memstat.ullTotalPhys - memstat.ullAvailPhys) / memstat.ullTotalPhys) * 100);
+    t := memstat.ullAvailPhys div 1024 div 1024;
     if RamBar.Visible then
        if (i <> rambar.Value) then
            rambar.Value := i;
@@ -414,8 +424,8 @@ begin
 
   if (SwpBar.Visible) or (lb_swpbar.Visible) then
   begin
-    i := round(((memstat.dwTotalPageFile - memstat.dwAvailPageFile) / memstat.dwTotalPageFile) * 100);
-    t := memstat.dwAvailPageFile div 1024 div 1024;
+    i := round(((memstat.ullTotalPageFile - memstat.ullAvailPageFile) / memstat.ullTotalPageFile) * 100);
+    t := memstat.ullAvailPageFile div 1024 div 1024;
     if SwpBar.Visible then
        if i <> swpbar.Value then
           swpbar.Value := i;
