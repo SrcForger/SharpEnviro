@@ -254,7 +254,7 @@ begin
       alpha := (P^ shr 24);
       if alpha > 0 then
       begin
-        RGBToHSL(WinColor(P^),h,s,l);
+        RGBToHSL(P^,h,s,l);
         new_hsl.Hue := h + HMod;
         new_hsl.Saturation := s + SMod;
         new_hsl.Lightness := l + LMod;
