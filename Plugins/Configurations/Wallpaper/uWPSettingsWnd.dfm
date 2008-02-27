@@ -27,7 +27,7 @@ object frmWPSettings: TfrmWPSettings
     Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
-    ActivePage = pagWallpaper
+    ActivePage = pagColor
     PropagateEnable = False
     Align = alClient
     object pagWallpaper: TJvStandardPage
@@ -432,7 +432,10 @@ object frmWPSettings: TfrmWPSettings
             Expanded = False
             ValueEditorType = vetColor
             Value = 0
+            ValueMin = 0
+            ValueMax = 255
             Visible = True
+            DisplayPercent = False
             ColorEditor = secWpColor.Item0
             Tag = 0
           end>
@@ -611,8 +614,8 @@ object frmWPSettings: TfrmWPSettings
             Margins.Bottom = 0
             Align = alLeft
             ParentBackground = False
-            Min = -128
-            Max = 128
+            Min = 0
+            Max = 255
             Value = 0
             Prefix = 'Hue: '
             Description = 'Change Hue'
@@ -806,7 +809,7 @@ object frmWPSettings: TfrmWPSettings
             Height = 21
             Align = alLeft
             Style = csDropDownList
-            ItemHeight = 13
+            ItemHeight = 0
             TabOrder = 0
             OnChange = cb_gtypeChange
             Items.Strings = (
@@ -899,7 +902,10 @@ object frmWPSettings: TfrmWPSettings
               Expanded = False
               ValueEditorType = vetColor
               Value = 0
+              ValueMin = 0
+              ValueMax = 255
               Visible = True
+              DisplayPercent = False
               ColorEditor = secGradColor.Item0
               Tag = 0
             end
@@ -910,7 +916,10 @@ object frmWPSettings: TfrmWPSettings
               Expanded = False
               ValueEditorType = vetColor
               Value = 0
+              ValueMin = 0
+              ValueMax = 255
               Visible = True
+              DisplayPercent = False
               ColorEditor = secGradColor.Item1
               Tag = 0
             end>
@@ -1007,7 +1016,7 @@ object frmWPSettings: TfrmWPSettings
         Left = 0
         Top = 0
         Width = 250
-        Height = 23
+        Height = 21
         Margins.Left = 28
         Margins.Top = 8
         Margins.Right = 8
@@ -1016,7 +1025,7 @@ object frmWPSettings: TfrmWPSettings
         Style = csDropDownList
         Constraints.MaxWidth = 250
         DropDownCount = 12
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 0
         OnChange = MonitorChangeEvent
       end
@@ -1024,6 +1033,7 @@ object frmWPSettings: TfrmWPSettings
   end
   object ssmConfig: TSharpESwatchManager
     Swatches = <>
+    PopulateThemeColors = True
     Width = 431
     ShowCaptions = True
     SwatchHeight = 16

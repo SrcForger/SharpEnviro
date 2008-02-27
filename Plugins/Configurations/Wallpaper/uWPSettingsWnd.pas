@@ -184,6 +184,8 @@ type
   public
     FTheme: string;
     FCurrentWP: TWPItem;
+    FThemeScheme: TSharpEColorSet;
+
     procedure UpdateGUIFromWPItem(AWPItem: TWPItem);
     procedure UpdateWPItemFromGuid;
     procedure RenderPreview;
@@ -326,7 +328,10 @@ var
   RSBmp: TBitmap32;
   x, y: integer;
   bInvalid: Boolean;
+  cGDStartColor, cGDEndColor, cBackground: TColor;
+
 begin
+
   bInvalid := false;
   if FCurrentWP = nil then
     bInvalid := true;
@@ -363,8 +368,9 @@ begin
     w2 := round(Bmp.Width * (w / Mon.Width));
     h2 := round(Bmp.Height * (h / Mon.Height));
 
+    cBackground := XmlSchemeCodeToColor(FCurrentWP.Color,FThemeScheme);
     BmpPreview.SetSize(w, h);
-    BmpPreview.Clear(color32(FCurrentWP.Color));
+    BmpPreview.Clear(color32(cBackground));
 
     RSBmp.SetSize(w2, h2);
     Bmp.DrawTo(RSBmp, Rect(0, 0, w2, h2));
@@ -404,9 +410,13 @@ begin
     imgColor.bitmap.assign(WPBmp);
     imgColor.bitmap.FrameRectS(0, 0, w, h, Color32(0, 0, 0, 255));
 
-    if Gradient then
+    if Gradient then begin
+
+      cGDStartColor := XmlSchemeCodeToColor(GDStartColor,FThemeScheme);
+      cGDEndColor := XmlSchemeCodeToColor(GDEndColor,FThemeScheme);
       ApplyGradient(WPBmp, GradientType,
-        GDStartColor, GDEndColor, GDStartAlpha, GDEndAlpha);
+        cGDStartColor, cGDEndColor, GDStartAlpha, GDEndAlpha);
+    end;
 
     WPBmp.MasterAlpha := Alpha;
     WPBmp.DrawTo(BmpPreview, 0, 0);
@@ -544,6 +554,8 @@ end;
 procedure TfrmWPSettings.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := true;
+  XmlGetThemeScheme(FThemeScheme);
+
   WPList := TObjecTList.Create(False);
 end;
 
