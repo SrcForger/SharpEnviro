@@ -339,7 +339,7 @@ begin
   pOwner := FOwner;
   if FOwner is TSharpEMenuWnd then lm := TSharpEMenuWnd(FOwner)
      else lm := self;
-  while pOwner is TSharpEMenuWnd do
+  while (pOwner is TSharpEMenuWnd) and (pOwner <> nil) do
   begin
     if TSharpEMenuWnd(pOwner).cOwner is TSharpEMenuWnd then
        lm := TSharpEMenuWnd(TSharpEMenuWnd(pOwner).cOwner);
