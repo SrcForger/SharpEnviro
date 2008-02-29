@@ -242,13 +242,20 @@ begin
 end;
 
 procedure TSharpEBarBackground.WndProc(var msg: TMessage);
+var
+  WinPos	: ^TWindowPos;
 begin
   inherited;
-  if (msg.Msg = WM_ACTIVATE) or (msg.Msg = WM_ACTIVATEAPP) then
-  begin
-   // SetZOrder;
-  end;
   msg.Result := DefWindowProc(windowHandle, msg.Msg, msg.wParam, msg.lParam);
+  if (msg.Msg = WM_WINDOWPOSCHANGED) then
+  begin
+   WinPos := pointer(msg.lparam);
+   if (WinPos.flags and SWP_NOZORDER) <> SWP_NOZORDER then
+     SetZOrder;
+  end else
+  if (msg.Msg = WM_ACTIVATE) or (msg.Msg = WM_ACTIVATEAPP)
+    or (msg.Msg = WM_SHOWWINDOW) or (msg.Msg = WM_SETFOCUS) then
+    SetZOrder;
   st := inttostr(msg.result);
 end;
 
