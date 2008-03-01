@@ -166,6 +166,7 @@ type
     procedure UnlockObjects1Click(Sender: TObject);
     procedure All1Click(Sender: TObject);
     procedure MakeWindow1Click(Sender: TObject);
+    procedure CreateParams(var Params: TCreateParams); override;
   private
     procedure WMSettingsChange(var Msg : TMessage);       message WM_SETTINGCHANGE;
     procedure WMDisplayChange(var Msg : TMessage);        message WM_DISPLAYCHANGE;
@@ -653,9 +654,6 @@ begin
      SetWindowLong(SharpDeskMainForm.Handle, GWL_USERDATA, magicDWord); //used for vwm
      setwindowpos(SharpDeskMainForm.Handle, HWND_TOP, Screen.DesktopLeft,Screen.DesktopTop,
                   Screen.DesktopWidth, Screen.DesktopHeight, SWP_NOZORDER);
-     SetWindowLong(Application.Handle,GWL_EXSTYLE,WS_EX_TOOLWINDOW or WS_EX_TOPMOST);
-     SetWindowLong(Handle,GWL_EXSTYLE,WS_EX_TOOLWINDOW or WS_EX_TOPMOST);
-     ShowWindow(application.handle, SW_HIDE);
 
      try
         SharpDeskMainForm.SetZOrder(False);
@@ -682,7 +680,6 @@ procedure TSharpDeskMainForm.FormShow(Sender: TObject);
 begin
   if SharpDesk.Desksettings.DragAndDrop then SharpDesk.DragAndDrop.RegisterDragAndDrop(SharpDesk.Image.Parent.Handle)
      else SharpDesk.DragAndDrop.UnregisterDragAndDrop(SharpDesk.Image.Parent.Handle);
-  ShowWindow(application.handle, SW_HIDE);
 end;
 
 
@@ -1165,6 +1162,17 @@ begin
   SharpDesk.CloneSelectedObjects;
 end;
 
+
+procedure TSharpDeskMainForm.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  with Params do
+  begin
+    Params.WinClassName := 'SharpDeskMainForm';
+    ExStyle := WS_EX_TOOLWINDOW or WS_EX_NOACTIVATE;
+    Style := WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+  end;
+end;
 
 // ######################################
 
