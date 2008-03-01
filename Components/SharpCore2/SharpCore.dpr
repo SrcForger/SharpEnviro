@@ -64,6 +64,7 @@ var
   lstComponents: TComponentList;
   hndWindow: THandle;
   TaskBarCreated: Integer;
+  hndEvent: THandle;
 
 function ProcessMessage(var Msg: TMsg): Boolean;
 var
@@ -474,6 +475,13 @@ begin
   // Initialize Themes... (for the services)
   SharpThemeApi.InitializeTheme;
   SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
+
+  hndEvent := OpenEvent(EVENT_MODIFY_STATE, False, 'msgina: ShellReadyEvent');
+  if hndEvent > 0 then
+  begin
+    SetEvent(hndEvent);
+    CloseHandle(hndEvent);
+  end;
 
   RunAll;
 
