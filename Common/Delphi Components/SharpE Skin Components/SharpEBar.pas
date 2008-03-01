@@ -242,20 +242,17 @@ begin
 end;
 
 procedure TSharpEBarBackground.WndProc(var msg: TMessage);
-var
-  WinPos	: ^TWindowPos;
 begin
   inherited;
-  msg.Result := DefWindowProc(windowHandle, msg.Msg, msg.wParam, msg.lParam);
-  if (msg.Msg = WM_WINDOWPOSCHANGED) then
+
+  if (msg.Msg = WM_ACTIVATE) or (msg.Msg = WM_ACTIVATEAPP) then
   begin
-   WinPos := pointer(msg.lparam);
-   if (WinPos.flags and SWP_NOZORDER) <> SWP_NOZORDER then
-     SetZOrder;
-  end else
-  if (msg.Msg = WM_ACTIVATE) or (msg.Msg = WM_ACTIVATEAPP)
-    or (msg.Msg = WM_SHOWWINDOW) or (msg.Msg = WM_SETFOCUS) then
-    SetZOrder;
+    if msg.WParam <> 0 then
+    begin
+      msg.result := 0;
+      SetZOrder;
+    end else msg.Result := DefWindowProc(windowHandle, msg.Msg, msg.wParam, msg.lParam);
+  end else msg.Result := DefWindowProc(windowHandle, msg.Msg, msg.wParam, msg.lParam);
   st := inttostr(msg.result);
 end;
 
@@ -296,7 +293,7 @@ begin
     else
     begin
       WindowHandle := CreateWindowEx(WS_EX_LAYERED or WS_EX_TRANSPARENT or
-        WS_EX_TOOLWINDOW,
+        WS_EX_TOOLWINDOW or WS_EX_NOACTIVATE,
         WindowClass.lpszClassName, // class name
         'SharpEBarBackGroundWindow', // title
         WS_POPUP, // styles
@@ -363,6 +360,7 @@ end;
 
 procedure TSharpEBarBackground.SetZOrder;
 begin
+  exit;
   if Owner <> nil then
     SetWindowPos(WindowHandle, (Owner as TSharpEBar).aform.handle,
       0, 0, 0, 0,
@@ -876,7 +874,10 @@ begin
 end;
 
 procedure TSharpEBar.WndProc(var msg: TMessage);
+var
+  rchanged : boolean;
 begin
+  rchanged := False;
   case msg.Msg of
     WM_MOVE:
       begin
@@ -900,14 +901,19 @@ begin
       end;
     WM_ACTIVATE:
       begin
+        msg.result := 0;
+        rchanged := True;
         if LOWORD(msg.WParam) = WA_INACTIVE then
-        begin
-          Throbber.FButtonDown := false;
-        end
-        else
-        begin
-          FBackGround.SetZOrder;
-        end;
+          Throbber.FButtonDown := false
+        else FBackGround.SetZOrder;
+      end;
+    WM_ACTIVATEAPP:
+      begin
+        msg.result := 0;
+        rchanged := True;
+        if msg.WParam = 0 then
+         SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
+                      SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
       end;
     WM_MOUSELEAVE:
       begin
@@ -924,7 +930,8 @@ begin
         end;
       end;
   end;
-  msg.result := CallWindowProc(hproc, form.Handle, msg.msg, msg.wparam, msg.lparam);
+  if not rchanged then
+    msg.result := CallWindowProc(hproc, form.Handle, msg.msg, msg.wparam, msg.lparam);
 end;
 
 procedure TSharpEBar.UpdateSkin(NewWidth : integer = -1);
