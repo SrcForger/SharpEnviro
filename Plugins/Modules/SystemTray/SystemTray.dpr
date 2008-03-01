@@ -104,7 +104,7 @@ begin
   ServiceCheck := ServiceCheck + 1;
   if ServiceCheck >= 20 then
   begin
-    hr := SharpApi.IsServiceStarted('SystemTray');
+    hr := SharpApi.IsServiceStarted('Shell');
     if hr <> MR_STARTED then
     begin
       TrayClient.ClearTrayIcons;

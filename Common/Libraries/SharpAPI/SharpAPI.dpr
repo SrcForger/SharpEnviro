@@ -1094,22 +1094,38 @@ end;
 
 function RegisterShellHookReceiver(Wnd : hwnd) : boolean;
 var
-  shellhookwnd : hwnd;
+  swnd : hwnd;
 begin
-  shellhookwnd := FindWindow('SharpE_ShellHook',nil);
-  if shellhookwnd <> 0 then
-    PostMessage(shellhookwnd,WM_REGISTERSHELLHOOK,wnd,0);
-  result := (shellhookwnd <> 0);
+  swnd := FindWindow('Shell_TrayWnd',nil);
+  if swnd <> 0 then
+  begin
+    swnd := FindWindowEx(swnd,0,'ReBarWindow32',nil);
+    if swnd <> 0 then
+    begin
+      swnd := FindWindowEx(swnd,0,'MSTaskSwWClass',nil);
+      if swnd <> 0 then
+        PostMessage(swnd,WM_REGISTERSHELLHOOK,wnd,0);
+    end;
+  end;
+  result := (swnd <> 0);
 end;
 
 function UnRegisterShellHookReceiver(Wnd : hwnd) : boolean;
 var
-  shellhookwnd : hwnd;
+  swnd : hwnd;
 begin
-  shellhookwnd := FindWindow('SharpE_ShellHook',nil);
-  if shellhookwnd <> 0 then
-    PostMessage(shellhookwnd,WM_UNREGISTERSHELLHOOK,wnd,0);
-  result := (shellhookwnd <> 0);
+  swnd := FindWindow('Shell_TrayWnd',nil);
+  if swnd <> 0 then
+  begin
+    swnd := FindWindowEx(swnd,0,'ReBarWindow32',nil);
+    if swnd <> 0 then
+    begin
+      swnd := FindWindowEx(swnd,0,'MSTaskSwWClass',nil);
+      if swnd <> 0 then
+        PostMessage(swnd,WM_UNREGISTERSHELLHOOK,wnd,0);
+    end;
+  end;
+  result := (swnd <> 0);
 end;
 
 function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer;
