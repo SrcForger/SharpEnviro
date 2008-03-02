@@ -26,6 +26,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 library Shell;
 uses
   MultiMon,
+  uxtheme,
+  Forms,
+  math,
   windows,
   classes,
   sysutils,
@@ -33,6 +36,7 @@ uses
   messages,
   Contnrs,
   JclSysInfo,
+  JclSimpleXML,
   winver in 'winver.pas',
   declaration in 'declaration.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas';
@@ -63,6 +67,12 @@ type
     display : TTrayIcon;
   end;
 
+  TAppBarItem = class
+    Data : TAppBarMsgDataV2;
+    AutoHideBar : boolean;
+    constructor Create(pData : TAppBarMsgDataV2);
+  end;
+
   TTrayManager = class(TObject)
   private
     FDllHandle : THandle;
@@ -77,15 +87,35 @@ type
     procedure CheckForDeadIcons;
     procedure BroadCastTrayMessage(pItem: TTrayIcon; action : integer);
     procedure BroadCastAllToOne(wnd : hwnd);
-    function HandleAppBarMessage(msg : TAppBarMsgDataV2) : integer;
+    function GetAppBarItem(pWnd : hwnd) : TAppBarItem;
+    function GetAutoHideAppBar(pEdge : Cardinal) : TAppBarItem;
+    function HandleAppBarMessage(msg : TAppBarMsgDataV2; lparam : dword) : integer;
     function LockAppBarMemory(abmd: TAppBarMsgDataV2): pAppBarDataV1;
     function UnLockAppBarMempory(Pnt: pAppBarDataV1): boolean;
   public
     Icons : TObjectList;
+    AppBarList : TObjectList;
     WndList : TStringList;
     constructor Create; reintroduce;
     destructor Destroy; override;    
-  end;    
+  end;
+
+  TDeskAreaManager = class
+  private
+    FAutoModeList : array of boolean;
+    FOffsetList : array of TRect;
+    FMonIDList : array of integer;
+  public
+    constructor Create; reintroduce;
+    destructor Destroy; override;
+
+    procedure LoadSettings;
+    procedure SetDeskArea;
+    procedure SetFullScreenArea;
+
+    procedure Enable;
+    procedure Disable;
+  end;  
 
 {$E ser}
 
@@ -95,19 +125,22 @@ type
 
 function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; external 'shell32.dll' index 181;
 
+function DeskAreaTimerWndProc(hWnd, Msg, wParam, lParam: Integer): Integer; stdcall; forward;
 function ShellTrayWndProc(hWnd, Msg, wParam, lParam: Integer): Integer; stdcall; forward;
 function MsTaskSwWClassWndProc(hWnd, Msg, wParam, lParam: Integer): Integer; stdcall; forward;
 
 var
   TaskManager : TTaskManager;
   TrayManager : TTrayManager;
+  DeskAreaManager : TDeskAreaManager;
 
   WM_SHELLHOOK : integer;
 
-  ShellTrayWnd   : hwnd;
-  TrayNotifyWnd  : hwnd;
-  ReBarWindow32  : hwnd;
-  MsTaskSwWClass : hwnd;
+  ShellTrayWnd     : hwnd;
+  TrayNotifyWnd    : hwnd;
+  ReBarWindow32    : hwnd;
+  MsTaskSwWClass   : hwnd;
+  DeskAreaTimerWnd : hwnd;
 
   ShellTrayWndClass: TWndClass = (
     style: 0;
@@ -153,6 +186,17 @@ var
     hbrBackground: 1;
     lpszMenuName: nil;
     lpszClassName: 'MSTaskSwWClass');
+  DeskAreaTimerWndClass: TWndClass = (
+    style: 0;
+    lpfnWndProc: @DeskAreaTimerWndProc;
+    cbClsExtra: 0;
+    cbWndExtra: 0;
+    hInstance: 0;
+    hIcon: 0;
+    hCursor: 0;
+    hbrBackground: 1;
+    lpszMenuName: nil;
+    lpszClassName: 'DeskAreaTimerWnd');
 
 
 function GetWndCaption(pHandle: hwnd): string;
@@ -169,6 +213,43 @@ var
 begin
   GetClassName(pHandle, buf, SizeOf(buf));
   result := buf;
+end;
+
+function PointInRect(P : TPoint; Rect : TRect) : boolean;
+begin
+  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
+     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
+     else PointInRect:=False;
+end;
+
+function DeskAreaTimerWndProc(hWnd, Msg, wParam, lParam: Integer): Integer; stdcall;
+begin
+  case Msg of
+    WM_SHARPEACTIONMESSAGE: begin
+      case LParam of
+        0 : DeskAreaManager.Enable;
+        1 : DeskAreaManager.Disable;
+      end;
+    end;
+    WM_SHARPEUPDATEACTIONS: begin
+      RegisterActionEx('!EnableDeskArea','Services',DeskAreaTimerWnd,0);
+      RegisterActionEx('!DisableDeskArea','Services',DeskAreaTimerWnd,1);
+    end;
+    WM_SHARPEUPDATESETTINGS: begin
+      if WParam = Integer(suDeskArea) then
+      begin
+        DeskAreaManager.LoadSettings;
+        DeskAreaManager.SetDeskArea;
+      end;
+    end;
+  end;
+  
+  if (Msg = WM_TIMER) and (wParam = 1) then
+  begin
+    if DeskAreaManager <> nil then
+      DeskAreaManager.SetDeskArea;
+    result := 0;
+  end else Result := DefWindowProc(hWnd, Msg, wParam, lParam);
 end;
 
 function ShellTrayWndProc(hWnd, Msg, wParam, lParam: Integer): Integer; stdcall;
@@ -199,7 +280,7 @@ begin
         SH_APPBAR_DATA :
         begin
           AppBarMsgData := pAppBarMsgDataV2(Data.lpData)^;
-          Result := TrayManager.HandleAppBarMessage(AppBarMsgData);
+          Result := TrayManager.HandleAppBarMessage(AppBarMsgData,lparam);
         end;
         SH_TRAY_DATA :
         begin
@@ -396,19 +477,26 @@ end;
 
 procedure Stop;
 begin
-  TaskManager.Free;
-  TrayManager.Free;
+  FreeAndNil(DeskAreaManager);
+  FreeAndNil(TrayManager);
+  FreeAndNil(TaskManager);
+
   DesroyWindowStructure;
   TerminateShellServices;
 end;
 
 function Start(owner: hwnd): hwnd;
 begin
+  InitThemeLibrary;
+
   TaskManager := nil;
   TrayManager := nil;
+  DeskAreaManager := nil;
   CreateWindowStructure;
-  TaskManager := TTaskManager.Create;
-  TrayManager := TTrayManager.Create;
+  TaskManager     := TTaskManager.Create;
+  TrayManager     := TTrayManager.Create;
+  DeskAreaManager := TDeskAreaManager.Create;
+  DeskAreaManager.LoadSettings;
 
   TerminateShellServices;
   sleep(1000);
@@ -423,7 +511,7 @@ begin
   with result do
   begin
     Name := 'Shell';
-    Description := 'Provides the core shell functionality (Taskbar and Tray)';
+    Description := 'Provides the core shell functionality (Taskbar,Tray,DeskArea)';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
     Version := '0.7.4.0';
     DataType := tteService;
@@ -606,6 +694,9 @@ begin
   Icons := TObjectList.Create;
   Icons.OwnsObjects := True;
   Icons.Clear;
+  AppBarList := TObjectList.Create;
+  AppBarList.OwnsObjects := True;
+  AppBarList.Clear;
   WndList := TStringList.Create;
   WndList.Duplicates := dupIgnore;
   WndList.Clear;
@@ -643,6 +734,8 @@ begin
   WndList := nil;
   Icons.Clear;
   Icons.Free;
+  AppBarList.Clear;
+  AppBarList.Free;
 
   if FDllHandle <> 0 then
   begin
@@ -673,23 +766,139 @@ begin
   result := nil;
 end;
 
-function TTrayManager.HandleAppBarMessage(msg: TAppBarMsgDataV2): integer;
+function TTrayManager.GetAppBarItem(pWnd: hwnd): TAppBarItem;
+var
+  n : integer;
+begin
+  result := nil;
+  for n := 0 to AppBarList.Count - 1 do
+    if TAppBarItem(AppBarList[n]).Data.abd.Wnd = pWnd then
+    begin
+      result := TAppBarItem(AppBarList[n]);
+      exit;
+    end;
+end;
+
+function TTrayManager.GetAutoHideAppBar(pEdge: Cardinal): TAppBarItem;
+var
+  n : integer;
+begin
+  result := nil;
+  for n := 0 to AppBarList.Count - 1 do
+    if ((TAppBarItem(AppBarList[n]).AutoHideBar) and (TAppBarItem(AppBarList[n]).Data.abd.uEdge = pEdge)) then
+    begin
+      result := TAppBarItem(AppBarList[n]);
+      exit;
+    end;
+end;
+
+function TTrayManager.HandleAppBarMessage(msg: TAppBarMsgDataV2; lparam : dword): integer;
 var
   phandle : pAppBarDataV1;
   shellwndrect : TRect;
   shellwndmon : HMonitor;
   shellwndmoninfo : TMonitorInfo;
+  ABItem : TAppBarItem;
+  mon : HMonitor;
+  moninfo : TMonitorInfo;
 begin
   result := 0;
   case msg.dwMessage of
+    // Retrieves the autohide and always-on-top states of the Windows taskbar.
     ABM_GETSTATE: result := 0; // Taskbar is neither in autohide nor always-on-top state
+
+    // Registers a new appbar
     ABM_NEW: begin
-               if CompareText(GetWndClass(msg.abd.Wnd),'TaskSwitcherWnd') = 0 then
-                 result := 1 // allow creating of the app bar which is the Vista 2D Flip Window
-                 else result := 0; // otherwise don't allow creating of app bars                                                              
-             end; 
-    ABM_GETTASKBARPOS:
-    begin
+      ABItem := TAppBarItem.Create(msg); // Create new app bar item;
+      AppBarList.Add(ABItem);
+      result := 1;
+    end;
+
+    // Registers or unregisters an autohide appbar for an edge of the screen.
+    ABM_SETAUTOHIDEBAR: begin
+      ABItem := GetAppBarItem(msg.abd.Wnd);
+      if ABItem <> nil then
+      begin
+        if lparam = 0 then // unregister
+        begin
+          AppBarList.Remove(ABItem);
+          result := 1;
+        end else // register
+        begin
+          if GetAutoHideAppBar(msg.abd.uEdge) = nil then // register new
+          begin
+            ABItem.Data.abd.uEdge := msg.abd.uEdge;
+            ABItem.AutoHideBar := True;
+            result := 1;
+          end else result := 0; // there is already an auto hide bar at this edge
+        end;
+      end;
+    end;
+
+    // Retrieves the handle to the autohide appbar associated with an edge of the screen.
+    ABM_GETAUTOHIDEBAR: begin
+      ABItem := GetAutoHideAppBar(msg.abd.uEdge);
+      if ABItem <> nil then
+        result := ABItem.Data.abd.Wnd
+      else result := 0;
+    end;
+
+    // Notifies the system that an appbar has been activated.
+    ABM_ACTIVATE: begin
+      result := 1; // always return true
+    end;
+
+    // Unregisters an appbar by removing it from the system's internal list.
+    ABM_REMOVE: begin
+      ABItem := GetAppBarItem(msg.abd.Wnd);
+      if ABItem <> nil then
+      begin
+        AppBarList.Remove(ABItem);
+        if DeskAreaManager <> nil then
+          DeskAreaManager.SetDeskArea;
+      end;
+      result := 1; // always return true
+    end;
+
+    // Sets the autohide and always-on-top states of the Microsoft Windows taskbar.
+    ABM_SETSTATE: begin // we ignore this messages... 
+      result := 1; // always return true
+    end;
+
+    // Notifies the system when an appbar's position has changed
+    ABM_WINDOWPOSCHANGED: begin
+      result := 1; // always return true
+    end;
+
+    // Requests a size and screen position for an appbar
+    ABM_QUERYPOS,ABM_SETPOS: begin
+      ABItem := GetAppBarItem(msg.abd.Wnd);
+      if ABItem <> nil then
+      begin
+        ABItem.Data.abd.uEdge := msg.abd.uEdge;
+        ABItem.Data.abd.rc := msg.abd.rc;        
+        phandle := LockAppBarMemory(msg);
+        if phandle <> nil then
+        begin
+          mon := MonitorFromWindow(phandle.Wnd, MONITOR_DEFAULTTONEAREST);
+          moninfo.cbSize := SizeOf(moninfo);
+          GetMonitorInfo(mon, @moninfo);
+          if phandle.rc.Top < moninfo.rcWork.Top then
+            phandle.rc.Top := moninfo.rcWork.Top;
+          if phandle.rc.Bottom > moninfo.rcWork.Bottom then
+            phandle.rc.Bottom := moninfo.rcWork.Bottom;
+          ABItem.Data.abd.rc := phandle.rc;
+          UnLockAppBarMempory(phandle);
+        end;
+      end;
+      result := 1; // always return true
+      if msg.dwMessage = ABM_SETPOS then
+        if DeskAreaManager <> nil then
+          DeskAreaManager.SetDeskArea;
+    end;
+
+    // Retrieves the bounding rectangle of the Windows taskbar
+    ABM_GETTASKBARPOS: begin
       phandle := LockAppBarMemory(msg);
       if phandle <> nil then
       begin
@@ -851,6 +1060,235 @@ begin
   if pItem.valid then
      BroadCastTrayMessage(pItem,1)
      else BroadCastTrayMessage(pItem,2);
+end;
+
+{ TAppBarItem }
+
+constructor TAppBarItem.Create(pData: TAppBarMsgDataV2);
+begin
+  inherited Create;
+  AutoHideBar := False;
+  Data.abd.cbSize := pData.abd.cbSize;
+  Data.abd.Wnd := pData.abd.Wnd;
+  Data.abd.uCallBackMessage := pData.abd.uCallBackMessage;
+end;
+
+{ TDeskAreaManager }
+
+constructor TDeskAreaManager.Create;
+begin
+  inherited Create;
+
+  setlength(FAutoModeList,0);
+  setlength(FOffsetList,0);
+  setlength(FMonIDList,0);
+
+  DeskAreaTimerWndClass.hInstance := hInstance;
+  if Windows.RegisterClass(DeskAreaTimerWndClass) <> 0 then
+  begin
+    DeskAreaTimerWnd := CreateWindow(DeskAreaTimerWndClass.lpszClassName, 'DeskAreaTimerWnd', 0, 0, 0, 0, 0, 0, 0, hInstance, nil);
+    if DeskAreaTimerWnd <> 0 then
+    begin
+      SetTimer(DeskAreaTimerWnd,1,3000,nil);
+      RegisterActionEx('!EnableDeskArea','Services',DeskAreaTimerWnd,0);
+      RegisterActionEx('!DisableDeskArea','Services',DeskAreaTimerWnd,1);
+    end else
+    begin
+      Windows.UnregisterClass(PChar('DeskAreaTimerWndClass'),hInstance);
+      SendDebugMessageEx('Shell','Failed to register "DeskAreaTimerWnd" window',0,0);
+    end;
+  end else SendDebugMessageEx('Shell','Failed to register "DeskAreaTimerWndClass" window class',0,0);
+end;
+
+destructor TDeskAreaManager.Destroy;
+begin
+  if DeskAreaTimerWnd <> 0 then
+  begin
+    KillTimer(DeskAreaTimerWnd,1);
+    DestroyWindow(DeskAreaTimerWnd);
+    Windows.UnregisterClass(PChar('DeskAreaTimerWnd'),hInstance);
+    UnRegisterAction('!EnableDeskArea');
+    UnRegisterAction('!DisableDeskArea');
+  end;
+
+  SetFullScreenArea;
+  setlength(FOffsetList,0);
+  setlength(FAutoModeList,0);
+  setlength(FMonIDList,0);
+
+  inherited Destroy;
+end;
+
+procedure TDeskAreaManager.Enable;
+begin
+  SetTimer(DeskAreaTimerWnd,1,3000,nil);
+  SetDeskArea;
+end;
+
+procedure TDeskAreaManager.Disable;
+begin
+  KillTimer(DeskAreaTimerWnd,1);
+  SetFullScreenArea;
+end;
+
+procedure TDeskAreaManager.SetDeskArea;
+var
+  n,i,k : integer;
+  BR : array of TBarRect;
+  Area : TRect;
+  am : boolean;
+  MonID : integer;
+  Index : integer;
+  ABItem : TAppBarItem;
+  r : Cardinal;
+begin
+  setlength(BR,0);
+  for n := 0 to SharpApi.GetSharpBarCount - 1 do
+  begin
+    setlength(BR,length(BR)+1);
+    BR[High(BR)] := SharpApi.GetSharpBarArea(n);
+  end;
+  for n := 0 to Screen.MonitorCount - 1 do
+  begin
+    if Screen.Monitors[n] = Screen.PrimaryMonitor then
+      MonID := -100
+      else MonID := Screen.Monitors[n].MonitorNum;
+
+    Index := -1;
+    for i := 0 to High(FMonIDList) do
+      if FMonIDList[i] = MonID then
+      begin
+        Index := i;
+        break;
+      end;
+
+    Area := Screen.Monitors[n].BoundsRect;
+    if Index <> -1 then
+      am := FAutoModeList[Index]
+      else am := True;
+    if am then
+    begin
+      for i := 0 to High(BR) do
+      begin
+        if IsWindowVisible(BR[i].wnd) then
+           if PointInRect(Point(BR[i].R.Left + (BR[i].R.Right - BR[i].R.Left) div 2,
+                                BR[i].R.Top + (BR[i].R.Bottom - BR[i].R.Top) div 2),
+                          Screen.Monitors[n].BoundsRect) then
+           begin
+             if BR[i].R.Top < Screen.Monitors[n].Top + Screen.Monitors[n].Height div 2 then
+                Area.Top := Max(Area.Top,BR[i].R.Bottom)
+                else Area.Bottom := Min(Area.Bottom,BR[i].R.Top);
+           end;
+      end;
+    end;
+
+    // apply custom monitor offsets
+    if Index <> -1 then
+    begin
+      Area.Left   := Area.Left + FOffsetList[Index].Left;
+      Area.Top    := Area.Top + FOffsetList[Index].Top;
+      Area.Right  := Area.Right - FOffsetList[Index].Right;
+      Area.Bottom := Area.Bottom - FOffsetList[Index].Bottom;
+    end;
+
+    // apply app bars
+    if TrayManager <> nil then
+      for i := 0 to TrayManager.AppBarList.Count - 1 do
+      begin
+        ABItem := TAppBarItem(TrayManager.AppBarList.Items[i]);
+        if not ABItem.AutoHideBar then
+          if PointInRect(Point(ABItem.Data.abd.rc.Left + (ABItem.Data.abd.rc.Right - ABItem.Data.abd.rc.Left) div 2,
+                               ABItem.Data.abd.rc.Top + (ABItem.Data.abd.rc.Bottom - ABItem.Data.abd.rc.Top) div 2),
+                         Screen.Monitors[n].BoundsRect) then
+          begin
+            if ((ABItem.Data.abd.uEdge = ABE_RIGHT) and (Area.Right > ABItem.Data.abd.rc.Left)) then
+              Area.Right := ABItem.Data.abd.rc.Left
+            else if ((ABItem.Data.abd.uEdge = ABE_LEFT) and (Area.Left < ABItem.Data.abd.rc.Right)) then
+              Area.Left := ABItem.Data.abd.rc.Right
+          end;
+      end;
+
+    if ((Win32MajorVersion = 5) and (Win32MinorVersion >= 1)) or (Win32MajorVersion = 6) then
+    begin
+      if not uxTheme.IsThemeActive then
+      begin
+        Area.Top := Area.Top + 4;
+        Area.Bottom := Area.Bottom - 4;
+      end;
+    end;
+
+    k := 0;
+    if (Area.Left <> Screen.Monitors[n].WorkareaRect.Left) or
+       (Area.Right <> Screen.Monitors[n].WorkareaRect.Right) or
+       (Area.Top <> Screen.Monitors[n].WorkareaRect.Top) or
+       (Area.Bottom <> Screen.Monitors[n].WorkareaRect.Bottom) then
+    begin
+      SystemParametersInfo(SPI_SETWORKAREA, k, @Area, SPIF_UPDATEINIFILE);
+//      SharpEBroadCast(WM_SETTINGCHANGE,SPI_SETWORKAREA, 0)
+//      SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0);
+      SendMessageTimeOut(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0,SMTO_ABORTIFHUNG,20,r);
+    end
+  end;
+  setlength(BR,0);
+end;
+
+procedure TDeskAreaManager.SetFullScreenArea;
+var
+  n : integer;
+  i : cardinal;
+  Area : TRect;
+  Mon : TMonitor;
+  r: Cardinal;
+begin
+  i := 0;
+  for n := 0 to Screen.MonitorCount - 1 do
+  begin
+    Mon := Screen.Monitors[n];
+    Area := Rect(Mon.Left,Mon.Top,Mon.Left + Mon.Width, Mon.Top + Mon.Height);
+    SystemParametersInfo(SPI_SETWORKAREA, i, @Area, SPIF_UPDATEINIFILE);
+    SendMessageTimeOut(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0,SMTO_ABORTIFHUNG,20,r);
+  end;
+end;
+
+procedure TDeskAreaManager.LoadSettings;
+var
+  XML : TJclSimpleXML;
+  Dir : String;
+  n : integer;
+begin
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\';
+  setlength(FOffsetList,0);
+  setlength(FAutoModeList,0);
+  setlength(FMonIDList,0);
+  if FileExists(Dir + 'DeskArea.xml') then
+  begin
+    XML := TJclSimpleXML.Create;
+    try
+      XML.LoadFromFile(Dir + 'DeskArea.xml');
+      if XML.Root.Items.ItemNamed['Monitors'] <> nil then
+         with XML.Root.Items.ItemNamed['Monitors'].Items do
+         begin
+           for n := 0 to Count - 1 do
+               with XML.Root.Items.ItemNamed['Monitors'].Items.Item[n].Items do
+               begin
+                 setlength(FMonIDList,length(FMonIDList)+1);
+                 FMonIDList[High(FMonIDList)] := IntValue('ID',-1);
+                 setlength(FAutoModeList,length(FAutoModeList)+1);
+                 FAutoModeList[High(FAutoModeList)] := BoolValue('AutoMode',True);
+                 setlength(FOffsetList,length(FOffsetList)+1);
+                 with FOffsetList[High(FOffsetList)] do
+                 begin
+                   Left   := IntValue('Left',0);
+                   Top    := IntValue('Top',0);
+                   Right  := IntValue('Right',0);
+                   Bottom := IntValue('Bottom',0);
+                 end;
+               end;
+         end;
+    finally
+      XML.Free;
+    end;
+  end;
 end;
 
 begin

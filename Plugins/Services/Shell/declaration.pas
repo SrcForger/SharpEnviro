@@ -191,6 +191,8 @@ type
   TinvFile = file of Tinv;
 
 const
+  ABM_SETSTATE = 10; 
+
   SH_APPBAR_DATA   = 0;
   SH_TRAY_DATA     = 1;
   SH_LOADPROC_DATA = 2;
