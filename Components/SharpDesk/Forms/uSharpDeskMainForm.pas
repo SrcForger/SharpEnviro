@@ -62,7 +62,6 @@ type
     DeleteObject1: TMenuItem;
     OpenObjectSettings1: TMenuItem;
     LockObjec1: TMenuItem;
-    ObjectPopUpImages: TImageList;
     CloneObject1: TMenuItem;
     AdvancedCommands: TMenuItem;
     RepaintObject2: TMenuItem;
@@ -104,7 +103,6 @@ type
     Objectselections1: TMenuItem;
     All1: TMenuItem;
     N9: TMenuItem;
-    ImageList1: TImageList;
     sameObjectSet1: TMenuItem;
     ObjectSet1: TMenuItem;
     ObjectPreset2: TMenuItem;
@@ -117,13 +115,13 @@ type
     N3: TMenuItem;
     Newobjectset1: TMenuItem;
     MakeWindow1: TMenuItem;
-    PngImageList1: TPngImageList;
     N13: TMenuItem;
     Lock1: TMenuItem;
     N6: TMenuItem;
     N1: TMenuItem;
     N10: TMenuItem;
     N14: TMenuItem;
+    PngImageList2: TPngImageList;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
