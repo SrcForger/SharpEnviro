@@ -39,11 +39,11 @@ type
   TSharpBarMainForm = class(TForm)
     PopupMenu1: TPopupMenu;
     Position1: TMenuItem;
-    AutoPos1: TMenuItem;
+    Top1: TMenuItem;
     Bottom1: TMenuItem;
     N1: TMenuItem;
     Left1: TMenuItem;
-    Right2: TMenuItem;
+    Right1: TMenuItem;
     Middle1: TMenuItem;
     N2: TMenuItem;
     Monitor1: TMenuItem;
@@ -59,8 +59,8 @@ type
     N5: TMenuItem;
     Delete1: TMenuItem;
     Move1: TMenuItem;
-    Left2: TMenuItem;
-    Right1: TMenuItem;
+    miLeftModule: TMenuItem;
+    miRightModule: TMenuItem;
     Settings: TMenuItem;
     DisableBarHiding1: TMenuItem;
     BarManagment1: TMenuItem;
@@ -86,8 +86,8 @@ type
     procedure FormResize(Sender: TObject);
     procedure SkinManager1SkinChanged(Sender: TObject);
     procedure DisableBarHiding1Click(Sender: TObject);
-    procedure Right1Click(Sender: TObject);
-    procedure Left2Click(Sender: TObject);
+    procedure miRightModuleClick(Sender: TObject);
+    procedure miLeftModuleClick(Sender: TObject);
     procedure Delete1Click(Sender: TObject);
     procedure SettingsClick(Sender: TObject);
     procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
@@ -105,11 +105,11 @@ type
     procedure PopupMenu1Popup(Sender: TObject);
     procedure FullScreen1Click(Sender: TObject);
     procedure ExitMnClick(Sender: TObject);
-    procedure Right2Click(Sender: TObject);
+    procedure Right1Click(Sender: TObject);
     procedure Middle1Click(Sender: TObject);
     procedure Left1Click(Sender: TObject);
     procedure Bottom1Click(Sender: TObject);
-    procedure AutoPos1Click(Sender: TObject);
+    procedure Top1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure OnMonitorPopupItemClick(Sender: TObject);
     procedure OnQuickAddModuleItemClick(Sender: TObject);
@@ -1100,7 +1100,7 @@ begin
   FBGImage.Free;
 end;
 
-procedure TSharpBarMainForm.AutoPos1Click(Sender: TObject);
+procedure TSharpBarMainForm.Top1Click(Sender: TObject);
 begin
   SharpEBar.VertPos := vpTop;
   UpdateBGImage;
@@ -1150,7 +1150,7 @@ begin
   SaveBarSettings;
 end;
 
-procedure TSharpBarMainForm.Right2Click(Sender: TObject);
+procedure TSharpBarMainForm.Right1Click(Sender: TObject);
 begin
   SharpEBar.HorizPos := hpRight;
   UpdateBGImage;
@@ -1187,7 +1187,8 @@ end;
 procedure TSharpBarMainForm.ExitMnClick(Sender: TObject);
 begin
   SaveBarSettings;
-  Close;
+  Application.Terminate;
+  //Close;
 end;
 
 procedure TSharpBarMainForm.FullScreen1Click(Sender: TObject);
@@ -1226,12 +1227,17 @@ begin
   Monitor1.Clear;
   for n := 0 to Screen.MonitorCount - 1 do begin
     item := TMenuItem.Create(Monitor1);
+    item.GroupIndex := 1;
+    item.RadioItem := true;
+    item.Caption := inttostr(n);
+
     if Screen.Monitors[n] = Screen.PrimaryMonitor then
-      item.Caption := inttostr(n) + ' (primary)'
-    else
-      item.Caption := inttostr(n);
+      item.Caption := inttostr(n) + ' (Primary)';
+
+    if n = SharpEBar.MonitorIndex then
+      item.Checked := True;
+
     item.Hint := inttostr(n);
-    item.ImageIndex := 14;
     item.OnClick := OnMonitorPopupItemClick;
     Monitor1.Add(item);
   end;
@@ -1242,11 +1248,12 @@ begin
   for n := 0 to ModuleManager.ModuleFiles.Count - 1 do begin
     mfile := TModuleFile(ModuleManager.ModuleFiles.Items[n]);
     item := TMenuItem.Create(Monitor1);
+
     s := ExtractFileName(mfile.FileName);
     setlength(s, length(s) - length(ExtractFileExt(s)));
     item.Caption := s;
     item.Tag := n;
-    item.ImageIndex := 11;
+    item.ImageIndex := 1;
     item.OnClick := OnQuickAddModuleItemClick;
     QuickAdDModule1.Add(item);
   end;
@@ -1264,14 +1271,14 @@ begin
       if (CompareText(sr.Name, '.') <> 0) and (CompareText(sr.Name, '..') <> 0) then begin
         if FileExists(Dir + sr.Name + '\Skin.xml') then begin
           item := TMenuItem.Create(Skin1);
-          if CompareText(sr.Name,SharpThemeApi.GetSkinName) = 0 then begin
-            item.ImageIndex := 28;
-            item.Caption := '(' + sr.Name + ')'
-          end
-          else begin
-            item.ImageIndex := 29;
-            item.Caption := sr.Name;
-          end;
+          item.GroupIndex := 1;
+          item.Checked := False;
+          item.Caption := sr.Name;
+          item.RadioItem := true;
+
+          if CompareText(sr.Name,SharpThemeApi.GetSkinName) = 0 then
+            item.Checked := True;
+
           item.Hint := sr.Name;
           item.OnClick := OnSkinSelectItemClick;
           Skin1.Add(item);
@@ -1291,21 +1298,35 @@ begin
   if FindFirst(Dir + '*.xml', FAAnyFile, sr) = 0 then
     repeat
       item := TMenuItem.Create(ColorScheme1);
+      item.GroupIndex := 1;
+      item.Caption := s;
+      item.Checked := false;
+      item.RadioItem := true;
+
       s := sr.Name;
       setlength(s, length(s) - length('.xml'));
-      if s = SharpThemeApi.GetSchemeName then begin
-        item.ImageIndex := 28;
-        item.Caption := '(' + s + ')'
-      end
-      else begin
-        item.ImageIndex := 29;
-        item.Caption := s;
-      end;
+      if s = SharpThemeApi.GetSchemeName then
+        item.Checked := True;
+
       item.Hint := sr.Name;
       item.OnClick := OnSchemeSelectItemClick;
       ColorScheme1.Add(item);
     until FindNext(sr) <> 0;
   FindClose(sr);
+
+  case SharpEBar.VertPos of
+    vpTop: Top1.Checked := True;
+    vpBottom: Bottom1.Checked := True;
+  end;
+
+  case SharpEBar.HorizPos of
+    hpLeft: Left1.Checked := True;
+    hpMiddle: Middle1.Checked := True;
+    hpRight: Right1.Checked := True;
+    hpFull: FullScreen1.Checked := True;
+  end;
+
+
 end;
 
 procedure TSharpBarMainForm.OnSchemeSelectItemClick(Sender: TObject);
@@ -1736,7 +1757,7 @@ begin
   end;
 end;
 
-procedure TSharpBarMainForm.Left2Click(Sender: TObject);
+procedure TSharpBarMainForm.miLeftModuleClick(Sender: TObject);
 var
   mThrobber: TSharpEMiniThrobber;
   tempModule: TModule;
@@ -1759,7 +1780,7 @@ begin
   SaveBarSettings;
 end;
 
-procedure TSharpBarMainForm.Right1Click(Sender: TObject);
+procedure TSharpBarMainForm.miRightModuleClick(Sender: TObject);
 var
   mThrobber: TSharpEMiniThrobber;
   tempModule: TModule;
