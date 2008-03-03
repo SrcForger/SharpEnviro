@@ -584,7 +584,8 @@ begin
     exit;
   end;
 
-  if (msg.WParam = Integer(suWallpaper)) then
+  if (msg.WParam = Integer(suWallpaper)) or (msg.WParam = Integer(suScheme))
+    or (msg.WParam = Integer(suSkin)) then
   begin
     SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
     Background.Reload;
@@ -592,6 +593,7 @@ begin
     SharpDesk.BackgroundLayer.Update;
     SharpDesk.BackgroundLayer.Changed;
     SharpApi.SharpEBroadCast(WM_DESKBACKGROUNDCHANGED,0,0);
+    SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
   end;
 
   if (msg.WParam = Integer(suSharpDesk)) then
