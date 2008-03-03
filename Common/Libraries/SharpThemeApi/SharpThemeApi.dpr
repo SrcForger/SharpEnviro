@@ -952,22 +952,22 @@ begin
           IconAlphaBlend := BoolValue('IconAlphaBlend', IconAlphaBlend);
           IconAlpha := IntValue('IconAlpha', IconAlpha);
           IconBlending := BoolValue('IconBlending', IconBlending);
-          IconBlendColor := IntValue('IconBlendColor', IconBlendColor);
+          IconBlendColor := ParseColor(PChar(Value('IconBlendColor', IntToStr(IconBlendColor))));
           IconBlendAlpha := IntValue('IconBlendAlpha', IconBlendAlpha);
           IconShadow := BoolValue('IconShadow', IconShadow);
-          IconShadowColor := IntValue('IconShadowColor', IconShadowColor);
+          IconShadowColor := ParseColor(PChar(Value('IconShadowColor', IntToStr(IconShadowColor))));
           IconShadowAlpha := IntValue('IconShadowAlpha', IconShadowAlpha);
           FontName := Value('FontName', FontName);
           TextSize := IntValue('TextSize', TextSize);
           TextBold := BoolValue('TextBold', TextBold);
           TextItalic := BoolValue('TextItalic', TextItalic);
           TextUnderline := BoolValue('TextUnderline', TextUnderline);
-          TextColor := IntValue('TextColor', TextColor);
+          TextColor := ParseColor(PChar(Value('TextColor', IntToStr(TextColor))));
           TextAlpha := BoolValue('TextAlpha', TextAlpha);
           TextAlphaValue := IntValue('TextAlphaValue', TextAlphaValue);
           TextShadow := BoolValue('TextShadow', TextShadow);
           TextShadowAlpha := IntValue('TextShadowAlpha', TextShadowAlpha);
-          TextShadowColor := IntValue('TextShadowColor', TextShadowColor);
+          TextShadowColor := ParseColor(PChar(Value('TextShadowColor', IntToStr(TextShadowColor))));
           TextShadowType := IntValue('TextShadowType', TextShadowType);
           TextShadowSize := IntValue('TextShadowSize', TextShadowSize);
           DisplayText := BoolValue('DisplayText', DisplayText);
@@ -1002,7 +1002,7 @@ begin
           AlphaValue := IntValue('AlphaValue', AlphaValue);
           Blend := BoolValue('Blend', Blend);
           BlendValue := IntValue('BlendValue', BlendValue);
-          BlendColor := IntValue('BlendColor', BlendColor);
+          BlendColor := ParseColor(PChar(Value('BlendColor', IntToStr(BlendColor))));
           Brightness := BoolValue('Brightness', Brightness);
           BrightnessValue := IntValue('BrightnessValue', BrightnessValue);
         end;
@@ -1036,7 +1036,7 @@ begin
             with Theme.Wallpapers[High(Theme.Wallpapers)] do begin
               Name := Value('Name', Name);
               Image := Value('Image', Image);
-              Color := IntValue('Color', Color);
+              Color := ParseColor(PChar(Value('Color', IntToStr(Color))));
               Alpha := IntValue('Alpha', Alpha);
               i := IntValue('Size', 0);
               case i of
@@ -1059,9 +1059,9 @@ begin
               else
                 GradientType := twgtHoriz;
               end;
-              GDStartColor := IntValue('GDStartColor', GDStartColor);
+              GDStartColor := ParseColor(PChar(Value('GDStartColor', IntToStr(GDStartColor))));
               GDStartAlpha := IntValue('GDStartAlpha', GDStartAlpha);
-              GDEndColor := IntValue('GDEndColor', GDEndColor);
+              GDEndColor := ParseColor(PChar(Value('GDEndColor', IntToStr(GDEndColor))));
               GDEndAlpha := IntValue('GDEndAlpha', GDEndAlpha);
               MirrorHoriz := BoolValue('MirrorHoriz', MirrorHoriz);
               MirrorVert := BoolValue('MirrorVert', MirrorVert);
