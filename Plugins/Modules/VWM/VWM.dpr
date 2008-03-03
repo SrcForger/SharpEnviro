@@ -225,6 +225,9 @@ begin
          temp.Form.Height := i;
     end;
 
+    if [part] <= [suScheme,suSkin] then
+      TMainForm(temp.Form).UpdateColors;
+
     // Step3: update
     if [part] <= [suScheme,suBackground,suSkinFileChanged,suTheme] then
     begin

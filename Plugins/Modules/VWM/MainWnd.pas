@@ -48,14 +48,19 @@ type
   private
     sVWMSpacing : integer;
     sBackgroundColor : integer;
+    sBackgroundColorSetting : String;
     sBackgroundAlpha : byte;
     sBorderColor : integer;
+    sBorderColorSetting : String;
     sBorderAlpha : byte;
     sForegroundColor : integer;
+    sForegroundColorSetting : String;
     sForegroundAlpha : byte;
     sHighlightColor : integer;
+    sHighlightColorSetting : String;
     sHighlightAlpha : byte;
     sTextColor : integer;
+    sTextColorSetting : String;
     sTextAlpha : byte;
     sDisplayVWMNumbers : boolean;
     procedure WMShellMessage(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
@@ -78,6 +83,7 @@ type
     procedure DrawVWMToForm;
     procedure DrawVWM;
     procedure UpdateVWMSettings;
+    procedure UpdateColors;
   end;
 
 // Skin Manager!
@@ -100,16 +106,21 @@ var
   fileloaded : boolean;
 begin
   sBackgroundColor := clWhite;
+  sBackgroundColorSetting := 'clWhite';
   sBackgroundAlpha := 128;
-  sBorderColor     := clBlack;
-  sBorderAlpha     := 128;
+  sBorderColor := clBlack;
+  sBorderColorSetting := 'clBlack';
+  sBorderAlpha := 128;
   sForegroundColor := clBlack;
+  sForegroundColorSetting := 'clBlack';
   sForegroundAlpha := 64;
-  sVWMSpacing      := 1;
-  sHighlightColor  := sBackgroundColor;
-  sHighlightAlpha  := 192;
-  sTextColor       := clBlack;
-  sTextAlpha       := 255;
+  sVWMSpacing := 1;
+  sHighlightColor := sBackgroundColor;
+  sHighlightColorSetting  := 'clBlack';
+  sHighlightAlpha := 192;
+  sTextColor := clBlack;
+  sTextColorSetting := 'clBlack';
+  sTextAlpha := 255;
   sDisplayVWMNumbers := True;
 
   XML := TJclSimpleXML.Create;
@@ -123,17 +134,19 @@ begin
     with XML.Root.Items do
     begin
       sDisplayVWMNumbers := BoolValue('Numbers',sDisplayVWMNumbers);
-      sBackgroundColor   := ParseColor(PChar(Value('Background',IntToStr(sBackgroundColor))));
-      sBorderColor       := ParseColor(PChar(Value('Border',IntToStr(sBorderColor))));
-      sForegroundColor   := ParseColor(PChar(Value('Foreground',IntToStr(sForegroundColor))));
-      sHighlightColor    := ParseColor(PChar(Value('Highlight',IntToStr(sHighlightColor))));
-      sTextColor         := ParseColor(PChar(Value('Text',IntToStr(sTextColor))));
+      sBackgroundColorSetting   := Value('Background',IntToStr(sBackgroundColor));
+      sBorderColorSetting       := Value('Border',IntToStr(sBorderColor));
+      sForegroundColorSetting   := Value('Foreground',IntToStr(sForegroundColor));
+      sHighlightColorSetting    := Value('Highlight',IntToStr(sHighlightColor));
+      sTextColorSetting         := Value('Text',IntToStr(sTextColor));
       sBackgroundAlpha := IntValue('BackgroundAlpha',sBackgroundAlpha);
       sBorderAlpha     := IntValue('BorderAlpha',sBorderAlpha);
       sForegroundAlpha := IntValue('ForegroundAlpha',sForegroundAlpha);
       sHighlightAlpha  := IntValue('HighlightAlpha',sHighlightAlpha);
       sTextAlpha       := IntValue('TextAlpha',sTextAlpha);
     end;
+    
+  UpdateColors;
   XML.Free;
 end;
 
@@ -144,6 +157,15 @@ begin
      else if (Width <> Background.Width) then
               Background.Setsize(Width,Height);
   uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+end;
+
+procedure TMainForm.UpdateColors;
+begin
+  sBackgroundColor := ParseColor(PChar(sBackgroundColorSetting));
+  sBorderColor     := ParseColor(PChar(sBorderColorSetting));
+  sForegroundColor := ParseColor(PChar(sForegroundColorSetting));
+  sHighlightColor  := ParseColor(PChar(sHighlightColorSetting));
+  sTextColor       := ParseColor(PChar(sTextColorSetting));
 end;
 
 procedure TMainForm.UpdateVWMSettings;
