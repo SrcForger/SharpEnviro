@@ -323,7 +323,7 @@ begin
       WPStyle := Reg.ReadString('WallpaperStyle');
       WPTile := Reg.ReadString('TileWallpaper');
       Reg.Free;
-      if CompareText(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp',WP) <> 0 then
+      if CompareText(SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg.bmp',WP) <> 0 then
       begin
         Dir := SharpThemeApi.GetThemeDirectory;
         FName := Dir + 'Wallpaper.xml';
