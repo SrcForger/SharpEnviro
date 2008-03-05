@@ -735,8 +735,8 @@ begin
     if wnd <> 0 then begin
       // First try to load the SharpDesk background image
       // if this fails then try to use PrintWindow on SharpDesk
-      if FileCheck(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp', True) then
-        BGBmp.LoadFromFile(SharpApi.GetSharpeDirectory + 'SharpDeskbg.bmp')
+      if FileCheck(SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg.bmp', True) then
+        BGBmp.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg.bmp')
       else if @PrintWindow <> nil then begin
         // try 3 times... :)
         if not PrintWindow(wnd, BGBmp.Handle, 0) then begin
@@ -1039,20 +1039,20 @@ begin
 
   //DelayTimer2.Enabled := True;
 
-  // Initialize the bar content
-  // ID > 0 try load from xml
-  // ID = -1 new bar
-  if mfParamID <> -255 then begin
-    SharpBarMainForm.LoadBarFromID(mfParamID);
-    mfParamID := -255;
-  end;
-
   UpdateBGZone;
   SkinManager.UpdateSkin;
   SharpEBar.Seed := -1;
   SharpEBar.UpdateSkin;
   if SharpEBar.Throbber.Visible then
     SharpEBar.Throbber.UpdateSkin;
+
+  // Initialize the bar content
+  // ID > 0 try load from xml
+  // ID = -1 new bar
+  if mfParamID <> -255 then begin
+    SharpBarMainForm.LoadBarFromID(mfParamID);
+    mfParamID := -255;
+  end;    
 
   SharpApi.RegisterActionEx(PChar('!FocusBar (' + inttostr(FBarID) + ')'), 'SharpBar', Handle, 1);
 end;
@@ -1435,7 +1435,9 @@ begin
   ShowWindow(application.Handle, SW_HIDE);
   if BarHideForm <> nil then
     BarHideForm.UpdateStatus;
-  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+//  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_UPDATENOW);
+//  RedrawWindow(Handle, nil,0, RDW_INTERNALPAINT or RDW_INVALIDATE or RDW_ALLCHILDREN);
   ModuleManager.RefreshMiniThrobbers;
 end;
 

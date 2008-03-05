@@ -166,13 +166,13 @@ type
                      function LoadModule(ID : integer; FromBar: integer; Position,Index : integer) : TModule; overload;
                      procedure LoadFromDirectory(pDirectory : String);
                      procedure RefreshFromDirectory(pDirectory : String);
-                     procedure FixModulePositions;
+                     procedure FixModulePositions(ForceUpdate : boolean = False);
                      procedure SaveBarSettings;
                      function GetModule(ID : integer) : TModule;
                      function GetModuleIndex(ID : integer) : integer;
                      procedure SortModulesByPosition;
                      procedure RefreshMiniThrobbers;
-                     procedure UpdateBarSize(PluginWidth : integer);
+                     procedure UpdateBarSize(PluginWidth : integer; ForceUpdate: boolean = False);
                      function GetFirstRModuleIndex : integer;
                      function GenerateModuleID : integer;
                      function GetFreeBarSpace : integer;
@@ -184,7 +184,7 @@ type
                      procedure BroadcastPluginMessage(msg : string);
                      procedure BroadcastPluginUpdate(part : TSU_UPDATE_ENUM; param : integer = 0);
                      procedure BroadCastModuleRefresh;
-                     procedure ReCalculateModuleSize(Broadcast : boolean = True);
+                     procedure ReCalculateModuleSize(Broadcast : boolean = True; ForceUpdate: boolean = False);
                      procedure OnMiniThrobberClick(Sender : TObject);
                      procedure OnMiniThrobberMouseDown(Sender : TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
                      procedure OnMiniThrobberMouseUp(Sender : TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -1154,7 +1154,7 @@ end;
 
 // Update the position of all modules and their mini throbbers
 // This will also update the main window width
-procedure TModuleManager.FixModulePositions;
+procedure TModuleManager.FixModulePositions(ForceUpdate : boolean = False);
 var
   n,i : integer;
   ro,lo,rx,x : integer;
@@ -1217,7 +1217,7 @@ begin
     begin
       LCount := LCount + 1;
       i := lo + x + MTWidth*(LCount);
-      if TempModule.Control.Left <> i then
+      if (TempModule.Control.Left <> i) or (ForceUpdate) then
       begin
         TempModule.Control.Left := i;
         CList.Add(TempModule);
@@ -1229,7 +1229,7 @@ begin
       if not (FBar.HorizPos = hpFull) then
          i := lo + LeftSize + rx + MTWidth*(RCount)
          else i := ParentControl.Width - ro - RightSize + rx + MTWidth*(RCount);
-      if i <> TempModule.Control.Left then
+      if (i <> TempModule.Control.Left) or (ForceUpdate) then
       begin
         TempModule.Control.Left := i;
         CList.Add(TempModule);
@@ -1277,7 +1277,7 @@ begin
 end;
 
 // Calculate and update the size of the bar
-procedure TModuleManager.UpdateBarSize(PluginWidth : integer);
+procedure TModuleManager.UpdateBarSize(PluginWidth : integer; ForceUpdate: boolean = False);
 var
   lo,ro : integer;
   MTWidth : integer;
@@ -1301,8 +1301,7 @@ begin
 
   PluginWidth := PluginWidth + MTWidth * FModules.Count;
 
-  if not (FBar.HorizPos = hpFull) then
-     if lo + ro + PluginWidth <> ParentControl.Width then
+  if ((ForceUpdate) or ((not (FBar.HorizPos = hpFull)) and (lo + ro + PluginWidth <> ParentControl.Width))) then
   begin
     nw := Max(lo + ro + FSkinManager.Skin.BarSkin.ThDim.XAsInt+5,lo + ro + PluginWidth);
     FBar.UpdatePosition(nw);
@@ -1314,7 +1313,7 @@ end;
 // Calculate how much space every module is taking and check how much free bar
 // space is left. Adjust the size of modules with dynamic size (task list,...)
 // if there is more space needed or of the dynamic module can have more space.
-procedure TModuleManager.ReCalculateModuleSize(Broadcast : boolean = True);
+procedure TModuleManager.ReCalculateModuleSize(Broadcast : boolean = True; ForceUpdate: boolean = False);
 var
   n : integer;
   temp : TModule;
@@ -1396,7 +1395,7 @@ begin
     if msize.Min <> msize.Width then
        i := i + 1;
   end;
-  UpdateBarSize(newsize);
+  UpdateBarSize(newsize,ForceUpdate);
 
   // Send update messages to modules
   i := 0;
