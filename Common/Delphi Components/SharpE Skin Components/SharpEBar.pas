@@ -360,7 +360,6 @@ end;
 
 procedure TSharpEBarBackground.SetZOrder;
 begin
-  exit;
   if Owner <> nil then
     SetWindowPos(WindowHandle, (Owner as TSharpEBar).aform.handle,
       0, 0, 0, 0,
@@ -911,9 +910,10 @@ begin
       begin
         msg.result := 0;
         rchanged := True;
-        if msg.WParam = 0 then
-         SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
-                      SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+        UpdateAlwaysOnTop
+//        if msg.WParam = 0 then
+  //       SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
+    //                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
       end;
     WM_MOUSELEAVE:
       begin
