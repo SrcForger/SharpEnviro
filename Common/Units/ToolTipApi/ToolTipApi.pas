@@ -32,7 +32,9 @@ uses
 
 
 function RegisterBallonWindow(Control : TWinControl) : hwnd;
-procedure AddBalloonWindowCallBack(BWnd : hwnd; Control : TWinControl; Icon : integer; Titel : String; Rect : TRect);
+procedure AddBalloonWindowCallBack(BWnd : hwnd; Control : TWinControl; ID : integer; Icon : integer; Titel : String; Rect : TRect);
+procedure SetBalloonPosition(BWnd : hwnd; X,Y : integer);
+procedure SetBalloonTracking(BWnd : hwnd; Control: TWinControl; ID : integer;Activate : boolean);
 
 function RegisterToolTip(Control: TWinControl) : hwnd;
 procedure EnableToolTip(TipWnd : hwnd);
@@ -53,14 +55,30 @@ const
 
 implementation
 
+procedure SetBalloonPosition(BWnd : hwnd; X,Y : integer);
+begin
+  SendMessage(BWnd, TTM_TRACKPOSITION, 0, MAKELONG(x,y));
+end;
+
+procedure SetBalloonTracking(BWnd : hwnd; Control: TWinControl; ID : integer; Activate : boolean);
+var
+  ti: TToolInfo;
+begin
+  ti.cbSize := SizeOf(ti);
+  ti.hwnd := Control.Handle;
+  ti.uId := Id;
+  if Activate then
+    SendMessage(BWnd, TTM_TRACKACTIVATE , 1, Integer(@ti))
+  else SendMessage(BWnd, TTM_TRACKACTIVATE , 0, Integer(@ti)); 
+end;
 
 function RegisterBallonWindow(Control : TWinControl) : hwnd;
 var
   hWnd, hWndB: THandle;
 begin
   hWnd    := Control.Handle;
-  hWndB   := CreateWindow(TOOLTIPS_CLASS, nil,
-                          WS_POPUP or TTS_NOPREFIX or TTS_ALWAYSTIP or TTS_NOFADE or TTS_NOANIMATE,
+  hWndB   := CreateWindowEx(WS_EX_TOPMOST,TOOLTIPS_CLASS, nil,
+                          WS_POPUP or TTS_BALLOON or TTS_NOPREFIX or TTS_ALWAYSTIP or TTS_NOFADE or TTS_NOANIMATE,
                           0, 0, 0, 0, hWnd, 0, HInstance, nil);
   if hWndB <> 0 then
      SetWindowPos(hWndB, HWND_TOPMOST, 0, 0, 0, 0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
@@ -68,7 +86,7 @@ begin
   result := hWndB;
 end;
 
-procedure AddBalloonWindowCallBack(BWnd : hwnd; Control : TWinControl; Icon : integer; Titel : String; Rect : TRect);
+procedure AddBalloonWindowCallBack(BWnd : hwnd; Control : TWinControl; ID : integer; Icon : integer; Titel : String; Rect : TRect);
 var
   ti: TToolInfo;
   P : PChar;
@@ -78,7 +96,7 @@ begin
   ti.hwnd := Control.Handle;
   ti.lpszText := LPSTR_TEXTCALLBACK;
   ti.lpszText := PChar(Titel);
-  ti.uId := 0;
+  ti.uId := Id;
   ti.rect := Rect;
   P := PChar(Titel);
   SendMessage(BWnd, TTM_ADDTOOL, 0, Integer(@ti));
@@ -99,7 +117,7 @@ var
   hWnd, hWndTip: THandle;
 begin
   hWnd    := Control.Handle;
-  hWndTip := CreateWindow(TOOLTIPS_CLASS, nil,
+  hWndTip := CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, nil,
                           WS_POPUP or TTS_NOPREFIX or TTS_ALWAYSTIP or TTS_NOFADE or TTS_NOANIMATE,
                           0, 0, 0, 0, hWnd, 0, HInstance, nil);
   if hWndTip <> 0 then
