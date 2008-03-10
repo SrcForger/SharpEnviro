@@ -191,8 +191,8 @@ begin
                dmsg := 'Hibernate';
              end;
         end;
-        ShutDown.Force := True;
-        if MessageBox(0,
+        ShutDown.Force := True;       
+        if MessageBox(FindWindow('TSharpCoreMainWnd',nil),
                       PChar('Do you really want to ' + dmsg + ' your Computer now?'),
                       PChar('Confirm ' + dmsg),MB_YESNO) = ID_YES then
            ShutDown.Execute;
