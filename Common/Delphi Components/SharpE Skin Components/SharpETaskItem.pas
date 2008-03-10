@@ -71,6 +71,7 @@ type
     FPrecacheText : TSkinText;
     FPrecacheBmp  : TBitmap32;
     FPrecacheCaption : String;
+    FHandle : Cardinal;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
@@ -137,6 +138,7 @@ type
     property State: TSharpETaskItemStates read FState write SetState;
     property Flashing: Boolean read FFlashing write SetFlashing;
     property FlashState: Boolean read FFlashState write SetFlashState;
+    property Handle: Cardinal read FHandle write FHandle;
    { Published declarations }
   end;
 
@@ -153,6 +155,7 @@ begin
 
   FGlyph32 := TBitmap32.Create;
 
+  FHandle := 0;
   FMargin := -1;
   FDisabledAlpha := 100;
   Flayout := blGlyphleft;
