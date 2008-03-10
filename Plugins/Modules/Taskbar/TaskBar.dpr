@@ -312,12 +312,24 @@ begin
         SharpApi.RegisterShellHookReceiver(temp.Form.Handle);
       end;
   end
+  else if CompareText(msg,'MM_VWMUPDATESETTINGS') = 0 then
+  begin
+    for n := 0 to ModuleList.Count - 1 do
+      if TModule(ModuleList.Items[n]).ID = ID then
+      begin
+        temp := TModule(ModuleList.Items[n]);
+        TMainForm(temp.Form).CurrentVWM := 1;
+        TMainForm(temp.Form).TM.ResetVMWs;
+        TMainForm(temp.Form).CompleteRefresh;
+      end;
+  end
   else if CompareText(msg,'MM_VWMDESKTOPCHANGED') = 0 then
   begin
     for n := 0 to ModuleList.Count - 1 do
       if TModule(ModuleList.Items[n]).ID = ID then
       begin
         temp := TModule(ModuleList.Items[n]);
+        TMainForm(temp.Form).CurrentVWM := SharpApi.GetCurrentVWM;
         TMainForm(temp.Form).CheckFilterAll;
       end;
   end;

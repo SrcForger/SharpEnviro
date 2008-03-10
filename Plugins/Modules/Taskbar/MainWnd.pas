@@ -33,7 +33,7 @@ uses
   Math, Contnrs, SharpESkinManager, SharpETaskItem, SharpESkin,
   SharpEBaseControls, SharpECustomSkinSettings, uTaskManager, uTaskItem,
   DateUtils, GR32, GR32_PNG, SharpIconUtils, SharpEButton, JvComponentBase,
-  JvDragDrop, VWMFunctions;
+  JvDragDrop, VWMFunctions,Commctrl;
 
 
 type
@@ -94,20 +94,22 @@ type
     FTipWnd : hwnd;
     FLastDragItem : TSharpETaskItem; // Only a pointer, don't free it...
     FLastDragMinimized : Boolean;
+    procedure WMNotify(var msg: TWMNotify); message WM_NOTIFY;
+    procedure WMCommand(var msg: TMessage); message WM_COMMAND;
+    procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;    
   public
     TM: TTaskManager;
     IList: TObjectList;
     ModuleID : integer;
     BarID : integer;
     BarWnd : hWnd;
+    CurrentVWM : integer;
     procedure SetSize(NewWidth : integer);
     procedure InitHook;
     procedure CalculateItemWidth(ItemCount : integer);
     procedure AlignTaskComponents;
     procedure LoadSettings;
     procedure ReAlignComponents(BroadCast : boolean);
-    procedure WMCommand(var msg: TMessage); message WM_COMMAND;
-    procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
     procedure NewTask(pItem : TTaskItem; Index : integer);
     procedure RemoveTask(pItem : TTaskItem; Index : integer);
     procedure UpdateTask(pItem : TTaskItem; Index : integer);
@@ -137,7 +139,8 @@ type
 implementation
 
 uses SettingsWnd,
-     uSharpBarAPI, ToolTipApi;
+     uSharpBarAPI,
+     ToolTipApi;
 
 var
   SysMenuHandle : hwnd;
@@ -241,10 +244,21 @@ begin
   Height := pHeight;
 end;
 
+procedure TMainForm.WMNotify(var msg: TWMNotify);
+begin
+  if Msg.NMHdr.code = TTN_SHOW then
+  begin
+    SetWindowPos(Msg.NMHdr.hwndFrom, HWND_TOPMOST, 0, 0, 0, 0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+    Msg.result := 1;
+    exit;
+  end else Msg.result := 0;
+end;
+
 procedure TMainForm.WMCommand(var msg: TMessage);
 var
   VWMCount : integer;
-  VWMIndex : integeR;
+  VWMIndex : integer;
+  TaskItem : TTaskItem;
 begin
   DebugOutPutInfo('TMainForm.WMCommand (Message Procedure)');
   PostMessage(SysMenuHandle, WM_SYSCOMMAND, msg.wparam, msg.lparam);
@@ -253,8 +267,11 @@ begin
   if VWMCount > 0 then
     if (msg.WParam >= 256) and (msg.WParam <= 256 + VWMCount) then
     begin
-      VWMIndex := GetCurrentVWM;    
+      VWMIndex := GetCurrentVWM;
       VWMMoveWindotToVWM(msg.WParam - 256 + 1,VWMIndex,VWMCount,SysMenuHandle);
+      TaskItem := TM.GetItemByHandle(SysMenuHandle);
+      if TaskItem <> nil then
+        TaskItem.LastVWM := msg.WParam - 256 + 1;
       SharpApi.SwitchToVWM(VWMIndex); // Refresh the current VWM
     end;
 
@@ -893,22 +910,24 @@ begin
         3: begin
              Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
-             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)
+             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
                 or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
                 or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
                 or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
                 or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
-               nm := True
+               nm := True;
+             nm := nm or (CurrentVWM = pItem.LastVWM);               
            end;
         4: begin
              Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
-             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)
+             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
                 or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
                 or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
                 or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
                 or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
-               nm := True
+               nm := True;
+             nm := nm or (CurrentVWM <> pItem.LastVWM);
            end;
         5: begin
              nm := IsIconic(pItem.Handle);
@@ -932,22 +951,24 @@ begin
         3: begin
              Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
-             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)
+             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
                 or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
                 or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
                 or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
                 or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
                result := false;
+             result := result and (CurrentVWM <> pItem.LastVWM);
            end;
         4: begin
              Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
-             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-Top) div 2), Mon.BoundsRect)
+             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
                 or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
                 or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
                 or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
                 or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
                result := false;
+             result := result and (CurrentVWM = pItem.LastVWM)
            end;
         5: begin
              result := IsIconic(pItem.Handle);
@@ -1191,6 +1212,8 @@ var
   end;
 
 begin
+  CurrentVWM := SharpApi.GetCurrentVWM;  
+
   FMoveToVWMIcon := TBitmap.Create;
   FMoveToVWMIcon.LoadFromResourceName(hInstance,'movetovwm');
 

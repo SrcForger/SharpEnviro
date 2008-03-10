@@ -34,7 +34,8 @@ uses
   SysUtils,
   DateUtils,
   JclSysUtils,
-  JclSysInfo;
+  JclSysInfo,
+  SharpApi;
 
 type
   TTaskItem = class
@@ -47,6 +48,7 @@ type
                 FFilePath : String;
                 FFileName : String;
                 FVisible  : boolean;
+                FLastVWM  : integer;
                 FPlacement: TWindowPlacement;
               private
               public
@@ -71,6 +73,7 @@ type
                 property TimeAdded : Int64  read FTimeAdded;
                 property FileName  : String read FFileName;
                 property FilePath  : String read FFilePath;
+                property LastVWM   : integer read FLastVWM write FLastVWM;
               end;
 
 function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; external 'user32.dll';
@@ -84,6 +87,7 @@ begin
   FHandle := phandle;
   UpdateFromHwnd;
   FTimeAdded := DateTimeToUnix(Now);
+  FLastVWM := SharpApi.GetCurrentVWM;
 end;
 
 destructor TTaskItem.Destroy;
@@ -155,6 +159,7 @@ end;
 
 procedure TTaskItem.Minimize;
 begin
+  FLastVWM := SharpApi.GetCurrentVWM;
   CloseWindow(FHandle);
   UpdateCaption;
   UpdateVisibleState;
@@ -168,6 +173,7 @@ begin
      else SwitchToThisWindow(FHandle,True);
   UpdateCaption;
   UpdateVisibleState;
+  FLastVWM := SharpApi.GetCurrentVWM;
 end;
 
 procedure TTaskItem.UpdatePlacement;

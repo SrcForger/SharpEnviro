@@ -33,6 +33,7 @@ uses Windows,
      Contnrs,
      Dialogs,
      uTaskItem,
+     SharpApi,
      JclSysUtils,
      JclStrings;
 
@@ -65,6 +66,7 @@ type
                    procedure FlashTask(pHandle : hwnd);
                    procedure DoSortTasks;
                    procedure ExChangeTasks(pItem1,pItem2 : TTaskItem);
+                   procedure ResetVMWs;
                    procedure CompleteRefresh;
                    function GetCount : integer;
                    function GetItemByHandle(pHandle : hwnd) : TTaskItem;
@@ -188,6 +190,7 @@ begin
       if pItem.Handle = pHandle then
       begin
         pItem.UpdateFromHwnd;
+        pItem.LastVWM := GetCurrentVWM;
         if Assigned(OnActivateTask) then FOnActivateTask(pItem,n);
         exit;
       end;
@@ -257,6 +260,20 @@ begin
     end;
   end;
   RemoveDeadTasks;
+end;
+
+procedure TTaskManager.ResetVMWs;
+var
+  n : integer;
+  pItem : TTaskItem;
+begin
+  if FItems.Count = 0 then exit;
+
+  for n := 0 to FItems.Count -1 do
+  begin
+    pItem := TTaskItem(FItems.Items[n]);
+    pItem.LastVWM := 1;
+  end;
 end;
 
 procedure TTaskManager.UpdateTask(pHandle : hwnd);
