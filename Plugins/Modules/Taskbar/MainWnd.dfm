@@ -120,8 +120,8 @@ object MainForm: TMainForm
     AutoPosition = True
   end
   object MenuPopup: TPopupMenu
-    Left = 168
-    Top = 96
+    Left = 208
+    Top = 56
     object Settings1: TMenuItem
       Caption = 'Settings'
       OnClick = Settings1Click

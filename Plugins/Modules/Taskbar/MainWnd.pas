@@ -267,12 +267,18 @@ begin
   if VWMCount > 0 then
     if (msg.WParam >= 256) and (msg.WParam <= 256 + VWMCount) then
     begin
-      VWMIndex := GetCurrentVWM;
-      VWMMoveWindotToVWM(msg.WParam - 256 + 1,VWMIndex,VWMCount,SysMenuHandle);
       TaskItem := TM.GetItemByHandle(SysMenuHandle);
       if TaskItem <> nil then
         TaskItem.LastVWM := msg.WParam - 256 + 1;
-      SharpApi.SwitchToVWM(VWMIndex); // Refresh the current VWM
+
+      if not IsIconic(SysMenuHandle) then
+      begin
+        VWMIndex := GetCurrentVWM;
+        VWMMoveWindotToVWM(msg.WParam - 256 + 1,VWMIndex,VWMCount,SysMenuHandle);
+      end;
+
+      if not CheckFilter(taskitem) then
+        RemoveTask(taskitem,-1);
     end;
 
   inherited;
@@ -321,7 +327,7 @@ procedure TMainForm.OnDragEventEnter(Sender: TJvDropTarget; var Effect: TJvDropE
 var
   pitem : TTaskItem;
 begin
-  pitem := TM.GetItemByHandle(TSharpETaskItem(Sender.Control).Tag);
+  pitem := TM.GetItemByHandle(TSharpETaskItem(Sender.Control).Handle);
   if pitem <> nil then
      pitem.Restore; 
 end;
@@ -336,6 +342,7 @@ begin
   begin
     ses_minall.visible := True;
     ses_minall.Left := n;
+    ses_minall.UpdateSkin;
     ses_minall.width := ses_minall.Height;
     n := n + ses_minall.Width + 2;
   end else ses_minall.Visible := False;
@@ -343,6 +350,7 @@ begin
   begin
     ses_maxall.Visible := True;
     ses_maxall.Left := n;
+    ses_minall.UpdateSkin;    
     ses_maxall.Width := ses_maxall.Height;
     n := n + ses_maxall.Width + 2;
   end else ses_maxall.Visible := False;
@@ -395,7 +403,7 @@ begin
 
   VWMMenu := 0;
   VWMCount := GetVWMCount;
-  if (GetVWMCount > 0) and (not IsIconic(pHandle)) then
+  if (GetVWMCount > 0) then //and (not IsIconic(pHandle)) then
   begin
    { Add a seperator }
    FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
@@ -445,7 +453,7 @@ procedure TMainForm.OnTaskItemMouseUp(Sender: TObject; Button: TMouseButton; Shi
 begin
   DebugOutPutInfo('TMainForm.OnTaskItemMouseUp (Procedure)');
   if not (Sender is TSharpETaskItem) then exit;
-  if Button = mbRight then DisplaySystemMenu(TSharpETaskItem(Sender).Tag);
+  if Button = mbRight then DisplaySystemMenu(TSharpETaskItem(Sender).Handle);
 end;
 
 procedure LoadFilterFromXML(var filter : TTaskFilter; XML : TJclSimpleXMLElem);
@@ -586,7 +594,7 @@ var
 begin
   DebugOutPutInfo('TMainForm.CompleteRefresh (Procedure)');
   for n := 0 to IList.Count - 1 do
-     ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList[n]).Tag);
+     ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList[n]).Handle);
   IList.Clear;
   TM.CompleteRefresh;
   AlignTaskComponents;
@@ -622,6 +630,7 @@ begin
     exit;
   end;
 
+  AlignSpecialButtons;
   NewWidth := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1);
 
   ToolTipApi.EnableToolTip(FTipWnd);
@@ -788,7 +797,7 @@ begin
         pTaskItem.Left := FSpecialButtonWidth + n*sMaxWidth + n*sSpacing;
         pTaskItem.AutoSize := True;
       end;
-      ToolTipApi.UpdateToolTipRect(FTipWnd,Self,pTaskItem.Tag,
+      ToolTipApi.UpdateToolTipRect(FTipWnd,Self,pTaskItem.Handle,
                                    Rect(pTaskItem.Left,pTaskItem.Top,
                                         pTaskItem.Left + pTaskItem.Width,
                                         pTaskItem.Top + pTaskItem.Height));
@@ -833,12 +842,12 @@ begin
     if pItem <> nil then
     begin
       for n := IList.Count - 1 downto 0 do
-          if TSharpETaskItem(IList.Items[n]).Tag = Integer(pItem.Handle) then
+          if TSharpETaskItem(IList.Items[n]).Handle = pItem.Handle then
           begin
             pTaskItem := TSharpETaskItem(IList.Items[n]);
             if not CheckFilter(pItem) then
             begin
-              RemoveTask(TM.GetItemByHandle(pTaskItem.Tag),0);
+              RemoveTask(TM.GetItemByHandle(pTaskItem.Handle),0);
               changed := True;
             end;
             break;
@@ -854,7 +863,7 @@ begin
     begin
       pTaskItem := nil;
       for n := 0 to IList.Count - 1 do
-          if TSharpETaskItem(IList.Items[n]).Tag = Integer(pItem.Handle) then
+          if TSharpETaskItem(IList.Items[n]).Handle = pItem.Handle then
           begin
             pTaskItem := TSharpETaskItem(IList.Items[n]);
             break;
@@ -990,7 +999,7 @@ begin
   begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
     if pTaskItem <> nil then
-       if pTaskItem.Tag = Integer(pItem.Handle) then
+       if pTaskItem.Handle = pItem.Handle then
        begin
          if pTaskItem.Down then exit;
          pTaskItem.Flashing := True;
@@ -1030,11 +1039,11 @@ begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
     if pTaskItem <> nil then
     begin
-      if (Integer(pItem.Handle) <> pTaskItem.Tag ) and (pTaskItem.Down) then
+      if (pItem.Handle <> pTaskItem.Handle) and (pTaskItem.Down) then
       begin
          pTaskItem.Down := False
       end
-      else if Integer(pItem.Handle) = pTaskItem.Tag then
+      else if pItem.Handle = pTaskItem.Handle then
       begin
         pTaskItem.Down := True;
         if pTaskItem.Flashing then pTaskItem.Flashing := False;
@@ -1064,12 +1073,12 @@ begin
   pTaskItem.Margin := 0;
   pTaskItem.Flashing := False;
   pTaskItem.Caption := pItem.Caption;
-  pTaskItem.Tag := pItem.Handle;
+  pTaskItem.Handle := pItem.Handle;
   pTaskItem.State := sState;
   UpdateIcon(pTaskItem,pItem);
   pTaskItem.OnClick := SharpETaskItemClick;
   pTaskItem.OnMouseUp := OnTaskItemMouseUp;
-  ToolTipApi.AddToolTip(FTipWnd,Self,pTaskItem.Tag,
+  ToolTipApi.AddToolTip(FTipWnd,Self,pTaskItem.Handle,
                         Rect(pTaskItem.Left,pTaskItem.Top,
                              pTaskItem.Left + pTaskItem.Width,
                              pTaskItem.Top + pTaskItem.Height),
@@ -1088,8 +1097,8 @@ begin
   index2 := -1;
   for n:= 0 to IList.Count - 1 do
   begin
-    if TSharpETaskItem(IList.Items[n]).Tag = Integer(pItem1.Handle) then index1 := n;
-    if TSharpETaskItem(IList.Items[n]).Tag = Integer(pItem2.Handle) then index2 := n;
+    if TSharpETaskItem(IList.Items[n]).Handle = pItem1.Handle then index1 := n;
+    if TSharpETaskItem(IList.Items[n]).Handle = pItem2.Handle then index2 := n;
     if (index1 <> -1) and (index2 <> -1) then break;
   end;
   if ((index1 = - 1) or (index2 = -1))
@@ -1106,9 +1115,9 @@ begin
   if pItem = nil then exit;
 
   for n := IList.Count - 1 downto 0 do
-    if TSharpETaskItem(IList.Items[n]).Tag = Integer(pItem.Handle) then
+    if TSharpETaskItem(IList.Items[n]).Handle = pItem.Handle then
     begin
-      ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList.Items[n]).Tag);
+      ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList.Items[n]).Handle);
       IList.Delete(n);
     end;
   CalculateItemWidth(IList.Count);
@@ -1126,7 +1135,7 @@ begin
   CheckFilterAll;
   pTaskItem := nil;
   for n := 0 to IList.Count - 1 do
-    if TSharpETaskItem(IList.Items[n]).Tag = Integer(pItem.Handle) then
+    if TSharpETaskItem(IList.Items[n]).Handle = pItem.Handle then
     begin
       pTaskItem := TSharpETaskItem(IList.Items[n]);
       break;
@@ -1136,7 +1145,7 @@ begin
 
   UpdateIcon(pTaskItem,pItem);
   pTaskItem.Caption := pItem.Caption;
-  ToolTipApi.UpdateToolTipText(FTipWnd,Self,pTaskItem.Tag,pTaskItem.Caption);
+  ToolTipApi.UpdateToolTipText(FTipWnd,Self,pTaskItem.Handle,pTaskItem.Caption);
 end;
 
 procedure TMainForm.SharpETaskItemClick(Sender: TObject);
@@ -1146,12 +1155,12 @@ begin
   DebugOutPutInfo('TMainForm.SharpETaskItemClick (Procedure)');
   if Sender = nil then exit;
   if not (Sender is TSharpETaskItem) then exit;
-  pItem := TM.GetItemByHandle(TSharpETaskItem(Sender).Tag);
+  pItem := TM.GetItemByHandle(TSharpETaskItem(Sender).Handle);
   
   if pItem <> nil then
   begin
     pItem.UpdateVisibleState;
-    if (not pItem.Visible) or (Integer(TM.LastActiveTask) <> TSharpETaskItem(Sender).Tag) then
+    if (not pItem.Visible) or (TM.LastActiveTask <> TSharpETaskItem(Sender).Handle) then
     begin
       pItem.Restore;
     end else
@@ -1291,7 +1300,7 @@ begin
   begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
     pTaskItem.Down := False;
-    pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Tag));
+    pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Handle));
     if pItem <> nil then
        pItem.Minimize;
   end;
@@ -1311,7 +1320,7 @@ begin
   for n := IList.Count -1 downto 0 do
   begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
-    pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Tag));
+    pItem := TTaskItem(TM.GetItemByHandle(pTaskItem.Handle));
     if pItem <> nil then
        pItem.Restore;
   end;
@@ -1345,12 +1354,12 @@ begin
     begin
       if pItem <> FLastDragItem then
       begin
-        ptmitem := TM.GetItemByHandle(pItem.Tag);
+        ptmitem := TM.GetItemByHandle(pItem.Handle);
         if ptmitem <> nil then
         begin
           if (FLastDragMinimized) and (FLastDragItem <> nil) then
           begin
-            ptmitemold := TM.GetItemByHandle(FLastDragItem.Tag);
+            ptmitemold := TM.GetItemByHandle(FLastDragItem.Handle);
             if ptmitemold <> nil then
                ptmitemold.Minimize;
           end;

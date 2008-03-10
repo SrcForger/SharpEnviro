@@ -169,11 +169,11 @@ procedure TTaskItem.Restore;
 begin
 //  if IsIconic(FHandle) then ShowWindow(FHandle, SW_Restore)
 //     else OpenIcon(FHandle);
+  FLastVWM := SharpApi.GetCurrentVWM;
   if IsIconic(FHandle) then SendMessage(FHandle, WM_SYSCOMMAND, SC_RESTORE, 0)
      else SwitchToThisWindow(FHandle,True);
   UpdateCaption;
   UpdateVisibleState;
-  FLastVWM := SharpApi.GetCurrentVWM;
 end;
 
 procedure TTaskItem.UpdatePlacement;
