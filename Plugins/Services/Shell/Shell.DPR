@@ -125,9 +125,9 @@ type
 
 function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; external 'shell32.dll' index 181;
 
-function DeskAreaTimerWndProc(hWnd, Msg, wParam, lParam: Integer): Integer; stdcall; forward;
-function ShellTrayWndProc(hWnd, Msg, wParam, lParam: Integer): Integer; stdcall; forward;
-function MsTaskSwWClassWndProc(hWnd, Msg, wParam, lParam: Integer): Integer; stdcall; forward;
+function DeskAreaTimerWndProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall; forward;
+function ShellTrayWndProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall; forward;
+function MsTaskSwWClassWndProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall; forward;
 
 var
   TaskManager : TTaskManager;
@@ -222,7 +222,7 @@ begin
      else PointInRect:=False;
 end;
 
-function DeskAreaTimerWndProc(hWnd, Msg, wParam, lParam: Integer): Integer; stdcall;
+function DeskAreaTimerWndProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
 begin
   case Msg of
     WM_SHARPEACTIONMESSAGE: begin
@@ -252,7 +252,7 @@ begin
   end else Result := DefWindowProc(hWnd, Msg, wParam, lParam);
 end;
 
-function ShellTrayWndProc(hWnd, Msg, wParam, lParam: Integer): Integer; stdcall;
+function ShellTrayWndProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
 var
   n : integer;
   TrayCmd: integer;
@@ -352,7 +352,7 @@ begin
   end;
 end;
 
-function MsTaskSwWClassWndProc(hWnd, Msg, wParam, lParam: Integer): Integer; stdcall;
+function MsTaskSwWClassWndProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
 var
   n : integer;
   s : String;
