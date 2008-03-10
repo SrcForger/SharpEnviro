@@ -444,7 +444,6 @@ begin
     CloseWindow;
     exit;
   end;
-    
 
   BuildPreviews;
 

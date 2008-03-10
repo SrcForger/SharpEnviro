@@ -192,18 +192,27 @@ begin
         3: begin
              Mon := Screen.MonitorFromWindow(wnd);
              GetWindowRect(wnd,R);
-             if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect))
-                or (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
-                or (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
-                   nm := True
+             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
+               nm := True;
+             nm := nm ;
            end;
         4: begin
              Mon := Screen.MonitorFromWindow(wnd);
              GetWindowRect(wnd,R);
-             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect))
-                and not (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
-                and not (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
-                   nm := True
+             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
+               nm := True;
+             nm := nm;
+           end;
+        5: begin
+             nm := IsIconic(wnd);
            end;
       end;
       if nm then break;
@@ -225,16 +234,27 @@ begin
         3: begin
              Mon := Screen.MonitorFromWindow(wnd);
              GetWindowRect(wnd,R);
-             if (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect))
-                or (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
-                or (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then result := false;
+             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
+               result := false;
+             result := result;;
            end;
         4: begin
              Mon := Screen.MonitorFromWindow(wnd);
              GetWindowRect(wnd,R);
-             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect))
-                and not (PointInRect(Point(R.Left, R.Top), Mon.BoundsRect))
-                and not (PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then result := false;
+             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
+                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
+               result := false;
+             result := result;
+           end;
+        5: begin
+             result := IsIconic(wnd);
            end;
       end;
     end;
