@@ -1,0 +1,3 @@
+sn_warning RCDATA "messagebox_warning.png"
+sn_error RCDATA "messagebox_critical.png"
+sn_info RCDATA "info.png"
