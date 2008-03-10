@@ -24,10 +24,10 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\Modules</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Plugins\Configurations\Scheme;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpFileUtils</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Plugins\Configurations\Scheme;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpFileUtils</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Plugins\Configurations\Scheme;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpFileUtils</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Plugins\Configurations\Scheme;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpFileUtils</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Plugins\Configurations\Scheme;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpNotify</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Plugins\Configurations\Scheme;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpNotify</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Plugins\Configurations\Scheme;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpNotify</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Plugins\Configurations\Scheme;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpNotify</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>
@@ -50,8 +50,7 @@
     <DCCReference Include="..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas" />
     <DCCReference Include="..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas" />
     <DCCReference Include="..\..\..\Components\SharpBar\uSharpBarAPI.pas" />
-    <DCCReference Include="..\..\Services\SystemTray\declaration.pas" />
-    <DCCReference Include="BalloonWindow.pas" />
+    <DCCReference Include="..\..\Services\Shell\declaration.pas" />
     <DCCReference Include="MainWnd.pas">
       <Form>MainForm</Form>
     </DCCReference>

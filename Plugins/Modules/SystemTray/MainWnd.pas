@@ -122,6 +122,13 @@ var
   s : String;
   ws : WideString;
 begin
+  if Msg.NMHdr.code = TTN_SHOW then
+  begin
+    SetWindowPos(Msg.NMHdr.hwndFrom, HWND_TOPMOST, 0, 0, 0, 0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+    msg.result := 1;
+    exit;
+  end;
+
   Result := (Msg.NMHdr.code = TTN_NEEDTEXT);
   for n := 0 to FTrayClient.WndList.Count - 1 do
       if (TTrayWnd(FTrayClient.WndList.Items[n]).Wnd = self) and

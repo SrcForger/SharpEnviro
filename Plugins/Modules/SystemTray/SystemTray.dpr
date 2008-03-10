@@ -40,7 +40,6 @@ uses
   Types,
   GR32,
   MainWnd in 'MainWnd.pas' {MainForm},
-  BalloonWindow in 'BalloonWindow.pas',
   TrayIconsManager in 'TrayIconsManager.pas',
   winver in 'winver.pas',
   DateUtils,

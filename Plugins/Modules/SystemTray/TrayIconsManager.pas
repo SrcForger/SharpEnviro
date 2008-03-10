@@ -36,11 +36,11 @@ uses Windows, Dialogs, SysUtils,
      GR32_Resamplers,
      WinVer,
      declaration,
-     BalloonWindow,
      DateUtils,
      Math,
      SharpGraphicsUtils,
-     SharpIconUtils;
+     SharpIconUtils,
+     SharpNotify;
 
 type
     TTrayChangeEvent = (tceIcon,tceTip,tceVersion);
@@ -101,7 +101,6 @@ type
                  private
                    FMsgWnd: TMsgWnd;
                    FWndList : TObjectList;
-                   FBalloonWnd : TBalloonForm;
                    FV4Popup : TTrayItem;
                    FIconSize : integer;
                    FIconSpacing : integer;
@@ -126,6 +125,9 @@ type
                    FRepaintHash     : integer;
                    FScreenPos       : TPoint;
                    FLastMessage     : Int64;
+                   procedure FOnBallonClick(wnd: hwnd; ID: Cardinal; Data: TObject;  Msg: integer);
+                   procedure FOnBallonShow(wnd: hwnd; ID: Cardinal; Data: TObject);
+                   procedure FOnBallonTimeOut(wnd: hwnd; ID: Cardinal; Data: TObject);
                    procedure FOnTipTimer(Sender : TObject);
                    procedure NewRepaintHash;
                  public
@@ -371,9 +373,6 @@ constructor TTrayClient.Create;
 begin
   inherited Create;
 
-  FBalloonWnd := TBalloonForm.Create(nil);
-  FBalloonWnd.TrayManager := self;
-
   Randomize;
   NewRepaintHash;
   FWndList := TObjectList.Create(True);
@@ -404,6 +403,10 @@ begin
 
   FMsgWnd := TMsgWnd.Create(nil);
   FMsgWnd.FTrayClient := self;
+
+  SharpNotifyEvent.OnClick := FOnBallonClick;
+  SharpNotifyEvent.OnShow := FOnBallonShow;
+  SharpNotifyEvent.OnTimeout := FOnBallonTimeout;
 end;
 
 procedure TTrayClient.AddWindow(wnd : TObject);
@@ -513,10 +516,11 @@ end;
 
 destructor TTrayClient.Destroy;
 begin
+  SharpNotifyEvent.OnClick := nil;
+  SharpNotifyEvent.OnShow := nil;
+  SharpNotifyEvent.OnTimeout := nil;
   FWndList.Free;
   FMsgWnd.Free;
-  if FBalloonWnd.Visible then FBalloonWnd.Close;
-  FBalloonWnd.Free;
   FItems.Free;
   FBitmap.Free;
   FTipTimer.Enabled := False;
@@ -566,6 +570,42 @@ begin
   if FMsgWnd = nil then exit;
   FMsgWnd.RegisterWithTray;
   FLastMessage := DateTimeToUnix(now);
+end;
+
+procedure TTrayClient.FOnBallonClick(wnd: hwnd; ID: Cardinal; Data: TObject;  Msg: integer);
+var
+  item : TTrayItem;
+begin
+  if Data <> nil then
+  begin
+    item := TTrayItem(Data);
+    case Msg of
+      WM_LBUTTONUP:  postmessage(item.Wnd,item.CallbackMessage,item.UID,NIN_BALLOONUSERCLICK);
+      else postmessage(item.Wnd,item.CallbackMessage,item.UID,NIN_BALLOONHIDE);
+    end;
+  end;
+end;
+
+procedure TTrayClient.FOnBallonShow(wnd: hwnd; ID: Cardinal; Data: TObject);
+var
+  item : TTrayItem;
+begin
+  if Data <> nil then
+  begin
+    item := TTrayItem(Data);
+    postmessage(item.Wnd,item.CallbackMessage,item.UID,NIN_BALLOONSHOW);
+  end;
+end;
+
+procedure TTrayClient.FOnBallonTimeOut(wnd: hwnd; ID: Cardinal; Data: TObject);
+var
+  item : TTrayItem;
+begin
+  if Data <> nil then
+  begin
+    item := TTrayItem(Data);
+    postmessage(item.Wnd,item.CallbackMessage,item.UID,NIN_BALLOONTIMEOUT);
+  end;
 end;
 
 procedure TTrayClient.FOnTipTimer(Sender : TObject);
@@ -690,6 +730,14 @@ end;
 procedure TTrayClient.AddOrModifyTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
   item : TTrayItem;
+  i : integer;
+  x,y : integer;
+  SPos : TPoint;
+  icon: TSharpNotifyIcon;
+  FixedInfo,FixedTitle : String;
+  TimeOut : integer;
+  wnd : TMainForm;
+  edge : TSharpNotifyEdge;
 begin
   FlastMessage := DateTimeToUnix(now);
   if GetTrayIconIndex(NIDv6.wnd,NIDv6.UID) = -1 then AddTrayIcon(NIDv6)
@@ -697,9 +745,52 @@ begin
   if (NIDv6.uFlags and NIF_INFO) = NIF_INFO then
   begin
     item := GetTrayIcon(NIDv6.Wnd,NIDv6.UID);
-    if item <> nil then
+    if (item <> nil) and (wndlist.Count > 0) then
        if (length(trim(item.FInfo))>0)
-          or (length(trim(item.FInfoTitle))>0) then FBalloonWnd.AddBallonTip(item);
+          or (length(trim(item.FInfoTitle))>0) then
+          begin
+            wnd := TTrayWnd(wndlist.Items[0]).wnd;
+            SPos := wnd.ClientToScreen(Point(0,wnd.Height));
+            x := SPos.x;
+            if SPos.y > wnd.Monitor.Top + wnd.Monitor.Height div 2 then
+            begin
+              edge := neBottomLeft;
+              y := SPos.y - wnd.Height
+            end else
+            begin
+              edge := neTopLeft;
+              y := SPos.y;
+            end;
+            case item.BInfoFlags of
+              1, 10: icon := niInfo;
+              3: icon := niError;
+              2: icon := niWarning;
+              0: icon := niInfo
+              else icon := niInfo
+            end;
+            FixedTitle := '';
+            for i := 0 to length(item.FInfoTitle)-1 do
+            begin
+              if item.FInfoTitle[i] = #0 then
+                break;
+              if (item.FInfoTitle[i] = #13) or (item.FInfoTitle[i] = #10) then
+                FixedTitle := FixedTitle + ' '
+              else FixedTitle := FixedTitle + item.FInfoTitle[i];
+            end;
+            for i := 0 to length(item.FInfo)-1 do
+            begin
+              if item.FInfo[i] = #0 then
+                break;
+              FixedInfo := FixedInfo + item.FInfo[i];
+            end;
+            TimeOut := item.BTimeout;
+            if TimeOut < 4000 then
+              TimeOut := 4000
+            else if TimeOut > 30000 then
+              TimeOut := 30000;
+            SharpNotify.CreateNotifyWindow(0,item,x,y,FixedTitle + #13 + FixedInfo,
+                                           Icon,edge,wnd.SkinManager,TimeOut,wnd.Monitor.BoundsRect);
+          end;
   end;
 end;
 
