@@ -1385,6 +1385,8 @@ var
   StartTime : Cardinal;
   temp: OFStruct;
   handle : hfile;
+  EMode : DWord;
+  DoSleep : boolean;
 begin
   result := False;
   if (MustExist and not FileExists(pFileName)) then
@@ -1395,15 +1397,24 @@ begin
     exit;
   end;
 
-  StartTime := GetTickCount;    
+  EMode := SetErrorMode(SEM_FAILCRITICALERRORS);
+  StartTime := GetTickCount;
   repeat
-    handle := OpenFile(PChar(pFileName),temp,OF_READWRITE);
-    if not (handle = HFILE_ERROR) then
-    begin
-      CloseHandle(handle);
-      result := True
-    end else sleep(SleepTime);
+    DoSleep := True;
+    try
+      handle := OpenFile(PChar(pFileName),temp,OF_SHARE_EXCLUSIVE);
+      if not (handle = HFILE_ERROR) then
+      begin
+        DoSleep := False;
+        CloseHandle(handle);
+        result := True;
+      end;
+    finally
+      if DoSleep then
+        sleep(SleepTime);
+    end;
   until (result or (GetTickCount - StartTime > TimeOut));
+  SetErrorMode(EMode);
 end;
 
 exports
