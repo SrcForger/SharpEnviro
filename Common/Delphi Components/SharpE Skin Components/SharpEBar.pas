@@ -247,11 +247,11 @@ begin
 
   if (msg.Msg = WM_ACTIVATE) or (msg.Msg = WM_ACTIVATEAPP) then
   begin
-    if msg.WParam <> 0 then
+   // if msg.WParam <> 0 then
     begin
       msg.result := 0;
       SetZOrder;
-    end else msg.Result := DefWindowProc(windowHandle, msg.Msg, msg.wParam, msg.lParam);
+    end// else msg.Result := DefWindowProc(windowHandle, msg.Msg, msg.wParam, msg.lParam);
   end else msg.Result := DefWindowProc(windowHandle, msg.Msg, msg.wParam, msg.lParam);
   st := inttostr(msg.result);
 end;
@@ -903,14 +903,14 @@ begin
         msg.result := 0;
         rchanged := True;
         if LOWORD(msg.WParam) = WA_INACTIVE then
-          Throbber.FButtonDown := false
-        else FBackGround.SetZOrder;
+          Throbber.FButtonDown := false;
+//        else FBackGround.SetZOrder;
       end;
     WM_ACTIVATEAPP:
       begin
         msg.result := 0;
         rchanged := True;
-        UpdateAlwaysOnTop
+//        UpdateAlwaysOnTop
 //        if msg.WParam = 0 then
   //       SetWindowPos(aform.handle, HWND_NOTOPMOST, 0, 0, 0, 0,
     //                  SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
