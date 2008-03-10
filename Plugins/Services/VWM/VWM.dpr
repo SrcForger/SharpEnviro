@@ -70,6 +70,7 @@ Source Name: VWM.service
   VWMCount : integer;
   sFocusTopMost : boolean;
   sFollowFocus : boolean;
+  LastDShellMessageTime : Int64;
 
 procedure AllocateMsgWnd;
 var
@@ -253,15 +254,18 @@ end;
     begin
       if sFollowFocus then
       begin
-       wnd := Message.lparam;
-       case Message.WParam of
-          HSHELL_WINDOWACTIVATED,HSHELL_WINDOWACTIVATED + 32768:
-          begin
-            if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
+        wnd := Message.lparam;
+        case Message.WParam of
+          HSHELL_WINDOWCREATED,HSHELL_WINDOWDESTROYED: begin
+            LastDShellMessageTime := GetTickCount;
+          end;
+          HSHELL_WINDOWACTIVATED,HSHELL_WINDOWACTIVATED + 32768: begin
+            if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
                ((IsWindowVisible(Wnd) and not IsIconic(wnd)) and
                ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
                (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
-               (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))  then
+               (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))) and
+               (GetTickCount - LastDShellMessageTime > 200)   then
             begin
               newdesk := VWMFunctions.VWMGetWindowVWM(CurrentDesktop,VWMCount,wnd);
               if  newdesk <> CurrentDesktop then
@@ -281,12 +285,13 @@ end;
     SharpApi.SharpEBroadCast(WM_VWMDESKTOPCHANGED,CurrentDesktop,0);
 end;
                                                                      
-// Service is started                                                
-function Start(Owner: HWND): HWND;                                   
+// Service is started
+function Start(Owner: HWND): HWND;
 begin
   ActionEvent := TActionEvent.Create;
   AllocateMsgWnd;
 
+  LastDShellMessageTime := GetTickCount;
   LoadVWMSettings;
   CurrentDesktop := 1;
   VWMFunctions.VWMMoveAllToOne; // has to be called two times ...
