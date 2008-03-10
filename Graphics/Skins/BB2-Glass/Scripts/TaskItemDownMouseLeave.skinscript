@@ -14,12 +14,12 @@ end;
 
 function OnAnimate : boolean;
 begin
-  DecreaseGradientFromAlpha('gradient',24);
+  DecreaseGradientFromAlpha('gradient',12);
   
   // End Condidition
-  if GetGradientFromAlpha('gradient') <= 64 then 
+  if GetGradientFromAlpha('gradient') <= 32 then 
   begin
-    SetGradientFromAlpha('gradient',64);
+    SetGradientFromAlpha('gradient',32);
 
     result := false;
   end else result := true;

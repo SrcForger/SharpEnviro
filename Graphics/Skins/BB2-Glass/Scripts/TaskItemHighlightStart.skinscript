@@ -19,13 +19,13 @@ begin
   SetAlpha('2',192);
   SetAlpha('3',192);
 
-  IncreaseGradientFromAlpha('gradient',21);
-  DecreaseGradientToAlpha('gradient',21);
+  IncreaseGradientFromAlpha('gradient',10);
+  DecreaseGradientToAlpha('gradient',10);
   
   // End Condidition
-  if GetGradientFromAlpha('gradient') >= 220 then 
+  if GetGradientFromAlpha('gradient') >= 110 then 
   begin     
-    SetGradientFromAlpha('gradient',220);
+    SetGradientFromAlpha('gradient',110);
     SetGradientToAlpha('gradient',0);
 
     result := false;

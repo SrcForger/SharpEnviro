@@ -19,8 +19,8 @@ begin
   DecreaseAlpha('2',24);
   DecreaseAlpha('3',24);
 
-  DecreaseGradientFromAlpha('gradient',4);
-  DecreaseGradientToAlpha('gradient',21);
+  DecreaseGradientFromAlpha('gradient',2);
+  DecreaseGradientToAlpha('gradient',10);
   
   if GetAlpha('0') <= 0then
   begin

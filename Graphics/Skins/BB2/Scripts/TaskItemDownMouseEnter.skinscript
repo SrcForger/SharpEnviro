@@ -14,12 +14,12 @@ end;
 
 function OnAnimate : boolean;
 begin
-  IncreaseGradientFromAlpha('gradient',24);
+  IncreaseGradientFromAlpha('gradient',12);
   
   // End Condidition
-  if GetGradientFromAlpha('gradient') >= 168 then 
+  if GetGradientFromAlpha('gradient') >= 96 then 
   begin
-    SetGradientFromAlpha('gradient',168);
+    SetGradientFromAlpha('gradient',96);
 
     result := false;
   end else result := true;

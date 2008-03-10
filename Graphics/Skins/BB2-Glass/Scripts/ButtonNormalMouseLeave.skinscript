@@ -19,8 +19,8 @@ begin
   DecreaseAlpha('2',24);
   DecreaseAlpha('3',24);
 
-  DecreaseGradientFromAlpha('gradient',4);
-  DecreaseGradientToAlpha('gradient',21);
+  DecreaseGradientFromAlpha('gradient',1);
+  DecreaseGradientToAlpha('gradient',5);
   
   if GetAlpha('0') <= 0then
   begin
@@ -29,7 +29,7 @@ begin
     SetAlpha('2',0);
     SetAlpha('3',0);
      
-    SetGradientFromAlpha('gradient',0);
+    SetGradientFromAlpha('gradient',4);
     SetGradientToAlpha('gradient',0);
 
     result := false;

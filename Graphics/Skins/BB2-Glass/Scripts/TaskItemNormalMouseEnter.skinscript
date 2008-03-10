@@ -19,8 +19,8 @@ begin
   IncreaseAlpha('2',24);
   IncreaseAlpha('3',24);
 
-  IncreaseGradientFromAlpha('gradient',4);
-  IncreaseGradientToAlpha('gradient',21);
+  IncreaseGradientFromAlpha('gradient',2);
+  IncreaseGradientToAlpha('gradient',10);
   
   // End Condidition
   if GetAlpha('0') >= 192 then 
@@ -30,8 +30,8 @@ begin
     SetAlpha('2',192);
     SetAlpha('3',192);
      
-    SetGradientFromAlpha('gradient',32);
-    SetGradientToAlpha('gradient',168);
+    SetGradientFromAlpha('gradient',16);
+    SetGradientToAlpha('gradient',84);
 
     result := false;
   end else result := true;
