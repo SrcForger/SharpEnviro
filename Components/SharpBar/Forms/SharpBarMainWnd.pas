@@ -1297,14 +1297,15 @@ begin
   Dir := SharpApi.GetSharpeDirectory + 'Skins\' + SharpThemeApi.GetSkinName + '\Schemes\';
   if FindFirst(Dir + '*.xml', FAAnyFile, sr) = 0 then
     repeat
+      s := sr.Name;
+      setlength(s, length(s) - length('.xml'));
+
       item := TMenuItem.Create(ColorScheme1);
       item.GroupIndex := 1;
       item.Caption := s;
       item.Checked := false;
       item.RadioItem := true;
 
-      s := sr.Name;
-      setlength(s, length(s) - length('.xml'));
       if s = SharpThemeApi.GetSchemeName then
         item.Checked := True;
 
