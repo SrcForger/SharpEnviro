@@ -1168,7 +1168,7 @@ begin
   inherited CreateParams(Params);
   with Params do
   begin
-    Params.WinClassName := 'SharpDeskMainForm';
+    Params.WinClassName := 'TSharpDeskMainForm';
     ExStyle := WS_EX_TOOLWINDOW or WS_EX_NOACTIVATE;
     Style := WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
   end;
