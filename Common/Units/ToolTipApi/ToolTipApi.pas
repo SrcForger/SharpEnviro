@@ -32,20 +32,20 @@ uses
 
 
 function RegisterBallonWindow(Control : TWinControl) : hwnd;
-procedure AddBalloonWindowCallBack(BWnd : hwnd; Control : TWinControl; ID : integer; Icon : integer; Titel : String; Rect : TRect);
+procedure AddBalloonWindowCallBack(BWnd : hwnd; Control : TWinControl; ID : Cardinal; Icon : integer; Titel : String; Rect : TRect);
 procedure SetBalloonPosition(BWnd : hwnd; X,Y : integer);
-procedure SetBalloonTracking(BWnd : hwnd; Control: TWinControl; ID : integer;Activate : boolean);
+procedure SetBalloonTracking(BWnd : hwnd; Control: TWinControl; ID : Cardinal;Activate : boolean);
 
 function RegisterToolTip(Control: TWinControl) : hwnd;
 procedure EnableToolTip(TipWnd : hwnd);
 procedure DisableToolTip(TipWnd : hwnd);
 procedure SetTipTitel(TipWnd : hwnd; Icon : integer; Titel : String);
-procedure AddToolTip(TipWnd : hwnd; Control: TWinControl; ID : integer; Rect : TRect; Text : String);
-procedure AddToolTipByCallBack(TipWnd : hwnd; Control: TWinControl; ID : integer; Rect : TRect);
-procedure DeleteToolTip(TipWnd : hwnd; Control: TWinControl; ID : integer);
-procedure UpdateToolTipText(TipWnd : hwnd; Control: TWinControl; ID : integer; Text : String);
-procedure UpdateToolTipTextByCallBack(TipWnd : hwnd; Control: TWinControl; ID : integer);
-procedure UpdateToolTipRect(TipWnd : hwnd; Control: TWinControl; ID : integer; Rect : TRect);
+procedure AddToolTip(TipWnd : hwnd; Control: TWinControl; ID : Cardinal; Rect : TRect; Text : String);
+procedure AddToolTipByCallBack(TipWnd : hwnd; Control: TWinControl; ID : Cardinal; Rect : TRect);
+procedure DeleteToolTip(TipWnd : hwnd; Control: TWinControl; ID : Cardinal);
+procedure UpdateToolTipText(TipWnd : hwnd; Control: TWinControl; ID : Cardinal; Text : String);
+procedure UpdateToolTipTextByCallBack(TipWnd : hwnd; Control: TWinControl; ID : Cardinal);
+procedure UpdateToolTipRect(TipWnd : hwnd; Control: TWinControl; ID : Cardinal; Rect : TRect);
 
 const
  TTS_NOANIMATE = $10;
@@ -60,7 +60,7 @@ begin
   SendMessage(BWnd, TTM_TRACKPOSITION, 0, MAKELONG(x,y));
 end;
 
-procedure SetBalloonTracking(BWnd : hwnd; Control: TWinControl; ID : integer; Activate : boolean);
+procedure SetBalloonTracking(BWnd : hwnd; Control: TWinControl; ID : Cardinal; Activate : boolean);
 var
   ti: TToolInfo;
 begin
@@ -86,7 +86,7 @@ begin
   result := hWndB;
 end;
 
-procedure AddBalloonWindowCallBack(BWnd : hwnd; Control : TWinControl; ID : integer; Icon : integer; Titel : String; Rect : TRect);
+procedure AddBalloonWindowCallBack(BWnd : hwnd; Control : TWinControl; ID : Cardinal; Icon : integer; Titel : String; Rect : TRect);
 var
   ti: TToolInfo;
   P : PChar;
@@ -126,7 +126,7 @@ begin
   result := hWndTip;
 end;
 
-procedure UpdateToolTipTextByCallback(TipWnd : hwnd; Control: TWinControl; ID : integer);
+procedure UpdateToolTipTextByCallback(TipWnd : hwnd; Control: TWinControl; ID : Cardinal);
 var
   ti: TToolInfo;
 begin
@@ -138,7 +138,7 @@ begin
   SendMessage(TipWnd, TTM_UPDATETIPTEXT, 0, Integer(@ti));
 end;
 
-procedure UpdateToolTipText(TipWnd : hwnd; Control: TWinControl; ID : integer; Text : String);
+procedure UpdateToolTipText(TipWnd : hwnd; Control: TWinControl; ID : Cardinal; Text : String);
 var
   ti: TToolInfo;
 begin
@@ -150,7 +150,7 @@ begin
   SendMessage(TipWnd, TTM_UPDATETIPTEXT, 0, Integer(@ti));
 end;
 
-procedure UpdateToolTipRect(TipWnd : hwnd; Control: TWinControl; ID : integer; Rect : TRect);
+procedure UpdateToolTipRect(TipWnd : hwnd; Control: TWinControl; ID : Cardinal; Rect : TRect);
 var
   ti: TToolInfo;
 begin
@@ -162,7 +162,7 @@ begin
   SendMessage(TipWnd, TTM_NEWTOOLRECT, 0, Integer(@ti));
 end;
 
-procedure AddToolTipByCallBack(TipWnd : hwnd; Control: TWinControl; ID : integer; Rect : TRect);
+procedure AddToolTipByCallBack(TipWnd : hwnd; Control: TWinControl; ID : Cardinal; Rect : TRect);
 var
   ti: TToolInfo;
 begin
@@ -175,7 +175,7 @@ begin
   SendMessage(TipWnd, TTM_ADDTOOL, 0, Integer(@ti));
 end;
 
-procedure AddToolTip(TipWnd : hwnd; Control: TWinControl; ID : integer; Rect : TRect; Text : String);
+procedure AddToolTip(TipWnd : hwnd; Control: TWinControl; ID : Cardinal; Rect : TRect; Text : String);
 var
   ti: TToolInfo;
 begin
@@ -188,7 +188,7 @@ begin
   SendMessage(TipWnd, TTM_ADDTOOL, 0, Integer(@ti));
 end;
 
-procedure DeleteToolTip(TipWnd : hwnd; Control: TWinControl; ID : integer);
+procedure DeleteToolTip(TipWnd : hwnd; Control: TWinControl; ID : Cardinal);
 var
   ti: TToolInfo;
 begin
