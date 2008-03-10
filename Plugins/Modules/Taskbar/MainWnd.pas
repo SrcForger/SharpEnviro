@@ -358,11 +358,27 @@ begin
 
   // Update Tooltips
   if sMinAllButton then
-    ToolTipApi.AddToolTip(FTipWnd,self,1,ses_minall.BoundsRect,'Minimize All Windows')
-  else ToolTipApi.DeleteToolTip(FTipWnd,self,1);
+  begin
+    if ses_minall.tag = 0 then
+      ToolTipApi.AddToolTip(FTipWnd,self,1,ses_minall.BoundsRect,'Minimize All Windows')
+    else ToolTipApi.UpdateToolTipRect(FTipWnd,self,1,ses_minall.BoundsRect);
+    ses_minall.Tag := 1;
+  end else
+  begin
+    ToolTipApi.DeleteToolTip(FTipWnd,self,1);
+    ses_minall.Tag := 0;
+  end;
   if sMaxAllButton then
-    ToolTipApi.AddToolTip(FTipWnd,self,2,ses_minall.BoundsRect,'Restore All Windows')
-  else ToolTipApi.DeleteToolTip(FTipWnd,self,2);
+  begin
+    if ses_maxall.tag = 0 then
+      ToolTipApi.AddToolTip(FTipWnd,self,2,ses_maxall.BoundsRect,'Restore All Windows')
+    else ToolTipApi.UpdateToolTipRect(FTipWnd,self,2,ses_maxall.BoundsRect);
+    ses_maxall.Tag := 1;
+  end else
+  begin
+    ToolTipApi.DeleteToolTip(FTipWnd,self,2);
+    ses_maxall.Tag := 0;
+  end;
 end;
 
 procedure TMainForm.DisplaySystemMenu(pHandle : hwnd);
