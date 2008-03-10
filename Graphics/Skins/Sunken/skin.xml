@@ -1124,11 +1124,8 @@
         </skinpart>
       </normalhover>
       <down>
-        <text>
-	<location>cw+iwh+2,ch</location>
-        </text>
         <icon>
-	<location>cw-9,3</location> 
+	<location>3,3</location> 
         </icon>
         <skinpart>
           <location>0,0</location>
@@ -1173,12 +1170,9 @@
         </skinpart>
       </down>
       <downhover>
-        <text>
-	<location>cw+iwh+2,ch</location>
-        </text>
         <icon>
-	<location>cw-9,3</location> 
-        </icon>      
+	<location>3,3</location> 
+        </icon>    
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
