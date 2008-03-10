@@ -579,7 +579,7 @@ begin
     SkinText.AssignFontTo(temp.font,FSkinManager.Scheme);
     size := menuskin.WidthLimit.XAsInt;
     maxsize := menuskin.WidthLimit.YAsInt;
-    maxitemtext := SkinText.GetMaxWidth(Rect(0,0,maxsize,64));
+    maxitemtext := SkinText.GetDim(Rect(0,0,maxsize,64)).X;
     for n:= 0 to FItems.Count -1 do
     begin
       item := TSharpEMenuItem(FItems.Items[n]);
