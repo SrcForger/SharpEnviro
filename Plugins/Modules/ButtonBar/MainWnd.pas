@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, Menus, Math, GR32, ToolTipApi, ShellApi,
+  Dialogs, Menus, Math, GR32, ToolTipApi, ShellApi, CommCtrl,
   JvSimpleXML,
   SharpApi,
   uSharpBarAPI,
@@ -74,6 +74,8 @@ type
     procedure ClearButtons;
     procedure AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
     procedure UpdateButtons;
+    procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
+    procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;    
   public
     ModuleID : integer;
     BarID : integer;
@@ -86,7 +88,6 @@ type
     procedure SetWidth(new : integer);
     procedure UpdateBackground(new : integer = -1);
     procedure LBWindowProc(var Message: TMessage);
-    procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;
   end;
 
 
@@ -109,6 +110,16 @@ begin
   OldLBWindowProc(Message);
 end;
 
+procedure TMainForm.WMNotify(var msg: TWMNotify);
+begin
+  if Msg.NMHdr.code = TTN_SHOW then
+  begin
+    SetWindowPos(Msg.NMHdr.hwndFrom, HWND_TOPMOST, 0, 0, 0, 0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+    Msg.result := 1;
+    exit;
+  end else Msg.result := 0;
+end;
+ 
 procedure TMainForm.WMDropFiles(var msg: TMessage);
 var
   pcFileName: PChar;

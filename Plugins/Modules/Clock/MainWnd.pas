@@ -28,7 +28,7 @@ unit MainWnd;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms,
+  Windows, SysUtils, Classes, Controls, Forms, Messages,
   Dialogs, StdCtrls, SharpEBaseControls, Commctrl,
   SharpESkinManager, JvSimpleXML, SharpApi, Menus, Math,
   SharpESkinLabel, SharpESkin, GR32, ExtCtrls, ToolTipApi;
@@ -58,6 +58,7 @@ type
     FTipWnd : hwnd;
     FTipSet : boolean;
     FOldTip : String;
+    procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
   public
     ModuleID : integer;
     BarID : integer;
@@ -74,6 +75,16 @@ implementation
 uses uSharpBarAPI;
 
 {$R *.dfm}
+
+procedure TMainForm.WMNotify(var msg: TWMNotify);
+begin
+  if Msg.NMHdr.code = TTN_SHOW then
+  begin
+    SetWindowPos(Msg.NMHdr.hwndFrom, HWND_TOPMOST, 0, 0, 0, 0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+    Msg.result := 1;
+    exit;
+  end else Msg.result := 0;
+end;
 
 procedure TMainForm.LoadSettings;
 var
