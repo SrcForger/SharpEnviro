@@ -351,7 +351,7 @@ object frmHome: TfrmHome
     HotTrackFont.Style = []
     Images = PngImageList1
     ImageIndex = 1
-    ExplicitWidth = 278
+    ExplicitLeft = 2
   end
   object Label4: TJvLabel
     AlignWithMargins = True
@@ -376,7 +376,6 @@ object frmHome: TfrmHome
     HotTrackFont.Style = []
     Images = PngImageList1
     ImageIndex = 1
-    ExplicitTop = 390
     ExplicitWidth = 220
   end
   object Label5: TJvLabel
@@ -402,7 +401,6 @@ object frmHome: TfrmHome
     HotTrackFont.Style = []
     Images = PngImageList1
     ImageIndex = 1
-    ExplicitTop = 369
     ExplicitWidth = 181
   end
   object Label6: TJvLabel
@@ -428,7 +426,6 @@ object frmHome: TfrmHome
     HotTrackFont.Style = []
     Images = PngImageList1
     ImageIndex = 1
-    ExplicitTop = 348
     ExplicitWidth = 187
   end
   object Label7: TJvLabel
@@ -443,7 +440,7 @@ object frmHome: TfrmHome
     Margins.Right = 4
     Margins.Bottom = 4
     Align = alTop
-    Caption = 'Tango: http://tango.freedesktop.org'
+    Caption = 'Tango Icons: http://tango.freedesktop.org'
     Transparent = True
     WordWrap = True
     OnClick = Label7Click
@@ -454,8 +451,32 @@ object frmHome: TfrmHome
     HotTrackFont.Style = []
     Images = PngImageList1
     ImageIndex = 1
-    ExplicitTop = 411
-    ExplicitWidth = 201
+    ExplicitWidth = 230
+  end
+  object JvLabel1: TJvLabel
+    AlignWithMargins = True
+    Left = 7
+    Top = 447
+    Width = 502
+    Height = 16
+    Cursor = crHandPoint
+    Margins.Left = 7
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
+    Align = alTop
+    Caption = 'Crystal Clear Icons http://everaldo.com/crystal/'
+    Transparent = True
+    WordWrap = True
+    OnClick = JvLabel1Click
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -11
+    HotTrackFont.Name = 'Tahoma'
+    HotTrackFont.Style = []
+    Images = PngImageList1
+    ImageIndex = 1
+    ExplicitWidth = 253
   end
   object lbUsers: TSharpEListBoxEx
     AlignWithMargins = True
@@ -493,6 +514,7 @@ object frmHome: TfrmHome
     AutosizeGrid = True
     Borderstyle = bsNone
     Align = alTop
+    ExplicitLeft = 5
   end
   object lbWebsiteLinks: TSharpEListBoxEx
     AlignWithMargins = True

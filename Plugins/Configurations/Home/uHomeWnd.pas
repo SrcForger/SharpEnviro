@@ -55,6 +55,7 @@ type
     Label5: TJvLabel;
     Label6: TJvLabel;
     Label7: TJvLabel;
+    JvLabel1: TJvLabel;
     procedure FormCreate(Sender: TObject);
     procedure lbUsersResize(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -74,6 +75,7 @@ type
     procedure Label5Click(Sender: TObject);
     procedure Label4Click(Sender: TObject);
     procedure Label7Click(Sender: TObject);
+    procedure JvLabel1Click(Sender: TObject);
   private
     FUsers: TList;
     procedure AddUsersToList;
@@ -107,6 +109,11 @@ End;
 procedure TfrmHome.FormDestroy(Sender: TObject);
 begin
   FUsers.Free;
+end;
+
+procedure TfrmHome.JvLabel1Click(Sender: TObject);
+begin
+  SharpExecute('http://everaldo.com/crystal/');
 end;
 
 procedure TfrmHome.Label1Click(Sender: TObject);
