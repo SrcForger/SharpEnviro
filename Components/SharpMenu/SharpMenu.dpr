@@ -165,21 +165,22 @@ begin
   Mon := Screen.MonitorFromPoint(Pos);
   if Mon = nil then
     Mon := wnd.Monitor;
+
+  // Check position
   i := Pos.X + SkinManager.Skin.MenuSkin.SkinDim.XAsInt;
   if (i + wnd.Width > (Mon.Left + Mon.Width)) then
      i := (Mon.Left + Mon.Width) - wnd.Width;
   wnd.Left := i;
 
-  // Check position
   i := Pos.Y + SkinManager.Skin.MenuSkin.SkinDim.YAsInt;
   if popupdir < 0 then
      i := i - wnd.Picture.Height;
   if (i + wnd.Picture.Height) > (Mon.Top + Mon.Height) then
       i := Mon.Top + Mon.Height - wnd.Picture.Height;
-  if i < 0 then
+  if i < Mon.Top then
   begin
     wnd.Height := Mon.Height;
-    i := 0;
+    i := Mon.Top;
   end;
   wnd.top := i;
 
