@@ -260,7 +260,7 @@ begin
   end;
 end;
 
-function WindowProc(hWnd, Msg, wParam, lParam: Integer): Integer; stdcall;
+function WindowProc(hWnd: hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
 const
   SCMsgFunc: function(msg: string): integer = nil;
 var
