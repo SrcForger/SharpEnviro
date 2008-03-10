@@ -44,8 +44,7 @@ uses
   SharpESkin,
   SharedBitmapList,
   SharpEScheme,
-  SharpApi,
-  SharpCenterApi;
+  SharpApi;
 
 type
   TSkinSource = (ssDefault, ssSystem, ssComponent);

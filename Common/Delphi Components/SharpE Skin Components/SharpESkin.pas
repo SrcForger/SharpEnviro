@@ -46,14 +46,14 @@ uses
 
 type
   TSharpESkinItem = (scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
-                     scTaskItem,scMenu,scMenuItem,scTaskSwitch);
+                     scTaskItem,scMenu,scMenuItem,scTaskSwitch,scNotify);
   TSharpESkinItems = set of TSharpESkinItem;
 
   TSharpEBarAutoPos = (apTop,apCenter,apBottom,apNone);
 
 const
  ALL_SHARPE_SKINS = [scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
-                     scTaskItem,scMenu,scMenuItem,scTaskSwitch];
+                     scTaskItem,scMenu,scMenuItem,scTaskSwitch,scNotify];
 
 type
   TSharpEButtonSkin = class;
@@ -65,7 +65,8 @@ type
   TSharpETaskItemSkin = class;
   TSharpEMenuSkin = class;
   TSharpEMenuItemSkin = class;
-  TSharpETaskSwitchSkin = Class;
+  TSharpETaskSwitchSkin = class;
+  TSharpENotifySkin = class;
   TSkinEvent = procedure of object;
 
   TSkinName = string;
@@ -95,6 +96,7 @@ type
     FMenuSkin : TSharpEMenuSkin;
     FMenuItemSkin: TSharpEMenuItemSkin;
     FTaskSwitchSkin : TSharpETaskSwitchSkin;
+    FNotifySkin : TSharpENotifySkin;
 
     FSkinHeader: TSharpeSkinHeader;
     FXml: TJvSimpleXml;
@@ -134,6 +136,7 @@ type
     property MenuItemSkin : TSharpEMenuItemSkin read FMenuItemSkin;
     property TaskItemSkin: TSharpETaskItemSkin  read FTaskItemSkin;
     property TaskSwitchSkin : TSharpETaskSwitchSkin read FTaskSwitchSkin;
+    property NotifySkin : TSharpENotifySkin read FNotifySkin;
     property SkinText: TSkinText read FSkinText;
     property SmallText  : TSkinText read FSmallText;
     property MediumText : TSkinText read FMediumText;
@@ -216,6 +219,27 @@ type
     property Compact: TSharpETaskItemState read FCompact write FCompact;
     property Mini: TSharpETaskItemState read FMini write FMini;
  end;
+
+  TSharpENotifySkin = class
+  private
+    FSkinDim    : TSkinDim;
+    FCATBOffset : TSkinPoint;
+    FCALROffset : TSkinPoint;
+    FBackground : TSkinPartEx;
+  public
+    constructor Create(BmpList : TSkinBitmapList);
+    destructor Destroy; override;
+    procedure Clear;
+    procedure SaveToStream(Stream: TStream);
+    procedure LoadFromStream(Stream: TStream);
+    procedure LoadFromXML(xml: TJvSimpleXMLElem; path: string);
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+
+    property SkinDim : TSkinDim read FSkinDim;
+    property CATBOffset : TSkinPoint read FCATBOffset;
+    property CALROffset : TSkinPoint read FCALROffset;
+    property Background : TSkinPartEx read FBackground;
+  end;
 
   TSharpETaskSwitchSkin = class
   private
@@ -539,7 +563,8 @@ begin
   if scMenu in FLoadSkins then FMenuSkin := TSharpEMenuSkin.Create(FBitmapList);
   if scMenuItem in FLoadSkins then FMenuItemSkin := TSharpEMenuItemSkin.Create(FBitmapList);
   if scTaskSwitch in FLoadSkins then FTaskSwitchSkin := TSharpETaskSwitchSkin.Create(FBitmapList);
-  
+  if scNotify in FLoadSkins then FNotifySkin := TSharpENotifySkin.Create(FBitmapList);
+
   FXml := TJvSimpleXml.Create(nil);
 end;
 
@@ -568,6 +593,8 @@ begin
   if FMenuSkin <> nil then FMenuSkin.Free;
   if FMenuItemSkin <> nil then FMenuItemSkin.Free;
   if FTaskSwitchSkin <> nil then FTaskSwitchSkin.Free;
+  if FNotifySkin <> nil then FNotifySkin.Free;
+
 
   FBitmapList.Free;
   inherited;
@@ -584,6 +611,7 @@ begin
   if FMenuSkin <> nil then FMenuSkin.UpdateDynamicProperties(cs);
   if FMenuItemSkin <> nil then FMenuItemSkin.UpdateDynamicProperties(cs);
   if FTaskSwitchSkin <> nil then FTaskSwitchSkin.UpdateDynamicProperties(cs);
+  if FNotifySkin <> nil then FNotifySkin.UpdateDynamicProperties(cs);
 
   FSkinText.UpdateDynamicProperties(cs);
   FSmallText.UpdateDynamicProperties(cs);
@@ -703,6 +731,10 @@ begin
     RemoveskinpartBitmaps(FTaskSwitchSkin.Background,List);
     RemoveskinpartBitmaps(FTaskSwitchSkin.Item,List);
     RemoveskinpartBitmaps(FTaskSwitchSkin.ItemHover,List);
+  end;
+  if FNotifySkin <> nil then
+  begin
+    RemoveskinpartBitmaps(FNotifySkin.Background,List);
   end;
 
   for n := 0 to List.Count - 1 do
@@ -835,8 +867,20 @@ begin
     if FTaskSwitchSkin <> nil then
     begin
       tempStream.clear;
-      StringSaveToStream('TaskSwitchSkin', Stream);
+      StringSaveToStream('TaskSwitch', Stream);
       FTaskSwitchSkin.SaveToStream(tempStream);
+      size := tempStream.Size;
+      tempStream.Position := 0;
+      Stream.WriteBuffer(size, sizeof(size));
+      Stream.CopyFrom(tempStream, Size);
+    end;
+
+    //Write Notify Skin
+    if FTaskSwitchSkin <> nil then
+    begin
+      tempStream.clear;
+      StringSaveToStream('Notify', Stream);
+      FNotifySkin.SaveToStream(tempStream);
       size := tempStream.Size;
       tempStream.Position := 0;
       Stream.WriteBuffer(size, sizeof(size));
@@ -903,8 +947,10 @@ begin
         FMenuSkin.LoadFromStream(Stream)
       else if (temp = 'MenuItem') and (FMenuItemSkin <> nil) then
         FMenuItemSkin.LoadFromStream(Stream)
-      else if (temp = 'TaskSwitchSkin') and (FTaskSwitchSkin <> nil) then
+      else if (temp = 'TaskSwitch') and (FTaskSwitchSkin <> nil) then
         FTaskSwitchSkin.LoadFromStream(Stream)
+      else if (temp = 'Notify') and (FNotifySkin <> nil) then
+        FNotifySkin.LoadFromStream(Stream)
       else Stream.Position := Stream.Position + size;
 
       temp := StringLoadFromStream(Stream);
@@ -931,6 +977,7 @@ begin
   if FMenuItemSkin <> nil then FMenuItemSkin.Clear;
   if FTaskItemSkin <> nil then FTaskItemSkin.Clear;
   if FTaskSwitchSkin <> nil then FTaskSwitchSkin.Clear;
+  if FNotifySkin <> nil then FNotifySkin.Clear;  
 
   FSmallText.Clear;
   FMediumText.Clear;
@@ -1036,6 +1083,8 @@ begin
     FMenuItemSkin.LoadFromXML(FXml.Root.Items.ItemNamed['menuitem'],path);
   if (FXml.Root.Items.ItemNamed['taskswitch'] <> nil) and (FTaskSwitchSkin <> nil) then
     FTaskSwitchSkin.LoadFromXML(FXML.Root.Items.ItemNamed['taskswitch'],path);
+  if (FXml.Root.Items.ItemNamed['notify'] <> nil) and (FNotifySkin <> nil) then
+    FNotifySkin.LoadFromXML(FXML.Root.Items.ItemNamed['notify'],path);
 
   if FBarSkin <> nil then
      FBarSkin.CheckValid;
@@ -1358,7 +1407,7 @@ begin
     with xml.Items do
     begin
       if ItemNamed['icon'] <> nil then
-        SkinIcon.LoadFromXML(ItemNamed['icon']); 
+        SkinIcon.LoadFromXML(ItemNamed['icon']);
       if ItemNamed['text'] <> nil then
         SkinText.LoadFromXML(ItemNamed['text']);
       if ItemNamed['dimension'] <> nil then
@@ -2582,6 +2631,92 @@ begin
   FAuthor := '';
   FName := '';
   FUrl := '';
+end;
+
+{ TSharpENotifySkin }
+
+procedure TSharpENotifySkin.Clear;
+begin
+  FSkinDim.SetLocation('0','0');
+  FSkinDim.SetDimension('256','64');
+  FCATBOffset.SetPoint('0','0');
+  FCALROffset.SetPoint('0','0');
+  FBackground.Clear;
+end;
+
+constructor TSharpENotifySkin.Create(BmpList: TSkinBitmapList);
+begin
+  Inherited Create;
+
+  FSkinDim := TSkinDim.Create;
+  FCATBOffset := TSkinPoint.Create;
+  FCALROffset := TSkinPoint.Create;
+  FBackground := TSkinPartEx.Create(BmpList);
+  Clear;
+end;
+
+destructor TSharpENotifySkin.Destroy;
+begin
+  FSkinDim.Free;
+  FCATBOffset.Free;
+  FCALROffset.Free;
+  FBackground.Free;
+
+  inherited Destroy;
+end;
+
+procedure TSharpENotifySkin.LoadFromStream(Stream: TStream);
+begin
+  FSkinDim.LoadFromStream(Stream);
+  FCATBOffset.LoadFromStream(Stream);
+  FCALROffset.LoadFromStream(Stream);
+  FBackground.LoadFromStream(Stream);
+end;
+
+procedure TSharpENotifySkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
+var
+  SkinText: TSkinText;
+  SkinIcon : TSkinIcon;
+begin
+  SkinIcon := TSkinIcon.Create;
+  SkinIcon.DrawIcon := False;
+  SkinText := TSkinText.Create;
+  SkinText.SetLocation('cw', 'ch');
+  try
+    with xml.Items do
+    begin
+      if ItemNamed['icon'] <> nil then
+        SkinIcon.LoadFromXML(ItemNamed['icon']);
+      if ItemNamed['text'] <> nil then
+        SkinText.LoadFromXML(ItemNamed['text']);
+      if ItemNamed['dimension'] <> nil then
+        FSkinDim.SetDimension(Value('dimension', 'w,h'));
+      if ItemNamed['location'] <> nil then
+        FSkinDim.SetLocation(Value('location','0,0'));
+      if ItemNamed['catboffset'] <> nil then
+        FCATBOffset.SetPoint(Value('catboffset', '0,0'));
+      if ItemNamed['calroffset'] <> nil then
+        FCALROffset.SetPoint(Value('calroffset','0,0'));
+      if ItemNamed['background'] <> nil then
+        FBackground.LoadFromXML(ItemNamed['background'], path, SkinText, SkinIcon);
+    end;
+  finally
+    SkinText.free;
+    SkinIcon.Free;
+  end;
+end;
+
+procedure TSharpENotifySkin.SaveToStream(Stream: TStream);
+begin
+  FSkinDim.SaveToStream(Stream);
+  FCATBOffset.SaveToStream(Stream);
+  FCALROffset.SaveToStream(Stream);
+  FBackground.SaveToStream(Stream);
+end;
+
+procedure TSharpENotifySkin.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FBackground.UpdateDynamicProperties(cs);
 end;
 
 end.

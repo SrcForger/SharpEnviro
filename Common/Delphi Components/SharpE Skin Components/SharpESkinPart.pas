@@ -133,6 +133,8 @@ type
   private
     FX: string;
     FY: string;
+    FWidth: string;
+    FHeight: string;
     FName: string;
     FColor: integer;
     FColorString: String;
@@ -142,7 +144,6 @@ type
     FStyleBold : boolean;
     FStyleItalic : boolean;
     FStyleUnderline : boolean;
-    FMaxWidth : String;
     FShadow : boolean;
     FShadowColor : integer;
     FShadowColorString : String;
@@ -158,7 +159,8 @@ type
     procedure Assign(Value: TSkinTextRecord); overload;
     procedure SetLocation(x, y: string); overload;
     procedure SetLocation(str: string); overload;
-    procedure SetMaxWidth(width : String);
+    procedure SetDimension(width, height : String); overload;
+    procedure SetDimension(str : string); overload;
 
     procedure SaveToStream(Stream: TStream);
     procedure LoadFromStream(Stream: TStream);
@@ -167,7 +169,7 @@ type
 
     procedure LoadFromXML(xml: TJvSimpleXMLElem);
     function GetXY(TextRect,CompRect,IconRect: TRect): TPoint;
-    function GetMaxWidth(CompRect: TRect): integer;
+    function GetDim(CompRect: TRect): TPoint;
     function GetFont(cs: TSharpEScheme): TFont;
     procedure AssignFontTo(pFont : TFont; cs: TSharpEScheme);
     procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme;
@@ -581,7 +583,8 @@ procedure TSkinText.Clear;
 begin
   FX := '';
   FY := '';
-  FMaxWidth := 'w';
+  FWidth := 'w';
+  FHeight := 'h';
   FStyleBold := False;
   FStyleItalic := False;
   FStyleUnderline := False;
@@ -599,13 +602,14 @@ procedure TSkinText.SaveToStream(Stream: TStream);
 begin
   StringSaveToStream(FX, Stream);
   StringSaveToStream(FY, Stream);
+  StringSaveToStream(FWidth,Stream);
+  StringSaveToStream(FHeight,Stream);
   StringSaveToStream(FName, Stream);
   StringSaveToStream(FColorString, Stream);
   StringSaveToStream(BoolToStr(FStyleBold),Stream);
   StringSaveToStream(BoolToStr(FStyleItalic),Stream);
   StringSaveToStream(BoolToStr(FStyleUnderline),Stream);
   StringSaveToStream(BoolToStr(FDrawText),Stream);
-  StringSaveToStream(FMaxWidth, Stream);
   Stream.WriteBuffer(FSize, sizeof(FSize));
   StringSaveToStream(BoolToStr(FShadow),Stream);
   StringSaveToStream(FShadowColorString,Stream);
@@ -626,13 +630,14 @@ var
 begin
   FX := StringLoadFromStream(Stream);
   FY := StringLoadFromStream(Stream);
+  FWidth := StringLoadFromStream(Stream);
+  FHeight := StringLoadFromStream(Stream);
   FName := StringLoadFromStream(Stream);
   FColorString := StringLoadFromStream(Stream);
   FStyleBold := StrToBool(StringLoadFromStream(Stream));
   FStyleItalic := StrToBool(StringLoadfromStream(Stream));
   FStyleUnderline := StrToBool(StringLoadFromStream(Stream));
   FDrawText := StrToBool(StringLoadFromStream(Stream));
-  FMaxwidth := StringLoadFromStream(Stream);
   Stream.ReadBuffer(FSize, sizeof(FSize));
   FShadow := StrToBool(StringLoadFromStream(Stream));
   FShadowColorString := StringLoadFromStream(Stream);
@@ -650,6 +655,8 @@ procedure TSkinText.Assign(Value: TSkinText);
 begin
   FX := Value.FX;
   FY := Value.FY;
+  FWidth := Value.FWidth;
+  FHeight := Value.FHeight;
   FName := Value.FName;
   FColor := Value.FColor;
   FColorString := Value.FColorString;
@@ -657,7 +664,6 @@ begin
   FStyleBold := Value.FStyleBold;
   FStyleItalic := Value.FStyleItalic;
   FStyleUnderline := Value.FStyleUnderline;
-  FMaxWidth := Value.FMaxWidth;
   FShadow := Value.FShadow;
   FShadowColor := Value.FShadowColor;
   FShadowColorString := Value.FShadowColorString;
@@ -676,9 +682,23 @@ begin
   FSize := Value.FSize;
 end;
 
-procedure TSkinText.SetMaxWidth(width : String);
+procedure TSkinText.SetDimension(width, height: String);
 begin
-  FMaxWidth := width;
+  FWidth := width;
+  FHeight := height;
+end;
+
+procedure TSkinText.SetDimension(str: string);
+var position: integer;
+begin
+  position := Pos(',', str);
+  if (position > 0) and (position < length(str)) then
+  begin
+    SetDimension(Copy(str, 1, position - 1), Copy(str, position + 1,
+      length(str)));
+  end
+  else
+    SetDimension('', '');
 end;
 
 procedure TSkinText.SetLocation(x, y: string);
@@ -751,8 +771,13 @@ begin
       FStyleItalic := BoolValue('italic',false);
     if ItemNamed['underline'] <> nil then
       FStyleUnderline := BoolValue('underline',false);
-    if ItemNamed['maxwidth'] <> nil then
-      FMaxWidth := Value('maxwidth','w');
+    if ItemNamed['dimension'] <> nil then
+      SetDimension(Value('dimension'),'w,h');
+    
+    if ItemNamed['width'] <> nil then
+      FWidth := Value('width','w');
+    if ItemNamed['height'] <> nil then
+      FHeight := Value('height','h');
     if ItemNamed['alpha'] <> nil then
       FAlphaString := Value('alpha','255');
     if ItemNamed['shadow'] <> nil then
@@ -775,13 +800,14 @@ begin
   end;
 end;
 
-function TSkinText.GetMaxWidth(CompRect: TRect) : integer;
+function TSkinText.GetDim(CompRect: TRect) : TPoint;
 var
   cw, ch : integer;
 begin
   cw := CompRect.Right - CompRect.Left;
   ch := CompRect.Bottom - CompRect.Top;
-  result := ParseCoordinate(FMaxwidth,cw,ch,cw,ch,0,0);
+  result.x := ParseCoordinate(FWidth,cw,ch,cw,ch,0,0);
+  result.y := ParseCoordinate(FHeight,cw,ch,cw,ch,0,0);
 end;
 
 function TSkinText.GetXY(TextRect,CompRect,IconRect: Trect): TPoint;
@@ -908,7 +934,8 @@ begin
   if ((CompareText(pPrecacheText.FName,FName) <> 0) or
 //     (CompareText(pPrecacheText.FColor,FColor) <> 0) or
      (pPrecacheText.FColor <> FColor) or
-     (CompareText(pPrecacheText.FMaxWidth,FMaxWidth) <> 0) or
+     (CompareText(pPrecacheText.FWidth,FWidth) <> 0) or
+     (CompareText(pPrecacheText.FHeight,FHeight) <> 0) or     
      (pPrecacheText.FShadowColor <> FShadowColor) or
      (pPrecacheText.FSize <> FSize) or
      (pPrecacheText.FStyleBold <> FStyleBold) or
@@ -1320,6 +1347,8 @@ begin
     end;
   end;
 
+      Bmp.DrawMode := dmBlend;
+      Bmp.CombineMode := cmMerge;
   // Draw Gradient
   if (FGradientAlpha.XAsInt <> 0) or (FGradientAlpha.YAsInt <> 0) then
   begin
@@ -1572,8 +1601,17 @@ begin
 end;
 
 function TSkinIcon.GetXY(TextRect, CompRect: TRect): TPoint;
+var
+  cw, ch: integer;
+  tw, th: integer;
 begin
-  result := FPosition.GetXY(TextRect,CompRect);
+  cw := CompRect.Right - CompRect.Left;
+  ch := CompRect.Bottom - CompRect.Top;
+  tw := TextRect.Right - TextRect.Left;
+  th := TextRect.Bottom - TextRect.Top;
+
+  result.X := ParseCoordinate(FPosition.FX, tw, th, cw, ch, FSize.XAsInt, FSize.YAsInt);
+  result.Y := ParseCoordinate(FPosition.FY, tw, th, cw, ch, FSize.XAsInt, FSize.YAsInt);
 end;
 
 procedure TSkinIcon.Assign(Value: TSkinIcon);
@@ -1962,7 +2000,7 @@ begin
   for y:=0 to Rect.Bottom-Rect.Top do
   begin
     if (y +Rect.Top >= 0) and (y +Rect.Top <= Bmp.Height - 1) then
-      Bmp.HorzLineT(DX1,y+Rect.Top,DX2,
+      Bmp.HorzLineTS(DX1,y+Rect.Top,DX2,
                     color32(sr+round(nr*y),sg+round(ng*y),sb+round(nb*y),st+round(nt*y)));
   end;
 end;
@@ -1998,7 +2036,7 @@ begin
   for x:= 0 to Rect.Right-Rect.Left do
   begin
     if (x + Rect.Left >= 0) and (x + Rect.Left <= Bmp.Width - 1) then
-      Bmp.VertLineT(x+Rect.Left,DY1,DY2,
+      Bmp.VertLineTS(x+Rect.Left,DY1,DY2,
                     color32(sr+round(nr*x),sg+round(ng*x),sb+round(nb*x),st+round(nt*x)));
   end;
 end;
@@ -2109,7 +2147,17 @@ begin
       end
       else if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'th') then
       begin
-        tmp := inttostr(th);
+        tmp := inttostr(tw);
+        inc(i);
+      end
+      else if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'wh') then
+      begin
+        tmp := inttostr(cw div 2);
+        inc(i);
+      end
+      else if (length(s) > i) and (lowercase(s[i] + s[i + 1]) = 'hh') then
+      begin
+        tmp := inttostr(ch div 2);
         inc(i);
       end else if (lowercase(s[i]) = 'w') then
         tmp := inttostr(cw)

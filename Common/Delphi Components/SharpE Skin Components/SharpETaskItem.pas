@@ -615,7 +615,7 @@ begin
 
     SkinText.AssignFontTo(bmp.Font,Scheme);
     DrawPart.Draw(bmp, Scheme);
-    mw := SkinText.GetMaxWidth(CompRect);
+    mw := SkinText.GetDim(CompRect).x;
     DrawCaption := FixCaption(Bmp,Caption,mw);
     TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
     TextPos := SkinText.GetXY(TextRect, CompRect, IconRect);
