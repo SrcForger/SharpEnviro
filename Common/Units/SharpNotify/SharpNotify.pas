@@ -328,7 +328,6 @@ begin
     Bmp.Clear(color32(0,0,0,0));
     FBitmap.DrawMode := dmBlend;
     Bmp.Draw(0,0,FBitmap);
-    Bmp.SaveToFile('C:\2.bmp');
     if not Win32Check(UpdateLayeredWindow(FWnd, DC, @TopLeft, @BmpSize,
       Bmp.Handle, @BmpTopLeft, clNone, @FBlend, ULW_ALPHA)) then
       RaiseLastWin32Error;
