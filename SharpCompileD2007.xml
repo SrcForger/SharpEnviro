@@ -14,7 +14,10 @@
      <project Name="Image" Type="DLL">Plugins\Configurations\Image\Image.dproj</project>  
      <project Name="Link" Type="DLL">Plugins\Configurations\Link\Link.dproj</project>       
      <project Name="KeyboardLayout" Type="DLL">Plugins\Configurations\KeyboardLayout\KeyboardLayout.dproj</project>       
+     <project Name="Glass Config" Type="DLL">Plugins\Configurations\Theme Glass\ThemeGlass.dproj</project>       
      <project Name="MemoryMonitor" Type="DLL">Plugins\Configurations\MemoryMonitor\MemoryMonitor.dproj</project>       
+     <project Name="MenuEdit" Type="DLL">Plugins\Configurations\MenuEdit\MenuEdit.dproj</project> 
+     <project Name="MenuList" Type="DLL">Plugins\Configurations\MenuList\MenuList.dproj</project>     
      <project Name="MiniScmd" Type="DLL">Plugins\Configurations\MiniScmd\MiniScmd.dproj</project>       
      <project Name="ModuleManager" Type="DLL">Plugins\Configurations\Module Manager\ModuleManager.dproj</project>           
      <project Name="Notes" Type="DLL">Plugins\Configurations\Notes\Notes.dproj</project>       
@@ -32,12 +35,7 @@
      <project Name="VWM" Type="DLL">Plugins\Configurations\VWM\VWM.dproj</project>  
      <project Name="VWMService" Type="DLL">Plugins\Configurations\VWMService\VWMService.dproj</project>  
      <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Wallpaper\Wallpaper.dproj</project>  
-     <project Name="WeatherService" Type="DLL">Plugins\Configurations\WeatherService\Weather.dproj</project>  
-     <project Name="Aliases" Type="DLL">Plugins\Configurations\Aliases\Aliases.dproj</project>   			     
-     <project Name="Home" Type="DLL">Plugins\Configurations\Home\Home.dproj</project>   
-     <project Name="MenuEdit" Type="DLL">Plugins\Configurations\MenuEdit\MenuEdit.dproj</project> 
-     <project Name="MenuList" Type="DLL">Plugins\Configurations\MenuList\MenuList.dproj</project>
-     <project Name="MenuList" Type="DLL">Plugins\Configurations\Theme Glass\ThemeGlass.dproj</project>  
+     <project Name="WeatherService" Type="DLL">Plugins\Configurations\WeatherService\Weather.dproj</project>            
   </package>
   <package Name="Components">
      <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
@@ -89,14 +87,12 @@
   <package Name="Services">
      <project Name="Actions" Type="DLL" >Plugins\Services\Actions\Actions.dproj</project> 
      <project Name="Cursors" Type="DLL" >Plugins\Services\Cursors\Cursors.dproj</project>  
-     <project Name="DeskArea" Type="DLL" >Plugins\Services\DeskArea\DeskArea.dproj</project>  
      <project Name="Exec" Type="DLL" >Plugins\Services\Exec\Exec.dproj</project>  
      <project Name="Hotkeys" Type="DLL" >Plugins\Services\Hotkeys\Hotkeys.dproj</project>  
+     <project Name="Shell" Type="DLL" >Plugins\Services\Shell\Shell.dproj</project>       
      <project Name="Skin" Type="DLL" >Plugins\Services\Skin\SkinController.dproj</project>  
      <project Name="Startup" Type="DLL" >Plugins\Services\StartupApps\Startup.dproj</project>  
      <project Name="SystemActions" Type="DLL" >Plugins\Services\SystemActions\SystemActions.dproj</project>  
-     <project Name="SystemTray" Type="DLL" >Plugins\Services\SystemTray\SystemTray.dproj</project>  
-     <project Name="TaskManager" Type="DLL" >Plugins\Services\TaskManager\TaskManager.dproj</project>  
      <project Name="TaskSwitch" Type="DLL" >Plugins\Services\TaskSwitch\TaskSwitch.dproj</project>  
      <project Name="VWM" Type="DLL" >Plugins\Services\VWM\VWM.dproj</project>  
      <project Name="Weather" Type="DLL" requ="Delphi 2005 Professional">Plugins\Services\Weather\Weather.dproj</project>  
