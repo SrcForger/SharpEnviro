@@ -73,7 +73,8 @@ const
   // Shell Hooks
   WM_REGISTERSHELLHOOK      = WM_APP + 560;
   WM_UNREGISTERSHELLHOOK    = WM_APP + 561;
-  WM_SHELLHOOKWINDOWCREATED = WM_APP + 562;  
+  WM_SHELLHOOKWINDOWCREATED = WM_APP + 562;
+  WM_REQUESTWNDLIST         = WM_APP + 563;    
 
   // SharpBar (new Skin Stuff)
   WM_UPDATEBARWIDTH       = WM_APP + 601;
@@ -1092,7 +1093,7 @@ begin
   setlength(ha,0);
 end;
 
-function RegisterShellHookReceiver(Wnd : hwnd) : boolean;
+function GetShellTaskMgrWindow : hwnd;
 var
   swnd : hwnd;
 begin
@@ -1101,12 +1102,28 @@ begin
   begin
     swnd := FindWindowEx(swnd,0,'ReBarWindow32',nil);
     if swnd <> 0 then
-    begin
       swnd := FindWindowEx(swnd,0,'MSTaskSwWClass',nil);
-      if swnd <> 0 then
-        PostMessage(swnd,WM_REGISTERSHELLHOOK,wnd,0);
-    end;
   end;
+  result := swnd;
+end;
+
+function RequestWindowList(Wnd : hwnd) : boolean;
+var
+  swnd : hwnd;
+begin
+  swnd := GetShellTaskMgrWindow;
+  if swnd <> 0 then  
+    PostMessage(swnd,WM_REQUESTWNDLIST,wnd,0);
+  result := (swnd <> 0);
+end;
+
+function RegisterShellHookReceiver(Wnd : hwnd) : boolean;
+var
+  swnd : hwnd;
+begin
+  swnd := GetShellTaskMgrWindow;
+  if swnd <> 0 then  
+    PostMessage(swnd,WM_REGISTERSHELLHOOK,wnd,0);
   result := (swnd <> 0);
 end;
 
@@ -1114,17 +1131,9 @@ function UnRegisterShellHookReceiver(Wnd : hwnd) : boolean;
 var
   swnd : hwnd;
 begin
-  swnd := FindWindow('Shell_TrayWnd',nil);
+  swnd := GetShellTaskMgrWindow;
   if swnd <> 0 then
-  begin
-    swnd := FindWindowEx(swnd,0,'ReBarWindow32',nil);
-    if swnd <> 0 then
-    begin
-      swnd := FindWindowEx(swnd,0,'MSTaskSwWClass',nil);
-      if swnd <> 0 then
-        PostMessage(swnd,WM_UNREGISTERSHELLHOOK,wnd,0);
-    end;
-  end;
+    PostMessage(swnd,WM_UNREGISTERSHELLHOOK,wnd,0);
   result := (swnd <> 0);
 end;
 
@@ -1458,6 +1467,8 @@ exports
   TerminateComponent,
   StartComponent,
 
+  GetShellTaskMgrWindow,
+  RequestWindowList,
   RegisterShellHookReceiver,
   UnRegisterShellHookReceiver,
 

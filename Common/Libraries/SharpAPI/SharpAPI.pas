@@ -61,7 +61,9 @@ const
   // Shell Hooks
   WM_REGISTERSHELLHOOK      = WM_APP + 560;
   WM_UNREGISTERSHELLHOOK    = WM_APP + 561;
-  WM_SHELLHOOKWINDOWCREATED = WM_APP + 562;  
+  WM_SHELLHOOKWINDOWCREATED = WM_APP + 562;
+  WM_REQUESTWNDLIST         = WM_APP + 563;
+  WM_TASKVWMCHANGE          = WM_APP + 564;
 
   // SharpBar (new Skin Stuff)
   WM_UPDATEBARWIDTH       = WM_APP + 601;
@@ -258,6 +260,8 @@ function CloseComponent(Component : PChar) : boolean; external 'SharpApi.dll' na
 procedure TerminateComponent(Component : PChar); external 'SharpApi.dll' name 'TerminateComponent';
 procedure StartComponent(Component : PChar); external 'SharpApi.dll' name 'StartComponent';
 
+function GetShellTaskMgrWindow : hwnd; external 'SharpApi.dll' name 'GetShellTaskMgrWindow';
+function RequestWindowList(Wnd : hwnd) : boolean; external 'SharpApi.dll' name 'RequestWindowList';
 function RegisterShellHookReceiver(Wnd : hwnd) : boolean; external 'SharpApi.dll' name 'RegisterShellHookReceiver';
 function UnRegisterShellHookReceiver(Wnd : hwnd) : boolean; external 'SharpApi.dll' name 'UnRegisterShellHookReceiver';
 
