@@ -39,10 +39,14 @@ uses
   JclSimpleXML,
   winver in 'winver.pas',
   declaration in 'declaration.pas',
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas';
+  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
+  uTaskManager in 'uTaskManager.pas',
+  uTaskItem in 'uTaskItem.pas',
+  VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
+  uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas';
 
 type
-  TTaskManager = Class(Tobject)
+  TTaskMsgManager = Class(Tobject)
     private
       Procedure RegisterHook;
       Procedure UnregisterHook;
@@ -125,14 +129,16 @@ type
 
 function RegisterShellHook(wnd : hwnd; param : dword) : boolean; stdcall; external 'shell32.dll' index 181;
 
-function DeskAreaTimerWndProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall; forward;
-function ShellTrayWndProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall; forward;
-function MsTaskSwWClassWndProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall; forward;
+function DeskAreaTimerWndProc(Wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall; forward;
+function ShellTrayWndProc(Wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall; forward;
+function MsTaskSwWClassWndProc(Wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall; forward;
 
 var
+  TaskMsgManager : TTaskMsgManager;
   TaskManager : TTaskManager;
   TrayManager : TTrayManager;
   DeskAreaManager : TDeskAreaManager;
+  LastActiveWindow : hwnd;
 
   WM_SHELLHOOK : integer;
 
@@ -222,7 +228,7 @@ begin
      else PointInRect:=False;
 end;
 
-function DeskAreaTimerWndProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
+function DeskAreaTimerWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
 begin
   case Msg of
     WM_SHARPEACTIONMESSAGE: begin
@@ -243,16 +249,16 @@ begin
       end;
     end;
   end;
-  
+
   if (Msg = WM_TIMER) and (wParam = 1) then
   begin
     if DeskAreaManager <> nil then
       DeskAreaManager.SetDeskArea;
     result := 0;
-  end else Result := DefWindowProc(hWnd, Msg, wParam, lParam);
+  end else Result := DefWindowProc(wnd, Msg, wParam, lParam);
 end;
 
-function ShellTrayWndProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
+function ShellTrayWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
 var
   n : integer;
   TrayCmd: integer;
@@ -268,7 +274,7 @@ var
 begin
   if TrayManager = nil then
   begin
-    Result := DefWindowProc(hWnd, Msg, wParam, lParam);
+    Result := DefWindowProc(wnd, Msg, wParam, lParam);
     exit;
   end;
 
@@ -328,55 +334,96 @@ begin
             else Result := 0;
         end;
 
-        else Result := DefWindowProc(hWnd, Msg, WParam, LParam);
+        else Result := DefWindowProc(wnd, Msg, WParam, LParam);
       end;
     end;
     WM_REGISTERWITHTRAY: begin
-      if TrayManager.WndList.IndexOf(inttostr(WParam)) = -1 then
+      if TrayManager.WndList.IndexOf(inttostr(Cardinal(WParam))) = -1 then
       begin
-        TrayManager.WndList.Add(inttostr(WParam));
+        TrayManager.WndList.Add(inttostr(Cardinal(WParam)));
         // Broadcast all icons to the new tray client
-        TrayManager.BroadCastAllToOne(WParam);
+        TrayManager.BroadCastAllToOne(Cardinal(WParam));
         result := 1;
       end else result :=0;
     end;
     WM_UNREGISTERWITHTRAY: begin
-      n := TrayManager.WndList.IndexOf(inttostr(WParam));
+      n := TrayManager.WndList.IndexOf(inttostr(Cardinal(WParam)));
       if n > 0 then
       begin
         TrayManager.WndList.Delete(n);
         result := 1;
       end else result := 0;
     end;
-    else Result := DefWindowProc(hWnd, Msg, wParam, lParam);
+    else Result := DefWindowProc(wnd, Msg, wParam, lParam);
   end;
 end;
 
-function MsTaskSwWClassWndProc(hWnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
+function MsTaskSwWClassWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
 var
   n : integer;
-  s : String;
+  ms : TMemoryStream;
+  cds : TCopyDataStruct;
+  pItem : TTaskItem;
+  h : hwnd;
+  vwm : integer;
 begin
-  if TaskManager <> nil then
+  if TaskMsgManager <> nil then
   begin
     if Integer(Msg) = WM_SHELLHOOK then
     begin
-    s := GetWndCaption(lparam);
-      if wParam = HSHELL_WINDOWCREATED then
+      if (wparam = HSHELL_WINDOWACTIVATED) or (wparam = HSHELL_WINDOWACTIVATED + 32768) then
       begin
-        s := GetWndCaption(lparam);
+        h := Cardinal(lparam);
+        pItem := TaskManager.GetItemByHandle(h);
+        if IsWindow(LastActiveWindow) and (pItem <> nil) then
+        begin
+          vwm := VWMGetWindowVWM(GetCurrentVWM,GetVWMCount,LastActiveWindow);
+          if vwm <> pItem.LastVWM then
+          begin
+            pItem.LastVWM := vwm;
+            for n := High(TaskMsgManager.WndList) downto 0 do
+              if IsWindow(TaskMsgManager.WndList[n]) then
+                PostMessage(TaskMsgManager.WndList[n],WM_TASKVWMCHANGE,pItem.Handle,pItem.LastVWM)
+              else TaskMsgManager.DeleteWnd(n);
+          end;
+        end;
+        LastActiveWindow := h;        
       end;
-      for n := High(TaskManager.WndList) downto 0 do
-        if IsWindow(TaskManager.WndList[n]) then
-          PostMessage(TaskManager.WndList[n],WM_SHARPSHELLMESSAGE,WParam,LParam)
-        else TaskManager.DeleteWnd(n);
+      TaskManager.HandleShellMessage(wparam,Cardinal(lparam));
+      for n := High(TaskMsgManager.WndList) downto 0 do
+        if IsWindow(TaskMsgManager.WndList[n]) then
+          PostMessage(TaskMsgManager.WndList[n],WM_SHARPSHELLMESSAGE,WParam,LParam)
+        else TaskMsgManager.DeleteWnd(n);
     end else
     case Msg of
-      WM_REGISTERSHELLHOOK: TaskManager.AddWnd(WParam);
-      WM_UNREGISTERSHELLHOOK: TaskManager.DeleteWndByHandle(WParam);
+      WM_REGISTERSHELLHOOK: TaskMsgManager.AddWnd(Cardinal(WParam));
+      WM_UNREGISTERSHELLHOOK: TaskMsgManager.DeleteWndByHandle(Cardinal(WParam));
+      WM_REQUESTWNDLIST: begin
+        ms := TMemoryStream.Create;
+        TaskManager.SaveToStream(ms);
+        with cds do
+        begin
+          dwData := TaskManager.ItemCount;
+          cbData := ms.Size;
+          lpData := ms.Memory;
+        end;
+        sendmessage(Cardinal(WParam), WM_COPYDATA, WM_REQUESTWNDLIST, Cardinal(@cds));
+        ms.Free;
+      end;
+      WM_TASKVWMCHANGE: begin
+        pItem := TaskManager.GetItemByHandle(Cardinal(wParam));
+        if pItem <> nil then
+        begin
+          pItem.LastVWM := lParam;
+          for n := High(TaskMsgManager.WndList) downto 0 do
+            if IsWindow(TaskMsgManager.WndList[n]) and (TaskMsgManager.WndList[n] <> wnd) then
+              PostMessage(TaskMsgManager.WndList[n],WM_TASKVWMCHANGE,WParam,LParam)
+            else TaskMsgManager.DeleteWnd(n);     
+        end;
+      end;
     end;
   end;
-  Result := DefWindowProc(hWnd, Msg, wParam, lParam);
+  Result := DefWindowProc(wnd, Msg, wParam, lParam);
 end;
 
 procedure CreateWindowStructure;
@@ -413,7 +460,7 @@ begin
           // MsTaskSwWClassClass
           if Windows.RegisterClass(MsTaskSwWClassClass) <> 0 then
           begin
-            MsTaskSwWClass := CreateWindow(MsTaskSwWClassClass.lpszClassName, 'SharpETaskManager', WS_CHILDWINDOW, 0, 0, 0, 0, ReBarWindow32, 0, hInstance, nil);
+            MsTaskSwWClass := CreateWindow(MsTaskSwWClassClass.lpszClassName, 'SharpETaskMsgManager', WS_CHILDWINDOW, 0, 0, 0, 0, ReBarWindow32, 0, hInstance, nil);
             if MsTaskSwWClass = 0 then
             begin
               SendDebugMessageEx('Shell','Failed to create "MsTaskSwWClass" window',0,0);
@@ -479,6 +526,7 @@ procedure Stop;
 begin
   FreeAndNil(DeskAreaManager);
   FreeAndNil(TrayManager);
+  FreeAndNil(TaskMsgManager);
   FreeAndNil(TaskManager);
 
   DesroyWindowStructure;
@@ -487,16 +535,20 @@ end;
 
 function Start(owner: hwnd): hwnd;
 begin
+  LastActiveWindow := 0; 
   InitThemeLibrary;
 
-  TaskManager := nil;
+  TaskMsgManager := nil;
   TrayManager := nil;
   DeskAreaManager := nil;
   CreateWindowStructure;
-  TaskManager     := TTaskManager.Create;
+  TaskMsgManager     := TTaskMsgManager.Create;
   TrayManager     := TTrayManager.Create;
   DeskAreaManager := TDeskAreaManager.Create;
   DeskAreaManager.LoadSettings;
+  TaskManager := TTaskManager.Create;
+  TaskManager.Enabled := True;
+  TaskManager.InitList;
 
   TerminateShellServices;
   sleep(1000);
@@ -525,9 +577,9 @@ exports
   Stop,
   GetMetaData;
 
-{ TTaskManager }
+{ TTaskMsgManager }
 
-procedure TTaskManager.AddWnd(wnd: hwnd);
+procedure TTaskMsgManager.AddWnd(wnd: hwnd);
 begin
   if FindWindow(wnd) <> -1 then
     exit;
@@ -536,7 +588,7 @@ begin
   WndList[High(WndList)] := wnd;
 end;
 
-constructor TTaskManager.Create;
+constructor TTaskMsgManager.Create;
 begin
   inherited Create;
 
@@ -548,7 +600,7 @@ begin
   RegisterHook;
 end;
 
-procedure TTaskManager.DeleteWnd(Index: Integer);
+procedure TTaskMsgManager.DeleteWnd(Index: Integer);
 var
   n : integer;
 begin
@@ -560,7 +612,7 @@ begin
   setlength(WndList,length(WndList)-1);
 end;
 
-procedure TTaskManager.DeleteWndByHandle(wnd: hwnd);
+procedure TTaskMsgManager.DeleteWndByHandle(wnd: hwnd);
 var
   Index : integer;
 begin
@@ -569,16 +621,16 @@ begin
     DeleteWnd(Index);
 end;
 
-destructor TTaskManager.Destroy;
+destructor TTaskMsgManager.Destroy;
 begin
   UnregisterHook;
 
   setlength(WndList,0);
-  
+
   inherited;
 end;
 
-function TTaskManager.FindWindow(wnd: hwnd): integer;
+function TTaskMsgManager.FindWindow(wnd: hwnd): integer;
 var
   n : integer;
 begin
@@ -591,7 +643,7 @@ begin
     end;
 end;
 
-procedure TTaskManager.RegisterHook;
+procedure TTaskMsgManager.RegisterHook;
 var
   mm: MINIMIZEDMETRICS;
 begin
@@ -607,7 +659,7 @@ begin
   RegisterShellHook(MsTaskSwWClass,3);
 end;
 
-procedure TTaskManager.UnregisterHook;
+procedure TTaskMsgManager.UnregisterHook;
 begin
   RegisterShellHook(MsTaskSwWClass,0);
 end;
