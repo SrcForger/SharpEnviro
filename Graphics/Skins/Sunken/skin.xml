@@ -1846,7 +1846,7 @@
     </disabled>
   </edit>
   <notify>
-    <dimension>256,h</dimension>
+    <dimension>320,h</dimension>
     <location>0,1</location>
     <catboffset>4,4</catboffset>
     <calroffset>4,4</calroffset>
