@@ -43,14 +43,15 @@ var
 function VWMGetWindowList(pArea : TRect) : TWndArray;
 function VWMGetDeskArea(CurrentVWM,index : integer) : TRect;
 procedure VWMSwitchDesk(pCurrentDesk,pNewDesk : integer; sFocusTopMost : boolean);
-procedure VWMMoveAllToOne;
+procedure VWMMoveAllToOne(CurrentVWM : integer; broadcast : boolean);
 function VWMGetWindowVWM(pCurrentVWM,pVWMCount : integer; pHandle : hwnd) : integer;
 procedure VWMMoveWindotToVWM(pTargetVWM,pCurrentVWM,pVWMCount : integer; pHandle : hwnd);
 
 implementation
 
 uses
-  uSystemFuncs;
+  uSystemFuncs,
+  SharpApi;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
 begin
@@ -234,26 +235,30 @@ begin
   setlength(DstList,0);
 end;
 
-procedure VWMMoveAllToOne;
+procedure VWMMoveAllToOne(CurrentVWM : integer; broadcast : boolean);
 var
   wndlist : TWndArray;
   wndpos : TRect;
   n : integer;
   desknr : integer;
   distance : integer;
+  shellwnd : hwnd;
 begin
   wndlist := VWMGetWindowList(Rect(0,0,0,0));
+  shellwnd := GetShellTaskMgrWindow;
   for n := 0 to High(wndlist) do
   begin
     GetWindowRect(wndlist[n],wndpos);
     if not (PointInRect(Point(wndpos.Left + (wndpos.Right - wndpos.Left) div 2,
                               wndpos.Top + (wndpos.Bottom - wndpos.Top) div 2), Screen.DesktopRect)) then
     begin
-      desknr := round(Int(wndpos.Left / (Screen.DesktopWidth + VWMSpacing)));     
+      desknr := round(Int(wndpos.Left / (Screen.DesktopWidth + VWMSpacing)));
       if wndpos.left < Screen.DesktopLeft then
         distance := (desknr - 1) * (Screen.DesktopWidth + VWMSpacing)
       else distance := (desknr + 1) * (Screen.DesktopWidth + VWMSpacing);
       SetWindowPos(wndlist[n],0,wndpos.Left - distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
+      if broadcast then
+        PostMessage(shellwnd,WM_TASKVWMCHANGE,wndlist[n],CurrentVWM);
     end;
   end;
   setlength(wndlist,0);

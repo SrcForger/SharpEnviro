@@ -179,8 +179,8 @@ end;
       begin
         case Message.lparam of
           0: begin // !AllToOneVWM
-               VWMFunctions.VWMMoveAllToOne; // has to be called two times ...
-               VWMFunctions.VWMMoveAllToOne; // ... reason ... unknown =)
+               VWMFunctions.VWMMoveAllToOne(CurrentDesktop,False); // has to be called two times ...
+               VWMFunctions.VWMMoveAllToOne(CurrentDesktop,True);  // ... reason ... unknown =)
                Changed := True;
              end;
           1: begin // !NextVWM
@@ -238,16 +238,18 @@ end;
     begin
       if Message.wparam = Integer(suVWM) then
       begin
-        VWMFunctions.VWMMoveAllToOne; // has to be called two times ...
-        VWMFunctions.VWMMoveAllToOne; // ... reason ... unknown =)
+        CurrentDesktop := 1;
+        VWMFunctions.VWMMoveAllToOne(CurrentDesktop,False); // has to be called two times ...
+        VWMFunctions.VWMMoveAllToOne(CurrentDesktop,True);  // ... reason ... unknown =)
         LoadVWMSettings;
         SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS,0,0);
       end;
     end;
     WM_DISPLAYCHANGE:
     begin
-      VWMFunctions.VWMMoveAllToOne; // has to be called two times ...
-      VWMFunctions.VWMMoveAllToOne; // ... reason ... unknown =)
+      CurrentDesktop := 1;
+      VWMFunctions.VWMMoveAllToOne(CurrentDesktop,False); // has to be called two times ...
+      VWMFunctions.VWMMoveAllToOne(CurrentDesktop,True);  // ... reason ... unknown =)
       SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS,0,0);
     end;
     WM_SHARPSHELLMESSAGE:
@@ -294,8 +296,8 @@ end;
   LastDShellMessageTime := GetTickCount;
   LoadVWMSettings;
   CurrentDesktop := 1;
-  VWMFunctions.VWMMoveAllToOne; // has to be called two times ...
-  VWMFunctions.VWMMoveAllToOne; // ... reason ... unknown =)
+  VWMFunctions.VWMMoveAllToOne(CurrentDesktop,False); // has to be called two times ...
+  VWMFunctions.VWMMoveAllToOne(CurrentDesktop,True);  // ... reason ... unknown =)
 
   Result := Owner;
   // Register Actions
@@ -308,8 +310,8 @@ end;
 // Service is stopped
 procedure Stop;                                                      
 begin
-  VWMFunctions.VWMMoveAllToOne; // has to be called two times ...
-  VWMFunctions.VWMMoveAllToOne; // ... reason ... unknown =)
+  VWMFunctions.VWMMoveAllToOne(1,False); // has to be called two times ...
+  VWMFunctions.VWMMoveAllToOne(1,True);  // ... reason ... unknown =)
 
   // Unregister Actions                                              
   UnregisterSharpEActions;                                                      
