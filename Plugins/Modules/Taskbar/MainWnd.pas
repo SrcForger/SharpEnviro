@@ -61,6 +61,7 @@ type
     ses_minall: TSharpEButton;
     DDHandler: TJvDragDrop;
     DropTarget: TJvDropTarget;
+    Timer1: TTimer;
     procedure DropTargetDragOver(Sender: TJvDropTarget;
       var Effect: TJvDropEffect);
     procedure FormShow(Sender: TObject);
@@ -70,6 +71,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Settings1Click(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   protected
   private
     FMoveToVWMIcon : TBitmap;
@@ -96,7 +98,9 @@ type
     FLastDragMinimized : Boolean;
     procedure WMNotify(var msg: TWMNotify); message WM_NOTIFY;
     procedure WMCommand(var msg: TMessage); message WM_COMMAND;
-    procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;    
+    procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
+    procedure WMCopyData(var msg : TMessage); message WM_COPYDATA;
+    procedure WMTaskVWMChange(var msg : TMessage); message WM_TASKVWMCHANGE;
   public
     TM: TTaskManager;
     IList: TObjectList;
@@ -244,6 +248,18 @@ begin
   Height := pHeight;
 end;
 
+procedure TMainForm.WMTaskVWMChange(var msg : TMessage);
+var
+  pItem : TTaskItem;
+begin
+  pItem := TM.GetItemByHandle(Cardinal(msg.WParam));
+  if pItem <> nil then
+  begin
+    pItem.LastVWM := msg.LParam;
+    TM.UpdateTask(pItem.Handle);
+  end;
+end;
+
 procedure TMainForm.WMNotify(var msg: TWMNotify);
 begin
   if Msg.NMHdr.code = TTN_SHOW then
@@ -276,6 +292,8 @@ begin
         VWMIndex := GetCurrentVWM;
         VWMMoveWindotToVWM(msg.WParam - 256 + 1,VWMIndex,VWMCount,SysMenuHandle);
       end;
+
+      PostMessage(GetShellTaskMgrWindow,WM_TASKVWMCHANGE,Integer(SysMenuHandle),msg.WParam - 256 + 1);      
 
       if not CheckFilter(taskitem) then
         RemoveTask(taskitem,-1);
@@ -941,18 +959,9 @@ begin
                 or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
                 or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
                nm := True;
-             nm := nm or (CurrentVWM = pItem.LastVWM);               
            end;
         4: begin
-             Mon := Screen.MonitorFromWindow(BarWnd);
-             GetWindowRect(pItem.Handle,R);
-             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
-               nm := True;
-             nm := nm or (CurrentVWM <> pItem.LastVWM);
+             nm := (CurrentVWM = pItem.LastVWM);
            end;
         5: begin
              nm := IsIconic(pItem.Handle);
@@ -982,18 +991,9 @@ begin
                 or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
                 or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
                result := false;
-             result := result and (CurrentVWM <> pItem.LastVWM);
            end;
         4: begin
-             Mon := Screen.MonitorFromWindow(BarWnd);
-             GetWindowRect(pItem.Handle,R);
-             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
-               result := false;
-             result := result and (CurrentVWM = pItem.LastVWM)
+             result := (CurrentVWM <> pItem.LastVWM)
            end;
         5: begin
              result := IsIconic(pItem.Handle);
@@ -1123,6 +1123,12 @@ begin
   AlignTaskComponents;
 end;
 
+procedure TMainForm.Timer1Timer(Sender: TObject);
+begin
+  Timer1.Enabled := False;
+  SharpApi.RequestWindowList(Handle);
+end;
+
 procedure TMainForm.RemoveTask(pItem : TTaskItem; Index : integer);
 var
   n : integer;
@@ -1187,22 +1193,32 @@ begin
   end;
 end;
 
+procedure TMainForm.WMCopyData(var msg : TMessage);
+var
+  ms : TMemoryStream;
+  cds : PCopyDataStruct;
+begin
+  cds := PCopyDataStruct(msg.lParam);
+  if msg.WParam = WM_REQUESTWNDLIST then
+  begin
+    ms := TMemoryStream.Create;
+    ms.Write(cds^.lpData^,cds^.cbData);
+    ms.Position := 0;
+    TM.LoadFromStream(ms,cds.dwData);
+    ms.Free;
+    msg.result := 1;
+    CompleteRefresh;
+  end;
+end;
+
 procedure TMainForm.WMShellHook(var msg : TMessage);
 begin
   if TM = nil then
     exit;
 
- DebugOutPutInfo('TMainForm.WMShellHook (Message Procedure)');
- if msg.LParam = Integer(self.Handle) then exit;
- case msg.WParam of
-   HSHELL_WINDOWCREATED : TM.AddTask(msg.LParam);
-   HSHELL_REDRAW : TM.UpdateTask(msg.LParam);
-   HSHELL_REDRAW + 32768 : TM.FlashTask(msg.LParam);
-   HSHELL_WINDOWDESTROYED : TM.RemoveTask(msg.LParam);
-   HSHELL_WINDOWACTIVATED : TM.ActivateTask(msg.LParam);
-   HSHELL_WINDOWACTIVATED + 32768 : TM.ActivateTask(msg.LParam);
-   HSHELL_GETMINRECT      : TM.UpdateTask(msg.LParam);
-  end;
+  DebugOutPutInfo('TMainForm.WMShellHook (Message Procedure)');
+  if Cardinal(msg.LParam) = Handle then exit;
+  TM.HandleShellMessage(msg.WParam,Cardinal(msg.LParam));
 end;
 
 procedure TMainForm.InitHook;
@@ -1212,30 +1228,6 @@ begin
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
-type
-  PParam = ^TParam;
-  TParam = record
-    wndlist: array of hwnd;
-  end;
-var
-  EnumParam : TParam;
-  n : integer;
-
-  function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
-  begin
-    if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) or
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
-       ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
-       (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))  then
-      with PParam(LParam)^ do
-      begin
-       setlength(wndlist,length(wndlist)+1);
-       wndlist[high(wndlist)] := wnd;
-      end;
-    result := True;
-  end;
-
 begin
   CurrentVWM := SharpApi.GetCurrentVWM;  
 
@@ -1272,15 +1264,9 @@ begin
   TM.OnFlashTask    := FlashTask;
   TM.OnTaskExchange := TaskExChange;
 
-  //InitHook;
   LoadSettings;
 
   FLocked := True;
-  setlength(EnumParam.wndlist,0);
-  EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
-  for n := 0 to High(EnumParam.wndlist) do
-    TM.AddTask(EnumParam.wndlist[n]);    
-  setlength(EnumParam.wndlist,0);
   //EnumWindows(@EnumWindowsProc, 0);
   FLocked := False;
   RealignComponents(False);
@@ -1351,7 +1337,7 @@ end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-  DropTarget.Control := self
+  DropTarget.Control := self;
 end;
 
 procedure TMainForm.DropTargetDragOver(Sender: TJvDropTarget;

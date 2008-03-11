@@ -149,21 +149,21 @@ object EditFilterForm: TEditFilterForm
     TabOrder = 11
     OnClick = btn_examplefiltersClick
   end
-  object rb_monvwm: TRadioButton
+  object rb_mon: TRadioButton
     Left = 8
-    Top = 352
+    Top = 353
     Width = 145
     Height = 17
-    Caption = 'Current Monitor/VWM'
+    Caption = 'Current Monitor'
     TabOrder = 12
     OnClick = rb_classnameClick
   end
-  object rb_notmonvwm: TRadioButton
+  object rb_vwm: TRadioButton
     Left = 8
     Top = 376
     Width = 177
     Height = 17
-    Caption = 'Not on Current Monitor/VWM'
+    Caption = 'Current VWM'
     TabOrder = 13
     OnClick = rb_classnameClick
   end

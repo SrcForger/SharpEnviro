@@ -54,8 +54,8 @@ type
     VisibleTasksonly1: TMenuItem;
     MinimizedTasjs1: TMenuItem;
     ExplorerWindows1: TMenuItem;
-    rb_monvwm: TRadioButton;
-    rb_notmonvwm: TRadioButton;
+    rb_mon: TRadioButton;
+    rb_vwm: TRadioButton;
     rb_minimized: TRadioButton;
     procedure btn_examplefiltersClick(Sender: TObject);
     procedure ExplorerWindows1Click(Sender: TObject);
@@ -145,8 +145,8 @@ begin
         case i of
           0: rb_showstate.Checked := True;
           1: rb_classname.Checked := True;
-          3: rb_monvwm.Checked    := True;
-          4: rb_notmonvwm.Checked := True;
+          3: rb_mon.Checked := True;
+          4: rb_vwm.Checked := True;
           5: rb_minimized.Checked := True;
           else rb_filename.Checked := True;
         end;
@@ -312,8 +312,8 @@ begin
       Add('WndClassName',edit_classname.Text);
       if rb_showstate.Checked then i := 0
          else if rb_classname.Checked then i := 1
-              else if rb_monvwm.Checked then i := 3
-                   else if rb_notmonvwm.Checked then i := 4
+              else if rb_mon.Checked then i := 3
+                   else if rb_vwm.Checked then i := 4
                         else if rb_minimized.Checked then i := 5
                              else i := 2;
       Add('FilterType',i);

@@ -50,6 +50,8 @@
     <DCCReference Include="..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas" />
     <DCCReference Include="..\..\..\Common\Units\VWM\VWMFunctions.pas" />
     <DCCReference Include="..\..\..\Components\SharpBar\uSharpBarAPI.pas" />
+    <DCCReference Include="..\..\Services\Shell\uTaskItem.pas" />
+    <DCCReference Include="..\..\Services\Shell\uTaskManager.pas" />
     <DCCReference Include="EditFilterWmd.pas">
       <Form>EditFilterForm</Form>
     </DCCReference>
@@ -62,7 +64,5 @@
     <DCCReference Include="sFilterWnd.pas">
       <Form>sfilterform</Form>
     </DCCReference>
-    <DCCReference Include="uTaskItem.pas" />
-    <DCCReference Include="uTaskManager.pas" />
   </ItemGroup>
 </Project>

@@ -145,4 +145,9 @@ object MainForm: TMainForm
     Left = 112
     Top = 56
   end
+  object Timer1: TTimer
+    OnTimer = Timer1Timer
+    Left = 240
+    Top = 56
+  end
 end

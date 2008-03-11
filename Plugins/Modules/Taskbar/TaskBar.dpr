@@ -44,8 +44,6 @@ uses
   gr32,
   MainWnd in 'MainWnd.pas' {MainForm},
   SettingsWnd in 'SettingsWnd.pas' {SettingsForm},
-  uTaskItem in 'uTaskItem.pas',
-  uTaskManager in 'uTaskManager.pas',
   sFilterWnd in 'sFilterWnd.pas' {sfilterform},
   EditFilterWmd in 'EditFilterWmd.pas' {EditFilterForm},
   MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
@@ -56,7 +54,9 @@ uses
   ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas',
   SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
-  uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas';
+  uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas',
+  uTaskItem in '..\..\Services\Shell\uTaskItem.pas',
+  uTaskManager in '..\..\Services\Shell\uTaskManager.pas';
 
 type
   TModule = class
