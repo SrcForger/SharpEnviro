@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, Graphics, SysUtils, Math, Classes, ExtCtrls, Forms,
   SharpThemeApi, SharpESkin, SharpESkinPart, SharpESkinManager, uTaskSwitchWnd,
-  GR32, GR32_Resamplers, SharpIconUtils, SharpGraphicsUtils;
+  GR32, GR32_PNG,GR32_Resamplers, SharpIconUtils, SharpGraphicsUtils;
 
 type
   TTSGui = class
@@ -15,6 +15,7 @@ type
     FIndex : integer;
     FBackground : TBitmap32;
     FNormal : TBitmap32;
+    FMiniBmp : TBitmap32;
     FUser32DllHandle : integer;
     FPreviewTimer : TTimer;
     FPreviewIndex : integer;
@@ -46,6 +47,8 @@ var
 function ForceForegroundWindow(hwnd: THandle): Boolean;
 
 implementation
+
+{$R TaskSwitchIcon.res}
 
 { TTSGui }
 
@@ -166,7 +169,8 @@ begin
     im := (w - isize) div 2;
     GetIcon(wndlist[n],Icon);
     Icon.DrawTo(Bmp,Rect(im,im,w-im,h-im));
-
+    if IsIconic(wndlist[n]) then
+      FMiniBmp.DrawTo(Bmp,Bmp.Width-FMiniBmp.Width,Bmp.Height - FMiniBmp.Height);
     Previews[n] := Bmp;
   end;
   Icon.Free;
@@ -189,6 +193,10 @@ begin
 end;
 
 constructor TTSGui.Create;
+var
+  ResStream : TResourceStream;
+  TempBmp : TBitmap32;
+  b : boolean;
 begin
   inherited Create;
 
@@ -221,7 +229,28 @@ begin
   FPreviewTimer := TTimer.Create(nil);
   FPreviewTimer.Interval := 10;
   FPreviewTimer.OnTimer := OnPreviewTimer;
-  FPreviewTimer.Enabled := False;       
+  FPreviewTimer.Enabled := False;
+
+  FMiniBmp := TBitmap32.Create;
+
+  TempBmp := TBitmap32.Create;
+  TempBmp.SetSize(16,16);
+  TempBmp.Clear(color32(0,0,0,0));
+
+  try
+    ResStream := TResourceStream.Create(HInstance, 'bulletdown', RT_RCDATA);
+    try
+      LoadBitmap32FromPng(TempBmp,ResStream,b);
+      FMiniBmp.Assign(tempBmp);
+    finally
+      ResStream.Free;
+    end;
+  except
+  end;
+  TempBmp.Free;
+    
+  FMiniBmp.DrawMode := dmBlend;
+  FMiniBmp.CombineMode := cmMerge;
 end;
 
 destructor TTSGui.Destroy;

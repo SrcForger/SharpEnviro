@@ -37,7 +37,9 @@ uses
   JclSysInfo,
   Dialogs,
   uTaskSwitchGUI in 'uTaskSwitchGUI.pas',
-  uTaskSwitchWnd in 'Forms\uTaskSwitchWnd.pas' {TaskSwitchWnd};
+  uTaskSwitchWnd in 'Forms\uTaskSwitchWnd.pas' {TaskSwitchWnd},
+  uTaskItem in '..\Shell\uTaskItem.pas',
+  uTaskManager in '..\Shell\uTaskManager.pas';
 
 type
   TActionEvent = Class(Tobject)
@@ -62,19 +64,24 @@ type
                   EFilters : array of String;
                 end;
 
-  THandleArray = array of hwnd;
+  TWindowItem = record
+                  wnd : hwnd;
+                  vwm : integer;
+                end;
+  TWindowArray = array of TWindowItem;
 
 var
   AE:TActionEvent;
   h:THandle;
   Filters : array of TTaskFilter;
   Actions : array of TTaskAction;
+  TaskManager : TTaskManager;
+  MessageReceived : boolean;
 
 
 {$E ser}
 
 {$R *.RES}
-
 
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
@@ -155,7 +162,7 @@ begin
   end else result := -1;
 end;
 
-function CheckFilter(wnd : hwnd; TA : TTaskAction) : boolean;
+function CheckFilter(wnd : hwnd; TA : TTaskAction; currentvwm,vwm : integer) : boolean;
 var
   n : integer;
   R : TRect;
@@ -198,18 +205,9 @@ begin
                 or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
                 or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
                nm := True;
-             nm := nm ;
            end;
         4: begin
-             Mon := Screen.MonitorFromWindow(wnd);
-             GetWindowRect(wnd,R);
-             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
-               nm := True;
-             nm := nm;
+             nm := (CurrentVWM = vwm);
            end;
         5: begin
              nm := IsIconic(wnd);
@@ -240,18 +238,9 @@ begin
                 or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
                 or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
                result := false;
-             result := result;;
            end;
         4: begin
-             Mon := Screen.MonitorFromWindow(wnd);
-             GetWindowRect(wnd,R);
-             if not (PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect)) then
-               result := false;
-             result := result;
+             result := (CurrentVWM <> vwm)
            end;
         5: begin
              result := IsIconic(wnd);
@@ -265,35 +254,16 @@ procedure CycleWindows(ActionIndex : integer);
 type
   PParam = ^TParam;
   TParam = record
-    wndlist: THandleArray;
+    wndlist: TWindowArray;
     ac : TTaskAction;
   end;
 var
   EnumParam : TParam;
-
-  function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
-  begin
-    if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) or
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
-       ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
-       (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) then
-       //(GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST = 0) then
-       with PParam(LParam)^ do
-       begin
-         if CheckFilter(wnd,ac) then
-         begin
-           setlength(wndlist,length(wndlist)+1);
-           wndlist[high(wndlist)] := wnd;
-         end;
-       end;
-    result := True;
-  end;
-
-var
   wnd : hwnd;
   n : integer;
-
+  stime : Int64;
+  pItem : TTaskItem;
+  currentvwm,vwm : integer;
 begin
   EnumParam.ac := Actions[ActionIndex];
 
@@ -306,8 +276,16 @@ begin
     exit;
   end;
 
+  // update the task list of the TaskManager class,
+  // and wait for it to be done
+  stime := GetTickCount;
+  MessageReceived := False;
+  if SharpApi.RequestWindowList(h) then
+    while (not MessageReceived) and (GetTickCount - stime < 5000) do
+      Application.ProcessMessages;
+
+  currentvwm := SharpApi.GetCurrentVWM;
   setlength(EnumParam.wndlist,0);
-  //EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
   wnd := GetTopWindow(0);//GetNextWindow(FindWindow('TSharpDeskMainForm',nil),GW_HWNDPREV);
   while wnd <> 0 do
   begin
@@ -319,10 +297,15 @@ begin
 //       (GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST = 0) then
        with EnumParam do
        begin
-         if CheckFilter(wnd,ac) then
+         pItem := TaskManager.GetItemByHandle(wnd);
+         if pItem <> nil then
+           vwm := pItem.LastVWM
+         else vwm := currentvwm;
+         if CheckFilter(wnd,ac,currentvwm,vwm) then
          begin
            setlength(wndlist,length(wndlist)+1);
-           wndlist[high(wndlist)] := wnd;
+           wndlist[high(wndlist)].wnd := wnd;
+           wndlist[high(wndlist)].vwm := vwm;
          end;
        end;
     wnd := GetNextWindow(wnd,GW_HWNDNEXT);           
@@ -339,7 +322,7 @@ begin
         // show new gui
         setlength(TSGUI.wndlist,length(wndlist));
         for n := 0 to High(wndlist) do
-          TSGUI.wndlist[n] := wndlist[n];
+          TSGUI.wndlist[n] := wndlist[n].wnd;
         TSGUI.ShowPreview := ac.Preview;
         TSGUI.Index := 1;
         TSGUI.ShowWindow;
@@ -349,20 +332,20 @@ begin
       // life action
       if Actions[ActionIndex].CForward then
       begin
-        if IsIconic(wndlist[1]) then
-          ShowWindow(wndlist[1],SW_RESTORE)
+        if IsIconic(wndlist[1].wnd) then
+          ShowWindow(wndlist[1].wnd,SW_RESTORE)
           else
           begin
-            ForceForegroundWindow(wndlist[1]);
-            SetWindowPos(wndlist[0],wndlist[High(wndlist)],0,0,0,0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+            ForceForegroundWindow(wndlist[1].wnd);
+            SetWindowPos(wndlist[0].wnd,wndlist[High(wndlist)].wnd,0,0,0,0,SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
           end;
       end else
       begin
-        if IsIconic(wndlist[1]) then
-          ShowWindow(wndlist[1],SW_RESTORE)
+        if IsIconic(wndlist[1].wnd) then
+          ShowWindow(wndlist[1].wnd,SW_RESTORE)
           else
           begin
-            ForceForegroundWindow(wndlist[High(wndlist)]);
+            ForceForegroundWindow(wndlist[High(wndlist)].wnd);
           end;
       end;
     end;
@@ -462,6 +445,7 @@ begin
   Classes.DeallocateHWnd(h);
   AE.Free;
   TSGUI.Free;
+  TaskManager.Free;
 
   UnregisterActions;
   ClearActions;
@@ -473,6 +457,7 @@ function Start(owner: hwnd): hwnd;
 begin
   Result := owner;
 
+  TaskManager := TTaskManager.Create;  
   TSGUI := TTSGUI.Create;
 
   ae := TActionEvent.Create;
@@ -485,7 +470,25 @@ begin
 end;
 
 procedure TActionEvent.MessageHandler(var Message: TMessage);
+var
+  ms : TMemoryStream;
+  cds : PCopyDataStruct;
 begin
+  if message.Msg = WM_COPYDATA then
+  begin
+    cds := PCopyDataStruct(message.lParam);
+    if message.WParam = WM_REQUESTWNDLIST then
+    begin
+      MessageReceived := True;
+      ms := TMemoryStream.Create;
+      ms.Write(cds^.lpData^,cds^.cbData);
+      ms.Position := 0;
+      TaskManager.LoadFromStream(ms,cds.dwData);
+      ms.Free;
+      message.result := 1;
+    end;
+  end;
+
   if message.Msg = WM_SHARPEACTIONMESSAGE then
   begin
     if (Message.LParam >= 0) and (Message.LParam <= High(Actions)) then
