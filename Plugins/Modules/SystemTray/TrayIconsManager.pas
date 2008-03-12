@@ -734,7 +734,7 @@ var
   x,y : integer;
   SPos : TPoint;
   icon: TSharpNotifyIcon;
-  FixedInfo,FixedTitle : String;
+  FixedInfo,FixedTitle : WideString;
   TimeOut : integer;
   wnd : TMainForm;
   edge : TSharpNotifyEdge;

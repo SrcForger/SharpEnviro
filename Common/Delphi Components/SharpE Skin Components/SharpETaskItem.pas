@@ -63,14 +63,14 @@ type
     FLayout: TButtonLayout;
     FMargin: Integer;
     FDisabledAlpha: Integer;
-    FCaption: string;
+    FCaption: WideString;
     FModalResult: TModalResult;
     FDefault: Boolean;
     FAutoPosition: Boolean;
     FDown: Boolean;
     FPrecacheText : TSkinText;
     FPrecacheBmp  : TBitmap32;
-    FPrecacheCaption : String;
+    FPrecacheCaption : WideString;
     FHandle : Cardinal;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
@@ -82,7 +82,7 @@ type
     procedure SetMargin(const Value: Integer);
     procedure SetDisabledAlpha(const Value: Integer);
     procedure SetAutoPosition(const Value: boolean);
-    procedure SetCaption(Value: string);
+    procedure SetCaption(Value: WideString);
     procedure SetDefault(Value: Boolean);
     procedure SetDown(Value: Boolean);
     procedure SetState(Value: TSharpETaskItemStates);
@@ -130,7 +130,7 @@ type
     property Layout: TButtonLayout read FLayout write SetLayout;
     property Margin: Integer read FMargin write SetMargin;
     property DisabledAlpha: Integer read FDisabledAlpha write SetDisabledAlpha;
-    property Caption: string read FCaption write SetCaption;
+    property Caption: WideString read FCaption write SetCaption;
     property ModalResult: TModalResult read FModalResult write FModalResult default 0;
     property Default: Boolean read FDefault write SetDefault default False;
     property AutoPosition: boolean read FAutoPosition write SetAutoPosition;
@@ -434,13 +434,13 @@ begin
   end else UpdateSkin;
 end;
 
-function FixCaption(bmp : TBitmap32; Caption : String; MaxWidth : integer) : String;
+function FixCaption(bmp : TBitmap32; Caption : WideString; MaxWidth : integer) : WideString;
 var
   n : integer;
   count : integer;
-  s : String;
+  s : WideString;
 begin
-  if bmp.TextWidth(Caption) <= MaxWidth then result := Caption
+  if bmp.TextWidthW(Caption) <= MaxWidth then result := Caption
   else
   begin
     count := length(Caption);
@@ -449,7 +449,7 @@ begin
     repeat
       n := n + 1;
       s := s + Caption[n];
-    until (bmp.TextWidth(s) > MaxWidth) or (n >= count);
+    until (bmp.TextWidthW(s) > MaxWidth) or (n >= count);
     if length(s)>=4 then
     begin
       setlength(s,length(s)-4);
@@ -465,7 +465,7 @@ var
   TextSize : TPoint;
   GlyphPos, TextPos: TPoint;
   temp : TBitmap32;
-  drawcaption : String;
+  drawcaption : WideString;
 begin
   with bmp do
   begin
@@ -516,15 +516,15 @@ begin
       TLinearResampler.Create(FGlyph32);
       FGlyph32.DrawTo(Temp,Rect(0,0,16,16));
       drawcaption := FixCaption(Bmp,Caption,96);
-      TextSize.X := bmp.TextWidth(drawcaption);
-      TextSize.Y := bmp.TextHeight(drawcaption);
+      TextSize.X := bmp.TextWidthW(drawcaption);
+      TextSize.Y := bmp.TextHeightW(drawcaption);
       TextPos.X := Width div 2 - TextSize.X div 2;
       TextPos.Y := Height div  2 - TextSize.Y div 2;
       GlyphPos.X := TextPos.X - (Temp.Width + 2) div 2;
       GlyphPos.Y := TextPos.Y - Temp.Height div 2 + TextSize.Y div 2;
       TextPos.X := TextPos.X + (Temp.Width + 2) div 2;
       Temp.DrawTo(bmp,GlyphPos.X,GlyphPos.Y);
-      bmp.RenderText(TextPos.X,TextPos.Y,drawcaption,0, Color32(bmp.Font.color));
+      bmp.RenderTextW(TextPos.X,TextPos.Y,drawcaption,0, Color32(bmp.Font.color));
       Temp.Free;
     end;
   end;
@@ -536,7 +536,7 @@ var
   TextSize : TPoint;
   GlyphPos, TextPos: TPoint;
   mw : integer;
-  DrawCaption : String;
+  DrawCaption : WideString;
   CurrentState : TSharpeTaskItemState;
   SkinText : TSkinText;
   SkinIcon : TSkinIcon;
@@ -620,13 +620,13 @@ begin
     DrawPart.Draw(bmp, Scheme);
     mw := SkinText.GetDim(CompRect).x;
     DrawCaption := FixCaption(Bmp,Caption,mw);
-    TextRect := Rect(0, 0, bmp.TextWidth(DrawCaption), bmp.TextHeight(DrawCaption));
+    TextRect := Rect(0, 0, bmp.TextWidthW(DrawCaption), bmp.TextHeightW(DrawCaption));
     TextPos := SkinText.GetXY(TextRect, CompRect, IconRect);
 
     if (FGlyph32 <> nil) and (SkinIcon.DrawIcon) and (FGlyph32.Width>0) and (FGlyph32.Height>0) then
     begin
-      TextSize.X := bmp.TextWidth(caption);
-      TextSize.Y := bmp.TextHeight(caption);
+      TextSize.X := bmp.TextWidthW(caption);
+      TextSize.Y := bmp.TextHeightW(caption);
 
       GlyphPos := SkinIcon.GetXY(TextRect,CompRect);
       SkinIcon.RenderTo(bmp,FGlyph32,GlyphPos.X,GlyphPos.Y);
@@ -635,7 +635,7 @@ begin
     if ((SkinText <> nil) and (SkinText.DrawText)) then
     begin
       if length(trim(Caption))>0 then
-         SkinText.RenderTo(bmp,TextPos.X,TextPos.Y,DrawCaption,Scheme,
+         SkinText.RenderToW(bmp,TextPos.X,TextPos.Y,DrawCaption,Scheme,
                            FPrecacheText,FPrecacheBmp,FPrecacheCaption);
       SkinText.Free;
     end;
@@ -644,7 +644,7 @@ begin
     DrawDefaultSkin(bmp, DefaultSharpEScheme);
 end;
 
-procedure TSharpETaskItem.SetCaption(Value: string);
+procedure TSharpETaskItem.SetCaption(Value: WideString);
 begin
   FCaption := Value;
   if not SharpEAnimManager.HasScriptRunning(self) then UpdateSkin;

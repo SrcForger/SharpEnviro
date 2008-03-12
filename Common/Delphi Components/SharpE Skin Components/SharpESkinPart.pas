@@ -172,6 +172,9 @@ type
     function GetDim(CompRect: TRect): TPoint;
     function GetFont(cs: TSharpEScheme): TFont;
     procedure AssignFontTo(pFont : TFont; cs: TSharpEScheme);
+    procedure RenderToW(Bmp : TBitmap32; X,Y : integer; Caption : WideString; cs : TSharpEScheme;
+                        var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : WideString); overload;
+    procedure RenderToW(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme); overload;
     procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme;
                        var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String); overload;
     procedure RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String;  cs : TSharpEScheme); overload;
@@ -900,6 +903,189 @@ begin
 
   FreeAndNil(TempBmp);
 end;
+
+procedure TSkinText.RenderToW(Bmp: TBitmap32; X, Y: integer; Caption: String;
+  cs: TSharpEScheme);
+var
+  c : TColor;
+  R,G,B : byte;
+  c2 : TColor32;
+  ShadowBmp : TBitmap32;
+  TempBmp : TBitmap32;
+  w,h : integer;
+  aalevel : integer;
+begin
+  TempBmp := TBitmap32.Create;
+  w := Bmp.TextWidthW(Caption);
+  h := Bmp.TextHeightW(Caption);
+  TempBmp.SetSize(w+20,h+20);
+  TempBmp.Clear(color32(0,0,0,0));
+  TempBmp.Font.Assign(bmp.Font);
+  TempBmp.DrawMode := dmBlend;
+  TempBmp.CombineMode := cmMerge;
+
+  if FShadow then
+  begin
+    ShadowBmp := TBitmap32.Create;
+    try
+      ShadowBmp.DrawMode := dmBlend;
+      ShadowBmp.CombineMode := cmMerge;
+      ShadowBmp.SetSize(TempBmp.Width,TempBmp.Height);
+      ShadowBmp.Clear(color32(0,0,0,0));
+      ShadowBmp.Font.Assign(Bmp.Font);
+      c := FShadowColor;
+      R := GetRValue(c);
+      G := GetGValue(c);
+      B := GetBValue(c);
+      c2 := color32(R,G,B,FShadowAlpha);
+      case FShadowType of
+        stLeft    : ShadowBmp.RenderTextW(TempBmp.Width div 2 - w div 2 - 1,
+                                         TempBmp.Height div 2 - h div 2 + 1,Caption,0,c2);
+        stRight   : ShadowBmp.RenderTextW(TempBmp.Width div 2 - w div 2 + 1,
+                                         TempBmp.Height div 2 - h div 2 + 1,Caption,0,c2);
+        stOutline :
+        begin
+          ShadowBmp.RenderTextW(TempBmp.Width div 2 - w div 2,
+                               TempBmp.Height div 2 - h div 2,Caption,0,c2);
+          fastblur(ShadowBmp,1,1);
+          ShadowBmp.RenderTextW(TempBmp.Width div 2 - w div 2,
+                               TempBmp.Height div 2 - h div 2,Caption,0,c2);
+        end;
+      end;
+      fastblur(ShadowBmp,1,1);
+      ShadowBmp.DrawTo(TempBmp,0,0);
+      ShadowBmp.DrawTo(TempBmp,0,0);
+      fastblur(ShadowBmp,1,1);
+      ShadowBmp.DrawTo(TempBmp,0,0);
+      ShadowBmp.DrawTo(TempBmp,0,0);
+      BlendImageA(TempBmp,FShadowColor,255);
+    finally
+      ShadowBmp.Free;
+    end;
+  end;
+  c := FColor;
+  R := GetRValue(c);
+  G := GetGValue(c);
+  B := GetBValue(c);
+  c2 := color32(R,G,B,255);
+  if FClearType then
+    aalevel := -2
+  else aalevel := 0;
+  TempBmp.RenderTextW(TempBmp.Width div 2 - w div 2,TempBmp.Height div 2 - h div 2,Caption,aalevel,c2);
+  TempBmp.MasterAlpha := FAlpha;
+  TempBmp.DrawTo(Bmp,X-10,Y-10);
+
+  FreeAndNil(TempBmp);
+
+end;
+
+procedure TSkinText.RenderToW(Bmp: TBitmap32; X, Y: integer;
+  Caption: WideString; cs: TSharpEScheme; var pPrecacheText: TSkinText;
+  var pPrecacheBmp: TBitmap32; var pPrecacheCaption: WideString);
+var
+  R,G,B : byte;
+  c2 : TColor32;
+  new : boolean;
+  ShadowBmp : TBitmap32;
+  w,h : integer;
+  aalevel : integer;
+begin
+  if (pPrecacheBmp = nil) or (pPrecacheText = nil) then
+  begin
+    new := True;
+    if pPrecacheBmp = nil then
+    begin
+      pPrecacheBmp := TBitmap32.Create;
+      pPrecacheBmp.DrawMode := dmBlend;
+      pPrecacheBmp.CombineMode := cmMerge;
+    end;
+    if pPrecacheText = nil then
+    begin
+      pPrecacheText := TSkinText.Create;
+      pPrecacheText.Clear;
+      pPrecacheText.FColorString := '-1';
+      pPrecacheText.UpdateDynamicProperties(cs);
+    end;
+  end else new := False;
+
+
+  // Check if something changed since cache bmp has been created.
+  if ((CompareText(pPrecacheText.FName,FName) <> 0) or
+//     (CompareText(pPrecacheText.FColor,FColor) <> 0) or
+     (pPrecacheText.FColor <> FColor) or
+     (CompareText(pPrecacheText.FWidth,FWidth) <> 0) or
+     (CompareText(pPrecacheText.FHeight,FHeight) <> 0) or     
+     (pPrecacheText.FShadowColor <> FShadowColor) or
+     (pPrecacheText.FSize <> FSize) or
+     (pPrecacheText.FStyleBold <> FStyleBold) or
+     (pPrecacheText.FStyleItalic <> FStyleItalic) or
+     (pPrecacheText.FStyleUnderline <> FStyleUnderline) or
+     (pPrecacheText.FShadow <> FShadow) or
+     (pPrecacheText.FShadowType <> FShadowType) or
+     (pPrecacheText.FShadowAlpha <> FShadowAlpha) or
+     (pPrecacheText.FClearType <> FClearType) or
+     (CompareText(pPrecacheCaption,Caption) <> 0)) or (new) then
+  begin
+    // text settings or caption changed! redraw caption
+    pPrecacheText.Assign(self);
+    pPrecacheCaption := Caption;
+    w := Bmp.TextWidthW(Caption);
+    h := Bmp.TextHeightW(Caption);
+    pPrecacheBmp.SetSize(w+20,h+20);
+    pPrecacheBmp.Clear(color32(0,0,0,0));
+    pPrecacheBmp.Font.Assign(bmp.Font);
+
+    if FShadow then
+    begin
+      ShadowBmp := TBitmap32.Create;
+      try
+        ShadowBmp.DrawMode := dmBlend;
+        ShadowBmp.CombineMode := cmMerge;
+        ShadowBmp.SetSize(pPrecacheBmp.Width,pPrecacheBmp.Height);
+        ShadowBmp.Clear(color32(0,0,0,0));
+        ShadowBmp.Font.Assign(Bmp.Font);
+        R := GetRValue(FShadowColor);
+        G := GetGValue(FShadowColor);
+        B := GetBValue(FShadowColor);
+        c2 := color32(R,G,B,FShadowAlpha);
+        case FShadowType of
+          stLeft    : ShadowBmp.RenderTextW(pPrecacheBmp.Width div 2 - w div 2 - 1,
+                                           pPrecacheBmp.Height div 2 - h div 2 + 1,Caption,0,c2);
+          stRight   : ShadowBmp.RenderTextW(pPrecacheBmp.Width div 2 - w div 2 + 1,
+                                           pPrecacheBmp.Height div 2 - h div 2 + 1,Caption,0,c2);
+          stOutline :
+          begin
+            ShadowBmp.RenderTextW(pPrecacheBmp.Width div 2 - w div 2,
+                                 pPrecacheBmp.Height div 2 - h div 2,Caption,0,c2);
+            fastblur(ShadowBmp,1,1);
+            ShadowBmp.RenderTextW(pPrecacheBmp.Width div 2 - w div 2,
+                                 pPrecacheBmp.Height div 2 - h div 2,Caption,0,c2);
+          end;
+        end;
+        fastblur(ShadowBmp,1,1);
+        ShadowBmp.DrawTo(pPrecacheBmp,0,0);
+        ShadowBmp.DrawTo(pPrecacheBmp,0,0);
+        fastblur(ShadowBmp,1,1);
+        ShadowBmp.DrawTo(pPrecacheBmp,0,0);
+        ShadowBmp.DrawTo(pPrecacheBmp,0,0);
+        BlendImageA(pPrecacheBmp,FShadowColor,255);
+      finally
+        ShadowBmp.Free;
+      end;
+    end;
+    R := GetRValue(FColor);
+    G := GetGValue(FColor);
+    B := GetBValue(FColor);
+    c2 := color32(R,G,B,255);
+    if FClearType then
+      aalevel := -2
+    else aalevel := 0;
+    pPrecacheBmp.RenderTextW(pPrecacheBmp.Width div 2 - w div 2,pPrecacheBmp.Height div 2 - h div 2,Caption,aalevel,c2);
+  end;
+  pPrecacheBmp.MasterAlpha := FAlpha;
+  pPrecacheBmp.DrawTo(Bmp,X-10,Y-10);
+end;
+
 
 procedure TSkinText.RenderTo(Bmp : TBitmap32; X,Y : integer; Caption : String; cs : TSharpEScheme;
                              var pPrecacheText : TSkinText; var pPrecacheBmp : TBitmap32; var pPrecacheCaption : String);

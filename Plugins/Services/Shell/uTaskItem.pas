@@ -43,7 +43,7 @@ type
                 FTimeAdded : Int64;
                 FHandle : hwnd;
                 FIcon : hIcon;
-                FCaption : String;
+                FCaption : WideString;
                 FWndClass : String;
                 FFilePath : String;
                 FFileName : String;
@@ -65,7 +65,7 @@ type
                 procedure Restore;
 
                 property Icon     : hIcon   read FIcon;
-                property Caption  : String  read FCaption;
+                property Caption  : WideString  read FCaption;
                 property Handle   : hwnd    read FHandle;
                 property WndClass : String  read FWndClass;
                 property Visible  : boolean read FVisible;
@@ -127,9 +127,9 @@ end;
 
 procedure TTaskItem.UpdateCaption;
 var
-  buf:Array[0..1024] of char;
+  buf:Array[0..1024] of wchar;
 begin
-  GetWindowText(FHandle,@buf,sizeof(buf));
+  GetWindowTextW(FHandle,@buf,sizeof(buf));
   FCaption := buf;
 end;
 
