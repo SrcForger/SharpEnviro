@@ -28,14 +28,18 @@ Source Name: VWM.service
 uses
   Windows,
   Classes,
+  MultiMon,
   Messages,
   Math,
   SharpAPI,
   SharpCenterApi,
   SysUtils,
   JclSimpleXML,
+  SharpESkinManager,
+  SharpESkin,
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
-  uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas';
+  uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas',
+  SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas';
 
 {$E ser}
                                                                      
@@ -70,7 +74,9 @@ Source Name: VWM.service
   VWMCount : integer;
   sFocusTopMost : boolean;
   sFollowFocus : boolean;
+  sShowOCD : boolean;
   LastDShellMessageTime : Int64;
+  SkinManager : TSharpESkinManager;
 
 procedure AllocateMsgWnd;
 var
@@ -102,6 +108,26 @@ begin
   if Instance <> @DefWindowProc then FreeObjectInstance(Instance);
 end;
 
+procedure ShowOCD;
+var
+  x,y : integer;
+  mon : HMonitor;
+  moninfo : TMonitorInfo;
+  p : TPoint;
+begin
+  if not sShowOCD then
+    exit;
+
+  GetCursorPos(p);
+  mon := MonitorFromPoint(p, MONITOR_DEFAULTTOPRIMARY);
+  moninfo.cbSize := SizeOf(moninfo);
+  GetMonitorInfo(mon, @moninfo);
+  x := moninfo.rcMonitor.Left + (moninfo.rcMonitor.Right - moninfo.rcMonitor.Left) div 2;
+  y := moninfo.rcMonitor.Bottom;
+
+  SharpNotify.CraeteNotifyText(0,nil,x,y,inttostr(CurrentDEsktop),neBottomCenter,SkinManager,2000,moninfo.rcMonitor,True);
+end;
+
 procedure LoadVWMSettings;
 var
   XML : TJclSimpleXML;
@@ -113,6 +139,7 @@ end;
   SharpApi.UnRegisterShellHookReceiver(Handle);
   sFocusTopMost := False;
   sFollowFocus := False;
+  sShowOCD := True;
   Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\VWM\';
   FName := Dir + 'VWM.xml';
   if FileExists(FName) then
@@ -130,6 +157,7 @@ end;
       VWMCount := Max(2,Min(VWMCount,12));
       sFocusTopMost := XML.Root.Items.BoolValue('FocusTopMost',sFocusTopMost);
       sFollowFocus := XML.Root.Items.BoolValue('FollowFocus',sFollowFocus);
+      sShowOCD := XML.Root.Items.BoolValue('ShowOCD',sShowOCD);
     end;
     XML.Free;
   end;
@@ -189,6 +217,7 @@ end;
                 newdesk := 1;
                VWMFunctions.VWMSwitchDesk(CurrentDesktop,newdesk,sFocusTopMost);
                CurrentDesktop := newdesk;
+               ShowOCD;               
                Changed := True;
              end;
           2: begin // !NextVWM
@@ -197,6 +226,7 @@ end;
                 newdesk := VWMCount;
                VWMFunctions.VWMSwitchDesk(CurrentDesktop,newdesk,sFocusTopMost);
                CurrentDesktop := newdesk;
+               ShowOCD;
                Changed := True;
              end;
           else
@@ -206,6 +236,7 @@ end;
             begin
               VWMFunctions.VWMSwitchDesk(CurrentDesktop,Message.lparam - VWMStartMessage + 1,sFocusTopMost);
               CurrentDesktop := Message.lparam - VWMStartMessage + 1;
+              ShowOCD;
               Changed := True;
             end;
           end;
@@ -222,6 +253,7 @@ end;
         begin
           VWMFunctions.VWMSwitchDesk(CurrentDesktop,Message.lparam,sFocusTopMost);
           CurrentDesktop := Message.lparam;
+          ShowOCD;          
           Changed := True;
           Message.Result := CurrentDesktop;
         end else Message.Result := 0;
@@ -273,6 +305,7 @@ end;
               if  newdesk <> CurrentDesktop then
               begin
                 VWMFunctions.VWMSwitchDesk(CurrentDesktop,NewDesk,False);
+                ShowOCD;                
                 CurrentDesktop := NewDesk;
                 Changed := True;
               end;
@@ -290,6 +323,11 @@ end;
 // Service is started
 function Start(Owner: HWND): HWND;
 begin
+  SkinManager := TSharpESkinManager.Create(nil,[scBasic]);
+  SkinManager.SkinSource := ssSystem;
+  SkinManager.SchemeSource := ssSystem;
+  SkinManager.Skin.UpdateDynamicProperties(SkinManager.Scheme);
+
   ActionEvent := TActionEvent.Create;
   AllocateMsgWnd;
 
@@ -305,6 +343,8 @@ end;
 
   SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS,0,0);
   ServiceDone('VWM');
+
+ShowOCD;  
 end;                                                                 
                                                                      
 // Service is stopped
@@ -320,6 +360,8 @@ end;
 
   VWMCount := 0;
   SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS,0,0);
+
+  SkinManager.Free;
 end;                                                                 
                                                                      
 // Service receives a message                                        
