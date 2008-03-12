@@ -80,10 +80,11 @@ type
     function AddDynamicDirectoryItem(pTarget : String; pMax,pSort : integer; pFilter : String; pRecursive : Boolean; pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
     function AddDriveListItem(pDriveNames:  boolean; pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
     function AddControlPanelItem(pDynamic : boolean; pInsertPos: Integer=-1): TObject;
-    function  AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean; pInsertPos: Integer=-1) : TObject; overload;
-    function  AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32; pType :TSharpEMenuItemType = mtCustom; pInsertPos: Integer=-1) : TObject;
+    function AddSubMenuItem(pCaption,pIcon,pTarget : String; pDynamic : boolean; pInsertPos: Integer=-1) : TObject; overload;
+    function AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32; pType :TSharpEMenuItemType = mtCustom; pInsertPos: Integer=-1) : TObject;
     function AddObjectListItem(pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
     function AddObjectItem(pFile : String; pDynamic : boolean; pInsertPos: Integer=-1): TObject;
+    function AddUListItem(pType,pCount : integer; pDynamic : boolean; pInsertPos: Integer=-1) : TObject;
 
     // Rendering
     procedure RenderBackground(pLeft, pTop : integer; BGBmp : TBitmap32 = nil);
@@ -206,6 +207,8 @@ begin
      result := 1
      else if (not I1.isDynamic) and (I2.isDynamic) then
      result := -1
+     else if ((I1.PropList.GetBool('NoSort')) or (I2.PropList.GetBool('NoSort'))) then
+     result := I1.ListIndex - I2.ListIndex
      else if (I1.isDynamic) and (I2.isDynamic) and (I1.ItemType = mtSubMenu) and (I2.ItemType <> I1.ItemType) then
      result := -1 - 2*Min(0,I1.PropList.GetInt('Sort'))
      else if (I1.isDynamic) and (I2.isDynamic) and (I2.ItemType = mtSubMenu) and (I2.ItemType <> I1.ItemType) then
@@ -256,6 +259,7 @@ begin
       mtDriveList : FMenuActions.UpdateDynamicDriveList(FDynList,item.PropList.GetBool('ShowDriveNames'));
       mtCPLList : FMenuActions.UpdateControlPanelList(FDynList);
       mtDesktopObjectList : FMenuActions.UpdateObjectList(FDynList);
+      mtulist : FMenuActions.UpdateUList(FDynList,item.PropList.GetInt('Type'),item.PropList.GetInt('Count'));
     end;
   end;
 
@@ -437,6 +441,24 @@ begin
        item.popup := SharpEMenuPopups.DynamicDirPopup;
   end;
   result := Item;
+
+  if pInsertPos = -1 then
+  FItems.Add(item) else
+  FItems.Insert(pInsertPos,item);
+end;
+
+function TSharpEMenu.AddUListItem(pType,pCount: integer; pDynamic: boolean;
+  pInsertPos: Integer): TObject;
+var
+  item : TSharpEMenuItem;
+begin
+  item := TSharpEMenuItem.Create(self,mtulist);
+  item.Icon := nil;
+  item.isVisible := False;
+  item.isDynamic := pDynamic;
+  item.PropList.Add('type',pType);
+  item.PropList.Add('count',pCount);
+  result := item;
 
   if pInsertPos = -1 then
   FItems.Add(item) else

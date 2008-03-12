@@ -6,7 +6,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>E:\SharpE\SharpMenu.exe</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>..\..\..\SharpE\SharpMenu.exe</DCC_DependencyCheckOutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -23,10 +23,10 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\SharpE\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\Common\Libraries\SharpThemeApi;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd party\GR32 Addons;..\..\Common\Libraries\SharpAPI;..\..\Common\Units\SharpFX;..\..\Common\Libraries\ShellHook;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\SharpIconUtils;..\..\Common\Units\SharpGraphicsUtils\;..\..\Common\Libraries\SharpCenterAPI;..\..\Common\Units\SharpFileUtils</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Common\Libraries\SharpThemeApi;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd party\GR32 Addons;..\..\Common\Libraries\SharpAPI;..\..\Common\Units\SharpFX;..\..\Common\Libraries\ShellHook;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\SharpIconUtils;..\..\Common\Units\SharpGraphicsUtils\;..\..\Common\Libraries\SharpCenterAPI;..\..\Common\Units\SharpFileUtils</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Common\Libraries\SharpThemeApi;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd party\GR32 Addons;..\..\Common\Libraries\SharpAPI;..\..\Common\Units\SharpFX;..\..\Common\Libraries\ShellHook;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\SharpIconUtils;..\..\Common\Units\SharpGraphicsUtils\;..\..\Common\Libraries\SharpCenterAPI;..\..\Common\Units\SharpFileUtils</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Common\Libraries\SharpThemeApi;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd party\GR32 Addons;..\..\Common\Libraries\SharpAPI;..\..\Common\Units\SharpFX;..\..\Common\Libraries\ShellHook;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\SharpIconUtils;..\..\Common\Units\SharpGraphicsUtils\;..\..\Common\Libraries\SharpCenterAPI;..\..\Common\Units\SharpFileUtils</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\Common\Libraries\SharpThemeApi;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd party\GR32 Addons;..\..\Common\Libraries\SharpAPI;..\..\Common\Units\SharpFX;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\SharpIconUtils;..\..\Common\Units\SharpGraphicsUtils\;..\..\Common\Libraries\SharpCenterAPI;..\..\Common\Units\SharpFileUtils;..\..\Common\Libraries\SharpApiEx</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Common\Libraries\SharpThemeApi;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd party\GR32 Addons;..\..\Common\Libraries\SharpAPI;..\..\Common\Units\SharpFX;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\SharpIconUtils;..\..\Common\Units\SharpGraphicsUtils\;..\..\Common\Libraries\SharpCenterAPI;..\..\Common\Units\SharpFileUtils;..\..\Common\Libraries\SharpApiEx</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Common\Libraries\SharpThemeApi;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd party\GR32 Addons;..\..\Common\Libraries\SharpAPI;..\..\Common\Units\SharpFX;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\SharpIconUtils;..\..\Common\Units\SharpGraphicsUtils\;..\..\Common\Libraries\SharpCenterAPI;..\..\Common\Units\SharpFileUtils;..\..\Common\Libraries\SharpApiEx</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Common\Libraries\SharpThemeApi;..\..\Common\Delphi Components\SharpE Skin Components;..\..\Common\3rd party\GR32 Addons;..\..\Common\Libraries\SharpAPI;..\..\Common\Units\SharpFX;..\..\Common\3rd party\TransparentEdit;..\..\Common\Units\SharpIconUtils;..\..\Common\Units\SharpGraphicsUtils\;..\..\Common\Libraries\SharpCenterAPI;..\..\Common\Units\SharpFileUtils;..\..\Common\Libraries\SharpApiEx</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>

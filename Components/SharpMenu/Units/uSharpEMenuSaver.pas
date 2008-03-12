@@ -77,6 +77,11 @@ begin
             Add('type','label');
             Add('Caption',menuitem.Caption);
           end;
+          mtulist: begin
+            Add('type','ulist');
+            Add('itemtype',menuitem.PropList.GetInt('Type'));
+            Add('count',menuitem.PropList.GetInt('Count'));
+          end;
           mtSubMenu: begin
             Add('type','submenu');
             Add('Caption',menuitem.Caption);

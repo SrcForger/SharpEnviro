@@ -33,7 +33,8 @@ type
   TSharpEMenuItem = class;
 
   TSharpEMenuItemType = (mtLink,mtSubMenu,mtSeparator,mtDynamicDir,mtDriveList,
-                         mtLabel,mtCustom,mtCPLList,mtDesktopObjectList,mtDesktopObject);
+                         mtLabel,mtCustom,mtCPLList,mtDesktopObjectList,
+                         mtDesktopObject,mtulist);
   TSharpEMenuItemState = (msNormal,msHover,msDown);
 
   TSharpEMenuItemClickEvent = procedure(pItem : TSharpEMenuItem; var CanClose : boolean) of object;

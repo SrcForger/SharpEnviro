@@ -84,6 +84,9 @@ begin
           if CompareText(typestring,'objectlist') = 0 then
             menu.AddObjectListItem(False)
           else
+          if CompareText(typestring,'ulist') = 0 then
+            menu.AddUListItem(IntValue('itemtype',0),IntValue('count',10),False)
+          else
           if CompareText(typestring,'submenu') = 0 then
           begin
             menuitem := TSharpEMenuItem(menu.AddSubMenuItem(Value('Caption'),Value('Icon'),Value('Target',''),False));

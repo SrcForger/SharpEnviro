@@ -36,6 +36,7 @@ uses Windows,
      DateUtils,
      SysUtils,
      SharpApi,
+     SharpApiEx,
      JclSysInfo,
      uSharpEMenuItem;
 
@@ -52,7 +53,8 @@ type
                                      pFilter : String; pSort,pMaxItems : integer; pRecursive : Boolean);
     procedure UpdateDynamicDriveList(var pDynList : TObjectList; pDriveNames : boolean);
     procedure UpdateControlPanelList(var pDynList : TObjectList);
-    procedure UpdateObjectList(var DynList : TObjectList);
+    procedure UpdateObjectList(var pDynList : TObjectList);
+    procedure UpdateUList(var pDynList : TObjectList; pType,pCount : integer);
   end;
 
 implementation
@@ -484,46 +486,45 @@ begin
 
       //if ((GetDriveType(pDrive) > 0)) then begin
 
-      if DiskSize(ord(SC[1])-$40) <> -1 then begin
-      SHGetFileInfo(PChar(SC), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or SHGFI_TYPENAME);
+      if DiskSize(ord(SC[1])-$40) <> -1 then
+      begin
+        SHGetFileInfo(PChar(SC), 0, Info, SizeOf(TSHFileInfo), SHGFI_DISPLAYNAME or SHGFI_TYPENAME);
 
-      found := false;
-      for n := pDynList.Count - 1 downto 0  do
-      begin
-        sn := '';
-        if pDriveNames then sn := Trim(Info.szDisplayName)
-           else sn := Trim(Info.szTypeName);
-        s := '['+ SC[1] + ':] - ' + sn;
-        item := TSharpEMenuItem(pDynList.Items[n]);
-        if (item.ItemType = mtLink) and (item.Caption = s)
-           and (item.PropList.GetString('Action') = SC[1] + ':\') then
+        found := false;
+        for n := pDynList.Count - 1 downto 0  do
         begin
-          pDynList.Delete(n);
-          found := true;
-          break;
+          sn := '';
+          if pDriveNames then sn := Trim(Info.szDisplayName)
+             else sn := Trim(Info.szTypeName);
+          s := '['+ SC[1] + ':] - ' + sn;
+          item := TSharpEMenuItem(pDynList.Items[n]);
+          if (item.ItemType = mtLink) and (item.Caption = s)
+             and (item.PropList.GetString('Action') = SC[1] + ':\') then
+          begin
+            pDynList.Delete(n);
+            found := true;
+            break;
+          end;
         end;
-      end;
-      if (not found) then
-      begin
+        if (not found) then
+        begin
           sn := '';
           if pDriveNames then sn := Info.szDisplayName
-             else sn := Info.szTypeName;
+            else sn := Info.szTypeName;
           s := '['+ SC[1] + ':] - ' + sn;
           pMenu.AddLinkItem(s,
                             SC[1] + ':\',
                             'shell:icon',
                             true);
         end;
-
       end;
-    //end;
     end;
   finally
     SetErrorMode(EMode) ;
   end;
 end;
 
-procedure TSharpEMenuActions.UpdateObjectList(var DynList: TObjectList);
+procedure TSharpEMenuActions.UpdateObjectList(var pDynList: TObjectList);
 var
   sr : TSearchRec;
   Dir : String;
@@ -540,13 +541,13 @@ begin
     if (CompareText(sr.Name,'.') <> 0) and (CompareText(sr.Name,'..') <> 0) then
     begin
       found := false;
-      for n := DynList.Count - 1 downto 0 do
+      for n := pDynList.Count - 1 downto 0 do
       begin
-        item := TSharpEMenuItem(DynList.Items[n]);
+        item := TSharpEMenuItem(pDynList.Items[n]);
         if item.ItemType = mtDesktopObject then
           if CompareText(sr.Name,item.PropList.GetString('ObjectFile')) = 0 then
           begin
-            DynList.Delete(n);
+            pDynList.Delete(n);
             found := True;
             break;
           end;
@@ -559,6 +560,39 @@ begin
     end;
   until (FindNext(sr) <> 0);
   FindClose(sr);
+end;
+
+procedure TSharpEMenuActions.UpdateUList(var pDynList: TObjectList; pType,pCount : integer);
+var
+  SList : TStringList;
+  i : integer;
+  s : String;
+  item : TSharpEMenuItem;
+  pMenu : TSharpEMenu;
+begin
+  pMenu := TSharpEMenu(FOwner);
+
+  SList := TStringList.Create;
+  SList.Clear;
+  case pType of
+    0: SList.CommaText := SharpApiEx.GetRecentItems(pCount);
+    else SList.CommaText := SharpApiEx.GetMostUsedItems(pCount);
+  end;
+
+  for i := 0 to SList.Count - 1 do
+  begin
+    begin
+      s := ExtractFileName(SList[i]);
+      if not FileExists(SList[i]) then
+        Item := TSharpEMenuItem(pMenu.AddLinkItem(s,SList[i],'icon.file',true))
+      else Item := TSharpEMenuItem(pMenu.AddLinkItem(s,SList[i],'shell:icon',true));
+      item.PropList.Add('NoSort',True);
+//      item.PropList.Add('Sort',2);
+  //    item.PropList.Add('SortData',-i);
+    end;
+  end;
+
+  SList.Free;
 end;
 
 end.
