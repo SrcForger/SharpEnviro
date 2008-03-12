@@ -135,6 +135,8 @@ const
   iidxMoveDown = 7;
   iidxObjects = 8;
   iidxCplList = 9;
+  iidxMruList = 10;
+  iidxDynamicFolder = 11;
 
 implementation
 
@@ -354,6 +356,7 @@ begin
                 [tmp.MenuItem.Caption]);
             mtDesktopObjectList: AColText := '<font color="clGray">objects | </font>system';
             mtCPLList: AColText := '<font color="clGray">control panel | </font>system';
+            mtulist: AColText := '<font color="clGray">mru list | </font>system';
 
           end;
         end;
@@ -435,7 +438,7 @@ begin
     case tmpData.MenuItem.ItemType of
       mtDynamicDir: begin
           png := pilIcons.PngImages.Add(false);
-          png.PngImage := pilDefault.PngImages[iidxFolder].PngImage;
+          png.PngImage := pilDefault.PngImages[iidxDynamicFolder].PngImage;
           tmpData.IconIndex := png.Index;
         end;
       mtDriveList: begin
@@ -464,6 +467,11 @@ begin
             png.PngImage := pilDefault.PngImages[iidxFolder].PngImage;
             tmpData.IconIndex := png.Index;
           end;
+        end;
+       mtulist: begin
+          png := pilIcons.PngImages.Add(false);
+          png.PngImage := pilDefault.PngImages[iidxMruList].PngImage;
+          tmpData.IconIndex := png.Index;
         end;
     end;
 
@@ -580,6 +588,7 @@ begin
     mtLabel: Result := Self.MenuItem.Caption;
     mtCPLList: Result := 'control panel list';
     mtDesktopObjectList: Result := 'desktop object list';
+    mtulist: Result := 'mru list';
   end;
 end;
 

@@ -21,7 +21,7 @@ object frmEdit: TfrmEdit
     Top = 77
     Width = 500
     Height = 102
-    ActivePage = pagDynamicDir
+    ActivePage = pagMru
     PropagateEnable = False
     Align = alClient
     object pagLink: TJvStandardPage
@@ -309,8 +309,8 @@ object frmEdit: TfrmEdit
       end
     end
     object pagBlank: TJvStandardPage
-      Left = 348
-      Top = 6
+      Left = 0
+      Top = 0
       Width = 500
       Height = 102
       Caption = 'pagBlank'
@@ -328,6 +328,54 @@ object frmEdit: TfrmEdit
         Caption = 'There are no configuration options'
         Enabled = False
         ExplicitWidth = 166
+      end
+    end
+    object pagMru: TJvStandardPage
+      Left = 0
+      Top = 0
+      Width = 500
+      Height = 102
+      Caption = 'pagMru'
+      object Label5: TLabel
+        Left = 10
+        Top = 34
+        Width = 54
+        Height = 13
+        Caption = 'Max Items:'
+      end
+      object rbMruListRecentItems: TRadioButton
+        Left = 8
+        Top = 0
+        Width = 113
+        Height = 17
+        Caption = 'Recent Items'
+        Checked = True
+        TabOrder = 0
+        TabStop = True
+        OnClick = GenericUpdateEditState
+      end
+      object rbMruListMostUsedItems: TRadioButton
+        Left = 127
+        Top = 0
+        Width = 113
+        Height = 17
+        Caption = 'Most Used Items'
+        TabOrder = 1
+        OnClick = GenericUpdateEditState
+      end
+      object sgbMruListCount: TSharpeGaugeBox
+        Left = 71
+        Top = 29
+        Width = 101
+        Height = 22
+        ParentBackground = False
+        Min = 1
+        Max = 25
+        Value = 10
+        Description = 'Set the max number of items to display (-1 Unlimited)'
+        PopPosition = ppRight
+        PercentDisplay = False
+        OnChangeValue = sgbDynamicDirMaxItemsChangeValue
       end
     end
   end

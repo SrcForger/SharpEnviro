@@ -78,6 +78,11 @@ type
     Label4: TLabel;
     chkRecursive: TCheckBox;
     chkDescending: TCheckBox;
+    pagMru: TJvStandardPage;
+    rbMruListRecentItems: TRadioButton;
+    rbMruListMostUsedItems: TRadioButton;
+    Label5: TLabel;
+    sgbMruListCount: TSharpeGaugeBox;
     procedure FormCreate(Sender: TObject);
     procedure cbMenuItemsSelect(Sender: TObject);
     procedure btnLinkIconBrowseClick(Sender: TObject);
@@ -120,6 +125,7 @@ const
   cSubmenuDescription = 'This menu item will create a new submenu. The target specifies what action to perform when the submenu is clicked (if any).';
   cSelectDescription = 'Please select the menu item to insert.';
   cDynamicDirDescription = 'This dynamic menu item will create a menu of files/directories. If multiple dynamic folders are used within the same submenu, all items are combined.';
+  cMruListDescription = 'This dynamic menu item will create a list from a defined mru type';
 
 implementation
 
@@ -132,7 +138,7 @@ procedure TfrmEdit.InitUI(AEditMode: TSCE_EditMode_Enum);
 var
   tmpItem: TItemData;
   tmpMenuItemType: TSharpEMenuItemType;
-  n:Integer;
+  n: Integer;
 begin
 
   case AEditMode of
@@ -181,6 +187,12 @@ begin
                 chkRecursive.Checked := false;
                 chkDescending.Checked := false;
                 sgbDynamicDirMaxItems.Value := -1;
+                SelectMenuItemType(tmpMenuItemType);
+              end;
+            mtulist: begin
+                rbMruListRecentItems.Checked := True;
+                rbMruListMostUsedItems.Checked := False;
+                sgbDynamicDirMaxItems.Value := 10;
                 SelectMenuItemType(tmpMenuItemType);
               end;
 
@@ -240,12 +252,22 @@ begin
                   1: cbDynamicDirSort.ItemIndex := 0;
                   3: cbDynamicDirSort.ItemIndex := 1;
                   2: cbDynamicDirSort.ItemIndex := 2;
-                  else cbDynamicDirSort.ItemIndex := 0;
+                else cbDynamicDirSort.ItemIndex := 0;
                 end;
 
                 chkDescending.Checked := (n < 0);
                 chkRecursive.Checked := tmpItem.MenuItem.PropList.GetBool('Recursive');
                 sgbDynamicDirMaxItems.Value := tmpItem.MenuItem.PropList.GetInt('MaxItems');
+                SelectMenuItemType(tmpItem.MenuItem.ItemType);
+              end;
+            mtulist: begin
+                n := tmpItem.MenuItem.PropList.GetInt('ItemType');
+                case n of
+                  0: rbMruListRecentItems.Checked := True;
+                  1: rbMruListMostUsedItems.Checked := True;
+                end;
+
+                sgbMruListCount.Value := tmpItem.MenuItem.PropList.GetInt('Count');
                 SelectMenuItemType(tmpItem.MenuItem.ItemType);
               end;
 
@@ -333,7 +355,7 @@ begin
 
   case tmp.MenuItemType of
     mtLink, mtLabel, mtSubMenu, mtDynamicDir: CenterDefineEditState(False);
-    mtSeparator, mtCPLList, mtDriveList, mtDesktopObjectList: if FEditMode = sceAdd then
+    mtSeparator, mtCPLList, mtDriveList, mtDesktopObjectList, mtulist: if FEditMode = sceAdd then
         CenterDefineButtonState(scbConfigure, True);
   end;
 end;
@@ -362,6 +384,9 @@ begin
     cSubmenuDescription)));
   cbMenuItems.AddItem('Dynamic Directory', Pointer(TPageData.Create(pagDynamicDir, mtDynamicDir, 140,
     cDynamicDirDescription)));
+  cbMenuItems.AddItem('Mru List', Pointer(TPageData.Create(pagMru, mtulist, 140,
+    cMruListDescription)));
+
   cbMenuItems.ItemIndex := 0;
 end;
 
@@ -405,7 +430,7 @@ var
 begin
   Result := True;
   tmpMenuItem := nil;
-  
+
   if not (AApply) then
     exit;
 
@@ -474,7 +499,7 @@ begin
                 0: nSort := 1;
                 1: nSort := 3;
                 2: nSort := 2;
-                else nSort := 1;
+              else nSort := 1;
               end;
 
               if chkDescending.Checked then
@@ -483,6 +508,13 @@ begin
               tmpMenuItem := tmpMenu.AddDynamicDirectoryItem(edDynamicDirTarget.Text,
                 sgbDynamicDirMaxItems.Value, nSort, edDynamicDirFilter.Text, chkRecursive.Checked, False,
                 nInsertPos);
+            end;
+          mtulist: begin
+
+              if rbMruListRecentItems.Checked then
+                n := 0 else n := 1;
+              tmpMenuItem := tmpMenu.AddUListItem(n,sgbMruListCount.Value,
+                 False, nInsertPos);
             end;
 
         end;
@@ -532,7 +564,7 @@ begin
                 0: nSort := 1;
                 1: nSort := 3;
                 2: nSort := 2;
-                else nSort := 1;
+              else nSort := 1;
               end;
 
               if chkDescending.Checked then
@@ -542,6 +574,15 @@ begin
               tmpItem.MenuItem.PropList.Add('MaxItems', sgbDynamicDirMaxItems.Value);
               tmpItem.MenuItem.PropList.Add('Sort', nSort);
             end;
+          mtulist: begin
+
+            if rbMruListRecentItems.Checked then
+              n := 0 else n := 1;
+
+            tmpItem.MenuItem.PropList.Add('ItemType', n);
+            tmpItem.MenuItem.PropList.Add('Count', sgbMruListCount.Value);
+
+          end;
         end;
 
         frmList.Save;
