@@ -50,7 +50,7 @@ type
   TSharpNotifyClickEventProc = procedure(wnd : hwnd; ID : Cardinal; Data : TObject; Msg : integer) of object;
   TSharpNotifyShowEventProc = procedure(wnd : hwnd; ID : Cardinal; Data : TObject) of object;
   TSharpNotifyIcon = (niError,niWarning,niInfo);
-  TSharpNotifyEdge = (neTopLeft,neBottomLeft);
+  TSharpNotifyEdge = (neTopLeft,neTopCenter,neBottomLeft,neBottomCenter);
   TSharpNotifyEvent = object
     OnClick : TSharpNotifyClickEventProc;
     OnShow : TSharpNotifyShowEventProc;
@@ -62,6 +62,9 @@ var
 
 {$R SharpNotifyIcons.res}
 
+procedure CraeteNotifyText(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
+                           pEdge : TSharpNotifyEdge; pSM : TSharpESkinManager; pTimeout : integer;
+                           pAreaRect : TRect; Replace: boolean);
 procedure CreateNotifyWindow(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
                              pIcon : TSharpNotifyIcon; pEdge : TSharpNotifyEdge; pSM : TSharpESkinManager;
                              pTimeout : integer; pAreaRect : TRect);
@@ -82,10 +85,12 @@ type
       FTimeout : integer;
       FBlend: TBlendFunction;
       FX,FY : integer;
+      FXMod,FYMod : integer;
       FActive : boolean;
       FData : TObject;
       FEdge : TSharpNotifyEdge;
       FAreaRect : TRect;
+      procedure RenderText(pCaption : WideString);
       procedure Render(pCaption : WideString; pIcon : TSharpNotifyIcon); overload;
       procedure Render(pCaption : WideString; pIcon : TBitmap32); overload;
       procedure RenderSpecial;
@@ -94,6 +99,7 @@ type
     public
       procedure Show;
       constructor Create(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString; pIcon : TSharpNotifyIcon; pEdge: TSharpNotifyEdge; pSM : TSharpESkinManager; pTimeout : integer; pAreaRect : TRect);
+      constructor CreateText(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString; pEdge: TSharpNotifyEdge; pSM : TSharpESkinManager; pTimeout : integer; pAreaRect : TRect);      
       destructor Destroy; override;
   end;
 
@@ -153,6 +159,45 @@ begin
   end;
     
   Result := DefWindowProc(hWnd, Msg, wParam, lParam);
+end;
+
+procedure CraeteNotifyText(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
+                           pEdge : TSharpNotifyEdge; pSM : TSharpESkinManager; pTimeout : integer;
+                           pAreaRect : TRect; Replace: boolean);
+var
+  item,listitem : TNotifyItem;
+  idrunning : boolean;
+  n : integer;
+begin
+  item := TNotifyItem.CreateText(pID,pData,px,py,pCaption,pEdge,pSM,pTimeout,pAreaRect);
+  SharpNotifyWindows.Add(item);
+  idrunning := False;
+  for n := 0 to SharpNotifyWindows.Count - 1 do
+  begin
+    listitem := TNotifyItem(SharpNotifyWindows.Items[n]);
+    if (listitem.FID = item.FID) and (listitem.FActive) then
+    begin
+      idrunning := True;
+      break;
+    end;
+  end;
+  if idrunning and replace then
+  begin
+    SharpNotifyWindows.Extract(listitem);
+    if assigned(SharpNotifyEvent.OnTimeout) then
+      SharpNotifyEvent.OnTimeout(listitem.FWnd,listitem.FID,listitem.FData);
+    listitem.Free;
+    idrunning := False;
+  end;
+  if not idrunning then
+  begin
+    item.Show;
+    if assigned(SharpNotifyEvent.OnShow) then
+     SharpNotifyEvent.OnShow(item.FWnd,item.FID,item.FData);
+  end;
+
+  if not SharpNotifyTimer.Enabled then
+    SharpNotifyTimer.Enabled := True;
 end;
 
 procedure CreateNotifyWindow(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
@@ -270,6 +315,28 @@ begin
   Render(pCaption,pIcon);  
 end;
 
+constructor TNotifyItem.CreateText(pID: Cardinal; pData: TObject; px,
+  py: integer; pCaption: WideString; pEdge: TSharpNotifyEdge;
+  pSM: TSharpESkinManager; pTimeout: integer; pAreaRect: TRect);
+begin
+  inherited Create;
+
+  FID := pID;
+  FData := pData;
+  FSkinManager := pSM;
+  FTimeout := pTimeout;
+  FX := pX;
+  FY := pY;
+  FBitmap := TBitmap32.Create;
+  FBitmap.CombineMode := cmMerge;
+  FBitmap.DrawMode := dmBlend;
+  FActive := False;
+  FEdge := pEdge;
+  FAreaRect := pAreaRect;
+
+  RenderText(pCaption);
+end;
+
 procedure TNotifyItem.CreateWindow;
 begin
   with FBlend do
@@ -280,9 +347,18 @@ begin
     AlphaFormat := AC_SRC_ALPHA;
   end;
 
-  if FEdge = neBottomLeft then
-    FY := FY - FBitmap.Height - FSkinManager.Skin.NotifySkin.SkinDim.YAsInt
-  else FY := FY + FSkinManager.Skin.NotifySkin.SkinDim.YAsInt;
+  case FEdge of
+    neTopLeft:    FY := FY + FYMod;
+    neTopCenter: begin
+      FX := FX - FBitmap.Width div 2;
+      FY := FY + FYMod;
+    end;
+    neBottomLeft: FY := FY - FBitmap.Height - FYMod;
+    neBottomCenter: begin
+      FX := FX - FBitmap.Width div 2;
+      FY := FY - FBitmap.Height - FYMod;
+    end;
+  end;
 
   if FX + FBitmap.Width > FAreaRect.Right then
     FX := FAreaRect.Right - FBitmap.Width
@@ -398,17 +474,25 @@ var
   i,k : integer;
   mw : integer;
 begin
+  FBitmap.SetSize(1,1);
+  FBitmap.Clear(color32(0,0,0,0));
+  FXMod := 0;
+  FYMod := 0;
+
   if FSkinManager = nil then
     exit;
   if not (scNotify in FSkinManager.ComponentSkins) then
     exit;
 
-  TestString := 'WAangb412GHU';    
+  TestString := 'WAangb412GHU';
 
   NS := FSkinManager.Skin.NotifySkin;
   NS.Background.SkinText.AssignFontTo(FBitmap.Font,FSkinManager.Scheme);
   w := NS.SkinDim.WidthAsInt;
   h := NS.SkinDim.HeightAsInt;
+
+  FXMod := FSkinManager.Skin.NotifySkin.SkinDim.XAsInt;
+  FYMod := FSkinManager.Skin.NotifySkin.SkinDim.YAsInt;
 
   cw := FBitmap.TextWidthW(TestString) / length(TestString);
   ch := FBitmap.TextHeightW(TestString);
@@ -488,7 +572,8 @@ var
   dc : hdc;
   temp : TBitmap32;
 begin
-  if FSkinManager.Skin.BarSkin.GlassEffect then
+  if FSkinManager.Skin.BarSkin <> nil then
+    if FSkinManager.Skin.BarSkin.GlassEffect then
   begin
     temp := TBitmap32.Create;
     temp.Assign(FBitmap);
@@ -519,6 +604,24 @@ begin
     end;
   end;
   Premul(FBitmap); 
+end;
+
+procedure TNotifyItem.RenderText(pCaption: WideString);
+var
+  w,h : integer;
+begin
+  FBitmap.SetSize(1,1);
+  FBitmap.Clear(color32(0,0,0,0));
+  FXMod := 0;
+  FYMod := 0;
+  if (FSkinManager = nil) or (length(pCaption) = 0) then
+    exit;
+  FSkinManager.Skin.OCDText.AssignFontTo(FBitmap.Font,FSkinManager.Scheme);
+  w := FBitmap.TextWidthW(pCaption) + 10;
+  h := FBitmap.TextHeightW(pCaption) + 10;
+  FBitmap.SetSize(w,h);
+  FBitmap.Clear(color32(0,0,0,0));
+  FSkinManager.Skin.OCDText.RenderToW(FBitmap,5,5,pCaption,FSkinManager.Scheme);
 end;
 
 procedure TNotifyItem.Show;
