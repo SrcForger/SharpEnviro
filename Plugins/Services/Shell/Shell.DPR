@@ -374,7 +374,7 @@ begin
       if (wparam = HSHELL_WINDOWACTIVATED) or (wparam = HSHELL_WINDOWACTIVATED + 32768) then
       begin
         h := Cardinal(lparam);
-        pItem := TaskManager.GetItemByHandle(h);
+        pItem := TaskManager.GetItemByHandle(LastActiveWindow);
         if IsWindow(LastActiveWindow) and (pItem <> nil) then
         begin
           vwm := VWMGetWindowVWM(GetCurrentVWM,GetVWMCount,LastActiveWindow);
