@@ -509,7 +509,7 @@ begin
   while length(s) > 0 do
   begin
     i := Max(pos(#13,s),pos(#10,s));
-    if (cw * length(s) > tdim.x) or (i<tdim.x/cw) then
+    if (cw * length(s) > tdim.x) or (i<>0) then
     begin
       if i <> 0 then
       begin
@@ -528,7 +528,7 @@ begin
             i := PosEx(' ',cs,i+1);
           end;
           cs := Copy(s,1,k);
-          s := Copy(s,length(cs)+1,length(s)-length(cs)-1);
+          s := Copy(s,length(cs)+1,length(s)-length(cs));
         end else s := Copy(s,length(cs),length(s)-length(cs));
       end;
     end else

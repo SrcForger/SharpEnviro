@@ -347,9 +347,12 @@ begin
   if CompareText(oTip,FTip) <> 0 then
      result := result + [tceTip];
 
-  FInfo := NIDv6.szInfo;
-  FInfoTitle := NIDv6.szInfoTitle;
-  FBTimeOut := NIDv6.Union.uTimeOut;
+  if (NIDv6.uFlags and NIF_INFO) = NIF_INFO then
+  begin
+    FInfo := NIDv6.szInfo;
+    FInfoTitle := NIDv6.szInfoTitle;
+    FBTimeOut := NIDv6.Union.uTimeOut;
+  end;
 
   oVersion := NIDv6.Union.uVersion;
   FBInfoFlags := NIDv6.Union.uVersion;
@@ -784,8 +787,8 @@ begin
               FixedInfo := FixedInfo + item.FInfo[i];
             end;
             TimeOut := item.BTimeout;
-            if TimeOut < 4000 then
-              TimeOut := 4000
+            if TimeOut < 5000 then
+              TimeOut := 5000
             else if TimeOut > 30000 then
               TimeOut := 30000;
             SharpNotify.CreateNotifyWindow(0,item,x,y,FixedTitle + #13 + FixedInfo,
