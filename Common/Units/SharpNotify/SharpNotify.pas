@@ -37,6 +37,7 @@ uses
   Graphics,  
   GR32,
   GR32_PNG,
+  StrUtils,
   ExtCtrls,
   SysUtils,
   SharpESkinManager,
@@ -61,7 +62,7 @@ var
 
 {$R SharpNotifyIcons.res}
 
-procedure CreateNotifyWindow(pID : Cardinal; pData : TObject; px,py : integer; pCaption : String;
+procedure CreateNotifyWindow(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
                              pIcon : TSharpNotifyIcon; pEdge : TSharpNotifyEdge; pSM : TSharpESkinManager;
                              pTimeout : integer; pAreaRect : TRect);
 
@@ -85,14 +86,14 @@ type
       FData : TObject;
       FEdge : TSharpNotifyEdge;
       FAreaRect : TRect;
-      procedure Render(pCaption : String; pIcon : TSharpNotifyIcon); overload;
-      procedure Render(pCaption : String; pIcon : TBitmap32); overload;
-      procedure RenderSpecial;   
+      procedure Render(pCaption : WideString; pIcon : TSharpNotifyIcon); overload;
+      procedure Render(pCaption : WideString; pIcon : TBitmap32); overload;
+      procedure RenderSpecial;
       procedure CreateWindow;
       procedure UpdateWndLayer;
     public
       procedure Show;
-      constructor Create(pID : Cardinal; pData : TObject; px,py : integer; pCaption : String; pIcon : TSharpNotifyIcon; pEdge: TSharpNotifyEdge; pSM : TSharpESkinManager; pTimeout : integer; pAreaRect : TRect);
+      constructor Create(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString; pIcon : TSharpNotifyIcon; pEdge: TSharpNotifyEdge; pSM : TSharpESkinManager; pTimeout : integer; pAreaRect : TRect);
       destructor Destroy; override;
   end;
 
@@ -154,7 +155,7 @@ begin
   Result := DefWindowProc(hWnd, Msg, wParam, lParam);
 end;
 
-procedure CreateNotifyWindow(pID : Cardinal; pData : TObject; px,py : integer; pCaption : String;
+procedure CreateNotifyWindow(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString;
                              pIcon : TSharpNotifyIcon; pEdge : TSharpNotifyEdge; pSM : TSharpESkinManager;
                              pTimeout : integer; pAreaRect : TRect);
 var
@@ -247,7 +248,7 @@ end;
 
 { TNotifyItem }
 
-constructor TNotifyItem.Create(pID : Cardinal; pData : TObject; px, py: integer; pCaption: String;
+constructor TNotifyItem.Create(pID : Cardinal; pData : TObject; px, py: integer; pCaption: WideString;
   pIcon: TSharpNotifyIcon; pEdge: TSharpNotifyEdge; pSM : TSharpESkinManager; pTimeout : integer;
   pAreaRect : TRect);
 begin
@@ -346,7 +347,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TNotifyItem.Render(pCaption : String; pIcon : TSharpNotifyIcon);
+procedure TNotifyItem.Render(pCaption : WideString; pIcon : TSharpNotifyIcon);
 var
   ResStream : TResourceStream;
   TempBmp : TBitmap32;
@@ -381,21 +382,20 @@ begin
   TempBmp.Free;
 end;
 
-procedure TNotifyItem.Render(pCaption : String; pIcon : TBitmap32);
-const
-  TestString = 'WAangb412GHU';
+procedure TNotifyItem.Render(pCaption : WideString; pIcon : TBitmap32);
 var
+  TestString : WideString;
   NS : TSharpENotifySkin;
   CompRect,IconRect,TextRect : TRect;
   TextPos,IconPos : TPoint;
-  s,cs : String;
+  s,cs : WideString;
   cw : single;
   ch : integer;
   y : integer;
   w,h : integer;
   tdim : TPoint;
   Text,Icon : TBitmap32;
-  i : integer;
+  i,k : integer;
   mw : integer;
 begin
   if FSkinManager = nil then
@@ -403,13 +403,15 @@ begin
   if not (scNotify in FSkinManager.ComponentSkins) then
     exit;
 
+  TestString := 'WAangb412GHU';    
+
   NS := FSkinManager.Skin.NotifySkin;
   NS.Background.SkinText.AssignFontTo(FBitmap.Font,FSkinManager.Scheme);
   w := NS.SkinDim.WidthAsInt;
   h := NS.SkinDim.HeightAsInt;
 
-  cw := FBitmap.TextWidth(TestString) / length(TestString);
-  ch := FBitmap.TextHeight(TestString);
+  cw := FBitmap.TextWidthW(TestString) / length(TestString);
+  ch := FBitmap.TextHeightW(TestString);
   s := pCaption;
   tDim := NS.Background.SkinText.GetDim(Rect(0,0,w,h));
   Text := TBitmap32.Create;
@@ -432,15 +434,26 @@ begin
       end else
       begin
         cs := Copy(s,1,round(tdim.x/cw));
-        s := Copy(s,length(cs),length(s)-length(cs));
+        k := Pos(' ',cs);
+        i := k;
+        if (k <> 0) and (k <> length(cs)) then
+        begin
+          while i <> 0 do
+          begin
+            k := i;
+            i := PosEx(' ',cs,i+1);
+          end;
+          cs := Copy(s,1,k);
+          s := Copy(s,length(cs)+1,length(s)-length(cs)-1);
+        end else s := Copy(s,length(cs),length(s)-length(cs));
       end;
     end else
     begin
       cs := s;
       s := Copy(s,length(cs),length(s)-length(cs));      
     end;
-    NS.Background.SkinText.RenderTo(Text,0,y,cs,FSkinManager.Scheme);
-    mw := max(mw,Text.TextWidth(cs));
+    NS.Background.SkinText.RenderToW(Text,0,y,cs,FSkinManager.Scheme);
+    mw := max(mw,Text.TextWidthW(cs));
     y := y + ch + 2;
   end;
 
