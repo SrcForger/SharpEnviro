@@ -48,6 +48,8 @@ type
     Panel1: TPanel;
     Label4: TLabel;
     sgb_vwmcount: TSharpeGaugeBox;
+    cb_ocd: TCheckBox;
+    Label5: TLabel;
     procedure sgb_vwmcountChangeValue(Sender: TObject; Value: Integer);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -82,6 +84,7 @@ begin
   Label4.Font.Color := clGray;
   Label2.Font.Color := clGray;
   Label3.Font.Color := clGray;
+  Label5.Font.Color := clGray;  
 end;
 
 procedure TfrmVWMSettings.SendUpdate;

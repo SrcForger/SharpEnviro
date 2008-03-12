@@ -3,7 +3,7 @@ object frmVWMSettings: TfrmVWMSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmVWMSettings'
-  ClientHeight = 234
+  ClientHeight = 305
   ClientWidth = 428
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -72,6 +72,28 @@ object frmVWMSettings: TfrmVWMSettings
     EllipsisPosition = epEndEllipsis
     Transparent = False
     WordWrap = True
+    ExplicitLeft = 23
+    ExplicitTop = 179
+  end
+  object Label5: TLabel
+    AlignWithMargins = True
+    Left = 18
+    Top = 252
+    Width = 402
+    Height = 37
+    Margins.Left = 18
+    Margins.Top = 4
+    Margins.Right = 8
+    Margins.Bottom = 0
+    Align = alTop
+    AutoSize = False
+    Caption = 
+      'Show a notification on the screen with the current desktop numbe' +
+      'r when the VWM is changed.'
+    EllipsisPosition = epEndEllipsis
+    Transparent = False
+    WordWrap = True
+    ExplicitLeft = 23
   end
   object cb_focustopmost: TCheckBox
     AlignWithMargins = True
@@ -143,5 +165,20 @@ object frmVWMSettings: TfrmVWMSettings
       PercentDisplay = False
       OnChangeValue = sgb_vwmcountChangeValue
     end
+  end
+  object cb_ocd: TCheckBox
+    AlignWithMargins = True
+    Left = 8
+    Top = 228
+    Width = 417
+    Height = 17
+    Margins.Left = 8
+    Align = alTop
+    Caption = 'Display VWM Changes'
+    Checked = True
+    State = cbChecked
+    TabOrder = 3
+    OnClick = cb_focustopmostClick
+    ExplicitLeft = 3
   end
 end
