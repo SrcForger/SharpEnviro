@@ -5100,6 +5100,8 @@ end;
 {$ENDIF}
 
 procedure TBitmap32.RenderTextW(X, Y: Integer; const Text: Widestring; AALevel: Integer; Color: TColor32);
+const
+  CLEARTYPE_QUALITY = 5;
 var
   B, B2: TBitmap32;
   Sz: TSize;
@@ -5111,11 +5113,13 @@ begin
 
   Alpha := Color shr 24;
   Color := Color and $00FFFFFF;
-  AALevel := Constrain(AALevel, -1, 4);
+  AALevel := Constrain(AALevel, -2, 4);
   PaddedText := Text + ' ';
 
 {$IFNDEF CLX}
-  if AALevel > -1 then
+  if AALevel = -2 then
+    SetFontAntialiasing(Font, CLEARTYPE_QUALITY)
+  else if AALevel > -1 then
     SetFontAntialiasing(Font, NONANTIALIASED_QUALITY)
   else
     SetFontAntialiasing(Font, ANTIALIASED_QUALITY);
@@ -5124,7 +5128,7 @@ begin
   { TODO : Optimize Clipping here }
   B := TBitmap32.Create;
   try
-    if AALevel = 0 then
+    if AALevel <= 0 then
     begin
 {$IFDEF CLX}
       B.Font := Font;
