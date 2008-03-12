@@ -183,9 +183,12 @@ type
     property ColorString : String read FColorString write FColorString;
     property Alpha : byte read FAlpha write FAlpha;
     property AlphaString : string read FAlphaString write FAlphaString;
+    property Shadow : boolean read FShadow write FShadow;
+    property Size : integer read FSize write FSize;
     property ShadowColor : integer read FShadowColor write FShadowColor;
     property ShadowColorString : String read FShadowColorString write FShadowColorString;
     property ShadowAlpha : byte read FShadowAlpha write FShadowAlpha;
+    property ShadowType : TShadowType read FShadowType write FShadowType;
     property DrawText : boolean read FDrawText write FDrawText;
     property ClearType : boolean read FClearType write FClearType;
   end;

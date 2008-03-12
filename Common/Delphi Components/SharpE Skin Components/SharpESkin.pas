@@ -45,14 +45,14 @@ uses
   Math;
 
 type
-  TSharpESkinItem = (scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
+  TSharpESkinItem = (scBasic,scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
                      scTaskItem,scMenu,scMenuItem,scTaskSwitch,scNotify);
   TSharpESkinItems = set of TSharpESkinItem;
 
   TSharpEBarAutoPos = (apTop,apCenter,apBottom,apNone);
 
 const
- ALL_SHARPE_SKINS = [scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
+ ALL_SHARPE_SKINS = [scBasic,scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
                      scTaskItem,scMenu,scMenuItem,scTaskSwitch,scNotify];
 
 type
@@ -80,6 +80,7 @@ type
     FSmallText  : TSkinText;
     FMediumText : TSkinText;
     FBigText    : TSkinText;
+    FOCDText    : TSkinText;
     FTextPosTL : TSkinPoint;
     FTextPosBL : TSkinPoint;
     FSkinVersion: Double;
@@ -141,6 +142,7 @@ type
     property SmallText  : TSkinText read FSmallText;
     property MediumText : TSkinText read FMediumText;
     property BigText    : TSkinText read FBigText;
+    property OCDText    : TSkinText read FOCDText;
     property TextPosTL : TSkinPoint read FTextPosTL;
     property TextPosBL : TSkinPoint read FTextPosBL;
     property BitmapList: TSkinBitmapList read FBitmapList write FBitmapList;
@@ -555,6 +557,7 @@ begin
   FSmallText  := TSkinText.Create;
   FMediumText := TSkinText.Create;
   FBigText    := TSkinText.Create;
+  FOCDText    := TSkinText.Create;
   FTextPosTL  := TSkinPoint.Create;
   FTextPosBL  := TSkinPoint.Create;
   FSkinHeader := TSharpeSkinHeader.Create;
@@ -585,6 +588,7 @@ begin
   FSmallText.Free;
   FMediumText.Free;
   FBigText.Free;
+  FOCDText.Free;
   FTextPosTL.Free;
   FTextPosBL.Free;
   FSkinHeader.Free;
@@ -617,6 +621,7 @@ begin
   FSmallText.UpdateDynamicProperties(cs);
   FMediumText.UpdateDynamicProperties(cs);
   FBigText.UpdateDynamicProperties(cs);
+  FOCDText.UpdateDynamicProperties(cs);
 end;
 
 procedure TSharpESkin.RemoveNotUsedBitmaps;
@@ -759,6 +764,7 @@ begin
   FSmallText.SaveToStream(Stream);
   FMediumText.SaveToStream(Stream);
   FBigText.SaveToStream(Stream);
+  FOCDText.SaveToStream(Stream);
   FTextPosTL.SaveToStream(Stream);
   FTextPosBL.SaveToStream(Stream);
   Stream.WriteBuffer(SaveBitmap, sizeof(SaveBitmap));
@@ -919,6 +925,7 @@ begin
     FSmallText.LoadFromStream(Stream);
     FMediumText.LoadFromStream(Stream);
     FBigText.LoadFromStream(Stream);
+    FOCDText.LoadFromStream(Stream);
     FTextPosTL.LoadFromStream(Stream);
     FTextPosBL.LoadFromStream(Stream);
     Stream.ReadBuffer(BmpListInStream, sizeof(BmpListInStream));
@@ -982,9 +989,20 @@ begin
   FSmallText.Clear;
   FMediumText.Clear;
   FBigText.Clear;
+  FOCDText.Clear;
   FBitmapList.Clear;
   FTextPosTL.Clear;
   FTextPosBL.Clear;
+
+  FOCDText.ColorString := 'clwhite';
+  FOCDText.Color := 16777215;
+  FOCDText.ShadowColorString := '0';
+  FOCDText.ShadowColor := 0;
+  FOCDText.Shadow := True;
+  FOCDText.ShadowType := stOutline;
+  FOCDText.Size := 72;
+  FOCDText.Alpha := 224;
+  FOCDText.AlphaString := '224';
 
   FSkinName := '';
 end;
@@ -1061,7 +1079,9 @@ begin
        if ItemNamed['medium'] <> nil then
           FMediumText.LoadFromXML(ItemNamed['medium']);
        if ItemNamed['big'] <> nil then
-          FBigText.LoadFromXML(ItemNamed['big']); 
+          FBigText.LoadFromXML(ItemNamed['big']);
+       if ItemNamed['ocd'] <> nil then
+          FOCDText.LoadFromXML(ItemNamed['ocd']);
      end;
   if FXml.Root.Items.ItemNamed['header'] <> nil then
     FSkinHeader.LoadFromXml(FXml.Root.Items.ItemNamed['header'], path);
