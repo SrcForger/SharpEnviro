@@ -32,6 +32,7 @@ Source Name: VWM.service
   Messages,
   Math,
   SharpAPI,
+  Dialogs,
   SharpCenterApi,
   SysUtils,
   JclSimpleXML,
@@ -77,6 +78,7 @@ Source Name: VWM.service
   sShowOCD : boolean;
   LastDShellMessageTime : Int64;
   SkinManager : TSharpESkinManager;
+  LastActiveWnd : hwnd;
 
 procedure AllocateMsgWnd;
 var
@@ -203,6 +205,10 @@ end;
   changed := False;
   // Message Handlers
   case Message.Msg of
+    WM_SHELLHOOKWINDOWCREATED: begin
+      if sFollowFocus then
+        RegisterShellHookReceiver(Handle)
+    end;
     WM_SHARPEACTIONMESSAGE:
       begin
         case Message.lparam of
@@ -251,7 +257,7 @@ end;
         if (Message.lparam > 0)
            and (Message.lparam <= VWMCount) then
         begin
-          VWMFunctions.VWMSwitchDesk(CurrentDesktop,Message.lparam,sFocusTopMost);
+          VWMFunctions.VWMSwitchDesk(CurrentDesktop,Message.lparam,sFocusTopMost,Cardinal(Message.WParam));
           CurrentDesktop := Message.lparam;
           ShowOCD;          
           Changed := True;
@@ -288,28 +294,33 @@ end;
     begin
       if sFollowFocus then
       begin
-        wnd := Message.lparam;
+        wnd := Cardinal(Message.lparam);
         case Message.WParam of
           HSHELL_WINDOWCREATED,HSHELL_WINDOWDESTROYED: begin
             LastDShellMessageTime := GetTickCount;
           end;
+          HSHELL_GETMINRECT: begin
+            LastDShellMessageTime := GetTickCount;
+          end;
           HSHELL_WINDOWACTIVATED,HSHELL_WINDOWACTIVATED + 32768: begin
-            if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
-               ((IsWindowVisible(Wnd) and not IsIconic(wnd)) and
+            if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
+               (((IsWindowVisible(Wnd) and not IsIconic(wnd)) and
                ((GetWindowLong(Wnd, GWL_HWNDPARENT) = 0) or
                (GetWindowLong(Wnd, GWL_HWNDPARENT) = Integer(GetDesktopWindow))) and
                (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))) and
-               (GetTickCount - LastDShellMessageTime > 200)   then
+               (GetTickCount - LastDShellMessageTime > 200) and
+               (LastActiveWnd <> wnd) then
             begin
               newdesk := VWMFunctions.VWMGetWindowVWM(CurrentDesktop,VWMCount,wnd);
               if  newdesk <> CurrentDesktop then
               begin
                 VWMFunctions.VWMSwitchDesk(CurrentDesktop,NewDesk,False);
-                ShowOCD;                
                 CurrentDesktop := NewDesk;
+                ShowOCD;
                 Changed := True;
               end;
             end;
+            LastActiveWnd := wnd;
           end;
         end;
       end;
@@ -343,9 +354,7 @@ end;
 
   SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS,0,0);
   ServiceDone('VWM');
-
-ShowOCD;  
-end;                                                                 
+end;
                                                                      
 // Service is stopped
 procedure Stop;                                                      
