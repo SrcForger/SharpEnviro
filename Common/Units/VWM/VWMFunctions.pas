@@ -40,9 +40,10 @@ type
 var
   VWMSpacing : integer;
 
+function WindowInRect(wnd : hwnd; Rect : TRect) : boolean;  
 function VWMGetWindowList(pArea : TRect) : TWndArray;
 function VWMGetDeskArea(CurrentVWM,index : integer) : TRect;
-procedure VWMSwitchDesk(pCurrentDesk,pNewDesk : integer; sFocusTopMost : boolean);
+procedure VWMSwitchDesk(pCurrentDesk,pNewDesk : integer; sFocusTopMost : boolean; pExceptWnd : hwnd = 0);
 procedure VWMMoveAllToOne(CurrentVWM : integer; broadcast : boolean);
 function VWMGetWindowVWM(pCurrentVWM,pVWMCount : integer; pHandle : hwnd) : integer;
 procedure VWMMoveWindotToVWM(pTargetVWM,pCurrentVWM,pVWMCount : integer; pHandle : hwnd);
@@ -197,7 +198,7 @@ begin
   setlength(EnumParam.wndlist,0);
 end;
 
-procedure VWMSwitchDesk(pCurrentDesk,pNewDesk : integer; sFocusTopMost : boolean);
+procedure VWMSwitchDesk(pCurrentDesk,pNewDesk : integer; sFocusTopMost : boolean; pExceptWnd : hwnd = 0);
 var
   n : integer;
   distance : integer;
@@ -212,8 +213,11 @@ begin
   SrcList := VWMGetWindowList(R);
   for n := 0 to High(SrcList) do
   begin
-    GetWindowRect(SrcList[n],wndpos);
-    SetWindowPos(SrcList[n],0,wndpos.Left + distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
+    if SrcList[n] <> pExceptWnd then
+    begin
+      GetWindowRect(SrcList[n],wndpos);
+      SetWindowPos(SrcList[n],0,wndpos.Left + distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
+    end;
   end;
 
   // Move the windows from the Dst to the Src Desktop
@@ -224,8 +228,11 @@ begin
   DstList := VWMGetWindowList(R);
   for n := 0 to High(DstList) do
   begin
-    GetWindowRect(DstList[n],wndpos);
-    SetWindowPos(DstList[n],0,wndpos.Left - distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
+    if DstList[n] <> pExceptWnd then
+    begin
+      GetWindowRect(DstList[n],wndpos);
+      SetWindowPos(DstList[n],0,wndpos.Left - distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
+    end;
   end;
 
   if (sFocusTopMost) and (length(DstList) > 0) then
