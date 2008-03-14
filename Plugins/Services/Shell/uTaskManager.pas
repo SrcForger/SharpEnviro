@@ -65,6 +65,7 @@ type
                    procedure UpdateTask(pHandle : hwnd);
                    procedure ActivateTask(pHandle : hwnd);
                    procedure FlashTask(pHandle : hwnd);
+                   procedure GetMinRect;
                    procedure DoSortTasks;
                    procedure ExChangeTasks(pItem1,pItem2 : TTaskItem);
                    procedure ResetVMWs;
@@ -107,7 +108,7 @@ begin
   inherited Create;
   FItems := TObjectList.Create(True);
   FItems.Clear;
-  FSortTasks := True;
+  FSortTasks := False;
   FSortType  := stCaption;
   FLastActiveTask := 0;
   FEnabled := False;
@@ -136,6 +137,27 @@ begin
 end;
 
 
+procedure TTaskManager.GetMinRect;
+var
+  pItem : TTaskItem;
+  n : integer;
+begin
+  if FItems.Count = 0 then exit;
+  if not FEnabled then exit;
+
+  RemoveDeadTasks;
+  for n := 0 to FItems.Count - 1 do
+  begin
+    pItem := TTaskItem(FItems.Items[n]);
+    if pItem.Handle = FLastActiveTask then
+    begin
+      pItem.UpdateFromHwnd;
+      if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
+    end;
+  end;
+  if FSortTasks then DoSortTasks;
+end;
+
 procedure TTaskManager.HandleShellMessage(wparam,lparam : Cardinal);
 begin
  case WParam of
@@ -145,7 +167,7 @@ begin
    HSHELL_WINDOWDESTROYED : RemoveTask(LParam);
    HSHELL_WINDOWACTIVATED : ActivateTask(LParam);
    HSHELL_WINDOWACTIVATED + 32768 : ActivateTask(LParam);
-   HSHELL_GETMINRECT      : UpdateTask(LParam);
+   HSHELL_GETMINRECT      : GetMinRect;
   end;
 end;
 
@@ -263,6 +285,7 @@ begin
       pItem := TTaskItem(FItems.Items[n]);
       if pItem.Handle = pHandle then
       begin
+        FLastActiveTask := pHandle;      
         pItem.UpdateFromHwnd;
         if Assigned(OnActivateTask) then FOnActivateTask(pItem,n);
         exit;
@@ -273,9 +296,11 @@ begin
   // send an activate message
   wndclass := GetWndClass(pHandle);
   if CompareText(wndclass,'ConsoleWindowClass') = 0 then  // cmd.exe
+  begin
+     FLastActiveTask := pHandle;
      AddTask(pHandle)
-     else// Task wasn found, remove focus from any activated task
-     if Assigned(OnActivateTask) then FOnActivateTask(nil,-1);
+  end else// Task wasn found, remove focus from any activated task
+   if Assigned(OnActivateTask) then FOnActivateTask(nil,-1);
 end;
 
 

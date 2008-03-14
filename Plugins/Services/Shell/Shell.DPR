@@ -138,7 +138,6 @@ var
   TaskManager : TTaskManager;
   TrayManager : TTrayManager;
   DeskAreaManager : TDeskAreaManager;
-  LastActiveWindow : hwnd;
 
   WM_SHELLHOOK : integer;
 
@@ -366,34 +365,50 @@ var
   pItem : TTaskItem;
   h : hwnd;
   vwm : integer;
+  deskswitch : boolean;
 begin
   if TaskMsgManager <> nil then
   begin
     if Integer(Msg) = WM_SHELLHOOK then
     begin
+      deskswitch := False;
       if (wparam = HSHELL_WINDOWACTIVATED) or (wparam = HSHELL_WINDOWACTIVATED + 32768) then
       begin
         h := Cardinal(lparam);
-        pItem := TaskManager.GetItemByHandle(LastActiveWindow);
-        if IsWindow(LastActiveWindow) and (pItem <> nil) then
+        pItem := TaskManager.GetItemByHandle(h);
+        if pItem <> nil then
         begin
-          vwm := VWMGetWindowVWM(GetCurrentVWM,GetVWMCount,LastActiveWindow);
-          if vwm <> pItem.LastVWM then
+          if not (pItem.Visible) then
           begin
-            pItem.LastVWM := vwm;
-            for n := High(TaskMsgManager.WndList) downto 0 do
-              if IsWindow(TaskMsgManager.WndList[n]) then
-                PostMessage(TaskMsgManager.WndList[n],WM_TASKVWMCHANGE,pItem.Handle,pItem.LastVWM)
-              else TaskMsgManager.DeleteWnd(n);
+            if pItem.LastVWM <> GetCurrentVWM then
+            begin
+//              VWMFunctions.VWMMoveWindotToVWM(pItem.LastVWM,GetCurrentVWM,GetVWMCount,pItem.Handle);
+              SharpApi.SwitchToVWM(pItem.LastVWM,pItem.Handle);
+              deskswitch := True;
+            end;
+          end else
+          if (WindowInRect(pItem.Handle,Screen.DesktopRect))then
+          begin
+            vwm := VWMGetWindowVWM(GetCurrentVWM,GetVWMCount,h);
+            if vwm <> pItem.LastVWM then
+            begin
+              pItem.LastVWM := vwm;
+              for n := High(TaskMsgManager.WndList) downto 0 do
+                if IsWindow(TaskMsgManager.WndList[n]) then
+                  PostMessage(TaskMsgManager.WndList[n],WM_TASKVWMCHANGE,pItem.Handle,pItem.LastVWM)
+                else TaskMsgManager.DeleteWnd(n);
+            end;
           end;
         end;
-        LastActiveWindow := h;        
       end;
       TaskManager.HandleShellMessage(wparam,Cardinal(lparam));
-      for n := High(TaskMsgManager.WndList) downto 0 do
-        if IsWindow(TaskMsgManager.WndList[n]) then
-          PostMessage(TaskMsgManager.WndList[n],WM_SHARPSHELLMESSAGE,WParam,LParam)
-        else TaskMsgManager.DeleteWnd(n);
+      if not deskswitch  then
+      begin
+        for n := High(TaskMsgManager.WndList) downto 0 do
+          if IsWindow(TaskMsgManager.WndList[n]) then
+            PostMessage(TaskMsgManager.WndList[n],WM_SHARPSHELLMESSAGE,WParam,LParam)
+          else TaskMsgManager.DeleteWnd(n);
+      end;
     end else
     case Msg of
       WM_REGISTERSHELLHOOK: TaskMsgManager.AddWnd(Cardinal(WParam));
@@ -535,7 +550,6 @@ end;
 
 function Start(owner: hwnd): hwnd;
 begin
-  LastActiveWindow := 0; 
   InitThemeLibrary;
 
   TaskMsgManager := nil;
@@ -567,7 +581,7 @@ begin
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
     Version := '0.7.4.0';
     DataType := tteService;
-    ExtraData := 'priority: 60| delay: 0';
+    ExtraData := 'priority: 20| delay: 0';
   end;
 end;
 
