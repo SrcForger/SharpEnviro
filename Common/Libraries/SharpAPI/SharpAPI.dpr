@@ -365,13 +365,13 @@ begin
   else result := 0;
 end;
 
-function SwitchToVWM(Index : integer) : boolean;
+function SwitchToVWM(Index : integer; ExceptWnd : hwnd = 0) : boolean;
 var
   wnd : hwnd;
 begin
   wnd := FindWindow('SharpE_VWM',nil);
   if wnd <> 0 then
-    result := (SendMessage(wnd,WM_VWMSWITCHDESKTOP,0,Index) <> 0)
+    result := (SendMessage(wnd,WM_VWMSWITCHDESKTOP,ExceptWnd,Index) <> 0)
   else result := False;
 end;
 

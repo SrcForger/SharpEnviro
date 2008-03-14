@@ -267,7 +267,7 @@ function UnRegisterShellHookReceiver(Wnd : hwnd) : boolean; external 'SharpApi.d
 
 function GetVWMCount : integer; external 'SharpApi.dll' name 'GetVWMCount';
 function GetCurrentVWM : integer; external 'SharpApi.dll' name 'GetCurrentVWM';
-function SwitchToVWM(Index : integer) : boolean; external 'SharpApi.dll' name 'SwitchToVWM';
+function SwitchToVWM(Index : integer; ExceptWnd : hwnd = 0) : boolean; external 'SharpApi.dll' name 'SwitchToVWM';
 
 //meta data functions
 function GetComponentMetaData(strFile: String; var MetaData: TMetaData; var Priority: Integer; var Delay: Integer) : Integer; external 'SharpApi.dll' name 'GetComponentMetaData';
