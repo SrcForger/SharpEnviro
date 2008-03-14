@@ -6,14 +6,12 @@
   <ItemGroup>
     <Projects Include="..\Plugins\Services\Actions\Actions.dproj" />
     <Projects Include="..\Plugins\Services\Cursors\cursors.dproj" />
-    <Projects Include="..\Plugins\Services\DeskArea\DeskArea.dproj" />
     <Projects Include="..\Plugins\Services\Exec\Exec.dproj" />
     <Projects Include="..\Plugins\Services\Hotkeys\Hotkeys.dproj" />
+    <Projects Include="..\Plugins\Services\MultimediaInput\MultimediaInput.dproj" />
     <Projects Include="..\Plugins\Services\Skin\SkinController.dproj" />
     <Projects Include="..\Plugins\Services\StartupApps\Startup.dproj" />
     <Projects Include="..\Plugins\Services\SystemActions\SystemActions.dproj" />
-    <Projects Include="..\Plugins\Services\SystemTray\SystemTray.dproj" />
-    <Projects Include="..\Plugins\Services\TaskManager\TaskManager.dproj" />
     <Projects Include="..\Plugins\Services\TaskSwitch\TaskSwitch.dproj" />
     <Projects Include="..\Plugins\Services\VWM\VWM.dproj" />
     <Projects Include="..\Plugins\Services\Weather\Weather.dproj" />
@@ -24,15 +22,6 @@
     <BorlandProject>
 <BorlandProject xmlns=""><Default.Personality></Default.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
-  <Target Name="DeskArea">
-    <MSBuild Projects="..\Plugins\Services\DeskArea\DeskArea.dproj" Targets="" />
-  </Target>
-  <Target Name="DeskArea:Clean">
-    <MSBuild Projects="..\Plugins\Services\DeskArea\DeskArea.dproj" Targets="Clean" />
-  </Target>
-  <Target Name="DeskArea:Make">
-    <MSBuild Projects="..\Plugins\Services\DeskArea\DeskArea.dproj" Targets="Make" />
-  </Target>
   <Target Name="Exec">
     <MSBuild Projects="..\Plugins\Services\Exec\Exec.dproj" Targets="" />
   </Target>
@@ -68,15 +57,6 @@
   </Target>
   <Target Name="Startup:Make">
     <MSBuild Projects="..\Plugins\Services\StartupApps\Startup.dproj" Targets="Make" />
-  </Target>
-  <Target Name="SystemTray">
-    <MSBuild Projects="..\Plugins\Services\SystemTray\SystemTray.dproj" Targets="" />
-  </Target>
-  <Target Name="SystemTray:Clean">
-    <MSBuild Projects="..\Plugins\Services\SystemTray\SystemTray.dproj" Targets="Clean" />
-  </Target>
-  <Target Name="SystemTray:Make">
-    <MSBuild Projects="..\Plugins\Services\SystemTray\SystemTray.dproj" Targets="Make" />
   </Target>
   <Target Name="Weather">
     <MSBuild Projects="..\Plugins\Services\Weather\Weather.dproj" Targets="" />
@@ -114,15 +94,6 @@
   <Target Name="TaskSwitch:Make">
     <MSBuild Projects="..\Plugins\Services\TaskSwitch\TaskSwitch.dproj" Targets="Make" />
   </Target>
-  <Target Name="TaskManager">
-    <MSBuild Projects="..\Plugins\Services\TaskManager\TaskManager.dproj" Targets="" />
-  </Target>
-  <Target Name="TaskManager:Clean">
-    <MSBuild Projects="..\Plugins\Services\TaskManager\TaskManager.dproj" Targets="Clean" />
-  </Target>
-  <Target Name="TaskManager:Make">
-    <MSBuild Projects="..\Plugins\Services\TaskManager\TaskManager.dproj" Targets="Make" />
-  </Target>
   <Target Name="SystemActions">
     <MSBuild Projects="..\Plugins\Services\SystemActions\SystemActions.dproj" Targets="" />
   </Target>
@@ -141,14 +112,23 @@
   <Target Name="VWM:Make">
     <MSBuild Projects="..\Plugins\Services\VWM\VWM.dproj" Targets="Make" />
   </Target>
+  <Target Name="MultimediaInput">
+    <MSBuild Projects="..\Plugins\Services\MultimediaInput\MultimediaInput.dproj" Targets="" />
+  </Target>
+  <Target Name="MultimediaInput:Clean">
+    <MSBuild Projects="..\Plugins\Services\MultimediaInput\MultimediaInput.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="MultimediaInput:Make">
+    <MSBuild Projects="..\Plugins\Services\MultimediaInput\MultimediaInput.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="DeskArea;Exec;Hotkeys;SkinController;Startup;SystemTray;Weather;Actions;cursors;TaskSwitch;TaskManager;SystemActions;VWM" />
+    <CallTarget Targets="Exec;Hotkeys;SkinController;Startup;Weather;Actions;cursors;TaskSwitch;SystemActions;VWM;MultimediaInput" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="DeskArea:Clean;Exec:Clean;Hotkeys:Clean;SkinController:Clean;Startup:Clean;SystemTray:Clean;Weather:Clean;Actions:Clean;cursors:Clean;TaskSwitch:Clean;TaskManager:Clean;SystemActions:Clean;VWM:Clean" />
+    <CallTarget Targets="Exec:Clean;Hotkeys:Clean;SkinController:Clean;Startup:Clean;Weather:Clean;Actions:Clean;cursors:Clean;TaskSwitch:Clean;SystemActions:Clean;VWM:Clean;MultimediaInput:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="DeskArea:Make;Exec:Make;Hotkeys:Make;SkinController:Make;Startup:Make;SystemTray:Make;Weather:Make;Actions:Make;cursors:Make;TaskSwitch:Make;TaskManager:Make;SystemActions:Make;VWM:Make" />
+    <CallTarget Targets="Exec:Make;Hotkeys:Make;SkinController:Make;Startup:Make;Weather:Make;Actions:Make;cursors:Make;TaskSwitch:Make;SystemActions:Make;VWM:Make;MultimediaInput:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>

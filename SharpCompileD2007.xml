@@ -89,6 +89,7 @@
      <project Name="Cursors" Type="DLL" >Plugins\Services\Cursors\Cursors.dproj</project>  
      <project Name="Exec" Type="DLL" >Plugins\Services\Exec\Exec.dproj</project>  
      <project Name="Hotkeys" Type="DLL" >Plugins\Services\Hotkeys\Hotkeys.dproj</project>  
+     <project Name="Multimedia Input" Type="DLL" >Plugins\Services\MultimediaInput\MultimediaInput.dproj</project>  
      <project Name="Shell" Type="DLL" >Plugins\Services\Shell\Shell.dproj</project>       
      <project Name="Skin" Type="DLL" >Plugins\Services\Skin\SkinController.dproj</project>  
      <project Name="Startup" Type="DLL" >Plugins\Services\StartupApps\Startup.dproj</project>  
