@@ -55,7 +55,7 @@ end;
 
 constructor TSharpERoundPanel.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FRoundValue := 10;
   ParentBackground := false;
   FBackgroundColor := clBtnFace;

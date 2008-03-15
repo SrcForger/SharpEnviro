@@ -48,7 +48,7 @@ end;
 
 procedure TMainWnd.FormCreate(Sender: TObject);
 begin
-
+  Self.DoubleBuffered := True;
    SetVistaFonts(Self);
 end;
 

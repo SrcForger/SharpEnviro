@@ -41,6 +41,7 @@ object MainWnd: TMainWnd
     Height = 24
     Align = alTop
     ParentColor = False
+    DisplayPercent = False
     Expanded = False
     GroupIndex = 0
     Caption = 'Scheme Test'
@@ -48,6 +49,8 @@ object MainWnd: TMainWnd
     ValueEditorType = vetColor
     ValueText = 'Alpha'
     Value = 0
+    ValueMin = 0
+    ValueMax = 255
     Visible = True
     SwatchManager = SharpESwatchManager1
     ExplicitLeft = -8

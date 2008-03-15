@@ -10,16 +10,19 @@ uses
   Graphics,
   Controls,
   Forms,
-  pngspeedbutton,
   ExtCtrls,
-  pngimagelist,
   ComCtrls,
-  JvComCtrls,
   StdCtrls,
-  jvPageList,
-  SharpECenterScheme,
+
+  // 3rd Party
+  pngimagelist,
+  pngspeedbutton,
+  JvComCtrls,
   gr32,
   JvSpin,
+
+  // SharpE Units
+  SharpECenterScheme,
   SharpFX,
   SharpThemeApi,
   SharpESwatchCollection,
@@ -47,7 +50,7 @@ type
     FColorPicker: TSharpEColorPicker;
     FAddColorButton: TPngSpeedButton;
     FPngImageList: TPngImageList;
-    FPages: TJvPageList;
+    FPages: TPageControl;
     FNameLabel: TPanel;
     FHueSlider, FSatSlider, FLumSlider: TJvTrackBar;
     FRedSlider, FGreenSlider, FBlueSlider: TJvTrackBar;
@@ -56,7 +59,7 @@ type
     FSliderUpdateMode: TColorSliderUpdateMode;
     FSCS: TSharpECenterScheme;
 
-    FColDefinePage, FValDefinePage, FBoolDefinePage, FSwatchesPage: TJvStandardPage;
+    FColDefinePage, FValDefinePage, FBoolDefinePage, FSwatchesPage: TTabSheet;
     FBoolCheckbox: TCheckBox;
 
     FExpanded: Boolean;
@@ -78,7 +81,7 @@ type
     FVisible: boolean;
     FDisplayPercent: boolean;
 
-    procedure CreateControls(Sender: TObject);
+    procedure CreateControls;
     procedure SetExpanded(const Value: Boolean);
     procedure SetGroupIndex(const Value: Integer);
 
@@ -203,6 +206,8 @@ end;
 constructor TSharpEColorEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  Parent := TWinControl(AOwner);
+  
   Self.Height := 135;
   Self.Width := 200;
   FCollapseHeight := 24;
@@ -212,11 +217,10 @@ begin
   FValueMax := 255;
   FValueText := '';
   FVisible := True;
-
-  CreateControls(nil);
+  CreateControls;
 end;
 
-procedure TSharpEColorEditor.CreateControls(Sender: TObject);
+procedure TSharpEColorEditor.CreateControls;
 var
   tmpPanel: TPanel;
 
@@ -266,6 +270,7 @@ begin
   with FTabs do begin
     Parent := Self;
     Anchors := [akRight, akTop, akLeft];
+    Name := 'ftabs';
 
     TabAlign := taRightJustify;
     IconBounds := Rect(12, 3, 0, 0);
@@ -298,6 +303,7 @@ begin
   with FColorPicker do begin
     Parent := FTabs;
     Anchors := [akRight, akTop];
+    name := 'FColorPicker';
 
     FColorPicker.Left := FTabs.Width - (FTabs.TabWidth * 2) -
       FTabs.IconBounds.Left + 2 - FColorPicker.Width;
@@ -314,6 +320,7 @@ begin
 
   tmpPanel := TPanel.Create(FTabs);
   with tmpPanel do begin
+    tmpPanel.Name := 'tmpPanel';
     tmpPanel.Parent := FTabs;
     tmpPanel.Anchors := [akRight, akTop];
     tmpPanel.Width := 20;
@@ -332,6 +339,7 @@ begin
 
   FAddColorButton := TPngSpeedButton.Create(tmpPanel);
   with FAddColorButton do begin
+    FAddColorButton.Name := 'faddcolorbutton';
     FAddColorButton.Parent := tmpPanel;
     FAddColorButton.Align := alClient;
     FAddColorButton.Flat := True;
@@ -350,6 +358,7 @@ begin
   FNameLabel := TPanel.Create(FTabs);
   with FNameLabel do begin
     Parent := FTabs;
+    name := 'fnamelabel';
     Anchors := [akLeft, akTop, akRight];
     Align := alNone;
     BevelInner := bvNone;
@@ -376,7 +385,7 @@ begin
   FTabContainer := TSharpERoundPanel.Create(self);
   with FTabContainer do begin
     Parent := Self;
-
+    name := 'ftabcontainer';
     Anchors := [akLeft, akTop, akRight, akBottom];
 
     DrawMode := srpNoTopRight;
@@ -395,19 +404,23 @@ begin
     SendToBack;
   end;
 
-  FPages := TJvpageList.Create(FTabContainer);
+  FPages := TPageControl.Create(FTabContainer);
   with FPages do begin
+    Name := 'fpages';
     Parent := FTabContainer;
     Color := FSCS.EditCol;
     Align := alClient;
+    ParentBackground := False;
+    Style := tsFlatButtons;
   end;
 
   // Create the customisation page
-  FColDefinePage := TJvStandardPage.Create(Self);
+  FColDefinePage := TTabSheet.Create(FPages);
   with FColDefinePage do begin
-    Parent := FPages;
-    PageList := FPages;
+    name := 'fcoldefinepage';
+    PageControl := FPages;
     Caption := 'Colour Edit';
+    TabVisible := False;
   end;
 
   // Create the sliders
@@ -430,22 +443,22 @@ begin
   AssignDefaultSliderProps(FBlueSlider);
 
   // Create the val define page
-  FValDefinePage := TJvStandardPage.Create(Self);
+  FValDefinePage := TTabSheet.Create(FPages);
   with FValDefinePage do begin
-    Parent := FPages;
-    PageList := FPages;
+    PageControl := FPages;
     Caption := 'Val Edit';
+    TabVisible := False;
   end;
 
   FValueSlider := TJvTrackBar.Create(FValDefinePage);
   AssignDefaultSliderProps(FValueSlider);
 
   // Create the bool define page
-  FBoolDefinePage := TJvStandardPage.Create(Self);
+  FBoolDefinePage := TTabSheet.Create(Self);
   with FBoolDefinePage do begin
-    Parent := FPages;
-    PageList := FPages;
+    PageControl := FPages;
     Caption := 'Bool Edit';
+    TabVisible := False;
   end;
 
   FBoolCheckbox := TCheckBox.Create(FBoolDefinePage);
@@ -457,12 +470,11 @@ begin
   end;
 
   // Create the swatches page
-  FSwatchesPage := TJvStandardPage.Create(Self);
+  FSwatchesPage := TTabSheet.Create(Self);
   with FSwatchesPage do begin
-    PageList := FPages;
-    BorderWidth := 4;
+    PageControl := FPages;
     Caption := 'Swatches';
-    Color := FSCS.EditCol;
+    TabVisible := False;
   end;
 
   FSharpESwatchCollection := TSharpESwatchCollection.Create(FSwatchesPage);
@@ -717,7 +729,7 @@ end;
 
 procedure TSharpEColorEditor.ResizeDefineColsPage;
 var
-  tmpTab: TJvcustomPage;
+  tmpTab: TTabSheet;
   iWidthLT, iWidthVal, iSliderWidth, iSpacer, iY, n: Integer;
   rLeftSlider, rLeftSliderVal, rRightSlider, rRightSliderVal, rLeftText,
     rRightText: TRect;
@@ -801,7 +813,7 @@ end;
 
 procedure TSharpEColorEditor.ResizeDefineValPage;
 var
-  tmpTab: TJvcustomPage;
+  tmpTab: TTabSheet;
   tmpLbl: TLabel;
   iWidthLT, iWidthVal, iSliderWidth, iSpacer, iY, n: Integer;
   rLeftSlider, rLeftSliderVal, rLeftText: TRect;
@@ -1364,7 +1376,7 @@ end;
 
 procedure TSharpEColorEditor.ResizeDefineBoolPage;
 var
-  tmpTab: TJvcustomPage;
+  tmpTab: TTabSheet;
   tmpLbl: TLabel;
   iSpacer, iY, n: Integer;
 
