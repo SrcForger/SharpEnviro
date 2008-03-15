@@ -138,6 +138,7 @@ var
   TaskManager : TTaskManager;
   TrayManager : TTrayManager;
   DeskAreaManager : TDeskAreaManager;
+  lastappcommand : int64;  
 
   WM_SHELLHOOK : integer;
 
@@ -366,7 +367,9 @@ var
   h : hwnd;
   vwm : integer;
   deskswitch : boolean;
+  b : integer;
 begin
+  result := 0;
   if TaskMsgManager <> nil then
   begin
     if Integer(Msg) = WM_SHELLHOOK then
@@ -402,13 +405,23 @@ begin
         end;
       end;
       TaskManager.HandleShellMessage(wparam,Cardinal(lparam));
-      if not deskswitch  then
+      if (not deskswitch) and (GetTickCount - lastappcommand > 200) then
       begin
         for n := High(TaskMsgManager.WndList) downto 0 do
           if IsWindow(TaskMsgManager.WndList[n]) then
-            PostMessage(TaskMsgManager.WndList[n],WM_SHARPSHELLMESSAGE,WParam,LParam)
+          begin
+            if wparam = HSHELL_APPCOMMAND then
+            begin
+              b := SendMessage(TaskMsgManager.WndList[n],WM_SHARPSHELLMESSAGE,WParam,LParam);
+              if b <> 0 then
+                result := 1;
+            end
+            else PostMessage(TaskMsgManager.WndList[n],WM_SHARPSHELLMESSAGE,WParam,LParam)
+          end
           else TaskMsgManager.DeleteWnd(n);
       end;
+      if wparam = HSHELL_APPCOMMAND then
+        lastappcommand := GetTickCount;
     end else
     case Msg of
       WM_REGISTERSHELLHOOK: TaskMsgManager.AddWnd(Cardinal(WParam));
@@ -438,7 +451,8 @@ begin
       end;
     end;
   end;
-  Result := DefWindowProc(wnd, Msg, wParam, lParam);
+  if result = 0 then
+    Result := DefWindowProc(wnd, Msg, wParam, lParam);
 end;
 
 procedure CreateWindowStructure;
@@ -606,6 +620,7 @@ constructor TTaskMsgManager.Create;
 begin
   inherited Create;
 
+  lastappcommand := GetTickCount;
   WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
   setlength(WndList,0);
 

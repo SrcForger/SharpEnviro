@@ -32,6 +32,7 @@ Source Name: VWM.service
   Messages,
   Math,
   SharpAPI,
+  SharpThemeApi,
   Dialogs,
   SharpCenterApi,
   SysUtils,
@@ -281,9 +282,15 @@ end;
         VWMFunctions.VWMMoveAllToOne(CurrentDesktop,True);  // ... reason ... unknown =)
         LoadVWMSettings;
         SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS,0,0);
+      end else
+      if (Message.wparam = Integer(suCursor)) or (Message.wparam = Integer(suScheme))
+         or (Message.wparam = Integer(suSkin)) or (Message.wparam = Integer(suTheme)) then
+      begin
+        SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
+        SkinManager.UpdateSkin;
       end;
     end;
-    WM_DISPLAYCHANGE:
+    WM_DISPLAYCHANGE:
     begin
       CurrentDesktop := 1;
       VWMFunctions.VWMMoveAllToOne(CurrentDesktop,False); // has to be called two times ...
@@ -292,6 +299,7 @@ end;
     end;
     WM_SHARPSHELLMESSAGE:
     begin
+      Message.Result := 0;
       if sFollowFocus then
       begin
         wnd := Cardinal(Message.lparam);

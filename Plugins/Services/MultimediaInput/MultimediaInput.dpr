@@ -31,6 +31,7 @@ uses
   MultiMon,
   Classes,
   SharpApi,
+  SharpThemeApi,
   Registry,
   MMSystem,
   Math,
@@ -72,6 +73,44 @@ var
   y := moninfo.rcMonitor.Bottom - 32;
 
   SharpNotify.CraeteNotifyText(0,nil,x,y,pCaption,neBottomCenter,SkinManager,2000,moninfo.rcMonitor,True);
+end;
+
+function GetWndClass(wnd : hwnd) : String;
+var
+  buf: array [0..254] of Char;
+begin
+  GetClassName(wnd, buf, SizeOf(buf));
+  result := buf;
+end;
+
+  function GetCaption(wnd : hwnd) : string;
+  var
+    buf:Array[0..1024] of char;
+  begin
+    GetWindowText(wnd,@buf,sizeof(buf));
+    result := buf;
+  end;
+
+procedure BroadCastAppCommand(pType : integer);
+var
+  wnd : hwnd;
+  result : boolean;
+begin
+  wnd := GetTopWindow(0);
+  result := False;
+  while (wnd <> 0) and (not result) do
+  begin
+    if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) or
+       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
+       ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
+       (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
+       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) then
+//       (GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST = 0) then
+      begin
+        result := (SendMessage(wnd,WM_APPCOMMAND,0,MakeLParam(0,pType)) <> 0);
+      end;
+    wnd := GetNextWindow(wnd,GW_HWNDNEXT);
+  end;
 end;
 
 function GetDefaultApp(pType : String) : String;
@@ -226,18 +265,33 @@ begin
   begin
     if msg.WParam = HSHELL_APPCOMMAND then
     begin
-      msg.result := 0;
+      msg.result := 1;
       case msg.LParamHi of
         APPCOMMAND_BROWSER_HOME: ExecDefaultApp('HTTP');
-        APPCOMMAND_LAUNCH_MAIL: ExecDefaultApp('mailto');        
+        APPCOMMAND_LAUNCH_MAIL: ExecDefaultApp('mailto');
         APPCOMMAND_VOLUME_UP: VolumeUp(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
         APPCOMMAND_VOLUME_DOWN: VolumeDown(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
         APPCOMMAND_VOLUME_MUTE: VolumeMute(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
         APPCOMMAND_MICROPHONE_VOLUME_UP: VolumeUp(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
         APPCOMMAND_MICROPHONE_VOLUME_DOWN: VolumeDown(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
         APPCOMMAND_MICROPHONE_VOLUME_MUTE,APPCOMMAND_MIC_ON_OFF_TOGGLE: VolumeMute(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
-        else msg.result := 1;
+        APPCOMMAND_MEDIA_NEXTTRACK,APPCOMMAND_MEDIA_PREVIOUSTRACK,
+        APPCOMMAND_MEDIA_STOP,APPCOMMAND_MEDIA_PLAY_PAUSE,
+        APPCOMMAND_MEDIA_PLAY,APPCOMMAND_MEDIA_PAUSE,
+        APPCOMMAND_MEDIA_RECORD,APPCOMMAND_MEDIA_FAST_FORWARD,
+        APPCOMMAND_MEDIA_REWIND,APPCOMMAND_MEDIA_CHANNEL_UP,
+        APPCOMMAND_MEDIA_CHANNEL_DOWN: BroadCastAppCommand(msg.LParamHi);
+        else msg.result := 0;
       end;
+    end;
+  end
+  else if msg.Msg = WM_SHARPEUPDATESETTINGS then
+  begin
+    if (msg.wparam = Integer(suCursor)) or (msg.wparam = Integer(suScheme))
+       or (msg.wparam = Integer(suSkin)) or (msg.wparam = Integer(suTheme)) then
+    begin
+      SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
+      SkinManager.UpdateSkin;
     end;
   end
   else if msg.Msg = WM_SHARPEUPDATEACTIONS then
