@@ -178,6 +178,8 @@ end;
 
 procedure TMainForm.WMShellMessage(var msg: TMessage);
 begin
+  msg.Result := 0;
+
   if VWMCount = 0 then
     exit;
 

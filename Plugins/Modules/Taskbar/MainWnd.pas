@@ -1213,6 +1213,7 @@ end;
 
 procedure TMainForm.WMShellHook(var msg : TMessage);
 begin
+  msg.Result := 0;
   if TM = nil then
     exit;
 

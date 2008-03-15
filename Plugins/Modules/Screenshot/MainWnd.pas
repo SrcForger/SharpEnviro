@@ -387,6 +387,7 @@ end;
 
 procedure TMainForm.WMShellHook(var msg : TMessage);
 begin
+  msg.Result := 0;
   if Cardinal(msg.LParam) = self.Handle then exit;
   if msg.LParam = 0 then exit;
   case msg.WParam of
