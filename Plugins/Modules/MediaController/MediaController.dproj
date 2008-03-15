@@ -49,11 +49,5 @@
     <DCCReference Include="MainWnd.pas">
       <Form>MainForm</Form>
     </DCCReference>
-    <DCCReference Include="PlayerSelectWnd.pas">
-      <Form>PlayerSelectForm</Form>
-    </DCCReference>
-    <DCCReference Include="SettingsWnd.pas">
-      <Form>SettingsForm</Form>
-    </DCCReference>
   </ItemGroup>
 </Project>

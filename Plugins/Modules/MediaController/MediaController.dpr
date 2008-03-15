@@ -41,13 +41,11 @@ uses
   SharpCenterApi,
   gr32,
   MainWnd in 'MainWnd.pas' {MainForm},
-  SettingsWnd in 'SettingsWnd.pas' {SettingsForm},
   uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  PlayerSelectWnd in 'PlayerSelectWnd.pas' {PlayerSelectForm};
+  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
 
 type
   TModule = class
@@ -226,19 +224,6 @@ begin
   end;
 end;
 
-procedure ShowSettingsWnd(ID : integer);
-var
-  n : integer;
-  temp : TModule;
-begin
-  for n := 0 to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.FForm).Settings1Click(TMainForm(temp.FForm).Settings1);
-      end;
-end;
-
 procedure SetSize(ID : integer; NewWidth : integer);
 var
   n : integer;
@@ -289,7 +274,6 @@ Exports
   Poschanged,
   Refresh,
   UpdateMessage,
-  ShowSettingsWnd,
   SetSize,
   ModuleMessage,
   GetMetaData;

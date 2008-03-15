@@ -1,6 +1,0 @@
-foobar RCDATA "foobar_icon.png"
-mpc RCDATA "mpc_icon.png"
-winamp RCDATA "winamp_icon.png"
-qcd RCDATA "qcd_icon.png"
-wmp RCDATA "wmp_icon.png"
-vlc RCDATA "vlc_icon.png"
