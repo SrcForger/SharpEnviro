@@ -240,6 +240,18 @@ begin
   end;
 end;
 
+procedure StopAllServices;
+var
+  i: Integer;
+  modData: TComponentData;
+begin
+  for i := 0 to lstComponents.Count - 1 do begin
+    modData := TComponentData(lstComponents.Items[i]);
+    if (modData.Running) and (modData.MetaData.DataType = tteService) then
+      StopService(modData)
+  end;
+end;
+
 procedure StopAll(bReboot: Boolean = False);
 var
   i: Integer;
@@ -284,7 +296,11 @@ begin
         Shell_NotifyIcon(NIM_DELETE, @nidTray); // Make sure we remove tray icon
         DestroyMenu(menPopup);
         if lstComponents <> nil then
+        begin
+          StopAllServices;
           FreeAndNil(lstComponents);
+          PostQuitMessage(0);
+        end;
       end;
 
     WM_CREATE: begin // Create and display tray icon
