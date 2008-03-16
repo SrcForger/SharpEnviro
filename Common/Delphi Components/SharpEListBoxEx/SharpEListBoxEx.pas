@@ -125,6 +125,7 @@ type
     function GetChecked: Boolean;
     function GetSubItemChecked(ASubItemIndex: Integer): boolean;
     procedure SetSubItemChecked(ASubItemIndex: Integer; const Value: boolean);
+    procedure SetChecked(const Value: Boolean);
 
   public
     constructor Create(AOwner: TComponent);
@@ -137,7 +138,7 @@ type
     property ID: Integer read FID write FID;
     property Caption: string read GetCaption write SetCaption;
     property ImageIndex: Integer read GetImageIndex write SetImageIndex;
-    property Checked: Boolean read GetChecked;
+    property Checked: Boolean read GetChecked write SetChecked;
     property Level: Integer read FLevel write FLevel;
 
     property SubItemImageIndex[ASubItemIndex: Integer]: Integer read GetSubItemImageIndex write
@@ -918,6 +919,12 @@ end;
 procedure TSharpEListItem.SetCaption(const Value: string);
 begin
   FSubItems[0] := Value;
+  TSharpEListBoxEx(FOwner).Invalidate;
+end;
+
+procedure TSharpEListItem.SetChecked(const Value: Boolean);
+begin
+  FSubItemCheckedStates[0] := Pointer(Value);
   TSharpEListBoxEx(FOwner).Invalidate;
 end;
 
