@@ -46,24 +46,18 @@ uses
   ImgList,
   pngimage,
   PngImageList,
-  JvExControls,
-  JvComponent,
   JclFileUtils,
   JclStrings,
   jvSimpleXml,
   Tabs,
-  SharpEListBox,
   SharpESkinManager,
   uSharpCenterDllMethods,
   uSharpCenterManager,
-  ToolWin,
   SharpERoundPanel,
   SharpETabList,
   GR32_Image,
   GR32,
   uVistaFuncs,
-  JvLabel,
-  JvPageList,
   SharpEListBoxEx,
   PngBitBtn,
   SharpThemeApi,
@@ -87,21 +81,9 @@ type
     pnlContent: TPanel;
     tlToolbar: TSharpETabList;
     pnlToolbar: TSharpERoundPanel;
-    plToolbar: TJvPageList;
     lbTree: TSharpEListBoxEx;
     picMain: TPngImageList;
     pilIcons: TPngImageList;
-    pagFav: TJvStandardPage;
-    pagHistory: TJvStandardPage;
-    pagImport: TJvStandardPage;
-    pagExport: TJvStandardPage;
-    Label1: TLabel;
-    edImportFilename: TEdit;
-    btnImport: TPngSpeedButton;
-    Label2: TLabel;
-    Edit2: TEdit;
-    PngSpeedButton2: TPngSpeedButton;
-    lbHistory: TSharpEListBoxEx;
     pnlLivePreview: TPanel;
     imgLivePreview: TImage32;
     pnlPluginContainer: TSharpEPageControl;
@@ -115,9 +97,18 @@ type
     btnEditApply: TPngSpeedButton;
     Timer1: TTimer;
     pnlTitle: TPanel;
-    lblDescription: TJvLabel;
-    lblTitle: TJvLabel;
     tmrClick: TTimer;
+    pcToolbar: TPageControl;
+    tabHistory: TTabSheet;
+    tabImport: TTabSheet;
+    btnImport: TPngSpeedButton;
+    Label1: TLabel;
+    edImportFilename: TEdit;
+    tabFav: TTabSheet;
+    lbHistory: TSharpEListBoxEx;
+    tabExport: TTabSheet;
+    lblDescription: TLabel;
+    lblTitle: TLabel;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
@@ -614,7 +605,7 @@ begin
     Integer(tidFavourite):
       begin
         pnlToolbar.Show;
-        pagFav.show;
+        tabFav.show;
       end;
     Integer(tidHistory):
       begin
@@ -623,12 +614,12 @@ begin
     Integer(tidImport):
       begin
         pnlToolbar.Show;
-        pagImport.Show;
+        tabImport.Show;
       end;
     Integer(tidExport):
       begin
         pnlToolbar.Show;
-        pagExport.Show;
+        tabExport.Show;
       end;
   end;
 
@@ -821,7 +812,7 @@ var
 begin
   UpdateLivePreview;
 
-  lockwindowupdate(Self.Handle);
+  //lockwindowupdate(Self.Handle);
   try
     if (@SCM.ActivePlugin.Open <> nil) then
     begin
@@ -842,7 +833,7 @@ begin
 
     end;
   finally
-    LockWindowUpdate(0);
+    //LockWindowUpdate(0);
   end;
 end;
 

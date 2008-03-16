@@ -30,11 +30,8 @@ uses
   dialogs,
   shellapi,
   graphics,
-  PngSpeedButton,
   Classes,
   sharpapi,
-  Tabs,
-  GR32_Image,
   GR32,
   SharpCenterApi;
 

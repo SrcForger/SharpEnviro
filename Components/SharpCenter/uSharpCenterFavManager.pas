@@ -13,8 +13,7 @@ uses
   Forms,
   Dialogs,
   ComCtrls,
-  ExtCtrls,
-  JvSimpleXml;
+  ExtCtrls;
 
 Type
   TSharpCenterFavManagerItem = class
