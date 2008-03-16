@@ -65,7 +65,8 @@ type
     procedure UpdateSharpEActions;
   end;
 
-
+var
+ WM_SHELLHOOK : integer;
 
 implementation
 
@@ -147,21 +148,30 @@ var
   wnd : hwnd;
   result : boolean;
 begin
-  wnd := GetTopWindow(0);
   result := False;
-  while (wnd <> 0) and (not result) do
+  if (IsServiceStarted('MultimediaInput') = MR_STARTED) and
+     (IsServiceStarted('Shell') = MR_STARTED) then
   begin
-    if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) or
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
-       ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
-       (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) then
+    wnd := SharpApi.GetShellTaskMgrWindow;
+    if wnd <> 0 then
+      SendMessage(wnd,WM_SHELLHOOK,HSHELL_APPCOMMAND,MakeLParam(0,pType));
+  end else
+  begin
+    wnd := GetTopWindow(0);
+    while (wnd <> 0) and (not result) do
+    begin
+      if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) or
+         (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
+         ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
+         (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
+         (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) then
 //       (GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST = 0) then
-      begin
-        result := (SendMessage(wnd,WM_APPCOMMAND,0,MakeLParam(0,pType)) <> 0);
-      end;
-    wnd := GetNextWindow(wnd,GW_HWNDNEXT);
-  end;
+        begin
+          result := (SendMessage(wnd,WM_APPCOMMAND,0,MakeLParam(0,pType)) <> 0);
+        end;
+      wnd := GetNextWindow(wnd,GW_HWNDNEXT);
+    end;
+  end;    
 end;
 
 //#############################
@@ -208,6 +218,7 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
   DoubleBuffered := True;
   Background  := TBitmap32.Create;
 end;
