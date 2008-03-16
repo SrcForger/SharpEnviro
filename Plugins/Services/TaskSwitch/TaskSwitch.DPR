@@ -299,13 +299,15 @@ begin
        begin
          pItem := TaskManager.GetItemByHandle(wnd);
          if pItem <> nil then
-           vwm := pItem.LastVWM
-         else vwm := currentvwm;
-         if CheckFilter(wnd,ac,currentvwm,vwm) then
          begin
-           setlength(wndlist,length(wndlist)+1);
-           wndlist[high(wndlist)].wnd := wnd;
-           wndlist[high(wndlist)].vwm := vwm;
+           vwm := pItem.LastVWM;
+//         else vwm := currentvwm;
+           if CheckFilter(wnd,ac,currentvwm,vwm) then
+           begin
+             setlength(wndlist,length(wndlist)+1);
+             wndlist[high(wndlist)].wnd := wnd;
+             wndlist[high(wndlist)].vwm := vwm;
+           end;
          end;
        end;
     wnd := GetNextWindow(wnd,GW_HWNDNEXT);           
