@@ -42,7 +42,6 @@ type
   private
     function GetItem(Index: Integer): TFilterItem;
     procedure SetItem(Index: Integer; const Value: TFilterItem);
-  published
   public
     procedure Load;
     procedure Save;
@@ -69,6 +68,7 @@ function TFilterItemList.AddItem(AItem: TFilterItem): TFilterItem;
 begin
   Add(AItem);
   AItem.Id := Self.Count;
+  result := AItem;
 end;
 
 function TFilterItemList.AddCurrentMonitor(AName: string;
@@ -159,7 +159,6 @@ end;
 procedure TFilterItemList.Load;
 var
   xml: TJclSimpleXML;
-  newItem: TFilterItem;
   sFile, sName: string;
   i, j: Integer;
   elems: TJclSimpleXMLElems;
@@ -220,7 +219,6 @@ var
   xml: TJclSimpleXML;
   tmpFilter: TFilterItem;
   i, iItem: Integer;
-  b: Boolean;
   sList: TStringList;
   showCmds: TWindowShowCommandList;
 begin

@@ -26,7 +26,6 @@ type
 
   TSWCmdItem = Class(TPersistent)
   private
-    FText: String;
     FEnabled: Boolean;
     FSWCmd: TSWCmdEnum;
     function GetText: String;
@@ -43,7 +42,6 @@ type
   private
     function GetItem(Index: Integer): TSWCmdItem;
     procedure SetItem(Index: Integer; const Value: TSWCmdItem);
-  published
   public
     procedure AddItems;
     function EnumCount: Integer;
@@ -129,7 +127,8 @@ end;
 function TWindowShowCommandList.GetItem(Index: Integer): TSWCmdItem;
 begin
   if Index < Count then
-    Result := TSWCmdItem(Items[Index]);
+    Result := TSWCmdItem(Items[Index])
+  else Result := nil;
 end;
 
 procedure TWindowShowCommandList.SetItem(Index: Integer;
