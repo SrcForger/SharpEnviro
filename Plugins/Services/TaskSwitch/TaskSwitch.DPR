@@ -39,20 +39,14 @@ uses
   uTaskSwitchGUI in 'uTaskSwitchGUI.pas',
   uTaskSwitchWnd in 'Forms\uTaskSwitchWnd.pas' {TaskSwitchWnd},
   uTaskItem in '..\Shell\uTaskItem.pas',
-  uTaskManager in '..\Shell\uTaskManager.pas';
+  uTaskManager in '..\Shell\uTaskManager.pas',
+  SWCmdList in '..\..\..\Common\Units\TaskFilterList\SWCmdList.pas',
+  TaskFilterList in '..\..\..\Common\Units\TaskFilterList\TaskFilterList.pas';
 
 type
   TActionEvent = Class(Tobject)
   Procedure MessageHandler(var Message: TMessage);
   end;
-
-  TTaskFilter = record
-                  FilterStates : Set of Byte;
-                  FilterClass : String;
-                  FilterFile  : String;
-                  FilterType  : integer;
-                  FilterName  : String;
-                end;
 
   TTaskAction = record
                   Name : String;
@@ -73,7 +67,7 @@ type
 var
   AE:TActionEvent;
   h:THandle;
-  Filters : array of TTaskFilter;
+  Filters : TFilterItemList;
   Actions : array of TTaskAction;
   TaskManager : TTaskManager;
   MessageReceived : boolean;
@@ -121,17 +115,17 @@ begin
       SharpApi.UnRegisterAction(PChar(Action));
 end;
 
-function GetFilter(pName : String) : TTaskFilter;
+function GetFilter(pName : String) : TFilterItem;
 var
   n : integer;
 begin
-  for n := 0 to High(Filters) do    
-    if CompareText(Filters[n].FilterName,pName) = 0 then
+  for n := 0 to Filters.Count - 1 do    
+    if CompareText(Filters[n].Name,pName) = 0 then
     begin
       result := Filters[n];
       exit;
     end;
-  result.FilterType := -1;
+  result := nil;
 end;
 
 function GetWndClass(wnd : hwnd) : String;
@@ -168,7 +162,7 @@ var
   R : TRect;
   Mon : TMonitor;
   nm : boolean;
-  CF : TTaskFilter;
+  CF : TFilterItem;
   WndShowCmd : integer;
   WndClassName : String;
   WndFileName : String;
@@ -189,30 +183,28 @@ begin
     for n:=0 to High(TA.IFilters) do
     begin
       CF := GetFilter(TA.IFilters[n]);
-      case CF.FilterType of
-        0: if WndShowCmd in CF.FilterStates then
-              nm := True;
-        1: if WndClassName = CF.FilterClass then
-              nm := True;
-        2: if WndFileName = CF.FilterFile then
-              nm := True;
-        3: begin
-             Mon := Screen.MonitorFromWindow(wnd);
-             GetWindowRect(wnd,R);
-             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
-               nm := True;
-           end;
-        4: begin
-             nm := (CurrentVWM = vwm);
-           end;
-        5: begin
-             nm := IsIconic(wnd);
-           end;
-      end;
+      if CF <> nil then
+        case CF.FilterType of
+          fteSWCmd: if TSWCmdEnum(WndShowCmd) in CF.SWCmds then nm := True;
+          fteWindow: if CompareText(WndClassName,CF.WndClassName) <> 0 then nm := True;
+          fteProcess: if CompareText(WndFileName,CF.FileName) <> 0 then nm := True;
+          fteCurrentMonitor: begin
+               Mon := Screen.MonitorFromWindow(wnd);
+               GetWindowRect(wnd,R);
+               if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
+                  or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
+                  or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
+                  or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
+                  or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
+                 nm := True;
+             end;
+          fteCurrentVWM: begin
+               nm := (CurrentVWM = vwm);
+             end;
+          fteMinimised: begin
+               nm := IsIconic(wnd);
+             end;
+        end;
       if nm then break;
     end;
   end;
@@ -225,27 +217,28 @@ begin
     for n:=0 to High(TA.EFilters) do
     begin
       CF := GetFilter(TA.EFilters[n]);
-      case CF.FilterType of
-        0: if WndShowCmd in CF.FilterStates then result := false;
-        1: if WndClassName = CF.FilterClass then result := false;
-        2: if WndFileName = CF.FilterFile then result := false;
-        3: begin
-             Mon := Screen.MonitorFromWindow(wnd);
-             GetWindowRect(wnd,R);
-             if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
-                or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
-               result := false;
-           end;
-        4: begin
-             result := (CurrentVWM <> vwm)
-           end;
-        5: begin
-             result := IsIconic(wnd);
-           end;
-      end;
+      if CF <> nil then
+        case CF.FilterType of
+          fteSWCmd: if TSWCmdEnum(WndShowCmd) in CF.SWCmds then result := false;
+          fteWindow: if CompareText(WndClassName,CF.WndClassName) <> 0 then result := false;
+          fteProcess: if CompareText(WndFileName,CF.FileName) <> 0 then result := false;
+          fteCurrentMonitor: begin
+               Mon := Screen.MonitorFromWindow(wnd);
+               GetWindowRect(wnd,R);
+               if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
+                  or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
+                  or PointInRect(Point(R.Left, R.Bottom), Mon.BoundsRect)
+                  or PointInRect(Point(R.Right, R.Top), Mon.BoundsRect)
+                  or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
+                 result := false;
+             end;
+          fteCurrentVWM: begin
+               result := (CurrentVWM <> vwm)
+             end;
+          fteMinimised: begin
+               result := IsIconic(wnd);
+             end;
+        end;
     end;
   end;
 end;
@@ -356,44 +349,6 @@ begin
   setlength(EnumParam.wndlist,0);
 end;
 
-procedure LoadFilterFromXML(var filter : TTaskFilter; XML : TJvSimpleXMLElem);
-var
-  n : integer;
-begin
-  filter.FilterType := XML.Items.IntValue('FilterType',2);
-  filter.FilterClass := XML.Items.Value('WndClassName');
-  filter.FilterFile  := LowerCase(XML.Items.Value('FileName'));
-  filter.FilterName := XML.Items.Value('Name','-1');
-  filter.FilterStates := [];
-  for n := 0 to 10 do
-      if XML.Items.BoolValue('SW_'+inttostr(n),False) then filter.FilterStates := filter.FilterStates + [n];
-end;
-
-procedure LoadFilterSettingsFromXML;
-var
-  XML : TJvSimpleXML;
-  i : integer;
-  fn : string;
-begin
-  setlength(Filters,0);
-  fn := SharpApi.GetSharpeGlobalSettingsPath + 'SharpBar\Module Settings\TaskBar\';
-  fn := fn + 'Filters.xml';
-  if not FileExists(fn) then
-     exit;
-
-  XML := TJvSimpleXML.Create(nil);
-  try
-    XML.LoadFromFile(fn);
-    for i := 0 to XML.Root.Items.Count - 1 do
-    begin
-      setlength(Filters,length(Filters)+1);
-      LoadFilterFromXML(Filters[High(Filters)],XML.Root.Items.Item[i]);
-    end;
-  except
-  end;
-  XML.Free;
-end;
-
 procedure LoadActionsFromXML;
 var
   XML : TJvSimpleXML;
@@ -452,12 +407,15 @@ begin
   UnregisterActions;
   ClearActions;
 
-  setlength(Filters,0);
+  Filters.Free;
 end;
 
 function Start(owner: hwnd): hwnd;
 begin
   Result := owner;
+
+  Filters := TFilterItemList.Create;
+  Filters.Load;
 
   TaskManager := TTaskManager.Create;  
   TSGUI := TTSGUI.Create;
@@ -465,7 +423,6 @@ begin
   ae := TActionEvent.Create;
   h := Classes.Allocatehwnd(Ae.MessageHandler);
 
-  LoadFilterSettingsFromXML;
   LoadActionsFromXML;
   RegisterActions;
   ServiceDone('Task Switch');
