@@ -569,6 +569,7 @@ var
   s : String;
   item : TSharpEMenuItem;
   pMenu : TSharpEMenu;
+  icon : String;
 begin
   pMenu := TSharpEMenu(FOwner);
 
@@ -583,12 +584,21 @@ begin
   begin
     begin
       s := ExtractFileName(SList[i]);
+      if (length(SList[i]) = 3) or (length(SList[i]) = 2) then // drive?
+      begin
+        if (SList[i][2] = ':') then
+        begin
+          Icon := 'shell:icon';
+          if length(SList[i]) = 2 then
+            SList[i] := SList[i] + '\';
+          s := SList[i];
+        end else Icon := 'icon.file';
+      end else
       if not FileExists(SList[i]) then
-        Item := TSharpEMenuItem(pMenu.AddLinkItem(s,SList[i],'icon.file',true))
-      else Item := TSharpEMenuItem(pMenu.AddLinkItem(s,SList[i],'shell:icon',true));
+        Icon := 'icon.file'
+      else Icon := 'shell:icon';
+      Item := TSharpEMenuItem(pMenu.AddLinkItem(s,SList[i],Icon,true));
       item.PropList.Add('NoSort',True);
-//      item.PropList.Add('Sort',2);
-  //    item.PropList.Add('SortData',-i);
     end;
   end;
 
