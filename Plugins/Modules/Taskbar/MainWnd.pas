@@ -33,7 +33,7 @@ uses
   Math, Contnrs, SharpESkinManager, SharpETaskItem, SharpESkin,
   SharpEBaseControls, SharpECustomSkinSettings, uTaskManager, uTaskItem,
   DateUtils, GR32, GR32_PNG, SharpIconUtils, SharpEButton, JvComponentBase,
-  JvDragDrop, VWMFunctions,Commctrl;
+  JvDragDrop, VWMFunctions,Commctrl,TaskFilterList,SWCmdList;
 
 
 type
@@ -45,13 +45,6 @@ type
   THSLColor = record
                 Hue, Saturation, Lightness : Integer;
               end;
-  TTaskFilter = record
-                  FilterStates : Set of Byte;
-                  FilterClass : String;
-                  FilterFile  : String;
-                  FilterType  : integer;
-                  FilterName  : String;
-                end;
 
   TMainForm = class(TForm)
     MenuPopup: TPopupMenu;
@@ -70,7 +63,6 @@ type
     procedure ses_minallClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure Settings1Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
   protected
   private
@@ -87,7 +79,7 @@ type
     sMaxAllButton : boolean;
     sMinAllButton : boolean;
     sIFilter,sEFilter : Boolean;
-    sIFilters,sEFilters : array of TTaskFilter;
+    sIFilters,sEFilters,sFilters : TFilterItemList;
     FLocked : boolean;
     FSpecialButtonWidth : integer;
     FDminA,FDmaxA : TBitmap32; // default min/max all images
@@ -142,8 +134,7 @@ type
 
 implementation
 
-uses SettingsWnd,
-     uSharpBarAPI,
+uses uSharpBarAPI,
      ToolTipApi;
 
 var
@@ -242,6 +233,9 @@ constructor TMainForm.CreateParented(ParentWindow : hwnd; pID,pBarID : integer; 
 begin
   DebugOutPutInfo('TMainForm.CreateParented (constructor)');
   Inherited CreateParented(ParentWindow);
+  sIFilters := TFilterItemList.Create;
+  sEFilters := TFilterItemList.Create;
+  sFilters := TFilterItemList.Create;
   ModuleID := pID;
   BarID := pBarID;
   BarWnd := pBarWnd;
@@ -490,52 +484,12 @@ begin
   if Button = mbRight then DisplaySystemMenu(TSharpETaskItem(Sender).Handle);
 end;
 
-procedure LoadFilterFromXML(var filter : TTaskFilter; XML : TJclSimpleXMLElem);
-var
-  n : integer;
-begin
-  filter.FilterType := XML.Items.IntValue('FilterType',2);
-  filter.FilterClass := XML.Items.Value('WndClassName');
-  filter.FilterFile  := LowerCase(XML.Items.Value('FileName'));
-  filter.FilterStates := [];
-  for n := 0 to 10 do
-      if XML.Items.BoolValue('SW_'+inttostr(n),False) then filter.FilterStates := filter.FilterStates + [n];
-end;
-
 procedure TMainForm.LoadFilterSettingsFromXML;
-var
-  XML : TJclSimpleXML;
-  i,n : integer;
-  fn : string;
 begin
   DebugOutPutInfo('TMainForm.LoadFilterSettingsFromXML (Procedure)');
-  fn := SharpApi.GetSharpeGlobalSettingsPath + 'SharpBar\Module Settings\TaskBar\';
-  fn := fn + 'Filters.xml';
-  if not FileExists(fn) then
-  begin
-    sIFilter := False;
-    sEFilter := False;
-    exit;
-  end;
-
-  XML := TJclSimpleXML.Create;
-  try
-    XML.LoadFromFile(fn);
-    for i := 0 to High(sIFilters) do
-    begin
-      for n := 0 to XML.Root.Items.Count - 1 do
-          if XML.Root.Items.Item[n].Items.Value('Name') = sIFilters[i].FilterName then
-             LoadFilterFromXML(sIFilters[i],XML.Root.Items.Item[n]);
-    end;
-    for i := 0 to High(sEFilters) do
-    begin
-      for n := 0 to XML.Root.Items.Count - 1 do
-          if XML.Root.Items.Item[n].Items.Value('Name') = sEFilters[i].FilterName then
-             LoadFilterFromXML(sEFilters[i],XML.Root.Items.Item[n]);
-    end;
-  except
-  end;
-  XML.Free;
+  sIFilters.Clear;
+  sEFilters.Clear;
+  sFilters.Load;
 end;
 
 procedure TMainForm.LoadSettings;
@@ -543,7 +497,8 @@ var
   fitem : TJclSimpleXMLElem;
   XML : TJclSimpleXML;
   fileloaded : boolean;
-  n : integer;
+  n,i : integer;
+  newitem : TFilterItem;
 begin
   DebugOutPutInfo('TMainForm.LoadSettings (Procedure)');
   sState     := tisFull;
@@ -552,6 +507,8 @@ begin
   sSpacing   := 2;
   sSort      := False;
   sDebug     := False;
+
+  LoadFilterSettingsFromXML;
 
   XML := TJclSimpleXML.Create;
   try
@@ -580,15 +537,19 @@ begin
       sIFilter := BoolValue('IFilter',False);
       sEFilter := BoolValue('EFilter',False);
       sDebug   := BoolValue('Debug',False);
-      setlength(sIFilters,0);
-      setlength(sEFilters,0);
       if ItemNamed['IFilters'] <> nil then
       begin
         fitem := ItemNamed['IFilters'];
         for n := 0 to fitem.Items.Count-1 do
         begin
-          setlength(sIFilters,length(sIFilters)+1);
-          sIFilters[High(sIFilters)].FilterName := fitem.Items.Item[n].Value;
+          for i := sFilters.Count - 1 downto 0 do
+            if CompareText(sFilters.Item[i].Name,fitem.Items.Item[n].Value) = 0 then
+            begin
+              newitem := TFilterItem.Create;
+              newitem.Assign(sFilters.Item[i]);
+              sIFilters.AddItem(newitem);
+              break;
+            end;
         end;
       end;
       if ItemNamed['EFilters'] <> nil then
@@ -596,16 +557,21 @@ begin
         fitem := ItemNamed['EFilters'];
         for n := 0 to fitem.Items.Count-1 do
         begin
-          setlength(sEFilters,length(sEFilters)+1);
-          sEFilters[High(sEFilters)].FilterName := fitem.Items.Item[n].Value;
+          for i := sFilters.Count - 1 downto 0 do
+            if CompareText(sFilters.Item[i].Name,fitem.Items.Item[n].Value) = 0 then
+            begin
+              newitem := TFilterItem.Create;
+              newitem.Assign(sFilters.Item[i]);
+              sEFilters.AddItem(newitem);
+              break;
+            end;
         end;
       end;
     end;
   XML.Free;
   
-  if length(sEFilters) = 0 then sEFilter := False;
-  if length(sIFilters) = 0 then sIFilter := False;
-  if (sIFilter) or (sEFilter) then LoadFilterSettingsFromXML;
+  if sEFilters.Count = 0 then sEFilter := False;
+  if sIFilters.Count = 0 then sIFilter := False;
 
   UpdateCustomSettings;
 
@@ -681,114 +647,6 @@ begin
   end else AlignTaskComponents;
 end;
 
-
-procedure TMainForm.Settings1Click(Sender: TObject);
-var
-  SettingsForm : TSettingsForm;
-  fitem : TJclSimpleXMLElem;
-  XML : TJclSimpleXML;
-  n,i : integer;
-begin
-  DebugOutPutInfo('TMainForm.Settings1Click (Procedure)');
-  try
-    SettingsForm := TSettingsForm.Create(application.MainForm);
-    case sState of
-      tisFull    : SettingsForm.cb_tsfull.Checked := True;
-      tisCompact : SettingsForm.cb_tscompact.Checked := True;
-      tisMini    : SettingsForm.cb_tsminimal.Checked := True;
-    end;
-    case sSortType of
-      stCaption  : SettingsForm.rb_caption.Checked := True;
-      stWndClass : SettingsForm.rb_wndclassname.Checked := True;
-      stTime     : SettingsForm.rb_timeadded.Checked := True;
-      stIcon     : SettingsForm.rb_icon.Checked := True;
-    end;
-    SettingsForm.cb_debug.Checked  := sDebug;
-    SettingsForm.cb_minall.Checked := sMinAllButton;
-    SettingsForm.cb_maxall.Checked := sMaxAllButton;
-    SettingsForm.cb_sort.Checked := sSort;
-    SettingsForm.rb_ifilter.Checked := sIFilter;
-    SettingsForm.rb_efilter.Checked := sEFilter;
-    SettingsForm.UpdateFilterList;
-    for n := 0 to High(sIFilters) do
-    begin
-      i := SettingsForm.list_include.Items.IndexOf(sIFilters[n].FilterName);
-      if i >=0 then SettingsForm.list_include.Checked[i] := True;
-    end;
-    for n := 0 to High(sEFilters) do
-    begin
-      i := SettingsForm.list_exclude.Items.IndexOf(sEFilters[n].FilterName);
-      if i >=0 then SettingsForm.list_exclude.Checked[i] := True;
-    end;
-
-    if SettingsForm.ShowModal = mrOk then
-    begin
-      if SettingsForm.cb_tscompact.Checked then sState := tisCompact
-         else if SettingsForm.cb_tsminimal.Checked then sState := tisMini
-              else sState := tisFull;
-      sSort := SettingsForm.cb_sort.Checked;
-      if SettingsForm.rb_wndclassname.Checked then sSortType := stWndClass
-         else if SettingsForm.rb_timeadded.Checked then sSortType := stTime
-              else if SettingsForm.rb_icon.Checked then sSortType := stIcon
-                   else sSortType := stCaption;
-      sIFilter := SettingsForm.rb_ifilter.Checked;
-      sEFilter := SettingsForm.rb_efilter.Checked;
-      sDebug   := SettingsForm.cb_debug.Checked;
-      setlength(sIFilters,0);
-      setlength(sEFilters,0);
-      for n := 0 to SettingsForm.list_include.Count - 1 do
-          if SettingsForm.list_include.Checked[n] then
-          begin
-            setlength(sIFilters,length(sIFilters)+1);
-            sIFilters[High(sIFilters)].FilterName := SettingsForm.list_include.Items[n];
-          end;
-      for n := 0 to SettingsForm.list_exclude.Count - 1 do
-          if SettingsForm.list_exclude.Checked[n] then
-          begin
-            setlength(sEFilters,length(sEFilters)+1);
-            sEFilters[High(sEFilters)].FilterName := SettingsForm.list_exclude.Items[n];
-          end;
-      sMinAllButton := SettingsForm.cb_minall.Checked;
-      sMaxAllButton := SettingsForm.cb_maxall.Checked;
-
-      XML := TJclSimpleXML.Create;
-      XML.Root.Name := 'TaskBarModuleSettings';
-      with XML.Root.Items do
-      begin
-        Add('Sort',sSort);
-        case sSortType of
-          stCaption  : Add('SortType',0);
-          stWndClass : Add('SortType',1);
-          stTime     : Add('SortType',2);
-          stIcon     : Add('SortType',3);
-        end;
-        case sState of
-          tisFull    : Add('State',0);
-          tisCompact : Add('State',1);
-          tisMini    : Add('State',2);
-        end;
-        Add('Debug',sDebug);
-        Add('MinAllButton',sMinAllButton);
-        Add('MaxAllButton',sMaxAllButton);
-        Add('IFilter',sIFilter);
-        Add('EFilter',sEFilter);
-        fitem := Add('IFilters');
-        for n := 0 to High(sIFilters) do
-            fitem.Items.Add(inttostr(n),sIFilters[n].FilterName);
-        fitem := Add('EFilters');
-        for n := 0 to High(sEFilters) do
-            fitem.Items.Add(inttostr(n),sEFilters[n].FilterName);
-      end;
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      XML.Free;
-      LoadSettings;
-      AlignTaskComponents;
-      RealignComponents(True);
-    end;
-  finally
-    FreeAndNil(SettingsForm);
-  end;
-end;
 
 procedure TMainForm.CalculateItemWidth(ItemCount : integer);
 var
@@ -941,16 +799,16 @@ begin
   nm := False;
   if sIFilter then
   begin
-    for n:=0 to High(sIFilters) do
+    for n:=0 to sIFilters.Count - 1 do
     begin
       case sIFilters[n].FilterType of
-        0: if pItem.Placement.showCmd in sIFilters[n].FilterStates then
+        fteSWCmd: if TSWCmdEnum(pItem.Placement.showCmd) in sIFilters[n].SWCmds then
               nm := True;
-        1: if pItem.WndClass = sIFilters[n].FilterClass then
+        fteWindow: if CompareText(pItem.WndClass,sIFilters[n].WndClassName) = 0 then
               nm := True;
-        2: if pItem.FileName = sIFilters[n].FilterFile then
+        fteProcess: if CompareText(pItem.FileName,sIFilters[n].FileName) = 0 then
               nm := True;
-        3: begin
+        fteCurrentMonitor: begin
              Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
              if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
@@ -960,10 +818,10 @@ begin
                 or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
                nm := True;
            end;
-        4: begin
+        fteCurrentVWM: begin
              nm := (CurrentVWM = pItem.LastVWM);
            end;
-        5: begin
+        fteMinimised: begin
              nm := IsIconic(pItem.Handle);
            end;
       end;
@@ -976,13 +834,16 @@ begin
 
   if sEFilter then
   begin
-    for n:=0 to High(sEFilters) do
+    for n:=0 to sEFilters.Count - 1 do
     begin
       case sEFilters[n].FilterType of
-        0: if pItem.Placement.showCmd in sEFilters[n].FilterStates then result := false;
-        1: if pItem.WndClass = sEFilters[n].FilterClass then result := false;
-        2: if pItem.FileName = sEFilters[n].FilterFile then result := false;
-        3: begin
+        fteSWCmd: if TSWCmdEnum(pItem.Placement.showCmd) in sEFilters[n].SWCmds then
+              result := False;
+        fteWindow: if CompareText(pItem.WndClass,sEFilters[n].WndClassName) = 0 then
+              result := False;
+        fteProcess: if CompareText(pItem.FileName,sEFilters[n].FileName) = 0 then
+              result := False;
+        fteCurrentMonitor: begin
              Mon := Screen.MonitorFromWindow(BarWnd);
              GetWindowRect(pItem.Handle,R);
              if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
@@ -992,10 +853,10 @@ begin
                 or PointInRect(Point(R.Right, R.Bottom), Mon.BoundsRect) then
                result := false;
            end;
-        4: begin
+        fteCurrentVWM: begin
              result := (CurrentVWM <> pItem.LastVWM)
            end;
-        5: begin
+        fteMinimised: begin
              result := IsIconic(pItem.Handle);
            end;
       end;
@@ -1289,6 +1150,9 @@ begin
   IList.Free;
   FreeAndNil(Background);
   UnRegisterShellHookReceiver(Handle);
+  sIFilters.Free;
+  sEFilters.Free;
+  sFilters.Free;
 end;
 
 procedure TMainForm.ses_minallClick(Sender: TObject);

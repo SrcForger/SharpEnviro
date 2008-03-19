@@ -186,8 +186,8 @@ begin
       if CF <> nil then
         case CF.FilterType of
           fteSWCmd: if TSWCmdEnum(WndShowCmd) in CF.SWCmds then nm := True;
-          fteWindow: if CompareText(WndClassName,CF.WndClassName) <> 0 then nm := True;
-          fteProcess: if CompareText(WndFileName,CF.FileName) <> 0 then nm := True;
+          fteWindow: if CompareText(WndClassName,CF.WndClassName) = 0 then nm := True;
+          fteProcess: if CompareText(WndFileName,CF.FileName) = 0 then nm := True;
           fteCurrentMonitor: begin
                Mon := Screen.MonitorFromWindow(wnd);
                GetWindowRect(wnd,R);
@@ -220,8 +220,8 @@ begin
       if CF <> nil then
         case CF.FilterType of
           fteSWCmd: if TSWCmdEnum(WndShowCmd) in CF.SWCmds then result := false;
-          fteWindow: if CompareText(WndClassName,CF.WndClassName) <> 0 then result := false;
-          fteProcess: if CompareText(WndFileName,CF.FileName) <> 0 then result := false;
+          fteWindow: if CompareText(WndClassName,CF.WndClassName) = 0 then result := false;
+          fteProcess: if CompareText(WndFileName,CF.FileName) = 0 then result := false;
           fteCurrentMonitor: begin
                Mon := Screen.MonitorFromWindow(wnd);
                GetWindowRect(wnd,R);
@@ -236,7 +236,7 @@ begin
                result := (CurrentVWM <> vwm)
              end;
           fteMinimised: begin
-               result := IsIconic(wnd);
+               result := not IsIconic(wnd);
              end;
         end;
     end;

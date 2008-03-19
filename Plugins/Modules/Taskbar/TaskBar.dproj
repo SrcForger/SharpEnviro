@@ -47,22 +47,15 @@
     <DCCReference Include="..\..\..\Common\Units\SharpFX\graphicsFX.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas" />
     <DCCReference Include="..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas" />
+    <DCCReference Include="..\..\..\Common\Units\TaskFilterList\SWCmdList.pas" />
+    <DCCReference Include="..\..\..\Common\Units\TaskFilterList\TaskFilterList.pas" />
     <DCCReference Include="..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas" />
     <DCCReference Include="..\..\..\Common\Units\VWM\VWMFunctions.pas" />
     <DCCReference Include="..\..\..\Components\SharpBar\uSharpBarAPI.pas" />
     <DCCReference Include="..\..\Services\Shell\uTaskItem.pas" />
     <DCCReference Include="..\..\Services\Shell\uTaskManager.pas" />
-    <DCCReference Include="EditFilterWmd.pas">
-      <Form>EditFilterForm</Form>
-    </DCCReference>
     <DCCReference Include="MainWnd.pas">
       <Form>MainForm</Form>
-    </DCCReference>
-    <DCCReference Include="SettingsWnd.pas">
-      <Form>SettingsForm</Form>
-    </DCCReference>
-    <DCCReference Include="sFilterWnd.pas">
-      <Form>sfilterform</Form>
     </DCCReference>
   </ItemGroup>
 </Project>
