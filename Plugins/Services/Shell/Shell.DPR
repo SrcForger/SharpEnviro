@@ -356,6 +356,10 @@ begin
     end;
     else Result := DefWindowProc(wnd, Msg, wParam, lParam);
   end;
+
+  // Office fix...
+  if msg = WM_USER + 236 then
+    Result := 1
 end;
 
 function MsTaskSwWClassWndProc(wnd : hwnd; Msg, wParam, lParam: Integer): Integer; stdcall;
@@ -578,6 +582,9 @@ begin
   TaskManager.Enabled := True;
   TaskManager.InitList;
 
+  SharpApi.SharpEBroadCast(WM_SHELLHOOKWINDOWCREATED,MsTaskSwWClass,0);
+  TaskMsgManager.RegisterHook;
+
   TerminateShellServices;
   sleep(1000);
   StartShellServices;
@@ -623,10 +630,6 @@ begin
   lastappcommand := GetTickCount;
   WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
   setlength(WndList,0);
-
-  SharpApi.SharpEBroadCast(WM_SHELLHOOKWINDOWCREATED,MsTaskSwWClass,0);
-
-  RegisterHook;
 end;
 
 procedure TTaskMsgManager.DeleteWnd(Index: Integer);
