@@ -748,7 +748,7 @@ begin
   end;
 
   // add new tasks
-  for i := TM.GetCount - 1 downto 0  do
+  for i := 0 to TM.GetCount - 1  do
   begin
     pItem := TM.GetItemByIndex(i);
     if pItem <> nil then
