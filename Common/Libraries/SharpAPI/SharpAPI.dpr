@@ -1411,12 +1411,15 @@ begin
   repeat
     DoSleep := True;
     try
-      handle := OpenFile(PChar(pFileName),temp,OF_SHARE_EXCLUSIVE);
-      if not (handle = HFILE_ERROR) then
-      begin
-        DoSleep := False;
-        CloseHandle(handle);
-        result := True;
+      try
+        handle := OpenFile(PChar(pFileName),temp,OF_SHARE_EXCLUSIVE);
+        if not (handle = HFILE_ERROR) then
+        begin
+          DoSleep := False;
+          CloseHandle(handle);
+          result := True;
+        end;
+      except
       end;
     finally
       if DoSleep then
