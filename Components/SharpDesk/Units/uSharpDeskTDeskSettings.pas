@@ -51,6 +51,8 @@ type
                        GridX               : integer;
                        GridY               : integer;
                        SetObjectRolledOut  : boolean;
+                       MenuFile            : String;
+                       MenuFileShift       : String;
                        constructor Create(pOwner : TObject);
                        destructor Destroy; override;
                        procedure SaveSettings;
@@ -80,6 +82,8 @@ begin
   ScreenSizeAdjust    := True;
   GridX               := 8;
   GridY               := 8;
+  MenuFile            := 'menu.xml';
+  MenuFileShift       := 'quicklaunch.xml';
   XML := TJvSimpleXML.Create(nil);
   ReloadSettings;
 end;
@@ -128,6 +132,8 @@ begin
     Add('WallpaperWatch',WallpaperWatch);
     Add('ScreenRotAdjust',ScreenRotAdjust);
     Add('ScreenSizeAdjust',ScreenSizeAdjust);
+    Add('MenuFile',menufile);
+    Add('MenuFileShift',MenuFileShift);
   end;
   with XML.Root.Items.ItemNamed['Grid'].Items do
   begin
@@ -171,6 +177,8 @@ begin
     WallpaperWatch      := BoolValue('WallpaperWatch',True);
     ScreenRotAdjust     := BoolValue('ScreenRotAdjust',True);
     ScreenSizeAdjust    := BoolValue('ScreenSizeAdjust',True);
+    MenuFile            := Value('MenuFile','menu.xml');
+    MenuFileShift       := Value('MenuFileShift','quicklaunch.xml');
   end;
   with XML.Root.Items.ItemNamed['Grid'].Items do
   begin

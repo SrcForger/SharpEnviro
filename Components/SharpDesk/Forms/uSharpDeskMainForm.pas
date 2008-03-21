@@ -731,6 +731,7 @@ procedure TSharpDeskMainForm.BackgroundImageMouseUp(Sender: TObject;
 var
    B : integer;
    DesktopObject : TDesktopObject;
+   ActionStr : String;
 begin
   if not SharpDesk.Enabled then exit;
   SharpDesk.MouseDown:=False;
@@ -817,8 +818,12 @@ begin
     LastY:=Y;
     if (Button = mbRight) then
     begin
-      SharpApi.SharpExecute(SharpApi.GetSharpeDirectory+'SharpMenu.exe '
-                            + inttostr(Mouse.CursorPos.X) + ' ' + inttostr(Mouse.CursorPos.Y));
+      ActionStr := inttostr(Mouse.CursorPos.X) + ' ' + inttostr(Mouse.CursorPos.Y) + ' ' + '1';
+      ActionStr := ActionStr + ' "' + SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
+      if (Shift = [ssShift]) then
+        ActionStr := ActionStr + SharpDesk.DeskSettings.MenuFileShift + '.xml"'
+      else ActionStr := ActionStr + SharpDesk.DeskSettings.MenuFile + '.xml"';
+      ShellApi.ShellExecute(Handle,'open',PChar(GetSharpEDirectory + 'SharpMenu.exe'),PChar(ActionStr),GetSharpEDirectory,SW_SHOWNORMAL);
       //sleep(1000);
       SharpApi.SendDebugMessageEx('SharpDesk',PChar('Menu popup at : ' + inttostr(Mouse.CursorPos.X) + '|' + inttostr(Mouse.CursorPos.Y)),clblue,DMT_Trace);
     end;

@@ -68,6 +68,7 @@ begin
   frmDeskSettings.cb_wpwatch.Checked := XMLSettings.WallpaperWatch;
   frmDeskSettings.cb_autorotate.Checked := XMLSettings.ScreenRotAdjust;
   frmDeskSettings.cb_adjustsize.Checked := XMLSettings.ScreenSizeAdjust;
+  frmDeskSettings.BuildMenuList(XMLSettings.MenuFile,XMLSettings.MenuFileShift);
 
   frmDeskSettings.Show;
   result := frmDeskSettings.Handle;
@@ -84,6 +85,8 @@ begin
   XMLSettings.WallpaperWatch := frmDeskSettings.cb_wpwatch.Checked;
   XMLSettings.ScreenRotAdjust := frmDeskSettings.cb_autorotate.Checked;
   XMLSettings.ScreenSizeAdjust := frmDeskSettings.cb_adjustsize.Checked;
+  XMLSettings.MenuFile := frmDeskSettings.cbMenuList.Text;
+  XMLSettings.MenuFileshift := frmDeskSettings.cbMenuShift.Text;
   XMLSettings.SaveSettings;
 end;
 

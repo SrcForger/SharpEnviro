@@ -57,6 +57,13 @@ type
     cb_grid: TCheckBox;
     sgb_gridy: TSharpeGaugeBox;
     sgb_gridx: TSharpeGaugeBox;
+    Panel2: TPanel;
+    Label7: TLabel;
+    cbMenuList: TComboBox;
+    Label8: TLabel;
+    Label9: TLabel;
+    Label10: TLabel;
+    cbMenuShift: TComboBox;
     procedure sgb_gridyChangeValue(Sender: TObject; Value: Integer);
     procedure cb_ddClick(Sender: TObject);
     procedure cb_ammClick(Sender: TObject);
@@ -64,10 +71,12 @@ type
     procedure cb_gridClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure cbMenuListChange(Sender: TObject);
   private
     procedure UpdateGridBox;
     procedure SendUpdate;
   public
+    procedure BuildMenuList(cMenu,sMenu : String);
   end;
 
 var
@@ -116,6 +125,39 @@ begin
 end;
 
 procedure TfrmDeskSettings.cb_singleclickClick(Sender: TObject);
+begin
+  SendUpdate;
+end;
+
+procedure TfrmDeskSettings.BuildMenuList(cMenu,sMenu : String);
+var
+  sr : TSearchRec;
+  Dir : String;
+  s : string;
+begin
+  cbmenulist.Items.Clear;
+  Dir := SharpApi.GetSharpeUserSettingsPath;
+  if FindFirst(Dir + 'SharpMenu\*.xml',FAAnyFile,sr) = 0 then
+  repeat
+    s := sr.Name;
+    setlength(s,length(s) - length(ExtractFileExt(s)));
+    cbmenulist.Items.Add(s);
+    cbmenushift.Items.Add(s);
+    if CompareText(s,cMenu) = 0 then
+      cbmenulist.ItemIndex := cbmenulist.Items.Count - 1;
+    if CompareText(s,sMenu) = 0 then
+      cbmenushift.ItemIndex := cbmenushift.Items.Count - 1;
+
+  until FindNext(sr) <> 0;
+  FindClose(sr);
+
+  if (cbmenulist.ItemIndex < 0) and (cbmenulist.Items.Count > 0) then
+     cbmenulist.ItemIndex := 0;
+  if (cbmenushift.ItemIndex < 0) and (cbmenushift.Items.Count > 0) then
+     cbmenushift.ItemIndex := 0;
+end;
+
+procedure TfrmDeskSettings.cbMenuListChange(Sender: TObject);
 begin
   SendUpdate;
 end;

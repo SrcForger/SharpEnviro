@@ -41,10 +41,6 @@ object SharpDeskMainForm: TSharpDeskMainForm
     OnMouseDown = BackgroundImageMouseDown
     OnMouseMove = BackgroundImageMouseMove
     OnMouseUp = BackgroundImageMouseUp
-    ExplicitLeft = 8
-    ExplicitTop = 8
-    ExplicitWidth = 297
-    ExplicitHeight = 155
   end
   object ObjectPopUp: TPopupMenu
     AutoLineReduction = maManual
