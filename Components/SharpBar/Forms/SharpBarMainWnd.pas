@@ -651,7 +651,6 @@ begin
   if FStartup then
     exit;
 
-  ModuleManager.DebugOutput('WM_UpdateBarWidth', 2, 1);
   //try
     ModuleManager.ReCalculateModuleSize((msg.wparam = 0));
   //finally
