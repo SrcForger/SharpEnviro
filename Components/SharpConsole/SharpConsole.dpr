@@ -16,6 +16,7 @@ uses
 begin
   Application.Initialize;
   Application.Title := 'SharpConsole';
+  Application.ShowMainForm := True;
   Application.CreateForm(TSharpConsoleWnd, SharpConsoleWnd);
   uVistaFuncs.SetVistaFonts(SharpConsoleWnd);
   Debugging.PrintBanners := True;

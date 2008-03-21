@@ -67,12 +67,6 @@ function TDebugStore.Add(DTLogged: TDateTime; ErrorType: integer; Module: string
 var
   errorstr:String;
 begin
-  Result := TInfo.Create;
-  Result.DTLogged := DTLogged;
-  Result.ErrorType := ErrorType;
-  Result.Module := Module;
-  Result.MessageText := MessageText;
-
   // Draw the text
   case ErrorType of
     DMT_INFO: errorstr := 'INFO';
@@ -83,7 +77,13 @@ begin
   end;
 
   if not (SharpConsoleWnd.IsModuleNotChecked(errorstr)) then
-      if not (SharpConsoleWnd.IsModuleNotChecked(Module)) then begin
+      if not (SharpConsoleWnd.IsModuleNotChecked(Module)) then
+  begin
+    Result := TInfo.Create;
+    Result.DTLogged := DTLogged;
+    Result.ErrorType := ErrorType;
+    Result.Module := Module;
+    Result.MessageText := MessageText;
 
     FItems.Add(Result);
 

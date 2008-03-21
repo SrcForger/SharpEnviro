@@ -29,6 +29,7 @@ uses
   Dialogs,
   sharpapi,
   StdCtrls,
+  Contnrs,
   Menus,
   ExtCtrls,
   fatthings,
@@ -113,6 +114,7 @@ type
     Label2: TLabel;
     clbDebugLevel: TJvgCheckListBox;
     Splitter1: TSplitter;
+    UpdateTimer: TTimer;
     procedure clbDebugLevelClick(Sender: TObject);
     procedure clbModuleListClick(Sender: TObject);
     procedure tlLogTabChange(ASender: TObject;
@@ -156,9 +158,11 @@ type
       X, Y: Integer);
     procedure tbPauseClick(Sender: TObject);
     procedure tmrRevertNormTimer(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormDestroy(Sender: TObject);
+    procedure UpdateTimerTimer(Sender: TObject);
   private
     FNotChecked: TStringList;
+    FUpdateList : TObjectList;
     procedure Restore(Sender: TObject);
     procedure GetCopyData(var Msg: TMessage); message wm_CopyData;
     procedure UpdateLog(Sender: TObject);
@@ -540,6 +544,15 @@ begin
   end;
 
   Application.OnHint := ShowToolBarHint;
+  FUpdateList := TObjectList.Create(False);
+  FUpdateList.Clear;
+end;
+
+procedure TSharpConsoleWnd.FormDestroy(Sender: TObject);
+begin
+  UpdateTimer.Enabled := FalsE;
+  FUpdateList.Free;
+  FNotChecked.Free;
 end;
 
 procedure TSharpConsoleWnd.FormPaint(Sender: TObject);
@@ -635,44 +648,15 @@ begin
     Result := strl.Strings[0]
   else
     Result := '';
+  Strl.Free;
 end;
 
 procedure TSharpConsoleWnd.UpdateLog(Sender: TObject);
-var
-  errorstr: string;
 begin
-  // Update the available modules
+  FUpdateList.Add(Sender);
   UpdateModulesList;
-
-  // Draw the text
-  case TInfo(Sender).ErrorType of
-    DMT_INFO: errorstr := 'INFO';
-    DMT_STATUS: errorstr := 'STATUS';
-    DMT_WARN: errorstr := 'WARN';
-    DMT_ERROR: errorstr := 'ERROR';
-    DMT_TRACE: errorstr := 'TRACE';
-  end;
-
-  if Playing then begin
-    if not (IsModuleNotChecked(errorstr)) then begin
-      if not (IsModuleNotChecked(TInfo(Sender).Module)) then begin
-
-        DrawText(TInfo(Sender).MessageText, clnone, TInfo(Sender).ErrorType,
-          TInfo(Sender).DTLogged);
-
-        mmoCopy.Lines.Add(Format('%s : %s',
-          [FormatDateTime('hh:nn:ss dd/mm/yy', TInfo(Sender).DTLogged),
-          errorstr + ' | ' + RemoveTags(TInfo(Sender).MessageText)]));
-
-        // Update Icon
-        ConsoleFlashInc := 0;
-        tiMain.Icon := TrayFlash.Picture.Icon;
-
-        tmrRevertNorm.Enabled := True;
-      end;
-    end;
-  end;
-
+  if not UpdateTimer.Enabled then
+    UpdateTimer.Enabled := True;
 end;
 
 procedure TSharpConsoleWnd.SelectAll1Click(Sender: TObject);
@@ -718,6 +702,47 @@ begin
   end;
   strl.Free;
   clbModuleList.Items.endupdate;
+end;
+
+procedure TSharpConsoleWnd.UpdateTimerTimer(Sender: TObject);
+var
+  errorstr: String;
+  item : TInfo;
+begin
+  if FUpdateList.Count > 0 then
+  begin
+    item := TInfo(FUpdateList.Items[0]);
+
+    // Draw the text
+    case item.ErrorType of
+      DMT_INFO: errorstr := 'INFO';
+      DMT_STATUS: errorstr := 'STATUS';
+      DMT_WARN: errorstr := 'WARN';
+      DMT_ERROR: errorstr := 'ERROR';
+      DMT_TRACE: errorstr := 'TRACE';
+    end;
+
+    if Playing then begin
+      if not (IsModuleNotChecked(errorstr)) then begin
+        if not (IsModuleNotChecked(item.Module)) then begin
+
+          DrawText(item.MessageText, clnone, item.ErrorType,
+            item.DTLogged);
+
+          mmoCopy.Lines.Add(Format('%s : %s',
+            [FormatDateTime('hh:nn:ss dd/mm/yy', item.DTLogged),
+            errorstr + ' | ' + RemoveTags(item.MessageText)]));
+
+          // Update Icon
+          ConsoleFlashInc := 0;
+          tiMain.Icon := TrayFlash.Picture.Icon;
+
+          tmrRevertNorm.Enabled := True;
+        end;
+      end;
+    end;
+    FUpdateList.Delete(0);
+  end else UpdateTimer.Enabled := False;
 end;
 
 procedure TSharpConsoleWnd.Infi1Click(Sender: TObject);
@@ -1069,13 +1094,6 @@ begin
     tmrRevertNorm.Enabled := False;
     ConsoleFlashInc := 0;
   end;
-end;
-
-procedure TSharpConsoleWnd.FormClose(Sender: TObject;
-  var Action: TCloseAction);
-begin
-  Action := caNone;
-  Hide;
 end;
 
 procedure TSharpConsoleWnd.tlLogTabChange(ASender: TObject;
