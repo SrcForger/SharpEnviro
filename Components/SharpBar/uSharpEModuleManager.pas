@@ -651,6 +651,11 @@ begin
       fileloaded := True;
     end;
   except
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpBar',PChar('(LoadModuleSpecial): Error loading '+ DirA + 'Bar.xml'), clred, DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
+    end;
   end;
   if fileloaded then
     if XML.Root.Items.ItemNamed['Modules'] <> nil then
@@ -879,15 +884,10 @@ begin
      else MTWidth := 0;
 
   // get left/right offets for plugin area
-  try
-    if FBar.ShowThrobber then
-       lo := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.X)
-       else lo := FBar.Throbber.Left;
-    ro := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.Y);
-  except
-    lo := 0;
-    ro := 0;
-  end;
+  if FBar.ShowThrobber then
+    lo := FSkinManager.Skin.BarSkin.PAXoffset.XAsInt
+  else lo := FBar.Throbber.Left;
+  ro := FSkinManager.Skin.BarSkin.PAXoffset.YAsInt;
 
   result := maxsize - ro - lo - FModules.Count * MTWidth;
 end;
@@ -1168,15 +1168,11 @@ var
 begin
   if FShutdown then exit;
 
-  try
-    if FBar.ShowThrobber then
-       lo := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.X)
-       else lo := FBar.Throbber.Left;
-    ro := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.Y);
-  except
-    lo := 0;
-    ro := 0;
-  end;
+  if FBar.ShowThrobber then
+    lo := FSkinManager.Skin.BarSkin.PAXoffset.XAsInt
+  else lo := FBar.Throbber.Left;
+  ro := FSkinManager.Skin.BarSkin.PAXoffset.YAsInt;
+
   ParentControl := GetControlByHandle(FParent);
 
   if (FModules.Count > 0) and (FShowMiniThrobbers) then
@@ -1284,15 +1280,11 @@ var
   ParentControl : TWinControl;
   nw : integer;
 begin
-  try
-    if FBar.ShowThrobber then
-       lo := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.X)
-       else lo := FBar.Throbber.Left;
-    ro := strtoint(FSkinManager.Skin.BarSkin.PAXoffset.Y);
-  except
-    lo := 0;
-    ro := 0;
-  end;
+  if FBar.ShowThrobber then
+    lo := FSkinManager.Skin.BarSkin.PAXoffset.XAsInt
+  else lo := FBar.Throbber.Left;
+  ro := FSkinManager.Skin.BarSkin.PAXoffset.YAsInt;
+  
   ParentControl := GetControlByHandle(FParent);
 
   if (FModules.Count > 0) and (FShowMiniThrobbers) then
@@ -1345,11 +1337,7 @@ begin
   begin
     temp := TModule(FModules.Items[n]);
     msize.Min := temp.Control.Tag;
-    try
-      msize.Width := strtoint(temp.Control.Hint);
-    except
-      msize.Width := msize.Min;
-    end;
+    msize.Width := StrToIntDef(temp.Control.Hint,msize.Min);
     minsize := minsize + msize.Min;
     maxsize := maxsize + msize.Width;
   //  if temp.Throbber.Visible then
@@ -1378,11 +1366,7 @@ begin
   begin
     temp := TModule(FModules.Items[n]);
     msize.Min := temp.Control.Tag;
-    try
-      msize.Width := strtoint(temp.Control.Hint);
-    except
-      msize.Width := msize.Min;
-    end;
+    msize.Width := StrToIntDef(temp.Control.Hint,msize.Min);
     csize := csize + msize.Min;
     if csize > maxbarsize - smod then
        newsize := newsize + 1
@@ -1404,11 +1388,7 @@ begin
   begin
     temp := TModule(FModules.Items[n]);
     msize.Min := temp.Control.Tag;
-    try
-      msize.Width := strtoint(temp.Control.Hint);
-    except
-      msize.Width := msize.Min;
-    end;
+    msize.Width := StrToIntDef(temp.Control.Hint,msize.Min);
     csize := csize + msize.Min;
     if csize > maxbarsize - smod then
     begin
@@ -1555,10 +1535,15 @@ begin
 
     FLoaded := True;
   except
-    try
-      FreeLibrary(FDllhandle);
-    finally
-      FDllHandle := 0;
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpBar',PChar('Error loading ' + FileName), clred, DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
+      try
+        FreeLibrary(FDllhandle);
+      finally
+        FDllHandle := 0;
+      end;
     end;
   end;
 end;

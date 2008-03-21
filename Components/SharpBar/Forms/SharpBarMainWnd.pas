@@ -267,11 +267,19 @@ begin
 
   // Find and load settings file!
   xml := TJclSimpleXML.Create;
+  b := False;
   try
-    xml.LoadFromFile(Dir + 'Bar.xml');
-    b := true;
+    if FileCheck(Dir + 'Bar.xml') then
+    begin
+      xml.LoadFromFile(Dir + 'Bar.xml');
+      b := true;
+    end;
   except
-    b := False;
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpBar',PChar('(WMBarReposition): Error loading '+ Dir + 'Bar.xml'), clred, DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
+    end;
   end;
 
   if b then begin
@@ -596,13 +604,9 @@ end;
 
 procedure TSharpBarMainForm.WMGetBarHeight(var msg: TMessage);
 begin
-  try
-    msg.Result := strtoint(SkinManager.Skin.BarSkin.SkinDim.Height) -
-      strtoint(SkinManager.Skin.BarSkin.PAYoffset.X) -
-      strtoint(SkinManager.Skin.BarSkin.PAYoffset.Y);
-  except
-    msg.Result := 30;
-  end;
+  msg.Result := SkinManager.Skin.BarSkin.SkinDim.HeightAsInt -
+      SkinManager.Skin.BarSkin.PAYoffset.XAsInt -
+      SkinManager.Skin.BarSkin.PAYoffset.YAsInt;
 end;
 
 // Plugin message received... foward to requested module
@@ -630,11 +634,9 @@ begin
   end
   else begin
     msgdata := pMsgData(PCopyDataStruct(msg.lParam)^.lpData)^;
-    try
-      pID := strtoint(lowercase(msgdata.Command));
-    except
+    pID := StrToIntDef(lowercase(msgdata.Command),-1);
+    if pID = -1 then
       exit;
-    end;
     pParams := msgdata.Parameters;
     ModuleManager.SendPluginMessage(pID, pParams);
   end;
@@ -833,6 +835,11 @@ begin
       Monitor.Left + MLeft + Monitor.Width,
       Monitor.Top + MTop + Monitor.Height), BGBmp);
   except
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpBar',PChar('Failed to Update BG Zone'), clred, DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
+    end;
   end;
   BGBmp.Free;
   UpdateBGImage;
@@ -940,11 +947,19 @@ begin
 
   // Find and load settings file!
   xml := TJclSimpleXML.Create;
+  b := False;
   try
-    xml.LoadFromFile(Dir + 'Bar.xml');
-    b := true;
+    if FileCheck(Dir + 'Bar.xml') then
+    begin
+      xml.LoadFromFile(Dir + 'Bar.xml');
+      b := true;
+    end;
   except
-    b := False;
+    on E: Exception do
+    begin
+      SharpApi.SendDebugMessageEx('SharpBar',PChar('(LoadBarFromID): Error loading '+ Dir + 'Bar.xml'), clred, DMT_ERROR);
+      SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
+    end;
   end;
 
   if b then begin
@@ -1164,11 +1179,7 @@ procedure TSharpBarMainForm.OnMonitorPopupItemClick(Sender: TObject);
 var
   index: integer;
 begin
-  try
-    index := strtoint(TMenuItem(Sender).Hint);
-  except
-    index := 0;
-  end;
+  index := StrToIntDef(TMenuItem(Sender).Hint,0);
   if index > Screen.MonitorCount - 1 then
     exit;
   if Screen.Monitors[index] = Screen.PrimaryMonitor then

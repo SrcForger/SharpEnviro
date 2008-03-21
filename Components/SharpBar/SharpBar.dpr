@@ -31,6 +31,7 @@ uses
   SysUtils,
   Types,
   StrUtils,
+  Graphics,
   SharpBarMainWnd in 'Forms\SharpBarMainWnd.pas' {SharpBarMainForm},
   uSharpBarAPI in 'uSharpBarAPI.pas',
   JclSimpleXML,
@@ -69,11 +70,16 @@ begin
   repeat
     if FileCheck(Dir + sr.Name + '\Bar.xml',True) then
     begin
+      fileloaded := False;
       try
         xml.LoadFromFile(Dir + sr.Name + '\Bar.xml');
         fileloaded := True;
       except
-        fileloaded := False;
+        on E: Exception do
+        begin
+          SharpApi.SendDebugMessageEx('SharpBar',PChar('(RemoveEmptyBars): Error loading '+Dir + sr.Name + '\Bar.xml'), clred, DMT_ERROR);
+          SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
+        end;
       end;
       delbar := False;
       if fileloaded then
@@ -145,11 +151,16 @@ begin
   repeat
     if FileCheck(Dir + sr.Name + '\Bar.xml',True) then
     begin
+      fileloaded := False;
       try
         xml.LoadFromFile(Dir + sr.Name + '\Bar.xml');
         fileloaded := True;
       except
-        fileloaded := False;
+        on E: Exception do
+        begin
+          SharpApi.SendDebugMessageEx('SharpBar',PChar('(LoadAutoStartBars): Error loading '+Dir + sr.Name + '\Bar.xml'), clred, DMT_ERROR);
+          SharpApi.SendDebugMessageEx('SharpBar',PChar(E.Message),clblue, DMT_TRACE);
+        end;
       end;
       if fileloaded then
       begin
@@ -246,12 +257,8 @@ begin
   begin
     // there is a param - now check if it's a valid integer value which
     // could be used as bar ID
-    try
-      ParamID := strtoint(ParamString);
-      if not CheckIfValidBar(ParamID) then ParamID := -1;
-    except
-      ParamID := -1;
-    end;
+    ParamID := StrToIntDef(ParamString,-1);
+    if not CheckIfValidBar(ParamID) then ParamID := -1;
   end else
   begin
     // no param given!
