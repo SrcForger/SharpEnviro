@@ -238,6 +238,8 @@ begin
       end;
     end;
   end;
+
+  SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
 end;
 
 procedure StopAllServices;

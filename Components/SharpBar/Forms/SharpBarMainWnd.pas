@@ -571,7 +571,10 @@ begin
 
   if (msg.WParam = Integer(suSkinFileChanged)) or
     (msg.Wparam = Integer(suScheme)) then
+  begin
     RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+    SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));     
+  end;
 
   if FBarLock then begin
     FBarLock := False;
@@ -1069,6 +1072,7 @@ begin
   end;    
 
   SharpApi.RegisterActionEx(PChar('!FocusBar (' + inttostr(FBarID) + ')'), 'SharpBar', Handle, 1);
+  SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));
 end;
 
 procedure TSharpBarMainForm.FormCreate(Sender: TObject);
