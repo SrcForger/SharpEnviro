@@ -30,7 +30,6 @@ library Button;
 uses
   Windows,
   Controls,
-  Dialogs,
   SysUtils,
   Forms,
   Classes,
@@ -39,11 +38,8 @@ uses
   SharpEBar,
   GR32,
   GR32_PNG,
-  StdCtrls,
-  JvSimpleXML,
   MouseTimer,
   SharpApi,
-  SharpCenterApi,
   uSharpBarApi,
   MainWnd in 'MainWnd.pas' {MainForm},
   SettingsWnd in 'SettingsWnd.pas' {SettingsForm};

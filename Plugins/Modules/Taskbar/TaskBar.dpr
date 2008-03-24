@@ -30,7 +30,6 @@ library TaskBar;
 uses
   Windows,
   Controls,
-  Dialogs,
   SysUtils,
   Forms,
   Classes,
@@ -39,8 +38,6 @@ uses
   SharpESkinManager,
   SharpEBar,
   StdCtrls,
-  JvSimpleXML,
-  SharpCenterApi,
   gr32,
   MainWnd in 'MainWnd.pas' {MainForm},
   MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',

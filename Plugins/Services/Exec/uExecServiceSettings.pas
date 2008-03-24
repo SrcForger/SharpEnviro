@@ -31,9 +31,6 @@ uses
   ContNrs,
   messages,
   SysUtils,
-  dialogs,
-  graphics,
-  Forms,
   windows,
 
   // JVCL

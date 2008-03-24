@@ -30,7 +30,6 @@ library QuickScript;
 uses
   Windows,
   Controls,
-  Dialogs,
   SysUtils,
   Forms,
   Classes,
@@ -39,8 +38,6 @@ uses
   SharpESkinManager,
   SharpEBar,
   StdCtrls,
-  JvSimpleXML,
-  SharpCenterApi,
   MainWnd in 'MainWnd.pas' {MainForm},
   uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',

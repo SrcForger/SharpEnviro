@@ -30,7 +30,6 @@ library Weather;
 uses
   Windows,
   Controls,
-  Dialogs,
   SysUtils,
   Forms,
   Classes,
@@ -39,9 +38,7 @@ uses
   SharpEBar,
   StdCtrls,
   SharpApi,
-  JvSimpleXML,
   uSharpBarApi,
-  SharpCenterApi,
   MouseTimer,
   gr32,
   MainWnd in 'MainWnd.pas' {MainForm},

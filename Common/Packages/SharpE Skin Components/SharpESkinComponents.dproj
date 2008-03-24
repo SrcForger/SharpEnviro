@@ -64,20 +64,19 @@
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\StrConst.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpE Skin Components\StrTools.pas" />
     <DCCReference Include="..\..\Libraries\SharpAPI\SharpAPI.pas" />
-    <DCCReference Include="..\..\Libraries\SharpCenterApi\SharpCenterAPI.pas" />
     <DCCReference Include="..\..\Libraries\SharpThemeApi\SharpThemeApi.pas" />
     <DCCReference Include="..\..\Units\SharpFX\PNG_D10.dcp" />
     <DCCReference Include="..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas" />
-    <DCCReference Include="designide.dcp" />
-    <DCCReference Include="GR32_BDS2006.dcp" />
-    <DCCReference Include="Jcl.dcp" />
-    <DCCReference Include="JclVcl.dcp" />
-    <DCCReference Include="JvCoreD11R.dcp" />
-    <DCCReference Include="JvInterpreterD11R.dcp" />
-    <DCCReference Include="JvSystemD11R.dcp" />
-    <DCCReference Include="PNG_D9.dcp" />
-    <DCCReference Include="rtl.dcp" />
-    <DCCReference Include="vcl.dcp" />
-    <DCCReference Include="xmlrtl.dcp" />
+    <DCCReference Include="C:\SharpE\designide.dcp" />
+    <DCCReference Include="C:\SharpE\GR32_BDS2006.dcp" />
+    <DCCReference Include="C:\SharpE\Jcl.dcp" />
+    <DCCReference Include="C:\SharpE\JclVcl.dcp" />
+    <DCCReference Include="C:\SharpE\JvCoreD11R.dcp" />
+    <DCCReference Include="C:\SharpE\JvInterpreterD11R.dcp" />
+    <DCCReference Include="C:\SharpE\JvSystemD11R.dcp" />
+    <DCCReference Include="C:\SharpE\PNG_D9.dcp" />
+    <DCCReference Include="C:\SharpE\rtl.dcp" />
+    <DCCReference Include="C:\SharpE\vcl.dcp" />
+    <DCCReference Include="C:\SharpE\xmlrtl.dcp" />
   </ItemGroup>
 </Project>

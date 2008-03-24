@@ -38,7 +38,6 @@ uses
   Classes,
   Graphics,
   sharpapi,
-  SharpCenterApi,
   sharpthemeapi,
   jvSimpleXml,
   jclStrings,

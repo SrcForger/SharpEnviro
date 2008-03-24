@@ -30,21 +30,17 @@ library BatteryMonitor;
 uses
   Windows,
   Controls,
-  Dialogs,
   SysUtils,
   Forms,
   Classes,
   Contnrs,
   SharpESkinManager,
   SharpEBar,
-  StdCtrls,
-  JvSimpleXML,
   SharpApi,
   uSharpBarApi,
   MouseTimer,
   GR32,
   GR32_PNG,
-  SharpCenterApi,
   MainWnd in 'MainWnd.pas' {MainForm};
 
 type

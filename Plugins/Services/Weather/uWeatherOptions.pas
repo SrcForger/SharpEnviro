@@ -33,9 +33,7 @@ uses
   ContNrs,
   SysUtils,
   JvSimpleXml,
-  dialogs,
-  Sharpapi,
-  Forms;
+  Sharpapi;
 
 type
   TWeatherSettings = class

@@ -31,7 +31,6 @@ library SystemTray;
 uses
   Windows,
   Controls,
-  Dialogs,
   SysUtils,
   ExtCtrls,
   Forms,
@@ -43,7 +42,6 @@ uses
   TrayIconsManager in 'TrayIconsManager.pas',
   winver in 'winver.pas',
   DateUtils,
-  SharpCenterApi,
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',

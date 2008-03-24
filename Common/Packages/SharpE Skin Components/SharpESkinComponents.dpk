@@ -33,26 +33,11 @@ requires
   vcl,
   Jcl,
   JclVcl,
-{$IFDEF VER170}
-  PNG_D9,
-  GR32_D2005,
-  JvSystemD9R,
-  JvCoreD9R,
-  JvInterpreterD9R;
-{$ENDIF}
-{$IFDEF VER180}
   PNG_D9,
   GR32_BDS2006,
-{$IFDEF VER185}
   JvSystemD11R,
   JvCoreD11R,
   JvInterpreterD11R;
-{$ELSE}
-  JvSystemD10R,
-  JvCoreD10R,
-  JvInterpreterD10R;
-{$ENDIF}
-{$ENDIF}
 
 contains
   sharedBitmapList in '..\..\Delphi Components\SharpE Skin Components\sharedBitmapList.pas',
@@ -80,7 +65,6 @@ contains
   StrTools in '..\..\Delphi Components\SharpE Skin Components\StrTools.pas',
   TranComp in '..\..\3rd party\TransparentEdit\TranComp.pas',
   SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
-  SharpCenterAPI in '..\..\Libraries\SharpCenterApi\SharpCenterAPI.pas',
   SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas',
   SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas',
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas';

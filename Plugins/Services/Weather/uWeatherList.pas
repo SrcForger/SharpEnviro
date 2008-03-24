@@ -31,9 +31,7 @@ uses
   jclIniFiles,
   ContNrs,
   SysUtils,
-  JvSimpleXml,
-  dialogs,
-  Forms;
+  JvSimpleXml;
 
 
 type

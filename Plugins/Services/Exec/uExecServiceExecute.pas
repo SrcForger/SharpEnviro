@@ -33,13 +33,9 @@ uses
   // Standard
   Windows,
   SysUtils,
-  Controls,
-  Forms,
-  Messages,
   shellAPI,
   fileutils,
   Classes,
-  Graphics,
   Registry,
   Contnrs,
   ShlObj,
@@ -53,7 +49,6 @@ uses
   JclSysInfo,
   Jclstrings,
   JclShell,
-  JclRegistry,
 
   // Project
   uExecServicePathIncludeList,

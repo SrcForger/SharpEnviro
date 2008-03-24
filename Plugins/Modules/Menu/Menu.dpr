@@ -30,7 +30,6 @@ library Menu;
 uses
   Windows,
   Controls,
-  Dialogs,
   SysUtils,
   Forms,
   Classes,
@@ -38,10 +37,8 @@ uses
   SharpESkinManager,
   SharpEBar,
   StdCtrls,
-  JvSimpleXML,
   MouseTimer,
   SharpApi,
-  SharpCenterApi,
   uSharpBarApi,
   gr32,
   MainWnd in 'MainWnd.pas' {MainForm},

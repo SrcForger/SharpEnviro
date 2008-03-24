@@ -44,8 +44,8 @@ object MainForm: TMainForm
     LabelStyle = lsMedium
   end
   object MenuPopup: TPopupMenu
-    Left = 168
-    Top = 120
+    Left = 128
+    Top = 72
     object OpenWindowsDateTimesettings1: TMenuItem
       Caption = 'Open Windows Date/Time Settings'
       OnClick = lb_clockDblClick
@@ -62,6 +62,6 @@ object MainForm: TMainForm
   object ClockTimer: TTimer
     OnTimer = ClockTimerTimer
     Left = 160
-    Top = 88
+    Top = 72
   end
 end

@@ -37,8 +37,6 @@ uses
   SharpESkinManager,
   GR32,
   StdCtrls,
-  JvSimpleXML,
-  SharpCenterApi,
   MainWnd in 'MainWnd.pas' {MainForm},
   uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',

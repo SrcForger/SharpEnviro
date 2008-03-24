@@ -31,7 +31,6 @@ uses
   ContNrs,
   SysUtils,
   dialogs,
-  Forms,
   windows,
 
   // JCL

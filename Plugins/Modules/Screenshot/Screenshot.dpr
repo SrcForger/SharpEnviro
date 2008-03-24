@@ -29,13 +29,12 @@ library Screenshot;
 
 uses
   // Default Units
-  Windows, Controls, Dialogs, SysUtils, Forms, Classes, Contnrs, StdCtrls,
+  Windows, Controls, SysUtils, Forms, Classes, Contnrs, StdCtrls,
   // Custom Units
-  JvSimpleXML, gr32,
+  gr32,
   // SharpE Units
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpESkinManager, SharpEBar, uSharpBarApi, MouseTimer,
-  SharpCenterApi,
   // Project Units
   MainWnd in 'MainWnd.pas' {MainForm},
   SettingsWnd in 'SettingsWnd.pas' {SettingsForm};

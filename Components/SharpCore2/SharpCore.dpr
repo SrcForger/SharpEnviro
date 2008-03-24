@@ -96,7 +96,7 @@ end;
 
 procedure DebugMsg(Msg: string; MsgType: Integer = DMT_TRACE);
 begin
-  SendDebugMessageEx(PChar('SharpCore'), PChar(Msg), 0, MsgType);
+  //SendDebugMessageEx(PChar('SharpCore'), PChar(Msg), 0, MsgType);
 end;
 
 procedure BuildMenu();
@@ -265,7 +265,7 @@ begin
     else if (modData.MetaData.DataType = tteComponent) then begin
       if bReboot and (modData.MetaData.Name = 'SharpCore') then Continue;      
       sName := modData.MetaData.Name;
-      CloseComponent(PChar(sName));
+      //CloseComponent(PChar(sName));
       modData.Running := False;
     end;
     modData := nil;
@@ -315,7 +315,7 @@ begin
           szTip := 'SharpCore';
         end;
         Shell_NotifyIcon(NIM_ADD, @nidTray);
-        SharpApi.GetSharpeUserSettingsPath; // initialize the user settings path
+        //SharpApi.GetSharpeUserSettingsPath; // initialize the user settings path
         lstComponents := TComponentList.Create;
         lstComponents.BuildList(strExtension); //enumerate services and components
         BuildMenu;
@@ -450,8 +450,8 @@ begin
 
   if bDebug then begin
     if FindWindow('TSharpConsoleWnd', nil) = 0 then begin
-      if ShellExecute(hInstance, 'open', PChar(GetSharpEDirectory + 'SharpConsole.exe'),
-        '', PChar(GetSharpEDirectory), 0) = 0 then begin
+      if ShellExecute(hInstance, 'open', PChar('SharpConsole.exe'),
+        '', PChar(' '), 0) = 0 then begin
         while wndDebug = 0 do //wait for SharpConsole to open
           wndDebug := FindWindow('TSharpConsoleWnd', nil);
         Sleep(5000);

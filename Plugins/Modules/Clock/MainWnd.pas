@@ -29,8 +29,8 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms, Messages,
-  Dialogs, StdCtrls, SharpEBaseControls, Commctrl,
-  SharpESkinManager, JvSimpleXML, SharpApi, Menus, Math,
+  StdCtrls, SharpEBaseControls, Commctrl,
+  SharpESkinManager, JclSimpleXML, SharpApi, Menus, Math,
   SharpESkinLabel, SharpESkin, GR32, ExtCtrls, ToolTipApi;
 
 
@@ -88,14 +88,14 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   fileloaded : boolean;
 begin
   sFormat := 'HH:MM:SS';
   sBottomFormat := 'DD.MM.YYYY';
   sStyle  := lsMedium;
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
     XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
     fileloaded := True;

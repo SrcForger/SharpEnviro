@@ -40,7 +40,6 @@ uses
   SharpThemeApi,
   JvSimpleXML,
   SharpApi,
-  SharpCenterApi,
   gr32,
   MainWnd in 'MainWnd.pas' {MainForm};
 

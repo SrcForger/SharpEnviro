@@ -27,7 +27,6 @@ library Exec;
 uses
   Forms,
   windows,
-  dialogs,
   graphics,
   SysUtils,
   StrUtils,

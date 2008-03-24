@@ -37,19 +37,19 @@ uses
   Forms,
   Types,
   Menus,
-  GR32,
+ // GR32,
   PngImageList,
-  PngImage,
+ // PngImage,
   ActiveX,
   ShellApi,
   ShlObj,
   SharpApi,
-  SharpESkin,
+{  SharpESkin,
   SharpESkinManager,
   uSharpEMenu,
   uSharpEMenuItem,
   uSharpEMenuSettings,
-  uSharpEMenuWnd,
+  uSharpEMenuWnd,   }
   SharpApiEx,
   ExPopupList,
   SharpIconUtils in '..\..\Units\SharpIconUtils\SharpIconUtils.pas',
@@ -79,13 +79,13 @@ type
                             procedure OnCustomIconClick(Sender : TObject);
                             procedure OnSharpEIconClick(Sender : TObject);
                           end;
-  TTargetDialogSkinClickHandler =
+  {TTargetDialogSkinClickHandler =
   class
     procedure OnFileOpenClick(pItem : TSharpEMenuItem; var CanClose : boolean);
     procedure OnDirOpenClick(pItem : TSharpEMenuItem; var CanClose : boolean);
     procedure OnShellFolderClick(pItem : TSharpEMenuItem; var CanClose : boolean);
     procedure OnMRClick(pItem : TSharpEMenuItem; var CanClose : boolean);    
-  end;
+  end;}
 
 
 const
@@ -401,7 +401,7 @@ begin
   end;
 end;
 
-function AddItemToMenu(Menu : TSharpEMenu; Caption : String; IconResName : String; pType :TSharpEMenuItemType = mtCustom) : TSharpEMenuItem;
+{function AddItemToMenu(Menu : TSharpEMenu; Caption : String; IconResName : String; pType :TSharpEMenuItemType = mtCustom) : TSharpEMenuItem;
 var
   ResStream : TResourceStream;
   b : boolean;
@@ -703,7 +703,7 @@ begin
      FreeAndNil(SharpEMenuIcons);
        
   result := PChar(targetmenuresult);
-end;
+end;   }
 
 function TargetDialog(TargetItems : TTargetDialogSelectItems; PopupPoint : TPoint) : PChar;
 var
@@ -1175,7 +1175,7 @@ end;
 
 Exports
   TargetDialog,
-  TargetDialogSkin,
+  //TargetDialogSkin,
   IconDialog;
 
 
