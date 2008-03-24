@@ -38,7 +38,7 @@ uses
   SharpEScheme,
   SharpESkinManager,
   SharpEButton,
-  SharpIconUtils;
+  SharpIconUtils, ImgList, PngImageList;
 
 
 type
@@ -50,17 +50,23 @@ type
                   end;
 
   TMainForm = class(TForm)
-    MenuPopup: TPopupMenu;
-    Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     sb_config: TSharpEButton;
+    ButtonPopup: TPopupMenu;
+    Delete1: TMenuItem;
+    PngImageList1: TPngImageList;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure btnMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);       
+    procedure btnMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);         
     procedure Settings1Click(Sender: TObject);
     procedure sb_configClick(Sender: TObject);
+    procedure Delete1Click(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -71,6 +77,8 @@ type
     FButtonList  : array of TButtonRecord;
     Background   : TBitmap32;
     FHintWnd     : hwnd; 
+    movebutton   : TSharpEButton;
+    hasmoved     : boolean;
     procedure ClearButtons;
     procedure AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
     procedure UpdateButtons;
@@ -101,6 +109,52 @@ procedure TMainForm.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.ExStyle := params.ExStyle or WS_EX_ACCEPTFILES;
+end;
+
+procedure TMainForm.Delete1Click(Sender: TObject);
+var
+  dbtn : TSharpEButton;
+  n : integer;
+  startindex : integer;
+  dbtnwidth : integer;
+  p : TPoint;
+begin
+  p := ScreenToClient(ButtonPopup.PopupPoint);
+  dbtn := nil;
+  startindex := -1;
+  for n := 0 to High(FButtonList) do
+    if (p.x > FButtonList[n].btn.Left)
+      and (p.x < FButtonList[n].btn.Left + FButtonList[n].btn.Width) then
+    begin
+      dbtn := FButtonList[n].btn;
+      startindex := n;
+      break;
+    end;
+
+  if dbtn = nil then
+    exit;
+  
+  ToolTipApi.DeleteToolTip(FHintWnd,self,startindex);
+  dbtnwidth := FButtonList[startindex].btn.Width + FButtonSpacing;
+  FButtonList[startindex].btn.Free;
+  for n := startindex to High(FButtonList)-1 do
+  begin
+    ToolTipApi.DeleteToolTip(FHintWnd,self,n+1);
+    with FButtonList[n] do
+    begin
+      btn := FButtonList[n+1].btn;
+      btn.Left := FButtonList[n].btn.Left - dbtnwidth;
+      target := FButtonList[n+1].target;
+      caption := FButtonList[n+1].caption;
+      icon := FButtonList[n+1].icon;
+      ToolTipApi.AddToolTip(FHintWnd,self,n,
+                            Rect(btn.left,btn.top,btn.Left + btn.Width,btn.Top + btn.Height),
+                            Caption);        
+    end;
+  end;
+  setlength(FButtonList,length(FButtonList)-1);
+  SaveSettings;
+  RealignComponents(True);  
 end;
 
 procedure TMainForm.LBWindowProc(var Message: TMessage);
@@ -158,6 +212,7 @@ procedure TMainForm.ClearButtons;
 var
   n : integer;
 begin
+  MoveButton := nil;
   for n := 0 to High(FButtonList) do
   begin
     FButtonList[n].btn.Free;
@@ -175,14 +230,22 @@ begin
     Index := High(FButtonList)
     else for n := High(FButtonList) downto Index + 1 do
       begin
-        FButtonList[n].btn := FButtonList[n-1].btn;
-        FButtonList[n].target := FButtonList[n-1].target;
-        FButtonList[n].caption := FButtonList[n-1].caption;
-        FButtonList[n].icon := FButtonList[n-1].icon;
+        ToolTipApi.DeleteToolTip(FHintWnd,self,n-1);
+        with FButtonList[n] do
+        begin
+          btn := FButtonList[n-1].btn;
+          target := FButtonList[n-1].target;
+          caption := FButtonList[n-1].caption;
+          icon := FButtonList[n-1].icon;
+          ToolTipApi.AddToolTip(FHintWnd,self,n,
+                                Rect(btn.left,btn.top,btn.Left + btn.Width,btn.Top + btn.Height),
+                                Caption);
+        end;
       end;
   with FButtonList[Index] do
   begin
     btn := TSharpEButton.Create(self);
+    btn.PopUpMenu := ButtonPopup;
     btn.Visible := False;
     btn.AutoPosition := True;
     btn.AutoSize := True;
@@ -191,6 +254,8 @@ begin
     btn.Parent := self;
     btn.left := FButtonSpacing + High(FButtonList)*FButtonSpacing + High(FButtonList)*sWidth;
     btn.OnMouseUp := btnMouseUp;
+    btn.OnMouseDown := btnMouseDown;
+    btn.OnMouseMove := btnMouseMove;
     btn.SkinManager := SharpESkinManager1;
     ToolTipApi.AddToolTip(FHintWnd,self,High(FButtonList),
                           Rect(btn.left,btn.top,btn.Left + btn.Width,btn.Top + btn.Height),
@@ -258,7 +323,7 @@ end;
 
 procedure TMainForm.sb_configClick(Sender: TObject);
 begin
-  Settings1.OnClick(Settings1);
+  Settings1Click(self);
 end;
 
 procedure TMainForm.UpdateButtons;
@@ -273,7 +338,7 @@ begin
         if btn.Left + btn.Width < Width then
            btn.Visible := True
            else btn.Visible := False;
-        ToolTipApi.UpdateToolTipRect(FHintWnd,self,High(FButtonList),
+        ToolTipApi.UpdateToolTipRect(FHintWnd,self,n,
                                      Rect(btn.left,btn.top,btn.Left + btn.Width,btn.Top + btn.Height));
       end;
 end;
@@ -394,21 +459,91 @@ begin
   end;
 end;
 
+procedure TMainForm.btnMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  MoveButton := TSharpEButton(Sender);
+  hasmoved := False;
+end;
+
+procedure TMainForm.btnMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+var
+  cButton : TSharpEButton;
+  cButtonIndex : integer;
+  p : TPoint;
+  n : integer;
+  cPos : integer;
+  temp : TButtonRecord;
+  MoveButtonIndex : integer;
+begin
+  if MoveButton = nil then
+    exit;
+
+  cButton := nil;
+  cButtonIndex := -1;
+  p := ScreenToClient(Mouse.CursorPos);
+  for n := 0 to High(FButtonList) do
+    if (p.x > FButtonList[n].btn.Left)
+      and (p.x < FButtonList[n].btn.Left + FButtonList[n].btn.Width) then
+    begin
+      cButton := FButtonList[n].btn;
+      cButtonIndex := n;
+      break;
+    end;
+
+  if cButton = nil then
+    exit;
+
+  if cButton <> MoveButton then
+  begin
+    MoveButtonIndex := -1;
+    for n := 0 to High(FButtonList) do
+      if MoveButton = FButtonList[n].btn then
+      begin
+        MoveButtonIndex := n;
+        break;
+      end;
+    if MoveButtonIndex <> -1 then
+    begin
+      hasmoved := True;               
+      cPos := FButtonList[cButtonIndex].btn.left;
+      temp := FButtonList[cButtonIndex];
+      temp.btn.Left := FButtonList[MoveButtonIndex].btn.Left;
+      FButtonList[MoveButtonIndex].btn.Left := CPos;
+      FButtonList[cButtonIndex] := FButtonList[MoveButtonIndex];
+      FButtonList[MoveButtonIndex] := temp;
+      ToolTipApi.DeleteToolTip(FHintWnd,self,MoveButtonIndex);
+      ToolTipApi.DeleteToolTip(FHintWnd,self,cButtonIndex);
+      ToolTipApi.AddToolTip(FHintWnd,self,MoveButtonIndex,
+                            Rect(cButton.left,cButton.top,cButton.Left + cButton.Width,cButton.Top + cButton.Height),
+                            FButtonList[MoveButtonIndex].caption);
+      ToolTipApi.AddToolTip(FHintWnd,self,cButtonIndex,
+                            Rect(MoveButton.left,MoveButton.top,MoveButton.Left + MoveButton.Width,MoveButton.Top + MoveButton.Height),
+                            FButtonList[cButtonIndex].caption);
+    end;
+  end;
+end;
+
 procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   ActionStr : String;
 begin
-  if Button = mbLeft then
+  MoveButton := nil;
+  if (Button = mbLeft) and (not hasmoved) then
   begin
     ActionStr := TSharpEButton(Sender).Hint;
     if UPPERCASE(ActionStr) = '!SHOWMENU' then SetForegroundWindow(FindWindow(nil,'SharpMenuWMForm'));
     SharpApi.SharpExecute(ActionStr);
   end;
+  if hasmoved then
+    SaveSettings;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  MoveButton := nil;
   Background := TBitmap32.Create;
   DoubleBuffered := True;
   FHintWnd := ToolTipApi.RegisterToolTip(self);

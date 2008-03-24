@@ -241,7 +241,7 @@ begin
       if TModule(ModuleList.Items[n]).ID = ID then
       begin
         temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.FForm).Settings1Click(TMainForm(temp.FForm).Settings1);
+        TMainForm(temp.FForm).Settings1Click(nil);
       end;
 end;
 
@@ -283,4 +283,5 @@ Exports
   GetMetaData;
 
 
+begin
 end.
