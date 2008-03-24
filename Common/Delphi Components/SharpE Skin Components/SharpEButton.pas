@@ -107,6 +107,7 @@ type
     //property TabStop default True;
     property AutoSize;
     property Visible;
+    property PopUpMenu;
     property OnClick;
     property OnDblClick;
     property OnMouseDown;
