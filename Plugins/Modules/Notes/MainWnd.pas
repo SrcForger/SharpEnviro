@@ -256,6 +256,7 @@ var
   Mon : TMonitor;
 begin
   if NotesForm = nil then NotesForm := TNotesForm.Create(self);
+  NotesForm.AlwaysOnTop := sAlwaysOnTop;
 
   if NotesForm.Visible then
   begin

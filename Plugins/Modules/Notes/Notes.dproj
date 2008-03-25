@@ -5,10 +5,10 @@
     <MainSource>Notes.dpr</MainSource>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
     <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\Modules\Notes.dll</DCC_DependencyCheckOutputName>
+    <DCC_EnabledPackages>true</DCC_EnabledPackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -25,17 +25,17 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\Modules</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Delphi Components\SharpEPageControl;..\..\..\Common\Delphi Components\SharpERoundPanel;..\..\..\Common\Delphi Components\SharpETabList;..\..\..\Common\Units\VistaFuncs</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Delphi Components\SharpEPageControl;..\..\..\Common\Delphi Components\SharpERoundPanel;..\..\..\Common\Delphi Components\SharpETabList;..\..\..\Common\Units\VistaFuncs</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Delphi Components\SharpEPageControl;..\..\..\Common\Delphi Components\SharpERoundPanel;..\..\..\Common\Delphi Components\SharpETabList;..\..\..\Common\Units\VistaFuncs</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils\;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Delphi Components\SharpEPageControl;..\..\..\Common\Delphi Components\SharpERoundPanel;..\..\..\Common\Delphi Components\SharpETabList;..\..\..\Common\Units\VistaFuncs</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-<BorlandProject><Delphi.Personality><Parameters><Parameters Name="HostApplication">..\..\..\..\SharpE\SharpBar.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="DebugCWD">..\..\..\..\SharpE\</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">7</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1031</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription">SharpBar menu module</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.7.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName">Menu Module</VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">SharpMenu.dll</VersionInfoKeys><VersionInfoKeys Name="ProductName">SharpMenu Module</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.7.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">Notes.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="HostApplication">..\..\..\..\SharpE\SharpBar.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="DebugCWD">..\..\..\..\SharpE\</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters><Parameters Name="RunParams">-load:11823732</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">7</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription">SharpBar notes module</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.7.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName">Notes Module</VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.7.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">Notes.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
   <ItemGroup>
@@ -50,9 +50,6 @@
     <DCCReference Include="..\..\..\Components\SharpBar\uSharpBarAPI.pas" />
     <DCCReference Include="MainWnd.pas">
       <Form>MainForm</Form>
-    </DCCReference>
-    <DCCReference Include="NotesNewTabWnd.pas">
-      <Form>NotesNewTabForm</Form>
     </DCCReference>
     <DCCReference Include="NotesWnd.pas">
       <Form>NotesForm</Form>
