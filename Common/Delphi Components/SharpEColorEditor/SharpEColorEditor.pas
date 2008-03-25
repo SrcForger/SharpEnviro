@@ -605,11 +605,12 @@ begin
     FSwatchesPage.Show;
   end;
 
-  FTabs.TabIndex := ATabIndex;
   if Assigned(FOnTabClick) then
     FOnTabClick(Self)
   else
     Expanded := True;
+
+  FTabs.TabIndex := ATabIndex;
 
 end;
 
