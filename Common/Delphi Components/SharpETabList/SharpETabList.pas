@@ -633,8 +633,7 @@ begin
 
       if bChange then
       begin
-
-        TabIndex := i;
+        FTabIndex := i;
         if assigned(FOnTabClick) then
           FOnTabClick(Self, i);
 
