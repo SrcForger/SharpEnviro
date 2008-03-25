@@ -21,8 +21,9 @@ type
     FMinimized: Boolean;
     FExpandedHeight: Integer;
     FTabControlVisible: boolean;
-    function GetTabItems: TSharpETabListItems;
-    procedure SetTabItems(const Value: TSharpETabListItems);
+    FButtons: TSharpETabList;
+    function GetTabItems: TTabItems;
+    procedure SetTabItems(const Value: TTabItems);
     procedure CreateControls;
     function GetOnTabChange: TSharpETabChange;
     procedure SetOnTabChange(const Value: TSharpETabChange);
@@ -66,6 +67,16 @@ type
     function GetTabBackgroundColor: TColor;
     procedure SetTabBackgroundColor(const Value: TColor);
     procedure SetTabControlVisible(const Value: boolean);
+    function GetButtons: TButtonItems;
+    procedure SetButtons(const Value: TButtonItems);
+    function GetIconSpacing: Integer;
+    function GetTextSpacing: Integer;
+    procedure SetIconSpacing(const Value: Integer);
+    procedure SetTextSpacing(const Value: Integer);
+    function GetOnBtnClick: TSharpEBtnClick;
+    procedure SetOnBtnClick(const Value: TSharpEBtnClick);
+    function GetBtnWidth: Integer;
+    procedure SetBtnWidth(const Value: Integer);
   protected
     procedure Loaded; override;
   public
@@ -83,11 +94,16 @@ type
     property DoubleBuffered;
 
     property ExpandedHeight: Integer read FExpandedHeight write FExpandedHeight;
-    property TabItems: TSharpETabListItems read GetTabItems write SetTabItems;
+    property TabItems: TTabItems read GetTabItems write SetTabItems;
+    property Buttons: TButtonItems read GetButtons write SetButtons;
     property RoundValue: Integer read GetRoundValue write SetRoundValue;
     property Border: Boolean read GetBorder write SetBorder;
 
+    Property TextSpacing: Integer read GetTextSpacing write SetTextSpacing;
+    Property IconSpacing: Integer read GetIconSpacing write SetIconSpacing;
+
     property TabCount: Integer read GetTabCount;
+    property BtnWidth: Integer read GetBtnWidth write SetBtnWidth;
     property TabWidth: Integer read GetTabWidth write SetTabWidth;
     property TabIndex: Integer read GetTabIndex write SetTabIndex;
     property TabAlignment: TLeftRight read GetTabAlign write SetTabAlign;
@@ -106,6 +122,7 @@ type
 
     property OnTabChange: TSharpETabChange read GetOnTabChange write SetOnTabChange;
     property OnTabClick: TSharpETabClick read GetOnTabClick write SetOnTabClick;
+    property OnBtnClick: TSharpEBtnClick read GetOnBtnClick write SetOnBtnClick;
 
     procedure ResizeEvent(Sender: TObject);
 
@@ -150,7 +167,7 @@ begin
     Border := True;
     BkgColor := clBtnFace;
     TabSelectedColor := clWhite;
-    TextBounds := Rect(8, 8, 8, 4);
+    TextSpacing := 8;
     AutoSizeTabs := True;
   end;
   FPnlContent := TSharpERoundPanel.Create(Self);
@@ -164,7 +181,7 @@ begin
     BorderColor := clBlack;
     Border := True;
     DrawMode := srpNoTopLeft;
-    ParentColor := False;
+    ParentColor := True;
     ParentBackground := False;
     DoubleBuffered := True;
 
@@ -186,9 +203,29 @@ begin
   Result := FPnlContent.BorderColor;
 end;
 
+function TSharpEPageControl.GetBtnWidth: Integer;
+begin
+  Result := FTabList.ButtonWidth;
+end;
+
+function TSharpEPageControl.GetButtons: TButtonItems;
+begin
+  Result := FTabList.Buttons;
+end;
+
+function TSharpEPageControl.GetIconSpacing: Integer;
+begin
+  Result := FTabList.IconSpacing;
+end;
+
 function TSharpEPageControl.GetMinimized: Boolean;
 begin
   Result := FMinimized;
+end;
+
+function TSharpEPageControl.GetOnBtnClick: TSharpEBtnClick;
+begin
+  Result := FTabList.OnBtnClick;
 end;
 
 function TSharpEPageControl.GetOnTabChange: TSharpETabChange;
@@ -231,7 +268,7 @@ begin
   Result := FTabList.TabIndex;
 end;
 
-function TSharpEPageControl.GetTabItems: TSharpETabListItems;
+function TSharpEPageControl.GetTabItems: TTabItems;
 begin
   Result := FTabList.TabList;
 end;
@@ -239,6 +276,11 @@ end;
 function TSharpEPageControl.GetTabWidth: Integer;
 begin
   Result := FTabList.TabWidth;
+end;
+
+function TSharpEPageControl.GetTextSpacing: Integer;
+begin
+  Result := FTabList.TextSpacing;
 end;
 
 function TSharpEPageControl.GetAutoSizeTabs: Boolean;
@@ -332,6 +374,21 @@ begin
   FTabList.BorderSelectedColor := Value;
 end;
 
+procedure TSharpEPageControl.SetBtnWidth(const Value: Integer);
+begin
+  FTabList.ButtonWidth := Value;
+end;
+
+procedure TSharpEPageControl.SetButtons(const Value: TButtonItems);
+begin
+  FTabList.Buttons := Value;
+end;
+
+procedure TSharpEPageControl.SetIconSpacing(const Value: Integer);
+begin
+  FTabList.IconSpacing := Value;
+end;
+
 procedure TSharpEPageControl.SetMinimized(const Value: Boolean);
 begin
   FMinimized := Value;
@@ -344,6 +401,11 @@ begin
     //Self.Height := FExpandedHeight;
     FTabList.Minimized := False;
   end;
+end;
+
+procedure TSharpEPageControl.SetOnBtnClick(const Value: TSharpEBtnClick);
+begin
+  FTabList.OnBtnClick := Value;
 end;
 
 procedure TSharpEPageControl.SetOnTabChange(const Value: TSharpETabChange);
@@ -386,7 +448,7 @@ begin
   FTabList.TabIndex := Value;
 end;
 
-procedure TSharpEPageControl.SetTabItems(const Value: TSharpETabListItems);
+procedure TSharpEPageControl.SetTabItems(const Value: TTabItems);
 begin
   FTabList.TabList := Value;
 end;
@@ -394,6 +456,11 @@ end;
 procedure TSharpEPageControl.SetTabWidth(const Value: Integer);
 begin
   FTabList.TabWidth := Value;
+end;
+
+procedure TSharpEPageControl.SetTextSpacing(const Value: Integer);
+begin
+  FTabList.TextSpacing := Value;
 end;
 
 procedure TSharpEPageControl.SetAutoSizeTabs(const Value: Boolean);
