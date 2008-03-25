@@ -21,7 +21,6 @@ type
     FMinimized: Boolean;
     FExpandedHeight: Integer;
     FTabControlVisible: boolean;
-    FButtons: TSharpETabList;
     function GetTabItems: TTabItems;
     procedure SetTabItems(const Value: TTabItems);
     procedure CreateControls;
@@ -69,14 +68,16 @@ type
     procedure SetTabControlVisible(const Value: boolean);
     function GetButtons: TButtonItems;
     procedure SetButtons(const Value: TButtonItems);
-    function GetIconSpacing: Integer;
-    function GetTextSpacing: Integer;
-    procedure SetIconSpacing(const Value: Integer);
-    procedure SetTextSpacing(const Value: Integer);
     function GetOnBtnClick: TSharpEBtnClick;
     procedure SetOnBtnClick(const Value: TSharpEBtnClick);
     function GetBtnWidth: Integer;
     procedure SetBtnWidth(const Value: Integer);
+    function GetIconSpacingX: Integer;
+    function GetIconSpacingY: Integer;
+    procedure SetIconSpacingX(const Value: Integer);
+    procedure SetIconSpacingY(const Value: Integer);
+    function GetTextSpacing: Integer;
+    procedure SetTextSpacing(const Value: Integer);
   protected
     procedure Loaded; override;
   public
@@ -100,7 +101,8 @@ type
     property Border: Boolean read GetBorder write SetBorder;
 
     Property TextSpacing: Integer read GetTextSpacing write SetTextSpacing;
-    Property IconSpacing: Integer read GetIconSpacing write SetIconSpacing;
+    Property IconSpacingX: Integer read GetIconSpacingX write SetIconSpacingX;
+    Property IconSpacingY: Integer read GetIconSpacingY write SetIconSpacingY;
 
     property TabCount: Integer read GetTabCount;
     property BtnWidth: Integer read GetBtnWidth write SetBtnWidth;
@@ -181,7 +183,8 @@ begin
     BorderColor := clBlack;
     Border := True;
     DrawMode := srpNoTopLeft;
-    ParentColor := True;
+    ParentColor := False;
+    Color := clWindow;
     ParentBackground := False;
     DoubleBuffered := True;
 
@@ -213,9 +216,14 @@ begin
   Result := FTabList.Buttons;
 end;
 
-function TSharpEPageControl.GetIconSpacing: Integer;
+function TSharpEPageControl.GetIconSpacingX: Integer;
 begin
-  Result := FTabList.IconSpacing;
+  Result := FTabList.IconSpacingX;
+end;
+
+function TSharpEPageControl.GetIconSpacingY: Integer;
+begin
+  Result := FTabList.IconSpacingY;
 end;
 
 function TSharpEPageControl.GetMinimized: Boolean;
@@ -384,9 +392,14 @@ begin
   FTabList.Buttons := Value;
 end;
 
-procedure TSharpEPageControl.SetIconSpacing(const Value: Integer);
+procedure TSharpEPageControl.SetIconSpacingX(const Value: Integer);
 begin
-  FTabList.IconSpacing := Value;
+  FTabList.IconSpacingX := Value;
+end;
+
+procedure TSharpEPageControl.SetIconSpacingY(const Value: Integer);
+begin
+  FTabList.IconSpacingY := Value;
 end;
 
 procedure TSharpEPageControl.SetMinimized(const Value: Boolean);
