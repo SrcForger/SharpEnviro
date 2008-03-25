@@ -31,6 +31,7 @@ uses
   Forms,
   Dialogs,
   JvSimpleXml,
+  ComCtrls,
   PngSpeedButton,
   uVistaFuncs,
   SysUtils,
@@ -128,12 +129,25 @@ begin
   end;
 end;
 
+procedure ClickTab(ATab: TStringItem);
+begin
+  TTabSheet(ATab.FObject).Show;
+end;
+
+procedure AddTabs(var ATabs: TStringList);
+begin
+  ATabs.AddObject('Desktop',frmDeskSettings.tabDesktop);
+  ATabs.AddObject('Objects',frmDeskSettings.tabObjects);
+  ATabs.AddObject('Menu',frmDeskSettings.tabMenu);
+end;
 
 exports
   Open,
   Close,
   Save,
   SetText,
+  ClickTab,
+  AddTabs,
   GetMetaData;
 
 end.

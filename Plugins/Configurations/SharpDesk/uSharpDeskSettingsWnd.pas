@@ -40,30 +40,34 @@ type
 
 type
   TfrmDeskSettings = class(TForm)
-    cb_adjustsize: TCheckBox;
-    cb_amm: TCheckBox;
-    cb_autorotate: TCheckBox;
-    cb_dd: TCheckBox;
-    cb_singleclick: TCheckBox;
-    cb_wpwatch: TCheckBox;
-    JvLabel1: TLabel;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label5: TLabel;
-    Label6: TLabel;
+    pcOptions: TPageControl;
+    tabObjects: TTabSheet;
     Panel1: TPanel;
     Label4: TLabel;
     cb_grid: TCheckBox;
     sgb_gridy: TSharpeGaugeBox;
     sgb_gridx: TSharpeGaugeBox;
+    cb_dd: TCheckBox;
+    JvLabel1: TLabel;
+    tabDesktop: TTabSheet;
+    cb_adjustsize: TCheckBox;
+    Label5: TLabel;
+    Label6: TLabel;
+    cb_autorotate: TCheckBox;
+    tabMenu: TTabSheet;
     Panel2: TPanel;
-    Label7: TLabel;
-    cbMenuList: TComboBox;
     Label8: TLabel;
-    Label9: TLabel;
     Label10: TLabel;
+    cbMenuList: TComboBox;
     cbMenuShift: TComboBox;
+    Label9: TLabel;
+    Label7: TLabel;
+    Label1: TLabel;
+    cb_singleclick: TCheckBox;
+    cb_amm: TCheckBox;
+    cb_wpwatch: TCheckBox;
+    Label3: TLabel;
+    Label2: TLabel;
     procedure sgb_gridyChangeValue(Sender: TObject; Value: Integer);
     procedure cb_ddClick(Sender: TObject);
     procedure cb_ammClick(Sender: TObject);
@@ -108,7 +112,8 @@ begin
 
   For i := 0 to Pred(Self.ComponentCount) do
     if Self.Components[i].ClassName = TLabel.ClassName then
-      TLabel(Self.Components[i]).Font.Color := clGray;
+      if TLabel(Self.Components[i]).Tag = 1 then
+        TLabel(Self.Components[i]).Font.Color := clGray;
 
 end;
 
