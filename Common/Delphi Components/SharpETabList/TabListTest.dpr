@@ -5,7 +5,8 @@ uses
   uTabListTest in 'uTabListTest.pas' {Form12},
   graphicsFX in '..\..\Units\SharpFX\graphicsFX.pas',
   SharpETabList in 'SharpETabList.pas',
-  SharpERoundPanel in '..\SharpERoundPanel\SharpERoundPanel.pas';
+  SharpERoundPanel in '..\SharpERoundPanel\SharpERoundPanel.pas',
+  SharpEPageControl in '..\SharpEPageControl\SharpEPageControl.pas';
 
 {$R *.res}
 
