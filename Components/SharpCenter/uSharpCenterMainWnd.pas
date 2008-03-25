@@ -649,6 +649,7 @@ begin
     exit;
 
   ClickItem;
+  Application.ProcessMessages;
 end;
 
 procedure TSharpCenterWnd.tlEditItemTabChange(ASender: TObject;
@@ -740,7 +741,6 @@ var
   tmpManager: TSharpCenterManager;
   sName: string;
 begin
-  LockWindowUpdate(Self.Handle);
   SCM.Unload;
 
   // Get the Button Data
@@ -791,7 +791,6 @@ begin
         SCM.Load(tmpItem.Filename, tmpItem.PluginID);
       end;
   end;
-  LockWindowUpdate(0);
 end;
 
 procedure TSharpCenterWnd.InitToolbar;
@@ -812,8 +811,6 @@ var
 begin
   UpdateLivePreview;
 
-  //lockwindowupdate(Self.Handle);
-  try
     if (@SCM.ActivePlugin.Open <> nil) then
     begin
       if SCM.PluginWndHandle <> 0 then begin
@@ -832,9 +829,6 @@ begin
           pnlEditContainer.Minimized := True;
 
     end;
-  finally
-    //LockWindowUpdate(0);
-  end;
 end;
 
 procedure TSharpCenterWnd.ShowHistory;
@@ -858,7 +852,6 @@ var
   i: Integer;
 begin
   // Resize Plugin window
-  LockWindowUpdate(Self.Handle);
   try
 
     // Edit bar
@@ -907,9 +900,6 @@ begin
     pnlPluginContainer.Height := pnlPluginContainer.Height+1;
     pnlPluginContainer.Height := pnlPluginContainer.Height-1;
 
-    LockWindowUpdate(0);
-    
-    UpdateSize;
     CenterUpdateSize;
 
     sbPlugin.SetFocus;
@@ -940,7 +930,7 @@ procedure TSharpCenterWnd.AddPluginTabsEvent(Sender: TObject);
 var
   i {idx}: Integer;
   s: string;
-
+  tabItem: TTabItem;
 begin
   pnlPluginContainer.TabList.Clear;
 
@@ -953,18 +943,16 @@ begin
     sbPlugin.Margins.Top := 32;
   end;
 
-  LockWindowUpdate(Self.Handle);
   try
-
     s := '';
     for i := 0 to Pred(SCM.PluginTabs.Count) do
     begin
-      pnlPluginContainer.TabList.Add(SCM.PluginTabs[i], -1, '');
+      tabItem := pnlPluginContainer.TabItems.Add;
+      tabItem.Caption := SCM.PluginTabs[i];
+
     end;
     pnlPluginContainer.TabIndex := FSelectedPluginTabID;
   finally
-
-    LockWindowUpdate(0);
     sbPlugin.Invalidate;
   end;
 end;

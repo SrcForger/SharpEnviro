@@ -1037,6 +1037,7 @@ object SharpCenterWnd: TSharpCenterWnd
         OnTabChange = tlToolbarTabChange
         OnTabClick = tlToolbarTabClick
         TabWidth = 24
+        ButtonWidth = 24
         TabIndex = 0
         TabColor = clWindow
         TabSelectedColor = 12711166
@@ -1046,6 +1047,9 @@ object SharpCenterWnd: TSharpCenterWnd
         CaptionUnSelectedColor = clBlack
         StatusUnSelectedColor = clGreen
         TabAlign = taLeftJustify
+        TextSpacing = 8
+        IconSpacingX = 4
+        IconSpacingY = 4
         AutoSizeTabs = False
         BottomBorder = False
         Border = False
@@ -1073,6 +1077,7 @@ object SharpCenterWnd: TSharpCenterWnd
             ImageIndex = 8
             Visible = True
           end>
+        Buttons = <>
         Minimized = False
       end
       object pnlToolbar: TSharpERoundPanel
@@ -1105,19 +1110,11 @@ object SharpCenterWnd: TSharpCenterWnd
           object tabHistory: TTabSheet
             Caption = 'tabHistory'
             TabVisible = False
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
           end
           object tabImport: TTabSheet
             Caption = 'tabImport'
             ImageIndex = 1
             TabVisible = False
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
             object btnImport: TPngSpeedButton
               Left = 118
               Top = 36
@@ -1583,10 +1580,6 @@ object SharpCenterWnd: TSharpCenterWnd
             Caption = 'tabFav'
             ImageIndex = 2
             TabVisible = False
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
             object lbHistory: TSharpEListBoxEx
               Left = 0
               Top = 0
@@ -1641,10 +1634,6 @@ object SharpCenterWnd: TSharpCenterWnd
             Caption = 'tabExport'
             ImageIndex = 3
             TabVisible = False
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
           end
         end
       end
@@ -1667,6 +1656,8 @@ object SharpCenterWnd: TSharpCenterWnd
       Padding.Bottom = 6
       ParentBackground = False
       TabOrder = 1
+      ExplicitLeft = 195
+      ExplicitTop = -6
       object pnlLivePreview: TPanel
         AlignWithMargins = True
         Left = 6
@@ -1707,12 +1698,17 @@ object SharpCenterWnd: TSharpCenterWnd
         DoubleBuffered = False
         ExpandedHeight = 200
         TabItems = <>
+        Buttons = <>
         RoundValue = 10
         Border = True
+        TextSpacing = 6
+        IconSpacingX = 4
+        IconSpacingY = 4
+        BtnWidth = 24
         TabWidth = 62
         TabIndex = 0
         TabAlignment = taLeftJustify
-        AutoSizeTabs = True
+        AutoSizeTabs = False
         TabBackgroundColor = clWindow
         BackgroundColor = clWindow
         BorderColor = 14737632
@@ -1790,8 +1786,13 @@ object SharpCenterWnd: TSharpCenterWnd
             ImageIndex = 2
             Visible = False
           end>
+        Buttons = <>
         RoundValue = 10
         Border = False
+        TextSpacing = 6
+        IconSpacingX = 4
+        IconSpacingY = 2
+        BtnWidth = 24
         TabWidth = 62
         TabIndex = 0
         TabAlignment = taLeftJustify
@@ -2778,7 +2779,7 @@ object SharpCenterWnd: TSharpCenterWnd
           AlignWithMargins = True
           Left = 4
           Top = 17
-          Width = 266
+          Width = 493
           Height = 13
           Margins.Left = 4
           Margins.Top = 0
@@ -2788,12 +2789,13 @@ object SharpCenterWnd: TSharpCenterWnd
           Caption = 'The most awesome configuration manager in the world!'
           Transparent = True
           Layout = tlCenter
+          ExplicitWidth = 266
         end
         object lblTitle: TLabel
           AlignWithMargins = True
           Left = 4
           Top = 0
-          Width = 61
+          Width = 493
           Height = 13
           Margins.Left = 4
           Margins.Top = 0
@@ -2803,6 +2805,7 @@ object SharpCenterWnd: TSharpCenterWnd
           Caption = 'SharpCenter'
           Transparent = True
           Layout = tlCenter
+          ExplicitWidth = 61
         end
       end
     end

@@ -751,7 +751,7 @@ begin
     ActivePlugin.AddTabs(FPluginTabs);
 
   if Assigned(FOnAddPluginTabs) then
-          FOnAddPluginTabs(Self);
+    FOnAddPluginTabs(Self);
 
   if (PluginTabs.Count > 0) and (@ActivePlugin.ClickTab <> nil) then begin
     tmpStrItem.FString := FPluginTabs.Strings[0];
