@@ -42,15 +42,16 @@ end;
 
 procedure TForm12.Button3Click(Sender: TObject);
 var
-  n:Integer;
   tmp: TTabItem;
 begin
+  SharpEPageControl1.TabList.Add('Long Notes!!!!!!');
+  SharpEPageControl1.TabList.Add('Longish Notes');
   tmp := SharpEPageControl1.TabList.Add('Notes');
+  tmp.ImageIndex := 0;
 end;
 
 procedure TForm12.Button4Click(Sender: TObject);
 var
-  n:Integer;
   tmp: TButtonItem;
 begin
   tmp := SharpEPageControl1.Buttons.Add;

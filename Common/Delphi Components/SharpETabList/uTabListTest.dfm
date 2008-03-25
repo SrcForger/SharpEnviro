@@ -63,7 +63,9 @@ object Form12: TForm12
     RoundValue = 10
     Border = True
     TextSpacing = 8
-    IconSpacing = 2
+    IconSpacingX = 8
+    IconSpacingY = 4
+    BtnWidth = 24
     TabWidth = 62
     TabIndex = 0
     TabAlignment = taLeftJustify
@@ -79,9 +81,6 @@ object Form12: TForm12
     TabCaptionColor = clBlack
     TabStatusColor = clGreen
     OnBtnClick = SharpEPageControl1BtnClick
-    ExplicitLeft = 0
-    ExplicitTop = 0
-    ExplicitWidth = 548
     DesignSize = (
       542
       300)
