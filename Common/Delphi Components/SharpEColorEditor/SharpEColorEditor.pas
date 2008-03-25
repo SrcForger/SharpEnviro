@@ -273,7 +273,8 @@ begin
     Name := 'ftabs';
 
     TabAlign := taRightJustify;
-    IconSpacing := 4;
+    IconSpacingX := 4;
+    IconSpacingY := 4;
     TabWidth := 40;
     AutoSizeTabs := False;
 
@@ -306,7 +307,7 @@ begin
     name := 'FColorPicker';
 
     FColorPicker.Left := FTabs.Width - (FTabs.TabWidth * 2) -
-      FTabs.IconSpacing + 2 - FColorPicker.Width;
+      FTabs.IconSpacingX + 2 - FColorPicker.Width;
     Top := 7;
     Height := 17;
     DoubleBuffered := False;
