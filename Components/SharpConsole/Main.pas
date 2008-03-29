@@ -44,7 +44,7 @@ uses
   uDebugging,
   pngimage, XPMan, PngImageList, SharpERoundPanel, SharpETabList,
   JvExControls, JvPageList, clipbrd, JvExCheckLst, JvCheckListBox, JvgListBox,
-  JvComponentBase, JvTrayIcon, SharpEPageControl;
+  JvComponentBase, SharpEPageControl, JvTrayIcon;
 
 type
   PConsoleMsg = ^TConsoleMsg;
@@ -78,8 +78,6 @@ type
     mnuTi: TPopupMenu;
     Exit1: TMenuItem;
     tmrRevertNorm: TTimer;
-    XPManifest1: TXPManifest;
-    tiMain: TJvTrayIcon;
     pnlMain: TPanel;
     pnlSelection: TPanel;
     pnlModuleList: TSharpERoundPanel;
@@ -115,25 +113,18 @@ type
     clbDebugLevel: TJvgCheckListBox;
     Splitter1: TSplitter;
     UpdateTimer: TTimer;
+    pilIcons: TPngImageList;
+    tiMain: TJvTrayIcon;
     procedure clbDebugLevelClick(Sender: TObject);
     procedure clbModuleListClick(Sender: TObject);
     procedure tlLogTabChange(ASender: TObject;
       const ATabIndex: Integer; var AChange: Boolean);
-    procedure Close1Click(Sender: TObject);
-    procedure Minimize1Click(Sender: TObject);
+
     procedure TextMemoLinkClick(Sender: TObject; Link: string);
     procedure TextMemoScrollVert(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormPaint(Sender: TObject);
-    procedure ThrobberbuttonMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure SizeButtonMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure ThrobberMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
 
-    procedure Image1MouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure Delete1Click(Sender: TObject);
     procedure SelectAll1Click(Sender: TObject);
     procedure Infi1Click(Sender: TObject);
@@ -163,7 +154,8 @@ type
   private
     FNotChecked: TStringList;
     FUpdateList : TObjectList;
-    procedure Restore(Sender: TObject);
+    FDebugList: TDebugList;
+
     procedure GetCopyData(var Msg: TMessage); message wm_CopyData;
     procedure UpdateLog(Sender: TObject);
     procedure UpdateModulesList;
@@ -189,7 +181,6 @@ var
   bMoveMouse, paused: boolean;
   bDragFullWindows: boolean;
   bHaveMoved: boolean;
-  //ColorScheme: TColorscheme;
   IsModuleWndClicked: Boolean;
   Playing: Boolean;
   ConsoleFlashInc: Integer;
@@ -472,22 +463,6 @@ begin
   end;
 end;
 
-procedure TSharpConsoleWnd.Close1Click(Sender: TObject);
-begin
-  SharpConsoleWnd.close;
-end;
-
-procedure TSharpConsoleWnd.Minimize1Click(Sender: TObject);
-begin
-  try
-    SetWindowpos(SharpConsoleWnd.handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE or
-      SWP_NOMOVE or SWP_NOREDRAW);
-    Application.Minimize;
-  except
-    SendConsoleErrorMessage('Problem minimizing Console.');
-  end;
-end;
-
 procedure TSharpConsoleWnd.TextMemoLinkClick(Sender: TObject; Link: string);
 begin
   SharpExecute(Link);
@@ -504,18 +479,20 @@ end;
 
 procedure TSharpConsoleWnd.FormCreate(Sender: TObject);
 begin
+  FDebugList := TDebugList.Create;
+  FDebugList.OnUpdate := UpdateLog;
+
   pagRoLog.Show;
   pcLog.TabIndex := 0;
   mmoCopy.DoubleBuffered := True;
-  SystemParametersInfo(SPI_GETDRAGFULLWINDOWS, 0, @bDragFullWindows, 0);
+
   Playing := True;
-  application.OnRestore := SharpConsoleWnd.Restore;
+
   TextMemo := TFatMemo.Create(pagRoLog);
   TextMemo.Font.name := 'segoe ui';
   TextMemo.Font.size := 8;
   TextMemo.Color := clWhite;
   TextMemo.BorderStyle := bsNone;
-  //TextMemo.ParentFont := True;
   TextMemo.Width := SharpConsoleWnd.Width - 13;
   TextMemo.Height := SharpConsoleWnd.height - 66;
   TextMemo.Align := alClient;
@@ -531,7 +508,7 @@ begin
   Textmemo.LineHeight := 15;
   TextMemo.TopIndex := 0;
   TextMemo.DoubleBuffered := True;
-  DebugList.OnUpdate := UpdateLog;
+
   paused := false;
   bMoveMouse := false;
   FNotChecked := TStringList.Create;
@@ -560,53 +537,6 @@ begin
   textmemo.Paint;
 end;
 
-procedure TSharpConsoleWnd.ThrobberbuttonMouseUp(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  try
-    popupmenu.Popup(SharpConsoleWnd.Left + 10, SharpConsoleWnd.top + 12);
-  except
-    SendConsoleErrorMessage('Problem showing popupmenu.');
-  end;
-end;
-
-procedure TSharpConsoleWnd.SizeButtonMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  try
-    oldMousePoint := point(x, y);
-    bMoveMouse := true;
-    bHaveMoved := false;
-    ReleaseCapture;
-    SystemParametersInfo(SPI_GETDRAGFULLWINDOWS, 0, @bDragFullWindows, 0);
-    SystemParametersInfo(SPI_SETDRAGFULLWINDOWS, 0, nil, 0);
-    PostMessage(SharpConsoleWnd.Handle, wm_SysCommand, SC_SIZE, 0);
-    PostMessage(SharpConsoleWnd.Handle, wm_KEYDOWN, vk_DOWN, 0);
-    PostMessage(SharpConsoleWnd.Handle, wm_KEYDOWN, vk_RIGHT, 0);
-  except
-    SendConsoleErrorMessage('Problem rezizeButton.');
-  end;
-end;
-
-procedure TSharpConsoleWnd.ThrobberMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  ReleaseCapture;
-  SendMessage(SharpConsoleWnd.Handle, wm_SysCommand, $F012, 0);
-end;
-
-procedure TSharpConsoleWnd.Image1MouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-const
-  // non documented constant found with Winsight
-  SC_DRAGMOVE = $F012;
-begin
-  if (Button = mbLeft) then begin
-    ReleaseCapture;
-    (Self as TControl).Perform(WM_SYSCOMMAND, SC_DRAGMOVE, 0);
-  end;
-end;
-
 procedure TSharpConsoleWnd.Delete1Click(Sender: TObject);
 begin
   DeleteHistory;
@@ -632,9 +562,9 @@ begin
   end;
 
   if msg.wParam <> DMT_ERROR then
-    debuglist.Add(now, msg.wParam, ExtractModuleName(RemoveTags(t2)), t2)
+    FDebugList.Add(now, msg.wParam, ExtractModuleName(RemoveTags(t2)), t2)
   else
-    debuglist.Add(now, msg.wParam, ExtractModuleName(RemoveTags(t2)), '<FONT COLOR=$0000FF>' +
+    FDebugList.Add(now, msg.wParam, ExtractModuleName(RemoveTags(t2)), '<FONT COLOR=$0000FF>' +
       RemoveTags(t2));
 end;
 
@@ -688,11 +618,11 @@ begin
   strl.Sorted := True;
   Strl.Duplicates := dupIgnore;
 
-  for i := 0 to DebugList.Count - 1 do
-    strl.Add(DebugList.Info[i].Module);
-
-  clbModuleList.items.BeginUpdate;
+  for i := 0 to FDebugList.Count - 1 do
+    strl.Add(FDebugList[i].Module);
   clbModuleList.Items.Clear;
+  clbModuleList.items.BeginUpdate;
+  try
   for i := 0 to strl.Count - 1 do begin
     clbModuleList.AddItem(strl.Strings[i], nil);
 
@@ -700,18 +630,23 @@ begin
     if IsModuleNotChecked(strl.Strings[i]) then
       clbModuleList.Checked[i] := cbUnchecked;
   end;
-  strl.Free;
-  clbModuleList.Items.endupdate;
+  finally
+    strl.Free;
+    clbModuleList.Items.endupdate;
+
+    clbModuleList.Visible := clbModuleList.Count <> 0;
+  end;
+  
 end;
 
 procedure TSharpConsoleWnd.UpdateTimerTimer(Sender: TObject);
 var
   errorstr: String;
-  item : TInfo;
+  item : TDebugItem;
 begin
   if FUpdateList.Count > 0 then
   begin
-    item := TInfo(FUpdateList.Items[0]);
+    item := TDebugItem(FUpdateList.Items[0]);
 
     // Draw the text
     case item.ErrorType of
@@ -812,9 +747,7 @@ var
   i: integer;
 begin
   TextMemo.Lines.Clear;
-
-  for i := DebugList.Count - 1 downto 0 do
-    DebugList.Delete(i);
+  FDebugList.Clear;
 
   clbDebugLevel.Clear;
   with clbDebugLevel do begin
@@ -864,7 +797,7 @@ begin
   else
     TextMemo.Visible := True;
 
-  sbMain.Panels.Items[0].Text := Format('History %d', [DebugList.Count]);
+  sbMain.Panels.Items[0].Text := Format('History %d', [FDebugList.Count]);
   sbMain.Panels.Items[1].Text := Format('Visible %d', [TextMemo.Lines.Count]);
 
   if Playing then
@@ -891,20 +824,20 @@ begin
   LockWindowUpdate(Self.Handle);
   Try
 
-  n := DebugList.Count div 10;
+  n := FDebugList.Count div 10;
   nDiv := n;
-  for i := 0 to DebugList.Count - 1 do begin
+  for i := 0 to FDebugList.Count - 1 do begin
 
     if i = n then begin
       prgRefresh.Position := prgRefresh.Position + 10;
       n := n + nDiv;
     end;
 
-    if i >= DebugList.Count-1 then
+    if i >= FDebugList.Count-1 then
       prgRefresh.Position := 100;
 
     // Draw the text
-    case DebugList.Info[i].ErrorType of
+    case FDebugList[i].ErrorType of
       DMT_INFO: errorstr := 'INFO';
       DMT_STATUS: errorstr := 'STATUS';
       DMT_WARN: errorstr := 'WARN';
@@ -913,13 +846,13 @@ begin
     end;
 
     if not (IsModuleNotChecked(errorstr)) then begin
-      if not (IsModuleNotChecked(DebugList.Info[i].Module)) then begin
-        DrawText(DebugList.Info[i].MessageText, clnone,
-          DebugList.Info[i].ErrorType, DebugList.Info[i].DTLogged);
+      if not (IsModuleNotChecked(FDebugList[i].Module)) then begin
+        DrawText(FDebugList[i].MessageText, clnone,
+          FDebugList[i].ErrorType, FDebugList[i].DTLogged);
 
         mmoCopy.Lines.Add(Format('%s : %s',
-          [FormatDateTime('hh:nn:ss dd/mm/yy', DebugList.Info[i].DTLogged),
-          errorstr + ' | ' + RemoveTags(DebugList.Info[i].MessageText)]));
+          [FormatDateTime('hh:nn:ss dd/mm/yy', FDebugList[i].DTLogged),
+          errorstr + ' | ' + RemoveTags(FDebugList[i].MessageText)]));
       end;
     end;
   end;
@@ -944,10 +877,10 @@ var
 begin
   strl := TStringList.Create;
 
-  for i := 0 to DebugList.count - 1 do begin
+  for i := 0 to FDebugList.count - 1 do begin
     strl.Add(Format('%s : %s',
-      [FormatDateTime('hh:nn:ss dd/mm/yy', DebugList.Info[i].DTLogged),
-      RemoveTags(DebugList.Info[i].MessageText)]));
+      [FormatDateTime('hh:nn:ss dd/mm/yy', FDebugList[i].DTLogged),
+      RemoveTags(FDebugList[i].MessageText)]));
   end;
 
   if dlgSaveFile.Execute then
@@ -965,9 +898,9 @@ var
 begin
   strl := TStringList.Create;
 
-  for i := 0 to DebugList.count - 1 do begin
+  for i := 0 to FDebugList.count - 1 do begin
     // Draw the text
-    case DebugList.Info[i].ErrorType of
+    case FDebugList[i].ErrorType of
       DMT_INFO: errorstr := 'INFO';
       DMT_STATUS: errorstr := 'STATUS';
       DMT_WARN: errorstr := 'WARN';
@@ -976,10 +909,10 @@ begin
     end;
 
     if not (IsModuleNotChecked(errorstr)) then begin
-      if not (IsModuleNotChecked(DebugList.Info[i].Module)) then begin
+      if not (IsModuleNotChecked(FDebugList[i].Module)) then begin
         strl.Add(Format('%s : %s',
-          [FormatDateTime('hh:nn:ss dd/mm/yy', DebugList.Info[i].DTLogged),
-          RemoveTags(DebugList.Info[i].MessageText)]));
+          [FormatDateTime('hh:nn:ss dd/mm/yy', FDebugList[i].DTLogged),
+          RemoveTags(FDebugList[i].MessageText)]));
       end;
     end;
   end;
@@ -1006,9 +939,9 @@ var
 begin
   strl := TStringList.Create;
 
-  for i := 0 to DebugList.count - 1 do begin
+  for i := 0 to FDebugList.count - 1 do begin
     // Draw the text
-    case DebugList.Info[i].ErrorType of
+    case FDebugList[i].ErrorType of
       DMT_INFO: errorstr := 'INFO';
       DMT_STATUS: errorstr := 'STATUS';
       DMT_WARN: errorstr := 'WARN';
@@ -1017,10 +950,10 @@ begin
     end;
 
     if not (IsModuleNotChecked(errorstr)) then begin
-      if not (IsModuleNotChecked(DebugList.Info[i].Module)) then begin
+      if not (IsModuleNotChecked(FDebugList[i].Module)) then begin
         strl.Add(Format('%s : %s',
-          [FormatDateTime('hh:nn:ss dd/mm/yy', DebugList.Info[i].DTLogged),
-          RemoveTags(DebugList.Info[i].MessageText)]));
+          [FormatDateTime('hh:nn:ss dd/mm/yy', FDebugList[i].DTLogged),
+          RemoveTags(FDebugList[i].MessageText)]));
       end;
     end;
   end;
@@ -1070,15 +1003,15 @@ end;
 
 procedure TSharpConsoleWnd.tbPauseClick(Sender: TObject);
 begin
-  if tbPause.ImageIndex = 9 then begin // pause
-    tbPause.ImageIndex := 10;
+  if tbPause.ImageIndex = 6 then begin // pause
+    tbPause.ImageIndex := 5;
     tbPause.Caption := 'Auto';
     SharpConsoleWnd.Caption := 'SharpConsole';
     Playing := True;
     exit;
   end
   else begin
-    tbPause.ImageIndex := 9;
+    tbPause.ImageIndex := 6;
     tbPause.Caption := 'Manual';
     SharpConsoleWnd.Caption := 'SharpConsole (Paused)';
     Playing := False;
@@ -1101,12 +1034,6 @@ procedure TSharpConsoleWnd.tlLogTabChange(ASender: TObject;
 begin
   if plMain <> nil then
     plMain.ActivePageIndex := ATabIndex;
-end;
-
-procedure TSharpConsoleWnd.Restore(Sender: TObject);
-begin
-  SetWindowpos(SharpConsoleWnd.handle, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE or
-      SWP_NOMOVE or SWP_NOREDRAW);
 end;
 
 procedure TSharpConsoleWnd.clbModuleListClick(Sender: TObject);
