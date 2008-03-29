@@ -1047,7 +1047,8 @@ object SharpCenterWnd: TSharpCenterWnd
         CaptionUnSelectedColor = clBlack
         StatusUnSelectedColor = clGreen
         TabAlign = taLeftJustify
-        TextSpacing = 8
+        TextSpacingX = 8
+        TextSpacingY = 6
         IconSpacingX = 4
         IconSpacingY = 4
         AutoSizeTabs = False
@@ -1656,8 +1657,6 @@ object SharpCenterWnd: TSharpCenterWnd
       Padding.Bottom = 6
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 195
-      ExplicitTop = -6
       object pnlLivePreview: TPanel
         AlignWithMargins = True
         Left = 6
@@ -1701,7 +1700,8 @@ object SharpCenterWnd: TSharpCenterWnd
         Buttons = <>
         RoundValue = 10
         Border = True
-        TextSpacing = 6
+        TextSpacingX = 4
+        TextSpacingY = 3
         IconSpacingX = 4
         IconSpacingY = 4
         BtnWidth = 24
@@ -1789,7 +1789,8 @@ object SharpCenterWnd: TSharpCenterWnd
         Buttons = <>
         RoundValue = 10
         Border = False
-        TextSpacing = 6
+        TextSpacingX = 4
+        TextSpacingY = 3
         IconSpacingX = 4
         IconSpacingY = 2
         BtnWidth = 24
