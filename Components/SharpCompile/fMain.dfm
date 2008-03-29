@@ -1017,6 +1017,7 @@ object frmMain: TfrmMain
   Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object panMain: TPanel
@@ -1262,7 +1263,7 @@ object frmMain: TfrmMain
         Margins.Right = 4
         Align = alClient
         Anchors = [akLeft, akRight, akBottom]
-        DoubleBuffered = False
+        DoubleBuffered = True
         ExpandedHeight = 200
         TabItems = <
           item
@@ -1275,12 +1276,18 @@ object frmMain: TfrmMain
             ImageIndex = 0
             Visible = True
           end>
+        Buttons = <>
         RoundValue = 10
         Border = True
+        TextSpacingX = 8
+        TextSpacingY = 4
+        IconSpacingX = 4
+        IconSpacingY = 4
+        BtnWidth = 24
         TabWidth = 68
         TabIndex = 0
         TabAlignment = taLeftJustify
-        AutoSizeTabs = False
+        AutoSizeTabs = True
         TabBackgroundColor = clWindow
         BackgroundColor = clWindow
         BorderColor = 15000804
