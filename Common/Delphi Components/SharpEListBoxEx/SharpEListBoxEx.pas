@@ -617,7 +617,8 @@ begin
 
   // Checked
   if AItem.Checked then begin
-    tmpColor := FColors.CheckColor;
+    if Not(Assigned(FOnGetCellColor)) then
+      tmpColor := FColors.CheckColor;
   end;
 
   if not (Enabled) then
