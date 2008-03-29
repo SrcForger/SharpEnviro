@@ -12,6 +12,7 @@ object Form12: TForm12
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Button1: TButton
@@ -48,9 +49,36 @@ object Form12: TForm12
     Height = 300
     Align = alTop
     Color = clWindow
-    DoubleBuffered = False
+    DoubleBuffered = True
     ExpandedHeight = 200
-    TabItems = <>
+    TabItems = <
+      item
+        Caption = 'New Tab'
+        ImageIndex = -1
+        Visible = True
+      end
+      item
+        Caption = 'New Tabber'
+        ImageIndex = -1
+        Visible = True
+      end
+      item
+        Caption = 'Note'
+        Status = 'edit'
+        ImageIndex = 3
+        Visible = True
+      end
+      item
+        Caption = '000'
+        Status = '000'
+        ImageIndex = -1
+        Visible = True
+      end
+      item
+        Caption = 'APE'
+        ImageIndex = -1
+        Visible = True
+      end>
     Buttons = <
       item
         ImageIndex = 0
@@ -62,9 +90,10 @@ object Form12: TForm12
       end>
     RoundValue = 10
     Border = True
-    TextSpacing = 8
-    IconSpacingX = 8
-    IconSpacingY = 4
+    TextSpacingX = 4
+    TextSpacingY = 4
+    IconSpacingX = 4
+    IconSpacingY = 2
     BtnWidth = 24
     TabWidth = 62
     TabIndex = 0
@@ -170,6 +199,30 @@ object Form12: TForm12
           F3EB3F0CF75F32FFFDFDE37F1DD179E148B86CC5D777CFD399FF32CAFF65FEFF
           14A86BBAC7EE3F6D0006ACC5DB721214F10000000049454E44AE426082}
         Name = 'PngImage2'
+        Background = clWindow
+      end
+      item
+        PngImage.Data = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000001FF4944415478DAC5933F68535114C6BFF782792FF0DA50
+          6D536C535A948E458A9314AAAB83A891D28246D450B050852A2822E8D0C14570
+          E8D0C1C12168A9B68B43405C3A28D841E9A08B50EC24B46913D360EE4BDE7DEF
+          78EE6D84DC3A2AF8E072EE3DEF7CBF73CEFD631111FEE6B3FE1980360A24ABDB
+          206A8064000A79046A5EE7791D087C84D2E7B5D0F3E485BC6500A2F5D7641F39
+          FD4706F57B2FF2B70328BF9C40C7C4B209101FE729319C0345A2599B12472DCA
+          3D6BD90ECACF3338982D9880DAEA1CB9C7CE42563F703975DD8AB691B25CBA1E
+          02F1CE0C7E2CDD45E7B51513F0F3FD634A1CCF20A8BCE3D44153D42A56A306A7
+          6B1CE585DBE8BABE6A022A6FEE91379A83ACACB464168858886676B576BA2FA1
+          949F466AFAB309281766289E1E82AC7F0542259608FD5DB803299D59434201F7
+          700E3BCF26D13DB36E02B6972FD381D420BCE1F3EA4C10353650FDB408A7BF83
+          5BAAB1D8D715B83D53D87A7A053D77BE9B809DA52C91C541F62EDA4726615916
+          2A6B8B48F47B4D714DB716EFBD89E2FC45F4DE2FEDABE05596DA4E8CA3F4F601
+          625E02C99337505D7B01B7CFD362B589E09371D2B7B0353786F443B10FB03046
+          EDA7AEC22F7E83F85240CC4D2276E828DA8646B9218EA190A3A4BE499B4FCEA1
+          6F363201C5FC198A02DE7D755D03012936D96BC3E656940F8D863E117DB56588
+          81476402FEDB6BFC05FCB743F0C5F3CBA60000000049454E44AE426082}
+        Name = 'PngImage3'
         Background = clWindow
       end>
     Left = 492

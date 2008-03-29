@@ -17,10 +17,22 @@ uses
   JclFileUtils;
 
 type
+  TTabExtents = Record
+    TabRect: TRect;
+    IconRect: TRect;
+    CaptionRect: TRect;
+    StatusRect: TRect;
+    TabWidth: Integer;
+    IconWidth: Integer;
+    CaptionWidth: Integer;
+    StatusWidth: Integer;
+  End;
+
+type
   TTabItem = class(TCollectionItem)
   private
     FCaption: string;
-    FTabRect: Trect;
+    FTabExtent: TTabExtents;
     FStatus: string;
     FImageIndex: Integer;
     FVisible: Boolean;
@@ -35,7 +47,7 @@ type
   published
     property Caption: string read FCaption write SetCaption;
     property Status: string read FStatus write SetStatus;
-    property TabRect: Trect read FTabRect write FTabRect;
+    property TabExtent: TTabExtents read FTabExtent write FTabExtent;
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
     property Visible: Boolean read FVisible write SetVisible;
 
@@ -83,8 +95,8 @@ type
 type
   TSharpETabClick = procedure(ASender: TObject; const ATabIndex: Integer) of object;
   TSharpEBtnClick = procedure(ASender: TObject; const ABtnIndex: Integer) of object;
-
   TSharpETabChange = procedure(ASender: TObject; const ATabIndex: Integer; var AChange: Boolean) of object;
+
 type
   TSharpETabList = class(TCustomPanel)
   private
@@ -94,7 +106,6 @@ type
     FtabColor: TColor;
     FBkgColor: TColor;
     FTabSelectedColor: TColor;
-    FTextSpacing: Integer;
     FOnTabChange: TSharpETabChange;
     FMouseOverID: Integer;
     FTimer: TTimer;
@@ -117,6 +128,8 @@ type
     FOnBtnClick: TSharpEBtnClick;
     FIconSpacingX: Integer;
     FIconSpacingY: Integer;
+    FTextSpacingX: Integer;
+    FTextSpacingY: Integer;
 
     function GetCount: Integer;
     procedure SetTabIndex(const Value: Integer);
@@ -145,9 +158,14 @@ type
     function GetButtonsWidth: Integer;
     procedure SetButtonWidth(const Value: Integer);
     function GetTabWidth(ATab: TTabItem): Integer;
+    procedure GetTabExtent(ATab: TTabItem; X,Y: Integer; var ATabExtents: TTabExtents);
     function GetMaxVisibleTabs: Integer;
+    procedure SetIconSpacingX(const Value: Integer);
+    procedure SetIconSpacingY(const Value: Integer);
+    procedure SetTextSpacingX(const Value: Integer);
+    procedure SetTextSpacingY(const Value: Integer);
   protected
-    procedure DrawTab(ATabRect: TRect; ATabItem: TTabItem);
+    procedure DrawTab(ATabItem: TTabItem);
     procedure DrawButton(AButtonRect: TRect; AButton: TButtonItem);
     procedure Loaded; override;
 
@@ -192,9 +210,10 @@ type
     property StatusUnSelectedColor: TColor read FStatusUnSelectedColor write FStatusUnSelectedColor;
 
     property TabAlign: TLeftRight read FTabAlign write SetTabAlign;
-    property TextSpacing: Integer read FTextSpacing write FTextSpacing;
-    property IconSpacingX: Integer read FIconSpacingX write FIconSpacingX;
-    property IconSpacingY: Integer read FIconSpacingY write FIconSpacingY;
+    property TextSpacingX: Integer read FTextSpacingX write SetTextSpacingX;
+    property TextSpacingY: Integer read FTextSpacingY write SetTextSpacingY;
+    property IconSpacingX: Integer read FIconSpacingX write SetIconSpacingX;
+    property IconSpacingY: Integer read FIconSpacingY write SetIconSpacingY;
 
     property AutoSizeTabs: Boolean read FAutoSizeTabs write SetAutoSizeTabs;
 
@@ -286,7 +305,8 @@ begin
   FStatusSelectedColor := clGreen;
   FBkgColor := clWindow;
   Height := 25;
-  FTextSpacing := 8;
+  FTextSpacingX := 8;
+  FTextSpacingY := 6;
   FIconSpacingX := 4;
   FIconSpacingY := 4;
   FAutoSizeTabs := True;
@@ -356,8 +376,8 @@ begin
   s := PathCompactPath(FImage32.Bitmap.Canvas.Handle, AButton.Caption,
     iCaptionWidth + 12, cpEnd);
 
-  FImage32.Bitmap.Textout(AButtonRect.Left + FTextSpacing + iIconWidth,
-    FTextSpacing, s);
+  FImage32.Bitmap.Textout(AButtonRect.Left + FTextSpacingX + iIconWidth,
+    FTextSpacingY, s);
 
 end;
 
@@ -399,24 +419,22 @@ begin
   end;
 end;
 
-procedure TSharpETabList.DrawTab(ATabRect: TRect; ATabItem: TTabItem);
+procedure TSharpETabList.DrawTab(ATabItem: TTabItem);
 var
-  iTabWidth, iIconWidth, {iIconHeight, } iStatusWidth, iCaptionWidth: Integer;
+  iIconWidth: Integer;
+  tabExtents: TTabExtents;
+  rTab, rIcon, rCaption, rStatus: TRect;
   s: string;
 begin
-  iTabWidth := ATabRect.Right - ATabRect.Left;
-  // Get icon width
-  if ((Assigned(FPngImageList)) and (ATabItem.ImageIndex >= 0) and
-    (ATabItem.ImageIndex <= FPngImageList.Count - 1)) then
-    iIconWidth := PngImageList.PngImages[ATabItem.ImageIndex].PngImage.Width
-  else
-    iiconWidth := 0;
+  tabExtents := ATabItem.TabExtent;
 
-  // Get status text width
-  iStatusWidth := FImage32.Bitmap.TextWidth(ATabItem.Status);
+  iiconWidth := tabExtents.IconWidth;
+  rtab := tabExtents.TabRect;
+  rIcon := tabExtents.IconRect;
+  rCaption := tabExtents.CaptionRect;
+  rStatus := tabExtents.StatusRect;
 
-  // Get caption width
-  iCaptionWidth := iTabWidth - iIconWidth - iStatusWidth;
+  //iCaptionWidth := iTabWidth - iIconWidth - iStatusWidth;
 
   // Tab Colour
   if ATabItem.Index = FTabIndex then
@@ -439,28 +457,24 @@ begin
   end;
 
   if FMinimized then
-    RoundRect(FImage32.Bitmap.Canvas.Handle, ATabRect.Left, ATabRect.Top, ATabRect.Right, ATabRect.bottom - 1, 10, 10)
+    RoundRect(FImage32.Bitmap.Canvas.Handle, rtab.Left, rtab.Top, rtab.Right, rtab.bottom - 1, 10, 10)
   else
-    RoundRect(FImage32.Bitmap.Canvas.Handle, ATabRect.Left, ATabRect.Top, ATabRect.Right, ATabRect.bottom + 5, 10, 10);
+    RoundRect(FImage32.Bitmap.Canvas.Handle, rtab.Left, rtab.Top, rtab.Right, rtab.bottom + 5, 10, 10);
 
   // Draw Tab Bottom Border
   if FBorder and FBottomBorder then
     if FTabIndex = ATabItem.Index then
-      FImage32.Bitmap.Line(ATabRect.Left + 1, ATabRect.Bottom - 1, ATabRect.Right - 1, ATabRect.Bottom - 1, Color32(FTabSelectedColor))
+      FImage32.Bitmap.Line(rtab.Left + 1, rtab.Bottom - 1, rtab.Right - 1, rtab.Bottom - 1, Color32(FTabSelectedColor))
     else
-      FImage32.Bitmap.Line(ATabRect.Left, ATabRect.Bottom - 1, ATabRect.Right, ATabRect.Bottom - 1, Color32(FBorderColor));
+      FImage32.Bitmap.Line(rtab.Left, rtab.Bottom - 1, rtab.Right, rtab.Bottom - 1, Color32(FBorderColor));
 
   // Draw image
   if iIconWidth > 0 then
   begin
-    FPngImageList.PngImages[ATabItem.ImageIndex].PngImage.Draw(FImage32.Bitmap.Canvas,
-      Rect(FIconSpacingX + ATabRect.Left, FIconSpacingY + ATabRect.Top,
-      (FIconSpacingX*2) + iIconWidth + ATabRect.Left,
-      FIconSpacingY + iIconWidth + ATabRect.Top));
+    FPngImageList.PngImages[ATabItem.ImageIndex].PngImage.Draw(FImage32.Bitmap.Canvas, rIcon);
   end;
 
   FImage32.Bitmap.Font.Assign(Self.Font);
-
   FImage32.Bitmap.Font.Style := [];
 
   // Caption Color
@@ -470,15 +484,10 @@ begin
     FImage32.Bitmap.Font.Color := FCaptionUnSelectedColor;
 
   // Draw Caption Text
-  s := PathCompactPath(FImage32.Bitmap.Canvas.Handle, ATabItem.Caption,
-    iCaptionWidth + FTextSpacing * 2, cpEnd);
-
-  if iIconWidth = 0 then
-    FImage32.Bitmap.Textout(ATabrect.Left + FTextSpacing + iIconWidth,
-      FTextSpacing, s)
-  else
-    FImage32.Bitmap.Textout(ATabrect.Left + iIconWidth + (FIconSpacingX * 2),
-      FTextSpacing, s);
+  //s := PathCompactPath(FImage32.Bitmap.Canvas.Handle, ATabItem.Caption,
+  //  iCaptionWidth + FTextSpacingX * 2, cpEnd);
+  s := ATabItem.Caption;
+  FImage32.Bitmap.Textout(rCaption.Left,rCaption.Top, s);
 
   // Status Text Color
   if FTabIndex = ATabItem.Index then
@@ -487,8 +496,7 @@ begin
     FImage32.Bitmap.Font.Color := FStatusUnSelectedColor;
 
   // Draw Status Text
-  FImage32.Bitmap.Textout(ATabrect.Right - iStatusWidth - FTextSpacing, FTextSpacing,
-    ATabItem.Status);
+  FImage32.Bitmap.Textout(rStatus.Left,rStatus.Top, ATabItem.Status);
 
 end;
 
@@ -540,41 +548,77 @@ begin
   Result := iMaxTabs;
 end;
 
-function TSharpETabList.GetTabWidth(ATab: TTabItem): Integer;
+procedure TSharpETabList.GetTabExtent(ATab: TTabItem; X,Y: Integer; var ATabExtents: TTabExtents);
 var
-  iIconWidth, iStatusWidth: Integer;
+  iIconWidth, iStatusWidth, w: Integer;
   iCaptionWidth: integer;
 begin
   iStatusWidth := 0;
   iIconWidth := 0;
   iCaptionWidth := 0;
 
+  ATabExtents.IconRect := Rect(0,0,0,0);
+  ATabExtents.StatusRect := Rect(0,0,0,0);
+  ATabExtents.CaptionRect := Rect(0,0,0,0);
+  ATabExtents.TabRect := Rect(0,0,0,0);
+  ATabExtents.TabWidth := 0;
+  ATabExtents.IconWidth := 0;
+  ATabExtents.CaptionWidth := 0;
+  ATabExtents.StatusWidth := 0;
+
   // Does tab have image?
   if ((Assigned(FPngImageList)) and (ATab.ImageIndex >= 0) and
     (ATab.ImageIndex <= FPngImageList.Count - 1)) then
   begin
     iIconWidth := PngImageList.PngImages[ATab.ImageIndex].PngImage.Width;
-    iIconWidth := iIconWidth + (FIconSpacingX * 2);
-  end;
-
-  // Does tab have status?
-  if ATab.Status <> '' then
-  begin
-    iStatusWidth := FImage32.Bitmap.TextWidth(ATab.Status);
-    iStatusWidth := iStatusWidth + (FTextSpacing);
+    iIconWidth := iIconWidth + (FIconSpacingX*2);
+    ATabExtents.IconWidth := iIconWidth;
+    ATabExtents.IconRect := Rect(X+FIconSpacingX,Y+FIconSpacingY,X+iIconWidth,Height);
   end;
 
   // Does tab have text?
   if ATab.Caption <> '' then
   begin
-    iCaptionWidth := FImage32.Bitmap.TextWidth(ATab.Caption);
+    iCaptionWidth := Self.Canvas.TextWidth(ATab.Caption);
 
-    if iIconWidth = 0 then
-      iCaptionWidth := iCaptionWidth + (FTextSpacing*2) else
-      iCaptionWidth := iCaptionWidth + (FTextSpacing)
+    if iIconWidth = 0 then begin
+      ATabExtents.CaptionRect := Rect(X+FTextSpacingX,Y+FTextSpacingY,
+      X+iCaptionWidth+FTextSpacingX*2,Height);
+      iCaptionWidth := iCaptionWidth + (FTextSpacingX*2);
+    end else begin
+      ATabExtents.CaptionRect := Rect(ATabExtents.IconRect.Right,Y+FTextSpacingY,
+      ATabExtents.IconRect.Right+iCaptionWidth+FTextSpacingX,Height);
+      iCaptionWidth := iCaptionWidth + (FTextSpacingX*2);
+    end;
+
+    ATabExtents.CaptionWidth := iCaptionWidth;
   end;
 
-  Result := iIconWidth + iStatusWidth + iCaptionWidth;
+  // Does tab have status? Only visible if caption
+  if ((ATab.Status <> '') and (ATab.Caption <> '')) then
+  begin
+    iStatusWidth := FImage32.Bitmap.TextWidth(ATab.Status);
+    iStatusWidth := iStatusWidth + (FTextSpacingX);
+    ATabExtents.StatusWidth := iStatusWidth;
+    ATabExtents.StatusRect := Rect(ATabExtents.CaptionRect.Right,Y+FTextSpacingY,
+      ATabExtents.CaptionRect.Right+iStatusWidth-FTextSpacingX,Height);
+  end;
+
+  // Tab rect
+  w := iIconWidth + iStatusWidth + iCaptionWidth;
+  ATabExtents.TabWidth := w;
+
+  if FTabAlign = taLeftJustify then
+  ATabExtents.TabRect := Rect(X,Y,X+W,Height) else
+  ATabExtents.TabRect := Rect(X-W,Y,X,Height);
+end;
+
+function TSharpETabList.GetTabWidth(ATab: TTabItem): Integer;
+var
+  tabExtents: TTabExtents;
+begin
+  GetTabExtent(ATab,0,0, tabExtents);
+  result := tabExtents.TabRect.Right-tabExtents.TabRect.Left;
 end;
 
 function TSharpETabList.Index(ATabItem: TTabItem): Integer;
@@ -607,7 +651,7 @@ begin
   for i := 0 to Pred(FButtons.Count) do
   begin
 
-    if WithinRect(X, Y, FButtons.Item[i].ButtonRect) then
+    if ( (WithinRect(X, Y, FButtons.Item[i].ButtonRect)) and (FButtons.Item[i].Visible) )  then
     begin
       Invalidate;
 
@@ -623,7 +667,7 @@ begin
   for i := 0 to Pred(FTabList.Count) do
   begin
 
-    if WithinRect(X, Y, FTabList.Item[i].TabRect) then
+    if ( (WithinRect(X, Y, FTabList.Item[i].TabExtent.TabRect)) and (FTabList.Item[i].Visible) ) then
     begin
       Invalidate;
 
@@ -657,9 +701,9 @@ begin
   begin
 
     tmpTab := FTabList.Item[i];
-    r := tmpTab.TabRect;
+    r := tmpTab.TabExtent.TabRect;
 
-    if WithinRect(X, Y, r) then
+    if ( WithinRect(X, Y, r) and (tmpTab.Visible) ) then
     begin
       FMouseOverID := i;
       Invalidate;
@@ -672,7 +716,7 @@ begin
   for i := 0 to Pred(FButtons.Count) do
   begin
 
-    if WithinRect(X, Y, FButtons.Item[i].ButtonRect) then
+    if ( (WithinRect(X, Y, FButtons.Item[i].ButtonRect)) and (FButtons.Item[i].Visible) ) then
     begin
       Invalidate;
 
@@ -687,7 +731,7 @@ procedure TSharpETabList.Paint;
 var
   x: Integer;
   iDrawCount, i, iTabWidth: Integer;
-  tr: TRect;
+  tabExtents: TTabExtents;
 begin
   inherited;
   if ((Height <= 0) or (Width <= 0)) then
@@ -725,14 +769,14 @@ begin
   begin
 
     iTabWidth := GetTabWidth(FTabList.Item[i]);
+    GetTabExtent(FTabList.Item[i],x,4,tabExtents);
+    FTabList.Item[i].TabExtent := tabExtents;
 
     if FTabAlign = taLeftJustify then
     begin
       if FTabList.Item[i].Visible then
       begin
-        tr := Rect(x, 4, x + iTabWidth, Height);
-        FTabList.Item[i].TabRect := tr;
-        DrawTab(tr, FTabList.Item[i]);
+        DrawTab(FTabList.Item[i]);
         x := x + iTabWidth + 2;
       end;
 
@@ -741,9 +785,7 @@ begin
     begin
       if FTabList.Item[i].Visible then
       begin
-        tr := Rect(x - iTabWidth, 4, x, Height);
-        FTabList.Item[i].TabRect := tr;
-        DrawTab(tr, FTabList.Item[i]);
+        DrawTab(FTabList.Item[i]);
         x := x - iTabWidth - 2;
       end;
     end;
@@ -777,6 +819,18 @@ end;
 procedure TSharpETabList.SetButtonWidth(const Value: Integer);
 begin
   FButtonWidth := Value;
+  Invalidate;
+end;
+
+procedure TSharpETabList.SetIconSpacingX(const Value: Integer);
+begin
+  FIconSpacingX := Value;
+  Invalidate;
+end;
+
+procedure TSharpETabList.SetIconSpacingY(const Value: Integer);
+begin
+  FIconSpacingY := Value;
   Invalidate;
 end;
 
@@ -825,6 +879,18 @@ begin
   Invalidate;
 end;
 
+procedure TSharpETabList.SetTextSpacingX(const Value: Integer);
+begin
+  FTextSpacingX := Value;
+  Invalidate;
+end;
+
+procedure TSharpETabList.SetTextSpacingY(const Value: Integer);
+begin
+  FTextSpacingY := Value;
+  Invalidate;
+end;
+
 function TSharpETabList.WithinRect(AX, AY: Integer; ARect: TRect): Boolean;
 begin
   Result := False;
@@ -868,8 +934,8 @@ begin
   if ((ATabID = -1) or (ATabID > Self.Count - 1)) then
     exit;
 
-  MouseDownEvent(Self, mbLeft, [], TabList.Item[ATabID].TabRect.Left + 1,
-    TabList.Item[ATabID].TabRect.Top + 1, nil);
+  MouseDownEvent(Self, mbLeft, [], TabList.Item[ATabID].TabExtent.TabRect.Left + 1,
+    TabList.Item[ATabID].TabExtent.TabRect.Top + 1, nil);
   Result := True;
 end;
 
@@ -879,7 +945,7 @@ begin
   if ATabItem = nil then
     exit;
 
-  MouseDownEvent(Self, mbLeft, [], ATabItem.TabRect.Left + 1, ATabItem.TabRect.Top + 1, nil);
+  MouseDownEvent(Self, mbLeft, [], ATabItem.TabExtent.TabRect.Left + 1, ATabItem.TabExtent.TabRect.Top + 1, nil);
   Result := True;
 end;
 
@@ -938,7 +1004,7 @@ end;
 procedure TTabItem.SetVisible(const Value: Boolean);
 begin
   FVisible := Value;
-  FTabRect := Rect(0, 0, 0, 0);
+  FTabExtent.TabRect := Rect(0, 0, 0, 0);
 end;
 
 { TButtonItem }

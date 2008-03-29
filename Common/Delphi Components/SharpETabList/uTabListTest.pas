@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, GR32, GR32_Image, SharpeTabList, ExtCtrls, SharpERoundPanel,
   ImgList, PngImageList, JvExControls, JvComponent, JvPageList, StdCtrls,
-  SharpEPageControl;
+  SharpEPageControl, uvistafuncs;
 
 type
   TForm12 = class(TForm)
@@ -21,6 +21,7 @@ type
     procedure Button4Click(Sender: TObject);
     procedure SharpEPageControl1BtnClick(ASender: TObject;
       const ABtnIndex: Integer);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
 
@@ -57,6 +58,11 @@ begin
   tmp := SharpEPageControl1.Buttons.Add;
   tmp.ImageIndex := 0;
 
+end;
+
+procedure TForm12.FormShow(Sender: TObject);
+begin
+  SetVistaFonts(Self);
 end;
 
 procedure TForm12.SharpEPageControl1BtnClick(ASender: TObject;
