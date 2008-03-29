@@ -6,7 +6,8 @@ uses
   SharpEPageControl in 'SharpEPageControl.pas',
   SharpETabList in '..\SharpETabList\SharpETabList.pas',
   SharpERoundPanel in '..\SharpERoundPanel\SharpERoundPanel.pas',
-  graphicsFX in '..\..\Units\SharpFX\graphicsFX.pas';
+  graphicsFX in '..\..\Units\SharpFX\graphicsFX.pas',
+  uVistaFuncs in '..\..\Units\VistaFuncs\uVistaFuncs.pas';
 
 {$R *.res}
 

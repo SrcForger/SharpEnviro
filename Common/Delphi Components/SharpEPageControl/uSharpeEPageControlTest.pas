@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, SharpEPageControl, StdCtrls, ExtCtrls, JvExControls, JvPageList,
-  ImgList, PngImageList;
+  ImgList, PngImageList, uVistaFuncs;
 
 type
   TForm4 = class(TForm)
@@ -13,8 +13,10 @@ type
     Button1: TButton;
     Button2: TButton;
     PngImageList1: TPngImageList;
+    Panel1: TPanel;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -36,6 +38,13 @@ end;
 procedure TForm4.Button2Click(Sender: TObject);
 begin
   SharpEPageControl1.TabList.Add('New',0);
+end;
+
+procedure TForm4.FormCreate(Sender: TObject);
+begin
+  Self.DoubleBuffered := True;
+  SharpEPageControl1.DoubleBuffered := True;
+  SetVistaFonts(Self);
 end;
 
 end.

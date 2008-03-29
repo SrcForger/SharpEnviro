@@ -12,49 +12,16 @@ object Form4: TForm4
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object SharpEPageControl1: TSharpEPageControl
-    Left = 0
-    Top = 0
-    Width = 402
-    Height = 209
-    Align = alTop
-    DoubleBuffered = False
-    ExpandedHeight = 200
-    TabItems = <>
-    Buttons = <>
-    RoundValue = 10
-    Border = True
-    TextSpacing = 8
-    IconSpacingX = 4
-    IconSpacingY = 4
-    BtnWidth = 24
-    TabWidth = 62
-    TabIndex = 0
-    TabAlignment = taLeftJustify
-    AutoSizeTabs = True
-    TabImageList = PngImageList1
-    TabBackgroundColor = clBtnFace
-    BackgroundColor = clBtnFace
-    BorderColor = clBlack
-    TabColor = 15724527
-    TabSelColor = clWhite
-    TabCaptionSelColor = clBlack
-    TabStatusSelColor = clGreen
-    TabCaptionColor = clBlack
-    TabStatusColor = clGreen
-    DesignSize = (
-      402
-      209)
-  end
   object Button1: TButton
     Left = 0
     Top = 215
     Width = 75
     Height = 25
     Caption = 'Button1'
-    TabOrder = 1
+    TabOrder = 0
     OnClick = Button1Click
   end
   object Button2: TButton
@@ -63,8 +30,62 @@ object Form4: TForm4
     Width = 75
     Height = 25
     Caption = 'Button2'
-    TabOrder = 2
+    TabOrder = 1
     OnClick = Button2Click
+  end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 402
+    Height = 268
+    Align = alClient
+    Caption = 'Panel1'
+    TabOrder = 2
+    object SharpEPageControl1: TSharpEPageControl
+      Left = 1
+      Top = 1
+      Width = 400
+      Height = 209
+      Align = alTop
+      DoubleBuffered = True
+      ExpandedHeight = 200
+      TabItems = <
+        item
+          Caption = 'New'
+          ImageIndex = -1
+          Visible = True
+        end
+        item
+          Caption = 'Newer'
+          ImageIndex = -1
+          Visible = True
+        end>
+      Buttons = <>
+      RoundValue = 10
+      Border = True
+      TextSpacingX = 12
+      TextSpacingY = 6
+      IconSpacingX = 4
+      IconSpacingY = 4
+      BtnWidth = 24
+      TabWidth = 62
+      TabIndex = 0
+      TabAlignment = taLeftJustify
+      AutoSizeTabs = False
+      TabImageList = PngImageList1
+      TabBackgroundColor = clBtnFace
+      BackgroundColor = clBtnFace
+      BorderColor = clBlack
+      TabColor = 15724527
+      TabSelColor = clWhite
+      TabCaptionSelColor = clBlack
+      TabStatusSelColor = clGreen
+      TabCaptionColor = clBlack
+      TabStatusColor = clGreen
+      DesignSize = (
+        400
+        209)
+    end
   end
   object PngImageList1: TPngImageList
     PngImages = <

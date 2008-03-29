@@ -76,8 +76,10 @@ type
     function GetIconSpacingY: Integer;
     procedure SetIconSpacingX(const Value: Integer);
     procedure SetIconSpacingY(const Value: Integer);
-    function GetTextSpacing: Integer;
-    procedure SetTextSpacing(const Value: Integer);
+    function GetTextSpacingX: Integer;
+    function GetTextSpacingY: Integer;
+    procedure SetTextSpacingX(const Value: Integer);
+    procedure SetTextSpacingY(const Value: Integer);
   protected
     procedure Loaded; override;
   public
@@ -100,7 +102,8 @@ type
     property RoundValue: Integer read GetRoundValue write SetRoundValue;
     property Border: Boolean read GetBorder write SetBorder;
 
-    Property TextSpacing: Integer read GetTextSpacing write SetTextSpacing;
+    Property TextSpacingX: Integer read GetTextSpacingX write SetTextSpacingX;
+    Property TextSpacingY: Integer read GetTextSpacingY write SetTextSpacingY;
     Property IconSpacingX: Integer read GetIconSpacingX write SetIconSpacingX;
     Property IconSpacingY: Integer read GetIconSpacingY write SetIconSpacingY;
 
@@ -169,7 +172,8 @@ begin
     Border := True;
     BkgColor := clBtnFace;
     TabSelectedColor := clWhite;
-    TextSpacing := 8;
+    TextSpacingX := 8;
+    TextSpacingY := 6;
     AutoSizeTabs := True;
   end;
   FPnlContent := TSharpERoundPanel.Create(Self);
@@ -286,9 +290,14 @@ begin
   Result := FTabList.TabWidth;
 end;
 
-function TSharpEPageControl.GetTextSpacing: Integer;
+function TSharpEPageControl.GetTextSpacingX: Integer;
 begin
-  Result := FTabList.TextSpacing;
+  Result := FTabList.TextSpacingX;
+end;
+
+function TSharpEPageControl.GetTextSpacingY: Integer;
+begin
+  Result := FTabList.TextSpacingY;
 end;
 
 function TSharpEPageControl.GetAutoSizeTabs: Boolean;
@@ -471,9 +480,14 @@ begin
   FTabList.TabWidth := Value;
 end;
 
-procedure TSharpEPageControl.SetTextSpacing(const Value: Integer);
+procedure TSharpEPageControl.SetTextSpacingX(const Value: Integer);
 begin
-  FTabList.TextSpacing := Value;
+  FTabList.TextSpacingX := Value;
+end;
+
+procedure TSharpEPageControl.SetTextSpacingY(const Value: Integer);
+begin
+  FTabList.TextSpacingY := Value;
 end;
 
 procedure TSharpEPageControl.SetAutoSizeTabs(const Value: Boolean);
