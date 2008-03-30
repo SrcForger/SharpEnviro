@@ -1,7 +1,7 @@
 ﻿{
-Source Name: TaskModule.dpr
-Description: TaskModule Config
-Copyright (C) Lee Green (lee@sharpenviro.com)
+Source Name: <ProjectName>.dpr
+Description: <Type> List Config
+Copyright (C) <Author> (<Email>)
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -23,7 +23,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
-library TaskModule;
+library Template;
 uses
   Controls,
   Classes,
@@ -38,87 +38,67 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
-  uEditWnd in 'uEditWnd.pas' {frmEdit},
+  uListWnd in 'uListWnd.pas' {frmList},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
 
 {$E .dll}
 
 {$R *.res}
 
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  pluginId: string;
-  barId: string;
-  moduleId: string;
 begin
-  {$REGION 'Form Creation'}
-    if frmEdit = nil then
-        frmEdit := TfrmEdit.Create(nil);
-      frmEdit.ParentWindow := aowner;
-      frmEdit.Left := 0;
-      frmEdit.Top := 0;
-      frmEdit.BorderStyle := bsNone;
-      frmEdit.Show;
-      uVistaFuncs.SetVistaFonts(frmEdit);
-  {$ENDREGION}
+  if frmList = nil then
+    frmList := TFrmList.Create(nil);
 
-  {$REGION 'Get plugin and module id'}
-    pluginId := APluginID;
-      barId := copy(pluginId, 0, pos(':',pluginId)-1);
-      moduleId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
-      frmEdit.BarId := barId;
-      frmEdit.ModuleId := moduleId;
-  {$ENDREGION}
+  uVistaFuncs.SetVistaFonts(frmList);
+  frmList.ParentWindow := aowner;
+  frmList.Left := 0;
+  frmList.Top := 0;
+  frmList.BorderStyle := bsNone;
+  frmList.Show;
 
-  frmEdit.LoadSettings;
-  result := frmEdit.Handle;
+  result := frmList.Handle;
 end;
 
 function Close: boolean;
 begin
   result := True;
   try
-    frmEdit.Close;
-    frmEdit.Free;
-    frmEdit := nil;
+    frmList.Close;
+    frmList.Free;
+    frmList := nil;
   except
     result := False;
   end;
 end;
 
-procedure Save;
-begin
-  frmEdit.SaveSettings;
-end;
-
 procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
   var ATitle: string; var ADescription: string);
 begin
-  AName := 'Task Options';
+  AName := 'Template';
   AStatus := '';
-  ATitle := 'Task Module';
-  ADescription := 'Configure Task Module';
-
+  ATitle := 'Template';
+  ADescription := 'A Template for config';
+  
 end;
 
 function GetMetaData(): TMetaData;
 begin
   with result do
   begin
-    Name := 'Task Module';
-    Description := 'Task Module Configuration';
-    Author := 'Lee Green (lee@sharpenviro.com)';
+    Name := 'Template';
+    Description := '<Type> Configuration';
+    Author := '<Author> (<Email>)';
     Version := '0.7';
     DataType := tteConfig;
 
-    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
-      Integer(suModule)]);
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suCenter)]);
   end;
 end;
 
@@ -126,19 +106,13 @@ procedure GetCenterScheme(var ABackground: TColor;
       var AItemColor: TColor; var AItemSelectedColor: TColor);
 begin
 
-  if frmEdit <> nil then begin
-    frmEdit.lbItems.Colors.ItemColor := AItemColor;
-    frmEdit.lbItems.Colors.CheckColor := AItemColor;
-    frmEdit.lbItems.Colors.ItemColorSelected := AItemSelectedColor;
-    frmEdit.lbItems.Colors.CheckColorSelected := AItemSelectedColor;
-
+  if frmList <> nil then begin
   end;
 end;
 
 exports
   Open,
   Close,
-  Save,
   SetText,
   GetMetaData,
   GetCenterScheme;

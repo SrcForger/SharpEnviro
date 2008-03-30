@@ -1,9 +1,9 @@
-object frmEdit: TfrmEdit
+object frmList: TfrmList
   Left = 0
   Top = 0
-  Caption = 'frmEdit'
-  ClientHeight = 377
-  ClientWidth = 503
+  Caption = 'frmList'
+  ClientHeight = 284
+  ClientWidth = 418
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,15 +16,10 @@ object frmEdit: TfrmEdit
   PixelsPerInch = 96
   TextHeight = 13
   object lbItems: TSharpEListBoxEx
-    AlignWithMargins = True
-    Left = 20
-    Top = 230
-    Width = 475
+    Left = 0
+    Top = 0
+    Width = 418
     Height = 148
-    Margins.Left = 20
-    Margins.Top = 8
-    Margins.Right = 8
-    Margins.Bottom = 0
     Columns = <
       item
         Width = 256
@@ -32,273 +27,26 @@ object frmEdit: TfrmEdit
         VAlign = taVerticalCenter
         ColumnAlign = calLeft
         StretchColumn = True
-        CanSelect = False
         ColumnType = ctDefault
         AutoSize = False
         Images = pilListBox
-      end
-      item
-        Width = 90
-        HAlign = taLeftJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calLeft
-        StretchColumn = False
-        ColumnType = ctCheck
-        AutoSize = False
-      end
-      item
-        Width = 90
-        HAlign = taLeftJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calLeft
-        StretchColumn = False
-        ColumnType = ctCheck
-        AutoSize = False
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnShadow
     Colors.ItemColor = clWindow
     Colors.ItemColorSelected = clBtnFace
     Colors.CheckColorSelected = clBtnFace
-    Colors.CheckColor = clWindow
+    Colors.CheckColor = 15528425
     OnResize = lbItemsResize
     ItemHeight = 30
-    OnClickCheck = lbItemsClickCheck
     OnClickItem = lbItemsClickItem
     OnGetCellCursor = lbItemsGetCellCursor
+    OnGetCellText = lbItemsGetCellText
     OnGetCellImageIndex = lbItemsGetCellImageIndex
     AutosizeGrid = True
     Borderstyle = bsNone
     Ctl3d = False
     Align = alTop
-  end
-  object pnlOptions: TPanel
-    Left = 0
-    Top = 0
-    Width = 503
-    Height = 222
-    Align = alTop
-    BevelOuter = bvNone
-    ParentColor = True
-    TabOrder = 1
-    object Label3: TLabel
-      AlignWithMargins = True
-      Left = 8
-      Top = 8
-      Width = 487
-      Height = 13
-      Margins.Left = 8
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Task Options'
-      ExplicitWidth = 62
-    end
-    object lblTaskOptionsDec: TLabel
-      AlignWithMargins = True
-      Left = 26
-      Top = 29
-      Width = 469
-      Height = 13
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Define the type of task style you wish to use:'
-      Transparent = False
-      ExplicitWidth = 219
-    end
-    object Label1: TLabel
-      AlignWithMargins = True
-      Left = 8
-      Top = 89
-      Width = 487
-      Height = 13
-      Margins.Left = 8
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Buttons'
-      ExplicitWidth = 37
-    end
-    object Label4: TLabel
-      AlignWithMargins = True
-      Left = 8
-      Top = 158
-      Width = 487
-      Height = 13
-      Margins.Left = 8
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Filters'
-      ExplicitWidth = 29
-    end
-    object lblFilterDesc: TLabel
-      AlignWithMargins = True
-      Left = 26
-      Top = 179
-      Width = 469
-      Height = 13
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Define the Filter conditions that apply to this task group:'
-      Transparent = False
-      ExplicitWidth = 271
-    end
-    object lblButtonsDesc: TLabel
-      AlignWithMargins = True
-      Left = 26
-      Top = 110
-      Width = 469
-      Height = 13
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Define which buttons you want to enable:'
-      Transparent = False
-      ExplicitWidth = 201
-    end
-    object Panel1: TPanel
-      AlignWithMargins = True
-      Left = 26
-      Top = 50
-      Width = 469
-      Height = 31
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      BevelOuter = bvNone
-      TabOrder = 0
-      object Label2: TLabel
-        Left = 205
-        Top = 4
-        Width = 56
-        Height = 13
-        Caption = 'Sort Mode: '
-      end
-      object Label6: TLabel
-        Left = 0
-        Top = 4
-        Width = 31
-        Height = 13
-        Caption = 'Style: '
-      end
-      object cbStyle: TComboBox
-        AlignWithMargins = True
-        Left = 36
-        Top = 0
-        Width = 150
-        Height = 21
-        Margins.Left = 8
-        Margins.Top = 0
-        Margins.Right = 12
-        Margins.Bottom = 0
-        Style = csDropDownList
-        Constraints.MaxWidth = 200
-        ItemHeight = 13
-        ItemIndex = 0
-        TabOrder = 0
-        Text = 'Default'
-        OnChange = SettingsChange
-        Items.Strings = (
-          'Default'
-          'Compact'
-          'Minimal')
-      end
-      object cbSortMode: TComboBox
-        AlignWithMargins = True
-        Left = 272
-        Top = 0
-        Width = 150
-        Height = 21
-        Margins.Left = 8
-        Margins.Top = 0
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Style = csDropDownList
-        Constraints.MaxWidth = 200
-        ItemHeight = 13
-        ItemIndex = 0
-        TabOrder = 1
-        Text = 'None'
-        OnChange = SettingsChange
-        Items.Strings = (
-          'None'
-          'Caption'
-          'Window Class Name'
-          'Time Added'
-          'Icon')
-      end
-    end
-    object Panel2: TPanel
-      AlignWithMargins = True
-      Left = 26
-      Top = 131
-      Width = 469
-      Height = 19
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      BevelOuter = bvNone
-      TabOrder = 1
-      object chkMinimiseBtn: TCheckBox
-        AlignWithMargins = True
-        Left = 0
-        Top = 0
-        Width = 118
-        Height = 17
-        Margins.Left = 26
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Caption = 'Minimise Tasks'
-        TabOrder = 0
-        OnClick = SettingsChange
-      end
-      object chkRestoreBtn: TCheckBox
-        AlignWithMargins = True
-        Left = 128
-        Top = 0
-        Width = 145
-        Height = 17
-        Margins.Left = 26
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Caption = 'Restore Tasks'
-        TabOrder = 1
-        OnClick = SettingsChange
-      end
-    end
-    object chkFilterTasks: TCheckBox
-      AlignWithMargins = True
-      Left = 26
-      Top = 200
-      Width = 469
-      Height = 17
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Filter Tasks (When enabled only checked tasks will apply)'
-      TabOrder = 2
-      OnClick = chkFilterTasksClick
-    end
   end
   object pilListBox: TPngImageList
     PngImages = <
@@ -747,8 +495,8 @@ object frmEdit: TfrmEdit
         Name = 'PngImage0'
         Background = clWindow
       end>
-    Left = 460
-    Top = 252
+    Left = 332
+    Top = 240
     Bitmap = {}
   end
 end
