@@ -118,7 +118,7 @@ begin
     DataType := tteConfig;
 
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
-      Integer(suModule)]);
+      Integer(suTaskFilter)]);
   end;
 end;
 
