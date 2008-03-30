@@ -95,7 +95,6 @@ object Form12: TForm12
     IconSpacingX = 4
     IconSpacingY = 2
     BtnWidth = 24
-    TabWidth = 62
     TabIndex = 0
     TabAlignment = taLeftJustify
     AutoSizeTabs = True
