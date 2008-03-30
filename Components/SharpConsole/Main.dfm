@@ -3709,7 +3709,6 @@ object SharpConsoleWnd: TSharpConsoleWnd
           IconSpacingX = 4
           IconSpacingY = 4
           BtnWidth = 24
-          TabWidth = 75
           TabIndex = 0
           TabAlignment = taLeftJustify
           AutoSizeTabs = False

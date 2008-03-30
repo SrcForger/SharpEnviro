@@ -1017,7 +1017,6 @@ object frmMain: TfrmMain
   Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object panMain: TPanel
@@ -1284,7 +1283,6 @@ object frmMain: TfrmMain
         IconSpacingX = 4
         IconSpacingY = 4
         BtnWidth = 24
-        TabWidth = 68
         TabIndex = 0
         TabAlignment = taLeftJustify
         AutoSizeTabs = True
