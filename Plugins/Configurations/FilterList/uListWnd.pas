@@ -75,7 +75,6 @@ type
       AItem: TSharpEListItem; var ACursor: TCursor);
   private
     FFilterItemList: TFilterItemList;
-    procedure SelectFilterItem(AName: string);
   public
     property FilterItemList: TFilterItemList read FFilterItemList write
       FFilterItemList;
@@ -108,20 +107,6 @@ begin
   FFilterItemList.Save;
 end;
 
-procedure TfrmList.SelectFilterItem(AName: string);
-var
-  i: Integer;
-  tmpFilter: TFilterItem;
-begin
-  for i := 0 to Pred(lbItems.Count) do begin
-    tmpFilter := TFilterItem(lbItems.Item[i].Data);
-    if CompareText(AName, tmpFilter.Name) = 0 then begin
-      lbItems.ItemIndex := i;
-      break;
-    end;
-  end;
-end;
-
 procedure TfrmList.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := True;
@@ -141,7 +126,6 @@ procedure TfrmList.lbItemsClickItem(Sender: TObject; const ACol: Integer;
 var
   tmpFilter, tmpCopyFilter: TFilterItem;
   bDelete: Boolean;
-  sNew: String;
   sCopy: String;
 
   function CtrlDown: Boolean;

@@ -243,7 +243,6 @@ var
   tmpFilter: TFilterItem;
   tmpSWCmd: TSWCmdItem;
   swCmds: TSWCmdEnums;
-  sNewFile, sOldFile, sMenuDir: string;
   i: Integer;
 begin
   Result := false;
@@ -438,8 +437,7 @@ procedure TfrmEdit.EnumerateShowCommands;
 var
   tmpLi: TSharpEListItem;
   tmpList: TWindowShowCommandList;
-  tmpItem: TSWCmdItem;
-  i, col: Integer;
+  i: Integer;
 begin
   tmpList := TWindowShowCommandList.Create;
   try

@@ -97,6 +97,10 @@ object frmEdit: TfrmEdit
       object tabEditSearch: TTabSheet
         Caption = 'tabEditSearch'
         TabVisible = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         DesignSize = (
           520
           101)
@@ -149,6 +153,10 @@ object frmEdit: TfrmEdit
         Caption = 'tabSelect'
         ImageIndex = 1
         TabVisible = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object rbMinimisedTasks: TRadioButton
           AlignWithMargins = True
           Left = 3
@@ -188,6 +196,10 @@ object frmEdit: TfrmEdit
         Caption = 'tabWindowCommand'
         ImageIndex = 2
         TabVisible = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object lbSwCommands: TSharpEListBoxEx
           Left = 0
           Top = 0
