@@ -118,7 +118,7 @@ end;
 procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
   var ATitle: string; var ADescription: string);
 begin
-  AName := 'Filters';
+  AName := 'Task Filters';
   ATitle := 'Filter Management';
   ADescription := 'Create and manage multiple filter configurations';
 end;
