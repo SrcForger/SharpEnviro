@@ -31,7 +31,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ToolWin, ComCtrls, ImgList,
   SharpThemeApi, Menus, JvComponentBase, JvFindReplace, PngImageList, StdCtrls,
-  JvExStdCtrls, JvMemo, ExtCtrls, SharpEPageControl, SharpETabList, JclStrings;
+  JvExStdCtrls, JvMemo, ExtCtrls, SharpEPageControl, SharpETabList, JclStrings,
+  uVistaFuncs;
 
 type
   TNotesForm = class(TForm)
@@ -71,6 +72,7 @@ type
       const ABtnIndex: Integer);
     procedure pcNotesTabClick(ASender: TObject; const ATabIndex: Integer);
     procedure NotesChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     FAlwaysOnTop: boolean;
     function CustomInputQuery(const ACaption, APrompt: string;
@@ -447,6 +449,11 @@ begin
     TMainForm(Owner).sLastTab := '';
   TMainForm(Owner).sLastTextPos.Y := Notes.CurrentLine;
   TMainForm(Owner).SaveSettings;
+end;
+
+procedure TNotesForm.FormCreate(Sender: TObject);
+begin
+  SetVistaFonts(Self);
 end;
 
 procedure TNotesForm.FormShow(Sender: TObject);

@@ -51,6 +51,7 @@ object NotesForm: TNotesForm
     000080010000800200008000000080010000C0070000EAAF0000FFFF0000}
   OldCreateOrder = False
   OnClose = FormClose
+  OnCreate = FormCreate
   OnKeyUp = NotesKeyUp
   OnShow = FormShow
   PixelsPerInch = 96
@@ -100,11 +101,11 @@ object NotesForm: TNotesForm
       end>
     RoundValue = 10
     Border = True
-    TextSpacing = 8
+    TextSpacingX = 4
+    TextSpacingY = 4
     IconSpacingX = 4
     IconSpacingY = 3
     BtnWidth = 16
-    TabWidth = 100
     TabIndex = 0
     TabAlignment = taLeftJustify
     AutoSizeTabs = True
@@ -120,6 +121,8 @@ object NotesForm: TNotesForm
     TabStatusColor = clGreen
     OnTabClick = pcNotesTabClick
     OnBtnClick = pcNotesBtnClick
+    ExplicitLeft = 9
+    ExplicitTop = -1
     DesignSize = (
       649
       371)
@@ -148,8 +151,6 @@ object NotesForm: TNotesForm
       OnChange = NotesChange
       OnKeyPress = NotesKeyPress
       OnKeyUp = NotesKeyUp
-      ExplicitLeft = -8
-      ExplicitTop = 80
     end
     object tbNotes: TToolBar
       AlignWithMargins = True
@@ -177,7 +178,6 @@ object NotesForm: TNotesForm
       TabOrder = 3
       Transparent = True
       Wrapable = False
-      ExplicitWidth = 633
       object tb_import: TToolButton
         Left = 0
         Top = 0
