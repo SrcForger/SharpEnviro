@@ -1051,11 +1051,12 @@ begin
       if tmpCol.ColumnType = ctCheck then begin
 
         bChecked := not (tmpItem.SubItemChecked[tmpCol.ID]);
-        tmpItem.SubItemChecked[tmpCol.ID] := bChecked;
         bCanSelect := False;
 
         if assigned(FOnClickCheck) then
           FOnClickCheck(Self, tmpCol.ID, tmpItem, bChecked);
+
+        tmpItem.SubItemChecked[tmpCol.ID] := bChecked;
 
       end;
 
