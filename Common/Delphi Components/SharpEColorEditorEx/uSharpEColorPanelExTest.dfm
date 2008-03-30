@@ -4,7 +4,7 @@ object Form1: TForm1
   BorderWidth = 4
   Caption = 'Form1'
   ClientHeight = 557
-  ClientWidth = 410
+  ClientWidth = 440
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -25,18 +25,19 @@ object Form1: TForm1
   object mmoDebug: TMemo
     Left = 0
     Top = 462
-    Width = 410
+    Width = 440
     Height = 95
     Align = alBottom
     BorderStyle = bsNone
     Lines.Strings = (
       'mmoDebug')
     TabOrder = 0
+    ExplicitWidth = 410
   end
   object SharpEColorEditorEx1: TSharpEColorEditorEx
     Left = 0
     Top = 0
-    Width = 410
+    Width = 440
     Height = 462
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
@@ -57,7 +58,10 @@ object Form1: TForm1
         Description = 'This is an alpha value:'
         ValueText = 'Alpha'
         Value = 4344
+        ValueMin = 0
+        ValueMax = 255
         Visible = True
+        DisplayPercent = False
         ColorEditor = SharpEColorEditorEx1.Item0
         Tag = 0
       end
@@ -69,7 +73,10 @@ object Form1: TForm1
         ValueEditorType = vetBoolean
         Description = 'Enable Bar Shadow?'
         Value = 0
+        ValueMin = 0
+        ValueMax = 255
         Visible = True
+        DisplayPercent = False
         ColorEditor = SharpEColorEditorEx1.Item1
         Tag = 0
       end
@@ -81,17 +88,23 @@ object Form1: TForm1
         ValueEditorType = vetValue
         ValueText = 'Opacity'
         Value = 100
+        ValueMin = 0
+        ValueMax = 255
         Visible = True
+        DisplayPercent = False
         ColorEditor = SharpEColorEditorEx1.Item2
         Tag = 0
       end
       item
         ColorCode = 8421376
-        ColorAsTColor = clTeal
-        Expanded = True
+        ColorAsTColor = clBlack
+        Expanded = False
         ValueEditorType = vetColor
         Value = 8421376
+        ValueMin = 0
+        ValueMax = 255
         Visible = True
+        DisplayPercent = False
         ColorEditor = SharpEColorEditorEx1.Item3
         Tag = 0
       end
@@ -101,7 +114,10 @@ object Form1: TForm1
         Expanded = False
         ValueEditorType = vetColor
         Value = 0
+        ValueMin = 0
+        ValueMax = 255
         Visible = True
+        DisplayPercent = False
         ColorEditor = SharpEColorEditorEx1.Item4
         Tag = 0
       end
@@ -111,11 +127,15 @@ object Form1: TForm1
         Expanded = False
         ValueEditorType = vetColor
         Value = 0
+        ValueMin = 0
+        ValueMax = 255
         Visible = True
+        DisplayPercent = False
         ColorEditor = SharpEColorEditorEx1.Item5
         Tag = 0
       end>
     SwatchManager = SharpESwatchManager1
+    ExplicitWidth = 410
     object Button2: TButton
       Left = 264
       Top = 380
@@ -148,14 +168,18 @@ object Form1: TForm1
     Swatches = <
       item
         Color = clBlack
+        ColorCode = 0
       end
       item
         Color = clBlack
+        ColorCode = 0
       end
       item
         Color = clBlack
+        ColorCode = 0
       end>
-    Width = 378
+    PopulateThemeColors = True
+    Width = 408
     ShowCaptions = False
     SwatchHeight = 16
     SwatchWidth = 16

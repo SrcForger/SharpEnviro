@@ -53,7 +53,6 @@ object MainWnd: TMainWnd
     ValueMax = 255
     Visible = True
     SwatchManager = SharpESwatchManager1
-    ExplicitLeft = -8
     DesignSize = (
       432
       24)
@@ -83,7 +82,7 @@ object MainWnd: TMainWnd
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 640
+    Width = 408
     ShowCaptions = False
     SwatchHeight = 16
     SwatchWidth = 16

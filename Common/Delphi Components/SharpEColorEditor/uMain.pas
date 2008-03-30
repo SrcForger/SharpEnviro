@@ -49,6 +49,7 @@ end;
 procedure TMainWnd.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := True;
+  Self.ParentBackground := False;
    SetVistaFonts(Self);
 end;
 

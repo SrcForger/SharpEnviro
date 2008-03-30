@@ -31,8 +31,6 @@ type
     function GetTabIndex: Integer;
     procedure SetTabIndex(const Value: Integer);
     function GetTabCount: Integer;
-    function GetTabWidth: Integer;
-    procedure SetTabWidth(const Value: Integer);
 
     function GetTabCaptionSelColor: TColor;
     function GetTabCaptionColor: TColor;
@@ -80,6 +78,8 @@ type
     function GetTextSpacingY: Integer;
     procedure SetTextSpacingX(const Value: Integer);
     procedure SetTextSpacingY(const Value: Integer);
+    function GetTabsWidth: Integer;
+    function GetButtonsWidth: Integer;
   protected
     procedure Loaded; override;
   public
@@ -87,6 +87,8 @@ type
     property TabList: TSharpETabList read FTabList write FTabList;
     property Minimized: Boolean read GetMinimized write SetMinimized;
     property TabControlVisible: boolean read FTabControlVisible write SetTabControlVisible;
+    property TabsWidth: Integer read GetTabsWidth;
+    property ButtonsWidth: Integer read GetButtonsWidth;
   published
     property Align;
     property Anchors;
@@ -109,7 +111,7 @@ type
 
     property TabCount: Integer read GetTabCount;
     property BtnWidth: Integer read GetBtnWidth write SetBtnWidth;
-    property TabWidth: Integer read GetTabWidth write SetTabWidth;
+
     property TabIndex: Integer read GetTabIndex write SetTabIndex;
     property TabAlignment: TLeftRight read GetTabAlign write SetTabAlign;
     property AutoSizeTabs: Boolean read GetAutoSizeTabs write SetAutoSizeTabs;
@@ -220,6 +222,11 @@ begin
   Result := FTabList.Buttons;
 end;
 
+function TSharpEPageControl.GetButtonsWidth: Integer;
+begin
+  Result := FTabList.ButtonsWidth;
+end;
+
 function TSharpEPageControl.GetIconSpacingX: Integer;
 begin
   Result := FTabList.IconSpacingX;
@@ -285,9 +292,9 @@ begin
   Result := FTabList.TabList;
 end;
 
-function TSharpEPageControl.GetTabWidth: Integer;
+function TSharpEPageControl.GetTabsWidth: Integer;
 begin
-  Result := FTabList.TabWidth;
+  Result := FTabList.TabsWidth;
 end;
 
 function TSharpEPageControl.GetTextSpacingX: Integer;
@@ -473,11 +480,6 @@ end;
 procedure TSharpEPageControl.SetTabItems(const Value: TTabItems);
 begin
   FTabList.TabList := Value;
-end;
-
-procedure TSharpEPageControl.SetTabWidth(const Value: Integer);
-begin
-  FTabList.TabWidth := Value;
 end;
 
 procedure TSharpEPageControl.SetTextSpacingX(const Value: Integer);

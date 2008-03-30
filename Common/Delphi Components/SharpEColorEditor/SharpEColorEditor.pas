@@ -259,7 +259,7 @@ begin
   // Load the image resource files
   LoadResources;
 
-  self.DoubleBuffered := True;
+  self.DoubleBuffered := true;
   Self.BorderWidth := 0;
   self.Color := clWindow;
   Self.ParentColor := False;
@@ -275,7 +275,6 @@ begin
     TabAlign := taRightJustify;
     IconSpacingX := 4;
     IconSpacingY := 4;
-    TabWidth := 40;
     AutoSizeTabs := False;
 
     Top := 0;
@@ -306,11 +305,10 @@ begin
     Anchors := [akRight, akTop];
     name := 'FColorPicker';
 
-    FColorPicker.Left := FTabs.Width - (FTabs.TabWidth * 2) -
-      FTabs.IconSpacingX + 2 - FColorPicker.Width;
+    FColorPicker.Left := FTabs.Width - 100;
     Top := 7;
     Height := 17;
-    DoubleBuffered := False;
+    DoubleBuffered := true;
 
     BackgroundColor := clWindow;
 
@@ -332,8 +330,9 @@ begin
     tmpPanel.BringToFront;
     tmpPanel.BevelInner := bvNone;
     tmpPanel.BevelOuter := bvNone;
-    tmpPanel.ParentBackground := False;
-    tmpPanel.ParentColor := False;
+    tmpPanel.ParentBackground := false;
+    tmpPanel.DoubleBuffered := true;
+    tmpPanel.ParentColor := true;
     tmpPanel.Color := clWindow;
     tmpPanel.Top := 5;
   end;
@@ -777,17 +776,12 @@ begin
   iY := iSpacer;
 
   rLeftText := Rect(iSpacer, iSpacer, iWidthLT, iY + 10);
-  rLeftSlider := Rect(rLeftText.Right, iY, rLeftText.Right + iSliderWidth, iY +
-    10);
-  rLeftSliderVal := Rect(rLeftSlider.Right, iY, rLeftSlider.Right + iWidthVal, iy
-    + 10);
+  rLeftSlider := Rect(rLeftText.Right, iY, rLeftText.Right + iSliderWidth, iY + 10);
+  rLeftSliderVal := Rect(rLeftSlider.Right, iY, rLeftSlider.Right + iWidthVal, iy + 10);
 
-  rRightText := Rect(rLeftSliderVal.Right + 4, iY, rLeftSliderVal.Right +
-    iWidthLT, iY + 10);
-  rRightSlider := Rect(rRightText.Right, iY, rRightText.Right - iSpacer +
-    iSliderWidth, iY + 10);
-  rRightSliderVal := Rect(rRightSlider.Right, iY, Self.Width - iSpacer - 4, iY +
-    10);
+  rRightText := Rect(rLeftSliderVal.Right + 4, iY, rLeftSliderVal.Right + iWidthLT, iY + 10);
+  rRightSlider := Rect(rRightText.Right, iY, rRightText.Right - iSpacer + iSliderWidth, iY + 10);
+  rRightSliderVal := Rect(rRightSlider.Right, iY, Self.Width - iSpacer*2, iY + 10);
 
   PositionSlider(FHueSlider, 'Hue:', rLeftText, rLeftSlider, rLeftSliderVal, 0,
     tmpTab, [akLeft, akTop], [akTop, akLeft, akRight]);
@@ -809,8 +803,6 @@ begin
 
   FSliderUpdateMode := sumAll;
   InitialiseColSliders;
-
-  //SetValue(FValue);
 end;
 
 procedure TSharpEColorEditor.ResizeDefineValPage;
