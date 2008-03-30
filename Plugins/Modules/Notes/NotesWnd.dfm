@@ -112,7 +112,7 @@ object NotesForm: TNotesForm
     TabImageList = PngImageList1
     TabBackgroundColor = clWindow
     BackgroundColor = clWindow
-    BorderColor = clBtnFace
+    BorderColor = clSilver
     TabColor = 15724527
     TabSelColor = clWindow
     TabCaptionSelColor = clBlack
@@ -121,8 +121,6 @@ object NotesForm: TNotesForm
     TabStatusColor = clGreen
     OnTabClick = pcNotesTabClick
     OnBtnClick = pcNotesBtnClick
-    ExplicitLeft = 9
-    ExplicitTop = -1
     DesignSize = (
       649
       371)
