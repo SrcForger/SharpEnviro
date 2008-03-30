@@ -494,11 +494,11 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  fitem : TJclSimpleXMLElem;
   XML : TJclSimpleXML;
   fileloaded : boolean;
   n,i : integer;
   newitem : TFilterItem;
+  SList : TStringList;
 begin
   DebugOutPutInfo('TMainForm.LoadSettings (Procedure)');
   sState     := tisFull;
@@ -511,6 +511,7 @@ begin
   LoadFilterSettingsFromXML;
 
   XML := TJclSimpleXML.Create;
+  SList := TSTringList.Create;
   try
     XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
     fileloaded := True;
@@ -539,11 +540,12 @@ begin
       sDebug   := BoolValue('Debug',False);
       if ItemNamed['IFilters'] <> nil then
       begin
-        fitem := ItemNamed['IFilters'];
-        for n := 0 to fitem.Items.Count-1 do
+        SList.Clear;      
+        SList.CommaText := ItemNamed['IFilters'].Value;
+        for n := 0 to SList.Count - 1 do
         begin
           for i := sFilters.Count - 1 downto 0 do
-            if CompareText(sFilters.Item[i].Name,fitem.Items.Item[n].Value) = 0 then
+            if CompareText(sFilters.Item[i].Name,SList[n]) = 0 then
             begin
               newitem := TFilterItem.Create;
               newitem.Assign(sFilters.Item[i]);
@@ -554,11 +556,12 @@ begin
       end;
       if ItemNamed['EFilters'] <> nil then
       begin
-        fitem := ItemNamed['EFilters'];
-        for n := 0 to fitem.Items.Count-1 do
+        SList.Clear;      
+        SList.CommaText := ItemNamed['EFilters'].Value;
+        for n := 0 to SList.Count - 1 do
         begin
           for i := sFilters.Count - 1 downto 0 do
-            if CompareText(sFilters.Item[i].Name,fitem.Items.Item[n].Value) = 0 then
+            if CompareText(sFilters.Item[i].Name,SList[n]) = 0 then
             begin
               newitem := TFilterItem.Create;
               newitem.Assign(sFilters.Item[i]);
@@ -569,6 +572,7 @@ begin
       end;
     end;
   XML.Free;
+  Slist.Free;
   
   if sEFilters.Count = 0 then sEFilter := False;
   if sIFilters.Count = 0 then sIFilter := False;
