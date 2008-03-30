@@ -507,6 +507,8 @@ begin
   sSpacing   := 2;
   sSort      := False;
   sDebug     := False;
+  sEFilter := True;
+  sIFilter := True;
 
   LoadFilterSettingsFromXML;
 
@@ -535,8 +537,8 @@ begin
       end;
       sMinAllButton := BoolValue('MinAllButton',False);
       sMaxAllButton := BoolValue('MaxAllButton',False);
-      sIFilter := BoolValue('IFilter',False);
-      sEFilter := BoolValue('EFilter',False);
+      sIFilter := BoolValue('FilterTasks',True);
+      sEFilter := BoolValue('FilterTasks',True);
       sDebug   := BoolValue('Debug',False);
       if ItemNamed['IFilters'] <> nil then
       begin

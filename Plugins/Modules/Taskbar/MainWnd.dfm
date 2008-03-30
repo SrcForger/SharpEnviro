@@ -21,7 +21,7 @@ object MainForm: TMainForm
     Left = 24
     Top = 0
     Width = 24
-    Height = 25
+    Height = 21
     Hint = 'Restory all Windows'
     ParentShowHint = False
     ShowHint = False
@@ -72,7 +72,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 24
-    Height = 25
+    Height = 21
     Hint = 'Minimize all Windows'
     ParentShowHint = False
     ShowHint = False
