@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <TaskModule>
+      <Dll>_ModuleDlls\TaskModule.dll</Dll>
+      <Icon>Icons\TaskModule.png</Icon>
+    </TaskModule>
+	<FilterList>
+      <Dll>..\_Components\_Componentdlls\FilterList.dll</Dll>
+    </FilterList>
+  </Sections>
+</SharpCenter>
