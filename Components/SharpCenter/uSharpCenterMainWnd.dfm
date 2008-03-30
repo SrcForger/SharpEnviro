@@ -1036,7 +1036,6 @@ object SharpCenterWnd: TSharpCenterWnd
         Align = alTop
         OnTabChange = tlToolbarTabChange
         OnTabClick = tlToolbarTabClick
-        TabWidth = 24
         ButtonWidth = 24
         TabIndex = 0
         TabColor = clWindow
@@ -1700,12 +1699,11 @@ object SharpCenterWnd: TSharpCenterWnd
         Buttons = <>
         RoundValue = 10
         Border = True
-        TextSpacingX = 4
-        TextSpacingY = 3
+        TextSpacingX = 8
+        TextSpacingY = 4
         IconSpacingX = 4
         IconSpacingY = 4
         BtnWidth = 24
-        TabWidth = 62
         TabIndex = 0
         TabAlignment = taLeftJustify
         AutoSizeTabs = False
@@ -1794,7 +1792,6 @@ object SharpCenterWnd: TSharpCenterWnd
         IconSpacingX = 4
         IconSpacingY = 2
         BtnWidth = 24
-        TabWidth = 62
         TabIndex = 0
         TabAlignment = taLeftJustify
         AutoSizeTabs = False
