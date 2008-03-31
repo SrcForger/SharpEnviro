@@ -33,7 +33,7 @@ uses
   Math, Contnrs, SharpESkinManager, SharpETaskItem, SharpESkin,
   SharpEBaseControls, SharpECustomSkinSettings, uTaskManager, uTaskItem,
   DateUtils, GR32, GR32_PNG, SharpIconUtils, SharpEButton, JvComponentBase,
-  JvDragDrop, VWMFunctions,Commctrl,TaskFilterList,SWCmdList;
+  JvDragDrop, VWMFunctions,Commctrl,TaskFilterList,SWCmdList, SharpTypes;
 
 
 type
@@ -74,7 +74,7 @@ type
     sSpacing    : integer;
     sState      : TSharpETaskItemStates;
     sSort       : boolean;
-    sSortType   : TSortType;
+    sSortType   : TSharpeTaskManagerSortType;
     sDebug      : boolean;
     sMaxAllButton : boolean;
     sMinAllButton : boolean;

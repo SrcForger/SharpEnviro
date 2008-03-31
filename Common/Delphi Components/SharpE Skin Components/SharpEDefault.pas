@@ -33,7 +33,8 @@ uses Graphics,
   Messages,
   SharpESkinPart,
   SharpApi,
-  SharpThemeApi;
+  SharpThemeApi,
+  SharpTypes;
 
 var
   DefaultSharpESkinTextRecord: TSkinTextRecord;

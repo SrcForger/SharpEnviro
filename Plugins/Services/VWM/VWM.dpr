@@ -38,7 +38,7 @@ Source Name: VWM.service
   SysUtils,
   JclSimpleXML,
   SharpESkinManager,
-  SharpESkin,
+  SharpTypes,
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
   uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas',
   SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas';

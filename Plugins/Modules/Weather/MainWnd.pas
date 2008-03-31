@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, SharpEBaseControls, SharpESkinManager,
-  SharpEScheme, SharpESkin, ExtCtrls, GR32,
+  SharpEScheme, SharpTypes, ExtCtrls, GR32,
   JvSimpleXML, SharpApi, Menus, Math, SharpESkinLabel,
   uWeatherParser, GR32_Image;
 
@@ -210,13 +210,12 @@ end;
 procedure TMainForm.ReAlignComponents(BroadCast : boolean);
 var
   newWidth : integer;
-  o1,o2,o3,o4 : integer;
+  o1,o3,o4 : integer;
   s : String;
   b : boolean;
 begin
   self.Caption := 'Weather';
   o1 := 2;
-  o2 := (Height - 2 - 4) div 2;
   o4 := 0;
 
   if (sShowIcon) and (FWeatherParser.CCValid) then

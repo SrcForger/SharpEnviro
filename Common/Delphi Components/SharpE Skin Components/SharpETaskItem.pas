@@ -34,7 +34,6 @@ uses
   Graphics,
   Controls,
   Forms,
-  Dialogs,
   StdCtrls,
   gr32,
   gr32_resamplers,
@@ -46,6 +45,7 @@ uses
   SharpESkinManager,
   SharpEAnimationTimers,
   SharpESkinPart,
+  SharpTypes,
   math,
   Types,
   Buttons;

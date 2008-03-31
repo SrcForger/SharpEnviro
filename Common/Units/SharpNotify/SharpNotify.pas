@@ -44,7 +44,8 @@ uses
   SharpESkinPart,
   SharpESkin,
   SharpThemeApi,
-  SharpGraphicsUtils;
+  SharpGraphicsUtils,
+  SharpTypes;
 
 type
   TSharpNotifyClickEventProc = procedure(wnd : hwnd; ID : Cardinal; Data : TObject; Msg : integer) of object;
@@ -172,6 +173,7 @@ begin
   item := TNotifyItem.CreateText(pID,pData,px,py,pCaption,pEdge,pSM,pTimeout,pAreaRect);
   SharpNotifyWindows.Add(item);
   idrunning := False;
+  listitem := nil;
   for n := 0 to SharpNotifyWindows.Count - 1 do
   begin
     listitem := TNotifyItem(SharpNotifyWindows.Items[n]);

@@ -9,6 +9,7 @@
     <Projects Include="..\Plugins\Services\Exec\Exec.dproj" />
     <Projects Include="..\Plugins\Services\Hotkeys\Hotkeys.dproj" />
     <Projects Include="..\Plugins\Services\MultimediaInput\MultimediaInput.dproj" />
+    <Projects Include="..\Plugins\Services\Shell\Shell.dproj" />
     <Projects Include="..\Plugins\Services\Skin\SkinController.dproj" />
     <Projects Include="..\Plugins\Services\StartupApps\Startup.dproj" />
     <Projects Include="..\Plugins\Services\SystemActions\SystemActions.dproj" />
@@ -121,14 +122,23 @@
   <Target Name="MultimediaInput:Make">
     <MSBuild Projects="..\Plugins\Services\MultimediaInput\MultimediaInput.dproj" Targets="Make" />
   </Target>
+  <Target Name="Shell">
+    <MSBuild Projects="..\Plugins\Services\Shell\Shell.dproj" Targets="" />
+  </Target>
+  <Target Name="Shell:Clean">
+    <MSBuild Projects="..\Plugins\Services\Shell\Shell.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="Shell:Make">
+    <MSBuild Projects="..\Plugins\Services\Shell\Shell.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="Exec;Hotkeys;SkinController;Startup;Weather;Actions;cursors;TaskSwitch;SystemActions;VWM;MultimediaInput" />
+    <CallTarget Targets="Exec;Hotkeys;SkinController;Startup;Weather;Actions;cursors;TaskSwitch;SystemActions;VWM;MultimediaInput;Shell" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="Exec:Clean;Hotkeys:Clean;SkinController:Clean;Startup:Clean;Weather:Clean;Actions:Clean;cursors:Clean;TaskSwitch:Clean;SystemActions:Clean;VWM:Clean;MultimediaInput:Clean" />
+    <CallTarget Targets="Exec:Clean;Hotkeys:Clean;SkinController:Clean;Startup:Clean;Weather:Clean;Actions:Clean;cursors:Clean;TaskSwitch:Clean;SystemActions:Clean;VWM:Clean;MultimediaInput:Clean;Shell:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="Exec:Make;Hotkeys:Make;SkinController:Make;Startup:Make;Weather:Make;Actions:Make;cursors:Make;TaskSwitch:Make;SystemActions:Make;VWM:Make;MultimediaInput:Make" />
+    <CallTarget Targets="Exec:Make;Hotkeys:Make;SkinController:Make;Startup:Make;Weather:Make;Actions:Make;cursors:Make;TaskSwitch:Make;SystemActions:Make;VWM:Make;MultimediaInput:Make;Shell:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>

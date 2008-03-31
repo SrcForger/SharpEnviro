@@ -30,8 +30,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, SharpEBaseControls, SharpEBar, SharpESkinManager, SharpEScheme, SharpESkin,
-  SharpEButton, GR32, SharpGraphicsUtils;
+  Dialogs, SharpEBaseControls, SharpEBar, SharpESkinManager, SharpEScheme,
+  SharpTypes, SharpESkin, SharpEButton, GR32, SharpGraphicsUtils;
 
 type
   TBarWnd = class(TForm)

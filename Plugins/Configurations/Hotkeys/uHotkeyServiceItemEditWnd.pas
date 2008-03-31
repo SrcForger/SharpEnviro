@@ -59,8 +59,6 @@ uses
   // PNG Image
   pngimage,
   JvComponentBase,
-  SharpEBaseControls,
-  SharpEEdit,
   TranComp,
   JvLabel,
   PngImageList,

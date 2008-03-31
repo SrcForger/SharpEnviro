@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms,
   Dialogs, StdCtrls, SharpEBaseControls, GR32,
-  SharpESkinManager, SharpEScheme, SharpESkin, ExtCtrls, SharpEProgressBar,
+  SharpESkinManager, SharpEScheme, SharpTypes, ExtCtrls, SharpEProgressBar,
   JvSimpleXML, SharpApi, Menus, Math, SharpESkinLabel;
 
 

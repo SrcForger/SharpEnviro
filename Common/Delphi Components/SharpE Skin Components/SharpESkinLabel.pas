@@ -40,8 +40,8 @@ uses
   SharpEDefault,
   SharpEScheme,
   SharpESkinManager,
-  SharpESkin,
   SharpESkinPart,
+  SharpTypes,  
   math,
   Types,
   Buttons;

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ProjectGuid>{6f1f752e-ee1c-43b1-b74d-38cadd5979c5}</ProjectGuid>
     <MainSource>Shell.DPR</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
@@ -17,17 +17,27 @@
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\Services\</DCC_ExeOutput>
     <DCC_Define>RELEASE</DCC_Define>
+    <DCC_UnitSearchPath>..\..\..\Common\Units\SharpTypes</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Units\SharpTypes</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Units\SharpTypes</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Units\SharpTypes</DCC_IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\Services\</DCC_ExeOutput>
     <DCC_Define>DEBUG</DCC_Define>
+    <DCC_UnitSearchPath>..\..\..\Common\Units\SharpTypes</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Units\SharpTypes</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Units\SharpTypes</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Units\SharpTypes</DCC_IncludePath>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="RunParams">-ext .ser</Parameters><Parameters Name="HostApplication">C:\svn\SharpE\SharpCore.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">0</VersionInfo><VersionInfo Name="MinorVer">7</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1031</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription">SharpCore System Tray Service</VersionInfoKeys><VersionInfoKeys Name="FileVersion">0.7.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName">SystemTray</VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">SharpE Development Team</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">SystemTray.service</VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">0.7.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">Shell.DPR</Source></Source><Excluded_Packages>
+      
+      
       
       
       

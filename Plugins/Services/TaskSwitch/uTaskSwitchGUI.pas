@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, Graphics, SysUtils, Math, Classes, ExtCtrls, Forms,
   SharpThemeApi, SharpESkin, SharpESkinPart, SharpESkinManager, uTaskSwitchWnd,
-  GR32, GR32_PNG,GR32_Resamplers, SharpIconUtils, SharpGraphicsUtils;
+  GR32, GR32_PNG,GR32_Resamplers, SharpIconUtils, SharpGraphicsUtils, SharpTypes;
 
 type
   TTSGui = class

@@ -34,7 +34,8 @@ uses Windows, Dialogs, SysUtils, Classes,
      SharpApi,
      SharpThemeApi,
      SharpCenterApi,
-     SharpESkin;
+     SharpESkin,
+     SharpTypes;
 
 Type
 

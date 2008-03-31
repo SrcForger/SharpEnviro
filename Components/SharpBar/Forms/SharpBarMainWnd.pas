@@ -32,7 +32,7 @@ uses
   Dialogs, SharpESkinManager, Menus, JclSimpleXML, SharpApi,
   GR32, uSharpEModuleManager, PngImageList, SharpEBar, SharpThemeApi,
   SharpEBaseControls, Controls, ExtCtrls, uSkinManagerThreads,
-  uSystemFuncs, Types, SharpESkin, Registry,
+  uSystemFuncs, Types, SharpESkin, Registry, SharpTypes,
   SharpGraphicsUtils, Math, SharpCenterApi, ImgList;
 
 type
@@ -1450,9 +1450,7 @@ begin
   ShowWindow(application.Handle, SW_HIDE);
   if BarHideForm <> nil then
     BarHideForm.UpdateStatus;
-//  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
   RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN or RDW_UPDATENOW);
-//  RedrawWindow(Handle, nil,0, RDW_INTERNALPAINT or RDW_INVALIDATE or RDW_ALLCHILDREN);
   ModuleManager.RefreshMiniThrobbers;
 end;
 

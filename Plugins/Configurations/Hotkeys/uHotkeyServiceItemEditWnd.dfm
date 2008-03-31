@@ -144,7 +144,7 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
         end
         object edName: TLabeledEdit
           Left = 56
-          Top = 8
+          Top = 12
           Width = 182
           Height = 22
           Anchors = [akLeft, akTop, akRight]
@@ -171,8 +171,8 @@ object FrmHotkeyEdit: TFrmHotkeyEdit
           OnChange = UpdateEditState
         end
         object edHotkey: TSharpEHotkeyEdit
-          Left = 305
-          Top = 8
+          Left = 301
+          Top = 12
           Width = 161
           Height = 22
           Modifier = []

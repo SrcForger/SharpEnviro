@@ -42,18 +42,8 @@ uses
   SharpEBitmapList,
   SharpEBase,
   SharpEScheme,
-  Math;
-
-type
-  TSharpESkinItem = (scBasic,scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
-                     scTaskItem,scMenu,scMenuItem,scTaskSwitch,scNotify);
-  TSharpESkinItems = set of TSharpESkinItem;
-
-  TSharpEBarAutoPos = (apTop,apCenter,apBottom,apNone);
-
-const
- ALL_SHARPE_SKINS = [scBasic,scButton,scBar,scProgressBar,scMiniThrobber,scEdit,
-                     scTaskItem,scMenu,scMenuItem,scTaskSwitch,scNotify];
+  Math,
+  SharpTypes;
 
 type
   TSharpEButtonSkin = class;
@@ -181,7 +171,6 @@ type
     property Version: string read FVersion write FVersion;
   end;
 
-  TSharpETaskItemStates = (tisFull,tisCompact,tisMini);
   TSharpETaskItemState = class
                            Normal         : TSkinPartEx;
                            NormalHover    : TSkinPartEx;

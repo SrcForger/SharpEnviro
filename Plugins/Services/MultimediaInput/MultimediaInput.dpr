@@ -35,7 +35,7 @@ uses
   Registry,
   MMSystem,
   Math,
-  SharpESkin,
+  SharpTypes,
   SharpESkinManager,
   SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas',
   SoundControls in '..\..\Modules\VolumeControl\SoundControls.pas';

@@ -42,7 +42,7 @@ uses
   SharpEDefault,
   SharpEScheme,
   SharpESkinManager,
-  SharpESkin,
+  SharpTypes,
   math,
   SharpESkinPart;
 

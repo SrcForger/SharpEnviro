@@ -35,16 +35,16 @@ uses
   Classes,
   Graphics,
   Controls,
-  Forms,
-  Dialogs,
   StdCtrls,
+  Forms,
   gr32,
   SharpEBase,
   SharpEDefault,
   SharpESkin,
   SharedBitmapList,
   SharpEScheme,
-  SharpApi;
+  SharpApi,
+  SharpTypes;
 
 type
   TSkinSource = (ssDefault, ssSystem, ssComponent);
@@ -170,9 +170,8 @@ begin
         SharpThemeApi.InitializeTheme;
         SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
       end;
+      LoadSharpEScheme(FSystemScheme);
     end;
-
-    LoadSharpEScheme(FSystemScheme);
   end;
 
   inherited Create(AOwner);
@@ -221,6 +220,9 @@ end;
 
 procedure TSharpESkinManager.UpdateSkin;
 begin
+  if (csDesigning in ComponentState) then
+    exit;
+
   if SkinSource = ssSystem then
   begin
     SystemSkin.LoadSkinFromStream;
@@ -233,6 +235,9 @@ end;
 
 procedure TSharpESkinManager.UpdateScheme;
 begin
+  if (csDesigning in ComponentState) then
+    exit;
+
   if SkinSource = ssSystem then
      LoadSharpEScheme(FSystemScheme);
   Skin.UpdateDynamicProperties(Scheme);

@@ -84,6 +84,9 @@ var
   mon : TMonitor;
 begin
   if Closing then exit;
+  if SharpBarMainForm.SharpEBar = nil then
+    exit;
+  
 
   mon := Screen.MonitorFromWindow(SharpBarMainForm.Handle);
   if mon = nil then mon := Screen.MonitorFromPoint(Point(SharpBarMainForm.Left,SharpBarMainForm.Top));

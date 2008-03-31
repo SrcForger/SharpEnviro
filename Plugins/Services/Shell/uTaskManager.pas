@@ -32,17 +32,14 @@ uses Windows,
      Classes,
      SysUtils,
      Contnrs,
-     Dialogs,
      uTaskItem,
-     SharpApi,
+     SharpTypes,
      JclSysUtils,
      JclStrings;
 
 type
   TTaskChangeEvent = procedure(pItem : TTaskItem; Index : integer) of object;
   TTaskExChangeEvent = procedure(pItem1,pItem2 : TTaskItem; I1,I2 : integer) of object;
-
-  TSortType = (stCaption,stWndClass,stTime,stIcon);
 
   TTaskManager = class
                  protected
@@ -56,7 +53,7 @@ type
                    FOnTaskExChange : TTaskExChangeEvent;
                    FItems          : TObjectList;
                    FSortTasks      : Boolean;
-                   FSortType       : TSortType;
+                   FSortType       : TSharpeTaskManagerSortType;
                    FLastActiveTask : hwnd;
                  public
                    procedure RemoveDeadTasks;
@@ -82,7 +79,7 @@ type
 
                    property Enabled        : boolean          read FEnabled write FEnabled;
                    property SortTasks      : boolean          read FSortTasks write FSortTasks;
-                   property SortType       : TSortType        read FSortType write FSortType;
+                   property SortType       : TSharpeTaskManagerSortType read FSortType write FSortType;
                    property OnNewTask      : TTaskChangeEvent read FOnNewTask write FOnNewTask;
                    property OnRemoveTask   : TTaskChangeEvent read FOnRemoveTask write FOnRemoveTask;
                    property OnUpdateTask   : TTaskChangeEvent read FOnUpdateTask write FOnUpdateTask;

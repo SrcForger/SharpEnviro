@@ -275,7 +275,6 @@ begin
   Application.Title := 'SharpBar';
   mfParamID := ParamID;
   Application.CreateForm(TSharpBarMainForm, SharpBarMainForm);
-  //  Application.CreateForm(TPluginManager2Form, PluginManager2Form);
   SharpBarMainForm.InitBar;
   if (x <> - 1) and (y <> - 1) then
      for n := 0 to Screen.MonitorCount - 1 do

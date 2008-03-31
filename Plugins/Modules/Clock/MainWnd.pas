@@ -29,9 +29,9 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms, Messages,
-  StdCtrls, SharpEBaseControls, Commctrl,
+  StdCtrls, SharpEBaseControls, Commctrl, SharpTypes,
   SharpESkinManager, JclSimpleXML, SharpApi, Menus, Math,
-  SharpESkinLabel, SharpESkin, GR32, ExtCtrls, ToolTipApi;
+  SharpESkinLabel, GR32, ExtCtrls, ToolTipApi;
 
 
 type
