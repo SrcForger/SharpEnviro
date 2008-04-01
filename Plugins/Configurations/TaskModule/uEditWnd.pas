@@ -37,11 +37,10 @@ uses
   Graphics,
   Controls,
   Forms,
-  Dialogs,
   StdCtrls,
   ImgList,
   PngImageList,
-
+  SharpTypes,
   SharpEListBoxEx, TaskFilterList, ExtCtrls, JclSimpleXml, JclStrings;
 
 type
