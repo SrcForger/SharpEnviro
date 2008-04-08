@@ -28,6 +28,7 @@ uses
   Controls,
   Classes,
   Windows,
+  ComCtrls,
   Forms,
   Dialogs,
   uVistaFuncs,
@@ -79,7 +80,7 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 
 begin
-  ATitle := 'SharpEnviro 0.74 TD4 R2';
+  ATitle := 'SharpEnviro 0.74 TD4 R3';
   ADescription := 'Welcome to SharpCenter. The ultimate configurator for SharpE.';
 end;
 
@@ -97,9 +98,37 @@ begin
   end;
 end;
 
+procedure ClickTab(ATab: TStringItem);
+begin
+  TTabSheet(ATab.FObject).Show;
+
+  if ATab.FString = 'Support' then begin
+    frmHome.AddUrlsToList(True);
+    frmHome.lblUrls.Caption := 'If you have a problem or query with this release, ' +
+      'you can contact us a number of ways: either by email, using the web forum or in our Irc chat room.'
+  end
+  else if ATab.FString = 'Contribution' then begin
+    frmHome.AddUrlsToList(False);
+    frmHome.lblUrls.Caption := 'Thanks to the following sites that contributed to SharpE. ' +
+      'Without such opensource groups and products we could never finish what we always set out to acheive.';
+  end;
+end;
+
+procedure AddTabs(var ATabs: TStringList);
+begin
+  if frmHome <> nil then
+  begin
+    ATabs.AddObject('About',frmHome.tabCredits);
+    ATabs.AddObject('Support',frmHome.tabUrls);
+    ATabs.AddObject('Contribution',frmHome.tabUrls);
+  end;
+end;
+
 exports
   Open,
   Close,
+  ClickTab,
+  AddTabs,
   GetMetaData,
   SetText;
 

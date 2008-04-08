@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, pngimage, ExtCtrls, SharpCenterApi, StdCtrls, SharpEListBoxEx,
-  JvLabel, ImgList, PngImageList, SharpApi, JvExControls;
+  JvLabel, ImgList, PngImageList, SharpApi, JvExControls, ComCtrls;
 
 type
   TUser = Class
@@ -39,29 +39,31 @@ type
     Email: String;
     Role: String;
     constructor Create(AName, AHandle, AEmail, ARole: String);
+  End;
 
+  TUrl = Class
+    Name: String;
+    Url: String;
+    Description: String;
+    SupportUrl: Boolean;
+    constructor Create(AName, AUrl, ADescription: String; ASupportUrl:Boolean=False);
   End;
 
   TfrmHome = class(TForm)
-    lblSharpETeam: TLabel;
-    lbUsers: TSharpEListBoxEx;
     PngImageList1: TPngImageList;
-    lbWebsiteLinks: TSharpEListBoxEx;
-    Label1: TLabel;
+    PageControl1: TPageControl;
+    tabCredits: TTabSheet;
+    tabUrls: TTabSheet;
+    lbUsers: TSharpEListBoxEx;
     imgLogo: TImage;
-    Label3: TLabel;
-    Label2: TJvLabel;
-    Label4: TJvLabel;
-    Label5: TJvLabel;
-    Label6: TJvLabel;
-    Label7: TJvLabel;
-    JvLabel1: TJvLabel;
+    Label1: TLabel;
+    Image1: TImage;
+    lblUrls: TLabel;
+    lbUrls: TSharpEListBoxEx;
     procedure FormCreate(Sender: TObject);
-    procedure lbUsersResize(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure lbUsersGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
-    procedure Label1Click(Sender: TObject);
     procedure lbWebsiteLinksGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure lbWebsiteLinksClickItem(Sender: TObject; const ACol: Integer;
@@ -70,17 +72,25 @@ type
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure lbUsersClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
-    procedure Label2Click(Sender: TObject);
-    procedure Label6Click(Sender: TObject);
-    procedure Label5Click(Sender: TObject);
-    procedure Label4Click(Sender: TObject);
     procedure Label7Click(Sender: TObject);
-    procedure JvLabel1Click(Sender: TObject);
+    procedure lbUrlsGetCellText(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var AColText: string);
+    procedure lbUrlsClickItem(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem);
+    procedure lbUrlsGetCellCursor(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var ACursor: TCursor);
+    procedure lbUrlsGetCellImageIndex(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var AImageIndex: Integer;
+      const ASelected: Boolean);
+    procedure lbUsersGetCellImageIndex(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var AImageIndex: Integer;
+      const ASelected: Boolean);
   private
     FUsers: TList;
+    FUrls: TList;
     procedure AddUsersToList;
-    procedure AddItems;
   public
+    procedure AddUrlsToList(ASupport: Boolean=False);
   end;
 
 var
@@ -97,91 +107,135 @@ implementation
 procedure TfrmHome.FormCreate(Sender: TObject);
 begin
   FUsers := TList.Create;
+  FUrls := TList.Create;
 
   AddUsersToList;
-  AddItems;
+  AddUrlsToList;
 
-  lbWebsiteLinks.AddItem('Trac - <u>http://trac.sharpe-shell.org',1);
-  lbWebsiteLinks.AddItem('Website - <u>http://www.sharpe-shell.org',1);
-  lbWebsiteLinks.AddItem('Sourceforge - <u>http://sourceforge.net/projects/sharpe/',1);
+
 End;
 
 procedure TfrmHome.FormDestroy(Sender: TObject);
 begin
   FUsers.Free;
-end;
-
-procedure TfrmHome.JvLabel1Click(Sender: TObject);
-begin
-  SharpExecute('http://everaldo.com/crystal/');
-end;
-
-procedure TfrmHome.Label1Click(Sender: TObject);
-begin
-  SharpExecute('http://www.famfamfam.com/lab/icons/silk/');
-end;
-
-procedure TfrmHome.Label2Click(Sender: TObject);
-begin
-  SharpExecute('http://www.famfamfam.com/lab/icons/silk/');
-end;
-
-procedure TfrmHome.Label4Click(Sender: TObject);
-begin
-   SharpExecute('http://www.thany.org');
-end;
-
-procedure TfrmHome.Label5Click(Sender: TObject);
-begin
-  SharpExecute('http://jvcl.sourceforge.net');
-end;
-
-procedure TfrmHome.Label6Click(Sender: TObject);
-begin
-  SharpExecute('http://www.graphics32.org');
+  FUrls.Free;
 end;
 
 procedure TfrmHome.Label7Click(Sender: TObject);
 begin
-  SharpExecute('http://tango.freedesktop.org');
+
 end;
 
 { TUser }
 
+procedure TfrmHome.AddUrlsToList(ASupport: Boolean=False);
+var
+  i: Integer;
+  tmpLi: TSharpEListItem;
+  tmpUrl: TUrl;
 
-procedure TfrmHome.AddItems;
+  procedure AddUrl(AName, AUrl, ADescription: String; ASupport:Boolean=False);
+  var
+    tmp: TUrl;
+  begin
+    tmp := TUrl.Create(AName,AUrl,ADescription,ASupport);
+    FUrls.Add(tmp);
+  end;
+
+begin
+  FUrls.Clear;
+
+  if Not(ASupport) then begin
+    AddUrl('Graphics32','http://www.graphics32.org','Advanced Graphics Library');
+    AddUrl('JediVcl','http://jvcl.sourceforge.net','Advanced Component Library');
+    AddUrl('Thany','http://www.thany.org','PngComponents');
+    AddUrl('Silk Icons','http://www.famfamfam.com/lab/icons/silk/','Icon Collection');
+    AddUrl('Crystal Icons','http://everaldo.com/crystal/','Icon Collection');
+    AddUrl('Tango','http://tango.freedesktop.org','Icon Collection');
+  end else begin
+    // Support Urls
+    AddUrl('Trac','http://trac.sharpe-shell.org','Wiki, Tickets, Roadmap',true);
+    AddUrl('Homepage','http://www.sharpe-shell.org','SharpE Homepage',true);
+    AddUrl('Sourceforge','http://sourceforge.net/projects/sharpe/','SVN Repositry',true);
+  end;
+
+  lbUrls.Clear;
+  for i := 0 to Pred(FUrls.Count) do begin
+    tmpUrl := TUrl(FUrls[i]);
+    tmpLi := lbUrls.AddItem(tmpUrl.Name,0);
+    tmpLi.Data := tmpUrl;
+  end;
+end;
+
+procedure TfrmHome.AddUsersToList;
 var
   i: Integer;
   tmpLi: TSharpEListItem;
   tmpUser: TUser;
+
+  procedure AddUser(AName, AHandle, AEmail, ARole: String);
+  var
+    tmp: TUser;
+  begin
+    tmp := TUser.Create(AName, AHandle, AEmail, ARole);
+    FUsers.Add(tmp);
+  end;
+
 begin
+  FUsers.Clear;
+  AddUser('CoCo', 'Silentpyjamas', 'coco@sharpenviro.com', 'PR, Community + Support.');
+  AddUser('David', 'Glacialfury', 'nathan@sharpenviro.com', 'Lead Tester + Support.');
+  AddUser('Florian', 'Captain Herisson', 'florian@sharpenviro.com', 'Graphics + Design.');
+  AddUser('Lee', 'Pixol', 'lee@sharpenviro.com', 'Lead Developer of Components, SharpCenter, Configurations.');
+  AddUser('Martin', 'Billiberserker', 'martin@sharpenviro.com', 'Lead Developer of SharpBar, SharpDesk, SharpMenu, Modules.');
+  AddUser('Nathan', 'Mc', 'nathan@sharpenviro.com', 'Lead Developer of SharpCore, SharpCompile.');
+
   lbUsers.Clear;
   for i := 0 to Pred(FUsers.Count) do begin
     tmpUser := TUser(FUsers[i]);
     tmpLi := lbUsers.AddItem(tmpUser.Name,0);
     tmpLi.Data := tmpUser;
-
   end;
+end;
+
+procedure TfrmHome.lbUrlsClickItem(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem);
+var
+  tmp: TUrl;
+begin
+  tmp := TUrl(AItem.Data);
+  if tmp = nil then exit;
+
+  SharpExecute(tmp.Url);
 
 end;
 
-procedure TfrmHome.AddUsersToList;
-var
-  tmp: TUser;
+procedure TfrmHome.lbUrlsGetCellCursor(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem; var ACursor: TCursor);
 begin
-  // Main dev team
-  tmp := TUser.Create('CoCo', 'Silentpyjamas', 'coco@sharpenviro.com', 'PR, Community + Support.');
-  FUsers.Add(tmp);
-  tmp := TUser.Create('David', 'Glacialfury', 'nathan@sharpenviro.com', 'Lead Tester + Support.');
-  FUsers.Add(tmp);
-  tmp := TUser.Create('Florian', 'Captain Herisson', 'florian@sharpenviro.com', 'Graphics + Design.');
-  FUsers.Add(tmp);
-  tmp := TUser.Create('Lee', 'Pixol', 'lee@sharpenviro.com', 'Lead Developer of Components, SharpCenter, Configurations.');
-  FUsers.Add(tmp);
-  tmp := TUser.Create('Martin', 'Billiberserker', 'martin@sharpenviro.com', 'Lead Developer of SharpBar, SharpDesk, SharpMenu, Modules.');
-  FUsers.Add(tmp);
-  tmp := TUser.Create('Nathan', 'Mc', 'nathan@sharpenviro.com', 'Lead Developer of SharpCore, SharpCompile.');
-  FUsers.Add(tmp);
+  ACursor := crHandPoint;
+end;
+
+procedure TfrmHome.lbUrlsGetCellImageIndex(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
+begin
+  AImageIndex := 1;
+end;
+
+procedure TfrmHome.lbUrlsGetCellText(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem; var AColText: string);
+var
+  tmp: TUrl;
+begin
+  tmp := TUrl(AItem.Data);
+  if tmp = nil then exit;
+
+  case ACol of
+    colName: begin
+      AColText := tmp.Name + ' (' + tmp.Description + ')' + ' - <font color="clGray">' + tmp.Url;
+    end;
+    colEmail : AColText := '<u><font color="clNavy">Email</u>';
+  end;
 
 end;
 
@@ -195,6 +249,21 @@ procedure TfrmHome.lbUsersGetCellCursor(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 begin
   Acursor := crHandPoint;
+end;
+
+procedure TfrmHome.lbUsersGetCellImageIndex(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
+  const ASelected: Boolean);
+var
+  tmp: TUser;
+begin
+  tmp := TUser(AItem.Data);
+  if tmp = nil then exit;
+
+  if tmp.Name = 'CoCo' then
+  AImageIndex := 2 else
+  AImageIndex := 0;
+
 end;
 
 procedure TfrmHome.lbUsersGetCellText(Sender: TObject; const ACol: Integer;
@@ -212,12 +281,6 @@ begin
     colEmail : AColText := '<u><font color="clNavy">Email</u>';
   end;
 
-end;
-
-procedure TfrmHome.lbUsersResize(Sender: TObject);
-begin
-  Self.Height := imgLogo.Height + lbUsers.Height + lbWebsiteLinks.Height +
-    (lblSharpETeam.Height*2) + 200;
 end;
 
 procedure TfrmHome.lbWebsiteLinksClickItem(Sender: TObject; const ACol: Integer;
@@ -245,6 +308,18 @@ begin
   Handle := AHandle;
   Email := AEmail;
   Role := ARole;
+end;
+
+{ TUrl }
+
+constructor TUrl.Create(AName, AUrl, ADescription: String; ASupportUrl:Boolean=False);
+begin
+  Name := AName;
+  Url := AUrl;
+  Description := ADescription;
+  SupportUrl := ASupportUrl;
+
+
 end;
 
 end.
