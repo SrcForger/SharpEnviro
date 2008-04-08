@@ -73,7 +73,6 @@ const
 type
   TSharpCenterWnd = class(TForm)
     pnlSettingTree: TPanel;
-    pnlTree: TPanel;
     pnlMain: TPanel;
     PnlButtons: TPanel;
     btnSave: TPngSpeedButton;
@@ -143,6 +142,7 @@ type
     procedure tmrClickTimer(Sender: TObject);
     procedure lbTreeGetCellColor(Sender: TObject; const AItem: TSharpEListItem;
       var AColor: TColor);
+    procedure tlToolbarBtnClick(ASender: TObject; const ABtnIndex: Integer);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -577,13 +577,25 @@ begin
     case ATabID of
       tidHome: Item[0].Visible := AVisible;
       tidFavourite: Item[1].Visible := AVisible;
-      tidHistory: Item[2].Visible := AVisible;
+      tidHistory: begin
+        //Item[2].Visible := AVisible;
+        tlToolbar.Buttons.Item[1].Visible := AVisible;
+      end;
       tidImport: Item[3].Visible := AVisible;
       tidExport: Item[4].Visible := AVisible;
     end;
   end;
   tlToolbar.TabIndex := 0;
   tlToolbar.Invalidate;
+end;
+
+procedure TSharpCenterWnd.tlToolbarBtnClick(ASender: TObject;
+  const ABtnIndex: Integer);
+begin
+  case ABtnIndex of
+    0: btnHomeClick(nil);
+    1: btnBackClick(nil);
+  end;
 end;
 
 procedure TSharpCenterWnd.tlToolbarTabChange(ASender: TObject;
@@ -706,7 +718,7 @@ procedure TSharpCenterWnd.InitWindow;
 begin
   // Vista
   SetVistaFonts(Self);
-  DoDoubleBufferAll(pnlTree);
+  //DoDoubleBufferAll(pnlTree);
   DoDoubleBufferAll(pnlTitle);
   DoDoubleBufferAll(lbTree);
 
