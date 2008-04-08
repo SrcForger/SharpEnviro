@@ -27,6 +27,7 @@ library ServiceManager;
 uses
   Controls,
   Classes,
+  ComCtrls,
   Windows,
   Forms,
   Dialogs,
@@ -118,10 +119,32 @@ begin
   end;
 end;
 
+procedure ClickTab(ATab: TStringItem);
+begin
+  if ATab.FString = 'Editable' then
+    frmBarList.AddItems(aiEditable) else
+  if ATab.FString = 'All' then
+    frmBarList.AddItems(aiAll) else
+  if ATab.FString = 'Disabled' then
+    frmBarList.AddItems(aiDisabled);
+end;
+
+procedure AddTabs(var ATabs: TStringList);
+begin
+  if frmBarList <> nil then
+  begin
+    ATabs.AddObject('All',nil);
+    ATabs.AddObject('Editable',nil);
+    ATabs.AddObject('Disabled',nil);
+  end;
+end;
+
 
 exports
   Open,
   Close,
+  AddTabs,
+  ClickTab,
   SetText,
   GetMetaData,
   GetCenterScheme;

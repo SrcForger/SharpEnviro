@@ -62,6 +62,8 @@ type
     Str: string;
   end;
 
+  TAddItemsType = (aiAll, aiEditable, aiDisabled);
+
   TfrmBarList = class(TForm)
     StatusImages: TPngImageList;
     lbItems: TSharpEListBoxEx;
@@ -81,11 +83,12 @@ type
       var AColText: string);
   private
     FWinHandle: THandle;
+    FAddItemsType: TAddItemsType;
     procedure WndProcHandler(var msg: TMessage);
   private
   public
     FComponentList: TComponentList;
-    procedure AddItems;
+    procedure AddItems( AAddItemsType: TAddItemsType=aiAll);
   end;
 
 var
@@ -159,6 +162,8 @@ begin
       end;
     end;
   end;
+
+  AddItems(FAddItemsType);
 end;
 
 procedure TfrmBarList.lbItemsGetCellCursor(Sender: TObject; const ACol: Integer;
@@ -252,7 +257,6 @@ procedure TfrmBarList.FormCreate(Sender: TObject);
 begin
   FWinHandle := AllocateHWND(WndProcHandler);
   FComponentList := TComponentList.Create;
-  AddItems;
 
   Self.DoubleBuffered := true;
   lbItems.DoubleBuffered := true;
@@ -267,16 +271,16 @@ end;
 procedure TfrmBarList.WndProcHandler(var msg: TMessage);
 begin
   if ((msg.Msg = WM_SHARPEUPDATESETTINGS) and (msg.WParam = integer(suCenter))) then begin
-    AddItems;
-    CenterUpdateSize;
+    AddItems(FAddItemsType);
   end;
 end;
 
-procedure TfrmBarList.AddItems;
+procedure TfrmBarList.AddItems( AAddItemsType: TAddItemsType=aiAll);
 var
   newItem: TSharpEListItem;
   tmp: TComponentData;
   selectedIndex, i: Integer;
+  bAdd: Boolean;
 begin
 
   // Get selected item
@@ -286,14 +290,27 @@ begin
   else
     selectedIndex := -1;
 
+  FAddItemsType := AAddItemsType;
+
   lbItems.Clear;
   FComponentList.BuildList('.service', false);
   FComponentList.Sort(CustomSort);
 
   for i := 0 to FComponentList.Count - 1 do begin
-
     tmp := TComponentData(FComponentList[i]);
+    bAdd := True;
+    case AAddItemsType of
+      aiEditable: begin
+        if Not(tmp.HasConfig) then
+        bAdd := False;
+      end;
+      aiDisabled: begin
+        if Not(tmp.Disabled) then
+          bAdd := false;
+      end;
+    end;
 
+    if bAdd then begin
     newItem := lbItems.AddItem(tmp.MetaData.Name);
     newItem.Data := tmp;
     newItem.AddSubItem('');
@@ -302,20 +319,13 @@ begin
 
     if tmp.ID = selectedIndex then
       lbItems.ItemIndex := i;
+    end;
 
   end;
   LockWindowUpdate(0);
 
-  if lbItems.Items.Count = 0 then begin
-    CenterDefineButtonState(scbEditTab, False);
-    CenterDefineButtonState(scbDeleteTab, False);
-  end
-  else begin
-    if lbItems.ItemIndex = -1 then
-      lbItems.ItemIndex := 0;
-    CenterDefineButtonState(scbEditTab, True);
-    CenterDefineButtonState(scbDeleteTab, True);
-  end;
+  CenterUpdateEditTabs(lbItems.Count,lbItems.ItemIndex);
+  CenterUpdateSize;
 end;
 
 end.
