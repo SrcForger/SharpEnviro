@@ -46,7 +46,7 @@ object frmIconList: TfrmIconList
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     OnResize = lb_iconlistResize
-    ItemHeight = 30
+    itemheight = 25
     OnClickItem = lb_iconlistClickItem
     OnGetCellCursor = lb_iconlistGetCellCursor
     OnGetCellText = lb_iconlistGetCellText

@@ -125,7 +125,7 @@ object frmCursesList: TfrmCursesList
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     OnResize = lbCursorListResize
-    ItemHeight = 30
+    itemheight = 25
     OnClickItem = lbCursorListClickItem
     AutosizeGrid = True
     Borderstyle = bsNone

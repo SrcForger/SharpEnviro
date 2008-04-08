@@ -71,7 +71,7 @@ object frmItemsWnd: TfrmItemsWnd
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     OnResize = lbItemsResize
-    ItemHeight = 30
+    itemheight = 25
     OnClickItem = lbItemsClickItem
     OnGetCellCursor = lbItemsGetCellCursor
     OnGetCellText = lbItemsGetCellText

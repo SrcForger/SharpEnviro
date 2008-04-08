@@ -62,7 +62,7 @@ object frmEdit: TfrmEdit
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = clWindow
     OnResize = lbItemsResize
-    ItemHeight = 30
+    itemheight = 25
     OnClickCheck = lbItemsClickCheck
     OnClickItem = lbItemsClickItem
     OnGetCellCursor = lbItemsGetCellCursor

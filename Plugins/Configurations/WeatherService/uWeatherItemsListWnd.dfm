@@ -60,7 +60,7 @@ object frmItemsList: TfrmItemsList
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     OnResize = lbWeatherListResize
-    ItemHeight = 30
+    itemheight = 25
     OnClickItem = lbWeatherListClickItem
     OnGetCellCursor = lbWeatherListGetCellCursor
     OnGetCellText = lbWeatherListGetCellText
