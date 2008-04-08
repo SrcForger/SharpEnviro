@@ -74,7 +74,7 @@ object Form1: TForm1
     Colors.ItemColorSelected = clBtnFace
     Colors.CheckColorSelected = 33023
     Colors.CheckColor = 15528425
-    ItemHeight = 30
+    ItemHeight = 25
     OnDblClickItem = SharpEListBoxEx1DblClickItem
     OnGetCellCursor = SharpEListBoxEx1GetCellCursor
     OnGetCellColor = SharpEListBoxEx1GetCellColor

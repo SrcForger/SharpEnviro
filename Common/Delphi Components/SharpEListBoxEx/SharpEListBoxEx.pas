@@ -611,9 +611,9 @@ begin
     FOnGetCellColor(Self, AItem, tmpColor);
 
   y := 0;
-  if AItemIndex = 0 then begin
+  {if AItemIndex = 0 then begin
     y := itemoffset.Y;
-  end;
+  end; }
 
   // Checked
   if AItem.Checked then begin
