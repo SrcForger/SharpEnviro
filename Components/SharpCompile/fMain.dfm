@@ -1363,7 +1363,7 @@ object frmMain: TfrmMain
           Colors.ItemColorSelected = clBtnFace
           Colors.CheckColorSelected = clBtnFace
           Colors.CheckColor = 15528425
-          ItemHeight = 30
+          itemheight = 25
           OnClickItem = lbSummaryClickItem
           OnDblClickItem = lbSummaryDblClickItem
           OnGetCellCursor = lbSummaryGetCellCursor
