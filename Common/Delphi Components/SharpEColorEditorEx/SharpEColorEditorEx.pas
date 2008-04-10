@@ -36,7 +36,6 @@ type
 
     FLastTab: Integer;
     FLastColorEditor: TSharpEColorEditor;
-    FDisplayPercent: boolean;
     FValueMin: Integer;
     FValueMax: Integer;
 
