@@ -73,9 +73,6 @@ type
     edWebsite: TLabeledEdit;
     Label3: TJvLabel;
     cbBasedOn: TComboBox;
-    pagDelete: TJvStandardPage;
-    Label2: TLabel;
-    Label1: TJvLabel;
     valThemeDirNotExists: TJvCustomValidator;
     procedure valThemeDirNotExistsValidate(Sender: TObject;
       ValueToValidate: Variant; var Valid: Boolean);

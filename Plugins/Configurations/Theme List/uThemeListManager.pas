@@ -117,14 +117,16 @@ begin
   end;
 
   // just create a default skin file
-  xml := TJvSimpleXML.Create(nil);
-  xml.Root.Name := 'SharpEThemeSkin';
-  xml.Root.Items.Add('Skin', 'BB2-Glass');
+  if ATemplate = '' then begin
+    xml := TJvSimpleXML.Create(nil);
+    xml.Root.Name := 'SharpEThemeSkin';
+    xml.Root.Items.Add('Skin', 'BB2-Glass');
 
-  sDest := sThemeDir + AName + '\' + 'Skin.xml';
+    sDest := sThemeDir + AName + '\' + 'Skin.xml';
 
-  xml.SaveToFile(sDest);
-  xml.free;
+    xml.SaveToFile(sDest);
+    xml.free;
+  end;
 end;
 
 function TThemeManager.CopyFolder(Asrc, ADest: string): Boolean;
@@ -185,7 +187,6 @@ begin
     sName := AOldName;
 
   // Get theme dir
-
   sXml := sThemeDir + sName + '\' + 'theme.xml';
 
   xml := TJvSimpleXML.Create(nil);
@@ -197,9 +198,15 @@ begin
       ItemNamed['Author'].Value := AAuthor;
       ItemNamed['Website'].Value := AWebsite;
     end;
+
+  // Rename theme if default
+  if XmlGetTheme = AOldName then
+    XmlSetTheme(sName);
+
   finally
     xml.SaveToFile(sXml);
   end;
+
 end;
 
 function TThemeManager.GetDefaultTheme: string;

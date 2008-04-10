@@ -91,39 +91,9 @@ object frmEditItem: TfrmEditItem
         Width = 137
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 3
         OnSelect = cbBasedOnSelect
-      end
-    end
-    object pagDelete: TJvStandardPage
-      Left = 0
-      Top = 0
-      Width = 483
-      Height = 69
-      BorderWidth = 8
-      object Label2: TLabel
-        Left = 0
-        Top = 13
-        Width = 304
-        Height = 13
-        Align = alTop
-        Caption = 'Are you sure you want to delete the currently selected Theme?'
-      end
-      object Label1: TJvLabel
-        Left = 0
-        Top = 0
-        Width = 67
-        Height = 13
-        Align = alTop
-        Caption = 'Confirmation:'
-        Transparent = True
-        HotTrackFont.Charset = DEFAULT_CHARSET
-        HotTrackFont.Color = clWindowText
-        HotTrackFont.Height = -11
-        HotTrackFont.Name = 'Tahoma'
-        HotTrackFont.Style = []
-        Images = pilError
       end
     end
   end
