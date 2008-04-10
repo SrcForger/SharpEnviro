@@ -46,40 +46,44 @@ uses
   SharpThemeApi,
   SharpESwatchManager,
   SharpECenterScheme,
-  SharpEColorEditor;
+  SharpEColorEditor, ImgList, PngImageList, JvErrorIndicator, JvComponentBase,
+  JvValidators;
 
 type
   TfrmEditScheme = class(TForm)
     edName: TLabeledEdit;
     edAuthor: TLabeledEdit;
     pnlContainer: TPanel;
-    SharpESwatchManager1: TSharpESwatchManager;
     SharpECenterScheme1: TSharpECenterScheme;
-    SharpERoundPanel1: TSharpERoundPanel;
-    secEx: TSharpEColorEditorEx;
-    procedure secExUiChange(Sender: TObject);
-    procedure secExSliderChange(Sender: TObject);
-    procedure secExChangeValue(ASender: TObject; AValue: Integer);
+    vals: TJvValidators;
+    err: TJvErrorIndicator;
+    PngImageList1: TPngImageList;
+    valSchemeName: TJvRequiredFieldValidator;
+    valSchemeUnique: TJvCustomValidator;
+    valAuthor: TJvRequiredFieldValidator;
+    valSchemeNameInvalidChars: TJvCustomValidator;
 
     procedure FormCreate(Sender: TObject);
     procedure edNameKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure valSchemeUniqueValidate(Sender: TObject; ValueToValidate: Variant;
+      var Valid: Boolean);
+    procedure valSchemeNameInvalidCharsValidate(Sender: TObject;
+      ValueToValidate: Variant; var Valid: Boolean);
   private
-    FColors: TObjectList;
     FSchemeItem: TSchemeItem;
     FSelectedColorIdx: Integer;
     FEditMode: TSCE_EDITMODE_ENUM;
-    procedure SetColors(const Value: TObjectList);
 
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
     property SchemeItem: TSchemeItem read FSchemeItem write FSchemeItem;
-    property Colors: TObjectList read FColors write SetColors;
 
     procedure InitUI(AEditMode: TSCE_EditMode_Enum);
-    function ValidateEdit(AEditMode: TSCE_EditMode_Enum): Boolean;
+
     function Save(AEditMode: TSCE_EditMode_Enum; AApply: Boolean): Boolean;
     property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
+    function Validate: boolean;
   end;
 
 var
@@ -91,57 +95,6 @@ uses JclStrings,
   uSchemeListWnd;
 
 {$R *.dfm}
-
-procedure TfrmEditScheme.SetColors(const Value: TObjectList);
-var
-  tmpItem: TSchemeColorItem;
-  tmpSkinColor: TSharpESkinColor;
-
-  i: Integer;
-  h: Integer;
-begin
-  FColors := Value;
-  h := 0;
-
-  try
-
-    secEx.BeginUpdate;
-    secEx.Items.Clear;
-    for i := 0 to Pred(FColors.Count) do begin
-      tmpItem := TSchemeColorItem(FColors[i]);
-      tmpSkinColor := XmlGetSkinColorByTag(tmpItem.Tag);
-
-      with secEx.Items.Add(Self) do begin
-        Title := tmpSkinColor.Name;
-        ColorCode := tmpItem.Color;
-        Tag := Integer(tmpItem);
-
-        if tmpSkinColor.schemetype = stInteger then
-          ValueEditorType := vetValue
-        else
-          ValueEditorType := vetColor;
-
-        Visible := True;
-        Value := tmpItem.Color;
-        Description := tmpSkinColor.Info + ':';
-        ValueText := tmpSkinColor.Name;
-      end;
-
-    end;
-
-  finally
-
-    secEx.EndUpdate;
-
-    if FColors.Count <> 0 then
-      h := 3 * secEx.Items.Item[0].ColorEditor.CollapseHeight
-        +
-        secEx.Items.Item[0].ColorEditor.ExpandedHeight;
-
-    Self.Height := h + 10;
-  end;
-
-end;
 
 procedure TfrmEditScheme.edNameKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
@@ -157,19 +110,16 @@ end;
 procedure TfrmEditScheme.InitUI(AEditMode: TSCE_EditMode_Enum);
 var
   tmpItem, lstItem: TSchemeItem;
+  df:TSC_DEFAULT_FIELDS;
 begin
   case AEditMode of
     sceAdd: begin
 
+        CenterReadDefaults(df);
         tmpItem := TSchemeItem.Create(nil);
-        tmpItem.Name := '';
-        tmpItem.Author := '';
-        tmpItem.LoadSkinColorDefaults(FSchemeManager.PluginID);
 
         edName.Text := '';
-        edAuthor.Text := '';
-
-        Colors := tmpItem.Colors;
+        edAuthor.Text := df.Author;
         SchemeItem := tmpItem;
       end;
     sceEdit: begin
@@ -181,21 +131,28 @@ begin
         tmpItem := TSchemeItem.Create(nil);
         tmpItem.Name := lstItem.Name;
         tmpItem.Author := lstItem.Author;
-        lstItem.Assign(tmpItem.Colors);
 
         edName.Text := tmpItem.Name;
         edAuthor.Text := tmpItem.Author;
-
-        Colors := tmpItem.Colors;
         SchemeItem := tmpItem;
 
       end;
   end;
 end;
 
-function TfrmEditScheme.ValidateEdit(AEditMode: TSCE_EditMode_Enum): Boolean;
+procedure TfrmEditScheme.valSchemeNameInvalidCharsValidate(Sender: TObject;
+  ValueToValidate: Variant; var Valid: Boolean);
 var
-  bInvalidAuthor, bExistsName: Boolean;
+  s: string;
+begin
+  s := string(ValueToValidate);
+  Valid := not (StrContainsChars(s, ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':'], False));
+end;
+
+procedure TfrmEditScheme.valSchemeUniqueValidate(Sender: TObject;
+  ValueToValidate: Variant; var Valid: Boolean);
+var
+  bExistsName: Boolean;
   sName, sSkinDir, sSchemeDir: string;
 begin
   sName := trim(StrRemoveChars(edName.Text,
@@ -204,18 +161,17 @@ begin
   sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, XmlGetSkin(FSchemeManager.PluginID)]);
 
   bExistsName := FileExists(sSchemeDir + sName + '.xml');
-  if ((CompareText(edName.Text, SchemeItem.Name) = 0) and (AEditMode = sceEdit)) then
+  if ((CompareText(edName.Text, SchemeItem.Name) = 0) and (FEditMode = sceEdit)) then
     bExistsName := False;
 
-  bInvalidAuthor := (edAuthor.Text = '');
-
-  Result := not ((bExistsName = True) or (bInvalidAuthor = True));
+  Valid := not (bExistsName);
 end;
 
 function TfrmEditScheme.Save(AEditMode: TSCE_EditMode_Enum;
   AApply: Boolean): Boolean;
 var
-  lstItem: TSchemeItem;
+  scheme: TSchemeItem;
+  sOriginalName: string;
 begin
   Result := True;
   if not (AApply) then
@@ -226,28 +182,27 @@ begin
 
         FSchemeItem.Name := edName.Text;
         FSchemeItem.Author := edAuthor.Text;
-        FSchemeItem.Save;
+        FSchemeManager.Save(edName.Text, edAuthor.Text);
         FSchemeItem.Free;
 
         Result := True;
-        SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
         SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
       end;
     sceEdit: begin
 
         if AApply then begin
 
-          lstItem := TSchemeItem(frmSchemeList.lbSchemeList.
-            Item[frmSchemeList.lbSchemeList.ItemIndex].Data);
+          scheme := TSchemeItem(frmSchemeList.lbSchemeList.SelectedItem.Data);
+          sOriginalName := scheme.Name;
 
-          lstItem.Name := edName.Text;
-          lstItem.Author := edAuthor.Text;
-          FSchemeItem.Assign(lstItem.Colors);
-          lstItem.Save;
+          FSchemeManager.Save(edName.Text, edAuthor.Text, sOriginalName);
+          FSchemeManager.Delete(scheme);
+
+          scheme.Name := edName.Text;
+          scheme.Author := edAuthor.Text;
         end;
 
         Result := True;
-        SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
         SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
       end;
   end;
@@ -255,34 +210,16 @@ begin
   frmSchemeList.RebuildSchemeList;
 end;
 
-procedure TfrmEditScheme.secExChangeValue(ASender: TObject;
-  AValue: Integer);
-var
-  tmpItem: TSchemeColorItem;
+function TfrmEditScheme.Validate: boolean;
 begin
-  tmpItem := TSchemeColorItem(TSharpEColorEditorExItem(ASender).Tag);
-
-  if TSharpEColorEditorExItem(ASender).ValueEditorType = vetColor then begin
-
-    tmpItem.Color := AValue;
-    tmpItem.UnparsedColor := ColorToString(XmlSchemeCodeToColor(AValue));
-  end
-  else begin
-    tmpItem.Color := AValue;
-    tmpItem.UnparsedColor := '';
+  err.BeginUpdate;
+  try
+    err.ClearErrors;
+    vals.ValidationSummary := nil;
+    Result := vals.Validate;
+  finally
+    err.EndUpdate;
   end;
-end;
-
-procedure TfrmEditScheme.secExSliderChange(Sender: TObject);
-begin
-  CenterUpdatePreview;
-  CenterDefineEditState(True);
-end;
-
-procedure TfrmEditScheme.secExUiChange(Sender: TObject);
-begin
-  CenterUpdatePreview;
-  CenterDefineEditState(True);
 end;
 
 end.

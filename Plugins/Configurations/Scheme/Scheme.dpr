@@ -129,9 +129,8 @@ begin
   if frmEditScheme = nil then exit;
 
   // Validation
-  if Not(frmEditScheme.ValidateEdit(AEditMode)) and AApply  then Begin
+  if Not(frmEditScheme.Validate) and AApply  then Begin
     Result := False;
-    //frmEditScheme.InitValidateUi(frmEditScheme);
     Exit;
   End;
 
@@ -146,8 +145,6 @@ begin
 
     frmEditScheme.Color := ABackground;
     frmEditScheme.pnlContainer.Color := ABackground;
-    frmEditScheme.SharpERoundPanel1.BackgroundColor := ABackground;
-    frmEditScheme.SharpERoundPanel1.Color := clWindow;
 
   end;
 
@@ -166,7 +163,7 @@ begin
     Version := '0.7.4.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
-      Integer(suTheme)]);
+      Integer(suScheme)]);
   end;
 end;
 

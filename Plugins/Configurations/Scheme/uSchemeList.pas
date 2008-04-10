@@ -32,66 +32,32 @@ type
   TSchemeItem = class(TPersistent)
   private
     FFilename: string;
-    FColors: TObjectList;
     FAuthor: string;
     FName: string;
     FID: Integer;
     FDefaultItem: Boolean;
     FOwner: TObject;
-    function GetSchemeColorItem(Index: integer): TSchemeColorItem;
 
   public
-    property Filename: string read FFilename write FFilename;
     property Name: string read FName write FName;
     property Author: string read FAuthor write FAuthor;
     property ID: Integer read FID write FID;
     property DefaultItem: Boolean read FDefaultItem write FDefaultItem;
-    property Colors: TobjectList read FColors write FColors;
     property Owner: TObject read FOwner write fOwner;
 
-    property Color[Index: integer]: TSchemeColorItem read GetSchemeColorItem; default;
-    function Count: Integer;
-    function GetItemAsColorArray(AObjectList: TObjectList = nil): TSharpEColorSet;
     constructor Create(AOwner: TObject);
-    destructor Destroy; override;
-
-    procedure Assign(ADest: TobjectList); reintroduce;
-    function LoadSkinColorDefaults(ATheme: string): Boolean;
-
-    function Save: boolean;
-  end;
-
-  TSchemeList = class
-  private
-    FItems: TObjectList;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Clear;
-
-    function Add(ASchemeItem: TSchemeItem): Integer; overload;
-    procedure Delete(ASchemeItem: TSchemeItem);
-
   end;
 
   TSchemeManager = class
   private
     FPluginID: string;
-    FDefaultScheme: string;
-    function GetSkinScheme: string;
-
   public
 
     procedure Delete(ASchemeItem: TSchemeItem);
-
     procedure Copy(ASchemeItem: TSchemeItem; var ACopyName:String);
-
-    procedure GetSchemeList(APluginID: String; AStringList: TStrings);
-    function GetSkinValid: Boolean;
-    function GetSkinSchemeDir(ATheme: string): string;
-
+    procedure Save(AName: String; AAuthor: String;AOriginalScheme:String='');
     property PluginID: string read FPluginID write FPluginID;
-
+    procedure GetSchemeList(APluginID: String; AStringList: TStrings);
   end;
 
 var
@@ -101,216 +67,13 @@ implementation
 
 { TSchemeItem }
 
-procedure TSchemeItem.Assign(ADest: TobjectList);
-var
-  i: Integer;
-  tmp, new: TSchemeColorItem;
-begin
-  ADest.Clear;
-
-  for i := 0 to Pred(FColors.Count) do begin
-    tmp := TSchemeColorItem(FColors[i]);
-    new := TSchemeColorItem.Create;
-    new.Color := tmp.Color;
-    new.Tag := tmp.Tag;
-    new.UnparsedColor := tmp.UnparsedColor;
-    ADest.Add(New)
-  end;
-end;
-
-function TSchemeItem.Count: Integer;
-begin
-  Result := FColors.Count;
-end;
-
 constructor TSchemeItem.Create(AOwner: TObject);
 begin
-  FColors := TObjectList.Create;
   FDefaultItem := False;
   FID := -1;
   FFilename := '';
-  FName := 'Untitled' + inttostr(Self.Count);
   FAuthor := 'Unknown';
   FOwner := AOwner;
-end;
-
-destructor TSchemeItem.Destroy;
-begin
-
-  if Assigned(FColors) then
-    FColors.Free;
-
-  inherited;
-end;
-
-function TSchemeITem.GetItemAsColorArray(AObjectList: TObjectList = nil): TSharpEColorSet;
-var
-  i: Integer;
-  tmpList: TObjectList;
-begin
-  if AObjectList = nil then
-    tmpList := FColors
-  else
-    tmpList := AObjectList;
-
-  SetLength(Result, tmpList.Count);
-  for i := 0 to Pred(tmpList.Count) do
-    with Result[i] do begin
-      Color := TSchemeColorItem(tmpList[i]).Color;
-      Tag := TSchemeColorItem(tmpList[i]).Tag;
-
-      schemetype := XmlGetSkinColorByTag(Tag).schemetype;
-    end;
-end;
-
-function TSchemeItem.GetSchemeColorItem(Index: integer): TSchemeColorItem;
-begin
-  Result := TSchemeColorItem(FColors[Index]);
-end;
-
-function TSchemeItem.LoadSkinColorDefaults(ATheme: string): Boolean;
-var
-  s: string;
-  xml: TJvSimpleXml;
-  i: Integer;
-  tmpColor: TSchemeColorItem;
-begin
-  Result := False;
-  s := FSchemeManager.GetSkinScheme;
-  if s = '' then
-    exit;
-
-  xml := TJvSimpleXML.Create(nil);
-  try
-
-    xml.LoadFromFile(s);
-    Colors.Clear;
-    Result := True;
-
-    for i := 0 to Pred(xml.Root.Items.Count) do begin
-
-      tmpColor := TSchemeColorItem.Create;
-      tmpColor.Tag := xml.Root.Items[i].Items.Value('Tag', '');
-      tmpColor.Color := ParseColor(PChar(xml.Root.Items[i].Items.Value('Default', '0')));
-      Colors.Add(tmpColor);
-    end;
-
-  finally
-    xml.Free;
-  end;
-end;
-
-function TSchemeItem.Save: Boolean;
-var
-  xml: TJvSimpleXML;
-  i: Integer;
-begin
-  Result := True;
-  xml := TJvSimpleXML.Create(nil);
-  FileDelete(Filename, False);
-
-  try
-    xml.Root.Name := 'SharpESkinScheme';
-    xml.Root.Items.Add('Info');
-    with xml.Root.Items.ItemNamed['Info'] do begin
-      Items.Add('Name', FName);
-      Items.Add('Author', FAuthor);
-    end;
-    for i := 0 to Pred(FColors.Count) do begin
-      with xml.Root.Items.Add('Item') do begin
-        Items.Add('Tag', TSchemeColorItem(FColors[i]).Tag);
-        if TSchemeColorItem(FColors[i]).UnparsedColor = '' then
-          Items.Add('Color', TSchemeColorItem(FColors[i]).Color)
-        else
-          Items.Add('Color', TSchemeColorItem(FColors[i]).UnparsedColor);
-      end;
-    end;
-  finally
-
-    FFilename := FSchemeManager.GetSkinSchemeDir(FSchemeManager.PluginID) + trim(StrRemoveChars(Self.Name,
-      ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']) + '.xml');
-    xml.SaveToFile(FFilename);
-    xml.Free;
-  end;
-end;
-
-function TSchemeManager.GetSkinSchemeDir(ATheme: string): string;
-var
-  xml: TJvSimpleXml;
-  sSkin, sFile: string;
-begin
-  Result := '';
-  sFile := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\Skin.xml';
-
-  if fileExists(sFile) then begin
-    xml := TJvSimpleXML.Create(nil);
-    try
-      xml.LoadFromFile(sFile);
-      sSkin := xml.Root.Items.Value('Skin');
-      Result := GetSharpeDirectory + 'Skins\' + sSkin + '\Schemes\';
-
-    finally
-      xml.Free;
-    end;
-  end;
-end;
-
-constructor TSchemeList.Create;
-begin
-  fItems := TObjectList.Create;
-end;
-
-destructor TSchemeList.Destroy;
-begin
-  FItems.Free;
-  inherited;
-end;
-
-procedure TSchemeList.Clear;
-begin
-  FItems.Clear;
-end;
-
-procedure TSchemeList.Delete(ASchemeItem: TSchemeItem);
-var
-  n: Integer;
-begin
-  n := FItems.IndexOf(ASchemeItem);
-  if n <> -1 then
-    FItems.Delete(n);
-end;
-
-function TSchemeList.Add(ASchemeItem: TSchemeItem): Integer;
-begin
-  Result := FItems.Add(ASchemeItem);
-end;
-
-function TSchemeManager.GetSkinScheme: string;
-var
-  xml: TJvSimpleXml;
-  sSkin, sFile: string;
-begin
-  Result := '';
-  sFile := GetSharpeUserSettingsPath + 'Themes\' + FPluginID + '\Skin.xml';
-
-  if fileExists(sFile) then begin
-    xml := TJvSimpleXML.Create(nil);
-    try
-      xml.LoadFromFile(sFile);
-      sSkin := xml.Root.Items.Value('Skin');
-
-      if sSkin <> '' then
-        Result := GetSharpeDirectory + 'Skins\' + sSkin + '\Scheme.xml';
-
-    finally
-      xml.Free;
-    end;
-  end;
-end;
-
-function TSchemeManager.GetSkinValid: Boolean;
-begin
-  Result := not (GetSkinScheme = '');
 end;
 
 { TSchemeManager }
@@ -318,7 +81,7 @@ end;
 procedure TSchemeManager.Copy(ASchemeItem: TSchemeItem; var ACopyName:String);
 var
   sFilename, s: string;
-  sSkinDir, sCopyName: string;
+  sSkinDir, sCopyName, sScheme: string;
   sSchemeDir: string;
   xml: TJvSimpleXML;
   n, n2:Integer;
@@ -326,6 +89,7 @@ begin
 
   sSkinDir := GetSharpeDirectory + 'skins';
   sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, XmlGetSkin(FPluginID)]);
+  sScheme := sSchemeDir + ASchemeItem.Name + '.xml';
   sCopyName := ASchemeItem.Name;
 
   // If already copy, remove copy symbol
@@ -341,7 +105,6 @@ begin
     if n2 > 1 then
       sCopyName := System.Copy(sCopyName,1,n2-1);
   end;
-  
 
   n := 0;
   s := sCopyName;
@@ -352,7 +115,7 @@ begin
   until not (fileExists(sFilename));
   sCopyName := s;
 
-  FileCopy(ASchemeItem.Filename, sFilename, False);
+  FileCopy(sScheme, sFilename, False);
   xml := TJvSimpleXML.Create(nil);
   try
     xml.LoadFromFile(sFilename);
@@ -376,13 +139,26 @@ begin
 
   sSkinDir := GetSharpeDirectory + 'skins';
   sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, XmlGetSkin(FPluginID)]);
-  sDeleteName := ASchemeItem.Filename;
-  repeat
-    sDeleteName := sDeleteName + '_' + 'copy';
-    sFilename := sSchemeDir + sDeleteName + '.xml';
-  until not (fileExists(sFilename));
+  sDeleteName := ASchemeItem.Name;
+  sFilename := sSchemeDir + sDeleteName + '.xml';
 
-  FileDelete(ASchemeItem.Filename, True);
+  FileDelete(sFilename, True);
+end;
+
+procedure TSchemeManager.Save(AName, AAuthor: String;AOriginalScheme:String='');
+var
+  colors: TSharpEColorSet;
+  sName: String;
+begin
+
+  // Get defaults
+  if AOriginalScheme = '' then
+    XmlGetThemeScheme(XmlGetSkin(FPluginID),colors) else
+    XmlGetThemeScheme(FPluginId,AOriginalScheme,colors);
+
+  // Save
+  sName := trim(StrRemoveChars(AName, ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
+  XmlSetThemeScheme(FPluginID,sName,colors,AAuthor);
 end;
 
 procedure TSchemeManager.GetSchemeList(APluginID: String; AStringList: TStrings);
@@ -392,7 +168,6 @@ var
   sList: TStringList;
   i, j: Integer;
   newItem: TSchemeItem;
-  newColItem: TSchemeColorItem;
 begin
   sSkinDir := GetSharpeDirectory + 'skins';
   sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, XmlGetSkin(APluginID)]);
@@ -409,7 +184,6 @@ begin
         xml.LoadFromFile(sList[i]);
 
         newItem := TSchemeItem.Create(nil);
-        newItem.FileName := sList[i];
 
         for j := 0 to Pred(xml.Root.Items.Count) do begin
           if CompareText(xml.Root.Items.Item[j].Name, 'Info') = 0 then begin
@@ -422,16 +196,9 @@ begin
             if newItem.Author = '' then
               newItem.Author := 'Unknown';
 
-            s := GetSkinScheme;
+            s := XmlGetScheme(FPluginID);
             if CompareText(s, newItem.Name) = 0 then
               newItem.DefaultItem := True;
-          end
-          else begin
-            newColItem := TSchemeColorItem.Create;
-            newColItem.Tag := xml.Root.Items[j].Items.Value('Tag', '');
-            newColItem.UnparsedColor := xml.Root.Items[j].Items.Value('Color', '');
-            newColItem.Color := ParseColor(PChar(xml.Root.Items[j].Items.Value('Color', '')));
-            newItem.Colors.Add(newColItem);
           end;
         end;
 

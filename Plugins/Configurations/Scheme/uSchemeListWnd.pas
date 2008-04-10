@@ -101,8 +101,9 @@ var
 
 const
   cNameColIdx = 0;
-  cCopyColIdx = 1;
-  cDeleteColIdx = 2;
+  cEditColIdx = 1;
+  cCopyColIdx = 2;
+  cDeleteColIdx = 3;
 
 implementation
 
@@ -116,6 +117,7 @@ procedure TfrmSchemeList.CreatePreviewBitmap(var ABmp: TBitmap32);
 var
   bmp: TBitmap32;
   tmpSchemeItem: TSchemeItem;
+  colors: TSharpEColorSet;
 begin
   bmp := TBitmap32.Create;
   tmpSchemeItem := nil;
@@ -130,8 +132,12 @@ begin
     if tmpSchemeItem = nil then
       exit;
 
+    if ( (frmEditScheme <> nil) and (frmEditScheme.EditMode = sceAdd)) then
+      XmlGetThemeScheme(XmlGetSkin(FSchemeManager.PluginID), colors) else
+      XmlGetThemeScheme(FSchemeManager.PluginID,tmpSchemeItem.Name,colors);
+
     BarPreview.CreateBarPreview(bmp, FSchemeManager.PluginID, XmlGetSkin(FSchemeManager.PluginID),
-      tmpSchemeItem.GetItemAsColorArray(tmpSchemeItem.Colors), ABmp.Width, true);
+      colors, ABmp.Width, true);
 
     ABmp.SetSize(bmp.Width, bmp.height);
     Bmp.DrawTo(ABmp);
@@ -160,15 +166,16 @@ begin
   LockWindowUpdate(Self.Handle);
   lbSchemeList.Clear;
 
-  //Screen.Cursor := crHourGlass;
   sl := TStringList.Create;
   try
+
     FSchemeManager.GetSchemeList(FSchemeManager.PluginID, sl);
 
     for i := 0 to Pred(sl.Count) do begin
       tmpScheme := TSchemeItem(sl.Objects[i]);
 
       newItem := lbSchemeList.AddItem(tmpScheme.Name + ' By ' + tmpScheme.Author, 0);
+      newItem.AddSubItem('');
       newItem.AddSubItem('');
       newItem.AddSubItem('');
 
@@ -192,10 +199,15 @@ begin
     end;
 
   finally
-    lbSchemeList.ItemIndex := iSel;
-    //lbSchemeList.Update;
+
+    if iSel < lbSchemeList.Count then
+      lbSchemeList.ItemIndex := iSel else
+      lbSchemeList.ItemIndex := 0;
+
+    XmlSetScheme(FSchemeManager.PluginID, TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data).Name);
+    SharpCenterApi.BroadcastGlobalUpdateMessage(suScheme, 0);
+
     LockWindowUpdate(0);
-    //Screen.Cursor := crDefault;
     sl.Free;
 
     CenterUpdateEditTabs(lbSchemeList.Count,lbSchemeList.ItemIndex);
@@ -255,7 +267,7 @@ begin
     // Set Scheme
     if AItem <> nil then begin
       XmlSetScheme(FSchemeManager.PluginID, TSchemeItem(AItem.Data).Name);
-      SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
+      SharpCenterApi.BroadcastGlobalUpdateMessage(suScheme, 0);
     end;
 
   end
@@ -268,6 +280,11 @@ begin
   end
   else if ACol = cDeleteColIdx then begin
 
+    if lbSchemeList.Count = 1 then begin
+      MessageDlg('Unable to delete selected scheme.' + #13 + #13 + 'There must always be one active scheme.', mtError, [mbOK], 0);
+      Exit;
+    end;
+
     tmpSchemeItem := TSchemeItem(AItem.Data);
 
     bDelete := True;
@@ -279,7 +296,13 @@ begin
       FSchemeManager.Delete(tmpSchemeItem);
       RebuildSchemeList;
     end;
+  end
+  else if ACol = cEditColIdx then begin
+    tmpSchemeItem := TSchemeItem(AItem.Data);
+    CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
+            + '\_Themes\SchemeEdit.con'), pchar( FSchemeManager.PluginID + ':' + tmpSchemeItem.Name ) );
   end;
+
 
   if frmEditScheme <> nil then
     frmEditScheme.InitUi(frmEditScheme.EditMode);
@@ -328,6 +351,8 @@ begin
     else
       AColText := Format('%s', [StrProper(tmp.Name)]);
   end;
+  if ACol = cEditColIdx then
+    AColText := '<font color="clNavy"><u>Edit</u> </font>';
 
 end;
 
