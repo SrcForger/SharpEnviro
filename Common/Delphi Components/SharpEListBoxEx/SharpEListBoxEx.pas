@@ -1085,7 +1085,8 @@ begin
   Result := nil;
   if Self.Items.Count <> 0 then
     if AItem <> -1 then
-      Result := TSharpEListItem(Self.Items.Objects[AItem]);
+      if AItem < Self.Items.Count then
+        Result := TSharpEListItem(Self.Items.Objects[AItem]);
 end;
 
 function TSharpEListBoxEx.GetItemAtCursorPos(
