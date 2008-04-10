@@ -22,7 +22,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
-unit uSharpCenterHistoryManager;
+unit uSharpCenterHistoryList;
 
 interface
 
@@ -52,7 +52,7 @@ uses
   Contnrs;
 
 type
-  TSharpCenterHistoryItem = class
+  TSharpCenterHistoryItem = class(TPersistent)
   private
     FCommand: TSCC_COMMAND_ENUM;
     FParam: string;
@@ -66,52 +66,28 @@ type
   end;
 
 type
-  TSharpCenterHistoryManager = class
+  TSharpCenterHistoryList = class(TObjectList)
   private
-    FList: TList;
-    function GetCount: Integer;
+    function GetItem(Index: Integer): TSharpCenterHistoryItem;
+    procedure SetItem(Index: Integer; const Value: TSharpCenterHistoryItem);
   public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Clear;
-    procedure Delete(AItem: TSharpCenterHistoryItem);
+    procedure DeleteItem(AItem: TSharpCenterHistoryItem);
 
     function AddFolder(APath: string): TSharpCenterHistoryItem;
-    function AddDll(ADll, APluginID: String): TSharpCenterHistoryItem;
-    function AddSetting(ASetting: string): TSharpCenterHistoryItem;
-    function Add(ACommand: TSCC_COMMAND_ENUM; AParameter, APluginID: string): TSharpCenterHistoryItem;
+    function AddDll(ADll, APluginId: String): TSharpCenterHistoryItem;
+    function AddCon(AConFile, APluginId: string): TSharpCenterHistoryItem;
+    function AddItem(ACommand: TSCC_COMMAND_ENUM; AParameter, APluginID: string): TSharpCenterHistoryItem;
     function GetLastEntry: TSharpCenterHistoryItem;
-    property List: TList read FList write FList;
 
-    property Count: Integer read GetCount;
+    property Item[Index: Integer] : TSharpCenterHistoryItem
+             read GetItem write SetItem; Default;
   end;
 
 implementation
 
 { TSharpCenterHistory }
 
-constructor TSharpCenterHistoryManager.Create;
-begin
-  FList := TList.Create;
-end;
-
-procedure TSharpCenterHistoryManager.Clear;
-begin
-  FList.Clear;
-end;
-
-destructor TSharpCenterHistoryManager.Destroy;
-var
-  i: Integer;
-begin
-  for i := 0 to Pred(FList.Count) do
-    TSharpCenterHistoryItem(FList[i]).Free;
-
-  FList.Free;
-  inherited;
-end;
-
-function TSharpCenterHistoryManager.AddFolder(APath: string): TSharpCenterHistoryItem;
+function TSharpCenterHistoryList.AddFolder(APath: string): TSharpCenterHistoryItem;
 begin
   Result := nil;
   if APath = '' then
@@ -121,12 +97,12 @@ begin
   Result.Command := sccChangeFolder;
   Result.Param := APath;
   Result.PluginID := '';
-  Result.ID := FList.Count;
+  Result.ID := Count;
 
-  FList.Add(Result);
+  Add(Result);
 end;
 
-function TSharpCenterHistoryManager.AddDll(
+function TSharpCenterHistoryList.AddDll(
   ADll, APluginID: string): TSharpCenterHistoryItem;
 begin
   Result := nil;
@@ -137,69 +113,73 @@ begin
   Result.Command := sccLoadDll;
   Result.Param := ADll;
   Result.PluginID := APluginID;
-  Result.ID := FList.Count;
+  Result.ID := Count;
 
-  FList.Add(Result);
+  Add(Result);
 end;
 
-function TSharpCenterHistoryManager.AddSetting(
-  ASetting: string): TSharpCenterHistoryItem;
+function TSharpCenterHistoryList.AddCon(
+  AConFile, APluginId: string): TSharpCenterHistoryItem;
 begin
   Result := nil;
-  if ASetting = '' then
+  if AConFile = '' then
     exit;
 
   Result := TSharpCenterHistoryItem.Create;
   Result.Command := sccLoadSetting;
-  Result.Param := ASetting;
-  Result.PluginID := '';
-  Result.ID := FList.Count;
+  Result.Param := AConFile;
+  Result.PluginID := APluginId;
+  Result.ID := Count;
 
-  FList.Add(Result);
+  Add(Result);
 end;
 
-function TSharpCenterHistoryManager.GetLastEntry: TSharpCenterHistoryItem;
+function TSharpCenterHistoryList.GetLastEntry: TSharpCenterHistoryItem;
 begin
   Result := nil;
-  if FList.Last <> nil then
-    Result := TSharpCenterHistoryItem(FList.Last);
+  if Last <> nil then
+    Result := TSharpCenterHistoryItem(Last);
 end;
 
-function TSharpCenterHistoryManager.Add(ACommand: TSCC_COMMAND_ENUM; AParameter, APluginID: string): TSharpCenterHistoryItem;
+procedure TSharpCenterHistoryList.SetItem(Index: Integer;
+  const Value: TSharpCenterHistoryItem);
+begin
+
+end;
+
+function TSharpCenterHistoryList.AddItem(ACommand: TSCC_COMMAND_ENUM; AParameter, APluginID: string): TSharpCenterHistoryItem;
 var
   i:Integer;
 begin
   Result := nil;
 
-  for i := 0 to Pred(FList.Count) do begin
-    if ((TSharpCenterHistoryItem(FList[i]).Param = AParameter) and
-      ((TSharpCenterHistoryItem(FList[i]).Command = ACommand))) then
-        exit;
-  end;
-
   Result := TSharpCenterHistoryItem.Create;
   Result.Command := ACommand;
   Result.Param := AParameter;
   Result.PluginID := APluginID;
-  Result.ID := FList.Count;
+  Result.ID := Count;
 
-  FList.Add(Result);
+  Add(Result);
 end;
 
-procedure TSharpCenterHistoryManager.Delete(AItem: TSharpCenterHistoryItem);
+procedure TSharpCenterHistoryList.DeleteItem(AItem: TSharpCenterHistoryItem);
 var
   n: Integer;
 begin
-  n := FList.IndexOf(AItem);
+  n := IndexOf(AItem);
   if n <> -1 then
   begin
-    FList.Delete(n);
+    Delete(n);
   end;
 end;
 
-function TSharpCenterHistoryManager.GetCount: Integer;
+function TSharpCenterHistoryList.GetItem(
+  Index: Integer): TSharpCenterHistoryItem;
 begin
-  Result := FList.Count;
+  Result := nil;
+
+  if Index < Count then
+    Result := TSharpCenterHistoryItem(Items[Index]);
 end;
 
 end.

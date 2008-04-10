@@ -197,7 +197,7 @@ uses
   uSystemFuncs,
   SharpEScheme,
   uSharpCenterHelperMethods,
-  uSharpCenterHistoryManager;
+  uSharpCenterHistoryList;
 
 {$R *.dfm}
 
@@ -265,10 +265,9 @@ var
   command: TSCC_COMMAND_ENUM;
 begin
   tmpMsg := PSharpE_DataStruct(PCopyDataStruct(msg.lParam)^.lpData)^;
-  tmpHist := SCM.ActiveCommand;
 
   command := CenterCommandAsEnum(tmpMsg.Command);
-  SCM.History.Add(tmpHist.Command, tmpHist.Param, tmpMsg.PluginID);
+
   SCM.ExecuteCommand(command,tmpMsg.Parameter, tmpMsg.PluginID);
   if command = sccLoadSetting then
     ForceForegroundWindow(Handle);
@@ -311,15 +310,17 @@ begin
   if scm = nil then
     exit;
 
-  if SCM.History.List.Count <> 0 then
-    tmpItem := SCM.History.List.Last;
+  if SCM.History.Count <> 0 then begin
+    SCM.History.DeleteItem(TSharpCenterHistoryItem(SCM.History.Last));
+    tmpItem := TSharpCenterHistoryItem(SCM.History.Last);
+  end;
 
   if tmpItem <> nil then
   begin
     SCM.ExecuteCommand(tmpItem.Command, tmpItem.Param, tmpItem.PluginID);
-    SCM.History.Delete(tmpItem);
+    SCM.History.Delete(SCM.History.IndexOf(tmpItem));
 
-    SetToolbarTabVisible(tidHistory, not (SCM.History.List.Count = 0));
+    SetToolbarTabVisible(tidHistory, not (SCM.History.Count = 0));
   end;
 end;
 
@@ -738,9 +739,6 @@ begin
   pnlTitle.Visible := False;
   lblTitle.Font.Size := 10;
   lblDescription.Font.Color := clGrayText;
-  //pnlTitle.DoubleBuffered := True;
-  //pnlEditContainer.DoubleBuffered := True;
-  //lbTree.DoubleBuffered := True;
   pnlToolbar.Hide;
 
 end;
@@ -748,8 +746,6 @@ end;
 procedure TSharpCenterWnd.ClickItem;
 var
   tmpItem: TSharpCenterManagerItem;
-  tmpHistItem: TSharpCenterHistoryItem;
-  tmpHist: TSharpCenterHistoryManager;
   tmpManager: TSharpCenterManager;
   sName: string;
 begin
@@ -762,37 +758,21 @@ begin
 
   sName := tmpItem.Caption;
 
-  tmpHistItem := SCM.ActiveCommand;
-  tmpHist := SCM.History;
   tmpManager := SCM;
 
   case tmpItem.ItemType of
     itmNone: ;
     itmFolder:
       begin
-
-        tmpHist.Add(tmpHistItem.Command, tmpHistItem.Param,
-          tmpHistItem.PluginID);
-
-        tmpHistItem.Command := sccChangeFolder;
-        tmpHistItem.Param := PathAddSeparator(tmpItem.Path);
-        tmpHistItem.PluginID := '';
-
-        tmpManager.BuildNavFromPath(tmpHistItem.Param);
+        tmpManager.BuildNavFromPath(PathAddSeparator(tmpItem.Path));
         SetToolbarTabVisible(tidHistory, True);
       end;
     itmSetting:
       begin
-        tmpHist.Add(tmpHistItem.Command, tmpHistItem.Param,
-          tmpHistItem.PluginID);
-
-        tmpHistItem.Command := sccLoadSetting;
-        tmpHistItem.Param := tmpItem.Filename;
-        tmpHistItem.PluginID := '';
 
         SetToolbarTabVisible(tidHistory, True);
 
-        if fileexists(tmpHistItem.Param) then
+        if fileexists(tmpItem.Filename) then
         begin
           SCM.BuildNavFromFile(tmpItem.Filename);
         end;
@@ -800,6 +780,7 @@ begin
       end;
     itmDll:
       begin
+        SCM.History.AddDll(tmpItem.Filename, tmpItem.PluginID);
         SCM.Load(tmpItem.Filename, tmpItem.PluginID);
       end;
   end;
@@ -846,12 +827,17 @@ end;
 procedure TSharpCenterWnd.ShowHistory;
 var
   i: Integer;
+  s: String;
 begin
   lbHistory.Clear;
-  for i := 0 to SCM.History.Count-1 do
-    lbHistory.AddItem(CenterCommandAsText(TSharpCenterHistoryItem(SCM.History.List[i]).Command) +
+  for i := 0 to SCM.History.Count-1 do begin
+    s := CenterCommandAsText(TSharpCenterHistoryItem(SCM.History.List[i]).Command) +
       ' ' + TSharpCenterHistoryItem(SCM.History.List[i]).Param + ' (' +
-          TSharpCenterHistoryItem(SCM.History.List[i]).PluginID + ')',4);
+          TSharpCenterHistoryItem(SCM.History.List[i]).PluginID + ')';
+    SendDebugMessageEx('SharpCenter',pchar(s),clBlack,DMT_TRACE);
+  end;
+  SendDebugMessageEx('SharpCenter',pchar('---'),clBlack,DMT_TRACE);
+
 end;
 
 procedure TSharpCenterWnd.Timer1Timer(Sender: TObject);

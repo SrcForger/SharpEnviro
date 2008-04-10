@@ -23,7 +23,7 @@ uses
 
   Menus,
 
-  uSharpCenterHistoryManager,
+  uSharpCenterHistoryList,
   uSharpCenterDllMethods,
   SharpCenterApi;
 
@@ -69,7 +69,7 @@ type
 type
   TSharpCenterManagerAddNavItem = procedure(AItem: TSharpCenterManagerItem;
     const AIndex: Integer) of object;
-  TSharpCenterSetHomeTitle = procedure(ATitle: String; ADescription: String) of object;
+  TSharpCenterSetHomeTitle = procedure(ATitle: string; ADescription: string) of object;
 
 type
   TSharpCenterManager = class
@@ -77,8 +77,7 @@ type
 
     FStateEditWarning: Boolean;
     FStateEditItem: Boolean;
-    FHistory: TSharpCenterHistoryManager;
-    FActiveCommand: TSharpCenterHistoryItem;
+    FHistory: TSharpCenterHistoryList;
     FRoot: string;
     FUnloadTimer: TTimer;
 
@@ -115,18 +114,16 @@ type
 
     procedure SetStateEditItem(const Value: Boolean);
     procedure SetStateEditWarning(const Value: Boolean);
-    function GetHistory: TSharpCenterHistoryManager;
-
+    function GetHistory: TSharpCenterHistoryList;
 
     function GetRoot: string;
     procedure AssignIconIndex(AFile: string; AItem: TSharpCenterManagerItem);
 
-    procedure SetActiveCommand(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID: string);
     procedure SetUnloadCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
       APluginID: string);
 
-    procedure GetItemText(AFile, APluginID: String; var AName: String;
- var AStatus: string; var ATitle: string; var ADescription: String);
+    procedure GetItemText(AFile, APluginID: string; var AName: string;
+      var AStatus: string; var ATitle: string; var ADescription: string);
     procedure BuildNavFromCommandLine;
 
   public
@@ -135,7 +132,7 @@ type
 
     // Nav Methods
     function BuildNavFromPath(APath: string): Boolean;
-    function BuildNavFromFile(AFile: string; ALoad: Boolean = True): Boolean;
+    function BuildNavFromFile(AFile: string; ALoad: Boolean = True; AHistory:Boolean = True): Boolean;
     function BuildNavRoot: Boolean;
 
     function LoadHome: Boolean;
@@ -160,7 +157,7 @@ type
     property StateEditItem: Boolean read FStateEditItem write SetStateEditItem;
     property StateEditWarning: Boolean read FStateEditWarning write SetStateEditWarning;
 
-    property History: TSharpCenterHistoryManager read GetHistory;
+    property History: TSharpCenterHistoryList read GetHistory;
 
     property ActivePlugin: TSetting read FActivePlugin write FActivePlugin;
     property ActivePluginID: string read FActivePluginID write FActivePluginID;
@@ -168,7 +165,6 @@ type
 
     property Root: string read GetRoot;
 
-    property ActiveCommand: TSharpCenterHistoryItem read FActiveCommand write FActiveCommand;
     property UnloadCommand: TSharpCenterHistoryItem read FUnloadCommand write FUnloadCommand;
 
     property PluginTabs: TStringList read FPluginTabs write FPluginTabs;
@@ -283,7 +279,16 @@ begin
     if FActivePlugin.Dllhandle <> 0 then
       Unload;
 
+    ActivePluginID := FUnloadCommand.PluginID;
     BuildNavFromPath(FUnloadCommand.Param)
+  end
+  else if FUnloadCommand.Command = sccLoadDll then
+  begin
+    if FActivePlugin.Dllhandle <> 0 then
+      Unload;
+
+    ActivePluginID := FUnloadCommand.PluginID;
+    BuildNavFromCommandLine;
   end
   else if FUnloadCommand.Command = sccLoadSetting then
   begin
@@ -317,12 +322,13 @@ begin
   UpdateSettingsBroadcast;
 end;
 
-function TSharpCenterManager.BuildNavFromFile(AFile: string; ALoad: Boolean = True): Boolean;
+function TSharpCenterManager.BuildNavFromFile(AFile: string; ALoad: Boolean = True;
+ AHistory:Boolean=True ): Boolean;
 var
   xml: TJvSimpleXML;
   i: Integer;
   pngfile: string;
-  sName,sStatus,sTitle, sDescription, sDll, sIcon: string;
+  sName, sStatus, sTitle, sDescription, sDll, sIcon: string;
   sPath: string;
   sFirstNavFile, sFirstPluginID: string;
   newItem: TSharpCenterManagerItem;
@@ -333,6 +339,9 @@ begin
 
     if Assigned(FOnInitNavigation) then
       FOnInitNavigation(Self);
+
+    if AHistory then
+      History.AddCon(AFile, ActivePluginID);
 
     xml := TJvSimpleXML.Create(nil);
     try
@@ -359,7 +368,7 @@ begin
           sStatus := '';
           sTitle := '';
           sDescription := '';
-          GetItemText(sPath + sDll, SCM.ActivePluginID,sName,sStatus,sTitle,sDescription);
+          GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sTitle, sDescription);
 
           if Items.Item[i].Items.ItemNamed['Name'] <> nil then
             sName := Items.Item[i].Items.ItemNamed['Name'].Value;
@@ -394,8 +403,9 @@ begin
     end;
 
   finally
-    if ALoad then
+    if ALoad then begin
       Load(sFirstNavFile, sFirstPluginID);
+    end;
 
     LockWindowUpdate(0);
   end;
@@ -422,8 +432,9 @@ begin
   if Assigned(FOnInitNavigation) then
     FOnInitNavigation(Self);
 
+  History.AddFolder(APath);
+
   try
-    SetActiveCommand(sccChangeFolder, APath, '');
     APath := PathAddSeparator(APath);
 
     if FindFirst(APath + '*.*', SysUtils.faAnyFile, SRec) = 0 then
@@ -459,13 +470,12 @@ begin
               sIcon := APath + PathRemoveExtension(sRec.Name) + '.png';
             end;
 
-          sPath := ExtractFilePath(APath + sRec.Name);
-          sName := '';
-          sStatus := '';
-          sTitle := '';
-          sDescription := '';
-          GetItemText(sPath + sDll, SCM.ActivePluginID,sName,sStatus,sTitle,sDescription);
-
+            sPath := ExtractFilePath(APath + sRec.Name);
+            sName := '';
+            sStatus := '';
+            sTitle := '';
+            sDescription := '';
+            GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sTitle, sDescription);
 
           finally
             Xml.Free;
@@ -522,7 +532,7 @@ begin
     end;
     LockWindowUpdate(0);
 
-    if SCM.History.Count = 0 then
+    if SCM.History.Count = 1 then
       SCM.LoadHome;
   end;
 end;
@@ -532,9 +542,9 @@ function TSharpCenterManager.ExecuteCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
 begin
   Result := False;
   if FStateEditWarning or FStateEditItem then begin
-    MessageDlg('Unable to display the configuration page (EditMode is Active)'+
-      #13+#10+'Please save your configuration before attempting to load another.'
-        , mtError, [mbOK], 0);
+    MessageDlg('Unable to display the configuration page (EditMode is Active)' +
+      #13 + #10 + 'Please save your configuration before attempting to load another.'
+      , mtError, [mbOK], 0);
     exit;
   end;
 
@@ -551,9 +561,14 @@ begin
       begin
         UnloadDllTimer(sccLoadSetting, AParam, APluginID);
 
-      end else begin
-        MessageDlg('Unknown command', mtError, [mbOK], 0);
-      end;
+      end
+      else
+        if ACommand = sccLoadDll then begin
+          UnloadDllTimer(sccLoadDll, AParam, APluginID);
+        end
+        else begin
+          MessageDlg('Unknown command', mtError, [mbOK], 0);
+        end;
 end;
 
 procedure TSharpCenterManager.UpdateSettingsBroadcast;
@@ -565,9 +580,9 @@ begin
 
   // if a ':' is in the string then it's a suModule message
   // we need to extract the ModuleID and send it as param...
-  if pos(':',FActivePluginID) <> 0 then
+  if pos(':', FActivePluginID) <> 0 then
   begin
-    if not TryStrToInt(copy(FActivePluginID, pos(':',FActivePluginID)+1, length(FActivePluginID) - pos(':',FActivePluginID)),n) then
+    if not TryStrToInt(copy(FActivePluginID, pos(':', FActivePluginID) + 1, length(FActivePluginID) - pos(':', FActivePluginID)), n) then
       n := -1;
   end
   else if TryStrToInt(FActivePluginID, n) then
@@ -597,7 +612,7 @@ begin
       for iSections := 0 to Pred(xml.Root.Items[0].Items.Count) do
       begin
         sDll := ExtractFilePath(strl[0]) + xml.Root.Items[0].Items[iSections].Items.Value('Dll', '');
-        if CompareText(FUnloadCommand.Param, sDll) = 0 then
+        if CompareText(ExtractFileName(FUnloadCommand.Param), ExtractFileName(sDll)) = 0 then
         begin
           sConFile := strl[i];
           break;
@@ -610,7 +625,10 @@ begin
     strl.Free;
     xml.Free;
   end;
-  BuildNavFromFile(sConFile, False);
+
+  if sConFile <> '' then
+    BuildNavFromFile(sConFile, False, False);
+
   Load(FUnloadCommand.Param, FUnloadCommand.PluginID);
 end;
 
@@ -639,10 +657,10 @@ begin
   end;
 
   if Assigned(FonUpdateTheme) then
-      FOnUpdateTheme(Self);
+    FOnUpdateTheme(Self);
 end;
 
-function TSharpCenterManager.GetHistory: TSharpCenterHistoryManager;
+function TSharpCenterManager.GetHistory: TSharpCenterHistoryList;
 begin
   Result := FHistory;
 end;
@@ -650,23 +668,18 @@ end;
 constructor TSharpCenterManager.Create;
 begin
   // Create the history object
-  FHistory := TSharpCenterHistoryManager.Create;
+  FHistory := TSharpCenterHistoryList.Create;
 
   // Set the active root path
   FRoot := GetCenterDirectory;
+
+  FUnloadCommand := TSharpCenterHistoryItem.Create;
 
   // Create the unload timer
   FUnloadTimer := TTimer.Create(nil);
   FUnloadTimer.OnTimer := UnloadTimerEvent;
   FUnloadTimer.Interval := 1;
   FUnloadTimer.Enabled := False;
-
-  // Set the default active command to the center root
-  FActiveCommand := TSharpCenterHistoryItem.Create;
-  FUnloadCommand := TSharpCenterHistoryItem.Create;
-  FActiveCommand.Command := sccChangeFolder;
-  FActiveCommand.Param := FRoot;
-  FActiveCommand.PluginID := '';
 
   FPluginTabs := TStringList.Create;
   FPngImageList := TPngImageList.Create(nil);
@@ -676,7 +689,6 @@ destructor TSharpCenterManager.Destroy;
 begin
   FreeAndNil(FHistory);
   FreeAndNil(FUnloadTimer);
-  FActiveCommand.Free;
   FUnloadCommand.Free;
   FPluginTabs.Free;
   FPngImageList.Free;
@@ -725,13 +737,6 @@ begin
     AItem.IconIndex := SCE_ICON_ITEM;
 end;
 
-procedure TSharpCenterManager.SetActiveCommand(ACommand: TSCC_COMMAND_ENUM; AParam, APluginID: string);
-begin
-  FActiveCommand.Command := ACommand;
-  FActiveCommand.Param := AParam;
-  FActiveCommand.PluginID := APluginID;
-end;
-
 procedure TSharpCenterManager.SetUnloadCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
   APluginID: string);
 begin
@@ -760,17 +765,17 @@ begin
   end;
 end;
 
-procedure TSharpCenterManager.GetItemText(AFile, APluginID: String; var AName: String;
- var AStatus: string; var ATitle: string; var ADescription: String);
+procedure TSharpCenterManager.GetItemText(AFile, APluginID: string; var AName: string;
+  var AStatus: string; var ATitle: string; var ADescription: string);
 var
   tmpSetting: Tsetting;
-  sStatus,sName,sTitle,sDescription: string;
+  sStatus, sName, sTitle, sDescription: string;
 begin
 
   AStatus := '';
   ATitle := '';
   ADescription := '';
-  
+
   if fileexists(AFile) then
   begin
     tmpSetting := LoadPlugin(PChar(Afile));
@@ -823,8 +828,6 @@ begin
       if assigned(FOnLoadEdit) then
         FOnLoadEdit(Self);
 
-
-
     end;
   end;
 end;
@@ -850,7 +853,7 @@ begin
 
         // Get title and description
         if (@FActivePlugin.SetText <> nil) then
-          FActivePlugin.SetText('',sName,sStatus,sTitle,sDescription);
+          FActivePlugin.SetText('', sName, sStatus, sTitle, sDescription);
 
         LoadPluginTabs;
 

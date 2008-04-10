@@ -7,7 +7,7 @@ uses
   uSharpCenterMainWnd in 'uSharpCenterMainWnd.pas' {SharpCenterWnd},
   uSharpCenterDllMethods in 'uSharpCenterDllMethods.pas',
   uSharpCenterHelperMethods in 'uSharpCenterHelperMethods.pas',
-  uSharpCenterHistoryManager in 'uSharpCenterHistoryManager.pas',
+  uSharpCenterHistoryList in 'uSharpCenterHistoryList.pas',
   uSharpCenterFavManager in 'uSharpCenterFavManager.pas',
   uSharpCenterManager in 'uSharpCenterManager.pas';
 
