@@ -963,8 +963,9 @@ begin
             if not (csDesigning in ComponentState) then begin
               XmlGetThemeScheme(colors);
 
-              FNameLabel.Caption := Format('%s (%s):', [FCaption,
-                colors[abs(FValue) - 1].Tag]);
+              if high(colors) > 0 then
+                FNameLabel.Caption := Format('%s (%s):', [FCaption,
+                  colors[abs(FValue) - 1].Tag]);
             end;
 
           end
