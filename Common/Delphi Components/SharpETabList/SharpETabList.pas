@@ -133,7 +133,6 @@ type
 
     function GetCount: Integer;
     procedure SetTabIndex(const Value: Integer);
-    procedure SetTabWidth(const Value: Integer);
     procedure SetBkgColor(const Value: TColor);
     procedure SetTabColor(const Value: TColor);
     procedure SetTabSelectedColor(const Value: TColor);
@@ -621,8 +620,10 @@ end;
 
 function TSharpETabList.GetTabsWidth: Integer;
 var
-  iTab, iTabsWidth, iTabWidth, iMaxTabs, iMaxWidth: Integer;
+  iTab, iTabsWidth, iTabWidth: Integer;
 begin
+  Result := 0;
+
   iTabsWidth := 0;
   for iTab := 0 to Pred(Count) do
   begin
@@ -898,12 +899,6 @@ end;
 procedure TSharpETabList.SetTabSelectedColor(const Value: TColor);
 begin
   FTabSelectedColor := Value;
-  Invalidate;
-end;
-
-procedure TSharpETabList.SetTabWidth(const Value: Integer);
-begin
-  FTabWidth := Value;
   Invalidate;
 end;
 
