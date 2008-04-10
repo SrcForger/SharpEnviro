@@ -14,44 +14,29 @@ object frmOptions: TfrmOptions
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object pnlTextShadow: TPanel
+  object sceGlassOptions: TSharpEColorEditorEx
     AlignWithMargins = True
-    Left = 0
+    Left = 8
     Top = 0
-    Width = 525
-    Height = 327
-    Margins.Left = 0
+    Width = 509
+    Height = 319
+    Margins.Left = 8
     Margins.Top = 0
-    Margins.Right = 0
-    Margins.Bottom = 0
+    Margins.Right = 8
+    Margins.Bottom = 8
+    VertScrollBar.Smooth = True
+    VertScrollBar.Tracking = True
     Align = alClient
+    BevelInner = bvNone
     BevelOuter = bvNone
-    ParentColor = True
+    BorderStyle = bsNone
+    Color = clWindow
+    ParentBackground = True
+    ParentColor = False
     TabOrder = 0
-    object sceGlassOptions: TSharpEColorEditorEx
-      AlignWithMargins = True
-      Left = 8
-      Top = 0
-      Width = 509
-      Height = 319
-      Margins.Left = 8
-      Margins.Top = 0
-      Margins.Right = 8
-      Margins.Bottom = 8
-      VertScrollBar.Smooth = True
-      VertScrollBar.Tracking = True
-      Align = alClient
-      BevelInner = bvNone
-      BevelOuter = bvNone
-      BorderStyle = bsNone
-      Color = clWindow
-      ParentBackground = True
-      ParentColor = False
-      TabOrder = 0
-      Items = <>
-      SwatchManager = SharpESwatchManager1
-      OnUiChange = sceGlassOptionsUiChange
-    end
+    Items = <>
+    SwatchManager = SharpESwatchManager1
+    OnUiChange = sceGlassOptionsUiChange
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>

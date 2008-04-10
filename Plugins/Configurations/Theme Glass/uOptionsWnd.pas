@@ -54,7 +54,6 @@ uses
 
 type
   TfrmOptions = class(TForm)
-    pnlTextShadow: TPanel;
     sceGlassOptions: TSharpEColorEditorEx;
     SharpESwatchManager1: TSharpESwatchManager;
     procedure FormShow(Sender: TObject);
@@ -89,6 +88,7 @@ var
 begin
   FUpdating := True;
   XML := TJvSimpleXML.Create(nil);
+  sceGlassOptions.BeginUpdate;
   try
 
     sSkinFile := XmlGetSkinFile(FPluginID);
@@ -150,6 +150,7 @@ begin
   finally
     XML.Free;
     FUpdating := False;
+    sceGlassOptions.EndUpdate;
   end;
 end;
 
@@ -196,7 +197,7 @@ procedure TfrmOptions.sceGlassOptionsUiChange(Sender: TObject);
 begin
   if Not(FUpdating) then begin
     Save;
-    SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
+    BroadcastGlobalUpdateMessage(suScheme, 0);
   end;
 end;
 
