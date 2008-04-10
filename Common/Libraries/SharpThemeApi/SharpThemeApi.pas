@@ -35,41 +35,41 @@ uses
   JvSimpleXml;
 
 type
-  TThemePart = (tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,
-                tpDesktopAnimation,tpWallpaper,tpSkinFont);
+  TThemePart = (tpSkin, tpScheme, tpInfo, tpIconSet, tpDesktopIcon,
+    tpDesktopAnimation, tpWallpaper, tpSkinFont);
   TThemeParts = set of TThemePart;
 
-  TThemeWallpaperGradientType = (twgtHoriz,twgtVert,twgtTSHoriz,twgtTSVert);
-  TThemeWallpaperSize = (twsCenter,twsScale,twsStretch,twsTile);
+  TThemeWallpaperGradientType = (twgtHoriz, twgtVert, twgtTSHoriz, twgtTSVert);
+  TThemeWallpaperSize = (twsCenter, twsScale, twsStretch, twsTile);
 
-  TThemeWallpaper  = record
-    Name            : String;
-    Image           : String;
-    Color           : integer;
-    Alpha           : integer;
-    Size            : TThemeWallpaperSize;
-    ColorChange     : boolean;
-    Hue             : integer;
-    Saturation      : integer;
-    Lightness       : integer;
-    Gradient        : boolean;
-    GradientType    : TThemeWallpaperGradientType;
-    GDStartColor    : integer;
-    GDStartAlpha    : integer;
-    GDEndColor      : integer;
-    GDEndAlpha      : integer;
-    MirrorHoriz     : boolean;
-    MirrorVert      : boolean;
+  TThemeWallpaper = record
+    Name: string;
+    Image: string;
+    Color: integer;
+    Alpha: integer;
+    Size: TThemeWallpaperSize;
+    ColorChange: boolean;
+    Hue: integer;
+    Saturation: integer;
+    Lightness: integer;
+    Gradient: boolean;
+    GradientType: TThemeWallpaperGradientType;
+    GDStartColor: integer;
+    GDStartAlpha: integer;
+    GDEndColor: integer;
+    GDEndAlpha: integer;
+    MirrorHoriz: boolean;
+    MirrorVert: boolean;
   end;
 
-  TSharpESchemeType = (stColor,stBoolean,stInteger);
+  TSharpESchemeType = (stColor, stBoolean, stInteger);
 
   TSharpESkinColor = record
     Name: string;
     Tag: string;
     Info: string;
     Color: integer;
-    schemetype : TSharpESchemeType;
+    schemetype: TSharpESchemeType;
   end;
   TSharpEColorSet = array of TSharpESkinColor;
 
@@ -79,7 +79,7 @@ type
   end;
 
   TThemeInfo = record
-    LastUpdate : Int64;
+    LastUpdate: Int64;
     Name: string;
     Author: string;
     Comment: string;
@@ -112,18 +112,17 @@ const
   WALLPAPER_FILE = 'Wallpaper.xml';
   SKINFONT_FILE = 'Font.xml';
 
-  ALL_THEME_PARTS = [tpSkin,tpScheme,tpInfo,tpIconSet,tpDesktopIcon,
-                     tpDesktopAnimation,tpWallpaper,tpSkinFont];
+  ALL_THEME_PARTS = [tpSkin, tpScheme, tpInfo, tpIconSet, tpDesktopIcon,
+    tpDesktopAnimation, tpWallpaper, tpSkinFont];
 
-
-// ThemeAPIControls
+  // ThemeAPIControls
 procedure InitializeTheme; external 'SharpThemeApi.dll' name 'InitializeTheme';
 function Initialized: boolean; external 'SharpThemeApi.dll' name 'Initialized';
-function LoadTheme(pName: PChar; ForceReload: Boolean = False; ThemeParts : TThemeParts = ALL_THEME_PARTS) : boolean; overload external 'SharpThemeApi.dll' name 'LoadTheme';
-function LoadTheme(ForceReload: Boolean = False; ThemeParts : TThemeParts = ALL_THEME_PARTS) : boolean; overload; external 'SharpThemeApi.dll' name 'LoadCurrentTheme';
+function LoadTheme(pName: PChar; ForceReload: Boolean = False; ThemeParts: TThemeParts = ALL_THEME_PARTS): boolean; overload external 'SharpThemeApi.dll' name 'LoadTheme';
+function LoadTheme(ForceReload: Boolean = False; ThemeParts: TThemeParts = ALL_THEME_PARTS): boolean; overload; external 'SharpThemeApi.dll' name 'LoadCurrentTheme';
 
 // Global data
-function GetCurrentSharpEThemeName : PChar; external 'SharpThemeApi.dll' name 'GetCurrentSharpEThemeName';
+function GetCurrentSharpEThemeName: PChar; external 'SharpThemeApi.dll' name 'GetCurrentSharpEThemeName';
 
 // Theme Info
 function GetThemeName: PChar; external 'SharpThemeApi.dll' name 'GetThemeName';
@@ -133,121 +132,119 @@ function GetThemeWebsite: PChar; external 'SharpThemeApi.dll' name 'GetThemeWebs
 
 // Theme Data
 function GetThemeDirectory: PChar; overload; external 'SharpThemeApi.dll' name 'GetCurrentThemeDirectory';
-function GetThemeDirectory(pName : PChar): PChar; overload external 'SharpThemeApi.dll' name 'GetThemeDirectory';
+function GetThemeDirectory(pName: PChar): PChar; overload external 'SharpThemeApi.dll' name 'GetThemeDirectory';
 
 // Theme Scheme
-function GetSchemeColorSet(pSet : integer) : TSharpEColorSet; external 'SharpThemeApi.dll' name 'GetSchemeColorSet';
-function GetSchemeName : PChar; external 'SharpThemeApi.dll' name 'GetSchemeName';
-function SchemeCodeToColor(pCode : integer) : integer; external 'SharpThemeApi.dll' name 'SchemeCodeToColor';
-function ColorToSchemeCode(pColor : integer) : integer; external 'SharpThemeApi.dll' name 'ColorToSchemeCode';
+function GetSchemeColorSet(pSet: integer): TSharpEColorSet; external 'SharpThemeApi.dll' name 'GetSchemeColorSet';
+function GetSchemeName: PChar; external 'SharpThemeApi.dll' name 'GetSchemeName';
+function SchemeCodeToColor(pCode: integer): integer; external 'SharpThemeApi.dll' name 'SchemeCodeToColor';
+function ColorToSchemeCode(pColor: integer): integer; external 'SharpThemeApi.dll' name 'ColorToSchemeCode';
 function GetSchemeColorCount: Integer; external 'SharpThemeApi.dll' name 'GetSchemeColorCount';
 function GetSchemeColorByIndex(pIndex: integer): TSharpESkinColor; external 'SharpThemeApi.dll' name 'GetSchemeColorByIndex';
 function GetSchemeColorIndexByTag(pTag: string): Integer; external 'SharpThemeApi.dll' name 'GetSchemeColorIndexByTag';
 function GetSchemeColorByTag(pTag: string): TSharpESkinColor; external 'SharpThemeApi.dll' name 'GetSchemeColorByTag';
-function ParseColor(AColorStr:PChar):Integer; external 'SharpThemeApi.dll' name 'ParseColor';
-function GetSchemeDirectory : PChar; external 'SharpThemeApi.dll' name 'GetSchemeDirectory';
+function ParseColor(AColorStr: PChar): Integer; external 'SharpThemeApi.dll' name 'ParseColor';
+function GetSchemeDirectory: PChar; external 'SharpThemeApi.dll' name 'GetSchemeDirectory';
 
 // Theme Skin
-function GetSkinName : PChar; external 'SharpThemeApi.dll' name 'GetSkinName';
-function GetSkinColorCount : integer; external 'SharpThemeApi.dll' name 'GetSkinColorCount';
-function GetSkinColor(pIndex : integer) : TSharpESkinColor; external 'SharpThemeApi.dll' name 'GetSkinColor';
-function GetSkinDirectory : PChar; external 'SharpThemeApi.dll' name 'GetSkinDirectory';
-function GetSkinGEBlurRadius : integer; external 'SharpThemeApi.dll' name 'GetSkinGEBlurRadius';
-function GetSkinGEBlurIterations : integer; external 'SharpThemeApi.dll' name 'GetSkinGEBlurIterations';
-function GetSkinGEBlend : boolean; external 'SharpThemeApi.dll' name 'GetSkinGEBlend';
-function GetSkinGEBlendColor : integer; external 'SharpThemeApi.dll' name 'GetSkinGEBlendColor';
-function GetSkinGEBlendAlpha : integer; external 'SharpThemeApi.dll' name 'GetSkinGEBlendAlpha';
-function GetSkinGELighten : boolean; external 'SharpThemeApi.dll' name 'GetSkinGELighten';
-function GetSkinGELightenAmount : integer; external 'SharpThemeApi.dll' name 'GetSkinGELightenAmount';
+function GetSkinName: PChar; external 'SharpThemeApi.dll' name 'GetSkinName';
+function GetSkinColorCount: integer; external 'SharpThemeApi.dll' name 'GetSkinColorCount';
+function GetSkinColor(pIndex: integer): TSharpESkinColor; external 'SharpThemeApi.dll' name 'GetSkinColor';
+function GetSkinDirectory: PChar; external 'SharpThemeApi.dll' name 'GetSkinDirectory';
+function GetSkinGEBlurRadius: integer; external 'SharpThemeApi.dll' name 'GetSkinGEBlurRadius';
+function GetSkinGEBlurIterations: integer; external 'SharpThemeApi.dll' name 'GetSkinGEBlurIterations';
+function GetSkinGEBlend: boolean; external 'SharpThemeApi.dll' name 'GetSkinGEBlend';
+function GetSkinGEBlendColor: integer; external 'SharpThemeApi.dll' name 'GetSkinGEBlendColor';
+function GetSkinGEBlendAlpha: integer; external 'SharpThemeApi.dll' name 'GetSkinGEBlendAlpha';
+function GetSkinGELighten: boolean; external 'SharpThemeApi.dll' name 'GetSkinGELighten';
+function GetSkinGELightenAmount: integer; external 'SharpThemeApi.dll' name 'GetSkinGELightenAmount';
 
 // Theme IconSet
-function GetIconSetName : PChar; external 'SharpThemeApi.dll' name 'GetIconSetName';
-function GetIconSetAuthor : PChar; external 'SharpThemeApi.dll' name 'GetIconSetAuthor';
-function GetIconSetWebsite : PChar; external 'SharpThemeApi.dll' name 'GetIconSetWebsite';
-function GetIconSetDirectory : PChar; external 'SharpThemeApi.dll' name 'GetIconSetDirectory';
-function GetIconSetIconsCount : integer; external 'SharpThemeApi.dll' name 'GetIconSetIconsCount';
-function GetIconSetIcon(pIndex : integer) : TSharpEIcon; overload; external 'SharpThemeApi.dll' name 'GetIconSetIconByIndex';
-function GetIconSetIcon(pTag : PChar) : TSharpEIcon; overload; external 'SharpThemeApi.dll' name'GetIconSetIconByTag';
-function IsIconInIconSet(pTag : PChar) : boolean; external 'SharpThemeApi.dll' name 'IsIconInIconSet';
+function GetIconSetName: PChar; external 'SharpThemeApi.dll' name 'GetIconSetName';
+function GetIconSetAuthor: PChar; external 'SharpThemeApi.dll' name 'GetIconSetAuthor';
+function GetIconSetWebsite: PChar; external 'SharpThemeApi.dll' name 'GetIconSetWebsite';
+function GetIconSetDirectory: PChar; external 'SharpThemeApi.dll' name 'GetIconSetDirectory';
+function GetIconSetIconsCount: integer; external 'SharpThemeApi.dll' name 'GetIconSetIconsCount';
+function GetIconSetIcon(pIndex: integer): TSharpEIcon; overload; external 'SharpThemeApi.dll' name 'GetIconSetIconByIndex';
+function GetIconSetIcon(pTag: PChar): TSharpEIcon; overload; external 'SharpThemeApi.dll' name 'GetIconSetIconByTag';
+function IsIconInIconSet(pTag: PChar): boolean; external 'SharpThemeApi.dll' name 'IsIconInIconSet';
 
 // Theme DesktopIcon
-function GetDesktopIconSize        : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconSize';
-function GetDesktopIconAlphaBlend  : boolean; external 'SharpThemeApi.dll' name 'GetDesktopIconAlphaBlend';
-function GetDesktopIconAlpha       : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconAlpha';
-function GetDesktopIconBlending    : boolean; external 'SharpThemeApi.dll' name 'GetDesktopIconBlending';
-function GetDesktopIconBlendColor  : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconBlendColor';
-function GetDesktopIconBlendAlpha  : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconBlendAlpha';
-function GetDesktopIconShadow      : boolean; external 'SharpThemeApi.dll' name 'GetDesktopIconShadow';
-function GetDesktopIconShadowColor : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconShadowColor';
-function GetDesktopIconShadowAlpha : integer; external 'SharpThemeApi.dll' name 'GetDesktopIconShadowAlpha';
-function GetDesktopFontName        : PChar;   external 'SharpThemeApi.dll' name 'GetDesktopFontName';
-function GetDesktopDisplayText     : boolean; external 'SharpThemeApi.dll' name 'GetDesktopDisplayText';
-function GetDesktopTextSize        : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextSize';
-function GetDesktopTextBold        : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextBold';
-function GetDesktopTextItalic      : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextItalic';
-function GetDesktopTextUnderline   : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextUnderline';
-function GetDesktopTextColor       : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextColor';
-function GetDesktopTextAlpha       : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextAlpha';
-function GetDesktopTextAlphaValue  : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextAlphaValue';
-function GetDesktopTextShadow      : boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextShadow';
-function GetDesktopTextShadowAlpha : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowAlpha';
-function GetDesktopTextShadowColor : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowColor';
-function GetDesktopTextShadowType  : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowType';
-function GetDesktopTextShadowSize  : integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowSize';
+function GetDesktopIconSize: integer; external 'SharpThemeApi.dll' name 'GetDesktopIconSize';
+function GetDesktopIconAlphaBlend: boolean; external 'SharpThemeApi.dll' name 'GetDesktopIconAlphaBlend';
+function GetDesktopIconAlpha: integer; external 'SharpThemeApi.dll' name 'GetDesktopIconAlpha';
+function GetDesktopIconBlending: boolean; external 'SharpThemeApi.dll' name 'GetDesktopIconBlending';
+function GetDesktopIconBlendColor: integer; external 'SharpThemeApi.dll' name 'GetDesktopIconBlendColor';
+function GetDesktopIconBlendAlpha: integer; external 'SharpThemeApi.dll' name 'GetDesktopIconBlendAlpha';
+function GetDesktopIconShadow: boolean; external 'SharpThemeApi.dll' name 'GetDesktopIconShadow';
+function GetDesktopIconShadowColor: integer; external 'SharpThemeApi.dll' name 'GetDesktopIconShadowColor';
+function GetDesktopIconShadowAlpha: integer; external 'SharpThemeApi.dll' name 'GetDesktopIconShadowAlpha';
+function GetDesktopFontName: PChar; external 'SharpThemeApi.dll' name 'GetDesktopFontName';
+function GetDesktopDisplayText: boolean; external 'SharpThemeApi.dll' name 'GetDesktopDisplayText';
+function GetDesktopTextSize: integer; external 'SharpThemeApi.dll' name 'GetDesktopTextSize';
+function GetDesktopTextBold: boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextBold';
+function GetDesktopTextItalic: boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextItalic';
+function GetDesktopTextUnderline: boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextUnderline';
+function GetDesktopTextColor: integer; external 'SharpThemeApi.dll' name 'GetDesktopTextColor';
+function GetDesktopTextAlpha: boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextAlpha';
+function GetDesktopTextAlphaValue: integer; external 'SharpThemeApi.dll' name 'GetDesktopTextAlphaValue';
+function GetDesktopTextShadow: boolean; external 'SharpThemeApi.dll' name 'GetDesktopTextShadow';
+function GetDesktopTextShadowAlpha: integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowAlpha';
+function GetDesktopTextShadowColor: integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowColor';
+function GetDesktopTextShadowType: integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowType';
+function GetDesktopTextShadowSize: integer; external 'SharpThemeApi.dll' name 'GetDesktopTextShadowSize';
 
 // Theme Desktop Animation
-function GetDesktopAnimUseAnimations   : boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimUseAnimations';
-function GetDesktopAnimScale           : boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimScale';
-function GetDesktopAnimScaleValue      : integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimScaleValue';
-function GetDesktopAnimAlpha           : boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimAlpha';
-function GetDesktopAnimAlphaValue      : integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimAlphaValue';
-function GetDesktopAnimBlend           : boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimBlend';
-function GetDesktopAnimBlendValue      : integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimBlendValue';
-function GetDesktopAnimBlendColor      : integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimBlendColor';
-function GetDesktopAnimBrightness      : boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimBrightness';
-function GetDesktopAnimBrightnessValue : integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimBrightnessValue';
+function GetDesktopAnimUseAnimations: boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimUseAnimations';
+function GetDesktopAnimScale: boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimScale';
+function GetDesktopAnimScaleValue: integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimScaleValue';
+function GetDesktopAnimAlpha: boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimAlpha';
+function GetDesktopAnimAlphaValue: integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimAlphaValue';
+function GetDesktopAnimBlend: boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimBlend';
+function GetDesktopAnimBlendValue: integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimBlendValue';
+function GetDesktopAnimBlendColor: integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimBlendColor';
+function GetDesktopAnimBrightness: boolean; external 'SharpThemeApi.dll' name 'GetDesktopAnimBrightness';
+function GetDesktopAnimBrightnessValue: integer; external 'SharpThemeApi.dll' name 'GetDesktopAnimBrightnessValue';
 
 // Theme Wallpaper
-function GetMonitorWallpaper(Index : integer) : TThemeWallpaper; external 'SharpThemeApi.dll' name 'GetMonitorWallpaper';
+function GetMonitorWallpaper(Index: integer): TThemeWallpaper; external 'SharpThemeApi.dll' name 'GetMonitorWallpaper';
 
 // Theme Skin Fon
-function GetSkinFontModSize          : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModSize';
-function GetSkinFontModName          : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModName';
-function GetSkinFontModAlpha         : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModAlpha';
-function GetSkinFontModUseShadow     : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModUseShadow';
-function GetSkinFontModShadowType    : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModShadowType';
-function GetSkinFontModShadowAlpha   : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModShadowAlpha';
-function GetSkinFontModBold          : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModBold';
-function GetSkinFontModItalic        : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModItalic';
-function GetSkinFontModUnderline     : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModUnderline';
-function GetSkinFontModClearType     : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModClearType';
-function GetSkinFontValueSize        : integer; external 'SharpThemeApi.dll' name 'GetSkinFontValueSize';
-function GetSkinFontValueName        : String;  external 'SharpThemeApi.dll' name 'GetSkinFontValueName';
-function GetSkinFontValueAlpha       : integer; external 'SharpThemeApi.dll' name 'GetSkinFontValueAlpha';
-function GetSkinFontValueUseShadow   : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueUseShadow';
-function GetSkinFontValueShadowType  : integer; external 'SharpThemeApi.dll' name 'GetSkinFontValueShadowType';
-function GetSkinFontValueShadowAlpha : integer; external 'SharpThemeApi.dll' name 'GetSkinFontValueShadowAlpha';
-function GetSkinFontValueBold        : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueBold';
-function GetSkinFontValueItalic      : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueItalic';
-function GetSkinFontValueUnderline   : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueUnderline';
-function GetSkinFontValueClearType   : boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueClearType';
-
-function XmlGetTheme: string; external 'SharpThemeApi.dll' name 'XmlGetTheme';
-
-function XmlGetScheme(ATheme: string): string; external 'SharpThemeApi.dll' name 'XmlGetScheme';
-function XmlSetScheme(AName:String; ATheme: string): string; external 'SharpThemeApi.dll' name 'XmlSetScheme';
-
-function XmlGetSkin(ATheme: String): String; external 'SharpThemeApi.dll' name 'XmlGetSkin';
-function XmlGetSchemeFile(ATheme: string): string; external 'SharpThemeApi.dll' name 'XmlGetSchemeFile';
-function XmlGetSkinFile(ATheme: String): String; external 'SharpThemeApi.dll' name 'XmlGetSkinFile';
-function XmlGetFontFile(ATheme: String): String; external 'SharpThemeApi.dll' name 'XmlGetFontFile';
-function XmlGetThemeFile(ATheme: String): String; external 'SharpThemeApi.dll' name 'XmlGetThemeFile';
+function GetSkinFontModSize: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModSize';
+function GetSkinFontModName: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModName';
+function GetSkinFontModAlpha: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModAlpha';
+function GetSkinFontModUseShadow: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModUseShadow';
+function GetSkinFontModShadowType: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModShadowType';
+function GetSkinFontModShadowAlpha: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModShadowAlpha';
+function GetSkinFontModBold: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModBold';
+function GetSkinFontModItalic: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModItalic';
+function GetSkinFontModUnderline: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModUnderline';
+function GetSkinFontModClearType: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontModClearType';
+function GetSkinFontValueSize: integer; external 'SharpThemeApi.dll' name 'GetSkinFontValueSize';
+function GetSkinFontValueName: string; external 'SharpThemeApi.dll' name 'GetSkinFontValueName';
+function GetSkinFontValueAlpha: integer; external 'SharpThemeApi.dll' name 'GetSkinFontValueAlpha';
+function GetSkinFontValueUseShadow: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueUseShadow';
+function GetSkinFontValueShadowType: integer; external 'SharpThemeApi.dll' name 'GetSkinFontValueShadowType';
+function GetSkinFontValueShadowAlpha: integer; external 'SharpThemeApi.dll' name 'GetSkinFontValueShadowAlpha';
+function GetSkinFontValueBold: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueBold';
+function GetSkinFontValueItalic: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueItalic';
+function GetSkinFontValueUnderline: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueUnderline';
+function GetSkinFontValueClearType: boolean; external 'SharpThemeApi.dll' name 'GetSkinFontValueClearType';
 
 function GetThemeListAsCommaText: string;
 procedure XmlGetThemeList(var AThemeList: TThemeInfoSet);
 
-function GetSchemeListAsCommaText(ATheme:string):string;
-procedure XmlGetThemeScheme(var AThemeScheme: TSharpEColorSet);
+function GetSchemeListAsCommaText(ATheme: string): string;
+
+procedure XmlGetThemeScheme(var AThemeScheme: TSharpEColorSet); overload;
+procedure XmlGetThemeScheme(ATheme: string; AScheme: string; ASkin: string; var AThemeScheme: TSharpEColorSet); overload;
+procedure XmlGetThemeScheme(ATheme: string; AScheme: string; var AThemeScheme: TSharpEColorSet); overload;
+procedure XmlGetThemeScheme(ASkin: string; var AThemeScheme: TSharpEColorSet); overload;
+
+procedure XmlSetThemeScheme(ATheme: string; AScheme: string; ASkin: string; var AThemeScheme: TSharpEColorSet; AAuthor:String=''); overload;
+procedure XmlSetThemeScheme(ATheme: string; AScheme: string; var AThemeScheme: TSharpEColorSet;AAuthor:String=''); overload;
+
+function XmlGetSchemeAuthor(ATheme: string; AScheme: string): string;
 
 function XmlColorToSchemeCode(AColor: integer): integer; overload;
 function XmlColorToSchemeCode(AColor: integer; AThemeScheme: TSharpEColorSet): integer; overload;
@@ -258,8 +255,17 @@ function XmlSchemeCodeToColor(AColorCode: integer; AThemeScheme: TSharpEColorSet
 function XmlGetSkinColorByTag(ATag: string): TSharpESkinColor; overload;
 function XmlGetSkinColorByTag(ATag: string; AThemeScheme: TSharpEColorSet): TSharpESkinColor; overload;
 
-procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string);
+function XmlGetSkin(ATheme: string): string;
+function XmlGetSkinFile(ATheme: String): String;
+function XmlGetSchemeFile(ATheme: string): string;
+function XmlGetFontFile(ATheme: string): string;
+function XmlGetTheme: string;
+function XmlGetThemeFile(ATheme: string): string;
+procedure XmlSetScheme(ATheme: String; AName: string);
+function XmlGetScheme(ATheme: string): string;
+procedure XmlSetTheme(ATheme: String);
 
+procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string);
 
 implementation
 
@@ -276,7 +282,7 @@ begin
   { Build a list of the files in directory StartDir
      (not the directories!)                         }
 
-  IsFound := FindFirst(StartDir+FileMask, faAnyFile-faDirectory, SR) = 0;
+  IsFound := FindFirst(StartDir + FileMask, faAnyFile - faDirectory, SR) = 0;
   while IsFound do begin
     FilesList.Add(StartDir + SR.Name);
     IsFound := FindNext(SR) = 0;
@@ -285,29 +291,29 @@ begin
 
   // Build a list of subdirectories
   DirList := TStringList.Create;
-  Try
-  IsFound := FindFirst(StartDir+'*.*', faAnyFile, SR) = 0;
-  while IsFound do begin
-    if ((SR.Attr and faDirectory) <> 0) and
-         (SR.Name[1] <> '.') then
-      DirList.Add(StartDir + SR.Name);
-    IsFound := FindNext(SR) = 0;
-  end;
-  SysUtils.FindClose(SR);
+  try
+    IsFound := FindFirst(StartDir + '*.*', faAnyFile, SR) = 0;
+    while IsFound do begin
+      if ((SR.Attr and faDirectory) <> 0) and
+        (SR.Name[1] <> '.') then
+        DirList.Add(StartDir + SR.Name);
+      IsFound := FindNext(SR) = 0;
+    end;
+    SysUtils.FindClose(SR);
 
-  // Scan the list of subdirectories
-  for i := 0 to DirList.Count - 1 do
-    FindFiles(FilesList, DirList[i], FileMask);
+    // Scan the list of subdirectories
+    for i := 0 to DirList.Count - 1 do
+      FindFiles(FilesList, DirList[i], FileMask);
 
-  Finally
+  finally
     DirList.Free;
-  End;
+  end;
 
 end;
 
 function GetThemeListAsCommaText: string;
 var
-  sThemeDir: String;
+  sThemeDir: string;
   tmpStringList: TStringList;
 begin
   sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
@@ -315,18 +321,18 @@ begin
   tmpStringList := TStringList.Create;
   try
 
-  FindFiles(tmpStringList,sThemeDir,'*theme.xml');
-  tmpStringList.Sort;
-  result := tmpStringList.CommaText;
+    FindFiles(tmpStringList, sThemeDir, '*theme.xml');
+    tmpStringList.Sort;
+    result := tmpStringList.CommaText;
 
   finally
     tmpStringList.Free;
   end;
 end;
 
-function GetSchemeListAsCommaText(ATheme: String): string;
+function GetSchemeListAsCommaText(ATheme: string): string;
 var
-  sSchemeDir, sSkin: String;
+  sSchemeDir, sSkin: string;
   tmpStringList: TStringList;
 begin
   sSkin := XmlGetSkin(ATheme);
@@ -335,9 +341,9 @@ begin
   tmpStringList := TStringList.Create;
   try
 
-  FindFiles(tmpStringList,sSchemeDir,'*.xml');
-  tmpStringList.Sort;
-  result := tmpStringList.CommaText;
+    FindFiles(tmpStringList, sSchemeDir, '*.xml');
+    tmpStringList.Sort;
+    result := tmpStringList.CommaText;
 
   finally
     tmpStringList.Free;
@@ -357,45 +363,46 @@ begin
   tmpStringList := TStringList.Create;
   try
 
-  tmpStringList.CommaText := GetThemeListAsCommaText;
+    tmpStringList.CommaText := GetThemeListAsCommaText;
 
-  Setlength(AThemeList, 0);
-  for i := 0 to Pred(tmpStringList.Count) do begin
-    xml := TJvSimpleXML.Create(nil);
-    try
-      xml.LoadFromFile(tmpStringList[i]);
+    Setlength(AThemeList, 0);
+    for i := 0 to Pred(tmpStringList.Count) do begin
+      xml := TJvSimpleXML.Create(nil);
+      try
+        xml.LoadFromFile(tmpStringList[i]);
 
-      itm.Filename := tmpStringList[i];
+        itm.Filename := tmpStringList[i];
 
-      itm.Name := XML.Root.Items.Value('Name', 'Invalid_Name');
-      itm.Author := XML.Root.Items.Value('Author', 'Invalid_Author');
-      itm.Comment := XML.Root.Items.Value('Comment', 'Invalid_Comment');
-      itm.Website := XML.Root.Items.Value('Website', 'Invalid_Website');
-      itm.ReadOnly := XML.Root.Items.BoolValue('ReadOnly', false);
+        itm.Name := XML.Root.Items.Value('Name', 'Invalid_Name');
+        itm.Author := XML.Root.Items.Value('Author', 'Invalid_Author');
+        itm.Comment := XML.Root.Items.Value('Comment', 'Invalid_Comment');
+        itm.Website := XML.Root.Items.Value('Website', 'Invalid_Website');
+        itm.ReadOnly := XML.Root.Items.BoolValue('ReadOnly', false);
 
-      sPreview := ExtractFilePath(tmpStringList[i]) + 'Preview.png';
-      if FileExists(sPreview) then
-        itm.Preview := sPreview
-      else
-        itm.Preview := '';
+        sPreview := ExtractFilePath(tmpStringList[i]) + 'Preview.png';
+        if FileExists(sPreview) then
+          itm.Preview := sPreview
+        else
+          itm.Preview := '';
 
-      SetLength(AThemeList,length(AThemeList)+1);
-      AThemeList[High(AThemeList)] := itm;
+        SetLength(AThemeList, length(AThemeList) + 1);
+        AThemeList[High(AThemeList)] := itm;
 
-    finally
-      xml.Free;
+      finally
+        xml.Free;
+      end;
     end;
-  end;
   finally
     tmpStringList.Free;
   end;
 
 end;
 
-procedure XmlGetThemeScheme(var AThemeScheme: TSharpEColorSet);
+procedure XmlGetThemeScheme(ATheme: string; AScheme: string; ASkin: string;
+  var AThemeScheme: TSharpEColorSet); overload;
 var
   XML: TJvSimpleXML;
-  i,j, Index: Integer;
+  i, j, Index: Integer;
   tmpRec: TSharpESkinColor;
   sFile, sTag, sCurScheme: string;
   tmpColor: string;
@@ -406,63 +413,212 @@ var
 begin
   Index := 0;
 
-  sTheme := XmlGetTheme;
-  sCurScheme := XmlGetScheme(sTheme);
-  sSkin := XmlGetSkin(sTheme);
+  sTheme := ATheme;
+  sCurScheme := AScheme;
+  sSkin := ASkin;
+
+  if ((sTheme = '') or (sCurScheme = '') or (sSkin = '')) then begin
+    SharpApi.SendDebugMessageEx('SharpThemeApi', 'Some parameters were invalid for XmlGetThemeScheme', 0, DMT_ERROR);
+    Setlength(AThemeScheme, 0);
+    Exit;
+  end;
 
   sSkinDir := GetSharpeDirectory + SKINS_DIRECTORY + '\' + sSkin + '\';
   sSchemeDir := sSkinDir + SKINS_SCHEME_DIRECTORY + '\';
 
   XML := TJvSimpleXML.Create(nil);
   try
-  
+
     // Get Scheme Colors
     Setlength(AThemeScheme, 0);
     XML.Root.Clear;
 
-      XML.LoadFromFile(sSkinDir + SCHEME_FILE);
-      for i := 0 to Pred(XML.Root.Items.Count) do begin
+    XML.LoadFromFile(sSkinDir + SCHEME_FILE);
+    for i := 0 to Pred(XML.Root.Items.Count) do begin
 
-        SetLength(AThemeScheme,length(AThemeScheme)+1);
-        tmpRec := AThemeScheme[i];
+      SetLength(AThemeScheme, length(AThemeScheme) + 1);
+      tmpRec := AThemeScheme[i];
 
-        with XML.Root.Items.Item[i].Items do begin
-          tmpRec.Name := Value('name', '');
-          tmpRec.Tag := Value('tag', '');
-          tmpRec.Info := Value('info', '');
-          tmpRec.Color := ParseColor(PChar(Value('Default', '0')));
-          s := Value('type', 'color');
-          if CompareText(s, 'boolean') = 0 then
-            tmpRec.schemetype := stBoolean
-          else if CompareText(s, 'integer') = 0 then
-            tmpRec.schemetype := stInteger
-          else
-            tmpRec.schemetype := stColor;
-        end;
-
-        AThemeScheme[i] := tmpRec;
+      with XML.Root.Items.Item[i].Items do begin
+        tmpRec.Name := Value('name', '');
+        tmpRec.Tag := Value('tag', '');
+        tmpRec.Info := Value('info', '');
+        tmpRec.Color := ParseColor(PChar(Value('Default', '0')));
+        s := Value('type', 'color');
+        if CompareText(s, 'boolean') = 0 then
+          tmpRec.schemetype := stBoolean
+        else if CompareText(s, 'integer') = 0 then
+          tmpRec.schemetype := stInteger
+        else
+          tmpRec.schemetype := stColor;
       end;
+
+      AThemeScheme[i] := tmpRec;
+    end;
 
     sFile := sSchemeDir + sCurScheme + '.xml';
     if FileExists(sFile) then begin
-        XML.LoadFromFile(sFile);
+      XML.LoadFromFile(sFile);
 
-        for i := 0 to Pred(XML.Root.Items.Count) do
-          with XML.Root.Items.Item[i].Items do begin
-            sTag := Value('tag', '');
-            tmpColor := Value('color', inttostr(AThemeScheme[Index].Color));
+      for i := 0 to Pred(XML.Root.Items.Count) do
+        with XML.Root.Items.Item[i].Items do begin
+          sTag := Value('tag', '');
+          tmpColor := Value('color', inttostr(AThemeScheme[Index].Color));
 
-            for j := 0 to high(AThemeScheme) do begin
-              if CompareText(AThemeScheme[j].Tag,sTag) = 0 then begin
-                AThemeScheme[j].Color := ParseColor(PChar(tmpColor)); 
-                break; 
-              end; 
-            end;              
+          for j := 0 to high(AThemeScheme) do begin
+            if CompareText(AThemeScheme[j].Tag, sTag) = 0 then begin
+              AThemeScheme[j].Color := ParseColor(PChar(tmpColor));
+              break;
+            end;
           end;
+        end;
     end;
   finally
     XML.Free;
   end;
+end;
+
+procedure XmlGetThemeScheme(ASkin: string; var AThemeScheme: TSharpEColorSet); overload;
+var
+  XML: TJvSimpleXML;
+  i: Integer;
+  tmpRec: TSharpESkinColor;
+  s: string;
+
+  sSkin, sSkinDir, sSchemeDir: string;
+begin
+  sSkin := ASkin;
+
+  if (sSkin = '') then begin
+    SharpApi.SendDebugMessageEx('SharpThemeApi', 'Some parameters were invalid for XmlGetThemeScheme', 0, DMT_ERROR);
+    Setlength(AThemeScheme, 0);
+    Exit;
+  end;
+
+  sSkinDir := GetSharpeDirectory + SKINS_DIRECTORY + '\' + sSkin + '\';
+  sSchemeDir := sSkinDir + SKINS_SCHEME_DIRECTORY + '\';
+
+  XML := TJvSimpleXML.Create(nil);
+  try
+
+    // Get Scheme Colors
+    Setlength(AThemeScheme, 0);
+    XML.Root.Clear;
+
+    XML.LoadFromFile(sSkinDir + SCHEME_FILE);
+    for i := 0 to Pred(XML.Root.Items.Count) do begin
+
+      SetLength(AThemeScheme, length(AThemeScheme) + 1);
+      tmpRec := AThemeScheme[i];
+
+      with XML.Root.Items.Item[i].Items do begin
+        tmpRec.Name := Value('name', '');
+        tmpRec.Tag := Value('tag', '');
+        tmpRec.Info := Value('info', '');
+        tmpRec.Color := ParseColor(PChar(Value('Default', '0')));
+        s := Value('type', 'color');
+        if CompareText(s, 'boolean') = 0 then
+          tmpRec.schemetype := stBoolean
+        else if CompareText(s, 'integer') = 0 then
+          tmpRec.schemetype := stInteger
+        else
+          tmpRec.schemetype := stColor;
+      end;
+
+      AThemeScheme[i] := tmpRec;
+    end;
+
+  finally
+    XML.Free;
+  end;
+end;
+
+procedure XmlSetThemeScheme(ATheme: string; AScheme: string; ASkin: string;
+  var AThemeScheme: TSharpEColorSet; AAuthor:string=''); overload;
+var
+  xml: TJvSimpleXML;
+  i: Integer;
+  sFileName, sSkinDir, sSchemeDir, sSkin, sAuthor: string;
+begin
+  xml := TJvSimpleXML.Create(nil);
+
+  try
+    xml.Root.Name := 'SharpESkinScheme';
+    xml.Root.Items.Add('Info');
+    with xml.Root.Items.ItemNamed['Info'] do begin
+      Items.Add('Name', AScheme);
+
+      if AAuthor = '' then
+        sAuthor := XmlGetSchemeAuthor(ATheme, AScheme) else begin
+          sAuthor := AAuthor;
+          Items.Add('Author', sAuthor);
+        end;
+
+    end;
+    for i := 0 to High(AThemeScheme) do begin
+      with xml.Root.Items.Add('Item') do begin
+        Items.Add('Tag', AThemeScheme[i].Tag);
+        Items.Add('Color', AThemeScheme[i].Color);
+      end;
+    end;
+  finally
+
+    sSkin := ASkin;
+    sSkinDir := GetSharpeDirectory + SKINS_DIRECTORY + '\' + sSkin + '\';
+    sSchemeDir := sSkinDir + SKINS_SCHEME_DIRECTORY + '\';
+    sFileName := sSchemeDir + AScheme + '.xml';
+    xml.SaveToFile(sFileName);
+    xml.Free;
+  end;
+
+end;
+
+procedure XmlSetThemeScheme(ATheme: string; AScheme: string;
+  var AThemeScheme: TSharpEColorSet; AAuthor: String =''); overload;
+begin
+  XmlSetThemeScheme(ATheme,AScheme,XmlGetSkin(ATheme),AThemeScheme,AAuthor);
+end;
+
+function XmlGetSchemeAuthor(ATheme: string; AScheme: string): string;
+var
+  xml: TJvSimpleXML;
+  sSkinDir, sSchemeDir, sSkin: string;
+begin
+  Result := '';
+  sSkin := XmlGetSkin(ATheme);
+  sSkinDir := GetSharpeDirectory + SKINS_DIRECTORY + '\' + sSkin + '\';
+  sSchemeDir := sSkinDir + SKINS_SCHEME_DIRECTORY + '\';
+
+  xml := TJvSimpleXML.Create(nil);
+  try
+    xml.LoadFromFile(sSchemeDir + AScheme + '.xml');
+    if xml.Root.Items.ItemNamed['Info'] <> nil then
+      result := xml.Root.Items.ItemNamed['Info'].Items.Value('Author');
+  finally
+    xml.Free;
+  end;
+end;
+
+procedure XmlGetThemeScheme(var AThemeScheme: TSharpEColorSet); overload;
+var
+  sTheme, sSkin, sCurScheme: string;
+begin
+  sTheme := XmlGetTheme;
+  sCurScheme := XmlGetScheme(sTheme);
+  sSkin := XmlGetSkin(sTheme);
+
+  XmlGetThemeScheme(sTheme, sCurScheme, sSkin, AThemeScheme);
+end;
+
+procedure XmlGetThemeScheme(ATheme: string; AScheme: string; var AThemeScheme: TSharpEColorSet); overload;
+var
+  sTheme, sSkin, sCurScheme: string;
+begin
+  sTheme := ATheme;
+  sCurScheme := AScheme;
+  sSkin := XmlGetSkin(sTheme);
+
+  XmlGetThemeScheme(sTheme, sCurScheme, sSkin, AThemeScheme);
 end;
 
 function XmlColorToSchemeCode(AColor: integer): integer;
@@ -470,12 +626,12 @@ var
   colors: TSharpEColorSet;
 begin
   XmlGetThemeScheme(colors);
-  Result := XmlColorToSchemeCode(AColor,colors);
+  Result := XmlColorToSchemeCode(AColor, colors);
 end;
 
-function XmlColorToSchemeCode(AColor: integer; AThemeScheme:TSharpEColorSet): integer;
+function XmlColorToSchemeCode(AColor: integer; AThemeScheme: TSharpEColorSet): integer;
 var
-  n:Integer;
+  n: Integer;
 begin
   for n := 0 to High(AThemeScheme) do
     if AThemeScheme[n].Color = AColor then begin
@@ -493,7 +649,7 @@ begin
   Result := XmlSchemeCodeToColor(AColorCode, colors);
 end;
 
-function XmlSchemeCodeToColor(AColorCode: integer; AThemeScheme:TSharpEColorSet): integer;
+function XmlSchemeCodeToColor(AColorCode: integer; AThemeScheme: TSharpEColorSet): integer;
 begin
   result := -1;
   if AColorCode < 0 then begin
@@ -509,26 +665,144 @@ var
   colors: TSharpEColorSet;
 begin
   XmlGetThemeScheme(colors);
-  Result := XmlGetSkinColorByTag(ATag,colors);
+  Result := XmlGetSkinColorByTag(ATag, colors);
 
 end;
 
-function XmlGetSkinColorByTag(ATag: string; AThemeScheme:TSharpEColorSet): TSharpESkinColor;
+function XmlGetSkinColorByTag(ATag: string; AThemeScheme: TSharpEColorSet): TSharpESkinColor;
 var
   n: integer;
   tmpColor: TSharpESkinColor;
 begin
-  Try
-  for n := 0 to High(AThemeScheme) do
-    if CompareText(AThemeScheme[n].Tag, ATag) = 0 then begin
-      tmpColor := AThemeScheme[n];
-      exit;
-    end;
-  Finally
+  try
+    for n := 0 to High(AThemeScheme) do
+      if CompareText(AThemeScheme[n].Tag, ATag) = 0 then begin
+        tmpColor := AThemeScheme[n];
+        exit;
+      end;
+  finally
     result := tmpColor;
-  End;
+  end;
 
 end;
 
+function XmlGetSchemeFile(ATheme: string): string;
+begin
+  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'scheme.xml';
+end;
+
+function XmlGetFontFile(ATheme: string): string;
+begin
+  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'font.xml';
+end;
+
+function XmlGetTheme: string;
+var
+  xml: TJvSimpleXML;
+  s: string;
+begin
+  Result := '';
+  xml := TJvSimpleXML.Create(nil);
+  try
+    s := GetSharpeUserSettingsPath + SHARPE_USER_SETTINGS;
+
+    if fileExists(s) then begin
+      xml.LoadFromFile(s);
+      Result := xml.Root.Items.Value('Theme', 'Default');
+    end;
+  finally
+    xml.Free;
+  end;
+end;
+
+procedure XmlSetTheme(ATheme: String);
+var
+  xml: TJvSimpleXML;
+  s: string;
+begin
+  xml := TJvSimpleXML.Create(nil);
+  try
+    s := GetSharpeUserSettingsPath + SHARPE_USER_SETTINGS;
+    forcedirectories(ExtractFilePath(s));
+
+    xml.Root.Name := 'SharpETheme';
+
+    if xml.Root.Items.ItemNamed['Theme'] <> nil then
+      xml.Root.Items.ItemNamed['Theme'].Value := ATheme else
+      xml.Root.Items.Add('Theme', ATheme);
+      
+    xml.SaveToFile(s);
+  finally
+    xml.Free;
+  end;
+end;
+
+function XmlGetThemeFile(ATheme: string): string;
+begin
+  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'theme.xml';
+end;
+
+procedure XmlSetScheme(ATheme: String; AName: string);
+var
+  xml: TJvSimpleXML;
+  s: string;
+begin
+  xml := TJvSimpleXML.Create(nil);
+  try
+    s := XmlGetSchemeFile(ATheme);
+    forcedirectories(ExtractFilePath(s));
+
+    xml.Root.Clear;
+    xml.Root.Name := 'SharpEThemeScheme';
+    xml.Root.Items.Add('Scheme', AName);
+    xml.SaveToFile(s);
+  finally
+    xml.Free;
+  end;
+end;
+
+function XmlGetScheme(ATheme: string): string;
+var
+  xml: TJvSimpleXML;
+  s: string;
+begin
+  Result := '';
+  xml := TJvSimpleXML.Create(nil);
+  try
+    s := XmlGetSchemeFile(ATheme);
+
+    if fileExists(s) then begin
+      xml.LoadFromFile(s);
+      Result := xml.Root.Items.Value('Scheme', 'Default');
+    end;
+  finally
+    xml.Free;
+  end;
+end;
+
+function XmlGetSkin(ATheme: string): string;
+var
+  xml: TJvSimpleXML;
+  s: string;
+begin
+  Result := '';
+  xml := TJvSimpleXML.Create(nil);
+  try
+    s := XmlGetSkinFile(ATheme);
+
+    if fileExists(s) then begin
+      xml.LoadFromFile(s);
+      Result := xml.Root.Items.Value('Skin', '');
+    end;
+  finally
+    xml.Free;
+  end;
+end;
+
+function XmlGetSkinFile(ATheme: string): string;
+begin
+  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'skin.xml';
+end;
 
 end.
+

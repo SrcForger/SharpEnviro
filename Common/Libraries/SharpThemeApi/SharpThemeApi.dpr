@@ -1738,103 +1738,6 @@ begin
   result := True;
 end;
 
-function XmlGetSkinFile(ATheme: string): string;
-begin
-  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'skin.xml';
-end;
-
-function XmlGetSchemeFile(ATheme: string): string;
-begin
-  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'scheme.xml';
-end;
-
-function XmlGetFontFile(ATheme: string): string;
-begin
-  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'font.xml';
-end;
-
-function XmlGetTheme: string;
-begin
-  Result := GetCurrentThemeName;
-end;
-
-function XmlGetThemeFile(ATheme: string): string;
-begin
-  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'theme.xml';
-end;
-
-procedure XmlSetScheme(ATheme: String; AName: string);
-var
-  xml: TJvSimpleXML;
-  s: string;
-begin
-  xml := TJvSimpleXML.Create(nil);
-  try
-    s := XmlGetSchemeFile(ATheme);
-    forcedirectories(ExtractFilePath(s));
-
-    xml.Root.Clear;
-    xml.Root.Name := 'SharpEThemeScheme';
-    xml.Root.Items.Add('Scheme', AName);
-    xml.SaveToFile(s);
-  finally
-    xml.Free;
-  end;
-end;
-
-function XmlGetScheme(ATheme: string): string;
-var
-  xml: TJvSimpleXML;
-  s: string;
-begin
-  Result := '';
-  xml := TJvSimpleXML.Create(nil);
-  try
-    s := XmlGetSchemeFile(ATheme);
-
-    if fileExists(s) then begin
-      xml.LoadFromFile(s);
-      Result := xml.Root.Items.Value('Scheme', 'Default');
-    end;
-  finally
-    xml.Free;
-  end;
-end;
-
-function XmlGetSkin(ATheme: string): string;
-var
-  xml: TJvSimpleXML;
-  s: string;
-begin
-  Result := '';
-  xml := TJvSimpleXML.Create(nil);
-  try
-    s := XmlGetSkinFile(ATheme);
-
-    if fileExists(s) then begin
-      xml.LoadFromFile(s);
-      Result := xml.Root.Items.Value('Skin', '');
-    end;
-  finally
-    xml.Free;
-  end;
-end;
-
-function XmlGetSchemeCount: Integer;
-begin
-
-end;
-
-function XmlGetSkinCount: Integer;
-begin
-
-end;
-
-function XmlGetThemeCount: Integer;
-begin
-
-end;
-
 {$R *.res}
 
 exports
@@ -1952,18 +1855,7 @@ exports
   GetSkinFontValueBold,
   GetSkinFontValueItalic,
   GetSkinFontValueUnderline,
-  GetSkinFontValueClearType,
-
-  // Xml Accessors
-  XmlGetTheme,
-  XmlGetSkin,
-  XmlGetScheme,
-  XmlSetScheme,
-
-  XmlGetThemeFile,
-  XmlGetSkinFile,
-  XmlGetFontFile,
-  XmlGetSchemeFile;
+  GetSkinFontValueClearType;
 
 begin
 end.
