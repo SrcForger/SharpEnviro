@@ -40,14 +40,11 @@ type
     FCustom: Boolean;
     FSCS:TSharpECenterScheme;
 
-    FSelectedID: Integer;
     FSchemeManager: TSchemeManager;
     FCustomColor: TSchemeColorItem;
 
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure AdvancedDrawItem(Sender: TObject; ACanvas: TCanvas; ARect: TRect; State:
-      TOwnerDrawState);
     procedure MenuClick(Sender: TObject);
 
     procedure SetBackgroundColor(const Value: TColor);
@@ -94,84 +91,6 @@ begin
 end;
 
 { TCustomSharpeColorPicker }
-
-procedure TCustomSharpeColorPicker.AdvancedDrawItem(Sender: TObject;
-  ACanvas: TCanvas; ARect: TRect; State: TOwnerDrawState);
-var
-  tmpbitmap: Tbitmap;
-  n: integer;
-
-  tmpCol: TSchemeColorItem;
-  skinCol: TSharpESkinColor;
-begin
-  tmpCol := TSchemeColorItem(TMenuItem(Sender).Tag);
-  if tmpCol = nil then exit;
-
-  if tmpCol.Tag = '' then begin
-    skinCol.Name := 'Custom';
-    skinCol.Color := tmpCol.Color;
-  end else
-    skinCol := XmlGetSkinColorByTag(tmpCol.Tag);
-
-  n := 20;
-
-  with ACanvas do
-  begin
-    font.Size := 8;
-
-    font.Color := clMenuText;
-
-    if not (odSelected in State) then
-      Brush.Color := clMenu
-    else
-    begin
-      Brush.Color := FSCS.EditCol;
-    end;
-
-    FillRect(ARect);
-
-    if (odSelected in State) then begin
-      pen.Color := darker(FSCS.EditBordCol,8);
-      Brush.Color := FSCS.EditCol;
-
-      RoundRect(Arect.Left, ARect.Top, ARect.Right, ARect.Bottom,6,6);
-    end;
-    
-
-    if (FColor = Integer(tmpCol.Data)) then
-    begin
-
-      pen.Color := darker(FSCS.SidePanelBordCol,12);
-      Brush.Color := FSCS.SidePanelCol;
-      RoundRect(Arect.Left, ARect.Top, ARect.Right, ARect.Bottom,6,6);
-
-      Brush.Color := skinCol.Color;
-
-      pen.Color := darker(skinCol.Color,20);
-      RoundRect(ARect.Left + 3, ARect.Top + 4, ARect.Left + 14, ARect.Bottom - 4,2,2);
-
-      font.Color := clMenuText;
-      tmpbitmap := TBitmap.Create;
-      tmpbitmap.Handle := LoadBitmap(HInstance, 'ARROW_BMP');
-      tmpbitmap.Transparent := True;
-      acanvas.Draw(Arect.Left + 17, Arect.Top + 5, tmpbitmap);
-      tmpbitmap.Free;
-      n := 28;
-    end
-    else
-    begin
-      Brush.Color := skinCol.Color;
-      pen.Color := darker(skinCol.Color,20);
-
-      //Rectangle(ARect.Left + 3, ARect.Top + 4, ARect.Left + 14, ARect.Bottom - 4);
-      RoundRect(ARect.Left + 3, ARect.Top + 4, ARect.Left + 14, ARect.Bottom - 4,2,2);
-
-    end;
-
-    SetBkMode(ACanvas.Handle, TRANSPARENT);
-    TextOut(ARect.Left + n, ARect.Top + 3, skinCol.Name);
-  end;
-end;
 
 procedure TCustomSharpeColorPicker.CMMouseEnter(var Message: TMessage);
 begin
@@ -381,9 +300,6 @@ begin
 end;
 
 procedure TCustomSharpeColorPicker.ShowColorMenu(Point: TPoint);
-var
-  pt1, pt2: TPoint;
-  bPopup: Boolean;
 begin
 
   if not (Assigned(FColorMenu)) then
