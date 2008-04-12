@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <DeskArea>
+      <Dll>_ServiceDlls\DeskArea.dll</Dll>
+      <Icon>_ServiceDlls\DeskArea.png</Icon>
+    </DeskArea>
+  </Sections>
+</SharpCenter>
