@@ -405,6 +405,10 @@ begin
   finally
     if ALoad then begin
       Load(sFirstNavFile, sFirstPluginID);
+    end else begin
+    
+      // Add the first dll in the con file
+      FHistory.AddDll(sFirstNavFile,sFirstPluginID);
     end;
 
     LockWindowUpdate(0);

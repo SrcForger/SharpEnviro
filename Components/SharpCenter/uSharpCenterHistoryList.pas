@@ -148,11 +148,7 @@ begin
 end;
 
 function TSharpCenterHistoryList.AddItem(ACommand: TSCC_COMMAND_ENUM; AParameter, APluginID: string): TSharpCenterHistoryItem;
-var
-  i:Integer;
 begin
-  Result := nil;
-
   Result := TSharpCenterHistoryItem.Create;
   Result.Command := ACommand;
   Result.Param := AParameter;

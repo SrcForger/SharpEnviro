@@ -261,7 +261,6 @@ end;
 procedure TSharpCenterWnd.GetCopyData(var Msg: TMessage);
 var
   tmpMsg: TsharpE_DataStruct;
-  tmpHist: TSharpCenterHistoryItem;
   command: TSCC_COMMAND_ENUM;
 begin
   tmpMsg := PSharpE_DataStruct(PCopyDataStruct(msg.lParam)^.lpData)^;
@@ -747,6 +746,7 @@ procedure TSharpCenterWnd.ClickItem;
 var
   tmpItem: TSharpCenterManagerItem;
   tmpManager: TSharpCenterManager;
+  tmpHistory: TSharpCenterHistoryItem;
   sName: string;
 begin
   SCM.Unload;
@@ -780,7 +780,12 @@ begin
       end;
     itmDll:
       begin
-        SCM.History.AddDll(tmpItem.Filename, tmpItem.PluginID);
+
+        // Don't add to the history, but change the last item otherwise its nav hell.
+        tmpHistory := SCM.History.Item[SCM.History.IndexOf(SCM.History.Last)];
+        tmpHistory.Command := sccLoadDll;
+        tmpHistory.PluginID := tmpItem.PluginID;
+        tmpHistory.Param := tmpItem.Filename;
         SCM.Load(tmpItem.Filename, tmpItem.PluginID);
       end;
   end;
