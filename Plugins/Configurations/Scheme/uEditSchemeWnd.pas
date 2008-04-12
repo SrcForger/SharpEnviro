@@ -196,7 +196,9 @@ begin
           sOriginalName := scheme.Name;
 
           FSchemeManager.Save(edName.Text, edAuthor.Text, sOriginalName);
-          FSchemeManager.Delete(scheme);
+
+          if Not(CompareText(edName.Text,sOriginalName) = 0) then
+            FSchemeManager.Delete(scheme);
 
           scheme.Name := edName.Text;
           scheme.Author := edAuthor.Text;
