@@ -1,0 +1,8 @@
+<SharpCenter>
+  <Sections>
+    <Icons> 
+      <Dll>_themedlls\SchemeEdit.dll</Dll>
+      <Icon>_themedlls\Scheme.png</Icon>
+    </Icons>
+  </Sections> 
+</SharpCenter>
