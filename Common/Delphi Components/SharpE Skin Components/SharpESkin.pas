@@ -989,7 +989,7 @@ begin
   FOCDText.ShadowColor := 0;
   FOCDText.Shadow := True;
   FOCDText.ShadowType := stOutline;
-  FOCDText.Size := 72;
+  FOCDText.Size := 56;
   FOCDText.Alpha := 224;
   FOCDText.AlphaString := '224';
 
@@ -1069,8 +1069,8 @@ begin
           FMediumText.LoadFromXML(ItemNamed['medium']);
        if ItemNamed['big'] <> nil then
           FBigText.LoadFromXML(ItemNamed['big']);
-       if ItemNamed['ocd'] <> nil then
-          FOCDText.LoadFromXML(ItemNamed['ocd']);
+       if ItemNamed['osd'] <> nil then
+          FOCDText.LoadFromXML(ItemNamed['osd']);
      end;
   if FXml.Root.Items.ItemNamed['header'] <> nil then
     FSkinHeader.LoadFromXml(FXml.Root.Items.ItemNamed['header'], path);
