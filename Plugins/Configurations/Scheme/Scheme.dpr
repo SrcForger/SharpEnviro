@@ -70,7 +70,7 @@ var
 begin
   AName := 'Schemes';
   ATitle := Format('Scheme Configuration for "%s"',[APluginID]);
-  ADescription := 'Create custom colour schemes for the selected skin.';
+  ADescription := 'Create or select colour schemes for the selected skin.';
 
   tmp := TSchemeManager.Create;
   sl := TstringList.Create;

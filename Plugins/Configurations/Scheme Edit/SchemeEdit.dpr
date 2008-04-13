@@ -59,11 +59,11 @@ begin
         pluginId := APluginID;
         themeId := copy(pluginId, 0, pos(':',pluginId)-1);
         schemeId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
-        frmSchemeEdit.Theme := themeId;
-        frmSchemeEdit.Scheme := schemeId;
     {$ENDREGION}
 
   // Get Scheme Colors
+  frmSchemeEdit.Theme := themeId;
+  frmSchemeEdit.Scheme := schemeId;
   XmlGetThemeScheme(themeId, schemeId, frmSchemeEdit.Colors);
 
   result := frmSchemeEdit.Handle;
@@ -71,10 +71,18 @@ end;
 
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
   var ATitle: String; var ADescription: String);
+var
+  pluginId, themeId, schemeId: String;
 begin
+  {$REGION 'Get theme and scheme'}
+        pluginId := APluginID;
+        themeId := copy(pluginId, 0, pos(':',pluginId)-1);
+        schemeId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
+    {$ENDREGION}
+
   AName := 'Edit Scheme';
-  ATitle := Format('Editing Scheme "%s"',[APluginID]);
-  ADescription := 'Create a custom scheme for the selected skin.';
+  ATitle := Format('Editing Scheme "%s"',[schemeId]);
+  ADescription := 'Create a colour scheme for the selected skin.';
 end;
 
 procedure Close;
