@@ -549,10 +549,10 @@ begin
       Items.Add('Name', AScheme);
 
       if AAuthor = '' then
-        sAuthor := XmlGetSchemeAuthor(ATheme, AScheme) else begin
+        sAuthor := XmlGetSchemeAuthor(ATheme, AScheme) else
           sAuthor := AAuthor;
-          Items.Add('Author', sAuthor);
-        end;
+
+        Items.Add('Author', sAuthor);
 
     end;
     for i := 0 to High(AThemeScheme) do begin
