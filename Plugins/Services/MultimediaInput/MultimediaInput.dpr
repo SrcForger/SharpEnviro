@@ -186,6 +186,9 @@ var
   p : single;
   TypeString : String;
 begin
+  if not (Win32MajorVersion < 6) then
+    exit;
+
   CurrentVolume := 0;
   if Win32MajorVersion < 6 then
   begin
@@ -215,6 +218,9 @@ var
   n : integer;
   p : single;
 begin
+  if not (Win32MajorVersion < 6) then
+    exit;
+
   CurrentVolume := 0;
   if Win32MajorVersion < 6 then
   begin
@@ -241,6 +247,9 @@ var
   Mute : boolean;
   TypeString : String;
 begin
+  if not (Win32MajorVersion < 6) then
+    exit;
+
   Mute := False;
   if Win32MajorVersion < 6 then
   begin
