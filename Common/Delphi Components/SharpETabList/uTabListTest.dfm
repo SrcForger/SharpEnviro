@@ -4,7 +4,7 @@ object Form12: TForm12
   BorderWidth = 10
   Caption = 'Form12'
   ClientHeight = 548
-  ClientWidth = 548
+  ClientWidth = 414
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -45,7 +45,7 @@ object Form12: TForm12
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 542
+    Width = 408
     Height = 300
     Align = alTop
     Color = clWindow
@@ -109,8 +109,9 @@ object Form12: TForm12
     TabCaptionColor = clBlack
     TabStatusColor = clGreen
     OnBtnClick = SharpEPageControl1BtnClick
+    ExplicitWidth = 491
     DesignSize = (
-      542
+      408
       300)
   end
   object Button4: TButton
