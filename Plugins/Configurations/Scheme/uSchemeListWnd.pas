@@ -85,6 +85,7 @@ type
 
   private
     procedure SelectSchemeItem(ASchemeName: string);
+
     { Private declarations }
 
   public
@@ -94,6 +95,9 @@ type
     procedure RebuildSchemeList;
     procedure InitialiseSettings(APluginID: string);
     procedure AddItems(ATheme: String);
+
+    procedure EditScheme(tmpSchemeItem: TSchemeItem); overload;
+    procedure EditScheme(name: string); overload;
   end;
 
 var
@@ -215,6 +219,16 @@ begin
   end;
 end;
 
+procedure TfrmSchemeList.EditScheme(tmpSchemeItem: TSchemeItem);
+begin
+  CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory + '\_Themes\SchemeEdit.con'), pchar(FSchemeManager.PluginID + ':' + tmpSchemeItem.Name));
+end;
+
+procedure TfrmSchemeList.EditScheme(name: String);
+begin
+  CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory + '\_Themes\SchemeEdit.con'), pchar(FSchemeManager.PluginID + ':' + name));
+end;
+
 procedure TfrmSchemeList.RebuildSchemeList;
 begin
   tmrRefreshItems.Enabled := True;
@@ -299,8 +313,7 @@ begin
   end
   else if ACol = cEditColIdx then begin
     tmpSchemeItem := TSchemeItem(AItem.Data);
-    CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-            + '\_Themes\SchemeEdit.con'), pchar( FSchemeManager.PluginID + ':' + tmpSchemeItem.Name ) );
+    EditScheme(tmpSchemeItem);
   end;
 
 

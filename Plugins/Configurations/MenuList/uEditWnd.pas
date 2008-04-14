@@ -192,6 +192,9 @@ begin
     sceAdd: begin
         frmList.Save(edName.Text, cbBasedOn.Text);
         Result := True;
+        frmList.EditMenu(edName.Text);
+        
+        Exit;
       end;
     sceEdit: begin
 

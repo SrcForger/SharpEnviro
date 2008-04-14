@@ -85,6 +85,8 @@ type
     procedure Save(AName: string; ATemplate: string);
     procedure CopyMenu(AName: string; var ANew: String);
     procedure RenderItems;
+
+    procedure EditMenu( name: string);
   end;
 
 var
@@ -212,6 +214,12 @@ begin
 
 end;
 
+procedure TfrmList.EditMenu(name: string);
+begin
+  CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
+          + '\_Components\MenuEdit.con'), pchar(name));
+end;
+
 procedure TfrmList.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := True;
@@ -249,8 +257,7 @@ begin
 
   case ACol of
     colEdit: begin
-        CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-          + '\_Components\MenuEdit.con'), pchar(tmpMenu.Name));
+        EditMenu(tmpMenu.Name);
       end;
     colDelete: begin
 

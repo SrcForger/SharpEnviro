@@ -193,6 +193,9 @@ begin
         df.Website := sWebsite;
         CenterWriteDefaults(df);
         frmThemeList.ThemeManager.Add(sName, sAuthor, sWebsite, sTemplate);
+
+        frmThemeList.EditTheme(sName);
+        exit;
       end;
     sceEdit: begin
       tmpThemeItem := TThemeListItem(frmThemeList.lbThemeList.SelectedItem.Data);

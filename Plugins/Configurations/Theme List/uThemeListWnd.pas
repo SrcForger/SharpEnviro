@@ -89,6 +89,8 @@ type
     ThemeManager: TThemeManager;
     procedure BuildThemeList;
     procedure ConfigureItem;
+
+    procedure EditTheme( name: String);
   end;
 
 var
@@ -413,6 +415,12 @@ begin
     CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
       + '_Themes\Theme.con'), pchar(sTheme))
   end;
+end;
+
+procedure TfrmThemeList.EditTheme(name: String);
+begin
+  CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
+      + '_Themes\Theme.con'), pchar(name))
 end;
 
 procedure TfrmThemeList.LoadTheme(tmpTheme: TThemeListItem);

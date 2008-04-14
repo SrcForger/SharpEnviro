@@ -186,7 +186,8 @@ begin
         FSchemeItem.Free;
 
         Result := True;
-        SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suScheme), 0);
+        frmSchemeList.EditScheme(edName.Text);
+        Exit;
       end;
     sceEdit: begin
 
