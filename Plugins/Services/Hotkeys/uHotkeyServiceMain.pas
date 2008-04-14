@@ -152,7 +152,7 @@ end;
 
 procedure THotkeyService.MessageHandler(var Message: TMessage);
 begin
-  if message.Msg = WM_SHARPEUPDATESETTINGS then begin
+  if (message.Msg = WM_SHARPEUPDATESETTINGS) and (message.WParam = Integer(suHotkey)) then begin
     HKService.UnregisterAllKeys;
     FreeAndNil(HKService);
     HKService := THotkeyService.Create;

@@ -65,6 +65,8 @@ begin
   if FrmConfig <> nil then begin
     FreeAndNil(FrmConfig);
   end;
+
+  BroadcastGlobalUpdateMessage(suHotkey);
 end;
 
 function OpenEdit(AOwner: Hwnd; AEditMode: TSCE_EDITMODE_ENUM): Hwnd;
@@ -156,7 +158,7 @@ begin
     Version := '0.7.4.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
-      Integer(suService)]);
+      Integer(suHotkey)]);
   end;
 end;
 
