@@ -878,6 +878,12 @@ begin
     setlength(ha,length(ha)+1);
     ha[high(ha)] := wnd;
   end;
+  wnd := FindWindow('TSharpCenterWnd',nil);
+  if wnd <> 0 then
+  begin
+    setlength(ha,length(ha)+1);
+    ha[high(ha)] := wnd;
+  end;
 
   mess := msg;
   wpara := wpar;
