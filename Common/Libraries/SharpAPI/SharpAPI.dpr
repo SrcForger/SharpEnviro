@@ -285,6 +285,49 @@ function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam): integer;
 
 { HELPER FUNCTIONS }
 
+// function based on http://www.delphipraxis.net/post452421.html
+function FindAllWindows(const WindowClass: string): THandleArray;
+type
+  PParam = ^TParam;
+  TParam = record
+    ClassName: string;
+    Res: THandleArray;
+  end;
+var
+  Rec: TParam;
+
+  function GetWndClass(pHandle: hwnd): string;
+  var
+    buf: array[0..254] of Char;
+  begin
+    GetClassName(pHandle, buf, SizeOf(buf));
+    result := buf;
+  end;
+
+  function _EnumProc(_hWnd: HWND; _LParam: LPARAM): LongBool; stdcall;
+  begin
+    with PParam(_LParam)^ do
+    begin
+      if (CompareText(GetWndClass(_hWnd), ClassName) = 0) then
+      begin
+        SetLength(Res, Length(Res) + 1);
+        Res[Length(Res) - 1] := _hWnd;
+      end;
+      Result := True;
+    end;
+  end;
+
+begin
+  try
+    Rec.ClassName := WindowClass;
+    SetLength(Rec.Res, 0);
+    EnumWindows(@_EnumProc, Integer(@Rec));
+  except
+    SetLength(Rec.Res, 0);
+  end;
+  Result := Rec.Res;
+end;
+
 function ReadRegString(const RootKey: HKEY; const Key, Name: string): string;
 var
   Size: DWORD;
@@ -796,18 +839,57 @@ begin
 end;
 
 function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam): integer;
-  function EnumWindowsProc(Wnd: hwnd; param: lParam): boolean; export; stdcall;
+var
+  ha : THandleArray;
+  n : integer;
+  wnd : hwnd;
+  ThreadID : dword;
+
+  function EnumThreadWindowsProc(Wnd: hwnd; param: lParam): boolean; export; stdcall;
   begin
     PostMessage(wnd, mess, wpara, lpara);
     inc(i);
     result := true;
   end;
+  
 begin
-  i := 0;
+  ha := FindAllWindows('TSharpBarMainForm');
+  wnd := FindWindow('TSharpCoreMainWnd',nil);
+  if wnd <> 0 then
+  begin
+    setlength(ha,length(ha)+1);
+    ha[high(ha)] := wnd;
+  end;
+  wnd := FindWindow('TSharpDeskMainForm',nil);
+  if wnd <> 0 then
+  begin
+    setlength(ha,length(ha)+1);
+    ha[high(ha)] := wnd;
+  end;
+  wnd := FindWindow('TSharpConsoleWnd',nil);
+  if wnd <> 0 then
+  begin
+    setlength(ha,length(ha)+1);
+    ha[high(ha)] := wnd;
+  end;
+  wnd := FindWindow('TSharpEMenuWnd',nil);
+  if wnd <> 0 then
+  begin
+    setlength(ha,length(ha)+1);
+    ha[high(ha)] := wnd;
+  end;
+
   mess := msg;
   wpara := wpar;
   lpara := lpar;
-  EnumWindows(@EnumWindowsProc, msg);
+  i := 0;  
+
+  for n := 0 to High(ha) do
+  begin
+    ThreadID := GetWindowThreadProcessId(ha[n],nil);
+    if ThreadID <> 0 then
+      EnumThreadWindows(ThreadID,@EnumThreadWindowsProc,msg);
+  end;
   result := i;
 end;
 
@@ -941,50 +1023,6 @@ begin
 
   Result := pchar(stemp);
   //SendDebugMessage('SharpApi Result',Result,clblack);
-end;
-
-// function based on http://www.delphipraxis.net/post452421.html
-
-function FindAllWindows(const WindowClass: string): THandleArray;
-type
-  PParam = ^TParam;
-  TParam = record
-    ClassName: string;
-    Res: THandleArray;
-  end;
-var
-  Rec: TParam;
-
-  function GetWndClass(pHandle: hwnd): string;
-  var
-    buf: array[0..254] of Char;
-  begin
-    GetClassName(pHandle, buf, SizeOf(buf));
-    result := buf;
-  end;
-
-  function _EnumProc(_hWnd: HWND; _LParam: LPARAM): LongBool; stdcall;
-  begin
-    with PParam(_LParam)^ do
-    begin
-      if (CompareText(GetWndClass(_hWnd), ClassName) = 0) then
-      begin
-        SetLength(Res, Length(Res) + 1);
-        Res[Length(Res) - 1] := _hWnd;
-      end;
-      Result := True;
-    end;
-  end;
-
-begin
-  try
-    Rec.ClassName := WindowClass;
-    SetLength(Rec.Res, 0);
-    EnumWindows(@_EnumProc, Integer(@Rec));
-  except
-    SetLength(Rec.Res, 0);
-  end;
-  Result := Rec.Res;
 end;
 
 function FindAllComponents(Component: PChar): THandleArray;
