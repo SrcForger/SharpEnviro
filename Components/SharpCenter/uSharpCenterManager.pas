@@ -545,12 +545,12 @@ function TSharpCenterManager.ExecuteCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
   APluginID: string): Boolean;
 begin
   Result := False;
-  if FStateEditWarning or FStateEditItem then begin
+  {if FStateEditWarning or FStateEditItem then begin
     MessageDlg('Unable to display the configuration page (EditMode is Active)' +
       #13 + #10 + 'Please save your configuration before attempting to load another.'
       , mtError, [mbOK], 0);
     exit;
-  end;
+  end; }
 
   Result := True;
   if ACommand = sccChangeFolder then
