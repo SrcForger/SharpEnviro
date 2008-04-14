@@ -38,7 +38,7 @@ type
                   public
                    procedure Create;
                    procedure Destroy;
-                   procedure Reload;
+                   procedure Reload(isSchemeChange : boolean);
                    procedure ApplyEffects(var Bmp : TBitmap32; Mon : TThemeWallpaper);
                   end;
 
@@ -66,7 +66,7 @@ end;
 procedure TBackground.Create;
 begin
 //  LaodSettings;
-  Reload;
+  Reload(False);
 end;
 
 
@@ -83,7 +83,7 @@ end;
 // ######################################
 
 
-procedure TBackground.Reload;
+procedure TBackground.Reload(isSchemeChange : boolean);
 var
    n,i : integer;
    PMon : TMonitor;
@@ -99,15 +99,18 @@ var
 
    loaded : boolean;
    WP : TThemeWallpaper;
-   img,preview : TBitmap32;
+   img : TBitmap32;
    SList : TStringList;
 
    RMode : boolean;
+   WPChanged : boolean;
 begin
   SharpDeskMainForm.Monitor; // make it update the TScren Monitor Data
 
   img := SharpDesk.Image.Bitmap;
   img.SetSize(Screen.DesktopWidth,Screen.DesktopHeight);
+
+  WPChanged := False;
   for n := 0 to Screen.MonitorCount - 1 do
   begin
     PMon := Screen.Monitors[n];
@@ -115,6 +118,15 @@ begin
        MonID := -100
        else MonID := PMon.MonitorNum;
     WP := SharpThemeApi.GetMonitorWallpaper(MonID);
+
+    // only update if scheme color changes and scheme colors are used
+    if (isSchemeChange) and (not (ColorToSchemeCode(WP.Color) <> WP.Color))
+      and (((not (ColorToSchemeCode(WP.GDStartColor) <> WP.GDStartColor))
+      and (not (ColorToSchemeCode(WP.GDEndColor) <> WP.GDEndColor))) or (not WP.Gradient)) then
+    Continue;
+
+    // at least one wallpaper has changed;
+    WPChanged := True;
 
     MonRect.TopLeft := SharpDesk.Image.ScreenToClient(Point(PMon.Left,PMon.Top));
     MonRect.BottomRight := SharpDesk.Image.ScreenToClient(Point(PMon.Left+PMon.Width,
@@ -252,6 +264,9 @@ begin
     TempBmp.Free;
     DrawBmp.Free;
   end;
+
+  if not WPChanged then
+    exit;
 
   SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Export : ') + WP.Name),clblue,DMT_trace);
   winWallPath := SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg';

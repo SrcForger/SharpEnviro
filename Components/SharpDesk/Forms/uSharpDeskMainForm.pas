@@ -403,7 +403,7 @@ begin
       SharpDeskMainForm.Top  := Screen.DesktopTop;
       SharpDeskMainForm.Width := Screen.DesktopWidth;
       SharpDeskMainForm.Height := Screen.DesktopHeight;
-      Background.Reload;
+      Background.Reload(True);
       BackgroundImage.ForceFullInvalidate;
       SharpDesk.BackgroundLayer.Update;
       SharpDesk.BackgroundLayer.Changed;
@@ -537,7 +537,7 @@ begin
     if WPChange then
     begin
       SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
-      Background.Reload;
+      Background.Reload(False);
     end;
     SharpDesk.UpdateAnimationLayer;
 
@@ -588,7 +588,7 @@ begin
     or (msg.WParam = Integer(suSkin)) then
   begin
     SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
-    Background.Reload;
+    Background.Reload(msg.Wparam = Integer(suScheme));
     BackgroundImage.ForceFullInvalidate;
     SharpDesk.BackgroundLayer.Update;
     SharpDesk.BackgroundLayer.Changed;
@@ -1561,7 +1561,7 @@ begin
      begin
           SharpDeskMainForm.SendMessageToConsole('loading wallpaper settings',COLOR_OK,DMT_STATUS);
           SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
-          Background.Reload;
+          Background.Reload(False);
      end;
 end;
 
