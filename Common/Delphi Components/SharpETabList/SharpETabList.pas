@@ -168,6 +168,7 @@ type
     function GetTabWidth(ATab: TTabItem): Integer;
     procedure GetTabExtent(ATab: TTabItem; X, Y: Integer; var ATabExtents: TTabExtents);
     function GetMaxVisibleTabs: Integer;
+    function GetVisibleTabCount: Integer;
     procedure SetIconSpacingX(const Value: Integer);
     procedure SetIconSpacingY(const Value: Integer);
     procedure SetTextSpacingX(const Value: Integer);
@@ -464,7 +465,7 @@ begin
   r := Rect(AScrollButtonRect.Right - 16, Height div 2 - 6,
     AScrollButtonRect.Right, Self.ClientHeight);
 
-  if ((FLastTabRight >= FTabList.Count)) then
+  if ((FLastTabRight >= GetVisibleTabCount)) then
     FScrollRight.ImageIndex := cRightArrowDisabledIdx else
     FScrollRight.ImageIndex := cRightArrowIdx;
 
@@ -589,7 +590,7 @@ begin
   iTabsWidth := 0;
   iMaxTabs := FLeftIndex;
 
-  for iTab := FLeftIndex to Pred(Count) do
+  for iTab := FLeftIndex to Pred(GetVisibleTabCount) do
   begin
     iTabWidth := GetTabWidth(TabList.Item[iTab]);
     iTabsWidth := iTabsWidth + iTabWidth;
@@ -612,7 +613,7 @@ var
 begin
   Result := 0;
 
-  if ((FTabAlign = taLeftJustify) and (FLastTabRight < Self.Count) or (FLeftIndex <> 0)) then
+  if ((FTabAlign = taLeftJustify) and (FLastTabRight < GetVisibleTabCount) or (FLeftIndex <> 0)) then
     Result := 32;
 end;
 
@@ -710,6 +711,20 @@ begin
   GetTabExtent(ATab, 0, 0, tabExtents);
 
   result := tabExtents.TabRect.Right - tabExtents.TabRect.Left;
+end;
+
+function TSharpETabList.GetVisibleTabCount: Integer;
+var
+  iTab: Integer;
+begin
+  Result := 0;
+
+  for iTab := 0 to Pred(Count) do
+  begin
+    if TabList.Item[iTab].Visible then begin
+      Inc(Result);
+    end;
+  end;
 end;
 
 function TSharpETabList.Index(ATabItem: TTabItem): Integer;
@@ -1057,10 +1072,6 @@ destructor TSharpETabList.Destroy;
 begin
   FImage32.Free;
   FTimer.Free;
-  FScrollButtonImageList.Free;
-  FPngImageList.Free;
-  FScrollLeft.Free;
-  FScrollRight.Free;
 
   inherited;
 

@@ -183,6 +183,7 @@ var
 
 begin
   FUsers.Clear;
+  AddUser('Bruno', 'Skizo', 'bruno@sharpenviro.com', 'Graphics, New Guy.');
   AddUser('CoCo', 'Silentpyjamas', 'coco@sharpenviro.com', 'PR, Community + Support.');
   AddUser('David', 'Glacialfury', 'nathan@sharpenviro.com', 'Lead Tester + Support.');
   AddUser('Florian', 'Captain Herisson', 'florian@sharpenviro.com', 'Graphics + Design.');
