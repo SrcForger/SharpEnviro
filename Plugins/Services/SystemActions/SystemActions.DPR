@@ -31,7 +31,8 @@ uses
   Messages,
   Classes,
   SharpApi,
-  uShutdown;
+  uShutdown,
+  JCLLocales;
 
 type
   TActionEvent = Class(Tobject)
@@ -41,12 +42,35 @@ type
 var
   AE:TActionEvent;
   h:THandle;
+  LocalsList : TJclKeyboardLayoutList;
 
 {$E ser}
 
 {$R *.RES}
 
 function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; external 'user32.dll';
+
+procedure RegisterKeyBoardLocals;
+var
+  n : integer;
+begin
+  if LocalsList.Count <= 1 then
+    exit;
+
+  for n := 0 to LocalsList.Count - 1 do
+    RegisterActionEx(PChar('!KL'+LocalsList[n].DisplayName),'Keyboard Layouts',h,100+n);
+end;
+
+procedure UnRegisterKeyBoardLocals;
+var
+  n : integer;
+begin
+  if LocalsList.Count <= 1 then
+    exit;
+
+  for n := 0 to LocalsList.Count - 1 do
+    UnRegisterAction(PChar('!KL'+LocalsList[n].DisplayName));    
+end;
 
 procedure RegisterActions;
 begin
@@ -58,6 +82,7 @@ begin
   RegisterActionEx('!MinimizeAll', 'Window Management', h, 6);
   RegisterActionEx('!RestoreAll', 'Window Management', h, 7);
   RegisterActionEx('!ToggleAllBars', 'SharpBar', h, 8);
+  RegisterKeyBoardLocals;
 end;
 
 // Service is started
@@ -67,6 +92,9 @@ begin
 
   ae := TActionEvent.Create;
   h := allocatehwnd(Ae.MessageHandler);
+
+  LocalsList := TJclKeyboardLayoutList.Create;
+  LocalsList.Refresh;
 
   RegisterActions;
   ServiceDone('System Actions');
@@ -78,6 +106,9 @@ begin
   DeallocateHWnd(h);
   AE.Free;
 
+  LocalsList.Free;
+
+  UnRegisterKeyBoardLocals;
   UnRegisterAction('!Restart');
   UnRegisterAction('!Shutdown');
   UnRegisterAction('!Logout');
@@ -160,11 +191,17 @@ var
 var
   ShutDown : TSEShutdown;
   dmsg : String;
-  n : integer;
+  n,k : integer;
   BarList : THandleArray;
   BarHidden : boolean;
 begin
-  if msg.Msg = WM_SHARPEUPDATEACTIONS then
+  if msg.Msg = WM_INPUTLANGCHANGE then
+  begin
+    UnRegisterKeyBoardLocals;
+    LocalsList.Refresh;
+    RegisterKeyBoardLocals;
+  end
+  else if msg.Msg = WM_SHARPEUPDATEACTIONS then
     RegisterActions
   else if msg.Msg = WM_SHARPEACTIONMESSAGE then
   begin
@@ -208,6 +245,19 @@ begin
       EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
     end;
 
+    // Keyboard Lacout Changed?
+    if (Msg.LParam >= 100) then
+    begin
+      n := Msg.LParam - 100;
+      k := 0;
+      if n <= LocalsList.Count - 1 then
+      begin
+        SystemParametersInfo(SPI_SETDEFAULTINPUTLANG, k, @LocalsList.Items[n].Layout, SPIF_SENDCHANGE or SPIF_UPDATEINIFILE);
+        PostMessage(HWND_BROADCAST,WM_INPUTLANGCHANGEREQUEST,0,LocalsList.Items[n].Layout);
+      end;
+      exit;
+    end;
+
   case Msg.LParam of
       5: begin
            // Lock Work Station / Switch User;
@@ -242,8 +292,6 @@ begin
          end;
     end;
     setlength(EnumParam.wndlist,0);
-
-
   end;
 end;
 
