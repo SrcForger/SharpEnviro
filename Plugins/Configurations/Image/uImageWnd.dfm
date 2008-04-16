@@ -135,9 +135,14 @@ object frmImage: TfrmImage
             ImageIndex = 0
             Visible = True
           end>
+        Buttons = <>
         RoundValue = 10
         Border = True
-        TabWidth = 62
+        TextSpacingX = 8
+        TextSpacingY = 6
+        IconSpacingX = 4
+        IconSpacingY = 4
+        BtnWidth = 24
         TabIndex = 0
         TabAlignment = taLeftJustify
         AutoSizeTabs = True
@@ -206,7 +211,6 @@ object frmImage: TfrmImage
               DirectInput = False
               TabOrder = 0
               OnChange = imagefileChange
-              ExplicitTop = 23
             end
           end
           object pageurl: TJvStandardPage
@@ -240,7 +244,7 @@ object frmImage: TfrmImage
               AlignWithMargins = True
               Left = 0
               Top = 49
-              Width = 79
+              Width = 351
               Height = 13
               Margins.Left = 0
               Margins.Top = 8
@@ -248,6 +252,7 @@ object frmImage: TfrmImage
               Margins.Bottom = 0
               Align = alTop
               Caption = 'Refresh Interval'
+              ExplicitWidth = 79
             end
             object Label7: TLabel
               AlignWithMargins = True
@@ -396,7 +401,6 @@ object frmImage: TfrmImage
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UIC_colorblend'
-          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -437,7 +441,6 @@ object frmImage: TfrmImage
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UIC_ColorAlpha'
-          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -571,7 +574,10 @@ object frmImage: TfrmImage
                 Expanded = False
                 ValueEditorType = vetColor
                 Value = 0
+                ValueMin = 0
+                ValueMax = 255
                 Visible = True
+                DisplayPercent = False
                 ColorEditor = IconColors.Item0
                 Tag = 0
               end>
@@ -621,7 +627,6 @@ object frmImage: TfrmImage
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UIC_colorblend'
-          Color = clWhite
           ParentBackground = False
           TabOrder = 0
           RoundValue = 10
@@ -662,7 +667,6 @@ object frmImage: TfrmImage
           Align = alTop
           BevelOuter = bvNone
           Caption = 'UIC_blendalpha'
-          Color = clWhite
           ParentBackground = False
           TabOrder = 1
           RoundValue = 10
@@ -703,6 +707,7 @@ object frmImage: TfrmImage
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
+    PopulateThemeColors = True
     Width = 329
     ShowCaptions = True
     SwatchHeight = 16
