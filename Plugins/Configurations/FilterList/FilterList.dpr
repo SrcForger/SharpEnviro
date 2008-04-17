@@ -78,6 +78,8 @@ begin
   except
     result := False;
   end;
+
+  BroadcastGlobalUpdateMessage(suTaskFilter);
 end;
 
 function OpenEdit(AOwner: hwnd; AEditMode:TSCE_EDITMODE_ENUM): hwnd;

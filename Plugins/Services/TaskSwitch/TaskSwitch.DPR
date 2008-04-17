@@ -446,14 +446,17 @@ begin
       ms.Free;
       message.result := 1;
     end;
-  end;
-
+  end else
   if message.Msg = WM_SHARPEACTIONMESSAGE then
   begin
     if (Message.LParam >= 0) and (Message.LParam <= High(Actions)) then
-      CycleWindows(Message.LParam);    
-  end;
-
+      CycleWindows(Message.LParam);
+  end else
+  if Message.Msg = WM_SHARPEUPDATESETTINGS then
+  begin
+    if Message.WParam = Integer(suTaskFilter) then
+      Filters.Load;
+  end else
   if Message.Msg = WM_SHARPEUPDATEACTIONS then
     RegisterActions;
 end;
