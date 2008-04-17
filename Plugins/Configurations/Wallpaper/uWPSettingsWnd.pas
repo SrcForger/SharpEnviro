@@ -337,13 +337,8 @@ begin
     bInvalid := true;
   if FCurrentWP.Mon = nil then
     bInvalid := true;
-  if ((not (FileExists(FCurrentWP.FileName))) or
-    (FCurrentWP.FileName = '')) then begin
-    bInvalid := True;
-  end;
 
   if bInvalid then begin
-    FCurrentWP.FileName := '';
     exit;
   end;
 
