@@ -106,8 +106,6 @@ begin
   DeallocateHWnd(h);
   AE.Free;
 
-  LocalsList.Free;
-
   UnRegisterKeyBoardLocals;
   UnRegisterAction('!Restart');
   UnRegisterAction('!Shutdown');
@@ -117,6 +115,8 @@ begin
   UnRegisterAction('!MinimizeAll');
   UnRegisterAction('!RestoreAll');
   UnRegisterAction('!ToggleAllBars');
+
+  LocalsList.Free;  
 end;
 
 { TActionEvent }
