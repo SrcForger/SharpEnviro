@@ -300,7 +300,11 @@ begin
   Reg.OpenKey('\Software\Microsoft\Windows\CurrentVersion\Themes\LastTheme',False);
   Reg.WriteString('Wallpaper', winWallPath+'.bmp');
   Reg.Free;
-  SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(winWallPath+'.bmp'), SPIF_SENDCHANGE);
+  try
+    SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, nil, SPIF_SENDCHANGE);
+  except
+      SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Failed to Send SPI_SETDESKWALLPAPER') + WP.Name),clblue,DMT_ERROR);
+  end;
 
   SendMessage(FindWindow('Progman','Program Manager'),WM_COMMAND,106597, 0);
 end;
