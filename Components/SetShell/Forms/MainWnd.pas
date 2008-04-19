@@ -98,7 +98,7 @@ begin
     finally
       ShutDown.Free;
     end;
-  end;
+  end else Application.Terminate;
 end;
 
 end.
