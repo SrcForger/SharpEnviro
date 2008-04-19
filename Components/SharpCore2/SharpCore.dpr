@@ -117,7 +117,7 @@ begin
   end;
 
   AppendMenu(menPopup, MF_POPUP, menServices, 'Services');
-  AppendMenu(menPopup, 0, ID_SHELLSWITCH, 'Set Explorer as shell');
+  AppendMenu(menPopup, 0, ID_SHELLSWITCH, 'Change Shell');
   AppendMenu(menPopup, MF_SEPARATOR, 0, nil);
   AppendMenu(menPopup, 0, ID_REBOOT, 'Reboot SharpE');
   AppendMenu(menPopup, 0, ID_SHUTDOWN, 'Shutdown SharpE');
@@ -337,6 +337,7 @@ begin
     WM_COMMAND: begin // Menu commands
         if HiWord(wParam) = 0 then
           case LoWord(wParam) of
+            ID_SHELLSWITCH: SharpExecute('SetShell.exe');
             ID_EXIT: SendMessage(hWnd, WM_CLOSE, 0, 0);
             ID_SHUTDOWN: begin
                 StopAll;
