@@ -330,7 +330,7 @@ begin
             end;
           end;
 
-          if e then Result := -1
+          if e then Result := 1
             else Result := 0;
         end;
 
