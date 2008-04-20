@@ -278,10 +278,10 @@ var
   mess: integer;
   lpara: lparam;
   stemp: string;
+  bsm: boolean;
 
 function GetSharpeDirectory: PChar; forward;
-function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam): integer;
-  forward;
+function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam; pSendMessage: boolean = False): integer; forward;
 
 { HELPER FUNCTIONS }
 
@@ -838,7 +838,7 @@ begin
   end;
 end;
 
-function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam): integer;
+function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam; pSendMessage: boolean = False): integer;
 var
   ha : THandleArray;
   n : integer;
@@ -847,7 +847,9 @@ var
 
   function EnumThreadWindowsProc(Wnd: hwnd; param: lParam): boolean; export; stdcall;
   begin
-    PostMessage(wnd, mess, wpara, lpara);
+    if bsm then
+      SendMessage(wnd, mess, wpara, lpara)
+    else PostMessage(wnd, mess, wpara, lpara);
     inc(i);
     result := true;
   end;
@@ -888,9 +890,10 @@ begin
   mess := msg;
   wpara := wpar;
   lpara := lpar;
+  bsm := pSendMessage;
   i := 0;  
 
-  for n := 0 to High(ha) do
+  for n := High(ha) downto 0 do
   begin
     ThreadID := GetWindowThreadProcessId(ha[n],nil);
     if ThreadID <> 0 then

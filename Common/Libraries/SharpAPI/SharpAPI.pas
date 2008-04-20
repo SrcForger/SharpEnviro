@@ -209,7 +209,7 @@ type
   TSU_UPDATE_ENUM = (suSkin, suSkinFileChanged, suScheme, suTheme, suIconSet,
     suBackground, suService, suDesktopIcon, suSharpDesk, suSharpMenu,
     suSharpBar, suCursor, suWallpaper, suDeskArea, suSkinFont, suDesktopObject,
-    suModule, suVWM, suCenter, suTaskFilter, suHotkey);
+    suModule, suVWM, suCenter, suTaskFilter, suHotkey, suDesktopBackgroundChanged);
   TSCE_EDITMODE_ENUM = (sceAdd, sceEdit, sceDelete);
   TSC_MODE_ENUM = (scmLive, scmApply);
 
@@ -246,7 +246,7 @@ function SendDebugMessageEx(module: pChar; msg: pChar; color: integer; MessageTy
 
 function SendConsoleMessage(msg: string): hresult; external 'SharpAPI.dll';
 function SharpExecute(data: string): hresult; external 'SharpAPI.dll';
-function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam): integer; external 'SharpAPI.dll';
+function SharpEBroadCast(msg: integer; wpar: wparam; lpar: lparam; pSendMessage: boolean = False): integer; external 'SharpAPI.dll';
 
 function SendMessageTo(WndName: string; msg: integer; wpar: wparam; lpar: lparam): boolean; external 'SharpAPI.dll';
 
