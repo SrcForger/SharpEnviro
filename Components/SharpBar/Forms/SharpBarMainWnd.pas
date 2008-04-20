@@ -126,7 +126,6 @@ type
     FSuspended: boolean;
     FBarID: integer;
     FStartup: Boolean;
-    FBarLock: Boolean;
     FTopZone: TBitmap32;
     FBottomZone: TBitmap32;
     FBGImage: TBitmap32;
@@ -140,7 +139,6 @@ type
     procedure LoadBarModules(XMLElem: TJclSimpleXMlElem);
 
     procedure WMDeskClosing(var msg: TMessage); message WM_DESKCLOSING;
-    procedure WMDeskBackgroundChange(var msg: TMessage); message WM_DESKBACKGROUNDCHANGED;
 
     // Bad Show/Hide Messages
     procedure WMShowBar(var msg: TMessage); message WM_SHOWBAR;
@@ -393,35 +391,6 @@ begin
   DelayTimer1.Enabled := True;
 end;
 
-// The Desktop Background has changed
-
-procedure TSharpBarMainForm.WMDeskBackgroundChange(var msg: TMessage);
-begin
-  if ModuleManager = nil then
-    exit;
-  if FSuspended then
-    exit;
-  if Closing then
-    exit;
-
-  FBarLock := True;
-
-  UpdateBGZone;
-
-  SharpEBar.Throbber.UpdateSkin;
-  if SharpEBar.Throbber.Visible then
-    SharpEbar.Throbber.Repaint;
-
-  ModuleManager.BroadcastPluginUpdate(suBackground);
-  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
-
-  FBarLock := False;
-
-  if ThemeHideTimer.Enabled then
-    ThemeHideTimer.OnTimer(ThemeHideTimer);
-
-end;
-
 // SharpE Actions
 
 procedure TSharpBarMainForm.WMUpdateBangs(var Msg: TMessage);
@@ -521,6 +490,16 @@ begin
 
   // Step1: Update settings and prepare modules for updating
   case msg.WParam of
+    Integer(suDesktopBackgroundChanged): begin
+      UpdateBGZone;
+      SharpEBar.Throbber.UpdateSkin;
+      if SharpEBar.Throbber.Visible then
+         SharpEbar.Throbber.Repaint;
+      ModuleManager.BroadcastPluginUpdate(suBackground);
+      RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+      if ThemeHideTimer.Enabled then
+        ThemeHideTimer.OnTimer(ThemeHideTimer);
+    end;
     Integer(suSkinFont): begin
         SharpThemeApi.LoadTheme(True, [tpSkinFont]);
         SkinManager.RefreshControls;
@@ -546,7 +525,6 @@ begin
   if (msg.WParam = Integer(suScheme))
     or (msg.WParam = Integer(suSkinFileChanged)) then begin
     // Only update the skin if scheme or skin file changed...
-    FBarLock := True;
     h := Height;
     SkinManager.UpdateScheme;
     SkinManager.UpdateSkin;
@@ -576,9 +554,6 @@ begin
     SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));     
   end;
 
-  if FBarLock then begin
-    FBarLock := False;
-  end;
 end;
 
 procedure TSharpBarMainForm.WMVWMDesktopChanged(var msg: TMessage);
@@ -1031,7 +1006,6 @@ begin
   //  SharpEBar.Throbber.SpecialBackground := FBGImage;
 
   FStartup := True;
-  FBarLock := False;
 
   randomize;
 
@@ -1166,6 +1140,8 @@ begin
   SharpApi.SharpEBroadCast(WM_UPDATEBARWIDTH, 0, 0);
   ModuleManager.FixModulePositions;
   SaveBarSettings;
+
+  SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);  
 end;
 
 procedure TSharpBarMainForm.Right1Click(Sender: TObject);
