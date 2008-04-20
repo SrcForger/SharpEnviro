@@ -431,7 +431,7 @@ begin
 
     FLoading := True;
     ThemeManager.SetTheme(tmpTheme.Name);
-    SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1);
+    SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1, True);
   end;
 end;
 

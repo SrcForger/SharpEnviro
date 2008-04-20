@@ -197,7 +197,7 @@ procedure TfrmOptions.sceGlassOptionsUiChange(Sender: TObject);
 begin
   if Not(FUpdating) then begin
     Save;
-    BroadcastGlobalUpdateMessage(suScheme, 0);
+    BroadcastGlobalUpdateMessage(suScheme, 0, True);
   end;
 end;
 

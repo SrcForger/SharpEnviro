@@ -209,7 +209,7 @@ begin
       lbSchemeList.ItemIndex := 0;
 
     XmlSetScheme(FSchemeManager.PluginID, TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data).Name);
-    SharpCenterApi.BroadcastGlobalUpdateMessage(suScheme, 0);
+    SharpCenterApi.BroadcastGlobalUpdateMessage(suScheme, 0, True);
 
     LockWindowUpdate(0);
     sl.Free;
@@ -281,7 +281,7 @@ begin
     // Set Scheme
     if AItem <> nil then begin
       XmlSetScheme(FSchemeManager.PluginID, TSchemeItem(AItem.Data).Name);
-      SharpCenterApi.BroadcastGlobalUpdateMessage(suScheme, 0);
+      SharpCenterApi.BroadcastGlobalUpdateMessage(suScheme, 0, True);
     end;
 
   end
