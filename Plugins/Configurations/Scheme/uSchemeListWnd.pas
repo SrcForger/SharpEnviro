@@ -197,19 +197,18 @@ begin
           break;
         end;
       end;
-
-      if lbSchemeList.ItemIndex = -1 then
-        lbSchemeList.ItemIndex := 0;
     end;
 
   finally
 
     if iSel < lbSchemeList.Count then
-      lbSchemeList.ItemIndex := iSel else
+      lbSchemeList.ItemIndex := iSel
+    else begin
       lbSchemeList.ItemIndex := 0;
+      SharpCenterApi.BroadcastGlobalUpdateMessage(suScheme, 0, True);
+    end;
 
     XmlSetScheme(FSchemeManager.PluginID, TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data).Name);
-    SharpCenterApi.BroadcastGlobalUpdateMessage(suScheme, 0, True);
 
     LockWindowUpdate(0);
     sl.Free;
