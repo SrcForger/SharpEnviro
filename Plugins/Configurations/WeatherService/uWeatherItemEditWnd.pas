@@ -52,6 +52,7 @@ type
     valID: TJvRequiredFieldValidator;
     valName: TJvRequiredFieldValidator;
     pilError: TPngImageList;
+    Label1: TLabel;
 
     procedure UpdateEditState(Sender: TObject);
     procedure btnSearchClick(Sender: TObject);

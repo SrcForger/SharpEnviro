@@ -3,7 +3,7 @@ object frmItemEdit: TfrmItemEdit
   Top = 0
   BorderStyle = bsNone
   Caption = 'Edit Form'
-  ClientHeight = 92
+  ClientHeight = 126
   ClientWidth = 490
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,19 +20,21 @@ object frmItemEdit: TfrmItemEdit
     Left = 0
     Top = 0
     Width = 490
-    Height = 92
+    Height = 126
     ActivePage = pagEdit
     PropagateEnable = False
     Align = alClient
     ParentBackground = True
+    ExplicitHeight = 92
     object pagEdit: TJvStandardPage
       Left = 0
       Top = 0
       Width = 490
-      Height = 92
+      Height = 126
+      ExplicitHeight = 92
       DesignSize = (
         490
-        92)
+        126)
       object btnSearch: TPngSpeedButton
         Left = 387
         Top = 5
@@ -41,6 +43,17 @@ object frmItemEdit: TfrmItemEdit
         Anchors = [akTop, akRight]
         Caption = 'Find station'
         OnClick = btnSearchClick
+      end
+      object Label1: TLabel
+        Left = 56
+        Top = 91
+        Width = 400
+        Height = 30
+        Caption = 
+          'Changes will take effect after the Weather Service updated the n' +
+          'ew informations from the internet on the next sheduled update. T' +
+          'his can take several minutes.'
+        WordWrap = True
       end
       object edName: TLabeledEdit
         Left = 56

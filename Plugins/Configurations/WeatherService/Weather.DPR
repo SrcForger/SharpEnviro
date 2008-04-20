@@ -64,6 +64,7 @@ begin
   except
     result := False;
   end;
+  BroadcastGlobalUpdateMessage(suWeather);  
 end;
 
 function OpenEdit(AOwner:Hwnd; AEditMode:TSCE_EDITMODE_ENUM):Hwnd;
