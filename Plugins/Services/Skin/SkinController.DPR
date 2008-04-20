@@ -89,7 +89,7 @@ begin
     case Message.LParam of
       0 : begin
             SkinServer.UpdateStreamFile;
-            SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged);
+            SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged,-1,True);
           end;
     end;
   end;

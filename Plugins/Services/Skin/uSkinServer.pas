@@ -63,7 +63,7 @@ procedure TSkinServer.FormCreate(Sender: TObject);
 begin
   FSkin := TSharpESkin.Create(self,ALL_SHARPE_SKINS);
   UpdateStreamFile;
-  SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged);
+  SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged,-1,True);
 end;
 
 procedure TSkinServer.FormDestroy(Sender: TObject);
@@ -110,7 +110,7 @@ begin
   if (msg.WParam = Integer(suSkin)) or (msg.WParam = Integer(suTheme)) then
   begin
     UpdateStreamFile;
-    SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged);
+    SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged,-1,True);
   end;
 end;
 
