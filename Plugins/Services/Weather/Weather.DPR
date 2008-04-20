@@ -43,6 +43,16 @@ uses
 
 {$R *.RES}
 
+type
+  TActionEvent = Class(Tobject)
+  Procedure MessageHandler(var msg: TMessage);
+  end;
+
+
+var
+  AE: TActionEvent;
+  h: THandle;
+
 function Start(owner: hwnd): hwnd;
 var
   fn: string;
@@ -74,14 +84,21 @@ begin
     Debug('Error Initialising TWeatherMgr',DMT_ERROR);
   End;
 
+  // Message Handler
+  ae := TActionEvent.Create;
+  h := allocatehwnd(Ae.MessageHandler);
+
   ServiceDone('Weather');
 end;
 
 procedure Stop;
 begin
-    FreeAndNil(WeatherOptions);
-    Freeandnil(WeatherList);
-    FreeAndNil(WeatherMgr);
+  DeallocateHWnd(h);
+  AE.Free;
+
+  FreeAndNil(WeatherOptions);
+  Freeandnil(WeatherList);
+  FreeAndNil(WeatherMgr);
 end;
 
 function SCMsg(msg: string): integer;
@@ -91,7 +108,18 @@ begin
     debug('Force Weather Update', DMT_INFO);
     WeatherMgr.ForceUpdate;
   end;
+end;
 
+procedure TActionEvent.MessageHandler(var msg: TMessage);
+begin
+  if msg.Msg = WM_SHARPEUPDATESETTINGS then
+  begin
+    if (msg.wparam = Integer(suWeather)) then
+    begin
+      WeatherList.Clear;
+      WeatherList.Load;
+    end;
+  end;
 end;
 
 function GetMetaData(): TMetaData;
