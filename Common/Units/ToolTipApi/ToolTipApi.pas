@@ -94,7 +94,6 @@ begin
   ti.cbSize := SizeOf(ti);
   ti.uFlags := TTF_TRANSPARENT or TTF_SUBCLASS;
   ti.hwnd := Control.Handle;
-  ti.lpszText := LPSTR_TEXTCALLBACK;
   ti.lpszText := PChar(Titel);
   ti.uId := Id;
   ti.rect := Rect;
@@ -128,12 +127,12 @@ end;
 
 procedure UpdateToolTipTextByCallback(TipWnd : hwnd; Control: TWinControl; ID : Cardinal);
 var
-  ti: TToolInfo;
+  ti: TToolInfoW;
 begin
   ti.cbSize := SizeOf(ti);
   ti.uFlags := TTF_TRANSPARENT or TTF_SUBCLASS;
   ti.hwnd := Control.Handle;
-  ti.lpszText := LPSTR_TEXTCALLBACK;
+  ti.lpszText := LPSTR_TEXTCALLBACKW;
   ti.uId := ID;
   SendMessage(TipWnd, TTM_UPDATETIPTEXT, 0, Integer(@ti));
 end;
@@ -164,12 +163,12 @@ end;
 
 procedure AddToolTipByCallBack(TipWnd : hwnd; Control: TWinControl; ID : Cardinal; Rect : TRect);
 var
-  ti: TToolInfo;
+  ti: TToolInfoW;
 begin
   ti.cbSize := SizeOf(ti);
   ti.uFlags := TTF_TRANSPARENT or TTF_SUBCLASS;
   ti.hwnd := Control.Handle;
-  ti.lpszText := LPSTR_TEXTCALLBACK;
+  ti.lpszText := LPSTR_TEXTCALLBACKW;
   ti.uId := ID;
   ti.rect := Rect;
   SendMessage(TipWnd, TTM_ADDTOOL, 0, Integer(@ti));
