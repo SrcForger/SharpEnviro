@@ -35,8 +35,8 @@ uses
   Windows;
 
 
-function BroadcastGlobalUpdateMessage(AUpdateType:TSU_UPDATE_ENUM;
-  APluginID: Integer=-1) : boolean;
+function BroadcastGlobalUpdateMessage(AUpdateType: TSU_UPDATE_ENUM;
+  APluginID: Integer = -1; ASendMessage: boolean = False): boolean;
     external 'SharpCenterAPI.dll' name 'BroadcastGlobalUpdateMessage';
 
 function BroadcastCenterMessage(wpar: wparam; lpar: lparam): boolean;

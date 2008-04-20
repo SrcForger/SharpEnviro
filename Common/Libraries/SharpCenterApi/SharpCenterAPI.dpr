@@ -162,10 +162,10 @@ begin
 end;
 
 function BroadcastGlobalUpdateMessage(AUpdateType: TSU_UPDATE_ENUM;
-  APluginID: Integer = -1): boolean;
+  APluginID: Integer = -1; ASendMessage: boolean = False): boolean;
 begin
   Result := True;
-  SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(AUpdateType), APluginID);
+  SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(AUpdateType), APluginID, ASendMessage);
 end;
 
 function CenterDefineEditState(AEditing: Boolean): boolean;
