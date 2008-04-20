@@ -407,7 +407,7 @@ begin
       BackgroundImage.ForceFullInvalidate;
       SharpDesk.BackgroundLayer.Update;
       SharpDesk.BackgroundLayer.Changed;
-      SharpApi.SharpEBroadCast(WM_DESKBACKGROUNDCHANGED,0,0);
+      SharpCenterApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
     end;
   end;
 end;
@@ -546,7 +546,7 @@ begin
     BackgroundImage.ForceFullInvalidate;
     SharpDesk.BackgroundLayer.Update;
     SharpDesk.BackgroundLayer.Changed;
-    SharpApi.SharpEBroadCast(WM_DESKBACKGROUNDCHANGED,0,0);
+    SharpCenterApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
   end;
 end;
 
@@ -592,8 +592,9 @@ begin
     BackgroundImage.ForceFullInvalidate;
     SharpDesk.BackgroundLayer.Update;
     SharpDesk.BackgroundLayer.Changed;
-    SharpApi.SharpEBroadCast(WM_DESKBACKGROUNDCHANGED,0,0);
     SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
+    if msg.WParam = Integer(suWallpaper) then
+      SharpCenterApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
   end;
 
   if (msg.WParam = Integer(suSharpDesk)) then
