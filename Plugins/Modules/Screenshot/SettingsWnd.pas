@@ -32,45 +32,44 @@ uses
   Windows, Messages, Types, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls,
   // SharpE Units
-  SharpApi, Buttons, JvExStdCtrls, JvListBox, JvDriveCtrls, JvCombobox, JvgPage,
-  Mask, JvExMask, JvSpin, Spin;
+  SharpApi, Buttons, Mask, Spin, FileCtrl;
 
 type
   TSettingsForm = class(TForm)
     Button1: TButton;
     Button2: TButton;
-    JvgPageControl1: TJvgPageControl;
-    TabSheet1: TTabSheet;
-    TabSheet2: TTabSheet;
-    GroupBox2: TGroupBox;
+    PageControl1: TPageControl;
+    General: TTabSheet;
     GroupBox3: TGroupBox;
     GroupBox5: TGroupBox;
     cbxDateTime: TCheckBox;
     cbxDateTimeFormat: TComboBox;
-    GroupBox1: TGroupBox;
-    cbxClipboard: TCheckBox;
-    cbxSaveAs: TCheckBox;
-    cbxSaveToFile: TCheckBox;
-    cbxActive: TCheckBox;
     GroupBox4: TGroupBox;
     Label2: TLabel;
     tbxFilename: TEdit;
     tbxNum: TEdit;
     cbxNum: TCheckBox;
-    cbxFormat: TComboBox;
+    GroupBox1: TGroupBox;
     Label1: TLabel;
-    DlbFolders: TJvDirectoryListBox;
-    JvDriveCombo1: TJvDriveCombo;
-    TabSheet3: TTabSheet;
+    cbxClipboard: TCheckBox;
+    cbxSaveAs: TCheckBox;
+    cbxSaveToFile: TCheckBox;
+    cbxActive: TCheckBox;
+    cbxFormat: TComboBox;
+    TabSheet4: TTabSheet;
+    GroupBox2: TGroupBox;
+    TabSheet5: TTabSheet;
     GroupBox6: TGroupBox;
-    GroupBox7: TGroupBox;
     Label3: TLabel;
     chkJpgGrayscale: TCheckBox;
-    Label4: TLabel;
     speJpgCompression: TSpinEdit;
+    GroupBox7: TGroupBox;
+    Label4: TLabel;
     spePngCompression: TSpinEdit;
     GroupBox8: TGroupBox;
     Memo1: TMemo;
+    JvDriveCombo1: TDriveComboBox;
+    DlbFolders: TDirectoryListBox;
     procedure cbxFormatChange(Sender: TObject);
     procedure cbxDateTimeClick(Sender: TObject);
     procedure cbxNumClick(Sender: TObject);
