@@ -57,6 +57,7 @@ begin
   if LocalsList.Count <= 1 then
     exit;
 
+  RegisterActionEx(PChar('!KLCycle'),'Keyboard Layouts',h,99);
   for n := 0 to LocalsList.Count - 1 do
     RegisterActionEx(PChar('!KL'+LocalsList[n].DisplayName),'Keyboard Layouts',h,100+n);
 end;
@@ -68,8 +69,9 @@ begin
   if LocalsList.Count <= 1 then
     exit;
 
+  UnRegisterAction(PChar('!KLCycle'));
   for n := 0 to LocalsList.Count - 1 do
-    UnRegisterAction(PChar('!KL'+LocalsList[n].DisplayName));    
+    UnRegisterAction(PChar('!KL'+LocalsList[n].DisplayName));
 end;
 
 procedure RegisterActions;
@@ -191,9 +193,10 @@ var
 var
   ShutDown : TSEShutdown;
   dmsg : String;
-  n,k : integer;
+  n,k,j : integer;
   BarList : THandleArray;
   BarHidden : boolean;
+  AL : TJclKeyboardLayout;
 begin
   if msg.Msg = WM_INPUTLANGCHANGE then
   begin
@@ -246,6 +249,22 @@ begin
     end;
 
     // Keyboard Lacout Changed?
+    if (Msg.LParam = 99) then
+    begin
+      k := 0;    
+      AL := LocalsList.ActiveLayout;
+      for n := 0 to LocalsList.Count - 1 do
+        if AL = LocalsList.Items[n] then
+        begin
+          j := n + 1;
+          if j > LocalsList.Count - 1 then
+            j := 0;
+          SystemParametersInfo(SPI_SETDEFAULTINPUTLANG, k, @LocalsList.Items[j].Layout, SPIF_SENDCHANGE or SPIF_UPDATEINIFILE);
+          PostMessage(HWND_BROADCAST,WM_INPUTLANGCHANGEREQUEST,0,LocalsList.Items[j].Layout);
+          break;
+        end;
+      exit;
+    end else
     if (Msg.LParam >= 100) then
     begin
       n := Msg.LParam - 100;
