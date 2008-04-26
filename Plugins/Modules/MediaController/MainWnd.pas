@@ -30,11 +30,14 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms,
   Dialogs, StdCtrls, SharpEButton, SharpESkinManager, 
-  SharpApi, Menus, Math, ShellApi,
-  GR32,  Types, SharpEBaseControls, ExtCtrls;
+  SharpApi, Menus, Math, ShellApi, MediaPlayerList,
+  GR32,  Types, SharpEBaseControls, ExtCtrls, Registry,
+  uSharpEMenuWnd, uSharpEMenu, uSharpEMenuSettings, uSharpEMenuItem;
 
 
 type
+  TControlCommandType = (cctPlay,cctPause,cctStop,cctNext,cctPrev);
+
   TMainForm = class(TForm)
     SharpESkinManager1: TSharpESkinManager;
     btn_next: TSharpEButton;
@@ -42,6 +45,7 @@ type
     btn_pause: TSharpEButton;
     btn_stop: TSharpEButton;
     btn_play: TSharpEButton;
+    btn_pselect: TSharpEButton;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -50,19 +54,29 @@ type
     procedure btn_pauseClick(Sender: TObject);
     procedure btn_playClick(Sender: TObject);
     procedure btn_nextClick(Sender: TObject);
+    procedure mnOnClick(pItem : TSharpEMenuItem; var CanClose : boolean);
+    procedure btn_pselectMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   protected
   private
     Background  : TBitmap32;
+    FMPlayers : TMediaPlayerList;
     procedure WMExecAction(var msg : TMessage); message WM_SHARPEACTIONMESSAGE;
+    procedure SendAppCommand(pType : TControlCommandType);
+    function GetStartPlayer(Root : HKEY; Key : String; Value : String) : String;
   public
     ModuleID : integer;
     BarID : integer;
     BarWnd : hWnd;
+    sPlayer : String;
+    sPSelect : Boolean;
     procedure LoadSettings;
+    procedure SaveSettings;
     procedure SetSize(NewWidth : integer);
     procedure ReAlignComponents(BroadCast : boolean);
     procedure UpdateBackground(new : integer = -1);
     procedure UpdateSharpEActions;
+    procedure UpdateSelectIcon;
   end;
 
 var
@@ -71,9 +85,48 @@ var
 implementation
 
 
-uses uSharpBarAPI;
+uses uSharpBarAPI,JclSimpleXML,PlayerSelectWnd;
 
 {$R *.dfm}
+
+function TMainForm.GetStartPlayer(Root : HKEY; Key : String; Value : String) : String;
+var
+  Reg : TRegistry;
+  PlayerPath : String;
+  PlayerSelectForm: TPlayerSelectForm;
+begin
+  Reg := TRegistry.Create;
+  Reg.RootKey := Root;
+  Reg.Access := KEY_READ;
+  PlayerPath := '';
+  if Reg.OpenKey(Key,False) then
+  begin
+    PlayerPath := Reg.ReadString(Value);
+    Reg.CloseKey;
+  end;
+  if not FileExists(PlayerPath) then
+  begin
+    PlayerSelectForm := TPlayerSelectForm.Create(self);
+    if PlayerSelectForm.ShowModal = mrOk then
+       PlayerPath := PlayerSelectForm.edit_player.Text
+       else PlayerPath := '';
+    PlayerSelectForm.Free;
+  end;
+  result := PlayerPath;
+  SharpApi.SharpExecute('_nohist,' + PlayerPath);
+end;
+
+procedure TMainForm.UpdateSelectIcon;
+var
+  mitem : TMediaPlayerItem;
+begin
+  mitem := FMPlayers.GetItem(sPlayer);
+  if mitem <> nil then
+  begin
+    btn_pselect.Glyph32.Assign(mitem.Icon);
+    btn_pselect.UpdateSkin;
+  end;
+end;
 
 procedure TMainForm.UpdateSharpEActions;
 begin
@@ -95,9 +148,112 @@ begin
   end;
 end;
 
-procedure TMainForm.LoadSettings;
+procedure TMainForm.SaveSettings;
+var
+  XML : TJclSimpleXML;
+  Dir : String;
+  FName : String;
+  n : integer;
+  mitem : TMediaPlayerItem;
 begin
+  XML := TJclSimpleXML.Create;
+  XML.Root.Name := 'MediaControllerModuleSettings';
+  with XML.Root.Items do
+  begin
+    Add('Player',sPlayer);
+    AdD('PSelect',sPSelect);
+  end;
+  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+  XML.Free;
+
+  XML := TJclSimpleXML.Create;
+  XML.Root.Name := 'MediaControllerPlayers';
+  for n := 0 to FMPlayers.Items.Count - 1 do
+    with XML.Root.Items.Add('Item').Items do
+    begin
+      mitem := TMediaPlayerItem(FMPlayers.Items[n]);
+      Add('Name',mitem.Name);
+      Add('Path',mitem.PlayerPath);
+    end;
+  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\';
+  FName := Dir + 'MediaPlayers.xml';
+  if not DirectoryExists(Dir) then
+     ForceDirectories(Dir);
+  XML.SaveToFile(FName + '~');
+  if FileExists(FName) then
+     DeleteFile(FName);
+  RenameFile(FName + '~',FName);
+  XML.Free;
+end;
+
+procedure TMainForm.LoadSettings;
+var
+  XML : TJclSimpleXML;
+  fileloaded : boolean;
+  mitem : TMediaPlayerItem;
+  n : integer;
+begin
+  sPlayer := 'Windows Media Player';
+  sPSelect := True;
+
+  XML := TJclSimpleXML.Create;
+  try
+    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    fileloaded := True;
+  except
+    fileloaded := False;
+  end;
+  if fileloaded then
+    with XML.Root.Items do
+    begin
+      sPlayer := Value('Player',sPlayer);
+      sPSelect := BoolValue('PSelect',sPSelect);
+    end;
+  XML.Free;
+
+  // temporary override... remove when settings window is done!
+  sPSelect := True;
+
+  XML := TJclSimpleXML.Create;
+  try
+    XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Module Settings\MediaPlayers.xml');
+    fileloaded := True;
+  except
+    fileloaded := False;
+  end;
+  if fileloaded then
+    with XML.Root.Items do
+    begin
+      for n := 0 to Count - 1 do
+      with XML.Root.Items.Item[n].Items do
+      begin
+        mitem := FMPlayers.GetItem(Value('Name','###error###'));
+        if mitem <> nil then
+          mitem.PlayerPath := Value('Path','');
+      end;
+    end;
+  XML.Free;
+
   UpdateActions;
+  UpdateSelectIcon;
+end;
+
+procedure TMainForm.mnOnClick(pItem: TSharpEMenuItem; var CanClose: boolean);
+var
+  mitem : TMediaPlayerItem;
+begin
+  CanClose := True;
+
+  if pItem = nil then
+    exit;
+
+  mitem := FMPlayers.GetItem(pItem.Caption);
+  if mitem <> nil then
+  begin
+    sPlayer := mitem.Name;
+    UpdateSelectIcon;
+  end;
+  SaveSettings;
 end;
 
 procedure TMainForm.UpdateBackground(new : integer = -1);
@@ -128,6 +284,7 @@ begin
   btn_stop.Width    := btn_stop.Height;
   btn_prev.Width    := btn_prev.Height;
   btn_next.Width    := btn_next.Height;
+  btn_pselect.Width := btn_pselect.Height;
 
   btn_play.Left := 2;
   btn_pause.Left := btn_play.Left + btn_play.Width + 1;
@@ -136,6 +293,13 @@ begin
   btn_next.Left := btn_prev.Left + btn_prev.Width + 1;
   i := 0;
 
+  if sPSelect then
+  begin
+    i := 3 + btn_pselect.Width;
+    btn_pselect.Left := btn_next.Left + btn_next.Width + 3;
+    btn_pselect.Visible := True;
+  end else btn_pselect.Visible := False;
+
   newWidth := btn_next.Left + btn_next.Width + i + 2;
   Tag := NewWidth;
   Hint := inttostr(NewWidth);
@@ -143,35 +307,39 @@ begin
      if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
 end;
 
-procedure BroadCastAppCommand(pType : integer);
+procedure TMainForm.SendAppCommand(pType : TControlCommandType);
 var
   wnd : hwnd;
-  result : boolean;
+  mitem : TMediaPlayerItem;
+  param : word;
 begin
-  result := False;
-  if (IsServiceStarted('MultimediaInput') = MR_STARTED) and
-     (IsServiceStarted('Shell') = MR_STARTED) then
+  mitem := FMPlayers.GetItem(sPlayer);
+  if mitem <> nil then
   begin
-    wnd := SharpApi.GetShellTaskMgrWindow;
+    wnd := FMPlayers.GetPlayerHandle(sPlayer);
     if wnd <> 0 then
-      SendMessage(wnd,WM_SHELLHOOK,HSHELL_APPCOMMAND,MakeLParam(0,pType));
-  end else
-  begin
-    wnd := GetTopWindow(0);
-    while (wnd <> 0) and (not result) do
     begin
-      if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) or
-         (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
-         ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
-         (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
-         (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) then
-//       (GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST = 0) then
-        begin
-          result := (SendMessage(wnd,WM_APPCOMMAND,0,MakeLParam(0,pType)) <> 0);
-        end;
-      wnd := GetNextWindow(wnd,GW_HWNDNEXT);
+      case pType of
+        cctPlay  : param := mitem.btnPlay;
+        cctPause : param := mitem.btnPause;
+        cctStop  : param := mitem.btnStop;
+        cctNext  : param := mitem.btnNext;
+        cctPrev  : param := mitem.btnPrev;
+        else param := 0;
+      end;
+      if mitem.AppCommand then
+        SendMessage(wnd,WM_APPCOMMAND,0,MakeLParam(0,param))
+      else SendMessage(wnd,WM_COMMAND,param,0)
+    end else
+    begin
+      if FileExists(mitem.PlayerPath) then
+        SharpApi.SharpExecute('_nohist,' + mitem.PlayerPath)
+      else begin
+        mitem.PlayerPath := GetStartPlayer(HKEY_LOCAL_MACHINE,mItem.RegPath,mItem.RegValue);
+        SaveSettings;
+      end;
     end;
-  end;    
+  end;
 end;
 
 //#############################
@@ -179,7 +347,7 @@ end;
 //#############################
 procedure TMainForm.btn_playClick(Sender: TObject);
 begin
-  BroadCastAppCommand(APPCOMMAND_MEDIA_PLAY_PAUSE);
+  SendAppCommand(cctPlay);
 end;
 
 //#############################
@@ -187,7 +355,7 @@ end;
 //#############################
 procedure TMainForm.btn_nextClick(Sender: TObject);
 begin
-BroadCastAppCommand(APPCOMMAND_MEDIA_NEXTTRACK);
+  SendAppCommand(cctNext);
 end;
 
 //#############################
@@ -195,29 +363,78 @@ end;
 //#############################
 procedure TMainForm.btn_pauseClick(Sender: TObject);
 begin
-  BroadCastAppCommand(APPCOMMAND_MEDIA_PLAY_PAUSE);
+  SendAppCommand(cctPause);
 end;
-
 
 //#############################
 //            STOP
 //#############################
 procedure TMainForm.btn_stopClick(Sender: TObject);
 begin
-  BroadCastAppCommand(APPCOMMAND_MEDIA_STOP);
+  SendAppCommand(cctStop);
 end;
-
 
 //#############################
 //       PREVIOUS TRACK
 //#############################
 procedure TMainForm.btn_prevClick(Sender: TObject);
 begin
-  BroadCastAppCommand(APPCOMMAND_MEDIA_PREVIOUSTRACK);
+  SendAppCommand(cctPrev);
+end;
+
+procedure TMainForm.btn_pselectMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  p : TPoint;
+  mn : TSharpEMenu;
+  ms : TSharpEMenuSettings;
+  wnd : TSharpEMenuWnd;
+  n : integer;
+  mitem : TMediaPlayerItem;
+begin
+  if Button = mbLeft then
+  begin
+    if FMPlayers.Items.Count = 0 then
+      exit;
+
+    ms := TSharpEMenuSettings.Create;
+    ms.LoadFromXML;
+    ms.CacheIcons := False;
+    ms.WrapMenu := False;
+
+    mn := TSharpEMenu.Create(SharpESkinManager1,ms);
+    ms.Free;
+
+    for n := 0 to FMPlayers.Items.Count - 1 do
+    begin
+      mitem := TMediaPlayerItem(FMPlayers.Items[n]);
+      TSharpEMenuItem(mn.AddCustomItem(mitem.Name,mitem.Name,mitem.Icon)).OnClick := mnOnClick;
+    end;
+
+    //mn.AddSeparatorItem(False);
+    mn.RenderBackground(0,0);
+
+    wnd := TSharpEMenuWnd.Create(self,mn);
+    wnd.FreeMenu := True; // menu will free itself when closed
+  
+    p := ClientToScreen(Point(btn_pselect.Left + btn_pselect.Width div 2, self.Height + self.Top));
+    p.x := p.x + SharpESkinManager1.Skin.MenuSkin.SkinDim.XAsInt - mn.Background.Width div 2;
+    if p.x < Monitor.Left then
+       p.x := Monitor.Left;
+    if p.x + mn.Background.Width  > Monitor.Left + Monitor.Width then
+       p.x := Monitor.Left + Monitor.Width - mn.Background.Width;
+    wnd.Left := p.x;
+    if p.Y < Monitor.Top + Monitor.Height div 2 then
+       wnd.Top := p.y + SharpESkinManager1.Skin.MenuSkin.SkinDim.YAsInt
+       else wnd.Top := p.y - Top - Height - mn.Background.Height - SharpESkinManager1.Skin.MenuSkin.SkinDim.YAsInt;
+    wnd.Show;
+  end;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  FMPlayers := TMediaPlayerList.Create;
+
   WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
   DoubleBuffered := True;
   Background  := TBitmap32.Create;
@@ -225,6 +442,8 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  FMPlayers.Free;
+
   SharpApi.UnRegisterAction('!MC-Play');
   SharpApi.UnRegisterAction('!MC-Pause');
   SharpApi.UnRegisterAction('!MC-Stop');
@@ -232,6 +451,8 @@ begin
   SharpApi.UnRegisterAction('!MC-Next');
 
   Background.Free;
+  if SharpEMenuPopups <> nil then
+    FreeAndNil(SharpEMenuPopups);
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
