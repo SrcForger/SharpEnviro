@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<MediaPlayers>
+  <item>
+    <Name>Foobar</Name>
+    <WndClass>{DA7CD0DE-1602-45e6-89A1-C2CA151E008E}/1</WndClass>
+    <WndCaption></WndCaption>
+    <Icon>foobar_icon.png</Icon>
+  </item> 
+  <item>
+    <Name>iTunes</Name>
+    <WndClass>iTunes</WndClass>
+    <WndCaption></WndCaption>
+    <Icon>iTunes.png</Icon>
+  </item>  
+  <item>
+    <Name>Media Monkey</Name>
+    <WndClass>Winamp v1.x</WndClass>
+    <WndCaption>Winamp 5.03</WndCaption>
+    <Icon>MediaMonkey.png</Icon>
+    <AppCommand>0</AppCommand>
+    <btnPlay>40045</btnPlay>
+    <btnPause>40046</btnPause>
+    <btnStop>40047</btnStop>
+    <btnNext>40048</btnNext>
+    <btnPrev>40044</btnPrev>
+  </item> 
+  <item>
+    <Name>Media Player Classic</Name>
+    <WndClass>MediaPlayerClassicW</WndClass>
+    <WndCaption>Media Player Classic</WndCaption>
+    <Icon>mpc_icon.png</Icon>
+    <RegPath>SOFTWARE\Gabest\Media Player Classic</RegPath>
+    <RegValue>ExePath</RegValue>
+  </item>  
+  <item>
+    <Name>Quintessential Player</Name>
+    <WndClass>PlayerCanvas</WndClass>
+    <WndCaption></WndCaption>
+    <Icon>qcd_icon.png</Icon>
+  </item>  
+  <item>
+    <Name>VLC Media Player</Name>
+    <WndClass>wxWindowClassNR</WndClass>
+    <WndCaption>VCL media player</WndCaption>
+    <Icon>vlc_icon.png</Icon>
+    <AppCommand>0</AppCommand>
+    <btnPlay>7109</btnPlay>
+    <btnPause>7109</btnPause>
+    <btnStop>13003</btnStop>
+    <btnNext>13013</btnNext>
+    <btnPrev>13014</btnPrev>
+    <RegPath>SOFTWARE\VideoLAN\VLC</RegPath>
+    <RegValue></RegValue>
+  </item>
+  <item>
+    <Name>Win Amp</Name>
+    <WndClass>Winamp v1.x</WndClass>
+    <WndCaption>Winamp 5.03</WndCaption>
+    <Icon>winamp_icon.png</Icon>
+    <AppCommand>0</AppCommand>
+    <btnPlay>40045</btnPlay>
+    <btnPause>40046</btnPause>
+    <btnStop>40047</btnStop>
+    <btnNext>40048</btnNext>
+    <btnPrev>40044</btnPrev>
+  </item>   
+  <item>
+    <Name>Windows Media Player</Name>
+    <WndClass>WMPlayerApp</WndClass>
+    <WndCaption>Windows Media Player</WndCaption>
+    <WndSubClass>WMPAppHost</WndSubClass>
+    <Icon>wmp_icon.png</Icon>
+    <RegPath>SOFTWARE\Microsoft\Multimedia\WMPlayer</RegPath>
+    <RegValue>Player.Path</RegValue>
+  </item>   
+</MediaPlayers>
