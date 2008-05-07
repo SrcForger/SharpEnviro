@@ -59,7 +59,8 @@ type
     FItems : TObjectList;
   public
     procedure Load;
-    function GetItem(pName : String) : TMediaPlayerItem;
+    function GetItem(pName : String) : TMediaPlayerItem; overload;
+    function GetItem(pWndClass,pWndCaption : String) : TMediaPlayerItem; overload;    
     function GetPlayerHandle(pName : String) : hwnd;
 
     constructor Create;
@@ -102,6 +103,23 @@ begin
   begin
     item := TMediaPlayerItem(FItems[n]);
     if CompareText(item.Name,pName) = 0 then
+    begin
+      result := item;
+      exit;
+    end;
+  end;
+end;
+
+function TMediaPlayerList.GetItem(pWndClass, pWndCaption: String): TMediaPlayerItem;
+var
+  n : integer;
+  item : TMediaPlayerItem;
+begin
+  result := nil;
+  for n := 0 to FItems.Count - 1 do
+  begin
+    item := TMediaPlayerItem(FItems[n]);
+    if CompareText(item.WndClassName,pWndClass) = 0 then
     begin
       result := item;
       exit;
