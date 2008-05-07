@@ -38,7 +38,8 @@ uses
   SharpTypes,
   SharpESkinManager,
   SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas',
-  SoundControls in '..\..\Modules\VolumeControl\SoundControls.pas';
+  SoundControls in '..\..\Modules\VolumeControl\SoundControls.pas',
+  MediaPlayerList in '..\..\Modules\MediaController\MediaPlayerList.pas';
 
 type
   TActionEvent = Class(Tobject)
@@ -50,6 +51,7 @@ var
   h:THandle;
   SkinManager : TSharpESkinManager;
   sShowOSD : boolean;
+  MPlayers : TMediaPlayerList;
 
 {$E ser}
 
@@ -91,23 +93,39 @@ end;
     result := buf;
   end;
 
-procedure BroadCastAppCommand(pType : integer);
+procedure BroadCastMediaAppCommand(pType : integer);
 var
   wnd : hwnd;
-  result : boolean;
+  wndclass : String;
+  mitem : TMediaPlayerItem;
+  param : word;
 begin
   wnd := GetTopWindow(0);
-  result := False;
-  while (wnd <> 0) and (not result) do
+  while (wnd <> 0) do
   begin
     if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) or
        (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
        ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
        (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
        (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0)) then
-//       (GetWindowLong(wnd, GWL_EXSTYLE) and WS_EX_TOPMOST = 0) then
       begin
-        result := (SendMessage(wnd,WM_APPCOMMAND,0,MakeLParam(0,pType)) <> 0);
+        wndclass := GetWndClass(wnd);
+        mitem := MPlayers.GetItem(wndclass,'');
+        if mitem <> nil then
+        begin
+          case pType of
+            APPCOMMAND_MEDIA_PLAY,APPCOMMAND_MEDIA_PLAY_PAUSE  : param := mitem.btnPlay;
+            APPCOMMAND_MEDIA_PAUSE : param := mitem.btnPause;
+            APPCOMMAND_MEDIA_STOP  : param := mitem.btnStop;
+            APPCOMMAND_MEDIA_NEXTTRACK  : param := mitem.btnNext;
+            APPCOMMAND_MEDIA_PREVIOUSTRACK  : param := mitem.btnPrev;
+          else param := 0;
+          end;
+          if mitem.AppCommand then
+            SendMessage(wnd,WM_APPCOMMAND,0,MakeLParam(0,param))
+          else SendMessage(wnd,WM_COMMAND,param,0);
+          exit;
+        end;
       end;
     wnd := GetNextWindow(wnd,GW_HWNDNEXT);
   end;
@@ -154,6 +172,8 @@ begin
   Result := owner;
   sShowOSD := True;
 
+  MPlayers := TMediaPlayerList.Create;
+
   ae := TActionEvent.Create;
   h := allocatehwnd(Ae.MessageHandler);
 
@@ -174,6 +194,8 @@ begin
   UnRegisterAction('!VolumeUp');
   UnRegisterAction('!VolumeDown');
   UnRegisterAction('!VolumeMute');
+
+  MPlayers.Free;
 end;
 
 { TActionEvent }
@@ -286,10 +308,7 @@ begin
         APPCOMMAND_MICROPHONE_VOLUME_MUTE,APPCOMMAND_MIC_ON_OFF_TOGGLE: VolumeMute(MIXERLINE_COMPONENTTYPE_SRC_FIRST);
         APPCOMMAND_MEDIA_NEXTTRACK,APPCOMMAND_MEDIA_PREVIOUSTRACK,
         APPCOMMAND_MEDIA_STOP,APPCOMMAND_MEDIA_PLAY_PAUSE,
-        APPCOMMAND_MEDIA_PLAY,APPCOMMAND_MEDIA_PAUSE,
-        APPCOMMAND_MEDIA_RECORD,APPCOMMAND_MEDIA_FAST_FORWARD,
-        APPCOMMAND_MEDIA_REWIND,APPCOMMAND_MEDIA_CHANNEL_UP,
-        APPCOMMAND_MEDIA_CHANNEL_DOWN: BroadCastAppCommand(msg.LParamHi);
+        APPCOMMAND_MEDIA_PLAY,APPCOMMAND_MEDIA_PAUSE: BroadCastMediaAppCommand(msg.LParamHi);
         else msg.result := 0;
       end;
     end;
