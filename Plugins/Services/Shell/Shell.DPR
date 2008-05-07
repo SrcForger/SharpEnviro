@@ -409,7 +409,7 @@ begin
         end;
       end;
       TaskManager.HandleShellMessage(wparam,Cardinal(lparam));
-      if (not deskswitch) and (GetTickCount - lastappcommand > 200) then
+      if (not deskswitch) and (GetTickCount - lastappcommand > 150) then
       begin
         for n := High(TaskMsgManager.WndList) downto 0 do
           if IsWindow(TaskMsgManager.WndList[n]) then
@@ -423,9 +423,9 @@ begin
             else PostMessage(TaskMsgManager.WndList[n],WM_SHARPSHELLMESSAGE,WParam,LParam)
           end
           else TaskMsgManager.DeleteWnd(n);
-      end;
-      if wparam = HSHELL_APPCOMMAND then
-        lastappcommand := GetTickCount;
+        if wparam = HSHELL_APPCOMMAND then
+          lastappcommand := GetTickCount;
+      end else result := 1;
     end else
     case Msg of
       WM_REGISTERSHELLHOOK: TaskMsgManager.AddWnd(Cardinal(WParam));
