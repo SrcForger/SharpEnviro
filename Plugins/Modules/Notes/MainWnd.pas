@@ -42,6 +42,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ButtonClick(Sender: TObject);
+    procedure ButtonDblClick(Sender: TObject);
   protected
   private
     sCaption     : Boolean;
@@ -291,6 +292,11 @@ begin
      else NotesForm.FormStyle := fsNormal;
 //  if sAlwaysOnTop then SetWindowPos(NotesForm.handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE)
    //  else SetWindowPos(NotesForm.handle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+end;
+
+procedure TMainForm.ButtonDblClick(Sender: TObject);
+begin
+  ButtonClick(Button);
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);

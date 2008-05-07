@@ -18,10 +18,10 @@ object MainForm: TMainForm
   PixelsPerInch = 96
   TextHeight = 13
   object ses_maxall: TSharpEButton
-    Left = 24
+    Left = 30
     Top = 0
     Width = 24
-    Height = 21
+    Height = 25
     Hint = 'Restory all Windows'
     ParentShowHint = False
     ShowHint = False
@@ -72,7 +72,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 0
     Width = 24
-    Height = 21
+    Height = 25
     Hint = 'Minimize all Windows'
     ParentShowHint = False
     ShowHint = False
