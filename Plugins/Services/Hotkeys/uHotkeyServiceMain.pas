@@ -159,7 +159,7 @@ begin
     HKService.AddHotkeys(True);
 
     Debug('WM_SHARPEUPDATESETTINGS',DMT_INFO);
-  end;
+  end else message.Result := DefWindowProc(h,message.Msg,message.WParam,message.LParam);
 end;
 
 procedure THotkeyService.RegisterAllKeys;

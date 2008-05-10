@@ -274,11 +274,7 @@ begin
 
         break;
       end;
-  end;
-
-  if Message.Msg = WM_QUERYENDSESSION then begin
-    Message.Result := 1;
-  End;
+  end else Message.Result := DefWindowProc(FWMHandle,Message.Msg,Message.WParam,Message.LParam);
   inherited;
 end;
 

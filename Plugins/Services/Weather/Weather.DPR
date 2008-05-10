@@ -119,7 +119,7 @@ begin
       WeatherList.Clear;
       WeatherList.Load;
     end;
-  end;
+  end else msg.Result := DefWindowProc(h,msg.Msg,msg.WParam,msg.LParam);
 end;
 
 function GetMetaData(): TMetaData;

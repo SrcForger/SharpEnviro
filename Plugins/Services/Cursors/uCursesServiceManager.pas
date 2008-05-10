@@ -147,7 +147,7 @@ begin
         ApplySkin;
       end;
     end;
-  end;
+  end else msg.Result := DefWindowProc(h,msg.Msg,Msg.WParam,msg.LParam);
 end;
 
 procedure TCursesManager.ApplySkin;

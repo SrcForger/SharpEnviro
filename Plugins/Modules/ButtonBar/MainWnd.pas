@@ -88,14 +88,12 @@ type
     ModuleID : integer;
     BarID : integer;
     BarWnd : hWnd;
-    OldLBWindowProc: TWndMethod;
     procedure RefreshIcons;
     procedure LoadSettings;
     procedure SaveSettings;
     procedure ReAlignComponents(BroadCast : boolean);
     procedure SetWidth(new : integer);
     procedure UpdateBackground(new : integer = -1);
-    procedure LBWindowProc(var Message: TMessage);
   end;
 
 
@@ -155,13 +153,6 @@ begin
   setlength(FButtonList,length(FButtonList)-1);
   SaveSettings;
   RealignComponents(True);  
-end;
-
-procedure TMainForm.LBWindowProc(var Message: TMessage);
-begin
-  if Message.Msg = WM_DROPFILES then
-     WMDropFiles(Message);
-  OldLBWindowProc(Message);
 end;
 
 procedure TMainForm.WMNotify(var msg: TWMNotify);

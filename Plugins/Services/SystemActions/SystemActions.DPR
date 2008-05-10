@@ -311,7 +311,7 @@ begin
          end;
     end;
     setlength(EnumParam.wndlist,0);
-  end;
+  end else msg.Result := DefWindowProc(h,msg.Msg,Msg.WParam,msg.LParam);
 end;
 
 function GetMetaData(): TMetaData;

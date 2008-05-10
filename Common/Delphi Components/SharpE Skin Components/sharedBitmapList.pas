@@ -218,6 +218,7 @@ begin
     end       }
     //else
   end;
+  Msg.Result := DefWindowProc(FMsgWnd,Msg.Msg,Msg.WParam,Msg.LParam);
 end;
 
 procedure TSystemSharpESkin.MessageHook2(var Msg: TMessage);

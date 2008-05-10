@@ -331,7 +331,7 @@ begin
       2: VolumeDown(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
       3: VolumeMute(MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
     end;
-  end;
+  end else msg.Result := DefWindowProc(h,msg.Msg,Msg.WParam,msg.LParam);
 end;
 
 function GetMetaData(): TMetaData;

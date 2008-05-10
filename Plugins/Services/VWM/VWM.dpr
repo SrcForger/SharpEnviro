@@ -333,6 +333,7 @@ end;
         end;
       end;
     end;
+    else Message.Result := DefWindowProc(Handle,Message.Msg,Message.WParam,Message.LParam);
   end;
 
   if Changed then

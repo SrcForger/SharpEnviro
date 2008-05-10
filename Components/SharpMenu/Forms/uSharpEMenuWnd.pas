@@ -641,6 +641,7 @@ var
   buf: array [0..254] of Char;
   cname : String;
 begin
+  Handled := False;
   if FIsClosing then exit;
   if msg.message = WM_SHARPSHELLMESSAGE then
   begin

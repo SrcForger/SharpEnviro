@@ -458,7 +458,8 @@ begin
       Filters.Load;
   end else
   if Message.Msg = WM_SHARPEUPDATEACTIONS then
-    RegisterActions;
+    RegisterActions
+  else Message.Result := DefWindowProc(h,Message.Msg,Message.WParam,Message.LParam);
 end;
 
 function GetMetaData(): TMetaData;

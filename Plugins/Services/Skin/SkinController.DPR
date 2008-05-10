@@ -92,10 +92,9 @@ begin
             SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged,-1,True);
           end;
     end;
-  end;
-
-  if Message.Msg = WM_SHARPEUPDATEACTIONS then
-    RegisterActionEx('!RefreshSkin','SharpSkin',h,0);
+  end else if Message.Msg = WM_SHARPEUPDATEACTIONS then
+    RegisterActionEx('!RefreshSkin','SharpSkin',h,0)
+  else Message.Result := DefWindowProc(h,Message.Msg,MEssage.WParam,Message.LParam);
 end;
 
 function GetMetaData(): TMetaData;

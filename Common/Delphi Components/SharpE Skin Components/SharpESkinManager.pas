@@ -271,7 +271,7 @@ begin
       if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
       RefreshControls;
     end;
-  end;
+  end else Msg.Result := DefWindowProc(FMsgWnd,Msg.Msg,Msg.WParam,Msg.LParam);
 end;
 
 procedure TSharpESkinManager.MessageHook2(var Msg: TMessage);
