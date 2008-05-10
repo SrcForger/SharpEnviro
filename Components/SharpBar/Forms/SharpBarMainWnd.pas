@@ -161,7 +161,6 @@ type
 
     // Shutdown
     procedure WMEndSession(var msg: TMessage); message WM_ENDSESSION;
-    procedure WMQueryEndSession(var msg: TMessage); message WM_QUERYENDSESSION;
 
     // SharpE Actions
     procedure WMUpdateBangs(var Msg: TMessage); message WM_SHARPEUPDATEACTIONS;
@@ -372,13 +371,9 @@ end;
 procedure TSharpBarMainForm.WMEndSession(var msg: TMessage);
 begin
   msg.result := 0;
-  Close;
-end;
-
-procedure TSharpBarMainForm.WMQueryEndSession(var msg: TMessage);
-begin
-  msg.Result := 1;
-  Self.Close;
+  
+  if msg.WParam <> 0 then
+    Close;
 end;
 
 // Desk is shutting down
