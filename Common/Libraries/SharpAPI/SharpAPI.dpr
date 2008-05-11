@@ -1476,6 +1476,17 @@ begin
   SetErrorMode(EMode);
 end;
 
+function GetCursorPosSecure(cursorPos: TPoint):boolean;
+begin
+  result := true;
+  try
+    GetCursorPos(cursorPos);
+  except
+    result := false;
+    cursorPos := Point(0,0);
+  end;
+end;
+
 exports
   SharpEBroadCast,
   SendDebugMessage, //Sends Message to SharpConsole
@@ -1531,7 +1542,8 @@ exports
   GetConfigMetaData,
   GetModuleMetaData,
 
-  FileCheck;
+  FileCheck,
+  GetCursorPosSecure;
 begin
 
 end.
