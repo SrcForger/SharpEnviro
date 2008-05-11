@@ -341,14 +341,17 @@ end;
 
 procedure TSharpBarMainForm.WMBarInsertModule(var msg: TMessage);
 var
-  MP: TPoint;
+  MP, cursorPos: TPoint;
   ModulePos: TPoint;
   tempModule: TModule;
   n: integer;
   LastPos: integer;
   LastIndex: integer;
 begin
-  MP := Mouse.CursorPos;
+  if Not(GetCursorPosSecure(cursorPos)) then
+    Exit;
+
+  MP := cursorPos;
   LastPos := -1;
   LastIndex := -1;
   for n := 0 to ModuleManager.Modules.Count - 1 do begin
@@ -1445,9 +1448,13 @@ var
   oHP: TSharpEBarHorizPos;
   oMon: integer;
   oPMon: boolean;
+  cursorPos: TPoint;
 begin
   if FSuspended then
     exit;
+
+  if Not(GetCursorPosSecure(cursorPos)) then
+    Exit;
 
   if Shift = [ssLeft] then begin
     if not BarMove then begin
@@ -1468,7 +1475,7 @@ begin
           Mon := -1
         else
           Mon := n;
-        P := Mouse.CursorPos;
+        P := cursorPos;
 
         // Special Movement Code if Full Align
         if SharpEBar.HorizPos = hpFull then begin

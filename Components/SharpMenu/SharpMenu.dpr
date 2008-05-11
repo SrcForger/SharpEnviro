@@ -77,6 +77,7 @@ var
   popupdir : integer;
   st : Int64;
   MutexHandle : THandle;
+  cursorPos: TPoint;
   SystemSkinLoadThread : TSystemSkinLoadThread;
   menusettings : TSharpEMenuSettings;
   Mon : TMonitor;
@@ -121,7 +122,10 @@ begin
   menusettings := TSharpEMenuSettings.Create;
   menusettings.LoadFromXML;
 
-  Pos := Mouse.CursorPos;
+  if Not(GetCursorPosSecure(cursorPos)) then
+    Exit;
+
+  Pos := cursorPos;
   popupdir := 1;
   // Check Params
   if ParamCount >= 2 then

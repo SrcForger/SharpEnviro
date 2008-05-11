@@ -408,8 +408,12 @@ procedure TfrmThemeList.ConfigureItem;
 var
   tmpItem: TSharpEListItem;
   sTheme: string;
+  cursorPos: TPoint;
 begin
-  tmpItem := lbThemeList.GetItemAtCursorPos(Mouse.CursorPos);
+  if Not(GetCursorPosSecure(cursorPos)) then
+    Exit;
+
+  tmpItem := lbThemeList.GetItemAtCursorPos(cursorPos);
   if tmpItem <> nil then begin
     sTheme := TThemeListItem(tmpItem.Data).Name;
     CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory

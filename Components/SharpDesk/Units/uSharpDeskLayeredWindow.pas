@@ -80,7 +80,8 @@ var
   pDesktopObject : TDesktopObject;
   CPos : TPoint;
   tme: TTRACKMOUSEEVENT;  
-  TrackMouseEvent_: function(var EventTrack: TTrackMouseEvent): BOOL; stdcall; 
+  TrackMouseEvent_: function(var EventTrack: TTrackMouseEvent): BOOL; stdcall;
+  cursorPos: TPoint;
 begin
   tme.cbSize := sizeof(TTRACKMOUSEEVENT);
   tme.dwFlags := TME_HOVER or TME_LEAVE;
@@ -101,7 +102,10 @@ begin
    // self.DrawWindow;
   end;
 
-  CPos := SharpDesk.Image.ScreenToClient(Mouse.CursorPos);
+  if Not(GetCursorPosSecure(cursorPos)) then
+    Exit;
+
+  CPos := SharpDesk.Image.ScreenToClient(cursorPos);
   pDesktopObject.Owner.DllSharpDeskMessage(pDesktopObject.Settings.ObjectID,
                                           pDesktopObject.Layer,
                                           SDM_MOUSE_MOVE,CPos.X,CPos.Y,0);  
@@ -114,7 +118,6 @@ begin
   pDesktopObject := TDesktopObject(FDesktopObject);
   if pDesktopObject = nil then exit;
   try
-  //  if PointInRect(Mouse.CursorPos,self.BoundsRect) then exit;
     pDesktopObject.Owner.DllSharpDeskMessage(pDesktopObject.Settings.ObjectID,
                                              pDesktopObject.Layer,
                                              SDM_MOUSE_LEAVE,0,0,0);
@@ -204,6 +207,7 @@ procedure TSharpDeskLayeredWindow.FormMouseDown(Sender: TObject;
 var
   p : TPoint;
   pDesktopObject : TDesktopObject;
+  cursorPos: TPoint;
 begin
   if (not TDesktopObject(FDesktopObject).Settings.Locked) and (Button = mbLeft) and (not dbclick) then
   begin
@@ -211,7 +215,11 @@ begin
     Perform(WM_NCLBUTTONDOWN,HTCAPTION,0);
     pDesktopObject := TDesktopObject(FDesktopObject);
     pDesktopObject.DeskManager.LastLayer := Tag;
-    p := pDesktopObject.DeskManager.Image.ScreenToClient(Mouse.CursorPos);
+
+    if Not(GetCursorPosSecure(cursorPos)) then
+      Exit;
+
+    p := pDesktopObject.DeskManager.Image.ScreenToClient(cursorPos);
     pDesktopObject.DeskManager.MoveLayerTo(pDesktopObject,
                                            p.X-x - pDesktopObject.Layer.Bitmap.Width div 2,
                                            p.Y-y - pDesktopObject.Layer.Bitmap.Height div 2);
@@ -224,10 +232,14 @@ procedure TSharpDeskLayeredWindow.FormMouseUp(Sender: TObject;
 var
   pDesktopObject : TDesktopObject;
   b : integer;
+  cursorPos: TPoint;
 begin
   pDesktopObject := TDesktopObject(FDesktopObject);
   pDesktopObject.DeskManager.LastLayer := Tag;
   pDesktopObject.Selected := True;
+
+  if Not(GetCursorPosSecure(cursorPos)) then
+    Exit;
 
   case Button of
    mbLeft   : B:=0;
@@ -238,7 +250,7 @@ begin
   try
     pDesktopObject.Owner.DllSharpDeskMessage(pDesktopObject.Settings.ObjectID,
                                              pDesktopObject.Layer,
-                                             SDM_MOUSE_UP,Mouse.CursorPos.X,Mouse.CursorPos.Y,B);
+                                             SDM_MOUSE_UP,cursorPos.X,cursorPos.Y,B);
   except
     on E: Exception do
     begin
@@ -259,7 +271,7 @@ begin
     try
       pDesktopObject.Owner.DllSharpDeskMessage(pDesktopObject.Settings.ObjectID,
                                                pDesktopObject.Layer,
-                                               SDM_MENU_POPUP,Mouse.CursorPos.X,Mouse.CursorPos.Y,0);
+                                               SDM_MENU_POPUP,cursorPos.X,cursorPos.Y,0);
       except
         on E: Exception do
         begin
@@ -278,7 +290,7 @@ begin
        else LockObjec1.ImageIndex:=29;
     if pDesktopObject.Settings.isWindow then MakeWindow1.ImageIndex:=4
        else MakeWindow1.ImageIndex:=29;
-    self.PopupMenu.Popup(Mouse.CursorPos.X,Mouse.CursorPos.y);
+    self.PopupMenu.Popup(cursorPos.X,cursorPos.y);
   end;
 end;
 
@@ -286,8 +298,12 @@ procedure TSharpDeskLayeredWindow.FormDblClick(Sender: TObject);
 var
   pDesktopObject : TDesktopObject;
   Cpos : TPoint;
+  cursorPos: TPoint;
 begin
   dbclick := True;
+  if Not(GetCursorPosSecure(cursorPos)) then
+    Exit;
+
   CPos := SharpDesk.Image.ScreenToClient(Mouse.CursorPos);
   pDesktopObject := TDesktopObject(FDesktopObject);
   pDesktopObject.Owner.DllSharpDeskMessage(pDesktopObject.Settings.ObjectID,

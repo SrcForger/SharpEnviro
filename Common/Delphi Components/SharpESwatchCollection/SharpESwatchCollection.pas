@@ -111,12 +111,15 @@ procedure TSharpESwatchCollection.PopupMenuEvent(ASender: TObject);
 var
   n: Integer;
   bEnabled: Boolean;
-  p: TPoint;
+  p, cursorPos: TPoint;
   tmp: TSharpESwatchCollectionItem;
 begin
   FPopupMenu.Items.Clear;
 
-  p := FImage32.ScreenToClient(Mouse.CursorPos);
+  if Not(GetCursorPosSecure(cursorPos)) then
+    Exit;
+
+  p := FImage32.ScreenToClient(cursorPos);
   tmp := FSwatchManager.GetItemFromPoint(p);
   FPopupMenu.Tag := Integer(tmp);
   bEnabled := tmp <> nil;
@@ -211,12 +214,16 @@ procedure TSharpESwatchCollection.MouseDownEvent(Sender: TObject;
   ALayer: TCustomLayer);
 var
   tmp: TSharpESwatchCollectionItem;
+  cursorPos: TPoint;
 begin
   if FSwatchManager = nil then
     Exit;
 
+  if Not(GetCursorPosSecure(cursorPos)) then
+    Exit;
+
   if Button = mbRight then
-    PopupSwatchMenu(Mouse.CursorPos.X, Mouse.CursorPos.Y, Self)
+    PopupSwatchMenu(cursorPos.X, cursorPos.Y, Self)
   else begin
     tmp := FSwatchManager.GetItemFromPoint(Point(X, Y));
     if (tmp = nil) then
