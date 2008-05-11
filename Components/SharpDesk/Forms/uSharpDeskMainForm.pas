@@ -961,14 +961,16 @@ end;
 procedure TSharpDeskMainForm.BackgroundImageMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer; Layer: TCustomLayer);
 var
-   CPos : TPoint;
+   CPos,cursorPos : TPoint;
    X1,X2,Y1,Y2 : integer;
    DesktopObject : TDesktopObject;
 begin
   if not SharpDesk.Enabled then exit;
   if not Assigned(Layer) then exit;
 
-  CPos := SharpDesk.Image.ScreenToClient(Mouse.CursorPos);
+  if GetCursorPosSecure(cursorPos) then
+    CPos := SharpDesk.Image.ScreenToClient(cursorPos) else
+    exit;
 
   if Layer.Tag > -1 then
   begin
