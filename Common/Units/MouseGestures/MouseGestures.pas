@@ -130,12 +130,9 @@ end;
 
 procedure TMouseGesture.StartRecord;
 var
-  MPos, cursorPos : TPoint;
+  MPos : TPoint;
 begin
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
-  MPos := cursorPos;
+  MPos := Mouse.CursorPos;
   FPoints.Clear;
 
   // Add the start point
@@ -150,13 +147,10 @@ end;
 
 procedure TMouseGesture.FinishRecord;
 var
-  MPos, cursorPos : TPoint;
+  MPos : TPoint;
 begin
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
   // Add the end point
-  MPos := cursorPos;
+  MPos := Mouse.CursorPos;
   FPoints.Add(TVecPoint.Create(MPos.X,MPos.Y,0,0));
 
   // Free the record timer
@@ -169,13 +163,10 @@ end;
 
 procedure TMouseGesture.OnRecordTimer(Sender : TObject);
 var
-  MPos, cursorPos : TPoint;
+  MPos : TPoint;
 begin
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
   // Add the new point
-  MPos := cursorPos;
+  MPos := Mouse.CursorPos;
   FPoints.Add(TVecPoint.Create(MPos.X,MPos.Y,0,0));
 end;
 

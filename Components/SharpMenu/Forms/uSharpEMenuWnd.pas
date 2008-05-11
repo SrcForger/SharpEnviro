@@ -433,7 +433,6 @@ end;
 procedure TSharpEMenuWnd.offsettimerTimer(Sender: TObject);
 var
   CPos : TPoint;
-  cursorPos: TPoint;
 begin
   if FIsClosing then exit;
   if FMenu = nil then exit;
@@ -445,10 +444,7 @@ begin
     SubMenuTimer.Enabled := True;
   end;
 
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
-  CPos := cursorPos;
+  CPos := Mouse.CursorPos;
   if (CPos.X > Left) and (CPos.X < Left + Width) then
   begin
     if (CPos.Y >= Monitor.Top) and (CPos.Y <= Monitor.Top + 5) and (FOffset >= 0) then
@@ -585,15 +581,11 @@ procedure TSharpEMenuWnd.FormMouseWheelDown(Sender: TObject; Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 var
   o : integer;
-  cursorPos: TPoint;
 begin
   if FParentMenu = nil then exit;
   if (FPicture.Height <= Height) and (FParentMenu.Picture.Height <= FParentMenu.Height) then exit;
 
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
-  if ((cursorPos.x < Left) or (cursorPos.x > Left + Width))
+  if ((Mouse.CursorPos.x < Left) or (Mouse.CursorPos.x > Left + Width))
      and (FParentMenu.Picture.Height > FParentMenu.Height) then
   begin
     FParentMenu.SharpESubMenu := nil;
@@ -615,15 +607,11 @@ procedure TSharpEMenuWnd.FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
   var
   o : integer;
-  cursorPos: TPoint;
 begin
   if FParentMenu = nil then exit;
   if (FPicture.Height <= Height) and (FParentMenu.Picture.Height <= FParentMenu.Height) then exit;
 
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
-  if ((cursorPos.x < Left) or (cursorPos.x > Left + Width))
+  if ((Mouse.CursorPos.x < Left) or (Mouse.CursorPos.x > Left + Width))
      and (FParentMenu.Picture.Height > FParentMenu.Height) then
   begin
     FParentMenu.SharpESubMenu := nil;

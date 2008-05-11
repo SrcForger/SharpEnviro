@@ -285,7 +285,7 @@ procedure Register;
 implementation
 
 uses
-  JvJVCLUtils, SharpApi;
+  JvJVCLUtils;
 
 {$R SharpEListBoxEx.res}
 
@@ -335,11 +335,8 @@ var
   ItemNo: Integer;
   tmpItem: TSharpEListItem;
   tmpCol: TSharpEListBoxExColumn;
-  p, cursorPos: TPoint;
+  p: TPoint;
 begin
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
   case Message.NotifyCode of
     LBN_SELCHANGE:
       begin
@@ -348,8 +345,7 @@ begin
     LBN_DBLCLK: begin
 
         if Assigned(FOnDblClickItem) then begin
-
-          p := Self.ScreenToClient(cursorPos);
+          p := Self.ScreenToClient(mouse.CursorPos);
           ItemNo := ItemAtPos(p, True);
 
           if ItemNo <> -1 then begin
@@ -693,19 +689,16 @@ var
   iCol, X, Y: Integer;
   R: TRect;
   n: Integer;
-  pt, cursorPos: TPoint;
+  pt: TPoint;
 begin
   result := nil;
 
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
-  n := ItemAtPos(Self.ScreenToClient(cursorPos), True);
+  n := ItemAtPos(Self.ScreenToClient(Mouse.CursorPos), True);
   if n = -1 then begin
     exit;
   end;
 
-  pt := Self.ScreenToClient(cursorPos);
+  pt := Self.ScreenToClient(Mouse.CursorPos);
   X := pt.X;
   Y := pt.Y;
 
@@ -1158,14 +1151,11 @@ var
   iCol, n: Integer;
   R: TRect;
   cur: TCursor;
-  cursorPos: TPoint;
   tmpItem: TSharpEListItem;
   b: Boolean;
 begin
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
 
-  n := ItemAtPos(Self.ScreenToClient(cursorPos), True);
+  n := ItemAtPos(Self.ScreenToClient(Mouse.CursorPos), True);
   if n = -1 then begin
     Self.Cursor := crDefault;
     exit;

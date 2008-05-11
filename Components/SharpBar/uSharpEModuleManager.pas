@@ -924,7 +924,7 @@ var
   checkModule,tempModule : TModule;
   index : integer;
   i,n : integer;
-  cPos,Pos, cursorPos : TPoint;
+  cPos,Pos : TPoint;
   update : boolean;
   pForm : TForm;
   BR : TBarRect;
@@ -933,10 +933,7 @@ begin
   if FThrobberMoveID = -1 then exit;
   if Shift = [ssLeft] then
   begin
-    if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
-    MP := cursorPos;
+    MP := Mouse.CursorPos;
     if not FThrobberMove then
     begin
       // Make sure the mouse was moved more than a few pixels before starting the move bar code
@@ -1089,11 +1086,7 @@ procedure TModuleManager.OnMiniThrobberMouseDown(Sender : TObject; Button: TMous
 var
   mThrobber : TSharpEMiniThrobber;
   tempModule : TModule;
-  cursorPos: TPoint;
 begin
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
   mThrobber := TSharpEMiniThrobber(Sender);
   if (mThrobber = nil) or (FThrobberMenu = nil) then exit;
   tempModule := GetModule(mThrobber.Tag); // tag = module ID
@@ -1103,7 +1096,7 @@ begin
   begin
     if FDragForm <> nil then FreeAndNil(FDragForm);
     FDragLastBar := 0;
-    FThrobberMovePoint := cursorPos;
+    FThrobberMovePoint := Mouse.CursorPos;
     FThrobberMoveID    := mThrobber.Tag;
   end else FThrobberMove := False;
 end;

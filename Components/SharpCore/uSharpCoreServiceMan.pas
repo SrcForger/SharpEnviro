@@ -668,7 +668,6 @@ procedure TServiceManager.ServiceItemMouseDown(Sender: TObject;
 var
   i: integer;
   id: integer;
-  cursorPos: TPoint;
 begin
   id := TServiceMgrItem(sender).Tag;
   ItemSelectedId := id;
@@ -711,11 +710,7 @@ begin
         stNever: miStartupOpt.Visible := False;
       end;
     end;
-
-    if Not(GetCursorPosSecure(cursorPos)) then
-      Exit;
-
-    SharpCoreMainWnd.mnuServices.Popup(cursorPos.X, cursorPos.Y);
+    SharpCoreMainWnd.mnuServices.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
 
   end;
 end;

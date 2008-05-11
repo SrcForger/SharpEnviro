@@ -1219,12 +1219,8 @@ var
   n : integer;
   pItem : TSharpETaskItem;
   ptmitem,ptmitemold : TTaskItem;
-  cursorPos: TPoint;
 begin
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
-  p := ScreenToClient(cursorPos);
+  p := ScreenToClient(Mouse.CursorPos);
   for n := 0 to IList.Count - 1 do
   begin
     pItem := TSharpETaskItem(IList.Items[n]);

@@ -396,16 +396,12 @@ var
   NewDesk : integer;
   p : TPoint;
   n : integer;
-  cursorPos: TPoint;
 begin
   if VWMCount = 0 then
     exit;
 
   NewDesk := 0;
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
-  p := ScreenToClient(cursorPos);
+  p := ScreenToClient(Mouse.CursorPos);
   for n := 0 to VWMCount do
     if p.x < (n * (VWMWidth + 2) + n * sVWMSpacing) then
     begin

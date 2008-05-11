@@ -1192,12 +1192,8 @@ procedure TSharpCenterWnd.FormMouseWheel(Sender: TObject; Shift: TShiftState;
   msg: Cardinal;
   code: Cardinal;
   i, n: Integer;
-  cursorPos: TPoint;
 begin
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
-  If WindowFromPoint( cursorPos ) = sbPlugin.Handle Then Begin
+  If WindowFromPoint( mouse.Cursorpos ) = sbPlugin.Handle Then Begin
     Handled := true;
     If ssShift In Shift Then
       msg := WM_HSCROLL

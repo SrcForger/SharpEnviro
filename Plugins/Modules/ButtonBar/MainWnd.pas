@@ -172,13 +172,9 @@ var
   p : TPoint;
   n : integer;
   index : integer;
-  cursorPos: TPoint;
 begin
   index := High(FButtonList) + 1;
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
-  p := ScreenToClient(cursorPos);
+  p := ScreenToClient(Mouse.CursorPos);
   for n := 0 to High(FButtonList) do
    if p.x < FButtonList[n].btn.Left then
    begin
@@ -471,17 +467,13 @@ var
   cPos : integer;
   temp : TButtonRecord;
   MoveButtonIndex : integer;
-  cursorPos: TPoint;
 begin
   if MoveButton = nil then
     exit;
 
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
   cButton := nil;
   cButtonIndex := -1;
-  p := ScreenToClient(cursorPos);
+  p := ScreenToClient(Mouse.CursorPos);
   for n := 0 to High(FButtonList) do
     if (p.x > FButtonList[n].btn.Left)
       and (p.x < FButtonList[n].btn.Left + FButtonList[n].btn.Width) then

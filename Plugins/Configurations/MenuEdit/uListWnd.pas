@@ -516,12 +516,8 @@ var
   tmpDest, tmpSrc: TItemData;
   tmpSrcMenu: TSharpEMenu;
   i: Integer;
-  cursorPos: TPoint;
 begin
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
-  pt := lbItems.ScreenToClient(cursorPos);
+  pt := lbItems.ScreenToClient(Mouse.CursorPos);
   tmrUpdatePosition.Enabled := False;
 
   n := lbItems.ItemAtPos(point(pt.x, pt.y), True);

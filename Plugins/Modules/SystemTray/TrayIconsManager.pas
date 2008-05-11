@@ -229,12 +229,8 @@ function GetCurrentMonitor : integer;
 var
   n : integer;
   CPos : TPoint;
-  cursorPos: TPoint;
 begin
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
-  CPos := cursorpos;
+  CPos := Mouse.Cursorpos;
   for n := 0 to Screen.MonitorCount - 1 do
       if PointInRect(CPos,Screen.Monitors[n].BoundsRect) then
       begin

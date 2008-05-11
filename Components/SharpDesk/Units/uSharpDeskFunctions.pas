@@ -140,19 +140,17 @@ end;
 function GetCurrentMonitor : integer;
 var
   n : integer;
-  CPos, cursorPos : TPoint;
+  CPos : TPoint;
 begin
-  result := 0;
-  if Not(GetCursorPosSecure(cursorPos)) then
-    Exit;
-
-  CPos := cursorPos;
+  CPos := Mouse.Cursorpos;
   for n := 0 to Screen.MonitorCount - 1 do
       if PointInRect(CPos,Screen.Monitors[n].BoundsRect) then
       begin
         result := n;
         exit;
       end;
+  // something went wrong and the cursor isn't in any monitor
+  result := 0;
 end;
 
 // function written by Andre Beckedorf (graphics32 dev team)

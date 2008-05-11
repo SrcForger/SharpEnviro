@@ -49,7 +49,7 @@ object frmList: TfrmList
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     OnResize = lbItemsResize
-    ItemHeight = 25
+    itemheight = 25
     OnClickItem = lbItemsClickItem
     OnDblClickItem = lbItemsDblClickItem
     OnGetCellCursor = lbItemsGetCellCursor
