@@ -1476,7 +1476,7 @@ begin
   SetErrorMode(EMode);
 end;
 
-function GetCursorPosSecure(cursorPos: TPoint):boolean;
+function GetCursorPosSecure(out cursorPos: TPoint):boolean;
 begin
   result := true;
   try

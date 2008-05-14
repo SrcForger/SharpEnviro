@@ -277,7 +277,7 @@ function GetConfigMetaData(strFile: String; var MetaData: TMetaData; var ConfigM
 function GetModuleMetaData(strFile: String; Preview: TBitmap32; var MetaData: TMetaData; var HasPreview: Boolean) : Integer; external 'SharpApi.dll' name 'GetModuleMetaData';
 
 function FileCheck(pFileName : String; MustExists: boolean = False) : boolean; external 'SharpApi.dll' name 'FileCheck';
-function GetCursorPosSecure(cursorPos: TPoint):boolean; external 'SharpApi.dll' name 'GetCursorPosSecure';
+function GetCursorPosSecure(out cursorPos: TPoint):boolean; external 'SharpApi.dll' name 'GetCursorPosSecure';
 
 implementation
 
