@@ -34,7 +34,7 @@ uses
   Contnrs,
   Math,
   Types,  
-  Graphics,  
+  Graphics,
   GR32,
   GR32_PNG,
   StrUtils,
@@ -473,8 +473,9 @@ var
   w,h : integer;
   tdim : TPoint;
   Text,Icon : TBitmap32;
-  i,k : integer;
+  i,i2,k : integer;
   mw : integer;
+  n: Integer;
 begin
   FBitmap.SetSize(1,1);
   FBitmap.Clear(color32(0,0,0,0));
@@ -508,11 +509,18 @@ begin
   Text.Clear(color32(0,0,0,0));
   y := 0;
   mw := 0;
+
   while length(s) > 0 do
   begin
-    i := Max(pos(#13,s),pos(#10,s));
-    if (cw * length(s) > tdim.x) or (i<>0) then
+    i := Min(pos(#13,s),pos(#10,s));
+    i2 := pos(#13#10,s);
+    if (cw * length(s) > tdim.x) or (i<>0) or (i2<>0) then
     begin
+      if (i2 <> 0) and (i2<=i) then
+      begin
+        cs := Copy(s,1,i2-1);
+        s := Copy(s,i2+2,length(s)-i2);
+      end else
       if i <> 0 then
       begin
         cs := Copy(s,1,i-1);
