@@ -960,7 +960,7 @@ begin
   pTaskItem.State := sState;
   UpdateIcon(pTaskItem,pItem);
   pTaskItem.OnClick := SharpETaskItemClick;
-//  pTaskItem.OnDblClick := SharpETaskItemClick;
+  pTaskItem.OnDblClick := SharpETaskItemClick;
   pTaskItem.OnMouseUp := OnTaskItemMouseUp;
   ToolTipApi.AddToolTip(FTipWnd,Self,pTaskItem.Handle,
                         Rect(pTaskItem.Left,pTaskItem.Top,
