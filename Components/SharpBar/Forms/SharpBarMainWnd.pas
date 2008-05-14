@@ -348,7 +348,9 @@ var
   LastPos: integer;
   LastIndex: integer;
 begin
-  MP := Mouse.CursorPos;
+  if not GetCursorPosSecure(MP) then
+    exit;
+    
   LastPos := -1;
   LastIndex := -1;
   for n := 0 to ModuleManager.Modules.Count - 1 do begin
@@ -1449,6 +1451,9 @@ begin
   if FSuspended then
     exit;
 
+  if not GetCursorPosSecure(P) then
+    exit;
+
   if Shift = [ssLeft] then begin
     if not BarMove then begin
       // Make sure the mouse was moved more than a few pixels before starting the move bar code
@@ -1468,7 +1473,6 @@ begin
           Mon := -1
         else
           Mon := n;
-        P := Mouse.CursorPos;
 
         // Special Movement Code if Full Align
         if SharpEBar.HorizPos = hpFull then begin
