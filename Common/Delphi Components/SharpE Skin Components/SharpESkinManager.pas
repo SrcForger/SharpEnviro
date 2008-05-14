@@ -247,7 +247,11 @@ end;
 function TSharpESkinManager.MessageHook(var Msg: TMessage): Boolean;
 begin
   result := false;
-  if not FHandleUpdates then exit;
+  if not FHandleUpdates then
+  begin
+    Msg.Result := DefWindowProc(FMsgWnd,Msg.Msg,Msg.WParam,Msg.LParam);
+    exit;
+  end;
 
   if (Msg.Msg = WM_SHARPEUPDATESETTINGS) then
   begin

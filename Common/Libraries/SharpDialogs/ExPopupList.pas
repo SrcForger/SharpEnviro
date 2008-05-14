@@ -38,6 +38,7 @@ begin
                           nrevent := True;
                         end else if GetSubMenu(lastmenu,lastmenuid) <> 0 then nrevent := False;
                       end;
+    else message.result := DefWindowProc(handle, message.Msg, message.wParam, message.lParam);
   End; 
   inherited;
 end; 
