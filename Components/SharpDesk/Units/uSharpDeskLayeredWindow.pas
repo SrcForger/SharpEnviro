@@ -65,6 +65,7 @@ type
 var
   SharpDeskLayeredWindow: TSharpDeskLayeredWindow;
   dbclick : boolean = False;
+  ignorenext : boolean = False;
 
 implementation
 
@@ -101,16 +102,25 @@ begin
    // self.DrawWindow;
   end;
 
-  CPos := SharpDesk.Image.ScreenToClient(Mouse.CursorPos);
+  if not GetCursorPosSecure(CPos) then
+    exit;
+  
+  CPos := SharpDesk.Image.ScreenToClient(CPos);
   pDesktopObject.Owner.DllSharpDeskMessage(pDesktopObject.Settings.ObjectID,
                                           pDesktopObject.Layer,
-                                          SDM_MOUSE_MOVE,CPos.X,CPos.Y,0);  
+                                          SDM_MOUSE_MOVE,CPos.X,CPos.Y,0);
 end;
 
 procedure TSharpDeskLayeredWindow.WMMouseLeave(var Msg: TMessage);
 var
   pDesktopObject : TDesktopObject;
 begin
+  if ignorenext then
+  begin
+    ignorenext := False;
+    exit;
+  end;
+
   pDesktopObject := TDesktopObject(FDesktopObject);
   if pDesktopObject = nil then exit;
   try
@@ -125,6 +135,7 @@ begin
       SharpApi.SendDebugMessageEx('SharpDesk',PChar(E.Message),clblue, DMT_TRACE);
     end;
   end;
+
   pDesktopObject.Selected := False;
   SharpDesk.SelectionCount := 0;
 end;
@@ -204,6 +215,7 @@ procedure TSharpDeskLayeredWindow.FormMouseDown(Sender: TObject;
 var
   p : TPoint;
   pDesktopObject : TDesktopObject;
+  CPos : TPoint;
 begin
   if (not TDesktopObject(FDesktopObject).Settings.Locked) and (Button = mbLeft) and (not dbclick) then
   begin
@@ -211,7 +223,9 @@ begin
     Perform(WM_NCLBUTTONDOWN,HTCAPTION,0);
     pDesktopObject := TDesktopObject(FDesktopObject);
     pDesktopObject.DeskManager.LastLayer := Tag;
-    p := pDesktopObject.DeskManager.Image.ScreenToClient(Mouse.CursorPos);
+    if not GetCursorPosSecure(CPos) then
+      exit;
+    p := pDesktopObject.DeskManager.Image.ScreenToClient(CPos);
     pDesktopObject.DeskManager.MoveLayerTo(pDesktopObject,
                                            p.X-x - pDesktopObject.Layer.Bitmap.Width div 2,
                                            p.Y-y - pDesktopObject.Layer.Bitmap.Height div 2);
@@ -224,7 +238,12 @@ procedure TSharpDeskLayeredWindow.FormMouseUp(Sender: TObject;
 var
   pDesktopObject : TDesktopObject;
   b : integer;
+  cursorPos : TPoint;
 begin
+  if not GetCursorPosSecure(cursorPos) then
+    exit;
+  cursorPos := SharpDesk.Image.ScreenToClient(cursorPos);
+
   pDesktopObject := TDesktopObject(FDesktopObject);
   pDesktopObject.DeskManager.LastLayer := Tag;
   pDesktopObject.Selected := True;
@@ -238,7 +257,7 @@ begin
   try
     pDesktopObject.Owner.DllSharpDeskMessage(pDesktopObject.Settings.ObjectID,
                                              pDesktopObject.Layer,
-                                             SDM_MOUSE_UP,Mouse.CursorPos.X,Mouse.CursorPos.Y,B);
+                                             SDM_MOUSE_UP,cursorPos.X,cursorPos.Y,B);
   except
     on E: Exception do
     begin
@@ -259,7 +278,7 @@ begin
     try
       pDesktopObject.Owner.DllSharpDeskMessage(pDesktopObject.Settings.ObjectID,
                                                pDesktopObject.Layer,
-                                               SDM_MENU_POPUP,Mouse.CursorPos.X,Mouse.CursorPos.Y,0);
+                                               SDM_MENU_POPUP,cursorPos.X,cursorPos.Y,0);
       except
         on E: Exception do
         begin
@@ -273,12 +292,13 @@ begin
 
       if ObjectPopUp.Items[ObjectPopUp.Items.Count-1].Name = 'STARTOFBOTTOMMENU' then ObjectPopUp.Items[ObjectPopUp.Items.Count-1].Visible := False
          else ObjectPopUp.Items[ObjectPopUp.Items.Count-1].Visible := True;
-  
+
     if pDesktopObject.Settings.Locked then LockObjec1.ImageIndex:=4
        else LockObjec1.ImageIndex:=29;
     if pDesktopObject.Settings.isWindow then MakeWindow1.ImageIndex:=4
        else MakeWindow1.ImageIndex:=29;
-    self.PopupMenu.Popup(Mouse.CursorPos.X,Mouse.CursorPos.y);
+    ignorenext := True;
+    self.PopupMenu.Popup(cursorPos.X,cursorPos.y);
   end;
 end;
 
@@ -288,7 +308,9 @@ var
   Cpos : TPoint;
 begin
   dbclick := True;
-  CPos := SharpDesk.Image.ScreenToClient(Mouse.CursorPos);
+  if not GetCursorPosSecure(CPos) then
+    exit;
+  CPos := SharpDesk.Image.ScreenToClient(CPos);
   pDesktopObject := TDesktopObject(FDesktopObject);
   pDesktopObject.Owner.DllSharpDeskMessage(pDesktopObject.Settings.ObjectID,
                                            pDesktopObject.Layer,

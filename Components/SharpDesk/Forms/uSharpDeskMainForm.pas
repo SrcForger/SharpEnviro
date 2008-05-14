@@ -733,9 +733,13 @@ var
    B : integer;
    DesktopObject : TDesktopObject;
    ActionStr : String;
+   CPos : TPoint;
 begin
   if not SharpDesk.Enabled then exit;
   SharpDesk.MouseDown:=False;
+
+  if not GetCursorPosSecure(CPos) then
+    exit;
 
   if oSelect then
   begin
@@ -769,7 +773,7 @@ begin
     try
       DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
                                               DesktopObject.Layer,
-                                             SDM_MOUSE_UP,Mouse.CursorPos.X,Mouse.CursorPos.Y,B);
+                                             SDM_MOUSE_UP,CPos.X,CPos.Y,B);
     except
       on E: Exception do
       begin
@@ -789,7 +793,7 @@ begin
       try
         DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
                                                 DesktopObject.Layer,
-                                                SDM_MENU_POPUP,Mouse.CursorPos.X,Mouse.CursorPos.Y,0);
+                                                SDM_MENU_POPUP,CPos.X,CPos.Y,0);
       except
         on E: Exception do
         begin
@@ -810,8 +814,8 @@ begin
            else MakeWindow1.Checked := False;
         if DesktopObject.Settings.Locked then LockObjec1.Checked := True
            else LockObjec1.Checked := False;
-        ObjectPopUp.Popup(Mouse.CursorPos.X,Mouse.CursorPos.y);
-      end else ObjectPopUp2.Popup(Mouse.CursorPos.x,Mouse.CursorPos.y);
+        ObjectPopUp.Popup(CPos.X,CPos.y);
+      end else ObjectPopUp2.Popup(CPos.x,CPos.y);
     end;
   end else
   begin
@@ -819,14 +823,14 @@ begin
     LastY:=Y;
     if (Button = mbRight) then
     begin
-      ActionStr := inttostr(Mouse.CursorPos.X) + ' ' + inttostr(Mouse.CursorPos.Y) + ' ' + '1';
+      ActionStr := inttostr(CPos.X) + ' ' + inttostr(CPos.Y) + ' ' + '1';
       ActionStr := ActionStr + ' "' + SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
       if (Shift = [ssShift]) then
         ActionStr := ActionStr + SharpDesk.DeskSettings.MenuFileShift + '.xml"'
       else ActionStr := ActionStr + SharpDesk.DeskSettings.MenuFile + '.xml"';
       ShellApi.ShellExecute(Handle,'open',PChar(GetSharpEDirectory + 'SharpMenu.exe'),PChar(ActionStr),GetSharpEDirectory,SW_SHOWNORMAL);
       //sleep(1000);
-      SharpApi.SendDebugMessageEx('SharpDesk',PChar('Menu popup at : ' + inttostr(Mouse.CursorPos.X) + '|' + inttostr(Mouse.CursorPos.Y)),clblue,DMT_Trace);
+      SharpApi.SendDebugMessageEx('SharpDesk',PChar('Menu popup at : ' + inttostr(CPos.X) + '|' + inttostr(CPos.Y)),clblue,DMT_Trace);
     end;
   end;
 end;
@@ -839,13 +843,17 @@ procedure TSharpDeskMainForm.BackgroundImageMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer;
   Layer: TCustomLayer);
 var
-   CPos : TPoint;
+   CPos,cursorPos : TPoint;
    DesktopObject : TDesktopObject;
    R : TRect;
    n : integer;
    HA : THandleArray;
 begin
   if not SharpDesk.Enabled then exit;
+
+  if GetCursorPosSecure(cursorPos) then
+    CPos := SharpDesk.Image.ScreenToClient(cursorPos) else
+    exit;
 
   // Check if the click was in an area of visible SharpE Menu
   HA := FindAllWindows('TSharpEMenuWnd');
@@ -854,7 +862,7 @@ begin
     for n := 0 to High(HA) do
     begin
       GetWindowRect(HA[n],R);
-      if PointInRect(Mouse.CursorPos,R) then
+      if PointInRect(CursorPos,R) then
          exit;
     end;
     SendMessage(HA[0],WM_SHARPTERMINATE,0,0);
@@ -867,8 +875,6 @@ begin
     exit;
   end;
   if not Assigned(Layer) then exit;
-
-  CPos := SharpDesk.Image.ScreenToClient(Mouse.CursorPos);
 
   if (Layer.Tag=-1) and (SharpDesk.SelectionCount<>0) then
   begin
@@ -924,7 +930,7 @@ begin
     end else
     if DesktopObject.Selected and (SharpDesk.SelectionCount<>0) then
     begin
-      SharpDesk.LayerMousePos := SharpDesk.GetNextGridPoint(Mouse.CursorPos);
+      SharpDesk.LayerMousePos := SharpDesk.GetNextGridPoint(CursorPos);
       case Button of
         mbLeft   : SharpDesk.MouseDown:=True;
         mbRight  : SharpDesk.MouseDown:=False;
@@ -1015,7 +1021,6 @@ begin
 
   if (SharpDesk.MouseDown) and (SharpDesk.SelectionCount<>0) then
   begin
-    CPos := Mouse.CursorPos;
     if SharpDesk.DeskSettings.Grid then CPos := SharpDesk.GetNextGridPoint(CPos);
     X1 := CPos.X-SharpDesk.LayerMousePos.X;
     Y1 := CPos.Y-SharpDesk.LayerMousePos.Y;
@@ -1104,12 +1109,15 @@ begin
   DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));
   if DesktopObject <> nil then
   begin
-    CPos := SharpDesk.Image.ScreenToClient(Mouse.CursorPos);
-    if DesktopObject.Layer.HitTest(CPos.X,CPos.Y) then
-       DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
-                                                DesktopObject.Layer,
-                                                SDM_DOUBLE_CLICK,
-                                                CPos.X,CPos.Y,0);
+    if GetCursorPosSecure(CPos) then
+    begin
+      CPos := SharpDesk.Image.ScreenToClient(CPos);
+      if DesktopObject.Layer.HitTest(CPos.X,CPos.Y) then
+         DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
+                                                 DesktopObject.Layer,
+                                                 SDM_DOUBLE_CLICK,
+                                                 CPos.X,CPos.Y,0);
+    end;
   end;
   SharpDesk.MouseDown := False;
   SharpDesk.ObjectsMoved := False;
@@ -1130,18 +1138,21 @@ begin
   DesktopObject := TDesktopObject(SharpDesk.GetDesktopObjectByID(SharpDesk.LastLayer));
   if DesktopObject <> nil then
   begin
-    CPos := Mouse.CursorPos;
-    if DesktopObject.Layer.HitTest(CPos.X,CPos.Y) then
+    if GetCursorPosSecure(CPos) then
     begin
-      DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
-                                               DesktopObject.Layer,
-                                               SDM_CLICK,
-                                               CPos.X,CPos.Y,0);
-      if (SharpDesk.DeskSettings.SingleClick) and (not SharpDesk.ObjectsMoved) then
-         DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
-                                                 DesktopObject.Layer,
-                                                 SDM_DOUBLE_CLICK,
-                                                 CPos.X,CPos.Y,0);                                               
+      CPos := SharpDesk.Image.ScreenToClient(CPos);
+      if DesktopObject.Layer.HitTest(CPos.X,CPos.Y) then
+      begin
+        DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
+                                                DesktopObject.Layer,
+                                                SDM_CLICK,
+                                                CPos.X,CPos.Y,0);
+        if (SharpDesk.DeskSettings.SingleClick) and (not SharpDesk.ObjectsMoved) then
+           DesktopObject.Owner.DllSharpDeskMessage(DesktopObject.Settings.ObjectID,
+                                                   DesktopObject.Layer,
+                                                   SDM_DOUBLE_CLICK,
+                                                   CPos.X,CPos.Y,0);
+      end;
     end;
   end;
   SharpDesk.MouseDown := False;
@@ -1253,13 +1264,18 @@ procedure TSharpDeskMainForm.WMDropFiles(var Message: TWMDropFiles);
 var
    aFile: array [0..255] of Char;
    n,cnt: Integer;
-   CPos : TPoint;
+   CPos,CursorPos : TPoint;
 begin
   inherited;
   cnt := DragQueryFile(Message.drop, $FFFFFFFF, nil, 0);
 
-  CPos:=Mouse.CursorPos;
-  CPos := SharpDeskMainForm.ScreenToClient(CPos);
+  if GetCursorPosSecure(cursorPos) then
+    CPos := SharpDesk.Image.ScreenToClient(cursorPos)
+  else begin
+    DragFinish(Message.Drop);
+    exit;    
+  end;
+
   if CPos.X>Screen.DesktopWidth-CLONE_MOVE_X then
   begin
     CPos.X:=64;
@@ -1282,7 +1298,7 @@ begin
       end;
     end;
   end;
-  DragFinish(Message.Drop);       
+  DragFinish(Message.Drop);
 end;
 
 

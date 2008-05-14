@@ -142,15 +142,18 @@ var
   n : integer;
   CPos : TPoint;
 begin
-  CPos := Mouse.Cursorpos;
+  // something went wrong and the cursor isn't in any monitor
+  result := 0;
+
+  if not GetCursorPosSecure(CPos) then
+    exit;
+
   for n := 0 to Screen.MonitorCount - 1 do
       if PointInRect(CPos,Screen.Monitors[n].BoundsRect) then
       begin
         result := n;
         exit;
       end;
-  // something went wrong and the cursor isn't in any monitor
-  result := 0;
 end;
 
 // function written by Andre Beckedorf (graphics32 dev team)
