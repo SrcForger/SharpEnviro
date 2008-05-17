@@ -228,17 +228,13 @@ procedure TTaskManager.RemoveDeadTasks;
 var
   n : integer;
   pItem : TTaskItem;
-  visible,minimized : boolean;
 begin
   if FItems.Count = 0 then exit;
 
   for n := FItems.Count - 1 downto 0 do
   begin
     pItem := TTaskItem(FItems.Items[n]);
-    visible := (GetWindowLong(pItem.Handle, GWL_STYLE) and WS_VISIBLE) = WS_VISIBLE;
-    minimized := ((GetWindowLong(pItem.Handle, GWL_STYLE) and WS_MINIMIZE) = WS_MINIMIZE) or (IsIconic(pItem.Handle));
-    if (not IsWindow(pItem.Handle)) or
-       ((not visible) and (not minimized)) then
+    if (not IsWindow(pItem.Handle)) then
     begin
       FItems.Extract(pItem);
       if Assigned(OnRemoveTask) then OnRemoveTask(pItem,n);
