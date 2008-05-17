@@ -211,9 +211,9 @@ const
 
 {$REGION 'Private'}
   fsCCUrl =
-    'http://xoap.weather.com/weather/local/%s?&unit=%s&cc=*&prod=xoap&par=1003043975&key=d387802826c0d318';
+    'http://xoap.weather.com/weather/local/%s?&unit=%s&cc=*&link=xoap&par=1003043975&key=d387802826c0d318';
   fsForecastUrl =
-    'http://xoap.weather.com/weather/local/%s?&unit=%s&dayf=10&prod=xoap&par=1003043975&key=d387802826c0d318';
+    'http://xoap.weather.com/weather/local/%s?&unit=%s&dayf=10&link=xoap&par=1003043975&key=d387802826c0d318';
 {$ENDREGION}
 
 begin
@@ -258,7 +258,7 @@ begin
   for i := 0 to WeatherList.Count - 1 do
   begin
     Application.ProcessMessages;
-    tmpInfo := WeatherList.Info[i];
+    tmpInfo := WeatherList[i];
 
     // Check for imperial or metric
     if tmpInfo.Metric then

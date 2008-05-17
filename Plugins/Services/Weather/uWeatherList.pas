@@ -35,7 +35,6 @@ uses
 
 
 type
-  // "Private" Object, TWeatherList needs it...
   TWeatherItem = class(TObject)
   private
     FID: Integer;
@@ -60,30 +59,26 @@ type
     property Metric: Boolean read FMetric write FMetric;
   end;
 
-  TWeatherList = class(TObject)
+  TWeatherList = class(TObjectList)
   private
-    FItems: TObjectList;
     FOnAddItem: TNotifyEvent;
     FFileName: string;
 
-    function GetCount: integer;
-    function GeTWeatherItem(Index: integer): TWeatherItem;
     procedure Debug(Str: string; ErrorType: Integer);
+    function GetItem(Index: Integer): TWeatherItem;
+    procedure SetItem(Index: Integer; const Value: TWeatherItem);
 
   public
     constructor Create(FileName: string);
-    destructor Destroy; override;
 
     function Add(Location:String; LocationID:String; FCLastUpdated:String;
       CCLastUpdated: String; LastIconID:Integer; LastTemp:Integer;
-        Enabled:Boolean; Metric:Boolean): TWeatherItem;
+        Enabled:Boolean; Metric:Boolean): TWeatherItem; overload;
 
-    procedure Delete(Index: integer); overload;
-    procedure Delete(AObject: TWeatherItem); overload;
-    procedure Clear;
+    procedure Delete(weatherItem: TWeatherItem); overload;
 
-    property Count: integer read GetCount;
-    property Info[Index: integer]: TWeatherItem read GeTWeatherItem;
+    property Item[Index: Integer] : TWeatherItem
+             read GetItem write SetItem; Default;
 
     property OnAddItem: TNotifyEvent read FOnAddItem write FOnAddItem;
 
@@ -103,10 +98,6 @@ implementation
 uses
   SharpApi;
 
-
-
-{ TWeatherList }
-
 function TWeatherList.Add(Location:String; LocationID:String;
   FCLastUpdated:String; CCLastUpdated: String; LastIconID:Integer;
     LastTemp:Integer; Enabled:Boolean; Metric:Boolean): TWeatherItem;
@@ -121,7 +112,7 @@ begin
   Result.LastIconID := LastIconID;
   Result.LastTemp := LastTemp;
   Result.Metric := Metric;
-  FItems.Add(Result);
+  Self.Add(Result);
 
   if Assigned(FOnAddItem) then
     FOnAddItem(Result);
@@ -131,7 +122,6 @@ constructor TWeatherList.Create(FileName: string);
 begin
   inherited Create;
   FFileName := FileName;
-  FItems := TObjectList.Create;
 
   if FileExists(FileName) then
     Load
@@ -140,30 +130,11 @@ begin
   end;
 end;
 
-procedure TWeatherList.Delete(Index: integer);
+function TWeatherList.GetItem(Index: Integer): TWeatherItem;
 begin
-  FItems.Delete(Index);
-end;
-
-procedure TWeatherList.Clear;
-begin
-  FItems.Clear;
-end;
-
-destructor TWeatherList.Destroy;
-begin
-  FItems.Free;
-  inherited;
-end;
-
-function TWeatherList.GetCount: integer;
-begin
-  Result := FItems.Count;
-end;
-
-function TWeatherList.GetWeatherItem(Index: integer): TWeatherItem;
-begin
-  Result := (FItems[Index] as TWeatherItem);
+  Result := nil;
+  if (Index >= 0) and (Index < Count) then
+    Result := (Items[Index] as TWeatherItem);
 end;
 
 procedure TWeatherList.Load;
@@ -221,6 +192,12 @@ begin
   Save(FFilename);
 end;
 
+procedure TWeatherList.SetItem(Index: Integer; const Value: TWeatherItem);
+begin
+  if (Index >= 0) and (Index < Count)
+  then Self[Index] := Value;
+end;
+
 procedure TWeatherList.Save(xmlfile: TFilename);
 var
   i: Integer;
@@ -235,14 +212,14 @@ begin
 
       for i := 0 to self.Count - 1 do begin
         Xml.Root.Items.Add(Format('Location%d', [i]));
-        Xml.Root.Items.Item[i].Properties.Add('Location', Self.Info[i].Location);
-        Xml.Root.Items.Item[i].Properties.Add('LocationID', Self.Info[i].LocationID);
-        Xml.Root.Items.Item[i].Properties.Add('FCLastUpdated', Self.Info[i].FCLastUpdated);
-        Xml.Root.Items.Item[i].Properties.Add('CCLastUpdated', Self.Info[i].CCLastUpdated);
-        Xml.Root.Items.Item[i].Properties.Add('LastIconID', Self.Info[i].LastIconID);
-        Xml.Root.Items.Item[i].Properties.Add('LastTemp', Self.Info[i].LastTemp);
-        Xml.Root.Items.Item[i].Properties.Add('Enabled', Self.Info[i].Enabled);
-        Xml.Root.Items.Item[i].Properties.Add('Metric', Self.Info[i].Metric);
+        Xml.Root.Items.Item[i].Properties.Add('Location', Self[i].Location);
+        Xml.Root.Items.Item[i].Properties.Add('LocationID', Self[i].LocationID);
+        Xml.Root.Items.Item[i].Properties.Add('FCLastUpdated', Self[i].FCLastUpdated);
+        Xml.Root.Items.Item[i].Properties.Add('CCLastUpdated', Self[i].CCLastUpdated);
+        Xml.Root.Items.Item[i].Properties.Add('LastIconID', Self[i].LastIconID);
+        Xml.Root.Items.Item[i].Properties.Add('LastTemp', Self[i].LastTemp);
+        Xml.Root.Items.Item[i].Properties.Add('Enabled', Self[i].Enabled);
+        Xml.Root.Items.Item[i].Properties.Add('Metric', Self[i].Metric);
       end;
 
       Xml.SaveToFile(xmlfile);
@@ -263,17 +240,16 @@ begin
   SendDebugMessageEx('Weather Service',PChar(Str),0,ErrorType);
 end;
 
-procedure TWeatherList.Delete(AObject: TWeatherItem);
+procedure TWeatherList.Delete(weatherItem: TWeatherItem);
 var
   n:integer;
 begin
-  n := FItems.IndexOf(AObject);
+  n := IndexOf(weatherItem);
 
   if n <> -1 then
-    FItems.Delete(n);
+    Delete(n);
 end;
 
-{ TWeatherItem }
 constructor TWeatherItem.Create;
 begin
   FLocation := '';
