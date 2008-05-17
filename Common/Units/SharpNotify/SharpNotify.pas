@@ -473,7 +473,7 @@ var
   w,h : integer;
   tdim : TPoint;
   Text,Icon : TBitmap32;
-  i,i2,k : integer;
+  i,i2,i3,k : integer;
   mw : integer;
   n: Integer;
 begin
@@ -510,9 +510,18 @@ begin
   y := 0;
   mw := 0;
 
+  // Line Wrapping
   while length(s) > 0 do
   begin
-    i := Min(pos(#13,s),pos(#10,s));
+    i2 := pos(#13,s);
+    i3 := pos(#10,s);
+    if (i2 = 0) and (i3 <> 0) then
+      i := i3
+    else if (i3 = 0) and (i2 <> 0) then
+      i := i2
+    else if (i2 <> 0) and (i3 <> 0) then
+      i := Min(i2,i3)
+    else i := 0;
     i2 := pos(#13#10,s);
     if (cw * length(s) > tdim.x) or (i<>0) or (i2<>0) then
     begin
