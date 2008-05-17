@@ -787,8 +787,8 @@ begin
               FixedInfo := FixedInfo + item.FInfo[i];
             end;
             TimeOut := item.BTimeout;
-            if TimeOut < 5000 then
-              TimeOut := 5000
+            if TimeOut < 7000 then
+              TimeOut := 7000
             else if TimeOut > 30000 then
               TimeOut := 30000;
             SharpNotify.CreateNotifyWindow(0,item,x,y,FixedTitle + #13 + FixedInfo,
