@@ -38,8 +38,6 @@ type
   TfrmItemsList = class(TForm)
     imlWeatherGlyphs: TPngImageList;
     lbWeatherList: TSharpEListBoxEx;
-
-    procedure img1Click(Sender: TObject);
     procedure lbWeatherListResize(Sender: TObject);
     procedure lbWeatherListClickItem(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem);
@@ -100,7 +98,7 @@ begin
     lbWeatherList.Clear;
 
     for i := 0 to Pred(AData.Count) do begin
-      tmpWeather := AData.Info[i];
+      tmpWeather := AData[i];
 
       newItem := lbWeatherList.AddItem(s, GetWeatherIndex(tmpWeather));
       newItem.AddSubItem('');
@@ -115,12 +113,10 @@ begin
       lbWeatherList.ItemIndex := n;
   finally
     LockWindowUpdate(0);
-  end;
-end;
 
-procedure TfrmItemsList.img1Click(Sender: TObject);
-begin
-  SharpExecute('http://www.weather.com/?prod=xoap&par=1003043975')
+    CenterUpdateEditTabs(lbWeatherList.Count,lbWeatherList.ItemIndex);
+    CenterUpdateConfigFull;
+  end;
 end;
 
 procedure TfrmItemsList.CustomWndProc(var msg: TMessage);

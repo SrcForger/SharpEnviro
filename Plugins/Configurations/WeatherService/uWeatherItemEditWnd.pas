@@ -53,9 +53,11 @@ type
     valName: TJvRequiredFieldValidator;
     pilError: TPngImageList;
     Label1: TLabel;
+    Image1: TImage;
 
     procedure UpdateEditState(Sender: TObject);
     procedure btnSearchClick(Sender: TObject);
+    procedure Image1Click(Sender: TObject);
   private
     { Private declarations }
     FItemEdit: TWeatherItem;
@@ -206,6 +208,11 @@ begin
 
   edName.Text := tmpWeather.Location;
   edWeatherID.Text := tmpWeather.LocationID;
+end;
+
+procedure TfrmItemEdit.Image1Click(Sender: TObject);
+begin
+  SharpExecute('http://www.weather.com/?prod=xoap&par=1003043975');
 end;
 
 procedure TfrmItemEdit.InitUi(AEditMode: TSCE_EDITMODE_ENUM;

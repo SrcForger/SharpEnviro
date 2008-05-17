@@ -45,6 +45,7 @@ begin
   frmItemsList.BorderStyle := bsNone;
   frmItemsList.UpdateDisplay(WeatherList);
   frmItemsList.Show;
+
   result := frmItemsList.Handle;
 end;
 

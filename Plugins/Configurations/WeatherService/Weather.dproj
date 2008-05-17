@@ -1,11 +1,12 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{d7a23641-7e39-4af3-8cf3-fccc5cd53d67}</ProjectGuid>
     <MainSource>Weather.DPR</MainSource>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\Center\Root\_Services\_Servicedlls\Weather.dll</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>F:\SharpE\Center\Root\_Services\_Servicedlls\Weather.dll</DCC_DependencyCheckOutputName>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
