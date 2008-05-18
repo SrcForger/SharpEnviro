@@ -1,44 +1,46 @@
 <SharpCompile>
   <package Name="Configuration">
      <project Name="Aliases" Type="DLL">Plugins\Configurations\Aliases\Aliases.dproj</project>  
-     <project Name="BatteryMonitor" Type="DLL">Plugins\Configurations\BatteryMonitor\BatteryMonitor.dproj</project>       
-     <project Name="Clock" Type="DLL">Plugins\Configurations\Clock\Clock.dproj</project>  
-     <project Name="CPUMonitor" Type="DLL">Plugins\Configurations\CPUMonitor\CPUMonitor.dproj</project>  
+     <project Name="Battery Monitor Module" Type="DLL">Plugins\Configurations\BatteryMonitor\BatteryMonitor.dproj</project>       
+     <project Name="Clock Module" Type="DLL">Plugins\Configurations\Clock\Clock.dproj</project>  
+     <project Name="CPU Monitor Module" Type="DLL">Plugins\Configurations\CPUMonitor\CPUMonitor.dproj</project>  
      <project Name="Curses" Type="DLL">Plugins\Configurations\Curses\Curses.dproj</project>  
-     <project Name="DeskArea" Type="DLL">Plugins\Configurations\DeskArea\DeskArea.dproj</project>  
+     <project Name="DeskArea Service" Type="DLL">Plugins\Configurations\DeskArea\DeskArea.dproj</project>  
      <project Name="Desktop" Type="DLL">Plugins\Configurations\Desktop\Desktop.dproj</project>  
+     <project Name="Filter List" Type="DLL">Plugins\Configurations\FilterList\FilterList.dproj</project>     
      <project Name="Font" Type="DLL">Plugins\Configurations\Font\Font.dproj</project>  
      <project Name="Home" Type="DLL">Plugins\Configurations\Home\Home.dproj</project>  
-     <project Name="Hotkeys" Type="DLL">Plugins\Configurations\Hotkeys\Hotkeys.dproj</project> 
+     <project Name="Hotkeys Service" Type="DLL">Plugins\Configurations\Hotkeys\Hotkeys.dproj</project> 
      <project Name="Icon List" Type="DLL">Plugins\Configurations\Icon List\IconList.dproj</project>       
-     <project Name="Image" Type="DLL">Plugins\Configurations\Image\Image.dproj</project>  
-     <project Name="Link" Type="DLL">Plugins\Configurations\Link\Link.dproj</project>       
-     <project Name="KeyboardLayout" Type="DLL">Plugins\Configurations\KeyboardLayout\KeyboardLayout.dproj</project>       
+     <project Name="Image Object" Type="DLL">Plugins\Configurations\Image\Image.dproj</project>  
+     <project Name="Link Object" Type="DLL">Plugins\Configurations\Link\Link.dproj</project>       
+     <project Name="Keyboard Layout Module" Type="DLL">Plugins\Configurations\KeyboardLayout\KeyboardLayout.dproj</project>       
      <project Name="Glass Config" Type="DLL">Plugins\Configurations\Theme Glass\ThemeGlass.dproj</project>       
-     <project Name="MemoryMonitor" Type="DLL">Plugins\Configurations\MemoryMonitor\MemoryMonitor.dproj</project>       
-     <project Name="MenuEdit" Type="DLL">Plugins\Configurations\MenuEdit\MenuEdit.dproj</project> 
-     <project Name="MenuList" Type="DLL">Plugins\Configurations\MenuList\MenuList.dproj</project>     
-     <project Name="MiniScmd" Type="DLL">Plugins\Configurations\MiniScmd\MiniScmd.dproj</project>       
-     <project Name="ModuleManager" Type="DLL">Plugins\Configurations\Module Manager\ModuleManager.dproj</project>           
-     <project Name="Notes" Type="DLL">Plugins\Configurations\Notes\Notes.dproj</project>       
-     <project Name="QuickScript" Type="DLL">Plugins\Configurations\QuickScript\QuickScript.dproj</project>       
-     <project Name="RecycleBin" Type="DLL">Plugins\Configurations\RecycleBin\RecycleBin.dproj</project>       
+     <project Name="Memory Monitor Module" Type="DLL">Plugins\Configurations\MemoryMonitor\MemoryMonitor.dproj</project>       
+     <project Name="Menu Editor" Type="DLL">Plugins\Configurations\MenuEdit\MenuEdit.dproj</project> 
+     <project Name="Menu List" Type="DLL">Plugins\Configurations\MenuList\MenuList.dproj</project>     
+     <project Name="MiniScmd Module" Type="DLL">Plugins\Configurations\MiniScmd\MiniScmd.dproj</project>       
+     <project Name="Module Manager" Type="DLL">Plugins\Configurations\Module Manager\ModuleManager.dproj</project>           
+     <project Name="Notes Module" Type="DLL">Plugins\Configurations\Notes\Notes.dproj</project>       
+     <project Name="Quick Script Module" Type="DLL">Plugins\Configurations\QuickScript\QuickScript.dproj</project>       
+     <project Name="Recycle Bin Object" Type="DLL">Plugins\Configurations\RecycleBin\RecycleBin.dproj</project>       
      <project Name="Scheme" Type="DLL">Plugins\Configurations\Scheme\Scheme.dproj</project>  
+     <project Name="Scheme Editor" Type="DLL">Plugins\Configurations\Scheme Edit\SchemeEdit.dproj</project>
      <project Name="Service Manager" Type="DLL">Plugins\Configurations\Service Manager\ServiceManager.dproj</project>  
      <project Name="SharpBar Manager" Type="DLL">Plugins\Configurations\SharpBar List\SharpBarList.dproj</project>  
      <project Name="SharpDesk" Type="DLL">Plugins\Configurations\SharpDesk\SharpDesk.dproj</project>  
      <project Name="SharpMenu" Type="DLL">Plugins\Configurations\SharpMenu\SharpMenu.dproj</project>  
      <project Name="Skin" Type="DLL">Plugins\Configurations\Theme Skin\ThemeSkinList.dproj</project>  
-     <project Name="SystemTray" Type="DLL">Plugins\Configurations\SystemTray\SystemTray.dproj</project>  
+     <project Name="SystemTray Module" Type="DLL">Plugins\Configurations\SystemTray\SystemTray.dproj</project>  
+     <project Name="Task Module" Type="DLL">Plugins\Configurations\TaskModule\TaskModule.dproj</project> 
      <project Name="Theme List" Type="DLL">Plugins\Configurations\Theme List\ThemeList.dproj</project>  
-     <project Name="VolumeControl" Type="DLL">Plugins\Configurations\VolumeControl\VolumeControl.dproj</project> 
-     <project Name="VWM" Type="DLL">Plugins\Configurations\VWM\VWM.dproj</project>  
-     <project Name="VWMService" Type="DLL">Plugins\Configurations\VWMService\VWMService.dproj</project>  
+     <project Name="VolumeControl Module" Type="DLL">Plugins\Configurations\VolumeControl\VolumeControl.dproj</project> 
+     <project Name="VWM Module" Type="DLL">Plugins\Configurations\VWM\VWM.dproj</project>  
+     <project Name="VWM Service" Type="DLL">Plugins\Configurations\VWMService\VWMService.dproj</project>  
      <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Wallpaper\Wallpaper.dproj</project>  
-     <project Name="WeatherService" Type="DLL">Plugins\Configurations\WeatherService\Weather.dproj</project> 
-	 <project Name="FilterList" Type="DLL">Plugins\Configurations\FilterList\FilterList.dproj</project>     
-	 <project Name="TaskModule" Type="DLL">Plugins\Configurations\TaskModule\TaskModule.dproj</project> 
-     <project Name="SchemeEdit" Type="DLL">Plugins\Configurations\Scheme Edit\SchemeEdit.dproj</project>    	 
+     <project Name="Weather Module" Type="DLL">Plugins\Configurations\WeatherModule\WeatherModule.dproj</project>    
+     <project Name="Weather Service" Type="DLL">Plugins\Configurations\WeatherService\Weather.dproj</project> 
+      	 
   </package>
   <package Name="Components">
      <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
