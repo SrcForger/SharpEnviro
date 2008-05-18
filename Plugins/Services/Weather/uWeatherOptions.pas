@@ -148,6 +148,7 @@ begin
       Add('CheckInterval',FCheckInterval);
     end;
 
+    ForceDirectories(ExtractFilePath((filename)));
     xml.SaveToFile(filename);
     Except
       Debug(format('Error saving %s',[filename]),DMT_ERROR);

@@ -222,6 +222,7 @@ begin
         Xml.Root.Items.Item[i].Properties.Add('Metric', Self[i].Metric);
       end;
 
+      ForceDirectories(ExtractFilePath((xmlFile)));
       Xml.SaveToFile(xmlfile);
     except
       on E: Exception do begin
