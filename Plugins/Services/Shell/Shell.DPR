@@ -409,7 +409,7 @@ begin
         end;
       end;
       TaskManager.HandleShellMessage(wparam,Cardinal(lparam));
-      if (not deskswitch) and (GetTickCount - lastappcommand > 150) then
+      if (not deskswitch) and (GetTickCount - lastappcommand > 100) then
       begin
         for n := High(TaskMsgManager.WndList) downto 0 do
           if IsWindow(TaskMsgManager.WndList[n]) then
