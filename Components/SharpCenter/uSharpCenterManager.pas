@@ -50,9 +50,10 @@ type
     FPlugin: TSetting;
     FTitle: string;
     FDescription: string;
+    procedure SetCaption(const Value: string);
   public
     constructor Create;
-    property Caption: string read FCaption write FCaption;
+    property Caption: string read FCaption write SetCaption;
     property Status: string read FStatus write FStatus;
     property Title: string read FTitle write FTitle;
     property Description: string read FDescription write FDescription;
@@ -949,6 +950,11 @@ end;
 constructor TSharpCenterManagerItem.Create;
 begin
 
+end;
+
+procedure TSharpCenterManagerItem.SetCaption(const Value: string);
+begin
+  FCaption := Value;
 end;
 
 initialization

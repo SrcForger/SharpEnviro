@@ -540,7 +540,7 @@ begin
           SCM.ActivePlugin.SetText(SCM.ActivePluginID, sName, sStatus,
             sTitle, sDescription);
 
-        TSharpCenterManagerItem(lbTree.SelectedItem.Data).Caption := sName;
+        //TSharpCenterManagerItem(lbTree.SelectedItem.Data).Caption := sName;
         TSharpCenterManagerItem(lbTree.SelectedItem.Data).Status := sStatus;
         TSharpCenterManagerItem(lbTree.SelectedItem.Data).Title := sTitle;
         TSharpCenterManagerItem(lbTree.SelectedItem.Data).Description := sDescription;
@@ -721,6 +721,8 @@ begin
   //DoDoubleBufferAll(pnlTree);
   DoDoubleBufferAll(pnlTitle);
   DoDoubleBufferAll(lbTree);
+  Self.ParentBackground := False;
+  Self.DoubleBuffered := True;
 
   // Set Listbox defaults
   lbTree.Colors.BorderColorSelected := $00C1F4FE;

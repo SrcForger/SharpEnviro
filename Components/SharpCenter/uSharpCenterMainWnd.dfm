@@ -1750,6 +1750,7 @@ object SharpCenterWnd: TSharpCenterWnd
             Align = alTop
             BevelOuter = bvNone
             Color = clWindow
+            FullRepaint = False
             ParentBackground = False
             TabOrder = 0
           end
