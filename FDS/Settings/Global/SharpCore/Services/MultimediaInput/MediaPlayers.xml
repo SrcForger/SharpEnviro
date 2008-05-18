@@ -2,7 +2,7 @@
 <MediaPlayers>
   <item>
     <Name>Foobar</Name>
-    <WndClass>{DA7CD0DE-1602-45e6-89A1-C2CA151E008E}/1</WndClass>
+    <WndClass>{97E27FAA-C0B3-4b8e-A693-ED7881E99FC1}</WndClass>
     <WndCaption></WndCaption>
     <Icon>foobar_icon.png</Icon>
   </item> 
