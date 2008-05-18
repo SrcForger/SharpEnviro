@@ -31,7 +31,6 @@ object frmOptions: TfrmOptions
     BevelOuter = bvNone
     BorderStyle = bsNone
     Color = clWindow
-    ParentBackground = True
     ParentColor = False
     TabOrder = 0
     Items = <>

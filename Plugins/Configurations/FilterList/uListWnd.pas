@@ -90,8 +90,8 @@ const
   colCopy = 1;
   colDelete = 2;
 
-  iidxCopy = 5;
-  iidxDelete = 6;
+  iidxCopy = 0;
+  iidxDelete = 1;
 
 implementation
 

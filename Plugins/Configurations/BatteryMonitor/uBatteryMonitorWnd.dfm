@@ -23,13 +23,11 @@ object frmBMon: TfrmBMon
     ActivePage = pagNotes
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 400
     object pagNotes: TJvStandardPage
       Left = 0
       Top = 0
       Width = 427
       Height = 93
-      ExplicitHeight = 400
       object Label3: TLabel
         AlignWithMargins = True
         Left = 8
@@ -57,8 +55,8 @@ object frmBMon: TfrmBMon
         Align = alTop
         AutoSize = False
         Caption = 
-          'Select if you want to display an icon along with the power statu' +
-          's.'
+          'Select the checkbox if you want to display the power status icon' +
+          '.'
         Transparent = False
         WordWrap = True
         ExplicitWidth = 309
@@ -74,7 +72,7 @@ object frmBMon: TfrmBMon
         Margins.Right = 8
         Margins.Bottom = 8
         Align = alTop
-        Caption = 'Icon'
+        Caption = 'Display Icon'
         Checked = True
         State = cbChecked
         TabOrder = 0

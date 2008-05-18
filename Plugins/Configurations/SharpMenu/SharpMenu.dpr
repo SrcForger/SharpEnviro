@@ -61,6 +61,7 @@ begin
   frmMenuSettings.Left := 2;
   frmMenuSettings.Top := 2;
   frmMenuSettings.BorderStyle := bsNone;
+  frmMenuSettings.Updating := True;
 
   Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Settings\';
   FName := Dir + 'SharpMenu.xml';
@@ -86,6 +87,7 @@ begin
   end;
 
   frmMenuSettings.Show;
+  frmMenuSettings.Updating := False;
   result := frmMenuSettings.Handle;
 end;
 

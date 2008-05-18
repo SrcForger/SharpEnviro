@@ -70,7 +70,7 @@ object frmConfig: TfrmConfig
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     OnResize = lbHotkeysResize
-    itemheight = 25
+    ItemHeight = 25
     OnClickItem = lbHotkeysClickItem
     OnGetCellCursor = lbHotkeysGetCellCursor
     OnGetCellImageIndex = lbHotkeysGetCellImageIndex

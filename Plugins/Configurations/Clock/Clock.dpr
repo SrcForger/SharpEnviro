@@ -142,7 +142,7 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
 begin
   AName := 'Clock';
   ATitle := 'Clock Module';
-  ADescription := 'Configure the clock module';
+  ADescription := 'A module that shows the current time and date';
 end;
 
 function GetMetaData(): TMetaData;

@@ -30,7 +30,7 @@ uses
   JvValidators,
   JvComponentBase,
   JvErrorIndicator,
-  SharpCenterApi;
+  SharpCenterApi, SharpERoundPanel;
 
 type
   TWeatherLocation = class
@@ -52,7 +52,7 @@ type
     valID: TJvRequiredFieldValidator;
     valName: TJvRequiredFieldValidator;
     pilError: TPngImageList;
-    Label1: TLabel;
+    JvLabel1: TJvLabel;
     Image1: TImage;
 
     procedure UpdateEditState(Sender: TObject);

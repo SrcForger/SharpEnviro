@@ -58,9 +58,11 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
+    FUpdating: Boolean;
     procedure UpdateWrapBox;
     procedure SendUpdate;
   public
+    property Updating: Boolean read FUpdating write FUpdating;
   end;
 
 var
@@ -100,7 +102,7 @@ end;
 
 procedure TfrmMenuSettings.SendUpdate;
 begin
-  if Visible then
+  if ( Not(Updating) and ( Visible ) ) then
      CenterDefineSettingsChanged;
 end;
 
