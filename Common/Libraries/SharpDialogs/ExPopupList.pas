@@ -23,7 +23,7 @@ Type
 
 procedure TExPopupList.WndProc(var Message: TMessage);
 begin
-  Case message.Msg Of 
+  Case message.Msg Of
     WM_ENTERMENULOOP: begin
 //                        nrevent := True;
 //                        lastmenuid := TWMMenuSelect(Message).IDItem;
@@ -38,7 +38,7 @@ begin
                           nrevent := True;
                         end else if GetSubMenu(lastmenu,lastmenuid) <> 0 then nrevent := False;
                       end;
-    else message.result := DefWindowProc(handle, message.Msg, message.wParam, message.lParam);
+    else message.result := DefWindowProc(FWindow, message.Msg, message.wParam, message.lParam);
   End; 
   inherited;
 end; 
