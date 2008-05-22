@@ -159,7 +159,7 @@ begin
          end;
       2: DisplayPropDialog(Application.Handle,item.PropList.GetString('Action'));
       3: SharpApi.SharpExecute(item.PropList.GetString('Action'));
-      4: JclShell.ShellOpenAs(item.PropList.GetString('Action'));
+      4: SharpApi.SharpExecute('_elevate,'+item.PropList.GetString('Action'));
     end;
   end;
 end;
@@ -173,7 +173,7 @@ begin
   // Seperator
   item := TMenuItem.Create(FDynamicDirPopup);
   item.Caption := 'Open';
-  item.ImageIndex := 2;
+  item.ImageIndex := 3;
   item.Tag := 3;
   item.OnClick := DynamicDirPopupOnClick;
   FDynamicDirPopup.Items.Add(item);
@@ -223,10 +223,9 @@ begin
 
   // Seperator
   item := TMenuItem.Create(FDynamicLinkPopup);
-  item.Caption := 'Open As...';
+  item.Caption := 'Open Elevated...';
   item.ImageIndex := 4;
   item.Tag := 4;
-  item.Visible := False;
   item.OnClick := DynamicLinkPopupOnClick;
   FDynamicLinkPopup.Items.Add(item);
 
