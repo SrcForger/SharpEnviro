@@ -75,7 +75,7 @@ begin
       frmVWMSettings.sgb_vwmcount.Value := XML.Root.Items.IntValue('VWMCount',4);
       frmVWMSettings.cb_focustopmost.Checked := XML.Root.Items.BoolValue('FocusTopMost',False);
       frmVWMSettings.cb_followfocus.Checked := XML.Root.Items.BoolValue('FollowFocus',False);
-      frmVWMSettings.cb_ocd.Checked := XML.Root.Items.BoolValue('ShowOCD',False);      
+      frmVWMSettings.cb_ocd.Checked := XML.Root.Items.BoolValue('ShowOCD',True);      
     end;
     XML.Free;
   end;
