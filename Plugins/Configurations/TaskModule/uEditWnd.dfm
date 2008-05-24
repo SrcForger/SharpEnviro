@@ -18,7 +18,7 @@ object frmEdit: TfrmEdit
   object lbItems: TSharpEListBoxEx
     AlignWithMargins = True
     Left = 20
-    Top = 230
+    Top = 257
     Width = 475
     Height = 148
     Margins.Left = 20
@@ -62,7 +62,7 @@ object frmEdit: TfrmEdit
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = clWindow
     OnResize = lbItemsResize
-    itemheight = 25
+    ItemHeight = 25
     OnClickCheck = lbItemsClickCheck
     OnClickItem = lbItemsClickItem
     OnGetCellCursor = lbItemsGetCellCursor
@@ -71,12 +71,13 @@ object frmEdit: TfrmEdit
     Borderstyle = bsNone
     Ctl3d = False
     Align = alTop
+    ExplicitTop = 230
   end
   object pnlOptions: TPanel
     Left = 0
     Top = 0
     Width = 503
-    Height = 222
+    Height = 249
     Align = alTop
     BevelOuter = bvNone
     ParentColor = True
@@ -113,7 +114,7 @@ object frmEdit: TfrmEdit
     object Label1: TLabel
       AlignWithMargins = True
       Left = 8
-      Top = 89
+      Top = 114
       Width = 487
       Height = 13
       Margins.Left = 8
@@ -122,12 +123,13 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       Caption = 'Buttons'
+      ExplicitTop = 89
       ExplicitWidth = 37
     end
     object Label4: TLabel
       AlignWithMargins = True
       Left = 8
-      Top = 158
+      Top = 183
       Width = 487
       Height = 13
       Margins.Left = 8
@@ -136,12 +138,13 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       Caption = 'Filters'
+      ExplicitTop = 158
       ExplicitWidth = 29
     end
     object lblFilterDesc: TLabel
       AlignWithMargins = True
       Left = 26
-      Top = 179
+      Top = 204
       Width = 469
       Height = 13
       Margins.Left = 26
@@ -151,12 +154,13 @@ object frmEdit: TfrmEdit
       Align = alTop
       Caption = 'Define the Filter conditions that apply to this task group:'
       Transparent = False
+      ExplicitTop = 179
       ExplicitWidth = 271
     end
     object lblButtonsDesc: TLabel
       AlignWithMargins = True
       Left = 26
-      Top = 110
+      Top = 135
       Width = 469
       Height = 13
       Margins.Left = 26
@@ -166,6 +170,7 @@ object frmEdit: TfrmEdit
       Align = alTop
       Caption = 'Define which buttons you want to enable:'
       Transparent = False
+      ExplicitTop = 110
       ExplicitWidth = 201
     end
     object Panel1: TPanel
@@ -245,7 +250,7 @@ object frmEdit: TfrmEdit
     object Panel2: TPanel
       AlignWithMargins = True
       Left = 26
-      Top = 131
+      Top = 156
       Width = 469
       Height = 19
       Margins.Left = 26
@@ -255,6 +260,7 @@ object frmEdit: TfrmEdit
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 1
+      ExplicitTop = 131
       object chkMinimiseBtn: TCheckBox
         AlignWithMargins = True
         Left = 0
@@ -287,7 +293,7 @@ object frmEdit: TfrmEdit
     object chkFilterTasks: TCheckBox
       AlignWithMargins = True
       Left = 26
-      Top = 200
+      Top = 225
       Width = 469
       Height = 17
       Margins.Left = 26
@@ -298,6 +304,25 @@ object frmEdit: TfrmEdit
       Caption = 'Filter Tasks (When enabled only checked tasks will apply)'
       TabOrder = 2
       OnClick = chkFilterTasksClick
+      ExplicitTop = 200
+    end
+    object chkMiddleClose: TCheckBox
+      AlignWithMargins = True
+      Left = 26
+      Top = 89
+      Width = 469
+      Height = 17
+      Margins.Left = 26
+      Margins.Top = 8
+      Margins.Right = 8
+      Margins.Bottom = 0
+      Align = alTop
+      Caption = 'Close tasks on middle click'
+      Checked = True
+      State = cbChecked
+      TabOrder = 3
+      OnClick = chkFilterTasksClick
+      ExplicitTop = 78
     end
   end
   object pilListBox: TPngImageList

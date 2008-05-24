@@ -76,6 +76,7 @@ type
     sSort       : boolean;
     sSortType   : TSharpeTaskManagerSortType;
     sDebug      : boolean;
+    sMiddleClose : boolean;
     sMaxAllButton : boolean;
     sMinAllButton : boolean;
     sIFilter,sEFilter : Boolean;
@@ -481,7 +482,14 @@ procedure TMainForm.OnTaskItemMouseUp(Sender: TObject; Button: TMouseButton; Shi
 begin
   DebugOutPutInfo('TMainForm.OnTaskItemMouseUp (Procedure)');
   if not (Sender is TSharpETaskItem) then exit;
-  if Button = mbRight then DisplaySystemMenu(TSharpETaskItem(Sender).Handle);
+  case Button of
+    mbRight: DisplaySystemMenu(TSharpETaskItem(Sender).Handle);
+    mbMiddle: if sMiddleClose then
+    begin
+      PostMessage(TSharpETaskItem(Sender).Handle, WM_CLOSE, 0, 0);
+      PostThreadMessage(GetWindowThreadProcessID(TSharpETaskItem(Sender).Handle, nil), WM_QUIT, 0, 0);
+    end;
+  end;
 end;
 
 procedure TMainForm.LoadFilterSettingsFromXML;
@@ -507,8 +515,9 @@ begin
   sSpacing   := 2;
   sSort      := False;
   sDebug     := False;
-  sEFilter := True;
-  sIFilter := True;
+  sEFilter   := True;
+  sIFilter   := True;
+  sMiddleClose := True;
 
   LoadFilterSettingsFromXML;
 
@@ -540,6 +549,7 @@ begin
       sIFilter := BoolValue('FilterTasks',True);
       sEFilter := BoolValue('FilterTasks',True);
       sDebug   := BoolValue('Debug',False);
+      sMiddleClose := BoolValue('MiddleClose',True);
       if ItemNamed['IFilters'] <> nil then
       begin
         SList.Clear;      

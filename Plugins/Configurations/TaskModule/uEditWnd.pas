@@ -75,6 +75,7 @@ type
     lblFilterDesc: TLabel;
     lblButtonsDesc: TLabel;
     chkFilterTasks: TCheckBox;
+    chkMiddleClose: TCheckBox;
     procedure lbItemsResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -274,6 +275,7 @@ begin
         chkMinimiseBtn.Checked := BoolValue('MinAllButton', False);
         chkRestoreBtn.Checked := BoolValue('MaxAllButton', False);
         chkFilterTasks.Checked := BoolValue('FilterTasks', False);
+        chkMiddleClose.Checked := BoolValue('MiddleClose', True);
         lbItems.Visible := chkFilterTasks.Checked;
         lbItemsResize(nil);
 
@@ -380,6 +382,7 @@ begin
       Add('MinAllButton', chkMinimiseBtn.Checked);
       Add('MaxAllButton', chkRestoreBtn.Checked);
       Add('FilterTasks', chkFilterTasks.Checked);
+      Add('MiddleClose', chkMiddleClose.Checked);
 
       includeList := TStringList.Create;
       excludeList := TStringList.Create;
