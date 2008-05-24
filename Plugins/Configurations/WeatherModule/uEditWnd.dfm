@@ -25,7 +25,6 @@ object frmEdit: TfrmEdit
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
-    ExplicitWidth = 503
     object Label3: TLabel
       AlignWithMargins = True
       Left = 8
@@ -127,7 +126,6 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitWidth = 469
       object Label6: TLabel
         Left = 0
         Top = 4
@@ -171,7 +169,6 @@ object frmEdit: TfrmEdit
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitWidth = 469
       object chkDisplayIcon: TCheckBox
         AlignWithMargins = True
         Left = 0
@@ -234,7 +231,7 @@ object frmEdit: TfrmEdit
         Margins.Bottom = 0
         Constraints.MaxWidth = 300
         TabOrder = 0
-        Text = 'Default'
+        Text = 'Temperature: {#TEMPERATURE#}'#176'{#UNITTEMP#}'
         OnChange = SettingsChange
       end
       object btnBrowseTop: TButton
@@ -261,7 +258,6 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       TabOrder = 3
-      ExplicitTop = 221
       object Label5: TLabel
         Left = 0
         Top = 4
@@ -281,7 +277,7 @@ object frmEdit: TfrmEdit
         Margins.Bottom = 0
         Constraints.MaxWidth = 300
         TabOrder = 0
-        Text = 'Default'
+        Text = 'Condition: {#CONDITION#}'
         OnChange = SettingsChange
       end
       object btnBrowseBottom: TButton

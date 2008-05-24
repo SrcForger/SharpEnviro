@@ -270,11 +270,11 @@ begin
         chkDisplayLabels.Checked := showLabels;
 
         // Top label
-        topLabel := Value('TopLabel');
+        topLabel := Value('TopLabel','Temperature: {#TEMPERATURE#}°{#UNITTEMP#}');
         edtTopLabel.Text := topLabel;
 
         // Bottom label
-        bottomLabel := Value('BottomLabel');
+        bottomLabel := Value('BottomLabel','Condition: {#CONDITION#}');
         edtBottomLabel.Text := bottomLabel;
       end;
 
