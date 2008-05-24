@@ -40,14 +40,6 @@ object MainForm: TMainForm
     AutoPos = apTop
     LabelStyle = lsSmall
   end
-  object MenuPopup: TPopupMenu
-    Left = 160
-    Top = 72
-    object Settings1: TMenuItem
-      Caption = 'Settings'
-      OnClick = Settings1Click
-    end
-  end
   object SharpESkinManager1: TSharpESkinManager
     SkinSource = ssSystem
     SchemeSource = ssSystem

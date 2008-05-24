@@ -42,7 +42,6 @@ uses
   MouseTimer,
   gr32,
   MainWnd in 'MainWnd.pas' {MainForm},
-  SettingsWnd in 'SettingsWnd.pas' {SettingsForm},
   uWeatherParser in '..\..\Objects\Weather\uWeatherParser.pas';
 
 type
@@ -232,19 +231,6 @@ begin
   end;
 end;
 
-procedure ShowSettingsWnd(ID : integer);
-var
-  n : integer;
-  temp : TModule;
-begin
-  for n := 0 to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.FForm).Settings1Click(TMainForm(temp.FForm).Settings1);
-      end;
-end;
-
 procedure SetSize(ID : integer; NewWidth : integer);
 var
   n : integer;
@@ -295,7 +281,6 @@ Exports
   Poschanged,
   Refresh,
   UpdateMessage,
-  ShowSettingsWnd,
   SetSize,
   ModuleMessage,
   GetMetaData;

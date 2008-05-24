@@ -37,8 +37,6 @@ uses
 
 type
   TMainForm = class(TForm)
-    MenuPopup: TPopupMenu;
-    Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     lb_bottom: TSharpESkinLabel;
     lb_top: TSharpESkinLabel;
@@ -46,7 +44,6 @@ type
     procedure BackgroundDblClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure Settings1Click(Sender: TObject);
   protected
   private
     sShowIcon    : boolean;
@@ -74,8 +71,7 @@ type
 
 implementation
 
-uses SettingsWnd,
-     GR32_PNG,
+uses GR32_PNG,
      uSharpBarAPI;
 
 {$R *.dfm}
@@ -152,8 +148,6 @@ begin
   sShowIcon    := True;
   sShowLabels  := True;
   sLocation    := '0';
-  sTopLabel    := 'Temperature: {#TEMPERATURE#}°{#UNITTEMP#}';
-  sBottomLabel := 'Condition: {#CONDITION#}';
 
   XML := TJvSimpleXML.Create(nil);
   try
@@ -271,50 +265,6 @@ begin
   Hint := inttostr(NewWidth);
   if newWidth <> width then
      if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
-end;
-
-
-procedure TMainForm.Settings1Click(Sender: TObject);
-var
-  SettingsForm : TSettingsForm;
-  XML : TJvSimpleXML;
-begin
-  try
-    SettingsForm := TSettingsForm.Create(Application.MainForm);
-    SettingsForm.cb_showicon.Checked := sShowIcon;
-    SettingsForm.cb_info.Checked := sShowLabels;
-    SettingsForm.cb_info.OnClick(SettingsForm.cb_info);
-    SettingsForm.edit_top.Text := sTopLabel;
-    SettingsForm.edit_bottom.Text := sBottomLabel;
-    SettingsForm.sLocation := sLocation;
-    SettingsForm.BuildLocationList(sLocation); 
-
-    if SettingsForm.ShowModal = mrOk then
-    begin
-      sShowIcon := SettingsForm.cb_showicon.Checked;
-      sShowLabels := SettingsForm.cb_info.Checked;
-      sTopLabel := SettingsForm.edit_top.Text;
-      sBottomLabel := SettingsForm.edit_bottom.Text;
-      sLocation := SettingsForm.sLocation;
-      XML := TJvSimpleXML.Create(nil);
-      XML.Root.Name := 'WeatherModuleSettings';
-      with XML.Root.Items do
-      begin
-        Add('showicon',sShowIcon);
-        Add('showlabels',sShowLabels);
-        Add('location',sLocation);
-        Add('toplabel',sTopLabel);
-        Add('bottomlabel',sBottomLabel);
-      end;
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      XML.Free;
-//      UpdateTimer.OnTimer(UpdateTimer);
-    end;
-    FWeatherParser.Update(sLocation);
-    ReAlignComponents(True);
-  finally
-    FreeAndNil(SettingsForm);
-  end;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
