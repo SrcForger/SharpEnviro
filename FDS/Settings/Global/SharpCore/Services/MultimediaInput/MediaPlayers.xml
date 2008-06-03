@@ -47,8 +47,8 @@
     <btnPlay>7109</btnPlay>
     <btnPause>7109</btnPause>
     <btnStop>13003</btnStop>
-    <btnNext>13013</btnNext>
-    <btnPrev>13014</btnPrev>
+    <btnNext>13014</btnNext>
+    <btnPrev>13013</btnPrev>
     <RegPath>SOFTWARE\VideoLAN\VLC</RegPath>
     <RegValue></RegValue>
   </item>
