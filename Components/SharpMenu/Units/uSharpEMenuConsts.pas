@@ -52,7 +52,13 @@ var
 begin
   r := pString;
   for n := 0 to FConstList.Count - 1 do
-      r := StringReplace(r,FConstList.Names[n],FConstList.ValueFromIndex[n],[rfReplaceAll,rfIgnoreCase]);
+    r := StringReplace(r,FConstList.Names[n],FConstList.ValueFromIndex[n],[rfReplaceAll,rfIgnoreCase]);
+  if length(pString) > 1 then
+  begin
+    if (pString[1] <> '\') and (pString[2] <> '\') then
+      r := StringReplace(r,'\\','\',[rfReplaceAll,rfIgnoreCase])
+    else r := '\' + StringReplace(r,'\\','\',[rfReplaceAll,rfIgnoreCase]);
+  end;
   result := r;
 end;
 
