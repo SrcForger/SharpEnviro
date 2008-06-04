@@ -121,6 +121,8 @@ object NotesForm: TNotesForm
     TabStatusColor = clGreen
     OnTabClick = pcNotesTabClick
     OnBtnClick = pcNotesBtnClick
+    ExplicitLeft = -1
+    ExplicitTop = -1
     DesignSize = (
       649
       371)
@@ -134,7 +136,6 @@ object NotesForm: TNotesForm
       Margins.Top = 0
       Margins.Right = 8
       Margins.Bottom = 8
-      AutoSize = False
       MaxLines = 0
       HideCaret = False
       Align = alClient
@@ -146,9 +147,11 @@ object NotesForm: TNotesForm
       ParentFlat = False
       ScrollBars = ssBoth
       TabOrder = 2
+      WantTabs = True
       OnChange = NotesChange
       OnKeyPress = NotesKeyPress
       OnKeyUp = NotesKeyUp
+      ExplicitLeft = 12
     end
     object tbNotes: TToolBar
       AlignWithMargins = True

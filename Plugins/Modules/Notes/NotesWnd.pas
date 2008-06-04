@@ -376,6 +376,7 @@ begin
     Notes.CaretPos := Point(length(Notes.Lines[Notes.Lines.Count - 1]), Notes.Lines.Count - 1);
     SendMessage(Notes.Handle, EM_SCROLLCARET, 0, 0);
   end;
+  Notes.Invalidate;
 end;
 
 procedure TNotesForm.ShowTabDialog(new: Boolean = true; tabName: string = '');
@@ -550,7 +551,9 @@ begin
   if (Key = ord('F')) and (Shift = [ssCtrl]) then
     btn_find.OnClick(btn_find)
   else if (Key = ord('A')) and (Shift = [ssCtrl]) then
-    btn_selectall.OnClick(btn_selectall);
+    btn_selectall.OnClick(btn_selectall)
+  else if (Key = VK_ESCAPE) then
+    Close;     
 
   SaveCurrentTab;
 end;
