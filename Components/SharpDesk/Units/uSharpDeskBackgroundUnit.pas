@@ -207,7 +207,7 @@ begin
         if TempBmp.Height=h then y:=1
            else y:=round(Int((h)/TempBmp.Height))+1;
         if TempBmp.Width=w then x:=1
-           else x:=round(Int((h)/TempBmp.Width))+1;
+           else x:=round(Int((w)/TempBmp.Width))+1;
         img.BeginUpdate;
         for ny:=0 to y-1 do
             for nx:=0 to x-1 do
