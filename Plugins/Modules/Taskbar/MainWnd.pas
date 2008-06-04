@@ -1098,6 +1098,10 @@ begin
   DebugOutPutInfo('TMainForm.WMShellHook (Message Procedure)');
   if Cardinal(msg.LParam) = Handle then exit;
   TM.HandleShellMessage(msg.WParam,Cardinal(msg.LParam));
+
+  if (msg.wparam = HSHELL_WINDOWACTIVATED) or
+    (msg.wparam = HSHELL_WINDOWACTIVATED + 32768) then
+    FLastDragItem := nil;
 end;
 
 procedure TMainForm.InitHook;
