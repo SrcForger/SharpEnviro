@@ -206,6 +206,8 @@ var
   newWidth : integer;
   o1,o3,o4 : integer;
   s : String;
+  i : integer;
+  sicon : String;
   b : boolean;
 begin
   self.Caption := 'Weather';
@@ -214,10 +216,16 @@ begin
 
   if (sShowIcon) and (FWeatherParser.CCValid) then
   begin
-    s := SharpApi.GetSharpeGlobalSettingsPath
-         + 'SharpDesk\Objects\Weather\Icons\64x64\'
-         + inttostr(strtoint(FWeatherParser.wxml.CurrentCondition.IconCode))
+    if trystrtoint(FWeatherParser.wxml.CurrentCondition.IconCode,i) then
+    begin
+      sicon := inttostr(i);
+    end else sicon := 'na';
+
+    s := SharpApi.GetSharpeDirectory
+         + 'Icons\Weather\64x64\'
+         + sicon
          + '.png';
+
     if FileExists(s) then
     begin
       LoadBitmap32FromPNG(FIcon,s,b);
@@ -264,7 +272,9 @@ begin
   Tag := newWidth;
   Hint := inttostr(NewWidth);
   if newWidth <> width then
-     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  begin
+    if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0)
+  end else Repaint;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
