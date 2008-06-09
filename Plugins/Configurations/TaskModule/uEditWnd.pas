@@ -54,8 +54,6 @@ type
     constructor Create(AName: string; AId: Integer);
   end;
 
-  TSortType = (stNone, stCaption, stWndClass, stTimeAdded, stIcon);
-
   TfrmEdit = class(TForm)
     lbItems: TSharpEListBoxEx;
     pilListBox: TPngImageList;
@@ -255,17 +253,17 @@ begin
         // State
         state := IntValue('State', 0);
         case state of
-          integer(tisCompact): cbStyle.ItemIndex := 2; // sState := tisCompact;
-          integer(tisMini): cbStyle.ItemIndex := 1;
+          integer(tisCompact): cbStyle.ItemIndex := 1; // sState := tisCompact;
+          integer(tisMini): cbStyle.ItemIndex := 2;
         else cbStyle.ItemIndex := 0;
         end;
 
         // Sort type
         sortTasks := BoolValue('Sort', False);
         if not (sortTasks) then cbSortMode.ItemIndex := 0 else begin
-          case TSortType(IntValue('SortType', 0)) of
+          case TSharpeTaskManagerSortType(IntValue('SortType', 0)) of
             stWndClass: cbSortMode.ItemIndex := 2;
-            stTimeAdded: cbSortMode.ItemIndex := 3;
+            stTime: cbSortMode.ItemIndex := 3;
             stIcon: cbSortMode.ItemIndex := 4;
           else cbSortMode.ItemIndex := 1;
           end;
@@ -361,12 +359,12 @@ begin
       // State
       case cbStyle.ItemIndex of
         0: Add('State', integer(tisFull));
-        1: Add('State', integer(tisMini));
+        2: Add('State', integer(tisMini));
       else Add('State', integer(tisCompact));
       end;
 
       // Sort?
-      if cbSortMode.ItemIndex = integer(stNone) then
+      if cbSortMode.ItemIndex = 0 then
         Add('Sort', False) else
         Add('Sort', True);
 
@@ -374,7 +372,7 @@ begin
       case cbSortMode.ItemIndex of
         1: Add('SortType', Integer(stCaption));
         2: Add('SortType', Integer(stWndClass));
-        3: Add('SortType', Integer(stTimeAdded));
+        3: Add('SortType', Integer(stTime));
         4: Add('SortType', Integer(stIcon));
       end;
 

@@ -71,7 +71,6 @@ object frmEdit: TfrmEdit
     Borderstyle = bsNone
     Ctl3d = False
     Align = alTop
-    ExplicitTop = 230
   end
   object pnlOptions: TPanel
     Left = 0
@@ -123,7 +122,6 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       Caption = 'Buttons'
-      ExplicitTop = 89
       ExplicitWidth = 37
     end
     object Label4: TLabel
@@ -138,7 +136,6 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       Caption = 'Filters'
-      ExplicitTop = 158
       ExplicitWidth = 29
     end
     object lblFilterDesc: TLabel
@@ -154,7 +151,6 @@ object frmEdit: TfrmEdit
       Align = alTop
       Caption = 'Define the Filter conditions that apply to this task group:'
       Transparent = False
-      ExplicitTop = 179
       ExplicitWidth = 271
     end
     object lblButtonsDesc: TLabel
@@ -170,7 +166,6 @@ object frmEdit: TfrmEdit
       Align = alTop
       Caption = 'Define which buttons you want to enable:'
       Transparent = False
-      ExplicitTop = 110
       ExplicitWidth = 201
     end
     object Panel1: TPanel
@@ -260,7 +255,6 @@ object frmEdit: TfrmEdit
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitTop = 131
       object chkMinimiseBtn: TCheckBox
         AlignWithMargins = True
         Left = 0
@@ -304,7 +298,6 @@ object frmEdit: TfrmEdit
       Caption = 'Filter Tasks (When enabled only checked tasks will apply)'
       TabOrder = 2
       OnClick = chkFilterTasksClick
-      ExplicitTop = 200
     end
     object chkMiddleClose: TCheckBox
       AlignWithMargins = True
@@ -322,7 +315,6 @@ object frmEdit: TfrmEdit
       State = cbChecked
       TabOrder = 3
       OnClick = chkFilterTasksClick
-      ExplicitTop = 78
     end
   end
   object pilListBox: TPngImageList
