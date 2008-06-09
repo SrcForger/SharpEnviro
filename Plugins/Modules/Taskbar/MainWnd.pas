@@ -541,18 +541,9 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      case IntValue('State',0) of
-        1 : sState := tisCompact;
-        2 : sState := tisMini;
-        else sState := tisFull;
-      end;
+      sState := TSharpETaskItemStates(IntValue('State',0));
       sSort := BoolValue('Sort',False);
-      case IntValue('SortType',0) of
-        1: sSortType := stWndClass;
-        2: sSortType := stTime;
-        3: sSortType := stIcon;
-        else sSortType := stCaption;
-      end;
+      sSortType := TSharpeTaskManagerSortType(IntValue('SortType',0));
       sMinAllButton := BoolValue('MinAllButton',False);
       sMaxAllButton := BoolValue('MaxAllButton',False);
       sIFilter := BoolValue('FilterTasks',True);
@@ -1097,6 +1088,7 @@ begin
     ms.Free;
     msg.result := 1;
     CompleteRefresh;
+    if TM.SortTasks then TM.DoSortTasks;
   end;
 end;
 

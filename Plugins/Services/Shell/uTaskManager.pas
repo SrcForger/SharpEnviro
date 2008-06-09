@@ -396,10 +396,10 @@ begin
     if pItem.Handle = pHandle then
     begin
       pItem.UpdateFromHwnd;
+      if FSortTasks then DoSortTasks;      
       if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
     end;
   end;
-  if FSortTasks then DoSortTasks;
 end;
 
 function TTaskManager.GetItemByHandle(pHandle : hwnd) : TTaskItem;
@@ -463,7 +463,6 @@ begin
           pItem1 := GetItemByHandle(StrToInt64Def(SList.ValueFromIndex[n],-1));
           if pItem1 <> nil then
           begin
-            FItems.Exchange(FItems.IndexOf(FItems.Items[n]),FItems.IndexOf(pitem1));
             ExChangeTasks(TTaskItem(FItems.Items[n]),pItem1);
           end;
         end;
