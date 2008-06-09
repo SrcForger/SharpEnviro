@@ -53,6 +53,7 @@ type
                   procedure RemoveWinControl(control : TWinControl);
 
                   property ControlList : TObjectList read FControlList;
+                  property LastControl: TControl read FLastControl write FLastControl;
                 end;
 
 implementation
