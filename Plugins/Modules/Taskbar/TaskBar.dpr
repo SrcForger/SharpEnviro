@@ -108,6 +108,7 @@ begin
   MouseTimer.AddWinControl(TMainForm(FForm));
   with FForm as TMainForm do
   begin
+    MTimer := MouseTimer;
     ModuleID := pID;
     BarID    := pBarID;
     BarWnd   := FBarWnd;

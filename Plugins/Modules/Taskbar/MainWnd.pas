@@ -33,7 +33,8 @@ uses
   Math, Contnrs, SharpESkinManager, SharpETaskItem, SharpESkin,
   SharpEBaseControls, SharpECustomSkinSettings, uTaskManager, uTaskItem,
   DateUtils, GR32, GR32_PNG, SharpIconUtils, SharpEButton, JvComponentBase,
-  JvDragDrop, VWMFunctions,Commctrl,TaskFilterList,SWCmdList, SharpTypes;
+  JvDragDrop, VWMFunctions,Commctrl,TaskFilterList,SWCmdList, SharpTypes,
+  MouseTimer;
 
 
 type
@@ -95,6 +96,7 @@ type
     procedure WMCopyData(var msg : TMessage); message WM_COPYDATA;
     procedure WMTaskVWMChange(var msg : TMessage); message WM_TASKVWMCHANGE;
   public
+    MTimer : TMouseTimer;
     TM: TTaskManager;
     IList: TObjectList;
     ModuleID : integer;
@@ -405,6 +407,9 @@ var
   VWMCount : integer;
 begin
   DebugOutPutInfo('TMainForm.DisplaySystemMenu (Procedure)');
+  if not (isWindow(pHandle)) then
+    exit;
+
   SysMenuHandle := pHandle;
   GetCursorPos(cp);
   AppMenu := GetSystemMenu(pHandle, False);
@@ -481,6 +486,10 @@ end;
 procedure TMainForm.OnTaskItemMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   DebugOutPutInfo('TMainForm.OnTaskItemMouseUp (Procedure)');
+
+  if Sender = nil then
+    exit;  
+
   if not (Sender is TSharpETaskItem) then exit;
   case Button of
     mbRight: DisplaySystemMenu(TSharpETaskItem(Sender).Handle);
@@ -1014,6 +1023,7 @@ begin
   DebugOutPutInfo('TMainForm.RemoveTask (Procedure)');
   if pItem = nil then exit;
 
+  MTimer.LastControl := nil;
   for n := IList.Count - 1 downto 0 do
     if TSharpETaskItem(IList.Items[n]).Handle = pItem.Handle then
     begin
@@ -1054,9 +1064,10 @@ var
 begin
   DebugOutPutInfo('TMainForm.SharpETaskItemClick (Procedure)');
   if Sender = nil then exit;
+
   if not (Sender is TSharpETaskItem) then exit;
   pItem := TM.GetItemByHandle(TSharpETaskItem(Sender).Handle);
-  
+
   if pItem <> nil then
   begin
     pItem.UpdateVisibleState;
