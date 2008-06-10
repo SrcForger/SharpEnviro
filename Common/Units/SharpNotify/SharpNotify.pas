@@ -100,7 +100,7 @@ type
     public
       procedure Show;
       constructor Create(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString; pIcon : TSharpNotifyIcon; pEdge: TSharpNotifyEdge; pSM : TSharpESkinManager; pTimeout : integer; pAreaRect : TRect);
-      constructor CreateText(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString; pEdge: TSharpNotifyEdge; pSM : TSharpESkinManager; pTimeout : integer; pAreaRect : TRect);      
+      constructor CreateText(pID : Cardinal; pData : TObject; px,py : integer; pCaption : WideString; pEdge: TSharpNotifyEdge; pSM : TSharpESkinManager; pTimeout : integer; pAreaRect : TRect);
       destructor Destroy; override;
   end;
 
@@ -397,21 +397,18 @@ begin
   TopLeft := Point(FX,FY);
 
   DC := GetDC(FWnd);
-  Bmp := TBitmap32.Create;
-  try
-    {$WARNINGS OFF}
-    if not Win32Check(LongBool(DC)) then
-      RaiseLastWin32Error;
-
-    bmp.SetSize(FBitmap.Width,FBitmap.Height);
+  if DC <> 0 then
+  begin
+    Bmp := TBitmap32.Create;
+    Bmp.SetSize(FBitmap.Width,FBitmap.Height);
     Bmp.Clear(color32(0,0,0,0));
     FBitmap.DrawMode := dmBlend;
     Bmp.Draw(0,0,FBitmap);
-    if not Win32Check(UpdateLayeredWindow(FWnd, DC, @TopLeft, @BmpSize,
-      Bmp.Handle, @BmpTopLeft, clNone, @FBlend, ULW_ALPHA)) then
-      RaiseLastWin32Error;
-    {$WARNINGS ON}
-  finally
+    try
+      UpdateLayeredWindow(FWnd, DC, @TopLeft, @BmpSize,
+                          Bmp.Handle, @BmpTopLeft, clNone, @FBlend, ULW_ALPHA);
+    except
+    end;
     Bmp.Free;
     ReleaseDC(FWnd, DC);
   end;
