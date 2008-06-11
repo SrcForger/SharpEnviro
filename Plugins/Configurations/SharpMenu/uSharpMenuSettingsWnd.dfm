@@ -3,7 +3,7 @@ object frmMenuSettings: TfrmMenuSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmMenuSettings'
-  ClientHeight = 228
+  ClientHeight = 304
   ClientWidth = 518
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -37,11 +37,12 @@ object frmMenuSettings: TfrmMenuSettings
     Transparent = True
     WordWrap = True
     ExplicitLeft = 31
+    ExplicitTop = 9
   end
   object Label3: TLabel
     AlignWithMargins = True
     Left = 26
-    Top = 90
+    Top = 151
     Width = 484
     Height = 32
     Margins.Left = 26
@@ -63,6 +64,29 @@ object frmMenuSettings: TfrmMenuSettings
     ExplicitLeft = 34
     ExplicitTop = 37
   end
+  object Label5: TLabel
+    AlignWithMargins = True
+    Left = 26
+    Top = 90
+    Width = 484
+    Height = 32
+    Margins.Left = 26
+    Margins.Top = 4
+    Margins.Right = 8
+    Margins.Bottom = 0
+    Align = alTop
+    AutoSize = False
+    Caption = 
+      'Enable to display generic icons. This means that all links of th' +
+      'e same type will have the same icon. On slow computers enabling ' +
+      'this option will improve the menu performance.'
+    Color = clBtnFace
+    EllipsisPosition = epEndEllipsis
+    ParentColor = False
+    Transparent = True
+    WordWrap = True
+    ExplicitLeft = 21
+  end
   object cb_useicons: TCheckBox
     AlignWithMargins = True
     Left = 8
@@ -75,12 +99,15 @@ object frmMenuSettings: TfrmMenuSettings
     Margins.Bottom = 0
     Align = alTop
     Caption = 'Use Icons'
+    Checked = True
+    State = cbChecked
     TabOrder = 0
     OnClick = cb_useiconsClick
+    ExplicitLeft = 13
   end
   object Panel1: TPanel
     Left = 0
-    Top = 122
+    Top = 183
     Width = 518
     Height = 117
     Align = alTop
@@ -88,6 +115,7 @@ object frmMenuSettings: TfrmMenuSettings
     Color = clWindow
     ParentBackground = False
     TabOrder = 1
+    ExplicitTop = 122
     object Label1: TLabel
       Left = 176
       Top = 75
@@ -175,7 +203,7 @@ object frmMenuSettings: TfrmMenuSettings
   object cb_cacheicons: TCheckBox
     AlignWithMargins = True
     Left = 8
-    Top = 69
+    Top = 130
     Width = 502
     Height = 17
     Margins.Left = 8
@@ -187,5 +215,23 @@ object frmMenuSettings: TfrmMenuSettings
     TabOrder = 2
     Visible = False
     OnClick = cb_useiconsClick
+    ExplicitLeft = 3
+  end
+  object cb_usegenicons: TCheckBox
+    AlignWithMargins = True
+    Left = 8
+    Top = 69
+    Width = 502
+    Height = 17
+    Margins.Left = 8
+    Margins.Top = 8
+    Margins.Right = 8
+    Margins.Bottom = 0
+    Align = alTop
+    Caption = 'Use Generic Icons'
+    TabOrder = 3
+    OnClick = cb_useiconsClick
+    ExplicitLeft = 16
+    ExplicitTop = 16
   end
 end

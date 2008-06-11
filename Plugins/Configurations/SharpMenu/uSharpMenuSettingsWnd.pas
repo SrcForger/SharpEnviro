@@ -51,6 +51,8 @@ type
     cobo_wrappos: TComboBox;
     Label3: TLabel;
     cb_cacheicons: TCheckBox;
+    cb_usegenicons: TCheckBox;
+    Label5: TLabel;
     procedure cobo_wrapposChange(Sender: TObject);
     procedure sgb_wrapcountChangeValue(Sender: TObject; Value: Integer);
     procedure cb_useiconsClick(Sender: TObject);
@@ -91,6 +93,7 @@ begin
   Label2.Font.Color := clGray;
   Label3.Font.Color := clGray;
   Label4.Font.Color := clGray;
+  Label5.Font.Color := clGray;
   cb_useiconsClick(self);
 end;
 
@@ -110,6 +113,7 @@ procedure TfrmMenuSettings.cb_useiconsClick(Sender: TObject);
 begin
   SendUpdate;
   cb_cacheicons.Enabled := cb_useicons.Checked;
+  cb_usegenicons.Enabled := cb_useicons.Checked;  
 end;
 
 procedure TfrmMenuSettings.sgb_wrapcountChangeValue(Sender: TObject;
