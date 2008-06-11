@@ -388,7 +388,6 @@ procedure TNotifyItem.UpdateWndLayer;
 var
   TopLeft, BmpTopLeft: TPoint;
   BmpSize: TSize;
-  Bmp : TBitmap32;
   DC: HDC;
 begin
   BmpSize.cx := FBitmap.Width;
@@ -399,17 +398,11 @@ begin
   DC := GetDC(FWnd);
   if DC <> 0 then
   begin
-    Bmp := TBitmap32.Create;
-    Bmp.SetSize(FBitmap.Width,FBitmap.Height);
-    Bmp.Clear(color32(0,0,0,0));
-    FBitmap.DrawMode := dmBlend;
-    Bmp.Draw(0,0,FBitmap);
     try
       UpdateLayeredWindow(FWnd, DC, @TopLeft, @BmpSize,
-                          Bmp.Handle, @BmpTopLeft, clNone, @FBlend, ULW_ALPHA);
+                          FBitmap.Handle, @BmpTopLeft, clNone, @FBlend, ULW_ALPHA);
     except
     end;
-    Bmp.Free;
     ReleaseDC(FWnd, DC);
   end;
 end;
@@ -472,7 +465,6 @@ var
   Text,Icon : TBitmap32;
   i,i2,i3,k : integer;
   mw : integer;
-  n: Integer;
 begin
   FBitmap.SetSize(1,1);
   FBitmap.Clear(color32(0,0,0,0));
