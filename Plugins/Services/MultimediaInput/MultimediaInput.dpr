@@ -39,7 +39,9 @@ uses
   SharpESkinManager,
   SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas',
   SoundControls in '..\..\Modules\VolumeControl\SoundControls.pas',
-  MediaPlayerList in '..\..\Modules\MediaController\MediaPlayerList.pas';
+  MediaPlayerList in '..\..\Modules\MediaController\MediaPlayerList.pas',
+  uVistaFuncs in '..\..\..\Common\Units\VistaFuncs\uVistaFuncs.pas',
+  MMDevApi_tlb in '..\..\Modules\VolumeControl\MMDevApi_tlb.pas';
 
 type
   TActionEvent = Class(Tobject)
@@ -208,16 +210,10 @@ var
   p : single;
   TypeString : String;
 begin
-  if not (Win32MajorVersion < 6) then
-    exit;
+  CurrentVolume := SoundControls.GetMasterVolume(mixer);
+  CurrentVolume := Min(65535,CurrentVolume + 65535 div 20);
+  SoundControls.SetMasterVolume(CurrentVolume,mixer);
 
-  CurrentVolume := 0;
-  if Win32MajorVersion < 6 then
-  begin
-    CurrentVolume := SoundControls.GetMasterVolume(mixer);
-    CurrentVolume := Min(65535,CurrentVolume + 65535 div 20);
-    SoundControls.SetMasterVolume(CurrentVolume,mixer);
-  end;
   p := CurrentVolume / 65535 * 100;
   for n := 0 to 20 do
   begin
@@ -240,16 +236,10 @@ var
   n : integer;
   p : single;
 begin
-  if not (Win32MajorVersion < 6) then
-    exit;
+  CurrentVolume := SoundControls.GetMasterVolume(mixer);
+  CurrentVolume := Max(0,CurrentVolume - 65535 div 20);
+  SoundControls.SetMasterVolume(CurrentVolume,mixer);
 
-  CurrentVolume := 0;
-  if Win32MajorVersion < 6 then
-  begin
-    CurrentVolume := SoundControls.GetMasterVolume(mixer);
-    CurrentVolume := Max(0,CurrentVolume - 65535 div 20);
-    SoundControls.SetMasterVolume(CurrentVolume,mixer);
-  end;
   p := CurrentVolume / 65535 * 100;
   for n := 0 to 20 do
   begin
@@ -269,16 +259,9 @@ var
   Mute : boolean;
   TypeString : String;
 begin
-  if not (Win32MajorVersion < 6) then
-    exit;
-
-  Mute := False;
-  if Win32MajorVersion < 6 then
-  begin
-    Mute := SoundControls.GetMaterMuteStatus(mixer);
-    Mute := not Mute;
-    SoundControls.MuteMaster(mixer);
-  end;
+  Mute := SoundControls.GetMasterMuteStatus(mixer);
+  Mute := not Mute;
+  SoundControls.MuteMaster(mixer);
   case mixer of
     MIXERLINE_COMPONENTTYPE_SRC_FIRST: TypeString := 'Microphone'
     else TypeString := 'Volume';
