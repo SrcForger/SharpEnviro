@@ -44,7 +44,9 @@ uses
   MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
   uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SoundControls in 'SoundControls.pas';
+  uVistaFuncs in '..\..\..\Common\Units\VistaFuncs\uVistaFuncs.pas',
+  SoundControls in 'SoundControls.pas',
+  MMDevApi_tlb in 'MMDevApi_tlb.pas';
 
 type
   TModule = class

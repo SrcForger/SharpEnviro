@@ -41,15 +41,61 @@
     <DelphiCompile Include="VolumeControl.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <DCCReference Include="..\" />
+    <DCCReference Include="..\..\" />
+    <DCCReference Include="..\..\..\" />
+    <DCCReference Include="..\..\..\..\Code" />
+    <DCCReference Include="..\..\..\C" />
+    <DCCReference Include="..\..\..\Co" />
+    <DCCReference Include="..\..\..\Com" />
+    <DCCReference Include="..\..\..\Comm" />
+    <DCCReference Include="..\..\..\Commo" />
+    <DCCReference Include="..\..\..\Common" />
+    <DCCReference Include="..\..\..\Common\" />
     <DCCReference Include="..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
+    <DCCReference Include="..\..\..\Common\U" />
+    <DCCReference Include="..\..\..\Common\Un" />
+    <DCCReference Include="..\..\..\Common\Uni" />
+    <DCCReference Include="..\..\..\Common\Unit" />
+    <DCCReference Include="..\..\..\Common\Units" />
+    <DCCReference Include="..\..\..\Common\Units\" />
     <DCCReference Include="..\..\..\Common\Units\MouseTimer\MouseTimer.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\graphicsFX.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpFX\SharpFX.pas" />
+    <DCCReference Include="..\..\..\Common\Units\V" />
+    <DCCReference Include="..\..\..\Common\Units\Vi" />
+    <DCCReference Include="..\..\..\Common\Units\Vis" />
+    <DCCReference Include="..\..\..\Common\Units\Vist" />
+    <DCCReference Include="..\..\..\Common\Units\Vista" />
+    <DCCReference Include="..\..\..\Common\Units\VistaF" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFu" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFun" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFunc" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\u" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uV" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uVi" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uVis" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uVist" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uVista" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uVistaF" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uVistaFu" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uVistaFun" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uVistaFunc" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uVistaFuncs" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uVistaFuncs.p" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uVistaFuncs.pa" />
+    <DCCReference Include="..\..\..\Common\Units\VistaFuncs\uVistaFuncs.pas" />
     <DCCReference Include="..\..\..\Components\SharpBar\uSharpBarAPI.pas" />
+    <DCCReference Include="..\..\..\Plugins" />
+    <DCCReference Include="..\..\Modules" />
+    <DCCReference Include="..\VolumeControl" />
     <DCCReference Include="MainWnd.pas">
       <Form>MainForm</Form>
     </DCCReference>
+    <DCCReference Include="MMDevApi_tlb.pas" />
     <DCCReference Include="SettingsWnd.pas">
       <Form>SettingsForm</Form>
     </DCCReference>

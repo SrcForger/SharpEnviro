@@ -237,11 +237,11 @@ var
   i : integer;
   v : real;
 begin
-  i := GetMasterVolume(sMixer);
-  if (i<>lastvolume) or (GetMaterMuteStatus(sMixer)<>lastmute) then
+  i := Integer(GetMasterVolume(sMixer));
+  if (i<>lastvolume) or (GetMasterMuteStatus(sMixer)<>lastmute) then
   begin
     lastvolume := i;
-    lastmute   := GetMaterMuteStatus(sMixer);
+    lastmute   := GetMasterMuteStatus(sMixer);
     pbar.Value := i;
     v := i / pbar.Max;
     if (lastmute) then mute.Glyph32.Assign(FDMute)
