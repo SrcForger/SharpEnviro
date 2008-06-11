@@ -71,15 +71,13 @@ var
   Code            : MMResult; 
   Mixer           : hMixerObj;
   fValue          : Single;
-  ret             : Integer;
 begin
   Mixer := InitMixer;
   Result := false;
   if IsWindowsVista then
   begin
     fValue := Value / 65535;
-    ret := MMEndPoint.SetMasterVolumeLevelScalar(fValue, GUID_NULL);
-    if ret = (E_INVALIDARG or E_OUTOFMEMORY) then MessageBox(0, 'Error happened', 'Error!', MB_OK);
+    MMEndPoint.SetMasterVolumeLevelScalar(fValue, nil);
     Result := true;
   end
   else
@@ -182,7 +180,7 @@ var
 begin
   if IsWindowsVista then
   begin
-    ret := MMEndPoint.SetMute((not GetMasterMuteStatus(0)), GUID_NULL);
+    MMEndPoint.SetMute((not GetMasterMuteStatus(0)), nil);
     result := True;
   end
   else

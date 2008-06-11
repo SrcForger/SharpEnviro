@@ -46,14 +46,14 @@ type
     Function UnregisterControlChangeNotify( AudioEndPtVol: IAudioEndpointVolumeCallback): Integer; stdcall;
     Function GetChannelCount(out PInteger): Integer; stdcall;
     Function SetMasterVolumeLevel(fLevelDB: single; pguidEventContext: PGUID):Integer; stdcall;
-    Function SetMasterVolumeLevelScalar(fLevelDB: single; pguidEventContext: TGUID):Integer; stdcall;
+    Function SetMasterVolumeLevelScalar(fLevelDB: single; pguidEventContext: PGUID):Integer; stdcall;
     Function GetMasterVolumeLevel(out fLevelDB: single):Integer; stdcall;
     Function GetMasterVolumeLevelScalar(out fLevel: single):Integer; stdcall;
     Function SetChannelVolumeLevel(nChannel: Integer; fLevelDB: double; pguidEventContext: TGUID):Integer; stdcall;
     Function SetChannelVolumeLevelScalar(nChannel: Integer; fLevelDB: single; pguidEventContext: TGUID):Integer; stdcall;
     Function GetChannelVolumeLevel(nChannel: Integer; out fLevelDB: double) : Integer; stdcall;
     Function GetChannelVolumeLevelScalar(nChannel: Integer; out fLevel: double) : Integer; stdcall;
-    Function SetMute(bMute: Boolean ; pguidEventContext: TGUID) :Integer; stdcall;
+    Function SetMute(bMute: Boolean ; pguidEventContext: PGUID) :Integer; stdcall;
     Function GetMute(out bMute: Boolean ) :Integer; stdcall;
     Function GetVolumeStepInfo( pnStep: Integer; out pnStepCount: Integer):Integer; stdcall;
     Function VolumeStepUp(pguidEventContext: TGUID) :Integer; stdcall;
