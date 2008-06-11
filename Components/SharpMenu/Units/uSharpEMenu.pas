@@ -176,8 +176,9 @@ begin
   FreeAndNil(FMenuActions);
   FreeAndNil(FMenuConsts);
   FreeAndNil(FSettings);
-  if SharpEMenuIcons.Items.Count = 0 then
-     FreeAndNil(SharpEMenuIcons);
+  if (SharpEMenuIcons <> nil) then
+    if SharpEMenuIcons.Items.Count = 0 then
+      FreeAndNil(SharpEMenuIcons);
   if FBackground <> nil then
      FreeAndNil(FBackground);
   if FNormalMenu <> nil then
@@ -312,7 +313,7 @@ begin
   FItems.Insert(pInsertPos,item);
 end;
 
-function  TSharpEMenu.AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32; pType :TSharpEMenuItemType = mtCustom; pInsertPos: Integer=-1) : TObject;
+function TSharpEMenu.AddCustomItem(pCaption,pIconName : String; pIcon : TBitmap32; pType :TSharpEMenuItemType = mtCustom; pInsertPos: Integer=-1) : TObject;
 var
   item : TSharpEMenuItem;
 begin
@@ -401,8 +402,14 @@ begin
   if not FDesignMode then
     pTarget := etarget;
   if FSettings.UseIcons then
+  begin
+    if FSettings.UseGenericIcons then
+    begin
+      if CompareText(pIcon,'shell:icon') = 0 then
+        pIcon := FMenuConsts.GetGenericIcon(eTarget);
+    end;
     item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget)
-  else item.Icon := nil;
+  end else item.Icon := nil;
   item.Caption := pCaption;
   item.PropList.Add('Action',pTarget);
   item.OnClick := FMenuActions.OnLinkClick;
@@ -429,8 +436,14 @@ begin
   if not FDesignMode then
     pTarget := etarget;
   if FSettings.UseIcons then
+  begin
+    if FSettings.UseGenericIcons then
+    begin
+      if CompareText(pIcon,'shell:icon') = 0 then
+        pIcon := FMenuConsts.GetGenericIcon(eTarget);
+    end;
     item.Icon := SharpEMenuIcons.AddIcon(pIcon,eTarget)
-  else item.Icon := nil;
+  end else item.Icon := nil;
   item.Caption := pCaption;
   item.isDynamic := pDynamic;
   if length(trim(pTarget))>0 then
