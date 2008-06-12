@@ -313,7 +313,7 @@ var
   n : integer;
   tempModule : TModule;
 begin
-  for n := 0 to FModules.Count - 1 do
+  for n := FModules.Count - 1 downto 0 do
   begin
     tempModule := TModule(FModules.Items[n]);
     if @tempModule.ModuleFile.DllModuleMessage <> nil then
@@ -321,7 +321,6 @@ begin
   end;
 end;
 
-// Broadcast a message to a single module by ID
 procedure TModuleManager.SaveBarSettings;
 var
   xml: TJclSimpleXML;
@@ -367,6 +366,7 @@ begin
   xml.Free;
 end;
 
+// Broadcast a message to a single module by ID
 function TModuleManager.SendPluginMessage(ID : integer; msg : string) : integer;
 var
   n : integer;
