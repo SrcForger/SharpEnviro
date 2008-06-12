@@ -305,10 +305,13 @@ begin
   if FItems.Count = 0 then exit;
   if not Assigned(FOnNewTask) then exit;
 
-  for n := 0 to FItems.Count -1 do
+  for n := 0 to FItems.Count - 1 do
   begin
-    pItem := TTaskItem(FItems.Items[n]);
-    FOnNewTask(pItem,n);
+    if n <= FItems.Count - 1 then
+    begin
+      pItem := TTaskItem(FItems.Items[n]);
+      FOnNewTask(pItem,n);
+    end;
   end;
 end;
 
@@ -360,7 +363,7 @@ var
 begin
   if FItems.Count = 0 then exit;
 
-  for n := 0 to FItems.Count -1 do
+  for n := FItems.Count - 1 downto 0 do
   begin
     pItem := TTaskItem(FItems.Items[n]);
     pItem.LastVWM := 1;

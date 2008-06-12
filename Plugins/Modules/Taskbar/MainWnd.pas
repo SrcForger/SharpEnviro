@@ -609,10 +609,13 @@ var
   n : integer;
 begin
   DebugOutPutInfo('TMainForm.CompleteRefresh (Procedure)');
-  for n := 0 to IList.Count - 1 do
+  for n := IList.Count - 1 downto 0 do
      ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList[n]).Handle);
+  FLocked := True;
   IList.Clear;
   TM.CompleteRefresh;
+  FLocked := False;
+  RealignComponents(True);
   AlignTaskComponents;
 end;
 
@@ -950,15 +953,21 @@ end;
 procedure TMainForm.NewTask(pItem : TTaskItem; Index : integer);
 var
   pTaskItem : TSharpETaskItem;
+  n: Integer;
 begin
   DebugOutPutInfo('TMainForm.NewTask (Procedure)');
   if pItem = nil then exit;
 
+  for n := 0 to IList.Count - 1 do
+    if TSharpETaskItem(IList.Items[n]).tag = integer(pItem) then
+      exit;
+
   if not CheckFilter(pItem) then exit;
   pTaskItem := TSharpETaskItem.Create(self);
   CalculateItemWidth(IList.Count + 1);
+
   IList.Add(pTaskItem);
-  pTaskItem.SkinManager := SystemSkinManager;  
+  pTaskItem.SkinManager := SystemSkinManager;
   pTaskItem.Width := sCurrentWidth;
   pTaskItem.Parent := self;
   pTaskItem.Left := Width;
@@ -968,6 +977,7 @@ begin
   pTaskItem.Caption := pItem.Caption;
   pTaskItem.Handle := pItem.Handle;
   pTaskItem.State := sState;
+  pTaskItem.Tag := integer(pItem);
   UpdateIcon(pTaskItem,pItem);
   pTaskItem.OnClick := SharpETaskItemClick;
   pTaskItem.OnDblClick := SharpETaskItemClick;
@@ -1139,7 +1149,7 @@ begin
   sMinAllButton := False;
   sMaxAllButton := False;
   sMaxwidth  := 128;
-  IList := TObjectList.Create;
+  IList := TObjectList.Create(True);
   IList.Clear;
   TM := TTaskManager.Create;
   TM.Enabled := True;
