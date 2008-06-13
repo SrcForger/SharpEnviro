@@ -288,7 +288,8 @@ begin
   // Windows which don't send a NewTask message will be added when they
   // send an activate message
   wndclass := GetWndClass(pHandle);
-  if CompareText(wndclass,'ConsoleWindowClass') = 0 then  // cmd.exe
+  if (CompareText(wndclass,'ConsoleWindowClass') = 0) // cmd.exe
+    or (CompareText(wndclass,'PuTTYConfigBox') = 0) then // Putty.exe
   begin
      FLastActiveTask := pHandle;
      AddTask(pHandle)
