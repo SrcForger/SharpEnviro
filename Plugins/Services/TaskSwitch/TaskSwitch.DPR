@@ -306,7 +306,7 @@ begin
     wnd := GetNextWindow(wnd,GW_HWNDNEXT);           
   end;
 
-  if length(EnumParam.wndlist) > 1 then
+  if length(EnumParam.wndlist) > 0 then
   with EnumParam do
   begin
     if ac.UseGUI then
