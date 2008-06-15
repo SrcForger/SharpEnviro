@@ -18,7 +18,8 @@
      <project Name="Glass Config" Type="DLL">Plugins\Configurations\Theme Glass\ThemeGlass.dproj</project>       
      <project Name="Memory Monitor Module" Type="DLL">Plugins\Configurations\MemoryMonitor\MemoryMonitor.dproj</project>       
      <project Name="Menu Editor" Type="DLL">Plugins\Configurations\MenuEdit\MenuEdit.dproj</project> 
-     <project Name="Menu List" Type="DLL">Plugins\Configurations\MenuList\MenuList.dproj</project>     
+     <project Name="Menu List" Type="DLL">Plugins\Configurations\MenuList\MenuList.dproj</project>   
+	 <project Name="Menu Module" Type="DLL">Plugins\Configurations\MenuModule\MenuModule.dproj</project> 	 
      <project Name="MiniScmd Module" Type="DLL">Plugins\Configurations\MiniScmd\MiniScmd.dproj</project>       
      <project Name="Module Manager" Type="DLL">Plugins\Configurations\Module Manager\ModuleManager.dproj</project>           
      <project Name="Notes Module" Type="DLL">Plugins\Configurations\Notes\Notes.dproj</project>       
