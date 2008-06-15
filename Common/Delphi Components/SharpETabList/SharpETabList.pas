@@ -608,8 +608,6 @@ begin
 end;
 
 function TSharpETabList.GetScrollButtonsWidth: integer;
-var
-  n: Integer;
 begin
   Result := 0;
 
@@ -1080,7 +1078,7 @@ end;
 procedure TSharpETabList.DrawTabs;
 var
   x: Integer;
-  i, n: Integer;
+  i: Integer;
   iTabWidth: Integer;
   tabExtents: TTabExtents;
 begin
