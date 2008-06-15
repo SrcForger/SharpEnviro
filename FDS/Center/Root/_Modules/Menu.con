@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <MenuModule>
+      <Dll>_ModuleDlls\MenuModule.dll</Dll>
+      <Icon>..\menu.png</Icon>
+    </MenuModule>
+  </Sections>
+</SharpCenter>
