@@ -2,7 +2,8 @@
   <package Name="Configuration">
      <project Name="Aliases" Type="DLL">Plugins\Configurations\Aliases\Aliases.dproj</project>  
      <project Name="Battery Monitor Module" Type="DLL">Plugins\Configurations\BatteryMonitor\BatteryMonitor.dproj</project>       
-     <project Name="Clock Module" Type="DLL">Plugins\Configurations\Clock\Clock.dproj</project>  
+     <project Name="Button Module" Type="DLL">Plugins\Configurations\ButtonModule\ButtonModule.dproj</project> 	
+	 <project Name="Clock Module" Type="DLL">Plugins\Configurations\Clock\Clock.dproj</project>  
      <project Name="CPU Monitor Module" Type="DLL">Plugins\Configurations\CPUMonitor\CPUMonitor.dproj</project>  
      <project Name="Curses" Type="DLL">Plugins\Configurations\Curses\Curses.dproj</project>  
      <project Name="DeskArea Service" Type="DLL">Plugins\Configurations\DeskArea\DeskArea.dproj</project>  
