@@ -72,6 +72,7 @@ type
     FPrecacheBmp  : TBitmap32;
     FPrecacheCaption : WideString;
     FHandle : Cardinal;
+    FDestroying : boolean;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
@@ -155,6 +156,7 @@ begin
 
   FGlyph32 := TBitmap32.Create;
 
+  FDestroying := False;
   FHandle := 0;
   FMargin := -1;
   FDisabledAlpha := 100;
@@ -351,7 +353,8 @@ procedure TSharpETaskItem.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited;
-  UpdateSkin;
+  if (not FDestroying) then  
+    UpdateSkin;
 end;
 
 procedure TSharpETaskItem.SMouseEnter;
@@ -689,6 +692,7 @@ end;
 destructor TSharpETaskItem.Destroy;
 begin
   inherited;
+  FDestroying := True;
   if FPrecacheBmp <> nil then FreeAndNil(FPrecacheBmp);
   if FPrecacheText <> nil then FreeAndNil(FPrecacheText);
   FGlyph32.Free;
