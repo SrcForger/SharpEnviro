@@ -37,7 +37,6 @@ object MainForm: TMainForm
     Top = 120
     object Settings1: TMenuItem
       Caption = 'Settings'
-      OnClick = Settings1Click
     end
   end
   object SharpESkinManager1: TSharpESkinManager

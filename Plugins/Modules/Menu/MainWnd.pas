@@ -46,8 +46,6 @@ uses
 
 type
   TMainForm = class(TForm)
-    MenuPopup: TPopupMenu;
-    Settings1: TMenuItem;
     SharpESkinManager1: TSharpESkinManager;
     btn: TSharpEButton;
     procedure FormPaint(Sender: TObject);
@@ -55,7 +53,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure Settings1Click(Sender: TObject);
   protected
   private
     sWidth       : integer;
@@ -66,8 +63,6 @@ type
     FDCaption    : boolean;
     sSpecialSkin : boolean;
     sMenu        : String;
-    FCustomSettings : TSharpECustomSkinSettings;
-    FCustomBmpList  : TSkinBitmapList;
     ModuleSize  : TModuleSize;
     Background : TBitmap32;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
@@ -79,7 +74,6 @@ type
     procedure UpdateIcon;
     procedure LoadSettings;
     procedure ReAlignComponents(BroadCast : boolean);
-    procedure UpdateCustomSkin;
     procedure SetWidth(new : integer);
     procedure UpdateBackground(new : integer = -1);
   end;
@@ -87,7 +81,6 @@ type
 
 implementation
 
-uses SettingsWnd;
 
 {$R *.dfm}
 
@@ -111,41 +104,6 @@ begin
        btn.Glyph32.SetSize(0,0)
   end else btn.Glyph32.SetSize(0,0);
   btn.Repaint;
-end;
-
-procedure TMainForm.UpdateCustomSkin;
-begin
-  if sSpecialSkin then
-  begin
-    FCustomSettings.LoadFromXML('');
-    try
-      if FCustomSettings.xml.Items.ItemNamed['menu'] <> nil then
-      with FCustomSettings.xml.Items.ItemNamed['menu'].Items do
-      begin
-         if ItemNamed['button'] <> nil then
-         begin
-           // found custom skin!
-           FDCaption := BoolValue('DisplayCaption',True);
-           FCustomBmpList.Clear;
-           if btn.CustomSkin = nil then
-              btn.CustomSkin := TSharpEButtonSkin.Create(FCustomBmpList)
-              else btn.CustomSkin.Clear;
-           btn.CustomSkin.LoadFromXML(ItemNamed['button'],FCustomSettings.Path);
-           exit;
-         end;
-       end;
-    except
-    end;
-  end;
-
-  FDCaption := True;
-  FCustomBmpList.Clear;
-  // nothing loaded - remove custom skin
-  if btn.CustomSkin <> nil then
-  begin
-    btn.CustomSkin.Free;
-    btn.CustomSkin := nil;
-  end;
 end;
 
 procedure TMainForm.LoadSettings;
@@ -184,7 +142,6 @@ begin
 
   UpdateBangs;
 
-  UpdateCustomSkin;
   UpdateIcon;
 end;
 
@@ -241,63 +198,6 @@ begin
 end;
 
 
-procedure TMainForm.Settings1Click(Sender: TObject);
-var
-  SettingsForm : TSettingsForm;
-  XML : TJvSimpleXML;
-begin
-  try
-    SettingsForm := TSettingsForm.Create(application.MainForm);
-    SettingsForm.cb_labels.Checked  := sShowLabel;
-    SettingsForm.edit_caption.Text := sCaption;
-    SettingsForm.tb_size.Position   := sWidth;
-    SettingsForm.edit_icon.Text := sIcon;
-    SettingsForm.cb_icon.Checked := sShowIcon;
-    SettingsForm.cb_icon.OnClick(SettingsForm.cb_icon);
-    SettingsForm.cb_labels.OnClick(SettingsForm.cb_labels);
-    SettingsForm.cb_specialskin.Checked := sSpecialSkin;
-    SettingsForm.UpdateIcon;
-    SettingsForm.sMenu := sMenu;
-
-    if SettingsForm.ShowModal = mrOk then
-    begin
-      sShowLabel := SettingsForm.cb_labels.Checked;
-      sCaption := SettingsForm.Edit_caption.Text;
-      sWidth := SettingsForm.tb_size.Position;
-      sSpecialSkin := SettingsForm.cb_specialskin.Checked;
-
-      SharpApi.UnRegisterAction(PChar('!OpenMenu: '+sMenu));
-      sMenu  := SettingsForm.sMenu;
-      SharpApi.RegisterActionEx(PChar('!OpenMenu: '+sMenu),'Modules',self.Handle,1);
-
-      sShowIcon := SettingsForm.cb_icon.Checked;
-      sIcon := SettingsForm.edit_icon.Text;
-      sSpecialSkin := SettingsForm.cb_specialskin.Checked;
-
-      XML := TJvSimpleXMl.Create(nil);
-      XML.Root.Name := 'MenuModuleSettings';
-      with XML.Root.Items do
-      begin
-        Add('Width',sWidth);
-        Add('ShowLabel',sShowLabel);
-        Add('ShowIcon',sShowIcon);
-        Add('Icon',sIcon);
-        Add('SpecialSkin',sSpecialSkin);
-        Add('Menu',sMenu);
-        Add('Caption',sCaption);
-      end;
-      UpdateIcon;
-      XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
-      XML.Free;
-    end;
-    UpdateCustomSkin;
-    ReAlignComponents(True);
-
-  finally
-    FreeAndNil(SettingsForm);
-  end;
-end;
-
 procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
@@ -332,16 +232,11 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := True;
   Background := TBitmap32.Create;
-  FCustomSettings := TSharpECustomSkinSettings.Create;
-  FCustomBmpList  := TSkinBitmapList.Create;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   Background.Free;
-  FCustomSettings.Free;
-  FCustomBmpList.Clear;
-  FCustomBmpList.Free;
 
   SharpApi.UnRegisterAction(PChar('!OpenMenu: '+sMenu));
 end;

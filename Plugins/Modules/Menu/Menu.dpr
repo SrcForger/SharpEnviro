@@ -41,8 +41,7 @@ uses
   SharpApi,
   uSharpBarApi,
   gr32,
-  MainWnd in 'MainWnd.pas' {MainForm},
-  SettingsWnd in 'SettingsWnd.pas' {SettingsForm};
+  MainWnd in 'MainWnd.pas' {MainForm};
 
 type
   TModule = class
@@ -181,7 +180,7 @@ end;
 procedure UpdateMessage(part : TSU_UPDATE_ENUM; param : integer);
 const
   processed : TSU_UPDATES = [suSkinFileChanged,suBackground,suTheme,suSkin,
-                             suScheme,suIconSet,suSkinFont];
+                             suScheme,suIconSet,suSkinFont,suModule];
 var
   temp : TModule;
   n,i : integer;
@@ -194,6 +193,12 @@ begin
   for n := 0  to ModuleList.Count - 1 do
   begin
     temp := TModule(ModuleList.Items[n]);
+    if (part = suModule) and (temp.ID = param) then
+    begin
+      TMainForm(temp.Form).LoadSettings;
+      TMainForm(temp.Form).ReAlignComponents(True);
+      break;
+    end;       
 
     // Step1: check if height changed
     if [part] <= [suSkinFileChanged,suBackground,suTheme] then
@@ -210,7 +215,6 @@ begin
     begin
       if (part = suSkinFileChanged) then
          TMainForm(temp.Form).SharpESkinManager1.UpdateSkin;
-      TMainForm(temp.Form).UpdateCustomSkin;
     end;
 
     // Step3: update
@@ -250,19 +254,6 @@ begin
       end;
 end;
 
-procedure ShowSettingsWnd(ID : integer);
-var
-  n : integer;
-  temp : TModule;
-begin
-  for n := 0 to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.FForm).Settings1Click(TMainForm(temp.FForm).Settings1);
-      end;
-end;
-
 procedure SetSize(ID : integer; NewWidth : integer);
 var
   n : integer;
@@ -297,9 +288,9 @@ Exports
   Refresh,
   UpdateMessage,
   ModuleMessage,
-  ShowSettingsWnd,
   SetSize,
   GetMetaData;
 
 
+begin
 end.
