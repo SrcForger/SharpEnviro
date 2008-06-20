@@ -8,7 +8,7 @@
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>rtl;vcl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>F:\SharpE\Center\Root\_Modules\_Moduledlls\MenuModule.dll</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\Center\Root\_Modules\_Moduledlls\MenuModule.dll</DCC_DependencyCheckOutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -43,6 +43,7 @@
     <DCCReference Include="..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
     <DCCReference Include="..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas" />
+    <DCCReference Include="..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas" />
     <DCCReference Include="..\..\..\Common\Units\SEListboxPainter\uSEListboxPainter.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas" />
     <DCCReference Include="..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas" />

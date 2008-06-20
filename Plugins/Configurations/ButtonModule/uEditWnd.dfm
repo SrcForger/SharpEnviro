@@ -30,7 +30,7 @@ object frmEdit: TfrmEdit
       AlignWithMargins = True
       Left = 8
       Top = 136
-      Width = 503
+      Width = 55
       Height = 13
       Margins.Left = 8
       Margins.Top = 8
@@ -38,13 +38,12 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       Caption = 'Display size'
-      ExplicitWidth = 55
     end
     object lblSizeDesc: TLabel
       AlignWithMargins = True
       Left = 26
       Top = 157
-      Width = 485
+      Width = 138
       Height = 13
       Margins.Left = 26
       Margins.Top = 8
@@ -53,13 +52,12 @@ object frmEdit: TfrmEdit
       Align = alTop
       Caption = 'Define the size of the button'
       Transparent = False
-      ExplicitWidth = 138
     end
     object Label1: TLabel
       AlignWithMargins = True
       Left = 8
       Top = 8
-      Width = 503
+      Width = 72
       Height = 13
       Margins.Left = 8
       Margins.Top = 8
@@ -67,13 +65,12 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       Caption = 'Display options'
-      ExplicitWidth = 72
     end
     object Label4: TLabel
       AlignWithMargins = True
       Left = 8
       Top = 207
-      Width = 503
+      Width = 69
       Height = 13
       Margins.Left = 8
       Margins.Top = 8
@@ -81,13 +78,12 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       Caption = 'Click command'
-      ExplicitWidth = 69
     end
     object lblMenuDesc: TLabel
       AlignWithMargins = True
       Left = 26
       Top = 228
-      Width = 485
+      Width = 256
       Height = 13
       Margins.Left = 26
       Margins.Top = 8
@@ -96,13 +92,12 @@ object frmEdit: TfrmEdit
       Align = alTop
       Caption = 'Define what action you want to execute when clicked'
       Transparent = False
-      ExplicitWidth = 256
     end
     object lblDisplayDesc: TLabel
       AlignWithMargins = True
       Left = 26
       Top = 29
-      Width = 485
+      Width = 135
       Height = 13
       Margins.Left = 26
       Margins.Top = 8
@@ -111,7 +106,6 @@ object frmEdit: TfrmEdit
       Align = alTop
       Caption = 'Define icon and text options'
       Transparent = False
-      ExplicitWidth = 135
     end
     object Panel1: TPanel
       AlignWithMargins = True

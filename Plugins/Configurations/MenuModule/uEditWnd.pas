@@ -123,7 +123,7 @@ var
 begin
   s := SharpDialogs.IconDialog('',
                                [smiCustomIcon,smiSharpEIcon],
-                               ClientToScreen(point(btnIconBrowse.Left,btnIconBrowse.Top)));
+                               Mouse.CursorPos);
   if length(trim(s))>0 then
   begin
     edIcon.Text := s;
@@ -238,7 +238,7 @@ var
 begin
   xml := TJclSimpleXML.Create;
   try
-    xml.Root.Name := 'WeatherModuleSettings';
+    xml.Root.Name := 'MenuModuleSettings';
     with xml.Root.Items do
     begin
 

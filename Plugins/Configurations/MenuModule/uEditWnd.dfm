@@ -38,7 +38,6 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       Caption = 'Display size'
-      ExplicitTop = 156
       ExplicitWidth = 55
     end
     object lblSizeDesc: TLabel
@@ -54,7 +53,6 @@ object frmEdit: TfrmEdit
       Align = alTop
       Caption = 'Define the size of the button'
       Transparent = False
-      ExplicitTop = 177
       ExplicitWidth = 138
     end
     object Label1: TLabel
@@ -83,7 +81,6 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       Caption = 'Menu'
-      ExplicitTop = 227
       ExplicitWidth = 26
     end
     object lblMenuDesc: TLabel
@@ -99,7 +96,6 @@ object frmEdit: TfrmEdit
       Align = alTop
       Caption = 'Select which menu is displayed when the button is clicked'
       Transparent = False
-      ExplicitTop = 248
       ExplicitWidth = 273
     end
     object lblDisplayDesc: TLabel
@@ -131,7 +127,6 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitTop = 198
       object Label6: TLabel
         Left = 0
         Top = 4
@@ -217,7 +212,6 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       TabOrder = 2
-      ExplicitTop = 259
       object Label2: TLabel
         Left = 0
         Top = 4

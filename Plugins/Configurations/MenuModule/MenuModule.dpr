@@ -45,7 +45,8 @@ uses
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
+  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas';
 
 {$E .dll}
 
@@ -57,6 +58,8 @@ var
   barId: string;
   moduleId: string;
 begin
+  SharpThemeapi.LoadTheme(False,[tpIconSet]);
+
   {$REGION 'Form Creation'}
     if frmEdit = nil then
         frmEdit := TfrmEdit.Create(nil);

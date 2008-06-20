@@ -201,7 +201,7 @@ begin
         UpdateIcon;
 
         // Menu
-        action := Value('ActionSt','!ShowMenu');
+        action := Value('ActionStr','!OpenMenu: Menu');
         edAction.Text := action;
 
         // Caption
@@ -222,7 +222,7 @@ var
 begin
   xml := TJclSimpleXML.Create;
   try
-    xml.Root.Name := 'WeatherModuleSettings';
+    xml.Root.Name := 'ButtonModuleSettings';
     with xml.Root.Items do
     begin
 
