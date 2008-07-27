@@ -318,17 +318,23 @@ var
   StartInfo : TStartupInfo;
   ProcInfo : TProcessInformation;
   CreateOK : Boolean;
+  Dir : String;
 begin
   { fill with known state }
   Debug('Attempting to execute with Create Process',DMT_INFO);
-
+  
   Result := True;
   FillChar(StartInfo,SizeOf(TStartupInfo),#0);
   FillChar(ProcInfo,SizeOf(TProcessInformation),#0);
   StartInfo.cb := SizeOf(TStartupInfo);
+  StartInfo.dwFlags     := STARTF_USESHOWWINDOW;
+  Dir := Trim(ExtractFilePath(APath));
+  if not SysUtils.DirectoryExists(Dir) then
+    Dir := '';
   CreateOK := CreateProcess(nil, PChar(APath), nil, nil,False,
-              CREATE_NEW_PROCESS_GROUP+NORMAL_PRIORITY_CLASS,
-              nil, nil, StartInfo, ProcInfo);
+              CREATE_DEFAULT_ERROR_MODE or CREATE_NEW_PROCESS_GROUP
+              or NORMAL_PRIORITY_CLASS,
+              nil, PChar(Dir), StartInfo, ProcInfo);
 
   if Not(CreateOK) then begin
     Result := False;
@@ -727,6 +733,12 @@ function TSharpExec.ShellOpenFile(hWnd: HWND; AFileName, AParams, ADefaultDir:
 var
   sOperation: string;
 begin
+  // make sure no empty strings which are only containing spaces are passes
+  // as params, this can kill SharpExecute
+  AFileName := trim(AFileName);
+  AParams := trim(AParams);
+  ADefaultDir := trim(ADefaultDir);
+
   Debug('FileName: ' + AFileName, DMT_TRACE);
   Debug('Params: ' + AParams, DMT_TRACE);
   Debug('dir: ' + ADefaultDir, DMT_TRACE);
