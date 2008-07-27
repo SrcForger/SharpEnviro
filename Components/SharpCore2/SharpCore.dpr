@@ -455,7 +455,7 @@ begin
   if bDebug then begin
     if FindWindow('TSharpConsoleWnd', nil) = 0 then begin
       if ShellExecute(hInstance, 'open', PChar(GetSharpEDirectory + 'SharpConsole.exe'),
-        '', PChar(' '), 0) = 0 then begin
+        '', PChar(''), 0) = 0 then begin
         while wndDebug = 0 do //wait for SharpConsole to open
           wndDebug := FindWindow('TSharpConsoleWnd', nil);
         Sleep(5000);
