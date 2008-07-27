@@ -127,7 +127,7 @@ end;
 
 procedure TTaskItem.UpdateCaption;
 var
-  buf:Array[0..1024] of wchar;
+  buf: array[0..2048] of wchar;
 begin
   GetWindowTextW(FHandle,@buf,sizeof(buf));
   FCaption := buf;
