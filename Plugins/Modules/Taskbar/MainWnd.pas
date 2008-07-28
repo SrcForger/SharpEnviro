@@ -90,6 +90,8 @@ type
     FTipWnd : hwnd;
     FLastDragItem : TSharpETaskItem; // Only a pointer, don't free it...
     FLastDragMinimized : Boolean;
+    FMoveItem : TSharpETaskItem;
+    FHasMoved : boolean;
     procedure WMNotify(var msg: TWMNotify); message WM_NOTIFY;
     procedure WMCommand(var msg: TMessage); message WM_COMMAND;
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
@@ -116,6 +118,8 @@ type
     procedure FlashTask(pItem : TTaskItem; Index : integer);
     procedure TaskExchange(pItem1,pItem2 : TTaskItem; n,i : integer);
     procedure SharpETaskItemClick(Sender: TObject);
+    procedure OnTaskItemMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure OnTaskItemMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
     procedure OnTaskItemMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
     procedure OnDragEventEnter(Sender: TJvDropTarget; var Effect: TJvDropEffect);
     procedure DisplaySystemMenu(pHandle : hwnd);
@@ -483,14 +487,59 @@ begin
   GetSystemMenu(pHandle, True);
 end;
 
+procedure TMainForm.OnTaskItemMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
+begin
+  FHasMoved := False;
+  if not sSort then
+    FMoveItem := TSharpETaskItem(Sender);
+end;
+
+procedure TMainForm.OnTaskItemMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+var
+  CursorPos,CPos : TPoint;
+  n : integer;
+  item : TSharpETaskItem;
+  i : integer;
+  item1,item2 : TTaskItem;
+begin
+  if (FMoveItem = nil) then
+    exit;
+
+  if GetCursorPosSecure(cursorPos) then
+    CPos := ScreenToClient(cursorPos)
+  else exit;
+
+  for n := 0 to IList.Count - 1 do
+  begin
+    item := TSharpETaskItem(IList.Items[n]);
+    if (CPos.X > item.Left) and (CPos.X < item.left + item.Width) then
+      if item <> FMoveItem then
+      begin
+        FHasMoved := True;
+      //  i := FMoveItem.Left;
+    //    FMoveItem.Left := item.Left;
+  //      item.left := i;
+//        IList.Exchange(n,IList.IndexOf(FMoveItem));
+        item1 := TM.GetItemByHandle(FMoveItem.Handle);
+        item2 := TM.GetItemByHandle(item.Handle);
+        TM.ExChangeTasks(item1,item2);
+        exit;
+      end;
+  end;
+end;
+
 procedure TMainForm.OnTaskItemMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   DebugOutPutInfo('TMainForm.OnTaskItemMouseUp (Procedure)');
 
-  if Sender = nil then
-    exit;  
+  FMoveItem := nil;
+
+  if (Sender = nil) or (FHasMoved) then
+    exit;
 
   if not (Sender is TSharpETaskItem) then exit;
+  
   case Button of
     mbRight: DisplaySystemMenu(TSharpETaskItem(Sender).Handle);
     mbMiddle: if sMiddleClose then
@@ -552,7 +601,7 @@ begin
       sMiddleClose := BoolValue('MiddleClose',True);
       if ItemNamed['IFilters'] <> nil then
       begin
-        SList.Clear;      
+        SList.Clear;
         SList.CommaText := ItemNamed['IFilters'].Value;
         for n := 0 to SList.Count - 1 do
         begin
@@ -608,6 +657,8 @@ procedure TMainForm.CompleteRefresh;
 var
   n : integer;
 begin
+  FMoveItem := nil;
+
   DebugOutPutInfo('TMainForm.CompleteRefresh (Procedure)');
   for n := IList.Count - 1 downto 0 do
      ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList[n]).Handle);
@@ -982,6 +1033,8 @@ begin
   pTaskItem.OnClick := SharpETaskItemClick;
   pTaskItem.OnDblClick := SharpETaskItemClick;
   pTaskItem.OnMouseUp := OnTaskItemMouseUp;
+  pTaskItem.OnMouseDown := OnTaskItemMouseDown;
+  pTaskItem.OnMouseMove := OnTaskItemMouseMove;
   ToolTipApi.AddToolTip(FTipWnd,Self,pTaskItem.Handle,
                         Rect(pTaskItem.Left,pTaskItem.Top,
                              pTaskItem.Left + pTaskItem.Width,
@@ -1028,6 +1081,8 @@ begin
   for n := IList.Count - 1 downto 0 do
     if TSharpETaskItem(IList.Items[n]).Handle = pItem.Handle then
     begin
+      if TSharpETaskItem(IList.Items[n]) = FMoveItem then
+        FMoveItem := nil;
       ToolTipApi.DeleteToolTip(FTipWnd,Self,TSharpETaskItem(IList.Items[n]).Handle);
       IList.Delete(n);
     end;
@@ -1064,7 +1119,7 @@ var
   pItem : TTaskItem;
 begin
   DebugOutPutInfo('TMainForm.SharpETaskItemClick (Procedure)');
-  if Sender = nil then exit;
+  if (Sender = nil) or (FHasMoved) then exit;
 
   if not (Sender is TSharpETaskItem) then exit;
   pItem := TM.GetItemByHandle(TSharpETaskItem(Sender).Handle);
