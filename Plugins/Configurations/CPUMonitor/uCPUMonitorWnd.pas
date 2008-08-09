@@ -181,15 +181,13 @@ begin
   else
     Reg.CloseKey;
 
-  if Reg.OpenKey('\SYSTEM\CurrentControlSet\Services\PerfOS\Performance', False) then begin
+  if Reg.OpenKey('\SYSTEM\CurrentControlSet\Services\PerfOS\Performance', False) then
+  begin
     if Reg.ValueExists('Disable Performance Counters') then
       PerfMonDisabled := (Reg.ReadInteger('Disable Performance Counters') <> 0)
-    else
-      PerfMonDisabled := True;
+    else PerfMonDisabled := False;
     Reg.CloseKey;
-  end
-  else
-    PerfMonDisabled := True;
+  end else PerfMonDisabled := False;
 
   Reg.Free;
 

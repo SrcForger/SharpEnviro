@@ -29,7 +29,6 @@ object frmCPUMon: TfrmCPUMon
       Width = 428
       Height = 399
       OnShow = pagMonShow
-      ExplicitWidth = 427
       object Label4: TLabel
         AlignWithMargins = True
         Left = 8
@@ -158,7 +157,6 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
-        ExplicitWidth = 427
         object sgbWidth: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 26
@@ -191,7 +189,6 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
-        ExplicitWidth = 427
         object sgbUpdate: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 26
@@ -224,7 +221,6 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 2
-        ExplicitWidth = 427
         object edit_cpu: TJvSpinEdit
           AlignWithMargins = True
           Left = 26
@@ -254,7 +250,6 @@ object frmCPUMon: TfrmCPUMon
         Caption = 'History Graph (Bar)'
         TabOrder = 3
         OnClick = rbGraphBarClick
-        ExplicitWidth = 393
       end
       object rbCurrentUsage: TRadioButton
         AlignWithMargins = True
@@ -270,7 +265,6 @@ object frmCPUMon: TfrmCPUMon
         Caption = 'Current Usage (Progress Bar)'
         TabOrder = 4
         OnClick = rbGraphBarClick
-        ExplicitWidth = 393
       end
       object rbGraphLine: TRadioButton
         AlignWithMargins = True
@@ -288,7 +282,6 @@ object frmCPUMon: TfrmCPUMon
         TabOrder = 5
         TabStop = True
         OnClick = rbGraphBarClick
-        ExplicitWidth = 393
       end
     end
     object pagColors: TJvStandardPage
@@ -298,7 +291,6 @@ object frmCPUMon: TfrmCPUMon
       Height = 399
       Caption = 'pagColors'
       OnShow = pagColorsShow
-      ExplicitWidth = 427
       object Label1: TLabel
         AlignWithMargins = True
         Left = 8
@@ -383,11 +375,14 @@ object frmCPUMon: TfrmCPUMon
           item
             Title = 'Background'
             ColorCode = 16777215
-            ColorAsTColor = clWhite
+            ColorAsTColor = clBlack
             Expanded = False
             ValueEditorType = vetColor
             Value = 16777215
+            ValueMin = 0
+            ValueMax = 255
             Visible = True
+            DisplayPercent = False
             ColorEditor = Colors.Item0
             Tag = 0
           end
@@ -398,7 +393,10 @@ object frmCPUMon: TfrmCPUMon
             Expanded = False
             ValueEditorType = vetColor
             Value = 0
+            ValueMin = 0
+            ValueMax = 255
             Visible = True
+            DisplayPercent = False
             ColorEditor = Colors.Item1
             Tag = 0
           end
@@ -409,13 +407,15 @@ object frmCPUMon: TfrmCPUMon
             Expanded = False
             ValueEditorType = vetColor
             Value = 0
+            ValueMin = 0
+            ValueMax = 255
             Visible = True
+            DisplayPercent = False
             ColorEditor = Colors.Item2
             Tag = 0
           end>
         SwatchManager = SharpESwatchManager1
         OnChangeColor = ColorsChangeColor
-        ExplicitWidth = 393
       end
       object Panel2: TPanel
         Left = 0
@@ -426,7 +426,6 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
-        ExplicitWidth = 427
         object sgbBackground: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 26
@@ -459,7 +458,6 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 2
-        ExplicitWidth = 427
         object sgbForeground: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 26
@@ -492,7 +490,6 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 3
-        ExplicitWidth = 427
         object sgbBorder: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 26
@@ -523,7 +520,6 @@ object frmCPUMon: TfrmCPUMon
       Width = 428
       Height = 399
       Caption = 'pagError'
-      ExplicitWidth = 427
       object SharpERoundPanel1: TSharpERoundPanel
         AlignWithMargins = True
         Left = 4
@@ -746,6 +742,7 @@ object frmCPUMon: TfrmCPUMon
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
+    PopulateThemeColors = True
     Width = 362
     ShowCaptions = True
     SwatchHeight = 16
