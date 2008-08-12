@@ -327,12 +327,11 @@ begin
   FillChar(StartInfo,SizeOf(TStartupInfo),#0);
   FillChar(ProcInfo,SizeOf(TProcessInformation),#0);
   StartInfo.cb := SizeOf(TStartupInfo);
-  StartInfo.dwFlags     := STARTF_USESHOWWINDOW;
   Dir := Trim(ExtractFilePath(APath));
   if not SysUtils.DirectoryExists(Dir) then
     Dir := '';
   CreateOK := CreateProcess(nil, PChar(APath), nil, nil,False,
-              CREATE_DEFAULT_ERROR_MODE or CREATE_NEW_PROCESS_GROUP
+              CREATE_DEFAULT_ERROR_MODE or DETACHED_PROCESS
               or NORMAL_PRIORITY_CLASS,
               nil, PChar(Dir), StartInfo, ProcInfo);
 
