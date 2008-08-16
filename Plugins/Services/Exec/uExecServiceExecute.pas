@@ -191,7 +191,7 @@ begin
           FileToExecute := fileexistsin(tmp, PathIncludeList[j].Path,
             PathIncludeList[j].WildCard);
 
-          if FileToExecute <> tmp then break;
+          if CompareText(FileToExecute,tmp) <> 0 then break;
         end;
 
         rs := False;
@@ -563,6 +563,7 @@ begin
 
     // If all else fails try to execute the text, if this does not work discard it
     Debug('ExecuteType: Last ShellOpenFile:', DMT_TRACE);
+    Debug('Param: ' + text, DMT_TRACE);
     result := true;
 
     if ShellOpenFile(Handle, text, '', ExtractFilePath(text), Elevate) = 1 then begin
@@ -686,7 +687,7 @@ begin
 
       // Remove Extension
       withoute := templist.Strings[i];
-      withoute := StrChopRight(withoute, 4);
+      setlength(withoute,length(withoute) - length(ExtractFileExt(withoute)));
 
       // Leave Extension Intact
       withe := templist.Strings[i];
