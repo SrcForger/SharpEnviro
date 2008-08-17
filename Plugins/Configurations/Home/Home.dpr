@@ -80,7 +80,7 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ATitle: String; var ADescription: String);
 
 begin
-  ATitle := 'SharpEnviro 0.74 TD4 R3';
+  ATitle := 'SharpEnviro 0.75 TD5';
   ADescription := 'Welcome to SharpCenter. The ultimate configurator for SharpE.';
 end;
 
