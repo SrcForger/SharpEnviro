@@ -90,7 +90,7 @@ object MainForm: TMainForm
         Top = 0
         Width = 209
         Height = 17
-        Caption = 'Seperate Explorer Process (Admin)'
+        Caption = 'Seperate Explorer Process'
         Checked = True
         State = cbChecked
         TabOrder = 0

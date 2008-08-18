@@ -28,7 +28,7 @@ unit uShellSwitcher;
 interface
 
 uses
-  Windows, SysUtils;
+  Windows, ShellApi, SysUtils;
 
 function IsSeperateExplorerFixApplied : boolean;
 function ApplySeperateExplorerFix : boolean;
@@ -113,7 +113,8 @@ begin
     RegCloseKey(hndReg);
   end;
 
-  regMask := 0;
+  ShellExecute(0,'open','SharpAdmin.exe','-IniFileMapping','',SW_SHOWNORMAL);
+{  regMask := 0;
   if IsWow64 then regMask := KEY_WOW64_64KEY;
 
   if RegOpenKeyEx(HKEY_LOCAL_MACHINE, cIniFileMap, 0, KEY_ALL_ACCESS or regMask, hndReg) = ERROR_SUCCESS then
@@ -127,8 +128,7 @@ begin
             result := True;
           RegCloseKey(hndReg);
         end;
-    end;
-
+    end;    }
 end;
 
 end.
