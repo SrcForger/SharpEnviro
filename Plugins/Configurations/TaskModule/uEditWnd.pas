@@ -223,7 +223,7 @@ end;
 procedure TfrmEdit.lbItemsResize(Sender: TObject);
 begin
   if lbItems.Visible then
-    Self.Height := lbItems.Height + pnlOptions.Height else
+    Self.Height := lbItems.Height + pnlOptions.Height + 8 else
     Self.Height := pnlOptions.Height;
 end;
 

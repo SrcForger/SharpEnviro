@@ -180,6 +180,7 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       BevelOuter = bvNone
+      ParentColor = True
       TabOrder = 0
       object Label2: TLabel
         Left = 205
@@ -254,6 +255,7 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       BevelOuter = bvNone
+      ParentColor = True
       TabOrder = 1
       object chkMinimiseBtn: TCheckBox
         AlignWithMargins = True
