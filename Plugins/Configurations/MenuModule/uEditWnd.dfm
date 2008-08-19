@@ -4,7 +4,7 @@ object frmEdit: TfrmEdit
   AutoSize = True
   BorderStyle = bsNone
   Caption = 'Edit'
-  ClientHeight = 270
+  ClientHeight = 272
   ClientWidth = 519
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object frmEdit: TfrmEdit
     Left = 0
     Top = 0
     Width = 519
-    Height = 270
+    Height = 272
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
@@ -29,7 +29,7 @@ object frmEdit: TfrmEdit
     object Label3: TLabel
       AlignWithMargins = True
       Left = 8
-      Top = 136
+      Top = 138
       Width = 503
       Height = 13
       Margins.Left = 8
@@ -38,12 +38,13 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       Caption = 'Display size'
+      ExplicitTop = 136
       ExplicitWidth = 55
     end
     object lblSizeDesc: TLabel
       AlignWithMargins = True
       Left = 26
-      Top = 157
+      Top = 159
       Width = 485
       Height = 13
       Margins.Left = 26
@@ -53,6 +54,7 @@ object frmEdit: TfrmEdit
       Align = alTop
       Caption = 'Define the size of the button'
       Transparent = False
+      ExplicitTop = 157
       ExplicitWidth = 138
     end
     object Label1: TLabel
@@ -72,7 +74,7 @@ object frmEdit: TfrmEdit
     object Label4: TLabel
       AlignWithMargins = True
       Left = 8
-      Top = 207
+      Top = 209
       Width = 503
       Height = 13
       Margins.Left = 8
@@ -81,12 +83,13 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       Caption = 'Menu'
+      ExplicitTop = 207
       ExplicitWidth = 26
     end
     object lblMenuDesc: TLabel
       AlignWithMargins = True
       Left = 26
-      Top = 228
+      Top = 230
       Width = 485
       Height = 13
       Margins.Left = 26
@@ -96,6 +99,7 @@ object frmEdit: TfrmEdit
       Align = alTop
       Caption = 'Select which menu is displayed when the button is clicked'
       Transparent = False
+      ExplicitTop = 228
       ExplicitWidth = 273
     end
     object lblDisplayDesc: TLabel
@@ -116,7 +120,7 @@ object frmEdit: TfrmEdit
     object Panel1: TPanel
       AlignWithMargins = True
       Left = 26
-      Top = 178
+      Top = 180
       Width = 485
       Height = 21
       Margins.Left = 26
@@ -126,7 +130,9 @@ object frmEdit: TfrmEdit
       Align = alTop
       AutoSize = True
       BevelOuter = bvNone
+      ParentColor = True
       TabOrder = 0
+      ExplicitTop = 178
       object Label6: TLabel
         Left = 0
         Top = 4
@@ -168,6 +174,7 @@ object frmEdit: TfrmEdit
       Margins.Bottom = 0
       Align = alTop
       BevelOuter = bvNone
+      ParentColor = True
       TabOrder = 1
       object chkDisplayIcon: TCheckBox
         AlignWithMargins = True
@@ -201,7 +208,7 @@ object frmEdit: TfrmEdit
     object Panel3: TPanel
       AlignWithMargins = True
       Left = 26
-      Top = 249
+      Top = 251
       Width = 485
       Height = 21
       Margins.Left = 26
@@ -211,7 +218,9 @@ object frmEdit: TfrmEdit
       Align = alTop
       AutoSize = True
       BevelOuter = bvNone
+      ParentColor = True
       TabOrder = 2
+      ExplicitTop = 249
       object Label2: TLabel
         Left = 0
         Top = 4
@@ -249,6 +258,7 @@ object frmEdit: TfrmEdit
       Align = alTop
       AutoSize = True
       BevelOuter = bvNone
+      ParentColor = True
       TabOrder = 3
       object Label7: TLabel
         Left = 0
@@ -278,7 +288,7 @@ object frmEdit: TfrmEdit
       Left = 26
       Top = 106
       Width = 485
-      Height = 22
+      Height = 24
       Margins.Left = 26
       Margins.Top = 8
       Margins.Right = 8
@@ -286,10 +296,11 @@ object frmEdit: TfrmEdit
       Align = alTop
       AutoSize = True
       BevelOuter = bvNone
+      ParentColor = True
       TabOrder = 4
       object Label8: TLabel
         Left = 0
-        Top = 4
+        Top = 7
         Width = 25
         Height = 13
         Caption = 'Icon:'
@@ -306,7 +317,7 @@ object frmEdit: TfrmEdit
       object edIcon: TEdit
         AlignWithMargins = True
         Left = 58
-        Top = 0
+        Top = 3
         Width = 294
         Height = 21
         Margins.Left = 8
