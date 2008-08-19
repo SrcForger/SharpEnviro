@@ -23,15 +23,11 @@ object frmMM: TfrmMM
     ActivePage = pagNotes
     PropagateEnable = False
     Align = alClient
-    ExplicitWidth = 427
-    ExplicitHeight = 534
     object pagNotes: TJvStandardPage
       Left = 0
       Top = 0
       Width = 397
       Height = 460
-      ExplicitWidth = 427
-      ExplicitHeight = 534
       object Label3: TLabel
         AlignWithMargins = True
         Left = 8
@@ -79,7 +75,7 @@ object frmMM: TfrmMM
         Margins.Bottom = 0
         Align = alTop
         Caption = 'Physical Memory'
-        ExplicitTop = 84
+        ExplicitWidth = 79
       end
       object Label6: TLabel
         AlignWithMargins = True
@@ -112,7 +108,6 @@ object frmMM: TfrmMM
         Margins.Bottom = 0
         Align = alTop
         Caption = 'Swap File'
-        ExplicitTop = 263
         ExplicitWidth = 45
       end
       object Label5: TLabel
@@ -145,7 +140,6 @@ object frmMM: TfrmMM
         Margins.Bottom = 0
         Align = alTop
         Caption = 'Status Bar Size'
-        ExplicitTop = 391
         ExplicitWidth = 72
       end
       object Label9: TLabel
@@ -160,7 +154,6 @@ object frmMM: TfrmMM
         Margins.Bottom = 0
         Align = alTop
         Caption = 'Value Text Format'
-        ExplicitTop = 452
         ExplicitWidth = 88
       end
       object cbRamInfo: TCheckBox
@@ -179,8 +172,6 @@ object frmMM: TfrmMM
         State = cbChecked
         TabOrder = 0
         OnClick = cbRamInfoClick
-        ExplicitTop = 231
-        ExplicitWidth = 393
       end
       object cbRamPC: TCheckBox
         AlignWithMargins = True
@@ -198,8 +189,6 @@ object frmMM: TfrmMM
         State = cbChecked
         TabOrder = 1
         OnClick = cbRamInfoClick
-        ExplicitTop = 207
-        ExplicitWidth = 393
       end
       object cbRamBar: TCheckBox
         AlignWithMargins = True
@@ -217,8 +206,6 @@ object frmMM: TfrmMM
         State = cbChecked
         TabOrder = 2
         OnClick = cbRamInfoClick
-        ExplicitTop = 183
-        ExplicitWidth = 393
       end
       object cbSwpBar: TCheckBox
         AlignWithMargins = True
@@ -236,8 +223,6 @@ object frmMM: TfrmMM
         State = cbChecked
         TabOrder = 3
         OnClick = cbRamInfoClick
-        ExplicitTop = 311
-        ExplicitWidth = 393
       end
       object cbSwpPC: TCheckBox
         AlignWithMargins = True
@@ -255,8 +240,6 @@ object frmMM: TfrmMM
         State = cbChecked
         TabOrder = 4
         OnClick = cbRamInfoClick
-        ExplicitTop = 335
-        ExplicitWidth = 393
       end
       object cbSwpInfo: TCheckBox
         AlignWithMargins = True
@@ -274,8 +257,6 @@ object frmMM: TfrmMM
         State = cbChecked
         TabOrder = 5
         OnClick = cbRamInfoClick
-        ExplicitTop = 359
-        ExplicitWidth = 393
       end
       object Panel1: TPanel
         AlignWithMargins = True
@@ -290,8 +271,6 @@ object frmMM: TfrmMM
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 6
-        ExplicitTop = 412
-        ExplicitWidth = 395
         object sgbBarSize: TSharpeGaugeBox
           Left = 0
           Top = 0
@@ -303,7 +282,7 @@ object frmMM: TfrmMM
           ParentBackground = False
           Min = 25
           Max = 200
-          Value = 100
+          Value = 50
           Prefix = 'Width: '
           Suffix = 'px'
           Description = 'Adjust Bar Width'
@@ -321,8 +300,6 @@ object frmMM: TfrmMM
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 7
-        ExplicitTop = 465
-        ExplicitWidth = 427
         object rbPTaken: TRadioButton
           AlignWithMargins = True
           Left = 24
@@ -339,7 +316,6 @@ object frmMM: TfrmMM
           TabOrder = 0
           TabStop = True
           OnClick = rbVertClick
-          ExplicitWidth = 395
         end
         object rbFreeMB: TRadioButton
           AlignWithMargins = True
@@ -355,7 +331,6 @@ object frmMM: TfrmMM
           Caption = 'Free MB (example: 210 MB Free)'
           TabOrder = 1
           OnClick = rbVertClick
-          ExplicitWidth = 395
         end
       end
       object Panel3: TPanel
