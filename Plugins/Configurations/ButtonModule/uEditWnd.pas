@@ -134,7 +134,7 @@ procedure TfrmEdit.btnBrowseClick(Sender: TObject);
 var
   s : string;
 begin
-  s := SharpDialogs.IconDialog('', [smiCustomIcon,smiSharpEIcon], Mouse.CursorPos);
+  s := SharpDialogs.IconDialog('', [smiShellIcon,smiCustomIcon,smiSharpEIcon], Mouse.CursorPos);
   if length(trim(s))>0 then
   begin
     edIcon.Text := s;
