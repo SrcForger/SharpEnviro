@@ -53,7 +53,7 @@
     <RegValue></RegValue>
   </item>
   <item>
-    <Name>Win Amp</Name>
+    <Name>Winamp</Name>
     <WndClass>Winamp v1.x</WndClass>
     <WndCaption>Winamp 5.03</WndCaption>
     <Icon>winamp_icon.png</Icon>
