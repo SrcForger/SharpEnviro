@@ -331,7 +331,7 @@ begin
   if not SysUtils.DirectoryExists(Dir) then
     Dir := '';
   CreateOK := CreateProcess(nil, PChar(APath), nil, nil,False,
-              CREATE_DEFAULT_ERROR_MODE or DETACHED_PROCESS
+              CREATE_DEFAULT_ERROR_MODE or CREATE_NEW_CONSOLE
               or NORMAL_PRIORITY_CLASS,
               nil, PChar(Dir), StartInfo, ProcInfo);
 
