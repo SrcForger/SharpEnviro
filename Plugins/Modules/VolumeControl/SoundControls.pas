@@ -5,8 +5,8 @@ interface
 uses Windows,MMSystem,uVistaFuncs,MMDevApi_tlb,ComObj,ActiveX;
 
 function InitMixer: HMixer;
-function MuteMaster(mxct : integer) : boolean; 
-function SetMasterVolume(Value: Cardinal; mxct : integer) : boolean; 
+function MuteMaster(mxct : integer) : boolean;
+function SetMasterVolume(Value: Cardinal; mxct : integer) : boolean;
 function GetMasterVolume(mxct : integer) : Cardinal;
 function GetMasterMuteStatus(mxct : integer) : boolean;
 function GetMasterMute(Mixer: hMixerObj; var Control: TMixerControl; mxct : integer): MMResult;
@@ -176,10 +176,10 @@ var
   Details: TMixerControlDetails; 
   BoolDetails: TMixerControlDetailsBoolean; 
   Code: MMResult;
-  ret: Integer;
 begin
   if IsWindowsVista then
   begin
+    InitMixer;
     MMEndPoint.SetMute((not GetMasterMuteStatus(0)), nil);
     result := True;
   end
@@ -210,21 +210,22 @@ end;
 
 function GetMasterMuteStatus(mxct : integer) : boolean;
 var
-  MasterMute: TMixerControl; 
-  Details: TMixerControlDetails; 
-  BoolDetails: TMixerControlDetailsBoolean; 
+  MasterMute: TMixerControl;
+  Details: TMixerControlDetails;
+  BoolDetails: TMixerControlDetailsBoolean;
   Code: MMResult;
   bMuted: Boolean;
-begin 
-  result := false; 
-  Code := GetMasterMute(0, MasterMute, mxct);
+begin
+  result := false;
   if IsWindowsVista then
   begin
+    InitMixer;
     MMEndPoint.GetMute(bMuted);
     Result := bMuted;
   end
   else
   begin
+    Code := GetMasterMute(0, MasterMute, mxct);
     if(Code = MMSYSERR_NOERROR)then
     begin
       with Details do
