@@ -28,6 +28,7 @@ program SharpCore;
 uses
   Windows,
   Messages,
+  ActiveX,
   ShellAPI,
   SharpAPI,
   SharpThemeApi,
@@ -502,6 +503,9 @@ begin
     SetEvent(hndEvent);
     CloseHandle(hndEvent);
   end;
+
+  // Initialize COM library (some services might need it);
+  CoInitialize(nil);
 
   RunAll;
 
