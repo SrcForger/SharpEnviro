@@ -1066,7 +1066,11 @@ begin
           FDragForm.AlphaBlend := True;
           FDragForm.AlphaBlendValue := 128;
           FDragForm.Show;
+          FDragForm.Left := MP.X;
+          FDragForm.Top := MP.Y;
+          FDragForm.Canvas.Lock;
           tempModule.Control.PaintTo(FDragForm.Canvas.Handle,0,0);
+          FDragForm.Canvas.Unlock;
         end;
         FDragForm.Left := MP.X;
         FDragForm.Top := MP.Y;
