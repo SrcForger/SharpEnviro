@@ -1054,10 +1054,11 @@ begin
 
       if not b then
       begin
+        tempModule := GetModule(FThrobberMoveID);
+        if tempModule = nil then exit;
+
         if FDragForm = nil then
         begin
-          tempModule := GetModule(FThrobberMoveID);
-          if tempModule = nil then exit;
           FDragForm := TForm.Create(nil);
           FDragForm.Width := tempModule.Control.Width;
           FDragForm.Height := tempModule.Control.Height;
@@ -1066,14 +1067,12 @@ begin
           FDragForm.AlphaBlend := True;
           FDragForm.AlphaBlendValue := 128;
           FDragForm.Show;
-          FDragForm.Left := MP.X;
-          FDragForm.Top := MP.Y;
-          FDragForm.Canvas.Lock;
-          tempModule.Control.PaintTo(FDragForm.Canvas.Handle,0,0);
-          FDragForm.Canvas.Unlock;
         end;
         FDragForm.Left := MP.X;
         FDragForm.Top := MP.Y;
+        FDragForm.Canvas.Lock;
+        tempModule.Control.PaintTo(FDragForm.Canvas.Handle,0,0);
+        FDragForm.Canvas.Unlock;
       end;
     end;
   end;
