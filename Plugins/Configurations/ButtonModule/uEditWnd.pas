@@ -42,22 +42,15 @@ uses
   PngImageList,
   SharpTypes,
   SharpEListBoxEx, TaskFilterList, ExtCtrls, JclSimpleXml, JclFileUtils, JclStrings, Menus,
-  SharpEGaugeBoxEdit, SharpIconUtils, GR32_Image, GR32;
+  SharpEGaugeBoxEdit, SharpIconUtils, GR32_Image, GR32, SharpECenterHeader,
+  JvExControls, JvXPCore, JvXPCheckCtrls;
 
 type
   TfrmEdit = class(TForm)
     pnlOptions: TPanel;
-    Label3: TLabel;
-    lblSizeDesc: TLabel;
-    Label1: TLabel;
     Panel1: TPanel;
     Panel2: TPanel;
-    chkDisplayIcon: TCheckBox;
-    chkDisplayCaption: TCheckBox;
     Label6: TLabel;
-    Label4: TLabel;
-    lblMenuDesc: TLabel;
-    lblDisplayDesc: TLabel;
     Panel3: TPanel;
     Label2: TLabel;
     pnlCaption: TPanel;
@@ -70,6 +63,11 @@ type
     gbSize: TSharpeGaugeBox;
     edAction: TEdit;
     btnAction: TButton;
+    SharpECenterHeader1: TSharpECenterHeader;
+    SharpECenterHeader2: TSharpECenterHeader;
+    SharpECenterHeader3: TSharpECenterHeader;
+    chkDisplayIcon: TJvXPCheckbox;
+    chkDisplayCaption: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
 
     procedure SettingsChange(Sender: TObject);
@@ -151,9 +149,6 @@ end;
 procedure TfrmEdit.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := True;
-  lblSizeDesc.Font.Color := clGrayText;
-  lblMenuDesc.Font.Color := clGrayText;
-  lblDisplayDesc.Font.Color := clGrayText;
 end;
 
 procedure TfrmEdit.gbSizeChangeValue(Sender: TObject; Value: Integer);

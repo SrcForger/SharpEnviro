@@ -100,11 +100,9 @@ begin
 end;
 
 procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
-  var ATitle: string; var ADescription: string);
+  var ADescription: string);
 begin
   AName := 'Button Options';
-  AStatus := '';
-  ATitle := 'Button Module';
   ADescription := 'Configure Button Module';
 
 end;
@@ -116,7 +114,7 @@ begin
     Name := 'Button Module';
     Description := 'Button Module Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7';
+    Version := '0.7.5.2';
     DataType := tteConfig;
 
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
@@ -124,11 +122,22 @@ begin
   end;
 end;
 
+procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
+begin
+  if frmEdit <> nil then begin
+    with frmEdit do begin
+      AssignThemeToForm(ATheme,frmEdit);
+    end;
+  end;
+end;
+
+
 exports
   Open,
   Close,
   Save,
   SetText,
+  GetCenterTheme,
   GetMetaData;
 
 begin

@@ -4,7 +4,7 @@ object frmEdit: TfrmEdit
   AutoSize = True
   BorderStyle = bsNone
   Caption = 'Edit'
-  ClientHeight = 271
+  ClientHeight = 286
   ClientWidth = 519
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -18,110 +18,23 @@ object frmEdit: TfrmEdit
   TextHeight = 13
   object pnlOptions: TPanel
     Left = 0
-    Top = 0
+    Top = 37
     Width = 519
-    Height = 271
+    Height = 249
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
-    object Label3: TLabel
-      AlignWithMargins = True
-      Left = 8
-      Top = 136
-      Width = 503
-      Height = 13
-      Margins.Left = 8
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Display size'
-      ExplicitWidth = 55
-    end
-    object lblSizeDesc: TLabel
-      AlignWithMargins = True
-      Left = 26
-      Top = 157
-      Width = 485
-      Height = 13
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Define the size of the button'
-      Transparent = False
-      ExplicitWidth = 138
-    end
-    object Label1: TLabel
-      AlignWithMargins = True
-      Left = 8
-      Top = 8
-      Width = 503
-      Height = 13
-      Margins.Left = 8
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Display options'
-      ExplicitWidth = 72
-    end
-    object Label4: TLabel
-      AlignWithMargins = True
-      Left = 8
-      Top = 207
-      Width = 503
-      Height = 13
-      Margins.Left = 8
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Click command'
-      ExplicitWidth = 69
-    end
-    object lblMenuDesc: TLabel
-      AlignWithMargins = True
-      Left = 26
-      Top = 228
-      Width = 485
-      Height = 13
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Define what action you want to execute when clicked'
-      Transparent = False
-      ExplicitWidth = 256
-    end
-    object lblDisplayDesc: TLabel
-      AlignWithMargins = True
-      Left = 26
-      Top = 29
-      Width = 485
-      Height = 13
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Define icon and text options'
-      Transparent = False
-      ExplicitWidth = 135
-    end
     object Panel1: TPanel
       AlignWithMargins = True
-      Left = 26
-      Top = 178
-      Width = 485
+      Left = 5
+      Top = 149
+      Width = 509
       Height = 21
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 5
       Margins.Bottom = 0
       Align = alTop
       AutoSize = True
@@ -151,50 +64,51 @@ object frmEdit: TfrmEdit
         Min = 16
         Max = 200
         Value = 100
-        Suffix = 'px'
+        Suffix = 'px width'
         Description = 'Adjust to set the size of the button'
         PopPosition = ppBottom
         PercentDisplay = False
         OnChangeValue = gbSizeChangeValue
+        BackgroundColor = clWindow
       end
     end
     object Panel2: TPanel
       AlignWithMargins = True
-      Left = 26
-      Top = 50
-      Width = 485
+      Left = 5
+      Top = 10
+      Width = 504
       Height = 19
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 10
       Margins.Bottom = 0
       Align = alTop
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 1
-      object chkDisplayIcon: TCheckBox
+      object chkDisplayIcon: TJvXPCheckbox
         AlignWithMargins = True
         Left = 0
         Top = 0
         Width = 94
         Height = 17
-        Margins.Left = 26
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 10
+        Margins.Bottom = 10
         Caption = 'Display Icon'
         TabOrder = 0
         OnClick = SettingsChange
       end
-      object chkDisplayCaption: TCheckBox
+      object chkDisplayCaption: TJvXPCheckbox
         AlignWithMargins = True
         Left = 100
         Top = 0
         Width = 105
         Height = 17
-        Margins.Left = 26
-        Margins.Top = 8
-        Margins.Right = 8
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 10
         Margins.Bottom = 0
         Caption = 'Display Caption'
         TabOrder = 1
@@ -203,13 +117,13 @@ object frmEdit: TfrmEdit
     end
     object Panel3: TPanel
       AlignWithMargins = True
-      Left = 26
-      Top = 249
-      Width = 485
+      Left = 5
+      Top = 227
+      Width = 504
       Height = 22
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 10
       Margins.Bottom = 0
       Align = alTop
       AutoSize = True
@@ -249,13 +163,13 @@ object frmEdit: TfrmEdit
     end
     object pnlCaption: TPanel
       AlignWithMargins = True
-      Left = 26
-      Top = 77
-      Width = 485
+      Left = 5
+      Top = 39
+      Width = 504
       Height = 21
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 10
       Margins.Bottom = 0
       Align = alTop
       AutoSize = True
@@ -287,13 +201,13 @@ object frmEdit: TfrmEdit
     end
     object pnlIcon: TPanel
       AlignWithMargins = True
-      Left = 26
-      Top = 106
-      Width = 485
+      Left = 5
+      Top = 70
+      Width = 504
       Height = 22
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 10
       Margins.Bottom = 0
       Align = alTop
       AutoSize = True
@@ -332,5 +246,53 @@ object frmEdit: TfrmEdit
         OnChange = SettingsChange
       end
     end
+    object SharpECenterHeader2: TSharpECenterHeader
+      AlignWithMargins = True
+      Left = 5
+      Top = 180
+      Width = 509
+      Height = 37
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 5
+      Margins.Bottom = 0
+      Title = 'Click Action'
+      Description = 'Define what action to take when clicked'
+      TitleColor = clWindowText
+      DescriptionColor = clRed
+      Align = alTop
+    end
+    object SharpECenterHeader3: TSharpECenterHeader
+      AlignWithMargins = True
+      Left = 5
+      Top = 102
+      Width = 509
+      Height = 37
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 5
+      Margins.Bottom = 0
+      Title = 'Button Size'
+      Description = 'Define the width of the button'
+      TitleColor = clWindowText
+      DescriptionColor = clRed
+      Align = alTop
+    end
+  end
+  object SharpECenterHeader1: TSharpECenterHeader
+    AlignWithMargins = True
+    Left = 5
+    Top = 0
+    Width = 509
+    Height = 37
+    Margins.Left = 5
+    Margins.Top = 0
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Title = 'Display'
+    Description = 'Define text and icon options'
+    TitleColor = clWindowText
+    DescriptionColor = clRed
+    Align = alTop
   end
 end
