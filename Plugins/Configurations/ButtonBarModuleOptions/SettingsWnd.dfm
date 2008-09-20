@@ -63,6 +63,7 @@ object frmSettings: TfrmSettings
           PopPosition = ppBottom
           PercentDisplay = False
           OnChangeValue = GaugeBoxChange
+          BackgroundColor = clWindow
         end
       end
       object SharpECenterHeader3: TSharpECenterHeader
@@ -115,11 +116,11 @@ object frmSettings: TfrmSettings
       end
       object chkButtonCaption: TJvXPCheckbox
         AlignWithMargins = True
-        Left = 5
+        Left = 2
         Top = 125
-        Width = 658
+        Width = 661
         Height = 17
-        Margins.Left = 5
+        Margins.Left = 2
         Margins.Top = 0
         Margins.Right = 5
         Margins.Bottom = 10
@@ -128,15 +129,16 @@ object frmSettings: TfrmSettings
         TabStop = False
         Align = alTop
         OnClick = CheckClick
-        ExplicitWidth = 653
+        ExplicitLeft = 5
+        ExplicitWidth = 658
       end
       object chkButtonIcon: TJvXPCheckbox
         AlignWithMargins = True
-        Left = 5
+        Left = 2
         Top = 199
-        Width = 658
+        Width = 661
         Height = 17
-        Margins.Left = 5
+        Margins.Left = 2
         Margins.Top = 0
         Margins.Right = 5
         Margins.Bottom = 10
@@ -146,7 +148,8 @@ object frmSettings: TfrmSettings
         State = cbChecked
         Align = alTop
         OnClick = CheckClick
-        ExplicitWidth = 653
+        ExplicitLeft = 5
+        ExplicitWidth = 658
       end
     end
   end

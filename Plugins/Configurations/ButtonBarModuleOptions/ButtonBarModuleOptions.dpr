@@ -162,7 +162,8 @@ end;
 
 procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
 begin
-  AssignThemeToForm(ATheme,frmSettings);
+  if frmSettings <> nil then
+    AssignThemeToForm(ATheme,frmSettings);
 end;
 
 exports
