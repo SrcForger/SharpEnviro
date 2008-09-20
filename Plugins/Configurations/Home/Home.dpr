@@ -35,6 +35,7 @@ uses
   SysUtils,
   Graphics,
   uHomeWnd in 'uHomeWnd.pas' {frmHome},
+  SharpCenterApi,
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas';
 
 {$E .dll}
@@ -77,11 +78,13 @@ begin
 end;
 
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
-
+  var ADescription: String);
+var
+  meta: TMetaData;
+  priority, delay: integer;
 begin
-  ATitle := 'SharpEnviro 0.75 TD5';
-  ADescription := 'Welcome to SharpCenter. The ultimate configurator for SharpE.';
+  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, priority, delay);
+  ADescription := format('Welcome to SharpEnviro (%s)',[meta.Version]);
 end;
 
 function GetMetaData(): TMetaData;
@@ -91,7 +94,7 @@ begin
     Name := 'Home';
     Description := 'Home Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7.4.0';
+    Version := '0.7.5.2';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
       Integer(suCenter)]);
@@ -124,12 +127,27 @@ begin
   end;
 end;
 
+procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
+begin
+  if frmHome <> nil then begin
+    with frmHome do begin
+      Theme := ATheme;
+      Font.Color := ATheme.PluginBackgroundText;
+      frmHome.Color := ATheme.PluginBackground;
+
+      AssignThemeToPluginListBox(ATheme,lbUsers);
+      AssignThemeToPluginListBox(ATheme,lbUrls);
+    end;
+  end;
+end;
+
 exports
   Open,
   Close,
   ClickTab,
   AddTabs,
   GetMetaData,
+  GetCenterTheme,
   SetText;
 
 end.

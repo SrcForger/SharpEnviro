@@ -56,7 +56,7 @@ type
     tabUrls: TTabSheet;
     lbUsers: TSharpEListBoxEx;
     imgLogo: TImage;
-    Label1: TLabel;
+    lblCredits: TLabel;
     Image1: TImage;
     lblUrls: TLabel;
     lbUrls: TSharpEListBoxEx;
@@ -88,9 +88,11 @@ type
   private
     FUsers: TList;
     FUrls: TList;
+    FTheme: TCenterThemeInfo;
     procedure AddUsersToList;
   public
     procedure AddUrlsToList(ASupport: Boolean=False);
+    property Theme: TCenterThemeInfo read FTheme write FTheme;
   end;
 
 var
@@ -233,11 +235,10 @@ begin
 
   case ACol of
     colName: begin
-      AColText := tmp.Name + ' (' + tmp.Description + ')' + ' - <font color="clGray">' + tmp.Url;
+      AColText := format('%s ( %s ) - <font color="%s"> %s',
+        [tmp.Name,tmp.Description,ColorToString(FTheme.PluginItemDescriptionText),tmp.Url]);
     end;
-    colEmail : AColText := '<u><font color="clNavy">Email</u>';
   end;
-
 end;
 
 procedure TfrmHome.lbUsersClickItem(Sender: TObject; const ACol: Integer;
@@ -277,9 +278,9 @@ begin
 
   case ACol of
     colName: begin
-      AColText := tmp.Name + ' (' + tmp.Handle + ')' + ' - <font color="clGray">' + tmp.Role;
+      AColText := format('%s ( %s ) - <font color="%s"> %s',
+        [tmp.Name,tmp.Handle,ColorToString(FTheme.PluginItemDescriptionText),tmp.Role]);
     end;
-    colEmail : AColText := '<u><font color="clNavy">Email</u>';
   end;
 
 end;
