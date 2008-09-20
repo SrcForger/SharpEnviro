@@ -2,80 +2,60 @@ object frmBMon: TfrmBMon
   Left = 0
   Top = 0
   Caption = 'frmBMon'
-  ClientHeight = 93
-  ClientWidth = 427
+  ClientHeight = 319
+  ClientWidth = 652
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
+  Font.Color = clWhite
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object plMain: TJvPageList
     Left = 0
     Top = 0
-    Width = 427
-    Height = 93
+    Width = 652
+    Height = 319
     ActivePage = pagNotes
     PropagateEnable = False
     Align = alClient
     object pagNotes: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 427
-      Height = 93
-      object Label3: TLabel
+      Width = 652
+      Height = 319
+      object SharpECenterHeader1: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 8
-        Top = 8
-        Width = 411
-        Height = 13
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
+        Left = 5
+        Top = 0
+        Width = 642
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 10
+        Title = 'Icon Visibility'
+        Description = 'Would you like to display the power status Icon?'
+        TitleColor = clWindowText
+        DescriptionColor = clGrayText
         Align = alTop
-        Caption = 'Display Options'
-        ExplicitWidth = 74
       end
-      object Label1: TLabel
+      object cb_icon: TJvXPCheckbox
         AlignWithMargins = True
-        Left = 26
-        Top = 29
-        Width = 393
-        Height = 13
-        Margins.Left = 26
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        Caption = 
-          'Select the checkbox if you want to display the power status icon' +
-          '.'
-        Transparent = False
-        WordWrap = True
-        ExplicitWidth = 309
-      end
-      object cb_icon: TCheckBox
-        AlignWithMargins = True
-        Left = 24
-        Top = 50
-        Width = 395
+        Left = 5
+        Top = 47
+        Width = 642
         Height = 17
-        Margins.Left = 24
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 8
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 10
+        Caption = 'Display the icon'
+        TabOrder = 1
         Align = alTop
-        Caption = 'Display Icon'
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
         OnClick = cb_iconClick
       end
     end

@@ -39,6 +39,9 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
+  StdCtrls,
+  SharpECenterHeader,
+  JvXPCheckCtrls,
   uBatteryMonitorWnd in 'uBatteryMonitorWnd.pas' {frmBMon},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
@@ -130,11 +133,10 @@ begin
 end;
 
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+  var ADescription: String);
 begin
   AName := 'Battery Monitor';
-  ATitle := 'Battery Monitor Module';
-  ADescription := 'Configure battery monitor module';
+  ADescription := 'The battery monitor module displays laptop status';
 end;
 
 function GetMetaData(): TMetaData;
@@ -144,11 +146,18 @@ begin
     Name := 'Battery Monitor';
     Description := 'Battery Monitor Module Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.5.2';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
   end;
+end;
+
+procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
+var
+  i: integer;
+begin
+  AssignThemeToForm(ATheme,frmBMon);
 end;
 
 exports
@@ -156,7 +165,8 @@ exports
   Close,
   Save,
   SetText,
-  GetMetaData;
+  GetMetaData,
+  GetCenterTheme;
 
 end.
 

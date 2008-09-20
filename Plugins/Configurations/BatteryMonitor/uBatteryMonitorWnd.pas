@@ -32,7 +32,9 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
   ImgList, PngImageList, GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
-  JvPageList, JvExControls, ComCtrls, Mask;
+  JvPageList, JvExControls, ComCtrls, Mask, pngimage, SharpERoundPanel,
+  SharpECenterHeader, JvExStdCtrls, JvCheckBox, JvCSVBaseControls, JvXPCore,
+  JvXPCheckCtrls;
 
 type
   TStringObject = class(TObject)
@@ -44,11 +46,9 @@ type
   TfrmBMon = class(TForm)
     plMain: TJvPageList;
     pagNotes: TJvStandardPage;
-    Label3: TLabel;
-    Label1: TLabel;
-    cb_icon: TCheckBox;
+    SharpECenterHeader1: TSharpECenterHeader;
+    cb_icon: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure cb_alwaysontopClick(Sender: TObject);
     procedure rb_textClick(Sender: TObject);
     procedure cb_iconClick(Sender: TObject);
@@ -81,11 +81,6 @@ end;
 procedure TfrmBMon.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := true;
-end;
-
-procedure TfrmBMon.FormShow(Sender: TObject);
-begin
-  Label1.Font.Color := clGrayText;
 end;
 
 procedure TfrmBMon.rb_textClick(Sender: TObject);
