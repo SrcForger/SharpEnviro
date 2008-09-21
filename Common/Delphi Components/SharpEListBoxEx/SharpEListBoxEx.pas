@@ -85,6 +85,7 @@ type
     FCheckColorSelected: TColor;
     FItemColor: TColor;
     FCheckColor: TColor;
+    FDisabledColor: TColor;
   published
     property BorderColor: TColor read FBorderColor write FBorderColor;
     property BorderColorSelected: TColor read FBorderColorSelected write FBorderColorSelected;
@@ -92,6 +93,7 @@ type
     property ItemColorSelected: TColor read FItemColorSelected write FItemColorSelected;
     property CheckColorSelected: TColor read FCheckColorSelected write FCheckColorSelected;
     property CheckColor: TColor read FCheckColor write FCheckColor;
+    property DisabledColor: TColor read FDisabledColor write FDisabledColor;
 
   end;
 
@@ -263,8 +265,6 @@ type
     property OnDragOver;
     property OnDragDrop;
     property OnStartDrag;
-    property OnMouseUp;
-    property OnMouseDown;
 
     property ItemOffset: TPoint read FItemOffset write FItemOffset;
     property AutosizeGrid: Boolean read FAutoSizeGrid write SetAutoSizeGrid;
@@ -278,6 +278,7 @@ type
     property DragMode;
     property DragKind;
     property DragCursor;
+    property Enabled;
   end;
 
 procedure Register;
@@ -621,8 +622,8 @@ begin
       tmpColor := FColors.CheckColor;
   end;
 
-  if not (Enabled) then
-    tmpColor := clWindow;
+  //if not (Enabled) then
+  //  tmpColor := Colors.DisabledColor;
 
   Self.Canvas.Brush.Color := tmpColor;
   Self.Canvas.Pen.Color := tmpColor;
@@ -642,8 +643,8 @@ begin
       tmpColor := FColors.FCheckColorSelected;
     end;
 
-    if not (Enabled) then
-      tmpColor := clBtnFace;
+    //if not (Enabled) then
+    //  tmpColor := Colors.DisabledColor;
 
     Self.Canvas.Brush.Color := tmpColor;
     Self.Canvas.Pen.Color := tmpColor;
@@ -1062,11 +1063,11 @@ begin
 
       if bCanSelect then begin
         Self.ItemIndex := ItemNo;
-        Self.Invalidate;
 
         if Assigned(FOnClickItem) then
           FOnClickItem(Self, tmpCol.ID, tmpItem);
 
+        Self.Invalidate;
         if (DragMode = dmAutomatic) and not (FMultiSelect and
           ((ssCtrl in ShiftState) or (ssShift in ShiftState))) then
           BeginDrag(False); 
