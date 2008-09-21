@@ -102,8 +102,8 @@ end;
 procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
   var ADescription: string);
 begin
-  AName := 'Button Options';
-  ADescription := 'Configure Button Module';
+  AName := 'Button';
+  ADescription := 'Configure the button module';
 
 end;
 

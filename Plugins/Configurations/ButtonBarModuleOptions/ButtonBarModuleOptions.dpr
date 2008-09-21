@@ -142,7 +142,7 @@ end;
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
   var ADescription: String);
 begin
-  AName := 'Module Options';
+  AName := 'Options';
   ADescription := 'Configure global options for the button bar module';
 end;
 
