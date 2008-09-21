@@ -5,7 +5,7 @@ object MainWnd: TMainWnd
   Caption = 'v'
   ClientHeight = 290
   ClientWidth = 432
-  Color = clWindow
+  Color = clBackground
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -47,15 +47,24 @@ object MainWnd: TMainWnd
     Caption = 'Scheme Test'
     ValueAsTColor = clBlack
     ValueEditorType = vetColor
+    Description = 'This is cool!'
     ValueText = 'Alpha'
     Value = 0
     ValueMin = 0
     ValueMax = 255
     Visible = True
     SwatchManager = SharpESwatchManager1
-    DesignSize = (
-      432
-      24)
+    Color = clBlack
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWhite
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    BorderColor = 16709617
+    TabColor = clBackground
+    SelectedTabColor = clLime
+    BackgroundColor = clLime
+    BackgroundTextColor = clBlack
   end
   object Button3: TButton
     Left = 284
@@ -82,7 +91,7 @@ object MainWnd: TMainWnd
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 408
+    Width = 399
     ShowCaptions = False
     SwatchHeight = 16
     SwatchWidth = 16
@@ -94,6 +103,9 @@ object MainWnd: TMainWnd
     SwatchFont.Style = []
     SwatchTextBorderColor = 16709617
     SortMode = sortName
+    BorderColor = clWhite
+    BackgroundColor = clWhite
+    BackgroundTextColor = clWhite
     Left = 348
     Top = 180
   end

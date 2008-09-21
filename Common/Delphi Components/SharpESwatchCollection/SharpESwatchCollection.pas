@@ -27,7 +27,6 @@ type
 type
   TSharpESwatchCollection = class(TScrollBox)
   private
-    FScheme: TSharpECenterScheme;
     FPopupMenu: Tpopupmenu;
     FImageList: TPngImageList;
 
@@ -95,8 +94,6 @@ begin
   FImage32.OnMouseUp := MouseDownEvent;
 
   LoadResources;
-
-  FScheme := TSharpECenterScheme.Create(nil);
 end;
 
 procedure TSharpESwatchCollection.Resize;

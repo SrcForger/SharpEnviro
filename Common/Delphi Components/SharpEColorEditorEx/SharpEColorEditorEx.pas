@@ -127,6 +127,8 @@ type
     procedure SetSwatchManager(const Value: TSharpESwatchManager);
     procedure ResizeEvent(Sender: TObject);
     procedure UiChangeEvent(Sender: TObject);
+    function GetBackgroundColor: TColor;
+    procedure SetBackgroundColor(const Value: TColor);
   public
     constructor Create(Sender: TComponent); override;
 
@@ -151,6 +153,8 @@ type
     property OnChangeColor: tvaluechangeevent read FOnChangeColor write
       FOnChangeColor;
     property OnUiChange: TNotifyEvent read FOnUiChange write FOnUiChange;
+
+    property BackgroundColor: TColor read GetBackgroundColor write SetBackgroundColor;
   end;
 
 procedure Register;
@@ -229,8 +233,6 @@ begin
       else
         TSharpEColorEditorEx(FParent).OnChangeColor(Self, FValue);
     end;
-
-  //TSharpEColorEditor(ASender).Update;
 end;
 
 procedure TSharpEColorEditorExItem.SetTitle(const Value: string);
@@ -281,7 +283,7 @@ begin
   FLastColorEditor := FColorEditor;
 
   if FParent <> nil then begin
-    TSharpEColorEditorEx(FParent).DisableAlign;
+    //TSharpEColorEditorEx(FParent).DisableAlign;
     TSharpEColorEditorEx(FParent).DisableAutoRange;
   end;
 
@@ -293,6 +295,8 @@ begin
   end;
 
   // Expand selected
+  //LockWindowUpdate(Application.MainFormHandle);
+  try
   for i := 0 to Pred(Collection.Count) do begin
     if TSharpEColorEditorExItem(Collection.Items[i]) = Self then begin
 
@@ -300,9 +304,12 @@ begin
       FColorEditor.SelectDefaultTab;
     end;
   end;
+  finally
+    //LockWindowUpdate(0);
+  end;
 
   if FParent <> nil then begin
-    TSharpEColorEditorEx(FParent).EnableAlign;
+    //TSharpEColorEditorEx(FParent).EnableAlign;
     TSharpEColorEditorEx(FParent).EnableAutoRange;
     TSharpEColorEditorEx(FParent).ScrollInView(FColorEditor);
   end;
@@ -348,6 +355,11 @@ procedure TSharpEColorEditorEx.EndUpdate;
 begin
   FUpdate := True;
   PopulateItems;
+end;
+
+function TSharpEColorEditorEx.GetBackgroundColor: TColor;
+begin
+  result := Self.Color;
 end;
 
 procedure TSharpEColorEditorEx.BeginUpdate;
@@ -554,7 +566,6 @@ begin
   Self.DisableAutoRange;
   Self.Updating;
   Self.Visible := False;
-
   try
     for i := Pred(ComponentCount) downto 0 do
       if Components[i] is TSharpEColorEditor then begin
@@ -620,6 +631,11 @@ begin
   else
     Self.Padding.Right := 0;
 
+end;
+
+procedure TSharpEColorEditorEx.SetBackgroundColor(const Value: TColor);
+begin
+  Self.Color := Value;
 end;
 
 procedure TSharpEColorEditorEx.SetItems(const Value: TSharpEColorEditorExItems);

@@ -29,31 +29,29 @@ implementation
 procedure TForm2.Button1Click(Sender: TObject);
 var
   tmp: TSharpEColorEditorEx;
-  tmpItem: TSharpEColorEditorExItem;
 begin
 
+  LockWindowUpdate(Self.Handle);
+  tmp := TSharpEColorEditorEx.Create(Self);
+  tmp.BeginUpdate;
   try
-    LockWindowUpdate(Self.Handle);
-    tmp := TSharpEColorEditorEx.Create(Self);
+
     tmp.Parent := Self;
-
-    tmp.BeginUpdate;
-
     tmp.SwatchManager := SharpESwatchManager1;
     tmp.Align := alClient;
     tmp.Height := 200;
     tmp.Color := clWindow;
 
-    tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
-    tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
-    tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
-    tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
-    tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
-    tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
-    tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
-    tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
-    tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
-    tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
+    TSharpEColorEditorExItem.Create(tmp.Items);
+    TSharpEColorEditorExItem.Create(tmp.Items);
+    TSharpEColorEditorExItem.Create(tmp.Items);
+    TSharpEColorEditorExItem.Create(tmp.Items);
+    TSharpEColorEditorExItem.Create(tmp.Items);
+    TSharpEColorEditorExItem.Create(tmp.Items);
+    TSharpEColorEditorExItem.Create(tmp.Items);
+    TSharpEColorEditorExItem.Create(tmp.Items);
+    TSharpEColorEditorExItem.Create(tmp.Items);
+    TSharpEColorEditorExItem.Create(tmp.Items);
 
     tmp.Items.Item[0].Title := 'New';
     tmp.Items.Item[0].ColorCode := clRed;

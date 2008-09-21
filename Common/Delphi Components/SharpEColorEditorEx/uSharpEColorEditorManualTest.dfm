@@ -1,9 +1,9 @@
 object Form2: TForm2
   Left = 0
   Top = 0
-  Width = 434
-  Height = 320
   Caption = 'Form2'
+  ClientHeight = 284
+  ClientWidth = 418
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -25,6 +25,7 @@ object Form2: TForm2
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
+    PopulateThemeColors = True
     Width = 100
     ShowCaptions = True
     SwatchHeight = 16
@@ -37,6 +38,9 @@ object Form2: TForm2
     SwatchFont.Style = []
     SwatchTextBorderColor = 16709617
     SortMode = sortName
+    BorderColor = clBlack
+    BackgroundColor = clBlack
+    BackgroundTextColor = clBlack
     Left = 352
     Top = 236
   end

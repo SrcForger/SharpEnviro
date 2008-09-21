@@ -1,11 +1,11 @@
 object Form1: TForm1
   Left = 0
   Top = 0
-  Width = 434
-  Height = 250
   BorderWidth = 1
   Caption = 'Form1'
-  Color = clWindow
+  ClientHeight = 212
+  ClientWidth = 416
+  Color = clBlack
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -33,9 +33,8 @@ object Form1: TForm1
     Top = 28
     Width = 35
     Height = 17
-    BackgroundColor = clWhite
-    Color = clWhite
-    ColorCode = 16777215
+    BackgroundColor = clBlack
+    Color = clBlack
   end
   object XPManifest1: TXPManifest
     Left = 172

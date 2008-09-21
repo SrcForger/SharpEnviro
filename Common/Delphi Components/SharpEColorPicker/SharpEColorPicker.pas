@@ -19,6 +19,7 @@ uses
   uSchemeList,
   uvistafuncs,
   SharpECenterScheme,
+  pngImage,
   JvSimpleXml;
 
 type
@@ -246,11 +247,11 @@ end;
 procedure TCustomSharpeColorPicker.Paint;
 var
   osBmp: TBitmap;
-  tmpBitmap: TBitmap;
+  //tmpBitmap: TBitmap;
+  png: TPNGObject;
 begin
 
   osBmp := TBitmap.Create;
-
   try
     osBmp.Height := Self.Height;//.Bottom;
     osBmp.Width := Self.Width;//.Right;
@@ -264,19 +265,20 @@ begin
     DrawColorSelector(osBmp, rColorPicker);
 
     // Draw Status
-    tmpBitmap := TBitmap.Create;
+    png := TPNGObject.Create;
 
     if FMouseDown then
-      TmpBitmap.Handle := LoadBitmap(HInstance, 'PIPETTESEL_BMP')
+      png.LoadFromResourceName(HInstance, 'PIPETTESEL_PNG')
     else if FMouseOver then
-      TmpBitmap.Handle := LoadBitmap(HInstance, 'PIPETTE_BMP')
+      png.LoadFromResourceName(HInstance, 'PIPETTE_PNG')
     else
-      TmpBitmap.Handle := LoadBitmap(HInstance, 'PIPETTE_BMP');
+      png.LoadFromResourceName(HInstance, 'PIPETTE_PNG');
 
-    TmpBitmap.TransparentColor := clFuchsia;
-    tmpBitmap.Transparent := True;
-    osBmp.Canvas.Draw(rColorPicker.Right + 3, 0, tmpBitmap);
-    tmpBitmap.Free;
+    //TmpBitmap.TransparentColor := clFuchsia;
+    //tmpBitmap.Transparent := True;
+    png.Draw(osBmp.Canvas, rect(rColorPicker.Right + 3, 0, rColorPicker.Right + 3 + 16,16));
+    //osBmp.Canvas.Draw(rColorPicker.Right + 3, 0, tmpBitmap);
+    //tmpBitmap.Free;
 
     // Copy off screen bitmap to canvas
     canvas.CopyRect(ClientRect, osBmp.canvas, ClientRect);

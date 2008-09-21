@@ -81,7 +81,6 @@ type
   TSharpESwatchManager = class(TComponent)
   private
     FCachedBitmap: TBitmap32;
-    FScheme: TSharpECenterScheme;
     FShowCaptions: Boolean;
     FSwatches: TSharpESwatchCollectionItems;
     FSwatchWidth: Integer;
@@ -95,6 +94,9 @@ type
     FOnUpdateSwatchBitmap: TOnUpdateSwatchBitmap;
     FUpdate: Boolean;
     FPopulateThemeColors: Boolean;
+    FBorderColor: TColor;
+    FBackgroundTextColor: TColor;
+    FBackgroundColor: TColor;
 
     procedure SetShowCaptions(const Value: Boolean);
     procedure SetSortMode(const Value: TSharpESwatchCollectionSortType);
@@ -156,6 +158,10 @@ type
     property OnGetWidth: TOnGetWidth read FonGetWidth write FOnGetWidth;
     property OnUpdateSwatchBitmap: TOnUpdateSwatchBitmap read
       FOnUpdateSwatchBitmap write FOnUpdateSwatchBitmap;
+
+    property BorderColor: TColor read FBorderColor write FBorderColor;
+    property BackgroundColor : TColor read FBackgroundColor write FBackgroundColor;
+    property BackgroundTextColor : TColor read FBackgroundTextColor write FBackgroundTextColor;
 
   end;
 
@@ -533,7 +539,7 @@ begin
     y := FSwatchSpacing;
 
     tmpBitmap.SetSize(w, 1000);
-    tmpBitmap.Clear(color32(FScheme.EditCol));
+    tmpBitmap.Clear(color32(BackgroundColor));
     tmpBitmap.Font.Assign(FSwatchFont);
 
     // Create swatches
@@ -744,8 +750,7 @@ begin
   FSwatchFont := TFont.Create;
 
   FSwatches := TSharpESwatchCollectionItems.Create(Self);
-  FScheme := TSharpECenterScheme.Create(Self);
-  FSwatchTextBorderColor := FScheme.EditBordCol;
+  FSwatchTextBorderColor := FBorderColor;
   FCachedBitmap := TBitmap32.Create;
 
 end;

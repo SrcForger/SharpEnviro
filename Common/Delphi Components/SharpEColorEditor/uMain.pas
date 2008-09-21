@@ -7,7 +7,7 @@ uses
   Dialogs, ExtCtrls, SharpEColorEditor, StdCtrls, JvPageList, JvExControls,
   JvComponent, ComCtrls, JvExComCtrls, JvComCtrls, XPMan, Mask, JvExMask, JvSpin,
   JvExStdCtrls, JvHtControls, sharpthemeapi, uVistaFuncs, JvLinkLabel, JvPanel,
-  JvLabel, JvExExtCtrls, SharpESwatchManager;
+  JvLabel, JvExExtCtrls, SharpESwatchManager, JvXPCore, JvXPCheckCtrls;
 
 type
   TMainWnd = class(TForm)
@@ -77,9 +77,8 @@ end;
 
 procedure TMainWnd.Button4Click(Sender: TObject);
 begin
-
-  SharpEColorEditor2.ValueEditorType := vetBoolean;
   SharpEColorEditor2.Description := 'Do you want the show enabled?';
+  SharpEColorEditor2.ValueEditorType := vetBoolean;
 end;
 
 end.

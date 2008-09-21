@@ -5,7 +5,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 557
   ClientWidth = 440
-  Color = clWindow
+  Color = clBlack
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -32,7 +32,6 @@ object Form1: TForm1
     Lines.Strings = (
       'mmoDebug')
     TabOrder = 0
-    ExplicitWidth = 410
   end
   object SharpEColorEditorEx1: TSharpEColorEditorEx
     Left = 0
@@ -45,8 +44,6 @@ object Form1: TForm1
     BevelInner = bvNone
     BevelOuter = bvNone
     BorderStyle = bsNone
-    Color = clWindow
-    ParentColor = False
     TabOrder = 1
     Items = <
       item
@@ -135,7 +132,6 @@ object Form1: TForm1
         Tag = 0
       end>
     SwatchManager = SharpESwatchManager1
-    ExplicitWidth = 410
     object Button2: TButton
       Left = 264
       Top = 380

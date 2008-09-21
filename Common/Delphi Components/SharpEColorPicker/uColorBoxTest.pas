@@ -13,7 +13,6 @@ type
     Panel1: TPanel;
     SharpEColorPicker1: TSharpEColorPicker;
     procedure FormCreate(Sender: TObject);
-    procedure SharpEColorBox1ColorClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -26,12 +25,6 @@ var
 implementation
 
 {$R *.dfm}
-
-procedure TForm1.SharpEColorBox1ColorClick(Sender: TObject);
-begin
-  Panel1.Caption :=  IntToStr(TSharpEColorPicker(Sender).ColorCode);
-  Panel1.Color := TSharpEColorPicker(Sender).Color;
-end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin

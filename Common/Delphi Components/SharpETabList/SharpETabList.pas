@@ -311,7 +311,6 @@ begin
 
   Self.BevelInner := bvNone;
   Self.BevelOuter := bvNone;
-  Self.ParentBackground := True;
 
   FTabList := TTabItems.Create(Self, TTabItem);
   FButtons := TButtonItems.Create(Self, TButtonItem);

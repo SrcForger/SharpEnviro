@@ -80,6 +80,8 @@ type
     procedure SetTextSpacingY(const Value: Integer);
     function GetTabsWidth: Integer;
     function GetButtonsWidth: Integer;
+    function GetPageBackgroundColor: TColor;
+    procedure SetPageBackgroundColor(const Value: TColor);
   protected
     procedure Loaded; override;
   public
@@ -126,6 +128,7 @@ type
     property TabStatusSelColor: TColor read GetTabStatusSelColor write SetTabStatusSelColor;
     property TabCaptionColor: TColor read GetTabCaptionColor write SetTabCaptionColor;
     property TabStatusColor: TColor read GetTabStatusColor write SetTabStatusColor;
+    property PageBackgroundColor: TColor read GetPageBackgroundColor write SetPageBackgroundColor;
 
     property OnTabChange: TSharpETabChange read GetOnTabChange write SetOnTabChange;
     property OnTabClick: TSharpETabClick read GetOnTabClick write SetOnTabClick;
@@ -177,6 +180,7 @@ begin
     TextSpacingX := 8;
     TextSpacingY := 6;
     AutoSizeTabs := True;
+    DoubleBuffered := False;
   end;
   FPnlContent := TSharpERoundPanel.Create(Self);
   with FPnlContent do begin
@@ -189,10 +193,11 @@ begin
     BorderColor := clBlack;
     Border := True;
     DrawMode := srpNoTopLeft;
-    ParentColor := False;
-    Color := clWindow;
+    ParentColor := True;
+    //Color := ;
     ParentBackground := False;
     DoubleBuffered := True;
+    Self.DoubleBuffered := True;
 
     Padding.Left := 8;
     Padding.Top := 8;
@@ -255,6 +260,11 @@ end;
 function TSharpEPageControl.GetOnTabClick: TSharpETabClick;
 begin
   Result := FTabList.OnTabClick;
+end;
+
+function TSharpEPageControl.GetPageBackgroundColor: TColor;
+begin
+  Result := FPnlContent.Color;
 end;
 
 function TSharpEPageControl.GetBackgroundColor: TColor;
@@ -445,6 +455,11 @@ end;
 procedure TSharpEPageControl.SetOnTabClick(const Value: TSharpETabClick);
 begin
   FTabList.OnTabClick := Value;
+end;
+
+procedure TSharpEPageControl.SetPageBackgroundColor(const Value: TColor);
+begin
+  FPnlContent.Color := Value;
 end;
 
 procedure TSharpEPageControl.SetBackgroundColor(const Value: TColor);
