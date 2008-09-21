@@ -92,6 +92,8 @@ type
     procedure SetPopPosition(const Value: TPopPosition);
     procedure SetDescription(const Value: string);
     procedure SetPercentDisplay(const Value : boolean);
+    function GetBackgroundColor: TColor;
+    procedure SetBackgroundColor(const Value: TColor);
   protected
     procedure SetEnabled(Value: boolean); override;
   public
@@ -122,6 +124,8 @@ type
     property PercentDisplay: boolean read FPercentDisplay write SetPercentDisplay;
 
     property OnChangeValue: TChangeValueEvent read FOnChangeValue write FOnChangeValue;
+
+    property BackgroundColor: TColor read GetBackgroundColor write SetBackgroundColor;
   end;
 
 procedure Register;
@@ -262,6 +266,11 @@ begin
     width := 13;
   end;
 
+end;
+
+function TSharpeGaugeBox.GetBackgroundColor: TColor;
+begin
+  result := FValueEdit.Color;
 end;
 
 procedure TSharpeGaugeBox.BtnGaugeClick(Sender: TObject);
@@ -460,6 +469,12 @@ end;
 procedure TSharpeGaugeBox.SetPopPosition(const Value: TPopPosition);
 begin
   FPopPosition := Value;
+end;
+
+procedure TSharpeGaugeBox.SetBackgroundColor(const Value: TColor);
+begin
+  FValueEdit.Color := Value;
+  FBackPanel.Color := Value;
 end;
 
 procedure TSharpeGaugeBox.SetDescription(const Value: string);
