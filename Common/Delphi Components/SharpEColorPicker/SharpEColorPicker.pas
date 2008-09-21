@@ -16,9 +16,7 @@ uses
   sharpthemeapi,
   graphics,
   Forms,
-  uSchemeList,
   uvistafuncs,
-  SharpECenterScheme,
   pngImage,
   JvSimpleXml;
 
@@ -39,20 +37,15 @@ type
     FColor: TColor;
     FLastColor: TColor;
     FCustom: Boolean;
-    FSCS:TSharpECenterScheme;
-
-    FSchemeManager: TSchemeManager;
-    FCustomColor: TSchemeColorItem;
 
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure MenuClick(Sender: TObject);
 
     procedure SetBackgroundColor(const Value: TColor);
     procedure DrawColorSelector(Bmp: TBitmap; R: TRect);
 
     procedure UpdateSelCol(Sender: TObject);
-    procedure ShowColorMenu(Point: TPoint);
+
     procedure SetColor(const Value: TColor);
     function GetColor: TColor;
 
@@ -117,9 +110,6 @@ begin
   FBackgroundColor := clBtnFace;
   FColor := clwhite;
   FLastColor := 0;
-  FSchemeManager := TSchemeManager.Create;
-  FCustomColor := TSchemeColorItem.Create;
-  FSCS := TSharpECenterScheme.Create(nil);
   Align := alNone;
 
   FColor := clWhite;
@@ -134,9 +124,6 @@ end;
 destructor TCustomSharpeColorPicker.Destroy;
 begin
   inherited;
-  FSchemeManager.Free;
-  FCustomColor.Free;
-  FSCS.Free;
 end;
 
 procedure TCustomSharpeColorPicker.DrawColorSelector(Bmp: TBitmap; R: TRect);
@@ -164,51 +151,6 @@ begin
   Result := FColor;
 end;
 
-procedure TCustomSharpeColorPicker.MenuClick(Sender: TObject);
-var
-  tmpCol: TSchemeColorItem;
-  n: Integer;
-  s:String;
-begin
-  tmpCol := nil;
-
-  if Sender = nil then
-    n := FColor else begin
-
-      tmpCol := TSchemeColorItem(TMenuItem(Sender).Tag);
-      n := Integer(tmpCol.Data);
-    end;
-
-  if ((tmpCol = nil) or (n >= 0)) then
-  begin
-    if not (assigned(FcolorDialog)) then
-      FColorDialog := TColorDialog.Create(nil);
-
-    s := GetSharpeUserSettingsPath+'ColorPicker.dat';
-    if fileexists(s) then
-      FColorDialog.CustomColors.LoadFromFile(s);
-
-    FColorDialog.Color := Color;
-    if FColorDialog.Execute then
-    begin
-      FCustom := True;
-
-      Color := FColorDialog.Color;
-      
-      //TMenuItem(Sender).Tag := Color;
-    end;
-
-    if fileexists(s) then
-      FColorDialog.CustomColors.SaveToFile(s);
-
-  end
-  else
-  begin
-    FCustom := False;
-    color := n;
-  end;
-end;
-
 procedure TCustomSharpeColorPicker.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
@@ -222,7 +164,6 @@ begin
     begin
       pt.X := X;
       pt.Y := Y;
-      ShowColorMenu(pt);
     end
     else
     begin
@@ -297,25 +238,7 @@ end;
 procedure TCustomSharpeColorPicker.SetColor(const Value: TColor);
 begin
   FColor := Value;
-  FCustomColor.Color := Value;
   paint;
-end;
-
-procedure TCustomSharpeColorPicker.ShowColorMenu(Point: TPoint);
-begin
-
-  if not (Assigned(FColorMenu)) then
-  begin
-    FColorMenu := TPopupMenu.Create(self);
-    FColorMenu.OwnerDraw := True;
-    FColorMenu.AutoHotkeys := maManual;
-  end;
-
-  FCustomColor.Data := Pointer(FColor);
-  MenuClick(nil);
-
-  if Assigned(FOnColorClick) then
-    FOnColorClick(Self);
 end;
 
 procedure TCustomSharpeColorPicker.UpdateSelCol(Sender: TObject);

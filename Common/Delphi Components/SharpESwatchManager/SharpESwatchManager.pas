@@ -10,7 +10,6 @@ uses
   ExtCtrls,
   SharpFX,
   Gr32,
-  SharpECenterScheme,
   JvSimpleXml,
   GR32_Polygons,
   SharpApi,

@@ -10,7 +10,6 @@ uses
   Controls,
   Forms,
   Dialogs,
-  SharpECenterScheme,
   menus,
   pngimagelist,
   SharpApi,
