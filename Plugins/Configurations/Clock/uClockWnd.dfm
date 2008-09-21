@@ -1,9 +1,10 @@
 object frmClock: TfrmClock
   Left = 0
   Top = 0
+  AutoSize = True
   BorderStyle = bsNone
   Caption = 'frmClock'
-  ClientHeight = 339
+  ClientHeight = 184
   ClientWidth = 447
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -16,266 +17,174 @@ object frmClock: TfrmClock
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object plMain: TJvPageList
-    Left = 0
+  object SharpECenterHeader1: TSharpECenterHeader
+    AlignWithMargins = True
+    Left = 5
     Top = 0
-    Width = 447
-    Height = 339
-    ActivePage = pagNotes
-    PropagateEnable = False
-    Align = alClient
-    object pagNotes: TJvStandardPage
+    Width = 437
+    Height = 37
+    Margins.Left = 5
+    Margins.Top = 0
+    Margins.Right = 5
+    Margins.Bottom = 10
+    Title = 'Clock Size'
+    Description = 'Define the size of the clock text'
+    TitleColor = clWindowText
+    DescriptionColor = clRed
+    Align = alTop
+  end
+  object SharpECenterHeader2: TSharpECenterHeader
+    AlignWithMargins = True
+    Left = 5
+    Top = 73
+    Width = 437
+    Height = 37
+    Margins.Left = 5
+    Margins.Top = 5
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Title = 'Clock Format'
+    Description = 'Define the format used for the displayed clock text'
+    TitleColor = clWindowText
+    DescriptionColor = clRed
+    Align = alTop
+    ExplicitTop = 140
+  end
+  object pnlTop: TPanel
+    AlignWithMargins = True
+    Left = 5
+    Top = 120
+    Width = 432
+    Height = 22
+    Margins.Left = 5
+    Margins.Top = 10
+    Margins.Right = 10
+    Margins.Bottom = 0
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ParentColor = True
+    TabOrder = 2
+    ExplicitTop = 187
+    object lblTop: TLabel
+      Left = 0
+      Top = 4
+      Width = 62
+      Height = 13
+      Caption = 'Top/Primary:'
+    end
+    object edTop: TEdit
+      AlignWithMargins = True
+      Left = 76
+      Top = 0
+      Width = 276
+      Height = 21
+      Margins.Left = 8
+      Margins.Top = 0
+      Margins.Right = 12
+      Margins.Bottom = 0
+      Constraints.MaxWidth = 300
+      TabOrder = 0
+      Text = 'HH:MM:SS'
+      OnChange = UpdateSettingsEvent
+    end
+    object btnTop: TButton
+      Left = 356
+      Top = 0
+      Width = 37
+      Height = 22
+      Caption = '...'
+      TabOrder = 1
+      OnClick = btnTopClick
+    end
+  end
+  object pnlBottom: TPanel
+    AlignWithMargins = True
+    Left = 5
+    Top = 152
+    Width = 432
+    Height = 22
+    Margins.Left = 5
+    Margins.Top = 10
+    Margins.Right = 10
+    Margins.Bottom = 10
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ParentBackground = False
+    ParentColor = True
+    TabOrder = 3
+    ExplicitTop = 219
+    object lblBottom: TLabel
+      Left = 0
+      Top = 4
+      Width = 38
+      Height = 13
+      Caption = 'Bottom:'
+    end
+    object edBottom: TEdit
+      AlignWithMargins = True
+      Left = 76
+      Top = 0
+      Width = 276
+      Height = 21
+      Margins.Left = 8
+      Margins.Top = 0
+      Margins.Right = 12
+      Margins.Bottom = 0
+      Constraints.MaxWidth = 300
+      TabOrder = 0
+      Text = 'DD.MM.YYYY'
+      OnChange = UpdateSettingsEvent
+    end
+    object btnBottom: TButton
+      Left = 356
+      Top = 0
+      Width = 37
+      Height = 22
+      Caption = '...'
+      TabOrder = 1
+      OnClick = btnBottomClick
+    end
+  end
+  object Panel1: TPanel
+    AlignWithMargins = True
+    Left = 5
+    Top = 47
+    Width = 432
+    Height = 21
+    Margins.Left = 5
+    Margins.Top = 0
+    Margins.Right = 10
+    Margins.Bottom = 0
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ParentColor = True
+    TabOrder = 4
+    object cboSize: TComboBox
       Left = 0
       Top = 0
-      Width = 447
-      Height = 339
-      object Label3: TLabel
-        AlignWithMargins = True
-        Left = 8
-        Top = 67
-        Width = 431
-        Height = 13
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        Caption = 'Text Size'
-        ExplicitTop = 70
-        ExplicitWidth = 44
-      end
-      object lbSize: TLabel
-        AlignWithMargins = True
-        Left = 26
-        Top = 88
-        Width = 413
-        Height = 17
-        Margins.Left = 26
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        Caption = 'Select how large you want the clock text to be displayed'
-        Transparent = False
-        WordWrap = True
-        ExplicitTop = 96
-        ExplicitWidth = 393
-      end
-      object Label2: TLabel
-        AlignWithMargins = True
-        Left = 26
-        Top = 33
-        Width = 413
-        Height = 26
-        Margins.Left = 26
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        Caption = 
-          'Enable this option to use an alternative two line display with t' +
-          'wo custom clock texts. (Note that you can'#39't change the text size' +
-          ' if this option is enabled)'
-        Transparent = False
-        WordWrap = True
-        ExplicitWidth = 406
-      end
-      object Label4: TLabel
-        AlignWithMargins = True
-        Left = 8
-        Top = 197
-        Width = 431
-        Height = 13
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        Caption = 'Text Format'
-        ExplicitTop = 200
-        ExplicitWidth = 59
-      end
-      object Label5: TLabel
-        AlignWithMargins = True
-        Left = 26
-        Top = 218
-        Width = 413
-        Height = 17
-        Margins.Left = 26
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        Caption = 'Top/Primary Label'
-        Transparent = False
-        WordWrap = True
-        ExplicitTop = 241
-        ExplicitWidth = 397
-      end
-      object lbTwoLine: TLabel
-        AlignWithMargins = True
-        Left = 26
-        Top = 276
-        Width = 413
-        Height = 17
-        Margins.Left = 26
-        Margins.Top = 12
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        Caption = 'Bottom Label'
-        Transparent = False
-        WordWrap = True
-        ExplicitTop = 299
-        ExplicitWidth = 397
-      end
-      object rbLarge: TRadioButton
-        AlignWithMargins = True
-        Left = 27
-        Top = 113
-        Width = 412
-        Height = 17
-        Margins.Left = 27
-        Margins.Top = 8
-        Margins.Right = 8
-        Align = alTop
-        Caption = 'Large'
-        TabOrder = 0
-        OnClick = rbLargeClick
-      end
-      object rbMedium: TRadioButton
-        AlignWithMargins = True
-        Left = 27
-        Top = 141
-        Width = 412
-        Height = 17
-        Margins.Left = 27
-        Margins.Top = 8
-        Margins.Right = 8
-        Align = alTop
-        Caption = 'Medium'
-        Checked = True
-        TabOrder = 1
-        TabStop = True
-        OnClick = rbLargeClick
-      end
-      object rbSmall: TRadioButton
-        AlignWithMargins = True
-        Left = 27
-        Top = 169
-        Width = 412
-        Height = 17
-        Margins.Left = 27
-        Margins.Top = 8
-        Margins.Right = 8
-        Align = alTop
-        Caption = 'Small'
-        TabOrder = 2
-        OnClick = rbLargeClick
-      end
-      object cbTwoLine: TCheckBox
-        AlignWithMargins = True
-        Left = 8
-        Top = 8
-        Width = 431
-        Height = 17
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        Caption = 'Two Line Display'
-        TabOrder = 3
-        OnClick = cbTwoLineClick
-      end
-      object Panel1: TPanel
-        Left = 0
-        Top = 293
-        Width = 447
-        Height = 29
-        Align = alTop
-        BevelOuter = bvNone
-        Caption = 'Panel1'
-        ParentColor = True
-        TabOrder = 4
-        object EditTwoLine: TEdit
-          AlignWithMargins = True
-          Left = 24
-          Top = 8
-          Width = 372
-          Height = 21
-          Margins.Left = 24
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alClient
-          TabOrder = 0
-          Text = 'DD.MM.YYYY'
-        end
-        object btnTwoLine: TButton
-          AlignWithMargins = True
-          Left = 404
-          Top = 6
-          Width = 35
-          Height = 23
-          Margins.Left = 0
-          Margins.Top = 6
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alRight
-          Caption = '...'
-          TabOrder = 1
-          OnClick = btnTwoLineClick
-        end
-      end
-      object Panel2: TPanel
-        Left = 0
-        Top = 235
-        Width = 447
-        Height = 29
-        Align = alTop
-        BevelOuter = bvNone
-        Caption = 'Panel1'
-        ParentColor = True
-        TabOrder = 5
-        object EditSingleLine: TEdit
-          AlignWithMargins = True
-          Left = 24
-          Top = 8
-          Width = 372
-          Height = 21
-          Margins.Left = 24
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alClient
-          TabOrder = 0
-          Text = 'HH:MM:SS'
-        end
-        object Button2: TButton
-          AlignWithMargins = True
-          Left = 404
-          Top = 6
-          Width = 35
-          Height = 23
-          Margins.Left = 0
-          Margins.Top = 6
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alRight
-          Caption = '...'
-          TabOrder = 1
-          OnClick = Button2Click
-        end
-      end
+      Width = 250
+      Height = 21
+      Margins.Left = 5
+      Margins.Top = 0
+      Margins.Right = 10
+      Margins.Bottom = 5
+      ItemHeight = 13
+      TabOrder = 0
+      Text = 'Large'
+      OnChange = UpdateSettingsEvent
+      Items.Strings = (
+        'Small'
+        'Medium'
+        'Large'
+        'Automatic (two line display)')
     end
   end
   object PopupMenu1: TPopupMenu
-    Left = 392
-    Top = 8
+    Left = 408
+    Top = 548
     object N213046HHMMSS3: TMenuItem
       Caption = '21:30:46 (HH:MM:SS)'
       Hint = 'HH:MM:SS'

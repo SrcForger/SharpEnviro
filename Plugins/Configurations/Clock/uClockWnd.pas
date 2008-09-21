@@ -32,7 +32,8 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
   ImgList, GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
-  JvPageList, JvExControls, ComCtrls, Mask;
+  JvPageList, JvExControls, ComCtrls, Mask, SharpECenterHeader, JvExStdCtrls,
+  JvRadioButton, JvXPCore, JvXPCheckCtrls, uSharpBarAPI;
 
 type
   TStringObject = class(TObject)
@@ -42,48 +43,48 @@ type
 
 type
   TfrmClock = class(TForm)
-    plMain: TJvPageList;
-    pagNotes: TJvStandardPage;
-    Label3: TLabel;
-    lbSize: TLabel;
-    rbLarge: TRadioButton;
-    rbMedium: TRadioButton;
-    rbSmall: TRadioButton;
-    cbTwoLine: TCheckBox;
-    Label2: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
-    Panel1: TPanel;
-    EditTwoLine: TEdit;
-    btnTwoLine: TButton;
-    Panel2: TPanel;
-    EditSingleLine: TEdit;
-    Button2: TButton;
-    lbTwoLine: TLabel;
     PopupMenu1: TPopupMenu;
     N213046HHMMSS3: TMenuItem;
     N213046HHMMSS1: TMenuItem;
     N213046HHMMSS2: TMenuItem;
     N21304619062006HHMMSSDDMMYYYY1: TMenuItem;
+    SharpECenterHeader1: TSharpECenterHeader;
+    SharpECenterHeader2: TSharpECenterHeader;
+    pnlTop: TPanel;
+    lblTop: TLabel;
+    edTop: TEdit;
+    btnTop: TButton;
+    pnlBottom: TPanel;
+    lblBottom: TLabel;
+    edBottom: TEdit;
+    btnBottom: TButton;
+    Panel1: TPanel;
+    cboSize: TComboBox;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure cb_alwaysontopClick(Sender: TObject);
-    procedure rb_textClick(Sender: TObject);
-    procedure cb_iconClick(Sender: TObject);
-    procedure cbTwoLineClick(Sender: TObject);
     procedure N213046HHMMSS3Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure btnTwoLineClick(Sender: TObject);
-    procedure rbLargeClick(Sender: TObject);
+    procedure btnTopClick(Sender: TObject);
+    procedure btnBottomClick(Sender: TObject);
+    procedure UpdateSettingsEvent(Sender: TObject);
   private
     procedure UpdateSettings;
+    procedure UpdateBottomEdit;
   public
-    sModuleID: string;
-    sBarID : string;
+    ModuleID: string;
+    BarID : string;
+    
+    procedure Save;
+    procedure Load;
   end;
 
 var
   frmClock: TfrmClock;
+
+const
+  Small = 0;
+  Medium = 1;
+  Large = 2;
+  Automatic = 3;
 
 implementation
 
@@ -91,36 +92,19 @@ uses SharpThemeApi, SharpCenterApi;
 
 {$R *.dfm}
 
-procedure TfrmClock.btnTwoLineClick(Sender: TObject);
+procedure TfrmClock.btnBottomClick(Sender: TObject);
 begin
-  PopUpMenu1.PopupComponent := EditTwoLine;
+  PopUpMenu1.PopupComponent := edBottom;
   PopUpMenu1.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
 end;
 
-procedure TfrmClock.Button2Click(Sender: TObject);
+procedure TfrmClock.btnTopClick(Sender: TObject);
 begin
-  PopUpMenu1.PopupComponent := EditSingleLine;
+  PopUpMenu1.PopupComponent := edTop;
   PopUpMenu1.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
 end;
 
-procedure TfrmClock.cbTwoLineClick(Sender: TObject);
-begin
-  UpdateSettings;
-  EditTwoLine.Enabled := cbTwoLine.Checked;
-  rbLarge.Enabled := not cbTwoLine.Checked;
-  rbSmall.Enabled := not cbTwoLine.Checked;
-  rbMedium.Enabled := not cbTwoLine.Checked;
-  lbSize.Enabled := not cbTwoLine.Checked;
-  lbTwoLine.Enabled := cbTwoLine.Checked;
-  btnTwoLine.Enabled := cbTwoLine.Checked;  
-end;
-
-procedure TfrmClock.cb_alwaysontopClick(Sender: TObject);
-begin
-  UpdateSettings;
-end;
-
-procedure TfrmClock.cb_iconClick(Sender: TObject);
+procedure TfrmClock.UpdateSettingsEvent(Sender: TObject);
 begin
   UpdateSettings;
 end;
@@ -132,11 +116,38 @@ end;
 
 procedure TfrmClock.FormShow(Sender: TObject);
 begin
-  cbTwoLine.OnClick(cbTwoLine);
-  Label2.Font.Color := clGrayText;
-  lbSize.Font.Color := clGrayText;
-  lbTwoLine.Font.Color := clGrayText;
-  Label5.Font.Color := clGrayText;
+  UpdateBottomEdit;
+end;
+
+procedure TfrmClock.Load;
+var
+  xml: TJvSimpleXML;
+  loaded: boolean;
+  style: Integer;
+begin
+  xml := TJvSimpleXML.Create(nil);
+  loaded := False;
+  try
+    xml.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(BarID),strtoint(ModuleID)));
+    loaded := True;
+  except
+  end;
+
+  if loaded then
+    with xml.Root.Items, frmClock do
+    begin
+
+      style := IntValue('Style',0);
+      if style < 3 then
+        cboSize.ItemIndex := style;
+
+      edTop.Text := Value('Format','HH:MM:SS');
+      edBottom.Text := Value('BottomFormat','DD.MM.YYYY');
+
+      if (length(edBottom.Text) > 0) then
+        cboSize.ItemIndex := 3;
+    end;
+  xml.Free;
 end;
 
 procedure TfrmClock.N213046HHMMSS3Click(Sender: TObject);
@@ -146,20 +157,50 @@ begin
   UpdateSettings;     
 end;
 
-procedure TfrmClock.rbLargeClick(Sender: TObject);
+procedure TfrmClock.Save;
+var
+  xml : TJvSimpleXML;
+  i : integer;
 begin
-  UpdateSettings;
-end;
+  if frmClock = nil then
+    exit;
 
-procedure TfrmClock.rb_textClick(Sender: TObject);
-begin
-  UpdateSettings;
+  xml := TJvSimpleXML.Create(nil);
+  try
+  xml.Root.Name := 'ClockModuleSettings';
+  with XML.Root.Items, frmClock do
+  begin
+
+    i := 1;
+    if cboSize.ItemIndex <> Automatic then begin
+      i := cboSize.ItemIndex;
+    Add('Style',i);
+    Add('Format',edTop.Text);
+
+    if cboSize.ItemIndex = Automatic then
+      Add('BottomFormat',edBottom.Text)
+    else Add('BottomFormat','');
+
+  end;
+  xml.SaveToFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmClock.BarID),strtoint(frmClock.ModuleID)));
+  end;
+  finally
+    xml.Free;
+  end;
 end;
 
 procedure TfrmClock.UpdateSettings;
 begin
   if Visible then
     SharpCenterApi.CenterDefineSettingsChanged;
+
+  UpdateBottomEdit;
+end;
+
+procedure TfrmClock.UpdateBottomEdit;
+begin
+  pnlBottom.Visible := cboSize.ItemIndex = Automatic;
+  CenterUpdateSize;
 end;
 
 end.

@@ -53,75 +53,35 @@ uses
 {$R *.res}
 
 procedure Save;
-var
-  XML : TJvSimpleXML;
-  i : integer;
 begin
-  if frmClock = nil then
-    exit;
-
-  XML := TJvSimpleXML.Create(nil);
-  XML.Root.Name := 'ClockModuleSettings';
-  with XML.Root.Items, frmClock do
-  begin
-    if rbLarge.Checked then
-      i := 2
-    else if rbSmall.Checked then
-      i := 0
-    else i := 1;
-    Add('Style',i);
-    Add('Format',EditSingleLine.Text);
-    if cbTwoLine.Checked then
-      Add('BottomFormat',EditTwoLine.Text)
-    else Add('BottomFormat','');
-  end;
-  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmClock.sBarID),strtoint(frmClock.sModuleID)));
-  XML.Free;
+  if frmClock <> nil then
+    frmClock.Save;
 end;
 
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 var
   XML : TJvSimpleXML;
-  left,right : String;
+  barId,moduleId : String;
   s : string;
   fileloaded : boolean;
 begin
-  if frmClock = nil then frmClock := TfrmClock.Create(nil);
+  GetBarModuleIds( APluginId, barId, moduleId );
 
-  s := APluginID;
-  left := copy(s, 0, pos(':',s)-1);
-  right := copy(s, pos(':',s)+1, length(s) - pos(':',s));
-  uVistaFuncs.SetVistaFonts(frmClock);
-  frmClock.sBarID := left;
-  frmClock.sModuleID := right;
-  frmClock.ParentWindow := aowner;
-  frmClock.Left := 2;
-  frmClock.Top := 2;
-  frmClock.BorderStyle := bsNone;
+  if frmClock = nil then frmClock := TfrmClock.Create(nil);
+  SetVistaFonts(frmClock);
+
+  frmClock.BarID := barId;
+  frmClock.ModuleID := moduleId;
+
+  with frmClock do begin
+    frmClock.ParentWindow := aowner;
+    frmClock.Left := 0;
+    frmClock.Top := 0;
+    frmClock.BorderStyle := bsNone;
+  end;
   result := frmClock.Handle;
 
-  XML := TJvSimpleXML.Create(nil);
-  fileloaded := False;
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(left),strtoint(right)));
-    fileloaded := True;
-  except
-  end;
-
-  if fileloaded then
-    with XML.Root.Items, frmClock do
-    begin
-      case IntValue('Style',1) of
-        2: rbLarge.Checked := True;
-        0: rbSmall.Checked := True;
-        else rbMedium.Checked := True;
-      end;
-      EditSingleLine.Text := Value('Format','HH:MM:SS');
-      EditTwoLine.Text := Value('BottomFormat','DD.MM.YYYY');
-      cbTwoLine.Checked := (length(EditTwoLine.Text) > 0)
-    end;
-  XML.Free;
-
+  frmClock.Load;
   frmClock.Show;
 end;
 
@@ -138,11 +98,10 @@ begin
 end;
 
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+  var ADescription: String);
 begin
   AName := 'Clock';
-  ATitle := 'Clock Module';
-  ADescription := 'A module that shows the current time and date';
+  ADescription := 'Configure the clock module';
 end;
 
 function GetMetaData(): TMetaData;
@@ -152,18 +111,29 @@ begin
     Name := 'Clock';
     Description := 'Clock Module Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.5.2';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
   end;
 end;
 
+procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
+begin
+  if frmClock <> nil then begin
+    with frmClock do begin
+      AssignThemeToForm(ATheme,frmClock);
+    end;
+  end;
+end;
+
+
 exports
   Open,
   Close,
   Save,
   SetText,
+  GetCenterTheme,
   GetMetaData;
 
 begin
