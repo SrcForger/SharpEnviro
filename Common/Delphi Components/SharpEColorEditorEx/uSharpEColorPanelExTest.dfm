@@ -4,7 +4,7 @@ object Form1: TForm1
   BorderWidth = 4
   Caption = 'Form1'
   ClientHeight = 557
-  ClientWidth = 440
+  ClientWidth = 443
   Color = clBlack
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -25,7 +25,7 @@ object Form1: TForm1
   object mmoDebug: TMemo
     Left = 0
     Top = 462
-    Width = 440
+    Width = 443
     Height = 95
     Align = alBottom
     BorderStyle = bsNone
@@ -36,7 +36,7 @@ object Form1: TForm1
   object SharpEColorEditorEx1: TSharpEColorEditorEx
     Left = 0
     Top = 0
-    Width = 440
+    Width = 443
     Height = 462
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
@@ -44,6 +44,8 @@ object Form1: TForm1
     BevelInner = bvNone
     BevelOuter = bvNone
     BorderStyle = bsNone
+    Color = clBlack
+    ParentColor = False
     TabOrder = 1
     Items = <
       item
@@ -132,6 +134,11 @@ object Form1: TForm1
         Tag = 0
       end>
     SwatchManager = SharpESwatchManager1
+    BorderColor = clBlack
+    BackgroundColor = clBlack
+    BackgroundTextColor = clWhite
+    ContainerColor = clLime
+    ContainerTextColor = clBlack
     object Button2: TButton
       Left = 264
       Top = 380
@@ -175,7 +182,7 @@ object Form1: TForm1
         ColorCode = 0
       end>
     PopulateThemeColors = True
-    Width = 408
+    Width = 410
     ShowCaptions = False
     SwatchHeight = 16
     SwatchWidth = 16
@@ -187,6 +194,9 @@ object Form1: TForm1
     SwatchFont.Style = []
     SwatchTextBorderColor = clBlack
     SortMode = sortName
+    BorderColor = clBlack
+    BackgroundColor = clWhite
+    BackgroundTextColor = clBlack
     Left = 284
     Top = 280
   end

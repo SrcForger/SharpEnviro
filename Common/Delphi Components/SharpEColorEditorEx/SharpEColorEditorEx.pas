@@ -122,6 +122,11 @@ type
     FUpdate: Boolean;
     FOnChangeColor: tvaluechangeevent;
     FOnUiChange: TNotifyEvent;
+    FBorderColor: TColor;
+    FContainerTextColor: TColor;
+    FContainerColor: TColor;
+    FBackgroundTextColor: TColor;
+    FBackgroundColor: TColor;
 
     procedure SetItems(const Value: TSharpEColorEditorExItems);
     procedure SetSwatchManager(const Value: TSharpESwatchManager);
@@ -129,6 +134,10 @@ type
     procedure UiChangeEvent(Sender: TObject);
     function GetBackgroundColor: TColor;
     procedure SetBackgroundColor(const Value: TColor);
+    procedure SetBackgroundTextColor(const Value: TColor);
+    procedure SetBorderColor(const Value: TColor);
+    procedure SetContainerColor(const Value: TColor);
+    procedure SetContainerTextColor(const Value: TColor);
   public
     constructor Create(Sender: TComponent); override;
 
@@ -154,7 +163,11 @@ type
       FOnChangeColor;
     property OnUiChange: TNotifyEvent read FOnUiChange write FOnUiChange;
 
-    property BackgroundColor: TColor read GetBackgroundColor write SetBackgroundColor;
+    property BorderColor: TColor read FBorderColor write SetBorderColor;
+    property BackgroundColor : TColor read FBackgroundColor write SetBackgroundColor;
+    property BackgroundTextColor : TColor read FBackgroundTextColor write SetBackgroundTextColor;
+    property ContainerColor: TColor read FContainerColor write SetContainerColor;
+    property ContainerTextColor: TColor read FContainerTextColor write SetContainerTextColor;
   end;
 
 procedure Register;
@@ -608,6 +621,10 @@ begin
       tmp.OnTabClick := FItems.Item[i].TabclickEvent;
       tmp.OnUiChange := UiChangeEvent;
 
+      tmp.BackgroundColor := FBackgroundColor;
+      tmp.BackgroundTextColor := FBackgroundTextColor;
+      tmp.BorderColor := FBorderColor;
+
       tmp.Height := 24;
       tmp.Visible := FItems.Item[i].Visible;
     end;
@@ -634,8 +651,55 @@ begin
 end;
 
 procedure TSharpEColorEditorEx.SetBackgroundColor(const Value: TColor);
+var
+  i:Integer;
 begin
+  FBackgroundColor := Value;
   Self.Color := Value;
+
+  for i := 0 to Pred(FItems.Count) do begin
+    FItems.Item[i].ColorEditor.BackgroundColor := Value;
+  end;
+end;
+
+procedure TSharpEColorEditorEx.SetBackgroundTextColor(const Value: TColor);
+var
+  i:Integer;
+begin
+  FBackgroundTextColor := Value;
+  for i := 0 to Pred(FItems.Count) do begin
+    FItems.Item[i].ColorEditor.BackgroundTextColor := Value;
+  end;
+end;
+
+procedure TSharpEColorEditorEx.SetBorderColor(const Value: TColor);
+var
+  i:Integer;
+begin
+  FBorderColor := Value;
+  for i := 0 to Pred(FItems.Count) do begin
+    FItems.Item[i].ColorEditor.BorderColor := Value;
+  end;
+end;
+
+procedure TSharpEColorEditorEx.SetContainerColor(const Value: TColor);
+var
+  i:Integer;
+begin
+  FContainerColor := Value;
+  for i := 0 to Pred(FItems.Count) do begin
+    FItems.Item[i].ColorEditor.ContainerColor := Value;
+  end;
+end;
+
+procedure TSharpEColorEditorEx.SetContainerTextColor(const Value: TColor);
+var
+  i:Integer;
+begin
+  FContainerTextColor := Value;
+  for i := 0 to Pred(FItems.Count) do begin
+    FItems.Item[i].ColorEditor.ContainerTextColor := Value;
+  end;
 end;
 
 procedure TSharpEColorEditorEx.SetItems(const Value: TSharpEColorEditorExItems);

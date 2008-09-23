@@ -104,7 +104,7 @@ begin
   tmp.Align := alTop;
   tmp.Height := 200;
 
-  //tmp.BeginUpdate;
+  tmp.Visible := False;
   Try
     tmpItem := TSharpEColorEditorExItem.Create(tmp.Items);
     tmpItem.Title := 'New';
@@ -116,8 +116,8 @@ begin
 
     tmpItem.Expanded := True;
   Finally
-    //tmp.EndUpdate;
-    //tmp.PopulateItems;
+    tmp.PopulateItems;
+    tmp.Visible := True;
   End;
 end;
 

@@ -188,21 +188,12 @@ begin
     Top := FTabList.Top + FTabList.Height - 1;
     Left := 0;
     Width := Self.Width;
-    Height := Self.Height - FTabList.Height;
-    FPnlContent.SendToBack;
-    BorderColor := clBlack;
-    Border := True;
+    Height := Self.Height - FTabList.Height-20;
     DrawMode := srpNoTopLeft;
     ParentColor := True;
-    //Color := ;
     ParentBackground := False;
-    DoubleBuffered := True;
-    Self.DoubleBuffered := True;
-
-    Padding.Left := 8;
-    Padding.Top := 8;
-    Padding.Right := 8;
-    Padding.Bottom := 8;
+    SendToBack;
+    DoubleBuffered := False;
   end;
 end;
 {$ENDREGION}
@@ -377,7 +368,7 @@ begin
 
     if FTabList.Visible then begin
       Top := FTabList.Top + FTabList.Height - 1;
-      Height := Self.Height - FTabList.Height;
+      Height := Self.Height - FTabList.Height+1;
 
       if Self.TabAlignment = taLeftJustify then
         FPnlContent.DrawMode := srpNoTopLeft

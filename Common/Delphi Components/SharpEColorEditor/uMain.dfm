@@ -54,17 +54,16 @@ object MainWnd: TMainWnd
     ValueMax = 255
     Visible = True
     SwatchManager = SharpESwatchManager1
-    Color = clBlack
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWhite
+    Font.Color = clBlack
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
-    BorderColor = 16709617
-    TabColor = clBackground
-    SelectedTabColor = clLime
-    BackgroundColor = clLime
-    BackgroundTextColor = clBlack
+    BorderColor = clLime
+    BackgroundColor = clBlack
+    BackgroundTextColor = clWhite
+    ContainerColor = clLime
+    ContainerTextColor = clBlack
   end
   object Button3: TButton
     Left = 284
@@ -91,7 +90,7 @@ object MainWnd: TMainWnd
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 399
+    Width = 407
     ShowCaptions = False
     SwatchHeight = 16
     SwatchWidth = 16
@@ -104,7 +103,7 @@ object MainWnd: TMainWnd
     SwatchTextBorderColor = 16709617
     SortMode = sortName
     BorderColor = clWhite
-    BackgroundColor = clWhite
+    BackgroundColor = clLime
     BackgroundTextColor = clWhite
     Left = 348
     Top = 180
