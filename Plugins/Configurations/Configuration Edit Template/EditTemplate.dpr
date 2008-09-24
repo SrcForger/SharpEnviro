@@ -114,11 +114,9 @@ begin
 end;
 
 procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
-  var ATitle: string; var ADescription: string);
+  var ADescription: string);
 begin
   AName := 'Edit Template';
-  AStatus := '';
-  ATitle := 'Edit Template';
   ADescription := 'A Template for Edit Configs';
   
 end;
@@ -130,7 +128,7 @@ begin
     Name := 'Edit Template';
     Description := '<Type> List Edit Configuration';
     Author := '<Author> (<Email>)';
-    Version := '0.7';
+    Version := '0.7.5.2';
     DataType := tteConfig;
 
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
@@ -138,16 +136,12 @@ begin
   end;
 end;
 
-procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
+procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
 begin
-
-  if frmList <> nil then begin
-  end;
-
-  if frmEdit <> nil then begin
-  end;
+  AssignThemeToForms(ATheme,frmList,frmEdit,AEdit);
+  frmList.Theme := ATheme;
 end;
+
 
 exports
   Open,
@@ -156,7 +150,7 @@ exports
   GetMetaData,
   OpenEdit,
   CloseEdit,
-  GetCenterScheme;
+  GetCenterTheme;
 
 begin
 end.

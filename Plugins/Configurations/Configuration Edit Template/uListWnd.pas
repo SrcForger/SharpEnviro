@@ -42,7 +42,7 @@ uses
   ImgList,
   PngImageList,
 
-  SharpEListBoxEx;
+  SharpEListBoxEx, SharpCenterApi;
 
 type
   TItemData = class
@@ -72,9 +72,11 @@ type
       AItem: TSharpEListItem; var ACursor: TCursor);
   private
     FItems: TObjectList;
+    FTheme: TCenterThemeInfo;
     procedure AddItemsToList(AList: TObjectList);
   public
     procedure RenderItems;
+    property Theme: TCenterThemeInfo read FTheme write FTheme;
   end;
 
 var
@@ -85,7 +87,7 @@ const
 
 implementation
 
-uses SharpThemeApi, SharpCenterApi, uEditWnd;
+uses SharpThemeApi, uEditWnd;
 
 {$R *.dfm}
 
