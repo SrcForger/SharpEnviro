@@ -4,7 +4,7 @@ object frmClock: TfrmClock
   AutoSize = True
   BorderStyle = bsNone
   Caption = 'frmClock'
-  ClientHeight = 184
+  ClientHeight = 194
   ClientWidth = 447
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -36,7 +36,7 @@ object frmClock: TfrmClock
   object SharpECenterHeader2: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 73
+    Top = 83
     Width = 437
     Height = 37
     Margins.Left = 5
@@ -48,11 +48,12 @@ object frmClock: TfrmClock
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
+    ExplicitTop = 73
   end
   object pnlTop: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 120
+    Top = 130
     Width = 432
     Height = 22
     Margins.Left = 5
@@ -64,6 +65,7 @@ object frmClock: TfrmClock
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 2
+    ExplicitTop = 120
     object lblTop: TLabel
       Left = 0
       Top = 4
@@ -99,7 +101,7 @@ object frmClock: TfrmClock
   object pnlBottom: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 152
+    Top = 162
     Width = 432
     Height = 22
     Margins.Left = 5
@@ -112,6 +114,7 @@ object frmClock: TfrmClock
     ParentBackground = False
     ParentColor = True
     TabOrder = 3
+    ExplicitTop = 152
     object lblBottom: TLabel
       Left = 0
       Top = 4
@@ -153,7 +156,7 @@ object frmClock: TfrmClock
     Margins.Left = 5
     Margins.Top = 0
     Margins.Right = 10
-    Margins.Bottom = 0
+    Margins.Bottom = 10
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone

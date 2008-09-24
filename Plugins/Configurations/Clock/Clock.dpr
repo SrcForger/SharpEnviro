@@ -117,11 +117,7 @@ end;
 
 procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
 begin
-  if frmClock <> nil then begin
-    with frmClock do begin
-      AssignThemeToForm(ATheme,frmClock);
-    end;
-  end;
+  AssignThemeToForm(ATheme,frmClock);
 end;
 
 
