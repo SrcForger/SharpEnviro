@@ -78,11 +78,9 @@ begin
 end;
 
 procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
-  var ATitle: string; var ADescription: string);
+  var ADescription: string);
 begin
   AName := 'Template';
-  AStatus := '';
-  ATitle := 'Template';
   ADescription := 'A Template for config';
   
 end;
@@ -94,7 +92,7 @@ begin
     Name := 'Template';
     Description := '<Type> Configuration';
     Author := '<Author> (<Email>)';
-    Version := '0.7';
+    Version := '0.7.5.2';
     DataType := tteConfig;
 
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
@@ -102,12 +100,9 @@ begin
   end;
 end;
 
-procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
+procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
 begin
-
-  if frmList <> nil then begin
-  end;
+  AssignThemeToForm(ATheme,frmList);
 end;
 
 exports
@@ -115,7 +110,7 @@ exports
   Close,
   SetText,
   GetMetaData,
-  GetCenterScheme;
+  GetCenterTheme;
 
 begin
 end.
