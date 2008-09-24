@@ -28,12 +28,13 @@ type
     { Private declarations }
     FAliasItems: TAliasList;
     FWinHandle: THandle;
+    FTheme: TCenterThemeInfo;
     procedure CustomWndProc(var msg: TMessage);
   public
     { Public declarations }
     procedure AddItems;
     property AliasItems: TAliasList read FAliasItems write FAliasItems;
-
+    property Theme: TCenterThemeInfo read FTheme write FTheme;
   end;
 
 var
@@ -221,13 +222,25 @@ procedure TfrmItemsWnd.lbItemsGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmp: TAliasListItem;
+  col,col2: TColor;
 begin
   tmp := TAliasListItem(Aitem.Data);
   if tmp = nil then
     exit;
 
   case ACol of
-    colName: AColText := Format('%s (%s)', [tmp.AliasName, tmp.AliasValue]);
+    colName: begin
+
+      if AItem = lbItems.SelectedItem then
+        col :=  Theme.PluginSelectedItemDescriptionText else
+        col :=  Theme.PluginItemDescriptionText;
+
+      if AItem = lbItems.SelectedItem then
+        col2 :=  Theme.PluginSelectedItemText else
+        col2 :=  Theme.PluginItemText;
+
+      AColText := format('<font color="%s">%s (<font color="%s">%s)',[ColorToString(col2),tmp.AliasName,ColorToString(col),tmp.AliasValue]);
+    end;
   end;
 
 end;

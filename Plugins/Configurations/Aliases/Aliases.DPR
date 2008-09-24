@@ -112,14 +112,13 @@ begin
 end;
 
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+  var ADescription: String);
 var
   srvSettingsPath: string;
   fileName: string;
   tmp: TAliasList;
 begin
   AName := 'Aliases';
-  ATitle := 'Aliases Configuration';
   ADescription := 'Create Alias commands for commonly used applications.';
 
   // Status
@@ -133,15 +132,20 @@ begin
   End;
 end;
 
-procedure GetCenterScheme(var ABackground: TColor; var AItemColor: TColor; var AItemSelectedColor: TColor);
+procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
 begin
-  if frmEditWnd <> nil then
-    frmEditWnd.Color := ABackground;
-  //CenterBGColor := ABackground;
+  if frmItemsWnd <> nil then begin
+    AssignThemeToForm(ATheme,frmItemsWnd);
+    frmItemsWnd.Theme := ATheme;
+  end;
+  if frmEditWnd <> nil then begin
+    AssignThemeToEditForm(ATheme,frmEditWnd);
 
-  frmItemsWnd.lbItems.Colors.ItemColor := AItemColor;
-  frmItemsWnd.lbItems.Colors.ItemColorSelected := AItemSelectedColor;
+    if AEdit then frmEditWnd.Color := ATheme.EditBackgroundError else
+      frmEditWnd.Color := ATheme.EditBackground;
+  end;
 end;
+
 
 function GetMetaData(): TMetaData;
 begin
@@ -150,7 +154,7 @@ begin
     Name := 'Aliases';
     Description := 'Aliases Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7.4.0';
+    Version := '0.7.5.2';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
       Integer(suService)]);
@@ -165,7 +169,7 @@ exports
   CloseEdit,
   SetText,
   GetMetaData,
-  GetCenterScheme;
+  GetCenterTheme;
 begin
 
 end.
