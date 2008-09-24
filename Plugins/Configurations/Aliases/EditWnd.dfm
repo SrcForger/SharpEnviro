@@ -46,8 +46,8 @@ object frmEditWnd: TfrmEditWnd
     Width = 289
     Height = 21
     Hint = 
-      'Replacement tokens can also be used: http://www.google.co.uk/sea' +
-      'rch?hl=en&q={0}+{1}&btnG=Search&meta='
+      'Replacement tokens can also be used (0-9): http://www.google.co.' +
+      'uk/search?hl=en&q={1}+{2}&btnG=Search&meta='
     Anchors = [akLeft, akTop, akRight]
     EditLabel.Width = 51
     EditLabel.Height = 13
