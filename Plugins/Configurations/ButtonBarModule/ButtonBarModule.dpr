@@ -198,20 +198,10 @@ end;
 
 procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
 begin
-  if frmEdit <> nil then begin
-
-    AssignThemeToEditForm(ATheme,frmEdit);
-    if AEdit then frmEdit.Color := ATheme.EditBackgroundError else
-      frmEdit.Color := ATheme.EditBackground;
-  end;
-
-  AssignThemeToForm(ATheme,frmList);
+  AssignThemeToForms(ATheme,frmList,frmEdit,AEdit);
   frmList.Theme := ATheme;
 
   frmList.UpdateImages;
-
-  
-
 end;
 
 
