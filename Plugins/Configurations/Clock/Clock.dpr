@@ -60,10 +60,7 @@ end;
 
 function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
 var
-  XML : TJvSimpleXML;
   barId,moduleId : String;
-  s : string;
-  fileloaded : boolean;
 begin
   GetBarModuleIds( APluginId, barId, moduleId );
 

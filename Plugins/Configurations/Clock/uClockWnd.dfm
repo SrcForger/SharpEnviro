@@ -48,7 +48,6 @@ object frmClock: TfrmClock
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitTop = 140
   end
   object pnlTop: TPanel
     AlignWithMargins = True
@@ -65,7 +64,6 @@ object frmClock: TfrmClock
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 2
-    ExplicitTop = 187
     object lblTop: TLabel
       Left = 0
       Top = 4
@@ -114,7 +112,6 @@ object frmClock: TfrmClock
     ParentBackground = False
     ParentColor = True
     TabOrder = 3
-    ExplicitTop = 219
     object lblBottom: TLabel
       Left = 0
       Top = 4
@@ -171,9 +168,11 @@ object frmClock: TfrmClock
       Margins.Top = 0
       Margins.Right = 10
       Margins.Bottom = 5
+      Style = csDropDownList
       ItemHeight = 13
+      ItemIndex = 0
       TabOrder = 0
-      Text = 'Large'
+      Text = 'Small'
       OnChange = UpdateSettingsEvent
       Items.Strings = (
         'Small'

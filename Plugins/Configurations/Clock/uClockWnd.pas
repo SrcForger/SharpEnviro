@@ -171,7 +171,6 @@ begin
   with XML.Root.Items, frmClock do
   begin
 
-    i := 1;
     if cboSize.ItemIndex <> Automatic then begin
       i := cboSize.ItemIndex;
     Add('Style',i);
