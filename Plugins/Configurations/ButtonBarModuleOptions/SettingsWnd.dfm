@@ -129,8 +129,6 @@ object frmSettings: TfrmSettings
         TabStop = False
         Align = alTop
         OnClick = CheckClick
-        ExplicitLeft = 5
-        ExplicitWidth = 658
       end
       object chkButtonIcon: TJvXPCheckbox
         AlignWithMargins = True
@@ -148,8 +146,6 @@ object frmSettings: TfrmSettings
         State = cbChecked
         Align = alTop
         OnClick = CheckClick
-        ExplicitLeft = 5
-        ExplicitWidth = 658
       end
     end
   end
