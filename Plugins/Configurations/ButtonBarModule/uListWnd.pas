@@ -254,6 +254,7 @@ procedure TfrmList.lbItemsGetCellText(Sender: TObject; const ACol: Integer;
 var
   tmpItemData: TButtonBarItem;
   s:String;
+  col, col2: TColor;
 begin
 
   tmpItemData := TButtonBarItem(AItem.Data);
@@ -264,7 +265,16 @@ begin
     colName: begin
       s := tmpItemData.Name;
       if s = '' then s := '*Untitled';
-      AColText := format('%s<BR><font color="%s">%s',[s,ColorToString(Theme.PluginItemDescriptionText),tmpItemData.Command]);
+
+      if AItem = lbItems.SelectedItem then
+        col :=  Theme.PluginSelectedItemDescriptionText else
+        col :=  Theme.PluginItemDescriptionText;
+
+      if AItem = lbItems.SelectedItem then
+        col2 :=  Theme.PluginSelectedItemText else
+        col2 :=  Theme.PluginItemText;
+
+      AColText := format('<font color="%s">%s<BR><font color="%s">%s',[ColorToString(col2),s,ColorToString(col),tmpItemData.Command]);
     end;
   end;
 end;

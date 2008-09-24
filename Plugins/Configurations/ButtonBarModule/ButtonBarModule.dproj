@@ -22,10 +22,10 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\Center\Root\_Modules\_ModuleDlls\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpeListBoxEx;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpeGaugeBox</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpeListBoxEx;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpeGaugeBox</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpeListBoxEx;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpeGaugeBox</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpeListBoxEx;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpeGaugeBox</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpeListBoxEx;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpeGaugeBox;..\..\..\Common\Delphi Components\SharpeColorEditorEx;..\..\..\Common\Delphi Components\SharpeColorEditor;..\..\..\Common\Delphi Components\SharpeSwatchManager;..\..\..\Common\Delphi Components\SharpePageControl;..\..\..\Common\Delphi Components\SharpeTabList;..\..\..\Common\Delphi Components\SharpeSwatchCollection;..\..\..\Common\Delphi Components\SharpeRoundPanel;..\..\..\Common\Delphi Components\SharpeColorPicker</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpeListBoxEx;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpeGaugeBox;..\..\..\Common\Delphi Components\SharpeColorEditorEx;..\..\..\Common\Delphi Components\SharpeColorEditor;..\..\..\Common\Delphi Components\SharpeSwatchManager;..\..\..\Common\Delphi Components\SharpePageControl;..\..\..\Common\Delphi Components\SharpeTabList;..\..\..\Common\Delphi Components\SharpeSwatchCollection;..\..\..\Common\Delphi Components\SharpeRoundPanel;..\..\..\Common\Delphi Components\SharpeColorPicker</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpeListBoxEx;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpeGaugeBox;..\..\..\Common\Delphi Components\SharpeColorEditorEx;..\..\..\Common\Delphi Components\SharpeColorEditor;..\..\..\Common\Delphi Components\SharpeSwatchManager;..\..\..\Common\Delphi Components\SharpePageControl;..\..\..\Common\Delphi Components\SharpeTabList;..\..\..\Common\Delphi Components\SharpeSwatchCollection;..\..\..\Common\Delphi Components\SharpeRoundPanel;..\..\..\Common\Delphi Components\SharpeColorPicker</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpeListBoxEx;..\..\..\Components\SharpBar;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpeGaugeBox;..\..\..\Common\Delphi Components\SharpeColorEditorEx;..\..\..\Common\Delphi Components\SharpeColorEditor;..\..\..\Common\Delphi Components\SharpeSwatchManager;..\..\..\Common\Delphi Components\SharpePageControl;..\..\..\Common\Delphi Components\SharpeTabList;..\..\..\Common\Delphi Components\SharpeSwatchCollection;..\..\..\Common\Delphi Components\SharpeRoundPanel;..\..\..\Common\Delphi Components\SharpeColorPicker</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>
@@ -52,8 +52,29 @@
     <DCCReference Include="uEditWnd.pas">
       <Form>frmEdit</Form>
     </DCCReference>
+    <DCCReference Include="uEdiWnd.pas">
+      <Form>frmEdit</Form>
+    </DCCReference>
+    <DCCReference Include="uEdWnd.pas">
+      <Form>frmEdit</Form>
+    </DCCReference>
+    <DCCReference Include="uEWnd.pas">
+      <Form>frmEdit</Form>
+    </DCCReference>
     <DCCReference Include="uListWnd.pas">
       <Form>frmList</Form>
+    </DCCReference>
+    <DCCReference Include="uLisWnd.pas">
+      <Form>frmEdit</Form>
+    </DCCReference>
+    <DCCReference Include="uLiWnd.pas">
+      <Form>frmEdit</Form>
+    </DCCReference>
+    <DCCReference Include="uLWnd.pas">
+      <Form>frmEdit</Form>
+    </DCCReference>
+    <DCCReference Include="uWnd.pas">
+      <Form>frmEdit</Form>
     </DCCReference>
   </ItemGroup>
 </Project>

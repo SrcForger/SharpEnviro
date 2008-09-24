@@ -45,7 +45,7 @@ uses
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  uEditWnd in 'uEditWnd.pas' {frmEdit},
+  uEditWnd in 'uEditWnd.pas',
   ButtonBarList in 'ButtonBarList.pas';
 
 {$E .dll}
