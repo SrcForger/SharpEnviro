@@ -210,7 +210,6 @@ end;
 procedure TfrmCPUMon.FormCreate(Sender: TObject);
 begin
   sLastPage := pagMon;
-  DoubleBuffered := true;
   try
     edit_cpu.MaxValue := adCpuUsage.GetCPUCount;
   except

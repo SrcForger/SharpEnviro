@@ -3,7 +3,7 @@ object frmCPUMon: TfrmCPUMon
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmCPUMon'
-  ClientHeight = 357
+  ClientHeight = 379
   ClientWidth = 432
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -19,16 +19,18 @@ object frmCPUMon: TfrmCPUMon
     Left = 0
     Top = 0
     Width = 432
-    Height = 357
-    ActivePage = pagMon
+    Height = 379
+    ActivePage = pagColors
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 357
     object pagMon: TJvStandardPage
       Left = 0
       Top = 0
       Width = 432
-      Height = 357
+      Height = 379
       OnShow = pagMonShow
+      ExplicitHeight = 357
       object Panel5: TPanel
         AlignWithMargins = True
         Left = 5
@@ -251,10 +253,11 @@ object frmCPUMon: TfrmCPUMon
       Left = 0
       Top = 0
       Width = 432
-      Height = 357
+      Height = 379
       Caption = 'pagColors'
       Color = clWhite
       OnShow = pagColorsShow
+      ExplicitHeight = 357
       object Colors: TSharpEColorEditorEx
         AlignWithMargins = True
         Left = 1
@@ -477,8 +480,9 @@ object frmCPUMon: TfrmCPUMon
       Left = 0
       Top = 0
       Width = 432
-      Height = 357
+      Height = 379
       Caption = 'pagError'
+      ExplicitHeight = 357
       object SharpERoundPanel1: TSharpERoundPanel
         AlignWithMargins = True
         Left = 4
@@ -574,8 +578,9 @@ object frmCPUMon: TfrmCPUMon
       Left = 0
       Top = 0
       Width = 432
-      Height = 357
+      Height = 379
       Caption = 'pagError2'
+      ExplicitHeight = 357
       object SharpERoundPanel2: TSharpERoundPanel
         AlignWithMargins = True
         Left = 4
