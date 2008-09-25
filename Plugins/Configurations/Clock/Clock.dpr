@@ -98,7 +98,7 @@ procedure SetText(const APluginID: String; var AName: String; var AStatus: Strin
   var ADescription: String);
 begin
   AName := 'Clock';
-  ADescription := 'Configure the clock module';
+  ADescription := 'Configure formatting options for the clock module';
 end;
 
 function GetMetaData(): TMetaData;

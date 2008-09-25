@@ -1,11 +1,10 @@
 object frmClock: TfrmClock
   Left = 0
   Top = 0
-  AutoSize = True
   BorderStyle = bsNone
   Caption = 'frmClock'
   ClientHeight = 194
-  ClientWidth = 447
+  ClientWidth = 411
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,7 +20,7 @@ object frmClock: TfrmClock
     AlignWithMargins = True
     Left = 5
     Top = 0
-    Width = 437
+    Width = 401
     Height = 37
     Margins.Left = 5
     Margins.Top = 0
@@ -32,12 +31,13 @@ object frmClock: TfrmClock
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
+    ExplicitWidth = 437
   end
   object SharpECenterHeader2: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
     Top = 83
-    Width = 437
+    Width = 401
     Height = 37
     Margins.Left = 5
     Margins.Top = 5
@@ -48,13 +48,13 @@ object frmClock: TfrmClock
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitTop = 73
+    ExplicitWidth = 437
   end
   object pnlTop: TPanel
     AlignWithMargins = True
     Left = 5
     Top = 130
-    Width = 432
+    Width = 396
     Height = 22
     Margins.Left = 5
     Margins.Top = 10
@@ -63,9 +63,13 @@ object frmClock: TfrmClock
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
+    ParentBackground = False
     ParentColor = True
     TabOrder = 2
-    ExplicitTop = 120
+    ExplicitWidth = 432
+    DesignSize = (
+      396
+      22)
     object lblTop: TLabel
       Left = 0
       Top = 4
@@ -83,7 +87,7 @@ object frmClock: TfrmClock
       Margins.Top = 0
       Margins.Right = 12
       Margins.Bottom = 0
-      Constraints.MaxWidth = 300
+      Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
       Text = 'HH:MM:SS'
       OnChange = UpdateSettingsEvent
@@ -93,6 +97,7 @@ object frmClock: TfrmClock
       Top = 0
       Width = 37
       Height = 22
+      Anchors = [akTop, akRight]
       Caption = '...'
       TabOrder = 1
       OnClick = btnTopClick
@@ -102,7 +107,7 @@ object frmClock: TfrmClock
     AlignWithMargins = True
     Left = 5
     Top = 162
-    Width = 432
+    Width = 396
     Height = 22
     Margins.Left = 5
     Margins.Top = 10
@@ -114,7 +119,10 @@ object frmClock: TfrmClock
     ParentBackground = False
     ParentColor = True
     TabOrder = 3
-    ExplicitTop = 152
+    ExplicitWidth = 432
+    DesignSize = (
+      396
+      22)
     object lblBottom: TLabel
       Left = 0
       Top = 4
@@ -132,7 +140,7 @@ object frmClock: TfrmClock
       Margins.Top = 0
       Margins.Right = 12
       Margins.Bottom = 0
-      Constraints.MaxWidth = 300
+      Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
       Text = 'DD.MM.YYYY'
       OnChange = UpdateSettingsEvent
@@ -142,6 +150,7 @@ object frmClock: TfrmClock
       Top = 0
       Width = 37
       Height = 22
+      Anchors = [akTop, akRight]
       Caption = '...'
       TabOrder = 1
       OnClick = btnBottomClick
@@ -151,7 +160,7 @@ object frmClock: TfrmClock
     AlignWithMargins = True
     Left = 5
     Top = 47
-    Width = 432
+    Width = 396
     Height = 21
     Margins.Left = 5
     Margins.Top = 0
@@ -162,6 +171,7 @@ object frmClock: TfrmClock
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 4
+    ExplicitWidth = 432
     object cboSize: TComboBox
       Left = 0
       Top = 0
