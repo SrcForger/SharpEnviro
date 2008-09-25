@@ -69,6 +69,7 @@ type
     procedure UpdateEditState(Sender: TObject);
     procedure btnCommandBrowseClick(Sender: TObject);
     procedure btnIconBrowseClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
 
   private
     { Private declarations }
@@ -169,6 +170,11 @@ begin
   finally
     eiVals.EndUpdate;
   end;
+end;
+
+procedure TfrmEdit.FormShow(Sender: TObject);
+begin
+  Self.DoubleBuffered := True;
 end;
 
 function TfrmEdit.ValidateEdit(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
