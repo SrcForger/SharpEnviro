@@ -52,29 +52,8 @@
     <DCCReference Include="uEditWnd.pas">
       <Form>frmEdit</Form>
     </DCCReference>
-    <DCCReference Include="uEdiWnd.pas">
-      <Form>frmEdit</Form>
-    </DCCReference>
-    <DCCReference Include="uEdWnd.pas">
-      <Form>frmEdit</Form>
-    </DCCReference>
-    <DCCReference Include="uEWnd.pas">
-      <Form>frmEdit</Form>
-    </DCCReference>
     <DCCReference Include="uListWnd.pas">
       <Form>frmList</Form>
-    </DCCReference>
-    <DCCReference Include="uLisWnd.pas">
-      <Form>frmEdit</Form>
-    </DCCReference>
-    <DCCReference Include="uLiWnd.pas">
-      <Form>frmEdit</Form>
-    </DCCReference>
-    <DCCReference Include="uLWnd.pas">
-      <Form>frmEdit</Form>
-    </DCCReference>
-    <DCCReference Include="uWnd.pas">
-      <Form>frmEdit</Form>
     </DCCReference>
   </ItemGroup>
 </Project>
