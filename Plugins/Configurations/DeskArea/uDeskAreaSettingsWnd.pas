@@ -32,7 +32,7 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi,
   ExtCtrls, Buttons, PngBitBtn, GR32_Image, Math,
   SharpThemeApi, Contnrs, GR32, GR32_Resamplers, SharpCenterApi,
-  SharpGraphicsUtils, SharpEGaugeBoxEdit, Types;
+  SharpGraphicsUtils, SharpEGaugeBoxEdit, Types, SharpECenterHeader;
 
 type
   TDAItem = class
@@ -46,22 +46,22 @@ type
 
   TfrmDASettings = class(TForm)
     Panel1: TPanel;
-    Label4: TLabel;
     cb_automode: TCheckBox;
     Panel2: TPanel;
     sgb_left: TSharpeGaugeBox;
     sgb_top: TSharpeGaugeBox;
-    Label2: TLabel;
-    Label1: TLabel;
     sgb_bottom: TSharpeGaugeBox;
     sgb_right: TSharpeGaugeBox;
+    SharpECenterHeader4: TSharpECenterHeader;
+    SharpECenterHeader1: TSharpECenterHeader;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure sgb_leftChangeValue(Sender: TObject; Value: Integer);
     procedure cb_automodeClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
   private
+    FTheme: TCenterThemeInfo;
     procedure SendUpdate;
+    
   public
     CurrentDAItem : TDAItem;
     update : boolean;
@@ -69,8 +69,8 @@ type
     procedure UpdateGUIFromDAItem(DAItem : TDAItem);
     procedure UpdateDAItemFromGui;
     procedure RenderPreview;
-
-
+    procedure UpdatePreview( var ABmp: TBitmap32 );
+    property Theme: TCenterThemeInfo read FTheme write FTheme;
   end;
 
 var
@@ -93,13 +93,13 @@ end;
 
 procedure TfrmDASettings.RenderPreview;
 const
-  PreviewHeight = 128;
+  PreviewHeight = 70;
 var
   w,h : integer;
   n : integer;
-  BR : TBarRect;
+  barBoundsRect : TBarRect;
   F : real;
-  DR : TRect;
+  monBoundsRect : TRect;
 begin
   if CurrentDAItem = nil then exit;
   if CurrentDAItem.Mon = nil then exit;
@@ -112,37 +112,47 @@ begin
     w := round(Mon.Width * F);
 
     PreviewBmp.SetSize(w,h);
-    PreviewBmp.Clear(color32(255,255,255,255));
+    PreviewBmp.Clear(FTheme.Background);
 
-    DR := Mon.BoundsRect;
+    monBoundsRect := Mon.BoundsRect;
     for  n := 0 to GetSharpBarCount - 1 do
     begin
-      BR := GetSharpBarArea(n);
-      if PointInRect(Point(BR.R.Left + (BR.R.Right - BR.R.Left) div 2,
-                     BR.R.Top + (BR.R.Bottom - BR.R.Top) div 2),
-                     Mon.BoundsRect) then
+      barBoundsRect := GetSharpBarArea(n);
+
+      if PointInRect(Point(barBoundsRect.R.Left + (barBoundsRect.R.Right - barBoundsRect.R.Left),
+                     barBoundsRect.R.Top + (barBoundsRect.R.Bottom - barBoundsRect.R.Top)),Mon.BoundsRect) then
       begin
-        PreviewBmp.FillRect(round(BR.R.Left * F),
-                            round(BR.R.Top * F),
-                            round(BR.R.Right * F),
-                            round(BR.R.Bottom * F),color32(0,0,128,255));
+        if barBoundsRect.R.Bottom + 40 < h then
+          barBoundsRect.R.Bottom := barBoundsRect.R.Bottom + 40;
+
+        if barBoundsRect.R.Top - 40 > 0 then
+          barBoundsRect.R.Top := barBoundsRect.R.Top - 40;
+
+        PreviewBmp.FillRect(round(barBoundsRect.R.Left * F),
+                            round(barBoundsRect.R.Top * F),
+                            round(barBoundsRect.R.Right * F),
+                            round(barBoundsRect.R.Bottom * F),color32(FTheme.BackgroundText));
         if AutoMode then
         begin
-          if BR.R.Top < Mon.Top + Mon.Height div 2 then
-            DR.Top := Max(DR.Top,BR.R.Bottom)
-            else DR.Bottom := Min(DR.Bottom,BR.R.Top);
+          if barBoundsRect.R.Top < Mon.Top + Mon.Height div 2 then
+            monBoundsRect.Top := Max(monBoundsRect.Top,barBoundsRect.R.Bottom)
+            else monBoundsRect.Bottom := Min(monBoundsRect.Bottom,barBoundsRect.R.Top);
         end;
       end;
     end;
-    DR.Left := DR.Left + OffSets.Left - Mon.BoundsRect.Left;
-    DR.Top  := DR.Top + OffSets.Top - Mon.BoundsRect.Top;
-    DR.Right := DR.Right - OffSets.Right - Mon.BoundsRect.Left;
-    DR.Bottom := DR.Bottom - OffSets.Bottom - Mon.BoundsRect.Top;
-    PreviewBmp.FrameRectS(round(DR.Left * F),
-                          round(DR.Top * F),
-                          round(DR.Right * F),
-                          round(DR.Bottom * F),color32(128,0,0,255));
+
+    monBoundsRect.Left := monBoundsRect.Left + OffSets.Left - Mon.BoundsRect.Left;
+    monBoundsRect.Top  := monBoundsRect.Top + OffSets.Top - Mon.BoundsRect.Top;
+    monBoundsRect.Right := monBoundsRect.Right - OffSets.Right - Mon.BoundsRect.Left;
+    monBoundsRect.Bottom := monBoundsRect.Bottom - OffSets.Bottom - Mon.BoundsRect.Top;
+    PreviewBmp.FrameRectS(round(monBoundsRect.Left * F),
+                          round(monBoundsRect.Top * F),
+                          round(monBoundsRect.Right * F),
+                          round(monBoundsRect.Bottom * F),FTheme.PluginBackgroundText);
+
   end;
+
+
   CenterUpdatePreview;
 end;
 
@@ -172,6 +182,19 @@ begin
 
   Update := False;
   RenderPreview;
+end;
+
+procedure TfrmDASettings.UpdatePreview( var ABmp: TBitmap32 );
+begin
+  if currentDAItem = nil then
+  begin
+    ABmp.SetSize(0,0);
+    exit;
+  end;
+
+  ABmp.SetSize(PreviewBmp.Width+2,PreviewBmp.Height+2);
+  ABmp.Clear(color32(FTheme.BackgroundText));
+  frmDASettings.PreviewBmp.DrawTo(ABmp,1,1);
 end;
 
 procedure TfrmDASettings.cb_automodeClick(Sender: TObject);
@@ -211,12 +234,6 @@ procedure TfrmDASettings.FormDestroy(Sender: TObject);
 begin
   DAList.Free;
   PreviewBmp.Free;
-end;
-
-procedure TfrmDASettings.FormShow(Sender: TObject);
-begin
-  Label4.Font.Color := clGray;
-  Label1.Font.Color := clGray;
 end;
 
 end.

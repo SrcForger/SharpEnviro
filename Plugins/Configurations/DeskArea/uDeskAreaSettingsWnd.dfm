@@ -2,8 +2,8 @@ object frmDASettings: TfrmDASettings
   Left = 0
   Top = 0
   Caption = 'frmDeskAreaSettings'
-  ClientHeight = 177
-  ClientWidth = 445
+  ClientHeight = 173
+  ClientWidth = 490
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,50 +13,34 @@ object frmDASettings: TfrmDASettings
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
-    Left = 0
-    Top = 0
-    Width = 445
-    Height = 65
+    AlignWithMargins = True
+    Left = 5
+    Top = 47
+    Width = 480
+    Height = 17
+    Margins.Left = 5
+    Margins.Top = 10
+    Margins.Right = 5
+    Margins.Bottom = 0
     Align = alTop
+    AutoSize = True
     BevelOuter = bvNone
     Color = clWindow
     ParentBackground = False
     TabOrder = 0
-    object Label4: TLabel
-      AlignWithMargins = True
-      Left = 26
-      Top = 29
-      Width = 411
-      Height = 33
-      Margins.Left = 26
-      Margins.Top = 4
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      AutoSize = False
-      Caption = 
-        'Enable this option to make the deskarea service automatically ad' +
-        'just the size of the desktop area based on the position of your ' +
-        'SharpBars.'
-      EllipsisPosition = epEndEllipsis
-      Transparent = False
-      WordWrap = True
-    end
     object cb_automode: TCheckBox
       AlignWithMargins = True
-      Left = 8
-      Top = 8
+      Left = 0
+      Top = 0
       Width = 429
       Height = 17
-      Margins.Left = 8
-      Margins.Top = 8
-      Margins.Right = 8
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 5
       Margins.Bottom = 0
-      Align = alTop
       Caption = 'Automated Mode'
       Checked = True
       State = cbChecked
@@ -65,114 +49,123 @@ object frmDASettings: TfrmDASettings
     end
   end
   object Panel2: TPanel
-    Left = 0
-    Top = 65
-    Width = 445
-    Height = 96
+    AlignWithMargins = True
+    Left = 5
+    Top = 121
+    Width = 480
+    Height = 48
+    Margins.Left = 5
+    Margins.Top = 10
+    Margins.Right = 5
+    Margins.Bottom = 0
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
     ParentBackground = False
     TabOrder = 1
-    object Label2: TLabel
-      AlignWithMargins = True
-      Left = 8
-      Top = 0
-      Width = 429
-      Height = 17
-      Margins.Left = 8
-      Margins.Top = 0
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      AutoSize = False
-      Caption = 'Desk Area Offsets'
-      Transparent = False
-      WordWrap = True
-    end
-    object Label1: TLabel
-      AlignWithMargins = True
-      Left = 26
-      Top = 21
-      Width = 411
-      Height = 32
-      Margins.Left = 26
-      Margins.Top = 4
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      AutoSize = False
-      Caption = 
-        'Use the sliders to adjust the size of the desktop area. If the a' +
-        'utomated mode is enabled then the values will be added to the au' +
-        'tomatically generated desk area.'
-      EllipsisPosition = epEndEllipsis
-      Transparent = False
-      WordWrap = True
-    end
     object sgb_left: TSharpeGaugeBox
-      Left = 26
-      Top = 66
-      Width = 90
+      Left = 0
+      Top = 0
+      Width = 130
       Height = 21
       ParentBackground = False
       Min = -32
       Max = 512
       Value = 0
       Prefix = 'Left: '
-      Suffix = 'px'
+      Suffix = ' px'
       Description = 'Left Offset'
-      PopPosition = ppRight
+      PopPosition = ppBottom
       PercentDisplay = False
       OnChangeValue = sgb_leftChangeValue
+      BackgroundColor = clWindow
     end
     object sgb_top: TSharpeGaugeBox
-      Left = 122
-      Top = 66
-      Width = 90
+      Left = 136
+      Top = 0
+      Width = 130
       Height = 21
       ParentBackground = False
       Min = -32
       Max = 512
       Value = 0
       Prefix = 'Top: '
-      Suffix = 'px'
+      Suffix = ' px'
       Description = 'Top Offset'
-      PopPosition = ppRight
+      PopPosition = ppBottom
       PercentDisplay = False
       OnChangeValue = sgb_leftChangeValue
+      BackgroundColor = clWindow
     end
     object sgb_bottom: TSharpeGaugeBox
-      Left = 314
-      Top = 66
-      Width = 90
+      Left = 136
+      Top = 27
+      Width = 130
       Height = 21
       ParentBackground = False
       Min = -32
       Max = 512
       Value = 0
       Prefix = 'Bottom: '
-      Suffix = 'px'
+      Suffix = ' px'
       Description = 'Bottom Offset'
-      PopPosition = ppRight
+      PopPosition = ppBottom
       PercentDisplay = False
       OnChangeValue = sgb_leftChangeValue
+      BackgroundColor = clWindow
     end
     object sgb_right: TSharpeGaugeBox
-      Left = 218
-      Top = 66
-      Width = 90
+      Left = 0
+      Top = 27
+      Width = 130
       Height = 21
       ParentBackground = False
       Min = -32
       Max = 512
       Value = 0
       Prefix = 'Right: '
-      Suffix = 'px'
+      Suffix = ' px'
       Description = 'Right Offset'
-      PopPosition = ppRight
+      PopPosition = ppBottom
       PercentDisplay = False
       OnChangeValue = sgb_leftChangeValue
+      BackgroundColor = clWindow
     end
+  end
+  object SharpECenterHeader4: TSharpECenterHeader
+    AlignWithMargins = True
+    Left = 5
+    Top = 74
+    Width = 480
+    Height = 37
+    Margins.Left = 5
+    Margins.Top = 10
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Title = 'DeskArea Offsets'
+    Description = 
+      'Define the constraints of the desktop area. You may also tweak t' +
+      'he automated mode'
+    TitleColor = clWindowText
+    DescriptionColor = clRed
+    Align = alTop
+  end
+  object SharpECenterHeader1: TSharpECenterHeader
+    AlignWithMargins = True
+    Left = 5
+    Top = 0
+    Width = 480
+    Height = 37
+    Margins.Left = 5
+    Margins.Top = 0
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Title = 'Automated Mode'
+    Description = 
+      'Define whether the constraints of the desktop area is determined' +
+      ' by the position of the bars'
+    TitleColor = clWindowText
+    DescriptionColor = clRed
+    Align = alTop
   end
 end

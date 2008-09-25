@@ -57,8 +57,8 @@ type
     procedure BuildCursorPreview;
   public
     Preview : TBitmap32;
-    sCurrentCursor : String;
-    sTheme : String;
+    FCurrentCursor : String;
+    FTheme : String;
     procedure BuildCursorList;
     procedure Save;
     procedure SendUpdate;
@@ -101,7 +101,7 @@ begin
   if frmCursesList.lbcursorlist.ItemIndex >= 0 then
   begin
     sTheme := TStringObject(lbCursorList.SelectedItem.Data).Str;
-    FName := SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmCursesList.sTheme+'\Cursor.xml';
+    FName := SharpApi.GetSharpeUserSettingsPath + '\Themes\'+FTheme+'\Cursor.xml';
 
     XML := TJvSimpleXML.Create(nil);
     XML.Root.Name := 'SharpEThemeCursor';
@@ -138,6 +138,7 @@ var
   Bmp32: TBitmap32;
   w,h : integer;
   IconCount : integer;
+  sTheme: String;
 begin
   LockWindowUpdate(Self.Handle);
   try
@@ -239,7 +240,7 @@ begin
 
             newItem.Data := ( obj );
 
-            if CompareText(sr.Name,sCurrentCursor) = 0 then
+            if CompareText(sr.Name,FCurrentCursor) = 0 then
             begin
               lbCursorList.ItemIndex := lbCursorList.Items.Count - 1;
               BuildCursorPreview;

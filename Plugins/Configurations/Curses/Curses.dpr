@@ -56,7 +56,7 @@ begin
   if frmCursesList = nil then frmCursesList := TfrmCursesList.Create(nil);
 
   uVistaFuncs.SetVistaFonts(frmCursesList);
-  frmCursesList.sTheme := APluginID;
+  frmCursesList.FTheme := APluginID;
   frmCursesList.ParentWindow := aowner;
   frmCursesList.Left := 2;
   frmCursesList.Top := 2;
@@ -65,7 +65,7 @@ begin
   XML := TJvSimpleXML.Create(nil);
   try
     XML.LoadFromFile(SharpApi.GetSharpeUserSettingsPath + 'Themes\'+APluginID+'\Cursor.xml');
-    frmCursesList.sCurrentCursor := XML.Root.Items.Value('CurrentSkin','');
+    frmCursesList.FCurrentCursor := XML.Root.Items.Value('CurrentSkin','');
     for n := 0 to frmCursesList.ccolors.Items.Count - 1 do
         frmCursesList.ccolors.Items.Item[n].ColorCode := XML.Root.Items.IntValue('Color' + inttostr(n),0);
   except

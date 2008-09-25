@@ -179,10 +179,9 @@ begin
 end;
 
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+  var ADescription: String);
 begin
   AName := 'Desk Area';
-  ATitle := 'Desktop Area Configuration';
   ADescription := 'Define how you want SharpE to manage your desktop real estate';
 
 end;
@@ -214,15 +213,7 @@ end;
 
 procedure UpdatePreview(var ABmp: TBitmap32);
 begin
-  if frmDASettings.currentDAItem = nil then
-  begin
-    ABmp.SetSize(0,0);
-    exit;
-  end;
-
-  ABmp.SetSize(frmDASettings.PreviewBmp.Width+2,frmDASettings.PreviewBmp.Height+2);
-  ABmp.Clear(color32(0,0,0,255));
-  frmDASettings.PreviewBmp.DrawTo(ABmp,1,1);
+  frmDASettings.UpdatePreview( ABmp );
 end;
 
 function GetMetaData(): TMetaData;
@@ -232,11 +223,18 @@ begin
     Name := 'Desk Area';
     Description := 'Desk Area Service Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.5.2';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suDeskArea)]);
   end;
+end;
+
+procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
+begin
+  AssignThemeToForm(ATheme,frmDASettings);
+  frmDASettings.Theme := ATheme;
+  frmDASettings.RenderPreview;
 end;
 
 
@@ -248,6 +246,7 @@ exports
   UpdatePreview,
   GetMetaData,
   AddTabs,
+  GetCenterTheme,
   ClickTab;
 
 end.
