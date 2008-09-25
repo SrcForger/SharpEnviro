@@ -95,16 +95,17 @@ end;
 procedure TfrmCursesList.Save;
 var
   XML : TJvSimpleXML;
-  FName : String;
+  FName, sTheme : String;
   n : integer;
 begin
   if frmCursesList.lbcursorlist.ItemIndex >= 0 then
   begin
+    sTheme := TStringObject(lbCursorList.SelectedItem.Data).Str;
     FName := SharpApi.GetSharpeUserSettingsPath + '\Themes\'+frmCursesList.sTheme+'\Cursor.xml';
 
     XML := TJvSimpleXML.Create(nil);
     XML.Root.Name := 'SharpEThemeCursor';
-    XML.Root.Items.Add('CurrentSkin',frmCursesList.lbcursorlist.Item[frmCursesList.lbcursorlist.ItemIndex].SubItemText[2]);
+    XML.Root.Items.Add('CurrentSkin',sTheme);
     for n := 0 to frmCursesList.ccolors.Items.Count - 1 do
         XML.Root.Items.Add('Color' + inttostr(n),frmCursesList.ccolors.Items.Item[n].ColorCode);
     XML.SaveToFile(FName + '~');
@@ -124,8 +125,6 @@ end;
 procedure TfrmCursesList.FormCreate(Sender: TObject);
 begin
   Preview := TBitmap32.Create;
-  lbCursorList.DoubleBuffered := True;
-  DoubleBuffered := true;
 end;
 
 procedure TfrmCursesList.BuildCursorPreview;
@@ -140,13 +139,16 @@ var
   w,h : integer;
   IconCount : integer;
 begin
+  LockWindowUpdate(Self.Handle);
+  try
   if (lbCursorList.ItemIndex < 0) or (lbCursorList.Count = 0) then
   begin
     CenterUpdatePreview;
     exit;
   end;
 
-  Dir := SharpApi.GetSharpeDirectory + 'Cursors\' + lbCursorList.Item[lbCursorList.ItemIndex].SubItemText[2] + '\';
+  sTheme := TStringObject(lbCursorList.SelectedItem.Data).Str;
+  Dir := SharpApi.GetSharpeDirectory + 'Cursors\' + sTheme + '\';
 
   Bmp32 := TBitmap32.Create;
   Bmp32.DrawMode := dmBlend;
@@ -194,6 +196,9 @@ begin
   Bmp32.Free;
 
   CenterUpdatePreview;
+  finally
+    LockWindowUpdate(0);
+  end;
 end;
 
 procedure TfrmCursesList.BuildCursorList;
@@ -202,6 +207,8 @@ var
   sr : TSearchRec;
   Dir : String;
   XML : TJvSimpleXML;
+  s, sName, sAuthor:String;
+  obj: TStringObject;
 begin
   lbCursorList.Clear;
   LockWindowUpdate(Self.Handle);
@@ -221,9 +228,16 @@ begin
           XML.LoadFromFile(Dir + sr.Name + '\Skin.xml');
           if XML.Root.Items.ItemNamed['SknDef'] <> nil then
           begin
-            newItem := lbCursorList.AddItem(XML.Root.Items.ItemNamed['SknDef'].Items.Value('Title','...'));
-            newItem.AddSubItem('(Author: ' + XML.Root.Items.ItemNamed['SknDef'].Items.Value('Author','Unknown') + ')');
-            newItem.AddSubItem(sr.Name);
+
+          sName := XML.Root.Items.ItemNamed['SknDef'].Items.Value('Title','Unknown');
+          sAuthor := XML.Root.Items.ItemNamed['SknDef'].Items.Value('Author','Unknown');
+          s := Format('%s by %s', [sName, sAuthor]);
+
+            newItem := lbCursorList.AddItem(s);
+            obj := TStringObject.Create();
+            obj.Str := sName;
+
+            newItem.Data := ( obj );
 
             if CompareText(sr.Name,sCurrentCursor) = 0 then
             begin

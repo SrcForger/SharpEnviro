@@ -31,7 +31,7 @@ object frmCursesList: TfrmCursesList
     BevelInner = bvNone
     BevelOuter = bvNone
     BorderStyle = bsNone
-    Color = clWindow
+    Color = clWhite
     ParentColor = False
     TabOrder = 0
     Items = <
@@ -93,6 +93,11 @@ object frmCursesList: TfrmCursesList
       end>
     SwatchManager = SharpESwatchManager1
     OnUiChange = ccolorsUiChange
+    BorderColor = clBlack
+    BackgroundColor = clWhite
+    BackgroundTextColor = clBlack
+    ContainerColor = clBlack
+    ContainerTextColor = clBlack
   end
   object lbCursorList: TSharpEListBoxEx
     Left = 0
@@ -108,15 +113,6 @@ object frmCursesList: TfrmCursesList
         StretchColumn = True
         ColumnType = ctDefault
         AutoSize = False
-      end
-      item
-        Width = 256
-        HAlign = taRightJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calRight
-        StretchColumn = False
-        ColumnType = ctDefault
-        AutoSize = False
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnShadow
@@ -124,8 +120,9 @@ object frmCursesList: TfrmCursesList
     Colors.ItemColorSelected = clBtnFace
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
+    Colors.DisabledColor = clBlack
     OnResize = lbCursorListResize
-    itemheight = 25
+    ItemHeight = 25
     OnClickItem = lbCursorListClickItem
     AutosizeGrid = True
     Borderstyle = bsNone
@@ -135,7 +132,7 @@ object frmCursesList: TfrmCursesList
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 386
+    Width = 385
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16
@@ -147,7 +144,10 @@ object frmCursesList: TfrmCursesList
     SwatchFont.Style = []
     SwatchTextBorderColor = 16709617
     SortMode = sortName
-    Left = 352
-    Top = 48
+    BorderColor = clBlack
+    BackgroundColor = clBlack
+    BackgroundTextColor = clBlack
+    Left = 380
+    Top = 12
   end
 end

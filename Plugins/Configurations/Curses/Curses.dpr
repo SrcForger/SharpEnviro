@@ -73,6 +73,7 @@ begin
   XML.Free;
 
   frmCursesList.Show;
+  frmCursesList.BuildCursorList;
   result := frmCursesList.Handle;
 end;
 
@@ -90,7 +91,7 @@ begin
 end;
 
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+  var ADescription: String);
 var
   xml: TJvSimpleXML;
   sDir: String;
@@ -98,8 +99,7 @@ var
   n:Integer;
 begin
   AName := 'Cursors';
-  ATitle := Format('Cursor Configuration for "%s"',[APluginID]);
-  ADescription := 'Select which cursor you want to use for this theme.';
+  ADescription := Format('Cursor Configuration for "%s"',[APluginID]);
 
   xml := TJvSimpleXML.Create(nil);
   sDir := SharpApi.GetSharpeDirectory + 'Cursors\';
@@ -119,20 +119,6 @@ begin
     xml.Free;
 
     AStatus := IntToStr(n);
-  end;
-end;
-
-procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
-begin
-  if frmCursesList <> nil then
-  begin
-    frmCursesList.lbcursorlist.Colors.ItemColor := AItemColor;
-    frmCursesList.lbcursorlist.Colors.ItemColorSelected := AItemSelectedColor;
-    frmCursesList.lbcursorlist.Colors.BorderColor := AItemSelectedColor;
-    frmCursesList.lbcursorlist.Colors.BorderColorSelected := AItemSelectedColor;
-    if frmCursesList.lbCursorList.Count = 0 then
-       frmCursesList.BuildCursorList;
   end;
 end;
 
@@ -160,11 +146,16 @@ begin
     Name := 'Cursors';
     Description := 'Cursor Theme Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.5.2';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suCursor)]);
   end;
+end;
+
+procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
+begin
+  AssignThemeToForm(ATheme,frmCursesList);
 end;
 
 exports
@@ -172,7 +163,7 @@ exports
   Close,
   Save,
   SetText,
-  GetCenterScheme,
+  GetCenterTheme,
   UpdatePreview,
   GetMetaData;
 
