@@ -63,7 +63,7 @@ uses
   SharpERoundPanel,
   SharpEUIC,
   JvExStdCtrls,
-  JvCheckBox;
+  JvCheckBox, SharpECenterHeader, JvXPCore, JvXPCheckCtrls;
 
 type
   TStringObject = class(TObject)
@@ -82,78 +82,31 @@ type
     sceFontColor: TSharpEColorEditorEx;
     pnlAnim: TPanel;
     Panel3: TPanel;
-    lblIconTransDet: TLabel;
     Panel4: TPanel;
-    lblIconSizeDet: TLabel;
-    CheckBox1: TLabel;
     SharpERoundPanel1: TSharpERoundPanel;
     icon32: TImage32;
-    rdoIcon32: TRadioButton;
     SharpERoundPanel2: TSharpERoundPanel;
     icon48: TImage32;
-    rdoIcon48: TRadioButton;
     SharpERoundPanel3: TSharpERoundPanel;
     Icon64: TImage32;
-    rdoIcon64: TRadioButton;
     SharpERoundPanel4: TSharpERoundPanel;
-    rdoIconCustom: TRadioButton;
     sgbIconSize: TSharpeGaugeBox;
     sgbIconTrans: TSharpeGaugeBox;
     Panel1: TPanel;
-    lblColorBlendDet: TLabel;
     sgbColorBlend: TSharpeGaugeBox;
     Panel2: TPanel;
-    lblIconShadowDet: TLabel;
     sgbIconShadow: TSharpeGaugeBox;
     Panel10: TPanel;
-    lblIconColorDet: TLabel;
-    lblIconColor: TLabel;
     sceIconColor: TSharpEColorEditorEx;
-    lblFontNameDet: TLabel;
-    lblFontSizeDet: TLabel;
-    lblFontTransDet: TLabel;
-    Label10: TLabel;
-    Label11: TLabel;
-    lblFontStyleDet: TLabel;
-    Label14: TLabel;
-    lblFontColor: TLabel;
-    lblFontColorDet: TLabel;
     pagFontShadow: TJvStandardPage;
-    lblFontShadowDet: TLabel;
-    pnlTextShadow: TPanel;
-    lblFontShadowTypeDet: TLabel;
-    lblFontShadowTransDet: TLabel;
-    Label18: TLabel;
-    Label19: TLabel;
-    Label20: TLabel;
-    lblFontShadowColDet: TLabel;
     cboFontName: TComboBox;
-    chkIconTrans: TJvCheckBox;
-    chkColorBlend: TJvCheckBox;
-    chkIconShadow: TJvCheckBox;
-    chkUnderline: TJvCheckBox;
-    chkItalic: TJvCheckBox;
-    chkBold: TJvCheckBox;
-    chkFontShadow: TJvCheckBox;
     Panel5: TPanel;
     sgbFontSize: TSharpeGaugeBox;
     Panel7: TPanel;
     sgbFontTrans: TSharpeGaugeBox;
-    Panel11: TPanel;
-    sgbFontShadowTrans: TSharpeGaugeBox;
-    chkAnim: TJvCheckBox;
-    lblAnimDet: TLabel;
     Panel9: TPanel;
-    lblAnimTransDet: TLabel;
-    lblAnimSizeDet: TLabel;
     Panel12: TPanel;
-    chkAnimTrans: TJvCheckBox;
-    chkAnimSize: TJvCheckBox;
     Panel13: TPanel;
-    chkAnimBrightness: TJvCheckBox;
-    lblAnimBrightnessDet: TLabel;
-    chkAnimColorBlend: TJvCheckBox;
-    lblAnimColorBlendDet: TLabel;
     Panel14: TPanel;
     Panel15: TPanel;
     sgbAnimTrans: TSharpeGaugeBox;
@@ -161,10 +114,49 @@ type
     sgbAnimColorBlend: TSharpeGaugeBox;
     sgbAnimSize: TSharpeGaugeBox;
     sceAnimColor: TSharpEColorEditorEx;
-    chkFontTrans: TJvCheckBox;
+    SharpECenterHeader1: TSharpECenterHeader;
+    pnlTextShadow: TPanel;
+    SharpECenterHeader2: TSharpECenterHeader;
+    SharpECenterHeader3: TSharpECenterHeader;
+    Panel11: TPanel;
+    sgbFontShadowTrans: TSharpeGaugeBox;
+    SharpECenterHeader4: TSharpECenterHeader;
     sceShadowColor: TSharpEColorEditorEx;
     Panel6: TPanel;
     cboFontShadowType: TComboBox;
+    SharpECenterHeader5: TSharpECenterHeader;
+    SharpECenterHeader6: TSharpECenterHeader;
+    SharpECenterHeader7: TSharpECenterHeader;
+    SharpECenterHeader8: TSharpECenterHeader;
+    SharpECenterHeader9: TSharpECenterHeader;
+    SharpECenterHeader10: TSharpECenterHeader;
+    SharpECenterHeader11: TSharpECenterHeader;
+    SharpECenterHeader12: TSharpECenterHeader;
+    SharpECenterHeader13: TSharpECenterHeader;
+    Panel8: TPanel;
+    SharpECenterHeader14: TSharpECenterHeader;
+    SharpECenterHeader15: TSharpECenterHeader;
+    SharpECenterHeader16: TSharpECenterHeader;
+    SharpECenterHeader17: TSharpECenterHeader;
+    SharpECenterHeader18: TSharpECenterHeader;
+    SharpECenterHeader19: TSharpECenterHeader;
+    chkColorBlend: TJvXPCheckbox;
+    chkIconShadow: TJvXPCheckbox;
+    chkIconTrans: TJvXPCheckbox;
+    chkFontShadow: TJvXPCheckbox;
+    chkBold: TJvXPCheckbox;
+    chkItalic: TJvXPCheckbox;
+    chkUnderline: TJvXPCheckbox;
+    chkAnimTrans: TJvXPCheckbox;
+    chkAnimSize: TJvXPCheckbox;
+    chkAnimBrightness: TJvXPCheckbox;
+    chkAnimColorBlend: TJvXPCheckbox;
+    chkFontTrans: TJvXPCheckbox;
+    rdoIcon32: TJvXPCheckbox;
+    rdoIcon48: TJvXPCheckbox;
+    rdoIcon64: TJvXPCheckbox;
+    rdoIconCustom: TJvXPCheckbox;
+    chkAnim: TJvXPCheckbox;
     procedure IconColorsUiChange(Sender: TObject);
 
     procedure cbboldClick(Sender: TObject);
@@ -269,12 +261,6 @@ procedure TfrmDesktopSettings.UpdateIconPage;
 begin
   LockWindowUpdate(Self.Handle);
   try
-    // Set Grey Texts
-    lblIconSizeDet.Font.Color := clGrayText;
-    lblIconTransDet.Font.Color := clGrayText;
-    lblColorBlendDet.Font.Color := clGrayText;
-    lblIconShadowDet.Font.Color := clGrayText;
-    lblIconColorDet.Font.Color := clGrayText;
 
     // Icon Size
     sgbiconsize.Enabled := rdoIconCustom.checked;
@@ -283,21 +269,19 @@ begin
     else
       icon32.Bitmap.Assign(FWhite32);
     if rdoIcon48.Checked then
-      icon48.Bitmap.Assign(FBlue32)
+      icon48.Bitmap.Assign(FBlue48)
     else
-      icon48.Bitmap.Assign(FWhite32);
+      icon48.Bitmap.Assign(FWhite48);
     if rdoIcon64.Checked then
-      icon64.Bitmap.Assign(FBlue32)
+      icon64.Bitmap.Assign(FBlue64)
     else
-      icon64.Bitmap.Assign(FWhite32);
+      icon64.Bitmap.Assign(FWhite64);
 
     // Icon Color Blend
-    lblColorBlendDet.Enabled := chkColorBlend.Checked;
     sgbColorBlend.Enabled := chkColorBlend.Checked;
     sceIconColor.Items.Item[0].Visible := chkColorBlend.checked;
 
     // Icon Shadow Transparency
-    lblIconShadowDet.Enabled := chkIconShadow.Checked;
     sgbIconShadow.Enabled := chkIconShadow.Checked;
     sceIconColor.Items.Item[1].Visible := chkIconShadow.checked;
 
@@ -305,18 +289,13 @@ begin
     sceIconColor.Invalidate;
 
     // Icon Transparency
-    lblIconTransDet.Enabled := chkIconTrans.Checked;
     sgbIconTrans.Enabled := chkIconTrans.Checked;
-
-    // Icon Color Labels
-    lblIconColor.Enabled := (chkIconShadow.Checked or chkColorBlend.Checked);
-    lblIconColorDet.Enabled := (chkIconShadow.Checked or chkColorBlend.Checked);
 
     // Update Page Height
     if (chkIconShadow.Checked or chkColorBlend.Checked) then
-      Self.Height := 580
+      Self.Height := 680
     else
-      Self.Height := 360;
+      Self.Height := 440;
 
     // Refresh size
     CenterUpdateSize;
@@ -329,30 +308,19 @@ procedure TfrmDesktopSettings.UpdateAnimationPage;
 begin
   LockWindowUpdate(Self.Handle);
   try
-    // Set Grey Texts
-    lblAnimTransDet.Font.Color := clGrayText;
-    lblAnimSizeDet.Font.Color := clGrayText;
-    lblAnimBrightnessDet.Font.Color := clGrayText;
-    lblAnimColorBlendDet.Font.Color := clGrayText;
-    lblAnimDet.Font.Color := clGrayText;
-
     // Hide/Show Animation Options
     pnlAnim.Visible := chkAnim.checked;
 
     // Animation Transparency
-    lblAnimTransDet.Enabled := chkAnimTrans.Checked;
     sgbAnimTrans.Enabled := chkAnimTrans.Checked;
 
     // Animation Brightness
-    lblAnimBrightnessDet.Enabled := chkAnimBrightness.Checked;
     sgbAnimBrightness.Enabled := chkAnimBrightness.Checked;
 
     // Animation Size
-    lblAnimSizeDet.Enabled := chkAnimSize.Checked;
     sgbAnimSize.Enabled := chkAnimSize.Checked;
 
     // Animation Color Blend
-    lblAnimColorBlendDet.Enabled := chkAnimColorBlend.Checked;
     sgbAnimColorBlend.Enabled := chkAnimColorBlend.Checked;
     sceAnimColor.Visible := chkAnimColorBlend.Checked;
     sceAnimColor.Items.Item[0].Visible := chkAnimColorBlend.checked;
@@ -361,13 +329,13 @@ begin
     if chkAnim.Checked then begin
 
       if sceAnimColor.Visible then
-        Self.Height := 580
+        Self.Height := 520
       else
-        Self.Height := 360;
+        Self.Height := 380;
 
     end
     else
-      Self.Height := 50;
+      Self.Height := 70;
 
     // Refresh size
     CenterUpdateSize;
@@ -391,15 +359,7 @@ begin
   LockWindowUpdate(Self.Handle);
   try
 
-    // Set Grey Texts
-    lblFontNameDet.Font.Color := clGrayText;
-    lblFontSizeDet.Font.Color := clGrayText;
-    lblFontTransDet.Font.Color := clGrayText;
-    lblFontStyleDet.Font.Color := clGrayText;
-    lblFontColorDet.Font.Color := clGrayText;
-
     // Font Transparency
-    lblFontTransDet.Enabled := chkFontTrans.Checked;
     sgbFontTrans.Enabled := chkFontTrans.Checked;
 
     // Update Page Height
@@ -416,12 +376,6 @@ begin
   LockWindowUpdate(Self.Handle);
   try
 
-    // Set Grey Texts
-    lblFontShadowDet.Font.Color := clGrayText;
-    lblFontShadowTypeDet.Font.Color := clGrayText;
-    lblFontShadowTransDet.Font.Color := clGrayText;
-    lblFontShadowColDet.Font.Color := clGrayText;
-
     // Font Shadow
     pnlTextShadow.Visible := chkFontShadow.Checked;
 
@@ -429,7 +383,7 @@ begin
     if chkFontShadow.Checked then
       Self.Height := 440
     else
-      Self.Height := 50;
+      Self.Height := 85;
 
     CenterUpdateSize;
 
@@ -451,9 +405,9 @@ begin
   rdoIcon64.Checked := False;
   rdoIconCustom.Checked := False;
 
-  TRadioButton(Sender).OnClick := nil;
-  TRadioButton(Sender).Checked := True;
-  TRadioButton(Sender).OnClick := rdoIconCustomClick;
+  TJvXPCheckbox(Sender).OnClick := nil;
+  TJvXPCheckbox(Sender).Checked := True;
+  TJvXPCheckbox(Sender).OnClick := rdoIconCustomClick;
 
   UpdateIconPage;
   SendUpdate;

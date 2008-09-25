@@ -254,11 +254,10 @@ begin
 end;
 
 procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+  var ADescription: String);
 begin
   AName := 'Desktop';
-  ATitle := Format('Desktop Configuration for "%s"',[APluginID]);
-  ADescription := 'Define what desktop options you want to use for this theme.';
+  ADescription := Format('Desktop Configuration for "%s"',[APluginID]);
 end;
 
 procedure ClickTab(ATab: TStringItem);
@@ -285,11 +284,16 @@ begin
     Name := 'Desktop';
     Description := 'Desktop Theme Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.5.2';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suDesktopIcon)]);
   end;
+end;
+
+procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
+begin
+  AssignThemeToForm(ATheme,frmDesktopSettings);
 end;
 
 exports
@@ -299,6 +303,7 @@ exports
   SetText,
   GetMetaData,
   AddTabs,
+  GetCenterTheme,
   ClickTab;
 
 end.
