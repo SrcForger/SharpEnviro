@@ -154,8 +154,6 @@ begin
 end;
 
 procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
-var
-  i: integer;
 begin
   AssignThemeToForm(ATheme,frmBMon);
 end;
