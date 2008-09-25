@@ -243,10 +243,10 @@ exports
   Close,
   Save,
   SetText,
-  UpdatePreview,
   GetMetaData,
   AddTabs,
   GetCenterTheme,
+  UpdatePreview,
   ClickTab;
 
 end.

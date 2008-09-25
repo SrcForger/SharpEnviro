@@ -112,7 +112,7 @@ begin
     w := round(Mon.Width * F);
 
     PreviewBmp.SetSize(w,h);
-    PreviewBmp.Clear(FTheme.Background);
+    PreviewBmp.Clear(FTheme.BackgroundText);
 
     monBoundsRect := Mon.BoundsRect;
     for  n := 0 to GetSharpBarCount - 1 do
@@ -193,7 +193,8 @@ begin
   end;
 
   ABmp.SetSize(PreviewBmp.Width+2,PreviewBmp.Height+2);
-  ABmp.Clear(color32(FTheme.BackgroundText));
+  ABmp.Clear(color32(FTheme.ContainerColor));
+
   frmDASettings.PreviewBmp.DrawTo(ABmp,1,1);
 end;
 
