@@ -2,7 +2,7 @@
 <SharpCenter>
   <Sections>
     <SharpDesk>
-      <Dll>_Components\_Componentdlls\SharpDesk.dll</Dll>
+      <Dll>_Components\_Componentdlls\DesktopComponent.dll</Dll>
       <Icon>desktopEdit.png</Icon>
     </SharpDesk>
   </Sections>
