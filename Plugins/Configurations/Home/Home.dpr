@@ -57,9 +57,6 @@ type
 
     procedure ClickPluginTab(ATab: TStringItem); stdCall;
     procedure AddPluginTabs(ATabItems: TStringList); stdCall;
-
-    function GetPluginName: String; override; stdCall;
-    function GetPluginDescriptionText: String; override; stdCall;
     procedure Refresh; override; stdcall;
 
   end;
@@ -100,20 +97,6 @@ begin
   PluginHost := APluginHost;
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
-var
-  meta: TMetaData;
-  priority, delay: integer;
-begin
-  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, priority, delay);
-  result := format('Welcome to SharpEnviro (%s)',[meta.Version]);
-end;
-
-function TSharpCenterPlugin.GetPluginName: String;
-begin
-  result := 'Home';
-end;
-
 function TSharpCenterPlugin.Open: Cardinal;
 begin
   frmHome := TfrmHome.Create(nil);
@@ -128,11 +111,18 @@ begin
 end;
 
 function GetMetaData(): TMetaData;
+var
+  meta: TMetaData;
+  priority, delay: integer;
+  tmp: string;
 begin
+  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, priority, delay);
+  tmp := format('Welcome to SharpEnviro (%s)',[meta.Version]);
+
   with result do
   begin
     Name := 'Home';
-    Description := 'Home Configuration';
+    Description := tmp;
     Author := 'Lee Green (lee@sharpenviro.com)';
     Version := '0.7.6.0';
     DataType := tteConfig;
