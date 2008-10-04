@@ -37,82 +37,124 @@ uses
   SysUtils,
   JvPageList,
   Graphics,
-  uSharpDeskSettingsWnd in 'uSharpDeskSettingsWnd.pas' {frmDeskSettings},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
+  uSharpDeskSettingsWnd in 'uSharpDeskSettingsWnd.pas' {frmSettings},
   uSharpDeskTDeskSettings in '..\..\..\Components\SharpDesk\Units\uSharpDeskTDeskSettings.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
+  SharpETabList,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  SharpCenterApi,
+  SharpApi;
 
 {$E .dll}
 
 {$R *.res}
 
-var
-  XMLSettings : TDeskSettings;
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginTabs )
+  private
+    FXmlDeskSettings: TDeskSettings;
+    procedure LoadSettings;
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+
+    procedure Save; override; stdcall;
+
+    procedure ClickPluginTab(ATab: TStringItem); stdCall;
+    procedure AddPluginTabs(ATabItems: TStringList); stdCall;
+    function GetPluginDescriptionText: String; override; stdCall;
+    procedure Refresh; override; stdcall;
+    destructor Destroy; override;
+
+    property XmlDeskSettings: TDeskSettings read FXmlDeskSettings write
+      FXmlDeskSettings;
+  end;
+
+{ TSharpCenterPlugin }
+
+procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
 begin
-  if frmDeskSettings = nil then frmDeskSettings := TfrmDeskSettings.Create(nil);
-  if XMLSettings = nil then XMLSettings := TDeskSettings.Create(nil);
-
-  uVistaFuncs.SetVistaFonts(frmDeskSettings);
-  frmDeskSettings.ParentWindow := aowner;
-  frmDeskSettings.Left := 0;
-  frmDeskSettings.Top := 0;
-  frmDeskSettings.BorderStyle := bsNone;
-
-  frmDeskSettings.cb_grid.Checked := XMLSettings.Grid;
-  frmDeskSettings.sgb_gridx.Value := XMLSettings.GridX;
-  frmDeskSettings.sgb_gridy.Value := XMLSettings.GridY;
-  frmDeskSettings.cb_singleclick.Checked := XMLSettings.SingleClick;
-  frmDeskSettings.cb_amm.Checked := XMLSettings.AdvancedMM;
-  frmDeskSettings.cb_dd.Checked := XMLSettings.DragAndDrop;
-  frmDeskSettings.cb_wpwatch.Checked := XMLSettings.WallpaperWatch;
-  frmDeskSettings.cb_autorotate.Checked := XMLSettings.ScreenRotAdjust;
-  frmDeskSettings.cb_adjustsize.Checked := XMLSettings.ScreenSizeAdjust;
-  frmDeskSettings.BuildMenuList(XMLSettings.MenuFile,XMLSettings.MenuFileShift);
-
-  frmDeskSettings.Show;
-  result := frmDeskSettings.Handle;
+  ATabItems.AddObject('Desktop',frmSettings.tabDesktop);
+  ATabItems.AddObject('Objects',frmSettings.tabObjects);
+  ATabItems.AddObject('Menu',frmSettings.tabMenu);
 end;
 
-procedure Save;
+procedure TSharpCenterPlugin.ClickPluginTab(ATab: TStringItem);
 begin
-  XMLSettings.Grid  := frmDeskSettings.cb_grid.Checked;
-  XMLSettings.GridX := frmDeskSettings.sgb_gridx.Value;
-  XMLSettings.GridY := frmDeskSettings.sgb_gridy.Value;
-  XMLSettings.SingleClick := frmDeskSettings.cb_singleclick.Checked;
-  XMLSettings.AdvancedMM := frmDeskSettings.cb_amm.Checked;
-  XMLSettings.DragAndDrop := frmDeskSettings.cb_dd.Checked;
-  XMLSettings.WallpaperWatch := frmDeskSettings.cb_wpwatch.Checked;
-  XMLSettings.ScreenRotAdjust := frmDeskSettings.cb_autorotate.Checked;
-  XMLSettings.ScreenSizeAdjust := frmDeskSettings.cb_adjustsize.Checked;
-  XMLSettings.MenuFile := frmDeskSettings.cbMenuList.Text;
-  XMLSettings.MenuFileshift := frmDeskSettings.cbMenuShift.Text;
-  XMLSettings.SaveSettings;
+  TTabSheet(ATab.FObject).Show;
 end;
 
-function Close : boolean;
+procedure TSharpCenterPlugin.Close;
 begin
-  result := True;
-  try
-    XMLSettings.Free;
-    XMLSettings := nil;
+  FreeAndNil(frmSettings);
+end;
 
-    frmDeskSettings.Close;
-    frmDeskSettings.Free;
-    frmDeskSettings := nil;
-  except
-    result := False;
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+begin
+  PluginHost := APluginHost;
+  FXmlDeskSettings := TDeskSettings.Create(nil);
+end;
+
+destructor TSharpCenterPlugin.Destroy;
+begin
+  inherited;
+  FXmlDeskSettings.Free;
+end;
+
+function TSharpCenterPlugin.GetPluginDescriptionText: String;
+begin
+  Result := 'Define advanced desktop and wallpaper functionality.';
+end;
+
+procedure TSharpCenterPlugin.LoadSettings;
+begin
+  with frmSettings, FXmlDeskSettings do begin
+    cb_grid.Checked := Grid;
+    sgb_gridx.Value := GridX;
+    sgb_gridy.Value := GridY;
+    cb_singleclick.Checked := SingleClick;
+    cb_amm.Checked := AdvancedMM;
+    cb_dd.Checked := DragAndDrop;
+    cb_wpwatch.Checked := WallpaperWatch;
+    cb_autorotate.Checked := ScreenRotAdjust;
+    cb_adjustsize.Checked := ScreenSizeAdjust;
+    BuildMenuList(MenuFile,MenuFileShift);
   end;
 end;
 
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+function TSharpCenterPlugin.Open: Cardinal;
 begin
-  AName := 'Desktop';
-  ATitle := 'Desktop Configuration';
-  ADescription := 'Define advanced desktop and wallpaper functionality.';
+  if frmSettings = nil then frmSettings := TfrmSettings.Create(nil);
+  uVistaFuncs.SetVistaFonts(frmSettings);
 
+  result := PluginHost.Open(frmSettings);
+  frmSettings.PluginHost := PluginHost;
+  LoadSettings;
+end;
+
+procedure TSharpCenterPlugin.Refresh;
+begin
+  AssignThemeToForm(PluginHost.Theme,frmSettings);
+end;
+
+procedure TSharpCenterPlugin.Save;
+begin
+  with frmSettings, FXmlDeskSettings do begin
+    Grid  := cb_grid.Checked;
+    GridX := sgb_gridx.Value;
+    GridY := sgb_gridy.Value;
+    SingleClick := cb_singleclick.Checked;
+    AdvancedMM := cb_amm.Checked;
+    DragAndDrop := cb_dd.Checked;
+    WallpaperWatch := cb_wpwatch.Checked;
+    ScreenRotAdjust := cb_autorotate.Checked;
+    ScreenSizeAdjust := cb_adjustsize.Checked;
+    MenuFile := cbMenuList.Text;
+    MenuFileshift := cbMenuShift.Text;
+    SaveSettings;
+  end;
 end;
 
 function GetMetaData(): TMetaData;
@@ -121,34 +163,23 @@ begin
   begin
     Name := 'Desktop';
     Description := 'Desktop Configuration';
-    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Author := 'Lee Green (lee@sharpenviro.com)';
+    Version := '0.7.6.0';
     DataType := tteConfig;
-    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
-      Integer(suSharpDesk)]);
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suCenter)]);
   end;
 end;
 
-procedure ClickTab(ATab: TStringItem);
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
 begin
-  TTabSheet(ATab.FObject).Show;
-end;
-
-procedure AddTabs(var ATabs: TStringList);
-begin
-  ATabs.AddObject('Desktop',frmDeskSettings.tabDesktop);
-  ATabs.AddObject('Objects',frmDeskSettings.tabObjects);
-  ATabs.AddObject('Menu',frmDeskSettings.tabMenu);
+  result := TSharpCenterPlugin.Create(APluginHost);
 end;
 
 exports
-  Open,
-  Close,
-  Save,
-  SetText,
-  ClickTab,
-  AddTabs,
+  InitPluginInterface,
   GetMetaData;
 
+begin
 end.
 

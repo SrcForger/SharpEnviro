@@ -30,7 +30,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterApi,
-  SharpEGaugeBoxEdit, ImgList, PngImageList, JvPageList, JvExControls, ExtCtrls;
+  SharpEGaugeBoxEdit, ImgList, PngImageList, JvPageList, JvExControls, ExtCtrls,
+  ISharpCenterHostUnit, SharpECenterHeader, JvXPCore, JvXPCheckCtrls;
 
 type
   TStringObject = Class(TObject)
@@ -39,35 +40,35 @@ type
   end;
 
 type
-  TfrmDeskSettings = class(TForm)
+  TfrmSettings = class(TForm)
     pcOptions: TPageControl;
     tabObjects: TTabSheet;
-    Panel1: TPanel;
-    Label4: TLabel;
-    cb_grid: TCheckBox;
+    tabDesktop: TTabSheet;
+    tabMenu: TTabSheet;
+    SharpECenterHeader1: TSharpECenterHeader;
+    SharpECenterHeader2: TSharpECenterHeader;
+    SharpECenterHeader3: TSharpECenterHeader;
+    SharpECenterHeader4: TSharpECenterHeader;
+    cb_adjustsize: TJvXPCheckbox;
+    cb_autorotate: TJvXPCheckbox;
+    cb_amm: TJvXPCheckbox;
+    cb_wpwatch: TJvXPCheckbox;
+    cb_dd: TJvXPCheckbox;
+    cb_singleclick: TJvXPCheckbox;
+    SharpECenterHeader5: TSharpECenterHeader;
+    SharpECenterHeader6: TSharpECenterHeader;
+    SharpECenterHeader7: TSharpECenterHeader;
+    pnlGrid: TPanel;
     sgb_gridy: TSharpeGaugeBox;
     sgb_gridx: TSharpeGaugeBox;
-    cb_dd: TCheckBox;
-    JvLabel1: TLabel;
-    tabDesktop: TTabSheet;
-    cb_adjustsize: TCheckBox;
-    Label5: TLabel;
-    Label6: TLabel;
-    cb_autorotate: TCheckBox;
-    tabMenu: TTabSheet;
-    Panel2: TPanel;
-    Label8: TLabel;
-    Label10: TLabel;
-    cbMenuList: TComboBox;
-    cbMenuShift: TComboBox;
-    Label9: TLabel;
-    Label7: TLabel;
+    cb_grid: TJvXPCheckbox;
+    SharpECenterHeader8: TSharpECenterHeader;
+    Panel1: TPanel;
     Label1: TLabel;
-    cb_singleclick: TCheckBox;
-    cb_amm: TCheckBox;
-    cb_wpwatch: TCheckBox;
-    Label3: TLabel;
+    cbMenuList: TComboBox;
+    Panel3: TPanel;
     Label2: TLabel;
+    cbMenuShift: TComboBox;
     procedure sgb_gridyChangeValue(Sender: TObject; Value: Integer);
     procedure cb_ddClick(Sender: TObject);
     procedure cb_ammClick(Sender: TObject);
@@ -77,14 +78,18 @@ type
     procedure FormCreate(Sender: TObject);
     procedure cbMenuListChange(Sender: TObject);
   private
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure UpdateGridBox;
     procedure SendUpdate;
   public
     procedure BuildMenuList(cMenu,sMenu : String);
+
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
   end;
 
 var
-  frmDeskSettings: TfrmDeskSettings;
+  frmSettings: TfrmSettings;
 
 implementation
 
@@ -92,49 +97,41 @@ implementation
 
 { TfrmConfigListWnd }
 
-procedure TfrmDeskSettings.FormCreate(Sender: TObject);
+procedure TfrmSettings.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := true;
-  Panel1.DoubleBuffered := true;
 end;
 
-procedure TfrmDeskSettings.UpdateGridBox;
+procedure TfrmSettings.UpdateGridBox;
 begin
-  sgb_gridx.Visible := cb_grid.Checked;
-  sgb_gridy.Visible := cb_grid.Checked;
+  pnlGrid.Visible := cb_grid.Checked;
 end;
 
-procedure TfrmDeskSettings.FormShow(Sender: TObject);
+procedure TfrmSettings.FormShow(Sender: TObject);
 var
   i:Integer;
 begin
   UpdateGridBox;
-
-  For i := 0 to Pred(Self.ComponentCount) do
-    if Self.Components[i].ClassName = TLabel.ClassName then
-      if TLabel(Self.Components[i]).Tag = 1 then
-        TLabel(Self.Components[i]).Font.Color := clGray;
-
 end;
 
-procedure TfrmDeskSettings.cb_gridClick(Sender: TObject);
+procedure TfrmSettings.cb_gridClick(Sender: TObject);
 begin
   UpdateGridBox;
   SendUpdate;
 end;
 
-procedure TfrmDeskSettings.SendUpdate;
+procedure TfrmSettings.SendUpdate;
 begin
   if Visible then
-     CenterDefineSettingsChanged;
+     FPluginHost.SetSettingsChanged;
 end;
 
-procedure TfrmDeskSettings.cb_singleclickClick(Sender: TObject);
+procedure TfrmSettings.cb_singleclickClick(Sender: TObject);
 begin
   SendUpdate;
 end;
 
-procedure TfrmDeskSettings.BuildMenuList(cMenu,sMenu : String);
+procedure TfrmSettings.BuildMenuList(cMenu,sMenu : String);
 var
   sr : TSearchRec;
   Dir : String;
@@ -162,22 +159,22 @@ begin
      cbmenushift.ItemIndex := 0;
 end;
 
-procedure TfrmDeskSettings.cbMenuListChange(Sender: TObject);
+procedure TfrmSettings.cbMenuListChange(Sender: TObject);
 begin
   SendUpdate;
 end;
 
-procedure TfrmDeskSettings.cb_ammClick(Sender: TObject);
+procedure TfrmSettings.cb_ammClick(Sender: TObject);
 begin
   SendUpdate;
 end;
 
-procedure TfrmDeskSettings.cb_ddClick(Sender: TObject);
+procedure TfrmSettings.cb_ddClick(Sender: TObject);
 begin
   SendUpdate;
 end;
 
-procedure TfrmDeskSettings.sgb_gridyChangeValue(Sender: TObject;
+procedure TfrmSettings.sgb_gridyChangeValue(Sender: TObject;
   Value: Integer);
 begin
   SendUpdate;

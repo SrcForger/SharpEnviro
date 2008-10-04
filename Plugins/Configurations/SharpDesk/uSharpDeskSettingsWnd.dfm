@@ -1,9 +1,9 @@
-object frmDeskSettings: TfrmDeskSettings
+object frmSettings: TfrmSettings
   Left = 0
   Top = 0
   BorderStyle = bsNone
-  Caption = 'frmDeskSettings'
-  ClientHeight = 318
+  Caption = 'frmSettings'
+  ClientHeight = 376
   ClientWidth = 428
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object frmDeskSettings: TfrmDeskSettings
     Left = 0
     Top = 0
     Width = 428
-    Height = 317
+    Height = 368
     ActivePage = tabMenu
     Align = alTop
     Style = tsFlatButtons
@@ -29,282 +29,239 @@ object frmDeskSettings: TfrmDeskSettings
       Caption = 'tabDesktop'
       ImageIndex = 1
       TabVisible = False
-      ExplicitTop = 27
-      ExplicitHeight = 221
-      object Label5: TLabel
-        Tag = 1
+      object SharpECenterHeader1: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 26
-        Top = 29
-        Width = 386
-        Height = 32
-        Margins.Left = 26
-        Margins.Top = 4
-        Margins.Right = 8
-        Margins.Bottom = 0
+        Left = 5
+        Top = 0
+        Width = 410
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 10
+        Title = 'Desktop resolution adjustment'
+        Description = 
+          'Define whether the desktop resizes when the resolution is change' +
+          'd'
+        TitleColor = clWindowText
+        DescriptionColor = clGrayText
         Align = alTop
-        AutoSize = False
-        Caption = 
-          'Disable this option if you have problems with games which are of' +
-          'ten changing the screen resolution.'
-        Color = clWindow
-        EllipsisPosition = epEndEllipsis
-        ParentColor = False
-        Transparent = False
-        WordWrap = True
-        ExplicitWidth = 394
       end
-      object Label6: TLabel
-        Tag = 1
+      object SharpECenterHeader2: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 26
-        Top = 90
-        Width = 386
-        Height = 30
-        Margins.Left = 26
-        Margins.Top = 4
-        Margins.Right = 8
-        Margins.Bottom = 0
+        Left = 5
+        Top = 74
+        Width = 410
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 10
+        Title = 'Wallpaper rotation'
+        Description = 'Define whether the desktop rotates when the screen is rotated'
+        TitleColor = clWindowText
+        DescriptionColor = clGrayText
         Align = alTop
-        AutoSize = False
-        Caption = 
-          'Enable this option to allow SharpDesk to rotate the desktop wall' +
-          'paper, when the screen is rotated by 90'#176' (this will keep proper ' +
-          'wallpaper dimensions)'
-        Color = clWindow
-        EllipsisPosition = epEndEllipsis
-        ParentColor = False
-        Transparent = False
-        WordWrap = True
-        ExplicitTop = 187
-        ExplicitWidth = 394
       end
-      object Label3: TLabel
-        Tag = 1
+      object SharpECenterHeader3: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 26
-        Top = 211
-        Width = 386
-        Height = 34
-        Margins.Left = 26
-        Margins.Top = 4
-        Margins.Right = 8
-        Margins.Bottom = 0
+        Left = 5
+        Top = 148
+        Width = 410
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 10
+        Title = 'Memory management'
+        Description = 
+          'Define whether to allow swap file usage within SharpDesk. Reduce' +
+          's memory usage at a cost of performance.'
+        TitleColor = clWindowText
+        DescriptionColor = clGrayText
         Align = alTop
-        AutoSize = False
-        Caption = 
-          'Enabling this option will allow SharpDesk to monitor when anothe' +
-          'r application changes the wallpaper, and then update automatical' +
-          'ly.'
-        Color = clWindow
-        EllipsisPosition = epEndEllipsis
-        ParentColor = False
-        Transparent = False
-        WordWrap = True
-        ExplicitTop = 422
-        ExplicitWidth = 394
       end
-      object Label2: TLabel
-        Tag = 1
+      object SharpECenterHeader4: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 26
-        Top = 149
-        Width = 386
-        Height = 33
-        Margins.Left = 26
-        Margins.Top = 4
-        Margins.Right = 8
-        Margins.Bottom = 0
+        Left = 5
+        Top = 222
+        Width = 410
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 10
+        Title = 'Wallpaper monitoring'
+        Description = 
+          'Define whether to allow external applications to change the desk' +
+          'top wallapaper automatically'
+        TitleColor = clWindowText
+        DescriptionColor = clGrayText
         Align = alTop
-        AutoSize = False
-        Caption = 
-          'Enable this option to reduce the memory usage of SharpDesk by mo' +
-          'ving constantly unused data to the swap file.'
-        Color = clWindow
-        EllipsisPosition = epEndEllipsis
-        ParentColor = False
-        Transparent = False
-        WordWrap = True
-        ExplicitLeft = 30
-        ExplicitTop = 137
       end
-      object cb_adjustsize: TCheckBox
+      object cb_adjustsize: TJvXPCheckbox
         AlignWithMargins = True
-        Left = 8
-        Top = 8
-        Width = 404
+        Left = 3
+        Top = 47
+        Width = 412
         Height = 17
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
+        Margins.Top = 0
+        Margins.Right = 5
         Margins.Bottom = 0
-        Align = alTop
-        Caption = 'Adjust desktop size to resolution changes'
-        Checked = True
-        State = cbChecked
+        Caption = 'Enable desktop sizing to resolution changes'
         TabOrder = 0
-        OnClick = cb_ammClick
-        ExplicitWidth = 412
-      end
-      object cb_autorotate: TCheckBox
-        AlignWithMargins = True
-        Left = 8
-        Top = 69
-        Width = 404
-        Height = 17
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        Caption = 'Auto rotate wallpaper (Advanced)'
         Checked = True
         State = cbChecked
+        Align = alTop
+        OnClick = cb_ammClick
+      end
+      object cb_autorotate: TJvXPCheckbox
+        AlignWithMargins = True
+        Left = 3
+        Top = 121
+        Width = 412
+        Height = 17
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Caption = 'Enable wallpaper rotation (Advanced)'
         TabOrder = 1
-        OnClick = cb_ammClick
-        ExplicitLeft = 4
-        ExplicitTop = 51
-      end
-      object cb_amm: TCheckBox
-        AlignWithMargins = True
-        Left = 8
-        Top = 128
-        Width = 404
-        Height = 17
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
+        Checked = True
+        State = cbChecked
         Align = alTop
-        Caption = 'Memory management (Advanced)'
+        OnClick = cb_ammClick
+      end
+      object cb_amm: TJvXPCheckbox
+        AlignWithMargins = True
+        Left = 3
+        Top = 195
+        Width = 412
+        Height = 17
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Caption = 'Enable memory management (Advanced)'
         TabOrder = 2
-        OnClick = cb_ammClick
-        ExplicitTop = 275
-        ExplicitWidth = 412
-      end
-      object cb_wpwatch: TCheckBox
-        AlignWithMargins = True
-        Left = 8
-        Top = 190
-        Width = 404
-        Height = 17
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
         Align = alTop
-        Caption = 'Windows wallpaper monitoring (Advanced)'
-        TabOrder = 3
         OnClick = cb_ammClick
-        ExplicitTop = 506
-        ExplicitWidth = 412
+      end
+      object cb_wpwatch: TJvXPCheckbox
+        AlignWithMargins = True
+        Left = 3
+        Top = 269
+        Width = 412
+        Height = 17
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Caption = 'Enable wallpaper monitoring (Advanced)'
+        TabOrder = 3
+        Align = alTop
+        OnClick = cb_ammClick
       end
     end
     object tabObjects: TTabSheet
       Caption = 'tabObjects'
       TabVisible = False
-      ExplicitTop = 27
-      ExplicitHeight = 162
-      object JvLabel1: TLabel
-        Tag = 1
+      object cb_dd: TJvXPCheckbox
         AlignWithMargins = True
-        Left = 26
-        Top = 126
-        Width = 386
-        Height = 21
-        Margins.Left = 26
-        Margins.Top = 4
-        Margins.Right = 8
+        Left = 3
+        Top = 152
+        Width = 412
+        Height = 17
+        Margins.Top = 0
+        Margins.Right = 5
         Margins.Bottom = 0
+        Caption = 'Enable drag && drop'
+        TabOrder = 0
+        Checked = True
+        State = cbChecked
         Align = alTop
-        AutoSize = False
-        Caption = 
-          'Enable this option to enable drag and drop functionality within ' +
-          'SharpDesk.'
-        Color = clWindow
-        EllipsisPosition = epEndEllipsis
-        ParentColor = False
-        Transparent = False
-        WordWrap = True
-        ExplicitTop = 246
-        ExplicitWidth = 394
+        OnClick = cb_ddClick
       end
-      object Label1: TLabel
-        Tag = 1
+      object cb_singleclick: TJvXPCheckbox
         AlignWithMargins = True
-        Left = 26
-        Top = 176
-        Width = 386
-        Height = 35
-        Margins.Left = 26
-        Margins.Top = 4
-        Margins.Right = 8
+        Left = 3
+        Top = 226
+        Width = 412
+        Height = 17
+        Margins.Top = 0
+        Margins.Right = 5
         Margins.Bottom = 0
+        Caption = 'Single click action'
+        TabOrder = 1
         Align = alTop
-        AutoSize = False
-        Caption = 
-          'Enable this option to enable hyperlink click functionalty for ob' +
-          'jects.  When disabled, all objects will require a double click t' +
-          'o launch.'
-        EllipsisPosition = epEndEllipsis
-        Transparent = False
-        WordWrap = True
-        ExplicitTop = 358
-        ExplicitWidth = 394
+        OnClick = cb_singleclickClick
       end
-      object Panel1: TPanel
-        Left = 0
+      object SharpECenterHeader5: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 5
         Top = 0
-        Width = 420
-        Height = 97
+        Width = 410
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 10
+        Title = 'Object grid allignment'
+        Description = 'Define whether to allow snap to grid functionality for objects'
+        TitleColor = clWindowText
+        DescriptionColor = clGrayText
+        Align = alTop
+      end
+      object SharpECenterHeader6: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 5
+        Top = 105
+        Width = 410
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 10
+        Title = 'Drag and drop'
+        Description = 
+          'Define whether to allow drag and drop functionality for the desk' +
+          'top'
+        TitleColor = clWindowText
+        DescriptionColor = clGrayText
+        Align = alTop
+      end
+      object SharpECenterHeader7: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 5
+        Top = 179
+        Width = 410
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 10
+        Title = 'Single click action'
+        Description = 
+          'Define whether to enable hyper link functionality for all object' +
+          's'
+        TitleColor = clWindowText
+        DescriptionColor = clGrayText
+        Align = alTop
+      end
+      object pnlGrid: TPanel
+        AlignWithMargins = True
+        Left = 5
+        Top = 74
+        Width = 405
+        Height = 21
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 10
+        Margins.Bottom = 0
         Align = alTop
         BevelOuter = bvNone
-        Color = clWindow
-        ParentBackground = False
-        TabOrder = 0
-        ExplicitTop = 61
-        ExplicitWidth = 428
-        object Label4: TLabel
-          Tag = 1
-          AlignWithMargins = True
-          Left = 26
-          Top = 29
-          Width = 386
-          Height = 37
-          Margins.Left = 26
-          Margins.Top = 4
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alTop
-          AutoSize = False
-          Caption = 
-            'Enable this option to enable snap to grid functionality for obje' +
-            'cts. Disabled objects can be freely positioned.'
-          EllipsisPosition = epEndEllipsis
-          Transparent = False
-          WordWrap = True
-          ExplicitWidth = 394
-        end
-        object cb_grid: TCheckBox
-          AlignWithMargins = True
-          Left = 8
-          Top = 8
-          Width = 404
-          Height = 17
-          Margins.Left = 8
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alTop
-          Caption = 'Align objects to grid'
-          Checked = True
-          State = cbChecked
-          TabOrder = 0
-          OnClick = cb_gridClick
-        end
+        ParentColor = True
+        TabOrder = 5
         object sgb_gridy: TSharpeGaugeBox
-          Left = 26
-          Top = 69
+          Left = 0
+          Top = 0
           Width = 120
           Height = 21
           ParentBackground = False
@@ -317,10 +274,11 @@ object frmDeskSettings: TfrmDeskSettings
           PopPosition = ppRight
           PercentDisplay = False
           OnChangeValue = sgb_gridyChangeValue
+          BackgroundColor = clWindow
         end
         object sgb_gridx: TSharpeGaugeBox
-          Left = 160
-          Top = 69
+          Left = 126
+          Top = 0
           Width = 120
           Height = 21
           ParentBackground = False
@@ -333,142 +291,75 @@ object frmDeskSettings: TfrmDeskSettings
           PopPosition = ppRight
           PercentDisplay = False
           OnChangeValue = sgb_gridyChangeValue
+          BackgroundColor = clWindow
         end
       end
-      object cb_dd: TCheckBox
+      object cb_grid: TJvXPCheckbox
         AlignWithMargins = True
-        Left = 8
-        Top = 105
-        Width = 404
+        Left = 3
+        Top = 47
+        Width = 412
         Height = 17
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
+        Margins.Top = 0
+        Margins.Right = 5
         Margins.Bottom = 0
-        Align = alTop
-        Caption = 'Enable drag && drop'
+        Caption = 'Align objects to grid'
+        TabOrder = 6
         Checked = True
         State = cbChecked
-        TabOrder = 1
-        OnClick = cb_ddClick
-        ExplicitTop = 225
-        ExplicitWidth = 412
-      end
-      object cb_singleclick: TCheckBox
-        AlignWithMargins = True
-        Left = 8
-        Top = 155
-        Width = 404
-        Height = 17
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
         Align = alTop
-        Caption = 'Single click action'
-        TabOrder = 2
-        OnClick = cb_singleclickClick
-        ExplicitLeft = 12
-        ExplicitTop = 150
+        OnClick = cb_gridClick
       end
     end
     object tabMenu: TTabSheet
       Caption = 'tbMenu'
       ImageIndex = 2
       TabVisible = False
-      ExplicitTop = 27
-      ExplicitHeight = 162
-      object Label9: TLabel
-        Tag = 1
+      object SharpECenterHeader8: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 26
-        Top = 29
-        Width = 386
-        Height = 13
-        Margins.Left = 26
-        Margins.Top = 4
-        Margins.Right = 8
-        Margins.Bottom = 8
+        Left = 5
+        Top = 0
+        Width = 410
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 10
+        Title = 'Desktop menu'
+        Description = 'Define which menu to display on mouse click'
+        TitleColor = clWindowText
+        DescriptionColor = clGrayText
         Align = alTop
-        Caption = 
-          'Change which menu will be displayed on right click of the deskto' +
-          'p.'
-        Color = clWindow
-        ParentColor = False
-        Transparent = False
-        WordWrap = True
-        ExplicitTop = 16
       end
-      object Label7: TLabel
+      object Panel1: TPanel
         AlignWithMargins = True
-        Left = 8
-        Top = 8
-        Width = 404
-        Height = 17
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
+        Left = 5
+        Top = 47
+        Width = 405
+        Height = 25
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 10
         Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        Caption = 'Right click menu'
-        Color = clWindow
-        ParentColor = False
-        Transparent = False
-        WordWrap = True
-      end
-      object Panel2: TPanel
-        Left = 0
-        Top = 50
-        Width = 420
-        Height = 54
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
-        Color = clWindow
         ParentBackground = False
-        TabOrder = 0
-        ExplicitTop = 38
-        object Label8: TLabel
-          AlignWithMargins = True
-          Left = 26
-          Top = 36
-          Width = 394
-          Height = 16
-          Margins.Left = 26
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          AutoSize = False
-          Caption = 'Shift + Right Click'
-          Color = clWindow
-          EllipsisPosition = epEndEllipsis
-          ParentColor = False
-          Transparent = False
-          WordWrap = True
-        end
-        object Label10: TLabel
-          Left = 26
+        ParentColor = True
+        TabOrder = 1
+        ExplicitTop = 276
+        object Label1: TLabel
+          Left = 0
           Top = 7
-          Width = 394
-          Height = 16
-          Margins.Left = 26
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          AutoSize = False
+          Width = 49
+          Height = 13
           Caption = 'Right Click'
-          Color = clWindow
-          EllipsisPosition = epEndEllipsis
-          ParentColor = False
-          Transparent = False
-          WordWrap = True
         end
         object cbMenuList: TComboBox
           AlignWithMargins = True
-          Left = 160
+          Left = 114
           Top = 4
-          Width = 177
+          Width = 238
           Height = 21
           Margins.Left = 26
           Margins.Top = 4
@@ -479,11 +370,36 @@ object frmDeskSettings: TfrmDeskSettings
           TabOrder = 0
           OnChange = cbMenuListChange
         end
+      end
+      object Panel3: TPanel
+        AlignWithMargins = True
+        Left = 5
+        Top = 77
+        Width = 405
+        Height = 25
+        Margins.Left = 5
+        Margins.Top = 5
+        Margins.Right = 10
+        Margins.Bottom = 0
+        Align = alTop
+        AutoSize = True
+        BevelOuter = bvNone
+        ParentBackground = False
+        ParentColor = True
+        TabOrder = 2
+        ExplicitTop = 324
+        object Label2: TLabel
+          Left = 0
+          Top = 7
+          Width = 85
+          Height = 13
+          Caption = 'Shift + Right Click'
+        end
         object cbMenuShift: TComboBox
           AlignWithMargins = True
-          Left = 160
-          Top = 33
-          Width = 177
+          Left = 114
+          Top = 4
+          Width = 238
           Height = 21
           Margins.Left = 26
           Margins.Top = 4
@@ -491,7 +407,7 @@ object frmDeskSettings: TfrmDeskSettings
           Margins.Bottom = 0
           Style = csDropDownList
           ItemHeight = 13
-          TabOrder = 1
+          TabOrder = 0
           OnChange = cbMenuListChange
         end
       end
