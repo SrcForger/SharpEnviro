@@ -124,7 +124,7 @@ begin
     Name := 'Home';
     Description := tmp;
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7.6.0';
+    Version := meta.Version;
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
       Integer(suCenter)]);
