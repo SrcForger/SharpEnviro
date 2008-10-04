@@ -1,7 +1,7 @@
 ﻿{
-Source Name: DeskArea
-Description: DeskArea Configuration
-Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
+Source Name: Home
+Description: Home Configuration
+Copyright (C) Lee Green (lee@sharpenviro.com)
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -36,72 +36,44 @@ uses
   Graphics,
   uHomeWnd in 'uHomeWnd.pas' {frmHome},
   SharpCenterApi,
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas';
+  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
+
+  SharpETabList,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit;
 
 {$E .dll}
 
 {$R *.res}
 
-function GetControlByHandle(AHandle: THandle): TWinControl;
-  begin
-    Try
-      Result := Pointer(GetProp(AHandle,
-      PChar(Format('Delphi%8.8x', [GetCurrentProcessID]))));
-    Except
-      Result := nil;
-    End;
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginTabs )
+  private
+  public
+    constructor Create( APluginHost: ISharpCenterHost );
+
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+
+    procedure ClickPluginTab(ATab: TStringItem); stdCall;
+    procedure AddPluginTabs(ATabItems: TStringList); stdCall;
+
+    function GetPluginName: String; override; stdCall;
+    function GetPluginDescriptionText: String; override; stdCall;
+    procedure Refresh; override; stdcall;
+
   end;
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
+{ TSharpCenterPlugin }
+
+procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
 begin
-  if frmHome = nil then frmHome := TfrmHome.Create(nil);
-  uVistaFuncs.SetVistaFonts(frmHome);
-
-  frmHome.ParentWindow := aowner;
-  frmHome.Left := 0;
-  frmHome.Top := 0;
-
-  frmHome.Show;
-  result := frmHome.Handle;
+  ATabItems.AddObject('About',frmHome.tabCredits);
+  ATabItems.AddObject('Support',frmHome.tabUrls);
+  ATabItems.AddObject('Contribution',frmHome.tabUrls);
 end;
 
-function Close : boolean;
-begin
-  result := True;
-  try
-    frmHome.Close;
-    frmHome.Free;
-    frmHome := nil;
-  except
-    result := False;
-  end;
-end;
-
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ADescription: String);
-var
-  meta: TMetaData;
-  priority, delay: integer;
-begin
-  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, priority, delay);
-  ADescription := format('Welcome to SharpEnviro (%s)',[meta.Version]);
-end;
-
-function GetMetaData(): TMetaData;
-begin
-  with result do
-  begin
-    Name := 'Home';
-    Description := 'Home Configuration';
-    Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7.5.2';
-    DataType := tteConfig;
-    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
-      Integer(suCenter)]);
-  end;
-end;
-
-procedure ClickTab(ATab: TStringItem);
+procedure TSharpCenterPlugin.ClickPluginTab(ATab: TStringItem);
 begin
   TTabSheet(ATab.FObject).Show;
 
@@ -115,40 +87,69 @@ begin
     frmHome.lblUrls.Caption := 'Thanks to the following sites that contributed to SharpE. ' +
       'Without such opensource groups and products we could never finish what we always set out to acheive.';
   end;
+
 end;
 
-procedure AddTabs(var ATabs: TStringList);
+procedure TSharpCenterPlugin.Close;
 begin
-  if frmHome <> nil then
+  PluginHost.Close;
+end;
+
+constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
+begin
+  PluginHost := APluginHost;
+end;
+
+function TSharpCenterPlugin.GetPluginDescriptionText: String;
+var
+  meta: TMetaData;
+  priority, delay: integer;
+begin
+  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, priority, delay);
+  result := format('Welcome to SharpEnviro (%s)',[meta.Version]);
+end;
+
+function TSharpCenterPlugin.GetPluginName: String;
+begin
+  result := 'Home';
+end;
+
+function TSharpCenterPlugin.Open: Cardinal;
+begin
+  frmHome := TfrmHome.Create(nil);
+  SetVistaFonts(frmHome);
+
+  result := PluginHost.Open(frmHome);
+end;
+
+procedure TSharpCenterPlugin.Refresh;
+begin
+  AssignThemeToForm(PluginHost.Theme,frmHome);
+end;
+
+function GetMetaData(): TMetaData;
+begin
+  with result do
   begin
-    ATabs.AddObject('About',frmHome.tabCredits);
-    ATabs.AddObject('Support',frmHome.tabUrls);
-    ATabs.AddObject('Contribution',frmHome.tabUrls);
+    Name := 'Home';
+    Description := 'Home Configuration';
+    Author := 'Lee Green (lee@sharpenviro.com)';
+    Version := '0.7.6.0';
+    DataType := tteConfig;
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+      Integer(suCenter)]);
   end;
 end;
 
-procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
+function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
 begin
-  if frmHome <> nil then begin
-    with frmHome do begin
-      Theme := ATheme;
-      Font.Color := ATheme.PluginBackgroundText;
-      frmHome.Color := ATheme.PluginBackground;
-
-      AssignThemeToPluginListBox(ATheme,lbUsers);
-      AssignThemeToPluginListBox(ATheme,lbUrls);
-    end;
-  end;
+  result := TSharpCenterPlugin.Create(APluginHost);
 end;
 
 exports
-  Open,
-  Close,
-  ClickTab,
-  AddTabs,
-  GetMetaData,
-  GetCenterTheme,
-  SetText;
+  InitPluginInterface,
+  GetMetaData;
 
+begin
 end.
 

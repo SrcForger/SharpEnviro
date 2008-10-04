@@ -28,11 +28,15 @@ object frmHome: TfrmHome
     object tabCredits: TTabSheet
       Caption = 'tabCredits'
       TabVisible = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object imgLogo: TImage
         AlignWithMargins = True
         Left = 4
         Top = 4
-        Width = 497
+        Width = 151
         Height = 50
         Margins.Left = 4
         Margins.Top = 4
@@ -299,7 +303,7 @@ object frmHome: TfrmHome
         AlignWithMargins = True
         Left = 8
         Top = 62
-        Width = 493
+        Width = 491
         Height = 26
         Margins.Left = 8
         Margins.Top = 4
@@ -311,7 +315,6 @@ object frmHome: TfrmHome
           'ny others possible... Please email us your love by clicking on a' +
           'ny member below.'
         WordWrap = True
-        ExplicitWidth = 491
       end
       object lbUsers: TSharpEListBoxEx
         Left = 0
@@ -340,6 +343,7 @@ object frmHome: TfrmHome
         Colors.ItemColorSelected = clBtnFace
         Colors.CheckColorSelected = clBtnFace
         Colors.CheckColor = 15528425
+        Colors.DisabledColor = clBlack
         ItemHeight = 25
         OnClickItem = lbUsersClickItem
         OnGetCellCursor = lbUsersGetCellCursor
@@ -354,11 +358,15 @@ object frmHome: TfrmHome
       Caption = 'tabUrls'
       ImageIndex = 2
       TabVisible = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Image1: TImage
         AlignWithMargins = True
         Left = 4
         Top = 4
-        Width = 497
+        Width = 151
         Height = 50
         Margins.Left = 4
         Margins.Top = 4
@@ -618,12 +626,13 @@ object frmHome: TfrmHome
           ABD5567D03B9D6FE1423A9546C6C6C4E5656566AC50A194596FD6B64D8ABB5BF
           A491856CC3FF01006D11CA6FFD9B660000000049454E44AE426082}
         ExplicitTop = -31
+        ExplicitWidth = 497
       end
       object lblUrls: TLabel
         AlignWithMargins = True
         Left = 8
         Top = 62
-        Width = 493
+        Width = 467
         Height = 26
         Margins.Left = 8
         Margins.Top = 4
@@ -635,7 +644,6 @@ object frmHome: TfrmHome
           ' us a number of ways, either by email, using the web forum or in' +
           ' our Irc chat room.'
         WordWrap = True
-        ExplicitWidth = 467
       end
       object lbUrls: TSharpEListBoxEx
         Left = 0
@@ -664,6 +672,7 @@ object frmHome: TfrmHome
         Colors.ItemColorSelected = clBtnFace
         Colors.CheckColorSelected = clBtnFace
         Colors.CheckColor = 15528425
+        Colors.DisabledColor = clBlack
         ItemHeight = 25
         OnClickItem = lbUrlsClickItem
         OnGetCellCursor = lbUrlsGetCellCursor

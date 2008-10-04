@@ -108,6 +108,7 @@ implementation
 
 procedure TfrmHome.FormCreate(Sender: TObject);
 begin
+  lbUsers.DoubleBuffered := true;
   FUsers := TList.Create;
   FUrls := TList.Create;
 
