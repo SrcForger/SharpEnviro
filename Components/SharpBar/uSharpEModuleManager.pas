@@ -1,9 +1,9 @@
 {
 Source Name: uSharpEModuleManager.pas
-Description: Dll Module Handler
+Description: Dll Module Handler                               showmessage('boom');
 Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
 
-Source Forge Site
+Source Forge Site                                                        
 https://sourceforge.net/projects/sharpe/
 
 SharpE Site
@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
 unit uSharpEModuleManager;
-
+                         
 interface
 
 uses 
@@ -37,12 +37,16 @@ uses
   ExtCtrls,
   Menus,
   Math,
+  Controls,
   SharpESkinManager,
   SharpEBar,
   SharpEMiniThrobber,
   SharpCenterApi,
   SharpApi,
-  Controls;
+  uISharpBarModule,
+  uISharpESkin,
+  uISharpBar,
+  uSharpESkinInterface;
 
 
 { Note about the class structure:
@@ -75,58 +79,50 @@ type
   TModuleFile    = class
                    private
                      FFileName  : string;
-                     FParent    : hwnd;
                      FDllHandle : integer;
                      FLoaded    : boolean;
-                     FSkinManager : TSharpESkinManager;
-                     FBar         : TSharpEBar;
                      procedure LoadDll;
                      procedure UnloadDll;
                    public
-                     DllCreateModule    : function(ID,BarID : integer; parent : hwnd) : hwnd;
-                     DllCloseModule     : function(ID : integer) : boolean;
-                     DllPosChanged      : procedure(ID : integer);
-                     DllModuleMessage   : function (ID : integer; msg: string): integer;
-                     DllShowSettingsWnd : procedure(ID : integer);
-                     DllRefresh         : procedure(ID : integer);
-                     DllSetSize         : procedure(ID : integer; NewWidth : integer);
-                     DllUpdateMessage   : procedure(Part : TSU_UPDATE_ENUM; Param : integer);
-                     DllInitModule      : procedure(ID : integer);
+                     DllCreateModule : function(ID,BarID : integer; BarWnd : hwnd) : IInterface;
                      procedure Clear;
-                     constructor Create(pFileName : string; pParent : hwnd;
-                                        pSkinManager : TSharpESkinManager;
-                                        pBar         : TSharpEBar); reintroduce;
+                     constructor Create(pFileName : string); reintroduce;
                      destructor Destroy; override;
 
                      property FileName : string read FFileName;
-                     property Parent   : hwnd   read FParent;
+                     property Loaded : boolean read FLoaded;
                    end;
 
   TModule        = class
                    private
                      FOwnerForm  : TWinControl;
-                     FControl    : TWinControl;
-                     FHandle     : hwnd;
-                     FID         : integer;
                      FModuleFile : TModuleFile;
                      FPosition   : integer;
                      FThrobber   : TSharpEMiniThrobber;
+                     FInterface          : IInterface;
+                     FModuleInterface    : ISharpBarModule;
+                     FModuleManager      : TObject;
                    public
                      constructor Create(pOwnerForm  : TWinControl;
                                         pModuleFile : TModuleFile;
                                         pID : integer;
                                         pBarID : integer;
                                         pParent : hwnd;
-                                        pPosition : integer); reintroduce;
+                                        pPosition : integer;
+                                        pMM : TObject); reintroduce;
                      destructor Destroy; override;
+                     procedure UpdateBackgroundW(NewWidth : integer);
+                     procedure UpdateBackgroundL(NewLeft : integer);
+                     procedure UpdateBackgroundS(NewTop, NewHeight : integer);
+                     procedure UpdateBackgroundF(NewLeft, NewTop, NewWidth, NewHeight : integer);
+                     procedure UpdateBackground; 
 
-                     property ID      : integer     read FID;
-                     property Control : TWinControl read FControl;
-                     property Handle  : hwnd        read FHandle;
+                     property ModuleManager : TObject read FModuleManager;
                      property ModuleFile : TModuleFile read FModuleFile;
                      property Position : integer    read FPosition write FPosition;
                      property OwnerForm : TWinControl read FOwnerForm;
                      property Throbber : TSharpEMiniThrobber read FThrobber write FThrobber;
+                     property mInterface : ISharpBarModule read FModuleInterface;
                    end;
 
   TModuleManager = class
@@ -139,7 +135,8 @@ type
                      FModuleFiles       : TObjectList;
                      FModules           : TObjectList;
                      FParent            : hwnd;
-                     FSkinManager       : TSharpESkinManager;
+                     FSkinInterface     : ISharpESkin;
+                     FBarInterface      : ISharpBar;
                      FBar               : TSharpEBar;
                      FThrobberMenu      : TPopupMenu;
                      FThrobberMovePoint : TPoint;
@@ -153,12 +150,14 @@ type
                      procedure SetShowMiniThrobbers(Value : Boolean);
                    public
                      constructor Create(pParent : hwnd;
-                                        pSkinManager : TSharpESkinManager;
+                                        pSkinInterface : ISharpESkin;
+                                        pBarInterface : ISharpBar;
                                         pBar         : TSharpEBar); reintroduce;
                      destructor Destroy; override;
                      procedure Clear;
                      procedure UnloadModules;
-                     procedure Unload(ID : integer);
+                     procedure Unload(Item : TModule); overload;
+                     procedure Unload(ID : integer); overload;
                      procedure Delete(ID : integer);
                      procedure Clone(ID : integer);
                      procedure CreateModule(MFID : integer; Position : integer);
@@ -191,6 +190,9 @@ type
                      procedure OnMiniThrobberMouseMove(Sender : TObject; Shift: TShiftState; X, Y: integer);
                      procedure OnDragReleaseTimerOnTimer(Sender : TObject);
                      procedure DebugOutput(Msg: string; Level, msgtype: integer);
+                     function GetModuleHeight : integer;
+                     function GetModuleTop : integer;
+                     procedure UpdateModuleHeights;
 
                      property ModuleDirectory : string       read FDirectory;
                      property Parent          : hwnd         read FParent;
@@ -200,6 +202,8 @@ type
                      property ShowMiniThrobbers : Boolean    read FShowMiniThrobbers write SetShowMiniThrobbers;
                      property BarID           : integer      read FBarID write FBarID;
                      property BarName         : string        read FBarName write FBarName;
+                     property SkinInterface   : ISharpESkin read FSkinInterface;
+                     property BarInterface    : ISharpBar read FBarInterface;
                    end;
 
 type
@@ -233,7 +237,8 @@ end;
 // ############## TModuleManager #################
 
 constructor TModuleManager.Create(pParent : hwnd;
-                                  pSkinManager : TSharpESkinManager;
+                                  pSkinInterface : ISharpESkin;
+                                  pBarInterface : ISharpBar;
                                   pBar         : TSharpEBar);
 begin
   inherited Create;
@@ -241,7 +246,8 @@ begin
   FDragLastBar  := 0;
   FDragForm     := nil;
   FParent       := pParent;
-  FSkinManager  := pSkinManager;
+  FSkinInterface  := pSkinInterface;
+  FBarInterface := pBarInterface;
   FBar          := pBar;
   FShowMiniThrobbers := True;
   FModuleSpacing := 4;
@@ -258,6 +264,8 @@ end;
 destructor TModuleManager.Destroy;
 begin
   FShutdown := True;
+  FBarInterface := nil;
+  FSkinInterface := nil;
   Clear;
   FModules.Free;
   FModules := nil;
@@ -297,13 +305,17 @@ end;
 procedure TModuleManager.BroadcastPluginUpdate(part : TSU_UPDATE_ENUM; param : integer = 0);
 var
   n : integer;
-  mf : TModuleFile;
+  temp : TModule;
 begin
-  for n := 0 to FModuleFiles.Count - 1 do
+  for n := 0 to FModules.Count - 1 do
   begin
-    mf := TModuleFile(FModuleFiles.Items[n]);
-    if @mf.DllUpdateMessage <> nil then
-       mf.DllUpdateMessage(part,param);
+    temp := TModule(FModules.Items[n]);
+    if [part] <= [suBackground,suTheme,suSkinFileChanged,suScheme] then
+    begin
+      temp.UpdateBackground;
+      temp.mInterface.Form.Repaint;
+    end;
+    temp.mInterface.UpdateMessage(part,param);
   end;
 end;
 
@@ -316,8 +328,8 @@ begin
   for n := FModules.Count - 1 downto 0 do
   begin
     tempModule := TModule(FModules.Items[n]);
-    if @tempModule.ModuleFile.DllModuleMessage <> nil then
-       tempModule.ModuleFile.DllModuleMessage(tempModule.ID,msg);
+    if tempModule.ModuleFile.Loaded then 
+      tempModule.mInterface.ModuleMessage(msg);
   end;
 end;
 
@@ -353,7 +365,7 @@ begin
     for i := 0 to ModuleManager.Modules.Count - 1 do begin
       tempModule := TModule(ModuleManager.Modules.Items[i]);
       with Items.Add('Item') do begin
-        Items.Add('ID', tempModule.ID);
+        Items.Add('ID', tempModule.mInterface.ID);
         Items.Add('Position', tempModule.Position);
         Items.Add('Module', ExtractFileName(tempModule.ModuleFile.FileName));
       end;
@@ -376,13 +388,10 @@ begin
   for n := 0 to FModules.Count - 1 do
   begin
     tempModule := TModule(FModules.Items[n]);
-    if tempModule.ID = ID then
+    if tempModule.mInterface.ID = ID then
     begin
-      if assigned(tempModule.ModuleFile.DllModuleMessage) then
-      begin
-        result := tempModule.ModuleFile.DllModuleMessage(ID,msg);
-        exit;
-      end;
+      tempModule.mInterface.ModuleMessage(msg);
+      exit;
     end;
   end;
 end;
@@ -431,10 +440,10 @@ begin
   for n := 0 to FModules.Count - 1 do
   begin
     TempModule := TModule(FModules.Items[n]);
-    if TempModule.ID = ID then
+    if TempModule.mInterface.ID = ID then
     begin
       MF := TempModule.ModuleFile;
-      MF.DLLCloseModule(ID);
+      TempModule.mInterface.CloseModule;
       FModules.Delete(n);
 
       if FileExists(Dir + inttostr(ID) + '.xml') then
@@ -465,7 +474,36 @@ end;
 procedure TModuleManager.UnloadModules;
 begin
   while FModules.Count <> 0 do
-        Unload(TModule(FModules.Items[0]).ID);
+    Unload(TModule(FModules.Items[0]));
+end;
+
+procedure TModuleManager.Unload(Item : TModule);
+var
+  MF : TModuleFile;
+  hm : boolean;
+  i : integer;
+begin
+  if Item = nil then
+    exit;
+
+  MF := Item.ModuleFile;
+  Item.mInterface.CloseModule;
+  FModules.Remove(Item);
+
+  // Check if the same module file has other modules loaded...
+  hm := False;
+  for i := 0 to FModules.Count - 1 do
+  begin
+    if TModule(FModules.Items[i]).ModuleFile = MF then
+    begin
+      hm := True;
+      break;
+    end;
+  end;
+  if not hm then
+    MF.UnloadDll; // No other modules loaded by that Module File... unload the dll
+
+  FixModulePositions;
 end;
 
 // Unload a module
@@ -473,33 +511,13 @@ procedure TModuleManager.Unload(ID : integer);
 var
   n : integer;
   TempModule : TModule;
-  MF : TModuleFile;
-  i : integer;
-  hm : boolean;
 begin
   for n := 0 to FModules.Count - 1 do
   begin
     TempModule := TModule(FModules.Items[n]);
-    if TempModule.ID = ID then
+    if TempModule.mInterface.ID = ID then
     begin
-      MF := TempModule.ModuleFile;
-      MF.DLLCloseModule(ID);
-      FModules.Delete(n);
-
-      // Check if the same module file has other modules loaded...
-      hm := False;
-      for i := 0 to FModules.Count - 1 do
-      begin
-        if TModule(FModules.Items[i]).ModuleFile = MF then
-        begin
-          hm := True;
-          break;
-        end;
-      end;
-      if not hm then
-         MF.UnloadDll; // No other modules loaded by that Module File... unload the dll
-
-      FixModulePositions;
+      Unload(TempModule);
       exit;
     end;
   end;
@@ -603,7 +621,7 @@ begin
     setlength(s,0);
     for n := 0 to 6 do s := s + inttostr(random(10));
     for n := 0 to FModules.Count -1 do
-        if TModule(FModules.Items[n]).ID = strtoint(s) then
+        if TModule(FModules.Items[n]).mInterface.ID = strtoint(s) then
         begin
           b := false;
           break;
@@ -687,11 +705,10 @@ begin
     pFile := TModuleFile(FModuleFiles.Items[n]);
     if ExtractFileName(pFile.FileName) = Module then
     begin
-      pModule := TModule.Create(FBar.aform,pFile,ID,FBarID,FParent,Position);
+      pModule := TModule.Create(FBar.aform,pFile,ID,FBarID,FParent,Position,self);
       if Index <> -1 then FModules.Insert(Index,pModule)
          else FModules.Add(pModule);
-      if @pModule.ModuleFile.DllInitModule <> nil then
-         pModule.ModuleFile.DllInitModule(pModule.ID);
+      pModule.mInterface.InitModule;
       result := pModule;
     end;
   end;
@@ -734,6 +751,13 @@ begin
   result := -1;
 end;
 
+function TModuleManager.GetModuleHeight: integer;
+begin
+  result := FSkinInterface.SkinManager.Skin.BarSkin.SkinDim.HeightAsInt -
+            FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.XAsInt -
+            FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.YAsInt;
+end;
+
 // Load all module dll files from a directory
 procedure TModuleManager.RefreshFromDirectory(pDirectory : string);
 var
@@ -747,7 +771,7 @@ begin
   repeat
     if GetModuleFileByFileName(FDirectory + sr.Name) = nil then
     begin
-      temp := TModuleFile.Create(FDirectory + sr.Name,FParent, FSkinManager, FBar);
+      temp := TModuleFile.Create(FDirectory + sr.Name);
       FModuleFiles.Add(temp);
     end;
   until FindNext(sr) <> 0;
@@ -772,7 +796,7 @@ begin
   for n := 0 to FModules.Count - 1 do
   begin
     pModule := TModule(FModules.Items[n]);
-    size := size + pModule.Control.Width;
+    size := size + pModule.mInterface.MinSize;
     if pModule.Throbber.Visible then
        size := size + pModule.Throbber.Width + FModuleSpacing
        else size := size + FModuleSpacing;
@@ -885,9 +909,9 @@ begin
 
   // get left/right offets for plugin area
   if FBar.ShowThrobber then
-    lo := FSkinManager.Skin.BarSkin.PAXoffset.XAsInt
+    lo := FSkinInterface.SkinManager.Skin.BarSkin.PAXoffset.XAsInt
   else lo := FBar.Throbber.Left;
-  ro := FSkinManager.Skin.BarSkin.PAXoffset.YAsInt;
+  ro := FSkinInterface.SkinManager.Skin.BarSkin.PAXoffset.YAsInt;
 
   result := maxsize - ro - lo - FModules.Count * MTWidth;
 end;
@@ -897,7 +921,7 @@ var
   n : integer;
 begin
   for n := 0 to FModules.Count - 1 do
-      if TModule(FModules.Items[n]).ID = ID then
+      if TModule(FModules.Items[n]).mInterface.ID = ID then
       begin
         result := n;
         exit;
@@ -905,12 +929,17 @@ begin
   result := -1;
 end;
 
+function TModuleManager.GetModuleTop: integer;
+begin
+  result := FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.XAsInt;
+end;
+
 function TModuleManager.GetModule(ID : integer) : TModule;
 var
   n : integer;
 begin
   for n := 0 to FModules.Count - 1 do
-      if TModule(FModules.Items[n]).ID = ID then
+      if TModule(FModules.Items[n]).mInterface.ID = ID then
       begin
         result := TModule(FModules.Items[n]);
         exit;
@@ -955,12 +984,12 @@ begin
       tempModule := GetModule(FThrobberMoveID);
       if tempModule = nil then exit;
       index := FModules.IndexOf(TempModule);
-      pos := tempModule.FControl.ClientToScreen(Point(tempModule.Control.Left,0));
+      pos := tempModule.mInterface.Form.ClientToScreen(Point(tempModule.mInterface.Form.Left,0));
       if index>0 then
       begin
         checkModule := TModule(FModules.Items[index -1]);
-        Cpos := FBar.aform.ClientToScreen(Point(CheckModule.Control.Left,0));
-        if MP.X <= CPos.X + CheckModule.FControl.Width then
+        Cpos := FBar.aform.ClientToScreen(Point(CheckModule.mInterface.Form.Left,0));
+        if MP.X <= CPos.X + CheckModule.mInterface.Form.Width then
         begin
           if (MP.X <= CPos.X) and
              ((FBar.HorizPos <> hpFull) or
@@ -988,10 +1017,10 @@ begin
       if (index < FModules.Count - 1) then
       begin
         checkModule := TModule(FModules.Items[index +1]);
-        Cpos := FBar.aform.ClientToScreen(Point(CheckModule.Control.Left,0));
+        Cpos := FBar.aform.ClientToScreen(Point(CheckModule.mInterface.Form.Left,0));
         if MP.X >= CPos.X then
         begin
-          if (MP.X >= CPos.X + CheckModule.Control.Width) and
+          if (MP.X >= CPos.X + CheckModule.mInterface.Form.Width) and
              ((FBar.HorizPos <> hpFull) or
              ((FBar.HorizPos = hpFull) and (checkmodule.Position = tempModule.Position))) then
           begin
@@ -1060,8 +1089,8 @@ begin
         if FDragForm = nil then
         begin
           FDragForm := TForm.Create(nil);
-          FDragForm.Width := tempModule.Control.Width;
-          FDragForm.Height := tempModule.Control.Height;
+          FDragForm.Width := tempModule.mInterface.Form.Width;
+          FDragForm.Height := tempModule.mInterface.Form.Height;
           FDragForm.BorderStyle := bsNone;
           SetWindowLong(FDragForm.handle, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
           FDragForm.AlphaBlend := True;
@@ -1071,7 +1100,7 @@ begin
         FDragForm.Left := MP.X;
         FDragForm.Top := MP.Y;
         FDragForm.Canvas.Lock;
-        tempModule.Control.PaintTo(FDragForm.Canvas.Handle,0,0);
+        tempModule.mInterface.Form.PaintTo(FDragForm.Canvas.Handle,0,0);
         FDragForm.Canvas.Unlock;
       end;
     end;
@@ -1138,7 +1167,7 @@ begin
   begin
       if FThrobberMenu.Items.Items[n].Tag = -1 then
       begin
-        if (@tempModule.ModuleFile.DllShowSettingsWnd = nil) and (not FileExists(cfile)) then
+        if (not FileExists(cfile)) then
            FThrobberMenu.Items.Items[n].Enabled := False
            else FThrobberMenu.Items.Items[n].Enabled := True;
         break;
@@ -1156,8 +1185,8 @@ begin
   for n := 0 to FModules.Count -1 do
   begin
     pModule := TModule(FModules.Items[n]);
-    if @pModule.ModuleFile.DllRefresh <> nil then
-       pModule.ModuleFile.DllRefresh(pModule.ID);
+    pModule.UpdateBackground;
+    pModule.mInterface.Refresh;
   end;
 end;
 
@@ -1172,15 +1201,14 @@ var
   LeftSize,RightSize : integer;
   MTWidth : integer; // mini Throbbers
   RCount,LCount : integer;
-  CList : TObjectList;
   nw : integer;
 begin
   if FShutdown then exit;
 
   if FBar.ShowThrobber then
-    lo := FSkinManager.Skin.BarSkin.PAXoffset.XAsInt
+    lo := FSkinInterface.SkinManager.Skin.BarSkin.PAXoffset.XAsInt
   else lo := FBar.Throbber.Left;
-  ro := FSkinManager.Skin.BarSkin.PAXoffset.YAsInt;
+  ro := FSkinInterface.SkinManager.Skin.BarSkin.PAXoffset.YAsInt;
 
   ParentControl := GetControlByHandle(FParent);
 
@@ -1194,14 +1222,14 @@ begin
   for n := 0 to FModules.Count -1 do
   begin
     TempModule := TModule(FModules.Items[n]);
-    if TempModule.Position = -1 then LeftSize := LeftSize + TempModule.Control.Width + MTWidth
-       else RightSize := RightSize + TempModule.Control.Width + MTWidth;
+    if TempModule.Position = -1 then LeftSize := LeftSize + TempModule.mInterface.Form.Width + MTWidth
+       else RightSize := RightSize + TempModule.mInterface.Form.Width + MTWidth;
   end;
 
   if not (FBar.HorizPos = hpFull) then
      if lo + ro + LeftSize + RightSize <> ParentControl.Width then
   begin
-    nw := Max(lo + ro + FSkinManager.Skin.BarSkin.ThDim.XAsInt+5,lo + ro + LeftSize + RightSize);
+    nw := Max(lo + ro + FSkinInterface.SkinManager.Skin.BarSkin.ThDim.XAsInt+5,lo + ro + LeftSize + RightSize);
     FBar.UpdateSkin(nw);
     ParentControl.Width := nw;
   end;
@@ -1213,8 +1241,6 @@ begin
   rx := 0;
   RCount := 0;
   LCount := 0;
-  CList := TObjectList.Create;
-  CList.OwnsObjects := False;
   for n := 0 to FModules.Count -1 do
   begin
     TempModule := TModule(FModules.Items[n]);
@@ -1222,28 +1248,30 @@ begin
     begin
       LCount := LCount + 1;
       i := lo + x + MTWidth*(LCount);
-      if (TempModule.Control.Left <> i) or (ForceUpdate) then
+      if (TempModule.mInterface.Form.Left <> i) or (ForceUpdate) then
       begin
-        TempModule.Control.Left := i;
-        CList.Add(TempModule);
+        TempModule.UpdateBackgroundL(i);
+        TempModule.mInterface.Left := i;
+        TempModule.mInterface.Form.Repaint;
       end;
-      x := x + TempModule.Control.Width;
+      x := x + TempModule.mInterface.Form.Width;
     end else
     begin
       RCount := RCount + 1;
       if not (FBar.HorizPos = hpFull) then
          i := lo + LeftSize + rx + MTWidth*(RCount)
          else i := ParentControl.Width - ro - RightSize + rx + MTWidth*(RCount);
-      if (i <> TempModule.Control.Left) or (ForceUpdate) then
+      if (i <> TempModule.mInterface.Form.Left) or (ForceUpdate) then
       begin
-        TempModule.Control.Left := i;
-        CList.Add(TempModule);
+        TempModule.UpdateBackgroundL(i);
+        TempModule.mInterface.Left := i;
+        TempModule.mInterface.Form.Repaint;
       end;
-      rx := rx + TempModule.Control.Width;
+      rx := rx + TempModule.mInterface.Form.Width;
     end;
-    TempModule.Control.Top  := strtoint(FSkinManager.Skin.BarSkin.PAYoffset.X);
-    TempModule.Throbber.Left := TempModule.Control.Left-TempModule.Throbber.Width-FModuleSpacing div 2;
-    TempModule.Throbber.Top  := TempModule.Control.Top;
+    TempModule.mInterface.Form.Top  := strtoint(FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.X);
+    TempModule.Throbber.Left := TempModule.mInterface.Form.Left-TempModule.Throbber.Width-FModuleSpacing div 2;
+    TempModule.Throbber.Top  := TempModule.mInterface.Form.Top;
     TempModule.Throbber.Bottom := (FBar.VertPos = vpBottom);
     TempModule.Throbber.OnClick := OnMiniThrobberClick;
     TempModule.Throbber.OnMouseDown := OnMiniThrobberMouseDown;
@@ -1252,15 +1280,6 @@ begin
     if (FShowMiniThrobbers) and (not TempModule.Throbber.Visible) then TempModule.Throbber.Visible := True
        else if (not FShowMiniThrobbers) then tempModule.Throbber.Visible := False;
   end;
-
-  for n := 0 to Clist.Count -1 do
-  begin
-    TempModule := TModule(CList.Items[n]);
-    TempModule.ModuleFile.DllPosChanged(TempModule.ID);
-  end;
-  CList.Clear;
-  FreeAndNil(CList);
-
 end;
 
 
@@ -1290,9 +1309,9 @@ var
   nw : integer;
 begin
   if FBar.ShowThrobber then
-    lo := FSkinManager.Skin.BarSkin.PAXoffset.XAsInt
+    lo := FSkinInterface.SkinManager.Skin.BarSkin.PAXoffset.XAsInt
   else lo := FBar.Throbber.Left;
-  ro := FSkinManager.Skin.BarSkin.PAXoffset.YAsInt;
+  ro := FSkinInterface.SkinManager.Skin.BarSkin.PAXoffset.YAsInt;
   
   ParentControl := GetControlByHandle(FParent);
 
@@ -1304,10 +1323,24 @@ begin
 
   if ((ForceUpdate) or ((not (FBar.HorizPos = hpFull)) and (lo + ro + PluginWidth <> ParentControl.Width))) then
   begin
-    nw := Max(lo + ro + FSkinManager.Skin.BarSkin.ThDim.XAsInt+5,lo + ro + PluginWidth);
+    nw := Max(lo + ro + FSkinInterface.SkinManager.Skin.BarSkin.ThDim.XAsInt+5,lo + ro + PluginWidth);
     FBar.UpdatePosition(nw);
 //    FBar.UpdateSkin(nw);
     ParentControl.Width := nw;
+  end;
+end;
+
+procedure TModuleManager.UpdateModuleHeights;
+var
+  n : integer;
+  temp : TModule;
+begin
+  for n := 0 to FModules.Count - 1 do
+  begin
+    temp := TModule(FModules.Items[n]);
+    temp.UpdateBackgroundS(GetModuleTop,GetModuleHeight);
+    temp.mInterface.SetTopHeight(GetModuleTop,GetModuleHeight);
+    temp.mInterface.Form.Repaint;
   end;
 end;
 
@@ -1315,6 +1348,11 @@ end;
 // space is left. Adjust the size of modules with dynamic size (task list,...)
 // if there is more space needed or of the dynamic module can have more space.
 procedure TModuleManager.ReCalculateModuleSize(Broadcast : boolean = True; ForceUpdate: boolean = False);
+type
+  TModuleSize = record
+                  Min : integer;
+                  Max : integer;
+                end;
 var
   n : integer;
   temp : TModule;
@@ -1345,18 +1383,15 @@ begin
   for n := 0 to FModules.Count - 1 do
   begin
     temp := TModule(FModules.Items[n]);
-    msize.Min := temp.Control.Tag;
-    msize.Width := StrToIntDef(temp.Control.Hint,msize.Min);
-    minsize := minsize + msize.Min;
-    maxsize := maxsize + msize.Width;
-  //  if temp.Throbber.Visible then
-  //     smod := smod + temp.Throbber.Width + FModuleSpacing
-  //     else smod := smod + FModuleSpacing;
+    msize.Min := temp.mInterface.MinSize;
+    msize.Max := temp.mInterface.MaxSize;
+    minsize := minsize + mSize.Min;
+    maxsize := maxsize + mSize.Max;
     smod := smod + FModuleSpacing;
-    if msize.Min <> msize.Width then
+    if msize.Min <> msize.Max then
     begin
       setlength(nonminmaxrequest,length(nonminmaxrequest)+1);
-      nonminmaxrequest[High(nonminmaxrequest)] := abs(msize.Width - msize.Min);
+      nonminmaxrequest[High(nonminmaxrequest)] := abs(msize.Max - msize.Min);
     end;
   end;
 
@@ -1374,18 +1409,18 @@ begin
   for n := 0 to FModules.Count - 1 do
   begin
     temp := TModule(FModules.Items[n]);
-    msize.Min := temp.Control.Tag;
-    msize.Width := StrToIntDef(temp.Control.Hint,msize.Min);
+    msize.Min := temp.mInterface.MinSize;
+    msize.Max := temp.mInterface.MaxSize;
     csize := csize + msize.Min;
     if csize > maxbarsize - smod then
        newsize := newsize + 1
     else
     begin
-      if msize.Min <> msize.Width then
+      if msize.Min <> msize.Max then
          newsize := newsize + msize.Min + nonminmaxrequest[i]
       else newsize := newsize + msize.Min;
     end;
-    if msize.Min <> msize.Width then
+    if msize.Min <> msize.Max then
        i := i + 1;
   end;
   UpdateBarSize(newsize,ForceUpdate);
@@ -1396,24 +1431,29 @@ begin
   for n := 0 to FModules.Count - 1 do
   begin
     temp := TModule(FModules.Items[n]);
-    msize.Min := temp.Control.Tag;
-    msize.Width := StrToIntDef(temp.Control.Hint,msize.Min);
+    msize.Min := temp.mInterface.MinSize;
+    msize.Max := temp.mInterface.MaxSize;
     csize := csize + msize.Min;
     if csize > maxbarsize - smod then
     begin
       // module out of bar area... hide it and make it small...
       // Check if the module is too big...
-      temp.Control.Visible := False;
-      temp.ModuleFile.DllSetSize(temp.ID,1);
+      temp.mInterface.Form.Visible := False;
+      temp.mInterface.Size := 1;
     end else
     begin
-      if not temp.control.Visible then
-         temp.control.Visible := True;
-      if msize.Min <> msize.Width then
-         temp.ModuleFile.DllSetSize(temp.ID,msize.Min + nonminmaxrequest[i])
-      else temp.ModuleFile.DllSetSize(temp.ID,msize.Min);
+      if not temp.mInterface.Form.Visible then
+         temp.mInterface.Form.Visible := True;
+      if msize.Min <> msize.Max then
+        newsize := msize.Min + nonminmaxrequest[i]
+      else newsize := msize.Min;
+      if temp.mInterface.Size <> newsize then
+      begin
+        temp.UpdateBackgroundW(newsize);
+        temp.mInterface.Size := newsize;
+      end;
     end;
-    if msize.Min <> msize.Width then
+    if msize.Min <> msize.Max then
        i := i + 1;
   end;
 
@@ -1467,27 +1507,13 @@ end;
 
 // ############## TModuleFile #################
 
-constructor TModuleFile.Create(pFileName : String; pParent : hwnd;
-                               pSkinManager : TSharpESkinManager;
-                               pBar         : TSharpEBar);
+constructor TModuleFile.Create(pFileName : String);
 begin
   Inherited Create;
-  FParent         := pParent;
-  FFileName       := pFileName;
-  FSkinManager    := pSkinManager;
-  FBar            := pBar;
-  FLoaded         := False;
+  FFileName        := pFileName;
+  FLoaded          := False;
 
-  DllCreateModule      := nil;
-  DllCloseModule       := nil;
-  DllPosChanged        := nil;
-  DllUpdateMessage     := nil;
-  DllModuleMessage     := nil;
-  DllShowSettingsWnd   := nil;
-  DllRefresh           := nil;
-  DllSetSize           := nil;
-  DllInitModule        := nil;
-  //LoadDll;
+  DllCreateModule := nil;
 end;
 
 destructor TModuleFile.Destroy;
@@ -1506,39 +1532,14 @@ begin
   try
     FDllHandle := LoadLibrary(PChar(FFileName));
 
-    DllShowSettingsWnd := nil;
-    DllModuleMessage   := nil;
-  
     if FDllHandle <> 0 then
-    begin
-      @DllCreateModule    := GetProcAddress(FDllHandle, 'CreateModule');
-      @DllCloseModule     := GetProcAddress(FDllHandle, 'CloseModule');
-      @DllPosChanged      := GetProcAddress(FDllHandle, 'PosChanged');
-      @DllUpdateMessage   := GetProcAddress(FDllHandle, 'UpdateMessage');
-      @DllModuleMessage   := GetProcAddress(FDllHandle, 'ModuleMessage');
-      @DllShowSettingsWnd := GetProcAddress(FDllHandle, 'ShowSettingsWnd');
-      @DllRefresh         := GetProcAddress(FDllHandle, 'Refresh');
-      @DllSetSize         := GetProcAddress(FDllHandle, 'SetSize');
-      @DllInitModule      := GetProcAddress(FDllHandle, 'InitModule');
-    end;
+      @DllCreateModule := GetProcAddress(FDllHandle, 'CreateModule');
 
-    if (@DllCreateModule = nil) or
-       (@DllCloseModule = nil) or
-       (@DllPosChanged = nil) or
-       (@DllUpdateMessage = nil) or
-       (@DllSetSize = nil) then
+    if (@DllCreateModule = nil) then
     begin
       FreeLibrary(FDllhandle);
       FDllhandle := 0;
-      DllCreateModule      := nil;
-      DllCloseModule       := nil;
-      DllPosChanged        := nil;
-      DllUpdateMessage     := nil;
-      DllModuleMessage     := nil;
-      DllShowSettingsWnd   := nil;
-      DllRefresh           := nil;
-      DllSetSize           := nil;
-      DllInitModule        := nil;
+      DllCreateModule := nil;
       exit;
     end;
 
@@ -1567,15 +1568,7 @@ begin
   finally
     FLoaded    := False;
     FDllHandle := 0;
-    DllCreateModule      := nil;
-    DllCloseModule       := nil;
-    DllPosChanged        := nil;
-    DllUpdateMessage     := nil;
-    DllModuleMessage     := nil;
-    DllShowSettingsWnd   := nil;
-    DllRefresh           := nil;
-    DllSetSize           := nil;
-    DllInitModule        := nil; 
+    DllCreateModule := nil;
   end;
 end;
 
@@ -1586,36 +1579,115 @@ end;
 
 // ############## TModule #################
 
-constructor TModule.Create(pOwnerForm  : TWinControl; pModuleFile : TModuleFile; pID,pBarID : integer; pParent : hwnd; pPosition : integer);
+constructor TModule.Create(pOwnerForm  : TWinControl; pModuleFile : TModuleFile; pID,pBarID : integer; pParent : hwnd; pPosition : integer; pMM : TObject);
 begin
   Inherited Create;
+  FInterface          := nil;
+  FModuleInterface    := nil;
+  FModuleManager := pMM;
+
   FOwnerForm := pOwnerForm;
-  FID := pID;
   FModuleFile := pModuleFile;
-  if not FModuleFile.FLoaded then FModuleFile.LoadDll;
-  FHandle := FModuleFile.DllCreateModule(FID,pBarID,pParent);
-  FControl := GetControlByHandle(FHandle);
+  if not FModuleFile.FLoaded then
+    FModuleFile.LoadDll;
+
+  FInterface := FModuleFile.DllCreateModule(pID,pBarID,pOwnerForm.Handle);
+  if not (FInterface.QueryInterface(IID_ISharpBarModule,FModuleInterface) = S_OK) then
+    FModuleInterface := nil;
+
+  if (FModuleInterface = nil) then
+    if MessageBox(pOwnerForm.Handle,
+        PChar('SharpBar tried to create a non valid Module ('+FModuleFile.FileName+'). It is highly recommend to terminate the bar and delete the invalid module file. Do you want to continue and terminate the SharpBar?)'),
+        'Critical Error',
+        MB_YESNO) = IDYES then
+          Halt;
+
+  FModuleInterface.SkinInterface := TModuleManager(FModuleManager).SkinInterface;
+  FModuleInterface.BarInterface := TModuleManager(FModuleManager).BarInterface;
+  FModuleInterface.SetTopHeight(TModuleManager(FModuleManager).GetModuleTop,
+                                TModuleManager(FModuleManager).GetModuleHeight);
+  FModuleInterface.Form.Show;
+
+
   FPosition := pPosition;
+
   FThrobber := TSharpEMiniThrobber.Create(FOwnerForm);
   FThrobber.Cursor := crHandPoint;
   FThrobber.AutoPosition := True;
   FThrobber.Parent := FOwnerForm;
   FThrobber.BringToFront;
-  FThrobber.SkinManager := pModuleFile.FSkinManager;
+  FThrobber.SkinManager := TModuleManager(FModuleManager).SkinInterface.SkinManager;
   FThrobber.Visible := False;
-  FThrobber.Tag := FID;
+  FThrobber.Tag := FModuleInterface.ID;
 //  FThrobber.SpecialBackground := TSharpBarMainForm(FOwnerForm).BGImage;
   FThrobber.SpecialBackground := TSharpBarMainForm(FOwnerForm).SharpEBar.Skin;
 end;
 
 destructor TModule.Destroy;
 begin
+  FInterface          := nil;
+  FModuleInterface.SkinInterface := nil;
+  FModuleInterface.BarInterface := nil;
+  FModuleInterface    := nil;
+
   if FThrobber <> nil then
   begin
     FThrobber.Free;
     FThrobber := nil;
   end;
   Inherited Destroy;
+end;
+
+procedure TModule.UpdateBackground;
+begin
+  if mInterface <> nil then
+    UpdateBackgroundF(mInterface.Form.Left,
+                     mInterface.Form.Top,
+                     mInterface.Form.Width,
+                     mInterface.Form.Height);
+end;
+
+procedure TModule.UpdateBackgroundF(NewLeft, NewTop, NewWidth, NewHeight : integer);
+var
+  Src : TRect;
+begin
+  if mInterface <> nil then
+  begin
+    Src.Left := NewLeft;
+    Src.Top := NewTop;
+    Src.Right := Src.Left + NewWidth;
+    Src.Bottom := Src.Top + NewHeight;
+    mInterface.Background.SetSize(Src.Right - Src.Left,Src.Bottom - Src.Top);
+    TSharpBarMainForm(FOwnerForm).SharpEBar.Skin.DrawTo(mInterface.Background,0,0,Src);
+  end;
+
+end;
+
+procedure TModule.UpdateBackgroundW(NewWidth: integer);
+begin
+  if mInterface <> nil then
+    UpdateBackgroundF(mInterface.Form.Left,
+                     mInterface.Form.Top,
+                     NewWidth,
+                     mInterface.Form.Height);
+end;
+
+procedure TModule.UpdateBackgroundS(NewTop, NewHeight : integer);
+begin
+  if mInterface <> nil then
+    UpdateBackgroundF(mInterface.Form.Left,
+                     NewTop,
+                     mInterface.Form.Width,
+                     NewHeight);
+end;
+
+procedure TModule.UpdateBackgroundL(NewLeft : integer);
+begin
+  if mInterface <> nil then
+    UpdateBackgroundF(NewLeft,
+                     mInterface.Form.Top,
+                     mInterface.Form.Width,
+                     mInterface.Form.Height);
 end;
 
 end.

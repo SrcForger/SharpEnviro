@@ -575,14 +575,14 @@ object SharpBarMainForm: TSharpBarMainForm
     Enabled = False
     Interval = 5000
     OnTimer = DelayTimer3Timer
-    Left = 312
+    Left = 352
     Top = 144
   end
   object ThemeHideTimer: TTimer
     Enabled = False
     Interval = 5000
     OnTimer = ThemeHideTimerTimer
-    Left = 272
+    Left = 312
     Top = 144
   end
 end

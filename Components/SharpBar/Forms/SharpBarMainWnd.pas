@@ -33,7 +33,8 @@ uses
   GR32, uSharpEModuleManager, PngImageList, SharpEBar, SharpThemeApi,
   SharpEBaseControls, Controls, ExtCtrls, uSkinManagerThreads,
   uSystemFuncs, Types, SharpESkin, Registry, SharpTypes,
-  SharpGraphicsUtils, Math, SharpCenterApi, ImgList;
+  SharpGraphicsUtils, Math, SharpCenterApi, ImgList,
+  uSharpESkinInterface, uSharpBarInterface;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -130,10 +131,10 @@ type
     FBottomZone: TBitmap32;
     FBGImage: TBitmap32;
     FShellBCInProgress: boolean;
-    FSkinManager: TSharpESkinManager;
+    FSkinInterface : TSharpESkinInterface;
+    FBarInterface : TSharpBarInterface;
     FSharpEBar: TSharpEBar;
     FBarName: string;
-    SkinManagerLoadThread: TSystemSkinLoadThread;
 
     procedure CreateNewBar;
     procedure LoadBarModules(XMLElem: TJclSimpleXMlElem);
@@ -167,8 +168,6 @@ type
     procedure WMSharpEBang(var Msg: TMessage); message WM_SHARPEACTIONMESSAGE;
 
     procedure WMGetFreeBarSpace(var msg: TMessage); message WM_GETFREEBARSPACE;
-    procedure WMGetBGHandle(var msg: TMessage); message WM_GETBACKGROUNDHANDLE;
-    procedure WMGetBarHeight(var msg: TMessage); message WM_GETBARHEIGHT;
 
     procedure WMSharpTerminate(var msg: TMessage); message WM_SHARPTERMINATE;
     procedure WMDisplayChange(var msg: TMessage); message WM_DISPLAYCHANGE;
@@ -184,11 +183,11 @@ type
     procedure UpdateBGImage(NewWidth: integer = -1);
     procedure InitBar;
     property BGImage: TBitmap32 read FBGImage;
-    property SkinManager: TSharpESkinManager read FSkinManager;
     property SharpEBar: TSharpEBar read FSharpEBar;
     property ShellBCInProgress: boolean read FShellBCInProgress;
     property BarID: integer read FBarID;
     property Startup: boolean read FStartup write FStartup;
+    property SkinInterface: TSharpESkinInterface read FSkinInterface;
   end;
 
 const
@@ -355,9 +354,9 @@ begin
   LastIndex := -1;
   for n := 0 to ModuleManager.Modules.Count - 1 do begin
     tempModule := TModule(ModuleManager.Modules.Items[n]);
-    ModulePos := tempModule.Control.ClientToScreen(Point(tempModule.Control.Width,
-      tempModule.Control.Top));
-    if ModulePos.X - tempModule.Control.Width < MP.X then begin
+    ModulePos := tempModule.mInterface.Form.ClientToScreen(Point(tempModule.mInterface.Form.Width,
+      tempModule.mInterface.Form.Top));
+    if ModulePos.X - tempModule.mInterface.Form.Width < MP.X then begin
       LastPos := tempModule.Position;
       LastIndex := n;
     end
@@ -499,7 +498,7 @@ begin
     end;
     Integer(suSkinFont): begin
         SharpThemeApi.LoadTheme(True, [tpSkinFont]);
-        SkinManager.RefreshControls;
+        SkinInterface.SkinManager.RefreshControls;
       end;
     Integer(suSkinFileChanged): SharpThemeApi.LoadTheme(True, [tpSkin, tpScheme]);
     Integer(suTheme): begin
@@ -514,17 +513,17 @@ begin
       end;
     Integer(suScheme): begin
         SharpThemeApi.LoadTheme(True, [tpSkin,tpScheme]);
-        SkinManager.UpdateScheme;
+        SkinInterface.SkinManager.UpdateScheme;
       end;
     Integer(suIconSet): SharpThemeApi.LoadTheme(True, [tpIconSet]);
   end;
 
+  h := Height;
   if (msg.WParam = Integer(suScheme))
     or (msg.WParam = Integer(suSkinFileChanged)) then begin
     // Only update the skin if scheme or skin file changed...
-    h := Height;
-    SkinManager.UpdateScheme;
-    SkinManager.UpdateSkin;
+    SkinInterface.SkinManager.UpdateScheme;
+    SkinInterface.SkinManager.UpdateSkin;
     SharpEBar.UpdateSkin;
     if h < Height then
       UpdateBGZone
@@ -543,6 +542,9 @@ begin
   // Step3: Modules updated, now update the bar
   if (msg.WParam = Integer(suSkinFileChanged)) then
     ModuleManager.ReCalculateModuleSize;
+
+  if h <> Height then
+    ModuleManager.UpdateModuleHeights;
 
   if (msg.WParam = Integer(suSkinFileChanged)) or
     (msg.Wparam = Integer(suScheme)) then
@@ -565,23 +567,6 @@ begin
   if ModuleManager = nil then
     exit;
   ModuleManager.BroadcastPluginMessage('MM_VWMUPDATESETTINGS');
-end;
-
-// Module is requesting the handle to the Background image
-
-procedure TSharpBarMainForm.WMGetBGHandle(var msg: TMessage);
-begin
-  //  msg.result := integer(@FBGImage);
-  msg.result := integer(@SharpEBar.Skin);
-end;
-
-// Module is requesting the height of the Bar
-
-procedure TSharpBarMainForm.WMGetBarHeight(var msg: TMessage);
-begin
-  msg.Result := SkinManager.Skin.BarSkin.SkinDim.HeightAsInt -
-      SkinManager.Skin.BarSkin.PAYoffset.XAsInt -
-      SkinManager.Skin.BarSkin.PAYoffset.YAsInt;
 end;
 
 // Plugin message received... foward to requested module
@@ -632,8 +617,8 @@ begin
     ModuleManager.ReCalculateModuleSize((msg.wparam = 0));
   //finally
   //end;
-  RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
-  ModuleManager.BroadcastPluginUpdate(suBackground, -2);
+ // RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+ // ModuleManager.BroadcastPluginUpdate(suBackground, -2);
 end;
 
 // ***********************
@@ -667,7 +652,7 @@ begin
     FBGImage.Draw(0, 0, FBottomZone);
 
   // Apply Glass Effects
-  if SkinManager.Skin.BarSkin.GlassEffect then begin
+  if SkinInterface.SkinManager.Skin.BarSkin.GlassEffect then begin
     if SharpThemeApi.GetSkinGEBlend then
       BlendImageC(FBGImage, GetSkinGEBlendColor, GetSkinGEBlendAlpha);
     fastblur(FBGImage, GetSkinGEBlurRadius, GetSkinGEBlurIterations);
@@ -871,6 +856,7 @@ begin
       NewID := NewID + inttostr(random(9) + 1);
   until not DirectoryExists(Dir + NewID);
   FBarID := strtoint(NewID);
+  FBarInterface.BarID := FBarID;
   ModuleManager.BarID := FBarID;
   ForceDirectories(Dir + NewID);
 
@@ -902,11 +888,13 @@ begin
     // Create new bar!
     FBarID := -1;
     ModuleManager.BarID := -1;
+    FBarInterface.BarID := -1;
     CreateNewBar;
     exit;
   end;
   FBarID := ID;
   ModuleManager.BarID := ID;
+  FBarInterface.BarID := ID;
 
   // There is a settings file and we have a Bar ID,
   // So let's check if the bar with this ID is already running
@@ -974,10 +962,9 @@ procedure TSharpBarMainForm.InitBar;
 begin
   FBarName := 'Toolbar';
 
-  FSkinManager := TSharpESkinManager.Create(self, [scBar, scMiniThrobber]);
-  FSkinManager.HandleUpdates := False;
+  FSkinInterface := TSharpESkinInterface.Create(self, ALL_SHARPE_SKINS);
 
-  FSharpEBar := TSharpEBar.CreateRuntime(self, SkinManager);
+  FSharpEBar := TSharpEBar.CreateRuntime(self, SkinInterface.SkinManager);
   FSharpEBar.AutoPosition := True;
   FSharpEBar.AutoStart := True;
   FSharpEBar.DisableHideBar := True;
@@ -992,10 +979,7 @@ begin
   FSharpEBar.onResetSize := SharpEBar1ResetSize;
   FSharpEBar.onBackgroundPaint := OnBackgroundPaint;
 
-  SharpEBar.SkinManager := FSkinManager;
-
-  // Load System Skin and Scheme in a Thread
-  SkinManagerLoadThread := TSystemSkinLoadThread.Create(FSkinManager);
+  SharpEBar.SkinManager := SkinInterface.SkinManager;
 
   FBottomZone := TBitmap32.Create;
   FTopZone := TBitmap32.Create;
@@ -1008,7 +992,12 @@ begin
 
   // Create and Initialize the module manager
   // (Make sure the Skin Manager and Module Settings are ready before doing this!)
-  ModuleManager := TModuleManager.Create(Handle, SkinManager, SharpEBar);
+  FBarInterface := TSharpBarInterface.Create;
+  FBarInterface.BarWnd := Handle;
+
+  ModuleManager := TModuleManager.Create(Handle, SkinInterface, FBarInterface, SharpEBar);
+  FBarInterface.ModuleManager := ModuleManager;
+  
   ModuleManager.DebugOutput('Created Module Manager', 2, 1);
   
   ModuleManager.ThrobberMenu := ThrobberPopUp;
@@ -1019,16 +1008,12 @@ begin
 
   BarHideForm := TBarHideForm.Create(self);
 
-  // Wait for the Skin Loading Thread to be finished
-  SkinManagerLoadThread.WaitFor;
-  SkinManagerLoadThread.Free;
-
-  FSkinManager.onSkinChanged := SkinManager1SkinChanged;
+  SkinInterface.SkinManager.onSkinChanged := SkinManager1SkinChanged;
 
   //DelayTimer2.Enabled := True;
 
   UpdateBGZone;
-  SkinManager.UpdateSkin;
+  SkinInterface.SkinManager.UpdateSkin;
   SharpEBar.Seed := -1;
   SharpEBar.UpdateSkin;
   if SharpEBar.Throbber.Visible then
@@ -1081,8 +1066,8 @@ begin
   FSharpEBar.Free;
   FSharpEBar := nil;
 
-  FSkinManager.Free;
-  FSkinManager := nil;
+  FSkinInterface := nil;
+  FBarInterface := nil;
 
   FBottomZone.Free;
   FTopZone.Free;
@@ -1725,9 +1710,7 @@ begin
   if FileExists(cfile) then
     SharpCenterApi.CenterCommand(sccLoadSetting,
       PChar(cfile),
-      PChar(inttostr(FBarID) + ':' + inttostr(tempModule.ID)))
-  else if @tempModule.ModuleFile.DllShowSettingsWnd <> nil then
-    tempModule.ModuleFile.DllShowSettingsWnd(tempModule.ID);
+      PChar(inttostr(FBarID) + ':' + inttostr(tempModule.mInterface.ID)));
 end;
 
 procedure TSharpBarMainForm.Delete1Click(Sender: TObject);

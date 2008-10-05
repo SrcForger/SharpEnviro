@@ -33,13 +33,16 @@ uses
   StrUtils,
   Graphics,
   SharpBarMainWnd in 'Forms\SharpBarMainWnd.pas' {SharpBarMainForm},
-  uSharpBarAPI in 'uSharpBarAPI.pas',
   JclSimpleXML,
   JclFileUtils,
   SharpEBar,
   SharpApi,
   BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm},
-  uSharpEModuleManager in 'uSharpEModuleManager.pas';
+  uSharpEModuleManager in 'uSharpEModuleManager.pas',
+  uISharpESkin in '..\..\Common\Interfaces\uISharpESkin.pas',
+  uSharpESkinInterface in 'uSharpESkinInterface.pas',
+  uISharpBar in '..\..\Common\Interfaces\uISharpBar.pas',
+  uSharpBarInterface in 'uSharpBarInterface.pas';
 
 {$R *.res}
 {$R metadata.res}
