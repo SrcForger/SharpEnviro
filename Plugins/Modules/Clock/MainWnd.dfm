@@ -24,7 +24,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 12
     Height = 21
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnDblClick = lb_clockDblClick
     Caption = '.'
@@ -36,7 +35,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 12
     Height = 21
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnDblClick = lb_clockDblClick
     Caption = '.'
@@ -50,14 +48,6 @@ object MainForm: TMainForm
       Caption = 'Open Windows Date/Time Settings'
       OnClick = lb_clockDblClick
     end
-  end
-  object SharpESkinManager1: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = []
-    HandleUpdates = False
-    Left = 192
-    Top = 72
   end
   object ClockTimer: TTimer
     OnTimer = ClockTimerTimer

@@ -32,47 +32,35 @@ uses
   Dialogs, StdCtrls, Menus, Math,
   JvSimpleXML, GR32,
   SharpApi,
-  uSharpBarAPI,
   SharpEBaseControls,
-  SharpESkinManager,
   SharpEButton,
   SharpIconUtils,
-  SharpEBitmapList,
-  SharpESkin;
+  uISharpBarModule;
 
 
 type
   TMainForm = class(TForm)
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
-    SharpESkinManager1: TSharpESkinManager;
     btn: TSharpEButton;
     procedure FormPaint(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   protected
   private
-    sWidth       : integer;
     sShowLabel   : boolean;
     sCaption     : String;
-    FDCaption    : boolean;
     sActionStr   : String;
     sIcon        : String;
     sShowIcon    : boolean; 
-    sSpecialSkin : boolean;
-    ModuleSize  : TModuleSize;
-    Background : TBitmap32;
   public
-    ModuleID : integer;
-    BarID : integer;
-    BarWnd : hWnd;
+    mInterface : ISharpBarModule;
     procedure UpdateIcon;
     procedure LoadSettings;
-    procedure ReAlignComponents(BroadCast : boolean);
-    procedure UpdateBackground(new : integer = -1);
-    procedure SetWidth(new : integer);
+    procedure ReAlignComponents;
+    procedure UpdateComponentSkins;
+    procedure UpdateSize;
   end;
 
 
@@ -90,23 +78,25 @@ begin
   btn.Repaint;
 end;
 
+procedure TMainForm.UpdateSize;
+begin
+  btn.Width := Width - 4;
+end;
+
 procedure TMainForm.LoadSettings;
 var
   XML : TJvSimpleXML;
   fileloaded : boolean;
 begin
-  sWidth       := 100;
   sShowLabel   := True;
   sCaption     := 'Menu';
   sActionStr   := '!ShowMenu';
-  sSpecialSkin := False;
-  FDCaption    := True;
   sIcon        := 'icon.mycomputer';
   sShowIcon    := True;
 
   XML := TJvSimpleXML.Create(nil);
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -114,11 +104,9 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      sWidth       := IntValue('Width',100);
       sShowLabel   := BoolValue('ShowLabel',True);
       sCaption     := Value('Caption','SharpE');
       sActionStr   := Value('ActionStr','!ShowMenu');
-      sSpecialSkin := BoolValue('SpecialSkin',False);
       sShowIcon    := BoolValue('ShowIcon',sShowIcon);
       sIcon        := Value('Icon',sIcon);
     end;
@@ -127,58 +115,32 @@ begin
   UpdateIcon;
 end;
 
-procedure TMainForm.UpdateBackground(new : integer = -1);
+procedure TMainForm.UpdateComponentSkins;
 begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+  btn.SkinManager := mInterface.SkinInterface.SkinManager;
 end;
 
-procedure TMainForm.SetWidth(new : integer);
-begin
-  new := Max(new,1);
-
-  UpdateBackground(new);
-
-  Width := new;
-  btn.Width := max(1,Width - 4);
-end;
-
-procedure TMainForm.ReAlignComponents(BroadCast : boolean);
+procedure TMainForm.ReAlignComponents;
 var
   newWidth : integer;
-  i : integer;
 begin
   self.Caption := sCaption;
-  if sWidth<20 then sWidth := 20;
-
   btn.Left := 2;
+  newWidth := 24;
+  
+  if (sShowIcon) and (btn.Glyph32 <> nil) then
+    newWidth := newWidth + btn.GetIconWidth;
 
-  if (sShowLabel) and (FDCaption) then
-    btn.Caption := sCaption
-  else
-    btn.Caption := '';
-
-  if btn.CustomSkin <> nil then
+  if (sShowLabel) then
   begin
-    try
-      i := strtoint(btn.CustomSkin.SkinDim.Width);
-      NewWidth := i + 4;
-    except
-      newWidth := sWidth + 8;
-    end;
-  end else newWidth := sWidth + 8;
+    btn.Caption := sCaption;
+    newWidth := newWidth + btn.GetTextWidth;
+  end else btn.Caption := '';
 
-  ModuleSize.Min := NewWidth;
-  ModuleSize.Width := NewWidth;
-  ModuleSize.Priority := 0;
-  self.Tag := NewWidth;
-  self.Hint := inttostr(NewWidth);
-//    self.Tag := PInteger(PModuleSize(@ModuleSize));
-//    self.Tag := @PInteger(ModuleSize);
-  if (BroadCast) and (newWidth <> Width) then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;
+  if newWidth <> Width then
+    mInterface.BarInterface.UpdateModuleSize;
 end;
 
 procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
@@ -194,17 +156,11 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := True;
-  Background := TBitmap32.Create;
-end;
-
-procedure TMainForm.FormDestroy(Sender: TObject);
-begin
-  FreeAndNil(Background);
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
-  Background.DrawTo(Canvas.Handle,0,0);
+  mInterface.Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

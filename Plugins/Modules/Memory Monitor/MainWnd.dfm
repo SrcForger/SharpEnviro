@@ -12,7 +12,6 @@ object MainForm: TMainForm
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
@@ -22,7 +21,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 51
     Height = 21
-    SkinManager = SharpESkinManager1
     AutoSize = True
     Caption = 'lb_swpbar'
     AutoPos = apTop
@@ -33,7 +31,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 51
     Height = 21
-    SkinManager = SharpESkinManager1
     AutoSize = True
     Caption = 'lb_rambar'
     AutoPos = apTop
@@ -44,7 +41,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 26
     Height = 21
-    SkinManager = SharpESkinManager1
     AutoSize = True
     Caption = 'swp'
     AutoPos = apTop
@@ -55,7 +51,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 26
     Height = 21
-    SkinManager = SharpESkinManager1
     AutoSize = True
     Caption = 'ram'
     AutoPos = apTop
@@ -72,7 +67,6 @@ object MainForm: TMainForm
     AutoPos = apCenter
     ParentShowHint = False
     ShowHint = False
-    SkinManager = SharpESkinManager1
     AutoSize = True
   end
   object rambar: TSharpEProgressBar
@@ -86,7 +80,6 @@ object MainForm: TMainForm
     AutoPos = apCenter
     ParentShowHint = False
     ShowHint = False
-    SkinManager = SharpESkinManager1
     AutoSize = True
   end
   object UpdateTimer: TTimer
@@ -94,13 +87,5 @@ object MainForm: TMainForm
     OnTimer = UpdateTimerTimer
     Left = 216
     Top = 40
-  end
-  object SharpESkinManager1: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = [scProgressBar]
-    HandleUpdates = False
-    Left = 224
-    Top = 80
   end
 end

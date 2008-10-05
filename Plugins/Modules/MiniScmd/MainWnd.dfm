@@ -12,7 +12,6 @@ object MainForm: TMainForm
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnPaint = FormPaint
   PixelsPerInch = 96
   TextHeight = 13
@@ -21,12 +20,10 @@ object MainForm: TMainForm
     Top = 0
     Width = 25
     Height = 25
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = btn_selectClick
     OnMouseDown = btn_selectMouseDown
     OnMouseUp = btn_selectMouseUp
-    Glyph32FileName = 'application_osx_terminal.png'
     Glyph32.DrawMode = dmBlend
     Glyph32.CombineMode = cmMerge
     Glyph32.ResamplerClassName = 'TLinearResampler'
@@ -73,17 +70,8 @@ object MainForm: TMainForm
     Width = 95
     Height = 25
     AutoSize = True
-    SkinManager = SharpESkinManager1
     AutoPosition = True
     OnKeyUp = editKeyUp
     OnKeyDown = editKeyDown
-  end
-  object SharpESkinManager1: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = [scButton, scEdit]
-    HandleUpdates = False
-    Left = 192
-    Top = 72
   end
 end

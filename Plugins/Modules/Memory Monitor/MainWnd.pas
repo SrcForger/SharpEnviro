@@ -30,14 +30,13 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms,
   Dialogs, StdCtrls, SharpEBaseControls, GR32,
-  SharpESkinManager, SharpEScheme, SharpTypes, ExtCtrls, SharpEProgressBar,
-  JvSimpleXML, SharpApi, Menus, Math, SharpESkinLabel;
+  SharpTypes, ExtCtrls, SharpEProgressBar,
+  JvSimpleXML, SharpApi, Menus, Math, SharpESkinLabel, uISharpBarModule;
 
 
 type
   TMainForm = class(TForm)
     UpdateTimer: TTimer;
-    SharpESkinManager1: TSharpESkinManager;
     lb_swpbar: TSharpESkinLabel;
     lb_rambar: TSharpESkinLabel;
     lb_swp: TSharpESkinLabel;
@@ -45,7 +44,6 @@ type
     swpbar: TSharpEProgressBar;
     rambar: TSharpEProgressBar;
     procedure FormPaint(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure BackgroundDblClick(Sender: TObject);
     procedure UpdateTimerTimer(Sender: TObject);
@@ -61,15 +59,12 @@ type
     ShowSWPInfo : boolean;
     ItemAlign   : integer;
     sITC        : integer;
-    Background  : TBitmap32;
   public
-    ModuleID : integer;
-    BarID : integer;
-    BarWnd : hWnd;
+    mInterface : ISharpBarModule;
     procedure LoadSettings;
-    procedure SetSize(NewWidth : integer);
-    procedure ReAlignComponents(BroadCast : boolean);
-    procedure UpdateBackground(new : integer = -1);
+    procedure ReAlignComponents;
+    procedure UpdateComponentSkins;
+    procedure UpdateSize;
   end;
 
 type 
@@ -111,7 +106,7 @@ begin
 
   XML := TJvSimpleXML.Create(nil);
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -134,26 +129,23 @@ begin
   XML.Free;
 end;
 
-procedure TMainForm.UpdateBackground(new : integer = -1);
+
+procedure TMainForm.UpdateComponentSkins;
 begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+  lb_ram.SkinManager := mInterface.SkinInterface.SkinManager;
+  lb_swp.SkinManager := mInterface.SkinInterface.SkinManager;
+  lb_rambar.SkinManager := mInterface.SkinInterface.SkinManager;
+  lb_swpbar.SkinManager := mInterface.SkinInterface.SkinManager;
+  rambar.SkinManager := mInterface.SkinInterface.SkinManager;
+  swpbar.SkinManager := mInterface.SkinInterface.SkinManager;
 end;
 
-procedure TMainForm.SetSize(NewWidth : integer);
+procedure TMainForm.UpdateSize;
 begin
-  NewWidth := Max(1,NewWidth);
-
-  UpdateBackground(NewWidth);
-
-  Width := NewWidth;
-  ReAlignComponents(False);
+  ReAlignComponents;
 end;
 
-procedure TMainForm.ReAlignComponents(Broadcast : boolean);
+procedure TMainForm.ReAlignComponents;
 var
   spacing : integer;
   o1,o3,o4,o5 : integer;
@@ -378,10 +370,12 @@ begin
   end;
 
   NewWidth := max(o1,max(max(o3,o4),o5));
-  Tag := NewWidth;
-  Hint := inttostr(NewWidth);
-  if (BroadCast) and (NewWidth <> Width) then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0)
-     else Repaint;
+
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;
+  if newWidth <> Width then
+    mInterface.BarInterface.UpdateModuleSize
+  else Repaint;
 end;
 
 
@@ -455,18 +449,12 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  Background := TBitmap32.Create;
   DoubleBuffered := True;
-end;
-
-procedure TMainForm.FormDestroy(Sender: TObject);
-begin
-  Background.Free;
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
-  Background.DrawTo(Canvas.Handle,0,0);
+  mInterface.Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

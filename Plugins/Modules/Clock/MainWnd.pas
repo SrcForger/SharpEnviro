@@ -30,14 +30,14 @@ interface
 uses
   Windows, SysUtils, Classes, Controls, Forms, Messages,
   StdCtrls, SharpEBaseControls, Commctrl, SharpTypes,
-  SharpESkinManager, JclSimpleXML, SharpApi, Menus, Math,
-  SharpESkinLabel, GR32, ExtCtrls, ToolTipApi;
+  JclSimpleXML, SharpApi, Menus, Math,
+  SharpESkinLabel, GR32, ExtCtrls, ToolTipApi,
+  uISharpBarModule;
 
 
 type
   TMainForm = class(TForm)
     MenuPopup: TPopupMenu;
-    SharpESkinManager1: TSharpESkinManager;
     OpenWindowsDateTimesettings1: TMenuItem;
     lb_bottomclock: TSharpESkinLabel;
     lb_clock: TSharpESkinLabel;
@@ -54,25 +54,20 @@ type
     sFormat : String;
     sBottomFormat : String;
     sStyle  : TSharpELabelStyle;
-    Background : TBitmap32;
     FTipWnd : hwnd;
     FTipSet : boolean;
     FOldTip : String;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
   public
-    ModuleID : integer;
-    BarID : integer;
-    BarWnd   : hWnd;
+    mInterface : ISharpBarModule;
     procedure LoadSettings;
-    procedure SetSize(NewWidth : integer);
-    procedure ReAlignComponents(BroadCast : boolean);
-    procedure UpdateBackground(new : integer = -1);
+    procedure ReAlignComponents;
+    procedure UpdateComponentSkins;
+    procedure UpdateSize;
   end;
 
 
 implementation
-
-uses uSharpBarAPI;
 
 {$R *.dfm}
 
@@ -97,7 +92,7 @@ begin
 
   XML := TJclSimpleXML.Create;
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -122,40 +117,31 @@ begin
   lb_clock.Updateskin;
 end;
 
-procedure TMainForm.UpdateBackground(new : integer = -1);
+procedure TMainForm.UpdateComponentSkins;
 begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+  lb_clock.SkinManager := mInterface.SkinInterface.SkinManager;
+  lb_bottomclock.SkinManager := mInterface.SkinInterface.SkinManager;
 end;
 
-procedure TMainForm.SetSize(NewWidth : integer);
+procedure TMainForm.UpdateSize;
 begin
-  NewWidth := Max(1,NewWidth);
-
-  UpdateBackground(NewWidth);
-
-  Width := NewWidth;
   if FTipSet then
      ToolTipApi.UpdateToolTipRect(FTipWnd,Self,0,Rect(0,0,Width,Height));
 
   if lb_bottomClock.Visible then
   begin
-    lb_clock.Left := newWidth div 2 - lb_clock.Width div 2;
-    lb_bottomclock.Left := newWidth div 2 - lb_bottomclock.Width div 2;
+    lb_clock.Left := Width div 2 - lb_clock.Width div 2;
+    lb_bottomclock.Left := Width div 2 - lb_bottomclock.Width div 2;
   end else lb_clock.Left := 0;
 end;
 
-procedure TMainForm.ReAlignComponents(BroadCast : boolean);
+procedure TMainForm.ReAlignComponents;
 var
   newWidth : integer;
 begin
   self.Caption := sFormat;
-  if not BroadCast then ClockTimer.OnTimer(ClockTimer);
+  ClockTimer.OnTimer(nil);
 
-//  newWidth := lb_clock.Canvas.TextWidth(sFormat)+4;
   lb_clock.UpdateSkin;
   if lb_bottomClock.Visible then
   begin
@@ -166,10 +152,11 @@ begin
     newWidth := lb_clock.Width;
     lb_clock.AutoPos := apCenter;
   end;
-  Tag := newWidth;
-  Hint := inttostr(NewWidth);
-  if newWidth <> width then
-     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;
+  if newWidth <> Width then
+    mInterface.BarInterface.UpdateModuleSize;
 end;
 
 
@@ -209,8 +196,9 @@ begin
   if IsWindowVisible(FTipWnd) then
      SendMessage(FTipWnd,TTM_UPDATE,0,0);
 
-  if (nw - ow > 4) or (lb_bottomclock.visible <> ov) then
-     RealignComponents(True);
+  if ((nw - ow > 4) or (lb_bottomclock.visible <> ov))
+    and (Sender <> nil) then
+    RealignComponents;
 end;
 
 procedure TMainForm.lb_clockDblClick(Sender: TObject);
@@ -223,7 +211,6 @@ begin
   FTipSet := False;
   FOldTip := '.';
   DoubleBuffered := True;
-  Background := TBitmap32.Create;
 
   FTipWnd := ToolTipApi.RegisterToolTip(self);
 end;
@@ -235,7 +222,6 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  Background.Free;
   ToolTipApi.DeleteToolTip(FTipWnd,Self,0);
   if FTipWnd <> 0 then
      DestroyWindow(FTipWnd);
@@ -243,7 +229,7 @@ end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
-  Background.DrawTo(Canvas.Handle,0,0);
+  mInterface.Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);

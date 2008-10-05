@@ -30,16 +30,15 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types,
   Dialogs, StdCtrls, GR32, SharpEBaseControls, SharpEButton,
-  SharpESkinManager, JvSimpleXML, SharpApi, Math, SharpEEdit, Menus;
+  JvSimpleXML, SharpApi, Math, SharpEEdit, Menus,
+  uISharpBarModule;
 
 
 type
   TMainForm = class(TForm)
-    SharpESkinManager1: TSharpESkinManager;
     edit: TSharpEEdit;
     btn_select: TSharpEButton;
     procedure FormPaint(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure editKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btn_selectMouseUp(Sender: TObject; Button: TMouseButton;
@@ -52,17 +51,14 @@ type
   private
     sWidth   : integer;
     sButton  : boolean;
-    Background : TBitmap32;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
   public
-    ModuleID : integer;
-    BarID : integer;
-    BarWnd : hWnd;
-    procedure UpdateBangs;
+    mInterface : ISharpBarModule;
+    procedure UpdateBangs;    
     procedure LoadSettings;
-    procedure SetSize(NewWidth : integer);
-    procedure ReAlignComponents(BroadCast : boolean);
-    procedure UpdateBackground(new : integer = -1);
+    procedure ReAlignComponents;
+    procedure UpdateComponentSkins;
+    procedure UpdateSize;
   end;
 
 var
@@ -72,7 +68,8 @@ var
 implementation
 
 uses uSharpBarAPI,
-     SharpDialogs;
+     SharpDialogs,
+     uSystemFuncs;
 
 {$R *.dfm}
 
@@ -89,7 +86,7 @@ begin
 
   XML := TJvSimpleXML.Create(nil);
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -97,31 +94,14 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      sWidth     := IntValue('Width',100);
-      sButton    := BoolValue('Button',True);
+      sWidth  := IntValue('Width',100);
+      sButton := BoolValue('Button',True);
     end;
   XML.Free;
 end;
 
-procedure TMainForm.UpdateBackground(new : integer = -1);
+procedure TMainForm.UpdateSize;
 begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
-end;
-
-procedure TMainForm.SetSize(NewWidth : integer);
-var
-  new : integer;
-begin
-  new := Max(NewWidth,1);
-
-  UpdateBackground(new);
-
-  Width := new;
-
   if sButton then
   begin
     btn_select.Width := btn_select.Height;
@@ -136,7 +116,7 @@ begin
 end;
 
 
-procedure TMainForm.ReAlignComponents(BroadCast : boolean);
+procedure TMainForm.ReAlignComponents;
 var
   newWidth : integer;
 begin
@@ -148,10 +128,12 @@ begin
   newWidth := sWidth + 4;
   Tag := newWidth;
   Hint := inttostr(newWidth);
+
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;
   if newWidth <> Width then
-  begin
-    if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0)
-  end else SetSize(Width);
+    mInterface.BarInterface.UpdateModuleSize
+  else UpdateSize;
 end;
 
 procedure TMainForm.editKeyUp(Sender: TObject; var Key: Word;
@@ -171,67 +153,18 @@ end;
 
 procedure TMainForm.UpdateBangs;
 begin
-  SharpApi.RegisterActionEx(PChar('!FocusMiniScmd ('+inttostr(ModuleID)+')'),'Modules',self.Handle,1);
+  SharpApi.RegisterActionEx(PChar('!FocusMiniScmd ('+inttostr(mInterface.ID)+')'),'Modules',self.Handle,1);
 end;
 
-function ForceForegroundWindow(hwnd: THandle): Boolean;
-const
-  SPI_GETFOREGROUNDLOCKTIMEOUT = $2000;
-  SPI_SETFOREGROUNDLOCKTIMEOUT = $2001;
-var
-  ForegroundThreadID: DWORD;
-  ThisThreadID: DWORD;
-  timeout: DWORD;
-
+procedure TMainForm.UpdateComponentSkins;
 begin
-  if IsIconic(hwnd) then
-    ShowWindow(hwnd, SW_RESTORE);
-
-  if GetForegroundWindow = hwnd then
-    Result := True
-  else begin
-    // Windows 98/2000 doesn't want to foreground a window when some other
-    // window has keyboard focus
-
-    if ((Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion > 4)) or
-      ((Win32Platform = VER_PLATFORM_WIN32_WINDOWS) and
-      ((Win32MajorVersion > 4) or ((Win32MajorVersion = 4) and
-      (Win32MinorVersion > 0)))) then begin
-      // Code from Karl E. Peterson, www.mvps.org/vb/sample.htm
-      // Converted to Delphi by Ray Lischner
-      // Published in The Delphi Magazine 55, page 16
-
-      Result := False;
-      ForegroundThreadID := GetWindowThreadProcessID(GetForegroundWindow, nil);
-      ThisThreadID := GetWindowThreadPRocessId(hwnd, nil);
-      if AttachThreadInput(ThisThreadID, ForegroundThreadID, True) then begin
-        BringWindowToTop(hwnd); // IE 5.5 related hack
-        SetForegroundWindow(hwnd);
-        AttachThreadInput(ThisThreadID, ForegroundThreadID, False);
-        Result := (GetForegroundWindow = hwnd);
-      end;
-      if not Result then begin
-        // Code by Daniel P. Stasinski
-        SystemParametersInfo(SPI_GETFOREGROUNDLOCKTIMEOUT, 0, @timeout, 0);
-        SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, TObject(0),
-          SPIF_SENDCHANGE);
-        BringWindowToTop(hwnd); // IE 5.5 related hack
-        SetForegroundWindow(hWnd);
-        SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, TObject(timeout), SPIF_SENDCHANGE);
-      end;
-    end
-    else begin
-      BringWindowToTop(hwnd); // IE 5.5 related hack
-      SetForegroundWindow(hwnd);
-    end;
-
-    Result := (GetForegroundWindow = hwnd);
-  end;
-end; { ForceForegroundWindow }
+  btn_select.SkinManager := mInterface.SkinInterface.SkinManager;
+  edit.SkinManager := mInterface.SkinInterface.SkinManager;
+end;
 
 procedure TMainForm.WMSharpEBang(var Msg : TMessage);
 begin
-  ForceForegroundWindow(BarWnd);
+  ForceForegroundWindow(mInterface.BarInterface.BarWnd);
   case msg.LParam of
     1: edit.SetFocus;
   end;
@@ -245,7 +178,7 @@ begin
                                  ClientToScreen(point(btn_select.Left,btn_select.Top + btn_select.height)));
   if length(trim(s))>0 then
   begin
-    ForceForegroundWindow(BarWnd);
+    ForceForegroundWindow(mInterface.BarInterface.BarWnd);
     edit.SetFocus;
     edit.Text := s;
     edit.Edit.SelectAll;
@@ -281,18 +214,12 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := True;
-  Background := TBitmap32.Create;
-end;
-
-procedure TMainForm.FormDestroy(Sender: TObject);
-begin
-  Background.Free;
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
-  if Background <> nil then
-     Background.DrawTo(Canvas.Handle,0,0);
+  if mInterface <> nil then  
+    mInterface.Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.
