@@ -85,7 +85,7 @@ constructor TInterfacedSharpBarModule.Create(pID, pBarID: integer;
   pBarWnd: hwnd);
 begin
   inherited Create(pID, pBarID, pBarWnd);
-  ModuleName := 'Button Module';
+  ModuleName := 'MiniScmd Module';
 
   try
     Form := TMainForm.CreateParented(BarWnd);
