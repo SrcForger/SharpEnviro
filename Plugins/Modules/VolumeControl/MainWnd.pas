@@ -30,13 +30,12 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32, GR32_PNG, SharpEBaseControls, SharpEButton,
-  SharpESkinManager,  ExtCtrls, SharpEProgressBar,
-  JclSimpleXML, SharpApi, Menus, Math, SoundControls, MMSystem;
+  ExtCtrls, SharpEProgressBar, JclSimpleXML, SharpApi, Menus,
+  Math, SoundControls, MMSystem, uISharpBarModule;
 
 
 type
   TMainForm = class(TForm)
-    SharpESkinManager1: TSharpESkinManager;
     ClockTimer: TTimer;
     mute: TSharpEButton;
     pbar: TSharpEProgressBar;
@@ -61,22 +60,17 @@ type
     FDLow,FDMed,FDHigh,FDMute : TBitmap32;
     lastvolume : integer;
     lastmute : boolean;
-    Background : TBitmap32;
     procedure InitDefaultImages;
   public
-    ModuleID : integer;
-    BarID : integer;
-    BarWnd   : hWnd;
+    mInterface : ISharpBarModule;
     procedure LoadSettings;
-    procedure SetSize(NewWidth : integer);
-    procedure ReAlignComponents(BroadCast : boolean);
-    procedure UpdateBackground(new : integer = -1);
+    procedure ReAlignComponents;
+    procedure UpdateComponentSkins;
+    procedure UpdateSize;
   end;
 
 
 implementation
-
-uses uSharpBarAPI;
 
 {$R *.dfm}
 {$R glyphs.res}
@@ -142,12 +136,12 @@ var
   XML : TJclSimpleXML;
   fileloaded : boolean;
 begin
-  sWidth  := 100;
+  sWidth  := 50;
   sMixer  := MIXERLINE_COMPONENTTYPE_DST_SPEAKERS;
 
   XML := TJclSimpleXML.Create;
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -155,29 +149,20 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      sWidth := IntValue('Width',100);
+      sWidth := IntValue('Width',50);
       sMixer := IntValue('Mixer',MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
     end;
   XMl.Free;
 end;
 
-procedure TMainForm.UpdateBackground(new : integer = -1);
+procedure TMainForm.UpdateComponentSkins;
 begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+  pbar.SkinManager := mInterface.SkinInterface.SkinManager;
+  mute.SkinManager := mInterface.SkinInterface.SkinManager;
 end;
 
-procedure TMainForm.SetSize(NewWidth : integer);
+procedure TMainForm.UpdateSize;
 begin
-  NewWidth := Max(NewWidth,1);
-
-  UpdateBackground(NewWidth);
-
-  Width := NewWidth;
-  
   mute.Width := Height + 2;
   pbar.Left := mute.Left + mute.Width + 2;
   pbar.Width := Width - mute.Left - mute.Width - 4;
@@ -188,7 +173,7 @@ begin
   cshape.Height := pbar.Height;
 end;
 
-procedure TMainForm.ReAlignComponents(BroadCast : boolean);
+procedure TMainForm.ReAlignComponents;
 var
   newWidth : integer;
 begin
@@ -196,24 +181,15 @@ begin
   ClockTimer.OnTimer(ClockTimer);
 
   newWidth := sWidth + mute.Width + 6;
-  Tag := newWidth;
-  Hint := inttostr(newWidth);
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;  
   if newWidth <> Width then
-     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
-
-  mute.Width := Height + 2;
-  pbar.Left := mute.Left + mute.Width + 2;
-  pbar.Width := Width - mute.Left - mute.Width - 4;
-  pbar.Height := Height - 8;
-  cshape.Left   := pbar.Left;
-  cshape.Top    := pbar.Top;
-  cshape.Width  := pbar.Width;
-  cshape.Height := pbar.Height;
+    mInterface.BarInterface.UpdateModuleSize
+  else UpdateSize
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  Background := TBitmap32.Create;
   DoubleBuffered := True;
   FDLow  := TBitmap32.Create;
   FDMed  := TBitmap32.Create;
@@ -225,7 +201,6 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  Background.Free;
   FDLow.free;
   FDMed.free;
   FDHigh.free;
@@ -294,12 +269,12 @@ procedure TMainForm.muteMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbRight then
-       SharpApi.SharpExecute('sndvol32.exe');
+    SharpApi.SharpExecute('sndvol32.exe');
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
-  Background.DrawTo(Canvas.Handle,0,0);
+  mInterface.Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

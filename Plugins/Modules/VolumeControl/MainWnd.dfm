@@ -21,7 +21,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 25
     Height = 25
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = muteClick
     OnMouseUp = muteMouseUp
@@ -40,7 +39,6 @@ object MainForm: TMainForm
     Max = 65535
     Value = 0
     AutoPos = apCenter
-    SkinManager = SharpESkinManager1
     AutoSize = False
   end
   object cshape: TShape
@@ -53,14 +51,6 @@ object MainForm: TMainForm
     OnMouseDown = cshapeMouseDown
     OnMouseMove = cshapeMouseMove
     OnMouseUp = cshapeMouseUp
-  end
-  object SharpESkinManager1: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = [scButton, scBar, scProgressBar]
-    HandleUpdates = False
-    Left = 192
-    Top = 72
   end
   object ClockTimer: TTimer
     Interval = 250
