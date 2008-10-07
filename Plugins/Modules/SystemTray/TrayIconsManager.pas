@@ -46,9 +46,6 @@ type
     TTrayChangeEvent = (tceIcon,tceTip,tceVersion);
     TTrayChangeEvents = Set of TTrayChangeEvent;
 
- {$REGION '### Classes ###'}
-  {$REGION 'TMsgWnd class'}
-
     TMsgWnd = class(TForm)
       procedure FormDestroy(Sender: TObject);
       procedure CreateParams(var Params: TCreateParams); override;
@@ -60,8 +57,6 @@ type
       isClosing : boolean;
       procedure RegisterWithTray;
     end;
-  {$ENDREGION}
-  {$REGION 'TTrayItem Class'}
 
   TTrayItem    = class
                  private
@@ -94,13 +89,12 @@ type
                    property Owner : TObject read FOwner write FOwner;
                    property TipIndex : integer read FTipIndex write FTipIndex;
                  end;
-  {$ENDREGION}
-  {$REGION 'TTrayClient Class'}
 
   TTrayClient = class
                  private
+                   FTipWnd : hwnd;
+                   FTipForm : TForm;
                    FMsgWnd: TMsgWnd;
-                   FWndList : TObjectList;
                    FV4Popup : TTrayItem;
                    FIconSize : integer;
                    FIconSpacing : integer;
@@ -156,8 +150,8 @@ type
                    procedure SetBlendAlpha(Value : integer);
                    procedure SetIconAlpha(Value : integer);
                    procedure PositionTrayWindow(x,y : integer; parent : TForm);
-                   procedure AddWindow(wnd : TObject);
-                   procedure RemoveWindow(wnd : TObject);
+                   procedure InitToolTips(wnd : TObject);
+                   procedure DeleteToolTips;
                    function GetFreeTipIndex : integer;
                    constructor Create; reintroduce;
                    destructor  Destroy; override;
@@ -182,10 +176,9 @@ type
                    property LastMessage    : Int64   read FLastMessage;
                    property LastTipItem    : TTrayItem read FLastTipItem;
                    property TipGPoint      : TPoint read FTipGPoint;
-                   property WndList        : TObjectList read FWndList;
+                   property TipWnd         : hwnd read FTipWnd;
+                   property TipForm        : TForm read FTipForm;  
                  end;
-  {$ENDREGION}
-{$ENDREGION}
 
 function AllowSetForegroundWindow(ProcessID : DWORD) : boolean; stdcall; external 'user32.dll' name 'AllowSetForegroundWindow';
 
@@ -195,14 +188,6 @@ implementation
 
 uses ToolTipApi,MainWnd;
 
-
-type
-
-  TTrayWnd = class
-             public
-               Wnd : TMainForm;
-               TipWnd : hwnd;
-             end;
 
 function ColorToColor32Alpha(Color : TColor; Alpha : integer) : TColor32;
 var
@@ -240,9 +225,6 @@ begin
   // something went wrong and the cursor isn't in any monitor
   result := 0;
 end;
-
-{$ENDREGION}
-{$REGION 'TMsgWnd'}
 
 procedure TMsgWnd.RegisterWithTray;
 begin
@@ -312,8 +294,6 @@ begin
   isClosing := True;
   PostMessage(FindWindow('Shell_TrayWnd',nil),WM_UNREGISTERWITHTRAY,handle,0);
 end;
-{$ENDREGION}
-{$REGION 'TTrayItem'}
 
 constructor TTrayItem.Create(NIDv6 : TNotifyIconDataV7);
 begin
@@ -369,8 +349,6 @@ begin
     result := result + [tceIcon];
   end;
 end;
-{$ENDREGION}
-{$REGION 'TTrayClient'}
 
 constructor TTrayClient.Create;
 begin
@@ -378,8 +356,6 @@ begin
 
   Randomize;
   NewRepaintHash;
-  FWndList := TObjectList.Create(True);
-  FWndList.Clear;
   FColorBlend := False;
   FIconAlpha  := 255;
   FBlendAlpha := 255;
@@ -410,43 +386,42 @@ begin
   SharpNotifyEvent.OnClick := FOnBallonClick;
   SharpNotifyEvent.OnShow := FOnBallonShow;
   SharpNotifyEvent.OnTimeout := FOnBallonTimeout;
+
+  FTipWnd := 0;
+  FTipForm := nil;
 end;
 
-procedure TTrayClient.AddWindow(wnd : TObject);
+procedure TTrayClient.InitToolTips(wnd : TObject);
 var
-  item : TTrayWnd;
-  item2 : TTrayItem;
   n : integer;
+  item : TTrayItem;
 begin
-  item := TTrayWnd.Create;
-  item.Wnd := TMainForm(wnd);
-  item.TipWnd := ToolTipApi.RegisterToolTip(TMainForm(wnd));
-  FWndList.Add(item);
+  FTipForm := TMainForm(wnd);
+  FTipWnd := ToolTipApi.RegisterToolTip(TMainForm(wnd));
   for n := 0 to FItems.Count - 1 do
   begin
-    item2 := TTrayItem(FItems.Items[n]);
-    ToolTipApi.AddToolTipByCallback(item.TipWnd,
-                                    item.Wnd,
-                                    item2.TipIndex,
+    item := TTrayItem(FItems.Items[n]);
+    ToolTipApi.AddToolTipByCallback(FTipWnd,
+                                    FTipForm,
+                                    item.TipIndex,
                                     Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
   end;
 end;
 
-procedure TTrayClient.RemoveWindow(wnd : TObject);
+procedure TTrayClient.DeleteToolTips;
 var
-  n,i : integer;
+  i : integer;
 begin
-  for n := 0 to FWndList.Count - 1 do
-      if TTrayWnd(FWndList.Items[n]).wnd = wnd then
-      begin
-        for i := 0 to FItems.Count - 1 do
-            ToolTipApi.DeleteToolTip(TTrayWnd(FWndList.Items[n]).TipWnd,
-                                     TTrayWnd(FWndList.Items[n]).Wnd,     
-                                     TTrayItem(FItems).TipIndex);
-        DestroyWindow(TTrayWnd(FWndList.Items[n]).TipWnd);
-        FWndList.Delete(n);
-        exit;
-      end; 
+  if (FTipWnd <> 0) then
+  begin
+    for i := 0 to FItems.Count - 1 do
+      ToolTipApi.DeleteToolTip(FTipWnd,
+                               FTipForm,
+                               TTrayItem(FItems.Items[i]).TipIndex);
+    DestroyWindow(FTipWnd);
+  end;
+  FTipWnd := 0;
+  FTipForm := nil;
 end;
 
 procedure TTrayClient.SetIconAlpha(Value : integer);
@@ -522,7 +497,7 @@ begin
   SharpNotifyEvent.OnClick := nil;
   SharpNotifyEvent.OnShow := nil;
   SharpNotifyEvent.OnTimeout := nil;
-  FWndList.Free;
+  DeleteToolTips;
   FMsgWnd.Free;
   FItems.Free;
   FBitmap.Free;
@@ -646,7 +621,6 @@ procedure TTrayClient.CloseVistaInfoTip;
 var
   wp : wparam;
   lp : lparam;
-  n : integer;
 begin
   if (FV4Popup <> nil) then
   begin
@@ -654,8 +628,8 @@ begin
     lp := MakeLParam(NIN_POPUPCLOSE,FV4Popup.uID);
     SendMessage(FV4Popup.Wnd,FV4Popup.CallbackMessage,wp,lp);
     FV4Popup := nil;
-    for n := 0 to FWndList.Count - 1 do
-        ToolTipApi.EnableToolTip(TTrayWnd(FWndList.Items[n]).TipWnd);
+    if FTipWnd <> 0 then
+      ToolTipApi.EnableToolTip(FTipWnd);
   end;
 end;
 
@@ -688,18 +662,21 @@ end;
 procedure TTrayClient.AddTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
   tempItem : TTrayItem;
-  i,n : integer;
+  n : integer;
 begin
   tempItem := TTrayItem.Create(NIDv6);
   tempItem.Owner := self;
   tempItem.TipIndex := GetFreeTipIndex;
   FItems.Add(TempItem);
   n := FItems.Count - 1;
-  for i := 0 to FWndList.Count - 1 do
-      ToolTipApi.AddToolTipByCallback(TTrayWnd(FWndList.Items[i]).TipWnd,
-                                      TTrayWnd(FWndList.Items[i]).Wnd,
-                                      tempItem.TipIndex,
-                                      Rect(FTopSpacing+n*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
+  if FTipWnd <> 0 then
+    ToolTipApi.AddToolTipByCallback(FTipWnd,
+                                    FTipForm,
+                                    tempItem.TipIndex,
+                                    Rect(FTopSpacing+n*(FIconSize + FIconSpacing),
+                                         FTopSpacing,
+                                         FTopSpacing+n*(FIconSize + FIconSpacing)+FIconSize,
+                                         FIconSize+FTopSpacing));
 
   RenderIcons;
 end;
@@ -748,11 +725,11 @@ begin
   if (NIDv6.uFlags and NIF_INFO) = NIF_INFO then
   begin
     item := GetTrayIcon(NIDv6.Wnd,NIDv6.UID);
-    if (item <> nil) and (wndlist.Count > 0) then
+    if (item <> nil) and (FTipWnd <> 0) then
        if (length(trim(item.FInfo))>0)
           or (length(trim(item.FInfoTitle))>0) then
           begin
-            wnd := TTrayWnd(wndlist.Items[0]).wnd;
+            wnd := TMainForm(FTipForm);
             SPos := wnd.ClientToScreen(Point(0,wnd.Height));
             x := SPos.x;
             if SPos.y > wnd.Monitor.Top + wnd.Monitor.Height div 2 then
@@ -792,7 +769,7 @@ begin
             else if TimeOut > 30000 then
               TimeOut := 30000;
             SharpNotify.CreateNotifyWindow(0,item,x,y,FixedTitle + #13 + FixedInfo,
-                                           Icon,edge,wnd.SkinManager,TimeOut,wnd.Monitor.BoundsRect);
+                                           Icon,edge,wnd.mInterface.SkinInterface.SkinManager,TimeOut,wnd.Monitor.BoundsRect);
           end;
   end;
 end;
@@ -801,7 +778,6 @@ procedure TTrayClient.ModifyTrayIcon(NIDv6 : TNotifyIconDataV7);
 var
   tempItem : TTrayItem;
   rs : TTrayChangeEvents;
-  k : integer;
 begin
   tempItem := GetTrayIcon(NIDv6.wnd,NIDv6.UID);
   if tempItem <> nil then
@@ -809,10 +785,10 @@ begin
     rs := TempItem.AssignFromNIDv6(NIDv6);
     if tceIcon in rs then RenderIcons;
     if tceTip in rs then
-       for k := 0 to FWndList.Count - 1 do
-           ToolTipApi.UpdateToolTipTextByCallback(TTrayWnd(FWndList.Items[k]).TipWnd,
-                                                  TTrayWnd(FWndList.Items[k]).Wnd,
-                                                  tempItem.TipIndex);
+      if FTipWnd <> 0 then      
+         ToolTipApi.UpdateToolTipTextByCallback(FTipWnd,
+                                                FTipForm,
+                                                tempItem.TipIndex);
   end;
 end;
 
@@ -827,7 +803,7 @@ end;
 
 procedure TTrayClient.DeleteTrayIconByIndex(index : integer);
 var
-  i,k : integer;
+  i : integer;
   temp : TTrayItem;
 begin
   if index > FItems.Count - 1 then exit;
@@ -836,18 +812,20 @@ begin
   if temp = FLastTipItem then
     StopTipTimer;
 
-  if index < FItems.Count - 1 then
-     for k := 0 to FWndList.Count - 1 do
-     begin
-       ToolTipApi.DeleteToolTip(TTrayWnd(FWndList.Items[k]).TipWnd,
-                                TTrayWnd(FWndList.Items[k]).Wnd,
-                                temp.TipIndex);
+  if (index < FItems.Count - 1) and (FTipWnd <> 0) then
+  begin
+    ToolTipApi.DeleteToolTip(FTipWnd,
+                             FTipForm,
+                             temp.TipIndex);
 
-       for i := index + 1 to FItems.Count - 1 do
-           ToolTipApi.UpdateToolTipRect(TTrayWnd(FWndList.Items[k]).TipWnd,
-                                        TTrayWnd(FWndList.Items[k]).Wnd,
-                                        TTrayItem(FItems.Items[i]).TipIndex,
-                                        Rect(FTopSpacing+(i-1)*(FIconSize + FIconSpacing),FTopSpacing,FTopSpacing+(i-1)*(FIconSize + FIconSpacing)+FIconSize,FIconSize+FTopSpacing));
+    for i := index + 1 to FItems.Count - 1 do
+      ToolTipApi.UpdateToolTipRect(FTipWnd,
+                                   FTipForm,
+                                   TTrayItem(FItems.Items[i]).TipIndex,
+                                   Rect(FTopSpacing+(i-1)*(FIconSize + FIconSpacing),
+                                        FTopSpacing,
+                                        FTopSpacing+(i-1)*(FIconSize + FIconSpacing)+FIconSize,
+                                        FIconSize+FTopSpacing));
     end;
   FItems.Extract(temp);
   FreeAndNil(Temp);
@@ -987,7 +965,6 @@ var
   ix,iy : DWORD;
   lp : lparam;
   wp : wparam;
-  i : integer;
 begin
   result := false;
   for n := 0 to FItems.Count - 1 do
@@ -1047,8 +1024,8 @@ begin
                           begin
                             FV4Popup := tempItem;
                             StartTipTimer(x,y,gx,gy);
-                            for i := 0 to FWndList.Count - 1 do
-                                ToolTipApi.DisableToolTip(TTrayWnd(FWndList.Items[i]).TipWnd);
+                            if FTipWnd <> 0 then      
+                              ToolTipApi.DisableToolTip(FTipWnd);
                           end;
                         end;
           WM_RBUTTONUP: begin

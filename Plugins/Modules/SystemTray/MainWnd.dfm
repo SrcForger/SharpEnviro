@@ -24,18 +24,9 @@ object MainForm: TMainForm
     Top = 0
     Width = 141
     Height = 21
-    SkinManager = SkinManager
     AutoSize = True
     Caption = 'SharpE Tray Service not running'
     AutoPos = apCenter
     LabelStyle = lsMedium
-  end
-  object SkinManager: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = [scBar, scNotify]
-    HandleUpdates = False
-    Left = 112
-    Top = 80
   end
 end

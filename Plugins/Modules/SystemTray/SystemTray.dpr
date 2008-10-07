@@ -42,394 +42,248 @@ uses
   TrayIconsManager in 'TrayIconsManager.pas',
   winver in 'winver.pas',
   DateUtils,
+  uISharpBarModule,
+  uISharpESkin,
+  uISharpBar,
+  Graphics,
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   ToolTipApi in '..\..\..\Common\Units\ToolTipApi\ToolTipApi.pas',
   SharpGraphicsUtils in '..\..\..\Common\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
   SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
-  declaration in '..\..\Services\Shell\declaration.pas';
+  declaration in '..\..\Services\Shell\declaration.pas',
+  uInterfacedSharpBarModuleBase in '..\..\..\Components\SharpBar\uInterfacedSharpBarModuleBase.pas';
 
 type
-  TTimerObject = object
-              procedure OnUpdateTimer(Sender : TObject);
-            end;
-  TModule = class
-            private
-              FForm    : TForm;
-              FID      : integer;
-              FPos     : integer;
-              FBarWnd  : hWnd;
-            public
-              constructor Create(pID,pBarID : integer; pParent : hwnd); reintroduce;
-              destructor Destroy; override;
+  TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
+    private
+      FUpdateTimer : TTimer;
+      FTrayClient : TTrayClient;
+      Flastrepaint : integer;
+      FServiceCheck : integer;
+      FServiceRunning : boolean;
+      procedure OnUpdateTimer(Sender : TObject);
+    public
+      constructor Create(pID,pBarID : integer; pBarWnd : hwnd); override;
 
-              property ID   : integer read FID;
-              property Pos  : integer read FPos write FPos;
-              property Form : TForm   read FForm;
-              property BarWnd : hWnd  read FBarWnd;
-            end;
+      function CloseModule : HRESULT; override;
+      function SetTopHeight(Top,Height : integer) : HRESULT; override;
+      function UpdateMessage(part : TSU_UPDATE_ENUM; param : integer) : HRESULT; override;
+      function InitModule : HRESULT; override;
 
-
-var
-  ModuleList : TObjectList;
-  MouseTimer : TMouseTimer;
-  FirstStart : boolean = True;
-  FUpdateTimer : TTimer;
-  TimerObject : TTimerObject;
-//  SaveDllProc: Pointer;
-  TrayClient : TTrayClient;
-  lastrepaint : integer;
-  ServiceCheck : integer;
-  ServiceRunning : boolean;
+      procedure SetSkinInterface(Value : ISharpESkin); override;
+      procedure SetSize(Value : integer); override;
+      procedure SetLeft(Value : integer); override;      
+  end;
 
 {$R *.res}
 
-procedure TTimerObject.OnUpdateTimer(SEnder : TObject);
+{ TInterfacedSharpBarModule }
+
+function TInterfacedSharpBarModule.CloseModule: HRESULT;
+begin
+  try
+    FUpdateTimer.Free;
+    FUpdateTimer := nil;
+
+    FTrayClient.Free;
+    FTrayClient := nil;
+
+    Form.Free;
+    Form := nil;
+    result := S_OK;
+  except
+    on E:Exception do
+    begin
+      result := E_FAIL;
+      SharpApi.SendDebugMessageEx(PChar(ModuleName),PChar('Error in CloseModule('
+        + inttostr(ID) + '):' + E.Message),clred,DMT_ERROR);
+    end;
+  end;
+end;
+
+procedure TInterfacedSharpBarModule.OnUpdateTimer(SEnder : TObject);
 var
-  n : integer;
-  tempModule : TModule;
   tempForm : TMainForm;
   hr : hresult;
 begin
-  if ModuleList = nil then exit;
-  if TrayClient = nil then exit;
-
-  ServiceCheck := ServiceCheck + 1;
-  if ServiceCheck >= 20 then
+  FServiceCheck := FServiceCheck + 1;
+  if FServiceCheck >= 20 then
   begin
     hr := SharpApi.IsServiceStarted('Shell');
     if hr <> MR_STARTED then
     begin
-      TrayClient.ClearTrayIcons;
-      ServiceRunning := False;
-      lastrepaint := -1;
-    end else ServiceRunning := True;
-    ServiceCheck := 0;
+      FTrayClient.ClearTrayIcons;
+      FServiceRunning := False;
+      Flastrepaint := -1;
+    end else FServiceRunning := True;
+    FServiceCheck := 0;
   end;
 
-  if (DateTimeToUnix(now) - TrayClient.LastMessage) >= 5 then
+  if (DateTimeToUnix(now) - FTrayClient.LastMessage) >= 5 then
   begin
-    TrayClient.RegisterWithTray;
-    ServiceCheck := 15;
+    FTrayClient.RegisterWithTray;
+    FServiceCheck := 15;
   end;
 
-  if TrayClient.RepaintHash = lastrepaint then exit;
+  if FTrayClient.RepaintHash = Flastrepaint then exit;
 
-  for n := 0 to ModuleList.Count - 1 do
+  tempForm := TMainForm(Form);
+  if FTrayClient.RepaintHash <> Flastrepaint then
   begin
-    tempModule := TModule(ModuleList.Items[n]);
-    if tempModule.Form <> nil then
-    begin
-      tempForm := TMainForm(tempModule.Form);
-      if TrayClient.RepaintHash <> lastrepaint then
-      begin
-        if ServiceRunning then
-           tempForm.lb_servicenotrunning.Visible := False
-           else tempForm.lb_servicenotrunning.Visible := True;
-        tempForm.ReAlignComponents(true);
-        if ServiceRunning then tempForm.RepaintIcons;
-      end;
-    end;
+    if FServiceRunning then
+      tempForm.lb_servicenotrunning.Visible := False
+    else tempForm.lb_servicenotrunning.Visible := True;
+    tempForm.ReAlignComponents;
+    if FServiceRunning then
+      tempForm.RepaintIcons;
   end;
-  lastrepaint := TrayClient.RepaintHash;
+  Flastrepaint := FTrayClient.RepaintHash;
 end;
 
-function GetControlByHandle(AHandle: THandle): TWinControl;
+constructor TInterfacedSharpBarModule.Create(pID, pBarID: integer;
+  pBarWnd: hwnd);
 begin
- Result := Pointer(GetProp( AHandle,
-                            PChar( Format( 'Delphi%8.8x',
-                                           [GetCurrentProcessID]))));
-end;
+  inherited Create(pID, pBarID, pBarWnd);
+  ModuleName := 'System Tray Module';
 
-constructor TModule.Create(pID,pBarID : integer; pParent : hwnd);
-begin
-  FID   := pID;
-  FBarWnd := pParent;
-  FForm := TMainForm.CreateParented(pParent);
-  TMainForm(FForm).FTrayClient := TrayClient;
-  TrayClient.ScreenPos := TMainForm(FForm).ClientToScreen(
-                               Point(TMainForm(FForm).Left,
-                               TMainForm(FForm).Top));
-  FForm.BorderStyle := bsNone;
   try
-    FForm.Height :=  GetBarPluginHeight(FBarWnd);
-  except
-  end;
- // FForm.ParentWindow := pParent;
- // MouseTimer.AddWinControl(TMainForm(FForm));
-  with FForm as TMainForm do
-  begin
-    ModuleID := pID;
-    BarWnd   := FBarWnd;
-    BarID    := pBarID;
+    Form := TMainForm.CreateParented(BarWnd);
+    Form.BorderStyle := bsNone;
+    Form.ParentWindow := BarWnd;    
 
-    LoadSettings;
-    ReAlignComponents(False);
-    TrayClient.ScreenPos := TMainForm(FForm).ClientToScreen(
-                                 Point(TMainForm(FForm).Left,
-                                 TMainForm(FForm).Top));
-    Show;
-  end;
-end;
-
-destructor TModule.Destroy;
-begin
-  FForm.Free;
-  FForm := nil;
-  inherited Destroy;
-end;
-
-function CreateModule(ID : integer;
-                      BarID : integer;
-                      parent : hwnd) : hwnd;
-var
-  temp : TModule;
-  i : integer;
-  wfs : boolean;
-begin
-  if firststart then
-  begin
-    TrayClient := TTrayClient.Create;
-    TrayClient.BackGroundColor := color32(0,0,0,0);
+    FTrayClient := TTrayClient.Create;
+    FTrayClient.BackGroundColor := color32(0,0,0,0);
     FUpdateTimer := TTimer.Create(nil);
-    FUpdateTimer.OnTimer := TimerObject.OnUpdateTimer;
+    FUpdateTimer.OnTimer := OnUpdateTimer;
     FUpdateTimer.Interval := 100;
     FUpdateTimer.Enabled := True;
-    ServiceCheck := 15;
-    servicerunning := true;
-    firststart := false;
-    wfs := True;
-  end else wfs := False;
+    FServiceCheck := 15;
+    FServicerunning := true;
 
-  try
-    if ModuleList = nil then
-       ModuleList := TObjectList.Create;
+    TMainForm(Form).mInterface := self;
+    TMainForm(Form).FTrayClient := FTrayClient;
 
-    if MouseTimer = nil then
-       MouseTimer := TMouseTimer.Create;
-
-    temp := TModule.Create(ID,BarID,parent);
-    TrayClient.AddWindow(temp.Form);
-    ModuleList.Add(temp);
-
-    if wfs then
-    begin
-      i := GetBarPluginHeight(temp.BarWnd);
-      if i < 20 then
-         TrayClient.IconSize := i - 4
-      else TrayClient.IconSize := 16;
-      {if TrayClient.IconSize < 16 then
-      begin
-        TrayClient.IconSize := TrayClient.IconSize;
-        TrayClient.topspacing := 2;
-      end else TrayClient.TopSpacing := 2;}
-    end;
   except
-    result := 0;
-    exit;
+    on E:Exception do
+    begin
+      SharpApi.SendDebugMessageEx(PChar(ModuleName),PChar('Error in CreateModule('
+        + inttostr(ID) + '):' + E.Message),clred,DMT_ERROR);
+      exit;
+    end;
   end;
-  result := temp.Form.Handle;
 end;
 
-function CloseModule(ID : integer) : boolean;
-var
-  n : integer;
+function TInterfacedSharpBarModule.InitModule: HRESULT;
 begin
-  if ModuleList = nil then
+  result := inherited InitModule;
+
+  if Form <> nil then
   begin
-    result := false;
-    exit;
-  end;
-  try
-    for n := 0 to ModuleList.Count - 1 do
-        if TModule(ModuleList.Items[n]).ID = ID then
-        begin
-          MouseTimer.RemoveWinControl(TModule(ModuleList.Items[n]).Form);
-          if MouseTimer.ControlList.Count = 0 then
-             FreeAndNil(MouseTimer);
-          TrayClient.RemoveWindow(TModule(ModuleList.Items[n]).Form);
-          ModuleList.Delete(n);
-          result := True;
-          exit;
-        end;
-  finally
-    result := False;
+    TMainForm(Form).LoadSettings;
+    TMainForm(Form).RealignComponents;
+    FTrayClient.ScreenPos := TMainForm(Form).ClientToScreen(
+                               Point(TMainForm(Form).Left,
+                               TMainForm(Form).Top));
   end;
 end;
 
-procedure Refresh(ID : integer);
+procedure TInterfacedSharpBarModule.SetLeft(Value: integer);
 begin
+  inherited SetLeft(Value);
+
+  if TMainForm(Form) <> nil then
+  begin               
+    FTrayClient.ScreenPos := TMainForm(Form).ClientToScreen(
+                                 Point(TMainForm(Form).Left,
+                                 TMainForm(Form).Top));
+    TMainForm(Form).RepaintIcons;
+
+    Flastrepaint := -1;
+    FUpdateTimer.OnTimer(FUpdateTimer);
+
+    FTrayClient.PositionTrayWindow(0,0,Form);
+  end;
 end;
 
-procedure PosChanged(ID : integer);
-var
-  n : integer;
-  temp : TModule;
+procedure TInterfacedSharpBarModule.SetSkinInterface(Value : ISharpESkin);
 begin
-  for n := 0  to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.Form).UpdateBackground;
+  Inherited SetSkinInterface(Value);
 
-        TrayClient.ScreenPos :=
-             TMainForm(temp.FForm).ClientToScreen(
-                                    Point(TMainForm(temp.FForm).Left,
-                                    TMainForm(temp.FForm).Top));
-        TMainForm(temp.Form).RepaintIcons;
-        
-        lastrepaint := -1;
-        FUpdateTimer.OnTimer(FUpdateTimer);
-
-        if n = 0 then
-          TrayClient.PositionTrayWindow(0,0,temp.Form);
-      end;
+  if Form <> nil then
+    TMainForm(Form).UpdateComponentSkins;
 end;
 
-procedure UpdateMessage(part : TSU_UPDATE_ENUM; param : integer);
+procedure TInterfacedSharpBarModule.SetSize(Value: integer);
+begin
+  inherited SetSize(Value);
+
+  FTrayClient.RenderIcons;
+  TMainForm(Form).RepaintIcons;
+end;
+
+function TInterfacedSharpBarModule.SetTopHeight(Top, Height: integer): HRESULT;
+begin
+  result := inherited SetTopHeight(Top, Height);
+
+  if Form <> nil then
+  begin
+    TMainForm(Form).RealignComponents;
+    if Height < 20 then
+      FTrayClient.IconSize := Height - 4
+    else FTrayClient.IconSize := 16;
+    FTrayClient.RenderIcons;
+    TMainForm(Form).RepaintIcons;
+  end;
+end;
+
+function TInterfacedSharpBarModule.UpdateMessage(part: TSU_UPDATE_ENUM;
+  param: integer): HRESULT;
 const
   processed : TSU_UPDATES = [suSkinFileChanged,suBackground,suTheme,suSkin,
                              suScheme,suModule,suSkinFont];
-var
-  temp : TModule;
-  n,i : integer;
 begin
-  if not (part in processed) then 
-    exit;
+  result := inherited UpdateMessage(part,param);
 
-  if ModuleList = nil then exit;
+  if not (part in processed) then
+    exit;  
 
-  for n := 0  to ModuleList.Count - 1 do
+  if (part = suModule) and (ID  = param) then
   begin
-    temp := TModule(ModuleList.Items[n]);
-    if (part = suModule) and (temp.ID = param) then
-    begin
-      TMainForm(temp.Form).LoadSettings;
-      TMainForm(temp.Form).ReAlignComponents(True);
-      break;
-    end;
-
-    // Step1: check if height changed
-    if [part] <= [suSkinFileChanged,suBackground,suTheme] then
-    begin
-      i := GetBarPluginHeight(temp.BarWnd);
-      if temp.Form.Height <> i then
-      begin
-        temp.Form.Height := i;
-        if TrayClient <> nil then
-        begin
-          if temp.Form.Height < 20 then
-             TrayClient.IconSize := temp.Form.Height - 4
-          else TrayClient.IconSize := 16;
-          TrayClient.RenderIcons;
-        end;
-      end;
-    end;
-
-     // Step2: check if skin or scheme changed
-    if [part] <= [suScheme,suTheme] then
-        TMainForm(temp.Form).SkinManager.UpdateScheme;
-    if (part = suSkinFileChanged) then
-       TMainForm(temp.Form).SkinManager.UpdateSkin;
-    if [part] <= [suScheme,suTheme,suSkinFileChanged] then
-       TMainForm(temp.Form).LoadSettings;
-
-    // Step3: update
-    if [part] <= [suScheme,suBackground,suSkinFileChanged,suTheme] then
-    begin
-      TMainForm(temp.Form).UpdateBackground;
-      TMainForm(temp.Form).RepaintIcons((param <> -2));
-      if [part] <= [suTheme,suSkinFileChanged] then
-         TMainForm(temp.Form).ReAlignComponents((part = suSkinFileChanged));
-
-      if n = 0 then
-         TrayClient.PositionTrayWindow(0,0,temp.Form);
-    end;
-
-    // Step4: Update if font changed
-    if [part] <= [suSkinFont] then
-      TMainForm(temp.Form).SkinManager.RefreshControls;
+    TMainForm(Form).LoadSettings;
+    TMainForm(Form).ReAlignComponents;
   end;
-end;
 
-procedure LibExit(Reason: Integer);
-begin
-    case reason of
-        DLL_PROCESS_ATTACH:
-            begin
+  if [part] <= [suTheme,suSkinFileChanged] then
+    TMainForm(Form).ReAlignComponents;
 
-            end;
-
-        DLL_PROCESS_DETACH:
-            begin
-              if FUpdateTimer <> nil then
-              begin
-                FUpdateTimer.Enabled := False;
-                FreeAndNil(FUpdateTimer);
-              end;
-              if TrayClient <> nil then
-                 FreeAndNil(TrayClient);
-            end;
-    end;
-end;
-
-procedure SetSize(ID : integer; NewWidth : integer);
-var
-  n : integer;
-  temp : TModule;
-begin
-  for n := 0 to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.FForm).SetSize(NewWidth);
-      end;
+  if [part] <= [suBackground] then
+    TMainForm(Form).RepaintIcons;
 end;
 
 function GetMetaData(Preview : TBitmap32) : TMetaData;
-//var
-//  Bmp : TBitmap32;
-//  ResStream : TResourceStream;
-//  b : boolean;
 begin
   with result do
   begin
     Name := 'System Tray';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Displays all system tray icons.';
-    Version := '0.7.4.0';
+    Version := '0.7.6.0';
     ExtraData := 'preview: False';
     DataType := tteModule;
-
-{    Bmp := TBitmap32.Create;
-    ResStream := TResourceStream.Create(HInstance, 'Preview', RT_RCDATA);
-    try
-      LoadBitmap32FromPng(Bmp,ResStream,b);
-    finally
-      ResStream.Free;
-    end;
-    Preview.SetSize(Bmp.Width,Bmp.Height);
-    Bmp.DrawTo(Preview);
-    Bmp.Free;}
   end;
+end;
+
+function CreateModule(ID,BarID : integer; BarWnd : hwnd) : IInterface;
+begin
+  result := TInterfacedSharpBarModule.Create(ID,BarID,BarWnd);
 end;
 
 Exports
   CreateModule,
-  CloseModule,
-  Poschanged,
-  Refresh,
-  UpdateMessage,
-  GetMetaData,
-  SetSize;
+  GetMetaData;
 
 begin
-//  SaveDllProc := @dllProc;  // Speichern der Kette von Exit-Prozeduren
-  DllProc := @LibExit;  // Installieren der LibExit-Exit-Prozedur
-  LibExit(DLL_PROCESS_ATTACH);
-
 end.

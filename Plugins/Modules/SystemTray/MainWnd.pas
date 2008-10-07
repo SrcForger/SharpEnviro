@@ -32,12 +32,11 @@ uses
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
   SharpESkinManager, JvSimpleXML, SharpApi, Menus, GR32_Layers, Types,
   TrayIconsManager, Math, GR32, SharpECustomSkinSettings, SharpESkinLabel,
-  ToolTipApi,Commctrl;
+  ToolTipApi,Commctrl, uISharpBarModule;
 
 
 type
   TMainForm = class(TForm)
-    SkinManager: TSharpESkinManager;
     lb_servicenotrunning: TSharpESkinLabel;
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
@@ -66,24 +65,19 @@ type
     procedure CMMOUSELEAVE(var msg : TMessage); message CM_MOUSELEAVE;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
   public
-    ModuleID : integer;
-    BarID : integer;
-    BarWnd : hWnd;
     FTrayClient : TTrayClient;
-    Background : TBitmap32;
     Buffer     : TBitmap32;
-    procedure LoadSettings;
+    mInterface : ISharpBarModule;
     procedure RepaintIcons(pRepaint : boolean = True);
-    procedure SetSize(NewWidth : integer);
-    procedure ReAlignComponents(SendUpdate : boolean);
-    procedure UpdateBackground(new : integer = -1);
+    procedure LoadSettings;
+    procedure ReAlignComponents;
+    procedure UpdateComponentSkins;
   end;
 
 
 implementation
 
-uses uSharpBarAPI,
-     SharpESkinPart,
+uses SharpESkinPart,
      SharpThemeApi;
 
 type
@@ -100,13 +94,9 @@ begin
   Result := x.HighPart * 4.294967296E9 + x.LowPart
 end;
 
-procedure TMainForm.UpdateBackground(new : integer = -1);
+procedure TMainForm.UpdateComponentSkins;
 begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+  lb_servicenotrunning.SkinManager := mInterface.SkinInterface.SkinManager;
 end;
 
 procedure TMainForm.CMMOUSELEAVE(var msg : TMessage);
@@ -130,14 +120,8 @@ begin
   end;
 
   Result := (Msg.NMHdr.code = TTN_NEEDTEXT);
-  for n := 0 to FTrayClient.WndList.Count - 1 do
-      if (TTrayWnd(FTrayClient.WndList.Items[n]).Wnd = self) and
-         (TTrayWnd(FTrayClient.WndList.Items[n]).TipWnd = Msg.NMHdr.hwndFrom)
-         then
-         begin
-           Result := Result and True;
-           break;
-         end;
+  if (FTrayClient.TipForm = self) and (FTrayClient.TipWnd = Msg.NMHdr.hwndFrom) then
+    Result := Result and True;
 
   if result then msg.result := 1
      else msg.result := 0;
@@ -166,7 +150,8 @@ begin
         ws := FTrayClient.LastTipItem.FTip;
         if length(ws) > 80 then
            lpszText := PWideChar(ws)
-           else szText[n] := FTrayClient.LastTipItem.FTip[n];
+           else for n := 0 to length(s)-1 do
+            szText[n] := FTrayClient.LastTipItem.FTip[n];
         hinst := 0;
       end;
   end;
@@ -196,13 +181,13 @@ begin
             with ItemNamed['systemtray'].Items do
             begin
               sShowBackground  := BoolValue('showbackground',False);
-              sBackgroundColor := SharpESkinPart.SchemedStringToColor(Value('backgroundcolor','0'),SkinManager.Scheme);
+              sBackgroundColor := SharpESkinPart.SchemedStringToColor(Value('backgroundcolor','0'),mInterface.SkinInterface.SkinManager.Scheme);
               sBackgroundAlpha := IntValue('backgroundalpha',255);
               sShowBorder      := BoolValue('showborder',False);
-              sBorderColor     := SharpESkinPart.SchemedStringToColor(Value('bordercolor','clwhite'),SkinManager.Scheme);
+              sBorderColor     := SharpESkinPart.SchemedStringToColor(Value('bordercolor','clwhite'),mInterface.SkinInterface.SkinManager.Scheme);
               sBorderAlpha     := IntValue('borderalpha',255);
               sColorBlend      := BoolValue('colorblend',false);
-              sBlendColor      := SharpESkinPart.SchemedStringToColor(Value('blendrcolor','clwhite'),SkinManager.Scheme);
+              sBlendColor      := SharpESkinPart.SchemedStringToColor(Value('blendrcolor','clwhite'),mInterface.SkinInterface.SkinManager.Scheme);
               sBlendAlpha      := IntValue('blendalpha',0);
               sIconAlpha       := IntValue('iconalpha',255);
             end;
@@ -211,7 +196,7 @@ begin
 
   XML := TJvSimpleXML.Create(nil);
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -239,19 +224,7 @@ begin
   XML.Free;
 end;
 
-procedure TMainForm.SetSize(NewWidth : integer);
-var
-  new : integer;
-begin
-  new := Max(1,NewWidth);
-
-  UpdateBackground(new);
-
-  Width := new;
-  RepaintIcons;
-end;
-
-procedure TMainForm.ReAlignComponents(SendUpdate : boolean);
+procedure TMainForm.ReAlignComponents;
 var
  newwidth : integer;
 begin
@@ -283,12 +256,10 @@ begin
     end else NewWidth := 64;
   end;
 
-  Tag := newwidth;
-  Hint := inttostr(newwidth);
-  if (newwidth <> width) and (SendUpdate) then
-  begin
-     SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
-  end;
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;
+  if newWidth <> Width then
+    mInterface.BarInterface.UpdateModuleSize;
 end;
 
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
@@ -300,7 +271,7 @@ end;
 
 procedure TMainForm.RepaintIcons(pRepaint : boolean = True);
 begin
-  Buffer.Assign(Background);
+  Buffer.Assign(mInterface.Background);
   if FTrayClient = nil then exit;
   FTrayClient.Bitmap.DrawMode := dmBlend;
   FTrayClient.Bitmap.DrawTo(Buffer,0,Height div 2 - FTrayClient.Bitmap.Height div 2);
@@ -312,7 +283,6 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := True;
   FCustomSkinSettings := TSharpECustomSkinSettings.Create;
-  Background := TBitmap32.Create;
   Buffer := TBitmap32.Create;
   Buffer.DrawMode := dmBlend;
   Buffer.CombineMode := cmMerge;
@@ -322,7 +292,6 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FCustomSkinSettings);
   Buffer.Free;
-  Background.Free;
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
