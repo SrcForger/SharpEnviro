@@ -34,271 +34,185 @@ uses
   Forms,
   Classes,
   Contnrs,
-  SharpESkinManager,
-  SharpEBar,
+  Graphics,
+  uISharpBarModule,
+  uISharpESkin,
+  uISharpBar,
+  dialogs,
   GR32,
   MainWnd in 'MainWnd.pas' {MainForm},
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   MouseTimer in '..\..\..\Common\Units\MouseTimer\MouseTimer.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   uSharpDeskFunctions in '..\..\..\Components\SharpDesk\Units\uSharpDeskFunctions.pas',
   adCpuUsage in '..\..\..\Common\3rd party\adCpuUsage\adCpuUsage.pas',
-  cpuUsage in 'cpuUsage.pas';
+  cpuUsage in 'cpuUsage.pas',
+  uInterfacedSharpBarModuleBase in '..\..\..\Components\SharpBar\uInterfacedSharpBarModuleBase.pas';
 
 type
+  TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
+    private
+    public
+      cpuusage : TCPUUsage;
+      constructor Create(pID,pBarID : integer; pBarWnd : hwnd); override;
 
-  TModule = class
-            private
-              FForm : TForm;
-              FID   : integer;
-              FPos  : integer;
-              FBarWnd  : hWnd;
-            public
-              constructor Create(pID,pBarID : integer; pParent : hwnd); reintroduce;
-              destructor Destroy; override;
+      function CloseModule : HRESULT; override;
+      function SetTopHeight(Top,Height : integer) : HRESULT; override;
+      function UpdateMessage(part : TSU_UPDATE_ENUM; param : integer) : HRESULT; override;
+      function InitModule : HRESULT; override;
 
-              property ID   : integer read FID;
-              property Pos  : integer read FPos write FPos;
-              property Form : TForm   read FForm;
-              property BarWnd : hWnd  read FBarWnd;
-            end;
+      procedure SetSize(Value : integer); override;
+      procedure SetLeft(Value : integer); override;
+  end;
 
 var
-  ModuleList : TObjectList;
-  MouseTimer : TMouseTimer;
   CurrentCPUUsage : TCPUUsage;
+  
 {$R *.res}
 
+{ TInterfacedSharpBarModule }
 
-function GetControlByHandle(AHandle: THandle): TWinControl;
+function TInterfacedSharpBarModule.CloseModule: HRESULT;
 begin
- Result := Pointer(GetProp( AHandle,
-                            PChar( Format( 'Delphi%8.8x',
-                                           [GetCurrentProcessID]))));
+  try
+    Form.Free;
+    Form := nil;
+    result := S_OK;
+  except
+    on E:Exception do
+    begin
+      result := E_FAIL;
+      SharpApi.SendDebugMessageEx(PChar(ModuleName),PChar('Error in CloseModule('
+        + inttostr(ID) + '):' + E.Message),clred,DMT_ERROR);
+    end;
+  end;
 end;
 
-
-
-constructor TModule.Create(pID,pBarID : integer; pParent : hwnd);
+constructor TInterfacedSharpBarModule.Create(pID, pBarID: integer;
+  pBarWnd: hwnd);
 begin
-  inherited Create;
-  FID   := pID;
-  FBarWnd := pParent;
-  FForm := TMainForm.CreateParented(pParent);
-  FForm.BorderStyle := bsNone;
+  inherited Create(pID, pBarID, pBarWnd);
+  ModuleName := 'CPU Monitor Module';
+
   try
-    FForm.Height := GetBarPluginHeight(FBarWnd);
+    Form := TMainForm.CreateParented(BarWnd);
+    Form.BorderStyle := bsNone;
+    TMainForm(Form).mInterface := self;
+    Form.ParentWindow := BarWnd;
   except
+    on E:Exception do
+    begin
+      SharpApi.SendDebugMessageEx(PChar(ModuleName),PChar('Error in CreateModule('
+        + inttostr(ID) + '):' + E.Message),clred,DMT_ERROR);
+      exit;
+    end;
   end;
-  FForm.ParentWindow := pParent;
-  MouseTimer.AddWinControl(TMainForm(FForm));
-  with FForm as TMainForm do
+end;
+
+function TInterfacedSharpBarModule.InitModule: HRESULT;
+begin
+  result := inherited InitModule;
+
+  if Form <> nil then
   begin
-    cpuusage := CurrentCPUUsage;
-    ModuleID := pID;
-    BarID := pBarID;
-    BarWnd   := FBarWnd;
-    LoadSettings;
-    CurrentCPUUsage.Forms.Add(FForm);
-    ReAlignComponents(False);
-    Show;
+    TMainForm(Form).cpuusage := cpuusage;
+    TMainForm(Form).LoadSettings;
+    cpuusage.Forms.Add(Form);    
+    TMainForm(Form).RealignComponents;
   end;
 end;
 
-destructor TModule.Destroy;
+procedure TInterfacedSharpBarModule.SetLeft(Value: integer);
 begin
-  FForm.Free;
-  FForm := nil;
-  inherited Destroy;
+  inherited SetLeft(Value);
+
+  if Form <> nil then
+    TMainForm(Form).UpdateGraph;
 end;
 
-function CreateModule(ID : integer;
-                      BarID : integer;
-                      parent : hwnd) : hwnd;
-var
-  temp : TModule;
+procedure TInterfacedSharpBarModule.SetSize(Value: integer);
 begin
-  try
-    if ModuleList = nil then
-       ModuleList := TObjectList.Create;
+  inherited SetSize(Value);
 
-    if MouseTimer = nil then
-       MouseTimer := TMouseTimer.Create;
-
-    if CurrentCPUUsage = nil then
-       CurrentCPUUsage := TCPUUsage.Create;
-
-    temp := TModule.Create(ID,BarID,parent);
-    ModuleList.Add(temp);
-  except
-    result := 0;
-    exit;
-  end;
-  result := temp.Form.Handle;
+  TMainForm(Form).ReAlignComponents;
 end;
 
-function CloseModule(ID : integer) : boolean;
-var
-  n : integer;
+function TInterfacedSharpBarModule.SetTopHeight(Top, Height: integer): HRESULT;
 begin
-  result := False;
-  if ModuleList = nil then exit;
+  result := inherited SetTopHeight(Top, Height);
 
-  try
-    for n := 0 to ModuleList.Count - 1 do
-        if TModule(ModuleList.Items[n]).ID = ID then
-        begin
-          MouseTimer.RemoveWinControl(TModule(ModuleList.Items[n]).Form);
-          if MouseTimer.ControlList.Count = 0 then
-             FreeAndNil(MouseTimer);
-          ModuleList.Delete(n);
-          if ModuleList.Count = 0 then
-             FreeAndNil(CurrentCPUUsage);
-          result := True;
-          exit;
-        end;
-  except
-    result := False;
+  if Form <> nil then
+  begin
+    TMainForm(Form).cpuusage := cpuusage;
+    TMainForm(Form).RealignComponents;
+    TMainForm(Form).UpdateGraph;
   end;
 end;
 
-procedure Refresh(ID : integer);
-var
-  n : integer;
-  temp : TModule;
-begin
-  for n := 0  to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.Form).ReAlignComponents(False);
-      end;
-end;
-
-procedure PosChanged(ID : integer);
-var
-  n : integer;
-  temp : TModule;
-begin
-  for n := 0  to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.Form).UpdateBackground;
-        TMainForm(temp.Form).Repaint;
-      end;
-end;
-
-procedure UpdateMessage(part : TSU_UPDATE_ENUM; param : integer);
+function TInterfacedSharpBarModule.UpdateMessage(part: TSU_UPDATE_ENUM;
+  param: integer): HRESULT;
 const
   processed : TSU_UPDATES = [suSkinFileChanged,suBackground,suTheme,suSkin,
-                             suScheme,suModule,suSkinFont];
-var
-  temp : TModule;
-  n,i : integer;
+                             suScheme,suIconSet,suSkinFont,suModule];
 begin
-  if not (part in processed) then 
-    exit;
+  result := inherited UpdateMessage(part,param);
 
-  if ModuleList = nil then exit;
+  if not (part in processed) then
+    exit;  
 
-  for n := 0  to ModuleList.Count - 1 do
+  if (part = suModule) and (ID  = param) then
   begin
-    temp := TModule(ModuleList.Items[n]);
-    if (part = suModule) and (temp.ID = param) then
-    begin
-      TMainForm(temp.Form).LoadSettings;
-      TMainForm(temp.Form).ReAlignComponents(True);
-      break;
-    end;    
-
-    // Step1: check if height changed
-    if [part] <= [suSkinFileChanged,suBackground,suTheme] then
-    begin
-      i := GetBarPluginHeight(temp.BarWnd);
-      if temp.Form.Height <> i then
-         temp.Form.Height := i;
-    end;
-
-     // Step2: check if skin or scheme changed
-    if [part] <= [suScheme,suTheme] then
-        TMainForm(temp.Form).SkinManager.UpdateScheme;
-    if (part = suSkinFileChanged) then
-       TMainForm(temp.Form).SkinManager.UpdateSkin;
-    if [part] <= [suScheme,suTheme,suSkinFileChanged] then
-       TMainForm(temp.Form).LoadSettings;
-
-    // Step3: update
-    if [part] <= [suScheme,suBackground,suSkinFileChanged,suTheme] then
-    begin
-      TMainForm(temp.Form).UpdateBackground;
-      TMainForm(temp.Form).UpdateGraph;
-      if param <> -2 then
-         TMainForm(temp.Form).Repaint;
-      if [part] <= [suTheme,suSkinFileChanged] then
-         TMainForm(temp.Form).ReAlignComponents((part = suSkinFileChanged));
-    end;
-
-    // Step4: Update if font changed
-    if [part] <= [suSkinFont] then
-      TMainForm(temp.Form).SkinManager.RefreshControls;    
+    TMainForm(Form).LoadSettings;
+    TMainForm(Form).ReAlignComponents;
   end;
-end;
 
-procedure SetSize(ID : integer; NewWidth : integer);
-var
-  n : integer;
-  temp : TModule;
-begin
-  for n := 0 to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.FForm).SetSize(NewWidth);
-      end;
+  if [part] <= [suTheme,suSkinFileChanged] then
+    TMainForm(Form).ReAlignComponents;
+
+  if [part] <= [suBackground] then
+    TMainForm(Form).UpdateGraph;
 end;
 
 function GetMetaData(Preview : TBitmap32) : TMetaData;
-{var
-  Bmp : TBitmap32;
-  ResStream : TResourceStream;
-  b : boolean;    }
 begin
   with result do
   begin
     Name := 'CPU Monitor';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Displays a graph showing CPU usage';
-    Version := '0.7.4.9';
+    Version := '0.7.6.0';
     ExtraData := 'preview: false';
     DataType := tteModule;
   end;
-
- {   Bmp := TBitmap32.Create;
-    ResStream := TResourceStream.Create(HInstance, 'Preview', RT_RCDATA);
-    try
-      LoadBitmap32FromPng(Bmp,ResStream,b);
-    finally
-      ResStream.Free;
-    end;
-    Preview.SetSize(Bmp.Width,Bmp.Height);
-    Bmp.DrawTo(Preview);
-    Bmp.Free;  }
 end;
 
+function CreateModule(ID,BarID : integer; BarWnd : hwnd) : IInterface;
+var
+  temp : TInterfacedSharpBarModule;
+begin
+  temp := TInterfacedSharpBarModule.Create(ID,BarID,BarWnd);
+  temp.cpuusage := CurrentCPUUsage;
+  result := temp;
+end;
+
+procedure EntryPointProc(Reason: Integer);
+begin
+  case reason of
+    DLL_PROCESS_ATTACH:
+      CurrentCPUUsage := TCPUUsage.Create;
+
+    DLL_PROCESS_DETACH:
+      CurrentCPUUsage.Free;
+  end;
+end;
 
 Exports
   CreateModule,
-  CloseModule,
-  Poschanged,
-  Refresh,
-  UpdateMessage,
-  GetMetaData,
-  SetSize,
   GetMetaData;
 
 begin
+  DllProc := @EntryPointProc;
+  EntryPointProc(DLL_PROCESS_ATTACH);
 end.

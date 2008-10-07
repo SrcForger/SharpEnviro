@@ -30,15 +30,13 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32, GR32_PNG, GR32_Image, SharpEBaseControls,
-  SharpESkinManager, ExtCtrls, SharpEProgressBar,
-  JclSimpleXML, SharpApi, Menus, Math,
-  cpuUsage, SharpThemeApi, SharpECustomSkinSettings;
+  ExtCtrls, SharpEProgressBar, JclSimpleXML, SharpApi, Menus, Math,
+  cpuUsage, SharpThemeApi, SharpECustomSkinSettings, uISharpBarModule;
 
 
 type
 
   TMainForm = class(TForm)
-    SkinManager: TSharpESkinManager;
     cpugraphcont: TImage32;
     pbar: TSharpEProgressBar;
     procedure FormPaint(Sender: TObject);
@@ -60,24 +58,19 @@ type
     oldvalue     : integer;
     FCustomSkinSettings: TSharpECustomSkinSettings;
   public
-    ModuleID : integer;
-    BarID    : integer;
-    BarWnd   : hWnd;
     cpuusage : TCPUUsage;
     cpugraph : TBitmap32;
-    background : TBitmap32;
-    procedure SetSize(NewWidth : integer);
+    mInterface : ISharpBarModule;
     procedure LoadSettings;
-    procedure ReAlignComponents(broadcast : boolean);
+    procedure ReAlignComponents;
     procedure UpdateGraph;
-    procedure UpdateBackground(new : integer = -1);
   end;
 
 
 implementation
 
-uses uSharpBarAPI,
-     SharpESkinPart;
+uses
+  SharpESkinPart;
 
 {$R *.dfm}
 
@@ -89,7 +82,7 @@ var
   fileloaded : boolean;
 begin
   sWidth    := 100;
-  sDrawMode := 0;
+  sDrawMode := 1;
   sUpdate   := 500;
   sCpu      := 0;
 
@@ -100,9 +93,9 @@ begin
          if ItemNamed['cpumonitor'] <> nil then
             with ItemNamed['cpumonitor'].Items do
             begin
-              sFGColor     := SharpESkinPart.SchemedStringToColor(Value('fgcolor','clwhite'),SkinManager.Scheme);
-              sBGColor     := SharpESkinPart.SchemedStringToColor(Value('bgcolor','0'),SkinManager.Scheme);
-              sBorderColor := SharpESkinPart.SchemedStringToColor(Value('bordercolor','clwhite'),SkinManager.Scheme);
+              sFGColor     := SharpESkinPart.SchemedStringToColor(Value('fgcolor','clwhite'),mInterface.SkinInterface.SkinManager.Scheme);
+              sBGColor     := SharpESkinPart.SchemedStringToColor(Value('bgcolor','0'),mInterface.SkinInterface.SkinManager.Scheme);
+              sBorderColor := SharpESkinPart.SchemedStringToColor(Value('bordercolor','clwhite'),mInterface.SkinInterface.SkinManager.Scheme);
               sFGAlpha     := IntValue('fgalpha',255);
               sBGAlpha     := IntValue('bgalpha',255);
               sBorderAlpha := IntValue('borderalpha',255);
@@ -118,7 +111,7 @@ begin
 
   XML := TJclSimpleXML.Create;
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -129,10 +122,10 @@ begin
       if ItemNamed['global'] <> nil then
         with ItemNamed['global'].Items do
          begin
-           sWidth    := IntValue('Width',100);
-           sDrawMode := IntValue('DrawMode',0);
-           sCPU      := IntValue('CPU',0);
-           sUpdate   := IntValue('Update',250);
+           sWidth    := IntValue('Width',sWidth);
+           sDrawMode := IntValue('DrawMode',sDrawMode);
+           sCPU      := IntValue('CPU',sCpu);
+           sUpdate   := IntValue('Update',sUpdate);
          end;
 
       skin := SharpThemeApi.GetSkinName;
@@ -163,7 +156,7 @@ begin
   result := Color32(R,G,B,alpha);
 end;
 
-procedure TMainForm.ReAlignComponents(Broadcast : boolean);
+procedure TMainForm.ReAlignComponents;
 var
   newWidth : integer;
   c : TColor32;
@@ -175,9 +168,11 @@ begin
 
   if Width < 10 then exit;
   newWidth := sWidth + 4;
-  Tag := NewWidth;
-  Hint := inttostr(NewWidth);
-  if newWidth <> Width then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;
+  if newWidth <> Width then
+    mInterface.BarInterface.UpdateModuleSize;
 
   case sDrawMode of
     0,1: begin
@@ -193,7 +188,7 @@ begin
              cpugraphcont.Bitmap.SetSize(Max(Width - 4,4),Height -4);
              cpugraph.SetSize(cpugraphcont.Bitmap.Width-2,cpugraphcont.Bitmap.Height-2);
              cpugraph.Clear(color32(0,0,0,0));
-             background.DrawTo(cpugraphcont.Bitmap,-2,-2);
+             mInterface.Background.DrawTo(cpugraphcont.Bitmap,-2,-2);
              c := ColorToColor32(sBorderColor,sBorderAlpha);
              cpugraphcont.Bitmap.FrameRectS(0,0,cpugraph.Width,cpugraph.Height,c);
              c := ColorToColor32(sBGColor,sBGAlpha);
@@ -210,25 +205,6 @@ begin
       pbar.Height := Height - 8;
     end;
   end;
-end;
-
-procedure TMainForm.UpdateBackground(new : integer = -1);
-begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
-end;
-
-procedure TMainForm.SetSize(NewWidth : integer);
-begin
-  NewWidth := Max(1,NewWidth);
-
-  UpdateBackground(NewWidth);
-
-  Width := NewWidth;
-  ReAlignComponents(False);
 end;
 
 procedure TMainForm.UpdateGraph;
@@ -285,7 +261,7 @@ begin
     begin
       cpugraphcont.Bitmap.BeginUpdate;
       cpugraphcont.Bitmap.Clear(color32(0,0,0,0));
-      background.DrawTo(cpugraphcont.Bitmap,-cpugraphcont.left,-cpugraphcont.Top);
+      mInterface.Background.DrawTo(cpugraphcont.Bitmap,-cpugraphcont.left,-cpugraphcont.Top);
       c1 := ColorToColor32(sBorderColor,sBorderAlpha);
       cpugraphcont.Bitmap.FrameRectTS(0,0,cpugraphcont.Bitmap.Width,cpugraphcont.Bitmap.Height,c1);
       cpugraphcont.Bitmap.EndUpdate;
@@ -299,7 +275,6 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  background := TBitmap32.Create;
   DoubleBuffered := True;
   cpugraph := TBitmap32.Create;
   cpugraph.DrawMode := dmBlend;
@@ -309,7 +284,6 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  background.Free;
   cpugraph.Free;
   FreeAndNil(FCustomSkinSettings);
 end;
@@ -321,7 +295,7 @@ end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
-  Background.DrawTo(Canvas.Handle,0,0);
+  mInterface.Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 begin

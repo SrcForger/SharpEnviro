@@ -24,7 +24,7 @@ object MainForm: TMainForm
     Min = 0
     Max = 100
     Value = 0
-    SkinManager = SkinManager
+    AutoPos = apCenter
     AutoSize = False
   end
   object cpugraphcont: TImage32
@@ -38,13 +38,5 @@ object MainForm: TMainForm
     ScaleMode = smNormal
     TabOrder = 0
     OnDblClick = cpugraphcontDblClick
-  end
-  object SkinManager: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = [scProgressBar]
-    HandleUpdates = False
-    Left = 224
-    Top = 72
   end
 end
