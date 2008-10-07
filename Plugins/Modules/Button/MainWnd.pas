@@ -30,7 +30,7 @@ interface
 uses
   Windows, SysUtils, Classes, Controls, Forms,
   Dialogs, StdCtrls, Menus, Math,
-  JvSimpleXML, GR32,
+  JclSimpleXML, GR32,
   SharpApi,
   SharpEBaseControls,
   SharpEButton,
@@ -85,7 +85,7 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   fileloaded : boolean;
 begin
   sShowLabel   := True;
@@ -94,7 +94,7 @@ begin
   sIcon        := 'icon.mycomputer';
   sShowIcon    := True;
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
     XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
