@@ -29,17 +29,16 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, SharpEButton, SharpESkinManager, 
-  SharpApi, Menus, Math, ShellApi, MediaPlayerList,
-  GR32,  Types, SharpEBaseControls, ExtCtrls, Registry,
-  uSharpEMenuWnd, uSharpEMenu, uSharpEMenuSettings, uSharpEMenuItem;
+  Dialogs, StdCtrls, SharpEButton, SharpApi, Menus, Math,
+  ShellApi, MediaPlayerList, GR32,  Types, SharpEBaseControls, ExtCtrls,
+  Registry, uSharpEMenuWnd, uSharpEMenu, uSharpEMenuSettings, uSharpEMenuItem,
+  uISharpBarModule;
 
 
 type
   TControlCommandType = (cctPlay,cctPause,cctStop,cctNext,cctPrev);
 
   TMainForm = class(TForm)
-    SharpESkinManager1: TSharpESkinManager;
     btn_next: TSharpEButton;
     btn_prev: TSharpEButton;
     btn_pause: TSharpEButton;
@@ -59,22 +58,18 @@ type
       Shift: TShiftState; X, Y: Integer);
   protected
   private
-    Background  : TBitmap32;
     FMPlayers : TMediaPlayerList;
     procedure WMExecAction(var msg : TMessage); message WM_SHARPEACTIONMESSAGE;
     procedure SendAppCommand(pType : TControlCommandType);
     function GetStartPlayer(Root : HKEY; Key : String; Value : String) : String;
   public
-    ModuleID : integer;
-    BarID : integer;
-    BarWnd : hWnd;
     sPlayer : String;
     sPSelect : Boolean;
+    mInterface : ISharpBarModule;
+    procedure ReAlignComponents;
+    procedure UpdateComponentSkins;
     procedure LoadSettings;
     procedure SaveSettings;
-    procedure SetSize(NewWidth : integer);
-    procedure ReAlignComponents(BroadCast : boolean);
-    procedure UpdateBackground(new : integer = -1);
     procedure UpdateSharpEActions;
     procedure UpdateSelectIcon;
   end;
@@ -85,7 +80,8 @@ var
 implementation
 
 
-uses uSharpBarAPI,JclSimpleXML,PlayerSelectWnd;
+uses
+  JclSimpleXML,PlayerSelectWnd;
 
 {$R *.dfm}
 
@@ -114,6 +110,16 @@ begin
   end;
   result := PlayerPath;
   SharpApi.SharpExecute('_nohist,' + PlayerPath);
+end;
+
+procedure TMainForm.UpdateComponentSkins;
+begin
+  btn_next.SkinManager    := mInterface.SkinInterface.SkinManager;
+  btn_prev.SkinManager    := mInterface.SkinInterface.SkinManager;
+  btn_pause.SkinManager   := mInterface.SkinInterface.SkinManager;
+  btn_stop.SkinManager    := mInterface.SkinInterface.SkinManager;
+  btn_play.SkinManager    := mInterface.SkinInterface.SkinManager;
+  btn_pselect.SkinManager := mInterface.SkinInterface.SkinManager;
 end;
 
 procedure TMainForm.UpdateSelectIcon;
@@ -163,7 +169,7 @@ begin
     Add('Player',sPlayer);
     AdD('PSelect',sPSelect);
   end;
-  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+  XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
   XML.Free;
 
   XML := TJclSimpleXML.Create;
@@ -198,7 +204,7 @@ begin
 
   XML := TJclSimpleXML.Create;
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -256,24 +262,6 @@ begin
   SaveSettings;
 end;
 
-procedure TMainForm.UpdateBackground(new : integer = -1);
-begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
-end;
-
-procedure TMainForm.SetSize(NewWidth : integer);
-begin
-  NewWidth := Max(1,NewWidth);
-
-  UpdateBackground(NewWidth);
-
-  Width := NewWidth;
-end;
-
 procedure TMainForm.ReAlignComponents;
 var
   newWidth : integer;
@@ -301,10 +289,11 @@ begin
   end else btn_pselect.Visible := False;
 
   newWidth := btn_next.Left + btn_next.Width + i + 2;
-  Tag := NewWidth;
-  Hint := inttostr(NewWidth);
+  
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;
   if newWidth <> Width then
-     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+    mInterface.BarInterface.UpdateModuleSize;
 end;
 
 procedure TMainForm.SendAppCommand(pType : TControlCommandType);
@@ -402,7 +391,7 @@ begin
     ms.CacheIcons := False;
     ms.WrapMenu := False;
 
-    mn := TSharpEMenu.Create(SharpESkinManager1,ms);
+    mn := TSharpEMenu.Create(mInterface.SkinInterface.SkinManager,ms);
     ms.Free;
 
     for n := 0 to FMPlayers.Items.Count - 1 do
@@ -418,15 +407,15 @@ begin
     wnd.FreeMenu := True; // menu will free itself when closed
   
     p := ClientToScreen(Point(btn_pselect.Left + btn_pselect.Width div 2, self.Height + self.Top));
-    p.x := p.x + SharpESkinManager1.Skin.MenuSkin.SkinDim.XAsInt - mn.Background.Width div 2;
+    p.x := p.x + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.XAsInt - mn.Background.Width div 2;
     if p.x < Monitor.Left then
        p.x := Monitor.Left;
     if p.x + mn.Background.Width  > Monitor.Left + Monitor.Width then
        p.x := Monitor.Left + Monitor.Width - mn.Background.Width;
     wnd.Left := p.x;
     if p.Y < Monitor.Top + Monitor.Height div 2 then
-       wnd.Top := p.y + SharpESkinManager1.Skin.MenuSkin.SkinDim.YAsInt
-       else wnd.Top := p.y - Top - Height - mn.Background.Height - SharpESkinManager1.Skin.MenuSkin.SkinDim.YAsInt;
+       wnd.Top := p.y + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt
+       else wnd.Top := p.y - Top - Height - mn.Background.Height - mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt;
     wnd.Show;
   end;
 end;
@@ -437,7 +426,6 @@ begin
 
   WM_SHELLHOOK := RegisterWindowMessage('SHELLHOOK');
   DoubleBuffered := True;
-  Background  := TBitmap32.Create;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -450,14 +438,13 @@ begin
   SharpApi.UnRegisterAction('!MC-Prev');
   SharpApi.UnRegisterAction('!MC-Next');
 
-  Background.Free;
   if SharpEMenuPopups <> nil then
     FreeAndNil(SharpEMenuPopups);
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
-  Background.DrawTo(Canvas.Handle,0,0);
+  mInterface.Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

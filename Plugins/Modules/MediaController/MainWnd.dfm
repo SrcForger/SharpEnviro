@@ -21,7 +21,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 16
     Height = 25
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = btn_nextClick
     Glyph32.DrawMode = dmBlend
@@ -97,7 +96,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 16
     Height = 25
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = btn_prevClick
     Glyph32.DrawMode = dmBlend
@@ -173,7 +171,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 16
     Height = 25
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = btn_pauseClick
     Glyph32.DrawMode = dmBlend
@@ -249,7 +246,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 16
     Height = 25
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = btn_stopClick
     Glyph32.DrawMode = dmBlend
@@ -325,7 +321,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 16
     Height = 25
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = btn_playClick
     Glyph32.DrawMode = dmBlend
@@ -401,7 +396,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 17
     Height = 25
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnMouseUp = btn_pselectMouseUp
     Glyph32.DrawMode = dmBlend
@@ -443,13 +437,5 @@ object MainForm: TMainForm
       A87050FFA87050A9}
     Layout = blGlyphLeft
     AutoPosition = True
-  end
-  object SharpESkinManager1: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = [scButton, scBar, scMenu, scMenuItem]
-    HandleUpdates = False
-    Left = 168
-    Top = 88
   end
 end
