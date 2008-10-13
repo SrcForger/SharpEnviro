@@ -21,10 +21,8 @@ object MainForm: TMainForm
     Top = 0
     Width = 105
     Height = 25
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnMouseUp = ButtonMouseUp
-    Glyph32FileName = 'script.png'
     Glyph32.DrawMode = dmBlend
     Glyph32.CombineMode = cmMerge
     Glyph32.OuterColor = -16777216
@@ -66,14 +64,6 @@ object MainForm: TMainForm
     Layout = blGlyphLeft
     Caption = 'Button'
     AutoPosition = True
-  end
-  object SharpESkinManager1: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = [scButton, scBar, scMenu, scMenuItem]
-    HandleUpdates = False
-    Left = 216
-    Top = 24
   end
   object PngImageList1: TPngImageList
     PngImages = <
