@@ -21,7 +21,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 105
     Height = 25
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = ButtonClick
     OnDblClick = ButtonDblClick
@@ -32,13 +31,5 @@ object MainForm: TMainForm
     Layout = blGlyphLeft
     Caption = 'Notes'
     AutoPosition = True
-  end
-  object SharpESkinManager1: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = [scButton]
-    HandleUpdates = False
-    Left = 192
-    Top = 80
   end
 end

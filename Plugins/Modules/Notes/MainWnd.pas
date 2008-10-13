@@ -30,13 +30,12 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Types,
   StdCtrls, GR32, GR32_PNG, SharpEButton,
-  SharpESkinManager, JvSimpleXML, SharpApi, Menus, Math, NotesWnd,
-  SharpEBaseControls;
+  JclSimpleXML, SharpApi, Menus, Math, NotesWnd,
+  SharpEBaseControls,uISharpBarModule;
 
 
 type
   TMainForm = class(TForm)
-    SharpESkinManager1: TSharpESkinManager;
     Button: TSharpEButton;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -52,31 +51,27 @@ type
     sTop         : integer;
     sWidth       : integer;
     sHeight      : integer;
-    Background   : TBitmap32;
     procedure WMSharpEBang(var Msg : TMessage);  message WM_SHARPEACTIONMESSAGE;
     procedure LoadIcon;
   public
-    ModuleID     : integer;
-    BarID        : integer;
-    BarWnd       : hWnd;
     sLineWrap    : Boolean;
     sMonoFont    : Boolean;
     sLastTab     : String;
     sLastTextPos : TPoint;
     NotesForm    : TNotesForm;
+    mInterface : ISharpBarModule;
+    procedure ReAlignComponents;
+    procedure UpdateComponentSkins;
+    procedure UpdateSize;
     procedure LoadSettings;
     procedure SaveSettings;
     procedure UpdateBangs;
-    procedure SetSize(NewWidth : integer);
-    procedure ReAlignComponents(Broadcast : boolean);
-    procedure UpdateBackground(new : integer = -1);
   end;
 
 
 implementation
 
-uses uSharpBarAPI,
-     uSystemFuncs;
+uses uSystemFuncs;
 
 {$R *.dfm}
 {$R glyphs.res}
@@ -84,6 +79,11 @@ uses uSharpBarAPI,
 procedure TMainForm.UpdateBangs;
 begin
   SharpApi.RegisterActionEx('!ToggleNotes','Modules',self.Handle,1);
+end;
+
+procedure TMainForm.UpdateComponentSkins;
+begin
+  Button.SkinManager := mInterface.SkinInterface.SkinManager;
 end;
 
 procedure TMainForm.WMSharpEBang(var Msg : TMessage);
@@ -120,7 +120,7 @@ end;
 
 procedure TMainForm.SaveSettings;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
 begin
   if NotesForm <> nil then
   begin
@@ -130,7 +130,7 @@ begin
     sHeight := NotesForm.Height;
   end;
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   XML.Root.Name := 'NotesModuleSettings';
   with xml.Root.Items do
   begin
@@ -147,13 +147,13 @@ begin
     Add('LastTextXPos',sLastTextPos.X);
     Add('LastTextYPos',sLastTextPos.Y);
   end;
-  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+  XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
   XML.Free;
 end;
 
 procedure TMainForm.LoadSettings;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   fileloaded : boolean;
   Mon : TMonitor;
 begin
@@ -172,9 +172,9 @@ begin
   sLeft   := Mon.Left + Mon.Width div 2 - sWidth div 2;
   sTop    := Mon.Top + Mon.Height div 2 - sHeight div 2;
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -198,22 +198,9 @@ begin
   XML.Free;
 end;
 
-procedure TMainForm.UpdateBackground(new : integer = -1);
+
+procedure TMainForm.UpdateSize;
 begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
-end;
-
-procedure TMainForm.SetSize(NewWidth : integer);
-begin
-  NewWidth := Max(1,NewWidth);
-
-  UpdateBackground(NewWidth);
-
-  Width := NewWidth;
   Button.Width := max(1,Width - 4);
 end;
 
@@ -235,11 +222,11 @@ begin
     newWidth := newWidth + Button.GetTextWidth;
   end else Button.Caption := '';
 
-  Tag := NewWidth;
-  Hint := inttostR(NewWidth);
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;
   if newWidth <> Width then
-     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0)
-        else Button.Width := max(1,Width - 4);
+    mInterface.BarInterface.UpdateModuleSize
+  else UpdateSize;
 end;
 
 
@@ -301,20 +288,18 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  Background := TBitmap32.Create;
   DoubleBuffered := True;
   NotesForm := nil;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  Background.Free;
   if NotesForm <> nil then FreeAndNil(NotesForm);
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
-  Background.DrawTo(Canvas.Handle,0,0);
+  mInterface.Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.
