@@ -29,15 +29,14 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, SharpEBaseControls, SharpESkinManager,
+  Dialogs, StdCtrls, SharpEBaseControls,
   SharpEScheme, SharpTypes, ExtCtrls, GR32,
-  JvSimpleXML, SharpApi, Menus, Math, SharpESkinLabel,
-  uWeatherParser, GR32_Image;
+  JclSimpleXML, SharpApi, Menus, Math, SharpESkinLabel,
+  uWeatherParser, GR32_Image, uISharpBarModule;
 
 
 type
   TMainForm = class(TForm)
-    SharpESkinManager1: TSharpESkinManager;
     lb_bottom: TSharpESkinLabel;
     lb_top: TSharpESkinLabel;
     procedure FormPaint(Sender: TObject);
@@ -53,16 +52,12 @@ type
     sBottomLabel : String;
     FIcon        : TBitmap32;
     FWeatherParser : TWeatherParser;
-    Background   : TBitmap32;
     function ReplaceDataInString(pString : String) : String;
   public
-    ModuleID : integer;
-    BarID    : integer;
-    BarWnd   : hWnd;
+    mInterface : ISharpBarModule;
     procedure LoadSettings;
-    procedure SetSize(NewWidth : integer);
-    procedure ReAlignComponents(BroadCast : boolean);
-    procedure UpdateBackground(new : integer = -1);
+    procedure ReAlignComponents(Broadcast : boolean = True);
+    procedure UpdateComponentSkins;
     property WeatherParser : TWeatherParser read FWeatherParser;
     property WeatherLocation : String read sLocation;
     property ShowIcon : boolean read sShowIcon;
@@ -140,18 +135,26 @@ begin
   result := pString;
 end;
 
+procedure TMainForm.UpdateComponentSkins;
+begin
+  lb_top.SkinManager := mInterface.SkinInterface.SkinManager;
+  lb_bottom.SkinManager := mInterface.SkinInterface.SkinManager;  
+end;
+
 procedure TMainForm.LoadSettings;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   fileloaded : boolean;
 begin
   sShowIcon    := True;
   sShowLabels  := True;
+  sTopLabel    := 'Temperature: {#TEMPERATURE#}°{#UNITTEMP#}';
+  sBottomLabel := 'Condition: {#CONDITION#}';
   sLocation    := '0';
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -169,7 +172,7 @@ begin
 
   if not DirectoryExists(GetSharpeUserSettingsPath + spath + 'Data\' + sLocation) then
   begin
-    XML := TJvSimpleXML.Create(nil);
+    XML := TJclSimpleXML.Create;
     try
       XML.LoadFromFile(GetSharpEUserSettingsPath+'SharpCore\Services\Weather\weatherlist.xml');
       if XML.Root.Items.Count > 0 then
@@ -182,26 +185,7 @@ begin
 //  UpdateTimer.OnTimer(UpdateTimer);
 end;
 
-procedure TMainForm.UpdateBackground(new : integer = -1);
-begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
-end;
-
-procedure TMainForm.SetSize(NewWidth : integer);
-begin
-  NewWidth := Max(1,NewWidth);
-
-  UpdateBackground(NewWidth);
-
-  Width := NewWidth;
-  Repaint;
-end;
-
-procedure TMainForm.ReAlignComponents(BroadCast : boolean);
+procedure TMainForm.ReAlignComponents(Broadcast : boolean = True);
 var
   newWidth : integer;
   o1,o3,o4 : integer;
@@ -269,18 +253,22 @@ begin
   end;
 
   NewWidth := max(o1,max(o3,o4));
-  Tag := newWidth;
-  Hint := inttostr(NewWidth);
-  if newWidth <> width then
-  begin
-    if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0)
-  end else Repaint;
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;
+  if (newWidth <> Width) and (Broadcast) then
+    mInterface.BarInterface.UpdateModuleSize
+  else Repaint;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  Background := TBitmap32.Create;
   DoubleBuffered := True;
+
+  sShowIcon    := True;
+  sShowLabels  := True;
+  sTopLabel    := 'Temperature: {#TEMPERATURE#}°{#UNITTEMP#}';
+  sBottomLabel := 'Condition: {#CONDITION#}';  
+
   FIcon := TBitmap32.Create;
   FIcon.DrawMode := dmBlend;
   FIcon.CombineMode := cmMerge;
@@ -289,7 +277,6 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  FreeAndNil(Background);
   FreeAndNil(FIcon);
   FreeAndNil(FWeatherParser);
 end;
@@ -304,7 +291,7 @@ var
   Bmp : TBitmap32;
 begin
   Bmp := TBitmap32.Create;
-  Bmp.Assign(Background);
+  Bmp.Assign(mInterface.Background);
   if showicon then
      FIcon.DrawTo(Bmp,Rect(1,1,Height-1,Height-1));
   Bmp.DrawTo(Canvas.Handle,0,0);

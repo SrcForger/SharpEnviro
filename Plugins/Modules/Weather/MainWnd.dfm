@@ -21,7 +21,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 12
     Height = 21
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnDblClick = BackgroundDblClick
     Caption = '.'
@@ -33,19 +32,10 @@ object MainForm: TMainForm
     Top = 0
     Width = 12
     Height = 21
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnDblClick = BackgroundDblClick
     Caption = '.'
     AutoPos = apTop
     LabelStyle = lsSmall
-  end
-  object SharpESkinManager1: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = []
-    HandleUpdates = False
-    Left = 192
-    Top = 72
   end
 end
