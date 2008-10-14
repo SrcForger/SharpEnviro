@@ -214,7 +214,8 @@ begin
   mInterface.MinSize := NewWidth;
   mInterface.MaxSize := NewWidth;
   if (newWidth <> Width) and (Broadcast) then
-    mInterface.BarInterface.UpdateModuleSize;
+    mInterface.BarInterface.UpdateModuleSize
+  else UpdateSize;
 end;
 
 procedure TMainForm.UpdateTimerTimer(Sender: TObject);
