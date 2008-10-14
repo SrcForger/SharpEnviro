@@ -33,256 +33,167 @@ uses
   SysUtils,
   Forms,
   Classes,
+  Graphics,
   Contnrs,
-  SharpESkinManager,
-  SharpEBar,
   SharpApi,
-  uSharpBarApi,
-  MouseTimer,
+  uISharpBarModule,
+  uISharpESkin,
+  uISharpBar,
+  uInterfacedSharpBarModuleBase,
   GR32,
   GR32_PNG,
   MainWnd in 'MainWnd.pas' {MainForm};
 
+
 type
-  TModule = class
-            private
-              FForm : TForm;
-              FID   : integer;
-              FPos  : integer;
-              FBarWnd  : hWnd;
-            public
-              constructor Create(pID,pBarID : integer; pParent : hwnd); reintroduce;
-              destructor Destroy; override;
+  TInterfacedSharpBarModule = class(TInterfacedSharpBarModuleBase)
+    private
+    public
+      constructor Create(pID,pBarID : integer; pBarWnd : hwnd); override;
 
-              property ID   : integer read FID;
-              property Pos  : integer read FPos write FPos;
-              property Form : TForm   read FForm;
-              property BarWnd : hWnd  read FBarWnd;
-            end;
+      function CloseModule : HRESULT; override;
+      function SetTopHeight(Top,Height : integer) : HRESULT; override;
+      function UpdateMessage(part : TSU_UPDATE_ENUM; param : integer) : HRESULT; override;
+      function InitModule : HRESULT; override;
 
-var
-  ModuleList : TObjectList;
-  MouseTimer : TMouseTimer;
+      procedure SetSkinInterface(Value : ISharpESkin); override;
+      procedure SetSize(Value : integer); override;
+      procedure SetLeft(Value : integer); override;
+  end;
 
-//{$R Preview.res}
 {$R *.res}
 
-function GetControlByHandle(AHandle: THandle): TWinControl;
+{ TInterfacedSharpBarModule }
+
+function TInterfacedSharpBarModule.CloseModule: HRESULT;
 begin
- Result := Pointer(GetProp( AHandle,
-                            PChar( Format( 'Delphi%8.8x',
-                                           [GetCurrentProcessID]))));
+  try
+    Form.Free;
+    Form := nil;
+    result := S_OK;
+  except
+    on E:Exception do
+    begin
+      result := E_FAIL;
+      SharpApi.SendDebugMessageEx(PChar(ModuleName),PChar('Error in CloseModule('
+        + inttostr(ID) + '):' + E.Message),clred,DMT_ERROR);
+    end;
+  end;
 end;
 
-constructor TModule.Create(pID,pBarID : integer; pParent : hwnd);
+constructor TInterfacedSharpBarModule.Create(pID, pBarID: integer;
+  pBarWnd: hwnd);
 begin
-  inherited Create;
-  FID   := pID;
-  FBarWnd := pParent;
-  FForm := TMainForm.CreateParented(pParent);
-  FForm.BorderStyle := bsNone;
+  inherited Create(pID, pBarID, pBarWnd);
+  ModuleName := 'Battery Monitor Module';
+
   try
-    FForm.Height := GetBarPluginHeight(FBarWnd);
+    Form := TMainForm.CreateParented(BarWnd);
+    Form.BorderStyle := bsNone;
+    TMainForm(Form).mInterface := self;
+    Form.ParentWindow := BarWnd;
   except
+    on E:Exception do
+    begin
+      SharpApi.SendDebugMessageEx(PChar(ModuleName),PChar('Error in CreateModule('
+        + inttostr(ID) + '):' + E.Message),clred,DMT_ERROR);
+      exit;
+    end;
   end;
-  FForm.ParentWindow := pParent;
-  MouseTimer.AddWinControl(TMainForm(FForm));
-  with FForm as TMainForm do
+end;
+
+function TInterfacedSharpBarModule.InitModule: HRESULT;
+begin
+  result := inherited InitModule;
+
+  if Form <> nil then
   begin
-    ModuleID := pID;
-    BarID    := pBarID;
-    BarWnd   := FBarWnd;
-    LoadSettings;
-    ReAlignComponents(False);
-    Show;
+    TMainForm(Form).LoadSettings;
+    TMainForm(Form).UpdateTimerTimer(TMainForm(Form).UpdateTimer);    
+    TMainForm(Form).RealignComponents;
   end;
 end;
 
-destructor TModule.Destroy;
+procedure TInterfacedSharpBarModule.SetLeft(Value: integer);
 begin
-  FForm.Free;
-  FForm := nil;
-  inherited Destroy;
+  inherited SetLeft(Value);
+
+  if Form <> nil then
+  begin
+    TMainForm(Form).RenderIcon;
+    TMainForm(Form).ReAlignComponents;
+    TMainForm(Form).Repaint;
+  end; 
 end;
 
-function CreateModule(ID : integer;
-                      BarID : integer;    
-                      parent : hwnd) : hwnd;
-var
-  temp : TModule;
+procedure TInterfacedSharpBarModule.SetSize(Value: integer);
 begin
-  try
-    if ModuleList = nil then
-       ModuleList := TObjectList.Create;
+  inherited SetSize(Value);
 
-    if MouseTimer = nil then
-       MouseTimer := TMouseTimer.Create;
-
-    temp := TModule.Create(ID,BarID,parent);
-    ModuleList.Add(temp);
-  except
-    result := 0;
-    exit;
-  end;
-  result := temp.Form.Handle;
+  TMainForm(Form).UpdateSize;
 end;
 
-function CloseModule(ID : integer) : boolean;
-var
-  n : integer;
+procedure TInterfacedSharpBarModule.SetSkinInterface(Value: ISharpESkin);
 begin
-  result := False;
-  if ModuleList = nil then exit;
+  inherited SetSkinInterface(Value);
 
-  try
-    for n := 0 to ModuleList.Count - 1 do
-        if TModule(ModuleList.Items[n]).ID = ID then
-        begin
-          MouseTimer.RemoveWinControl(TModule(ModuleList.Items[n]).Form);
-          if MouseTimer.ControlList.Count = 0 then
-             FreeAndNil(MouseTimer);
-          ModuleList.Delete(n);
-          result := True;
-          exit;
-        end;
-  except
-    result := False;
-  end;
+  if Form <> nil then
+    TMainForm(Form).UpdateComponentSkins;
 end;
 
-procedure Refresh(ID : integer);
-var
-  n : integer;
-  temp : TModule;
+function TInterfacedSharpBarModule.SetTopHeight(Top, Height: integer): HRESULT;
 begin
-  for n := 0  to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.Form).ReAlignComponents(True);
-      end;
+  result := inherited SetTopHeight(Top, Height);
+
+  if Form <> nil then
+    TMainForm(Form).RealignComponents(False);
 end;
 
-procedure PosChanged(ID : integer);
-var
-  n : integer;
-  temp : TModule;
-begin
-  for n := 0  to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.Form).UpdateBackground;
-        TMainForm(temp.Form).LastIcon := nil;
-        TMainForm(temp.Form).RenderIcon;
-        TMainForm(temp.Form).ReAlignComponents(True);
-        TMainForm(temp.Form).Repaint;
-      end;
-end;
-
-procedure UpdateMessage(part : TSU_UPDATE_ENUM; param : integer);
+function TInterfacedSharpBarModule.UpdateMessage(part: TSU_UPDATE_ENUM;
+  param: integer): HRESULT;
 const
   processed : TSU_UPDATES = [suSkinFileChanged,suBackground,suTheme,suSkin,
-                             suScheme,suModule,suSkinFont];
-var
-  temp : TModule;
-  n,i : integer;
+                             suScheme,suIconSet,suSkinFont,suModule];
 begin
-  if not (part in processed) then 
-    exit;
+  result := inherited UpdateMessage(part,param);
 
-  if ModuleList = nil then exit;
+  if not (part in processed) then
+    exit;  
 
-  for n := 0  to ModuleList.Count - 1 do
+  if (part = suModule) and (ID  = param) then
   begin
-    temp := TModule(ModuleList.Items[n]);
-    if (part = suModule) and (temp.ID = param) then
-    begin
-      TMainForm(temp.Form).LoadSettings;
-      TMainForm(temp.Form).ReAlignComponents(True);
-      break;
-    end;    
-
-    // Step1: check if height changed
-    if [part] <= [suSkinFileChanged,suBackground,suTheme] then
-    begin
-      i := GetBarPluginHeight(temp.BarWnd);
-      if temp.Form.Height <> i then
-         temp.Form.Height := i;
-    end;
-
-     // Step2: check if skin or scheme changed
-    if [part] <= [suScheme,suTheme] then
-       TMainForm(temp.Form).SharpESkinManager1.UpdateScheme;
-    if (part = suSkinFileChanged) then
-       TMainForm(temp.Form).SharpESkinManager1.UpdateSkin;
-
-    // Step3: update
-    if [part] <= [suScheme,suBackground,suSkinFileChanged,suTheme] then
-    begin
-      TMainForm(temp.Form).UpdateBackground;
-      TMainForm(temp.Form).LastIcon := nil;
-      TMainForm(temp.Form).RenderIcon((param <> -2));
-      if [part] <= [suTheme,suSkinFileChanged] then
-         TMainForm(temp.Form).ReAlignComponents(True);
-    end;
-
-    // Step5: Update if font changed
-    if [part] <= [suSkinFont] then
-      TMainForm(temp.Form).SharpESkinManager1.RefreshControls;    
+    TMainForm(Form).LoadSettings;
+    TMainForm(Form).ReAlignComponents;
   end;
-end;
 
-procedure SetSize(ID : integer; NewWidth : integer);
-var
-  n : integer;
-  temp : TModule;
-begin
-  for n := 0 to ModuleList.Count - 1 do
-      if TModule(ModuleList.Items[n]).ID = ID then
-      begin
-        temp := TModule(ModuleList.Items[n]);
-        TMainForm(temp.FForm).SetSize(NewWidth);
-      end;
+  if [part] <= [suTheme,suSkinFileChanged] then
+    TMainForm(Form).ReAlignComponents;
 end;
 
 function GetMetaData(Preview : TBitmap32) : TMetaData;
-{var
-  Bmp : TBitmap32;
-  ResStream : TResourceStream;
-  b : boolean;}
 begin
   with result do
   begin
     Name := 'Battery Monitor';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Battery usage and status monitor';
-    Version := '0.7.3.3';
+    Version := '0.7.6.0';
     ExtraData := 'preview: False';
     DataType := tteModule;
-
-  {  Bmp := TBitmap32.Create;
-    ResStream := TResourceStream.Create(HInstance, 'Preview', RT_RCDATA);
-    try
-      LoadBitmap32FromPng(Bmp,ResStream,b);
-    finally
-      ResStream.Free;
-    end;
-    Preview.SetSize(Bmp.Width,Bmp.Height);
-    Bmp.DrawTo(Preview);
-    Bmp.Free;   }
   end;
+end;
+
+function CreateModule(ID,BarID : integer; BarWnd : hwnd) : IInterface;
+begin
+  result := TInterfacedSharpBarModule.Create(ID,BarID,BarWnd);
 end;
 
 
 Exports
   CreateModule,
-  CloseModule,
-  Poschanged,
-  Refresh,
-  UpdateMessage,
-  GetMetaData,
-  SetSize;
+  GetMetaData;
 
 
+begin
 end.
+

@@ -29,14 +29,13 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, Forms,
-  Dialogs, StdCtrls, SharpEBaseControls, SharpESkinManager,
-  ExtCtrls, SharpEProgressBar, GR32,
-  JvSimpleXML, SharpApi, Menus, Math, SharpESkinLabel;
+  Dialogs, StdCtrls, SharpEBaseControls, 
+  ExtCtrls, SharpEProgressBar, GR32, uISharpBarModule,
+  JclSimpleXML, SharpApi, Menus, Math, SharpESkinLabel;
 
 
 type
   TMainForm = class(TForm)
-    SharpESkinManager1: TSharpESkinManager;
     UpdateTimer: TTimer;
     lb_pc: TSharpESkinLabel;
     pbar: TSharpEProgressBar;
@@ -54,24 +53,20 @@ type
     FBStatus1 : TBitmap32;
     FBStatus2 : TBitmap32;
     FLastIcon : TBitmap32;
-    Background : TBitmap32;
   public
-    ModuleID : integer;
-    BarID    : integer;
-    BarWnd   : hWnd;
+    mInterface : ISharpBarModule;
     procedure LoadSettings;
-    procedure SetSize(NewWidth : integer);
+    procedure ReAlignComponents(Broadcast : boolean = True);
+    procedure UpdateComponentSkins;
+    procedure UpdateSize;
     procedure RenderIcon(pRepaint : boolean = True);
-    procedure ReAlignComponents(BroadCast : boolean);
-    procedure UpdateBackground(new : integer = -1);
     property LastIcon : TBitmap32 read FLastIcon write FLastIcon;
   end;
 
 
 implementation
 
-uses GR32_PNG,
-     uSharpBarAPI;
+uses GR32_PNG;
 
 {$R *.dfm}
 {$R glyphs.res}
@@ -123,17 +118,12 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   fileloaded : boolean;
 begin
-  sShowIcon := True;
-  sShowPBar := True;
-  sShowInfo := True;
-  sShowPC   := True;
-
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -141,37 +131,29 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      sShowIcon := BoolValue('showicon',True);
-      sShowPBar := BoolValue('showpbar',True);
-      sShowInfo := BoolValue('showinfo',True);
-      sShowPC   := BoolValue('showpc',True);
+      sShowIcon := BoolValue('showicon',sShowIcon);
+      sShowPBar := BoolValue('showpbar',sShowPBar);
+      sShowInfo := BoolValue('showinfo',sShowInfo);
+      sShowPC   := BoolValue('showpc',sShowPC);
     end;
   XML.Free;
   UpdateTimer.OnTimer(UpdateTimer);
 end;
 
-procedure TMainForm.UpdateBackground(new : integer = -1);
+procedure TMainForm.UpdateComponentSkins;
 begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
+  lb_pc.SkinManager := mInterface.SkinInterface.SkinManager;
+  lb_info.SkinManager := mInterface.SkinInterface.SkinManager;
+  pbar.SkinManager := mInterface.SkinInterface.SkinManager;
 end;
 
-procedure TMainForm.SetSize(NewWidth : integer);
+procedure TMainForm.UpdateSize;
 begin
-  NewWidth := Max(NewWidth,1);
-
-  UpdateBackground(NewWidth);
-
-  Width := NewWidth;
-
   FLastIcon := nil;
   RenderIcon;
 end;
 
-procedure TMainForm.ReAlignComponents(BroadCast : boolean);
+procedure TMainForm.ReAlignComponents(Broadcast : boolean = True);
 var
   newWidth : integer;
   o1,o2,o3,o4 : integer;
@@ -204,6 +186,7 @@ begin
     end else i := lb_info.Textwidth;
     o3 := lb_info.Left + i + 12;
     o4 := o3;
+    lb_info.Visible := True;
   end else lb_Info.Visible := False;
   if sShowPC then
   begin
@@ -214,6 +197,7 @@ begin
        else lb_pc.Left := o3 - 5;
     lb_pc.Top := 2 + (o2 div 2) - (lb_pc.Height div 2);
     o4 := max(o4,lb_pc.Left + lb_pc.Width + 2);
+    lb_pc.Visible := True;
   end else lb_pc.Visible := False;
   if sShowPBar then
   begin
@@ -223,13 +207,14 @@ begin
        else pbar.Width := o4-10;
     pbar.Left := o1;
     pbar.Top := Height - 2 - pbar.Height;
+    pbar.Visible := True;
   end else pbar.Visible := False;
 
   NewWidth := max(o1,max(o3,o4));
-  Tag := newWidth;
-  Hint := inttostr(NewWidth);
-  if newWidth <> width then
-     if BroadCast then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;
+  if (newWidth <> Width) and (Broadcast) then
+    mInterface.BarInterface.UpdateModuleSize;
 end;
 
 procedure TMainForm.UpdateTimerTimer(Sender: TObject);
@@ -296,8 +281,12 @@ var
   TempBmp : TBitmap32;
   b : boolean;
 begin
-  Background := TBitmap32.Create;
   DoubleBuffered := True;
+
+  sShowIcon := True;
+  sShowPBar := True;
+  sShowInfo := True;
+  sShowPC   := True;
 
   FLastIcon := nil;
   FBStatus1 := TBitmap32.Create;
@@ -343,7 +332,6 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FBStatus1);
   FreeAndNil(FBStatus2);
-  FreeAndNil(Background);
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
@@ -351,7 +339,7 @@ var
   Bmp : TBitmap32;
 begin
   Bmp := TBitmap32.Create;
-  Bmp.Assign(Background);
+  Bmp.Assign(mInterface.Background);
   if (FLastIcon <> nil) and sShowIcon then
 //     FLastIcon.DrawTo(Canvas.Handle,Rect(2,2,Height-2,Height-2),FLastIcon.BoundsRect);
      FLastIcon.DrawTo(Bmp,Rect(2,2,Height-2,Height-2));

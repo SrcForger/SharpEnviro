@@ -21,7 +21,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 12
     Height = 21
-    SkinManager = SharpESkinManager1
     AutoSize = True
     Caption = '.'
     AutoPos = apTop
@@ -36,7 +35,6 @@ object MainForm: TMainForm
     Max = 100
     Value = 0
     AutoPos = apBottom
-    SkinManager = SharpESkinManager1
     AutoSize = True
   end
   object lb_info: TSharpESkinLabel
@@ -44,19 +42,10 @@ object MainForm: TMainForm
     Top = 0
     Width = 12
     Height = 21
-    SkinManager = SharpESkinManager1
     AutoSize = True
     Caption = '.'
     AutoPos = apTop
     LabelStyle = lsMedium
-  end
-  object SharpESkinManager1: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = [scProgressBar]
-    HandleUpdates = False
-    Left = 200
-    Top = 72
   end
   object UpdateTimer: TTimer
     OnTimer = UpdateTimerTimer
