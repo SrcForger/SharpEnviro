@@ -30,6 +30,7 @@ interface
 
 uses Windows,
      Graphics,
+     JclFileUtils,
      SysUtils,
      ShellApi,
      SharpThemeApi,
@@ -200,6 +201,7 @@ var
   FileInfo : SHFILEINFO;
   ImageListHandle : THandle;
   Flag : DWord;
+  Attr : integer;
 begin
   if Size <= 16 then
     Flag := SHGFI_ICON or SHGFI_SMALLICON
@@ -210,9 +212,16 @@ begin
     result := extrShellIconLarge(Bmp,FileName,Size);
     exit;
   end;
+  Flag := Flag or SHGFI_USEFILEATTRIBUTES;
 
+  if isDirectory(FileName) then
+    Attr := FILE_ATTRIBUTE_DIRECTORY
+  else
+    Attr := FILE_ATTRIBUTE_NORMAL;
+
+  
   ImageListHandle := SHGetFileInfo( pChar(FileName),
-                                    0,
+                                    Attr,
                                     FileInfo, sizeof( SHFILEINFO ),
                                     Flag);
   if FileInfo.hicon <> 0 then
