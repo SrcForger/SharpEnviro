@@ -23,7 +23,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
-library SharpMenu;
+library MenuSettings;
 uses
   Controls,
   Classes,
@@ -41,7 +41,7 @@ uses
   SharpCenterApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
-  uSharpMenuSettingsWnd in 'uSharpMenuSettingsWnd.pas' {frmSettings},
+  settingsWnd in 'settingsWnd.pas' {frmSettings},
   uSharpDeskTDeskSettings in '..\..\..\Components\SharpDesk\Units\uSharpDeskTDeskSettings.pas';
 
 {$E .dll}

@@ -142,7 +142,6 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = chkUseIconsClick
-    ExplicitLeft = 0
   end
   object chkCacheIcons: TJvXPCheckbox
     AlignWithMargins = True
@@ -205,7 +204,6 @@ object frmSettings: TfrmSettings
       TitleColor = clWindowText
       DescriptionColor = clGrayText
       Align = alTop
-      ExplicitTop = -6
     end
     object chkUseGenericIcons: TJvXPCheckbox
       AlignWithMargins = True
@@ -221,7 +219,6 @@ object frmSettings: TfrmSettings
       TabOrder = 1
       Align = alTop
       OnClick = chkUseIconsClick
-      ExplicitTop = 14
     end
   end
 end
