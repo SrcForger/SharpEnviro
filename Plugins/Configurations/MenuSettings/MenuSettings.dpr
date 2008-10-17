@@ -1,7 +1,7 @@
 ﻿{
-Source Name: SharpDesk Configs
-Description: SharpDesk Config Dll
-Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
+Source Name: MenuSettings.dpr
+Description: Menu Settings Configuration
+Copyright (C) Lee Green (lee@sharpenviro.com)
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -109,6 +109,7 @@ begin
            chkCacheIcons.Checked := BoolValue('CacheIcons',True);
            chkUseIcons.Checked := BoolValue('UseIcons',True);
            chkUseGenericIcons.Checked := BoolValue('UseGenericIcons',False);
+           UpdateUi;
          end;
   end;
 end;
@@ -123,6 +124,7 @@ begin
 
     result := PluginHost.Open(frmSettings);
     frmSettings.PluginHost := PluginHost;
+    frmSettings.Plugin := Self;
     LoadSettings;
 
   finally
@@ -170,10 +172,10 @@ begin
   begin
     Name := 'Menu';
     Description := 'Menu Configuration';
-    Author := 'Martin Krämer (MartinKraemer@gmx.net)';
+    Author := 'Lee Green (lee@sharpenviro.com)';
     Version := '0.7.6.0';
     DataType := tteConfig;
-    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
       Integer(suSharpMenu)]);
   end;
 end;

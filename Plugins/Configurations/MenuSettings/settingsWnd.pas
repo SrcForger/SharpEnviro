@@ -32,7 +32,7 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterApi,
   JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
   SharpEGaugeBoxEdit, JvLabel, SharpECenterHeader, JvXPCore, JvXPCheckCtrls,
-  ISharpCenterHostUnit;
+  ISharpCenterHostUnit, ISharpCenterPluginUnit;
 
 type
   TStringObject = Class(TObject)
@@ -64,10 +64,14 @@ type
   private
     FIsUpdating: Boolean;
     FPluginHost: TInterfacedSharpCenterHostBase;
+    FPlugin: TInterfacedSharpCenterPlugin;
     procedure SendUpdate;
   public
     property IsUpdating: Boolean read FIsUpdating write FIsUpdating;
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property Plugin: TInterfacedSharpCenterPlugin read FPlugin write FPlugin;
+
+    procedure UpdateUi;
   end;
 
 var
@@ -98,20 +102,25 @@ end;
 procedure TfrmSettings.SendUpdate;
 begin
   if Not(FIsUpdating) then
-    FPluginHost.SetSettingsChanged;
+    FPlugin.Save;
 end;
 
 procedure TfrmSettings.chkUseIconsClick(Sender: TObject);
 begin
   SendUpdate;
-  chkCacheicons.Enabled := chkUseIcons.Checked;
-  pnlGenericIcons.Visible := chkUseIcons.Checked;
+  UpdateUi;
 end;
 
 procedure TfrmSettings.sgbWrapCountChangeValue(Sender: TObject;
   Value: Integer);
 begin
   SendUpdate;
+end;
+
+procedure TfrmSettings.UpdateUi;
+begin
+  chkCacheicons.Enabled := chkUseIcons.Checked;
+  pnlGenericIcons.Visible := chkUseIcons.Checked;
 end;
 
 procedure TfrmSettings.cboWrapPosChange(Sender: TObject);
