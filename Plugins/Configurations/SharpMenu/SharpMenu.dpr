@@ -37,110 +37,131 @@ uses
   JvPageList,
   Graphics,
   Math,
-  uSharpMenuSettingsWnd in 'uSharpMenuSettingsWnd.pas' {frmMenuSettings},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  uSharpDeskTDeskSettings in '..\..\..\Components\SharpDesk\Units\uSharpDeskTDeskSettings.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas';
+  SharpApi,
+  SharpCenterApi,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  uSharpMenuSettingsWnd in 'uSharpMenuSettingsWnd.pas' {frmSettings},
+  uSharpDeskTDeskSettings in '..\..\..\Components\SharpDesk\Units\uSharpDeskTDeskSettings.pas';
 
 {$E .dll}
 
 {$R *.res}
 
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
+  private
+    FXmlDeskSettings: TDeskSettings;
+    procedure LoadSettings;
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  XML : TJvSimpleXML;
-  Dir : String;
-  FName : String;
-  i : integer;
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+
+    procedure Save; override; stdcall;
+
+    function GetPluginDescriptionText: String; override; stdCall;
+    procedure Refresh; override; stdcall;
+
+    property XmlDeskSettings: TDeskSettings read FXmlDeskSettings write
+      FXmlDeskSettings;
+  end;
+
+{ TSharpCenterPlugin }
+
+procedure TSharpCenterPlugin.Close;
 begin
-  if frmMenuSettings = nil then frmMenuSettings := TfrmMenuSettings.Create(nil);
+  FreeAndNil(frmSettings);
+end;
 
-  uVistaFuncs.SetVistaFonts(frmMenuSettings);
-  frmMenuSettings.ParentWindow := aowner;
-  frmMenuSettings.Left := 2;
-  frmMenuSettings.Top := 2;
-  frmMenuSettings.BorderStyle := bsNone;
-  frmMenuSettings.Updating := True;
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+begin
+  PluginHost := APluginHost;
+end;
 
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Settings\';
-  FName := Dir + 'SharpMenu.xml';
+function TSharpCenterPlugin.GetPluginDescriptionText: String;
+begin
+  Result := 'Define advanced desktop and wallpaper functionality.';
+end;
 
-  XML := TJvSimpleXML.Create(nil);
-  try
-    if FileExists(FName) then
-    begin
-      XML.LoadFromFile(FName);
-      if XML.Root.Items.ItemNamed['Settings'] <> nil then
-         with XML.Root.Items.ItemNamed['Settings'].Items do
+procedure TSharpCenterPlugin.LoadSettings;
+var
+  dir, fileName: string;
+  i:integer;
+begin
+  dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Settings\';
+  fileName := dir + 'SharpMenu.xml';
+
+  with PluginHost, frmSettings do begin
+
+    Xml.LoadFromFile( fileName );
+
+    if Xml.Root.Items.ItemNamed['Settings'] <> nil then
+         with Xml.Root.Items.ItemNamed['Settings'].Items do
          begin
-           frmMenuSettings.cb_wrap.Checked := BoolValue('WrapMenu',True);
-           frmMenuSettings.sgb_wrapcount.Value := IntValue('WrapCount',25);
+           chkMenuWrapping.Checked := BoolValue('WrapMenu',True);
+           sgbWrapCount.Value := IntValue('WrapCount',25);
+
            i := Max(0,Min(1,IntValue('WrapPosition',0)));
-           frmMenuSettings.cobo_wrappos.ItemIndex := i;
-           frmMenuSettings.cb_cacheicons.Checked := BoolValue('CacheIcons',True);
-           frmMenuSettings.cb_useicons.Checked := BoolValue('UseIcons',True);
-           frmMenuSettings.cb_usegenicons.Checked := BoolValue('UseGenericIcons',False);
+           cboWrapPos.ItemIndex := i;
+
+           chkCacheIcons.Checked := BoolValue('CacheIcons',True);
+           chkUseIcons.Checked := BoolValue('UseIcons',True);
+           chkUseGenericIcons.Checked := BoolValue('UseGenericIcons',False);
          end;
-    end;
-  finally
-    XML.Free;
   end;
-
-  frmMenuSettings.Show;
-  frmMenuSettings.Updating := False;
-  result := frmMenuSettings.Handle;
 end;
 
-procedure Save;
-var
-  XML : TJvSimpleXML;
-  Dir : String;
-  FName : String;
+function TSharpCenterPlugin.Open: Cardinal;
 begin
-  Dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Settings\';
-  if not DirectoryExists(Dir) then
-     ForceDirectories(Dir);
-  FName := Dir + 'SharpMenu.xml';
+  if frmSettings = nil then frmSettings := TfrmSettings.Create(nil);
+  uVistaFuncs.SetVistaFonts(frmSettings);
 
-  XML := TJvSimpleXML.Create(nil);
-  XML.Root.Name := 'SharpEMenuSettings';
-  with XML.Root.Items.Add('Settings').Items do
-  begin
-   Add('WrapMenu',frmMenuSettings.cb_wrap.Checked);
-   AdD('WrapCount',frmMenuSettings.sgb_wrapcount.Value);
-   Add('WrapPosition',frmMenuSettings.cobo_wrappos.ItemIndex);
-   Add('CacheIcons',frmMenuSettings.cb_cacheicons.Checked);
-   Add('UseIcons',frmMenuSettings.cb_useicons.Checked);
-   Add('UseGenericIcons',frmMenuSettings.cb_usegenicons.Checked);
-  end;
-  XML.SaveToFile(FName + '~');
-  if FileExists(FName) then
-     DeleteFile(FName);
-  RenameFile(FName + '~',
-             FName);
-  XML.Free;
-end;
-
-function Close : boolean;
-begin
-  result := True;
+  frmSettings.IsUpdating := true;
   try
-    frmMenuSettings.Close;
-    frmMenuSettings.Free;
-    frmMenuSettings := nil;
-  except
-    result := False;
+
+    result := PluginHost.Open(frmSettings);
+    frmSettings.PluginHost := PluginHost;
+    LoadSettings;
+
+  finally
+    frmSettings.IsUpdating := false;
   end;
 end;
 
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+procedure TSharpCenterPlugin.Refresh;
 begin
-  AName := 'Menu';
-  ATitle := 'Menu Configuration';
-  ADescription := 'Define advanced menu options, such as caching and wrapping.';
+  AssignThemeToForm(PluginHost.Theme,frmSettings);
+end;
 
+procedure TSharpCenterPlugin.Save;
+var
+  dir : String;
+  fileName : String;
+begin
+  dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Settings\';
+  if not DirectoryExists(dir) then
+     ForceDirectories(dir);
+  fileName := dir + 'SharpMenu.xml';
+
+  with PluginHost, frmSettings do begin
+    Xml.Root.Name := 'SharpEMenuSettings';
+    with Xml.Root.Items.Add('Settings').Items do
+    begin
+      Add('WrapMenu',chkMenuWrapping.Checked);
+      Add('WrapCount',sgbWrapCount.Value);
+      Add('WrapPosition',cboWrapPos.ItemIndex);
+      Add('CacheIcons',chkCacheIcons.Checked);
+      Add('UseIcons',chkUseIcons.Checked);
+      Add('UseGenericIcons',chkUseGenericIcons.Checked);
+    end;
+
+    Xml.SaveToFile(fileName + '~');
+  end;
+
+  if FileExists(fileName) then DeleteFile(fileName);
+  RenameFile(fileName + '~', fileName);
 end;
 
 function GetMetaData(): TMetaData;
@@ -150,19 +171,20 @@ begin
     Name := 'Menu';
     Description := 'Menu Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suSharpMenu)]);
   end;
 end;
 
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
+end;
 
 exports
-  Open,
-  Close,
-  Save,
-  SetText,
+  InitPluginInterface,
   GetMetaData;
 
 begin

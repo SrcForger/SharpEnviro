@@ -31,7 +31,8 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterApi,
   JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
-  SharpEGaugeBoxEdit, JvLabel;
+  SharpEGaugeBoxEdit, JvLabel, SharpECenterHeader, JvXPCore, JvXPCheckCtrls,
+  ISharpCenterHostUnit;
 
 type
   TStringObject = Class(TObject)
@@ -40,35 +41,37 @@ type
   end;
 
 type
-  TfrmMenuSettings = class(TForm)
-    cb_useicons: TCheckBox;
-    Label2: TLabel;
+  TfrmSettings = class(TForm)
     Panel1: TPanel;
     Label1: TLabel;
-    Label4: TLabel;
-    cb_wrap: TCheckBox;
-    sgb_wrapcount: TSharpeGaugeBox;
-    cobo_wrappos: TComboBox;
-    Label3: TLabel;
-    cb_cacheicons: TCheckBox;
-    cb_usegenicons: TCheckBox;
-    Label5: TLabel;
-    procedure cobo_wrapposChange(Sender: TObject);
-    procedure sgb_wrapcountChangeValue(Sender: TObject; Value: Integer);
-    procedure cb_useiconsClick(Sender: TObject);
-    procedure cb_wrapClick(Sender: TObject);
+    sgbWrapCount: TSharpeGaugeBox;
+    cboWrapPos: TComboBox;
+    SharpECenterHeader1: TSharpECenterHeader;
+    SharpECenterHeader3: TSharpECenterHeader;
+    SharpECenterHeader4: TSharpECenterHeader;
+    chkUseIcons: TJvXPCheckbox;
+    chkCacheIcons: TJvXPCheckbox;
+    chkMenuWrapping: TJvXPCheckbox;
+    pnlGenericIcons: TPanel;
+    schGenericIcons: TSharpECenterHeader;
+    chkUseGenericIcons: TJvXPCheckbox;
+    procedure cboWrapPosChange(Sender: TObject);
+    procedure sgbWrapCountChangeValue(Sender: TObject; Value: Integer);
+    procedure chkUseIconsClick(Sender: TObject);
+    procedure chkMenuWrappingClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
-    FUpdating: Boolean;
-    procedure UpdateWrapBox;
+    FIsUpdating: Boolean;
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure SendUpdate;
   public
-    property Updating: Boolean read FUpdating write FUpdating;
+    property IsUpdating: Boolean read FIsUpdating write FIsUpdating;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
   end;
 
 var
-  frmMenuSettings: TfrmMenuSettings;
+  frmSettings: TfrmSettings;
 
 implementation
 
@@ -76,53 +79,42 @@ implementation
 
 { TfrmConfigListWnd }
 
-procedure TfrmMenuSettings.FormCreate(Sender: TObject);
+procedure TfrmSettings.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := true;
   Panel1.DoubleBuffered := true;
 end;
 
-procedure TfrmMenuSettings.UpdateWrapBox;
+procedure TfrmSettings.FormShow(Sender: TObject);
 begin
-
+  chkUseIconsClick(self);
 end;
 
-procedure TfrmMenuSettings.FormShow(Sender: TObject);
-begin
-  UpdateWrapBox;
-  Label2.Font.Color := clGray;
-  Label3.Font.Color := clGray;
-  Label4.Font.Color := clGray;
-  Label5.Font.Color := clGray;
-  cb_useiconsClick(self);
-end;
-
-procedure TfrmMenuSettings.cb_wrapClick(Sender: TObject);
-begin
-  UpdateWrapBox;
-  SendUpdate;
-end;
-
-procedure TfrmMenuSettings.SendUpdate;
-begin
-  if ( Not(Updating) and ( Visible ) ) then
-     CenterDefineSettingsChanged;
-end;
-
-procedure TfrmMenuSettings.cb_useiconsClick(Sender: TObject);
+procedure TfrmSettings.chkMenuWrappingClick(Sender: TObject);
 begin
   SendUpdate;
-  cb_cacheicons.Enabled := cb_useicons.Checked;
-  cb_usegenicons.Enabled := cb_useicons.Checked;  
 end;
 
-procedure TfrmMenuSettings.sgb_wrapcountChangeValue(Sender: TObject;
+procedure TfrmSettings.SendUpdate;
+begin
+  if Not(FIsUpdating) then
+    FPluginHost.SetSettingsChanged;
+end;
+
+procedure TfrmSettings.chkUseIconsClick(Sender: TObject);
+begin
+  SendUpdate;
+  chkCacheicons.Enabled := chkUseIcons.Checked;
+  pnlGenericIcons.Visible := chkUseIcons.Checked;
+end;
+
+procedure TfrmSettings.sgbWrapCountChangeValue(Sender: TObject;
   Value: Integer);
 begin
   SendUpdate;
 end;
 
-procedure TfrmMenuSettings.cobo_wrapposChange(Sender: TObject);
+procedure TfrmSettings.cboWrapPosChange(Sender: TObject);
 begin
   SendUpdate;
 end;

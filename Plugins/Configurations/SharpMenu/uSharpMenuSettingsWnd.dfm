@@ -1,10 +1,10 @@
-object frmMenuSettings: TfrmMenuSettings
+object frmSettings: TfrmSettings
   Left = 0
   Top = 0
   BorderStyle = bsNone
-  Caption = 'frmMenuSettings'
-  ClientHeight = 304
-  ClientWidth = 518
+  Caption = 'frmSettings'
+  ClientHeight = 254
+  ClientWidth = 600
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,222 +16,212 @@ object frmMenuSettings: TfrmMenuSettings
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Label2: TLabel
-    AlignWithMargins = True
-    Left = 26
-    Top = 29
-    Width = 484
-    Height = 32
-    Margins.Left = 26
-    Margins.Top = 4
-    Margins.Right = 8
-    Margins.Bottom = 0
-    Align = alTop
-    AutoSize = False
-    Caption = 
-      'Enable to display icons. On slow computers disabling this option' +
-      ' can increase the menu performance.'
-    Color = clBtnFace
-    EllipsisPosition = epEndEllipsis
-    ParentColor = False
-    Transparent = True
-    WordWrap = True
-    ExplicitLeft = 31
-    ExplicitTop = 9
-  end
-  object Label3: TLabel
-    AlignWithMargins = True
-    Left = 26
-    Top = 151
-    Width = 484
-    Height = 32
-    Margins.Left = 26
-    Margins.Top = 4
-    Margins.Right = 8
-    Margins.Bottom = 0
-    Align = alTop
-    AutoSize = False
-    Caption = 
-      'When enabled, icons are cached to disk, resulting in a noticeabl' +
-      'e performance improvement, at a cost of a few MB of hard disk sp' +
-      'ace.'
-    Color = clBtnFace
-    EllipsisPosition = epEndEllipsis
-    ParentColor = False
-    Transparent = True
-    Visible = False
-    WordWrap = True
-    ExplicitLeft = 34
-    ExplicitTop = 37
-  end
-  object Label5: TLabel
-    AlignWithMargins = True
-    Left = 26
-    Top = 90
-    Width = 484
-    Height = 32
-    Margins.Left = 26
-    Margins.Top = 4
-    Margins.Right = 8
-    Margins.Bottom = 0
-    Align = alTop
-    AutoSize = False
-    Caption = 
-      'Enable to display generic icons. This means that all links of th' +
-      'e same type will have the same icon. On slow computers enabling ' +
-      'this option will improve the menu performance.'
-    Color = clBtnFace
-    EllipsisPosition = epEndEllipsis
-    ParentColor = False
-    Transparent = True
-    WordWrap = True
-    ExplicitLeft = 21
-  end
-  object cb_useicons: TCheckBox
-    AlignWithMargins = True
-    Left = 8
-    Top = 8
-    Width = 502
-    Height = 17
-    Margins.Left = 8
-    Margins.Top = 8
-    Margins.Right = 8
-    Margins.Bottom = 0
-    Align = alTop
-    Caption = 'Use Icons'
-    Checked = True
-    State = cbChecked
-    TabOrder = 0
-    OnClick = cb_useiconsClick
-    ExplicitLeft = 13
-  end
   object Panel1: TPanel
     Left = 0
-    Top = 183
-    Width = 518
-    Height = 117
+    Top = 212
+    Width = 600
+    Height = 31
     Align = alTop
     BevelOuter = bvNone
     Color = clWindow
     ParentBackground = False
     TabOrder = 1
-    ExplicitTop = 122
     object Label1: TLabel
-      Left = 176
-      Top = 75
+      Left = 172
+      Top = 11
       Width = 106
       Height = 13
       AutoSize = False
-      Caption = 'Sub Menu Position:'
+      Caption = 'Sub-Menu Position:'
       Color = clWindow
       ParentColor = False
       WordWrap = True
     end
-    object Label4: TLabel
-      AlignWithMargins = True
-      Left = 26
-      Top = 29
-      Width = 484
-      Height = 32
-      Margins.Left = 26
-      Margins.Top = 4
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      AutoSize = False
-      Caption = 
-        'Enable this option to wrap the menu into multiple sub menus if t' +
-        'here are too many items in a menu.'
-      Color = clWindow
-      EllipsisPosition = epEndEllipsis
-      ParentColor = False
-      Transparent = False
-      WordWrap = True
-      ExplicitLeft = 34
-      ExplicitTop = 128
-    end
-    object cb_wrap: TCheckBox
-      AlignWithMargins = True
-      Left = 8
+    object sgbWrapCount: TSharpeGaugeBox
+      Left = 5
       Top = 8
-      Width = 502
-      Height = 17
-      Margins.Left = 8
-      Margins.Top = 8
-      Margins.Right = 8
-      Margins.Bottom = 0
-      Align = alTop
-      Caption = 'Wrap Menu'
-      Checked = True
-      State = cbChecked
-      TabOrder = 0
-      OnClick = cb_wrapClick
-    end
-    object sgb_wrapcount: TSharpeGaugeBox
-      Left = 26
-      Top = 72
-      Width = 121
+      Width = 149
       Height = 21
       ParentBackground = False
       Min = 5
       Max = 100
       Value = 25
-      Prefix = 'Item Count: '
+      Prefix = 'Items to wrap: '
       Description = 'Item wrap count'
       PopPosition = ppRight
       PercentDisplay = False
-      OnChangeValue = sgb_wrapcountChangeValue
+      OnChangeValue = sgbWrapCountChangeValue
+      BackgroundColor = clWindow
     end
-    object cobo_wrappos: TComboBox
+    object cboWrapPos: TComboBox
       Left = 288
-      Top = 72
-      Width = 121
+      Top = 8
+      Width = 85
       Height = 21
       Style = csDropDownList
       Ctl3D = True
       ItemHeight = 13
       ItemIndex = 0
       ParentCtl3D = False
-      TabOrder = 2
+      TabOrder = 1
       Text = 'Bottom'
-      OnChange = cobo_wrapposChange
+      OnChange = cboWrapPosChange
       Items.Strings = (
         'Bottom'
         'Top')
     end
   end
-  object cb_cacheicons: TCheckBox
+  object SharpECenterHeader1: TSharpECenterHeader
     AlignWithMargins = True
-    Left = 8
-    Top = 130
-    Width = 502
-    Height = 17
-    Margins.Left = 8
-    Margins.Top = 8
-    Margins.Right = 8
-    Margins.Bottom = 0
+    Left = 5
+    Top = 0
+    Width = 590
+    Height = 37
+    Margins.Left = 5
+    Margins.Top = 0
+    Margins.Right = 5
+    Margins.Bottom = 10
+    Title = 'Menu Icons'
+    Description = 
+      'Define whether to display menu icons. Disabling will improve men' +
+      'u performance.'
+    TitleColor = clWindowText
+    DescriptionColor = clGrayText
     Align = alTop
-    Caption = 'Cache Icons (Advanced)'
-    TabOrder = 2
-    Visible = False
-    OnClick = cb_useiconsClick
-    ExplicitLeft = 3
   end
-  object cb_usegenicons: TCheckBox
+  object SharpECenterHeader3: TSharpECenterHeader
     AlignWithMargins = True
-    Left = 8
-    Top = 69
-    Width = 502
-    Height = 17
-    Margins.Left = 8
-    Margins.Top = 8
-    Margins.Right = 8
-    Margins.Bottom = 0
+    Left = 5
+    Top = 253
+    Width = 590
+    Height = 37
+    Margins.Left = 5
+    Margins.Top = 10
+    Margins.Right = 5
+    Margins.Bottom = 10
+    Title = 'Cache Icons'
+    Description = 
+      'Define whether to cache icons. Enabling will improve menu perfor' +
+      'mance.'
+    TitleColor = clWindowText
+    DescriptionColor = clGrayText
+    Visible = False
     Align = alTop
-    Caption = 'Use Generic Icons'
-    TabOrder = 3
-    OnClick = cb_useiconsClick
-    ExplicitLeft = 16
-    ExplicitTop = 16
+  end
+  object SharpECenterHeader4: TSharpECenterHeader
+    AlignWithMargins = True
+    Left = 5
+    Top = 148
+    Width = 590
+    Height = 37
+    Margins.Left = 5
+    Margins.Top = 10
+    Margins.Right = 5
+    Margins.Bottom = 10
+    Title = 'Menu Wrapping'
+    Description = 
+      'Define whether to wrap a large menu into smaller sub-menus, if t' +
+      'here are too many menu items.'
+    TitleColor = clWindowText
+    DescriptionColor = clGrayText
+    Align = alTop
+  end
+  object chkUseIcons: TJvXPCheckbox
+    AlignWithMargins = True
+    Left = 5
+    Top = 47
+    Width = 590
+    Height = 17
+    Margins.Left = 5
+    Margins.Top = 0
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Caption = 'Enable menu icons'
+    TabOrder = 0
+    Checked = True
+    State = cbChecked
+    Align = alTop
+    OnClick = chkUseIconsClick
+    ExplicitLeft = 0
+  end
+  object chkCacheIcons: TJvXPCheckbox
+    AlignWithMargins = True
+    Left = 5
+    Top = 300
+    Width = 590
+    Height = 17
+    Margins.Left = 5
+    Margins.Top = 0
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Caption = 'Enable caching of icons'
+    TabOrder = 2
+    Align = alTop
+    Visible = False
+    OnClick = chkUseIconsClick
+  end
+  object chkMenuWrapping: TJvXPCheckbox
+    AlignWithMargins = True
+    Left = 5
+    Top = 195
+    Width = 590
+    Height = 17
+    Margins.Left = 5
+    Margins.Top = 0
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Caption = 'Enable menu wrapping'
+    TabOrder = 6
+    Checked = True
+    State = cbChecked
+    Align = alTop
+    OnClick = chkMenuWrappingClick
+  end
+  object pnlGenericIcons: TPanel
+    Left = 0
+    Top = 64
+    Width = 600
+    Height = 74
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    Color = clWindow
+    ParentBackground = False
+    TabOrder = 7
+    object schGenericIcons: TSharpECenterHeader
+      AlignWithMargins = True
+      Left = 5
+      Top = 10
+      Width = 590
+      Height = 37
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 5
+      Margins.Bottom = 10
+      Title = 'Generic Icons'
+      Description = 
+        'Define whether to use generic icons for common types. Enabling w' +
+        'ill improve menu performance.'
+      TitleColor = clWindowText
+      DescriptionColor = clGrayText
+      Align = alTop
+      ExplicitTop = -6
+    end
+    object chkUseGenericIcons: TJvXPCheckbox
+      AlignWithMargins = True
+      Left = 5
+      Top = 57
+      Width = 590
+      Height = 17
+      Margins.Left = 5
+      Margins.Top = 0
+      Margins.Right = 5
+      Margins.Bottom = 0
+      Caption = 'Enable generic icons'
+      TabOrder = 1
+      Align = alTop
+      OnClick = chkUseIconsClick
+      ExplicitTop = 14
+    end
   end
 end
