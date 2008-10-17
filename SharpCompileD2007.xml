@@ -8,6 +8,7 @@
      <project Name="Curses" Type="DLL">Plugins\Configurations\Curses\Curses.dproj</project>  
      <project Name="DeskArea Service" Type="DLL">Plugins\Configurations\DeskArea\DeskArea.dproj</project>  
      <project Name="Desktop" Type="DLL">Plugins\Configurations\Desktop\Desktop.dproj</project>  
+     <project Name="DesktopComponent" Type="DLL">Plugins\Configurations\Desktop Component\DesktopComponent.dproj</project>  
      <project Name="Filter List" Type="DLL">Plugins\Configurations\FilterList\FilterList.dproj</project>     
      <project Name="Font" Type="DLL">Plugins\Configurations\Font\Font.dproj</project>  
      <project Name="Home" Type="DLL">Plugins\Configurations\Home\Home.dproj</project>  
@@ -31,7 +32,7 @@
      <project Name="Service Manager" Type="DLL">Plugins\Configurations\Service Manager\ServiceManager.dproj</project>  
      <project Name="SharpBar Manager" Type="DLL">Plugins\Configurations\SharpBar List\SharpBarList.dproj</project>  
      <project Name="SharpDesk" Type="DLL">Plugins\Configurations\SharpDesk\SharpDesk.dproj</project>  
-     <project Name="SharpMenu" Type="DLL">Plugins\Configurations\SharpMenu\SharpMenu.dproj</project>  
+     <project Name="MenuSettings" Type="DLL">Plugins\Configurations\MenuSettings\MenuSettings.dproj</project>  
      <project Name="Skin" Type="DLL">Plugins\Configurations\Theme Skin\ThemeSkinList.dproj</project>  
      <project Name="SystemTray Module" Type="DLL">Plugins\Configurations\SystemTray\SystemTray.dproj</project>  
      <project Name="Task Module" Type="DLL">Plugins\Configurations\TaskModule\TaskModule.dproj</project> 
