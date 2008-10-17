@@ -28,7 +28,7 @@ program SharpAdmin;
 {$APPTYPE CONSOLE}
 
 uses
-  Windows,SysUtils;
+  Windows,SysUtils, Classes, JclStrings;
 
 {$R VistaElevated.res}
 
@@ -78,9 +78,69 @@ begin
     end;
 end;
 
+function DeleteKeyValue(cmd: string): boolean;
+var
+    Handle  : HKEY;
+    regMask: DWord;
+    x64: boolean;
+    hk: cardinal;
+    value, key, hks: string;
+    tokens, list: TStringList;
+    params: string;
+    i: Integer;
+begin
+  Result := false;
+
+  list := TStringList.Create;
+  tokens := TStringList.Create;
+  try
+
+    // Get keys to delete
+    StrTokenToStrings(cmd,'^',list);
+
+    for i := 0 to pred(list.count) do begin
+
+      hks := '';
+      key := '';
+      value := '';
+
+      // Get tokens for delete list
+      params := list[i];
+      StrTokenToStrings(params,',',tokens);
+
+      // Check for exact parameter count
+      if tokens.count = 4 then begin
+        hks := tokens[0];
+        key := tokens[1];
+        value := tokens[2];
+        x64 := StrToBool(tokens[3]);
+
+        if hks = 'HKCU' then hk := HKEY_CURRENT_USER else hk := HKEY_LOCAL_MACHINE;
+
+        // 64 bit gubbins
+        regMask := 0;
+        if x64 then regMask := KEY_WOW64_64KEY;
+
+        // Most important open in read only mode, and 64 bit access if needed
+        if RegOpenKeyEx(hk, PChar(key), 0, KEY_ALL_ACCESS or regMask, Handle) <> ERROR_SUCCESS then
+          exit;
+
+        if RegDeleteValue(Handle, pchar(value) ) = ERROR_SUCCESS then
+          result := true;
+
+        RegCloseKey(Handle);
+      end;
+
+    end;
+
+  finally
+    list.Free;
+  end;
+end;
+
 var
   n : integer;
-  par : String;
+  par,cmd : String;
 begin
   if ParamCount = 0 then
   begin
@@ -89,6 +149,8 @@ begin
     Writeln('');
     Writeln('Commands:');
     Writeln('-IniFileMapping   set HKLM shell boot path to current users winlogon key ');
+    WriteLn('-DeleteKeyValue   delete a key value in the registry, params = hkey:string,' +
+      'key:string, keyvalue:string, x64:bool ( seperate with ^ for multiple commands ');
   end;
 
   for n := 1 to ParamCount do
@@ -101,6 +163,11 @@ begin
       if IniFileMappingFix then
         Writeln('Applying IniFileMapping fix... Success')
       else Writeln('Applying IniFileMapping fix... Failed');
+    end else if CompareText(par,'DeleteKeyValue') = 0 then begin
+
+      if DeleteKeyValue(ParamStr(n+1)) then
+        Writeln('Deleting RunOnce Key... Success')
+      else Writeln('Deleting RunOnce Key... Failed');
     end;
   end;
 end.
