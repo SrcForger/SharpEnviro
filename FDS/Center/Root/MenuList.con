@@ -5,8 +5,8 @@
       <Dll>_Components\_Componentdlls\MenuList.dll</Dll>
       <Icon>MenuEdit.png</Icon>
     </MenuList>
-	<Options>
-      <Dll>_Components\_Componentdlls\SharpMenu.dll</Dll>
+    <Options>
+      <Dll>_Components\_Componentdlls\MenuSettings.dll</Dll>
       <Icon>Settings.png</Icon>
 	  <Name>Menu Options</Name>
     </Options>
