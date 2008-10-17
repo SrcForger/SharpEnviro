@@ -4,8 +4,7 @@ uses
   Forms,
   uStartupTest in 'uStartupTest.pas' {Form1},
   uStartup in 'uStartup.pas',
-  FileUtils in '..\Exec\FileUtils.pas',
-  uExecServiceExtractShortcut in '..\Exec\uExecServiceExtractShortcut.pas';
+  FileUtils in '..\Exec\FileUtils.pas';
 
 {$R *.res}
 

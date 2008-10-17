@@ -28,13 +28,14 @@ unit uStartup;
 interface
 
 uses
-  windows,
+
+  classes,
   activex,
   messages,
   comobj,
   shlobj,
   registry,
-  classes,
+
   sysutils,
   tlhelp32,
   fileutils,
@@ -43,114 +44,310 @@ uses
   jclstrings,
   jclshell,
   jclfileutils,
-  sharpapi;
+  sharpapi,
 
-
-type
-  TExecFileCommand = Record
-  Filename: String;
-  Commandline: String;
-end;
+  windows;
 
 type
-  TStartup = class
+  TStartupItem = class
+  end;
+
+  TRegistryStartupItem = class(TStartupItem)
   private
+    FRunOnce: Boolean;
+    FSubkey: String;
+    FHkey: HKEY;
+    FHkeyStr: string;
+    FValueKey: string;
+    FProcess64: boolean;
+  public
+    constructor Create( hk: cardinal; hks: string; subKey: string; x64: boolean; runOnce: boolean);
+    property SubKey: String read FSubkey write FSubKey;
+    property ValueKey: string read FValueKey write FValueKey;
+    property RunOnce: Boolean read FRunOnce write FRunOnce;
+    property HKey: HKEY read FHKey write FHKey;
+    property HKeyStr: String read FHKeyStr write FHKeyStr;
+    property Process64: boolean read FProcess64 write FProcess64;
+  end;
 
-    procedure DeleteEntriesIn(AKey: string; AHKEY: HKEY);
-    procedure RunEntriesIn(AKey: string; AHKEY: HKEY);
-    procedure RunDir(Idl: Integer);
+  TPathStartupItem = class(TStartupItem)
+  private
+    FDir: string;
+  public
+    constructor Create( dir: string );
+    property Dir: string read FDir write FDir;
+  end;
+
+type
+  TAddRegEvent = procedure(key: string; value: string) of object;
+  TAddDirEvent = procedure(filename : string) of object;
+type
+  TStartup = class(TList)
+  private
+    FOnAddDirEvent: TAddDirEvent;
+    FOnAddRegEvent: TAddRegEvent;
+    FDebug: boolean;
+    FDeleteList: TList;
+
+    procedure InitialiseKeys;
+    procedure InitialisePaths;
+    function AddRegistryStartupItem( hk: cardinal; hks: string; subKey: string; x64: boolean; runOnce: boolean): TRegistryStartupItem;
+    function AddPath( path: string ): TPathStartupItem;
+    function IsWow64(): boolean;
+    function RegEnum(const rootKey: HKEY; const name: String;
+         var resultList: TStringList; const process64: boolean; const DoKeys: Boolean): Boolean;
+    function RegReadValue(const rootKey: HKEY; const name: String; const value: String;
+      const process64: boolean): string;
+    //procedure Debug(Str: string; MessageType: Integer);
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    function RunEntriesIn(reg: TRegistryStartupItem; process64: boolean): integer;
+    procedure RunDir(dir: string);
     function FindTask(ExeFileName: string): Integer;
-    procedure Debug(Str: string; MessageType: Integer);
-    function StrtoFileandCmd(str: string):TExecFileCommand;
+    class procedure DebugMsg(Str: string; MessageType: Integer); static;
 
     function AppRunning(AFile:String):Boolean;
+
+    property Debug: boolean read FDebug write FDebug;
+    property OnAddRegEvent: TAddRegEvent read FOnAddRegEvent write FOnAddRegEvent;
+    property OnAddDirEvent: TAddDirEvent read FOnAddDirEvent write FOnAddDirEvent;
   public
     procedure LoadStartupApps;
   end;
-
-const
-  RunPath = 'Software\Microsoft\Windows\CurrentVersion\Run';
-  RunOncePAth = 'Software\Microsoft\Windows\CurrentVersion\RunOnce';
-  WinlogonKey = 'SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon';
-  RunHKLMPolicies = 'Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run';
 
 implementation
 
 { TStartup }
 
-function TStartup.AppRunning(AFile:String):Boolean;
-var
-  s:String;
-begin
-  Result := False;
-  s := AFile;
-  s := ExpandEnvVars(s);
-  s := Copy(s, 1, Length(s) - 2);
-
-  if findtask(s) = 1 then
-     Result := True;
-end;
-
-procedure TStartup.DeleteEntriesIn(AKey: string; AHKEY: HKEY);
-begin
-  try
-    DeleteRegKey(AKey, AHKEY);
-    CreateRegKey(AKey, '', '', AHKEY);
-  except
-    Debug('Unable to Delete Key: ' + AKey, DMT_INFO);
+{$REGION 'Registry methods'}
+  function TStartup.IsWow64(): boolean;
+  type
+    TIsWow64Process = function(Handle: THandle; var Res: boolean): boolean; stdcall;
+  var
+    IsWow64Result: boolean;
+    IsWow64Process: TIsWow64Process;
+  begin
+    result := False;
+    IsWow64Process := GetProcAddress(GetModuleHandle('kernel32'), 'IsWow64Process');
+    if Assigned(IsWow64Process) then
+      if IsWow64Process(GetCurrentProcess, IsWow64Result) then
+        result := IsWow64Result;
   end;
-end;
 
-function TStartup.FindTask(ExeFileName: string): Integer;
-const
-  PROCESS_TERMINATE = $0001;
-var
-  ContinueLoop: BOOL;
-  FSnapshotHandle: THandle;
-  FProcessEntry32: TProcessEntry32;
-  currentscan, currenttask: string;
+  function TStartup.RegEnum(const rootKey: HKEY; const name: String;
+           var resultList: TStringList; const process64: boolean; const DoKeys: Boolean): Boolean;
+
+var Buf     : Array[0..2047] of Char;
+    BufSize : Cardinal;
+    i       : Integer;
+    Res     : Integer;
+    S       : String;
+    Handle  : HKEY;
+    regMask: DWord;
+
+    procedure MoveMem(const Source; var Dest; const Count: Integer);
 begin
-  Result := -1;
-  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-  try
-    FProcessEntry32.dwSize := Sizeof(FProcessEntry32);
-    ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
-
-    currenttask := extractfilename(exefilename);
-    Debug('Searching For: ' + currenttask,DMT_INFO);
-    while integer(ContinueLoop) <> 0 do
-    begin
-      currentscan := string(FProcessEntry32.szExeFile);
-
-      //Debug('Current Scan: ' + currentscan,DMT_INFO);
-      if CompareText(currenttask,currentscan) = 0 then
-      begin
-        Debug('Found: ' + currenttask,DMT_INFO);
-        Result := 1;
-        exit;
-      end;
-      ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
+  if Count <= 0 then
+    exit;
+  if Count > 4 then
+    System.Move(Source, Dest, Count)
+  else
+    Case Count of // optimization for small moves
+      1 : PByte(@Dest)^ := PByte(@Source)^;
+      2 : PWord(@Dest)^ := PWord(@Source)^;
+      4 : PLongWord(@Dest)^ := PLongWord(@Source)^;
+    else
+      System.Move(Source, Dest, Count);
     end;
-  finally
-    CloseHandle(FSnapshotHandle);
+end;
+begin
+  // we require a list to be created
+  Result := false;
+
+  if ResultList = nil then exit;
+
+  // 64 bit gubbins
+  regMask := 0;
+  if process64 then regMask := KEY_WOW64_64KEY;
+
+  // Most important open in read only mode, and 64 bit access if needed
+  Result := RegOpenKeyEx(RootKey, PChar(Name), 0, KEY_READ or regMask, Handle) = ERROR_SUCCESS;
+  if not Result then exit;
+
+  i := 0;
+  Repeat
+    BufSize := Sizeof(Buf);
+    if DoKeys then
+      Res := RegEnumKeyEx(Handle, I, @Buf[0], BufSize, nil, nil, nil, nil)
+    else
+      Res := RegEnumValue(Handle, I, @Buf[0], BufSize, nil, nil, nil, nil);
+    if Res = ERROR_SUCCESS then
+      begin
+        SetLength(S, BufSize);
+        if BufSize > 0 then
+          MoveMem(Buf[0], Pointer(S)^, BufSize);
+
+        resultList.Add(s);
+        Inc(i);
+      end;
+  Until Res <> ERROR_SUCCESS;
+  RegCloseKey(Handle);
+end;
+
+function TStartup.RegReadValue(const rootKey: HKEY; const name: String; const value: String;
+  const process64: boolean): string;
+
+var
+    BufSize : Cardinal;
+    Handle  : HKEY;
+    regMask: DWord;
+    keyname: PAnsiChar;
+    regValType: DWord;
+    Buffer: array[0..256] of Char;
+
+begin
+  Result := '';
+  regValType := REG_SZ;
+
+  // 64 bit gubbins
+  regMask := 0;
+  if process64 then regMask := KEY_WOW64_64KEY;
+
+  // Most important open in read only mode, and 64 bit access if needed
+  if RegOpenKeyEx(RootKey, PChar(name), 0, KEY_READ or regMask, Handle) <> ERROR_SUCCESS then
+    exit;
+
+  keyName := pchar(value);
+  BufSize := SizeOf(Buffer);
+  if RegQueryValueEx(Handle, keyName, nil, @regValType, @Buffer, @Bufsize) = ERROR_SUCCESS then
+    Result := Buffer;
+
+  //FreeMem(regVal);
+  RegCloseKey(Handle);
+end;
+
+{$ENDREGION}
+
+{$REGION 'List manipulation'}
+function TStartup.AddPath(path: string): TPathStartupItem;
+  var
+    tmp: TPathStartupItem;
+  begin
+    tmp := TPathStartupItem.Create(path);
+    Self.Add(tmp);
+    result := tmp;
+  end;
+
+function TStartup.AddRegistryStartupItem( hk: cardinal; hks: string; subKey: string; x64: boolean; runOnce: boolean): TRegistryStartupItem;
+var
+  tmp: TRegistryStartupItem;
+begin
+  tmp := TRegistryStartupItem.Create(hk,hks,subKey,x64,runOnce);
+  Self.Add(tmp);
+  result := tmp;
+end;
+
+procedure TStartup.InitialiseKeys;
+var
+  i:integer;
+  hk: Array[0..2] of cardinal;
+  hks: Array[0..2] of string;
+  x64: Array[0..2] of boolean;
+
+begin
+  hk[0] := HKEY_CURRENT_USER;
+  hk[1] := HKEY_LOCAL_MACHINE;
+  hk[2] := HKEY_LOCAL_MACHINE;
+  hks[0] := 'HKCU';
+  hks[1] := 'HKLM';
+  hks[2] := 'HKLM';
+  x64[0] := false;
+  x64[1] := false;
+  x64[2] := true;
+
+  for i := 0 to 2 do begin
+
+    if ( (i = 2) and (not(IsWow64))) then exit;
+
+    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run',x64[i], false);
+    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\RunServicesOnce',x64[i], true);
+    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\RunServices',x64[i], false);
+    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnceEx',x64[i], true);
+    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce\Setup',x64[i], true);
+    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce',x64[i], true);
+    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\RunEx',x64[i], false);
+    AddRegistryStartupItem(hk[i],hks[i],'SOFTWARE\Microsoft\Windows\CurrentVersion\Run',x64[i], false);
   end;
 end;
 
-procedure TStartup.RunDir(Idl: Integer);
+procedure TStartup.InitialisePaths;
+begin
+  AddPath(GetSpecialFolderLocation(CSIDL_COMMON_STARTUP));
+  AddPath(GetSpecialFolderLocation(CSIDL_STARTUP));
+end;
+{$ENDREGION}
+
+{$REGION 'Process discovery'}
+  function TStartup.AppRunning(AFile:String):Boolean;
+  var
+    s:String;
+  begin
+    Result := False;
+    s := AFile;
+    s := ExpandEnvVars(s);
+    s := Copy(s, 1, Length(s) - 2);
+  
+    if findtask(s) = 1 then
+       Result := True;
+  end;
+  
+  function TStartup.FindTask(ExeFileName: string): Integer;
+  const
+    PROCESS_TERMINATE = $0001;
+  var
+    ContinueLoop: BOOL;
+    FSnapshotHandle: THandle;
+    FProcessEntry32: TProcessEntry32;
+    currentscan, currenttask: string;
+  begin
+    Result := -1;
+    FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    try
+      FProcessEntry32.dwSize := Sizeof(FProcessEntry32);
+      ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
+  
+      currenttask := extractfilename(exefilename);
+      DebugMsg('Searching For: ' + currenttask,DMT_INFO);
+      while integer(ContinueLoop) <> 0 do
+      begin
+        currentscan := string(FProcessEntry32.szExeFile);
+  
+        //Debug('Current Scan: ' + currentscan,DMT_INFO);
+        if CompareText(currenttask,currentscan) = 0 then
+        begin
+          DebugMsg('Found: ' + currenttask,DMT_INFO);
+          Result := 1;
+          exit;
+        end;
+        ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
+      end;
+    finally
+      CloseHandle(FSnapshotHandle);
+    end;
+  end;
+  
+{$ENDREGION}
+
+procedure TStartup.RunDir(dir: string);
 var
-  sdir: PChar;
-  pp: PItemIDList;
   a: integer;
   Data: TWin32FindData;
-  hwin: THandle;
   lpShortcut: TShellLink;
 begin
-  hwin := 0;
-  try
-    GetMem(sdir, MAX_PATH + 1);
-    if SHGetSpecialFolderLocation(hWin, IDL, pp) = NOERROR then
-      if SHGetPathFromIDList(pp, sdir) then begin
-        a := FindFirstFile(PChar(sdir + '\*.*'), Data);
+
+        a := FindFirstFile(PChar(dir + '\*.*'), Data);
         repeat
           if not (((Data.cFileName[0] = '.') and (Data.cFileName[1] = '')) or
             ((Data.cFileName[0] = '.') and (Data.cFileName[1] = '.') and
@@ -160,154 +357,136 @@ begin
               outputdebugstring('not loading')
             else begin
 
-              JclShell.ShellLinkResolve(sdir + '\' + Data.cFileName,lpShortcut);
+              JclShell.ShellLinkResolve(dir + '\' + Data.cFileName,lpShortcut);
+
+              if assigned(FOnAddDirEvent) then
+                FOnAddDirEvent(dir + '\' + Data.cFileName);
 
               if findtask(lpShortcut.Target) = -1
                 then begin
-                  ServiceMsg('exec',pchar('_nohist,' + sdir + '\' + Data.cFileName));
+
+                  if not Debug then
+                    ServiceMsg('exec',pchar('_nohist,' + dir + '\' + Data.cFileName));
               end;
             end;
           end;
         until not FindNextFile(a, Data);
-      end;
-    FreeMem(sdir);
-  except
-  end;
+
 end;
 
-procedure TStartup.RunEntriesIn(AKey: string; AHKEY: HKEY);
+function TStartup.RunEntriesIn(reg: TRegistryStartupItem; process64: boolean): integer;
 var
-  Reg: Tregistry;
-  sList: TStringList;
+  list: TStringList;
   i: integer;
-  sFile, sCmd: string;
-
+  s: string;
 begin
-  sList := TStringList.Create;
-  Reg := Tregistry.Create;
-  with Reg do
-  begin
-     Access := KEY_READ;
-    rootkey := AHKEY;
-    OpenKey(AKey, False);
-    GetValueNames(sList);
-  end;
 
+  list := TStringList.Create;
   try
-    sFile := '';
-    sCmd := '';
+    RegEnum( reg.HKey, reg.subKey, list, process64, false );
+    result := list.Count;
 
-
-    for i := 0 to Pred(sList.Count) do
+    for i := 0 to Pred(list.Count) do
     begin
-      sFile := Reg.ReadString(sList[i]);
+      reg.ValueKey := list[i];
 
-      if sFile <> '' then begin
-        if Not(AppRunning(ExtractFileName(sFile))) then
-          ServiceMsg('exec',pchar('_nohist,' + sFile));
+      s := RegReadValue(reg.FHkey,reg.subKey,list[i], process64);
+      if s <> '' then begin
+
+        if Assigned(FOnAddRegEvent) then
+            FOnAddRegEvent( reg.HKeyStr + '\' + reg.subKey, list[i] + ' - ' + s);
+
+        if reg.runOnce then
+              FDeleteList.Add(reg);
+
+        if Not(AppRunning(ExtractFileName(s))) then begin
+
+          if Not(Debug) then begin
+            ServiceMsg('exec',pchar('_nohist,' + s));
+
+
+            end;
+          end;
+        end;
       end;
-    end;
 
   finally
-    reg.Free;
-    sList.Free;
+    list.Free;
   end;
 end;
 
-procedure TStartup.Debug(Str: string; MessageType: Integer);
+constructor TStartup.Create;
+begin
+  FDeleteList := TList.Create;
+  InitialiseKeys;
+  InitialisePaths;
+end;
+
+class procedure TStartup.DebugMsg(Str: string; MessageType: Integer);
 begin
   SendDebugMessageEx('Startup Service', Pchar(Str), 0, MessageType);
 end;
 
-procedure TStartup.LoadStartupApps;
+destructor TStartup.Destroy;
 begin
-  //Debug('Execute UserInit', DMT_INFO);
-  //ServiceMsg('exec',pchar('_nohist,' + GetWindowsSystemFolder+'\userinit.exe'));
-
-  Debug('Execute HKLM Policies', DMT_INFO);
-  RunEntriesIn(RunHKLMPolicies, HKEY_LOCAL_MACHINE);
-
-  Debug('Execute RunOnce', DMT_INFO);
-  RunEntriesIn(RunOncePath, HKEY_LOCAL_MACHINE);
-  RunEntriesIn(RunOncePath, HKEY_CURRENT_USER);
-
- // Debug('Delete RunOnce', DMT_INFO);
- // DeleteEntriesIn(runOncePath, HKEY_LOCAL_MACHINE);
- DeleteEntriesIn(runOncePath, HKEY_CURRENT_USER);
-
-
-  Debug('Execute Run', DMT_INFO);
-  RunEntriesIn(runPath, HKEY_LOCAL_MACHINE);
-  RunEntriesIn(runPath, HKEY_CURRENT_USER);
-
-  Debug('Execute Start Menu', DMT_INFO);
-  RunDir(CSIDL_COMMON_STARTUP);
-  RunDir(CSIDL_STARTUP);
+  FDeleteList.Free;
 end;
 
-function TStartup.StrtoFileandCmd(str: string):TExecFileCommand;
+procedure TStartup.LoadStartupApps;
 var
-  filetoexecute, commandline: string;
   i: Integer;
-  tmp, s: string;
-  tokens: Tstringlist;
-  rs: boolean;
-
+  tmpReg: TRegistryStartupItem;
+  tmpPath: TPathStartupItem;
+  s,s64: string;
 begin
-  // Iniitialise
-  if str <> '' then begin
-  filetoexecute := '';
-  commandline := '';
-  Result.Filename := '';
-  Result.Commandline := '';
+  FDeleteList.Clear;
+  for i := 0 to Pred(Count) do begin
 
-  // First check if the first char is a quote
-  if str[1] = '"' then begin
-    s := Copy(str,2,length(str));
-    i := Pos('"',s);
+    if TObject(Items[i]) is TRegistryStartupItem then begin
 
-    Result.Filename := Copy(str,2,i-1);
-    Result.Commandline := Copy(str,i+2,length(str));
-    Exit;
-  end;
+      tmpReg := TRegistryStartupItem(Items[i]);
+      RunEntriesIn( tmpReg,tmpReg.Process64 );
 
-  // Remove quotes from quoted string
-  str := StrRemoveChars(str, ['"']);
+    end else if TObject(Items[i]) is TPathStartupItem then begin
 
-  // Get number of spaces in str
-  tokens := TStringList.Create;
-  Try
-  StrTokenToStrings(str, ' ', tokens);
-
-  tmp := '';
-  for i := 0 to tokens.count - 1 do begin
-    filetoexecute := filetoexecute + tokens.Strings[i];
-    tmp := filetoexecute;
-
-    rs := False;
-    if (filetoexecute <> tmp) and (filetoexecute <> str) then
-      rs := True;
-
-    // if the string is now an actual file then return the remainder as a command
-    if FileExists(filetoexecute) and (isDirectory(filetoexecute) = false) then begin
-      if rs then begin
-        StrReplace(str, tmp, '');
-        str := filetoexecute + str;
-      end;
-
-      commandline := copy(str, length(filetoexecute) + 1, length(str) - length(filetoexecute));
-      if StrCompare(filetoexecute,commandline) = 0 then
-        commandline := '';
-      Result.Filename := Filetoexecute;
-      Result.Commandline := commandline;
-      Exit;
+      tmpPath := TPathStartupItem(Items[i]);
+      RunDir(tmpPath.Dir);
     end;
-    filetoexecute := filetoexecute + ' ';
   end;
-  Finally
-    tokens.Free;
-  End;
+
+  // Check for runonce items
+  if FDeleteList.Count > 0 then begin
+    s := '';
+    for i := 0 to Pred(FDeleteList.Count) do begin
+      tmpReg := TRegistryStartupItem(FDeleteList[i]);
+
+      if tmpReg.Process64 then
+        s64 := '1' else s64 := '0';
+
+      s := s + format('%s,%s,%s,%s',[tmpReg.HKeyStr, tmpReg.SubKey,tmpReg.ValueKey,s64]);
+      s := s + '^';
+    end;
+    ShellExecute(0,'open','SharpAdmin.exe',pchar('-DeleteKeyValue ' + s),'',SW_SHOWNORMAL);
   end;
+  
+end;
+
+{ TPathStartupItem }
+
+constructor TPathStartupItem.Create(dir: string);
+begin
+  FDir := dir;
+end;
+
+{ TRegistryStartupItem }
+
+constructor TRegistryStartupItem.Create( hk: cardinal; hks: string; subKey: string; x64: boolean; runOnce: boolean);
+begin
+  FHkey := hk;
+  FHkeyStr := hks;
+  FProcess64 := x64;
+  FSubkey := subKey;
+  FRunOnce := runOnce;
 end;
 
 end.

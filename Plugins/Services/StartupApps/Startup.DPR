@@ -67,7 +67,7 @@ begin
     Name := 'Startup';
     Description := 'Runs all normal startup applications';
     Author := 'Lee Green (Pixol@sharpe-shell.org)';
-    Version := '0.7.4.0';
+    Version := '0.7.5.2';
     DataType := tteService;
     ExtraData := 'priority: 160| delay: 0';
   end;
