@@ -50,7 +50,7 @@ type
   TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginTabs )
   private
   public
-    constructor Create( APluginHost: ISharpCenterHost );
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
@@ -89,10 +89,10 @@ end;
 
 procedure TSharpCenterPlugin.Close;
 begin
-  PluginHost.Close;
+  FreeAndNil(frmHome); 
 end;
 
-constructor TSharpCenterPlugin.Create(APluginHost: ISharpCenterHost);
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
   PluginHost := APluginHost;
 end;
@@ -102,6 +102,7 @@ begin
   frmHome := TfrmHome.Create(nil);
   SetVistaFonts(frmHome);
 
+  frmHome.PluginHost := PluginHost;
   result := PluginHost.Open(frmHome);
 end;
 
@@ -131,7 +132,7 @@ begin
   end;
 end;
 
-function InitPluginInterface( APluginHost: ISharpCenterHost ) : ISharpCenterPlugin;
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

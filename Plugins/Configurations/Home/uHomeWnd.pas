@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, pngimage, ExtCtrls, SharpCenterApi, StdCtrls, SharpEListBoxEx,
-  JvLabel, ImgList, PngImageList, SharpApi, JvExControls, ComCtrls;
+  JvLabel, ImgList, PngImageList, SharpApi, JvExControls, ComCtrls, ISharpCenterHostUnit;
 
 type
   TUser = Class
@@ -88,11 +88,11 @@ type
   private
     FUsers: TList;
     FUrls: TList;
-    FTheme: TCenterThemeInfo;
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure AddUsersToList;
   public
     procedure AddUrlsToList(ASupport: Boolean=False);
-    property Theme: TCenterThemeInfo read FTheme write FTheme;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
   end;
 
 var
@@ -186,7 +186,7 @@ var
 
 begin
   FUsers.Clear;
-  AddUser('Bruno', 'Skizo', 'bruno@sharpenviro.com', 'Graphics, New Guy.');
+  //AddUser('Bruno', 'Skizo', 'bruno@sharpenviro.com', 'Graphics, New Guy.');
   AddUser('CoCo', 'Silentpyjamas', 'coco@sharpenviro.com', 'PR, Community + Support.');
   AddUser('David', 'Glacialfury', 'nathan@sharpenviro.com', 'Lead Tester + Support.');
   AddUser('Florian', 'Captain Herisson', 'florian@sharpenviro.com', 'Graphics + Design.');
@@ -230,14 +230,20 @@ procedure TfrmHome.lbUrlsGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmp: TUrl;
+  colItemTxt: TColor;
+  colDescTxt: TColor;
+  colBtnTxt: TColor;
 begin
   tmp := TUrl(AItem.Data);
   if tmp = nil then exit;
 
+  // Assign theme colours
+  AssignThemeToListBoxItemText(PluginHost.Theme, AItem, colItemTxt, colDescTxt, colBtnTxt);
+
   case ACol of
     colName: begin
-      AColText := format('%s ( %s ) - <font color="%s"> %s',
-        [tmp.Name,tmp.Description,ColorToString(FTheme.PluginItemDescriptionText),tmp.Url]);
+      AColText := format('<font color="%s">%s</font> <font color="%s">( %s ) - <u>%s</font>',
+        [ColorToString(colItemTxt),tmp.Name,ColorToString(colDescTxt),tmp.Description,tmp.Url]);
     end;
   end;
 end;
@@ -280,7 +286,7 @@ begin
   case ACol of
     colName: begin
       AColText := format('%s ( %s ) - <font color="%s"> %s',
-        [tmp.Name,tmp.Handle,ColorToString(FTheme.PluginItemDescriptionText),tmp.Role]);
+        [tmp.Name,tmp.Handle,ColorToString(FPluginHost.Theme.PluginItemDescriptionText),tmp.Role]);
     end;
   end;
 
