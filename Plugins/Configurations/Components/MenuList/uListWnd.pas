@@ -319,16 +319,15 @@ procedure TfrmList.lbItemsGetCellText(Sender: TObject; const ACol: Integer;
 var
   tmpMenu: TMenuDataObject;
   s: String;
-  col: TColor;
+  colItemTxt: TColor;
+  colDescTxt: TColor;
+  colBtnTxt: TColor;
 begin
 
   tmpMenu := TMenuDataObject(AItem.Data);
-  if tmpMenu = nil then
-    exit;
+  if tmpMenu = nil then exit;
 
-  if AItem = lbItems.SelectedItem then
-        col := PluginHost.Theme.PluginSelectedItemText else
-        col := PluginHost.Theme.PluginItemText;
+  AssignThemeToListBoxItemText(FPluginHost.Theme, AItem, colItemTxt, colDescTxt, colBtnTxt);
 
   case ACol of
     colName: begin
@@ -336,10 +335,10 @@ begin
       s := tmpMenu.Name;
       if s = '' then s := '*Untitled';
 
-      AColText := format('<font color="%s">%s',[ColorToString(col),s]);
+      AColText := format('<font color="%s">%s',[ColorToString(colItemTxt),s]);
     end;
 
-    colEdit: AColText := format('<font color="%s"><u>Edit</u>',[ColorToString(col),s]);
+    colEdit: AColText := format('<font color="%s"><u>Edit</u>',[ColorToString(colBtnTxt),s]);
   end;
 end;
 

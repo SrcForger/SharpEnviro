@@ -39,15 +39,10 @@ uses
   SysUtils,
   Graphics,
   uListWnd in 'uListWnd.pas' {frmList},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  uEditWnd in 'uEditWnd.pas',
-
+  uEditWnd in 'uEditWnd.pas' {$E .dll},
   SharpETabList,
+  SharpApi,
+  SharpCenterApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit;
 
@@ -85,9 +80,9 @@ end;
 
 function TSharpCenterPlugin.CloseEdit(AApply: Boolean): Boolean;
 begin
-  if frmEdit = nil then exit;
-  
   Result := True;
+
+  if frmEdit = nil then exit;
 
   // First validate
   if AApply then
@@ -169,7 +164,7 @@ begin
     Name := 'Menu List';
     Description := 'Menu List Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7.5.2';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
       Integer(suCenter)]);

@@ -342,22 +342,20 @@ procedure TfrmList.lbItemsGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmp: TItemData;
-  col,col2: TColor;
-  bRi: boolean;
   n : integer;
   s: String;
+  colItemTxt: TColor;
+  colDescTxt: TColor;
+  colBtnTxt: TColor;
 begin
 
   tmp := TItemData(AItem.Data);
-  if tmp = nil then
-    exit;
+  if tmp = nil then exit;
+
+  AssignThemeToListBoxItemText(FPluginHost.Theme, AItem, colItemTxt, colDescTxt, colBtnTxt);
 
   case ACol of
     colName: begin
-
-      if AItem = lbItems.SelectedItem then
-        col :=  PluginHost.Theme.PluginSelectedItemText else
-        col :=  PluginHost.Theme.PluginItemText;
 
         if tmp.IsParent then
           AColText := 'Previous Menu'
@@ -365,38 +363,38 @@ begin
           case tmp.MenuItem.ItemType of
 
             mtSeparator: AColText := Format('<font color="%s">--------------------------------------------------------------------------------------------------------------------------',
-            [colortostring(col),colortostring(col2)]);
+            [colortostring(colItemTxt),colortostring(colDescTxt)]);
 
             mtDynamicDir: AColText := Format('<font color="%s">%s',
-                [colortostring(col),tmp.MenuItem.PropList.GetString('Action')]);
+                [colortostring(colItemTxt),tmp.MenuItem.PropList.GetString('Action')]);
 
             mtDriveList: AColText := Format('<font color="%s">Drive List',
-              [colortostring(col)]);
+              [colortostring(colItemTxt)]);
 
             mtSubMenu: AColText := format('<font color="%s">%s</font>',
-                [colortostring(col),tmp.MenuItem.Caption]);
+                [colortostring(colItemTxt),tmp.MenuItem.Caption]);
 
             mtLink: AColText := format('<font color="%s">%s.link',
-                [colortostring(col),tmp.MenuItem.Caption]);
+                [colortostring(colItemTxt),tmp.MenuItem.Caption]);
 
             mtLabel: AColText := format('<font color="%s">%s',
-                [colortostring(col),tmp.MenuItem.Caption]);
+                [colortostring(colItemTxt),tmp.MenuItem.Caption]);
 
             mtDesktopObjectList: AColText := format('<font color="%s">Desktop Objects',
-              [colortostring(col)]);
+              [colortostring(colItemTxt)]);
 
             mtCPLList: AColText := format('<font color="%s">Control Panel Items',
-              [colortostring(col)]);
+              [colortostring(colItemTxt)]);
 
             mtulist: begin
 
             n := tmp.MenuItem.PropList.GetInt('ItemType');
             if n = 0 then s := 'Mru - Recent Items' else
               s := 'Mru - Most Used Items';
-            
+
 
               AColText := Format('<font color="%s">%s',
-              [colortostring(col),s]);
+              [colortostring(colItemTxt),s]);
             end;
 
           end;

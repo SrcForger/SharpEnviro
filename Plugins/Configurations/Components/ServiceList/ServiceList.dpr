@@ -1,7 +1,7 @@
 ﻿{
-Source Name: Menu Editor
-Description: SharpMenu Editor Config
-Copyright (C) Lee Green (lee@sharpenviro.com)
+Source Name: SharpBarList
+Description: SharpBar Manager Config Dll
+Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -23,66 +23,67 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 }
 
-library MenuEdit;
+library ServiceList;
 uses
   Controls,
   Classes,
+  ComCtrls,
   Windows,
   Forms,
   Dialogs,
-  JclSimpleXml,
-  JclFileUtils,
-  GR32,
-  GR32_Image,
+  Contnrs,
+  graphics,
+  JvSimpleXml,
   PngSpeedButton,
   uVistaFuncs,
   SysUtils,
-  Graphics,
-  uSharpEMenuSaver,
+  uComponentMan,
   SharpApi,
   SharpCenterApi,
-  uSharpEMenuItem,
-  uListWnd in 'uListWnd.pas' {frmList},
-  uEditWnd in 'uEditWnd.pas' {frmEdit},
   ISharpCenterHostUnit,
-  ISharpCenterPluginUnit;
+  ISharpCenterPluginUnit,
+  listWnd in 'listWnd.pas' {frmList};
 
 {$E .dll}
 
 {$R *.res}
 
 type
-  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit )
-  private
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginTabs )
   public
     constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
 
-    function GetPluginDescriptionText: String; override; stdCall;
+    procedure ClickPluginTab(ATab: TStringItem); stdCall;
+    procedure AddPluginTabs(ATabItems: TStringList); stdCall;
     procedure Refresh; override; stdcall;
-    destructor Destroy; override;
-    function CloseEdit(AApply: Boolean): Boolean; stdcall;
-    function OpenEdit: Cardinal; stdcall;
+
+    function GetPluginStatusText : string; override; stdcall;
+    function GetPluginName : string; override; stdcall;
   end;
 
 { TSharpCenterPlugin }
 
+procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
+begin
+  ATabItems.AddObject('All',TObject(aiAll));
+  ATabItems.AddObject('Filter Configurable',TObject(aiEditable));
+  ATabItems.AddObject('FilterDisabled',TObject(aiDisabled));
+end;
+
+procedure TSharpCenterPlugin.ClickPluginTab(ATab: TStringItem);
+var
+  tmp: TAddItemsType;
+begin
+  tmp := TAddItemsType(ATab.FObject);
+  frmList.AddItems(tmp);
+end;
+
 procedure TSharpCenterPlugin.Close;
 begin
   FreeAndNil(frmList);
-end;
-
-function TSharpCenterPlugin.CloseEdit(AApply: Boolean): Boolean;
-begin
-  Result := True;
-
-  // Save settings?
-  frmEdit.Save(AApply);
-
-  // Free the window
-  FreeAndNil(frmEdit);
 end;
 
 constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
@@ -90,53 +91,49 @@ begin
   PluginHost := APluginHost;
 end;
 
-destructor TSharpCenterPlugin.Destroy;
+function TSharpCenterPlugin.GetPluginName: string;
 begin
-  inherited;
+  result := 'Services';
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
+function TSharpCenterPlugin.GetPluginStatusText: string;
+var
+  tmpList: TComponentList;
 begin
-  Result := format('Menu Configuration for "%s". Drag Items to position them, hold down Ctrl to move an item into a submenu',[PluginHost.PluginId]);
+  tmpList := TComponentList.Create;
+  Try
+    tmpList.BuildList('.service',false);
+    result := IntToStr(tmpList.Count);
+  Finally
+    tmpList.Free;
+  End;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
 begin
   if frmList = nil then frmList := TfrmList.Create(nil);
   uVistaFuncs.SetVistaFonts(frmList);
-  frmList.PluginHost := PluginHost;
 
-  frmList.MenuFile := GetSharpeUserSettingsPath + 'SharpMenu\' + PluginHost.PluginId + '.xml';
   result := PluginHost.Open(frmList);
-end;
-
-function TSharpCenterPlugin.OpenEdit: Cardinal;
-begin
-  if frmEdit = nil then frmEdit := TfrmEdit.Create(nil);
-  uVistaFuncs.SetVistaFonts(frmEdit);
-
-  frmEdit.PluginHost := PluginHost;
-  result := PluginHost.OpenEdit(frmEdit);
-
-  frmEdit.InitUI;
+  frmList.PluginHost := PluginHost;
 end;
 
 procedure TSharpCenterPlugin.Refresh;
 begin
-  AssignThemeToForms(PluginHost.Theme,frmList,frmEdit,PluginHost.Editing);
+  AssignThemeToForm(PluginHost.Theme,frmList);
 end;
 
 function GetMetaData(): TMetaData;
 begin
   with result do
   begin
-    Name := 'Menu Editor';
-    Description := 'Menu Editor Configuration';
+    Name := 'Service Manager';
+    Description := 'Manage and configure the SharpE Service providers';
     Author := 'Lee Green (lee@sharpenviro.com)';
     Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
-      Integer(suCenter)]);
+      Integer(suService)]);
   end;
 end;
 

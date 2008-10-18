@@ -41,8 +41,8 @@ uses
   SharpCenterApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
-  settingsWnd in 'settingsWnd.pas' {frmSettings},
-  uSharpDeskTDeskSettings in '..\..\..\Components\SharpDesk\Units\uSharpDeskTDeskSettings.pas';
+  uSharpDeskTDeskSettings,
+  settingsWnd in 'settingsWnd.pas' {frmSettings};
 
 {$E .dll}
 
@@ -82,7 +82,7 @@ end;
 
 function TSharpCenterPlugin.GetPluginDescriptionText: String;
 begin
-  Result := 'Define advanced desktop and wallpaper functionality.';
+  Result := 'Define global menu options.';
 end;
 
 procedure TSharpCenterPlugin.LoadSettings;
