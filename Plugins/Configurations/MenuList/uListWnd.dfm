@@ -1,9 +1,10 @@
 object frmList: TfrmList
   Left = 0
   Top = 0
+  BorderStyle = bsNone
   Caption = 'frmList'
-  ClientHeight = 284
-  ClientWidth = 418
+  ClientHeight = 320
+  ClientWidth = 434
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,14 +12,14 @@ object frmList: TfrmList
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object lbItems: TSharpEListBoxEx
     Left = 0
     Top = 0
-    Width = 418
+    Width = 434
     Height = 148
     Columns = <
       item
@@ -68,6 +69,7 @@ object frmList: TfrmList
     Colors.ItemColorSelected = clBtnFace
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
+    Colors.DisabledColor = clBlack
     OnResize = lbItemsResize
     ItemHeight = 25
     OnClickItem = lbItemsClickItem

@@ -47,104 +47,87 @@ uses
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
   SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
   SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  uSharpEMenu in '..\..\..\Components\SharpMenu\Units\uSharpEMenu.pas',
-  uEditWnd in 'uEditWnd.pas' {frmEdit};
+  uEditWnd in 'uEditWnd.pas' {frmEdit},
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit;
 
 {$E .dll}
 
 {$R *.res}
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit )
+  private
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+
+    function GetPluginDescriptionText: String; override; stdCall;
+    procedure Refresh; override; stdcall;
+    destructor Destroy; override;
+    function CloseEdit(AApply: Boolean): Boolean; stdcall;
+    function OpenEdit: Cardinal; stdcall;
+  end;
+
+{ TSharpCenterPlugin }
+
+procedure TSharpCenterPlugin.Close;
 begin
-  // Create the window
-  if frmList = nil then
-    frmList := TFrmList.Create(nil);
-
-  // Assign vista fonts
-  uVistaFuncs.SetVistaFonts(frmList);
-
-  // Assign the menu file
-  frmList.MenuFile := GetSharpeUserSettingsPath + 'SharpMenu\' + APluginID + '.xml';
-
-  // Assign window settings
-  frmList.ParentWindow := aowner;
-  frmList.Left := 0;
-  frmList.Top := 0;
-  frmList.BorderStyle := bsNone;
-  frmList.Show;
-
-  result := frmList.Handle;
+  FreeAndNil(frmList);
 end;
 
-function Close: boolean;
-begin
-  result := True;
-
-  // Free the window
-  frmList.Close;
-  frmList.Free;
-  frmList := nil;
-end;
-
-function OpenEdit(AOwner:Hwnd; AEditMode:TSCE_EditMode_Enum):Hwnd;
-begin
-  // Create window
-  if Not(Assigned(frmEdit)) then
-    frmEdit := TfrmEdit.Create(nil);
-
-  // Assign Vista fonts
-  uVistaFuncs.SetVistaFonts(frmEdit);
-
-  // Assign window settings
-  frmEdit.ParentWindow := AOwner;
-  frmEdit.Left := 0;
-  frmEdit.Top := 0;
-  frmEdit.BorderStyle := bsNone;
-
-  // Assign edit mode, and initialise ui
-  frmEdit.EditMode := AEditMode;
-  frmEdit.InitUI(AEditMode);
-
-  // Show the window
-  frmEdit.Show;
-
-  Result := frmEdit.Handle;
-end;
-
-function CloseEdit(AEditMode:TSCE_EditMode_Enum; AApply:Boolean): boolean;
+function TSharpCenterPlugin.CloseEdit(AApply: Boolean): Boolean;
 begin
   Result := True;
 
   // Save settings?
-  frmEdit.Save(AEditMode, AApply);
+  frmEdit.Save(AApply);
 
   // Free the window
   FreeAndNil(frmEdit);
 end;
 
-procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
-  var ATitle: string; var ADescription: string);
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
-  AName := 'Menu Editor';
-  ATitle := Format('Menu Configuration for "%s"', [APluginID]);
-  ADescription := 'Drag Items to position them, hold down Ctrl to move an item into a submenu';
-  AStatus := '';
+  PluginHost := APluginHost;
 end;
 
-procedure GetCenterScheme(var ABackground: TColor;
-  var AItemColor: TColor; var AItemSelectedColor: TColor);
+destructor TSharpCenterPlugin.Destroy;
 begin
+  inherited;
+end;
 
-  // Assign scheme colours
-  if frmList <> nil then begin
-    frmList.lbItems.Colors.ItemColor := AItemColor;
-    frmList.lbItems.Colors.ItemColorSelected := AItemSelectedColor;
-    frmList.lbItems.Colors.BorderColor := AItemSelectedColor;
-    frmList.lbItems.Colors.BorderColorSelected := AItemSelectedColor;
-  end;
+function TSharpCenterPlugin.GetPluginDescriptionText: String;
+begin
+  Result := format('Menu Configuration for "%s". Drag Items to position them, hold down Ctrl to move an item into a submenu',[PluginHost.PluginId]);
+end;
 
-  if frmEdit <> nil then
-    frmEdit.Color := ABackground;
+function TSharpCenterPlugin.Open: Cardinal;
+begin
+  if frmList = nil then frmList := TfrmList.Create(nil);
+  uVistaFuncs.SetVistaFonts(frmList);
+  frmList.PluginHost := PluginHost;
+
+  frmList.MenuFile := GetSharpeUserSettingsPath + 'SharpMenu\' + PluginHost.PluginId + '.xml';
+  result := PluginHost.Open(frmList);
+end;
+
+function TSharpCenterPlugin.OpenEdit: Cardinal;
+begin
+  if frmEdit = nil then frmEdit := TfrmEdit.Create(nil);
+  uVistaFuncs.SetVistaFonts(frmEdit);
+
+  frmEdit.PluginHost := PluginHost;
+  result := PluginHost.OpenEdit(frmEdit);
+
+  frmEdit.InitUI;
+end;
+
+procedure TSharpCenterPlugin.Refresh;
+begin
+  AssignThemeToForms(PluginHost.Theme,frmList,frmEdit,PluginHost.Editing);
 end;
 
 function GetMetaData(): TMetaData;
@@ -154,21 +137,22 @@ begin
     Name := 'Menu Editor';
     Description := 'Menu Editor Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7.4.0';
+    Version := '0.7.5.2';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
       Integer(suCenter)]);
   end;
 end;
 
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
+end;
+
 exports
-  Open,
-  Close,
-  OpenEdit,
-  CloseEdit,
-  SetText,
-  GetCenterScheme,
+  InitPluginInterface,
   GetMetaData;
 
+begin
 end.
 

@@ -53,7 +53,7 @@ object frmEdit: TfrmEdit
     Height = 22
     Style = csDropDownList
     Anchors = [akTop, akRight]
-    ItemHeight = 14
+    ItemHeight = 0
     TabOrder = 1
     OnChange = editStateEvent
   end

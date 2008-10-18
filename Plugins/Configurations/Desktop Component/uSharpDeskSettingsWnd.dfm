@@ -347,7 +347,9 @@ object frmSettings: TfrmSettings
         ParentBackground = False
         ParentColor = True
         TabOrder = 1
-        ExplicitTop = 276
+        DesignSize = (
+          405
+          25)
         object Label1: TLabel
           Left = 0
           Top = 7
@@ -359,13 +361,14 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 114
           Top = 4
-          Width = 238
+          Width = 283
           Height = 21
           Margins.Left = 26
           Margins.Top = 4
           Margins.Right = 8
           Margins.Bottom = 0
           Style = csDropDownList
+          Anchors = [akLeft, akTop, akRight]
           ItemHeight = 13
           TabOrder = 0
           OnChange = cbMenuListChange
@@ -376,18 +379,19 @@ object frmSettings: TfrmSettings
         Left = 5
         Top = 77
         Width = 405
-        Height = 25
+        Height = 34
         Margins.Left = 5
         Margins.Top = 5
         Margins.Right = 10
-        Margins.Bottom = 0
+        Margins.Bottom = 10
         Align = alTop
-        AutoSize = True
         BevelOuter = bvNone
         ParentBackground = False
         ParentColor = True
         TabOrder = 2
-        ExplicitTop = 324
+        DesignSize = (
+          405
+          34)
         object Label2: TLabel
           Left = 0
           Top = 7
@@ -399,13 +403,14 @@ object frmSettings: TfrmSettings
           AlignWithMargins = True
           Left = 114
           Top = 4
-          Width = 238
+          Width = 283
           Height = 21
           Margins.Left = 26
           Margins.Top = 4
           Margins.Right = 8
           Margins.Bottom = 0
           Style = csDropDownList
+          Anchors = [akLeft, akTop, akRight]
           ItemHeight = 13
           TabOrder = 0
           OnChange = cbMenuListChange

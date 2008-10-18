@@ -57,14 +57,15 @@ uses
   // PNG Image
   pngimage,
   JvComponentBase,
-  TranComp,
   JvLabel,
   PngImageList,
   PngBitBtn,
   JvExStdCtrls,
   PngSpeedButton,
   JvErrorIndicator,
-  JvValidators;
+  JvValidators,
+
+  ISharpCenterHostUnit;
 
 type
   TfrmEdit = class(TForm)
@@ -86,16 +87,18 @@ type
   private
     { Private declarations }
     FUpdating: Boolean;
-    FEditMode: TSCE_EDITMODE_ENUM;
+    FPluginHost: TInterfacedSharpCenterHostBase;
   public
     { Public declarations }
     SelectedText: string;
-    procedure InitUi(AEditMode: TSCE_EDITMODE_ENUM; AChangePage: Boolean = False);
-    function ValidateEdit(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+    procedure InitUi(AChangePage: Boolean = False);
+    function ValidateEdit: Boolean;
     procedure ClearValidation;
-    function Save(AApply: Boolean; AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+    function Save(AApply: Boolean): Boolean;
 
-    property EditMode: TSCE_EDITMODE_ENUM read FEditMode write FEditMode;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
+
   end;
 
 var
@@ -114,8 +117,7 @@ uses
 
 {$R *.dfm}
 
-procedure TfrmEdit.InitUi(AEditMode: TSCE_EDITMODE_ENUM;
-  AChangePage: Boolean = False);
+procedure TfrmEdit.InitUi(AChangePage: Boolean = False);
 var
   tmpItem: TSharpEListItem;
   tmpMenuItem: TMenuDataObject;
@@ -124,7 +126,7 @@ begin
   FUpdating := True;
   try
 
-    case AEditMode of
+    case PluginHost.EditMode of
       sceAdd: begin
           edName.Text := '';
 
@@ -156,11 +158,11 @@ begin
   end;
 end;
 
-function TfrmEdit.ValidateEdit(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+function TfrmEdit.ValidateEdit: Boolean;
 begin
   Result := False;
 
-  case AEditMode of
+  case PluginHost.EditMode of
     sceAdd, sceEdit: begin
 
         errorinc.BeginUpdate;
@@ -177,8 +179,7 @@ begin
   end;
 end;
 
-function TfrmEdit.Save(AApply: Boolean;
-  AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+function TfrmEdit.Save(AApply: Boolean ): Boolean;
 var
   tmpItem: TSharpEListItem;
   tmpMenuItem: TMenuDataObject;
@@ -188,7 +189,7 @@ begin
   if not (AApply) then
     Exit;
 
-  case AEditMode of
+  case PluginHost.EditMode of
     sceAdd: begin
         frmList.Save(edName.Text, cbBasedOn.Text);
         Result := True;
@@ -218,12 +219,12 @@ begin
   end;
 
   frmList.RenderItems;
-  CenterUpdateConfigFull;
+  PluginHost.Refresh(rtAll);
 end;
 
 procedure TfrmEdit.UpdateEditState(Sender: TObject);
 begin
-  CenterDefineEditState(True);
+  PluginHost.SetEditing(True);
 end;
 
 procedure TfrmEdit.ClearValidation;
@@ -245,7 +246,7 @@ end;
 procedure TfrmEdit.editStateEvent(Sender: TObject);
 begin
   if not (FUpdating) then
-    CenterDefineEditState(True);
+    PluginHost.SetEditing(True);
 end;
 
 procedure TfrmEdit.valNameExistsValidate(Sender: TObject;
@@ -262,7 +263,7 @@ begin
   sMenuDir := GetSharpeUserSettingsPath + 'SharpMenu\';
 
   bExistsName := FileExists(sMenuDir + sName + '.xml');
-  if (FEditMode = sceEdit) then begin
+  if (PluginHost.EditMode = sceEdit) then begin
     tmpItem := frmList.lbItems.SelectedItem;
     tmpMenuItem := TMenuDataObject(tmpItem.Data);
 

@@ -99,7 +99,7 @@ object frmEdit: TfrmEdit
       Top = 0
       Width = 500
       Height = 102
-      object chkDriveNames: TCheckBox
+      object chkDriveNames: TJvXPCheckbox
         Left = 10
         Top = 0
         Width = 145
@@ -115,11 +115,15 @@ object frmEdit: TfrmEdit
       Width = 500
       Height = 102
       Caption = 'pagLabel'
+      DesignSize = (
+        500
+        102)
       object edLabelCaption: TLabeledEdit
         Left = 60
         Top = 0
         Width = 426
         Height = 21
+        Anchors = [akLeft, akTop, akRight]
         EditLabel.Width = 41
         EditLabel.Height = 13
         EditLabel.Caption = 'Caption:'
@@ -260,6 +264,7 @@ object frmEdit: TfrmEdit
         PopPosition = ppRight
         PercentDisplay = False
         OnChangeValue = sgbDynamicDirMaxItemsChangeValue
+        BackgroundColor = clWindow
       end
       object cbDynamicDirSort: TComboBox
         Left = 217
@@ -267,7 +272,7 @@ object frmEdit: TfrmEdit
         Width = 105
         Height = 21
         Style = csDropDownList
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 3
         OnChange = GenericUpdateEditState
         Items.Strings = (
@@ -289,16 +294,16 @@ object frmEdit: TfrmEdit
         TabOrder = 4
         OnChange = GenericUpdateEditState
       end
-      object chkRecursive: TCheckBox
+      object chkRecursive: TJvXPCheckbox
         Left = 10
         Top = 61
-        Width = 155
+        Width = 142
         Height = 17
         Caption = 'Include Subdirectories'
         TabOrder = 5
         OnClick = GenericUpdateEditState
       end
-      object chkDescending: TCheckBox
+      object chkDescending: TJvXPCheckbox
         Left = 158
         Top = 61
         Width = 155
@@ -318,7 +323,7 @@ object frmEdit: TfrmEdit
         AlignWithMargins = True
         Left = 8
         Top = 0
-        Width = 488
+        Width = 166
         Height = 13
         Margins.Left = 8
         Margins.Top = 0
@@ -327,7 +332,6 @@ object frmEdit: TfrmEdit
         Align = alTop
         Caption = 'There are no configuration options'
         Enabled = False
-        ExplicitWidth = 166
       end
     end
     object pagMru: TJvStandardPage
@@ -343,26 +347,6 @@ object frmEdit: TfrmEdit
         Height = 13
         Caption = 'Max Items:'
       end
-      object rbMruListRecentItems: TRadioButton
-        Left = 8
-        Top = 0
-        Width = 113
-        Height = 17
-        Caption = 'Recent Items'
-        Checked = True
-        TabOrder = 0
-        TabStop = True
-        OnClick = GenericUpdateEditState
-      end
-      object rbMruListMostUsedItems: TRadioButton
-        Left = 127
-        Top = 0
-        Width = 113
-        Height = 17
-        Caption = 'Most Used Items'
-        TabOrder = 1
-        OnClick = GenericUpdateEditState
-      end
       object sgbMruListCount: TSharpeGaugeBox
         Left = 71
         Top = 29
@@ -376,6 +360,28 @@ object frmEdit: TfrmEdit
         PopPosition = ppRight
         PercentDisplay = False
         OnChangeValue = sgbDynamicDirMaxItemsChangeValue
+        BackgroundColor = clWindow
+      end
+      object rbMruListRecentItems: TJvXPCheckbox
+        Left = 8
+        Top = 0
+        Width = 113
+        Height = 17
+        Caption = 'Recent Items'
+        TabOrder = 0
+        Checked = True
+        State = cbChecked
+        OnClick = rbMruListMostUsedItemsClick
+      end
+      object rbMruListMostUsedItems: TJvXPCheckbox
+        Left = 127
+        Top = 0
+        Width = 113
+        Height = 17
+        Caption = 'Most Used Items'
+        TabOrder = 1
+        TabStop = False
+        OnClick = rbMruListMostUsedItemsClick
       end
     end
   end
@@ -386,6 +392,8 @@ object frmEdit: TfrmEdit
     Height = 77
     Align = alTop
     BevelOuter = bvNone
+    ParentBackground = False
+    ParentColor = True
     TabOrder = 1
     DesignSize = (
       500
@@ -472,7 +480,6 @@ object frmEdit: TfrmEdit
   object tmr: TTimer
     Enabled = False
     Interval = 300
-    OnTimer = tmrTimer
     Left = 464
     Top = 12
   end

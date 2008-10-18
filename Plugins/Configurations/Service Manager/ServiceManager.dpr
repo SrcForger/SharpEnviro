@@ -38,7 +38,10 @@ uses
   uVistaFuncs,
   SysUtils,
   SharpCenterApi,
-  uServiceManagerWnd in 'uServiceManagerWnd.pas' {frmBarList},
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+
+  listWnd in 'listWnd.pas' {frmList},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
   GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
@@ -49,60 +52,79 @@ uses
 
 {$R *.res}
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-begin
-  if frmBarList = nil then frmBarList := TfrmBarList.Create(nil);
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginTabs )
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
-  uVistaFuncs.SetVistaFonts(frmBarList);
-  frmBarList.ParentWindow := aowner;
-  frmBarList.Left := 0;
-  frmBarList.Top := 0;
-  frmBarList.BorderStyle := bsNone;
-  frmBarList.Show;
-  result := frmBarList.Handle;
-end;
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
 
-function Close : boolean;
-begin
-  result := True;
-  try
-    frmBarList.Close;
-    frmBarList.Free;
-    frmBarList := nil;
+    procedure ClickPluginTab(ATab: TStringItem); stdCall;
+    procedure AddPluginTabs(ATabItems: TStringList); stdCall;
+    procedure Refresh; override; stdcall;
 
-  except
-    result := False;
+    function GetPluginStatusText : string; override; stdcall;
+    function GetPluginName : string; override; stdcall;
   end;
+
+{ TSharpCenterPlugin }
+
+procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
+begin
+  ATabItems.AddObject('All',TObject(aiAll));
+  ATabItems.AddObject('Filter Configurable',TObject(aiEditable));
+  ATabItems.AddObject('FilterDisabled',TObject(aiDisabled));
 end;
 
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+procedure TSharpCenterPlugin.ClickPluginTab(ATab: TStringItem);
+var
+  tmp: TAddItemsType;
+begin
+  tmp := TAddItemsType(ATab.FObject);
+  frmList.AddItems(tmp);
+end;
+
+procedure TSharpCenterPlugin.Close;
+begin
+  FreeAndNil(frmList);
+end;
+
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+begin
+  PluginHost := APluginHost;
+end;
+
+function TSharpCenterPlugin.GetPluginName: string;
+begin
+  result := 'Services';
+end;
+
+function TSharpCenterPlugin.GetPluginStatusText: string;
 var
   tmpList: TComponentList;
 begin
-  AName := 'Services';
-  ATitle := 'Service Management';
-  ADescription := 'Manage the SharpE Services including configuration. ';
-
   tmpList := TComponentList.Create;
   Try
     tmpList.BuildList('.service',false);
-    AStatus := IntToStr(tmpList.Count);
+    result := IntToStr(tmpList.Count);
   Finally
     tmpList.Free;
   End;
 end;
 
-procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
+function TSharpCenterPlugin.Open: Cardinal;
 begin
+  if frmList = nil then frmList := TfrmList.Create(nil);
+  uVistaFuncs.SetVistaFonts(frmList);
 
-  if frmBarList <> nil then begin
-    frmBarList.lbItems.Colors.ItemColor := AItemColor;
-    frmBarList.lbItems.Colors.ItemColorSelected := AItemSelectedColor;
-    frmBarList.lbItems.Colors.BorderColor := AItemSelectedColor;
-    frmBarList.lbItems.Colors.BorderColorSelected := AItemSelectedColor;
-  end;
+  result := PluginHost.Open(frmList);
+  frmList.PluginHost := PluginHost;
+end;
+
+procedure TSharpCenterPlugin.Refresh;
+begin
+  AssignThemeToForm(PluginHost.Theme,frmList);
 end;
 
 function GetMetaData(): TMetaData;
@@ -110,44 +132,24 @@ begin
   with result do
   begin
     Name := 'Service Manager';
-    Description := 'Service Manager Configuration';
+    Description := 'Manage and configure the SharpE Service providers';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
       Integer(suService)]);
   end;
 end;
 
-procedure ClickTab(ATab: TStringItem);
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
 begin
-  if ATab.FString = 'Editable' then
-    frmBarList.AddItems(aiEditable) else
-  if ATab.FString = 'All' then
-    frmBarList.AddItems(aiAll) else
-  if ATab.FString = 'Disabled' then
-    frmBarList.AddItems(aiDisabled);
+  result := TSharpCenterPlugin.Create(APluginHost);
 end;
-
-procedure AddTabs(var ATabs: TStringList);
-begin
-  if frmBarList <> nil then
-  begin
-    ATabs.AddObject('All',nil);
-    ATabs.AddObject('Editable',nil);
-    ATabs.AddObject('Disabled',nil);
-  end;
-end;
-
 
 exports
-  Open,
-  Close,
-  AddTabs,
-  ClickTab,
-  SetText,
-  GetMetaData,
-  GetCenterScheme;
+  InitPluginInterface,
+  GetMetaData;
 
+begin
 end.
 

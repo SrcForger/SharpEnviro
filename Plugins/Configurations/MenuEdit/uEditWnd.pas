@@ -23,7 +23,9 @@ uses
   pngimage,
   SharpCenterApi,
   SharpApi,
-  SharpEGaugeBoxEdit;
+  SharpEGaugeBoxEdit,
+
+  ISharpCenterHostUnit, JvXPCore, JvXPCheckCtrls;
 
 type
   TPageData = class
@@ -55,7 +57,6 @@ type
     JvLabel1: TJvLabel;
     cbMenuItems: TComboBox;
     cbItemPosition: TComboBox;
-    chkDriveNames: TCheckBox;
     pagLabel: TJvStandardPage;
     edLabelCaption: TLabeledEdit;
     pagSubMenu: TJvStandardPage;
@@ -76,13 +77,14 @@ type
     lblDescription: TLabel;
     pagBlank: TJvStandardPage;
     Label4: TLabel;
-    chkRecursive: TCheckBox;
-    chkDescending: TCheckBox;
     pagMru: TJvStandardPage;
-    rbMruListRecentItems: TRadioButton;
-    rbMruListMostUsedItems: TRadioButton;
     Label5: TLabel;
     sgbMruListCount: TSharpeGaugeBox;
+    rbMruListRecentItems: TJvXPCheckbox;
+    rbMruListMostUsedItems: TJvXPCheckbox;
+    chkRecursive: TJvXPCheckbox;
+    chkDescending: TJvXPCheckbox;
+    chkDriveNames: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
     procedure cbMenuItemsSelect(Sender: TObject);
     procedure btnLinkIconBrowseClick(Sender: TObject);
@@ -90,25 +92,26 @@ type
     procedure FormShow(Sender: TObject);
     procedure btnSubmenuIconBrowseClick(Sender: TObject);
     procedure btnSubmenuTargetBrowseClick(Sender: TObject);
-    procedure tmrTimer(Sender: TObject);
+
     procedure btnDynamicDirBrowseClick(Sender: TObject);
     procedure GenericUpdateEditState(Sender: TObject);
     procedure sgbDynamicDirMaxItemsChangeValue(Sender: TObject; Value: Integer);
     procedure cbItemPositionChange(Sender: TObject);
+    procedure rbMruListMostUsedItemsClick(Sender: TObject);
   private
     { Private declarations }
-    FEditMode: TSCE_EDITMODE_ENUM;
     FUpdating: Boolean;
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure InitWnd;
     procedure SelectMenuItemType(AItemType: TSharpEMenuItemType);
-    procedure SetEditMode(const Value: TSCE_EDITMODE_ENUM);
     procedure UpdateEditState;
   public
     { Public declarations }
-    procedure InitUI(AEditMode: TSCE_EditMode_Enum);
-    property EditMode: TSCE_EDITMODE_ENUM read FEditMode write SetEditMode;
-    function ValidateEdit(AEditMode: TSCE_EditMode_Enum): Boolean;
-    function Save(AEditMode: TSCE_EditMode_Enum; AApply: Boolean): Boolean;
+    procedure InitUI;
+    function ValidateEdit: Boolean;
+    function Save(AApply: Boolean): Boolean;
+
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
   end;
 
 var
@@ -134,14 +137,14 @@ uses
 
 {$R *.dfm}
 
-procedure TfrmEdit.InitUI(AEditMode: TSCE_EditMode_Enum);
+procedure TfrmEdit.InitUI;
 var
   tmpItem: TItemData;
   tmpMenuItemType: TSharpEMenuItemType;
   n: Integer;
 begin
 
-  case AEditMode of
+  case PluginHost.EditMode of
     sceAdd: begin
 
         FUpdating := True;
@@ -197,6 +200,7 @@ begin
               end;
 
           end;
+          
         finally
           FUpdating := False;
         end;
@@ -261,6 +265,9 @@ begin
                 SelectMenuItemType(tmpItem.MenuItem.ItemType);
               end;
             mtulist: begin
+
+                rbMruListRecentItems.Checked := False;
+                rbMruListMostUsedItems.Checked := False;
                 n := tmpItem.MenuItem.PropList.GetInt('ItemType');
                 case n of
                   0: rbMruListRecentItems.Checked := True;
@@ -354,9 +361,9 @@ begin
     tmp.Page.Show;
 
   case tmp.MenuItemType of
-    mtLink, mtLabel, mtSubMenu, mtDynamicDir: CenterDefineEditState(False);
-    mtSeparator, mtCPLList, mtDriveList, mtDesktopObjectList, mtulist: if FEditMode = sceAdd then
-        CenterDefineButtonState(scbConfigure, True);
+    mtLink, mtLabel, mtSubMenu, mtDynamicDir: PluginHost.SetEditing(False);
+    mtSeparator, mtCPLList, mtDriveList, mtDesktopObjectList, mtulist: if PluginHost.EditMode = sceAdd then
+      PluginHost.SetButtonVisibility(scbConfigure,True);
   end;
 end;
 
@@ -409,17 +416,28 @@ end;
 procedure TfrmEdit.UpdateEditState;
 begin
   if not (FUpdating) then
-    CenterDefineEditState(True);
+    PluginHost.Editing := True;
 end;
 
 procedure TfrmEdit.InitWnd;
 begin
+  Self.DoubleBuffered := true;
+  pnlHeader.DoubleBuffered := true;
   cbMenuItems.ItemIndex := nMenuItemIndex;
   cbItemPosition.ItemIndex := nInsertIndex;
   cbMenuItemsSelect(nil);
 end;
 
-function TfrmEdit.Save(AEditMode: TSCE_EditMode_Enum; AApply: Boolean): Boolean;
+procedure TfrmEdit.rbMruListMostUsedItemsClick(Sender: TObject);
+begin
+  rbMruListRecentItems.Checked := false;
+  rbMruListMostUsedItems.Checked := false;
+
+  TJvXPCheckbox(sender).Checked := true;
+  UpdateEditState;
+end;
+
+function TfrmEdit.Save(AApply: Boolean): Boolean;
 var
   tmpMenuItemType: TSharpEMenuItemType;
   tmpMenuItem: TObject;
@@ -434,7 +452,7 @@ begin
   if not (AApply) then
     exit;
 
-  case AEditMode of
+  case PluginHost.EditMode of
     sceAdd: begin
 
         tmpMenuItemType := TPageData(cbMenuItems.Items.Objects[cbMenuItems.ItemIndex]).MenuItemType;
@@ -606,24 +624,13 @@ begin
   end;
 end;
 
-procedure TfrmEdit.SetEditMode(const Value: TSCE_EDITMODE_ENUM);
-begin
-  FEditMode := Value;
-end;
-
 procedure TfrmEdit.sgbDynamicDirMaxItemsChangeValue(Sender: TObject;
   Value: Integer);
 begin
   UpdateEditState;
 end;
 
-procedure TfrmEdit.tmrTimer(Sender: TObject);
-begin
-  tmr.Enabled := False;
-  CenterUpdateSize;
-end;
-
-function TfrmEdit.ValidateEdit(AEditMode: TSCE_EditMode_Enum): Boolean;
+function TfrmEdit.ValidateEdit: Boolean;
 begin
   Result := True;
 end;

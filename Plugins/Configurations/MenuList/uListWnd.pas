@@ -52,7 +52,8 @@ uses
   JclStrings,
   GR32_Image,
   Types,
-  PngImageList;
+  PngImageList,
+  ISharpCenterHostUnit;
 
 type
   TMenuDataObject = class
@@ -66,7 +67,6 @@ type
     lbItems: TSharpEListBoxEx;
     pilDefault: TPngImageList;
     procedure lbItemsResize(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure lbItemsGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
@@ -77,8 +77,10 @@ type
       AItem: TSharpEListItem);
     procedure lbItemsGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
+    procedure FormShow(Sender: TObject);
   private
     FItems: TObjectList;
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure AddItemsToList(AList: TObjectList);
     procedure SelectMenuItem(AName: string);
   public
@@ -87,7 +89,8 @@ type
     procedure RenderItems;
 
     procedure EditMenu( name: string);
-  end;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;  end;
 
 var
   frmList: TfrmList;
@@ -220,18 +223,18 @@ begin
           + '\_Components\MenuEdit.con'), pchar(name));
 end;
 
-procedure TfrmList.FormCreate(Sender: TObject);
+procedure TfrmList.FormDestroy(Sender: TObject);
+begin
+  FItems.Free;
+end;
+
+procedure TfrmList.FormShow(Sender: TObject);
 begin
   Self.DoubleBuffered := True;
   lbItems.DoubleBuffered := True;
 
   FItems := TObjectList.Create;
   RenderItems;
-end;
-
-procedure TfrmList.FormDestroy(Sender: TObject);
-begin
-  FItems.Free;
 end;
 
 procedure TfrmList.lbItemsClickItem(Sender: TObject; const ACol: Integer;
@@ -280,10 +283,10 @@ begin
   end;
 
   if frmEdit <> nil then
-    frmEdit.InitUi(frmEdit.EditMode);
+    frmEdit.InitUi;
 
-  CenterUpdateEditTabs(lbItems.Count, lbItems.ItemIndex);
-  CenterUpdateConfigFull;
+  PluginHost.SetEditTabsVisibility(lbItems.ItemIndex, lbItems.Count );
+  PluginHost.Refresh( rtAll );
 end;
 
 procedure TfrmList.lbItemsGetCellCursor(Sender: TObject; const ACol: Integer;
@@ -315,15 +318,28 @@ procedure TfrmList.lbItemsGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmpMenu: TMenuDataObject;
+  s: String;
+  col: TColor;
 begin
 
   tmpMenu := TMenuDataObject(AItem.Data);
   if tmpMenu = nil then
     exit;
 
+  if AItem = lbItems.SelectedItem then
+        col := PluginHost.Theme.PluginSelectedItemText else
+        col := PluginHost.Theme.PluginItemText;
+
   case ACol of
-    colName: AColText := tmpMenu.Name;
-    colEdit: AColText := '<font color="clNavy"><u>Edit</u>';
+    colName: begin
+
+      s := tmpMenu.Name;
+      if s = '' then s := '*Untitled';
+
+      AColText := format('<font color="%s">%s',[ColorToString(col),s]);
+    end;
+
+    colEdit: AColText := format('<font color="%s"><u>Edit</u>',[ColorToString(col),s]);
   end;
 end;
 
@@ -371,8 +387,10 @@ begin
   if lbItems.ItemIndex = -1 then
     lbItems.ItemIndex := 0;
 
-  CenterUpdateEditTabs(lbItems.Count, lbItems.ItemIndex);
-  CenterUpdateConfigFull;
+  if PluginHost <> nil then begin
+    PluginHost.SetEditTabsVisibility(lbItems.ItemIndex,lbItems.Count);
+    PluginHost.Refresh( rtAll );
+  end;
 
 end;
 

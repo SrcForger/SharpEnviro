@@ -60,7 +60,8 @@ uses
   uSharpEMenuSaver,
   uSharpEMenuItem,
   SharpESkinManager,
-  Menus;
+  
+  ISharpCenterHostUnit;
 
 type
 
@@ -102,6 +103,7 @@ type
   private
     FMenuFile: string;
     FMenu: TSharpEMenu;
+    FPluginHost: TInterfacedSharpCenterHostBase;
 
     procedure RenderItemsBuffered(AMenu: TSharpEMenu; AClear: Boolean = True;
       AParent: Boolean = False);
@@ -116,6 +118,7 @@ type
       AParent: Boolean = False);
 
     procedure Save;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
   end;
 
 var
@@ -137,6 +140,7 @@ const
   iidxCplList = 9;
   iidxMruList = 10;
   iidxDynamicFolder = 11;
+  iidxLink = 12;
 
 implementation
 
@@ -184,13 +188,14 @@ var
   tmpMenu: TSharpEMenu;
   bDelete: Boolean;
 begin
-
   tmp := TItemData(AItem.Data);
   if tmp = nil then
     exit;
 
   case ACol of
     colDelete: begin
+
+        if lbItems.SelectedItem <> AItem then exit;
 
         bDelete := True;
         if not (CtrlDown) then
@@ -199,7 +204,7 @@ begin
             bDelete := False;
 
         if bDelete then begin
-
+          
           tmpMenu := TSharpEMenu(tmp.MenuItem.OwnerMenu);
           tmpMenu.Items.Extract(tmp.MenuItem);
 
@@ -210,14 +215,17 @@ begin
 
           Save;
         end;
+
       end;
   end;
 
   if (frmEdit <> nil) then
-    frmEdit.InitUi(frmEdit.EditMode);
+    frmEdit.InitUi;
 
-  CenterUpdateEditTabs(lbItems.Count,lbItems.ItemIndex);
-  CenterUpdateConfigFull;
+  PluginHost.SetEditTabsVisibility(lbItems.ItemIndex,lbItems.Count);
+  PluginHost.Refresh(rtAll);
+
+
 end;
 
 procedure TfrmList.lbItemsDblClickItem(Sender: TObject; const ACol: Integer;
@@ -238,13 +246,13 @@ begin
           if tmp.MenuItem.OwnerMenu <> nil then
             RenderItemsBuffered(TSharpEMenu(tmp.MenuItem.OwnerMenu), True, True);
 
-          CenterSelectEditTab(scbAddTab);
+          PluginHost.SetEditTab(scbAddTab);
         end else
       begin
         case tmp.MenuItem.ItemType of
           mtSubMenu: begin
               RenderItemsBuffered(TSharpEMenu(tmp.MenuItem.SubMenu), True, True);
-              CenterSelectEditTab(scbAddTab);
+              PluginHost.SetEditTab(scbAddTab);
             end;
         end;
       end;
@@ -261,8 +269,8 @@ begin
 
   tmrUpdatePosition.Enabled := False;
 
-  CenterUpdateEditTabs(lbItems.Count,lbItems.ItemIndex);
-  CenterUpdateConfigFull;
+  PluginHost.SetEditTabsVisibility(lbItems.ItemIndex,lbItems.Count);
+  PluginHost.Refresh(rtAll);
   Save;
 end;
 
@@ -305,7 +313,10 @@ begin
   if tmp = nil then
     exit;
 
-  if ((tmp.IsParent) or (ACol = 1)) then
+  if (tmp.IsParent) and (ACol <> 1) then
+    ACursor := crHandPoint;
+
+  if ( ACol = 1 ) and ( lbItems.SelectedItem = AItem ) then
     ACursor := crHandPoint;
 end;
 
@@ -322,8 +333,8 @@ begin
 
   case ACol of
     colName: AImageIndex := tmp.IconIndex;
-    colDelete: if not (tmp.IsParent) then
-        AImageIndex := iidxDelete;
+    colDelete: if not (tmp.IsParent) and (AItem = lbItems.SelectedItem) then
+       AImageIndex := iidxDelete;
   end;
 end;
 
@@ -331,6 +342,10 @@ procedure TfrmList.lbItemsGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmp: TItemData;
+  col,col2: TColor;
+  bRi: boolean;
+  n : integer;
+  s: String;
 begin
 
   tmp := TItemData(AItem.Data);
@@ -340,23 +355,49 @@ begin
   case ACol of
     colName: begin
 
+      if AItem = lbItems.SelectedItem then
+        col :=  PluginHost.Theme.PluginSelectedItemText else
+        col :=  PluginHost.Theme.PluginItemText;
+
         if tmp.IsParent then
           AColText := 'Previous Menu'
         else begin
           case tmp.MenuItem.ItemType of
-            mtSeparator: AColText := '<font color="clGray">separator </font><font color="$00BBBBBB">| --------------------------------------------------------------------------------------------------------------------------';
-            mtDynamicDir: AColText := Format('<font color="clGray">dynamic dir | </font>%s',
-                [tmp.MenuItem.PropList.GetString('Action')]);
-            mtDriveList: AColText := '<font color="clGray">drives | </font>System';
-            mtSubMenu: AColText := format('<font color="clGray">menu | </font>%s',
-                [tmp.MenuItem.Caption]);
-            mtLink: AColText := format('<font color="clGray">link | </font>%s',
-                [tmp.MenuItem.Caption]);
-            mtLabel: AColText := format('<font color="clGray">text | </font>%s',
-                [tmp.MenuItem.Caption]);
-            mtDesktopObjectList: AColText := '<font color="clGray">objects | </font>system';
-            mtCPLList: AColText := '<font color="clGray">control panel | </font>system';
-            mtulist: AColText := '<font color="clGray">mru list | </font>system';
+
+            mtSeparator: AColText := Format('<font color="%s">--------------------------------------------------------------------------------------------------------------------------',
+            [colortostring(col),colortostring(col2)]);
+
+            mtDynamicDir: AColText := Format('<font color="%s">%s',
+                [colortostring(col),tmp.MenuItem.PropList.GetString('Action')]);
+
+            mtDriveList: AColText := Format('<font color="%s">Drive List',
+              [colortostring(col)]);
+
+            mtSubMenu: AColText := format('<font color="%s">%s</font>',
+                [colortostring(col),tmp.MenuItem.Caption]);
+
+            mtLink: AColText := format('<font color="%s">%s.link',
+                [colortostring(col),tmp.MenuItem.Caption]);
+
+            mtLabel: AColText := format('<font color="%s">%s',
+                [colortostring(col),tmp.MenuItem.Caption]);
+
+            mtDesktopObjectList: AColText := format('<font color="%s">Desktop Objects',
+              [colortostring(col)]);
+
+            mtCPLList: AColText := format('<font color="%s">Control Panel Items',
+              [colortostring(col)]);
+
+            mtulist: begin
+
+            n := tmp.MenuItem.PropList.GetInt('ItemType');
+            if n = 0 then s := 'Mru - Recent Items' else
+              s := 'Mru - Most Used Items';
+            
+
+              AColText := Format('<font color="%s">%s',
+              [colortostring(col),s]);
+            end;
 
           end;
         end;
@@ -380,12 +421,13 @@ end;
 procedure TfrmList.RenderItems(AMenu: TSharpEMenu; AClear: Boolean = True;
   AParent: Boolean = False);
 var
-  i: Integer;
+  i,n: Integer;
   tmpData: TItemData;
   tmpMenu: TSharpEMenu;
   newItem: TSharpEListItem;
   png: TPngImageCollectionItem;
   bmp, bmpResized: TBitmap32;
+  pt: TPoint;
 begin
 
   if AClear then begin
@@ -403,9 +445,7 @@ begin
 
     newItem := lbItems.AddItem('Parent');
     newItem.Data := tmpData;
-    newItem.AddSubItem('');
-    newItem.AddSubItem('');
-    newItem.AddSubItem('');
+    newItem.AddSubItem('',-1);
 
     png := pilIcons.PngImages.Add(false);
     png.PngImage := pilDefault.PngImages[iidxParentFolder].PngImage;
@@ -461,8 +501,13 @@ begin
           png.PngImage := pilDefault.PngImages[iidxCplList].PngImage;
           tmpData.IconIndex := png.Index;
         end;
+      mtLink: begin
+          png := pilIcons.PngImages.Add(false);
+          png.PngImage := pilDefault.PngImages[iidxlink].PngImage;
+          tmpData.IconIndex := png.Index;
+        end;
       mtSubMenu: begin
-          if tmpData.MenuItem.Icon.IconSource = '' then begin
+          if ( (tmpData.MenuItem.Icon = nil) or (tmpData.MenuItem.Icon.IconSource = '')) then begin
             png := pilIcons.PngImages.Add(false);
             png.PngImage := pilDefault.PngImages[iidxFolder].PngImage;
             tmpData.IconIndex := png.Index;
@@ -484,12 +529,19 @@ begin
     if lbItems.Items.Count > 0 then begin
       if IsParentMenu then
         lbItems.ItemIndex := -1
-      else
+      else begin
+
+        pt := lbItems.ScreenToClient(Mouse.CursorPos);
+        n := lbItems.ItemAtPos(point(pt.x, pt.y), True);
+        if n <> -1 then
+
+        lbItems.ItemIndex := n else
         lbItems.ItemIndex := 0;
+      end;
     end;
 
-  CenterUpdateEditTabs(lbItems.Count,lbItems.ItemIndex);
-  CenterUpdateConfigFull;
+  PluginHost.SetEditTabsVisibility(lbItems.ItemIndex,lbItems.Count);
+  PluginHost.Refresh;
 end;
 
 procedure TfrmList.RenderItemsBuffered(AMenu: TSharpEMenu; AClear,
@@ -564,7 +616,7 @@ begin
       if IsParentMenu then
         RenderItemsBuffered(tmpSrcMenu, True, True)
       else
-        RenderItemsBuffered(FMenu);
+        lbItems.Items.Exchange(nTo,n);
 
       for i := 0 to Pred(lbItems.Count) do begin
         if TItemData(lbItems.Item[i].Data).MenuItem = tmpSrc.MenuItem then begin
