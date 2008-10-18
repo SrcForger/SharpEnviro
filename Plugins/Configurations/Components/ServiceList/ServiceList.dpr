@@ -70,7 +70,7 @@ procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
 begin
   ATabItems.AddObject('All',TObject(aiAll));
   ATabItems.AddObject('Filter Configurable',TObject(aiEditable));
-  ATabItems.AddObject('FilterDisabled',TObject(aiDisabled));
+  ATabItems.AddObject('Filter Disabled',TObject(aiDisabled));
 end;
 
 procedure TSharpCenterPlugin.ClickPluginTab(ATab: TStringItem);
