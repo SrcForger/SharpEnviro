@@ -32,9 +32,11 @@ uses
   classes,
   activex,
   messages,
+  controls,
   comobj,
   shlobj,
   registry,
+  dialogs,
 
   sysutils,
   tlhelp32,
@@ -61,7 +63,8 @@ type
     FValueKey: string;
     FProcess64: boolean;
   public
-    constructor Create( hk: cardinal; hks: string; subKey: string; x64: boolean; runOnce: boolean);
+    constructor Create( hk: cardinal; hks: string; subKey: string; x64: boolean; runOnce: boolean); overload;
+    constructor Create( hk: cardinal; hks: string; subKey: string; valueKey:string; x64: boolean; runOnce: boolean); overload;
     property SubKey: String read FSubkey write FSubKey;
     property ValueKey: string read FValueKey write FValueKey;
     property RunOnce: Boolean read FRunOnce write FRunOnce;
@@ -397,7 +400,8 @@ begin
             FOnAddRegEvent( reg.HKeyStr + '\' + reg.subKey, list[i] + ' - ' + s);
 
         if reg.runOnce then
-              FDeleteList.Add(reg);
+              FDeleteList.Add( TRegistryStartupItem.Create(reg.HKey,reg.HKeyStr,
+                reg.SubKey, reg.ValueKey, reg.Process64, reg.RunOnce) );
 
         if Not(AppRunning(ExtractFileName(s))) then begin
 
@@ -437,7 +441,8 @@ var
   i: Integer;
   tmpReg: TRegistryStartupItem;
   tmpPath: TPathStartupItem;
-  s,s64: string;
+  s,s2,s64,admin: string;
+  hasHklm, has64bitKey, continue: boolean;
 begin
   FDeleteList.Clear;
   for i := 0 to Pred(Count) do begin
@@ -456,19 +461,42 @@ begin
 
   // Check for runonce items
   if FDeleteList.Count > 0 then begin
-    s := '';
+    s2 := '';
+    hasHklm := false;
+    has64bitKey := false;
     for i := 0 to Pred(FDeleteList.Count) do begin
+
+      s := '';
       tmpReg := TRegistryStartupItem(FDeleteList[i]);
 
-      if tmpReg.Process64 then
-        s64 := '1' else s64 := '0';
+      if tmpReg.Process64 then begin
+        s64 := '1';
+        has64bitKey := true;
+      end else s64 := '0';
 
-      s := s + format('%s,%s,%s,%s',[tmpReg.HKeyStr, tmpReg.SubKey,tmpReg.ValueKey,s64]);
-      s := s + '^';
+      if tmpReg.FHkey = HKEY_LOCAL_MACHINE then
+        hasHklm := true;
+
+      s := format('%s,%s,%s,%s^',[tmpReg.HKeyStr, tmpReg.SubKey,tmpReg.ValueKey,s64]);
+      s2 := s2 + s;
     end;
-    ShellExecute(0,'open','SharpAdmin.exe',pchar('-DeleteKeyValue ' + s),'',SW_SHOWNORMAL);
+
+    admin := GetSharpeDirectory+ 'SharpAdmin.exe -DeleteKeyValue ' + s2;
+
+    continue := true;
+    if ( (IsWow64) and ( (hasHklm) or (has64bitKey) ) ) then begin
+      if (MessageDlg('There are RunOnce specific keys that should be deleted. '
+        +#13+#10+''+#13+#10+
+          'As these keys are within a protected registry area, they must be deleted using elevation.'
+            +#13+#10+''+#13+#10+
+              'To gain access rights, please launch SharpAdmin elevated. Click OK to launch... ', mtInformation, [mbOK, mbIgnore], 0) in [mrIgnore, mrNone]) then
+                continue := false;
+    end;       
+
+    if continue then
+      SharpExecute(admin);
   end;
-  
+
 end;
 
 { TPathStartupItem }
@@ -484,6 +512,17 @@ constructor TRegistryStartupItem.Create( hk: cardinal; hks: string; subKey: stri
 begin
   FHkey := hk;
   FHkeyStr := hks;
+  FProcess64 := x64;
+  FSubkey := subKey;
+  FRunOnce := runOnce;
+end;
+
+constructor TRegistryStartupItem.Create(hk: cardinal; hks, subKey,
+  valueKey: string; x64, runOnce: boolean);
+begin
+  FHkey := hk;
+  FHkeyStr := hks;
+  FValueKey := valueKey;
   FProcess64 := x64;
   FSubkey := subKey;
   FRunOnce := runOnce;
