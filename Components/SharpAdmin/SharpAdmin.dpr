@@ -91,6 +91,8 @@ var
 begin
   Result := false;
 
+  cmd := StrAfter('-DeleteKeyValue',cmd);
+
   list := TStringList.Create;
   tokens := TStringList.Create;
   try
@@ -115,14 +117,19 @@ begin
         value := tokens[2];
         x64 := StrToBool(tokens[3]);
 
-        if hks = 'HKCU' then hk := HKEY_CURRENT_USER else hk := HKEY_LOCAL_MACHINE;
+        if trim(hks) = 'HKCU' then begin
+          hk := HKEY_CURRENT_USER;
+        end
+        else begin
+          hk := HKEY_LOCAL_MACHINE;
+        end; 
 
         // 64 bit gubbins
         regMask := 0;
         if x64 then regMask := KEY_WOW64_64KEY;
 
         // Most important open in read only mode, and 64 bit access if needed
-        if RegOpenKeyEx(hk, PChar(key), 0, KEY_ALL_ACCESS or regMask, Handle) <> ERROR_SUCCESS then
+        if RegOpenKeyEx(hk, PChar(key), 0, KEY_SET_VALUE or regMask, Handle) <> ERROR_SUCCESS then
           exit;
 
         if RegDeleteValue(Handle, pchar(value) ) = ERROR_SUCCESS then
@@ -165,7 +172,7 @@ begin
       else Writeln('Applying IniFileMapping fix... Failed');
     end else if CompareText(par,'DeleteKeyValue') = 0 then begin
 
-      if DeleteKeyValue(ParamStr(n+1)) then
+      if DeleteKeyValue(CmdLine) then
         Writeln('Deleting RunOnce Key... Success')
       else Writeln('Deleting RunOnce Key... Failed');
     end;
