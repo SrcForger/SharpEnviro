@@ -21,7 +21,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 105
     Height = 25
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnMouseUp = btnMouseUp
     Glyph32.DrawMode = dmBlend
@@ -31,13 +30,5 @@ object MainForm: TMainForm
     Layout = blGlyphLeft
     Caption = '...'
     AutoPosition = True
-  end
-  object SharpESkinManager1: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = [scButton]
-    HandleUpdates = False
-    Left = 192
-    Top = 72
   end
 end
