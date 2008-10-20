@@ -30,14 +30,13 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Menus, Math, GR32, ToolTipApi, ShellApi, CommCtrl,
-  JvSimpleXML,
+  JclSimpleXML,
+  SharpCenterApi,
   SharpApi,
   uSharpBarAPI,
   SharpEBaseControls,
-  SharpESkin,
-  SharpEScheme,
-  SharpESkinManager,
   SharpEButton,
+  uISharpBarModule,
   SharpIconUtils, ImgList, PngImageList;
 
 
@@ -50,7 +49,6 @@ type
                   end;
 
   TMainForm = class(TForm)
-    SharpESkinManager1: TSharpESkinManager;
     sb_config: TSharpEButton;
     ButtonPopup: TPopupMenu;
     Delete1: TMenuItem;
@@ -64,7 +62,6 @@ type
       Shift: TShiftState; X, Y: Integer);       
     procedure btnMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);         
-    procedure Settings1Click(Sender: TObject);
     procedure sb_configClick(Sender: TObject);
     procedure Delete1Click(Sender: TObject);
   protected
@@ -75,7 +72,6 @@ type
     FButtonSpacing : integer;
     sShowIcon    : boolean;
     FButtonList  : array of TButtonRecord;
-    Background   : TBitmap32;
     FHintWnd     : hwnd; 
     movebutton   : TSharpEButton;
     hasmoved     : boolean;
@@ -85,21 +81,17 @@ type
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
     procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;    
   public
-    ModuleID : integer;
-    BarID : integer;
-    BarWnd : hWnd;
-    procedure RefreshIcons;
+    mInterface : ISharpBarModule;
     procedure LoadSettings;
+    procedure ReAlignComponents(Broadcast : Boolean = True);
+    procedure UpdateComponentSkins;
+    procedure UpdateSize;
+    procedure RefreshIcons;
     procedure SaveSettings;
-    procedure ReAlignComponents(BroadCast : boolean);
-    procedure SetWidth(new : integer);
-    procedure UpdateBackground(new : integer = -1);
   end;
 
 
 implementation
-
-uses SettingsWnd;
 
 {$R *.dfm}
 
@@ -247,7 +239,7 @@ begin
     btn.OnMouseUp := btnMouseUp;
     btn.OnMouseDown := btnMouseDown;
     btn.OnMouseMove := btnMouseMove;
-    btn.SkinManager := SharpESkinManager1;
+    btn.SkinManager := mInterface.SkinInterface.SkinManager;
     ToolTipApi.AddToolTip(FHintWnd,self,High(FButtonList),
                           Rect(btn.left,btn.top,btn.Left + btn.Width,btn.Top + btn.Height),
                           pCaption);
@@ -286,11 +278,11 @@ end;
 
 procedure TMainForm.SaveSettings;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   n : integer;
 begin
-  XML := TJvSimpleXMl.Create(nil);
-  XML.Root.Name := 'MenuModuleSettings';
+  XML := TJclSimpleXMl.Create;
+  XML.Root.Name := 'ButtonBarModuleSettings';
   with XML.Root.Items do
   begin
     Add('Width',sWidth);
@@ -308,13 +300,20 @@ begin
            end;
     end;
   end;
-  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+  XML.SaveToFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
   XML.Free;
 end;
 
 procedure TMainForm.sb_configClick(Sender: TObject);
+var
+  cfile : String;
 begin
-  Settings1Click(self);
+  cfile := SharpApi.GetCenterDirectory + '_Modules\ButtonBar.con';
+
+  if FileExists(cfile) then
+    SharpCenterApi.CenterCommand(sccLoadSetting,
+      PChar(cfile),
+      PChar(inttostr(mInterface.BarInterface.BarID) + ':' + inttostr(mInterface.ID)));
 end;
 
 procedure TMainForm.UpdateButtons;
@@ -336,7 +335,7 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   fileloaded : boolean;
   n : integer;
 begin
@@ -347,9 +346,9 @@ begin
   sShowIcon    := True;
   FButtonSpacing := 2;
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -370,31 +369,16 @@ begin
   XML.Free;
 end;
 
-procedure TMainForm.UpdateBackground(new : integer = -1);
+procedure TMainForm.UpdateSize;
 begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
-end;
-
-procedure TMainForm.SetWidth(new : integer);
-begin
-  new := Max(new,1);
-
-  UpdateBackground(new);
-
-  Width := new;
-
   UpdateButtons;
 end;
 
-procedure TMainForm.ReAlignComponents(BroadCast : boolean);
+procedure TMainForm.ReAlignComponents(BroadCast : boolean = True);
 var
   newWidth : integer;
 begin
-  self.Caption := 'ButtonBar';
+  self.Caption := 'ButtonBar (' + inttostr(length(FButtonList)) + ')';
   if sWidth<20 then sWidth := 20;
 
   sb_config.Visible := (length(FButtonList) = 0);
@@ -405,50 +389,22 @@ begin
   end
   else newWidth := FButtonSpacing + High(FButtonList)*FButtonSpacing + length(FButtonList)*sWidth + FButtonSpacing;
 
-  self.Tag := NewWidth;
-  self.Hint := inttostr(NewWidth);
-
-  if (BroadCast) and (newWidth <> Width) then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0)
-     else UpdateButtons;
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;
+  if newWidth <> Width then
+    mInterface.BarInterface.UpdateModuleSize
+  else UpdateButtons;
 end;
 
-
-procedure TMainForm.Settings1Click(Sender: TObject);
+procedure TMainForm.UpdateComponentSkins;
 var
-  SettingsForm : TSettingsForm;
   n : integer;
 begin
-  try
-    SettingsForm := TSettingsForm.Create(application.MainForm);
-    SettingsForm.cb_labels.Checked  := sShowLabel;
-    SettingsForm.cb_icon.Checked := sShowIcon;
-    SettingsForm.tb_size.Position   := sWidth;
-    for n := 0 to High(FButtonList) do
-        with FButtonList[n] do
-             SettingsForm.AddButton(Target,Caption,Icon);
-
-    if SettingsForm.ShowModal = mrOk then
-    begin
-      sShowLabel := SettingsForm.cb_labels.Checked;
-      sWidth := SettingsForm.tb_size.Position;
-      sShowIcon := SettingsForm.cb_icon.Checked;
-
-      ClearButtons;
-      for n := 0 to SettingsForm.buttons.Items.Count - 1 do
-          with SettingsForm.buttons.Items.Item[n] do
-               AddButton(SubItems[0],SubItems[1],Caption);
-
-      if (length(FButtonList) > 0) and (sb_config.Visible) then
-        sb_config.Left := -200;
-
-      SaveSettings;
-    end;
-    ReAlignComponents(True);
-
-  finally
-    FreeAndNil(SettingsForm);
-  end;
+  sb_config.SkinManager := mInterface.SkinInterface.SkinManager;
+  for n := 0 to High(FButtonList) do
+    FButtonList[n].btn.SkinManager := mInterface.SkinInterface.SkinManager;
 end;
+
 
 procedure TMainForm.btnMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
@@ -535,22 +491,20 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   MoveButton := nil;
-  Background := TBitmap32.Create;
   DoubleBuffered := True;
   FHintWnd := ToolTipApi.RegisterToolTip(self);
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  Background.Free;
   if FHintWnd <> 0 then
      DestroyWindow(FHintWnd);
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
-  if Background <> nil then
-     Background.DrawTo(Canvas.Handle,0,0);
+  if mInterface <> nil then
+     mInterface.Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 end.

@@ -21,7 +21,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 127
     Height = 25
-    SkinManager = SharpESkinManager1
     AutoSize = True
     OnClick = sb_configClick
     Glyph32.DrawMode = dmBlend
@@ -64,14 +63,6 @@ object MainForm: TMainForm
     Layout = blGlyphLeft
     Caption = 'Click to Add Buttons'
     AutoPosition = True
-  end
-  object SharpESkinManager1: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = [scButton]
-    HandleUpdates = False
-    Left = 176
-    Top = 8
   end
   object ButtonPopup: TPopupMenu
     Images = PngImageList1
