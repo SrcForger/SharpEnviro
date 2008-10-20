@@ -32,15 +32,14 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Menus, Math, Types,
   // Custom Units
-  JvSimpleXML, GR32, GR32_PNG, JCLLocales,
+  JclSimpleXML, GR32, GR32_PNG, JCLLocales,
   // SharpE Units
-  SharpApi, uSharpBarAPI, SharpEBaseControls, SharpESkin, SharpEScheme,
-  SharpESkinManager, SharpEButton, uSharpEMenu, uSharpEMenuWnd,
+  SharpApi, uSharpBarAPI, SharpEBaseControls, SharpEScheme,
+  SharpEButton, uSharpEMenu, uSharpEMenuWnd, uISharpBarModule,
   uSharpEMenuSettings, uSharpEMenuItem;
 
 type
   TMainForm = class(TForm)
-    SkinManager: TSharpESkinManager;
     btn: TSharpEButton;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -56,14 +55,11 @@ type
     FButtonIcon : TBitmap32;
     FMenuIcon   : TBitmap32;
   public
-    ModuleID : integer;
-    BarID : integer;
-    BarWnd : hWnd;
-    Background : TBitmap32;
+    mInterface : ISharpBarModule;
     procedure LoadSettings;
-    procedure ReAlignComponents(BroadCast : boolean);
-    procedure SetWidth(new : integer);
-    procedure UpdateBackground(new : integer = -1);
+    procedure ReAlignComponents(Broadcast : Boolean = True);
+    procedure UpdateComponentSkins;
+    procedure UpdateSize;
     procedure UpdateCurrentLayout;
   end;
 
@@ -74,14 +70,14 @@ implementation
 
 procedure TMainForm.LoadSettings;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   fileloaded : boolean;
 begin
   sShowIcon := True;
   sThreeLetterCode := False;
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -95,28 +91,12 @@ begin
   XML.Free;
 end;
 
-procedure TMainForm.UpdateBackground(new : integer = -1);
+procedure TMainForm.UpdateSize;
 begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
-end;
-
-procedure TMainForm.SetWidth(new : integer);
-begin
-  new := Max(new,1);
-
-  // Update the Background Bitmap!
-  UpdateBackground(new);
-
-  // Background is updated, now resize the form
-  Width := new;
   btn.Width := max(1,Width - 4);
 end;
 
-procedure TMainForm.ReAlignComponents(BroadCast : boolean);
+procedure TMainForm.ReAlignComponents(BroadCast : boolean = True);
 var
   newWidth : integer;
 begin
@@ -126,11 +106,11 @@ begin
 
   btn.Left := 2;
 
-  self.Tag := NewWidth;
-  self.Hint := inttostr(NewWidth);
-
-  // Send a message to the bar that the module is requesting a width update
-  if (BroadCast) and (newWidth <> Width) then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;
+  if newWidth <> Width then
+    mInterface.BarInterface.UpdateModuleSize
+  else UpdateSize;
 end;
 
 procedure TMainForm.OnMenuItemClick(pItem : TSharpEMenuItem; var CanClose : boolean);
@@ -170,7 +150,7 @@ begin
     ms.LoadFromXML;
     ms.CacheIcons := False;
 
-    mn := TSharpEMenu.Create(SkinManager,ms);
+    mn := TSharpEMenu.Create(mInterface.SkinInterface.SkinManager,ms);
     ms.Free;
 
     List := TJclKeyboardLayoutList.Create;
@@ -196,15 +176,15 @@ begin
     wnd.FreeMenu := True; // menu will free itself when closed
 
     p := ClientToScreen(Point(self.btn.Left + self.btn.Width div 2, self.Height + self.Top));
-    p.x := p.x + SkinManager.Skin.MenuSkin.SkinDim.XAsInt - mn.Background.Width div 2;
+    p.x := p.x + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.XAsInt - mn.Background.Width div 2;
     if p.x < Monitor.Left then
        p.x := Monitor.Left;
     if p.x + mn.Background.Width  > Monitor.Left + Monitor.Width then
        p.x := Monitor.Left + Monitor.Width - mn.Background.Width;
     wnd.Left := p.x;
     if p.Y < Monitor.Top + Monitor.Height div 2 then
-       wnd.Top := p.y + SkinManager.Skin.MenuSkin.SkinDim.YAsInt
-       else wnd.Top := p.y - Top - Height - mn.Background.Height - SkinManager.Skin.MenuSkin.SkinDim.YAsInt;
+       wnd.Top := p.y + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt
+       else wnd.Top := p.y - Top - Height - mn.Background.Height - mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt;
     wnd.Show;
   end;
 end;
@@ -215,7 +195,6 @@ var
   TempBmp : TBitmap32;
   b : boolean;
 begin
-  Background := TBitmap32.Create;
   DoubleBuffered := True;
 
   FButtonIcon := TBitmap32.Create;
@@ -256,7 +235,6 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  Background.Free;
   FButtonIcon.Free;
   FMenuIcon.Free;
 
@@ -266,12 +244,17 @@ end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
-  Background.DrawTo(Canvas.Handle,0,0);
+  mInterface.Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
 begin
-  UpdateCurrentLayout
+  UpdateCurrentLayout;
+end;
+
+procedure TMainForm.UpdateComponentSkins;
+begin
+  btn.SkinManager := mInterface.SkinInterface.SkinManager;
 end;
 
 procedure TMainForm.UpdateCurrentLayout;

@@ -22,7 +22,6 @@ object MainForm: TMainForm
     Top = 0
     Width = 75
     Height = 25
-    SkinManager = SkinManager
     AutoSize = True
     OnMouseUp = btnMouseUp
     Glyph32.DrawMode = dmBlend
@@ -30,13 +29,5 @@ object MainForm: TMainForm
     Glyph32.ResamplerClassName = 'TNearestResampler'
     Layout = blGlyphLeft
     AutoPosition = True
-  end
-  object SkinManager: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = [scButton, scBar, scMenu, scMenuItem]
-    HandleUpdates = False
-    Left = 232
-    Top = 32
   end
 end
