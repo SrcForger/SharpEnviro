@@ -841,11 +841,25 @@ var
   DIcon : boolean;
   Tpos : TPoint;
   DText : boolean;
-  drawpart : TObject;
+  drawpart : TSkinPart;
+  drawpartEx : TSkinPartEx;
   menuitemskin : TSharpEMenuItemSkin;
   w,h : integer;
   ST : TSkinText;
   textrect,iconrect : TRect;
+
+procedure AssignDrawPart(part : TSkinPartEx); overload;
+begin
+  drawpart := nil;
+  drawpartEx := part;
+end;
+
+procedure AssignDrawPart(part : TSkinPart); overload;
+begin
+  drawpartEx := nil;
+  drawpart := part;
+end;
+
 begin
   if FSkinManager = nil then exit;
   if Dst = nil then exit;
@@ -873,19 +887,19 @@ begin
   try
     h := 8;
     case item.ItemType of
-      mtLabel     : drawpart := menuitemskin.LabelItem;
-      mtSeparator : drawpart := menuitemskin.Separator;
+      mtLabel     : AssignDrawPart(menuitemskin.LabelItem);
+      mtSeparator : AssignDrawPart(menuitemskin.Separator);
       mtSubMenu   : begin
                       case state of
-                        msHover,msDown : drawpart := menuitemskin.HoverSubItem;
-                        else             drawpart := menuitemskin.NormalSubItem;
+                        msHover,msDown : AssignDrawPart(menuitemskin.HoverSubItem);
+                        else             AssignDrawPart(menuitemskin.NormalSubItem);
                       end;
                     end;
       else          begin
                       case state of
-                        msHover : drawpart := menuitemskin.HoverItem;
-                        msDown  : drawpart := menuitemskin.DownItem;
-                        else      drawpart := menuitemskin.NormalItem;
+                        msHover : AssignDrawPart(menuitemskin.HoverItem);
+                        msDown  : AssignDrawPart(menuitemskin.DownItem);
+                        else      AssignDrawPart(menuitemskin.NormalItem);
                       end;
                     end;
     end;
@@ -893,48 +907,49 @@ begin
     text.Clear(color32(0,0,0,0));
     dicon := False;
     dtext := False;
-    ST := CreateThemedSkinText(TSkinPart(drawpart).SkinText);
     textrect := Rect(0,0,0,0);
-    if (drawpart is TSkinPartEx) then
+    if drawpartEx <> nil then
+    with drawpartEx do
     begin
-      with drawpart as TSkinPartEx do
+      ST := CreateThemedSkinText(drawpartEx.SkinText);
+      h := SkinDim.HeightAsInt;
+      if (item.Icon <> nil) and (SkinIcon.DrawIcon) and (FSettings.UseIcons) then
+        iconrect := Rect(0,0,SkinIcon.Size.XAsInt,SkinIcon.Size.YAsInt)
+      else iconrect := Rect(0,0,0,0);
+      if (length(item.Caption)>0) and (SkinText.DrawText) then
       begin
-        h := SkinDim.HeightAsInt;
-        if (item.Icon <> nil) and (SkinIcon.DrawIcon) and (FSettings.UseIcons) then
-          iconrect := Rect(0,0,SkinIcon.Size.XAsInt,SkinIcon.Size.YAsInt)
-        else iconrect := Rect(0,0,0,0);
-        if (length(item.Caption)>0) and (SkinText.DrawText) then
-        begin
-          text.SetSize(w,h);
-          text.clear(color32(0,0,0,0));
-          ST.AssignFontTo(text.Font,FSkinManager.Scheme);
-          Tpos := ST.GetXY(Rect(0, 0, text.TextWidth(item.Caption), text.TextHeight(item.Caption)),
-                                 Rect(0, 0, w, h),iconrect);
-          ST.RenderTo(text,Tpos.x,Tpos.y,item.Caption,FSkinManager.Scheme);
-          textrect := rect(TPos.X,TPos.Y,TPos.X + text.TextWidth(item.Caption),TPos.Y + text.TextHeight(item.Caption));
-          dtext := true;
-        end;
-        if (item.Icon <> nil) and (SkinIcon.DrawIcon) and (FSettings.UseIcons) then
-        begin
-          IWidth := SkinIcon.Size.XAsInt;
-          IHeight := SkinIcon.Size.YAsInt;
-          if (IWidth <> Icon.Width) or (IHeight <> Icon.Height) then
-          begin
-            icon.setsize(IWidth,IHeight);
-            icon.Clear(color32(0,0,0,0));
-            item.Icon.Icon.DrawTo(icon,Rect(0,0,icon.width,icon.height));
-          end else icon.assign(item.Icon.Icon);
-          dicon := true;
-          Ipos := SkinIcon.GetXY(textrect,Rect(0,0,w,h));
-        end;
+        text.SetSize(w,h);
+        text.clear(color32(0,0,0,0));
+        ST.AssignFontTo(text.Font,FSkinManager.Scheme);
+        Tpos := ST.GetXY(Rect(0, 0, text.TextWidth(item.Caption), text.TextHeight(item.Caption)),
+                         Rect(0, 0, w, h),iconrect);
+        ST.RenderTo(text,Tpos.x,Tpos.y,item.Caption,FSkinManager.Scheme);
+        textrect := rect(TPos.X,TPos.Y,TPos.X + text.TextWidth(item.Caption),TPos.Y + text.TextHeight(item.Caption));
+        dtext := true;
       end;
+      if (item.Icon <> nil) and (SkinIcon.DrawIcon) and (FSettings.UseIcons) then
+      begin
+        IWidth := SkinIcon.Size.XAsInt;
+        IHeight := SkinIcon.Size.YAsInt;
+        if (IWidth <> Icon.Width) or (IHeight <> Icon.Height) then
+        begin
+          icon.setsize(IWidth,IHeight);
+          icon.Clear(color32(0,0,0,0));
+          item.Icon.Icon.DrawTo(icon,Rect(0,0,icon.width,icon.height));
+        end else icon.assign(item.Icon.Icon);
+        dicon := true;
+        Ipos := SkinIcon.GetXY(textrect,Rect(0,0,w,h));
+      end;
+      ST.Free;
     end
-    else if (drawpart is TSkinPart) then
-            h := TSkinPart(drawpart).SkinDim.HeightAsInt;
-    ST.Free;
+    else if (drawpart <> nil) then
+      h := drawpart.SkinDim.HeightAsInt;
     temp.SetSize(w,h);
     temp.Clear(color32(0,0,0,0));
-    TSkinPart(drawpart).draw(temp,FSkinManager.Scheme);
+    if drawpartex <> nil then
+      drawpartex.draw(temp,FSkinManager.Scheme)
+    else if drawpart <> nil then
+      drawpart.draw(temp,FSkinManager.Scheme);
     temp.DrawTo(dst,px,py);
     if dicon then
        icon.DrawTo(dst,px+IPos.x,py+IPos.y);
