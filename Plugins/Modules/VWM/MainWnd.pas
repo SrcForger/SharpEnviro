@@ -34,7 +34,9 @@ uses
   // Custom Units
   GR32, VWMFunctions,
   // SharpE API Units
-  SharpApi, uSharpBarAPI, SharpThemeApi;
+  SharpApi, SharpThemeApi,
+  // Interface Units
+  uISharpBarModule;
 
 type
   TMainForm = class(TForm)
@@ -65,33 +67,20 @@ type
     sDisplayVWMNumbers : boolean;
     procedure WMShellMessage(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
   public
-    // visual components
-
     // vars and functions
-    ModuleID : integer;
-    BarID : integer;
-    BarWnd : hWnd;
-    Background : TBitmap32;
     VWM : TBitmap32;
     VWMWidth,VWMHeight : integer;
     VWMCount : integer;
     VWMIndex : integer;
+    mInterface : ISharpBarModule;
     procedure LoadSettings;
-    procedure ReAlignComponents(BroadCast : boolean);
-    procedure SetWidth(new : integer);
-    procedure UpdateBackground(new : integer = -1);
+    procedure ReAlignComponents(BroadCast : boolean = True);
+    procedure UpdateSize;
     procedure DrawVWMToForm;
     procedure DrawVWM;
     procedure UpdateVWMSettings;
     procedure UpdateColors;
   end;
-
-// Skin Manager!
-// The SkinManager Component is the most important component of the Window
-// It gives access to the current skin and scheme.
-// If you are using any SharpE Skin Component then just drop it onto the Form
-// and change it's SkinManager property to the SkinManager component
-
 
 implementation
 
@@ -125,7 +114,7 @@ begin
 
   XML := TJclSimpleXML.Create;
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -148,15 +137,6 @@ begin
     
   UpdateColors;
   XML.Free;
-end;
-
-procedure TMainForm.UpdateBackground(new : integer = -1);
-begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
 end;
 
 procedure TMainForm.UpdateColors;
@@ -195,18 +175,8 @@ begin
   end;
 end;
 
-procedure TMainForm.SetWidth(new : integer);
+procedure TMainForm.UpdateSize;
 begin
-  // The Module is receiving it's new size from the SharpBar!
-  // Make sure the new width is not negative or zero
-  new := Max(new,1);
-
-  // Update the Background Bitmap!
-  UpdateBackground(new);
-
-  // Background is updated, now resize the form
-  Width := new;
-
   UpdateVWMSettings;
   DrawVWM;
   DrawVWMToForm;
@@ -229,11 +199,10 @@ begin
   newWidth := (VWMWidth + 2) * VWMCount + Max(0,(VWMCount - 1)) * sVWMSpacing;
   DrawVWM;
 
-  self.Tag := NewWidth;
-  self.Hint := inttostr(NewWidth);
-
-  // Send a message to the bar that the module is requesting a width update
-  if (BroadCast) and (newWidth <> Width) then SendMessage(self.ParentWindow,WM_UPDATEBARWIDTH,0,0);
+  mInterface.MinSize := NewWidth;
+  mInterface.MaxSize := NewWidth;
+  if newWidth <> Width then
+    mInterface.BarInterface.UpdateModuleSize;
 end;
 
 procedure TMainForm.DrawVWM;
@@ -385,7 +354,7 @@ var
   tmp : TBitmap32;
 begin
   tmp := TBitmap32.Create;
-  tmp.assign(Background);
+  tmp.assign(mInterface.Background);
   VWM.DrawTo(tmp);
   tmp.DrawTo(Canvas.Handle,0,0);
   tmp.Free;
@@ -423,7 +392,6 @@ begin
   DoubleBuffered := True;
 
   // Create all clases
-  Background := TBitmap32.Create;
   VWM := TBitmap32.Create;
   VWM.SetSize(0,0);
   VWM.DrawMode := dmBlend;
@@ -434,7 +402,6 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  Background.Free;
   VWM.Free;
 
   SharpApi.UnRegisterShellHookReceiver(Handle);
