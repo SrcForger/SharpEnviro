@@ -30,11 +30,11 @@ interface
 uses
   Types, Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, JclSimpleXML, SharpApi, Menus,
-  Math, Contnrs, SharpESkinManager, SharpETaskItem, SharpESkin,
+  Math, Contnrs, SharpETaskItem, SharpESkin,
   SharpEBaseControls, SharpECustomSkinSettings, uTaskManager, uTaskItem,
   DateUtils, GR32, GR32_PNG, SharpIconUtils, SharpEButton, JvComponentBase,
   JvDragDrop, VWMFunctions,Commctrl,TaskFilterList,SWCmdList, SharpTypes,
-  MouseTimer;
+  uISharpBarModule;
 
 
 type
@@ -50,7 +50,6 @@ type
   TMainForm = class(TForm)
     MenuPopup: TPopupMenu;
     Settings1: TMenuItem;
-    SystemSkinManager: TSharpESkinManager;
     ses_maxall: TSharpEButton;
     ses_minall: TSharpEButton;
     DDHandler: TJvDragDrop;
@@ -86,7 +85,6 @@ type
     FSpecialButtonWidth : integer;
     FDminA,FDmaxA : TBitmap32; // default min/max all images
     FCustomSkinSettings: TSharpECustomSkinSettings;
-    Background : TBitmap32;
     FTipWnd : hwnd;
     FLastDragItem : TSharpETaskItem; // Only a pointer, don't free it...
     FLastDragMinimized : Boolean;
@@ -98,19 +96,17 @@ type
     procedure WMCopyData(var msg : TMessage); message WM_COPYDATA;
     procedure WMTaskVWMChange(var msg : TMessage); message WM_TASKVWMCHANGE;
   public
-    MTimer : TMouseTimer;
     TM: TTaskManager;
     IList: TObjectList;
-    ModuleID : integer;
-    BarID : integer;
-    BarWnd : hWnd;
+    mInterface : ISharpBarModule;
     CurrentVWM : integer;
-    procedure SetSize(NewWidth : integer);
+    procedure UpdateSize;
+    procedure UpdateComponentSkins;
     procedure InitHook;
     procedure CalculateItemWidth(ItemCount : integer);
     procedure AlignTaskComponents;
     procedure LoadSettings;
-    procedure ReAlignComponents(BroadCast : boolean);
+    procedure ReAlignComponents(BroadCast : boolean = True);
     procedure NewTask(pItem : TTaskItem; Index : integer);
     procedure RemoveTask(pItem : TTaskItem; Index : integer);
     procedure UpdateTask(pItem : TTaskItem; Index : integer);
@@ -128,11 +124,10 @@ type
     function CheckFilter(pItem : TTaskItem) : boolean;
     procedure CheckFilterAll;
     procedure LoadFilterSettingsFromXML;
-    constructor CreateParented(ParentWindow : hwnd; pID,pBarID : integer; pBarWnd : Hwnd; pHeight : integer);
+    constructor CreateParented(ParentWindow : hwnd);
     procedure AlignSpecialButtons;
     procedure UpdateCustomSettings;
     procedure RepaintComponents;
-    procedure UpdateBackground(new : integer = -1);
 
     procedure DebugOutPutInfo(msg : String);
     procedure DebugOutPutError(msg : String);
@@ -141,8 +136,8 @@ type
 
 implementation
 
-uses uSharpBarAPI,
-     ToolTipApi;
+uses
+  ToolTipApi;
 
 var
   SysMenuHandle : hwnd;
@@ -162,15 +157,6 @@ begin
   SharpApi.SendDebugMessageEx('Module|Taskbar',PChar(msg),clMaroon,DMT_ERROR);
 end;
 
-procedure TMainForm.UpdateBackground(new : integer = -1);
-begin
-  if (new <> -1) then
-     Background.SetSize(new,Height)
-     else if (Width <> Background.Width) then
-              Background.Setsize(Width,Height);
-  uSharpBarAPI.PaintBarBackGround(BarWnd,Background,self,Background.Width);
-end;
-
 function PointInRect(P : TPoint; Rect : TRect) : boolean;
 begin
   if (P.X>=Rect.Left) and (P.X<=Rect.Right)
@@ -186,6 +172,17 @@ begin
       TSharpETaskItem(IList.Items[n]).Repaint;
   ses_minall.Repaint;
   ses_maxall.Repaint;
+end;
+
+procedure TMainForm.UpdateComponentSkins;
+var
+  n : integer;
+begin
+  ses_maxall.SkinManager := mInterface.SkinInterface.SkinManager;
+  ses_minall.SkinManager := mInterface.SkinInterface.SkinManager;
+
+  for n := 0 to IList.Count - 1 do
+    TSharpETaskItem(IList.Items[n]).SkinManager := mInterface.SkinInterface.SkinManager;
 end;
 
 procedure TMainForm.UpdateCustomSettings;
@@ -236,17 +233,13 @@ begin
   end;
 end;
 
-constructor TMainForm.CreateParented(ParentWindow : hwnd; pID,pBarID : integer; pBarWnd : Hwnd; pHeight : integer);
+constructor TMainForm.CreateParented(ParentWindow : hwnd);
 begin
   DebugOutPutInfo('TMainForm.CreateParented (constructor)');
   Inherited CreateParented(ParentWindow);
   sIFilters := TFilterItemList.Create;
   sEFilters := TFilterItemList.Create;
   sFilters := TFilterItemList.Create;
-  ModuleID := pID;
-  BarID := pBarID;
-  BarWnd := pBarWnd;
-  Height := pHeight;
 end;
 
 procedure TMainForm.WMTaskVWMChange(var msg : TMessage);
@@ -306,12 +299,12 @@ end;
 procedure TMainForm.GetSpacing;
 begin
   DebugOutPutInfo('TMainForm.GetSpacing (Procedure)');
-  if SystemSkinManager.Skin.TaskItemSkin = nil then exit;
+  if mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin = nil then exit;
   try
     case sState of
-      tisCompact: sSpacing := SystemSkinManager.Skin.TaskItemSkin.Compact.Spacing;
-      tisMini: sSpacing := SystemSkinManager.Skin.TaskItemSkin.Mini.Spacing;
-    else sSpacing := SystemSkinManager.Skin.TaskItemSkin.Full.Spacing;
+      tisCompact: sSpacing := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Compact.Spacing;
+      tisMini: sSpacing := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Mini.Spacing;
+    else sSpacing := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.Spacing;
     end;
   except
     sSpacing := 2;
@@ -319,9 +312,9 @@ begin
 
   try
     case sState of
-      tisCompact: sMaxWidth := SystemSkinManager.Skin.TaskItemSkin.Compact.SkinDim.WidthAsInt;
-      tisMini: sMaxWidth := SystemSkinManager.Skin.TaskItemSkin.Mini.SkinDim.WidthAsInt;
-      else sMaxWidth := SystemSkinManager.Skin.TaskItemSkin.Full.SkinDim.WidthAsInt;
+      tisCompact: sMaxWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Compact.SkinDim.WidthAsInt;
+      tisMini: sMaxWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Mini.SkinDim.WidthAsInt;
+      else sMaxWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.SkinDim.WidthAsInt;
     end;
   except
     sMaxWidth := 128;
@@ -329,9 +322,9 @@ begin
 
   try
     case sState of
-      tisCompact: sAutoHeight := SystemSkinManager.Skin.TaskItemSkin.Compact.SkinDim.HeightAsInt;
-      tisMini   : sAutoHeight := SystemSkinManager.Skin.TaskItemSkin.Mini.SkinDim.HeightAsInt;
-      else sAutoHeight := SystemSkinManager.Skin.TaskItemSkin.Full.SkinDim.HeightAsInt;
+      tisCompact: sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Compact.SkinDim.HeightAsInt;
+      tisMini   : sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Mini.SkinDim.HeightAsInt;
+      else sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.SkinDim.HeightAsInt;
     end;
   except
     sAutoHeight := Height - 2;
@@ -500,7 +493,6 @@ var
   CursorPos,CPos : TPoint;
   n : integer;
   item : TSharpETaskItem;
-  i : integer;
   item1,item2 : TTaskItem;
 begin
   if (FMoveItem = nil) then
@@ -582,7 +574,7 @@ begin
   XML := TJclSimpleXML.Create;
   SList := TSTringList.Create;
   try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(BarID, ModuleID));
+    XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
   except
     fileloaded := False;
@@ -670,23 +662,19 @@ begin
   AlignTaskComponents;
 end;
 
-procedure TMainForm.SetSize(NewWidth : integer);
-var
-  new : integer;
+procedure TMainForm.UpdateSize;
 begin
-  DebugOutPutInfo('TMainForm.SetSize (Procedure)');
-  new := Max(NewWidth,1);
-  UpdateBackground(new);
-  Width := new;
+  DebugOutPutInfo('TMainForm.UpdateSize (Procedure)');
+
   if IList.Count <= 0 then
     exit;
-    
+
   CalculateItemWidth(IList.Count);
   AlignTaskComponents;
   Repaint;
 end;
 
-procedure TMainForm.ReAlignComponents(BroadCast : boolean);
+procedure TMainForm.ReAlignComponents(BroadCast : boolean = True);
 var
   newWidth : integer;
 begin
@@ -694,9 +682,10 @@ begin
   GetSpacing;
   if IList.Count <=0 then
   begin
-    Tag := 1;
-    Hint := '1';
-    if BroadCast then SendMessage(BarWnd,WM_UPDATEBARWIDTH,0,0);
+    mInterface.MinSize := 1;
+    mInterface.MaxSize := 1;
+    if BroadCast then
+      mInterface.BarInterface.UpdateModuleSize;
     exit;
   end;
 
@@ -706,15 +695,12 @@ begin
   ToolTipApi.EnableToolTip(FTipWnd);
 //  ToolTipApi.DisableToolTip(FTipWnd);
 
-  if sState = tisMini then Tag := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1)
-     else Tag := Max(FSpecialButtonWidth + IList.Count * 16 + (IList.Count - 1) * sSpacing,1);
-     
-  Hint := InttoStr(NewWidth);
-  if Width <> NewWidth then
-  begin
-    //AlignTaskComponents;
-    if BroadCast then SendMessage(BarWnd,WM_UPDATEBARWIDTH,0,0);
-  end else AlignTaskComponents;
+  if sState = tisMini then mInterface.MinSize := Max(FSpecialButtonWidth + IList.Count * sMaxWidth + (IList.Count - 1) * sSpacing,1)
+     else mInterface.MinSize := Max(FSpecialButtonWidth + IList.Count * 16 + (IList.Count - 1) * sSpacing,1);
+
+  mInterface.MaxSize := NewWidth;
+  if (newWidth <> Width) and BroadCast then
+    mInterface.BarInterface.UpdateModuleSize;
 end;
 
 
@@ -879,7 +865,7 @@ begin
         fteProcess: if CompareText(pItem.FileName,sIFilters[n].FileName) = 0 then
               nm := True;
         fteCurrentMonitor: begin
-             Mon := Screen.MonitorFromWindow(BarWnd);
+             Mon := Screen.MonitorFromWindow(mInterface.BarInterface.BarWnd);
              GetWindowRect(pItem.Handle,R);
              if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
                 or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
@@ -914,7 +900,7 @@ begin
         fteProcess: if CompareText(pItem.FileName,sEFilters[n].FileName) = 0 then
               result := False;
         fteCurrentMonitor: begin
-             Mon := Screen.MonitorFromWindow(BarWnd);
+             Mon := Screen.MonitorFromWindow(mInterface.BarInterface.BarWnd);
              GetWindowRect(pItem.Handle,R);
              if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
                 or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
@@ -1018,7 +1004,7 @@ begin
   CalculateItemWidth(IList.Count + 1);
 
   IList.Add(pTaskItem);
-  pTaskItem.SkinManager := SystemSkinManager;
+  pTaskItem.SkinManager := mInterface.SkinInterface.SkinManager;
   pTaskItem.Width := sCurrentWidth;
   pTaskItem.Parent := self;
   pTaskItem.Left := Width;
@@ -1040,7 +1026,11 @@ begin
                              pTaskItem.Left + pTaskItem.Width,
                              pTaskItem.Top + pTaskItem.Height),
                              pTaskItem.Caption);
-  if not FLocked then ReAlignComponents(True);
+  if not FLocked then
+  begin
+    ReAlignComponents(True);
+    AlignTaskComponents;
+  end;
 end;
 
 procedure TMainForm.TaskExchange(pItem1,pItem2 : TTaskItem; n,i : integer);
@@ -1077,7 +1067,6 @@ begin
   DebugOutPutInfo('TMainForm.RemoveTask (Procedure)');
   if pItem = nil then exit;
 
-  MTimer.LastControl := nil;
   for n := IList.Count - 1 downto 0 do
     if TSharpETaskItem(IList.Items[n]).Handle = pItem.Handle then
     begin
@@ -1087,7 +1076,11 @@ begin
       IList.Delete(n);
     end;
   CalculateItemWidth(IList.Count);
-  if not FLocked then ReAlignComponents(True);
+  if not FLocked then
+  begin
+    ReAlignComponents(True);
+    AlignTaskComponents;
+  end;
 end;
 
 procedure TMainForm.UpdateTask(pItem : TTaskItem; Index : integer);
@@ -1112,6 +1105,8 @@ begin
   UpdateIcon(pTaskItem,pItem);
   pTaskItem.Caption := pItem.Caption;
   ToolTipApi.UpdateToolTipText(FTipWnd,Self,pTaskItem.Handle,pTaskItem.Caption);
+
+  AlignTaskComponents;
 end;
 
 procedure TMainForm.SharpETaskItemClick(Sender: TObject);
@@ -1191,8 +1186,6 @@ begin
   FCustomSkinSettings := TSharpECustomSkinSettings.Create;
   DoubleBuffered := True;
 
-  Background := TBitmap32.Create;
-
   FDminA := TBitmap32.Create;
   FDmaxA := TBitmap32.Create;
 
@@ -1215,12 +1208,8 @@ begin
   TM.OnFlashTask    := FlashTask;
   TM.OnTaskExchange := TaskExChange;
 
-  LoadSettings;
-
   FLocked := True;
-  //EnumWindows(@EnumWindowsProc, 0);
   FLocked := False;
-  RealignComponents(False);
 end;
 
 
@@ -1237,7 +1226,6 @@ begin
   TM.Free;
   IList.Clear;
   IList.Free;
-  FreeAndNil(Background);
   UnRegisterShellHookReceiver(Handle);
   sIFilters.Free;
   sEFilters.Free;
@@ -1286,7 +1274,7 @@ end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
 begin
-  Background.DrawTo(Canvas.Handle,0,0);
+  mInterface.Background.DrawTo(Canvas.Handle,0,0);
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);

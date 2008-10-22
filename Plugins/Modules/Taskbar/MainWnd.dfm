@@ -25,7 +25,6 @@ object MainForm: TMainForm
     Hint = 'Restory all Windows'
     ParentShowHint = False
     ShowHint = False
-    SkinManager = SystemSkinManager
     AutoSize = True
     OnClick = ses_maxallClick
     Glyph32.DrawMode = dmBlend
@@ -76,7 +75,6 @@ object MainForm: TMainForm
     Hint = 'Minimize all Windows'
     ParentShowHint = False
     ShowHint = False
-    SkinManager = SystemSkinManager
     AutoSize = True
     OnClick = ses_minallClick
     Glyph32.DrawMode = dmBlend
@@ -126,22 +124,14 @@ object MainForm: TMainForm
       Caption = 'Settings'
     end
   end
-  object SystemSkinManager: TSharpESkinManager
-    SkinSource = ssSystem
-    SchemeSource = ssSystem
-    ComponentSkins = [scButton, scTaskItem]
-    HandleUpdates = False
-    Left = 176
-    Top = 56
-  end
   object DDHandler: TJvDragDrop
     DropTarget = Owner
-    Left = 144
+    Left = 176
     Top = 56
   end
   object DropTarget: TJvDropTarget
     OnDragOver = DropTargetDragOver
-    Left = 112
+    Left = 144
     Top = 56
   end
   object Timer1: TTimer
