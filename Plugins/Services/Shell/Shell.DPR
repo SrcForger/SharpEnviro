@@ -579,6 +579,7 @@ begin
   DeskAreaManager := TDeskAreaManager.Create;
   DeskAreaManager.LoadSettings;
   TaskManager := TTaskManager.Create;
+  TaskManager.ListMode := True;
   TaskManager.Enabled := True;
   TaskManager.InitList;
 
@@ -1225,6 +1226,7 @@ var
   Index : integer;
   ABItem : TAppBarItem;
   r : Cardinal;
+  MonCount : integer;
 begin
   setlength(BR,0);
   for n := 0 to SharpApi.GetSharpBarCount - 1 do
@@ -1232,11 +1234,22 @@ begin
     setlength(BR,length(BR)+1);
     BR[High(BR)] := SharpApi.GetSharpBarArea(n);
   end;
-  for n := 0 to Screen.MonitorCount - 1 do
+
+  try
+    MonCount := Screen.MonitorCount;
+  except
+    exit;
+  end;
+
+  for n := 0 to MonCount - 1 do
   begin
-    if Screen.Monitors[n] = Screen.PrimaryMonitor then
-      MonID := -100
-      else MonID := Screen.Monitors[n].MonitorNum;
+    try
+      if Screen.Monitors[n] = Screen.PrimaryMonitor then
+        MonID := -100
+        else MonID := Screen.Monitors[n].MonitorNum;
+    except
+      exit;
+    end;
 
     Index := -1;
     for i := 0 to High(FMonIDList) do
@@ -1246,7 +1259,12 @@ begin
         break;
       end;
 
-    Area := Screen.Monitors[n].BoundsRect;
+    try
+      Area := Screen.Monitors[n].BoundsRect;
+    except
+      exit;
+    end;
+    
     if Index <> -1 then
       am := FAutoModeList[Index]
       else am := True;
@@ -1254,15 +1272,19 @@ begin
     begin
       for i := 0 to High(BR) do
       begin
-        if IsWindowVisible(BR[i].wnd) then
-           if PointInRect(Point(BR[i].R.Left + (BR[i].R.Right - BR[i].R.Left) div 2,
-                                BR[i].R.Top + (BR[i].R.Bottom - BR[i].R.Top) div 2),
-                          Screen.Monitors[n].BoundsRect) then
-           begin
-             if BR[i].R.Top < Screen.Monitors[n].Top + Screen.Monitors[n].Height div 2 then
-                Area.Top := Max(Area.Top,BR[i].R.Bottom)
-                else Area.Bottom := Min(Area.Bottom,BR[i].R.Top);
-           end;
+        try
+          if IsWindowVisible(BR[i].wnd) then
+             if PointInRect(Point(BR[i].R.Left + (BR[i].R.Right - BR[i].R.Left) div 2,
+                                  BR[i].R.Top + (BR[i].R.Bottom - BR[i].R.Top) div 2),
+                            Screen.Monitors[n].BoundsRect) then
+             begin
+               if BR[i].R.Top < Screen.Monitors[n].Top + Screen.Monitors[n].Height div 2 then
+                  Area.Top := Max(Area.Top,BR[i].R.Bottom)
+                  else Area.Bottom := Min(Area.Bottom,BR[i].R.Top);
+             end;
+        except
+          exit;
+        end;
       end;
     end;
 
@@ -1281,14 +1303,18 @@ begin
       begin
         ABItem := TAppBarItem(TrayManager.AppBarList.Items[i]);
         if not ABItem.AutoHideBar then
-          if PointInRect(Point(ABItem.Data.abd.rc.Left + (ABItem.Data.abd.rc.Right - ABItem.Data.abd.rc.Left) div 2,
-                               ABItem.Data.abd.rc.Top + (ABItem.Data.abd.rc.Bottom - ABItem.Data.abd.rc.Top) div 2),
-                         Screen.Monitors[n].BoundsRect) then
-          begin
-            if ((ABItem.Data.abd.uEdge = ABE_RIGHT) and (Area.Right > ABItem.Data.abd.rc.Left)) then
-              Area.Right := ABItem.Data.abd.rc.Left
-            else if ((ABItem.Data.abd.uEdge = ABE_LEFT) and (Area.Left < ABItem.Data.abd.rc.Right)) then
-              Area.Left := ABItem.Data.abd.rc.Right
+          try
+            if PointInRect(Point(ABItem.Data.abd.rc.Left + (ABItem.Data.abd.rc.Right - ABItem.Data.abd.rc.Left) div 2,
+                                 ABItem.Data.abd.rc.Top + (ABItem.Data.abd.rc.Bottom - ABItem.Data.abd.rc.Top) div 2),
+                           Screen.Monitors[n].BoundsRect) then
+            begin
+              if ((ABItem.Data.abd.uEdge = ABE_RIGHT) and (Area.Right > ABItem.Data.abd.rc.Left)) then
+                Area.Right := ABItem.Data.abd.rc.Left
+              else if ((ABItem.Data.abd.uEdge = ABE_LEFT) and (Area.Left < ABItem.Data.abd.rc.Right)) then
+                Area.Left := ABItem.Data.abd.rc.Right
+            end;
+          except
+            exit;
           end;
       end;
 
@@ -1302,16 +1328,20 @@ begin
     end;
 
     k := 0;
-    if (Area.Left <> Screen.Monitors[n].WorkareaRect.Left) or
-       (Area.Right <> Screen.Monitors[n].WorkareaRect.Right) or
-       (Area.Top <> Screen.Monitors[n].WorkareaRect.Top) or
-       (Area.Bottom <> Screen.Monitors[n].WorkareaRect.Bottom) then
-    begin
-      SystemParametersInfo(SPI_SETWORKAREA, k, @Area, SPIF_UPDATEINIFILE);
-//      SharpEBroadCast(WM_SETTINGCHANGE,SPI_SETWORKAREA, 0)
-//      SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0);
-      SendMessageTimeOut(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0,SMTO_ABORTIFHUNG,20,r);
-    end
+    try
+      if (Area.Left <> Screen.Monitors[n].WorkareaRect.Left) or
+         (Area.Right <> Screen.Monitors[n].WorkareaRect.Right) or
+         (Area.Top <> Screen.Monitors[n].WorkareaRect.Top) or
+         (Area.Bottom <> Screen.Monitors[n].WorkareaRect.Bottom) then
+      begin
+        SystemParametersInfo(SPI_SETWORKAREA, k, @Area, SPIF_UPDATEINIFILE);
+  //      SharpEBroadCast(WM_SETTINGCHANGE,SPI_SETWORKAREA, 0)
+  //      SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0);
+        SendMessageTimeOut(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0,SMTO_ABORTIFHUNG,20,r);
+      end
+    except
+      exit;
+    end;
   end;
   setlength(BR,0);
 end;
@@ -1325,12 +1355,16 @@ var
   r: Cardinal;
 begin
   i := 0;
-  for n := 0 to Screen.MonitorCount - 1 do
-  begin
-    Mon := Screen.Monitors[n];
-    Area := Rect(Mon.Left,Mon.Top,Mon.Left + Mon.Width, Mon.Top + Mon.Height);
-    SystemParametersInfo(SPI_SETWORKAREA, i, @Area, SPIF_UPDATEINIFILE);
-    SendMessageTimeOut(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0,SMTO_ABORTIFHUNG,20,r);
+  try
+    for n := 0 to Screen.MonitorCount - 1 do
+    begin
+      Mon := Screen.Monitors[n];
+      Area := Rect(Mon.Left,Mon.Top,Mon.Left + Mon.Width, Mon.Top + Mon.Height);
+      SystemParametersInfo(SPI_SETWORKAREA, i, @Area, SPIF_UPDATEINIFILE);
+      SendMessageTimeOut(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0,SMTO_ABORTIFHUNG,20,r);
+    end;
+  except
+    exit;
   end;
 end;
 
