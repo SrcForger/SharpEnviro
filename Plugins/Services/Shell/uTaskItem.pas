@@ -52,7 +52,7 @@ type
                 FPlacement: TWindowPlacement;
               private
               public
-                constructor Create(phandle : hwnd); reintroduce;
+                constructor Create(pHandle : hwnd; pListMode : Boolean = False); reintroduce;
                 destructor Destroy; override;
                 procedure UpdateFromHwnd;
                 procedure UpdateCaption;
@@ -81,11 +81,12 @@ function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; e
 implementation
 
 
-constructor TTaskItem.Create(phandle : hwnd);
+constructor TTaskItem.Create(pHandle : hwnd; pListMode : Boolean = False);
 begin
   inherited Create;
-  FHandle := phandle;
-  UpdateFromHwnd;
+  FHandle := pHandle;
+  if not pListMode then  
+    UpdateFromHwnd;
   FTimeAdded := DateTimeToUnix(Now);
   FLastVWM := SharpApi.GetCurrentVWM;
 end;

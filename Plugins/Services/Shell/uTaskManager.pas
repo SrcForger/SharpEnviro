@@ -45,6 +45,7 @@ type
                  protected
                  private
                    FEnabled        : Boolean;
+                   FListMode       : Boolean;
                    FOnNewTask      : TTaskChangeEvent;
                    FOnRemoveTask   : TTaskChangeEvent;
                    FOnUpdateTask   : TTaskChangeEvent;
@@ -78,6 +79,7 @@ type
                    destructor Destroy; override;
 
                    property Enabled        : boolean          read FEnabled write FEnabled;
+                   property ListMode       : boolean          read FListMode write FListMode;
                    property SortTasks      : boolean          read FSortTasks write FSortTasks;
                    property SortType       : TSharpeTaskManagerSortType read FSortType write FSortType;
                    property OnNewTask      : TTaskChangeEvent read FOnNewTask write FOnNewTask;
@@ -109,6 +111,7 @@ begin
   FSortType  := stCaption;
   FLastActiveTask := 0;
   FEnabled := False;
+  FListMode := False;
 end;
 
 destructor TTaskManager.Destroy;
@@ -148,7 +151,8 @@ begin
     pItem := TTaskItem(FItems.Items[n]);
     if pItem.Handle = FLastActiveTask then
     begin
-      pItem.UpdateFromHwnd;
+      if not FListMode then
+        pItem.UpdateFromHwnd;
       if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
     end;
   end;
@@ -216,7 +220,7 @@ begin
     Stream.ReadBuffer(LastVWM,sizeof(LastVWM));
     if GetItemByHandle(Handle) = nil then
     begin
-      pItem := TTaskItem.Create(Handle);
+      pItem := TTaskItem.Create(Handle,FListMode);
       pItem.TimeAdded := TimeAdded;
       pItem.LastVWM := LastVWM;
       FITems.Add(pItem);
@@ -278,8 +282,9 @@ begin
       pItem := TTaskItem(FItems.Items[n]);
       if pItem.Handle = pHandle then
       begin
-        FLastActiveTask := pHandle;      
-        pItem.UpdateFromHwnd;
+        FLastActiveTask := pHandle;
+        if not FListMode then        
+          pItem.UpdateFromHwnd;
         if Assigned(OnActivateTask) then FOnActivateTask(pItem,n);
         exit;
       end;
@@ -325,8 +330,9 @@ begin
   RemoveDeadTasks;
   if not IsWindow(pHandle) then exit;
   if GetItemByHandle(pHandle) <> nil then exit; // item already exists
-  pItem := TTaskItem.Create(pHandle);
-  pItem.UpdateCaption;
+  pItem := TTaskItem.Create(pHandle,FListMode);
+  if not FListMode then 
+    pItem.UpdateCaption;
   FItems.Add(pItem);
   if Assigned(OnNewTask) then FOnNewTask(pItem, FItems.Count -1);
   if FSortTasks then DoSortTasks;
@@ -399,7 +405,8 @@ begin
     pItem := TTaskItem(FItems.Items[n]);
     if pItem.Handle = pHandle then
     begin
-      pItem.UpdateFromHwnd;
+      if not FListMode then     
+        pItem.UpdateFromHwnd;
       if FSortTasks then DoSortTasks;      
       if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
     end;
@@ -443,6 +450,7 @@ var
   SList : TStringList;
   fixedcaption : String;
 begin
+  if FListMode then exit;
   if FItems.Count = 0 then exit;
 
   case FSortType of
