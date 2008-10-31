@@ -722,11 +722,24 @@ begin
      else sCurrentWidth := Max(Min((FreeSpace - ItemCount*sSpacing) div ItemCount,sMaxWidth),16);
 end;
 
+procedure LockWindow(const Handle: HWND); 
+begin 
+  SendMessage(Handle, WM_SETREDRAW, 0, 0); 
+end; 
+
+procedure UnlockWindow(const Handle: HWND); 
+begin 
+  SendMessage(Handle, WM_SETREDRAW, 1, 0); 
+  RedrawWindow(Handle, nil, 0,
+    RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
+end;
+
 procedure TMainForm.AlignTaskComponents;
 var
   n : integer;
   pTaskItem : TSharpETaskItem;
 begin
+  LockWindow(Handle);
   DebugOutPutInfo('TMainForm.AlignTaskComponents (Procedure)');
   for n := IList.Count - 1 downto 0 do
   begin
@@ -751,6 +764,7 @@ begin
                                         pTaskItem.Top + pTaskItem.Height));
     end;
   end;
+  UnlockWindow(Handle);
 end;
 
 procedure UpdateIcon(var pTaskItem : TSharpETaskItem; pItem : TTaskItem);
@@ -1105,8 +1119,6 @@ begin
   UpdateIcon(pTaskItem,pItem);
   pTaskItem.Caption := pItem.Caption;
   ToolTipApi.UpdateToolTipText(FTipWnd,Self,pTaskItem.Handle,pTaskItem.Caption);
-
-  AlignTaskComponents;
 end;
 
 procedure TMainForm.SharpETaskItemClick(Sender: TObject);
