@@ -58,11 +58,13 @@ type
     FParam: string;
     FPluginID: String;
     FID: Integer;
+    FTabIndex: Integer;
   public
     property ID: Integer read FID write FID;
     property Command: TSCC_COMMAND_ENUM read FCommand write FCommand;
     property Param: string read FParam write FParam;
     property PluginID: String read FPluginID write FPluginID;
+    property TabIndex: Integer read FTabIndex write FTabIndex;
   end;
 
 type
@@ -85,6 +87,9 @@ type
 
 implementation
 
+uses
+  uSharpCenterManager;
+
 { TSharpCenterHistory }
 
 function TSharpCenterHistoryList.AddFolder(APath: string): TSharpCenterHistoryItem;
@@ -98,6 +103,7 @@ begin
   Result.Param := APath;
   Result.PluginID := '';
   Result.ID := Count;
+  Result.TabIndex := SCM.PluginTabIndex;
 
   Add(Result);
 end;
@@ -114,6 +120,7 @@ begin
   Result.Param := ADll;
   Result.PluginID := APluginID;
   Result.ID := Count;
+  Result.TabIndex := SCM.PluginTabIndex;
 
   Add(Result);
 end;
@@ -130,6 +137,7 @@ begin
   Result.Param := AConFile;
   Result.PluginID := APluginId;
   Result.ID := Count;
+  Result.TabIndex := SCM.PluginTabIndex;
 
   Add(Result);
 end;
@@ -154,6 +162,7 @@ begin
   Result.Param := AParameter;
   Result.PluginID := APluginID;
   Result.ID := Count;
+  Result.TabIndex := SCM.PluginTabIndex;
 
   Add(Result);
 end;

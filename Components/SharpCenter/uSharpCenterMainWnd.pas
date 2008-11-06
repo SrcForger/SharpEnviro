@@ -107,11 +107,9 @@ type
     lbHistory: TSharpEListBoxEx;
     tabExport: TTabSheet;
     lblDescription: TLabel;
-    lblTitle: TLabel;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure tlPluginTabsTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
-    procedure Timer1Timer(Sender: TObject);
 
     procedure tlEditItemTabClick(ASender: TObject; const ATabIndex: Integer);
     procedure btnEditApplyClick(Sender: TObject);
@@ -131,8 +129,6 @@ type
     procedure lbTree_MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure btnHomeClick(Sender: TObject);
-
-    procedure FormShow(Sender: TObject);
     procedure sbPluginResize(Sender: TObject);
     procedure lbTreeClickItem(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem);
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -143,20 +139,26 @@ type
     procedure lbTreeGetCellColor(Sender: TObject; const AItem: TSharpEListItem;
       var AColor: TColor);
     procedure tlToolbarBtnClick(ASender: TObject; const ABtnIndex: Integer);
+
+    procedure FormShow(Sender: TObject);
+    procedure pnlPluginContainerTabClick(ASender: TObject;
+      const ATabIndex: Integer);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
-    FSelectedPluginTabID: Integer;
+    FForceShow: Boolean;
 
     procedure UpdateLivePreview;
     procedure CenterMessage(var Msg: TMessage); message WM_SHARPCENTERMESSAGE;
     procedure WMTerminateMessage(var Msg: TMessage); message WM_SHARPTERMINATE;
     procedure ClickItem;
 
-    procedure ShowHistory;
     procedure InitCommandLine;
     procedure DoDoubleBufferAll(AComponent: TComponent);
     procedure UpdateConfigHeader;
+    procedure UpdateEditButtons;
+    procedure AssignPluginHostEvents;
+    procedure AssignPluginEvents;
   public
 
     procedure GetCopyData(var Msg: TMessage); message wm_CopyData;
@@ -181,7 +183,21 @@ type
     procedure ApplyEditEvent(Sender: TObject);
     procedure CancelEditEvent(Sender: Tobject);
     procedure SavePluginEvent(Sender: TObject);
-    procedure SetHomeTitleEvent(ATitle: String; ADescription: String);
+    procedure RefreshThemeEvent(Sender: TObject);
+    procedure SetHomeTitleEvent(ADescription: string);
+    procedure RefreshSizeEvent(Sender: TObject);
+    procedure RefreshPreviewEvent(Sender: TObject);
+    procedure RefreshPluginTabsEvent(Sender: TObject);
+    procedure RefreshTitleEvent(Sender: TObject);
+    procedure RefreshAllEvent(Sender: TObject);
+
+    procedure SetHostSettingsChangedEvent(Sender: TObject);
+
+    procedure SetEditTabEvent(ATab: TSCB_BUTTON_ENUM);
+    procedure SetEditTabVisibilityEvent(ATab: TSCB_BUTTON_ENUM; AVisible: Boolean);
+    procedure SetButtonVisibilityEvent(ATab: TSCB_BUTTON_ENUM; AVisible: Boolean);
+    procedure SetEditingEvent( AValue: Boolean );
+    procedure SetWarningEvent( AValue: Boolean );
   protected
   end;
 
@@ -197,65 +213,47 @@ uses
   uSystemFuncs,
   SharpEScheme,
   uSharpCenterHelperMethods,
-  uSharpCenterHistoryList;
+  uSharpCenterHistoryList,
+  ISharpCenterHostUnit;
 
 {$R *.dfm}
 
-procedure TSharpCenterWnd.FormShow(Sender: TObject);
-begin
-  SCM.OnInitNavigation := InitNavEvent;
-  SCM.OnAddNavItem := AddItemEvent;
-
-  SCM.OnLoadPlugin := LoadPluginEvent;
-  SCM.OnUnloadPlugin := UnloadPluginEvent;
-
-  SCM.OnLoadEdit := LoadEditEvent;
-  SCM.OnApplyEdit := ApplyEditEvent;
-  SCM.OnCancelEdit := CancelEditEvent;
-
-  SCM.OnAddPluginTabs := AddPluginTabsEvent;
-  SCM.OnUpdateTheme := UpdateThemeEvent;
-  SCM.OnSetHomeTitle := SetHomeTitleEvent;
-
-  SCM.PngImageList := pilIcons;
-  SCM.PluginContainer := pnlPlugin;
-  SCM.EditWndContainer := pnlEditPlugin;
-  SCM.PngImageList := picMain;
-
-  InitWindow;
-  InitToolbar;
-  InitCommandLine;
-
-end;
-
 procedure TSharpCenterWnd.btnHomeClick(Sender: TObject);
 begin
-  LockWindowUpdate(Self.Handle);
-  try
-    SCM.Unload;
-    InitToolbar;
+  // Initialise the tool bar to a default state
+  InitToolbar;
 
-    SetToolbarTabVisible(tidHistory, False);
-    SCM.BuildNavRoot;
-  finally
-    LockWindowUpdate(0);
-  end;
+  // Build the navigation root
+  SCM.BuildNavRoot;
 end;
 
 procedure TSharpCenterWnd.lbTree_MouseUp(Sender: TObject; Button:
   TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if lbTree.ItemIndex = -1 then
-    exit;
-
   ClickItem;
 end;
 
 procedure TSharpCenterWnd.FormResize(Sender: TObject);
 begin
+  UpdateSize;
+end;
 
-  if SCM <> nil then
-    UpdateSize;
+procedure TSharpCenterWnd.FormShow(Sender: TObject);
+begin
+  // Assign Host ui properties
+  with SCM.PluginHost do
+  begin
+    PluginOwner := pnlPlugin;
+    EditOwner := pnlEditPlugin;
+    SCM.PngImageList := picMain;
+  end;
+  
+  AssignPluginEvents;
+  AssignPluginHostEvents;
+
+  InitWindow;
+  InitToolbar;
+  InitCommandLine;
 end;
 
 procedure TSharpCenterWnd.GetCopyData(var Msg: TMessage);
@@ -266,8 +264,9 @@ begin
   tmpMsg := PSharpE_DataStruct(PCopyDataStruct(msg.lParam)^.lpData)^;
 
   command := CenterCommandAsEnum(tmpMsg.Command);
+  SCM.ExecuteCommand(command, tmpMsg.Parameter, tmpMsg.PluginID, 0);
 
-  SCM.ExecuteCommand(command,tmpMsg.Parameter, tmpMsg.PluginID);
+  // Force window to front
   if command = sccLoadSetting then
     ForceForegroundWindow(Handle);
 end;
@@ -292,7 +291,7 @@ begin
       sCmd := strlTokens[1];
       if 2 < strlTokens.Count then
         sPluginID := strlTokens[2];
-      SCM.ExecuteCommand(enumCommandType, scmd, sPluginID);
+      SCM.ExecuteCommand(enumCommandType, scmd, sPluginID, 0);
     finally
       strlTokens.Free;
     end;
@@ -306,41 +305,37 @@ var
   tmpItem: TSharpCenterHistoryItem;
 begin
   tmpItem := nil;
-  if scm = nil then
-    exit;
 
-  if SCM.History.Count <> 0 then begin
+  if SCM.History.Count <> 0 then
+  begin
     SCM.History.DeleteItem(TSharpCenterHistoryItem(SCM.History.Last));
     tmpItem := TSharpCenterHistoryItem(SCM.History.Last);
   end;
 
   if tmpItem <> nil then
   begin
-    SCM.ExecuteCommand(tmpItem.Command, tmpItem.Param, tmpItem.PluginID);
+    SCM.ExecuteCommand(tmpItem.Command, tmpItem.Param, tmpItem.PluginID, tmpItem.TabIndex);
     SCM.History.Delete(SCM.History.IndexOf(tmpItem));
 
     SetToolbarTabVisible(tidHistory, not (SCM.History.Count = 0));
+
   end;
 end;
 
 procedure TSharpCenterWnd.btnSaveClick(Sender: TObject);
 begin
+  if SCM.CheckEditState then
+      exit;
+
   LockWindowUpdate(Self.Handle);
   try
-
-    if SCM.CheckEditState then
-    begin
-      exit;
-    end;
-
-    SCM.StateEditItem := False;
-    SCM.StateEditWarning := False;
+    SCM.PluginHost.Editing := False;
+    SCM.PluginHost.Warning := False;
     SCM.Save;
 
   finally
     LockWindowUpdate(0);
-    btnSave.Enabled := False;
-    btnCancel.Enabled := False;
+    PnlButtons.Hide;
   end;
 end;
 
@@ -350,14 +345,10 @@ begin
   try
     FCancelClicked := True;
 
-    if @SCM.ActivePlugin.Open <> nil then
-    begin
-      SCM.StateEditItem := False;
-      SCM.StateEditWarning := False;
+    SCM.PluginHost.Editing := False;
+    SCM.PluginHost.Warning := False;
 
-      SCM.Unload;
-    end;
-
+    SCM.Unload;
     SCM.Reload;
   finally
     FCancelClicked := False;
@@ -372,35 +363,37 @@ end;
 
 procedure TSharpCenterWnd.UpdateLivePreview;
 var
-  Bmp: TBitmap32;
+  bmp: TBitmap32;
 begin
   if SCM = nil then
     exit;
 
-  if (@SCM.ActivePlugin.UpdatePreview <> nil) then
+  if (SCM.PluginHasPreviewSupport) then
   begin
-    Bmp := TBitmap32.Create;
-    Bmp.DrawMode := dmBlend;
-    Bmp.CombineMode := cmMerge;
-    Bmp.SetSize(pnlLivePreview.Width, 50);
+    bmp := TBitmap32.Create;
+    try
+      bmp.DrawMode := dmBlend;
+      bmp.CombineMode := cmMerge;
+      bmp.SetSize(pnlLivePreview.Width, 50);
 
-    SCM.ActivePlugin.UpdatePreview(Bmp);
+      SCM.Plugin.PreviewInterface.UpdatePreview(bmp);
 
-    imgLivePreview.Bitmap.SetSize(Bmp.Width, Bmp.Height);
-    imgLivePreview.Bitmap.Clear(color32(clWindow));
-    Bmp.DrawTo(imgLivePreview.Bitmap, 0, 0);
+      imgLivePreview.Bitmap.SetSize(bmp.Width, bmp.Height);
+      imgLivePreview.Bitmap.Clear(color32(SCM.Theme.Background));
+      bmp.DrawTo(imgLivePreview.Bitmap, 0, 0);
 
-    //imgLivePreview.Height := Bmp.Height;
-    pnlLivePreview.Height := Bmp.Height;
-
-    Bmp.Free;
+      pnlLivePreview.Height := bmp.Height;
+    finally
+      bmp.Free;
+    end;
   end
   else
     pnlLivePreview.Height := 0;
 end;
 
 procedure TSharpCenterWnd.DoDoubleBufferAll(AComponent: TComponent);
-var i: integer;
+var
+  i: integer;
 begin
   if Assigned(AComponent) then
   begin
@@ -430,97 +423,103 @@ procedure TSharpCenterWnd.lbTreeGetCellColor(Sender: TObject;
   const AItem: TSharpEListItem; var AColor: TColor);
 begin
   if AItem.ID = lbTree.ItemIndex then
-    AColor := $00C1F4FE;
+    AColor := SCM.Theme.NavBarSelectedItem;
 end;
 
 procedure TSharpCenterWnd.lbTreeGetCellText(Sender: TObject;
   const ACol: Integer; AItem: TSharpEListItem; var AColText: string);
 var
   tmp: TSharpCenterManagerItem;
+  col: TColor;
 begin
   tmp := TSharpCenterManagerItem(AItem.Data);
-  if tmp = nil then exit;
+  if tmp = nil then
+    exit;
+
+  if lbTree.SelectedItem = AItem then
+    col := SCM.Theme.NavBarSelectedItemText
+  else
+    col := SCM.Theme.NavBarItemText;
 
   case ACol of
-    0: AColText := tmp.Caption;
-    1: AColText := tmp.Status;
+    0:
+      begin
+        AColText := format('<font color="%s">%s',
+          [colortoString(col), tmp.Caption]);
+      end;
+    1:
+      begin
+        AColText := format('<font color="%s">%s',
+          [colortoString(col), tmp.Status]);
+      end;
   end;
 end;
 
 procedure TSharpCenterWnd.CenterMessage(var Msg: TMessage);
-var
-  bEnabled: Boolean;
-  iBtnID: Integer;
-  sName, sStatus, sTitle, sDescription: String;
 begin
   if SCM = nil then
     exit;
 
   case msg.WParam of
 
-    SCM_SET_TAB_SELECTED: begin
+//    SCM_SET_TAB_SELECTED:
+//      begin
+//
+//        SCM.StateEditItem := False;
+//        SCM.StateEditWarning := False;
+//
+//        if pnlEditContainer.Minimized then
+//          FSelectedTabID := -1
+//        else
+//        begin
+//
+//          case Msg.LParam of
+//            integer(scbAddTab):
+//              begin
+//                pnlEditContainer.TabIndex := cEdit_Add;
+//                FSelectedTabID := cEdit_Add;
+//                SCM.LoadEdit(FSelectedTabID);
+//              end;
+//            integer(scbEditTab):
+//              begin
+//                pnlEditContainer.TabIndex := cEdit_Edit;
+//                FSelectedTabID := cEdit_Edit;
+//                SCM.LoadEdit(FSelectedTabID);
+//              end;
+//          end;
+//        end;
+//        UpdateThemeEvent(nil);
+//      end;
 
-        SCM.StateEditItem := False;
-        SCM.StateEditWarning := False;
+//    SCM_SET_BUTTON_ENABLED, SCM_SET_BUTTON_DISABLED:
+//      begin
+//
+//        bEnabled := (msg.WParam = SCM_SET_BUTTON_ENABLED);
+//        iBtnID := msg.LParam;
+//        case iBtnID of
+//          integer(scbImport): SetToolbarTabVisible(tidImport, bEnabled);
+//          integer(scbExport): SetToolbarTabVisible(tidExport, bEnabled);
+//          integer(scbDelete): btnEditApply.Enabled := bEnabled;
+//          integer(scbAddTab): pnlEditContainer.TabItems.Item[cEdit_Add].Visible := bEnabled;
+//          integer(scbEditTab): pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := bEnabled;
+//          integer(scbConfigure):
+//            begin
+//              btnEditApply.Enabled := bEnabled;
+//              btnEditApply.Caption := 'Add';
+//              btnEditApply.PngImage := pilIcons.PngImages.Items[10].PngImage;
+//            end;
+//        end;
+//      end;
 
-        if pnlEditContainer.Minimized then
-          FSelectedTabID := -1 else begin
-
-        case Msg.LParam of
-          integer(scbAddTab): begin
-              pnlEditContainer.TabIndex := cEdit_Add;
-              FSelectedTabID := cEdit_Add;
-              SCM.LoadEdit(FSelectedTabID);
-            end;
-          integer(scbEditTab): begin
-              pnlEditContainer.TabIndex := cEdit_Edit;
-              FSelectedTabID := cEdit_Edit;
-              SCM.LoadEdit(FSelectedTabID);
-            end;
-        end;
-          end;
-        UpdateThemeEvent(nil);
-      end;
-
-    SCM_SET_BUTTON_ENABLED, SCM_SET_BUTTON_DISABLED:
-      begin
-
-        bEnabled := (msg.WParam = SCM_SET_BUTTON_ENABLED);
-        iBtnID := msg.LParam;
-        case iBtnID of
-          integer(scbImport): SetToolbarTabVisible(tidImport, bEnabled);
-          integer(scbExport): SetToolbarTabVisible(tidExport, bEnabled);
-          integer(scbDelete): btnEditApply.Enabled := bEnabled;
-          integer(scbAddTab): pnlEditContainer.TabItems.Item[cEdit_Add].Visible := bEnabled;
-          integer(scbEditTab): pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := bEnabled;
-          integer(scbConfigure): begin
-            btnEditApply.Enabled := bEnabled;
-            btnEditApply.Caption := 'Add';
-            btnEditApply.PngImage := pilIcons.PngImages.Items[10].PngImage;
-          end;
-        end;
-      end;
-
-    SCM_SET_SETTINGS_CHANGED:
-      begin
-        btnSave.Enabled := True;
-        btnCancel.Enabled := True;
-
-        //UpdatePluginTabs;
-      end;
-    SCM_EVT_UPDATE_PREVIEW:
-      begin
-        UpdateLivePreview;
-      end;
-    SCM_SET_EDIT_STATE:
-      begin
-        if SCM.StateEditItem <> True then
-          SCM.StateEditItem := True;
-      end;
-    SCM_SET_EDIT_CANCEL_STATE:
-      begin
-        SCM.StateEditItem := False;
-      end;
+//    SCM_SET_SETTINGS_CHANGED:
+//      begin
+//
+//        //UpdatePluginTabs;
+//      end;
+//    SCM_EVT_UPDATE_PREVIEW:
+//      begin
+//        UpdateLivePreview;
+//      end;
     SCM_EVT_UPDATE_SETTINGS:
       begin
         SCM.UpdateSettingsBroadcast;
@@ -529,22 +528,20 @@ begin
       begin
         UpdateSize;
       end;
-    SCM_EVT_UPDATE_TABS:
-      begin
-        SCM.LoadPluginTabs;
-        lbTree.Refresh;
-      end;
+//    SCM_EVT_UPDATE_TABS:
+//      begin
+//        SCM.LoadPluginTabs;
+//        lbTree.Refresh;
+//      end;
     SCM_EVT_UPDATE_CONFIG_TEXT:
       begin
-        if (@SCM.ActivePlugin <> nil) then
-          SCM.ActivePlugin.SetText(SCM.ActivePluginID, sName, sStatus,
-            sTitle, sDescription);
 
-        //TSharpCenterManagerItem(lbTree.SelectedItem.Data).Caption := sName;
-        TSharpCenterManagerItem(lbTree.SelectedItem.Data).Status := sStatus;
-        TSharpCenterManagerItem(lbTree.SelectedItem.Data).Title := sTitle;
-        TSharpCenterManagerItem(lbTree.SelectedItem.Data).Description := sDescription;
-        lbTree.Refresh;
+       if SCM.Plugin.Dllhandle <> 0 then
+        begin
+          TSharpCenterManagerItem(lbTree.SelectedItem.Data).Status := scm.Plugin.PluginInterface.GetPluginStatusText;
+          TSharpCenterManagerItem(lbTree.SelectedItem.Data).Description := scm.Plugin.PluginInterface.GetPluginDescriptionText;
+          lbTree.Refresh;
+        end;
 
         UpdateConfigHeader;
       end;
@@ -562,11 +559,147 @@ begin
   end;
 end;
 
-procedure TSharpCenterWnd.SetHomeTitleEvent(ATitle, ADescription: String);
+procedure TSharpCenterWnd.SetButtonVisibilityEvent(ATab: TSCB_BUTTON_ENUM;
+  AVisible: Boolean);
+begin
+  case ATab of
+    scbImport: SetToolbarTabVisible(tidImport, AVisible);
+    scbExport: SetToolbarTabVisible(tidExport, AVisible);
+    scbConfigure:
+    begin
+      btnEditApply.Visible := AVisible;
+      btnEditApply.Caption := 'Add';
+      btnEditApply.PngImage := pilIcons.PngImages.Items[10].PngImage;
+      FForceShow := True;
+    end;
+  end;
+end;
+
+procedure TSharpCenterWnd.SetEditingEvent(AValue: Boolean);
+begin
+  UpdateEditButtons;
+end;
+
+procedure TSharpCenterWnd.SetEditTabEvent(ATab: TSCB_BUTTON_ENUM);
+begin
+
+  SCM.PluginHost.Editing := False;
+  SCM.PluginHost.Warning := False;
+
+  if pnlEditContainer.Minimized then
+    FSelectedTabID := -1
+  else
+  begin
+
+    case ATab of
+      scbAddTab:
+        begin
+          pnlEditContainer.TabIndex := cEdit_Add;
+          FSelectedTabID := cEdit_Add;
+          SCM.LoadEdit(FSelectedTabID);
+        end;
+      scbEditTab:
+        begin
+          pnlEditContainer.TabIndex := cEdit_Edit;
+          FSelectedTabID := cEdit_Edit;
+          SCM.LoadEdit(FSelectedTabID);
+        end;
+    end;
+  end;
+  UpdateThemeEvent(nil);
+end;
+
+procedure TSharpCenterWnd.SetEditTabVisibilityEvent(ATab: TSCB_BUTTON_ENUM;
+  AVisible: Boolean);
+begin
+  case ATab of
+    scbAddTab: pnlEditContainer.TabItems.Item[cEdit_Add].Visible := AVisible;
+    scbEditTab: pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := AVisible;
+  end;
+end;
+
+procedure TSharpCenterWnd.SetHomeTitleEvent(ADescription: string);
 begin
   pnlTitle.Visible := True;
-  lblTitle.Caption := ATitle;
   lblDescription.Caption := ADescription;
+end;
+
+procedure TSharpCenterWnd.SetHostSettingsChangedEvent(Sender: TObject);
+begin
+  PnlButtons.Show;
+end;
+
+procedure TSharpCenterWnd.AssignPluginEvents;
+begin
+  SCM.OnRefreshTheme := RefreshThemeEvent;
+  SCM.OnInitNavigation := InitNavEvent;
+  SCM.OnAddNavItem := AddItemEvent;
+  SCM.OnSetHomeTitle := SetHomeTitleEvent;
+  SCM.OnLoadPlugin := LoadPluginEvent;
+  SCM.OnUnloadPlugin := UnloadPluginEvent;
+  SCM.OnLoadEdit := LoadEditEvent;
+  SCM.OnApplyEdit := ApplyEditEvent;
+  SCM.OnCancelEdit := CancelEditEvent;
+  SCM.OnAddPluginTabs := AddPluginTabsEvent;
+  SCM.OnUpdateTheme := UpdateThemeEvent;
+end;
+
+procedure TSharpCenterWnd.AssignPluginHostEvents;
+begin
+  SCM.PluginHost.OnSettingsChanged := SetHostSettingsChangedEvent;
+  SCM.PluginHost.OnSetEditTab := SetEditTabEvent;
+  SCM.PluginHost.OnSetEditTabVisibility := SetEditTabVisibilityEvent;
+  SCM.PluginHost.OnRefreshSize := RefreshSizeEvent;
+  SCM.PluginHost.OnRefreshPreview := RefreshPreviewEvent;
+  SCM.PluginHost.OnRefreshTheme := RefreshThemeEvent;
+  SCM.PluginHost.OnRefreshPluginTabs := RefreshPluginTabsEvent;
+  SCM.PluginHost.OnRefreshAll := RefreshAllEvent;
+  SCM.PluginHost.OnSetEditing := SetEditingEvent;
+  SCM.PluginHost.OnSetWarning := SetWarningEvent;
+  SCM.PluginHost.OnSetButtonVisibility := SetButtonVisibilityEvent;
+  SCM.PluginHost.OnRefreshTitle := RefreshTitleEvent;
+end;
+
+procedure TSharpCenterWnd.UpdateEditButtons;
+begin
+  if (SCM.PluginHost.Editing) then
+  begin
+    btnEditApply.Visible := True;
+    case FSelectedTabID of
+      integer(tidAdd):
+        btnEditApply.Caption := 'Add';
+      integer(tidEdit):
+        btnEditApply.Caption := 'Apply';
+      integer(tidDelete):
+        begin
+          btnEditApply.Caption := 'Delete';
+          btnEditApply.Visible := True;
+        end;
+    end;
+    btnEditCancel.Caption := 'Cancel';
+  end
+  else
+  begin
+    btnEditApply.Visible := False;
+    case FSelectedTabID of
+      integer(tidAdd):
+        begin
+          btnEditApply.Caption := 'Add';
+          if FForceShow then begin
+            btnEditApply.Visible := true;
+            FForceShow := false;
+          end;
+        end;
+      integer(tidEdit):
+        btnEditApply.Caption := 'Edit';
+      integer(tidDelete):
+        begin
+          btnEditApply.Caption := 'Delete';
+          btnEditApply.Visible := True;
+        end;
+    end;
+    btnEditCancel.Caption := 'Close';
+  end;
 end;
 
 procedure TSharpCenterWnd.SetToolbarTabVisible(ATabID: TTabID; AVisible:
@@ -577,10 +710,11 @@ begin
     case ATabID of
       tidHome: Item[0].Visible := AVisible;
       tidFavourite: Item[1].Visible := AVisible;
-      tidHistory: begin
-        //Item[2].Visible := AVisible;
-        tlToolbar.Buttons.Item[1].Visible := AVisible;
-      end;
+      tidHistory:
+        begin
+          //Item[2].Visible := AVisible;
+          tlToolbar.Buttons.Item[1].Visible := AVisible;
+        end;
       tidImport: Item[3].Visible := AVisible;
       tidExport: Item[4].Visible := AVisible;
     end;
@@ -589,9 +723,16 @@ begin
   tlToolbar.Invalidate;
 end;
 
+procedure TSharpCenterWnd.SetWarningEvent(AValue: Boolean);
+begin
+  SCM.RefreshTheme;
+end;
+
 procedure TSharpCenterWnd.tlToolbarBtnClick(ASender: TObject;
   const ABtnIndex: Integer);
 begin
+  if SCM.PluginHost.Editing then exit;
+
   case ABtnIndex of
     0: btnHomeClick(nil);
     1: btnBackClick(nil);
@@ -601,7 +742,8 @@ end;
 procedure TSharpCenterWnd.tlToolbarTabChange(ASender: TObject;
   const ATabIndex: Integer; var AChange: Boolean);
 begin
-  if pnlToolbar = nil then exit;
+  if pnlToolbar = nil then
+    exit;
 
   if SCM.CheckEditState then
   begin
@@ -640,7 +782,8 @@ end;
 procedure TSharpCenterWnd.tlToolbarTabClick(ASender: TObject; const ATabIndex:
   Integer);
 begin
-
+  if SCM.PluginHost.Editing then exit;
+  
   case ATabIndex of
     0: btnHomeClick(nil);
     //0: btnHome.Click;
@@ -718,28 +861,24 @@ procedure TSharpCenterWnd.InitWindow;
 begin
   // Vista
   SetVistaFonts(Self);
-  //DoDoubleBufferAll(pnlTree);
+
   DoDoubleBufferAll(pnlTitle);
   DoDoubleBufferAll(lbTree);
+  DoDoubleBufferAll(pnlContent);
+  DoDoubleBufferAll(pnlEditToolbar);
   Self.ParentBackground := False;
   Self.DoubleBuffered := True;
-
-  // Set Listbox defaults
-  lbTree.Colors.BorderColorSelected := $00C1F4FE;
 
   // Reinit values
   FSelectedTabID := 0;
   FCancelClicked := False;
 
-  btnSave.Enabled := False;
-  btnCancel.Enabled := False;
-  pnlEditContainer.Height := 0;
+  PnlButtons.Hide;
+  pnlEditContainer.Visible := False;
   pnlLivePreview.Height := 0;
   pnlPluginContainer.Visible := False;
   pnlEditContainer.TabIndex := -1;
   pnlTitle.Visible := False;
-  lblTitle.Font.Size := 10;
-  lblDescription.Font.Color := clGrayText;
   pnlToolbar.Hide;
 
 end;
@@ -747,37 +886,34 @@ end;
 procedure TSharpCenterWnd.ClickItem;
 var
   tmpItem: TSharpCenterManagerItem;
-  tmpManager: TSharpCenterManager;
   tmpHistory: TSharpCenterHistoryItem;
-  sName: string;
 begin
-  SCM.Unload;
+  if lbTree.ItemIndex = -1 then exit;
 
-  // Get the Button Data
+  // Set the plugin tab index to 0 so we start with the 1st page of a config
+  SCM.PluginTabIndex := 0;
+
+  // Get center manager item, and exit if null
   tmpItem := TSharpCenterManagerItem(lbTree.Item[lbTree.ItemIndex].Data);
   if tmpItem = nil then
     exit;
-
-  sName := tmpItem.Caption;
-
-  tmpManager := SCM;
 
   case tmpItem.ItemType of
     itmNone: ;
     itmFolder:
       begin
-        tmpManager.BuildNavFromPath(PathAddSeparator(tmpItem.Path));
+        SCM.BuildNavFromPath(tmpItem.Path);
+
+        // Show the history tab
         SetToolbarTabVisible(tidHistory, True);
       end;
     itmSetting:
       begin
 
-        SetToolbarTabVisible(tidHistory, True);
+        SCM.BuildNavFromFile(tmpItem.Filename);
 
-        if fileexists(tmpItem.Filename) then
-        begin
-          SCM.BuildNavFromFile(tmpItem.Filename);
-        end;
+        // Show the history tab
+        SetToolbarTabVisible(tidHistory, True);
 
       end;
     itmDll:
@@ -800,56 +936,37 @@ begin
   SetToolbarTabVisible(tidExport, False);
   SetToolbarTabVisible(tidHistory, False);
 
-  // Hide Toolbar panel, and set tabindex to home
+  // Hide tool bar panel, and set tabindex to home
   pnlToolbar.Visible := False;
   tlToolbar.TabIndex := 0;
+
+  // Set plugin tab index to 0
+  SCM.PluginTabIndex := 0;
 end;
 
 procedure TSharpCenterWnd.UpdateSize;
 var
   h: Integer;
 begin
+  if SCM = nil then exit;
+
   UpdateLivePreview;
 
-    if (@SCM.ActivePlugin.Open <> nil) then
-    begin
-      if SCM.PluginWndHandle <> 0 then begin
-        h := GetControlByHandle(SCM.PluginWndHandle).Height;
-        pnlPlugin.Height := h;
-        GetControlByHandle(SCM.PluginWndHandle).Width := pnlPlugin.Width;
-      end;
-
-      if @SCM.ActivePlugin.OpenEdit <> nil then
-        if SCM.EditWndHandle <> 0 then
-        begin
-          pnlEditContainer.Minimized := False;
-          pnlEditContainer.Height := 80 + GetControlByHandle(SCM.EditWndHandle).Height;
-          GetControlByHandle(SCM.EditWndHandle).Width := pnlEditPlugin.Width;
-        end else
-          pnlEditContainer.Minimized := True;
-
-    end;
-end;
-
-procedure TSharpCenterWnd.ShowHistory;
-var
-  i: Integer;
-  s: String;
-begin
-  lbHistory.Clear;
-  for i := 0 to SCM.History.Count-1 do begin
-    s := CenterCommandAsText(TSharpCenterHistoryItem(SCM.History.List[i]).Command) +
-      ' ' + TSharpCenterHistoryItem(SCM.History.List[i]).Param + ' (' +
-          TSharpCenterHistoryItem(SCM.History.List[i]).PluginID + ')';
-    SendDebugMessageEx('SharpCenter',pchar(s),clBlack,DMT_TRACE);
+  if SCM.PluginWndHandle <> 0 then
+  begin
+    h := GetControlByHandle(SCM.PluginWndHandle).Height;
+    pnlPlugin.Height := h;
+    GetControlByHandle(SCM.PluginWndHandle).Width := pnlPlugin.Width;
   end;
-  SendDebugMessageEx('SharpCenter',pchar('---'),clBlack,DMT_TRACE);
 
-end;
-
-procedure TSharpCenterWnd.Timer1Timer(Sender: TObject);
-begin
-  ShowHistory;
+  if SCM.EditWndHandle <> 0 then
+  begin
+    pnlEditContainer.Minimized := False;
+    pnlEditContainer.Height := 65 + GetControlByHandle(SCM.EditWndHandle).Height;
+    GetControlByHandle(SCM.EditWndHandle).Width := pnlEditPlugin.Width;
+  end
+  else
+    pnlEditContainer.Minimized := True;
 end;
 
 procedure TSharpCenterWnd.LoadPluginEvent(Sender: TObject);
@@ -860,35 +977,46 @@ begin
   try
 
     // Edit bar
-    PnlButtons.Show;
-    pnlEditContainer.Height := 0;
-    if (@SCM.ActivePlugin.OpenEdit <> nil) then
+    // .Show;
+
+    if (SCM.PluginHasEditSupport) then
+    begin
       pnlEditContainer.Minimized := True;
+      pnlEditContainer.Visible := True;
+    end
+    else
+      pnlEditContainer.Visible := False;
 
     pnlEditContainer.TabItems.Item[cEdit_Add].Visible := True;
     pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := True;
 
-    if (@SCM.ActivePlugin.UpdatePreview <> nil) then
+    if (SCM.PluginHasPreviewSupport) then
     begin
       pnlLivePreview.Height := 45;
     end;
 
     pnlToolbar.Hide;
     FSelectedTabID := 0;
-    FSelectedPluginTabID := 0;
 
-    if (SCM.ActivePlugin.ConfigMode = SharpApi.scmLive) then
-      PnlButtons.Hide else
-      PnlButtons.Show;
+    if (SCM.Plugin.ConfigMode = SharpApi.scmLive) then
+      PnlButtons.Hide
+    else begin
 
-    if (@SCM.ActivePlugin.OpenEdit <> nil) then begin
+      if SCM.PluginHost.Editing then
+        PnlButtons.Show;
+    end;
+
+    if (SCM.PluginHasEditSupport) then
+    begin
       pnlEditContainer.TabList.TabIndex := -1;
     end;
 
     // Select in list
-    for i := 0 to Pred(lbTree.Count) do begin
+    for i := 0 to Pred(lbTree.Count) do
+    begin
       if CompareText(TSharpCenterManagerItem(lbTree.Item[i].Data).Filename,
-        SCM.ActivePlugin.Filename) = 0 then begin
+        SCM.Plugin.Dll) = 0 then
+      begin
         lbTree.ItemIndex := i;
         break;
       end;
@@ -897,19 +1025,146 @@ begin
     // Update Title and Description
     UpdateConfigHeader;
 
-    TForm(GetControlByHandle(SCM.PluginWndHandle)).Color := clWindow;
   finally
     pnlPluginContainer.Show;
 
     // Forces a resize
-    pnlPluginContainer.Height := pnlPluginContainer.Height+1;
-    pnlPluginContainer.Height := pnlPluginContainer.Height-1;
+    pnlPluginContainer.Height := pnlPluginContainer.Height + 1;
+    pnlPluginContainer.Height := pnlPluginContainer.Height - 1;
 
-    CenterUpdateSize;
+    SCM.PluginHost.Refresh( rtAll );
 
     sbPlugin.SetFocus;
   end;
 
+end;
+
+procedure TSharpCenterWnd.pnlPluginContainerTabClick(ASender: TObject;
+  const ATabIndex: Integer);
+begin
+  LockWindowUpdate(Self.Handle);
+  try
+    SCM.ClickTab(ATabIndex);
+    SCM.PluginTabIndex := ATabIndex;
+    TSharpCenterHistoryItem(SCM.History.Last).TabIndex := ATabIndex;
+
+    
+
+  finally
+    LockWindowUpdate(0);
+  end;
+end;
+
+procedure TSharpCenterWnd.RefreshSizeEvent(Sender: TObject);
+begin
+  UpdateSize;
+end;
+
+procedure TSharpCenterWnd.RefreshAllEvent(Sender: TObject);
+begin
+  RefreshPreviewEvent(nil);
+  //RefreshThemeEvent(nil);
+  //RefreshPluginTabsEvent(nil);
+  RefreshSizeEvent(nil);
+end;
+
+procedure TSharpCenterWnd.RefreshPluginTabsEvent(Sender: TObject);
+begin
+  SCM.LoadPluginTabs;
+  lbTree.Refresh;
+end;
+
+procedure TSharpCenterWnd.RefreshPreviewEvent(Sender: TObject);
+begin
+  UpdateLivePreview;
+end;
+
+procedure TSharpCenterWnd.RefreshThemeEvent(Sender: TObject);
+var
+  colBackground: TColor;
+begin
+
+  // Navbar
+  lbTree.Color := SCM.Theme.Background;
+
+  if SCM.PluginHost.Warning then
+  begin
+    lbTree.Colors.ItemColor := SCM.Theme.NavBarItem;
+    lbTree.Colors.ItemColorSelected := SCM.Theme.NavBarItem;
+  end
+  else
+  begin
+    lbTree.Colors.ItemColor := SCM.Theme.NavBarItem;
+    lbTree.Colors.ItemColorSelected := SCM.Theme.NavBarSelectedItem;
+  end;
+
+  lbTree.Colors.DisabledColor := SCM.Theme.Background;
+
+  // Title
+  lblDescription.Font.Color := SCM.Theme.BackgroundText;
+
+  pnlSettingTree.Color := SCM.Theme.Background;
+  pnlMain.Color := SCM.Theme.Background;
+  pnlContent.Color := SCM.Theme.Background;
+  Self.Color := SCM.Theme.Background;
+  tlToolbar.BkgColor := SCM.Theme.Background;
+  pnlTitle.Color := SCM.Theme.Background;
+
+  if SCM.PluginHost.Warning then
+    colBackground := SCM.Theme.EditBackgroundError
+  else
+    colBackground := SCM.Theme.EditBackground;
+
+  pnlEditContainer.Color := colBackground;
+  pnlEditContainer.PageBackgroundColor := colBackground;
+  pnlEditContainer.BackgroundColor := colBackground;
+  pnlEditContainer.TabBackgroundColor := SCM.Theme.Background;
+  pnlEditContainer.BackgroundColor := colBackground;
+  pnlEditContainer.TabColor := SCM.Theme.Background;
+  pnlEditContainer.TabSelColor := colBackground;
+  pnlEditContainer.TabCaptionColor := SCM.Theme.BackgroundText;
+  pnlEditContainer.TabCaptionSelColor := SCM.Theme.EditBackgroundText;
+  pnlEditContainer.BorderColor := SCM.Theme.Border;
+
+  pnlEditToolbar.Color := colBackground;
+  pnlEditPluginContainer.Color := colBackground;
+  pnlEditPluginContainer.BackgroundColor := SCM.Theme.Background;
+  pnlEditPlugin.color := colBackground;
+
+  btnEditCancel.Font.Color := SCM.Theme.EditBackgroundText;
+  btnEditApply.Font.Color := SCM.Theme.EditBackgroundText;
+
+  sbPlugin.Color := SCM.Theme.PluginBackground;
+  pnlPluginContainer.PageBackgroundColor := SCM.Theme.PluginBackground;
+  pnlPluginContainer.BackgroundColor := SCM.Theme.Background;
+  pnlPluginContainer.TabBackgroundColor := SCM.Theme.Background;
+  pnlPluginContainer.TabColor := SCM.Theme.PluginTab;
+  pnlPluginContainer.TabSelColor := SCM.Theme.PluginSelectedTab;
+  pnlPluginContainer.TabCaptionColor := SCM.Theme.PluginTabText;
+  pnlPluginContainer.TabCaptionSelColor := SCM.Theme.PluginTabSelectedText;
+  pnlPluginContainer.BorderColor := SCM.Theme.Border;
+  pnlPluginContainer.DoubleBuffered := True;
+
+  pnlContent.DoubleBuffered := True;
+  pnlMain.DoubleBuffered := True;
+  Self.DoubleBuffered := True;
+
+  PnlButtons.Color := SCM.Theme.Background;
+  btnSave.Font.Color := SCM.Theme.BackgroundText;
+  btnCancel.Font.Color := SCM.Theme.BackgroundText;
+
+end;
+
+procedure TSharpCenterWnd.RefreshTitleEvent(Sender: TObject);
+begin
+  if SCM.Plugin.Dllhandle <> 0 then begin
+    TSharpCenterManagerItem(lbTree.SelectedItem.Data).Caption := scm.Plugin.PluginInterface.GetPluginName;
+    TSharpCenterManagerItem(lbTree.SelectedItem.Data).Status := scm.Plugin.PluginInterface.GetPluginStatusText;
+    TSharpCenterManagerItem(lbTree.SelectedItem.Data).Description := scm.Plugin.PluginInterface.GetPluginDescriptionText;
+    lbTree.Refresh;
+  end;
+
+  UpdateConfigHeader;
 end;
 
 procedure TSharpCenterWnd.AddItemEvent(AItem: TSharpCenterManagerItem;
@@ -928,7 +1183,7 @@ end;
 procedure TSharpCenterWnd.InitNavEvent(Sender: TObject);
 begin
   lbTree.Clear;
-  PnlButtons.Show;
+  //PnlButtons.Show;
 end;
 
 procedure TSharpCenterWnd.AddPluginTabsEvent(Sender: TObject);
@@ -939,11 +1194,14 @@ var
 begin
   pnlPluginContainer.TabList.Clear;
 
-  if SCM.PluginTabs.Count <= 1 then begin
+  if SCM.PluginTabs.Count <= 1 then
+  begin
     pnlPluginContainer.TabList.Hide;
     sbPlugin.Margins.Top := 6;
     exit;
-  end else begin
+  end
+  else
+  begin
     pnlPluginContainer.TabList.Show;
     sbPlugin.Margins.Top := 32;
   end;
@@ -956,7 +1214,8 @@ begin
       tabItem.Caption := SCM.PluginTabs[i];
 
     end;
-    pnlPluginContainer.TabIndex := FSelectedPluginTabID;
+
+    pnlPluginContainer.TabIndex := SCM.PluginTabIndex;
   finally
     sbPlugin.Invalidate;
   end;
@@ -968,30 +1227,25 @@ begin
   // Check if Save first
   LockWindowUpdate(Self.Handle);
   try
-    if ((btnSave.Enabled) and not (FCancelClicked)) then
+    if ((PnlButtons.Visible) and not (FCancelClicked)) then
     begin
       SCM.Save;
     end;
 
     // Handle proper closing of the edit window
-    if @SCM.ActivePlugin.OpenEdit <> nil then
+    if (scm.PluginHasEditSupport) then
     begin
-
-      if ((@SCM.ActivePlugin.CloseEdit <> nil) and (SCM.EditWndHandle <> 0))
-        then
-        SCM.ActivePlugin.CloseEdit(sceEdit, False);
+      SCM.Plugin.EditInterface.CloseEdit(False);
     end;
 
   finally
 
-    //tlPluginTabs.Height := 0;
     pnlEditContainer.TabList.TabIndex := -1;
-    btnSave.Enabled := False;
-    btnCancel.Enabled := False;
     pnlLivePreview.Height := 0;
-    pnlEditContainer.Height := 0;
+    pnlEditContainer.Visible := False;
     pnlPluginContainer.Hide;
     pnlTitle.Hide;
+    PnlButtons.Hide;
 
     LockWindowUpdate(0);
   end;
@@ -999,84 +1253,27 @@ end;
 
 procedure TSharpCenterWnd.UpdateThemeEvent(Sender: TObject);
 var
-  colBackground, colItem, colSelectedItem: TColor;
   ctrl: TWinControl;
 begin
-  //LockWindowUpdate(Self.Handle);
-  ctrl := nil;
-  if SCM.EditWndHandle <> 0 then
-    if GetControlByHandle(SCM.EditWndHandle) <> nil then
-      ctrl := TForm(GetControlByHandle(SCM.EditWndHandle)).ActiveControl;
+  LockWindowUpdate(Self.Handle);
   try
-
-    if @SCM.ActivePlugin.GetCenterScheme <> nil then
-    begin
-
-      if not (SCM.StateEditWarning) then
+    ctrl := nil;
+    if SCM.EditWndHandle <> 0 then
+      if GetControlByHandle(SCM.EditWndHandle) <> nil then
       begin
-        colBackground := $00FBEFE3;
-        colItem := clWindow;
-        colSelectedItem := $00FBEFE3;
-      end
-      else
-      begin
-        colBackground := $00D9D6F9;
-        colItem := clWindow;
-        colSelectedItem := $00FBEFE3;
+        ctrl := TForm(GetControlByHandle(SCM.EditWndHandle)).ActiveControl;
       end;
 
-      SCM.ActivePlugin.GetCenterScheme(colBackground,
-        colItem, colSelectedItem);
+    SCM.RefreshTheme;
+    Scm.Plugin.PluginInterface.Refresh;
 
-      pnlEditContainer.BackgroundColor := colBackground;
-      pnlEditContainer.TabBackgroundColor := clWindow;
-      pnlEditPluginContainer.Color := colBackground;
-      pnlEditPlugin.Color := colBackground;
-      pnlEditToolbar.Color := colBackground;
-      pnlEditContainer.TabSelColor := colBackground;
-      lbTree.Enabled := not (SCM.StateEditItem);
+    lbTree.Enabled := not (SCM.PluginHost.Editing);
+    UpdateEditButtons;
 
-      btnEditCancel.Enabled := True;
-
-      if (SCM.StateEditItem) then
-      begin
-        btnEditApply.Enabled := True;
-
-        case FSelectedTabID of
-          integer(tidAdd): btnEditApply.Caption := 'Add';
-          integer(tidEdit): btnEditApply.Caption := 'Apply';
-          integer(tidDelete):
-            begin
-              btnEditApply.Caption := 'Delete';
-              btnEditApply.Visible := True;
-            end;
-        end;
-
-        btnEditCancel.Caption := 'Cancel';
-
-      end
-      else
-      begin
-        btnEditApply.Enabled := False;
-
-        case FSelectedTabID of
-          integer(tidAdd): btnEditApply.Caption := 'Add';
-          integer(tidEdit): btnEditApply.Caption := 'Edit';
-          integer(tidDelete):
-            begin
-              btnEditApply.Caption := 'Delete';
-              btnEditApply.Visible := True;
-            end;
-        end;
-
-        btnEditCancel.Caption := 'Close';
-      end;
-
-    end;
-  finally
-    //lockWindowUpdate(0);
     if ctrl <> nil then
       ctrl.SetFocus;
+  finally
+    LockWindowUpdate(0);
   end;
 end;
 
@@ -1086,7 +1283,7 @@ begin
   LockWindowUpdate(Self.Handle);
   try
     UpdateSize;
-    CenterUpdateSize;
+    SCM.PluginHost.Refresh ( rtAll );
   finally
     LockWindowUpdate(0);
   end;
@@ -1094,8 +1291,7 @@ end;
 
 procedure TSharpCenterWnd.SavePluginEvent(Sender: TObject);
 begin
-  btnSave.Enabled := False;
-  btnCancel.Enabled := False;
+  PnlButtons.Hide;
 end;
 
 procedure TSharpCenterWnd.UpdateConfigHeader;
@@ -1110,9 +1306,9 @@ begin
     begin
       if (ExtractFileExt(tmp.Filename) = '.dll') then
       begin
-        lblTitle.Caption := tmp.Title;
         lblDescription.Caption := tmp.Description;
-        pnlTitle.Visible := (tmp.Title <> '');
+        lblDescription.Hint := tmp.Description;
+        pnlTitle.Visible := (tmp.Description <> '');
       end;
     end;
   end;
@@ -1121,7 +1317,8 @@ end;
 procedure TSharpCenterWnd.sbPluginResize(Sender: TObject);
 begin
   if sbPlugin.VertScrollBar.IsScrollBarVisible then
-    sbPlugin.Padding.Right := 6 else
+    sbPlugin.Padding.Right := 6
+  else
     sbPlugin.Padding.Right := 0;
 end;
 
@@ -1149,20 +1346,11 @@ end;
 
 procedure TSharpCenterWnd.tlPluginTabsTabChange(ASender: TObject;
   const ATabIndex: Integer; var AChange: Boolean);
-var
-  tmpStrItem: TStringItem;
 begin
   LockWindowUpdate(Self.Handle);
   try
 
-    if (ATabIndex > SCM.PluginTabs.Count - 1) then
-      exit;
-    if @SCM.ActivePlugin.ClickTab <> nil then begin
 
-      tmpStrItem.FString := SCM.PluginTabs[ATabIndex];
-      tmpStrItem.FObject := SCM.PluginTabs.Objects[ATabIndex];
-      SCM.ActivePlugin.ClickTab(tmpStrItem);
-    end;
 
   finally
     LockWindowUpdate(0);
@@ -1178,7 +1366,7 @@ procedure TSharpCenterWnd.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
   try
-    if @SCM.ActivePlugin <> nil then
+    if @SCM.Plugin <> nil then
       SCM.Unload;
 
     FreeAndNil(SCM);
@@ -1190,28 +1378,29 @@ end;
 
 procedure TSharpCenterWnd.FormMouseWheel(Sender: TObject; Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
- Var
+var
   msg: Cardinal;
   code: Cardinal;
   i, n: Integer;
 begin
-  If WindowFromPoint( mouse.Cursorpos ) = sbPlugin.Handle Then Begin
+  if WindowFromPoint(mouse.Cursorpos) = sbPlugin.Handle then
+  begin
     Handled := true;
-    If ssShift In Shift Then
+    if ssShift in Shift then
       msg := WM_HSCROLL
-    Else
+    else
       msg := WM_VSCROLL;
 
-    If WheelDelta > 0 Then
+    if WheelDelta > 0 then
       code := SB_LINEUP
-    Else
+    else
       code := SB_LINEDOWN;
 
-    n:= Mouse.WheelScrollLines;
-    For i:= 1 to n Do
-      sbPlugin.Perform( msg, code, 0 );
-    sbPlugin.Perform( msg, SB_ENDSCROLL, 0 );
-  End;
+    n := Mouse.WheelScrollLines;
+    for i := 1 to n do
+      sbPlugin.Perform(msg, code, 0);
+    sbPlugin.Perform(msg, SB_ENDSCROLL, 0);
+  end;
 end;
 
 end.

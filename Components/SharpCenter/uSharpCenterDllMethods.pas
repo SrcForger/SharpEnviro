@@ -36,7 +36,7 @@ uses
   SharpCenterApi;
 
 type
-  TSetting = record
+  TPlugin = record
     Filename: string;
     Dllhandle: Thandle;
     ConfigType: TSU_UPDATE_ENUM;
@@ -56,15 +56,19 @@ type
     UpdatePreview: procedure (var ABmp:TBitmap32);
 
     SetText: procedure (const APluginID:string; var AName:string;
-      var AStatus: string; var ATitle: string; var ADescription: string);
+      var AStatus: string; var ADescription: string);
+
+    GetCenterTheme: procedure (const ATheme: TCenterThemeInfo; const AEditing: Boolean);
 
     GetCenterScheme: procedure (var ABackground: TColor;
       var AItemColor: TColor; var AItemSelectedColor: TColor);
   end;
-  PSetting = ^TSetting;
+  PSetting = ^TPlugin;
+
+
 
   // functions to use for loading Plugins
-function LoadPlugin(filename: Pchar): TSetting;
+function LoadPlugin(filename: Pchar): TPlugin;
 function UnloadPlugin(plugin: PSetting): hresult;
 
 implementation
@@ -87,6 +91,7 @@ begin
 
     plugin.SetText := nil;
     plugin.GetCenterScheme := nil;
+    plugin.GetCenterTheme := nil;
 
     plugin.DllHandle := 0;
     FreeLibrary(plugin.dllhandle);
@@ -96,7 +101,7 @@ begin
   end;
 end;
 
-function LoadPlugin(filename: Pchar): TSetting;
+function LoadPlugin(filename: Pchar): TPlugin;
 begin
     result.filename := filename;
 
@@ -119,6 +124,7 @@ begin
 
       @result.SetText := GetProcAddress(result.Dllhandle,'SetText');
       @result.GetCenterScheme := GetProcAddress(result.Dllhandle, 'GetCenterScheme');
+      @result.GetCenterTheme := GetProcAddress(result.Dllhandle, 'GetCenterTheme');
 
       if (@result.Open = nil) then begin
         freelibrary(result.dllhandle);

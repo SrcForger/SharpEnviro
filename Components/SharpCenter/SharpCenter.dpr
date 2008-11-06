@@ -9,7 +9,12 @@ uses
   uSharpCenterHelperMethods in 'uSharpCenterHelperMethods.pas',
   uSharpCenterHistoryList in 'uSharpCenterHistoryList.pas',
   uSharpCenterFavManager in 'uSharpCenterFavManager.pas',
-  uSharpCenterManager in 'uSharpCenterManager.pas';
+  uSharpCenterManager in 'uSharpCenterManager.pas',
+  uSharpCenterThemeManager in 'uSharpCenterThemeManager.pas',
+  ISharpCenterPluginUnit in '..\..\Common\Interfaces\ISharpCenterPluginUnit.pas',
+  uSharpCenterPluginManager in 'uSharpCenterPluginManager.pas',
+  uSharpCenterHost in 'uSharpCenterHost.pas',
+  ISharpCenterHostUnit in '..\..\Common\Interfaces\ISharpCenterHostUnit.pas';
 
 {$R *.res}
 {$R metadata.res}

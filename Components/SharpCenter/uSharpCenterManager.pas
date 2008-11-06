@@ -24,8 +24,13 @@ uses
   Menus,
 
   uSharpCenterHistoryList,
-  uSharpCenterDllMethods,
-  SharpCenterApi;
+  uSharpCenterPluginManager,
+  ISharpCenterPluginUnit,
+  ISharpCenterHostUnit,
+  SharpCenterApi,
+  SharpETabList,
+  uSharpCenterHost,
+  uSharpCenterThemeManager;
 
 type
   TSharpCenterItemType = (itmNone, itmFolder, itmSetting, itmDll);
@@ -47,18 +52,16 @@ type
     FCaption: string;
     FStatus: string;
     FPluginID: string;
-    FPlugin: TSetting;
-    FTitle: string;
+    FPlugin: TPlugin;
     FDescription: string;
     procedure SetCaption(const Value: string);
   public
     constructor Create;
     property Caption: string read FCaption write SetCaption;
     property Status: string read FStatus write FStatus;
-    property Title: string read FTitle write FTitle;
     property Description: string read FDescription write FDescription;
     property PluginID: string read FPluginID write FPluginID;
-    property Plugin: TSetting read FPlugin write FPlugin;
+    property Plugin: TPlugin read FPlugin write FPlugin;
 
     property Filename: string read FFilename write FFilename;
     property Path: string read FPath write FPath;
@@ -70,40 +73,41 @@ type
 type
   TSharpCenterManagerAddNavItem = procedure(AItem: TSharpCenterManagerItem;
     const AIndex: Integer) of object;
-  TSharpCenterSetHomeTitle = procedure(ATitle: string; ADescription: string) of object;
+  TSharpCenterSetHomeTitle = procedure(ADescription: string) of object;
 
 type
   TSharpCenterManager = class
   private
 
-    FStateEditWarning: Boolean;
-    FStateEditItem: Boolean;
     FHistory: TSharpCenterHistoryList;
     FRoot: string;
     FUnloadTimer: TTimer;
 
-    FActivePlugin: TSetting;
+    FPlugin: TPlugin;
     FUnloadCommand: TSharpCenterHistoryItem;
     FActivePluginID: string;
     FActiveFile: string;
     FOnAddNavItem: TSharpCenterManagerAddNavItem;
     FPngImageList: TPngImageList;
 
-    FPluginWndHandle: THandle;
-    FEditWndHandle: THandle;
+    FPluginHandle: THandle;
+    FEditHandle: THandle;
     FOnLoadPlugin: TNotifyEvent;
     FOnUnloadPlugin: TNotifyEvent;
-    FPluginTabs: TStringList;
     FOnAddPluginTabs: TNotifyEvent;
     FOnUpdateTheme: TNotifyEvent;
     FOnInitNavigation: TNotifyEvent;
-    FEditWndContainer: TPanel;
-    FPluginContainer: TPanel;
     FOnLoadEdit: TNotifyEvent;
     FOnCancelEdit: TNotifyEvent;
     FOnApplyEdit: TNotifyEvent;
     FOnSetTitle: TNotifyEvent;
     FOnSetHomeTitle: TSharpCenterSetHomeTitle;
+    FOnRefreshTheme: TNotifyEvent;
+    FPluginHost: TInterfacedSharpCenterHostBase;
+    FPluginTabs: TStringList;
+    FThemeManager: TCenterThemeManager;
+
+    FPluginTabIndex: Integer;
 
     // Events
     procedure UnloadTimerEvent(Sender: TObject);
@@ -111,34 +115,35 @@ type
     // Dll Methods
 
     function UnloadDllTimer(ACommand: TSCC_COMMAND_ENUM; AParam,
-      APluginID: string): Boolean;
+      APluginID: string; APluginTabIndex: Integer): Boolean;
 
-    procedure SetStateEditItem(const Value: Boolean);
-    procedure SetStateEditWarning(const Value: Boolean);
     function GetHistory: TSharpCenterHistoryList;
 
     function GetRoot: string;
     procedure AssignIconIndex(AFile: string; AItem: TSharpCenterManagerItem);
 
     procedure SetUnloadCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
-      APluginID: string);
+      APluginID: string; APluginTabIndex: Integer);
 
     procedure GetItemText(AFile, APluginID: string; var AName: string;
-      var AStatus: string; var ATitle: string; var ADescription: string);
+      var AStatus: string; var ADescription: string);
     procedure BuildNavFromCommandLine;
+    function GetTheme: TCenterThemeInfo;
 
+
+    function GetSharpCenterPlugin: ISharpCenterPlugin;
   public
     constructor Create;
     destructor Destroy; override;
 
     // Nav Methods
-    function BuildNavFromPath(APath: string): Boolean;
-    function BuildNavFromFile(AFile: string; ALoad: Boolean = True; AHistory:Boolean = True): Boolean;
-    function BuildNavRoot: Boolean;
+    procedure BuildNavFromPath(APath: string);
+    procedure BuildNavFromFile(AFile: string; ALoad: Boolean = True; AHistory:Boolean = True);
+    procedure BuildNavRoot;
 
     function LoadHome: Boolean;
     function Load(AFile, APluginID: string): Boolean;
-    function Save: Boolean;
+    procedure Save;
     function Reload: Boolean;
     function Unload: Boolean;
 
@@ -149,20 +154,25 @@ type
     function CheckEditState: Boolean;
 
     procedure UpdateSettingsBroadcast;
+    procedure RefreshTheme;
+
+    function PluginHasEditSupport: Boolean;
+    function PluginHasTabSupport: Boolean;
+    function PluginHasPreviewSupport: Boolean;
+
     function ExecuteCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
-      APluginID: string): Boolean;
+      APluginID: string; APluginTabIndex: Integer): Boolean;
 
     property OnAddNavItem: TSharpCenterManagerAddNavItem read FOnAddNavItem write FOnAddNavItem;
     property PngImageList: TPngImageList read FPngImageList write FPngImageList;
 
-    property StateEditItem: Boolean read FStateEditItem write SetStateEditItem;
-    property StateEditWarning: Boolean read FStateEditWarning write SetStateEditWarning;
-
     property History: TSharpCenterHistoryList read GetHistory;
 
-    property ActivePlugin: TSetting read FActivePlugin write FActivePlugin;
+    property Plugin: TPlugin read FPlugin write FPlugin;
     property ActivePluginID: string read FActivePluginID write FActivePluginID;
     property ActiveFile: string read FActiveFile write FActiveFile;
+
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
 
     property Root: string read GetRoot;
 
@@ -170,12 +180,15 @@ type
 
     property PluginTabs: TStringList read FPluginTabs write FPluginTabs;
     function LoadPluginTabs: Boolean;
+    procedure ClickTab( ATabIndex: Integer );
+    property PluginTabIndex: Integer read FPluginTabIndex write FPluginTabIndex;
 
-    property PluginWndHandle: THandle read FPluginWndHandle write FPluginWndHandle;
-    property EditWndHandle: THandle read FEditWndHandle write FEditWndHandle;
+    property PluginWndHandle: THandle read FPluginHandle write FPluginHandle;
+    property EditWndHandle: THandle read FEditHandle write FEditHandle;
+    property Theme: TCenterThemeInfo read GetTheme;
 
-    property PluginContainer: TPanel read FPluginContainer write FPluginContainer;
-    property EditWndContainer: TPanel read FEditWndContainer write FEditWndContainer;
+    property SharpCenterPlugin: ISharpCenterPlugin read GetSharpCenterPlugin;
+    property ThemeManager: TCenterThemeManager read FThemeManager write FThemeManager;
     property OnInitNavigation: TNotifyEvent read FOnInitNavigation write FOnInitNavigation;
     property OnUpdateTheme: TNotifyEvent read FOnUpdateTheme write FOnUpdateTheme;
     property OnAddPluginTabs: TNotifyEvent read FOnAddPluginTabs write FOnAddPluginTabs;
@@ -186,6 +199,7 @@ type
     property OnApplyEdit: TNotifyEvent read FOnApplyEdit write FOnApplyEdit;
     property OnCancelEdit: TNotifyEvent read FOnCancelEdit write FOnCancelEdit;
     property OnSetHomeTitle: TSharpCenterSetHomeTitle read FOnSetHomeTitle write FOnSetHomeTitle;
+    property OnRefreshTheme: TNotifyEvent read FOnRefreshTheme write FOnRefreshTheme;
   end;
 
 var
@@ -205,13 +219,19 @@ begin
 
   try
 
-    if FileExists(AFile) then begin
-      ActivePlugin := LoadPlugin(PChar(AFile));
+    // Always ensure the dll is unloaded before loading another
+    Unload;
 
-      if (@ActivePlugin.Open) <> nil then
-      begin
-        FPluginWndHandle := ActivePlugin.Open(Pchar(APluginID), FPluginContainer.Handle);
-        FPluginContainer.ParentWindow := FPluginWndHandle;
+    if FileExists(AFile) then begin
+
+      FPlugin := LoadPluginInterface(PChar(AFile));
+
+      if ( @FPlugin.InitPluginInterface <> nil ) then begin
+
+      FPluginHost.PluginId := APluginID;
+      FPlugin.PluginInterface := FPlugin.InitPluginInterface( FPluginHost );
+      FPluginHandle := Plugin.PluginInterface.Open();
+      FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
 
         // load plugin tabs
         LoadPluginTabs;
@@ -235,41 +255,40 @@ function TSharpCenterManager.Unload: Boolean;
 begin
 
   Result := False;
-  if (ActivePlugin.Dllhandle = 0) then
+  if (Plugin.Dllhandle = 0) then
     exit;
 
   if Assigned(FOnUnloadPlugin) then
     FOnUnloadPlugin(Self);
 
-  // Handle proper closing of the setting
-  if @FActivePlugin.Close <> nil then
-    FActivePlugin.Close;
+  // Call the close method on the plugin
+  SharpCenterPlugin.Close;
 
-  // Unload dll
-  UnloadPlugin(@FActivePlugin);
+  // Unload the plugin
+  UnloadPluginInterface(@FPlugin);
 
-  FEditWndHandle := 0;
-  FPluginWndHandle := 0;
-  FActivePlugin.Dllhandle := 0;
-  FActivePlugin.Filename := '';
+  FEditHandle := 0;
+  FPluginHandle := 0;
+  FPlugin.Dllhandle := 0;
   Result := True;
 end;
 
 function TSharpCenterManager.UnloadDllTimer(ACommand: TSCC_COMMAND_ENUM; AParam,
-  APluginID: string): Boolean;
+  APluginID: string; APluginTabIndex: Integer): Boolean;
 begin
   Result := True;
-  SetUnloadCommand(ACommand, AParam, APluginID);
+  SetUnloadCommand(ACommand, AParam, APluginID, APluginTabIndex);
   FUnloadTimer.Enabled := True;
 end;
 
 procedure TSharpCenterManager.UnloadTimerEvent(Sender: TObject);
 begin
   FUnloadTimer.Enabled := False;
+  SCM.PluginTabIndex := FUnloadCommand.TabIndex;
 
   if FUnloadCommand.Command = sccUnloadDll then
   begin
-    if FActivePlugin.Dllhandle <> 0 then
+    if FPlugin.Dllhandle <> 0 then
       Unload;
 
     if not (IsDirectory(FUnloadCommand.Param)) then
@@ -277,7 +296,7 @@ begin
   end
   else if FUnloadCommand.Command = sccChangeFolder then
   begin
-    if FActivePlugin.Dllhandle <> 0 then
+    if FPlugin.Dllhandle <> 0 then
       Unload;
 
     ActivePluginID := FUnloadCommand.PluginID;
@@ -285,7 +304,7 @@ begin
   end
   else if FUnloadCommand.Command = sccLoadDll then
   begin
-    if FActivePlugin.Dllhandle <> 0 then
+    if FPlugin.Dllhandle <> 0 then
       Unload;
 
     ActivePluginID := FUnloadCommand.PluginID;
@@ -294,7 +313,7 @@ begin
   else if FUnloadCommand.Command = sccLoadSetting then
   begin
 
-    if FActivePlugin.Dllhandle <> 0 then
+    if FPlugin.Dllhandle <> 0 then
       Unload;
 
     ActivePluginID := FUnloadCommand.PluginID;
@@ -308,23 +327,31 @@ begin
   end;
 end;
 
+procedure TSharpCenterManager.RefreshTheme;
+begin
+  FThemeManager.Refresh;
+
+  if Plugin.Dllhandle <> 0 then
+    Plugin.PluginInterface.Refresh;
+
+  if assigned(FOnRefreshTheme) then
+    FOnRefreshTheme(Self);
+end;
+
 function TSharpCenterManager.Reload: Boolean;
 begin
   Result := Load(FActiveFile, FActivePluginID);
 end;
 
-function TSharpCenterManager.Save: Boolean;
+procedure TSharpCenterManager.Save;
 begin
-  Result := True;
-
-  if (@FActivePlugin.Save <> nil) then
-    FActivePlugin.Save;
+  SharpCenterPlugin.Save;
 
   UpdateSettingsBroadcast;
 end;
 
-function TSharpCenterManager.BuildNavFromFile(AFile: string; ALoad: Boolean = True;
- AHistory:Boolean=True ): Boolean;
+procedure TSharpCenterManager.BuildNavFromFile(AFile: string; ALoad: Boolean = True;
+ AHistory:Boolean=True );
 var
   xml: TJvSimpleXML;
   i: Integer;
@@ -334,8 +361,9 @@ var
   sFirstNavFile, sFirstPluginID: string;
   newItem: TSharpCenterManagerItem;
 begin
+  if ( not( fileexists(AFile) ) ) then exit;
+
   LockWindowUpdate(Application.MainForm.Handle);
-  Result := True;
   try
 
     if Assigned(FOnInitNavigation) then
@@ -369,7 +397,7 @@ begin
           sStatus := '';
           sTitle := '';
           sDescription := '';
-          GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sTitle, sDescription);
+          GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
 
           if Items.Item[i].Items.ItemNamed['Name'] <> nil then
             sName := Items.Item[i].Items.ItemNamed['Name'].Value;
@@ -381,7 +409,6 @@ begin
 
           newItem.Filename := sPath + sDll;
           newItem.PluginID := SCM.ActivePluginID;
-          newItem.Title := sTitle;
           newItem.Description := sDescription;
           NewItem.Status := sStatus;
 
@@ -416,7 +443,7 @@ begin
   end;
 end;
 
-function TSharpCenterManager.BuildNavFromPath(APath: string): Boolean;
+procedure TSharpCenterManager.BuildNavFromPath(APath: string);
 var
   SRec: TSearchRec;
   xml: TJvSimpleXML;
@@ -430,8 +457,10 @@ var
   sTitle: string;
   sDescription: string;
 begin
+  // Unload the dll first
+  SCM.Unload;
+
   iCount := 0;
-  Result := True;
   LockWindowUpdate(Application.MainForm.Handle);
 
   if Assigned(FOnInitNavigation) then
@@ -480,7 +509,7 @@ begin
             sStatus := '';
             sTitle := '';
             sDescription := '';
-            GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sTitle, sDescription);
+            GetItemText(sPath + sDll, SCM.ActivePluginID, sName, sStatus, sDescription);
 
           finally
             Xml.Free;
@@ -543,33 +572,25 @@ begin
 end;
 
 function TSharpCenterManager.ExecuteCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
-  APluginID: string): Boolean;
+  APluginID: string; APluginTabIndex: Integer): Boolean;
 begin
-  Result := False;
-  {if FStateEditWarning or FStateEditItem then begin
-    MessageDlg('Unable to display the configuration page (EditMode is Active)' +
-      #13 + #10 + 'Please save your configuration before attempting to load another.'
-      , mtError, [mbOK], 0);
-    exit;
-  end; }
-
   Result := True;
   if ACommand = sccChangeFolder then
   begin
-    UnloadDllTimer(sccChangeFolder, AParam, APluginID);
+    UnloadDllTimer(sccChangeFolder, AParam, APluginID, APluginTabIndex);
   end else
     if ACommand = sccUnloadDll then
     begin
-      UnloadDllTimer(sccUnloadDll, AParam, APluginID);
+      UnloadDllTimer(sccUnloadDll, AParam, APluginID, APluginTabIndex);
     end else
       if ACommand = sccLoadSetting then
       begin
-        UnloadDllTimer(sccLoadSetting, AParam, APluginID);
+        UnloadDllTimer(sccLoadSetting, AParam, APluginID, APluginTabIndex);
 
       end
       else
         if ACommand = sccLoadDll then begin
-          UnloadDllTimer(sccLoadDll, AParam, APluginID);
+          UnloadDllTimer(sccLoadDll, AParam, APluginID, APluginTabIndex);
         end
         else begin
           MessageDlg('Unknown command', mtError, [mbOK], 0);
@@ -581,7 +602,7 @@ var
   enumSettingType: TSU_UPDATE_ENUM;
   n: Integer;
 begin
-  enumSettingType := FActivePlugin.ConfigType;
+  enumSettingType := FPlugin.ConfigType;
 
   // if a ':' is in the string then it's a suModule message
   // we need to extract the ModuleID and send it as param...
@@ -637,32 +658,10 @@ begin
   Load(FUnloadCommand.Param, FUnloadCommand.PluginID);
 end;
 
-function TSharpCenterManager.BuildNavRoot: Boolean;
+procedure TSharpCenterManager.BuildNavRoot;
 begin
   History.Clear;
-  Result := BuildNavFromPath(FRoot);
-end;
-
-procedure TSharpCenterManager.SetStateEditWarning(const Value: Boolean);
-begin
-  if FStateEditWarning <> Value then begin
-
-    FStateEditWarning := Value;
-
-    if Assigned(FonUpdateTheme) then
-      FOnUpdateTheme(Self);
-  end;
-end;
-
-procedure TSharpCenterManager.SetStateEditItem(const Value: Boolean);
-begin
-  if FStateEditItem <> Value then begin
-
-    FStateEditItem := Value;
-  end;
-
-  if Assigned(FonUpdateTheme) then
-    FOnUpdateTheme(Self);
+  BuildNavFromPath(FRoot);
 end;
 
 function TSharpCenterManager.GetHistory: TSharpCenterHistoryList;
@@ -672,7 +671,14 @@ end;
 
 constructor TSharpCenterManager.Create;
 begin
-  // Create the history object
+  // Create the host interface
+  FThemeManager := TCenterThemeManager.Create;
+
+  FPluginHost := TInterfacedSharpCenterHostBase.Create;
+
+  RefreshTheme;
+  FPluginHost.Theme := FThemeManager.Theme;
+
   FHistory := TSharpCenterHistoryList.Create;
 
   // Set the active root path
@@ -698,6 +704,10 @@ begin
   FPluginTabs.Free;
   FPngImageList.Free;
 
+  // Don't free the interface, set the interface to nil
+  FThemeManager.Free;
+  FPluginHost := nil;
+
   inherited;
 end;
 
@@ -706,16 +716,39 @@ begin
   Result := FRoot;
 end;
 
+function TSharpCenterManager.GetSharpCenterPlugin: ISharpCenterPlugin;
+begin
+  Result := FPlugin.PluginInterface;
+end;
+
+function TSharpCenterManager.GetTheme: TCenterThemeInfo;
+begin
+  Result := FThemeManager.Theme;
+end;
+
 function TSharpCenterManager.CheckEditState: Boolean;
 begin
   Result := False;
-  if StateEditItem then begin
-    StateEditWarning := True;
+  if PluginHost.Editing then begin
+    PluginHost.Warning := True;
     Result := True;
   end;
 
-  if ((StateEditItem) or (StateEditWarning)) then
+  if ((PluginHost.Editing) or (PluginHost.Warning)) then
     Result := True;
+end;
+
+procedure TSharpCenterManager.ClickTab(ATabIndex: Integer);
+var
+  tmpStrItem: TStringItem;
+begin
+  if ( (ATabIndex >= 0) and ( ATabIndex < FPluginTabs.Count) ) then begin
+
+    tmpStrItem.FString := FPluginTabs[ATabIndex];
+    tmpStrItem.FObject := FPluginTabs.Objects[ATabIndex];
+
+    FPlugin.TabInterface.ClickPluginTab(tmpStrItem);
+  end;
 end;
 
 procedure TSharpCenterManager.AssignIconIndex(AFile: string;
@@ -743,104 +776,153 @@ begin
 end;
 
 procedure TSharpCenterManager.SetUnloadCommand(ACommand: TSCC_COMMAND_ENUM; AParam,
-  APluginID: string);
+  APluginID: string; APluginTabIndex: Integer);
 begin
   FUnloadCommand.Command := ACommand;
   FUnloadCommand.Param := AParam;
   FUnloadCommand.PluginID := APluginID;
+  FUnloadCommand.TabIndex := APluginTabIndex;
 end;
 
 function TSharpCenterManager.LoadPluginTabs: Boolean;
-var
-  tmpStrItem: TStringItem;
 begin
-  FPluginTabs.Clear;
   Result := True;
+  SCM.PluginTabs.Clear;
+  
+  if (PluginHasTabSupport) then begin
+    Plugin.TabInterface.AddPluginTabs(PluginTabs);
 
-  if (@ActivePlugin.AddTabs <> nil) then
-    ActivePlugin.AddTabs(FPluginTabs);
+    if Assigned(FOnAddPluginTabs) then
+      FOnAddPluginTabs(Self);
+  end else
+    if Assigned(FOnAddPluginTabs) then
+      FOnAddPluginTabs(Self);
 
-  if Assigned(FOnAddPluginTabs) then
-    FOnAddPluginTabs(Self);
-
-  if (PluginTabs.Count > 0) and (@ActivePlugin.ClickTab <> nil) then begin
-    tmpStrItem.FString := FPluginTabs.Strings[0];
-    tmpStrItem.FObject := FPluginTabs.Objects[0];
-    ActivePlugin.ClickTab(tmpStrItem);
+  if (PluginTabs.Count > 0) then begin
+    ClickTab(FPluginTabIndex);
   end;
 end;
 
-procedure TSharpCenterManager.GetItemText(AFile, APluginID: string; var AName: string;
-  var AStatus: string; var ATitle: string; var ADescription: string);
+function TSharpCenterManager.PluginHasEditSupport: Boolean;
 var
-  tmpSetting: Tsetting;
-  sStatus, sName, sTitle, sDescription: string;
+  tmp:ISharpCenterPluginEdit;
+begin
+  Result := True;
+
+  tmp := nil;
+  if not(SharpCenterPlugin.QueryInterface(IID_ISharpCenterPluginEdit,tmp) = S_OK) then
+    Result := False else begin
+      with Plugin do begin
+        EditInterface := tmp;
+      end;
+    end;
+end;
+
+function TSharpCenterManager.PluginHasPreviewSupport: Boolean;
+var
+  tmp:ISharpCenterPluginPreview;
+begin
+  Result := True;
+
+  tmp := nil;
+  if not(SharpCenterPlugin.QueryInterface(IID_ISharpCenterPluginPreview,tmp) = S_OK) then
+    Result := False else begin
+      with Plugin do begin
+        PreviewInterface := tmp;
+      end;
+    end;
+end;
+
+function TSharpCenterManager.PluginHasTabSupport: Boolean;
+var
+  tmp:ISharpCenterPluginTabs;
+begin
+  Result := True;
+
+  tmp := nil;
+  if not(SharpCenterPlugin.QueryInterface(IID_ISharpCenterPluginTabs,tmp) = S_OK) then
+    Result := False else begin
+      with Plugin do begin
+        TabInterface := tmp;
+      end;
+    end;
+end;
+
+procedure TSharpCenterManager.GetItemText(AFile, APluginID: string; var AName: string;
+  var AStatus: string; var ADescription: string);
+var
+  tmpPlugin: TPlugin;
+  sStatus, sName, sDescription: string;
 begin
 
   AStatus := '';
-  ATitle := '';
   ADescription := '';
+  FPluginHost.PluginId := APluginID;
 
   if fileexists(AFile) then
   begin
-    tmpSetting := LoadPlugin(PChar(Afile));
+    tmpPlugin := LoadPluginInterface(PChar(Afile));
+
+    if ( @tmpPlugin.InitPluginInterface <> nil ) then begin
+
+      tmpPlugin.PluginInterface := tmpPlugin.InitPluginInterface( FPluginHost );
 
     try
-      if (@tmpSetting.SetText <> nil) then
-      begin
-        tmpSetting.SetText(APluginID, sName, sStatus, sTitle, sDescription);
-      end;
+      sName := tmpPlugin.PluginInterface.GetPluginName;
+      if sName = '' then sName := tmpPlugin.MetaData.Name;
+
+      sStatus := tmpPlugin.PluginInterface.GetPluginStatusText;
+
+      sDescription := tmpPlugin.PluginInterface.GetPluginDescriptionText;
+      if sDescription = '' then sDescription := tmpPlugin.MetaData.Description;
+      
 
     finally
-      //tmpSetting.DllHandle := 0;
-      UnloadPlugin(@tmpSetting);
+
+      UnloadPluginInterface(@tmpPlugin);
 
       AStatus := sStatus;
       AName := sName;
-      ATitle := sTitle;
       ADescription := sDescription;
+    end;
     end;
   end;
 end;
 
 function TSharpCenterManager.LoadEdit(ATabID: Integer): Boolean;
 var
-  handle: THandle;
+  editMode:TSCE_EDITMODE_ENUM;
 begin
-  handle := 0;
   Result := True;
+  editMode := sceAdd;
 
   if CheckEditState then exit;
 
-  if (@FActivePlugin.OpenEdit <> nil) then begin
+  if (PluginHasEditSupport) then begin
 
     case Integer(ATabID) of
-      Integer(tidAdd): handle :=
-        FActivePlugin.OpenEdit(EditWndContainer.Handle, sceAdd);
-      Integer(tidEdit): handle :=
-        FActivePlugin.OpenEdit(EditWndContainer.Handle, sceEdit);
-      Integer(tidDelete): handle :=
-        FActivePlugin.OpenEdit(EditWndContainer.Handle, sceDelete);
+      Integer(tidAdd): editMode := sceAdd;
+      Integer(tidEdit): editMode := sceEdit;
+      Integer(tidDelete): editMode := sceDelete;
     end;
 
-    if handle <> HR_NORECIEVERWINDOW then begin
-      EditWndHandle := handle;
-      EditWndContainer.ParentWindow := EditWndHandle;
+    FPluginHost.EditMode := editMode;
+    FEditHandle := Plugin.EditInterface.OpenEdit();
+    FPluginHost.EditOwner.ParentWindow := FEditHandle;
 
-      if assigned(FOnUpdateTheme) then
-        FOnUpdateTheme(Self);
+    if assigned(FOnUpdateTheme) then
+      FOnUpdateTheme(Self);
 
-      if assigned(FOnLoadEdit) then
-        FOnLoadEdit(Self);
+    if assigned(FOnLoadEdit) then
+      FOnLoadEdit(Self);
 
-    end;
   end;
 end;
 
 function TSharpCenterManager.LoadHome: Boolean;
 var
   Xml: TJvSimpleXML;
-  sFile, sName, sStatus, sDescription, sTitle: string;
+  sFile, tmp: string;
 
 begin
   Result := False;
@@ -849,27 +931,29 @@ begin
   try
 
     if FileExists(sFile) then begin
-      FActivePlugin := LoadPlugin(PChar(sFile));
+      FPlugin := LoadPluginInterface(PChar(sFile));
 
-      if (@FActivePlugin.Open) <> nil then
-      begin
-        FPluginWndHandle := FActivePlugin.Open(Pchar(''), FPluginContainer.Handle);
-        FPluginContainer.ParentWindow := FPluginWndHandle;
+      if ( @FPlugin.InitPluginInterface <> nil ) then begin
 
-        // Get title and description
-        if (@FActivePlugin.SetText <> nil) then
-          FActivePlugin.SetText('', sName, sStatus, sTitle, sDescription);
+      FPlugin.PluginInterface := FPlugin.InitPluginInterface( FPluginHost );
+      FPluginHandle := Plugin.PluginInterface.Open();
+      FPluginHost.PluginOwner.ParentWindow := FPluginHandle;
 
-        LoadPluginTabs;
+      LoadPluginTabs;
 
-        if Assigned(FOnSetHomeTitle) then
-          FOnSetHomeTitle(sTitle, sDescription);
+      if Assigned(FOnSetHomeTitle) then begin
+        tmp := FPlugin.PluginInterface.GetPluginDescriptionText;
+        if tmp = '' then tmp := FPlugin.MetaData.Description;
+
+        FOnSetHomeTitle(tmp);
+      end;
 
         if Assigned(FOnLoadPlugin) then
           FOnLoadPlugin(Self);
 
         if Assigned(FOnUpdateTheme) then
           FOnUpdateTheme(Self);
+
 
         Result := True;
       end;
@@ -883,25 +967,30 @@ end;
 function TSharpCenterManager.ApplyEdit(ATabID: Integer): Boolean;
 var
   bValid: Boolean;
+  editMode: TSCE_EDITMODE_ENUM;
 begin
   Result := True;
+  editMode  := sceAdd;
 
   LockWindowUpdate(Application.MainForm.Handle);
   try
 
     bValid := True;
-    if (@ActivePlugin.CloseEdit <> nil) then begin
+    if (PluginHasEditSupport) then begin
 
       case ATabID of
-        Integer(tidAdd): bValid := ActivePlugin.CloseEdit(sceAdd, True);
-        Integer(tidEdit): bValid := ActivePlugin.CloseEdit(sceEdit, True);
-        Integer(tidDelete): bValid := ActivePlugin.CloseEdit(sceDelete, True);
+        Integer(tidAdd): editMode := sceAdd;
+        Integer(tidEdit): editMode := sceEdit;
+        Integer(tidDelete): editMode := sceDelete;
       end;
+
+      FPluginHost.EditMode := editMode;
+      bValid := Plugin.EditInterface.CloseEdit( True );
     end;
 
     if bValid then begin
-      StateEditItem := False;
-      StateEditWarning := False;
+      PluginHost.Editing := False;
+      PluginHost.Warning := False;
       EditWndHandle := 0;
 
       if Assigned(FOnApplyEdit) then
@@ -923,12 +1012,14 @@ function TSharpCenterManager.CancelEdit(ATabID: Integer): Boolean;
 begin
   Result := True;
 
-  if (@ActivePlugin.CloseEdit <> nil) then
-    ActivePlugin.CloseEdit(sceEdit, False);
+  if (PluginHasEditSupport) then begin
+    PluginHost.EditMode := sceEdit;
+    Plugin.EditInterface.CloseEdit(False);
+  end;
 
-  if not (StateEditItem) then begin
-    StateEditItem := False;
-    StateEditWarning := False;
+  if not (PluginHost.Editing) then begin
+    PluginHost.Editing := False;
+    PluginHost.Warning := False;
     EditWndHandle := 0;
 
     if assigned(FOnCancelEdit) then
@@ -937,8 +1028,8 @@ begin
     exit;
   end;
 
-  StateEditItem := False;
-  StateEditWarning := False;
+  PluginHost.Warning := False;
+  PluginHost.Editing := False;
   EditWndHandle := 0;
 
   if assigned(FOnCancelEdit) then
