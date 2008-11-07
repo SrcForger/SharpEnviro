@@ -1066,6 +1066,7 @@ begin
   //RefreshThemeEvent(nil);
   //RefreshPluginTabsEvent(nil);
   RefreshSizeEvent(nil);
+  RefreshTitleEvent(nil);
 end;
 
 procedure TSharpCenterWnd.RefreshPluginTabsEvent(Sender: TObject);
@@ -1156,11 +1157,30 @@ begin
 end;
 
 procedure TSharpCenterWnd.RefreshTitleEvent(Sender: TObject);
+var
+  sName, sStatus, sDescription: string;
+  tmpItem: TSharpCenterManagerItem;
 begin
   if SCM.Plugin.Dllhandle <> 0 then begin
-    TSharpCenterManagerItem(lbTree.SelectedItem.Data).Caption := scm.Plugin.PluginInterface.GetPluginName;
-    TSharpCenterManagerItem(lbTree.SelectedItem.Data).Status := scm.Plugin.PluginInterface.GetPluginStatusText;
-    TSharpCenterManagerItem(lbTree.SelectedItem.Data).Description := scm.Plugin.PluginInterface.GetPluginDescriptionText;
+
+    if lbTree.SelectedItem = nil then exit;
+    
+    tmpItem := TSharpCenterManagerItem(lbTree.SelectedItem.Data);
+
+    // Name
+    sName := scm.Plugin.PluginInterface.GetPluginName;
+    if sName = '' then sName := scm.Plugin.MetaData.Name;
+    tmpItem.Caption := sName;
+
+    // Status
+    sStatus := scm.Plugin.PluginInterface.GetPluginStatusText;
+    tmpItem.Status := sStatus;
+
+    // Description
+    sDescription := scm.Plugin.PluginInterface.GetPluginDescriptionText;
+    if sDescription = '' then sDescription := scm.Plugin.MetaData.Description;
+    tmpItem.Description := sDescription;
+
     lbTree.Refresh;
   end;
 
