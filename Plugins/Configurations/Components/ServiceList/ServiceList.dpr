@@ -37,12 +37,12 @@ uses
   PngSpeedButton,
   uVistaFuncs,
   SysUtils,
-  uComponentMan,
   SharpApi,
   SharpCenterApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
-  listWnd in 'listWnd.pas' {frmList};
+  listWnd in 'listWnd.pas' {frmList},
+  uComponentMan in '..\..\..\..\Components\SharpCore2\uComponentMan.pas';
 
 {$E .dll}
 
