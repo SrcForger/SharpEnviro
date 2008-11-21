@@ -3,7 +3,7 @@ object frmSettings: TfrmSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmDeskAreaSettings'
-  ClientHeight = 175
+  ClientHeight = 173
   ClientWidth = 506
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -54,12 +54,13 @@ object frmSettings: TfrmSettings
     Left = 5
     Top = 121
     Width = 496
-    Height = 48
+    Height = 49
     Margins.Left = 5
     Margins.Top = 10
     Margins.Right = 5
     Margins.Bottom = 0
     Align = alTop
+    AutoSize = True
     BevelOuter = bvNone
     Color = clWindow
     ParentBackground = False
@@ -70,20 +71,20 @@ object frmSettings: TfrmSettings
       Width = 130
       Height = 21
       ParentBackground = False
-      Min = -32
+      Min = 0
       Max = 512
       Value = 0
       Prefix = 'Left: '
       Suffix = ' px'
       Description = 'Left Offset'
-      PopPosition = ppBottom
+      PopPosition = ppTop
       PercentDisplay = False
       OnChangeValue = sgb_leftChangeValue
       BackgroundColor = clWindow
     end
     object sgb_top: TSharpeGaugeBox
-      Left = 136
-      Top = 0
+      Left = 0
+      Top = 28
       Width = 130
       Height = 21
       ParentBackground = False
@@ -116,18 +117,18 @@ object frmSettings: TfrmSettings
       BackgroundColor = clWindow
     end
     object sgb_right: TSharpeGaugeBox
-      Left = 0
-      Top = 27
+      Left = 136
+      Top = 0
       Width = 130
       Height = 21
       ParentBackground = False
-      Min = -32
+      Min = 0
       Max = 512
       Value = 0
       Prefix = 'Right: '
       Suffix = ' px'
       Description = 'Right Offset'
-      PopPosition = ppBottom
+      PopPosition = ppTop
       PercentDisplay = False
       OnChangeValue = sgb_leftChangeValue
       BackgroundColor = clWindow

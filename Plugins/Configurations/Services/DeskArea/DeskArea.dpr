@@ -31,7 +31,7 @@ uses
   SysUtils,
   Forms,
   Dialogs,
-  JvSimpleXml,
+  JclSimpleXml,
   PngSpeedButton,
   SharpETabList,
   ISharpCenterHostUnit,
@@ -109,7 +109,7 @@ end;
 
 procedure TSharpCenterPlugin.Load;
 var
-  xml: TJvSimpleXML;
+  xml: TJclSimpleXML;
   n, i: integer;
   fileName: string;
   daItem: TDAItem;
@@ -120,7 +120,7 @@ begin
   fileName := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\DeskArea.xml';
 
   failed := True;
-  xml := TJvSimpleXML.Create(nil);
+  xml := Self.PluginHost.Xml;
   try
     if FileExists(fileName) then
     begin
@@ -156,7 +156,6 @@ begin
     end;
   except
   end;
-  xml.Free;
 
   if Failed then
   begin
@@ -198,13 +197,13 @@ var
   fileName,dir : String;
   n : integer;
   daItem : TDAItem;
-  xml : TJvsimpleXML;
+  xml : TJclSimpleXML;
 begin
   dir := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\';
   fileName := dir + 'DeskArea.xml';
-  xml := TJvSimpleXML.Create(nil);
+  xml := PluginHost.Xml;
   xml.Root.Clear;
-  try
+
     xml.Root.Name := 'SharpEDeskArea';
     xml.Root.Items.Add('Monitors');
     with xml.Root.Items.ItemNamed['Monitors'].Items do
@@ -230,9 +229,6 @@ begin
     if FileExists(fileName) then
        DeleteFile(fileName);
     RenameFile(fileName + '~',fileName);
-  finally
-    xml.Free;
-  end;
 end;
 
 procedure TSharpCenterPlugin.UpdatePreview(ABitmap: TBitmap32);

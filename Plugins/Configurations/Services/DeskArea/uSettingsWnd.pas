@@ -199,7 +199,7 @@ begin
   end;
 
   ABmp.SetSize(PreviewBmp.Width+2,PreviewBmp.Height+2);
-  ABmp.Clear(color32(PluginHost.Theme.ContainerColor));
+  ABmp.Clear(color32(PluginHost.Theme.Background));
 
   frmSettings.PreviewBmp.DrawTo(ABmp,1,1);
 end;
