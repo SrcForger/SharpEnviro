@@ -48,6 +48,7 @@
     </DelphiCompile>
     <DCCReference Include="..\..\Common\Interfaces\ISharpCenterHostUnit.pas" />
     <DCCReference Include="..\..\Common\Interfaces\ISharpCenterPluginUnit.pas" />
+    <DCCReference Include="..\..\Common\Interfaces\IXmlBaseUnit.pas" />
     <DCCReference Include="uSharpCenterDllMethods.pas" />
     <DCCReference Include="uSharpCenterFavManager.pas" />
     <DCCReference Include="uSharpCenterHelperMethods.pas" />

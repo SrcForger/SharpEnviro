@@ -368,6 +368,9 @@ begin
   if SCM = nil then
     exit;
 
+  //LockWindowUpdate(Self.Handle);
+  try
+
   if (SCM.PluginHasPreviewSupport) then
   begin
     bmp := TBitmap32.Create;
@@ -378,9 +381,13 @@ begin
 
       SCM.Plugin.PreviewInterface.UpdatePreview(bmp);
 
+      imgLivePreview.Color := SCM.Theme.Background;
+      pnlLivePreview.Color := SCM.Theme.Background;
+      
       imgLivePreview.Bitmap.SetSize(bmp.Width, bmp.Height);
       imgLivePreview.Bitmap.Clear(color32(SCM.Theme.Background));
       bmp.DrawTo(imgLivePreview.Bitmap, 0, 0);
+
 
       pnlLivePreview.Height := bmp.Height;
     finally
@@ -389,6 +396,10 @@ begin
   end
   else
     pnlLivePreview.Height := 0;
+
+  finally
+    //LockWindowUpdate(0);
+  end;
 end;
 
 procedure TSharpCenterWnd.DoDoubleBufferAll(AComponent: TComponent);
@@ -973,45 +984,36 @@ procedure TSharpCenterWnd.LoadPluginEvent(Sender: TObject);
 var
   i: Integer;
 begin
-  // Resize Plugin window
+  LockWindowUpdate(Self.Handle);
   try
 
-    // Edit bar
-    // .Show;
-
-    if (SCM.PluginHasEditSupport) then
-    begin
-      pnlEditContainer.Minimized := True;
-      pnlEditContainer.Visible := True;
-    end
-    else
-      pnlEditContainer.Visible := False;
-
+    // Set add/edit tabs to visible
     pnlEditContainer.TabItems.Item[cEdit_Add].Visible := True;
     pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := True;
-
-    if (SCM.PluginHasPreviewSupport) then
-    begin
-      pnlLivePreview.Height := 45;
-    end;
-
     pnlToolbar.Hide;
+
+    // Reset selected tab id
     FSelectedTabID := 0;
 
+    // Hide/show buttons panel
     if (SCM.Plugin.ConfigMode = SharpApi.scmLive) then
       PnlButtons.Hide
     else begin
-
       if SCM.PluginHost.Editing then
         PnlButtons.Show;
     end;
 
+    // Hide or show edit panel if supported
     if (SCM.PluginHasEditSupport) then
     begin
+      pnlEditContainer.Minimized := True;
+      pnlEditContainer.Visible := True;
       pnlEditContainer.TabList.TabIndex := -1;
-    end;
+    end
+    else
+      pnlEditContainer.Visible := False;
 
-    // Select in list
+    // Select the first nav item in list
     for i := 0 to Pred(lbTree.Count) do
     begin
       if CompareText(TSharpCenterManagerItem(lbTree.Item[i].Data).Filename,
@@ -1031,10 +1033,10 @@ begin
     // Forces a resize
     pnlPluginContainer.Height := pnlPluginContainer.Height + 1;
     pnlPluginContainer.Height := pnlPluginContainer.Height - 1;
-
     SCM.PluginHost.Refresh( rtAll );
 
     sbPlugin.SetFocus;
+    LockWindowUpdate(0);
   end;
 
 end;
@@ -1047,9 +1049,7 @@ begin
     SCM.ClickTab(ATabIndex);
     SCM.PluginTabIndex := ATabIndex;
     TSharpCenterHistoryItem(SCM.History.Last).TabIndex := ATabIndex;
-
-    
-
+    UpdateSize;
   finally
     LockWindowUpdate(0);
   end;

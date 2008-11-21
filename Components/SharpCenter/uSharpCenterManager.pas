@@ -270,6 +270,7 @@ begin
   FEditHandle := 0;
   FPluginHandle := 0;
   FPlugin.Dllhandle := 0;
+
   Result := True;
 end;
 

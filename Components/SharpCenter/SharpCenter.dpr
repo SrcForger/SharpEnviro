@@ -14,7 +14,8 @@ uses
   ISharpCenterPluginUnit in '..\..\Common\Interfaces\ISharpCenterPluginUnit.pas',
   uSharpCenterPluginManager in 'uSharpCenterPluginManager.pas',
   uSharpCenterHost in 'uSharpCenterHost.pas',
-  ISharpCenterHostUnit in '..\..\Common\Interfaces\ISharpCenterHostUnit.pas';
+  ISharpCenterHostUnit in '..\..\Common\Interfaces\ISharpCenterHostUnit.pas',
+  IXmlBaseUnit in '..\..\Common\Interfaces\IXmlBaseUnit.pas';
 
 {$R *.res}
 {$R metadata.res}
