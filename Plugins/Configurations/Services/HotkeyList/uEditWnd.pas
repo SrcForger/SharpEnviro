@@ -201,7 +201,7 @@ begin
 
   case FPluginHost.EditMode of
     sceAdd: begin
-        FHotkeyList.Add(edHotkey.Text, edCommand.Text, edName.Text);
+        FHotkeyList.AddItem(edHotkey.Text, edCommand.Text, edName.Text);
 
 
         frmItemsWnd.RefreshHotkeys;

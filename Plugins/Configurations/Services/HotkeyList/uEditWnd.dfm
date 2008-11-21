@@ -69,6 +69,12 @@ object frmEditWnd: TfrmEditWnd
     Width = 161
     Height = 22
     Modifier = []
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGray
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
     Color = clBtnFace
     OnKeyUp = edHotkeyKeyUp
     Anchors = [akTop, akRight]

@@ -33,9 +33,10 @@ uses
   SysUtils,
   dialogs,
   Forms,
+  IXmlBaseUnit,
 
   // JVCL
-  JvSimpleXml;
+  JclSimpleXml;
 
 type
   THotkeyItem = class(TObject)
@@ -49,28 +50,22 @@ type
     property Name: string read FName write FName;
   end;
 
-  THotkeyList = class(TObject)
+  THotkeyList = class(TInterfacedXmlBaseList)
   private
-    FItems: TObjectList;
     FFileName: string;
-    function GetCount: integer;
-    function GetInfo(Index: integer): THotkeyItem;
+    function GetItem(Index: integer): THotkeyItem;
   public
-    constructor Create(FileName: string);
-    destructor Destroy; override;
+    constructor Create;
 
-    function Add(Hotkey, Command, Name: String): THotkeyItem;
-    procedure Delete(Index: integer); overload;
-    procedure Delete(AItem:  THotkeyItem); overload;
+    function AddItem(Hotkey, Command, Name: String): THotkeyItem;
+    procedure Delete(AItem:  THotkeyItem);
     function IndexOfName(AName: String):Integer;
     function IndexOfHotkey(AHotkey: String):Integer;
     function IndexOfHotkeyItem(AHotkeyItem: THotkeyItem):Integer;
 
-    property Count: integer read GetCount;
     property Filename: string read FFileName write FFileName;
 
-    property HotkeyItem[Index: integer]: THotkeyItem read GetInfo;
-    property Items: TObjectList read FItems write FItems;
+    property HotkeyItem[Index: integer]: THotkeyItem read GetItem;
 
     procedure Load; overload;
     procedure Save; overload;
@@ -99,51 +94,26 @@ begin
   Result := CompareText(tmp1.Name,tmp2.Name);
 end;
 
-function THotkeyList.Add(Hotkey, Command, Name: String): THotkeyItem;
+function THotkeyList.AddItem(Hotkey, Command, Name: String): THotkeyItem;
 begin
   Result := THotkeyItem.Create;
   Result.Hotkey := Hotkey;
   Result.Command := Command;
   Result.Name := Name;
-  FItems.Add(Result);
+  Add(Result);
 end;
 
-constructor THotkeyList.Create(FileName: string);
+constructor THotkeyList.Create;
 begin
-  FFileName := FileName;
-  Debug('THotkeyList Constructor', DMT_INFO);
-
-  // Create Object List
-  FItems := TObjectList.Create;
-
-  // Load Xml List
-  if FileExists(FileName) then
-    Load
-  else
-    Save;
-
   Inherited Create;
 end;
 
-procedure THotkeyList.Delete(Index: integer);
+function THotkeyList.GetItem(Index: integer): THotkeyItem;
 begin
-  FItems.Delete(Index);
-end;
+  Result := nil;
 
-destructor THotkeyList.Destroy;
-begin
-  FItems.Free;
-  inherited;
-end;
-
-function THotkeyList.GetCount: integer;
-begin
-  Result := FItems.Count;
-end;
-
-function THotkeyList.GetInfo(Index: integer): THotkeyItem;
-begin
-  Result := (FItems[Index] as THotkeyItem);
+  if ( ( Index >= 0 ) and ( Index < Self.Count )) then
+    Result := THotkeyItem(Items[Index]);
 end;
 
 procedure THotkeyList.Load;
@@ -158,74 +128,44 @@ end;
 
 procedure THotkeyList.Load(XmlFile: string);
 var
-  ItemCount, Loop: Integer;
-  xml: TjvSimpleXml;
-  prop: string;
+  i: Integer;
+  nodes: TJclSimpleXMLElems;
 
 begin
   Debug(Format('Loading File: %s',[XmlFile]), DMT_INFO);
 
-  Xml := TJvSimpleXml.Create(Nil);
+  Xml.XmlFilename := XmlFile;
+  if Xml.Load then begin
+    for i := 0 to Pred(xml.XmlRoot.Items.Count) do begin
+      nodes := Xml.XmlRoot.Items.Item[i].Items;
 
-  try
-    try
-      xml.LoadFromFile(Xmlfile);
+      Self.AddItem( nodes.Value('Hotkey'),nodes.Value('Command'),nodes.Value('Name'));
 
-      Itemcount := xml.Root.Properties.Item[0].IntValue;
-      for Loop := 0 to itemcount - 1 do begin
-        prop := 'hotkey' + inttostr(loop);
-
-        with xml.Root.Items do begin
-
-          self.Add(
-            ItemNamed['hotkey' + inttostr(loop)].Items.Value('Hotkey', ''),
-            ItemNamed['hotkey' + inttostr(loop)].Items.Value('Command', ''),
-            ItemNamed['hotkey' + inttostr(loop)].Items.Value('Name', ''));
-        end;
-      end;
-    except
-
-      on E: Exception do begin
-        Debug('Error While Loading Xml File', DMT_ERROR);
-        Debug(E.Message, DMT_TRACE);
-      end;
     end;
-  finally
-    xml.Free;
   end;
 end;
 
 procedure THotkeyList.Save(XmlFile: string);
 var
-  Loop: Integer;
-  xml: TjvSimpleXml;
+  i: Integer;
+  node: TJclSimpleXMLElemClassic;
 begin
-  Debug(Format('Saving File: %s',[XmlFile]), DMT_INFO);
 
-  xml := TJvSimpleXml.Create(nil);
-  try
-    try
-      xml.Root.Name := 'Hotkeys';
-      xml.Root.Properties.Add('ItemCount', self.count);
+  Xml.XmlRoot.Clear;
+  Xml.XmlRoot.Name := 'Hotkeys';
+  with Xml.XmlRoot do begin
 
-      for loop := 0 to self.Count - 1 do begin
-        xml.Root.Items.Add('Hotkey' + IntToStr(Loop));
-        xml.Root.Items.Item[loop].Items.Add('Name', Self.HotkeyItem[loop].Name);
-        xml.Root.Items.Item[loop].Items.Add('Hotkey', Self.HotkeyItem[loop].Hotkey);
-        xml.Root.Items.Item[loop].Items.Add('Command', Self.HotkeyItem[loop].Command);
-      end;
+    for i := 0 to pred(self.Count) do begin
 
-      forcedirectories(extractfilepath(xmlfile));
-      xml.SaveToFile(Xmlfile);
-    except
-      on E: Exception do begin
-        Debug('Error While Saving Xml File', DMT_ERROR);
-        Debug(E.Message, DMT_TRACE);
+      node := Xml.XmlRoot.Items.Add('Hotkey');
+      with node.Items do begin
+        Add('Name', HotkeyItem[i].Name);
+        Add('Hotkey', HotkeyItem[i].Hotkey);
+        Add('Command', HotkeyItem[i].Command);
       end;
     end;
 
-  finally
-    xml.Free;
+    Xml.Save;
   end;
 end;
 
@@ -233,14 +173,14 @@ procedure THotkeyList.Delete(AItem: THotkeyItem);
 var
   n:Integer;
 begin
-  n := FItems.IndexOf(AItem);
+  n := IndexOf(AItem);
   if n <> -1 then
-    FItems.Delete(n);
+    TList(Self).Delete(n);
 end;
 
 procedure THotkeyList.Sort;
 begin
-  FItems.Sort(CustomSort);
+  TList(self).Sort(CustomSort);
 end;
 
 function THotkeyList.IndexOfName(AName: String): Integer;
@@ -249,8 +189,8 @@ var
   i:Integer;
 begin
   Result := -1;
-  For i := 0 to Pred(FItems.Count) do begin
-    tmp := THotkeyItem(FItems[i]);
+  For i := 0 to Pred(Count) do begin
+    tmp := THotkeyItem(Items[i]);
     if CompareText(tmp.Name,AName) = 0 then begin
       Result := i;
       break;
@@ -264,8 +204,8 @@ var
   i:Integer;
 begin
   Result := -1;
-  For i := 0 to Pred(FItems.Count) do begin
-    tmp := THotkeyItem(FItems[i]);
+  For i := 0 to Pred(Count) do begin
+    tmp := THotkeyItem(Items[i]);
     if CompareText(tmp.Hotkey,AHotkey) = 0 then begin
       Result := i;
       break;
@@ -275,7 +215,7 @@ end;
 
 function THotkeyList.IndexOfHotkeyItem(AHotkeyItem: THotkeyItem): Integer;
 begin
-  Result := FItems.IndexOf(AHotkeyItem);
+  Result := IndexOf(AHotkeyItem);
 end;
 
 { THotkeyItem }

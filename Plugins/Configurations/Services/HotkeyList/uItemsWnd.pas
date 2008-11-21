@@ -178,10 +178,13 @@ var
 begin
   // Load Hotkey List
   fn := GetSharpeUserSettingsPath + cSettingsLocation;
-  if (not (assigned(FHotkeyList))) then
-    FHotkeyList := THotkeyList.Create(fn)
+  if (not (assigned(FHotkeyList))) then begin
+    FHotkeyList := THotkeyList.Create;
+    FHotkeyList.Filename := fn;
+    FHotkeyList.Load;
+  end
   else begin
-    FHotkeyList.Items.Clear;
+    FHotkeyList.Clear;
     FHotkeyList.Load;
   end;
 end;
@@ -239,7 +242,7 @@ begin
       end;
     colCopy: begin
         sCopy := 'Copy of ' + tmp.Name;
-        tmp2 := FHotkeyList.Add('', tmp.Command, sCopy);
+        tmp2 := FHotkeyList.AddItem('', tmp.Command, sCopy);
         RefreshHotkeys;
         FHotkeyList.Save;
 

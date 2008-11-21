@@ -102,10 +102,10 @@ var
   itemCount: integer;
 begin
   fn := GetSharpeUserSettingsPath + cSettingsLocation;
+  PluginHost.Xml.XmlFilename := fn;
+  PluginHost.Xml.Load;
 
-  PluginHost.Xml.LoadFromFile(fn);
-
-  itemCount := PluginHost.Xml.Root.Properties.Item[0].IntValue;
+  itemCount := PluginHost.Xml.XmlRoot.Items.Count;
   result := IntToStr(ItemCount);
 end;
 
