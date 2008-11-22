@@ -130,10 +130,7 @@ procedure THotkeyList.Load(XmlFile: string);
 var
   i: Integer;
   nodes: TJclSimpleXMLElems;
-
 begin
-  Debug(Format('Loading File: %s',[XmlFile]), DMT_INFO);
-
   Xml.XmlFilename := XmlFile;
   if Xml.Load then begin
     for i := 0 to Pred(xml.XmlRoot.Items.Count) do begin
