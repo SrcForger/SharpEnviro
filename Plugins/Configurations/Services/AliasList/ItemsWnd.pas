@@ -108,7 +108,9 @@ begin
 
   srvSettingsPath := GetSharpeUserSettingsPath + 'SharpCore\Services\Exec\';
   sAliasPath := SrvSettingsPath + 'AliasList.xml';
-  FAliasItems := TAliasList.Create(sAliasPath);
+  FAliasItems := TAliasList.Create;
+  FAliasItems.FileName := sAliasPath;
+  FAliasItems.Load;
 end;
 
 procedure TfrmItemsWnd.CustomWndProc(var msg: TMessage);
@@ -172,7 +174,7 @@ begin
       end;
     colCopy: begin
         sCopy := 'Copy of ' + tmp.AliasName;
-        tmp2 := FAliasItems.Add(sCopy, tmp.AliasValue, tmp.Elevate);
+        tmp2 := FAliasItems.AddItem(sCopy, tmp.AliasValue, tmp.Elevate);
 
         AddItems;
         FAliasItems.Save;

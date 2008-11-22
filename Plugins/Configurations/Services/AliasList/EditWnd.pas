@@ -111,7 +111,7 @@ begin
 
   case FPluginHost.EditMode of
     sceAdd: begin
-        frmItemsWnd.AliasItems.Add(edName.Text, edCommand.Text, cbElevation.Checked);
+        frmItemsWnd.AliasItems.AddItem(edName.Text, edCommand.Text, cbElevation.Checked);
         FPluginHost.SetSettingsChanged;
 
         frmItemsWnd.AddItems;
