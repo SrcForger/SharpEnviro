@@ -109,38 +109,37 @@ end;
 
 procedure TSharpCenterPlugin.Load;
 var
-  xml: TJclSimpleXML;
   n, i: integer;
-  fileName: string;
   daItem: TDAItem;
   mon: TMonitor;
   monId: integer;
-  failed: boolean;
-begin
-  fileName := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\DeskArea.xml';
 
-  failed := True;
-  xml := Self.PluginHost.Xml;
-  try
-    if FileExists(fileName) then
-    begin
-      xml.LoadFromFile(fileName);
+const
+  primaryId = -100;
+
+begin
+  PluginHost.Xml.XmlFilename := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\DeskArea.xml';
+  if PluginHost.Xml.Load then begin
+
+    with PluginHost.Xml.XmlRoot do begin
+
       for n := 0 to Screen.MonitorCount - 1 do
       begin
         mon := Screen.Monitors[n];
         if mon.Primary then
-          monId := -100
+          monId := primaryId
         else
           monId := mon.MonitorNum;
+
         daItem := TDAItem.Create;
         daItem.monId := monId;
         daItem.mon := mon;
         DAList.Add(daItem);
 
-        if xml.Root.Items.ItemNamed['Monitors'] <> nil then
-          for i := 0 to xml.Root.Items.ItemNamed['Monitors'].Items.Count - 1 do
-            if xml.Root.Items.ItemNamed['Monitors'].Items.Item[i].Items.IntValue('ID', 0) = monId then
-              with xml.Root.Items.ItemNamed['Monitors'].Items.Item[i].Items do
+        if Items.ItemNamed['Monitors'] <> nil then
+          for i := 0 to Items.ItemNamed['Monitors'].Items.Count - 1 do
+            if Items.ItemNamed['Monitors'].Items.Item[i].Items.IntValue('ID', 0) = monId then
+              with Items.ItemNamed['Monitors'].Items.Item[i].Items do
               begin
                 daItem.AutoMode := BoolValue('AutoMode', True);
                 daItem.OffSets.Left := IntValue('Left', 0);
@@ -149,16 +148,12 @@ begin
                 daItem.OffSets.Bottom := IntValue('Bottom', 0);
                 break;
               end;
-        if monId = -100 then
+        if monId = primaryId then
           frmSettings.UpdateGUIFromDAItem(daItem);
       end;
-      failed := False;
     end;
-  except
-  end;
+  end else begin
 
-  if Failed then
-  begin
     DAList.Clear;
 
     for n := 0 to Screen.MonitorCount - 1 do
@@ -194,19 +189,15 @@ end;
 
 procedure TSharpCenterPlugin.Save;
 var
-  fileName,dir : String;
   n : integer;
   daItem : TDAItem;
-  xml : TJclSimpleXML;
 begin
-  dir := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\';
-  fileName := dir + 'DeskArea.xml';
-  xml := PluginHost.Xml;
-  xml.Root.Clear;
+  PluginHost.Xml.XmlFilename := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\DeskArea.xml';
+  with PluginHost.Xml.XmlRoot do begin
+    Name := 'SharpEDeskArea';
 
-    xml.Root.Name := 'SharpEDeskArea';
-    xml.Root.Items.Add('Monitors');
-    with xml.Root.Items.ItemNamed['Monitors'].Items do
+    Items.Add('Monitors');
+    with Items.ItemNamed['Monitors'].Items do
     begin
       for n := 0 to DAList.Count - 1 do
       begin
@@ -223,12 +214,8 @@ begin
       end;
     end;
 
-    if not DirectoryExists(dir) then
-      ForceDirectories(dir);
-    xml.SaveToFile(fileName + '~');
-    if FileExists(fileName) then
-       DeleteFile(fileName);
-    RenameFile(fileName + '~',fileName);
+    PluginHost.Xml.Save;
+  end;
 end;
 
 procedure TSharpCenterPlugin.UpdatePreview(ABitmap: TBitmap32);
