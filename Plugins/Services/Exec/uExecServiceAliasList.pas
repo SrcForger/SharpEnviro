@@ -33,10 +33,7 @@ uses
   dialogs,
   windows,
 
-  // JCL
-  jclIniFiles,
-  // JVCL
-  JvSimpleXml;
+  JclSimpleXml, IXmlBaseUnit;
 
 type
   // "Private" Object, TAliasList needs it...
@@ -51,31 +48,24 @@ type
     property Elevate: boolean read FElevate write FElevate;
   end;
 
-  TAliasList = class(TObject)
+  TAliasList = class(TInterfacedXmlBaseList)
   private
     FOnAddItem: TNotifyEvent;
     FFileName: string;
-    function GeTAliasListItem(Index: integer): TAliasListItem;
-    function GetCount: Integer;
+    function GetItem(Index: integer): TAliasListItem;
   public
-    FItems: TObjectList;
-    constructor Create(FileName: string);
-    destructor Destroy; override;
 
-    function Add(AliasName, AliasValue: string; AElevate:Boolean=False): TAliasListItem;
+    function AddItem(AliasName, AliasValue: string; AElevate:Boolean=False): TAliasListItem;
 
     procedure Load; overload;
     procedure Save; overload;
     procedure Load(FileName: string); overload;
     procedure Save(FileName: string); overload;
     function Delete(AItem: TAliasListItem):Boolean; overload;
-    
+
     procedure Sort;
+    property AliasItem[Index: integer]: TAliasListItem read GetItem; default;
 
-    property Count: Integer read GetCount;
-    property Item[Index: integer]: TAliasListItem read GeTAliasListItem; default;
-
-    property Items: TObjectList read FItems write FItems;
     property OnAddItem: TNotifyEvent read FOnAddItem write FOnAddItem;
     property FileName: string read FFileName write FFileName;
     function IndexOfName(AName: String):Integer;
@@ -105,31 +95,17 @@ begin
   SendDebugMessageEx('Exec Service', Pchar(Text), 0, DebugType);
 end;
 
-function TAliasList.Add(AliasName, AliasValue: string;
+function TAliasList.AddItem(AliasName, AliasValue: string;
   AElevate:Boolean=False): TAliasListItem;
 begin
   Result := TAliasListItem.Create;
   Result.AliasName := AliasName;
   Result.AliasValue := AliasValue;
   Result.Elevate := AElevate;
-  FItems.Add(Result);
+  Add(Result);
 
   if Assigned(FOnAddItem) then
     FOnAddItem(Result);
-end;
-
-constructor TAliasList.Create(FileName: string);
-begin
-  inherited Create;
-  FFileName := FileName;
-  FItems := TObjectList.Create;
-
-  if FileExists(FileName) then
-    Load
-  else begin
-    Add('Notepad', 'Notepad.exe');
-    Save;
-  end;
 end;
 
 function TAliasList.Delete(AItem: TAliasListItem): Boolean;
@@ -138,28 +114,20 @@ var
 begin
   Result := False;
 
-  i := FItems.IndexOf(AItem);
+  i := IndexOf(AItem);
   if i <> -1 then begin
-    FItems.Delete(i);
+    Delete(i);
     Result := True;
   end;
 
 end;
 
-destructor TAliasList.Destroy;
+function TAliasList.GetItem(Index: integer): TAliasListItem;
 begin
-  FItems.Free;
-  inherited;
-end;
-
-function TAliasList.GeTAliasListItem(Index: integer): TAliasListItem;
-begin
-  Result := (FItems[Index] as TAliasListItem);
-end;
-
-function TAliasList.GetCount: Integer;
-begin
-  Result := FItems.Count;
+  result := nil;
+  
+  if ((Index < Count) and (Index >= 0)) then
+    Result := TAliasListItem(Items[index]);
 end;
 
 function TAliasList.IndexOfName(AName: String): Integer;
@@ -168,8 +136,8 @@ var
   i:Integer;
 begin
   Result := -1;
-  For i := 0 to Pred(FItems.Count) do begin
-    tmp := TAliasListItem(FItems[i]);
+  For i := 0 to Pred(Count) do begin
+    tmp := TAliasListItem(Items[i]);
     if CompareText(tmp.AliasName,AName) = 0 then begin
       Result := i;
       break;
@@ -180,39 +148,30 @@ end;
 procedure TAliasList.Save(FileName: string);
 var
   i: Integer;
-  Xml: TjvSimpleXml;
+  node: TJclSimpleXMLElemClassic;
 begin
-  DeleteFile(pchar(FileName));
-  Xml := TJvSimpleXml.Create(nil);
 
-  try
-    try
-      Xml.Root.Name := 'Aliases';
-      xml.Root.Properties.Add('ItemCount', FItems.count);
+  Xml.XmlRoot.Clear;
+  Xml.XmlRoot.Name := 'Aliases';
+  with Xml.XmlRoot do begin
 
-      for i := 0 to FItems.Count - 1 do begin
-        Xml.Root.Items.Add(Format('Alias%d', [i]));
-        Xml.Root.Items.Item[i].Items.Add('AliasName', Self[i].AliasName);
-        Xml.Root.Items.Item[i].Items.Add('AliasValue', Self[i].AliasValue);
-        Xml.Root.Items.Item[i].Items.Add('Elevate', Self[i].Elevate);
-      end;
+    for i := 0 to pred(self.Count) do begin
 
-      Xml.SaveToFile(FileName);
-    except
-      on E: Exception do begin
-        Debug('Error While Saving Xml File', DMT_ERROR);
-        Debug(E.Message, DMT_TRACE);
+      node := Xml.XmlRoot.Items.Add('Alias');
+      with node.Items do begin
+        Add('AliasName', AliasItem[i].AliasName);
+        Add('AliasValue', AliasItem[i].AliasValue);
+        Add('Elevate', AliasItem[i].Elevate);
       end;
     end;
 
-  finally
-    Xml.Free;
+    Xml.Save;
   end;
 end;
 
 procedure TAliasList.Sort;
 begin
-  FItems.Sort(CustomSort);
+  TList(Self).Sort(CustomSort);
 end;
 
 procedure TAliasList.Save;
@@ -227,53 +186,17 @@ end;
 
 procedure TAliasList.Load(FileName: string);
 var
-  ItemCount, Loop: Integer;
-  xml: TjvSimpleXml;
-  prop: string;
-  sMsg: String;
+  i: Integer;
+  nodes: TJclSimpleXMLElems;
 begin
+  Xml.XmlFilename := FileName;
+  if Xml.Load then begin
+    for i := 0 to Pred(xml.XmlRoot.Items.Count) do begin
+      nodes := Xml.XmlRoot.Items.Item[i].Items;
 
-  xml := TJvSimpleXml.Create(nil);
+      Self.AddItem( nodes.Value('AliasName'),nodes.Value('AliasValue'),nodes.BoolValue('Elevate'));
 
-  try
-    try
-      xml.LoadFromFile(FileName);
-
-      if xml.Root.Name <> 'Aliases' then begin
-        sMsg := 'Invalid Aliases File' + #13;
-        Debug(sMsg, DMT_ERROR);
-
-        sMsg := sMsg + Format('Expected "%s" found "%s"',['Aliases',xml.Root.Name]);
-        MessageDlg(sMsg, mtError, [mbOK], 0);
-
-        // Save empty and reload
-        exit;
-      end;
-
-      Itemcount := xml.Root.Properties.Item[0].IntValue;
-      for Loop := 0 to itemcount - 1 do begin
-        prop := 'Alias' + inttostr(loop);
-
-        with xml.Root.Items do begin
-
-          if ItemNamed[prop] <> nil then
-            self.Add(
-              ItemNamed[prop].Items.Value('AliasName', ''),
-              ItemNamed[prop].Items.Value('AliasValue', ''),
-              ItemNamed[prop].Items.BoolValue('Elevate', False) );
-        end;
-      end;
-    except
-
-      on E: Exception do begin
-        Debug('Error While Loading Xml File', DMT_ERROR);
-        Debug(E.Message, DMT_TRACE);
-
-        Save;
-      end;
     end;
-  finally
-    xml.Free;
   end;
 end;
 
