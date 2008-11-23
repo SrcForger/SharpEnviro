@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterApi,
   JvExComCtrls, JvComCtrls, ExtCtrls, JvPageList, JvExControls, JvComponent,
-  SharpEGaugeBoxEdit, JvLabel, SharpECenterHeader, JvXPCore, JvXPCheckCtrls,
+  SharpEGaugeBoxEdit, SharpECenterHeader, JvXPCore, JvXPCheckCtrls,
   ISharpCenterHostUnit, ISharpCenterPluginUnit;
 
 type

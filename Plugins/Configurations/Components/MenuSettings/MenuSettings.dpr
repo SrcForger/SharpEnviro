@@ -92,13 +92,14 @@ var
 begin
   dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Settings\';
   fileName := dir + 'SharpMenu.xml';
+  PluginHost.Xml.XmlFilename := fileName;
 
   with PluginHost, frmSettings do begin
 
-    Xml.LoadFromFile( fileName );
+    if Xml.Load then begin
 
-    if Xml.Root.Items.ItemNamed['Settings'] <> nil then
-         with Xml.Root.Items.ItemNamed['Settings'].Items do
+    if Xml.XmlRoot.Items.ItemNamed['Settings'] <> nil then
+         with Xml.XmlRoot.Items.ItemNamed['Settings'].Items do
          begin
            chkMenuWrapping.Checked := BoolValue('WrapMenu',True);
            sgbWrapCount.Value := IntValue('WrapCount',25);
@@ -111,6 +112,7 @@ begin
            chkUseGenericIcons.Checked := BoolValue('UseGenericIcons',False);
            UpdateUi;
          end;
+    end;
   end;
 end;
 
@@ -143,13 +145,12 @@ var
   fileName : String;
 begin
   dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Settings\';
-  if not DirectoryExists(dir) then
-     ForceDirectories(dir);
   fileName := dir + 'SharpMenu.xml';
 
   with PluginHost, frmSettings do begin
-    Xml.Root.Name := 'SharpEMenuSettings';
-    with Xml.Root.Items.Add('Settings').Items do
+    Xml.XmlRoot.Clear;
+    Xml.XmlRoot.Name := 'SharpEMenuSettings';
+    with Xml.XmlRoot.Items.Add('Settings').Items do
     begin
       Add('WrapMenu',chkMenuWrapping.Checked);
       Add('WrapCount',sgbWrapCount.Value);
@@ -159,11 +160,8 @@ begin
       Add('UseGenericIcons',chkUseGenericIcons.Checked);
     end;
 
-    Xml.SaveToFile(fileName + '~');
+    PluginHost.Xml.Save;
   end;
-
-  if FileExists(fileName) then DeleteFile(fileName);
-  RenameFile(fileName + '~', fileName);
 end;
 
 function GetMetaData(): TMetaData;
