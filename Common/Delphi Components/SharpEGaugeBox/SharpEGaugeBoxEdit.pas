@@ -42,7 +42,9 @@ uses
   Types,
   GR32,
   JvExComCtrls,
-  JvComCtrls;
+  JvComCtrls,
+
+  SharpGraphicsUtils;
 
   {$R SharpEGaugeBoxBitmaps.res}
 
@@ -98,7 +100,6 @@ type
     procedure SetEnabled(Value: boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure Paint; override;
     procedure UpdateValue;
     procedure UpdateEditBox;
     procedure BeforeDestruction; override;
@@ -111,6 +112,7 @@ type
     property Font;
     property Constraints;
     property ParentBackground;
+    property Visible;
 
     property Min: Integer read FMin write SetMin;
     property Max: Integer read FMax write SetMax;
@@ -172,29 +174,6 @@ begin
 
 end;
 
-procedure TSharpeGaugeBox.Paint;
-var
-  MBmp: TBitmap32;
-  R: TRect;
-
-begin
-  R := ClientRect;
-
-  mBmp := TBitmap32.Create;
-  try
-    mBmp.Height := ClientRect.Bottom;
-    mBmp.Width := ClientRect.Right;
-    MBmp.Clear(Color32(Color));
-    //FBtnGauge.Enabled := Self.Enabled;
-    //FValueEdit.Enabled := Self.Enabled;
-
-  finally
-    Canvas.CopyRect(ClientRect, mBmp.canvas, ClientRect);
-    mBmp.Free;
-
-  end;
-end;
-
 procedure TSharpeGaugeBox.SetEnabled(Value: boolean);
 begin
   FBackPanel.Enabled := Value;
@@ -250,6 +229,7 @@ begin
 
   FBtnGauge := TSpeedButton.Create(FValueEdit);
   FBtnGauge.Glyph.LoadFromResourceName(HInstance,'DROPLEFT_GRAY');
+  SetBackgroundColor(self.BackgroundColor);
 
   with FBtnGauge do
   begin
@@ -259,11 +239,11 @@ begin
     Width := ButtonWidth;
     Font.Style := [fsBold];
     Caption := '';
-    Flat := True;
+    Flat := false;
     Color := Self.Color;
     OnMouseUp := BtnGaugeMouseUp;
     Cursor := crArrow;
-    width := 13;
+    width := 15;
   end;
 
 end;
@@ -472,9 +452,19 @@ begin
 end;
 
 procedure TSharpeGaugeBox.SetBackgroundColor(const Value: TColor);
+var
+  tmpGlyph: TBitmap32;
 begin
   FValueEdit.Color := Value;
   FBackPanel.Color := Value;
+
+  // Update glyph
+  tmpGlyph := TBitmap32.Create;
+  tmpGlyph.DrawMode := dmBlend;
+  tmpGlyph.LoadFromResourceName(HInstance,'DROPLEFT_GRAY');
+  SharpGraphicsUtils.ReplaceColor32( tmpGlyph, Color32(clBlack), color32(Font.Color) );
+  tmpGlyph.DrawTo(FBtnGauge.Glyph.Canvas.Handle,0,0);
+  tmpGlyph.Free;
 end;
 
 procedure TSharpeGaugeBox.SetDescription(const Value: string);

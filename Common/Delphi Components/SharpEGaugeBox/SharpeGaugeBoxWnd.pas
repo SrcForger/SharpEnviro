@@ -106,7 +106,7 @@ end;
 procedure TFrmSharpeGaugeBox.FormClose(Sender: TObject;
   var Action: TCloseAction);
 begin
-  SharpApi.UnRegisterShellHookReceiver(Handle);
+  //SharpApi.UnRegisterShellHookReceiver(Handle);
 end;
 
 procedure TFrmSharpeGaugeBox.FormCreate(Sender: TObject);
@@ -128,7 +128,7 @@ end;
 procedure TFrmSharpeGaugeBox.FormShow(Sender: TObject);
 begin
   SetVistaFonts(Self);
-  SharpApi.RegisterShellHookReceiver(Handle);
+  //SharpApi.RegisterShellHookReceiver(Handle);
 end;
 
 end.

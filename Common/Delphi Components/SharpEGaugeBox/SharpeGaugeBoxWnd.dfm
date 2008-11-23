@@ -6,6 +6,7 @@ object FrmSharpeGaugeBox: TFrmSharpeGaugeBox
   ClientWidth = 247
   Color = clBtnFace
   ParentFont = True
+  KeyPreview = True
   OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
