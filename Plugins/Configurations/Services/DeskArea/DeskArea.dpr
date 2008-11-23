@@ -175,11 +175,11 @@ function TSharpCenterPlugin.Open: Cardinal;
 begin
   if frmSettings = nil then
     frmSettings := TfrmSettings.Create(nil);
+  frmSettings.PluginHost := PluginHost;
   uVistaFuncs.SetVistaFonts(frmSettings);
 
-  result := PluginHost.Open(frmSettings);
-  frmSettings.PluginHost := PluginHost;
   Load;
+  result := PluginHost.Open(frmSettings);
 end;
 
 procedure TSharpCenterPlugin.Refresh;

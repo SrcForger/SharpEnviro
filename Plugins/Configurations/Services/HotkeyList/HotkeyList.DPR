@@ -30,9 +30,11 @@ uses
   dialogs,
   graphics,
   sysutils,
+  variants,
   SharpCenterApi,
   SharpAPI,
   jvSimpleXml,
+  jvValidators,
   uVistaFuncs,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
@@ -42,18 +44,26 @@ uses
   uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas';
 
 type
-  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit )
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit,
+    ISharpCenterPluginValidation )
+  private
+    procedure ValidateHotkeyExists(Sender: TObject; ValueToValidate: Variant;
+      var Valid: Boolean);
+    procedure ValidateNameExists(Sender: TObject; ValueToValidate: Variant;
+      var Valid: Boolean);
   public
     constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
-    function CloseEdit(AApply: Boolean): Boolean; stdcall;
+    procedure CloseEdit(AApply: Boolean); stdcall;
     function OpenEdit: Cardinal; stdcall;
 
     function GetPluginDescriptionText: String; override; stdCall;
     function GetPluginStatusText: String; override; stdCall;
     procedure Refresh; override; stdcall;
+    procedure SetupValidators; stdcall;
+
   end;
 
 { TSharpCenterPlugin }
@@ -64,21 +74,10 @@ begin
   FreeAndNil(frmEditWnd);
 end;
 
-function TSharpCenterPlugin.CloseEdit(AApply: Boolean): Boolean;
+procedure TSharpCenterPlugin.CloseEdit(AApply: Boolean);
 begin
-  Result := True;
-
-  if frmEditWnd = nil then exit;
-
-  // First validate
   if AApply then
-    if Not(frmEditWnd.ValidateEdit) then begin
-      Result := False;
-      Exit;
-    end;
-
-  // If Validation ok then continue
-  frmEditWnd.Save(AApply);
+    frmEditWnd.Save;
 
   // Refresh hotkeys
   BroadcastGlobalUpdateMessage(suHotkey);
@@ -125,12 +124,86 @@ begin
   uVistaFuncs.SetVistaFonts(frmEditWnd);
 
   result := PluginHost.OpenEdit(frmEditWnd);
-  frmEditWnd.InitUi;
+  frmEditWnd.Init;
 end;
 
 procedure TSharpCenterPlugin.Refresh;
 begin
   AssignThemeToForms(PluginHost.Theme,frmItemsWnd,frmEditWnd, PluginHost.Editing);
+end;
+
+procedure TSharpCenterPlugin.SetupValidators;
+var
+  tmp: TJvCustomValidator;
+begin
+  // Can not leave fields blank
+  PluginHost.AddRequiredFieldValidator( frmEditWnd.edName,'Please enter a hotkey name','Text');
+  PluginHost.AddRequiredFieldValidator( frmEditWnd.edCommand,'Please enter a command name','Text');
+  PluginHost.AddRequiredFieldValidator( frmEditWnd.edHotkey,'Please enter hotkey','Text');
+
+  // Validator for checking duplicates
+  tmp := PluginHost.AddCustomValidator( frmEditWnd.edName,'There is already a hotkey with this name','Text');
+  tmp.OnValidate := ValidateNameExists;
+  tmp := PluginHost.AddCustomValidator( frmEditWnd.edHotkey,'There is already a command with this hotkey','Text');
+  tmp.OnValidate := ValidateHotkeyExists;
+end;
+
+procedure TSharpCenterPlugin.ValidateNameExists(Sender: TObject;
+  ValueToValidate: Variant; var Valid: Boolean);
+var
+  idx: Integer;
+  s: string;
+begin
+  Valid := True;
+
+  s := '';
+  if ValueToValidate <> null then
+    s := VarToStr(ValueToValidate);
+
+  if s = '' then begin
+    Valid := False;
+    Exit;
+  end;
+
+  idx := FHotkeyList.IndexOfName(s);
+
+  if (idx <> -1) then begin
+
+    if frmEditWnd.ItemEdit <> nil then
+      if frmEditWnd.ItemEdit.Name = s then
+        exit;
+
+    Valid := False;
+  end;
+end;
+
+procedure TSharpCenterPlugin.ValidateHotkeyExists(Sender: TObject;
+  ValueToValidate: Variant; var Valid: Boolean);
+var
+  idx: Integer;
+  s: string;
+begin
+  Valid := True;
+
+  s := '';
+  if ValueToValidate <> null then
+    s := VarToStr(ValueToValidate);
+
+  if s = '' then begin
+    Valid := False;
+    Exit;
+  end;
+
+  idx := FHotkeyList.IndexOfHotkey(s);
+
+  if (idx <> -1) then begin
+
+    if frmEditWnd.ItemEdit <> nil then
+      if frmEditWnd.ItemEdit.Hotkey = s then
+        exit;
+
+    Valid := False;
+  end;
 end;
 
 function GetMetaData(): TMetaData;

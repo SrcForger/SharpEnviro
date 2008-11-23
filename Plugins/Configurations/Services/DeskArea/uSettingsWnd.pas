@@ -78,7 +78,7 @@ type
 
 var
   frmSettings: TfrmSettings;
-  DAList : TObjectList;
+  DAList : TList;
 
 implementation
 
@@ -220,7 +220,7 @@ begin
   PreviewBmp.DrawMode := dmBlend;
   PreviewBmp.CombineMode := cmMerge;
 
-  DAList := TObjecTList.Create(False);
+  DAList := TList.Create;
 end;
 
 procedure TfrmSettings.SendUpdate;

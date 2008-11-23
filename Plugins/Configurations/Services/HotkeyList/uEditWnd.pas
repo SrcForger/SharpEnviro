@@ -43,10 +43,6 @@ uses
   Buttons,
   ImgList,
 
-  // JVCL
-  JvPageList,
-  JvExControls,
-
   // Project
   SharpEHotkeyEdit,
 
@@ -59,13 +55,10 @@ uses
   // PNG Image
   pngimage,
   JvComponentBase,
-  JvLabel,
   PngImageList,
   PngBitBtn,
   JvExStdCtrls,
   PngSpeedButton,
-  JvErrorIndicator,
-  JvValidators,
   uHotkeyServiceList,
 
   ISharpCenterHostUnit,
@@ -73,23 +66,11 @@ uses
 
 type
   TfrmEditWnd = class(TForm)
-    vals: TJvValidators;
-    valHotkey: TJvRequiredFieldValidator;
-    valName: TJvRequiredFieldValidator;
-    pilError: TPngImageList;
-    errorinc: TJvErrorIndicator;
-    valCommand: TJvRequiredFieldValidator;
-    valNameExists: TJvCustomValidator;
-    valHotkeyExists: TJvCustomValidator;
     edName: TLabeledEdit;
     edCommand: TLabeledEdit;
     edHotkey: TSharpEHotkeyEdit;
     Button1: TPngSpeedButton;
     Label1: TLabel;
-    procedure valHotkeyExistsValidate(Sender: TObject; ValueToValidate: Variant;
-      var Valid: Boolean);
-    procedure valNameExistsValidate(Sender: TObject;
-      ValueToValidate: Variant; var Valid: Boolean);
     procedure edHotkeyKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure UpdateEditState(Sender: TObject);
     procedure cmdbrowseclick(Sender: TObject);
@@ -102,13 +83,12 @@ type
   public
     { Public declarations }
     SelectedText: string;
-    procedure InitUi;
-    function ValidateEdit: Boolean;
-    procedure ClearValidation;
-    function Save(AApply: Boolean): Boolean;
+    procedure Init;
+    procedure Save;
 
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
       FPluginHost;
+    property ItemEdit: ThotkeyItem read FItemEdit write FItemEdit;
   end;
 
 var
@@ -133,7 +113,7 @@ begin
   edCommand.Text := SharpDialogs.TargetDialog(STI_ALL_TARGETS, Mouse.CursorPos);
 end;
 
-procedure TfrmEditWnd.InitUi;
+procedure TfrmEditWnd.Init;
 var
   tmpItem: TSharpEListItem;
   tmpHotkey: THotkeyItem;
@@ -169,36 +149,11 @@ begin
   end;
 end;
 
-function TfrmEditWnd.ValidateEdit: Boolean;
-begin
-  Result := False;
-
-  case FPluginHost.EditMode of
-    sceAdd, sceEdit: begin
-
-        errorinc.BeginUpdate;
-        try
-          errorinc.ClearErrors;
-          vals.ValidationSummary := nil;
-
-          Result := vals.Validate;
-        finally
-          errorinc.EndUpdate;
-        end;
-      end;
-    sceDelete: Result := True;
-  end;
-end;
-
-function TfrmEditWnd.Save(AApply: Boolean): Boolean;
+procedure TfrmEditWnd.Save;
 var
   tmpItem: TSharpEListItem;
   tmpHotkey: THotkeyItem;
 begin
-  Result := false;
-  if not (AApply) then
-    Exit;
-
   case FPluginHost.EditMode of
     sceAdd: begin
         FHotkeyList.AddItem(edHotkey.Text, edCommand.Text, edName.Text);
@@ -206,8 +161,6 @@ begin
 
         frmItemsWnd.RefreshHotkeys;
         FHotkeyList.Save;
-
-        Result := True;
       end;
     sceEdit: begin
         tmpItem := frmItemsWnd.lbHotkeys.Item[frmItemsWnd.lbHotkeys.ItemIndex];
@@ -218,8 +171,6 @@ begin
 
         frmItemsWnd.RefreshHotkeys;
         FHotkeyList.Save;
-
-        Result := True;
       end;
   end;
 
@@ -232,79 +183,13 @@ begin
     FPluginHost.Editing := true;
 end;
 
-procedure TfrmEditWnd.ClearValidation;
-begin
-  errorinc.BeginUpdate;
-  try
-    errorinc.ClearErrors;
-  finally
-    errorinc.EndUpdate;
-  end;
-end;
-
 procedure TfrmEditWnd.edHotkeyKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   UpdateEditState(nil);
 end;
 
-procedure TfrmEditWnd.valNameExistsValidate(Sender: TObject;
-  ValueToValidate: Variant; var Valid: Boolean);
-var
-  idx: Integer;
-  s: string;
-begin
-  Valid := True;
 
-  s := '';
-  if ValueToValidate <> null then
-    s := VarToStr(ValueToValidate);
-
-  if s = '' then begin
-    Valid := False;
-    Exit;
-  end;
-
-  idx := FHotkeyList.IndexOfName(s);
-
-  if (idx <> -1) then begin
-
-    if FItemEdit <> nil then
-      if FItemEdit.Name = s then
-        exit;
-
-    Valid := False;
-  end;
-end;
-
-procedure TfrmEditWnd.valHotkeyExistsValidate(Sender: TObject;
-  ValueToValidate: Variant; var Valid: Boolean);
-var
-  idx: Integer;
-  s: string;
-begin
-  Valid := True;
-
-  s := '';
-  if ValueToValidate <> null then
-    s := VarToStr(ValueToValidate);
-
-  if s = '' then begin
-    Valid := False;
-    Exit;
-  end;
-
-  idx := FHotkeyList.IndexOfHotkey(s);
-
-  if (idx <> -1) then begin
-
-    if FItemEdit <> nil then
-      if FItemEdit.Hotkey = s then
-        exit;
-
-    Valid := False;
-  end;
-end;
 
 end.
 

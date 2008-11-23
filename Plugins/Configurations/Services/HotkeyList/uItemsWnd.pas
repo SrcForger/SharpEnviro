@@ -256,7 +256,7 @@ begin
   end;
 
   if frmEditWnd <> nil then
-    frmEditWnd.InitUi;
+    frmEditWnd.Init;
 
   FPluginHost.SetEditTabsVisibility(lbHotkeys.ItemIndex,lbHotkeys.Count);
   FPluginHost.Refresh;
