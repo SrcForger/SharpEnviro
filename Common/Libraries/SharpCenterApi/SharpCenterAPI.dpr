@@ -324,7 +324,7 @@ exports
   BroadcastGlobalUpdateMessage,
   BroadcastCenterMessage,
   CenterCommand,
-  CenterDefineEditState,
+  {CenterDefineEditState,
   CenterDefineButtonState,
   CenterDefineSettingsChanged,
   CenterSelectEditTab,
@@ -334,7 +334,7 @@ exports
   CenterUpdateTabs,
   CenterUpdateConfigText,
   CenterUpdateConfigFull,
-  CenterUpdateEditTabs,
+  CenterUpdateEditTabs,  }
   CenterCommandAsText,
   CenterCommandAsEnum,
   CenterReadDefaults,
