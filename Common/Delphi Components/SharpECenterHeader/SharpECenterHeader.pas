@@ -39,6 +39,7 @@ type
       property Margins;
       property AlignWithMargins;
       property Visible;
+      property Color;
   end;
 
   procedure Register;
@@ -60,6 +61,7 @@ begin
   Self.AlignWithMargins := True;
   Self.BevelInner := bvNone;
   Self.BevelOuter := bvNone;
+  Self.DoubleBuffered := true;
 
   titleLabel := TLabel.Create(Self);
   with titleLabel do begin
@@ -101,7 +103,7 @@ begin
     WordWrap := True;
     Layout := tlCenter;
     Font.Color := clRed;
-
+    ShowHint := true;
   end;
 
   SetVistaFonts(TCustomForm(self));
@@ -122,6 +124,7 @@ procedure TCustomSharpECenterHeader.SetDescription(const Value: string);
 begin
   FDescription := Value;
   descriptionLabel.Caption := FDescription;
+  descriptionLabel.Hint := FDescription;
 end;
 
 procedure TCustomSharpECenterHeader.SetDescriptionColor(const Value: TColor);
