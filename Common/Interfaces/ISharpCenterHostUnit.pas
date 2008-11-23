@@ -4,10 +4,13 @@ interface
 
 uses
   Windows, SharpApi,SharpCenterApi, SharpETabList, Controls, Forms, Classes, GR32,
-  uVistaFuncs, SysUtils, jclSimpleXml;
+  uVistaFuncs, SysUtils, jclSimpleXml, JvValidators, JvErrorIndicator, IXmlBaseUnit;
 
 const
   IID_ISharpCenterHost: TGUID = '{2277C19F-F87B-4CED-9ADA-8C3467426066}';
+
+type
+  TRefreshTypeEnum = ( rtAll, rtSize, rtPreview, rtTabs, rtTheme, rtTitle, rtStatus, rtDescription );
 
 type
   ISharpCenterHost = interface(IInterface)
@@ -38,12 +41,29 @@ type
   procedure SetEditing(Value : Boolean); stdcall;
   property Editing: Boolean read GetEditing write SetEditing;
 
-  procedure RefreshTheme; stdcall;
+  function GetWarning : Boolean; stdcall;
+  procedure SetWarning(Value : Boolean); stdcall;
+  property Warning: Boolean read GetWarning write SetWarning;
+
+  procedure Refresh( ARefreshType: TRefreshTypeEnum = rtAll ); stdCall;
+
   function Open(AForm: TForm) : THandle; stdcall;
   function OpenEdit(AForm: TForm):THandle; stdCall;
+  procedure Save; stdCall;
 
   procedure SetSettingsChanged; stdCall;
+
+  procedure SetEditTab( ATab: TSCB_BUTTON_ENUM ); stdCall;
+  procedure SetEditTabVisibility(  ATab: TSCB_BUTTON_ENUM; Visible: Boolean); stdCall;
+  procedure SetEditTabsVisibility( AItemIndex: Integer; AItemCount: Integer); stdCall;
+  procedure SetButtonVisibility( AButton: TSCB_BUTTON_ENUM; Visible: Boolean); stdCall;
 end;
+
+type
+  TSetEditTabEvent = procedure( ATab: TSCB_BUTTON_ENUM ) of object;
+  TSetEditTabVisibilityEvent = procedure( ATab: TSCB_BUTTON_ENUM; AVisible: Boolean) of object;
+  TSetEditTabsVisibilityEvent = procedure ( AItemIndex: Integer; AItemCount: Integer) of object;
+  TSetEditingEvent = procedure ( AValue: Boolean ) of object;
 
 type
   TInterfacedSharpCenterHostBase = class(TInterfacedObject,ISharpCenterHost)
@@ -55,8 +75,26 @@ type
       FTheme: TCenterThemeInfo;
       FEditMode: TSCE_EDITMODE_ENUM;
       FEditing: Boolean;
-      FXml: TJclSimpleXML;
-    FOnSettingsChanged: TNotifyEvent;
+      FWarning: Boolean;
+      FOnSettingsChanged: TNotifyEvent;
+
+      FOnSetEditTabVisibility: TSetEditTabVisibilityEvent;
+      FOnSetEditTab: TSetEditTabEvent;
+      FOnRefreshAll: TNotifyEvent;
+      FOnRefreshPluginTabs: TNotifyEvent;
+      FOnRefreshPreview: TNotifyEvent;
+      FOnRefreshTheme: TNotifyEvent;
+      FOnRefreshTitle: TNotifyEvent;
+      FOnRefreshSize: TNotifyEvent;
+      FOnSetEditing: TSetEditingEvent;
+      FOnSetWarning: TSetEditingEvent;
+      FOnSetButtonVisibility: TSetEditTabVisibilityEvent;
+      FXml: TInterfacedXmlBase;
+      FOnSave: TNotifyEvent;
+
+      FValidator: TJvValidators;
+      FErrorIndicator: TJvErrorIndicator;
+
       function GetEditOwner : TWinControl; stdCall;
       procedure SetEditOwner(Value : TWinControl); stdCall;
       function GetPluginOwner : TWinControl; stdCall;
@@ -68,13 +106,13 @@ type
       function GetEditMode : TSCE_EDITMODE_ENUM; stdCall;
       procedure SetEditMode(Value : TSCE_EDITMODE_ENUM); stdCall;
       function GetEditing : Boolean; stdCall;
-      procedure SetEditing(Value : Boolean); stdCall;
-    function GetXml: TJclSimpleXML;
+      function GetWarning : Boolean; stdcall;
+      procedure SetWarning(Value : Boolean); stdcall;
     public
       constructor Create;
       destructor Destroy; override;
       function GetTheme : TCenterThemeInfo; virtual; stdCall;
-
+      procedure SetEditing(Value : Boolean); stdCall;
       property EditOwner : TWinControl read GetEditOwner write SetEditOwner;
       property PluginOwner : TWinControl read GetPluginOwner write SetPluginOwner;
       property PluginId : string read GetPluginId write SetPluginId;
@@ -82,30 +120,119 @@ type
       property EditMode: TSCE_EDITMODE_ENUM read GetEditMode write
         SetEditMode;
       property Editing: Boolean read GetEditing write SetEditing;
-      property Xml: TJclSimpleXML read GetXml;
+      property Warning: Boolean read GetWarning write SetWarning;
 
-      procedure RefreshTheme; virtual; stdCall;
+      procedure Refresh( ARefreshType: TRefreshTypeEnum = rtAll ); stdCall;
       function Open(AForm: TForm) : THandle; stdcall;
       function OpenEdit(AForm: TForm):THandle; stdCall;
+      procedure Save; stdCall;
+
+      procedure SetEditTab( ATab: TSCB_BUTTON_ENUM ); stdCall;
+      procedure SetEditTabVisibility( ATab: TSCB_BUTTON_ENUM; AVisible: Boolean); stdCall;
+      procedure SetEditTabsVisibility( AItemIndex: Integer; AItemCount: Integer); stdCall;
+      procedure SetButtonVisibility( AButton: TSCB_BUTTON_ENUM; Visible: Boolean); stdCall;
+      procedure SetSettingsChanged; stdCall;
+
+      property Xml: TInterfacedXmlBase read FXml;
+      property Validator: TJvValidators read FValidator;
+      property ErrorIndicator: TJvErrorIndicator read FErrorIndicator;
+
+      function AddRequiredFieldValidator( controlToValidate: TControl;
+        errorMessage: string; propertyToValidate: string ): TJvRequiredFieldValidator;
+
+      function AddCustomValidator( controlToValidate: TControl;
+        errorMessage: string; propertyToValidate: string ): TJvCustomValidator;
+
+      property OnSave: TNotifyEvent read FOnSave write
+        FOnSave;
+
+      property OnRefreshAll: TNotifyEvent read FOnRefreshAll write
+        FOnRefreshAll;
+
+      property OnRefreshTitle: TNotifyEvent read FOnRefreshTitle write
+        FOnRefreshTitle;
+
+      property OnRefreshSize: TNotifyEvent read FOnRefreshSize write
+        FOnRefreshSize;
+
+      property OnRefreshTheme: TNotifyEvent read FOnRefreshTheme write
+        FOnRefreshTheme;
+
+      property OnRefreshPreview: TNotifyEvent read FOnRefreshPreview write
+        FOnRefreshPreview;
+
+      property OnRefreshPluginTabs: TNotifyEvent read FOnRefreshPluginTabs write
+        FOnRefreshPluginTabs;
 
       property OnSettingsChanged: TNotifyEvent read FOnSettingsChanged write
         FOnSettingsChanged;
 
-      procedure SetSettingsChanged; stdCall;
+      property OnSetEditing: TSetEditingEvent read FOnSetEditing write
+        FOnSetEditing;
+
+      property OnSetWarning: TSetEditingEvent read FOnSetWarning write
+        FOnSetWarning;
+
+      property OnSetEditTab: TSetEditTabEvent read FOnSetEditTab write
+        FOnSetEditTab;
+
+      property OnSetEditTabVisibility: TSetEditTabVisibilityEvent read FOnSetEditTabVisibility write
+        FOnSetEditTabVisibility;
+
+      property OnSetButtonVisibility: TSetEditTabVisibilityEvent read FOnSetButtonVisibility write
+        FOnSetButtonVisibility;
     end;
 
 implementation
 
 { TInterfacedSharpCenterHostBase }
 
+function TInterfacedSharpCenterHostBase.AddCustomValidator(
+  controlToValidate: TControl; errorMessage,
+  propertyToValidate: string): TJvCustomValidator;
+var
+  tmp: TJvCustomValidator;
+begin
+  tmp := TJvCustomValidator.Create( Application.MainForm );
+  tmp.ControlToValidate := controlToValidate;
+  tmp.ErrorMessage := errorMessage;
+  tmp.PropertyToValidate := propertyToValidate;
+  Validator.Insert(tmp);
+
+  result := tmp;
+end;
+
+function TInterfacedSharpCenterHostBase.AddRequiredFieldValidator(
+  controlToValidate: TControl; errorMessage,
+  propertyToValidate: string): TJvRequiredFieldValidator;
+var
+  tmp: TJvRequiredFieldValidator;
+begin
+  tmp := TJvRequiredFieldValidator.Create( Application.MainForm );
+  tmp.ControlToValidate := controlToValidate;
+  tmp.ErrorMessage := errorMessage;
+  tmp.PropertyToValidate := propertyToValidate;
+  Validator.Insert(tmp);
+
+  result := tmp;
+end;
+
 constructor TInterfacedSharpCenterHostBase.Create;
 begin
-  FXml := TJclSimpleXML.Create;
+  FXml := TInterfacedXmlBase.Create;
+
+  FErrorIndicator := TJvErrorIndicator.Create(nil);
+  FValidator := TJvValidators.Create(nil);
+  with FValidator do begin
+    ErrorIndicator := FErrorIndicator;
+  end;
 end;
 
 destructor TInterfacedSharpCenterHostBase.Destroy;
 begin
-  FXml.Free;
+  FXml := nil;
+  FValidator.Free;
+  FErrorIndicator.Free;
 end;
 
 function TInterfacedSharpCenterHostBase.GetEditing: Boolean;
@@ -138,14 +265,15 @@ begin
   Result := FTheme;
 end;
 
-function TInterfacedSharpCenterHostBase.GetXml: TJclSimpleXML;
+function TInterfacedSharpCenterHostBase.GetWarning: Boolean;
 begin
-  result :=  FXml;
+  result := FWarning;
 end;
 
 function TInterfacedSharpCenterHostBase.Open(AForm: TForm): THandle;
 begin
   AForm.ParentWindow := FPluginOwner.Handle;
+  AForm.BorderStyle := bsNone;
   AForm.Left := 0;
   AForm.Top := 0;
   AForm.Show;
@@ -155,20 +283,103 @@ end;
 function TInterfacedSharpCenterHostBase.OpenEdit(AForm: TForm): THandle;
 begin
   AForm.ParentWindow := FEditOwner.Handle;
+  AForm.BorderStyle := bsNone;
   AForm.Left := 0;
   AForm.Top := 0;
   AForm.Show;
   result := AForm.Handle;
 end;
 
-procedure TInterfacedSharpCenterHostBase.RefreshTheme;
+procedure TInterfacedSharpCenterHostBase.SetEditTab(ATab: TSCB_BUTTON_ENUM);
 begin
+  if assigned(FOnSetEditTab) then
+    FOnSetEditTab( ATab );
+end;
 
+procedure TInterfacedSharpCenterHostBase.SetEditTabsVisibility(AItemIndex,
+  AItemCount: Integer);
+
+  procedure BC(AEnabled: Boolean; AButton: TSCB_BUTTON_ENUM);
+  begin
+    if AEnabled then
+      SetEditTabVisibility(AButton, True)
+    else
+      SetEditTabVisibility(AButton, False);
+  end;
+
+begin
+  if ((AItemCount = 0) or (AItemIndex = -1)) then begin
+    BC(False, scbEditTab);
+
+    if (AItemCount = 0) then begin
+      SetEditTab(scbAddTab);
+    end;
+
+    BC(True, scbAddTab);
+
+  end
+  else begin
+    BC(True, scbAddTab);
+    BC(True, scbEditTab);
+  end;
+end;
+procedure TInterfacedSharpCenterHostBase.SetEditTabVisibility(
+  ATab: TSCB_BUTTON_ENUM; AVisible: Boolean);
+begin
+  if assigned(FOnSetEditTabVisibility) then
+    FOnSetEditTabVisibility( ATab, AVisible );
+end;
+
+procedure TInterfacedSharpCenterHostBase.Refresh(
+  ARefreshType: TRefreshTypeEnum = rtAll);
+begin
+  case ARefreshType of
+    rtAll: begin
+      if assigned(FOnRefreshAll) then
+        FOnRefreshAll(Self);
+    end;
+    rtSize: begin
+      if assigned(FOnRefreshSize) then
+        FOnRefreshSize(Self);
+    end;
+    rtPreview: begin
+      if assigned(FOnRefreshPreview) then
+        FOnRefreshPreview(Self);
+    end;
+    rtTabs: begin
+      if assigned(FOnRefreshPluginTabs) then
+        FOnRefreshPluginTabs(Self);
+    end;
+    rtTheme : begin
+      if assigned(FOnRefreshTheme) then
+        FOnRefreshTheme(Self);
+    end;
+    rtTitle,rtStatus,rtDescription : begin
+      if assigned(FOnRefreshTitle) then
+        FOnRefreshTitle(Self);
+    end;
+  end;
+end;
+
+procedure TInterfacedSharpCenterHostBase.Save;
+begin
+  if assigned(FOnSave) then
+    FOnSave(Self);
+end;
+
+procedure TInterfacedSharpCenterHostBase.SetButtonVisibility(
+  AButton: TSCB_BUTTON_ENUM; Visible: Boolean);
+begin
+  if assigned(FOnSetButtonVisibility) then
+    FOnSetButtonVisibility(AButton,Visible);
 end;
 
 procedure TInterfacedSharpCenterHostBase.SetEditing(Value: Boolean);
 begin
   FEditing := Value;
+
+  if assigned(FOnSetEditing) then
+    FOnSetEditing(Value);
 end;
 
 procedure TInterfacedSharpCenterHostBase.SetEditMode(Value: TSCE_EDITMODE_ENUM);
@@ -200,6 +411,17 @@ end;
 procedure TInterfacedSharpCenterHostBase.SetTheme(Value: TCenterThemeInfo);
 begin
   FTheme := Value;
+end;
+
+procedure TInterfacedSharpCenterHostBase.SetWarning(Value: Boolean);
+begin
+  if FWarning <> Value then begin
+
+    FWarning := Value;
+
+    if Assigned(FOnSetWarning) then
+      FOnSetWarning(Value);
+  end;
 end;
 
 end.
