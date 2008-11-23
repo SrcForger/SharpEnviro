@@ -264,6 +264,8 @@ function XmlGetThemeFile(ATheme: string): string;
 procedure XmlSetScheme(ATheme: String; AName: string);
 function XmlGetScheme(ATheme: string): string;
 procedure XmlSetTheme(ATheme: String);
+function XmlGetSkinDir(ATheme: String): String; overload;
+function XmlGetSkinDir: String; overload;
 
 procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string);
 
@@ -717,8 +719,8 @@ end;
 
 procedure XmlSetTheme(ATheme: String);
 var
-  xml: TJvSimpleXML;
   s: string;
+  xml:TJvSimpleXML;
 begin
   xml := TJvSimpleXML.Create(nil);
   try
@@ -802,6 +804,22 @@ end;
 function XmlGetSkinFile(ATheme: string): string;
 begin
   Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'skin.xml';
+end;
+
+function XmlGetSkinDir(ATheme: String):string;
+var
+  skin: string;
+begin
+  result := '';
+  skin := XmlGetSkin(ATheme);
+
+  if skin <> '' then
+    Result := GetSharpeDirectory + SKINS_DIRECTORY + '\' + skin + '\';
+end;
+
+function XmlGetSkinDir:string;
+begin
+  Result := XmlGetSkinDir(XmlGetTheme);
 end;
 
 end.
