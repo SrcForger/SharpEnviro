@@ -29,14 +29,11 @@ type
     { Private declarations }
     FBackgroundColor: TColor;
     FTimer: TTimer;
-    FColorMenu: TPopupMenu;
     rColorPicker: TRect;
     FMouseOver, FMouseDown: Boolean;
     FOnColorClick: TNotifyEvent;
-    FColorDialog: TColorDialog;
     FColor: TColor;
     FLastColor: TColor;
-    FCustom: Boolean;
 
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
