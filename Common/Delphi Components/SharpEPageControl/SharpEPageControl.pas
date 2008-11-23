@@ -193,7 +193,7 @@ begin
     ParentColor := True;
     ParentBackground := False;
     SendToBack;
-    DoubleBuffered := False;
+    DoubleBuffered := True;
   end;
 end;
 {$ENDREGION}
