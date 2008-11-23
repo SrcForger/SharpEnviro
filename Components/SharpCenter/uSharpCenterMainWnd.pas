@@ -391,12 +391,17 @@ begin
 
 
       pnlLivePreview.Height := bmp.Height;
+      pnlLivePreview.Margins.Top := 10;
+      pnlLivePreview.Margins.Bottom := 15;
     finally
       bmp.Free;
     end;
   end
-  else
+  else begin
     pnlLivePreview.Height := 0;
+    pnlLivePreview.Margins.Top := 0;
+    pnlLivePreview.Margins.Bottom := 0;
+  end;
 
   finally
     //LockWindowUpdate(0);

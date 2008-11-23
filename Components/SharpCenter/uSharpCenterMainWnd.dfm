@@ -1662,27 +1662,30 @@ object SharpCenterWnd: TSharpCenterWnd
       object pnlLivePreview: TPanel
         AlignWithMargins = True
         Left = 6
-        Top = 35
+        Top = 37
         Width = 542
         Height = 27
         Margins.Left = 0
-        Margins.Top = 0
+        Margins.Top = 2
         Margins.Right = 0
-        Margins.Bottom = 4
+        Margins.Bottom = 8
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         UseDockManager = False
         Locked = True
         TabOrder = 0
+        ExplicitTop = 35
         object imgLivePreview: TImage32
           Left = 0
           Top = 0
           Width = 542
           Height = 27
+          Margins.Left = 0
+          Margins.Right = 0
           Align = alClient
           Bitmap.ResamplerClassName = 'TNearestResampler'
-          BitmapAlign = baCenter
+          BitmapAlign = baTopLeft
           ParentColor = False
           Scale = 1.000000000000000000
           ScaleMode = smNormal
@@ -1691,9 +1694,9 @@ object SharpCenterWnd: TSharpCenterWnd
       end
       object pnlPluginContainer: TSharpEPageControl
         Left = 6
-        Top = 270
+        Top = 276
         Width = 542
-        Height = 250
+        Height = 244
         Align = alClient
         DoubleBuffered = False
         ExpandedHeight = 200
@@ -1721,15 +1724,17 @@ object SharpCenterWnd: TSharpCenterWnd
         PageBackgroundColor = clWindow
         OnTabChange = tlPluginTabsTabChange
         OnTabClick = pnlPluginContainerTabClick
+        ExplicitTop = 270
+        ExplicitHeight = 250
         DesignSize = (
           542
-          250)
+          244)
         object sbPlugin: TScrollBox
           AlignWithMargins = True
           Left = 6
           Top = 32
           Width = 530
-          Height = 212
+          Height = 206
           Margins.Left = 6
           Margins.Top = 32
           Margins.Right = 6
@@ -1742,6 +1747,7 @@ object SharpCenterWnd: TSharpCenterWnd
           ParentColor = False
           TabOrder = 2
           OnResize = sbPluginResize
+          ExplicitHeight = 212
           object pnlPlugin: TPanel
             Left = 0
             Top = 0
@@ -1762,7 +1768,7 @@ object SharpCenterWnd: TSharpCenterWnd
       object pnlEditContainer: TSharpEPageControl
         AlignWithMargins = True
         Left = 6
-        Top = 66
+        Top = 72
         Width = 542
         Height = 200
         Margins.Left = 0
@@ -1806,6 +1812,7 @@ object SharpCenterWnd: TSharpCenterWnd
         PageBackgroundColor = clWindow
         OnTabChange = tlEditItemTabChange
         OnTabClick = tlEditItemTabClick
+        ExplicitTop = 66
         DesignSize = (
           542
           200)
@@ -2776,11 +2783,11 @@ object SharpCenterWnd: TSharpCenterWnd
           Left = 0
           Top = 0
           Width = 538
-          Height = 22
+          Height = 20
           Margins.Left = 0
           Margins.Top = 0
           Margins.Right = 4
-          Margins.Bottom = 4
+          Margins.Bottom = 6
           Align = alClient
           AutoSize = False
           Caption = 'The most awesome configuration manager in the world!'
