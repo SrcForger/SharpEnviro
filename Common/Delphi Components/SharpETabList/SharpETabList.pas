@@ -36,6 +36,7 @@ type
     FStatus: string;
     FImageIndex: Integer;
     FVisible: Boolean;
+    FData: TObject;
     procedure SetImageIndex(const Value: Integer);
     procedure SetVisible(const Value: Boolean);
     procedure SetCaption(const Value: string);
@@ -43,14 +44,14 @@ type
   public
     constructor Create(Collection: TCollection); override;
     procedure SetCollection(Value: TCollection); override;
-
+    property Data: TObject read FData write FData;
   published
     property Caption: string read FCaption write SetCaption;
     property Status: string read FStatus write SetStatus;
     property TabExtent: TTabExtents read FTabExtent write FTabExtent;
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
     property Visible: Boolean read FVisible write SetVisible;
-
+    
   end;
 
   TButtonItem = class(TCollectionItem)
@@ -175,6 +176,8 @@ type
     procedure SetTextSpacingY(const Value: Integer);
     procedure CreateScrollButtonComponents;
     procedure DrawTabs;
+    function GetTabItem(Index: Integer): TTabItem;
+    procedure SetTabItem(Index: Integer; const Value: TTabItem);
 
   protected
     procedure DrawTab(ATabItem: TTabItem);
@@ -201,6 +204,9 @@ type
 
     property TabsWidth: Integer read GetTabsWidth;
     property ButtonsWidth: Integer read GetButtonsWidth;
+
+    property TabItem[Index: Integer] : TTabItem
+             read GetTabItem write SetTabItem; Default;
 
   published
     property Align;
@@ -681,6 +687,13 @@ begin
   ATabExtents.TabRect := Rect(X, Y, X + W, Height);
 end;
 
+function TSharpETabList.GetTabItem(Index: Integer): TTabItem;
+begin
+  result := nil;
+  if (Index >= 0) and (Index < FTabList.Count) then
+    result := FTabList.Item[Index];
+end;
+
 function TSharpETabList.GetTabsWidth: Integer;
 var
   iTab, iTabsWidth, iTabWidth: Integer;
@@ -981,6 +994,12 @@ begin
     FTabIndex := Value;
 
   Invalidate;
+end;
+
+procedure TSharpETabList.SetTabItem(Index: Integer; const Value: TTabItem);
+begin
+  if (Index >= 0) and (Index < FTabList.Count) then
+    FTabList.SetItem(Index, Value);
 end;
 
 procedure TSharpETabList.SetTabSelectedColor(const Value: TColor);
