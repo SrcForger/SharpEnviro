@@ -8,11 +8,18 @@ uses
 
 const
   IID_ISharpCenterPluginEdit: TGUID = '{C7477868-4A58-4EDF-8D81-2C0B1732C116}';
+  IID_ISharpCenterPluginValidation: TGUID = '{3E12792D-C1D9-4C58-B055-FFC4B1A72D3F}';
   IID_ISharpCenterPluginTabs: TGUID = '{1874CB85-3577-4CBD-9F73-EE464223E3FD}';
   IID_ISharpCenterPluginPreview: TGUID = '{C397A7F1-86D1-4E20-AD5C-EA52C51DC306}';
   IID_ISharpCenterPlugin: TGUID = '{F9E1BB12-4885-43FF-B4CB-56517F6F486D}';
 
 type
+  ISharpCenterPluginValidation = interface(IInterface)
+  ['{3E12792D-C1D9-4C58-B055-FFC4B1A72D3F}']
+
+    procedure SetupValidators; stdCall;
+  end;
+
   ISharpCenterPluginPreview = interface(IInterface)
   ['{C397A7F1-86D1-4E20-AD5C-EA52C51DC306}']
 
@@ -23,7 +30,7 @@ type
   ['{C7477868-4A58-4EDF-8D81-2C0B1732C116}']
 
   function OpenEdit: THandle; stdCall;
-  function CloseEdit(AApply:Boolean): boolean; stdCall;
+  procedure CloseEdit(AApply:Boolean); stdCall;
   end;
 
   ISharpCenterPluginTabs = interface(IInterface)
