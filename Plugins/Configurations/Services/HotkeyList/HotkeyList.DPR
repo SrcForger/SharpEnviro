@@ -100,12 +100,14 @@ var
   fn: string;
   itemCount: integer;
 begin
+  result := '';
   fn := GetSharpeUserSettingsPath + cSettingsLocation;
   PluginHost.Xml.XmlFilename := fn;
-  PluginHost.Xml.Load;
 
-  itemCount := PluginHost.Xml.XmlRoot.Items.Count;
-  result := IntToStr(ItemCount);
+  if PluginHost.Xml.Load then begin
+    itemCount := PluginHost.Xml.XmlRoot.Items.Count;
+    result := IntToStr(ItemCount);
+  end;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;

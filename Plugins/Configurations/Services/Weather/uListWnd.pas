@@ -212,7 +212,7 @@ begin
   end;
 
   if frmEditWnd <> nil then
-    frmEditWnd.InitUi;
+    frmEditWnd.Init;
 
   PluginHost.SetEditTabsVisibility( lbWeatherList.ItemIndex, lbWeatherList.Count );
   PluginHost.Refresh;

@@ -24,12 +24,8 @@ uses
   SharpEListBoxEx,
   Menus,
   SharpApi,
-  JvLabel,
   ImgList,
   PngImageList,
-  JvValidators,
-  JvComponentBase,
-  JvErrorIndicator,
   SharpCenterApi, SharpERoundPanel, ISharpCenterHostUnit, JvXPCore,
   JvXPCheckCtrls;
 
@@ -42,17 +38,12 @@ type
 type
   TfrmEditWnd = class(TForm)
     mnuSearch: TPopupMenu;
-    errorinc: TJvErrorIndicator;
-    vals: TJvValidators;
-    valID: TJvRequiredFieldValidator;
-    valName: TJvRequiredFieldValidator;
-    pilError: TPngImageList;
     btnSearch: TPngSpeedButton;
     edName: TLabeledEdit;
     edWeatherID: TLabeledEdit;
     Image1: TImage;
-    JvLabel1: TJvLabel;
     chkMetric: TJvXPCheckbox;
+    JvLabel1: TLabel;
 
     procedure UpdateEditState(Sender: TObject);
     procedure btnSearchClick(Sender: TObject);
@@ -68,13 +59,12 @@ type
     procedure ClickItem(Sender: TObject);
   public
     { Public declarations }
-    procedure InitUi;
-    function ValidateEdit: Boolean;
-    procedure ClearValidation;
-    function Save(AApply: Boolean): Boolean;
+    procedure Init;
+    procedure Save;
 
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
       FPluginHost;
+    property ItemEdit: TWeatherItem read FItemEdit write FItemEdit;
   end;
 
 var
@@ -217,7 +207,7 @@ begin
   SharpExecute('http://www.weather.com/?prod=xoap&par=1003043975');
 end;
 
-procedure TfrmEditWnd.InitUi;
+procedure TfrmEditWnd.Init;
 var
   tmpItem: TSharpEListItem;
   tmpWeather: TWeatherItem;
@@ -253,45 +243,11 @@ begin
   end;
 end;
 
-procedure TfrmEditWnd.ClearValidation;
-begin
-  errorinc.BeginUpdate;
-  try
-    errorinc.ClearErrors;
-  finally
-    errorinc.EndUpdate;
-  end;
-end;
-
-function TfrmEditWnd.ValidateEdit: Boolean;
-begin
-  Result := False;
-
-  case FPluginHost.EditMode of
-    sceAdd, sceEdit: begin
-
-        errorinc.BeginUpdate;
-        try
-          errorinc.ClearErrors;
-          vals.ValidationSummary := nil;
-
-          Result := vals.Validate;
-        finally
-          errorinc.EndUpdate;
-        end;
-      end;
-  end;
-end;
-
-function TfrmEditWnd.Save(AApply: Boolean): Boolean;
+procedure TfrmEditWnd.Save;
 var
   tmpItem: TSharpEListItem;
   tmpWeather: TWeatherItem;
 begin
-  Result := false;
-  if not (AApply) then
-    Exit;
-
   case FPluginHost.EditMode of
     sceAdd: begin
 
@@ -302,7 +258,6 @@ begin
         frmItemswnd.UpdateDisplay;
         SharpApi.ServiceMsg('weather', '_forceupdate');
 
-        Result := True;
       end;
     sceEdit: begin
         tmpItem := frmItemswnd.lbWeatherList.Item[frmItemswnd.lbWeatherList.ItemIndex];
@@ -314,7 +269,6 @@ begin
         frmItemswnd.UpdateDisplay;
         FPluginHost.Save;
 
-        Result := True;
       end;
   end;
 

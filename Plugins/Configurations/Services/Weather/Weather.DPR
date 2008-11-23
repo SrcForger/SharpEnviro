@@ -30,7 +30,8 @@ uses
 {$R *.RES}
 
 type
-  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit )
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit,
+    ISharpCenterPluginValidation )
   private
     procedure Load;
 
@@ -39,12 +40,14 @@ type
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
-    function CloseEdit(AApply: Boolean): Boolean; stdcall;
+    procedure CloseEdit(AApply: Boolean); stdcall;
     function OpenEdit: Cardinal; stdcall;
     procedure Save; override; stdCall;
 
+
     function GetPluginDescriptionText: String; override; stdCall;
     procedure Refresh; override; stdcall;
+    procedure SetupValidators; stdcall;
   end;
 
 { TSharpCenterPlugin }
@@ -55,21 +58,11 @@ begin
   FreeAndNil(frmEditWnd);
 end;
 
-function TSharpCenterPlugin.CloseEdit(AApply: Boolean): Boolean;
+procedure TSharpCenterPlugin.CloseEdit(AApply: Boolean);
 begin
-  Result := True;
-
-  if frmEditWnd = nil then exit;
-
-  // First validate
   if AApply then
-    if Not(frmEditWnd.ValidateEdit) then begin
-      Result := False;
-      Exit;
-    end;
+    frmEditWnd.Save;
 
-  // If Validation ok then continue
-  frmEditWnd.Save(AApply);
   FreeAndNil(frmEditWnd);
 end;
 
@@ -110,7 +103,7 @@ begin
   uVistaFuncs.SetVistaFonts(frmEditWnd);
 
   result := PluginHost.OpenEdit(frmEditWnd);
-  frmEditWnd.InitUi;
+  frmEditWnd.Init;
 end;
 
 procedure TSharpCenterPlugin.Refresh;
@@ -123,6 +116,13 @@ begin
   inherited;
   frmItemswnd.WeatherList.SaveSettings;
   frmItemswnd.WeatherOptions.SaveSettings;
+end;
+
+procedure TSharpCenterPlugin.SetupValidators;
+begin
+  // Can not leave fields blank
+  PluginHost.AddRequiredFieldValidator( frmEditWnd.edName,'Please enter a name for this weather Id','Text');
+  PluginHost.AddRequiredFieldValidator( frmEditWnd.edWeatherID,'Please enter a valid weather Id','Text');
 end;
 
 function GetMetaData(): TMetaData;
