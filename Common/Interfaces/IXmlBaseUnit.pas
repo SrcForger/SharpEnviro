@@ -76,6 +76,17 @@ type
 
 end;
 
+type
+  TInterfacedXmlBaseList = class( TList )
+  private
+    FXml: TInterfacedXmlBase;
+  public
+    destructor Destroy; override;
+    property Xml: TInterfacedXmlBase read FXml;
+    constructor Create;
+    
+end;
+
 implementation
 
 { TInterfacedXmlBase }
@@ -127,8 +138,12 @@ var
   backupFile: string;
 begin
   result := true;
-  FXmlRoot := nil;
-  FXml.Root.Clear;
+
+  // Check for null xml
+  if FXml = nil then begin
+    FXml := TJclSimpleXML.Create;
+  end else
+    FXml.Root.Clear;
 
   if not (FileValidPrecheck(FXmlFileName)) then begin
     result := false;
@@ -189,6 +204,10 @@ begin
 
   Try
     FXml.LoadFromFile(fileName);
+
+    // Check for empty file, as sometimes the file can get wiped.
+    if Length(FXml.Root.SaveToString()) = 0 then
+      result := false;
   Except
     on E: Exception do begin
       Debug(format('Error loading file: %s',[fileName]),DMT_ERROR);
@@ -205,6 +224,9 @@ begin
   Result := true;
 
   try
+    if not DirectoryExists(ExtractFilePath(FXmlFileName)) then
+      ForceDirectories(ExtractFilePath(FXmlFileName));
+
     FXml.SaveToFile(FXmlFileName);
   except
     on E: Exception do begin
@@ -244,6 +266,19 @@ end;
 procedure TInterfacedXmlBase.SetXmlRoot(value: TJclSimpleXMLElemClassic);
 begin
   FXmlRoot := value;
+end;
+
+{ IInterfacedXmlBaseList }
+
+constructor TInterfacedXmlBaseList.Create;
+begin
+  FXml := TInterfacedXmlBase.Create;
+end;
+
+destructor TInterfacedXmlBaseList.Destroy;
+begin
+  FXml := nil;
+  inherited;
 end;
 
 end.
