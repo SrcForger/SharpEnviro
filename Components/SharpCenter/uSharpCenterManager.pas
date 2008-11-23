@@ -17,7 +17,7 @@ uses
   ExtCtrls,
   pngimage,
   pngimagelist,
-
+  JvValidators,
   JclFileUtils,
   JvSimpleXml,
 
@@ -132,6 +132,7 @@ type
 
 
     function GetSharpCenterPlugin: ISharpCenterPlugin;
+    procedure SetupValidation;
   public
     constructor Create;
     destructor Destroy; override;
@@ -157,6 +158,7 @@ type
     procedure RefreshTheme;
 
     function PluginHasEditSupport: Boolean;
+    function PluginHasValidationSupport: Boolean;
     function PluginHasTabSupport: Boolean;
     function PluginHasPreviewSupport: Boolean;
 
@@ -752,6 +754,21 @@ begin
   end;
 end;
 
+procedure TSharpCenterManager.SetupValidation;
+var
+  i: Integer;
+begin
+  // Delete existing
+  for i := Pred(PluginHost.Validator.Count) downto 0 do
+  begin
+    PluginHost.Validator[i].Free;
+  end;
+  // Set validation graphics
+  PluginHost.ErrorIndicator.Images := FPngImageList;
+  PluginHost.ErrorIndicator.ImageIndex := 3;
+  Plugin.ValidationInterface.SetupValidators;
+end;
+
 procedure TSharpCenterManager.AssignIconIndex(AFile: string;
   AItem: TSharpCenterManagerItem);
 var
@@ -815,6 +832,21 @@ begin
     Result := False else begin
       with Plugin do begin
         EditInterface := tmp;
+      end;
+    end;
+end;
+
+function TSharpCenterManager.PluginHasValidationSupport: Boolean;
+var
+  tmp:ISharpCenterPluginValidation;
+begin
+  Result := True;
+
+  tmp := nil;
+  if not(SharpCenterPlugin.QueryInterface(IID_ISharpCenterPluginValidation,tmp) = S_OK) then
+    Result := False else begin
+      with Plugin do begin
+        ValidationInterface := tmp;
       end;
     end;
 end;
@@ -911,6 +943,11 @@ begin
     FEditHandle := Plugin.EditInterface.OpenEdit();
     FPluginHost.EditOwner.ParentWindow := FEditHandle;
 
+    // Set up validators
+    if (PluginHasValidationSupport) then begin
+      SetupValidation;
+    end;
+
     if assigned(FOnUpdateTheme) then
       FOnUpdateTheme(Self);
 
@@ -986,7 +1023,15 @@ begin
       end;
 
       FPluginHost.EditMode := editMode;
-      bValid := Plugin.EditInterface.CloseEdit( True );
+
+      // Validate here
+      if (PluginHasValidationSupport) then begin
+        bValid := PluginHost.Validator.Validate;
+      end else
+        bValid := true;
+
+      if bValid then
+        Plugin.EditInterface.CloseEdit( True );
     end;
 
     if bValid then begin
@@ -1015,6 +1060,7 @@ begin
 
   if (PluginHasEditSupport) then begin
     PluginHost.EditMode := sceEdit;
+
     Plugin.EditInterface.CloseEdit(False);
   end;
 

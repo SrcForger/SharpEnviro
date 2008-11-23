@@ -190,6 +190,7 @@ type
     procedure RefreshPluginTabsEvent(Sender: TObject);
     procedure RefreshTitleEvent(Sender: TObject);
     procedure RefreshAllEvent(Sender: TObject);
+    procedure SaveEvent(Sender: TObject);
 
     procedure SetHostSettingsChangedEvent(Sender: TObject);
 
@@ -669,6 +670,7 @@ begin
   SCM.PluginHost.OnSetWarning := SetWarningEvent;
   SCM.PluginHost.OnSetButtonVisibility := SetButtonVisibilityEvent;
   SCM.PluginHost.OnRefreshTitle := RefreshTitleEvent;
+  SCM.PluginHost.OnSave := SaveEvent;
 end;
 
 procedure TSharpCenterWnd.UpdateEditButtons;
@@ -1307,6 +1309,11 @@ begin
   finally
     LockWindowUpdate(0);
   end;
+end;
+
+procedure TSharpCenterWnd.SaveEvent(Sender: TObject);
+begin
+  SCM.Save;
 end;
 
 procedure TSharpCenterWnd.SavePluginEvent(Sender: TObject);
