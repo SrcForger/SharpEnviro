@@ -349,7 +349,7 @@ begin
       end;
 
   if frmEdit<> nil then
-    frmEdit.InitUi;
+    frmEdit.Init;
 
   FPluginHost.SetEditTabsVisibility(lbThemeList.ItemIndex,lbThemeList.Count);
   FPluginHost.Refresh( rtAll );
@@ -483,8 +483,8 @@ end;
 
 procedure TfrmList.EditTheme(name: String);
 begin
-  CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-      + '_Themes\Theme.con'), pchar(name))
+  //CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
+  //    + '_Themes\Theme.con'), pchar(name))
 end;
 
 procedure TfrmList.GenerateMask;

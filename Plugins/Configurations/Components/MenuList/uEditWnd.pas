@@ -41,45 +41,19 @@ uses
   ExtCtrls,
   StdCtrls,
   Buttons,
-  ImgList,
-
-  // JVCL
+  ISharpCenterHostUnit,
   JvExControls,
-
-  // JCL
-  jclStrings,
-  SharpApi,
-  SharpCenterApi,
-
-  SharpEListBox,
-  SharpEListBoxEx,
-
-  // PNG Image
-  pngimage,
-  JvComponentBase,
+  JclStrings,
   JvLabel,
-  PngImageList,
-  PngBitBtn,
-  JvExStdCtrls,
-  PngSpeedButton,
-  JvErrorIndicator,
-  JvValidators,
-
-  ISharpCenterHostUnit;
+  SharpApi,
+  SharpEListBoxEx;
 
 type
   TfrmEdit = class(TForm)
-    vals: TJvValidators;
-    valName: TJvRequiredFieldValidator;
-    pilError: TPngImageList;
-    errorinc: TJvErrorIndicator;
-    valNameExists: TJvCustomValidator;
     edName: TLabeledEdit;
     cbBasedOn: TComboBox;
     JvLabel1: TJvLabel;
 
-    procedure valNameExistsValidate(Sender: TObject;
-      ValueToValidate: Variant; var Valid: Boolean);
     procedure edHotkeyKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure UpdateEditState(Sender: TObject);
     procedure editStateEvent(Sender: TObject);
@@ -91,10 +65,8 @@ type
   public
     { Public declarations }
     SelectedText: string;
-    procedure InitUi(AChangePage: Boolean = False);
-    function ValidateEdit: Boolean;
-    procedure ClearValidation;
-    function Save(AApply: Boolean): Boolean;
+    procedure InitUi;
+    procedure Save;
 
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
       FPluginHost;
@@ -117,7 +89,7 @@ uses
 
 {$R *.dfm}
 
-procedure TfrmEdit.InitUi(AChangePage: Boolean = False);
+procedure TfrmEdit.InitUi;
 var
   tmpItem: TSharpEListItem;
   tmpMenuItem: TMenuDataObject;
@@ -158,41 +130,15 @@ begin
   end;
 end;
 
-function TfrmEdit.ValidateEdit: Boolean;
-begin
-  Result := False;
-
-  case PluginHost.EditMode of
-    sceAdd, sceEdit: begin
-
-        errorinc.BeginUpdate;
-        try
-          errorinc.ClearErrors;
-          vals.ValidationSummary := nil;
-
-          Result := vals.Validate;
-        finally
-          errorinc.EndUpdate;
-        end;
-      end;
-    sceDelete: Result := True;
-  end;
-end;
-
-function TfrmEdit.Save(AApply: Boolean ): Boolean;
+procedure TfrmEdit.Save;
 var
   tmpItem: TSharpEListItem;
   tmpMenuItem: TMenuDataObject;
   sNewFile, sOldFile, sMenuDir: string;
 begin
-  Result := false;
-  if not (AApply) then
-    Exit;
-
   case PluginHost.EditMode of
     sceAdd: begin
         frmList.Save(edName.Text, cbBasedOn.Text);
-        Result := True;
         frmList.EditMenu(edName.Text);
         
         Exit;
@@ -213,8 +159,6 @@ begin
 
         if CompareText(sOldFile,sNewFile) <> 0 then
           RenameFile(sOldFile,sNewFile);
-
-        Result := True;
       end;
   end;
 
@@ -227,16 +171,6 @@ begin
   PluginHost.SetEditing(True);
 end;
 
-procedure TfrmEdit.ClearValidation;
-begin
-  errorinc.BeginUpdate;
-  try
-    errorinc.ClearErrors;
-  finally
-    errorinc.EndUpdate;
-  end;
-end;
-
 procedure TfrmEdit.edHotkeyKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -247,31 +181,6 @@ procedure TfrmEdit.editStateEvent(Sender: TObject);
 begin
   if not (FUpdating) then
     PluginHost.SetEditing(True);
-end;
-
-procedure TfrmEdit.valNameExistsValidate(Sender: TObject;
-  ValueToValidate: Variant; var Valid: Boolean);
-var
-  bExistsName: Boolean;
-  sName, sMenuDir: string;
-
-  tmpItem: TSharpEListItem;
-  tmpMenuItem: TMenuDataObject;
-begin
-  sName := trim(StrRemoveChars(ValueToValidate,
-    ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
-  sMenuDir := GetSharpeUserSettingsPath + 'SharpMenu\';
-
-  bExistsName := FileExists(sMenuDir + sName + '.xml');
-  if (PluginHost.EditMode = sceEdit) then begin
-    tmpItem := frmList.lbItems.SelectedItem;
-    tmpMenuItem := TMenuDataObject(tmpItem.Data);
-
-    if (CompareText(edName.Text, tmpMenuItem.Name) = 0) then
-      bExistsName := False;
-  end;
-
-  Valid := not (bExistsName);
 end;
 
 end.

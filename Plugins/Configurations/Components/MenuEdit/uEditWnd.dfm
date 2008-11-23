@@ -21,7 +21,7 @@ object frmEdit: TfrmEdit
     Top = 77
     Width = 500
     Height = 102
-    ActivePage = pagMru
+    ActivePage = pagBlank
     PropagateEnable = False
     Align = alClient
     object pagLink: TJvStandardPage
@@ -272,7 +272,7 @@ object frmEdit: TfrmEdit
         Width = 105
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 3
         OnChange = GenericUpdateEditState
         Items.Strings = (
@@ -323,7 +323,7 @@ object frmEdit: TfrmEdit
         AlignWithMargins = True
         Left = 8
         Top = 0
-        Width = 166
+        Width = 488
         Height = 13
         Margins.Left = 8
         Margins.Top = 0
@@ -332,6 +332,7 @@ object frmEdit: TfrmEdit
         Align = alTop
         Caption = 'There are no configuration options'
         Enabled = False
+        ExplicitWidth = 166
       end
     end
     object pagMru: TJvStandardPage
@@ -398,35 +399,6 @@ object frmEdit: TfrmEdit
     DesignSize = (
       500
       77)
-    object Label3: TJvLabel
-      Left = 8
-      Top = 12
-      Width = 57
-      Height = 13
-      Caption = 'Menu Item:'
-      Transparent = True
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'Tahoma'
-      HotTrackFont.Style = []
-    end
-    object JvLabel1: TJvLabel
-      Left = 324
-      Top = 12
-      Width = 46
-      Height = 13
-      AutoSize = False
-      Caption = 'Position:'
-      Anchors = [akTop, akRight]
-      Transparent = True
-      HotTrackFont.Charset = DEFAULT_CHARSET
-      HotTrackFont.Color = clWindowText
-      HotTrackFont.Height = -11
-      HotTrackFont.Name = 'Tahoma'
-      HotTrackFont.Style = []
-      TextEllipsis = tePathEllipsis
-    end
     object lblDescription: TLabel
       AlignWithMargins = True
       Left = 8
@@ -442,6 +414,24 @@ object frmEdit: TfrmEdit
       Caption = 'lblDescription'
       EllipsisPosition = epEndEllipsis
       WordWrap = True
+    end
+    object Label3: TLabel
+      Left = 8
+      Top = 12
+      Width = 55
+      Height = 13
+      Caption = 'Menu Item:'
+      Transparent = True
+    end
+    object JvLabel1: TLabel
+      Left = 324
+      Top = 12
+      Width = 46
+      Height = 13
+      Anchors = [akTop, akRight]
+      AutoSize = False
+      Caption = 'Position:'
+      Transparent = True
     end
     object cbMenuItems: TComboBox
       Left = 80

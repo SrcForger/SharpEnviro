@@ -40,12 +40,9 @@ uses
   StdCtrls,
   JvExControls,
   JvComponent,
-  JvLabel,
   ImgList,
   PngImageList,
   JvExStdCtrls,
-  JvValidators,
-  JvErrorIndicator,
   ExtCtrls,
   JvPageList,
   SharpApi,
@@ -63,21 +60,14 @@ uses
 
 type
   TfrmEdit = class(TForm)
-    vals: TJvValidators;
-    valThemeName: TJvRequiredFieldValidator;
-    errorinc: TJvErrorIndicator;
-    valThemeAuthor: TJvRequiredFieldValidator;
-    pilError: TPngImageList;
     plEdit: TJvPageList;
     pagAdd: TJvStandardPage;
     edName: TLabeledEdit;
     edAuthor: TLabeledEdit;
     edWebsite: TLabeledEdit;
-    Label3: TJvLabel;
     cbBasedOn: TComboBox;
-    valThemeDirNotExists: TJvCustomValidator;
-    procedure valThemeDirNotExistsValidate(Sender: TObject;
-      ValueToValidate: Variant; var Valid: Boolean);
+    Label3: TLabel;
+
     procedure cbBasedOnSelect(Sender: TObject);
 
     procedure edThemeNameKeyPress(Sender: TObject; var Key: Char);
@@ -87,11 +77,8 @@ type
     { Private declarations }
   public
     { Public declarations }
-    function ValidateWindow: Boolean;
-    procedure ClearValidation;
-
-    function InitUi: Boolean;
-    function SaveUi(AApply: Boolean): Boolean;
+    procedure Init;
+    procedure Save;
 
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
   end;
@@ -111,13 +98,12 @@ begin
   PluginHost.Editing := True;
 end;
 
-function TfrmEdit.InitUi: Boolean;
+procedure TfrmEdit.Init;
 var
   df: TSC_DEFAULT_FIELDS;
   tmpItem: TSharpEListItem;
   tmpThemeItem: TThemeListItem;
 begin
-  Result := False;
   case FPluginHost.EditMode of
     sceAdd: begin
         pagAdd.Show;
@@ -140,7 +126,6 @@ begin
         if ((Visible) and (edName.Enabled)) then
           edName.SetFocus;
 
-        Result := True;
       end;
   sceEdit: begin
 
@@ -158,13 +143,12 @@ begin
 
         cbBasedOn.Enabled := False;
 
-        Result := True;
       end;
     end;
   end;
 end;
 
-function TfrmEdit.SaveUi(AApply:Boolean): Boolean;
+procedure TfrmEdit.Save;
 var
   sAuthor: string;
   sWebsite: string;
@@ -173,11 +157,6 @@ var
   df: TSC_DEFAULT_FIELDS;
   tmpThemeItem: TThemeListItem;
 begin
-  Result := True;
-
-  if not (AApply) then
-    exit;
-
   case FPluginHost.EditMode of
     sceAdd: begin
         sName := edName.Text;
@@ -210,25 +189,6 @@ begin
   frmList.BuildThemeList;
 end;
 
-function TfrmEdit.ValidateWindow: Boolean;
-begin
-  Result := False;
-
-  case FPluginHost.EditMode of
-    sceAdd, sceEdit: begin
-        errorinc.BeginUpdate;
-        try
-          errorinc.ClearErrors;
-          vals.ValidationSummary := nil;
-          Result := vals.Validate;
-        finally
-          errorinc.EndUpdate;
-        end;
-      end;
-    sceDelete: Result := True;
-  end;
-end;
-
 procedure TfrmEdit.btnConfigureClick(Sender: TObject);
 begin
   frmList.ConfigureItem;
@@ -239,32 +199,7 @@ begin
   FPluginHost.Editing := True;
 end;
 
-procedure TfrmEdit.ClearValidation;
-begin
 
-  errorinc.BeginUpdate;
-  try
-    errorinc.ClearErrors;
-  finally
-    errorinc.EndUpdate;
-  end;
-end;
-
-procedure TfrmEdit.valThemeDirNotExistsValidate(Sender: TObject;
-  ValueToValidate: Variant; var Valid: Boolean);
-var
-  sValidName, sThemeDir: string;
-begin
-  Valid := True;
-
-  sValidName := trim(StrRemoveChars(string(ValueToValidate),
-    ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
-
-  sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
-  if DirectoryExists(sThemeDir + sValidName) then
-    Valid := False;
-
-end;
 
 end.
 

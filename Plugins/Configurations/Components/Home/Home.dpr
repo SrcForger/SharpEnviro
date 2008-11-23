@@ -36,9 +36,7 @@ uses
   Graphics,
   uHomeWnd in 'uHomeWnd.pas' {frmHome},
   SharpCenterApi,
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-
-  SharpETabList,
+  SharpApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit;
 

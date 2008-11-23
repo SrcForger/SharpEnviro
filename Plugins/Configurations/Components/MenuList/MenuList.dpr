@@ -32,6 +32,7 @@ uses
   Dialogs,
   JclSimpleXml,
   JclFileUtils,
+  JclStrings,
   GR32,
   GR32_Image,
   PngSpeedButton,
@@ -43,21 +44,28 @@ uses
   SharpETabList,
   SharpApi,
   SharpCenterApi,
+  SharpEListBoxEx,
   ISharpCenterHostUnit,
-  ISharpCenterPluginUnit;
+  ISharpCenterPluginUnit,
+  JvValidators;
 
 {$E .dll}
 
 {$R *.res}
 
 type
-  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit )
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit,
+    ISharpCenterPluginValidation )
   private
+
+    procedure ValidateMenuName(Sender: TObject;
+      ValueToValidate: Variant; var Valid: Boolean);
   public
     constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
+
 
     function GetPluginDescriptionText: String; override; stdCall;
     function GetPluginName: String; override; stdCall;
@@ -65,7 +73,8 @@ type
 
     procedure Refresh; override; stdcall;
     function OpenEdit: Cardinal; stdcall;
-    function CloseEdit(AApply: Boolean): Boolean; stdcall;
+    procedure CloseEdit(AApply: Boolean); stdcall;
+    procedure SetupValidators; stdcall;
 
 
   end;
@@ -78,21 +87,10 @@ begin
   FreeAndNil(frmEdit);
 end;
 
-function TSharpCenterPlugin.CloseEdit(AApply: Boolean): Boolean;
+procedure TSharpCenterPlugin.CloseEdit(AApply: Boolean);
 begin
-  Result := True;
-
-  if frmEdit = nil then exit;
-
-  // First validate
   if AApply then
-    if Not(frmEdit.ValidateEdit) then begin
-      Result := False;
-      Exit;
-    end;
-
-  // If Validation ok then continue
-  frmEdit.Save(AApply);
+    frmEdit.Save;
 
   if Assigned(frmEdit) then
     FreeAndNil(frmEdit);
@@ -152,6 +150,43 @@ begin
   AssignThemeToForms(PluginHost.Theme,frmList,frmEdit,PluginHost.Editing);
 end;
 
+procedure TSharpCenterPlugin.SetupValidators;
+var
+  tmp: TJvCustomValidator;
+begin
+  // Can not leave field name blank
+  PluginHost.AddRequiredFieldValidator( frmEdit.edName,'Please enter a menu name','Text');
+
+  // Validator for checking duplicates
+  tmp := PluginHost.AddCustomValidator( frmEdit.edName,'There is already a menu with this name','Text');
+  tmp.OnValidate := ValidateMenuName;
+end;
+
+procedure TSharpCenterPlugin.ValidateMenuName(Sender: TObject;
+  ValueToValidate: Variant; var Valid: Boolean);
+var
+  bExistsName: Boolean;
+  sName, sMenuDir: string;
+
+  tmpItem: TSharpEListItem;
+  tmpMenuItem: TMenuDataObject;
+begin
+  sName := trim(StrRemoveChars(ValueToValidate,
+    ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
+  sMenuDir := GetSharpeUserSettingsPath + 'SharpMenu\';
+
+  bExistsName := FileExists(sMenuDir + sName + '.xml');
+  if (PluginHost.EditMode = sceEdit) then begin
+    tmpItem := frmList.lbItems.SelectedItem;
+    tmpMenuItem := TMenuDataObject(tmpItem.Data);
+
+    if (CompareText(frmEdit.edName.Text, tmpMenuItem.Name) = 0) then
+      bExistsName := False;
+  end;
+
+  Valid := not (bExistsName);
+end;
+
 function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
@@ -171,12 +206,61 @@ begin
   end;
 end;
 
+var  
+  OldApp : TApplication;
+  OldScreen : TScreen; 
+  OldControlAtom : TAtom;
+
+procedure DLLInitialize(App : TApplication; Scr : TScreen; RealControlAtom :Integer);
+var 
+  x : pointer; 
+  p : ^Word; 
+begin 
+  If (OldApp = Nil) Then 
+  Begin 
+    // store away the current application, screen and control atom 
+    OldApp := Application; 
+    OldScreen := Screen; 
+    //p := GetControlAtom;
+    //OldControlAtom := p^;
+    // Assign the EXE's application, screen and control atom 
+    Application := App; 
+    Screen := Scr; 
+    //p^ := RealControlAtom;
+  end;
+
+end; 
+
+function GetInstance(AOwner : TComponent) : TForm;
+begin 
+  // create an instance of the form 
+  // result := TMyPlugin.create(Application.MainForm);
+end; 
+
+procedure DLLFinalize;
+var 
+  p : ^Word; 
+begin 
+  // restore the DLL's application, screen and control atom 
+ // p := GetControlAtom;
+ // p^ := OldControlAtom; 
+  Screen := OldScreen; 
+  Application := OldApp; 
+end;
+
 exports
+  DLLInitialize,
+  GetInstance,
+  DLLFinalize,
+  
   InitPluginInterface,
   GetMetaData;
 
-begin
-end.
+begin 
+  OldApp := nil; 
+  OldScreen := nil; 
+  OldControlAtom := 0; 
+end. 
 
 
 

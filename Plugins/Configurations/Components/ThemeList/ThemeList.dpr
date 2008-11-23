@@ -37,6 +37,8 @@ uses
   uVistaFuncs,
   SharpCenterApi,
   SharpApi,
+  JvValidators,
+  JclStrings,
   SharpThemeApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
@@ -49,7 +51,11 @@ uses
 {$R *.res}
 
 type
-  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit  )
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit,
+    ISharpCenterPluginValidation  )
+  private
+    procedure ValidateTheme(Sender: TObject; ValueToValidate: Variant;
+      var Valid: Boolean);
   public
     constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
@@ -58,11 +64,14 @@ type
 
     procedure Refresh; override; stdcall;
     function OpenEdit: Cardinal; stdcall;
-    function CloseEdit(AApply: Boolean): Boolean; stdcall;
+    procedure CloseEdit(AApply: Boolean); stdcall;
 
     function GetPluginName : string; override; stdcall;
     function GetPluginStatusText : string; override; stdcall;
     function GetPluginDescriptionText : string; override; stdcall;
+    procedure SetupValidators; stdcall;
+
+
   end;
 
 { TSharpCenterPlugin }
@@ -73,20 +82,10 @@ begin
   FreeAndNil(frmEdit);
 end;
 
-function TSharpCenterPlugin.CloseEdit(AApply: Boolean): Boolean;
+procedure TSharpCenterPlugin.CloseEdit(AApply: Boolean);
 begin
-  Result := True;
-
-  // First validate
   if AApply then
-    if Not(frmEdit.ValidateWindow) then begin
-      Result := False;
-      Exit;
-    end else
-       frmEdit.ClearValidation;
-
-  // If Validation ok then continue
-  frmEdit.SaveUi(AApply);
+    frmEdit.Save;
 
   FreeAndNil(frmEdit);
 end;
@@ -139,12 +138,41 @@ begin
   frmEdit.PluginHost := PluginHost;
   result := PluginHost.OpenEdit(frmEdit);
 
-  frmEdit.InitUi;
+  frmEdit.Init;
 end;
 
 procedure TSharpCenterPlugin.Refresh;
 begin
   AssignThemeToForms(PluginHost.Theme,frmList,frmEdit,PluginHost.Editing);
+end;
+
+procedure TSharpCenterPlugin.SetupValidators;
+var
+  tmp: TJvCustomValidator;
+begin
+  // Required field validators
+  PluginHost.AddRequiredFieldValidator( frmEdit.edAuthor,'Please enter a name for the author','Text');
+  PluginHost.AddRequiredFieldValidator( frmEdit.edName,'Please enter a name for the theme','Text');
+
+  // Validator for checking duplicates
+  tmp := PluginHost.AddCustomValidator( frmEdit.edName,'There is already a theme with this name','Text');
+  tmp.OnValidate := ValidateTheme;
+end;
+
+procedure TSharpCenterPlugin.ValidateTheme(Sender: TObject;
+  ValueToValidate: Variant; var Valid: Boolean);
+var
+  sValidName, sThemeDir: string;
+begin
+  Valid := True;
+
+  sValidName := trim(StrRemoveChars(string(ValueToValidate),
+    ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
+
+  sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
+  if DirectoryExists(sThemeDir + sValidName) then
+    Valid := False;
+
 end;
 
 function GetMetaData(): TMetaData;

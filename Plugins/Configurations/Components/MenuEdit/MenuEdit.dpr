@@ -63,7 +63,7 @@ type
     function GetPluginDescriptionText: String; override; stdCall;
     procedure Refresh; override; stdcall;
     destructor Destroy; override;
-    function CloseEdit(AApply: Boolean): Boolean; stdcall;
+    procedure CloseEdit(AApply: Boolean); stdcall;
     function OpenEdit: Cardinal; stdcall;
   end;
 
@@ -74,12 +74,11 @@ begin
   FreeAndNil(frmList);
 end;
 
-function TSharpCenterPlugin.CloseEdit(AApply: Boolean): Boolean;
+procedure TSharpCenterPlugin.CloseEdit(AApply: Boolean);
 begin
-  Result := True;
-
   // Save settings?
-  frmEdit.Save(AApply);
+  if AApply then
+    frmEdit.Save;
 
   // Free the window
   FreeAndNil(frmEdit);

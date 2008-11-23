@@ -15,7 +15,6 @@ uses
   JvExControls,
   JvPageList,
   StdCtrls,
-  JvLabel,
   uSharpEMenuItem,
   uSharpEMenu,
   ExtCtrls,
@@ -53,8 +52,6 @@ type
     edLinkTarget: TLabeledEdit;
     btnLinkTargetBrowse: TButton;
     pnlHeader: TPanel;
-    Label3: TJvLabel;
-    JvLabel1: TJvLabel;
     cbMenuItems: TComboBox;
     cbItemPosition: TComboBox;
     pagLabel: TJvStandardPage;
@@ -85,6 +82,8 @@ type
     chkRecursive: TJvXPCheckbox;
     chkDescending: TJvXPCheckbox;
     chkDriveNames: TJvXPCheckbox;
+    Label3: TLabel;
+    JvLabel1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure cbMenuItemsSelect(Sender: TObject);
     procedure btnLinkIconBrowseClick(Sender: TObject);
@@ -108,8 +107,7 @@ type
   public
     { Public declarations }
     procedure InitUI;
-    function ValidateEdit: Boolean;
-    function Save(AApply: Boolean): Boolean;
+    procedure Save;
 
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
   end;
@@ -437,7 +435,7 @@ begin
   UpdateEditState;
 end;
 
-function TfrmEdit.Save(AApply: Boolean): Boolean;
+procedure TfrmEdit.Save;
 var
   tmpMenuItemType: TSharpEMenuItemType;
   tmpMenuItem: TObject;
@@ -446,11 +444,7 @@ var
   i: Integer;
   tmpItem: TItemData;
 begin
-  Result := True;
   tmpMenuItem := nil;
-
-  if not (AApply) then
-    exit;
 
   case PluginHost.EditMode of
     sceAdd: begin
@@ -628,11 +622,6 @@ procedure TfrmEdit.sgbDynamicDirMaxItemsChangeValue(Sender: TObject;
   Value: Integer);
 begin
   UpdateEditState;
-end;
-
-function TfrmEdit.ValidateEdit: Boolean;
-begin
-  Result := True;
 end;
 
 end.

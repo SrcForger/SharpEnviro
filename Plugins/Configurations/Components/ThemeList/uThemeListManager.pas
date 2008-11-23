@@ -13,12 +13,14 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
+  JclSimpleXml,
   JvSimpleXml,
   shellapi,
   JclFileUtils,
   JclStrings,
 
-  SharpThemeApi;
+  SharpThemeApi,
+  IXmlBaseUnit;
 
 type
   TThemeListItem = class
@@ -51,7 +53,7 @@ type
     property Readonly: boolean read GetReadOnly write SetReadOnly;
   end;
 
-  TThemeManager = class
+  TThemeManager = class(TInterfacedXmlBase)
   private
     function CopyFolder(Asrc, ADest: string): Boolean;
   public
@@ -68,15 +70,13 @@ implementation
 
 uses
   SharpApi,
-  uThemeListWnd,
-  JclSimpleXml;
+  uThemeListWnd;
 
 { TThemeManager }
 
 procedure TThemeManager.Add(AName, AAuthor, Awebsite: string;
   ATemplate: string = ''; AReadOnly: Boolean = False);
 var
-  xml: TJvSimpleXml;
   sThemeDir: string;
   sSrc: string;
   sDest: string;
@@ -95,10 +95,10 @@ begin
     CopyFolder(sSrc, sDest);
   end;
 
-  xml := TJvSimpleXML.Create(nil);
-  xml.Root.Name := 'SharpETheme';
+  XmlRoot.Clear;
+  XmlRoot.Name := 'SharpETheme';
   try
-    with Xml.Root.items do begin
+    with XmlRoot.items do begin
       Add('Name', AName);
       Add('Author', AAuthor);
       Add('Website', AWebsite);
@@ -106,26 +106,19 @@ begin
     end;
   finally
 
-    // create folder
-    if not (DirectoryExists(sThemeDir + AName)) then
-      ForceDirectories(sThemeDir + AName);
-
-    sDest := sThemeDir + AName + '\' + 'Theme.xml';
-
-    xml.SaveToFile(sDest);
-    xml.Free;
+    XmlFilename := sThemeDir + AName + '\' + 'Theme.xml';
+    Save;
   end;
 
   // just create a default skin file
   if ATemplate = '' then begin
-    xml := TJvSimpleXML.Create(nil);
-    xml.Root.Name := 'SharpEThemeSkin';
-    xml.Root.Items.Add('Skin', 'BB2-Glass');
 
-    sDest := sThemeDir + AName + '\' + 'Skin.xml';
+    XmlRoot.Clear;
+    XmlRoot.Name := 'SharpEThemeSkin';
+    xmlRoot.Items.Add('Skin', 'BB2-Glass');
 
-    xml.SaveToFile(sDest);
-    xml.free;
+    XmlFilename := sThemeDir + AName + '\' + 'Skin.xml';
+    Save;
   end;
 end;
 
@@ -166,9 +159,7 @@ end;
 
 procedure TThemeManager.Edit(AOldName, ANewName, AAuthor, AWebsite: string);
 var
-  xml: TJvSimpleXml;
   sThemeDir, sName: string;
-  sXml: string;
 begin
 
   // Remove invalid chars
@@ -187,12 +178,11 @@ begin
     sName := AOldName;
 
   // Get theme dir
-  sXml := sThemeDir + sName + '\' + 'theme.xml';
+  XmlFilename := sThemeDir + sName + '\' + 'theme.xml';
+  Load;
 
-  xml := TJvSimpleXML.Create(nil);
-  xml.LoadFromFile(sXml);
   try
-    with Xml.Root.items do begin
+    with XmlRoot.items do begin
 
       ItemNamed['Name'].Value := sName;
       ItemNamed['Author'].Value := AAuthor;
@@ -204,53 +194,40 @@ begin
     XmlSetTheme(sName);
 
   finally
-    xml.SaveToFile(sXml);
+    Save;
   end;
 
 end;
 
 function TThemeManager.GetDefaultTheme: string;
-var
-  xml: TJvSimpleXML;
-  s: string;
 begin
   Result := '';
-  s := GetSharpeUserSettingsPath + 'SharpE.xml';
-  xml := TJvSimpleXML.Create(nil);
-  try
-    xml.LoadFromFile(s);
-    Result := xml.Root.Items.Value('Theme', '');
 
-  finally
-    xml.Free;
-  end;
+  XmlFilename := GetSharpeUserSettingsPath + 'SharpE.xml';
+  Load;
+  Result := xmlRoot.Items.Value('Theme', '');
 end;
 
 procedure TThemeManager.SetTheme(AName: string);
 var
-  xml: TJvSimpleXML;
   elem: TJvSimpleXMLElem;
   s, sDest, sThemeDir: string;
 begin
-
   sThemeDir := GetSharpeUserSettingsPath + 'Themes\';
   sDest := GetSharpeUserSettingsPath + 'SharpE.xml';
 
   s := GetSharpeUserSettingsPath + 'SharpE.xml';
-  xml := TJvSimpleXML.Create(nil);
-  try
-    xml.LoadFromFile(sDest);
-    elem := xml.Root.Items.ItemNamed['Theme'];
 
-    if elem <> nil then
-      elem.Value := AName
-    else
-      xml.Root.Items.Add('Theme', AName);
+  XmlFilename := sDest;
+  Load;
+  elem := xmlRoot.Items.ItemNamed['Theme'];
 
-  finally
-    xml.SaveToFile(sDest);
-    xml.Free;
-  end;
+  if elem <> nil then
+    elem.Value := AName
+  else
+    xmlRoot.Items.Add('Theme', AName);
+
+  Save;
 end;
 
 { TThemeListItem }
