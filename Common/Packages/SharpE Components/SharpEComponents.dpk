@@ -40,24 +40,9 @@ requires
   JclVcl,
   VclSmp,
   SharpESkinComponents,
-{$IFDEF VER170}
-  PNG_D9,
-  PngComponentsD9,
-  GR32_D2005,
-  JvCoreD9R,
-  JvSystemD9R,
-  JvStdCtrlsD9R,
-  JvCustomD9R,
-  JvMMD9R,
-  JvCtrlsD9R,
-  JvInterpreterD9R,
-  JvPageCompsD9R;
-{$ENDIF}
-{$IFDEF VER180}
   PNG_D9,
   PngComponentsD9,
   GR32_BDS2006,
-{$IFDEF VER185}
   JvCoreD11R,
   JvSystemD11R,
   JvStdCtrlsD11R,
@@ -65,18 +50,8 @@ requires
   JvMMD11R,
   JvCtrlsD11R,
   JvInterpreterD11R,
-  JvPageCompsD11R;
-{$ELSE}
-  JvCoreD10R,
-  JvSystemD10R,
-  JvStdCtrlsD10R,
-  JvCustomD10R,
-  JvMMD10R,
-  JvCtrlsD10R,
-  JvInterpreterD10R,
-  JvPageCompsD10R;
-{$ENDIF}
-{$ENDIF}
+  JvPageCompsD11R,
+  JvXPCtrlsD11R;
 
 contains
   SharpEFontSelector in '..\..\Delphi Components\SharpEFontSelector\SharpEFontSelector.pas',
@@ -101,6 +76,7 @@ contains
   uSchemeList in '..\..\..\Plugins\Configurations\Scheme\uSchemeList.pas',
   uVistaFuncs in '..\..\Units\VistaFuncs\uVistaFuncs.pas',
   VKToString in '..\..\Units\SCHotkeyManager\VKToString.pas',
-  SharpFX in '..\..\Units\SharpFX\SharpFX.pas';
+  SharpFX in '..\..\Units\SharpFX\SharpFX.pas',
+  SharpECenterHeader in '..\..\Delphi Components\SharpECenterHeader\SharpECenterHeader.pas';
 
 end.

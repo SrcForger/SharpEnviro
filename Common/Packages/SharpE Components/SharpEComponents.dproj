@@ -1,11 +1,12 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{43f52535-79f6-417c-83a4-413dc08d94eb}</ProjectGuid>
     <MainSource>SharpEComponents.dpk</MainSource>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>C:\Dokumente und Einstellungen\All Users\Dokumente\RAD Studio\5.0\Bpl\SharpEComponents.bpl</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>C:\Users\Public\Documents\RAD Studio\5.0\Bpl\SharpEComponents.bpl</DCC_DependencyCheckOutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -36,7 +37,34 @@
     <DelphiCompile Include="SharpEComponents.dpk">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
+    <DCCReference Include="..\..\..\Components\SharpCenter\bdertl.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\dbrtl.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\designide.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\GR32_BDS2006.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\Jcl.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\JclVcl.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\JvCoreD11R.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\JvCtrlsD11R.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\JvCustomD11R.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\JvInterpreterD11R.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\JvMMD11R.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\JvPageCompsD11R.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\JvStdCtrlsD11R.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\JvSystemD11R.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\JvXPCtrlsD11R.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\PngComponentsD9.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\PNG_D9.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\rtl.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\SharpESkinComponents.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\vcl.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\vclactnband.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\vcldb.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\vcljpg.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\VclSmp.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\vclx.dcp" />
+    <DCCReference Include="..\..\..\Components\SharpCenter\xmlrtl.dcp" />
     <DCCReference Include="..\..\..\Plugins\Configurations\Scheme\uSchemeList.pas" />
+    <DCCReference Include="..\..\Delphi Components\SharpECenterHeader\SharpECenterHeader.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpECenterScheme\SharpECenterScheme.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpEColorEditorEx\SharpEColorEditorEx.pas" />
     <DCCReference Include="..\..\Delphi Components\SharpEColorEditor\SharpEColorEditor.pas" />
@@ -62,30 +90,5 @@
     <DCCReference Include="..\..\Units\SharpFX\SharpFX.pas" />
     <DCCReference Include="..\..\Units\SharpFX\vclactnbandSharpESkinComponents.dcp" />
     <DCCReference Include="..\..\Units\VistaFuncs\uVistaFuncs.pas" />
-    <DCCReference Include="bdertl.dcp" />
-    <DCCReference Include="dbrtl.dcp" />
-    <DCCReference Include="designide.dcp" />
-    <DCCReference Include="GR32_BDS2006.dcp" />
-    <DCCReference Include="Jcl.dcp" />
-    <DCCReference Include="JclVcl.dcp" />
-    <DCCReference Include="JvCoreD11R.dcp" />
-    <DCCReference Include="JvCtrlsD11R.dcp" />
-    <DCCReference Include="JvCustomD11R.dcp" />
-    <DCCReference Include="JvInterpreterD11R.dcp" />
-    <DCCReference Include="JvMMD11R.dcp" />
-    <DCCReference Include="JvPageCompsD11R.dcp" />
-    <DCCReference Include="JvStdCtrlsD11R.dcp" />
-    <DCCReference Include="JvSystemD11R.dcp" />
-    <DCCReference Include="PngComponentsD9.dcp" />
-    <DCCReference Include="PNG_D9.dcp" />
-    <DCCReference Include="rtl.dcp" />
-    <DCCReference Include="SharpESkinComponents.dcp" />
-    <DCCReference Include="vcl.dcp" />
-    <DCCReference Include="vclactnband.dcp" />
-    <DCCReference Include="vcldb.dcp" />
-    <DCCReference Include="vcljpg.dcp" />
-    <DCCReference Include="VclSmp.dcp" />
-    <DCCReference Include="vclx.dcp" />
-    <DCCReference Include="xmlrtl.dcp" />
   </ItemGroup>
 </Project>
