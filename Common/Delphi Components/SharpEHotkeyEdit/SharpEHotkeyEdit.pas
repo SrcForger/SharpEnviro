@@ -12,7 +12,7 @@ uses
   Dialogs,
   StdCtrls,
   Windows,
-  VKToString,
+
   uScHotkeyMgr;
 
 type
@@ -43,6 +43,8 @@ type
   published
     property Font;
     property ParentFont;
+    property ParentColor;
+    property Color;
     property Modifier;
     property Key;
     property OnChange;
@@ -55,6 +57,9 @@ type
 procedure Register;
 
 implementation
+
+uses
+  VKToString;
 
 { TCustomSharpEHotkeyEdit }
 
