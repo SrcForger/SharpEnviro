@@ -205,7 +205,7 @@ type
   // SharpCenter types
   TSCC_COMMAND_ENUM = (sccLoadSetting, sccChangeFolder, sccUnloadDll, sccLoadDll);
   TSCB_BUTTON_ENUM = (scbMoveUp, scbMoveDown, scbImport, scbExport, scbClear,
-    scbDelete, scbHelp, scbAddTab, scbEditTab, scbDeleteTab, scbConfigure);
+    scbHelp, scbAddTab, scbEditTab, scbConfigure);
   TSU_UPDATE_ENUM = (suSkin, suSkinFileChanged, suScheme, suTheme, suIconSet,
     suBackground, suService, suDesktopIcon, suSharpDesk, suSharpMenu,
     suSharpBar, suCursor, suWallpaper, suDeskArea, suSkinFont, suDesktopObject,
