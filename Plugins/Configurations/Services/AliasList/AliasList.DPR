@@ -30,14 +30,12 @@ uses
   Windows,
   Forms,
   Dialogs,
-  JvSimpleXml,
+  variants,
   ComCtrls,
-  PngSpeedButton,
   uVistaFuncs,
   SysUtils,
-  JvPageList,
+  JvValidators,
   Graphics,
-  SharpETabList,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   SharpCenterApi,
@@ -51,17 +49,23 @@ uses
 {$R *.res}
 
 type
-  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit )
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit,
+    ISharpCenterPluginValidation )
+  private
+    procedure ValidateAliasName(Sender: TObject;
+      ValueToValidate: Variant; var Valid: Boolean);
   public
     constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
-    function CloseEdit(AApply: Boolean): Boolean; stdcall;
+    procedure CloseEdit(AApply: Boolean); stdcall;
     function OpenEdit: Cardinal; stdcall;
+
 
     function GetPluginDescriptionText: String; override; stdCall;
     procedure Refresh; override; stdcall;
+    procedure SetupValidators; stdcall;
   end;
 
 { TSharpCenterPlugin }
@@ -72,21 +76,10 @@ begin
   FreeAndNil(frmEditWnd);
 end;
 
-function TSharpCenterPlugin.CloseEdit(AApply: Boolean): Boolean;
+procedure TSharpCenterPlugin.CloseEdit(AApply: Boolean);
 begin
-  Result := True;
-
-  if frmEditWnd = nil then exit;
-
-  // First validate
   if AApply then
-    if Not(frmEditWnd.ValidateEdit) then begin
-      Result := False;
-      Exit;
-    end;
-
-  // If Validation ok then continue
-  frmEditWnd.Save(AApply);
+    frmEditWnd.Save;
 
   // Refresh services
   SharpApi.ServiceMsg('exec','_refresh');
@@ -120,12 +113,54 @@ begin
   uVistaFuncs.SetVistaFonts(frmEditWnd);
 
   result := PluginHost.OpenEdit(frmEditWnd);
-  frmEditWnd.InitUi;
+  frmEditWnd.Init;
 end;
 
 procedure TSharpCenterPlugin.Refresh;
 begin
   AssignThemeToForms(PluginHost.Theme,frmItemsWnd,frmEditWnd, PluginHost.Editing);
+end;
+
+procedure TSharpCenterPlugin.SetupValidators;
+var
+  tmp: TJvCustomValidator;
+begin
+  // Can not leave fields blank
+  PluginHost.AddRequiredFieldValidator( frmEditWnd.edName,'Please enter an alias name','Text');
+  PluginHost.AddRequiredFieldValidator( frmEditWnd.edCommand,'Please enter command for the alias','Text');
+
+  // Validator for checking duplicates
+  tmp := PluginHost.AddCustomValidator( frmEditWnd.edName,'There is already an alias with this name','Text');
+  tmp.OnValidate := ValidateAliasName;
+end;
+
+procedure TSharpCenterPlugin.ValidateAliasName(Sender: TObject;
+  ValueToValidate: Variant; var Valid: Boolean);
+var
+  idx: Integer;
+  s: string;
+begin
+  Valid := True;
+
+  s := '';
+  if ValueToValidate <> null then
+    s := VarToStr(ValueToValidate);
+
+  if s = '' then begin
+    Valid := False;
+    Exit;
+  end;
+
+  idx := frmItemsWnd.AliasItems.IndexOfName(s);
+
+  if (idx <> -1) then begin
+
+    if frmEditWnd.ItemEdit <> nil then
+      if frmEditWnd.ItemEdit.AliasName = s then
+        exit;
+
+    Valid := False;
+  end;
 end;
 
 function GetMetaData(): TMetaData;

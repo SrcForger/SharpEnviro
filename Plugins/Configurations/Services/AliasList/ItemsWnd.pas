@@ -190,7 +190,7 @@ begin
   end;
 
   if frmEditWnd <> nil then
-    frmEditWnd.InitUi;
+    frmEditWnd.Init;
 
   PluginHost.SetEditTabsVisibility(lbItems.ItemIndex,lbItems.Count);
   PluginHost.Refresh;
