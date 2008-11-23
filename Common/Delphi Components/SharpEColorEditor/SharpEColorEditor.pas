@@ -45,7 +45,7 @@ const
   cTabColSwatch = 1;
 
 type
-  TSharpEColorEditor = class(TCustomControl)
+  TSharpEColorEditor = class(TCustomPanel)
   private
     FTabs: TSharpETabList;
     FColorPicker: TSharpEColorPicker;
@@ -289,6 +289,8 @@ begin
   Self.BorderWidth := 0;
   Self.ParentBackground := False;
   Self.DoubleBuffered := False;
+  Self.BevelInner := bvNone;
+  Self.BevelOuter := bvNone;
 
   // Create Page Control
   FPageControl := TSharpEPageControl.Create(Self);
@@ -355,7 +357,7 @@ begin
     FPanel.BevelOuter := bvNone;
     FPanel.ParentBackground := false;
     FPanel.DoubleBuffered := true;
-    FPanel.ParentColor := true;
+    FPanel.ParentColor := False;
     FPanel.Color := self.Color;
     FPanel.Top := 5;
 
