@@ -132,7 +132,6 @@ type
     procedure SetSwatchManager(const Value: TSharpESwatchManager);
     procedure ResizeEvent(Sender: TObject);
     procedure UiChangeEvent(Sender: TObject);
-    function GetBackgroundColor: TColor;
     procedure SetBackgroundColor(const Value: TColor);
     procedure SetBackgroundTextColor(const Value: TColor);
     procedure SetBorderColor(const Value: TColor);
@@ -301,14 +300,19 @@ begin
   end;
 
   // collapse all
+  LockWindowUpdate(TSharpEColorEditorEx(FParent).Handle);
+  try
   for i := 0 to Pred(Collection.Count) do begin
     TSharpEColorEditor(TSharpEColorEditorExItem(Collection.Items[i]).ColorEditor).Collapse;
     TSharpEColorEditorExItem(Collection.Items[i]).Expanded := False;
 
   end;
+  finally
+    LockWindowUpdate(0);
+  end;
 
   // Expand selected
-  //LockWindowUpdate(Application.MainFormHandle);
+  LockWindowUpdate(TSharpEColorEditorEx(FParent).Handle);
   try
   for i := 0 to Pred(Collection.Count) do begin
     if TSharpEColorEditorExItem(Collection.Items[i]) = Self then begin
@@ -318,7 +322,7 @@ begin
     end;
   end;
   finally
-    //LockWindowUpdate(0);
+    LockWindowUpdate(0);
   end;
 
   if FParent <> nil then begin
@@ -368,11 +372,6 @@ procedure TSharpEColorEditorEx.EndUpdate;
 begin
   FUpdate := True;
   PopulateItems;
-end;
-
-function TSharpEColorEditorEx.GetBackgroundColor: TColor;
-begin
-  result := Self.Color;
 end;
 
 procedure TSharpEColorEditorEx.BeginUpdate;
@@ -515,9 +514,7 @@ end;
 constructor TSharpEColorEditorEx.Create(Sender: TComponent);
 begin
   inherited Create(Sender);
-
-  ParentBackground := False;
-  DoubleBuffered := True;
+  
   ParentColor := False;
   BevelInner := bvNone;
   BevelOuter := bvNone;
