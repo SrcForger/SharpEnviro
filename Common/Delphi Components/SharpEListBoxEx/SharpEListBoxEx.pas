@@ -128,6 +128,7 @@ type
     function GetSubItemChecked(ASubItemIndex: Integer): boolean;
     procedure SetSubItemChecked(ASubItemIndex: Integer; const Value: boolean);
     procedure SetChecked(const Value: Boolean);
+    function GetSelected: boolean;
 
   public
     constructor Create(AOwner: TComponent);
@@ -142,6 +143,7 @@ type
     property ImageIndex: Integer read GetImageIndex write SetImageIndex;
     property Checked: Boolean read GetChecked write SetChecked;
     property Level: Integer read FLevel write FLevel;
+    property Selected: boolean read GetSelected;
 
     property SubItemImageIndex[ASubItemIndex: Integer]: Integer read GetSubItemImageIndex write
     SetSubItemImageIndex; default;
@@ -156,6 +158,7 @@ type
     property SubItemText[ASubItem: Integer]: string read GetSubItemText write SetSubItemText;
     function SubItemCount: Integer;
     property Color: TColor read FColor write FColor;
+    property SubItems: TStringList read FSubItems write FSubItems;
   end;
 
   TSharpEListBoxExOnClickCheck = procedure(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem; var AChecked: Boolean) of object;
@@ -519,6 +522,8 @@ var
   col: TColor;
 begin
   // Init
+  if ( (ACol >= 0) and (ACol< Aitem.SubItems.Count) ) then begin
+
   sColText := Aitem.SubItemText[ACol];
   if Assigned(FOnGetCellText) then begin
     FOnGetCellText(Self, ACol, Aitem, sColText);
@@ -595,7 +600,7 @@ begin
     bmp32.DrawTo(ACanvas.Handle, rColRect.Left, rColRect.Top);
     bmp32.Free;
   end;
-
+  end;
 end;
 
 procedure TSharpEListBoxEx.DrawSelection(ARect: TRect;
@@ -840,6 +845,13 @@ end;
 function TSharpEListItem.GetImageIndex: Integer;
 begin
   Result := GetSubItemImageIndex(0);
+end;
+
+function TSharpEListItem.GetSelected: boolean;
+begin
+  Result := False;
+  if (FOwner as TSharpEListBoxEx).SelectedItem = Self then
+    Result := True;
 end;
 
 function TSharpEListItem.GetSubItemChecked(ASubItemIndex: Integer): boolean;
