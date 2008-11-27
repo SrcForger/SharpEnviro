@@ -126,7 +126,7 @@ var
 begin
   self.Caption := sCaption;
   btn.Left := 2;
-  newWidth := 24;
+  newWidth := 20;
   
   if (sShowIcon) and (btn.Glyph32 <> nil) then
     newWidth := newWidth + btn.GetIconWidth;

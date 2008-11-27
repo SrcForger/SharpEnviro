@@ -50,7 +50,6 @@ type
       Shift: TShiftState; X, Y: Integer);
   protected
   private
-    sWidth       : integer;
     sShowIcon    : boolean; 
     sShowLabel   : boolean;
     sIcon        : String; 
@@ -105,7 +104,6 @@ var
   XML : TJclSimpleXML;
   fileloaded : boolean;
 begin
-  sWidth       := 100;
   sShowLabel   := True;
   sCaption     := 'Menu';
   sShowIcon    := True;
@@ -122,7 +120,6 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      sWidth       := IntValue('Width',sWidth);
       sShowLabel   := BoolValue('ShowLabel',sShowLabel);
       sShowIcon    := BoolValue('ShowIcon',sShowIcon);
       sIcon        := Value('Icon',sIcon);
@@ -146,7 +143,7 @@ var
 begin
   self.Caption := sCaption;
   btn.Left := 2;
-  newWidth := 24;
+  newWidth := 20;
   
   if (sShowIcon) and (btn.Glyph32 <> nil) then
     newWidth := newWidth + btn.GetIconWidth;

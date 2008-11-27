@@ -113,7 +113,7 @@ var
   newWidth : integer;
 begin
   Button.Left := 2;
-  newWidth := 24;
+  newWidth := 20;
   if (sIcon) and (Button.Glyph32 <> nil) then
   begin
     Button.Glyph32.Assign(FIcon);
@@ -122,7 +122,7 @@ begin
 
   if (sCaption) then
   begin
-    Button.Caption := ' Scripts ';
+    Button.Caption := 'Scripts';
     newWidth := newWidth + Button.GetTextWidth;
   end else Button.Caption := '';
 

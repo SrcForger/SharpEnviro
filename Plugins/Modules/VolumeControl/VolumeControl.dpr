@@ -115,6 +115,7 @@ begin
   begin
     TMainForm(Form).LoadSettings;
     TMainForm(Form).RealignComponents;
+    TMainForm(Form).ClockTimer.Enabled := True;
   end;
 end;
 

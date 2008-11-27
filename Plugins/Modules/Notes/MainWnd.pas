@@ -209,7 +209,7 @@ var
   newWidth : integer;
 begin
   Button.Left := 2;
-  newWidth := 24;
+  newWidth := 20;
   if (sIcon) and (Button.Glyph32 <> nil) then
   begin
     LoadIcon;
@@ -218,7 +218,7 @@ begin
 
   if (sCaption) then
   begin
-    Button.Caption := ' Notes ';
+    Button.Caption := 'Notes';
     newWidth := newWidth + Button.GetTextWidth;
   end else Button.Caption := '';
 

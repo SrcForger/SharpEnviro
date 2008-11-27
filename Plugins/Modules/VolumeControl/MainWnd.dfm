@@ -53,6 +53,7 @@ object MainForm: TMainForm
     OnMouseUp = cshapeMouseUp
   end
   object ClockTimer: TTimer
+    Enabled = False
     Interval = 250
     OnTimer = ClockTimerTimer
     Left = 224
