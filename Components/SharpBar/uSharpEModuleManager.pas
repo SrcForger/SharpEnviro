@@ -1,6 +1,6 @@
 {
 Source Name: uSharpEModuleManager.pas
-Description: Dll Module Handler                               showmessage('boom');
+Description: Dll Module Handler                              
 Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
 
 Source Forge Site                                                        
