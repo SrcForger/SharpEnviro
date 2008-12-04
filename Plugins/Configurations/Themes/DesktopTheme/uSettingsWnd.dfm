@@ -22,7 +22,7 @@ object frmSettingsWnd: TfrmSettingsWnd
     Top = 0
     Width = 595
     Height = 591
-    ActivePage = pagFontShadow
+    ActivePage = pagFont
     PropagateEnable = False
     Align = alClient
     object pagIcon: TJvStandardPage
@@ -57,7 +57,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Bottom = 0
           Constraints.MaxWidth = 534
           ParentBackground = False
-          Min = 16
+          Min = 1
           Max = 255
           Value = 192
           Suffix = '% visible'
@@ -341,7 +341,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Bottom = 0
           Constraints.MaxWidth = 534
           ParentBackground = False
-          Min = 16
+          Min = 1
           Max = 255
           Value = 192
           Suffix = '% blended'
@@ -379,7 +379,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Margins.Bottom = 0
           Constraints.MaxWidth = 534
           ParentBackground = False
-          Min = 16
+          Min = 1
           Max = 255
           Value = 192
           Suffix = '% visible'
@@ -688,7 +688,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Value = 10
           Suffix = ' px'
           Description = 'Change font size'
-          PopPosition = ppRight
+          PopPosition = ppBottom
           PercentDisplay = False
           OnChangeValue = SendUpdateEvent
           BackgroundColor = clWindow
@@ -726,7 +726,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Value = 0
           Suffix = '% visible'
           Description = 'Change font opacity'
-          PopPosition = ppRight
+          PopPosition = ppBottom
           PercentDisplay = True
           OnChangeValue = SendUpdateEvent
           BackgroundColor = clWindow
@@ -1453,6 +1453,7 @@ object frmSettingsWnd: TfrmSettingsWnd
               'Left Shadow'
               'Right Shadow'
               'Outline Glow')
+            ExplicitTop = 2
           end
         end
       end
