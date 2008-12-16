@@ -214,8 +214,7 @@ function FindAllWindows(const WindowClass: string): THandleArray;
 implementation
 
 
-uses uSharpBarApi,
-     SharpBarMainWnd,
+uses SharpBarMainWnd,
      JclSimpleXML;
 
 
