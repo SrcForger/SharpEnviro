@@ -171,7 +171,7 @@ begin
                     begin
 
                       // Found the matching wallpaper, load the settings
-{$REGION 'Load Wallpaper settings'}
+                      {$REGION 'Load Wallpaper settings'}
                       wpItem.Name := Value('Name');
                       wpItem.FileName := Value('Image');
                       wpItem.Color := IntValue('Color', 0);
@@ -291,7 +291,7 @@ var
 
   elemMonitors, elemWallpapers: TJclSimpleXMLElem;
 begin
-  PluginHost.Xml.XmlFilename := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\DeskArea\DeskArea.xml';
+  PluginHost.Xml.XmlFilename := XmlGetWallpaperFile(PluginHost.PluginId);
   with PluginHost.Xml.XmlRoot, frmSettingsWnd do begin
     Name := 'SharpEThemeWallpaper';
 
@@ -303,7 +303,7 @@ begin
 
     with elemMonitors.Items do
     begin
-{$REGION 'Find and Delete all already existing monitors'}
+      {$REGION 'Find and Delete all already existing monitors'}
       for iWpItem := 0 to WPList.Count - 1 do
       begin
         wpItem := TWPItem(WPList.Items[iWpItem]);
@@ -313,7 +313,7 @@ begin
       end;
 {$ENDREGION}
 
-{$REGION 'Add new monitors'}
+      {$REGION 'Add new monitors'}
       for iWpItem := 0 to WPList.Count - 1 do
       begin
         wpItem := TWPItem(WPList.Items[iWpItem]);
@@ -337,7 +337,7 @@ begin
     with elemWallpapers.Items do
     begin
 
-{$REGION 'Find and delete all existing wallpapers'}
+      {$REGION 'Find and delete all existing wallpapers'}
       for iWpItem := 0 to WPList.Count - 1 do
       begin
         wpItem := TWPItem(WPList.Items[iWpItem]);
@@ -347,7 +347,7 @@ begin
       end;
 {$ENDREGION}
 
-{$REGION 'Add wallpapers'}
+      {$REGION 'Add wallpapers'}
       for iWpItem := 0 to WPList.Count - 1 do
       begin
         wpItem := TWPItem(WPList.Items[iWpItem]);
@@ -386,6 +386,8 @@ begin
       end;
 {$ENDREGION}
     end;
+
+    PluginHost.Xml.Save;
 
     {$REGION 'Save wallpaper preview'}
       pngFile := ExtractFilePath(filename) + 'preview.png';
