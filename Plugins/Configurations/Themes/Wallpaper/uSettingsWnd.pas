@@ -159,7 +159,6 @@ type
 
     procedure MirrorChangeEvent(Sender: TObject);
     procedure AlignmentChangeEvent(Sender: TObject);
-    procedure cb_gtypeChange(Sender: TObject);
     procedure WallpaperColorUiChangeEvent(Sender: TObject);
     procedure WallpaperTransChangeEvent(Sender: TObject; Value: Integer);
     procedure edtWallpaperChange(Sender: TObject);
@@ -170,11 +169,14 @@ type
     procedure ApplyGradientClickEvent(Sender: TObject);
     procedure MonitorChangeEvent(Sender: TObject);
     procedure HSLColorChangeEvent(Sender: TObject; Value: Integer);
+    procedure cboGradTypeSelect(Sender: TObject);
   private
     FPluginHost: TInterfacedSharpCenterHostBase;
-  public
     FCurrentWP: TWPItem;
     FThemeScheme: TSharpEColorSet;
+    procedure UpdateWpItem;
+  public
+
 
     procedure UpdateGUIFromWPItem(AWPItem: TWPItem);
     procedure UpdateWPItemFromGuid;
@@ -185,6 +187,8 @@ type
     procedure UpdateGradientPage;
 
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property CurrentWP: TWPItem read FCurrentWP write FCurrentWP;
+    property ThemeScheme: TSharpEColorSet read FThemeScheme write FThemeScheme;
   end;
 
 var
@@ -265,6 +269,12 @@ begin
   wploaded := loaded;
 end;
 
+procedure TfrmSettingsWnd.UpdateWpItem;
+begin
+  UpdateWPItemFromGuid;
+  FPluginHost.SetSettingsChanged;
+end;
+
 procedure TfrmSettingsWnd.UpdateColorPage;
 begin
   LockWindowUpdate(Self.Handle);
@@ -300,6 +310,22 @@ begin
 
     if pnlMonitor.Visible then
       Self.Height := Self.Height + 100;
+
+    FPluginHost.Refresh;
+  finally
+    LockWindowUpdate(0);
+  end;
+end;
+
+procedure TfrmSettingsWnd.UpdateWallpaperPage;
+begin
+  LockWindowUpdate(Self.Handle);
+  try
+
+    if pnlMonitor.Visible then
+      Self.Height := 700
+    else
+      Self.Height := 600;
 
     FPluginHost.Refresh;
   finally
@@ -411,24 +437,7 @@ end;
 
 procedure TfrmSettingsWnd.HSLColorChangeEvent(Sender: TObject; Value: Integer);
 begin
-  UpdateWPItemFromGuid;
-  FPluginHost.SetSettingsChanged;
-end;
-
-procedure TfrmSettingsWnd.UpdateWallpaperPage;
-begin
-  LockWindowUpdate(Self.Handle);
-  try
-  
-    if pnlMonitor.Visible then
-      Self.Height := 700
-    else
-      Self.Height := 600;
-
-    FPluginHost.Refresh;
-  finally
-    LockWindowUpdate(0);
-  end;
+  UpdateWpItem;
 end;
 
 procedure TfrmSettingsWnd.UpdateWPItemFromGuid;
@@ -497,6 +506,7 @@ begin
     end;
     chkWpMirrorHoriz.Checked := AWPItem.MirrorHoriz;
     chkWpMirrorVert.Checked := AWPItem.MirrorVert;
+    edtWpFile.DoubleBuffered := true;
     edtWpFile.Text := AWPItem.FileName;
     sgbWpTrans.Value := AWPItem.Alpha;
     chkApplyColor.checked := AWPItem.ColorChange;
@@ -586,42 +596,40 @@ end;
 procedure TfrmSettingsWnd.WallpaperTransChangeEvent(Sender: TObject;
   Value: Integer);
 begin
-  UpdateWPItemFromGuid;
-  FPluginHost.SetSettingsChanged;
+  UpdateWpItem;
 end;
 
 procedure TfrmSettingsWnd.WallpaperColorUiChangeEvent(Sender: TObject);
 begin
-  UpdateWPItemFromGuid;
-  FPluginHost.SetSettingsChanged;
+  UpdateWpItem;
 end;
 
 procedure TfrmSettingsWnd.MonitorChangeEvent(Sender: TObject);
 begin
   FCurrentWP := TWPItem(cboMonitor.Items.Objects[cboMonitor.ItemIndex]);
   UpdateWPItemFromGuid;
+
   RenderPreview;
   FPluginHost.Refresh(rtPreview);
 end;
 
-procedure TfrmSettingsWnd.cb_gtypeChange(Sender: TObject);
+procedure TfrmSettingsWnd.cboGradTypeSelect(Sender: TObject);
 begin
-  UpdateWPItemFromGuid;
-  FPluginHost.SetSettingsChanged;;
+  UpdateWpItem
 end;
 
 procedure TfrmSettingsWnd.ApplyGradientClickEvent(Sender: TObject);
 begin
-  UpdateWPItemFromGuid;
+  UpdateWpItem;
+
   UpdateGradientPage;
-  FPluginHost.SetSettingsChanged;;
 end;
 
 procedure TfrmSettingsWnd.ApplyColorClickEvent(Sender: TObject);
 begin
-  UpdateWPItemFromGuid;
+  UpdateWpItem;
+
   UpdateColorPage;
-  FPluginHost.SetSettingsChanged;;
 end;
 
 procedure TfrmSettingsWnd.btnWpBrowseClick(Sender: TObject);
@@ -645,8 +653,7 @@ end;
 
 procedure TfrmSettingsWnd.MirrorChangeEvent(Sender: TObject);
 begin
-  UpdateWPItemFromGuid;
-  FPluginHost.SetSettingsChanged;;
+  UpdateWpItem;
 end;
 
 procedure TfrmSettingsWnd.fedit_image_KeyUp(Sender: TObject; var Key: Word;

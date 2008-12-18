@@ -30,16 +30,12 @@ object frmSettingsWnd: TfrmSettingsWnd
     ActivePage = pagGradient
     PropagateEnable = False
     Align = alClient
-    ExplicitTop = 139
-    ExplicitHeight = 427
     object pagWallpaper: TJvStandardPage
       Left = 0
       Top = 0
       Width = 491
       Height = 490
       Caption = 'pagWallpaper'
-      ExplicitLeft = 248
-      ExplicitTop = -56
       object Panel6: TPanel
         AlignWithMargins = True
         Left = 5
@@ -55,9 +51,6 @@ object frmSettingsWnd: TfrmSettingsWnd
         ParentBackground = False
         ParentColor = True
         TabOrder = 0
-        ExplicitLeft = 28
-        ExplicitTop = 52
-        ExplicitWidth = 455
         object edtWpFile: TEdit
           Left = 0
           Top = 0
@@ -71,7 +64,6 @@ object frmSettingsWnd: TfrmSettingsWnd
           TabOrder = 0
           Text = 'edtWpFile'
           OnChange = edtWallpaperChange
-          ExplicitWidth = 377
           ExplicitHeight = 21
         end
         object btnWpBrowse: TButton
@@ -87,7 +79,6 @@ object frmSettingsWnd: TfrmSettingsWnd
           Caption = 'Browse'
           TabOrder = 1
           OnClick = btnWpBrowseClick
-          ExplicitLeft = 380
         end
       end
       object Panel7: TPanel
@@ -105,9 +96,6 @@ object frmSettingsWnd: TfrmSettingsWnd
         ParentBackground = False
         ParentColor = True
         TabOrder = 1
-        ExplicitLeft = 28
-        ExplicitTop = 126
-        ExplicitWidth = 455
         object rdoWpAlignStretch: TJvXPCheckbox
           Left = 138
           Top = 0
@@ -169,9 +157,6 @@ object frmSettingsWnd: TfrmSettingsWnd
         ParentBackground = False
         ParentColor = True
         TabOrder = 2
-        ExplicitLeft = 28
-        ExplicitTop = 201
-        ExplicitWidth = 455
         object chkWpMirrorVert: TJvXPCheckbox
           Left = 81
           Top = 0
@@ -220,9 +205,6 @@ object frmSettingsWnd: TfrmSettingsWnd
         ParentBackground = False
         ParentColor = True
         TabOrder = 4
-        ExplicitLeft = 28
-        ExplicitTop = 276
-        ExplicitWidth = 455
         object sgbWpTrans: TSharpeGaugeBox
           Left = 0
           Top = 0
@@ -288,9 +270,6 @@ object frmSettingsWnd: TfrmSettingsWnd
         BackgroundTextColor = clBlack
         ContainerColor = clBlack
         ContainerTextColor = clBlack
-        ExplicitLeft = 20
-        ExplicitTop = 346
-        ExplicitWidth = 463
       end
       object SharpECenterHeader6: TSharpECenterHeader
         AlignWithMargins = True
@@ -307,8 +286,6 @@ object frmSettingsWnd: TfrmSettingsWnd
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
-        ExplicitLeft = 10
-        ExplicitTop = 5
       end
       object SharpECenterHeader7: TSharpECenterHeader
         AlignWithMargins = True
@@ -325,8 +302,6 @@ object frmSettingsWnd: TfrmSettingsWnd
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
-        ExplicitLeft = 0
-        ExplicitTop = 130
       end
       object SharpECenterHeader8: TSharpECenterHeader
         AlignWithMargins = True
@@ -343,8 +318,6 @@ object frmSettingsWnd: TfrmSettingsWnd
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
-        ExplicitLeft = 20
-        ExplicitTop = 216
       end
       object SharpECenterHeader9: TSharpECenterHeader
         AlignWithMargins = True
@@ -361,7 +334,6 @@ object frmSettingsWnd: TfrmSettingsWnd
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
-        ExplicitTop = 296
       end
       object SharpECenterHeader10: TSharpECenterHeader
         AlignWithMargins = True
@@ -378,8 +350,6 @@ object frmSettingsWnd: TfrmSettingsWnd
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
-        ExplicitLeft = 10
-        ExplicitTop = 372
       end
     end
     object pagColor: TJvStandardPage
@@ -388,7 +358,6 @@ object frmSettingsWnd: TfrmSettingsWnd
       Width = 491
       Height = 490
       Caption = 'pagColor'
-      ExplicitHeight = 427
       object imgColor: TImage32
         Left = 384
         Top = 113
@@ -415,8 +384,6 @@ object frmSettingsWnd: TfrmSettingsWnd
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 2
-        ExplicitTop = 48
-        ExplicitHeight = 379
         object Panel10: TPanel
           AlignWithMargins = True
           Left = 5
@@ -432,9 +399,6 @@ object frmSettingsWnd: TfrmSettingsWnd
           ParentBackground = False
           ParentColor = True
           TabOrder = 0
-          ExplicitLeft = 26
-          ExplicitTop = 52
-          ExplicitWidth = 457
           object sgbLum: TSharpeGaugeBox
             AlignWithMargins = True
             Left = 218
@@ -518,9 +482,6 @@ object frmSettingsWnd: TfrmSettingsWnd
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
-          ExplicitLeft = 3
-          ExplicitTop = 3
-          ExplicitWidth = 479
         end
       end
       object chkApplyColor: TJvXPCheckbox
@@ -537,9 +498,6 @@ object frmSettingsWnd: TfrmSettingsWnd
         TabOrder = 0
         Align = alTop
         OnClick = ApplyColorClickEvent
-        ExplicitLeft = 8
-        ExplicitTop = 8
-        ExplicitWidth = 475
       end
     end
     object pagGradient: TJvStandardPage
@@ -548,7 +506,6 @@ object frmSettingsWnd: TfrmSettingsWnd
       Width = 491
       Height = 490
       Caption = 'pagGradient'
-      ExplicitHeight = 427
       object pnlGrad: TPanel
         AlignWithMargins = True
         Left = 0
@@ -563,8 +520,6 @@ object frmSettingsWnd: TfrmSettingsWnd
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 1
-        ExplicitTop = 48
-        ExplicitHeight = 379
         object Panel5: TPanel
           AlignWithMargins = True
           Left = 5
@@ -580,9 +535,6 @@ object frmSettingsWnd: TfrmSettingsWnd
           ParentBackground = False
           ParentColor = True
           TabOrder = 0
-          ExplicitLeft = 26
-          ExplicitTop = 52
-          ExplicitWidth = 457
           object cboGradType: TComboBox
             Left = 0
             Top = 0
@@ -592,7 +544,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Style = csDropDownList
             ItemHeight = 13
             TabOrder = 0
-            OnChange = cb_gtypeChange
+            OnSelect = cboGradTypeSelect
             Items.Strings = (
               'Horizontal'
               'Vertical'
@@ -615,9 +567,6 @@ object frmSettingsWnd: TfrmSettingsWnd
           ParentBackground = False
           ParentColor = True
           TabOrder = 1
-          ExplicitLeft = 26
-          ExplicitTop = 127
-          ExplicitWidth = 457
           object sgbGradStartTrans: TSharpeGaugeBox
             Left = 0
             Top = 0
@@ -716,10 +665,6 @@ object frmSettingsWnd: TfrmSettingsWnd
           BackgroundTextColor = clBlack
           ContainerColor = clBlack
           ContainerTextColor = clBlack
-          ExplicitLeft = 20
-          ExplicitTop = 197
-          ExplicitWidth = 463
-          ExplicitHeight = 182
         end
         object SharpECenterHeader3: TSharpECenterHeader
           AlignWithMargins = True
@@ -736,9 +681,6 @@ object frmSettingsWnd: TfrmSettingsWnd
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
-          ExplicitLeft = 3
-          ExplicitTop = 3
-          ExplicitWidth = 479
         end
         object SharpECenterHeader4: TSharpECenterHeader
           AlignWithMargins = True
@@ -755,8 +697,6 @@ object frmSettingsWnd: TfrmSettingsWnd
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
-          ExplicitLeft = 0
-          ExplicitTop = 130
         end
         object SharpECenterHeader5: TSharpECenterHeader
           AlignWithMargins = True
@@ -773,8 +713,6 @@ object frmSettingsWnd: TfrmSettingsWnd
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
-          ExplicitLeft = 7
-          ExplicitTop = 194
         end
       end
       object imgGradient: TImage32
@@ -845,9 +783,6 @@ object frmSettingsWnd: TfrmSettingsWnd
       BorderColor = clBtnFace
       Border = False
       BackgroundColor = clBtnFace
-      ExplicitLeft = 31
-      ExplicitTop = 51
-      ExplicitWidth = 449
       object cboMonitor: TComboBox
         Left = 0
         Top = 0
@@ -881,9 +816,6 @@ object frmSettingsWnd: TfrmSettingsWnd
       TitleColor = clWindowText
       DescriptionColor = clRed
       Align = alTop
-      ExplicitLeft = 3
-      ExplicitTop = 3
-      ExplicitWidth = 479
     end
   end
   object ssmConfig: TSharpESwatchManager
