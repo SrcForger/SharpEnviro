@@ -37,7 +37,6 @@ uses
   SharpESkinManager,
   Graphics,
   GR32,
-  uSharpBarApi,
   SharpApi,
   uISharpBarModule,
   uISharpESkin,
