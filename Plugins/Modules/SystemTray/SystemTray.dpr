@@ -155,6 +155,7 @@ begin
     Form.ParentWindow := BarWnd;    
 
     FTrayClient := TTrayClient.Create;
+    FTrayClient.InitToolTips(Form);
     FTrayClient.BackGroundColor := color32(0,0,0,0);
     FUpdateTimer := TTimer.Create(nil);
     FUpdateTimer.OnTimer := OnUpdateTimer;
