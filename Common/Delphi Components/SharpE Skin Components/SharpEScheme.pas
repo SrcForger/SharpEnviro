@@ -65,7 +65,7 @@ type
     procedure ClearColors;
     property OnNotify: TSchemeEvent read FOnNotify write FOnNotify;
   published
-    property Colors : TSharpEColorSet read FColors;
+    property Colors : TSharpEColorSet read FColors write FColors;
   end;
 
 implementation
