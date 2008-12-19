@@ -32,7 +32,6 @@ uses
   Dialogs, StdCtrls, Menus, Math,
   JclSimpleXML, GR32,
   SharpApi,
-  uSharpBarAPI,
   SharpEBaseControls,
   SharpEButton,
   SharpIconUtils,

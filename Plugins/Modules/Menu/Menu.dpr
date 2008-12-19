@@ -37,7 +37,6 @@ uses
   Contnrs,
   StdCtrls,
   SharpApi,
-  uSharpBarApi,
   gr32,
   uISharpBarModule,
   uISharpESkin,
@@ -177,7 +176,7 @@ begin
     Name := 'Menu';
     Author := 'Martin Krämer <Martin@SharpEnviro.com>';
     Description := 'Displays a button that will run SharpMenu';
-    Version := '0.7.3.3';
+    Version := '0.7.5.2';
     ExtraData := 'preview: false';
     DataType := tteModule;
   end;
