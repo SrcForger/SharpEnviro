@@ -5,7 +5,7 @@
      <project Name="Clock Module" Type="DLL">Plugins\Configurations\Clock\Clock.dproj</project>
      <project Name="CPU Monitor Module" Type="DLL">Plugins\Configurations\CPUMonitor\CPUMonitor.dproj</project>
      <project Name="Filter List" Type="DLL">Plugins\Configurations\FilterList\FilterList.dproj</project>
-     <project Name="Font" Type="DLL">Plugins\Configurations\Font\Font.dproj</project>
+     
      <project Name="Image Object" Type="DLL">Plugins\Configurations\Image\Image.dproj</project>
      <project Name="Keyboard Layout Module" Type="DLL">Plugins\Configurations\KeyboardLayout\KeyboardLayout.dproj</project>
      <project Name="Link Object" Type="DLL">Plugins\Configurations\Link\Link.dproj</project>
@@ -21,7 +21,6 @@
      <project Name="Task Module" Type="DLL">Plugins\Configurations\TaskModule\TaskModule.dproj</project>
      <project Name="VolumeControl Module" Type="DLL">Plugins\Configurations\VolumeControl\VolumeControl.dproj</project>
      <project Name="VWM Module" Type="DLL">Plugins\Configurations\VWM\VWM.dproj</project>
-     <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Wallpaper\Wallpaper.dproj</project>
      <project Name="Weather Module" Type="DLL">Plugins\Configurations\WeatherModule\WeatherModule.dproj</project>
   </package>
   <package Name="Configurations - Components">
@@ -48,6 +47,8 @@
      <project Name="SchemeEdit" Type="DLL">Plugins\Configurations\Themes\SchemeEdit\SchemeEdit.dproj</project>
      <project Name="SchemeList" Type="DLL">Plugins\Configurations\Themes\SchemeList\SchemeList.dproj</project>
      <project Name="SkinList" Type="DLL">Plugins\Configurations\Themes\SkinList\SkinList.dproj</project>
+	 <project Name="SkinFont" Type="DLL">Plugins\Configurations\Themes\Font\Font.dproj</project>
+	 <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Themes\Wallpaper\Wallpaper.dproj</project>
   </package>
   <package Name="Components">
      <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
