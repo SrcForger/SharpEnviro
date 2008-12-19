@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ProjectGuid>{95fc47df-8d83-4363-bb4f-78f1ffdea869}</ProjectGuid>
     <MainSource>SkinList.dpr</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>rtl;vcl</DCC_UsePackage>
