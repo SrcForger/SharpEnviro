@@ -524,6 +524,7 @@ begin
         end;
 
         if c.ClassNameIs('TJvXpCheckBox') then begin
+          TJvXPCheckbox(c).Color := ATheme.PluginBackground;
           TJvXpCheckBox(c).ParentColor := False;
           TJvXpCheckBox(c).ParentFont := False;
           TJvXpCheckBox(c).Font.Color := ATheme.PluginBackgroundText;
@@ -734,7 +735,7 @@ begin
   themeFile := themeDir+ theme + '\' + 'ctheme.xml';
 
   if ( (theme = '') or ( not(FileExists(themeFile))))  then begin
-    SharpApi.SendDebugMessageEx('SharpCenterApi', 'Some parameters were invalid for XmlGetCenterTheme', 0, DMT_ERROR);
+    //SharpApi.SendDebugMessageEx('SharpCenterApi', 'Some parameters were invalid for XmlGetCenterTheme', 0, DMT_ERROR);
     AssignSystemDefaultTheme( ATheme );
     Exit;
   end;
