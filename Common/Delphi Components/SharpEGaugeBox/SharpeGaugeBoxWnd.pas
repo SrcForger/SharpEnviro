@@ -6,14 +6,17 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, SharpeGaugeBoxEdit, StdCtrls, ComCtrls,
   JvExComCtrls, JvComCtrls, uVistaFuncs, JvExExtCtrls, JvPanel, JvComponent,
-  JvExtComponent, SharpApi;
+  JvExtComponent, SharpApi, ImgList, PngImageList, Buttons, PngSpeedButton;
 
 type
   TFrmSharpeGaugeBox = class(TForm)
     BorderPanel: TJvPanel;
     Shape1: TJvPanel;
-    lblGauge: TLabel;
     GaugeBar: TJvTrackBar;
+    Panel1: TPanel;
+    PngSpeedButton1: TPngSpeedButton;
+    PngImageList1: TPngImageList;
+    PngSpeedButton2: TPngSpeedButton;
     procedure FormShow(Sender: TObject);
     procedure GaugeBarMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -26,6 +29,8 @@ type
       MousePos: TPoint; var Handled: Boolean);
     procedure FormDeactivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure PngSpeedButton2Click(Sender: TObject);
+    procedure PngSpeedButton1Click(Sender: TObject);
   protected
     procedure WMShellMessage(var msg : TMessagE); message WM_SHARPSHELLMESSAGE;
   private
@@ -55,6 +60,16 @@ end;
 function TFrmSharpeGaugeBox.GetGaugeBar: TJvTrackBar;
 begin
   Result := GaugeBar;
+end;
+
+procedure TFrmSharpeGaugeBox.PngSpeedButton1Click(Sender: TObject);
+begin
+  GaugeBar.Position := GaugeBar.Position + 1;
+end;
+
+procedure TFrmSharpeGaugeBox.PngSpeedButton2Click(Sender: TObject);
+begin
+  GaugeBar.Position := GaugeBar.Position - 1;
 end;
 
 procedure TFrmSharpeGaugeBox.WMShellMessage(var msg: TMessagE);
@@ -100,7 +115,7 @@ begin
     GaugeBoxEdit.UpdateValue;
     GaugeBoxEdit.UpdateEditBox;
   end;
-  BorderPanel.SetFocus;
+  //BorderPanel.SetFocus;
 end;
 
 procedure TFrmSharpeGaugeBox.FormClose(Sender: TObject;

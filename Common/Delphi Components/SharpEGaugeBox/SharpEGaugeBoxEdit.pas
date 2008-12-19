@@ -96,6 +96,7 @@ type
     procedure SetPercentDisplay(const Value : boolean);
     function GetBackgroundColor: TColor;
     procedure SetBackgroundColor(const Value: TColor);
+    procedure SelectValueText;
   protected
     procedure SetEnabled(Value: boolean); override;
   public
@@ -206,7 +207,7 @@ begin
     BevelInner := bvNone;
     BevelOuter := bvNone;
     BevelKind := bkNone;
-    ParentBackground := False;
+    ParentBackground := false;
     DoubleBuffered := True;
     ParentFont := True;
     Color := Self.Color;
@@ -224,7 +225,7 @@ begin
     OnExit := ValueEditExit;
     OnClick := ValueEditClick;
     ParentFont := True;
-    MaxLength := 6;
+    MaxLength := 50;
   end;
 
   FBtnGauge := TSpeedButton.Create(FValueEdit);
@@ -239,7 +240,7 @@ begin
     Width := ButtonWidth;
     Font.Style := [fsBold];
     Caption := '';
-    Flat := false;
+    Flat := true;
     Color := Self.Color;
     OnMouseUp := BtnGaugeMouseUp;
     Cursor := crArrow;
@@ -271,8 +272,8 @@ begin
     tmpGaugeBar.Max := FMax;
     tmpGaugeBar.Position := FValue;
     tmpGaugeBar.Min := FMin;
+
     NoUpdate := False;
-    lblGauge.Caption := FDescription;
   end;
 
   PopAnimateWindow(Self, TFrmSharpeGaugeBox(FFrmSharpeGaugeBox));
@@ -334,12 +335,13 @@ procedure TSharpeGaugeBox.ValueEditExit(Sender: TObject);
 begin
   UpdateValue;
   UpdateEditBox;
-  FValueEdit.SelectAll;
+  SelectValueText;
 end;
 
 procedure TSharpeGaugeBox.ValueEditClick(Sender: Tobject);
 begin
-  FValueEdit.SelectAll;
+  SelectValueText;
+  FBtnGauge.Refresh;
 end;
 
 procedure TSharpeGaugeBox.PopAnimateWindow(Popper: TControl;
@@ -350,9 +352,7 @@ var
 begin
   h := PopWindow.Height;
 
-  w := Self.Canvas.TextWidth(FDescription)+50;
-  if w < 30 then
-    w := 120;
+  w := 150;
 
   xPos := Popper.ClientToScreen(Point(0, Popper.ClientHeight));
 
@@ -427,7 +427,7 @@ begin
       FValue := iVal;
     end;
 
-  FValueEdit.SelectAll;
+  SelectValueText;
 
   if assigned(FOnChangeValue) then
     FOnChangeValue(Self, iVal);
@@ -484,6 +484,18 @@ begin
      FreeAndNil(FBackPanel);
   if assigned(FFrmSharpeGaugeBox) then
      FreeAndNil(FFrmSharpeGaugeBox);
+end;
+
+procedure TSharpeGaugeBox.SelectValueText;
+var
+  temp: Integer;
+begin
+  if FPercentDisplay then
+     temp := round(FValue / FMax * 100)
+     else temp := FValue;
+
+  FValueEdit.SelStart := Pos(IntToStr(temp), FValueEdit.Text) - 1;
+  FValueEdit.SelLength := length(IntToStr(temp));
 end;
 
 end.
