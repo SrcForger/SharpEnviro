@@ -1,0 +1,20 @@
+object BarWnd: TBarWnd
+  Left = 0
+  Top = 0
+  Caption = 'BarWnd'
+  ClientHeight = 32
+  ClientWidth = 423
+  Color = clBtnFace
+  TransparentColor = True
+  TransparentColorValue = clFuchsia
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
+  PixelsPerInch = 96
+  TextHeight = 13
+end
