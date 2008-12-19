@@ -54,7 +54,7 @@ uses
   Contnrs,
   Types,
   JclStrings,
-  ISharpCenterHostUnit;
+  ISharpCenterHostUnit, uComponentMan;
 
 type
   TStringObject = class(TObject)
