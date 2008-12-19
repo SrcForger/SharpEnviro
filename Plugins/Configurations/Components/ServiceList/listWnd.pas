@@ -54,7 +54,6 @@ uses
   Contnrs,
   Types,
   JclStrings,
-  uComponentMan,
   ISharpCenterHostUnit;
 
 type
