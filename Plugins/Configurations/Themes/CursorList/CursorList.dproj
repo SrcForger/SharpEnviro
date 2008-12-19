@@ -42,14 +42,6 @@
     <DelphiCompile Include="CursorList.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas" />
-    <DCCReference Include="..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas" />
-    <DCCReference Include="..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas" />
-    <DCCReference Include="..\..\..\Common\Units\SEListboxPainter\uSEListboxPainter.pas" />
-    <DCCReference Include="..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterCommon.pas" />
-    <DCCReference Include="..\..\..\Common\Units\SharpCenterSupporting\uSharpCenterPluginTabList.pas" />
-    <DCCReference Include="..\..\..\Common\Units\SharpFX\graphicsFX.pas" />
-    <DCCReference Include="..\..\..\Common\Units\SharpFX\SharpFX.pas" />
     <DCCReference Include="uSettingsWnd.pas">
       <Form>frmSettingsWnd</Form>
     </DCCReference>

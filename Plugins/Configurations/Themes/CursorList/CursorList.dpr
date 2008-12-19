@@ -37,12 +37,10 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
+  SharpThemeApi,
+  SharpApi,
+  SharpCenterApi,
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettingsWnd},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit;
 
