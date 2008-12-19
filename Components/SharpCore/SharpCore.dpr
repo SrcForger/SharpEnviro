@@ -35,6 +35,7 @@ uses
   SharpCenterApi,
   Classes,
   SysUtils,
+  uVistaFuncs,
   uComponentMan in 'uComponentMan.pas';
 
 {$R *.res}
@@ -497,7 +498,9 @@ begin
   SharpThemeApi.InitializeTheme;
   SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
 
-  hndEvent := OpenEvent(EVENT_MODIFY_STATE, False, 'msgina: ShellReadyEvent');
+  if uVistaFuncs.IsWindowsVista then
+     hndEvent := OpenEvent(EVENT_MODIFY_STATE, False, 'ShellDesktopSwitchEvent')
+  else hndEvent := OpenEvent(EVENT_MODIFY_STATE, False, 'msgina: ShellReadyEvent');
   if hndEvent > 0 then
   begin
     SetEvent(hndEvent);
