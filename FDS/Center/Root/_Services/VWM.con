@@ -2,7 +2,7 @@
 <SharpCenter>
   <Sections>
     <VWM>
-      <Dll>_ServiceDlls\VWMService.dll</Dll>
+      <Dll>_ServiceDlls\VWM.dll</Dll>
       <Icon>_ServiceDlls\VWMService.png</Icon>
     </VWM>
   </Sections>

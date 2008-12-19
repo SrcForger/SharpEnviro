@@ -2,8 +2,8 @@
 <SharpCenter>
   <Sections>
     <Aliases>
-      <Dll>_ServiceDlls\Aliases.dll</Dll>
-      <Icon>_ServiceDlls\Aliases.png</Icon>
+      <Dll>_ServiceDlls\AliasList.dll</Dll>
+      <Icon>_ServiceDlls\AliasList.png</Icon>
     </Aliases>
   </Sections>
 </SharpCenter>

@@ -2,8 +2,8 @@
 <SharpCenter>
   <Sections>
     <Hotkeys>
-      <Dll>_ServiceDlls\Hotkeys.dll</Dll>
-      <Icon>_ServiceDlls\Hotkeys.png</Icon>
+      <Dll>_ServiceDlls\HotkeyList.dll</Dll>
+      <Icon>_ServiceDlls\HotkeyList.png</Icon>
     </Hotkeys>
   </Sections>
 </SharpCenter>
