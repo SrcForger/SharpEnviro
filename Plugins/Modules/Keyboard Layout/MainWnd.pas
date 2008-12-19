@@ -34,7 +34,7 @@ uses
   // Custom Units
   JclSimpleXML, GR32, GR32_PNG, JCLLocales,
   // SharpE Units
-  SharpApi, uSharpBarAPI, SharpEBaseControls, SharpEScheme,
+  SharpApi, SharpEBaseControls, SharpEScheme,
   SharpEButton, uSharpEMenu, uSharpEMenuWnd, uISharpBarModule,
   uSharpEMenuSettings, uSharpEMenuItem;
 
