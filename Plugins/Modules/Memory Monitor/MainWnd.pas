@@ -85,8 +85,6 @@ function GlobalMemoryStatusEx(var lpBuffer: TMemoryStatusEx): BOOL; stdcall; ext
 
 implementation
 
-uses uSharpBarAPI;
-
 {$R *.dfm}
 
 procedure TMainForm.LoadSettings;
