@@ -29,7 +29,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, ExtCtrls, Graphics, StdCtrls,
-  SharpEGaugeBoxEdit, SharpEColorEditorEx, PngSpeedButton;
+  SharpEGaugeBoxEdit, SharpEColorEditorEx, JvXPCheckCtrls, PngSpeedButton;
 
 type
   TSharpEUIC = class(TPanel)
@@ -46,34 +46,25 @@ type
     FAutoReset : boolean;
     FDefaultValue : String;
     FMonitorControl : TComponent;
-    procedure SetBorderColor(const Value: TColor);
-    procedure SetBorder(const Value: Boolean);
-    procedure SetBackgroundColor(const Value: TColor);
     procedure SetMonitorControl(const Value: TComponent);
     procedure SetDefaultValue(const Value: String);
-    procedure SetNormalColor(const Value: TColor);
     procedure ResetBtnOnClick(Sender : TObject);
     procedure SetHasChanged(const Value: boolean);
   protected
     procedure Resize; override;
     procedure Paint; override;
-    procedure SetRoundValue(Value: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure UpdateStatus(Init : boolean = False);
     procedure UpdateStatusFromValue(Value : String; Init : boolean = False);
     procedure UpdateBtnStatus;
+    procedure Reset;
   published
-    property RoundValue: Integer read FRoundValue write SetRoundValue;
-    property BorderColor: TColor read FBorderColor write SetBorderColor;
-    property Border: Boolean read FBorder write SetBorder;
-    property BackgroundColor : TColor read FBackgroundColor write SetBackgroundColor;
     property HasChanged : boolean read FHasChanged write SetHasChanged;
     property AutoReset : boolean read FAutoReset write FAutoReset;
     property DefaultValue : String read FDefaultValue write SetDefaultValue;
     property MonitorControl : TComponent read FMonitorControl write SetMonitorControl;
-    property NormalColor : TColor read FNormalColor write SetNormalColor;
     property Color;
 
     property OnReset : TNotifyEvent read FOnResetEvent write FOnResetEvent;
@@ -125,7 +116,8 @@ begin
   BevelInner := bvNone;
   BevelOuter := bvNone;
 
-  //self.ParentBackground := True;
+  DoubleBuffered := true;
+  ParentBackground := false;
 
   FResetBtn := TPngSpeedButton.Create(self);
   FResetBtn.Parent := self;
@@ -149,26 +141,13 @@ end;
 
 procedure TSharpEUIC.Paint;
 begin
-  if FHasChanged then
-  begin
-    Canvas.Brush.Color := FNormalColor;
-    Canvas.FillRect(ClientRect);
+  Canvas.Brush.Color := Color;
+  Canvas.FillRect(ClientRect);
+end;
 
-    if FBorder then
-      Canvas.Pen.Color := FBorderColor
-    else Canvas.Pen.Color := FBackgroundColor;
-
-    Canvas.Brush.Color := FBackgroundColor;
-    Canvas.RoundRect(0, 0, Width, Height, RoundValue, RoundValue);
-
-    Color := FBackgroundColor;    
-  end else
-  begin
-    Canvas.Brush.Color := FNormalColor;
-    Canvas.FillRect(ClientRect);
-
-    Color := FNormalColor;    
-  end;
+procedure TSharpEUIC.Reset;
+begin
+  ResetBtnOnClick( nil);
 end;
 
 procedure TSharpEUIC.ResetBtnOnClick(Sender: TObject);
@@ -179,6 +158,8 @@ begin
   begin
     if FMonitorControl is TCheckBox then
       TCheckBox(FMonitorControl).Checked := StringToBoolean(FDefaultValue)
+    else if FMonitorControl is TJvXpCheckBox then
+      TJvXpCheckBox(FMonitorControl).Checked := StringToBoolean(FDefaultValue)
     else if FMonitorControl is TEdit then
       TEdit(FMonitorControl).Text := FDefaultValue
     else if FMonitorControl is TSharpEGaugeBox then
@@ -217,24 +198,6 @@ begin
   Invalidate;
 end;
 
-procedure TSharpEUIC.SetBackgroundColor(const Value: TColor);
-begin
-  FBackgroundColor := Value;
-  Invalidate;
-end;
-
-procedure TSharpEUIC.SetBorder(const Value: Boolean);
-begin
-  FBorder := Value;
-  Invalidate;
-end;
-
-procedure TSharpEUIC.SetBorderColor(const Value: TColor);
-begin
-  FBorderColor := Value;
-  Invalidate;
-end;
-
 procedure TSharpEUIC.SetDefaultValue(const Value: String);
 begin
   FDefaultValue := Value;
@@ -254,19 +217,6 @@ begin
   UpdateStatus(True);
 end;
 
-procedure TSharpEUIC.SetNormalColor(const Value: TColor);
-begin
-  FNormalColor := Value;
-  Invalidate;
-end;
-
-procedure TSharpEUIC.SetRoundValue(Value: Integer);
-begin
-  FRoundValue := Value;
-  if Parent <> nil then
-    Resize;
-end;
-
 procedure TSharpEUIC.UpdateBtnStatus;
 begin
   if FHasChanged then
@@ -275,7 +225,10 @@ begin
     FResetBtn.Top := 1;
     FResetBtn.Height := Height - 2;
     FResetBtn.Width := 24;
-    FResetBtn.Left := Width - 4 - FResetBtn.Width;
+
+    if FMonitorControl <> nil then
+      FResetBtn.Left := TWinControl(FMonitorControl).Left + TWinControl(FMonitorControl).Width else
+      FResetBtn.Left := Width - 4 - FResetBtn.Width;
   end else
     FResetBtn.Visible := False;
 end;
@@ -291,6 +244,8 @@ begin
 
   if FMonitorControl is TCheckBox then
     NewChangedState := (TCheckBox(FMonitorControl).Checked <> StringToBoolean(FDefaultValue))
+  else if FMonitorControl is TJvXpCheckBox then
+    NewChangedState := (TJvXpCheckBox(FMonitorControl).Checked <> StringToBoolean(FDefaultValue))
   else if FMonitorControl is TEdit then
     NewChangedState := (CompareText(TEdit(FMonitorControl).Text,FDefaultValue) <> 0)
   else if FMonitorControl is TSharpEGaugeBox then
