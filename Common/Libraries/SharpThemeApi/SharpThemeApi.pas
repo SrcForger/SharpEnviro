@@ -234,7 +234,7 @@ function GetSkinFontValueClearType: boolean; external 'SharpThemeApi.dll' name '
 function GetThemeListAsCommaText: string;
 procedure XmlGetThemeList(var AThemeList: TThemeInfoSet);
 
-function GetSchemeListAsCommaText(ATheme: string): string;
+function XmlGetSchemeListAsCommaText(ATheme: string): string;
 
 procedure XmlGetThemeScheme(var AThemeScheme: TSharpEColorSet); overload;
 procedure XmlGetThemeScheme(ATheme: string; AScheme: string; ASkin: string; var AThemeScheme: TSharpEColorSet); overload;
@@ -259,9 +259,11 @@ function XmlGetSkin(ATheme: string): string;
 function XmlGetSkinFile(ATheme: String): String;
 function XmlGetSchemeFile(ATheme: string): string;
 function XmlGetFontFile(ATheme: string): string;
+function XmlGetWallpaperFile(ATheme: string): string;
 function XmlGetTheme: string;
 function XmlGetThemeFile(ATheme: string): string;
 procedure XmlSetScheme(ATheme: String; AName: string);
+procedure XmlSetSkin(ATheme: String; AName: string);
 function XmlGetScheme(ATheme: string): string;
 procedure XmlSetTheme(ATheme: String);
 function XmlGetSkinDir(ATheme: String): String; overload;
@@ -332,7 +334,7 @@ begin
   end;
 end;
 
-function GetSchemeListAsCommaText(ATheme: string): string;
+function XmlGetSchemeListAsCommaText(ATheme: string): string;
 var
   sSchemeDir, sSkin: string;
   tmpStringList: TStringList;
@@ -693,9 +695,19 @@ begin
   Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'scheme.xml';
 end;
 
+function XmlGetSkinFile(ATheme: string): string;
+begin
+  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'skin.xml';
+end;
+
 function XmlGetFontFile(ATheme: string): string;
 begin
   Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'font.xml';
+end;
+
+function XmlGetWallpaperFile(ATheme: string): string;
+begin
+  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'wallpaper.xml';
 end;
 
 function XmlGetTheme: string;
@@ -801,10 +813,25 @@ begin
   end;
 end;
 
-function XmlGetSkinFile(ATheme: string): string;
+procedure XmlSetSkin(ATheme: String; AName: string);
+var
+  xml: TJvSimpleXML;
+  s: string;
 begin
-  Result := GetSharpeUserSettingsPath + 'Themes\' + ATheme + '\' + 'skin.xml';
+  xml := TJvSimpleXML.Create(nil);
+  try
+    s := XmlGetSkinFile(ATheme);
+    forcedirectories(ExtractFilePath(s));
+
+    xml.Root.Clear;
+    xml.Root.Name := 'SharpEThemeSkin';
+    xml.Root.Items.Add('Skin', AName);
+    xml.SaveToFile(s);
+  finally
+    xml.Free;
+  end;
 end;
+
 
 function XmlGetSkinDir(ATheme: String):string;
 var
