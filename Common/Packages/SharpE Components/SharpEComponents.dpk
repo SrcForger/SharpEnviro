@@ -73,7 +73,6 @@ contains
   SharpEUIC in '..\..\Delphi Components\SharpEUIC\SharpEUIC.pas',
   uScHotkeyMgr in '..\..\Units\SCHotkeyManager\uScHotkeyMgr.pas',
   graphicsFX in '..\..\Units\SharpFX\graphicsFX.pas',
-  uSchemeList in '..\..\..\Plugins\Configurations\Scheme\uSchemeList.pas',
   uVistaFuncs in '..\..\Units\VistaFuncs\uVistaFuncs.pas',
   VKToString in '..\..\Units\SCHotkeyManager\VKToString.pas',
   SharpFX in '..\..\Units\SharpFX\SharpFX.pas',
