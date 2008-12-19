@@ -4,31 +4,31 @@
       <Dll>_themedlls\IconList.dll</Dll>
       <Icon>_themedlls\IconList.png</Icon>
     </Icons>
-    <Desktop> 
-      <Dll>_themedlls\Desktop.dll</Dll>
+      <Desktop> 
+      <Dll>_themedlls\DesktopTheme.dll</Dll>
       <Icon>..\Desktop.png</Icon>
     </Desktop>
     <Curses> 
-      <Dll>_themedlls\Curses.dll</Dll>
+      <Dll>_themedlls\CursorList.dll</Dll>
       <Icon>_themedlls\Curses.png</Icon>
     </Curses>
-    <Scheme> 
-      <Dll>_themedlls\Scheme.dll</Dll>
-      <Icon>_themedlls\Scheme.png</Icon>
-    </Scheme>
     <Skin> 
-      <Dll>_themedlls\ThemeSkinList.dll</Dll>
+      <Dll>_themedlls\SkinList.dll</Dll>
       <Icon>_themedlls\ThemeSkinList.png</Icon>
     </Skin>
 	<Glass> 
-      <Dll>_themedlls\ThemeGlass.dll</Dll>
+      <Dll>_themedlls\Glass.dll</Dll>
       <Icon>_themedlls\Glass.png</Icon>
     </Glass>
+    <Scheme> 
+      <Dll>_themedlls\SchemeList.dll</Dll>
+      <Icon>_themedlls\Scheme.png</Icon>
+    </Scheme>
     <Wallpaper> 
       <Dll>_themedlls\Wallpaper.dll</Dll>
 	  <Icon>_themedlls\Wallpaper.png</Icon>
     </Wallpaper>
-	<Font> 
+    <Font> 
       <Dll>_themedlls\Font.dll</Dll>
       <Icon>_themedlls\font.png</Icon>
     </Font>
