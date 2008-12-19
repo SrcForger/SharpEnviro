@@ -45,13 +45,13 @@ type
     tbNotes: TToolBar;
     tb_import: TToolButton;
     tb_export: TToolButton;
-    ToolButton7: TToolButton;
+    tb_separator1: TToolButton;
     tb_copy: TToolButton;
     tb_paste: TToolButton;
-    ToolButton1: TToolButton;
+    tb_cut: TToolButton;
     btn_selectall: TToolButton;
     btn_find: TToolButton;
-    ToolButton2: TToolButton;
+    tb_separator2: TToolButton;
     btn_linewrap: TToolButton;
     btn_monofont: TToolButton;
     procedure NotesKeyPress(Sender: TObject; var Key: Char);
@@ -59,7 +59,7 @@ type
     procedure btn_monofontClick(Sender: TObject);
     procedure btn_linewrapClick(Sender: TObject);
     procedure btn_findClick(Sender: TObject);
-    procedure ToolButton1Click(Sender: TObject);
+    procedure tb_cutClick(Sender: TObject);
     procedure tb_importClick(Sender: TObject);
     procedure tb_exportClick(Sender: TObject);
     procedure btn_selectallClick(Sender: TObject);
@@ -477,7 +477,7 @@ begin
   Notes.SelectAll;
 end;
 
-procedure TNotesForm.ToolButton1Click(Sender: TObject);
+procedure TNotesForm.tb_cutClick(Sender: TObject);
 begin
   Notes.CutToClipboard;
 end;
@@ -543,6 +543,8 @@ begin
     Notes.Font.Name := 'Courier New'
   else
     Notes.Font.Name := 'Tahoma';
+
+  NotesChange(Sender);	
 end;
 
 procedure TNotesForm.NotesKeyUp(Sender: TObject; var Key: Word;
@@ -566,28 +568,78 @@ end;
 procedure TNotesForm.NotesChange(Sender: TObject);
 var
   i : Integer;
-  Wider, Higher : Boolean;
+  scrollStyle : Integer;
+  lineWidth : Integer;
+  linesHeight : Integer;
+  notesHeight : Integer;
+  notesWidth : Integer;
+  vscrollWidth : Integer;
+  hscrollHeight : Integer;
 begin
-  Wider:=False;
-  Higher:=False;
-
   font.Name:=Notes.font.name;
   font.Size:=Notes.font.size;
   font.Style:=Notes.font.style;
 
-  // Check Height
-  If Notes.Lines.Count*canvas.TextHeight('Mg')>Notes.Height then Higher:=True;
+  // Start off by setting the scrollbars to not be visible.
+  scrollStyle := Integer(ssNone);
 
+  hscrollHeight	:= 0;
+  vscrollWidth := 0;
+  lineWidth := 0;
+
+  // Calculate the total height of all lines by multiplying
+  // the line count by the height of
+  linesHeight := Notes.Lines.Count * canvas.TextHeight('Mg');
+
+  notesHeight := Notes.Height;
+  notesWidth := Notes.Width;
+
+  // Check Height
+  if linesHeight > notesHeight then
+  begin
+    // If the height of the lines greater than the height of the
+    // notes window set the scroll width for when we calculate things below.
+    vscrollWidth := 20;
+  end;
+  
   // Check width
   for i:=0 to Notes.Lines.Count-1 do
-  Begin
-    if canvas.TextWidth(Notes.Lines[i])>Notes.Width then Wider:=True;
+  begin
+    if canvas.TextWidth(Notes.Lines[i]) > lineWidth then
+    begin
+      // Keep track of only the longest line width as we use it
+      // when we calculate things below.
+      lineWidth := canvas.TextWidth(Notes.Lines[i]);
+    end;
+
+    if lineWidth > notesWidth then
+    begin
+      // If we find a line wider than the width of the window set
+      // the scroll height for when we calculate things below and
+      // break out of the loop.
+      hscrollHeight	:= 20;
+      break;
+    end;
   end;
 
-  If Wider and Higher then Notes.ScrollBars:=ssBoth else
-  if Higher then Notes.ScrollBars:=ssVertical else
-  if Wider then Notes.ScrollBars:=ssHorizontal
-  else Notes.ScrollBars:=ssNone;
+  if linesHeight > notesHeight - hscrollHeight then
+  begin
+    // The height of the lines is greater than the notes window height
+    // less the horizontal scrollbar height if visible so indicate
+    // that we want the vertical scrollbar visible.
+    scrollStyle := scrollStyle + Integer(ssVertical);
+  end;
+
+  if lineWidth > notesWidth - vscrollWidth then
+  begin
+    // The max line width is greater than the notes window width
+    // less the vertical scrollbar width if visible so indicate
+    // that we want the horizontal scrollbar visible.
+    scrollStyle	:= scrollStyle + Integer(ssHorizontal);
+  end;
+
+  // ssNone = 0, ssHorizontal = 1, ssVertical = 2, ssBoth = 3
+  Notes.ScrollBars := TScrollStyle(scrollStyle);
 end;
 
 procedure TNotesForm.NotesKeyPress(Sender: TObject; var Key: Char);

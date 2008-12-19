@@ -53,6 +53,7 @@ object NotesForm: TNotesForm
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyUp = NotesKeyUp
+  OnResize = NotesChange
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -119,10 +120,9 @@ object NotesForm: TNotesForm
     TabStatusSelColor = clGreen
     TabCaptionColor = clBlack
     TabStatusColor = clGreen
+    PageBackgroundColor = clWindow
     OnTabClick = pcNotesTabClick
     OnBtnClick = pcNotesBtnClick
-    ExplicitLeft = -1
-    ExplicitTop = -1
     DesignSize = (
       649
       371)
@@ -136,6 +136,7 @@ object NotesForm: TNotesForm
       Margins.Top = 0
       Margins.Right = 8
       Margins.Bottom = 8
+      AutoSize = False
       MaxLines = 0
       HideCaret = False
       Align = alClient
@@ -151,7 +152,6 @@ object NotesForm: TNotesForm
       OnChange = NotesChange
       OnKeyPress = NotesKeyPress
       OnKeyUp = NotesKeyUp
-      ExplicitLeft = 12
     end
     object tbNotes: TToolBar
       AlignWithMargins = True
@@ -201,18 +201,29 @@ object NotesForm: TNotesForm
         ShowHint = True
         OnClick = tb_exportClick
       end
-      object ToolButton7: TToolButton
+      object tb_separator1: TToolButton
         Left = 54
         Top = 0
         Width = 8
-        Caption = 'ToolButton7'
+        Caption = 'tb_separator1'
         ImageIndex = 6
         Style = tbsSeparator
       end
-      object tb_copy: TToolButton
+      object tb_cut: TToolButton
         Left = 62
         Top = 0
-        Hint = 'Copy Selected Text'
+        Hint = 'Cut'
+        AutoSize = True
+        Caption = 'Cut'
+        ImageIndex = 3
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = tb_cutClick
+      end
+      object tb_copy: TToolButton
+        Left = 89
+        Top = 0
+        Hint = 'Copy'
         AutoSize = True
         Caption = 'Copy'
         ImageIndex = 2
@@ -221,26 +232,15 @@ object NotesForm: TNotesForm
         OnClick = tb_copyClick
       end
       object tb_paste: TToolButton
-        Left = 89
+        Left = 116
         Top = 0
-        Hint = 'Paste Selected Text'
+        Hint = 'Paste'
         AutoSize = True
         Caption = 'Paste'
         ImageIndex = 0
         ParentShowHint = False
         ShowHint = True
         OnClick = tb_pasteClick
-      end
-      object ToolButton1: TToolButton
-        Left = 116
-        Top = 0
-        Hint = 'Cut Selected Text'
-        AutoSize = True
-        Caption = 'ToolButton1'
-        ImageIndex = 3
-        ParentShowHint = False
-        ShowHint = True
-        OnClick = ToolButton1Click
       end
       object btn_selectall: TToolButton
         Left = 143
@@ -264,11 +264,11 @@ object NotesForm: TNotesForm
         ShowHint = True
         OnClick = btn_findClick
       end
-      object ToolButton2: TToolButton
+      object tb_separator2: TToolButton
         Left = 197
         Top = 0
         Width = 8
-        Caption = 'ToolButton2'
+        Caption = 'tb_separator2'
         ImageIndex = 8
         Style = tbsSeparator
       end
@@ -632,7 +632,6 @@ object NotesForm: TNotesForm
       end>
     Left = 144
     Top = 116
-    Bitmap = {}
   end
   object ImportDialog: TOpenDialog
     Filter = 'Text File (*.txt)|*.txt|All Files (*.*)|*.*'
