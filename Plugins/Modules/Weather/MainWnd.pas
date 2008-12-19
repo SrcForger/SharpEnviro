@@ -66,8 +66,7 @@ type
 
 implementation
 
-uses GR32_PNG,
-     uSharpBarAPI;
+uses GR32_PNG;
 
 {$R *.dfm}
 
