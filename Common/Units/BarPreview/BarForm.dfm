@@ -1,9 +1,10 @@
 object BarWnd: TBarWnd
   Left = 0
   Top = 0
+  BorderStyle = bsNone
   Caption = 'BarWnd'
-  ClientHeight = 32
-  ClientWidth = 423
+  ClientHeight = 68
+  ClientWidth = 439
   Color = clBtnFace
   TransparentColor = True
   TransparentColorValue = clFuchsia
@@ -30,7 +31,7 @@ object BarWnd: TBarWnd
     Caption = 'SharpE'
     AutoPosition = False
   end
-  object SharpEScheme1: TSharpEScheme
+  object ssMain: TSharpEScheme
     Left = 280
     Top = 8
   end

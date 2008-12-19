@@ -35,7 +35,7 @@ uses
 
 type
   TBarWnd = class(TForm)
-    SharpEScheme1: TSharpEScheme;
+    ssMain: TSharpEScheme;
     Button: TSharpEButton;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -43,7 +43,7 @@ type
     { Private-Deklarationen }
     procedure OnBackgroundPaint(Sender : TObject; Target : TBitmap32; x : integer);
   public
-    SharpEBar1: TSharpEBar;
+    Bar: TSharpEBar;
     SkinManager : TSharpESkinManager;
     SkinComp : TSharpESkin;
     Background : TBitmap32;
@@ -69,18 +69,18 @@ begin
      SkinComp := TSharpESkin.Create(self,[scBar,scButton,scMenu,scMenuItem])
      else SkinComp := TSharpESkin.Create(self,[scBar,scButton]);
 
-  SkinManager := TSharpESkinManager.CreateRuntime(self,SkinComp,SharpEScheme1,True,[scBar,scButton]);
+  SkinManager := TSharpESkinManager.CreateRuntime(self,SkinComp,ssMain,True,[scBar,scButton]);
   SkinManager.SkinSource := ssComponent;
   SkinManager.SchemeSource := ssComponent;
 
-  SharpEBar1 := TSharpEBar.CreateRuntime(self,SkinManager);
+  Bar := TSharpEBar.CreateRuntime(self,SkinManager);
   Button.SkinManager := SkinManager;
-  SharpEBar1.OnBackgroundPaint := OnBackgroundPaint;
+  Bar.OnBackgroundPaint := OnBackgroundPaint;
 end;
 
 procedure TBarWnd.FormDestroy(Sender: TObject);
 begin
-  FreeAndNil(SharpEbar1);
+  FreeAndNil(Bar);
   FreeAndNil(SkinManager);
   FreeAndNil(SkinComp);
   FreeAndNil(Background);
