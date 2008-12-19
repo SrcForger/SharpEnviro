@@ -1,7 +1,7 @@
 {
 Source Name: Not available
 Description: Exec Service for SharpCore
-Copyright (C) Lee Green (Pixol) pixol@sharpe-shell.org
+Copyright (C) Lee Green (Pixol) lee@sharpenviro.com
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -97,7 +97,7 @@ begin
     tmpAliasValue:= Copy(msg,posex(' ',msg,AnsiPos(' ',msg)+1)+1,Length(msg));
     if (Length(trim(tmpAliasName)) <> 0) and (Length(trim(tmpAliasValue)) <> 0) then
     begin
-      SharpExec.AliasList.Add(tmpAliasName, tmpAliasValue);
+      SharpExec.AliasList.AddItem(tmpAliasName, tmpAliasValue);
       SharpExec.AliasList.Save;
     end;
   end;
@@ -132,8 +132,8 @@ begin
   begin
     Name := 'Exec';
     Description := 'Assists with executing strings, including process elevation and actions';
-    Author := 'Lee Gree (Pixol@sharpe-shell.org';
-    Version := '0.7.4.0';
+    Author := 'Lee (lee@sharpenviro.com)';
+    Version := '0.7.6.0';
     DataType := tteService;
     ExtraData := 'priority: 20| delay: 0';
   end;

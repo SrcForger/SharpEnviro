@@ -278,7 +278,7 @@ begin
 
   // Initiliase the Classes
   PathIncludeList := TPathIncludeList.Create(PiListFn);
-  AliasList := TAliasList.Create(PiAliasFn);
+  AliasList := TAliasList.Create;
   RecentItemList := TRecentItemsList.Create(RiListFn);
   ExecSettings := TExecSettings.Create(ExecSettingsFn);
   UsedItemList := TUsedItemsList.Create(UiListFn);
@@ -618,7 +618,7 @@ begin
   PathIncludeList.Items.Clear;
   PathIncludeList.Load;
 
-  AliasList.Items.Clear;
+  AliasList.Clear;
   AliasList.Load;
 
   ExecSettings.Load;
@@ -1003,7 +1003,7 @@ begin
       StrTokenToStrings(Params, ',', ParamsStrl);
     end;
 
-    for i := 0 to Pred(AliasList.FItems.Count) do begin
+    for i := 0 to Pred(AliasList.Count) do begin
 
       // Check if there is a match in the Alias List
       if StrCompare(AliasName, AliasList[i].AliasName) = 0 then begin
