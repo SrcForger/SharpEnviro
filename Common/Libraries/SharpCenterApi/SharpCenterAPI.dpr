@@ -168,95 +168,6 @@ begin
   SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(AUpdateType), APluginID, ASendMessage);
 end;
 
-function CenterDefineEditState(AEditing: Boolean): boolean;
-begin
-  if AEditing then
-    Result := BroadcastCenterMessage(SCM_SET_EDIT_STATE, 0) else
-    Result := BroadcastCenterMessage(SCM_SET_EDIT_CANCEL_STATE, 0);
-end;
-
-function CenterDefineButtonState(AButton: TSCB_BUTTON_ENUM; AEnabled: Boolean): boolean;
-begin
-  if AEnabled then
-    Result := BroadcastCenterMessage(SCM_SET_BUTTON_ENABLED, Integer(AButton)) else
-    Result := BroadcastCenterMessage(SCM_SET_BUTTON_DISABLED, Integer(AButton));
-end;
-
-function CenterDefineSettingsChanged: boolean;
-begin
-  Result := BroadcastCenterMessage(SCM_SET_SETTINGS_CHANGED, 0);
-end;
-
-function CenterSelectEditTab(AEditTab: TSCB_BUTTON_ENUM): boolean;
-begin
-  Result := False;
-  case AEditTab of
-    scbAddTab, scbEditTab, scbDeleteTab:
-      Result := BroadcastCenterMessage(SCM_SET_TAB_SELECTED, integer(AEditTab));
-  end;
-end;
-
-function CenterUpdatePreview: boolean;
-begin
-  Result := BroadcastCenterMessage(SCM_EVT_UPDATE_PREVIEW, 0);
-end;
-
-function CenterUpdateSettings: boolean;
-begin
-  Result := BroadcastCenterMessage(SCM_EVT_UPDATE_SETTINGS, 0);
-end;
-
-function CenterUpdateSize: boolean;
-begin
-  Result := BroadcastCenterMessage(SCM_EVT_UPDATE_SIZE, 0);
-end;
-
-function CenterUpdateTabs: boolean;
-begin
-  Result := BroadcastCenterMessage(SCM_EVT_UPDATE_TABS, 0);
-end;
-
-function CenterUpdateConfigText: boolean;
-begin
-  Result := BroadcastCenterMessage(SCM_EVT_UPDATE_CONFIG_TEXT, 0);
-end;
-
-procedure CenterUpdateConfigFull;
-begin
-  CenterUpdatePreview;
-  CenterUpdateSize;
-  CenterUpdateTabs;
-  CenterUpdateConfigText;
-end;
-
-procedure CenterUpdateEditTabs(AItemCount: Integer; AItemIndex: Integer);
-
-  procedure BC(AEnabled: Boolean; AButton: TSCB_BUTTON_ENUM);
-  begin
-    if AEnabled then
-      CenterDefineButtonState(AButton, True)
-    else
-      CenterDefineButtonState(AButton, False);
-  end;
-
-begin
-  if ((AItemCount = 0) or (AItemIndex = -1)) then begin
-    BC(False, scbEditTab);
-
-    if (AItemCount = 0) then begin
-      BC(False, scbDeleteTab);
-      CenterSelectEditTab(scbAddTab);
-    end;
-
-    BC(True, scbAddTab);
-
-  end
-  else begin
-    BC(True, scbAddTab);
-    BC(True, scbEditTab);
-  end;
-end;
-
 function CenterCommandAsText(ACommand: TSCC_COMMAND_ENUM): string;
 begin
   if ACommand = sccLoadSetting then result := SCC_LOAD_SETTING else
@@ -324,17 +235,6 @@ exports
   BroadcastGlobalUpdateMessage,
   BroadcastCenterMessage,
   CenterCommand,
-  {CenterDefineEditState,
-  CenterDefineButtonState,
-  CenterDefineSettingsChanged,
-  CenterSelectEditTab,
-  CenterUpdatePreview,
-  CenterUpdateSettings,
-  CenterUpdateSize,
-  CenterUpdateTabs,
-  CenterUpdateConfigText,
-  CenterUpdateConfigFull,
-  CenterUpdateEditTabs,  }
   CenterCommandAsText,
   CenterCommandAsEnum,
   CenterReadDefaults,
