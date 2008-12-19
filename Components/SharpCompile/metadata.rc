@@ -9,6 +9,6 @@ STRINGTABLE
   IDS_NAME "SharpCompile"
   IDS_DESCRIPTION "The fanciest build tool in creation"
   IDS_AUTHOR "Nathan LaFreniere (mc@sharpe-shell.org)"
-  IDS_VERSION "0.7.4.0"
+  IDS_VERSION "0.7.5.2"
   IDS_EXTRADATA "priority: 0|delay: 0"
 }

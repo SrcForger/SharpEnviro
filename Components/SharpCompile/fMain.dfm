@@ -1262,6 +1262,7 @@ object frmMain: TfrmMain
         Margins.Right = 4
         Align = alClient
         Anchors = [akLeft, akRight, akBottom]
+        Color = clWindow
         DoubleBuffered = True
         ExpandedHeight = 200
         TabItems = <
@@ -1295,6 +1296,7 @@ object frmMain: TfrmMain
         TabStatusSelColor = clGreen
         TabCaptionColor = clBlack
         TabStatusColor = clGreen
+        PageBackgroundColor = clWindow
         OnTabClick = stlMainTabClick
         DesignSize = (
           656
@@ -1363,7 +1365,8 @@ object frmMain: TfrmMain
           Colors.ItemColorSelected = clBtnFace
           Colors.CheckColorSelected = clBtnFace
           Colors.CheckColor = 15528425
-          itemheight = 25
+          Colors.DisabledColor = clBlack
+          ItemHeight = 25
           OnClickItem = lbSummaryClickItem
           OnDblClickItem = lbSummaryDblClickItem
           OnGetCellCursor = lbSummaryGetCellCursor

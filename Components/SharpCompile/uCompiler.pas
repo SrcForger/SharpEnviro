@@ -324,6 +324,9 @@ begin
     DCC32.Add('-LU"' + Project.Packages + '"');
 
   DCC32.Add('');
+  DCC32.Add('-U"' + Project.SearchPath + '"');
+  DCC32.Add('-R"' + Project.SearchPath + '"');
+  DCC32.Add('');
   DCC32.Add('-U"' + FBrowsePath + '"');
   DCC32.Add('-I"' + FBrowsePath + '"');
   DCC32.Add('-R"' + FBrowsePath + '"');
@@ -332,10 +335,6 @@ begin
   DCC32.Add('-U"' + FSearchPath + '"');
   DCC32.Add('-I"' + FSearchPath + '"');
   DCC32.Add('-R"' + FSearchPath + '"');
-
-  DCC32.Add('');
-  DCC32.Add('-U"' + Project.SearchPath + '"');
-  DCC32.Add('-R"' + Project.SearchPath + '"');
 
   if bDebug then
     DCC32.Add('-GD');
@@ -368,8 +367,10 @@ begin
     begin
       if FileExists('..\..\Common\Units\DebugDialog\DebugDialog.pas') then
         WriteLn(tempDpr, 'DebugDialog in ''..\..\Common\Units\DebugDialog\DebugDialog.pas'',')
+      else if FileExists('..\..\..\Common\Units\DebugDialog\DebugDialog.pas') then
+        WriteLn(tempDpr, 'DebugDialog in ''..\..\..\Common\Units\DebugDialog\DebugDialog.pas'',')
       else
-        WriteLn(tempDpr, 'DebugDialog in ''..\..\..\Common\Units\DebugDialog\DebugDialog.pas'',');
+        WriteLn(tempDpr, 'DebugDialog in ''..\..\..\..\Common\Units\DebugDialog\DebugDialog.pas'',');
       bInserted := True;
     end;
   end;
