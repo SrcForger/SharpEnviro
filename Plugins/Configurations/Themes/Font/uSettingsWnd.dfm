@@ -26,7 +26,6 @@ object frmSettingsWnd: TfrmSettingsWnd
     BevelOuter = bvNone
     Color = clWindow
     TabOrder = 0
-    ExplicitTop = 88
   end
   object plMain: TJvPageList
     Left = 0
@@ -36,16 +35,13 @@ object frmSettingsWnd: TfrmSettingsWnd
     ActivePage = pagFontShadow
     PropagateEnable = False
     Align = alClient
-    ExplicitTop = 88
-    ExplicitHeight = 507
     object pagFont: TJvStandardPage
       Left = 0
       Top = 0
       Width = 434
       Height = 565
       Caption = 'pagFont'
-      ExplicitHeight = 507
-      object UIC_Size: TSharpEUIC
+      object uicFontSize: TSharpEUIC
         AlignWithMargins = True
         Left = 5
         Top = 127
@@ -57,16 +53,16 @@ object frmSettingsWnd: TfrmSettingsWnd
         Margins.Bottom = 10
         Align = alTop
         BevelOuter = bvNone
-        Caption = 'UIC_Size'
+        Caption = 'uicFontSize'
         Color = clWhite
         ParentBackground = False
         TabOrder = 0
         HasChanged = False
         AutoReset = True
         DefaultValue = '0'
-        MonitorControl = sgb_size
+        MonitorControl = sgbFontSize
         OnReset = UIC_Reset
-        object sgb_size: TSharpeGaugeBox
+        object sgbFontSize: TSharpeGaugeBox
           Left = 0
           Top = 0
           Width = 250
@@ -84,11 +80,11 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Change font size by'
           PopPosition = ppBottom
           PercentDisplay = False
-          OnChangeValue = sgb_sizeChangeValue
+          OnChangeValue = SgbUicValueChanged
           BackgroundColor = clWindow
         end
       end
-      object UIC_FontType: TSharpEUIC
+      object uicFontType: TSharpEUIC
         AlignWithMargins = True
         Left = 5
         Top = 47
@@ -107,9 +103,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         HasChanged = False
         AutoReset = False
         DefaultValue = '-1'
-        MonitorControl = cbxFontName
+        MonitorControl = cboFontName
         OnReset = UIC_Reset
-        object cbxFontName: TComboBox
+        object cboFontName: TComboBox
           Left = 0
           Top = 0
           Width = 250
@@ -129,11 +125,11 @@ object frmSettingsWnd: TfrmSettingsWnd
           ItemHeight = 19
           ParentFont = False
           TabOrder = 0
-          OnChange = cbxFontNameChange
-          OnDrawItem = cbxFontNameDrawItem
+          OnChange = controlUicValueChanged
+          OnDrawItem = cboFontNameDrawItem
         end
       end
-      object UIC_Alpha: TSharpEUIC
+      object uicAlpha: TSharpEUIC
         AlignWithMargins = True
         Left = 5
         Top = 209
@@ -152,9 +148,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         HasChanged = False
         AutoReset = True
         DefaultValue = '0'
-        MonitorControl = sgb_alpha
+        MonitorControl = sgbFontVisibility
         OnReset = UIC_Reset
-        object sgb_alpha: TSharpeGaugeBox
+        object sgbFontVisibility: TSharpeGaugeBox
           Left = 0
           Top = 0
           Width = 250
@@ -172,11 +168,11 @@ object frmSettingsWnd: TfrmSettingsWnd
           Description = 'Change font opacity'
           PopPosition = ppBottom
           PercentDisplay = True
-          OnChangeValue = sgb_alphaChangeValue
+          OnChangeValue = SgbUicValueChanged
           BackgroundColor = clWindow
         end
       end
-      object UIC_Bold: TSharpEUIC
+      object uicBold: TSharpEUIC
         AlignWithMargins = True
         Left = 5
         Top = 423
@@ -194,9 +190,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         HasChanged = False
         AutoReset = False
         DefaultValue = 'False'
-        MonitorControl = cb_bold
+        MonitorControl = chkBold
         OnReset = UIC_Reset
-        object cb_bold: TJvXPCheckbox
+        object chkBold: TJvXPCheckbox
           Left = 0
           Top = 0
           Width = 49
@@ -208,10 +204,10 @@ object frmSettingsWnd: TfrmSettingsWnd
           Caption = 'Bold'
           TabOrder = 0
           Align = alLeft
-          OnClick = cb_boldClick
+          OnClick = controlUicValueChanged
         end
       end
-      object UIC_Italic: TSharpEUIC
+      object uicItalic: TSharpEUIC
         AlignWithMargins = True
         Left = 5
         Top = 363
@@ -229,9 +225,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         HasChanged = False
         AutoReset = False
         DefaultValue = 'False'
-        MonitorControl = cb_Italic
+        MonitorControl = chkItalic
         OnReset = UIC_Reset
-        object cb_Italic: TJvXPCheckbox
+        object chkItalic: TJvXPCheckbox
           Left = 0
           Top = 0
           Width = 53
@@ -243,10 +239,10 @@ object frmSettingsWnd: TfrmSettingsWnd
           Caption = 'Italic'
           TabOrder = 0
           Align = alLeft
-          OnClick = cb_ItalicClick
+          OnClick = controlUicValueChanged
         end
       end
-      object UIC_Underline: TSharpEUIC
+      object uicUnderline: TSharpEUIC
         AlignWithMargins = True
         Left = 5
         Top = 393
@@ -265,9 +261,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         HasChanged = False
         AutoReset = False
         DefaultValue = 'False'
-        MonitorControl = cb_Underline
+        MonitorControl = chkUnderline
         OnReset = UIC_Reset
-        object cb_Underline: TJvXPCheckbox
+        object chkUnderline: TJvXPCheckbox
           Left = 0
           Top = 0
           Width = 73
@@ -279,10 +275,10 @@ object frmSettingsWnd: TfrmSettingsWnd
           Caption = 'Underline'
           TabOrder = 0
           Align = alLeft
-          OnClick = cb_UnderlineClick
+          OnClick = controlUicValueChanged
         end
       end
-      object UIC_ClearType: TSharpEUIC
+      object uicCleartype: TSharpEUIC
         AlignWithMargins = True
         Left = 5
         Top = 286
@@ -300,9 +296,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         HasChanged = False
         AutoReset = False
         DefaultValue = '0'
-        MonitorControl = cb_cleartype
+        MonitorControl = chkCleartype
         OnReset = UIC_Reset
-        object cb_cleartype: TJvXPCheckbox
+        object chkCleartype: TJvXPCheckbox
           Left = 0
           Top = 0
           Width = 141
@@ -314,7 +310,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Caption = 'Apply cleartype fonts'
           TabOrder = 0
           Align = alLeft
-          OnClick = cb_cleartypeClick
+          OnClick = controlUicValueChanged
         end
       end
       object SharpECenterHeader1: TSharpECenterHeader
@@ -406,8 +402,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       Width = 434
       Height = 565
       Caption = 'pagFontShadow'
-      ExplicitHeight = 507
-      object UIC_Shadow: TSharpEUIC
+      object uicShadow: TSharpEUIC
         AlignWithMargins = True
         Left = 5
         Top = 0
@@ -426,9 +421,9 @@ object frmSettingsWnd: TfrmSettingsWnd
         HasChanged = False
         AutoReset = False
         DefaultValue = 'False'
-        MonitorControl = cb_shadow
+        MonitorControl = chkShadow
         OnReset = UIC_Reset
-        object cb_shadow: TJvXPCheckbox
+        object chkShadow: TJvXPCheckbox
           Left = 0
           Top = 0
           Width = 177
@@ -441,7 +436,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           TabOrder = 0
           Align = alLeft
           DragKind = dkDock
-          OnClick = cb_shadowClick
+          OnClick = controlUicValueChanged
         end
       end
       object textpanel: TPanel
@@ -453,8 +448,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
-        ExplicitHeight = 472
-        object UIC_ShadowType: TSharpEUIC
+        object uicShadowType: TSharpEUIC
           AlignWithMargins = True
           Left = 5
           Top = 47
@@ -472,9 +466,9 @@ object frmSettingsWnd: TfrmSettingsWnd
           HasChanged = True
           AutoReset = False
           DefaultValue = '-1'
-          MonitorControl = cb_shadowtype
+          MonitorControl = cboShadowType
           OnReset = UIC_Reset
-          object cb_shadowtype: TComboBox
+          object cboShadowType: TComboBox
             Left = 0
             Top = 0
             Width = 250
@@ -490,14 +484,14 @@ object frmSettingsWnd: TfrmSettingsWnd
             ItemIndex = 0
             TabOrder = 0
             Text = 'Left'
-            OnChange = cb_shadowtypeChange
+            OnChange = controlUicValueChanged
             Items.Strings = (
               'Left'
               'Right'
               'Outline')
           end
         end
-        object UIC_ShadowAlpha: TSharpEUIC
+        object uicShadowAlpha: TSharpEUIC
           AlignWithMargins = True
           Left = 5
           Top = 129
@@ -515,9 +509,9 @@ object frmSettingsWnd: TfrmSettingsWnd
           HasChanged = False
           AutoReset = True
           DefaultValue = '0'
-          MonitorControl = sgb_shadowalpha
+          MonitorControl = sgbShadowAlpha
           OnReset = UIC_Reset
-          object sgb_shadowalpha: TSharpeGaugeBox
+          object sgbShadowAlpha: TSharpeGaugeBox
             Left = 0
             Top = 0
             Width = 250
@@ -535,7 +529,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Description = 'Change shadow opacity'
             PopPosition = ppBottom
             PercentDisplay = True
-            OnChangeValue = sgb_shadowalphaChangeValue
+            OnChangeValue = SgbUicValueChanged
             BackgroundColor = clWindow
           end
         end
@@ -589,8 +583,6 @@ object frmSettingsWnd: TfrmSettingsWnd
     ParentBackground = False
     ParentColor = True
     TabOrder = 2
-    ExplicitLeft = 0
-    ExplicitWidth = 434
     object Image1: TImage
       Left = 0
       Top = 0
