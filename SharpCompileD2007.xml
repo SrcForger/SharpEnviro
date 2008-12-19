@@ -85,7 +85,6 @@
      <project Name="MiniScmd" Type="DLL" >Plugins\Modules\MiniScmd\MiniScmd.dproj</project>
      <project Name="Notes" Type="DLL" >Plugins\Modules\Notes\Notes.dproj</project>
      <project Name="Quick Script" Type="DLL" >Plugins\Modules\QuickScript\QuickScript.dproj</project>
-     <project Name="Screenshot" Type="DLL" >Plugins\Modules\Screenshot\Screenshot.dproj</project>
      <project Name="SystemTray" Type="DLL" >Plugins\Modules\SystemTray\SystemTray.dproj</project>
      <project Name="Taskbar" Type="DLL" >Plugins\Modules\Taskbar\Taskbar.dproj</project>
      <project Name="Volume Control" Type="DLL" >Plugins\Modules\VolumeControl\VolumeControl.dproj</project>
