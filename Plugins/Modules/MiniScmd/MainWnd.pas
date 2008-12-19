@@ -67,8 +67,7 @@ var
 
 implementation
 
-uses uSharpBarAPI,
-     SharpDialogs,
+uses SharpDialogs,
      uSystemFuncs;
 
 {$R *.dfm}
