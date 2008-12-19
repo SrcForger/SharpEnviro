@@ -54,35 +54,11 @@ var
   h: THandle;
 
 function Start(owner: hwnd): hwnd;
-var
-  fn: string;
 begin
   Result := HInstance;
 
-  // Weather Options
-  fn := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatheroptions.xml';
-  ForceDirectories(ExtractFilePath(fn));
-  Try
-    WeatherOptions := TWeatherSettings.Create(fn);
-  Except
-    Debug('Error Initialising TWeatherOptions',DMT_ERROR);
-  End;
-
-  // Weather Manager
-  fn := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\weatherlist.xml';
-  ForceDirectories(ExtractFilePath(fn));
-  Try
-    WeatherList := TWeatherList.Create(fn);
-  Except
-    Debug('Error Initialising TWeatherStore',DMT_ERROR);
-  End;
-
   // Weather update manager
-  Try
-    WeatherMgr := TWeatherMgr.Create;
-  Except
-    Debug('Error Initialising TWeatherMgr',DMT_ERROR);
-  End;
+  WeatherMgr := TWeatherMgr.Create;
 
   // Message Handler
   ae := TActionEvent.Create;
@@ -96,8 +72,6 @@ begin
   DeallocateHWnd(h);
   AE.Free;
 
-  FreeAndNil(WeatherOptions);
-  Freeandnil(WeatherList);
   FreeAndNil(WeatherMgr);
 end;
 
@@ -105,7 +79,6 @@ function SCMsg(msg: string): integer;
 begin
   Result := HInstance;
   if msg = '_forceupdate' then begin
-    debug('Force Weather Update', DMT_INFO);
     WeatherMgr.ForceUpdate;
   end;
 end;
@@ -116,8 +89,8 @@ begin
   begin
     if (msg.wparam = Integer(suWeather)) then
     begin
-      WeatherList.Clear;
-      WeatherList.Load;
+      WeatherMgr.WeatherList.Clear;
+      WeatherMgr.WeatherList.LoadSettings;
     end;
   end else msg.Result := DefWindowProc(h,msg.Msg,msg.WParam,msg.LParam);
 end;
@@ -129,7 +102,7 @@ begin
     Name := 'Weather';
     Description := 'Updates weather information for the bar module';
     Author := 'Lee Green (Pixol@sharpe-shell.org)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.0';
     DataType := tteService;
     ExtraData := 'priority: 90| delay: 0';
   end;

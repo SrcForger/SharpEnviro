@@ -30,6 +30,7 @@ uses
   Classes,
   ContNrs,
   SysUtils,
+  Graphics,
   Dialogs,
   Forms,
 
@@ -42,6 +43,7 @@ uses
   ExtCtrls,
   Wininet,
 
+  uWeatherOptions,
   uWeatherList,
   SharpCenterApi,
   SharpApi;
@@ -57,19 +59,21 @@ type
     FForce: Boolean;
     FErrorCount: Integer;
     FNextUpdate: Double;
+    FWeatherOptions: TWeatherOptions;
+    FWeatherList: TWeatherList;
     procedure Download(UrlTarget: string; Target: string);
     procedure WeatherUpdateCheck(Sender: TObject);
     function ConnectionKind: TConnectionKind;
+    procedure Debug(msg: string; errorType: Integer=DMT_INFO);
   public
     constructor Create;
     destructor Destroy; override;
 
     procedure ForceUpdate;
+    property WeatherOptions: TWeatherOptions read FWeatherOptions write FWeatherOptions;
+    property WeatherList: TWeatherList read FWeatherList write FWeatherList;
 
   end;
-
-var
-  WeatherMgr: TWeatherMgr;
 
 const
   sPOST_FileExt = '.sop';
@@ -83,10 +87,12 @@ const
   STRDateTime = '  AT: ';
   STRSeparator = '-----------------------------------------------------------';
 
+var
+  WeatherMgr: TWeatherMgr;
+
 implementation
 
 uses
-  uWeatherOptions,
   SOAPHTTPTrans;
 
 { TWeatherMgr }
@@ -120,6 +126,13 @@ var
   interval: Integer;
   iMin: Integer;
 begin
+  FWeatherList := TWeatherList.Create();
+  FWeatherList.FileName := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\WeatherList.xml';
+  FWeatherList.LoadSettings;
+
+  FWeatherOptions := TWeatherOptions.Create();
+  FWeatherOptions.FileName := GetSharpeUserSettingsPath + 'SharpCore\Services\Weather\WeatherOptions.xml';
+  FWeatherOptions.LoadSettings;
 
   FErrorCount := 0;
   FNextUpdate := -1;
@@ -129,7 +142,7 @@ begin
 
   // Check for less than 60 seconds, would be too much cpu
   try
-    interval := WeatherOptions.CheckInterval * 1000;
+    interval := FWeatherOptions.CheckInterval * 1000;
     if (interval < iMin) then
       interval := iMin;
   except
@@ -143,9 +156,16 @@ begin
   WeatherUpdateCheck(Self);
 end;
 
+procedure TWeatherMgr.Debug(msg: string; errorType: Integer);
+begin
+  SendDebugMessageEx('Weather Service',pchar(msg),clBlack, errorType);
+end;
+
 destructor TWeatherMgr.Destroy;
 begin
   FTimer.Free;
+  FWeatherOptions.Free;
+  FWeatherList.Free;
   inherited;
 end;
 
@@ -191,7 +211,7 @@ begin
 
   // Reload
   WeatherList.Clear;
-  WeatherList.Load;
+  WeatherList.LoadSettings;
   
   WeatherUpdateCheck(Self);
   FForce := false;
@@ -284,7 +304,7 @@ begin
 
       // Check for less than 30 minutes, must not be less
       try
-        interval := WeatherOptions.CCondInterval;
+        interval := FWeatherOptions.CCondInterval;
         if (interval < 30) then
           interval := 30;
       except
@@ -321,7 +341,7 @@ begin
           tmpInfo.CCLastUpdated := DateTimeToStr(now);
           FErrorCount := 0;
 
-          WeatherList.Save;
+          WeatherList.SaveSettings;
           SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
 
           SharpEBroadCast(WM_WEATHERUPDATE, 0, 0);
@@ -338,7 +358,7 @@ begin
 
       // Check for less than 2 hours, must not be less
       try
-        interval := WeatherOptions.FCastInterval;
+        interval := FWeatherOptions.FCastInterval;
         if (interval < 120) then
           interval := 120;
       except
@@ -361,7 +381,7 @@ begin
           tmpInfo.FCLastUpdated := DateTimeToStr(now);
           FErrorCount := 0;
 
-          WeatherList.Save;
+          WeatherList.SaveSettings;
 
           SharpEBroadCast(WM_WEATHERUPDATE, 0, 0);
           SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);

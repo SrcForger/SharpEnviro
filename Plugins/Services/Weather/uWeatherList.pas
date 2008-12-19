@@ -28,10 +28,11 @@ unit uWeatherList;
 interface
 uses
   Classes,
-  jclIniFiles,
   ContNrs,
   SysUtils,
-  JvSimpleXml;
+  JclSimpleXml,
+
+  IXmlBaseUnit;
 
 
 type
@@ -59,19 +60,17 @@ type
     property Metric: Boolean read FMetric write FMetric;
   end;
 
-  TWeatherList = class(TObjectList)
+  TWeatherList = class(TInterfacedXmlBaseList)
   private
     FOnAddItem: TNotifyEvent;
     FFileName: string;
 
-    procedure Debug(Str: string; ErrorType: Integer);
     function GetItem(Index: Integer): TWeatherItem;
     procedure SetItem(Index: Integer; const Value: TWeatherItem);
 
   public
-    constructor Create(FileName: string);
 
-    function Add(Location:String; LocationID:String; FCLastUpdated:String;
+    function AddItem(Location:String; LocationID:String; FCLastUpdated:String;
       CCLastUpdated: String; LastIconID:Integer; LastTemp:Integer;
         Enabled:Boolean; Metric:Boolean): TWeatherItem; overload;
 
@@ -82,23 +81,18 @@ type
 
     property OnAddItem: TNotifyEvent read FOnAddItem write FOnAddItem;
 
-    procedure Load(xmlfile: TFilename); overload;
-    procedure Save(xmlfile: TFilename); overload;
-    procedure Load; overload;
-    procedure Save; overload;
+    procedure LoadSettings;
+    procedure SaveSettings;
 
     property FileName: string read FFileName write FFileName;
   end;
-
-  var
-    WeatherList:TWeatherList;
 
 implementation
 
 uses
   SharpApi;
 
-function TWeatherList.Add(Location:String; LocationID:String;
+function TWeatherList.AddItem(Location:String; LocationID:String;
   FCLastUpdated:String; CCLastUpdated: String; LastIconID:Integer;
     LastTemp:Integer; Enabled:Boolean; Metric:Boolean): TWeatherItem;
 begin
@@ -118,78 +112,35 @@ begin
     FOnAddItem(Result);
 end;
 
-constructor TWeatherList.Create(FileName: string);
-begin
-  inherited Create;
-  FFileName := FileName;
-
-  if FileExists(FileName) then
-    Load
-  else begin
-    Save;
-  end;
-end;
-
 function TWeatherList.GetItem(Index: Integer): TWeatherItem;
 begin
   Result := nil;
   if (Index >= 0) and (Index < Count) then
-    Result := (Items[Index] as TWeatherItem);
+    Result := TWeatherItem(Items[Index]);
 end;
 
-procedure TWeatherList.Load;
-begin
-  Load(FFilename);
-end;
-
-procedure TWeatherList.Load(xmlfile: TFilename);
+procedure TWeatherList.LoadSettings;
 var
-  ItemCount, Loop: Integer;
-  xml: TjvSimpleXml;
-  prop: string;
+  i: Integer;
+  props: TJclSimpleXMLProps;
 begin
+  Xml.XmlFilename := FFileName;
+  if Xml.Load then begin
+    for i := 0 to Pred(xml.XmlRoot.Items.Count) do begin
+      props := Xml.XmlRoot.Items.Item[i].Properties;
 
-  xml := TJvSimpleXml.Create(nil);
+      Self.AddItem(
+        props.Value('Location'),
+        props.Value('LocationId'),
+        props.Value('FCLastUpdated','-1'),
+        props.Value('CCLastUpdated','-1'),
+        props.IntValue('LastIconId',-1),
+        props.IntValue('LastTemp',-999),
+        props.BoolValue('Enabled',True),
+        props.BoolValue('Metric',True));
 
-  try
-    try
-      xml.LoadFromFile(xmlfile);
-
-      Itemcount := xml.Root.Properties.Item[0].IntValue;
-      for Loop := 0 to itemcount - 1 do begin
-        prop := 'Location' + inttostr(loop);
-
-        with xml.Root.Items do begin
-
-          self.Add(
-            ItemNamed['Location' + inttostr(loop)].Properties.Value('Location',''),
-            ItemNamed['Location' + inttostr(loop)].Properties.Value('LocationID',''),
-            ItemNamed['Location' + inttostr(loop)].Properties.Value('FCLastUpdated','-1'),
-            ItemNamed['Location' + inttostr(loop)].Properties.Value('CCLastUpdated','-1'),
-            ItemNamed['Location' + inttostr(loop)].Properties.IntValue('LastIconID',-1),
-            ItemNamed['Location' + inttostr(loop)].Properties.IntValue('LastTemp',-999),
-            ItemNamed['Location' + inttostr(loop)].Properties.BoolValue('Enabled',True),
-            ItemNamed['Location' + inttostr(loop)].Properties.BoolValue('Metric',True));
-        end;
-      end;
-    except
-
-      on E: Exception do begin
-        Debug('Error While Loading Xml File', DMT_ERROR);
-        Debug(E.Message, DMT_TRACE);
-
-        // Create New
-        Save;
-      end;
     end;
-  finally
-    xml.Free;
   end;
-end;
-
-procedure TWeatherList.Save;
-begin
-  Save(FFilename);
 end;
 
 procedure TWeatherList.SetItem(Index: Integer; const Value: TWeatherItem);
@@ -198,47 +149,33 @@ begin
   then Self[Index] := Value;
 end;
 
-procedure TWeatherList.Save(xmlfile: TFilename);
+procedure TWeatherList.SaveSettings;
 var
   i: Integer;
-  Xml: TjvSimpleXml;
+  node: TJclSimpleXMLElemClassic;
 begin
-  Xml := TJvSimpleXml.Create(nil);
+  Xml.XmlFilename := FFileName;
+  Xml.XmlRoot.Clear;
+  Xml.XmlRoot.Name := 'WeatherLocations';
+  with Xml.XmlRoot do begin
 
-  try
-    try
-      Xml.Root.Name := 'WeatherLocations';
-      xml.Root.Properties.Add('ItemCount', self.count);
+    for i := 0 to pred(self.Count) do begin
 
-      for i := 0 to self.Count - 1 do begin
-        Xml.Root.Items.Add(Format('Location%d', [i]));
-        Xml.Root.Items.Item[i].Properties.Add('Location', Self[i].Location);
-        Xml.Root.Items.Item[i].Properties.Add('LocationID', Self[i].LocationID);
-        Xml.Root.Items.Item[i].Properties.Add('FCLastUpdated', Self[i].FCLastUpdated);
-        Xml.Root.Items.Item[i].Properties.Add('CCLastUpdated', Self[i].CCLastUpdated);
-        Xml.Root.Items.Item[i].Properties.Add('LastIconID', Self[i].LastIconID);
-        Xml.Root.Items.Item[i].Properties.Add('LastTemp', Self[i].LastTemp);
-        Xml.Root.Items.Item[i].Properties.Add('Enabled', Self[i].Enabled);
-        Xml.Root.Items.Item[i].Properties.Add('Metric', Self[i].Metric);
-      end;
-
-      ForceDirectories(ExtractFilePath((xmlFile)));
-      Xml.SaveToFile(xmlfile);
-    except
-      on E: Exception do begin
-        Debug('Error While Saving Xml File', DMT_ERROR);
-        Debug(E.Message, DMT_TRACE);
+      node := Xml.XmlRoot.Items.Add('Hotkey');
+      with node.Properties do begin
+        Add('Location', Self[i].Location);
+        Add('LocationID', Self[i].LocationID);
+        Add('FCLastUpdated', Self[i].FCLastUpdated);
+        Add('CCLastUpdated', Self[i].CCLastUpdated);
+        Add('LastIconID', Self[i].LastIconID);
+        Add('LastTemp', Self[i].LastTemp);
+        Add('Enabled', Self[i].Enabled);
+        Add('Metric', Self[i].Metric);
       end;
     end;
 
-  finally
-    Xml.Free;
+    Xml.Save;
   end;
-end;
-
-procedure TWeatherList.Debug(Str: string; ErrorType: Integer);
-begin
-  SendDebugMessageEx('Weather Service',PChar(Str),0,ErrorType);
 end;
 
 procedure TWeatherList.Delete(weatherItem: TWeatherItem);
