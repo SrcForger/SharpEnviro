@@ -33,7 +33,6 @@ uses
   JclSimpleXML,
   SharpCenterApi,
   SharpApi,
-  uSharpBarAPI,
   SharpEBaseControls,
   SharpEButton,
   uISharpBarModule,
