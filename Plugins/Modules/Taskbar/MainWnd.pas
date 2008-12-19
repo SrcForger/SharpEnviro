@@ -1119,6 +1119,8 @@ begin
   UpdateIcon(pTaskItem,pItem);
   pTaskItem.Caption := pItem.Caption;
   ToolTipApi.UpdateToolTipText(FTipWnd,Self,pTaskItem.Handle,pTaskItem.Caption);
+
+  AlignTaskComponents;
 end;
 
 procedure TMainForm.SharpETaskItemClick(Sender: TObject);
