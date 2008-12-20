@@ -12,11 +12,11 @@
      <project Name="Memory Monitor Module" Type="DLL">Plugins\Configurations\MemoryMonitor\MemoryMonitor.dproj</project>
      <project Name="Menu Module" Type="DLL">Plugins\Configurations\MenuModule\MenuModule.dproj</project>
      <project Name="MiniScmd Module" Type="DLL">Plugins\Configurations\MiniScmd\MiniScmd.dproj</project>
-     <project Name="Module Manager" Type="DLL">Plugins\Configurations\Module Manager\ModuleManager.dproj</project>
+     
      <project Name="Notes Module" Type="DLL">Plugins\Configurations\Notes\Notes.dproj</project>
      <project Name="Quick Script Module" Type="DLL">Plugins\Configurations\QuickScript\QuickScript.dproj</project>
      <project Name="Recycle Bin Object" Type="DLL">Plugins\Configurations\RecycleBin\RecycleBin.dproj</project>
-     <project Name="SharpBar Manager" Type="DLL">Plugins\Configurations\SharpBar List\SharpBarList.dproj</project>
+     
      <project Name="SystemTray Module" Type="DLL">Plugins\Configurations\SystemTray\SystemTray.dproj</project>
      <project Name="Task Module" Type="DLL">Plugins\Configurations\TaskModule\TaskModule.dproj</project>
      <project Name="VolumeControl Module" Type="DLL">Plugins\Configurations\VolumeControl\VolumeControl.dproj</project>
@@ -24,30 +24,32 @@
      <project Name="Weather Module" Type="DLL">Plugins\Configurations\WeatherModule\WeatherModule.dproj</project>
   </package>
   <package Name="Configurations - Components">
-     <project Name="DesktopSettings" Type="DLL">Plugins\Configurations\Components\DesktopSettings\DesktopSettings.dproj</project>
+	 <project Name="Toolbar List" Type="DLL">Plugins\Configurations\Components\Barlist\BarList.dproj</project>
+     <project Name="Desktop" Type="DLL">Plugins\Configurations\Components\DesktopSettings\DesktopSettings.dproj</project>
      <project Name="Home" Type="DLL">Plugins\Configurations\Components\Home\Home.dproj</project>
-     <project Name="MenuEdit" Type="DLL">Plugins\Configurations\Components\MenuEdit\MenuEdit.dproj</project>
-     <project Name="MenuList" Type="DLL">Plugins\Configurations\Components\MenuList\MenuList.dproj</project>
-     <project Name="MenuSettings" Type="DLL">Plugins\Configurations\Components\MenuSettings\MenuSettings.dproj</project>
-     <project Name="ServiceList" Type="DLL">Plugins\Configurations\Components\ServiceList\ServiceList.dproj</project>
-     <project Name="ThemeList" Type="DLL">Plugins\Configurations\Components\ThemeList\ThemeList.dproj</project>
+     <project Name="Menu Editor" Type="DLL">Plugins\Configurations\Components\MenuEdit\MenuEdit.dproj</project>
+     <project Name="Menu List" Type="DLL">Plugins\Configurations\Components\MenuList\MenuList.dproj</project>
+     <project Name="Menu" Type="DLL">Plugins\Configurations\Components\MenuSettings\MenuSettings.dproj</project>
+	 <project Name="Module List" Type="DLL">Plugins\Configurations\Components\ModuleList\ModuleList.dproj</project>
+     <project Name="Service List" Type="DLL">Plugins\Configurations\Components\ServiceList\ServiceList.dproj</project>
+     <project Name="Theme List" Type="DLL">Plugins\Configurations\Components\ThemeList\ThemeList.dproj</project>
   </package>
   <package Name="Configurations - Services">
-     <project Name="AliasList" Type="DLL">Plugins\Configurations\Services\AliasList\AliasList.dproj</project>
+     <project Name="Alias List" Type="DLL">Plugins\Configurations\Services\AliasList\AliasList.dproj</project>
      <project Name="DeskArea" Type="DLL">Plugins\Configurations\Services\DeskArea\DeskArea.dproj</project>
-     <project Name="HotkeyList" Type="DLL">Plugins\Configurations\Services\HotkeyList\HotkeyList.dproj</project>
+     <project Name="Hotkey List" Type="DLL">Plugins\Configurations\Services\HotkeyList\HotkeyList.dproj</project>
      <project Name="VWM" Type="DLL">Plugins\Configurations\Services\VWM\VWM.dproj</project>
      <project Name="Weather" Type="DLL">Plugins\Configurations\Services\Weather\Weather.dproj</project>
   </package>
   <package Name="Configurations - Themes">
-     <project Name="CursorList" Type="DLL">Plugins\Configurations\Themes\CursorList\CursorList.dproj</project>
-     <project Name="DesktopTheme" Type="DLL">Plugins\Configurations\Themes\DesktopTheme\DesktopTheme.dproj</project>
+     <project Name="Cursor List" Type="DLL">Plugins\Configurations\Themes\CursorList\CursorList.dproj</project>
+     <project Name="Desktop Theme" Type="DLL">Plugins\Configurations\Themes\DesktopTheme\DesktopTheme.dproj</project>
      <project Name="Glass" Type="DLL">Plugins\Configurations\Themes\Glass\Glass.dproj</project>
-     <project Name="IconList" Type="DLL">Plugins\Configurations\Themes\IconList\IconList.dproj</project>
-     <project Name="SchemeEdit" Type="DLL">Plugins\Configurations\Themes\SchemeEdit\SchemeEdit.dproj</project>
-     <project Name="SchemeList" Type="DLL">Plugins\Configurations\Themes\SchemeList\SchemeList.dproj</project>
-     <project Name="SkinList" Type="DLL">Plugins\Configurations\Themes\SkinList\SkinList.dproj</project>
-	 <project Name="SkinFont" Type="DLL">Plugins\Configurations\Themes\Font\Font.dproj</project>
+     <project Name="Icon List" Type="DLL">Plugins\Configurations\Themes\IconList\IconList.dproj</project>
+     <project Name="Scheme Editor" Type="DLL">Plugins\Configurations\Themes\SchemeEdit\SchemeEdit.dproj</project>
+     <project Name="Scheme List" Type="DLL">Plugins\Configurations\Themes\SchemeList\SchemeList.dproj</project>
+     <project Name="Skin List" Type="DLL">Plugins\Configurations\Themes\SkinList\SkinList.dproj</project>
+	 <project Name="Skin Font" Type="DLL">Plugins\Configurations\Themes\Font\Font.dproj</project>
 	 <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Themes\Wallpaper\Wallpaper.dproj</project>
   </package>
   <package Name="Components">
