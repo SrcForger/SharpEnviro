@@ -64,6 +64,7 @@ type
     procedure LoadSettings;
     procedure ReAlignComponents;
     procedure UpdateGraph;
+    procedure UpdateComponentSkins;
   end;
 
 
@@ -205,6 +206,11 @@ begin
       pbar.Height := Height - 8;
     end;
   end;
+end;
+
+procedure TMainForm.UpdateComponentSkins;
+begin
+  pbar.SkinManager := mInterface.SkinInterface.SkinManager;
 end;
 
 procedure TMainForm.UpdateGraph;

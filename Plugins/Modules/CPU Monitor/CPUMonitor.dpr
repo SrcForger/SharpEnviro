@@ -63,6 +63,7 @@ type
       function UpdateMessage(part : TSU_UPDATE_ENUM; param : integer) : HRESULT; override;
       function InitModule : HRESULT; override;
 
+      procedure SetSkinInterface(Value : ISharpESkin); override;      
       procedure SetSize(Value : integer); override;
       procedure SetLeft(Value : integer); override;
   end;
@@ -122,6 +123,14 @@ begin
     cpuusage.Forms.Add(Form);    
     TMainForm(Form).RealignComponents;
   end;
+end;
+
+procedure TInterfacedSharpBarModule.SetSkinInterface(Value: ISharpESkin);
+begin
+  inherited SetSkinInterface(Value);
+
+  if Form <> nil then
+    TMainForm(Form).UpdateComponentSkins;
 end;
 
 procedure TInterfacedSharpBarModule.SetLeft(Value: integer);
