@@ -168,7 +168,7 @@ function GetMetaData(): TMetaData;
 begin
   with result do
   begin
-    Name := 'Menu';
+    Name := 'Menu Options';
     Description := 'Menu Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
     Version := '0.7.6.0';
