@@ -1439,7 +1439,6 @@ const
   SleepTime = 10;
 var
   StartTime : Cardinal;
-  temp: OFStruct;
   handle : hfile;
   EMode : DWord;
   DoSleep : boolean;
@@ -1459,8 +1458,8 @@ begin
     DoSleep := True;
     try
       try
-        handle := OpenFile(PChar(pFileName),temp,OF_SHARE_EXCLUSIVE);
-        if not (handle = HFILE_ERROR) then
+        handle := CreateFile(PChar(pFileName), GENERIC_READ, 0, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+        if not (handle = INVALID_HANDLE_VALUE) then
         begin
           DoSleep := False;
           CloseHandle(handle);
