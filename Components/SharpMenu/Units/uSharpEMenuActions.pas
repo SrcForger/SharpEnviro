@@ -224,6 +224,7 @@ var
     svalue : String;
     n : integer;
     found : boolean;
+    fattri : DWORD;
   begin
     {$WARNINGS OFF}
     pAddDir := IncludeTrailingBackSlash(pAddDir);
@@ -232,6 +233,14 @@ var
     repeat
       if (CompareText(sr.Name,'.') <> 0) and (CompareText(sr.Name,'..') <> 0) then
       begin
+        if (sr.Attr and faDirectory) > 0 then
+        begin
+          fattri := GetFileAttributes(PChar(pAddDir + sr.Name));
+          if ((fattri and FILE_ATTRIBUTE_REPARSE_POINT) > 0)
+            and ((fattri and FILE_ATTRIBUTE_HIDDEN) > 0) then
+              continue;
+        end;
+
         found := False;
         if FilterList.Count = 0 then
           found := True
