@@ -231,12 +231,16 @@ begin
 
   if Form <> nil then
   begin
-    TMainForm(Form).RealignComponents;
+    if Initialized then
+      TMainForm(Form).RealignComponents;
+      
     if Height < 20 then
       FTrayClient.IconSize := Height - 4
     else FTrayClient.IconSize := 16;
     FTrayClient.RenderIcons;
-    TMainForm(Form).RepaintIcons;
+
+    if Initialized then
+      TMainForm(Form).RepaintIcons;
   end;
 end;
 
@@ -247,6 +251,9 @@ const
                              suScheme,suModule,suSkinFont];
 begin
   result := inherited UpdateMessage(part,param);
+
+  if not (Initialized) then
+    exit;
 
   if not (part in processed) then
     exit;  

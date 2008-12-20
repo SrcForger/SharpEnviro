@@ -47,7 +47,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure BackgroundDblClick(Sender: TObject);
     procedure UpdateTimerTimer(Sender: TObject);
-    procedure FormShow(Sender: TObject);
   protected
   private
     BarWidth    : integer;
@@ -161,7 +160,8 @@ begin
   lb_swp.Left := -100;
   lb_ram.Left := -100;
 
-  UpdateTimerTimer(UpdateTimer);
+  if UpdateTimer.Enabled then
+    UpdateTimerTimer(UpdateTimer);
   case ItemAlign of
    3: begin
         o3 := 2;
@@ -376,11 +376,6 @@ begin
   else Repaint;
 end;
 
-
-procedure TMainForm.FormShow(Sender: TObject);
-begin
-  UpdateTimer.Enabled := True;
-end;
 
 procedure TMainForm.UpdateTimerTimer(Sender: TObject);
 var

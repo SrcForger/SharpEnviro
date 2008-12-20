@@ -108,6 +108,7 @@ begin
 
   if Form <> nil then
   begin
+    TMainForm(Form).UpdateTimer.Enabled := True;  
     TMainForm(Form).LoadSettings;
     TMainForm(Form).RealignComponents;
   end;
@@ -132,7 +133,7 @@ function TInterfacedSharpBarModule.SetTopHeight(Top, Height: integer): HRESULT;
 begin
   result := inherited SetTopHeight(Top, Height);
 
-  if Form <> nil then
+  if (Form <> nil) and (Initialized) then
     TMainForm(Form).RealignComponents;
 end;
 
@@ -143,6 +144,9 @@ const
                              suScheme,suIconSet,suSkinFont,suModule];
 begin
   result := inherited UpdateMessage(part,param);
+
+  if not (Initialized) then
+    exit;
 
   if not (part in processed) then
     exit;  

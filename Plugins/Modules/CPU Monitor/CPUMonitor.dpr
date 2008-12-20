@@ -146,8 +146,11 @@ begin
   if Form <> nil then
   begin
     TMainForm(Form).cpuusage := cpuusage;
-    TMainForm(Form).RealignComponents;
-    TMainForm(Form).UpdateGraph;
+    if Initialized then
+    begin
+      TMainForm(Form).RealignComponents;
+      TMainForm(Form).UpdateGraph;
+    end;
   end;
 end;
 
@@ -158,6 +161,9 @@ const
                              suScheme,suIconSet,suSkinFont,suModule];
 begin
   result := inherited UpdateMessage(part,param);
+
+  if not (Initialized) then
+    exit;
 
   if not (part in processed) then
     exit;  

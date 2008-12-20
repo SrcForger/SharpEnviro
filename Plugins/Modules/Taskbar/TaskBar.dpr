@@ -130,6 +130,9 @@ function TInterfacedSharpBarModule.ModuleMessage(msg: String): HRESULT;
 begin
   result := Inherited ModuleMessage(msg);
 
+  if not (Initialized) then
+    exit;
+
   if CompareText(msg,'MM_SHELLHOOKWINDOWCREATED') = 0 then
     SharpApi.RegisterShellHookReceiver(Form.Handle)
   else if CompareText(msg,'MM_VWMUPDATESETTINGS') = 0 then
@@ -171,7 +174,7 @@ function TInterfacedSharpBarModule.SetTopHeight(Top, Height: integer): HRESULT;
 begin
   result := inherited SetTopHeight(Top, Height);
 
-  if Form <> nil then
+  if (Form <> nil) and (Initialized) then
     TMainForm(Form).RealignComponents(False);
 end;
 
@@ -182,6 +185,9 @@ const
                              suScheme,suIconSet,suSkinFont,suModule,suTaskFilter];
 begin
   result := inherited UpdateMessage(part,param);
+
+  if not (Initialized) then
+    exit;
 
   if not (part in processed) then
     exit;  

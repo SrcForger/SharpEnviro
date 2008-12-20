@@ -137,7 +137,8 @@ begin
       sShowPC   := BoolValue('showpc',sShowPC);
     end;
   XML.Free;
-  UpdateTimer.OnTimer(UpdateTimer);
+  if UpdateTimer.Enabled then
+    UpdateTimer.OnTimer(UpdateTimer);
 end;
 
 procedure TMainForm.UpdateComponentSkins;

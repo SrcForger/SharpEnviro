@@ -13,7 +13,6 @@ object MainForm: TMainForm
   OldCreateOrder = False
   OnCreate = FormCreate
   OnPaint = FormPaint
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object lb_swpbar: TSharpESkinLabel

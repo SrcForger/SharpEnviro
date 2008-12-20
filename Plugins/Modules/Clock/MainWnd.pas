@@ -96,7 +96,7 @@ begin
     fileloaded := True;
   except
     fileloaded := False;
-  end;
+  end;                                      
   if fileloaded then
     with xml.Root.Items do
     begin
@@ -113,7 +113,9 @@ begin
   if lb_clock.LabelStyle = sStyle then
      if lb_clock.LabelStyle = lsSmall then lb_clock.LabelStyle := lsMedium
         else lb_clock.LabelStyle := lsSmall;
-  ClockTimer.OnTimer(ClockTimer);
+
+  if ClockTimer.Enabled then
+    ClockTimer.OnTimer(nil);
   lb_clock.Updateskin;
 end;
 
@@ -140,7 +142,8 @@ var
   newWidth : integer;
 begin
   self.Caption := sFormat;
-  ClockTimer.OnTimer(nil);
+  if ClockTimer.Enabled then
+    ClockTimer.OnTimer(nil);
 
   lb_clock.UpdateSkin;
   if lb_bottomClock.Visible then

@@ -48,6 +48,7 @@ object MainForm: TMainForm
     LabelStyle = lsMedium
   end
   object UpdateTimer: TTimer
+    Enabled = False
     OnTimer = UpdateTimerTimer
     Left = 224
     Top = 16

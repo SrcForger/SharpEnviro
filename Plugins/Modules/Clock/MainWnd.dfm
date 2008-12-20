@@ -1,7 +1,7 @@
 object MainForm: TMainForm
   Left = 0
   Top = 0
-  Caption = 'Sharp Menu'
+  Caption = 'Clock'
   ClientHeight = 159
   ClientWidth = 277
   Color = clBtnFace
@@ -50,6 +50,7 @@ object MainForm: TMainForm
     end
   end
   object ClockTimer: TTimer
+    Enabled = False
     OnTimer = ClockTimerTimer
     Left = 160
     Top = 72

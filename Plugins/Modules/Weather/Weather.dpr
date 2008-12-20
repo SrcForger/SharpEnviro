@@ -118,6 +118,9 @@ begin
 
   if CompareText(msg,'MM_WEATHERUPDATE') <> 0 then exit;
 
+  if not (Initialized) then
+    exit;
+
   TMainForm(Form).WeatherParser.Update(TMainForm(Form).WeatherLocation);
   TMainForm(Form).ReAlignComponents;
 end;
@@ -134,7 +137,7 @@ function TInterfacedSharpBarModule.SetTopHeight(Top, Height: integer): HRESULT;
 begin
   result := inherited SetTopHeight(Top, Height);
 
-  if Form <> nil then
+  if (Form <> nil) and (Initialized) then
     TMainForm(Form).RealignComponents(False);
 end;
 
@@ -145,6 +148,9 @@ const
                              suScheme,suIconSet,suSkinFont,suModule];
 begin
   result := inherited UpdateMessage(part,param);
+
+  if not (Initialized) then
+    exit;
 
   if not (part in processed) then
     exit;  

@@ -40,11 +40,11 @@ uses
 
 type
   TMainForm = class(TForm)
-    Timer1: TTimer;
+    UpdateTimer: TTimer;
     procedure FormPaint(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure Timer1Timer(Sender: TObject);
+    procedure UpdateTimerTimer(Sender: TObject);
     procedure FormClick(Sender: TObject);
   protected
   private
@@ -182,7 +182,7 @@ begin
   DrawVWMToForm;
 end;
 
-procedure TMainForm.Timer1Timer(Sender: TObject);
+procedure TMainForm.UpdateTimerTimer(Sender: TObject);
 begin
   DrawVWM;
   DrawVWMToForm;

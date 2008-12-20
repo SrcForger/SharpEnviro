@@ -17,9 +17,10 @@ object MainForm: TMainForm
   OnPaint = FormPaint
   PixelsPerInch = 96
   TextHeight = 13
-  object Timer1: TTimer
+  object UpdateTimer: TTimer
+    Enabled = False
     Interval = 2000
-    OnTimer = Timer1Timer
+    OnTimer = UpdateTimerTimer
     Left = 120
     Top = 56
   end
