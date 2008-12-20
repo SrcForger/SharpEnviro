@@ -2,7 +2,7 @@
 <SharpCenter>
   <Sections>
     <ModuleManager>
-      <Dll>_ComponentDlls\ModuleManager.dll</Dll>
+      <Dll>_ComponentDlls\ModuleList.dll</Dll>
       <Icon>..\ModuleAdd.png</Icon>
     </ModuleManager>
   </Sections>
