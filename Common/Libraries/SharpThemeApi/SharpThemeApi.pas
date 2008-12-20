@@ -235,6 +235,7 @@ function GetThemeListAsCommaText: string;
 procedure XmlGetThemeList(var AThemeList: TThemeInfoSet);
 
 function XmlGetSchemeListAsCommaText(ATheme: string): string;
+function XmlGetBarListAsCommaText: string;
 
 procedure XmlGetThemeScheme(var AThemeScheme: TSharpEColorSet); overload;
 procedure XmlGetThemeScheme(ATheme: string; AScheme: string; ASkin: string; var AThemeScheme: TSharpEColorSet); overload;
@@ -346,6 +347,25 @@ begin
   try
 
     FindFiles(tmpStringList, sSchemeDir, '*.xml');
+    tmpStringList.Sort;
+    result := tmpStringList.CommaText;
+
+  finally
+    tmpStringList.Free;
+  end;
+end;
+
+function XmlGetBarListAsCommaText: string;
+var
+  sBarDir: string;
+  tmpStringList: TStringList;
+begin
+  sBarDir := GetSharpeUserSettingsPath + 'SharpBar\Bars\';
+
+  tmpStringList := TStringList.Create;
+  try
+
+    FindFiles(tmpStringList, sBarDir, '*bar.xml');
     tmpStringList.Sort;
     result := tmpStringList.CommaText;
 
