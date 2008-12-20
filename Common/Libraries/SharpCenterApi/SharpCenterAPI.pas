@@ -80,6 +80,8 @@ Type
   PluginSelectedItemDescriptionText,
   PluginItemButtonText,
   PluginSelectedItemButtonText,
+  PluginItemButtonDisabledText,
+  PluginSelectedItemButtonDisabledText,
   PluginSectionTitle,
   PluginSectionDescription,
   PluginControlBackground,
@@ -137,8 +139,10 @@ procedure XmlSetCenterTheme(AThemeName: String);
 procedure AssignThemeToForm( ATheme: TCenterThemeInfo; AForm: TForm );
 procedure AssignThemeToEditForm( ATheme: TCenterThemeInfo; AForm: TForm );
 procedure AssignThemeToForms( ATheme: TCenterThemeInfo; AForm, AEditForm: TForm; AEdit: Boolean );
-procedure AssignThemeToListBoxItemText( ATheme: TCenterThemeInfo; AItem: TSharpEListItem; var colItemTxt:tcolor; var colDescTxt:tcolor; var colBtnTxt: TColor);
-
+procedure AssignThemeToListBoxItemText( ATheme: TCenterThemeInfo; AItem: TSharpEListItem;
+  var colItemTxt:tcolor; var colDescTxt:tcolor; var colBtnTxt: TColor); overload;
+procedure AssignThemeToListBoxItemText( ATheme: TCenterThemeInfo; AItem: TSharpEListItem;
+  var colItemTxt:tcolor; var colDescTxt:tcolor; var colBtnTxt: TColor; var colBtnDisabledTxt: TColor); overload;
 
 procedure GetBarModuleIds( const APluginId: String; var ABarId, AModuleId: String ); overload;
 procedure GetBarModuleIds( const APluginId: String; var ABarId, AModuleId: Integer ); overload;
@@ -288,11 +292,13 @@ begin
 
   ATheme.PluginItemDescriptionText := ParseColor(PChar(AElems.Value('PluginItemDescriptionText', IntToStr(clWindowText))));
   ATheme.PluginItemButtonText := ParseColor(PChar(AElems.Value('PluginItemButtonText', IntToStr(clWindowText))));
+  ATheme.PluginItemButtonDisabledText := ParseColor(PChar(AElems.Value('PluginItemButtonDisabledText', IntToStr(clWindowText))));
 
 
   ATheme.PluginSelectedItemText := ParseColor(PChar(AElems.Value('PluginSelectedItemText', IntToStr(clHighlightText))));
   ATheme.PluginSelectedItemDescriptionText := ParseColor(PChar(AElems.Value('PluginSelectedItemDescriptionText', IntToStr(clHighlightText))));
   ATheme.PluginSelectedItemButtonText := ParseColor(PChar(AElems.Value('PluginSelectedItemButtonText', IntToStr(clHighlightText))));
+  ATheme.PluginSelectedItemButtonDisabledText := ParseColor(PChar(AElems.Value('PluginSelectedItemButtonDisabledText', IntToStr(clHighlightText))));
 
   ATheme.PluginSectionTitle := ParseColor(PChar(AElems.Value('PluginSectionTitle', IntToStr(clHighlightText))));
   ATheme.PluginSectionDescription := ParseColor(PChar(AElems.Value('PluginSectionDescription', IntToStr(clHighlightText))));
@@ -412,6 +418,7 @@ begin
   ATheme.PluginItemButtonText := clNavy;
   ATheme.PluginSelectedItemDescriptionText := clYellow;
   ATheme.PluginSelectedItemButtonText := clYellow;
+  ATheme.PluginSelectedItemButtonDisabledText := clGray;
   ATheme.PluginSelectedItemText := clWhite;
   ATheme.PluginSectionTitle := clNavy;
   ATheme.PluginSectionDescription := clBlue;
@@ -708,19 +715,30 @@ begin
 
 end;
 
-procedure AssignThemeToListBoxItemText( ATheme: TCenterThemeInfo; AItem: TSharpEListItem; var colItemTxt:tcolor; var colDescTxt:tcolor; var colBtnTxt: TColor);
+procedure AssignThemeToListBoxItemText( ATheme: TCenterThemeInfo; AItem: TSharpEListItem;
+  var colItemTxt:tcolor; var colDescTxt:tcolor; var colBtnTxt: TColor );
+var
+  colBtnDisabledTxt: TColor;
+begin
+  AssignThemeToListBoxItemText( ATheme, AItem, colItemTxt, colDescTxt, colBtnTxt, colBtnDisabledTxt );
+end;
+
+procedure AssignThemeToListBoxItemText( ATheme: TCenterThemeInfo; AItem: TSharpEListItem;
+  var colItemTxt:tcolor; var colDescTxt:tcolor; var colBtnTxt: TColor; var colBtnDisabledTxt: TColor);
 begin
   if AItem.Selected then
   begin
     colItemTxt := ATheme.PluginSelectedItemText;
     colDescTxt := ATheme.PluginSelectedItemDescriptionText;
     colBtnTxt := ATheme.PluginSelectedItemButtonText;
+    colBtnDisabledTxt := ATheme.PluginSelectedItemButtonDisabledText;
   end
   else
   begin
     colItemTxt := ATheme.PluginItemText;
     colDescTxt := ATheme.PluginItemDescriptionText;
     colBtnTxt := ATheme.PluginItemButtonText;
+    colBtnDisabledTxt := ATheme.PluginItemButtonDisabledText;
   end;
 end;
 
