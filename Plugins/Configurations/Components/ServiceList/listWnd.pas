@@ -139,6 +139,7 @@ begin
   sName := tmpMetaData.MetaData.Name;
   case ACol of
     colEdit: begin
+      if tmpMetaData.HasConfig then
           CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
             + '\_Services\' + sName + '.con'), '');
       end;
