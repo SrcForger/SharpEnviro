@@ -178,7 +178,8 @@ var
   newWidth : integer;
 begin
   self.Caption := inttostr(sMixer);
-  ClockTimer.OnTimer(ClockTimer);
+  if ClockTimer.Enabled then
+    ClockTimer.OnTimer(ClockTimer);
 
   newWidth := sWidth + mute.Width + 6;
   mInterface.MinSize := NewWidth;
