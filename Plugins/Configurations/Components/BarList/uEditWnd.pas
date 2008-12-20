@@ -1,0 +1,441 @@
+{
+Source Name: SharpBarListEditWnd.pas
+Description: SharpBarList Edit Window
+Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
+
+Source Forge Site
+https://sourceforge.net/projects/sharpe/
+
+SharpE Site
+http://www.sharpenviro.com
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+}
+
+unit uEditWnd;
+
+interface
+
+uses
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Math,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  JvExControls,
+  JvComponent,
+  ImgList,
+  PngImageList,
+  JvExStdCtrls,
+  JvEdit,
+  JvValidateEdit,
+  JvValidators,
+  JvComponentBase,
+  JvErrorIndicator,
+  ExtCtrls,
+  JvPageList,
+  JvSimpleXml,
+  SharpApi,
+  JclStrings,
+  SharpCenterApi,
+  SharpEListBoxEx,
+  uListWnd,
+
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit;
+
+type
+  TfrmEditwnd = class(TForm)
+    vals: TJvValidators;
+    errorinc: TJvErrorIndicator;
+    pilError: TPngImageList;
+    valBarName: TJvCustomValidator;
+    edName: TLabeledEdit;
+    cobo_monitor: TComboBox;
+    cbBasedOn: TComboBox;
+    cobo_valign: TComboBox;
+    cobo_halign: TComboBox;
+    JvLabel3: TLabel;
+    JvLabel2: TLabel;
+    JvLabel1: TLabel;
+    Label3: TLabel;
+    pnlBarSpace: TPanel;
+    Label1: TLabel;
+    JvLabel4: TLabel;
+    procedure valBarNameValidate(Sender: TObject; ValueToValidate: Variant;
+      var Valid: Boolean);
+    procedure cbBasedOnSelect(Sender: TObject);
+
+    procedure edThemeNameKeyPress(Sender: TObject; var Key: Char);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    FBarItem: TBarItem;
+    FUpdating: Boolean;
+    FPluginHost: TInterfacedSharpCenterHostBase;
+    { Private declarations }
+  public
+    { Public declarations }
+    procedure BuildMonList;
+    procedure ClearMonList;
+    function ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+    procedure ClearValidation;
+
+    property BarItem: TBarItem read FBarItem write FBarItem;
+
+    procedure Init();
+    procedure Save();
+
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
+  end;
+
+type
+  TIntObject = class
+    Value: Integer;
+    constructor Create(pValue: integer);
+  end;
+
+var
+  frmEditwnd: TfrmEditwnd;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmEditwnd.Init();
+var
+  tmpItem: TSharpEListItem;
+  tmpBar: TBarItem;
+  n: integer;
+begin
+  FUpdating := True;
+  try
+
+    case FPluginHost.EditMode of
+      sceAdd: begin
+
+          if not (frmListWnd.BarSpaceCheck) then begin
+            pnlBarSpace.Show;
+            Exit;
+          end;
+
+          pnlBarSpace.Hide;
+          edName.Text := '';
+
+          cbBasedOn.Items.Clear;
+          cbBasedOn.Items.AddObject('New Bar', nil);
+
+          // Build list
+          for n := 0 to frmListWnd.lbBarList.Count - 1 do begin
+            tmpBar := TBarItem(frmListWnd.lbBarList.Item[n].Data);
+            cbBasedOn.Items.AddObject(tmpBar.Name, tmpBar);
+          end;
+
+          cbBasedOn.ItemIndex := 0;
+          cbBasedOn.Enabled := True;
+          FBarItem := nil;
+
+          BuildMonList;
+          cobo_monitor.ItemIndex := 0;
+          edName.SetFocus;
+        end;
+      sceEdit: begin
+          if frmListWnd.lbBarList.ItemIndex <> -1 then begin
+
+            pnlBarSpace.Hide;
+            tmpItem := frmListWnd.lbBarList.SelectedItem;
+            FBarItem := TBarItem(tmpItem.Data);
+
+            edName.Text := FBarItem.Name;
+            edName.SetFocus;
+
+            if FBarItem = nil then
+              FBarItem := TBarItem.Create;
+
+            FBarItem.Name := FBarItem.Name;
+            FBarItem.BarID := FBarItem.BarID;
+            FBarItem.Monitor := FBarItem.Monitor;
+            FBarItem.PMonitor := FBarItem.PMonitor;
+            FBarItem.HPos := FBarItem.HPos;
+            FBarItem.VPos := FBarItem.VPos;
+            FBarItem.AutoStart := FBarItem.AutoStart;
+
+            BuildMonList;
+            if FBarItem.PMonitor then
+              cobo_monitor.ItemIndex := 0
+            else
+              cobo_monitor.ItemIndex := Min(abs(FBarItem.Monitor), cobo_monitor.Items.Count - 1);
+            cobo_valign.ItemIndex := FBarItem.VPos;
+            cobo_halign.ItemIndex := FBarItem.HPos;
+
+            cbBasedOn.Items.Clear;
+            cbBasedOn.Items.AddObject('Not Applicable', nil);
+            cbBasedOn.ItemIndex := 0;
+            cbBasedOn.Enabled := False;
+          end;
+        end;
+    end;
+  finally
+    FUpdating := False;
+  end;
+end;
+
+procedure TfrmEditwnd.Save();
+var
+  xml: TJvSimpleXML;
+  dir: string;
+  newId: string;
+  copyId: integer;
+  n: integer;
+  wnd: hwnd;
+  sr: TSearchRec;
+  fileLoaded: boolean;
+begin
+  dir := SharpApi.GetSharpeUserSettingsPath + 'SharpBar\Bars\';
+  copyId := 0;
+
+  case FPluginHost.EditMode of
+    sceAdd: begin
+        // Generate a new unique bar ID and make sure that there is no other
+        // bar with the same ID
+        repeat
+          newId := '';
+          for n := 1 to 8 do
+            newId := newId + inttostr(random(9) + 1);
+        until not DirectoryExists(dir + newId);
+
+        if cbBasedOn.ItemIndex > 0 then begin
+          copyId := TBarItem(cbBasedOn.Items.Objects[cbBasedOn.ItemIndex]).BarID;
+
+          if FindFirst(dir + inttostr(copyId) + '\*.xml', FAAnyFile, sr) = 0 then
+            repeat
+              if FileExists(dir + inttostr(copyId) + '\' + sr.Name) then
+                CopyFile(PChar(dir + inttostr(copyId) + '\' + sr.Name),
+                  PChar(dir + newId + '\' + sr.Name), True);
+            until FindNext(sr) <> 0;
+          FindClose(sr);
+        end;
+
+        xml := TJvSimpleXML.Create(nil);
+        if FileCheck(dir + newId + '\Bar.xml', True) then begin
+          try
+            xml.LoadFromFile(dir + newId + '\Bar.xml');
+            fileLoaded := True;
+          except
+            fileLoaded := False;
+          end;
+        end
+        else
+          fileLoaded := False;
+
+        if not fileLoaded then
+          xml.Root.Name := 'SharpBar';
+
+        with xml.Root.Items do begin
+          if ItemNamed['Settings'] = nil then
+            Add('Settings');
+
+          with ItemNamed['Settings'].Items do begin
+            clear;
+            Add('ID', newId);
+            Add('Name', edName.Text);
+            Add('ShowThrobber', True);
+            Add('DisableHideBar', False);
+            Add('AutoStart', True);
+            Add('AutoPosition', True);
+            Add('PrimaryMonitor', (cobo_monitor.ItemIndex = 0));
+            Add('MonitorIndex', TIntObject(cobo_monitor.Items.Objects[cobo_monitor.ItemIndex]).Value);
+            Add('HorizPos', cobo_halign.ItemIndex);
+            Add('VertPos', cobo_valign.ItemIndex);
+          end;
+
+          if ItemNamed['Modules'] = nil then
+            Add('Modules');
+        end;
+        ForceDirectories(dir + newId);
+        if FileCheck(dir + newId + '\Bar.xml') then
+          xml.SaveToFile(dir + newId + '\Bar.xml');
+        xml.Free;
+      end;
+    sceEdit: begin
+        copyId := TBarItem(FBarItem).BarID;
+        xml := TJvSimpleXML.Create(nil);
+        fileLoaded := False;
+        if FileCheck(dir + inttostr(copyId) + '\Bar.xml', True) then begin
+          try
+            xml.LoadFromFile(dir + inttostr(copyId) + '\Bar.xml');
+            fileLoaded := True;
+          except
+          end;
+        end;
+        if fileLoaded then
+          with xml.Root.Items do begin
+            if ItemNamed['Settings'] = nil then
+              Add('Settings');
+
+            with ItemNamed['Settings'].Items do begin
+              Clear;
+              Add('ID', newId);
+              Add('Name', edName.Text);
+              Add('ShowThrobber', True);
+              Add('DisableHideBar', False);
+              Add('AutoStart', True);
+              Add('AutoPosition', True);
+              Add('PrimaryMonitor', (cobo_monitor.ItemIndex = 0));
+              Add('MonitorIndex', TIntObject(cobo_monitor.Items.Objects[cobo_monitor.ItemIndex]).Value);
+              Add('HorizPos', cobo_halign.ItemIndex);
+              Add('VertPos', cobo_valign.ItemIndex);
+            end;
+          end;
+        if FileCheck(dir + inttostr(copyId) + '\Bar.xml') then
+          xml.SaveToFile(dir + inttostr(copyId) + '\Bar.xml');
+        xml.Free;
+      end;
+  end;
+
+  if FPluginHost.EditMode = sceAdd then
+    SharpApi.SharpExecute('_nohist,' + SharpApi.GetSharpeDirectory + 'SharpBar.exe' +
+      ' -load:' + newId +
+      ' -noREB' +
+      ' -noLASB')
+  else if FPluginHost.EditMode = sceEdit then begin
+    wnd := FindWindow(nil, PChar('SharpBar_' + inttostr(copyId)));
+    if wnd <> 0 then
+      SendMessage(wnd, WM_BARREPOSITION, 0, 0);
+  end;
+
+  frmListWnd.tmrUpdate.Enabled := True;
+end;
+
+procedure TfrmEditwnd.BuildMonList;
+var
+  n: integer;
+  s: string;
+  Mon: TMonitor;
+
+begin
+  ClearMonList;
+  for n := 0 to Screen.MonitorCount - 1 do begin
+    Mon := Screen.Monitors[n];
+    if Mon.Primary then
+      s := 'Primary'
+    else
+      s := inttostr(Mon.MonitorNum);
+    s := s + ' (' + inttostr(Mon.Width) + 'x' + inttostr(Mon.Height) + ')';
+    cobo_monitor.Items.AddObject(s, TIntObject.Create(Mon.MonitorNum));
+
+    if Mon.Primary then
+      cobo_monitor.Items.Move(n, 0);
+  end;
+end;
+
+procedure TfrmEditwnd.edThemeNameKeyPress(Sender: TObject; var Key: Char);
+begin
+  if not (FUpdating) then
+    FPluginHost.Editing := true;
+end;
+
+procedure TfrmEditwnd.FormCreate(Sender: TObject);
+begin
+  FBarItem := TBarItem.Create;
+end;
+
+procedure TfrmEditwnd.FormDestroy(Sender: TObject);
+begin
+  ClearMonList;
+end;
+
+function TfrmEditwnd.ValidateWindow(AEditMode: TSCE_EDITMODE_ENUM): Boolean;
+begin
+  errorinc.BeginUpdate;
+  try
+    errorinc.ClearErrors;
+    vals.ValidationSummary := nil;
+
+    Result := vals.Validate;
+  finally
+    errorinc.EndUpdate;
+  end;
+end;
+
+procedure TfrmEditwnd.cbBasedOnSelect(Sender: TObject);
+begin
+  if not (FUpdating) then
+    FPluginHost.Editing := true;
+end;
+
+procedure TfrmEditwnd.ClearMonList;
+var
+  n: integer;
+begin
+  for n := 0 to cobo_monitor.Items.Count - 1 do
+    TIntObject(cobo_monitor.Items.Objects[n]).Free;
+  cobo_monitor.Items.Clear;
+end;
+
+procedure TfrmEditwnd.ClearValidation;
+begin
+  errorinc.BeginUpdate;
+  try
+    errorinc.ClearErrors;
+  finally
+    errorinc.EndUpdate;
+  end;
+end;
+
+procedure TfrmEditwnd.valBarNameValidate(Sender: TObject;
+  ValueToValidate: Variant; var Valid: Boolean);
+var
+  n: integer;
+begin
+  if (pnlBarSpace.Visible) then begin
+    Valid := True;
+    exit;
+  end;
+
+  if length(trim(ValueToValidate)) = 0 then begin
+    valBarName.ErrorMessage := 'Please enter a valid name!';
+    Valid := False;
+    exit;
+  end;
+
+  for n := 0 to frmListWnd.lbBarList.Count - 1 do
+    if FBarItem <> TBarItem(frmListWnd.lbBarList.Item[n].Data) then
+      if CompareText(frmListWnd.lbBarList.Item[n].SubItemText[1], ValueToValidate) = 0 then begin
+        valBarName.ErrorMessage := 'Another Bar with the same name already exists!';
+        Valid := False;
+        exit;
+      end;
+
+  Valid := True;
+end;
+
+{ TIntObject }
+
+constructor TIntObject.Create(pValue: integer);
+begin
+  inherited Create;
+
+  Value := pValue;
+end;
+
+end.
+
