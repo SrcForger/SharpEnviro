@@ -2,7 +2,7 @@
 <SharpCenter>
   <Sections>
     <Services>
-      <Dll>_Components\_Componentdlls\ServiceManager.dll</Dll>
+      <Dll>_Components\_Componentdlls\ServiceList.dll</Dll>
       <Icon>Services.png</Icon>
     </Services>
   </Sections>
