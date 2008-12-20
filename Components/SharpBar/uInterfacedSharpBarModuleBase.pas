@@ -17,6 +17,7 @@ uses
 type
   TInterfacedSharpBarModuleBase = class(TInterfacedObject,ISharpBarModule)
   private
+    FInitialized : Boolean;
     FModuleName : String;
     FSkinInterface : ISharpESkin;
     FBarInterface : ISharpBar;
@@ -33,6 +34,7 @@ type
     destructor Destroy; override;
 
     property ModuleName : String read FModuleName write FModuleName;
+    property Initialized : Boolean read FInitialized write FInitialized;
 
     // ISharpBarModule methods
     function CloseModule : HRESULT; virtual; stdcall;
@@ -98,6 +100,7 @@ end;
 constructor TInterfacedSharpBarModuleBase.Create(pID,pBarID : integer; pBarWnd : hwnd);
 begin
   FModuleName := 'InterfaceSharpBarModule';
+  FInitialized := False;
   FBackground := TBitmap32.Create;
   FForm := nil;
 
@@ -168,6 +171,7 @@ end;
 
 function TInterfacedSharpBarModuleBase.InitModule : HRESULT;
 begin
+  FInitialized := True;
   result := S_OK;
 end;
 
