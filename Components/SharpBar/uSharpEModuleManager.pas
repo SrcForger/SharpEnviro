@@ -1269,8 +1269,10 @@ begin
       rx := rx + TempModule.mInterface.Form.Width;
     end;
     TempModule.mInterface.Form.Top  := strtoint(FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.X);
-    TempModule.Throbber.Left := TempModule.mInterface.Form.Left-TempModule.Throbber.Width-FModuleSpacing div 2;
-    TempModule.Throbber.Top  := TempModule.mInterface.Form.Top;
+    if TempModule.Throbber. Left <> TempModule.mInterface.Form.Left-TempModule.Throbber.Width-FModuleSpacing div 2 then
+      TempModule.Throbber.Left := TempModule.mInterface.Form.Left-TempModule.Throbber.Width-FModuleSpacing div 2;
+    if TempModule.Throbber.Top <> TempModule.mInterface.Form.Top then
+      TempModule.Throbber.Top  := TempModule.mInterface.Form.Top;
     TempModule.Throbber.Bottom := (FBar.VertPos = vpBottom);
     TempModule.Throbber.OnClick := OnMiniThrobberClick;
     TempModule.Throbber.OnMouseDown := OnMiniThrobberMouseDown;
@@ -1501,6 +1503,7 @@ begin
     setlength(harray,0);
   end;
   SetWindowLong(ParentControl.Handle,GWL_USERDATA,abs(sdif));
+  RefreshMiniThrobbers;
 end;
 
 
