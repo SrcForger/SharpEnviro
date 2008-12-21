@@ -475,9 +475,11 @@ begin
   end;
 
   TrackPopupMenu(AppMenu, tpm_leftalign or tpm_leftbutton, cp.x, cp.y, 0, Handle, nil);
-  if VWMMenu <> 0 then  
-    DestroyMenu(VWMMenu);
-  GetSystemMenu(pHandle, True);
+  if VWMMenu <> 0 then
+  begin
+    DeleteMenu(AppMenu,0,MF_BYPOSITION);
+    DeleteMenu(AppMenu,0,MF_BYPOSITION);
+  end;
 end;
 
 procedure TMainForm.OnTaskItemMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
