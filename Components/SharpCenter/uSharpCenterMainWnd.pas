@@ -61,7 +61,15 @@ uses
   SharpEListBoxEx,
   PngBitBtn,
   SharpThemeApi,
-  Types, SharpEPageControl, SharpCenterApi;
+  Types, SharpEPageControl, SharpCenterApi,
+  SharpECenterHeader,
+  SharpEGaugeBoxEdit,
+  SharpEColorEditorEx,
+  SharpEHotkeyEdit,
+  SharpESwatchManager,
+  JvPageList,
+  JvSpin,
+  JvXPCheckCtrls;
 
 const
   cEditTabHide = 0;
@@ -191,6 +199,9 @@ type
     procedure RefreshTitleEvent(Sender: TObject);
     procedure RefreshAllEvent(Sender: TObject);
     procedure SaveEvent(Sender: TObject);
+
+    procedure AssignThemeToPluginFormEvent( AForm: TForm; AEditing: Boolean );
+    procedure AssignThemeToEditFormEvent( AForm: TForm; AEditing: Boolean );
 
     procedure SetHostSettingsChangedEvent(Sender: TObject);
 
@@ -676,6 +687,204 @@ begin
   SCM.PluginHost.OnSetButtonVisibility := SetButtonVisibilityEvent;
   SCM.PluginHost.OnRefreshTitle := RefreshTitleEvent;
   SCM.PluginHost.OnSave := SaveEvent;
+  SCM.PluginHost.OnThemeEditForm := AssignThemeToEditFormEvent;
+  SCM.PluginHost.OnThemePluginForm := AssignThemeToPluginFormEvent;
+end;
+
+procedure TSharpCenterWnd.AssignThemeToEditFormEvent(AForm: TForm;
+  AEditing: Boolean);
+var
+  i: integer;
+  c: TComponent;
+  theme: TCenterThemeInfo;
+begin
+  theme := SCM.Theme;
+
+  if AForm <> nil then begin
+    with AForm do begin
+      Color := theme.EditBackground;
+      Font.Color := theme.EditBackgroundText;
+      DoubleBuffered := True;
+
+      for i := 0 to Pred(ComponentCount) do begin
+
+        c := Components[i];
+
+        if c.ClassNameIs('TJvXpCheckBox') then begin
+          TJvXpCheckBox(c).ParentColor := False;
+          TJvXpCheckBox(c).ParentFont := False;
+          TJvXpCheckBox(c).Font.Color := theme.EditBackgroundText;
+          TJvXpCheckBox(c).DoubleBuffered := True;
+        end;
+
+        if c.ClassNameIs('TLabeledEdit') then begin
+          TLabeledEdit(c).Color := theme.EditControlBackground;
+          TLabeledEdit(c).Font.Color := theme.EditControlText;
+          TLabeledEdit(c).EditLabel.Font.Color := theme.EditBackgroundText;
+          TLabeledEdit(c).DoubleBuffered := True;
+        end;
+
+        if c.ClassNameIs('TEdit') then begin
+          TEdit(c).Color := theme.EditControlBackground;
+          TEdit(c).Font.Color := theme.EditControlText;
+          TEdit(c).DoubleBuffered := True;
+        end;
+
+        if c.ClassNameIs('TSharpEHotkeyEdit') then begin
+          TSharpEHotkeyEdit(c).Color := theme.EditControlBackground;
+          TSharpEHotkeyEdit(c).Font.Color := theme.EditControlText;
+          TSharpEHotkeyEdit(c).DoubleBuffered := True;
+        end;
+
+        if c.ClassNameIs('TComboBox') then begin
+          TComboBox(c).Color := theme.EditControlBackground;
+          TComboBox(c).Font.Color := theme.EditControlText;
+          TComboBox(c).DoubleBuffered := True;
+        end;
+
+        if c.ClassNameIs('TPngSpeedButton') then begin
+          TButton(c).Font.Color := theme.EditBackgroundText;
+          TButton(c).ParentFont := False;
+          TButton(c).DoubleBuffered := True;
+        end;
+
+        if c.ClassNameIs('TJvStandardPage') then begin
+          TJvStandardPage(c).Color := theme.EditBackground;
+          TJvStandardPage(c).Font.Color := theme.EditBackgroundText;
+          TJvStandardPage(c).ParentBackground := False;
+        end;
+
+        if c.ClassNameIs('TJvXpCheckBox') then begin
+          TJvXpCheckBox(c).ParentColor := False;
+          TJvXpCheckBox(c).ParentFont := False;
+          TJvXpCheckBox(c).Font.Color := theme.EditBackgroundText;
+          TJvXpCheckBox(c).Color := theme.EditBackground;
+        end;
+
+        if c.ClassNameIs('TSharpEGaugeBox') then begin
+          TSharpEGaugeBox(c).Color := theme.EditControlBackground;
+          TSharpEGaugeBox(c).Font.Color := theme.EditControlText;
+          TSharpeGaugeBox(c).BackgroundColor := theme.EditControlBackground;
+          TSharpeGaugeBox(c).DoubleBuffered := True;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TSharpCenterWnd.AssignThemeToPluginFormEvent(AForm: TForm;
+  AEditing: Boolean);
+var
+  i: integer;
+  c: TComponent;
+  theme: TCenterThemeInfo;
+begin
+  theme := SCM.Theme;
+
+  if AForm <> nil then begin
+    with AForm do begin
+      Color := theme.PluginBackground;
+      Font.Color := theme.PluginBackgroundText;
+      DoubleBuffered := True;
+
+      for i := 0 to Pred(ComponentCount) do begin
+
+        c := Components[i];
+
+        if c.ClassNameIs('TSharpECenterHeader') then begin
+          TSharpECenterHeader(c).TitleColor := theme.PluginSectionTitle;
+          TSharpECenterHeader(c).DescriptionColor := theme.PluginSectionDescription;
+          TSharpECenterHeader(c).DoubleBuffered := True;
+          TSharpECenterHeader(c).ParentBackground := False;
+          TSharpECenterHeader(c).Color := theme.PluginBackground;
+        end;
+
+        if c.ClassNameIs('TJvXpCheckBox') then begin
+          TJvXPCheckbox(c).Color := theme.PluginBackground;
+          TJvXpCheckBox(c).ParentColor := False;
+          TJvXpCheckBox(c).ParentFont := False;
+          TJvXpCheckBox(c).Font.Color := theme.PluginBackgroundText;
+        end;
+
+        if c.ClassNameIs('TRadioButton') then begin
+          TRadioButton(c).ParentColor := False;
+          TRadioButton(c).ParentFont := False;
+          TRadioButton(c).Font.Color := theme.PluginBackgroundText;
+        end;
+
+        if c.ClassNameIs('TSharpEListBoxEx') then begin
+          TSharpEListBoxEx(c).Color := theme.PluginBackground;
+          TSharpEListBoxEx(c).Colors.ItemColor := theme.PluginItem;
+          TSharpEListBoxEx(c).Colors.ItemColorSelected := theme.PluginSelectedItem;
+          TSharpEListBoxEx(c).Colors.ItemColor := theme.PluginItem;
+          TSharpEListBoxEx(c).Colors.ItemColorSelected := theme.PluginSelectedItem;
+          TSharpEListBoxEx(c).Colors.BorderColor := theme.PluginBackground;
+          TSharpEListBoxEx(c).DoubleBuffered := True;
+        end;
+
+        if c.ClassNameIs('TSharpEGaugeBox') then begin
+          TSharpEGaugeBox(c).Color := theme.PluginBackground;
+          TSharpEGaugeBox(c).Font.Color := theme.PluginControlText;
+          TSharpeGaugeBox(c).BackgroundColor := theme.PluginControlBackground;
+          TSharpeGaugeBox(c).DoubleBuffered := True;
+        end;
+
+        if c.ClassNameIs('TEdit') then begin
+          TEdit(c).Color := theme.PluginControlBackground;
+          TEdit(c).Font.Color := theme.PluginControlText;
+        end;
+
+        if c.ClassNameIs('TComboBox') then begin
+          TComboBox(c).Color := theme.PluginControlBackground;
+          TComboBox(c).Font.Color := theme.PluginControlText;
+        end;
+
+        if c.ClassNameIs('TLabel') then begin
+          TLabel(c).Color := theme.PluginBackground;
+          TLabel(c).Font.Color := theme.PluginBackgroundText;
+          TLabel(c).ParentColor := False;
+        end;
+
+        if c.ClassNameIs('TTabSheet') then begin
+          TTabSheet(c).Font.Color := theme.PluginBackgroundText;
+        end;
+
+        if c.ClassNameIs('TJvSpinEdit') then begin
+          TJvSpinEdit(c).Color := theme.PluginControlBackground;
+          TJvSpinEdit(c).Font.Color := theme.PluginControlText;
+          TJvSpinEdit(c).DoubleBuffered := True;
+        end;
+
+        if c.ClassNameIs('TPanel') then begin
+          TPanel(c).DoubleBuffered := True;
+          TPanel(c).ParentBackground := False;
+        end;
+
+        if c.ClassNameIs('TSharpEColorEditorEx') then begin
+          TSharpEColorEditorEx(c).BackgroundColor := theme.PluginBackground;
+          TSharpEColorEditorEx(c).BackgroundTextColor := theme.PluginBackgroundText;
+          TSharpEColorEditorEx(c).BorderColor := theme.ContainerColor;
+          TSharpEColorEditorEx(c).ContainerColor := theme.ContainerColor;
+          TSharpEColorEditorEx(c).ContainerTextColor := theme.ContainerTextColor;
+          TSharpEColorEditorEx(c).Color := theme.PluginBackground;
+          TSharpEColorEditorEx(c).DoubleBuffered := True;
+          TSharpEColorEditorEx(c).ParentBackground := False;
+        end;
+
+        if c.ClassNameIs('TSharpESwatchManager') then begin
+          TSharpESwatchManager(c).BackgroundColor := theme.ContainerColor;
+          TSharpESwatchManager(c).BackgroundTextColor := theme.ContainerTextColor;
+          TSharpESwatchManager(c).BorderColor := theme.ContainerColor;
+        end;
+
+        if c.ClassNameIs('TJvStandardPage') then begin
+          TJvStandardPage(c).Color := theme.PluginBackground;
+          TJvStandardPage(c).Font.Color := theme.PluginBackgroundText;
+        end;
+
+      end;
+    end;
+  end;
 end;
 
 procedure TSharpCenterWnd.UpdateEditButtons;

@@ -39,6 +39,9 @@ function UnloadPluginInterface(plugin: PPlugin): hresult;
 
 implementation
 
+uses
+  uSharpCenterManager;
+
 function UnloadPluginInterface(plugin: PPlugin): hresult;
 begin
   result := 0;
@@ -63,6 +66,9 @@ begin
     result.Dll := dll;
 
     GetConfigMetaData(Dll,Result.MetaData,Result.ConfigMode,Result.ConfigType);
+    if Result.MetaData.Version <> scm.PluginVersion  then begin
+       result.DllHandle := 0;
+    end else begin
 
     result.dllhandle := LoadLibrary(dll);
     if result.dllhandle <> 0 then begin
@@ -75,7 +81,7 @@ begin
         SendDebugMessageEx('SharpCenter','Unable to load plugin, InitPluginInterface does not exist',clRed,DMT_ERROR);
       end;
     end;
-
+    end;
 end;
 
 end.

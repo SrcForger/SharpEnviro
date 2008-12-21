@@ -108,6 +108,7 @@ type
     FThemeManager: TCenterThemeManager;
 
     FPluginTabIndex: Integer;
+    FPluginVersion: string;
 
     // Events
     procedure UnloadTimerEvent(Sender: TObject);
@@ -188,6 +189,7 @@ type
     property PluginWndHandle: THandle read FPluginHandle write FPluginHandle;
     property EditWndHandle: THandle read FEditHandle write FEditHandle;
     property Theme: TCenterThemeInfo read GetTheme;
+    property PluginVersion: string read FPluginVersion write FPluginVersion;
 
     property SharpCenterPlugin: ISharpCenterPlugin read GetSharpCenterPlugin;
     property ThemeManager: TCenterThemeManager read FThemeManager write FThemeManager;
@@ -228,7 +230,7 @@ begin
 
       FPlugin := LoadPluginInterface(PChar(AFile));
 
-      if ( @FPlugin.InitPluginInterface <> nil ) then begin
+      if ( (FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil ) ) then begin
 
       FPluginHost.PluginId := APluginID;
       FPlugin.PluginInterface := FPlugin.InitPluginInterface( FPluginHost );
@@ -673,6 +675,9 @@ begin
 end;
 
 constructor TSharpCenterManager.Create;
+var
+  meta: TMetaData;
+  priority, delay: Integer;
 begin
   // Create the host interface
   FThemeManager := TCenterThemeManager.Create;
@@ -686,6 +691,10 @@ begin
 
   // Set the active root path
   FRoot := GetCenterDirectory;
+
+  // Get the plugin version
+  SharpAPI.GetComponentMetaData( GetSharpeDirectory + 'SharpCore.exe', meta, priority, delay);
+  FPluginVersion := meta.Version;
 
   FUnloadCommand := TSharpCenterHistoryItem.Create;
 
@@ -896,7 +905,7 @@ begin
   begin
     tmpPlugin := LoadPluginInterface(PChar(Afile));
 
-    if ( @tmpPlugin.InitPluginInterface <> nil ) then begin
+    if ( (tmpPlugin.Dllhandle <> 0) and (@tmpPlugin.InitPluginInterface <> nil ) ) then begin
 
       tmpPlugin.PluginInterface := tmpPlugin.InitPluginInterface( FPluginHost );
 
@@ -971,7 +980,7 @@ begin
     if FileExists(sFile) then begin
       FPlugin := LoadPluginInterface(PChar(sFile));
 
-      if ( @FPlugin.InitPluginInterface <> nil ) then begin
+      if ( (FPlugin.Dllhandle <> 0) and (@FPlugin.InitPluginInterface <> nil ) ) then begin
 
       FPlugin.PluginInterface := FPlugin.InitPluginInterface( FPluginHost );
       FPluginHandle := Plugin.PluginInterface.Open();
