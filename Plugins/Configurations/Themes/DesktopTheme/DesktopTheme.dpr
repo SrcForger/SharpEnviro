@@ -49,25 +49,25 @@ uses
 {$R *.res}
 
 type
-  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin,
-    ISharpCenterPluginTabs )
+  TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin,
+      ISharpCenterPluginTabs)
   private
     procedure Load;
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create(APluginHost: TInterfacedSharpCenterHostBase);
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
-    procedure Save; override; stdCall;
+    procedure Save; override; stdcall;
 
-    function GetPluginDescriptionText: String; override; stdCall;
+    function GetPluginDescriptionText: string; override; stdcall;
     procedure Refresh; override; stdcall;
     procedure AddPluginTabs(ATabItems: TStringList); stdcall;
     procedure ClickPluginTab(ATab: TStringItem); stdcall;
 
   end;
 
-{ TSharpCenterPlugin }
+  { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
 begin
@@ -96,9 +96,9 @@ begin
   PluginHost := APluginHost;
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
+function TSharpCenterPlugin.GetPluginDescriptionText: string;
 begin
-  result := Format('Desktop Configuration for "%s"',[PluginHost.PluginId]);
+  result := Format('Desktop Configuration for "%s"', [PluginHost.PluginId]);
 end;
 
 procedure TSharpCenterPlugin.Load;
@@ -116,7 +116,7 @@ begin
 
       with XmlRoot.Items do begin
 
-        {$REGION 'IconTab'}
+{$REGION 'IconTab'}
         rdoIcon32.Checked := false;
         rdoIcon48.Checked := false;
         rdoIcon64.Checked := false;
@@ -129,7 +129,7 @@ begin
         else
           rdoIconcustom.Checked := True;
         end;
-        
+
         sgbiconsize.Value := iIconSize;
         chkIconTrans.Checked := BoolValue('IconAlphaBlend', False);
         sgbIconTrans.value := IntValue('IconAlpha', 255);
@@ -139,9 +139,9 @@ begin
         sgbIconShadow.Value := IntValue('IconShadowAlpha', 196);
         sceIconColor.Items.Item[0].ColorCode := IntValue('IconBlendColor', 0);
         sceIconColor.Items.Item[1].ColorCode := IntValue('IconShadowColor', 0);
-        {$ENDREGION}
+{$ENDREGION}
 
-        {$REGION 'FontTab'}
+{$REGION 'FontTab'}
         FFontName := Value('FontName', 'Verdana');
         sgbFontSize.Value := IntValue('TextSize', 12);
         chkBold.Checked := BoolValue('TextBold', False);
@@ -153,8 +153,8 @@ begin
         sgbFontShadowTrans.Value := IntValue('TextShadowAlpha', 196);
         sceFontColor.Items.Item[0].ColorCode := IntValue('TextColor', clWhite);
         sceShadowColor.Items.Item[0].ColorCode := IntValue('TextShadowColor', 0);
-        cboFontShadowType.ItemIndex := Max(0,Min(3,IntValue('TextShadowType',0)));
-        {$ENDREGION}
+        cboFontShadowType.ItemIndex := Max(0, Min(3, IntValue('TextShadowType', 0)));
+{$ENDREGION}
       end;
     end;
 
@@ -165,16 +165,16 @@ begin
 
       with XmlRoot.Items do begin
 
-          chkAnim.Checked := BoolValue('UseAnimations', True);
-          chkAnimSize.Checked := BoolValue('Scale', False);
-          sgbAnimSize.Value := IntValue('ScaleValue', 0);
-          chkAnimTrans.Checked := BoolValue('Alpha', True);
-          sgbAnimTrans.Value := IntValue('AlphaValue', 64);
-          chkAnimColorBlend.Checked := BoolValue('Blend', False);
-          sgbAnimColorBlend.Value := IntValue('BlendValue', 255);
-          chkAnimBrightness.Checked := BoolValue('Brightness', True);
-          sgbAnimBrightness.Value := IntValue('BrightnessValue', 64);
-          sceAnimColor.Items.Item[0].ColorCode := IntValue('BlendColor', clWhite);
+        chkAnim.Checked := BoolValue('UseAnimations', True);
+        chkAnimSize.Checked := BoolValue('Scale', False);
+        sgbAnimSize.Value := IntValue('ScaleValue', 0);
+        chkAnimTrans.Checked := BoolValue('Alpha', True);
+        sgbAnimTrans.Value := IntValue('AlphaValue', 64);
+        chkAnimColorBlend.Checked := BoolValue('Blend', False);
+        sgbAnimColorBlend.Value := IntValue('BlendValue', 255);
+        chkAnimBrightness.Checked := BoolValue('Brightness', True);
+        sgbAnimBrightness.Value := IntValue('BrightnessValue', 64);
+        sceAnimColor.Items.Item[0].ColorCode := IntValue('BlendColor', clWhite);
       end;
     end;
 
@@ -194,7 +194,7 @@ end;
 
 procedure TSharpCenterPlugin.Refresh;
 begin
-  AssignThemeToForm(PluginHost.Theme,frmSettingsWnd);
+  PluginHost.AssignThemeToPluginForm(frmSettingsWnd);
 end;
 
 procedure TSharpCenterPlugin.Save;
@@ -210,65 +210,65 @@ begin
     XMLRoot.Items.Clear;
     XMLRoot.Name := 'SharpEThemeDesktopIcon';
 
-      with XMLRoot.Items do
-      begin
-        if rdoIcon32.Checked then
-          iIconSize := 32
-        else if rdoIcon48.Checked then
-          iIconSize := 48
-        else if rdoIcon64.Checked then
-          iIconSize := 64
-        else
-          iIconSize := sgbIconSize.Value;
+    with XMLRoot.Items do
+    begin
+      if rdoIcon32.Checked then
+        iIconSize := 32
+      else if rdoIcon48.Checked then
+        iIconSize := 48
+      else if rdoIcon64.Checked then
+        iIconSize := 64
+      else
+        iIconSize := sgbIconSize.Value;
 
-        Add('IconSize', iIconSize);
-        Add('IconAlphaBlend', chkIconTrans.Checked);
-        Add('IconAlpha', sgbIconTrans.Value);
-        Add('IconBlending', chkColorBlend.Checked);
-        Add('IconBlendAlpha', sgbColorBlend.Value);
-        Add('IconShadow', chkIconShadow.Checked);
-        Add('IconShadowAlpha', sgbIconShadow.Value);
-        Add('IconBlendColor',
-          sceIconColor.Items.Item[0].ColorCode);
-        Add('IconShadowColor',
-          sceIconColor.Items.Item[1].ColorCode);
-        Add('FontName', cboFontName.Text);
-        Add('TextSize', sgbFontSize.Value);
-        Add('TextBold', chkBold.Checked);
-        Add('TextItalic', chkItalic.Checked);
-        Add('TextUnderline', chkUnderline.Checked);
-        Add('TextAlpha', chkFontTrans.Checked);
-        Add('TextAlphaValue', sgbFontTrans.Value);
-        Add('TextShadow', chkFontShadow.Checked);
-        Add('TextShadowAlpha', sgbFontShadowTrans.Value);
-        Add('TextShadowType', cboFontShadowType.ItemIndex);
-        Add('TextColor', sceFontColor.Items.Item[0].ColorCode);
-        Add('TextShadowColor',
-          sceShadowColor.Items.Item[0].ColorCode);
-      end;
+      Add('IconSize', iIconSize);
+      Add('IconAlphaBlend', chkIconTrans.Checked);
+      Add('IconAlpha', sgbIconTrans.Value);
+      Add('IconBlending', chkColorBlend.Checked);
+      Add('IconBlendAlpha', sgbColorBlend.Value);
+      Add('IconShadow', chkIconShadow.Checked);
+      Add('IconShadowAlpha', sgbIconShadow.Value);
+      Add('IconBlendColor',
+        sceIconColor.Items.Item[0].ColorCode);
+      Add('IconShadowColor',
+        sceIconColor.Items.Item[1].ColorCode);
+      Add('FontName', cboFontName.Text);
+      Add('TextSize', sgbFontSize.Value);
+      Add('TextBold', chkBold.Checked);
+      Add('TextItalic', chkItalic.Checked);
+      Add('TextUnderline', chkUnderline.Checked);
+      Add('TextAlpha', chkFontTrans.Checked);
+      Add('TextAlphaValue', sgbFontTrans.Value);
+      Add('TextShadow', chkFontShadow.Checked);
+      Add('TextShadowAlpha', sgbFontShadowTrans.Value);
+      Add('TextShadowType', cboFontShadowType.ItemIndex);
+      Add('TextColor', sceFontColor.Items.Item[0].ColorCode);
+      Add('TextShadowColor',
+        sceShadowColor.Items.Item[0].ColorCode);
+    end;
 
-      XmlFilename := sDir + 'DesktopIcon.xml';
-      PluginHost.Xml.Save;
+    XmlFilename := sDir + 'DesktopIcon.xml';
+    PluginHost.Xml.Save;
 
-      XMLRoot.Items.Clear;
-      XMLRoot.Name := 'SharpEThemeDesktopAnimation';
+    XMLRoot.Items.Clear;
+    XMLRoot.Name := 'SharpEThemeDesktopAnimation';
 
-      with XMLRoot.Items do
-      begin
-        Add('UseAnimations', chkAnim.Checked);
-        Add('Scale', chkAnimSize.Checked);
-        Add('ScaleValue', sgbAnimSize.Value);
-        Add('Alpha', chkAnimTrans.Checked);
-        Add('AlphaValue', sgbAnimTrans.Value);
-        Add('Blend', chkAnimColorBlend.Checked);
-        Add('BlendValue', sgbAnimColorBlend.Value);
-        Add('Brightness', chkAnimBrightness.Checked);
-        Add('BrightnessValue', sgbAnimBrightness.Value);
-        Add('BlendColor', sceAnimColor.Items.Item[0].ColorCode);
-      end;
+    with XMLRoot.Items do
+    begin
+      Add('UseAnimations', chkAnim.Checked);
+      Add('Scale', chkAnimSize.Checked);
+      Add('ScaleValue', sgbAnimSize.Value);
+      Add('Alpha', chkAnimTrans.Checked);
+      Add('AlphaValue', sgbAnimTrans.Value);
+      Add('Blend', chkAnimColorBlend.Checked);
+      Add('BlendValue', sgbAnimColorBlend.Value);
+      Add('Brightness', chkAnimBrightness.Checked);
+      Add('BrightnessValue', sgbAnimBrightness.Value);
+      Add('BlendColor', sceAnimColor.Items.Item[0].ColorCode);
+    end;
 
-      XmlFilename := sDir + 'DesktopAnimation.xml';
-      PluginHost.Xml.Save;
+    XmlFilename := sDir + 'DesktopAnimation.xml';
+    PluginHost.Xml.Save;
 
   end;
 end;
@@ -282,12 +282,12 @@ begin
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
     Version := '0.7.6.0';
     DataType := tteConfig;
-    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+    ExtraData := format('configmode: %d| configtype: %d', [Integer(scmApply),
       Integer(suDesktopIcon)]);
   end;
 end;
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: TInterfacedSharpCenterHostBase): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

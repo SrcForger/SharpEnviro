@@ -113,7 +113,7 @@ end;
 
 procedure TSharpCenterPlugin.Refresh;
 begin
-  AssignThemeToForm(PluginHost.Theme,frmEditWnd);
+  PluginHost.AssignThemeToPluginForm(frmEditWnd);
 end;
 
 procedure TSharpCenterPlugin.Save;

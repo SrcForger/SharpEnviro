@@ -139,7 +139,7 @@ end;
 
 procedure TSharpCenterPlugin.Refresh;
 begin
-  AssignThemeToForms(PluginHost.Theme,frmListWnd,frmEditWnd, PluginHost.Editing);
+  PluginHost.AssignThemeToForms(frmListWnd,frmEditWnd);
   PluginHost.SetEditTabVisibility(scbEditTab,false);
 end;
 

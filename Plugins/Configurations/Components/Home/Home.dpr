@@ -106,7 +106,7 @@ end;
 
 procedure TSharpCenterPlugin.Refresh;
 begin
-  AssignThemeToForm(PluginHost.Theme,frmHome);
+  PluginHost.AssignThemeToPluginForm(frmHome);
 end;
 
 function GetMetaData(): TMetaData;
