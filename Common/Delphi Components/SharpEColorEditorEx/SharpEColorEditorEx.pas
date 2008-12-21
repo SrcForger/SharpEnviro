@@ -469,7 +469,7 @@ end;
 function TSharpEColorEditorExItems.GetItem(
   Index: Integer): TSharpEColorEditorExItem;
 begin
-  result := inherited Items[Index] as TSharpEColorEditorExItem;
+  result := TSharpEColorEditorExItem(Items[Index]);
 end;
 
 procedure TSharpEColorEditorExItems.SetItem(Index: Integer;
