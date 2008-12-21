@@ -3,7 +3,7 @@ unit ISharpCenterHostUnit;
 interface
 
 uses
-  Windows, SharpApi,SharpCenterApi, SharpETabList, Controls, Forms, Classes, GR32,
+  Windows, SharpApi,SharpCenterApi, SharpETabList, Controls, Forms, Graphics, Classes, GR32,
   uVistaFuncs, SysUtils, jclSimpleXml, JvValidators, JvErrorIndicator, IXmlBaseUnit;
 
 const
@@ -64,7 +64,7 @@ type
   TSetEditTabVisibilityEvent = procedure( ATab: TSCB_BUTTON_ENUM; AVisible: Boolean) of object;
   TSetEditTabsVisibilityEvent = procedure ( AItemIndex: Integer; AItemCount: Integer) of object;
   TSetEditingEvent = procedure ( AValue: Boolean ) of object;
-
+  TThemeFormEvent = procedure ( AForm: TForm; AEditing: Boolean ) of object;
 type
   TInterfacedSharpCenterHostBase = class(TInterfacedObject,ISharpCenterHost)
 
@@ -94,6 +94,8 @@ type
 
       FValidator: TJvValidators;
       FErrorIndicator: TJvErrorIndicator;
+      FOnThemePluginForm: TThemeFormEvent;
+      FOnThemeEditForm: TThemeFormEvent;
 
       function GetEditOwner : TWinControl; stdCall;
       procedure SetEditOwner(Value : TWinControl); stdCall;
@@ -132,6 +134,10 @@ type
       procedure SetEditTabsVisibility( AItemIndex: Integer; AItemCount: Integer); stdCall;
       procedure SetButtonVisibility( AButton: TSCB_BUTTON_ENUM; Visible: Boolean); stdCall;
       procedure SetSettingsChanged; stdCall;
+
+      procedure AssignThemeToPluginForm( APluginForm: TForm );
+      procedure AssignThemeToEditForm( AEditForm: TForm );
+      procedure AssignThemeToForms( AForm, AEditForm: TForm );
 
       property Xml: TInterfacedXmlBase read FXml;
       property Validator: TJvValidators read FValidator;
@@ -181,6 +187,12 @@ type
 
       property OnSetButtonVisibility: TSetEditTabVisibilityEvent read FOnSetButtonVisibility write
         FOnSetButtonVisibility;
+
+      property OnThemeEditForm: TThemeFormEvent read FOnThemeEditForm write
+        FOnThemeEditForm;
+
+      property OnThemePluginForm: TThemeFormEvent read FOnThemePluginForm write
+        FOnThemePluginForm;
     end;
 
 implementation
@@ -215,6 +227,39 @@ begin
   Validator.Insert(tmp);
 
   result := tmp;
+end;
+
+procedure TInterfacedSharpCenterHostBase.AssignThemeToEditForm(
+  AEditForm: TForm);
+begin
+  if assigned(FOnThemeEditForm) then
+    FOnThemeEditForm( AEditForm, FEditing );
+end;
+
+procedure TInterfacedSharpCenterHostBase.AssignThemeToPluginForm(
+  APluginForm: TForm);
+begin
+  if assigned(FOnThemePluginForm) then
+    FOnThemePluginForm( APluginForm, FEditing );
+end;
+
+procedure TInterfacedSharpCenterHostBase.AssignThemeToForms( AForm, AEditForm: TForm );
+var
+  colBackground: Tcolor;
+begin
+  AssignThemeToPluginForm(AForm);
+  colBackground := FTheme.EditBackground;
+
+  If FEditing then begin
+    with FTheme do begin
+      EditBackground := EditBackgroundError;
+    end;
+    FTheme.EditBackground := FTheme.EditBackgroundError;
+  end;
+
+  AssignThemeToEditForm(AEditForm);
+  FTheme.EditBackground := colBackground;
+
 end;
 
 constructor TInterfacedSharpCenterHostBase.Create;
