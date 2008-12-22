@@ -28,7 +28,7 @@ unit IXmlBaseUnit;
 interface
 
 uses
-  Windows, Graphics, SysUtils, SharpApi, SharpThemeApi, Controls, Forms, Classes, JclSimpleXml;
+  Windows, Graphics, SysUtils, SharpApi, Controls, Forms, Classes, JclSimpleXml;
 
 const
   IID_IXmlBase: TGUID = '{2A6E32B6-9DAA-400B-B464-A8EE353BE247}';
@@ -72,8 +72,6 @@ type
     property XmlFilename: string read GetXmlFilename write SetXmlFilename;
     property XmlRoot: TJclSimpleXMLElemClassic read GetXmlRoot;
 
-    procedure GetBarModuleIdFromPluginId( const pluginId: string; var barId, moduleId: string );
-
 end;
 
 type
@@ -111,13 +109,6 @@ begin
   FXml.Free;
 
   inherited;
-end;
-
-procedure TInterfacedXmlBase.GetBarModuleIdFromPluginId(const pluginId: string;
-  var barId, moduleId: string);
-begin
-   barId := copy(pluginId, 0, pos(':',pluginId)-1);
-   moduleId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
 end;
 
 function TInterfacedXmlBase.GetXmlFilename: string;

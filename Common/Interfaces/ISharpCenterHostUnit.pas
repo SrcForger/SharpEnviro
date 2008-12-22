@@ -129,6 +129,8 @@ type
       function OpenEdit(AForm: TForm):THandle; stdCall;
       procedure Save; stdCall;
 
+      procedure GetBarModuleIdFromPluginId(var barId, moduleId: string);
+
       procedure SetEditTab( ATab: TSCB_BUTTON_ENUM ); stdCall;
       procedure SetEditTabVisibility( ATab: TSCB_BUTTON_ENUM; AVisible: Boolean); stdCall;
       procedure SetEditTabsVisibility( AItemIndex: Integer; AItemCount: Integer); stdCall;
@@ -198,6 +200,12 @@ type
 implementation
 
 { TInterfacedSharpCenterHostBase }
+
+procedure TInterfacedSharpCenterHostBase.GetBarModuleIdFromPluginId(var barId, moduleId: string);
+begin
+   barId := copy(FPluginId, 0, pos(':',FPluginId)-1);
+   moduleId := copy(FPluginId, pos(':',FPluginId)+1, length(FPluginId) - pos(':',FPluginId));
+end;
 
 function TInterfacedSharpCenterHostBase.AddCustomValidator(
   controlToValidate: TControl; errorMessage,
