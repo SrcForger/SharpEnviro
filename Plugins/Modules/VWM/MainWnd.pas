@@ -379,6 +379,10 @@ begin
     end;
 
   NewDesk := Min(NewDesk,VWMCount);
+
+  if NewDesk = VWMIndex then
+    exit;
+
   if SharpApi.SwitchToVWM(NewDesk) then
   begin
     UpdateVWMSettings;
