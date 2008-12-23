@@ -71,6 +71,8 @@ type
     IsParent: Boolean;
     IconIndex: Integer;
     function GetCaption: string;
+  private
+
   end;
 
   TfrmList = class(TForm)
@@ -108,6 +110,7 @@ type
     procedure RenderItemsBuffered(AMenu: TSharpEMenu; AClear: Boolean = True;
       AParent: Boolean = False);
     procedure LoadMenu;
+    procedure EditSubFolder(tmp: TItemData; const ACol: Integer);
 
   public
     property MenuFile: string read FMenuFile write FMenuFile;
@@ -126,7 +129,8 @@ var
 
 const
   colName = 0;
-  colDelete = 1;
+  colEdit = 1;
+  colDelete = 2;
 
   iidxCopy = 0;
   iidxDelete = 1;
@@ -193,6 +197,9 @@ begin
     exit;
 
   case ACol of
+    colEdit: begin
+      EditSubFolder(tmp,colName);
+    end;
     colDelete: begin
 
         if lbItems.SelectedItem <> AItem then exit;
@@ -238,26 +245,7 @@ begin
   if tmp = nil then
     exit;
 
-  case ACol of
-    colName:
-      begin
-
-        if tmp.IsParent then begin
-          if tmp.MenuItem.OwnerMenu <> nil then
-            RenderItemsBuffered(TSharpEMenu(tmp.MenuItem.OwnerMenu), True, True);
-
-          PluginHost.SetEditTab(scbAddTab);
-        end else
-      begin
-        case tmp.MenuItem.ItemType of
-          mtSubMenu: begin
-              RenderItemsBuffered(TSharpEMenu(tmp.MenuItem.SubMenu), True, True);
-              PluginHost.SetEditTab(scbAddTab);
-            end;
-        end;
-      end;
-  end;
-  end;
+  EditSubFolder(tmp, ACol);
 end;
 
 procedure TfrmList.lbItemsDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -301,6 +289,9 @@ begin
 
   if tmp.IsParent then
     AClickable := False;
+
+  if ((ACol = colEdit) and not(tmp.MenuItem.ItemType = mtSubMenu)) then
+    AClickable := False;
 end;
 
 procedure TfrmList.lbItemsGetCellCursor(Sender: TObject; const ACol: Integer;
@@ -316,7 +307,10 @@ begin
   if (tmp.IsParent) and (ACol <> 1) then
     ACursor := crHandPoint;
 
-  if ( ACol = 1 ) and ( lbItems.SelectedItem = AItem ) then
+  if ( ACol = 1 ) and ( tmp.MenuItem.ItemType = mtSubMenu ) then
+    ACursor := crHandPoint;
+
+  if ( ACol = 2 ) and ( lbItems.SelectedItem = AItem ) then
     ACursor := crHandPoint;
 end;
 
@@ -333,8 +327,10 @@ begin
 
   case ACol of
     colName: AImageIndex := tmp.IconIndex;
-    colDelete: if not (tmp.IsParent) and (AItem = lbItems.SelectedItem) then
+    colDelete: begin
+      if not (tmp.IsParent) and (AItem = lbItems.SelectedItem) then
        AImageIndex := iidxDelete;
+    end;
   end;
 end;
 
@@ -355,6 +351,14 @@ begin
   AssignThemeToListBoxItemText(FPluginHost.Theme, AItem, colItemTxt, colDescTxt, colBtnTxt);
 
   case ACol of
+    colEdit: begin
+      if tmp.MenuItem.ItemType = mtSubMenu then
+       AColText := Format('<u><font color="%s">Edit', [colortostring(colBtnTxt)]) else
+       AColText := '';
+
+       if tmp.IsParent then
+        AColText := Format('<u><font color="%s">Back', [colortostring(colBtnTxt)]);
+    end;
     colName: begin
 
         if tmp.IsParent then
@@ -443,7 +447,8 @@ begin
 
     newItem := lbItems.AddItem('Parent');
     newItem.Data := tmpData;
-    newItem.AddSubItem('',-1);
+    newItem.AddSubItem('');
+    newItem.AddSubItem('');
 
     png := pilIcons.PngImages.Add(false);
     png.PngImage := pilDefault.PngImages[iidxParentFolder].PngImage;
@@ -520,6 +525,7 @@ begin
 
     newItem := lbItems.AddItem(tmpData.MenuItem.Caption);
     newItem.Data := tmpData;
+    newItem.AddSubItem('');
     newItem.AddSubItem('');
   end;
 
@@ -639,6 +645,31 @@ begin
     mtCPLList: Result := 'control panel list';
     mtDesktopObjectList: Result := 'desktop object list';
     mtulist: Result := 'mru list';
+  end;
+end;
+
+procedure TfrmList.EditSubFolder(tmp: TItemData; const ACol: Integer);
+begin
+  case ACol of
+    colName:
+      begin
+        if tmp.IsParent then
+        begin
+          if tmp.MenuItem.OwnerMenu <> nil then
+            RenderItemsBuffered(TSharpEMenu(tmp.MenuItem.OwnerMenu), True, True);
+          PluginHost.SetEditTab(scbAddTab);
+        end
+        else
+        begin
+          case tmp.MenuItem.ItemType of
+            mtSubMenu:
+              begin
+                RenderItemsBuffered(TSharpEMenu(tmp.MenuItem.SubMenu), True, True);
+                PluginHost.SetEditTab(scbAddTab);
+              end;
+          end;
+        end;
+      end;
   end;
 end;
 

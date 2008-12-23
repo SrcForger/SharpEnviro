@@ -32,6 +32,17 @@ object frmList: TfrmList
         Images = pilIcons
       end
       item
+        Width = 35
+        HAlign = taRightJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        StretchColumn = False
+        CanSelect = False
+        ColumnType = ctDefault
+        AutoSize = False
+        Images = pilDefault
+      end
+      item
         Width = 30
         HAlign = taCenter
         VAlign = taVerticalCenter
