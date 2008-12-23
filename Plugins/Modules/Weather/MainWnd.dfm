@@ -22,6 +22,7 @@ object MainForm: TMainForm
     Width = 12
     Height = 21
     AutoSize = True
+    Visible = False
     OnDblClick = BackgroundDblClick
     Caption = '.'
     AutoPos = apTop
@@ -33,6 +34,7 @@ object MainForm: TMainForm
     Width = 12
     Height = 21
     AutoSize = True
+    Visible = False
     OnDblClick = BackgroundDblClick
     Caption = '.'
     AutoPos = apTop

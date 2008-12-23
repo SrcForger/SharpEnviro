@@ -46,22 +46,22 @@ uses
 type
   TfrmEdit = class(TForm)
     pnlOptions: TPanel;
-    Label3: TLabel;
+    lblWeatherLocation: TLabel;
     lblWeatherLocationDesc: TLabel;
-    Label1: TLabel;
+    lblDisplayOptions: TLabel;
     Panel1: TPanel;
     Panel2: TPanel;
     chkDisplayIcon: TCheckBox;
     chkDisplayLabels: TCheckBox;
     cbLocation: TComboBox;
-    Label6: TLabel;
-    Label4: TLabel;
+    lblLocation: TLabel;
+    lblLabels: TLabel;
     lblLabelDesc: TLabel;
     lblDisplayDesc: TLabel;
     Panel3: TPanel;
-    Label2: TLabel;
+    lblTop: TLabel;
     Panel4: TPanel;
-    Label5: TLabel;
+    lblBottom: TLabel;
     edtTopLabel: TEdit;
     edtBottomLabel: TEdit;
     btnBrowseTop: TButton;
@@ -200,7 +200,7 @@ begin
     xml.LoadFromFile(GetSharpEUserSettingsPath+'SharpCore\Services\Weather\WeatherList.xml');
 
     for n := 0 to XML.Root.Items.Count - 1 do begin
-      cbLocation.Items.Add(xml.Root.Items.Item[n].Properties.Value('location',''));
+      cbLocation.Items.Add(xml.Root.Items.Item[n].Properties.Value('Name',''));
     end;
 
   finally

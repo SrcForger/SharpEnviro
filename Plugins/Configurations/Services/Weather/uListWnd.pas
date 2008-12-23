@@ -135,7 +135,7 @@ end;
 
 procedure TfrmItemswnd.FormCreate(Sender: TObject);
 begin
-  FWinHandle := AllocateHWND(CustomWndProc);
+  FWinHandle := Classes.AllocateHWND(CustomWndProc);
   lbWeatherList.DoubleBuffered := True;
 
   FWeatherList := TWeatherList.Create();
@@ -144,7 +144,7 @@ end;
 
 procedure TfrmItemswnd.FormDestroy(Sender: TObject);
 begin
-  DeallocateHWnd(FWinHandle);
+  Classes.DeallocateHWnd(FWinHandle);
 
   FWeatherList.Free;
   FWeatherOptions.Free;
@@ -199,7 +199,7 @@ begin
     colDelete: begin
         bDelete := True;
         if not (CtrlDown) then
-          if (MessageDlg(Format('Are you sure you want to delete: %s?', [tmp.Location]), mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
+          if (MessageDlg(Format('Are you sure you want to delete: %s?', [tmp.Name]), mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
             bDelete := False;
 
         if bDelete then begin
@@ -272,7 +272,7 @@ begin
           sTemp := Format(' (%d%s)', [tmp.LastTemp, sM]);
 
         s := Format('<font color="%s" />%s<font color="%s" />%s', [colorToString(colItemTxt),
-          tmp.Location, colorToString(colDescTxt), sTemp]);
+          tmp.Name, colorToString(colDescTxt), sTemp]);
         AColText := s;
       end;
     colStatus: begin

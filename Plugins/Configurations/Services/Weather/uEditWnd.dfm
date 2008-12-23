@@ -20,18 +20,18 @@ object frmEditWnd: TfrmEditWnd
   PixelsPerInch = 96
   TextHeight = 13
   object btnSearch: TPngSpeedButton
-    Left = 387
-    Top = 5
-    Width = 75
+    Left = 375
+    Top = 29
+    Width = 87
     Height = 25
     Anchors = [akTop, akRight]
-    Caption = 'Find station'
+    Caption = 'Find Location ID'
     OnClick = btnSearchClick
   end
   object Image1: TImage
     AlignWithMargins = True
-    Left = 12
-    Top = 96
+    Left = 9
+    Top = 109
     Width = 31
     Height = 31
     Cursor = crHandPoint
@@ -186,10 +186,10 @@ object frmEditWnd: TfrmEditWnd
     OnClick = Image1Click
   end
   object JvLabel1: TLabel
-    Left = 56
-    Top = 96
+    Left = 55
+    Top = 110
     Width = 427
-    Height = 50
+    Height = 31
     Anchors = [akLeft, akTop, akRight]
     AutoSize = False
     Caption = 
@@ -199,18 +199,18 @@ object frmEditWnd: TfrmEditWnd
     Transparent = True
     WordWrap = True
   end
-  object edName: TLabeledEdit
+  object edLocation: TLabeledEdit
     Left = 56
-    Top = 8
+    Top = 33
     Width = 313
     Height = 21
     Hint = 
-      'The identifier used for this location (i.e., Home, Cottage, NYC,' +
-      ' etc)'
+      'Enter the location here (i.e. Berlin, Germany or Seattle, Washin' +
+      'gton etc)'
     Anchors = [akLeft, akTop, akRight]
-    EditLabel.Width = 31
+    EditLabel.Width = 44
     EditLabel.Height = 13
-    EditLabel.Caption = 'Name:'
+    EditLabel.Caption = 'Location:'
     LabelPosition = lpLeft
     LabelSpacing = 6
     ParentShowHint = False
@@ -219,13 +219,13 @@ object frmEditWnd: TfrmEditWnd
     OnChange = UpdateEditState
   end
   object edWeatherID: TLabeledEdit
-    Left = 56
-    Top = 40
+    Left = 55
+    Top = 60
     Width = 406
     Height = 21
     Hint = 
-      'Enter the location here (Berlin, Germany or Seattle, Washington ' +
-      'etc)'
+      'Enter the Weather ID for the Location (i.e. for Berlin, Germany ' +
+      '= GMXX0007)'
     Anchors = [akLeft, akTop, akRight]
     EditLabel.Width = 15
     EditLabel.Height = 13
@@ -239,12 +239,27 @@ object frmEditWnd: TfrmEditWnd
   end
   object chkMetric: TJvXPCheckbox
     Left = 56
-    Top = 68
-    Width = 197
+    Top = 87
+    Width = 193
     Height = 17
     Caption = 'Use metric system.'
     TabOrder = 0
     OnClick = UpdateEditState
+  end
+  object edName: TLabeledEdit
+    Left = 56
+    Top = 6
+    Width = 313
+    Height = 21
+    Hint = 'The name alias for this location (i.e., Home, Cottage, NYC, etc)'
+    EditLabel.Width = 31
+    EditLabel.Height = 13
+    EditLabel.Caption = 'Name:'
+    LabelPosition = lpLeft
+    LabelSpacing = 6
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
   end
   object mnuSearch: TPopupMenu
     AutoHotkeys = maManual

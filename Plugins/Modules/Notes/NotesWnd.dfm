@@ -632,6 +632,7 @@ object NotesForm: TNotesForm
       end>
     Left = 144
     Top = 116
+    Bitmap = {}
   end
   object ImportDialog: TOpenDialog
     Filter = 'Text File (*.txt)|*.txt|All Files (*.*)|*.*'

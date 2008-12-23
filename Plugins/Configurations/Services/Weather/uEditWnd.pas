@@ -39,11 +39,12 @@ type
   TfrmEditWnd = class(TForm)
     mnuSearch: TPopupMenu;
     btnSearch: TPngSpeedButton;
-    edName: TLabeledEdit;
+    edLocation: TLabeledEdit;
     edWeatherID: TLabeledEdit;
     Image1: TImage;
     chkMetric: TJvXPCheckbox;
     JvLabel1: TLabel;
+    edName: TLabeledEdit;
 
     procedure UpdateEditState(Sender: TObject);
     procedure btnSearchClick(Sender: TObject);
@@ -187,7 +188,7 @@ end;
 
 procedure TfrmEditWnd.btnSearchClick(Sender: TObject);
 begin
-  DownloadLocationData(edName.Text);
+  DownloadLocationData(edLocation.Text);
 end;
 
 procedure TfrmEditWnd.ClickItem(Sender: TObject);
@@ -198,7 +199,7 @@ begin
   if tmpWeather = nil then
     exit;
 
-  edName.Text := tmpWeather.Location;
+  edLocation.Text := tmpWeather.Location;
   edWeatherID.Text := tmpWeather.LocationID;
 end;
 
@@ -218,6 +219,7 @@ begin
     case FPluginHost.EditMode of
       sceAdd: begin
           edName.Text := '';
+          edLocation.Text := '';
           edWeatherID.Text := '';
           chkMetric.Checked := True;
 
@@ -232,7 +234,8 @@ begin
           tmpWeather := TWeatherItem(tmpItem.Data);
           FItemEdit := tmpWeather;
 
-          edName.Text := tmpWeather.Location;
+          edName.Text := tmpWeather.Name;
+          edLocation.Text := tmpWeather.Location;
           edWeatherID.Text := tmpWeather.LocationID;
           chkMetric.Checked := tmpWeather.Metric;
         end;
@@ -251,7 +254,7 @@ begin
   case FPluginHost.EditMode of
     sceAdd: begin
 
-        frmItemswnd.WeatherList.AddItem(edName.Text, edWeatherID.Text, '-1', '-1', -1, -1, True, chkMetric.Checked);
+        frmItemswnd.WeatherList.AddItem(edName.Text, edLocation.Text, edWeatherID.Text, '-1', '-1', -1, -1, True, chkMetric.Checked);
         FPluginHost.Save;
 
         // Force the service to update
@@ -262,7 +265,8 @@ begin
     sceEdit: begin
         tmpItem := frmItemswnd.lbWeatherList.Item[frmItemswnd.lbWeatherList.ItemIndex];
         tmpWeather := TWeatherItem(tmpItem.Data);
-        tmpWeather.Location := edName.Text;
+        tmpWeather.Name := edName.Text;
+        tmpWeather.Location := edLocation.Text;
         tmpWeather.LocationID := edWeatherID.Text;
         tmpWeather.Metric := chkMetric.Checked;
 

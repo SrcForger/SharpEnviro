@@ -25,8 +25,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 library Weather;
 
-
-
 uses
   Windows,
   Controls,
@@ -183,11 +181,9 @@ begin
   result := TInterfacedSharpBarModule.Create(ID,BarID,BarWnd);
 end;
 
-
 Exports
   CreateModule,
   GetMetaData;
-
 
 begin
 end.

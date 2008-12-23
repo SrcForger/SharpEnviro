@@ -25,7 +25,7 @@ object frmEdit: TfrmEdit
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
-    object Label3: TLabel
+    object lblWeatherLocation: TLabel
       AlignWithMargins = True
       Left = 8
       Top = 8
@@ -54,7 +54,7 @@ object frmEdit: TfrmEdit
       Transparent = False
       ExplicitWidth = 256
     end
-    object Label1: TLabel
+    object lblDisplayOptions: TLabel
       AlignWithMargins = True
       Left = 8
       Top = 79
@@ -68,7 +68,7 @@ object frmEdit: TfrmEdit
       Caption = 'Display Options'
       ExplicitWidth = 74
     end
-    object Label4: TLabel
+    object lblLabels: TLabel
       AlignWithMargins = True
       Left = 8
       Top = 148
@@ -126,7 +126,7 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       TabOrder = 0
-      object Label6: TLabel
+      object lblLocation: TLabel
         Left = 0
         Top = 4
         Width = 47
@@ -212,7 +212,7 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       TabOrder = 2
-      object Label2: TLabel
+      object lblTop: TLabel
         Left = 0
         Top = 5
         Width = 22
@@ -258,7 +258,7 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       TabOrder = 3
-      object Label5: TLabel
+      object lblBottom: TLabel
         Left = 0
         Top = 4
         Width = 38

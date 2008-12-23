@@ -45,8 +45,8 @@ type
     procedure FormCreate(Sender: TObject);
   protected
   private
-    sShowIcon    : boolean;
-    sShowLabels  : boolean;
+    bShowIcon    : boolean;
+    bShowLabels  : boolean;
     sLocation    : String;
     sTopLabel    : String;
     sBottomLabel : String;
@@ -60,7 +60,7 @@ type
     procedure UpdateComponentSkins;
     property WeatherParser : TWeatherParser read FWeatherParser;
     property WeatherLocation : String read sLocation;
-    property ShowIcon : boolean read sShowIcon;
+    property ShowIcon : boolean read bShowIcon;
   end;
 
 
@@ -145,8 +145,8 @@ var
   XML : TJclSimpleXML;
   fileloaded : boolean;
 begin
-  sShowIcon    := True;
-  sShowLabels  := True;
+  bShowIcon    := True;
+  bShowLabels  := True;
   sTopLabel    := 'Temperature: {#TEMPERATURE#}°{#UNITTEMP#}';
   sBottomLabel := 'Condition: {#CONDITION#}';
   sLocation    := '0';
@@ -161,8 +161,8 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      sShowIcon    := BoolValue('showicon',True);
-      sShowLabels  := BoolValue('showlabels',True);
+      bShowIcon    := BoolValue('showicon',True);
+      bShowLabels  := BoolValue('showlabels',True);
       sLocation    := Value('location',slocation);
       sTopLabel    := Value('toplabel',sTopLabel);
       sBottomLabel := Value('bottomlabel',sBottomLabel);
@@ -187,19 +187,22 @@ end;
 procedure TMainForm.ReAlignComponents(Broadcast : boolean = True);
 var
   newWidth : integer;
-  o1,o3,o4 : integer;
+  iIconWidth, iTopWidth, iBottomWidth : integer;
   s : String;
   i : integer;
   sicon : String;
   b : boolean;
+  bTopLabel : boolean;
+  bBottomLabel : boolean;
 begin
   self.Caption := 'Weather';
-  o1 := 2;
-  o4 := 0;
+  iIconWidth := 2;
+  iTopWidth	:= 0;
+  iBottomWidth := 0;
 
-  if (sShowIcon) and (FWeatherParser.CCValid) then
+  if (bShowIcon) and (FWeatherParser.CCValid) then
   begin
-    if trystrtoint(FWeatherParser.wxml.CurrentCondition.IconCode,i) then
+    if TryStrToInt(FWeatherParser.wxml.CurrentCondition.IconCode,i) then
     begin
       sicon := inttostr(i);
     end else sicon := 'na';
@@ -209,49 +212,72 @@ begin
          + sicon
          + '.png';
 
+    if not FileExists(s) then
+      s := SharpApi.GetSharpeDirectory + 'Icons\Weather\64x64\na.png';
+
     if FileExists(s) then
     begin
       LoadBitmap32FromPNG(FIcon,s,b);
-      o1 := o1 + Height - 4;
+      // Get the icons width and add a spacer.
+      // The icon is drawn as a square based on the bar height in FormPaint
+      iIconWidth := Height + 2;
     end;
   end;
 
-  if (sShowLabels) then
+  if (bShowLabels) then
   begin
-    lb_bottom.Caption := s;  
+    bTopLabel := (length(trim(sTopLabel)) > 0);
+    bBottomLabel := (length(trim(sBottomLabel)) > 0);
+
+    if (bTopLabel) then
+    begin
     lb_top.Caption := ReplaceDataInString(sTopLabel);
     lb_top.UpdateSkin;
     lb_top.Resize;
     lb_top.Visible := True;
-    lb_top.left := o1;
-    s := ReplaceDataInString(sBottomLabel);
-    if length(trim(s))>0 then
+    lb_top.left := iIconWidth;
+    lb_top.LabelStyle := lsMedium;
+    // Center the label in case the bottom label is not displayed
+    lb_top.AutoPos := apCenter;
+    end;
+
+    if (bBottomLabel) then
     begin
-      lb_top.LabelStyle := lsSmall;
-      lb_top.AutoPos := apTop;
-      lb_bottom.Caption := s;
+      lb_bottom.Caption := ReplaceDataInString(sBottomLabel);
       lb_bottom.UpdateSkin;
       lb_bottom.Resize;
-      lb_bottom.Left := o1;
-      lb_bottom.AutoPos := apBottom;
       lb_bottom.Visible := True;
-      o3 := o1 + lb_top.Width + 2;
-      o4 := o1 + lb_bottom.Width + 2;
-    end else
-    begin
-      lb_top.LabelStyle := lsMedium;
-      lb_top.AutoPos := apCenter;
-      lb_bottom.Visible := False;
-      o3 := o1 + lb_top.Width + 2;
+      lb_bottom.Left := iIconWidth;
+      lb_bottom.LabelStyle := lsMedium;
+      // Center the label in case the top label is not diplayed
+      lb_bottom.AutoPos := apCenter;
     end;
-  end else
-  begin
-    o3 := 2;
-    lb_top.Visible := False;
-    lb_bottom.Visible := False;
+
+    if bTopLabel and bBottomLabel then
+    begin
+      // Change both the top and bottom labels to account for each other.
+      lb_top.LabelStyle := lsSmall;
+      lb_top.AutoPos := apTop;
+      lb_bottom.LabelStyle := lsSmall;
+      lb_bottom.AutoPos := apBottom;
+    end;
+
+    // Get the width of the icon and the top label and add a spacer
+    iTopWidth	:= iIconWidth + lb_top.Width + 2;
+
+    // Get the width of the icon and the bottom label and add a spacer
+    iBottomWidth := iIconWidth + lb_bottom.Width + 2;
+
+    if Not bTopLabel and not bBottomLabel then
+    begin
+      iTopWidth := 0;
+      iBottomWidth := 0;
+      lb_bottom.Visible := False;
+      lb_top.Visible := False;
+    end;
   end;
 
-  NewWidth := max(o1,max(o3,o4));
+  NewWidth := max(iIconWidth,max(iTopWidth,iBottomWidth));
   mInterface.MinSize := NewWidth;
   mInterface.MaxSize := NewWidth;
   if (newWidth <> Width) and (Broadcast) then
@@ -263,8 +289,8 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := True;
 
-  sShowIcon    := True;
-  sShowLabels  := True;
+  bShowIcon    := True;
+  bShowLabels  := True;
   sTopLabel    := 'Temperature: {#TEMPERATURE#}°{#UNITTEMP#}';
   sBottomLabel := 'Condition: {#CONDITION#}';  
 
@@ -289,6 +315,7 @@ procedure TMainForm.FormPaint(Sender: TObject);
 var
   Bmp : TBitmap32;
 begin
+  mInterface.Background.Clear();
   Bmp := TBitmap32.Create;
   Bmp.Assign(mInterface.Background);
   if showicon then
