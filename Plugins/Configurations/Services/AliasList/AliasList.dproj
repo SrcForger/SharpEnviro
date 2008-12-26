@@ -7,7 +7,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>F:\SharpE\Center\Root\_Services\_ServiceDlls\AliasList.dll</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>..\..\..\..\..\SharpE\Center\Root\_Services\_ServiceDlls\AliasList.dll</DCC_DependencyCheckOutputName>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -24,7 +24,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
-    <DCC_ExeOutput>..\..\..\..\SharpE\Center\Root\_Services\_ServiceDlls\</DCC_ExeOutput>
+    <DCC_ExeOutput>..\..\..\..\..\SharpE\Center\Root\_Services\_ServiceDlls\</DCC_ExeOutput>
     <DCC_Define>DEBUG</DCC_Define>
     <DCC_UnitSearchPath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Units\SEListboxPainter\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Delphi Components\SharpEHotkeyEdit;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterApi</DCC_UnitSearchPath>
     <DCC_ResourcePath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Units\SEListboxPainter\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Libraries\SharpDialogs;..\..\..\Common\Delphi Components\SharpEListBoxEx;..\..\..\Common\Units\VistaFuncs;..\..\..\Common\Delphi Components\SharpEHotkeyEdit;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterApi</DCC_ResourcePath>

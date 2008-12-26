@@ -108,7 +108,7 @@ end;
 
 procedure TSharpCenterPlugin.Refresh;
 begin
-  AssignThemeToForms(PluginHost.Theme,frmItemsWnd,frmEditWnd, PluginHost.Editing);
+  PluginHost.AssignThemeToForms(frmItemsWnd, frmEditWnd);
 end;
 
 procedure TSharpCenterPlugin.Save;
