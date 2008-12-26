@@ -409,7 +409,7 @@ end;
 
 procedure TfrmListWnd.FormCreate(Sender: TObject);
 begin
-  FWinHandle := AllocateHWND(CustomWndProc);
+  FWinHandle := Classes.AllocateHWND(CustomWndProc);
   FBarList := TObjectList.Create(True);
   Self.DoubleBuffered := true;
   lbBarList.DoubleBuffered := true;
@@ -418,7 +418,7 @@ end;
 procedure TfrmListWnd.FormDestroy(Sender: TObject);
 begin
   FBarList.Free;
-  DeallocateHWnd(FWinHandle);
+  Classes.DeallocateHWnd(FWinHandle);
 end;
 
 procedure TfrmListWnd.CustomWndProc(var msg: TMessage);

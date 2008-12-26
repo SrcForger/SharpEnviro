@@ -6,7 +6,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>F:\SharpE\Center\Root\_Themes\_themedlls\ThemeList.dll</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>..\..\..\..\..\SharpE\Center\Root\_Themes\_themedlls\ThemeList.dll</DCC_DependencyCheckOutputName>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
   </PropertyGroup>
@@ -16,7 +16,7 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_Optimize>False</DCC_Optimize>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-    <DCC_ExeOutput>..\..\..\..\SharpE\Center\Root\_Themes\_themedlls\</DCC_ExeOutput>
+    <DCC_ExeOutput>..\..\..\..\..\SharpE\Center\Root\_Themes\_themedlls\</DCC_ExeOutput>
     <DCC_UnitSearchPath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Units\SEListboxPainter\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SCHotkeyEdit;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpeListBoxEx;..\..\..\Common\Units\VistaFuncs</DCC_UnitSearchPath>
     <DCC_ResourcePath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Units\SEListboxPainter\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SCHotkeyEdit;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpeListBoxEx;..\..\..\Common\Units\VistaFuncs</DCC_ResourcePath>
     <DCC_ObjPath>..\..\..\Common\Units\SCHotkeyManager\;..\..\..\Common\Units\SEListboxPainter\;..\..\..\Common\Libraries\SharpThemeApi;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpCenterApi;..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Units\SharpFX;..\..\..\Common\3rd party\TransparentEdit;..\..\..\Common\Delphi Components\SCHotkeyEdit;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Delphi Components\SharpeListBoxEx;..\..\..\Common\Units\VistaFuncs</DCC_ObjPath>

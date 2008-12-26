@@ -267,7 +267,7 @@ end;
 
 procedure TfrmList.FormCreate(Sender: TObject);
 begin
-  FWinHandle := AllocateHWND(WndProcHandler);
+  FWinHandle := Classes.AllocateHWND(WndProcHandler);
   FComponentList := TComponentList.Create;
 
   Self.DoubleBuffered := true;
@@ -276,7 +276,7 @@ end;
 
 procedure TfrmList.FormDestroy(Sender: TObject);
 begin
-  DeallocateHWnd(FWinHandle);
+  Classes.DeallocateHWnd(FWinHandle);
   FComponentList.Free;
 end;
 
