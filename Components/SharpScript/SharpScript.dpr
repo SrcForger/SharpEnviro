@@ -26,7 +26,7 @@ var
   Ext : String;
   //installscript : TSharpEInstallerScript;
   genericscript : TSharpEGenericScript;
-  newgeneric : boolean;
+  //newgeneric : boolean;
 
 begin
   SharpBase_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
@@ -36,14 +36,14 @@ begin
   Windows_Adapter.RegisterJvInterpreterAdapter(GlobalJvInterpreterAdapter);
 
 
-  newgeneric := False;
+  //newgeneric := False;
   if ParamCount > 0 then
   begin
     Prm := ParamStr(1);
     SharpApi.SendDebugMessageEx('SharpScript',PChar('Param:'+ParamStr(1)),0,DMT_INFO);
     if CompareText(Prm,'-newgenericscript') = 0 then
     begin
-      newgeneric := True;
+      //newgeneric := True;
     end else
     if FileExists(Prm) then
     begin

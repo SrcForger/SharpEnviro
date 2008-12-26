@@ -9,6 +9,6 @@ STRINGTABLE
   IDS_NAME "SharpShellServices"
   IDS_DESCRIPTION "Manages shell service objects"
   IDS_AUTHOR "Malx (Malx@sharpe-shell.org)"
-  IDS_VERSION "0.7.4.0"
+  IDS_VERSION "0.7.6.0"
   IDS_EXTRADATA "priority: 0|delay: 0"
 }

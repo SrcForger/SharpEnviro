@@ -84,7 +84,7 @@ var
 
 procedure LoadShellServiceObjectsVista;
 var
-  reg: Treginifile;
+  //reg: Treginifile;
   list: TstringList;
   str: string;
   i: integer;

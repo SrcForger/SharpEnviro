@@ -9,6 +9,6 @@ STRINGTABLE
   IDS_NAME "SharpCenter"
   IDS_DESCRIPTION "The central configuration program"
   IDS_AUTHOR "Lee Green (Pixol@sharpe-shell.org)"
-  IDS_VERSION "0.7.5.2"
+  IDS_VERSION "0.7.6.0"
   IDS_EXTRADATA "priority: 0|delay: 0"
 }

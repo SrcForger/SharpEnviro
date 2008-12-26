@@ -1035,7 +1035,7 @@ object frmMain: TfrmMain
     ParentCtl3D = False
     TabOrder = 0
     object splMain: TSplitter
-      Left = 185
+      Left = 217
       Top = 6
       Width = 9
       Height = 480
@@ -1046,7 +1046,7 @@ object frmMain: TfrmMain
     object panLeft: TPanel
       Left = 6
       Top = 6
-      Width = 179
+      Width = 211
       Height = 480
       Margins.Bottom = 0
       Align = alLeft
@@ -1061,7 +1061,7 @@ object frmMain: TfrmMain
         AlignWithMargins = True
         Left = 4
         Top = 4
-        Width = 175
+        Width = 207
         Height = 401
         Margins.Left = 4
         Margins.Top = 4
@@ -1083,7 +1083,7 @@ object frmMain: TfrmMain
         object sepProjLbl: TSharpERoundPanel
           Left = 6
           Top = 6
-          Width = 163
+          Width = 195
           Height = 22
           Align = alTop
           BevelOuter = bvNone
@@ -1100,7 +1100,7 @@ object frmMain: TfrmMain
             AlignWithMargins = True
             Left = 3
             Top = 3
-            Width = 157
+            Width = 189
             Height = 16
             Align = alClient
             Alignment = taCenter
@@ -1113,7 +1113,7 @@ object frmMain: TfrmMain
           AlignWithMargins = True
           Left = 9
           Top = 31
-          Width = 157
+          Width = 189
           Height = 361
           Align = alClient
           BevelInner = bvNone
@@ -1133,7 +1133,7 @@ object frmMain: TfrmMain
         AlignWithMargins = True
         Left = 4
         Top = 414
-        Width = 175
+        Width = 207
         Height = 63
         Margins.Left = 4
         Margins.Top = 0
@@ -1154,7 +1154,7 @@ object frmMain: TfrmMain
         object sepOptLbl: TSharpERoundPanel
           Left = 6
           Top = 6
-          Width = 163
+          Width = 195
           Height = 22
           Align = alTop
           BevelOuter = bvNone
@@ -1172,7 +1172,7 @@ object frmMain: TfrmMain
             AlignWithMargins = True
             Left = 3
             Top = 3
-            Width = 157
+            Width = 189
             Height = 16
             Align = alClient
             Alignment = taCenter
@@ -1185,7 +1185,7 @@ object frmMain: TfrmMain
           AlignWithMargins = True
           Left = 9
           Top = 34
-          Width = 157
+          Width = 189
           Height = 20
           Margins.Top = 6
           Align = alClient
@@ -1199,9 +1199,9 @@ object frmMain: TfrmMain
       end
     end
     object panRight: TPanel
-      Left = 194
+      Left = 226
       Top = 6
-      Width = 660
+      Width = 628
       Height = 480
       Margins.Bottom = 0
       Align = alClient
@@ -1213,7 +1213,7 @@ object frmMain: TfrmMain
         AlignWithMargins = True
         Left = 9
         Top = 454
-        Width = 648
+        Width = 616
         Height = 22
         Margins.Left = 9
         Margins.Bottom = 4
@@ -1255,7 +1255,7 @@ object frmMain: TfrmMain
         AlignWithMargins = True
         Left = 0
         Top = 0
-        Width = 656
+        Width = 624
         Height = 448
         Margins.Left = 0
         Margins.Top = 0
@@ -1299,13 +1299,13 @@ object frmMain: TfrmMain
         PageBackgroundColor = clWindow
         OnTabClick = stlMainTabClick
         DesignSize = (
-          656
+          624
           448)
         object mDetailed: TJvMemo
           AlignWithMargins = True
           Left = 6
           Top = 30
-          Width = 644
+          Width = 612
           Height = 412
           Margins.Left = 6
           Margins.Top = 30
@@ -1331,7 +1331,7 @@ object frmMain: TfrmMain
           AlignWithMargins = True
           Left = 6
           Top = 30
-          Width = 644
+          Width = 612
           Height = 412
           Margins.Left = 6
           Margins.Top = 30

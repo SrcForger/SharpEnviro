@@ -4,7 +4,7 @@
    manifestVersion="1.0">
 <assemblyIdentity
     processorArchitecture="x86"
-    version="0.7.2.0"
+    version="0.7.6.0"
     type="win32"
     name="SharpShellServices.exe"/>
     <description>SharpE Shell Service Object provider</description>

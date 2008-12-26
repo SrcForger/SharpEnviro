@@ -79,11 +79,11 @@ begin
 end;
 
 procedure TCreateInstallScriptForm.ToolButton1Click(Sender: TObject);
-var
-  n : integer;
-  MemoryStream : TMemoryStream;
-  b : boolean;
-  s : String;
+//var
+  //n : integer;
+  //MemoryStream : TMemoryStream;
+  //b : boolean;
+  //s : String;
 begin
  { if SavePackageDialog.Execute then
   begin

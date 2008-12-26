@@ -169,11 +169,10 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
       object Label1: TLabel
         Left = 5
         Top = 5
-        Width = 218
+        Width = 25
         Height = 13
         Align = alTop
         Caption = 'Files:'
-        ExplicitWidth = 25
       end
       object lb_files: TListBox
         Left = 5
@@ -183,7 +182,6 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
         Align = alClient
         ItemHeight = 13
         TabOrder = 0
-        ExplicitHeight = 144
       end
       object ToolBar1: TToolBar
         Left = 5
@@ -224,11 +222,10 @@ object CreateInstallScriptForm: TCreateInstallScriptForm
       object Label2: TLabel
         Left = 5
         Top = 5
-        Width = 218
+        Width = 55
         Height = 13
         Align = alTop
         Caption = 'Changelog:'
-        ExplicitWidth = 55
       end
       object ed_changelog: TMemo
         Left = 5

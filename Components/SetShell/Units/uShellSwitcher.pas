@@ -98,13 +98,13 @@ end;
 function SetNewShell(path : PChar) : boolean;
 var
   hndReg: HKey;
-  regVal: PChar;
-  regValSize: DWord;
-  regValType: DWord;
-  regMask: DWord;
+  //regVal: PChar;
+  //regValSize: DWord;
+  //regValType: DWord;
+  //regMask: DWord;
 begin
   result := False;
-  regValType := REG_SZ;
+  //regValType := REG_SZ;
   
   if RegOpenKeyEx(HKEY_CURRENT_USER, cWinLogonKey, 0, KEY_ALL_ACCESS, hndReg) = ERROR_SUCCESS then
   begin
