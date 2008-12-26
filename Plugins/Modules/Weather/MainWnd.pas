@@ -315,7 +315,7 @@ procedure TMainForm.FormPaint(Sender: TObject);
 var
   Bmp : TBitmap32;
 begin
-  mInterface.Background.Clear();
+  mInterface.Background.DrawTo(Canvas.Handle,0,0);
   Bmp := TBitmap32.Create;
   Bmp.Assign(mInterface.Background);
   if showicon then
