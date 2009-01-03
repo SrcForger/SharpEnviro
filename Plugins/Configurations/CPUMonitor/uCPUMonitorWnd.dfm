@@ -23,18 +23,16 @@ object frmCPUMon: TfrmCPUMon
     ActivePage = pagColors
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 357
     object pagMon: TJvStandardPage
       Left = 0
       Top = 0
       Width = 432
       Height = 379
       OnShow = pagMonShow
-      ExplicitHeight = 357
       object Panel5: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 321
+        Top = 313
         Width = 422
         Height = 23
         Margins.Left = 5
@@ -46,6 +44,7 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
+        ExplicitTop = 321
         object sgbUpdate: TSharpeGaugeBox
           Left = 0
           Top = 0
@@ -71,7 +70,7 @@ object frmCPUMon: TfrmCPUMon
       object Panel6: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 243
+        Top = 237
         Width = 422
         Height = 21
         Margins.Left = 5
@@ -83,6 +82,7 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
+        ExplicitTop = 243
         object edit_cpu: TJvSpinEdit
           AlignWithMargins = True
           Left = 0
@@ -101,7 +101,7 @@ object frmCPUMon: TfrmCPUMon
       object rbGraphBar: TRadioButton
         AlignWithMargins = True
         Left = 5
-        Top = 47
+        Top = 45
         Width = 417
         Height = 17
         Margins.Left = 5
@@ -112,11 +112,12 @@ object frmCPUMon: TfrmCPUMon
         Caption = 'History Graph (Bar)'
         TabOrder = 2
         OnClick = rbGraphBarClick
+        ExplicitTop = 47
       end
       object rbCurrentUsage: TRadioButton
         AlignWithMargins = True
         Left = 5
-        Top = 91
+        Top = 89
         Width = 417
         Height = 17
         Margins.Left = 5
@@ -127,11 +128,12 @@ object frmCPUMon: TfrmCPUMon
         Caption = 'Current Usage (Progress Bar)'
         TabOrder = 3
         OnClick = rbGraphBarClick
+        ExplicitTop = 91
       end
       object rbGraphLine: TRadioButton
         AlignWithMargins = True
         Left = 5
-        Top = 69
+        Top = 67
         Width = 417
         Height = 17
         Margins.Left = 5
@@ -144,13 +146,14 @@ object frmCPUMon: TfrmCPUMon
         TabOrder = 4
         TabStop = True
         OnClick = rbGraphBarClick
+        ExplicitTop = 69
       end
       object SharpECenterHeader3: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
         Top = 0
         Width = 422
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
@@ -164,9 +167,9 @@ object frmCPUMon: TfrmCPUMon
       object SharpECenterHeader4: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 118
+        Top = 116
         Width = 422
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -180,7 +183,7 @@ object frmCPUMon: TfrmCPUMon
       object Panel7: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 165
+        Top = 161
         Width = 422
         Height = 21
         Margins.Left = 5
@@ -219,9 +222,9 @@ object frmCPUMon: TfrmCPUMon
       object SharpECenterHeader5: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 196
+        Top = 192
         Width = 422
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -235,9 +238,9 @@ object frmCPUMon: TfrmCPUMon
       object SharpECenterHeader6: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 274
+        Top = 268
         Width = 422
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -257,11 +260,10 @@ object frmCPUMon: TfrmCPUMon
       Caption = 'pagColors'
       Color = clWhite
       OnShow = pagColorsShow
-      ExplicitHeight = 357
       object Colors: TSharpEColorEditorEx
         AlignWithMargins = True
         Left = 1
-        Top = 171
+        Top = 167
         Width = 421
         Height = 80
         Margins.Left = 1
@@ -332,7 +334,7 @@ object frmCPUMon: TfrmCPUMon
       object Panel2: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 47
+        Top = 45
         Width = 417
         Height = 23
         Margins.Left = 5
@@ -370,7 +372,7 @@ object frmCPUMon: TfrmCPUMon
       object Panel3: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 75
+        Top = 73
         Width = 417
         Height = 21
         Margins.Left = 5
@@ -408,7 +410,7 @@ object frmCPUMon: TfrmCPUMon
       object Panel4: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 101
+        Top = 99
         Width = 417
         Height = 23
         Margins.Left = 5
@@ -448,7 +450,7 @@ object frmCPUMon: TfrmCPUMon
         Left = 5
         Top = 0
         Width = 422
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
@@ -462,9 +464,9 @@ object frmCPUMon: TfrmCPUMon
       object SharpECenterHeader2: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 134
+        Top = 132
         Width = 422
-        Height = 37
+        Height = 35
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -482,7 +484,6 @@ object frmCPUMon: TfrmCPUMon
       Width = 432
       Height = 379
       Caption = 'pagError'
-      ExplicitHeight = 357
       object SharpERoundPanel1: TSharpERoundPanel
         AlignWithMargins = True
         Left = 4
@@ -580,7 +581,6 @@ object frmCPUMon: TfrmCPUMon
       Width = 432
       Height = 379
       Caption = 'pagError2'
-      ExplicitHeight = 357
       object SharpERoundPanel2: TSharpERoundPanel
         AlignWithMargins = True
         Left = 4
