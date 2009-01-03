@@ -29,12 +29,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
-  ImgList, PngImageList, GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
-  JvPageList, JvExControls, ComCtrls, Mask, pngimage, SharpERoundPanel,
-  SharpECenterHeader, JvExStdCtrls, JvCheckBox, JvCSVBaseControls, JvXPCore,
-  JvXPCheckCtrls;
+  Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterAPI,
+  ExtCtrls,  SharpEGaugeBoxEdit, SharpECenterHeader, JvPageList, JvExControls,
+  JvXPCheckCtrls, JvExStdCtrls, JvXPCore, ISharpCenterHostUnit;
 
 type
   TStringObject = class(TObject)
@@ -49,14 +46,12 @@ type
     SharpECenterHeader1: TSharpECenterHeader;
     cb_icon: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
-    procedure cb_alwaysontopClick(Sender: TObject);
-    procedure rb_textClick(Sender: TObject);
     procedure cb_iconClick(Sender: TObject);
   private
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure UpdateSettings;
   public
-    sModuleID: string;
-    sBarID : string;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
   end;
 
 var
@@ -64,14 +59,7 @@ var
 
 implementation
 
-uses SharpThemeApi, SharpCenterApi;
-
 {$R *.dfm}
-
-procedure TfrmBMon.cb_alwaysontopClick(Sender: TObject);
-begin
-  UpdateSettings;
-end;
 
 procedure TfrmBMon.cb_iconClick(Sender: TObject);
 begin
@@ -83,15 +71,10 @@ begin
   DoubleBuffered := true;
 end;
 
-procedure TfrmBMon.rb_textClick(Sender: TObject);
-begin
-  UpdateSettings;
-end;
-
 procedure TfrmBMon.UpdateSettings;
 begin
   if Visible then
-    SharpCenterApi.CenterDefineSettingsChanged;
+    PluginHost.Save;
 end;
 
 end.

@@ -29,114 +29,92 @@ uses
   Classes,
   Windows,
   Forms,
-  Math,
   Dialogs,
-  JvSimpleXml,
-  GR32,
-  GR32_Image,
-  PngSpeedButton,
+  JclSimpleXml,
   JvPageList,
   uVistaFuncs,
   SysUtils,
   Graphics,
-  StdCtrls,
-  SharpECenterHeader,
-  JvXPCheckCtrls,
-  uBatteryMonitorWnd in 'uBatteryMonitorWnd.pas' {frmBMon},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
-  SharpDialogs in '..\..\..\Common\Libraries\SharpDialogs\SharpDialogs.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  SharpAPI,
+  SharpCenterAPI,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  uBatteryMonitorWnd in 'uBatteryMonitorWnd.pas' {frmBMon};
 
 {$E .dll}
 
 {$R *.res}
 
-procedure Save;
-var
-  XML : TJvSimpleXML;
+type
+  TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin)
+  private
+    barID : string;
+    moduleID : string;
+    procedure LoadSettings;
+  public
+    constructor Create(APluginHost: TInterfacedSharpCenterHostBase);
+
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
+    function GetPluginDescriptionText: string; override; stdcall;
+    procedure Refresh; override; stdcall;
+end;
+
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+begin
+  PluginHost := APluginHost;
+  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+end;
+
+procedure TSharpCenterPlugin.Save;
 begin
   if frmBMon = nil then
     exit;
 
-  XML := TJvSimpleXML.Create(nil);
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmBMon.sBarID),strtoint(frmBMon.sModuleID)));
-  except
-    XML.Root.Clear;
-  end;
-
-  XML.Root.Name := 'BatteryMonitorModuleSettings';
-  with XML.Root.Items, frmBMon do
+  with PluginHost.Xml.XmlRoot do
   begin
-    if ItemNamed['showicon'] <> nil then
-      ItemNamed['showicon'].BoolValue := cb_icon.Checked
-    else Add('showicon',cb_icon.Checked);
+    Name := 'BatteryMonitorModuleSettings';
+
+    // Clear the list so we don't get duplicates.
+    Items.Clear;
+
+    Items.Add('showicon', frmBMon.cb_icon.Checked);
+
+    PluginHost.Xml.Save;
   end;
-  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmBMon.sBarID),strtoint(frmBMon.sModuleID)));
-  XML.Free;
 end;
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  XML : TJvSimpleXML;
-  left,right : String;
-  s : string;
-  fileloaded : boolean;
+procedure TSharpCenterPlugin.LoadSettings;
+begin
+  if PluginHost.Xml.Load then
+  begin
+    with PluginHost.Xml.XmlRoot do
+    begin
+      frmBMon.cb_icon.Checked := Items.BoolValue('showicon', True);
+    end;
+  end;
+end;
+
+function TSharpCenterPlugin.Open: Cardinal;
 begin
   if frmBMon = nil then frmBMon := TfrmBMon.Create(nil);
-
-  s := APluginID;
-  left := copy(s, 0, pos(':',s)-1);
-  right := copy(s, pos(':',s)+1, length(s) - pos(':',s));
+  frmBMon.PluginHost := PluginHost;
   uVistaFuncs.SetVistaFonts(frmBMon);
-  frmBMon.sBarID := left;
-  frmBMon.sModuleID := right;
-  frmBMon.ParentWindow := aowner;
-  frmBMon.Left := 2;
-  frmBMon.Top := 2;
-  frmBMon.BorderStyle := bsNone;
-  result := frmBMon.Handle;
 
-  XML := TJvSimpleXML.Create(nil);
-  fileloaded := False;
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(left),strtoint(right)));
-    fileloaded := True;
-  except
-  end;
-
-  if fileloaded then
-    with XML.Root.Items, frmBMon do
-    begin
-      cb_icon.Checked := BoolValue('showicon',True);
-    end;
-  XML.Free;
-
-  frmBMon.Show;
+  LoadSettings;
+  result := PluginHost.Open(frmBMon);
 end;
 
-function Close : boolean;
+procedure TSharpCenterPlugin.Close;
 begin
-  result := True;
-  try
-    frmBMon.Close;
-    frmBMon.Free;
-    frmBMon := nil;
-  except
-    result := False;
-  end;
+  FreeAndNil(frmBMon);
 end;
 
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ADescription: String);
+function TSharpCenterPlugin.GetPluginDescriptionText: String;
 begin
-  AName := 'Battery Monitor';
-  ADescription := 'The battery monitor module displays laptop status';
+  result := 'The battery monitor module displays laptop status';
 end;
 
 function GetMetaData(): TMetaData;
@@ -146,25 +124,27 @@ begin
     Name := 'Battery Monitor';
     Description := 'Battery Monitor Module Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.5.2';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
   end;
 end;
 
-procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
+procedure TSharpCenterPlugin.Refresh;
 begin
-  AssignThemeToForm(ATheme,frmBMon);
+  PluginHost.AssignThemeToPluginForm(frmBMon);
+end;
+
+function InitPluginInterface(APluginHost: TInterfacedSharpCenterHostBase) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
 end;
 
 exports
-  Open,
-  Close,
-  Save,
-  SetText,
-  GetMetaData,
-  GetCenterTheme;
+  InitPluginInterface,
+  GetMetaData;
 
+begin
 end.
 
