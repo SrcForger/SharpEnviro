@@ -3,7 +3,7 @@ object frmClock: TfrmClock
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmClock'
-  ClientHeight = 194
+  ClientHeight = 269
   ClientWidth = 411
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -21,7 +21,7 @@ object frmClock: TfrmClock
     Left = 5
     Top = 0
     Width = 401
-    Height = 37
+    Height = 35
     Margins.Left = 5
     Margins.Top = 0
     Margins.Right = 5
@@ -31,14 +31,13 @@ object frmClock: TfrmClock
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitWidth = 437
   end
   object SharpECenterHeader2: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 83
+    Top = 81
     Width = 401
-    Height = 37
+    Height = 35
     Margins.Left = 5
     Margins.Top = 5
     Margins.Right = 5
@@ -48,12 +47,11 @@ object frmClock: TfrmClock
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitWidth = 437
   end
   object pnlTop: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 130
+    Top = 126
     Width = 396
     Height = 22
     Margins.Left = 5
@@ -65,48 +63,34 @@ object frmClock: TfrmClock
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 2
-    ExplicitWidth = 432
-    DesignSize = (
-      396
-      22)
-    object lblTop: TLabel
-      Left = 0
-      Top = 4
-      Width = 62
-      Height = 13
-      Caption = 'Top/Primary:'
-    end
-    object edTop: TEdit
-      AlignWithMargins = True
-      Left = 76
-      Top = 0
-      Width = 276
-      Height = 21
-      Margins.Left = 8
-      Margins.Top = 0
-      Margins.Right = 12
-      Margins.Bottom = 0
-      Anchors = [akLeft, akTop, akRight]
-      TabOrder = 0
-      Text = 'HH:MM:SS'
-      OnChange = UpdateSettingsEvent
-    end
+    TabOrder = 1
     object btnTop: TButton
       Left = 356
       Top = 0
       Width = 37
       Height = 22
-      Anchors = [akTop, akRight]
       Caption = '...'
       TabOrder = 1
       OnClick = btnTopClick
+    end
+    object editTop: TLabeledEdit
+      Left = 76
+      Top = 0
+      Width = 274
+      Height = 21
+      EditLabel.Width = 68
+      EditLabel.Height = 13
+      EditLabel.Caption = 'Top / Primary:'
+      LabelPosition = lpLeft
+      LabelSpacing = 6
+      TabOrder = 0
+      OnChange = UpdateSettingsEvent
     end
   end
   object pnlBottom: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 162
+    Top = 158
     Width = 396
     Height = 22
     Margins.Left = 5
@@ -118,48 +102,34 @@ object frmClock: TfrmClock
     BevelOuter = bvNone
     ParentBackground = False
     ParentColor = True
-    TabOrder = 3
-    ExplicitWidth = 432
-    DesignSize = (
-      396
-      22)
-    object lblBottom: TLabel
-      Left = 0
-      Top = 4
-      Width = 38
-      Height = 13
-      Caption = 'Bottom:'
-    end
-    object edBottom: TEdit
-      AlignWithMargins = True
-      Left = 76
-      Top = 0
-      Width = 276
-      Height = 21
-      Margins.Left = 8
-      Margins.Top = 0
-      Margins.Right = 12
-      Margins.Bottom = 0
-      Anchors = [akLeft, akTop, akRight]
-      TabOrder = 0
-      Text = 'DD.MM.YYYY'
-      OnChange = UpdateSettingsEvent
-    end
+    TabOrder = 2
     object btnBottom: TButton
       Left = 356
       Top = 0
       Width = 37
       Height = 22
-      Anchors = [akTop, akRight]
       Caption = '...'
       TabOrder = 1
       OnClick = btnBottomClick
     end
+    object editBottom: TLabeledEdit
+      Left = 76
+      Top = 0
+      Width = 274
+      Height = 21
+      EditLabel.Width = 38
+      EditLabel.Height = 13
+      EditLabel.Caption = 'Bottom:'
+      LabelPosition = lpLeft
+      LabelSpacing = 6
+      TabOrder = 0
+      OnChange = UpdateSettingsEvent
+    end
   end
-  object Panel1: TPanel
+  object pnlSize: TPanel
     AlignWithMargins = True
     Left = 5
-    Top = 47
+    Top = 45
     Width = 396
     Height = 21
     Margins.Left = 5
@@ -170,8 +140,7 @@ object frmClock: TfrmClock
     AutoSize = True
     BevelOuter = bvNone
     ParentColor = True
-    TabOrder = 4
-    ExplicitWidth = 432
+    TabOrder = 0
     object cboSize: TComboBox
       Left = 0
       Top = 0
@@ -194,28 +163,120 @@ object frmClock: TfrmClock
         'Automatic (two line display)')
     end
   end
+  object SharpECenterHeader3: TSharpECenterHeader
+    AlignWithMargins = True
+    Left = 5
+    Top = 195
+    Width = 401
+    Height = 35
+    Margins.Left = 5
+    Margins.Top = 5
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Title = 'Tooltip Format'
+    Description = 
+      'Define the format used for the tooltip when you mouse over the c' +
+      'lock module.'
+    TitleColor = clWindowText
+    DescriptionColor = clRed
+    Align = alTop
+  end
+  object pnlTooltip: TPanel
+    AlignWithMargins = True
+    Left = 5
+    Top = 235
+    Width = 401
+    Height = 23
+    Margins.Left = 5
+    Margins.Top = 5
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    Color = clWindow
+    ParentBackground = False
+    TabOrder = 3
+    object editTooltip: TEdit
+      Left = 0
+      Top = 2
+      Width = 350
+      Height = 21
+      TabOrder = 0
+      OnChange = UpdateSettingsEvent
+    end
+    object btnTooltip: TButton
+      Left = 356
+      Top = 0
+      Width = 37
+      Height = 22
+      Caption = '...'
+      TabOrder = 1
+      OnClick = btnTooltipClick
+    end
+  end
   object PopupMenu1: TPopupMenu
     Left = 408
     Top = 548
-    object N213046HHMMSS3: TMenuItem
-      Caption = '21:30:46 (HH:MM:SS)'
+    object TimeColon: TMenuItem
+      Caption = 'HH:MM:SS'
       Hint = 'HH:MM:SS'
-      OnClick = N213046HHMMSS3Click
+      OnClick = MenuItemClick
     end
-    object N213046HHMMSS1: TMenuItem
-      Caption = '09:30:46 pm (HH:MM:SS AM/PM)'
+    object TimeColonAMPM: TMenuItem
+      Caption = 'HH:MM:SS AM/PM'
       Hint = 'HH:MM:SS AM/PM'
-      OnClick = N213046HHMMSS3Click
+      OnClick = MenuItemClick
     end
-    object N213046HHMMSS2: TMenuItem
-      Caption = '21:30:46 - 19.06.2006 (HH:MM:SS - DD.MM.YYYY)'
+    object TimeColonDashDatePeriod: TMenuItem
+      Caption = 'HH:MM:SS - DD.MM.YYYY'
       Hint = 'HH:MM:SS - DD.MM.YYYY'
-      OnClick = N213046HHMMSS3Click
+      OnClick = MenuItemClick
     end
-    object N21304619062006HHMMSSDDMMYYYY1: TMenuItem
-      Caption = '09:30:46 pm - 19.06.2006 (HH:MM:SS AM/PM - DD.MM.YYYY)'
+    object TimeColonAMPMDashDatePeriod: TMenuItem
+      Caption = 'HH:MM:SS AM/PM - DD.MM.YYYY'
       Hint = 'HH:MM:SS AM/PM - DD.MM.YYYY'
-      OnClick = N213046HHMMSS3Click
+      OnClick = MenuItemClick
+    end
+    object DatePeriod: TMenuItem
+      Caption = 'DD.MM.YYYY'
+      Hint = 'DD.MM.YYYY'
+      OnClick = MenuItemClick
+    end
+    object DatePeriodTimeColon: TMenuItem
+      Caption = 'DD.MM.YYYY HH:MM:SS'
+      Hint = 'DD.MM.YYYY HH:MM:SS'
+      OnClick = MenuItemClick
+    end
+    object DatePeriodTimeColonAMPM: TMenuItem
+      Caption = 'DD.MM.YYYY HH:MM:SS AM/PM'
+      Hint = 'DD.MM.YYYY HH:MM:SS AM/PM'
+      OnClick = MenuItemClick
+    end
+    object DateSlash: TMenuItem
+      Caption = 'MM/DD/YYYY'
+      Hint = 'MM/DD/YYYY'
+      OnClick = MenuItemClick
+    end
+    object DateSlashTimeColon: TMenuItem
+      Caption = 'MM/DD/YYYY HH:MM:SS'
+      Hint = 'MM/DD/YYYY HH:MM:SS'
+      OnClick = MenuItemClick
+    end
+    object DateSlashTimeColonAMPM: TMenuItem
+      Caption = 'MM/DD/YYYY HH:MM:SS AM/PM'
+      Hint = 'MM/DD/YYYY HH:MM:SS AM/PM'
+      OnClick = MenuItemClick
+    end
+    object LongDateSpaceComma: TMenuItem
+      Caption = 'DDDD - MMMM D, YYYY'
+      Hint = 'DDDD - MMMM D, YYYY'
+      OnClick = MenuItemClick
+    end
+    object LongDatePeriod: TMenuItem
+      Caption = 'DDDD - DD.MM.YYYY'
+      Hint = 'DDDD - DD.MM.YYYY'
+      OnClick = MenuItemClick
     end
   end
 end

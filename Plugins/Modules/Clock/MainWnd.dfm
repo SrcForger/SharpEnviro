@@ -25,6 +25,7 @@ object MainForm: TMainForm
     Width = 12
     Height = 21
     AutoSize = True
+    Visible = False
     OnDblClick = lb_clockDblClick
     Caption = '.'
     AutoPos = apBottom

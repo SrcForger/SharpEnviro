@@ -53,6 +53,7 @@ type
   private
     sFormat : String;
     sBottomFormat : String;
+    sTooltipFormat : String;
     sStyle  : TSharpELabelStyle;
     FTipWnd : hwnd;
     FTipSet : boolean;
@@ -86,9 +87,14 @@ var
   XML : TJclSimpleXML;
   fileloaded : boolean;
 begin
-  sFormat := 'HH:MM:SS';
-  sBottomFormat := 'DD.MM.YYYY';
+  // Default some values each time the settings are loaded.
+  sFormat := '';
+  sBottomFormat := '';
+  sTooltipFormat := '';
   sStyle  := lsMedium;
+  lb_clock.AutoPos := apCenter;
+  lb_bottomclock.Caption := '';
+  lb_bottomclock.Visible := False;
 
   XML := TJclSimpleXML.Create;
   try
@@ -100,19 +106,46 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      sFormat := Value('Format','HH:MM:SS');
-      sBottomFormat := Value('BottomFormat','DD.MM.YYYY');
-      case IntValue('Style',1) of
-        0: sStyle := lsSmall;
-        2: sStyle := lsBig;
-        else sStyle := lsMedium
+      // There should always be a Format element no matter which style is used.
+      sFormat := Value('Format', 'HH:MM:SS');
+
+      // There should always be a tooltip format element.
+      sTooltipFormat := Value('TooltipFormat', 'DDDD - DD.MM.YYYY');
+
+      // The valid values for style are
+      // 0 = Small, 1 = Medium, 2 = Big, 3 = Automatic
+      // Defaulting to -1 indicates a new config or the xml could be bad. 
+      case IntValue('Style', -1) of
+        0: lb_clock.LabelStyle := lsSmall;
+        1: lb_clock.LabelStyle := lsMedium;
+        2: lb_clock.LabelStyle := lsBig;
+        3:
+        begin
+          // This user has specified automatic, so set the style to small
+          // and read the bottom label format if there is one.
+
+          sBottomFormat := Value('BottomFormat', '');
+
+          // Make the bottom label visible if a format was specified.
+          lb_bottomclock.Visible := Length(Trim(sBottomFormat)) > 0;
+
+          if lb_bottomclock.Visible then
+          begin
+            // If there is a bottom format then use a small style and
+            // reposition the main label to the top.
+            lb_clock.LabelStyle := lsSmall;
+            lb_clock.AutoPos := apTop;
+          end;
+        end;
+        else
+          // Its either a new config or it is messed up so start fresh.
+          lb_clock.LabelStyle := lsSmall;
+          lb_clock.AutoPos := apTop;
+          sBottomFormat := 'DD.MM.YYYY';
+          lb_bottomclock.Visible := True;
       end;
     end;
   XML.Free;
-
-  if lb_clock.LabelStyle = sStyle then
-     if lb_clock.LabelStyle = lsSmall then lb_clock.LabelStyle := lsMedium
-        else lb_clock.LabelStyle := lsSmall;
 
   if ClockTimer.Enabled then
     ClockTimer.OnTimer(nil);
@@ -146,14 +179,15 @@ begin
     ClockTimer.OnTimer(nil);
 
   lb_clock.UpdateSkin;
+
+  // The top label is always visible so start with its width.
+  newWidth := lb_clock.Width;
+  
   if lb_bottomClock.Visible then
   begin
-    lb_clock.AutoPos := apTop;
-    newWidth := max(lb_clock.Width,lb_bottomClock.Width);
-  end else
-  begin
-    newWidth := lb_clock.Width;
-    lb_clock.AutoPos := apCenter;
+    lb_bottomclock.UpdateSkin;
+    // The bottom label is visible so see if it is wider than the main label.
+    newWidth := max(lb_clock.Width, lb_bottomClock.Width);
   end;
 
   mInterface.MinSize := NewWidth;
@@ -162,45 +196,40 @@ begin
     mInterface.BarInterface.UpdateModuleSize;
 end;
 
-
 procedure TMainForm.ClockTimerTimer(Sender: TObject);
 var
   d : String;
   s : string;
   ow,nw : integer;
-  ov : boolean;
 begin
   ow := Width;
-  ov := lb_bottomclock.visible;
   DateTimeToString(s,sFormat,now());
   lb_clock.Caption := s;
-  if length(trim(sBottomFormat)) > 0 then
+
+  // The top label is always visible so start with its width.
+  nw := lb_clock.Width;
+
+  if lb_bottomclock.Visible then
   begin
     DateTimeToString(s,sBottomFormat,now());
     lb_bottomclock.Caption := s;
-    if lb_clock.LabelStyle <> lsSmall then
-       lb_clock.LabelStyle := lsSmall;
+
+    // The bottom label is visible so see if it is wider than the main label.
     nw := max(lb_bottomclock.Width,lb_clock.Width);
-    lb_bottomclock.Visible := True;
-  end else
-  begin
-    if lb_clock.LabelStyle <> sStyle then
-       lb_clock.LabelStyle := sStyle;
-    nw := lb_clock.Width;
-    lb_bottomclock.Visible := False;
   end;
 
-  DateTimeToString(d,'DDDD - DD.MM.YYYY',now());
+  DateTimeToString(d,sTooltipFormat,now());
+  
   if (CompareText(d,FOldTip) <> 0) and (FTipSet) then
   begin
     ToolTipApi.UpdateToolTipText(FTipWnd,Self,0,d);
     FOldTip := d;
   end;
+
   if IsWindowVisible(FTipWnd) then
      SendMessage(FTipWnd,TTM_UPDATE,0,0);
 
-  if ((nw - ow > 4) or (lb_bottomclock.visible <> ov))
-    and (Sender <> nil) then
+  if (nw - ow > 4) and (Sender <> nil) then
     RealignComponents;
 end;
 

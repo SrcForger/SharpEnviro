@@ -29,76 +29,96 @@ uses
   Classes,
   Windows,
   Forms,
-  Math,
   Dialogs,
-  JvSimpleXml,
-  GR32,
-  GR32_Image,
+  JclSimpleXml,
   JvPageList,
   uVistaFuncs,
   SysUtils,
   Graphics,
-  uClockWnd in 'uClockWnd.pas' {frmClock},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
-  SharpDialogs in '..\..\..\Common\Libraries\SharpDialogs\SharpDialogs.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  SharpAPI,
+  SharpCenterAPI,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  uClockWnd in 'uClockWnd.pas' {frmClock};
 
 {$E .dll}
 
 {$R *.res}
 
-procedure Save;
-begin
-  if frmClock <> nil then
-    frmClock.Save;
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
+  private
+    barID : string;
+    moduleID : string;
+    procedure Load;
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
+    procedure Refresh; override; stdCall;
+
+    function GetPluginDescriptionText: String; override; stdCall;
 end;
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  barId,moduleId : String;
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
-  GetBarModuleIds( APluginId, barId, moduleId );
+  PluginHost := APluginHost;
+  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+end;
 
+procedure TSharpCenterPlugin.Save;
+begin
+  with PluginHost.Xml.XmlRoot do
+  begin
+    Name := 'ClockModuleSettings';
+
+    // Clear the list so we don't get duplicates.
+    Items.Clear;
+
+    Items.Add('Style', frmClock.cboSize.ItemIndex);
+    Items.Add('Format', frmClock.editTop.Text);
+    Items.Add('BottomFormat', frmClock.editBottom.Text);
+    Items.Add('TooltipFormat', frmClock.editTooltip.Text);
+
+    PluginHost.Xml.Save;
+  end;
+end;
+
+procedure TSharpCenterPlugin.Load;
+begin
+  if PluginHost.Xml.Load then
+  begin
+    with PluginHost.Xml.XmlRoot do
+    begin
+      frmClock.cboSize.ItemIndex := Items.IntValue('Style', 3);
+      frmClock.editTop.Text := Items.Value('Format', 'HH:MM:SS');
+      frmClock.editBottom.Text := Items.Value('BottomFormat', 'DD.MM.YYYY');
+      frmClock.editTooltip.Text := Items.Value('TooltipFormat', 'DDDD - DD.MM.YYYY');
+    end;
+  end;
+end;
+
+function TSharpCenterPlugin.Open: Cardinal;
+begin
   if frmClock = nil then frmClock := TfrmClock.Create(nil);
-  SetVistaFonts(frmClock);
+  frmClock.PluginHost := PluginHost;
+  uVistaFuncs.SetVistaFonts(frmClock);
 
-  frmClock.BarID := barId;
-  frmClock.ModuleID := moduleId;
-
-  with frmClock do begin
-    frmClock.ParentWindow := aowner;
-    frmClock.Left := 0;
-    frmClock.Top := 0;
-    frmClock.BorderStyle := bsNone;
-  end;
-  result := frmClock.Handle;
-
-  frmClock.Load;
-  frmClock.Show;
+  Load;
+  result := PluginHost.Open(frmClock);
 end;
 
-function Close : boolean;
+procedure TSharpCenterPlugin.Close;
 begin
-  result := True;
-  try
-    frmClock.Close;
-    frmClock.Free;
-    frmClock := nil;
-  except
-    result := False;
-  end;
+  FreeAndNil(frmClock);
 end;
 
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ADescription: String);
+function TSharpCenterPlugin.GetPluginDescriptionText: String;
 begin
-  AName := 'Clock';
-  ADescription := 'Configure formatting options for the clock module';
+  result := 'Configure formatting options for the clock module';
 end;
 
 function GetMetaData(): TMetaData;
@@ -108,25 +128,25 @@ begin
     Name := 'Clock';
     Description := 'Clock Module Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.5.2';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
   end;
 end;
 
-procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
+procedure TSharpCenterPlugin.Refresh;
 begin
-  AssignThemeToForm(ATheme,frmClock);
+  PluginHost.AssignThemeToPluginForm(frmClock);
 end;
 
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
+end;
 
 exports
-  Open,
-  Close,
-  Save,
-  SetText,
-  GetCenterTheme,
+  InitPluginInterface,
   GetMetaData;
 
 begin

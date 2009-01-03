@@ -29,52 +29,57 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
-  ImgList, GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
-  JvPageList, JvExControls, ComCtrls, Mask, SharpECenterHeader, JvExStdCtrls,
-  JvRadioButton, JvXPCore, JvXPCheckCtrls, uSharpBarAPI;
-
-type
-  TStringObject = class(TObject)
-  public
-    Str: string;
-  end;
+  Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterAPI,
+  ExtCtrls, SharpEGaugeBoxEdit, SharpECenterHeader, JvExStdCtrls, JvExControls,
+  JvXPCore, JvXPCheckCtrls, ISharpCenterHostUnit;
 
 type
   TfrmClock = class(TForm)
     PopupMenu1: TPopupMenu;
-    N213046HHMMSS3: TMenuItem;
-    N213046HHMMSS1: TMenuItem;
-    N213046HHMMSS2: TMenuItem;
-    N21304619062006HHMMSSDDMMYYYY1: TMenuItem;
+    TimeColon: TMenuItem;
+    TimeColonAMPM: TMenuItem;
+    TimeColonDashDatePeriod: TMenuItem;
+    TimeColonAMPMDashDatePeriod: TMenuItem;
     SharpECenterHeader1: TSharpECenterHeader;
     SharpECenterHeader2: TSharpECenterHeader;
     pnlTop: TPanel;
-    lblTop: TLabel;
-    edTop: TEdit;
     btnTop: TButton;
     pnlBottom: TPanel;
-    lblBottom: TLabel;
-    edBottom: TEdit;
     btnBottom: TButton;
-    Panel1: TPanel;
+    pnlSize: TPanel;
     cboSize: TComboBox;
+    DateSlashTimeColon: TMenuItem;
+    editTop: TLabeledEdit;
+    editBottom: TLabeledEdit;
+    SharpECenterHeader3: TSharpECenterHeader;
+    pnlTooltip: TPanel;
+    editTooltip: TEdit;
+    btnTooltip: TButton;
+    DateSlash: TMenuItem;
+    LongDateSpaceComma: TMenuItem;
+    LongDatePeriod: TMenuItem;
+    DatePeriod: TMenuItem;
+    DatePeriodTimeColon: TMenuItem;
+    DatePeriodTimeColonAMPM: TMenuItem;
+    DateSlashTimeColonAMPM: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure N213046HHMMSS3Click(Sender: TObject);
+    procedure MenuItemClick(Sender: TObject);
     procedure btnTopClick(Sender: TObject);
     procedure btnBottomClick(Sender: TObject);
+    procedure btnTooltipClick(Sender: TObject);
     procedure UpdateSettingsEvent(Sender: TObject);
   private
+    FPluginHost: TInterfacedSharpCenterHostBase;
+    procedure UpdatePopupMenuCaptions;
     procedure UpdateSettings;
     procedure UpdateBottomEdit;
   public
     ModuleID: string;
     BarID : string;
-    
-    procedure Save;
-    procedure Load;
+
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
   end;
 
 var
@@ -88,20 +93,42 @@ const
 
 implementation
 
-uses SharpThemeApi, SharpCenterApi;
-
 {$R *.dfm}
 
 procedure TfrmClock.btnBottomClick(Sender: TObject);
 begin
-  PopUpMenu1.PopupComponent := edBottom;
+  UpdatePopupMenuCaptions;
+  PopUpMenu1.PopupComponent := editBottom;
   PopUpMenu1.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
 end;
 
 procedure TfrmClock.btnTopClick(Sender: TObject);
 begin
-  PopUpMenu1.PopupComponent := edTop;
+  UpdatePopupMenuCaptions;
+  PopUpMenu1.PopupComponent := editTop;
   PopUpMenu1.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
+end;
+
+procedure TfrmClock.btnTooltipClick(Sender: TObject);
+begin
+  UpdatePopupMenuCaptions;
+  PopupMenu1.PopupComponent := editTooltip;
+  PopUpMenu1.Popup(Mouse.CursorPos.X,Mouse.CursorPos.Y);
+end;
+
+procedure TfrmClock.UpdatePopupMenuCaptions();
+var
+  menuItem : TMenuItem;
+begin
+  with PopupMenu1 do
+  begin
+    for menuItem in Items do
+    begin
+      // We use the Hint property to store the format so use it to
+      // generate the captions for each menu item using the current date time.
+      menuItem.Caption := FormatDateTime(menuItem.Hint, Now()) + ' (' + menuItem.Hint + ')';
+    end;
+  end;
 end;
 
 procedure TfrmClock.UpdateSettingsEvent(Sender: TObject);
@@ -119,79 +146,21 @@ begin
   UpdateBottomEdit;
 end;
 
-procedure TfrmClock.Load;
-var
-  xml: TJvSimpleXML;
-  loaded: boolean;
-  style: Integer;
+procedure TfrmClock.MenuItemClick(Sender: TObject);
 begin
-  xml := TJvSimpleXML.Create(nil);
-  loaded := False;
-  try
-    xml.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(BarID),strtoint(ModuleID)));
-    loaded := True;
-  except
-  end;
+  if PopupMenu1.PopupComponent is TEdit then
+    TEdit(PopUpMenu1.PopupComponent).Text := TMenuItem(Sender).Hint;
 
-  if loaded then
-    with xml.Root.Items, frmClock do
-    begin
+  if PopUpMenu1.PopupComponent is TLabeledEdit then
+     TLabeledEdit(PopUpMenu1.PopupComponent).Text := TMenuItem(Sender).Hint;
 
-      style := IntValue('Style',0);
-      if style < 3 then
-        cboSize.ItemIndex := style;
-
-      edTop.Text := Value('Format','HH:MM:SS');
-      edBottom.Text := Value('BottomFormat','DD.MM.YYYY');
-
-      if (length(edBottom.Text) > 0) then
-        cboSize.ItemIndex := 3;
-    end;
-  xml.Free;
-end;
-
-procedure TfrmClock.N213046HHMMSS3Click(Sender: TObject);
-begin
-  if PopUpMenu1.PopupComponent is TEdit then
-     TEdit(PopUpMenu1.PopupComponent).Text := TMenuItem(Sender).Hint;
-  UpdateSettings;     
-end;
-
-procedure TfrmClock.Save;
-var
-  xml : TJvSimpleXML;
-  i : integer;
-begin
-  if frmClock = nil then
-    exit;
-
-  xml := TJvSimpleXML.Create(nil);
-  try
-  xml.Root.Name := 'ClockModuleSettings';
-  with XML.Root.Items, frmClock do
-  begin
-
-    if cboSize.ItemIndex <> Automatic then begin
-      i := cboSize.ItemIndex;
-    Add('Style',i);
-    Add('Format',edTop.Text);
-
-    if cboSize.ItemIndex = Automatic then
-      Add('BottomFormat',edBottom.Text)
-    else Add('BottomFormat','');
-
-  end;
-  xml.SaveToFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmClock.BarID),strtoint(frmClock.ModuleID)));
-  end;
-  finally
-    xml.Free;
-  end;
+  UpdateSettings;
 end;
 
 procedure TfrmClock.UpdateSettings;
 begin
   if Visible then
-    SharpCenterApi.CenterDefineSettingsChanged;
+    PluginHost.Save;
 
   UpdateBottomEdit;
 end;
@@ -199,7 +168,6 @@ end;
 procedure TfrmClock.UpdateBottomEdit;
 begin
   pnlBottom.Visible := cboSize.ItemIndex = Automatic;
-  CenterUpdateSize;
 end;
 
 end.
