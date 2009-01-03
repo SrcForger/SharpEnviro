@@ -29,105 +29,95 @@ uses
   Classes,
   Windows,
   Forms,
-  Math,
   Dialogs,
-  JvSimpleXml,
-  GR32,
-  GR32_Image,
-  PngSpeedButton,
+  JclSimpleXml,
   JvPageList,
   uVistaFuncs,
   SysUtils,
   Graphics,
-  uMMWnd in 'uMMWnd.pas' {frmMM},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
-  SharpDialogs in '..\..\..\Common\Libraries\SharpDialogs\SharpDialogs.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  SharpAPI,
+  SharpCenterAPI,
+  SharpThemeApi,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  uMMWnd in 'uMMWnd.pas' {frmMM};
 
 {$E .dll}
 
 {$R *.res}
 
-procedure Save;
-var
-  XML : TJvSimpleXML;
-begin
-  if frmMM = nil then
-    exit;
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
+  private
+    barID : string;
+    moduleID : string;
+    procedure Load;
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
-  XML := TJvSimpleXML.Create(nil);
-  XML.Root.Name := 'MemoryMonitorModuleSettings';
-  with XML.Root.Items, frmMM do
-  begin
-    if rbPTaken.Checked then
-      Add('ITC',0)
-    else Add('ITC',1);
-    Add('ShowRAMBar',cbrambar.Checked);
-    Add('ShowRAMInfo',cbraminfo.checked);
-    Add('ShowRAMPC',cbrampc.Checked);
-    Add('ShowSWPBar',cbswpbar.Checked);
-    Add('ShowSWPInfo',cbswpinfo.Checked);
-    Add('ShowSWPPC',cbswppc.Checked);
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
+    procedure Refresh; override; stdCall;
 
-    if rbHoriz.Checked then
-      Add('ItemAlign',1)
-    else if rbVert.Checked then
-      Add('ItemAlign',2)
-    else
-      Add('ItemAlign',3);
-    Add('Width',sgbBarSize.Value);
-  end;
-  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmMM.sBarID),strtoint(frmMM.sModuleID)));
-  XML.Free;
+    function GetPluginDescriptionText: String; override; stdCall;
 end;
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  XML : TJvSimpleXML;
-  left,right : String;
-  s : string;
-  fileloaded : boolean;
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
-  if frmMM = nil then frmMM := TfrmMM.Create(nil);
+  PluginHost := APluginHost;
+  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+end;
 
-  s := APluginID;
-  left := copy(s, 0, pos(':',s)-1);
-  right := copy(s, pos(':',s)+1, length(s) - pos(':',s));
-  uVistaFuncs.SetVistaFonts(frmMM);
-  frmMM.sBarID := left;
-  frmMM.sModuleID := right;
-  frmMM.ParentWindow := aowner;
-  frmMM.Left := 2;
-  frmMM.Top := 2;
-  frmMM.BorderStyle := bsNone;
-  result := frmMM.Handle;
+procedure TSharpCenterPlugin.Save;
+begin
+  PluginHost.Xml.XmlRoot.Name := 'MemoryMonitorModuleSettings';
 
-  XML := TJvSimpleXML.Create(nil);
-  fileloaded := False;
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(left),strtoint(right)));
-    fileloaded := True;
-  except
+  with PluginHost.Xml.XmlRoot.Items, frmMM do
+  begin
+    // Clear the list so we don't get duplicates.
+    Clear;
+    
+    if rbPTaken.Checked then
+      Add('ITC', 0)
+    else Add('ITC', 1);
+
+    Add('ShowRAMBar', cbrambar.Checked);
+    Add('ShowRAMInfo', cbraminfo.checked);
+    Add('ShowRAMPC', cbrampc.Checked);
+    Add('ShowSWPBar', cbswpbar.Checked);
+    Add('ShowSWPInfo', cbswpinfo.Checked);
+    Add('ShowSWPPC', cbswppc.Checked);
+
+    if rbHoriz.Checked then
+      Add('ItemAlign', 1)
+    else if rbVert.Checked then
+      Add('ItemAlign', 2)
+    else
+      Add('ItemAlign', 3);
+    Add('Width', sgbBarSize.Value);
   end;
 
-  if fileloaded then
-    with XML.Root.Items, frmMM do
+  PluginHost.Xml.Save;
+end;
+
+procedure TSharpCenterPlugin.Load;
+begin
+  if PluginHost.Xml.Load then
+  begin
+    with PluginHost.Xml.XmlRoot.Items, frmMM do
     begin
       case IntValue('ITC',0) of
         1: rbFreeMB.checked := True;
         else rbPTaken.Checked := True;
       end;
-      cbrambar.Checked := BoolValue('ShowRAMBar',cbrambar.Checked);
-      cbraminfo.checked := BoolValue('ShowRAMInfo',cbraminfo.checked);
-      cbrampc.Checked := BoolValue('ShowRAMPC',cbrampc.Checked);
-      cbswpbar.Checked := BoolValue('ShowSWPBar',cbswpbar.Checked);
-      cbswpinfo.Checked := BoolValue('ShowSWPInfo',cbswpinfo.Checked);
-      cbswppc.Checked := BoolValue('ShowSWPPC',cbswppc.Checked);
+      cbrambar.Checked := BoolValue('ShowRAMBar', cbrambar.Checked);
+      cbraminfo.checked := BoolValue('ShowRAMInfo', cbraminfo.checked);
+      cbrampc.Checked := BoolValue('ShowRAMPC', cbrampc.Checked);
+      cbswpbar.Checked := BoolValue('ShowSWPBar', cbswpbar.Checked);
+      cbswpinfo.Checked := BoolValue('ShowSWPInfo', cbswpinfo.Checked);
+      cbswppc.Checked := BoolValue('ShowSWPPC', cbswppc.Checked);
       case IntValue('ItemAlign',3) of
         1: rbHoriz.Checked := True;
         2: rbVert.Checked := True;
@@ -135,30 +125,27 @@ begin
       end;
       sgbBarSize.Value := IntValue('Width',sgbBarSize.Value);
     end;
-  XML.Free;
-
-  frmMM.Show;
-end;
-
-function Close : boolean;
-begin
-  result := True;
-  try
-    frmMM.Close;
-    frmMM.Free;
-    frmMM := nil;
-  except
-    result := False;
   end;
 end;
 
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+function TSharpCenterPlugin.Open: Cardinal;
 begin
-  AName := 'Memory Monitor';
-  ATitle := 'Memory Monitor Module';
-  ADescription := 'Configure memory monitor module';
+  if frmMM = nil then frmMM := TfrmMM.Create(nil);
+  frmMM.PluginHost := PluginHost;
+  uVistaFuncs.SetVistaFonts(frmMM);
 
+  Load;
+  result := PluginHost.Open(frmMM);
+end;
+
+procedure TSharpCenterPlugin.Close;
+begin
+  FreeAndNil(frmMM);
+end;
+
+function TSharpCenterPlugin.GetPluginDescriptionText : String;
+begin
+  result := 'Configure memory monitor module';
 end;
 
 function GetMetaData(): TMetaData;
@@ -168,18 +155,25 @@ begin
     Name := 'Memory Monitor';
     Description := 'Memory Monitor Module Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
   end;
 end;
 
+procedure TSharpCenterPlugin.Refresh;
+begin
+  PluginHost.AssignThemeToPluginForm(frmMM);
+end;
+
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
+end;
+
 exports
-  Open,
-  Close,
-  Save,
-  SetText,
+  InitPluginInterface,
   GetMetaData;
 
 begin

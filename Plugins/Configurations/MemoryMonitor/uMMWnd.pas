@@ -29,54 +29,46 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
-  ImgList, PngImageList, GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
-  JvPageList, JvExControls, ComCtrls, Mask;
-
-type
-  TStringObject = class(TObject)
-  public
-    Str: string;
-  end;
+  Dialogs, StdCtrls, JclSimpleXml, Menus, ComCtrls, SharpAPI, SharpCenterAPI,
+  ExtCtrls, SharpEGaugeBoxEdit, JclStrings, JvPageList, JvExControls,
+  JvXPCore, JvXPCheckCtrls, ISharpCenterHostUnit, SharpECenterHeader;
 
 type
   TfrmMM = class(TForm)
     plMain: TJvPageList;
     pagNotes: TJvStandardPage;
-    cbRamInfo: TCheckBox;
-    Label3: TLabel;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label6: TLabel;
-    cbRamPC: TCheckBox;
-    cbRamBar: TCheckBox;
-    Label4: TLabel;
-    Label5: TLabel;
-    cbSwpBar: TCheckBox;
-    cbSwpPC: TCheckBox;
-    cbSwpInfo: TCheckBox;
-    Label7: TLabel;
-    Panel1: TPanel;
+    pnlSize: TPanel;
     sgbBarSize: TSharpeGaugeBox;
-    Label9: TLabel;
-    Panel2: TPanel;
+    pnlFormat: TPanel;
     rbPTaken: TRadioButton;
     rbFreeMB: TRadioButton;
-    Panel3: TPanel;
+    pnlAlignment: TPanel;
     rbHoriz: TRadioButton;
     rbHoriz2: TRadioButton;
     rbVert: TRadioButton;
+    schAlignment: TSharpECenterHeader;
+    schRam: TSharpECenterHeader;
+    schSwap: TSharpECenterHeader;
+    schSize: TSharpECenterHeader;
+    schFormat: TSharpECenterHeader;
+    cbRamBar: TJvXPCheckbox;
+    cbRamPC: TJvXPCheckbox;
+    cbRamInfo: TJvXPCheckbox;
+    cbSwpBar: TJvXPCheckbox;
+    cbSwpPC: TJvXPCheckbox;
+    cbSwpInfo: TJvXPCheckbox;
+    pnlRam: TPanel;
+    pnlSwap: TPanel;
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
-    procedure cbRamInfoClick(Sender: TObject);
-    procedure rbVertClick(Sender: TObject);
+    procedure CheckboxClick(Sender: TObject);
+    procedure RadioButtonClick(Sender: TObject);
     procedure sgbBarSizeChangeValue(Sender: TObject; Value: Integer);
   private
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure UpdateSettings;
   public
-    sModuleID: string;
-    sBarID : string;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
   end;
 
 var
@@ -84,11 +76,9 @@ var
 
 implementation
 
-uses SharpThemeApi, SharpCenterApi;
-
 {$R *.dfm}
 
-procedure TfrmMM.cbRamInfoClick(Sender: TObject);
+procedure TfrmMM.CheckboxClick(Sender: TObject);
 begin
   UpdateSettings;
 end;
@@ -98,14 +88,7 @@ begin
   DoubleBuffered := true;
 end;
 
-procedure TfrmMM.FormShow(Sender: TObject);
-begin
-  Label5.Font.Color := clGrayText;
-  Label1.Font.Color := clGrayText;
-  Label6.Font.Color := clGrayText;
-end;
-
-procedure TfrmMM.rbVertClick(Sender: TObject);
+procedure TfrmMM.RadioButtonClick(Sender: TObject);
 begin
   UpdateSettings;
 end;
@@ -118,7 +101,7 @@ end;
 procedure TfrmMM.UpdateSettings;
 begin
   if Visible then
-    SharpCenterApi.CenterDefineSettingsChanged;
+    PluginHost.Save;
 end;
 
 end.
