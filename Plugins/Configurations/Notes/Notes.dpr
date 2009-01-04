@@ -39,118 +39,96 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
-  uNotesWnd in 'uNotesWnd.pas' {frmNotes},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
-  SharpDialogs in '..\..\..\Common\Libraries\SharpDialogs\SharpDialogs.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  SharpAPI,
+  SharpCenterAPI,
+  SharpThemeApi,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  uNotesWnd in 'uNotesWnd.pas' {frmNotes};
 
 {$E .dll}
 
 {$R *.res}
 
-procedure Save;
-var
-  XML : TJvSimpleXML;
-begin
-  if frmNotes = nil then
-    exit;
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
+  private
+    barID : string;
+    moduleID : string;
+    procedure Load;
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
-  XML := TJvSimpleXML.Create(nil);
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmNotes.sBarID),strtoint(frmNotes.sModuleID)));
-  except
-    XML.Root.Clear;
-  end;
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
+    procedure Refresh; override; stdCall;
 
-  XML.Root.Name := 'NotesModuleSettings';
-  with XML.Root.Items, frmNotes do
-  begin
-    if ItemNamed['AlwaysOnTop'] <> nil then
-      ItemNamed['AlwaysOnTop'].BoolValue := cb_alwaysontop.Checked
-    else Add('AlwaysOnTop',cb_alwaysontop.Checked);
-
-    if ItemNamed['Caption'] <> nil then
-      ItemNamed['Caption'].BoolValue := (rb_text.Checked or rb_icontext.Checked)
-    else Add('Caption',(rb_text.Checked or rb_icontext.Checked));
-
-    if ItemNamed['Icon'] <> nil then
-      ItemNamed['Icon'].BoolValue := (rb_icon.Checked or rb_icontext.Checked)
-    else Add('Icon',(rb_icon.Checked or rb_icontext.Checked));
-  end;
-  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmNotes.sBarID),strtoint(frmNotes.sModuleID)));
-  XML.Free;
+    function GetPluginDescriptionText: String; override; stdCall;
 end;
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  XML : TJvSimpleXML;
-  left,right : String;
-  s : string;
-  fileloaded : boolean;
-  ShowIcon,ShowCaption : boolean;
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
-  if frmNotes = nil then frmNotes := TfrmNotes.Create(nil);
+  PluginHost := APluginHost;
+  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+end;
 
-  s := APluginID;
-  left := copy(s, 0, pos(':',s)-1);
-  right := copy(s, pos(':',s)+1, length(s) - pos(':',s));
-  uVistaFuncs.SetVistaFonts(frmNotes);
-  frmNotes.sBarID := left;
-  frmNotes.sModuleID := right;
-  frmNotes.ParentWindow := aowner;
-  frmNotes.Left := 2;
-  frmNotes.Top := 2;
-  frmNotes.BorderStyle := bsNone;
-  result := frmNotes.Handle;
+procedure TSharpCenterPlugin.Save;
+begin
+  PluginHost.Xml.XmlRoot.Name := 'NotesModuleSettings';
 
-  XML := TJvSimpleXML.Create(nil);
-  fileloaded := False;
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(left),strtoint(right)));
-    fileloaded := True;
-  except
+  with PluginHost.Xml.XmlRoot.Items, frmNotes do
+  begin
+    // Clear the list so we don't get duplicates.
+    Clear;
+
+    Add('AlwaysOnTop', cbAlwaysOnTop.Checked);
+    Add('Caption', (rb_text.Checked or rb_icontext.Checked));
+    Add('Icon', (rb_icon.Checked or rb_icontext.Checked));
   end;
 
-  if fileloaded then
-    with XML.Root.Items, frmNotes do
+  PluginHost.Xml.Save;
+end;
+
+procedure TSharpCenterPlugin.Load;
+var
+  ShowIcon, ShowCaption : boolean;
+begin
+  if PluginHost.Xml.Load then
+  begin
+    with PluginHost.Xml.XmlRoot.Items, frmNotes do
     begin
-      cb_alwaysontop.Checked := BoolValue('AlwaysOnTop',True);
-      ShowIcon := BoolValue('Icon',True);
-      ShowCaption := BoolValue('Caption',True);
+      cbAlwaysOnTop.Checked := BoolValue('AlwaysOnTop', True);
+      ShowIcon := BoolValue('Icon', True);
+      ShowCaption := BoolValue('Caption', True);
       if ShowIcon and ShowCaption then
         rb_icontext.Checked := True
       else if ShowCaption then
         rb_text.Checked := True
       else rb_icon.Checked := True;
     end;
-  XML.Free;
-
-  frmNotes.Show;
-end;
-
-function Close : boolean;
-begin
-  result := True;
-  try
-    frmNotes.Close;
-    frmNotes.Free;
-    frmNotes := nil;
-  except
-    result := False;
   end;
 end;
 
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+function TSharpCenterPlugin.Open: Cardinal;
 begin
-  AName := 'Notes';
-  ATitle := 'Notes Module';
-  ADescription := 'Configure notes module';
+  if frmNotes = nil then frmNotes := TfrmNotes.Create(nil);
+  frmNotes.PluginHost := PluginHost;
+  uVistaFuncs.SetVistaFonts(frmNotes);
+
+  Load;
+  result := PluginHost.Open(frmNotes);
+end;
+
+procedure TSharpCenterPlugin.Close;
+begin
+  FreeAndNil(frmNotes);
+end;
+
+function TSharpCenterPlugin.GetPluginDescriptionText : String;
+begin
+  result := 'Configure Notes module';
 end;
 
 function GetMetaData(): TMetaData;
@@ -160,7 +138,7 @@ begin
     Name := 'Notes';
     Description := 'Notes Module Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
@@ -168,12 +146,20 @@ begin
 end;
 
 
-exports
-  Open,
-  Close,
-  Save,
-  GetMetaData,
-  SetText;
+procedure TSharpCenterPlugin.Refresh;
+begin
+  PluginHost.AssignThemeToPluginForm(frmNotes);
+end;
 
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
+end;
+
+exports
+  InitPluginInterface,
+  GetMetaData;
+
+begin
 end.
 

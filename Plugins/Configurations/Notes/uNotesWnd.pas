@@ -32,7 +32,8 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
   ImgList, PngImageList, GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
-  JvPageList, JvExControls, ComCtrls, Mask;
+  JvPageList, JvExControls, ComCtrls, Mask, SharpCenterAPI, ISharpCenterHostUnit,
+  SharpECenterHeader, JvXPCore, JvXPCheckCtrls;
 
 type
   TStringObject = class(TObject)
@@ -44,22 +45,25 @@ type
   TfrmNotes = class(TForm)
     plMain: TJvPageList;
     pagNotes: TJvStandardPage;
-    Label5: TLabel;
-    cb_alwaysontop: TCheckBox;
-    Label3: TLabel;
-    Label1: TLabel;
+    lblAlwaysOnTop: TLabel;
     rb_icon: TRadioButton;
     rb_text: TRadioButton;
     rb_icontext: TRadioButton;
+    schWindowOptions: TSharpECenterHeader;
+    schDisplayOptions: TSharpECenterHeader;
+    cbAlwaysOnTop: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure cb_alwaysontopClick(Sender: TObject);
     procedure rb_textClick(Sender: TObject);
+    procedure cbAlwaysOnTopClick(Sender: TObject);
   private
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure UpdateSettings;
   public
     sModuleID: string;
     sBarID : string;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
   end;
 
 var
@@ -67,9 +71,12 @@ var
 
 implementation
 
-uses SharpThemeApi, SharpCenterApi;
-
 {$R *.dfm}
+
+procedure TfrmNotes.cbAlwaysOnTopClick(Sender: TObject);
+begin
+  UpdateSettings;
+end;
 
 procedure TfrmNotes.cb_alwaysontopClick(Sender: TObject);
 begin
@@ -81,12 +88,6 @@ begin
   DoubleBuffered := true;
 end;
 
-procedure TfrmNotes.FormShow(Sender: TObject);
-begin
-  Label5.Font.Color := clGrayText;
-  Label1.Font.Color := clGrayText;
-end;
-
 procedure TfrmNotes.rb_textClick(Sender: TObject);
 begin
   UpdateSettings;
@@ -95,7 +96,7 @@ end;
 procedure TfrmNotes.UpdateSettings;
 begin
   if Visible then
-    SharpCenterApi.CenterDefineSettingsChanged;
+    PluginHost.Save;
 end;
 
 end.
