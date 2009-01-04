@@ -33,37 +33,31 @@ uses
   ImgList, PngImageList, GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
   JvPageList, JvExControls, ComCtrls, Mask, SharpEColorEditorEx,
-  SharpESwatchManager;
-
-type
-  TStringObject = class(TObject)
-  public
-    Str: string;
-  end;
+  SharpESwatchManager, ISharpCenterHostUnit, SharpECenterHeader, JvXPCore,
+  JvXPCheckCtrls;
 
 type
   TfrmSysTray = class(TForm)
     plMain: TJvPageList;
     pagSysTray: TJvStandardPage;
-    lbBackground: TLabel;
-    Panel1: TPanel;
+    pnlIcon: TPanel;
     sgbIconAlpha: TSharpeGaugeBox;
-    Panel2: TPanel;
+    pnlBackground: TPanel;
     sgbBackground: TSharpeGaugeBox;
-    Label3: TLabel;
     Colors: TSharpEColorEditorEx;
     SharpESwatchManager1: TSharpESwatchManager;
-    Label4: TLabel;
-    Label5: TLabel;
-    cbBackground: TCheckBox;
-    Panel3: TPanel;
+    pnlBorder: TPanel;
     sgbBorder: TSharpeGaugeBox;
-    lbBorder: TLabel;
-    cbBorder: TCheckBox;
-    cbBlend: TCheckBox;
-    lbBlend: TLabel;
-    Panel4: TPanel;
+    pnlBlend: TPanel;
     sgbBlend: TSharpeGaugeBox;
+    schIconVisibility: TSharpECenterHeader;
+    schBackgroundVisibility: TSharpECenterHeader;
+    schBorderVisibility: TSharpECenterHeader;
+    schColorBlendOptions: TSharpECenterHeader;
+    schColor: TSharpECenterHeader;
+    chkBackground: TJvXPCheckbox;
+    chkBorder: TJvXPCheckbox;
+    chkBlend: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure cb_numbersClick(Sender: TObject);
@@ -73,10 +67,11 @@ type
     procedure cbBorderClick(Sender: TObject);
     procedure cbBlendClick(Sender: TObject);
   private
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure UpdateSettings;
   public
-    sModuleID: string;
-    sBarID : string;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
   end;
 
 var
@@ -90,25 +85,22 @@ uses SharpThemeApi, SharpCenterApi;
 
 procedure TfrmSysTray.cbBackgroundClick(Sender: TObject);
 begin
-  sgbBackground.Enabled := cbBackground.Checked;
-  lbBackground.Enabled := cbBackground.Checked;
-  Colors.Items.Item[0].Visible := cbBackground.Checked;
+  sgbBackground.Enabled := chkBackground.Checked;
+  Colors.Items.Item[0].Visible := chkBackground.Checked;
   UpdateSettings;
 end;
 
 procedure TfrmSysTray.cbBlendClick(Sender: TObject);
 begin
-  sgbBlend.Enabled := cbBlend.Checked;
-  lbBlend.Enabled := cbBlend.Checked;
-  Colors.Items.Item[2].Visible := cbBlend.Checked;
+  sgbBlend.Enabled := chkBlend.Checked;
+  Colors.Items.Item[2].Visible := chkBlend.Checked;
   UpdateSettings;
 end;
 
 procedure TfrmSysTray.cbBorderClick(Sender: TObject);
 begin
-  sgbBorder.Enabled := cbBorder.Checked;
-  lbBorder.Enabled := cbBorder.Checked;
-  Colors.Items.Item[1].Visible := cbBorder.Checked;  
+  sgbBorder.Enabled := chkBorder.Checked;
+  Colors.Items.Item[1].Visible := chkBorder.Checked;
   UpdateSettings;
 end;
 
@@ -129,13 +121,9 @@ end;
 
 procedure TfrmSysTray.FormShow(Sender: TObject);
 begin
-  Label5.Font.Color := clGrayText;
-  lbBackground.Font.Color := clGrayText;
-  lbBorder.Font.Color := clGrayText;
-  lbBlend.Font.Color := clGrayText;
-  cbBackground.OnClick(cbBackground);
-  cbBorder.OnClick(cbBorder);
-  cbBlend.OnClick(cbBlend);
+  chkBackground.OnClick(chkBackground);
+  chkBorder.OnClick(chkBorder);
+  chkBlend.OnClick(chkBlend);
 end;
 
 procedure TfrmSysTray.sgbIconAlphaChangeValue(Sender: TObject; Value: Integer);
@@ -146,7 +134,7 @@ end;
 procedure TfrmSysTray.UpdateSettings;
 begin
   if Visible then
-    SharpCenterApi.CenterDefineSettingsChanged;
+    PluginHost.Save;
 end;
 
 end.

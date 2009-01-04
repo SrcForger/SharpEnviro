@@ -1,9 +1,10 @@
 object frmSysTray: TfrmSysTray
   Left = 0
   Top = 0
+  BorderStyle = bsNone
   Caption = 'frmSysTray'
-  ClientHeight = 587
-  ClientWidth = 427
+  ClientHeight = 576
+  ClientWidth = 435
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,134 +19,23 @@ object frmSysTray: TfrmSysTray
   object plMain: TJvPageList
     Left = 0
     Top = 0
-    Width = 427
-    Height = 587
+    Width = 435
+    Height = 576
     ActivePage = pagSysTray
     PropagateEnable = False
     Align = alClient
     object pagSysTray: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 427
-      Height = 587
-      object lbBackground: TLabel
+      Width = 435
+      Height = 576
+      object pnlIcon: TPanel
         AlignWithMargins = True
-        Left = 26
-        Top = 121
-        Width = 393
-        Height = 20
-        Margins.Left = 26
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        Caption = 
-          'Enabled this option to display a simple background behind the ic' +
-          'ons'
-        Transparent = False
-        WordWrap = True
-      end
-      object Label3: TLabel
-        AlignWithMargins = True
-        Left = 8
-        Top = 372
-        Width = 411
-        Height = 13
-        Margins.Left = 8
-        Margins.Top = 16
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        BiDiMode = bdRightToLeftNoAlign
-        Caption = 'Colors'
-        ParentBiDiMode = False
-        Transparent = False
-        WordWrap = True
-        ExplicitTop = 401
-      end
-      object Label4: TLabel
-        AlignWithMargins = True
-        Left = 8
-        Top = 8
-        Width = 411
-        Height = 13
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        BiDiMode = bdRightToLeftNoAlign
-        Caption = 'Icon Visibility'
-        ParentBiDiMode = False
-        Transparent = False
-        WordWrap = True
-        ExplicitLeft = 26
-        ExplicitTop = 73
-        ExplicitWidth = 65
-      end
-      object Label5: TLabel
-        AlignWithMargins = True
-        Left = 26
-        Top = 29
-        Width = 393
-        Height = 20
-        Margins.Left = 26
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        Caption = 
-          'Changing this value will adjust the visibility of all tray icons' +
-          '.'
-        Transparent = False
-        WordWrap = True
-      end
-      object lbBorder: TLabel
-        AlignWithMargins = True
-        Left = 26
-        Top = 213
-        Width = 393
-        Height = 20
-        Margins.Left = 26
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        Caption = 
-          'Enabled this option to display a simple a border around the whol' +
-          'e tray'
-        Transparent = False
-        WordWrap = True
-        ExplicitTop = 330
-      end
-      object lbBlend: TLabel
-        AlignWithMargins = True
-        Left = 26
-        Top = 305
-        Width = 393
-        Height = 20
-        Margins.Left = 26
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        Caption = 'Enable this option to blend all icons to a custom color.'
-        Transparent = False
-        WordWrap = True
-        ExplicitLeft = 18
-        ExplicitTop = 367
-      end
-      object Panel1: TPanel
-        Left = 0
-        Top = 49
-        Width = 427
+        Left = 3
+        Top = 44
+        Width = 429
         Height = 31
+        Margins.Bottom = 6
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
@@ -171,28 +61,26 @@ object frmSysTray: TfrmSysTray
           PopPosition = ppBottom
           PercentDisplay = True
           OnChangeValue = sgbIconAlphaChangeValue
+          BackgroundColor = clWindow
         end
       end
-      object Panel2: TPanel
-        Left = 0
-        Top = 141
-        Width = 427
+      object pnlBackground: TPanel
+        AlignWithMargins = True
+        Left = 3
+        Top = 125
+        Width = 429
         Height = 31
+        Margins.Bottom = 6
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
         object sgbBackground: TSharpeGaugeBox
-          AlignWithMargins = True
-          Left = 26
-          Top = 8
+          Left = 186
+          Top = 5
           Width = 159
           Height = 23
-          Margins.Left = 26
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alLeft
+          Color = clWindow
           ParentBackground = False
           Min = 0
           Max = 255
@@ -203,13 +91,23 @@ object frmSysTray: TfrmSysTray
           PopPosition = ppBottom
           PercentDisplay = True
           OnChangeValue = sgbIconAlphaChangeValue
+          BackgroundColor = clWindow
+        end
+        object chkBackground: TJvXPCheckbox
+          Left = 26
+          Top = 7
+          Width = 135
+          Height = 17
+          Caption = 'Display Background'
+          TabOrder = 1
+          OnClick = cbBackgroundClick
         end
       end
       object Colors: TSharpEColorEditorEx
         AlignWithMargins = True
         Left = 26
-        Top = 393
-        Width = 393
+        Top = 373
+        Width = 401
         Height = 80
         Margins.Left = 26
         Margins.Top = 8
@@ -229,11 +127,14 @@ object frmSysTray: TfrmSysTray
           item
             Title = 'Background'
             ColorCode = 16777215
-            ColorAsTColor = clWhite
+            ColorAsTColor = clBlack
             Expanded = False
             ValueEditorType = vetColor
             Value = 16777215
+            ValueMin = 0
+            ValueMax = 255
             Visible = True
+            DisplayPercent = False
             ColorEditor = Colors.Item0
             Tag = 0
           end
@@ -244,7 +145,10 @@ object frmSysTray: TfrmSysTray
             Expanded = False
             ValueEditorType = vetColor
             Value = 0
+            ValueMin = 0
+            ValueMax = 255
             Visible = True
+            DisplayPercent = False
             ColorEditor = Colors.Item1
             Tag = 0
           end
@@ -255,48 +159,38 @@ object frmSysTray: TfrmSysTray
             Expanded = False
             ValueEditorType = vetColor
             Value = 0
+            ValueMin = 0
+            ValueMax = 255
             Visible = True
+            DisplayPercent = False
             ColorEditor = Colors.Item2
             Tag = 0
           end>
         SwatchManager = SharpESwatchManager1
         OnChangeColor = ColorsChangeColor
+        BorderColor = clBlack
+        BackgroundColor = clWindow
+        BackgroundTextColor = clBlack
+        ContainerColor = clBlack
+        ContainerTextColor = clBlack
       end
-      object cbBackground: TCheckBox
+      object pnlBorder: TPanel
         AlignWithMargins = True
-        Left = 8
-        Top = 96
-        Width = 411
-        Height = 17
-        Margins.Left = 8
-        Margins.Top = 16
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        Caption = 'Display Background'
-        TabOrder = 3
-        OnClick = cbBackgroundClick
-      end
-      object Panel3: TPanel
-        Left = 0
-        Top = 233
-        Width = 427
+        Left = 3
+        Top = 206
+        Width = 429
         Height = 31
+        Margins.Bottom = 6
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 4
+        TabOrder = 3
         object sgbBorder: TSharpeGaugeBox
-          AlignWithMargins = True
-          Left = 26
-          Top = 8
+          Left = 186
+          Top = 5
           Width = 159
           Height = 23
-          Margins.Left = 26
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alLeft
+          Color = clWindow
           ParentBackground = False
           Min = 0
           Max = 255
@@ -307,58 +201,34 @@ object frmSysTray: TfrmSysTray
           PopPosition = ppBottom
           PercentDisplay = True
           OnChangeValue = sgbIconAlphaChangeValue
+          BackgroundColor = clWindow
+        end
+        object chkBorder: TJvXPCheckbox
+          Left = 26
+          Top = 7
+          Width = 135
+          Height = 17
+          Caption = 'Display Border'
+          TabOrder = 1
+          OnClick = cbBorderClick
         end
       end
-      object cbBorder: TCheckBox
+      object pnlBlend: TPanel
         AlignWithMargins = True
-        Left = 8
-        Top = 188
-        Width = 411
-        Height = 17
-        Margins.Left = 8
-        Margins.Top = 16
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        Caption = 'Display Border'
-        TabOrder = 5
-        OnClick = cbBorderClick
-      end
-      object cbBlend: TCheckBox
-        AlignWithMargins = True
-        Left = 8
-        Top = 280
-        Width = 411
-        Height = 17
-        Margins.Left = 8
-        Margins.Top = 16
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        Caption = 'Color Blend Icon'
-        TabOrder = 6
-        OnClick = cbBlendClick
-      end
-      object Panel4: TPanel
-        Left = 0
-        Top = 325
-        Width = 427
+        Left = 3
+        Top = 287
+        Width = 429
         Height = 31
+        Margins.Bottom = 6
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 7
+        TabOrder = 4
         object sgbBlend: TSharpeGaugeBox
-          AlignWithMargins = True
-          Left = 26
-          Top = 8
+          Left = 186
+          Top = 5
           Width = 159
           Height = 23
-          Margins.Left = 26
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          Align = alLeft
           ParentBackground = False
           Min = 0
           Max = 255
@@ -369,13 +239,91 @@ object frmSysTray: TfrmSysTray
           PopPosition = ppBottom
           PercentDisplay = True
           OnChangeValue = sgbIconAlphaChangeValue
+          BackgroundColor = clWindow
         end
+        object chkBlend: TJvXPCheckbox
+          Left = 26
+          Top = 7
+          Width = 135
+          Height = 17
+          Caption = 'Color Blend Icon'
+          TabOrder = 1
+          OnClick = cbBlendClick
+        end
+      end
+      object schIconVisibility: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 3
+        Top = 3
+        Width = 429
+        Height = 35
+        Title = 'Icon Visibility'
+        Description = 'Adjust the visibility of the system tray icons.'
+        TitleColor = clWindowText
+        DescriptionColor = clRed
+        Align = alTop
+        Color = clWindow
+      end
+      object schBackgroundVisibility: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 3
+        Top = 84
+        Width = 429
+        Height = 35
+        Title = 'Background Visibility'
+        Description = 
+          'Adjust the visibility of the background behind the system tray i' +
+          'cons.'
+        TitleColor = clWindowText
+        DescriptionColor = clRed
+        Align = alTop
+        Color = clWindow
+      end
+      object schBorderVisibility: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 3
+        Top = 165
+        Width = 429
+        Height = 35
+        Title = 'Border Visibility'
+        Description = 'Adjust the visibilty of the border around the system tray.'
+        TitleColor = clWindowText
+        DescriptionColor = clRed
+        Align = alTop
+        Color = clWindow
+      end
+      object schColorBlendOptions: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 3
+        Top = 246
+        Width = 429
+        Height = 35
+        Title = 'Color Blend Icon Options'
+        Description = 'Adjust the color blending options for the system tray icons.'
+        TitleColor = clWindowText
+        DescriptionColor = clRed
+        Align = alTop
+        Color = clWindow
+      end
+      object schColor: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 3
+        Top = 327
+        Width = 429
+        Height = 35
+        Title = 'Color Options'
+        Description = 'Select the color for the Background, Border and Blending.'
+        TitleColor = clWindowText
+        DescriptionColor = clRed
+        Align = alTop
+        Color = clWindow
       end
     end
   end
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
-    Width = 361
+    PopulateThemeColors = True
+    Width = 368
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16
@@ -387,6 +335,9 @@ object frmSysTray: TfrmSysTray
     SwatchFont.Style = []
     SwatchTextBorderColor = 16709617
     SortMode = sortName
+    BorderColor = clBlack
+    BackgroundColor = clBlack
+    BackgroundTextColor = clBlack
     Left = 288
     Top = 64
   end
