@@ -32,82 +32,103 @@ uses
   Dialogs,
   JclSimpleXml,
   JclFileUtils,
-  GR32,
-  GR32_Image,
-  PngSpeedButton,
   uVistaFuncs,
   SysUtils,
   Graphics,
-  uEditWnd in 'uEditWnd.pas' {frmEdit},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas',
-  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas';
+  SharpAPI,
+  SharpCenterAPI,
+  SharpThemeApi,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  uEditWnd in 'uEditWnd.pas' {frmEdit};
 
 {$E .dll}
 
 {$R *.res}
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  pluginId: string;
-  barId: string;
-  moduleId: string;
-begin
-  SharpThemeapi.LoadTheme(False,[tpIconSet]);
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
+  private
+    barID : string;
+    moduleID : string;
+    procedure Load;
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
-  {$REGION 'Form Creation'}
-    if frmEdit = nil then
-        frmEdit := TfrmEdit.Create(nil);
-      frmEdit.ParentWindow := aowner;
-      frmEdit.Left := 0;
-      frmEdit.Top := 0;
-      frmEdit.BorderStyle := bsNone;
-      frmEdit.Show;
-      uVistaFuncs.SetVistaFonts(frmEdit);
-  {$ENDREGION}
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
+    procedure Refresh; override; stdCall;
 
-  {$REGION 'Get plugin and module id'}
-    pluginId := APluginID;
-      barId := copy(pluginId, 0, pos(':',pluginId)-1);
-      moduleId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
-      frmEdit.BarId := barId;
-      frmEdit.ModuleId := moduleId;
-  {$ENDREGION}
-
-  frmEdit.LoadSettings;
-  result := frmEdit.Handle;
+    function GetPluginDescriptionText: String; override; stdCall;
 end;
 
-function Close: boolean;
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
-  result := True;
-  try
-    frmEdit.Close;
-    frmEdit.Free;
-    frmEdit := nil;
-  except
-    result := False;
+  PluginHost := APluginHost;
+  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+end;
+
+procedure TSharpCenterPlugin.Load;
+var
+  menuFile : string;
+begin
+  if PluginHost.Xml.Load then
+  begin
+    with PluginHost.Xml.XmlRoot.Items, frmEdit do
+    begin
+      gbSize.Value := IntValue('Width', 100);
+      chkDisplayCaption.Checked := BoolValue('ShowLabel', True);
+      chkDisplayIcon.Checked := BoolValue('ShowIcon', true);
+      editIcon.Text := Value('Icon','icon.mycomputer');
+
+      menuFile := PathRemoveExtension(ExtractFileName(Value('Menu','Menu.xml')));
+      cbMenu.ItemIndex := cbMenu.Items.IndexOf(menuFile);
+
+      editCaption.Text := Value('Caption','Menu');
+    end;
   end;
 end;
 
-procedure Save;
+function TSharpCenterPlugin.Open: Cardinal;
 begin
-  frmEdit.SaveSettings;
+  if frmEdit = nil then frmEdit := TfrmEdit.Create(nil);
+  frmEdit.PluginHost := PluginHost;
+  uVistaFuncs.SetVistaFonts(frmEdit);
+
+  Load;
+  result := PluginHost.Open(frmEdit);
 end;
 
-procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
-  var ATitle: string; var ADescription: string);
+procedure TSharpCenterPlugin.Close;
 begin
-  AName := 'Menu Options';
-  AStatus := '';
-  ATitle := 'Menu Module';
-  ADescription := 'Configure Menu Module';
+  FreeAndNil(frmEdit);
+end;
 
+procedure TSharpCenterPlugin.Save;
+begin
+  PluginHost.Xml.XmlRoot.Name := 'MenuModuleSettings';
+
+  with PluginHost.Xml.XmlRoot.Items, frmEdit do
+  begin
+    // Clear the list so we don't get duplicates.
+    Clear;
+
+    Add('Width', gbSize.Value);
+    Add('ShowLabel', chkDisplayCaption.Checked);
+    Add('ShowIcon', chkDisplayIcon.Checked);
+    Add('Icon', editIcon.Text);
+    Add('Menu', cbMenu.Text);
+    Add('Caption', editCaption.Text);
+  end;
+
+  PluginHost.Xml.Save;
+end;
+
+function TSharpCenterPlugin.GetPluginDescriptionText : String;
+begin
+  result := 'Configure Menu Module';
 end;
 
 function GetMetaData(): TMetaData;
@@ -117,7 +138,7 @@ begin
     Name := 'Menu Module';
     Description := 'Menu Module Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7';
+    Version := '0.7.6.0';
     DataType := tteConfig;
 
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
@@ -125,11 +146,18 @@ begin
   end;
 end;
 
+procedure TSharpCenterPlugin.Refresh;
+begin
+  PluginHost.AssignThemeToPluginForm(frmEdit);
+end;
+
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
+end;
+
 exports
-  Open,
-  Close,
-  Save,
-  SetText,
+  InitPluginInterface,
   GetMetaData;
 
 begin

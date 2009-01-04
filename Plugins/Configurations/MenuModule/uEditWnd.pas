@@ -33,59 +33,52 @@ uses
   SysUtils,
   Variants,
   Classes,
-  Contnrs,
   Graphics,
   Controls,
   Forms,
+  Dialogs,
   StdCtrls,
-  ImgList,
-  PngImageList,
-  SharpTypes,
-  SharpEListBoxEx, TaskFilterList, ExtCtrls, JclSimpleXml, JclFileUtils, JclStrings, Menus,
-  SharpEGaugeBoxEdit, SharpIconUtils, GR32_Image, GR32;
+  ExtCtrls,
+  JclSimpleXml,
+  JclFileUtils,
+  SharpEGaugeBoxEdit,
+  SharpAPI,
+  SharpThemeApi,
+  SharpDialogs,
+  SharpECenterHeader,
+  ISharpCenterHostUnit;
 
 type
   TfrmEdit = class(TForm)
     pnlOptions: TPanel;
-    Label3: TLabel;
-    lblSizeDesc: TLabel;
-    Label1: TLabel;
-    Panel1: TPanel;
+    pnlDisplaySize: TPanel;
     Panel2: TPanel;
     chkDisplayIcon: TCheckBox;
     chkDisplayCaption: TCheckBox;
-    Label6: TLabel;
-    Label4: TLabel;
-    lblMenuDesc: TLabel;
-    lblDisplayDesc: TLabel;
-    Panel3: TPanel;
-    Label2: TLabel;
+    pnlMenu: TPanel;
     pnlCaption: TPanel;
-    Label7: TLabel;
     pnlIcon: TPanel;
-    Label8: TLabel;
-    edCaption: TEdit;
     btnIconBrowse: TButton;
-    edIcon: TEdit;
     gbSize: TSharpeGaugeBox;
     cbMenu: TComboBox;
+    schMenu: TSharpECenterHeader;
+    schDisplaySize: TSharpECenterHeader;
+    pnlDisplayOptions: TPanel;
+    schDisplayOptions: TSharpECenterHeader;
+    editCaption: TLabeledEdit;
+    editIcon: TLabeledEdit;
     procedure FormCreate(Sender: TObject);
 
     procedure SettingsChange(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
     procedure gbSizeChangeValue(Sender: TObject; Value: Integer);
   private
-    FModuleId: string;
-    FBarId: string;
-    FUpdating: boolean;
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure PopulateMenus;
-    procedure UpdateIcon;
+    procedure UpdateSettings;
   public
-    property BarId: string read FBarId write FBarId;
-    property ModuleId: string read FModuleId write FModuleId;
-
-    procedure LoadSettings;
-    procedure SaveSettings;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
   end;
 
 var
@@ -96,26 +89,7 @@ const
 
 implementation
 
-uses SharpThemeApi, SharpDialogs, SharpApi, SharpCenterApi, uSharpBarAPI, SharpESkin;
-
 {$R *.dfm}
-
-procedure TfrmEdit.UpdateIcon;
-//var
-//  Bmp : TBitmap32;
-begin
-  {Bmp := TBitmap32.Create;
-  try
-    Bmp.DrawMode := dmBlend;
-    Bmp.CombineMode := cmMerge;
-    img_icon.Bitmap.SetSize(img_icon.Width,img_icon.Height);
-    img_icon.Bitmap.Clear(color32(self.Color));
-    if IconStringToIcon(edIcon.Text,'',Bmp) then
-       Bmp.DrawTo(img_icon.Bitmap,Rect(0,0,img_icon.Bitmap.Width,img_icon.Bitmap.Height));
-  finally
-    Bmp.Free;
-  end;  }
-end;
 
 procedure TfrmEdit.btnBrowseClick(Sender: TObject);
 var
@@ -126,8 +100,7 @@ begin
                                Mouse.CursorPos);
   if length(trim(s))>0 then
   begin
-    edIcon.Text := s;
-    UpdateIcon;
+    editIcon.Text := s;
   end;
 end;
 
@@ -157,116 +130,24 @@ end;
 
 procedure TfrmEdit.SettingsChange(Sender: TObject);
 begin
-  if not (FUpdating) then
-    CenterDefineSettingsChanged;
+  UpdateSettings;
 end;
 
 procedure TfrmEdit.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := True;
-  lblSizeDesc.Font.Color := clGrayText;
-  lblMenuDesc.Font.Color := clGrayText;
-  lblDisplayDesc.Font.Color := clGrayText;
+  PopulateMenus;
 end;
 
 procedure TfrmEdit.gbSizeChangeValue(Sender: TObject; Value: Integer);
 begin
-  if not (FUpdating) then
-    CenterDefineSettingsChanged;
+  UpdateSettings;
 end;
 
-procedure TfrmEdit.LoadSettings;
-var
-  xml: TJclSimpleXML;
-  fileloaded: boolean;
-  showLabel, showIcon: boolean;
-  icon, menu, caption, s: string;
-  width: integer;
+procedure TfrmEdit.UpdateSettings;
 begin
-  xml := TJclSimpleXML.Create;
-  FUpdating := True;
-  try
-    fileloaded := False;
-    try
-      XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(StrToInt(FBarId), StrToInt(FModuleId)));
-      fileloaded := True;
-    except
-    end;
-
-    if fileloaded then
-      with xml.Root.Items do
-      begin
-        PopulateMenus;
-
-        // Width
-        width := IntValue('Width', 100);
-        gbSize.Value := width;
-
-        // Show label
-        showLabel := BoolValue('ShowLabel', true);
-        chkDisplayCaption.Checked := showLabel;
-
-        // Show icon
-        showIcon := BoolValue('ShowIcon', true);
-        chkDisplayIcon.Checked := showIcon;
-
-        // Icon
-        icon := Value('Icon','icon.mycomputer');
-        edIcon.Text := icon;
-        UpdateIcon;
-
-        // Menu
-        menu := Value('Menu','Menu.xml');
-        s := PathRemoveExtension( ExtractFileName(menu) );
-        cbMenu.ItemIndex := cbMenu.Items.IndexOf(s);
-
-        // Caption
-        caption := Value('Caption','Menu');
-        edCaption.Text := caption;
-      end;
-
-  finally
-    XML.Free;
-    FUpdating := False;
-  end;
-
+  if Visible then
+    PluginHost.Save;
 end;
-
-procedure TfrmEdit.SaveSettings;
-var
-  xml: TJclSimpleXML;
-begin
-  xml := TJclSimpleXML.Create;
-  try
-    xml.Root.Name := 'MenuModuleSettings';
-    with xml.Root.Items do
-    begin
-
-      // Width
-      Add('Width',gbSize.Value);
-
-      // Show label
-      Add('ShowLabel',chkDisplayCaption.Checked);
-
-      // Show icon
-      Add('ShowIcon', chkDisplayIcon.Checked);
-
-      // Icon
-      Add('Icon', edIcon.Text);
-
-      // Menu
-      Add('Menu', cbMenu.Text);
-
-      // Caption
-      Add('Caption', edCaption.Text);
-    end;
-
-  finally
-    XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(StrToInt(FBarId), StrToInt(FModuleId)));
-    XML.Free;
-  end;
-
-end;
-
 end.
 
