@@ -7,7 +7,6 @@
      <project Name="Link Object" Type="DLL">Plugins\Configurations\Link\Link.dproj</project>
      <project Name="Quick Script Module" Type="DLL">Plugins\Configurations\QuickScript\QuickScript.dproj</project>
      <project Name="Recycle Bin Object" Type="DLL">Plugins\Configurations\RecycleBin\RecycleBin.dproj</project>
-     <project Name="SystemTray Module" Type="DLL">Plugins\Configurations\SystemTray\SystemTray.dproj</project>
      <project Name="Task Module" Type="DLL">Plugins\Configurations\TaskModule\TaskModule.dproj</project>
   </package>
   <package Name="Configurations - Components">
@@ -29,6 +28,7 @@
      <project Name="Menu Module" Type="DLL">Plugins\Configurations\Modules\MenuModule\MenuModule.dproj</project>
      <project Name="MiniScmd Module" Type="DLL">Plugins\Configurations\Modules\MiniScmd\MiniScmd.dproj</project>
      <project Name="Notes Module" Type="DLL">Plugins\Configurations\Modules\Notes\Notes.dproj</project>
+     <project Name="SystemTray Module" Type="DLL">Plugins\Configurations\Modules\SystemTray\SystemTray.dproj</project>
      <project Name="VolumeControl Module" Type="DLL">Plugins\Configurations\Modules\VolumeControl\VolumeControl.dproj</project>
      <project Name="VWM Module" Type="DLL">Plugins\Configurations\Modules\VWM\VWM.dproj</project>
      <project Name="Weather Module" Type="DLL">Plugins\Configurations\Modules\WeatherModule\WeatherModule.dproj</project>
