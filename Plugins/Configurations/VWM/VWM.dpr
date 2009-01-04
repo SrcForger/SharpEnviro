@@ -39,32 +39,51 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
-  uVWMsWnd in 'uVWMsWnd.pas' {frmVWM},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
-  SharpDialogs in '..\..\..\Common\Libraries\SharpDialogs\SharpDialogs.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  SharpAPI,
+  SharpCenterAPI,
+  SharpThemeApi,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  uVWMsWnd in 'uVWMsWnd.pas' {frmVWM};
 
 {$E .dll}
 
 {$R *.res}
 
-procedure Save;
-var
-  XML : TJvSimpleXML;
-begin
-  if frmVWM = nil then
-    exit;
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
+  private
+    barID : string;
+    moduleID : string;
+    procedure Load;
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
-  XML := TJvSimpleXML.Create(nil);
-  XML.Root.Name := 'VWMModuleSettings';
-  with XML.Root.Items, frmVWM do
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
+    procedure Refresh; override; stdCall;
+
+    function GetPluginDescriptionText: String; override; stdCall;
+end;
+
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+begin
+  PluginHost := APluginHost;
+  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+end;
+
+procedure TSharpCenterPlugin.Save;
+begin
+  PluginHost.Xml.XmlRoot.Name := 'VWMModuleSettings';
+
+  with PluginHost.Xml.XmlRoot.Items, frmVWM do
   begin
-    Add('Numbers',cb_numbers.Checked);
+    // Clear the list so we don't get duplicates.
+    Clear;
+
+    Add('Numbers',chkShowNumbers.Checked);
     Add('Background',Colors.Items.Item[0].ColorCode);
     Add('Border',Colors.Items.Item[1].ColorCode);
     Add('Foreground',Colors.Items.Item[2].ColorCode);
@@ -76,43 +95,17 @@ begin
     Add('HighlightAlpha',sgb_Highlight.Value);
     Add('TextAlpha',sgb_Text.Value);
   end;
-  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmVWM.sBarID),strtoint(frmVWM.sModuleID)));
-  XML.Free;
+
+  PluginHost.Xml.Save;
 end;
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  XML : TJvSimpleXML;
-  left,right : String;
-  s : string;
-  fileloaded : boolean;
+procedure TSharpCenterPlugin.Load;
 begin
-  if frmVWM = nil then frmVWM := TfrmVWM.Create(nil);
-
-  s := APluginID;
-  left := copy(s, 0, pos(':',s)-1);
-  right := copy(s, pos(':',s)+1, length(s) - pos(':',s));
-  uVistaFuncs.SetVistaFonts(frmVWM);
-  frmVWM.sBarID := left;
-  frmVWM.sModuleID := right;
-  frmVWM.ParentWindow := aowner;
-  frmVWM.Left := 2;
-  frmVWM.Top := 2;
-  frmVWM.BorderStyle := bsNone;
-  result := frmVWM.Handle;
-
-  XML := TJvSimpleXML.Create(nil);
-  fileloaded := False;
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(left),strtoint(right)));
-    fileloaded := True;
-  except
-  end;
-
-  if fileloaded then
-    with XML.Root.Items, frmVWM do
+  if PluginHost.Xml.Load then
+  begin
+    with PluginHost.Xml.XmlRoot.Items, frmVWM do
     begin
-      cb_numbers.Checked := BoolValue('Numbers',True);
+      chkShowNumbers.Checked := BoolValue('Numbers',True);
       Colors.Items.Item[0].ColorCode := IntValue('Background',clWhite);
       Colors.Items.Item[1].ColorCode := IntValue('Border',clBlack);
       Colors.Items.Item[2].ColorCode := IntValue('Foreground',clBlack);
@@ -124,30 +117,27 @@ begin
       sgb_Highlight.Value  := IntValue('HighlightAlpha',192);
       sgb_Text.Value       := IntValue('TextAlpha',255);
     end;
-  XML.Free;
-
-  frmVWM.Show;
-end;
-
-function Close : boolean;
-begin
-  result := True;
-  try
-    frmVWM.Close;
-    frmVWM.Free;
-    frmVWM := nil;
-  except
-    result := False;
   end;
 end;
 
-
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+function TSharpCenterPlugin.Open: Cardinal;
 begin
-  AName := 'VWM';
-  ATitle := 'Virtual Window Manager Module';
-  ADescription := 'Configure virtual window manager module';
+  if frmVWM = nil then frmVWM := TfrmVWM.Create(nil);
+  frmVWM.PluginHost := PluginHost;
+  uVistaFuncs.SetVistaFonts(frmVWM);
+
+  Load;
+  result := PluginHost.Open(frmVWM);
+end;
+
+procedure TSharpCenterPlugin.Close;
+begin
+  FreeAndNil(frmVWM);
+end;
+
+function TSharpCenterPlugin.GetPluginDescriptionText : String;
+begin
+  result := 'Configure virtual window manager module';
 end;
 
 function GetMetaData(): TMetaData;
@@ -157,19 +147,25 @@ begin
     Name := 'VWM';
     Description := 'VWM Module Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
   end;
 end;
 
+procedure TSharpCenterPlugin.Refresh;
+begin
+  PluginHost.AssignThemeToPluginForm(frmVWM);
+end;
+
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
+end;
 
 exports
-  Open,
-  Close,
-  Save,
-  SetText,
+  InitPluginInterface,
   GetMetaData;
 
 begin

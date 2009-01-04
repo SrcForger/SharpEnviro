@@ -33,7 +33,8 @@ uses
   ImgList, PngImageList, GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
   JvPageList, JvExControls, ComCtrls, Mask, SharpEColorEditorEx,
-  SharpESwatchManager;
+  SharpESwatchManager, ISharpCenterHostUnit, SharpECenterHeader, JvXPCore,
+  JvXPCheckCtrls;
 
 type
   TStringObject = class(TObject)
@@ -45,10 +46,6 @@ type
   TfrmVWM = class(TForm)
     plMain: TJvPageList;
     pagVWM: TJvStandardPage;
-    Label5: TLabel;
-    cb_numbers: TCheckBox;
-    Label1: TLabel;
-    Label2: TLabel;
     Panel1: TPanel;
     sgb_background: TSharpeGaugeBox;
     Panel2: TPanel;
@@ -59,19 +56,22 @@ type
     sgb_highlight: TSharpeGaugeBox;
     Panel5: TPanel;
     sgb_text: TSharpeGaugeBox;
-    Label3: TLabel;
     Colors: TSharpEColorEditorEx;
     SharpESwatchManager1: TSharpESwatchManager;
+    schColorVisibility: TSharpECenterHeader;
+    schColorSelection: TSharpECenterHeader;
+    schNumbers: TSharpECenterHeader;
+    chkShowNumbers: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure cb_numbersClick(Sender: TObject);
     procedure sgb_backgroundChangeValue(Sender: TObject; Value: Integer);
     procedure ColorsChangeColor(ASender: TObject; AValue: Integer);
   private
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure UpdateSettings;
   public
-    sModuleID: string;
-    sBarID : string;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
   end;
 
 var
@@ -98,12 +98,6 @@ begin
   DoubleBuffered := true;
 end;
 
-procedure TfrmVWM.FormShow(Sender: TObject);
-begin
-  Label5.Font.Color := clGrayText;
-  Label1.Font.Color := clGrayText;
-end;
-
 procedure TfrmVWM.sgb_backgroundChangeValue(Sender: TObject; Value: Integer);
 begin
   UpdateSettings;
@@ -112,7 +106,7 @@ end;
 procedure TfrmVWM.UpdateSettings;
 begin
   if Visible then
-    SharpCenterApi.CenterDefineSettingsChanged;
+    PluginHost.Save;
 end;
 
 end.
