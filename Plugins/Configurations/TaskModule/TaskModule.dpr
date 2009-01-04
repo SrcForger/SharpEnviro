@@ -32,79 +32,192 @@ uses
   Dialogs,
   JclSimpleXml,
   JclFileUtils,
-  GR32,
-  GR32_Image,
-  PngSpeedButton,
+  JclStrings,
   uVistaFuncs,
   SysUtils,
   Graphics,
-  uEditWnd in 'uEditWnd.pas' {frmEdit},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  SharpAPI,
+  SharpCenterAPI,
+  SharpThemeApi,
+  SharpTypes,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  uEditWnd in 'uEditWnd.pas' {frmEdit};
 
 {$E .dll}
 
 {$R *.res}
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
+  private
+    barID : string;
+    moduleID : string;
+    procedure Load;
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
+    procedure Refresh; override; stdCall;
+
+    function GetPluginDescriptionText: String; override; stdCall;
+end;
+
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+begin
+  PluginHost := APluginHost;
+  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+end;
+
+procedure TSharpCenterPlugin.Load;
 var
-  pluginId: string;
-  barId: string;
-  moduleId: string;
+  sortTasks: boolean;
+  includeList, excludeList: TStringList;
+  state, index, i: Integer;
 begin
-  {$REGION 'Form Creation'}
-    if frmEdit = nil then
-        frmEdit := TfrmEdit.Create(nil);
-      frmEdit.ParentWindow := aowner;
-      frmEdit.Left := 0;
-      frmEdit.Top := 0;
-      frmEdit.BorderStyle := bsNone;
-      frmEdit.Show;
-      uVistaFuncs.SetVistaFonts(frmEdit);
-  {$ENDREGION}
+  if PluginHost.Xml.Load then
+  begin
+    with PluginHost.Xml.XmlRoot.Items, frmEdit do
+    begin
+      // State
+      state := IntValue('State', 0);
+      case state of
+        integer(tisCompact): cbStyle.ItemIndex := 1; // sState := tisCompact;
+        integer(tisMini): cbStyle.ItemIndex := 2;
+      else cbStyle.ItemIndex := 0;
+      end;
 
-  {$REGION 'Get plugin and module id'}
-    pluginId := APluginID;
-      barId := copy(pluginId, 0, pos(':',pluginId)-1);
-      moduleId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
-      frmEdit.BarId := barId;
-      frmEdit.ModuleId := moduleId;
-  {$ENDREGION}
+      // Sort type
+      sortTasks := BoolValue('Sort', False);
+      if not (sortTasks) then cbSortMode.ItemIndex := 0 else begin
+        case TSharpeTaskManagerSortType(IntValue('SortType', 0)) of
+          stWndClass: cbSortMode.ItemIndex := 2;
+          stTime: cbSortMode.ItemIndex := 3;
+          stIcon: cbSortMode.ItemIndex := 4;
+        else cbSortMode.ItemIndex := 1;
+        end;
+      end;
 
-  frmEdit.LoadSettings;
-  result := frmEdit.Handle;
-end;
+      // Buttons
+      chkMinimiseBtn.Checked := BoolValue('MinAllButton', False);
+      chkRestoreBtn.Checked := BoolValue('MaxAllButton', False);
+      chkFilterTasks.Checked := BoolValue('FilterTasks', False);
+      chkMiddleClose.Checked := BoolValue('MiddleClose', True);
+      lbItems.Visible := chkFilterTasks.Checked;
+      lbItemsResize(nil);
 
-function Close: boolean;
-begin
-  result := True;
-  try
-    frmEdit.Close;
-    frmEdit.Free;
-    frmEdit := nil;
-  except
-    result := False;
+      // Include/Exclude Filters
+      includeList := TStringList.Create;
+      excludeList := TStringList.Create;
+
+      try
+        StrTokenToStrings(Value('IFilters', ''), ',', includeList);
+        StrTokenToStrings(Value('EFilters', ''), ',', excludeList);
+
+        // include checks
+        for i := 0 to Pred(includeList.Count) do begin
+          index := lbItems.Items.IndexOf(StrRemoveChars(includeList[i], ['"']));
+          if index <> -1 then
+            lbItems.Item[index].SubItemChecked[1] := true;
+        end;
+
+        // exclude checks
+        for i := 0 to Pred(excludeList.Count) do begin
+          index := lbItems.Items.IndexOf(StrRemoveChars(excludeList[i], ['"']));
+          if index <> -1 then
+            lbItems.Item[index].SubItemChecked[2] := true;
+        end;
+      finally
+        includeList.Free;
+        excludeList.Free;
+      end;
+    end;
   end;
+ end;
+
+function TSharpCenterPlugin.Open: Cardinal;
+begin
+  if frmEdit = nil then frmEdit := TfrmEdit.Create(nil);
+  frmEdit.PluginHost := PluginHost;
+  uVistaFuncs.SetVistaFonts(frmEdit);
+
+  Load;
+  result := PluginHost.Open(frmEdit);
 end;
 
-procedure Save;
+procedure TSharpCenterPlugin.Close;
 begin
-  frmEdit.SaveSettings;
+  FreeAndNil(frmEdit);
 end;
 
-procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
-  var ATitle: string; var ADescription: string);
+procedure TSharpCenterPlugin.Save;
+var
+  i: Integer;
+  includeList, excludeList: TStringList;
 begin
-  AName := 'Task Options';
-  AStatus := '';
-  ATitle := 'Task Module';
-  ADescription := 'Configure Task Module';
+  PluginHost.Xml.XmlRoot.Name := 'TaskBarModuleSettings';
 
+  with PluginHost.Xml.XmlRoot.Items, frmEdit do
+  begin
+    // Clear the list so we don't get duplicates.
+    Clear;
+    
+    // State
+    case cbStyle.ItemIndex of
+      0: Add('State', integer(tisFull));
+      2: Add('State', integer(tisMini));
+    else Add('State', integer(tisCompact));
+    end;
+
+    // Sort?
+    if cbSortMode.ItemIndex = 0 then
+      Add('Sort', False) else
+      Add('Sort', True);
+
+    // Sort type
+    case cbSortMode.ItemIndex of
+      1: Add('SortType', Integer(stCaption));
+      2: Add('SortType', Integer(stWndClass));
+      3: Add('SortType', Integer(stTime));
+      4: Add('SortType', Integer(stIcon));
+    end;
+
+    // Buttons
+    Add('MinAllButton', chkMinimiseBtn.Checked);
+    Add('MaxAllButton', chkRestoreBtn.Checked);
+    Add('FilterTasks', chkFilterTasks.Checked);
+    Add('MiddleClose', chkMiddleClose.Checked);
+
+    includeList := TStringList.Create;
+    excludeList := TStringList.Create;
+
+    try
+      // Include/Exclude Filters
+      for i := 0 to Pred(lbItems.Count) do begin
+        if lbItems.Item[i].SubItemChecked[1] then
+          includeList.Add(lbItems.Item[i].Caption) else
+          if lbItems.Item[i].SubItemChecked[2] then
+            excludeList.Add(lbItems.Item[i].Caption);
+      end;
+
+      Add('IFilters', includeList.DelimitedText);
+      Add('EFilters', excludeList.DelimitedText);
+
+    finally
+      includeList.Free;
+      excludeList.Free;
+    end;
+  end;
+
+  PluginHost.Xml.Save;
+end;
+
+function TSharpCenterPlugin.GetPluginDescriptionText : String;
+begin
+  result := 'Configure Task Module';
 end;
 
 function GetMetaData(): TMetaData;
@@ -114,7 +227,7 @@ begin
     Name := 'Task Module';
     Description := 'Task Module Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7';
+    Version := '0.7.6.0';
     DataType := tteConfig;
 
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
@@ -122,26 +235,19 @@ begin
   end;
 end;
 
-procedure GetCenterScheme(var ABackground: TColor;
-      var AItemColor: TColor; var AItemSelectedColor: TColor);
+procedure TSharpCenterPlugin.Refresh;
 begin
+  PluginHost.AssignThemeToPluginForm(frmEdit);
+end;
 
-  if frmEdit <> nil then begin
-    frmEdit.lbItems.Colors.ItemColor := AItemColor;
-    frmEdit.lbItems.Colors.CheckColor := AItemColor;
-    frmEdit.lbItems.Colors.ItemColorSelected := AItemSelectedColor;
-    frmEdit.lbItems.Colors.CheckColorSelected := AItemSelectedColor;
-
-  end;
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
 end;
 
 exports
-  Open,
-  Close,
-  Save,
-  SetText,
-  GetMetaData,
-  GetCenterScheme;
+  InitPluginInterface,
+  GetMetaData;
 
 begin
 end.

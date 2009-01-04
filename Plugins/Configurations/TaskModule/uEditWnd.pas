@@ -41,7 +41,9 @@ uses
   ImgList,
   PngImageList,
   SharpTypes,
-  SharpEListBoxEx, TaskFilterList, ExtCtrls, JclSimpleXml, JclStrings;
+  SharpEListBoxEx, TaskFilterList, ExtCtrls, JclSimpleXml, JclStrings,
+  ISharpCenterHostUnit, SharpThemeApi, SharpCenterApi, SharpESkin,
+  SharpECenterHeader, JvExControls, JvXPCore, JvXPCheckCtrls;
 
 type
   TItemData = class
@@ -58,22 +60,19 @@ type
     lbItems: TSharpEListBoxEx;
     pilListBox: TPngImageList;
     pnlOptions: TPanel;
-    Label3: TLabel;
-    lblTaskOptionsDec: TLabel;
-    Label1: TLabel;
-    Panel1: TPanel;
-    Panel2: TPanel;
-    chkMinimiseBtn: TCheckBox;
-    chkRestoreBtn: TCheckBox;
+    pnlStyleAndSort: TPanel;
+    pnlButtons: TPanel;
     cbStyle: TComboBox;
-    Label2: TLabel;
-    Label6: TLabel;
+    lblSort: TLabel;
+    lblStyle: TLabel;
     cbSortMode: TComboBox;
-    Label4: TLabel;
-    lblFilterDesc: TLabel;
-    lblButtonsDesc: TLabel;
-    chkFilterTasks: TCheckBox;
-    chkMiddleClose: TCheckBox;
+    schTaskOptions: TSharpECenterHeader;
+    schButtons: TSharpECenterHeader;
+    schFilters: TSharpECenterHeader;
+    chkMiddleClose: TJvXPCheckbox;
+    chkMinimiseBtn: TJvXPCheckbox;
+    chkRestoreBtn: TJvXPCheckbox;
+    chkFilterTasks: TJvXPCheckbox;
     procedure lbItemsResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -91,17 +90,12 @@ type
     procedure chkFilterTasksClick(Sender: TObject);
     procedure SettingsChange(Sender: TObject);
   private
+    FPluginHost: TInterfacedSharpCenterHostBase;
     FTaskFilterList: TFilterItemList;
-    FModuleId: string;
-    FBarId: string;
-    FUpdating: boolean;
   public
     procedure RenderItems;
-    property BarId: string read FBarId write FBarId;
-    property ModuleId: string read FModuleId write FModuleId;
-
-    procedure LoadSettings;
-    procedure SaveSettings;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
   end;
 
 var
@@ -112,32 +106,26 @@ const
 
 implementation
 
-uses SharpThemeApi, SharpCenterApi, uSharpBarAPI, SharpESkin;
-
 {$R *.dfm}
 
 procedure TfrmEdit.SettingsChange(Sender: TObject);
 begin
-  if not (FUpdating) then
-    CenterDefineSettingsChanged;
+  if Visible then
+    PluginHost.Save;
 end;
 
 procedure TfrmEdit.chkFilterTasksClick(Sender: TObject);
 begin
-  if not (FUpdating) then
-    CenterDefineSettingsChanged;
+  SettingsChange(Sender);
 
   lbItems.Visible := chkFilterTasks.Checked;
-  CenterUpdateSize;
+  PluginHost.Refresh(rtAll);
 end;
 
 procedure TfrmEdit.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := True;
   lbItems.DoubleBuffered := True;
-  lblTaskOptionsDec.Font.Color := clGrayText;
-  lblFilterDesc.Font.Color := clGrayText;
-  lblButtonsDesc.Font.Color := clGrayText;
 
   FTaskFilterList := TFilterItemList.Create;
   RenderItems;
@@ -159,8 +147,7 @@ begin
       AItem.SubItemChecked[1] := False;
   end;
 
-  if not (FUpdating) then
-    CenterDefineSettingsChanged;
+  SettingsChange(Sender);
 end;
 
 procedure TfrmEdit.lbItemsClickItem(Sender: TObject; const ACol: Integer;
@@ -186,7 +173,7 @@ begin
     colName: //Click Event;
   end;
 
-  CenterUpdateConfigFull;
+  SettingsChange(Sender);
 end;
 
 procedure TfrmEdit.lbItemsGetCellColor(Sender: TObject;
@@ -227,90 +214,6 @@ begin
     Self.Height := pnlOptions.Height;
 end;
 
-procedure TfrmEdit.LoadSettings;
-var
-  xml: TJclSimpleXML;
-  fileloaded: boolean;
-  state, index, i: Integer;
-  sortTasks: boolean;
-
-  includeList, excludeList: TStringList;
-begin
-  xml := TJclSimpleXML.Create;
-  FUpdating := True;
-  try
-    fileloaded := False;
-    try
-      XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(StrToInt(FBarId), StrToInt(FModuleId)));
-      fileloaded := True;
-    except
-    end;
-
-    if fileloaded then
-      with xml.Root.Items do
-      begin
-
-        // State
-        state := IntValue('State', 0);
-        case state of
-          integer(tisCompact): cbStyle.ItemIndex := 1; // sState := tisCompact;
-          integer(tisMini): cbStyle.ItemIndex := 2;
-        else cbStyle.ItemIndex := 0;
-        end;
-
-        // Sort type
-        sortTasks := BoolValue('Sort', False);
-        if not (sortTasks) then cbSortMode.ItemIndex := 0 else begin
-          case TSharpeTaskManagerSortType(IntValue('SortType', 0)) of
-            stWndClass: cbSortMode.ItemIndex := 2;
-            stTime: cbSortMode.ItemIndex := 3;
-            stIcon: cbSortMode.ItemIndex := 4;
-          else cbSortMode.ItemIndex := 1;
-          end;
-        end;
-
-        // Buttons
-        chkMinimiseBtn.Checked := BoolValue('MinAllButton', False);
-        chkRestoreBtn.Checked := BoolValue('MaxAllButton', False);
-        chkFilterTasks.Checked := BoolValue('FilterTasks', False);
-        chkMiddleClose.Checked := BoolValue('MiddleClose', True);
-        lbItems.Visible := chkFilterTasks.Checked;
-        lbItemsResize(nil);
-
-        // Include/Exclude Filters
-        includeList := TStringList.Create;
-        excludeList := TStringList.Create;
-        try
-          StrTokenToStrings(Value('IFilters', ''), ',', includeList);
-          StrTokenToStrings(Value('EFilters', ''), ',', excludeList);
-
-          // include checks
-          for i := 0 to Pred(includeList.Count) do begin
-            index := lbItems.Items.IndexOf(StrRemoveChars(includeList[i], ['"']));
-            if index <> -1 then
-              lbItems.Item[index].SubItemChecked[1] := true;
-          end;
-
-          // exclude checks
-          for i := 0 to Pred(excludeList.Count) do begin
-            index := lbItems.Items.IndexOf(StrRemoveChars(excludeList[i], ['"']));
-            if index <> -1 then
-              lbItems.Item[index].SubItemChecked[2] := true;
-          end;
-
-        finally
-          includeList.Free;
-          excludeList.Free;
-        end;
-      end;
-
-  finally
-    XML.Free;
-    FUpdating := False;
-  end;
-
-end;
-
 procedure TfrmEdit.RenderItems;
 var
   newItem: TSharpEListItem;
@@ -339,75 +242,6 @@ begin
   end;
 
   lbItems.ItemIndex := -1;
-
-  CenterUpdateEditTabs(lbItems.Count, lbItems.ItemIndex);
-  CenterUpdateConfigFull;
-end;
-
-procedure TfrmEdit.SaveSettings;
-var
-  xml: TJclSimpleXML;
-  i: Integer;
-  includeList, excludeList: TStringList;
-begin
-  xml := TJclSimpleXML.Create;
-  try
-    xml.Root.Name := 'TaskBarModuleSettings';
-    with xml.Root.Items do
-    begin
-
-      // State
-      case cbStyle.ItemIndex of
-        0: Add('State', integer(tisFull));
-        2: Add('State', integer(tisMini));
-      else Add('State', integer(tisCompact));
-      end;
-
-      // Sort?
-      if cbSortMode.ItemIndex = 0 then
-        Add('Sort', False) else
-        Add('Sort', True);
-
-      // Sort type
-      case cbSortMode.ItemIndex of
-        1: Add('SortType', Integer(stCaption));
-        2: Add('SortType', Integer(stWndClass));
-        3: Add('SortType', Integer(stTime));
-        4: Add('SortType', Integer(stIcon));
-      end;
-
-      // Buttons
-      Add('MinAllButton', chkMinimiseBtn.Checked);
-      Add('MaxAllButton', chkRestoreBtn.Checked);
-      Add('FilterTasks', chkFilterTasks.Checked);
-      Add('MiddleClose', chkMiddleClose.Checked);
-
-      includeList := TStringList.Create;
-      excludeList := TStringList.Create;
-      try
-
-        // Include/Exclude Filters
-        for i := 0 to Pred(lbItems.Count) do begin
-          if lbItems.Item[i].SubItemChecked[1] then
-            includeList.Add(lbItems.Item[i].Caption) else
-            if lbItems.Item[i].SubItemChecked[2] then
-              excludeList.Add(lbItems.Item[i].Caption);
-        end;
-
-        Add('IFilters', includeList.DelimitedText);
-        Add('EFilters', excludeList.DelimitedText);
-
-      finally
-        includeList.Free;
-        excludeList.Free;
-      end;
-    end;
-
-  finally
-    XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(StrToInt(FBarId), StrToInt(FModuleId)));
-    XML.Free;
-  end;
-
 end;
 
 { TItemData }
