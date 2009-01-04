@@ -32,32 +32,28 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
   ImgList, PngImageList, GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
-  JvPageList, JvExControls, ComCtrls, Mask;
-
-type
-  TStringObject = class(TObject)
-  public
-    Str: string;
-  end;
+  JvPageList, JvExControls, ComCtrls, Mask, ISharpCenterHostUnit,
+  SharpECenterHeader, JvXPCore, JvXPCheckCtrls;
 
 type
   TfrmMiniScmd = class(TForm)
     plMain: TJvPageList;
     pagMiniScmd: TJvStandardPage;
-    Label5: TLabel;
-    cb_quickselect: TCheckBox;
-    Label3: TLabel;
-    Panel1: TPanel;
+    lblQuickSelect: TLabel;
+    pnlSize: TPanel;
     sgb_width: TSharpeGaugeBox;
+    scmQuickSelect: TSharpECenterHeader;
+    scmSize: TSharpECenterHeader;
+    cbQuickSelect: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
-    procedure cb_quickselectClick(Sender: TObject);
+    procedure cbQuickSelectClick(Sender: TObject);
     procedure sgb_widthChangeValue(Sender: TObject; Value: Integer);
   private
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure UpdateSettings;
   public
-    sModuleID: string;
-    sBarID : string;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
   end;
 
 var
@@ -65,11 +61,9 @@ var
 
 implementation
 
-uses SharpThemeApi, SharpCenterApi;
-
 {$R *.dfm}
 
-procedure TfrmMiniScmd.cb_quickselectClick(Sender: TObject);
+procedure TfrmMiniScmd.cbQuickSelectClick(Sender: TObject);
 begin
   UpdateSettings;
 end;
@@ -77,11 +71,6 @@ end;
 procedure TfrmMiniScmd.FormCreate(Sender: TObject);
 begin
   DoubleBuffered := true;
-end;
-
-procedure TfrmMiniScmd.FormShow(Sender: TObject);
-begin
-  Label5.Font.Color := clGrayText;
 end;
 
 procedure TfrmMiniScmd.sgb_widthChangeValue(Sender: TObject; Value: Integer);
@@ -92,7 +81,7 @@ end;
 procedure TfrmMiniScmd.UpdateSettings;
 begin
   if Visible then
-    SharpCenterApi.CenterDefineSettingsChanged;
+    PluginHost.Save;
 end;
 
 end.

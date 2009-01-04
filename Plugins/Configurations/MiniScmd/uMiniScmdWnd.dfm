@@ -1,9 +1,10 @@
 object frmMiniScmd: TfrmMiniScmd
   Left = 0
   Top = 0
+  BorderStyle = bsNone
   Caption = 'frmMiniScmd'
-  ClientHeight = 166
-  ClientWidth = 427
+  ClientHeight = 197
+  ClientWidth = 435
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,33 +13,30 @@ object frmMiniScmd: TfrmMiniScmd
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object plMain: TJvPageList
     Left = 0
     Top = 0
-    Width = 427
-    Height = 166
+    Width = 435
+    Height = 197
     ActivePage = pagMiniScmd
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 400
     object pagMiniScmd: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 427
-      Height = 166
-      ExplicitHeight = 400
-      object Label5: TLabel
+      Width = 435
+      Height = 197
+      object lblQuickSelect: TLabel
         AlignWithMargins = True
-        Left = 26
-        Top = 32
-        Width = 393
+        Left = 20
+        Top = 72
+        Width = 405
         Height = 49
-        Margins.Left = 26
+        Margins.Left = 20
         Margins.Top = 8
-        Margins.Right = 8
+        Margins.Right = 10
         Margins.Bottom = 0
         Align = alTop
         AutoSize = False
@@ -49,47 +47,21 @@ object frmMiniScmd: TfrmMiniScmd
           ' the command box)'
         Transparent = False
         WordWrap = True
+        ExplicitLeft = 48
+        ExplicitTop = 73
+        ExplicitWidth = 379
       end
-      object Label3: TLabel
+      object pnlSize: TPanel
         AlignWithMargins = True
-        Left = 8
-        Top = 89
-        Width = 411
-        Height = 13
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 8
-        Align = alTop
-        Caption = 'Command Box Size'
-        ExplicitWidth = 90
-      end
-      object cb_quickselect: TCheckBox
-        AlignWithMargins = True
-        Left = 8
-        Top = 8
-        Width = 411
-        Height = 16
-        Margins.Left = 8
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        Caption = 'Display '#39'Quick Select'#39' Button'
-        Checked = True
-        State = cbChecked
-        TabOrder = 0
-        OnClick = cb_quickselectClick
-      end
-      object Panel1: TPanel
-        Left = 0
-        Top = 110
-        Width = 427
+        Left = 3
+        Top = 165
+        Width = 429
         Height = 21
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 1
+        TabOrder = 0
+        ExplicitTop = 166
         object sgb_width: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 24
@@ -110,7 +82,55 @@ object frmMiniScmd: TfrmMiniScmd
           PopPosition = ppRight
           PercentDisplay = False
           OnChangeValue = sgb_widthChangeValue
+          BackgroundColor = clWindow
         end
+      end
+      object scmQuickSelect: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 3
+        Top = 3
+        Width = 429
+        Height = 35
+        Title = 'Quick Select Options'
+        Description = 
+          'Configure whether or not you want a quick select button displaye' +
+          'd.'
+        TitleColor = clWindowText
+        DescriptionColor = clRed
+        Align = alTop
+        Color = clWindow
+      end
+      object scmSize: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 3
+        Top = 124
+        Width = 429
+        Height = 35
+        Title = 'Command Box Size'
+        Description = 'Configure how wide you want the command box to be.'
+        TitleColor = clWindowText
+        DescriptionColor = clRed
+        Align = alTop
+        Color = clWindow
+        ExplicitTop = 125
+      end
+      object cbQuickSelect: TJvXPCheckbox
+        AlignWithMargins = True
+        Left = 20
+        Top = 44
+        Width = 405
+        Height = 17
+        Margins.Left = 20
+        Margins.Right = 10
+        Caption = 'Display '#39'Quick Select'#39' Button'
+        TabOrder = 3
+        Checked = True
+        State = cbChecked
+        Align = alTop
+        OnClick = cbQuickSelectClick
+        ExplicitLeft = -3
+        ExplicitTop = 45
+        ExplicitWidth = 435
       end
     end
   end

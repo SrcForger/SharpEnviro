@@ -39,96 +39,87 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
-  uMiniScmdWnd in 'uMiniScmdWnd.pas' {frmMiniScmd},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
-  SharpDialogs in '..\..\..\Common\Libraries\SharpDialogs\SharpDialogs.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  SharpAPI,
+  SharpCenterAPI,
+  SharpThemeApi,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  uMiniScmdWnd in 'uMiniScmdWnd.pas' {frmMiniScmd};
 
 {$E .dll}
 
 {$R *.res}
 
-procedure Save;
-var
-  XML : TJvSimpleXML;
-begin
-  if frmMiniScmd = nil then
-    exit;
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
+  private
+    barID : string;
+    moduleID : string;
+    procedure Load;
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
-  XML := TJvSimpleXML.Create(nil);
-  XML.Root.Name := 'MiniScmdModuleSettings';    
-  with XML.Root.Items, frmMiniScmd do
-  begin
-    Add('Width',sgb_width.Value);
-    Add('Button',cb_quickselect.Checked);
-  end;
-  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmMiniScmd.sBarID),strtoint(frmMiniScmd.sModuleID)));
-  XML.Free;
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
+    procedure Refresh; override; stdCall;
+
+    function GetPluginDescriptionText: String; override; stdCall;
 end;
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  XML : TJvSimpleXML;
-  left,right : String;
-  s : string;
-  fileloaded : boolean;
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+begin
+  PluginHost := APluginHost;
+  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+end;
+
+procedure TSharpCenterPlugin.Save;
+begin
+  PluginHost.Xml.XmlRoot.Name := 'MiniScmdModuleSettings';
+
+  with PluginHost.Xml.XmlRoot.Items, frmMiniScmd do
+  begin
+    // Clear the list so we don't get duplicates.
+    Clear;
+
+    Add('Width', sgb_width.Value);
+    Add('Button', cbQuickSelect.Checked);
+  end;
+
+  PluginHost.Xml.Save;
+end;
+
+procedure TSharpCenterPlugin.Load;
+begin
+  if PluginHost.Xml.Load then
+  begin
+    with PluginHost.Xml.XmlRoot.Items, frmMiniScmd do
+    begin
+      sgb_width.Value := IntValue('Width', 100);
+      cbQuickSelect.Checked := BoolValue('Button', True);
+    end;
+  end;
+end;
+
+function TSharpCenterPlugin.Open: Cardinal;
 begin
   if frmMiniScmd = nil then frmMiniScmd := TfrmMiniScmd.Create(nil);
-
-  s := APluginID;
-  left := copy(s, 0, pos(':',s)-1);
-  right := copy(s, pos(':',s)+1, length(s) - pos(':',s));
+  frmMiniScmd.PluginHost := PluginHost;
   uVistaFuncs.SetVistaFonts(frmMiniScmd);
-  frmMiniScmd.sBarID := left;
-  frmMiniScmd.sModuleID := right;
-  frmMiniScmd.ParentWindow := aowner;
-  frmMiniScmd.Left := 2;
-  frmMiniScmd.Top := 2;
-  frmMiniScmd.BorderStyle := bsNone;
-  result := frmMiniScmd.Handle;
 
-  XML := TJvSimpleXML.Create(nil);
-  fileloaded := False;
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(left),strtoint(right)));
-    fileloaded := True;
-  except
-  end;
-
-  if fileloaded then
-    with XML.Root.Items, frmMiniScmd do
-    begin
-      sgb_width.Value := IntValue('Width',100);
-      cb_quickselect.Checked := BoolValue('Button',True);
-    end;
-  XML.Free;
-
-  frmMiniScmd.Show;
+  Load;
+  result := PluginHost.Open(frmMiniScmd);
 end;
 
-function Close : boolean;
+procedure TSharpCenterPlugin.Close;
 begin
-  result := True;
-  try
-    frmMiniScmd.Close;
-    frmMiniScmd.Free;
-    frmMiniScmd := nil;
-  except
-    result := False;
-  end;
+  FreeAndNil(frmMiniScmd);
 end;
 
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+function TSharpCenterPlugin.GetPluginDescriptionText : String;
 begin
-  AName := 'Mini SCmd';
-  ATitle := 'Mini SCmd Module';
-  ADescription := 'Configure Mini SCmd module';
+  result := 'Configure Mini SCmd module';
 end;
 
 function GetMetaData(): TMetaData;
@@ -138,19 +129,27 @@ begin
     Name := 'Mini SCmd';
     Description := 'Mini SCmd Module Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
   end;
 end;
 
-exports
-  Open,
-  Close,
-  Save,
-  GetMetaData,
-  SetText;
+procedure TSharpCenterPlugin.Refresh;
+begin
+  PluginHost.AssignThemeToPluginForm(frmMiniScmd);
+end;
 
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
+end;
+
+exports
+  InitPluginInterface,
+  GetMetaData;
+
+begin
 end.
 
