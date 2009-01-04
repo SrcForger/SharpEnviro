@@ -32,30 +32,25 @@ uses
   Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
   ImgList, PngImageList, GR32, GR32_PNG, SharpApi,
   ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit,
-  JvPageList, JvExControls, ComCtrls, Mask;
-
-type
-  TStringObject = class(TObject)
-  public
-    Str: string;
-  end;
+  JvPageList, JvExControls, ComCtrls, Mask, ISharpCenterHostUnit,
+  SharpECenterHeader, JvXPCore, JvXPCheckCtrls;
 
 type
   TfrmKLayout = class(TForm)
     plMain: TJvPageList;
     pagKLayout: TJvStandardPage;
-    Label5: TLabel;
-    cbIcon: TCheckBox;
-    cbTLC: TCheckBox;
-    Label1: TLabel;
+    lblIcon: TLabel;
+    lblTLC: TLabel;
+    schDisplayOptions: TSharpECenterHeader;
+    chkIcon: TJvXPCheckbox;
+    chkTLC: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure cbIconClick(Sender: TObject);
   private
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure UpdateSettings;
   public
-    sModuleID: string;
-    sBarID : string;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
   end;
 
 var
@@ -77,16 +72,10 @@ begin
   DoubleBuffered := true;
 end;
 
-procedure TfrmKLayout.FormShow(Sender: TObject);
-begin
-  Label5.Font.Color := clGrayText;
-  Label1.Font.Color := clGrayText;
-end;
-
 procedure TfrmKLayout.UpdateSettings;
 begin
   if Visible then
-    SharpCenterApi.CenterDefineSettingsChanged;
+    PluginHost.Save;
 end;
 
 end.

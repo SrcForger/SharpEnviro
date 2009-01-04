@@ -39,96 +39,87 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
-  uKLayoutWnd in 'uKLayoutWnd.pas' {frmKLayout},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
-  SharpDialogs in '..\..\..\Common\Libraries\SharpDialogs\SharpDialogs.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  SharpAPI,
+  SharpCenterAPI,
+  SharpThemeApi,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  uKLayoutWnd in 'uKLayoutWnd.pas' {frmKLayout};
 
 {$E .dll}
 
 {$R *.res}
 
-procedure Save;
-var
-  XML : TJvSimpleXML;
-begin
-  if frmKLayout = nil then
-    exit;
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
+  private
+    barID : string;
+    moduleID : string;
+    procedure Load;
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
-  XML := TJvSimpleXML.Create(nil);
-  XML.Root.Name := 'KeyboardLayoutModuleSettings';
-  with XML.Root.Items, frmKLayout do
-  begin
-    Add('ShowIcon',cbIcon.Checked);
-    Add('ThreeLetterCode',cbTLC.Checked);
-  end;
-  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmKLayout.sBarID),strtoint(frmKLayout.sModuleID)));
-  XML.Free;
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
+    procedure Refresh; override; stdCall;
+
+    function GetPluginDescriptionText: String; override; stdCall;
 end;
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  XML : TJvSimpleXML;
-  left,right : String;
-  s : string;
-  fileloaded : boolean;
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+begin
+  PluginHost := APluginHost;
+  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+end;
+
+procedure TSharpCenterPlugin.Save;
+begin
+  PluginHost.Xml.XmlRoot.Name := 'KeyboardLayoutModuleSettings';
+
+  with PluginHost.Xml.XmlRoot.Items, frmKLayout do
+  begin
+    // Clear the list so we don't get duplicates.
+    Clear;
+
+    Add('ShowIcon', chkIcon.Checked);
+    Add('ThreeLetterCode', chkTLC.Checked);
+  end;
+
+  PluginHost.Xml.Save;
+end;
+
+procedure TSharpCenterPlugin.Load;
+begin
+  if PluginHost.Xml.Load then
+  begin
+    with PluginHost.Xml.XmlRoot.Items, frmKLayout do
+    begin
+      chkIcon.Checked := BoolValue('ShowIcon', chkIcon.Checked);
+      chkTLC.Checked  := BoolValue('ThreeLetterCode', chkTLC.Checked);
+    end;
+  end;
+end;
+
+function TSharpCenterPlugin.Open: Cardinal;
 begin
   if frmKLayout = nil then frmKLayout := TfrmKLayout.Create(nil);
-
-  s := APluginID;
-  left := copy(s, 0, pos(':',s)-1);
-  right := copy(s, pos(':',s)+1, length(s) - pos(':',s));
+  frmKLayout.PluginHost := PluginHost;
   uVistaFuncs.SetVistaFonts(frmKLayout);
-  frmKLayout.sBarID := left;
-  frmKLayout.sModuleID := right;
-  frmKLayout.ParentWindow := aowner;
-  frmKLayout.Left := 2;
-  frmKLayout.Top := 2;
-  frmKLayout.BorderStyle := bsNone;
-  result := frmKLayout.Handle;
 
-  XML := TJvSimpleXML.Create(nil);
-  fileloaded := False;
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(left),strtoint(right)));
-    fileloaded := True;
-  except
-  end;
-
-  if fileloaded then
-    with XML.Root.Items, frmKLayout do
-    begin
-      cbIcon.Checked := BoolValue('ShowIcon',cbIcon.Checked);
-      cbTLC.Checked  := BoolValue('ThreeLetterCode',cbTLC.Checked);
-    end;
-  XML.Free;
-
-  frmKLayout.Show;
+  Load;
+  result := PluginHost.Open(frmKLayout);
 end;
 
-function Close : boolean;
+procedure TSharpCenterPlugin.Close;
 begin
-  result := True;
-  try
-    frmKLayout.Close;
-    frmKLayout.Free;
-    frmKLayout := nil;
-  except
-    result := False;
-  end;
+  FreeAndNil(frmKLayout);
 end;
 
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+function TSharpCenterPlugin.GetPluginDescriptionText : String;
 begin
-  AName := 'Keyboard Layout';
-  ATitle := 'Keyboard Layout Module';
-  ADescription := 'Configure keyboard layout module';
+  result := 'Configure keyboard layout module';
 end;
 
 function GetMetaData(): TMetaData;
@@ -138,18 +129,25 @@ begin
     Name := 'Keyboard Layout';
     Description := 'Keyboard Layout Module Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
   end;
 end;
 
+procedure TSharpCenterPlugin.Refresh;
+begin
+  PluginHost.AssignThemeToPluginForm(frmKLayout);
+end;
+
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
+end;
+
 exports
-  Open,
-  Close,
-  Save,
-  SetText,
+  InitPluginInterface,
   GetMetaData;
 
 begin
