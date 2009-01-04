@@ -1,13 +1,9 @@
 <SharpCompile>
   <package Name="Configurations">
-     <project Name="Button Module" Type="DLL">Plugins\Configurations\ButtonModule\ButtonModule.dproj</project>
      <project Name="Filter List" Type="DLL">Plugins\Configurations\FilterList\FilterList.dproj</project>
      <project Name="Image Object" Type="DLL">Plugins\Configurations\Image\Image.dproj</project>
-     <project Name="Keyboard Layout Module" Type="DLL">Plugins\Configurations\KeyboardLayout\KeyboardLayout.dproj</project>
      <project Name="Link Object" Type="DLL">Plugins\Configurations\Link\Link.dproj</project>
-     <project Name="Quick Script Module" Type="DLL">Plugins\Configurations\QuickScript\QuickScript.dproj</project>
      <project Name="Recycle Bin Object" Type="DLL">Plugins\Configurations\RecycleBin\RecycleBin.dproj</project>
-     <project Name="Task Module" Type="DLL">Plugins\Configurations\TaskModule\TaskModule.dproj</project>
   </package>
   <package Name="Configurations - Components">
 	 <project Name="Toolbar List" Type="DLL">Plugins\Configurations\Components\Barlist\BarList.dproj</project>
@@ -22,13 +18,17 @@
   </package>
   <package Name="Configurations - Modules">
      <project Name="Battery Monitor Module" Type="DLL">Plugins\Configurations\Modules\BatteryMonitor\BatteryMonitor.dproj</project>
+     <project Name="Button Module" Type="DLL">Plugins\Configurations\Modules\ButtonModule\ButtonModule.dproj</project>
      <project Name="Clock Module" Type="DLL">Plugins\Configurations\Modules\Clock\Clock.dproj</project>
      <project Name="CPU Monitor Module" Type="DLL">Plugins\Configurations\Modules\CPUMonitor\CPUMonitor.dproj</project>
+     <project Name="Keyboard Layout Module" Type="DLL">Plugins\Configurations\Modules\KeyboardLayout\KeyboardLayout.dproj</project>
      <project Name="Memory Monitor Module" Type="DLL">Plugins\Configurations\Modules\MemoryMonitor\MemoryMonitor.dproj</project>
      <project Name="Menu Module" Type="DLL">Plugins\Configurations\Modules\MenuModule\MenuModule.dproj</project>
      <project Name="MiniScmd Module" Type="DLL">Plugins\Configurations\Modules\MiniScmd\MiniScmd.dproj</project>
      <project Name="Notes Module" Type="DLL">Plugins\Configurations\Modules\Notes\Notes.dproj</project>
+     <project Name="Quick Script Module" Type="DLL">Plugins\Configurations\Modules\QuickScript\QuickScript.dproj</project>
      <project Name="SystemTray Module" Type="DLL">Plugins\Configurations\Modules\SystemTray\SystemTray.dproj</project>
+     <project Name="Task Module" Type="DLL">Plugins\Configurations\Modules\TaskModule\TaskModule.dproj</project>
      <project Name="VolumeControl Module" Type="DLL">Plugins\Configurations\Modules\VolumeControl\VolumeControl.dproj</project>
      <project Name="VWM Module" Type="DLL">Plugins\Configurations\Modules\VWM\VWM.dproj</project>
      <project Name="Weather Module" Type="DLL">Plugins\Configurations\Modules\WeatherModule\WeatherModule.dproj</project>
