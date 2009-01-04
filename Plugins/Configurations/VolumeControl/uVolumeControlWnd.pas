@@ -30,45 +30,37 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi, SharpCenterApi,
-  SharpEGaugeBoxEdit, ImgList, PngImageList, JvPageList, JvExControls, ExtCtrls;
-
-type
-  TStringObject = Class(TObject)
-  public
-    Str:String;
-  end;
+  SharpEGaugeBoxEdit, ImgList, PngImageList, JvPageList, JvExControls, ExtCtrls,
+  ISharpCenterHostUnit, SoundControls, MMSystem, SharpECenterHeader;
 
 type
   TfrmVolumeControl = class(TForm)
     JvPageList1: TJvPageList;
     JvSettingsPage: TJvStandardPage;
-    Panel1: TPanel;
+    pnlSize: TPanel;
     sgb_width: TSharpeGaugeBox;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
-    Panel2: TPanel;
+    lblMixerNote: TLabel;
+    pnlMixer: TPanel;
     cb_mlist: TComboBox;
-    procedure FormShow(Sender: TObject);
+    schMixer: TSharpECenterHeader;
+    schSize: TSharpECenterHeader;
     procedure FormCreate(Sender: TObject);
     procedure cb_mlistChange(Sender: TObject);
     procedure sgb_widthChangeValue(Sender: TObject; Value: Integer);
   private
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure SendUpdate;
   public
     IDList : TStringList;
-    sBarID,sModuleID : String;  
     procedure BuildMixerList;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
   end;
 
 var
   frmVolumeControl: TfrmVolumeControl;
 
 implementation
-
-uses
-  SoundControls,MMSystem;
 
 {$R *.dfm}
 
@@ -115,16 +107,10 @@ begin
   IDList.Clear;
 end;
 
-procedure TfrmVolumeControl.FormShow(Sender: TObject);
-begin
-  Label4.Font.Color := clGray;
-  Label3.Font.Color := clGray;
-end;
-
 procedure TfrmVolumeControl.SendUpdate;
 begin
   if Visible then
-     CenterDefineSettingsChanged;
+    PluginHost.Save;
 end;
 
 procedure TfrmVolumeControl.sgb_widthChangeValue(Sender: TObject;

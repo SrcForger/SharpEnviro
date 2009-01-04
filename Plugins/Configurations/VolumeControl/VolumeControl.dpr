@@ -37,118 +37,116 @@ uses
   JvPageList,
   Graphics,
   MMSystem,
-  uVolumeControlWnd in 'uVolumeControlWnd.pas' {frmVolumeControl},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  SoundControls in '..\..\Modules\VolumeControl\SoundControls.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  SharpAPI,
+  SharpCenterAPI,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  uVolumeControlWnd in 'uVolumeControlWnd.pas' {frmVolumeControl};
 
 {$E .dll}
 
 {$R *.res}
 
+type
+  TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin, ISharpCenterPluginTabs)
+  private
+    barID : string;
+    moduleID : string;
+    procedure Load;
+  public
+    constructor Create(APluginHost: TInterfacedSharpCenterHostBase);
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
+    procedure Refresh; override; stdcall;
+
+    function GetPluginDescriptionText: string; override; stdcall;
+    procedure AddPluginTabs(ATabItems: TStringList); stdcall;
+    procedure ClickPluginTab(ATab: TStringItem); stdcall;
+end;
+
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+begin
+  PluginHost := APluginHost;
+  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+end;
+
+procedure TSharpCenterPlugin.Load;
 var
-  XML : TJclSimpleXML;
-  fileloaded : boolean;
-  left,right : String;
-  s : string;
   n,i : integer;
 begin
-  if frmVolumeControl = nil then frmVolumeControl := TfrmVolumeControl.Create(nil);
-
-  uVistaFuncs.SetVistaFonts(frmVolumeControl);
-  frmVolumeControl.ParentWindow := aowner;
-  frmVolumeControl.Left := 0;
-  frmVolumeControl.Top := 0;
-  frmVolumeControl.BorderStyle := bsNone;
-
-  s := APluginID;
-  left := copy(s, 0, pos(':',s)-1);
-  right := copy(s, pos(':',s)+1, length(s) - pos(':',s));
-
-  frmVolumeControl.sBarID := left;
-  frmVolumeControl.sModuleID := right;
-
-  XML := TJclSimpleXML.Create;
-  fileloaded := False;
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(left),strtoint(right)));
-    fileloaded := True;
-  except
-  end;
-
   frmVolumeControl.BuildMixerList;
-  if fileloaded then
-    with XML.Root.Items, frmVolumeControl do
+
+  if PluginHost.Xml.Load then
+  begin
+    with PluginHost.Xml.XmlRoot.Items, frmVolumeControl do
     begin
       sgb_Width.Value := IntValue('Width',75);
       i := IntValue('Mixer',MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
       for n := 0 to IDList.Count -1 do
-      if strtoint(IDList[n]) = i then
       begin
-        cb_mlist.ItemIndex := n;
-        break;
+        if strtoint(IDList[n]) = i then
+        begin
+          cb_mlist.ItemIndex := n;
+          break;
+        end;
       end;
     end;
-
-  XML.Free;
-  frmVolumeControl.Show;
-  result := frmVolumeControl.Handle;
+  end;
 end;
 
-procedure Save;
-var
-  XML : TJclSimpleXML;
+function TSharpCenterPlugin.Open: Cardinal;
 begin
-  if frmVolumeControl = nil then
-    exit;
+  if frmVolumeControl = nil then frmVolumeControl := TfrmVolumeControl.Create(nil);
+  frmVolumeControl.PluginHost := PluginHost;
+  uVistaFuncs.SetVistaFonts(frmVolumeControl);
 
-  XML := TJclSimpleXML.Create;
-  XML.Root.Clear;
+  Load;
+  result := PluginHost.Open(frmVolumeControl);
+end;
 
-  XML.Root.Name := 'VolumeControlModuleSettings';
-  with XML.Root.Items, frmVolumeControl do
+procedure TSharpCenterPlugin.Save;
+begin
+  PluginHost.Xml.XmlRoot.Name := 'VolumeControlModuleSettings';
+
+  with PluginHost.Xml.XmlRoot.Items, frmVolumeControl do
   begin
-    if IDList.Count = 0 then Add('Mixer',0)
-      else Add('Mixer',IDList[cb_mlist.ItemIndex]);
-    Add('Width',sgb_Width.Value);
+    // Clear the list so we don't get duplicates.
+    Clear;
+    
+    if IDList.Count = 0 then
+      Add('Mixer',0)
+    else
+      Add('Mixer',IDList[cb_mlist.ItemIndex]);
+
+    Add('Width', sgb_Width.Value);
   end;
-  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmVolumeControl.sBarID),strtoint(frmVolumeControl.sModuleID)));
-  XML.Free;
+
+  PluginHost.Xml.Save;
 end;
 
-function Close : boolean;
+procedure TSharpCenterPlugin.Close;
 begin
-  result := True;
-  try
-    frmVolumeControl.Close;
-    frmVolumeControl.Free;
-    frmVolumeControl := nil;
-  except
-    result := False;
-  end;
+  FreeAndNil(frmVolumeControl);
 end;
 
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+function TSharpCenterPlugin.GetPluginDescriptionText: String;
 begin
-  AName := 'Volume Control';
-  ATitle := 'Volume Control Module';
-  ADescription := 'Configure volume control module';
+  result := 'Configure volume control module';
 end;
 
-procedure ClickTab(ATab: TStringItem);
+procedure TSharpCenterPlugin.ClickPluginTab(ATab: TStringItem);
 begin
   TJvStandardPage(ATab.FObject).Show;
 end;
 
-procedure AddTabs(var ATabs:TStringList);
+procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
 begin
   if frmVolumeControl <> nil then
   begin
-    ATabs.AddObject('Volume Control',frmVolumeControl.JvSettingsPage);
+    ATabItems.AddObject('Volume Control', frmVolumeControl.JvSettingsPage);
   end;
 end;
 
@@ -159,21 +157,25 @@ begin
     Name := 'Volume Control';
     Description := 'Volume Control Module Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
   end;
 end;
 
+procedure TSharpCenterPlugin.Refresh;
+begin
+  PluginHost.AssignThemeToPluginForm(frmVolumeControl);
+end;
+
+function InitPluginInterface(APluginHost: TInterfacedSharpCenterHostBase) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
+end;
 
 exports
-  Open,
-  Close,
-  Save,
-  SetText,
-  AddTabs,
-  ClickTab,
+  InitPluginInterface,
   GetMetaData;
 
 begin

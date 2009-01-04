@@ -3,7 +3,7 @@ object frmVolumeControl: TfrmVolumeControl
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmVolumeControl'
-  ClientHeight = 465
+  ClientHeight = 204
   ClientWidth = 428
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -13,81 +13,29 @@ object frmVolumeControl: TfrmVolumeControl
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object JvPageList1: TJvPageList
     Left = 0
     Top = 0
     Width = 428
-    Height = 465
+    Height = 204
     ActivePage = JvSettingsPage
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 465
     object JvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
       Width = 428
-      Height = 465
-      object Label1: TLabel
-        AlignWithMargins = True
-        Left = 8
-        Top = 4
-        Width = 412
-        Height = 13
-        Margins.Left = 8
-        Margins.Top = 4
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        Caption = 'Select Mixer'
-        Transparent = False
-        WordWrap = True
-        ExplicitLeft = 18
-        ExplicitWidth = 56
-      end
-      object Label2: TLabel
-        AlignWithMargins = True
-        Left = 8
-        Top = 101
-        Width = 412
-        Height = 13
-        Margins.Left = 8
-        Margins.Top = 4
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        Caption = 'Bar Size'
-        Transparent = False
-        WordWrap = True
-        ExplicitLeft = 18
-        ExplicitTop = 122
-      end
-      object Label3: TLabel
+      Height = 204
+      ExplicitHeight = 465
+      object lblMixerNote: TLabel
         AlignWithMargins = True
         Left = 18
-        Top = 118
+        Top = 45
         Width = 402
-        Height = 18
-        Margins.Left = 18
-        Margins.Top = 4
-        Margins.Right = 8
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        Caption = 'Change how big the volume control bar should be.'
-        Transparent = False
-        WordWrap = True
-        ExplicitTop = 119
-      end
-      object Label4: TLabel
-        AlignWithMargins = True
-        Left = 18
-        Top = 21
-        Width = 402
-        Height = 45
+        Height = 36
         Margins.Left = 18
         Margins.Top = 4
         Margins.Right = 8
@@ -95,24 +43,28 @@ object frmVolumeControl: TfrmVolumeControl
         Align = alTop
         AutoSize = False
         Caption = 
-          'Select the sound mixer which you want to control. Note that some' +
-          ' mixers won'#39't work and for some there might be doubled entries i' +
-          'n the list. You will just have to try and test to find the one y' +
-          'ou need.'
+          'Note that some mixers won'#39't work and for some there might be dou' +
+          'bled entries in the list. You will just have to try and test to ' +
+          'find the one you need.'
         EllipsisPosition = epEndEllipsis
         Transparent = False
         WordWrap = True
-        ExplicitTop = 70
       end
-      object Panel1: TPanel
-        Left = 0
-        Top = 136
-        Width = 428
+      object pnlSize: TPanel
+        AlignWithMargins = True
+        Left = 10
+        Top = 162
+        Width = 408
         Height = 31
+        Margins.Left = 10
+        Margins.Right = 10
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 0
+        ExplicitLeft = 0
+        ExplicitTop = 136
+        ExplicitWidth = 428
         object sgb_width: TSharpeGaugeBox
           Left = 18
           Top = 3
@@ -128,17 +80,23 @@ object frmVolumeControl: TfrmVolumeControl
           PopPosition = ppRight
           PercentDisplay = False
           OnChangeValue = sgb_widthChangeValue
+          BackgroundColor = clWindow
         end
       end
-      object Panel2: TPanel
-        Left = 0
-        Top = 66
-        Width = 428
+      object pnlMixer: TPanel
+        AlignWithMargins = True
+        Left = 10
+        Top = 84
+        Width = 408
         Height = 31
+        Margins.Left = 10
+        Margins.Right = 10
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 1
+        ExplicitLeft = 3
+        ExplicitWidth = 422
         object cb_mlist: TComboBox
           Left = 18
           Top = 3
@@ -149,6 +107,42 @@ object frmVolumeControl: TfrmVolumeControl
           TabOrder = 0
           OnChange = cb_mlistChange
         end
+      end
+      object schMixer: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 10
+        Top = 3
+        Width = 408
+        Height = 35
+        Margins.Left = 10
+        Margins.Right = 10
+        Title = 'Mixer'
+        Description = 'Select the sound mixer which you want to control.'
+        TitleColor = clWindowText
+        DescriptionColor = clRed
+        Align = alTop
+        Color = clWindow
+        ExplicitLeft = 96
+        ExplicitTop = -7
+        ExplicitWidth = 185
+      end
+      object schSize: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 10
+        Top = 121
+        Width = 408
+        Height = 35
+        Margins.Left = 10
+        Margins.Right = 10
+        Title = 'Size'
+        Description = 'Change how big the volume control will appear on the SharpBar.'
+        TitleColor = clWindowText
+        DescriptionColor = clRed
+        Align = alTop
+        Color = clWindow
+        ExplicitLeft = 80
+        ExplicitTop = 97
+        ExplicitWidth = 185
       end
     end
   end
