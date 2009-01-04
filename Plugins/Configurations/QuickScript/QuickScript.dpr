@@ -39,81 +39,64 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
-  uQuickScriptWnd in 'uQuickScriptWnd.pas' {frmQuickScript},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
-  SharpDialogs in '..\..\..\Common\Libraries\SharpDialogs\SharpDialogs.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  SharpAPI,
+  SharpCenterAPI,
+  SharpThemeApi,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  uQuickScriptWnd in 'uQuickScriptWnd.pas' {frmQuickScript};
 
 {$E .dll}
 
 {$R *.res}
 
-procedure Save;
-var
-  XML : TJvSimpleXML;
-begin
-  if frmQuickScript = nil then
-    exit;
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
+  private
+    barID : string;
+    moduleID : string;
+    procedure Load;
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
-  XML := TJvSimpleXML.Create(nil);
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmQuickScript.sBarID),strtoint(frmQuickScript.sModuleID)));
-  except
-    XML.Root.Clear;
-  end;
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
+    procedure Refresh; override; stdCall;
 
-  XML.Root.Name := 'QuickScriptModuleSettings';
-  with XML.Root.Items, frmQuickScript do
-  begin
-    if ItemNamed['Caption'] <> nil then
-      ItemNamed['Caption'].BoolValue := (rb_text.Checked or rb_icontext.Checked)
-    else Add('Caption',(rb_text.Checked or rb_icontext.Checked));
-
-    if ItemNamed['Icon'] <> nil then
-      ItemNamed['Icon'].BoolValue := (rb_icon.Checked or rb_icontext.Checked)
-    else Add('Icon',(rb_icon.Checked or rb_icontext.Checked));
-  end;
-  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmQuickScript.sBarID),strtoint(frmQuickScript.sModuleID)));
-  XML.Free;
+    function GetPluginDescriptionText: String; override; stdCall;
 end;
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  XML : TJvSimpleXML;
-  left,right : String;
-  s : string;
-  fileloaded : boolean;
-  ShowIcon,ShowCaption : boolean;
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
-  if frmQuickScript = nil then frmQuickScript := TfrmQuickScript.Create(nil);
+  PluginHost := APluginHost;
+  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+end;
 
-  s := APluginID;
-  left := copy(s, 0, pos(':',s)-1);
-  right := copy(s, pos(':',s)+1, length(s) - pos(':',s));
-  uVistaFuncs.SetVistaFonts(frmQuickScript);
-  frmQuickScript.sBarID := left;
-  frmQuickScript.sModuleID := right;
-  frmQuickScript.ParentWindow := aowner;
-  frmQuickScript.Left := 2;
-  frmQuickScript.Top := 2;
-  frmQuickScript.BorderStyle := bsNone;
-  result := frmQuickScript.Handle;
+procedure TSharpCenterPlugin.Save;
+begin
+  PluginHost.Xml.XmlRoot.Name := 'QuickScriptModuleSettings';
 
-  XML := TJvSimpleXML.Create(nil);
-  fileloaded := False;
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(left),strtoint(right)));
-    fileloaded := True;
-  except
+  with PluginHost.Xml.XmlRoot.Items, frmQuickScript do
+  begin
+    // Clear the list so we don't get duplicates.
+    Clear;
+
+    Add('Caption', (rb_text.Checked or rb_icontext.Checked));
+    Add('Icon', (rb_icon.Checked or rb_icontext.Checked));
   end;
 
-  if fileloaded then
-    with XML.Root.Items, frmQuickScript do
+  PluginHost.Xml.Save;
+end;
+
+procedure TSharpCenterPlugin.Load;
+var
+  ShowIcon, ShowCaption : boolean;
+begin
+  if PluginHost.Xml.Load then
+  begin
+    with PluginHost.Xml.XmlRoot.Items, frmQuickScript do
     begin
       ShowIcon := BoolValue('Icon',True);
       ShowCaption := BoolValue('Caption',True);
@@ -123,29 +106,27 @@ begin
         rb_text.Checked := True
       else rb_icon.Checked := True;
     end;
-  XML.Free;
-
-  frmQuickScript.Show;
-end;
-
-function Close : boolean;
-begin
-  result := True;
-  try
-    frmQuickScript.Close;
-    frmQuickScript.Free;
-    frmQuickScript := nil;
-  except
-    result := False;
   end;
 end;
 
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ATitle: String; var ADescription: String);
+function TSharpCenterPlugin.Open: Cardinal;
 begin
-  AName := 'Quick Script';
-  ATitle := 'Quick Script Module';
-  ADescription := 'Quick script module';
+  if frmQuickScript = nil then frmQuickScript := TfrmQuickScript.Create(nil);
+  frmQuickScript.PluginHost := PluginHost;
+  uVistaFuncs.SetVistaFonts(frmQuickScript);
+
+  Load;
+  result := PluginHost.Open(frmQuickScript);
+end;
+
+procedure TSharpCenterPlugin.Close;
+begin
+  FreeAndNil(frmQuickScript);
+end;
+
+function TSharpCenterPlugin.GetPluginDescriptionText : String;
+begin
+  result := 'Quick Script Module';
 end;
 
 function GetMetaData(): TMetaData;
@@ -155,20 +136,27 @@ begin
     Name := 'Quick Script';
     Description := 'Quick Script Module Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
   end;
 end;
 
+procedure TSharpCenterPlugin.Refresh;
+begin
+  PluginHost.AssignThemeToPluginForm(frmQuickScript);
+end;
+
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
+end;
 
 exports
-  Open,
-  Close,
-  Save,
-  SetText,
+  InitPluginInterface,
   GetMetaData;
 
+begin
 end.
 
