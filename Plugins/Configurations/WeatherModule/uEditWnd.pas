@@ -41,23 +41,17 @@ uses
   ImgList,
   PngImageList,
   SharpTypes,
-  SharpEListBoxEx, TaskFilterList, ExtCtrls, JclSimpleXml, JclStrings, Menus;
+  SharpEListBoxEx, TaskFilterList, ExtCtrls, JclSimpleXml, JclStrings, Menus,
+  ISharpCenterHostUnit, SharpECenterHeader, JvExControls, JvXPCore,
+  JvXPCheckCtrls;
 
 type
   TfrmEdit = class(TForm)
     pnlOptions: TPanel;
-    lblWeatherLocation: TLabel;
-    lblWeatherLocationDesc: TLabel;
-    lblDisplayOptions: TLabel;
     Panel1: TPanel;
     Panel2: TPanel;
-    chkDisplayIcon: TCheckBox;
-    chkDisplayLabels: TCheckBox;
     cbLocation: TComboBox;
     lblLocation: TLabel;
-    lblLabels: TLabel;
-    lblLabelDesc: TLabel;
-    lblDisplayDesc: TLabel;
     Panel3: TPanel;
     lblTop: TLabel;
     Panel4: TPanel;
@@ -143,6 +137,11 @@ type
     Condition3: TMenuItem;
     emperature21C1: TMenuItem;
     WindSpeed1: TMenuItem;
+    schLocation: TSharpECenterHeader;
+    schDisplayOptions: TSharpECenterHeader;
+    schLabelOptions: TSharpECenterHeader;
+    chkDisplayIcon: TJvXPCheckbox;
+    chkDisplayLabels: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);
 
     procedure SettingsChange(Sender: TObject);
@@ -150,27 +149,19 @@ type
     procedure miTagClick(Sender: TObject);
     procedure miExampleClick(Sender: TObject);
   private
-    FModuleId: string;
-    FBarId: string;
-    FUpdating: boolean;
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure PopulateLocations;
   public
-    property BarId: string read FBarId write FBarId;
-    property ModuleId: string read FModuleId write FModuleId;
-
-    procedure LoadSettings;
-    procedure SaveSettings;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
   end;
 
 var
   frmEdit: TfrmEdit;
 
-const
-  colName = 0;
-
 implementation
 
-uses SharpThemeApi, SharpApi, SharpCenterApi, uSharpBarAPI, SharpESkin;
+uses SharpThemeApi, SharpApi, SharpCenterApi, SharpESkin;
 
 {$R *.dfm}
 
@@ -222,67 +213,14 @@ end;
 
 procedure TfrmEdit.SettingsChange(Sender: TObject);
 begin
-  if not (FUpdating) then
-    CenterDefineSettingsChanged;
+  if Visible then
+    PluginHost.Save;
 end;
 
 procedure TfrmEdit.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := True;
-  lblWeatherLocationDesc.Font.Color := clGrayText;
-  lblLabelDesc.Font.Color := clGrayText;
-  lblDisplayDesc.Font.Color := clGrayText;
-end;
-
-procedure TfrmEdit.LoadSettings;
-var
-  xml: TJclSimpleXML;
-  fileloaded: boolean;
-  showIcon, showLabels: boolean;
-  location, topLabel, bottomLabel: string;
-begin
-  xml := TJclSimpleXML.Create;
-  FUpdating := True;
-  try
-    fileloaded := False;
-    try
-      XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(StrToInt(FBarId), StrToInt(FModuleId)));
-      fileloaded := True;
-    except
-    end;
-
-    if fileloaded then
-      with xml.Root.Items do
-      begin
-
-        // Location
-        PopulateLocations;
-        location := Value('Location', '');
-        cbLocation.ItemIndex := cbLocation.Items.IndexOf(location);
-        if cbLocation.ItemIndex = -1 then cbLocation.ItemIndex := 0;
-
-        // Show icon
-        showIcon := BoolValue('ShowIcon', true);
-        chkDisplayIcon.Checked := showIcon;
-
-        // Show labels
-        showLabels := BoolValue('ShowLabels', true);
-        chkDisplayLabels.Checked := showLabels;
-
-        // Top label
-        topLabel := Value('TopLabel','Temperature: {#TEMPERATURE#}°{#UNITTEMP#}');
-        edtTopLabel.Text := topLabel;
-
-        // Bottom label
-        bottomLabel := Value('BottomLabel','Condition: {#CONDITION#}');
-        edtBottomLabel.Text := bottomLabel;
-      end;
-
-  finally
-    XML.Free;
-    FUpdating := False;
-  end;
-
+  PopulateLocations;
 end;
 
 procedure TfrmEdit.miTagClick(Sender: TObject);
@@ -295,39 +233,6 @@ begin
      edt.Text := edt.Text + TMenuItem(Sender).Hint;
 
   SettingsChange(nil);
-end;
-
-procedure TfrmEdit.SaveSettings;
-var
-  xml: TJclSimpleXML;
-begin
-  xml := TJclSimpleXML.Create;
-  try
-    xml.Root.Name := 'WeatherModuleSettings';
-    with xml.Root.Items do
-    begin
-
-      // Location
-      Add('Location',cbLocation.Text);
-
-      // Show icon
-      Add('ShowIcon',chkDisplayIcon.Checked);
-
-      // Show labels
-      Add('ShowLabels', chkDisplayLabels.Checked);
-
-      // Top label
-      Add('TopLabel', edtTopLabel.Text);
-
-      // Bottom label
-      Add('BottomLabel', edtBottomLabel.Text);
-    end;
-
-  finally
-    XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(StrToInt(FBarId), StrToInt(FModuleId)));
-    XML.Free;
-  end;
-
 end;
 
 end.

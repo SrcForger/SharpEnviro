@@ -38,73 +38,95 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
-  uEditWnd in 'uEditWnd.pas' {frmEdit},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpIconUtils in '..\..\..\Common\Units\SharpIconUtils\SharpIconUtils.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  SharpAPI,
+  SharpCenterAPI,
+  SharpThemeApi,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  uEditWnd in 'uEditWnd.pas' {frmEdit};
 
 {$E .dll}
 
 {$R *.res}
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  pluginId: string;
-  barId: string;
-  moduleId: string;
-begin
-  {$REGION 'Form Creation'}
-    if frmEdit = nil then
-        frmEdit := TfrmEdit.Create(nil);
-      frmEdit.ParentWindow := aowner;
-      frmEdit.Left := 0;
-      frmEdit.Top := 0;
-      frmEdit.BorderStyle := bsNone;
-      frmEdit.Show;
-      uVistaFuncs.SetVistaFonts(frmEdit);
-  {$ENDREGION}
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
+  private
+    barID : string;
+    moduleID : string;
+    procedure Load;
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
-  {$REGION 'Get plugin and module id'}
-    pluginId := APluginID;
-      barId := copy(pluginId, 0, pos(':',pluginId)-1);
-      moduleId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
-      frmEdit.BarId := barId;
-      frmEdit.ModuleId := moduleId;
-  {$ENDREGION}
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
+    procedure Refresh; override; stdCall;
 
-  frmEdit.LoadSettings;
-  result := frmEdit.Handle;
+    function GetPluginDescriptionText: String; override; stdCall;
 end;
 
-function Close: boolean;
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
-  result := True;
-  try
-    frmEdit.Close;
-    frmEdit.Free;
-    frmEdit := nil;
-  except
-    result := False;
+  PluginHost := APluginHost;
+  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+end;
+
+procedure TSharpCenterPlugin.Load;
+begin
+  if PluginHost.Xml.Load then
+  begin
+    with PluginHost.Xml.XmlRoot.Items, frmEdit do
+    begin
+        cbLocation.ItemIndex := cbLocation.Items.IndexOf(Value('Location', ''));
+        if cbLocation.ItemIndex = -1 then cbLocation.ItemIndex := 0;
+
+        chkDisplayIcon.Checked := BoolValue('ShowIcon', True);
+        chkDisplayLabels.Checked := BoolValue('ShowLabels', True);
+        edtTopLabel.Text := Value('TopLabel', 'Temperature: {#TEMPERATURE#}°{#UNITTEMP#}');
+        edtBottomLabel.Text := Value('BottomLabel', 'Condition: {#CONDITION#}');
+    end;
   end;
 end;
 
-procedure Save;
+function TSharpCenterPlugin.Open: Cardinal;
 begin
-  frmEdit.SaveSettings;
+  if frmEdit = nil then frmEdit := TfrmEdit.Create(nil);
+  frmEdit.PluginHost := PluginHost;
+  uVistaFuncs.SetVistaFonts(frmEdit);
+
+  Load;
+  result := PluginHost.Open(frmEdit);
 end;
 
-procedure SetText(const APluginID: string; var AName: string; var AStatus: string;
-  var ATitle: string; var ADescription: string);
+procedure TSharpCenterPlugin.Close;
 begin
-  AName := 'Weather Options';
-  AStatus := '';
-  ATitle := 'Weather Module';
-  ADescription := 'Configure Weather Module';
+  FreeAndNil(frmEdit);
+end;
 
+procedure TSharpCenterPlugin.Save;
+begin
+  PluginHost.Xml.XmlRoot.Name := 'WeatherModuleSettings';
+
+  with PluginHost.Xml.XmlRoot.Items, frmEdit do
+  begin
+    // Clear the list so we don't get duplicates.
+    Clear;
+
+    Add('Location', cbLocation.Text);
+    Add('ShowIcon', chkDisplayIcon.Checked);
+    Add('ShowLabels', chkDisplayLabels.Checked);
+    Add('TopLabel', edtTopLabel.Text);
+    Add('BottomLabel', edtBottomLabel.Text);
+  end;
+
+  PluginHost.Xml.Save;
+end;
+
+function TSharpCenterPlugin.GetPluginDescriptionText : String;
+begin
+  result := 'Configure Weather Module';
 end;
 
 function GetMetaData(): TMetaData;
@@ -114,7 +136,7 @@ begin
     Name := 'Weather Module';
     Description := 'Weather Module Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7';
+    Version := '0.7.6.0';
     DataType := tteConfig;
 
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
@@ -122,11 +144,18 @@ begin
   end;
 end;
 
+procedure TSharpCenterPlugin.Refresh;
+begin
+  PluginHost.AssignThemeToPluginForm(frmEdit);
+end;
+
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
+end;
+
 exports
-  Open,
-  Close,
-  Save,
-  SetText,
+  InitPluginInterface,
   GetMetaData;
 
 begin
