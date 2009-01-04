@@ -42,16 +42,16 @@ uses
   PngImageList,
   SharpTypes,
   SharpEListBoxEx, TaskFilterList, ExtCtrls, JclSimpleXml, JclFileUtils, JclStrings, Menus,
-  SharpEGaugeBoxEdit, SharpIconUtils, GR32_Image, GR32, SharpECenterHeader,
-  JvExControls, JvXPCore, JvXPCheckCtrls;
+  SharpEGaugeBoxEdit, GR32_Image, GR32, SharpECenterHeader,
+  JvExControls, JvXPCore, JvXPCheckCtrls, ISharpCenterHostUnit;
 
 type
   TfrmEdit = class(TForm)
     pnlOptions: TPanel;
-    Panel1: TPanel;
-    Panel2: TPanel;
+    pnlSize: TPanel;
+    pnlDisplay: TPanel;
     Label6: TLabel;
-    Panel3: TPanel;
+    pnlAction: TPanel;
     Label2: TLabel;
     pnlCaption: TPanel;
     Label7: TLabel;
@@ -75,16 +75,11 @@ type
     procedure gbSizeChangeValue(Sender: TObject; Value: Integer);
     procedure btnActionClick(Sender: TObject);
   private
-    FModuleId: string;
-    FBarId: string;
-    FUpdating: boolean;
+    FPluginHost: TInterfacedSharpCenterHostBase;
     procedure UpdateIcon;
   public
-    property BarId: string read FBarId write FBarId;
-    property ModuleId: string read FModuleId write FModuleId;
-
-    procedure LoadSettings;
-    procedure SaveSettings;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
+      FPluginHost;
   end;
 
 var
@@ -95,7 +90,7 @@ const
 
 implementation
 
-uses SharpThemeApi, SharpDialogs, SharpApi, SharpCenterApi, uSharpBarAPI, SharpESkin;
+uses SharpThemeApi, SharpDialogs, SharpApi, SharpCenterApi;
 
 {$R *.dfm}
 
@@ -124,7 +119,7 @@ begin
   if length(trim(s))>0 then
   begin
     edAction.Text := s;
-    UpdateIcon;
+    //UpdateIcon;
   end;
 end;
 
@@ -136,14 +131,14 @@ begin
   if length(trim(s))>0 then
   begin
     edIcon.Text := s;
-    UpdateIcon;
+    //UpdateIcon;
   end;
 end;
 
 procedure TfrmEdit.SettingsChange(Sender: TObject);
 begin
-  if not (FUpdating) then
-    CenterDefineSettingsChanged;
+  if Visible then
+    PluginHost.Save;
 end;
 
 procedure TfrmEdit.FormCreate(Sender: TObject);
@@ -153,98 +148,7 @@ end;
 
 procedure TfrmEdit.gbSizeChangeValue(Sender: TObject; Value: Integer);
 begin
-  if not (FUpdating) then
-    CenterDefineSettingsChanged;
-end;
-
-procedure TfrmEdit.LoadSettings;
-var
-  xml: TJclSimpleXML;
-  fileloaded: boolean;
-  showLabel, showIcon: boolean;
-  icon, action, caption: string;
-  width: integer;
-begin
-  xml := TJclSimpleXML.Create;
-  FUpdating := True;
-  try
-    fileloaded := False;
-    try
-      XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(StrToInt(FBarId), StrToInt(FModuleId)));
-      fileloaded := True;
-    except
-    end;
-
-    if fileloaded then
-      with xml.Root.Items do
-      begin
-        // Width
-        width := IntValue('Width', 100);
-        gbSize.Value := width;
-
-        // Show label
-        showLabel := BoolValue('ShowLabel', true);
-        chkDisplayCaption.Checked := showLabel;
-
-        // Show icon
-        showIcon := BoolValue('ShowIcon', true);
-        chkDisplayIcon.Checked := showIcon;
-
-        // Icon
-        icon := Value('Icon','icon.mycomputer');
-        edIcon.Text := icon;
-        UpdateIcon;
-
-        // Menu
-        action := Value('ActionStr','!OpenMenu: Menu');
-        edAction.Text := action;
-
-        // Caption
-        caption := Value('Caption','Menu');
-        edCaption.Text := caption;
-      end;
-
-  finally
-    XML.Free;
-    FUpdating := False;
-  end;
-
-end;
-
-procedure TfrmEdit.SaveSettings;
-var
-  xml: TJclSimpleXML;
-begin
-  xml := TJclSimpleXML.Create;
-  try
-    xml.Root.Name := 'ButtonModuleSettings';
-    with xml.Root.Items do
-    begin
-
-      // Width
-      Add('Width',gbSize.Value);
-
-      // Show label
-      Add('ShowLabel',chkDisplayCaption.Checked);
-
-      // Show icon
-      Add('ShowIcon', chkDisplayIcon.Checked);
-
-      // Icon
-      Add('Icon', edIcon.Text);
-
-      // Menu
-      Add('ActionStr', edAction.Text);
-
-      // Caption
-      Add('Caption', edCaption.Text);
-    end;
-
-  finally
-    XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(StrToInt(FBarId), StrToInt(FModuleId)));
-    XML.Free;
-  end;
-
+  SettingsChange(Sender);
 end;
 
 end.

@@ -1,11 +1,10 @@
 object frmEdit: TfrmEdit
   Left = 0
   Top = 0
-  AutoSize = True
   BorderStyle = bsNone
   Caption = 'Edit'
-  ClientHeight = 286
-  ClientWidth = 519
+  ClientHeight = 280
+  ClientWidth = 440
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,19 +17,18 @@ object frmEdit: TfrmEdit
   TextHeight = 13
   object pnlOptions: TPanel
     Left = 0
-    Top = 37
-    Width = 519
-    Height = 249
-    Align = alTop
-    AutoSize = True
+    Top = 0
+    Width = 440
+    Height = 280
+    Align = alClient
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
-    object Panel1: TPanel
+    object pnlSize: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 149
-      Width = 509
+      Top = 182
+      Width = 430
       Height = 21
       Margins.Left = 5
       Margins.Top = 10
@@ -41,6 +39,8 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 0
+      ExplicitTop = 149
+      ExplicitWidth = 509
       object Label6: TLabel
         Left = 0
         Top = 4
@@ -72,11 +72,11 @@ object frmEdit: TfrmEdit
         BackgroundColor = clWindow
       end
     end
-    object Panel2: TPanel
+    object pnlDisplay: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 10
-      Width = 504
+      Top = 45
+      Width = 425
       Height = 19
       Margins.Left = 5
       Margins.Top = 10
@@ -86,6 +86,8 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 1
+      ExplicitTop = 10
+      ExplicitWidth = 504
       object chkDisplayIcon: TJvXPCheckbox
         AlignWithMargins = True
         Left = 0
@@ -115,11 +117,11 @@ object frmEdit: TfrmEdit
         OnClick = SettingsChange
       end
     end
-    object Panel3: TPanel
+    object pnlAction: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 227
-      Width = 504
+      Top = 258
+      Width = 425
       Height = 22
       Margins.Left = 5
       Margins.Top = 10
@@ -130,6 +132,8 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 2
+      ExplicitTop = 227
+      ExplicitWidth = 504
       object Label2: TLabel
         Left = 0
         Top = 4
@@ -164,8 +168,8 @@ object frmEdit: TfrmEdit
     object pnlCaption: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 39
-      Width = 504
+      Top = 74
+      Width = 425
       Height = 21
       Margins.Left = 5
       Margins.Top = 10
@@ -176,6 +180,8 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 3
+      ExplicitTop = 39
+      ExplicitWidth = 504
       object Label7: TLabel
         Left = 0
         Top = 4
@@ -202,8 +208,8 @@ object frmEdit: TfrmEdit
     object pnlIcon: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 70
-      Width = 504
+      Top = 105
+      Width = 425
       Height = 22
       Margins.Left = 5
       Margins.Top = 10
@@ -214,6 +220,8 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 4
+      ExplicitTop = 70
+      ExplicitWidth = 504
       object Label8: TLabel
         Left = 0
         Top = 4
@@ -249,9 +257,9 @@ object frmEdit: TfrmEdit
     object SharpECenterHeader2: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
-      Top = 180
-      Width = 509
-      Height = 37
+      Top = 213
+      Width = 430
+      Height = 35
       Margins.Left = 5
       Margins.Top = 10
       Margins.Right = 5
@@ -261,13 +269,15 @@ object frmEdit: TfrmEdit
       TitleColor = clWindowText
       DescriptionColor = clRed
       Align = alTop
+      ExplicitTop = 180
+      ExplicitWidth = 509
     end
     object SharpECenterHeader3: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
-      Top = 102
-      Width = 509
-      Height = 37
+      Top = 137
+      Width = 430
+      Height = 35
       Margins.Left = 5
       Margins.Top = 10
       Margins.Right = 5
@@ -277,22 +287,25 @@ object frmEdit: TfrmEdit
       TitleColor = clWindowText
       DescriptionColor = clRed
       Align = alTop
+      ExplicitTop = 102
+      ExplicitWidth = 509
     end
-  end
-  object SharpECenterHeader1: TSharpECenterHeader
-    AlignWithMargins = True
-    Left = 5
-    Top = 0
-    Width = 509
-    Height = 37
-    Margins.Left = 5
-    Margins.Top = 0
-    Margins.Right = 5
-    Margins.Bottom = 0
-    Title = 'Display'
-    Description = 'Define text and icon options'
-    TitleColor = clWindowText
-    DescriptionColor = clRed
-    Align = alTop
+    object SharpECenterHeader1: TSharpECenterHeader
+      AlignWithMargins = True
+      Left = 5
+      Top = 0
+      Width = 430
+      Height = 35
+      Margins.Left = 5
+      Margins.Top = 0
+      Margins.Right = 5
+      Margins.Bottom = 0
+      Title = 'Display'
+      Description = 'Define text and icon options'
+      TitleColor = clWindowText
+      DescriptionColor = clRed
+      Align = alTop
+      ExplicitWidth = 509
+    end
   end
 end
