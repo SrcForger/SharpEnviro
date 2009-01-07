@@ -48,9 +48,7 @@ uses
 type
   TfrmEdit = class(TForm)
     pnlOptions: TPanel;
-    pnlSize: TPanel;
     pnlDisplay: TPanel;
-    Label6: TLabel;
     pnlAction: TPanel;
     Label2: TLabel;
     pnlCaption: TPanel;
@@ -60,12 +58,10 @@ type
     edCaption: TEdit;
     btnIconBrowse: TButton;
     edIcon: TEdit;
-    gbSize: TSharpeGaugeBox;
     edAction: TEdit;
     btnAction: TButton;
     SharpECenterHeader1: TSharpECenterHeader;
     SharpECenterHeader2: TSharpECenterHeader;
-    SharpECenterHeader3: TSharpECenterHeader;
     chkDisplayIcon: TJvXPCheckbox;
     chkDisplayCaption: TJvXPCheckbox;
     procedure FormCreate(Sender: TObject);

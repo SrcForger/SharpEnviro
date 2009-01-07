@@ -3,7 +3,7 @@ object frmEdit: TfrmEdit
   Top = 0
   BorderStyle = bsNone
   Caption = 'Edit'
-  ClientHeight = 280
+  ClientHeight = 222
   ClientWidth = 440
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -19,59 +19,12 @@ object frmEdit: TfrmEdit
     Left = 0
     Top = 0
     Width = 440
-    Height = 280
+    Height = 222
     Align = alClient
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
-    object pnlSize: TPanel
-      AlignWithMargins = True
-      Left = 5
-      Top = 182
-      Width = 430
-      Height = 21
-      Margins.Left = 5
-      Margins.Top = 10
-      Margins.Right = 5
-      Margins.Bottom = 0
-      Align = alTop
-      AutoSize = True
-      BevelOuter = bvNone
-      ParentColor = True
-      TabOrder = 0
-      ExplicitTop = 149
-      ExplicitWidth = 509
-      object Label6: TLabel
-        Left = 0
-        Top = 4
-        Width = 23
-        Height = 13
-        Caption = 'Size:'
-      end
-      object gbSize: TSharpeGaugeBox
-        AlignWithMargins = True
-        Left = 58
-        Top = 0
-        Width = 294
-        Height = 21
-        Margins.Left = 8
-        Margins.Top = 0
-        Margins.Right = 12
-        Margins.Bottom = 0
-        Color = clWindow
-        Constraints.MaxWidth = 300
-        ParentBackground = False
-        Min = 16
-        Max = 200
-        Value = 100
-        Suffix = 'px width'
-        Description = 'Adjust to set the size of the button'
-        PopPosition = ppBottom
-        PercentDisplay = False
-        OnChangeValue = gbSizeChangeValue
-        BackgroundColor = clWindow
-      end
-    end
+    ExplicitHeight = 280
     object pnlDisplay: TPanel
       AlignWithMargins = True
       Left = 5
@@ -85,9 +38,7 @@ object frmEdit: TfrmEdit
       Align = alTop
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 1
-      ExplicitTop = 10
-      ExplicitWidth = 504
+      TabOrder = 0
       object chkDisplayIcon: TJvXPCheckbox
         AlignWithMargins = True
         Left = 0
@@ -120,7 +71,7 @@ object frmEdit: TfrmEdit
     object pnlAction: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 258
+      Top = 182
       Width = 425
       Height = 22
       Margins.Left = 5
@@ -131,9 +82,8 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 2
-      ExplicitTop = 227
-      ExplicitWidth = 504
+      TabOrder = 1
+      ExplicitTop = 258
       object Label2: TLabel
         Left = 0
         Top = 4
@@ -179,9 +129,7 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 3
-      ExplicitTop = 39
-      ExplicitWidth = 504
+      TabOrder = 2
       object Label7: TLabel
         Left = 0
         Top = 4
@@ -219,9 +167,7 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 4
-      ExplicitTop = 70
-      ExplicitWidth = 504
+      TabOrder = 3
       object Label8: TLabel
         Left = 0
         Top = 4
@@ -257,7 +203,7 @@ object frmEdit: TfrmEdit
     object SharpECenterHeader2: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
-      Top = 213
+      Top = 137
       Width = 430
       Height = 35
       Margins.Left = 5
@@ -269,26 +215,7 @@ object frmEdit: TfrmEdit
       TitleColor = clWindowText
       DescriptionColor = clRed
       Align = alTop
-      ExplicitTop = 180
-      ExplicitWidth = 509
-    end
-    object SharpECenterHeader3: TSharpECenterHeader
-      AlignWithMargins = True
-      Left = 5
-      Top = 137
-      Width = 430
-      Height = 35
-      Margins.Left = 5
-      Margins.Top = 10
-      Margins.Right = 5
-      Margins.Bottom = 0
-      Title = 'Button Size'
-      Description = 'Define the width of the button'
-      TitleColor = clWindowText
-      DescriptionColor = clRed
-      Align = alTop
-      ExplicitTop = 102
-      ExplicitWidth = 509
+      ExplicitTop = 213
     end
     object SharpECenterHeader1: TSharpECenterHeader
       AlignWithMargins = True
@@ -305,7 +232,6 @@ object frmEdit: TfrmEdit
       TitleColor = clWindowText
       DescriptionColor = clRed
       Align = alTop
-      ExplicitWidth = 509
     end
   end
 end
