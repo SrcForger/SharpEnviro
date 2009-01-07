@@ -447,7 +447,10 @@ begin
 
       if FileExists(Dir + inttostr(ID) + '.xml') then
         DeleteFile(Dir + inttostr(ID) + '.xml');
-      
+
+      if FileExists(Dir + IntToStr(ID) + '.xml_bak') then
+        DeleteFile(Dir + IntToStr(ID) + '.xml_bak');
+
       // Check if the same module file has other modules loaded...
       hm := False;
       for i := 0 to FModules.Count - 1 do
