@@ -4,7 +4,7 @@ object frmSettings: TfrmSettings
   BorderStyle = bsNone
   Caption = 'frmSettings'
   ClientHeight = 233
-  ClientWidth = 668
+  ClientWidth = 443
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,21 +17,23 @@ object frmSettings: TfrmSettings
   object plMain: TJvPageList
     Left = 0
     Top = 0
-    Width = 668
+    Width = 443
     Height = 233
     ActivePage = pagNotes
     PropagateEnable = False
     Align = alClient
+    ExplicitWidth = 668
     object pagNotes: TJvStandardPage
       Left = 0
       Top = 0
-      Width = 668
+      Width = 443
       Height = 233
+      ExplicitWidth = 668
       object Panel7: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 47
-        Width = 658
+        Top = 45
+        Width = 433
         Height = 21
         Margins.Left = 5
         Margins.Top = 10
@@ -42,6 +44,7 @@ object frmSettings: TfrmSettings
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
+        ExplicitWidth = 658
         object sgbWidth: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 0
@@ -69,9 +72,9 @@ object frmSettings: TfrmSettings
       object SharpECenterHeader3: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 152
-        Width = 658
-        Height = 37
+        Top = 148
+        Width = 433
+        Height = 35
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
@@ -81,13 +84,14 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
+        ExplicitWidth = 658
       end
       object SharpECenterHeader4: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
         Top = 0
-        Width = 658
-        Height = 37
+        Width = 433
+        Height = 35
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
@@ -97,13 +101,14 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
+        ExplicitWidth = 658
       end
       object SharpECenterHeader6: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 78
-        Width = 658
-        Height = 37
+        Top = 76
+        Width = 433
+        Height = 35
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
@@ -113,12 +118,13 @@ object frmSettings: TfrmSettings
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
+        ExplicitWidth = 658
       end
       object chkButtonCaption: TJvXPCheckbox
         AlignWithMargins = True
         Left = 2
-        Top = 125
-        Width = 661
+        Top = 121
+        Width = 436
         Height = 17
         Margins.Left = 2
         Margins.Top = 0
@@ -129,12 +135,13 @@ object frmSettings: TfrmSettings
         TabStop = False
         Align = alTop
         OnClick = CheckClick
+        ExplicitWidth = 661
       end
       object chkButtonIcon: TJvXPCheckbox
         AlignWithMargins = True
         Left = 2
-        Top = 199
-        Width = 661
+        Top = 193
+        Width = 436
         Height = 17
         Margins.Left = 2
         Margins.Top = 0
@@ -146,6 +153,7 @@ object frmSettings: TfrmSettings
         State = cbChecked
         Align = alTop
         OnClick = CheckClick
+        ExplicitWidth = 661
       end
     end
   end

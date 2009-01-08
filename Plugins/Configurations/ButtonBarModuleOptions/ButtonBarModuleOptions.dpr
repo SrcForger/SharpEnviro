@@ -39,144 +39,129 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
-  SettingsWnd in 'SettingsWnd.pas' {frmSettings},
-  SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
-  SharpFX in '..\..\..\Common\Units\SharpFX\SharpFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  SharpCenterAPI in '..\..\..\Common\Libraries\SharpCenterApi\SharpCenterAPI.pas',
-  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas',
-  SharpDialogs in '..\..\..\Common\Libraries\SharpDialogs\SharpDialogs.pas',
-  uSharpBarAPI in '..\..\..\Components\SharpBar\uSharpBarAPI.pas';
+  SharpAPI,
+  SharpCenterAPI,
+  SharpThemeApi,
+  ISharpCenterHostUnit,
+  ISharpCenterPluginUnit,
+  SettingsWnd in 'SettingsWnd.pas' {frmSettings};
 
 {$E .dll}
 
 {$R *.res}
 
-procedure Save;
-var
-  XML : TJvSimpleXML;
+type
+  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
+  private
+    barID : string;
+    moduleID : string;
+    procedure Load;
+  public
+    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+
+    function Open: Cardinal; override; stdcall;
+    procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
+    procedure Refresh; override; stdCall;
+
+    function GetPluginDescriptionText: String; override; stdCall;
+end;
+
+constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
-  if frmSettings = nil then
-    exit;
+  PluginHost := APluginHost;
+  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
+end;
 
-  XML := TJvSimpleXML.Create(nil);
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmSettings.sBarID),strtoint(frmSettings.sModuleID)));
-  except
-    XML.Root.Clear;
-  end;
+procedure TSharpCenterPlugin.Save;
+begin
+  PluginHost.Xml.XmlRoot.Name := 'ButtonBarModuleSettings';
 
-  XML.Root.Name := 'ButtonBarModuleSettings';
-  with XML.Root.Items, frmSettings do
+  with PluginHost.Xml.XmlRoot.Items, frmSettings do
   begin
+    // Do not clear the list as the ButtonBarModule also saves to this file.
+
     if ItemNamed['ShowCaption'] <> nil then
       ItemNamed['ShowCaption'].BoolValue := chkButtonCaption.Checked
-    else Add('ShowCaption',chkButtonCaption.Checked);
+    else
+      Add('ShowCaption', chkButtonCaption.Checked);
 
     if ItemNamed['ShowIcon'] <> nil then
       ItemNamed['ShowIcon'].BoolValue := chkButtonIcon.Checked
-    else Add('ShowIcon',chkButtonIcon.Checked);
+    else
+      Add('ShowIcon', chkButtonIcon.Checked);
 
     if ItemNamed['Width'] <> nil then
       ItemNamed['Width'].IntValue := sgbWidth.Value
-    else Add('Width',sgbWidth.Value);
+    else
+      Add('Width', sgbWidth.Value);
   end;
-  XML.SaveToFile(uSharpBarApi.GetModuleXMLFile(strtoint(frmSettings.sBarID),strtoint(frmSettings.sModuleID)));
-  XML.Free;
+
+  PluginHost.Xml.Save;
 end;
 
-function Open(const APluginID: Pchar; AOwner: hwnd): hwnd;
-var
-  XML : TJvSimpleXML;
-  left,right : String;
-  s : string;
-  fileloaded : boolean;
+procedure TSharpCenterPlugin.Load;
+begin
+  if PluginHost.Xml.Load then
+  begin
+    with PluginHost.Xml.XmlRoot.Items, frmSettings do
+    begin
+      chkButtonCaption.Checked := BoolValue('ShowCaption', False);
+      chkButtonIcon.Checked := BoolValue('ShowIcon', False);
+      sgbWidth.Value := IntValue('Width', 25);
+    end;
+  end;
+end;
+
+function TSharpCenterPlugin.Open: Cardinal;
 begin
   if frmSettings = nil then frmSettings := TfrmSettings.Create(nil);
-
-  s := APluginID;
-  left := copy(s, 0, pos(':',s)-1);
-  right := copy(s, pos(':',s)+1, length(s) - pos(':',s));
+  frmSettings.PluginHost := PluginHost;
   uVistaFuncs.SetVistaFonts(frmSettings);
-  frmSettings.sBarID := left;
-  frmSettings.sModuleID := right;
-  frmSettings.ParentWindow := aowner;
-  frmSettings.Left := 2;
-  frmSettings.Top := 2;
-  frmSettings.BorderStyle := bsNone;
-  result := frmSettings.Handle;
 
-  XML := TJvSimpleXML.Create(nil);
-  fileloaded := False;
-  try
-    XML.LoadFromFile(uSharpBarApi.GetModuleXMLFile(strtoint(left),strtoint(right)));
-    fileloaded := True;
-  except
-  end;
-
-  if fileloaded then
-    with XML.Root.Items, frmSettings do
-    begin
-      chkButtonCaption.Checked := BoolValue('ShowCaption',False);
-      chkButtonIcon.Checked := BoolValue('ShowIcon',False);
-      sgbWidth.Value := IntValue('Width',25);
-    end;
-  XML.Free;
-
-  frmSettings.Show;
+  Load;
+  result := PluginHost.Open(frmSettings);
 end;
 
-function Close : boolean;
+procedure TSharpCenterPlugin.Close;
 begin
-  result := True;
-  try
-    frmSettings.Close;
-    frmSettings.Free;
-    frmSettings := nil;
-  except
-    result := False;
-  end;
+  FreeAndNil(frmSettings);
 end;
 
-procedure SetText(const APluginID: String; var AName: String; var AStatus: String;
-  var ADescription: String);
+function TSharpCenterPlugin.GetPluginDescriptionText : String;
 begin
-  AName := 'Options';
-  ADescription := 'Configure global options for the button bar module';
+  result := 'Configure global options for the button bar module';
 end;
 
 function GetMetaData(): TMetaData;
 begin
   with result do
   begin
-    Name := 'ButtonBarModuleOptions';
+    Name := 'ButtonBar Module Options';
     Description := 'ButtonBar Module Options Config';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7.5.2';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
       Integer(suModule)]);
   end;
 end;
 
-procedure GetCenterTheme(const ATheme: TCenterThemeInfo; const AEdit: Boolean);
+procedure TSharpCenterPlugin.Refresh;
 begin
-  if frmSettings <> nil then begin
-    with frmSettings do begin
-      AssignThemeToForm(ATheme,frmSettings);
-    end;
-  end;
+  PluginHost.AssignThemeToPluginForm(frmSettings);
 end;
 
+function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+begin
+  result := TSharpCenterPlugin.Create(APluginHost);
+end;
 
 exports
-  Open,
-  Close,
-  Save,
-  SetText,
-  GetCenterTheme,
+  InitPluginInterface,
   GetMetaData;
 
+begin
 end.
 
