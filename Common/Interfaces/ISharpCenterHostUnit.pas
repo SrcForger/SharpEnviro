@@ -130,6 +130,7 @@ type
       procedure Save; stdCall;
 
       procedure GetBarModuleIdFromPluginId(var barId, moduleId: string);
+      function GetModuleXmlFilename: string;
 
       procedure SetEditTab( ATab: TSCB_BUTTON_ENUM ); stdCall;
       procedure SetEditTabVisibility( ATab: TSCB_BUTTON_ENUM; AVisible: Boolean); stdCall;
@@ -203,6 +204,8 @@ implementation
 
 procedure TInterfacedSharpCenterHostBase.GetBarModuleIdFromPluginId(var barId, moduleId: string);
 begin
+  if FPluginId = '' then exit;
+
    barId := copy(FPluginId, 0, pos(':',FPluginId)-1);
    moduleId := copy(FPluginId, pos(':',FPluginId)+1, length(FPluginId) - pos(':',FPluginId));
 end;
@@ -252,22 +255,9 @@ begin
 end;
 
 procedure TInterfacedSharpCenterHostBase.AssignThemeToForms( AForm, AEditForm: TForm );
-var
-  colBackground: Tcolor;
 begin
   AssignThemeToPluginForm(AForm);
-  colBackground := FTheme.EditBackground;
-
-  If FEditing then begin
-    with FTheme do begin
-      EditBackground := EditBackgroundError;
-    end;
-    FTheme.EditBackground := FTheme.EditBackgroundError;
-  end;
-
   AssignThemeToEditForm(AEditForm);
-  FTheme.EditBackground := colBackground;
-
 end;
 
 constructor TInterfacedSharpCenterHostBase.Create;
@@ -301,6 +291,14 @@ end;
 function TInterfacedSharpCenterHostBase.GetEditOwner: TWinControl;
 begin
   Result := FEditOwner;
+end;
+
+function TInterfacedSharpCenterHostBase.GetModuleXmlFilename: string;
+var
+  barId, moduleId: string;
+begin
+  GetBarModuleIdFromPluginId( barId, moduleId );
+  Result := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
 end;
 
 function TInterfacedSharpCenterHostBase.GetPluginId: string;
