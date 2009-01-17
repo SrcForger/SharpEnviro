@@ -29,38 +29,36 @@ object frmList: TfrmList
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
-        AutoSize = False
-      end
-      item
-        Width = 30
-        HAlign = taCenter
-        VAlign = taVerticalCenter
-        ColumnAlign = calRight
-        StretchColumn = False
-        CanSelect = False
-        ColumnType = ctDefault
-        AutoSize = False
-      end
-      item
-        Width = 30
-        HAlign = taCenter
-        VAlign = taVerticalCenter
-        ColumnAlign = calRight
-        StretchColumn = False
-        CanSelect = False
-        ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = False
         Images = pilDefault
       end
       item
-        Width = 30
+        Width = 35
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
+      end
+      item
+        Width = 35
+        HAlign = taCenter
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        StretchColumn = False
+        ColumnType = ctDefault
+        VisibleOnSelectOnly = True
+        Images = pilDefault
+      end
+      item
+        Width = 35
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        StretchColumn = False
+        ColumnType = ctDefault
+        VisibleOnSelectOnly = True
         Images = pilDefault
       end>
     Colors.BorderColor = clBtnFace
@@ -70,12 +68,15 @@ object frmList: TfrmList
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     Colors.DisabledColor = clBlack
+    DefaultColumn = 0
     OnResize = lbItemsResize
-    ItemHeight = 25
+    ItemHeight = 30
     OnClickItem = lbItemsClickItem
+    OnDblClickItem = lbItemsDblClickItem
     OnGetCellCursor = lbItemsGetCellCursor
     OnGetCellText = lbItemsGetCellText
     OnGetCellImageIndex = lbItemsGetCellImageIndex
+    OnGetCellClickable = lbItemsGetCellClickable
     AutosizeGrid = True
     Borderstyle = bsNone
     Ctl3d = False
@@ -137,6 +138,33 @@ object frmList: TfrmList
           42129302155218AD6494C4CA0705B95E94EB662A492D25DD5FF73EA67FD12FCA
           BE71F0E82977BB0000000049454E44AE426082}
         Name = 'PngImage6'
+        Background = clWindow
+      end
+      item
+        PngImage.Data = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000002454944415478DA8D93CB6B135114C6BF99BC4C4CBB4893
+          2160342B5782603621AB6A41AA956E04515CF9C0FE0B014521D84571E1464150
+          EC7421154511AA6D952A8E20220826A9D249118D52A349B1BE4AC86B1E9E7BA7
+          99BC103ACC61EE0CE7FBCEEF9E3357304D13994CE6C0DF85ABF3DA5A015A298F
+          E1A9E5383677AD0AE9747AB7AEEBAF8C4665AB033A56AF8D61FFE4D2A6D44EA7
+          332E24934977229138BE65694EF60F00EB2F15ECBD9EED48340C038CB4FDDDEB
+          F5C2E572C5BB083494AE8C61DFCDC59E6A4CD4BEF6783C70BBDD2D02F7E29CDC
+          27995857140C4DBDE389A97B25301DABCD090C7E237524C8C496814D50230251
+          C3F7CBD4835BEFB9C1853B45ECDAEEDD30B022FBB98CF1A321381C0EB68D1681
+          333B2BF7074DFC79AE6078DA6AE2B9DBDFECAAA66152E8D0C964FC98C41A68F8
+          7CBE440FC1D74B67307257E5C8EDFB66EF9AA6D9DF29CA814060B045F0F691DC
+          1732F1FB99828364C092CE4E17E94955A9AC6E6E4CA2D1408A084451443018EC
+          EA014D6165E23446EEE778727B10B24D53AD5691CFE7118BC5123681F8E6A1DC
+          4F53F8F944C1A107AA9D4CE63CD8D89A625555118D46110E873B094422F872F1
+          14466796ED79B37D33036A182A950A72B91C2291082449EAFC13C5D733B25F32
+          F06BFE0546672D83A6B841FBA6BF8E5766E250280441102C836E82FCF99338BC
+          F0915767626652ABD5502C1659D378E5E645261601256DDBA33EFEE40B78A115
+          7E2076E32917B2689E03D675B6AED7EB7CCD9E441E179A87E4C4CE81C11D7ED7
+          50A1ACAD4C7E58EB3D0CFF39CEFF00BFBE835CD4870AD10000000049454E44AE
+          426082}
+        Name = 'PngImage2'
         Background = clWindow
       end>
     Left = 332

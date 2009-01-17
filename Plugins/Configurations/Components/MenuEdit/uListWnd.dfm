@@ -28,29 +28,27 @@ object frmList: TfrmList
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = False
         Images = pilIcons
       end
       item
         Width = 35
-        HAlign = taRightJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calRight
-        StretchColumn = False
-        CanSelect = False
-        ColumnType = ctDefault
-        AutoSize = False
-        Images = pilDefault
-      end
-      item
-        Width = 30
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
+        Images = pilDefault
+      end
+      item
+        Width = 35
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        StretchColumn = False
+        ColumnType = ctDefault
+        VisibleOnSelectOnly = True
         Images = pilDefault
       end>
     Colors.BorderColor = clBtnFace
@@ -60,8 +58,9 @@ object frmList: TfrmList
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     Colors.DisabledColor = clBlack
+    DefaultColumn = 0
     OnResize = lbItemsResize
-    ItemHeight = 25
+    ItemHeight = 30
     OnClickItem = lbItemsClickItem
     OnDblClickItem = lbItemsDblClickItem
     OnGetCellCursor = lbItemsGetCellCursor

@@ -24,6 +24,8 @@ object frmListWnd: TfrmListWnd
     Width = 434
     Height = 1
     Align = alTop
+    ExplicitLeft = 8
+    ExplicitTop = 26
   end
   object Shape2: TShape
     Left = 0
@@ -51,7 +53,7 @@ object frmListWnd: TfrmListWnd
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = False
         Images = StatusImages
       end
       item
@@ -61,29 +63,37 @@ object frmListWnd: TfrmListWnd
         ColumnAlign = calRight
         StretchColumn = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
         Images = StatusImages
       end
       item
-        Width = 30
+        Width = 25
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
         Images = StatusImages
       end
       item
-        Width = 30
+        Width = 25
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
+        Images = StatusImages
+      end
+      item
+        Width = 35
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        StretchColumn = False
+        ColumnType = ctDefault
+        VisibleOnSelectOnly = True
         Images = StatusImages
       end>
     Colors.BorderColor = clBtnFace
@@ -93,7 +103,8 @@ object frmListWnd: TfrmListWnd
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     Colors.DisabledColor = clBlack
-    ItemHeight = 32
+    DefaultColumn = 0
+    ItemHeight = 30
     OnClickItem = lbModulesClickItem
     OnGetCellCursor = lbModulesGetCellCursor
     OnGetCellText = lbModulesGetCellText
@@ -121,7 +132,7 @@ object frmListWnd: TfrmListWnd
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = False
         Images = StatusImages
       end
       item
@@ -131,29 +142,37 @@ object frmListWnd: TfrmListWnd
         ColumnAlign = calRight
         StretchColumn = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
         Images = StatusImages
       end
       item
-        Width = 30
+        Width = 25
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
         Images = StatusImages
       end
       item
-        Width = 30
+        Width = 25
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
+        Images = StatusImages
+      end
+      item
+        Width = 35
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        StretchColumn = False
+        ColumnType = ctDefault
+        VisibleOnSelectOnly = True
         Images = StatusImages
       end>
     Colors.BorderColor = clBtnFace
@@ -163,7 +182,8 @@ object frmListWnd: TfrmListWnd
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     Colors.DisabledColor = clBlack
-    ItemHeight = 32
+    DefaultColumn = 0
+    ItemHeight = 30
     OnClickItem = lbModulesClickItem
     OnGetCellCursor = lbModulesGetCellCursor
     OnGetCellText = lbModulesGetCellText
@@ -264,7 +284,7 @@ object frmListWnd: TfrmListWnd
         C0C5C1C470F8E27B869B37DFAFFDFBE97BC4EBDD9E7F081AA09C77EE7FB49508
         C3EF7FFF198E5CFCC070EBE69B552F373887131D885249A7FE473B8A311C0769
         BEF676F1AB6DCE712445A344E491FFCA12C07470E5CDC2D7BBDD131808000C03
-        C4FC0EFCFFF7F9FB9C37FB3D530969C66A00A9806203003187C0E18827483F00
+        C4FC0EFCFFFFF9FB9CD7FB3D530969C66A00A980620300318BC0E171DEB98A00
         00000049454E44AE426082}
       ExplicitHeight = 41
     end

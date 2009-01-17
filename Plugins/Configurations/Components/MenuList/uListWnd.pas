@@ -59,8 +59,9 @@ type
   TMenuDataObject = class
   public
     ID: Integer;
-      Name: string;
+    Name: string;
     FileName: string;
+    Items: integer;
   end;
 
   TfrmList = class(TForm)
@@ -78,6 +79,10 @@ type
     procedure lbItemsGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure FormShow(Sender: TObject);
+    procedure lbItemsGetCellClickable(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var AClickable: Boolean);
+    procedure lbItemsDblClickItem(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem);
   private
     FItems: TObjectList;
     FPluginHost: TInterfacedSharpCenterHostBase;
@@ -157,7 +162,7 @@ begin
   try
 
     // build list of bar.xml files
-    AdvBuildFileList(dir + '*.xml', faAnyFile, slMenus, amAny, [flFullNames]);
+    SharpThemeApi.FindFiles( slMenus, dir, '*.xml' );
     for i := 0 to Pred(slMenus.Count) do begin
       xml.LoadFromFile(slMenus[i]);
       if xml.Root.Name = 'SharpEMenuFile' then begin
@@ -165,6 +170,7 @@ begin
         newItem.ID := i;
         newItem.Name := PathRemoveExtension(ExtractFileName(slMenus[i]));
         newItem.FileName := slMenus[i];
+        newItem.Items := xml.Root.Items.Count;
         AList.Add(newItem);
       end;
     end;
@@ -289,6 +295,26 @@ begin
   PluginHost.Refresh( rtAll );
 end;
 
+procedure TfrmList.lbItemsDblClickItem(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem);
+var
+  tmpMenu: TMenuDataObject;
+begin
+
+  tmpMenu := TMenuDataObject(AItem.Data);
+  if tmpMenu = nil then
+    exit;
+
+  EditMenu(tmpMenu.Name);
+end;
+
+procedure TfrmList.lbItemsGetCellClickable(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem; var AClickable: Boolean);
+begin
+  if (ACol > 0) then
+    AClickable := true;
+end;
+
 procedure TfrmList.lbItemsGetCellCursor(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 begin
@@ -308,6 +334,7 @@ begin
     exit;
 
   case ACol of
+    0: AImageIndex := 2;
     colCopy: AImageIndex := iidxCopy;
     colDelete: AImageIndex := iidxDelete;
   end;
@@ -318,7 +345,8 @@ procedure TfrmList.lbItemsGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmpMenu: TMenuDataObject;
-  s: String;
+  s, s2: String;
+
   colItemTxt: TColor;
   colDescTxt: TColor;
   colBtnTxt: TColor;
@@ -335,10 +363,21 @@ begin
       s := tmpMenu.Name;
       if s = '' then s := '*Untitled';
 
-      AColText := format('<font color="%s">%s',[ColorToString(colItemTxt),s]);
+      if tmpMenu.Items = 0 then
+        s2 := 'Empty' else
+      if tmpMenu.Items = 1 then
+        s2 := IntToStr(tmpMenu.Items) + ' Menu Item'
+      else
+        s2 := IntToStr(tmpMenu.Items) + ' Menu Items';
+
+
+      AColText := format('<font color="%s">%s<font color="%s"> - %s',[ColorToString(colItemTxt),s,
+        ColorToString(colDescTxt),s2]);
     end;
 
-    colEdit: AColText := format('<font color="%s"><u>Edit</u>',[ColorToString(colBtnTxt),s]);
+    colEdit: begin
+      AColText := format('<font color="%s"><u>Edit</u>',[ColorToString(colBtnTxt),s]);
+    end;
   end;
 end;
 

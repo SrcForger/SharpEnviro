@@ -98,9 +98,9 @@ var
   frmList: TfrmList;
 const
   colName = 0;
-  colStartStop = 1;
-  colEnableDisable = 2;
-  colEdit = 3;
+  colStartStop = 2;
+  colEnableDisable = 3;
+  colEdit = 1;
 
   iidxStop = 2;
   iidxPause = 1;
@@ -164,11 +164,10 @@ begin
         ServiceStop(pchar(sName));
         lbItems.Refresh;
       end;
+
+      AddItems(FAddItemsType);
     end;
   end;
-
-  if FAddItemsType = aiDisabled then
-    AddItems(FAddItemsType);
 end;
 
 procedure TfrmList.lbItemsGetCellCursor(Sender: TObject; const ACol: Integer;
@@ -312,7 +311,11 @@ begin
     bAdd := True;
     case AAddItemsType of
       aiEditable: begin
-        if Not(tmp.HasConfig) then
+        if Not(tmp.HasConfig) or (tmp.Disabled) then
+        bAdd := False;
+      end;
+      aiAll: begin
+        if (tmp.HasConfig) or (tmp.Disabled) then
         bAdd := False;
       end;
       aiDisabled: begin

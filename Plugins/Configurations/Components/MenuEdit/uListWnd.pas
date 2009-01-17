@@ -60,7 +60,7 @@ uses
   uSharpEMenuSaver,
   uSharpEMenuItem,
   SharpESkinManager,
-  
+
   ISharpCenterHostUnit;
 
 type
@@ -197,9 +197,13 @@ begin
     exit;
 
   case ACol of
-    colEdit: begin
-      EditSubFolder(tmp,colName);
+    0: begin
+      if tmp.IsParent then
+        EditSubFolder(tmp, colName);
     end;
+    colEdit: begin
+        EditSubFolder(tmp, colName);
+      end;
     colDelete: begin
 
         if lbItems.SelectedItem <> AItem then exit;
@@ -210,8 +214,9 @@ begin
             mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
             bDelete := False;
 
+        Abort;
         if bDelete then begin
-          
+
           tmpMenu := TSharpEMenu(tmp.MenuItem.OwnerMenu);
           tmpMenu.Items.Extract(tmp.MenuItem);
 
@@ -229,9 +234,8 @@ begin
   if (frmEdit <> nil) then
     frmEdit.InitUi;
 
-  PluginHost.SetEditTabsVisibility(lbItems.ItemIndex,lbItems.Count);
+  PluginHost.SetEditTabsVisibility(lbItems.ItemIndex, lbItems.Count);
   PluginHost.Refresh(rtAll);
-
 
 end;
 
@@ -257,7 +261,7 @@ begin
 
   tmrUpdatePosition.Enabled := False;
 
-  PluginHost.SetEditTabsVisibility(lbItems.ItemIndex,lbItems.Count);
+  PluginHost.SetEditTabsVisibility(lbItems.ItemIndex, lbItems.Count);
   PluginHost.Refresh(rtAll);
   Save;
 end;
@@ -287,10 +291,10 @@ begin
   if tmp = nil then
     exit;
 
-  if tmp.IsParent then
-    AClickable := False;
+  if (ACol > 0) then
+    AClickable := true; 
 
-  if ((ACol = colEdit) and not(tmp.MenuItem.ItemType = mtSubMenu)) then
+  if tmp.IsParent then
     AClickable := False;
 end;
 
@@ -307,10 +311,10 @@ begin
   if (tmp.IsParent) and (ACol <> 1) then
     ACursor := crHandPoint;
 
-  if ( ACol = 1 ) and ( tmp.MenuItem.ItemType = mtSubMenu ) then
+  if (ACol = 1) and (tmp.MenuItem.ItemType = mtSubMenu) then
     ACursor := crHandPoint;
 
-  if ( ACol = 2 ) and ( lbItems.SelectedItem = AItem ) then
+  if (ACol = 2) then
     ACursor := crHandPoint;
 end;
 
@@ -328,9 +332,9 @@ begin
   case ACol of
     colName: AImageIndex := tmp.IconIndex;
     colDelete: begin
-      if not (tmp.IsParent) and (AItem = lbItems.SelectedItem) then
-       AImageIndex := iidxDelete;
-    end;
+        if not (tmp.IsParent) and (AItem = lbItems.SelectedItem) then
+          AImageIndex := iidxDelete;
+      end;
   end;
 end;
 
@@ -338,8 +342,8 @@ procedure TfrmList.lbItemsGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
   tmp: TItemData;
-  n : integer;
-  s: String;
+  n: integer;
+  s: string;
   colItemTxt: TColor;
   colDescTxt: TColor;
   colBtnTxt: TColor;
@@ -352,13 +356,13 @@ begin
 
   case ACol of
     colEdit: begin
-      if tmp.MenuItem.ItemType = mtSubMenu then
-       AColText := Format('<u><font color="%s">Edit', [colortostring(colBtnTxt)]) else
-       AColText := '';
 
-       if tmp.IsParent then
-        AColText := Format('<u><font color="%s">Back', [colortostring(colBtnTxt)]);
-    end;
+        if tmp.MenuItem.ItemType = mtSubMenu then
+            AColText := Format('<u><font color="%s">Edit', [colortostring(colBtnTxt)]);
+
+        if tmp.IsParent then
+          AColText := Format('<u><font color="%s">Back', [colortostring(colBtnTxt)]);
+      end;
     colName: begin
 
         if tmp.IsParent then
@@ -367,39 +371,38 @@ begin
           case tmp.MenuItem.ItemType of
 
             mtSeparator: AColText := Format('<font color="%s">--------------------------------------------------------------------------------------------------------------------------',
-            [colortostring(colItemTxt),colortostring(colDescTxt)]);
+                [colortostring(colItemTxt), colortostring(colDescTxt)]);
 
             mtDynamicDir: AColText := Format('<font color="%s">%s',
-                [colortostring(colItemTxt),tmp.MenuItem.PropList.GetString('Action')]);
+                [colortostring(colItemTxt), tmp.MenuItem.PropList.GetString('Action')]);
 
             mtDriveList: AColText := Format('<font color="%s">Drive List',
-              [colortostring(colItemTxt)]);
+                [colortostring(colItemTxt)]);
 
             mtSubMenu: AColText := format('<font color="%s">%s</font>',
-                [colortostring(colItemTxt),tmp.MenuItem.Caption]);
+                [colortostring(colItemTxt), tmp.MenuItem.Caption]);
 
             mtLink: AColText := format('<font color="%s">%s.link',
-                [colortostring(colItemTxt),tmp.MenuItem.Caption]);
+                [colortostring(colItemTxt), tmp.MenuItem.Caption]);
 
             mtLabel: AColText := format('<font color="%s">%s',
-                [colortostring(colItemTxt),tmp.MenuItem.Caption]);
+                [colortostring(colItemTxt), tmp.MenuItem.Caption]);
 
             mtDesktopObjectList: AColText := format('<font color="%s">Desktop Objects',
-              [colortostring(colItemTxt)]);
+                [colortostring(colItemTxt)]);
 
             mtCPLList: AColText := format('<font color="%s">Control Panel Items',
-              [colortostring(colItemTxt)]);
+                [colortostring(colItemTxt)]);
 
             mtulist: begin
 
-            n := tmp.MenuItem.PropList.GetInt('ItemType');
-            if n = 0 then s := 'Mru - Recent Items' else
-              s := 'Mru - Most Used Items';
+                n := tmp.MenuItem.PropList.GetInt('ItemType');
+                if n = 0 then s := 'Mru - Recent Items' else
+                  s := 'Mru - Most Used Items';
 
-
-              AColText := Format('<font color="%s">%s',
-              [colortostring(colItemTxt),s]);
-            end;
+                AColText := Format('<font color="%s">%s',
+                  [colortostring(colItemTxt), s]);
+              end;
 
           end;
         end;
@@ -423,7 +426,7 @@ end;
 procedure TfrmList.RenderItems(AMenu: TSharpEMenu; AClear: Boolean = True;
   AParent: Boolean = False);
 var
-  i,n: Integer;
+  i, n: Integer;
   tmpData: TItemData;
   tmpMenu: TSharpEMenu;
   newItem: TSharpEListItem;
@@ -510,13 +513,13 @@ begin
           tmpData.IconIndex := png.Index;
         end;
       mtSubMenu: begin
-          if ( (tmpData.MenuItem.Icon = nil) or (tmpData.MenuItem.Icon.IconSource = '')) then begin
+          if ((tmpData.MenuItem.Icon = nil) or (tmpData.MenuItem.Icon.IconSource = '')) then begin
             png := pilIcons.PngImages.Add(false);
             png.PngImage := pilDefault.PngImages[iidxFolder].PngImage;
             tmpData.IconIndex := png.Index;
           end;
         end;
-       mtulist: begin
+      mtulist: begin
           png := pilIcons.PngImages.Add(false);
           png.PngImage := pilDefault.PngImages[iidxMruList].PngImage;
           tmpData.IconIndex := png.Index;
@@ -539,12 +542,12 @@ begin
         n := lbItems.ItemAtPos(point(pt.x, pt.y), True);
         if n <> -1 then
 
-        lbItems.ItemIndex := n else
-        lbItems.ItemIndex := 0;
+          lbItems.ItemIndex := n else
+          lbItems.ItemIndex := 0;
       end;
     end;
 
-  PluginHost.SetEditTabsVisibility(lbItems.ItemIndex,lbItems.Count);
+  //PluginHost.SetEditTabsVisibility(lbItems.ItemIndex, lbItems.Count);
   PluginHost.Refresh;
 end;
 
@@ -620,7 +623,7 @@ begin
       if IsParentMenu then
         RenderItemsBuffered(tmpSrcMenu, True, True)
       else
-        lbItems.Items.Exchange(nTo,n);
+        lbItems.Items.Exchange(nTo, n);
 
       for i := 0 to Pred(lbItems.Count) do begin
         if TItemData(lbItems.Item[i].Data).MenuItem = tmpSrc.MenuItem then begin

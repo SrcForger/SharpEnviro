@@ -51,30 +51,30 @@ uses
 {$R *.res}
 
 type
-  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit,
-    ISharpCenterPluginValidation  )
+  TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin, ISharpCenterPluginEdit,
+      ISharpCenterPluginValidation)
   private
     procedure ValidateTheme(Sender: TObject; ValueToValidate: Variant;
       var Valid: Boolean);
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create(APluginHost: TInterfacedSharpCenterHostBase);
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
+    procedure Save; override; stdcall;
 
     procedure Refresh; override; stdcall;
     function OpenEdit: Cardinal; stdcall;
     procedure CloseEdit(AApply: Boolean); stdcall;
 
-    function GetPluginName : string; override; stdcall;
-    function GetPluginStatusText : string; override; stdcall;
-    function GetPluginDescriptionText : string; override; stdcall;
+    function GetPluginName: string; override; stdcall;
+    function GetPluginStatusText: string; override; stdcall;
+    function GetPluginDescriptionText: string; override; stdcall;
     procedure SetupValidators; stdcall;
-
 
   end;
 
-{ TSharpCenterPlugin }
+  { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.Close;
 begin
@@ -95,7 +95,7 @@ begin
   PluginHost := APluginHost;
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText: String;
+function TSharpCenterPlugin.GetPluginDescriptionText: string;
 begin
   Result := 'Create and manage themes that customise the appearance of SharpE.';
 end;
@@ -107,14 +107,14 @@ end;
 
 function TSharpCenterPlugin.GetPluginStatusText: string;
 var
-  dir : String;
+  dir: string;
   files: TStringList;
 begin
   files := TStringList.Create;
   try
 
-  dir := SharpApi.GetSharpeUserSettingsPath + 'Themes\';
-  SharpThemeApi.FindFiles( files, dir, '*Theme.xml');
+    dir := SharpApi.GetSharpeUserSettingsPath + 'Themes\';
+    SharpThemeApi.FindFiles(files, dir, '*Theme.xml');
   finally
     result := inttoStr(files.Count);
     files.Free;
@@ -143,7 +143,23 @@ end;
 
 procedure TSharpCenterPlugin.Refresh;
 begin
-  PluginHost.AssignThemeToForms(frmList,frmEdit);
+  PluginHost.AssignThemeToForms(frmList, frmEdit);
+end;
+
+procedure TSharpCenterPlugin.Save;
+var
+  tmpTheme: TThemeListItem;
+begin
+  with frmList do begin
+    lbThemeList.Enabled := False;
+    tmrEnableUi.Enabled := True;
+
+    tmpTheme := TThemeListItem(lbThemeList.SelectedItem.Data);
+
+    Loading := True;
+    ThemeManager.SetTheme(tmpTheme.Name);
+    SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1, True);
+  end;
 end;
 
 procedure TSharpCenterPlugin.SetupValidators;
@@ -151,11 +167,11 @@ var
   tmp: TJvCustomValidator;
 begin
   // Required field validators
-  PluginHost.AddRequiredFieldValidator( frmEdit.edAuthor,'Please enter a name for the author','Text');
-  PluginHost.AddRequiredFieldValidator( frmEdit.edName,'Please enter a name for the theme','Text');
+  PluginHost.AddRequiredFieldValidator(frmEdit.edAuthor, 'Please enter a name for the author', 'Text');
+  PluginHost.AddRequiredFieldValidator(frmEdit.edName, 'Please enter a name for the theme', 'Text');
 
   // Validator for checking duplicates
-  tmp := PluginHost.AddCustomValidator( frmEdit.edName,'There is already a theme with this name','Text');
+  tmp := PluginHost.AddCustomValidator(frmEdit.edName, 'There is already a theme with this name', 'Text');
   tmp.OnValidate := ValidateTheme;
 end;
 
@@ -184,12 +200,12 @@ begin
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
     Version := '0.7.6.0';
     DataType := tteConfig;
-    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+    ExtraData := format('configmode: %d| configtype: %d', [Integer(scmApply),
       Integer(suTheme)]);
   end;
 end;
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: TInterfacedSharpCenterHostBase): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;
@@ -200,3 +216,4 @@ exports
 
 begin
 end.
+

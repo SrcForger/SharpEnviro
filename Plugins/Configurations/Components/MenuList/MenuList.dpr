@@ -206,61 +206,12 @@ begin
   end;
 end;
 
-var  
-  OldApp : TApplication;
-  OldScreen : TScreen; 
-  OldControlAtom : TAtom;
-
-procedure DLLInitialize(App : TApplication; Scr : TScreen; RealControlAtom :Integer);
-var 
-  x : pointer; 
-  p : ^Word; 
-begin 
-  If (OldApp = Nil) Then 
-  Begin 
-    // store away the current application, screen and control atom 
-    OldApp := Application; 
-    OldScreen := Screen; 
-    //p := GetControlAtom;
-    //OldControlAtom := p^;
-    // Assign the EXE's application, screen and control atom 
-    Application := App; 
-    Screen := Scr; 
-    //p^ := RealControlAtom;
-  end;
-
-end; 
-
-function GetInstance(AOwner : TComponent) : TForm;
-begin 
-  // create an instance of the form 
-  // result := TMyPlugin.create(Application.MainForm);
-end; 
-
-procedure DLLFinalize;
-var 
-  p : ^Word; 
-begin 
-  // restore the DLL's application, screen and control atom 
- // p := GetControlAtom;
- // p^ := OldControlAtom; 
-  Screen := OldScreen; 
-  Application := OldApp; 
-end;
-
 exports
-  DLLInitialize,
-  GetInstance,
-  DLLFinalize,
-  
   InitPluginInterface,
   GetMetaData;
 
-begin 
-  OldApp := nil; 
-  OldScreen := nil; 
-  OldControlAtom := 0; 
-end. 
+begin
+end.
 
 
 

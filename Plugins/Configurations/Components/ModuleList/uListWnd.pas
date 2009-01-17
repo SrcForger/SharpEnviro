@@ -128,9 +128,11 @@ var
 
 const
   colName = 0;
-  colMove = 1;
-  colDelete = 3;
-  colEdit = 2;
+  colEdit = 1;
+  colMoveUp = 2;
+  colMoveDown = 3;
+  colDelete = 4;
+  
 
   iidxMoveUp = 1;
   iidxMoveDown = 2;
@@ -179,13 +181,11 @@ begin
 
   case ACol of
     colDelete: SendMessage(wnd, WM_BARCOMMAND, BC_DELETE, tmpModule.ID);
-    colMove: begin
-      if sender = lbModulesRight then begin
-        SendMessage(wnd, WM_BARCOMMAND, BC_MOVEUP, tmpModule.ID);
-      end else begin
-        SendMessage(wnd, WM_BARCOMMAND, BC_MOVEDOWN, tmpModule.ID);
-      end;
-
+    colMoveUp: begin
+      SendMessage(wnd, WM_BARCOMMAND, BC_MOVEUP, tmpModule.ID);
+    end;
+    colMoveDown: begin
+      SendMessage(wnd, WM_BARCOMMAND, BC_MOVEDOWN, tmpModule.ID);
     end;
     colEdit: begin
 
@@ -220,7 +220,7 @@ begin
     exit;
 
   case ACol of
-    colMove, colDelete: if AItem.SubItemImageIndex[ACol] <> -1 then
+    colMoveUp,colMoveDown, colDelete: if AItem.SubItemImageIndex[ACol] <> -1 then
         ACursor := crHandPoint;
     colEdit: if AItem.SubItemText[ACol] <> '' then
         ACursor := crHandPoint;
@@ -232,13 +232,11 @@ procedure TfrmListWnd.lbModulesGetCellImageIndex(Sender: TObject; const ACol: In
   AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
 begin
   case ACol of
-    colMove: begin
-        if Sender = lbModulesLeft then begin
-          AImageIndex := iidxMoveDown;
-        end
-        else begin
-          AImageIndex := iidxMoveUp;
-        end;
+    colMoveUp: begin
+        AImageIndex := iidxMoveUp;
+      end;
+    colMoveDown: begin
+        AImageIndex := iidxMoveDown;
       end;
     colDelete: AImageIndex := iidxDelete;
   end;
@@ -357,6 +355,7 @@ begin
       else newItem := lbModulesRight.AddItem(tmpModule.Name);
 
       newItem.Data := tmpModule;
+      newItem.AddSubItem('', -1);
       newItem.AddSubItem('', -1);
       newItem.AddSubItem('', -1);
       newItem.AddSubItem('', -1);

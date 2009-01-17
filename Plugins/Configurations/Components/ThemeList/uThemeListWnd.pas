@@ -86,13 +86,12 @@ type
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
     procedure Button1Click(Sender: TObject);
-    procedure LoadThemeOnTimer(Sender: TObject);
   private
     FLoading: Boolean;
     FPluginHost: TInterfacedSharpCenterHostBase;
     FPngMissing: TPNGObject;
     FMask: TBitmap32;
-    procedure LoadTheme(tmpTheme: TThemeListItem);
+
     procedure GenerateMask;
 
     
@@ -101,6 +100,7 @@ type
     procedure BuildThemeList;
     procedure ConfigureItem;
 
+    property Loading: boolean read FLoading write FLoading;
     procedure EditTheme( name: String);
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
   end;
@@ -290,7 +290,7 @@ begin
 
   case ACol of
     cName: begin
-      tmrLoadTheme.Enabled := True;
+      FPluginHost.SetSettingsChanged;
       exit;
     end;
     cReadOnly: ;
@@ -362,12 +362,6 @@ begin
   tmrEnableUi.Enabled := False;
   lbThemeList.Enabled := True;
   FLoading := False;
-end;
-
-procedure TfrmList.LoadThemeOnTimer(Sender: TObject);
-begin
-  tmrLoadTheme.Enabled := False;
-  LoadTheme(TThemeListItem(lbThemeList.SelectedItem.Data));
 end;
 
 procedure TfrmList.lbThemeListGetCellCursor(Sender: TObject; const ACol: Integer;
@@ -483,8 +477,8 @@ end;
 
 procedure TfrmList.EditTheme(name: String);
 begin
-  //CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
-  //    + '_Themes\Theme.con'), pchar(name))
+  CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
+     + '_Themes\Theme.con'), pchar(name))
 end;
 
 procedure TfrmList.GenerateMask;
@@ -506,18 +500,6 @@ begin
   ResStream.Free;
 
   TempBmp.Free;
-end;
-
-procedure TfrmList.LoadTheme(tmpTheme: TThemeListItem);
-begin
-  begin
-    lbThemeList.Enabled := False;
-    tmrEnableUi.Enabled := True;
-
-    FLoading := True;
-    ThemeManager.SetTheme(tmpTheme.Name);
-    SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1, True);
-  end;
 end;
 
 procedure TfrmList.lbThemeListResize(Sender: TObject);

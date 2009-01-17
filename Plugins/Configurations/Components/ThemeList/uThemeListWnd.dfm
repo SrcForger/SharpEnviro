@@ -29,62 +29,57 @@ object frmList: TfrmList
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = False
         Images = ThemeImages
         SelectedImages = SelectedThemeImages
       end
       item
-        Width = 30
+        Width = 35
         HAlign = taRightJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = False
         Images = pilDefault
       end
       item
-        Width = 30
+        Width = 35
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
         Images = pilDefault
       end
       item
-        Width = 30
+        Width = 35
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
       end
       item
-        Width = 30
+        Width = 35
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
         Images = pilDefault
       end
       item
-        Width = 30
-        HAlign = taCenter
+        Width = 35
+        HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
         Images = pilDefault
       end>
     Colors.BorderColor = clBtnFace
@@ -94,6 +89,7 @@ object frmList: TfrmList
     Colors.CheckColorSelected = 14673882
     Colors.CheckColor = 15528425
     Colors.DisabledColor = clBlack
+    DefaultColumn = 0
     OnResize = lbThemeListResize
     ItemHeight = 55
     OnClickItem = lbThemeListClickItem
@@ -773,7 +769,6 @@ object frmList: TfrmList
   object tmrLoadTheme: TTimer
     Enabled = False
     Interval = 1
-    OnTimer = LoadThemeOnTimer
     Left = 84
     Top = 200
   end

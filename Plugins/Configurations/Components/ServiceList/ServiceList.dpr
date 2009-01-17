@@ -49,28 +49,58 @@ uses
 {$R *.res}
 
 type
-  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginTabs )
+  TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin, ISharpCenterPluginTabs)
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create(APluginHost: TInterfacedSharpCenterHostBase);
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
 
-    procedure ClickPluginTab(ATab: TStringItem); stdCall;
-    procedure AddPluginTabs(ATabItems: TStringList); stdCall;
+    procedure ClickPluginTab(ATab: TStringItem); stdcall;
+    procedure AddPluginTabs(ATabItems: TStringList); stdcall;
     procedure Refresh; override; stdcall;
 
-    function GetPluginStatusText : string; override; stdcall;
-    function GetPluginName : string; override; stdcall;
+    function GetPluginStatusText: string; override; stdcall;
+    function GetPluginName: string; override; stdcall;
   end;
 
-{ TSharpCenterPlugin }
+  { TSharpCenterPlugin }
 
 procedure TSharpCenterPlugin.AddPluginTabs(ATabItems: TStringList);
+var
+  tmpList: TComponentList;
+  iConfigurable, iDisabled, iOthers, i: Integer;
+  tmp: TComponentData;
 begin
-  ATabItems.AddObject('All',TObject(aiAll));
-  ATabItems.AddObject('Filter Configurable',TObject(aiEditable));
-  ATabItems.AddObject('Filter Disabled',TObject(aiDisabled));
+  iConfigurable := 0;
+  iDisabled := 0;
+  iOthers := 0;
+
+  tmpList := TComponentList.Create;
+  try
+    tmpList.BuildList('.service', false);
+
+    for i := 0 to Pred(tmpList.Count) do begin
+
+      tmp := TComponentData(tmpList[i]);
+
+      if (tmp.HasConfig) and not (tmp.Disabled) then
+        inc(iConfigurable);
+
+      if not(tmp.HasConfig) and not(tmp.Disabled) then
+        Inc(iOthers);
+
+      if (tmp.Disabled) then
+        Inc(iDisabled);
+    end;
+
+    ATabItems.AddObject(Format('Configurable (%d)', [iConfigurable]), TObject(aiEditable));
+    ATabItems.AddObject(Format('System (%d)', [iOthers]), TObject(aiAll));
+    ATabItems.AddObject(Format('Disabled (%d)', [iDisabled]), TObject(aiDisabled));
+
+  finally
+    tmpList.Free;
+  end;
 end;
 
 procedure TSharpCenterPlugin.ClickPluginTab(ATab: TStringItem);
@@ -101,12 +131,12 @@ var
   tmpList: TComponentList;
 begin
   tmpList := TComponentList.Create;
-  Try
-    tmpList.BuildList('.service',false);
+  try
+    tmpList.BuildList('.service', false);
     result := IntToStr(tmpList.Count);
-  Finally
+  finally
     tmpList.Free;
-  End;
+  end;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
@@ -132,12 +162,12 @@ begin
     Author := 'Lee Green (lee@sharpenviro.com)';
     Version := '0.7.6.0';
     DataType := tteConfig;
-    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
+    ExtraData := format('configmode: %d| configtype: %d', [Integer(scmLive),
       Integer(suService)]);
   end;
 end;
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: TInterfacedSharpCenterHostBase): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

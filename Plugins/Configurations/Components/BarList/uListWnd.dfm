@@ -29,7 +29,7 @@ object frmListWnd: TfrmListWnd
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = False
         Images = StatusImages
       end
       item
@@ -38,9 +38,8 @@ object frmListWnd: TfrmListWnd
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
       end
       item
         Width = 50
@@ -48,28 +47,26 @@ object frmListWnd: TfrmListWnd
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
       end
       item
-        Width = 30
-        HAlign = taCenter
-        VAlign = taVerticalCenter
-        ColumnAlign = calRight
-        StretchColumn = False
-        CanSelect = False
-        ColumnType = ctDefault
-        AutoSize = False
-      end
-      item
-        Width = 30
+        Width = 35
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
+      end
+      item
+        Width = 35
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        StretchColumn = False
+        ColumnType = ctDefault
+        VisibleOnSelectOnly = True
         Images = StatusImages
       end>
     Colors.BorderColor = clBtnFace
@@ -79,6 +76,7 @@ object frmListWnd: TfrmListWnd
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     Colors.DisabledColor = clBlack
+    DefaultColumn = 0
     OnResize = lbBarListResize
     ItemHeight = 40
     OnClickItem = lbBarListClickItem
