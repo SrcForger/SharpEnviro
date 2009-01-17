@@ -60,13 +60,12 @@ begin
 
   SharpEListBoxEx1.OnGetCellCursor := GetCellCursor;
   SharpEListBoxEx1.ItemOffset := Point(4,4);
-  SharpEListBoxEx1.itemheight := 25;//54;
+  SharpEListBoxEx1.itemheight := 54;
 
   li := SharpEListBoxEx1.AddItem('<b>New Theme </b>By Lee <br>Created with creative juices',1);
   li.AddSubItem(IntToStr(SharpEListBoxEx1.Count),0);
   li.AddSubItem('<u>Delete</u>',1);
   li.AddSubItem('',false);
-  li.Level := SharpEListBoxEx1.Count-1;
   li.Hint := 'Click to set as default';
 
 end;

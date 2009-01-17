@@ -33,7 +33,7 @@ object Form1: TForm1
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = False
         Images = col1
       end
       item
@@ -42,9 +42,8 @@ object Form1: TForm1
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
         Images = col1
       end
       item
@@ -53,9 +52,8 @@ object Form1: TForm1
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
         Images = col1
       end
       item
@@ -64,9 +62,8 @@ object Form1: TForm1
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctCheck
-        AutoSize = False
+        VisibleOnSelectOnly = True
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnFace
@@ -74,6 +71,7 @@ object Form1: TForm1
     Colors.ItemColorSelected = clBtnFace
     Colors.CheckColorSelected = 33023
     Colors.CheckColor = 15528425
+    Colors.DisabledColor = clBlack
     ItemHeight = 25
     OnDblClickItem = SharpEListBoxEx1DblClickItem
     OnGetCellCursor = SharpEListBoxEx1GetCellCursor

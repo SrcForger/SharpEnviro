@@ -35,9 +35,8 @@ type
     FSelectedImages: TPngImageList;
     FStretchColumn: Boolean;
     FCursorRect: TRect;
-    FCanSelect: Boolean;
     FColumnType: TSEColumn_Type;
-    FAutoSize: Boolean;
+    FVisibleOnSelectOnly: Boolean;
 
     procedure SetWidth(const Value: Integer);
     procedure SetHAlign(const Value: TAlignment);
@@ -56,9 +55,8 @@ type
     property VAlign: TVerticalAlignment read FVAlign write SetVAlign;
     property ColumnAlign: TSEColumn_Align read FColumnAlign write FColumnAlign;
     property StretchColumn: Boolean read FStretchColumn write FStretchColumn;
-    property CanSelect: Boolean read FCanSelect write FCanSelect default True;
     property ColumnType: TSEColumn_Type read FColumnType write FColumnType;
-    property AutoSize: Boolean read FAutoSize write FAutoSize;
+    property VisibleOnSelectOnly: Boolean read FVisibleOnSelectOnly write FVisibleOnSelectOnly;
 
     property Images: TPngImageList read
       FImages write FImages;
@@ -108,7 +106,6 @@ type
     FOwner: TComponent;
     FSubItemCheckedStates: TList;
     FColor: TColor;
-    FLevel: Integer;
 
     function GetSubItemText(ASubItem: Integer): string;
     procedure SetSubItemText(ASubItem: Integer; const Value: string);
@@ -142,7 +139,6 @@ type
     property Caption: string read GetCaption write SetCaption;
     property ImageIndex: Integer read GetImageIndex write SetImageIndex;
     property Checked: Boolean read GetChecked write SetChecked;
-    property Level: Integer read FLevel write FLevel;
     property Selected: boolean read GetSelected;
 
     property SubItemImageIndex[ASubItemIndex: Integer]: Integer read GetSubItemImageIndex write
@@ -189,6 +185,8 @@ type
 
     FOnClickCheck: TSharpEListBoxExOnClickCheck;
     FOnDblClickItem: TSharpEListBoxExOnDblClickItem;
+    FDefaultColumn: Integer;
+
     procedure ResizeEvent(Sender: TObject);
     procedure DrawItemEvent(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
@@ -249,6 +247,7 @@ type
   published
     property Columns: TSharpEListBoxExColumns read FColumns write SetColumns stored True;
     property Colors: TSharpEListBoxExColors read FColors write SetColors stored True;
+    property DefaultColumn: Integer read FDefaultColumn write FDefaultColumn;
     property Color;
     property Font;
     property Anchors;
@@ -265,6 +264,7 @@ type
     property OnGetCellText: TSharpEListBoxExGetColText read FOnGetCellText write FOnGetCellText;
     property OnGetCellImageIndex: TSharpEListBoxExGetColImageIndex read FOnGetCellImageIndex write FOnGetCellImageIndex;
     property OnGetCellClickable: TSharpEListBoxExGetColClickable read FOnGetCellClickable write FOnGetCellClickable;
+
     property OnDragOver;
     property OnDragDrop;
     property OnStartDrag;
@@ -431,7 +431,6 @@ var
   R: TRect;
   iCol: Integer;
   bSelected: Boolean;
-  nLevel: Integer;
   tmpItem: TSharpEListItem;
 begin
   UpdateColumnSizes;
@@ -449,14 +448,23 @@ begin
     // Draw Columns
     for iCol := 0 to Pred(ColumnCount) do begin
 
-      nLevel := 0;
-
-      if iCol = 0 then
-        nLevel := tmpItem.Level * 24;
-
       tmpCol := Column[iCol];
-      tmpCol.ColumnRect := Types.Rect(tmpCol.ColumnRect.Left + ItemOffset.X + nLevel,
-        Rect.Top, tmpCol.ColumnRect.Right, Rect.Bottom);
+      if (not (tmpItem = SelectedItem) and (tmpCol.VisibleOnSelectOnly)) then
+        Continue;
+
+
+      // Set the column rect
+      if ((iCol = DefaultColumn) and not(tmpItem = SelectedItem)) then begin
+
+        tmpCol.ColumnRect := Types.Rect(tmpCol.ColumnRect.Left + ItemOffset.X,
+          Rect.Top, Self.Width-(ItemOffset.X*4), Rect.Bottom);
+
+      end else begin
+
+        tmpCol.ColumnRect := Types.Rect(tmpCol.ColumnRect.Left + ItemOffset.X,
+          Rect.Top, tmpCol.ColumnRect.Right, Rect.Bottom);
+
+      end;
       R := tmpCol.ColumnRect;
 
       if (iCol <= tmpItem.SubItemCount - 1) then begin
@@ -522,84 +530,84 @@ var
   col: TColor;
 begin
   // Init
-  if ( (ACol >= 0) and (ACol< Aitem.SubItems.Count) ) then begin
+  if ((ACol >= 0) and (ACol < Aitem.SubItems.Count)) then begin
 
-  sColText := Aitem.SubItemText[ACol];
-  if Assigned(FOnGetCellText) then begin
-    FOnGetCellText(Self, ACol, Aitem, sColText);
-  end;
+    sColText := Aitem.SubItemText[ACol];
+    if Assigned(FOnGetCellText) then begin
+      FOnGetCellText(Self, ACol, Aitem, sColText);
+    end;
 
-  rColRect := ARect;
+    rColRect := ARect;
 
-  // Get Image Width
-  iImgWidth := 0;
-  if APngImage <> nil then
-    iImgWidth := APngImage.Width + 8;
+    // Get Image Width
+    iImgWidth := 0;
+    if APngImage <> nil then
+      iImgWidth := APngImage.Width + 8;
 
-  // Define Horizontal Column Align
+    // Define Horizontal Column Align
 {$REGION 'ColumnAlign'}
-  case Column[Acol].HAlign of
-    taLeftJustify: begin
-        sColText := '<ALIGN="LEFT">' + sColText;
-        rColRect.Left := rColRect.Left + iImgWidth + ItemOffset.X;
-      end;
-    taRightJustify: begin
-        sColText := '<ALIGN="RIGHT">' + sColText;
-        rColRect.Right := rColRect.Right - iImgWidth - ItemOffset.X;
-      end;
-    taCenter: sColText := '<ALIGN="CENTER">' + sColText;
-  end;
-{$ENDREGION}
-
-  // Define Vertical Column Align
-{$REGION 'VerticalAlign'}
-  ACanvas.Font := Self.Font;
-  iTextHeight := HTMLTextHeight(ACanvas, sColText, 100);
-  case Column[ACol].VAlign of
-    taAlignTop: rColRect := Rect(rColRect.Left, ARect.Top + ItemOffset.Y, rColRect.Right, ARect.Top + ItemOffset.Y + iTextHeight);
-    taAlignBottom: rColRect := Rect(rColRect.Left, ARect.Bottom - ItemOffset.Y - iTextHeight, rColRect.Right, ARect.Bottom - ItemOffset.Y);
-    taVerticalCenter: begin
-        iItemHWOffsets := ItemHeight - ItemOffset.Y;
-        n := (iItemHWOffsets div 2) - (iTextHeight div 2);
-
-        rColRect := Rect(rColRect.Left, ARect.Top + n, rColRect.Right, ARect.Top + n + iTextHeight);
-      end;
-  end;
-{$ENDREGION}
-
-  bmp32 := TBitmap32.Create;
-  try
-    bmp32.SetSize(rColRect.Right - rColRect.Left, rColRect.Bottom - rColRect.Top);
-    bmp32.draw(bmp32.ClipRect, rColRect, ACanvas.Handle);
-    bmp32.Canvas.Font := Self.Font;
-    rTextRect := bmp32.ClipRect;
-
-    if rColRect.Right - rColRect.Left > 0 then
-      if rColRect.Bottom - rColRect.Top > 0 then begin
-
-        bDrawEllipsis := False;
-        w := HTMLTextWidth(bmp32.Canvas, rTextRect, [], sColText, 100);
-        if w > rTextRect.Right - rTextRect.Left then
-          bDrawEllipsis := True;
-
-        SetBkMode(bmp32.Canvas.Handle, TRANSPARENT);
-        HTMLDrawText(bmp32.Canvas, rTextRect, [], sColText, 100);
-
-        if bDrawEllipsis then begin
-          rEllipsisRect := bmp32.ClipRect;
-          rEllipsisRect.Left := rEllipsisRect.Right - 16;
-          rEllipsisRect.Bottom := rEllipsisRect.Bottom - 1;
-
-          col := Aitem.Color;
-
-          HGradient(bmp32, ColorToRGB(col), ColorToRGB(col), 0, 255, rEllipsisRect);
+    case Column[Acol].HAlign of
+      taLeftJustify: begin
+          sColText := '<ALIGN="LEFT">' + sColText;
+          rColRect.Left := rColRect.Left + iImgWidth + ItemOffset.X;
         end;
-      end;
+      taRightJustify: begin
+          sColText := '<ALIGN="RIGHT">' + sColText;
+          rColRect.Right := rColRect.Right - iImgWidth - ItemOffset.X;
+        end;
+      taCenter: sColText := '<ALIGN="CENTER">' + sColText;
+    end;
+{$ENDREGION}
 
-  finally
-    bmp32.DrawTo(ACanvas.Handle, rColRect.Left, rColRect.Top);
-    bmp32.Free;
-  end;
+    // Define Vertical Column Align
+{$REGION 'VerticalAlign'}
+    ACanvas.Font := Self.Font;
+    iTextHeight := HTMLTextHeight(ACanvas, sColText, 100);
+    case Column[ACol].VAlign of
+      taAlignTop: rColRect := Rect(rColRect.Left, ARect.Top + ItemOffset.Y, rColRect.Right, ARect.Top + ItemOffset.Y + iTextHeight);
+      taAlignBottom: rColRect := Rect(rColRect.Left, ARect.Bottom - ItemOffset.Y - iTextHeight, rColRect.Right, ARect.Bottom - ItemOffset.Y);
+      taVerticalCenter: begin
+          iItemHWOffsets := ItemHeight - ItemOffset.Y;
+          n := (iItemHWOffsets div 2) - (iTextHeight div 2);
+
+          rColRect := Rect(rColRect.Left, ARect.Top + n, rColRect.Right, ARect.Top + n + iTextHeight);
+        end;
+    end;
+{$ENDREGION}
+
+    bmp32 := TBitmap32.Create;
+    try
+      bmp32.SetSize(rColRect.Right - rColRect.Left, rColRect.Bottom - rColRect.Top);
+      bmp32.draw(bmp32.ClipRect, rColRect, ACanvas.Handle);
+      bmp32.Canvas.Font := Self.Font;
+      rTextRect := bmp32.ClipRect;
+
+      if rColRect.Right - rColRect.Left > 0 then
+        if rColRect.Bottom - rColRect.Top > 0 then begin
+
+          bDrawEllipsis := False;
+          w := HTMLTextWidth(bmp32.Canvas, rTextRect, [], sColText, 100);
+          if w > rTextRect.Right - rTextRect.Left then
+            bDrawEllipsis := True;
+
+          SetBkMode(bmp32.Canvas.Handle, TRANSPARENT);
+          HTMLDrawText(bmp32.Canvas, rTextRect, [], sColText, 100);
+
+          if bDrawEllipsis then begin
+            rEllipsisRect := bmp32.ClipRect;
+            rEllipsisRect.Left := rEllipsisRect.Right - 16;
+            rEllipsisRect.Bottom := rEllipsisRect.Bottom - 1;
+
+            col := Aitem.Color;
+
+            HGradient(bmp32, ColorToRGB(col), ColorToRGB(col), 0, 255, rEllipsisRect);
+          end;
+        end;
+
+    finally
+      bmp32.DrawTo(ACanvas.Handle, rColRect.Left, rColRect.Top);
+      bmp32.Free;
+    end;
   end;
 end;
 
@@ -617,18 +625,12 @@ begin
     FOnGetCellColor(Self, AItem, tmpColor);
 
   y := 0;
-  {if AItemIndex = 0 then begin
-    y := itemoffset.Y;
-  end; }
 
   // Checked
   if AItem.Checked then begin
-    if Not(Assigned(FOnGetCellColor)) then
+    if not (Assigned(FOnGetCellColor)) then
       tmpColor := FColors.CheckColor;
   end;
-
-  //if not (Enabled) then
-  //  tmpColor := Colors.DisabledColor;
 
   Self.Canvas.Brush.Color := tmpColor;
   Self.Canvas.Pen.Color := tmpColor;
@@ -648,9 +650,6 @@ begin
       tmpColor := FColors.FCheckColorSelected;
     end;
 
-    //if not (Enabled) then
-    //  tmpColor := Colors.DisabledColor;
-
     Self.Canvas.Brush.Color := tmpColor;
     Self.Canvas.Pen.Color := tmpColor;
 
@@ -658,25 +657,6 @@ begin
     Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top + y,
       ARect.Right - (ItemOffset.X), ARect.Bottom - itemoffset.Y, 10, 10);
   end;
-
-  {if (odFocused in AState) and (odSelected in AState) then begin
-    Self.Canvas.Brush.Color := Colors.ItemColorSelected;
-    Self.Canvas.Pen.Color := Colors.BorderColorSelected;
-
-    if not (Enabled) then begin
-      Self.Canvas.Brush.Color := clBtnFace;
-      Self.Canvas.Pen.Color := clBtnFace;
-    end;
-
-    if AItem.Checked then begin
-      Self.Canvas.Brush.Color := Colors.CheckColorSelected;
-      Self.Canvas.Pen.Color := Colors.CheckColorSelected;
-    end;
-
-    AItem.Color := Self.Canvas.Brush.Color;
-    Self.Canvas.RoundRect(ARect.Left + ItemOffset.X, ARect.Top + y,
-      ARect.Right - (ItemOffset.X), ARect.Bottom - itemoffset.Y, 10, 10);
-  end;   }
 
 end;
 
@@ -712,8 +692,8 @@ begin
 
     R := Self.ItemRect(n);
 
-    if (X > Column[iCol].ColumnRect.Left) and (X < Column[iCol].ColumnRect.Right) and
-      (Y > R.Top) and (Y < R.Bottom) then begin
+    if (X >= Column[iCol].ColumnRect.Left-ItemOffset.X) and (X <= Column[iCol].ColumnRect.Right+ItemOffset.X) and
+      (Y >= R.Top) and (Y <= R.Bottom) then begin
 
       Result := Column[iCol];
       break;
@@ -789,7 +769,6 @@ end;
 constructor TSharpEListItem.Create(AOwner: TComponent);
 begin
   FOwner := AOwner;
-  FLevel := 0;
   FSubItems := TStringList.Create;
   FSubItemImages := TList.Create;
   FSubItemSelectedImages := TList.Create;
@@ -1037,60 +1016,76 @@ var
   p: TPoint;
   ShiftState: TShiftState;
 begin
-  ShiftState := KeysToShiftState(Message.Keys);
-  if (DragMode = dmAutomatic) and FMultiSelect then begin
-    if not (ssShift in ShiftState) or (ssCtrl in ShiftState) then begin
-      ItemNo := ItemAtPos(SmallPointToPoint(Message.Pos), True);
-      if (ItemNo >= 0) and (Selected[ItemNo]) then begin
-        BeginDrag(False);
-        Exit;
+
+  try
+    ShiftState := KeysToShiftState(Message.Keys);
+    if (DragMode = dmAutomatic) and FMultiSelect then begin
+      if not (ssShift in ShiftState) or (ssCtrl in ShiftState) then begin
+        ItemNo := ItemAtPos(SmallPointToPoint(Message.Pos), True);
+        if (ItemNo >= 0) and (Selected[ItemNo]) then begin
+          BeginDrag(False);
+          Exit;
+        end;
       end;
     end;
-  end;  
 
-  p := SmallPointToPoint(Message.Pos);
-  ItemNo := ItemAtPos(p, True);
+    p := SmallPointToPoint(Message.Pos);
+    ItemNo := ItemAtPos(p, True);
 
-  if ItemNo <> -1 then begin
-    tmpItem := Self.Item[itemNo];
-    tmpCol := GetColumnAtMouseCursorPos;
+    if ItemNo <> -1 then begin
+      tmpItem := Self.Item[itemNo];
+      tmpCol := GetColumnAtMouseCursorPos;
 
-    if tmpCol <> nil then begin
+      if tmpCol <> nil then begin
 
-      bCanSelect := tmpCol.CanSelect;
-      if assigned(FOnGetCellClickable) then
-        FOnGetCellClickable(Self, tmpCol.ID, tmpItem, bCanSelect);
+        bCanSelect := true;
+        if assigned(FOnGetCellClickable) then
+          FOnGetCellClickable(Self, tmpCol.ID, tmpItem, bCanSelect);
 
-      if tmpCol.ColumnType = ctCheck then begin
+        if ((tmpCol.VisibleOnSelectOnly) and not (tmpItem = SelectedItem)) then begin
 
-        bChecked := not (tmpItem.SubItemChecked[tmpCol.ID]);
-        bCanSelect := False;
+          if bCanSelect then begin
 
-        if assigned(FOnClickCheck) then
-          FOnClickCheck(Self, tmpCol.ID, tmpItem, bChecked);
+            Self.ItemIndex := ItemNo;
+            if Assigned(FOnClickItem) then
+              FOnClickItem(Self, DefaultColumn, tmpItem);
+          end;
 
-        tmpItem.SubItemChecked[tmpCol.ID] := bChecked;
+          exit;
+        end;
 
-      end;
+        if tmpCol.ColumnType = ctCheck then begin
 
-      if bCanSelect then begin
-        Self.ItemIndex := ItemNo;
+          bChecked := not (tmpItem.SubItemChecked[tmpCol.ID]);
+          bCanSelect := False;
 
-        if Assigned(FOnClickItem) then
-          FOnClickItem(Self, tmpCol.ID, tmpItem);
+          if assigned(FOnClickCheck) then
+            FOnClickCheck(Self, tmpCol.ID, tmpItem, bChecked);
 
-        Self.Invalidate;
-        if (DragMode = dmAutomatic) and not (FMultiSelect and
-          ((ssCtrl in ShiftState) or (ssShift in ShiftState))) then
-          BeginDrag(False); 
-      end
-      else begin
-        if Assigned(FOnClickItem) then
-          FOnClickItem(Self, tmpCol.ID, tmpItem);
+          tmpItem.SubItemChecked[tmpCol.ID] := bChecked;
+
+        end;
+
+        if bCanSelect then begin
+          Self.ItemIndex := ItemNo;
+
+          if Assigned(FOnClickItem) then
+            FOnClickItem(Self, tmpCol.ID, tmpItem);
+
+          Self.Invalidate;
+          if (DragMode = dmAutomatic) and not (FMultiSelect and
+            ((ssCtrl in ShiftState) or (ssShift in ShiftState))) then
+            BeginDrag(False);
+        end
+        else begin
+          if Assigned(FOnClickItem) then
+            FOnClickItem(Self, tmpCol.ID, tmpItem);
+        end;
       end;
     end;
+  finally
+    Self.Invalidate;
   end;
-
 end;
 
 function TSharpEListBoxEx.GetItem(AItem: Integer): TSharpEListItem;
@@ -1167,6 +1162,7 @@ var
   tmpItem: TSharpEListItem;
   b: Boolean;
 begin
+  UpdateColumnSizes;
 
   n := ItemAtPos(Self.ScreenToClient(Mouse.CursorPos), True);
   if n = -1 then begin
@@ -1177,12 +1173,17 @@ begin
 
   for iCol := 0 to Pred(ColumnCount) do begin
 
+    if ((Column[iCol].VisibleOnSelectOnly) and not (tmpItem = SelectedItem)) then begin
+      Self.Cursor := crDefault;
+      exit;
+    end;
+
     R := Self.ItemRect(n);
 
     if (X > Column[iCol].ColumnRect.Left) and (X < Column[iCol].ColumnRect.Right) and
       (Y > R.Top) and (Y < R.Bottom) then begin
 
-      b := Column[iCol].CanSelect;
+      b := true;
       if Assigned(FOnGetCellClickable) then
         FOnGetCellClickable(Self, iCol, tmpItem, b);
 
@@ -1207,12 +1208,11 @@ end;
 constructor TSharpEListBoxExColumn.Create(Collection: TCollection);
 begin
   inherited;
-  FCanSelect := True;
   FWidth := 30;
   FVAlign := taVerticalCenter;
   FHAlign := taLeftJustify;
   FStretchColumn := False;
-  FAutoSize := False;
+  FVisibleOnSelectOnly := False;
   FOwner := TSharpEListBoxEx(Collection.Owner);
 end;
 
