@@ -2479,19 +2479,11 @@ object SharpCenterWnd: TSharpCenterWnd
           object tabHistory: TTabSheet
             Caption = 'tabHistory'
             TabVisible = False
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
           end
           object tabImport: TTabSheet
             Caption = 'tabImport'
             ImageIndex = 1
             TabVisible = False
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
             object btnImport: TPngSpeedButton
               Left = 118
               Top = 36
@@ -2974,7 +2966,7 @@ object SharpCenterWnd: TSharpCenterWnd
                   ColumnAlign = calLeft
                   StretchColumn = True
                   ColumnType = ctDefault
-                  AutoSize = False
+                  VisibleOnSelectOnly = False
                   Images = pilIcons
                 end
                 item
@@ -2984,7 +2976,7 @@ object SharpCenterWnd: TSharpCenterWnd
                   ColumnAlign = calRight
                   StretchColumn = False
                   ColumnType = ctDefault
-                  AutoSize = False
+                  VisibleOnSelectOnly = False
                 end>
               Colors.BorderColor = clBtnFace
               Colors.BorderColorSelected = clBtnShadow
@@ -2993,6 +2985,7 @@ object SharpCenterWnd: TSharpCenterWnd
               Colors.CheckColorSelected = clBtnFace
               Colors.CheckColor = 15528425
               Colors.DisabledColor = clBlack
+              DefaultColumn = 0
               Color = 8447997
               Font.Charset = ANSI_CHARSET
               Font.Color = clWindowText
@@ -3012,10 +3005,6 @@ object SharpCenterWnd: TSharpCenterWnd
             Caption = 'tabExport'
             ImageIndex = 3
             TabVisible = False
-            ExplicitLeft = 0
-            ExplicitTop = 0
-            ExplicitWidth = 0
-            ExplicitHeight = 0
           end
         end
       end
@@ -3037,7 +3026,7 @@ object SharpCenterWnd: TSharpCenterWnd
             ColumnAlign = calLeft
             StretchColumn = True
             ColumnType = ctDefault
-            AutoSize = False
+            VisibleOnSelectOnly = False
             Images = picMain
           end
           item
@@ -3047,7 +3036,7 @@ object SharpCenterWnd: TSharpCenterWnd
             ColumnAlign = calRight
             StretchColumn = False
             ColumnType = ctDefault
-            AutoSize = False
+            VisibleOnSelectOnly = False
           end>
         Colors.BorderColor = clBtnFace
         Colors.BorderColorSelected = clBtnShadow
@@ -3056,6 +3045,7 @@ object SharpCenterWnd: TSharpCenterWnd
         Colors.CheckColorSelected = clBtnFace
         Colors.CheckColor = 15528425
         Colors.DisabledColor = clBlack
+        DefaultColumn = 0
         ItemHeight = 25
         OnClickItem = lbTreeClickItem
         OnGetCellColor = lbTreeGetCellColor
