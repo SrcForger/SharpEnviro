@@ -50,6 +50,7 @@ type
     SharpESwatchManager1: TSharpESwatchManager;
     ccolors: TSharpEColorEditorEx;
     tmr: TTimer;
+    PngImageList1: TPngImageList;
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -61,6 +62,9 @@ type
     procedure FormShow(Sender: TObject);
     procedure lbCursorListGetCellText(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AColText: string);
+    procedure lbCursorListGetCellImageIndex(Sender: TObject;
+      const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
+      const ASelected: Boolean);
   private
     FPluginHost: TInterfacedSharpCenterHostBase;
     FPreview: TBitmap32;
@@ -98,6 +102,13 @@ procedure TfrmSettingsWnd.lbCursorListClickItem(Sender: TObject; const ACol: Int
 begin
   BuildCursorPreview;
   SendUpdate;
+end;
+
+procedure TfrmSettingsWnd.lbCursorListGetCellImageIndex(Sender: TObject;
+  const ACol: Integer; AItem: TSharpEListItem; var AImageIndex: Integer;
+  const ASelected: Boolean);
+begin
+  AImageIndex := 0;
 end;
 
 procedure TfrmSettingsWnd.lbCursorListGetCellText(Sender: TObject;

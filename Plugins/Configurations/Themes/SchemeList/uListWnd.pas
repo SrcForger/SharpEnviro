@@ -67,11 +67,11 @@ type
   TfrmListWnd = class(TForm)
     Label3: TLabel;
     lbSchemeList: TSharpEListBoxEx;
-    imlCol1: TPngImageList;
     imlCol2: TPngImageList;
     bmlMain: TBitmap32List;
     tmrRefreshItems: TTimer;
     tmrSendUpdate: TTimer;
+    tmrSetScheme: TTimer;
 
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -88,6 +88,7 @@ type
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
     procedure tmrSendUpdateTimer(Sender: TObject);
+    procedure tmrSetSchemeTimer(Sender: TObject);
 
   private
     FPluginHost: TInterfacedSharpCenterHostBase;
@@ -295,8 +296,8 @@ begin
 
     // Set Scheme
     if AItem <> nil then begin
-      XmlSetScheme(FSchemeManager.PluginID, TSchemeItem(AItem.Data).Name);
-      PostMessage(self.Handle,WM_EVENTS,0,0);
+      tmrSetScheme.Enabled := true;
+      Exit;
     end;
 
   end
@@ -354,6 +355,8 @@ begin
   if tmp = nil then
     exit;
 
+  if ACol = 0 then
+    AImageIndex := 2;
   if ACol = cCopyColIdx then begin
     AImageIndex := 1;
   end
@@ -402,6 +405,18 @@ procedure TfrmListWnd.tmrSendUpdateTimer(Sender: TObject);
 begin
   tmrSendUpdate.enabled := false;
   //SharpCenterApi.BroadcastGlobalUpdateMessage(suScheme, 0);
+end;
+
+procedure TfrmListWnd.tmrSetSchemeTimer(Sender: TObject);
+var
+  tmp:TSchemeItem;
+begin
+  tmrSetScheme.Enabled := false;
+  tmp := TSchemeItem(lbSchemeList.SelectedItem.Data);
+  XmlSetScheme(FSchemeManager.PluginID, tmp.Name);
+
+  PostMessage(self.Handle,WM_EVENTS,0,0);
+  PluginHost.Refresh(rtPreview);
 end;
 
 end.

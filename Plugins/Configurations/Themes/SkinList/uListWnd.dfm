@@ -29,30 +29,28 @@ object frmListWnd: TfrmListWnd
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = False
         Images = pilNormal
         SelectedImages = pilSelected
       end
       item
-        Width = 30
+        Width = 35
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
         Images = PngImageList1
       end
       item
-        Width = 30
-        HAlign = taCenter
+        Width = 35
+        HAlign = taLeftJustify
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
         Images = PngImageList1
       end>
     Colors.BorderColor = clBtnFace
@@ -62,6 +60,7 @@ object frmListWnd: TfrmListWnd
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     Colors.DisabledColor = clBlack
+    DefaultColumn = 0
     OnResize = lbSkinListResize
     ItemHeight = 40
     OnClickItem = lbSkinListClickItem
@@ -146,5 +145,12 @@ object frmListWnd: TfrmListWnd
     PngImages = <>
     Left = 72
     Top = 280
+  end
+  object tmrSetSkin: TTimer
+    Enabled = False
+    Interval = 1
+    OnTimer = tmrSetSkinTimer
+    Left = 244
+    Top = 268
   end
 end

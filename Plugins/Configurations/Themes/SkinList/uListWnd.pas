@@ -68,6 +68,7 @@ type
     tmrRefreshItems: TTimer;
     pilSelected: TPngImageList;
     pilNormal: TPngImageList;
+    tmrSetSkin: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure lbSkinListClickItem(Sender: TObject; const ACol: Integer; AItem: TSharpEListItem);
@@ -80,6 +81,7 @@ type
       AItem: TSharpEListItem; var ACursor: TCursor);
     procedure lbSkinListResize(Sender: TObject);
     procedure tmrRefreshItemsTimer(Sender: TObject);
+    procedure tmrSetSkinTimer(Sender: TObject);
 
   private
     FSkin: string;
@@ -288,8 +290,22 @@ end;
 procedure TfrmListWnd.tmrRefreshItemsTimer(Sender: TObject);
 begin
   tmrRefreshItems.Enabled := False;
+
   BuildPreviewList;
   lbSkinList.Refresh;
+end;
+
+procedure TfrmListWnd.tmrSetSkinTimer(Sender: TObject);
+var
+  tmp: TSkinItem;
+begin
+  tmrSetSkin.Enabled := false;
+
+  tmp := TSkinItem(lbSkinList.SelectedItem.Data);
+  FSkin := tmp.Name;
+  FPluginHost.Save;
+
+  SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suSkin), 0);
 end;
 
 procedure TfrmListWnd.lbSkinListClickItem(Sender: TObject; const ACol: Integer;
@@ -297,13 +313,6 @@ procedure TfrmListWnd.lbSkinListClickItem(Sender: TObject; const ACol: Integer;
 var
   tmp: TSkinItem;
 
-  procedure SetSkin;
-  begin
-    FSkin := tmp.Name;
-    FPluginHost.Save;
-
-    SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(suSkin), 0);
-  end;
 begin
   tmp := TSkinItem(AItem.Data);
 
@@ -311,17 +320,15 @@ begin
 
     case ACol of
       cItem: begin
-          SetSkin;
+          tmrSetSkin.Enabled := true;
         end;
         cUrl: begin
           if tmp.Website <> '' then
-            SharpExecute(tmp.Website) else
-            SetSkin;
+            SharpExecute(tmp.Website);
         end;
         cInfo: begin
           if tmp.Info <> '' then
-            ShowMessage(tmp.Info) else
-            SetSkin;
+            ShowMessage(tmp.Info);
 
         end;
     end;

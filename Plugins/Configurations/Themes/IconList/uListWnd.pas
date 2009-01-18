@@ -232,7 +232,7 @@ begin
   else if (ACol = 1) then begin
     if (Pos('http', tmp.Website) <> 0) then
       SharpExecute(TIconItem(AItem.Data).Website) else begin
-        PluginHost.Refresh;
+        PluginHost.Refresh(rtPreview);
         PluginHost.Save;
       end;
   end;
@@ -266,6 +266,9 @@ begin
   tmp := TIconItem(AItem.Data);
   if tmp = nil then
     exit;
+
+  if ACol = 0 then
+    AImageIndex := 2;
 
   if ACol = 1 then begin
 

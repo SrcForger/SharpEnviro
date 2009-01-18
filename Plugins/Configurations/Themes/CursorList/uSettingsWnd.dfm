@@ -99,8 +99,6 @@ object frmSettingsWnd: TfrmSettingsWnd
     BackgroundTextColor = clBlack
     ContainerColor = clBlack
     ContainerTextColor = clBlack
-    ExplicitTop = 64
-    ExplicitHeight = 104
   end
   object lbCursorList: TSharpEListBoxEx
     Left = 0
@@ -115,7 +113,8 @@ object frmSettingsWnd: TfrmSettingsWnd
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = False
+        Images = PngImageList1
       end>
     Colors.BorderColor = clBtnFace
     Colors.BorderColorSelected = clBtnShadow
@@ -124,10 +123,12 @@ object frmSettingsWnd: TfrmSettingsWnd
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     Colors.DisabledColor = clBlack
+    DefaultColumn = 0
     OnResize = lbCursorListResize
-    ItemHeight = 25
+    ItemHeight = 30
     OnClickItem = lbCursorListClickItem
     OnGetCellText = lbCursorListGetCellText
+    OnGetCellImageIndex = lbCursorListGetCellImageIndex
     AutosizeGrid = True
     Borderstyle = bsNone
     Ctl3d = False
@@ -160,5 +161,29 @@ object frmSettingsWnd: TfrmSettingsWnd
     OnTimer = tmrOnTimer
     Left = 300
     Top = 136
+  end
+  object PngImageList1: TPngImageList
+    PngImages = <
+      item
+        PngImage.Data = {
+          89504E470D0A1A0A0000000D4948445200000010000000100804000000B5FA37
+          EA0000000467414D410000AFC837058AE90000001974455874536F6674776172
+          650041646F626520496D616765526561647971C9653C0000011B4944415478DA
+          63FCCF000167EA4C9A18B00046988293FFFF3659D5E35170F4BF28C3D356C71A
+          9C0A0EFD3763B8C7F0B0C3B31287827DFFAD187E303C64B8DF1D508655C1AEFF
+          D640058C4053EE7447946151B0EDBF2DC33786FF0CCC0C77186EF425166328D8
+          F4DF9EE10BC33F208B95E116C3D5899905680AD6FD7764F80C54C0C8C0CEF097
+          E13AC3E52985B9280A56FDF7042AF80B54B0E9EB9F1B7F74FFB0FD9D52998BA4
+          60E97F6386633F8DD9E51816FFFF2355F48281A189F32F43E377B88285FFFFBC
+          F8E3FF67A5ABC20B86130BCB12301C39F7E49FD0F447130364D7BB324CFAF757
+          A8EE239A82199C19DF4174E7F360893B0CC71A9B1AD014C0404BACFA22438679
+          9FFF8874FDC2AAA081EDEF833FCFFE6EED82C62C00A6AA800184188152000000
+          0049454E44AE426082}
+        Name = 'PngImage0'
+        Background = clWindow
+      end>
+    Left = 368
+    Top = 136
+    Bitmap = {}
   end
 end
