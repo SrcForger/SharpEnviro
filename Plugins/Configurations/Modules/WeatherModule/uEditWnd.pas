@@ -191,7 +191,7 @@ begin
     xml.LoadFromFile(GetSharpEUserSettingsPath+'SharpCore\Services\Weather\WeatherList.xml');
 
     for n := 0 to XML.Root.Items.Count - 1 do begin
-      cbLocation.Items.Add(xml.Root.Items.Item[n].Properties.Value('Name',''));
+      cbLocation.Items.Add(xml.Root.Items.Item[n].Properties.Value('Location',''));
     end;
 
   finally

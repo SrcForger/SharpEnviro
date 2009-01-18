@@ -39,7 +39,6 @@ type
   TWeatherItem = class(TObject)
   private
     FID: Integer;
-    FName: String;
     FLocation: String;
     FLocationID: String;
     FEnabled: Boolean;
@@ -51,7 +50,6 @@ type
   public
     constructor Create;
     Property ID: Integer Read FID Write FID;
-    Property Name: string read FName write FName;
     Property Location: String Read FLocation Write FLocation;
     Property LocationID: String read FLocationID Write FLocationID;
     Property Enabled: Boolean Read FEnabled Write FEnabled;
@@ -72,7 +70,7 @@ type
 
   public
 
-    function AddItem(Name:String; Location:String; LocationID:String; FCLastUpdated:String;
+    function AddItem(Location:String; LocationID:String; FCLastUpdated:String;
       CCLastUpdated: String; LastIconID:Integer; LastTemp:Integer;
         Enabled:Boolean; Metric:Boolean): TWeatherItem; overload;
 
@@ -94,13 +92,12 @@ implementation
 uses
   SharpApi;
 
-function TWeatherList.AddItem(Name:String; Location:String; LocationID:String;
+function TWeatherList.AddItem(Location:String; LocationID:String;
   FCLastUpdated:String; CCLastUpdated: String; LastIconID:Integer;
     LastTemp:Integer; Enabled:Boolean; Metric:Boolean): TWeatherItem;
 begin
   Result := TWeatherItem.Create;
   Result.ID := Self.Count;
-  Result.Name := Name;
   Result.Location := Location;
   Result.LocationID := LocationID;
   Result.Enabled := Enabled;
@@ -133,7 +130,6 @@ begin
       props := Xml.XmlRoot.Items.Item[i].Properties;
 
       Self.AddItem(
-        props.Value('Name'),
         props.Value('Location'),
         props.Value('LocationId'),
         props.Value('FCLastUpdated','-1'),
@@ -167,7 +163,6 @@ begin
 
       node := Xml.XmlRoot.Items.Add('WeatherLocation');
       with node.Properties do begin
-        Add('Name', Self[i].Name);
         Add('Location', Self[i].Location);
         Add('LocationID', Self[i].LocationID);
         Add('FCLastUpdated', Self[i].FCLastUpdated);
@@ -195,7 +190,6 @@ end;
 
 constructor TWeatherItem.Create;
 begin
-  FName := '';
   FLocation := '';
   FLocationID := '';
   FEnabled := False;

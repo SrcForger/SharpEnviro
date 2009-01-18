@@ -24,7 +24,6 @@ object frmEdit: TfrmEdit
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
-    ExplicitWidth = 519
     object Panel1: TPanel
       AlignWithMargins = True
       Left = 20
@@ -40,9 +39,6 @@ object frmEdit: TfrmEdit
       Color = clWindow
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 26
-      ExplicitTop = 50
-      ExplicitWidth = 406
       object lblLocation: TLabel
         Left = 0
         Top = 2
@@ -87,7 +83,6 @@ object frmEdit: TfrmEdit
       Color = clWindow
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 20
       object chkDisplayIcon: TJvXPCheckbox
         AlignWithMargins = True
         Left = 2
@@ -128,9 +123,6 @@ object frmEdit: TfrmEdit
       Color = clWindow
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 26
-      ExplicitTop = 190
-      ExplicitWidth = 485
       object lblTop: TLabel
         Left = 0
         Top = 5
@@ -178,9 +170,6 @@ object frmEdit: TfrmEdit
       Color = clWindow
       ParentBackground = False
       TabOrder = 3
-      ExplicitLeft = 26
-      ExplicitTop = 220
-      ExplicitWidth = 485
       object lblBottom: TLabel
         Left = 0
         Top = 4
@@ -225,7 +214,6 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
-      ExplicitWidth = 400
     end
     object schDisplayOptions: TSharpECenterHeader
       AlignWithMargins = True
@@ -241,9 +229,6 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
-      ExplicitLeft = 200
-      ExplicitTop = 88
-      ExplicitWidth = 185
     end
     object schLabelOptions: TSharpECenterHeader
       AlignWithMargins = True
@@ -257,9 +242,6 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
-      ExplicitLeft = 78
-      ExplicitTop = 138
-      ExplicitWidth = 185
     end
   end
   object mnuTags: TPopupMenu
