@@ -65,7 +65,7 @@ type
     function LoadFile( fileName: String ): boolean;
     function FileValidPrecheck(fileName:string): boolean;
   public
-    constructor Create();
+    constructor Create(); reintroduce;
     destructor Destroy; override;
     function Load: boolean; stdcall;
     function Save: boolean; stdcall;
@@ -81,8 +81,8 @@ type
   public
     destructor Destroy; override;
     property Xml: TInterfacedXmlBase read FXml;
-    constructor Create;
-    
+    constructor Create; reintroduce;
+
 end;
 
 implementation
@@ -91,6 +91,8 @@ implementation
 
 constructor TInterfacedXmlBase.Create;
 begin
+  inherited Create;
+  
   FXml := TJclSimpleXML.Create;
 end;
 
@@ -263,6 +265,7 @@ end;
 
 constructor TInterfacedXmlBaseList.Create;
 begin
+  inherited Create;
   FXml := TInterfacedXmlBase.Create;
 end;
 
