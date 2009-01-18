@@ -232,6 +232,7 @@ procedure TfrmListWnd.lbModulesGetCellImageIndex(Sender: TObject; const ACol: In
   AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
 begin
   case ACol of
+    0: AImageIndex := 0;
     colMoveUp: begin
         AImageIndex := iidxMoveUp;
       end;

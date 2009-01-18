@@ -198,9 +198,9 @@ begin
 
   case ACol of
     0: begin
-      if tmp.IsParent then
-        EditSubFolder(tmp, colName);
-    end;
+        if tmp.IsParent then
+          EditSubFolder(tmp, colName);
+      end;
     colEdit: begin
         EditSubFolder(tmp, colName);
       end;
@@ -214,7 +214,6 @@ begin
             mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
             bDelete := False;
 
-        Abort;
         if bDelete then begin
 
           tmpMenu := TSharpEMenu(tmp.MenuItem.OwnerMenu);
@@ -227,7 +226,7 @@ begin
 
           Save;
         end;
-
+        Abort;
       end;
   end;
 
@@ -292,7 +291,7 @@ begin
     exit;
 
   if (ACol > 0) then
-    AClickable := true; 
+    AClickable := true;
 
   if tmp.IsParent then
     AClickable := False;
@@ -358,7 +357,7 @@ begin
     colEdit: begin
 
         if tmp.MenuItem.ItemType = mtSubMenu then
-            AColText := Format('<u><font color="%s">Edit', [colortostring(colBtnTxt)]);
+          AColText := Format('<u><font color="%s">Edit', [colortostring(colBtnTxt)]);
 
         if tmp.IsParent then
           AColText := Format('<u><font color="%s">Back', [colortostring(colBtnTxt)]);
@@ -379,9 +378,19 @@ begin
             mtDriveList: AColText := Format('<font color="%s">Drive List',
                 [colortostring(colItemTxt)]);
 
-            mtSubMenu: AColText := format('<font color="%s">%s</font>',
-                [colortostring(colItemTxt), tmp.MenuItem.Caption]);
+            mtSubMenu: begin
 
+                n := TSharpEMenu(tmp.MenuItem.SubMenu).Items.Count;
+                if n = 0 then
+                  s := 'Empty' else
+                  if n = 1 then
+                    s := IntToStr(n) + ' Menu Item'
+                  else
+                    s := IntToStr(n) + ' Menu Items';
+
+                AColText := format('<font color="%s">%s<font color="%s"> - %s</font>',
+                  [colortostring(colItemTxt), tmp.MenuItem.Caption, colortostring(colDescTxt), s]);
+              end;
             mtLink: AColText := format('<font color="%s">%s.link',
                 [colortostring(colItemTxt), tmp.MenuItem.Caption]);
 
