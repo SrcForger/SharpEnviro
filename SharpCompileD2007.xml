@@ -14,7 +14,7 @@
 	 <project Name="Module List" Type="DLL">Plugins\Configurations\Components\ModuleList\ModuleList.dproj</project>
      <project Name="Service List" Type="DLL">Plugins\Configurations\Components\ServiceList\ServiceList.dproj</project>
      <project Name="Theme List" Type="DLL">Plugins\Configurations\Components\ThemeList\ThemeList.dproj</project>
-	 <project Name="Filter List" Type="DLL">Plugins\Configurations\FilterList\FilterList.dproj</project>
+	 <project Name="Filter List" Type="DLL">Plugins\Configurations\Components\FilterList\FilterList.dproj</project>
   </package>
   <package Name="Configurations - Modules">
      <project Name="Battery Monitor" Type="DLL">Plugins\Configurations\Modules\BatteryMonitor\BatteryMonitor.dproj</project>
