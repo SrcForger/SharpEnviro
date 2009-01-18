@@ -274,7 +274,7 @@ procedure TfrmItemsWnd.lbHotkeysGetCellImageIndex(Sender: TObject;
   const ASelected: Boolean);
 begin
   if ACol = colName then
-    AImageIndex := -1
+    AImageIndex := 2
   else if ACol = colDelete then
     AImageIndex := iidxDelete
   else if ACol = colCopy then

@@ -4,7 +4,7 @@ object frmEditWnd: TfrmEditWnd
   BorderStyle = bsNone
   Caption = 'Edit Form'
   ClientHeight = 149
-  ClientWidth = 490
+  ClientWidth = 505
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,15 +15,15 @@ object frmEditWnd: TfrmEditWnd
   OldCreateOrder = False
   Position = poDesigned
   DesignSize = (
-    490
+    505
     149)
   PixelsPerInch = 96
   TextHeight = 13
   object btnSearch: TPngSpeedButton
-    Left = 375
-    Top = 29
-    Width = 87
-    Height = 25
+    Left = 359
+    Top = 17
+    Width = 110
+    Height = 21
     Anchors = [akTop, akRight]
     Caption = 'Find Location ID'
     OnClick = btnSearchClick
@@ -188,7 +188,7 @@ object frmEditWnd: TfrmEditWnd
   object JvLabel1: TLabel
     Left = 55
     Top = 110
-    Width = 427
+    Width = 442
     Height = 31
     Anchors = [akLeft, akTop, akRight]
     AutoSize = False
@@ -198,11 +198,12 @@ object frmEditWnd: TfrmEditWnd
       'This can take several minutes.'
     Transparent = True
     WordWrap = True
+    ExplicitWidth = 427
   end
   object edLocation: TLabeledEdit
-    Left = 56
-    Top = 33
-    Width = 313
+    Left = 76
+    Top = 17
+    Width = 277
     Height = 21
     Hint = 
       'Enter the location here (i.e. Berlin, Germany or Seattle, Washin' +
@@ -219,9 +220,9 @@ object frmEditWnd: TfrmEditWnd
     OnChange = UpdateEditState
   end
   object edWeatherID: TLabeledEdit
-    Left = 55
-    Top = 60
-    Width = 406
+    Left = 76
+    Top = 44
+    Width = 393
     Height = 21
     Hint = 
       'Enter the Weather ID for the Location (i.e. for Berlin, Germany ' +
@@ -238,32 +239,17 @@ object frmEditWnd: TfrmEditWnd
     OnChange = UpdateEditState
   end
   object chkMetric: TJvXPCheckbox
-    Left = 56
-    Top = 87
+    Left = 76
+    Top = 79
     Width = 193
     Height = 17
     Caption = 'Use metric system.'
     TabOrder = 0
     OnClick = UpdateEditState
   end
-  object edName: TLabeledEdit
-    Left = 56
-    Top = 6
-    Width = 313
-    Height = 21
-    Hint = 'The name alias for this location (i.e., Home, Cottage, NYC, etc)'
-    EditLabel.Width = 31
-    EditLabel.Height = 13
-    EditLabel.Caption = 'Name:'
-    LabelPosition = lpLeft
-    LabelSpacing = 6
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 3
-  end
   object mnuSearch: TPopupMenu
     AutoHotkeys = maManual
-    Left = 4
-    Top = 60
+    Left = 440
+    Top = 112
   end
 end

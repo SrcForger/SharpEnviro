@@ -11,23 +11,16 @@ uses
   Graphics,
   Controls,
   Forms,
-  Dialogs,
-  StdCtrls,
-  ExtCtrls,
-  Buttons,
   pngimage,
   uWeatherList,
   jvSimpleXml,
   PngSpeedButton,
-  JvPageList,
-  JvExControls,
   SharpEListBoxEx,
-  Menus,
   SharpApi,
   ImgList,
   PngImageList,
   SharpCenterApi, SharpERoundPanel, ISharpCenterHostUnit, JvXPCore,
-  JvXPCheckCtrls;
+  JvXPCheckCtrls, JvExControls, StdCtrls, ExtCtrls, Buttons, Menus;
 
 type
   TWeatherLocation = class
@@ -44,7 +37,6 @@ type
     Image1: TImage;
     chkMetric: TJvXPCheckbox;
     JvLabel1: TLabel;
-    edName: TLabeledEdit;
 
     procedure UpdateEditState(Sender: TObject);
     procedure btnSearchClick(Sender: TObject);
@@ -218,7 +210,6 @@ begin
 
     case FPluginHost.EditMode of
       sceAdd: begin
-          edName.Text := '';
           edLocation.Text := '';
           edWeatherID.Text := '';
           chkMetric.Checked := True;
@@ -234,7 +225,6 @@ begin
           tmpWeather := TWeatherItem(tmpItem.Data);
           FItemEdit := tmpWeather;
 
-          edName.Text := tmpWeather.Name;
           edLocation.Text := tmpWeather.Location;
           edWeatherID.Text := tmpWeather.LocationID;
           chkMetric.Checked := tmpWeather.Metric;
@@ -254,7 +244,7 @@ begin
   case FPluginHost.EditMode of
     sceAdd: begin
 
-        frmItemswnd.WeatherList.AddItem(edName.Text, edLocation.Text, edWeatherID.Text, '-1', '-1', -1, -1, True, chkMetric.Checked);
+        frmItemswnd.WeatherList.AddItem(edLocation.Text, edWeatherID.Text, '-1', '-1', -1, -1, True, chkMetric.Checked);
         FPluginHost.Save;
 
         // Force the service to update
@@ -265,7 +255,6 @@ begin
     sceEdit: begin
         tmpItem := frmItemswnd.lbWeatherList.Item[frmItemswnd.lbWeatherList.ItemIndex];
         tmpWeather := TWeatherItem(tmpItem.Data);
-        tmpWeather.Name := edName.Text;
         tmpWeather.Location := edLocation.Text;
         tmpWeather.LocationID := edWeatherID.Text;
         tmpWeather.Metric := chkMetric.Checked;

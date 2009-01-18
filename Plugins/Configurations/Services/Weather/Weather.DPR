@@ -121,8 +121,7 @@ end;
 procedure TSharpCenterPlugin.SetupValidators;
 begin
   // Can not leave fields blank
-  PluginHost.AddRequiredFieldValidator( frmEditWnd.edName,'Please enter a name for this weather Id','Text');
-  PluginHost.AddRequiredFieldValidator( frmEditWnd.edWeatherID,'Please enter a valid weather Id','Text');
+  PluginHost.AddRequiredFieldValidator( frmEditWnd.edWeatherID,'Please enter a valid location Id','Text');
 end;
 
 function GetMetaData(): TMetaData;
@@ -132,7 +131,7 @@ begin
     Name := 'Weather';
     Description := 'Weather Service Configuration';
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
-    Version := '0.7.5.2';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
       Integer(suService)]);

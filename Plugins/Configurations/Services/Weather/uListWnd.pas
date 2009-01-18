@@ -6,7 +6,6 @@ uses
   Windows,
   Messages,
   SysUtils,
-  Variants,
   Classes,
   Graphics,
   Controls,
@@ -14,26 +13,13 @@ uses
   Dialogs,
   StdCtrls,
   pngimage,
-
-  ExtCtrls,
-  Buttons,
-  ImgList,
-  ComCtrls,
-  ToolWin,
-  JvExControls,
-  JvComponent,
-  JvGradientHeaderPanel,
   GR32,
   sharpfx,
-  JclGraphics,
-  JvHtControls,
-  JvExStdCtrls,
-  Grids,
   PngSpeedButton,
   PngImageList,
   uWeatherList,
   uWeatherOptions,
-  SharpEListBoxEx, SharpApi, SharpCenterApi, ISharpCenterHostUnit;
+  SharpEListBoxEx, SharpApi, SharpCenterApi, ISharpCenterHostUnit, ImgList;
 
 type
   TfrmItemswnd = class(TForm)
@@ -199,7 +185,7 @@ begin
     colDelete: begin
         bDelete := True;
         if not (CtrlDown) then
-          if (MessageDlg(Format('Are you sure you want to delete: %s?', [tmp.Name]), mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
+          if (MessageDlg(Format('Are you sure you want to delete: %s?', [tmp.Location]), mtConfirmation, [mbOK, mbCancel], 0) = mrCancel) then
             bDelete := False;
 
         if bDelete then begin
@@ -272,7 +258,7 @@ begin
           sTemp := Format(' (%d%s)', [tmp.LastTemp, sM]);
 
         s := Format('<font color="%s" />%s<font color="%s" />%s', [colorToString(colItemTxt),
-          tmp.Name, colorToString(colDescTxt), sTemp]);
+          tmp.Location, colorToString(colDescTxt), sTemp]);
         AColText := s;
       end;
     colStatus: begin

@@ -30,28 +30,26 @@ object frmItemswnd: TfrmItemswnd
         ColumnAlign = calLeft
         StretchColumn = True
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = False
         Images = imlWeatherGlyphs
       end
       item
-        Width = 150
-        HAlign = taRightJustify
-        VAlign = taVerticalCenter
-        ColumnAlign = calRight
-        StretchColumn = False
-        ColumnType = ctDefault
-        AutoSize = False
-        Images = imlWeatherGlyphs
-      end
-      item
-        Width = 30
+        Width = 60
         HAlign = taCenter
         VAlign = taVerticalCenter
         ColumnAlign = calRight
         StretchColumn = False
-        CanSelect = False
         ColumnType = ctDefault
-        AutoSize = False
+        VisibleOnSelectOnly = True
+      end
+      item
+        Width = 35
+        HAlign = taLeftJustify
+        VAlign = taVerticalCenter
+        ColumnAlign = calRight
+        StretchColumn = False
+        ColumnType = ctDefault
+        VisibleOnSelectOnly = True
         Images = imlWeatherGlyphs
       end>
     Colors.BorderColor = clBtnFace
@@ -61,8 +59,9 @@ object frmItemswnd: TfrmItemswnd
     Colors.CheckColorSelected = clBtnFace
     Colors.CheckColor = 15528425
     Colors.DisabledColor = clBlack
+    DefaultColumn = 0
     OnResize = lbWeatherListResize
-    ItemHeight = 25
+    ItemHeight = 30
     OnClickItem = lbWeatherListClickItem
     OnGetCellCursor = lbWeatherListGetCellCursor
     OnGetCellText = lbWeatherListGetCellText

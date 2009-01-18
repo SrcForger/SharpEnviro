@@ -170,7 +170,7 @@ begin
     Name := 'Aliases';
     Description := 'Aliases Configuration';
     Author := 'Lee Green (lee@sharpenviro.com)';
-    Version := '0.7.5.2';
+    Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
       Integer(suService)]);

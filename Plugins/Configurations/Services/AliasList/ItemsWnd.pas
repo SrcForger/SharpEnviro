@@ -214,6 +214,11 @@ begin
     exit;
 
   case ACol of
+    0: begin
+      if tmp.Elevate then
+      AImageIndex := 4 else
+      AImageIndex := 3;
+    end;
     colCopy: AImageIndex := iidxCopy;
     colDelete: AImageIndex := iidxDelete;
     colLocked: if tmp.Elevate then
@@ -237,7 +242,7 @@ begin
   case ACol of
     colName: begin
 
-      AColText := format('<font color="%s">%s (<font color="%s">%s)',[ColorToString(colItemTxt),
+      AColText := format('<font color="%s">%s<font color="%s"> - %s',[ColorToString(colItemTxt),
         tmp.AliasName,ColorToString(colDescTxt),tmp.AliasValue]);
     end;
   end;
