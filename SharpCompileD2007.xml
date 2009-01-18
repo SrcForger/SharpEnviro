@@ -17,21 +17,23 @@
      <project Name="Theme List" Type="DLL">Plugins\Configurations\Components\ThemeList\ThemeList.dproj</project>
   </package>
   <package Name="Configurations - Modules">
-     <project Name="Battery Monitor Module" Type="DLL">Plugins\Configurations\Modules\BatteryMonitor\BatteryMonitor.dproj</project>
-     <project Name="Button Module" Type="DLL">Plugins\Configurations\Modules\ButtonModule\ButtonModule.dproj</project>
-     <project Name="Clock Module" Type="DLL">Plugins\Configurations\Modules\Clock\Clock.dproj</project>
-     <project Name="CPU Monitor Module" Type="DLL">Plugins\Configurations\Modules\CPUMonitor\CPUMonitor.dproj</project>
-     <project Name="Keyboard Layout Module" Type="DLL">Plugins\Configurations\Modules\KeyboardLayout\KeyboardLayout.dproj</project>
-     <project Name="Memory Monitor Module" Type="DLL">Plugins\Configurations\Modules\MemoryMonitor\MemoryMonitor.dproj</project>
-     <project Name="Menu Module" Type="DLL">Plugins\Configurations\Modules\MenuModule\MenuModule.dproj</project>
-     <project Name="MiniScmd Module" Type="DLL">Plugins\Configurations\Modules\MiniScmd\MiniScmd.dproj</project>
-     <project Name="Notes Module" Type="DLL">Plugins\Configurations\Modules\Notes\Notes.dproj</project>
-     <project Name="Quick Script Module" Type="DLL">Plugins\Configurations\Modules\QuickScript\QuickScript.dproj</project>
-     <project Name="SystemTray Module" Type="DLL">Plugins\Configurations\Modules\SystemTray\SystemTray.dproj</project>
-     <project Name="Task Module" Type="DLL">Plugins\Configurations\Modules\TaskModule\TaskModule.dproj</project>
-     <project Name="VolumeControl Module" Type="DLL">Plugins\Configurations\Modules\VolumeControl\VolumeControl.dproj</project>
-     <project Name="VWM Module" Type="DLL">Plugins\Configurations\Modules\VWM\VWM.dproj</project>
-     <project Name="Weather Module" Type="DLL">Plugins\Configurations\Modules\WeatherModule\WeatherModule.dproj</project>
+     <project Name="Battery Monitor" Type="DLL">Plugins\Configurations\Modules\BatteryMonitor\BatteryMonitor.dproj</project>
+     <project Name="Button" Type="DLL">Plugins\Configurations\Modules\ButtonModule\ButtonModule.dproj</project>
+     <project Name="Button Bar List" Type="DLL">Plugins\Configurations\Modules\ButtonBarList\ButtonBarList.dproj</project>
+     <project Name="Button Bar Options" Type="DLL">Plugins\Configurations\Modules\ButtonBarOptions\ButtonBarOptions.dproj</project>
+     <project Name="Clock" Type="DLL">Plugins\Configurations\Modules\Clock\Clock.dproj</project>
+     <project Name="CPU Monitor" Type="DLL">Plugins\Configurations\Modules\CPUMonitor\CPUMonitor.dproj</project>
+     <project Name="Keyboard Layout" Type="DLL">Plugins\Configurations\Modules\KeyboardLayout\KeyboardLayout.dproj</project>
+     <project Name="Memory Monitor" Type="DLL">Plugins\Configurations\Modules\MemoryMonitor\MemoryMonitor.dproj</project>
+     <project Name="Menu" Type="DLL">Plugins\Configurations\Modules\MenuModule\MenuModule.dproj</project>
+     <project Name="Mini Scmd" Type="DLL">Plugins\Configurations\Modules\MiniScmd\MiniScmd.dproj</project>
+     <project Name="Notes" Type="DLL">Plugins\Configurations\Modules\Notes\Notes.dproj</project>
+     <project Name="Quick Script" Type="DLL">Plugins\Configurations\Modules\QuickScript\QuickScript.dproj</project>
+     <project Name="System Tray" Type="DLL">Plugins\Configurations\Modules\SystemTray\SystemTray.dproj</project>
+     <project Name="Task" Type="DLL">Plugins\Configurations\Modules\TaskModule\TaskModule.dproj</project>
+     <project Name="Volume Control" Type="DLL">Plugins\Configurations\Modules\VolumeControl\VolumeControl.dproj</project>
+     <project Name="VWM" Type="DLL">Plugins\Configurations\Modules\VWM\VWM.dproj</project>
+     <project Name="Weather" Type="DLL">Plugins\Configurations\Modules\WeatherModule\WeatherModule.dproj</project>
   </package>
   <package Name="Configurations - Services">
      <project Name="Alias List" Type="DLL">Plugins\Configurations\Services\AliasList\AliasList.dproj</project>
@@ -76,17 +78,17 @@
   <package Name="Modules">
      <project Name="Battery Monitor" Type="DLL" >Plugins\Modules\Battery Monitor\BatteryMonitor.dproj</project>
      <project Name="Button" Type="DLL" >Plugins\Modules\Button\Button.dproj</project>
-     <project Name="ButtonBar" Type="DLL" >Plugins\Modules\ButtonBar\ButtonBar.dproj</project>
+     <project Name="Button Bar" Type="DLL" >Plugins\Modules\ButtonBar\ButtonBar.dproj</project>
      <project Name="Clock" Type="DLL" >Plugins\Modules\Clock\Clock.dproj</project>
      <project Name="CPU Monitor" Type="DLL" >Plugins\Modules\CPU Monitor\CPUMonitor.dproj</project>
-     <project Name="KeyboardLayout" Type="DLL" >Plugins\Modules\Keyboard Layout\KeyboardLayout.dproj</project>
+     <project Name="Keyboard Layout" Type="DLL" >Plugins\Modules\Keyboard Layout\KeyboardLayout.dproj</project>
      <project Name="Media Controller" Type="DLL" >Plugins\Modules\MediaController\MediaController.dproj</project>
      <project Name="Memory Monitor" Type="DLL" >Plugins\Modules\Memory Monitor\MemoryMonitor.dproj</project>
      <project Name="Menu" Type="DLL" >Plugins\Modules\Menu\Menu.dproj</project>
-     <project Name="MiniScmd" Type="DLL" >Plugins\Modules\MiniScmd\MiniScmd.dproj</project>
+     <project Name="Mini Scmd" Type="DLL" >Plugins\Modules\MiniScmd\MiniScmd.dproj</project>
      <project Name="Notes" Type="DLL" >Plugins\Modules\Notes\Notes.dproj</project>
      <project Name="Quick Script" Type="DLL" >Plugins\Modules\QuickScript\QuickScript.dproj</project>
-     <project Name="SystemTray" Type="DLL" >Plugins\Modules\SystemTray\SystemTray.dproj</project>
+     <project Name="System Tray" Type="DLL" >Plugins\Modules\SystemTray\SystemTray.dproj</project>
      <project Name="Taskbar" Type="DLL" >Plugins\Modules\Taskbar\Taskbar.dproj</project>
      <project Name="Volume Control" Type="DLL" >Plugins\Modules\VolumeControl\VolumeControl.dproj</project>
      <project Name="VWM" Type="DLL" >Plugins\Modules\VWM\VWM.dproj</project>
