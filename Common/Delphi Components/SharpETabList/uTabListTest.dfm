@@ -3,7 +3,7 @@ object Form12: TForm12
   Top = 0
   BorderWidth = 10
   Caption = 'Form12'
-  ClientHeight = 548
+  ClientHeight = 400
   ClientWidth = 414
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -108,8 +108,8 @@ object Form12: TForm12
     TabStatusSelColor = clGreen
     TabCaptionColor = clBlack
     TabStatusColor = clGreen
+    PageBackgroundColor = clWindow
     OnBtnClick = SharpEPageControl1BtnClick
-    ExplicitWidth = 491
     DesignSize = (
       408
       300)
@@ -122,6 +122,15 @@ object Form12: TForm12
     Caption = 'Add Button'
     TabOrder = 4
     OnClick = Button4Click
+  end
+  object btnToggleVisibility: TButton
+    Left = 72
+    Top = 360
+    Width = 82
+    Height = 25
+    Caption = 'Toggle Visibility'
+    TabOrder = 5
+    OnClick = btnToggleVisibilityClick
   end
   object PngImageList1: TPngImageList
     PngImages = <

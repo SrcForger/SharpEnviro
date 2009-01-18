@@ -16,12 +16,14 @@ type
     Button3: TButton;
     SharpEPageControl1: TSharpEPageControl;
     Button4: TButton;
+    btnToggleVisibility: TButton;
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure SharpEPageControl1BtnClick(ASender: TObject;
       const ABtnIndex: Integer);
     procedure FormShow(Sender: TObject);
+    procedure btnToggleVisibilityClick(Sender: TObject);
   private
     { Private declarations }
 
@@ -35,6 +37,19 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TForm12.btnToggleVisibilityClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  with SharpEPageControl1.TabList do
+  begin
+    for i := 0 to Count - 1 do
+      TabItem[i].Visible := not TabItem[i].Visible;
+  end;
+  SharpEPageControl1.Invalidate;
+  Self.Repaint;
+end;
 
 procedure TForm12.Button2Click(Sender: TObject);
 begin

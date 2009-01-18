@@ -1243,6 +1243,9 @@ procedure TTabItem.SetVisible(const Value: Boolean);
 begin
   FVisible := Value;
   FTabExtent.TabRect := Rect(0, 0, 0, 0);
+
+  if Collection <> nil then
+    TSharpETabList(Collection.Owner).Invalidate;
 end;
 
 { TButtonItem }
