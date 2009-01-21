@@ -40,7 +40,8 @@ uses
   Dialogs,
   StdCtrls,
   SharpApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uISharpETheme,
   ExtCtrls,
   GR32,
   GR32_Layers,
@@ -141,11 +142,13 @@ procedure TSplashForm.FormCreate(Sender: TObject);
 var
   FullFileName, PassedFileName : string;
   b : boolean;
+  Theme : ISharpETheme;
 begin
   FPicture := TBitmap32.Create;
   TerminateFlag := False;
-  InitializeTheme;
-  LoadTheme(True,[tpInfo]);
+
+  Theme := GetCurrentTheme;
+  
   ServiceDone('SharpSplash');
   // set defaults if no params passed
   PassedFileName := ParamStr(1);
@@ -156,7 +159,7 @@ begin
   CloseTimer.Interval := ShowDelay;
 
   // find splash image
-  FullFileName := GetThemeDirectory + PassedFileName;
+  FullFileName := Theme.Info.Directory + '\' + PassedFileName;
   if not FileExists(FullFileName) then
   begin
     FullFileName := GetSharpeDirectory + PassedFileName;

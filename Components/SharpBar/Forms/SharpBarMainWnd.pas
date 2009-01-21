@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Forms,
   Dialogs, SharpESkinManager, Menus, JclSimpleXML, SharpApi,
-  GR32, uSharpEModuleManager, PngImageList, SharpEBar, SharpThemeApi,
+  GR32, uSharpEModuleManager, PngImageList, SharpEBar,
   SharpEBaseControls, Controls, ExtCtrls, uSkinManagerThreads,
   uSystemFuncs, Types, SharpESkin, Registry, SharpTypes,
   SharpGraphicsUtils, Math, SharpCenterApi, ImgList,
@@ -204,8 +204,12 @@ var
 
 implementation
 
-uses SharpEMiniThrobber,
-  BarHideWnd;
+uses
+  SharpEMiniThrobber,
+  BarHideWnd,
+  uISharpETheme,
+  SharpThemeApiEx,
+  uThemeConsts;
 
 {$R *.dfm}
 // {$R SharpBarCR.RES}
@@ -317,7 +321,7 @@ begin
         ModuleManager.SortModulesByPosition;
         ModuleManager.FixModulePositions;
         SaveBarSettings;
-        SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
+        SharpApi.BroadcastGlobalUpdateMessage(suCenter);
         msg.Result := BCR_SUCCESS;
       end;
     BC_MOVEDOWN: begin
@@ -325,14 +329,14 @@ begin
         ModuleManager.SortModulesByPosition;
         ModuleManager.FixModulePositions;
         SaveBarSettings;
-        SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
+        SharpApi.BroadcastGlobalUpdateMessage(suCenter);
         msg.Result := BCR_SUCCESS;
       end;
     BC_DELETE: begin
         ModuleManager.Delete(msg.LParam);
         ModuleManager.ReCalculateModuleSize;
         SaveBarSettings;
-        SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
+        SharpApi.BroadcastGlobalUpdateMessage(suCenter);
         msg.Result := BCR_SUCCESS;
       end;
   end;
@@ -475,6 +479,7 @@ end;
 procedure TSharpBarMainForm.WMUpdateSettings(var msg: TMessage);
 var
   h: integer;
+  Theme : ISharpETheme;
 begin
   if FSuspended then
     exit;
@@ -483,6 +488,10 @@ begin
 
   if msg.WParam < 0 then
     exit;
+
+  if [TSU_UPDATE_ENUM(msg.WParam)] <= [suSkinFont,suSkinFileChanged,suTheme,suIconSet,
+                      suScheme] then
+    Theme := GetCurrentTheme;
 
   // Step1: Update settings and prepare modules for updating
   case msg.WParam of
@@ -497,12 +506,12 @@ begin
         ThemeHideTimer.OnTimer(ThemeHideTimer);
     end;
     Integer(suSkinFont): begin
-        SharpThemeApi.LoadTheme(True, [tpSkinFont]);
+        Theme.LoadTheme([tpSkinFont]);
         SkinInterface.SkinManager.RefreshControls;
       end;
-    Integer(suSkinFileChanged): SharpThemeApi.LoadTheme(True, [tpSkin, tpScheme]);
+    Integer(suSkinFileChanged): Theme.LoadTheme([tpSkinScheme]);
     Integer(suTheme): begin
-        SharpThemeApi.LoadTheme(True, [tpSkin, tpScheme, tpIconSet]);
+        Theme.LoadTheme([tpTheme,tpSkinScheme, tpSkinFont, tpIconSet]);
         // Check if SharpDesk is running
         if SharpApi.IsComponentRunning('SharpDesk') then begin
           // SharpDesk is running -> the background is going to change
@@ -512,10 +521,10 @@ begin
         end;
       end;
     Integer(suScheme): begin
-        SharpThemeApi.LoadTheme(True, [tpSkin,tpScheme]);
+        Theme.LoadTheme([tpSkinScheme]);
         SkinInterface.SkinManager.UpdateScheme;
       end;
-    Integer(suIconSet): SharpThemeApi.LoadTheme(True, [tpIconSet]);
+    Integer(suIconSet): Theme.LoadTheme([tpIconSet]);
   end;
 
   h := Height;
@@ -533,18 +542,15 @@ begin
       SharpEBar.Throbber.UpdateSkin;
       SharpEbar.Throbber.Repaint;
     end;
+    if h <> Height then
+      ModuleManager.UpdateModuleHeights;    
+    if (msg.WParam = Integer(suSkinFileChanged)) then
+      ModuleManager.ReCalculateModuleSize;
     ModuleManager.BroadcastPluginUpdate(suBackground);
   end;
 
   // Step2: Update modules
   ModuleManager.BroadcastPluginUpdate(TSU_UPDATE_ENUM(msg.WParam), msg.LParam);
-
-  // Step3: Modules updated, now update the bar
-  if (msg.WParam = Integer(suSkinFileChanged)) then
-    ModuleManager.ReCalculateModuleSize;
-
-  if h <> Height then
-    ModuleManager.UpdateModuleHeights;
 
   if (msg.WParam = Integer(suSkinFileChanged)) or
     (msg.Wparam = Integer(suScheme)) then
@@ -633,6 +639,8 @@ end;
 // Update the background image based on bar position and add glass effects
 
 procedure TSharpBarMainForm.UpdateBGImage(NewWidth: integer = -1);
+var
+  Theme : ISharpETheme;
 begin
   if FSuspended then
     exit;
@@ -652,12 +660,14 @@ begin
     FBGImage.Draw(0, 0, FBottomZone);
 
   // Apply Glass Effects
-  if SkinInterface.SkinManager.Skin.BarSkin.GlassEffect then begin
-    if SharpThemeApi.GetSkinGEBlend then
-      BlendImageC(FBGImage, GetSkinGEBlendColor, GetSkinGEBlendAlpha);
-    fastblur(FBGImage, GetSkinGEBlurRadius, GetSkinGEBlurIterations);
-    if GetSkinGELighten then
-      lightenBitmap(FBGImage, GetSkinGELightenAmount);
+  if SkinInterface.SkinManager.Skin.BarSkin.GlassEffect then
+  begin
+    Theme := GetCurrentTheme;
+    if Theme.Skin.GlassEffect.Blend then
+      BlendImageC(FBGImage, Theme.Skin.GlassEffect.BlendColor, Theme.Skin.GlassEffect.BlendAlpha);
+    fastblur(FBGImage, Theme.Skin.GlassEffect.BlurRadius, Theme.Skin.GlassEffect.BlurIterations);
+    if Theme.Skin.GlassEffect.Lighten then
+      lightenBitmap(FBGImage, Theme.Skin.GlassEffect.LightenAmount);
   end;
 
   SharpEBar.UpdateSkin;
@@ -1035,7 +1045,7 @@ procedure TSharpBarMainForm.FormCreate(Sender: TObject);
 begin
   Closing := False;
   DoubleBuffered := True;
-  SharpThemeApi.LoadTheme;
+  GetCurrentTheme.LoadTheme([tpSkinScheme, tpIconSet, tpSkinFont]);
 
   FUser32DllHandle := LoadLibrary('user32.dll');
   if FUser32DllHandle <> 0 then
@@ -1112,7 +1122,7 @@ begin
   ModuleManager.FixModulePositions;
   SaveBarSettings;
 
-  SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
+  SharpApi.BroadcastGlobalUpdateMessage(suCenter);
 end;
 
 procedure TSharpBarMainForm.Middle1Click(Sender: TObject);
@@ -1123,7 +1133,7 @@ begin
   ModuleManager.FixModulePositions;
   SaveBarSettings;
 
-  SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);  
+  SharpApi.BroadcastGlobalUpdateMessage(suCenter);
 end;
 
 procedure TSharpBarMainForm.Right1Click(Sender: TObject);
@@ -1134,7 +1144,7 @@ begin
   ModuleManager.FixModulePositions;
   SaveBarSettings;
 
-  SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
+  SharpApi.BroadcastGlobalUpdateMessage(suCenter);
 end;
 
 procedure TSharpBarMainForm.OnMonitorPopupItemClick(Sender: TObject);
@@ -1183,7 +1193,7 @@ begin
   ModuleManager.FixModulePositions;
   SaveBarSettings;
 
-  SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
+  SharpApi.BroadcastGlobalUpdateMessage(suCenter);
 end;
 
 procedure TSharpBarMainForm.PopupMenu1Popup(Sender: TObject);
@@ -1194,7 +1204,10 @@ var
   s: string;
   sr: TSearchRec;
   Dir: string;
+  Theme : ISharpETheme;
 begin
+  Theme := GetCurrentTheme;
+
   // Build Monitor List
   Monitor1.Clear;
   for n := 0 to Screen.MonitorCount - 1 do begin
@@ -1248,7 +1261,7 @@ begin
           item.Caption := sr.Name;
           item.RadioItem := true;
 
-          if CompareText(sr.Name,SharpThemeApi.GetSkinName) = 0 then
+          if CompareText(sr.Name,Theme.Skin.Name) = 0 then
             item.Checked := True;
 
           item.Hint := sr.Name;
@@ -1266,7 +1279,7 @@ begin
   item.Caption := '-';
   ColorScheme1.Add(item);
 
-  Dir := SharpApi.GetSharpeDirectory + 'Skins\' + SharpThemeApi.GetSkinName + '\Schemes\';
+  Dir := SharpApi.GetSharpeDirectory + 'Skins\' + Theme.Skin.Name + '\Schemes\';
   if FindFirst(Dir + '*.xml', FAAnyFile, sr) = 0 then
     repeat
       s := sr.Name;
@@ -1278,7 +1291,7 @@ begin
       item.Checked := false;
       item.RadioItem := true;
 
-      if s = SharpThemeApi.GetSchemeName then
+      if s = Theme.Scheme.Name then
         item.Checked := True;
 
       item.Hint := sr.Name;
@@ -1298,79 +1311,44 @@ begin
     hpRight: Right1.Checked := True;
     hpFull: FullScreen1.Checked := True;
   end;
-
-
 end;
 
 procedure TSharpBarMainForm.OnSchemeSelectItemClick(Sender: TObject);
 var
-  XML: TJclSimpleXML;
-  Dir: string;
   s: string;
+  Theme : ISharpETheme;
 begin
-  Dir := SharpThemeApi.GetThemeDirectory;
-
-  // Change Scheme
-  XML := TJclSimpleXML.Create;
-  try
-    XML.Root.Name := 'SharpEThemeScheme';
-    XML.Root.Clear;
-    s := TMenuItem(Sender).Hint;
-    setlength(s, length(s) - length('.xml'));
-    XML.Root.Items.Add('Scheme', s);
-    XML.SaveToFile(Dir + 'Scheme.xml');
-  finally
-    XML.Free;
-  end;
-  SharpCenterApi.BroadcastGlobalUpdateMessage(suSkin);
+  Theme := GetCurrentTheme;
+  s := TMenuItem(Sender).Hint;
+  setlength(s, length(s) - length('.xml'));
+  Theme.Scheme.Name := s;
+  Theme.Scheme.SaveToFile;
+  SharpApi.BroadcastGlobalUpdateMessage(suSkin);
 end;
 
 procedure TSharpBarMainForm.OnSkinSelectItemClick(Sender: TObject);
 var
-  XML: TJclSimpleXML;
-  Dir, NewSkin, SkinDir: string;
+  NewSkin, SkinDir: string;
   sr: TSearchRec;
+  Theme : ISharpETheme;
   s: string;
 begin
-  XML := TJclSimpleXML.Create;
-  Dir := SharpThemeApi.GetThemeDirectory;
   NewSkin := TMenuItem(Sender).Hint;
   SkinDir := SharpApi.GetSharpeDirectory + 'Skins\' + NewSkin + '\';
 
-  // Change Skin
-  try
-    if FileExists(Dir + 'Skin.xml') then begin
-      XML.LoadFromFile(Dir + 'Skin.xml');
-      if XML.Root.Items.ItemNamed['Skin'] <> nil then
-        XML.Root.Items.ItemNamed['Skin'].Value := NewSkin
-      else
-        XML.Root.Items.Add('Skin', NewSkin);
-    end
-    else begin
-      XML.Root.Name := 'SharpEThemeSkin';
-      XML.Root.Clear;
-      XML.Root.Items.Add('Skin', NewSkin);
-    end;
-    XML.SaveToFile(Dir + 'Skin.xml');
-  finally
-    XML.Free;
-  end;
+  Theme := GetCurrentTheme;  
+  Theme.Skin.Name := NewSkin;
+  Theme.Skin.SaveToFileSkinAndGlass;
 
-  if FindFirst(SkinDir + 'Schemes\*.xml', FAAnyFile, sr) = 0 then begin
-    XML := TJclSimpleXML.Create;
-    try
-      XML.Root.Name := 'SharpEThemeScheme';
-      XML.Root.Clear;
-      s := sr.Name;
-      setlength(s, length(s) - length('.xml'));
-      XML.Root.Items.Add('Scheme', s);
-      XML.SaveToFile(Dir + 'Scheme.xml');
-    finally
-      XML.Free;
-    end;
+  if FindFirst(SkinDir + 'Schemes\*.xml', FAAnyFile, sr) = 0 then
+  begin
+    s := sr.Name;
+    setlength(s, length(s) - length('.xml'));
+    Theme.Scheme.Name := s;
+    Theme.Scheme.SaveToFile;
   end;
   FindClose(sr);
-  SharpCenterApi.BroadcastGlobalUpdateMessage(suSkin);
+  SharpApi.BroadcastGlobalUpdateMessage(suSkin);
 end;
 
 procedure TSharpBarMainForm.SharpEBar1ResetSize(Sender: TObject);
@@ -1726,7 +1704,7 @@ begin
     ModuleManager.Delete(mThrobber.Tag);
     SaveBarSettings;
     ModuleManager.ReCalculateModuleSize;
-    SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
+    SharpApi.BroadcastGlobalUpdateMessage(suCenter);
   end;
 end;
 

@@ -160,7 +160,7 @@ uses uSharpDeskDesktopObject,
      uSharpDeskObjectSetItem,
      uSharpDeskFunctions,
      SharpDeskApi,
-     SharpThemeApi;
+     SharpThemeApiEx;
 
 
 

@@ -296,7 +296,7 @@ begin
   FixModulePositions;
   SaveBarSettings;
 
-  SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
+  SharpApi.BroadcastGlobalUpdateMessage(suCenter);
 
 end;
 

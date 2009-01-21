@@ -44,7 +44,8 @@ uses
   Controls,
   SysUtils,
   SharpApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uThemeConsts,
   SharpESkinManager,
   SharpTypes,
   uSharpEMenuWnd in 'Forms\uSharpEMenuWnd.pas' {SharpEMenuWnd},
@@ -140,8 +141,7 @@ begin
      mfile := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\Menu.xml';
   if not FileExists(mfile) then halt;
 
-  SharpThemeApi.InitializeTheme;
-  SharpThemeApi.LoadTheme(True,[tpScheme,tpSkin,tpIconSet,tpSkinFont]);
+  GetCurrentTheme.LoadTheme([tpSkinScheme,tpIconSet,tpSkinFont]);
 
   iconcachefile := ExtractFileName(mfile);
   setlength(iconcachefile,length(iconcachefile) - length(ExtractFileExt(iconcachefile)));

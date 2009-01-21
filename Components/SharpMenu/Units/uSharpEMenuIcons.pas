@@ -27,7 +27,7 @@ unit uSharpEMenuIcons;
 
 interface
 
-uses SysUtils,Contnrs,Classes,GR32,SharpThemeApi,uSharpEMenuIcon;
+uses SysUtils,Contnrs,Classes,GR32,uSharpEMenuIcon;
 
 type
   TSharpEMenuIcons = class
@@ -48,7 +48,12 @@ type
 
 implementation
 
-uses SharpApi,jclsysinfo;
+uses
+  JCLSysInfo,
+  SharpApi,
+  SharpThemeApiEx,
+  uISharpETheme,
+  uThemeConsts;
 
 constructor TSharpEMenuIcons.Create;
 begin
@@ -73,7 +78,7 @@ var
   found : boolean;
 begin
   if pos(pIconSource,'.') <> 0 then
-    isSEIcon := SharpThemeApi.IsIconInIconSet(PChar(pIconSource))
+    isSEIcon := GetCurrentTheme.Icons.IsIconInIconSet(pIconSource)
   else isSEIcon := False;
 
   found := False;
@@ -228,7 +233,7 @@ begin
     Item := TSharpEMenuIcon(FItems.Items[n]);
     if (not Item.Cached) and (length(Item.IconSource) > 0) and
        (Item.Icon.Width > 0) and (Item.Icon.Height > 0)
-       and (not SharpThemeApi.IsIconInIconSet(PChar(Item.IconSource))) then
+       and (not GetCurrentTheme.Icons.IsIconInIconSet(Item.IconSource)) then
     begin
       StringSaveToStream(Item.IconSource,Stream);
       case Item.IconType of

@@ -29,7 +29,6 @@ interface
 
 uses SysUtils, Windows, Forms, Contnrs, Menus, Controls, GR32,Classes,Dialogs,
      SharpGraphicsUtils,
-     SharpThemeApi,
      SharpESkinManager,
      uSharpEMenuPopups,
      uSharpEMenuIcons,
@@ -137,7 +136,9 @@ uses Math,
      JclFileUtils,
      SharpESkin,
      SharpESkinPart,
-     uSharpEMenuWnd;
+     uSharpEMenuWnd,
+     SharpThemeApiEx,
+     uISharpETheme;
 
 constructor TSharpEMenu.Create(pParentMenuItem : TSharpEMenuItem; pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings);
 begin
@@ -770,6 +771,7 @@ var
   w,h : integer;
   menuskin : TSharpEMenuSkin;
   dc : hdc;
+  Theme : ISharpETheme;
 begin
   ImageCheck(FBackground,Point(255,32));
   if FSkinManager = nil then exit;
@@ -808,11 +810,12 @@ begin
              pLeft,
              pTop,
              SRCCOPY or CAPTUREBLT);
-      if SharpThemeApi.GetSkinGEBlend then
-        BlendImageC(FSpecialBackground,GetSkinGEBlendColor,GetSkinGEBlendAlpha);
-      fastblur(FSpecialBackground,GetSkinGEBlurRadius,GetSkinGEBlurIterations);
-      if GetSkinGELighten then
-         lightenBitmap(FSpecialBackground,GetSkinGELightenAmount);
+      Theme := GetCurrentTheme;
+      if Theme.Skin.GlassEffect.Blend then
+        BlendImageC(FSpecialBackground,Theme.Skin.GlassEffect.BlendColor,Theme.Skin.GlassEffect.BlendAlpha);
+      fastblur(FSpecialBackground,Theme.Skin.GlassEffect.BlurRadius,Theme.Skin.GlassEffect.BlurIterations);
+      if Theme.Skin.GlassEffect.Lighten then
+         lightenBitmap(FSpecialBackground,Theme.Skin.GlassEffect.LightenAmount);
       FSpecialBackground.ResetAlpha(255);
       FBackground.SetSize(w,h);
       FBackground.Clear(color32(0,0,0,0));

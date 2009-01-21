@@ -22,10 +22,10 @@
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_Define>DEBUG</DCC_Define>
-    <DCC_UnitSearchPath>..\..\Common\Libraries\SharpThemeApi</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Common\Libraries\SharpThemeApi</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Common\Libraries\SharpThemeApi</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Common\Libraries\SharpThemeApi</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\Common\Libraries\SharpThemeApiEx</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Common\Libraries\SharpThemeApiEx</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Common\Libraries\SharpThemeApiEx</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Common\Libraries\SharpThemeApiEx</DCC_IncludePath>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>

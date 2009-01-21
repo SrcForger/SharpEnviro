@@ -33,7 +33,9 @@ uses
   GR32_Image,GR32_Layers,GR32, GR32_resamplers, JPeg,Types,
   ShlObj,JvSimpleXML,JclSysInfo,AppEvnts,
   SharpApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uThemeConsts,
+  uISharpETheme,
   SharpDeskApi,
   uSharpDeskBackgroundUnit,
   uSharpDeskFunctions,
@@ -325,12 +327,12 @@ begin
       Reg.Free;
       if CompareText(SharpApi.GetSharpeUserSettingsPath + 'SharpDeskbg.bmp',WP) <> 0 then
       begin
-        Dir := SharpThemeApi.GetThemeDirectory;
-        FName := Dir + 'Wallpaper.xml';
+        Dir := GetCurrentTheme.Info.Directory;
+        FName := Dir + '\Wallpaper.xml';
         if FileExists(FName) then
         begin
           // Get the name of the primary monitor (ID:-100 = Primary Mon)
-          WPName := SharpThemeApi.GetMonitorWallpaper(-100).Name;
+          WPName := GetCurrentTheme.Wallpaper.GetMonitorWallpaper(-100).Name;
           XML := TJvSimpleXML.Create(nil);
           try
             XML.LoadFromFile(FName);
@@ -407,7 +409,7 @@ begin
       BackgroundImage.ForceFullInvalidate;
       SharpDesk.BackgroundLayer.Update;
       SharpDesk.BackgroundLayer.Changed;
-      SharpCenterApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
+      SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
     end;
   end;
 end;
@@ -525,7 +527,7 @@ begin
   SharpDeskMainForm.SendMessageToConsole('Loading Theme',COLOR_OK,DMT_STATUS);
 
   try
-    SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
+    GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
     SharpDesk.DeskSettings.ReloadSettings;
 
     SharpApi.SendDebugMessageEx('SharpDesk',PChar('Main Resize : ' +
@@ -546,7 +548,7 @@ begin
     BackgroundImage.ForceFullInvalidate;
     SharpDesk.BackgroundLayer.Update;
     SharpDesk.BackgroundLayer.Changed;
-    SharpCenterApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
+    SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
   end;
 end;
 
@@ -587,14 +589,14 @@ begin
   if (msg.WParam = Integer(suWallpaper)) or (msg.WParam = Integer(suScheme))
     or (msg.WParam = Integer(suSkin)) then
   begin
-    SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
+    GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
     Background.Reload(msg.Wparam = Integer(suScheme));
     BackgroundImage.ForceFullInvalidate;
     SharpDesk.BackgroundLayer.Update;
     SharpDesk.BackgroundLayer.Changed;
     SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
     if msg.WParam = Integer(suWallpaper) then
-      SharpCenterApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
+      SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
   end;
 
   if (msg.WParam = Integer(suSharpDesk)) then
@@ -606,7 +608,7 @@ begin
 
   if (msg.WParam = Integer(suDesktopIcon)) or (msg.WParam = Integer(suIconSet)) then
   begin
-    SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
+    GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
     SharpDesk.SendMessageToAllObjects(SDM_SETTINGS_UPDATE,0,0,0);
   end;
 
@@ -632,9 +634,7 @@ end;
 
 procedure TSharpDeskMainForm.FormCreate(Sender: TObject);
 begin
-  if not SharpThemeApi.Initialized then
-     SharpThemeApi.InitializeTheme;
-  SharpThemeApi.LoadTheme();
+  GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
 
      ObjectPopupImageCount := ObjectPopUp.Images.Count;
 

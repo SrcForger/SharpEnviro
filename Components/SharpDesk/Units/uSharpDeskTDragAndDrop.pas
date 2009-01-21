@@ -76,7 +76,7 @@ uses uSharpDeskManager,
      uSharpDeskObjectFile,
      uSharpDeskObjectSet,
      uSharpDeskObjectSetItem,
-     SharpThemeApi;
+     SharpThemeApiEx;
 
 
 // ######################################

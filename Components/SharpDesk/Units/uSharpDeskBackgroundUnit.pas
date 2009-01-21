@@ -29,7 +29,7 @@ Interface
 
 uses Windows,Graphics,SysUtils,Forms,SharpApi,Classes,Dialogs,Types,
      GR32,Math,GR32_blend,GR32_Image, GR32_resamplers,PngImage, Registry,Messages,
-     SharpThemeApi, GR32_PNG, Jpeg,
+     SharpThemeApiEx, uThemeConsts, GR32_PNG, Jpeg, uISharpETheme, 
      SharpGraphicsUtils,
      SharpImageUtils;
 
@@ -39,7 +39,7 @@ type
                    procedure Create;
                    procedure Destroy;
                    procedure Reload(isSchemeChange : boolean);
-                   procedure ApplyEffects(var Bmp : TBitmap32; Mon : TThemeWallpaper);
+                   procedure ApplyEffects(var Bmp : TBitmap32; Mon : TThemeWallpaperItem);
                   end;
 
 Implementation
@@ -52,7 +52,7 @@ uses uSharpDeskMainForm;
 // ######################################
 
 
-procedure TBackground.ApplyEffects(var Bmp : TBitmap32; Mon : TThemeWallpaper);
+procedure TBackground.ApplyEffects(var Bmp : TBitmap32; Mon : TThemeWallpaperItem);
 begin
   if (Mon.Gradient) and ((Mon.GDStartAlpha<>255) or (Mon.GDEndAlpha<>255)) then
      ApplyGradient(Bmp, Mon.GradientType, Mon.GDStartColor,Mon.GDEndColor,
@@ -98,14 +98,18 @@ var
    Reg : TRegistry;
 
    loaded : boolean;
-   WP : TThemeWallpaper;
+   WP : TThemeWallpaperItem;
    img : TBitmap32;
    SList : TStringList;
 
    RMode : boolean;
    WPChanged : boolean;
+
+   Theme : ISharpETheme;
 begin
   SharpDeskMainForm.Monitor; // make it update the TScren Monitor Data
+
+  Theme := GetCurrentTheme;
 
   img := SharpDesk.Image.Bitmap;
   img.SetSize(Screen.DesktopWidth,Screen.DesktopHeight);
@@ -117,13 +121,13 @@ begin
     if PMon.Primary then
        MonID := -100
        else MonID := PMon.MonitorNum;
-    WP := SharpThemeApi.GetMonitorWallpaper(MonID);
+    WP := Theme.Wallpaper.GetMonitorWallpaper(MonID);
 
     // only update if scheme color changes and scheme colors are used
-    if (isSchemeChange) and (not (ColorToSchemeCode(WP.Color) <> WP.Color))
-      and (((not (ColorToSchemeCode(WP.GDStartColor) <> WP.GDStartColor))
-      and (not (ColorToSchemeCode(WP.GDEndColor) <> WP.GDEndColor))) or (not WP.Gradient)) then
-    Continue;
+    if (isSchemeChange) and (StrToIntDef(WP.ColorStr,-1) >= 0)
+      and (((StrToIntDef(WP.GDStartColorStr,-1) >= 0)
+           or (StrToIntDef(WP.GDEndColorStr,-1) >= 0)) or (not WP.Gradient)) then
+      Continue;
 
     // at least one wallpaper has changed;
     WPChanged := True;
@@ -149,7 +153,7 @@ begin
 
     loaded := False;
     SList := TStringList.Create;
-    SList.Add(SharpThemeApi.GetThemeDirectory + WP.Image);
+    SList.Add(Theme.Info.Directory + '\' + WP.Image);
     SList.Add(WP.Image);
     SList.Add(SharpApi.GetSharpeDirectory + WP.Image);
     for i := 0 to SList.Count - 1 do
@@ -279,10 +283,10 @@ begin
   // save the preview bitmap
   TempBmp := TBitmap32.Create;
   RescaleImage(SharpDesk.Image.Bitmap,TempBmp,62,48,True);
-  if not DirectoryExists(GetThemeDirectory) then
-    ForceDirectories(GetThemeDirectory);
-  if FileCheck(GetThemeDirectory + 'preview.png') then
-    SaveBitmap32ToPNG(TempBmp,GetThemeDirectory + 'preview.png',False,True,clWhite);
+  if not DirectoryExists(Theme.Info.Directory) then
+    ForceDirectories(Theme.Info.Directory);
+  if FileCheck(Theme.Info.Directory + '\preview.png') then
+    SaveBitmap32ToPNG(TempBmp,Theme.Info.Directory + '\preview.png',False,True,clWhite);
   TempBmp.Free;
 
   SharpApi.SendDebugMessageEx('SharpDesk',PChar(('Background - Set Win Wallpaper : ') + WP.Name),clblue,DMT_trace);
