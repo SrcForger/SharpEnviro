@@ -36,7 +36,9 @@ uses
   SharpIconUtils,
   SharpImageUtils,
   SharpGraphicsUtils,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uISharpETheme,
+  uThemeConsts,
   uSharpDeskDebugging,
   IdBaseComponent,
   IdHTTP,
@@ -99,7 +101,7 @@ begin
   if Locked then
     exit;
     
-  if SharpThemeApi.GetDesktopAnimUseAnimations then
+  if GetCurrentTheme.Desktop.Animation.UseAnimations then
   begin
     FHLTimerI := 1;
     FHLTimer.Enabled := True;
@@ -112,7 +114,7 @@ end;
 
 procedure TImageLayer.EndHL;
 begin
-  if SharpThemeApi.GetDesktopAnimUseAnimations then
+  if GetCurrentTheme.Desktop.Animation.UseAnimations then
   begin
     FHLTimerI := -1;
     FHLTimer.Enabled := True;
@@ -125,6 +127,7 @@ end;
 procedure TImageLayer.OnTimer(Sender: TObject);
 var
   i : integer;
+  Theme : ISharpETheme;
 begin
   FParentImage.BeginUpdate;
   BeginUpdate;
@@ -146,12 +149,13 @@ begin
     exit;
   end;
 
-  if SharpThemeApi.GetDesktopAnimAlpha then
+  Theme := GetCurrentTheme;
+  if Theme.Desktop.Animation.Alpha then
   begin
     if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
        i := FSettings.Theme[DS_ICONALPHA].IntValue
        else i := 255;
-    i := i + round(((SharpThemeApi.GetDesktopAnimAlphaValue/FAnimSteps)*FHLTimer.Tag));
+    i := i + round(((Theme.Desktop.Animation.AlphaValue/FAnimSteps)*FHLTimer.Tag));
     if i > 255 then i := 255
        else if i<32 then i := 32;
     Bitmap.MasterAlpha := i;
@@ -162,12 +166,12 @@ begin
     FHLTimer.Tag := FAnimSteps;
   end;
   DrawBitmap;
-  if SharpThemeApi.GetDesktopAnimBrightness then
-     LightenBitmap(Bitmap,round(FHLTimer.Tag*(SharpThemeApi.GetDesktopAnimBrightnessValue/FAnimSteps)));
-  if SharpThemeApi.GetDesktopAnimBlend then
+  if Theme.Desktop.Animation.Brightness then
+     LightenBitmap(Bitmap,round(FHLTimer.Tag*(Theme.Desktop.Animation.BrightnessValue/FAnimSteps)));
+  if Theme.Desktop.Animation.Blend then
      BlendImageA(Bitmap,
-                 SharpThemeApi.GetDesktopAnimBlendColor,
-                 round(FHLTimer.Tag*(SharpThemeApi.GetDesktopAnimBlendValue/FAnimSteps)));
+                 Theme.Desktop.Animation.BlendColor,
+                 round(FHLTimer.Tag*(Theme.Desktop.Animation.BlendValue/FAnimSteps)));
   FParentImage.EndUpdate;
   EndUpdate;
   Changed;
@@ -359,7 +363,7 @@ begin
   with FSettings do
   begin
     FBLendValue := Theme[DS_ICONBLENDALPHA].IntValue;
-    FBlendColor := SharpThemeApi.SchemeCodeToColor(Theme[DS_ICONBLENDCOLOR].IntValue);
+    FBlendColor := GetCurrentTheme.Scheme.SchemeCodeToColor(Theme[DS_ICONBLENDCOLOR].IntValue);
     FBlend      := Theme[DS_ICONBLENDING].BoolValue;
     FAlphaValue := Theme[DS_ICONALPHA].IntValue;
     FAlphaBlend := Theme[DS_ICONALPHABLEND].BoolValue;

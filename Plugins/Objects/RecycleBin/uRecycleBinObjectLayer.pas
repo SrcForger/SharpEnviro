@@ -37,9 +37,12 @@ uses
   uSharpDeskFunctions,
   uSharpDeskObjectSettings,
   SharpGraphicsUtils,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uISharpETheme,
+  uThemeConsts,
   SharpIconUtils,
   GR32_Resamplers;
+
 type
    TColorRec = packed record
                  b,g,r,a: Byte;
@@ -170,7 +173,7 @@ end;
 
 procedure TRecycleBinLayer.StartHL;
 begin
-  if SharpThemeApi.GetDesktopAnimUseAnimations then
+  if GetCurrentTheme.Desktop.Animation.UseAnimations then
   begin
     FHLTimerI := 1;
     FHLTimer.Enabled := True;
@@ -183,7 +186,7 @@ end;
 
 procedure TRecycleBinLayer.EndHL;
 begin
-  if SharpThemeApi.GetDesktopAnimUseAnimations then
+  if GetCurrentTheme.Desktop.Animation.UseAnimations then
   begin
     FHLTimerI := -1;
     FHLTimer.Enabled := True;
@@ -196,6 +199,7 @@ end;
 procedure TRecycleBinLayer.OnTimer(Sender: TObject);
 var
   i : integer;
+  Theme : ISharpETheme;
 begin
   FParentImage.BeginUpdate;
   BeginUpdate;
@@ -218,15 +222,16 @@ begin
     exit;
   end;
 
-  if SharpThemeApi.GetDesktopAnimScale then
-     FScale := round(100 + ((SharpThemeApi.GetDesktopAnimScaleValue)/FAnimSteps)*FHLTimer.Tag);
-  if SharpThemeApi.GetDesktopAnimAlpha then
+  Theme := GetCurrentTheme;
+  if Theme.Desktop.Animation.Scale then
+    FScale := round(100 + ((Theme.Desktop.Animation.ScaleValue)/FAnimSteps)*FHLTimer.Tag);
+  if Theme.Desktop.Animation.Alpha then
   begin
     FScale := 100;
     if FSettings.Theme[DS_ICONALPHABLEND].BoolValue then
        i := FSettings.Theme[DS_ICONALPHA].IntValue
        else i := 255;
-    i := i + round(((SharpThemeApi.GetDesktopAnimAlphaValue/FAnimSteps)*FHLTimer.Tag));
+    i := i + round(((Theme.Desktop.Animation.AlphaValue/FAnimSteps)*FHLTimer.Tag));
     if i > 255 then i := 255
        else if i<32 then i := 32;
     Bitmap.MasterAlpha := i;
@@ -237,12 +242,12 @@ begin
     FHLTimer.Tag := FAnimSteps;
   end;
   DrawBitmap;
-  if SharpThemeApi.GetDesktopAnimBrightness then
-     LightenBitmap(Bitmap,round(FHLTimer.Tag*(SharpThemeApi.GetDesktopAnimBrightnessValue/FAnimSteps)));
-  if SharpThemeApi.GetDesktopAnimBlend then
+  if Theme.Desktop.Animation.Brightness then
+     LightenBitmap(Bitmap,round(FHLTimer.Tag*(Theme.Desktop.Animation.BrightnessValue/FAnimSteps)));
+  if Theme.Desktop.Animation.Blend then
      BlendImageA(Bitmap,
-                 SharpThemeApi.GetDesktopAnimBlendColor,
-                 round(FHLTimer.Tag*(SharpThemeApi.GetDesktopAnimBlendValue/FAnimSteps)));
+                 Theme.Desktop.Animation.BlendColor,
+                 round(FHLTimer.Tag*(Theme.Desktop.Animation.BlendValue/FAnimSteps)));
   FParentImage.EndUpdate;
   EndUpdate;
   Changed;
@@ -312,21 +317,23 @@ end;
 procedure TRecycleBinLayer.LoadSettings;
 var
   bmp : TBitmap32;
+  ITheme : ISharpETheme;
 begin
   if ObjectID=0 then exit;
 
   FSettings.LoadSettings;
 
+  ITheme := GetCurrentTheme;
   with FSettings do
   begin
     FFontSettings.Name      := Theme[DS_FONTNAME].Value;
     FFontSettings.Size      := Theme[DS_TEXTSIZE].IntValue;
-    FFontSettings.Color     := SharpThemeApi.SchemeCodeToColor(Theme[DS_TEXTCOLOR].IntValue);
+    FFontSettings.Color     := ITheme.Scheme.SchemeCodeToColor(Theme[DS_TEXTCOLOR].IntValue);
     FFontSettings.Bold      := Theme[DS_TEXTBOLD].BoolValue;
     FFontSettings.Italic    := Theme[DS_TEXTITALIC].BoolValue;
     FFontSettings.Underline := Theme[DS_TEXTUNDERLINE].BoolValue;
     FFontSettings.AALevel   := 0;
-    FFontSettings.ShadowColor      := SharpThemeApi.SchemeCodeToColor(Theme[DS_TEXTSHADOWCOLOR].IntValue);
+    FFontSettings.ShadowColor      := ITheme.Scheme.SchemeCodeToColor(Theme[DS_TEXTSHADOWCOLOR].IntValue);
     FFontSettings.ShadowAlphaValue := Theme[DS_TEXTSHADOWALPHA].IntValue;
     FFontSettings.Shadow           := Theme[DS_TEXTSHADOW].BoolValue;
     FFontSettings.TextAlpha        := Theme[DS_TEXTALPHA].BoolValue;
@@ -357,10 +364,10 @@ begin
     FIconSettings.YOffset     := 0;
 
     FIconSettings.Blend       := Theme[DS_ICONBLENDING].BoolValue;
-    FIconSettings.BlendColor  := SharpThemeApi.SchemeCodeToColor(Theme[DS_ICONBLENDCOLOR].IntValue);
+    FIconSettings.BlendColor  := ITheme.Scheme.SchemeCodeToColor(Theme[DS_ICONBLENDCOLOR].IntValue);
     FIconSettings.BlendValue  := Theme[DS_ICONBLENDALPHA].IntValue;
     FIconSettings.Shadow      := Theme[DS_ICONSHADOW].BoolValue;
-    FIconSettings.ShadowColor := SharpThemeApi.SchemeCodeToColor(Theme[DS_ICONSHADOWCOLOR].IntValue);
+    FIconSettings.ShadowColor := ITheme.Scheme.SchemeCodeToColor(Theme[DS_ICONSHADOWCOLOR].IntValue);
     FIconSettings.ShadowAlpha := 255-Theme[DS_ICONSHADOWALPHA].IntValue;
 
     if Theme[DS_ICONSIZE].IntValue <= 8 then

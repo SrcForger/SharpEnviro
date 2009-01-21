@@ -35,7 +35,7 @@ uses
   uSharpDeskFunctions,
   RecycleBinObjectXMLSettings,
   mlinewnd,
-  SharpThemeApi, GR32,
+  SharpThemeApiEx, GR32,
   SharpIconUtils, GR32_Image, Menus;
 
 type
