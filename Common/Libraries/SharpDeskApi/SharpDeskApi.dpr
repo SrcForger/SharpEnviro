@@ -34,8 +34,7 @@ uses
   Math,
   Classes,
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas',
-  SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
-  SharpThemeApi in '..\SharpThemeApi\SharpThemeApi.pas';
+  SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas';
 
 {$R glyphs.res}
 {$R *.res}
