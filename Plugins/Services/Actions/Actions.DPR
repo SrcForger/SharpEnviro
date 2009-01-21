@@ -45,8 +45,6 @@ uses
   uActionServiceList in 'uActionServiceList.pas',
   uActionServiceManager in 'uActionServiceManager.pas';
 
-{$E ser}
-
 {$R *.RES}
 
 function Start(owner: hwnd): hwnd;

@@ -73,8 +73,6 @@ var
   MessageReceived : boolean;
 
 
-{$E ser}
-
 {$R *.RES}
 
 

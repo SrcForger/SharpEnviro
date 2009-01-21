@@ -38,8 +38,6 @@ uses
   uExecServiceRecentItemList in 'uExecServiceRecentItemList.pas',
   uExecServiceUsedItemList in 'uExecServiceUsedItemList.pas';
 
-{$E ser}
-
 {$R *.RES}
 
 // Free all service resources

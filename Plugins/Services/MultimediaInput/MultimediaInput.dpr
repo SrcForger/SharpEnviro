@@ -31,7 +31,7 @@ uses
   MultiMon,
   Classes,
   SharpApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
   Registry,
   MMSystem,
   Math,
@@ -54,8 +54,6 @@ var
   SkinManager : TSharpESkinManager;
   sShowOSD : boolean;
   MPlayers : TMediaPlayerList;
-
-{$E ser}
 
 {$R *.RES}
 
@@ -167,6 +165,7 @@ end;
 function Start(owner: hwnd): hwnd;
 begin
   SkinManager := TSharpESkinManager.Create(nil,[scBasic]);
+  SkinManager.HandleThemeApiUpdates := False;
   SkinManager.SkinSource := ssSystem;
   SkinManager.SchemeSource := ssSystem;
   SkinManager.Skin.UpdateDynamicProperties(SkinManager.Scheme);
@@ -294,15 +293,6 @@ begin
         APPCOMMAND_MEDIA_PLAY,APPCOMMAND_MEDIA_PAUSE: BroadCastMediaAppCommand(msg.LParamHi);
         else msg.result := 0;
       end;
-    end;
-  end
-  else if msg.Msg = WM_SHARPEUPDATESETTINGS then
-  begin
-    if (msg.wparam = Integer(suCursor)) or (msg.wparam = Integer(suScheme))
-       or (msg.wparam = Integer(suSkin)) or (msg.wparam = Integer(suTheme)) then
-    begin
-      SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
-      SkinManager.UpdateSkin;
     end;
   end
   else if msg.Msg = WM_SHARPEUPDATEACTIONS then

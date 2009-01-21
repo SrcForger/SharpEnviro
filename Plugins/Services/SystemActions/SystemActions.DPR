@@ -44,8 +44,6 @@ var
   h:THandle;
   LocalsList : TJclKeyboardLayoutList;
 
-{$E ser}
-
 {$R *.RES}
 
 function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; external 'user32.dll';

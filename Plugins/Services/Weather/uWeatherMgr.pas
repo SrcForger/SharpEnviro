@@ -45,7 +45,6 @@ uses
 
   uWeatherOptions,
   uWeatherList,
-  SharpCenterApi,
   SharpApi;
 
 type
@@ -342,7 +341,7 @@ begin
           FErrorCount := 0;
 
           WeatherList.SaveSettings;
-          SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
+          SharpApi.BroadcastGlobalUpdateMessage(suCenter);
 
           SharpEBroadCast(WM_WEATHERUPDATE, 0, 0);
         end;
@@ -384,7 +383,7 @@ begin
           WeatherList.SaveSettings;
 
           SharpEBroadCast(WM_WEATHERUPDATE, 0, 0);
-          SharpCenterApi.BroadcastGlobalUpdateMessage(suCenter);
+          SharpApi.BroadcastGlobalUpdateMessage(suCenter);
         end;
       end;
     except

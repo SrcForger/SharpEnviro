@@ -4,8 +4,9 @@ interface
 
 uses
   Windows, Messages, Graphics, SysUtils, Math, Classes, ExtCtrls, Forms,
-  SharpThemeApi, SharpESkin, SharpESkinPart, SharpESkinManager, uTaskSwitchWnd,
-  GR32, GR32_PNG,GR32_Resamplers, SharpIconUtils, SharpGraphicsUtils, SharpTypes;
+  SharpThemeApiEx, uISharpETheme, SharpESkin, SharpESkinPart, SharpESkinManager,
+  uTaskSwitchWnd, SharpIconUtils, SharpGraphicsUtils, SharpTypes,
+   GR32, GR32_PNG, GR32_Resamplers;
 
 type
   TTSGui = class
@@ -206,13 +207,8 @@ begin
   setlength(previews,0);
   FWnd := nil;
 
-  if not SharpThemeApi.Initialized then
-  begin
-    SharpThemeApi.InitializeTheme;
-    SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme,tpInfo]);
-  end;  
-
   FSkinManager := TSharpESkinManager.Create(nil,[scBar,scTaskSwitch]);
+  FSkinManager.HandleThemeApiUpdates := False;
   FSkinManager.SkinSource := ssSystem;
   FSkinManager.SchemeSource := ssSystem;
   FSkinManager.Skin.UpdateDynamicProperties(FSkinManager.Scheme);
@@ -463,6 +459,7 @@ var
   n: Integer;
   temp : TBitmap32;
   dc : HDC;
+  Theme : ISharpETheme;
 begin
   if FPreviewTimer.Enabled then
     FPreviewTimer.Enabled := False;
@@ -520,11 +517,12 @@ begin
              FWnd.Monitor.Left + FWnd.Monitor.Width div 2 - FBackground.Width div 2,
              FWnd.Monitor.Top + FWnd.Monitor.Height div 2 - FBackground.Height div 2,
              SRCCOPY or CAPTUREBLT);
-      if SharpThemeApi.GetSkinGEBlend then
-        BlendImageC(FBackground,GetSkinGEBlendColor,GetSkinGEBlendAlpha);
-      fastblur(FBackground,GetSkinGEBlurRadius,GetSkinGEBlurIterations);
-      if GetSkinGELighten then
-         lightenBitmap(FBackground,GetSkinGELightenAmount);
+      Theme := GetCurrentTheme;
+      if Theme.Skin.GlassEffect.Blend then
+        BlendImageC(FBackground,Theme.Skin.GlassEffect.BlendColor,Theme.Skin.GlassEffect.BlendAlpha);
+      fastblur(FBackground,Theme.Skin.GlassEffect.BlurRadius,Theme.Skin.GlassEffect.BlurIterations);
+      if Theme.Skin.GlassEffect.Lighten then
+         lightenBitmap(FBackground,Theme.Skin.GlassEffect.LightenAmount);
       FBackground.ResetAlpha(255);
       Temp.SetSize(w,h);
       Temp.Clear(color32(0,0,0,0));

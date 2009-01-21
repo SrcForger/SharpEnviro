@@ -38,8 +38,6 @@ uses
   uCursesServiceManager in 'uCursesServiceManager.pas',
   uCursesServiceSettings in 'uCursesServiceSettings.pas';
 
-{$E ser}
-
 {$R *.RES}
 
 procedure Stop;

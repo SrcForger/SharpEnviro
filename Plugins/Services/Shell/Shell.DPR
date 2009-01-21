@@ -121,7 +121,6 @@ type
     procedure Disable;
   end;  
 
-{$E ser}
 
 {$R *.RES}
 

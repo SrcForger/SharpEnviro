@@ -32,8 +32,9 @@ uses Windows, Dialogs, SysUtils, Classes,
      Forms, Controls, Messages, Types, Graphics, Contnrs, ExtCtrls,
      GR32,
      SharpApi,
-     SharpThemeApi,
-     SharpCenterApi,
+     SharpThemeApiEx,
+     uISharpETheme,
+     uThemeConsts,
      SharpESkin,
      SharpTypes;
 
@@ -63,7 +64,7 @@ procedure TSkinServer.FormCreate(Sender: TObject);
 begin
   FSkin := TSharpESkin.Create(self,ALL_SHARPE_SKINS);
   UpdateStreamFile;
-  SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged,-1,True);
+  SharpApi.BroadcastGlobalUpdateMessage(suSkinFileChanged,-1,True);
 end;
 
 procedure TSkinServer.FormDestroy(Sender: TObject);
@@ -73,13 +74,16 @@ end;
 
 
 procedure TSkinServer.UpdateStreamFile;
+var
+  Theme : ISharpETheme;
 begin
   //Load new skin
-  SharpThemeApi.LoadTheme(True,[tpSkin]);
-  FFileName := SharpThemeApi.GetSkinDirectory + 'Skin.xml';
+  Theme := GetCurrentTheme;
+  Theme.LoadTheme([tpSkinScheme]);
+  FFileName := Theme.Skin.Directory + 'Skin.xml';
   FSkin.LoadFromXmlFile(FFileName);
   if FStream <> nil then
-     FreeAndNil(FStream);
+    FreeAndNil(FStream);
 
   try
     DeleteFile(SharpApi.GetSharpeUserSettingsPath + 'SharpE.skin');
@@ -110,7 +114,7 @@ begin
   if (msg.WParam = Integer(suSkin)) or (msg.WParam = Integer(suTheme)) then
   begin
     UpdateStreamFile;
-    SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged,-1,True);
+    SharpApi.BroadcastGlobalUpdateMessage(suSkinFileChanged,-1,True);
   end;
 end;
 

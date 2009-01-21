@@ -33,10 +33,10 @@ uses
   sysutils,
   SharpAPI,
   uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas',
-  uHotkeyServiceMain in 'uHotkeyServiceMain.pas',
-  uHotkeyServiceList in '..\..\Configurations\Hotkeys\uHotkeyServiceList.pas';
+  uHotkeyServiceMain in 'uHotkeyServiceMain.pas' {$E ser},
+  uHotkeyServiceList in '..\..\Configurations\Services\HotkeyList\uHotkeyServiceList.pas';
 
-{$E ser}
+{$E dll}
 
 procedure Stop;
 begin

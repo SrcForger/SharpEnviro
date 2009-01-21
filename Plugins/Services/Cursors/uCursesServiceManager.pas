@@ -38,9 +38,10 @@ uses
   Classes,
   Graphics,
   sharpapi,
-  sharpthemeapi,
+  SharpThemeApiEx,
   jvSimpleXml,
   jclStrings,
+  uISharpETheme,
 
   uCursesServiceSettings;
 
@@ -139,7 +140,6 @@ begin
     if (msg.wparam = Integer(suCursor)) or (msg.wparam = Integer(suScheme))
        or (msg.wparam = Integer(suSkin)) or (msg.wparam = Integer(suTheme)) then
     begin
-      SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
       FCursesSettings.Load;
       if length(trim(FCursesSettings.CurrentSkin)) > 0 then
       begin
@@ -154,6 +154,7 @@ procedure TCursesManager.ApplySkin;
 var
   n: integer;
   clist : array of integer;
+  Theme : ISharpETheme;
 begin
   for n := Low(CursorBmpArray) to High(CursorBmpArray) do
       if CursorBmpArray[n] <> nil then
@@ -164,9 +165,10 @@ begin
 
   // convert to scheme colors
   setlength(clist,length(FCursesSettings.Colors));
+  Theme := GetCurrentTheme;
   for n := 0 to High(FCursesSettings.Colors) do
   begin
-    clist[n] := SharpThemeApi.SchemeCodeToColor(FCursesSettings.Colors[n]);
+    clist[n] := Theme.Scheme.SchemeCodeToColor(FCursesSettings.Colors[n]);
 
     // black will be transparent... but if selected as blend then color it's
     // not supposed to be transparent, so adjust the black and make clFuchsia

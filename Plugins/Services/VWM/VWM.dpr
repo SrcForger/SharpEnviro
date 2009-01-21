@@ -53,9 +53,8 @@ uses
   Messages,
   Math,
   SharpAPI,
-  SharpThemeApi,
+  SharpThemeApiEx,
   Dialogs,
-  SharpCenterApi,
   SysUtils,
   JclSimpleXML,
   SharpESkinManager,
@@ -63,8 +62,6 @@ uses
   VWMFunctions in '..\..\..\Common\Units\VWM\VWMFunctions.pas',
   uSystemFuncs in '..\..\..\Common\Units\SystemFuncs\uSystemFuncs.pas',
   SharpNotify in '..\..\..\Common\Units\SharpNotify\SharpNotify.pas';
-
-{$E ser}
 
 {$R *.res}
 
@@ -409,13 +406,7 @@ begin
           VWMFunctions.VWMMoveAllToOne(CurrentDesktop, True); // ... reason ... unknown =)
           LoadVWMSettings;
           SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS, 0, 0);
-        end else
-          if (Message.wparam = Integer(suCursor)) or (Message.wparam = Integer(suScheme))
-            or (Message.wparam = Integer(suSkin)) or (Message.wparam = Integer(suTheme)) then
-          begin
-            SharpThemeApi.LoadTheme(True, [tpSkin, tpScheme]);
-            SkinManager.UpdateSkin;
-          end;
+        end;
       end;
     WM_DISPLAYCHANGE:
 
@@ -485,7 +476,7 @@ function Start(Owner: HWND): HWND;
 begin
 
   SkinManager := TSharpESkinManager.Create(nil, [scBasic]);
-
+  SkinManager.HandleThemeApiUpdates := False;
   SkinManager.SkinSource := ssSystem;
   SkinManager.SchemeSource := ssSystem;
   SkinManager.Skin.UpdateDynamicProperties(SkinManager.Scheme);

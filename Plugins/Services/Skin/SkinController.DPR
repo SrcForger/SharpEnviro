@@ -29,17 +29,13 @@ uses
   windows,
   Classes,
   Messages,
-  SharpCenterApi,
   uSkinServer in 'uSkinServer.pas' {SkinServer},
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
   graphicsFX in '..\..\..\Common\Units\SharpFX\graphicsFX.pas',
-  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas',
-  SharpThemeApi in '..\..\..\Common\Libraries\SharpThemeApi\SharpThemeApi.pas';
+  GR32_PNG in '..\..\..\Common\3rd party\GR32 Addons\GR32_PNG.pas';
 
-{$E ser}
 
 {$R *.RES}
-
 
 
 type
@@ -54,9 +50,6 @@ Var
 
 function Start(owner: hwnd): hwnd;
 begin
-  if not SharpThemeApi.Initialized then
-     SharpThemeApi.InitializeTheme;
-
   result := owner;
   SkinServer := TSkinServer.Create(nil);
 
@@ -89,7 +82,7 @@ begin
     case Message.LParam of
       0 : begin
             SkinServer.UpdateStreamFile;
-            SharpCenterApi.BroadcastGlobalUpdateMessage(suSkinfileChanged,-1,True);
+            SharpApi.BroadcastGlobalUpdateMessage(suSkinfileChanged,-1,True);
           end;
     end;
   end else if Message.Msg = WM_SHARPEUPDATEACTIONS then

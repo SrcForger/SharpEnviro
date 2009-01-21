@@ -35,10 +35,10 @@ uses
   // Standard
   SysUtils,
   Graphics,
-  SharpThemeApi,
+  SharpThemeApiEx,
 
   // JVCL
-  JvSimpleXml;
+  JclSimpleXml;
 
 type
   TColorArray = array of integer;
@@ -71,7 +71,7 @@ constructor TCursesSettings.Create;
 begin
   inherited Create;
 
-  FFileName := SharpThemeApi.GetThemeDirectory + 'Cursor.xml';
+  FFileName := GetCurrentTheme.Info.Directory + '\Cursor.xml';
 
   setlength(FColors,4);
   // some default values;
@@ -96,13 +96,13 @@ end;
 
 procedure TCursesSettings.Load;
 var
-  xml: TjvSimpleXml;
+  xml: TJclSimpleXml;
   n: integer;
 begin
-  FFileName := SharpThemeApi.GetThemeDirectory + 'Cursor.xml';
+  FFileName := GetCurrentTheme.Info.Directory + '\Cursor.xml';
   
   // Create and load XML file
-  xml := TJvSimpleXml.Create(nil);
+  xml := TJclSimpleXml.Create;
   try
     try
       xml.LoadFromFile(FFileName);
@@ -129,11 +129,11 @@ end;
 
 procedure TCursesSettings.Save;
 var
-  xml: TjvSimpleXml;
+  xml: TJclSimpleXml;
   n : integer;
 begin
   // Create and load XML file
-  xml := TJvSimpleXml.Create(nil);
+  xml := TJclSimpleXml.Create;
   try
     try
       xml.Root.Name := 'SharpEThemeCursor';

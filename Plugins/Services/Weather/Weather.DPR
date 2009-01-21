@@ -39,8 +39,6 @@ uses
   uWeatherOptions in 'uWeatherOptions.pas',
   uWeatherMgr in 'uWeatherMgr.pas';
 
-{$E ser}
-
 {$R *.RES}
 
 type

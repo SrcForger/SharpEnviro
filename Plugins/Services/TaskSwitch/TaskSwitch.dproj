@@ -7,7 +7,7 @@
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\Services\TaskSwitch.ser</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\Services\TaskSwitch.dll</DCC_DependencyCheckOutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
@@ -24,10 +24,10 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_ExeOutput>..\..\..\..\SharpE\Services\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpThemeAPI;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpTypes</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpThemeAPI;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpTypes</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpThemeAPI;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpTypes</DCC_ObjPath>
-    <DCC_IncludePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpThemeAPI;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpTypes</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpThemeAPIEx;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpTypes</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpThemeAPIEx;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpTypes</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpThemeAPIEx;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpTypes</DCC_ObjPath>
+    <DCC_IncludePath>..\..\..\Common\Libraries\SharpAPI;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\3rd party\GR32 Addons;..\..\..\Common\Libraries\SharpThemeAPIEx;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\SharpFileUtils;..\..\..\Common\Units\SharpTypes</DCC_IncludePath>
     <DCC_Define>DEBUG</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>
