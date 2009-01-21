@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32, GR32_PNG, GR32_Image, SharpEBaseControls,
   ExtCtrls, SharpEProgressBar, JclSimpleXML, SharpApi, Menus, Math,
-  cpuUsage, SharpThemeApi, SharpECustomSkinSettings, uISharpBarModule;
+  cpuUsage, SharpECustomSkinSettings, uISharpBarModule;
 
 
 type
@@ -45,17 +45,20 @@ type
     procedure FormCreate(Sender: TObject);
   protected
   private
-    sWidth       : integer;
-    sDrawMode    : integer;
-    sCPU         : integer;
-    sBGColor     : integer;
-    sBorderColor : integer;
-    sFGColor     : integer;
-    sUpdate      : integer;
-    sFGAlpha     : integer;
-    sBGAlpha     : integer;
-    sBorderAlpha : integer;
-    oldvalue     : integer;
+    sWidth          : integer;
+    sDrawMode       : integer;
+    sCPU            : integer;
+    sBGColorStr     : String;
+    sBGColor        : integer;
+    sBorderColorStr : String;
+    sBorderColor    : integer;
+    sFGColorStr     : String;
+    sFGColor        : integer;
+    sUpdate         : integer;
+    sFGAlpha        : integer;
+    sBGAlpha        : integer;
+    sBorderAlpha    : integer;
+    oldvalue        : integer;
     FCustomSkinSettings: TSharpECustomSkinSettings;
   public
     cpuusage : TCPUUsage;
@@ -71,7 +74,9 @@ type
 implementation
 
 uses
-  SharpESkinPart;
+  SharpESkinPart,
+  uISharpETheme,
+  SharpThemeApiEx;
 
 {$R *.dfm}
 
@@ -81,11 +86,18 @@ var
   XML : TJclSimpleXML;
   skin : String;
   fileloaded : boolean;
+  Theme : ISharpETheme;
 begin
   sWidth    := 100;
   sDrawMode := 1;
   sUpdate   := 500;
   sCpu      := 0;
+  sFGColorStr     := 'clwhite';
+  sBGColorStr     := '0';
+  sBorderColorStr := 'clwhite';
+  sFGAlpha     := 255;
+  sBGAlpha     := 64;
+  sBorderAlpha := 255;
 
   // Load Skin custom settings as default
   FCustomSkinSettings.LoadFromXML('');
@@ -94,20 +106,14 @@ begin
          if ItemNamed['cpumonitor'] <> nil then
             with ItemNamed['cpumonitor'].Items do
             begin
-              sFGColor     := SharpESkinPart.SchemedStringToColor(Value('fgcolor','clwhite'),mInterface.SkinInterface.SkinManager.Scheme);
-              sBGColor     := SharpESkinPart.SchemedStringToColor(Value('bgcolor','0'),mInterface.SkinInterface.SkinManager.Scheme);
-              sBorderColor := SharpESkinPart.SchemedStringToColor(Value('bordercolor','clwhite'),mInterface.SkinInterface.SkinManager.Scheme);
-              sFGAlpha     := IntValue('fgalpha',255);
-              sBGAlpha     := IntValue('bgalpha',255);
-              sBorderAlpha := IntValue('borderalpha',255);
+              sFGColorStr     := Value('fgcolor','clwhite');
+              sBGColorStr     := Value('bgcolor','0');
+              sBorderColorStr := Value('bordercolor','clwhite');
+              sFGAlpha        := IntValue('fgalpha',255);
+              sBGAlpha        := IntValue('bgalpha',255);
+              sBorderAlpha    := IntValue('borderalpha',255);
             end;
   except
-    sFGColor  := clwhite;
-    sBGColor  := 0;
-    sBorderColor := clwhite;
-    sFGAlpha     := 255;
-    sBGAlpha     := 255;
-    sBorderAlpha := 255;
   end;
 
   XML := TJclSimpleXML.Create;
@@ -129,17 +135,18 @@ begin
            sUpdate   := IntValue('Update',sUpdate);
          end;
 
-      skin := SharpThemeApi.GetSkinName;
+      Theme := GetCurrentTheme;
+      skin := Theme.Skin.Name;
       if ItemNamed['skin'] <> nil then
          if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then
             with ItemNamed['skin'].Items.ItemNamed[skin].Items do
             begin
-              sFGColor     := SchemeCodeToColor(IntValue('FGColor',sFGColor));
-              sBGColor     := SchemeCodeToColor(IntValue('BGColor',sBGColor));
-              sBorderColor := SchemeCodeToColor(IntValue('BorderColor',sBorderColor));
-              sFGAlpha     := Max(0,Min(255,IntValue('FGAlpha',sFGAlpha)));
-              sBGAlpha     := Max(0,Min(255,IntValue('BGAlpha',sBGAlpha)));
-              sBorderAlpha := Max(0,Min(255,IntValue('BorderAlpha',sBorderAlpha)));
+              sFGColorStr     := Value('FGColor',sFGColorStr);
+              sBGColorStr     := Value('BGColor',sBGColorStr);
+              sBorderColorStr := Value('BorderColor',sBorderColorStr);
+              sFGAlpha        := Max(0,Min(255,IntValue('FGAlpha',sFGAlpha)));
+              sBGAlpha        := Max(0,Min(255,IntValue('BGAlpha',sBGAlpha)));
+              sBorderAlpha    := Max(0,Min(255,IntValue('BorderAlpha',sBorderAlpha)));
             end;
     end;
   XML.Free;
@@ -175,6 +182,10 @@ begin
   if newWidth <> Width then
     mInterface.BarInterface.UpdateModuleSize;
 
+  sFGColor     := SharpESkinPart.SchemedStringToColor(sFGColorStr,mInterface.SkinInterface.SkinManager.Scheme);
+  sBGColor     := SharpESkinPart.SchemedStringToColor(sBGColorStr,mInterface.SkinInterface.SkinManager.Scheme);
+  sBorderColor := SharpESkinPart.SchemedStringToColor(sBorderColorStr,mInterface.SkinInterface.SkinManager.Scheme);    
+  SharpApi.SendDebugMessage('BOOM',inttostR(sBorderColor) + '-' + sBorderColorStr + ' -' + inttostr(sBorderAlpha),clred);
   case sDrawMode of
     0,1: begin
            pbar.Visible := False;

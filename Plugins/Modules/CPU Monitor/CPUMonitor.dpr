@@ -183,7 +183,10 @@ begin
     TMainForm(Form).ReAlignComponents;
   end;
 
-  if [part] <= [suTheme,suSkinFileChanged] then
+  if [part] <= [suSkinFileChanged] then
+    TMainForm(Form).LoadSettings;
+
+  if [part] <= [suTheme,suScheme,suSkinFileChanged] then
     TMainForm(Form).ReAlignComponents;
 
   if [part] <= [suBackground] then

@@ -31,13 +31,13 @@ uses Windows, Dialogs, SysUtils,
      Forms, Controls, Messages, Types, Graphics, Contnrs, ExtCtrls,
      GR32,
      SharpApi,
-     SharpThemeApi,
      GR32_Filters,
      GR32_Resamplers,
      WinVer,
      declaration,
      DateUtils,
      Math,
+     SharpThemeApiEx,
      SharpGraphicsUtils,
      SharpIconUtils,
      SharpNotify;
@@ -436,7 +436,7 @@ procedure TTrayClient.SetBorderColor(Value : TColor32);
 begin
   if Value <> FBorderColor then
   begin
-    FBorderColor := ColorToColor32Alpha(SchemeCodeToColor(Value),FBorderAlpha);
+    FBorderColor := ColorToColor32Alpha(GetCurrentTheme.Scheme.SchemeCodeToColor(Value),FBorderAlpha);
   end;
 end;
 
@@ -444,7 +444,7 @@ procedure TTrayClient.SetBackgroundColor(Value : TColor32);
 begin
   if Value <> FBackgroundColor then
   begin
-    FBackgroundColor := ColorToColor32Alpha(SchemeCodeToColor(Value),FBackgroundAlpha);
+    FBackgroundColor := ColorToColor32Alpha(GetCurrentTheme.Scheme.SchemeCodeToColor(Value),FBackgroundAlpha);
   end;
 end;
 
@@ -453,7 +453,7 @@ begin
   if Value <> FBorderAlpha then
   begin
     FBorderAlpha := Value;
-    FBorderColor := ColorToColor32Alpha(SchemeCodeToColor(WinColor(FBorderColor)),FBorderAlpha);
+    FBorderColor := ColorToColor32Alpha(GetCurrentTheme.Scheme.SchemeCodeToColor(WinColor(FBorderColor)),FBorderAlpha);
   end;
 end;
 
@@ -462,7 +462,7 @@ begin
   if Value <> FBackgroundAlpha then
   begin
     FBackgroundAlpha := Value;
-    FBackgroundColor := ColorToColor32Alpha(SchemeCodeToColor(WinColor(FBackgroundColor)),FBackgroundAlpha);
+    FBackgroundColor := ColorToColor32Alpha(GetCurrentTheme.Scheme.SchemeCodeToColor(WinColor(FBackgroundColor)),FBackgroundAlpha);
   end;
 end;
 
@@ -470,7 +470,7 @@ procedure TTrayClient.SetBlendColor(Value : integer);
 begin
   if Value <> FBlendColor then
   begin
-    FBlendColor := SchemeCodeToColor(Value);
+    FBlendColor := GetCurrentTheme.Scheme.SchemeCodeToColor(Value);
   end;
 end;
 

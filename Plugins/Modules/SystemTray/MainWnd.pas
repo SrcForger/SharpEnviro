@@ -30,7 +30,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, GR32_Image, SharpEBaseControls, SharpEButton,
-  SharpESkinManager, JvSimpleXML, SharpApi, Menus, GR32_Layers, Types,
+  SharpESkinManager, JclSimpleXML, SharpApi, Menus, GR32_Layers, Types,
   TrayIconsManager, Math, GR32, SharpECustomSkinSettings, SharpESkinLabel,
   ToolTipApi,Commctrl, uISharpBarModule;
 
@@ -48,20 +48,23 @@ type
     procedure FormCreate(Sender: TObject);
   protected
   private
-    sShowBackground  : Boolean;
-    sBackgroundColor : integer;
-    sBackgroundAlpha : integer;
-    sShowBorder      : Boolean;
-    sBorderColor     : integer;
-    sBorderAlpha     : integer;
-    sColorBlend      : Boolean;
-    sBlendColor      : integer;
-    sBlendAlpha      : integer;
-    sIconAlpha       : integer;
-    cwidth           : integer;
-    doubleclick      : boolean;
-    refreshed        : boolean;
-    FCustomSkinSettings: TSharpECustomSkinSettings;
+    sShowBackground     : Boolean;
+    sBackgroundColor    : integer;
+    sBackgroundColorStr : String;
+    sBackgroundAlpha    : integer;
+    sShowBorder         : Boolean;
+    sBorderColor        : integer;
+    sBorderColorStr     : String;
+    sBorderAlpha        : integer;
+    sColorBlend         : Boolean;
+    sBlendColor         : integer;
+    sBlendColorStr      : String;
+    sBlendAlpha         : integer;
+    sIconAlpha          : integer;
+    cwidth              : integer;
+    doubleclick         : boolean;
+    refreshed           : boolean;
+    FCustomSkinSettings : TSharpECustomSkinSettings;
     procedure CMMOUSELEAVE(var msg : TMessage); message CM_MOUSELEAVE;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
   public
@@ -78,7 +81,7 @@ type
 implementation
 
 uses SharpESkinPart,
-     SharpThemeApi;
+     SharpThemeApiEx;
 
 type
   TTrayWnd = class
@@ -159,42 +162,45 @@ end;
 
 procedure TMainForm.LoadSettings;
 var
-  XML : TJvSimpleXML;
+  XML : TJclSimpleXML;
   fileloaded : boolean;
   skin : String;
 begin
   // Load Skin custom settings as default
-  sShowBackground  := False;
-  sBackgroundColor := 0;
-  sBackgroundAlpha := 255;
-  sShowBorder      := False;
-  sBorderColor     := clwhite;
-  sBorderAlpha     := 255;
-  sColorBlend      := False;
-  sBlendColor      := clwhite;
-  sBlendAlpha      := 255;
-  sIconAlpha       := 255;
+  sShowBackground     := False;
+  sBackgroundColor    := 0;
+  sBackgroundColorStr := '0';
+  sBackgroundAlpha    := 255;
+  sShowBorder         := False;
+  sBorderColor        := clwhite;
+  sBorderColorStr     := 'clwhite';
+  sBorderAlpha        := 255;
+  sColorBlend         := False;
+  sBlendColor         := clwhite;
+  sBlendColorStr      := 'clwhite';
+  sBlendAlpha         := 255;
+  sIconAlpha          := 255;
   FCustomSkinSettings.LoadFromXML('');
   try
     with FCustomSkinSettings.xml.Items do
          if ItemNamed['systemtray'] <> nil then
             with ItemNamed['systemtray'].Items do
             begin
-              sShowBackground  := BoolValue('showbackground',False);
-              sBackgroundColor := SharpESkinPart.SchemedStringToColor(Value('backgroundcolor','0'),mInterface.SkinInterface.SkinManager.Scheme);
-              sBackgroundAlpha := IntValue('backgroundalpha',255);
-              sShowBorder      := BoolValue('showborder',False);
-              sBorderColor     := SharpESkinPart.SchemedStringToColor(Value('bordercolor','clwhite'),mInterface.SkinInterface.SkinManager.Scheme);
-              sBorderAlpha     := IntValue('borderalpha',255);
-              sColorBlend      := BoolValue('colorblend',false);
-              sBlendColor      := SharpESkinPart.SchemedStringToColor(Value('blendrcolor','clwhite'),mInterface.SkinInterface.SkinManager.Scheme);
-              sBlendAlpha      := IntValue('blendalpha',0);
-              sIconAlpha       := IntValue('iconalpha',255);
+              sShowBackground     := BoolValue('showbackground',False);
+              sBackgroundColorStr := Value('backgroundcolor','0');
+              sBackgroundAlpha    := IntValue('backgroundalpha',255);
+              sShowBorder         := BoolValue('showborder',False);
+              sBorderColorStr     := Value('bordercolor','clwhite');
+              sBorderAlpha        := IntValue('borderalpha',255);
+              sColorBlend         := BoolValue('colorblend',false);
+              sBlendColorStr      := Value('blendrcolor','clwhite');
+              sBlendAlpha         := IntValue('blendalpha',0);
+              sIconAlpha          := IntValue('iconalpha',255);
             end;
   except
   end;
 
-  XML := TJvSimpleXML.Create(nil);
+  XML := TJclSimpleXML.Create;
   try
     XML.LoadFromFile(mInterface.BarInterface.GetModuleXMLFile(mInterface.ID));
     fileloaded := True;
@@ -204,21 +210,21 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      skin := SharpThemeApi.GetSkinName;
+      skin := GetCurrentTheme.Skin.Name;
       if ItemNamed['skin'] <> nil then
          if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then
             with ItemNamed['skin'].Items.ItemNamed[skin].Items do
             begin
-              sShowBackground  := BoolValue('ShowBackground',sShowBackground);
-              sBackgroundColor := IntValue('BackgroundColor',sBackgroundColor);
-              sBackgroundAlpha := IntValue('BackgroundAlpha',sBackgroundAlpha);
-              sShowBorder      := BoolValue('ShowBorder',sShowBorder);
-              sBorderColor     := IntValue('BorderColor',sBorderColor);
-              sBorderAlpha     := IntValue('BorderAlpha',sBorderAlpha);
-              sColorBlend      := BoolValue('ColorBlend',sColorBlend);
-              sBlendColor      := IntValue('BlendColor',sBlendColor);
-              sBlendAlpha      := IntValue('BlendAlpha',sBlendAlpha);
-              sIconAlpha       := IntValue('IconAlpha',sIconAlpha);
+              sShowBackground     := BoolValue('ShowBackground',sShowBackground);
+              sBackgroundColorStr := Value('BackgroundColor',sBackgroundColorStr);
+              sBackgroundAlpha    := IntValue('BackgroundAlpha',sBackgroundAlpha);
+              sShowBorder         := BoolValue('ShowBorder',sShowBorder);
+              sBorderColorStr     := Value('BorderColor',sBorderColorStr);
+              sBorderAlpha        := IntValue('BorderAlpha',sBorderAlpha);
+              sColorBlend         := BoolValue('ColorBlend',sColorBlend);
+              sBlendColorStr      := Value('BlendColor',sBlendColorStr);
+              sBlendAlpha         := IntValue('BlendAlpha',sBlendAlpha);
+              sIconAlpha          := IntValue('IconAlpha',sIconAlpha);
             end;
     end;
   XML.Free;
@@ -238,6 +244,10 @@ begin
   begin
     if FTrayClient <> nil then
     begin
+      sBackGroundColor := SharpESkinPart.SchemedStringToColor(sBackGroundColorStr,mInterface.SkinInterface.SkinManager.Scheme);
+      sBorderColor     := SharpESkinPart.SchemedStringToColor(sBorderColorStr,mInterface.SkinInterface.SkinManager.Scheme);
+      sBlendColor      := SharpESkinPart.SchemedStringToColor(sBlendColorStr,mInterface.SkinInterface.SkinManager.Scheme);
+
       FTrayClient.BackGroundColor := sBackGroundColor;
       FTrayClient.DrawBackground  := sShowBackground;
       FTrayClient.BackgroundAlpha := sBackgroundAlpha;

@@ -188,6 +188,7 @@ begin
     FTrayClient.ScreenPos := TMainForm(Form).ClientToScreen(
                                Point(TMainForm(Form).Left,
                                TMainForm(Form).Top));
+    TMainForm(Form).FTrayClient.RenderIcons;
   end;
 end;
 
@@ -264,7 +265,10 @@ begin
     TMainForm(Form).ReAlignComponents;
   end;
 
-  if [part] <= [suTheme,suSkinFileChanged] then
+  if [part] <= [suSkinFileChanged] then
+    TMainForm(Form).LoadSettings;
+
+  if [part] <= [suTheme,suSkinFileChanged,suScheme] then
     TMainForm(Form).ReAlignComponents;
 
   if [part] <= [suBackground] then
