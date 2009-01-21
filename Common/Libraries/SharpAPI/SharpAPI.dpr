@@ -40,6 +40,7 @@ uses
   classes,
   strutils,
   gr32,
+  types,
   SimpleForms in '..\..\Units\SimpleUnits\SimpleForms.pas';
 
 {$R *.RES}
@@ -1486,8 +1487,16 @@ begin
   end;
 end;
 
+function BroadcastGlobalUpdateMessage(AUpdateType: TSU_UPDATE_ENUM;
+  APluginID: Integer = -1; ASendMessage: boolean = False): boolean;
+begin
+  Result := True;
+  SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(AUpdateType), APluginID, ASendMessage);
+end;
+
 exports
   SharpEBroadCast,
+  BroadcastGlobalUpdateMessage,
   SendDebugMessage, //Sends Message to SharpConsole
   SendDebugMessageEx,
   SendConsoleMessage, //Sends Message to SharpConsole

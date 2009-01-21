@@ -161,13 +161,6 @@ begin
   end;
 end;
 
-function BroadcastGlobalUpdateMessage(AUpdateType: TSU_UPDATE_ENUM;
-  APluginID: Integer = -1; ASendMessage: boolean = False): boolean;
-begin
-  Result := True;
-  SharpEBroadCast(WM_SHARPEUPDATESETTINGS, Integer(AUpdateType), APluginID, ASendMessage);
-end;
-
 function CenterCommandAsText(ACommand: TSCC_COMMAND_ENUM): string;
 begin
   if ACommand = sccLoadSetting then result := SCC_LOAD_SETTING else
@@ -232,7 +225,6 @@ begin
 end;
 
 exports
-  BroadcastGlobalUpdateMessage,
   BroadcastCenterMessage,
   CenterCommand,
   CenterCommandAsText,

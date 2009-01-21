@@ -37,7 +37,9 @@ uses
   Graphics,
   JvSimpleXml,
   JclSimpleXml,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uThemeConsts,
+  uISharpETheme,
   ExtCtrls,
   StdCtrls,
   ComCtrls,
@@ -99,11 +101,6 @@ Type
 
   end;
   TCenterThemeInfoSet = array of TCenterThemeInfo;
-
-
-function BroadcastGlobalUpdateMessage(AUpdateType: TSU_UPDATE_ENUM;
-  APluginID: Integer = -1; ASendMessage: boolean = False): boolean;
-    external 'SharpCenterAPI.dll' name 'BroadcastGlobalUpdateMessage';
 
 function BroadcastCenterMessage(wpar: wparam; lpar: lparam): boolean;
   external 'SharpCenterAPI.dll' name 'BroadcastCenterMessage';
@@ -249,59 +246,62 @@ begin
 end;
 
 procedure GetThemeValuesFromElems( var ATheme: TCenterThemeInfo ; AElems: TJclSimpleXMLElems ; AFileName: String );
+var
+  Theme : ISharpETheme;
 begin
   // Scheme meta data
   ATheme.Filename := AFileName;
   ATheme.Name := AElems.Value('Name', 'Invalid_Name');
   ATheme.Author := AElems.Value('Author', 'Invalid_Author');
 
+  Theme := GetCurrentTheme;
   // Global background colour
-	ATheme.Background := SharpThemeApi.ParseColor(PChar(AElems.Value('Background', IntToStr(clWindow))));
-  ATheme.BackgroundText := SharpThemeApi.ParseColor(PChar(AElems.Value('BackgroundText', IntToStr(clWindowText))));
-  ATheme.Border := SharpThemeApi.ParseColor(PChar(AElems.Value('Border', IntToStr(clWindowText))));
+	ATheme.Background := Theme.Scheme.ParseColor(AElems.Value('Background', IntToStr(clWindow)));
+  ATheme.BackgroundText := Theme.Scheme.ParseColor(AElems.Value('BackgroundText', IntToStr(clWindowText)));
+  ATheme.Border := Theme.Scheme.ParseColor(AElems.Value('Border', IntToStr(clWindowText)));
 
 	// Navbar colours
-  ATheme.NavBarItem := ParseColor(PChar(AElems.Value('NavBarItem', IntToStr(clWindow))));
-  ATheme.NavBarSelectedItem := ParseColor(PChar(AElems.Value('NavBarSelectedItem', IntToStr(clHighlight))));
-  ATheme.NavBarItemText := ParseColor(PChar(AElems.Value('NavBarItemText', IntToStr(clWindowText))));
-  ATheme.NavBarSelectedItemText := ParseColor(PChar(AElems.Value('NavBarSelectedItemText', IntToStr(clHighlightText))));
+  ATheme.NavBarItem := Theme.Scheme.ParseColor(AElems.Value('NavBarItem', IntToStr(clWindow)));
+  ATheme.NavBarSelectedItem := Theme.Scheme.ParseColor(AElems.Value('NavBarSelectedItem', IntToStr(clHighlight)));
+  ATheme.NavBarItemText := Theme.Scheme.ParseColor(AElems.Value('NavBarItemText', IntToStr(clWindowText)));
+  ATheme.NavBarSelectedItemText := Theme.Scheme.ParseColor(AElems.Value('NavBarSelectedItemText', IntToStr(clHighlightText)));
 
   // Navbar colours
-  ATheme.PluginTab := ParseColor(PChar(AElems.Value('PluginTab', IntToStr(clWindow))));
-  ATheme.PluginSelectedTab := ParseColor(PChar(AElems.Value('pluginSelectedTab', IntToStr(clHighlight))));
-  ATheme.PluginTabText := ParseColor(PChar(AElems.Value('PluginTabText', IntToStr(clWindowText))));
-  ATheme.PluginTabSelectedText := ParseColor(PChar(AElems.Value('PluginTabSelectedText', IntToStr(clHighlightText))));
-  ATheme.PluginBackground := ParseColor(PChar(AElems.Value('PluginBackground', IntToStr(clWindow))));
-  ATheme.PluginBackgroundText := ParseColor(PChar(AElems.Value('PluginBackgroundText', IntToStr(clHighlight))));
-	ATheme.PluginItem := ParseColor(PChar(AElems.Value('PluginItem', IntToStr(clWindow))));
-  ATheme.PluginSelectedItem := ParseColor(PChar(AElems.Value('PluginSelectedItem', IntToStr(clHighlight))));
-  ATheme.PluginItemText := ParseColor(PChar(AElems.Value('PluginItemText', IntToStr(clWindowText))));
+  ATheme.PluginTab := Theme.Scheme.ParseColor(AElems.Value('PluginTab', IntToStr(clWindow)));
+  ATheme.PluginSelectedTab := Theme.Scheme.ParseColor(AElems.Value('pluginSelectedTab', IntToStr(clHighlight)));
+  ATheme.PluginTabText := Theme.Scheme.ParseColor(AElems.Value('PluginTabText', IntToStr(clWindowText)));
+  ATheme.PluginTabSelectedText := Theme.Scheme.ParseColor(AElems.Value('PluginTabSelectedText', IntToStr(clHighlightText)));
+  ATheme.PluginBackground := Theme.Scheme.ParseColor(AElems.Value('PluginBackground', IntToStr(clWindow)));
+  ATheme.PluginBackgroundText := Theme.Scheme.ParseColor(AElems.Value('PluginBackgroundText', IntToStr(clHighlight)));
+	ATheme.PluginItem := Theme.Scheme.ParseColor(AElems.Value('PluginItem', IntToStr(clWindow)));
+  ATheme.PluginSelectedItem := Theme.Scheme.ParseColor(AElems.Value('PluginSelectedItem', IntToStr(clHighlight)));
+  ATheme.PluginItemText := Theme.Scheme.ParseColor(AElems.Value('PluginItemText', IntToStr(clWindowText)));
 
-  ATheme.PluginItemDescriptionText := ParseColor(PChar(AElems.Value('PluginItemDescriptionText', IntToStr(clWindowText))));
-  ATheme.PluginItemButtonText := ParseColor(PChar(AElems.Value('PluginItemButtonText', IntToStr(clWindowText))));
-  ATheme.PluginItemButtonDisabledText := ParseColor(PChar(AElems.Value('PluginItemButtonDisabledText', IntToStr(clWindowText))));
+  ATheme.PluginItemDescriptionText := Theme.Scheme.ParseColor(AElems.Value('PluginItemDescriptionText', IntToStr(clWindowText)));
+  ATheme.PluginItemButtonText := Theme.Scheme.ParseColor(AElems.Value('PluginItemButtonText', IntToStr(clWindowText)));
+  ATheme.PluginItemButtonDisabledText := Theme.Scheme.ParseColor(AElems.Value('PluginItemButtonDisabledText', IntToStr(clWindowText)));
 
 
-  ATheme.PluginSelectedItemText := ParseColor(PChar(AElems.Value('PluginSelectedItemText', IntToStr(clHighlightText))));
-  ATheme.PluginSelectedItemDescriptionText := ParseColor(PChar(AElems.Value('PluginSelectedItemDescriptionText', IntToStr(clHighlightText))));
-  ATheme.PluginSelectedItemButtonText := ParseColor(PChar(AElems.Value('PluginSelectedItemButtonText', IntToStr(clHighlightText))));
-  ATheme.PluginSelectedItemButtonDisabledText := ParseColor(PChar(AElems.Value('PluginSelectedItemButtonDisabledText', IntToStr(clHighlightText))));
+  ATheme.PluginSelectedItemText := Theme.Scheme.ParseColor(AElems.Value('PluginSelectedItemText', IntToStr(clHighlightText)));
+  ATheme.PluginSelectedItemDescriptionText := Theme.Scheme.ParseColor(AElems.Value('PluginSelectedItemDescriptionText', IntToStr(clHighlightText)));
+  ATheme.PluginSelectedItemButtonText := Theme.Scheme.ParseColor(AElems.Value('PluginSelectedItemButtonText', IntToStr(clHighlightText)));
+  ATheme.PluginSelectedItemButtonDisabledText := Theme.Scheme.ParseColor(AElems.Value('PluginSelectedItemButtonDisabledText', IntToStr(clHighlightText)));
 
-  ATheme.PluginSectionTitle := ParseColor(PChar(AElems.Value('PluginSectionTitle', IntToStr(clHighlightText))));
-  ATheme.PluginSectionDescription := ParseColor(PChar(AElems.Value('PluginSectionDescription', IntToStr(clHighlightText))));
-  ATheme.PluginControlBackground := ParseColor(PChar(AElems.Value('PluginControlBackground', IntToStr(clred))));
-  ATheme.PluginControlText := ParseColor(PChar(AElems.Value('PluginControlText', IntToStr(clBtnText))));
+  ATheme.PluginSectionTitle := Theme.Scheme.ParseColor(AElems.Value('PluginSectionTitle', IntToStr(clHighlightText)));
+  ATheme.PluginSectionDescription := Theme.Scheme.ParseColor(AElems.Value('PluginSectionDescription', IntToStr(clHighlightText)));
+  ATheme.PluginControlBackground := Theme.Scheme.ParseColor(AElems.Value('PluginControlBackground', IntToStr(clred)));
+  ATheme.PluginControlText := Theme.Scheme.ParseColor(AElems.Value('PluginControlText', IntToStr(clBtnText)));
 
 	// Edit panel colours
-  ATheme.EditBackground := ParseColor(PChar(AElems.Value('EditBackground', IntToStr(clBtnFace))));
-  ATheme.EditBackgroundText := ParseColor(PChar(AElems.Value('EditBackgroundText', IntToStr(clred))));
-  ATheme.EditBackgroundError := ParseColor(PChar(AElems.Value('EditBackgroundError', IntToStr(clBtnText))));
-  ATheme.EditControlBackground := ParseColor(PChar(AElems.Value('EditControlBackground', IntToStr(clred))));
-  ATheme.EditControlText := ParseColor(PChar(AElems.Value('EditControlText', IntToStr(clBtnText))));
+  ATheme.EditBackground := Theme.Scheme.ParseColor(AElems.Value('EditBackground', IntToStr(clBtnFace)));
+  ATheme.EditBackgroundText := Theme.Scheme.ParseColor(AElems.Value('EditBackgroundText', IntToStr(clred)));
+  ATheme.EditBackgroundError := Theme.Scheme.ParseColor(AElems.Value('EditBackgroundError', IntToStr(clBtnText)));
+  ATheme.EditControlBackground := Theme.Scheme.ParseColor(AElems.Value('EditControlBackground', IntToStr(clred)));
+  ATheme.EditControlText := Theme.Scheme.ParseColor(AElems.Value('EditControlText', IntToStr(clBtnText)));
 
   // Container
-  ATheme.ContainerColor := ParseColor(PChar(AElems.Value('ContainerColor', IntToStr(clred))));
-  ATheme.ContainerTextColor := ParseColor(PChar(AElems.Value('ContainerTextColor', IntToStr(clBtnText))));
+  ATheme.ContainerColor := Theme.Scheme.ParseColor(AElems.Value('ContainerColor', IntToStr(clred)));
+  ATheme.ContainerTextColor := Theme.Scheme.ParseColor(AElems.Value('ContainerTextColor', IntToStr(clBtnText)));
 end;
 
 procedure XmlGetCenterThemeList(var AThemeList: TCenterThemeInfoSet);

@@ -221,6 +221,8 @@ type
     Website: string;
   end;
 
+function BroadcastGlobalUpdateMessage(AUpdateType: TSU_UPDATE_ENUM; APluginID: Integer = -1; ASendMessage: boolean = False): boolean; external 'SharpAPI.dll' name 'BroadcastGlobalUpdateMessage';
+
 function RegisterAction(ActionName: Pchar; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterAction';
 function RegisterActionEx(ActionName: Pchar; GroupName:PChar; WindowHandle: hwnd; LParamID: Cardinal) : hresult; external 'SharpAPI.dll' name 'RegisterActionEx';
 
