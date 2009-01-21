@@ -31,7 +31,9 @@ uses
   ActiveX,
   ShellAPI,
   SharpAPI,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uISharpETheme,
+  uThemeConsts,
   SharpCenterApi,
   Classes,
   SysUtils,
@@ -288,6 +290,7 @@ var
   sParams: string;
   iPos: Integer;
   iIndex: Integer;
+  Theme : ISharpETheme;
 begin
   result := 0;
   if Msg = TaskBarCreated then begin // system tray created/updated, add icon again
@@ -295,6 +298,22 @@ begin
     end
   else
   case Msg of
+    // Update ThemeAPI
+    WM_SHARPEUPDATESETTINGS:
+    begin
+      if [TSU_UPDATE_ENUM(wParam)] <= [suSkinFont,suSkinFileChanged,suTheme,
+                                           suIconSet,suScheme] then
+      begin
+        Theme := GetCurrentTheme;
+        case wParam of
+          Integer(suSkinFont): Theme.LoadTheme([tpSkinFont]);
+          Integer(suTheme):    Theme.LoadTheme([tpTheme,tpSkinFont,tpIconSet]);
+          Integer(suScheme):   Theme.LoadTheme([tpSkinScheme]);
+          Integer(suIconSet):  Theme.LoadTheme([tpIconSet]);
+        end;
+      end;
+    end;
+
     WM_DESTROY: PostQuitMessage(0);
 
     WM_CLOSE: begin
@@ -430,13 +449,15 @@ begin
 end;
 
 begin
+  // Initialize Themes... (for the services)
+  GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
 
   stlCmdLine := TStringList.Create;
 
   bDebug := False;
   bReboot := False;
   bDoStartup := True;
-  strExtension := '.service';
+  strExtension := '.dll';
   wndDebug := 0;
   stlCmdLine.DelimitedText := GetCommandLine;
   for i := 0 to stlCmdLine.Count - 1 do begin
@@ -450,7 +471,7 @@ begin
       if (i + 1) <= (stlCmdLine.Count - 1) then
         strExtension := stlCmdLine[i + 1]
       else
-        strExtension := '.service';
+        strExtension := '.dll';
   end;
   stlCmdLine.Free;
 
@@ -493,10 +514,6 @@ begin
 
   hndWindow := CreateWindow(wclClass.lpszClassName, 'SharpCore', 0,
     10, 10, 340, 220, 0, 0, hInstance, nil);
-
-  // Initialize Themes... (for the services)
-  SharpThemeApi.InitializeTheme;
-  SharpThemeApi.LoadTheme(True,ALL_THEME_PARTS);
 
   if uVistaFuncs.IsWindowsVista then
      hndEvent := OpenEvent(EVENT_MODIFY_STATE, False, 'ShellDesktopSwitchEvent')
