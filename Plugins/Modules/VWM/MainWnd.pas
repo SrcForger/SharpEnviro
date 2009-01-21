@@ -34,9 +34,9 @@ uses
   // Custom Units
   GR32, VWMFunctions,
   // SharpE API Units
-  SharpApi, SharpThemeApi,
+  SharpApi, SharpThemeApiEx,
   // Interface Units
-  uISharpBarModule;
+  uISharpBarModule, uISharpETheme;
 
 type
   TMainForm = class(TForm)
@@ -140,12 +140,18 @@ begin
 end;
 
 procedure TMainForm.UpdateColors;
+var
+  Theme : ISharpETheme;
 begin
-  sBackgroundColor := ParseColor(PChar(sBackgroundColorSetting));
-  sBorderColor     := ParseColor(PChar(sBorderColorSetting));
-  sForegroundColor := ParseColor(PChar(sForegroundColorSetting));
-  sHighlightColor  := ParseColor(PChar(sHighlightColorSetting));
-  sTextColor       := ParseColor(PChar(sTextColorSetting));
+  Theme := GetCurrentTheme;
+  with Theme.Scheme do
+  begin
+    sBackgroundColor := ParseColor(sBackgroundColorSetting);
+    sBorderColor     := ParseColor(sBorderColorSetting);
+    sForegroundColor := ParseColor(sForegroundColorSetting);
+    sHighlightColor  := ParseColor(sHighlightColorSetting);
+    sTextColor       := ParseColor(sTextColorSetting);
+  end;
 end;
 
 procedure TMainForm.UpdateVWMSettings;
