@@ -14,14 +14,13 @@
     <Projects Include="..\Components\SharpMenu\SharpMenu.dproj" />
     <Projects Include="..\Components\SharpScript\SharpScript.dproj" />
     <Projects Include="..\Components\SharpShellServices\SharpShellServices.dproj" />
-    <Projects Include="..\Components\SharpSkin\SharpSkin.dproj" />
     <Projects Include="..\Components\SharpSplash\SharpSplash.dproj" />
   </ItemGroup>
   <ProjectExtensions>
     <Borland.Personality>Default.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+<BorlandProject xmlns=""><Default.Personality></Default.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Target Name="SharpBar">
     <MSBuild Projects="..\Components\SharpBar\SharpBar.dproj" Targets="" />
@@ -49,15 +48,6 @@
   </Target>
   <Target Name="SharpDesk:Make">
     <MSBuild Projects="..\Components\SharpDesk\SharpDesk.dproj" Targets="Make" />
-  </Target>
-  <Target Name="SharpSkin">
-    <MSBuild Projects="..\Components\SharpSkin\SharpSkin.dproj" Targets="" />
-  </Target>
-  <Target Name="SharpSkin:Clean">
-    <MSBuild Projects="..\Components\SharpSkin\SharpSkin.dproj" Targets="Clean" />
-  </Target>
-  <Target Name="SharpSkin:Make">
-    <MSBuild Projects="..\Components\SharpSkin\SharpSkin.dproj" Targets="Make" />
   </Target>
   <Target Name="SharpSplash">
     <MSBuild Projects="..\Components\SharpSplash\SharpSplash.dproj" Targets="" />
@@ -132,13 +122,13 @@
     <MSBuild Projects="..\Components\SharpCompile\SharpCompile.dproj" Targets="Make" />
   </Target>
   <Target Name="Build">
-    <CallTarget Targets="SharpBar;SharpCenter;SharpDesk;SharpSkin;SharpSplash;SharpScript;SharpCore;SharpShellServices;SharpMenu;SharpConsole;SetShell;SharpCompile" />
+    <CallTarget Targets="SharpBar;SharpCenter;SharpDesk;SharpSplash;SharpScript;SharpCore;SharpShellServices;SharpMenu;SharpConsole;SetShell;SharpCompile" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="SharpBar:Clean;SharpCenter:Clean;SharpDesk:Clean;SharpSkin:Clean;SharpSplash:Clean;SharpScript:Clean;SharpCore:Clean;SharpShellServices:Clean;SharpMenu:Clean;SharpConsole:Clean;SetShell:Clean;SharpCompile:Clean" />
+    <CallTarget Targets="SharpBar:Clean;SharpCenter:Clean;SharpDesk:Clean;SharpSplash:Clean;SharpScript:Clean;SharpCore:Clean;SharpShellServices:Clean;SharpMenu:Clean;SharpConsole:Clean;SetShell:Clean;SharpCompile:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="SharpBar:Make;SharpCenter:Make;SharpDesk:Make;SharpSkin:Make;SharpSplash:Make;SharpScript:Make;SharpCore:Make;SharpShellServices:Make;SharpMenu:Make;SharpConsole:Make;SetShell:Make;SharpCompile:Make" />
+    <CallTarget Targets="SharpBar:Make;SharpCenter:Make;SharpDesk:Make;SharpSplash:Make;SharpScript:Make;SharpCore:Make;SharpShellServices:Make;SharpMenu:Make;SharpConsole:Make;SetShell:Make;SharpCompile:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>
