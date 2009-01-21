@@ -730,8 +730,38 @@ begin
         if c.ClassNameIs('TLabeledEdit') then begin
           TLabeledEdit(c).Color := theme.EditControlBackground;
           TLabeledEdit(c).Font.Color := theme.EditControlText;
-          TLabeledEdit(c).EditLabel.Font.Color := theme.EditBackgroundText;
+
+          if TLabeledEdit(c).EditLabel.Tag <> -1 then
+          TLabeledEdit(c).EditLabel.Font.Color := theme.EditBackgroundText else
+          TLabeledEdit(c).EditLabel.Font.Color := theme.EditControlText;
+
           TLabeledEdit(c).DoubleBuffered := True;
+        end;
+
+        if c.ClassNameIs('TLabel') then begin
+
+          if TLabel(c).Tag <> -1 then begin
+            TLabel(c).Color := theme.EditBackground;
+            TLabel(c).Font.Color := theme.EditBackgroundText;
+          end else begin
+            TLabel(c).Color := theme.EditControlBackground;
+            TLabel(c).Font.Color := theme.EditControlText;
+          end;
+        end;
+
+        if c.ClassNameIs('TSharpEListBoxEx') then begin
+          TSharpEListBoxEx(c).Color := theme.EditControlBackground;
+          TSharpEListBoxEx(c).Colors.ItemColor := theme.EditControlBackground;
+          TSharpEListBoxEx(c).Colors.ItemColorSelected := theme.EditControlBackground;
+          TSharpEListBoxEx(c).Colors.CheckColor := theme.EditControlBackground;
+          TSharpEListBoxEx(c).Colors.CheckColorSelected := theme.EditControlBackground;
+          TSharpEListBoxEx(c).Colors.BorderColor := theme.EditControlBackground;
+          TSharpEListBoxEx(c).DoubleBuffered := True;
+        end;
+
+        if c.ClassNameIs('TSharpERoundPanel') then begin
+          TSharpERoundPanel(c).BackgroundColor := theme.EditBackground;
+          TSharpERoundPanel(c).Color := theme.EditControlBackground;
         end;
 
         if c.ClassNameIs('TEdit') then begin
@@ -765,10 +795,10 @@ begin
         end;
 
         if c.ClassNameIs('TJvXpCheckBox') then begin
-          TJvXpCheckBox(c).ParentColor := False;
+          TJvXpCheckBox(c).ParentColor := true;
           TJvXpCheckBox(c).ParentFont := False;
-          TJvXpCheckBox(c).Font.Color := theme.EditBackgroundText;
-          TJvXpCheckBox(c).Color := theme.EditBackground;
+          TJvXpCheckBox(c).Font.Color := theme.EditControlText;
+          TJvXpCheckBox(c).Color := theme.EditControlBackground;
         end;
 
         if c.ClassNameIs('TSharpEGaugeBox') then begin
@@ -830,6 +860,8 @@ begin
           TSharpEListBoxEx(c).Colors.ItemColorSelected := theme.PluginSelectedItem;
           TSharpEListBoxEx(c).Colors.ItemColor := theme.PluginItem;
           TSharpEListBoxEx(c).Colors.ItemColorSelected := theme.PluginSelectedItem;
+          TSharpEListBoxEx(c).Colors.CheckColor := theme.PluginItem;
+          TSharpEListBoxEx(c).Colors.CheckColorSelected := theme.PluginSelectedItem;
           TSharpEListBoxEx(c).Colors.BorderColor := theme.PluginBackground;
           TSharpEListBoxEx(c).DoubleBuffered := True;
         end;
