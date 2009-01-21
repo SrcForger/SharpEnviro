@@ -27,27 +27,27 @@ unit SharpECustomSkinSettings;
 
 interface
 
-uses JvSimpleXML,SysUtils, SharpApi, SharpThemeApi;
+uses JclSimpleXML, SysUtils, SharpApi, SharpThemeApiEx;
 
 type
    TSharpECustomSkinSettings = class
   private
-    FXML : TJvSimpleXML;
+    FXML : TJclSimpleXML;
     FPath : String;
-    function GetXMLElem : TJvSimpleXMLElem;
+    function GetXMLElem : TJclSimpleXMLElem;
   public
     procedure LoadFromXML(ppath: string);
     procedure Clear;
     constructor Create; reintroduce;
     destructor Destroy; override;
 
-    property xml : TJvSimpleXMLElem read GetXMLElem;
+    property xml : TJclSimpleXMLElem read GetXMLElem;
     property Path : String read FPath;
   end;
 
 implementation
 
-function TSharpECustomSkinSettings.GetXMLElem : TJvSimpleXMLElem;
+function TSharpECustomSkinSettings.GetXMLElem : TJclSimpleXMLElem;
 begin
   result :=  FXML.Root;
 end;
@@ -63,7 +63,7 @@ begin
      else
      begin
        {$WARNINGS OFF}
-       dir := SharpThemeApi.GetSkinDirectory;
+       dir := GetCurrentTheme.Skin.Directory;
        {$WARNINGS ON}
        if FileExists(dir + 'custom.xml') then fn := dir + 'custom.xml'
           else exit;
@@ -86,7 +86,7 @@ end;
 constructor TSharpECustomSkinSettings.Create;
 begin
   inherited Create;
-  FXML := TJvSimpleXML.Create(nil);
+  FXML := TJclSimpleXML.Create;
   Clear;
 end;
 

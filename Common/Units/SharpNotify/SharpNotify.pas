@@ -43,7 +43,9 @@ uses
   SharpESkinManager,
   SharpESkinPart,
   SharpESkin,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uThemeConsts,
+  uISharpETheme,
   SharpGraphicsUtils,
   SharpTypes;
 
@@ -579,6 +581,7 @@ const
 var
   dc : hdc;
   temp : TBitmap32;
+  Theme : ISharpETheme;
 begin
   if FSkinManager.Skin.BarSkin <> nil then
     if FSkinManager.Skin.BarSkin.GlassEffect then
@@ -599,11 +602,12 @@ begin
              FX,
              FY,
              SRCCOPY or CAPTUREBLT);
-      if SharpThemeApi.GetSkinGEBlend then
-        BlendImageC(FBitmap,GetSkinGEBlendColor,GetSkinGEBlendAlpha);
-      fastblur(FBitmap,GetSkinGEBlurRadius,GetSkinGEBlurIterations);
-      if GetSkinGELighten then
-         lightenBitmap(FBitmap,GetSkinGELightenAmount);
+      Theme := GetCurrentTheme;
+      if Theme.Skin.GlassEffect.Blend then
+        BlendImageC(FBitmap,Theme.Skin.GlassEffect.BlendColor,Theme.Skin.GlassEffect.BlendAlpha);
+      fastblur(FBitmap,Theme.Skin.GlassEffect.BlurRadius,Theme.Skin.GlassEffect.BlurIterations);
+      if Theme.Skin.GlassEffect.Lighten then
+         lightenBitmap(FBitmap,Theme.Skin.GlassEffect.LightenAmount);
       FBitmap.ResetAlpha(255);
       ReplaceTransparentAreas(FBitmap,temp,Color32(0,0,0,0));
       temp.DrawTo(FBitmap,0,0);

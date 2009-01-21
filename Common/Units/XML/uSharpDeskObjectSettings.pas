@@ -27,12 +27,14 @@ unit uSharpDeskObjectSettings;
 
 interface
 
-uses JvSimpleXML,
+uses JclSimpleXML,
      SharpApi,
      SysUtils,
-     SharpThemeApi;
+     SharpThemeApiEx,
+     uISharpETheme,
+     uThemeConsts;
 
-const
+const                                                                 
   DS_ICONSIZE = 0;
   DS_ICONALPHABLEND = 1;
   DS_ICONALPHA = 2;
@@ -76,13 +78,13 @@ type
     private
       procedure AddArrayItem(Index : integer; Name : String; ItemType : byte; isCustom : boolean);
     protected
-      FXML : TJvSimpleXML;
-      FXMLRoot : TJvSimpleXMLElem;
+      FXML : TJclSimpleXML;
+      FXMLRoot : TJclSimpleXMLElem;
       FObjectName : String;
       FObjectID : Integer;
       ts : TThemeSettingsArray;
     public
-      constructor Create(pObjectID : integer; pXMLRoot: TJvSimpleXMLElem; pObjectName : String); reintroduce;
+      constructor Create(pObjectID : integer; pXMLRoot: TJclSimpleXMLElem; pObjectName : String); reintroduce;
       destructor Destroy; override;
       procedure InitLoadSettings;
       procedure LoadSettings; virtual;
@@ -91,7 +93,7 @@ type
       procedure FinishSaveSettings(SaveToFile : boolean);
       function GetSettingsFile : String;
 
-      property XML : TJvSimpleXML read FXML;
+      property XML : TJclSimpleXML read FXML;
     end;
 
 
@@ -104,12 +106,12 @@ begin
   ts[Index].ItemType := ItemType;
 end;
 
-constructor TDesktopXMLSettings.Create(pObjectID : integer; pXMLRoot: TJvSimpleXMLElem; pObjectName : String);
+constructor TDesktopXMLSettings.Create(pObjectID : integer; pXMLRoot: TJclSimpleXMLElem; pObjectName : String);
 begin
   Inherited Create;
   FObjectID := pObjectID;
   FXMLRoot := pXMLRoot;
-  FXML := TJvSimpleXML.Create(nil);
+  FXML := TJclSimpleXML.Create;
   FObjectName := pObjectName;
   FXML.Root.Name := pObjectName + 'ObjectSettings';
   if FXMLRoot = nil then
@@ -177,33 +179,38 @@ end;
 procedure TDesktopXMLSettings.LoadSettings;
 var
   n : integer;
+  Theme : ISharpETheme;
 begin
   if FXMLRoot = nil then exit;
 
   // Load Theme Settings
-  ts[DS_ICONSIZE].IntValue := GetDesktopIconSize;
-  ts[DS_ICONALPHABLEND].BoolValue := GetDesktopIconAlphaBlend;
-  ts[DS_ICONALPHA].IntValue := GetDesktopIconAlpha;
-  ts[DS_ICONBLENDING].BoolValue := GetDesktopIconBlending;
-  ts[DS_ICONBLENDCOLOR].IntValue := GetDesktopIconBlendColor;
-  ts[DS_ICONBLENDALPHA].IntValue := GetDesktopIconBlendAlpha;
-  ts[DS_ICONSHADOW].BoolValue := GetDesktopIconShadow;
-  ts[DS_ICONSHADOWCOLOR].IntValue := GetDesktopIconShadowColor;
-  ts[DS_ICONSHADOWALPHA].IntValue := GetDesktopIconShadowAlpha;
-  ts[DS_FONTNAME].Value := GetDesktopFontName;
-  ts[DS_DISPLAYTEXT].BoolValue := GetDesktopDisplayText;
-  ts[DS_TEXTSIZE].IntValue := GetDesktopTextSize;
-  ts[DS_TEXTBOLD].BoolValue := GetDesktopTextBold;
-  ts[DS_TEXTITALIC].BoolValue := GetDesktopTextItalic;
-  ts[DS_TEXTUNDERLINE].BoolValue := GetDesktopTextUnderline;
-  ts[DS_TEXTCOLOR].IntValue := GetDesktopTextColor;
-  ts[DS_TEXTALPHA].BoolValue :=GetDesktopTextAlpha;
-  ts[DS_TEXTALPHAVALUE].IntValue := GetDesktopTextAlphaValue;
-  ts[DS_TEXTSHADOW].BoolValue := GetDesktopTextShadow;
-  ts[DS_TEXTSHADOWALPHA].IntValue := GetDesktopTextShadowAlpha;
-  ts[DS_TEXTSHADOWCOLOR].IntValue := GetDesktopTextShadowColor;
-  ts[DS_TEXTSHADOWTYPE].IntValue := GetDesktopTextShadowType;
-  ts[DS_TEXTSHADOWSIZE].IntValue := GetDesktopTextShadowSize;
+  Theme := GetCurrentTheme;
+  with Theme.Desktop.Icon do
+  begin
+    ts[DS_ICONSIZE].IntValue := IconSize;
+    ts[DS_ICONALPHABLEND].BoolValue := IconAlphaBlend;
+    ts[DS_ICONALPHA].IntValue := IconAlpha;
+    ts[DS_ICONBLENDING].BoolValue := IconBlending;
+    ts[DS_ICONBLENDCOLOR].IntValue := IconBlendColor;
+    ts[DS_ICONBLENDALPHA].IntValue := IconBlendAlpha;
+    ts[DS_ICONSHADOW].BoolValue := IconShadow;
+    ts[DS_ICONSHADOWCOLOR].IntValue := IconShadowColor;
+    ts[DS_ICONSHADOWALPHA].IntValue := IconShadowAlpha;
+    ts[DS_FONTNAME].Value := FontName;
+    ts[DS_DISPLAYTEXT].BoolValue := DisplayText;
+    ts[DS_TEXTSIZE].IntValue := TextSize;
+    ts[DS_TEXTBOLD].BoolValue := TextBold;
+    ts[DS_TEXTITALIC].BoolValue := TextItalic;
+    ts[DS_TEXTUNDERLINE].BoolValue := TextUnderline;
+    ts[DS_TEXTCOLOR].IntValue := TextColor;
+    ts[DS_TEXTALPHA].BoolValue :=TextAlpha;
+    ts[DS_TEXTALPHAVALUE].IntValue := TextAlphaValue;
+    ts[DS_TEXTSHADOW].BoolValue := TextShadow;
+    ts[DS_TEXTSHADOWALPHA].IntValue := TextShadowAlpha;
+    ts[DS_TEXTSHADOWCOLOR].IntValue := TextShadowColor;
+    ts[DS_TEXTSHADOWTYPE].IntValue := TextShadowType;
+    ts[DS_TEXTSHADOWSIZE].IntValue := TextShadowSize;
+  end;
 
   // Object Theme Settings
   with FXMLRoot.Items do

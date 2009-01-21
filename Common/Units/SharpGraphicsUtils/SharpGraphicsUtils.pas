@@ -28,7 +28,7 @@ unit SharpGraphicsUtils;
 
 interface
 
-uses Windows, Graphics, GR32, GR32_Blend, Math, SharpThemeApi;
+uses Windows, Graphics, GR32, GR32_Blend, Math, uThemeConsts;
 
 type
   THSLColor = record

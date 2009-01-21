@@ -63,6 +63,7 @@ type
     FComponentSkin: TSharpESkin;
     FUsingMainWnd : boolean;
     FHandleUpdates : boolean;
+    FHandleThemeApiUpdates : boolean;
     FSkinItems : TSharpESkinItems;
     FMsgWnd : Hwnd;
     procedure SystemSkinChanged(sender : TObject);
@@ -100,6 +101,7 @@ type
     property CompSkin: TSharpESkin read FComponentSkin write SetComponentSkin;
     property ComponentSkins: TSharpESkinItems read FSkinItems write SetComponentSkins default ALL_SHARPE_SKINS;
     property HandleUpdates : boolean read FHandleUpdates write FHandleUpdates;
+    property HandleThemeApiUpdates : boolean read FHandleThemeApiUpdates write FHandleThemeApiUpdates;
     property onSkinChanged: TNotifyEvent read FOnSkinChanged write FOnSkinChanged;
   end;
 
@@ -108,7 +110,9 @@ procedure LoadSharpEScheme(Scheme: TSharpEScheme);
 implementation
 uses
   SharpEBaseControls,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uThemeConsts,
+  uISharpETheme,
   SharpESkinPart;
 
 constructor TSharpESkinManager.CreateRuntime(AOwner: TComponent;
@@ -160,16 +164,12 @@ begin
   end;
 
   FHandleUpdates := True;
+  FHandleThemeApiUpdates := True;
 
   if not FNoSystemSchemeInit then
   begin
     if not (csDesigning in ComponentState) then
     begin
-      if not SharpThemeApi.Initialized then
-      begin
-        SharpThemeApi.InitializeTheme;
-        SharpThemeApi.LoadTheme(True,[tpSkin,tpScheme]);
-      end;
       LoadSharpEScheme(FSystemScheme);
     end;
   end;
@@ -245,6 +245,8 @@ begin
 end;
 
 function TSharpESkinManager.MessageHook(var Msg: TMessage): Boolean;
+var
+  Theme : ISharpETheme;
 begin
   result := false;
   if not FHandleUpdates then
@@ -255,25 +257,42 @@ begin
 
   if (Msg.Msg = WM_SHARPEUPDATESETTINGS) then
   begin
+    if (FHandleThemeApiUpdates)
+      and ([TSU_UPDATE_ENUM(msg.WParam)] <= [suSkinFont,suSkinFileChanged,suTheme,
+                                            suIconSet,suScheme]) then
+      Theme := GetCurrentTheme;
+    if (Msg.WParam = Integer(suTheme)) then
+    begin
+      Theme.LoadTheme;
+    end else
     if (Msg.WParam = Integer(suSkinFont)) then
     begin
       if not (csDesigning in ComponentState) then
-        SharpThemeApi.LoadTheme(False,[tpSkinFont]);
+      begin
+        if FHandleThemeApiUpdates then
+          Theme.LoadTheme([tpSkinFont]);
         RefreshControls;
+      end;
     end
     else if (Msg.WParam = Integer(suSkinFileChanged)) then
     begin
       if not (csDesigning in ComponentState) then
-         SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
-      UpdateSkin;
+      begin
+        if FHandleThemeApiUpdates then
+         Theme.LoadTheme([tpSkinScheme]);
+        UpdateSkin;
+      end;
     end
     else if (Msg.WParam = Integer(suScheme)) then
     begin
       if not (csDesigning in ComponentState) then
-         SharpThemeApi.LoadTheme(False,[tpSkin,tpScheme]);
-      UpdateScheme;
-      if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
-      RefreshControls;
+      begin
+        if FHandleThemeApiUpdates then
+          Theme.LoadTheme([tpSkinScheme]);
+        UpdateScheme;
+        if Assigned(FOnSkinChanged) then FOnSkinChanged(self);
+          RefreshControls;
+      end;
     end;
   end else Msg.Result := DefWindowProc(FMsgWnd,Msg.Msg,Msg.WParam,Msg.LParam);
 end;
@@ -467,11 +486,13 @@ end;
 procedure LoadSharpEScheme(Scheme: TSharpEScheme);
 var
   n : integer;
+  Theme : ISharpETheme;
 begin
   try
+    Theme := GetCurrentTheme;
     Scheme.ClearColors;
-    for n := 0 to SharpThemeApi.GetSchemeColorCount - 1 do
-        Scheme.AddColor(SharpThemeApi.GetSchemeColorByIndex(n));
+    for n := 0 to Theme.Scheme.GetColorCount - 1 do
+        Scheme.AddColor(Theme.Scheme.GetColorByIndex(n));
   except
     Scheme.Assign(DefaultSharpEScheme);
   end;

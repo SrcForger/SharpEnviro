@@ -35,12 +35,11 @@ uses
   Classes,
   Graphics,
   Controls,
-  Forms,
-  Dialogs,
   StdCtrls,
   gr32,
   SharpEBase,
-  SharpThemeApi;
+  SharpThemeApiEx,
+  uThemeConsts;
 
 type
   TSchemeEvent = procedure of object;

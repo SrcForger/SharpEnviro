@@ -33,7 +33,8 @@ uses Graphics,
   Messages,
   SharpESkinPart,
   SharpApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uThemeConsts,
   SharpTypes;
 
 var

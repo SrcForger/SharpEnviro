@@ -33,7 +33,9 @@ uses Windows,
      JclFileUtils,
      SysUtils,
      ShellApi,
-     SharpThemeApi,
+     SharpThemeApiEx,
+     uThemeConsts,
+     uISharpETheme,
      CommCtrl,
      Math,
      GR32,
@@ -283,27 +285,32 @@ end;
 
 function IconStringToIcon(Icon,Target : String; Bmp : TBitmap32; Size : integer) : boolean;
 var
+  Theme : ISharpETheme;
   SEIcon : TSharpEIcon;
   Ext : String;
 begin
   Target := GetFileNameWithoutParams(Target);
   if CompareText(Icon,'shell:icon') = 0 then
      result := (extrShellIcon(Bmp,Target,Size) <> 0)
-  else if SharpThemeApi.IsIconInIconSet(PChar(Icon)) then
+  else
   begin
-    SEIcon := SharpThemeApi.GetIconSetIcon(PChar(Icon));
-    result := LoadIco(Bmp,SharpThemeApi.GetIconSetDirectory + SEIcon.FileName,Size);
-  end else
-  begin
-    if FileExists(Icon) then
+    Theme := GetCurrentTheme;
+    if Theme.Icons.IsIconInIconSet(Icon) then
     begin
-      Ext := ExtractFileExt(Icon);
-      if CompareText(Ext,'.png') = 0 then
-         result := LoadPng(Bmp,Icon)
-      else if CompareText(Ext,'.ico') = 0 then
-         result := LoadIco(Bmp,Icon,0)
-      else result := False;
-    end else result := False;
+      SEIcon := Theme.Icons.GetIconByTag(Icon);
+      result := LoadIco(Bmp,Theme.Icons.Directory + SEIcon.FileName,Size);
+    end else
+    begin
+      if FileExists(Icon) then
+      begin
+        Ext := ExtractFileExt(Icon);
+        if CompareText(Ext,'.png') = 0 then
+           result := LoadPng(Bmp,Icon)
+        else if CompareText(Ext,'.ico') = 0 then
+           result := LoadIco(Bmp,Icon,0)
+        else result := False;
+      end else result := False;
+    end;
   end;
 end;
 

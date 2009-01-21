@@ -318,7 +318,9 @@ implementation
 uses Sysutils,
      SharpEDefault,
      gr32_png,
-     SharpThemeApi;
+     SharpThemeApiEx,
+     uThemeConsts,
+     uISharpETheme;
 
 type ESkinPartList = class(Exception);
 
@@ -2031,8 +2033,9 @@ var
   n : integer;
 begin
   n := cs.GetColorIndexByTag(str);
-  if n <> -1 then result := cs.GetColorByTag(str)
-  else result := SharpThemeApi.ParseColor(PChar(str));
+  if n <> -1 then
+    result := cs.GetColorByTag(str)
+  else result := GetCurrentTheme.Scheme.ParseColor(str);
 end;
 
 function get_location(str: string): TRect;
@@ -2243,29 +2246,36 @@ begin
 end;
 
 function CreateThemedSkinText(Base : TSkinText) : TSkinText;
+var
+  Theme : ISharpETheme;
 begin
   result := TSkinText.Create;
   result.Assign(Base);
-  if GetSkinFontModSize then
-    result.FSize := result.FSize + GetSkinFontValueSize;
-  if GetSkinFontModName then
-    result.FName := GetSkinFontValueName;
-  if GetSkinFontModAlpha then
-    result.FAlpha := Max(0,Min(255,result.FAlpha + GetSkinFontValueAlpha));
-  if GetSkinFontModUseShadow then
-    result.FShadow := GetSkinFontValueUseShadow;
-  if GetSkinFontModShadowType then
-    result.FShadowType := TShadowType(GetSkinFontValueShadowType);
-  if GetSkinFontModShadowAlpha then
-    result.FShadowAlpha := Max(0,Min(255,result.FShadowAlpha + GetSkinFontValueShadowAlpha));
-  if GetSkinFontModBold then
-    result.FStyleBold := GetSkinFontValueBold;
-  if GetSkinFontModItalic then
-    result.FStyleItalic := GetSkinFontValueItalic;
-  if GetSkinFontModUnderline then
-    result.FStyleUnderline := GetSkinFontValueUnderline;
-  if GetSkinFontModClearType then
-    result.FClearType := GetSkinFontValueClearType;
+
+  Theme := GetCurrentTheme;
+  with Theme.Skin.SkinFont do
+  begin
+    if ModSize then
+      result.FSize := result.FSize + ValueSize;
+    if ModName then
+      result.FName := ValueName;
+    if ModAlpha then
+      result.FAlpha := Max(0,Min(255,result.FAlpha + ValueAlpha));
+    if ModUseShadow then
+      result.FShadow := ValueUseShadow;
+    if ModShadowType then
+      result.FShadowType := TShadowType(ValueShadowType);
+    if ModShadowAlpha then
+      result.FShadowAlpha := Max(0,Min(255,result.FShadowAlpha + ValueShadowAlpha));
+    if ModBold then
+      result.FStyleBold := ValueBold;
+    if ModItalic then
+      result.FStyleItalic := ValueItalic;
+    if ModUnderline then
+      result.FStyleUnderline := ValueUnderline;
+    if ModClearType then
+      result.FClearType := ValueClearType;
+  end;
 end;
 
 function ParseCoordinate(s: string; tw, th, cw, ch, iw, ih: integer): integer;
