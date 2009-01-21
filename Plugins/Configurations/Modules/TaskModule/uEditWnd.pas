@@ -83,12 +83,12 @@ type
       AItem: TSharpEListItem);
     procedure lbItemsGetCellCursor(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var ACursor: TCursor);
-    procedure lbItemsGetCellColor(Sender: TObject; const AItem: TSharpEListItem;
-      var AColor: TColor);
     procedure lbItemsClickCheck(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AChecked: Boolean);
     procedure chkFilterTasksClick(Sender: TObject);
     procedure SettingsChange(Sender: TObject);
+    procedure lbItemsGetCellText(Sender: TObject; const ACol: Integer;
+      AItem: TSharpEListItem; var AColText: string);
   private
     FPluginHost: TInterfacedSharpCenterHostBase;
     FTaskFilterList: TFilterItemList;
@@ -111,7 +111,7 @@ implementation
 procedure TfrmEdit.SettingsChange(Sender: TObject);
 begin
   if Visible then
-    PluginHost.Save;
+    FPluginHost.SetSettingsChanged;
 end;
 
 procedure TfrmEdit.chkFilterTasksClick(Sender: TObject);
@@ -176,13 +176,6 @@ begin
   SettingsChange(Sender);
 end;
 
-procedure TfrmEdit.lbItemsGetCellColor(Sender: TObject;
-  const AItem: TSharpEListItem; var AColor: TColor);
-begin
-  if AItem.SubItemChecked[1] then AColor := $00E6FBE9;
-  if AItem.SubItemChecked[2] then AColor := $00E8E1FF;
-end;
-
 procedure TfrmEdit.lbItemsGetCellCursor(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 begin
@@ -202,9 +195,33 @@ begin
     exit;
 
   case ACol of
-    colName: ;
+    colName: AImageIndex := 0 ;
   end;
 
+end;
+
+procedure TfrmEdit.lbItemsGetCellText(Sender: TObject; const ACol: Integer;
+  AItem: TSharpEListItem; var AColText: string);
+var
+	colItemTxt, colDescTxt, colBtnTxt: TColor;
+  tmpItemData: TFilterItem;
+begin
+  tmpItemData := TFilterItem(AItem.Data);
+  if tmpItemData = nil then
+    exit;
+
+  // Assign theme colours
+  AssignThemeToListBoxItemText(FPluginHost.Theme, AItem, colItemTxt, colDescTxt, colBtnTxt);
+
+  case ACol of
+    colName: AColText := Format('<font color="%s" />%s',[ColorToString(colItemTxt),
+      tmpItemData.Name]);
+    1: AColText := Format('<font color="%s" />%s',[ColorToString(colBtnTxt),
+      'Include']);
+    2: AColText := Format('<font color="%s" />%s',[ColorToString(colBtnTxt),
+      'Exclude']);
+
+  end;
 end;
 
 procedure TfrmEdit.lbItemsResize(Sender: TObject);

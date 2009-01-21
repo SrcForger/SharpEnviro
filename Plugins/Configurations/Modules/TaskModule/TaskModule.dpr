@@ -40,6 +40,7 @@ uses
   SharpCenterAPI,
   SharpThemeApi,
   SharpTypes,
+  TaskFilterList,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uEditWnd in 'uEditWnd.pas' {frmEdit};
@@ -157,6 +158,7 @@ procedure TSharpCenterPlugin.Save;
 var
   i: Integer;
   includeList, excludeList: TStringList;
+  tmp: TFilterItem;
 begin
   PluginHost.Xml.XmlRoot.Name := 'TaskBarModuleSettings';
 
@@ -197,10 +199,16 @@ begin
     try
       // Include/Exclude Filters
       for i := 0 to Pred(lbItems.Count) do begin
-        if lbItems.Item[i].SubItemChecked[1] then
-          includeList.Add(lbItems.Item[i].Caption) else
-          if lbItems.Item[i].SubItemChecked[2] then
-            excludeList.Add(lbItems.Item[i].Caption);
+
+        tmp := TFilterItem(lbItems.Item[i].Data);
+        if lbItems.Item[i].SubItemChecked[1] then begin
+
+
+          includeList.Add(tmp.Name)
+        end
+        else if lbItems.Item[i].SubItemChecked[2] then begin
+            excludeList.Add(tmp.Name);
+        end;
       end;
 
       Add('IFilters', includeList.DelimitedText);
