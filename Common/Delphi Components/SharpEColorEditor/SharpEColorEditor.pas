@@ -25,7 +25,9 @@ uses
 
   // SharpE Units
   SharpFX,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uThemeConsts,
+  uISharpETheme,
   SharpESwatchCollection,
   SharpESwatchManager,
   SharpERoundPanel,
@@ -916,7 +918,7 @@ begin
     exit;
 
   if FValue < 0 then
-    col := XmlSchemeCodeToColor(FValue)
+    col := GetCurrentTheme.Scheme.SchemeCodeToColor(FValue)
   else
     col := FValue;
 
@@ -987,7 +989,7 @@ end;
 
 procedure TSharpEColorEditor.SetCaption(const Value: string);
 var
-  colors: TSharpEColorSet;
+  Theme : ISharpETheme;
   s: string;
   pct, val: double;
 begin
@@ -1001,11 +1003,11 @@ begin
           if (FValue < 0) then begin
 
             if not (csDesigning in ComponentState) then begin
-              XmlGetThemeScheme(colors);
+              Theme := GetCurrentTheme;
 
-              if high(colors) > 0 then
+              if Theme.Scheme.GetColorCount > 0 then
                 FNameLabel.Caption := Format('%s (%s):', [FCaption,
-                  colors[abs(FValue) - 1].Tag]);
+                  Theme.Scheme.GetColorByIndex(abs(FValue)-1).Tag]);
             end;
 
           end
@@ -1326,7 +1328,7 @@ begin
         try
 
           if FValue < 0 then begin
-            FValueAsTColor := XmlSchemeCodeToColor(Value);
+            FValueAsTColor := GetCurrentTheme.Scheme.SchemeCodeToColor(Value);
           end else
             FValueAsTColor := Value;
 

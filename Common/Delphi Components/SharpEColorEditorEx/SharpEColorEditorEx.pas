@@ -12,7 +12,7 @@ uses
   Forms,
   StdCtrls,
   SharpEColorEditor,
-  SharpThemeApi,
+  SharpThemeApiEx,
   SharpESwatchManager;
 
 type
@@ -358,7 +358,7 @@ var
 begin
 
   try
-    col := sharpthemeapi.parsecolor(PChar(Value));
+    col := GetCurrentTheme.Scheme.ParseColor(Value);
 
     if FColorEditor <> nil then begin
       FColorEditor.OverrideSliderUpdateMode(sumAll);

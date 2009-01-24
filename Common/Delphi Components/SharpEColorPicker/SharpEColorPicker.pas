@@ -13,7 +13,7 @@ uses
   menus,
   SharpApi,
   sharpfx,
-  sharpthemeapi,
+  sharpthemeapiEx,
   graphics,
   Forms,
   uvistafuncs,
@@ -130,13 +130,13 @@ begin
   // Draw border
   if FMouseOver then
   begin
-    Bmp.Canvas.Brush.Color := XmlSchemeCodeToColor(FColor); //CodeToColor(FColorCode);
+    Bmp.Canvas.Brush.Color := GetCurrentTheme.Scheme.SchemeCodeToColor(FColor); //CodeToColor(FColorCode);
     Bmp.Canvas.Pen.Color := darker(Bmp.Canvas.Brush.Color, 20);
     Bmp.Canvas.RoundRect(R.Left,R.Top,R.Right,R.Bottom,0,0);
   end
   else
   begin
-    Bmp.Canvas.Brush.Color := XmlSchemeCodeToColor(FColor); //CodeToColor(FColorCode);
+    Bmp.Canvas.Brush.Color := GetCurrentTheme.Scheme.SchemeCodeToColor(FColor); //CodeToColor(FColorCode);
     Bmp.Canvas.Pen.Color := darker(Bmp.Canvas.Brush.Color, 10);
     Bmp.Canvas.RoundRect(R.Left,R.Top,R.Right,R.Bottom,0,0);
   end;

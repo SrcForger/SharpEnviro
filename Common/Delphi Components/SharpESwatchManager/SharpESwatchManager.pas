@@ -173,7 +173,7 @@ function Sort_ByName(Item1, Item2: Pointer): Integer;
 implementation
 
 uses
-  SharpThemeApi;
+  SharpThemeApiEx, uISharpETheme, uThemeConsts;
 
 procedure Register;
 begin
@@ -829,16 +829,14 @@ end;
 procedure TSharpESwatchManager.AddThemeDefaults;
 var
   newItem: TSharpESwatchCollectionItem;
-  tmpColorSet: TSharpEColorSet;
   tmpColor: TSharpESkinColor;
   i: Integer;
+  Theme : ISharpETheme;
 begin
+  Theme := GetCurrentTheme;
 
-  SetLength(tmpColorSet,0);
-  XmlGetThemeScheme(tmpColorSet);
-
-  For i := 0 to high(tmpColorSet) do begin
-    tmpColor := tmpColorSet[i];
+  For i := 0 to Theme.Scheme.GetColorCount - 1 do begin
+    tmpColor := Theme.Scheme.GetColorByIndex(i);
 
     if tmpColor.schemetype = stColor then begin
       newItem := TSharpESwatchCollectionItem.Create(FSwatches);
