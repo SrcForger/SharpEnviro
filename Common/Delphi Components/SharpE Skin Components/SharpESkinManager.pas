@@ -263,7 +263,8 @@ begin
       Theme := GetCurrentTheme;
     if (Msg.WParam = Integer(suTheme)) then
     begin
-      Theme.LoadTheme;
+      if FHandleThemeApiUpdates then
+        Theme.LoadTheme;
     end else
     if (Msg.WParam = Integer(suSkinFont)) then
     begin
