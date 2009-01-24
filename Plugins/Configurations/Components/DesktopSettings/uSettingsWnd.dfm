@@ -21,7 +21,7 @@ object frmSettings: TfrmSettings
     Top = 0
     Width = 428
     Height = 368
-    ActivePage = tabMenu
+    ActivePage = tabObjects
     Align = alTop
     Style = tsFlatButtons
     TabOrder = 0
@@ -29,10 +29,6 @@ object frmSettings: TfrmSettings
       Caption = 'tabDesktop'
       ImageIndex = 1
       TabVisible = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object SharpECenterHeader1: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
@@ -167,10 +163,6 @@ object frmSettings: TfrmSettings
     object tabObjects: TTabSheet
       Caption = 'tabObjects'
       TabVisible = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object cb_dd: TJvXPCheckbox
         AlignWithMargins = True
         Left = 3
@@ -279,7 +271,7 @@ object frmSettings: TfrmSettings
           Prefix = 'Height: '
           Suffix = 'px'
           Description = 'Grid Height'
-          PopPosition = ppRight
+          PopPosition = ppBottom
           PercentDisplay = False
           OnChangeValue = sgb_gridyChangeValue
           BackgroundColor = clWindow
@@ -296,7 +288,7 @@ object frmSettings: TfrmSettings
           Prefix = 'Width: '
           Suffix = 'px'
           Description = 'Grid Width'
-          PopPosition = ppRight
+          PopPosition = ppBottom
           PercentDisplay = False
           OnChangeValue = sgb_gridyChangeValue
           BackgroundColor = clWindow

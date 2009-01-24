@@ -55,7 +55,7 @@ uses
   Types,
   JclStrings,
   SharpERoundPanel,
-  SharpThemeApi,
+  SharpThemeApiEx,
 
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit, SharpECenterHeader, pngimage;

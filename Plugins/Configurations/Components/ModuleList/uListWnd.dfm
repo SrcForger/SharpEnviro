@@ -237,7 +237,7 @@ object frmListWnd: TfrmListWnd
       Left = 22
       Top = 5
       Width = 101
-      Height = 15
+      Height = 13
       Margins.Left = 2
       Margins.Top = 5
       Margins.Right = 5
@@ -245,7 +245,6 @@ object frmListWnd: TfrmListWnd
       Align = alLeft
       Caption = 'Left Alligned Modules'
       Layout = tlCenter
-      ExplicitHeight = 13
     end
   end
   object Panel1: TPanel
@@ -293,7 +292,7 @@ object frmListWnd: TfrmListWnd
       Left = 22
       Top = 5
       Width = 107
-      Height = 15
+      Height = 13
       Margins.Left = 2
       Margins.Top = 5
       Margins.Right = 5
@@ -301,7 +300,6 @@ object frmListWnd: TfrmListWnd
       Align = alLeft
       Caption = 'Right Alligned Modules'
       Layout = tlCenter
-      ExplicitHeight = 13
     end
   end
   object StatusImages: TPngImageList

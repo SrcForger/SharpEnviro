@@ -111,7 +111,8 @@ const
 
 implementation
 
-uses SharpThemeApi,
+uses
+  SharpFileUtils,
   SharpCenterApi,
   SharpIconUtils,
   uEditWnd;
@@ -162,7 +163,7 @@ begin
   try
 
     // build list of bar.xml files
-    SharpThemeApi.FindFiles( slMenus, dir, '*.xml' );
+    SharpFileUtils.FindFiles( slMenus, dir, '*.xml' );
     for i := 0 to Pred(slMenus.Count) do begin
       xml.LoadFromFile(slMenus[i]);
       if xml.Root.Name = 'SharpEMenuFile' then begin
