@@ -724,12 +724,6 @@ begin
 
         c := Components[i];
 
-        if c.ClassNameIs('TJvXpCheckBox') then begin
-          TJvXpCheckBox(c).ParentColor := False;
-          TJvXpCheckBox(c).ParentFont := False;
-          TJvXpCheckBox(c).Font.Color := theme.EditBackgroundText;
-          TJvXpCheckBox(c).DoubleBuffered := True;
-        end;
 
         if c.ClassNameIs('TLabeledEdit') then begin
           TLabeledEdit(c).Color := theme.EditControlBackground;
@@ -802,7 +796,7 @@ begin
           TJvXpCheckBox(c).ParentColor := true;
           TJvXpCheckBox(c).ParentFont := False;
           TJvXpCheckBox(c).Font.Color := theme.EditControlText;
-          TJvXpCheckBox(c).Color := theme.EditControlBackground;
+          TJvXpCheckBox(c).Color := theme.EditBackground;
         end;
 
         if c.ClassNameIs('TSharpEGaugeBox') then begin
@@ -906,6 +900,7 @@ begin
         if c.ClassNameIs('TPanel') then begin
           TPanel(c).DoubleBuffered := True;
           TPanel(c).ParentBackground := False;
+          TPanel(c).Color := theme.PluginBackground;
         end;
 
         if c.ClassNameIs('TSharpEColorEditorEx') then begin
@@ -1253,8 +1248,8 @@ begin
   try
 
     // Set add/edit tabs to visible
-    pnlEditContainer.TabItems.Item[cEdit_Add].Visible := True;
-    pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := True;
+    //pnlEditContainer.TabItems.Item[cEdit_Add].Visible := True;
+    //pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := True;
     pnlToolbar.Hide;
 
     // Reset selected tab id
