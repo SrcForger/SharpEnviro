@@ -303,7 +303,7 @@ begin
   FAddItemsType := AAddItemsType;
 
   lbItems.Clear;
-  FComponentList.BuildList('.service', false);
+  FComponentList.BuildList('.dll', false);
   FComponentList.Sort(CustomSort);
 
   for i := 0 to FComponentList.Count - 1 do begin
