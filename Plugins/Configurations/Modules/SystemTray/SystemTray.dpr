@@ -42,8 +42,8 @@ uses
   SysUtils,
   Graphics,
   SharpAPI,
+  SharpThemeApiEx,
   SharpCenterAPI,
-  SharpThemeApi,
   SharpECustomSkinSettings,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
@@ -85,7 +85,7 @@ begin
 
   with PluginHost.Xml.XmlRoot.Items, frmSysTray do
   begin
-    skin := XmlGetSkin(XmlGetTheme);
+    skin := GetCurrentTheme.Skin.Name;
 
     if ItemNamed['skin'] <> nil then
     begin
@@ -145,7 +145,7 @@ begin
   end;
   Custom.Free;
 
-  skin := XmlGetSkin(XmlGetTheme);
+  skin := GetCurrentTheme.Skin.Name;
 
   if PluginHost.Xml.Load then
   begin

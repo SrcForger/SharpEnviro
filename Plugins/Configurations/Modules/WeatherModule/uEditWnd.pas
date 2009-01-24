@@ -161,7 +161,8 @@ var
 
 implementation
 
-uses SharpThemeApi, SharpApi, SharpCenterApi, SharpESkin;
+uses
+  SharpApi, SharpCenterApi, SharpESkin;
 
 {$R *.dfm}
 

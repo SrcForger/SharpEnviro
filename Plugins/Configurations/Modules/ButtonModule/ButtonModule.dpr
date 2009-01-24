@@ -37,7 +37,7 @@ uses
   Graphics,
   SharpAPI,
   SharpCenterAPI,
-  SharpThemeApi,
+  SharpThemeApiEx,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uEditWnd in 'uEditWnd.pas' {frmEdit};

@@ -41,7 +41,6 @@ uses
   Graphics,
   SharpAPI,
   SharpCenterAPI,
-  SharpThemeApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uMiniScmdWnd in 'uMiniScmdWnd.pas' {frmMiniScmd};

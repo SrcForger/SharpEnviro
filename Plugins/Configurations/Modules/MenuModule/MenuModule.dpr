@@ -1,5 +1,5 @@
 ﻿{
-Source Name: WeatherModule.dpr
+Source Name: MenuModule.dpr
 Description: Menu Module Config
 Copyright (C) Lee Green (lee@sharpenviro.com)
 
@@ -37,7 +37,6 @@ uses
   Graphics,
   SharpAPI,
   SharpCenterAPI,
-  SharpThemeApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uEditWnd in 'uEditWnd.pas' {frmEdit};

@@ -41,9 +41,9 @@ uses
   ExtCtrls,
   JclSimpleXml,
   JclFileUtils,
+  SharpFileUtils,
   SharpEGaugeBoxEdit,
   SharpAPI,
-  SharpThemeApi,
   SharpDialogs,
   SharpECenterHeader,
   ISharpCenterHostUnit;
@@ -114,7 +114,7 @@ begin
   files := TStringList.Create;
   try
 
-  SharpThemeApi.FindFiles(files, GetSharpeUserSettingsPath + 'SharpMenu\','*.xml');
+  SharpFileUtils.FindFiles(files, GetSharpeUserSettingsPath + 'SharpMenu\','*.xml');
 
     for i := 0 to pred(files.Count) do begin
       s := files[i];

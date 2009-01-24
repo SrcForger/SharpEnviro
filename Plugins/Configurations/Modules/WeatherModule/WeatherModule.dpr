@@ -40,7 +40,6 @@ uses
   Graphics,
   SharpAPI,
   SharpCenterAPI,
-  SharpThemeApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uEditWnd in 'uEditWnd.pas' {frmEdit};

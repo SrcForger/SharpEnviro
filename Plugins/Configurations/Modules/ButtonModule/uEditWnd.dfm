@@ -24,11 +24,10 @@ object frmEdit: TfrmEdit
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
-    ExplicitHeight = 280
     object pnlDisplay: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 45
+      Top = 47
       Width = 425
       Height = 19
       Margins.Left = 5
@@ -39,6 +38,7 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 0
+      ExplicitTop = 45
       object chkDisplayIcon: TJvXPCheckbox
         AlignWithMargins = True
         Left = 0
@@ -71,7 +71,7 @@ object frmEdit: TfrmEdit
     object pnlAction: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 182
+      Top = 186
       Width = 425
       Height = 22
       Margins.Left = 5
@@ -83,7 +83,7 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 1
-      ExplicitTop = 258
+      ExplicitTop = 182
       object Label2: TLabel
         Left = 0
         Top = 4
@@ -118,7 +118,7 @@ object frmEdit: TfrmEdit
     object pnlCaption: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 74
+      Top = 76
       Width = 425
       Height = 21
       Margins.Left = 5
@@ -130,6 +130,7 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 2
+      ExplicitTop = 74
       object Label7: TLabel
         Left = 0
         Top = 4
@@ -156,7 +157,7 @@ object frmEdit: TfrmEdit
     object pnlIcon: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 105
+      Top = 107
       Width = 425
       Height = 22
       Margins.Left = 5
@@ -168,6 +169,7 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 3
+      ExplicitTop = 105
       object Label8: TLabel
         Left = 0
         Top = 4
@@ -203,9 +205,9 @@ object frmEdit: TfrmEdit
     object SharpECenterHeader2: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
-      Top = 137
+      Top = 139
       Width = 430
-      Height = 35
+      Height = 37
       Margins.Left = 5
       Margins.Top = 10
       Margins.Right = 5
@@ -215,14 +217,14 @@ object frmEdit: TfrmEdit
       TitleColor = clWindowText
       DescriptionColor = clRed
       Align = alTop
-      ExplicitTop = 213
+      ExplicitTop = 137
     end
     object SharpECenterHeader1: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
       Top = 0
       Width = 430
-      Height = 35
+      Height = 37
       Margins.Left = 5
       Margins.Top = 0
       Margins.Right = 5

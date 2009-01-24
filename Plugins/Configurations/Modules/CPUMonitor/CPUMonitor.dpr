@@ -37,11 +37,13 @@ uses
   Graphics,
   SharpAPI,
   SharpCenterAPI,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uThemeConsts,
   SharpECustomSkinSettings,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uISharpESkin,
+  uISharpETheme,
   adCpuUsage,
   uCPUMonitorWnd in 'uCPUMonitorWnd.pas' {frmCPUMon};
 
@@ -109,7 +111,7 @@ begin
     with ItemNamed['skin'].Items do
     begin
       // Get the skin name as we save information per skin.
-      skin := XmlGetSkin(XmlGetTheme);
+      skin := GetCurrentTheme.Skin.Name;
 
       // If the element with the skin name does not exist then add it.
       if ItemNamed[skin] = nil then
@@ -135,25 +137,26 @@ end;
 procedure TSharpCenterPlugin.Load;
 var
   Custom: TSharpECustomSkinSettings;
-  scheme: TSharpEColorSet;
   Skin: string;
   i: Integer;
+  Theme : ISharpETheme;
 begin
   frmCPUMon.Left := 0;
   frmCPUMon.Top := 0;
   frmCPUMon.BorderStyle := bsNone;
-  
+
+  Theme := GetCurrentTheme;
+
   Custom := TSharpECustomSkinSettings.Create;
-  Custom.LoadFromXML(XmlGetSkinDir);
+  Custom.LoadFromXML(Theme.Skin.Directory);
   with Custom.xml.Items do
   begin
     if ItemNamed['cpumonitor'] <> nil then
       with ItemNamed['cpumonitor'].Items, frmCPUMon do
       begin
-        XmlGetThemeScheme(scheme);
-        Colors.Items.Item[0].ColorCode := XmlSchemeCodeToColor(IntValue('bgcolor', 0), scheme);
-        Colors.Items.Item[1].ColorCode := XmlSchemeCodeToColor(IntValue('fgcolor', clwhite), scheme);
-        Colors.Items.Item[2].ColorCode := XmlSchemeCodeToColor(IntValue('bordercolor', clwhite), scheme);
+        Colors.Items.Item[0].ColorCode := Theme.Scheme.SchemeCodeToColor(IntValue('bgcolor', 0));
+        Colors.Items.Item[1].ColorCode := Theme.Scheme.SchemeCodeToColor(IntValue('fgcolor', clwhite));
+        Colors.Items.Item[2].ColorCode := Theme.Scheme.SchemeCodeToColor(IntValue('bordercolor', clwhite));
         sgbBackground.Value := IntValue('bgalpha', 255);
         sgbForeground.Value := IntValue('fgalpha', 255);
         sgbBorder.Value := IntValue('borderalpha', 255);
@@ -184,7 +187,7 @@ begin
         end;
       end;
 
-      skin := XmlGetSkin(XmlGetTheme);
+      skin := Theme.Skin.Name;
       
       if ItemNamed['skin'] <> nil then
       begin

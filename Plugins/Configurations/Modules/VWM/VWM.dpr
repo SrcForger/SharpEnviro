@@ -1,7 +1,7 @@
 ﻿{
 Source Name: VWM.dpr
 Description: VWM Module Config Dll
-Copyright (C) Martin KrÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤mer (MartinKraemer@gmx.net)
+Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
 
 Source Forge Site
 https://sourceforge.net/projects/sharpe/
@@ -41,7 +41,6 @@ uses
   Graphics,
   SharpAPI,
   SharpCenterAPI,
-  SharpThemeApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uVWMsWnd in 'uVWMsWnd.pas' {frmVWM};

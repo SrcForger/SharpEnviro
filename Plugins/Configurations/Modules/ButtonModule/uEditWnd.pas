@@ -86,7 +86,8 @@ const
 
 implementation
 
-uses SharpThemeApi, SharpDialogs, SharpApi, SharpCenterApi;
+uses
+  SharpThemeApiEx, SharpDialogs, SharpApi, SharpCenterApi;
 
 {$R *.dfm}
 

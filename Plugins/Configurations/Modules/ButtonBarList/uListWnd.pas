@@ -99,7 +99,9 @@ const
 
 implementation
 
-uses SharpThemeApi, uEditWnd;
+uses
+  SharpThemeApiEx,
+  uEditWnd;
 
 {$R *.dfm}
 

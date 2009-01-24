@@ -38,7 +38,6 @@ uses
   Graphics,
   SharpAPI,
   SharpCenterAPI,
-  SharpThemeApi,
   SharpTypes,
   TaskFilterList,
   ISharpCenterHostUnit,

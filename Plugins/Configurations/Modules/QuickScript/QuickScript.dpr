@@ -41,7 +41,6 @@ uses
   Graphics,
   SharpAPI,
   SharpCenterAPI,
-  SharpThemeApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uQuickScriptWnd in 'uQuickScriptWnd.pas' {frmQuickScript};

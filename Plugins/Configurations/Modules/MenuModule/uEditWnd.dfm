@@ -95,7 +95,7 @@ object frmEdit: TfrmEdit
         Align = alTop
         Style = csDropDownList
         Constraints.MaxWidth = 300
-        ItemHeight = 13
+        ItemHeight = 0
         TabOrder = 0
         OnChange = SettingsChange
       end

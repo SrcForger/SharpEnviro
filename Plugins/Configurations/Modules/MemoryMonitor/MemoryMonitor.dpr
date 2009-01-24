@@ -37,7 +37,6 @@ uses
   Graphics,
   SharpAPI,
   SharpCenterAPI,
-  SharpThemeApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uMMWnd in 'uMMWnd.pas' {frmMM};

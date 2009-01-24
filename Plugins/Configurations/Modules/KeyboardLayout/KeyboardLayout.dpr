@@ -41,7 +41,7 @@ uses
   Graphics,
   SharpAPI,
   SharpCenterAPI,
-  SharpThemeApi,
+  SharpThemeApiEx,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uKLayoutWnd in 'uKLayoutWnd.pas' {frmKLayout};

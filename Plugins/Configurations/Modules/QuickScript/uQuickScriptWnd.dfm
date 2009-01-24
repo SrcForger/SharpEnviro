@@ -23,19 +23,15 @@ object frmQuickScript: TfrmQuickScript
     ActivePage = pagQuickScript
     PropagateEnable = False
     Align = alClient
-    ExplicitWidth = 427
-    ExplicitHeight = 400
     object pagQuickScript: TJvStandardPage
       Left = 0
       Top = 0
       Width = 449
       Height = 161
-      ExplicitWidth = 435
-      ExplicitHeight = 427
       object rb_icon: TRadioButton
         AlignWithMargins = True
         Left = 24
-        Top = 74
+        Top = 76
         Width = 417
         Height = 17
         Margins.Left = 24
@@ -46,13 +42,12 @@ object frmQuickScript: TfrmQuickScript
         Caption = 'Icon'
         TabOrder = 0
         OnClick = rb_textClick
-        ExplicitTop = 95
-        ExplicitWidth = 395
+        ExplicitTop = 74
       end
       object rb_text: TRadioButton
         AlignWithMargins = True
         Left = 24
-        Top = 99
+        Top = 101
         Width = 417
         Height = 17
         Margins.Left = 24
@@ -63,13 +58,12 @@ object frmQuickScript: TfrmQuickScript
         Caption = 'Text'
         TabOrder = 1
         OnClick = rb_textClick
-        ExplicitTop = 120
-        ExplicitWidth = 395
+        ExplicitTop = 99
       end
       object rb_icontext: TRadioButton
         AlignWithMargins = True
         Left = 24
-        Top = 49
+        Top = 51
         Width = 417
         Height = 17
         Margins.Left = 24
@@ -82,15 +76,14 @@ object frmQuickScript: TfrmQuickScript
         TabOrder = 2
         TabStop = True
         OnClick = rb_textClick
-        ExplicitTop = 70
-        ExplicitWidth = 395
+        ExplicitTop = 49
       end
       object schDisplayOptions: TSharpECenterHeader
         AlignWithMargins = True
         Left = 3
         Top = 3
         Width = 443
-        Height = 35
+        Height = 37
         Title = 'Display Options'
         Description = 
           'Select how the button for opening the Quick Script window will d' +
@@ -99,9 +92,6 @@ object frmQuickScript: TfrmQuickScript
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitLeft = 96
-        ExplicitTop = 18
-        ExplicitWidth = 185
       end
     end
   end
