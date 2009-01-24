@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>C:\SharpE\SharpThemeApiEx.dll</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>..\..\..\..\SharpE\SharpThemeApiEx.dll</DCC_DependencyCheckOutputName>
     <MainSource>SharpThemeApiEx.dpr</MainSource>
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>vcl;rtl</DCC_UsePackage>
@@ -20,7 +20,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
     <DCC_Define>DEBUG</DCC_Define>
-    <DCC_ExeOutput>C:\SharpE\</DCC_ExeOutput>
+    <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
     <DCC_UnitSearchPath>..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Interfaces\</DCC_UnitSearchPath>
     <DCC_ResourcePath>..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Interfaces\</DCC_ResourcePath>
     <DCC_ObjPath>..\..\..\Common\Libraries\SharpApi;..\..\..\Common\Interfaces\</DCC_ObjPath>
@@ -31,6 +31,24 @@
     <Borland.ProjectType />
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters><Parameters Name="HostApplication">C:\SharpE\SharpBar.exe</Parameters><Parameters Name="RunParams">-load:14163176</Parameters><Parameters Name="DebugCWD">C:\SharpE\</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1031</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">SharpThemeApiEx.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       
       
       <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
@@ -49,6 +67,7 @@
     <DCCReference Include="uIThemeScheme.pas" />
     <DCCReference Include="uIThemeSkin.pas" />
     <DCCReference Include="uIThemeWallpaper.pas" />
+    <DCCReference Include="uSharpETheme.pas" />
     <DCCReference Include="uThemeConsts.pas" />
     <DCCReference Include="uThemeDesktop.pas" />
     <DCCReference Include="uThemeIcons.pas" />
