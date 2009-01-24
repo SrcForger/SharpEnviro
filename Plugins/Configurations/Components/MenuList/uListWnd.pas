@@ -41,7 +41,6 @@ uses
   JclSimpleXML,
   JclFileUtils,
   Contnrs,
-  jvSimpleXml,
   ImgList,
   SharpEListBox,
   SharpEListBoxEx,
@@ -135,7 +134,7 @@ end;
 
 procedure TfrmList.AddItemsToList(AList: TObjectList);
 var
-  xml: TJvSimpleXML;
+  xml: TJclSimpleXML;
   newItem: TMenuDataObject;
   dir: string;
   slMenus: TStringList;
@@ -159,7 +158,7 @@ begin
   dir := SharpApi.GetSharpeUserSettingsPath + 'SharpMenu\';
 
   slMenus := TStringList.Create;
-  xml := TJvSimpleXML.Create(nil);
+  xml := TJclSimpleXML.Create;
   try
 
     // build list of bar.xml files
@@ -435,13 +434,17 @@ end;
 
 procedure TfrmList.Save(AName: string; ATemplate: string);
 var
-  xml: TJvSimpleXML;
+  xml: TJclSimpleXML;
   sFileName: string;
   sMenuDir: string;
   sSrc, sDest: string;
 begin
   // Check template
   sMenuDir := GetSharpeUserSettingsPath + 'SharpMenu\';
+
+  if not DirectoryExists(sMenuDir) then
+    ForceDirectories(sMenuDir);
+
   if ATemplate <> '' then begin
     sSrc := sMenuDir + ATemplate + '.xml';
     sDest := sMenuDir + AName + '.xml';
@@ -450,7 +453,7 @@ begin
   end
   else begin
 
-    xml := TJvSimpleXML.Create(nil);
+    xml := TJclSimpleXML.Create;
     try
       xml.Root.Name := 'SharpEMenuFile';
     finally
