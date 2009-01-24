@@ -33,7 +33,7 @@ uses
   sysutils,
   SharpAPI,
   uHotkeyServiceGeneral in 'uHotkeyServiceGeneral.pas',
-  uHotkeyServiceMain in 'uHotkeyServiceMain.pas' {$E ser},
+  uHotkeyServiceMain in 'uHotkeyServiceMain.pas',
   uHotkeyServiceList in '..\..\Configurations\Services\HotkeyList\uHotkeyServiceList.pas';
 
 {$E dll}
@@ -68,7 +68,7 @@ begin
     Name := 'Hotkeys';
     Description := 'Manages system-wide hotkeys';
     Author := 'Lee Green (Pixol@sharpe-shell.org)';
-    Version := '0.7.4.0';
+    Version := '0.7.6.0';
     DataType := tteService;
     ExtraData := 'priority: 80| delay: 0';
   end;
