@@ -89,6 +89,8 @@ begin
   fn := GetSharpeUserSettingsPath + cSettingsLocation;
   If Not(Assigned(FHotkeyList)) Then
     FHotkeyList := THotkeyList.Create;
+  FHotkeyList.FileName := fn;
+  FHotkeyList.Load;
 
   // Add Hotkeys to Manager
   Debug(Format('Hotkey data Items: %d',[FHotkeyList.Count]),DMT_STATUS);
