@@ -185,7 +185,6 @@ begin
   sFGColor     := SharpESkinPart.SchemedStringToColor(sFGColorStr,mInterface.SkinInterface.SkinManager.Scheme);
   sBGColor     := SharpESkinPart.SchemedStringToColor(sBGColorStr,mInterface.SkinInterface.SkinManager.Scheme);
   sBorderColor := SharpESkinPart.SchemedStringToColor(sBorderColorStr,mInterface.SkinInterface.SkinManager.Scheme);    
-  SharpApi.SendDebugMessage('BOOM',inttostR(sBorderColor) + '-' + sBorderColorStr + ' -' + inttostr(sBorderAlpha),clred);
   case sDrawMode of
     0,1: begin
            pbar.Visible := False;
