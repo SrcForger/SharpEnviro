@@ -307,7 +307,7 @@ begin
         Theme := GetCurrentTheme;
         case wParam of
           Integer(suSkinFont): Theme.LoadTheme([tpSkinFont]);
-          Integer(suTheme):    Theme.LoadTheme([tpTheme,tpSkinFont,tpIconSet]);
+          Integer(suTheme):    Theme.LoadTheme(ALL_THEME_PARTS);
           Integer(suScheme):   Theme.LoadTheme([tpSkinScheme]);
           Integer(suIconSet):  Theme.LoadTheme([tpIconSet]);
         end;
