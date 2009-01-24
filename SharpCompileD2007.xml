@@ -76,7 +76,7 @@
      <project Name="SharpCenterApi" Type="DLL">Common\Libraries\SharpCenterApi\SharpCenterApi.dproj</project>
      <project Name="SharpDeskApi" Type="DLL">Common\Libraries\SharpDeskApi\SharpDeskApi.dproj</project>
      <project Name="SharpDialogs" Type="DLL">Common\Libraries\SharpDialogs\SharpDialogs.dproj</project>
-     <project Name="SharpThemeApi" Type="DLL">Common\Libraries\SharpThemeApi\SharpThemeApi.dproj</project>
+     <project Name="SharpThemeApiEx" Type="DLL">Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.dproj</project>
   </package>
   <package Name="Modules">
      <project Name="Battery Monitor" Type="DLL" >Plugins\Modules\Battery Monitor\BatteryMonitor.dproj</project>

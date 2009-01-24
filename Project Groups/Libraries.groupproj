@@ -9,13 +9,13 @@
     <Projects Include="..\Common\Libraries\SharpCenterApi\SharpCenterAPI.dproj" />
     <Projects Include="..\Common\Libraries\SharpDeskApi\SharpDeskApi.dproj" />
     <Projects Include="..\Common\Libraries\SharpDialogs\SharpDialogs.dproj" />
-    <Projects Include="..\Common\Libraries\SharpThemeApi\SharpThemeApi.dproj" />
+    <Projects Include="..\Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.dproj" />
   </ItemGroup>
   <ProjectExtensions>
     <Borland.Personality>Default.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-  <BorlandProject xmlns=""> <Default.Personality> </Default.Personality> </BorlandProject></BorlandProject>
+<BorlandProject xmlns=""><Default.Personality></Default.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
   <Target Name="SharpAPI">
     <MSBuild Projects="..\Common\Libraries\SharpAPI\SharpAPI.dproj" Targets="" />
@@ -34,15 +34,6 @@
   </Target>
   <Target Name="SharpDeskApi:Make">
     <MSBuild Projects="..\Common\Libraries\SharpDeskApi\SharpDeskApi.dproj" Targets="Make" />
-  </Target>
-  <Target Name="SharpThemeApi">
-    <MSBuild Projects="..\Common\Libraries\SharpThemeApi\SharpThemeApi.dproj" Targets="" />
-  </Target>
-  <Target Name="SharpThemeApi:Clean">
-    <MSBuild Projects="..\Common\Libraries\SharpThemeApi\SharpThemeApi.dproj" Targets="Clean" />
-  </Target>
-  <Target Name="SharpThemeApi:Make">
-    <MSBuild Projects="..\Common\Libraries\SharpThemeApi\SharpThemeApi.dproj" Targets="Make" />
   </Target>
   <Target Name="SharpDialogs">
     <MSBuild Projects="..\Common\Libraries\SharpDialogs\SharpDialogs.dproj" Targets="" />
@@ -71,14 +62,23 @@
   <Target Name="SharpCenterAPI:Make">
     <MSBuild Projects="..\Common\Libraries\SharpCenterApi\SharpCenterAPI.dproj" Targets="Make" />
   </Target>
+  <Target Name="SharpThemeApiEx">
+    <MSBuild Projects="..\Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.dproj" Targets="" />
+  </Target>
+  <Target Name="SharpThemeApiEx:Clean">
+    <MSBuild Projects="..\Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.dproj" Targets="Clean" />
+  </Target>
+  <Target Name="SharpThemeApiEx:Make">
+    <MSBuild Projects="..\Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.dproj" Targets="Make" />
+  </Target>
   <Target Name="Build">
-    <CallTarget Targets="SharpAPI;SharpDeskApi;SharpThemeApi;SharpDialogs;SharpAPIEx;SharpCenterAPI" />
+    <CallTarget Targets="SharpAPI;SharpDeskApi;SharpDialogs;SharpAPIEx;SharpCenterAPI;SharpThemeApiEx" />
   </Target>
   <Target Name="Clean">
-    <CallTarget Targets="SharpAPI:Clean;SharpDeskApi:Clean;SharpThemeApi:Clean;SharpDialogs:Clean;SharpAPIEx:Clean;SharpCenterAPI:Clean" />
+    <CallTarget Targets="SharpAPI:Clean;SharpDeskApi:Clean;SharpDialogs:Clean;SharpAPIEx:Clean;SharpCenterAPI:Clean;SharpThemeApiEx:Clean" />
   </Target>
   <Target Name="Make">
-    <CallTarget Targets="SharpAPI:Make;SharpDeskApi:Make;SharpThemeApi:Make;SharpDialogs:Make;SharpAPIEx:Make;SharpCenterAPI:Make" />
+    <CallTarget Targets="SharpAPI:Make;SharpDeskApi:Make;SharpDialogs:Make;SharpAPIEx:Make;SharpCenterAPI:Make;SharpThemeApiEx:Make" />
   </Target>
   <Import Condition="Exists('$(MSBuildBinPath)\Borland.Group.Targets')" Project="$(MSBuildBinPath)\Borland.Group.Targets" />
 </Project>
