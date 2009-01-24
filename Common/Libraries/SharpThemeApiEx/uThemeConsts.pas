@@ -186,7 +186,19 @@ type
   end;
 
   TThemeWallpaperItems = array of TThemeWallpaperItem;
-  TMonitorWallpapers = array of TWallpaperMonitor;  
+  TMonitorWallpapers = array of TWallpaperMonitor;
+
+  // TThemeList
+  TThemeListItem = record
+    Name: string;
+    Author: string;
+    Comment: string;
+    Website: string;
+    Filename: string;
+    Preview: string;
+    Readonly: boolean;
+  end;
+  TThemeListItemSet = array of TThemeListItem;
 
 const
   // File and Directories

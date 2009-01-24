@@ -41,12 +41,19 @@ uses
   uThemeIcons in 'uThemeIcons.pas',
   uThemeWallpaper in 'uThemeWallpaper.pas',
   uIThemeWallpaper in 'uIThemeWallpaper.pas',
-  uSharpETheme in 'uSharpETheme.pas';
+  uSharpETheme in 'uSharpETheme.pas',
+  uThemeList in 'uThemeList.pas',
+  uIThemeList in 'uIThemeList.pas';
 
 {$R *.res}
 
 var
   Theme : ISharpETheme;
+
+function GetThemeList : IThemeList;
+begin
+  result := TThemeList.Create;
+end;
 
 function GetCurrentTheme : ISharpETheme;
 var
@@ -74,7 +81,8 @@ begin
 end;
 
 exports
-  GetCurrentTheme;
+  GetCurrentTheme,
+  GetThemeList;
 
 begin
   DllProc := @EntryPointProc;

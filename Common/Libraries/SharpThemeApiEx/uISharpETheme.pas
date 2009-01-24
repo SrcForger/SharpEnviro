@@ -58,6 +58,7 @@ type
     property Wallpaper : IThemeWallpaper read GetThemeWallpaper;
 
     procedure LoadTheme(pParts: TThemeParts = ALL_THEME_PARTS); stdcall;
+    procedure SetCurrentTheme(Name : String); stdcall;    
   end;
 
 implementation

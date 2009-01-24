@@ -79,6 +79,7 @@ type
     property Wallpaper : IThemeWallpaper read GetThemeWallpaper;       
 
     procedure LoadTheme(pParts: TThemeParts = ALL_THEME_PARTS); stdcall;
+    procedure SetCurrentTheme(Name : String); stdcall;
   end;
 
 implementation
@@ -122,7 +123,6 @@ begin
   finally
     XML.Free;
   end;
-
 end;
 
 destructor TSharpETheme.Destroy;
@@ -160,6 +160,22 @@ begin
 
   if not fileloaded then
     CreateDefaultSharpEUserSettings;
+end;
+
+procedure TSharpETheme.SetCurrentTheme(Name : String);
+var
+  XML: TJclSimpleXML;
+begin
+  XML := TJclSimpleXML.Create;
+  try
+    XML.Root.Name := 'SharpEUserSettings';
+    XML.Root.Items.Clear;
+    XML.Root.Items.Add('Theme', Name);
+    ForceDirectories(SharpApi.GetSharpeUserSettingsPath);
+    XML.SaveToFile(SharpApi.GetSharpeUserSettingsPath + SHARPE_USER_SETTINGS);
+  finally
+    XML.Free;
+  end;
 end;
 
 function TSharpETheme.GetThemeDesktop: IThemeDesktop;
