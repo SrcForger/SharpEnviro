@@ -60,7 +60,9 @@ uses
   uVistaFuncs,
   SharpEListBoxEx,
   PngBitBtn,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uISharpETheme,
+  uThemeConsts,
   Types, SharpEPageControl, SharpCenterApi,
   SharpECenterHeader,
   SharpEGaugeBoxEdit,
@@ -151,6 +153,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure pnlPluginContainerTabClick(ASender: TObject;
       const ATabIndex: Integer);
+    procedure FormCreate(Sender: TObject);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -159,6 +162,7 @@ type
     procedure UpdateLivePreview;
     //procedure CenterMessage(var Msg: TMessage); message WM_SHARPCENTERMESSAGE;
     procedure WMTerminateMessage(var Msg: TMessage); message WM_SHARPTERMINATE;
+    procedure WMSettingsUpdate(var Msg: TMessage); message WM_SHARPEUPDATESETTINGS;
     procedure ClickItem;
 
     procedure InitCommandLine;
@@ -1643,6 +1647,24 @@ begin
   end;
 end;
 
+procedure TSharpCenterWnd.WMSettingsUpdate(var Msg: TMessage);
+var
+  Theme : ISharpETheme;
+begin
+  if [TSU_UPDATE_ENUM(msg.WParam)] <= [suSkinFont,suSkinFileChanged,suTheme,
+                                       suIconSet,suScheme] then
+  begin
+    Theme := GetCurrentTheme;
+    case msg.WParam of
+      Integer(suSkinFont): Theme.LoadTheme([tpSkinFont]);
+      Integer(suSkinFileChanged): Theme.LoadTheme([tpSkinScheme]);
+      Integer(suTheme): Theme.LoadTheme(ALL_THEME_PARTS);
+      Integer(suScheme): Theme.LoadTheme([tpSkinScheme]);
+      Integer(suIconSet): Theme.LoadTheme([tpIconSet]);
+    end;    
+  end;
+end;
+
 procedure TSharpCenterWnd.WMTerminateMessage(var Msg: TMessage);
 begin
   Close;
@@ -1660,6 +1682,11 @@ begin
   finally
     CanClose := True;
   end;
+end;
+
+procedure TSharpCenterWnd.FormCreate(Sender: TObject);
+begin
+  GetCurrentTheme.LoadTheme(ALL_THEME_PARTS); // Initialize Theme Api
 end;
 
 procedure TSharpCenterWnd.FormMouseWheel(Sender: TObject; Shift: TShiftState;
