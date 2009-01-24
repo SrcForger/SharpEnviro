@@ -2,11 +2,11 @@
 <SharpCenter>
   <Sections>
     <ButtonBarList>
-      <Dll>_ModuleDlls\ButtonBarModule.dll</Dll>
+      <Dll>_ModuleDlls\ButtonBarList.dll</Dll>
       <Icon>..\buttons.png</Icon>
     </ButtonBarList>
    <ButtonBarOptions>
-      <Dll>_ModuleDlls\ButtonBarModuleOptions.dll</Dll>
+      <Dll>_ModuleDlls\ButtonBarOptions.dll</Dll>
     </ButtonBarOptions>
   </Sections>
 </SharpCenter>
