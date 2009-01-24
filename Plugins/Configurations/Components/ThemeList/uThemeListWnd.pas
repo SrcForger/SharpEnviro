@@ -52,7 +52,9 @@ uses
   JclStrings,
   JclInifiles,
   SharpCenterApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uThemeConsts,
+  uIThemeList,
   SharpGraphicsUtils,
   pngimage,
   Jcldatetime,
@@ -85,7 +87,6 @@ type
     procedure lbThemeListGetCellImageIndex(Sender: TObject; const ACol: Integer;
       AItem: TSharpEListItem; var AImageIndex: Integer;
       const ASelected: Boolean);
-    procedure Button1Click(Sender: TObject);
   private
     FLoading: Boolean;
     FPluginHost: TInterfacedSharpCenterHostBase;
@@ -149,7 +150,7 @@ var
   i: Integer;
 begin
   for i := pred(lbThemeList.Count) downto 0 do begin
-    TThemeListItem(lbThemeList.Item[i].Data).Free;
+    TThemeListItemClass(lbThemeList.Item[i].Data).Free;
     lbThemeList.DeleteItem(i);
   end;
 
@@ -165,9 +166,8 @@ var
   b: boolean;
   i: Integer;
   newItem: TSharpEListItem;
-  tmpThemeInfo: TThemeInfo;
-  themes: TThemeInfoSet;
-
+  tmpThemeInfo: TThemeListItem;
+  ThemeList : IThemeList;
 begin
   lbThemeList.Clear;
   LockWindowUpdate(Self.Handle);
@@ -180,11 +180,9 @@ begin
     bmp.Height := ThemeImages.Height;
     SetBkMode(Bmp.Handle, TRANSPARENT);
 
-    Setlength(themes,0);
-    XmlGetThemeList(themes);
-
-    for i := 0 to high(themes) do begin
-      tmpThemeInfo := themes[i];
+    ThemeList := GetThemeList;
+    for i := 0 to ThemeList.GetThemeCount - 1 do begin
+      tmpThemeInfo := ThemeList.Themes[i];
 
       newItem := lbThemeList.AddItem('');
       newItem.AddSubItem('');
@@ -193,7 +191,7 @@ begin
       newItem.AddSubItem('');
       newItem.AddSubItem('');
 
-      newItem.Data := TThemeListItem.Create(tmpThemeInfo);
+      newItem.Data := TThemeListItemClass.Create(tmpThemeInfo);
       //bmp32.Clear(clWhite32);
       bmp32.DrawMode := dmBlend;
       bmp32.CombineMode := cmMerge;
@@ -245,7 +243,7 @@ begin
 
       lbThemeList.ItemIndex := -1;
       for i := 0 to Pred(lbThemeList.Count) do begin
-        if CompareText(TThemeListItem(lbThemeList.Item[i].Data).Name,
+        if CompareText(TThemeListItemClass(lbThemeList.Item[i].Data).Name,
           ThemeManager.GetDefaultTheme) = 0 then begin
           lbThemeList.ItemIndex := i;
           break;
@@ -269,9 +267,9 @@ end;
 procedure TfrmList.lbThemeListClickItem(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem);
 var
-  tmpTheme: TThemeListItem;
+  tmpTheme: TThemeListItemClass;
   s: string;
-  tmp: TThemeListItem;
+  tmp: TThemeListItemClass;
   newID: Integer;
   bDelete: Boolean;
 
@@ -284,7 +282,7 @@ var
   end;
 
 begin
-  tmpTheme := TThemeListItem(AItem.Data);
+  tmpTheme := TThemeListItemClass(AItem.Data);
 
   if FPluginHost.Editing then exit;
 
@@ -328,7 +326,7 @@ begin
 
         if bDelete then begin
 
-            tmp := TThemeListItem(AItem.Data);
+            tmp := TThemeListItemClass(AItem.Data);
             ThemeManager.Delete(tmp.Name);
 
             if Aitem.id > (lbThemeList.Count - 2) then begin
@@ -367,9 +365,9 @@ end;
 procedure TfrmList.lbThemeListGetCellCursor(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var ACursor: TCursor);
 var
-  tmpTheme: TThemeListItem;
+  tmpTheme: TThemeListItemClass;
 begin
-  tmpTheme := TThemeListItem(AItem.Data);
+  tmpTheme := TThemeListItemClass(AItem.Data);
     if tmpTheme <> nil then begin
 
     case ACol of
@@ -390,10 +388,10 @@ end;
 procedure TfrmList.lbThemeListGetCellImageIndex(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AImageIndex: Integer; const ASelected: Boolean);
 var
-  tmpTheme: TThemeListItem;
+  tmpTheme: TThemeListItemClass;
 begin
 
-  tmpTheme := TThemeListItem(AItem.Data);
+  tmpTheme := TThemeListItemClass(AItem.Data);
   if tmpTheme <> nil then begin
 
     case ACol of
@@ -423,13 +421,13 @@ end;
 procedure TfrmList.lbThemeListGetCellText(Sender: TObject; const ACol: Integer;
   AItem: TSharpEListItem; var AColText: string);
 var
-  tmpTheme: TThemeListItem;
+  tmpTheme: TThemeListItemClass;
   s: string;
   colItemTxt: TColor;
   colDescTxt: TColor;
   colBtnTxt: TColor;
 begin
-  tmpTheme := TThemeListItem(AItem.Data);
+  tmpTheme := TThemeListItemClass(AItem.Data);
   if tmpTheme <> nil then begin
 
     AssignThemeToListBoxItemText(FPluginHost.Theme, AItem, colItemTxt, colDescTxt, colBtnTxt);
@@ -454,14 +452,6 @@ begin
 
 end;
 
-procedure TfrmList.Button1Click(Sender: TObject);
-var
-  skinCols: TSharpEColorSet;
-begin
-  SetLength(skinCols,0);
-  XmlGetThemeScheme(skinCols);
-end;
-
 procedure TfrmList.ConfigureItem;
 var
   tmpItem: TSharpEListItem;
@@ -469,7 +459,7 @@ var
 begin
   tmpItem := lbThemeList.GetItemAtCursorPos(Mouse.CursorPos);
   if tmpItem <> nil then begin
-    sTheme := TThemeListItem(tmpItem.Data).Name;
+    sTheme := TThemeListItemClass(tmpItem.Data).Name;
     CenterCommand(sccLoadSetting, PChar(SharpApi.GetCenterDirectory
       + '_Themes\Theme.con'), pchar(sTheme))
   end;

@@ -47,7 +47,7 @@ uses
   JvPageList,
   SharpApi,
   SharpCenterApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
   uThemeListManager,
   SharpEListBoxEx,
   JclStrings,
@@ -102,7 +102,7 @@ procedure TfrmEdit.Init;
 var
   df: TSC_DEFAULT_FIELDS;
   tmpItem: TSharpEListItem;
-  tmpThemeItem: TThemeListItem;
+  tmpThemeItem: TThemeListItemClass;
 begin
   case FPluginHost.EditMode of
     sceAdd: begin
@@ -131,7 +131,7 @@ begin
 
       if frmList.lbThemeList.ItemIndex <> -1 then begin
         tmpItem := frmList.lbThemeList.Item[frmList.lbThemeList.ItemIndex];
-        tmpThemeItem := TThemeListItem(tmpItem.Data);
+        tmpThemeItem := TThemeListItemClass(tmpItem.Data);
 
         edName.Text := tmpThemeItem.Name;
         edAuthor.Text := tmpThemeItem.Author;
@@ -155,7 +155,7 @@ var
   sTemplate: string;
   sName: string;
   df: TSC_DEFAULT_FIELDS;
-  tmpThemeItem: TThemeListItem;
+  tmpThemeItem: TThemeListItemClass;
 begin
   case FPluginHost.EditMode of
     sceAdd: begin
@@ -176,7 +176,7 @@ begin
         exit;
       end;
     sceEdit: begin
-      tmpThemeItem := TThemeListItem(frmList.lbThemeList.SelectedItem.Data);
+      tmpThemeItem := TThemeListItemClass(frmList.lbThemeList.SelectedItem.Data);
 
       frmList.ThemeManager.Edit(tmpThemeItem.Name,edName.Text,
         edAuthor.Text, edWebsite.Text);

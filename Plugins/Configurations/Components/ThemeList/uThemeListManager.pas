@@ -19,13 +19,15 @@ uses
   JclFileUtils,
   JclStrings,
 
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uISharpETheme,
+  uThemeConsts,
   IXmlBaseUnit;
 
 type
-  TThemeListItem = class
+  TThemeListItemClass = class
   private
-    FThemeInfo: TThemeInfo;
+    FThemeInfo: TThemeListItem;
     function GetAuthor: string;
     function GetComment: string;
     function GetFilename: string;
@@ -41,7 +43,7 @@ type
     procedure SetReadOnly(const Value: boolean);
     procedure SetWebsite(const Value: string);
   public
-    constructor Create(AThemeInfo: TThemeInfo);
+    constructor Create(AThemeInfo: TThemeListItem);
 
     property Name: string read GetName write SetName;
     property Author: string read GetAuthor write SetAuthor;
@@ -160,6 +162,7 @@ end;
 procedure TThemeManager.Edit(AOldName, ANewName, AAuthor, AWebsite: string);
 var
   sThemeDir, sName: string;
+  Theme : ISharpETheme;
 begin
 
   // Remove invalid chars
@@ -189,9 +192,10 @@ begin
       ItemNamed['Website'].Value := AWebsite;
     end;
 
+  Theme := GetCurrentTheme;
   // Rename theme if default
-  if XmlGetTheme = AOldName then
-    XmlSetTheme(sName);
+  if Theme.Info.Name = AOldName then
+    Theme.SetCurrentTheme(sName);
 
   finally
     Save;
@@ -230,79 +234,79 @@ begin
   Save;
 end;
 
-{ TThemeListItem }
+{ TThemeListItemClass }
 
-constructor TThemeListItem.Create(AThemeInfo: TThemeInfo);
+constructor TThemeListItemClass.Create(AThemeInfo: TThemeListItem);
 begin
   FThemeInfo := AThemeInfo;
 end;
 
-function TThemeListItem.GetAuthor: string;
+function TThemeListItemClass.GetAuthor: string;
 begin
   Result := FThemeInfo.Author;
 end;
 
-function TThemeListItem.GetComment: string;
+function TThemeListItemClass.GetComment: string;
 begin
   Result := FThemeInfo.Comment;
 end;
 
-function TThemeListItem.GetFilename: string;
+function TThemeListItemClass.GetFilename: string;
 begin
   Result := FThemeInfo.Filename;
 end;
 
-function TThemeListItem.GetName: string;
+function TThemeListItemClass.GetName: string;
 begin
   Result := FThemeInfo.Name;
 end;
 
-function TThemeListItem.GetPreview: string;
+function TThemeListItemClass.GetPreview: string;
 begin
   Result := FThemeInfo.Preview;
 end;
 
-function TThemeListItem.GetReadOnly: boolean;
+function TThemeListItemClass.GetReadOnly: boolean;
 begin
   Result := FThemeInfo.Readonly;
 end;
 
-function TThemeListItem.GetWebsite: string;
+function TThemeListItemClass.GetWebsite: string;
 begin
   Result := FThemeInfo.Website
 end;
 
-procedure TThemeListItem.SetAuthor(const Value: string);
+procedure TThemeListItemClass.SetAuthor(const Value: string);
 begin
   FThemeInfo.Author := Value;
 end;
 
-procedure TThemeListItem.SetComment(const Value: string);
+procedure TThemeListItemClass.SetComment(const Value: string);
 begin
   FThemeInfo.Comment := Value;
 end;
 
-procedure TThemeListItem.SetFilename(const Value: string);
+procedure TThemeListItemClass.SetFilename(const Value: string);
 begin
   FThemeInfo.Filename := Value;
 end;
 
-procedure TThemeListItem.SetName(const Value: string);
+procedure TThemeListItemClass.SetName(const Value: string);
 begin
   FThemeInfo.Name := Value;
 end;
 
-procedure TThemeListItem.SetPreview(const Value: string);
+procedure TThemeListItemClass.SetPreview(const Value: string);
 begin
   FThemeInfo.Preview := Value;
 end;
 
-procedure TThemeListItem.SetReadOnly(const Value: boolean);
+procedure TThemeListItemClass.SetReadOnly(const Value: boolean);
 begin
   FThemeInfo.Readonly := Value;
 end;
 
-procedure TThemeListItem.SetWebsite(const Value: string);
+procedure TThemeListItemClass.SetWebsite(const Value: string);
 begin
   FThemeInfo.Website := Value;
 end;

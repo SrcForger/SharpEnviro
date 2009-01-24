@@ -104,7 +104,7 @@ const
 
 implementation
 
-uses SharpThemeApi,
+uses
   SharpCenterApi,
   SharpIconUtils,
   uEditWnd;

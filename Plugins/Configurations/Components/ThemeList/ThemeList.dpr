@@ -36,10 +36,11 @@ uses
   SysUtils,
   uVistaFuncs,
   SharpCenterApi,
+  SharpFileUtils,
   SharpApi,
   JvValidators,
   JclStrings,
-  SharpThemeApi,
+  SharpThemeApiEx,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uThemeListWnd in 'uThemeListWnd.pas' {frmList},
@@ -114,7 +115,7 @@ begin
   try
 
     dir := SharpApi.GetSharpeUserSettingsPath + 'Themes\';
-    SharpThemeApi.FindFiles(files, dir, '*Theme.xml');
+    SharpFileUtils.FindFiles(files, dir, '*Theme.xml');
   finally
     result := inttoStr(files.Count);
     files.Free;
@@ -148,17 +149,17 @@ end;
 
 procedure TSharpCenterPlugin.Save;
 var
-  tmpTheme: TThemeListItem;
+  tmpTheme: TThemeListItemClass;
 begin
   with frmList do begin
     lbThemeList.Enabled := False;
     tmrEnableUi.Enabled := True;
 
-    tmpTheme := TThemeListItem(lbThemeList.SelectedItem.Data);
+    tmpTheme := TThemeListItemClass(lbThemeList.SelectedItem.Data);
 
     Loading := True;
     ThemeManager.SetTheme(tmpTheme.Name);
-    SharpCenterApi.BroadcastGlobalUpdateMessage(suTheme, -1, True);
+    SharpApi.BroadcastGlobalUpdateMessage(suTheme, -1, True);
   end;
 end;
 

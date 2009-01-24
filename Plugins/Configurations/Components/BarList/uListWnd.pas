@@ -134,7 +134,7 @@ const
 implementation
 
 uses uEditWnd,
-  SharpThemeApi;
+  SharpThemeApiEx;
 
 {$R *.dfm}
 

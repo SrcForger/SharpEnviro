@@ -39,7 +39,8 @@ uses
   SysUtils,
   SharpApi,
   SharpCenterApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  SharpFileUtils,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uListWnd in 'uListWnd.pas' {frmListWnd},
@@ -96,6 +97,25 @@ end;
 function TSharpCenterPlugin.GetPluginDescriptionText: String;
 begin
   Result := 'Create and manage toolbar configurations.';
+end;
+
+function XmlGetBarListAsCommaText: string;
+var
+  sBarDir: string;
+  tmpStringList: TStringList;
+begin
+  sBarDir := GetSharpeUserSettingsPath + 'SharpBar\Bars\';
+
+  tmpStringList := TStringList.Create;
+  try
+
+    FindFiles(tmpStringList, sBarDir, '*bar.xml');
+    tmpStringList.Sort;
+    result := tmpStringList.CommaText;
+
+  finally
+    tmpStringList.Free;
+  end;
 end;
 
 function TSharpCenterPlugin.GetPluginStatusText: String;

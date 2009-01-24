@@ -48,7 +48,7 @@ object frmSettings: TfrmSettings
       Value = 25
       Prefix = 'Items to wrap: '
       Description = 'Item wrap count'
-      PopPosition = ppRight
+      PopPosition = ppBottom
       PercentDisplay = False
       OnChangeValue = sgbWrapCountChangeValue
       BackgroundColor = clWindow
