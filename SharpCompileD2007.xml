@@ -41,6 +41,9 @@
      <project Name="Hotkey List" Type="DLL">Plugins\Configurations\Services\HotkeyList\HotkeyList.dproj</project>
      <project Name="VWM" Type="DLL">Plugins\Configurations\Services\VWM\VWM.dproj</project>
      <project Name="Weather" Type="DLL">Plugins\Configurations\Services\Weather\Weather.dproj</project>
+	 <project Name="TaskSwitchList" Type="DLL">Plugins\Configurations\Services\TaskSwitchList\TaskSwitchList.dproj</project>
+     <project Name="TaskSwitchEdit" Type="DLL">Plugins\Configurations\Services\TaskSwitchEdit\TaskSwitchEdit.dproj</project>
+  
   </package>
   <package Name="Configurations - Themes">
      <project Name="Cursor List" Type="DLL">Plugins\Configurations\Themes\CursorList\CursorList.dproj</project>
