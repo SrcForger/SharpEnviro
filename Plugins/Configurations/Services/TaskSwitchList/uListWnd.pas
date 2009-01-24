@@ -45,7 +45,7 @@ uses
   GR32_Image,
   SharpApi,
   SharpCenterApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
   SharpEListBoxEx,
   PngImageList,
   JclSimpleXML,

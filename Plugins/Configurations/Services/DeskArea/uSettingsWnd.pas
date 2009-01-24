@@ -31,7 +31,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvSimpleXml, Menus, ComCtrls, SharpApi,
   ExtCtrls, Buttons, PngBitBtn, GR32_Image, Math,
-  SharpThemeApi, Contnrs, GR32, GR32_Resamplers, SharpCenterApi,
+  SharpThemeApiEx, Contnrs, GR32, GR32_Resamplers, SharpCenterApi,
   SharpGraphicsUtils, SharpEGaugeBoxEdit, Types, SharpECenterHeader,
   ISharpCenterHostUnit, graphicsFx;
 

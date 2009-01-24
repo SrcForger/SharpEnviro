@@ -126,7 +126,8 @@ const
 
 implementation
 
-uses SharpThemeApi,
+uses
+  SharpThemeApiEx,
   SharpApi;
 
 {$R *.dfm}

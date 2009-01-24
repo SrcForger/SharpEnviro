@@ -9,7 +9,7 @@ uses
   windows,
   JclFileUtils,
   JclStrings,
-  SharpThemeApi,
+  SharpThemeApiEx,
   JclSimpleXml,
   SharpApi,
   graphics,
@@ -173,7 +173,6 @@ end;
 procedure TTaskSwitchItemList.Save;
 var
   iTaskSwitch: integer;
-  i: integer;
   taskSwitchElem: TJclSimpleXMLElem;
   tmp: TTaskSwitchItem;
 begin

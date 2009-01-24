@@ -39,7 +39,7 @@ uses
   SharpCenterApi,
   SharpApi,
   GR32,
-  SharpThemeApi,
+  SharpThemeApiEx,
   uVistaFuncs,
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettings};
 
