@@ -52,7 +52,7 @@ Type
 
       procedure UpdateSkin(var Msg: TMessage); message WM_SHARPEUPDATESETTINGS;
     public
-      procedure UpdateStreamFile;
+      procedure UpdateStreamFile(ByUpdateMessage : Boolean = False);
     end;
 
 {$R *.dfm}
@@ -63,7 +63,7 @@ implementation
 procedure TSkinServer.FormCreate(Sender: TObject);
 begin
   FSkin := TSharpESkin.Create(self,ALL_SHARPE_SKINS);
-  UpdateStreamFile;
+  UpdateStreamFile(True);
   SharpApi.BroadcastGlobalUpdateMessage(suSkinFileChanged,-1,True);
 end;
 
@@ -73,13 +73,14 @@ begin
 end;
 
 
-procedure TSkinServer.UpdateStreamFile;
+procedure TSkinServer.UpdateStreamFile(ByUpdateMessage : Boolean = False);
 var
   Theme : ISharpETheme;
 begin
   //Load new skin
   Theme := GetCurrentTheme;
-  Theme.LoadTheme([tpSkinScheme]);
+  if not ByUpdateMessage then
+    Theme.LoadTheme([tpSkinScheme]);
   FFileName := Theme.Skin.Directory + 'Skin.xml';
   FSkin.LoadFromXmlFile(FFileName);
   if FStream <> nil then
@@ -113,7 +114,7 @@ procedure TSkinServer.UpdateSkin(var Msg: TMessage);
 begin
   if (msg.WParam = Integer(suSkin)) or (msg.WParam = Integer(suTheme)) then
   begin
-    UpdateStreamFile;
+    UpdateStreamFile(True);
     SharpApi.BroadcastGlobalUpdateMessage(suSkinFileChanged,-1,True);
   end;
 end;
