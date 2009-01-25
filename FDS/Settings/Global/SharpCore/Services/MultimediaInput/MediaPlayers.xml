@@ -7,6 +7,12 @@
     <Icon>foobar_icon.png</Icon>
   </item> 
   <item>
+    <Name>Foobar (ColumnsUi)</Name>
+    <WndClass>{E7076D1C-A7BF-4f39-B771-BCBE88F2A2A8}</WndClass>
+    <WndCaption></WndCaption>
+    <Icon>foobar_icon.png</Icon>
+  </item> 
+  <item>
     <Name>iTunes</Name>
     <WndClass>iTunes</WndClass>
     <WndCaption></WndCaption>
