@@ -39,6 +39,7 @@ uses
 type
   TSharpETheme = class(TInterfacedObject, ISharpETheme)
   private
+    FIsCustomTheme : boolean;
     FParts : TThemeParts;
     FThemeInfo : TThemeInfo;
     FThemeSkin : TThemeSkin;
@@ -56,7 +57,8 @@ type
     procedure CreateDefaultSharpeUserSettings;
     function CheckSharpEUserSettings: boolean;
   public
-    constructor Create; reintroduce;
+    constructor Create; reintroduce; overload;
+    constructor Create(pName : String); overload;
     destructor Destroy; override;
 
     //ISharpETheme Interface
@@ -99,8 +101,22 @@ begin
 
   FParts := [];
 
+  FIsCustomTheme := False;
   FThemeInfo := TThemeInfo.Create(GetCurrentTheme);
   FThemeInfoInterface := FThemeInfo;
+end;
+
+constructor TSharpETheme.Create(pName: String);
+begin
+  inherited Create;
+
+  SharpApi.SendDebugMessage('ThemeAPI','TSharpETheme.Create(' + pName + ')', 0);
+
+  FParts := [];
+
+  FIsCustomTheme := True;
+  FThemeInfo := TThemeInfo.Create(pName);
+  FThemeInfoInterface := FThemeInfo;  
 end;
 
 procedure TSharpETheme.CreateDefaultSharpeUserSettings;
@@ -231,7 +247,7 @@ begin
         + ',' + BoolToStr((FThemeWallpaper = nil));
   SharpApi.SendDebugMessage('ThemeAPI','Load Theme:' + s + s2, 0);
 
-  if (tpTheme in pParts) then
+  if (tpTheme in pParts) and (not FIsCustomTheme) then
   begin
     FThemeInfo.Name := GetCurrentTheme;
     FThemeInfo.LoadFromFile;

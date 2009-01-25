@@ -8,6 +8,7 @@ uses
 
 function GetCurrentTheme : ISharpETheme; external 'SharpThemeApiEx.dll';
 function GetThemeList : IThemeList; external 'SharpThemeApiEx.dll';
+function GetTheme(pName : String) : ISharpETheme; external 'SharpThemeApiEx.dll';
 
 implementation
 

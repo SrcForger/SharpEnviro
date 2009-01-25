@@ -52,7 +52,7 @@ type
 
     function GetName : String; stdcall;
     procedure SetName(Value : String); stdcall;
-    property Name : String read GetName;
+    property Name : String read GetName write SetName;
 
     function GetDirectory : String; stdcall;
     property Directory : String read GetDirectory;

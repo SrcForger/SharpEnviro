@@ -67,6 +67,11 @@ begin
   result := Theme;
 end;
 
+function GetTheme(pName : String) : ISharpETheme;
+begin
+  result := TSharpETheme.Create(pName);
+end;
+
 procedure EntryPointProc(Reason: Integer);
 begin
   case reason of
@@ -82,7 +87,8 @@ end;
 
 exports
   GetCurrentTheme,
-  GetThemeList;
+  GetThemeList,
+  GetTheme;
 
 begin
   DllProc := @EntryPointProc;

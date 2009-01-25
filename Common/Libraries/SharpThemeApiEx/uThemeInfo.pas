@@ -179,7 +179,7 @@ procedure TThemeInfo.SetName(Value: String);
 begin
   if length(trim(Value)) <> 0 then
   begin
-    FName := Name;
+    FName := Value;
     UpdateDirectory;
   end;
 end;
