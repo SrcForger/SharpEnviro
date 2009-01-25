@@ -138,9 +138,6 @@ procedure AssignThemeToListBoxItemText( ATheme: TCenterThemeInfo; AItem: TSharpE
 procedure AssignThemeToListBoxItemText( ATheme: TCenterThemeInfo; AItem: TSharpEListItem;
   var colItemTxt:tcolor; var colDescTxt:tcolor; var colBtnTxt: TColor; var colBtnDisabledTxt: TColor); overload;
 
-procedure GetBarModuleIds( const APluginId: String; var ABarId, AModuleId: String ); overload;
-procedure GetBarModuleIds( const APluginId: String; var ABarId, AModuleId: Integer ); overload;
-
 implementation
 
 procedure FindFiles(var FilesList: TStringList; StartDir, FileMask: string);
@@ -477,6 +474,10 @@ begin
   ATheme.PluginSelectedItemText := cEditBackgroundText;
   ATheme.PluginItemDescriptionText := cEditBackgroundText;
   ATheme.PluginSelectedItemDescriptionText := cEditBackgroundText;
+  ATheme.PluginItemButtonText := clBlue;
+  ATheme.PluginSelectedItemButtonText := clBlue;
+  ATheme.PluginItemButtonDisabledText := clGray;
+  ATheme.PluginSelectedItemButtonDisabledText := clGray;
   ATheme.PluginSectionTitle := clBlack;
   ATheme.PluginSectionDescription := clGray;
   ATheme.PluginControlText := clBlack;
@@ -533,7 +534,7 @@ begin
 
   if ( (theme = '') or ( not(FileExists(themeFile))))  then begin
     //SharpApi.SendDebugMessageEx('SharpCenterApi', 'Some parameters were invalid for XmlGetCenterTheme', 0, DMT_ERROR);
-    AssignSystemDefaultTheme( ATheme );
+    AssignSystemDefaultTheme2( ATheme );
     Exit;
   end;
 
@@ -545,18 +546,6 @@ begin
   finally
     xml.Free;
   end;
-end;
-
-procedure GetBarModuleIds( const APluginId: String; var ABarId, AModuleId: String );
-begin
-  ABarId := copy(APluginId, 0, pos(':',APluginId)-1);
-  AModuleId := copy(APluginId, pos(':',APluginId)+1, length(APluginId) - pos(':',APluginId));
-end;
-
-procedure GetBarModuleIds( const APluginId: String; var ABarId, AModuleId: Integer );
-begin
-  ABarId := StrToInt(copy(APluginId, 0, pos(':',APluginId)-1));
-  AModuleId := StrToInt(copy(APluginId, pos(':',APluginId)+1, length(APluginId) - pos(':',APluginId)));
 end;
 
 end.
