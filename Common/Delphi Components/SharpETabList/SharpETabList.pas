@@ -989,7 +989,7 @@ begin
     // if the buttons width and the width of all visible tabs
     // is less than the tab list width then leave the left
     // index where it is as and break out of the loop.
-    if (GetButtonsWidth + GetTabsWidth < Self.Width) then
+    if (GetButtonsWidth + GetTabsWidth + GetScrollButtonsWidth < Self.Width) then
       Break;
   end;
 
