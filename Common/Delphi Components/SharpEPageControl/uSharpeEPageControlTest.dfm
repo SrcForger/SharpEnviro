@@ -68,7 +68,6 @@ object Form4: TForm4
       IconSpacingX = 4
       IconSpacingY = 4
       BtnWidth = 24
-      TabWidth = 62
       TabIndex = 0
       TabAlignment = taLeftJustify
       AutoSizeTabs = False
@@ -82,6 +81,7 @@ object Form4: TForm4
       TabStatusSelColor = clGreen
       TabCaptionColor = clBlack
       TabStatusColor = clGreen
+      PageBackgroundColor = clBtnFace
       DesignSize = (
         400
         209)

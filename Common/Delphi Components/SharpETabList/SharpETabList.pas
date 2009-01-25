@@ -133,6 +133,7 @@ type
     FTextSpacingY: Integer;
     FLeftIndex: Integer;
     FLastTabRight: Integer;
+    FDisplayedTabs: Integer;
     FScrollLeft: TButtonItem;
     FScrollRight: TButtonItem;
     FScrollButtonImageList: TPngImageList;
@@ -424,7 +425,6 @@ begin
 
   for i := 0 to Pred(FButtons.Count) do
   begin
-
     if FTabAlign = taLeftJustify then
     begin
       if FButtons.Item[i].Visible then
@@ -434,7 +434,6 @@ begin
         DrawButton(br, FPngImageList, FButtons.Item[i]);
         x := x + FButtonWidth + 2;
       end;
-
     end
     else
     begin
@@ -446,21 +445,33 @@ begin
         x := x - FButtonWidth - 2;
       end;
     end;
-
   end;
 end;
 
 procedure TSharpETabList.DrawScrollButtons(AScrollButtonRect: TRect);
 var
   r: TRect;
+  i: Integer;
 begin
 
   r := Rect(AScrollButtonRect.Left, Height div 2 - 6,
     AScrollButtonRect.Left + 16, Self.ClientHeight);
 
   if (FLeftIndex = 0) then
-    FScrollLeft.ImageIndex := cLeftArrowDisabledIdx else
-    FScrollLeft.ImageIndex := cLeftArrowIdx;
+    // The current left index is zero so disable the scroll button arrow.
+    FScrollLeft.ImageIndex := cLeftArrowDisabledIdx
+  else
+    begin
+      FScrollLeft.ImageIndex := cLeftArrowDisabledIdx;
+      for i := Pred(FLeftIndex) downto 0 do
+        if FTabList.Item[i].Visible then
+        begin
+          // If there is a visible tab before the left index
+          // then enable the scroll button arrow.
+          FScrollLeft.ImageIndex := cLeftArrowIdx;
+          Break;
+        end;
+    end;
 
   FScrollLeft.ButtonRect := r;
 
@@ -470,6 +481,9 @@ begin
   r := Rect(AScrollButtonRect.Right - 16, Height div 2 - 6,
     AScrollButtonRect.Right, Self.ClientHeight);
 
+  // If the maximum number of visible tabs that we can display
+  // is greather than or equal to the number of visible tabs
+  // that exist then disable the scroll button arrow.
   if ((FLastTabRight >= GetVisibleTabCount)) then
     FScrollRight.ImageIndex := cRightArrowDisabledIdx else
     FScrollRight.ImageIndex := cRightArrowIdx;
@@ -589,35 +603,60 @@ var
 begin
 
   if FTabAlign = taLeftJustify then
-    iMaxWidth := Self.Width - GetButtonsWidth - GetScrollButtonsWidth - 15 else
+    iMaxWidth := Self.Width - GetButtonsWidth - GetScrollButtonsWidth else
     iMaxWidth := Self.Width - GetButtonsWidth - 10;
 
   iTabsWidth := 0;
-  iMaxTabs := FLeftIndex;
+  iMaxTabs := 0;
 
-  for iTab := FLeftIndex to Pred(GetVisibleTabCount) do
+  for iTab := FLeftIndex to Pred(Count) do
   begin
-    iTabWidth := GetTabWidth(TabList.Item[iTab]);
-    iTabsWidth := iTabsWidth + iTabWidth;
-
-    if iTabsWidth > iMaxWidth then
+    // Only count tabs that are supposed to be visible.
+    if Tablist.Item[iTab].Visible then
     begin
-      Result := iMaxTabs;
-      exit;
-    end
-    else
-      Inc(iMaxTabs, 1);
+      iTabWidth := GetTabWidth(TabList.Item[iTab]);
+      iTabsWidth := iTabsWidth + iTabWidth;
+
+      if iTabsWidth > iMaxWidth then
+      begin
+        // Once we are passed our limit then exit.
+        Result := iMaxTabs;
+        exit;
+      end
+      else
+        Inc(iMaxTabs, 1);
+    end;
   end;
 
   Result := iMaxTabs;
 end;
 
 function TSharpETabList.GetScrollButtonsWidth: integer;
+var
+  i: Integer;
+  bScroll: Boolean;
 begin
   Result := 0;
+  bScroll := False;
 
-  if ((FTabAlign = taLeftJustify) and (FLastTabRight < GetVisibleTabCount) or (FLeftIndex <> 0)) then
-    Result := 32;
+  // Only display the scroll buttons for left aligned tabs.
+  if (FTabAlign = taLeftJustify) then
+  begin
+    // If there is a visible tab before the current left index
+    // then we need to display the scroll buttons.
+    if (FLeftIndex > 0) then
+      for i := Pred(FLeftIndex) downto 0 do
+        if TabItem[i].Visible then
+          bScroll := True;
+          
+    // If the buttons width + the tabs with is greater than the
+    // tab list width then we need to display the scroll buttons.
+    if (GetButtonsWidth + GetTabsWidth > Self.Width) then
+      bScroll := True;
+
+    if bScroll then
+      Result := 32;
+  end;
 end;
 
 procedure TSharpETabList.GetTabExtent(ATab: TTabItem; X, Y: Integer; var ATabExtents: TTabExtents);
@@ -729,7 +768,7 @@ var
 begin
   Result := 0;
 
-  for iTab := 0 to Pred(Count) do
+  for iTab := FLeftIndex to Pred(Count) do
   begin
     if TabList.Item[iTab].Visible then begin
       Inc(Result);
@@ -768,7 +807,16 @@ begin
   if (WithinRect(X, Y, FScrollLeft.ButtonRect)) then begin
 
     if FScrollLeft.ImageIndex <> cLeftArrowDisabledIdx then
-      Dec(FLeftIndex);
+      // If the current left index is 0 then we don't need to
+      // find a new left index.
+      if FLeftIndex > 0 then
+        // Loop until we find a visible tab before the current left index.
+        for i := FLeftIndex downto 1 do
+        begin
+          Dec(FLeftIndex);
+          if FTabList.Item[FLeftIndex].Visible then
+            Break;
+        end;
 
     Invalidate;
     exit;
@@ -777,7 +825,13 @@ begin
   if (WithinRect(X, Y, FScrollRight.ButtonRect)) then begin
 
     if FScrollRight.ImageIndex <> cRightArrowDisabledIdx then
-      Inc(FLeftIndex);
+      // Loop until we find a visible tab after the current left index.
+      for i := FLeftIndex to Pred(Count) do
+      begin
+        Inc(FLeftIndex);
+        if FTabList.Item[FLeftIndex].Visible then
+          Break;
+      end;
 
     Invalidate;
     exit;
@@ -915,9 +969,40 @@ begin
 end;
 
 procedure TSharpETabList.Resize;
+var
+  i: Integer;
+  leftIndex: Integer;
 begin
   inherited;
+
+  // store the current left index and set the left index
+  // to 0 before we calculate the widths as we want all
+  // the widths of the tabs summed.
+  leftIndex := FLeftIndex;
   FLeftIndex := 0;
+
+  for i := 0 to leftIndex do
+  begin
+    if TabItem[i].Visible then
+      FLeftIndex := i;
+
+    // if the buttons width and the width of all visible tabs
+    // is less than the tab list width then leave the left
+    // index where it is as and break out of the loop.
+    if (GetButtonsWidth + GetTabsWidth < Self.Width) then
+      Break;
+  end;
+
+  // if the last left index had its visibility changed
+  // find a new left index.
+  if not TabItem[FLeftIndex].Visible then
+    for i := 0 to Pred(Count) do
+      if TabItem[i].Visible then
+      begin
+        FLeftIndex := i;
+        Break;
+      end;
+      
   Invalidate;
 end;
 
@@ -1101,7 +1186,7 @@ var
   tabExtents: TTabExtents;
 begin
   // Init tabs
-  for i := 0 to Pred(FTabList.Count) do
+  for i := 0 to Pred(Count) do
     with FTabList.Item[i].TabExtent do
     begin
       TabRect := Rect(0, 0, 0, 0);
@@ -1117,26 +1202,28 @@ begin
 
     // How many are visible
     FLastTabRight := GetMaxVisibleTabs;
+    // Keep track of how many tabs we have actually drawn.
+    FDisplayedTabs := 0;
 
     if FTabAlign = taLeftJustify then
     begin
-
 {$REGION 'Draw left aligned tabs'}
-      for i := FLeftIndex to Pred(FTabList.Count) do
+      for i := FLeftIndex to Pred(Count) do
       begin
-
-        if (i < (FLastTabRight)) then
+        // Draw tabs until we hit our max limit.
+        if (FDisplayedTabs < FLastTabRight) then
         begin
           iTabWidth := GetTabWidth(FTabList.Item[i]);
           GetTabExtent(FTabList.Item[i], x, 4, tabExtents);
           FTabList.Item[i].TabExtent := tabExtents;
+          // Only draw tabs that are supposed to be visible.
           if FTabList.Item[i].Visible then
           begin
             DrawTab(FTabList.Item[i]);
             x := x + iTabWidth + 2;
+            Inc(FDisplayedTabs, 1);
           end;
         end
-
         else
         begin
           with FTabList.Item[i].TabExtent do
@@ -1146,7 +1233,6 @@ begin
         end;
       end;
 {$ENDREGION}
-
     end
     else
     begin
@@ -1195,7 +1281,7 @@ begin
   png.PngImage.LoadFromResourceName(HInstance, 'SHARPE_TABLIST_ARR_RIGHT_D_PNG');
 end;
 
-{ TSharpETabListItem }
+{$REGION 'TSharpETabListItem'}
 
 constructor TTabItem.Create(Collection: TCollection);
 begin
@@ -1248,7 +1334,9 @@ begin
     TSharpETabList(Collection.Owner).Invalidate;
 end;
 
-{ TButtonItem }
+{$ENDREGION 'TSharpETabListItem'}
+
+{$REGION 'TButtonItem'}
 
 constructor TButtonItem.Create(Collection: TCollection);
 begin
@@ -1290,7 +1378,9 @@ begin
   FButtonRect := Rect(0, 0, 0, 0);
 end;
 
-{ TButtonItems }
+{$ENDREGION 'TButtonItem'}
+
+{$REGION 'TButtonItems'}
 
 function TButtonItems.Add: TButtonItem;
 begin
@@ -1301,6 +1391,8 @@ function TButtonItems.GetItem(Index: Integer): TButtonItem;
 begin
   result := inherited Items[Index] as TButtonItem;
 end;
+
+{$ENDREGION 'TButtonItems'}
 
 end.
 

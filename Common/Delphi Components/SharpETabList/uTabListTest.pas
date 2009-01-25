@@ -45,10 +45,11 @@ begin
   with SharpEPageControl1.TabList do
   begin
     for i := 0 to Count - 1 do
-      TabItem[i].Visible := not TabItem[i].Visible;
+      if (TabItem[i].Caption <> '000') and
+       (TabItem[i].Caption <> 'New Tabber') and
+       (TabItem[i].Caption <> 'Note') then
+        TabItem[i].Visible := not TabItem[i].Visible;
   end;
-  SharpEPageControl1.Invalidate;
-  Self.Repaint;
 end;
 
 procedure TForm12.Button2Click(Sender: TObject);

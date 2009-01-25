@@ -6,6 +6,8 @@ object Form12: TForm12
   ClientHeight = 400
   ClientWidth = 414
   Color = clWhite
+  Constraints.MinHeight = 100
+  Constraints.MinWidth = 200
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11

@@ -14,7 +14,7 @@ uses
   SharpESwatchCollection in '..\SharpESwatchCollection\SharpESwatchCollection.pas',
   graphicsFX in '..\..\Units\SharpFX\graphicsFX.pas',
   SharpFX in '..\..\Units\SharpFX\SharpFX.pas',
-  uSchemeList in '..\..\..\Plugins\Configurations\Scheme\uSchemeList.pas',
+  uSchemeList in '..\..\..\Plugins\Configurations\Themes\SchemeList\uSchemeList.pas',
   SharpECenterScheme in '..\SharpECenterScheme\SharpECenterScheme.pas',
   SharpESwatchManager in '..\SharpESwatchManager\SharpESwatchManager.pas',
   SharpETabList in '..\SharpETabList\SharpETabList.pas',
