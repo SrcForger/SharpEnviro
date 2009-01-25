@@ -6,7 +6,6 @@ uses
   SharpESwatchManager in 'SharpESwatchManager.pas',
   SharpFX in '..\..\Units\SharpFX\SharpFX.pas',
   SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
-  SharpECenterScheme in '..\SharpECenterScheme\SharpECenterScheme.pas',
   SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas',
   SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas';
 

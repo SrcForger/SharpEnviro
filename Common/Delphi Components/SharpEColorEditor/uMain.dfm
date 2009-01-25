@@ -40,7 +40,6 @@ object MainWnd: TMainWnd
     Width = 432
     Height = 24
     Align = alTop
-    ParentColor = False
     DisplayPercent = False
     Expanded = False
     GroupIndex = 0

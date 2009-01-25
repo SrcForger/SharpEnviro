@@ -6,7 +6,8 @@ uses
   SharpEListBoxEx in 'SharpEListBoxEx.pas',
   SharpGraphicsUtils in '..\..\Units\SharpGraphicsUtils\SharpGraphicsUtils.pas',
   SharpThemeApi in '..\..\Libraries\SharpThemeApi\SharpThemeApi.pas',
-  SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas';
+  SharpAPI in '..\..\Libraries\SharpAPI\SharpAPI.pas',
+  uThemeConsts in '..\..\Libraries\SharpThemeApiEx\uThemeConsts.pas';
 
 {$R *.res}
 

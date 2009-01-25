@@ -7,7 +7,7 @@ uses
   Dialogs, ExtCtrls, SharpEColorEditor, StdCtrls, JvPageList, JvExControls,
   JvComponent, ComCtrls, JvExComCtrls, JvComCtrls, XPMan, Mask, JvExMask, JvSpin,
   JvExStdCtrls, JvHtControls, sharpthemeapi, uVistaFuncs, JvLinkLabel, JvPanel,
-  JvLabel, JvExExtCtrls, SharpESwatchManager, JvXPCore, JvXPCheckCtrls;
+  JvLabel, JvExExtCtrls, SharpESwatchManager, JvXPCore, JvXPCheckCtrls, SharpThemeApiEx;
 
 type
   TMainWnd = class(TForm)

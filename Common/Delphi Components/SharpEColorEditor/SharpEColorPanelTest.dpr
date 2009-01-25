@@ -15,16 +15,18 @@ uses
   graphicsFX in '..\..\Units\SharpFX\graphicsFX.pas',
   SharpFX in '..\..\Units\SharpFX\SharpFX.pas',
   uSchemeList in '..\..\..\Plugins\Configurations\Themes\SchemeList\uSchemeList.pas',
-  SharpECenterScheme in '..\SharpECenterScheme\SharpECenterScheme.pas',
   SharpESwatchManager in '..\SharpESwatchManager\SharpESwatchManager.pas',
   SharpETabList in '..\SharpETabList\SharpETabList.pas',
   uVistaFuncs in '..\..\Units\VistaFuncs\uVistaFuncs.pas',
-  SharpEPageControl in '..\SharpEPageControl\SharpEPageControl.pas';
+  SharpEPageControl in '..\SharpEPageControl\SharpEPageControl.pas',
+  SharpThemeApiEx;
 
 {$R *.res}
 
 begin
   Application.Initialize;
+
+  GetCurrentTheme.LoadTheme;
   Application.CreateForm(TMainWnd, MainWnd);
   Application.Run;
 end.
