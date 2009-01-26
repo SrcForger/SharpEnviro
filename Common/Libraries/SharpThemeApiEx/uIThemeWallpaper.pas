@@ -40,6 +40,7 @@ type
     property Monitors : TMonitorWallpapers read GetMonitors;
 
     function GetMonitorWallpaper(MonitorID: integer): TThemeWallpaperItem; stdcall;
+    function GetMonitor(MonitorID : integer): TWallpaperMonitor; stdcall;
     procedure UpdateMonitor(pMonitor : TWallpaperMonitor); stdcall;
     procedure UpdateWallpaper(pWallpaper : TThemeWallpaperItem); stdcall;
 

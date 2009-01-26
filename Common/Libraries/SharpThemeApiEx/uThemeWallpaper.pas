@@ -50,6 +50,7 @@ type
     property Monitors : TMonitorWallpapers read GetMonitors;
 
     function GetMonitorWallpaper(MonitorID: integer): TThemeWallpaperItem; stdcall;
+    function GetMonitor(MonitorID : integer): TWallpaperMonitor; stdcall;
     procedure UpdateMonitor(pMonitor : TWallpaperMonitor); stdcall;
     procedure UpdateWallpaper(pWallpaper : TThemeWallpaperItem); stdcall;
 
@@ -79,6 +80,21 @@ begin
   inherited;
 end;
 
+function TThemeWallpaper.GetMonitor(MonitorID: integer): TWallpaperMonitor;
+var
+  n : integer;
+begin
+  for n := 0 to High(FMonitors) do
+    if FMonitors[n].ID = MonitorID then
+    begin
+      result := FMonitors[n];
+      exit;
+    end;
+
+  // return the default/primary monitor if not found
+  result := FMonitors[0];
+end;
+
 function TThemeWallpaper.GetMonitors : TMonitorWallpapers;
 begin
   result := FMonitors;
@@ -91,7 +107,7 @@ begin
   for n := 0 to High(FMonitors) do
     if FMonitors[n].ID = MonitorID then
       for i := 0 to High(FWallpapers) do
-        if CompareText(FWallpapers[i].Name, FWallpapers[n].Name) = 0 then
+        if CompareText(FWallpapers[i].Name, FMonitors[n].Name) = 0 then
         begin
           result := FWallpapers[i];
           exit;
