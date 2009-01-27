@@ -29,9 +29,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, SharpApi, JclFileUtils,
-  ImgList, PngImageList,
-  graphicsfx, SharpThemeApi, SharpEListBoxEx, BarPreview, GR32, GR32_PNG, pngimage,
+  Dialogs, StdCtrls, JclSimpleXml, SharpApi, JclFileUtils,
+  ImgList, PngImageList, uISharpETheme, uThemeConsts,
+  graphicsfx, SharpThemeApiEx, SharpEListBoxEx, BarPreview, GR32, GR32_PNG, pngimage,
   ExtCtrls, SharpCenterApi, JclStrings,
 
   ISharpCenterHostUnit,
@@ -85,6 +85,7 @@ type
 
   private
     FSkin: string;
+    FTheme: ISharpETheme;
     FPluginHost: TInterfacedSharpCenterHostBase;
     procedure BuildSkinList;
     procedure BuildPreviewList;
@@ -97,8 +98,8 @@ type
     procedure RefreshSkinList;
     property Skin: string read FSkin write FSkin;
 
-    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost
-      write FPluginHost;
+    property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
+    property Theme: ISharpETheme read FTheme write FTheme;    
   end;
 
 var
@@ -163,8 +164,8 @@ begin
         bmp32.DrawMode := dmBlend;
         bmp32.Clear( color32( PluginHost.Theme.PluginSelectedItem ) );
 
-        scheme := XmlGetScheme(PluginHost.PluginId) + '.xml';
-        CreateBarPreview(Bmp32, PluginHost.PluginId, skin, scheme, 120);
+        scheme := 'DEFAULT';
+        CreateBarPreview(Bmp32, PluginHost.PluginId, skin, scheme, 120, FTheme);
 
         pilNormal.BkColor := FPluginHost.Theme.PluginItem;
         pilSelected.BkColor := FPluginHost.Theme.PluginSelectedItem;
@@ -217,7 +218,7 @@ begin
       li.AddSubItem('');
       li.Data := Pointer(TSkinItem.Create(sSkin));
 
-      s := XmlGetSkin(PluginHost.PluginId);
+      s := FTheme.Skin.Name;
       if s = sSkin then
         iIndex := i;
 
@@ -429,7 +430,7 @@ end;
 
 constructor TSkinItem.Create(ASkin: String);
 var
-  xml:TJvSimpleXML;
+  xml:TJclSimpleXML;
   s:String;
 begin
   FName := ASkin;
@@ -438,7 +439,7 @@ begin
   if Not(FileExists(s)) then
     exit;
 
-  xml := TJvSimpleXML.Create(nil);
+  xml := TJclSimpleXML.Create;
   Try
     xml.LoadFromFile(s);
     if xml.Root.Items.ItemNamed['header'] <> nil then begin

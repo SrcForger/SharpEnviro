@@ -44,7 +44,9 @@ uses
   ISharpCenterPluginUnit,
   SharpEColorEditorEx,
   SharpEColorEditor,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uISharpETheme,
+  uThemeConsts,
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettingsWnd};
 
 {$E .dll}
@@ -55,6 +57,7 @@ type
   TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin)
   private
     FPluginHost: TInterfacedSharpCenterHostBase;
+    FTheme : ISharpETheme;
     procedure Load;
   public
     constructor Create(APluginHost: TInterfacedSharpCenterHostBase);
@@ -81,6 +84,8 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
   PluginHost := APluginHost;
+  FTheme := GetTheme(APluginHost.PluginId);
+  FTheme.LoadTheme([tpSkinScheme]);
 end;
 
 function TSharpCenterPlugin.GetPluginDescriptionText: string;
@@ -107,68 +112,63 @@ procedure TSharpCenterPlugin.Load;
 var
   tmpItem: TSharpEColorEditorExItem;
 begin
+  FTheme.LoadTheme([tpSkinScheme]);
+
   frmSettingsWnd.IsUpdating := true;
   frmSettingsWnd.sceGlassOptions.BeginUpdate;
   try
+    with FTheme.Skin.GlassEffect, frmSettingsWnd do
+    begin
+      tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
+      tmpItem.Title := 'Blur Radius';
+      tmpItem.Description := 'Adjust this value to define the glass blur effect';
+      tmpItem.ValueText := 'Blur Radius: ';
+      tmpItem.ValueEditorType := vetValue;
+      tmpItem.ValueMax := 10;
+      tmpItem.Value := BlurRadius;
 
-    with PluginHost.Xml, PluginHost, frmSettingsWnd do begin
+      tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
+      tmpItem.Title := 'Blur Iterations';
+      tmpItem.Description := 'Adjust this value to define the blur iterations';
+      tmpItem.ValueText := 'Blur Amount: ';
+      tmpItem.ValueEditorType := vetValue;
+      tmpItem.ValueMax := 5;
+      tmpItem.Value := BlurIterations;
 
-      XmlFilename := XmlGetSkinFile(PluginHost.PluginId);
-      if Xml.Load then begin
+      tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
+      tmpItem.Title := 'Blend';
+      tmpItem.Description := 'Enable blend options?';
+      tmpItem.ValueEditorType := vetBoolean;
+      if Blend then tmpItem.Value := 1
+        else tmpItem.Value := 0;
 
-        with XMLRoot.Items do begin
+      tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
+      tmpItem.Title := 'Blend Color';
+      tmpItem.ValueEditorType := vetColor;
+      tmpItem.Value := BlendColor;
 
-          tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
-          tmpItem.Title := 'Blur Radius';
-          tmpItem.Description := 'Adjust this value to define the glass blur effect';
-          tmpItem.ValueText := 'Blur Radius: ';
-          tmpItem.ValueEditorType := vetValue;
-          tmpItem.ValueMax := 10;
-          tmpItem.Value := IntValue('GEBlurRadius', 1);
+      tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
+      tmpItem.Title := 'Blend Transparecy';
+      tmpItem.Description := 'Adjust this value to define the blend transparency';
+      tmpItem.ValueText := 'Blend Amount: ';
+      tmpItem.ValueEditorType := vetValue;
+      tmpItem.ValueMax := 255;
+      tmpItem.Value := BlendAlpha;
 
-          tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
-          tmpItem.Title := 'Blur Iterations';
-          tmpItem.Description := 'Adjust this value to define the blur iterations';
-          tmpItem.ValueText := 'Blur Amount: ';
-          tmpItem.ValueEditorType := vetValue;
-          tmpItem.ValueMax := 5;
-          tmpItem.Value := IntValue('GEBlurIterations', 3);
+      tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
+      tmpItem.Title := 'Lighten';
+      tmpItem.Description := 'Enable lighten options?';
+      tmpItem.ValueEditorType := vetBoolean;
+      if Lighten then tmpItem.Value := 1
+        else tmpItem.Value := 0;
 
-          tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
-          tmpItem.Title := 'Blend';
-          tmpItem.Description := 'Enable blend options?';
-          tmpItem.ValueEditorType := vetBoolean;
-          tmpItem.Value := IntValue('GEBlend', 0);
-
-          tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
-          tmpItem.Title := 'Blend Color';
-          tmpItem.ValueEditorType := vetColor;
-          tmpItem.Value := IntValue('GEBlendColor', clWhite);
-
-          tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
-          tmpItem.Title := 'Blend Transparecy';
-          tmpItem.Description := 'Adjust this value to define the blend transparency';
-          tmpItem.ValueText := 'Blend Amount: ';
-          tmpItem.ValueEditorType := vetValue;
-          tmpItem.ValueMax := 255;
-          tmpItem.Value := IntValue('GEBlendAlpha', 32);
-
-          tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
-          tmpItem.Title := 'Lighten';
-          tmpItem.Description := 'Enable lighten options?';
-          tmpItem.ValueEditorType := vetBoolean;
-          tmpItem.Value := IntValue('GELighten', 1);
-
-          tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
-          tmpItem.Title := 'Lighten Transparency';
-          tmpItem.Description := 'Adjust this value to define the lighten transparency';
-          tmpItem.ValueText := 'Lighten Amount: ';
-          tmpItem.ValueEditorType := vetValue;
-          tmpItem.ValueMax := 255;
-          tmpItem.Value := IntValue('GELightenAmount', 32);
-
-        end;
-      end;
+      tmpItem := TSharpEColorEditorExItem.Create(sceGlassOptions.Items);
+      tmpItem.Title := 'Lighten Transparency';
+      tmpItem.Description := 'Adjust this value to define the lighten transparency';
+      tmpItem.ValueText := 'Lighten Amount: ';
+      tmpItem.ValueEditorType := vetValue;
+      tmpItem.ValueMax := 255;
+      tmpItem.Value := LightenAmount;
     end;
   finally
     frmSettingsWnd.IsUpdating := False;
@@ -194,27 +194,17 @@ end;
 
 procedure TSharpCenterPlugin.Save;
 begin
-  with PluginHost.Xml, PluginHost, frmSettingsWnd do begin
-
-    XmlRoot.Clear;
-    XmlRoot.Name := 'SharpEThemeSkin';
-
-    with XMLRoot.Items do begin
-
-      Add('Skin', XmlGetSkin(PluginId));
-      Add('GEBlurRadius', sceGlassOptions.Items.Item[0].Value);
-      Add('GEBlurIterations', sceGlassOptions.Items.Item[1].Value);
-      Add('GEBlend', sceGlassOptions.Items.Item[2].Value);
-      Add('GEBlendColor', sceGlassOptions.Items.Item[3].Value);
-      Add('GEBlendAlpha', sceGlassOptions.Items.Item[4].Value);
-      Add('GELighten', sceGlassOptions.Items.Item[5].Value);
-      Add('GELightenAmount', sceGlassOptions.Items.Item[6].Value);
-    end;
-
-    XmlFilename := XmlGetSkinFile(PluginId);
-    Xml.Save;
-
+  with FTheme.Skin.GlassEffect, frmSettingsWnd do
+  begin
+    BlurRadius     := sceGlassOptions.Items.Item[0].Value;
+    BlurIterations := sceGlassOptions.Items.Item[1].Value;
+    Blend          := (sceGlassOptions.Items.Item[2].Value <> 0);
+    BlendColor     := sceGlassOptions.Items.Item[3].Value;
+    BlendAlpha     := sceGlassOptions.Items.Item[4].Value;
+    Lighten        := (sceGlassOptions.Items.Item[5].Value <> 0);
+    LightenAmount  := sceGlassOptions.Items.Item[6].Value;
   end;
+  FTheme.Skin.SaveToFileSkinAndGlass;
 end;
 
 function GetMetaData(): TMetaData;

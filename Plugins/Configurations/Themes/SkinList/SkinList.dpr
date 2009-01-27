@@ -1,6 +1,6 @@
 {
-Source Name: ThemeList
-Description: Theme List Config Dll
+Source Name: SkinList
+Description: Skin List Config Dll
 Copyright (C) Martin Krämer (MartinKraemer@gmx.net)
 
 Source Forge Site
@@ -34,7 +34,10 @@ uses
   graphics,
   PngSpeedButton,
   SharpCenterApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uThemeConsts,
+  uISharpETheme,
+  SharpFileUtils,
   SharpApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
@@ -50,6 +53,7 @@ uses
 type
   TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
   private
+    FTheme: ISharpETheme;
     procedure Load;
   public
     constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
@@ -74,6 +78,8 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
   PluginHost := APluginHost;
+  FTheme := GetTheme(APluginHost.PluginId);
+  FTheme.LoadTheme([tpSkinScheme]);
 end;
 
 function TSharpCenterPlugin.GetPluginDescriptionText: String;
@@ -89,7 +95,7 @@ begin
 
   files := TStringList.Create;
   try
-    FindFiles( files, GetSharpeDirectory + 'Skins\', '*Skin.xml' );
+    SharpFileUtils.FindFiles( files, GetSharpeDirectory + 'Skins\', '*Skin.xml' );
     if files.Count <> 0 then result := IntToStr(files.Count);
   finally
     files.Free;
@@ -98,12 +104,14 @@ end;
 
 procedure TSharpCenterPlugin.Load;
 begin
-  frmListWnd.Skin := XmlGetSkin(PluginHost.PluginId);
+  FTheme.LoadTheme([tpSkinScheme]);
+  frmListWnd.Skin := FTheme.Skin.Name;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
 begin
   if frmListWnd = nil then frmListWnd := TfrmListWnd.Create(nil);
+  frmListWnd.Theme := FTheme;
   frmListWnd.PluginHost := PluginHost;
   uVistaFuncs.SetVistaFonts(frmListWnd);
 
@@ -119,7 +127,8 @@ end;
 
 procedure TSharpCenterPlugin.Save;
 begin
-  XmlSetSkin(PluginHost.PluginId, frmListWnd.Skin);
+  FTheme.Skin.Name := frmListWnd.Skin;
+  FTheme.Skin.SaveToFileSkinAndGlass;
 end;
 
 function GetMetaData(): TMetaData;
