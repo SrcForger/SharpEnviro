@@ -37,7 +37,7 @@ uses
   uVistaFuncs,
   SysUtils,
   Graphics,
-  SharpThemeApi,
+  SharpThemeApiEx,
   SharpApi,
   SharpCenterApi,
   uSettingsWnd in 'uSettingsWnd.pas' {frmSettingsWnd},

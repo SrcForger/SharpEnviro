@@ -56,7 +56,9 @@ uses
   Mask,
   JvExMask,
   JvToolEdit,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uISharpETheme,
+  uThemeConsts,
   Contnrs,
   GR32,
   GR32_Resamplers,
@@ -79,9 +81,9 @@ type
     Bmp: TBitmap32;
     MonID: integer;
     Mon: TMonitor;
-      Name: string;
+    Name: string;
     FileName: string;
-    Color: integer;
+    ColorStr: string;
     Alpha: integer;
     Size: TThemeWallpaperSize;
     ColorChange: boolean;
@@ -90,9 +92,9 @@ type
     Lightness: integer;
     Gradient: boolean;
     GradientType: TThemeWallpaperGradientType;
-    GDStartColor: integer;
+    GDStartColorStr: string;
     GDStartAlpha: integer;
-    GDEndColor: integer;
+    GDEndColorStr: string;
     GDEndAlpha: integer;
     MirrorHoriz: boolean;
     MirrorVert: boolean;
@@ -173,11 +175,9 @@ type
   private
     FPluginHost: TInterfacedSharpCenterHostBase;
     FCurrentWP: TWPItem;
-    FThemeScheme: TSharpEColorSet;
+    FTheme: ISharpETheme;
     procedure UpdateWpItem;
   public
-
-
     procedure UpdateGUIFromWPItem(AWPItem: TWPItem);
     procedure UpdateWPItemFromGuid;
     procedure RenderPreview;
@@ -188,7 +188,7 @@ type
 
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
     property CurrentWP: TWPItem read FCurrentWP write FCurrentWP;
-    property ThemeScheme: TSharpEColorSet read FThemeScheme write FThemeScheme;
+    property Theme: ISharpETheme read FTheme write FTheme;
   end;
 
 var
@@ -212,7 +212,7 @@ begin
   TLinearResampler.Create(BmpPreview);
 
   // Default Settings
-  Color := 0;
+  ColorStr := '0';
   Alpha := 255;
   Size := twsScale;
   ColorChange := False;
@@ -221,9 +221,9 @@ begin
   Lightness := 0;
   Gradient := False;
   GradientType := twgtVert;
-  GDStartColor := 0;
+  GDStartColorStr := '0';
   GDStartAlpha := 0;
-  GDEndColor := 0;
+  GDEndColorStr := '0';
   GDEndAlpha := 255;
   MirrorHoriz := False;
   MirrorVert := False;
@@ -375,7 +375,7 @@ begin
     w2 := round(Bmp.Width * (w / Mon.Width));
     h2 := round(Bmp.Height * (h / Mon.Height));
 
-    cBackground := XmlSchemeCodeToColor(FCurrentWP.Color,FThemeScheme);
+    cBackground := FTheme.Scheme.ParseColor(FCurrentWP.ColorStr);
     BmpPreview.SetSize(w, h);
     BmpPreview.Clear(color32(cBackground));
 
@@ -418,9 +418,8 @@ begin
     imgColor.bitmap.FrameRectS(0, 0, w, h, Color32(0, 0, 0, 255));
 
     if Gradient then begin
-
-      cGDStartColor := XmlSchemeCodeToColor(GDStartColor,FThemeScheme);
-      cGDEndColor := XmlSchemeCodeToColor(GDEndColor,FThemeScheme);
+      cGDStartColor := FTheme.Scheme.ParseColor(GDStartColorStr);
+      cGDEndColor := FTheme.Scheme.ParseColor(GDEndColorStr);
       ApplyGradient(WPBmp, GradientType,
         cGDStartColor, cGDEndColor, GDStartAlpha, GDEndAlpha);
     end;
@@ -471,15 +470,17 @@ begin
   end;
   FCurrentWP.GDStartAlpha := sgbGradStartTrans.Value;
   FCurrentWP.GDEndAlpha := sgbGradEndTrans.Value;
-  FCurrentWP.Color := secWpColor.Items.Item[0].ColorCode;
-  FCurrentWP.GDStartColor := secGradColor.Items.Item[0].ColorCode;
-  FCurrentWP.GDEndColor := secGradColor.Items.Item[1].ColorCode;
+  FCurrentWP.ColorStr := inttostr(secWpColor.Items.Item[0].ColorCode);
+  FCurrentWP.GDStartColorStr := inttostr(secGradColor.Items.Item[0].ColorCode);
+  FCurrentWP.GDEndColorStr := inttostr(secGradColor.Items.Item[1].ColorCode);
 
   RenderPreview;
   FPluginHost.Refresh(rtPreview);
 end;
 
 procedure TfrmSettingsWnd.UpdateGUIFromWPItem(AWPItem: TWPItem);
+var
+  i : integer;
 begin
   chkWpMirrorVert.OnClick := nil;
   chkWpMirrorHoriz.OnClick := nil;
@@ -522,9 +523,15 @@ begin
     end;
     sgbGradStartTrans.Value := AWPItem.GDStartAlpha;
     sgbGradEndTrans.Value := AWPItem.GDEndAlpha;
-    secWpColor.Items.Item[0].ColorCode := AWPItem.Color;
-    secGradColor.Items.Item[0].ColorCode := AWPItem.GDStartColor;
-    secGradColor.Items.Item[1].ColorCode := AWPItem.GDEndColor;
+    if TryStrToInt(AWPItem.ColorStr,i) then
+      secWpColor.Items.Item[0].ColorCode := i
+    else secWpColor.Items.Item[0].ColorCode := FTheme.Scheme.ParseColor(AWPItem.ColorStr);
+    if TryStrToInt(AWPItem.GDStartColorStr,i) then
+      secGradColor.Items.Item[0].ColorCode := i
+    else secGradColor.Items.Item[0].ColorCode := FTheme.Scheme.ParseColor(AWPItem.GDStartColorStr);
+    if TryStrToInt(AWPItem.GDEndColorStr,i) then
+      secGradColor.Items.Item[0].ColorCode := i
+    else secGradColor.Items.Item[0].ColorCode := FTheme.Scheme.ParseColor(AWPItem.GDEndColorStr);
 
     UpdateWPItemFromGuid;
     RenderPreview;
@@ -545,7 +552,6 @@ end;
 procedure TfrmSettingsWnd.FormCreate(Sender: TObject);
 begin
   Self.DoubleBuffered := true;
-  XmlGetThemeScheme(FThemeScheme);
 
   WPList := TObjecTList.Create(False);
 end;

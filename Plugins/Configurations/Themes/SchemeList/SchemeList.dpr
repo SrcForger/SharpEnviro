@@ -36,7 +36,10 @@ uses
   JclStrings,
   JvValidators,
   SharpCenterApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  SharpFileUtils,
+  uISharpETheme,
+  uThemeConsts,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
   uListWnd in 'uListWnd.pas' {frmListWnd},
@@ -52,6 +55,7 @@ type
     procedure ValidateSchemeExists(Sender: TObject; ValueToValidate: Variant; var Valid: Boolean);
     procedure ValidateInvalidChars(Sender: TObject; ValueToValidate: Variant; var Valid: Boolean);
   public
+    Theme : ISharpETheme;
     constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
 
     function Open: Cardinal; override; stdcall;
@@ -86,11 +90,30 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
   PluginHost := APluginHost;
+  Theme := GetTheme(PluginHost.PluginID);
+  Theme.LoadTheme([tpSkinScheme]);
 end;
 
 function TSharpCenterPlugin.GetPluginDescriptionText: String;
 begin
   Result := Format('Scheme Configuration for "%s"',[PluginHost.PluginId]);
+end;
+
+function XmlGetSchemeListAsCommaText(Theme : ISharpETheme): string;
+var
+  sSchemeDir: string;
+  tmpStringList: TStringList;
+begin
+  sSchemeDir := Theme.Scheme.Directory;
+
+  tmpStringList := TStringList.Create;
+  try
+    SharpFileUtils.FindFiles(tmpStringList, sSchemeDir, '*.xml');
+    tmpStringList.Sort;
+    result := tmpStringList.CommaText;
+  finally
+    tmpStringList.Free;
+  end;
 end;
 
 function TSharpCenterPlugin.GetPluginStatusText: String;
@@ -99,7 +122,7 @@ var
 begin
   sl := TstringList.Create;
   try
-    sl.CommaText := XmlGetSchemeListAsCommaText(PluginHost.PluginId);
+    sl.CommaText := XmlGetSchemeListAsCommaText(Theme);
   finally
     result := IntToStr(sl.count);
     sl.Free;
@@ -112,7 +135,7 @@ begin
   uVistaFuncs.SetVistaFonts(frmListWnd);
 
   frmListWnd.PluginHost := PluginHost;
-  frmListWnd.InitialiseSettings;
+  frmListWnd.InitialiseSettings(Theme);
   result := PluginHost.Open(frmListWnd);
 end;
 
@@ -166,7 +189,7 @@ begin
   sName := trim(StrRemoveChars(frmEditWnd.edName.Text,
     ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
   sSkinDir := GetSharpeDirectory + 'skins';
-  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, XmlGetSkin(PluginHost.PluginId)]);
+  sSchemeDir := Theme.Scheme.Directory;
 
   bExistsName := FileExists(sSchemeDir + sName + '.xml');
   if ((CompareText(frmEditWnd.edName.Text, frmEditWnd.SchemeItem.Name) = 0) and (PluginHost.EditMode = sceEdit)) then

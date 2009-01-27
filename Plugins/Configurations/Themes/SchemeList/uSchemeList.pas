@@ -9,8 +9,11 @@ uses
   windows,
   JclFileUtils,
   JclStrings,
-  SharpThemeApi,
-  JvSimpleXml,
+  SharpThemeApiEx,
+  uISharpETheme,
+  uThemeConsts,
+  JclSimpleXml,
+  SharpFileUtils,
   SharpApi,
   graphics;
 
@@ -51,13 +54,17 @@ type
   TSchemeManager = class
   private
     FPluginID: string;
+    FTheme: ISharpETheme;
   public
 
     procedure Delete(ASchemeItem: TSchemeItem);
     procedure Copy(ASchemeItem: TSchemeItem; var ACopyName:String);
     procedure Save(AName: String; AAuthor: String;AOriginalScheme:String='');
     property PluginID: string read FPluginID write FPluginID;
+    property Theme: ISharpETheme read FTheme write FTheme;
     procedure GetSchemeList(APluginID: String; AStringList: TStrings);
+
+    function XmlGetSchemeListAsCommaText: string;    
   end;
 
 var
@@ -81,14 +88,13 @@ end;
 procedure TSchemeManager.Copy(ASchemeItem: TSchemeItem; var ACopyName:String);
 var
   sFilename, s: string;
-  sSkinDir, sCopyName, sScheme: string;
+  sCopyName, sScheme: string;
   sSchemeDir: string;
-  xml: TJvSimpleXML;
+  xml: TJclSimpleXML;
   n, n2:Integer;
 begin
 
-  sSkinDir := GetSharpeDirectory + 'skins';
-  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, XmlGetSkin(FPluginID)]);
+  sSchemeDir := FTheme.Scheme.Directory;
   sScheme := sSchemeDir + ASchemeItem.Name + '.xml';
   sCopyName := ASchemeItem.Name;
 
@@ -116,7 +122,7 @@ begin
   sCopyName := s;
 
   FileCopy(sScheme, sFilename, False);
-  xml := TJvSimpleXML.Create(nil);
+  xml := TJclSimpleXML.Create;
   try
     xml.LoadFromFile(sFilename);
     if xml.Root.Items.ItemNamed['info'] <> nil then
@@ -133,12 +139,10 @@ end;
 procedure TSchemeManager.Delete(ASchemeItem: TSchemeItem);
 var
   sFilename: string;
-  sSkinDir, sDeleteName: string;
+  sDeleteName: string;
   sSchemeDir: string;
 begin
-
-  sSkinDir := GetSharpeDirectory + 'skins';
-  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, XmlGetSkin(FPluginID)]);
+  sSchemeDir := Theme.Scheme.Directory;
   sDeleteName := ASchemeItem.Name;
   sFilename := sSchemeDir + sDeleteName + '.xml';
 
@@ -147,39 +151,86 @@ end;
 
 procedure TSchemeManager.Save(AName, AAuthor: String;AOriginalScheme:String='');
 var
-  colors: TSharpEColorSet;
+  XML : TJclSimpleXML;
   sName: String;
+  sScheme,sFileName : String;
 begin
-
-  // Get defaults
-  if AOriginalScheme = '' then
-    XmlGetThemeScheme(XmlGetSkin(FPluginID),colors) else
-    XmlGetThemeScheme(FPluginId,AOriginalScheme,colors);
-
   // Save
   sName := trim(StrRemoveChars(AName, ['"', '<', '>', '|', '/', '\', '*', '?', '.', ':']));
-  XmlSetThemeScheme(FPluginID,sName,colors,AAuthor);
+
+  if AOriginalScheme <> '' then
+  begin
+    sFilename := Theme.Scheme.Directory + sName + '.xml';
+    sScheme := Theme.Scheme.Directory + AOriginalScheme + '.xml';
+    FileCopy(sScheme, sFilename, False);
+
+    XML := TJclSimpleXML.Create;
+    try
+      XML.LoadFromFile(sFilename);
+      if XML.Root.Items.ItemNamed['Info'] <> nil then
+        XML.Root.Items.ItemNamed['Info'].Clear
+      else XML.Root.Items.Add('Info');
+      with XML.Root.Items.ItemNamed['Info'].Items do
+      begin
+        Add('Name',sName);
+        Add('Author',AAuthor);
+      end;
+    finally
+      XML.SaveToFile(sFilename);
+      XML.Free;
+    end;
+  end else
+  begin
+    sFilename := Theme.Scheme.Directory + sName + '.xml';
+
+    XML := TJclSimpleXML.Create;
+    XML.Root.Name := 'SharpESkinScheme';
+    with XML.Root.Items.Add('Info').Items do
+    begin
+      Add('Name',sName);
+      Add('Author', AAuthor);
+    end;
+    XML.SaveToFile(sFilename);
+    XML.Free;
+  end;
 end;
+
+function TSchemeManager.XmlGetSchemeListAsCommaText: string;
+var
+  sSchemeDir: string;
+  tmpStringList: TStringList;
+begin
+  sSchemeDir := Theme.Scheme.Directory;
+
+  tmpStringList := TStringList.Create;
+  try
+    SharpFileUtils.FindFiles(tmpStringList, sSchemeDir, '*.xml');
+    tmpStringList.Sort;
+    result := tmpStringList.CommaText;
+  finally
+    tmpStringList.Free;
+  end;
+end;
+
 
 procedure TSchemeManager.GetSchemeList(APluginID: String; AStringList: TStrings);
 var
-  s, sSchemeDir, sSkinDir, sXmlSearch: string;
-  xml: TJvSimpleXml;
+  s, sSchemeDir, sXmlSearch: string;
+  xml: TJclSimpleXml;
   sList: TStringList;
   i, j: Integer;
   newItem: TSchemeItem;
 begin
-  sSkinDir := GetSharpeDirectory + 'skins';
-  sSchemeDir := Format('%s\%s\schemes\', [sSkinDir, XmlGetSkin(APluginID)]);
+  sSchemeDir := Theme.Scheme.Directory;
   sXmlSearch := sSchemeDir + '*.xml';
 
   sList := TStringList.Create;
   try
-    sList.CommaText := XmlGetSchemeListAsCommaText( FPluginID );
+    sList.CommaText := XmlGetSchemeListAsCommaText;
     sList.Sort;
 
     for i := 0 to Pred(sList.Count) do begin
-      xml := TJvSimpleXML.Create(nil);
+      xml := TJclSimpleXML.Create;
       try
         xml.LoadFromFile(sList[i]);
 
@@ -196,7 +247,7 @@ begin
             if newItem.Author = '' then
               newItem.Author := 'Unknown';
 
-            s := XmlGetScheme(FPluginID);
+            s := Theme.Scheme.Name;
             if CompareText(s, newItem.Name) = 0 then
               newItem.DefaultItem := True;
           end;

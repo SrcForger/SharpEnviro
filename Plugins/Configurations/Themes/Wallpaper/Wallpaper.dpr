@@ -41,7 +41,9 @@ uses
   uVistaFuncs,
   SysUtils,
   GR32,
-  SharpThemeApi,
+  SharpThemeApiEx,
+  uThemeConsts,
+  uISharpETheme,
   SharpApi,
   JvPageList,
   JclSimpleXml,
@@ -61,6 +63,7 @@ type
   TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin, ISharpCenterPluginPreview,
       ISharpCenterPluginTabs)
   private
+    FTheme : ISharpETheme;
     function Load: Boolean;
     procedure PopulateAvailableMonitors;
   public
@@ -98,7 +101,6 @@ begin
         UpdateColorPage else
         if TJvStandardPage(ATab.FObject) = pagGradient then
           UpdateGradientPage;
-
   end;
 end;
 
@@ -110,6 +112,8 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
   PluginHost := APluginHost;
+  FTheme := GetTheme(PluginHost.PluginID);
+  FTheme.LoadTheme([tpWallpaper,tpSkinScheme]);
 end;
 
 function TSharpCenterPlugin.GetPluginDescriptionText: string;
@@ -119,120 +123,59 @@ end;
 
 function TSharpCenterPlugin.Load: Boolean;
 var
-  iScreenMonitor, iMonitor, iWallpaper, val: integer;
   wpItem: TWPItem;
   monitor: TMonitor;
   monitorId: integer;
-
-  elemMonitors, elemWallpapers: TJclSimpleXMLElem;
+  iScreenMonitor: integer;
 begin
   result := true;
 
-  PluginHost.Xml.XmlFilename := XmlGetWallpaperFile(PluginHost.PluginId);
-  if PluginHost.Xml.Load then begin
-    with PluginHost.Xml.XmlRoot do begin
+  FTheme.LoadTheme([tpWallpaper,tpSkinScheme]);
 
-      for iScreenMonitor := 0 to Pred(Screen.MonitorCount) do
-      begin
-        monitor := Screen.Monitors[iScreenMonitor];
+  for iScreenMonitor := 0 to Screen.MonitorCount - 1 do
+  begin
+    monitor := Screen.Monitors[iScreenMonitor];
 
-        // Get primary monitor
-        if monitor.Primary then
-          monitorId := -100
-        else
-          monitorId := monitor.MonitorNum;
+    // Get primary monitor
+    if monitor.Primary then
+      monitorId := -100
+    else
+      monitorId := monitor.MonitorNum;
 
-        // Create a new wallpaper item, and add to the list
-        wpItem := TWPItem.Create;
-        wpItem.MonID := monitorId;
-        wpItem.Mon := monitor;
-        WPList.Add(wpItem);
+    // Create a new wallpaper item, and add to the list
+    wpItem := TWPItem.Create;
+    wpItem.MonID := monitorId;
+    wpItem.Mon := monitor;
+    wpList.Add(wpItem);
 
-        // Get the monitors xml element
-        elemMonitors := Items.ItemNamed['Monitors'];
-
-        if elemMonitors <> nil then
-
-          // Enumerate available monitors
-          for iMonitor := 0 to elemMonitors.Items.Count - 1 do
-            if elemMonitors.Items.Item[iMonitor].Items.IntValue('ID', 0) = monitorId then
-            begin
-
-              // A Wallpaper for that monitor exists, now we need to find it
-              // Get the wallpaper xml element
-              elemWallpapers := Items.ItemNamed['Wallpapers'];
-
-              if elemWallpapers <> nil then
-                for iWallpaper := 0 to elemWallpapers.Items.Count - 1 do
-
-                  if CompareText(elemWallpapers.Items.Item[iWallpaper].Items.Value('Name', '-2'),
-                    elemMonitors.Items.Item[iMonitor].Items.Value('Name', '-1')) = 0 then
-                    with elemWallpapers.Items.Item[iWallpaper].Items do
-                    begin
-
-                      // Found the matching wallpaper, load the settings
-                      {$REGION 'Load Wallpaper settings'}
-                      wpItem.Name := Value('Name');
-                      wpItem.FileName := Value('Image');
-                      wpItem.Color := IntValue('Color', 0);
-                      wpItem.Alpha := IntValue('Alpha', 255);
-                      val := IntValue('Size', 0);
-                      case val of
-                        0: wpItem.Size := twsCenter;
-                        2: wpItem.Size := twsStretch;
-                        3: wpItem.Size := twsTile;
-                      else wpItem.Size := twsScale;
-                      end;
-                      wpItem.ColorChange := BoolValue('ColorChange', False);
-                      wpItem.Hue := IntValue('Hue', 0);
-                      wpItem.Saturation := IntValue('Saturation', 0);
-                      wpItem.Lightness := IntValue('Lightness', 0);
-                      wpItem.Gradient := BoolValue('Gradient', False);
-                      val := IntValue('GradientType', 0);
-                      case val of
-                        1: wpItem.GradientType := twgtVert;
-                        2: wpItem.GradientType := twgtTSHoriz;
-                        3: wpItem.GradientType := twgtTSVert
-                      else wpItem.GradientType := twgtHoriz;
-                      end;
-                      wpItem.GDStartColor := IntValue('GDStartColor', 0);
-                      wpItem.GDStartAlpha := IntValue('GDStartAlpha', 0);
-                      wpItem.GDEndColor := IntValue('GDEndColor', 0);
-                      wpItem.GDEndAlpha := IntValue('GDEndAlpha', 255);
-                      wpItem.MirrorHoriz := BoolValue('MirrorHoriz', False);
-                      wpItem.MirrorVert := BoolValue('MirrorVert', False);
-{$ENDREGION}
-
-                      break;
-                    end;
-              break;
-            end;
-        wpItem.LoadFromFile;
-      end
-    end
-  end
-  else begin
-
-    // if not successfull create a default configuration
-    for iMonitor := 0 to Screen.MonitorCount - 1 do
+    with FTheme.Wallpaper.GetMonitorWallpaper(monitorID) do
     begin
-      monitor := Screen.Monitors[iMonitor];
-      if monitor.Primary then monitorId := -100
-      else monitorId := monitor.MonitorNum;
-
-      WPItem := TWPItem.Create;
-      WPItem.MonID := monitorId;
-      WPItem.Mon := monitor;
-      WPList.Add(WPItem);
+      wpItem.Name := Name;
+      wpItem.FileName := Image;
+      wpItem.ColorStr := ColorStr;
+      wpItem.Alpha := Alpha;
+      wpItem.Size := Size;
+      wpItem.ColorChange := ColorChange;
+      wpItem.Hue := Hue;
+      wpItem.Saturation := Saturation;
+      wpItem.Lightness := Lightness;
+      wpItem.Gradient := Gradient;
+      wpItem.GradientType := GradientType;
+      wpItem.GDStartColorStr := GDStartColorStr;
+      wpItem.GDStartAlpha := GDStartAlpha;
+      wpItem.GDEndColorStr := GDEndColorStr;
+      wpItem.GDEndAlpha := GDEndAlpha;
+      wpItem.MirrorHoriz := MirrorHoriz;
+      wpItem.MirrorVert := MirrorVert;
     end;
-
+    wpItem.LoadFromFile;
   end;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
 begin
-
   if frmSettingsWnd = nil then frmSettingsWnd := TfrmSettingsWnd.Create(nil);
+  frmSettingsWnd.Theme := FTheme;
   uVistaFuncs.SetVistaFonts(frmSettingsWnd);
   frmSettingsWnd.PluginHost := PluginHost;
 
@@ -283,131 +226,66 @@ var
   filename: string;
   pngFile: string;
   iWpItem: integer;
-  i: integer;
   wpItem: TWPItem;
-  val: integer;
   bmp: TBitmap32;
   r: Trect;
 
-  elemMonitors, elemWallpapers: TJclSimpleXMLElem;
+  Mon : TWallpaperMonitor;
+  MonWall : TThemeWallpaperItem;
 begin
-  PluginHost.Xml.XmlFilename := XmlGetWallpaperFile(PluginHost.PluginId);
-  with PluginHost.Xml.XmlRoot, frmSettingsWnd do begin
-    Name := 'SharpEThemeWallpaper';
 
-    // Update Monitors
-    elemMonitors := Items.ItemNamed['Monitors'];
+  // Update Monitors
+  for iWpItem := 0 to WPList.Count - 1 do
+  begin
+    wpItem := TWPItem(WPList.Items[iWpItem]);
+    Mon.Name := wpItem.Name;
+    Mon.ID := wpITem.MonID;
+    FTheme.Wallpaper.UpdateMonitor(Mon);
+  end;
 
-    if elemMonitors = nil then
-      elemMonitors := Items.Add('Monitors');
-
-    with elemMonitors.Items do
+  for iWpItem := 0 to WPList.Count - 1 do
+  begin
+    wpItem := TWPItem(WPList.Items[iWpItem]);
+    with MonWall do
     begin
-      {$REGION 'Find and Delete all already existing monitors'}
-      for iWpItem := 0 to WPList.Count - 1 do
-      begin
-        wpItem := TWPItem(WPList.Items[iWpItem]);
-        for i := Count - 1 downto 0 do
-          if Item[i].Items.IntValue('ID', -1) = wpItem.MonID then
-            Delete(i);
-      end;
-{$ENDREGION}
-
-      {$REGION 'Add new monitors'}
-      for iWpItem := 0 to WPList.Count - 1 do
-      begin
-        wpItem := TWPItem(WPList.Items[iWpItem]);
-        with Add('item').Items do
-        begin
-          if length(trim(wpItem.Name)) = 0 then
-            wpItem.Name := inttostr(wpItem.MonID + random(900000) + 1);
-          Add('Name', wpItem.Name);
-          Add('ID', wpItem.MonID);
-        end;
-      end;
-{$ENDREGION}
+      Name            := wpItem.Name;
+      Image           := wpItem.FileName;
+      ColorStr        := wpItem.ColorStr;
+      Alpha           := wpItem.Alpha;
+      Size            := wpItem.Size;
+      ColorChange     := wpItem.ColorChange;
+      Hue             := wpItem.Hue;
+      Saturation      := wpItem.Saturation;
+      Lightness       := wpItem.Lightness;
+      Gradient        := wpItem.Gradient;
+      GradientType    := wpItem.GradientType;
+      GDStartColorStr := wpItem.GDStartColorStr;
+      GDStartAlpha    := wpItem.GDStartAlpha;
+      GDEndColorStr   := wpItem.GDEndColorStr ;
+      GDEndAlpha      := wpItem.GDEndAlpha;
+      MirrorHoriz     := wpItem.MirrorHoriz;
+      MirrorVert      := wpItem.MirrorVert;
     end;
+    FTheme.Wallpaper.UpdateWallpaper(MonWall);
+  end;
 
-    // Update Wallpapers
-    elemWallpapers := Items.ItemNamed['Wallpapers'];
+  FTheme.Wallpaper.SaveToFile;
+  
+  pngFile := ExtractFilePath(filename) + 'preview.png';
+  bmp := TBitmap32.Create;
+  try
+    bmp.Width := 62;
+    bmp.Height := 48;
+    bmp.Clear(clWhite32);
+    r := frmSettingsWnd.CurrentWP.BmpPreview.ClipRect;
+    InflateRect(r, -1, -1);
 
-    if elemWallpapers = nil then
-      elemWallpapers := Items.Add('Wallpapers');
+    frmSettingsWnd.CurrentWP.BmpPreview.DrawTo(bmp, Rect(0, 0, 62, 48), frmSettingsWnd.CurrentWP.BmpPreview.ClipRect);
 
-    with elemWallpapers.Items do
-    begin
-
-      {$REGION 'Find and delete all existing wallpapers'}
-      for iWpItem := 0 to WPList.Count - 1 do
-      begin
-        wpItem := TWPItem(WPList.Items[iWpItem]);
-        for i := Count - 1 downto 0 do
-          if Item[i].Items.Value('Name', '-1') = wpItem.Name then
-            Delete(i);
-      end;
-{$ENDREGION}
-
-      {$REGION 'Add wallpapers'}
-      for iWpItem := 0 to WPList.Count - 1 do
-      begin
-        wpItem := TWPItem(WPList.Items[iWpItem]);
-        with Add('item').Items do
-        begin
-          Add('Name', wpItem.Name);
-          Add('Image', wpItem.FileName);
-          Add('Color', wpItem.Color);
-          Add('Alpha', wpItem.Alpha);
-          case wpItem.Size of
-            twsCenter: val := 0;
-            twsStretch: val := 2;
-            twsTile: val := 3;
-          else val := 1;
-          end;
-          Add('Size', val);
-          Add('ColorChange', wpItem.ColorChange);
-          Add('Hue', wpItem.Hue);
-          Add('Saturation', wpItem.Saturation);
-          Add('Lightness', wpItem.Lightness);
-          Add('Gradient', wpItem.Gradient);
-          case wpItem.GradientType of
-            twgtVert: val := 1;
-            twgtTSHoriz: val := 2;
-            twgtTSVert: val := 3;
-          else val := 0;
-          end;
-          Add('GradientType', val);
-          Add('GDStartColor', wpItem.GDStartColor);
-          Add('GDStartAlpha', wpItem.GDStartAlpha);
-          Add('GDEndColor', wpItem.GDEndColor);
-          Add('GDEndAlpha', wpItem.GDEndAlpha);
-          Add('MirrorHoriz', wpItem.MirrorHoriz);
-          Add('MirrorVert', wpItem.MirrorVert);
-        end;
-      end;
-{$ENDREGION}
-    end;
-
-    PluginHost.Xml.Save;
-
-    {$REGION 'Save wallpaper preview'}
-      pngFile := ExtractFilePath(filename) + 'preview.png';
-          bmp := TBitmap32.Create;
-          try
-            bmp.Width := 62;
-            bmp.Height := 48;
-            bmp.Clear(clWhite32);
-            r := CurrentWP.BmpPreview.ClipRect;
-            InflateRect(r, -1, -1);
-      
-            CurrentWP.BmpPreview.DrawTo(bmp, Rect(0, 0, 62, 48), CurrentWP.BmpPreview.ClipRect);
-      
-            if FileCheck(pngFile) then
-              SaveBitmap32ToPNG(bmp, pngFile, False, False, clBlack);
-          finally
-            bmp.Free;
-          end;
-    {$ENDREGION}
-
+    if FileCheck(pngFile) then
+      SaveBitmap32ToPNG(bmp, pngFile, False, False, clBlack);
+  finally
+    bmp.Free;
   end;
 end;
 

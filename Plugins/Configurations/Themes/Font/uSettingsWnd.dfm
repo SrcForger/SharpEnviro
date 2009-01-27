@@ -625,7 +625,7 @@ object frmSettingsWnd: TfrmSettingsWnd
       Left = 22
       Top = 5
       Width = 258
-      Height = 15
+      Height = 13
       Margins.Left = 2
       Margins.Top = 5
       Margins.Right = 5
@@ -633,7 +633,6 @@ object frmSettingsWnd: TfrmSettingsWnd
       Align = alLeft
       Caption = 'The options below will override the default skin values'
       Layout = tlCenter
-      ExplicitHeight = 13
     end
     object btnRevert: TPngSpeedButton
       Left = 316

@@ -43,7 +43,7 @@ uses
   JclIniFiles,
   SharpApi,
   SharpCenterApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
   SharpESwatchManager,
   SharpEColorEditor, ImgList, PngImageList, JvComponentBase,
   ISharpCenterHostUnit;

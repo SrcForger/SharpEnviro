@@ -46,10 +46,12 @@ uses
   uEditWnd,
   SharpApi,
   SharpCenterApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
   SharpEListBoxEx,
   PngImageList,
   JvSimpleXML,
+  uISharpETheme,
+  uThemeConsts,
   uSchemeList,
   BarPreview,
   Gr32,
@@ -101,7 +103,7 @@ type
 
     { Public declarations }
     procedure RebuildSchemeList;
-    procedure InitialiseSettings;
+    procedure InitialiseSettings(Theme : ISharpETheme);
     procedure AddItems(ATheme: String);
 
     procedure EditScheme(tmpSchemeItem: TSchemeItem); overload;
@@ -132,7 +134,6 @@ procedure TfrmListWnd.CreatePreviewBitmap(var ABmp: TBitmap32);
 var
   bmp: TBitmap32;
   tmpSchemeItem: TSchemeItem;
-  colors: TSharpEColorSet;
 begin
   bmp := TBitmap32.Create;
   tmpSchemeItem := nil;
@@ -147,12 +148,8 @@ begin
     if tmpSchemeItem = nil then
       exit;
 
-    if ( ( frmEditWnd <> nil ) and (FPluginHost.EditMode = sceAdd)) then
-      XmlGetThemeScheme(XmlGetSkin(FSchemeManager.PluginID), colors) else
-      XmlGetThemeScheme(FSchemeManager.PluginID,tmpSchemeItem.Name,colors);
-
-    BarPreview.CreateBarPreview(bmp, FSchemeManager.PluginID, XmlGetSkin(FSchemeManager.PluginID),
-      tmpSchemeItem.Name, 150, colors, true );
+    BarPreview.CreateBarPreview(bmp, FSchemeManager.PluginID, FSchemeManager.Theme.Skin.Name,
+      tmpSchemeItem.Name, 150, FSchemeManager.Theme, true );
 
     ABmp.SetSize(bmp.Width, bmp.height);
     Bmp.DrawTo(ABmp);
@@ -161,9 +158,10 @@ begin
   end;
 end;
 
-procedure TfrmListWnd.InitialiseSettings;
+procedure TfrmListWnd.InitialiseSettings(Theme : ISharpETheme);
 begin
   FSchemeManager.PluginID := FPluginHost.PluginId;
+  FSchemeManager.Theme := Theme;
   RebuildSchemeList;
 end;
 
@@ -203,7 +201,7 @@ begin
       lbSchemeList.ItemIndex := -1;
       for i := 0 to Pred(lbSchemeList.Count) do begin
         if CompareText(TSchemeItem(lbSchemeList.Item[i].Data).Name,
-          XmlGetScheme(FSchemeManager.PluginID)) = 0 then begin
+          FSchemeManager.Theme.Scheme.Name) = 0 then begin
           iSel := i;
           break;
         end;
@@ -216,10 +214,10 @@ begin
       lbSchemeList.ItemIndex := iSel
     else begin
       lbSchemeList.ItemIndex := 0;
-      SharpCenterApi.BroadcastGlobalUpdateMessage(suScheme, 0, True);
+      SharpApi.BroadcastGlobalUpdateMessage(suScheme, 0, True);
     end;
 
-    XmlSetScheme(FSchemeManager.PluginID, TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data).Name);
+    //XmlSetScheme(FSchemeManager.PluginID, TSchemeItem(lbSchemeList.Item[lbSchemeList.ItemIndex].Data).Name);
 
     LockWindowUpdate(0);
     sl.Free;
@@ -241,7 +239,7 @@ end;
 
 procedure TfrmListWnd.EventsMessageHandler(var Msg: TMessage);
 begin
-  SharpCenterApi.BroadcastGlobalUpdateMessage(suScheme, 0);
+  SharpApi.BroadcastGlobalUpdateMessage(suScheme, 0);
 end;
 
 procedure TfrmListWnd.RebuildSchemeList;
@@ -413,7 +411,8 @@ var
 begin
   tmrSetScheme.Enabled := false;
   tmp := TSchemeItem(lbSchemeList.SelectedItem.Data);
-  XmlSetScheme(FSchemeManager.PluginID, tmp.Name);
+  FSchemeManager.Theme.Scheme.Name := tmp.Name;
+  FSchemeManager.Theme.Scheme.SaveToFile;
 
   PostMessage(self.Handle,WM_EVENTS,0,0);
   PluginHost.Refresh(rtPreview);

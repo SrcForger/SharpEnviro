@@ -134,7 +134,7 @@ var
 
 implementation
 
-uses SharpThemeApi;
+uses SharpThemeApiEx;
 
 {$R *.dfm}
 

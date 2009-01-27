@@ -90,7 +90,7 @@ var
 
 implementation
 
-uses SharpThemeApi,
+uses SharpThemeApiEx,
      SharpCenterApi;
 
 {$R *.dfm}

@@ -38,6 +38,9 @@ uses
   SysUtils,
   Graphics,
   SharpCenterApi,
+  SharpThemeApiEx,
+  uThemeConsts,
+  uISharpETheme,
   SharpApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
@@ -50,6 +53,7 @@ uses
 type
   TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginPreview )
   private
+    FTheme : ISharpETheme;
     procedure Load;
   public
     constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
@@ -75,6 +79,8 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
   PluginHost := APluginHost;
+  FTheme := GetTheme(PluginHost.PluginId);
+  FTheme.LoadTheme([tpIconSet]);
 end;
 
 function TSharpCenterPlugin.GetPluginDescriptionText: String;
@@ -98,21 +104,9 @@ begin
 end;
 
 procedure TSharpCenterPlugin.Load;
-var
-  iconSet: string;
 begin
-  with PluginHost, PluginHost.Xml do begin
-    XmlFilename := GetSharpeUserSettingsPath + 'Themes\' + PluginId + '\IconSet.xml';
-
-    if Xml.Load then begin
-      iconSet := XMLRoot.Items.Value('Name', '');
-      frmListWnd.IconSet := iconSet;
-    end else begin
-
-      // Default
-      frmListWnd.IconSet := 'Cubeix White';
-    end;
-  end;
+  FTheme.LoadTheme([tpIconSet]);
+  frmListWnd.IconSet := FTheme.Icons.Name;
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
@@ -123,7 +117,6 @@ begin
 
   Load;
   result := PluginHost.Open(frmListWnd);
-
 end;
 
 procedure TSharpCenterPlugin.Refresh;
@@ -133,18 +126,12 @@ end;
 
 procedure TSharpCenterPlugin.Save;
 begin
-  with frmListWnd, PluginHost.Xml do begin
-    if lbIcons.ItemIndex >= 0 then begin
-
-      XmlRoot.Clear;
-      XMLRoot.Name := 'SharpEThemeIconSet';
-      XMLRoot.Items.Add('Name', TIconItem(lbIcons.SelectedItem.Data).Name);
-
-      XmlFilename := GetSharpeUserSettingsPath + 'Themes\' + PluginHost.PluginId + '\IconSet.xml';
-
-      PluginHost.Xml.Save;
+  with frmListWnd do
+    if lbIcons.ItemIndex >= 0 then
+    begin
+      FTheme.Icons.Name := TIconItem(lbIcons.SelectedItem.Data).Name;
+      FTheme.Icons.SaveToFile;
     end;
-  end;
 end;
 
 procedure TSharpCenterPlugin.UpdatePreview(ABitmap: TBitmap32);
