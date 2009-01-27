@@ -40,7 +40,6 @@ uses
   BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm},
   uSharpEModuleManager in 'uSharpEModuleManager.pas',
   uISharpESkin in '..\..\Common\Interfaces\uISharpESkin.pas',
-  uSharpESkinInterface in 'uSharpESkinInterface.pas',
   uISharpBar in '..\..\Common\Interfaces\uISharpBar.pas',
   uSharpBarInterface in 'uSharpBarInterface.pas';
 
