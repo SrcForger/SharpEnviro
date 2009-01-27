@@ -32,9 +32,13 @@ uses
   SharpCenterApi,
   ISharpCenterHostUnit,
   ISharpCenterPluginUnit,
-  sharpthemeapi,
+  JclSimpleXML,
+  sharpthemeapiEx,
   graphics,
   uVistaFuncs,
+  uThemeConsts,
+  uISharpETheme,
+  BarPreview,
   forms,
   GR32,
   uEditWnd in 'uEditWnd.pas' {frmEditWnd};
@@ -44,6 +48,7 @@ uses
 type
   TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin, ISharpCenterPluginPreview )
   private
+    FTheme : ISharpETheme;
     procedure Load;
   public
     constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
@@ -68,19 +73,26 @@ begin
 end;
 
 constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
+var
+  pluginId, themeId, schemeId: String;
 begin
   PluginHost := APluginHost;
+
+  pluginId := PluginHost.PluginId;
+  themeId := copy(pluginId, 0, pos(':',pluginId)-1);
+  schemeId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
+
+  FTheme := GetTheme(themeId);
+  FTheme.LoadTheme([tpSkinScheme]);
 end;
 
 function TSharpCenterPlugin.GetPluginDescriptionText: String;
 var
   pluginId, themeId, schemeId: String;
 begin
-  {$REGION 'Get theme and scheme'}
-        pluginId := PluginHost.PluginId;
-        themeId := copy(pluginId, 0, pos(':',pluginId)-1);
-        schemeId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
-    {$ENDREGION}
+  pluginId := PluginHost.PluginId;
+  themeId := copy(pluginId, 0, pos(':',pluginId)-1);
+  schemeId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
 
   result := Format('Editing Scheme "%s"',[schemeId]);
 end;
@@ -89,21 +101,19 @@ procedure TSharpCenterPlugin.Load;
 var
   pluginId, themeId, schemeId: String;
 begin
-  {$REGION 'Get theme and scheme'}
-        pluginId := PluginHost.PluginId;
-        themeId := copy(pluginId, 0, pos(':',pluginId)-1);
-        schemeId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
-    {$ENDREGION}
+  FTheme.LoadTheme([tpSkinScheme]);
+  pluginId := PluginHost.PluginId;
+  themeId := copy(pluginId, 0, pos(':',pluginId)-1);
+  schemeId := copy(pluginId, pos(':',pluginId)+1, length(pluginId) - pos(':',pluginId));
 
-  // Get Scheme Colors
-  frmEditWnd.Theme := themeId;
   frmEditWnd.Scheme := schemeId;
-  XmlGetThemeScheme(themeId, schemeId, frmEditWnd.Colors);
+  XmlGetThemeScheme(themeId, schemeId, FTheme.Skin.Name, frmEditWnd.Colors, FTheme);
 end;
 
 function TSharpCenterPlugin.Open: Cardinal;
 begin
   if frmEditWnd = nil then frmEditWnd := TfrmEditWnd.Create(nil);
+  frmEditWnd.Theme := FTheme;
   uVistaFuncs.SetVistaFonts(frmEditWnd);
 
   frmEditWnd.PluginHost := PluginHost;
@@ -116,9 +126,73 @@ begin
   PluginHost.AssignThemeToPluginForm(frmEditWnd);
 end;
 
+function XmlGetSchemeAuthor(ATheme: string; AScheme: string; ITheme : ISharpETheme): string;
+var
+  xml: TJclSimpleXML;
+  sSkinDir, sSchemeDir, sSkin: string;
+begin
+  Result := '';
+  sSkin := ITheme.Skin.Name;
+  sSkinDir := GetSharpeDirectory + SKINS_DIRECTORY + '\' + sSkin + '\';
+  sSchemeDir := sSkinDir + SKINS_SCHEME_DIRECTORY + '\';
+
+  xml := TJclSimpleXML.Create;
+  try
+    xml.LoadFromFile(sSchemeDir + AScheme + '.xml');
+    if xml.Root.Items.ItemNamed['Info'] <> nil then
+      result := xml.Root.Items.ItemNamed['Info'].Items.Value('Author');
+  finally
+    xml.Free;
+  end;
+end;
+
+procedure XmlSetThemeScheme(ATheme: string; AScheme: string; ASkin: string;
+  var AThemeScheme: TSharpEColorSet; ITheme: ISharpETheme; AAuthor:string=''); overload;
+var
+  xml: TJclSimpleXML;
+  i: Integer;
+  sFileName, sSkinDir, sSchemeDir, sSkin, sAuthor: string;
+begin
+  xml := TJclSimpleXML.Create;
+
+  try
+    xml.Root.Name := 'SharpESkinScheme';
+    xml.Root.Items.Add('Info');
+    with xml.Root.Items.ItemNamed['Info'] do begin
+      Items.Add('Name', AScheme);
+
+      if AAuthor = '' then
+        sAuthor := XmlGetSchemeAuthor(ATheme, AScheme, ITheme) else
+          sAuthor := AAuthor;
+
+        Items.Add('Author', sAuthor);
+
+    end;
+    for i := 0 to High(AThemeScheme) do begin
+      with xml.Root.Items.Add('Item') do begin
+        Items.Add('Tag', AThemeScheme[i].Tag);
+        Items.Add('Color', AThemeScheme[i].Color);
+      end;
+    end;
+  finally
+
+    sSkin := ASkin;
+    sSkinDir := GetSharpeDirectory + SKINS_DIRECTORY + '\' + sSkin + '\';
+    sSchemeDir := sSkinDir + SKINS_SCHEME_DIRECTORY + '\';
+    sFileName := sSchemeDir + AScheme + '.xml';
+    xml.SaveToFile(sFileName);
+    xml.Free;
+  end;
+
+end;
+
 procedure TSharpCenterPlugin.Save;
 begin
-  XmlSetThemeScheme(frmEditWnd.Theme,frmEditWnd.Scheme,frmEditWnd.Colors);
+  XmlSetThemeScheme(FTheme.Info.Name,
+                    frmEditWnd.Scheme,
+                    FTheme.Skin.Name,
+                    frmEditWnd.Colors,
+                    FTheme);
 end;
 
 procedure TSharpCenterPlugin.UpdatePreview(ABitmap: TBitmap32);

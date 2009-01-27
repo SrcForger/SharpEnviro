@@ -45,10 +45,12 @@ uses
   GR32_Image,
   SharpApi,
   SharpCenterApi,
-  SharpThemeApi,
+  SharpThemeApiEx,
   SharpEListBoxEx,
   PngImageList,
-  JvSimpleXML,
+  JclSimpleXML,
+  uThemeConsts,
+  uISharpETheme,
   BarPreview,
   Gr32,
   ImgList, SharpESwatchManager, SharpEColorEditorEx, SharpEColorEditor, ISharpCenterHostUnit;
@@ -66,14 +68,13 @@ type
     procedure cexSchemeUiChange(Sender: TObject);
     procedure tmrPreviewTimer(Sender: TObject);
   private
-    FTheme: string;
+    FTheme: ISharpETheme;
     FScheme: string;
     FPluginHost: TInterfacedSharpCenterHostBase;
   public
-
     Colors: TSharpEColorSet;
     procedure CreatePreviewBitmap(var ABmp: TBitmap32);
-    property Theme: string read FTheme write FTheme;
+    property Theme: ISharpETheme read FTheme write FTheme;
     property Scheme: string read FScheme write FScheme;
 
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write FPluginHost;
@@ -119,7 +120,7 @@ begin
   bmp := TBitmap32.Create;
   try
 
-    BarPreview.CreateBarPreview(bmp, FTheme, XmlGetSkin(FTheme),
+    BarPreview.CreateBarPreview(bmp, FTheme.Info.Name, FTheme.Skin.Name,
       FScheme,150,Colors, true);
 
     ABmp.SetSize(bmp.Width, bmp.height);
