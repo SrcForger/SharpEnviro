@@ -983,7 +983,7 @@ begin
 
   for i := 0 to leftIndex do
   begin
-    if TabItem[i].Visible then
+    if ( (TabItem[i] <> nil) and (TabItem[i].Visible) ) then
       FLeftIndex := i;
 
     // if the buttons width and the width of all visible tabs
@@ -995,7 +995,7 @@ begin
 
   // if the last left index had its visibility changed
   // find a new left index.
-  if not TabItem[FLeftIndex].Visible then
+  if ( (TabItem[i] <> nil) and (not TabItem[FLeftIndex].Visible)) then
     for i := 0 to Pred(Count) do
       if TabItem[i].Visible then
       begin

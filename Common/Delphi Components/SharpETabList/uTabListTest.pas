@@ -24,9 +24,10 @@ type
       const ABtnIndex: Integer);
     procedure FormShow(Sender: TObject);
     procedure btnToggleVisibilityClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
-
+    TabList: TSharpETabList;
   public
     { Public declarations }
   end;
@@ -50,6 +51,14 @@ begin
        (TabItem[i].Caption <> 'Note') then
         TabItem[i].Visible := not TabItem[i].Visible;
   end;
+end;
+
+procedure TForm12.Button1Click(Sender: TObject);
+begin
+  TabList := TSharpETabList.Create(Self);
+  TabList.Parent := self;
+  TabList.Align := alTop;
+  TabList.Add('Test');
 end;
 
 procedure TForm12.Button2Click(Sender: TObject);
