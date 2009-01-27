@@ -27,23 +27,104 @@ unit BarPreview;
 
 interface
 
-uses SharpApi, Types, SharpThemeApi, Math, GR32, JvSimpleXML, BarForm, SharpEBar,
-  Windows, SysUtils, Dialogs, Graphics, uSharpEMenu, uSharpEMenuSettings;
+uses SharpApi, Types, SharpThemeApiEx, uThemeConsts, Math, GR32, JclSimpleXML,
+  BarForm, SharpEBar, Windows, SysUtils, Dialogs, Graphics, uISharpETheme,
+  uSharpEMenu, uSharpEMenuSettings;
 
 procedure CreateBarPreview(srcBitmap: TBitmap32; theme, skin, scheme: string; barWidth: integer;
   var colors: TSharpEColorSet; drawGlass: boolean = false); overload;
 
 procedure CreateBarPreview(srcBitmap: TBitmap32; theme, skin, scheme: string; barWidth: integer;
-  drawGlass: Boolean = false); overload;
+  ITheme : ISharpETheme; drawGlass: Boolean = false); overload;
 
 implementation
 
+procedure XmlGetThemeScheme(ATheme: string; AScheme: string; ASkin: string;
+  var AThemeScheme: TSharpEColorSet; ITheme : ISharpETheme); overload;
+var
+  XML: TJclSimpleXML;
+  i, j, Index: Integer;
+  tmpRec: TSharpESkinColor;
+  sFile, sTag, sCurScheme: string;
+  tmpColor: string;
+  s: string;
+
+  sTheme, sSkin: string;
+  sSkinDir, sSchemeDir: string;
+begin
+  Index := 0;
+
+  sTheme := ATheme;
+  sCurScheme := AScheme;
+  sSkin := ASkin;
+
+  if ((sTheme = '') or (sCurScheme = '') or (sSkin = '')) then begin
+    SharpApi.SendDebugMessageEx('SharpThemeApi', 'Some parameters were invalid for XmlGetThemeScheme', 0, DMT_ERROR);
+    Setlength(AThemeScheme, 0);
+    Exit;
+  end;
+
+  sSkinDir := GetSharpeDirectory + SKINS_DIRECTORY + '\' + sSkin + '\';
+  sSchemeDir := sSkinDir + SKINS_SCHEME_DIRECTORY + '\';
+
+  XML := TJclSimpleXML.Create;
+  try
+
+    // Get Scheme Colors
+    Setlength(AThemeScheme, 0);
+    XML.Root.Clear;
+
+    XML.LoadFromFile(sSkinDir + SKINS_SCHEME_FILE);
+    for i := 0 to Pred(XML.Root.Items.Count) do begin
+
+      SetLength(AThemeScheme, length(AThemeScheme) + 1);
+      tmpRec := AThemeScheme[i];
+
+      with XML.Root.Items.Item[i].Items do begin
+        tmpRec.Name := Value('name', '');
+        tmpRec.Tag := Value('tag', '');
+        tmpRec.Info := Value('info', '');
+        tmpRec.Color := ITheme.Scheme.ParseColor(Value('Default', '0'));
+        s := Value('type', 'color');
+        if CompareText(s, 'boolean') = 0 then
+          tmpRec.schemetype := stBoolean
+        else if CompareText(s, 'integer') = 0 then
+          tmpRec.schemetype := stInteger
+        else
+          tmpRec.schemetype := stColor;
+      end;
+
+      AThemeScheme[i] := tmpRec;
+    end;
+
+    sFile := sSchemeDir + sCurScheme + '.xml';
+    if FileExists(sFile) then begin
+      XML.LoadFromFile(sFile);
+
+      for i := 0 to Pred(XML.Root.Items.Count) do
+        with XML.Root.Items.Item[i].Items do begin
+          sTag := Value('tag', '');
+          tmpColor := Value('color', inttostr(AThemeScheme[Index].Color));
+
+          for j := 0 to high(AThemeScheme) do begin
+            if CompareText(AThemeScheme[j].Tag, sTag) = 0 then begin
+              AThemeScheme[j].Color := ITheme.Scheme.ParseColor(PChar(tmpColor));
+              break;
+            end;
+          end;
+        end;
+    end;
+  finally
+    XML.Free;
+  end;
+end;
+
 procedure CreateBarPreview(srcBitmap: TBitmap32; theme, skin, scheme: string; barWidth: integer;
-  drawGlass: Boolean = false);
+  ITheme : ISharpETheme; drawGlass: Boolean = false);
 var
   colors: TSharpEColorSet;
 begin
-  XmlGetThemeScheme(theme, scheme, skin, colors);
+  XmlGetThemeScheme(theme, scheme, skin, colors, ITheme);
   CreateBarPreview( srcBitmap, theme, skin, scheme, barWidth, colors, drawGlass );
 end;
 
@@ -57,19 +138,19 @@ var
   skinfile: string;
   schemefile: string;
   themeskinfile: string;
-  xml: TJvSimpleXML;
+  xml: TJclSimpleXML;
   throbberpos: TPoint;
   buttonpos: TPoint;
   x, y: integer;
 begin
-  xml := TJvSimpleXML.Create(nil);
+  xml := TJclSimpleXML.Create;
   try
 
     with BarWnd do begin
 
       // Get the files
       skinfile := GetSharpeDirectory + 'Skins\' + skin + '\skin.xml';
-      themeskinfile := SharpThemeApi.XmlGetSkinFile(theme);
+      themeskinfile := GetSharpeUserSettingsPath + 'Themes\' + Theme + '\' + 'skin.xml';
       schemefile := Dir + 'Skins\' + skin + '\scheme.xml';
 
       // Precheck
