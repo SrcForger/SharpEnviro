@@ -37,6 +37,9 @@ procedure CreateBarPreview(srcBitmap: TBitmap32; theme, skin, scheme: string; ba
 procedure CreateBarPreview(srcBitmap: TBitmap32; theme, skin, scheme: string; barWidth: integer;
   ITheme : ISharpETheme; drawGlass: Boolean = false); overload;
 
+procedure XmlGetThemeScheme(ATheme: string; AScheme: string; ASkin: string;
+  var AThemeScheme: TSharpEColorSet; ITheme : ISharpETheme); overload;  
+
 implementation
 
 procedure XmlGetThemeScheme(ATheme: string; AScheme: string; ASkin: string;
