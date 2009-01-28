@@ -60,9 +60,20 @@ type
 
   end;
 
+  function CustomSort(AItem1, AItem2:Pointer):Integer;
+
 implementation
 
 { TFilterItemList }
+
+function CustomSort(AItem1, AItem2:Pointer):Integer;
+var
+  tmp1,tmp2: TFilterItem;
+begin
+  tmp1 := TFilterItem(AItem1);
+  tmp2 := TFilterItem(AItem2);
+  Result := CompareText(tmp1.Name,tmp2.Name);
+end;
 
 function TFilterItemList.AddItem(AItem: TFilterItem): TFilterItem;
 begin
@@ -210,6 +221,8 @@ begin
     xml.Free;
     showCmdsList.Free;
     sList.Free;
+
+    Self.Sort(CustomSort);
   end;
 end;
 
