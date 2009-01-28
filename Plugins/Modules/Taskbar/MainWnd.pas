@@ -90,6 +90,7 @@ type
     FLastDragMinimized : Boolean;
     FMoveItem : TSharpETaskItem;
     FHasMoved : boolean;
+    FRefreshOnNextMouseMove : boolean;
     procedure WMNotify(var msg: TWMNotify); message WM_NOTIFY;
     procedure WMCommand(var msg: TMessage); message WM_COMMAND;
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
@@ -498,7 +499,15 @@ var
   item1,item2 : TTaskItem;
 begin
   if (FMoveItem = nil) then
+  begin
+    if (IList.Count > 0) and (FRefreshOnNextMouseMove) then
+    begin
+      FRefreshOnNextMouseMove := False;
+      TSharpETaskItem(IList[IList.Count - 1]).UpdateSkin;
+      TSharpETaskItem(IList[IList.Count - 1]).Repaint;
+    end;
     exit;
+  end;
 
   if GetCursorPosSecure(cursorPos) then
     CPos := ScreenToClient(cursorPos)
@@ -748,7 +757,8 @@ begin
     pTaskItem := TSharpETaskItem(IList.Items[n]);
     if pTaskItem <> nil then
     begin
-      if not pTaskItem.Visible then pTaskItem.Visible := True;
+      if not pTaskItem.Visible then
+        pTaskItem.Visible := True;
       if sCurrentWidth < sMaxWidth then
       begin
         pTaskItem.AutoSize := False;
@@ -1047,6 +1057,8 @@ begin
     ReAlignComponents(True);
     AlignTaskComponents;
   end;
+
+  FRefreshOnNextMouseMove := True;
 end;
 
 procedure TMainForm.TaskExchange(pItem1,pItem2 : TTaskItem; n,i : integer);
@@ -1097,6 +1109,8 @@ begin
     ReAlignComponents(True);
     AlignTaskComponents;
   end;
+
+  FRefreshOnNextMouseMove := False;
 end;
 
 procedure TMainForm.UpdateTask(pItem : TTaskItem; Index : integer);
@@ -1191,7 +1205,7 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  CurrentVWM := SharpApi.GetCurrentVWM;  
+  CurrentVWM := SharpApi.GetCurrentVWM;
 
   FMoveToVWMIcon := TBitmap.Create;
   FMoveToVWMIcon.LoadFromResourceName(hInstance,'movetovwm');
@@ -1207,6 +1221,8 @@ begin
 
   FDminA.Assign(ses_minall.Glyph32);
   FDmaxA.Assign(ses_maxall.Glyph32);
+
+  FRefreshOnNextMouseMove := False;
 
   sIFilter := False;
   sEFilter := False;
