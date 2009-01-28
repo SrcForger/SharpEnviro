@@ -41,6 +41,7 @@ uses
   StdCtrls,
   gr32,
   Math,
+  MonitorList,
   SharpeDefault,
   SharpGraphicsUtils,
   SharpEBase,
@@ -483,7 +484,7 @@ end;
 
 procedure TSharpEBar.UpdatePosition(NewWidth : integer = -1);
 var
-  Mon: TMonitor;
+  Mon: TMonitorItem;
   x, y: integer;
   u : boolean;
 begin
@@ -495,10 +496,10 @@ begin
 
   FMonitorIndex := abs(FMonitorIndex);
   try
-    if (FMonitorIndex > (Screen.MonitorCount - 1)) or (FPrimaryMon) then
-      Mon := Screen.PrimaryMonitor
+    if (FMonitorIndex > (MonList.MonitorCount - 1)) or (FPrimaryMon) then
+      Mon := MonList.PrimaryMonitor
     else
-      Mon := Screen.Monitors[FMonitorIndex];
+      Mon := MonList.Monitors[FMonitorIndex];
   except
     exit;
   end;

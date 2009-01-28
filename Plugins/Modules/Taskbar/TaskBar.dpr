@@ -38,6 +38,7 @@ uses
   StdCtrls,
   graphics,
   gr32,
+  MonitorList,
   uISharpBarModule,
   uISharpESkin,
   uISharpBar,
@@ -133,7 +134,9 @@ begin
   if not (Initialized) then
     exit;
 
-  if CompareText(msg,'MM_SHELLHOOKWINDOWCREATED') = 0 then
+  if CompareText(msg,'MM_DISPLAYCHANGE') = 0 then
+    MonList.GetMonitors
+  else if CompareText(msg,'MM_SHELLHOOKWINDOWCREATED') = 0 then
     SharpApi.RegisterShellHookReceiver(Form.Handle)
   else if CompareText(msg,'MM_VWMUPDATESETTINGS') = 0 then
   begin

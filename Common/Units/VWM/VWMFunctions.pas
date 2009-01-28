@@ -32,6 +32,7 @@ uses
   Messages,
   Forms,
   Types,
+  MonitorList,
   Math;
 
 type
@@ -94,14 +95,14 @@ begin
 
   if pCurrentVWM = pTargetVWM then
   begin
-    distance := (wndVWM) * (Screen.DesktopWidth + VWMSpacing);
+    distance := (wndVWM) * (MonList.DesktopWidth + VWMSpacing);
     GetWindowRect(pHandle,wndpos);
     SetWindowPos(pHandle,0,wndpos.Left - distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
   end
   else
   if pCurrentVWM = wndVWM then
   begin
-    distance := (pTargetVWM) * (Screen.DesktopWidth + VWMSpacing);
+    distance := (pTargetVWM) * (MonList.DesktopWidth + VWMSpacing);
     GetWindowRect(pHandle,wndpos);
     SetWindowPos(pHandle,0,wndpos.Left + distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
     if VWMGetWindowVWM(pCurrentVWM,pVWMCount,pHandle) = pCurrentVWM then
@@ -109,7 +110,7 @@ begin
   end
   else
   begin
-    distance := (pTargetVWM - wndVWM) * (Screen.DesktopWidth + VWMSpacing);
+    distance := (pTargetVWM - wndVWM) * (MonList.DesktopWidth + VWMSpacing);
     GetWindowRect(pHandle,wndpos);
     SetWindowPos(pHandle,0,wndpos.Left + distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
   end;
@@ -126,7 +127,7 @@ begin
     exit;
 
   GetWindowRect(pHandle,WPos);
-  if WindowInRect(pHandle,Screen.DesktopRect) then
+  if WindowInRect(pHandle,MonList.DesktopRect) then
   begin
     // Current VWM!
     result := pCurrentVWM;
@@ -158,10 +159,10 @@ begin
   if (index + 1 <> CurrentVWM) then
     index := index + 1
   else index := 0;
-  result.Left := Screen.DesktopLeft + index * Screen.DesktopWidth + Max(0,index - 1) * VWMSpacing;
-  result.Right := Screen.DesktopLeft + (index + 1) * Screen.DesktopWidth + Max(0,index - 1) * VWMSpacing;
-  result.Top := Screen.DesktopTop;
-  result.Bottom := Screen.DesktopTop + Screen.DesktopHeight;
+  result.Left := MonList.DesktopLeft + index * MonList.DesktopWidth + Max(0,index - 1) * VWMSpacing;
+  result.Right := MonList.DesktopLeft + (index + 1) * MonList.DesktopWidth + Max(0,index - 1) * VWMSpacing;
+  result.Top := MonList.DesktopTop;
+  result.Bottom := MonList.DesktopTop + MonList.DesktopHeight;
 end;
 
 function VWMGetWindowList(pArea : TRect) : TWndArray;
@@ -208,8 +209,8 @@ var
   R : TRect;
 begin
   // Move the windows from the Src to the Dst Desktop
-  R := Screen.DesktopRect;
-  distance := (pCurrentDesk) * (Screen.DesktopWidth + VWMSpacing);
+  R := MonList.DesktopRect;
+  distance := (pCurrentDesk) * (MonList.DesktopWidth + VWMSpacing);
   SrcList := VWMGetWindowList(R);
   for n := 0 to High(SrcList) do
   begin
@@ -221,8 +222,8 @@ begin
   end;
 
   // Move the windows from the Dst to the Src Desktop
-  R := Screen.DesktopRect;
-  distance := (pNewDesk) * (Screen.DesktopWidth + VWMSpacing);
+  R := MonList.DesktopRect;
+  distance := (pNewDesk) * (MonList.DesktopWidth + VWMSpacing);
   R.Left := R.Left + distance;
   R.Right := R.Right + distance;
   DstList := VWMGetWindowList(R);
@@ -257,12 +258,12 @@ begin
   begin
     GetWindowRect(wndlist[n],wndpos);
     if not (PointInRect(Point(wndpos.Left + (wndpos.Right - wndpos.Left) div 2,
-                              wndpos.Top + (wndpos.Bottom - wndpos.Top) div 2), Screen.DesktopRect)) then
+                              wndpos.Top + (wndpos.Bottom - wndpos.Top) div 2), MonList.DesktopRect)) then
     begin
-      desknr := round(Int(wndpos.Left / (Screen.DesktopWidth + VWMSpacing)));
-      if wndpos.left < Screen.DesktopLeft then
-        distance := (desknr - 1) * (Screen.DesktopWidth + VWMSpacing)
-      else distance := (desknr + 1) * (Screen.DesktopWidth + VWMSpacing);
+      desknr := round(Int(wndpos.Left / (MonList.DesktopWidth + VWMSpacing)));
+      if wndpos.left < MonList.DesktopLeft then
+        distance := (desknr - 1) * (MonList.DesktopWidth + VWMSpacing)
+      else distance := (desknr + 1) * (MonList.DesktopWidth + VWMSpacing);
       SetWindowPos(wndlist[n],0,wndpos.Left - distance,wndpos.Top,0,0,SWP_NOACTIVATE or SWP_NOOWNERZORDER or SWP_NOSIZE);
       if broadcast then
         PostMessage(shellwnd,WM_TASKVWMCHANGE,wndlist[n],CurrentVWM);

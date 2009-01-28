@@ -36,6 +36,7 @@ uses
   Graphics,
   Contnrs,
   SharpApi,
+  MonitorList,
   uISharpBarModule,
   uISharpESkin,
   uISharpBar,
@@ -119,7 +120,9 @@ function TInterfacedSharpBarModule.ModuleMessage(msg: string): HRESULT;
 begin
   result := inherited ModuleMessage(msg);
 
-  if CompareText(msg,'MM_SHELLHOOKWINDOWCREATED') = 0 then
+  if CompareText(msg,'MM_DISPLAYCHANGE') = 0 then
+    MonList.GetMonitors
+  else if CompareText(msg,'MM_SHELLHOOKWINDOWCREATED') = 0 then
     SharpApi.RegisterShellHookReceiver(Form.Handle)
   else if (CompareText(msg,'MM_VWMDESKTOPCHANGED') = 0) and (Initialized) then
   begin

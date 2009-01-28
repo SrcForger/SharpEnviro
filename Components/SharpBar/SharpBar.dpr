@@ -37,6 +37,7 @@ uses
   JclFileUtils,
   SharpEBar,
   SharpApi,
+  MonitorList,
   BarHideWnd in 'Forms\BarHideWnd.pas' {BarHideForm},
   uSharpEModuleManager in 'uSharpEModuleManager.pas',
   uISharpESkin in '..\..\Common\Interfaces\uISharpESkin.pas',
@@ -196,7 +197,7 @@ var
   n : integer;
   x,y : integer;
   noREB,noLASB : boolean;
-  Mon : TMonitor;
+  Mon : TMonitorItem;
 begin
   // Possible exec Params
   // SharpBar.exe -noLASB  ::: no LoadAutoStartBars
@@ -279,9 +280,9 @@ begin
   Application.CreateForm(TSharpBarMainForm, SharpBarMainForm);
   SharpBarMainForm.InitBar;
   if (x <> - 1) and (y <> - 1) then
-     for n := 0 to Screen.MonitorCount - 1 do
+     for n := 0 to MonList.MonitorCount - 1 do
      begin
-       Mon := Screen.Monitors[n];
+       Mon := MonList.Monitors[n];
        if PointInRect(Point(x,y),Mon.BoundsRect) then
        begin
          if y > Mon.Top + Mon.Height div 2 then SharpBarMainForm.SharpEBar.VertPos := vpBottom

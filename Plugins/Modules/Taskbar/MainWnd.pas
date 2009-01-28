@@ -30,7 +30,7 @@ interface
 uses
   Types, Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, JclSimpleXML, SharpApi, Menus,
-  Math, Contnrs, SharpETaskItem, SharpESkin,
+  Math, Contnrs, SharpETaskItem, SharpESkin, MonitorList,
   SharpEBaseControls, SharpECustomSkinSettings, uTaskManager, uTaskItem,
   DateUtils, GR32, GR32_PNG, SharpIconUtils, SharpEButton, JvComponentBase,
   JvDragDrop, VWMFunctions,Commctrl,TaskFilterList,SWCmdList, SharpTypes,
@@ -861,7 +861,7 @@ function TMainForm.CheckFilter(pItem : TTaskItem) : boolean;
 var
   n : integer;
   R : TRect;
-  Mon : TMonitor;
+  Mon : TMonitorItem;
   nm : boolean;
 begin
   if pItem = nil then
@@ -891,7 +891,7 @@ begin
         fteProcess: if CompareText(pItem.FileName,sIFilters[n].FileName) = 0 then
               nm := True;
         fteCurrentMonitor: begin
-             Mon := Screen.MonitorFromWindow(mInterface.BarInterface.BarWnd);
+             Mon := MonList.MonitorFromWindow(mInterface.BarInterface.BarWnd);
              GetWindowRect(pItem.Handle,R);
              if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
                 or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)
@@ -926,7 +926,7 @@ begin
         fteProcess: if CompareText(pItem.FileName,sEFilters[n].FileName) = 0 then
               result := False;
         fteCurrentMonitor: begin
-             Mon := Screen.MonitorFromWindow(mInterface.BarInterface.BarWnd);
+             Mon := MonList.MonitorFromWindow(mInterface.BarInterface.BarWnd);
              GetWindowRect(pItem.Handle,R);
              if PointInRect(Point(R.Left + (R.Right-R.Left) div 2, R.Top + (R.Bottom-R.Top) div 2), Mon.BoundsRect)
                 or PointInRect(Point(R.Left, R.Top), Mon.BoundsRect)

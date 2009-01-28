@@ -31,6 +31,7 @@ uses
   Messages,
   Math,
   SharpAPI,
+  MonitorList,
   SharpThemeApiEx,
   uISharpESkin,
   Dialogs,
@@ -283,6 +284,7 @@ begin
       end;
     WM_DISPLAYCHANGE:
       begin
+        MonList.GetMonitors;
         CurrentDesktop := 1;
 
         VWMFunctions.VWMMoveAllToOne(CurrentDesktop, False); // has to be called two times ...

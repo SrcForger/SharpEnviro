@@ -32,7 +32,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Menus, Math,
   // Custom Units
-  GR32, VWMFunctions,
+  GR32, VWMFunctions, MonitorList,
   // SharpE API Units
   SharpApi, SharpThemeApiEx,
   // Interface Units
@@ -159,7 +159,7 @@ begin
   VWMCount := GetVWMCount;
   VWMIndex := GetCurrentVWM;
   VWMHeight := Height - 2;
-  VWMWidth := round(VWMHeight / Screen.PrimaryMonitor.Height * Screen.PrimaryMonitor.Width);
+  VWMWidth := round(VWMHeight / MonList.PrimaryMonitor.Height * MonList.PrimaryMonitor.Width);
 end;
 
 procedure TMainForm.WMShellMessage(var msg: TMessage);
@@ -236,7 +236,7 @@ begin
   VWM.SetSize((VWMWidth + 2) * VWMCount + Max(0,(VWMCount - 1)) * sVWMSpacing, VWMHeight + 2);
   VWM.Clear(color32(0,0,0,0));
 
-  scale := VWMHeight / Screen.DesktopHeight;
+  scale := VWMHeight / MonList.DesktopHeight;
 
   wndbmp := TBitmap32.Create;
   wndbmp.DrawMode := dmBlend;
@@ -270,12 +270,12 @@ begin
         GetWindowRect(wndlist[i],wndrect);
         w := wndRect.Right - wndRect.Left;
         if index + 1 = VWMIndex then
-          wndrect.Left := (index + 1)*VWMWidth + round((wndRect.Left - Screen.DesktopLeft) * scale)
+          wndrect.Left := (index + 1)*VWMWidth + round((wndRect.Left - MonList.DesktopLeft) * scale)
         else
-        wndrect.Left := smod*VWMWidth + round((wndRect.Left - Screen.DesktopLeft - (smod) * (Screen.DesktopWidth + VWMWidth)) * scale);
-        wndrect.Top := Max(0,round((wndrect.Top + Screen.DesktopTop) * scale));
+        wndrect.Left := smod*VWMWidth + round((wndRect.Left - MonList.DesktopLeft - (smod) * (MonList.DesktopWidth + VWMWidth)) * scale);
+        wndrect.Top := Max(0,round((wndrect.Top + MonList.DesktopTop) * scale));
         wndrect.Right := wndrect.Left + Min(VWMWidth,round(w * scale));
-        wndrect.Bottom := Min(wndbmp.Height,round((wndrect.Bottom + Screen.DesktopTop) * scale));
+        wndrect.Bottom := Min(wndbmp.Height,round((wndrect.Bottom + MonList.DesktopTop) * scale));
         c := ColorToColor32Alpha(sBackgroundColor,sForegroundAlpha);
         if n + 1 = VWMIndex then
           c := LightenColor32(c,64);
@@ -336,8 +336,8 @@ begin
     
     index := n + 1;
     index := index + 1;
-    SrcRect.Left := VWMWidth * (index - 1) ;//round((Screen.DesktopWidth * (index - 1) + Max(0,index - 2) * VWMSpacing) * scale);
-    SrcRect.Right := VWMWidth * (index) ;//;round((Screen.DesktopWidth * (index)) * scale);
+    SrcRect.Left := VWMWidth * (index - 1) ;//round((MonList.DesktopWidth * (index - 1) + Max(0,index - 2) * VWMSpacing) * scale);
+    SrcRect.Right := VWMWidth * (index) ;//;round((MonList.DesktopWidth * (index)) * scale);
     SrcRect.Top := 0;
     SrcRect.Bottom := wndbmp.Height;
     wndbmp.DrawTo(VWM,DstRect.Left,DstRect.Top,SrcRect);

@@ -34,7 +34,7 @@ uses
   SharpEBaseControls, Controls, ExtCtrls, uSkinManagerThreads,
   uSystemFuncs, Types, SharpESkin, Registry, SharpTypes,
   SharpGraphicsUtils, Math, SharpCenterApi, ImgList,
-  uSharpESkinInterface, uSharpBarInterface;
+  uSharpESkinInterface, uSharpBarInterface, MonitorList;
 
 type
   TSharpBarMainForm = class(TForm)
@@ -471,6 +471,9 @@ procedure TSharpBarMainForm.WMDisplayChange(var msg: TMessage);
 begin
   if FSuspended then
     exit;
+
+  MonList.GetMonitors;
+  ModuleManager.BroadcastPluginMessage('MM_DISPLAYCHANGE');
   DelayTimer3.Enabled := True;
 end;
 
@@ -698,7 +701,7 @@ begin
     exit;
 
   BGBmp := TBitmap32.Create;
-  BGBmp.SetSize(Screen.Width, Screen.Height);
+  BGBmp.SetSize(MonList.Width, MonList.Height);
   BGBmp.Clear(color32(0, 0, 0, 255));
   try
     // check if SharpDesk is running
@@ -782,8 +785,8 @@ begin
     // need to calculate an offset
     MLeft := 0;
     MTop := 0;
-    for n := 0 to Screen.MonitorCount - 1 do
-      with Screen.Monitors[n] do begin
+    for n := 0 to MonList.MonitorCount - 1 do
+      with MonList.Monitors[n] do begin
         if (Left < 0) and (Left < MLeft) then
           MLeft := Left;
         if (Top < 0) and (Top < MTop) then
@@ -1152,9 +1155,9 @@ var
   index: integer;
 begin
   index := StrToIntDef(TMenuItem(Sender).Hint,0);
-  if index > Screen.MonitorCount - 1 then
+  if index > MonList.MonitorCount - 1 then
     exit;
-  if Screen.Monitors[index] = Screen.PrimaryMonitor then
+  if MonList.Monitors[index] = MonList.PrimaryMonitor then
     SharpEBar.PrimaryMonitor := True
   else begin
     SharpEbar.PrimaryMonitor := False;
@@ -1210,13 +1213,13 @@ begin
 
   // Build Monitor List
   Monitor1.Clear;
-  for n := 0 to Screen.MonitorCount - 1 do begin
+  for n := 0 to MonList.MonitorCount - 1 do begin
     item := TMenuItem.Create(Monitor1);
     item.GroupIndex := 1;
     item.RadioItem := true;
     item.Caption := inttostr(n);
 
-    if Screen.Monitors[n] = Screen.PrimaryMonitor then
+    if MonList.Monitors[n] = MonList.PrimaryMonitor then
       item.Caption := inttostr(n) + ' (Primary)';
 
     if n = SharpEBar.MonitorIndex then
@@ -1431,8 +1434,8 @@ begin
       oHP := SharpEBar.HorizPos;
       oMon := SharpEBar.MonitorIndex;
       oPMon := SharpEbar.PrimaryMonitor;
-      for n := 0 to Screen.MonitorCount - 1 do begin
-        if Screen.Monitors[n] = Screen.PrimaryMonitor then
+      for n := 0 to MonList.MonitorCount - 1 do begin
+        if MonList.Monitors[n] = MonList.PrimaryMonitor then
           Mon := -1
         else
           Mon := n;
@@ -1440,9 +1443,9 @@ begin
         // Special Movement Code if Full Align
         if SharpEBar.HorizPos = hpFull then begin
           // Top
-          R.Left := Screen.Monitors[n].Left;
-          R.Right := R.Left + Screen.Monitors[n].Width;
-          R.Top := Screen.Monitors[n].Top;
+          R.Left := MonList.Monitors[n].Left;
+          R.Right := R.Left + MonList.Monitors[n].Width;
+          R.Top := MonList.Monitors[n].Top;
           R.Bottom := R.Top + 64;
           if PointInRect(P, R) then begin
             if Mon = -1 then
@@ -1456,7 +1459,7 @@ begin
           end;
 
           // Bottom
-          R.Top := Screen.Monitors[n].Top + Screen.Monitors[n].Height - 64;
+          R.Top := MonList.Monitors[n].Top + MonList.Monitors[n].Height - 64;
           R.Bottom := R.Top + 64;
           if PointInRect(P, R) then begin
             if Mon = -1 then
@@ -1473,8 +1476,8 @@ begin
 
         // Compact Movement Code
         // Top Left
-        R.Left := Screen.Monitors[n].Left;
-        R.Top := Screen.Monitors[n].Top;
+        R.Left := MonList.Monitors[n].Left;
+        R.Top := MonList.Monitors[n].Top;
         R.Right := R.Left + 256;
         R.Bottom := R.Top + 64;
         if PointInRect(P, R) then begin
@@ -1489,8 +1492,8 @@ begin
         end;
 
         // Top Middle
-        R.Left := Screen.Monitors[n].Left + Screen.Monitors[n].Width div 2 - 128;
-        R.Top := Screen.Monitors[n].Top;
+        R.Left := MonList.Monitors[n].Left + MonList.Monitors[n].Width div 2 - 128;
+        R.Top := MonList.Monitors[n].Top;
         R.Right := R.Left + 128;
         R.Bottom := R.Top + 64;
         if PointInRect(P, R) then begin
@@ -1505,8 +1508,8 @@ begin
         end;
 
         // Top Right
-        R.Left := Screen.Monitors[n].Left + Screen.Monitors[n].Width - 256;
-        R.Top := Screen.Monitors[n].Top;
+        R.Left := MonList.Monitors[n].Left + MonList.Monitors[n].Width - 256;
+        R.Top := MonList.Monitors[n].Top;
         R.Right := R.Left + 256;
         R.Bottom := R.Top + 64;
         if PointInRect(P, R) then begin
@@ -1521,8 +1524,8 @@ begin
         end;
 
         // Bottom Left
-        R.Left := Screen.Monitors[n].Left;
-        R.Top := Screen.Monitors[n].Top + Screen.Monitors[n].Height - 64;
+        R.Left := MonList.Monitors[n].Left;
+        R.Top := MonList.Monitors[n].Top + MonList.Monitors[n].Height - 64;
         R.Right := R.Left + 256;
         R.Bottom := R.Top + 64;
         if PointInRect(P, R) then begin
@@ -1537,8 +1540,8 @@ begin
         end;
 
         // Bottom Middle
-        R.Left := Screen.Monitors[n].Left + Screen.Monitors[n].Width div 2 - 128;
-        R.Top := Screen.Monitors[n].Top + Screen.Monitors[n].Height - 64;
+        R.Left := MonList.Monitors[n].Left + MonList.Monitors[n].Width div 2 - 128;
+        R.Top := MonList.Monitors[n].Top + MonList.Monitors[n].Height - 64;
         R.Right := R.Left + 128;
         R.Bottom := R.Top + 64;
         if PointInRect(P, R) then begin
@@ -1553,8 +1556,8 @@ begin
         end;
 
         // Bottom Right
-        R.Left := Screen.Monitors[n].Left + Screen.Monitors[n].Width - 256;
-        R.Top := Screen.Monitors[n].Top + Screen.Monitors[n].Height - 64;
+        R.Left := MonList.Monitors[n].Left + MonList.Monitors[n].Width - 256;
+        R.Top := MonList.Monitors[n].Top + MonList.Monitors[n].Height - 64;
         R.Right := R.Left + 256;
         R.Bottom := R.Top + 64;
         if PointInRect(P, R) then begin
@@ -1802,7 +1805,7 @@ end;
 
 procedure TSharpBarMainForm.OnBarPositionUpdate(Sender: TObject; var X, Y: Integer);
 var
-  Mon: TMonitor;
+  Mon: TMonitorItem;
 begin
   if FSuspended then
     exit;
@@ -1810,10 +1813,10 @@ begin
     BarHideForm.UpdateStatus;
 
   if SharpEBar.HorizPos = hpMiddle then begin
-    if (SharpEBar.MonitorIndex > (Screen.MonitorCount - 1)) or (SharpEBar.PrimaryMonitor) then
-      Mon := Screen.PrimaryMonitor
+    if (SharpEBar.MonitorIndex > (MonList.MonitorCount - 1)) or (SharpEBar.PrimaryMonitor) then
+      Mon := MonList.PrimaryMonitor
     else
-      Mon := Screen.Monitors[SharpEBar.MonitorIndex];
+      Mon := MonList.Monitors[SharpEBar.MonitorIndex];
     if Mon <> nil then begin
       if x < Mon.Left then
         x := Mon.Left;

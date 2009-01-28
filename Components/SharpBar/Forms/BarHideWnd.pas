@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs;
+  Dialogs, MonitorList;
 
 type
   TBarHideForm = class(TForm)
@@ -81,15 +81,15 @@ end;
 
 procedure TBarHideForm.UpdateStatus;
 var
-  mon : TMonitor;
+  mon : TMonitorItem;
 begin
   if Closing then exit;
   if SharpBarMainForm.SharpEBar = nil then
     exit;
   
 
-  mon := Screen.MonitorFromWindow(SharpBarMainForm.Handle);
-  if mon = nil then mon := Screen.MonitorFromPoint(Point(SharpBarMainForm.Left,SharpBarMainForm.Top));
+  mon := MonList.MonitorFromWindow(SharpBarMainForm.Handle);
+  if mon = nil then mon := MonList.MonitorFromPoint(Point(SharpBarMainForm.Left,SharpBarMainForm.Top));
 
   if (SharpBarMainForm.SharpEBar.VertPos = vpTop) and
      (SharpBarMainForm.SharpEBar.SpecialHideForm) then

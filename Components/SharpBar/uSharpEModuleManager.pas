@@ -38,6 +38,7 @@ uses
   Menus,
   Math,
   Controls,
+  MonitorList,
   SharpESkinManager,
   SharpEBar,
   SharpEMiniThrobber,
@@ -856,7 +857,7 @@ function TModuleManager.GetMaxBarSpace : integer;
 var
   maxsize : integer;
   pForm : TWinControl;
-  pMon : TMonitor;
+  pMon : TMonitorItem;
   lo,ro : integer;
   harray : THandleArray;
   n : integer;
@@ -868,9 +869,9 @@ begin
   pForm := GetControlByHandle(FParent);
 
   // get screen size
-  pMon := Screen.MonitorFromPoint(Point(pForm.Left,pForm.Top),mdNearest);
+  pMon := MonList.MonitorFromPoint(Point(pForm.Left,pForm.Top),mdNearest);
   if pMon = nil then
-     pMon := TForm(pForm).Monitor;
+     pMon := MonList.FindMonitor(TForm(pForm).Monitor.Handle);
   if pMon = nil then
   begin
     result := 0;
@@ -888,7 +889,7 @@ begin
     begin
       GetWindowRect(harray[n],R);
       // another bar on the same monitor with the same top position ?
-      if (R.Top = pForm.Top) and (Screen.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
+      if (R.Top = pForm.Top) and (MonList.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
       begin
         freespace := GetWindowLong(harray[n],GWL_USERDATA);
         if (FBar.HorizPos = hpLeft) or (FBar.HorizPos = hpRight) then
@@ -1370,7 +1371,7 @@ var
   smod : integer;
   harray : THandleArray;
   ParentControl : TWinControl;
-  pMon : TMonitor;
+  pMon : TMonitorItem;
   R : TRect;
   newsize : integer;
   csize : integer;
@@ -1469,7 +1470,7 @@ begin
 
   // Check if there is no bar space left and if other bars which have
   // free space left should resize
-  pMon := Screen.MonitorFromPoint(Point(ParentControl.Left,ParentControl.Top),mdNearest);
+  pMon := MonList.MonitorFromPoint(Point(ParentControl.Left,ParentControl.Top),mdNearest);
   maxSize := pMon.Width - ParentControl.Width;
 
   setlength(harray,0);
@@ -1484,7 +1485,7 @@ begin
       begin
         GetWindowRect(harray[n],R);
         // another bar on the same monitor with the same top position?
-        if (R.Top = ParentControl.Top) and (Screen.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
+        if (R.Top = ParentControl.Top) and (MonList.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
             MaxSize := MaxSize - (R.Right - R.Left);
       end;
   //  if MaxSize < 0 then
@@ -1493,7 +1494,7 @@ begin
         begin
           GetWindowRect(harray[n],R);
           // another bar on the same monitor with the same top position?
-          if (R.Top = ParentControl.Top) and (Screen.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
+          if (R.Top = ParentControl.Top) and (MonList.MonitorFromPoint(R.TopLeft,mdNearest) = pMon) then
           begin
             //freespace := GetWindowLong(harray[n],GWL_USERDATA);
             //if (MaxSize < 0) and (FreeSpace > 0) then
