@@ -50,7 +50,7 @@ uses
   JclStrings,
   jvSimpleXml,
   Tabs,
-  SharpESkinManager,
+  //SharpESkinManager,
   uSharpCenterDllMethods,
   uSharpCenterManager,
   SharpERoundPanel,
@@ -153,7 +153,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure pnlPluginContainerTabClick(ASender: TObject;
       const ATabIndex: Integer);
-    procedure FormCreate(Sender: TObject);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -486,99 +485,6 @@ begin
       end;
   end;
 end;
-
-//procedure TSharpCenterWnd.CenterMessage(var Msg: TMessage);
-//begin
-//  if SCM = nil then
-//    exit;
-//
-//  case msg.WParam of
-//
-////    SCM_SET_TAB_SELECTED:
-////      begin
-////
-////        SCM.StateEditItem := False;
-////        SCM.StateEditWarning := False;
-////
-////        if pnlEditContainer.Minimized then
-////          FSelectedTabID := -1
-////        else
-////        begin
-////
-////          case Msg.LParam of
-////            integer(scbAddTab):
-////              begin
-////                pnlEditContainer.TabIndex := cEdit_Add;
-////                FSelectedTabID := cEdit_Add;
-////                SCM.LoadEdit(FSelectedTabID);
-////              end;
-////            integer(scbEditTab):
-////              begin
-////                pnlEditContainer.TabIndex := cEdit_Edit;
-////                FSelectedTabID := cEdit_Edit;
-////                SCM.LoadEdit(FSelectedTabID);
-////              end;
-////          end;
-////        end;
-////        UpdateThemeEvent(nil);
-////      end;
-//
-////    SCM_SET_BUTTON_ENABLED, SCM_SET_BUTTON_DISABLED:
-////      begin
-////
-////        bEnabled := (msg.WParam = SCM_SET_BUTTON_ENABLED);
-////        iBtnID := msg.LParam;
-////        case iBtnID of
-////          integer(scbImport): SetToolbarTabVisible(tidImport, bEnabled);
-////          integer(scbExport): SetToolbarTabVisible(tidExport, bEnabled);
-////          integer(scbDelete): btnEditApply.Enabled := bEnabled;
-////          integer(scbAddTab): pnlEditContainer.TabItems.Item[cEdit_Add].Visible := bEnabled;
-////          integer(scbEditTab): pnlEditContainer.TabItems.Item[cEdit_Edit].Visible := bEnabled;
-////          integer(scbConfigure):
-////            begin
-////              btnEditApply.Enabled := bEnabled;
-////              btnEditApply.Caption := 'Add';
-////              btnEditApply.PngImage := pilIcons.PngImages.Items[10].PngImage;
-////            end;
-////        end;
-////      end;
-//
-////    SCM_SET_SETTINGS_CHANGED:
-////      begin
-////
-////        //UpdatePluginTabs;
-////      end;
-////    SCM_EVT_UPDATE_PREVIEW:
-////      begin
-////        UpdateLivePreview;
-////      end;
-//    SCM_EVT_UPDATE_SETTINGS:
-//      begin
-//        SCM.UpdateSettingsBroadcast;
-//      end;
-//    SCM_EVT_UPDATE_SIZE:
-//      begin
-//        UpdateSize;
-//      end;
-////    SCM_EVT_UPDATE_TABS:
-////      begin
-////        SCM.LoadPluginTabs;
-////        lbTree.Refresh;
-////      end;
-//    SCM_EVT_UPDATE_CONFIG_TEXT:
-//      begin
-//
-//       if SCM.Plugin.Dllhandle <> 0 then
-//        begin
-//          TSharpCenterManagerItem(lbTree.SelectedItem.Data).Status := scm.Plugin.PluginInterface.GetPluginStatusText;
-//          TSharpCenterManagerItem(lbTree.SelectedItem.Data).Description := scm.Plugin.PluginInterface.GetPluginDescriptionText;
-//          lbTree.Refresh;
-//        end;
-//
-//        UpdateConfigHeader;
-//      end;
-//  end;
-//end;
 
 procedure TSharpCenterWnd.btnEditCancelClick(Sender: TObject);
 begin
@@ -1677,11 +1583,6 @@ begin
   finally
     CanClose := True;
   end;
-end;
-
-procedure TSharpCenterWnd.FormCreate(Sender: TObject);
-begin
-  GetCurrentTheme.LoadTheme(ALL_THEME_PARTS); // Initialize Theme Api
 end;
 
 procedure TSharpCenterWnd.FormMouseWheel(Sender: TObject; Shift: TShiftState;
