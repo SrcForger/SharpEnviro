@@ -27,7 +27,6 @@ library Shell;
 uses
   MultiMon,
   uxtheme,
-  Forms,
   math,
   windows,
   classes,
@@ -37,6 +36,7 @@ uses
   Contnrs,
   JclSysInfo,
   JclSimpleXML,
+  MonitorList,
   winver in 'winver.pas',
   declaration in 'declaration.pas',
   SharpAPI in '..\..\..\Common\Libraries\SharpAPI\SharpAPI.pas',
@@ -109,6 +109,7 @@ type
     FAutoModeList : array of boolean;
     FOffsetList : array of TRect;
     FMonIDList : array of integer;
+    FScreenChange : Boolean;
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -119,6 +120,8 @@ type
 
     procedure Enable;
     procedure Disable;
+
+    property ScreenChange : Boolean read FScreenChange write FScreenChange;
   end;  
 
 
@@ -247,11 +250,17 @@ begin
         DeskAreaManager.SetDeskArea;
       end;
     end;
+    WM_DISPLAYCHANGE: DeskAreaManager.ScreenChange := True;
   end;
 
   if (Msg = WM_TIMER) and (wParam = 1) then
   begin
-    if DeskAreaManager <> nil then
+    if DeskAreaManager.ScreenChange then
+    begin
+      MonList.GetMonitors;
+      DeskAreaManager.ScreenChange := False;
+    end
+    else if DeskAreaManager <> nil then
       DeskAreaManager.SetDeskArea;
     result := 0;
   end else Result := DefWindowProc(wnd, Msg, wParam, lParam);
@@ -393,7 +402,7 @@ begin
               deskswitch := True;
             end;
           end else
-          if (WindowInRect(pItem.Handle,Screen.DesktopRect))then
+          if (WindowInRect(pItem.Handle,MonList.DesktopRect))then
           begin
             vwm := VWMGetWindowVWM(GetCurrentVWM,GetVWMCount,h);
             if vwm <> pItem.LastVWM then
@@ -1159,6 +1168,7 @@ end;
 
 { TDeskAreaManager }
 
+
 constructor TDeskAreaManager.Create;
 begin
   inherited Create;
@@ -1166,6 +1176,8 @@ begin
   setlength(FAutoModeList,0);
   setlength(FOffsetList,0);
   setlength(FMonIDList,0);
+
+  FScreenChange := False;
 
   DeskAreaTimerWndClass.hInstance := hInstance;
   if Windows.RegisterClass(DeskAreaTimerWndClass) <> 0 then
@@ -1234,21 +1246,13 @@ begin
     BR[High(BR)] := SharpApi.GetSharpBarArea(n);
   end;
 
-  try
-    MonCount := Screen.MonitorCount;
-  except
-    exit;
-  end;
+  MonCount := MonList.MonitorCount;
 
   for n := 0 to MonCount - 1 do
   begin
-    try
-      if Screen.Monitors[n] = Screen.PrimaryMonitor then
-        MonID := -100
-        else MonID := Screen.Monitors[n].MonitorNum;
-    except
-      exit;
-    end;
+    if MonList.Monitors[n] = MonList.PrimaryMonitor then
+      MonID := -100
+    else MonID := MonList.Monitors[n].MonitorNum;
 
     Index := -1;
     for i := 0 to High(FMonIDList) do
@@ -1258,12 +1262,8 @@ begin
         break;
       end;
 
-    try
-      Area := Screen.Monitors[n].BoundsRect;
-    except
-      exit;
-    end;
-    
+    Area := MonList.Monitors[n].BoundsRect;
+
     if Index <> -1 then
       am := FAutoModeList[Index]
       else am := True;
@@ -1271,19 +1271,15 @@ begin
     begin
       for i := 0 to High(BR) do
       begin
-        try
-          if IsWindowVisible(BR[i].wnd) then
-             if PointInRect(Point(BR[i].R.Left + (BR[i].R.Right - BR[i].R.Left) div 2,
-                                  BR[i].R.Top + (BR[i].R.Bottom - BR[i].R.Top) div 2),
-                            Screen.Monitors[n].BoundsRect) then
-             begin
-               if BR[i].R.Top < Screen.Monitors[n].Top + Screen.Monitors[n].Height div 2 then
-                  Area.Top := Max(Area.Top,BR[i].R.Bottom)
-                  else Area.Bottom := Min(Area.Bottom,BR[i].R.Top);
-             end;
-        except
-          exit;
-        end;
+        if IsWindowVisible(BR[i].wnd) then
+           if PointInRect(Point(BR[i].R.Left + (BR[i].R.Right - BR[i].R.Left) div 2,
+                                BR[i].R.Top + (BR[i].R.Bottom - BR[i].R.Top) div 2),
+                          MonList.Monitors[n].BoundsRect) then
+           begin
+             if BR[i].R.Top < MonList.Monitors[n].Top + MonList.Monitors[n].Height div 2 then
+                Area.Top := Max(Area.Top,BR[i].R.Bottom)
+                else Area.Bottom := Min(Area.Bottom,BR[i].R.Top);
+           end;
       end;
     end;
 
@@ -1302,18 +1298,14 @@ begin
       begin
         ABItem := TAppBarItem(TrayManager.AppBarList.Items[i]);
         if not ABItem.AutoHideBar then
-          try
-            if PointInRect(Point(ABItem.Data.abd.rc.Left + (ABItem.Data.abd.rc.Right - ABItem.Data.abd.rc.Left) div 2,
-                                 ABItem.Data.abd.rc.Top + (ABItem.Data.abd.rc.Bottom - ABItem.Data.abd.rc.Top) div 2),
-                           Screen.Monitors[n].BoundsRect) then
-            begin
-              if ((ABItem.Data.abd.uEdge = ABE_RIGHT) and (Area.Right > ABItem.Data.abd.rc.Left)) then
-                Area.Right := ABItem.Data.abd.rc.Left
-              else if ((ABItem.Data.abd.uEdge = ABE_LEFT) and (Area.Left < ABItem.Data.abd.rc.Right)) then
-                Area.Left := ABItem.Data.abd.rc.Right
-            end;
-          except
-            exit;
+          if PointInRect(Point(ABItem.Data.abd.rc.Left + (ABItem.Data.abd.rc.Right - ABItem.Data.abd.rc.Left) div 2,
+                               ABItem.Data.abd.rc.Top + (ABItem.Data.abd.rc.Bottom - ABItem.Data.abd.rc.Top) div 2),
+                         MonList.Monitors[n].BoundsRect) then
+          begin
+            if ((ABItem.Data.abd.uEdge = ABE_RIGHT) and (Area.Right > ABItem.Data.abd.rc.Left)) then
+              Area.Right := ABItem.Data.abd.rc.Left
+            else if ((ABItem.Data.abd.uEdge = ABE_LEFT) and (Area.Left < ABItem.Data.abd.rc.Right)) then
+              Area.Left := ABItem.Data.abd.rc.Right
           end;
       end;
 
@@ -1327,20 +1319,16 @@ begin
     end;
 
     k := 0;
-    try
-      if (Area.Left <> Screen.Monitors[n].WorkareaRect.Left) or
-         (Area.Right <> Screen.Monitors[n].WorkareaRect.Right) or
-         (Area.Top <> Screen.Monitors[n].WorkareaRect.Top) or
-         (Area.Bottom <> Screen.Monitors[n].WorkareaRect.Bottom) then
-      begin
-        SystemParametersInfo(SPI_SETWORKAREA, k, @Area, SPIF_UPDATEINIFILE);
+    if (Area.Left <> MonList.Monitors[n].WorkareaRect.Left) or
+       (Area.Right <> MonList.Monitors[n].WorkareaRect.Right) or
+       (Area.Top <> MonList.Monitors[n].WorkareaRect.Top) or
+       (Area.Bottom <> MonList.Monitors[n].WorkareaRect.Bottom) then
+    begin
+      SystemParametersInfo(SPI_SETWORKAREA, k, @Area, SPIF_UPDATEINIFILE);
   //      SharpEBroadCast(WM_SETTINGCHANGE,SPI_SETWORKAREA, 0)
   //      SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0);
-        SendMessageTimeOut(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0,SMTO_ABORTIFHUNG,20,r);
-      end
-    except
-      exit;
-    end;
+      SendMessageTimeOut(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0,SMTO_ABORTIFHUNG,20,r);
+    end
   end;
   setlength(BR,0);
 end;
@@ -1350,14 +1338,14 @@ var
   n : integer;
   i : cardinal;
   Area : TRect;
-  Mon : TMonitor;
+  Mon : TMonitorItem;
   r: Cardinal;
 begin
   i := 0;
   try
-    for n := 0 to Screen.MonitorCount - 1 do
+    for n := 0 to MonList.MonitorCount - 1 do
     begin
-      Mon := Screen.Monitors[n];
+      Mon := MonList.Monitors[n];
       Area := Rect(Mon.Left,Mon.Top,Mon.Left + Mon.Width, Mon.Top + Mon.Height);
       SystemParametersInfo(SPI_SETWORKAREA, i, @Area, SPIF_UPDATEINIFILE);
       SendMessageTimeOut(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETWORKAREA, 0,SMTO_ABORTIFHUNG,20,r);
