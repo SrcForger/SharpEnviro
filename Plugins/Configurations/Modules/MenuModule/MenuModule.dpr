@@ -77,7 +77,6 @@ begin
   begin
     with PluginHost.Xml.XmlRoot.Items, frmEdit do
     begin
-      gbSize.Value := IntValue('Width', 100);
       chkDisplayCaption.Checked := BoolValue('ShowLabel', True);
       chkDisplayIcon.Checked := BoolValue('ShowIcon', true);
       editIcon.Text := Value('Icon','icon.mycomputer');
@@ -114,7 +113,6 @@ begin
     // Clear the list so we don't get duplicates.
     Clear;
 
-    Add('Width', gbSize.Value);
     Add('ShowLabel', chkDisplayCaption.Checked);
     Add('ShowIcon', chkDisplayIcon.Checked);
     Add('Icon', editIcon.Text);

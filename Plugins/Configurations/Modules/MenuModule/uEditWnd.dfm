@@ -24,48 +24,10 @@ object frmEdit: TfrmEdit
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
-    object pnlDisplaySize: TPanel
-      AlignWithMargins = True
-      Left = 5
-      Top = 283
-      Width = 410
-      Height = 22
-      Margins.Left = 5
-      Margins.Top = 0
-      Margins.Right = 5
-      Margins.Bottom = 0
-      Align = alTop
-      BevelOuter = bvNone
-      ParentColor = True
-      TabOrder = 0
-      object gbSize: TSharpeGaugeBox
-        Left = 0
-        Top = 0
-        Width = 252
-        Height = 22
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 5
-        Align = alLeft
-        Color = clWindow
-        Constraints.MaxWidth = 477
-        ParentBackground = False
-        Min = 16
-        Max = 200
-        Value = 100
-        Suffix = ' px'
-        Description = 'Adjust to set the size of the button'
-        PopPosition = ppBottom
-        PercentDisplay = False
-        OnChangeValue = gbSizeChangeValue
-        BackgroundColor = clWindow
-      end
-    end
     object pnlMenu: TPanel
       AlignWithMargins = True
       Left = 5
-      Top = 362
+      Top = 283
       Width = 410
       Height = 21
       Margins.Left = 5
@@ -76,7 +38,8 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 1
+      TabOrder = 0
+      ExplicitTop = 362
       object cbMenu: TComboBox
         Left = 0
         Top = 0
@@ -108,7 +71,7 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       Color = clWindow
       ParentBackground = False
-      TabOrder = 2
+      TabOrder = 1
       object editCaption: TEdit
         Left = 0
         Top = 0
@@ -148,7 +111,7 @@ object frmEdit: TfrmEdit
       Align = alTop
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 4
+      TabOrder = 3
       object chkDisplayIcon: TCheckBox
         Left = 0
         Top = 0
@@ -218,7 +181,7 @@ object frmEdit: TfrmEdit
       AutoSize = True
       BevelOuter = bvNone
       ParentColor = True
-      TabOrder = 7
+      TabOrder = 6
       object btnIconBrowse: TButton
         Left = 258
         Top = 0
@@ -239,27 +202,10 @@ object frmEdit: TfrmEdit
         ExplicitHeight = 21
       end
     end
-    object schDisplaySize: TSharpECenterHeader
-      AlignWithMargins = True
-      Left = 5
-      Top = 236
-      Width = 410
-      Height = 37
-      Margins.Left = 5
-      Margins.Top = 10
-      Margins.Right = 5
-      Margins.Bottom = 10
-      Title = 'Display Size'
-      Description = 'Define the size of the button.'
-      TitleColor = clWindowText
-      DescriptionColor = clRed
-      Align = alTop
-      Color = clWindow
-    end
     object schMenu: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
-      Top = 315
+      Top = 236
       Width = 410
       Height = 37
       Margins.Left = 5
@@ -272,6 +218,7 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
+      ExplicitTop = 315
     end
   end
 end

@@ -106,7 +106,7 @@ begin
     begin
       sShowLabel   := BoolValue('ShowLabel',True);
       sCaption     := Value('Caption','SharpE');
-      sActionStr   := Value('ActionStr','!ShowMenu');
+      sActionStr   := Value('ActionStr','!OpenMenu: Menu');
       sShowIcon    := BoolValue('ShowIcon',sShowIcon);
       sIcon        := Value('Icon',sIcon);
     end;

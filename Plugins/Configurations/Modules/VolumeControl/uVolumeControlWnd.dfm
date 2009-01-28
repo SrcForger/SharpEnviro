@@ -65,9 +65,6 @@ object frmVolumeControl: TfrmVolumeControl
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 0
-        ExplicitLeft = 10
-        ExplicitTop = 162
-        ExplicitWidth = 408
         object sgb_width: TSharpeGaugeBox
           Left = 0
           Top = 3
@@ -76,7 +73,7 @@ object frmVolumeControl: TfrmVolumeControl
           ParentBackground = False
           Min = 25
           Max = 200
-          Value = 75
+          Value = 50
           Prefix = 'Width: '
           Suffix = 'px'
           Description = 'Adjust Volume Bar Width'
@@ -100,9 +97,6 @@ object frmVolumeControl: TfrmVolumeControl
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 1
-        ExplicitLeft = 10
-        ExplicitTop = 84
-        ExplicitWidth = 408
         object cb_mlist: TComboBox
           Left = 0
           Top = 3
@@ -130,9 +124,6 @@ object frmVolumeControl: TfrmVolumeControl
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitLeft = 10
-        ExplicitTop = 3
-        ExplicitWidth = 408
       end
       object schSize: TSharpECenterHeader
         AlignWithMargins = True
@@ -150,9 +141,6 @@ object frmVolumeControl: TfrmVolumeControl
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitLeft = 10
-        ExplicitTop = 123
-        ExplicitWidth = 408
       end
     end
   end

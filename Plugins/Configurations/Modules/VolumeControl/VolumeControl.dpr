@@ -83,7 +83,7 @@ begin
   begin
     with PluginHost.Xml.XmlRoot.Items, frmVolumeControl do
     begin
-      sgb_Width.Value := IntValue('Width',75);
+      sgb_Width.Value := IntValue('Width',50);
       i := IntValue('Mixer',MIXERLINE_COMPONENTTYPE_DST_SPEAKERS);
       for n := 0 to IDList.Count -1 do
       begin

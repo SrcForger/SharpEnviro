@@ -51,17 +51,14 @@ uses
 type
   TfrmEdit = class(TForm)
     pnlOptions: TPanel;
-    pnlDisplaySize: TPanel;
     Panel2: TPanel;
     chkDisplayIcon: TCheckBox;
     chkDisplayCaption: TCheckBox;
     pnlMenu: TPanel;
     pnlIcon: TPanel;
     btnIconBrowse: TButton;
-    gbSize: TSharpeGaugeBox;
     cbMenu: TComboBox;
     schMenu: TSharpECenterHeader;
-    schDisplaySize: TSharpECenterHeader;
     pnlDisplayOptions: TPanel;
     schDisplayOptions: TSharpECenterHeader;
     SharpECenterHeader1: TSharpECenterHeader;
