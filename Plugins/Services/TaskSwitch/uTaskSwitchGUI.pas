@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, Graphics, SysUtils, Math, Classes, ExtCtrls, Forms,
   SharpThemeApiEx, uISharpETheme, SharpESkin, SharpESkinPart, SharpESkinManager,
-  uTaskSwitchWnd, SharpIconUtils, SharpGraphicsUtils, SharpTypes,
+  uTaskSwitchWnd, SharpIconUtils, SharpGraphicsUtils, SharpTypes, uISharpESkin,
    GR32, GR32_PNG, GR32_Resamplers;
 
 type
@@ -29,7 +29,7 @@ type
     wndlist : array of hwnd;
     previews : array of TBitmap32;
     StartState: TKeyboardState;
-    constructor Create; reintroduce;
+    constructor Create(pSkinInterface : ISharpESkin); reintroduce;
     destructor Destroy; override;
     procedure ShowWindow;
     procedure CloseWindow;
@@ -193,7 +193,7 @@ begin
   end;
 end;
 
-constructor TTSGui.Create;
+constructor TTSGui.Create(pSkinInterface : ISharpESkin);
 var
   ResStream : TResourceStream;
   TempBmp : TBitmap32;
@@ -207,11 +207,7 @@ begin
   setlength(previews,0);
   FWnd := nil;
 
-  FSkinManager := TSharpESkinManager.Create(nil,[scBar,scTaskSwitch]);
-  FSkinManager.HandleThemeApiUpdates := False;
-  FSkinManager.SkinSource := ssSystem;
-  FSkinManager.SchemeSource := ssSystem;
-  FSkinManager.Skin.UpdateDynamicProperties(FSkinManager.Scheme);
+  FSkinManager := pSkinInterface.SkinManager;
 
   FBackground := TBitmap32.Create;
   FNormal := TBitmap32.Create;
@@ -253,7 +249,6 @@ destructor TTSGui.Destroy;
 var
   n : integer;
 begin
-  FSkinManager.Free;
   setlength(wndlist,0);
   for n := 0 to High(Previews) do
     Previews[n].Free;

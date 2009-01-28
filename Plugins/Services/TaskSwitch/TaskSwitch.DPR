@@ -35,6 +35,7 @@ uses
   JvSimpleXML,
   JclSysUtils,
   JclSysInfo,
+  uISharpESkin,
   Dialogs,
   uTaskSwitchGUI in 'uTaskSwitchGUI.pas',
   uTaskSwitchWnd in 'Forms\uTaskSwitchWnd.pas' {TaskSwitchWnd},
@@ -67,6 +68,7 @@ type
 var
   AE:TActionEvent;
   h:THandle;
+  SkinInterface : ISharpESkin;
   Filters : TFilterItemList;
   Actions : array of TTaskAction;
   TaskManager : TTaskManager;
@@ -408,15 +410,17 @@ begin
   Filters.Free;
 end;
 
-function Start(owner: hwnd): hwnd;
+function StartEx(owner: hwnd; pSkinInterface : ISharpESkin): hwnd;
 begin
   Result := owner;
+
+  SkinInterface := pSkinInterface;
 
   Filters := TFilterItemList.Create;
   Filters.Load;
 
   TaskManager := TTaskManager.Create;  
-  TSGUI := TTSGUI.Create;
+  TSGUI := TTSGUI.Create(SkinInterface);
 
   ae := TActionEvent.Create;
   h := Classes.Allocatehwnd(Ae.MessageHandler);
@@ -474,7 +478,7 @@ begin
 end;
 
 exports
-  Start,
+  StartEx,
   Stop,
   GetMetaData;
 

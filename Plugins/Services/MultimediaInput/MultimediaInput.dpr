@@ -33,6 +33,7 @@ uses
   SharpApi,
   SharpThemeApiEx,
   Registry,
+  uISharpESkin,
   MMSystem,
   Math,
   SharpTypes,
@@ -49,6 +50,7 @@ type
   end;
 
 var
+  SkinInterface: ISharpESkin;
   AE:TActionEvent;
   h:THandle;
   SkinManager : TSharpESkinManager;
@@ -162,13 +164,11 @@ begin
 end;
 
 // Service is started
-function Start(owner: hwnd): hwnd;
+function StartEx(owner: hwnd; pSkinInterface : ISharpESkin): hwnd;
 begin
-  SkinManager := TSharpESkinManager.Create(nil,[scBasic]);
-  SkinManager.HandleThemeApiUpdates := False;
-  SkinManager.SkinSource := ssSystem;
-  SkinManager.SchemeSource := ssSystem;
-  SkinManager.Skin.UpdateDynamicProperties(SkinManager.Scheme);
+  SkinInterface := pSkinInterface;
+
+  SkinManager := SkinInterface.SkinManager;
 
   Result := owner;
   sShowOSD := True;
@@ -187,7 +187,6 @@ end;
 procedure Stop;
 begin
   SharpApi.UnRegisterShellHookReceiver(h);
-  SkinManager.Free;
 
   DeallocateHWnd(h);
   AE.Free;
@@ -322,7 +321,7 @@ end;
 
 //Ordinary Dll code, tells delphi what functions to export.
 exports
-  Start,
+  StartEx,
   Stop,
   GetMetaData;
 
