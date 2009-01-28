@@ -39,7 +39,6 @@ requires
   Jcl,
   JclVcl,
   VclSmp,
-  SharpESkinComponents,
   PNG_D9,
   PngComponentsD9,
   GR32_BDS2006,
@@ -51,7 +50,8 @@ requires
   JvCtrlsD11R,
   JvInterpreterD11R,
   JvPageCompsD11R,
-  JvXPCtrlsD11R;
+  JvXPCtrlsD11R,
+  SharpESkinComponents;
 
 contains
   SharpEFontSelector in '..\..\Delphi Components\SharpEFontSelector\SharpEFontSelector.pas',
@@ -62,7 +62,6 @@ contains
   SharpERoundPanel in '..\..\Delphi Components\SharpERoundPanel\SharpERoundPanel.pas',
   SharpEListBoxEx in '..\..\Delphi Components\SharpEListBoxEx\SharpEListBoxEx.pas',
   SharpETabList in '..\..\Delphi Components\SharpETabList\SharpETabList.pas',
-  SharpECenterScheme in '..\..\Delphi Components\SharpECenterScheme\SharpECenterScheme.pas',
   SharpEColorPicker in '..\..\Delphi Components\SharpEColorPicker\SharpEColorPicker.pas',
   SharpEColorEditor in '..\..\Delphi Components\SharpEColorEditor\SharpEColorEditor.pas',
   SharpEColorEditorEx in '..\..\Delphi Components\SharpEColorEditorEx\SharpEColorEditorEx.pas',
