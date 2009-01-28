@@ -33,7 +33,7 @@ object frmBMon: TfrmBMon
         Left = 5
         Top = 0
         Width = 650
-        Height = 35
+        Height = 37
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
@@ -48,7 +48,7 @@ object frmBMon: TfrmBMon
       object cb_icon: TJvXPCheckbox
         AlignWithMargins = True
         Left = 5
-        Top = 45
+        Top = 47
         Width = 650
         Height = 17
         Margins.Left = 5
@@ -58,7 +58,15 @@ object frmBMon: TfrmBMon
         Caption = 'Display the icon'
         TabOrder = 1
         Align = alTop
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
         OnClick = cb_iconClick
+        ExplicitLeft = 20
+        ExplicitWidth = 635
       end
     end
   end

@@ -135,7 +135,7 @@ end;
 procedure TfrmSysTray.UpdateSettings;
 begin
   if Visible then
-    PluginHost.Save;
+    PluginHost.SetSettingsChanged;
 end;
 
 end.

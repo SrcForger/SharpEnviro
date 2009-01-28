@@ -107,7 +107,7 @@ end;
 procedure TfrmVWM.UpdateSettings;
 begin
   if Visible then
-    PluginHost.Save;
+    PluginHost.SetSettingsChanged;
 end;
 
 end.

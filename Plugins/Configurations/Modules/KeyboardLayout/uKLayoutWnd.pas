@@ -39,11 +39,10 @@ type
   TfrmKLayout = class(TForm)
     plMain: TJvPageList;
     pagKLayout: TJvStandardPage;
-    lblIcon: TLabel;
-    lblTLC: TLabel;
     schDisplayOptions: TSharpECenterHeader;
     chkIcon: TJvXPCheckbox;
     chkTLC: TJvXPCheckbox;
+    SharpECenterHeader1: TSharpECenterHeader;
     procedure FormCreate(Sender: TObject);
     procedure cbIconClick(Sender: TObject);
   private
@@ -76,7 +75,7 @@ end;
 procedure TfrmKLayout.UpdateSettings;
 begin
   if Visible then
-    PluginHost.Save;
+    PluginHost.SetSettingsChanged;
 end;
 
 end.

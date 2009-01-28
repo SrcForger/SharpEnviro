@@ -23,29 +23,33 @@ object frmMM: TfrmMM
     ActivePage = pagNotes
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 492
     object pagNotes: TJvStandardPage
       Left = 0
       Top = 0
       Width = 405
       Height = 505
-      ExplicitHeight = 492
       object pnlSize: TPanel
         AlignWithMargins = True
-        Left = 3
-        Top = 319
-        Width = 399
-        Height = 70
+        Left = 5
+        Top = 314
+        Width = 395
+        Height = 77
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 3
         object sgbBarSize: TSharpeGaugeBox
-          Left = 20
-          Top = 45
-          Width = 137
+          Left = 5
+          Top = 57
+          Width = 250
           Height = 20
-          Margins.Left = 20
+          Margins.Left = 5
+          Margins.Right = 5
           Color = clWindow
           ParentBackground = False
           Min = 25
@@ -61,79 +65,76 @@ object frmMM: TfrmMM
         end
         object schSize: TSharpECenterHeader
           AlignWithMargins = True
-          Left = 3
-          Top = 3
-          Width = 393
-          Height = 35
+          Left = 5
+          Top = 10
+          Width = 385
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 10
+          Margins.Right = 5
+          Margins.Bottom = 0
           Title = 'Status Bar Size'
           Description = 'Set the width of the bar when displayed.'
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = -9
+          ExplicitLeft = 3
+          ExplicitTop = 3
+          ExplicitWidth = 393
         end
       end
       object pnlFormat: TPanel
         AlignWithMargins = True
-        Left = 3
-        Top = 395
-        Width = 399
-        Height = 96
+        Left = 5
+        Top = 401
+        Width = 395
+        Height = 67
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 0
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 4
-        ExplicitTop = 329
-        object rbPTaken: TRadioButton
-          AlignWithMargins = True
-          Left = 20
-          Top = 49
-          Width = 369
-          Height = 17
-          Margins.Left = 20
-          Margins.Top = 8
-          Margins.Right = 10
-          Margins.Bottom = 8
-          Align = alTop
-          Caption = 'Percent Taken (example: 61%)'
-          Checked = True
-          TabOrder = 0
-          TabStop = True
-          OnClick = RadioButtonClick
-          ExplicitTop = 45
-        end
-        object rbFreeMB: TRadioButton
-          AlignWithMargins = True
-          Left = 20
-          Top = 74
-          Width = 369
-          Height = 17
-          Margins.Left = 20
-          Margins.Top = 0
-          Margins.Right = 10
-          Margins.Bottom = 8
-          Align = alTop
-          Caption = 'Free MB (example: 210 MB Free)'
-          TabOrder = 1
-          OnClick = RadioButtonClick
-          ExplicitLeft = 24
-          ExplicitTop = 33
-          ExplicitWidth = 373
-        end
         object schFormat: TSharpECenterHeader
           AlignWithMargins = True
-          Left = 3
-          Top = 3
-          Width = 393
-          Height = 35
+          Left = 5
+          Top = 0
+          Width = 385
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
           Title = 'Value Text Format'
           Description = 'Change the format of how the text value is displayed.'
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 9
+          ExplicitLeft = 3
+          ExplicitTop = 3
+          ExplicitWidth = 393
+        end
+        object cboTextFormat: TComboBox
+          Left = 5
+          Top = 46
+          Width = 250
+          Height = 21
+          Margins.Left = 5
+          Margins.Right = 5
+          Style = csDropDownList
+          ItemHeight = 13
+          ItemIndex = 1
+          TabOrder = 1
+          Text = 'Free MB (example: 210MB Free)'
+          OnChange = cboChange
+          Items.Strings = (
+            'Percent Taken (example: 61%)'
+            'Free MB (example: 210MB Free)')
         end
       end
       object pnlAlignment: TPanel
@@ -141,58 +142,22 @@ object frmMM: TfrmMM
         Left = 3
         Top = 3
         Width = 399
-        Height = 70
+        Height = 66
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
-        object rbHoriz: TRadioButton
-          Left = 17
-          Top = 48
-          Width = 77
-          Height = 17
-          Margins.Left = 24
-          Margins.Top = 0
-          Margins.Right = 8
-          Margins.Bottom = 8
-          Caption = 'Horizontal'
-          TabOrder = 0
-          OnClick = RadioButtonClick
-        end
-        object rbVert: TRadioButton
-          Left = 279
-          Top = 48
-          Width = 105
-          Height = 17
-          Margins.Left = 24
-          Margins.Top = 0
-          Margins.Right = 8
-          Margins.Bottom = 8
-          Caption = 'Vertical (2 rows)'
-          TabOrder = 2
-          OnClick = RadioButtonClick
-        end
-        object rbHoriz2: TRadioButton
-          Left = 126
-          Top = 48
-          Width = 121
-          Height = 17
-          Margins.Left = 24
-          Margins.Top = 0
-          Margins.Right = 8
-          Margins.Bottom = 8
-          Caption = 'Horizontal (Compact)'
-          Checked = True
-          TabOrder = 1
-          TabStop = True
-          OnClick = RadioButtonClick
-        end
         object schAlignment: TSharpECenterHeader
           AlignWithMargins = True
-          Left = 3
-          Top = 3
-          Width = 393
-          Height = 35
+          Left = 5
+          Top = 0
+          Width = 389
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 10
           Title = 'Alignment'
           Description = 
             'Change how you want the memory and swap file information to be a' +
@@ -201,44 +166,75 @@ object frmMM: TfrmMM
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 27
+          ExplicitLeft = 3
+          ExplicitTop = 3
+          ExplicitWidth = 393
+        end
+        object cboAlignment: TComboBox
+          Left = 5
+          Top = 45
+          Width = 250
+          Height = 21
+          Margins.Left = 5
+          Margins.Right = 5
+          Style = csDropDownList
+          ItemHeight = 13
+          ItemIndex = 0
+          TabOrder = 1
+          Text = 'Horizontal'
+          OnChange = cboChange
+          Items.Strings = (
+            'Horizontal'
+            'Horizontal (Compact)'
+            'Vertical (2 rows)')
         end
       end
       object pnlRam: TPanel
         AlignWithMargins = True
-        Left = 3
-        Top = 79
-        Width = 399
-        Height = 114
+        Left = 5
+        Top = 82
+        Width = 395
+        Height = 108
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 10
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         Color = clWindow
         ParentBackground = False
         TabOrder = 1
         object schRam: TSharpECenterHeader
           AlignWithMargins = True
-          Left = 3
-          Top = 3
-          Width = 393
-          Height = 35
+          Left = 5
+          Top = 0
+          Width = 385
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 10
           Title = 'Physical Memory'
           Description = 'Select how to display information about the physical memory.'
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitLeft = -60
-          ExplicitTop = -10
-          ExplicitWidth = 177
+          ExplicitLeft = 3
+          ExplicitTop = 3
+          ExplicitWidth = 393
         end
         object cbRamBar: TJvXPCheckbox
           AlignWithMargins = True
-          Left = 20
-          Top = 44
-          Width = 369
+          Left = 5
+          Top = 47
+          Width = 385
           Height = 17
-          Margins.Left = 20
-          Margins.Right = 10
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
           Caption = 'Status Bar'
           TabOrder = 0
           Checked = True
@@ -246,18 +242,19 @@ object frmMM: TfrmMM
           State = cbChecked
           Align = alTop
           OnClick = CheckboxClick
-          ExplicitLeft = 21
-          ExplicitTop = 45
-          ExplicitWidth = 367
+          ExplicitTop = 46
+          ExplicitWidth = 384
         end
         object cbRamInfo: TJvXPCheckbox
           AlignWithMargins = True
-          Left = 20
-          Top = 90
-          Width = 369
+          Left = 5
+          Top = 91
+          Width = 385
           Height = 17
-          Margins.Left = 20
-          Margins.Right = 10
+          Margins.Left = 5
+          Margins.Top = 5
+          Margins.Right = 5
+          Margins.Bottom = 0
           Caption = 'Information Label'
           TabOrder = 2
           Checked = True
@@ -265,18 +262,19 @@ object frmMM: TfrmMM
           State = cbChecked
           Align = alTop
           OnClick = CheckboxClick
-          ExplicitLeft = 21
-          ExplicitTop = 24
-          ExplicitWidth = 367
+          ExplicitTop = 92
+          ExplicitWidth = 384
         end
         object cbRamPC: TJvXPCheckbox
           AlignWithMargins = True
-          Left = 20
-          Top = 67
-          Width = 369
+          Left = 5
+          Top = 69
+          Width = 385
           Height = 17
-          Margins.Left = 20
-          Margins.Right = 10
+          Margins.Left = 5
+          Margins.Top = 5
+          Margins.Right = 5
+          Margins.Bottom = 0
           Caption = 'Value as Text'
           TabOrder = 1
           Checked = True
@@ -284,89 +282,102 @@ object frmMM: TfrmMM
           State = cbChecked
           Align = alTop
           OnClick = CheckboxClick
-          ExplicitLeft = 21
-          ExplicitTop = 24
-          ExplicitWidth = 367
+          ExplicitWidth = 384
         end
       end
       object pnlSwap: TPanel
         AlignWithMargins = True
-        Left = 3
-        Top = 199
-        Width = 399
+        Left = 5
+        Top = 200
+        Width = 395
         Height = 114
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         ParentBackground = False
         TabOrder = 2
+        ExplicitLeft = 3
+        ExplicitTop = 199
+        ExplicitWidth = 399
         object schSwap: TSharpECenterHeader
           AlignWithMargins = True
-          Left = 3
-          Top = 3
-          Width = 393
-          Height = 35
+          Left = 5
+          Top = 0
+          Width = 385
+          Height = 37
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 10
           Title = 'Swap File'
           Description = 'Select how to display information about the swap file.'
           TitleColor = clWindowText
           DescriptionColor = clRed
           Align = alTop
           Color = clWindow
-          ExplicitTop = 246
-          ExplicitWidth = 399
+          ExplicitLeft = 3
+          ExplicitTop = 3
+          ExplicitWidth = 393
         end
         object cbSwpBar: TJvXPCheckbox
           AlignWithMargins = True
-          Left = 20
-          Top = 44
-          Width = 369
+          Left = 5
+          Top = 47
+          Width = 385
           Height = 17
-          Margins.Left = 20
-          Margins.Right = 10
+          Margins.Left = 5
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 0
           Caption = 'Status Bar'
           TabOrder = 0
           Checked = True
           State = cbChecked
           Align = alTop
           OnClick = CheckboxClick
-          ExplicitTop = 45
-          ExplicitWidth = 367
+          ExplicitTop = 46
+          ExplicitWidth = 384
         end
         object cbSwpPC: TJvXPCheckbox
           AlignWithMargins = True
-          Left = 20
-          Top = 67
-          Width = 369
+          Left = 5
+          Top = 69
+          Width = 385
           Height = 17
-          Margins.Left = 20
-          Margins.Right = 10
+          Margins.Left = 5
+          Margins.Top = 5
+          Margins.Right = 5
+          Margins.Bottom = 0
           Caption = 'Value as Text'
           TabOrder = 1
           Checked = True
           State = cbChecked
           Align = alTop
           OnClick = CheckboxClick
-          ExplicitLeft = 21
-          ExplicitTop = 68
-          ExplicitWidth = 367
+          ExplicitWidth = 384
         end
         object cbSwpInfo: TJvXPCheckbox
           AlignWithMargins = True
-          Left = 20
-          Top = 90
-          Width = 369
+          Left = 5
+          Top = 91
+          Width = 385
           Height = 17
-          Margins.Left = 20
-          Margins.Right = 10
+          Margins.Left = 5
+          Margins.Top = 5
+          Margins.Right = 5
+          Margins.Bottom = 0
           Caption = 'Information Label'
           TabOrder = 2
           Checked = True
           State = cbChecked
           Align = alTop
           OnClick = CheckboxClick
-          ExplicitLeft = 21
-          ExplicitTop = 24
-          ExplicitWidth = 367
+          ExplicitTop = 92
+          ExplicitWidth = 384
         end
       end
     end

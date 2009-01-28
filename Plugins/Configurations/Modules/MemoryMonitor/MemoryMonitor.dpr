@@ -46,26 +46,26 @@ uses
 {$R *.res}
 
 type
-  TSharpCenterPlugin = class( TInterfacedSharpCenterPlugin )
+  TSharpCenterPlugin = class(TInterfacedSharpCenterPlugin)
   private
-    barID : string;
-    moduleID : string;
+    barID: string;
+    moduleID: string;
     procedure Load;
   public
-    constructor Create( APluginHost: TInterfacedSharpCenterHostBase );
+    constructor Create(APluginHost: TInterfacedSharpCenterHostBase);
 
     function Open: Cardinal; override; stdcall;
     procedure Close; override; stdcall;
     procedure Save; override; stdcall;
-    procedure Refresh; override; stdCall;
+    procedure Refresh; override; stdcall;
 
-    function GetPluginDescriptionText: String; override; stdCall;
-end;
+    function GetPluginDescriptionText: string; override; stdcall;
+  end;
 
 constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
   PluginHost := APluginHost;
-  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.GetBarModuleIdFromPluginId(barID, moduleID);
   PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
 end;
 
@@ -77,8 +77,8 @@ begin
   begin
     // Clear the list so we don't get duplicates.
     Clear;
-    
-    if rbPTaken.Checked then
+
+    if cboTextFormat.ItemIndex = 0 then
       Add('ITC', 0)
     else Add('ITC', 1);
 
@@ -89,12 +89,12 @@ begin
     Add('ShowSWPInfo', cbswpinfo.Checked);
     Add('ShowSWPPC', cbswppc.Checked);
 
-    if rbHoriz.Checked then
-      Add('ItemAlign', 1)
-    else if rbVert.Checked then
-      Add('ItemAlign', 2)
-    else
-      Add('ItemAlign', 3);
+    case cboAlignment.ItemIndex of
+      0: Add('ItemAlign', 1);
+      1: Add('ItemAlign', 2);
+      2: Add('ItemAlign', 3);
+    end;
+
     Add('Width', sgbBarSize.Value);
   end;
 
@@ -107,9 +107,9 @@ begin
   begin
     with PluginHost.Xml.XmlRoot.Items, frmMM do
     begin
-      case IntValue('ITC',0) of
-        1: rbFreeMB.checked := True;
-        else rbPTaken.Checked := True;
+      case IntValue('ITC', 0) of
+        1: cboTextFormat.ItemIndex := 0
+      else cboTextFormat.ItemIndex := 1;
       end;
       cbrambar.Checked := BoolValue('ShowRAMBar', cbrambar.Checked);
       cbraminfo.checked := BoolValue('ShowRAMInfo', cbraminfo.checked);
@@ -117,12 +117,12 @@ begin
       cbswpbar.Checked := BoolValue('ShowSWPBar', cbswpbar.Checked);
       cbswpinfo.Checked := BoolValue('ShowSWPInfo', cbswpinfo.Checked);
       cbswppc.Checked := BoolValue('ShowSWPPC', cbswppc.Checked);
-      case IntValue('ItemAlign',3) of
-        1: rbHoriz.Checked := True;
-        2: rbVert.Checked := True;
-        else rbHoriz2.Checked := True;
+      case IntValue('ItemAlign', 3) of
+        1: cboAlignment.ItemIndex := 0;
+        2: cboAlignment.ItemIndex := 1;
+      else cboAlignment.ItemIndex := 2;
       end;
-      sgbBarSize.Value := IntValue('Width',sgbBarSize.Value);
+      sgbBarSize.Value := IntValue('Width', sgbBarSize.Value);
     end;
   end;
 end;
@@ -142,7 +142,7 @@ begin
   FreeAndNil(frmMM);
 end;
 
-function TSharpCenterPlugin.GetPluginDescriptionText : String;
+function TSharpCenterPlugin.GetPluginDescriptionText: string;
 begin
   result := 'Configure memory monitor module';
 end;
@@ -156,7 +156,7 @@ begin
     Author := 'Martin Krämer (MartinKraemer@gmx.net)';
     Version := '0.7.6.0';
     DataType := tteConfig;
-    ExtraData := format('configmode: %d| configtype: %d',[Integer(scmApply),
+    ExtraData := format('configmode: %d| configtype: %d', [Integer(scmApply),
       Integer(suModule)]);
   end;
 end;
@@ -166,7 +166,7 @@ begin
   PluginHost.AssignThemeToPluginForm(frmMM);
 end;
 
-function InitPluginInterface( APluginHost: TInterfacedSharpCenterHostBase ) : ISharpCenterPlugin;
+function InitPluginInterface(APluginHost: TInterfacedSharpCenterHostBase): ISharpCenterPlugin;
 begin
   result := TSharpCenterPlugin.Create(APluginHost);
 end;

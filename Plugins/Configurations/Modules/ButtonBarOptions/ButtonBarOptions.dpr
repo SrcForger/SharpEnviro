@@ -71,7 +71,7 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
   PluginHost := APluginHost;
-  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.GetBarModuleIdFromPluginId(barID, moduleID);
   PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
 end;
 
@@ -108,8 +108,8 @@ begin
   begin
     with PluginHost.Xml.XmlRoot.Items, frmSettings do
     begin
-      chkButtonCaption.Checked := BoolValue('ShowCaption', False);
-      chkButtonIcon.Checked := BoolValue('ShowIcon', False);
+      chkButtonCaption.Checked := BoolValue('ShowCaption', True);
+      chkButtonIcon.Checked := BoolValue('ShowIcon', True);
       sgbWidth.Value := IntValue('Width', 25);
     end;
   end;

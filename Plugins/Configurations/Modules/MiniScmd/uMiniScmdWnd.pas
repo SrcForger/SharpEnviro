@@ -39,7 +39,6 @@ type
   TfrmMiniScmd = class(TForm)
     plMain: TJvPageList;
     pagMiniScmd: TJvStandardPage;
-    lblQuickSelect: TLabel;
     pnlSize: TPanel;
     sgb_width: TSharpeGaugeBox;
     scmQuickSelect: TSharpECenterHeader;
@@ -81,7 +80,7 @@ end;
 procedure TfrmMiniScmd.UpdateSettings;
 begin
   if Visible then
-    PluginHost.Save;
+    PluginHost.SetSettingsChanged;
 end;
 
 end.

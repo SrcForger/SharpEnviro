@@ -31,14 +31,13 @@ object frmEdit: TfrmEdit
       Width = 425
       Height = 19
       Margins.Left = 5
-      Margins.Top = 10
+      Margins.Top = 0
       Margins.Right = 10
       Margins.Bottom = 0
       Align = alTop
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 0
-      ExplicitTop = 45
       object chkDisplayIcon: TJvXPCheckbox
         AlignWithMargins = True
         Left = 0
@@ -75,7 +74,7 @@ object frmEdit: TfrmEdit
       Width = 425
       Height = 22
       Margins.Left = 5
-      Margins.Top = 10
+      Margins.Top = 0
       Margins.Right = 10
       Margins.Bottom = 0
       Align = alTop
@@ -83,7 +82,6 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 1
-      ExplicitTop = 182
       object Label2: TLabel
         Left = 0
         Top = 4
@@ -93,9 +91,9 @@ object frmEdit: TfrmEdit
       end
       object edAction: TEdit
         AlignWithMargins = True
-        Left = 52
+        Left = 58
         Top = 0
-        Width = 300
+        Width = 294
         Height = 21
         Margins.Left = 8
         Margins.Top = 0
@@ -130,7 +128,6 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 2
-      ExplicitTop = 74
       object Label7: TLabel
         Left = 0
         Top = 4
@@ -169,7 +166,6 @@ object frmEdit: TfrmEdit
       BevelOuter = bvNone
       ParentColor = True
       TabOrder = 3
-      ExplicitTop = 105
       object Label8: TLabel
         Left = 0
         Top = 4
@@ -211,13 +207,12 @@ object frmEdit: TfrmEdit
       Margins.Left = 5
       Margins.Top = 10
       Margins.Right = 5
-      Margins.Bottom = 0
-      Title = 'Click Action'
+      Margins.Bottom = 10
+      Title = 'Action Options'
       Description = 'Define what action to take when clicked'
       TitleColor = clWindowText
       DescriptionColor = clRed
       Align = alTop
-      ExplicitTop = 137
     end
     object SharpECenterHeader1: TSharpECenterHeader
       AlignWithMargins = True
@@ -228,8 +223,8 @@ object frmEdit: TfrmEdit
       Margins.Left = 5
       Margins.Top = 0
       Margins.Right = 5
-      Margins.Bottom = 0
-      Title = 'Display'
+      Margins.Bottom = 10
+      Title = 'Display Options'
       Description = 'Define text and icon options'
       TitleColor = clWindowText
       DescriptionColor = clRed

@@ -41,11 +41,11 @@ type
     pagNotes: TJvStandardPage;
     Panel7: TPanel;
     sgbWidth: TSharpeGaugeBox;
-    SharpECenterHeader3: TSharpECenterHeader;
     SharpECenterHeader4: TSharpECenterHeader;
     SharpECenterHeader6: TSharpECenterHeader;
     chkButtonCaption: TJvXPCheckbox;
     chkButtonIcon: TJvXPCheckbox;
+    Panel1: TPanel;
     procedure GaugeBoxChange(Sender: TObject; Value: Integer);
     procedure CheckClick(Sender: TObject);
   private

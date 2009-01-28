@@ -3,7 +3,7 @@ object frmCPUMon: TfrmCPUMon
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmCPUMon'
-  ClientHeight = 379
+  ClientHeight = 378
   ClientWidth = 432
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -19,20 +19,20 @@ object frmCPUMon: TfrmCPUMon
     Left = 0
     Top = 0
     Width = 432
-    Height = 379
-    ActivePage = pagColors
+    Height = 378
+    ActivePage = pagMon
     PropagateEnable = False
     Align = alClient
     object pagMon: TJvStandardPage
       Left = 0
       Top = 0
       Width = 432
-      Height = 379
+      Height = 378
       OnShow = pagMonShow
       object Panel5: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 313
+        Top = 245
         Width = 422
         Height = 23
         Margins.Left = 5
@@ -44,35 +44,14 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
-        ExplicitTop = 321
-        object sgbUpdate: TSharpeGaugeBox
-          Left = 0
-          Top = 0
-          Width = 200
-          Height = 23
-          Margins.Left = 26
-          Margins.Top = 8
-          Margins.Right = 8
-          Margins.Bottom = 0
-          ParentBackground = False
-          Min = 100
-          Max = 1000
-          Value = 250
-          Prefix = 'Interval: '
-          Suffix = ' ms'
-          Description = 'Adjust Update Interval'
-          PopPosition = ppBottom
-          PercentDisplay = False
-          OnChangeValue = sgbWidthChangeValue
-          BackgroundColor = clWindow
-        end
+        ExplicitTop = 165
       end
       object Panel6: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 237
+        Top = 212
         Width = 422
-        Height = 21
+        Height = 23
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -82,125 +61,156 @@ object frmCPUMon: TfrmCPUMon
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 1
-        ExplicitTop = 243
-        object edit_cpu: TJvSpinEdit
-          AlignWithMargins = True
+        ExplicitTop = 132
+        object edit_cpu: TSharpeGaugeBox
           Left = 0
           Top = 0
-          Width = 200
-          Height = 21
+          Width = 177
+          Height = 23
           Margins.Left = 26
-          Margins.Top = 0
+          Margins.Top = 8
           Margins.Right = 8
           Margins.Bottom = 0
-          ButtonKind = bkClassic
-          TabOrder = 0
-          OnChange = edit_cpuChange
+          ParentBackground = False
+          Min = 0
+          Max = 5
+          Value = 0
+          Prefix = 'CPU: '
+          Description = 'Adjust Update Interval'
+          PopPosition = ppBottom
+          PercentDisplay = False
+          OnChangeValue = sgbWidthChangeValue
+          BackgroundColor = clWindow
         end
-      end
-      object rbGraphBar: TRadioButton
-        AlignWithMargins = True
-        Left = 5
-        Top = 45
-        Width = 417
-        Height = 17
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 10
-        Margins.Bottom = 0
-        Align = alTop
-        Caption = 'History Graph (Bar)'
-        TabOrder = 2
-        OnClick = rbGraphBarClick
-        ExplicitTop = 47
-      end
-      object rbCurrentUsage: TRadioButton
-        AlignWithMargins = True
-        Left = 5
-        Top = 89
-        Width = 417
-        Height = 17
-        Margins.Left = 5
-        Margins.Top = 5
-        Margins.Right = 10
-        Margins.Bottom = 0
-        Align = alTop
-        Caption = 'Current Usage (Progress Bar)'
-        TabOrder = 3
-        OnClick = rbGraphBarClick
-        ExplicitTop = 91
-      end
-      object rbGraphLine: TRadioButton
-        AlignWithMargins = True
-        Left = 5
-        Top = 67
-        Width = 417
-        Height = 17
-        Margins.Left = 5
-        Margins.Top = 5
-        Margins.Right = 10
-        Margins.Bottom = 0
-        Align = alTop
-        Caption = 'History Graph (Line)'
-        Checked = True
-        TabOrder = 4
-        TabStop = True
-        OnClick = rbGraphBarClick
-        ExplicitTop = 69
+        object sgbUpdate: TSharpeGaugeBox
+          Left = 188
+          Top = 0
+          Width = 193
+          Height = 22
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          ParentBackground = False
+          Min = 100
+          Max = 2000
+          Value = 250
+          Prefix = 'Update every '
+          Suffix = ' ms'
+          Description = 'Adjust Update Interval'
+          PopPosition = ppBottom
+          PercentDisplay = False
+          OnChangeValue = sgbWidthChangeValue
+          BackgroundColor = clWindow
+        end
       end
       object SharpECenterHeader3: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
         Top = 0
         Width = 422
-        Height = 35
+        Height = 37
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
         Margins.Bottom = 0
-        Title = 'Graph Type'
-        Description = 'Define the type of graph used for displaying CPU usage'
+        Title = 'Chart Type'
+        Description = 'Define the type of chart used for displaying CPU usage'
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
+      end
+      object SharpECenterHeader5: TSharpECenterHeader
+        AlignWithMargins = True
+        Left = 5
+        Top = 165
+        Width = 422
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Title = 'CPU'
+        Description = 'Define the CPU to monitor. 0 = CPU 1, 1 = CPU 2, 2 = OVERALL'
+        TitleColor = clWindowText
+        DescriptionColor = clRed
+        Align = alTop
+        ExplicitTop = 85
+      end
+      object Panel1: TPanel
+        AlignWithMargins = True
+        Left = 5
+        Top = 47
+        Width = 422
+        Height = 23
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 0
+        Align = alTop
+        BevelOuter = bvNone
+        ParentColor = True
+        TabOrder = 4
+        object cboGraphType: TComboBox
+          Left = 0
+          Top = 0
+          Width = 177
+          Height = 21
+          Margins.Left = 26
+          Margins.Top = 8
+          Margins.Right = 8
+          Margins.Bottom = 0
+          Style = csDropDownList
+          Color = clBtnFace
+          ItemHeight = 13
+          ItemIndex = 0
+          TabOrder = 0
+          Text = 'History Graph (Bar)'
+          OnChange = edit_cpuChange
+          Items.Strings = (
+            'History Graph (Bar)'
+            'History Graph (Line)'
+            'Current Usage (Progress Bar)')
+        end
       end
       object SharpECenterHeader4: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 116
+        Top = 80
         Width = 422
-        Height = 35
+        Height = 37
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
         Margins.Bottom = 0
-        Title = 'Graph Size'
-        Description = 'Define the width for the graph'
+        Title = 'Chart Size'
+        Description = 'Define the size for the graph'
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
+        ExplicitTop = 104
       end
-      object Panel7: TPanel
+      object Panel3: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 161
+        Top = 127
         Width = 422
-        Height = 21
+        Height = 23
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
-        Margins.Bottom = 0
+        Margins.Bottom = 5
         Align = alTop
-        AutoSize = True
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 7
+        TabOrder = 6
+        ExplicitTop = 135
         object sgbWidth: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 0
           Top = 0
-          Width = 200
-          Height = 21
+          Width = 177
+          Height = 22
           Margins.Left = 8
           Margins.Top = 0
           Margins.Right = 12
@@ -219,56 +229,24 @@ object frmCPUMon: TfrmCPUMon
           BackgroundColor = clWindow
         end
       end
-      object SharpECenterHeader5: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 5
-        Top = 192
-        Width = 422
-        Height = 35
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'CPU'
-        Description = 'Define the CPU to monitor. 0 = CPU 1, 1 = CPU 2, 2 = OVERALL'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
-      object SharpECenterHeader6: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 5
-        Top = 268
-        Width = 422
-        Height = 35
-        Margins.Left = 5
-        Margins.Top = 10
-        Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Update Interval'
-        Description = 'Define the graph update interval'
-        TitleColor = clWindowText
-        DescriptionColor = clRed
-        Align = alTop
-      end
     end
     object pagColors: TJvStandardPage
       Left = 0
       Top = 0
       Width = 432
-      Height = 379
+      Height = 378
       Caption = 'pagColors'
       Color = clWhite
       OnShow = pagColorsShow
       object Colors: TSharpEColorEditorEx
         AlignWithMargins = True
-        Left = 1
-        Top = 167
-        Width = 421
+        Left = 2
+        Top = 160
+        Width = 425
         Height = 80
-        Margins.Left = 1
+        Margins.Left = 2
         Margins.Top = 0
-        Margins.Right = 10
+        Margins.Right = 5
         Margins.Bottom = 0
         VertScrollBar.Smooth = True
         VertScrollBar.Tracking = True
@@ -330,17 +308,18 @@ object frmCPUMon: TfrmCPUMon
         BackgroundTextColor = clBlack
         ContainerColor = clBlack
         ContainerTextColor = clBlack
+        ExplicitTop = 193
       end
       object Panel2: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 45
+        Top = 47
         Width = 417
         Height = 23
         Margins.Left = 5
-        Margins.Top = 10
+        Margins.Top = 0
         Margins.Right = 10
-        Margins.Bottom = 0
+        Margins.Bottom = 5
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
@@ -368,28 +347,12 @@ object frmCPUMon: TfrmCPUMon
           OnChangeValue = sgbWidthChangeValue
           BackgroundColor = clWindow
         end
-      end
-      object Panel3: TPanel
-        AlignWithMargins = True
-        Left = 5
-        Top = 73
-        Width = 417
-        Height = 21
-        Margins.Left = 5
-        Margins.Top = 5
-        Margins.Right = 10
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = True
-        BevelOuter = bvNone
-        ParentColor = True
-        TabOrder = 2
         object sgbForeground: TSharpeGaugeBox
           AlignWithMargins = True
-          Left = 0
+          Left = 210
           Top = 0
           Width = 200
-          Height = 21
+          Height = 23
           Margins.Left = 0
           Margins.Top = 0
           Margins.Right = 0
@@ -410,7 +373,7 @@ object frmCPUMon: TfrmCPUMon
       object Panel4: TPanel
         AlignWithMargins = True
         Left = 5
-        Top = 99
+        Top = 80
         Width = 417
         Height = 23
         Margins.Left = 5
@@ -421,7 +384,8 @@ object frmCPUMon: TfrmCPUMon
         AutoSize = True
         BevelOuter = bvNone
         ParentColor = True
-        TabOrder = 3
+        TabOrder = 2
+        ExplicitTop = 113
         object sgbBorder: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 0
@@ -450,12 +414,12 @@ object frmCPUMon: TfrmCPUMon
         Left = 5
         Top = 0
         Width = 422
-        Height = 35
+        Height = 37
         Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Visiblity'
+        Margins.Bottom = 10
+        Title = 'Chart Element Visibility'
         Description = 'Define the visibility of the chart elements'
         TitleColor = clWindowText
         DescriptionColor = clRed
@@ -464,25 +428,26 @@ object frmCPUMon: TfrmCPUMon
       object SharpECenterHeader2: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 132
+        Top = 113
         Width = 422
-        Height = 35
+        Height = 37
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
-        Margins.Bottom = 0
-        Title = 'Colour'
+        Margins.Bottom = 10
+        Title = 'Chart Element Colours'
         Description = 'Define the colour of the chart elements'
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
+        ExplicitTop = 146
       end
     end
     object pagError: TJvStandardPage
       Left = 0
       Top = 0
       Width = 432
-      Height = 379
+      Height = 378
       Caption = 'pagError'
       object SharpERoundPanel1: TSharpERoundPanel
         AlignWithMargins = True
@@ -579,7 +544,7 @@ object frmCPUMon: TfrmCPUMon
       Left = 0
       Top = 0
       Width = 432
-      Height = 379
+      Height = 378
       Caption = 'pagError2'
       object SharpERoundPanel2: TSharpERoundPanel
         AlignWithMargins = True
@@ -714,7 +679,7 @@ object frmCPUMon: TfrmCPUMon
   object SharpESwatchManager1: TSharpESwatchManager
     Swatches = <>
     PopulateThemeColors = True
-    Width = 388
+    Width = 392
     ShowCaptions = True
     SwatchHeight = 16
     SwatchWidth = 16
@@ -729,7 +694,7 @@ object frmCPUMon: TfrmCPUMon
     BorderColor = clBlack
     BackgroundColor = clBlack
     BackgroundTextColor = clBlack
-    Left = 372
-    Top = 24
+    Left = 384
+    Top = 56
   end
 end

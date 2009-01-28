@@ -3,7 +3,7 @@ object frmQuickScript: TfrmQuickScript
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmQuickScript'
-  ClientHeight = 161
+  ClientHeight = 82
   ClientWidth = 449
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -19,71 +19,59 @@ object frmQuickScript: TfrmQuickScript
     Left = 0
     Top = 0
     Width = 449
-    Height = 161
+    Height = 82
     ActivePage = pagQuickScript
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 161
     object pagQuickScript: TJvStandardPage
       Left = 0
       Top = 0
       Width = 449
-      Height = 161
-      object rb_icon: TRadioButton
+      Height = 82
+      ExplicitTop = -3
+      ExplicitHeight = 161
+      object Panel1: TPanel
         AlignWithMargins = True
-        Left = 24
-        Top = 76
-        Width = 417
-        Height = 17
-        Margins.Left = 24
+        Left = 5
+        Top = 47
+        Width = 439
+        Height = 21
+        Margins.Left = 5
         Margins.Top = 0
-        Margins.Right = 8
-        Margins.Bottom = 8
+        Margins.Right = 5
+        Margins.Bottom = 0
         Align = alTop
-        Caption = 'Icon'
+        AutoSize = True
+        BevelOuter = bvNone
         TabOrder = 0
-        OnClick = rb_textClick
-        ExplicitTop = 74
-      end
-      object rb_text: TRadioButton
-        AlignWithMargins = True
-        Left = 24
-        Top = 101
-        Width = 417
-        Height = 17
-        Margins.Left = 24
-        Margins.Top = 0
-        Margins.Right = 8
-        Margins.Bottom = 8
-        Align = alTop
-        Caption = 'Text'
-        TabOrder = 1
-        OnClick = rb_textClick
-        ExplicitTop = 99
-      end
-      object rb_icontext: TRadioButton
-        AlignWithMargins = True
-        Left = 24
-        Top = 51
-        Width = 417
-        Height = 17
-        Margins.Left = 24
-        Margins.Top = 8
-        Margins.Right = 8
-        Margins.Bottom = 8
-        Align = alTop
-        Caption = 'Icon and Text'
-        Checked = True
-        TabOrder = 2
-        TabStop = True
-        OnClick = rb_textClick
-        ExplicitTop = 49
+        ExplicitTop = 33
+        object cboDisplay: TComboBox
+          Left = 0
+          Top = 0
+          Width = 250
+          Height = 21
+          Align = alLeft
+          Style = csDropDownList
+          ItemHeight = 13
+          TabOrder = 0
+          OnChange = cboComboChange
+          Items.Strings = (
+            'Icon and Text'
+            'Icon'
+            'Text')
+        end
       end
       object schDisplayOptions: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 3
-        Top = 3
-        Width = 443
+        Left = 5
+        Top = 0
+        Width = 439
         Height = 37
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 10
         Title = 'Display Options'
         Description = 
           'Select how the button for opening the Quick Script window will d' +
@@ -92,6 +80,9 @@ object frmQuickScript: TfrmQuickScript
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
+        ExplicitLeft = 3
+        ExplicitTop = 3
+        ExplicitWidth = 443
       end
     end
   end

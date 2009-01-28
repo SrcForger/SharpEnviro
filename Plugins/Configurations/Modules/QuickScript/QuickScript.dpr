@@ -69,7 +69,7 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
   PluginHost := APluginHost;
-  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.GetBarModuleIdFromPluginId(barID, moduleID);
   PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
 end;
 
@@ -82,8 +82,8 @@ begin
     // Clear the list so we don't get duplicates.
     Clear;
 
-    Add('Caption', (rb_text.Checked or rb_icontext.Checked));
-    Add('Icon', (rb_icon.Checked or rb_icontext.Checked));
+    Add('Caption', ((cboDisplay.ItemIndex = 0) or ( cboDisplay.ItemIndex = 2)));
+    Add('Icon', ((cboDisplay.ItemIndex = 0) or ( cboDisplay.ItemIndex = 1)));
   end;
 
   PluginHost.Xml.Save;
@@ -100,10 +100,10 @@ begin
       ShowIcon := BoolValue('Icon',True);
       ShowCaption := BoolValue('Caption',True);
       if ShowIcon and ShowCaption then
-        rb_icontext.Checked := True
+        cboDisplay.ItemIndex := 0
       else if ShowCaption then
-        rb_text.Checked := True
-      else rb_icon.Checked := True;
+        cboDisplay.ItemIndex := 2
+      else cboDisplay.ItemIndex := 1;
     end;
   end;
 end;

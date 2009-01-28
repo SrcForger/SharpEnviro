@@ -42,8 +42,6 @@ type
 
   TButtonBarList = class(TInterfacedXmlBaseList)
   private
-    FShowIcons, FShowCaptions: Boolean;
-    FWidth: Integer;
     FFilename: string;
     function GetButtonItem(index: integer): TButtonBarItem;
   public

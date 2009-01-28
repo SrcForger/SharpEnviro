@@ -3,7 +3,7 @@ object frmSettings: TfrmSettings
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmSettings'
-  ClientHeight = 233
+  ClientHeight = 159
   ClientWidth = 443
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -18,71 +18,57 @@ object frmSettings: TfrmSettings
     Left = 0
     Top = 0
     Width = 443
-    Height = 233
+    Height = 159
     ActivePage = pagNotes
     PropagateEnable = False
     Align = alClient
+    ExplicitHeight = 233
     object pagNotes: TJvStandardPage
       Left = 0
       Top = 0
       Width = 443
-      Height = 233
+      Height = 159
+      ExplicitHeight = 233
       object Panel7: TPanel
         AlignWithMargins = True
         Left = 5
         Top = 47
         Width = 433
-        Height = 21
+        Height = 23
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
-        Margins.Bottom = 10
+        Margins.Bottom = 0
         Align = alTop
-        AutoSize = True
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
-        ExplicitTop = 45
         object sgbWidth: TSharpeGaugeBox
           AlignWithMargins = True
           Left = 0
           Top = 0
           Width = 250
-          Height = 21
-          Margins.Left = 8
+          Height = 23
+          Margins.Left = 0
           Margins.Top = 0
-          Margins.Right = 12
+          Margins.Right = 5
           Margins.Bottom = 0
+          Align = alLeft
           Color = clWindow
           Constraints.MaxWidth = 300
           ParentBackground = False
           Min = 16
           Max = 200
           Value = 100
+          Prefix = 'Width: '
           Suffix = ' px'
           Description = 'Adjust button size'
           PopPosition = ppBottom
           PercentDisplay = False
           OnChangeValue = GaugeBoxChange
           BackgroundColor = clWindow
+          ExplicitHeight = 21
         end
-      end
-      object SharpECenterHeader3: TSharpECenterHeader
-        AlignWithMargins = True
-        Left = 5
-        Top = 152
-        Width = 433
-        Height = 37
-        Margins.Left = 5
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Title = 'Button Icons'
-        Description = 'Define whether icons should be displayed on buttons'
-        TitleColor = clWindowText
-        DescriptionColor = clGrayText
-        Align = alTop
-        ExplicitTop = 148
       end
       object SharpECenterHeader4: TSharpECenterHeader
         AlignWithMargins = True
@@ -103,51 +89,70 @@ object frmSettings: TfrmSettings
       object SharpECenterHeader6: TSharpECenterHeader
         AlignWithMargins = True
         Left = 5
-        Top = 78
+        Top = 80
         Width = 433
         Height = 37
         Margins.Left = 5
-        Margins.Top = 0
+        Margins.Top = 10
         Margins.Right = 5
         Margins.Bottom = 10
-        Title = 'Button Captions'
-        Description = 'Define whether captions should be displayed on buttons'
+        Title = 'Button Icon and Caption'
+        Description = 'Define whether to display an icon or button caption'
         TitleColor = clWindowText
         DescriptionColor = clGrayText
         Align = alTop
+        ExplicitTop = 78
       end
-      object chkButtonCaption: TJvXPCheckbox
+      object Panel1: TPanel
         AlignWithMargins = True
-        Left = 2
-        Top = 125
-        Width = 436
-        Height = 17
-        Margins.Left = 2
+        Left = 5
+        Top = 127
+        Width = 433
+        Height = 21
+        Margins.Left = 5
         Margins.Top = 0
         Margins.Right = 5
-        Margins.Bottom = 10
-        Caption = 'Enable button captions'
-        TabOrder = 1
-        TabStop = False
+        Margins.Bottom = 0
         Align = alTop
-        OnClick = CheckClick
-      end
-      object chkButtonIcon: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 2
-        Top = 199
-        Width = 436
-        Height = 17
-        Margins.Left = 2
-        Margins.Top = 0
-        Margins.Right = 5
-        Margins.Bottom = 10
-        Caption = 'Enable button icons'
-        TabOrder = 5
-        Checked = True
-        State = cbChecked
-        Align = alTop
-        OnClick = CheckClick
+        BevelOuter = bvNone
+        Color = clWindow
+        ParentBackground = False
+        TabOrder = 3
+        ExplicitTop = 172
+        object chkButtonIcon: TJvXPCheckbox
+          Left = 0
+          Top = 0
+          Width = 149
+          Height = 21
+          Margins.Left = 2
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Caption = 'Enable button icons'
+          TabOrder = 0
+          Checked = True
+          State = cbChecked
+          Align = alLeft
+          OnClick = CheckClick
+        end
+        object chkButtonCaption: TJvXPCheckbox
+          Left = 149
+          Top = 0
+          Width = 436
+          Height = 21
+          Margins.Left = 2
+          Margins.Top = 0
+          Margins.Right = 5
+          Margins.Bottom = 10
+          Caption = 'Enable button captions'
+          TabOrder = 1
+          TabStop = False
+          Align = alLeft
+          OnClick = CheckClick
+          ExplicitLeft = 158
+          ExplicitTop = 12
+          ExplicitHeight = 17
+        end
       end
     end
   end

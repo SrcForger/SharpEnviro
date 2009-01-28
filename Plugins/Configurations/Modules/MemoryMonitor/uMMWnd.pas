@@ -40,12 +40,7 @@ type
     pnlSize: TPanel;
     sgbBarSize: TSharpeGaugeBox;
     pnlFormat: TPanel;
-    rbPTaken: TRadioButton;
-    rbFreeMB: TRadioButton;
     pnlAlignment: TPanel;
-    rbHoriz: TRadioButton;
-    rbHoriz2: TRadioButton;
-    rbVert: TRadioButton;
     schAlignment: TSharpECenterHeader;
     schRam: TSharpECenterHeader;
     schSwap: TSharpECenterHeader;
@@ -59,10 +54,13 @@ type
     cbSwpInfo: TJvXPCheckbox;
     pnlRam: TPanel;
     pnlSwap: TPanel;
+    cboAlignment: TComboBox;
+    cboTextFormat: TComboBox;
     procedure FormCreate(Sender: TObject);
     procedure CheckboxClick(Sender: TObject);
     procedure RadioButtonClick(Sender: TObject);
     procedure sgbBarSizeChangeValue(Sender: TObject; Value: Integer);
+    procedure cboChange(Sender: TObject);
   private
     FPluginHost: TInterfacedSharpCenterHostBase;
     procedure UpdateSettings;
@@ -77,6 +75,11 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TfrmMM.cboChange(Sender: TObject);
+begin
+  UpdateSettings;
+end;
 
 procedure TfrmMM.CheckboxClick(Sender: TObject);
 begin
@@ -101,7 +104,7 @@ end;
 procedure TfrmMM.UpdateSettings;
 begin
   if Visible then
-    PluginHost.Save;
+    PluginHost.SetSettingsChanged;
 end;
 
 end.

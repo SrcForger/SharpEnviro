@@ -56,7 +56,6 @@ type
     chkDisplayIcon: TCheckBox;
     chkDisplayCaption: TCheckBox;
     pnlMenu: TPanel;
-    pnlCaption: TPanel;
     pnlIcon: TPanel;
     btnIconBrowse: TButton;
     gbSize: TSharpeGaugeBox;
@@ -65,8 +64,10 @@ type
     schDisplaySize: TSharpECenterHeader;
     pnlDisplayOptions: TPanel;
     schDisplayOptions: TSharpECenterHeader;
-    editCaption: TLabeledEdit;
-    editIcon: TLabeledEdit;
+    SharpECenterHeader1: TSharpECenterHeader;
+    editCaption: TEdit;
+    SharpECenterHeader2: TSharpECenterHeader;
+    editIcon: TEdit;
     procedure FormCreate(Sender: TObject);
 
     procedure SettingsChange(Sender: TObject);
@@ -147,7 +148,7 @@ end;
 procedure TfrmEdit.UpdateSettings;
 begin
   if Visible then
-    PluginHost.Save;
+    PluginHost.SetSettingsChanged;
 end;
 end.
 

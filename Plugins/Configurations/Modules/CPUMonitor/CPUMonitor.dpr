@@ -73,7 +73,7 @@ end;
 constructor TSharpCenterPlugin.Create(APluginHost: TInterfacedSharpCenterHostBase);
 begin
   PluginHost := APluginHost;
-  SharpCenterApi.GetBarModuleIds(PluginHost.PluginId, barID, moduleID);
+  PluginHost.GetBarModuleIdFromPluginId(barID, moduleID);
   PluginHost.Xml.XmlFilename := GetSharpeUserSettingsPath + 'SharpBar\Bars\' + barID + '\' + moduleID + '.xml';
 end;
 
@@ -97,9 +97,10 @@ begin
       Add('Width', sgbWidth.Value);
       Add('Update', sgbUpdate.Value);
       Add('CPU', round(edit_cpu.Value));
-      if rbGraphBar.Checked then
+
+      if cboGraphType.ItemIndex = 0 then
         Add('DrawMode',0)
-      else if rbCurrentUsage.Checked then
+      else if cboGraphType.ItemIndex = 2 then
         Add('DrawMode',2)
       else Add('DrawMode',1);
     end;
@@ -177,12 +178,10 @@ begin
           edit_cpu.Value := IntValue('CPU', round(edit_cpu.Value));
           i := IntValue('DrawMode', 1);
           case i of
-            0:
-              rbGraphBar.Checked := True;
-            2:
-              rbCurrentUsage.Checked := True;
+            0: cboGraphType.ItemIndex := 0;
+            2: cboGraphType.ItemIndex := 2;
           else
-            rbGraphLine.Checked := True;
+            cboGraphType.ItemIndex := 1;
           end;
         end;
       end;

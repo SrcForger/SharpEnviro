@@ -23,22 +23,20 @@ object frmVolumeControl: TfrmVolumeControl
     ActivePage = JvSettingsPage
     PropagateEnable = False
     Align = alClient
-    ExplicitHeight = 465
     object JvSettingsPage: TJvStandardPage
       Left = 0
       Top = 0
       Width = 428
       Height = 204
-      ExplicitHeight = 465
       object lblMixerNote: TLabel
         AlignWithMargins = True
-        Left = 18
-        Top = 45
-        Width = 402
+        Left = 5
+        Top = 42
+        Width = 418
         Height = 36
-        Margins.Left = 18
-        Margins.Top = 4
-        Margins.Right = 8
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
         Margins.Bottom = 0
         Align = alTop
         AutoSize = False
@@ -49,26 +47,31 @@ object frmVolumeControl: TfrmVolumeControl
         EllipsisPosition = epEndEllipsis
         Transparent = False
         WordWrap = True
+        ExplicitLeft = 18
+        ExplicitTop = 45
+        ExplicitWidth = 402
       end
       object pnlSize: TPanel
         AlignWithMargins = True
-        Left = 10
-        Top = 162
-        Width = 408
+        Left = 5
+        Top = 166
+        Width = 418
         Height = 31
-        Margins.Left = 10
-        Margins.Right = 10
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 0
-        ExplicitLeft = 0
-        ExplicitTop = 136
-        ExplicitWidth = 428
+        ExplicitLeft = 10
+        ExplicitTop = 162
+        ExplicitWidth = 408
         object sgb_width: TSharpeGaugeBox
-          Left = 18
+          Left = 0
           Top = 3
-          Width = 120
+          Width = 200
           Height = 21
           ParentBackground = False
           Min = 25
@@ -85,22 +88,25 @@ object frmVolumeControl: TfrmVolumeControl
       end
       object pnlMixer: TPanel
         AlignWithMargins = True
-        Left = 10
-        Top = 84
-        Width = 408
+        Left = 5
+        Top = 78
+        Width = 418
         Height = 31
-        Margins.Left = 10
-        Margins.Right = 10
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
         Align = alTop
         BevelOuter = bvNone
         Color = clWindow
         TabOrder = 1
-        ExplicitLeft = 3
-        ExplicitWidth = 422
+        ExplicitLeft = 10
+        ExplicitTop = 84
+        ExplicitWidth = 408
         object cb_mlist: TComboBox
-          Left = 18
+          Left = 0
           Top = 3
-          Width = 167
+          Width = 200
           Height = 21
           Style = csDropDownList
           ItemHeight = 13
@@ -110,39 +116,43 @@ object frmVolumeControl: TfrmVolumeControl
       end
       object schMixer: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 10
-        Top = 3
-        Width = 408
-        Height = 35
-        Margins.Left = 10
-        Margins.Right = 10
+        Left = 5
+        Top = 0
+        Width = 418
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 5
         Title = 'Mixer'
         Description = 'Select the sound mixer which you want to control.'
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitLeft = 96
-        ExplicitTop = -7
-        ExplicitWidth = 185
+        ExplicitLeft = 10
+        ExplicitTop = 3
+        ExplicitWidth = 408
       end
       object schSize: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 10
-        Top = 121
-        Width = 408
-        Height = 35
-        Margins.Left = 10
-        Margins.Right = 10
+        Left = 5
+        Top = 119
+        Width = 418
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 10
         Title = 'Size'
         Description = 'Change how big the volume control will appear on the SharpBar.'
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitLeft = 80
-        ExplicitTop = 97
-        ExplicitWidth = 185
+        ExplicitLeft = 10
+        ExplicitTop = 123
+        ExplicitWidth = 408
       end
     end
   end

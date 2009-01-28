@@ -51,7 +51,6 @@ type
     Panel1: TPanel;
     Panel2: TPanel;
     cbLocation: TComboBox;
-    lblLocation: TLabel;
     Panel3: TPanel;
     lblTop: TLabel;
     Panel4: TPanel;
@@ -215,7 +214,7 @@ end;
 procedure TfrmEdit.SettingsChange(Sender: TObject);
 begin
   if Visible then
-    PluginHost.Save;
+    PluginHost.SetSettingsChanged;
 end;
 
 procedure TfrmEdit.FormCreate(Sender: TObject);

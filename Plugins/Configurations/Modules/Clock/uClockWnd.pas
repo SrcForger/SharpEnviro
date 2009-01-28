@@ -49,8 +49,6 @@ type
     pnlSize: TPanel;
     cboSize: TComboBox;
     DateSlashTimeColon: TMenuItem;
-    editTop: TLabeledEdit;
-    editBottom: TLabeledEdit;
     SharpECenterHeader3: TSharpECenterHeader;
     pnlTooltip: TPanel;
     editTooltip: TEdit;
@@ -62,6 +60,10 @@ type
     DatePeriodTimeColon: TMenuItem;
     DatePeriodTimeColonAMPM: TMenuItem;
     DateSlashTimeColonAMPM: TMenuItem;
+    editTop: TEdit;
+    editBottom: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure MenuItemClick(Sender: TObject);
@@ -160,7 +162,7 @@ end;
 procedure TfrmClock.UpdateSettings;
 begin
   if Visible then
-    PluginHost.Save;
+    PluginHost.SetSettingsChanged;
 
   UpdateBottomEdit;
 end;

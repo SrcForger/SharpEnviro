@@ -28,45 +28,27 @@ object frmMiniScmd: TfrmMiniScmd
       Top = 0
       Width = 435
       Height = 197
-      object lblQuickSelect: TLabel
-        AlignWithMargins = True
-        Left = 20
-        Top = 72
-        Width = 405
-        Height = 49
-        Margins.Left = 20
-        Margins.Top = 8
-        Margins.Right = 10
-        Margins.Bottom = 0
-        Align = alTop
-        AutoSize = False
-        Caption = 
-          'Enable this option to display a button next to the command box w' +
-          'hich will open a target selection dialog when clicked. (When the' +
-          ' button is right clicked the selected target will be copied into' +
-          ' the command box)'
-        Transparent = False
-        WordWrap = True
-        ExplicitLeft = 48
-        ExplicitTop = 73
-        ExplicitWidth = 379
-      end
       object pnlSize: TPanel
         AlignWithMargins = True
-        Left = 3
-        Top = 165
-        Width = 429
+        Left = 5
+        Top = 121
+        Width = 425
         Height = 21
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 0
         Align = alTop
         BevelOuter = bvNone
         ParentColor = True
         TabOrder = 0
-        ExplicitTop = 166
+        ExplicitLeft = 3
+        ExplicitTop = 165
+        ExplicitWidth = 429
         object sgb_width: TSharpeGaugeBox
-          AlignWithMargins = True
-          Left = 24
+          Left = 0
           Top = 0
-          Width = 144
+          Width = 200
           Height = 21
           Margins.Left = 24
           Margins.Top = 0
@@ -87,10 +69,14 @@ object frmMiniScmd: TfrmMiniScmd
       end
       object scmQuickSelect: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 3
-        Top = 3
-        Width = 429
-        Height = 35
+        Left = 5
+        Top = 0
+        Width = 425
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 10
         Title = 'Quick Select Options'
         Description = 
           'Configure whether or not you want a quick select button displaye' +
@@ -99,38 +85,56 @@ object frmMiniScmd: TfrmMiniScmd
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
+        ExplicitLeft = 3
+        ExplicitTop = 3
+        ExplicitWidth = 429
       end
       object scmSize: TSharpECenterHeader
         AlignWithMargins = True
-        Left = 3
-        Top = 124
-        Width = 429
-        Height = 35
+        Left = 5
+        Top = 74
+        Width = 425
+        Height = 37
+        Margins.Left = 5
+        Margins.Top = 10
+        Margins.Right = 5
+        Margins.Bottom = 0
         Title = 'Command Box Size'
         Description = 'Configure how wide you want the command box to be.'
         TitleColor = clWindowText
         DescriptionColor = clRed
         Align = alTop
         Color = clWindow
-        ExplicitTop = 125
+        ExplicitLeft = 3
+        ExplicitTop = 126
+        ExplicitWidth = 429
       end
       object cbQuickSelect: TJvXPCheckbox
         AlignWithMargins = True
-        Left = 20
-        Top = 44
-        Width = 405
+        Left = 5
+        Top = 47
+        Width = 425
         Height = 17
-        Margins.Left = 20
-        Margins.Right = 10
+        Hint = 
+          'Enable this option to display a button next to the command box w' +
+          'hich will open a target selection dialog when clicked. (When the' +
+          ' button is right clicked the selected target will be copied into' +
+          ' the command box)'
+        Margins.Left = 5
+        Margins.Top = 0
+        Margins.Right = 5
+        Margins.Bottom = 0
         Caption = 'Display '#39'Quick Select'#39' Button'
         TabOrder = 3
         Checked = True
         State = cbChecked
         Align = alTop
+        ParentShowHint = False
+        ShowHint = True
         OnClick = cbQuickSelectClick
-        ExplicitLeft = -3
-        ExplicitTop = 45
-        ExplicitWidth = 435
+        ExplicitLeft = 20
+        ExplicitTop = 46
+        ExplicitWidth = 405
       end
     end
   end

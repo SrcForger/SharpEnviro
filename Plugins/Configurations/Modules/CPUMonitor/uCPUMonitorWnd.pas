@@ -41,20 +41,14 @@ type
     pagMon: TJvStandardPage;
     SharpESwatchManager1: TSharpESwatchManager;
     Panel5: TPanel;
-    sgbUpdate: TSharpeGaugeBox;
     Panel6: TPanel;
-    edit_cpu: TJvSpinEdit;
     pagColors: TJvStandardPage;
     Colors: TSharpEColorEditorEx;
     Panel2: TPanel;
     sgbBackground: TSharpeGaugeBox;
-    Panel3: TPanel;
     sgbForeground: TSharpeGaugeBox;
     Panel4: TPanel;
     sgbBorder: TSharpeGaugeBox;
-    rbGraphBar: TRadioButton;
-    rbCurrentUsage: TRadioButton;
-    rbGraphLine: TRadioButton;
     pagError: TJvStandardPage;
     SharpERoundPanel1: TSharpERoundPanel;
     Label10: TLabel;
@@ -70,13 +64,16 @@ type
     Label17: TLabel;
     Label18: TLabel;
     SharpECenterHeader1: TSharpECenterHeader;
-    SharpECenterHeader2: TSharpECenterHeader;
     SharpECenterHeader3: TSharpECenterHeader;
-    SharpECenterHeader4: TSharpECenterHeader;
-    Panel7: TPanel;
-    sgbWidth: TSharpeGaugeBox;
     SharpECenterHeader5: TSharpECenterHeader;
-    SharpECenterHeader6: TSharpECenterHeader;
+    Panel1: TPanel;
+    cboGraphType: TComboBox;
+    SharpECenterHeader2: TSharpECenterHeader;
+    edit_cpu: TSharpeGaugeBox;
+    sgbUpdate: TSharpeGaugeBox;
+    SharpECenterHeader4: TSharpECenterHeader;
+    Panel3: TPanel;
+    sgbWidth: TSharpeGaugeBox;
     procedure FormCreate(Sender: TObject);
     procedure cb_numbersClick(Sender: TObject);
     procedure sgbWidthChangeValue(Sender: TObject; Value: Integer);
@@ -172,7 +169,7 @@ procedure TfrmCPUMon.FormCreate(Sender: TObject);
 begin
   sLastPage := pagMon;
   try
-    edit_cpu.MaxValue := adCpuUsage.GetCPUCount;
+    edit_cpu.Max := adCpuUsage.GetCPUCount;
   except
   end;
 end;
@@ -202,7 +199,7 @@ end;
 procedure TfrmCPUMon.UpdateSettings;
 begin
   if Visible then
-    PluginHost.Save;
+    PluginHost.SetSettingsChanged;
 end;
 
 end.

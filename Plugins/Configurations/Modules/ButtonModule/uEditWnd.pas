@@ -72,7 +72,6 @@ type
     procedure btnActionClick(Sender: TObject);
   private
     FPluginHost: TInterfacedSharpCenterHostBase;
-    procedure UpdateIcon;
   public
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost write
       FPluginHost;
@@ -90,23 +89,6 @@ uses
   SharpThemeApiEx, SharpDialogs, SharpApi, SharpCenterApi;
 
 {$R *.dfm}
-
-procedure TfrmEdit.UpdateIcon;
-//var
-//  Bmp : TBitmap32;
-begin
-  {Bmp := TBitmap32.Create;
-  try
-    Bmp.DrawMode := dmBlend;
-    Bmp.CombineMode := cmMerge;
-    img_icon.Bitmap.SetSize(img_icon.Width,img_icon.Height);
-    img_icon.Bitmap.Clear(color32(self.Color));
-    if IconStringToIcon(edIcon.Text,'',Bmp) then
-       Bmp.DrawTo(img_icon.Bitmap,Rect(0,0,img_icon.Bitmap.Width,img_icon.Bitmap.Height));
-  finally
-    Bmp.Free;
-  end;  }
-end;
 
 procedure TfrmEdit.btnActionClick(Sender: TObject);
 var
@@ -135,7 +117,7 @@ end;
 procedure TfrmEdit.SettingsChange(Sender: TObject);
 begin
   if Visible then
-    PluginHost.Save;
+    PluginHost.SetSettingsChanged;
 end;
 
 procedure TfrmEdit.FormCreate(Sender: TObject);

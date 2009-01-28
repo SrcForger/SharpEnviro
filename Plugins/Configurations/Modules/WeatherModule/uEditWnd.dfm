@@ -26,29 +26,25 @@ object frmEdit: TfrmEdit
     TabOrder = 0
     object Panel1: TPanel
       AlignWithMargins = True
-      Left = 20
-      Top = 49
-      Width = 412
+      Left = 5
+      Top = 47
+      Width = 430
       Height = 21
-      Margins.Left = 20
-      Margins.Top = 8
-      Margins.Right = 8
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 5
       Align = alTop
       AutoSize = True
       BevelOuter = bvNone
       Color = clWindow
       ParentBackground = False
       TabOrder = 0
-      object lblLocation: TLabel
-        Left = 0
-        Top = 2
-        Width = 47
-        Height = 13
-        Caption = 'Location: '
-      end
+      ExplicitLeft = 20
+      ExplicitTop = 49
+      ExplicitWidth = 412
       object cbLocation: TComboBox
         AlignWithMargins = True
-        Left = 52
+        Left = 0
         Top = 0
         Width = 300
         Height = 21
@@ -71,58 +67,68 @@ object frmEdit: TfrmEdit
     end
     object Panel2: TPanel
       AlignWithMargins = True
-      Left = 26
-      Top = 122
-      Width = 406
+      Left = 5
+      Top = 128
+      Width = 430
       Height = 19
-      Margins.Left = 26
-      Margins.Top = 8
-      Margins.Right = 8
+      Margins.Left = 5
+      Margins.Top = 0
+      Margins.Right = 5
+      Margins.Bottom = 0
       Align = alTop
       BevelOuter = bvNone
       Color = clWindow
       ParentBackground = False
       TabOrder = 1
+      ExplicitTop = 118
       object chkDisplayIcon: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 2
+        Left = 0
         Top = 0
         Width = 97
-        Height = 17
+        Height = 19
         Caption = 'Display Icon'
         TabOrder = 0
         Checked = True
         State = cbChecked
+        Align = alLeft
         OnClick = SettingsChange
+        ExplicitLeft = 2
+        ExplicitHeight = 17
       end
       object chkDisplayLabels: TJvXPCheckbox
-        AlignWithMargins = True
-        Left = 111
+        Left = 97
         Top = 0
         Width = 98
-        Height = 17
+        Height = 19
         Caption = 'Display Labels'
         TabOrder = 1
         Checked = True
         State = cbChecked
+        Align = alLeft
         OnClick = SettingsChange
+        ExplicitLeft = 100
+        ExplicitTop = 3
+        ExplicitHeight = 21
       end
     end
     object Panel3: TPanel
       AlignWithMargins = True
-      Left = 20
-      Top = 193
-      Width = 412
+      Left = 5
+      Top = 214
+      Width = 430
       Height = 22
-      Margins.Left = 20
-      Margins.Top = 8
-      Margins.Right = 8
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 5
+      Margins.Bottom = 0
       Align = alTop
       AutoSize = True
       BevelOuter = bvNone
       Color = clWindow
       ParentBackground = False
       TabOrder = 2
+      ExplicitLeft = 0
+      ExplicitTop = 190
       object lblTop: TLabel
         Left = 0
         Top = 5
@@ -157,19 +163,22 @@ object frmEdit: TfrmEdit
     end
     object Panel4: TPanel
       AlignWithMargins = True
-      Left = 20
-      Top = 226
-      Width = 412
+      Left = 5
+      Top = 246
+      Width = 430
       Height = 21
-      Margins.Left = 20
-      Margins.Top = 8
-      Margins.Right = 8
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 5
       Align = alTop
       AutoSize = True
       BevelOuter = bvNone
       Color = clWindow
       ParentBackground = False
       TabOrder = 3
+      ExplicitLeft = 23
+      ExplicitTop = 244
+      ExplicitWidth = 412
       object lblBottom: TLabel
         Left = 0
         Top = 4
@@ -204,23 +213,34 @@ object frmEdit: TfrmEdit
     end
     object schLocation: TSharpECenterHeader
       AlignWithMargins = True
-      Left = 3
-      Top = 3
-      Width = 434
-      Height = 35
+      Left = 5
+      Top = 0
+      Width = 430
+      Height = 37
+      Margins.Left = 5
+      Margins.Top = 0
+      Margins.Right = 5
+      Margins.Bottom = 0
       Title = 'Weather Location'
       Description = 'Define which location you want to use for this module.'
       TitleColor = clWindowText
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
+      ExplicitLeft = 3
+      ExplicitTop = 3
+      ExplicitWidth = 434
     end
     object schDisplayOptions: TSharpECenterHeader
       AlignWithMargins = True
-      Left = 3
-      Top = 76
-      Width = 434
-      Height = 35
+      Left = 5
+      Top = 81
+      Width = 430
+      Height = 37
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 5
+      Margins.Bottom = 10
       Title = 'Display Options'
       Description = 
         'Define whether or not you want an icon and text labels displayed' +
@@ -229,19 +249,29 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
+      ExplicitLeft = 3
+      ExplicitTop = 78
+      ExplicitWidth = 434
     end
     object schLabelOptions: TSharpECenterHeader
       AlignWithMargins = True
-      Left = 3
-      Top = 147
-      Width = 434
-      Height = 35
+      Left = 5
+      Top = 157
+      Width = 430
+      Height = 37
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 5
+      Margins.Bottom = 10
       Title = 'Label Options'
       Description = 'Define the text that is displayed in the text labels.'
       TitleColor = clWindowText
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
+      ExplicitLeft = 3
+      ExplicitTop = 151
+      ExplicitWidth = 434
     end
   end
   object mnuTags: TPopupMenu

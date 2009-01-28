@@ -39,13 +39,12 @@ type
   TfrmQuickScript = class(TForm)
     plMain: TJvPageList;
     pagQuickScript: TJvStandardPage;
-    rb_icon: TRadioButton;
-    rb_text: TRadioButton;
-    rb_icontext: TRadioButton;
+    Panel1: TPanel;
+    cboDisplay: TComboBox;
     schDisplayOptions: TSharpECenterHeader;
     procedure FormCreate(Sender: TObject);
     procedure cb_alwaysontopClick(Sender: TObject);
-    procedure rb_textClick(Sender: TObject);
+    procedure cboComboChange(Sender: TObject);
   private
     FPluginHost: TInterfacedSharpCenterHostBase;
     procedure UpdateSettings;
@@ -73,7 +72,7 @@ begin
   DoubleBuffered := true;
 end;
 
-procedure TfrmQuickScript.rb_textClick(Sender: TObject);
+procedure TfrmQuickScript.cboComboChange(Sender: TObject);
 begin
   UpdateSettings;
 end;
@@ -81,7 +80,7 @@ end;
 procedure TfrmQuickScript.UpdateSettings;
 begin
   if Visible then
-    PluginHost.Save;
+    PluginHost.SetSettingsChanged;
 end;
 
 end.

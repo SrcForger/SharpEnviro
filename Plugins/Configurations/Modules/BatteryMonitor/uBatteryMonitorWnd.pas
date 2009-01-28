@@ -74,7 +74,7 @@ end;
 procedure TfrmBMon.UpdateSettings;
 begin
   if Visible then
-    PluginHost.Save;
+    PluginHost.SetSettingsChanged;
 end;
 
 end.

@@ -7,7 +7,7 @@
     <DCC_EnabledPackages>true</DCC_EnabledPackages>
     <DCC_UsePackage>rtl;vcl</DCC_UsePackage>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>..\..\..\..\..\SharpE\Center\Root\_Modules\_ModuleDlls\SystemTray.dll</DCC_DependencyCheckOutputName>
+    <DCC_DependencyCheckOutputName>F:\SharpE\Center\Root\_Modules\_ModuleDlls\SystemTray.dll</DCC_DependencyCheckOutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Version>7.0</Version>
