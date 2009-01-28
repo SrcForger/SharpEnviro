@@ -56,6 +56,7 @@ begin
   SharpExec := tSharpExec.create;
   Handle := owner;
   ServiceDone('Exec');
+  SharpExec.ReloadLists;
 end;
 
 //when receive message from sharpcore do this

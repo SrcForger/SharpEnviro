@@ -279,6 +279,7 @@ begin
   // Initiliase the Classes
   PathIncludeList := TPathIncludeList.Create(PiListFn);
   AliasList := TAliasList.Create;
+  AliasList.FileName := PiAliasFn;
   RecentItemList := TRecentItemsList.Create(RiListFn);
   ExecSettings := TExecSettings.Create(ExecSettingsFn);
   UsedItemList := TUsedItemsList.Create(UiListFn);
@@ -982,7 +983,6 @@ var
 
   bMatch: Boolean;
 begin
-
   // Initialise the String Lists
   ParamsStrl := TStringList.Create;
   Strl := TStringList.Create;
@@ -1004,7 +1004,6 @@ begin
     end;
 
     for i := 0 to Pred(AliasList.Count) do begin
-
       // Check if there is a match in the Alias List
       if StrCompare(AliasName, AliasList[i].AliasName) = 0 then begin
 
