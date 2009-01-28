@@ -123,8 +123,8 @@ begin
     begin
       barBoundsRect := GetSharpBarArea(n);
 
-      if PointInRect(Point(barBoundsRect.R.Left + (barBoundsRect.R.Right - barBoundsRect.R.Left),
-                     barBoundsRect.R.Top + (barBoundsRect.R.Bottom - barBoundsRect.R.Top)),Mon.BoundsRect) then
+      if PointInRect(Point(barBoundsRect.R.Left + (barBoundsRect.R.Right - barBoundsRect.R.Left) div 2,
+                     barBoundsRect.R.Top + (barBoundsRect.R.Bottom - barBoundsRect.R.Top) div 2),Mon.BoundsRect) then
       begin
         if barBoundsRect.R.Bottom + 40 < h then
           barBoundsRect.R.Bottom := barBoundsRect.R.Bottom + 40;
@@ -132,10 +132,10 @@ begin
         if barBoundsRect.R.Top - 40 > 0 then
           barBoundsRect.R.Top := barBoundsRect.R.Top - 40;
 
-        PreviewBmp.FillRect(round(barBoundsRect.R.Left * F),
-                            round(barBoundsRect.R.Top * F),
-                            round(barBoundsRect.R.Right * F),
-                            round(barBoundsRect.R.Bottom * F),color32(PluginHost.Theme.ContainerTextColor));
+        PreviewBmp.FillRect(round((barBoundsRect.R.Left - Mon.Left) * F),
+                            round((barBoundsRect.R.Top - Mon.Top) * F),
+                            round((barBoundsRect.R.Right - Mon.Left) * F),
+                            round((barBoundsRect.R.Bottom - Mon.Top)* F),color32(PluginHost.Theme.ContainerTextColor));
         if AutoMode then
         begin
           if barBoundsRect.R.Top < Mon.Top + Mon.Height div 2 then
