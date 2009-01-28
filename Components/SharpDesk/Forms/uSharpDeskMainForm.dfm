@@ -868,4 +868,11 @@ object SharpDeskMainForm: TSharpDeskMainForm
     Top = 56
     Bitmap = {}
   end
+  object BackgroundReloadTimer: TTimer
+    Enabled = False
+    Interval = 2500
+    OnTimer = BackgroundReloadTimerTimer
+    Left = 64
+    Top = 16
+  end
 end

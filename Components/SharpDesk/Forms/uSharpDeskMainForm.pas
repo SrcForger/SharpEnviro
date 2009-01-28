@@ -124,6 +124,7 @@ type
     N10: TMenuItem;
     N14: TMenuItem;
     PngImageList2: TPngImageList;
+    BackgroundReloadTimer: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -167,6 +168,7 @@ type
     procedure All1Click(Sender: TObject);
     procedure MakeWindow1Click(Sender: TObject);
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure BackgroundReloadTimerTimer(Sender: TObject);
   private
     procedure WMSettingsChange(var Msg : TMessage);       message WM_SETTINGCHANGE;
     procedure WMDisplayChange(var Msg : TMessage);        message WM_DISPLAYCHANGE;
@@ -405,11 +407,8 @@ begin
       SharpDeskMainForm.Top  := Screen.DesktopTop;
       SharpDeskMainForm.Width := Screen.DesktopWidth;
       SharpDeskMainForm.Height := Screen.DesktopHeight;
-      Background.Reload(True);
-      BackgroundImage.ForceFullInvalidate;
-      SharpDesk.BackgroundLayer.Update;
-      SharpDesk.BackgroundLayer.Changed;
-      SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
+      BackgroundReloadTimer.Enabled := False;
+      BackgroundReloadTimer.Enabled := True;
     end;
   end;
 end;
@@ -835,6 +834,18 @@ begin
   end;
 end;
 
+
+procedure TSharpDeskMainForm.BackgroundReloadTimerTimer(Sender: TObject);
+begin
+  BackgroundReloadTimer.Enabled := False;
+  SharpDeskMainForm.SendMessageToConsole('loading wallpaper settings',COLOR_OK,DMT_STATUS);
+  SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
+  Background.Reload(False);
+  BackgroundImage.ForceFullInvalidate;
+  SharpDesk.BackgroundLayer.Update;
+  SharpDesk.BackgroundLayer.Changed;
+  SharpApi.BroadcastGlobalUpdateMessage(suDesktopBackgroundChanged,-1,True);
+end;
 
 // ######################################
 
@@ -1575,13 +1586,9 @@ end;
 
 procedure TSharpDeskMainForm.FormResize(Sender: TObject);
 begin
-     SharpDesk.ResizeBackgroundLayer;
-     if not startup then
-     begin
-          SharpDeskMainForm.SendMessageToConsole('loading wallpaper settings',COLOR_OK,DMT_STATUS);
-          SharpDeskMainForm.SendMessageToConsole('loading wallpaper',COLOR_OK,DMT_STATUS);
-          Background.Reload(False);
-     end;
+  SharpDesk.ResizeBackgroundLayer;
+  BackgroundReloadTimer.Enabled := False;
+  BackgroundReloadTimer.Enabled := True;
 end;
 
 procedure TSharpDeskMainForm.FormPaint(Sender: TObject);
