@@ -3,7 +3,7 @@ object frmHome: TfrmHome
   Top = 0
   BorderStyle = bsNone
   Caption = 'frmDeskAreaSettings'
-  ClientHeight = 347
+  ClientHeight = 375
   ClientWidth = 513
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -20,7 +20,7 @@ object frmHome: TfrmHome
     Left = 0
     Top = 0
     Width = 513
-    Height = 329
+    Height = 367
     ActivePage = tabCredits
     Align = alTop
     Style = tsFlatButtons
@@ -28,7 +28,7 @@ object frmHome: TfrmHome
     object tabCredits: TTabSheet
       Caption = 'tabCredits'
       TabVisible = False
-      ExplicitHeight = 285
+      ExplicitHeight = 319
       object imgLogo: TImage
         AlignWithMargins = True
         Left = 4
@@ -343,7 +343,7 @@ object frmHome: TfrmHome
         Colors.CheckColor = 15528425
         Colors.DisabledColor = clBlack
         DefaultColumn = 0
-        ItemHeight = 25
+        ItemHeight = 30
         OnClickItem = lbUsersClickItem
         OnGetCellCursor = lbUsersGetCellCursor
         OnGetCellText = lbUsersGetCellText
@@ -351,15 +351,13 @@ object frmHome: TfrmHome
         AutosizeGrid = False
         Borderstyle = bsNone
         Align = alTop
-        ExplicitTop = 92
-        ExplicitWidth = 505
       end
     end
     object tabUrls: TTabSheet
       Caption = 'tabUrls'
       ImageIndex = 2
       TabVisible = False
-      ExplicitHeight = 285
+      ExplicitHeight = 319
       object Image1: TImage
         AlignWithMargins = True
         Left = 4
@@ -672,7 +670,7 @@ object frmHome: TfrmHome
         Colors.CheckColor = 15528425
         Colors.DisabledColor = clBlack
         DefaultColumn = 0
-        ItemHeight = 25
+        ItemHeight = 30
         OnClickItem = lbUrlsClickItem
         OnGetCellCursor = lbUrlsGetCellCursor
         OnGetCellText = lbUrlsGetCellText
@@ -680,8 +678,6 @@ object frmHome: TfrmHome
         AutosizeGrid = True
         Borderstyle = bsNone
         Align = alTop
-        ExplicitTop = 92
-        ExplicitWidth = 505
       end
     end
   end
