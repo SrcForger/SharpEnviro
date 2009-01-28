@@ -39,9 +39,6 @@ object frmEdit: TfrmEdit
       Color = clWindow
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 20
-      ExplicitTop = 49
-      ExplicitWidth = 412
       object cbLocation: TComboBox
         AlignWithMargins = True
         Left = 0
@@ -80,7 +77,6 @@ object frmEdit: TfrmEdit
       Color = clWindow
       ParentBackground = False
       TabOrder = 1
-      ExplicitTop = 118
       object chkDisplayIcon: TJvXPCheckbox
         Left = 0
         Top = 0
@@ -92,8 +88,6 @@ object frmEdit: TfrmEdit
         State = cbChecked
         Align = alLeft
         OnClick = SettingsChange
-        ExplicitLeft = 2
-        ExplicitHeight = 17
       end
       object chkDisplayLabels: TJvXPCheckbox
         Left = 97
@@ -106,9 +100,6 @@ object frmEdit: TfrmEdit
         State = cbChecked
         Align = alLeft
         OnClick = SettingsChange
-        ExplicitLeft = 100
-        ExplicitTop = 3
-        ExplicitHeight = 21
       end
     end
     object Panel3: TPanel
@@ -127,8 +118,6 @@ object frmEdit: TfrmEdit
       Color = clWindow
       ParentBackground = False
       TabOrder = 2
-      ExplicitLeft = 0
-      ExplicitTop = 190
       object lblTop: TLabel
         Left = 0
         Top = 5
@@ -176,9 +165,6 @@ object frmEdit: TfrmEdit
       Color = clWindow
       ParentBackground = False
       TabOrder = 3
-      ExplicitLeft = 23
-      ExplicitTop = 244
-      ExplicitWidth = 412
       object lblBottom: TLabel
         Left = 0
         Top = 4
@@ -227,9 +213,6 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
-      ExplicitLeft = 3
-      ExplicitTop = 3
-      ExplicitWidth = 434
     end
     object schDisplayOptions: TSharpECenterHeader
       AlignWithMargins = True
@@ -249,9 +232,6 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
-      ExplicitLeft = 3
-      ExplicitTop = 78
-      ExplicitWidth = 434
     end
     object schLabelOptions: TSharpECenterHeader
       AlignWithMargins = True
@@ -269,9 +249,6 @@ object frmEdit: TfrmEdit
       DescriptionColor = clRed
       Align = alTop
       Color = clWindow
-      ExplicitLeft = 3
-      ExplicitTop = 151
-      ExplicitWidth = 434
     end
   end
   object mnuTags: TPopupMenu

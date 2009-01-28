@@ -184,11 +184,17 @@ procedure TfrmEdit.PopulateLocations;
 var
   xml:TJclSimpleXML;
   n: Integer;
+  WeatherFile : String;
 begin
+  WeatherFile := GetSharpEUserSettingsPath+'SharpCore\Services\Weather\WeatherList.xml';
   cbLocation.Clear;
+
+  if not FileExists(WeatherFile) then
+    exit;
+
   xml := TJclSimpleXML.Create;
   try
-    xml.LoadFromFile(GetSharpEUserSettingsPath+'SharpCore\Services\Weather\WeatherList.xml');
+    xml.LoadFromFile(WeatherFile);
 
     for n := 0 to XML.Root.Items.Count - 1 do begin
       cbLocation.Items.Add(xml.Root.Items.Item[n].Properties.Value('Location',''));
