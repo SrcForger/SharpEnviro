@@ -154,9 +154,6 @@ begin
   FItems := TObjectList.Create;
   bSave := False;
 
-  // Load Internals
-  AddInternals;
-
   if FileExists(AFileName) then
   begin
 
@@ -176,7 +173,10 @@ begin
     end;
   end
   else
+  begin
+    AddInternals;
     Save;
+  end;
 end;
 
 destructor TPathIncludeList.Destroy;
@@ -252,6 +252,7 @@ var
   sMsg: string;
 begin
 
+  AddInternals;
   xml := TJvSimpleXml.Create(nil);
 
   try
