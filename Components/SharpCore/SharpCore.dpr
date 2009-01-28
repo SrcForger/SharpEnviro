@@ -38,6 +38,8 @@ uses
   Classes,
   SysUtils,
   uVistaFuncs,
+  uSharpESkinInterface,
+  uISharpESkin,
   uComponentMan in 'uComponentMan.pas';
 
 {$R *.res}
@@ -51,6 +53,8 @@ const
   ID_SHELLSWITCH = 4;
 
 var
+  SkinInterface: TSharpESkinInterface;
+  ISkinInterface: ISharpESkin;
   wclClass: TWndClass;
   wndMsg: TMsg;
   nidTray: TNotifyIconData;
@@ -130,19 +134,24 @@ end;
 
 function StartService(var modData: TComponentData): Integer;
 type
-  TStartFunc = function(owner: hwnd): hwnd;
+  TStartFunc   = function(owner: hwnd): hwnd;
+  TStartFuncEx = function(owner: hwnd; pSkinInterface : ISharpESkin): hwnd;
 const
-  StartFunc: TStartFunc = nil;
+  StartFunc:   TStartFunc = nil;
+  StartFuncEx: TStartFuncEx = nil;
 begin
   Result := 1;
   if (modData.MetaData.DataType = tteService) and (not modData.Running) then
   begin
     modData.FileHandle := LoadLibrary(PChar(modData.FileName));
-    @StartFunc := GetProcAddress(modData.FileHandle, 'Start');
-    if Assigned(StartFunc) then
+    @StartFunc   := GetProcAddress(modData.FileHandle, 'Start');
+    @StartFuncEx := GetProcAddress(modData.FileHandle, 'StartEx');
+    if Assigned(StartFunc) or Assigned(StartFuncEx) then
     begin
       DebugMsg('Starting ' + modData.MetaData.Name);
-      StartFunc(hndWindow);
+      if Assigned(StartFunc) then
+        StartFunc(hndWindow)
+      else StartFuncEx(hndWindow, ISkinInterface);
       CheckMenuItem(menServices, modData.ID, MF_CHECKED);
       modData.Running := True;
     end;
@@ -306,9 +315,16 @@ begin
       begin
         Theme := GetCurrentTheme;
         case wParam of
-          Integer(suSkinFont): Theme.LoadTheme([tpSkinFont]);
+          Integer(suSkinFont): begin
+            Theme.LoadTheme([tpSkinFont]);
+            ISkinInterface.SkinManager.RefreshControls;
+          end;
           Integer(suTheme):    Theme.LoadTheme(ALL_THEME_PARTS);
-          Integer(suScheme):   Theme.LoadTheme([tpSkinScheme]);
+          Integer(suScheme),Integer(suSkinFileChanged): begin
+            Theme.LoadTheme([tpSkinScheme]);
+            ISkinInterface.SkinManager.UpdateScheme;
+            ISkinInterface.SkinManager.UpdateSkin;
+          end;
           Integer(suIconSet):  Theme.LoadTheme([tpIconSet]);
         end;
       end;
@@ -452,6 +468,10 @@ begin
   // Initialize Themes... (for the services)
   GetCurrentTheme.LoadTheme(ALL_THEME_PARTS);
 
+  // Initialize the SkinInterface which then later can be passed to services
+  SkinInterface := TSharpESkinInterface.Create(nil);
+  ISkinInterface := SkinInterface;
+
   stlCmdLine := TStringList.Create;
 
   bDebug := False;
@@ -535,5 +555,6 @@ begin
     DispatchMessage(wndMsg);
   end;
 
+  ISkinInterface := nil;
 end.
 
