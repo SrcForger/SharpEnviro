@@ -277,6 +277,7 @@ var
   i: integer;
   wpara: wparam;
   mess: integer;
+  messwnd : hwnd;
   lpara: lparam;
   stemp: string;
   bsm: boolean;
@@ -848,9 +849,13 @@ var
 
   function EnumThreadWindowsProc(Wnd: hwnd; param: lParam): boolean; export; stdcall;
   begin
-    if bsm then
-      SendMessage(wnd, mess, wpara, lpara)
-    else PostMessage(wnd, mess, wpara, lpara);
+    // make sure to not send to the main window again
+    if messwnd <> wnd then
+    begin
+      if bsm then
+        SendMessage(wnd, mess, wpara, lpara)
+      else PostMessage(wnd, mess, wpara, lpara);
+    end;      
     inc(i);
     result := true;
   end;
@@ -896,6 +901,12 @@ begin
 
   for n := High(ha) downto 0 do
   begin
+    messwnd := ha[n];
+    // send first to main window
+    if bsm then
+      SendMessage(messwnd, mess, wpara, lpara)
+    else PostMessage(messwnd, mess, wpara, lpara);
+    
     ThreadID := GetWindowThreadProcessId(ha[n],nil);
     if ThreadID <> 0 then
       EnumThreadWindows(ThreadID,@EnumThreadWindowsProc,msg);
