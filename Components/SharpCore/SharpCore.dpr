@@ -311,7 +311,7 @@ begin
     WM_SHARPEUPDATESETTINGS:
     begin
       if [TSU_UPDATE_ENUM(wParam)] <= [suSkinFont,suSkinFileChanged,suTheme,
-                                           suIconSet,suScheme] then
+                                       suSkin,suIconSet,suScheme] then
       begin
         Theme := GetCurrentTheme;
         case wParam of
@@ -319,9 +319,14 @@ begin
             Theme.LoadTheme([tpSkinFont]);
             ISkinInterface.SkinManager.RefreshControls;
           end;
-          Integer(suTheme):    Theme.LoadTheme(ALL_THEME_PARTS);
-          Integer(suScheme),Integer(suSkinFileChanged): begin
+          Integer(suTheme): Theme.LoadTheme(ALL_THEME_PARTS);
+          Integer(suSkin): Theme.LoadTheme([tpSkinScheme]);
+          Integer(suScheme): begin
             Theme.LoadTheme([tpSkinScheme]);
+            ISkinInterface.SkinManager.UpdateScheme;
+            ISkinInterface.SkinManager.UpdateSkin;
+          end;
+          Integer(suSkinFileChanged): begin
             ISkinInterface.SkinManager.UpdateScheme;
             ISkinInterface.SkinManager.UpdateSkin;
           end;
