@@ -114,7 +114,7 @@ procedure TSkinServer.UpdateSkin(var Msg: TMessage);
 begin
   if (msg.WParam = Integer(suSkin)) or (msg.WParam = Integer(suTheme)) then
   begin
-    UpdateStreamFile(True);
+    UpdateStreamFile(False);
     SharpApi.BroadcastGlobalUpdateMessage(suSkinFileChanged,-1,True);
   end;
 end;
