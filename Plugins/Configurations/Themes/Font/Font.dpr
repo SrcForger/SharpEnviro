@@ -208,8 +208,11 @@ begin
 end;
 
 procedure TSharpCenterPlugin.Save;
+var
+  FontData : TThemeSkinFont;
 begin
-  with frmSettingsWnd, FTheme.Skin.SkinFont do
+  FontData := FTheme.Skin.SkinFont;
+  with frmSettingsWnd, FontData do
   begin
     ModSize          := uicFontSize.HasChanged;
     ModName          := uicFontType.HasChanged;
@@ -232,6 +235,7 @@ begin
     ValueUnderline   := chkUnderline.checked;
     ValueClearType   := chkCleartype.Checked;
   end;
+  FTheme.Skin.SkinFont := FontData;
   FTheme.Skin.SaveToFileFont;
 end;
 

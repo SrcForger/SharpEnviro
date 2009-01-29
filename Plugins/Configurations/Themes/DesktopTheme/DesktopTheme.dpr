@@ -200,8 +200,11 @@ end;
 procedure TSharpCenterPlugin.Save;
 var
   iIconSize: integer;
+  IconData : TThemeDesktopIcon;
+  AnimData : TThemeDesktopAnim;
 begin
-  with frmSettingsWnd, FTheme.Desktop.Icon do
+  IconData := FTheme.Desktop.Icon;
+  with frmSettingsWnd, IconData do
   begin
     if rdoIcon32.Checked then
       iIconSize := 32
@@ -234,8 +237,10 @@ begin
     TextColorStr       := Inttostr(sceFontColor.Items.Item[0].ColorCode);
     TextShadowColorStr := Inttostr(sceShadowColor.Items.Item[0].ColorCode);
   end;
+  FTheme.Desktop.Icon := IconData;
 
-  with frmSettingsWnd,FTheme.Desktop.Animation do
+  AnimData := FTheme.Desktop.Animation;
+  with frmSettingsWnd,AnimData do
   begin
     UseAnimations   := chkAnim.Checked;
     Scale           := chkAnimSize.Checked;
@@ -248,6 +253,7 @@ begin
     BrightnessValue := sgbAnimBrightness.Value;
     BlendColorStr   := Inttostr(sceAnimColor.Items.Item[0].ColorCode);
   end;
+  FTheme.Desktop.Animation := AnimData;
 
   FTheme.Desktop.SaveToFile;
 end;

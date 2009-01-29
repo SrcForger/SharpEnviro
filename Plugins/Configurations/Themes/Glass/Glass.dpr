@@ -193,8 +193,11 @@ begin
 end;
 
 procedure TSharpCenterPlugin.Save;
+var
+  GlassData : TThemeSkinGlassEffect;
 begin
-  with FTheme.Skin.GlassEffect, frmSettingsWnd do
+  GlassData := FTheme.Skin.GlassEffect;
+  with GlassData, frmSettingsWnd do
   begin
     BlurRadius     := sceGlassOptions.Items.Item[0].Value;
     BlurIterations := sceGlassOptions.Items.Item[1].Value;
@@ -204,6 +207,7 @@ begin
     Lighten        := (sceGlassOptions.Items.Item[5].Value <> 0);
     LightenAmount  := sceGlassOptions.Items.Item[6].Value;
   end;
+  FTheme.Skin.GlassEffect := GlassData;
   FTheme.Skin.SaveToFileSkinAndGlass;
 end;
 
