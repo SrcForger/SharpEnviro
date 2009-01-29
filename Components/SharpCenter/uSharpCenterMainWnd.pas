@@ -153,6 +153,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure pnlPluginContainerTabClick(ASender: TObject;
       const ATabIndex: Integer);
+    procedure FormCreate(Sender: TObject);
   private
     FCancelClicked: Boolean;
     FSelectedTabID: Integer;
@@ -1583,6 +1584,11 @@ begin
   finally
     CanClose := True;
   end;
+end;
+
+procedure TSharpCenterWnd.FormCreate(Sender: TObject);
+begin
+  GetCurrentTheme.LoadTheme(ALL_THEME_PARTS); // Initialize Theme Api
 end;
 
 procedure TSharpCenterWnd.FormMouseWheel(Sender: TObject; Shift: TShiftState;
