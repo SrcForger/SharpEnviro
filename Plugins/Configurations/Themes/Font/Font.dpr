@@ -120,7 +120,7 @@ begin
   FTheme.LoadTheme([tpSkinFont]);
   with frmSettingsWnd, FTheme.Skin.SkinFont do
   begin
-    frmSettingsWnd.IsUpdating := true;
+    IsUpdating := true;
 
     // Font size
     if ModSize then begin
@@ -188,6 +188,7 @@ begin
       uicClearType.HasChanged := True;
       chkCleartype.checked := ValueClearType;
     end;
+    IsUpdating := false;
   end;
 end;
 
@@ -249,7 +250,7 @@ begin
     Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d', [Integer(scmApply),
-      Integer(suTheme)]);
+      Integer(suSkinFont)]);
   end;
 end;
 
