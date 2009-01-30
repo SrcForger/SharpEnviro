@@ -22,28 +22,28 @@
         <dimension>3,28</dimension>
         <image>images/BarLeft.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-3,0</location>
         <dimension>3,28</dimension>
         <image>images/BarRight.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>3,0</location>
         <dimension>w-6,28</dimension>
         <image>images/BarMiddle.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>1,1</location>
         <dimension>w-2,26</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>164</alpha>
+        <alpha>$Alpha-32</alpha>
       </skinpart>
     </bar>
     <throbber>
@@ -55,14 +55,14 @@
           <dimension>6,20</dimension>
           <image>images/BarThrobber.png</image>
           <color>$Border</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
         <skinpart>
           <location>1,1</location>
           <dimension>4,18</dimension>
           <image>images/Empty.png</image>
           <color>$Background</color>
-          <alpha>128</alpha>
+          <alpha>$Alpha-64</alpha>
         </skinpart>
       </normal>
       <hover>
@@ -71,14 +71,14 @@
           <dimension>6,20</dimension>
           <image>images/BarThrobber.png</image>
           <color>$Border</color>
-          <alpha>228</alpha>
+          <alpha>$Alpha+32</alpha>
         </skinpart>
         <skinpart>
           <location>1,1</location>
           <dimension>4,18</dimension>
           <image>images/Empty.png</image>
           <color>$Background</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
       </hover>
       <down>
@@ -87,14 +87,14 @@
           <dimension>6,20</dimension>
           <image>images/BarThrobber.png</image>
           <color>$Border</color>
-          <alpha>164</alpha>
+          <alpha>$Alpha-32</alpha>
         </skinpart>
         <skinpart>
           <location>1,1</location>
           <dimension>4,18</dimension>
           <image>images/Empty.png</image>
           <color>$Background</color>
-          <alpha>60</alpha>
+          <alpha>$Alpha-136</alpha>
         </skinpart>
       </down>
     </throbber>
@@ -107,7 +107,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -115,7 +115,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -123,7 +123,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -131,7 +131,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
@@ -141,6 +141,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Background,$Background</gradientcolor>
         <gradientalpha>0,60</gradientalpha>
+	<alpha>$Alpha-166</alpha>
       </skinpart>
     </custombg>
   </sharpbar>
@@ -170,35 +171,35 @@
         <dimension>w-3,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>180</alpha>
+        <alpha>$Alpha-16</alpha>
       </skinpart>
       <skinpart>
         <location>2,1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
       <skinpart>
         <location>2,h-1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
       <skinpart>
         <location>1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
     </background>
     <item>
@@ -208,35 +209,35 @@
         <dimension>w-3,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>180</alpha>
+        <alpha>$Alpha-16</alpha>
       </skinpart>
       <skinpart>
         <location>2,1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
       <skinpart>
         <location>2,h-1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
       <skinpart>
         <location>1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+32</alpha>
       </skinpart>
     </item> 
     <itemhover>
@@ -246,35 +247,35 @@
         <dimension>w-3,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>128</alpha>
+        <alpha>$Alpha-64</alpha>
       </skinpart>
       <skinpart>
         <location>2,1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+34</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+34</alpha>
       </skinpart>
       <skinpart>
         <location>2,h-1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+34</alpha>
       </skinpart>
       <skinpart>
         <location>1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+34</alpha>
       </skinpart>
     </itemhover>
   </taskswitch>
@@ -289,35 +290,35 @@
         <dimension>w-3,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>180</alpha>
+        <alpha>$Alpha-34</alpha>
       </skinpart>
       <skinpart>
         <location>2,1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+34</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+34</alpha>
       </skinpart>
       <skinpart>
         <location>2,h-1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+34</alpha>
       </skinpart>
       <skinpart>
         <location>1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+34</alpha>
       </skinpart>
     </background>
   </menu>
@@ -348,7 +349,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -356,7 +357,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -364,7 +365,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -372,7 +373,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
@@ -382,6 +383,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Background,$Background</gradientcolor>
         <gradientalpha>0,60</gradientalpha>
+	<alpha>$Alpha-166</alpha>
       </skinpart>
     </normal>
     <hover>
@@ -393,7 +395,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -401,7 +403,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -409,7 +411,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -417,7 +419,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
@@ -427,6 +429,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Background,$Background</gradientcolor>
         <gradientalpha>100,24</gradientalpha>
+	<alpha>$Alpha-120</alpha>
       </skinpart>
     </hover>
     <down>
@@ -438,7 +441,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>200</alpha>
+        <alpha>$Alpha+4</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -446,7 +449,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>200</alpha>
+        <alpha>$Alpha+4</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -454,7 +457,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>200</alpha>
+        <alpha>$Alpha+4</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -462,7 +465,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>200</alpha>
+        <alpha>$Alpha+4</alpha>
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
@@ -472,6 +475,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Background,$Background</gradientcolor>
         <gradientalpha>48,192</gradientalpha>
+	<alpha>$Alpha-70</alpha>
       </skinpart>
     </down>
     <normalsub>
@@ -483,7 +487,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -491,7 +495,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -499,7 +503,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -507,7 +511,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
@@ -517,6 +521,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Background,$Background</gradientcolor>
         <gradientalpha>0,84</gradientalpha>
+	<alpha>$Alpha-154</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -524,7 +529,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -532,7 +537,7 @@
         <dimension>4,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
     </normalsub>
     <hoversub>
@@ -544,7 +549,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -552,7 +557,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -560,7 +565,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -568,7 +573,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
@@ -578,6 +583,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Background,$Background</gradientcolor>
         <gradientalpha>164,64</gradientalpha>
+	<alpha>$Alpha-96</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -585,7 +591,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -593,7 +599,7 @@
         <dimension>4,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
     </hoversub>
     <separator>
@@ -604,7 +610,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -612,7 +618,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -620,7 +626,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -628,7 +634,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
@@ -638,6 +644,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Background,$Background</gradientcolor>
         <gradientalpha>0,96</gradientalpha>
+	<alpha>$Alpha-145</alpha>
       </skinpart>
     </separator>
     <label>
@@ -656,7 +663,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>100</alpha>
+        <alpha>$Alpha-96</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -664,7 +671,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>100</alpha>
+        <alpha>$Alpha-96</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -672,7 +679,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>100</alpha>
+        <alpha>$Alpha-96</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -680,7 +687,7 @@
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>100</alpha>
+        <alpha>$Alpha-96</alpha>
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
@@ -690,6 +697,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Background,$Background</gradientcolor>
         <gradientalpha>0,40</gradientalpha>
+	<alpha>$Alpha-170</alpha>
       </skinpart>
     </label>
   </menuitem>
@@ -728,7 +736,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>148</alpha>
+          <alpha>$Alpha-48</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -736,7 +744,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>148</alpha>
+          <alpha>$Alpha-48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -744,7 +752,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>148</alpha>
+          <alpha>$Alpha-48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -752,7 +760,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>148</alpha>
+          <alpha>$Alpha-48</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -762,6 +770,7 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>24,168</gradientalpha>
+ 	  <alpha>$Alpha-100</alpha>
         </skinpart>
       </normal>
       <normalhover>
@@ -771,7 +780,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -779,7 +788,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -787,7 +796,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -795,7 +804,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -805,6 +814,7 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>168,24</gradientalpha>
+          <alpha>$Alpha-100</alpha>
         </skinpart>
       </normalhover>
       <down>
@@ -820,7 +830,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>220</alpha>
+          <alpha>$Alpha+24</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -828,7 +838,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>220</alpha>
+          <alpha>$Alpha+24</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -836,7 +846,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>220</alpha>
+          <alpha>$Alpha+24</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -844,7 +854,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>220</alpha>
+          <alpha>$Alpha+24</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -854,6 +864,7 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>48,192</gradientalpha>
+  	  <alpha>$Alpha-80</alpha>
         </skinpart>
       </down>
       <downhover>
@@ -869,7 +880,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -877,7 +888,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -885,7 +896,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -893,7 +904,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -903,6 +914,7 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>192,48</gradientalpha>
+	  <alpha>$Alpha-80</alpha>
         </skinpart>
       </downhover>
       <highlight>
@@ -920,7 +932,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -928,7 +940,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -936,7 +948,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -946,6 +958,7 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>168,24</gradientalpha>
+	  <alpha>$Alpha-100</alpha>
         </skinpart>
       </highlight>
       <highlighthover>
@@ -955,7 +968,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -963,7 +976,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -971,7 +984,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -979,7 +992,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -989,6 +1002,7 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>192,48</gradientalpha>
+ 	  <alpha>$Alpha-80</alpha>
         </skinpart>
       </highlighthover>
     </full>
@@ -1026,7 +1040,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>148</alpha>
+          <alpha>$Alpha-48</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -1034,7 +1048,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>148</alpha>
+          <alpha>$Alpha-48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -1042,7 +1056,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>148</alpha>
+          <alpha>$Alpha-48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -1050,7 +1064,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>148</alpha>
+          <alpha>$Alpha-48</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -1060,6 +1074,7 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>24,168</gradientalpha>
+ 	  <alpha>$Alpha-100</alpha>
         </skinpart>
       </normal>
       <normalhover>
@@ -1069,7 +1084,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -1077,7 +1092,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -1085,7 +1100,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -1093,7 +1108,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -1103,16 +1118,23 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>168,24</gradientalpha>
+          <alpha>$Alpha-100</alpha>
         </skinpart>
       </normalhover>
       <down>
+        <text>
+          <location>cw+iwh+3,ch+1</location>
+        </text>
+        <icon>
+          <location>cw-8,3</location>
+        </icon>      
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>220</alpha>
+          <alpha>$Alpha+24</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -1120,7 +1142,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>220</alpha>
+          <alpha>$Alpha+24</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -1128,7 +1150,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>220</alpha>
+          <alpha>$Alpha+24</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -1136,7 +1158,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>220</alpha>
+          <alpha>$Alpha+24</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -1146,16 +1168,23 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>48,192</gradientalpha>
+  	  <alpha>$Alpha-80</alpha>
         </skinpart>
       </down>
       <downhover>
+        <text>
+          <location>cw+iwh+3,ch+1</location>
+        </text>
+        <icon>
+          <location>cw-8,3</location>
+        </icon>       
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -1163,7 +1192,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -1171,7 +1200,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -1179,7 +1208,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -1189,6 +1218,7 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>192,48</gradientalpha>
+	  <alpha>$Alpha-80</alpha>
         </skinpart>
       </downhover>
       <highlight>
@@ -1206,7 +1236,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -1214,7 +1244,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -1222,7 +1252,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -1232,6 +1262,7 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>168,24</gradientalpha>
+	  <alpha>$Alpha-100</alpha>
         </skinpart>
       </highlight>
       <highlighthover>
@@ -1241,7 +1272,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -1249,7 +1280,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -1257,7 +1288,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -1265,7 +1296,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -1275,6 +1306,7 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>192,48</gradientalpha>
+ 	  <alpha>$Alpha-80</alpha>
         </skinpart>
       </highlighthover>
     </compact>
@@ -1303,7 +1335,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>148</alpha>
+          <alpha>$Alpha-48</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -1311,7 +1343,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>148</alpha>
+          <alpha>$Alpha-48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -1319,7 +1351,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>148</alpha>
+          <alpha>$Alpha-48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -1327,7 +1359,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>148</alpha>
+          <alpha>$Alpha-48</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -1337,6 +1369,7 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>24,168</gradientalpha>
+ 	  <alpha>$Alpha-100</alpha>
         </skinpart>
       </normal>
       <normalhover>
@@ -1346,7 +1379,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -1354,7 +1387,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -1362,7 +1395,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -1370,7 +1403,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>196</alpha>
+          <alpha>$Alpha</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -1380,16 +1413,23 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>168,24</gradientalpha>
+          <alpha>$Alpha-100</alpha>
         </skinpart>
       </normalhover>
       <down>
+        <text>
+          <location>cw+iwh+3,ch+1</location>
+        </text>
+        <icon>
+          <location>cw-8,3</location>
+        </icon>      
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>220</alpha>
+          <alpha>$Alpha+24</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -1397,7 +1437,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>220</alpha>
+          <alpha>$Alpha+24</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -1405,7 +1445,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>220</alpha>
+          <alpha>$Alpha+24</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -1413,7 +1453,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>220</alpha>
+          <alpha>$Alpha+24</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -1423,16 +1463,23 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>48,192</gradientalpha>
+  	  <alpha>$Alpha-80</alpha>
         </skinpart>
       </down>
       <downhover>
+        <text>
+          <location>cw+iwh+3,ch+1</location>
+        </text>
+        <icon>
+          <location>cw-8,3</location>
+        </icon>       
         <skinpart>
           <ID>0</ID>
           <location>1,0</location>
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -1440,7 +1487,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -1448,7 +1495,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -1456,7 +1503,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -1466,6 +1513,7 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>192,48</gradientalpha>
+	  <alpha>$Alpha-80</alpha>
         </skinpart>
       </downhover>
       <highlight>
@@ -1483,7 +1531,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -1491,7 +1539,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -1499,7 +1547,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -1509,6 +1557,7 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>168,24</gradientalpha>
+	  <alpha>$Alpha-100</alpha>
         </skinpart>
       </highlight>
       <highlighthover>
@@ -1518,7 +1567,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>1</ID>
@@ -1526,7 +1575,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>2</ID>
@@ -1534,7 +1583,7 @@
           <dimension>w-2,1</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>3</ID>
@@ -1542,7 +1591,7 @@
           <dimension>1,h-2</dimension>
           <image>images/Empty.png</image>
           <color>$Border</color>
-          <alpha>244</alpha>
+          <alpha>$Alpha+48</alpha>
         </skinpart>
         <skinpart>
           <ID>gradient</ID>
@@ -1552,178 +1601,11 @@
           <gradienttype>vertical</gradienttype>
           <gradientcolor>$Background,$Background</gradientcolor>
           <gradientalpha>192,48</gradientalpha>
+ 	  <alpha>$Alpha-80</alpha>
         </skinpart>
       </highlighthover>
     </mini>
   </taskitem>
-  <form>
-    <dimension>w,10</dimension>
-    <text>
-      <location>8,7</location>
-      <name>Small Fonts</name>
-      <size>6</size>
-      <bold>0</bold>
-      <color>$ThrobberText</color>
-    </text>
-    <btndown>
-      <dimension>10,10</dimension>
-      <normal>
-        <skinpart>
-          <alpha>196</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Down.png</image>
-          <color>$Background</color>
-        </skinpart>
-      </normal>
-      <hover>
-        <skinpart>
-          <alpha>196</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Down.png</image>
-          <color>$BackgroundHover</color>
-        </skinpart>
-      </hover>
-      <down>
-        <skinpart>
-          <alpha>196</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Down.png</image>
-          <color>$Background</color>
-        </skinpart>
-      </down>
-      <disabled>
-        <skinpart>
-          <alpha>128</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Down.png</image>
-          <color>$Background</color>
-        </skinpart>
-      </disabled>
-    </btndown>
-    <btnclose>
-      <normal>
-        <skinpart>
-          <alpha>196</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Close.png</image>
-          <color>$Background</color>
-        </skinpart>
-      </normal>
-      <hover>
-        <skinpart>
-          <alpha>196</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Close.png</image>
-          <color>$BackgroundHover</color>
-        </skinpart>
-      </hover>
-      <down>
-        <skinpart>
-          <alpha>196</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Close.png</image>
-          <color>$Background</color>
-        </skinpart>
-      </down>
-      <disabled>
-        <skinpart>
-          <alpha>128</alpha>
-          <location>0,0</location>
-          <dimension>10,10</dimension>
-          <image>images/Form_Btn_Close.png</image>
-          <color>$Background</color>
-        </skinpart>
-      </disabled>
-    </btnclose>
-    <full>
-      <dimension>w,h</dimension>
-      <lroffset>6,6</lroffset>
-      <tboffset>27,6</tboffset>
-      <tbarlocation>6,6</tbarlocation>
-      <tbardimension>w-12,21</tbardimension>
-      <skinpart>
-        <location>0,0</location>
-        <dimension>6,23</dimension>
-        <image>images/Form_left_top.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>0,23</location>
-        <dimension>6,h-29</dimension>
-        <image>images/Form_left_middle.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>0,h-6</location>
-        <dimension>6,6</dimension>
-        <image>images/Form_left_bottom.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>6,0</location>
-        <dimension>w-12,6</dimension>
-        <image>images/Form_middle_top.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>6,6</location>
-        <dimension>w-12,12</dimension>
-        <image>images/empty.png</image>
-        <color>$ThrobberDark</color>
-      </skinpart>
-      <skinpart>
-        <location>7,7</location>
-        <dimension>w-15,9</dimension>
-        <image>images/empty.png</image>
-        <gradienttype>horizontal</gradienttype>
-        <gradientcolor>$ForeGroundHover,$Foreground</gradientcolor>
-        <gradientalpha>255,255</gradientalpha>
-      </skinpart>
-      <skinpart>
-        <location>6,18</location>
-        <dimension>w-12,5</dimension>
-        <image>images/Form_middle_middle.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>6,23</location>
-        <dimension>w-12,h-29</dimension>
-        <image>images/empty.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>6,h-6</location>
-        <dimension>w-12,6</dimension>
-        <image>images/Form_middle_bottom.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>w-6,0</location>
-        <dimension>6,23</dimension>
-        <image>images/Form_right_top.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>w-6,23</location>
-        <dimension>6,h-29</dimension>
-        <image>images/Form_right_middle.png</image>
-        <color>$Background</color>
-      </skinpart>
-      <skinpart>
-        <location>w-6,h-6</location>
-        <dimension>6,6</dimension>
-        <image>images/Form_right_bottom.png</image>
-        <color>$Background</color>
-      </skinpart>
-    </full>
-  </form>
   <minithrobber>
     <dimension>5,5</dimension>
     <location>0,4</location>
@@ -1733,14 +1615,14 @@
         <dimension>5,5</dimension>
         <image>images/MiniThrobber.png</image>
         <color>$Border</color>
-        <alpha>64</alpha>
+        <alpha>$Alpha-132</alpha>
       </skinpart>
       <skinpart>
         <location>1,1</location>
         <dimension>2,2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>32</alpha>
+        <alpha>$Alpha-164</alpha>
       </skinpart>
     </normal>
     <hover>
@@ -1749,14 +1631,14 @@
         <dimension>5,5</dimension>
         <image>images/MiniThrobber.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <location>1,1</location>
         <dimension>2,2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>128</alpha>
+        <alpha>$Alpha-68</alpha>
       </skinpart>
     </hover>
     <down>
@@ -1765,14 +1647,14 @@
         <dimension>5,5</dimension>
         <image>images/MiniThrobber.png</image>
         <color>$Border</color>
-        <alpha>32</alpha>
+        <alpha>$Alpha-164</alpha>
       </skinpart>
       <skinpart>
         <location>1,1</location>
         <dimension>2,2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>16</alpha>
+        <alpha>$Alpha-180</alpha>
       </skinpart>
     </down>
   </minithrobber>
@@ -1794,6 +1676,7 @@
     </icon>    
     <location>0,1</location>
     <dimension>w,19</dimension>    
+    <widthmod>16</widthmod>
     <OnNormalMouseEnter>Scripts\ButtonNormalMouseEnter.skinscript</OnNormalMouseEnter>
     <OnNormalMouseLeave>Scripts\ButtonNormalMouseLeave.skinscript</OnNormalMouseLeave>
     <normal>
@@ -1803,7 +1686,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -1811,7 +1694,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -1819,7 +1702,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -1827,7 +1710,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
@@ -1835,8 +1718,9 @@
         <dimension>w-3,h-3</dimension>
         <image>images/bgempty.png</image>
         <gradienttype>vertical</gradienttype>
-        <gradientcolor>$Background,$Background</gradientcolor>
-        <gradientalpha>0,144</gradientalpha>
+        <gradientcolor>$Border,$Border</gradientcolor>
+        <gradientalpha>0,64</gradientalpha>
+	<alpha>$Alpha-120</alpha>
       </skinpart>
     </normal>
     <hover>
@@ -1846,7 +1730,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -1854,7 +1738,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -1862,7 +1746,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -1870,7 +1754,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
@@ -1880,6 +1764,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Background,$Background</gradientcolor>
         <gradientalpha>144,0</gradientalpha>
+	<alpha>$Alpha-120</alpha>
       </skinpart>
     </hover>
     <down>
@@ -1895,7 +1780,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>128</alpha>
+        <alpha>$Alpha-68</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -1903,7 +1788,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>128</alpha>
+        <alpha>$Alpha-68</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -1911,7 +1796,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>128</alpha>
+        <alpha>$Alpha-68</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -1919,7 +1804,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>128</alpha>
+        <alpha>$Alpha-68</alpha>
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
@@ -1929,6 +1814,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Background,$Background</gradientcolor>
         <gradientalpha>96,0</gradientalpha>
+	<alpha>$Alpha-148</alpha>
       </skinpart>
     </down>
     <disabled>
@@ -1988,28 +1874,28 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,1</location>
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <location>1,h-1</location>
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <location>0,1</location>
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -2017,7 +1903,7 @@
         <dimension>w-2,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>64</alpha>
+        <alpha>$Alpha-132</alpha>
       </skinpart>
     </background>
     <progress>
@@ -2028,7 +1914,7 @@
         <dimension>w-2,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>128</alpha>
+        <alpha>$Alpha-136</alpha>
       </skinpart>
       <skinpart>
         <ID>gradient</ID>
@@ -2038,6 +1924,7 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Background,$Background</gradientcolor>
         <gradientalpha>32,164</gradientalpha>
+	<alpha>$Alpha-100</alpha>
       </skinpart>
     </progress>
   </progressbar>
@@ -2056,7 +1943,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -2064,7 +1951,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -2072,7 +1959,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -2080,7 +1967,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -2088,7 +1975,7 @@
         <dimension>w-2,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>96</alpha>
+        <alpha>$Alpha-100</alpha>
       </skinpart>
     </normal>
     <focus>
@@ -2098,7 +1985,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -2106,7 +1993,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -2114,7 +2001,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -2122,7 +2009,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>148</alpha>
+        <alpha>$Alpha-48</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -2130,7 +2017,7 @@
         <dimension>w-2,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>96</alpha>
+        <alpha>$Alpha-100</alpha>
       </skinpart>
     </focus>
     <hover>
@@ -2140,7 +2027,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>1</ID>
@@ -2148,7 +2035,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>2</ID>
@@ -2156,7 +2043,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -2164,7 +2051,7 @@
         <dimension>1,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>196</alpha>
+        <alpha>$Alpha</alpha>
       </skinpart>
       <skinpart>
         <ID>3</ID>
@@ -2172,7 +2059,7 @@
         <dimension>w-2,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>128</alpha>
+        <alpha>$Alpha-68</alpha>
       </skinpart>
     </hover>
     <disabled>
@@ -2207,35 +2094,35 @@
         <dimension>w-3,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>180</alpha>
+        <alpha>$Alpha-16</alpha>
       </skinpart>
       <skinpart>
         <location>2,1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+24</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+24</alpha>
       </skinpart>
       <skinpart>
         <location>2,h-1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+24</alpha>
       </skinpart>
       <skinpart>
         <location>1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>220</alpha>
+        <alpha>$Alpha+24</alpha>
       </skinpart>    
     </background>
   </notify>    

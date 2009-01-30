@@ -24,4 +24,11 @@
     <Info>Text Shadow Color</Info>
     <Default>0</Default>
   </item>
+  <item>
+    <Name>Alpha</Name>
+    <Tag>$Alpha</Tag>
+    <Info>Background Alpha</Info>
+    <Default>196</Default>
+    <type>Integer</type>
+  </item>
 </SharpESkinScheme>
