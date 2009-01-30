@@ -1871,6 +1871,7 @@
     <dimension>w,19</dimension>
     <iconlroffset>3,3</iconlroffset>
     <icontboffset>3,3</icontboffset>
+    <widthmod>14</widthmod>
     <OnNormalMouseEnter>Scripts\ButtonNormalMouseEnter.skinscript</OnNormalMouseEnter>
     <OnNormalMouseLeave>Scripts\ButtonNormalMouseLeave.skinscript</OnNormalMouseLeave>
     <normal>

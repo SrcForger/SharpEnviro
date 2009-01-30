@@ -991,7 +991,8 @@
       <location>cw-8,3</location>
     </icon>    
     <location>0,2</location>
-    <dimension>w,20</dimension>
+    <dimension>w,21</dimension>
+    <widthmod>16</widthmod>
     <normal>
       <!-- Normal State Skin Parts -->
       <skinpart>

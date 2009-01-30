@@ -1455,6 +1455,7 @@
     </icon>
     <location>0,0</location>
     <dimension>w,21</dimension>
+    <widthmod>16</widthmod>
     <normal>
       <skinpart>
         <location>0,0</location>

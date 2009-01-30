@@ -1995,6 +1995,7 @@
     </icon>
     <location>0,0</location>
     <dimension>w,19</dimension>
+    <widthmod>14</widthmod>
     <OnNormalMouseEnter>Scripts\ButtonNormalMouseEnter.skinscript</OnNormalMouseEnter>
     <OnNormalMouseLeave>Scripts\ButtonNormalMouseLeave.skinscript</OnNormalMouseLeave>
     <normal>
