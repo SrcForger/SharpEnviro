@@ -142,7 +142,7 @@ var
 begin
   self.Caption := sCaption;
   btn.Left := 2;
-  newWidth := 20;
+  newWidth := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
   
   if (sShowIcon) and (btn.Glyph32 <> nil) then
     newWidth := newWidth + btn.GetIconWidth;

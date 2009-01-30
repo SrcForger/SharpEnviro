@@ -102,7 +102,11 @@ var
 begin
   self.Caption := 'Keyboard Layout' ;
 
-  newWidth := btn.Width + 4;
+  newWidth := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
+  
+  if (sShowIcon) and (btn.Glyph32 <> nil) then
+    newWidth := newWidth + btn.GetIconWidth;
+  newWidth := newWidth + btn.GetTextWidth;
 
   btn.Left := 2;
 

@@ -356,7 +356,10 @@ begin
     ses_minall.visible := True;
     ses_minall.Left := n;
     ses_minall.UpdateSkin;
-    ses_minall.width := ses_minall.Height;
+    ses_minall.Width := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
+    if ses_minall.Glyph32 <> nil then
+      ses_minall.Width := ses_minall.Width + ses_minall.GetIconWidth;
+    ses_minall.Width := ses_minall.Width - 4;
     n := n + ses_minall.Width + 2;
   end else ses_minall.Visible := False;
   if sMaxAllButton then
@@ -364,8 +367,11 @@ begin
     ses_maxall.Visible := True;
     ses_maxall.Left := n;
     ses_minall.UpdateSkin;    
-    ses_maxall.Width := ses_maxall.Height;
+    ses_maxall.Width := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
+    if ses_maxall.Glyph32 <> nil then
+      ses_maxall.Width := ses_maxall.Width + ses_maxall.GetIconWidth;
     n := n + ses_maxall.Width + 2;
+    ses_maxall.Width := ses_maxall.Width - 4;
   end else ses_maxall.Visible := False;
   FSpecialButtonWidth := n + 4;
 

@@ -266,13 +266,17 @@ procedure TMainForm.ReAlignComponents;
 var
   newWidth : integer;
   i : integer;
+  buttonwidth : integer;
 begin
-  btn_play.Width    := btn_play.Height;
-  btn_pause.Width   := btn_pause.Height;
-  btn_stop.Width    := btn_stop.Height;
-  btn_prev.Width    := btn_prev.Height;
-  btn_next.Width    := btn_next.Height;
-  btn_pselect.Width := btn_pselect.Height;
+  buttonwidth := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
+  buttonwidth := buttonwidth + btn_play.GetIconWidth;
+  buttonwidth := buttonwidth - 4;
+  btn_play.Width    := buttonwidth;
+  btn_pause.Width   := buttonwidth;
+  btn_stop.Width    := buttonwidth;
+  btn_prev.Width    := buttonwidth;
+  btn_next.Width    := buttonwidth;
+  btn_pselect.Width := buttonwidth;
 
   btn_play.Left := 2;
   btn_pause.Left := btn_play.Left + btn_play.Width + 1;

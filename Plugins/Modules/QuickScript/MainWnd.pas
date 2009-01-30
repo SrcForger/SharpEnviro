@@ -113,7 +113,7 @@ var
   newWidth : integer;
 begin
   Button.Left := 2;
-  newWidth := 20;
+  newWidth := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
   if (sIcon) and (Button.Glyph32 <> nil) then
   begin
     Button.Glyph32.Assign(FIcon);

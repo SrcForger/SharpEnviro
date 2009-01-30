@@ -103,7 +103,10 @@ procedure TMainForm.UpdateSize;
 begin
   if sButton then
   begin
-    btn_select.Width := btn_select.Height;
+    btn_select.Width := mInterface.SkinInterface.SkinManager.Skin.ButtonSkin.WidthMod;
+    if btn_select.Glyph32 <> nil then
+      btn_select.Width := btn_select.Width + btn_select.GetIconWidth;
+    btn_select.Width := btn_select.Width - 4;
     btn_select.Left := Width - btn_select.Width - 2;
     btn_select.show;
     edit.Width := max(1,(Width - 6) - btn_select.width);
