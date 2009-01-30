@@ -325,6 +325,7 @@ type
     FDown: TSkinPartEx;
     FHover: TSkinPartEx;
     FDisabled: TSkinPartEx;
+    FWidthMod: integer;
     FOnNormalMouseEnterScript : String;
     FOnNormalMouseLeaveScript : String;
   public
@@ -338,6 +339,7 @@ type
     function GetAutoDim(r: TRect): TRect;
     procedure UpdateDynamicProperties(cs: TSharpEScheme);
 
+    property WidthMod: integer read FWidthMod write FWidthMod;
     property Normal: TSkinPartEx read FNormal write FNormal;
     property Down: TSkinPartEx read FDown write FDown;
     property Hover: TSkinPartEx read FHover write FHover;
@@ -1459,6 +1461,7 @@ begin
   FDisabled := TSkinPartEx.Create(BmpList);
   FOnNormalMouseEnterScript   := '';
   FOnNormalMouseLeaveScript   := '';
+  FWidthMod := 0;
 end;
 
 destructor TSharpEButtonSkin.Destroy;
@@ -1487,6 +1490,7 @@ begin
   FDisabled.SaveToStream(Stream);
   StringSaveToStream(FOnNormalMouseEnterScript,Stream);
   StringSaveToStream(FOnNormalMouseLeaveScript,Stream);
+  Stream.WriteBuffer(FWidthMod,SizeOf(FWidthMod));
 end;
 
 procedure TSharpEButtonSkin.LoadFromStream(Stream: TStream);
@@ -1498,6 +1502,7 @@ begin
   FDisabled.LoadFromStream(Stream);
   FOnNormalMouseEnterScript := StringLoadFromStream(Stream);
   FOnNormalMouseLeaveScript := StringLoadFromStream(Stream);
+  Stream.ReadBuffer(FWidthMod,SizeOf(FWidthMod));
 end;
 
 procedure TSharpEButtonSkin.Clear;
@@ -1510,6 +1515,7 @@ begin
   FSkinDim.SetDimension('w', 'h');
   FOnNormalMouseEnterScript   := '';
   FOnNormalMouseLeaveScript   := '';
+  FWidthMod := 0;
 end;
 
 procedure TSharpEButtonSkin.LoadFromXML(xml: TJvSimpleXMLElem; path: string);
@@ -1548,6 +1554,8 @@ begin
       if ItemNamed['OnNormalMouseLeave'] <> nil then
         FOnNormalMouseLeaveScript := LoadScriptFromFile(IncludeTrailingBackSlash(Path) + Value('OnNormalMouseLeave',''));
       {$WARNINGS ON}
+
+      FWidthMod := IntValue('WidthMod',20);      
     end;
   finally
     SkinText.free;
