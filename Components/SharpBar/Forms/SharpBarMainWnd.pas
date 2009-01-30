@@ -556,7 +556,8 @@ begin
   ModuleManager.BroadcastPluginUpdate(TSU_UPDATE_ENUM(msg.WParam), msg.LParam);
 
   if (msg.WParam = Integer(suSkinFileChanged)) or
-    (msg.Wparam = Integer(suScheme)) then
+    (msg.Wparam = Integer(suScheme)) or
+    (msg.Wparam = Integer(suSkinFont)) then
   begin
     RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
     SetProcessWorkingSetSize(GetCurrentProcess, dword(-1), dword(-1));     
