@@ -120,11 +120,13 @@ begin
            if DirectoryExists(item.PropList.GetString('Target')) then
               RemoveDir(item.PropList.GetString('Target'));
            menu.Items.Remove(item);
+           menuwnd.Visible := False;
            menu.RenderBackground(menuwnd.Left,menuwnd.Top);
            menu.RenderNormalMenu;
            menu.RenderTo(menuwnd.Picture);
            menuwnd.PreMul(menuwnd.Picture);
            menuwnd.DrawWindow;
+           menuwnd.Visible := True;
          end;
       2: DisplayPropDialog(Application.Handle,item.PropList.GetString('Target'));
       3: SharpApi.SharpExecute(item.PropList.GetString('Target'));
@@ -151,11 +153,13 @@ begin
       1: begin
            JclFileUtils.FileDelete(item.PropList.GetString('Action'));
            menu.Items.Remove(item);
+           menuwnd.Visible := False;           
            menu.RenderBackground(menuwnd.Left,menuwnd.Top);
            menu.RenderNormalMenu;
            menu.RenderTo(menuwnd.Picture);
            menuwnd.PreMul(menuwnd.Picture);
            menuwnd.DrawWindow;
+           menuwnd.Visible := True;           
          end;
       2: DisplayPropDialog(Application.Handle,item.PropList.GetString('Action'));
       3: SharpApi.SharpExecute(item.PropList.GetString('Action'));
