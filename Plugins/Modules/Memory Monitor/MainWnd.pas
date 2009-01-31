@@ -206,7 +206,7 @@ begin
 
         if ShowSwpInfo then
         begin
-          lb_swp.Caption := 'SWAP:';
+          lb_swp.Caption := 'SWP:';
           lb_swp.LabelStyle := lsSmall;
           lb_swp.UpdateSkin;
           lb_swp.Left := o4 - 5;
