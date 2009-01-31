@@ -511,6 +511,8 @@ begin
     Integer(suSkinFont): begin
         Theme.LoadTheme([tpSkinFont]);
         SkinInterface.SkinManager.RefreshControls;
+        ModuleManager.BroadcastPluginUpdate(suSkinFileChanged);
+        ModuleManager.ReCalculateModuleSize;        
       end;
     Integer(suSkinFileChanged): Theme.LoadTheme([tpSkinScheme]);
     Integer(suTheme): begin
