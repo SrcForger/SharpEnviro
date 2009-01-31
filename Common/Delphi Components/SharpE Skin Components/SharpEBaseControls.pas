@@ -462,7 +462,8 @@ begin
     (csLoading in Owner.ComponentState) then
     exit;
   DrawSkin;
-  DrawToCanvas;
+  if Visible then
+    DrawToCanvas;
 end;
 
 procedure TCustomSharpEGraphicControl.SetBitmapSizes;
