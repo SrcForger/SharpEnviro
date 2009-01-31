@@ -64,12 +64,17 @@ type
     SharpECenterHeader2: TSharpECenterHeader;
     chkDisplayIcon: TJvXPCheckbox;
     chkDisplayCaption: TJvXPCheckbox;
+    pnlActionR: TPanel;
+    Label1: TLabel;
+    edActionR: TEdit;
+    btnActionR: TButton;
     procedure FormCreate(Sender: TObject);
 
     procedure SettingsChange(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
     procedure gbSizeChangeValue(Sender: TObject; Value: Integer);
     procedure btnActionClick(Sender: TObject);
+    procedure btnActionRClick(Sender: TObject);
   private
     FPluginHost: TInterfacedSharpCenterHostBase;
   public
@@ -110,6 +115,18 @@ begin
   if length(trim(s))>0 then
   begin
     edIcon.Text := s;
+    //UpdateIcon;
+  end;
+end;
+
+procedure TfrmEdit.btnActionRClick(Sender: TObject);
+var
+  s : string;
+begin
+  s := SharpDialogs.TargetDialog(STI_ALL_TARGETS, Mouse.CursorPos);
+  if length(trim(s))>0 then
+  begin
+    edActionR.Text := s;
     //UpdateIcon;
   end;
 end;

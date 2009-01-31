@@ -3,7 +3,7 @@ object frmEdit: TfrmEdit
   Top = 0
   BorderStyle = bsNone
   Caption = 'Edit'
-  ClientHeight = 222
+  ClientHeight = 250
   ClientWidth = 440
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -19,11 +19,12 @@ object frmEdit: TfrmEdit
     Left = 0
     Top = 0
     Width = 440
-    Height = 222
+    Height = 250
     Align = alClient
     BevelOuter = bvNone
     ParentColor = True
     TabOrder = 0
+    ExplicitHeight = 222
     object pnlDisplay: TPanel
       AlignWithMargins = True
       Left = 5
@@ -85,15 +86,15 @@ object frmEdit: TfrmEdit
       object Label2: TLabel
         Left = 0
         Top = 4
-        Width = 34
+        Width = 47
         Height = 13
-        Caption = 'Action:'
+        Caption = 'Left Click:'
       end
       object edAction: TEdit
         AlignWithMargins = True
-        Left = 58
+        Left = 72
         Top = 0
-        Width = 294
+        Width = 280
         Height = 21
         Margins.Left = 8
         Margins.Top = 0
@@ -137,9 +138,9 @@ object frmEdit: TfrmEdit
       end
       object edCaption: TEdit
         AlignWithMargins = True
-        Left = 58
+        Left = 72
         Top = 0
-        Width = 294
+        Width = 280
         Height = 21
         Margins.Left = 8
         Margins.Top = 0
@@ -184,9 +185,9 @@ object frmEdit: TfrmEdit
       end
       object edIcon: TEdit
         AlignWithMargins = True
-        Left = 58
+        Left = 72
         Top = 0
-        Width = 294
+        Width = 280
         Height = 21
         Margins.Left = 8
         Margins.Top = 0
@@ -229,6 +230,53 @@ object frmEdit: TfrmEdit
       TitleColor = clWindowText
       DescriptionColor = clRed
       Align = alTop
+    end
+    object pnlActionR: TPanel
+      AlignWithMargins = True
+      Left = 5
+      Top = 218
+      Width = 425
+      Height = 22
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 10
+      Margins.Bottom = 0
+      Align = alTop
+      AutoSize = True
+      BevelOuter = bvNone
+      ParentColor = True
+      TabOrder = 6
+      ExplicitTop = 212
+      object Label1: TLabel
+        Left = 0
+        Top = 4
+        Width = 53
+        Height = 13
+        Caption = 'Right Click:'
+      end
+      object edActionR: TEdit
+        AlignWithMargins = True
+        Left = 72
+        Top = 0
+        Width = 280
+        Height = 21
+        Margins.Left = 8
+        Margins.Top = 0
+        Margins.Right = 12
+        Margins.Bottom = 0
+        Constraints.MaxWidth = 300
+        TabOrder = 0
+        OnChange = SettingsChange
+      end
+      object btnActionR: TButton
+        Left = 356
+        Top = 0
+        Width = 37
+        Height = 22
+        Caption = '...'
+        TabOrder = 1
+        OnClick = btnActionRClick
+      end
     end
   end
 end

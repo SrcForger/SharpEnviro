@@ -52,6 +52,7 @@ type
     sShowLabel   : boolean;
     sCaption     : String;
     sActionStr   : String;
+    sActionStrR  : String;
     sIcon        : String;
     sShowIcon    : boolean; 
   public
@@ -89,8 +90,9 @@ var
   fileloaded : boolean;
 begin
   sShowLabel   := True;
-  sCaption     := 'Menu';
-  sActionStr   := '!ShowMenu';
+  sCaption     := 'SharpE';
+  sActionStr   := '!OpenMenu: Menu';
+  sActionStrR  := 'explorer';
   sIcon        := 'icon.mycomputer';
   sShowIcon    := True;
 
@@ -104,9 +106,10 @@ begin
   if fileloaded then
     with xml.Root.Items do
     begin
-      sShowLabel   := BoolValue('ShowLabel',True);
-      sCaption     := Value('Caption','SharpE');
-      sActionStr   := Value('ActionStr','!OpenMenu: Menu');
+      sShowLabel   := BoolValue('ShowLabel',sShowLabel);
+      sCaption     := Value('Caption',sCaption);
+      sActionStr   := Value('ActionStr',sActionStr);
+      sActionStrR  := Value('ActionStrR',sActionStrR);
       sShowIcon    := BoolValue('ShowIcon',sShowIcon);
       sIcon        := Value('Icon',sIcon);
     end;
@@ -148,8 +151,13 @@ procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
 begin
   if Button = mbLeft then
   begin
-    if UPPERCASE(sActionStr) = '!SHOWMENU' then SetForegroundWindow(FindWindow(nil,'SharpMenuWMForm'));
+//    if UPPERCASE(sActionStr) = '!SHOWMENU' then SetForegroundWindow(FindWindow(nil,'SharpMenuWMForm'));
     SharpApi.SharpExecute(sActionStr);
+  end else if Button = mbRight then
+  begin
+    if length(trim(sActionStrR)) = 0 then
+      SharpApi.SharpExecute(sActionStr)
+    else SharpApi.SharpExecute(sActionStrR);
   end;
 end;
 
