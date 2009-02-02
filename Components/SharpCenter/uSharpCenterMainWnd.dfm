@@ -2958,6 +2958,10 @@ object SharpCenterWnd: TSharpCenterWnd
             Caption = 'tabFav'
             ImageIndex = 2
             TabVisible = False
+            ExplicitLeft = 0
+            ExplicitTop = 0
+            ExplicitWidth = 0
+            ExplicitHeight = 0
             object lbHistory: TSharpEListBoxEx
               Left = 0
               Top = 0

@@ -296,6 +296,8 @@ var
   sPluginID: string;
   sCmd: string;
 begin
+  SendDebugMessage('SharpCenter',cmdline,0);
+
   n := Pos('-api', CmdLine);
   if n <> 0 then
   begin

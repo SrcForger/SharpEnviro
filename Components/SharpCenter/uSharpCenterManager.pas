@@ -836,6 +836,11 @@ var
 begin
   Result := True;
 
+  if SharpCenterPlugin = nil then begin
+    Result := false;
+    exit;
+  end;
+
   tmp := nil;
   if not(SharpCenterPlugin.QueryInterface(IID_ISharpCenterPluginEdit,tmp) = S_OK) then
     Result := False else begin
@@ -850,6 +855,11 @@ var
   tmp:ISharpCenterPluginValidation;
 begin
   Result := True;
+
+  if SharpCenterPlugin = nil then begin
+    Result := false;
+    exit;
+  end;
 
   tmp := nil;
   if not(SharpCenterPlugin.QueryInterface(IID_ISharpCenterPluginValidation,tmp) = S_OK) then
@@ -866,6 +876,11 @@ var
 begin
   Result := True;
 
+  if SharpCenterPlugin = nil then begin
+    Result := false;
+    exit;
+  end;
+
   tmp := nil;
   if not(SharpCenterPlugin.QueryInterface(IID_ISharpCenterPluginPreview,tmp) = S_OK) then
     Result := False else begin
@@ -880,6 +895,11 @@ var
   tmp:ISharpCenterPluginTabs;
 begin
   Result := True;
+
+  if SharpCenterPlugin = nil then begin
+    Result := false;
+    exit;
+  end;
 
   tmp := nil;
   if not(SharpCenterPlugin.QueryInterface(IID_ISharpCenterPluginTabs,tmp) = S_OK) then
