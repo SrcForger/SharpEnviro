@@ -105,6 +105,7 @@
   <package Name="Services">
      <project Name="Actions" Type="DLL" >Plugins\Services\Actions\Actions.dproj</project>
      <project Name="Cursors" Type="DLL" >Plugins\Services\Cursors\Cursors.dproj</project>
+     <project Name="DDEServer" Type="DLL" >Plugins\Services\DDEServer\DDEServer.dproj</project>
      <project Name="Exec" Type="DLL" >Plugins\Services\Exec\Exec.dproj</project>
      <project Name="Hotkeys" Type="DLL" >Plugins\Services\Hotkeys\Hotkeys.dproj</project>
      <project Name="Multimedia Input" Type="DLL" >Plugins\Services\MultimediaInput\MultimediaInput.dproj</project>
