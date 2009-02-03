@@ -113,6 +113,12 @@ type
     FDrawIcon : boolean;
     FSize : TSkinPoint;
     FPosition : TSkinPoint;
+    FLighten : Boolean;
+    FLightenAmount : Integer;
+    FBlend : Boolean;
+    FBlendColor : integer;
+    FBlendColorStr : String;
+    FBlendAlpha : Byte;
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -123,8 +129,15 @@ type
     procedure LoadFromXML(xml: TJvSimpleXMLElem);
     procedure RenderTo(Dst,Src : TBitmap32; x,y : integer);
     function GetXY(TextRect: TRect; CompRect: TRect): TPoint;
+    procedure UpdateDynamicProperties(cs: TSharpEScheme);    
     property DrawIcon : boolean read FDrawIcon write FDrawIcon;
     property Size : TSkinPoint read FSize;
+    property Lighten : Boolean read FLighten write FLighten;
+    property LightenAmount : integer read FLightenAmount write FLightenAmount;
+    property Blend : Boolean read FBlend write FBlend;
+    property BlendColor : integer read FBlendColor write FBlendColor;
+    property BlendColorStr : String read FBlendColorStr write FBlendColorStr;
+    property BlendAlpha : Byte read FBlendAlpha write FBlendAlpha;
   end;
 
   TShadowType = (stLeft,stRight,stOutline);
@@ -223,6 +236,7 @@ type
     FLayerMode: TLayerMode;
 
   private
+    FIsEmpty: Boolean;
     FItems: TSkinPartList;
     FID: String;
     FBmpList: TSkinBitmapList;
@@ -254,13 +268,14 @@ type
     procedure SaveToStream(Stream: TStream);  virtual;
     procedure LoadFromStream(Stream: TStream); virtual;
 
-    procedure UpdateDynamicProperties(cs: TSharpEScheme);
+    procedure UpdateDynamicProperties(cs: TSharpEScheme); virtual;
 
     function LoadFromXML(xml: TJvSimpleXMLElem; path: string; Text: TSkinText): boolean; virtual;
     procedure draw(bmp: TBitmap32; cs: TSharpEScheme);
     function Empty: Boolean;
     function GetBitmap: TBitmap32;
 
+    property IsEmpty: Boolean read FIsEmpty write FIsEmpty;
     property ID: String read FID;
     property Items: TSkinPartList read FItems;
     property Bitmap: TBitmap32 read GetBitmap;
@@ -291,6 +306,7 @@ type
     constructor Create(BmpList: TSkinBitmapList); override;
     destructor Destroy; override;
     procedure Clear; override;
+    procedure UpdateDynamicProperties(cs: TSharpEScheme); override;
     procedure Assign(Value: TSkinPartEx); reintroduce;
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromStream(Stream: TStream); override;
@@ -302,13 +318,16 @@ type
   end;
 
 function get_location(str: string): TRect;
+function ParseColor(src : String; cs : TSharpEScheme) : integer;
 function EvaluateValue(str: string; cs: TSharpEScheme) : integer;
+procedure EvaluateColor(src: string; out color : String; out modvalue : integer);
 function SchemedStringToColor(str: string; cs: TSharpEScheme): TColor;
 procedure doBlend(Dest: TBitmap32; source: TBitmap32; color: TColor);
 procedure VGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
 procedure HGradient(Bmp : TBitmap32; color1,color2 : TColor; st,et : byte; Rect : TRect);
 function CreateThemedSkinText(Base : TSkinText) : TSkinText;
 function ParseCoordinate(s: string; tw, th, cw, ch, iw, ih: integer): integer;
+function LightenRGB(src : integer; amount : integer) : integer;
 
 var
   SharpESkinTextBarBottom : boolean;
@@ -755,8 +774,8 @@ end;
 procedure TSkinText.UpdateDynamicProperties(cs: TSharpEScheme);
 begin
   FAlpha := Min(255,Max(0,EvaluateValue(FAlphaString,cs)));
-  FShadowColor := SchemedStringToColor(FShadowColorString,cs);
-  FColor       := SchemedStringToColor(FColorString,cs);
+  FShadowColor := ParseColor(FShadowColorString,cs);
+  FColor       := ParseColor(FColorString,cs);
 end;
 
 procedure TSkinText.LoadFromXML(xml: TJvSimpleXMLElem);
@@ -1377,16 +1396,16 @@ begin
     test := Bitmap.Empty
   else
     test := true;
-  result := test and (FItems.Count = 0);
+  result := (test and (FItems.Count = 0)) and (not IsEmpty);
 end;
 
 procedure TSkinPart.UpdateDynamicProperties(cs: TSharpEScheme);
 var
   n : integer;
 begin
-  FBlendColor := SchemedStringToColor(FBlendColorString,cs);
-  FGradientColor.FX := inttostr(SchemedStringToColor(FGradientColorS.X,cs));
-  FGradientColor.FY := inttostr(SchemedStringToColor(FGradientColorS.Y,cs));
+  FBlendColor := ParseColor(FBlendColorString,cs);
+  FGradientColor.FX := inttostr(ParseColor(FGradientColorS.X,cs));
+  FGradientColor.FY := inttostr(ParseColor(FGradientColorS.Y,cs));
   FMasterAlpha := Min(255,Max(0,EvaluateValue(FMasterAlphaString,cs)));
   n := 1;
   if length(FEnabledString) > 0 then
@@ -1424,6 +1443,7 @@ begin
   StringSavetoStream(FGradientType, Stream);
   FSkinDim.SaveToStream(Stream);
   FSkinText.SaveToStream(Stream);
+  StringSaveToStream(BoolToStr(FIsEmpty),Stream);  
   count := FItems.Count;
   Stream.WriteBuffer(count, sizeof(count));
   for i := 0 to count - 1 do
@@ -1452,6 +1472,7 @@ begin
     FGradientType := StringLoadFromStream(Stream);
     FSkinDim.LoadFromStream(Stream);
     FSkinText.LoadFromStream(Stream);
+    FIsEmpty := StrToBool(StringLoadFromStream(Stream));
     Stream.ReadBuffer(count, sizeof(count));
     for i := 0 to count - 1 do
     begin
@@ -1490,6 +1511,7 @@ var temp: Tbitmap32;
 
 begin
   if not FEnabled then exit;
+  if FIsEmpty then exit;
 
   if (FBitmapId >= 0) and not ((FGradientAlpha.XAsInt <> 0) or (FGradientAlpha.YAsInt <> 0)) then
   begin
@@ -1538,25 +1560,36 @@ begin
     end;
   end;
 
-      Bmp.DrawMode := dmBlend;
-      Bmp.CombineMode := cmMerge;
+  Bmp.DrawMode := dmBlend;
+  Bmp.CombineMode := cmMerge;
   // Draw Gradient
   if (FGradientAlpha.XAsInt <> 0) or (FGradientAlpha.YAsInt <> 0) then
   begin
     r := FSkinDim.GetRect(rect(0, 0, bmp.Width, bmp.Height));
-    if GradientType = 'horizontal' then
-       HGradient(Bmp,
+    temp := TBitmap32.Create;
+    temp.assign(Bmp);
+    temp.Clear(color32(0,0,0,0));
+    temp.DrawMode := dmBlend;
+    temp.CombineMode := cmMerge;
+    try
+      if GradientType = 'horizontal' then
+         HGradient(temp,
                  FGradientColor.XAsInt,
                  FGradientColor.YAsInt,
                  FGradientAlpha.XAsInt,
                  FGradientAlpha.YAsInt,
                  r)
-       else VGradient(Bmp,
+       else VGradient(temp,
                  FGradientColor.XAsInt,
                  FGradientColor.YAsInt,
                  FGradientAlpha.XAsInt,
                  FGradientAlpha.YAsInt,
                  r);
+       temp.MasterAlpha := FMasterAlpha;
+       temp.DrawTo(Bmp);
+    finally
+      temp.Free;
+    end;
   end;
 
   for i := 0 to Items.Count - 1 do
@@ -1579,6 +1612,8 @@ begin
     result := false;
     with xml.Items do
     begin
+      if ItemNamed['Empty'] <> nil then
+        FIsEmpty := BoolValue('Empty',False);
       if ItemNamed['ID'] <> nil then
         FID := Value('ID','');
       if ItemNamed['enabled'] <> nil then
@@ -1665,6 +1700,7 @@ begin
   Clear;
   if Value = nil then
     Exit;
+  FIsEmpty := Value.IsEmpty;
   FID := Value.ID;
   FBitmapId := Value.FBitmapId;
   FSkinDim.Assign(Value.SkinDim);
@@ -1692,6 +1728,7 @@ procedure TSkinPart.Clear;
 begin
   if FItems <> nil then
     FItems.Clear;
+  FIsEmpty := False;
   FID := '';
   FBitmapID := -1;
   FBlend := false;
@@ -1714,6 +1751,7 @@ constructor TSkinPart.Create(BmpList: TSkinBitmapList);
 begin
   inherited Create;
   next := nil; prev := nil;
+  FIsEmpty := False;
   FItems := TSkinPartList.create(BmpList);
   FSkinDim := TSkinDim.create;
   FSkinText := TSkinText.create;
@@ -1772,6 +1810,12 @@ begin
   FDrawIcon := True;
   FSize.SetPoint('16','16');
   FPosition.SetPoint('0','0');
+  FBlend := False;
+  FBlendColorStr := '0';
+  FBlendColor := 0;
+  FBlendAlpha := 255;
+  FLighten := False;
+  FLightenAmount := 48;
 end;
 
 constructor TSkinIcon.Create;
@@ -1810,6 +1854,12 @@ begin
   FDrawIcon := Value.DrawIcon;
   FSize.Assign(Value.FSize);
   FPosition.Assign(Value.FPosition);
+  FLighten := Value.Lighten;
+  FLightenAmount := Value.LightenAmount;
+  FBlend := Value.Blend;
+  FBlendColorStr := Value.BlendColorStr;
+  FBlendColor := Value.BlendColor;
+  FBlendAlpha := Value.BlendAlpha;
 end;
 
 procedure TSkinIcon.SaveToStream(Stream: TStream);
@@ -1817,6 +1867,11 @@ begin
   StringSaveToStream(BoolToStr(FDrawIcon),Stream);
   FSize.SaveToStream(Stream);
   FPosition.SaveToStream(Stream);
+  StringSaveToStream(BoolToStr(FLighten),Stream);
+  Stream.WriteBuffer(FLightenAmount, SizeOf(FLightenAmount));
+  StringSaveToStream(BoolToStr(FBlend),Stream);
+  StringSaveToStream(FBlendColorStr,Stream);
+  Stream.WriteBuffer(FBlendAlpha, SizeOf(FBlendAlpha));
 end;
 
 procedure TSkinIcon.LoadFromStream(Stream: TStream);
@@ -1824,6 +1879,11 @@ begin
   FDrawIcon := StrToBool(StringLoadFromStream(Stream));
   FSize.LoadFromStream(Stream);
   FPosition.LoadFromStream(Stream);
+  FLighten := StrToBool(StringLoadFromStream(Stream));
+  Stream.ReadBuffer(FLightenAmount, SizeOf(FLightenAmount));
+  FBlend := StrToBool(StringLoadFromStream(Stream));
+  FBlendColorStr := StringLoadFromStream(Stream);
+  Stream.ReadBuffer(FBlendAlpha, SizeOf(FBlendAlpha));
 end;
 
 procedure TSkinIcon.LoadFromXML(xml: TJvSimpleXMLElem);
@@ -1831,18 +1891,34 @@ begin
   with xml.Items do
   begin
     if ItemNamed['size'] <> nil then
-       FSize.SetPoint(Value('size', 'w,h'));
+      FSize.SetPoint(Value('size', 'w,h'));
     if ItemNamed['location'] <> nil then
-       FPosition.SetPoint(Value('location','0,0'));
+      FPosition.SetPoint(Value('location','0,0'));
     if ItemNamed['draw'] <> nil then
-       FDrawIcon := BoolValue('draw',true);
+      FDrawIcon := BoolValue('draw',true);
+    if ItemNamed['blend'] <> nil then
+      FBlend := BoolValue('blend',false);
+    if ItemNamed['lighten'] <> nil then
+      FLighten := BoolValue('lighten',false);
+    if ItemNamed['lightenamount'] <> nil then
+      FLightenAmount := IntValue('lightenamount',0);
+    if ItemNamed['blendcolor'] <> nil then
+      FBlendColorStr := Value('blendcolor','0');
+    if ItemNamed['blendalpha'] <> nil then
+      FBlendAlpha := IntValue('blendalpha',255);
   end;
+end;
+
+procedure TSkinIcon.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  FBlendColor := ParseColor(FBlendColorStr,cs);
 end;
 
 procedure TSkinIcon.RenderTo(Dst, Src: TBitmap32; x,y : integer);
 var
   IWidth,IHeight : integer;
   icon : TBitmap32;
+  temp : TBitmap32;
 begin
   if (src = nil) or (not DrawIcon) then
    exit;
@@ -1861,6 +1937,26 @@ begin
     icon.Clear(color32(0,0,0,0));
     src.DrawTo(icon,Rect(0,0,icon.width,icon.height));
   end else icon.assign(src);
+
+  if FBlend then
+  begin
+    temp := TBitmap32.Create;
+    temp.DrawMode := dmBlend;
+    temp.CombineMode := cmMerge;
+    temp.SetSize(Icon.Width,Icon.Height);
+    temp.Clear(color32(0,0,0,0));
+    try
+      doBlend(temp, icon, FBlendColor);
+      temp.MasterAlpha := FBlendAlpha;
+      icon.Clear(color32(0,0,0,0));
+      temp.DrawTo(icon);
+    finally
+      temp.free;
+    end;
+  end;
+
+  if FLighten then
+    LightenBitmap(icon,FLightenAmount);
 
   icon.DrawTo(dst,x,y);
   icon.free;
@@ -1888,6 +1984,13 @@ begin
   inherited Assign(Value as TSkinPart);
   FSkinIcon.Assign(Value.SkinIcon);
   FWidthMod := Value.WidthMod;
+end;
+
+procedure TSkinPartEx.UpdateDynamicProperties(cs: TSharpEScheme);
+begin
+  Inherited UpdateDynamicProperties(cs);
+  
+  FSkinIcon.UpdateDynamicProperties(cs);
 end;
 
 procedure TSkinPartEx.Clear;
@@ -1971,6 +2074,7 @@ begin
   end;
 end;
 
+
 function EvaluateValue(str: string; cs: TSharpEScheme) : integer;
 var
   n : integer;
@@ -1984,8 +2088,9 @@ begin
     exit;
   end;
 
-  for n := 0 to High(cs.Colors) do
-      str := StringReplace(str,cs.Colors[n].Tag,inttostr(cs.Colors[n].Color),[rfReplaceAll,rfIgnoreCase]);
+  if cs <> nil then
+    for n := 0 to High(cs.Colors) do
+        str := StringReplace(str,cs.Colors[n].Tag,inttostr(cs.Colors[n].Color),[rfReplaceAll,rfIgnoreCase]);
 
   result := 0;
   tmp := '';
@@ -2028,6 +2133,43 @@ begin
   end;
 end;
 
+procedure EvaluateColor(src: string; out color : String; out modvalue : integer);
+var
+  s : string;
+  p1,p2,p : integer;
+begin
+  src := StringReplace(src,' ','',[rfReplaceAll]);
+  p1 := Pos('+',src);
+  p2 := Pos('-',src);
+  if (p1 = 0) and (p2 = 0) then
+  begin
+    color := src;
+    modvalue := 0;
+    exit;
+  end;
+
+  if p1 = 0 then
+    p1 := length(src);
+  if p2 = 0 then
+    p2 := length(src);
+    
+  p := min(p1,p2);
+  color := copy(src,0,p-1);
+  
+  s := copy(src,p,length(src)-p+1);
+  modvalue := EvaluateValue(s,nil);
+end;
+
+function ParseColor(src : String; cs : TSharpEScheme) : integer;
+var
+  Color : String;
+  ModValue : integer;
+begin
+  EvaluateColor(src,Color,ModValue);
+  result := SchemedStringToColor(Color,cs);
+  result := LightenRGB(result,ModValue);
+end;
+
 function SchemedStringToColor(str: string; cs: TSharpEScheme): TColor;
 var
   n : integer;
@@ -2062,6 +2204,45 @@ begin
   end;
   a[j] := strtoint(temp);
   result := rect(a[0], a[1], a[2], a[3]);
+end;
+
+function LightenRGB(src : integer; amount : integer) : integer;
+var
+  r,g,b : Byte;
+  r2,g2,b2 : Integer;
+  ro,go,bo : Integer;
+  overhead : Integer;
+begin
+  R := GetRValue(src);
+  G := GetGValue(src);
+  B := GetBValue(src);
+  R2 := R + amount;
+  G2 := G + amount;
+  B2 := B + amount;
+
+  ro := 0;
+  go := 0;
+  bo := 0;
+  if R2 > 255 then
+    ro := (R2 - 255)
+  else if R2 < 0 then
+    ro := R2;
+  if G2 > 255 then
+    go := (G2 - 255)
+  else if G2 < 0 then
+    go := G2;
+  if B2 > 255 then
+    bo := (B2 - 255)
+  else if B2 < 0 then
+    bo := B2;
+  if (ro < 0) or (go < 0) or (bo < 0) then
+    overhead := min(ro,min(go,bo))
+  else overhead := max(ro,max(go,bo));
+  R2 := R2 - overhead;
+  G2 := G2 - overhead;
+  B2 := B2 - overhead;
+
+  result := RGB(R2,G2,B2);
 end;
 
 function Lighter(Color: TColor; Percent: Byte): TColor;
