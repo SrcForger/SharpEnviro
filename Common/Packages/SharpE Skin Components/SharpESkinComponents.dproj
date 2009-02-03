@@ -20,10 +20,10 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
-    <DCC_UnitSearchPath>..\..\Libraries\SharpAPI;..\..\Libraries\SharpThemeAPIEx;..\..\3rd party\GR32 Addons;..\..\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils;..\..\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\Libraries\SharpAPI;..\..\Libraries\SharpThemeAPIEx;..\..\3rd party\GR32 Addons;..\..\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils;..\..\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\Libraries\SharpAPI;..\..\Libraries\SharpThemeAPIEx;..\..\3rd party\GR32 Addons;..\..\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils;..\..\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes</DCC_ObjPath>
-    <DCC_IncludePath>..\..\Libraries\SharpAPI;..\..\Libraries\SharpThemeAPIEx;..\..\3rd party\GR32 Addons;..\..\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils;..\..\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\..\Libraries\SharpAPI;..\..\Libraries\SharpThemeAPIEx;..\..\3rd party\GR32 Addons;..\..\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils;..\..\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\MonitorList</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\Libraries\SharpAPI;..\..\Libraries\SharpThemeAPIEx;..\..\3rd party\GR32 Addons;..\..\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils;..\..\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\MonitorList</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\Libraries\SharpAPI;..\..\Libraries\SharpThemeAPIEx;..\..\3rd party\GR32 Addons;..\..\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils;..\..\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\MonitorList</DCC_ObjPath>
+    <DCC_IncludePath>..\..\Libraries\SharpAPI;..\..\Libraries\SharpThemeAPIEx;..\..\3rd party\GR32 Addons;..\..\3rd party\TransparentEdit;..\..\..\Common\Units\SharpGraphicsUtils;..\..\Libraries\SharpCenterAPI;..\..\..\Common\Units\SharpTypes;..\..\..\Common\Units\MonitorList</DCC_IncludePath>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
