@@ -147,6 +147,7 @@ begin
        SharpBarMainForm.SharpEBar.ShowThrobber := not SharpBarMainForm.SharpEBar.ShowThrobber;
        ModuleManager.ReCalculateModuleSize;
        if SharpBarMainForm.SharpEBar.ShowThrobber then SharpBarMainForm.SharpEBar.Throbber.Repaint;
+       ModuleManager.BroadcastPluginUpdate(suBackground);
      end;
    end;
 end;
