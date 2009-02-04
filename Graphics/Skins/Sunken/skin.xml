@@ -251,7 +251,7 @@
     <location>0,1</location>
     <widthlimit>128,350</widthlimit>
     <tboffset>2,2</tboffset>
-    <lroffset>2,1</lroffset>
+    <lroffset>2,2</lroffset>
     <background>
       <skinpart>
         <location>0,0</location>
@@ -322,6 +322,10 @@
       <widthmod>48</widthmod>
     </normal>
     <hover>
+      <icon>
+        <lighten>1</lighten>
+        <lightenamount>32</lightenamount>
+      </icon>
       <dimension>w,22</dimension>
       <widthmod>48</widthmod>
       <skinpart>
@@ -382,6 +386,10 @@
       </skinpart>
     </normalsub>
     <hoversub>
+      <icon>
+        <lighten>1</lighten>
+        <lightenamount>32</lightenamount>
+      </icon>
       <dimension>w,22</dimension>
       <widthmod>48</widthmod>
       <skinpart>
@@ -506,6 +514,10 @@
         </skinpart>
       </normal>
       <normalhover>
+        <icon>
+          <lighten>1</lighten>
+          <lightenamount>32</lightenamount>
+        </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -602,8 +614,10 @@
 	<location>cw+iwh+2,ch</location>
         </text>
         <icon>
-	<location>cw-9,3</location> 
-        </icon>      
+  	  <location>cw-9,3</location> 
+          <lighten>1</lighten>
+          <lightenamount>32</lightenamount>
+        </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -647,6 +661,10 @@
         </skinpart>
       </downhover>
       <highlighthover>
+        <icon>
+          <lighten>1</lighten>
+          <lightenamount>32</lightenamount>
+        </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -690,7 +708,7 @@
         </skinpart>
       </highlighthover>
       <highlight>
-     <skinpart>
+        <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
           <image>images/empty.png</image>
@@ -798,6 +816,10 @@
         </skinpart>
       </normal>
       <normalhover>
+        <icon>
+          <lighten>1</lighten>
+          <lightenamount>32</lightenamount>
+        </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -894,7 +916,9 @@
 	<location>cw+iwh+2,ch</location>
         </text>
         <icon>
-	<location>cw-9,3</location> 
+	  <location>cw-9,3</location>   
+          <lighten>1</lighten>
+          <lightenamount>32</lightenamount>
         </icon>      
         <skinpart>
           <location>0,0</location>
@@ -939,6 +963,10 @@
         </skinpart>
       </downhover>
       <highlighthover>
+        <icon>
+          <lighten>1</lighten>
+          <lightenamount>32</lightenamount>
+        </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -1081,6 +1109,10 @@
         </skinpart>
       </normal>
       <normalhover>
+        <icon>
+          <lighten>1</lighten>
+          <lightenamount>32</lightenamount>
+        </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -1171,8 +1203,10 @@
       </down>
       <downhover>
         <icon>
-	<location>3,3</location> 
-        </icon>    
+	  <location>3,3</location> 
+          <lighten>1</lighten>
+          <lightenamount>32</lightenamount>
+        </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -1216,6 +1250,10 @@
         </skinpart>
       </downhover>
       <highlighthover>
+        <icon>
+          <lighten>1</lighten>
+          <lightenamount>32</lightenamount>
+        </icon>
         <skinpart>
           <location>0,0</location>
           <dimension>w,h</dimension>
@@ -1500,6 +1538,10 @@
       </skinpart>
     </normal>
     <hover>
+      <icon>
+        <lighten>1</lighten>
+        <lightenamount>32</lightenamount>
+      </icon>
       <skinpart>
         <location>0,0</location>
         <dimension>w,h</dimension>
