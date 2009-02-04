@@ -211,6 +211,7 @@ begin
     with xml.Root.Items do
     begin
       skin := GetCurrentTheme.Skin.Name;
+      skin := StringReplace(skin,' ','_',[rfReplaceAll]);   
       if ItemNamed['skin'] <> nil then
          if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then
             with ItemNamed['skin'].Items.ItemNamed[skin].Items do

@@ -113,6 +113,7 @@ begin
     begin
       // Get the skin name as we save information per skin.
       skin := GetCurrentTheme.Skin.Name;
+      skin := StringReplace(skin,' ','_',[rfReplaceAll]);         
 
       // If the element with the skin name does not exist then add it.
       if ItemNamed[skin] = nil then
@@ -187,6 +188,7 @@ begin
       end;
 
       skin := Theme.Skin.Name;
+      skin := StringReplace(skin,' ','_',[rfReplaceAll]);   
       
       if ItemNamed['skin'] <> nil then
       begin

@@ -86,6 +86,7 @@ begin
   with PluginHost.Xml.XmlRoot.Items, frmSysTray do
   begin
     skin := GetCurrentTheme.Skin.Name;
+    skin := StringReplace(skin,' ','_',[rfReplaceAll]);    
 
     if ItemNamed['skin'] <> nil then
     begin
@@ -116,7 +117,6 @@ end;
 procedure TSharpCenterPlugin.Load;
 var
   Custom : TSharpECustomSkinSettings;
-  SkinManager : TSharpESkinManager;
   Skin : String;
 begin
   Custom := TSharpECustomSkinSettings.Create;
@@ -127,25 +127,23 @@ begin
     begin
       with ItemNamed['systemtray'].Items, frmSysTray do
         begin
-        SkinManager := TSharpESkinManager.Create(nil,[]);
-        SkinManager.SchemeSource       := ssSystem;
         chkBackground.Checked           := BoolValue('showbackground',False);
-        Colors.Items.Item[0].ColorCode := SharpESkinPart.SchemedStringToColor(Value('backgroundcolor','0'),SkinManager.Scheme);
+        Colors.Items.Item[0].ColorCode := GetCurrentTheme.Scheme.ParseColor(Value('backgroundcolor','0'));
         sgbBackground.Value            := IntValue('backgroundalpha',255);
         chkBorder.Checked               := BoolValue('showborder',False);
-        Colors.Items.Item[1].ColorCode := SharpESkinPart.SchemedStringToColor(Value('bordercolor','clwhite'),SkinManager.Scheme);
+        Colors.Items.Item[1].ColorCode := GetCurrentTheme.Scheme.ParseColor(Value('bordercolor','clwhite'));
         sgbBorder.Value                := IntValue('borderalpha',255);
         chkBlend.Checked                := BoolValue('colorblend',false);
-        Colors.Items.Item[2].ColorCode := SharpESkinPart.SchemedStringToColor(Value('blendrcolor','clwhite'),SkinManager.Scheme);
+        Colors.Items.Item[2].ColorCode := GetCurrentTheme.Scheme.ParseColor(Value('blendrcolor','clwhite'));
         sgbBlend.Value                 := IntValue('blendalpha',0);
         sgbIconAlpha.Value             := IntValue('iconalpha',255);
-        SkinManager.Free;
       end;
     end;
   end;
   Custom.Free;
 
   skin := GetCurrentTheme.Skin.Name;
+  skin := StringReplace(skin,' ','_',[rfReplaceAll]);
 
   if PluginHost.Xml.Load then
   begin

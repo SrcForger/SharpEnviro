@@ -137,6 +137,7 @@ begin
 
       Theme := GetCurrentTheme;
       skin := Theme.Skin.Name;
+      skin := StringReplace(skin,' ','_',[rfReplaceAll]);   
       if ItemNamed['skin'] <> nil then
          if ItemNamed['skin'].Items.ItemNamed[skin] <> nil then
             with ItemNamed['skin'].Items.ItemNamed[skin].Items do
