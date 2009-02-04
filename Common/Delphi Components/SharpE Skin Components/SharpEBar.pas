@@ -670,7 +670,7 @@ begin
     if assigned(FManager) then
     begin
       if (FManager.Skin.BarSkin.Valid)
-          and (not FManager.Skin.BarSkin.BarBottom.Empty)
+          and ((not FManager.Skin.BarSkin.BarBottom.Empty) or (FManager.Skin.BarSkin.EnableVFlip))
           and (Value = vpBottom) then
       begin
         FManager.Skin.BarSkin.PAXoffset := FManager.Skin.BarSkin.PBXoffset;
@@ -750,7 +750,8 @@ begin
 
   if (FManager.Skin.BarSkin.Valid) then
   begin
-    if (not FManager.Skin.BarSkin.BarBottom.Empty) and (FVertPos = vpBottom) then
+    if ((not FManager.Skin.BarSkin.BarBottom.Empty) or (FManager.Skin.BarSkin.EnableVFlip))
+      and (FVertPos = vpBottom) then
     begin
       FManager.Skin.BarSkin.PAXoffset := FManager.Skin.BarSkin.PBXoffset;
       FManager.Skin.BarSkin.PAYoffset := FManager.Skin.BarSkin.PBYoffset;

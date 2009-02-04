@@ -1272,7 +1272,7 @@ begin
       end;
       rx := rx + TempModule.mInterface.Form.Width;
     end;
-    TempModule.mInterface.Form.Top  := strtoint(FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.X);
+    TempModule.mInterface.Form.Top  := FSkinInterface.SkinManager.Skin.BarSkin.PAYoffset.XAsInt;
     if TempModule.Throbber. Left <> TempModule.mInterface.Form.Left-TempModule.Throbber.Width-FModuleSpacing div 2 then
       TempModule.Throbber.Left := TempModule.mInterface.Form.Left-TempModule.Throbber.Width-FModuleSpacing div 2;
     if TempModule.Throbber.Top <> TempModule.mInterface.Form.Top then
@@ -1339,12 +1339,15 @@ procedure TModuleManager.UpdateModuleHeights;
 var
   n : integer;
   temp : TModule;
+  t,h : integer;
 begin
+  t := GetModuleTop;
+  h := GetModuleHeight;
   for n := 0 to FModules.Count - 1 do
   begin
     temp := TModule(FModules.Items[n]);
     temp.UpdateBackgroundS(GetModuleTop,GetModuleHeight);
-    temp.mInterface.SetTopHeight(GetModuleTop,GetModuleHeight);
+    temp.mInterface.SetTopHeight(t,h);
     temp.mInterface.Form.Repaint;
   end;
 end;
