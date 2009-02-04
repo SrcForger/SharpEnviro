@@ -251,35 +251,35 @@
     <location>0,1</location>
     <widthlimit>128,350</widthlimit>
     <tboffset>2,2</tboffset>
-    <lroffset>1,1</lroffset>
+    <lroffset>2,1</lroffset>
     <background>
       <skinpart>
         <location>0,0</location>
         <dimension>w,1</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>225</alpha>
+        <alpha>255</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,1</location>
         <dimension>1,h-2</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>225</alpha>
+        <alpha>255</alpha>
       </skinpart>
       <skinpart>
         <location>0,h-1</location>
         <dimension>w,1</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>225</alpha>
+        <alpha>255</alpha>
       </skinpart>
       <skinpart>
         <location>0,1</location>
         <dimension>1,h-2</dimension>
         <image>images/empty.png</image>
         <color>0</color>
-        <alpha>225</alpha>
+        <alpha>255</alpha>
       </skinpart>
       <skinpart>
         <location>1,1</location>
