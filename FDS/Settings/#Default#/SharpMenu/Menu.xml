@@ -15,12 +15,6 @@
   </item>
   <item>
     <type>link</type>
-    <Caption>Network</Caption>
-    <Target>shell:NetworkFolder</Target>
-    <Icon>icon.network</Icon>
-  </item>
-  <item>
-    <type>link</type>
     <Caption>Control Panel</Caption>
     <Target>shell:ControlPanelFolder</Target>
     <Icon>icon.controlpanel</Icon>
