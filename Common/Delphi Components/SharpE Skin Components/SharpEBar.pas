@@ -1085,9 +1085,10 @@ begin
     if FAutoSize then
     begin
       e := False;
-      if (not FManager.Skin.BarSkin.BarBottom.Empty) and (FPar.VertPos = vpBottom) then
-         r := FManager.Skin.BarSkin.GetThrobberBottomDim(CompRect)
-         else r := FManager.Skin.BarSkin.GetThrobberDim(CompRect);
+      if ((not FManager.Skin.BarSkin.BarBottom.Empty) or (FManager.Skin.BarSkin.EnableVFlip))
+        and (FPar.VertPos = vpBottom) then
+        r := FManager.Skin.BarSkin.GetThrobberBottomDim(CompRect)
+      else r := FManager.Skin.BarSkin.GetThrobberDim(CompRect);
 
       if ((r.Right - r.Left) <> width) or ((r.Bottom - r.Top) <> height) then
       begin
