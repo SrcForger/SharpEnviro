@@ -934,12 +934,9 @@ begin
       begin
         IWidth := SkinIcon.Size.XAsInt;
         IHeight := SkinIcon.Size.YAsInt;
-        if (IWidth <> Icon.Width) or (IHeight <> Icon.Height) then
-        begin
-          icon.setsize(IWidth,IHeight);
-          icon.Clear(color32(0,0,0,0));
-          item.Icon.Icon.DrawTo(icon,Rect(0,0,icon.width,icon.height));
-        end else icon.assign(item.Icon.Icon);
+        icon.setsize(IWidth,IHeight);
+        icon.Clear(color32(0,0,0,0));
+        SkinIcon.RenderTo(icon,item.Icon.Icon,0,0);
         dicon := true;
         Ipos := SkinIcon.GetXY(textrect,Rect(0,0,w,h));
       end;

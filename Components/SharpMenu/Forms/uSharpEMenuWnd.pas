@@ -403,9 +403,9 @@ begin
     begin
       FSubMenu := TSharpEMenuWnd.Create(self,TSharpEMenu(item.submenu));
       FSubMenu.ParentMenu := self;
-      t := Left + Width;
+      t := Left + Width + FMenu.SkinManager.Skin.MenuSkin.SkinDim.XAsInt;
       if (t + FSubMenu.Width > Monitor.Left + Monitor.Width) then
-         t := Left - FSubMenu.Width;
+         t := Left - FSubMenu.Width - FMenu.SkinManager.Skin.MenuSkin.SkinDim.XAsInt;
       if (t < Monitor.Left) then t := 0;
       FSubMenu.Left := t;
 
