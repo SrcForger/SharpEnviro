@@ -22,6 +22,6 @@
     <borderalpha>154</borderalpha>
     <blendcolor>$Border</blendcolor>
     <blendalpha>255</blendalpha>
-    <iconalpha>204</iconalpha>
+    <iconalpha>255</iconalpha>
   </systemtray>
 </SharpECustomSkinSettings>
