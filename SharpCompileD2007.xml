@@ -1,6 +1,6 @@
 <SharpCompile>
   <package Name="Configurations">
-     <project Name="Image Object" Type="DLL">Plugins\Configurations\Image\Image.dproj</project>
+     
      <project Name="Link Object" Type="DLL">Plugins\Configurations\Link\Link.dproj</project>
      <project Name="Recycle Bin Object" Type="DLL">Plugins\Configurations\RecycleBin\RecycleBin.dproj</project>
   </package>
@@ -43,7 +43,6 @@
      <project Name="Weather" Type="DLL">Plugins\Configurations\Services\Weather\Weather.dproj</project>
 	 <project Name="TaskSwitchList" Type="DLL">Plugins\Configurations\Services\TaskSwitchList\TaskSwitchList.dproj</project>
      <project Name="TaskSwitchEdit" Type="DLL">Plugins\Configurations\Services\TaskSwitchEdit\TaskSwitchEdit.dproj</project>
-  
   </package>
   <package Name="Configurations - Themes">
      <project Name="Cursor List" Type="DLL">Plugins\Configurations\Themes\CursorList\CursorList.dproj</project>
@@ -55,6 +54,9 @@
      <project Name="Skin List" Type="DLL">Plugins\Configurations\Themes\SkinList\SkinList.dproj</project>
 	 <project Name="Skin Font" Type="DLL">Plugins\Configurations\Themes\Font\Font.dproj</project>
 	 <project Name="Wallpaper" Type="DLL">Plugins\Configurations\Themes\Wallpaper\Wallpaper.dproj</project>
+  </package>
+  <package Name="Configurations - Objects">
+     <project Name="Image Object" Type="DLL">Plugins\Configurations\Objects\Image\Image.dproj</project>
   </package>
   <package Name="Components">
      <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
