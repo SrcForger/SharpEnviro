@@ -116,6 +116,7 @@ type
     property SkinManager;
     //property TabOrder;
     //property TabStop default True;
+    property PopUpMenu;
     property AutoSize;
     property Visible;
     property OnClick;
@@ -621,8 +622,11 @@ begin
 
     SkinText.AssignFontTo(bmp.Font,Scheme);
     DrawPart.Draw(bmp, Scheme);
-    mw := SkinText.GetDim(CompRect).x;
-    DrawCaption := FixCaption(Bmp,Caption,mw);
+    if (SkinText.DrawText) and (length(Caption) > 0) then
+    begin
+      mw := SkinText.GetDim(CompRect).x;
+      DrawCaption := FixCaption(Bmp,Caption,mw);
+    end else DrawCaption := '';
     TextRect := Rect(0, 0, bmp.TextWidthW(DrawCaption), bmp.TextHeightW(DrawCaption));
     TextPos := SkinText.GetXY(TextRect, CompRect, IconRect);
 
@@ -633,7 +637,7 @@ begin
 
       GlyphPos := SkinIcon.GetXY(TextRect,CompRect);
       SkinIcon.RenderTo(bmp,FGlyph32,GlyphPos.X,GlyphPos.Y);
-    end;    
+    end;
 
     if ((SkinText <> nil) and (SkinText.DrawText)) then
     begin
