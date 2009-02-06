@@ -135,35 +135,35 @@
         <dimension>w-3,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>2,1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>2,h-1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
     </background>
     <item>
@@ -173,35 +173,35 @@
         <dimension>w-3,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>$Alpha-16</alpha>
+        <alpha>$MAlpha-16</alpha>
       </skinpart>
       <skinpart>
         <location>2,1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>2,h-1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+32</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
     </item> 
     <itemhover>
@@ -211,35 +211,35 @@
         <dimension>w-3,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha-64</alpha>
+        <alpha>$MAlpha+32</alpha>
       </skinpart>
       <skinpart>
         <location>2,1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>2,h-1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
     </itemhover>
   </taskswitch>
@@ -258,35 +258,35 @@
         <gradienttype>vertical</gradienttype>
         <gradientcolor>$Background+16,$Background-16</gradientcolor>
         <gradientalpha>255,255</gradientalpha>
-	<alpha>$Alpha+34</alpha>
+	<alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>2,1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>2,h-1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
     </background>
   </menu>
@@ -347,7 +347,7 @@
         <dimension>3,h-10</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha-48</alpha>
+        <alpha>$MAlpha-48</alpha>
       </skinpart>
     </normalsub>
     <hoversub>
@@ -366,7 +366,7 @@
         <dimension>3,h-10</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
     </hoversub>
     <separator>
@@ -376,7 +376,7 @@
         <dimension>w-2,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha-32</alpha>
+        <alpha>$MAlpha-32</alpha>
       </skinpart>
     </separator>
     <label>
@@ -785,14 +785,14 @@
         <dimension>5,5</dimension>
         <image>images/MiniThrobber.png</image>
         <color>$Border</color>
-        <alpha>$Alpha-132</alpha>
+        <alpha>$Alpha-64</alpha>
       </skinpart>
       <skinpart>
         <location>1,1</location>
         <dimension>2,2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>$Alpha-164</alpha>
+        <alpha>$Alpha-96</alpha>
       </skinpart>
     </normal>
     <hover>
@@ -808,7 +808,7 @@
         <dimension>2,2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>$Alpha-68</alpha>
+        <alpha>$Alpha-32</alpha>
       </skinpart>
     </hover>
     <down>
@@ -817,14 +817,14 @@
         <dimension>5,5</dimension>
         <image>images/MiniThrobber.png</image>
         <color>$Border</color>
-        <alpha>$Alpha-164</alpha>
+        <alpha>$Alpha-64</alpha>
       </skinpart>
       <skinpart>
         <location>1,1</location>
         <dimension>2,2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>$Alpha-180</alpha>
+        <alpha>$Alpha-80</alpha>
       </skinpart>
     </down>
   </minithrobber>
@@ -1095,35 +1095,35 @@
         <dimension>w-3,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
-        <alpha>$Alpha+34</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>2,1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>w-1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>2,h-1</location>
         <dimension>w-3,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>
       <skinpart>
         <location>1,2</location>
         <dimension>1,h-3</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
-        <alpha>$Alpha+34</alpha>
+        <alpha>$MAlpha</alpha>
       </skinpart>    
     </background>
   </notify>    

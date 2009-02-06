@@ -31,9 +31,16 @@
     <Default>0</Default>
   </item>
   <item>
-    <Name>Alpha</Name>
+    <Name>Background Alpha</Name>
     <Tag>$Alpha</Tag>
     <Info>Background Alpha</Info>
+    <Default>196</Default>
+    <type>Integer</type>
+  </item>
+  <item>
+    <Name>Menu Alpha</Name>
+    <Tag>$MAlpha</Tag>
+    <Info>Menu, Task Switch and Notification Alpha</Info>
     <Default>196</Default>
     <type>Integer</type>
   </item>
