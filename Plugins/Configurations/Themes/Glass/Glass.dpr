@@ -202,7 +202,7 @@ begin
     BlurRadius     := sceGlassOptions.Items.Item[0].Value;
     BlurIterations := sceGlassOptions.Items.Item[1].Value;
     Blend          := (sceGlassOptions.Items.Item[2].Value <> 0);
-    BlendColor     := sceGlassOptions.Items.Item[3].Value;
+    BlendColorStr  := inttostr(sceGlassOptions.Items.Item[3].ColorCode);
     BlendAlpha     := sceGlassOptions.Items.Item[4].Value;
     Lighten        := (sceGlassOptions.Items.Item[5].Value <> 0);
     LightenAmount  := sceGlassOptions.Items.Item[6].Value;
