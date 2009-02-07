@@ -41,8 +41,8 @@ type
                   
   TIntData = class(TPropertyData)
              public
-               Value : integer;
-               constructor Create(pName : String; pValue : integer); reintroduce;
+               Value : Int64;
+               constructor Create(pName : String; pValue : Int64); reintroduce;
              end;
 
   TStringData = class(TPropertyData)
@@ -63,10 +63,10 @@ type
     function FindByName(pName : String) : TObject;
   public
     procedure Add(pName : String; pValue : String); overload;
-    procedure Add(pName : String; pValue : integer); overload;
+    procedure Add(pName : String; pValue : Int64); overload;
     procedure Add(pName : String; pValue : boolean); overload;
     function GetString(pName : String) : String;
-    function GetInt(pName : String) : integer;
+    function GetInt(pName : String) : Int64;
     function GetBool(pName : String) : boolean;
     function Remove(pName : String) : boolean;
     procedure Clear;
@@ -86,7 +86,7 @@ begin
   Name := pName;
 end;
 
-constructor TIntData.Create(pName : String; pValue : integer);
+constructor TIntData.Create(pName : String; pValue : Int64);
 begin
   inherited Create(pName);
   Value := pValue;
@@ -140,7 +140,7 @@ begin
   FList.Add(TStringData.Create(pName,pValue));
 end;
 
-procedure TPropertyList.Add(pName : String; pValue : Integer);
+procedure TPropertyList.Add(pName : String; pValue : Int64);
 begin
   Remove(pName);
   FList.Add(TIntData.Create(pName,pValue));
@@ -163,7 +163,7 @@ begin
         result := TStringData(item).Value;
 end;
 
-function TPropertyList.GetInt(pName : String) : integer;
+function TPropertyList.GetInt(pName : String) : Int64;
 var
   item : TObject;
 begin
