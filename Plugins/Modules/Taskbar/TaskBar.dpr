@@ -121,6 +121,7 @@ begin
   if Form <> nil then
   begin
     TMainForm(Form).LoadSettings;
+    TMainForm(Form).LoadGlobalFilters;
     TMainForm(Form).RealignComponents;
     TMainForm(Form).CompleteRefresh;
     TMainForm(Form).InitHook;    
@@ -185,7 +186,8 @@ function TInterfacedSharpBarModule.UpdateMessage(part: TSU_UPDATE_ENUM;
   param: integer): HRESULT;
 const
   processed : TSU_UPDATES = [suSkinFileChanged,suBackground,suTheme,suSkin,
-                             suScheme,suIconSet,suSkinFont,suModule,suTaskFilter];
+                             suScheme,suIconSet,suSkinFont,suModule,suTaskFilter,
+                             suTaskAppBarFilters];
 begin
   result := inherited UpdateMessage(part,param);
 
@@ -197,6 +199,12 @@ begin
 
   if (part = suTaskFilter) then
     TMainForm(Form).LoadSettings;
+
+  if (part = suTaskAppBarFilters) then
+  begin
+    TMainForm(Form).LoadGlobalFilters;
+    TMainForm(Form).CheckFilterAll;
+  end;
 
   if (part = suModule) and (ID  = param) then
   begin

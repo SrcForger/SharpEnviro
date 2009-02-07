@@ -79,7 +79,9 @@ type
     sMiddleClose : boolean;
     sMaxAllButton : boolean;
     sMinAllButton : boolean;
+    sShowAppBarWindows : boolean;
     sIFilter,sEFilter : Boolean;
+    sIGlobalFilters : array of String;
     sIFilters,sEFilters,sFilters : TFilterItemList;
     FLocked : boolean;
     FSpecialButtonWidth : integer;
@@ -124,6 +126,7 @@ type
     procedure CompleteRefresh;
     function CheckFilter(pItem : TTaskItem) : boolean;
     procedure CheckFilterAll;
+    procedure LoadGlobalFilters;
     procedure LoadFilterSettingsFromXML;
     constructor CreateParented(ParentWindow : hwnd);
     procedure AlignSpecialButtons;
@@ -138,7 +141,7 @@ type
 implementation
 
 uses
-  ToolTipApi;
+  ToolTipApi,IXMLBaseUnit;
 
 var
   SysMenuHandle : hwnd;
@@ -567,6 +570,27 @@ begin
   sFilters.Load;
 end;
 
+procedure TMainForm.LoadGlobalFilters;
+var
+  n,i : integer;
+  XML : TInterfacedXmlBase;
+begin
+  setlength(sIGlobalFilters,0);
+
+  XML := TInterfacedXMLBase.Create;
+  XML.XmlFilename := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\ApplicationBar\Apps.xml';
+
+  if XML.Load then
+    for n := 0 to XML.XmlRoot.Items.Count - 1 do
+      for i := 0 to XML.XmlRoot.Items.Item[n].Items.Count - 1 do
+      begin
+        setlength(sIGlobalFilters,length(sIGlobalFilters) + 1);
+        sIGlobalFilters[High(sIGlobalFilters)] := ExtractFileName(XML.XmlRoot.Items.Item[n].Items.Item[i].Value);
+      end;
+
+  XML.Free;
+end;
+
 procedure TMainForm.LoadSettings;
 var
   XML : TJclSimpleXML;
@@ -585,6 +609,7 @@ begin
   sEFilter   := True;
   sIFilter   := True;
   sMiddleClose := True;
+  sShowAppBarWindows := False;
 
   LoadFilterSettingsFromXML;
 
@@ -608,6 +633,7 @@ begin
       sEFilter := BoolValue('FilterTasks',True);
       sDebug   := BoolValue('Debug',False);
       sMiddleClose := BoolValue('MiddleClose',True);
+      sShowAppBarWindows := BoolValue('AppBarWindow',False);
       if ItemNamed['IFilters'] <> nil then
       begin
         SList.Clear;
@@ -882,6 +908,15 @@ begin
     result := true;
     exit;
   end;
+
+  // Check global app bar filters
+  if not sShowAppBarWindows then
+    for n := 0 to High(sIGlobalFilters) do
+      if CompareText(sIGlobalFilters[n],pItem.FileName) = 0 then
+      begin
+        result := False;
+        exit;
+      end;
 
   result := true;
   nm := False;
