@@ -27,7 +27,7 @@ unit uSharpEMenuItem;
 
 interface
 
-uses GR32,SysUtils,uSharpEMenuIcon,uPropertyList;
+uses GR32,SysUtils,Controls,Classes,uSharpEMenuIcon,uPropertyList;
 
 type
   TSharpEMenuItem = class;
@@ -37,6 +37,7 @@ type
                          mtDesktopObject,mtulist);
   TSharpEMenuItemState = (msNormal,msHover,msDown);
 
+  TSharpEMenuItemMouseEvent = procedure(pItem : TSharpEMenuItem; Button: TMouseButton; Shift: TShiftState) of object;  
   TSharpEMenuItemClickEvent = procedure(pItem : TSharpEMenuItem; var CanClose : boolean) of object;
   TSharpEMenuItemPaintEvent = procedure(Dst : TBitmap32; px,py : integer;
                                         pItem : TObject; state : TSharpEMenuItemState) of object;
@@ -44,8 +45,9 @@ type
   TSharpEMenuItem = class
   private
     // Events
-    FClickEvent : TSharpEMenuItemClickEvent;
-    FPaintEvent : TSharpEMenuItemPaintEvent;
+    FClickEvent   : TSharpEMenuItemClickEvent;
+    FPaintEvent   : TSharpEMenuItemPaintEvent;
+    FMouseUpEvent : TSharpEMenuItemMouseEvent;
     // #############
     FIcon      : TSharpEMenuIcon; // only a pointer to the icon list!
     FSubMenu   : TObject;
@@ -77,6 +79,7 @@ type
     property ItemIndex : integer read GetItemIndex;
     property OnClick   : TSharpEMenuItemClickEvent read FClickEvent write FClickEvent;
     property OnPaint   : TSharpEMenuItemPaintEvent read FPaintEvent write FPaintEvent;
+    property OnMouseUp : TSharpEMenuItemMouseEvent read FMouseUpEvent write FMouseUpEvent;
   end;
 
 implementation
@@ -94,8 +97,9 @@ begin
   FDynamic := False;
   FWrapMenu := False;
 
-  FClickEvent := nil;
-  FPaintEvent := nil;
+  FClickEvent   := nil;
+  FPaintEvent   := nil;
+  FMouseUpEvent := nil;
 
   FCaption := '';
   FItemType := pItemType;

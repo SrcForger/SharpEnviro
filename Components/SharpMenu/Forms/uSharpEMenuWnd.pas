@@ -321,7 +321,7 @@ begin
   if FMenu = nil then exit;
 
   p := ClientToScreen(point(X,Y));
-  if FMenu.PerformMouseUp(self,Button, p.X,p.Y) then
+  if FMenu.PerformMouseUp(self,Button, Shift, p.X,p.Y) then
   begin
     FMenu.RenderTo(FPicture,FOffset);
     PreMul(FPicture);

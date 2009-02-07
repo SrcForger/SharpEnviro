@@ -102,7 +102,7 @@ type
     // Perform Actions
     function PerformMouseMove(px,py : integer; var submenu : boolean) : boolean;
     function PerformMouseDown(Wnd : TObject; Button: TMouseButton; X,Y : integer) : boolean;
-    function PerformMouseUp(Wnd : TObject; Button: TMouseButton; X,Y : integer) : boolean;
+    function PerformMouseUp(Wnd : TObject; Button: TMouseButton; Shift: TShiftState; X,Y : integer) : boolean;
     function PerformClick : boolean;
 
     // Refresh Content
@@ -1092,7 +1092,8 @@ begin
   end else result := false;
 end;
 
-function TSharpEMenu.PerformMouseUp(Wnd : TObject; Button: TMouseButton; X,Y : integer) : boolean;
+function TSharpEMenu.PerformMouseUp(Wnd : TObject; Button: TMouseButton;
+  Shift: TShiftState; X,Y : integer) : boolean;
 var
   item : TSharpEMenuItem;
   mwnd : TSharpEMenuWnd;
@@ -1102,7 +1103,11 @@ begin
   begin
     item := TSharpEMenuItem(FItems.Items[FItemIndex]);
     FMouseDown := False;
-    result := true;
+    if Assigned(item.OnMouseUp) then
+    begin
+      item.OnMouseUp(item, Button, Shift);
+      result := false;
+    end else result := true;
     if (button = mbRight) and assigned(item.Popup) then
     begin
       mwnd := TSharpEMenuWnd(wnd);
