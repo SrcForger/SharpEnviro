@@ -281,41 +281,42 @@
   </taskswitch>
   <menu>
     <dimension>w,h</dimension>
+    <location>-1,-1</location>
     <widthlimit>128,350</widthlimit>
     <tboffset>5,5</tboffset>
     <lroffset>5,5</lroffset>
     <background>
       <skinpart>
-        <location>2,2</location>
-        <dimension>w-3,h-3</dimension>
+        <location>1,1</location>
+        <dimension>w-2,h-2</dimension>
         <image>images/Empty.png</image>
         <color>$Background</color>
         <alpha>$Alpha-34</alpha>
       </skinpart>
       <skinpart>
-        <location>2,1</location>
-        <dimension>w-3,1</dimension>
+        <location>0,0</location>
+        <dimension>w-1,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
         <alpha>$Alpha+34</alpha>
       </skinpart>
       <skinpart>
-        <location>w-1,2</location>
-        <dimension>1,h-3</dimension>
+        <location>w-1,0</location>
+        <dimension>1,h-1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
         <alpha>$Alpha+34</alpha>
       </skinpart>
       <skinpart>
-        <location>2,h-1</location>
-        <dimension>w-3,1</dimension>
+        <location>0,h-1</location>
+        <dimension>w-1,1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
         <alpha>$Alpha+34</alpha>
       </skinpart>
       <skinpart>
-        <location>1,2</location>
-        <dimension>1,h-3</dimension>
+        <location>0,0</location>
+        <dimension>1,h-1</dimension>
         <image>images/Empty.png</image>
         <color>$Border</color>
         <alpha>$Alpha+34</alpha>

@@ -410,7 +410,7 @@
   </taskswitch>
   <menu>
     <dimension>w,h</dimension>
-    <location>0,3</location>
+    <location>0,-1</location>
     <widthlimit>128,350</widthlimit>
     <tboffset>5,5</tboffset>
     <lroffset>5,5</lroffset>
@@ -567,7 +567,7 @@
         <dimension>9,7</dimension>
         <image>images/BarRightBorderBGCut.png</image>
         <color>$BorderBG</color>
-        <alpha>$Alpha-32</alpha>
+        <alpha>$Alpha+20-32</alpha>
       </skinpart>
       <skinpart>
         <location>w-9,h-7</location>

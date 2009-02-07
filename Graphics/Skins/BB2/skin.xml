@@ -442,7 +442,7 @@
     <itemhover>
       <dimension>58,58</dimension>
       <skinpart>
-        <location>0,0</location>
+        <location>0,-1</location>
         <dimension>w,h</dimension>
         <image>images/TaskSwitchSelect.png</image>
         <color>$Background</color>
@@ -452,7 +452,7 @@
   </taskswitch>
   <menu>
     <dimension>w,h</dimension>
-    <location>0,3</location>
+    <location>0,0</location>
     <widthlimit>128,350</widthlimit>
     <tboffset>5,5</tboffset>
     <lroffset>5,5</lroffset>

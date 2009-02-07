@@ -248,7 +248,7 @@
   </taskswitch>
   <menu>
     <dimension>w,h</dimension>
-    <location>0,1</location>
+    <location>-1,0</location>
     <widthlimit>128,350</widthlimit>
     <tboffset>2,2</tboffset>
     <lroffset>2,2</lroffset>
