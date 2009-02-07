@@ -18,7 +18,7 @@ object frmEdit: TfrmEdit
   object lbItems: TSharpEListBoxEx
     AlignWithMargins = True
     Left = 5
-    Top = 266
+    Top = 352
     Width = 493
     Height = 148
     Margins.Left = 5
@@ -78,7 +78,7 @@ object frmEdit: TfrmEdit
     Left = 0
     Top = 0
     Width = 503
-    Height = 261
+    Height = 347
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
@@ -229,7 +229,7 @@ object frmEdit: TfrmEdit
     object schFilters: TSharpECenterHeader
       AlignWithMargins = True
       Left = 5
-      Top = 187
+      Top = 273
       Width = 493
       Height = 37
       Margins.Left = 5
@@ -261,7 +261,7 @@ object frmEdit: TfrmEdit
     object chkFilterTasks: TJvXPCheckbox
       AlignWithMargins = True
       Left = 5
-      Top = 234
+      Top = 320
       Width = 493
       Height = 17
       Margins.Left = 5
@@ -272,6 +272,49 @@ object frmEdit: TfrmEdit
       TabOrder = 6
       Align = alTop
       OnClick = chkFilterTasksClick
+    end
+    object SharpECenterHeader1: TSharpECenterHeader
+      AlignWithMargins = True
+      Left = 5
+      Top = 197
+      Width = 493
+      Height = 37
+      Margins.Left = 5
+      Margins.Top = 10
+      Margins.Right = 5
+      Margins.Bottom = 10
+      Title = 'Application Bar Tasks'
+      Description = 
+        'Define if you want to show tasks which are part of any applicati' +
+        'on bar module.'
+      TitleColor = clWindowText
+      DescriptionColor = clRed
+      Align = alTop
+      Color = clWindow
+    end
+    object Panel1: TPanel
+      AlignWithMargins = True
+      Left = 5
+      Top = 244
+      Width = 488
+      Height = 19
+      Margins.Left = 5
+      Margins.Top = 0
+      Margins.Right = 10
+      Margins.Bottom = 10
+      Align = alTop
+      BevelOuter = bvNone
+      ParentColor = True
+      TabOrder = 8
+      object chkAppBar: TJvXPCheckbox
+        Left = 0
+        Top = -1
+        Width = 321
+        Height = 17
+        Caption = 'Show Application Bar Windows'
+        TabOrder = 0
+        OnClick = SettingsChange
+      end
     end
   end
   object pilListBox: TPngImageList

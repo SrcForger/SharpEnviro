@@ -73,6 +73,9 @@ type
     chkMinimiseBtn: TJvXPCheckbox;
     chkRestoreBtn: TJvXPCheckbox;
     chkFilterTasks: TJvXPCheckbox;
+    SharpECenterHeader1: TSharpECenterHeader;
+    Panel1: TPanel;
+    chkAppBar: TJvXPCheckbox;
     procedure lbItemsResize(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);

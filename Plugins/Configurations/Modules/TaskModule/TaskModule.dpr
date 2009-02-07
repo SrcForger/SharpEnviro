@@ -101,6 +101,9 @@ begin
         end;
       end;
 
+      // App Bar Windows
+      chkAppBar.Checked := BoolValue('AppBarWindow', False);
+
       // Buttons
       chkMinimiseBtn.Checked := BoolValue('MinAllButton', False);
       chkRestoreBtn.Checked := BoolValue('MaxAllButton', False);
@@ -185,6 +188,9 @@ begin
       3: Add('SortType', Integer(stTime));
       4: Add('SortType', Integer(stIcon));
     end;
+
+    // App Bar Windows
+    Add('AppBarWindow', chkAppBar.Checked);
 
     // Buttons
     Add('MinAllButton', chkMinimiseBtn.Checked);
