@@ -84,6 +84,7 @@ type
     sShowLabel   : boolean;
     FButtonSpacing : integer;
     sShowIcon    : boolean;
+    sCountOverlay : boolean;
     FButtonList  : array of TButtonRecord;
     FHintWnd     : hwnd; 
     movebutton   : TSharpETaskItem;
@@ -92,6 +93,7 @@ type
     FLastMenu    : TSharpEMenuWnd;
     FLastButton  : TButtonRecord;
     procedure ClearButtons;
+    procedure UpdateButtonIcon(Btn : TButtonRecord);
     procedure UpdateButtonStatus(wnd : hwnd; create : boolean);
     function GetButtonItem(pButton : TSharpETaskItem) : TButtonRecord;
     procedure AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
@@ -119,7 +121,7 @@ function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; e
 implementation
 
 uses
-  IXmlBaseUnit;
+  IXmlBaseUnit, SharpESkinPart;
 
 {$R *.dfm}
 
@@ -253,6 +255,7 @@ var
   n,i: integer;
   processname, filename : string;
   count : integer;
+  oldcount : integer;
 
   function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
   begin
@@ -290,9 +293,12 @@ begin
         FButtonList[n].wnd := EnumParam.wndlist[i].wnd;
       end;
     FButtonList[n].btn.Down := (count > 0);
+    oldcount := FButtonList[n].btn.Tag;
     FButtonList[n].btn.Tag := count;
     if count = 0 then
       FButtonList[n].wnd := 0;
+    if oldcount <> count then
+      UpdateButtonIcon(FButtonList[n]);
   end;
   setlength(EnumParam.wndlist,0);
 end;
@@ -397,6 +403,7 @@ begin
   with XML.Root.Items do
   begin
     Add('State',Integer(sState));
+    Add('CountOverlay',sCountOverlay);
     with Add('Apps').Items do
     begin
       for n := 0 to High(FButtonList) do
@@ -425,6 +432,73 @@ begin
       PChar(inttostr(mInterface.BarInterface.BarID) + ':' + inttostr(mInterface.ID)));
 end;
 
+procedure TMainForm.UpdateButtonIcon(Btn: TButtonRecord);
+var
+  SkinText : TSkinText;
+  Bmp : TBitmap32;
+  w,h : integer;
+  x,y : integer;
+  n : integer;
+begin
+  if not sCountOverlay then
+    exit;
+
+  if Btn.Btn.Tag <= 1 then
+  begin
+    Btn.Btn.Overlay.SetSize(0,0);
+    Btn.btn.Repaint;
+    exit;
+  end;
+
+//  if not mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Valid(tisFull) then
+  //  exit;
+
+//  if not IconStringToIcon(Btn.Icon,Btn.Target,Btn.btn.Glyph32) then
+  //  Btn.btn.Glyph32.SetSize(0,0);
+
+  {SkinText := CreateThemedSkinText(mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.Normal.SkinText);
+  SkinText.UpdateDynamicProperties(mInterface.SkinInterface.SkinManager.Scheme);
+  SkinText.Size := 8;
+  SkinText.ShadowType := stOutline;
+  SkinText.Alpha := 255;
+  Bmp := TBitmap32.Create;
+  SkinText.AssignFontTo(Bmp.Font,mInterface.SkinInterface.SkinManager.Scheme);
+  w := Bmp.TextWidthW(inttostr(Btn.Btn.Tag));
+  h := Bmp.TextHeightW(inttostr(Btn.Btn.Tag));
+  Bmp.SetSize(w+8,h+4);
+  SkinText.RenderToW(Bmp,4,2,inttostr(Btn.Btn.Tag),mInterface.SkinInterface.SkinManager.Scheme);
+  Bmp.DrawMode := dmBlend;
+  Bmp.CombineMode := cmMerge;
+  Btn.Btn.Overlay.Assign(Bmp);
+  Btn.Btn.OverlayPos := Point(Btn.Btn.Width - w - 8, Btn.Btn.Height - h - 4);
+  Bmp.Free;              }
+  Bmp := TBitmap32.Create;
+  Bmp.SetSize(sAutoWidth,sAutoHeight);
+  Bmp.Clear(color32(0,0,0,0));
+  Bmp.DrawMode := dmBlend;
+  Bmp.CombineMode := cmMerge;
+
+  x := 3;
+  y := 3;
+  for n := 1 to Btn.Btn.Tag do
+  begin
+    Bmp.FrameRectTS(x,y,x+4,y+4,Color32(0,0,0,196));
+    Bmp.FillRectT(x+1,y+1,x+3,y+3,color32(255,255,255,196));
+    x := x + 5;
+    if x > sAutoWidth - 8 then
+    begin
+      x := 3;
+      y := y + 5;
+    end;
+  end;
+
+  Btn.Btn.Overlay.Assign(Bmp);
+  Btn.Btn.OverlayPos := Point(1,1);
+  Bmp.Free;  
+
+  Btn.btn.Repaint;
+end;
+
 procedure TMainForm.UpdateButtons;
 var
   n : integer;
@@ -447,12 +521,14 @@ procedure TMainForm.UpdateButtonStatus(wnd: hwnd; create: boolean);
 var
   processname,filename : String;
   n : integer;
+  oldcount : integer;
 begin
   processname := GetProcessNameFromWnd(wnd);
   filename := LowerCase(ExtractFileName(processname));
   for n := 0 to High(FButtonList) do
     if CompareText(FButtonList[n].exename, filename) = 0 then
     begin
+      oldcount := FButtonList[n].btn.Tag;
       if create then
         FButtonList[n].btn.Tag := FButtonList[n].btn.Tag + 1
       else FButtonList[n].btn.Tag := FButtonList[n].btn.Tag - 1;
@@ -462,6 +538,8 @@ begin
       if FButtonList[n].btn.Tag > 0 then
         FButtonList[n].wnd := wnd
       else FButtonList[n].wnd := 0;
+      if oldcount <> FButtonList[n].btn.Tag then
+        UpdateButtonIcon(FButtonList[n]);
     end;
 end;
 
@@ -477,6 +555,7 @@ begin
   sShowIcon    := True;
   FButtonSpacing := 2;
   sState       := tisCompact;
+  sCountOverlay := True;
 
   XML := TJclSimpleXML.Create;
   try
@@ -489,6 +568,7 @@ begin
     with xml.Root.Items do
     begin
       sState := TSharpETaskItemStates(IntValue('State',2));
+      sCountOverlay := BoolValue('CountOverlay',True);
       if ItemNamed['Apps'] <> nil then
       with ItemNamed['Apps'].Items do
            for n := 0 to Count - 1 do
@@ -497,8 +577,6 @@ begin
                          Item[n].Items.Value('Caption','C:\'));
     end;
   XML.Free;
-
-  CheckList;
 end;
 
 procedure TMainForm.mnMouseUp(pItem: TSharpEMenuItem; Button: TMouseButton;
@@ -529,6 +607,7 @@ begin
         FLastMenu.Top := FLastMenu.Top + (h - FLastMenu.Height);
       FLastMenu.Visible := True;
       FLastMenu.FreeMenu := True;
+      FLastButton.btn.Tag := FLastButton.btn.Tag - 1;
     end else FreeAndNil(FLastMenu);
 
     PostMessage(wnd, WM_CLOSE, 0, 0);
@@ -540,6 +619,7 @@ begin
         FLastButton.btn.Down := False;
         FLastButton.btn.Tag := 0;
       end;
+    UpdateButtonIcon(FLastButton);      
   end;
 end;
 
@@ -605,6 +685,17 @@ begin
   sb_config.SkinManager := mInterface.SkinInterface.SkinManager;
   for n := 0 to High(FButtonList) do
     FButtonList[n].btn.SkinManager := mInterface.SkinInterface.SkinManager;
+
+  case sState of
+    tisCompact: sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Compact.SkinDim.HeightAsInt;
+    tisMini   : sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Mini.SkinDim.HeightAsInt;
+    else sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.SkinDim.HeightAsInt;
+  end;
+  case sState of
+    tisCompact: sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Compact.SkinDim.WidthAsInt;
+    tisMini   : sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Mini.SkinDim.WidthAsInt;
+    else sAutoWidth := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.SkinDim.WidthAsInt;
+  end;    
 end;
 
 
@@ -757,6 +848,25 @@ var
   n: integer;
   item : TSharpEMenuItem;
   R : TRect;
+  Bmp : TBitmap32;
+  Icon : hIcon;
+
+  function GetIcon(wnd : hwnd) : hIcon;
+  const
+    ICON_SMALL2 = 2;
+  begin
+    result := 0;
+    try
+      SendMessageTimeout(wnd, WM_GETICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(result));
+
+      if (result = 0) then result := HICON(GetClassLong(wnd, GCL_HICON));
+
+      if (result = 0) then SendMessageTimeout(wnd, WM_GETICON, 1, 0, SMTO_ABORTIFHUNG, 1000, DWORD(result));
+      if (result = 0) then result := HICON(GetClassLong(wnd, GCL_HICON));
+      if (result = 0) then SendMessageTimeout(wnd, WM_QUERYDRAGICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(result));
+    except
+    end;
+  end;
 
   function GetCaption(handle : hwnd) : String;
   var
@@ -803,7 +913,15 @@ begin
     filename := LowerCase(ExtractFileName(processname));
     if CompareText(filename,btn.exename) = 0 then
     begin
-      item := TSharpEMenuItem(mn.AddCustomItem(GetCaption(EnumParam.wndlist[n]),btn.target,btn.btn.Glyph32));
+      Icon := GetIcon(EnumParam.wndlist[n]);
+      Bmp := TBitmap32.Create;
+      if Icon = 0 then
+        Bmp.Assign(btn.btn.Glyph32)
+      else IconToImage(Bmp,Icon);
+      item := TSharpEMenuItem(mn.AddCustomItem(GetCaption(EnumParam.wndlist[n]),'customicon:'+inttostr(n),Bmp));
+      Bmp.Free;
+      if Icon <> 0 then
+        DestroyIcon(Icon);
       item.OnClick := mnOnClick;
       item.OnMouseUp := mnMouseUp;
       item.PropList.Add('wnd',EnumParam.wndlist[n]);

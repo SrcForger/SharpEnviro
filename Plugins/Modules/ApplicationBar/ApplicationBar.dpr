@@ -113,6 +113,7 @@ begin
     TMainForm(Form).RealignComponents;
     SharpApi.RegisterShellHookReceiver(Form.Handle);
     TMainForm(Form).UpdateGlobalFilterList(False);
+    TMainForm(Form).CheckList;
   end;
 end;
 
@@ -158,6 +159,7 @@ begin
     TMainForm(Form).LoadSettings;
     TMainForm(Form).ReAlignComponents;
     TMainForm(Form).UpdateGlobalFilterList(False);
+    TMainForm(Form).CheckList;
   end;
 
   if [part] <= [suTheme,suSkinFileChanged] then
