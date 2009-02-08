@@ -73,6 +73,8 @@ type
     FPrecacheCaption : WideString;
     FHandle : Cardinal;
     FDestroying : boolean;
+    FOverlay : TBitmap32;
+    FOverlayPos : TPoint;
     procedure CMDialogKey(var Message: TCMDialogKey); message CM_DIALOGKEY;
     procedure CMDialogChar(var Message: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMFocusChanged(var Message: TCMFocusChanged); message CM_FOCUSCHANGED;
@@ -141,6 +143,8 @@ type
     property Flashing: Boolean read FFlashing write SetFlashing;
     property FlashState: Boolean read FFlashState write SetFlashState;
     property Handle: Cardinal read FHandle write FHandle;
+    property Overlay: TBitmap32 read FOverlay;
+    property OverlayPos: TPoint read FOverlayPos write FOverlayPos;
    { Published declarations }
   end;
 
@@ -156,7 +160,11 @@ begin
   Height := 25;
 
   FGlyph32 := TBitmap32.Create;
+  FOverlay := TBitmap32.Create;
+  FOverlay.DrawMode := dmBlend;
+  FOverlay.CombineMode := cmMerge;
 
+  FOverlayPos := Point(0,0);
   FDestroying := False;
   FHandle := 0;
   FMargin := -1;
@@ -164,6 +172,7 @@ begin
   Flayout := blGlyphleft;
   FButtonDown := False;
   FFlashing := False;
+  Tag := 0;
 end;
 
 procedure TSharpETaskItem.CNCommand(var Message: TWMCommand);
@@ -646,6 +655,9 @@ begin
                            FPrecacheText,FPrecacheBmp,FPrecacheCaption);
       SkinText.Free;
     end;
+
+    if (FOverlay <> nil) and (FOverlay.Width > 0) and (FOverlay.Height > 0) then
+      FOverlay.DrawTo(bmp,FOverlayPos.X,FOverlayPos.Y);
   end
   else
     DrawDefaultSkin(bmp, DefaultSharpEScheme);
@@ -700,6 +712,7 @@ begin
   if FPrecacheBmp <> nil then FreeAndNil(FPrecacheBmp);
   if FPrecacheText <> nil then FreeAndNil(FPrecacheText);
   FGlyph32.Free;
+  FOverlay.Free;
 end;
 
 procedure TSharpETaskItem.SetGlyph32FileName(const Value: TGlyph32FileName);
