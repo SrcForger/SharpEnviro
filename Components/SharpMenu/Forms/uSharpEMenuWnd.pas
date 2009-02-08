@@ -204,8 +204,11 @@ begin
 
   if (Width <> FPicture.Width) then
   begin
-    if ParentMenu.Left > Left then
-       Left := ParentMenu.Left  - FPicture.Width;
+    if ParentMenu <> nil then
+    begin
+      if ParentMenu.Left > Left then
+         Left := ParentMenu.Left  - FPicture.Width;
+    end;
     Width := FPicture.Width;
   end;
 
