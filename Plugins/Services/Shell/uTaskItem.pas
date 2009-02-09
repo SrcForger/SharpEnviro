@@ -93,6 +93,9 @@ end;
 
 destructor TTaskItem.Destroy;
 begin
+  if FIcon <> 0 then
+    DestroyIcon(FIcon);
+    
   inherited Destroy;
 end;
 
