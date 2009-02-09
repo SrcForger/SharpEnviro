@@ -114,6 +114,8 @@ begin
     SharpApi.RegisterShellHookReceiver(Form.Handle);
     TMainForm(Form).UpdateGlobalFilterList(False);
     TMainForm(Form).CheckList;
+    TMainForm(Form).TaskManager.Enabled := True;
+    SharpApi.RequestWindowList(TMainForm(Form).Handle);
   end;
 end;
 

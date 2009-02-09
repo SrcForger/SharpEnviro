@@ -43,7 +43,9 @@ uses
   uSharpEMenu,
   uSharpEMenuWnd,
   uSharpEMenuSettings,
-  uSharpEMenuItem,  
+  uSharpEMenuItem,
+  uTaskManager,
+  uTaskItem,
   SharpIconUtils, ImgList, PngImageList, ExtCtrls;
 
 
@@ -89,18 +91,21 @@ type
     FHintWnd     : hwnd; 
     movebutton   : TSharpETaskItem;
     hasmoved     : boolean;
-    FLastActiveTask : hwnd;
     FLastMenu    : TSharpEMenuWnd;
     FLastButton  : TButtonRecord;
+    FTM : TTaskManager;
+    procedure OnNewTask(pItem : TTaskItem; Index : integer);
+    procedure OnRemoveTask(pItem : TTaskItem; Index : integer);
+    procedure OnUpdateTask(pItem : TTaskItem; Index : integer);    
     procedure ClearButtons;
     procedure UpdateButtonIcon(Btn : TButtonRecord);
-    procedure UpdateButtonStatus(wnd : hwnd; create : boolean);
     function GetButtonItem(pButton : TSharpETaskItem) : TButtonRecord;
     procedure AddButton(pTarget,pIcon,pCaption : String; Index : integer = -1);
     procedure UpdateButtons;
     procedure WMNotify(var msg : TWMNotify); message WM_NOTIFY;
     procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
+    procedure WMCopyData(var msg : TMessage); message WM_COPYDATA;
     procedure mnOnClick(pItem : TSharpEMenuItem; var CanClose : boolean);
     procedure mnMouseUp(pItem : TSharpEMenuItem; Button: TMouseButton; Shift: TShiftState);
   public
@@ -114,6 +119,7 @@ type
     procedure SaveSettings;
     procedure CheckList;
     procedure UpdateGlobalFilterList(Broadcast : Boolean);
+    property TaskManager : TTaskManager read FTM;
   end;
 
 function SwitchToThisWindow(Wnd : hwnd; fAltTab : boolean) : boolean; stdcall; external 'user32.dll';
@@ -192,14 +198,32 @@ end;
  
 procedure TMainForm.WMShellHook(var msg: TMessage);
 begin
- case msg.WParam of
-   HSHELL_WINDOWCREATED : UpdateButtonStatus(msg.LParam,true);
-//   HSHELL_REDRAW : UpdateTask(LParam);
-//   HSHELL_REDRAW + 32768 : FlashTask(LParam);
-   HSHELL_WINDOWDESTROYED : UpdateButtonStatus(msg.LParam,false);
-   HSHELL_WINDOWACTIVATED : if msg.LParam <> 0 then FLastActiveTask := msg.LParam;
-   HSHELL_WINDOWACTIVATED + 32768 : if msg.LParam <> 0 then FLastActiveTask := msg.LParam;
-//   HSHELL_GETMINRECT      : GetMinRect;
+  case msg.WParam of
+    HSHELL_WINDOWCREATED : FTM.HandleShellMessage(msg.WParam,msg.LParam);
+    HSHELL_REDRAW : FTM.HandleShellMessage(msg.WParam,msg.LParam);
+    HSHELL_REDRAW + 32768 : FTM.HandleShellMessage(msg.WParam,msg.LParam);
+    HSHELL_WINDOWDESTROYED : FTM.HandleShellMessage(msg.WParam,msg.LParam);
+    HSHELL_WINDOWACTIVATED : FTM.HandleShellMessage(msg.WParam,msg.LParam);
+    HSHELL_WINDOWACTIVATED + 32768 : FTM.HandleShellMessage(msg.WParam,msg.LParam);
+    HSHELL_GETMINRECT      : FTM.HandleShellMessage(msg.WParam,msg.LParam);
+  end;
+end;
+
+procedure TMainForm.WMCopyData(var msg: TMessage);
+var
+  ms : TMemoryStream;
+  cds : PCopyDataStruct;
+begin
+  cds := PCopyDataStruct(msg.lParam);
+  if msg.WParam = WM_REQUESTWNDLIST then
+  begin
+    ms := TMemoryStream.Create;
+    ms.Write(cds^.lpData^,cds^.cbData);
+    ms.Position := 0;
+    FTM.LoadFromStream(ms,cds.dwData);
+    ms.Free;
+    msg.result := 1;
+    CheckList;
   end;
 end;
 
@@ -240,58 +264,25 @@ begin
 end;
 
 procedure TMainForm.CheckList;
-type
-  TData = record
-    wnd : hwnd;
-    filename : String;
-  end;
-
-  PParam = ^TParam;
-  TParam = record
-    wndlist: array of TData;
-  end;
 var
-  EnumParam : TParam;
   n,i: integer;
-  processname, filename : string;
   count : integer;
   oldcount : integer;
-
-  function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
-  begin
-    if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) or
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
-       ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
-       (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))
-       and ((GetWindowLong(Wnd, GWL_STYLE) and DS_3DLOOK = 0)
-        and (GetWindowLong(Wnd, GWL_STYLE) and DS_FIXEDSYS = 0)
-        or (GetWindowLong(Wnd, GWL_STYLE) and WS_VISIBLE <> 0)) then
-      with PParam(LParam)^ do
-      begin
-        setlength(wndlist,length(wndlist)+1);
-        wndlist[high(wndlist)].wnd := wnd;
-      end;
-    result := True;
-  end;
+  Item : TTaskItem;
 begin
-  setlength(EnumParam.wndlist,0);
-  EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
-  for n := 0 to High(EnumParam.wndlist) do
-  begin
-    processname := GetProcessNameFromWnd(EnumParam.wndlist[n].wnd);
-    filename := LowerCase(ExtractFileName(processname));
-    EnumParam.wndlist[n].filename := filename;
-  end;
   for n := 0 to High(FButtonList) do
   begin
     count := 0;
-    for i := 0 to High(EnumParam.wndlist) do
-      if CompareText(FButtonList[n].exename,EnumParam.wndlist[i].filename) = 0 then
-      begin
-        count := count + 1;
-        FButtonList[n].wnd := EnumParam.wndlist[i].wnd;
-      end;
+    for i := 0 to FTM.ItemCount - 1 do
+    begin
+      Item := TTaskItem(FTM.GetItemByIndex(i));
+      if Item <> nil then
+        if CompareText(FButtonList[n].exename,Item.FileName) = 0 then
+        begin
+          count := count + 1;
+          FButtonList[n].wnd := Item.Handle;
+        end;
+    end;
     FButtonList[n].btn.Down := (count > 0);
     oldcount := FButtonList[n].btn.Tag;
     FButtonList[n].btn.Tag := count;
@@ -300,7 +291,6 @@ begin
     if oldcount <> count then
       UpdateButtonIcon(FButtonList[n]);
   end;
-  setlength(EnumParam.wndlist,0);
 end;
 
 procedure TMainForm.ClearButtons;
@@ -490,6 +480,8 @@ begin
       x := 3;
       y := y + 5;
     end;
+    if y > sAutoHeight - 4 then
+      break;
   end;
 
   Btn.Btn.Overlay.Assign(Bmp);
@@ -515,32 +507,6 @@ begin
         ToolTipApi.UpdateToolTipRect(FHintWnd,self,n,
                                      Rect(btn.left,btn.top,btn.Left + btn.Width,btn.Top + btn.Height));
       end;
-end;
-
-procedure TMainForm.UpdateButtonStatus(wnd: hwnd; create: boolean);
-var
-  processname,filename : String;
-  n : integer;
-  oldcount : integer;
-begin
-  processname := GetProcessNameFromWnd(wnd);
-  filename := LowerCase(ExtractFileName(processname));
-  for n := 0 to High(FButtonList) do
-    if CompareText(FButtonList[n].exename, filename) = 0 then
-    begin
-      oldcount := FButtonList[n].btn.Tag;
-      if create then
-        FButtonList[n].btn.Tag := FButtonList[n].btn.Tag + 1
-      else FButtonList[n].btn.Tag := FButtonList[n].btn.Tag - 1;
-      if FButtonList[n].btn.Tag < 0 then
-        FButtonList[n].btn.Tag := 0;
-      FButtonList[n].btn.down := (FButtonList[n].btn.Tag > 0);
-      if FButtonList[n].btn.Tag > 0 then
-        FButtonList[n].wnd := wnd
-      else FButtonList[n].wnd := 0;
-      if oldcount <> FButtonList[n].btn.Tag then
-        UpdateButtonIcon(FButtonList[n]);
-    end;
 end;
 
 procedure TMainForm.LoadSettings;
@@ -631,6 +597,76 @@ begin
     exit;
 
   SwitchToThisWindow(pItem.PropList.GetInt('wnd'), True);
+end;
+
+procedure TMainForm.OnNewTask(pItem: TTaskItem; Index: integer);
+var
+  n : integer;
+  s : String;
+begin
+  for n := 0 to High(FButtonList) do
+  begin
+    if CompareText(pItem.FileName, FButtonList[n].exename) = 0 then
+    begin
+      FButtonList[n].btn.Tag := FButtonList[n].btn.Tag + 1;
+      if FButtonList[n].btn.Tag >= 1 then
+        FButtonList[n].btn.Down := True;
+      if FButtonList[n].btn.Tag > 1 then
+        UpdateButtonIcon(FButtonList[n]);
+
+      if FButtonList[n].btn.Tag > 1 then
+      begin
+        s := FButtonList[n].exename;
+        setlength(s,length(s) - length(ExtractFileExt(s)));
+        FButtonList[n].btn.Caption := s;
+      end else FButtonList[n].btn.Caption := pItem.Caption;        
+    end;
+  end;
+end;
+
+procedure TMainForm.OnRemoveTask(pItem: TTaskItem; Index: integer);
+var
+  n : integer;
+  s : String;
+begin
+  for n := 0 to High(FButtonList) do
+  begin
+    if CompareText(pItem.FileName, FButtonList[n].exename) = 0 then
+    begin
+      FButtonList[n].btn.Tag := FButtonList[n].btn.Tag - 1;
+      if FButtonList[n].btn.Tag <= 0 then
+      begin
+        FButtonList[n].btn.Tag := 0;
+        FButtonList[n].btn.Down := False;
+      end else UpdateButtonIcon(FButtonList[n]);
+
+      if FButtonList[n].btn.Tag > 1 then
+      begin
+        s := FButtonList[n].exename;
+        setlength(s,length(s) - length(ExtractFileExt(s)));
+        FButtonList[n].btn.Caption := s;
+      end else FButtonList[n].btn.Caption := pItem.Caption;      
+    end;
+  end;
+end;
+
+procedure TMainForm.OnUpdateTask(pItem: TTaskItem; Index: integer);
+var
+  n : integer;
+  s : String;
+begin
+  for n := 0 to High(FButtonList) do
+  begin
+    if CompareText(pItem.FileName, FButtonList[n].exename) = 0 then
+    begin
+      if FButtonList[n].btn.Tag > 1 then
+      begin
+        s := FButtonList[n].exename;
+        setlength(s,length(s) - length(ExtractFileExt(s)));
+        FButtonList[n].btn.Caption := s;
+      end else FButtonList[n].btn.Caption := pItem.Caption;   
+    end;
+  end;
 end;
 
 procedure TMainForm.UpdateSize;
@@ -819,7 +855,7 @@ begin
         if BtnItem.Btn.Tag > 1 then
           BuildAndShowMenu(BtnItem)
         else begin
-          if IsIconic(BtnItem.wnd) or (FLastActiveTask <> BtnItem.wnd) then
+          if IsIconic(BtnItem.wnd) or (FTM.LastActiveTask <> BtnItem.wnd) then
             SwitchToThisWindow(BtnItem.wnd,True)
           else PostMessage(BtnItem.wnd,WM_SYSCOMMAND,SC_MINIMIZE,0);
         end;
@@ -832,72 +868,18 @@ begin
 end;
 
 procedure TMainForm.BuildAndShowMenu(btn: TButtonRecord);
-type
-  PParam = ^TParam;
-  TParam = record
-    wndlist: array of hwnd;
-  end;
-
 var
-  processname, filename : String;
   p : TPoint;
   mn : TSharpEMenu;
   ms : TSharpEMenuSettings;
   wnd : TSharpEMenuWnd;
-  EnumParam : TParam;
   n: integer;
   item : TSharpEMenuItem;
   R : TRect;
   Bmp : TBitmap32;
-  Icon : hIcon;
-
-  function GetIcon(wnd : hwnd) : hIcon;
-  const
-    ICON_SMALL2 = 2;
-  begin
-    result := 0;
-    try
-      SendMessageTimeout(wnd, WM_GETICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(result));
-
-      if (result = 0) then result := HICON(GetClassLong(wnd, GCL_HICON));
-
-      if (result = 0) then SendMessageTimeout(wnd, WM_GETICON, 1, 0, SMTO_ABORTIFHUNG, 1000, DWORD(result));
-      if (result = 0) then result := HICON(GetClassLong(wnd, GCL_HICON));
-      if (result = 0) then SendMessageTimeout(wnd, WM_QUERYDRAGICON, 0, 0, SMTO_ABORTIFHUNG, 1000, DWORD(result));
-    except
-    end;
-  end;
-
-  function GetCaption(handle : hwnd) : String;
-  var
-    buf: array[0..2048] of wchar;
-  begin
-    GetWindowTextW(handle,@buf,sizeof(buf));
-    result := buf;
-  end;
-
-  function EnumWindowsProc(Wnd: HWND; LParam: LPARAM): BOOL; stdcall;
-  begin
-    if ((GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) or
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_APPWINDOW <> 0)) and
-       ((IsWindowVisible(Wnd) or IsIconic(wnd)) and
-       (GetWindowLong(Wnd, GWL_STYLE) and WS_CHILD = 0) and
-       (GetWindowLong(Wnd, GWL_EXSTYLE) and WS_EX_TOOLWINDOW = 0))
-       and ((GetWindowLong(Wnd, GWL_STYLE) and DS_3DLOOK = 0)
-        and (GetWindowLong(Wnd, GWL_STYLE) and DS_FIXEDSYS = 0)
-        or (GetWindowLong(Wnd, GWL_STYLE) and WS_VISIBLE <> 0)) then
-      with PParam(LParam)^ do
-      begin
-        setlength(wndlist,length(wndlist)+1);
-        wndlist[high(wndlist)] := wnd;
-      end;
-    result := True;
-  end;
+  TaskItem : TTaskItem;
 
 begin
-  setlength(EnumParam.wndlist,0);
-  EnumWindows(@EnumWindowsProc, Integer(@EnumParam));
-
   ms := TSharpEMenuSettings.Create;
   ms.LoadFromXML;
 
@@ -907,26 +889,24 @@ begin
  // mn.AddLinkItem('Close All','','customicon:edititem',FMenuIcon1,false);
 //  mn.AddSeparatorItem(False);
 
-  for n := 0 to High(EnumParam.wndlist) do
+  for n := 0 to FTM.ItemCount - 1 do
   begin
-    processname := GetProcessNameFromWnd(EnumParam.wndlist[n]);
-    filename := LowerCase(ExtractFileName(processname));
-    if CompareText(filename,btn.exename) = 0 then
+    TaskItem := TTaskItem(FTM.GetItemByIndex(n));
+    if TaskItem <> nil then
     begin
-      Icon := GetIcon(EnumParam.wndlist[n]);
-      Bmp := TBitmap32.Create;
-      if Icon = 0 then
-        Bmp.Assign(btn.btn.Glyph32)
-      else IconToImage(Bmp,Icon);
-      item := TSharpEMenuItem(mn.AddCustomItem(GetCaption(EnumParam.wndlist[n]),'customicon:'+inttostr(n),Bmp));
-      Bmp.Free;
-      if Icon <> 0 then
-        DestroyIcon(Icon);
-      item.OnClick := mnOnClick;
-      item.OnMouseUp := mnMouseUp;
-      item.PropList.Add('wnd',EnumParam.wndlist[n]);
+      if CompareText(TaskItem.FileName,btn.exename) = 0 then
+      begin
+        Bmp := TBitmap32.Create;
+        if TaskItem.Icon = 0 then
+          Bmp.Assign(btn.btn.Glyph32)
+        else IconToImage(Bmp,TaskItem.Icon);
+        item := TSharpEMenuItem(mn.AddCustomItem(TaskItem.Caption,'customicon:'+inttostr(n),Bmp));
+        Bmp.Free;
+        item.OnClick := mnOnClick;
+        item.OnMouseUp := mnMouseUp;
+        item.PropList.Add('wnd',TaskItem.Handle);
+      end;
     end;
-  //    mn.AddLinkItem(GetCaption(EnumParam.wndlist[n]),btn.target,'shell:icon',False);
   end;
 
   mn.RenderBackground(0,0);
@@ -955,6 +935,11 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  FTM := TTaskManager.Create;
+  FTM.OnNewTask := OnNewTask;
+  FTM.OnRemoveTask := OnRemoveTask;
+  FTM.OnUpdateTask := OnUpdateTask;
+
   MoveButton := nil;
   DoubleBuffered := True;
   FHintWnd := ToolTipApi.RegisterToolTip(self);
@@ -964,6 +949,8 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   if FHintWnd <> 0 then
      DestroyWindow(FHintWnd);
+  FTM.Enabled := False;
+  FTM.Free;
 end;
 
 procedure TMainForm.FormPaint(Sender: TObject);
