@@ -181,7 +181,7 @@ begin
   showCmdsList.AddItems;
 
   Clear;
-  sFile := GetSharpeGlobalSettingsPath + 'SharpCore\Services\Shell\TaskFilters.xml';
+  sFile := GetSharpeUserSettingsPath + 'SharpCore\Services\Shell\TaskFilters.xml';
   if not (FileExists(sFile)) then exit;
 
   sList := TStringList.Create;
@@ -237,7 +237,7 @@ var
 begin
   showCmds := TWindowShowCommandList.Create;
   showCmds.AddItems;
-  sFile := GetSharpeGlobalSettingsPath + 'SharpCore\Services\Shell\TaskFilters.xml';
+  sFile := GetSharpeUserSettingsPath + 'SharpCore\Services\Shell\TaskFilters.xml';
   forceDirectories(ExtractFilePath(sFile));
 
   sList := TStringList.Create;
