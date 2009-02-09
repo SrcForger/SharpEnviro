@@ -788,6 +788,10 @@ begin
   w := w + menuskin.LROffset.XAsInt + menuskin.LROffset.YAsInt;
   h := h + menuskin.TBOffset.XAsInt + menuskin.TBOffset.YAsInt;
 
+  // fail safe check
+  if (w<=0) or (h<=0) then
+    exit;
+
   FBackground.SetSize(w,h);
   FBackground.Clear(color32(0,0,0,0));
 
@@ -919,7 +923,8 @@ begin
       if (item.Icon <> nil) and (SkinIcon.DrawIcon) and (FSettings.UseIcons) then
         iconrect := Rect(0,0,SkinIcon.Size.XAsInt,SkinIcon.Size.YAsInt)
       else iconrect := Rect(0,0,0,0);
-      if (length(item.Caption)>0) and (SkinText.DrawText) then
+      if (length(item.Caption)>0) and (SkinText.DrawText) and
+        (w>0) and (h>0) then
       begin
         text.SetSize(w,h);
         text.clear(color32(0,0,0,0));
@@ -934,27 +939,33 @@ begin
       begin
         IWidth := SkinIcon.Size.XAsInt;
         IHeight := SkinIcon.Size.YAsInt;
-        icon.setsize(IWidth,IHeight);
-        icon.Clear(color32(0,0,0,0));
-        SkinIcon.RenderTo(icon,item.Icon.Icon,0,0);
-        dicon := true;
-        Ipos := SkinIcon.GetXY(textrect,Rect(0,0,w,h));
+        if (IWidth > 0) and (IHeight > 0) then
+        begin
+          icon.setsize(IWidth,IHeight);
+          icon.Clear(color32(0,0,0,0));
+          SkinIcon.RenderTo(icon,item.Icon.Icon,0,0);
+          dicon := true;
+          Ipos := SkinIcon.GetXY(textrect,Rect(0,0,w,h));
+        end;
       end;
       ST.Free;
     end
     else if (drawpart <> nil) then
       h := drawpart.SkinDim.HeightAsInt;
-    temp.SetSize(w,h);
-    temp.Clear(color32(0,0,0,0));
-    if drawpartex <> nil then
-      drawpartex.draw(temp,FSkinManager.Scheme)
-    else if drawpart <> nil then
-      drawpart.draw(temp,FSkinManager.Scheme);
-    temp.DrawTo(dst,px,py);
-    if dicon then
-       icon.DrawTo(dst,px+IPos.x,py+IPos.y);
-    if dtext then
-       text.DrawTo(dst,px,py);
+    if (w > 0) and (h > 0) then
+    begin
+      temp.SetSize(w,h);
+      temp.Clear(color32(0,0,0,0));
+      if drawpartex <> nil then
+        drawpartex.draw(temp,FSkinManager.Scheme)
+      else if drawpart <> nil then
+        drawpart.draw(temp,FSkinManager.Scheme);
+      temp.DrawTo(dst,px,py);
+      if dicon then
+         icon.DrawTo(dst,px+IPos.x,py+IPos.y);
+      if dtext then
+         text.DrawTo(dst,px,py);
+    end;
   finally
     FreeAndNil(temp);
     FreeAndNil(icon);
@@ -1003,6 +1014,9 @@ begin
   if (FNormalMenu = nil) then RenderNormalMenu;
 
   menuskin := FSkinManager.Skin.MenuSkin;
+
+  if (FBackground.Width <= 0) or (FBackground.Height <= 0) then
+    exit;
 
   Dst.SetSize(FBackground.Width,FBackground.Height);
   Dst.Clear(color32(0,0,0,0));
