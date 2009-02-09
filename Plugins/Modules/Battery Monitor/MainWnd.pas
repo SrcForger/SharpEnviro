@@ -204,7 +204,7 @@ begin
   begin
     pbar.AutoSize := False;
     pbar.Height := o2;
-    if sShowIcon then pbar.Width := o3 - 12
+    if sShowIcon then pbar.Width := o3 - 24
        else pbar.Width := o4-10;
     pbar.Left := o1;
     pbar.Top := Height - 2 - pbar.Height;
