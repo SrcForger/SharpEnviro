@@ -90,7 +90,7 @@ type
     rbProcess: TJvXPCheckbox;
     rbWindow: TJvXPCheckbox;
     JvLabel1: TLabel;
-    ilWndClass: TImageList;
+    ilWndClass: TPngImageList;
 
     procedure valNameExistsValidate(Sender: TObject;
       ValueToValidate: Variant; var Valid: Boolean);
@@ -433,11 +433,8 @@ var
 begin
   newicon := 0;
 
-  SendMessageTimeout(wnd, WM_GETICON, ICON_BIG, 0, SMTO_ABORTIFHUNG or SMTO_BLOCK, 50, DWORD(newicon));
-  if newicon = 0 then SendMessageTimeout(wnd, WM_GETICON, ICON_SMALL, 0, SMTO_ABORTIFHUNG or SMTO_BLOCK, 50, DWORD(newicon));
-  if newicon = 0 then newicon := HICON(GetClassLong(wnd, GCL_HICON));
+  SendMessageTimeout(wnd, WM_GETICON, ICON_SMALL, 0, SMTO_ABORTIFHUNG or SMTO_BLOCK, 50, DWORD(newicon));
   if newicon = 0 then newicon := HICON(GetClassLong(wnd, GCL_HICONSM));
-  if newicon = 0 then SendMessageTimeout(wnd, WM_QUERYDRAGICON, 0, 0, SMTO_ABORTIFHUNG or SMTO_BLOCK, 50, DWORD(newicon));
   if newicon = 0 then SendMessageTimeout(wnd, WM_GETICON, ICON_SMALL2, 0, SMTO_ABORTIFHUNG or SMTO_BLOCK, 50, DWORD(newicon));
   result := newicon;
 end;
@@ -469,6 +466,8 @@ procedure TfrmEdit.EnumerateWindows;
   var
     item: TMenuItem;
     tempIcon: TIcon;
+    validicon : boolean;
+    icon : hicon;
     sWndClass, sCaption, sProcName, s: string;
   begin
     if (GetWindowLong(Wnd, GWL_STYLE) and WS_SYSMENU <> 0) and
@@ -516,13 +515,21 @@ procedure TfrmEdit.EnumerateWindows;
 {$ENDREGION}
 
       item.Caption := Format('%s%s%s', [sWndClass, sCaption, sProcName]);
-      item.ImageIndex := frmEdit.mnuWndClass.Items.Count;
+      item.ImageIndex := frmEdit.ilWndClass.Count;
       item.OnClick := EnumWindowsPopupClick;
       frmEdit.mnuWndClass.Items.add(item);
+      validicon := True;
       tempIcon := TIcon.Create;
       try
-        tempIcon.Handle := GetIcon(wnd);
-        frmEdit.ilWndClass.AddIcon(tempIcon);
+        icon := GetIcon(wnd);
+        if icon <> 0 then
+          tempIcon.Handle := icon
+        else validicon := False;
+        if validicon then
+          validicon := (tempIcon.Width <= 16) and (tempIcon.Width > 0);
+        if validicon then
+          frmEdit.ilWndClass.AddIcon(tempIcon)
+        else item.ImageIndex := 0;
       finally
         tempIcon.Free;
       end;
@@ -530,8 +537,12 @@ procedure TfrmEdit.EnumerateWindows;
     result := True;
   end;
 
+var
+  n : integer;
+
 begin
-  ilWndClass.Clear;
+  for n := ilWndClass.Count - 1 downto 1 do
+    ilWndClass.Delete(n);
   mnuWndClass.items.clear;
   EnumWindows(@EnumWindowsProc, 0);
   mnuWndClass.Popup(Mouse.CursorPos.X, Mouse.CursorPos.Y);
