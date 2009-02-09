@@ -383,6 +383,7 @@ var
   ms : TSharpEMenuSettings;
   wnd : TSharpEMenuWnd;
   n : integer;
+  R : TRect;
   mitem : TMediaPlayerItem;
 begin
   if Button = mbLeft then
@@ -409,18 +410,22 @@ begin
 
     wnd := TSharpEMenuWnd.Create(self,mn);
     wnd.FreeMenu := True; // menu will free itself when closed
-  
+
+    GetWindowRect(mInterface.BarInterface.BarWnd,R);
     p := ClientToScreen(Point(btn_pselect.Left + btn_pselect.Width div 2, self.Height + self.Top));
+    p.y := R.Top;
     p.x := p.x + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.XAsInt - mn.Background.Width div 2;
     if p.x < Monitor.Left then
-       p.x := Monitor.Left;
+      p.x := Monitor.Left;
     if p.x + mn.Background.Width  > Monitor.Left + Monitor.Width then
-       p.x := Monitor.Left + Monitor.Width - mn.Background.Width;
+      p.x := Monitor.Left + Monitor.Width - mn.Background.Width;
     wnd.Left := p.x;
     if p.Y < Monitor.Top + Monitor.Height div 2 then
-       wnd.Top := p.y + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt
-       else wnd.Top := p.y - Top - Height - mn.Background.Height - mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt;
-    wnd.Show;
+      wnd.Top := R.Bottom + mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt
+    else begin
+      wnd.Top := R.Top - wnd.Picture.Height - mInterface.SkinInterface.SkinManager.Skin.MenuSkin.SkinDim.YAsInt;
+    end;
+    wnd.show;
   end;
 end;
 

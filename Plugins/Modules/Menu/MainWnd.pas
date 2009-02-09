@@ -166,18 +166,22 @@ procedure TMainForm.btnMouseUp(Sender: TObject; Button: TMouseButton;
 var
   ActionStr, pdir : String;
   p : TPoint;
+  R : TRect;
 begin
   if Button = mbLeft then
   begin
-    p := ClientToScreen(Point(btn.Left,btn.Top));
+    GetWindowRect(mInterface.BarInterface.BarWnd,R);
+    p := ClientToScreen(Point(btn.Left + btn.Width div 2, self.Height + self.Top));
+    p.x := p.x - btn.Width div 2;
+    p.y := R.Top;    
     if p.y > Monitor.Top + Monitor.Height div 2 then
     begin
-      p.y := p.y;
+      p.y := R.Top;
       pdir := '-1';
     end
     else
     begin
-      p.y := p.y + Height - btn.Top;
+      p.y := R.Bottom;
       pdir := '1';
     end;
 //    ActionStr := SharpApi.GetSharpeDirectory;
