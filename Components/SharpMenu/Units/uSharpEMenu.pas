@@ -836,6 +836,31 @@ begin
   end;
 end;
 
+function FixCaption(bmp : TBitmap32; Caption : WideString; MaxWidth : integer) : WideString;
+var
+  n : integer;
+  count : integer;
+  s : WideString;
+begin
+  if bmp.TextWidthW(Caption) <= MaxWidth then result := Caption
+  else
+  begin
+    count := length(Caption);
+    s := '';
+    n := 0;
+    repeat
+      n := n + 1;
+      s := s + Caption[n];
+    until (bmp.TextWidthW(s) > MaxWidth) or (n >= count);
+    if length(s)>=4 then
+    begin
+      setlength(s,length(s)-4);
+      s := s + '...';
+    end else s := '';
+    result := s;
+  end;
+end;
+
 procedure TSharpEMenu.RenderMenuItem(Dst : TBitmap32; px,py : integer;
                              pitem : TObject; state : TSharpEMenuItemState);
 var
@@ -854,6 +879,7 @@ var
   w,h : integer;
   ST : TSkinText;
   textrect,iconrect : TRect;
+  fixedCaption : String;
 
 procedure AssignDrawPart(part : TSkinPartEx); overload;
 begin
@@ -929,10 +955,11 @@ begin
         text.SetSize(w,h);
         text.clear(color32(0,0,0,0));
         ST.AssignFontTo(text.Font,FSkinManager.Scheme);
-        Tpos := ST.GetXY(Rect(0, 0, text.TextWidth(item.Caption), text.TextHeight(item.Caption)),
+        FixedCaption := FixCaption(text,item.Caption,w-32);        
+        Tpos := ST.GetXY(Rect(0, 0, text.TextWidth(FixedCaption), text.TextHeight(FixedCaption)),
                          Rect(0, 0, w, h),iconrect);
-        ST.RenderTo(text,Tpos.x,Tpos.y,item.Caption,FSkinManager.Scheme);
-        textrect := rect(TPos.X,TPos.Y,TPos.X + text.TextWidth(item.Caption),TPos.Y + text.TextHeight(item.Caption));
+        ST.RenderTo(text,Tpos.x,Tpos.y,FixedCaption,FSkinManager.Scheme);
+        textrect := rect(TPos.X,TPos.Y,TPos.X + text.TextWidth(FixedCaption),TPos.Y + text.TextHeight(FixedCaption));
         dtext := true;
       end;
       if (item.Icon <> nil) and (SkinIcon.DrawIcon) and (FSettings.UseIcons) then
