@@ -20,7 +20,8 @@
      <project Name="Battery Monitor" Type="DLL">Plugins\Configurations\Modules\BatteryMonitor\BatteryMonitor.dproj</project>
      <project Name="Button" Type="DLL">Plugins\Configurations\Modules\ButtonModule\ButtonModule.dproj</project>
      <project Name="Button Bar List" Type="DLL">Plugins\Configurations\Modules\ButtonBarList\ButtonBarList.dproj</project>
-     <project Name="Button Bar Options" Type="DLL">Plugins\Configurations\Modules\ButtonBarOptions\ButtonBarOptions.dproj</project>
+     <project Name="AppBar List" Type="DLL">Plugins\Configurations\Modules\AppBarList\AppBarList.dproj</project> 
+	 <project Name="Button Bar Options" Type="DLL">Plugins\Configurations\Modules\ButtonBarOptions\ButtonBarOptions.dproj</project>
      <project Name="Clock" Type="DLL">Plugins\Configurations\Modules\Clock\Clock.dproj</project>
      <project Name="CPU Monitor" Type="DLL">Plugins\Configurations\Modules\CPUMonitor\CPUMonitor.dproj</project>
      <project Name="Keyboard Layout" Type="DLL">Plugins\Configurations\Modules\KeyboardLayout\KeyboardLayout.dproj</project>
@@ -81,6 +82,7 @@
      <project Name="SharpThemeApiEx" Type="DLL">Common\Libraries\SharpThemeApiEx\SharpThemeApiEx.dproj</project>
   </package>
   <package Name="Modules">
+	 <project Name="Application Bar" Type="DLL" >Plugins\Modules\ApplicationBar\ApplicationBar.dproj</project>
      <project Name="Battery Monitor" Type="DLL" >Plugins\Modules\Battery Monitor\BatteryMonitor.dproj</project>
      <project Name="Button" Type="DLL" >Plugins\Modules\Button\Button.dproj</project>
      <project Name="Button Bar" Type="DLL" >Plugins\Modules\ButtonBar\ButtonBar.dproj</project>
