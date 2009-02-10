@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<SharpCenter>
+  <Sections>
+    <ButtonBarList>
+      <Dll>_ModuleDlls\AppBarList.dll</Dll>
+      <Icon>..\buttons.png</Icon>
+    </ButtonBarList>
+  </Sections>
+</SharpCenter>
