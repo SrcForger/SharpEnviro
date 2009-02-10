@@ -30,9 +30,9 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, ToolWin, ComCtrls, ImgList,
-  SharpThemeApi, Menus, JvComponentBase, JvFindReplace, PngImageList, StdCtrls,
+  SharpThemeApiEx, Menus, JvComponentBase, JvFindReplace, PngImageList, StdCtrls,
   JvExStdCtrls, JvMemo, ExtCtrls, SharpEPageControl, SharpETabList, JclStrings,
-  uVistaFuncs;
+  uVistaFuncs, SharpFileUtils;
 
 type
   TNotesForm = class(TForm)
@@ -277,7 +277,7 @@ begin
   pcNotes.TabItems.Clear;
   files := TStringList.Create;
   try
-    SharpThemeApi.FindFiles(files, sDir, '*' + NOTES_EXTENSION);
+    FindFiles(files, sDir, '*' + NOTES_EXTENSION);
     for i := 0 to Pred(files.Count) do
     begin
 
