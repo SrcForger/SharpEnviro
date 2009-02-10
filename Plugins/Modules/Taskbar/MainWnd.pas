@@ -836,7 +836,7 @@ var
   changed : boolean;
 begin
   DebugOutPutInfo('TMainForm.CheckFilterAll (Procedure)');
-  if (sIFilter = False) and (sEFilter = False) then exit;
+  if (sIFilter = False) and (sEFilter = False) and (sShowAppBarWindows) then exit;
 
   changed := False;
   FLocked := True;
@@ -903,7 +903,7 @@ begin
   end;
 
 //  DebugOutPutInfo('TMainForm.CheckFilter (Procedure)');
-  if (sIFilter = False) and (sEFilter = False) then
+  if (sIFilter = False) and (sEFilter = False) and (sShowAppBarWindows) then
   begin
     result := true;
     exit;
