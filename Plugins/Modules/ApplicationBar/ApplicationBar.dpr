@@ -36,8 +36,10 @@ uses
   Contnrs,
   Graphics,
   StdCtrls,
+  JclSimpleXML,
   SharpApi,
   Gr32,
+  IXmlBaseUnit,
   uISharpBarModule,
   uISharpESkin,
   uISharpBar,
@@ -66,11 +68,30 @@ type
 { TInterfacedSharpBarModule }
 
 function TInterfacedSharpBarModule.CloseModule: HRESULT;
+var
+  XML : TInterfacedXmlBase;
+  n : integer;
 begin
   try
     SharpApi.UnRegisterShellHookReceiver(Form.Handle);
     Form.Free;
     Form := nil;
+
+    XML := TInterfacedXMLBase.Create;
+    XML.XmlFilename := SharpApi.GetSharpeUserSettingsPath + 'SharpCore\Services\ApplicationBar\Apps.xml';
+
+    if XML.Load then
+      for n := 0 to XML.XmlRoot.Items.Count - 1 do
+        if XML.XmlRoot.Items.Item[n].Properties.IntValue('ID',-1) = ID then
+        begin
+          XML.XmlRoot.Items.DeletE(n);
+          break;
+        end;
+    XML.Save;
+
+    XML.Free;
+
+    SharpApi.BroadCastGlobalUpdateMessage(suTaskAppBarFilters);    
     result := S_OK;
   except
     on E:Exception do

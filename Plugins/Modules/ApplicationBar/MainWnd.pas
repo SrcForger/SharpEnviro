@@ -1,5 +1,5 @@
 {
-Source Name: MainWnd.pas
+Source Name: MainWnd.pas                                                    
 Description: Application Bar Module - Main Window
 Copyright (C) Martin Krämer <MartinKraemer@gmx.net>
 
@@ -96,7 +96,9 @@ type
     FTM : TTaskManager;
     procedure OnNewTask(pItem : TTaskItem; Index : integer);
     procedure OnRemoveTask(pItem : TTaskItem; Index : integer);
-    procedure OnUpdateTask(pItem : TTaskItem; Index : integer);    
+    procedure OnUpdateTask(pItem : TTaskItem; Index : integer);
+    procedure OnFlaskTask(pItem : TTaskItem; Index : integer);
+    procedure OnActivateTask(pItem : TTaskItem; Index : integer);
     procedure ClearButtons;
     procedure UpdateButtonIcon(Btn : TButtonRecord);
     function GetButtonItem(pButton : TSharpETaskItem) : TButtonRecord;
@@ -106,6 +108,7 @@ type
     procedure WMDropFiles(var msg: TMessage); message WM_DROPFILES;
     procedure WMShellHook(var msg : TMessage); message WM_SHARPSHELLMESSAGE;
     procedure WMCopyData(var msg : TMessage); message WM_COPYDATA;
+    procedure WMAddAppBarTask(var msg : TMessage); message WM_ADDAPPBARTASK;
     procedure mnOnClick(pItem : TSharpEMenuItem; var CanClose : boolean);
     procedure mnMouseUp(pItem : TSharpEMenuItem; Button: TMouseButton; Shift: TShiftState);
   public
@@ -209,6 +212,26 @@ begin
   end;
 end;
 
+procedure TMainForm.WMAddAppBarTask(var msg: TMessage);
+var
+  FilePath,FileName : String;
+begin
+  if IsWindow(msg.wparam) then
+  begin
+    FilePath := GetProcessNameFromWnd(msg.wparam);
+    FileName := LowerCase(ExtractFileName(FilePath));
+    AddButton(FilePath,'shell:icon',FileName,Length(FButtonList));
+
+    sb_config.Left := -200;
+    UpdateButtons;
+    SaveSettings;
+    RealignComponents(True);
+    UpdateGlobalFilterList(True);
+    CheckList;
+    exit;         
+  end;
+end;
+
 procedure TMainForm.WMCopyData(var msg: TMessage);
 var
   ms : TMemoryStream;
@@ -255,7 +278,7 @@ begin
      StrDispose(pcFileName);
   end;
   DragFinish(Msg.wParam);
-  sb_config.Left := -200;  
+  sb_config.Left := -200;
   UpdateButtons;
   SaveSettings;
   RealignComponents(True);
@@ -599,6 +622,30 @@ begin
   SwitchToThisWindow(pItem.PropList.GetInt('wnd'), True);
 end;
 
+procedure TMainForm.OnActivateTask(pItem: TTaskItem; Index: integer);
+var
+  n : integer;
+begin
+  if pItem = nil then exit;
+
+  for n := 0 to High(FButtonList) do
+    if FButtonList[n].wnd = pItem.Handle then
+      if FButtonList[n].btn.Flashing then
+      begin
+        FButtonList[n].btn.Flashing := False;
+        FButtonList[n].btn.Repaint;
+      end;
+end;
+
+procedure TMainForm.OnFlaskTask(pItem: TTaskItem; Index: integer);
+var
+  n : integer;
+begin
+  for n := 0 to High(FButtonList) do
+    if FButtonList[n].wnd = pItem.Handle then
+      FButtonList[n].btn.Flashing := True;
+end;
+
 procedure TMainForm.OnNewTask(pItem: TTaskItem; Index: integer);
 var
   n : integer;
@@ -679,7 +726,7 @@ var
   newWidth : integer;
   n : integer;
 begin
-  self.Caption := 'ApplicationBar (' + inttostr(length(FButtonList)) + ')';
+  self.Caption := 'ApplicationBar';
 
   case sState of
     tisCompact: sAutoHeight := mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Compact.SkinDim.HeightAsInt;
@@ -939,6 +986,8 @@ begin
   FTM.OnNewTask := OnNewTask;
   FTM.OnRemoveTask := OnRemoveTask;
   FTM.OnUpdateTask := OnUpdateTask;
+  FTM.OnFlashTask := OnFlaskTask;
+  FTM.OnActivateTask := OnActivateTask;
 
   MoveButton := nil;
   DoubleBuffered := True;
