@@ -27,6 +27,13 @@ unit SharpTypes;
 
 interface
 
+uses
+  Windows;
+
+// Global
+type
+  THandleArray = array of hwnd;
+
 // Taskbar
 type
   TSharpETaskItemStates = (tisFull,tisCompact,tisMini);
