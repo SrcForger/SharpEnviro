@@ -55,6 +55,7 @@ type
                 constructor Create(pHandle : hwnd; pListMode : Boolean = False); reintroduce;
                 destructor Destroy; override;
                 procedure UpdateFromHwnd;
+                procedure UpdateNonCriticalFromHwnd;
                 procedure UpdateCaption;
                 procedure UpdateWndClass;
                 procedure UpdateVisibleState;
@@ -86,7 +87,8 @@ begin
   inherited Create;
   FHandle := pHandle;
   if not pListMode then  
-    UpdateFromHwnd;
+    UpdateFromHwnd
+  else UpdateNonCriticalFromHwnd;
   FTimeAdded := DateTimeToUnix(Now);
   FLastVWM := SharpApi.GetCurrentVWM;
 end;
@@ -127,6 +129,12 @@ begin
   end;
   
   if newicon <> 0 then FIcon := newicon;
+end;
+
+procedure TTaskItem.UpdateNonCriticalFromHwnd;
+begin
+  UpdateVisibleState;
+  UpdatePlacement;
 end;
 
 procedure TTaskItem.UpdateCaption;

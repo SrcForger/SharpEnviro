@@ -152,7 +152,8 @@ begin
     if pItem.Handle = FLastActiveTask then
     begin
       if not FListMode then
-        pItem.UpdateFromHwnd;
+        pItem.UpdateFromHwnd
+      else pItem.UpdateNonCriticalFromHwnd;
       if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
     end;
   end;
@@ -287,7 +288,8 @@ begin
       begin
         FLastActiveTask := pHandle;
         if not FListMode then        
-          pItem.UpdateFromHwnd;
+          pItem.UpdateFromHwnd
+        else pItem.UpdateNonCriticalFromHwnd;
         if Assigned(OnActivateTask) then FOnActivateTask(pItem,n);
         exit;
       end;
@@ -409,7 +411,8 @@ begin
     if pItem.Handle = pHandle then
     begin
       if not FListMode then     
-        pItem.UpdateFromHwnd;
+        pItem.UpdateFromHwnd
+      else pItem.UpdateNonCriticalFromHwnd;
       if FSortTasks then DoSortTasks;      
       if Assigned(FOnUpdateTask) then FOnUpdateTask(pItem,n);
     end;
