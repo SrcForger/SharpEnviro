@@ -87,6 +87,7 @@ begin
       chkFocusTopMost.Checked := Items.BoolValue('FocusTopMost',False);
       chkFollowFocus.Checked := Items.BoolValue('FollowFocus',False);
       chkNotifications.Checked := Items.BoolValue('ShowOCD',True);
+      chkResetOnDisplayChange.Checked := Items.BoolValue('ResetOnDisplayChange', True);      
     end;
   end;
 end;
@@ -108,12 +109,15 @@ end;
 
 procedure TSharpCenterPlugin.Save;
 begin
-  with PluginHost.Xml.XmlRoot, frmSettings do begin
+  with PluginHost.Xml.XmlRoot, frmSettings do
+  begin
     Name := 'VWMServiceSettings';
+    Items.Clear;
     Items.Add('VWMCount',sgbVwmCount.Value);
     Items.Add('FocusTopMost',chkFocusTopMost.Checked);
     Items.Add('FollowFocus',chkFollowFocus.Checked);
     Items.Add('ShowOCD',chkNotifications.Checked);
+    Items.Add('ResetOnDisplayChange',chkResetOnDisplayChange.Checked);
 
     PluginHost.Xml.Save;
   end;

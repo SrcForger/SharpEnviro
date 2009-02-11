@@ -75,6 +75,7 @@ var
   VWMCount: integer;
   sFocusTopMost: boolean;
   sFollowFocus: boolean;
+  sResetOnResChange: boolean;
   sShowOCD: boolean;
   LastDShellMessageTime: Int64;
   SkinManager: TSharpESkinManager;
@@ -140,6 +141,7 @@ begin
   SharpApi.UnRegisterShellHookReceiver(Handle);
   sFocusTopMost := False;
   sFollowFocus := False;
+  sResetOnResChange := True;
   sShowOCD := True;
   Dir := GetSharpeUserSettingsPath + 'SharpCore\Services\VWM\';
   FName := Dir + 'VWM.xml';
@@ -159,6 +161,7 @@ begin
       sFocusTopMost := XML.Root.Items.BoolValue('FocusTopMost', sFocusTopMost);
       sFollowFocus := XML.Root.Items.BoolValue('FollowFocus', sFollowFocus);
       sShowOCD := XML.Root.Items.BoolValue('ShowOCD', sShowOCD);
+      sResetOnResChange := XML.Root.Items.BoolValue('ResetOnDisplayChange', sResetOnResChange);
     end;
     XML.Free;
   end;
@@ -284,12 +287,15 @@ begin
       end;
     WM_DISPLAYCHANGE:
       begin
-        MonList.GetMonitors;
-        CurrentDesktop := 1;
+        if sResetOnResChange then
+        begin
+          MonList.GetMonitors;
+          CurrentDesktop := 1;
 
-        VWMFunctions.VWMMoveAllToOne(CurrentDesktop, False); // has to be called two times ...
-        VWMFunctions.VWMMoveAllToOne(CurrentDesktop, True); // ... reason ... unknown =)
-        SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS, 0, 0);
+          VWMFunctions.VWMMoveAllToOne(CurrentDesktop, False); // has to be called two times ...
+          VWMFunctions.VWMMoveAllToOne(CurrentDesktop, True); // ... reason ... unknown =)
+          SharpApi.SharpEBroadCast(WM_VWMUPDATESETTINGS, 0, 0);
+        end;
       end;
     WM_SHARPSHELLMESSAGE:
       begin

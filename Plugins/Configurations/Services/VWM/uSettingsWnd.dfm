@@ -4,7 +4,7 @@ object frmSettings: TfrmSettings
   AutoSize = True
   BorderStyle = bsNone
   Caption = 'frmSettings'
-  ClientHeight = 295
+  ClientHeight = 369
   ClientWidth = 766
   Color = clWindow
   Font.Charset = DEFAULT_CHARSET
@@ -132,11 +132,12 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
+    ExplicitLeft = -2
   end
   object SharpECenterHeader4: TSharpECenterHeader
     AlignWithMargins = True
     Left = 5
-    Top = 226
+    Top = 300
     Width = 756
     Height = 37
     Margins.Left = 5
@@ -150,12 +151,12 @@ object frmSettings: TfrmSettings
     TitleColor = clWindowText
     DescriptionColor = clRed
     Align = alTop
-    ExplicitLeft = 10
+    ExplicitTop = 226
   end
   object chkNotifications: TJvXPCheckbox
     AlignWithMargins = True
     Left = 3
-    Top = 273
+    Top = 347
     Width = 758
     Height = 17
     Margins.Top = 0
@@ -167,5 +168,44 @@ object frmSettings: TfrmSettings
     State = cbChecked
     Align = alTop
     OnClick = SettingsChanged
+    ExplicitTop = 273
+  end
+  object SharpECenterHeader5: TSharpECenterHeader
+    AlignWithMargins = True
+    Left = 5
+    Top = 226
+    Width = 756
+    Height = 37
+    Margins.Left = 5
+    Margins.Top = 10
+    Margins.Right = 5
+    Margins.Bottom = 10
+    Title = 'Reset on display change'
+    Description = 
+      'All windows will be moved to the the first virtual desktop when ' +
+      'the screen resolution is changed.'
+    TitleColor = clWindowText
+    DescriptionColor = clRed
+    Align = alTop
+    ExplicitLeft = 10
+    ExplicitTop = 160
+  end
+  object chkResetOnDisplayChange: TJvXPCheckbox
+    AlignWithMargins = True
+    Left = 3
+    Top = 273
+    Width = 758
+    Height = 17
+    Margins.Top = 0
+    Margins.Right = 5
+    Margins.Bottom = 0
+    Caption = 'Enable reset on display change'
+    TabOrder = 9
+    Checked = True
+    State = cbChecked
+    Align = alTop
+    OnClick = SettingsChanged
+    ExplicitLeft = 8
+    ExplicitTop = 207
   end
 end

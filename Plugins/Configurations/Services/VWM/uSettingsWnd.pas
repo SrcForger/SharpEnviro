@@ -50,6 +50,8 @@ type
     chkFollowFocus: TJvXPCheckbox;
     SharpECenterHeader4: TSharpECenterHeader;
     chkNotifications: TJvXPCheckbox;
+    SharpECenterHeader5: TSharpECenterHeader;
+    chkResetOnDisplayChange: TJvXPCheckbox;
     procedure sgbVwmCountChangeValue(Sender: TObject; Value: Integer);
     procedure SettingsChanged(Sender: TObject);
   private
