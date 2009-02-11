@@ -53,6 +53,7 @@ const
   WM_SHOWBAR               = WM_APP + 535;
   WM_HIDEBAR               = WM_APP + 536;
   WM_BARSTATUSCHANGED      = WM_APP + 537; //wparam:0 = started, wparam:1 = stopped
+  WM_ADDAPPBARTASK         = WM_APP + 538;
 
   WM_DESKCLOSING          = WM_APP + 537;
 
