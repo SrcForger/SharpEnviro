@@ -39,6 +39,7 @@ uses
   Math,
   Controls,
   MonitorList,
+  SharpTypes,
   SharpESkinManager,
   SharpEBar,
   SharpEMiniThrobber,
@@ -206,9 +207,6 @@ type
                      property SkinInterface   : ISharpESkin read FSkinInterface;
                      property BarInterface    : ISharpBar read FBarInterface;
                    end;
-
-type
-  THandleArray = array of HWND;
 
 function FindAllWindows(const WindowClass: string): THandleArray;
 

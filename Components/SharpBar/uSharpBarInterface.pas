@@ -3,7 +3,7 @@ unit uSharpBarInterface;
 interface
 
 uses
-  Windows,SharpApi,JclSimpleXML,SysUtils,
+  Windows,SharpApi,JclSimpleXML,SysUtils, SharpTypes,
   uISharpBar, uSharpEModuleManager;
 
 type
@@ -15,6 +15,7 @@ type
       ModuleManager : TModuleManager;
 
       // ISharpBar Interface
+      function GetModuleWindows(pFileName : String) : THandleArray; stdcall;
       procedure UpdateModuleSize; stdcall;
       function GetModuleXMLFile(ModuleID : integer) : String; stdcall;
 
@@ -39,6 +40,23 @@ end;
 function TSharpBarInterface.GetBarWnd: hwnd;
 begin
   result := FBarWnd;
+end;
+
+function TSharpBarInterface.GetModuleWindows(pFileName : String) : THandleArray;
+var
+  n : integer;
+  temp : TModule;
+begin
+  setlength(result,0);
+  for n := 0 to ModuleManager.Modules.Count - 1 do
+  begin
+    temp := TModule(ModuleManager.Modules.Items[n]);
+    if compareText(ExtractFileName(temp.ModuleFile.FileName),pFileName) = 0 then
+    begin
+      setlength(result,length(result)+1);
+      result[High(result)] := temp.mInterface.Form.Handle;
+    end;
+  end;
 end;
 
 function TSharpBarInterface.GetModuleXMLFile(ModuleID: integer): String;
