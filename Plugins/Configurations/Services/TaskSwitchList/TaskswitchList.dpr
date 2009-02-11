@@ -213,7 +213,7 @@ begin
     Version := '0.7.6.0';
     DataType := tteConfig;
     ExtraData := format('configmode: %d| configtype: %d',[Integer(scmLive),
-      Integer(suHotkey)]);
+      Integer(suTaskFilterActions)]);
   end;
 end;
 

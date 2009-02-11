@@ -457,7 +457,12 @@ begin
   if Message.Msg = WM_SHARPEUPDATESETTINGS then
   begin
     if Message.WParam = Integer(suTaskFilter) then
-      Filters.Load;
+      Filters.Load
+    else if Message.WParam = Integer(suTaskFilterActions) then
+    begin
+      LoadActionsFromXML;
+      RegisterActions;
+    end;
   end else
   if Message.Msg = WM_SHARPEUPDATEACTIONS then
     RegisterActions

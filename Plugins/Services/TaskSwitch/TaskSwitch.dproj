@@ -38,16 +38,6 @@
       
       
       
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
       <Excluded_Packages Name="C:\Users\Lee Green\Documents\Borland Studio Projects\Bpl\B305vd70.bpl">TurboPower Abbrevia 3.05 Design-time package - VCL70</Excluded_Packages>
     </Excluded_Packages><Source><Source Name="MainSource">TaskSwitch.DPR</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
   </ProjectExtensions>
