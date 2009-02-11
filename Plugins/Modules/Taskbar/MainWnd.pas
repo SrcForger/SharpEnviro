@@ -103,6 +103,7 @@ type
     IList: TObjectList;
     mInterface : ISharpBarModule;
     CurrentVWM : integer;
+    function FindAppBars : THandleArray;
     procedure UpdateSize;
     procedure UpdateComponentSkins;
     procedure InitHook;
@@ -273,11 +274,18 @@ var
   VWMCount : integer;
   VWMIndex : integer;
   TaskItem : TTaskItem;
+  wnd : hwnd;
 begin
   DebugOutPutInfo('TMainForm.WMCommand (Message Procedure)');
   PostMessage(SysMenuHandle, WM_SYSCOMMAND, msg.wparam, msg.lparam);
 
   VWMCount := GetVWMCount;
+  if msg.WParam > 512 then // Pin to appbar message
+  begin
+    wnd := msg.WParam - 512;
+    if IsWindow(wnd) then
+      PostMessage(wnd,WM_ADDAPPBARTASK,sysMenuHandle,0);
+  end else
   if VWMCount > 0 then
     if (msg.WParam >= 256) and (msg.WParam <= 256 + VWMCount) then
     begin
@@ -403,15 +411,142 @@ begin
   end;
 end;
 
+// function based on http://www.delphipraxis.net/post452421.html
+function FindAllWindows(const WindowClass: string): THandleArray;
+type
+  PParam = ^TParam;
+  TParam = record
+    ClassName: string;
+    Res: THandleArray;
+  end;
+var
+  Rec: TParam;
+
+  function GetWndClass(pHandle: hwnd): string;
+  var
+    buf: array[0..254] of Char;
+  begin
+    GetClassName(pHandle, buf, SizeOf(buf));
+    result := buf;
+  end;
+
+  function _EnumProc(_hWnd: HWND; _LParam: LPARAM): LongBool; stdcall;
+  begin
+    with PParam(_LParam)^ do
+    begin
+      if (CompareText(GetWndClass(_hWnd), ClassName) = 0) then
+      begin
+        SetLength(Res, Length(Res) + 1);
+        Res[Length(Res) - 1] := _hWnd;
+      end;
+      Result := True;
+    end;
+  end;
+
+begin
+  try
+    Rec.ClassName := WindowClass;
+    SetLength(Rec.Res, 0);
+    EnumWindows(@_EnumProc, Integer(@Rec));
+  except
+    SetLength(Rec.Res, 0);
+  end;
+  Result := Rec.Res;
+end;
+
+function TMainForm.FindAppBars : THandleArray;
+type
+  PParam = ^TParam;
+  TParam = record
+    wndlist: THandleArray;
+  end;
+  
+var
+  List : TStringList;
+  EnumParam : TParam;
+  ha : THandleArray;
+  n : integer;
+  s : String;
+
+  function GetCaption(handle : hwnd): String;
+  var
+    buf: array[0..2048] of wchar;
+  begin
+    GetWindowTextW(handle,@buf,sizeof(buf));
+    result := buf;
+  end;
+
+  function EnumThreadWindowsProc(Wnd: hwnd; param: lParam): boolean; export; stdcall;
+  begin
+    if CompareText(GetCaption(wnd),'ApplicationBar') = 0 then
+    with PParam(Param)^ do
+    begin
+      setlength(wndlist,length(wndlist)+1);
+      wndlist[High(wndlist)] := wnd;
+    end;
+    result := true;
+  end;
+  
+begin
+  ha := FindAllWindows('TSharpBarMainForm');
+
+  setlength(EnumParam.wndlist,0);
+  for n := High(ha) downto 0 do
+  begin
+    if not (ha[n] = Handle) then
+      EnumChildWindows(ha[n],@EnumThreadWindowsProc,Integer(@EnumParam));
+  end;
+
+  setlength(result,length(EnumParam.Wndlist));
+  for n := 0 to High(EnumParam.Wndlist) do
+    result[n] := EnumParam.WndList[n];
+  setlength(EnumParam.wndlist,0);
+
+  // add modules from the modules bar
+  // For some reason EnumChildWindows doesn't work on there
+  List := TStringList.Create;
+  s := mInterface.BarInterface.GetModuleWindows('ApplicationBar.dll');
+  List.CommaText := s;
+  for n := 0 to List.Count - 1 do
+  begin
+    setlength(result,length(result) + 1);
+    result[High(result)] := strtoint(List[n]);
+  end;
+  List.Free;
+end;
+
+function GetPositionString(wnd : hwnd) : String;
+var
+  Mon : TMonitor;
+  R : TRect;
+  P : TPoint;
+begin
+  result := '';
+  GetWindowRect(wnd,R);
+  P := Point(R.Left + (R.Right - R.Left) div 2, R.Top + (R.Bottom - R.Top) div 2);
+  Mon := Screen.MonitorFromWindow(wnd);
+  if not Mon.Primary then
+    result := result + 'Monitor:' + inttostr(Mon.MonitorNum)+'| ';
+  if P.Y > Mon.Top + Mon.Height div 2 then
+    result := result + 'Bottom'
+  else result := result + 'Top';
+  result := result + ',';
+  if P.X > Mon.Left + Mon.Width div 2 then
+    result := result + 'Right'
+  else result := result + 'Left';
+end;
+
 procedure TMainForm.DisplaySystemMenu(pHandle : hwnd);
 var
   cp: TPoint;
   AppMenu: hMenu;
   MenuItemInfo: TMenuItemInfo;
   n : integer;
+  AppBarMenu : hMenu;
   VWMMenu : hMenu;
   VWMIndex : integer;
   VWMCount : integer;
+  AppBars : THandleArray;
 begin
   DebugOutPutInfo('TMainForm.DisplaySystemMenu (Procedure)');
   if not (isWindow(pHandle)) then
@@ -420,6 +555,11 @@ begin
   SysMenuHandle := pHandle;
   GetCursorPos(cp);
   AppMenu := GetSystemMenu(pHandle, False);
+  if not IsMenu(AppMenu) then
+  begin
+    GetSystemMenu(pHandle, True);
+    AppMenu := GetSystemMenu(pHandle, False);
+  end;
 
   if IsIconic(pHandle) then
   begin
@@ -442,18 +582,59 @@ begin
     EnableMenuItem(AppMenu, SC_Minimize, mf_bycommand or mf_enabled);
   end;
 
+  AppBars := FindAppBars;
+  AppBarMenu := 0;
+  if length(AppBars)>0 then
+  begin
+    { Add a seperator }
+    FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+    MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
+    MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or
+      MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+    MenuItemInfo.fType := MFT_SEPARATOR;
+    MenuItemInfo.wID := $EFFF;
+    InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
+
+    { Add Pin to App Bar Item}
+    FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+    MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
+    MenuItemInfo.fMask := MIIM_DATA or
+      MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+    MenuItemInfo.fType := MFT_STRING;
+    MenuItemInfo.dwTypeData := 'Pin to Application Bar';
+    AppBarMenu := CreateMenu;
+    MenuItemInfo.hSubMenu := AppBarMenu;
+    MenuItemInfo.wID := $EFFF;
+    InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
+
+    for n := 0 to High(AppBars) do
+    begin
+      FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+      MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
+      MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or
+        MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+      MenuItemInfo.fType := MFT_STRING;
+      MenuItemInfo.dwTypeData := PChar('Application bar at ' + GetPositionString(AppBars[n]));
+      MenuItemInfo.wID := 512 + AppBars[n];
+      InsertMenuItem(AppBarMenu, DWORD(0), True, MenuItemInfo);
+    end;    
+  end;
+
   VWMMenu := 0;
   VWMCount := GetVWMCount;
   if (GetVWMCount > 0) then //and (not IsIconic(pHandle)) then
   begin
    { Add a seperator }
-   FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
-   MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
-   MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or
-     MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
-   MenuItemInfo.fType := MFT_SEPARATOR;
-   MenuItemInfo.wID := $EFFF;
-   InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
+   if AppBarMenu = 0 then
+   begin
+     FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
+     MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
+     MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or
+       MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
+     MenuItemInfo.fType := MFT_SEPARATOR;
+     MenuItemInfo.wID := $EFFF;
+     InsertMenuItem(AppMenu, DWORD(0), True, MenuItemInfo);
+   end;
 
    { Add a VWM Item}
    FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
@@ -484,12 +665,17 @@ begin
    end;
   end;
 
+  SendMessage(pHandle, WM_INITMENUPOPUP, AppMenu, MAKELPARAM(0, 1));
+  SendMessage(pHandle, WM_INITMENU, AppMenu, 0);
   TrackPopupMenu(AppMenu, tpm_leftalign or tpm_leftbutton, cp.x, cp.y, 0, Handle, nil);
+  
   if VWMMenu <> 0 then
-  begin
     DeleteMenu(AppMenu,0,MF_BYPOSITION);
+  if AppBarMenu <> 0 then
     DeleteMenu(AppMenu,0,MF_BYPOSITION);
-  end;
+  if (VWMMenu <> 0) or (AppBarMenu <> 0) then // Delete Seperator
+    DeleteMenu(AppMenu,0,MF_BYPOSITION);
+  setlength(AppBars,0);
 end;
 
 procedure TMainForm.OnTaskItemMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
