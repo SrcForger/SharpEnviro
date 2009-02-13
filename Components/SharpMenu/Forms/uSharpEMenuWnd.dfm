@@ -33,7 +33,7 @@ object SharpEMenuWnd: TSharpEMenuWnd
   TextHeight = 13
   object SubMenuTimer: TTimer
     Enabled = False
-    Interval = 100
+    Interval = 250
     OnTimer = SubMenuTimerTimer
     Left = 112
     Top = 72
@@ -49,5 +49,12 @@ object SharpEMenuWnd: TSharpEMenuWnd
     OnMessage = ApplicationEvents1Message
     Left = 176
     Top = 72
+  end
+  object SubMenuCloseTimer: TTimer
+    Enabled = False
+    Interval = 250
+    OnTimer = SubMenuCloseTimerTimer
+    Left = 112
+    Top = 104
   end
 end

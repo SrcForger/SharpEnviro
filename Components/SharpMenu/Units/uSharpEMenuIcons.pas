@@ -33,17 +33,19 @@ type
   TSharpEMenuIcons = class
   private
     FItems : TObjectList;
-    function FindIcon(pIconSource,pIconData : String) : TSharpEMenuIcon;
   public
     property Items : TObjectList read FItems;
     constructor Create; reintroduce;
     destructor Destroy; override;
     function AddIcon(pIconSource,pIconData : String) : TSharpEMenuIcon; overload;
     function AddIcon(pIconSource : String; pBmp : TBitmap32) : TSharpEMenuIcon; overload;
+    function FindIcon(pIconSource,pIconData : String) : TSharpEMenuIcon;
+    function FindGenericIcon(pIconData : String) : boolean;
     procedure RemoveIcon(pIconSource : String); overload;
     procedure RemoveIcon(pIcon : TSharpEMenuIcon); overload;
     procedure SaveIconCache(pFileName : String);
     procedure LoadIconCache(pFileName : String);
+    procedure LoadGenericIcons;
   end;
 
 implementation
@@ -77,7 +79,7 @@ var
   isSEIcon : boolean;
   found : boolean;
 begin
-  if pos(pIconSource,'.') <> 0 then
+  if pos('.',pIconSource) <> 0 then
     isSEIcon := GetCurrentTheme.Icons.IsIconInIconSet(pIconSource)
   else isSEIcon := False;
 
@@ -104,6 +106,25 @@ begin
   result := nil;
 end;
 
+// only checks for generic icons!
+function TSharpEMenuIcons.FindGenericIcon(pIconData: String): boolean;
+var
+  n : integer;
+  Item : TSharpEMenuIcon;
+begin
+  result := False;
+  for n := 0 to FItems.Count -1 do
+  begin
+    Item := TSharpEMenuIcon(FItems.Items[n]);
+    if Item.IconType = itGeneric then
+      if CompareText(Item.IconSource,pIconData) = 0 then
+      begin
+        result := True;
+        exit;
+      end;
+  end;
+end;
+
 function TSharpEMenuIcons.AddIcon(pIconSource : String; pBmp : TBitmap32) : TSharpEMenuIcon;
 var
   Item : TSharpEMenuIcon;
@@ -124,7 +145,7 @@ begin
   Item := FindIcon(pIconSource,pIconData);
   if Item = nil then
   begin
-    Item := TSharpEMenuIcon.Create(pIconSource,pIconData);
+    Item := TSharpEMenuIcon.Create(pIconSource,pIconData,True);
     FItems.Add(Item);
   end else Item.Count := Item.Count + 1;
   result := Item;
@@ -180,6 +201,29 @@ begin
   SetString(str, nil, Size);
   Stream.ReadBuffer(Pointer(str)^, Size);
   result := str;
+end;
+
+procedure TSharpEMenuIcons.LoadGenericIcons;
+var
+  Dir : String;
+  sr : TSearchRec;
+  filename : String;
+  filetag : String;
+begin
+  Dir := SharpApi.GetSharpeDirectory + 'Icons\Menu\';
+
+  if FindFirst(Dir + '*.png',faAnyFile,sr) = 0 then
+  repeat
+    filename := Dir + sr.Name;
+    if FileExists(filename) then
+    begin
+      filetag := sr.Name;
+      setlength(filetag,length(filetag) - length(ExtractFileExt(filetag)));
+      filetag := 'generic.' + filetag;
+      AddIcon(filename,filetag);
+    end;
+  until (FindNext(sr) <> 0);
+  FindClose(sr);
 end;
 
 procedure TSharpEMenuIcons.LoadIconCache(pFileName : String);

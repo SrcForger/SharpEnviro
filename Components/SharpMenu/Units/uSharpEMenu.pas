@@ -98,6 +98,8 @@ type
     function GetItemsHeight(pindex : integer) : integer;
     function NextVisibleIndex : integer;
     function PreviousVisibleIndex : integer;
+    procedure SelectItemByMenu(pSubMenu : TSharpEMenu);
+    function GetItemUndercursor(px, py: integer): TSharpEMenuItem;
 
     // Perform Actions
     function PerformMouseMove(px,py : integer; var submenu : boolean) : boolean;
@@ -140,6 +142,13 @@ uses Math,
      SharpThemeApiEx,
      uISharpETheme;
 
+function PointInRect(P : TPoint; Rect : TRect) : boolean;
+begin
+  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
+     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
+     else PointInRect:=False;
+end;     
+
 constructor TSharpEMenu.Create(pParentMenuItem : TSharpEMenuItem; pManager  : TSharpESkinManager; pSettings : TSharpEMenuSettings);
 begin
   inherited Create;
@@ -161,7 +170,10 @@ begin
   FWrapMenu := False;
 
   if SharpEMenuIcons = nil then
-     SharpEMenuIcons := TSharpEMenuIcons.Create;
+  begin
+    SharpEMenuIcons := TSharpEMenuIcons.Create;
+    SharpEMenuIcons.LoadGenericIcons;
+  end;
 
   if SharpEMenuPopups = nil then
      SharpEMenuPopups := TSharpEMenuPopups.Create;
@@ -554,6 +566,32 @@ begin
   result := size;
 end;
 
+
+function TSharpEMenu.GetItemUndercursor(px, py: integer): TSharpEMenuItem;
+var
+  menuskin : TSharpEMenuSkin;
+  item : TSharpEMenuItem;
+  tl : TPoint;
+  n : integer;
+begin
+  menuskin := FSkinManager.Skin.MenuSkin;
+  tl.x := menuskin.LROffset.XAsInt;
+  tl.y := menuskin.TBOffset.XAsInt;
+
+  for n := 0 to High(FItemsHeight) do
+  begin
+    item := TSharpEMenuItem(FItems.Items[n]);
+    if (PointInRect(Point(px,py),Rect(0,tl.y,tl.y + tl.x+FItemWidth,tl.y + FItemsHeight[n]))
+        and (item.isVisible)) then
+    begin
+      result := item;
+      exit;
+    end;
+    tl.y := tl.y + FItemsHeight[n];
+  end;
+  result := nil;
+end;
+
 // Calculate the height of the menu and store the result as array in FItemsHeight
 procedure TSharpEMenu.UpdateItemsHeight;
 var
@@ -727,8 +765,11 @@ begin
 
       submenuitem := TSharpEMenuItem.Create(self,mtSubMenu);
       if FSettings.UseIcons then
-        submenuitem.Icon := SharpEMenuIcons.AddIcon('icon.folder','icon.folder')
-      else submenuitem.Icon := nil;
+      begin
+        if FSettings.UseGenericIcons then
+          submenuitem.Icon := SharpEMenuIcons.FindIcon('generic.folder','generic.folder')
+        else submenuitem.Icon := SharpEMenuIcons.AddIcon('icon.folder','icon.folder');
+      end else submenuitem.Icon := nil;
       submenuitem.Caption := 'Next Page...';
       submenuitem.isDynamic := True;
       submenuitem.isWrapMenu := True;
@@ -1083,6 +1124,22 @@ begin
   RenderTo(Dst);
 end;
 
+procedure TSharpEMenu.SelectItemByMenu(pSubMenu: TSharpEMenu);
+var
+  n : integer;
+  item : TSharpEMenuItem;
+begin
+  for n := 0 to High(FItemsHeight) do
+  begin
+    item := TSharpEMenuItem(FItems.Items[n]);
+    if item.SubMenu = pSubMenu then
+    begin
+      FItemIndex := n;
+      exit;
+    end;
+  end;
+end;
+
 procedure TSharpEMenu.RenderTo(Dst : TBitmap32; pLeft,pTop : integer);
 begin
   if (FSkinManager = nil) then exit;
@@ -1094,13 +1151,6 @@ end;
 procedure TSharpEMenu.RenderTo(Dst : TBitmap32);
 begin
   RenderTo(Dst,0);
-end;
-
-function PointInRect(P : TPoint; Rect : TRect) : boolean;
-begin
-  if (P.X>=Rect.Left) and (P.X<=Rect.Right)
-     and (P.Y>=Rect.Top) and (P.Y<=Rect.Bottom) then PointInRect:=True
-     else PointInRect:=False;
 end;
 
 function TSharpEMenu.PerformClick : boolean;
@@ -1115,7 +1165,8 @@ begin
     if assigned(item.OnClick) then
     begin
       CanClose := False;
-      item.OnClick(item,CanClose);
+      if not ((item.isDynamic) and (item.ItemType = mtSubMenu)) then
+        item.OnClick(item,CanClose);
       result := CanClose;
       exit;
     end;

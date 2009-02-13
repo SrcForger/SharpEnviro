@@ -17,6 +17,10 @@ type
 
 implementation
 
+uses
+  uSharpEMenu,
+  uSharpEMenuIcons;
+
 constructor TSharpEMenuConsts.Create;
 begin
   inherited Create;
@@ -145,7 +149,7 @@ var
   link: TShellLinkInfo;
 begin
   if isDirectory(ExcludeTrailingBackSlash(pSource)) or isDirectory(IncludeTrailingBackSlash(pSource)) then
-    result := 'icon.folder'
+    result := 'generic.folder'
   else
   begin
     Ext := ExtractFileExt(pSource);
@@ -155,27 +159,37 @@ begin
       Ext := ExtractFileExt(link.FileName);
     end;
     if isDirectory(ExcludeTrailingBackSlash(pSource)) or isDirectory(IncludeTrailingBackSlash(pSource)) then
-      result := 'icon.folder'
-    else if (CompareText(Ext,'.exe') = 0) or (CompareText(Ext,'.bat') = 0)
+    begin
+      result := 'generic.folder';
+      exit;
+    end;
+
+    if SharpEMenuIcons.FindGenericIcon('generic' + Ext) then
+    begin
+      result := 'generic' + Ext;
+      exit;
+    end;
+    
+    if (CompareText(Ext,'.exe') = 0) or (CompareText(Ext,'.bat') = 0)
       or (CompareText(Ext,'.com') = 0) then
-      result := 'icon.file.application'
+      result := 'generic.application'
     else if (CompareText(Ext,'.html') = 0) or (CompareText(Ext,'.htm') = 0)
       or (CompareText(Ext,'.url') = 0) or (CompareText(Ext,'.php') = 0)
       or (CompareText(Ext,'.xml') = 0)  then
-      result := 'icon.file.url'
+      result := 'generic.url'
     else if (CompareText(Ext,'.mp3') = 0) or (CompareText(Ext,'.wav') = 0)
       or (CompareText(Ext,'.xmi') = 0) or (CompareText(Ext,'.midi') = 0)
       or (CompareText(Ext,'.ogg') = 0) or (CompareText(Ext,'.wma') = 0) then
-      result := 'icon.file.music'
+      result := 'generic.music'
     else if (CompareText(Ext,'.jpg') = 0) or (CompareText(Ext,'.jpeg') = 0)
       or (CompareText(Ext,'.bmp') = 0) or (CompareText(Ext,'.png') = 0)
       or (CompareText(Ext,'.gif') = 0) or (CompareText(Ext,'.nef') = 0) then
-      result := 'icon.file.picture'
+      result := 'generic.image'
     else if (CompareText(Ext,'.avi') = 0) or (CompareText(Ext,'.mov') = 0)
       or (CompareText(Ext,'.mpg') = 0) or (CompareText(Ext,'.mpeg') = 0)
       or (CompareText(Ext,'.wmv') = 0) or (CompareText(Ext,'.rm') = 0) then
-      result := 'icon.file.movie'
-    else result := 'icon.file';
+      result := 'generic.movie'
+    else result := 'generic.file';
   end
 end;
 

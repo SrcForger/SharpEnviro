@@ -30,7 +30,7 @@ interface
 uses SysUtils,Classes,GR32,GR32_Resamplers;
 
 type
-  TIconType = (itShellIcon,itCustomIcon);
+  TIconType = (itShellIcon,itCustomIcon,itGeneric);
 
   TSharpEMenuIcon = class
   private
@@ -47,7 +47,7 @@ type
     property IconShellHandle : THandle read FIconHandle;
     property Count : integer read FCount write FCount;
     property Cached : boolean read FCached write FCached;
-    constructor Create(pIconSource,pIconData : String); reintroduce; overload;
+    constructor Create(pIconSource,pIconData : String; isGeneric: Boolean = False); reintroduce; overload;
     constructor Create(pIconSource : String; pBmp : TBitmap32); overload;
     constructor Create(pIconSource : String; pIconType : TIconType; Stream : TStream); overload;
     destructor Destroy; override;
@@ -92,7 +92,7 @@ begin
   end;
 end;
 
-constructor TSharpEMenuIcon.Create(pIconSource,pIconData : String);
+constructor TSharpEMenuIcon.Create(pIconSource,pIconData : String; isGeneric: Boolean = False);
 begin
   inherited Create;
   FCached := False;
@@ -104,6 +104,11 @@ begin
   TLinearResampler.Create(FIcon);
   FCount := 1;
 
+  if isGeneric then
+  begin
+    FIconSource := pIconData;
+    FIconType := itGeneric;
+  end else
   if CompareText(pIconSource,'shell:icon') = 0 then
   begin
     FIconSource := pIconData;

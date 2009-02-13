@@ -53,6 +53,7 @@ type
     SubMenuTimer: TTimer;
     offsettimer: TTimer;
     ApplicationEvents1: TApplicationEvents;
+    SubMenuCloseTimer: TTimer;
     procedure ApplicationEvents1Message(var Msg: tagMSG; var Handled: Boolean);
     procedure FormMouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
@@ -73,6 +74,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure SubMenuCloseTimerTimer(Sender: TObject);
   private
     FMenu : TSharpEMenu;
     FParentMenu : TSharpeMenuWnd;
@@ -276,22 +278,37 @@ procedure TSharpEMenuWnd.FormMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 var
   submenu : boolean;
+  item : TSharpEMenuItem;
 begin
   if FIsClosing then exit;
   if FMenu = nil then exit;
 
   submenu := false;
+  if FParentMenu <> nil then
+  begin
+    FParentMenu.SubMenuCloseTimer.Enabled := False;
+    FParentMenu.SubMenuTimer.Enabled := False;
+    FParentMenu.SharpEMenu.SelectItemByMenu(FMenu);
+    FParentMenu.SharpEMenu.RenderTo(FParentMenu.Picture,FOffset);
+    PreMul(FParentMenu.Picture);
+    FParentMenu.DrawWindow;
+  end;
+  if FSubMenu <> nil then
+  begin
+    item := FMenu.CurrentItem;
+    if item <> nil then
+    begin
+      if item.SubMenu <> FSubMenu.SharpEMenu then
+      begin
+        SubMenuCloseTimer.Enabled := True;
+      end else SubMenuCloseTimer.Enabled := False;
+    end;
+  end;
   if FMenu.PerformMouseMove(x,y+FOffset,submenu) then
   begin
-    if FSubMenu <> nil then
-    begin
-      FSubMenu.SharpEMenu.RecycleBitmaps;
-      FSubMenu.Release;
-      FSubMenu := nil;
-    end;
     SubMenuTimer.Enabled := False;
     if submenu then
-       SubMenuTimer.Enabled := True;
+      SubMenuTimer.Enabled := True;
     FMenu.RenderTo(FPicture,FOffset);
     PreMul(FPicture);
     DrawWindow;
@@ -356,7 +373,8 @@ begin
   if FMenu = nil then exit;
 
   if FMenu.PerformClick then
-     CloseAll;
+     CloseAll
+  else SubMenuTimerTimer(nil);
 end;
 
 procedure TSharpEMenuWnd.FormDestroy(Sender: TObject);
@@ -384,6 +402,18 @@ begin
   if FRootMenu then Application.Terminate;
 end;
 
+procedure TSharpEMenuWnd.SubMenuCloseTimerTimer(Sender: TObject);
+begin
+  SubMenuCloseTimer.Enabled := False;
+  if FSubMenu <> nil then
+  begin
+    FSubMenu.SharpEMenu.RecycleBitmaps;
+    FSubMenu.Visible := False;
+    FSubMenu.Release;
+    FSubMenu := nil;
+  end;
+end;
+
 procedure TSharpEMenuWnd.SubMenuTimerTimer(Sender: TObject);
 var
   item : TSharpEMenuItem;
@@ -398,12 +428,16 @@ begin
   begin
     if FSubMenu <> nil then
     begin
+      if (item.SubMenu = FSubMenu.SharpEMenu) then
+        exit;
       FSubMenu.SharpEMenu.RecycleBitmaps;
+      FSubMenu.Visible := False;
       FSubMenu.Release;
       FSubMenu := nil;
     end;
     if item.SubMenu <> nil then
     begin
+      SubMenuCloseTimer.Enabled := False;
       FSubMenu := TSharpEMenuWnd.Create(self,TSharpEMenu(item.submenu));
       FSubMenu.ParentMenu := self;
       t := Left + Width + FMenu.SkinManager.Skin.MenuSkin.SkinDim.XAsInt;
@@ -664,5 +698,6 @@ begin
 end;
 
 end.
+
 
 

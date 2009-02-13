@@ -97,6 +97,7 @@ begin
   FDynamic := False;
   FWrapMenu := False;
 
+  FSubMenu      := nil;
   FClickEvent   := nil;
   FPaintEvent   := nil;
   FMouseUpEvent := nil;
