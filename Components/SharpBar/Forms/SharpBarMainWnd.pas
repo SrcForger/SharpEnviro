@@ -624,11 +624,11 @@ begin
     exit;
   if FStartup then
     exit;
+  if ModuleManager = nil then
+    exit;
 
-  //try
-    ModuleManager.ReCalculateModuleSize((msg.wparam = 0));
-  //finally
-  //end;
+  ModuleManager.ReCalculateModuleSize((msg.wparam = 0));
+
  // RedrawWindow(Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INVALIDATE or RDW_ALLCHILDREN);
  // ModuleManager.BroadcastPluginUpdate(suBackground, -2);
 end;
