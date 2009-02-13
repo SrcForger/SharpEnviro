@@ -300,7 +300,7 @@ procedure TfrmEdit.btnLinkIconBrowseClick(Sender: TObject);
 var
   s: string;
 begin
-  s := SharpDialogs.IconDialog(edLinkIcon.Text, SMI_ALL_ICONS, Mouse.CursorPos);
+  s := SharpDialogs.IconDialog(edLinkIcon.Text, [smiShellIcon,smiCustomIcon,smiSharpEIcon,smiGenericIcon], Mouse.CursorPos);
 
   if s <> '' then
     edLinkIcon.Text := s;
@@ -321,7 +321,7 @@ procedure TfrmEdit.btnSubmenuIconBrowseClick(Sender: TObject);
 var
   s: string;
 begin
-  s := SharpDialogs.IconDialog(edSubmenuIcon.Text, SMI_ALL_ICONS, Mouse.CursorPos);
+  s := SharpDialogs.IconDialog(edSubmenuIcon.Text, [smiShellIcon,smiCustomIcon,smiSharpEIcon,smiGenericIcon], Mouse.CursorPos);
 
   if s <> '' then
     edSubmenuIcon.Text := s;
