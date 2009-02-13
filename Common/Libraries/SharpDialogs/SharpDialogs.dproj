@@ -1,4 +1,5 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{9f03aac1-1bba-4929-8631-838fb347a38c}</ProjectGuid>
     <MainSource>SharpDialogs.dpr</MainSource>
@@ -14,10 +15,10 @@
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     <DCC_ExeOutput>..\..\..\..\SharpE\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\SharpApi\;..\SharpApiEx\;..\SharpCenterApi\;..\SharpThemeApi\;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\ControlPanelItems;..\..\..\Components\SharpMenu;..\..\..\Components\SharpMenu\Units;..\..\..\Components\SharpMenu\Forms;..\..\..\Common\Units\PropertyList;..\..\..\Common\3rd party\GR32 Addons</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\SharpApi\;..\SharpApiEx\;..\SharpCenterApi\;..\SharpThemeApi\;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\ControlPanelItems;..\..\..\Components\SharpMenu;..\..\..\Components\SharpMenu\Units;..\..\..\Components\SharpMenu\Forms;..\..\..\Common\Units\PropertyList;..\..\..\Common\3rd party\GR32 Addons</DCC_ResourcePath>
-    <DCC_ObjPath>..\SharpApi\;..\SharpApiEx\;..\SharpCenterApi\;..\SharpThemeApi\;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\ControlPanelItems;..\..\..\Components\SharpMenu;..\..\..\Components\SharpMenu\Units;..\..\..\Components\SharpMenu\Forms;..\..\..\Common\Units\PropertyList;..\..\..\Common\3rd party\GR32 Addons</DCC_ObjPath>
-    <DCC_IncludePath>..\SharpApi\;..\SharpApiEx\;..\SharpCenterApi\;..\SharpThemeApi\;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\ControlPanelItems;..\..\..\Components\SharpMenu;..\..\..\Components\SharpMenu\Units;..\..\..\Components\SharpMenu\Forms;..\..\..\Common\Units\PropertyList;..\..\..\Common\3rd party\GR32 Addons</DCC_IncludePath>
+    <DCC_UnitSearchPath>..\SharpApi\;..\SharpApiEx\;..\SharpThemeApiEx\;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\ControlPanelItems;..\..\..\Components\SharpMenu;..\..\..\Components\SharpMenu\Units;..\..\..\Components\SharpMenu\Forms;..\..\..\Common\Units\PropertyList;..\..\..\Common\3rd party\GR32 Addons</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\SharpApi\;..\SharpApiEx\;..\SharpThemeApiEx\;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\ControlPanelItems;..\..\..\Components\SharpMenu;..\..\..\Components\SharpMenu\Units;..\..\..\Components\SharpMenu\Forms;..\..\..\Common\Units\PropertyList;..\..\..\Common\3rd party\GR32 Addons</DCC_ResourcePath>
+    <DCC_ObjPath>..\SharpApi\;..\SharpApiEx\;..\SharpThemeApiEx\;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\ControlPanelItems;..\..\..\Components\SharpMenu;..\..\..\Components\SharpMenu\Units;..\..\..\Components\SharpMenu\Forms;..\..\..\Common\Units\PropertyList;..\..\..\Common\3rd party\GR32 Addons</DCC_ObjPath>
+    <DCC_IncludePath>..\SharpApi\;..\SharpApiEx\;..\SharpThemeApiEx\;..\..\..\Common\Delphi Components\SharpE Skin Components;..\..\..\Common\Units\SharpGraphicsUtils;..\..\..\Common\Units\SharpIconUtils;..\..\..\Common\Units\ControlPanelItems;..\..\..\Components\SharpMenu;..\..\..\Components\SharpMenu\Units;..\..\..\Components\SharpMenu\Forms;..\..\..\Common\Units\PropertyList;..\..\..\Common\3rd party\GR32 Addons</DCC_IncludePath>
     <DCC_Define>RELEASE</DCC_Define>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -33,7 +34,15 @@
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType />
     <BorlandProject>
-<BorlandProject><Delphi.Personality><Parameters><Parameters Name="HostApplication">E:\SharpE\Project1.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1031</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">SharpDialogs.dpr</Source></Source><Excluded_Packages>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="HostApplication">..\..\..\..\SharpE\SharpCenter.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1031</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">SharpDialogs.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
       
       
       
@@ -53,6 +62,5 @@
     <DCCReference Include="..\..\Units\SharpFileUtils\SharpFileUtils.pas" />
     <DCCReference Include="..\..\Units\SharpIconUtils\SharpIconUtils.pas" />
     <DCCReference Include="..\..\Units\VistaFuncs\uVistaFuncs.pas" />
-    <DCCReference Include="..\SharpThemeApi\SharpThemeApi.pas" />
   </ItemGroup>
 </Project>

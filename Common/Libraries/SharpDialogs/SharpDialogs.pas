@@ -34,12 +34,12 @@ type
                              stiDirectory,stiShellFolders,stiScript,stiAction);
   TTargetDialogSelectItems = Set of TTargetDialogSelectItem;
 
-  TIconMenuSelectItem = (smiShellIcon,smiCustomIcon,smiSharpEIcon);
+  TIconMenuSelectItem = (smiShellIcon,smiCustomIcon,smiSharpEIcon,smiGenericIcon);
   TIconMenuSelectItems = Set of TIconMenuSelectItem;
 
 
 const
-  SMI_ALL_ICONS = [smiShellIcon,smiCustomIcon,smiSharpEIcon];
+  SMI_ALL_ICONS = [smiShellIcon,smiCustomIcon,smiSharpEIcon]; // do not add smiGenericIcon
   STI_ALL_TARGETS = [stiFile,stiRecentFiles,stiMostUsedFiles,stiDrive,
                      stiDirectory,stiShellFolders,stiScript,stiAction];
 

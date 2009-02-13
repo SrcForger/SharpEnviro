@@ -37,24 +37,18 @@ uses
   Forms,
   Types,
   Menus,
- // GR32,
   PngImageList,
- // PngImage,
   ActiveX,
   ShellApi,
   ShlObj,
   SharpApi,
-{  SharpESkin,
-  SharpESkinManager,
-  uSharpEMenu,
-  uSharpEMenuItem,
-  uSharpEMenuSettings,
-  uSharpEMenuWnd,   }
   SharpApiEx,
+  uThemeConsts,
+  uISharpETheme,
   ExPopupList,
+  SharpThemeApiEx,
   SharpIconUtils in '..\..\Units\SharpIconUtils\SharpIconUtils.pas',
   GR32_PNG in '..\..\3rd party\GR32 Addons\GR32_PNG.pas',
-  SharpThemeApi in '..\SharpThemeApi\SharpThemeApi.pas',
   uVistaFuncs in '..\..\Units\VistaFuncs\uVistaFuncs.pas',
   SharpFileUtils in '..\..\Units\SharpFileUtils\SharpFileUtils.pas';
 
@@ -72,7 +66,7 @@ type
                                 procedure OnActionClick(Sender : TObject);
                               end;
 
-  TIconMenuSelectItem = (smiShellIcon,smiCustomIcon,smiSharpEIcon);
+  TIconMenuSelectItem = (smiShellIcon,smiCustomIcon,smiSharpEIcon,smiGenericIcon);
   TIconMenuSelectItems = Set of TIconMenuSelectItem;
   TIconMenuClickHandler = class
                             procedure OnShellIconClick(Sender : TObject);
@@ -89,7 +83,7 @@ type
 
 
 const
-  SMI_ALL_ICONS = [smiShellIcon,smiCustomIcon,smiSharpEIcon];
+  SMI_ALL_ICONS = [smiShellIcon,smiCustomIcon,smiSharpEIcon]; // do not add smiGenericIcon
   STI_ALL_TARGETS = [stiFile,stiRecentFiles,stiMostUsedFiles,stiDrive,
                      stiDirectory,stiShellFolders,stiScript,stiAction];
 
@@ -1021,11 +1015,15 @@ var
   iconmenuclick : TIconMenuClickHandler;
   iml : TPngImageList;
   subiml : TPngImageList;
+  subgenericiml : TPngImageList;
   bmp : TBitmap;
   FileInfo : SHFILEINFO;
   ImageListHandle : THandle;
   WIcon : TIcon;
   icon : TSharpEIcon;
+  Theme : ISharpETheme;
+  sr : TSearchRec;
+  filename,filetag : String;
 begin
   Iconmenuresult := '';
   Iconmenu := TPopupMenu.Create(nil);
@@ -1036,6 +1034,9 @@ begin
   subiml := TPngImageList.Create(nil);
   subiml.Width := 40;
   subiml.Height := 40;
+  subgenericiml := TPngImageList.Create(nil);
+  subgenericiml.Width := 16;
+  subgenericiml.Height := 16;  
   Iconmenu.Images := iml;
 
   // Build Image Lists
@@ -1048,12 +1049,17 @@ begin
   iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'cube16');
   iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'open16');
   iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'graph16');
+  iml.PngImages.Add(False).PngImage.LoadFromResourceName(hinstance,'action16');
 
   iml.Add(bmp,bmp);
 
   Bmp.Width := 40;
   Bmp.Height := 40;
   subiml.Add(bmp,bmp);
+
+  Bmp.Width := 16;
+  Bmp.Height := 16;
+  subgenericiml.Add(bmp,bmp);
 
   if smiShellIcon in IconItems then
   begin
@@ -1120,10 +1126,11 @@ begin
     mindex := mindex + 1;
 
     wIcon := TIcon.Create;
-    Dir := GetIconSetDirectory;
-    for n := 0 to GetIconSetIconsCount - 1 do
+    Theme := GetCurrentTheme;
+    Dir := Theme.Icons.Directory;
+    for n := 0 to Theme.Icons.GetIconCount - 1 do
     begin
-      icon := GetIconSetIcon(n);
+      icon := Theme.Icons.GetIconByIndex(n);
 
       if FileExists(Dir + Icon.FileName) then
       begin
@@ -1142,6 +1149,39 @@ begin
     wIcon.Free;
   end;
 
+  if smiGenericIcon in IconItems then
+  begin
+    menuItem := TMenuItem.Create(Iconmenu);
+    menuItem.Caption := 'Generic Icon';
+    menuItem.ImageIndex := 4;
+    menuItem.SubMenuImages := subgenericiml;
+    Iconmenu.Items.Add(menuItem);
+    mindex := mindex + 1;
+
+    n := 0;
+    Dir := SharpApi.GetSharpeDirectory + 'Icons\Menu\';
+    if FindFirst(Dir + '*.png',faAnyFile,sr) = 0 then
+    repeat
+      filename := Dir + sr.Name;
+      if FileExists(filename) then
+      begin
+        filetag := sr.Name;
+        setlength(filetag,length(filetag) - length(ExtractFileExt(filetag)));
+        filetag := 'generic.' + filetag;
+        subgenericiml.PngImages.Add(False).PngImage.LoadFromFile(filename);
+        menuItem := TMenuItem.Create(Iconmenu);
+        menuItem.Caption := filetag;
+        menuItem.Hint := filetag;
+        menuItem.OnClick := iconmenuclick.OnSharpEIconClick;
+        menuItem.ImageIndex := subgenericiml.Count;
+        if n mod 20  = 0 then menuItem.Break := mbBarBreak;
+        Iconmenu.Items.Items[mindex].Add(menuItem);
+        n := n + 1;                
+      end;
+    until (FindNext(sr) <> 0);
+    FindClose(sr);
+  end;
+
   if smiCustomIcon in IconItems then
   begin
     menuItem := TMenuItem.Create(Iconmenu);
@@ -1153,7 +1193,13 @@ begin
     //mindex := mindex + 1;
   end;
 
+  Bmp.Width := 40;
+  Bmp.Height := 40;
   subiml.Add(bmp,bmp);
+
+  Bmp.Width := 16;
+  Bmp.Height := 16;
+  subgenericiml.Add(bmp,bmp);
   Bmp.Free;
 
   Iconmenu.Popup(PopupPoint.X,PopupPoint.Y);
