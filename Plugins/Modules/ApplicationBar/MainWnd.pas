@@ -83,9 +83,7 @@ type
     sState       : TSharpETaskItemStates;
     sAutoWidth   : integer;
     sAutoHeight  : integer;
-    sShowLabel   : boolean;
     FButtonSpacing : integer;
-    sShowIcon    : boolean;
     sCountOverlay : boolean;
     FButtonList  : array of TButtonRecord;
     FHintWnd     : hwnd; 
@@ -378,16 +376,10 @@ begin
     icon := pIcon;
     exename := ExtractFileName(target);
 
-    if sShowLabel then
-      btn.Caption := pCaption
-    else
-      btn.Caption := '';
+    btn.Caption := pCaption;
 
-    if sShowIcon then
-    begin
-      if not IconStringToIcon(pIcon,pTarget,btn.Glyph32) then
-         btn.Glyph32.SetSize(0,0)
-    end else btn.Glyph32.SetSize(0,0);
+    if not IconStringToIcon(pIcon,pTarget,btn.Glyph32) then
+       btn.Glyph32.SetSize(0,0)
   end;
 end;
 
@@ -395,8 +387,6 @@ procedure TMainForm.RefreshIcons;
 var
   n : integer;
 begin
-  if not sShowIcon then exit;
-
   for n := 0 to High(FButtonList) do
       with FButtonList[n] do
       begin
@@ -447,9 +437,7 @@ end;
 
 procedure TMainForm.UpdateButtonIcon(Btn: TButtonRecord);
 var
-  SkinText : TSkinText;
   Bmp : TBitmap32;
-  w,h : integer;
   x,y : integer;
   n : integer;
 begin
@@ -463,28 +451,6 @@ begin
     exit;
   end;
 
-//  if not mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Valid(tisFull) then
-  //  exit;
-
-//  if not IconStringToIcon(Btn.Icon,Btn.Target,Btn.btn.Glyph32) then
-  //  Btn.btn.Glyph32.SetSize(0,0);
-
-  {SkinText := CreateThemedSkinText(mInterface.SkinInterface.SkinManager.Skin.TaskItemSkin.Full.Normal.SkinText);
-  SkinText.UpdateDynamicProperties(mInterface.SkinInterface.SkinManager.Scheme);
-  SkinText.Size := 8;
-  SkinText.ShadowType := stOutline;
-  SkinText.Alpha := 255;
-  Bmp := TBitmap32.Create;
-  SkinText.AssignFontTo(Bmp.Font,mInterface.SkinInterface.SkinManager.Scheme);
-  w := Bmp.TextWidthW(inttostr(Btn.Btn.Tag));
-  h := Bmp.TextHeightW(inttostr(Btn.Btn.Tag));
-  Bmp.SetSize(w+8,h+4);
-  SkinText.RenderToW(Bmp,4,2,inttostr(Btn.Btn.Tag),mInterface.SkinInterface.SkinManager.Scheme);
-  Bmp.DrawMode := dmBlend;
-  Bmp.CombineMode := cmMerge;
-  Btn.Btn.Overlay.Assign(Bmp);
-  Btn.Btn.OverlayPos := Point(Btn.Btn.Width - w - 8, Btn.Btn.Height - h - 4);
-  Bmp.Free;              }
   Bmp := TBitmap32.Create;
   Bmp.SetSize(sAutoWidth,sAutoHeight);
   Bmp.Clear(color32(0,0,0,0));
@@ -497,13 +463,13 @@ begin
   begin
     Bmp.FrameRectTS(x,y,x+4,y+4,Color32(0,0,0,196));
     Bmp.FillRectT(x+1,y+1,x+3,y+3,color32(255,255,255,196));
-    x := x + 5;
-    if x > sAutoWidth - 8 then
+    y := y + 5;
+    if y > sAutoHeight - 8 then
     begin
-      x := 3;
-      y := y + 5;
+      y := 3;
+      x := x + 5;
     end;
-    if y > sAutoHeight - 4 then
+    if x > sAutoWidth - 8 then
       break;
   end;
 
@@ -540,8 +506,6 @@ var
 begin
   ClearButtons;
 
-  sShowLabel   := False;
-  sShowIcon    := True;
   FButtonSpacing := 2;
   sState       := tisCompact;
   sCountOverlay := True;
