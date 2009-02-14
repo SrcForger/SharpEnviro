@@ -1212,6 +1212,7 @@ begin
 
   FreeAndNil(IconMenu);
   FreeAndNil(subiml);
+  FreeAndNil(subgenericiml);
   FreeAndNil(iml);
   FreeAndNil(Iconmenuclick);
 
