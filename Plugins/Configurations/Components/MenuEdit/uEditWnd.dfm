@@ -261,7 +261,7 @@ object frmEdit: TfrmEdit
         Max = 1000
         Value = 0
         Description = 'Set the max number of items to display (-1 Unlimited)'
-        PopPosition = ppRight
+        PopPosition = ppBottom
         PercentDisplay = False
         OnChangeValue = sgbDynamicDirMaxItemsChangeValue
         BackgroundColor = clWindow
@@ -358,7 +358,7 @@ object frmEdit: TfrmEdit
         Max = 25
         Value = 10
         Description = 'Set the max number of items to display (-1 Unlimited)'
-        PopPosition = ppRight
+        PopPosition = ppBottom
         PercentDisplay = False
         OnChangeValue = sgbDynamicDirMaxItemsChangeValue
         BackgroundColor = clWindow

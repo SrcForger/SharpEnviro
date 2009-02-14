@@ -77,7 +77,7 @@ object frmVolumeControl: TfrmVolumeControl
           Prefix = 'Width: '
           Suffix = 'px'
           Description = 'Adjust Volume Bar Width'
-          PopPosition = ppRight
+          PopPosition = ppBottom
           PercentDisplay = False
           OnChangeValue = sgb_widthChangeValue
           BackgroundColor = clWindow

@@ -58,7 +58,7 @@ object frmSettings: TfrmSettings
       Value = 4
       Prefix = 'Desktops: '
       Description = 'Desktop count'
-      PopPosition = ppRight
+      PopPosition = ppBottom
       PercentDisplay = False
       OnChangeValue = sgbVwmCountChangeValue
       BackgroundColor = clWindow

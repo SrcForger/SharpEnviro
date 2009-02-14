@@ -222,7 +222,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Prefix = 'Transparency: '
           Suffix = '%'
           Description = 'Change Wallpaper Transparency'
-          PopPosition = ppRight
+          PopPosition = ppBottom
           PercentDisplay = True
           OnChangeValue = WallpaperTransChangeEvent
           BackgroundColor = clWindow

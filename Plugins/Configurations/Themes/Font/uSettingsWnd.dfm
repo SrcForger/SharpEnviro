@@ -46,7 +46,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Left = 5
         Top = 127
         Width = 424
-        Height = 25
+        Height = 22
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -66,7 +66,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Left = 0
           Top = 0
           Width = 250
-          Height = 25
+          Height = 22
           Margins.Left = 0
           Margins.Top = 0
           Margins.Right = 0
@@ -109,7 +109,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Left = 0
           Top = 0
           Width = 250
-          Height = 25
+          Height = 22
           Margins.Left = 0
           Margins.Top = 0
           Margins.Right = 0
@@ -134,7 +134,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Left = 5
         Top = 209
         Width = 424
-        Height = 25
+        Height = 22
         Margins.Left = 5
         Margins.Top = 10
         Margins.Right = 5
@@ -154,7 +154,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Left = 0
           Top = 0
           Width = 250
-          Height = 25
+          Height = 22
           Margins.Left = 0
           Margins.Top = 0
           Margins.Right = 0
@@ -177,7 +177,7 @@ object frmSettingsWnd: TfrmSettingsWnd
         Left = 5
         Top = 423
         Width = 424
-        Height = 25
+        Height = 22
         Margins.Left = 5
         Margins.Top = 5
         Margins.Right = 5
@@ -496,7 +496,7 @@ object frmSettingsWnd: TfrmSettingsWnd
           Left = 5
           Top = 129
           Width = 424
-          Height = 25
+          Height = 22
           Margins.Left = 5
           Margins.Top = 10
           Margins.Right = 5
@@ -515,7 +515,7 @@ object frmSettingsWnd: TfrmSettingsWnd
             Left = 0
             Top = 0
             Width = 250
-            Height = 25
+            Height = 22
             Margins.Left = 5
             Margins.Top = 5
             Margins.Right = 0
