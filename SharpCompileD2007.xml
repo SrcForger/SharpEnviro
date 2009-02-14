@@ -1,9 +1,4 @@
 <SharpCompile>
-  <package Name="Configurations">
-     
-     <project Name="Link Object" Type="DLL">Plugins\Configurations\Link\Link.dproj</project>
-     <project Name="Recycle Bin Object" Type="DLL">Plugins\Configurations\RecycleBin\RecycleBin.dproj</project>
-  </package>
   <package Name="Configurations - Components">
 	 <project Name="Toolbar List" Type="DLL">Plugins\Configurations\Components\Barlist\BarList.dproj</project>
      <project Name="Desktop" Type="DLL">Plugins\Configurations\Components\DesktopSettings\DesktopSettings.dproj</project>
@@ -59,6 +54,8 @@
   </package>
   <package Name="Configurations - Objects">
      <project Name="Image Object" Type="DLL">Plugins\Configurations\Objects\Image\Image.dproj</project>
+	 <project Name="Link Object" Type="DLL">Plugins\Configurations\Objects\Link\Link.dproj</project>
+     <project Name="Recycle Bin Object" Type="DLL">Plugins\Configurations\Objects\RecycleBin\RecycleBin.dproj</project>
   </package>
   <package Name="Components">
      <project Name="SetShell" Type="Application">Components\SetShell\SetShell.dproj</project>
