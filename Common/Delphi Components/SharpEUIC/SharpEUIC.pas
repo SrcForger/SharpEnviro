@@ -47,7 +47,7 @@ type
     FDefaultValue : String;
     FMonitorControl : TComponent;
     procedure SetMonitorControl(const Value: TComponent);
-    procedure SetDefaultValue(const Value: String);
+    
     procedure ResetBtnOnClick(Sender : TObject);
     procedure SetHasChanged(const Value: boolean);
   protected
@@ -57,8 +57,13 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure UpdateStatus(Init : boolean = False);
-    procedure UpdateStatusFromValue(Value : String; Init : boolean = False);
+    procedure UpdateStatusFromValue(Value : String; Init : boolean = False); overload;
+    procedure UpdateStatusFromValue(Value: Integer; Init: boolean = False); overload;
     procedure UpdateBtnStatus;
+
+    procedure SetDefaultValue(const Value: String); overload;
+    procedure SetDefaultValue(const Value: Boolean); overload;
+    procedure SetDefaultValue(const Value: Integer); overload;
     procedure Reset;
   published
     property HasChanged : boolean read FHasChanged write SetHasChanged;
@@ -130,6 +135,8 @@ begin
   FResetBtn.Hint := 'Reset Setting';
 
   UpdateBtnStatus;
+
+  AutoSize := True;
 end;
 
 destructor TSharpEUIC.Destroy;
@@ -201,6 +208,24 @@ end;
 procedure TSharpEUIC.SetDefaultValue(const Value: String);
 begin
   FDefaultValue := Value;
+  UpdateStatus(True);
+end;
+
+procedure TSharpEUIC.SetDefaultValue(const Value: Integer);
+begin
+  FDefaultValue := IntToStr(Value);
+  UpdateStatus(True);
+end;
+
+procedure TSharpEUIC.SetDefaultValue(const Value: Boolean);
+var
+  s:string;
+begin
+  s := 'False';
+  if Value then
+    s := 'True';
+
+  FDefaultValue := s;
   UpdateStatus(True);
 end;
 
@@ -279,6 +304,27 @@ var
   NewChangedState : boolean;
 begin
   NewChangedState := (CompareText(Value,DefaultValue) <> 0);
+
+  if NewChangedState <> FHasChanged then
+  begin
+    if (NewChangedState and (not AutoReset) and (not FHasChanged))
+       or (AutoReset) or (Init) then
+    begin
+      FHasChanged := NewChangedState;
+      UpdateBtnStatus;
+      Invalidate;
+    end;
+  end;  
+
+end;
+
+procedure TSharpEUIC.UpdateStatusFromValue(Value: Integer; Init: boolean);
+var
+  NewChangedState : boolean;
+  s: string;
+begin
+  s := IntToStr(Value);
+  NewChangedState := (CompareText(s,DefaultValue) <> 0);
 
   if NewChangedState <> FHasChanged then
   begin
