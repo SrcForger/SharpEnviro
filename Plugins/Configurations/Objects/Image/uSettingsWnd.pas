@@ -28,16 +28,49 @@ unit uSettingsWnd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvSimpleXml, JclFileUtils,
-  ImgList, PngImageList,
-  SharpEListBox, SharpEListBoxEx, GR32, GR32_PNG, SharpApi,
-  ExtCtrls, Menus, JclStrings, GR32_Image, SharpEGaugeBoxEdit, SharpEUIC,
-  SharpEFontSelectorFontList, JvPageList, JvExControls, SharpEPageControl,
-  ComCtrls, Mask, JvExMask, JvToolEdit, SharpEColorEditorEx, SharpESwatchManager,
+  Windows,
+  Messages,
+  SysUtils,
+  Variants,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
+  Dialogs,
+  StdCtrls,
+  JvSimpleXml,
+  JclFileUtils,
+  ImgList,
+  PngImageList,
+  SharpEListBox,
+  SharpEListBoxEx,
+  GR32,
+  GR32_PNG,
+  SharpApi,
+  ExtCtrls,
+  Menus,
+  JclStrings,
+  GR32_Image,
+  SharpEGaugeBoxEdit,
+  SharpEUIC,
+  SharpEFontSelectorFontList,
+  JvPageList,
+  JvExControls,
+  SharpEPageControl,
+  ComCtrls,
+  Mask,
+  JvExMask,
+  JvToolEdit,
+  SharpEColorEditorEx,
+  SharpESwatchManager,
 
   ISharpCenterHostUnit,
-  ISharpCenterPluginUnit, SharpECenterHeader, Buttons, PngSpeedButton, pngimage;
+  SharpDialogs,
+  ISharpCenterPluginUnit,
+  SharpECenterHeader,
+  Buttons,
+  PngSpeedButton,
+  pngimage;
 
 type
   TStringObject = class(TObject)
@@ -53,7 +86,6 @@ type
     spc: TSharpEPageControl;
     pl: TJvPageList;
     pagefile: TJvStandardPage;
-    imagefile: TJvFilenameEdit;
     pageurl: TJvStandardPage;
     imageurl: TEdit;
     Panel1: TPanel;
@@ -61,7 +93,6 @@ type
     sgb_size: TSharpeGaugeBox;
     Panel3: TPanel;
     sbgimagencblendalpha: TSharpeGaugeBox;
-    Panel10: TPanel;
     UIC_colorblend: TSharpEUIC;
     cbcolorblend: TCheckBox;
     UIC_ColorAlpha: TSharpEUIC;
@@ -82,17 +113,21 @@ type
     SharpECenterHeader7: TSharpECenterHeader;
     Panel4: TPanel;
     sgb_refresh: TSharpeGaugeBox;
-    Panel6: TPanel;
     Panel7: TPanel;
     Image1: TImage;
     Label1: TLabel;
     btnRevert: TPngSpeedButton;
+    Panel8: TPanel;
+    PngSpeedButton1: TPngSpeedButton;
+    imagefile: TEdit;
+    OpenDialog1: TOpenDialog;
+    pnlDisplay: TPanel;
+    pnlImage: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure sgb_sizeChangeValue(Sender: TObject; Value: Integer);
     procedure UIC_Reset(Sender: TObject);
     procedure spcTabChange(ASender: TObject; const ATabIndex: Integer;
       var AChange: Boolean);
-    procedure IconColorsResize(Sender: TObject);
     procedure IconColorsChangeColor(ASender: TObject; AValue: Integer);
     procedure sgbiconalphaChangeValue(Sender: TObject; Value: Integer);
     procedure cbalphablendClick(Sender: TObject);
@@ -101,15 +136,22 @@ type
     procedure imagefileChange(Sender: TObject);
     procedure imageurlChange(Sender: TObject);
     procedure btnRevertClick(Sender: TObject);
+    procedure PngSpeedButton1Click(Sender: TObject);
+    procedure IconColorsResize(Sender: TObject);
   private
     FPluginHost: TInterfacedSharpCenterHostBase;
     function GetChangedControlCount: integer;
     procedure UpdateSettingsChanged;
+
+    procedure UpdateImagePage;
+    procedure UpdateDisplayPage;
   public
     sObjectID: string;
 
     property PluginHost: TInterfacedSharpCenterHostBase read FPluginHost
       write FPluginHost;
+
+    procedure UpdatePageUI;
 
   end;
 
@@ -118,7 +160,8 @@ var
 
 implementation
 
-uses SharpThemeApi, SharpCenterApi;
+uses SharpThemeApi,
+  SharpCenterApi;
 
 {$R *.dfm}
 
@@ -145,6 +188,9 @@ procedure TfrmSettings.spcTabChange(ASender: TObject; const ATabIndex: Integer;
 begin
   pl.ActivePageIndex := ATabIndex;
   Achange := True;
+
+  UpdatePageUI;
+  UpdateSettingsChanged;
 end;
 
 procedure TfrmSettings.UIC_Reset(Sender: TObject);
@@ -154,7 +200,7 @@ end;
 
 procedure TfrmSettings.btnRevertClick(Sender: TObject);
 var
-  i:Integer;
+  i: Integer;
 begin
 
   for i := 0 to Pred(Self.ComponentCount) do begin
@@ -168,7 +214,7 @@ end;
 
 function TfrmSettings.GetChangedControlCount: integer;
 var
-  i:Integer;
+  i: Integer;
 begin
   result := 0;
   for i := 0 to Pred(Self.ComponentCount) do begin
@@ -182,12 +228,16 @@ end;
 procedure TfrmSettings.cbalphablendClick(Sender: TObject);
 begin
   UIC_AlphaBlend.UpdateStatus;
+
+  UpdatePageUI;
   UpdateSettingsChanged;
 end;
 
 procedure TfrmSettings.cbcolorblendClick(Sender: TObject);
 begin
   UIC_ColorBlend.UpdateStatus;
+
+  UpdatePageUI;
   UpdateSettingsChanged;
 end;
 
@@ -204,7 +254,8 @@ end;
 
 procedure TfrmSettings.IconColorsResize(Sender: TObject);
 begin
-  UIC_Colors.Height := IconColors.Height + 8;
+  UIC_Colors.Height := IconColors.Height + 4;
+  UpdateDisplayPage;
 end;
 
 procedure TfrmSettings.imagefileChange(Sender: TObject);
@@ -217,14 +268,72 @@ begin
   UpdateSettingsChanged;
 end;
 
+procedure TfrmSettings.PngSpeedButton1Click(Sender: TObject);
+var
+  s: string;
+begin
+  if OpenDialog1.Execute then
+    s := OpenDialog1.FileName;
+  if length(trim(s)) > 0 then
+  begin
+    imagefile.Text := s;
+  end;
+end;
+
 procedure TfrmSettings.UpdateSettingsChanged;
 begin
   if (Visible) then begin
     PluginHost.SetSettingsChanged;
-    PluginHost.Refresh;
   end;
 
   btnRevert.Visible := (GetChangedControlCount <> 0);
+end;
+
+procedure TfrmSettings.UpdateDisplayPage;
+begin
+  LockWindowUpdate(self.Handle);
+  try
+    if pagDisplay.Visible then begin
+
+      UIC_blendalpha.Visible := cbalphablend.Checked;
+      UIC_ColorAlpha.Visible := cbcolorblend.Checked;
+
+      frmSettings.Height := pnlDisplay.Height;
+      PluginHost.Refresh(rtSize);
+    end;
+  finally
+    LockWindowUpdate(0);
+  end;
+end;
+
+procedure TfrmSettings.UpdateImagePage;
+begin
+  LockWindowUpdate(self.Handle);
+  try
+    if pagImage.Visible then begin
+
+      if pl.ActivePageIndex = 0 then begin
+        spc.Height := 205;
+        pl.Height := 80;
+      end else begin
+        spc.Height := 285;
+        pl.Height := 160;
+      end;
+
+      frmSettings.Height := pnlImage.Height + 50;
+      PluginHost.Refresh(rtSize);
+    end;
+  finally
+    LockWindowUpdate(0);
+  end;
+end;
+
+procedure TfrmSettings.UpdatePageUI;
+begin
+  if pagImage.Visible then
+    UpdateImagePage
+  else if pagDisplay.Visible then
+    UpdateDisplayPage;
 end;
 
 end.

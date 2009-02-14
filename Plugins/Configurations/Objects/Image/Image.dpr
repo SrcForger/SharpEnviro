@@ -89,10 +89,7 @@ begin
     tmpPag.Show;
   end;
 
-  if tmpPag = frmSettings.pagImage then
-    frmSettings.Height := 350 else
-    frmSettings.Height := 420;
-
+  frmSettings.UpdatePageUI;
   PluginHost.Refresh(rtSize);
 end;
 
