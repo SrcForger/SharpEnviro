@@ -2166,7 +2166,9 @@ var
   ModValue : integer;
 begin
   EvaluateColor(src,Color,ModValue);
+
   result := SchemedStringToColor(Color,cs);
+  result := abs(result);
   result := LightenRGB(result,ModValue);
 end;
 
