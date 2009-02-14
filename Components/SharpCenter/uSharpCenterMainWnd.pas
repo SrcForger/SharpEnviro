@@ -69,9 +69,11 @@ uses
   SharpEColorEditorEx,
   SharpEHotkeyEdit,
   SharpESwatchManager,
+  JvExControls,
   JvPageList,
   JvSpin,
-  JvXPCheckCtrls;
+  JvXPCheckCtrls,
+  JvExMask, JvToolEdit;
 
 const
   cEditTabHide = 0;
@@ -785,6 +787,11 @@ begin
           TEdit(c).Font.Color := theme.PluginControlText;
         end;
 
+        if c.ClassNameIs('TMemo') then begin
+          TMemo(c).Color := theme.PluginControlBackground;
+          TMemo(c).Font.Color := theme.PluginControlText;
+        end;
+
         if c.ClassNameIs('TComboBox') then begin
           TComboBox(c).Color := theme.PluginControlBackground;
           TComboBox(c).Font.Color := theme.PluginControlText;
@@ -804,6 +811,12 @@ begin
           TJvSpinEdit(c).Color := theme.PluginControlBackground;
           TJvSpinEdit(c).Font.Color := theme.PluginControlText;
           TJvSpinEdit(c).DoubleBuffered := True;
+        end;
+
+        if c.ClassNameIs('TJvFilenameEdit') then begin
+          TJvFilenameEdit(c).Color := theme.PluginControlBackground;
+          TJvFilenameEdit(c).Font.Color := theme.PluginControlText;
+          TJvFilenameEdit(c).DoubleBuffered := True;
         end;
 
         if c.ClassNameIs('TPanel') then begin
@@ -832,6 +845,19 @@ begin
         if c.ClassNameIs('TJvStandardPage') then begin
           TJvStandardPage(c).Color := theme.PluginBackground;
           TJvStandardPage(c).Font.Color := theme.PluginBackgroundText;
+        end;
+
+        if c.ClassNameIs('TSharpEPageControl') then begin
+          TSharpEPageControl(c).PageBackgroundColor := theme.PluginBackground;
+          TSharpEPageControl(c).BackgroundColor := theme.Background;
+          TSharpEPageControl(c).TabBackgroundColor := theme.Background;
+          TSharpEPageControl(c).TabColor := theme.PluginTab;
+          TSharpEPageControl(c).TabSelColor := theme.PluginSelectedTab;
+          TSharpEPageControl(c).TabCaptionColor := theme.PluginTabText;
+          TSharpEPageControl(c).TabCaptionSelColor := theme.PluginTabSelectedText;
+          TSharpEPageControl(c).BorderColor := theme.Border;
+          TSharpEPageControl(c).DoubleBuffered := True;
+
         end;
 
       end;
